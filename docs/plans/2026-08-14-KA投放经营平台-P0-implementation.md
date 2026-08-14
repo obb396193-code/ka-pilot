@@ -9,6 +9,7 @@
 **Tech Stack:** TypeScript, Next.js, Fastify, PostgreSQL/RDS, Redis-compatible queue, Vitest, Playwright, Zod, Drizzle ORM, Claude Agent SDK, DingTalk Stream SDK.
 
 > 本计划是设计后的实施草案，不代表已获准开工。正式执行前需要创建独立 worktree，并重新核对公司内网可用依赖、RDS/缓存申请方式、SSO 接入和 Multica 接口契约。
+> 其中 Web 六模块壳是基于旧版原型的暂定结构，一级导航已在讨论版 v0.4 中撤回；执行 Task 10 前必须先完成正式页面信息架构设计。
 
 ---
 
@@ -256,4 +257,3 @@ tests/
 4. RDS、缓存、队列和对象存储的申请结果；
 5. Multica 请求、回执、查询和 correlation ID 的真实合同；
 6. 2—3 位灰度用户和一组脱敏测试任务。
-
