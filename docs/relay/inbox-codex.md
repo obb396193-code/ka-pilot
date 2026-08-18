@@ -83,3 +83,21 @@
 - 2026-08-18 老板终裁：第九项一级导航=**「集成与通知」**（保留一级与业务域并列，不收头像菜单；一期钉钉仍是唯一重点渠道，命名为全渠道留位）。二级六项：接入管理/群助手/推送订阅/卡片中心/值守告警/消息记录。
 - **PRD v1.6 已冻结进契约阶段**（导航改名+二级六项已落文档，路由 /dingtalk→/integrations）。
 - **R-002 立即开始，不再有任何前置**：按 `docs/plans/原型图生成指令.md`（通用前缀里第九项名已改「集成与通知」）生成 11 页原型图+v3 画册。完成回执本信箱。
+
+
+### R-007 后端 B1a 开工：契约存储层（与 R-002 生图并行）
+
+- 派活方：arch　日期：2026-08-18
+- 前置阅读（顺序）：`packages/contract/schema.sql` + `metrics.md` + `api.md`（唯一事实源）→ `docs/23-开发协作规范.md`（纪律）→ PRD v1.6 §3.1/§4。
+- 交付物（目录边界：apps/worker、apps/web/app/api、packages/db、packages/domain）：
+  1. `packages/db`：按 schema.sql 出迁移（node-pg-migrate 或 drizzle，你选并在状态文件记录理由）；迁移可重放；分区表按月建
+  2. `packages/domain`：metrics.md 全部派生指标纯函数实现 + 单测（含环比 NEW/null 边界、双口径合并、零耗日剔除）——**这是"agent 不算数"的唯一计算实现**
+  3. `apps/worker` 骨架：jobs 表轮询消费器（DB lease，SELECT FOR UPDATE SKIP LOCKED）+ etl_full/etl_incr 两个 job handler（调奇航 get_data，userId 从 payload 取）+ etl_runs 留痕 + 失败重试进 outbound 告警
+  4. qihang client：GET get_data 封装（account/account_offline/account_realtime/ad_realtime 四 resource；502/503/504 重试 3 次指数退避；鉴权失败不重试直接 blocked_auth）
+  5. metrics_raw 落库 → canonical 合并 job（字段级合并规则见 metrics.md）
+- 工程纪律：`[be]` 前缀路径限定 commit；在自己分支 `be/b1a`；建 `docs/plans/B1a-状态.md`（从 CR 状态文件模板样式）逐条更新；完成给 SHA 等 arch 验收
+- 本地环境：PG 用 docker 本地起；**不碰 SQLite**；奇航接口本地不通就写 client 单测（mock HTTP 层），真实连通在内网联调
+- 契约缺口：写 inbox-arch.md 提议，不自己发明字段
+- 状态：待处理
+
+### R-002 补充：生图与 R-007 并行不互斥，先完成生图批次再开 B1a 亦可（自行排程，两者本周内都要有产出）
