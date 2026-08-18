@@ -1,0 +1,83 @@
+import { describe, expect, it, vi } from "vitest";
+
+import type { JobRecord, JobRepositoryPort } from "@ka/db";
+
+import { JobConsumer } from "../src/jobs/consumer.js";
+import { BlockedAuthError } from "../src/qihang/errors.js";
+
+function job(overrides: Partial<JobRecord> = {}): JobRecord {
+  return {
+    id: "job-1",
+    workspaceId: "workspace-1",
+    jobType: "etl_incr",
+    payload: {},
+    priority: 5,
+    credentialOwnerUserId: "user-1",
+    status: "leased",
+    leaseUntil: new Date(Date.now() + 60_000),
+    attempts: 1,
+    maxAttempts: 3,
+    runAfter: new Date(),
+    ...overrides,
+  };
+}
+
+function repositoryFor(nextJob: JobRecord | null): JobRepositoryPort {
+  return {
+    leaseNext: vi.fn(async () => nextJob),
+    markRunning: vi.fn(async () => undefined),
+    markDone: vi.fn(async () => undefined),
+    markFailure: vi.fn(async () => undefined),
+    markBlockedAuth: vi.fn(async () => undefined),
+  };
+}
+
+describe("JobConsumer", () => {
+  it("runs a registered handler and completes the job", async () => {
+    const repository = repositoryFor(job());
+    const handler = vi.fn(async () => undefined);
+    const consumer = new JobConsumer(repository, { etl_incr: handler });
+
+    expect(await consumer.processOnce()).toBe(true);
+    expect(repository.markRunning).toHaveBeenCalledWith("job-1");
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(repository.markDone).toHaveBeenCalledWith("job-1");
+  });
+
+  it("marks credential failures blocked_auth without retry", async () => {
+    const currentJob = job();
+    const repository = repositoryFor(currentJob);
+    const consumer = new JobConsumer(repository, {
+      etl_incr: async () => {
+        throw new BlockedAuthError("expired");
+      },
+    });
+
+    await consumer.processOnce();
+
+    expect(repository.markBlockedAuth).toHaveBeenCalledWith("job-1", "expired");
+    expect(repository.markFailure).not.toHaveBeenCalled();
+  });
+
+  it("schedules ordinary failures with capped exponential backoff", async () => {
+    const currentJob = job({ attempts: 2 });
+    const repository = repositoryFor(currentJob);
+    const now = new Date("2026-08-19T00:00:00.000Z");
+    const consumer = new JobConsumer(
+      repository,
+      { etl_incr: async () => Promise.reject(new Error("boom")) },
+      { now: () => now, retryBaseMs: 1_000 },
+    );
+
+    await consumer.processOnce();
+
+    const retryAt = vi.mocked(repository.markFailure).mock.calls[0]?.[2];
+    expect(retryAt?.toISOString()).toBe("2026-08-19T00:00:02.000Z");
+  });
+
+  it("returns false when no job is available", async () => {
+    const repository = repositoryFor(null);
+    const consumer = new JobConsumer(repository, {});
+    expect(await consumer.processOnce()).toBe(false);
+  });
+});
