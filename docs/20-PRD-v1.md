@@ -205,7 +205,8 @@ ad_metrics_hourly(ad_id, account_id, ds, hh, cost, conversion, real_conversion, 
 account_structure(account_id, campaign_id, unit_id, creative_id, level, name, status, bid, day_budget,
   schedule_time, synced_at)   -- 经 agent 同步
 account_balance(account_id, balance, recharge_balance, contract_rebate, direct_rebate, synced_at)
-tasks(task_id PK[奇航], task_name, biz_name, period_start/end, target_volume, owner_user_id, status)
+tasks(task_id PK[奇航], task_name, biz_name, rta_flag, delivery_mode, placement_pref, conversion_metric,
+  period_start/end, target_volume, owner_user_id, status)   -- REQ-024 RTA/投放方式/版位/转化口径
 assessment_price_history(task_id, price, effective_date, changed_by, created_at)
 channel_coefficients(media, coefficient, effective_date, changed_by)   -- 返点折算系数
 work_items(id, type[diagnosis|dispatch|self|agent_question], account_id, task_id, rule_id, severity,
@@ -275,6 +276,7 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 - 形态：①页面上下文助手（主）——每页右下角，自动带当前页面/筛选/勾选行；高频问题 chip（"为什么成本涨""和上周比"）②全局抽屉（⌘K）③后台 Agent（早报/异常聚合/失败归因，无 UI）④Agent Inbox 三类事项进统一队列（notify/question/review——question=agent 卡住反问）
 - **输出规范**：结论+证据+口径徽章（点击跳官方视图对数）；确定性数字全部来自 API 不由模型算；确定性部分与推断部分视觉区分
 - **记忆文件**：agent_memory 表，纠正一次问"要不要记住"；口头规矩挂账户带有效期（"这周保量不保成本"→期间该户超成本告警自动降级并附注）
+- 上下文生命周期：同对话保留、刷新恢复、**新建对话默认清空**（REQ-079）；重要范围可存为对象组复用
 - 评测基准集：人工确认过的诊断结论入集，改 prompt 自动回归；准确率驱动自治度档位
 
 ## 3.7 报告（A）
