@@ -2,6 +2,10 @@
 .env
 .env.*
 !.env.example
+**/node_modules/
+**/.vitest/
+**/coverage/
+**/dist/
 
 # 公司真实数据默认不入库，需要时白名单单独放行
 *.xlsx
