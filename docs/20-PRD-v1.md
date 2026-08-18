@@ -209,7 +209,7 @@ Executive Summary（6 卡片+异常事项自然语言列表按严重度）→ �
 
 示意 schema（契约期细化）：
 ```
-users(id, buc_id, name, qihang_user_id, idealab_ak_ref, role, created_at)
+users(id, buc_id, name, qihang_user_id, multica_pat_ref, idealab_ak_ref, role, created_at)  -- 三凭证均 secret ref
 accounts(account_id PK, account_name, task_id, biz_name, media, owner_user_id, lifecycle_stage, is_starred, tags[])
 account_metrics_daily(account_id, ds, source[realtime|offline|gap_filled], cost, exposure, click,
   conversion, real_conversion, cpa, budget, budget_usage_rate, deduction_rate,
@@ -443,9 +443,11 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 - **开户、充值不设强制审批**（老板原话维持）。断量倒计时旁的"充值提审"入口=**自愿快捷方式**（需要找上级要钱时一键发起），绝非充值的必经门槛；文案改为"申请充值"，不含"审批"字样
 - 主动提审全线同理：永远是用户自愿发起的协作动作，任何功能不得把它变成强制关卡（红线）
 
-**mul_ PAT 身份边界（Codex 六项之一）：**
-- 现状如实：demo 期用老板个人 `mul_` PAT（既成先例）；它是**个人凭证不是服务身份**——与"不借个人 token"红线的关系=自己的 token 自己授权给自己的产品（一期合法性模型），非借他人
-- 正式化路径写死：部门推广前申请 `mcn_` Cloud Node PAT（已证实存在，Multica Web 端签发）或正式服务身份；凭证只进 secret reference；此项挂在"二期硬门槛"清单
+**凭证模型（2026-08-18 老板终裁：每用户自己的 token 与 OS 交互）：**
+- **每个用户绑定三样自己的凭证**（设置页引导，secret reference 存储不落明文）：①奇航 userId（拉数）②Multica `mul_` PAT（派活给 agent/读回执——**产品以当前操作用户自己的 PAT 调 Multica**，媒体侧与 OS 侧审计显示真实操作人，不存在"全记在一个人头上"）③IdeaLab AK（LLM 调用）
+- 谁的操作用谁的凭证——与"不借个人 token"红线完全一致：每人授权自己的产品替自己干活
+- 无 PAT 用户降级：只读+建议+深链跳后台（不能派活给 agent）
+- 服务级后台任务（全量 ETL 调度等不归属单人的动作）：demo 期用老板 PAT，正式化换 `mcn_` Cloud Node PAT（二期项）
 
 ---
 
