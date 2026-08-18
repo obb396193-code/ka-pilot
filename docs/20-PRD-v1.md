@@ -1,7 +1,7 @@
-# KA 投放工作台 · 产品需求文档（PRD v1.2）
+# KA 投放工作台 · 产品需求文档（PRD v1.3）
 
-> 日期：2026-08-18（v1.2）　作者：arch（Claude）　审：老板 / Codex（复核意见已合并）
-> v1.2 变更：合并老板六项终裁（画布/群查数/网关独立/资产五段/拆片/卡片四档）+ Codex 复核意见（部署拆三单元/B1 拆三段/Schema 契约要求/LLM Provider 抽象/充值不默认审批边界/补 4 项缺失功能/导航撤销定稿改候选）
+> 日期：2026-08-18（v1.3 定向清理版）　作者：arch（Claude）　审：老板 / Codex
+> v1.3 变更（Codex 二轮复核六 P0 定向清理，零新功能）：删除全部相反旧文案；导航九项全文统一；旧示意 Schema 删除只留契约硬要求；三部署单元全文一致（删进程内 cron 规范表述/SQLite 降为本地开发专用/monorepo 改三应用结构）；后台任务凭证归属闭环；工作流单一数据模型；Provider 能力矩阵替换旧通路描述
 > v1.1 变更：新增 §3.13 数据运维域、§3.14 时间与终端域、§3.15 追溯补入与规格增强；功能全集对照 21 号清单（19 域约 170 点）
 > 依据：17-功能全景 v2.1（84+ 功能点）、19-实证定案（14 项全通）、18-日报规范、16-值守设计、15-八路审查、台账 #1-114 全部拍板。
 > **本文是开发的唯一需求依据。** 与 17 号冲突处以本文为准；本文未覆盖的细节回溯 17 号。
@@ -49,7 +49,7 @@ GAP            = account_conversion / account_real_conversion − 1 （回传 vs
 
 # 第二部分：信息架构与页面概览
 
-## 2.1 一级导航（2026-08-18 老板定稿：8 项）
+## 2.1 一级导航（2026-08-18 老板定稿：9 项）
 
 ```
 工作台 ｜ 投放任务 ｜ 数据分析 ｜ 账户资源 ｜ 自动化 ｜ 商品素材 ｜ 报告 ｜ 知识库 ｜ 钉钉中心   [⌘K Agent] [头像▾]
@@ -112,6 +112,14 @@ GAP            = account_conversion / account_real_conversion − 1 （回传 vs
 | 周报/复盘 | `/reports/review` | P1 | 任务复盘+Deep Research |
 | 结算对账 | `/reports/settlement` | P1 | 月中试算+差异转工作项 |
 | **AI 提效看板** | `/reports/ai-impact` | P2 | 四象限提效统计+Shadow 对照 alpha |
+| **完整数据总表** | `/data/table` | P0 | 全量明细不聚合，筛选/列配置/导出（老板点名） |
+| **工作流画布** | `/automation/workflows/[id]` | P1 | 自由编排画布+版本+运行固定版本 |
+| **自动化运行中心** | `/automation/runs` | P1 | 运行实例/状态/日志/为什么没触发 |
+| **商品池** | `/materials/products` | P2 | 选品/测品（数据可得性优先） |
+| **素材拆解与相似查找** | `/materials/analysis` | P2 | 拆片结构化+相似匹配（复用 CR） |
+| **Agent/OS 运行监控** | `/admin/runs` | P1 | Run 列表/状态/受限原始日志/故障对账 |
+| **值守与警报配置** | `/dingtalk/alerting` | P1 | 规则 fork/阈值/值班表/静默/升级链（钉钉中心内） |
+| **公共资产治理** | `/assets` | P2 | 统一资产列表（报表/工作流/策略/对象组），两态起步 |
 | **自动化中心** | `/automation` | P1 | 自动化规则+自治度滑块+工作流模板商店+运行记录 |
 | **协作中心** | `/collab` | P1 | 派发管理+提审（我提的/待我批的）+升级链 |
 | **知识库** | `/knowledge` | P1 | 复刻 CR：编辑器/文档树/@双链；AI 报告自动归档 |
@@ -208,7 +216,7 @@ Executive Summary（6 卡片+异常事项自然语言列表按严重度）→ �
 
 ## 3.1 数据层（S）
 
-**ETL 管线**（node-cron，常驻 FaaS 进程内）：
+**ETL 管线**（Worker/Scheduler 应用承载；调度=PostgreSQL job/outbox 表+DB lease 单实例语义，**不使用进程内 cron 作为规范机制**）：
 - 每日 03:00 全量：对每个注册用户的 userId 并发拉 `account`（列表+归属）→ `account_offline`（昨日结算）→ `account_realtime`（近 7 日补洞）→ 落库
 - 日间每 30 分钟增量：`account_realtime`（当日）+ 重点户 `ad_realtime`（hh 小时级）
 - 每小时经 agent 同步：账户结构（campaign/unit/creative 三层）+ 余额（fund）——低频走 webhook→agent→RESULT_JSON→读回
@@ -225,7 +233,7 @@ Executive Summary（6 卡片+异常事项自然语言列表按严重度）→ �
 - 补齐正文已要求的表：etl_runs/backfill_jobs/data_quality_checks/data_revision_jobs｜business_calendar/duty_roster｜changeset_simulations（What-if）｜multica_threads/account_thread_bindings/agent_runs/scheduled_infra_jobs｜workflow_definitions/versions/nodes/edges/runs/run_events（画布已裁决做）｜dingtalk_connections/identity_mappings/subscriptions/inbound_events/outbound_messages/callback_idempotency｜products/materials/product_material_relations/material_lineage/design_requests｜report_definitions/settlement_templates/field_mappings/runs｜agent_sessions/messages/context_items｜assets/asset_versions/asset_dependencies/asset_validations（统一资产模型，五段全字段）
 - 指标表按日期分区+retention/rollup job 定义
 
-示意 schema（契约期细化）：
+**以下旧示意 schema 已废弃，仅留作字段名参考**——契约期一律按上方硬要求重构（workspace_id/task_accounts/raw-canonical 分表/ad_entities 强类型/changesets 四表拆分），开发不得按旧表结构开工：
 ```
 users(id, buc_id, name, qihang_user_id, multica_pat_ref, idealab_ak_ref, role, created_at)  -- 三凭证均 secret ref
 accounts(account_id PK, account_name, task_id, biz_name, media, owner_user_id, lifecycle_stage, is_starred, tags[])
@@ -297,7 +305,7 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 - P1：正常推送；次日催办卡片；48h 升级运营
 - P2：攒整点/并入早报
 - 早报 08:30：渲染 PNG（复用 Chromium 管线）+ 文字摘要发群；个人版可选私聊
-- 卡片：L0 只读直跑（查数/刷新）；L3 跳 Web；L1/L2 押后
+- 卡片：L0-L3 四档全实现（老板终裁）——L0 只读直跑/L1 低风险确认/L2 变更集确认/L3 跳 Web 明细；校验幂等键与变更集 Hash
 - 通知偏好：静默时段（仅 P1/P2 生效）、按任务订阅、户级静音
 
 ## 3.6 Agent 体系（A）
@@ -305,7 +313,8 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 **运行时：Claude Agent SDK（唯一运行时）+ ModelProvider 抽象（v1.2 修正）**
 - Provider 可配：IdeaLab/OpenAI 兼容｜Anthropic 官方 API｜其他兼容网关（`LLM_PROVIDER` 环境变量+各自凭证）
 - **现状如实**（台账 #117/#119）：当前免费内部 AK 仅 `qwen3-coder-plus` 与 `qwen3.8-max` 实测可用；**Claude 经 IdeaLab 需另申请模型权限，或走 Anthropic 官方 API（老板已确认双通道均可）**；SDK 与兼容模型的协议适配须契约期实测，不预写"均可切"
-- base_url → IdeaLab Anthropic 兼容端点；**每用户绑自己的 AK**（设置页，类 BYOK；200 次/日免费额度 demo 够用）；CCSwitch 式多模型：主 Claude，可按任务切 Qwen/DeepSeek（网关侧同一 AK）
+- **Provider Capability Matrix**（契约期实测填写，实测通过才启用）：每个 provider×模型记录——工具调用/流式/结构化输出/超时重试/Claude Agent SDK 协议兼容性。当前已实测：IdeaLab `qwen3-coder-plus`（0.75s 快）与 `qwen3.8-max`（推理型 3.5-4.2s）可用；Claude 经 IdeaLab 需另申请权限或走 Anthropic 官方 API
+- 每用户绑自己的 IdeaLab AK（设置页，200 次/日免费额度 demo 够）
 - 形态：①页面上下文助手（主）——每页右下角，自动带当前页面/筛选/勾选行；高频问题 chip（"为什么成本涨""和上周比"）②全局抽屉（⌘K）③后台 Agent（早报/异常聚合/失败归因，无 UI）④Agent Inbox 三类事项进统一队列（notify/question/review——question=agent 卡住反问）
 - **输出规范**：结论+证据+口径徽章（点击跳官方视图对数）；确定性数字全部来自 API 不由模型算；确定性部分与推断部分视觉区分
 - **记忆文件**：agent_memory 表，纠正一次问"要不要记住"；口头规矩挂账户带有效期（"这周保量不保成本"→期间该户超成本告警自动降级并附注）
@@ -347,7 +356,7 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 - **"操作变规则"**：变更集历史里选中一段操作 → "把这套动作做成每周一自动跑" → 反推生成规则草稿
 - **工作流：模板商店 + 自由编排画布（2026-08-18 老板裁决：画布要做）**：官方预设模板（垃圾计划清理流/优质户复制流/断量充值提审流/新户冷启动观察流）一键启用改参数；**自由编排画布**——节点=投放业务原子能力（数据/计算/Agent/执行/协作/控制六类，不开放任意 Shell/SQL），拖拽连线、每人可自建、可复制官方模板修改、Agent 可生成流程草稿（过校验+模拟运行才能发布）；模板与自建流程同一数据模型（可视化步骤序列），执行统一走变更集链路+可靠执行内规
 - 运行记录：每次自动化触发的完整留痕（触发条件快照/执行内容/结果/回滚入口）；"为什么没触发"调试器在此
-- 库表补充：`automation_runs(id, rule_id, trigger_snapshot JSONB, action, changeset_id, status, created_at)`；`workflow_templates(id, name, steps JSONB, params_schema, owner, is_official)`
+- 库表补充：`automation_runs(id, rule_id, trigger_snapshot JSONB, action, changeset_id, status, created_at)`。**工作流单一数据模型**：模板=`workflow_definition` 的一种发布态（asset_type=official_template），用户复制模板即产生新 definition/version；节点/边/参数 Schema/版本固定/运行全部共用 `workflow_definitions/versions/nodes/edges/runs/run_events`，**不存在独立的 workflow_templates 表**
 
 **Shadow Mode（举证引擎，B 级随自动化灰度）**：影子记录每个决策点"AI 会怎么做 vs 人实际怎么做"，T+1/T+7 双轨回收 → 滚动产出 AI 决策 alpha（采纳 vs 未采纳的成本差）→ 喂 AI 提效看板；同时兼任自治度升档的考试期（影子跑 N 天准确率达标才允许升档）。
 
@@ -443,7 +452,7 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 - 卡片：L0-L3 四档全做
 
 - 竞情数据源：**已解锁（2026-08-18 老板确认 AppGrowing 账号已有）**——大盘竞情正式入规划（P2）：竞情素材流+本方任务/素材关联展示；接入方式待查（API/导出/先挂链接起步）
-- 公共资产生命周期：起步只做"我的/共享的"布尔，五段生命周期后置
+- 公共资产生命周期（老板终裁）：assets 表带五段全字段+完整元数据（version/依赖/验证时间/成功率/使用人数/替代版本），UI 起步只暴露两态、团队扩大后开放五段流转
 - 大促：战役视图砍；**业务日历+阈值方案日历化保留**（服务基线准确性，非战役管理）
 - 素材拆解分析（拆片/相似查找）：随 AIGC 接入定，P2
 
@@ -465,7 +474,9 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 - **每个用户绑定三样自己的凭证**（设置页引导，secret reference 存储不落明文）：①奇航 userId（拉数）②Multica `mul_` PAT（派活给 agent/读回执——**产品以当前操作用户自己的 PAT 调 Multica**，媒体侧与 OS 侧审计显示真实操作人，不存在"全记在一个人头上"）③IdeaLab AK（LLM 调用）
 - 谁的操作用谁的凭证——与"不借个人 token"红线完全一致：每人授权自己的产品替自己干活
 - 无 PAT 用户降级：只读+建议+深链跳后台（不能派活给 agent）
-- 服务级后台任务（全量 ETL 调度等不归属单人的动作）：demo 期用老板 PAT，正式化换 `mcn_` Cloud Node PAT（二期项）
+- **后台任务凭证归属（闭环规则）**：每个需用户权限的 job 固化 `credential_owner_user_id + initiator_user_id + workspace_id + 授权快照`；**重试永远用原运行绑定的凭证，绝不自动换成他人/老板 PAT**；凭证失效/撤销 → job 进 `blocked_auth` 态并通知本人重新授权，不借他人凭证续跑；定时基建/延迟执行/T+1 回查/结构同步均按发起人凭证运行
+- 服务级任务（不归属单人：全量 ETL 调度/系统对平自检）：demo 期用老板 PAT 且**仅限只读类动作**，不得执行属于其他用户的媒体写操作；正式化换 `mcn_` Cloud Node PAT（二期项）
+- **凭证存储**：正式方案=加密凭证库/内部 Secret 服务，数据库只存 reference 与元数据；config vars 仅承载应用级密钥（如服务 PAT），**不承载每用户三凭证**
 
 ---
 
@@ -492,7 +503,7 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 │  Next.js（SSR 前端+API routes）＝一个应用同时扛前后端              │
 │  ├─ Web UI（React 19 + Tailwind）                                │
 │  ├─ /api/*（业务 API：查询/工作项/变更集/规则/设置）               │
-│  ├─ node-cron：ETL 调度｜规则扫描｜T+1 回收｜推送                  │
+│  （历史单应用示意，已被上方三单元拓扑取代，仅留存档）              │
 │  ├─ Agent Runtime：Claude Agent SDK → IdeaLab（用户 AK）          │
 │  ├─ （钉钉能力已拆出，见下方独立网关应用）                        │
 │  └─ Multica 桥：bin/multica + mul_ PAT（建 issue/发 webhook/读回执）│
@@ -505,7 +516,8 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 │  private-dataservice（账户归属）appCode ✅实证                    │
 │  IdeaLab（LLM）✅实证 ｜ 钉钉开放平台 ✅实证                       │
 │  Multica webhook→agent 沙箱→kuaishou-cli（写+结构+余额）✅实证     │
-│  PostgreSQL（Normandy RDS，申请中；未批前 demo 用 SQLite 单文件）   │
+│  PostgreSQL（Normandy RDS 申请中；**三单元共享须网络库**——RDS 未批 │
+│   前用最小规格自购/临时 PG；SQLite 仅限单机本地开发与 mock）        │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -515,7 +527,13 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 
 ```
 ka-workbench/
-├─ apps/web/                    # Next.js 全栈应用
+├─ apps/web/                    # ① Web/API 应用（页面+查询 API+权限）
+├─ apps/worker/                 # ② Worker/Scheduler（ETL/规则/T+1/backfill/Agent Runtime/Chromium）
+├─ apps/dingtalk-gateway/       # ③ 钉钉网关（Stream/入站路由/卡片回调/推送重试）
+├─ packages/db/                 # 迁移+schema（三应用共用）
+├─ packages/domain/             # 口径计算/规则引擎核心（纯函数，三应用共用）
+│
+│  （以下为 apps/web 旧版内部结构示意，server/ 各模块按上述三应用归位）
 │  ├─ app/                      # App Router 页面（按 2.2 路由表）
 │  ├─ components/               # UI 组件库（见前端规范）
 │  ├─ server/
@@ -553,7 +571,7 @@ arch（本会话）：契约包（schema+API 合同+类型+脱敏 mock 数据集
 | **B4 任务与报告** | 任务详情（pacing+考核价版本化）→日报 12 模块→发钉钉 | 自动日报替代手写日报 |
 | **B5 Agent** | SDK 接入+页面助手+诊断双产物+记忆 | 勾 3 个户问"为什么涨"得到带证据回答 |
 | **B6 分析与报表** | 自助报表设计器+Agent 做表+策略分析+盯盘+Gap 对账 | 老板拖出一张比 Excel 好看的周报表 |
-| **B7 自动化与协作** | 自动化规则+自治度滑块+NL 编译器+工作流模板商店+派发提审+升级链 | 一条规则从建议档升到确认档跑通 |
+| **B7 自动化与协作** | 自动化规则+自治度滑块+NL 编译器+**工作流（模板商店+自由画布+Agent 编排+固定版本运行）**+派发提审+升级链 | 用户从模板复制→画布改流程→发布→固定版本运行一遍跑通；一条规则从建议档升确认档 |
 | **B8 沉淀与放大** | 知识库（复刻 CR）+运行废气案例库+Shadow Mode+AI 提效看板+基建管理+结算+素材域 | 知识库可写可搜，AI 提效有数可举 |
 
 每批次：真部署 daily → 老板真数据验收 → 下一批。**B1 开工前置：Codex 复核意见合并 + 契约包出稿。**
@@ -583,7 +601,7 @@ arch（本会话）：契约包（schema+API 合同+类型+脱敏 mock 数据集
 
 ## 5.2 布局系统
 
-- 顶部导航 56px 固定（7 项+Agent 按钮+用户）；**无侧栏**（视图收敛 tab 原则）
+- 顶部导航 56px 固定（9 项：工作台/投放任务/数据分析/账户资源/自动化/商品素材/报告/知识库/钉钉中心 + ⌘K Agent + 头像菜单）；**无侧栏**（视图收敛 tab 原则）
 - 内容区 max-width 1440px 居中，页面左右 padding 32px
 - 页内二级导航 = 顶部 tab 条（下边框指示，非按钮组）
 - 栅格：KPI 卡片行 = auto-fit minmax(180px,1fr)；主内容 8/12 + 侧栏 4/12（工作台的待办/早报区）
@@ -641,4 +659,4 @@ arch（本会话）：契约包（schema+API 合同+类型+脱敏 mock 数据集
 2. IdeaLab 200 次/日额度在 agent 多轮调用下的真实消耗——B5 实测，不够则申请正式配额或 Whale
 3. 素材级独立数据源（AIGC 平台接入时确认）
 4. 组织架构接口（上级派发的汇报关系，先手工配置成员表）
-5. RDS 审批时长（demo 先 SQLite 顶）
+5. RDS 审批时长（三单元需网络库：RDS 未批前用最小自购/临时 PG；SQLite 仅本地开发）

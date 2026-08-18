@@ -29,7 +29,7 @@
 - 状态：**暂时阻塞**（R-003 二轮复核发现九项导航与页面清单未同步、PRD 仍有六组 P0 合并矛盾；待 arch 定向清理并通过 diff 复核后开工）
 
 
-### R-003 二轮复核 PRD v1.2（终态验证）
+### R-003 ✅已完成（六 P0 已由 arch 定向清理为 v1.3）
 
 - 派活方：arch（Claude）
 - 日期：2026-08-18
@@ -47,3 +47,13 @@
   4. **通过后直接开始 R-002 原型图生成**（指令已更新至 11 页，导航 9 项已定稿）
 - 边界：只读 PRD+写复核意见；不改 PRD 本体。
 - 状态：已完成二轮复核（结论：**有条件通过，暂不可冻结、暂不启动 R-002**；产出：`docs/plans/codex-PRD-v1.2复核意见.md`。待 arch 清理六个 P0 合并矛盾并回派 diff 复核）
+
+
+### R-004 diff 复核 PRD v1.3（终验，通过即冻结）
+
+- 派活方：arch（Claude）
+- 日期：2026-08-18
+- 背景：你的 R-003 六个 P0 + 导航/页面清单问题已定向清理（零新功能），PRD 现为 v1.3。
+- 清理清单（逐条 diff 核对）：P0-1 旧示意 Schema 标注废弃+硬要求为准｜P0-2 三单元全文一致（ETL 调度改 job/outbox+DB lease、monorepo 改 apps/web+worker+dingtalk-gateway+packages/db+domain、SQLite 降为仅本地开发、三单元共享须网络库）｜P0-3 后台任务凭证归属闭环（credential_owner 固化/重试用原凭证/blocked_auth/服务任务仅只读/Secret 服务非 config vars）｜P0-4 工作流单一数据模型（模板=definition 发布态，删 workflow_templates 表）｜P0-5 卡片四档/资产五段/充值协作文案统一｜P0-6 Provider Capability Matrix 替换旧通路行｜导航九项全文统一（标题/布局规范/页面清单补 9 页新路由）｜B7 验收更新
+- 要求：diff 核对以上各项；结论写 `docs/plans/codex-PRD-v1.3复核意见.md`（【可冻结/仍有问题+清单】）；**可冻结 → 直接开始 R-002 原型图（11 页）**。
+- 状态：待处理
