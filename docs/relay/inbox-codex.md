@@ -56,4 +56,4 @@
 - 背景：你的 R-003 六个 P0 + 导航/页面清单问题已定向清理（零新功能），PRD 现为 v1.3。
 - 清理清单（逐条 diff 核对）：P0-1 旧示意 Schema 标注废弃+硬要求为准｜P0-2 三单元全文一致（ETL 调度改 job/outbox+DB lease、monorepo 改 apps/web+worker+dingtalk-gateway+packages/db+domain、SQLite 降为仅本地开发、三单元共享须网络库）｜P0-3 后台任务凭证归属闭环（credential_owner 固化/重试用原凭证/blocked_auth/服务任务仅只读/Secret 服务非 config vars）｜P0-4 工作流单一数据模型（模板=definition 发布态，删 workflow_templates 表）｜P0-5 卡片四档/资产五段/充值协作文案统一｜P0-6 Provider Capability Matrix 替换旧通路行｜导航九项全文统一（标题/布局规范/页面清单补 9 页新路由）｜B7 验收更新
 - 要求：diff 核对以上各项；结论写 `docs/plans/codex-PRD-v1.3复核意见.md`（【可冻结/仍有问题+清单】）；**可冻结 → 直接开始 R-002 原型图（11 页）**。
-- 状态：待处理
+- 状态：已完成 diff 终验（结论：**仍有问题，不可冻结，R-002 暂不启动**；产出：`docs/plans/codex-PRD-v1.3复核意见.md`。P0-1/P0-4/P0-6/B7 已通过；P0-2/P0-3/P0-5/导航仍有旧行残留，待 arch 按六处精确修改后再次回派）
