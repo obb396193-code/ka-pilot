@@ -54,6 +54,11 @@
 12. 同样跑 unit list，贴结构。确认返回里有没有 campaign_id/unit_id 与 ad 层的关联字段。
 13. 跑 kuaishou-cli account fund --advertiser-id <同上>，贴余额字段结构。
 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+六、FaaS→钉钉公网出网（你之前设计里自己标注"没测过"的那条）
+
+14. 从 FaaS daily 环境 curl 钉钉开放平台 API（api.dingtalk.com 或 oapi.dingtalk.com），贴 HTTP 状态码——验证钉钉推送能不能直接从 FaaS 发（我们的钉钉网关之前在 FaaS 上跑通过 Stream 长连接，理论上出网是通的，但请再确认一次 REST API 方向）。
+
 请按编号回答。最关键的是 3a（传参）、6（外部读取凭证）、7（LLM 通路）。
 ```
 
