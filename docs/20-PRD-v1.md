@@ -1,6 +1,7 @@
-# KA 投放工作台 · 产品需求文档（PRD v1.1）
+# KA 投放工作台 · 产品需求文档（PRD v1.2）
 
-> 日期：2026-08-18（v1.1 含二轮查漏补遗）　作者：arch（Claude）　审：老板 / Codex
+> 日期：2026-08-18（v1.2）　作者：arch（Claude）　审：老板 / Codex（复核意见已合并）
+> v1.2 变更：合并老板六项终裁（画布/群查数/网关独立/资产五段/拆片/卡片四档）+ Codex 复核意见（部署拆三单元/B1 拆三段/Schema 契约要求/LLM Provider 抽象/充值不默认审批边界/补 4 项缺失功能/导航撤销定稿改候选）
 > v1.1 变更：新增 §3.13 数据运维域、§3.14 时间与终端域、§3.15 追溯补入与规格增强；功能全集对照 21 号清单（19 域约 170 点）
 > 依据：17-功能全景 v2.1（84+ 功能点）、19-实证定案（14 项全通）、18-日报规范、16-值守设计、15-八路审查、台账 #1-114 全部拍板。
 > **本文是开发的唯一需求依据。** 与 17 号冲突处以本文为准；本文未覆盖的细节回溯 17 号。
@@ -48,7 +49,7 @@ GAP            = account_conversion / account_real_conversion − 1 （回传 vs
 
 # 第二部分：信息架构与页面概览
 
-## 2.1 一级导航（7 项定稿）
+## 2.1 一级导航（候选方案——待老板拍板，遵守 REQ-014/015：功能全集已铺开，现提两个候选）
 
 ```
 ┌────────────────────────────────────────────────────────────┐
@@ -66,7 +67,9 @@ GAP            = account_conversion / account_real_conversion − 1 （回传 vs
 | 6 | **报告** | 要交的东西 | 日报｜周报复盘｜结算对账 |
 | 7 | **钉钉中心** | 推送管理 | 连接配置｜推送规则｜发送记录 |
 
-不进导航：**Agent** = 全局右侧抽屉（快捷键 `⌘K` 唤起，每页可用）；**自动化中心/协作中心/知识库** = 右上角「更多」菜单入口（使用频率成熟后可提级）；**设置** = 右上角用户菜单（个人阈值/AK 绑定/通知偏好）；**治理后台** = 管理员可见（连接健康/模板版本/系数配置）。
+**候选 A（arch 原案）**：如上表 7 项（含钉钉中心）；自动化/协作/知识库进「更多」。
+**候选 B（Codex 案）**：工作台｜投放任务｜数据分析｜账户资源｜商品素材｜**自动化**｜报告——理由：自动化/工作流是老板明确要求用户可自建的核心生产工具，不该藏「更多」；钉钉中心是低频配置，降入「更多/集成管理」。
+共同点：Agent = 全局抽屉（⌘K）；设置 = 用户菜单；治理后台 = 管理员；基建管理留账户资源内 Tab。**待老板选 A/B 或改。**
 
 ## 2.2 页面总清单（P0=首发必须，P1=第二批，P2=第三批）
 
@@ -194,7 +197,17 @@ Executive Summary（6 卡片+异常事项自然语言列表按严重度）→ �
 - 工程规则：字段级合并不做行级替换（离线无转化字段）；保留 `_data_source`；剔除零消耗日再算均值；单日消耗>历史均值 5 倍标"数据异常"不删除；ETL 失败重试 3 次+钉钉告警+前端数据健康降级
 - **带外变更检测**：每轮对比 bid/budget/status 快照，非产品发起的变更 → 自动标记相关工作项"已在后台处理" + 写入操作时间线（type=external）
 
-**库表（PostgreSQL，B 级功能不提前建表）**：
+**库表（PostgreSQL，B 级功能不提前建表）——v1.2：以下为示意，契约期按 Codex Schema 意见重构，硬要求：**
+- 全业务表带 `workspace_id`（多租户键）+ workspace/member/role/resource_grant 权限骨架
+- `accounts.task_id` 单值改 `task_accounts(task_id, account_id, valid_from, valid_to)` 关系表（历史/多任务）
+- 指标 raw 表与 canonical 表分离（canonical 一户一日一行+字段来源记录，防 source 维度双计）
+- 账户结构分层表或 `ad_entities(parent_id,type)` 强类型
+- 变更集拆 `changesets/changeset_items/execution_runs/execution_events`（批量与部分成功）
+- 凭证只存 secret reference 不存明文；区分用户凭证与服务凭证
+- 补齐正文已要求的表：etl_runs/backfill_jobs/data_quality_checks/data_revision_jobs｜business_calendar/duty_roster｜changeset_simulations（What-if）｜multica_threads/account_thread_bindings/agent_runs/scheduled_infra_jobs｜workflow_definitions/versions/nodes/edges/runs/run_events（画布已裁决做）｜dingtalk_connections/identity_mappings/subscriptions/inbound_events/outbound_messages/callback_idempotency｜products/materials/product_material_relations/material_lineage/design_requests｜report_definitions/settlement_templates/field_mappings/runs｜agent_sessions/messages/context_items｜assets/asset_versions/asset_dependencies/asset_validations（统一资产模型，五段全字段）
+- 指标表按日期分区+retention/rollup job 定义
+
+示意 schema（契约期细化）：
 ```
 users(id, buc_id, name, qihang_user_id, idealab_ak_ref, role, created_at)
 accounts(account_id PK, account_name, task_id, biz_name, media, owner_user_id, lifecycle_stage, is_starred, tags[])
@@ -271,7 +284,9 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 
 ## 3.6 Agent 体系（A）
 
-**运行时：Claude Agent SDK + IdeaLab 网关（已确认 Claude 可用）**
+**运行时：Claude Agent SDK（唯一运行时）+ ModelProvider 抽象（v1.2 修正）**
+- Provider 可配：IdeaLab/OpenAI 兼容｜Anthropic 官方 API｜其他兼容网关（`LLM_PROVIDER` 环境变量+各自凭证）
+- **现状如实**（台账 #117/#119）：当前免费内部 AK 仅 `qwen3-coder-plus` 与 `qwen3.8-max` 实测可用；**Claude 经 IdeaLab 需另申请模型权限，或走 Anthropic 官方 API（老板已确认双通道均可）**；SDK 与兼容模型的协议适配须契约期实测，不预写"均可切"
 - base_url → IdeaLab Anthropic 兼容端点；**每用户绑自己的 AK**（设置页，类 BYOK；200 次/日免费额度 demo 够用）；CCSwitch 式多模型：主 Claude，可按任务切 Qwen/DeepSeek（网关侧同一 AK）
 - 形态：①页面上下文助手（主）——每页右下角，自动带当前页面/筛选/勾选行；高频问题 chip（"为什么成本涨""和上周比"）②全局抽屉（⌘K）③后台 Agent（早报/异常聚合/失败归因，无 UI）④Agent Inbox 三类事项进统一队列（notify/question/review——question=agent 卡住反问）
 - **输出规范**：结论+证据+口径徽章（点击跳官方视图对数）；确定性数字全部来自 API 不由模型算；确定性部分与推断部分视觉区分
@@ -414,11 +429,43 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 - 大促：战役视图砍；**业务日历+阈值方案日历化保留**（服务基线准确性，非战役管理）
 - 素材拆解分析（拆片/相似查找）：随 AIGC 接入定，P2
 
+## 3.16 v1.2 补齐（Codex 复核缺失项 + 边界澄清）
+
+**补入功能：**
+- **加账户/关账户操作闭环（REQ-041）**：加账户=开户流程（无 API 段手工标记）+导入已有账户（从 get_data 列表认领）；关账户=状态流转+关联工作项/定时任务清理向导；"关户"媒体侧端点待实证（进实证清单）
+- **选品能力（REQ-048）**：商品池独立建模（products 表）——待投商品维护/筛选/评估（历史投放表现+测试结果），与任务/素材/账户关联；数据源=启航素材库接口按商品查+任务关联，AIGC 接入后增强
+- **找商品/找素材/相似查找（REQ-052）**：搜索+筛选（按表现/任务/商品/标签）；相似素材基于拆片结构化字段（钩子/卖点/节奏）匹配——依赖 CR 拆片能力复用（老板已裁决）
+- **钉钉群建工作项（REQ-102）**：群内 @机器人"给XX任务建个待办：…"→意图识别→参数补齐确认卡→落库→回链；与群查数同批（Gateway 入站链路）
+- **Agent/OS 运行监控页（REQ-073/081）**：用户可见的 Run 列表（状态/耗时/结果），有权限者查受限原始日志；故障对账入口
+- **原子能力目录（REQ-043/044/098）**：Capability Registry——每个原子能力（改价/预算/暂停/时段/基建…）注册表单 Schema/权限/版本/可用状态；页面按钮与工作流节点同源调用，新增 MAPI 能力=注册新条目不改业务代码
+
+**边界澄清（REQ-046，Codex 指出的矛盾）：**
+- **开户、充值不设强制审批**（老板原话维持）。断量倒计时旁的"充值提审"入口=**自愿快捷方式**（需要找上级要钱时一键发起），绝非充值的必经门槛；文案改为"申请充值"，不含"审批"字样
+- 主动提审全线同理：永远是用户自愿发起的协作动作，任何功能不得把它变成强制关卡（红线）
+
+**mul_ PAT 身份边界（Codex 六项之一）：**
+- 现状如实：demo 期用老板个人 `mul_` PAT（既成先例）；它是**个人凭证不是服务身份**——与"不借个人 token"红线的关系=自己的 token 自己授权给自己的产品（一期合法性模型），非借他人
+- 正式化路径写死：部门推广前申请 `mcn_` Cloud Node PAT（已证实存在，Multica Web 端签发）或正式服务身份；凭证只进 secret reference；此项挂在"二期硬门槛"清单
+
 ---
 
 # 第四部分：技术架构
 
-## 4.1 部署拓扑（全 FaaS，实证定案）
+## 4.1 部署拓扑（v1.2：三部署单元，Codex 意见采纳+老板网关独立裁决）
+
+同一 monorepo、共享契约与数据库，拆三个 FaaS 应用（各自独立扩缩/发布/故障域）：
+
+```
+① Web/API 应用：Next.js 页面 + 查询 API + 权限校验；只投递长任务不直接跑 Agent/Chromium
+② Worker/Scheduler 应用：ETL/规则扫描/T+1/backfill/Agent Runtime/Chromium 渲染；
+   任务用 PostgreSQL job/outbox 表派发 + DB lease 保证单实例语义（不依赖进程内 node-cron 自觉唯一）
+③ DingTalk Gateway 应用：Stream 长连接/入站身份意图路由/卡片回调幂等/推送重试/Multica 桥
+   ＝现有钉钉网关代码演进（老板裁决 REQ-104 独立部署）
+```
+
+原单应用拓扑作废。以下为外部依赖（不变）：
+
+## 4.1.1 原拓扑说明（历史，外部依赖清单仍有效）
 
 ```
 ┌─ FaaS 应用（a1 faas，custom.debian10，常驻 Node 20）─────────────┐
@@ -478,7 +525,9 @@ arch（本会话）：契约包（schema+API 合同+类型+脱敏 mock 数据集
 
 | 批次 | 内容 | 验收 |
 |---|---|---|
-| **B1 数据脊柱** | 契约包→ETL（get_data 双口径+归属）→库表→计算层→数据大盘+维度透视页 | 老板打开透视页，数字与手工 Excel 对平 |
+| **B1a 契约与存储** | 契约包（含语义层）→PostgreSQL 迁移→租户/权限骨架→原始落库→ETL Run 监控 | 迁移可重放，ETL 每轮留痕 |
+| **B1b 回灌与口径** | 90 天 backfill→canonical 合并（raw/canonical 分表防双计）→指标计算→对平自检 | 数字与手工 Excel/后台对平 |
+| **B1c 数据服务与页面** | 语义层 API（query_type 五类）→数据大盘→维度透视→数据健康 | 老板日常巡检替代 Excel |
 | **B2 队列闭环** | 规则引擎（3 条）→工作项→工作台页→忽略/静音→钉钉早报+P0 推送 | 老板一天的巡检在工作台完成 |
 | **B3 执行闭环** | 结构同步→账户详情（计划层+操作史上图）→变更集+dry-run+确认→写链路→T+1 回收→带外检测 | 一次真实调价从建议到回收全程留痕 |
 | **B4 任务与报告** | 任务详情（pacing+考核价版本化）→日报 12 模块→发钉钉 | 自动日报替代手写日报 |
