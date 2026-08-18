@@ -12,7 +12,7 @@ export interface MigrationOptions {
   log?: (message: string) => void;
 }
 
-export async function runMigrations(options: MigrationOptions) {
+export async function runMigrations(options: MigrationOptions): Promise<unknown[]> {
   const runnerOptions: RunnerOption = {
     databaseUrl: options.databaseUrl,
     dir: path.join(packageRoot, "migrations"),

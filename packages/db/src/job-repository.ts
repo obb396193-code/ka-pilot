@@ -30,6 +30,20 @@ export interface JobRepositoryPort {
   markBlockedAuth(id: string, message: string): Promise<void>;
 }
 
+export interface NewJob {
+  workspaceId: string | null;
+  jobType: string;
+  payload: Record<string, unknown>;
+  priority?: number;
+  credentialOwnerUserId: string | null;
+  maxAttempts?: number;
+  runAfter?: Date;
+}
+
+export interface JobEnqueuerPort {
+  enqueue(job: NewJob): Promise<string>;
+}
+
 type JobRow = {
   id: string;
   workspace_id: string | null;
@@ -80,6 +94,30 @@ async function withTransaction<T>(
 
 export class JobRepository implements JobRepositoryPort {
   constructor(private readonly pool: Pool) {}
+
+  async enqueue(job: NewJob): Promise<string> {
+    const result = await this.pool.query<{ id: string }>(
+      `INSERT INTO jobs (
+         workspace_id, job_type, payload, priority, credential_owner_user_id,
+         max_attempts, run_after, status
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'queued')
+       RETURNING id`,
+      [
+        job.workspaceId,
+        job.jobType,
+        job.payload,
+        job.priority ?? 5,
+        job.credentialOwnerUserId,
+        job.maxAttempts ?? 3,
+        job.runAfter ?? new Date(),
+      ],
+    );
+    const id = result.rows[0]?.id;
+    if (!id) {
+      throw new Error("Failed to enqueue job");
+    }
+    return id;
+  }
 
   async leaseNext(leaseSeconds: number): Promise<JobRecord | null> {
     if (!Number.isInteger(leaseSeconds) || leaseSeconds <= 0) {

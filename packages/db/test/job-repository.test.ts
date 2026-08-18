@@ -91,4 +91,35 @@ describe("JobRepository", () => {
       credential_owner_user_id: user.rows[0]?.id,
     });
   });
+
+  it("enqueues a scoped job with explicit credential ownership", async () => {
+    await pool.query("DELETE FROM jobs");
+    const workspace = await pool.query<{ id: string }>(
+      "INSERT INTO workspaces (name) VALUES ('enqueue-workspace') RETURNING id",
+    );
+    const user = await pool.query<{ id: string }>(
+      "INSERT INTO users (workspace_id, name) VALUES ($1, 'enqueue-owner') RETURNING id",
+      [workspace.rows[0]?.id],
+    );
+
+    const id = await repository.enqueue({
+      workspaceId: workspace.rows[0]!.id,
+      jobType: "agent_task",
+      payload: { prompt: "分析异常" },
+      priority: 3,
+      credentialOwnerUserId: user.rows[0]!.id,
+      maxAttempts: 2,
+    });
+
+    const result = await pool.query<{
+      id: string;
+      status: string;
+      credential_owner_user_id: string;
+    }>("SELECT id, status, credential_owner_user_id FROM jobs WHERE id = $1", [id]);
+    expect(result.rows[0]).toEqual({
+      id,
+      status: "queued",
+      credential_owner_user_id: user.rows[0]!.id,
+    });
+  });
 });
