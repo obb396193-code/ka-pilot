@@ -13,7 +13,7 @@
   3. **审库表 schema 增补**：§3.13/3.15 要求的新表（duty_roster 值班表/etl_runs 任务运行/business_calendar 业务日历/backfill_jobs）和既有表改动（metrics 表分区与降采样、changesets 加 what-if 字段），给出你的 schema 终版意见。
   4. 结论写 `docs/plans/codex-PRD复核意见.md`：分【同意】【异议+理由】【补充】【schema 意见】【导航意见】五节。
 - 边界：只读+写复核意见文件，不改 PRD 本体（改动 arch 合并）；不动 apps/ 代码。
-- 状态：待处理
+- 状态：已完成（产出：`docs/plans/codex-PRD复核意见.md`；结论：有条件不通过，待 arch 修订 PRD 后复核）
 
 ### R-002 生成前端原型图（R-001 完成且 arch 合并意见后做）
 
