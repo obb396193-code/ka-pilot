@@ -1,4 +1,4 @@
-import type { JobRepositoryPort } from "@ka/db";
+import type { JobRecord, JobRepositoryPort } from "@ka/db";
 
 import { BlockedAuthError } from "../qihang/errors.js";
 import { retryDelayMs } from "./retry.js";
@@ -8,6 +8,13 @@ export interface JobConsumerOptions {
   leaseSeconds?: number;
   retryBaseMs?: number;
   now?: () => Date;
+  onTerminalFailure?: (job: JobRecord, failure: TerminalFailure) => Promise<void>;
+  onNotificationError?: (error: unknown) => void;
+}
+
+export interface TerminalFailure {
+  kind: "failed" | "blocked_auth";
+  message: string;
 }
 
 function errorMessage(error: unknown): string {
@@ -18,6 +25,8 @@ export class JobConsumer {
   private readonly leaseSeconds: number;
   private readonly retryBaseMs: number;
   private readonly now: () => Date;
+  private readonly onTerminalFailure: JobConsumerOptions["onTerminalFailure"];
+  private readonly onNotificationError: JobConsumerOptions["onNotificationError"];
 
   constructor(
     private readonly repository: JobRepositoryPort,
@@ -27,6 +36,8 @@ export class JobConsumer {
     this.leaseSeconds = options.leaseSeconds ?? 60;
     this.retryBaseMs = options.retryBaseMs ?? 5_000;
     this.now = options.now ?? (() => new Date());
+    this.onTerminalFailure = options.onTerminalFailure;
+    this.onNotificationError = options.onNotificationError;
   }
 
   async processOnce(): Promise<boolean> {
@@ -45,13 +56,18 @@ export class JobConsumer {
       await this.repository.markDone(job.id);
     } catch (error) {
       if (error instanceof BlockedAuthError) {
-        await this.repository.markBlockedAuth(job.id, errorMessage(error));
+        const message = errorMessage(error);
+        await this.repository.markBlockedAuth(job.id, message);
+        await this.notify(job, { kind: "blocked_auth", message });
         return true;
       }
       const retryAt = new Date(
         this.now().getTime() + retryDelayMs(job.attempts, this.retryBaseMs),
       );
       await this.repository.markFailure(job, errorMessage(error), retryAt);
+      if (job.attempts >= job.maxAttempts) {
+        await this.notify(job, { kind: "failed", message: errorMessage(error) });
+      }
     }
     return true;
   }
@@ -62,6 +78,20 @@ export class JobConsumer {
       if (!processed) {
         await waitForAbortOrDelay(signal, pollIntervalMs);
       }
+    }
+  }
+
+  private async notify(
+    job: JobRecord,
+    failure: TerminalFailure,
+  ): Promise<void> {
+    if (!this.onTerminalFailure) {
+      return;
+    }
+    try {
+      await this.onTerminalFailure(job, failure);
+    } catch (error) {
+      this.onNotificationError?.(error);
     }
   }
 }

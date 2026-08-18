@@ -16,7 +16,7 @@ function jsonResponse(body: unknown, status = 200): Response {
 
 describe("QihangClient", () => {
   it("constructs the account pagination request from explicit job identity", async () => {
-    const fetchFn = vi.fn(async () =>
+    const fetchFn = vi.fn<typeof fetch>(async () =>
       jsonResponse({
         successful: true,
         data: { rows: [{ account_id: "a1" }], totalNum: 1, pageNum: 2, pageSize: 50 },
@@ -49,16 +49,36 @@ describe("QihangClient", () => {
     ["account_realtime", { ds: "20260819" }],
     ["ad_realtime", { ds: "20260819", hh: 10, adIds: ["d1", "d2"] }],
   ] as const)("constructs %s query parameters", async (resource, extra) => {
-    const fetchFn = vi.fn(async () => jsonResponse({ successful: true, data: [] }));
+    const fetchFn = vi.fn<typeof fetch>(async () =>
+      jsonResponse({ successful: true, data: [] }),
+    );
     const client = new QihangClient({ fetchFn });
 
-    await client.query({
-      resource,
-      userId: "u1",
-      media: "KUAISHOU",
-      accountIds: ["a1", "a2"],
-      ...extra,
-    });
+    if (resource === "account_offline") {
+      await client.query({
+        resource,
+        userId: "u1",
+        media: "KUAISHOU",
+        accountIds: ["a1", "a2"],
+        ...extra,
+      });
+    } else if (resource === "account_realtime") {
+      await client.query({
+        resource,
+        userId: "u1",
+        media: "KUAISHOU",
+        accountIds: ["a1", "a2"],
+        ...extra,
+      });
+    } else {
+      await client.query({
+        resource,
+        userId: "u1",
+        media: "KUAISHOU",
+        accountIds: ["a1", "a2"],
+        ...extra,
+      });
+    }
 
     const calledUrl = new URL(fetchFn.mock.calls[0]?.[0] as string);
     expect(calledUrl.searchParams.get("resource")).toBe(resource);

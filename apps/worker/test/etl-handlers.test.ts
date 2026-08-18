@@ -1,0 +1,153 @@
+import { describe, expect, it, vi } from "vitest";
+
+import { createFullEtlHandler } from "../src/etl/full-handler.js";
+import { createIncrementalEtlHandler } from "../src/etl/incr-handler.js";
+import type {
+  EtlRunStore,
+  RawMetricRecord,
+} from "../src/etl/types.js";
+import type { QihangQuery, QihangQueryResult } from "../src/qihang/client.js";
+
+const workspaceId = "11111111-1111-4111-8111-111111111111";
+const ownerUserId = "22222222-2222-4222-8222-222222222222";
+
+function job(jobType: "etl_full" | "etl_incr", payload: Record<string, unknown>) {
+  return {
+    id: "33333333-3333-4333-8333-333333333333",
+    workspaceId,
+    jobType,
+    payload,
+    priority: 5,
+    credentialOwnerUserId: ownerUserId,
+    status: "leased" as const,
+    leaseUntil: null,
+    attempts: 1,
+    maxAttempts: 3,
+    runAfter: new Date("2026-08-19T00:00:00Z"),
+  };
+}
+
+function store() {
+  const records: RawMetricRecord[] = [];
+  const value: EtlRunStore = {
+    startRun: vi.fn().mockResolvedValue(91),
+    appendRaw: vi.fn(async (rows) => {
+      records.push(...rows);
+    }),
+    finishRun: vi.fn().mockResolvedValue(undefined),
+    failRun: vi.fn().mockResolvedValue(undefined),
+  };
+  return { value, records };
+}
+
+describe("ETL handlers", () => {
+  it("runs account pagination, yesterday offline and a seven-day realtime window", async () => {
+    const calls: QihangQuery[] = [];
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => {
+        calls.push(query);
+        if (query.resource === "account") {
+          const pageNum = query.pageNum ?? 1;
+          return {
+            rows: [{ account_id: pageNum === 1 ? "a-1" : "a-2" }],
+            pagination: { totalNum: 2, pageNum, pageSize: 1 },
+            envelope: {},
+          };
+        }
+        return {
+          rows: [{ account_id: "a-1", ds: "20260818", account_cost: 10 }],
+          envelope: {},
+        };
+      }),
+    };
+    const runStore = store();
+    const handler = createFullEtlHandler({ qihang, store: runStore.value });
+
+    await handler(
+      job("etl_full", {
+        workspaceId,
+        userId: "u-qihang",
+        asOfDate: "2026-08-19",
+        pageSize: 1,
+        realtimeDays: 7,
+      }),
+    );
+
+    expect(calls.filter((call) => call.resource === "account")).toHaveLength(2);
+    expect(calls).toContainEqual(
+      expect.objectContaining({
+        resource: "account_offline",
+        beginDate: "2026-08-18",
+        endDate: "2026-08-18",
+        userId: "u-qihang",
+      }),
+    );
+    expect(calls.filter((call) => call.resource === "account_realtime")).toHaveLength(7);
+    expect(runStore.records.some((row) => row.resource === "account")).toBe(true);
+    expect(runStore.records.every((row) => row.workspaceId === workspaceId)).toBe(true);
+    expect(runStore.value.finishRun).toHaveBeenCalledWith(91, runStore.records.length);
+  });
+
+  it("runs current account realtime and focused-account ad realtime", async () => {
+    const calls: QihangQuery[] = [];
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => {
+        calls.push(query);
+        return {
+          rows: [{ account_id: "a-9", ad_id: "ad-1", ds: "20260819" }],
+          envelope: {},
+        };
+      }),
+    };
+    const runStore = store();
+    const handler = createIncrementalEtlHandler({ qihang, store: runStore.value });
+
+    await handler(
+      job("etl_incr", {
+        workspaceId,
+        userId: "u-qihang",
+        ds: "2026-08-19",
+        accountIds: ["a-9"],
+        focusAccountIds: ["a-9"],
+        adIds: ["ad-1"],
+        hh: 9,
+      }),
+    );
+
+    expect(calls).toEqual([
+      expect.objectContaining({
+        resource: "account_realtime",
+        ds: "2026-08-19",
+        accountIds: ["a-9"],
+      }),
+      expect.objectContaining({
+        resource: "ad_realtime",
+        ds: "2026-08-19",
+        accountIds: ["a-9"],
+        adIds: ["ad-1"],
+        hh: 9,
+      }),
+    ]);
+    expect(runStore.value.finishRun).toHaveBeenCalledWith(91, 2);
+  });
+
+  it("records the failed ETL step before propagating the error", async () => {
+    const qihang = {
+      query: vi.fn().mockRejectedValue(new Error("offline unavailable")),
+    };
+    const runStore = store();
+    const handler = createFullEtlHandler({ qihang, store: runStore.value });
+    const failingJob = job("etl_full", {
+      workspaceId,
+      userId: "u-qihang",
+      asOfDate: "2026-08-19",
+    });
+
+    await expect(handler(failingJob)).rejects.toThrow("offline unavailable");
+    expect(runStore.value.failRun).toHaveBeenCalledWith(
+      91,
+      "account_page_1",
+      "offline unavailable",
+    );
+  });
+});
