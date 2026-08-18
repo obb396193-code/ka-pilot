@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ka
+      POSTGRES_PASSWORD: ka
+      POSTGRES_DB: ka
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ka -d ka"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - ka_b1a_pg:/var/lib/postgresql/data
+
+volumes:
+  ka_b1a_pg:
