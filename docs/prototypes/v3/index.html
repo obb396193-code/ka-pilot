@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KA 投放经营平台 · v3 原型画册</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #1d1d1f;
+        --muted: #6e6e73;
+        --line: #e8e8ed;
+        --paper: #ffffff;
+        --canvas: #f5f5f7;
+        --accent: #ff6a2c;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--canvas);
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        min-height: 64px;
+        padding: 12px max(24px, calc((100vw - 1500px) / 2));
+        border-bottom: 1px solid rgba(232, 232, 237, 0.92);
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        white-space: nowrap;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 18px;
+        letter-spacing: -0.02em;
+      }
+
+      .version {
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      nav {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      nav::-webkit-scrollbar { display: none; }
+
+      nav a {
+        flex: 0 0 auto;
+        padding: 7px 10px;
+        color: var(--muted);
+        border-radius: 999px;
+        text-decoration: none;
+        font-size: 12px;
+      }
+
+      nav a:hover {
+        color: var(--ink);
+        background: #f1f1f3;
+      }
+
+      main {
+        width: min(1500px, calc(100% - 40px));
+        margin: 0 auto;
+        padding: 48px 0 96px;
+      }
+
+      .intro {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: end;
+        gap: 24px;
+        margin-bottom: 32px;
+      }
+
+      .intro h2 {
+        margin: 0 0 8px;
+        font-size: clamp(30px, 5vw, 58px);
+        letter-spacing: -0.055em;
+      }
+
+      .intro p {
+        max-width: 760px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      .count {
+        padding: 8px 12px;
+        color: var(--accent);
+        border: 1px solid #ffd8c6;
+        border-radius: 999px;
+        background: #fff7f3;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .gallery {
+        display: grid;
+        gap: 36px;
+      }
+
+      figure {
+        margin: 0;
+        scroll-margin-top: 88px;
+      }
+
+      figcaption {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        margin: 0 0 12px;
+      }
+
+      .page-no {
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+
+      .page-title {
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--paper);
+        box-shadow: 0 20px 60px rgba(29, 29, 31, 0.08);
+      }
+
+      footer {
+        padding: 32px 20px 48px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 12px;
+      }
+
+      @media (max-width: 900px) {
+        header { align-items: flex-start; flex-direction: column; }
+        nav { width: 100%; }
+        main { width: min(100% - 24px, 1500px); padding-top: 28px; }
+        .intro { grid-template-columns: 1fr; align-items: start; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <h1>KA 投放经营平台</h1>
+        <span class="version">v3 原型画册</span>
+      </div>
+      <nav aria-label="原型页导航">
+        <a href="#p01">工作台</a>
+        <a href="#p02">维度透视</a>
+        <a href="#p03">任务详情</a>
+        <a href="#p04">账户详情</a>
+        <a href="#p05">变更确认</a>
+        <a href="#p06">自助报表</a>
+        <a href="#p07">基建管理</a>
+        <a href="#p08">日报</a>
+        <a href="#p09">Agent</a>
+        <a href="#p10">值守通知</a>
+        <a href="#p11">数据总表</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div>
+          <h2>从发现问题，到执行与回收。</h2>
+          <p>首批 11 页高保真概念原型。导航采用九项终版，第九项为「集成与通知」；本画册保留生成的原始图片，只提供连续浏览和页面跳转。</p>
+        </div>
+        <span class="count">11 PAGES</span>
+      </section>
+
+      <section class="gallery">
+        <figure id="p01"><figcaption><span class="page-no">P01</span><span class="page-title">工作台</span></figcaption><img src="./p01-工作台.png" alt="工作台原型" /></figure>
+        <figure id="p02"><figcaption><span class="page-no">P02</span><span class="page-title">维度透视</span></figcaption><img src="./p02-维度透视.png" alt="维度透视原型" /></figure>
+        <figure id="p03"><figcaption><span class="page-no">P03</span><span class="page-title">任务详情</span></figcaption><img src="./p03-任务详情.png" alt="任务详情原型" /></figure>
+        <figure id="p04"><figcaption><span class="page-no">P04</span><span class="page-title">账户详情</span></figcaption><img src="./p04-账户详情.png" alt="账户详情原型" /></figure>
+        <figure id="p05"><figcaption><span class="page-no">P05</span><span class="page-title">变更集确认</span></figcaption><img src="./p05-变更集确认.png" alt="变更集确认原型" /></figure>
+        <figure id="p06"><figcaption><span class="page-no">P06</span><span class="page-title">自助报表设计器</span></figcaption><img src="./p06-自助报表.png" alt="自助报表设计器原型" /></figure>
+        <figure id="p07"><figcaption><span class="page-no">P07</span><span class="page-title">基建管理</span></figcaption><img src="./p07-基建管理.png" alt="基建管理原型" /></figure>
+        <figure id="p08"><figcaption><span class="page-no">P08</span><span class="page-title">日报</span></figcaption><img src="./p08-日报.png" alt="日报原型" /></figure>
+        <figure id="p09"><figcaption><span class="page-no">P09</span><span class="page-title">Agent 抽屉</span></figcaption><img src="./p09-Agent抽屉.png" alt="Agent 抽屉原型" /></figure>
+        <figure id="p10"><figcaption><span class="page-no">P10</span><span class="page-title">值守通知</span></figcaption><img src="./p10-值守通知.png" alt="值守通知原型" /></figure>
+        <figure id="p11"><figcaption><span class="page-no">P11</span><span class="page-title">完整数据总表</span></figcaption><img src="./p11-数据总表.png" alt="完整数据总表原型" /></figure>
+      </section>
+    </main>
+
+    <footer>KA 投放经营平台 · 视觉方向讨论用 · 2026-08</footer>
+  </body>
+</html>
