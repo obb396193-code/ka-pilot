@@ -12,3 +12,4 @@ export * from "./agent-context.js";
 export * from "./agent-provider.js";
 export * from "./agent-diagnosis.js";
 export * from "./report-plan.js";
+export * from "./report-dataset.js";
