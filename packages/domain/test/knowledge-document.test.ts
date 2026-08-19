@@ -83,6 +83,32 @@ describe("parseKnowledgeDocument", () => {
     expect(() => parseKnowledgeDocument({ blocks: [dangerous] })).toThrow("unsafe key");
   });
 
+  it("rejects JSON-like containers with holes, custom fields, symbols, or accessors", () => {
+    const sparse = Array.from({ length: 1 }) as unknown[];
+    delete sparse[0];
+    expect(() => parseKnowledgeDocument({ blocks: sparse })).toThrow("holes");
+
+    const custom = [] as unknown[] & { extra?: string };
+    custom.extra = "hidden";
+    expect(() => parseKnowledgeDocument({ blocks: custom })).toThrow("custom properties");
+
+    const symbolic: Record<string | symbol, unknown> = { type: "paragraph" };
+    symbolic[Symbol("hidden")] = "hidden";
+    expect(() => parseKnowledgeDocument({ blocks: [symbolic] })).toThrow("symbol properties");
+
+    let getterCalled = false;
+    const accessor: Record<string, unknown> = {};
+    Object.defineProperty(accessor, "text", {
+      enumerable: true,
+      get() {
+        getterCalled = true;
+        return "must not execute";
+      },
+    });
+    expect(() => parseKnowledgeDocument({ blocks: [accessor] })).toThrow("accessors");
+    expect(getterCalled).toBe(false);
+  });
+
   it("enforces block, depth, node, string, and serialized byte limits", () => {
     expect(() =>
       parseKnowledgeDocument({ blocks: [{}, {}] }, { maxBlocks: 1 }),

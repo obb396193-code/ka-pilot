@@ -53,6 +53,7 @@ interface CloneState {
   limits: KnowledgeDocumentLimits;
   ancestors: WeakSet<object>;
   nodes: number;
+  serializedBytes: number;
 }
 
 const UNSAFE_KEYS = new Set(["__proto__", "constructor", "prototype"]);
@@ -73,16 +74,12 @@ export function parseKnowledgeDocument(
     throw resourceLimit("knowledge document exceeds the blocks limit");
   }
 
-  const state: CloneState = { limits, ancestors: new WeakSet(), nodes: 0 };
+  const state: CloneState = { limits, ancestors: new WeakSet(), nodes: 0, serializedBytes: 0 };
   const cloned = cloneJsonValue(input, 0, state);
   if (!isPlainRecord(cloned) || !Array.isArray(cloned.blocks)) {
     throw invalidEnvelope("knowledge document envelope could not be preserved");
   }
-  const envelope = cloned as unknown as KnowledgeDocumentEnvelope;
-  if (Buffer.byteLength(JSON.stringify(envelope), "utf8") > limits.maxBytes) {
-    throw resourceLimit("knowledge document exceeds the serialized bytes limit");
-  }
-  return envelope;
+  return cloned as unknown as KnowledgeDocumentEnvelope;
 }
 
 export function projectKnowledgeDocumentText(document: KnowledgeDocumentEnvelope): string | null {
@@ -110,10 +107,14 @@ function resolveLimits(options: Partial<KnowledgeDocumentLimits>): KnowledgeDocu
 
 function cloneJsonValue(value: unknown, depth: number, state: CloneState): KnowledgeJsonValue {
   countNode(depth, state);
-  if (value === null || typeof value === "boolean") return value;
-  if (typeof value === "string") return cloneString(value, state.limits);
+  if (value === null || typeof value === "boolean") {
+    addSerializedValueBytes(value, state);
+    return value;
+  }
+  if (typeof value === "string") return cloneString(value, state);
   if (typeof value === "number") {
     if (!Number.isFinite(value)) throw invalidJson("knowledge document JSON numbers must be finite");
+    addSerializedValueBytes(value, state);
     return value;
   }
   if (Array.isArray(value)) return cloneArray(value, depth, state);
@@ -131,10 +132,11 @@ function countNode(depth: number, state: CloneState): void {
   }
 }
 
-function cloneString(value: string, limits: KnowledgeDocumentLimits): string {
-  if (Buffer.byteLength(value, "utf8") > limits.maxStringBytes) {
+function cloneString(value: string, state: CloneState): string {
+  if (Buffer.byteLength(value, "utf8") > state.limits.maxStringBytes) {
     throw resourceLimit("knowledge document exceeds the string bytes limit");
   }
+  addSerializedValueBytes(value, state);
   return value;
 }
 
@@ -142,6 +144,7 @@ function cloneArray(value: unknown[], depth: number, state: CloneState): readonl
   enterContainer(value, state);
   try {
     assertPlainArray(value);
+    addSerializedBytes(2 + Math.max(0, value.length - 1), state);
     return Object.freeze(value.map((item) => cloneJsonValue(item, depth + 1, state)));
   } finally {
     state.ancestors.delete(value);
@@ -156,12 +159,26 @@ function cloneObject(
   enterContainer(value, state);
   try {
     const result: Record<string, KnowledgeJsonValue> = {};
-    for (const key of safeEnumerableKeys(value)) {
+    const keys = safeEnumerableKeys(value);
+    addSerializedBytes(2 + Math.max(0, keys.length - 1), state);
+    for (const key of keys) {
+      addSerializedBytes(Buffer.byteLength(JSON.stringify(key), "utf8") + 1, state);
       result[key] = cloneJsonValue(value[key], depth + 1, state);
     }
     return Object.freeze(result);
   } finally {
     state.ancestors.delete(value);
+  }
+}
+
+function addSerializedValueBytes(value: KnowledgeJsonPrimitive, state: CloneState): void {
+  addSerializedBytes(Buffer.byteLength(JSON.stringify(value), "utf8"), state);
+}
+
+function addSerializedBytes(bytes: number, state: CloneState): void {
+  state.serializedBytes += bytes;
+  if (state.serializedBytes > state.limits.maxBytes) {
+    throw resourceLimit("knowledge document exceeds the serialized bytes limit");
   }
 }
 
