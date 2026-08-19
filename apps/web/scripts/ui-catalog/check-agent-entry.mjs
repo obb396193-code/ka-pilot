@@ -11,6 +11,24 @@ const requiredLinks = [
 ];
 
 const requiredRules = ["先查目录", "官方源码", "多候选对比", "许可证"];
+const guideSources = [
+  "shadcn",
+  "coss",
+  "reui",
+  "tremor",
+  "aceternity",
+  "magic-ui",
+  "react-bits",
+  "tweakcn",
+];
+const requiredGuideSections = [
+  "## 安装与获取",
+  "## 使用与组合",
+  "## 修改与适配",
+  "## 许可证",
+  "## 更新与变更",
+  "最后核验：",
+];
 
 let content = "";
 const failures = [];
@@ -27,6 +45,21 @@ for (const link of requiredLinks) {
 
 for (const rule of requiredRules) {
   if (!content.includes(rule)) failures.push(`missing rule: ${rule}`);
+}
+
+for (const source of guideSources) {
+  const guideUrl = new URL(`../../docs/frontend/ui-assets/guides/${source}.md`, root);
+  let guide = "";
+  try {
+    guide = await readFile(guideUrl, "utf8");
+  } catch {
+    failures.push(`missing guide: ${source}`);
+    continue;
+  }
+
+  for (const section of requiredGuideSections) {
+    if (!guide.includes(section)) failures.push(`${source}: missing section ${section}`);
+  }
 }
 
 if (failures.length > 0) {
