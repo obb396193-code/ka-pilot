@@ -121,7 +121,9 @@ function normalizeRatio(value: OverCostRampInput["realCpa"]): RatioValue {
   return { value: null, state: "undefined" };
 }
 
-function overCostCpaTrace(input: OverCostRampInput): ConditionTrace {
+type CpaThreshold = { threshold: number; multiplier: number };
+
+function resolveCpaThreshold(input: OverCostRampInput): CpaThreshold | ConditionTrace {
   if (!isFiniteNumber(input.assessmentPrice) || input.assessmentPrice < 0) {
     return {
       condition: "cpa_threshold",
@@ -136,10 +138,17 @@ function overCostCpaTrace(input: OverCostRampInput): ConditionTrace {
       reason: "账户生命周期缺失，不能确定阈值倍数",
     };
   }
-
-  const ratio = normalizeRatio(input.realCpa);
   const multiplier = input.lifecycleStage === "cold_start" ? 1.5 : 1.2;
-  const threshold = input.assessmentPrice * multiplier;
+  return { threshold: input.assessmentPrice * multiplier, multiplier };
+}
+
+function overCostCpaTrace(input: OverCostRampInput): ConditionTrace {
+  const thresholdResult = resolveCpaThreshold(input);
+  if ("outcome" in thresholdResult) {
+    return thresholdResult;
+  }
+  const { threshold, multiplier } = thresholdResult;
+  const ratio = normalizeRatio(input.realCpa);
   if (ratio.state === "infinite") {
     return {
       condition: "cpa_threshold",

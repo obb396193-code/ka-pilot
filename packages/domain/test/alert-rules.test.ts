@@ -91,6 +91,34 @@ describe("evaluateOverCostRamp", () => {
 
     expect(result.outcome).toBe("insufficient_data");
   });
+
+  it("requires lifecycle, assessment price and spend inputs independently", () => {
+    expect(
+      evaluateOverCostRamp({
+        realCpa: 40,
+        assessmentPrice: 30,
+        cost: 5000,
+        realConversion: 100,
+      }).outcome,
+    ).toBe("insufficient_data");
+    expect(
+      evaluateOverCostRamp({
+        realCpa: 40,
+        assessmentPrice: -1,
+        cost: 5000,
+        lifecycleStage: "scaling",
+        realConversion: 100,
+      }).outcome,
+    ).toBe("insufficient_data");
+    expect(
+      evaluateOverCostRamp({
+        realCpa: 40,
+        assessmentPrice: 30,
+        lifecycleStage: "scaling",
+        realConversion: 100,
+      }).outcome,
+    ).toBe("insufficient_data");
+  });
 });
 
 describe("evaluateZeroDelivery", () => {
@@ -105,6 +133,7 @@ describe("evaluateZeroDelivery", () => {
       "not_matched",
     );
     expect(evaluateZeroDelivery({ cost: 0 }).outcome).toBe("insufficient_data");
+    expect(evaluateZeroDelivery({ entityAgeHours: 30 }).outcome).toBe("insufficient_data");
   });
 });
 
@@ -131,5 +160,11 @@ describe("evaluateSpendCliff", () => {
         outcome: "insufficient_data",
       }),
     );
+  });
+
+  it("does not treat NEW as a numeric decline", () => {
+    expect(
+      evaluateSpendCliff({ spendChange: "NEW", hadManualBudgetChange: false }).outcome,
+    ).toBe("insufficient_data");
   });
 });

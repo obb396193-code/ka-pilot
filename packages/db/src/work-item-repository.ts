@@ -141,103 +141,136 @@ async function rollback(client: PoolClient): Promise<void> {
   }
 }
 
+function validateNewAlert(input: NewAlertWorkItem): void {
+  if (input.workspaceId.length === 0 || input.accountId.length === 0 || input.title.length === 0) {
+    throw new Error("workspaceId, accountId and title are required");
+  }
+}
+
+function optionalValue<T>(value: T | null | undefined): T | null {
+  return value === undefined ? null : value;
+}
+
+function optionalJson(value: Record<string, unknown> | null | undefined): string | null {
+  return value === null || value === undefined ? null : JSON.stringify(value);
+}
+
+async function findActiveAlert(
+  client: PoolClient,
+  input: NewAlertWorkItem,
+): Promise<WorkItemRow | undefined> {
+  const active = await client.query<WorkItemRow>(
+    `SELECT ${columns}
+     FROM work_items
+     WHERE workspace_id = $1
+       AND rule_id = $2::bigint
+       AND account_id = $3
+       AND status IN ('open', 'processing', 'escalated')
+     ORDER BY created_at DESC, id DESC
+     LIMIT 1
+     FOR UPDATE`,
+    [input.workspaceId, String(input.ruleId), input.accountId],
+  );
+  return active.rows[0];
+}
+
+async function updateActiveAlert(
+  client: PoolClient,
+  input: NewAlertWorkItem,
+  existing: WorkItemRow,
+): Promise<CreateOrMergeResult> {
+  if (existing.severity === null) {
+    throw new Error(`Active alert work item ${existing.id} has no severity`);
+  }
+  const decision = decideDuplicate(existing.severity, input.severity);
+  const upgraded = decision === "upgrade";
+  const updated = await client.query<WorkItemRow>(
+    `UPDATE work_items
+     SET severity = CASE WHEN $2::boolean THEN $3 ELSE severity END,
+         status = CASE WHEN $2::boolean THEN 'open' ELSE status END,
+         title = $4,
+         task_id = COALESCE($5, task_id),
+         evidence_snapshot = $6::jsonb,
+         diagnosis = COALESCE($7::jsonb, diagnosis),
+         assignee = COALESCE($8::uuid, assignee),
+         acceptance_criteria = COALESCE($9, acceptance_criteria),
+         sla_due = COALESCE($10::timestamptz, sla_due),
+         resolved_at = NULL
+     WHERE workspace_id = $1 AND id = $11
+     RETURNING ${columns}`,
+    [
+      input.workspaceId,
+      upgraded,
+      input.severity,
+      input.title,
+      optionalValue(input.taskId),
+      JSON.stringify(input.evidenceSnapshot),
+      optionalJson(input.diagnosis),
+      optionalValue(input.assignee),
+      optionalValue(input.acceptanceCriteria),
+      optionalValue(input.slaDue),
+      existing.id,
+    ],
+  );
+  return {
+    disposition: upgraded ? "upgraded" : "merged",
+    workItem: requiredRow(updated.rows[0], "Failed to update active work item"),
+  };
+}
+
+async function insertAlert(
+  client: PoolClient,
+  input: NewAlertWorkItem,
+): Promise<CreateOrMergeResult> {
+  const inserted = await client.query<WorkItemRow>(
+    `INSERT INTO work_items (
+       workspace_id, type, account_id, task_id, rule_id, severity, title,
+       evidence_snapshot, diagnosis, status, assignee, creator,
+       acceptance_criteria, sla_due
+     ) VALUES (
+       $1, $2, $3, $4, $5::bigint, $6, $7,
+       $8::jsonb, $9::jsonb, 'open', $10::uuid, $11::uuid, $12, $13::timestamptz
+     )
+     RETURNING ${columns}`,
+    [
+      input.workspaceId,
+      input.type,
+      input.accountId,
+      optionalValue(input.taskId),
+      String(input.ruleId),
+      input.severity,
+      input.title,
+      JSON.stringify(input.evidenceSnapshot),
+      optionalJson(input.diagnosis),
+      optionalValue(input.assignee),
+      optionalValue(input.creator),
+      optionalValue(input.acceptanceCriteria),
+      optionalValue(input.slaDue),
+    ],
+  );
+  return {
+    disposition: "created",
+    workItem: requiredRow(inserted.rows[0], "Failed to create work item"),
+  };
+}
+
 export class WorkItemRepository {
   constructor(private readonly pool: Pool) {}
 
   async createOrMergeAlert(input: NewAlertWorkItem): Promise<CreateOrMergeResult> {
-    if (input.workspaceId.length === 0 || input.accountId.length === 0 || input.title.length === 0) {
-      throw new Error("workspaceId, accountId and title are required");
-    }
+    validateNewAlert(input);
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
       const dedupeKey = workItemDedupeKey(input);
       await client.query("SELECT pg_advisory_xact_lock(hashtextextended($1, 0))", [dedupeKey]);
-
-      const active = await client.query<WorkItemRow>(
-        `SELECT ${columns}
-         FROM work_items
-         WHERE workspace_id = $1
-           AND rule_id = $2::bigint
-           AND account_id = $3
-           AND status IN ('open', 'processing', 'escalated')
-         ORDER BY created_at DESC, id DESC
-         LIMIT 1
-         FOR UPDATE`,
-        [input.workspaceId, String(input.ruleId), input.accountId],
-      );
-      const existing = active.rows[0];
-      if (existing !== undefined) {
-        if (existing.severity === null) {
-          throw new Error(`Active alert work item ${existing.id} has no severity`);
-        }
-        const decision = decideDuplicate(existing.severity, input.severity);
-        const updated = await client.query<WorkItemRow>(
-          `UPDATE work_items
-           SET severity = CASE WHEN $2::boolean THEN $3 ELSE severity END,
-               status = CASE WHEN $2::boolean THEN 'open' ELSE status END,
-               title = $4,
-               task_id = COALESCE($5, task_id),
-               evidence_snapshot = $6::jsonb,
-               diagnosis = COALESCE($7::jsonb, diagnosis),
-               assignee = COALESCE($8::uuid, assignee),
-               acceptance_criteria = COALESCE($9, acceptance_criteria),
-               sla_due = COALESCE($10::timestamptz, sla_due),
-               resolved_at = NULL
-           WHERE workspace_id = $1 AND id = $11
-           RETURNING ${columns}`,
-          [
-            input.workspaceId,
-            decision === "upgrade",
-            input.severity,
-            input.title,
-            input.taskId ?? null,
-            JSON.stringify(input.evidenceSnapshot),
-            input.diagnosis === undefined ? null : JSON.stringify(input.diagnosis),
-            input.assignee ?? null,
-            input.acceptanceCriteria ?? null,
-            input.slaDue ?? null,
-            existing.id,
-          ],
-        );
-        await client.query("COMMIT");
-        return {
-          disposition: decision === "upgrade" ? "upgraded" : "merged",
-          workItem: requiredRow(updated.rows[0], "Failed to update active work item"),
-        };
-      }
-
-      const inserted = await client.query<WorkItemRow>(
-        `INSERT INTO work_items (
-           workspace_id, type, account_id, task_id, rule_id, severity, title,
-           evidence_snapshot, diagnosis, status, assignee, creator,
-           acceptance_criteria, sla_due
-         ) VALUES (
-           $1, $2, $3, $4, $5::bigint, $6, $7,
-           $8::jsonb, $9::jsonb, 'open', $10::uuid, $11::uuid, $12, $13::timestamptz
-         )
-         RETURNING ${columns}`,
-        [
-          input.workspaceId,
-          input.type,
-          input.accountId,
-          input.taskId ?? null,
-          String(input.ruleId),
-          input.severity,
-          input.title,
-          JSON.stringify(input.evidenceSnapshot),
-          input.diagnosis === undefined ? null : JSON.stringify(input.diagnosis),
-          input.assignee ?? null,
-          input.creator ?? null,
-          input.acceptanceCriteria ?? null,
-          input.slaDue ?? null,
-        ],
-      );
+      const existing = await findActiveAlert(client, input);
+      const result =
+        existing === undefined
+          ? await insertAlert(client, input)
+          : await updateActiveAlert(client, input, existing);
       await client.query("COMMIT");
-      return {
-        disposition: "created",
-        workItem: requiredRow(inserted.rows[0], "Failed to create work item"),
-      };
+      return result;
     } catch (error) {
       await rollback(client);
       throw error;

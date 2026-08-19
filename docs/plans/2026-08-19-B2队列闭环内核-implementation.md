@@ -48,7 +48,7 @@ expect(evaluateSpendCliff({
 
 **Step 2: Run test to verify it fails**
 
-Run: `npm test -- --run test/alert-rules.test.ts` in `packages/domain`  
+Run: `npm test -- --run test/alert-rules.test.ts` in `packages/domain`
 Expected: FAIL because `alert-rules.ts` does not exist.
 
 **Step 3: Implement the minimal rule evaluator**
@@ -82,7 +82,7 @@ export interface RuleEvaluation {
 
 **Step 4: Run tests and quality checks**
 
-Run: `npm test -- --run test/alert-rules.test.ts && npm run typecheck && npm run lint`  
+Run: `npm test -- --run test/alert-rules.test.ts && npm run typecheck && npm run lint`
 Expected: PASS.
 
 **Step 5: Commit**
@@ -112,7 +112,7 @@ git commit -m "[be] 实现可解释首发规则"
 
 **Step 2: Run test to verify it fails**
 
-Run: `npm test -- --run test/work-items.test.ts` in `packages/domain`  
+Run: `npm test -- --run test/work-items.test.ts` in `packages/domain`
 Expected: FAIL because module does not exist.
 
 **Step 3: Implement the state machine**
@@ -141,7 +141,7 @@ export function decideDuplicate(
 
 **Step 4: Run tests and checks**
 
-Run: `npm test -- --run test/work-items.test.ts && npm run typecheck && npm run lint`  
+Run: `npm test -- --run test/work-items.test.ts && npm run typecheck && npm run lint`
 Expected: PASS.
 
 **Step 5: Commit**
@@ -170,7 +170,7 @@ git commit -m "[be] 实现工作项状态与去重策略"
 
 **Step 2: Run test to verify it fails**
 
-Run: `npm test -- --run test/notification-policy.test.ts` in `packages/domain`  
+Run: `npm test -- --run test/notification-policy.test.ts` in `packages/domain`
 Expected: FAIL.
 
 **Step 3: Implement deterministic routing**
@@ -186,7 +186,7 @@ export type NotificationDecision =
 
 **Step 4: Run tests and checks**
 
-Run: `npm test -- --run test/notification-policy.test.ts && npm run typecheck && npm run lint`  
+Run: `npm test -- --run test/notification-policy.test.ts && npm run typecheck && npm run lint`
 Expected: PASS.
 
 **Step 5: Commit**
@@ -217,7 +217,7 @@ git commit -m "[be] 实现告警通知分级策略"
 
 **Step 2: Run test to verify it fails**
 
-Run: `TEST_DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka npm test -- --run test/work-item-repository.test.ts` in `packages/db`  
+Run: `TEST_DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka npm test -- --run test/work-item-repository.test.ts` in `packages/db`
 Expected: FAIL because repository does not exist.
 
 **Step 3: Implement transaction-safe repository**
@@ -239,7 +239,7 @@ COMMIT;
 
 **Step 4: Run PostgreSQL and package checks**
 
-Run: `npm test -- --run test/work-item-repository.test.ts && npm run typecheck && npm run lint`  
+Run: `npm test -- --run test/work-item-repository.test.ts && npm run typecheck && npm run lint`
 Expected: PASS.
 
 **Step 5: Commit**
@@ -268,7 +268,7 @@ git commit -m "[be] 实现工作项事务仓储"
 
 **Step 2: Run test to verify it fails**
 
-Run: `npm test -- --run test/rule-scan-handler.test.ts` in `apps/worker`  
+Run: `npm test -- --run test/rule-scan-handler.test.ts` in `apps/worker`
 Expected: FAIL.
 
 **Step 3: Implement ports and handler**
@@ -294,7 +294,7 @@ export interface AlertSink {
 
 **Step 4: Run worker checks**
 
-Run: `npm test -- --run test/rule-scan-handler.test.ts && npm run typecheck && npm run lint`  
+Run: `npm test -- --run test/rule-scan-handler.test.ts && npm run typecheck && npm run lint`
 Expected: PASS.
 
 **Step 5: Commit**
@@ -314,7 +314,7 @@ git commit -m "[be] 实现规则扫描编排内核"
 
 **Step 1: Run all package tests**
 
-Run in each package: `npm test -- --run`  
+Run in each package: `npm test -- --run`
 Expected: all PASS.
 
 **Step 2: Run coverage, typecheck, lint**
@@ -331,8 +331,8 @@ Expected: business source line coverage >=80%, all checks PASS.
 
 **Step 3: Run dependency and secret checks**
 
-Run: `npm audit --audit-level=high` in all four packages.  
-Run repository scans for credential prefixes and dynamic execution patterns.  
+Run: `npm audit --audit-level=high` in all four packages.
+Run repository scans for credential prefixes and dynamic execution patterns.
 Expected: Critical/High 0; no real credential or unsafe dynamic execution introduced.
 
 **Step 4: Record exact boundaries**
@@ -353,5 +353,5 @@ git commit -m "[be] 完成B2队列内核质量门禁"
 
 **Step 6: Self-review commit**
 
-Run: `git show --stat HEAD && git diff --check <B2_BASE>..HEAD`  
+Run: `git show --stat HEAD && git diff --check <B2_BASE>..HEAD`
 Expected: only backend-owned paths and agreed docs changed; no contract or frontend file changed.
