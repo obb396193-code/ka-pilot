@@ -52,3 +52,19 @@
 - 边界如实：三个产品 API 的服务端实现属 B1c，本批仅完成网关调用侧与 mock 合同测试；HTTP 200 业务鉴权码仍等 B7 内网实证，不猜。
 
 **arch 待办**：等 Codex 交最终 SHA，逐条审计 R-007 清单 ✅/❌。
+
+---
+
+### P-005 ⏳B2 最小契约差异包｜be（Codex）
+
+老板已批准 Claude 离线期间按“契约安全内核”继续推进。Codex 只实现领域/Repository/Worker 端口，不修改下列冻结契约；请 arch 回来后集中裁决：
+
+1. **复合规则表达**：`alert_rules(metric/operator/threshold)` 无法表达首发规则的多条件、冷启动护栏和排除条件。建议最小新增版本化 `condition_tree JSONB` + `fallback_copy TEXT`；旧三列只作简单规则兼容，不把复合语义塞进 `scope`。
+2. **工作项去重与复发**：PRD 定义规则+账户去重、跨 P 级重弹，但表无稳定 dedupe 字段/发生次数。建议裁决是否增加 `dedupe_key TEXT`、`occurrence_count INT`、`last_triggered_at TIMESTAMPTZ` 及活动态唯一约束；本批暂用事务 advisory lock + 活动态查询。
+3. **工作项动作状态机**：`POST .../process|reject|escalate|dispatch` 未定义 process 是“开始处理”还是“完成”，dispatch 是改 assignee 还是生成派发记录。请冻结 action→状态、允许源状态和响应 DTO。
+4. **户级静音语义**：当前 `work_items.muted_until` 属单工作项，`alert_rules.muted_until` 属整条规则，均不能无歧义表达“某账户静音 3 天且 P0 是否突破”。请裁决静音作用域与 P0 规则。
+5. **通知调度**：`outbound_messages` 无 `run_after`，P2 整点攒批和静默延后只能经 `jobs` 调度。建议冻结“jobs 延时→到点写 outbound”的单一路径，避免两套调度真相。
+6. **生产数据缺口**：0 曝光规则需要计划创建时间+计划级消耗；断崖排除需要主动预算调整记录。当前 B1 canonical 不完整支持。本批只实现输入端口与 `insufficient_data`，不把缺失当 0。
+7. **API DTO**：冻结 `/work-items` 列表/详情/动作与 `/rules/:id/explain` 的完整请求响应后，再由 be 补 Web API；现阶段不猜。
+
+建议优先级：1/2/3 为 B2 API 与生产扫描前硬门；4/5 可随集成通知接口一起定；6 由 B3 数据/操作史补齐。
