@@ -136,8 +136,10 @@ html,body,#root{min-height:100%;margin:0}body{font-family:"Avenir Next","PingFan
   await write(join(LIVE_ROOT, "assets/preview.css"), result.css);
 }
 
-function frameHtml(preview) {
-  return `<!doctype html>\n<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src data: blob:; font-src data:"><title>${preview.title} · Live Preview</title><link rel="stylesheet" href="../assets/preview.css"></head><body><div id="root"></div><script src="../assets/${preview.id}.js"></script></body></html>\n`;
+function frameHtml(preview, css, bundle) {
+  const safeCss = css.replace(/<\/style/gi, "<\\/style");
+  const safeBundle = bundle.replace(/<\/script/gi, "<\\/script");
+  return `<!doctype html>\n<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:"><title>${preview.title} · Live Preview</title><style>${safeCss}</style></head><body><div id="root"></div><script>${safeBundle}</script></body></html>\n`;
 }
 
 async function writeManifest() {
@@ -150,6 +152,7 @@ async function writeManifest() {
     records.push({
       ...preview,
       mode: "compiled-official-source",
+      delivery: "inline-frame-for-file-url",
       interaction: "live",
       frame_path: `frames/${preview.id}.html`,
       bundle_path: `assets/${preview.id}.js`,
@@ -216,9 +219,16 @@ async function build() {
     });
     const bundle = await readFile(bundlePath, "utf8");
     await write(bundlePath, bundle.replace(/[ \t]+$/gm, ""));
-    await write(join(LIVE_ROOT, `frames/${preview.id}.html`), frameHtml(preview));
   }
   await buildCss(tempRoot);
+  const css = await readFile(join(LIVE_ROOT, "assets/preview.css"), "utf8");
+  for (const preview of PREVIEWS) {
+    const bundle = await readFile(join(LIVE_ROOT, `assets/${preview.id}.js`), "utf8");
+    await write(
+      join(LIVE_ROOT, `frames/${preview.id}.html`),
+      frameHtml(preview, css, bundle),
+    );
+  }
   const manifest = await writeManifest();
   console.log(JSON.stringify({ previews: manifest.preview_count, assets: manifest.represented_official_assets }));
 }
@@ -234,6 +244,13 @@ async function check() {
     if (/[ \t]+$/m.test(bundle.toString("utf8"))) errors.push(`${preview.id}: bundle has trailing whitespace`);
     if (hash(frame) !== preview.frame_sha256) errors.push(`${preview.id}: frame hash mismatch`);
     if (preview.network_required !== false) errors.push(`${preview.id}: must be offline`);
+    const frameText = frame.toString("utf8");
+    if (!frameText.includes("<style>") || !frameText.includes("<script>")) {
+      errors.push(`${preview.id}: frame must inline CSS and JavaScript for file:// use`);
+    }
+    if (/<(?:script|link)[^>]+(?:src|href)=/i.test(frameText)) {
+      errors.push(`${preview.id}: frame must not load child resources`);
+    }
   }
   const css = await readFile(join(LIVE_ROOT, manifest.css_path));
   if (hash(css) !== manifest.css_sha256) errors.push("css hash mismatch");

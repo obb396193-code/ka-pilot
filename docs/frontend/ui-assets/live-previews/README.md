@@ -4,7 +4,7 @@
 
 - 每个来源一个独立 frame；当前五个新来源、10 个代表官方资产。
 - frame 由主展厅用 `sandbox="allow-scripts"` 加载，不开放 same-origin。
-- bundle、frame、CSS 全部登记 SHA-256；无 CDN、无 fetch、无远程字体。
+- bundle、frame、CSS 全部登记 SHA-256；frame 内联对应 CSS/JS，确保直接 `file://` 双击也能运行；无 CDN、无 fetch、无远程字体。
 - 这里只是可视选型，不代表组件已经装进 `apps/web` 运行时。
 
 本地重建需准备临时 build-only 依赖（不写入产品 `package.json`）：
