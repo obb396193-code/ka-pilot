@@ -11,6 +11,7 @@ export * from "./backfill-repository.js";
 export * from "./data-quality-repository.js";
 export * from "./semantic-query-repository.js";
 export * from "./semantic-query-types.js";
+export * from "./report-facts-source.js";
 export * from "./work-item-repository.js";
 export * from "./changeset-repository.js";
 export * from "./task-repository.js";
