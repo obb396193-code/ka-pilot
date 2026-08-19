@@ -60,11 +60,16 @@ export function createCanonicalHandler(dependencies: {
 }): JobHandler {
   return async (job) => {
     const scope = payloadSchema.parse(job.payload);
+    if (job.workspaceId !== scope.workspaceId) {
+      throw new Error("Canonical job workspace does not match its payload");
+    }
     const runScope = {
       workspaceId: scope.workspaceId,
       dateFrom: scope.dateFrom,
       dateTo: scope.dateTo,
       reportDate: scope.reportDate,
+      credentialOwnerUserId: job.credentialOwnerUserId,
+      ...(scope.backfillId === undefined ? {} : { backfillId: scope.backfillId }),
     };
     const runId = await dependencies.runs.startRun(job.id, "canonical", runScope);
     let currentStep = "aggregate:load_inputs";

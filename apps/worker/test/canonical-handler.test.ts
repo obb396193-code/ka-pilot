@@ -93,6 +93,8 @@ describe("canonical handler", () => {
         dateFrom: "2026-08-18",
         dateTo: "2026-08-18",
         reportDate: "2026-08-19",
+        credentialOwnerUserId: null,
+        backfillId: 7,
       },
     );
     expect(jobs.enqueue).toHaveBeenCalledWith({

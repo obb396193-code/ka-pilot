@@ -1,6 +1,7 @@
 import {
   BackfillRepository,
   CredentialRepository,
+  DataQualityRepository,
   EtlRunRepository,
   JobRepository,
   MetricsRepository,
@@ -17,6 +18,7 @@ import { createIncrementalEtlHandler } from "./etl/incr-handler.js";
 import { JobConsumer } from "./jobs/consumer.js";
 import { withQihangIdentity } from "./jobs/identity.js";
 import { createFailureNotifier } from "./notifications/failure-notifier.js";
+import { createDataQualityHandler } from "./quality/check-handler.js";
 import { QihangClient } from "./qihang/client.js";
 
 type DatabasePool = ReturnType<typeof createPool>;
@@ -37,6 +39,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
   const metrics = new MetricsRepository(options.pool);
   const outbound = new OutboundMessageRepository(options.pool);
   const batches = new BackfillRepository(options.pool);
+  const quality = new DataQualityRepository(options.pool);
   const notifyFailure = createFailureNotifier(outbound);
 
   const etlStore = {
@@ -75,6 +78,11 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
         },
         runs: etlRuns,
         jobs,
+      }),
+      data_quality_check: createDataQualityHandler({
+        quality,
+        runs: etlRuns,
+        outbound,
       }),
     },
     {
