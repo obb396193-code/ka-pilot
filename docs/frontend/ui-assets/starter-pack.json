@@ -1,0 +1,253 @@
+{
+  "schema_version": 1,
+  "strategy": "curated-high-probability-public-source",
+  "approved_at": "2026-08-19",
+  "runtime_installation": "none-cache-only",
+  "notes": [
+    "Every root must resolve to a public-source item in the committed catalogs.",
+    "The cache is isolated from apps/web; selection does not mean runtime approval.",
+    "Registry dependencies may expand the downloaded payload count beyond the root count."
+  ],
+  "roots": [
+    {
+      "asset_id": "coss:p-date-picker-2",
+      "reason": "细节完成度高的单月日期范围选择，是已确认的首轮真实对比候选。",
+      "use_cases": ["date-range", "filters"]
+    },
+    {
+      "asset_id": "coss:p-date-picker-9",
+      "reason": "双月日期范围备选，用于宽屏数据筛选。",
+      "use_cases": ["date-range", "filters"]
+    },
+    {
+      "asset_id": "coss:p-command-2",
+      "reason": "包含异步、空态、加载态的 Command 搜索组合，适合全局命令与账户搜索。",
+      "use_cases": ["filters", "command-search"]
+    },
+    {
+      "asset_id": "coss:p-combobox-19",
+      "reason": "带 Avatar、Badge 的实体选择组合，适合账户、任务和负责人筛选。",
+      "use_cases": ["filters", "entity-select"]
+    },
+    {
+      "asset_id": "coss:p-field-9",
+      "reason": "Field 与 Combobox 的标准组合，适合统一表单标签、提示与错误状态。",
+      "use_cases": ["filters", "form-detail"]
+    },
+    {
+      "asset_id": "coss:p-input-group-23",
+      "reason": "搜索、图标和 Tooltip 组合，适合数据表工具栏。",
+      "use_cases": ["filters", "table-toolbar"]
+    },
+    {
+      "asset_id": "coss:p-table-8",
+      "reason": "包含选择、分页与 TanStack Table 的完整细节组合。",
+      "use_cases": ["data-grid", "table-toolbar"]
+    },
+    {
+      "asset_id": "coss:p-drawer-12",
+      "reason": "Dialog 与 Drawer 响应式组合，适合移动端筛选和详情编辑。",
+      "use_cases": ["feedback", "responsive-overlay"]
+    },
+    {
+      "asset_id": "coss:p-empty-1",
+      "reason": "高频空态成品，适合列表无数据与首次使用引导。",
+      "use_cases": ["empty-state", "feedback"]
+    },
+    {
+      "asset_id": "coss:p-slider-22",
+      "reason": "数值区间过滤组合，可用于消耗、CPA 和进度范围筛选。",
+      "use_cases": ["filters", "numeric-range"]
+    },
+    {
+      "asset_id": "coss:p-switch-7",
+      "reason": "复合时段与开关选择，可参考自动化规则和静默时段配置。",
+      "use_cases": ["filters", "automation-form"]
+    },
+    {
+      "asset_id": "coss:p-calendar-13",
+      "reason": "Calendar 与 Combobox 的组合，可用于月份、年份快速跳转。",
+      "use_cases": ["date-range", "filters"]
+    },
+    {
+      "asset_id": "reui:c-data-grid-20",
+      "reason": "带列可见性和分页的成熟数据表模式，匹配账户与任务总表。",
+      "use_cases": ["data-grid", "table-toolbar"]
+    },
+    {
+      "asset_id": "reui:c-data-grid-22",
+      "reason": "包含行操作、复制、筛选和反馈的复杂数据表，适合高密度运营操作。",
+      "use_cases": ["data-grid", "table-toolbar", "feedback"]
+    },
+    {
+      "asset_id": "reui:c-data-grid-27",
+      "reason": "虚拟滚动数据表候选，用于大账户和大素材列表。",
+      "use_cases": ["data-grid", "large-list"]
+    },
+    {
+      "asset_id": "reui:c-calendar-29",
+      "reason": "带预设的日期范围完整候选，与 coss 日期组件同页比较。",
+      "use_cases": ["date-range", "filters"]
+    },
+    {
+      "asset_id": "reui:c-combobox-25",
+      "reason": "复杂 Combobox + Calendar/Dialog 组合，覆盖高级筛选情形。",
+      "use_cases": ["filters", "entity-select"]
+    },
+    {
+      "asset_id": "reui:c-command-5",
+      "reason": "带 Kbd 与 Badge 的命令入口，适合 Agent 和快捷操作中心。",
+      "use_cases": ["command-search", "feedback"]
+    },
+    {
+      "asset_id": "reui:c-empty-12",
+      "reason": "卡片式空态候选，用于报告、知识库和自动化首次使用。",
+      "use_cases": ["empty-state", "feedback"]
+    },
+    {
+      "asset_id": "reui:data-grid",
+      "reason": "ReUI Data Grid primitives 汇总，是复杂示例的依赖底座。",
+      "use_cases": ["data-grid"]
+    },
+    {
+      "asset_id": "tremor:block/filterbar/filterbar-01",
+      "reason": "成熟的分析筛选栏布局，可替换内部控件但保留信息节奏。",
+      "use_cases": ["filters", "analytics-layout"]
+    },
+    {
+      "asset_id": "tremor:block/kpi-cards/kpi-card-01",
+      "reason": "KPI 卡片版式参考，适合消耗、CPA、达标率和风险指标。",
+      "use_cases": ["analytics-layout", "kpi-card"]
+    },
+    {
+      "asset_id": "tremor:block/chart-compositions/chart-composition-01",
+      "reason": "图表与说明、图例的组合节奏成熟，图表运行时可替换为项目 ECharts。",
+      "use_cases": ["analytics-layout", "chart-composition"]
+    },
+    {
+      "asset_id": "tremor:block/table-actions/table-action-01",
+      "reason": "表格批量操作栏参考，适合账户与任务管理。",
+      "use_cases": ["data-grid", "table-toolbar"]
+    },
+    {
+      "asset_id": "tremor:block/tables/table-01",
+      "reason": "报告型表格的密度和层级参考。",
+      "use_cases": ["data-grid", "analytics-layout"]
+    },
+    {
+      "asset_id": "tremor:block/empty-states/empty-state-01",
+      "reason": "分析产品空态版式，与 coss/ReUI 细节控件形成对比。",
+      "use_cases": ["empty-state", "analytics-layout"]
+    },
+    {
+      "asset_id": "tremor:block/page-shells/page-shell-01",
+      "reason": "报告与数据页面壳参考，不引入为新的全站导航底座。",
+      "use_cases": ["analytics-layout", "page-shell"]
+    },
+    {
+      "asset_id": "aceternity:bento-grid",
+      "reason": "AI 能力总览和成果陈列的高质感网格。",
+      "use_cases": ["ai-accent", "feature-overview"]
+    },
+    {
+      "asset_id": "aceternity:spotlight-new",
+      "reason": "欢迎页与 Agent 入口的聚光背景，限制在低频展示区。",
+      "use_cases": ["ai-accent", "hero-background"]
+    },
+    {
+      "asset_id": "aceternity:text-generate-effect",
+      "reason": "Agent 输出和首次引导的文字呈现候选。",
+      "use_cases": ["ai-accent", "text-motion"]
+    },
+    {
+      "asset_id": "aceternity:timeline",
+      "reason": "操作史、任务进度和归因路径展示候选。",
+      "use_cases": ["timeline", "analytics-layout"]
+    },
+    {
+      "asset_id": "aceternity:background-beams-with-collision",
+      "reason": "低频高光背景，用于品牌化 Agent 欢迎区。",
+      "use_cases": ["ai-accent", "hero-background"]
+    },
+    {
+      "asset_id": "aceternity:card-spotlight",
+      "reason": "关键功能入口和成果卡片的局部光效。",
+      "use_cases": ["ai-accent", "feature-overview"]
+    },
+    {
+      "asset_id": "magic-ui:bento-grid",
+      "reason": "比强动效更克制的能力总览网格，可与 Aceternity 同场比较。",
+      "use_cases": ["ai-accent", "feature-overview"]
+    },
+    {
+      "asset_id": "magic-ui:animated-list",
+      "reason": "Agent Inbox、事件流和实时处理状态的轻动效列表。",
+      "use_cases": ["ai-accent", "activity-feed"]
+    },
+    {
+      "asset_id": "magic-ui:number-ticker",
+      "reason": "KPI 更新的轻量数字动效，可受 reduced-motion 控制。",
+      "use_cases": ["analytics-layout", "kpi-card"]
+    },
+    {
+      "asset_id": "magic-ui:blur-fade",
+      "reason": "低成本入场动效，用于空态和说明模块。",
+      "use_cases": ["ai-accent", "feedback"]
+    },
+    {
+      "asset_id": "magic-ui:border-beam",
+      "reason": "只用于少数关键状态卡片的边框强调。",
+      "use_cases": ["ai-accent", "feedback"]
+    },
+    {
+      "asset_id": "magic-ui:magic-card",
+      "reason": "交互高光卡片，用于 AI 能力入口对比。",
+      "use_cases": ["ai-accent", "feature-overview"]
+    },
+    {
+      "asset_id": "magic-ui:marquee",
+      "reason": "可用于素材或成果横向浏览，但只作低频候选。",
+      "use_cases": ["ai-accent", "content-strip"]
+    },
+    {
+      "asset_id": "react-bits:Counter",
+      "reason": "独立 KPI 数字动效候选，与 Magic NumberTicker 比较性能和风格。",
+      "use_cases": ["analytics-layout", "kpi-card"]
+    },
+    {
+      "asset_id": "react-bits:SpotlightCard",
+      "reason": "Agent 和自动化能力入口的强调卡片。",
+      "use_cases": ["ai-accent", "feature-overview"]
+    },
+    {
+      "asset_id": "react-bits:AnimatedContent",
+      "reason": "可控的内容入场动效，适合局部状态切换。",
+      "use_cases": ["ai-accent", "feedback"]
+    },
+    {
+      "asset_id": "react-bits:FadeContent",
+      "reason": "更克制的内容过渡备选。",
+      "use_cases": ["ai-accent", "feedback"]
+    },
+    {
+      "asset_id": "react-bits:SoftAurora",
+      "reason": "比强粒子背景更适合 B 端欢迎页的柔和氛围。",
+      "use_cases": ["ai-accent", "hero-background"]
+    },
+    {
+      "asset_id": "react-bits:ShinyText",
+      "reason": "小范围 Agent 状态文字高光。",
+      "use_cases": ["ai-accent", "text-motion"]
+    },
+    {
+      "asset_id": "react-bits:BlurText",
+      "reason": "欢迎语和首次引导的文字入场备选。",
+      "use_cases": ["ai-accent", "text-motion"]
+    },
+    {
+      "asset_id": "tweakcn:modern-minimal",
+      "reason": "该官方源文件包含全部 42 个 presets；以 Modern Minimal 作为缓存入口，后续从同一源挑多风格种子。",
+      "use_cases": ["runtime-theme"]
+    }
+  ]
+}
