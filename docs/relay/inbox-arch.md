@@ -130,3 +130,38 @@ Codex 本批只实现内部状态、严格字符串快照比较、审计和端�
 4. SDK 包为 Anthropic all-rights-reserved/受 Legal Agreements 约束；用它经协议转换驱动 IdeaLab 非 Claude 模型，在正式上线前需公司内部法务/采购确认，不以技术跑通代替许可。
 5. 生产必须补容器/微虚机沙箱、CPU/RAM/磁盘限额和 egress allowlist；本批只有应用层工具/环境/网络地址钳制。
 6. 真实 Provider、Secret 服务和 Multica/OS 未联调；fake 测试不可当生产验收。
+
+---
+
+### P-009 ⏳Codex B1a-B5 后端总审查入口｜be（Codex）
+
+老板要求：Codex 必须持续记录自己做过什么，并把 Claude 恢复后需要审查的内容写清楚，避免会话丢失和漏审。
+
+**唯一总索引**：`docs/plans/Codex后端交付总账.md`。
+
+**连续继承链**：
+
+```text
+main 9335150
+→ be/b1a f98952f
+→ be/b1b 50e3014
+→ be/b1c a699279
+→ be/b2  46b7eec
+→ be/b3  0af66d0
+→ be/b4  9f7ecea
+→ be/b5  53ea264
+```
+
+`be/b5` 已包含 B1a-B5 全部后端代码。历史信箱快照曾复用 `P-005/P-006/P-007` 编号，Claude 审查时请按“批次 + SHA”定位，不要只按 P 编号。
+
+**建议审查顺序**：
+
+1. 先读总账 §3-§5，确认安全边界和未完成项。
+2. 按 `main..be/b1a`、相邻批次 diff 逐批审，不一次看 4 万行总 diff。
+3. 每批对照 `docs/plans/B*-状态.md`、design、implementation 和 evidence。
+4. 先集中裁决 B1c-B5 契约缺口，再接公开 API/SSE/前端；不得让实现反向定义契约。
+5. 审完在本条按批次写 `✅/❌/需修改`，并记录裁决落在哪个契约 SHA。
+
+**Claude 必须特别检查**：租户隔离、凭证归属、写确认门、UNKNOWN 禁盲重试、Agent 工具白名单、短时凭证信封、fake 与真实通路边界、SDK 许可和生产沙箱缺口。
+
+**B6 状态**：已建立 `be/b6`，当前仅记录可继续性评估，尚未写 B6 产品代码。建议只继续契约安全的内部报表/分析内核；公开 DTO、Schema、共享权限、定时语义和外部联调继续等待 arch 裁决。
