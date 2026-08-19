@@ -145,6 +145,11 @@ export const workflowRunEventSchema = z.discriminatedUnion("kind", [
 ]);
 
 export type WorkflowRunEvent = z.infer<typeof workflowRunEventSchema>;
+export type WorkflowRunEventDraft = WorkflowRunEvent extends infer Event
+  ? Event extends WorkflowRunEvent
+    ? Omit<Event, "sequence">
+    : never
+  : never;
 
 export interface WorkflowNodeRunState {
   nodeId: string;
