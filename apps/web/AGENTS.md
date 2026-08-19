@@ -6,6 +6,9 @@
 
 - [UI 资产总入口](../../docs/frontend/ui-assets/README.md)
 - [前端 Agent 工作流](../../docs/frontend/ui-assets/agent-workflow.md)
+- [数据产品前端执行规范](../../docs/frontend/ui-assets/frontend-product-standard.md)
+- [新来源准入与使用边界](../../docs/frontend/ui-assets/discovery.md)
+- [F-004 前端 UI 资产与质量门禁](../../docs/relay/F-004-前端UI资产与质量门禁.md)
 - [跨来源能力索引](../../docs/frontend/ui-assets/capabilities.json)
 - [真实风格图册](../../docs/frontend/ui-assets/visual-guide.md)
 - [已对比/已拍板记录](../../docs/frontend/ui-assets/decisions/README.md)
@@ -22,14 +25,19 @@
 7. **先检验再交付**：至少通过 lint、build、多主题、键盘、空/错/加载/禁用、桌面/移动端和 overlay 层级检查。
 8. **访问边界**：目录候选先看 `access_status/access_tier/auth_requirement`；Pro/Ultimate/401 项必须先取得合法许可，禁止用第三方镜像补源码。
 9. **目录不等于下载**：只有 `source-download-manifest.json` 中存在官方 URL、精确 ref/SHA-256 和本地路径，才能汇报“源码已下载/已适配”；`catalogued` 只表示 Agent 知道它存在。
+10. **组件先行、状态齐全**：业务组件先在 Storybook 或等价隔离页覆盖正常/加载/空/错/过期/无权限/禁用状态，再进入页面；页面完成定义以 `frontend-product-standard.md` 为准。
+11. **自动验收**：核心页面必须有桌面/移动视觉回归和键盘/焦点检查；图表、表格、弹窗和筛选器不得只凭鼠标主路径验收。
 
 ## 当前优先级
 
 - 页面壳与基础结构：shadcn/ui + Blocks
 - 细节组件：coss/ui Components + Particles
-- 复杂数据：ReUI
+- 复杂数据：ReUI、Dice UI；与 coss/TanStack 重叠时先同容器对比
+- 复杂业务组件：Kibo UI（Gantt/Kanban/Editor/Dropzone/Calendar），颜色统一映射到项目 token
 - KPI/经营看板：Tremor Blocks
+- Agent 界面：Vercel AI Elements（悬浮入口/对话/消息/推理/工具/来源）
 - 高级视觉/动效：Aceternity、Magic UI、React Bits
+- 选择性微动效：Animate UI、Motion Primitives；每次对比、少量接入、支持 reduced motion
 - 多风格：tweakcn token；组件禁止硬编码某个 preset
 - 业务图表：ECharts，颜色从同一主题 token bridge 获取
 

@@ -531,7 +531,7 @@
 
       <section class="view" id="view-discovery" hidden>
         <div class="content-width section">
-          <div class="section-head"><div><div class="section-kicker">Next intake</div><h1 id="discovery-heading"></h1></div><p class="section-intro">全部已核官方许可证和定位，但仍是 discovery-only、源码未缓存。AI Elements 和 Kibo UI 最值得优先进入下一批全量审计。</p></div>
+          <div class="section-head"><div><div class="section-kicker">Approved intake</div><h1 id="discovery-heading"></h1></div><p class="section-intro">老板已完成准入拍板：AI Elements、Kibo UI、Dice UI 正式进入具体能力选型，Animate UI、Motion Primitives 只做少量微动效对比。五库仍未全量收录、缓存或安装。</p></div>
           <div class="discovery-grid" id="discovery-grid"></div>
           <p class="footnote">候选里的第三方 patterns、模板或 Sponsor 内容如果另有商业授权，必须再次拆分；不能因为主仓 MIT/Apache 就把所有外链内容都当免费。</p>
         </div>
@@ -602,7 +602,7 @@
         $("#alt-intro").textContent = `已知付费元数据 ${nf.format(DATA.summary.paid_items)} 条，其中 ${nf.format(DATA.summary.provider_group_records)} 条只是分类节点；具体能力全部有处置策略，但 ${nf.format(DATA.summary.unresolved_paid_items)} 条没有足够证据称为直接替代，已明确标成“需组合/先核许可证”。`;
         $("#cache-intro").textContent = `当前是隔离缓存，不是运行时安装：${nf.format(DATA.summary.cached_roots)} 个高频根资产带出 ${nf.format(DATA.summary.cached_dependencies)} 个同源依赖，共 ${nf.format(DATA.summary.cached_entries)} 个缓存条目、${nf.format(DATA.summary.cached_files)} 个物理缓存文件。`;
         $("#theme-heading").textContent = `${nf.format(DATA.summary.theme_presets)} 个官方主题种子`;
-        $("#discovery-heading").textContent = `又找到 ${nf.format(DATA.summary.discovery_sources)} 个值得审计的免费库`;
+        $("#discovery-heading").textContent = `${nf.format(DATA.summary.discovery_sources)} 个已拍板的新来源`;
       }
 
       function renderMetrics() {
@@ -715,7 +715,7 @@
       }
 
       function renderDiscovery() {
-        $("#discovery-grid").innerHTML = DATA.discovery.map((source, index) => `<article class="discovery-card"><div class="badge-row"><span class="badge ${index < 2 ? "starter" : ""}">${esc(source.priority)} priority</span><span class="badge ${source.redistribution_restricted ? "paid" : "free"}">${esc(source.license)}</span>${source.redistribution_restricted ? `<span class="badge paid">限制组件再分发</span>` : ""}<span class="badge metadata">源码未缓存</span></div><h3>${esc(source.name)}</h3><p><b>${esc(source.role)}</b></p><p>${esc(source.visual_style)}</p><div class="tag-list">${source.best_for.map((item) => `<span class="tag">${esc(item)}</span>`).join("")}</div><div class="warning"><b>接入边界：</b>${esc(source.compatibility)}</div><p style="margin:14px 0;color:var(--muted);font-size:12px">${esc(source.next_action)}</p><div class="actions">${link(source.official_url, "官网", "action primary")}${link(source.docs_url, "文档")}${link(source.repository_url, "GitHub")}</div></article>`).join("");
+        $("#discovery-grid").innerHTML = DATA.discovery.map((source) => `<article class="discovery-card"><div class="badge-row"><span class="badge ${source.decision_status === "approved-for-catalog-and-contextual-use" ? "starter" : "metadata"}">${source.decision_status === "approved-for-catalog-and-contextual-use" ? "正式准入" : "选择性准入"}</span><span class="badge ${source.redistribution_restricted ? "paid" : "free"}">${esc(source.license)}</span>${source.redistribution_restricted ? `<span class="badge paid">限制组件再分发</span>` : ""}<span class="badge metadata">未缓存/未安装</span></div><h3>${esc(source.name)}</h3><p><b>${esc(source.role)}</b></p><p>${esc(source.visual_style)}</p><div class="tag-list">${source.best_for.map((item) => `<span class="tag">${esc(item)}</span>`).join("")}</div><div class="warning"><b>项目用法：</b>${esc(source.project_use_policy || source.compatibility)}</div><p style="margin:14px 0;color:var(--muted);font-size:12px">${esc(source.next_action)}</p><div class="actions">${link(source.official_url, "官网", "action primary")}${link(source.docs_url, "文档")}${link(source.repository_url, "GitHub")}</div></article>`).join("");
       }
 
       function initFilters() {

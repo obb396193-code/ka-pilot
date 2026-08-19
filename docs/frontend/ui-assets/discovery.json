@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "verified_at": "2026-08-19",
-  "status": "shortlist-not-yet-catalogued",
-  "selection_rule": "Only official documentation and official repositories are accepted. Discovery does not mean the inventory or source has been cached.",
+  "status": "boss-reviewed-mixed-intake",
+  "selection_rule": "Only official documentation and official repositories are accepted. Approval means the source may enter project selection; it does not mean the full inventory has been catalogued, source has been cached, or runtime dependency has been installed.",
   "sources": [
     {
       "id": "ai-elements",
@@ -21,8 +21,11 @@
       "docs_url": "https://elements.ai-sdk.dev/docs",
       "repository_url": "https://github.com/vercel/ai-elements",
       "license_url": "https://github.com/vercel/ai-elements/blob/main/LICENSE",
+      "decision_status": "approved-for-catalog-and-contextual-use",
+      "project_use_policy": "Agent 对话、悬浮窗、消息、推理、工具调用和来源引用的首选候选；普通数据页不默认引入。",
       "catalog_status": "discovery-only",
       "source_cache_status": "not-cached",
+      "runtime_install_status": "not-installed",
       "access_status": "public-source",
       "evidence_note": "官方文档与仓库明确提供 shadcn Registry 源码安装，并以 Apache-2.0 开源。",
       "next_action": "优先全量审计官方 Registry；为产品 Agent 抽屉挑 conversation、message、prompt-input、reasoning、tool、sources。"
@@ -44,8 +47,11 @@
       "docs_url": "https://www.kibo-ui.com/docs",
       "repository_url": "https://github.com/shadcnblocks/kibo",
       "license_url": "https://github.com/shadcnblocks/kibo/blob/main/license.md",
+      "decision_status": "approved-for-catalog-and-contextual-use",
+      "project_use_policy": "Gantt、Kanban、Editor、Dropzone、Color Picker、复杂 Calendar 的首选候选；视觉颜色统一改为项目语义 token，不直接照搬官网配色。",
       "catalog_status": "discovery-only",
       "source_cache_status": "not-cached",
+      "runtime_install_status": "not-installed",
       "access_status": "public-source",
       "evidence_note": "官方介绍明确为 shadcn companion、完全开源 MIT，并展示 Gantt、Kanban、Editor、Dropzone 等高阶组件。",
       "next_action": "下一批抓取 Registry 全量清单；优先比较 ReUI Pro 的 Gantt/Kanban/Editor 能力。"
@@ -67,8 +73,11 @@
       "docs_url": "https://diceui.com/docs/introduction",
       "repository_url": "https://github.com/sadmann7/diceui",
       "license_url": "https://github.com/sadmann7/diceui/blob/main/LICENSE",
+      "decision_status": "approved-for-catalog-and-contextual-use",
+      "project_use_policy": "Data Grid、File Upload、Kanban、Time Picker 等复杂交互的正式候选；首次使用前与 ReUI/coss/TanStack 同业务容器对比。",
       "catalog_status": "discovery-only",
       "source_cache_status": "not-cached",
+      "runtime_install_status": "not-installed",
       "access_status": "public-source",
       "evidence_note": "官方文档列出 47 个组件和 9 个 utilities，并声明 WCAG/ARIA/键盘支持；官方仓库为 MIT。",
       "next_action": "全量抓取组件目录，重点与 coss/ReUI 比较 Data Grid、File Upload、Kanban 和筛选细节。"
@@ -90,8 +99,11 @@
       "docs_url": "https://animate-ui.com/docs",
       "repository_url": "https://github.com/imskyleen/animate-ui",
       "license_url": "https://github.com/imskyleen/animate-ui/blob/main/LICENSE.md",
+      "decision_status": "approved-for-selective-comparison",
+      "project_use_policy": "只按具体微交互少量选择；每次与 Aceternity、Magic UI、React Bits、Motion Primitives 对比，遵守 Commons Clause，禁止整库默认安装。",
       "catalog_status": "discovery-only",
       "source_cache_status": "not-cached",
+      "runtime_install_status": "not-installed",
       "access_status": "public-source",
       "evidence_note": "官方文档支持直接复制修改；官方 LICENSE 是 MIT + Commons Clause，可用于应用，但限制直接销售或再分发组件本身。",
       "next_action": "抓取 components/primitives/icons 三类完整索引，作为 Aceternity/React Bits Pro 动效的免费替代池。"
@@ -113,8 +125,11 @@
       "docs_url": "https://motion-primitives.com/docs",
       "repository_url": "https://github.com/ibelick/motion-primitives",
       "license_url": "https://github.com/ibelick/motion-primitives/blob/main/LICENCE.md",
+      "decision_status": "approved-for-selective-comparison",
+      "project_use_policy": "只用于文字、数字、布局和局部交互的克制微动效；每次与现有动效来源对比，禁止成为业务组件底座。",
       "catalog_status": "discovery-only",
       "source_cache_status": "not-cached",
+      "runtime_install_status": "not-installed",
       "access_status": "public-source",
       "evidence_note": "官方仓库明确为可定制开源动效组件，MIT；官网当前对自动抓取返回 403，因此完整目录待从官方仓库复核。",
       "next_action": "从官方仓库建立目录与维护状态，不把 README 的展示数量推断成全量。"

@@ -2,6 +2,8 @@
 
 ## 1. 接到页面或组件需求
 
+先读 `frontend-product-standard.md`，明确页面决策层级、指标/数据契约、状态矩阵和 Definition of Done。
+
 先把需求拆成能力词，不要先写 JSX。例如账户筛选条可拆为：日期范围、账户多选、状态筛选、保存视图、清空条件、移动端收纳。
 
 逐个能力查：
@@ -42,6 +44,8 @@ node apps/web/scripts/ui-catalog/cache-starter-sources.mjs --check
 ### 官方都没有
 
 记录搜索范围和不适合原因，再查 `discovery.json`，然后提出三种选择：组合现有资产、引入新官方来源、或确有必要时本地实现。不得只写一句“没有”。
+
+当前新来源使用策略：AI Elements、Kibo、Dice 已获老板准入，可进入具体能力选型；Animate UI、Motion Primitives 只能做少量微动效候选。它们在全量目录抓取完成前仍保持 `discovery-only/not-cached/not-installed`，不得把“获准选择”汇报成“已安装”。
 
 ### 命中付费能力但当前未购买
 
@@ -90,6 +94,8 @@ node apps/web/scripts/ui-catalog/cache-starter-sources.mjs --check
 - Radix 与 Base UI overlays 同页时层级正常；
 - 大表/长列表/频繁筛选的性能；
 - 来源、许可证和修改记录可追溯。
+
+核心业务组件还必须进入 Storybook 或等价隔离页，覆盖 `loading/empty/partial/stale/error/no-permission/disabled`；P0 页面必须有 Playwright 桌面/移动截图回归和键盘/焦点路径。完整门禁见 `frontend-product-standard.md`。
 
 ## 6. 交付说明
 

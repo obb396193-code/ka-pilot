@@ -25,10 +25,12 @@ catalogued → approved/preferred → vendored → adapted → deprecated
 |---|---|---|
 | 页面壳、Sidebar、基础表单/弹层 | shadcn/ui、Blocks | coss |
 | 日期、组合框、Command、Field、Drawer、空态等细节 | coss Components/Particles | shadcn、ReUI |
-| Data Grid、复合筛选、列配置、虚拟滚动 | ReUI | shadcn/TanStack 示例 |
+| Data Grid、复合筛选、列配置、虚拟滚动 | ReUI、Dice UI | coss、shadcn/TanStack 示例 |
+| Gantt、Kanban、Editor、上传区、复杂 Calendar | Kibo UI | Dice UI、ReUI |
 | KPI、趋势、报告、驾驶舱版式 | Tremor Blocks | shadcn Blocks |
 | Bento、高级卡片、背景 | Aceternity | Magic UI |
-| 局部动效 | Magic UI、React Bits | Aceternity |
+| Agent 对话、悬浮窗、推理、工具调用、来源引用 | Vercel AI Elements | shadcn primitives |
+| 局部动效 | Magic UI、React Bits、Aceternity | Animate UI、Motion Primitives（只按需对比） |
 | 主题/多风格 | tweakcn | 项目语义 token |
 
 coss current 的 577 条来自当前 `coss.com/ui` Registry，采用 Base UI 新架构，是新代码默认路径；coss Origin 的 646 条是官方仓库保留的旧版快照（599 个组件/示例 + 47 个支持资产），能力更多但维护较慢，只在 current 缺能力时补位。旧 `@tremor/react` 同样只作 legacy 能力参考，新代码默认先查 Tremor Raw。
@@ -41,7 +43,8 @@ coss current 的 577 条来自当前 `coss.com/ui` Registry，采用 Base UI 新
 - `source-download-manifest.json`、`source-download-status.md`：实际运行时源码、hash、引用与 provenance。
 - `starter-pack.json`、`source-cache/manifest.json`：A 方案的 48 个高频根资产、传递依赖、官方 payload/raw source、逐文件 hash 和缓存状态。
 - `free-alternatives.json/.md`：2,176 条已知付费元数据中，23 条分类节点单列，2,153 个具体能力逐项记录免费候选/组合策略、置信度与复核状态；当前 272 项有同能力候选、638 项按语义选图标、1,237 项需重组、6 项先核许可，不包含或推导付费源码。
-- `discovery.json/.md`：待评估的公开源码来源，目前只登记 Kibo UI、Dice UI、Animate UI、Motion Primitives、Vercel AI Elements，未冒充已缓存或已安装；Commons Clause 等限制单列。
+- `discovery.json/.md`：老板已审阅的新来源准入记录。AI Elements、Kibo、Dice 正式进入选型，Animate UI、Motion Primitives 选择性进入对比；五者仍未冒充已全量收录、缓存或安装，Commons Clause 等限制单列。
+- `frontend-product-standard.md`：数据密集产品的设计交付、组件实现、图表、主题、Storybook、视觉回归、无障碍和 Definition of Done。
 - `showroom.html`：无需服务端、无需联网即可筛选查看的离线展厅；`showroom-data.json` 是其可再生成数据。
 - `guides/`：官方安装、使用、组合、修改/迁移、主题、许可证和 changelog 的项目摘要。
 - `capabilities.json`：跨来源能力索引，用一个需求找到多个候选。
@@ -70,6 +73,7 @@ coss current 的 577 条来自当前 `coss.com/ui` Registry，采用 Base UI 新
 - [源码下载状态](source-download-status.md)
 - [存储格式契约](storage-format.md)
 - [前端 Agent 使用流程](agent-workflow.md)
+- [数据产品前端执行规范](frontend-product-standard.md)
 - [打开离线 UI 展厅](showroom.html)
 - [高频源码缓存清单](source-cache/manifest.json)
 - [付费能力免费替代](free-alternatives.md)

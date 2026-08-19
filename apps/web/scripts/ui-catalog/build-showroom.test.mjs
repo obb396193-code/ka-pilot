@@ -148,6 +148,14 @@ test("generated showroom is self-contained and carries every catalog and paid ma
   assert.equal(data.summary.cached_roots, 48);
   assert.equal(data.summary.cached_files, 93);
   assert.equal(data.discovery.length, 5);
+  assert.equal(
+    data.discovery.filter((item) => item.decision_status === "approved-for-catalog-and-contextual-use").length,
+    3,
+  );
+  assert.equal(
+    data.discovery.filter((item) => item.decision_status === "approved-for-selective-comparison").length,
+    2,
+  );
   assert.equal(data.themes.length, 42);
   assert.equal(new Set(data.assets.map((item) => item.id)).size, 5996);
   assert.equal(data.assets.filter((item) => item.alternatives.length > 0).length, 2153);

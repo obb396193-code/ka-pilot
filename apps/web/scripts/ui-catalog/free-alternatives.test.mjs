@@ -338,6 +338,9 @@ test("generated discovery shortlist records verified license restrictions and ca
     assert.match(source.repository_url, /^https:\/\/github\.com\//);
     assert.equal(source.catalog_status, "discovery-only");
     assert.equal(source.source_cache_status, "not-cached");
+    assert.equal(source.runtime_install_status, "not-installed");
+    assert.match(source.decision_status, /^approved-for-/);
+    assert.ok(source.project_use_policy.length > 20);
     assert.equal(typeof source.license_verified, "boolean");
     assert.equal(typeof source.redistribution_restricted, "boolean");
   }

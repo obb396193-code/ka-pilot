@@ -81,7 +81,9 @@ tags:
 3. 已收录免费资产的组合；
 4. 确无现成实现时，独立编写业务组合层，但不照抄付费源码和受保护设计。
 
-首批新增公开源码候选为 Kibo UI（复杂 B 端组件）、Dice UI（Data Grid/File Upload 等无障碍交互）、Animate UI（克制的 shadcn 动效）、Motion Primitives（精细微交互）、Vercel AI Elements（AI/Agent 界面）。它们目前只进入 discovery，尚未全量收录或缓存。Animate UI 实际为 **MIT + Commons Clause**，可放进应用，但不能直接销售或再分发组件本身。
+首批新增公开源码候选为 Kibo UI（复杂 B 端组件）、Dice UI（Data Grid/File Upload 等无障碍交互）、Animate UI（克制的 shadcn 动效）、Motion Primitives（精细微交互）、Vercel AI Elements（AI/Agent 界面）。老板已于 2026-08-19 拍板：**AI Elements、Kibo、Dice 正式准入具体能力选型；Animate UI、Motion Primitives 选择性准入，只少量对比使用**。它们当前仍只在 discovery，尚未全量收录、缓存或安装；准入不等于安装。Animate UI 实际为 **MIT + Commons Clause**，可放进应用，但不能直接销售或再分发组件本身。
+
+前端质量执行规范另见 `docs/frontend/ui-assets/frontend-product-standard.md`：Storybook 是组件状态试验台，ECharts 是正式报表引擎，Design Tokens/Style Dictionary 是 tweakcn 多主题与 CSS/图表的统一变量层，Playwright 与键盘/无障碍检查是自动验收门禁。前端批次必须按“产品与数据契约 → 信息架构/状态矩阵 → token/组件选择 → Ready for Dev → 组件隔离实现 → 页面/API 集成 → 视觉/键盘/数据/性能验收 → 回写决策”执行。
 
 ## 离线 HTML 展厅
 
@@ -92,7 +94,7 @@ tags:
 - 2,176 条付费元数据、23 条分类节点与 2,153 个具体能力的分级替代/组合策略；
 - 89 个已缓存源码条目与本地路径；
 - 42 个 tweakcn 官方主题的真实色板；
-- 5 个新开源候选的定位、许可证和官方入口。
+- 5 个新来源的老板准入状态、项目用法、许可证和官方入口。
 
 ## 风格与使用定位
 
