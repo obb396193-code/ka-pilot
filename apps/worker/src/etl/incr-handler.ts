@@ -1,6 +1,7 @@
 import type { JobHandler } from "../jobs/types.js";
 import { incrementalEtlPayloadSchema } from "./payload.js";
 import { rowsToRawRecords } from "./raw-ingest.js";
+import { replayRequestParams } from "./replay-params.js";
 import { errorSummary } from "./run-utils.js";
 import type { EtlRunStore, QihangQueryPort } from "./types.js";
 
@@ -33,6 +34,7 @@ export function createIncrementalEtlHandler(
         rows: result.rows,
         workspaceId: payload.workspaceId,
         resource,
+        requestParams: replayRequestParams(query),
         fallbackDs: payload.ds,
         fetchedByUserId: payload.fetchedByUserId,
       });

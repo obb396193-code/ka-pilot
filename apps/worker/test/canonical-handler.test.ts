@@ -44,7 +44,12 @@ describe("canonical handler", () => {
       id: "33333333-3333-4333-8333-333333333333",
       workspaceId,
       jobType: "canonical_merge",
-      payload: { workspaceId, dateFrom: "2026-08-18", dateTo: "2026-08-18" },
+      payload: {
+        workspaceId,
+        dateFrom: "2026-08-18",
+        dateTo: "2026-08-18",
+        reportDate: "2026-08-19",
+      },
       priority: 5,
       credentialOwnerUserId: null,
       status: "leased",

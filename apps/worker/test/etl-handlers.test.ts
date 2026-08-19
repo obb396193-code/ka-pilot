@@ -85,6 +85,7 @@ describe("ETL handlers", () => {
     expect(calls.filter((call) => call.resource === "account_realtime")).toHaveLength(7);
     expect(runStore.records.some((row) => row.resource === "account")).toBe(true);
     expect(runStore.records.every((row) => row.workspaceId === workspaceId)).toBe(true);
+    expect(runStore.records.every((row) => !("userId" in row.requestParams))).toBe(true);
     expect(runStore.value.finishRun).toHaveBeenCalledWith(91, runStore.records.length);
   });
 

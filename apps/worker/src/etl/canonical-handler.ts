@@ -13,6 +13,7 @@ const payloadSchema = z.object({
   workspaceId: z.string().uuid(),
   dateFrom: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   dateTo: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  reportDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
 
 export interface CanonicalMergeWork {
@@ -29,6 +30,7 @@ export interface CanonicalStore {
     workspaceId: string;
     dateFrom: string;
     dateTo: string;
+    reportDate: string;
   }): Promise<CanonicalMergeWork[]>;
   loadEffectiveSettings(
     workspaceId: string,

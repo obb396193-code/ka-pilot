@@ -19,6 +19,7 @@ export function rowsToRawRecords(input: {
   rows: readonly QihangRow[];
   workspaceId: string;
   resource: MetricResource;
+  requestParams: Record<string, unknown>;
   fallbackDs: string;
   fetchedByUserId: string | null;
 }): RawMetricRecord[] {
@@ -40,6 +41,7 @@ export function rowsToRawRecords(input: {
       ds: normalizeDate(row.ds, input.fallbackDs),
       source,
       resource: input.resource,
+      requestParams: input.requestParams,
       payload: row,
       fetchedByUserId: input.fetchedByUserId,
     };

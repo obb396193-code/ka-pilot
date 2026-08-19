@@ -5,3 +5,4 @@ export * from "./etl-run-repository.js";
 export * from "./outbound-message-repository.js";
 export * from "./metrics-repository.js";
 export * from "./gateway-repository.js";
+export * from "./raw-metrics-repository.js";

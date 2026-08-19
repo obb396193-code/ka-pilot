@@ -3,6 +3,7 @@ import type { QihangQuery } from "../qihang/client.js";
 import { shiftIsoDate, trailingDates } from "./date-range.js";
 import { fullEtlPayloadSchema } from "./payload.js";
 import { rowsToRawRecords } from "./raw-ingest.js";
+import { replayRequestParams } from "./replay-params.js";
 import { errorSummary } from "./run-utils.js";
 import type { EtlRunStore, QihangQueryPort } from "./types.js";
 
@@ -29,6 +30,7 @@ export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHand
         rows: result.rows,
         workspaceId: payload.workspaceId,
         resource: query.resource,
+        requestParams: replayRequestParams(query),
         fallbackDs,
         fetchedByUserId: payload.fetchedByUserId,
       });
@@ -56,6 +58,7 @@ export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHand
           rows: result.rows,
           workspaceId: payload.workspaceId,
           resource: "account",
+          requestParams: replayRequestParams(query),
           fallbackDs: payload.asOfDate,
           fetchedByUserId: payload.fetchedByUserId,
         });

@@ -9,6 +9,7 @@ export interface RawMetricRecord {
   ds: string;
   source: MetricSource;
   resource: MetricResource;
+  requestParams: Record<string, unknown>;
   payload: Record<string, unknown>;
   fetchedByUserId: string | null;
 }
