@@ -86,3 +86,13 @@
 Codex 本批只实现内部状态、严格字符串快照比较、审计和端口；不修改契约。
 
 **B3 内核交付回执（2026-08-19）**：功能审查 SHA `36c72f2`。已完成 TTL/from 冲突/状态机/反向草稿、事务仓储、逐项部分成功、execution_run 审计、歧义超时→UNKNOWN、UNKNOWN 只读 reconcile、T+1 成功项端口；四包 165 tests，覆盖率均 >80%，复杂度 0 warning，audit 0。真实 OS/CLI、同账户锁、API 与真实 T+1/带外检测如实暂缓。报告：`docs/evidence/B3-代码质量报告.md`。
+
+---
+
+### P-007 ⏳B4 任务与报告契约差异｜be（Codex）
+
+1. 奇航 `task_id` 是否为主数据仍未核验；B4 Repository 只接收 taskId，不绑定来源。
+2. `task_accounts UNIQUE(task_id,account_id,valid_from)` 缺 workspace_id，且无租户 FK/区间排斥约束；建议修正复合唯一与 FK，区间重叠由事务检查兜底。
+3. pacing 请冻结：日历天还是业务日、asOf 是否含当日、7 日零量日是否纳入、任务结束后的显示语义。本批明确采用“asOf=完整结算日，剩余不含 asOf，调用方传有效日序列”。
+4. 日报“12 模块”缺字段、顺序、角色裁剪、缺数状态和版本 schema；本批只做稳定事实集。
+5. 考核价变更后的重算范围、确认已读和通知 DTO 需与 B2 通知契约一起冻结。
