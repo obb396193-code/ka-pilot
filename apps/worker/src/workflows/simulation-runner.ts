@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 
 import {
   CapabilityRegistry,
+  type CapabilityDefinition,
   type CompiledWorkflowNode,
   type WorkflowInputBinding,
 } from "@ka/domain";
@@ -106,44 +107,44 @@ export class WorkflowSimulationRunner {
     outputs: Map<string, unknown>,
     startedAt: number,
   ): Promise<WorkflowSimulationNodeResult> {
-    let capability;
-    try {
-      capability = this.registry.resolve(node.capability.id, node.capability.version);
-      assertCapabilityMatchesPlan(node, capability);
-    } catch {
-      return { nodeId: node.id, status: "blocked", errorCode: "capability_unavailable" };
-    }
-    if (!capability.supportsSimulation) {
-      return { nodeId: node.id, status: "blocked", errorCode: "simulation_not_supported" };
-    }
-    const permission = await this.permissions.authorize({
-      auth: input.auth,
-      nodeId: node.id,
-      capability,
-    });
-    if (!permission.allowed) {
-      return {
-        nodeId: node.id,
-        status: permission.reason === "permission_denied" ? "permission_denied" : "blocked",
-        errorCode: permission.reason,
-      };
-    }
+    const prepared = await this.prepareNode(input, node, params, outputs);
+    if (!prepared.ok) return prepared.result;
+    return this.invokePreparedNode(input, node, prepared, outputs, startedAt);
+  }
 
-    let values: Record<string, unknown>;
-    try {
-      values = resolveNodeInputs(node.inputs, params, outputs);
-    } catch (error) {
-      return {
-        nodeId: node.id,
-        status: error instanceof MissingParameterError ? "missing_data" : "blocked",
-        errorCode: error instanceof MissingParameterError ? "missing_parameter" : "dependency_blocked",
-      };
+  private async prepareNode(
+    input: WorkflowSimulationInput,
+    node: CompiledWorkflowNode,
+    params: Readonly<Record<string, unknown>>,
+    outputs: Map<string, unknown>,
+  ): Promise<PreparedSimulationNode> {
+    const capability = resolveSimulationCapability(this.registry, node);
+    if (!capability) return blocked(node.id, "capability_unavailable");
+    if (!capability.supportsSimulation) return blocked(node.id, "simulation_not_supported");
+    const permission = await this.permissions.authorize({ auth: input.auth, nodeId: node.id, capability });
+    if (!permission.allowed) {
+      return blocked(
+        node.id,
+        permission.reason,
+        permission.reason === "permission_denied" ? "permission_denied" : "blocked",
+      );
     }
-    const parsedInput = capability.inputSchema.safeParse(values);
-    if (!parsedInput.success) {
-      return { nodeId: node.id, status: "blocked", errorCode: "input_invalid" };
-    }
-    const inputHash = hashCanonical(parsedInput.data);
+    const resolved = resolveSimulationInputs(node, params, outputs);
+    if (!resolved.ok) return resolved;
+    const parsedInput = capability.inputSchema.safeParse(resolved.values);
+    if (!parsedInput.success) return blocked(node.id, "input_invalid");
+    return { ok: true, capability, values: parsedInput.data };
+  }
+
+  private async invokePreparedNode(
+    input: WorkflowSimulationInput,
+    node: CompiledWorkflowNode,
+    prepared: Extract<PreparedSimulationNode, { ok: true }>,
+    outputs: Map<string, unknown>,
+    startedAt: number,
+  ): Promise<WorkflowSimulationNodeResult> {
+    const { capability, values } = prepared;
+    const inputHash = hashCanonical(values);
     const idempotencyKey = simulationIdempotencyKey(
       input.auth.simulationId,
       input.plan.fingerprint,
@@ -162,7 +163,7 @@ export class WorkflowSimulationRunner {
           auth: input.auth,
           capability,
           mode,
-          values: parsedInput.data,
+          values,
           idempotencyKey,
         },
         timeoutMs,
@@ -189,6 +190,45 @@ export class WorkflowSimulationRunner {
         idempotencyKey,
       };
     }
+  }
+}
+
+type PreparedSimulationNode =
+  | { ok: true; capability: CapabilityDefinition; values: Record<string, unknown> }
+  | { ok: false; result: WorkflowSimulationNodeResult };
+
+function blocked(
+  nodeId: string,
+  errorCode: NonNullable<WorkflowSimulationNodeResult["errorCode"]>,
+  status: WorkflowSimulationNodeResult["status"] = "blocked",
+): Extract<PreparedSimulationNode, { ok: false }> {
+  return { ok: false, result: { nodeId, status, errorCode } };
+}
+
+function resolveSimulationCapability(
+  registry: CapabilityRegistry,
+  node: CompiledWorkflowNode,
+): CapabilityDefinition | null {
+  try {
+    const capability = registry.resolve(node.capability.id, node.capability.version);
+    assertCapabilityMatchesPlan(node, capability);
+    return capability;
+  } catch {
+    return null;
+  }
+}
+
+function resolveSimulationInputs(
+  node: CompiledWorkflowNode,
+  params: Readonly<Record<string, unknown>>,
+  outputs: ReadonlyMap<string, unknown>,
+): { ok: true; values: Record<string, unknown> } | Extract<PreparedSimulationNode, { ok: false }> {
+  try {
+    return { ok: true, values: resolveNodeInputs(node.inputs, params, outputs) };
+  } catch (error) {
+    return error instanceof MissingParameterError
+      ? blocked(node.id, "missing_parameter", "missing_data")
+      : blocked(node.id, "dependency_blocked");
   }
 }
 

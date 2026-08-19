@@ -8,9 +8,12 @@ import {
   type CapabilityDefinition,
   type CompiledWorkflowNode,
   type WorkflowInputBinding,
+  type WorkflowAdvanceDecision,
+  type WorkflowBlockReason,
   type WorkflowNodeRunState,
   type WorkflowRunEvent,
   type WorkflowRunEventDraft,
+  type WorkflowRunState,
   type WorkflowRunStatus,
 } from "@ka/domain";
 
@@ -56,6 +59,34 @@ const HASH = /^[a-f0-9]{64}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f-]{27}$/i;
 
 class InvocationTimeoutError extends Error {}
+
+type NormalizedAdvanceDecision = Exclude<WorkflowAdvanceDecision, { kind: "wait_for_running" }>;
+
+interface AdvanceDecisionInput {
+  snapshot: DurableWorkflowRunSnapshot;
+  auth: WorkflowRunAuthContext;
+  events: WorkflowRunEvent[];
+  state: WorkflowRunState;
+  decision: NormalizedAdvanceDecision;
+  now: string;
+  storedStatus: WorkflowRunStatus;
+}
+
+interface AdvanceDecisionOutcome {
+  storedStatus: WorkflowRunStatus;
+  effectDelta: number;
+  result?: WorkflowAdvanceResult;
+}
+
+type PreparedRunNode =
+  | {
+      ok: true;
+      capability: CapabilityDefinition;
+      values: Record<string, unknown>;
+      inputHash: string;
+      idempotencyKey: string;
+    }
+  | { ok: false; errorCode: string };
 
 export class DurableWorkflowRunHandler {
   private readonly maxSteps: number;
@@ -105,72 +136,82 @@ export class DurableWorkflowRunHandler {
 
     while (true) {
       const state = replayWorkflowRun(snapshot.plan, events);
-      if (state.status !== "queued") {
-        if (effects >= this.maxSteps) {
-          return { kind: "yielded", runStatus: "running", reason: "step_limit" };
-        }
-        if (this.clock().getTime() - startedAt >= this.maxWallTimeMs) {
-          return { kind: "yielded", runStatus: "running", reason: "time_limit" };
-        }
-      }
+      const budget = executionBudgetResult(
+        state.status,
+        effects,
+        this.maxSteps,
+        this.clock().getTime() - startedAt,
+        this.maxWallTimeMs,
+      );
+      if (budget) return budget;
       if (storedStatus === "queued" && state.status === "running") {
         storedStatus = await this.moveStatus(snapshot, storedStatus, "running");
       }
       const now = eventTime(this.clock(), events);
-      let decision = planWorkflowAdvance(state, now);
-      if (decision.kind === "wait_for_running") {
-        const recovering = Object.values(state.nodes)
-          .filter((node) => node.status === "running")
-          .sort((left, right) => left.nodeId.localeCompare(right.nodeId))[0];
-        if (!recovering) return { kind: "blocked", runStatus: state.status, reasonCode: "data_not_ready" };
-        decision = {
-          kind: "run_nodes",
-          nodes: [{ nodeId: recovering.nodeId, attempt: recovering.attempt, phase: "invoke" }],
-        };
-      }
+      const decision = normalizeAdvanceDecision(state, planWorkflowAdvance(state, now));
+      const outcome = await this.applyAdvanceDecision({
+        snapshot,
+        auth,
+        events,
+        state,
+        decision,
+        now,
+        storedStatus,
+      });
+      storedStatus = outcome.storedStatus;
+      effects += outcome.effectDelta;
+      if (outcome.result) return outcome.result;
+    }
+  }
 
-      if (decision.kind === "start_run") {
+  private async applyAdvanceDecision(input: AdvanceDecisionInput): Promise<AdvanceDecisionOutcome> {
+    const { snapshot, auth, events, state, decision, now } = input;
+    let { storedStatus } = input;
+    switch (decision.kind) {
+      case "start_run":
         await this.append(events, snapshot, "run_started", { kind: "run_started", at: now });
         storedStatus = await this.moveStatus(snapshot, storedStatus, "running");
-        continue;
-      }
-      if (decision.kind === "run_nodes") {
+        return { storedStatus, effectDelta: 0 };
+      case "run_nodes": {
         const next = decision.nodes[0];
-        if (!next) return { kind: "blocked", runStatus: state.status, reasonCode: "data_not_ready" };
+        if (!next) return blockedOutcome(storedStatus, state.status);
         await this.runNode(snapshot, auth, events, state.nodes[next.nodeId], next.attempt, next.phase);
-        effects += 1;
-        continue;
+        return { storedStatus, effectDelta: 1 };
       }
-      if (decision.kind === "finish_run") {
+      case "finish_run":
         await this.append(events, snapshot, "run_finished_succeeded", {
           kind: "run_finished",
           status: "succeeded",
           at: now,
         });
         storedStatus = await this.moveStatus(snapshot, storedStatus, "succeeded");
-        return { kind: "terminal", runStatus: "succeeded" };
-      }
-      if (decision.kind === "terminal") {
+        return terminalOutcome(storedStatus, "succeeded");
+      case "terminal":
         if (storedStatus !== decision.status) {
           storedStatus = await this.moveStatus(snapshot, storedStatus, decision.status);
         }
-        return { kind: "terminal", runStatus: decision.status };
-      }
-      if (decision.kind === "waiting_confirmation") {
+        return terminalOutcome(storedStatus, decision.status);
+      case "waiting_confirmation":
         storedStatus = await this.moveStatus(snapshot, storedStatus, "waiting_confirmation");
         return {
-          kind: "waiting_confirmation",
-          runStatus: "waiting_confirmation",
-          nodeId: decision.nodeId,
+          storedStatus,
+          effectDelta: 0,
+          result: { kind: "waiting_confirmation", runStatus: "waiting_confirmation", nodeId: decision.nodeId },
         };
-      }
-      if (decision.kind === "paused") {
-        return { kind: "paused", runStatus: "paused", reasonCode: decision.reasonCode };
-      }
-      if (decision.kind === "retry_wait") {
-        return { kind: "retry_wait", runStatus: "running", retryAt: decision.retryAt };
-      }
-      return { kind: "blocked", runStatus: state.status, reasonCode: decision.reasonCode };
+      case "paused":
+        return {
+          storedStatus,
+          effectDelta: 0,
+          result: { kind: "paused", runStatus: "paused", reasonCode: decision.reasonCode },
+        };
+      case "retry_wait":
+        return {
+          storedStatus,
+          effectDelta: 0,
+          result: { kind: "retry_wait", runStatus: "running", retryAt: decision.retryAt },
+        };
+      default:
+        return blockedOutcome(storedStatus, state.status, decision.reasonCode);
     }
   }
 
@@ -249,48 +290,20 @@ export class DurableWorkflowRunHandler {
   ): Promise<void> {
     const node = snapshot.plan.nodes[prior?.nodeId ?? ""];
     if (!node || !prior) throw new Error("compiled workflow node is unavailable");
-    let capability: CapabilityDefinition;
-    try {
-      capability = this.registry.resolve(node.capability.id, node.capability.version);
-      assertCapabilityMatchesPlan(node, capability);
-    } catch {
-      await this.startAndFail(snapshot, events, node, prior, attempt, "capability_unavailable");
+    const prepared = await this.prepareRunNode(snapshot, events, node, prior, attempt, phase);
+    if (!prepared.ok) {
+      await this.startAndFail(snapshot, events, node, prior, attempt, prepared.errorCode);
       return;
     }
 
-    let values: Record<string, unknown>;
-    try {
-      values = await resolveNodeInputs(snapshot, node.inputs, events, this.outputs);
-    } catch {
-      await this.startAndFail(snapshot, events, node, prior, attempt, "input_unavailable");
-      return;
-    }
-    const parsed = capability.inputSchema.safeParse(values);
-    if (!parsed.success) {
-      await this.startAndFail(snapshot, events, node, prior, attempt, "input_invalid");
-      return;
-    }
-    const inputHash = hashCanonical(parsed.data);
-    const idempotencyKey = workflowNodeIdempotencyKey({
-      runId: snapshot.runId,
-      nodeId: node.id,
-      attempt,
-      capabilityVersion: capability.version,
-      inputHash,
-    });
-    if ((prior.status === "running" || phase === "execute_confirmed") &&
-      (prior.inputHash !== inputHash || prior.idempotencyKey !== idempotencyKey)) {
-      await this.fail(events, snapshot, node.id, attempt, "input_changed");
-      return;
-    }
-
+    const { capability, values, inputHash, idempotencyKey } = prepared;
     const permission = await this.permissions.authorize({ auth, nodeId: node.id, capability });
     if (!permission.allowed) {
       await this.startAndFail(snapshot, events, node, prior, attempt, permission.reason);
       return;
     }
     if (phase === "execute_confirmed") {
-      await this.executeConfirmed(snapshot, auth, events, node, capability, prior, parsed.data, idempotencyKey);
+      await this.executeConfirmed(snapshot, auth, events, node, capability, prior, values, idempotencyKey);
       return;
     }
     if (prior.status !== "running") {
@@ -304,10 +317,39 @@ export class DurableWorkflowRunHandler {
       });
     }
     if (capability.mode === "execute") {
-      await this.previewAction(snapshot, auth, events, node, capability, attempt, parsed.data, idempotencyKey);
+      await this.previewAction(snapshot, auth, events, node, capability, attempt, values, idempotencyKey);
     } else {
-      await this.invokeCapability(snapshot, auth, events, node, capability, attempt, parsed.data, idempotencyKey);
+      await this.invokeCapability(snapshot, auth, events, node, capability, attempt, values, idempotencyKey);
     }
+  }
+
+  private async prepareRunNode(
+    snapshot: DurableWorkflowRunSnapshot,
+    events: readonly WorkflowRunEvent[],
+    node: CompiledWorkflowNode,
+    prior: WorkflowNodeRunState,
+    attempt: number,
+    phase: "invoke" | "execute_confirmed",
+  ): Promise<PreparedRunNode> {
+    const capability = resolveRunCapability(this.registry, node);
+    if (!capability) return { ok: false, errorCode: "capability_unavailable" };
+    const values = await resolveRunInputs(snapshot, node.inputs, events, this.outputs);
+    if (!values) return { ok: false, errorCode: "input_unavailable" };
+    const parsed = capability.inputSchema.safeParse(values);
+    if (!parsed.success) return { ok: false, errorCode: "input_invalid" };
+    const inputHash = hashCanonical(parsed.data);
+    const idempotencyKey = workflowNodeIdempotencyKey({
+      runId: snapshot.runId,
+      nodeId: node.id,
+      attempt,
+      capabilityVersion: capability.version,
+      inputHash,
+    });
+    const mustMatchPrior = prior.status === "running" || phase === "execute_confirmed";
+    if (mustMatchPrior && (prior.inputHash !== inputHash || prior.idempotencyKey !== idempotencyKey)) {
+      return { ok: false, errorCode: "input_changed" };
+    }
+    return { ok: true, capability, values: parsed.data, inputHash, idempotencyKey };
   }
 
   private async invokeCapability(
@@ -646,6 +688,53 @@ export class DurableWorkflowRunHandler {
   }
 }
 
+function normalizeAdvanceDecision(
+  state: WorkflowRunState,
+  decision: WorkflowAdvanceDecision,
+): NormalizedAdvanceDecision {
+  if (decision.kind !== "wait_for_running") return decision;
+  const recovering = Object.values(state.nodes)
+    .filter((node) => node.status === "running")
+    .sort((left, right) => left.nodeId.localeCompare(right.nodeId))[0];
+  if (!recovering) return { kind: "blocked", reasonCode: "data_not_ready" };
+  return {
+    kind: "run_nodes",
+    nodes: [{ nodeId: recovering.nodeId, attempt: recovering.attempt, phase: "invoke" }],
+  };
+}
+
+function executionBudgetResult(
+  status: WorkflowRunStatus,
+  effects: number,
+  maxSteps: number,
+  elapsedMs: number,
+  maxWallTimeMs: number,
+): WorkflowAdvanceResult | null {
+  if (status === "queued") return null;
+  if (effects >= maxSteps) return { kind: "yielded", runStatus: "running", reason: "step_limit" };
+  if (elapsedMs >= maxWallTimeMs) return { kind: "yielded", runStatus: "running", reason: "time_limit" };
+  return null;
+}
+
+function blockedOutcome(
+  storedStatus: WorkflowRunStatus,
+  runStatus: WorkflowRunStatus,
+  reasonCode: WorkflowBlockReason = "data_not_ready",
+): AdvanceDecisionOutcome {
+  return {
+    storedStatus,
+    effectDelta: 0,
+    result: { kind: "blocked", runStatus, reasonCode },
+  };
+}
+
+function terminalOutcome(
+  storedStatus: WorkflowRunStatus,
+  runStatus: "succeeded" | "failed" | "unknown" | "cancelled",
+): AdvanceDecisionOutcome {
+  return { storedStatus, effectDelta: 0, result: { kind: "terminal", runStatus } };
+}
+
 async function resolveNodeInputs(
   snapshot: DurableWorkflowRunSnapshot,
   bindings: Readonly<Record<string, WorkflowInputBinding>>,
@@ -656,25 +745,64 @@ async function resolveNodeInputs(
   const state = replayWorkflowRun(snapshot.plan, events);
   const result: Record<string, unknown> = {};
   for (const [key, binding] of Object.entries(bindings)) {
-    if (binding.source === "literal") {
-      result[key] = binding.value;
-    } else if (binding.source === "parameter") {
-      if (!(binding.name in params)) throw new Error("required workflow parameter is missing");
-      result[key] = params[binding.name];
-    } else {
-      const ref = state.nodes[binding.nodeId]?.outputRef;
-      if (!ref) throw new Error("workflow dependency output is unavailable");
-      let value = await outputs.get({ workspaceId: snapshot.workspaceId, ref });
-      for (const part of binding.path) {
-        if (value === null || typeof value !== "object" || !(part in value)) {
-          throw new Error("workflow dependency output path is unavailable");
-        }
-        value = (value as Record<string, unknown>)[part];
-      }
-      result[key] = value;
-    }
+    result[key] = await resolveRunBinding(snapshot.workspaceId, binding, params, state, outputs);
   }
   return result;
+}
+
+async function resolveRunBinding(
+  workspaceId: string,
+  binding: WorkflowInputBinding,
+  params: Readonly<Record<string, unknown>>,
+  state: WorkflowRunState,
+  outputs: WorkflowOutputStore,
+): Promise<unknown> {
+  if (binding.source === "literal") return binding.value;
+  if (binding.source === "parameter") {
+    if (!(binding.name in params)) throw new Error("required workflow parameter is missing");
+    return params[binding.name];
+  }
+  const ref = state.nodes[binding.nodeId]?.outputRef;
+  if (!ref) throw new Error("workflow dependency output is unavailable");
+  const output = await outputs.get({ workspaceId, ref });
+  return resolveOutputPath(output, binding.path);
+}
+
+function resolveOutputPath(output: unknown, path: readonly string[]): unknown {
+  let value = output;
+  for (const part of path) {
+    if (value === null || typeof value !== "object" || !(part in value)) {
+      throw new Error("workflow dependency output path is unavailable");
+    }
+    value = (value as Record<string, unknown>)[part];
+  }
+  return value;
+}
+
+function resolveRunCapability(
+  registry: CapabilityRegistry,
+  node: CompiledWorkflowNode,
+): CapabilityDefinition | null {
+  try {
+    const capability = registry.resolve(node.capability.id, node.capability.version);
+    assertCapabilityMatchesPlan(node, capability);
+    return capability;
+  } catch {
+    return null;
+  }
+}
+
+async function resolveRunInputs(
+  snapshot: DurableWorkflowRunSnapshot,
+  bindings: Readonly<Record<string, WorkflowInputBinding>>,
+  events: readonly WorkflowRunEvent[],
+  outputs: WorkflowOutputStore,
+): Promise<Record<string, unknown> | null> {
+  try {
+    return await resolveNodeInputs(snapshot, bindings, events, outputs);
+  } catch {
+    return null;
+  }
 }
 
 function resolveParameters(snapshot: DurableWorkflowRunSnapshot): Record<string, unknown> {

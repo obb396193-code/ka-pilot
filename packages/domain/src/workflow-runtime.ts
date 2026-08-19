@@ -240,19 +240,36 @@ function applyEvent(
   state: MutableRunState,
   event: WorkflowRunEvent,
 ): void {
-  if (event.kind === "run_started") return startRun(state);
-  if (event.kind === "run_paused") return pauseRun(state, event.reasonCode);
-  if (event.kind === "run_resumed") return resumeRun(state);
-  if (event.kind === "run_cancelled") return cancelRun(state);
-  if (event.kind === "run_finished") return finishRun(state, event.status);
+  if (!("nodeId" in event)) return applyRunEvent(state, event);
 
   const node = state.nodes[event.nodeId];
   const compiled = plan.nodes[event.nodeId];
   if (!node || !compiled) throw new Error(`Workflow event references unknown node ${event.nodeId}`);
+  applyNodeEvent(state, node, compiled.capability.maxAttempts, compiled.capability.mode, event);
+}
+
+function applyRunEvent(
+  state: MutableRunState,
+  event: Exclude<WorkflowRunEvent, { nodeId: string }>,
+): void {
+  if (event.kind === "run_started") return startRun(state);
+  if (event.kind === "run_paused") return pauseRun(state, event.reasonCode);
+  if (event.kind === "run_resumed") return resumeRun(state);
+  if (event.kind === "run_cancelled") return cancelRun(state);
+  finishRun(state, event.status);
+}
+
+function applyNodeEvent(
+  state: MutableRunState,
+  node: WorkflowNodeRunState,
+  maxAttempts: number,
+  mode: string,
+  event: Extract<WorkflowRunEvent, { nodeId: string }>,
+): void {
   if (event.kind === "node_started") return startNode(node, event);
   if (event.kind === "node_succeeded") return succeedNode(node, event);
-  if (event.kind === "node_retry_scheduled") return scheduleRetry(node, compiled.capability.maxAttempts, event);
-  if (event.kind === "node_waiting_confirmation") return waitForConfirmation(state, node, compiled.capability.mode, event);
+  if (event.kind === "node_retry_scheduled") return scheduleRetry(node, maxAttempts, event);
+  if (event.kind === "node_waiting_confirmation") return waitForConfirmation(state, node, mode, event);
   if (event.kind === "node_confirmation_received") return confirmNode(state, node, event);
   if (event.kind === "node_skipped") return skipNode(node, event.reasonCode);
   if (event.kind === "node_failed") return failNode(state, node, event);
@@ -472,23 +489,8 @@ export function planWorkflowAdvance(
   now: string,
 ): WorkflowAdvanceDecision {
   isoTimestampSchema.parse(now);
-  if (isTerminal(state.status)) {
-    return { kind: "terminal", status: state.status as "succeeded" | "failed" | "unknown" | "cancelled" };
-  }
-  if (state.status === "queued") return { kind: "start_run" };
-  if (state.status === "paused") {
-    return { kind: "paused", reasonCode: state.pauseReason ?? "manual_pause" };
-  }
-  if (state.status === "waiting_confirmation") {
-    const waiting = Object.values(state.nodes).find((node) => node.status === "waiting_confirmation");
-    if (!waiting?.confirmation) return { kind: "blocked", reasonCode: "waiting_confirmation" };
-    return {
-      kind: "waiting_confirmation",
-      nodeId: waiting.nodeId,
-      previewHash: waiting.confirmation.previewHash,
-      changesetId: waiting.confirmation.changesetId,
-    };
-  }
+  const runDecision = planRunStatusDecision(state);
+  if (runDecision) return runDecision;
 
   const runnable = Object.values(state.nodes)
     .filter((node) => node.status === "ready" || (node.status === "retry_wait" && (node.retryAt ?? "") <= now))
@@ -499,9 +501,7 @@ export function planWorkflowAdvance(
       phase: node.confirmation?.confirmedBy ? "execute_confirmed" as const : "invoke" as const,
     }));
   if (runnable.length > 0) return { kind: "run_nodes", nodes: runnable };
-  if (Object.values(state.nodes).some((node) => node.status === "running")) {
-    return { kind: "wait_for_running" };
-  }
+  if (Object.values(state.nodes).some((node) => node.status === "running")) return { kind: "wait_for_running" };
   const retryAt = Object.values(state.nodes)
     .filter((node) => node.status === "retry_wait" && node.retryAt)
     .map((node) => node.retryAt as string)
@@ -511,6 +511,25 @@ export function planWorkflowAdvance(
     return { kind: "finish_run", status: "succeeded" };
   }
   return { kind: "blocked", reasonCode: "data_not_ready" };
+}
+
+function planRunStatusDecision(state: WorkflowRunState): WorkflowAdvanceDecision | null {
+  if (isTerminal(state.status)) {
+    return { kind: "terminal", status: state.status as "succeeded" | "failed" | "unknown" | "cancelled" };
+  }
+  if (state.status === "queued") return { kind: "start_run" };
+  if (state.status === "paused") {
+    return { kind: "paused", reasonCode: state.pauseReason ?? "manual_pause" };
+  }
+  if (state.status !== "waiting_confirmation") return null;
+  const waiting = Object.values(state.nodes).find((node) => node.status === "waiting_confirmation");
+  if (!waiting?.confirmation) return { kind: "blocked", reasonCode: "waiting_confirmation" };
+  return {
+    kind: "waiting_confirmation",
+    nodeId: waiting.nodeId,
+    previewHash: waiting.confirmation.previewHash,
+    changesetId: waiting.confirmation.changesetId,
+  };
 }
 
 export interface NodeInvocationIdentity {

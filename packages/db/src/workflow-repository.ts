@@ -509,12 +509,29 @@ function assertJson(
   depth = 0,
 ): void {
   if (depth > 32) throw new Error(`${label} exceeds JSON depth limit`);
-  if (value === null || typeof value === "string" || typeof value === "boolean") return;
-  if (typeof value === "number") {
-    if (Number.isFinite(value)) return;
-    throw new Error(`${label} must contain finite JSON numbers`);
+  if (isJsonScalar(value, label)) return;
+  assertJsonContainer(value, label, seen, depth);
+}
+
+function isJsonScalar(
+  value: unknown,
+  label: string,
+): value is null | string | boolean | number {
+  if (value === null || typeof value === "string" || typeof value === "boolean") return true;
+  if (typeof value !== "number") return false;
+  if (!Number.isFinite(value)) throw new Error(`${label} must contain finite JSON numbers`);
+  return true;
+}
+
+function assertJsonContainer(
+  value: unknown,
+  label: string,
+  seen: Set<object>,
+  depth: number,
+): void {
+  if (value === null || typeof value !== "object") {
+    throw new Error(`${label} must be JSON serializable`);
   }
-  if (typeof value !== "object") throw new Error(`${label} must be JSON serializable`);
   if (seen.has(value)) throw new Error(`${label} must not contain cycles`);
   seen.add(value);
   if (Array.isArray(value)) {

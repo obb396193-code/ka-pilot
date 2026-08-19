@@ -323,20 +323,8 @@ function compileNode(
   parameters: readonly WorkflowParameter[],
   ancestors: ReadonlySet<string> | undefined,
 ): CompiledWorkflowNode {
-  if (node.kind !== capability.kind) {
-    throw new Error(`Workflow node ${node.id} kind does not match its capability`);
-  }
-  if (capability.mode === "execute" && node.config?.confirmation !== "required") {
-    throw new Error(`Workflow node ${node.id} execute capability requires confirmation`);
-  }
-  const timeoutMs = node.config?.timeoutMs ?? capability.timeoutMs;
-  const maxAttempts = node.config?.maxAttempts ?? capability.maxAttempts;
-  if (timeoutMs > capability.timeoutMs) {
-    throw new Error(`Workflow node ${node.id} timeout exceeds capability limit`);
-  }
-  if (maxAttempts > capability.maxAttempts) {
-    throw new Error(`Workflow node ${node.id} maxAttempts exceeds capability limit`);
-  }
+  assertNodeCapability(node, capability);
+  const { timeoutMs, maxAttempts } = resolveNodeLimits(node, capability);
   validateBindings(node, capability, new Set(parameters.map((item) => item.name)), ancestors);
   return Object.freeze({
     id: node.id,
@@ -356,6 +344,30 @@ function compileNode(
   });
 }
 
+function assertNodeCapability(node: ParsedNode, capability: CapabilityDefinition): void {
+  if (node.kind !== capability.kind) {
+    throw new Error(`Workflow node ${node.id} kind does not match its capability`);
+  }
+  if (capability.mode === "execute" && node.config?.confirmation !== "required") {
+    throw new Error(`Workflow node ${node.id} execute capability requires confirmation`);
+  }
+}
+
+function resolveNodeLimits(
+  node: ParsedNode,
+  capability: CapabilityDefinition,
+): { timeoutMs: number; maxAttempts: number } {
+  const timeoutMs = node.config?.timeoutMs ?? capability.timeoutMs;
+  const maxAttempts = node.config?.maxAttempts ?? capability.maxAttempts;
+  if (timeoutMs > capability.timeoutMs) {
+    throw new Error(`Workflow node ${node.id} timeout exceeds capability limit`);
+  }
+  if (maxAttempts > capability.maxAttempts) {
+    throw new Error(`Workflow node ${node.id} maxAttempts exceeds capability limit`);
+  }
+  return { timeoutMs, maxAttempts };
+}
+
 function validateBindings(
   node: ParsedNode,
   capability: CapabilityDefinition,
@@ -371,21 +383,36 @@ function validateBindings(
     if (!fieldSchema) throw new Error(`Unknown capability input ${key} on node ${node.id}`);
     const binding = node.inputs[key];
     if (!binding) continue;
-    if (binding.source === "parameter" && !parameters.has(binding.name)) {
-      throw new Error(`Unknown workflow parameter ${binding.name}`);
-    }
-    if (binding.source === "node_output") {
-      if (!ancestors?.has(binding.nodeId)) {
-        throw new Error(`Node output ${binding.nodeId} is not upstream of ${node.id}`);
-      }
-    }
-    if (binding.source === "literal") {
-      assertJsonValue(binding.value, `literal input ${node.id}.${key}`);
-      if (!fieldSchema.safeParse(binding.value).success) {
-        throw new Error(`Invalid literal for capability input ${node.id}.${key}`);
-      }
-    }
+    validateBinding(node.id, key, binding, fieldSchema, parameters, ancestors);
   }
+  validateRequiredBindings(node, shape);
+}
+
+function validateBinding(
+  nodeId: string,
+  key: string,
+  binding: WorkflowInputBinding,
+  fieldSchema: z.ZodType,
+  parameters: ReadonlySet<string>,
+  ancestors: ReadonlySet<string> | undefined,
+): void {
+  if (binding.source === "parameter" && !parameters.has(binding.name)) {
+    throw new Error(`Unknown workflow parameter ${binding.name}`);
+  }
+  if (binding.source === "node_output" && !ancestors?.has(binding.nodeId)) {
+    throw new Error(`Node output ${binding.nodeId} is not upstream of ${nodeId}`);
+  }
+  if (binding.source !== "literal") return;
+  assertJsonValue(binding.value, `literal input ${nodeId}.${key}`);
+  if (!fieldSchema.safeParse(binding.value).success) {
+    throw new Error(`Invalid literal for capability input ${nodeId}.${key}`);
+  }
+}
+
+function validateRequiredBindings(
+  node: ParsedNode,
+  shape: Record<string, z.ZodType>,
+): void {
   for (const [key, fieldSchema] of Object.entries(shape)) {
     if (!(key in node.inputs) && !fieldSchema.safeParse(undefined).success) {
       throw new Error(`Missing capability input ${key} on node ${node.id}`);
