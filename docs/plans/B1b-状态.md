@@ -17,7 +17,7 @@
 - [x] 独立 backfill_day handler
 - [x] canonical 批次留痕与质量阶段衔接
 - [x] 三类 data quality 检查与 outbound 告警
-- [ ] 10 账户 × 90 天 PostgreSQL 冒烟及证据
+- [x] 10 账户 × 90 天 PostgreSQL 冒烟及证据
 - [ ] 全量质量门禁与最终 SHA 回执
 
 ## 关键修正
@@ -36,3 +36,6 @@
 | 2026-08-19 | 90 天批次协调、单日回灌与完成后进度刷新 | ✅ DB 2 + Worker 9 tests；typecheck + lint |
 | 2026-08-19 | canonical 留痕、幂等 quality 衔接与历史零耗过滤 | ✅ DB 3 + Worker 4 tests；typecheck + lint |
 | 2026-08-19 | latest raw 总量对平、CPA 超 5 倍与连续两日缺数告警 | ✅ DB 4 + Worker 4 tests；typecheck + lint |
+| 2026-08-19 | 10 个脱敏假账户 × 90 天完整 PostgreSQL 冒烟 | ✅ canonical 900；quality 270/270；failed 0；游标到 2026-08-18 |
+
+证据：`docs/evidence/B1b-90天回灌日志.txt`、`docs/evidence/B1b-90天回灌.png`。全部为程序生成的脱敏假数据，不代表真实奇航接口已联通。
