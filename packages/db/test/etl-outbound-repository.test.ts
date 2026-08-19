@@ -9,6 +9,7 @@ const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
 
 describe("ETL run and outbound repositories", () => {
+  const workspaceId = "11111111-1111-4111-8111-111111111111";
   const pool = new Pool({ connectionString: databaseUrl });
   const etlRuns = new EtlRunRepository(pool);
   const outbound = new OutboundMessageRepository(pool);
@@ -26,29 +27,30 @@ describe("ETL run and outbound repositories", () => {
     const successId = await etlRuns.startRun(
       "33333333-3333-4333-8333-333333333333",
       "full",
-      { workspaceId: "w-1" },
+      { workspaceId },
     );
     await etlRuns.finishRun(successId, 17);
     const failureId = await etlRuns.startRun(
       "44444444-4444-4444-8444-444444444444",
       "incr",
-      { workspaceId: "w-1" },
+      { workspaceId },
     );
     await etlRuns.failRun(failureId, "account_realtime", "upstream timeout");
 
     const result = await pool.query<{
       id: string;
+      workspace_id: string;
       status: string;
       rows_ingested: number | null;
       step_failed: string | null;
       error_summary: string | null;
     }>(
-      `SELECT id, status, rows_ingested, step_failed, error_summary
+      `SELECT id, workspace_id, status, rows_ingested, step_failed, error_summary
        FROM etl_runs ORDER BY id`,
     );
 
     expect(result.rows).toEqual([
-      expect.objectContaining({ status: "done", rows_ingested: 17 }),
+      expect.objectContaining({ workspace_id: workspaceId, status: "done", rows_ingested: 17 }),
       expect.objectContaining({
         status: "failed",
         step_failed: "account_realtime",

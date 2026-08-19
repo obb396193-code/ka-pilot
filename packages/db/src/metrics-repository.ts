@@ -143,7 +143,7 @@ export class MetricsRepository {
          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
          $14, $15, $16, $17, $18, $19, $20, $21, $22, now()
        )
-       ON CONFLICT (account_id, ds) DO UPDATE SET
+       ON CONFLICT (workspace_id, account_id, ds) DO UPDATE SET
          cost = EXCLUDED.cost,
          exposure = EXCLUDED.exposure,
          click = EXCLUDED.click,
@@ -164,14 +164,11 @@ export class MetricsRepository {
          field_sources = EXCLUDED.field_sources,
          data_anomaly = EXCLUDED.data_anomaly,
          computed_at = now()
-       WHERE account_metrics_daily.workspace_id = EXCLUDED.workspace_id
        RETURNING account_id`,
       values,
     );
     if (result.rowCount !== 1) {
-      throw new Error(
-        `Canonical key collision across workspaces for account ${record.accountId} on ${record.ds}`,
-      );
+      throw new Error(`Failed to upsert canonical account ${record.accountId} on ${record.ds}`);
     }
   }
 }

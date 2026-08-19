@@ -8,11 +8,14 @@ export class EtlRunRepository {
     runKind: "full" | "incr",
     scope: Record<string, unknown>,
   ): Promise<number> {
+    const workspaceId =
+      typeof scope.workspaceId === "string" ? scope.workspaceId : null;
     const result = await this.pool.query<{ id: string }>(
-      `INSERT INTO etl_runs (job_id, run_kind, scope, started_at, status, rows_ingested)
-       VALUES ($1, $2, $3, now(), 'running', 0)
+      `INSERT INTO etl_runs (
+         workspace_id, job_id, run_kind, scope, started_at, status, rows_ingested
+       ) VALUES ($4, $1, $2, $3, now(), 'running', 0)
        RETURNING id`,
-      [jobId, runKind, scope],
+      [jobId, runKind, scope, workspaceId],
     );
     const id = result.rows[0]?.id;
     if (id === undefined) {
