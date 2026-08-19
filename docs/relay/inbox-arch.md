@@ -119,3 +119,14 @@ Codex 本批只实现内部状态、严格字符串快照比较、审计和端�
 建议优先级：1/2/6/7/8 是 Web/API 联调前硬门；3/4/5 是正式多租户上线硬门；9 等 B7 内网实证；10 随用量看板冻结。
 
 **B5 当前路线**：`docs/plans/2026-08-19-B5-Agent后端-design.md`。在 arch 裁决前只实现既有表可承载的 Repository、领域/Runtime/网关端口和 fake upstream 集成测试。
+
+**B5 内核交付回执（2026-08-19）**：功能审查 SHA `545637c`。已完成会话/context/memory/Run 仓储、诊断双产物与安全降级、Provider capability/router/fallback、短时凭证信封、Claude Agent SDK 安全运行时、本地协议 sidecar、Orchestrator 和 read/preview 原子能力端口。四包 271 默认测试 + 1 项 opt-in 真实 SDK 烟测；coverage 全部 >80%；typecheck/lint/audit 通过；复杂度 0 warning。报告：`docs/evidence/B5-代码质量报告.md`。
+
+**arch/Claude 必审红线**：
+
+1. 先裁决 P-008 的 session/run/event/provider credential/API DTO，再接 Web/SSE；当前 `createAgentBackend()` 不在 Worker main 自动启动。
+2. 审核 `tools:[]` + in-process MCP、auto-memory 关闭、12-key env、短时信封插件和 sidecar 进程边界。
+3. 确认 sidecar 仍属 Worker 部署单元内部 localhost，不新增公开服务。
+4. SDK 包为 Anthropic all-rights-reserved/受 Legal Agreements 约束；用它经协议转换驱动 IdeaLab 非 Claude 模型，在正式上线前需公司内部法务/采购确认，不以技术跑通代替许可。
+5. 生产必须补容器/微虚机沙箱、CPU/RAM/磁盘限额和 egress allowlist；本批只有应用层工具/环境/网络地址钳制。
+6. 真实 Provider、Secret 服务和 Multica/OS 未联调；fake 测试不可当生产验收。
