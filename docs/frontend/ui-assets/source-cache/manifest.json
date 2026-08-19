@@ -1,0 +1,2833 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-19T11:35:31.281Z",
+  "strategy": "curated-high-probability-public-source",
+  "runtime_installation": "none-cache-only",
+  "root_asset_count": 48,
+  "cached_entry_count": 89,
+  "cached_root_count": 48,
+  "cached_dependency_count": 41,
+  "cached_file_count": 93,
+  "by_source": {
+    "aceternity": {
+      "entries": 7,
+      "files": 7,
+      "roots": 6,
+      "dependencies": 1
+    },
+    "coss": {
+      "entries": 44,
+      "files": 44,
+      "roots": 12,
+      "dependencies": 32
+    },
+    "magic-ui": {
+      "entries": 7,
+      "files": 7,
+      "roots": 7,
+      "dependencies": 0
+    },
+    "react-bits": {
+      "entries": 7,
+      "files": 11,
+      "roots": 7,
+      "dependencies": 0
+    },
+    "reui": {
+      "entries": 16,
+      "files": 16,
+      "roots": 8,
+      "dependencies": 8
+    },
+    "tremor": {
+      "entries": 7,
+      "files": 7,
+      "roots": 7,
+      "dependencies": 0
+    },
+    "tweakcn": {
+      "entries": 1,
+      "files": 1,
+      "roots": 1,
+      "dependencies": 0
+    }
+  },
+  "failures": [],
+  "entries": [
+    {
+      "asset_id": "aceternity:background-beams-with-collision",
+      "source": "aceternity",
+      "upstream_name": "background-beams-with-collision",
+      "root_or_dependency": "root",
+      "source_url": "https://ui.aceternity.com/registry/background-beams-with-collision.json",
+      "resolved_url": "https://ui.aceternity.com/registry/background-beams-with-collision.json",
+      "license": "Aceternity free item; verify per-item and third-party terms",
+      "license_scope": "Free Registry item; verify any embedded third-party asset terms",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "9337d964f6d597c3fe8edd2f3a3b37afacd9ec3577ffcbc4a61aeb0e92eebe5f",
+      "hash_scope": "payload",
+      "local_path": "aceternity/background-beams-with-collision.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "components/ui/background-beams-with-collision.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "aceternity:bento-grid",
+      "source": "aceternity",
+      "upstream_name": "bento-grid",
+      "root_or_dependency": "root",
+      "source_url": "https://ui.aceternity.com/registry/bento-grid.json",
+      "resolved_url": "https://ui.aceternity.com/registry/bento-grid.json",
+      "license": "Aceternity free item; verify per-item and third-party terms",
+      "license_scope": "Free Registry item; verify any embedded third-party asset terms",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "9d988ea63b4209b65e386aa26dba37005d67667e122184c8905b6d31eda32482",
+      "hash_scope": "payload",
+      "local_path": "aceternity/bento-grid.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "components/ui/bento-grid.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "aceternity:canvas-reveal-effect",
+      "source": "aceternity",
+      "upstream_name": "canvas-reveal-effect",
+      "root_or_dependency": "dependency",
+      "source_url": "https://ui.aceternity.com/registry/canvas-reveal-effect.json",
+      "resolved_url": "https://ui.aceternity.com/registry/canvas-reveal-effect.json",
+      "license": "Aceternity free item; verify per-item and third-party terms",
+      "license_scope": "Free Registry item; verify any embedded third-party asset terms",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "68ce92e879c578275ef4d74c6b0fe312bc8c114d8d0fb25d709f3913e9cd85c4",
+      "hash_scope": "payload",
+      "local_path": "aceternity/canvas-reveal-effect.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "components/ui/canvas-reveal-effect.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "aceternity:card-spotlight"
+      ]
+    },
+    {
+      "asset_id": "aceternity:card-spotlight",
+      "source": "aceternity",
+      "upstream_name": "card-spotlight",
+      "root_or_dependency": "root",
+      "source_url": "https://ui.aceternity.com/registry/card-spotlight.json",
+      "resolved_url": "https://ui.aceternity.com/registry/card-spotlight.json",
+      "license": "Aceternity free item; verify per-item and third-party terms",
+      "license_scope": "Free Registry item; verify any embedded third-party asset terms",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "a46aab4f9f62bce0fb183635a03206be695f181d46a8c9b78ffed796906d5b6c",
+      "hash_scope": "payload",
+      "local_path": "aceternity/card-spotlight.json",
+      "files_in_payload": 2,
+      "payload_file_paths": [
+        "components/ui/canvas-reveal-effect.tsx",
+        "components/ui/card-spotlight.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "canvas-reveal-effect",
+          "url": "https://ui.aceternity.com/registry/canvas-reveal-effect.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "aceternity:spotlight-new",
+      "source": "aceternity",
+      "upstream_name": "spotlight-new",
+      "root_or_dependency": "root",
+      "source_url": "https://ui.aceternity.com/registry/spotlight-new.json",
+      "resolved_url": "https://ui.aceternity.com/registry/spotlight-new.json",
+      "license": "Aceternity free item; verify per-item and third-party terms",
+      "license_scope": "Free Registry item; verify any embedded third-party asset terms",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "df03e25ac5d808013c5287e52caaec424120f4a5010f886304d3f7084707c2ed",
+      "hash_scope": "payload",
+      "local_path": "aceternity/spotlight-new.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "components/ui/spotlight-new.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "aceternity:text-generate-effect",
+      "source": "aceternity",
+      "upstream_name": "text-generate-effect",
+      "root_or_dependency": "root",
+      "source_url": "https://ui.aceternity.com/registry/text-generate-effect.json",
+      "resolved_url": "https://ui.aceternity.com/registry/text-generate-effect.json",
+      "license": "Aceternity free item; verify per-item and third-party terms",
+      "license_scope": "Free Registry item; verify any embedded third-party asset terms",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "31f3b8c41b215c8e91a6068c03e63d18ba1b2f196d055827eec6b6cf593ced1f",
+      "hash_scope": "payload",
+      "local_path": "aceternity/text-generate-effect.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "components/ui/text-generate-effect.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "aceternity:timeline",
+      "source": "aceternity",
+      "upstream_name": "timeline",
+      "root_or_dependency": "root",
+      "source_url": "https://ui.aceternity.com/registry/timeline.json",
+      "resolved_url": "https://ui.aceternity.com/registry/timeline.json",
+      "license": "Aceternity free item; verify per-item and third-party terms",
+      "license_scope": "Free Registry item; verify any embedded third-party asset terms",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "32ec3327b9057d7f5dc75488d92a5cd1f233581437d58d55555ad260b771a9e0",
+      "hash_scope": "payload",
+      "local_path": "aceternity/timeline.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "components/ui/timeline.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:autocomplete",
+      "source": "coss",
+      "upstream_name": "autocomplete",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/autocomplete.json",
+      "resolved_url": "https://coss.com/ui/r/autocomplete.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "cb12993e367e4895813549b43422431ab6aaa89f4f9bde746852d11d1ab0de63",
+      "hash_scope": "payload",
+      "local_path": "coss/autocomplete.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/autocomplete.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "input",
+          "url": "https://coss.com/ui/r/input.json"
+        },
+        {
+          "name": "scroll-area",
+          "url": "https://coss.com/ui/r/scroll-area.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-command-2"
+      ]
+    },
+    {
+      "asset_id": "coss:avatar",
+      "source": "coss",
+      "upstream_name": "avatar",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/avatar.json",
+      "resolved_url": "https://coss.com/ui/r/avatar.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "cbdb88971a62b21f3be7a7c61e06dfd753b24eb358dfb8c30782e50090addae9",
+      "hash_scope": "payload",
+      "local_path": "coss/avatar.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/avatar.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-combobox-19"
+      ]
+    },
+    {
+      "asset_id": "coss:badge",
+      "source": "coss",
+      "upstream_name": "badge",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/badge.json",
+      "resolved_url": "https://coss.com/ui/r/badge.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "6447fc6679885712adfd66649ed70793baec9c086dc6b47b90c3e281b3d1cf45",
+      "hash_scope": "payload",
+      "local_path": "coss/badge.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/badge.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-combobox-19"
+      ]
+    },
+    {
+      "asset_id": "coss:button",
+      "source": "coss",
+      "upstream_name": "button",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/button.json",
+      "resolved_url": "https://coss.com/ui/r/button.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "ec0425ff3e8a3d1b74f8f7f98184fae522ad012a24593d99314148333571560c",
+      "hash_scope": "payload",
+      "local_path": "coss/button.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/button.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "spinner",
+          "url": "https://coss.com/ui/r/spinner.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-date-picker-2"
+      ]
+    },
+    {
+      "asset_id": "coss:calendar",
+      "source": "coss",
+      "upstream_name": "calendar",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/calendar.json",
+      "resolved_url": "https://coss.com/ui/r/calendar.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "89bf3cf8aa970fb0fc46f0aa16c6436e684668f065e3cf681a87350d01009162",
+      "hash_scope": "payload",
+      "local_path": "coss/calendar.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/calendar.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-date-picker-2"
+      ]
+    },
+    {
+      "asset_id": "coss:card",
+      "source": "coss",
+      "upstream_name": "card",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/card.json",
+      "resolved_url": "https://coss.com/ui/r/card.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "79fac2382b2163be07481e9ec2e42920ba7eedab69cebed903471695fe54c53d",
+      "hash_scope": "payload",
+      "local_path": "coss/card.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/card.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-table-8"
+      ]
+    },
+    {
+      "asset_id": "coss:checkbox",
+      "source": "coss",
+      "upstream_name": "checkbox",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/checkbox.json",
+      "resolved_url": "https://coss.com/ui/r/checkbox.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "1fe5b0cb7f79ef206b8a4bae042444aba5c66cd249128818deffdbc01b52bcae",
+      "hash_scope": "payload",
+      "local_path": "coss/checkbox.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/checkbox.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-table-8"
+      ]
+    },
+    {
+      "asset_id": "coss:checkbox-group",
+      "source": "coss",
+      "upstream_name": "checkbox-group",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/checkbox-group.json",
+      "resolved_url": "https://coss.com/ui/r/checkbox-group.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "3052be19ec09c3451f7c00c5d5f917cb387fd2ae5a0eff854d7a5f510bb8da96",
+      "hash_scope": "payload",
+      "local_path": "coss/checkbox-group.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/checkbox-group.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-switch-7"
+      ]
+    },
+    {
+      "asset_id": "coss:combobox",
+      "source": "coss",
+      "upstream_name": "combobox",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/combobox.json",
+      "resolved_url": "https://coss.com/ui/r/combobox.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "6450394eecabdb898dfb907a562343af42f3d61982ec662ed3573bf8fa1e613f",
+      "hash_scope": "payload",
+      "local_path": "coss/combobox.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/combobox.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "input",
+          "url": "https://coss.com/ui/r/input.json"
+        },
+        {
+          "name": "scroll-area",
+          "url": "https://coss.com/ui/r/scroll-area.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-combobox-19"
+      ]
+    },
+    {
+      "asset_id": "coss:command",
+      "source": "coss",
+      "upstream_name": "command",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/command.json",
+      "resolved_url": "https://coss.com/ui/r/command.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "a613b0e2cbc96385b3df844595db2a2318fda77895052b2de9cba85180a89464",
+      "hash_scope": "payload",
+      "local_path": "coss/command.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/command.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "autocomplete",
+          "url": "https://coss.com/ui/r/autocomplete.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-command-2"
+      ]
+    },
+    {
+      "asset_id": "coss:dialog",
+      "source": "coss",
+      "upstream_name": "dialog",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/dialog.json",
+      "resolved_url": "https://coss.com/ui/r/dialog.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "c234338b47dea3973152d1223293af5cc39b16441d0329da68e84efba9250838",
+      "hash_scope": "payload",
+      "local_path": "coss/dialog.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/dialog.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "scroll-area",
+          "url": "https://coss.com/ui/r/scroll-area.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-drawer-12"
+      ]
+    },
+    {
+      "asset_id": "coss:drawer",
+      "source": "coss",
+      "upstream_name": "drawer",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/drawer.json",
+      "resolved_url": "https://coss.com/ui/r/drawer.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "672bb0eca94da40c20843b9b3d8831234767471ca7fb8aa291f0e284ca45c986",
+      "hash_scope": "payload",
+      "local_path": "coss/drawer.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/drawer.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "scroll-area",
+          "url": "https://coss.com/ui/r/scroll-area.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-drawer-12"
+      ]
+    },
+    {
+      "asset_id": "coss:empty",
+      "source": "coss",
+      "upstream_name": "empty",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/empty.json",
+      "resolved_url": "https://coss.com/ui/r/empty.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "3f72196b7f77ace3122f479277c415d7d7dcaea0a364a4fd754209fa50244b5d",
+      "hash_scope": "payload",
+      "local_path": "coss/empty.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/empty.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-command-2"
+      ]
+    },
+    {
+      "asset_id": "coss:field",
+      "source": "coss",
+      "upstream_name": "field",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/field.json",
+      "resolved_url": "https://coss.com/ui/r/field.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "b0efc6f3d69fc935419ee4ebeb5ce79d4bf7ee7f1f797439ce8748240503fe94",
+      "hash_scope": "payload",
+      "local_path": "coss/field.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/field.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-field-9"
+      ]
+    },
+    {
+      "asset_id": "coss:form",
+      "source": "coss",
+      "upstream_name": "form",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/form.json",
+      "resolved_url": "https://coss.com/ui/r/form.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "88cd07481e6f1682b9459c9522d650b2d291dc2338d1693290334a8d8e095ce8",
+      "hash_scope": "payload",
+      "local_path": "coss/form.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/form.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-drawer-12"
+      ]
+    },
+    {
+      "asset_id": "coss:input",
+      "source": "coss",
+      "upstream_name": "input",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/input.json",
+      "resolved_url": "https://coss.com/ui/r/input.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "dd80584491e555f2ee4e81f4a30c996bc0a91858bca026d4f5fb459b54b87307",
+      "hash_scope": "payload",
+      "local_path": "coss/input.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/input.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-command-2"
+      ]
+    },
+    {
+      "asset_id": "coss:input-group",
+      "source": "coss",
+      "upstream_name": "input-group",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/input-group.json",
+      "resolved_url": "https://coss.com/ui/r/input-group.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "40971ef8038ef03256ae5fcae595873e521a419403129fa9ee0a298877ee97fe",
+      "hash_scope": "payload",
+      "local_path": "coss/input-group.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/input-group.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "input",
+          "url": "https://coss.com/ui/r/input.json"
+        },
+        {
+          "name": "textarea",
+          "url": "https://coss.com/ui/r/textarea.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-input-group-23"
+      ]
+    },
+    {
+      "asset_id": "coss:kbd",
+      "source": "coss",
+      "upstream_name": "kbd",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/kbd.json",
+      "resolved_url": "https://coss.com/ui/r/kbd.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "c8bac185ada7123916b9a2161a263c84c89654222c8a2fc6dcf8d0c36fdb3be2",
+      "hash_scope": "payload",
+      "local_path": "coss/kbd.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/kbd.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-command-2"
+      ]
+    },
+    {
+      "asset_id": "coss:label",
+      "source": "coss",
+      "upstream_name": "label",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/label.json",
+      "resolved_url": "https://coss.com/ui/r/label.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "88fb40fa51b80e2924882f35d5b144c95defd156921577e093342c211ab717aa",
+      "hash_scope": "payload",
+      "local_path": "coss/label.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/label.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-switch-7"
+      ]
+    },
+    {
+      "asset_id": "coss:number-field",
+      "source": "coss",
+      "upstream_name": "number-field",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/number-field.json",
+      "resolved_url": "https://coss.com/ui/r/number-field.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "2de96e15c631e70017b715b2a2554a7e2f7cdbbe20f86592a517644a0ed8dc77",
+      "hash_scope": "payload",
+      "local_path": "coss/number-field.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/number-field.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "label",
+          "url": "https://coss.com/ui/r/label.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-slider-22"
+      ]
+    },
+    {
+      "asset_id": "coss:p-calendar-13",
+      "source": "coss",
+      "upstream_name": "p-calendar-13",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-calendar-13.json",
+      "resolved_url": "https://coss.com/ui/r/p-calendar-13.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "790d6a65af5dc891b254aec9743340a1545ed8d61475bbdd0662f926f65397ae",
+      "hash_scope": "payload",
+      "local_path": "coss/p-calendar-13.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-calendar-13.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "calendar",
+          "url": "https://coss.com/ui/r/calendar.json"
+        },
+        {
+          "name": "combobox",
+          "url": "https://coss.com/ui/r/combobox.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:p-combobox-19",
+      "source": "coss",
+      "upstream_name": "p-combobox-19",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-combobox-19.json",
+      "resolved_url": "https://coss.com/ui/r/p-combobox-19.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "dab2bc984d3282ebb6ee55de09e62b1a2fcec3a2b166841211c614373ca0812d",
+      "hash_scope": "payload",
+      "local_path": "coss/p-combobox-19.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-combobox-19.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "avatar",
+          "url": "https://coss.com/ui/r/avatar.json"
+        },
+        {
+          "name": "badge",
+          "url": "https://coss.com/ui/r/badge.json"
+        },
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "combobox",
+          "url": "https://coss.com/ui/r/combobox.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:p-command-2",
+      "source": "coss",
+      "upstream_name": "p-command-2",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-command-2.json",
+      "resolved_url": "https://coss.com/ui/r/p-command-2.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "c57aa8fb32836953ba293ce5325145e33f67a365e3109388029d487319daae88",
+      "hash_scope": "payload",
+      "local_path": "coss/p-command-2.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-command-2.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "autocomplete",
+          "url": "https://coss.com/ui/r/autocomplete.json"
+        },
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "command",
+          "url": "https://coss.com/ui/r/command.json"
+        },
+        {
+          "name": "empty",
+          "url": "https://coss.com/ui/r/empty.json"
+        },
+        {
+          "name": "input",
+          "url": "https://coss.com/ui/r/input.json"
+        },
+        {
+          "name": "kbd",
+          "url": "https://coss.com/ui/r/kbd.json"
+        },
+        {
+          "name": "scroll-area",
+          "url": "https://coss.com/ui/r/scroll-area.json"
+        },
+        {
+          "name": "skeleton",
+          "url": "https://coss.com/ui/r/skeleton.json"
+        },
+        {
+          "name": "spinner",
+          "url": "https://coss.com/ui/r/spinner.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:p-date-picker-2",
+      "source": "coss",
+      "upstream_name": "p-date-picker-2",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-date-picker-2.json",
+      "resolved_url": "https://coss.com/ui/r/p-date-picker-2.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "f5c045026424ac74b7e81c5d655af62628ee02e559bf354162b77ce399b37a80",
+      "hash_scope": "payload",
+      "local_path": "coss/p-date-picker-2.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-date-picker-2.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "calendar",
+          "url": "https://coss.com/ui/r/calendar.json"
+        },
+        {
+          "name": "popover",
+          "url": "https://coss.com/ui/r/popover.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:p-date-picker-9",
+      "source": "coss",
+      "upstream_name": "p-date-picker-9",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-date-picker-9.json",
+      "resolved_url": "https://coss.com/ui/r/p-date-picker-9.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "b3a0458eeca487e2fd393fb70e4d0cc6d58d11869be8e7ea726eb4d9fed85738",
+      "hash_scope": "payload",
+      "local_path": "coss/p-date-picker-9.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-date-picker-9.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "calendar",
+          "url": "https://coss.com/ui/r/calendar.json"
+        },
+        {
+          "name": "popover",
+          "url": "https://coss.com/ui/r/popover.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:p-drawer-12",
+      "source": "coss",
+      "upstream_name": "p-drawer-12",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-drawer-12.json",
+      "resolved_url": "https://coss.com/ui/r/p-drawer-12.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "2e0bc1f863cab7630cd67a58698eb76fed1dc5d06c41234889750fc65c7a30e7",
+      "hash_scope": "payload",
+      "local_path": "coss/p-drawer-12.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-drawer-12.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "dialog",
+          "url": "https://coss.com/ui/r/dialog.json"
+        },
+        {
+          "name": "drawer",
+          "url": "https://coss.com/ui/r/drawer.json"
+        },
+        {
+          "name": "field",
+          "url": "https://coss.com/ui/r/field.json"
+        },
+        {
+          "name": "form",
+          "url": "https://coss.com/ui/r/form.json"
+        },
+        {
+          "name": "input",
+          "url": "https://coss.com/ui/r/input.json"
+        },
+        {
+          "name": "use-media-query",
+          "url": "https://coss.com/ui/r/use-media-query.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:p-empty-1",
+      "source": "coss",
+      "upstream_name": "p-empty-1",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-empty-1.json",
+      "resolved_url": "https://coss.com/ui/r/p-empty-1.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "08695e65ec6da8b68f2028a343d4c38c06cf43b6766b91957dde7ea69688518d",
+      "hash_scope": "payload",
+      "local_path": "coss/p-empty-1.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-empty-1.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "empty",
+          "url": "https://coss.com/ui/r/empty.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:p-field-9",
+      "source": "coss",
+      "upstream_name": "p-field-9",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-field-9.json",
+      "resolved_url": "https://coss.com/ui/r/p-field-9.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "885cdb6273f861da5ce5cc422a78534a68aaf698e716d85a1f5ae46c00fde923",
+      "hash_scope": "payload",
+      "local_path": "coss/p-field-9.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-field-9.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "combobox",
+          "url": "https://coss.com/ui/r/combobox.json"
+        },
+        {
+          "name": "field",
+          "url": "https://coss.com/ui/r/field.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:p-input-group-23",
+      "source": "coss",
+      "upstream_name": "p-input-group-23",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-input-group-23.json",
+      "resolved_url": "https://coss.com/ui/r/p-input-group-23.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "d74540b1b13bb8d3d74dc139292f7485cdfff1cfb98786ed1221e330e8fe7f03",
+      "hash_scope": "payload",
+      "local_path": "coss/p-input-group-23.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-input-group-23.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "input-group",
+          "url": "https://coss.com/ui/r/input-group.json"
+        },
+        {
+          "name": "tooltip",
+          "url": "https://coss.com/ui/r/tooltip.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:p-slider-22",
+      "source": "coss",
+      "upstream_name": "p-slider-22",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-slider-22.json",
+      "resolved_url": "https://coss.com/ui/r/p-slider-22.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "c3ebb2cfc9b3598928cd373a9ecfcdc5bd633881cace1e3cc89a24e4ca923b3b",
+      "hash_scope": "payload",
+      "local_path": "coss/p-slider-22.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-slider-22.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "input-group",
+          "url": "https://coss.com/ui/r/input-group.json"
+        },
+        {
+          "name": "number-field",
+          "url": "https://coss.com/ui/r/number-field.json"
+        },
+        {
+          "name": "slider",
+          "url": "https://coss.com/ui/r/slider.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:p-switch-7",
+      "source": "coss",
+      "upstream_name": "p-switch-7",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-switch-7.json",
+      "resolved_url": "https://coss.com/ui/r/p-switch-7.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "eca077bce2706a3273d7d5e922d199a9eedf2b6ff1181926fbb9cdce1f8a5c0d",
+      "hash_scope": "payload",
+      "local_path": "coss/p-switch-7.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-switch-7.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "checkbox",
+          "url": "https://coss.com/ui/r/checkbox.json"
+        },
+        {
+          "name": "checkbox-group",
+          "url": "https://coss.com/ui/r/checkbox-group.json"
+        },
+        {
+          "name": "combobox",
+          "url": "https://coss.com/ui/r/combobox.json"
+        },
+        {
+          "name": "label",
+          "url": "https://coss.com/ui/r/label.json"
+        },
+        {
+          "name": "popover",
+          "url": "https://coss.com/ui/r/popover.json"
+        },
+        {
+          "name": "select",
+          "url": "https://coss.com/ui/r/select.json"
+        },
+        {
+          "name": "switch",
+          "url": "https://coss.com/ui/r/switch.json"
+        },
+        {
+          "name": "tooltip",
+          "url": "https://coss.com/ui/r/tooltip.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:p-table-8",
+      "source": "coss",
+      "upstream_name": "p-table-8",
+      "root_or_dependency": "root",
+      "source_url": "https://coss.com/ui/r/p-table-8.json",
+      "resolved_url": "https://coss.com/ui/r/p-table-8.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "faf1430bcd93d2b2693c60d2dd406f945704e8dfc1208e71514c99be81a157af",
+      "hash_scope": "payload",
+      "local_path": "coss/p-table-8.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/particles/p-table-8.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "badge",
+          "url": "https://coss.com/ui/r/badge.json"
+        },
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        },
+        {
+          "name": "card",
+          "url": "https://coss.com/ui/r/card.json"
+        },
+        {
+          "name": "checkbox",
+          "url": "https://coss.com/ui/r/checkbox.json"
+        },
+        {
+          "name": "pagination",
+          "url": "https://coss.com/ui/r/pagination.json"
+        },
+        {
+          "name": "select",
+          "url": "https://coss.com/ui/r/select.json"
+        },
+        {
+          "name": "table",
+          "url": "https://coss.com/ui/r/table.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "coss:pagination",
+      "source": "coss",
+      "upstream_name": "pagination",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/pagination.json",
+      "resolved_url": "https://coss.com/ui/r/pagination.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "e0eb63bd9aa52b0448bc84bcf63c881f297d12e6e7cbad1a7048ced419e8e626",
+      "hash_scope": "payload",
+      "local_path": "coss/pagination.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/pagination.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "button",
+          "url": "https://coss.com/ui/r/button.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-table-8"
+      ]
+    },
+    {
+      "asset_id": "coss:popover",
+      "source": "coss",
+      "upstream_name": "popover",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/popover.json",
+      "resolved_url": "https://coss.com/ui/r/popover.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "8a71de3696b38f0dedbb1e1e0ac74ab7c106ea2c2abfca4130c74d62039b7903",
+      "hash_scope": "payload",
+      "local_path": "coss/popover.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/popover.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-date-picker-2"
+      ]
+    },
+    {
+      "asset_id": "coss:scroll-area",
+      "source": "coss",
+      "upstream_name": "scroll-area",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/scroll-area.json",
+      "resolved_url": "https://coss.com/ui/r/scroll-area.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "7dec1f81d43ad3d444d9622640fd6f4dba12bb2a913ab1847dfcbc07e388710c",
+      "hash_scope": "payload",
+      "local_path": "coss/scroll-area.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/scroll-area.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-command-2"
+      ]
+    },
+    {
+      "asset_id": "coss:select",
+      "source": "coss",
+      "upstream_name": "select",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/select.json",
+      "resolved_url": "https://coss.com/ui/r/select.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "96c0f2af83901ba856c933ba6cc3d2ae8e9d1e0ef15abb16390d20304c81441d",
+      "hash_scope": "payload",
+      "local_path": "coss/select.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/select.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-table-8"
+      ]
+    },
+    {
+      "asset_id": "coss:skeleton",
+      "source": "coss",
+      "upstream_name": "skeleton",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/skeleton.json",
+      "resolved_url": "https://coss.com/ui/r/skeleton.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "a44259c84ccddfeaa311aa4fb7d74217953f3dcc38702f56498566e7677de161",
+      "hash_scope": "payload",
+      "local_path": "coss/skeleton.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/skeleton.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-command-2"
+      ]
+    },
+    {
+      "asset_id": "coss:slider",
+      "source": "coss",
+      "upstream_name": "slider",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/slider.json",
+      "resolved_url": "https://coss.com/ui/r/slider.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "6362f5bfb69bcb80e8d5264f4bb5c1f033a654248300b7e0a177d22b8857c2c0",
+      "hash_scope": "payload",
+      "local_path": "coss/slider.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/slider.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-slider-22"
+      ]
+    },
+    {
+      "asset_id": "coss:spinner",
+      "source": "coss",
+      "upstream_name": "spinner",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/spinner.json",
+      "resolved_url": "https://coss.com/ui/r/spinner.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "5ad5667bc3e317a97f8aba803211958c1045e954c86f1110fc7325a2bc61bfad",
+      "hash_scope": "payload",
+      "local_path": "coss/spinner.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/spinner.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-command-2"
+      ]
+    },
+    {
+      "asset_id": "coss:switch",
+      "source": "coss",
+      "upstream_name": "switch",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/switch.json",
+      "resolved_url": "https://coss.com/ui/r/switch.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "4b803868161ff34db087eadc874128df1df043c3da24ecfd521bc30ca5052d99",
+      "hash_scope": "payload",
+      "local_path": "coss/switch.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/switch.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-switch-7"
+      ]
+    },
+    {
+      "asset_id": "coss:table",
+      "source": "coss",
+      "upstream_name": "table",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/table.json",
+      "resolved_url": "https://coss.com/ui/r/table.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "5597158df48fdab3e125f28b343a09acc9f2f8c737a8954ce6de7e681d842858",
+      "hash_scope": "payload",
+      "local_path": "coss/table.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/table.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-table-8"
+      ]
+    },
+    {
+      "asset_id": "coss:textarea",
+      "source": "coss",
+      "upstream_name": "textarea",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/textarea.json",
+      "resolved_url": "https://coss.com/ui/r/textarea.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "d19bba7b7d40252b6a7cc1178ae53392c62e4c5ea3e40d613027e0a3f7266016",
+      "hash_scope": "payload",
+      "local_path": "coss/textarea.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/textarea.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:input-group"
+      ]
+    },
+    {
+      "asset_id": "coss:tooltip",
+      "source": "coss",
+      "upstream_name": "tooltip",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/tooltip.json",
+      "resolved_url": "https://coss.com/ui/r/tooltip.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "e462c49b1b68fe0dcdfd3308418def8bf79a1403bd8712d2941e4761885aeadb",
+      "hash_scope": "payload",
+      "local_path": "coss/tooltip.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/ui/tooltip.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-input-group-23"
+      ]
+    },
+    {
+      "asset_id": "coss:use-media-query",
+      "source": "coss",
+      "upstream_name": "use-media-query",
+      "root_or_dependency": "dependency",
+      "source_url": "https://coss.com/ui/r/use-media-query.json",
+      "resolved_url": "https://coss.com/ui/r/use-media-query.json",
+      "license": "MIT when sourced from coss apps/ui; verify file path",
+      "license_scope": "MIT applies to coss apps/ui; root repository remains AGPL-3.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "c4c16f3bc82635a4a69b700c041776d999482a751d50552d79721d72b74b05b5",
+      "hash_scope": "payload",
+      "local_path": "coss/use-media-query.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/default/hooks/use-media-query.ts"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "coss:p-drawer-12"
+      ]
+    },
+    {
+      "asset_id": "magic-ui:animated-list",
+      "source": "magic-ui",
+      "upstream_name": "animated-list",
+      "root_or_dependency": "root",
+      "source_url": "https://magicui.design/r/animated-list.json",
+      "resolved_url": "https://magicui.design/r/animated-list.json",
+      "license": "MIT",
+      "license_scope": "Magic UI free Registry and repository under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "a95ae266e0eda12b8230724c690818a434d22bad0a2093a8197417cc997d298b",
+      "hash_scope": "payload",
+      "local_path": "magic-ui/animated-list.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/magicui/animated-list.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "magic-ui:bento-grid",
+      "source": "magic-ui",
+      "upstream_name": "bento-grid",
+      "root_or_dependency": "root",
+      "source_url": "https://magicui.design/r/bento-grid.json",
+      "resolved_url": "https://magicui.design/r/bento-grid.json",
+      "license": "MIT",
+      "license_scope": "Magic UI free Registry and repository under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "f43018c50fbc37f00856e3d2b5934af9bb56276d841151987a376b8caaf8c9ea",
+      "hash_scope": "payload",
+      "local_path": "magic-ui/bento-grid.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/magicui/bento-grid.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "magic-ui:blur-fade",
+      "source": "magic-ui",
+      "upstream_name": "blur-fade",
+      "root_or_dependency": "root",
+      "source_url": "https://magicui.design/r/blur-fade.json",
+      "resolved_url": "https://magicui.design/r/blur-fade.json",
+      "license": "MIT",
+      "license_scope": "Magic UI free Registry and repository under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "5161e38f05b5898ee42892daa9c133688f528b20817bb4c62ae79f68967a88ba",
+      "hash_scope": "payload",
+      "local_path": "magic-ui/blur-fade.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/magicui/blur-fade.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "magic-ui:border-beam",
+      "source": "magic-ui",
+      "upstream_name": "border-beam",
+      "root_or_dependency": "root",
+      "source_url": "https://magicui.design/r/border-beam.json",
+      "resolved_url": "https://magicui.design/r/border-beam.json",
+      "license": "MIT",
+      "license_scope": "Magic UI free Registry and repository under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "5ed4f31cf1aa2cf44b03d57058b6bc46ae2b100fef426c9bf7f5ee9663ecf66a",
+      "hash_scope": "payload",
+      "local_path": "magic-ui/border-beam.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/magicui/border-beam.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "magic-ui:magic-card",
+      "source": "magic-ui",
+      "upstream_name": "magic-card",
+      "root_or_dependency": "root",
+      "source_url": "https://magicui.design/r/magic-card.json",
+      "resolved_url": "https://magicui.design/r/magic-card.json",
+      "license": "MIT",
+      "license_scope": "Magic UI free Registry and repository under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "d487ae39795640bd3fbb467a5a98285a4c803036d71e5b1a9a06cb7d26c2a755",
+      "hash_scope": "payload",
+      "local_path": "magic-ui/magic-card.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/magicui/magic-card.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "magic-ui:marquee",
+      "source": "magic-ui",
+      "upstream_name": "marquee",
+      "root_or_dependency": "root",
+      "source_url": "https://magicui.design/r/marquee.json",
+      "resolved_url": "https://magicui.design/r/marquee.json",
+      "license": "MIT",
+      "license_scope": "Magic UI free Registry and repository under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "6378d12f6ac7b383bcbe25cbfcd21ad567d4726ff9979bf07991598a7bdef1ce",
+      "hash_scope": "payload",
+      "local_path": "magic-ui/marquee.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/magicui/marquee.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "magic-ui:number-ticker",
+      "source": "magic-ui",
+      "upstream_name": "number-ticker",
+      "root_or_dependency": "root",
+      "source_url": "https://magicui.design/r/number-ticker.json",
+      "resolved_url": "https://magicui.design/r/number-ticker.json",
+      "license": "MIT",
+      "license_scope": "Magic UI free Registry and repository under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "c4808c7218100b218df9ada8e5d1ff21ce99045b41468131534b3d8db61122a7",
+      "hash_scope": "payload",
+      "local_path": "magic-ui/number-ticker.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "registry/magicui/number-ticker.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "react-bits:AnimatedContent",
+      "source": "react-bits",
+      "upstream_name": "AnimatedContent",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/DavidHDev/react-bits/tree/main/src/content/Animations/AnimatedContent",
+      "resolved_url": "https://api.github.com/repos/DavidHDev/react-bits/git/trees/main?recursive=1",
+      "license": "MIT + Commons Clause; Pro is separate",
+      "license_scope": "MIT + Commons Clause; Pro is separate",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "github-tree",
+      "sha256": "b5b031519bb0b79cc286794604b1e906d88df3050b19ae947e0f1934997f2543",
+      "hash_scope": "file-set",
+      "local_path": "react-bits/AnimatedContent/",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "src/content/Animations/AnimatedContent/AnimatedContent.jsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "react-bits/AnimatedContent/AnimatedContent.jsx",
+          "source_path": "src/content/Animations/AnimatedContent/AnimatedContent.jsx",
+          "resolved_url": "https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/Animations/AnimatedContent/AnimatedContent.jsx",
+          "http_status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "sha256": "03877fc7d220cf80b637b8ac419caaf9850e6dca9e234cb76c226915be1b5dc6",
+          "bytes": 2489
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "react-bits:BlurText",
+      "source": "react-bits",
+      "upstream_name": "BlurText",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/DavidHDev/react-bits/tree/main/src/content/TextAnimations/BlurText",
+      "resolved_url": "https://api.github.com/repos/DavidHDev/react-bits/git/trees/main?recursive=1",
+      "license": "MIT + Commons Clause; Pro is separate",
+      "license_scope": "MIT + Commons Clause; Pro is separate",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "github-tree",
+      "sha256": "7a5da0961a81deac33837578fcb8b0b18ad325da8d4af2be20d4e044142bf1cd",
+      "hash_scope": "file-set",
+      "local_path": "react-bits/BlurText/",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "src/content/TextAnimations/BlurText/BlurText.jsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "react-bits/BlurText/BlurText.jsx",
+          "source_path": "src/content/TextAnimations/BlurText/BlurText.jsx",
+          "resolved_url": "https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/TextAnimations/BlurText/BlurText.jsx",
+          "http_status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "sha256": "acc6de3d323a3e961849b2b35967317ab2295fb28742090f75ea189a5aefa7be",
+          "bytes": 2876
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "react-bits:Counter",
+      "source": "react-bits",
+      "upstream_name": "Counter",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/DavidHDev/react-bits/tree/main/src/content/Components/Counter",
+      "resolved_url": "https://api.github.com/repos/DavidHDev/react-bits/git/trees/main?recursive=1",
+      "license": "MIT + Commons Clause; Pro is separate",
+      "license_scope": "MIT + Commons Clause; Pro is separate",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "github-tree",
+      "sha256": "da9bb42d46d9a159966cff8f95a3ac1df5fa5f0f19b7fffe2bc979483919ac19",
+      "hash_scope": "file-set",
+      "local_path": "react-bits/Counter/",
+      "files_in_payload": 2,
+      "payload_file_paths": [
+        "src/content/Components/Counter/Counter.css",
+        "src/content/Components/Counter/Counter.jsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "react-bits/Counter/Counter.css",
+          "source_path": "src/content/Components/Counter/Counter.css",
+          "resolved_url": "https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/Components/Counter/Counter.css",
+          "http_status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "sha256": "60fab391d42262f31bc52685686ff6cba19abe3304e4179cbc0e7e5be4db22a0",
+          "bytes": 586
+        },
+        {
+          "path": "react-bits/Counter/Counter.jsx",
+          "source_path": "src/content/Components/Counter/Counter.jsx",
+          "resolved_url": "https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/Components/Counter/Counter.jsx",
+          "http_status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "sha256": "6d4abe14c27485bd909989c8aba374a5dc88bfe7d2b79e439f738d5462b8cb0d",
+          "bytes": 3509
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "react-bits:FadeContent",
+      "source": "react-bits",
+      "upstream_name": "FadeContent",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/DavidHDev/react-bits/tree/main/src/content/Animations/FadeContent",
+      "resolved_url": "https://api.github.com/repos/DavidHDev/react-bits/git/trees/main?recursive=1",
+      "license": "MIT + Commons Clause; Pro is separate",
+      "license_scope": "MIT + Commons Clause; Pro is separate",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "github-tree",
+      "sha256": "c262d380ff208145e8f813b71614890b6534667143f5720b99971c0ff38b2ce1",
+      "hash_scope": "file-set",
+      "local_path": "react-bits/FadeContent/",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "src/content/Animations/FadeContent/FadeContent.jsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "react-bits/FadeContent/FadeContent.jsx",
+          "source_path": "src/content/Animations/FadeContent/FadeContent.jsx",
+          "resolved_url": "https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/Animations/FadeContent/FadeContent.jsx",
+          "http_status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "sha256": "d913f489f4b3892950deab0b20fe1901e68e4678d580f7a86cf6a53a46c4223d",
+          "bytes": 2240
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "react-bits:ShinyText",
+      "source": "react-bits",
+      "upstream_name": "ShinyText",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/DavidHDev/react-bits/tree/main/src/content/TextAnimations/ShinyText",
+      "resolved_url": "https://api.github.com/repos/DavidHDev/react-bits/git/trees/main?recursive=1",
+      "license": "MIT + Commons Clause; Pro is separate",
+      "license_scope": "MIT + Commons Clause; Pro is separate",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "github-tree",
+      "sha256": "85f9b64dd4f1e3172d1b2f7f656313eb43f9a46c163c092cbc515fdfad6356fd",
+      "hash_scope": "file-set",
+      "local_path": "react-bits/ShinyText/",
+      "files_in_payload": 2,
+      "payload_file_paths": [
+        "src/content/TextAnimations/ShinyText/ShinyText.css",
+        "src/content/TextAnimations/ShinyText/ShinyText.jsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "react-bits/ShinyText/ShinyText.css",
+          "source_path": "src/content/TextAnimations/ShinyText/ShinyText.css",
+          "resolved_url": "https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/TextAnimations/ShinyText/ShinyText.css",
+          "http_status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "sha256": "ddd3e35beb196f744606b5677830a35c86741b07d000543cf522667dbce74c80",
+          "bytes": 41
+        },
+        {
+          "path": "react-bits/ShinyText/ShinyText.jsx",
+          "source_path": "src/content/TextAnimations/ShinyText/ShinyText.jsx",
+          "resolved_url": "https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/TextAnimations/ShinyText/ShinyText.jsx",
+          "http_status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "sha256": "40db1d6de91972de7c78702c2b29f58ca9b2de22a07193fdec9683a16b4cb5dd",
+          "bytes": 3604
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "react-bits:SoftAurora",
+      "source": "react-bits",
+      "upstream_name": "SoftAurora",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/DavidHDev/react-bits/tree/main/src/content/Backgrounds/SoftAurora",
+      "resolved_url": "https://api.github.com/repos/DavidHDev/react-bits/git/trees/main?recursive=1",
+      "license": "MIT + Commons Clause; Pro is separate",
+      "license_scope": "MIT + Commons Clause; Pro is separate",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "github-tree",
+      "sha256": "ae2c8bb76dede12a8cdf61bc6545011d1b6623e8700b120cdbcae5b3612a2f72",
+      "hash_scope": "file-set",
+      "local_path": "react-bits/SoftAurora/",
+      "files_in_payload": 2,
+      "payload_file_paths": [
+        "src/content/Backgrounds/SoftAurora/SoftAurora.css",
+        "src/content/Backgrounds/SoftAurora/SoftAurora.jsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "react-bits/SoftAurora/SoftAurora.css",
+          "source_path": "src/content/Backgrounds/SoftAurora/SoftAurora.css",
+          "resolved_url": "https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/Backgrounds/SoftAurora/SoftAurora.css",
+          "http_status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "sha256": "091c4593c231d45c9e90aeb526af6bbb18f820063bb042e8c7d8d0006f97f174",
+          "bytes": 58
+        },
+        {
+          "path": "react-bits/SoftAurora/SoftAurora.jsx",
+          "source_path": "src/content/Backgrounds/SoftAurora/SoftAurora.jsx",
+          "resolved_url": "https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/Backgrounds/SoftAurora/SoftAurora.jsx",
+          "http_status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "sha256": "be2fcd2bed2679d149d85b04eb61c45d5c58c2a779098dd3f043c0b561adf14c",
+          "bytes": 8113
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "react-bits:SpotlightCard",
+      "source": "react-bits",
+      "upstream_name": "SpotlightCard",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/DavidHDev/react-bits/tree/main/src/content/Components/SpotlightCard",
+      "resolved_url": "https://api.github.com/repos/DavidHDev/react-bits/git/trees/main?recursive=1",
+      "license": "MIT + Commons Clause; Pro is separate",
+      "license_scope": "MIT + Commons Clause; Pro is separate",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "github-tree",
+      "sha256": "355c1c629d4876c3fd282bfe19d0a7832dfb26e0195254f348ef1ebe8ba2a2fe",
+      "hash_scope": "file-set",
+      "local_path": "react-bits/SpotlightCard/",
+      "files_in_payload": 2,
+      "payload_file_paths": [
+        "src/content/Components/SpotlightCard/SpotlightCard.css",
+        "src/content/Components/SpotlightCard/SpotlightCard.jsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "react-bits/SpotlightCard/SpotlightCard.css",
+          "source_path": "src/content/Components/SpotlightCard/SpotlightCard.css",
+          "resolved_url": "https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/Components/SpotlightCard/SpotlightCard.css",
+          "http_status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "sha256": "d2e0a07a5b9edf383c74d7a3ee93d9e0c6cdfff21c861c67dca1ce88902d08f9",
+          "bytes": 625
+        },
+        {
+          "path": "react-bits/SpotlightCard/SpotlightCard.jsx",
+          "source_path": "src/content/Components/SpotlightCard/SpotlightCard.jsx",
+          "resolved_url": "https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/Components/SpotlightCard/SpotlightCard.jsx",
+          "http_status": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "sha256": "f31b73f72852c45cb8430abb568fac23aae95c545369b04795c0f76792bfd779",
+          "bytes": 739
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "reui:badge",
+      "source": "reui",
+      "upstream_name": "badge",
+      "root_or_dependency": "dependency",
+      "source_url": "https://reui.io/r/base-nova/badge.json",
+      "resolved_url": "https://reui.io/r/base-nova/badge.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "43a95d2c2953c96b00094d8be0d9b81dba660f2c241e44d99bf50711ecbcc18c",
+      "hash_scope": "payload",
+      "local_path": "reui/badge.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "badge.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "reui:c-data-grid-20"
+      ]
+    },
+    {
+      "asset_id": "reui:c-calendar-29",
+      "source": "reui",
+      "upstream_name": "c-calendar-29",
+      "root_or_dependency": "root",
+      "source_url": "https://reui.io/r/base-nova/c-calendar-29.json",
+      "resolved_url": "https://reui.io/r/base-nova/c-calendar-29.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "5d373adea696b757822ee9807647ba87a8baf996b0996a81d1a634de3d737696",
+      "hash_scope": "payload",
+      "local_path": "reui/c-calendar-29.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "c-calendar-29.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "reui:c-combobox-25",
+      "source": "reui",
+      "upstream_name": "c-combobox-25",
+      "root_or_dependency": "root",
+      "source_url": "https://reui.io/r/base-nova/c-combobox-25.json",
+      "resolved_url": "https://reui.io/r/base-nova/c-combobox-25.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "75b9848c9e943e9ae3de3a9e25125d7fa4e6034f398aa688bbbe72b17fc6f1d9",
+      "hash_scope": "payload",
+      "local_path": "reui/c-combobox-25.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "c-combobox-25.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "reui:c-command-5",
+      "source": "reui",
+      "upstream_name": "c-command-5",
+      "root_or_dependency": "root",
+      "source_url": "https://reui.io/r/base-nova/c-command-5.json",
+      "resolved_url": "https://reui.io/r/base-nova/c-command-5.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "5a7205137aec6ca0cb5cdb87665a28e8ded3ffdf4e2e6cf4c397413629be5293",
+      "hash_scope": "payload",
+      "local_path": "reui/c-command-5.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "c-command-5.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "badge",
+          "url": "https://reui.io/r/base-nova/badge.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "reui:c-data-grid-20",
+      "source": "reui",
+      "upstream_name": "c-data-grid-20",
+      "root_or_dependency": "root",
+      "source_url": "https://reui.io/r/base-nova/c-data-grid-20.json",
+      "resolved_url": "https://reui.io/r/base-nova/c-data-grid-20.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "054c18dce3760e8c0801887703226ba91272097df2dfc16da3b7684472599587",
+      "hash_scope": "payload",
+      "local_path": "reui/c-data-grid-20.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "c-data-grid-20.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "badge",
+          "url": "https://reui.io/r/base-nova/badge.json"
+        },
+        {
+          "name": "data-grid",
+          "url": "https://reui.io/r/base-nova/data-grid.json"
+        },
+        {
+          "name": "data-grid-column-header",
+          "url": "https://reui.io/r/base-nova/data-grid-column-header.json"
+        },
+        {
+          "name": "data-grid-column-visibility",
+          "url": "https://reui.io/r/base-nova/data-grid-column-visibility.json"
+        },
+        {
+          "name": "data-grid-pagination",
+          "url": "https://reui.io/r/base-nova/data-grid-pagination.json"
+        },
+        {
+          "name": "data-grid-scroll-area",
+          "url": "https://reui.io/r/base-nova/data-grid-scroll-area.json"
+        },
+        {
+          "name": "data-grid-table",
+          "url": "https://reui.io/r/base-nova/data-grid-table.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "reui:c-data-grid-22",
+      "source": "reui",
+      "upstream_name": "c-data-grid-22",
+      "root_or_dependency": "root",
+      "source_url": "https://reui.io/r/base-nova/c-data-grid-22.json",
+      "resolved_url": "https://reui.io/r/base-nova/c-data-grid-22.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "f73c47fb78d09f197112c6d089270c06ba8ff677d566f48cf0ff348e68895e4b",
+      "hash_scope": "payload",
+      "local_path": "reui/c-data-grid-22.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "c-data-grid-22.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "badge",
+          "url": "https://reui.io/r/base-nova/badge.json"
+        },
+        {
+          "name": "data-grid",
+          "url": "https://reui.io/r/base-nova/data-grid.json"
+        },
+        {
+          "name": "data-grid-column-header",
+          "url": "https://reui.io/r/base-nova/data-grid-column-header.json"
+        },
+        {
+          "name": "data-grid-pagination",
+          "url": "https://reui.io/r/base-nova/data-grid-pagination.json"
+        },
+        {
+          "name": "data-grid-scroll-area",
+          "url": "https://reui.io/r/base-nova/data-grid-scroll-area.json"
+        },
+        {
+          "name": "data-grid-table",
+          "url": "https://reui.io/r/base-nova/data-grid-table.json"
+        },
+        {
+          "name": "use-copy-to-clipboard",
+          "url": "https://reui.io/r/base-nova/use-copy-to-clipboard.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "reui:c-data-grid-27",
+      "source": "reui",
+      "upstream_name": "c-data-grid-27",
+      "root_or_dependency": "root",
+      "source_url": "https://reui.io/r/base-nova/c-data-grid-27.json",
+      "resolved_url": "https://reui.io/r/base-nova/c-data-grid-27.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "25f49e8bf72d7d0c1de2e4afe22035b2017d469e59a1e16783c86e01cfcd1ca9",
+      "hash_scope": "payload",
+      "local_path": "reui/c-data-grid-27.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "c-data-grid-27.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "badge",
+          "url": "https://reui.io/r/base-nova/badge.json"
+        },
+        {
+          "name": "data-grid",
+          "url": "https://reui.io/r/base-nova/data-grid.json"
+        },
+        {
+          "name": "data-grid-column-header",
+          "url": "https://reui.io/r/base-nova/data-grid-column-header.json"
+        },
+        {
+          "name": "data-grid-scroll-area",
+          "url": "https://reui.io/r/base-nova/data-grid-scroll-area.json"
+        },
+        {
+          "name": "data-grid-table-virtual",
+          "url": "https://reui.io/r/base-nova/data-grid-table-virtual.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "reui:c-empty-12",
+      "source": "reui",
+      "upstream_name": "c-empty-12",
+      "root_or_dependency": "root",
+      "source_url": "https://reui.io/r/base-nova/c-empty-12.json",
+      "resolved_url": "https://reui.io/r/base-nova/c-empty-12.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "807aa48a2a09ef38418af8eb478a88749e70f8ea1c2af49e11f74b7240c9cfe3",
+      "hash_scope": "payload",
+      "local_path": "reui/c-empty-12.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "c-empty-12.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "reui:data-grid",
+      "source": "reui",
+      "upstream_name": "data-grid",
+      "root_or_dependency": "root",
+      "source_url": "https://reui.io/r/base-nova/data-grid.json",
+      "resolved_url": "https://reui.io/r/base-nova/data-grid.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "bb8817f0dcebe894a5be2c12ffe8f720daddab65ceeb61982580f04c274c0489",
+      "hash_scope": "payload",
+      "local_path": "reui/data-grid.json",
+      "files_in_payload": 10,
+      "payload_file_paths": [
+        "data-grid-column-filter.tsx",
+        "data-grid-column-header.tsx",
+        "data-grid-column-visibility.tsx",
+        "data-grid-pagination.tsx",
+        "data-grid-scroll-area.tsx",
+        "data-grid-table-dnd-rows.tsx",
+        "data-grid-table-dnd.tsx",
+        "data-grid-table-virtual.tsx",
+        "data-grid-table.tsx",
+        "data-grid.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "badge",
+          "url": "https://reui.io/r/base-nova/badge.json"
+        },
+        {
+          "name": "data-grid-table",
+          "url": "https://reui.io/r/base-nova/data-grid-table.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "reui:data-grid-column-header",
+      "source": "reui",
+      "upstream_name": "data-grid-column-header",
+      "root_or_dependency": "dependency",
+      "source_url": "https://reui.io/r/base-nova/data-grid-column-header.json",
+      "resolved_url": "https://reui.io/r/base-nova/data-grid-column-header.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "33f922465f345e76c810c67d2ab1f93ff82a1f5910eb769af82a05eb1dd4b36a",
+      "hash_scope": "payload",
+      "local_path": "reui/data-grid-column-header.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "data-grid-column-header.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "data-grid",
+          "url": "https://reui.io/r/base-nova/data-grid.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "reui:c-data-grid-20"
+      ]
+    },
+    {
+      "asset_id": "reui:data-grid-column-visibility",
+      "source": "reui",
+      "upstream_name": "data-grid-column-visibility",
+      "root_or_dependency": "dependency",
+      "source_url": "https://reui.io/r/base-nova/data-grid-column-visibility.json",
+      "resolved_url": "https://reui.io/r/base-nova/data-grid-column-visibility.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "febd00a17989f0a7e3afe7e762536bef69a5678c3eccca99d3a637e14ae41c1b",
+      "hash_scope": "payload",
+      "local_path": "reui/data-grid-column-visibility.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "data-grid-column-visibility.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "data-grid",
+          "url": "https://reui.io/r/base-nova/data-grid.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "reui:c-data-grid-20"
+      ]
+    },
+    {
+      "asset_id": "reui:data-grid-pagination",
+      "source": "reui",
+      "upstream_name": "data-grid-pagination",
+      "root_or_dependency": "dependency",
+      "source_url": "https://reui.io/r/base-nova/data-grid-pagination.json",
+      "resolved_url": "https://reui.io/r/base-nova/data-grid-pagination.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "7f49fdbd8309e67f695a56cb04eda397c2c6cbd1588a51f0f9690fa409f65f33",
+      "hash_scope": "payload",
+      "local_path": "reui/data-grid-pagination.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "data-grid-pagination.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "data-grid",
+          "url": "https://reui.io/r/base-nova/data-grid.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "reui:c-data-grid-20"
+      ]
+    },
+    {
+      "asset_id": "reui:data-grid-scroll-area",
+      "source": "reui",
+      "upstream_name": "data-grid-scroll-area",
+      "root_or_dependency": "dependency",
+      "source_url": "https://reui.io/r/base-nova/data-grid-scroll-area.json",
+      "resolved_url": "https://reui.io/r/base-nova/data-grid-scroll-area.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "6121df7e01e7d490e0a55b4c2040bc2cde279d7656b327e0abc3dd754c8ae364",
+      "hash_scope": "payload",
+      "local_path": "reui/data-grid-scroll-area.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "data-grid-scroll-area.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "data-grid",
+          "url": "https://reui.io/r/base-nova/data-grid.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "reui:c-data-grid-20"
+      ]
+    },
+    {
+      "asset_id": "reui:data-grid-table",
+      "source": "reui",
+      "upstream_name": "data-grid-table",
+      "root_or_dependency": "dependency",
+      "source_url": "https://reui.io/r/base-nova/data-grid-table.json",
+      "resolved_url": "https://reui.io/r/base-nova/data-grid-table.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "8e083cfafbe734052c9dbdd10b840fe86cc46111bb9f189211e864a97b73be72",
+      "hash_scope": "payload",
+      "local_path": "reui/data-grid-table.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "data-grid-table.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "data-grid",
+          "url": "https://reui.io/r/base-nova/data-grid.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "reui:c-data-grid-20"
+      ]
+    },
+    {
+      "asset_id": "reui:data-grid-table-virtual",
+      "source": "reui",
+      "upstream_name": "data-grid-table-virtual",
+      "root_or_dependency": "dependency",
+      "source_url": "https://reui.io/r/base-nova/data-grid-table-virtual.json",
+      "resolved_url": "https://reui.io/r/base-nova/data-grid-table-virtual.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "5a2c48d539641a47f024243b2283d0307d5b6328bf47dfa7dcfa63c7ff860d24",
+      "hash_scope": "payload",
+      "local_path": "reui/data-grid-table-virtual.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "data-grid-table-virtual.tsx"
+      ],
+      "registry_dependencies": [
+        {
+          "name": "data-grid",
+          "url": "https://reui.io/r/base-nova/data-grid.json"
+        },
+        {
+          "name": "data-grid-table",
+          "url": "https://reui.io/r/base-nova/data-grid-table.json"
+        }
+      ],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "reui:c-data-grid-27"
+      ]
+    },
+    {
+      "asset_id": "reui:use-copy-to-clipboard",
+      "source": "reui",
+      "upstream_name": "use-copy-to-clipboard",
+      "root_or_dependency": "dependency",
+      "source_url": "https://reui.io/r/base-nova/use-copy-to-clipboard.json",
+      "resolved_url": "https://reui.io/r/base-nova/use-copy-to-clipboard.json",
+      "license": "MIT",
+      "license_scope": "Public ReUI Registry source under MIT",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "sha256": "fd2a396af79c828b2a9ef7c0a0afb5444fc668c1d340ee51f35875048e37b651",
+      "hash_scope": "payload",
+      "local_path": "reui/use-copy-to-clipboard.json",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "use-copy-to-clipboard.ts"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [],
+      "cache_status": "cached",
+      "required_by": [
+        "reui:c-data-grid-22"
+      ]
+    },
+    {
+      "asset_id": "tremor:block/chart-compositions/chart-composition-01",
+      "source": "tremor",
+      "upstream_name": "block/chart-compositions/chart-composition-01",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/tremorlabs/tremor-blocks/blob/main/src/content/components/chart-compositions/chart-composition-01.tsx",
+      "resolved_url": "https://raw.githubusercontent.com/tremorlabs/tremor-blocks/main/src/content/components/chart-compositions/chart-composition-01.tsx",
+      "license": "MIT",
+      "license_scope": "MIT applies to tremorlabs/tremor-blocks",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "sha256": "507e9a80c69330184f8ec1407f6e367df71c32891f2f18b108a199d807b74cea",
+      "hash_scope": "payload",
+      "local_path": "tremor/block-chart-compositions-chart-composition-01/chart-composition-01.tsx",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "chart-composition-01.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "tremor/block-chart-compositions-chart-composition-01/chart-composition-01.tsx",
+          "source_path": "/tremorlabs/tremor-blocks/main/src/content/components/chart-compositions/chart-composition-01.tsx",
+          "sha256": "507e9a80c69330184f8ec1407f6e367df71c32891f2f18b108a199d807b74cea",
+          "bytes": 12714
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "tremor:block/empty-states/empty-state-01",
+      "source": "tremor",
+      "upstream_name": "block/empty-states/empty-state-01",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/tremorlabs/tremor-blocks/blob/main/src/content/components/empty-states/empty-state-01.tsx",
+      "resolved_url": "https://raw.githubusercontent.com/tremorlabs/tremor-blocks/main/src/content/components/empty-states/empty-state-01.tsx",
+      "license": "MIT",
+      "license_scope": "MIT applies to tremorlabs/tremor-blocks",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "sha256": "70b695bf936f89b8cc62b02edb76411dad1db4cc7dcd44985073cb1d5dc0c6ec",
+      "hash_scope": "payload",
+      "local_path": "tremor/block-empty-states-empty-state-01/empty-state-01.tsx",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "empty-state-01.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "tremor/block-empty-states-empty-state-01/empty-state-01.tsx",
+          "source_path": "/tremorlabs/tremor-blocks/main/src/content/components/empty-states/empty-state-01.tsx",
+          "sha256": "70b695bf936f89b8cc62b02edb76411dad1db4cc7dcd44985073cb1d5dc0c6ec",
+          "bytes": 1113
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "tremor:block/filterbar/filterbar-01",
+      "source": "tremor",
+      "upstream_name": "block/filterbar/filterbar-01",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/tremorlabs/tremor-blocks/blob/main/src/content/components/filterbar/filterbar-01.tsx",
+      "resolved_url": "https://raw.githubusercontent.com/tremorlabs/tremor-blocks/main/src/content/components/filterbar/filterbar-01.tsx",
+      "license": "MIT",
+      "license_scope": "MIT applies to tremorlabs/tremor-blocks",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "sha256": "139a442a351d38b8e51ebdd23913a60301e9ad2d371bb1fa67dcd18ade22e883",
+      "hash_scope": "payload",
+      "local_path": "tremor/block-filterbar-filterbar-01/filterbar-01.tsx",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "filterbar-01.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "tremor/block-filterbar-filterbar-01/filterbar-01.tsx",
+          "source_path": "/tremorlabs/tremor-blocks/main/src/content/components/filterbar/filterbar-01.tsx",
+          "sha256": "139a442a351d38b8e51ebdd23913a60301e9ad2d371bb1fa67dcd18ade22e883",
+          "bytes": 2743
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "tremor:block/kpi-cards/kpi-card-01",
+      "source": "tremor",
+      "upstream_name": "block/kpi-cards/kpi-card-01",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/tremorlabs/tremor-blocks/blob/main/src/content/components/kpi-cards/kpi-card-01.tsx",
+      "resolved_url": "https://raw.githubusercontent.com/tremorlabs/tremor-blocks/main/src/content/components/kpi-cards/kpi-card-01.tsx",
+      "license": "MIT",
+      "license_scope": "MIT applies to tremorlabs/tremor-blocks",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "sha256": "4023f20de8030f368ea7f4cb88955479e5c4c605e1d5e63c1b8c91f29b8d2a38",
+      "hash_scope": "payload",
+      "local_path": "tremor/block-kpi-cards-kpi-card-01/kpi-card-01.tsx",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "kpi-card-01.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "tremor/block-kpi-cards-kpi-card-01/kpi-card-01.tsx",
+          "source_path": "/tremorlabs/tremor-blocks/main/src/content/components/kpi-cards/kpi-card-01.tsx",
+          "sha256": "4023f20de8030f368ea7f4cb88955479e5c4c605e1d5e63c1b8c91f29b8d2a38",
+          "bytes": 1432
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "tremor:block/page-shells/page-shell-01",
+      "source": "tremor",
+      "upstream_name": "block/page-shells/page-shell-01",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/tremorlabs/tremor-blocks/blob/main/src/content/components/page-shells/page-shell-01.tsx",
+      "resolved_url": "https://raw.githubusercontent.com/tremorlabs/tremor-blocks/main/src/content/components/page-shells/page-shell-01.tsx",
+      "license": "MIT",
+      "license_scope": "MIT applies to tremorlabs/tremor-blocks",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "sha256": "4555810c27829941b26153f1422779df861e722932da38a87eb52c779ea1b1be",
+      "hash_scope": "payload",
+      "local_path": "tremor/block-page-shells-page-shell-01/page-shell-01.tsx",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "page-shell-01.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "tremor/block-page-shells-page-shell-01/page-shell-01.tsx",
+          "source_path": "/tremorlabs/tremor-blocks/main/src/content/components/page-shells/page-shell-01.tsx",
+          "sha256": "4555810c27829941b26153f1422779df861e722932da38a87eb52c779ea1b1be",
+          "bytes": 3569
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "tremor:block/table-actions/table-action-01",
+      "source": "tremor",
+      "upstream_name": "block/table-actions/table-action-01",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/tremorlabs/tremor-blocks/blob/main/src/content/components/table-actions/table-action-01.tsx",
+      "resolved_url": "https://raw.githubusercontent.com/tremorlabs/tremor-blocks/main/src/content/components/table-actions/table-action-01.tsx",
+      "license": "MIT",
+      "license_scope": "MIT applies to tremorlabs/tremor-blocks",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "sha256": "b1324b92a7264e3e51b7c3eeff740b37dddff7dafc6cb4b82314d0dc7f84a8f6",
+      "hash_scope": "payload",
+      "local_path": "tremor/block-table-actions-table-action-01/table-action-01.tsx",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "table-action-01.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "tremor/block-table-actions-table-action-01/table-action-01.tsx",
+          "source_path": "/tremorlabs/tremor-blocks/main/src/content/components/table-actions/table-action-01.tsx",
+          "sha256": "b1324b92a7264e3e51b7c3eeff740b37dddff7dafc6cb4b82314d0dc7f84a8f6",
+          "bytes": 7560
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "tremor:block/tables/table-01",
+      "source": "tremor",
+      "upstream_name": "block/tables/table-01",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/tremorlabs/tremor-blocks/blob/main/src/content/components/tables/table-01.tsx",
+      "resolved_url": "https://raw.githubusercontent.com/tremorlabs/tremor-blocks/main/src/content/components/tables/table-01.tsx",
+      "license": "MIT",
+      "license_scope": "MIT applies to tremorlabs/tremor-blocks",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "sha256": "bb97fc6a2af65017560c9fb780053f111bbfb8387a93bf45fecae05645775ea2",
+      "hash_scope": "payload",
+      "local_path": "tremor/block-tables-table-01/table-01.tsx",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "table-01.tsx"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "tremor/block-tables-table-01/table-01.tsx",
+          "source_path": "/tremorlabs/tremor-blocks/main/src/content/components/tables/table-01.tsx",
+          "sha256": "bb97fc6a2af65017560c9fb780053f111bbfb8387a93bf45fecae05645775ea2",
+          "bytes": 3333
+        }
+      ],
+      "cache_status": "cached"
+    },
+    {
+      "asset_id": "tweakcn:modern-minimal",
+      "source": "tweakcn",
+      "upstream_name": "modern-minimal",
+      "root_or_dependency": "root",
+      "source_url": "https://github.com/jnsahaj/tweakcn/blob/main/utils/theme-presets.ts",
+      "resolved_url": "https://raw.githubusercontent.com/jnsahaj/tweakcn/main/utils/theme-presets.ts",
+      "license": "Apache-2.0",
+      "license_scope": "Apache-2.0",
+      "fetched_at": "2026-08-19T11:35:31.281Z",
+      "http_status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "sha256": "d333858a5a4f1e2fd615f1b73709f552e5a84c12882196456dfc48e1f09376a8",
+      "hash_scope": "payload",
+      "local_path": "tweakcn/modern-minimal/theme-presets.ts",
+      "files_in_payload": 1,
+      "payload_file_paths": [
+        "theme-presets.ts"
+      ],
+      "registry_dependencies": [],
+      "cached_files": [
+        {
+          "path": "tweakcn/modern-minimal/theme-presets.ts",
+          "source_path": "/jnsahaj/tweakcn/main/utils/theme-presets.ts",
+          "sha256": "d333858a5a4f1e2fd615f1b73709f552e5a84c12882196456dfc48e1f09376a8",
+          "bytes": 114849
+        }
+      ],
+      "cache_status": "cached"
+    }
+  ]
+}

@@ -9,6 +9,7 @@ const REPOSITORY_ROOT = new URL("../../", WEB_ROOT);
 const CATALOG_ROOT = new URL("docs/frontend/ui-assets/catalogs/", REPOSITORY_ROOT);
 const JSON_OUTPUT = new URL("docs/frontend/ui-assets/source-download-manifest.json", REPOSITORY_ROOT);
 const MARKDOWN_OUTPUT = new URL("docs/frontend/ui-assets/source-download-status.md", REPOSITORY_ROOT);
+const STARTER_CACHE_MANIFEST = new URL("docs/frontend/ui-assets/source-cache/manifest.json", REPOSITORY_ROOT);
 
 const THIRD_PARTY_DIRECTORIES = ["coss", "reui", "tremor", "aceternity", "magic-ui", "react-bits"];
 const RELEVANT_PACKAGES = [
@@ -34,6 +35,14 @@ export function buildRuntimeManifest({
   sourceTexts,
   thirdPartyFiles,
   shadcnNames,
+  starterCacheManifest = {
+    cached_entry_count: 0,
+    cached_root_count: 0,
+    cached_dependency_count: 0,
+    cached_file_count: 0,
+    failures: [],
+    by_source: {},
+  },
 }) {
   const allSource = sourceTexts.join("\n");
   const dependencies = { ...(packageJson.dependencies ?? {}), ...(packageJson.devDependencies ?? {}) };
@@ -74,6 +83,11 @@ export function buildRuntimeManifest({
       provenance_inferred_files: components.filter((item) => item.provenance_status.startsWith("inferred")).length,
       selected_third_party_source_files: thirdPartySourceFileCount,
       fully_cached_catalog_items: catalogIndex.counts.by_source_cache_status["source-cached"] ?? 0,
+      starter_cached_entries: starterCacheManifest.cached_entry_count ?? 0,
+      starter_cached_roots: starterCacheManifest.cached_root_count ?? 0,
+      starter_cached_dependencies: starterCacheManifest.cached_dependency_count ?? 0,
+      starter_cached_files: starterCacheManifest.cached_file_count ?? 0,
+      starter_cache_failures: starterCacheManifest.failures?.length ?? 0,
     },
     components_config: {
       style: componentsConfig.style ?? "",
@@ -86,10 +100,22 @@ export function buildRuntimeManifest({
     selected_third_party_directories: Object.fromEntries(
       THIRD_PARTY_DIRECTORIES.map((name) => [name, thirdPartyFiles[name] ?? []]),
     ),
+    isolated_starter_cache: {
+      runtime_imported: false,
+      entries: starterCacheManifest.cached_entry_count ?? 0,
+      roots: starterCacheManifest.cached_root_count ?? 0,
+      dependencies: starterCacheManifest.cached_dependency_count ?? 0,
+      source_files: starterCacheManifest.cached_file_count ?? 0,
+      failures: starterCacheManifest.failures ?? [],
+      by_source: starterCacheManifest.by_source ?? {},
+      manifest_path: "docs/frontend/ui-assets/source-cache/manifest.json",
+      note: "Official public source is cached with hashes for later selection; nothing in this cache is installed into apps/web.",
+    },
     conclusion: {
       catalog_source_downloaded: false,
       shadcn_style_local_source_present: components.length > 0,
       third_party_selected_source_present: thirdPartySourceFileCount > 0,
+      starter_source_cache_present: (starterCacheManifest.cached_entry_count ?? 0) > 0,
       next_rule: "When an asset is approved, inspect/download its exact official item payload, store the upstream URL/ref/hash/local path, then mark it vendored or adapted.",
     },
   };
@@ -108,14 +134,27 @@ export function runtimeManifestMarkdown(manifest) {
     `- 运行仓已有 ${summary.runtime_local_ui_source_files} 个 \`components/ui/*.tsx\` 本地源码文件，其中 ${summary.runtime_imported_local_ui_files} 个被当前源码显式引用。`,
     `- 这些文件的 shadcn 来源只能由 \`components.json.style=${manifest.components_config.style}\` 与路径推断；精确 upstream ref/hash 已验证 0 个。`,
     `- coss、ReUI、Tremor、Aceternity、Magic UI、React Bits 的来源隔离目录当前合计 ${summary.selected_third_party_source_files} 个源码文件。`,
+    `- 独立 starter cache 已保存 ${summary.starter_cached_roots} 个根资产、${summary.starter_cached_entries} 个缓存条目、${summary.starter_cached_files} 份源码文件；失败 ${summary.starter_cache_failures}。这些文件尚未安装进运行仓。`,
     "",
-    "所以不能说“所有目录源码已下载”。准确说法是：目录全量可查；现有 shadcn 风格本地源码可运行但 provenance 待补；已选第三方源码尚未接入，批准使用时再从官方 item 下载并登记 hash。",
+    "所以不能说“所有目录源码已下载”。准确说法是：目录全量可查；高频公开源码已在隔离缓存中可复核；现有 shadcn 风格本地源码可运行但 provenance 待补；第三方缓存尚未接入运行仓。",
+    "",
+    "## 隔离 Starter Cache",
+    "",
+    "| 来源 | 根资产 | 依赖 | 缓存条目 | 源码文件 |",
+    "|---|---:|---:|---:|---:|",
+  ];
+  for (const [source, counts] of Object.entries(manifest.isolated_starter_cache.by_source)) {
+    lines.push(`| ${source} | ${counts.roots} | ${counts.dependencies} | ${counts.entries} | ${counts.files} |`);
+  }
+  lines.push(
+    "",
+    "缓存位置：`docs/frontend/ui-assets/source-cache/`。这里的 Registry JSON 包含实际 `files[].content`；GitHub 资产保存 raw 文件并逐文件记录 SHA-256。缓存不等于选型拍板或运行时接入。",
     "",
     "## 本地 UI 源码",
     "",
     "| 文件 | 当前引用数 | 目录映射 | provenance |",
     "|---|---:|---|---|",
-  ];
+  );
   for (const item of manifest.local_ui_components) {
     lines.push(`| \`${item.path}\` | ${item.runtime_import_count} | ${item.catalog_identity || "未映射"} | ${item.provenance_status} |`);
   }
@@ -128,7 +167,6 @@ export function runtimeManifestMarkdown(manifest) {
     "3. 只下载被批准的 item 与必要依赖，不镜像整个付费包。",
     "4. 在 manifest 登记官方 URL、variant、HTTP/访问状态、源码 SHA-256、本地路径和改动说明。",
     "5. 未登记 exact ref/hash 的本地文件只能标 inferred，不能标 verified。",
-    "",
   );
   return `${lines.join("\n")}\n`;
 }
@@ -157,11 +195,19 @@ async function atomicWrite(url, value) {
 }
 
 async function buildFromWorkspace() {
-  const [catalogIndex, shadcnCatalog, componentsConfig, packageJson] = await Promise.all([
+  const [catalogIndex, shadcnCatalog, componentsConfig, packageJson, starterCacheManifest] = await Promise.all([
     readFile(new URL("index.json", CATALOG_ROOT), "utf8").then(JSON.parse),
     readFile(new URL("shadcn.json", CATALOG_ROOT), "utf8").then(JSON.parse),
     readFile(new URL("components.json", WEB_ROOT), "utf8").then(JSON.parse),
     readFile(new URL("package.json", WEB_ROOT), "utf8").then(JSON.parse),
+    readFile(STARTER_CACHE_MANIFEST, "utf8").then(JSON.parse).catch(() => ({
+      cached_entry_count: 0,
+      cached_root_count: 0,
+      cached_dependency_count: 0,
+      cached_file_count: 0,
+      failures: [],
+      by_source: {},
+    })),
   ]);
   const componentUrls = await listFiles(new URL("components/ui/", WEB_ROOT), (name) => name.endsWith(".tsx"));
   const componentFiles = await Promise.all(componentUrls.map(async (url) => {
@@ -191,6 +237,7 @@ async function buildFromWorkspace() {
     sourceTexts,
     thirdPartyFiles,
     shadcnNames: new Set(shadcnCatalog.items.map((item) => item.upstream_name)),
+    starterCacheManifest,
   });
 }
 

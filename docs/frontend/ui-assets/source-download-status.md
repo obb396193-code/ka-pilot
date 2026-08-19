@@ -8,8 +8,23 @@
 - 运行仓已有 22 个 `components/ui/*.tsx` 本地源码文件，其中 20 个被当前源码显式引用。
 - 这些文件的 shadcn 来源只能由 `components.json.style=new-york-v4` 与路径推断；精确 upstream ref/hash 已验证 0 个。
 - coss、ReUI、Tremor、Aceternity、Magic UI、React Bits 的来源隔离目录当前合计 0 个源码文件。
+- 独立 starter cache 已保存 48 个根资产、89 个缓存条目、93 份源码文件；失败 0。这些文件尚未安装进运行仓。
 
-所以不能说“所有目录源码已下载”。准确说法是：目录全量可查；现有 shadcn 风格本地源码可运行但 provenance 待补；已选第三方源码尚未接入，批准使用时再从官方 item 下载并登记 hash。
+所以不能说“所有目录源码已下载”。准确说法是：目录全量可查；高频公开源码已在隔离缓存中可复核；现有 shadcn 风格本地源码可运行但 provenance 待补；第三方缓存尚未接入运行仓。
+
+## 隔离 Starter Cache
+
+| 来源 | 根资产 | 依赖 | 缓存条目 | 源码文件 |
+|---|---:|---:|---:|---:|
+| aceternity | 6 | 1 | 7 | 7 |
+| coss | 12 | 32 | 44 | 44 |
+| magic-ui | 7 | 0 | 7 | 7 |
+| react-bits | 7 | 0 | 7 | 11 |
+| reui | 8 | 8 | 16 | 16 |
+| tremor | 7 | 0 | 7 | 7 |
+| tweakcn | 1 | 0 | 1 | 1 |
+
+缓存位置：`docs/frontend/ui-assets/source-cache/`。这里的 Registry JSON 包含实际 `files[].content`；GitHub 资产保存 raw 文件并逐文件记录 SHA-256。缓存不等于选型拍板或运行时接入。
 
 ## 本地 UI 源码
 
