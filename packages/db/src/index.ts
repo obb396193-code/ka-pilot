@@ -12,3 +12,4 @@ export * from "./data-quality-repository.js";
 export * from "./semantic-query-repository.js";
 export * from "./semantic-query-types.js";
 export * from "./work-item-repository.js";
+export * from "./changeset-repository.js";
