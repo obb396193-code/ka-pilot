@@ -35,80 +35,80 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "张三",
+    email: "zhangsan@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: "工作台",
       url: "#",
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
+      title: "生命周期",
       url: "#",
       icon: IconListDetails,
     },
     {
-      title: "Analytics",
+      title: "数据分析",
       url: "#",
       icon: IconChartBar,
     },
     {
-      title: "Projects",
+      title: "项目",
       url: "#",
       icon: IconFolder,
     },
     {
-      title: "Team",
+      title: "团队",
       url: "#",
       icon: IconUsers,
     },
   ],
   navClouds: [
     {
-      title: "Capture",
+      title: "捕获",
       icon: IconCamera,
       isActive: true,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "活跃提案",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "已归档",
           url: "#",
         },
       ],
     },
     {
-      title: "Proposal",
+      title: "提案",
       icon: IconFileDescription,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "活跃提案",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "已归档",
           url: "#",
         },
       ],
     },
     {
-      title: "Prompts",
+      title: "提示词",
       icon: IconFileAi,
       url: "#",
       items: [
         {
-          title: "Active Proposals",
+          title: "活跃提案",
           url: "#",
         },
         {
-          title: "Archived",
+          title: "已归档",
           url: "#",
         },
       ],
@@ -116,34 +116,34 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Settings",
+      title: "设置",
       url: "#",
       icon: IconSettings,
     },
     {
-      title: "Get Help",
+      title: "帮助",
       url: "#",
       icon: IconHelp,
     },
     {
-      title: "Search",
+      title: "搜索",
       url: "#",
       icon: IconSearch,
     },
   ],
   documents: [
     {
-      name: "Data Library",
+      name: "数据库",
       url: "#",
       icon: IconDatabase,
     },
     {
-      name: "Reports",
+      name: "报告",
       url: "#",
       icon: IconReport,
     },
     {
-      name: "Word Assistant",
+      name: "文档助手",
       url: "#",
       icon: IconFileWord,
     },
@@ -162,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">示例公司</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
