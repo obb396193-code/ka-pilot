@@ -91,6 +91,22 @@ describe("computeTaskPacing", () => {
     expect(pacing.requiredDailyVolume).toEqual({ value: null, state: "undefined" });
   });
 
+  it("keeps a zero target distinguishable from a missing target", () => {
+    const pacing = computeTaskPacing({
+      periodStart: "2026-08-01",
+      periodEnd: "2026-08-31",
+      asOf: "2026-08-20",
+      targetVolume: 0,
+      completedVolume: 0,
+      recentDailyVolumes: [0],
+    });
+
+    expect(pacing.targetProgress).toEqual({ value: null, state: "undefined" });
+    expect(pacing.projectedCompletion).toEqual({ value: null, state: "undefined" });
+    expect(pacing.projectedGap).toBe(0);
+    expect(pacing.requiredDailyVolume).toEqual({ value: 0, state: "finite" });
+  });
+
   it("keeps missing targets and samples explicit", () => {
     const pacing = computeTaskPacing({
       periodStart: "2026-08-01",

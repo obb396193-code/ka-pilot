@@ -69,6 +69,13 @@ function countCalendarRemainingDays(
     : countInclusiveDays(firstRemainingDay, periodEnd);
 }
 
+function countElapsedDays(periodStart: number, periodEnd: number, asOf: number): number {
+  const totalDays = countInclusiveDays(periodStart, periodEnd);
+  if (asOf < periodStart) return 0;
+  if (asOf >= periodEnd) return totalDays;
+  return countInclusiveDays(periodStart, asOf);
+}
+
 function countEffectiveRemainingDays(
   values: readonly string[],
   periodStart: number,
@@ -105,6 +112,39 @@ function recentAverage(values: readonly number[]): number | null {
     : recent.reduce((sum, value) => sum + value, 0) / recent.length;
 }
 
+function projectVolume(
+  completedVolume: number | null,
+  average: number | null,
+  remainingDays: number,
+): number | null {
+  if (completedVolume === null) return null;
+  if (remainingDays === 0) return completedVolume;
+  return average === null ? null : completedVolume + average * remainingDays;
+}
+
+function nonnegativeDifference(
+  target: number | null,
+  actual: number | null,
+): number | null {
+  return target === null || actual === null ? null : Math.max(0, target - actual);
+}
+
+function countRemainingDays(
+  input: TaskPacingInput,
+  periodStart: number,
+  periodEnd: number,
+  asOf: number,
+): number {
+  return input.remainingEffectiveDays
+    ? countEffectiveRemainingDays(
+        input.remainingEffectiveDays,
+        periodStart,
+        periodEnd,
+        asOf,
+      )
+    : countCalendarRemainingDays(periodStart, periodEnd, asOf);
+}
+
 export function computeTaskPacing(input: TaskPacingInput): TaskPacing {
   const periodStart = parseDate(input.periodStart, "periodStart");
   const periodEnd = parseDate(input.periodEnd, "periodEnd");
@@ -122,37 +162,12 @@ export function computeTaskPacing(input: TaskPacingInput): TaskPacing {
   const spent = nonnegativeFact(input.spent, "spent");
 
   const totalDays = countInclusiveDays(periodStart, periodEnd);
-  const elapsedDays =
-    asOf < periodStart
-      ? 0
-      : asOf >= periodEnd
-        ? totalDays
-        : countInclusiveDays(periodStart, asOf);
-  const remainingDays = input.remainingEffectiveDays
-    ? countEffectiveRemainingDays(
-        input.remainingEffectiveDays,
-        periodStart,
-        periodEnd,
-        asOf,
-      )
-    : countCalendarRemainingDays(periodStart, periodEnd, asOf);
+  const elapsedDays = countElapsedDays(periodStart, periodEnd, asOf);
+  const remainingDays = countRemainingDays(input, periodStart, periodEnd, asOf);
   const average = recentAverage(input.recentDailyVolumes);
-  const projectedVolume =
-    completedVolume === null
-      ? null
-      : remainingDays === 0
-        ? completedVolume
-        : average === null
-          ? null
-          : completedVolume + average * remainingDays;
-  const projectedGap =
-    targetVolume === null || projectedVolume === null
-      ? null
-      : Math.max(0, targetVolume - projectedVolume);
-  const remainingTarget =
-    targetVolume === null || completedVolume === null
-      ? null
-      : Math.max(0, targetVolume - completedVolume);
+  const projectedVolume = projectVolume(completedVolume, average, remainingDays);
+  const projectedGap = nonnegativeDifference(targetVolume, projectedVolume);
+  const remainingTarget = nonnegativeDifference(targetVolume, completedVolume);
 
   return {
     elapsedDays,

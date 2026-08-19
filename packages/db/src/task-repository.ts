@@ -23,8 +23,8 @@ export interface TaskRecord {
   targetVolume: number | null;
   budget: number | null;
   ownerUserId: string | null;
-  status: string;
-  createdAt: string;
+  status: string | null;
+  createdAt: string | null;
 }
 
 export interface AssignTaskAccountInput {
@@ -54,9 +54,9 @@ export interface AssessmentPriceRecord {
   taskId: string;
   price: number;
   effectiveDate: string;
-  changedBy: string;
+  changedBy: string | null;
   evidenceUrl: string | null;
-  createdAt: string;
+  createdAt: string | null;
 }
 
 export interface TaskMetricQuery {
@@ -80,8 +80,8 @@ interface TaskRow {
   target_volume: string | number | null;
   budget: string | number | null;
   owner_user_id: string | null;
-  status: string;
-  created_at: Date | string;
+  status: string | null;
+  created_at: Date | string | null;
 }
 
 interface TaskAccountRow {
@@ -99,9 +99,9 @@ interface AssessmentPriceRow {
   task_id: string;
   price: string | number;
   effective_date: string;
-  changed_by: string;
+  changed_by: string | null;
   evidence_url: string | null;
-  created_at: Date | string;
+  created_at: Date | string | null;
 }
 
 interface TaskMetricRow {
@@ -163,7 +163,7 @@ function mapTask(row: TaskRow): TaskRecord {
     budget: nullableNumber(row.budget),
     ownerUserId: row.owner_user_id,
     status: row.status,
-    createdAt: isoTimestamp(row.created_at),
+    createdAt: row.created_at === null ? null : isoTimestamp(row.created_at),
   };
 }
 
@@ -189,7 +189,7 @@ function mapAssessmentPrice(row: AssessmentPriceRow): AssessmentPriceRecord {
     effectiveDate: row.effective_date,
     changedBy: row.changed_by,
     evidenceUrl: row.evidence_url,
-    createdAt: isoTimestamp(row.created_at),
+    createdAt: row.created_at === null ? null : isoTimestamp(row.created_at),
   };
 }
 

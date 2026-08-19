@@ -130,11 +130,7 @@ export function buildDailyReportMetricFacts(
   };
 }
 
-function taskFacts(
-  input: DailyReportTaskInput,
-  reportDate: string,
-  missingFacts: string[],
-): DailyReportTaskFacts {
+function assertTaskInput(input: DailyReportTaskInput, reportDate: string): void {
   if (input.taskId.trim() === "") throw new Error("taskId is required");
   if (input.pacing.asOf !== reportDate) {
     throw new Error("task pacing asOf must equal reportDate");
@@ -145,28 +141,33 @@ function taskFacts(
   ) {
     throw new Error("assessmentPrice must be a finite positive number");
   }
+}
 
+function collectTaskMissingFacts(
+  input: DailyReportTaskInput,
+  missingFacts: string[],
+): void {
   const path = `tasks.${input.taskId}`;
-  if (input.assessmentPrice === null) missingFacts.push(`${path}.assessmentPrice`);
-  if (input.pacing.budget === null || input.pacing.budget === undefined) {
-    missingFacts.push(`${path}.budget`);
+  const required = {
+    assessmentPrice: input.assessmentPrice,
+    budget: input.pacing.budget,
+    completedVolume: input.pacing.completedVolume,
+    metrics: input.metrics,
+    spent: input.pacing.spent,
+    targetVolume: input.pacing.targetVolume,
+  };
+  for (const [field, value] of Object.entries(required)) {
+    if (value === null || value === undefined) missingFacts.push(`${path}.${field}`);
   }
-  if (
-    input.pacing.completedVolume === null ||
-    input.pacing.completedVolume === undefined
-  ) {
-    missingFacts.push(`${path}.completedVolume`);
-  }
-  if (input.metrics === null) missingFacts.push(`${path}.metrics`);
-  if (input.pacing.spent === null || input.pacing.spent === undefined) {
-    missingFacts.push(`${path}.spent`);
-  }
-  if (
-    input.pacing.targetVolume === null ||
-    input.pacing.targetVolume === undefined
-  ) {
-    missingFacts.push(`${path}.targetVolume`);
-  }
+}
+
+function taskFacts(
+  input: DailyReportTaskInput,
+  reportDate: string,
+  missingFacts: string[],
+): DailyReportTaskFacts {
+  assertTaskInput(input, reportDate);
+  collectTaskMissingFacts(input, missingFacts);
 
   return {
     taskId: input.taskId,
