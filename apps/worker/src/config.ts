@@ -8,7 +8,14 @@ const enabledFlag = z
   .transform((value) => value === "true");
 const taskKindSchema = z.enum(["chat", "diagnosis", "background"]);
 const providerProtocolSchema = z.enum(["anthropic_messages", "openai_chat_completions"]);
-const httpUrlSchema = z.string().url().refine(isHttpUrl, "Only HTTP(S) URLs are allowed");
+const providerUrlSchema = z.string().url().refine(
+  isSafeProviderUrl,
+  "Provider URLs require HTTPS except for loopback testing",
+);
+const localGatewayUrlSchema = z.string().url().refine(
+  isLoopbackHttpUrl,
+  "Model gateway must use localhost HTTP",
+);
 const envelopeKeySchema = z
   .string()
   .trim()
@@ -18,7 +25,7 @@ const providerProfileSchema = z
   .object({
     id: z.string().trim().min(1).regex(/^[a-z0-9][a-z0-9._-]*$/),
     protocol: providerProtocolSchema,
-    baseUrl: httpUrlSchema,
+    baseUrl: providerUrlSchema,
     models: z.array(z.string().trim().min(1)).min(1),
     defaultModel: z.string().trim().min(1),
     enabled: z.boolean().default(true),
@@ -60,7 +67,7 @@ const workerConfigSchema = z.object({
   AGENT_MAX_TURNS: positiveInteger.default(8),
   AGENT_MAX_BUDGET_USD: positiveNumber.default(1),
   AGENT_TIMEOUT_MS: positiveInteger.default(120_000),
-  MODEL_GATEWAY_BASE_URL: httpUrlSchema.optional(),
+  MODEL_GATEWAY_BASE_URL: localGatewayUrlSchema.optional(),
   MODEL_GATEWAY_CLIENT_KEY: z.string().min(32).optional(),
   MODEL_GATEWAY_ENVELOPE_KEY_BASE64: envelopeKeySchema.optional(),
   MODEL_PROVIDER_PROFILES_JSON: z.string().trim().min(1).optional(),
@@ -122,7 +129,7 @@ function loadAgentConfig(parsed: z.infer<typeof workerConfigSchema>): AgentRunti
 
   const gatewayFields = z
     .object({
-      baseUrl: httpUrlSchema,
+      baseUrl: localGatewayUrlSchema,
       clientKey: z.string().min(32),
       envelopeKey: envelopeKeySchema,
       providerProfilesJson: z.string().trim().min(1),
@@ -154,9 +161,16 @@ function parseProviderProfiles(serialized: string): ModelProviderProfileConfig[]
   return providerProfilesSchema.parse(value);
 }
 
-function isHttpUrl(value: string): boolean {
+function isSafeProviderUrl(value: string): boolean {
   const url = new URL(value);
-  return (url.protocol === "http:" || url.protocol === "https:") && !url.username && !url.password;
+  return !url.username && !url.password && (
+    url.protocol === "https:" || isLoopbackHttpUrl(value)
+  );
+}
+
+function isLoopbackHttpUrl(value: string): boolean {
+  const url = new URL(value);
+  return url.protocol === "http:" && ["127.0.0.1", "localhost", "[::1]"].includes(url.hostname);
 }
 
 function isCanonical32ByteBase64(value: string): boolean {

@@ -95,11 +95,26 @@ describe("worker config", () => {
       profiles: [providerProfile("file-url", { baseUrl: "file:///tmp/provider" })],
     },
     {
+      label: "an insecure remote provider URL",
+      profiles: [providerProfile("remote-http", { baseUrl: "http://provider.example/v1" })],
+    },
+    {
       label: "an inline API key",
       profiles: [providerProfile("secret", { apiKey: "must-not-be-here" })],
     },
   ])("rejects $label", ({ profiles }) => {
     expect(() => loadEnabledConfig(profiles)).toThrow();
+  });
+
+  it("rejects a non-loopback model gateway", () => {
+    expect(() => loadWorkerConfig({
+      DATABASE_URL: "postgres://local/ka",
+      AGENT_ENABLED: "true",
+      MODEL_GATEWAY_BASE_URL: "https://gateway.example",
+      MODEL_GATEWAY_CLIENT_KEY: "g".repeat(32),
+      MODEL_GATEWAY_ENVELOPE_KEY_BASE64: Buffer.alloc(32, 7).toString("base64"),
+      MODEL_PROVIDER_PROFILES_JSON: JSON.stringify([providerProfile("provider")]),
+    })).toThrow(/localhost/i);
   });
 
   it("parses the string false as disabled", () => {

@@ -111,7 +111,7 @@ function assertProviderProfiles(profiles: readonly ProviderProfile[]): void {
     ids.add(profile.id);
     const url = new URL(profile.baseUrl);
     if (
-      !["http:", "https:"].includes(url.protocol) ||
+      !isSafeProviderUrl(url) ||
       url.username !== "" ||
       url.password !== "" ||
       profile.models.length === 0 ||
@@ -123,4 +123,10 @@ function assertProviderProfiles(profiles: readonly ProviderProfile[]): void {
       throw new Error(`Gateway provider profile contains inline secret material: ${profile.id}`);
     }
   }
+}
+
+function isSafeProviderUrl(url: URL): boolean {
+  return url.protocol === "https:" || (
+    url.protocol === "http:" && ["127.0.0.1", "localhost", "[::1]"].includes(url.hostname)
+  );
 }

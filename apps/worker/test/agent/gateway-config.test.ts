@@ -75,5 +75,12 @@ describe("model gateway sidecar config", () => {
         pluginPath: "/private/tmp/plugin.mjs",
       }),
     ).toThrow(/duplicate/i);
+    expect(() =>
+      buildGatewaySidecarConfig({
+        port: 3456,
+        providers: [{ ...provider, id: "remote-http", baseUrl: "http://provider.example/v1" }],
+        pluginPath: "/private/tmp/plugin.mjs",
+      }),
+    ).toThrow(/invalid/i);
   });
 });
