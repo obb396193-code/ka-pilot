@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-19T15:29:07.580Z",
+  "generated_at": "2026-08-19T15:38:06.845Z",
   "selection_rule": "同一 canonical capability 有多个来源时，先按 comparison-template.md 展示真实预览和工程对比；已有 preferred 且场景相同则直接复用。",
   "total_items": 7056,
   "indexed_items": 7056,
@@ -118118,9 +118118,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/action-bar",
-      "source_url": "https://diceui.com/r/action-bar.json",
+      "source_url": "https://diceui.com/r/radix-vega/action-bar.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/action-bar.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/action-bar.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -118160,9 +118160,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/action-bar",
-      "source_url": "https://diceui.com/r/action-bar-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/action-bar-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/action-bar-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/action-bar-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "action-bar",
@@ -118201,9 +118201,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/action-bar-position",
-      "source_url": "https://diceui.com/r/action-bar-position-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/action-bar-position-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/action-bar-position-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/action-bar-position-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "action-bar",
@@ -118244,9 +118244,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/angle-slider",
-      "source_url": "https://diceui.com/r/angle-slider.json",
+      "source_url": "https://diceui.com/r/radix-vega/angle-slider.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/angle-slider.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/angle-slider.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -118286,9 +118286,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/angle-slider-controlled",
-      "source_url": "https://diceui.com/r/angle-slider-controlled-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/angle-slider-controlled-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/angle-slider-controlled-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/angle-slider-controlled-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "angle-slider",
@@ -118328,9 +118328,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/angle-slider",
-      "source_url": "https://diceui.com/r/angle-slider-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/angle-slider-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/angle-slider-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/angle-slider-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "angle-slider"
@@ -118368,9 +118368,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/angle-slider-form",
-      "source_url": "https://diceui.com/r/angle-slider-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/angle-slider-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/angle-slider-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/angle-slider-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@hookform/resolvers",
@@ -118413,9 +118413,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/angle-slider-range",
-      "source_url": "https://diceui.com/r/angle-slider-range-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/angle-slider-range-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/angle-slider-range-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/angle-slider-range-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "angle-slider"
@@ -118453,9 +118453,9 @@
         "themes"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/angle-slider-themes",
-      "source_url": "https://diceui.com/r/angle-slider-themes-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/angle-slider-themes-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/angle-slider-themes-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/angle-slider-themes-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "angle-slider"
@@ -118492,9 +118492,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/avatar-group",
-      "source_url": "https://diceui.com/r/avatar-group.json",
+      "source_url": "https://diceui.com/r/radix-vega/avatar-group.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/avatar-group.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/avatar-group.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -118531,9 +118531,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/avatar-group-custom-overflow",
-      "source_url": "https://diceui.com/r/avatar-group-custom-overflow-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/avatar-group-custom-overflow-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/avatar-group-custom-overflow-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/avatar-group-custom-overflow-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "avatar",
@@ -118571,9 +118571,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/avatar-group",
-      "source_url": "https://diceui.com/r/avatar-group-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/avatar-group-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/avatar-group-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/avatar-group-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "avatar",
@@ -118611,9 +118611,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/avatar-group-icons",
-      "source_url": "https://diceui.com/r/avatar-group-icons-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/avatar-group-icons-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/avatar-group-icons-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/avatar-group-icons-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "avatar-group",
@@ -118651,9 +118651,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/avatar-group-rtl",
-      "source_url": "https://diceui.com/r/avatar-group-rtl-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/avatar-group-rtl-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/avatar-group-rtl-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/avatar-group-rtl-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "avatar",
@@ -118691,9 +118691,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/avatar-group-truncation",
-      "source_url": "https://diceui.com/r/avatar-group-truncation-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/avatar-group-truncation-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/avatar-group-truncation-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/avatar-group-truncation-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "avatar",
@@ -118731,9 +118731,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/badge-overflow",
-      "source_url": "https://diceui.com/r/badge-overflow.json",
+      "source_url": "https://diceui.com/r/radix-vega/badge-overflow.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/badge-overflow.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/badge-overflow.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -118770,9 +118770,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/badge-overflow",
-      "source_url": "https://diceui.com/r/badge-overflow-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/badge-overflow-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/badge-overflow-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/badge-overflow-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "badge",
@@ -118810,9 +118810,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/badge-overflow-interactive",
-      "source_url": "https://diceui.com/r/badge-overflow-interactive-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/badge-overflow-interactive-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/badge-overflow-interactive-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/badge-overflow-interactive-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "badge",
@@ -118853,9 +118853,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/badge-overflow-multiline",
-      "source_url": "https://diceui.com/r/badge-overflow-multiline-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/badge-overflow-multiline-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/badge-overflow-multiline-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/badge-overflow-multiline-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "badge",
@@ -118893,9 +118893,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/banner",
-      "source_url": "https://diceui.com/r/banner.json",
+      "source_url": "https://diceui.com/r/radix-vega/banner.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/banner.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/banner.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -118935,9 +118935,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/banner",
-      "source_url": "https://diceui.com/r/banner-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/banner-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/banner-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/banner-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "banner",
@@ -118976,9 +118976,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/banner-stacked",
-      "source_url": "https://diceui.com/r/banner-stacked-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/banner-stacked-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/banner-stacked-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/banner-stacked-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "banner",
@@ -119017,9 +119017,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/checkbox-group",
-      "source_url": "https://diceui.com/r/checkbox-group.json",
+      "source_url": "https://diceui.com/r/radix-vega/checkbox-group.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/checkbox-group.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/checkbox-group.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/checkbox-group"
@@ -119057,9 +119057,9 @@
         "motion-animation"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/checkbox-group-animated",
-      "source_url": "https://diceui.com/r/checkbox-group-animated-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/checkbox-group-animated-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/checkbox-group-animated-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/checkbox-group-animated-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/checkbox-group",
@@ -119098,9 +119098,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/checkbox-group",
-      "source_url": "https://diceui.com/r/checkbox-group-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/checkbox-group-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/checkbox-group-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/checkbox-group-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/checkbox-group",
@@ -119139,9 +119139,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/checkbox-group-horizontal",
-      "source_url": "https://diceui.com/r/checkbox-group-horizontal-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/checkbox-group-horizontal-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/checkbox-group-horizontal-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/checkbox-group-horizontal-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/checkbox-group",
@@ -119180,9 +119180,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/checkbox-group-multi-selection",
-      "source_url": "https://diceui.com/r/checkbox-group-multi-selection-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/checkbox-group-multi-selection-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/checkbox-group-multi-selection-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/checkbox-group-multi-selection-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/checkbox-group",
@@ -119221,9 +119221,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/checkbox-group-validation",
-      "source_url": "https://diceui.com/r/checkbox-group-validation-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/checkbox-group-validation-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/checkbox-group-validation-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/checkbox-group-validation-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/checkbox-group",
@@ -119262,9 +119262,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/circular-progress",
-      "source_url": "https://diceui.com/r/circular-progress.json",
+      "source_url": "https://diceui.com/r/radix-vega/circular-progress.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/circular-progress.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/circular-progress.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -119301,9 +119301,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/circular-progress-colors",
-      "source_url": "https://diceui.com/r/circular-progress-colors-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/circular-progress-colors-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/circular-progress-colors-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/circular-progress-colors-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "circular-progress",
@@ -119341,9 +119341,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/circular-progress",
-      "source_url": "https://diceui.com/r/circular-progress-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/circular-progress-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/circular-progress-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/circular-progress-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "circular-progress"
@@ -119380,9 +119380,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/circular-progress-interactive",
-      "source_url": "https://diceui.com/r/circular-progress-interactive-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/circular-progress-interactive-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/circular-progress-interactive-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/circular-progress-interactive-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -119420,9 +119420,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/client-only",
-      "source_url": "https://diceui.com/r/client-only.json",
+      "source_url": "https://diceui.com/r/radix-vega/client-only.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/client-only.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/client-only.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -119457,9 +119457,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/color-picker",
-      "source_url": "https://diceui.com/r/color-picker.json",
+      "source_url": "https://diceui.com/r/radix-vega/color-picker.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/color-picker.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/color-picker.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -119503,9 +119503,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/color-picker-controlled",
-      "source_url": "https://diceui.com/r/color-picker-controlled-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/color-picker-controlled-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/color-picker-controlled-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/color-picker-controlled-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -119543,9 +119543,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/color-picker",
-      "source_url": "https://diceui.com/r/color-picker-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/color-picker-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/color-picker-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/color-picker-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "color-picker"
@@ -119583,9 +119583,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/color-picker-form",
-      "source_url": "https://diceui.com/r/color-picker-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/color-picker-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/color-picker-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/color-picker-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@hookform/resolvers/zod",
@@ -119627,9 +119627,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/color-picker-inline",
-      "source_url": "https://diceui.com/r/color-picker-inline-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/color-picker-inline-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/color-picker-inline-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/color-picker-inline-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "color-picker"
@@ -119666,9 +119666,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/color-swatch",
-      "source_url": "https://diceui.com/r/color-swatch.json",
+      "source_url": "https://diceui.com/r/radix-vega/color-swatch.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/color-swatch.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/color-swatch.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -119705,9 +119705,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/color-swatch",
-      "source_url": "https://diceui.com/r/color-swatch-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/color-swatch-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/color-swatch-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/color-swatch-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "color-swatch"
@@ -119744,9 +119744,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/color-swatch-sizes",
-      "source_url": "https://diceui.com/r/color-swatch-sizes-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/color-swatch-sizes-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/color-swatch-sizes-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/color-swatch-sizes-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "color-swatch"
@@ -119783,9 +119783,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/color-swatch-transparency",
-      "source_url": "https://diceui.com/r/color-swatch-transparency-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/color-swatch-transparency-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/color-swatch-transparency-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/color-swatch-transparency-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "color-swatch"
@@ -119823,9 +119823,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/combobox",
-      "source_url": "https://diceui.com/r/combobox.json",
+      "source_url": "https://diceui.com/r/radix-vega/combobox.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/combobox.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/combobox.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/combobox",
@@ -119869,9 +119869,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/combobox-custom-filter",
-      "source_url": "https://diceui.com/r/combobox-custom-filter-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/combobox-custom-filter-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/combobox-custom-filter-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/combobox-custom-filter-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "combobox",
@@ -119910,9 +119910,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/combobox-debounced",
-      "source_url": "https://diceui.com/r/combobox-debounced-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/combobox-debounced-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/combobox-debounced-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/combobox-debounced-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "combobox",
@@ -119951,9 +119951,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/combobox",
-      "source_url": "https://diceui.com/r/combobox-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/combobox-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/combobox-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/combobox-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "combobox",
@@ -119992,9 +119992,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/combobox-groups",
-      "source_url": "https://diceui.com/r/combobox-groups-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/combobox-groups-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/combobox-groups-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/combobox-groups-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "combobox",
@@ -120033,9 +120033,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/combobox-multiple",
-      "source_url": "https://diceui.com/r/combobox-multiple-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/combobox-multiple-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/combobox-multiple-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/combobox-multiple-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "combobox",
@@ -120074,9 +120074,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/combobox-tags",
-      "source_url": "https://diceui.com/r/combobox-tags-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/combobox-tags-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/combobox-tags-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/combobox-tags-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "combobox",
@@ -120116,9 +120116,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/combobox-virtualized",
-      "source_url": "https://diceui.com/r/combobox-virtualized-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/combobox-virtualized-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/combobox-virtualized-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/combobox-virtualized-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@tanstack/react-virtual",
@@ -120157,9 +120157,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/compare-slider",
-      "source_url": "https://diceui.com/r/compare-slider.json",
+      "source_url": "https://diceui.com/r/radix-vega/compare-slider.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/compare-slider.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/compare-slider.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -120199,9 +120199,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/compare-slider-controlled",
-      "source_url": "https://diceui.com/r/compare-slider-controlled-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/compare-slider-controlled-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/compare-slider-controlled-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/compare-slider-controlled-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -120242,9 +120242,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/compare-slider-customization",
-      "source_url": "https://diceui.com/r/compare-slider-customization-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/compare-slider-customization-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/compare-slider-customization-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/compare-slider-customization-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "compare-slider"
@@ -120281,9 +120281,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/compare-slider",
-      "source_url": "https://diceui.com/r/compare-slider-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/compare-slider-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/compare-slider-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/compare-slider-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "compare-slider"
@@ -120320,9 +120320,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/compare-slider-vertical",
-      "source_url": "https://diceui.com/r/compare-slider-vertical-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/compare-slider-vertical-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/compare-slider-vertical-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/compare-slider-vertical-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "compare-slider"
@@ -120359,9 +120359,9 @@
         "kind/utility"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/compose-refs",
-      "source_url": "https://diceui.com/r/compose-refs.json",
+      "source_url": "https://diceui.com/r/radix-vega/compose-refs.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/compose-refs.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/compose-refs.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -120396,9 +120396,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/cropper",
-      "source_url": "https://diceui.com/r/cropper.json",
+      "source_url": "https://diceui.com/r/radix-vega/cropper.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/cropper.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/cropper.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -120438,9 +120438,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/cropper-controlled",
-      "source_url": "https://diceui.com/r/cropper-controlled-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/cropper-controlled-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/cropper-controlled-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/cropper-controlled-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -120480,9 +120480,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/cropper",
-      "source_url": "https://diceui.com/r/cropper-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/cropper-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/cropper-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/cropper-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "cropper"
@@ -120520,9 +120520,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/cropper-file-upload",
-      "source_url": "https://diceui.com/r/cropper-file-upload-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/cropper-file-upload-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/cropper-file-upload-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/cropper-file-upload-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@hookform/resolvers",
@@ -120566,9 +120566,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/cropper-shapes",
-      "source_url": "https://diceui.com/r/cropper-shapes-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/cropper-shapes-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/cropper-shapes-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/cropper-shapes-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "cropper",
@@ -120608,9 +120608,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/cropper-video",
-      "source_url": "https://diceui.com/r/cropper-video-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/cropper-video-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/cropper-video-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/cropper-video-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -120651,9 +120651,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/data-grid",
-      "source_url": "https://diceui.com/r/data-grid-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/data-grid-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/data-grid-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/data-grid-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@tanstack/react-table",
@@ -120695,9 +120695,9 @@
         "table"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/data-table",
-      "source_url": "https://diceui.com/r/data-table-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/data-table-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/data-table-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/data-table-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "data-table",
@@ -120735,9 +120735,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/direction-provider",
-      "source_url": "https://diceui.com/r/direction-provider.json",
+      "source_url": "https://diceui.com/r/radix-vega/direction-provider.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/direction-provider.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/direction-provider.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -120772,9 +120772,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/editable",
-      "source_url": "https://diceui.com/r/editable.json",
+      "source_url": "https://diceui.com/r/radix-vega/editable.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/editable.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/editable.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -120814,9 +120814,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/editable-autosize",
-      "source_url": "https://diceui.com/r/editable-autosize-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/editable-autosize-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/editable-autosize-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/editable-autosize-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -120854,9 +120854,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/editable",
-      "source_url": "https://diceui.com/r/editable-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/editable-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/editable-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/editable-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -120894,9 +120894,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/editable-double-click",
-      "source_url": "https://diceui.com/r/editable-double-click-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/editable-double-click-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/editable-double-click-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/editable-double-click-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -120935,9 +120935,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/editable-form",
-      "source_url": "https://diceui.com/r/editable-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/editable-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/editable-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/editable-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -120976,9 +120976,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/editable-todo-list",
-      "source_url": "https://diceui.com/r/editable-todo-list-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/editable-todo-list-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/editable-todo-list-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/editable-todo-list-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -121018,9 +121018,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/file-upload",
-      "source_url": "https://diceui.com/r/file-upload.json",
+      "source_url": "https://diceui.com/r/radix-vega/file-upload.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/file-upload.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/file-upload.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -121061,9 +121061,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/file-upload-chat-input",
-      "source_url": "https://diceui.com/r/file-upload-chat-input-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/file-upload-chat-input-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/file-upload-chat-input-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/file-upload-chat-input-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@uploadthing/react",
@@ -121107,9 +121107,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/file-upload-circular-progress",
-      "source_url": "https://diceui.com/r/file-upload-circular-progress-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/file-upload-circular-progress-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/file-upload-circular-progress-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/file-upload-circular-progress-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -121149,9 +121149,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/file-upload",
-      "source_url": "https://diceui.com/r/file-upload-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/file-upload-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/file-upload-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/file-upload-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -121192,9 +121192,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/file-upload-direct-upload",
-      "source_url": "https://diceui.com/r/file-upload-direct-upload-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/file-upload-direct-upload-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/file-upload-direct-upload-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/file-upload-direct-upload-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -121235,9 +121235,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/file-upload-fill-progress",
-      "source_url": "https://diceui.com/r/file-upload-fill-progress-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/file-upload-fill-progress-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/file-upload-fill-progress-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/file-upload-fill-progress-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -121278,9 +121278,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/file-upload-form",
-      "source_url": "https://diceui.com/r/file-upload-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/file-upload-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/file-upload-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/file-upload-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@hookform/resolvers/zod",
@@ -121323,9 +121323,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/file-upload-uploadthing",
-      "source_url": "https://diceui.com/r/file-upload-uploadthing-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/file-upload-uploadthing-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/file-upload-uploadthing-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/file-upload-uploadthing-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@uploadthing/react",
@@ -121367,9 +121367,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/file-upload-validation",
-      "source_url": "https://diceui.com/r/file-upload-validation-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/file-upload-validation-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/file-upload-validation-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/file-upload-validation-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -121409,9 +121409,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/fps",
-      "source_url": "https://diceui.com/r/fps.json",
+      "source_url": "https://diceui.com/r/radix-vega/fps.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/fps.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/fps.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -121446,9 +121446,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/fps",
-      "source_url": "https://diceui.com/r/fps-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/fps-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/fps-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/fps-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "fps"
@@ -121485,9 +121485,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/fps-strategy",
-      "source_url": "https://diceui.com/r/fps-strategy-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/fps-strategy-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/fps-strategy-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/fps-strategy-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "fps"
@@ -121524,9 +121524,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/gauge",
-      "source_url": "https://diceui.com/r/gauge.json",
+      "source_url": "https://diceui.com/r/radix-vega/gauge.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/gauge.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/gauge.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -121563,9 +121563,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/gauge-colors",
-      "source_url": "https://diceui.com/r/gauge-colors-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/gauge-colors-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/gauge-colors-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/gauge-colors-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "gauge"
@@ -121602,9 +121602,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/gauge",
-      "source_url": "https://diceui.com/r/gauge-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/gauge-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/gauge-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/gauge-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "gauge"
@@ -121641,9 +121641,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/gauge-sizes",
-      "source_url": "https://diceui.com/r/gauge-sizes-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/gauge-sizes-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/gauge-sizes-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/gauge-sizes-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "gauge"
@@ -121680,9 +121680,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/gauge-variants",
-      "source_url": "https://diceui.com/r/gauge-variants-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/gauge-variants-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/gauge-variants-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/gauge-variants-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "gauge"
@@ -121719,9 +121719,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/hitbox",
-      "source_url": "https://diceui.com/r/hitbox.json",
+      "source_url": "https://diceui.com/r/radix-vega/hitbox.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/hitbox.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/hitbox.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -121758,9 +121758,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/hitbox-debug",
-      "source_url": "https://diceui.com/r/hitbox-debug-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/hitbox-debug-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/hitbox-debug-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/hitbox-debug-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -121798,9 +121798,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/hitbox",
-      "source_url": "https://diceui.com/r/hitbox-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/hitbox-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/hitbox-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/hitbox-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "checkbox",
@@ -121839,9 +121839,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/hitbox-positions",
-      "source_url": "https://diceui.com/r/hitbox-positions-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/hitbox-positions-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/hitbox-positions-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/hitbox-positions-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "checkbox",
@@ -121879,9 +121879,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/hitbox-radii",
-      "source_url": "https://diceui.com/r/hitbox-radii-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/hitbox-radii-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/hitbox-radii-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/hitbox-radii-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "checkbox",
@@ -121920,9 +121920,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/hitbox-sizes",
-      "source_url": "https://diceui.com/r/hitbox-sizes-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/hitbox-sizes-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/hitbox-sizes-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/hitbox-sizes-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "checkbox",
@@ -121961,9 +121961,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/kanban",
-      "source_url": "https://diceui.com/r/kanban.json",
+      "source_url": "https://diceui.com/r/radix-vega/kanban.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/kanban.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/kanban.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@dnd-kit/core",
@@ -122005,9 +122005,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/kanban",
-      "source_url": "https://diceui.com/r/kanban-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/kanban-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/kanban-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/kanban-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@dnd-kit/core",
@@ -122052,9 +122052,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/kanban-dynamic-overlay",
-      "source_url": "https://diceui.com/r/kanban-dynamic-overlay-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/kanban-dynamic-overlay-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/kanban-dynamic-overlay-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/kanban-dynamic-overlay-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@dnd-kit/core",
@@ -122098,9 +122098,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/key-value",
-      "source_url": "https://diceui.com/r/key-value.json",
+      "source_url": "https://diceui.com/r/radix-vega/key-value.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/key-value.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/key-value.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -122143,9 +122143,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/key-value",
-      "source_url": "https://diceui.com/r/key-value-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/key-value-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/key-value-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/key-value-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "key-value"
@@ -122183,9 +122183,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/key-value-form",
-      "source_url": "https://diceui.com/r/key-value-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/key-value-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/key-value-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/key-value-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@hookform/resolvers",
@@ -122229,9 +122229,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/key-value-paste",
-      "source_url": "https://diceui.com/r/key-value-paste-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/key-value-paste-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/key-value-paste-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/key-value-paste-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "key-value",
@@ -122269,9 +122269,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/key-value-validation",
-      "source_url": "https://diceui.com/r/key-value-validation-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/key-value-validation-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/key-value-validation-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/key-value-validation-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "key-value"
@@ -122308,9 +122308,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/listbox",
-      "source_url": "https://diceui.com/r/listbox.json",
+      "source_url": "https://diceui.com/r/radix-vega/listbox.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/listbox.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/listbox.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/listbox"
@@ -122347,9 +122347,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/listbox",
-      "source_url": "https://diceui.com/r/listbox-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/listbox-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/listbox-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/listbox-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "listbox"
@@ -122386,9 +122386,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/listbox-grid",
-      "source_url": "https://diceui.com/r/listbox-grid-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/listbox-grid-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/listbox-grid-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/listbox-grid-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "listbox"
@@ -122425,9 +122425,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/listbox-group",
-      "source_url": "https://diceui.com/r/listbox-group-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/listbox-group-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/listbox-group-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/listbox-group-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "listbox"
@@ -122464,9 +122464,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/listbox-horizontal",
-      "source_url": "https://diceui.com/r/listbox-horizontal-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/listbox-horizontal-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/listbox-horizontal-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/listbox-horizontal-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "listbox"
@@ -122503,9 +122503,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/marquee",
-      "source_url": "https://diceui.com/r/marquee.json",
+      "source_url": "https://diceui.com/r/radix-vega/marquee.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/marquee.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/marquee.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -122542,9 +122542,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/marquee",
-      "source_url": "https://diceui.com/r/marquee-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/marquee-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/marquee-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/marquee-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "marquee"
@@ -122581,9 +122581,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/marquee-logo",
-      "source_url": "https://diceui.com/r/marquee-logo-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/marquee-logo-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/marquee-logo-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/marquee-logo-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "marquee"
@@ -122620,9 +122620,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/marquee-rtl",
-      "source_url": "https://diceui.com/r/marquee-rtl-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/marquee-rtl-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/marquee-rtl-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/marquee-rtl-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "marquee"
@@ -122659,9 +122659,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/marquee-vertical",
-      "source_url": "https://diceui.com/r/marquee-vertical-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/marquee-vertical-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/marquee-vertical-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/marquee-vertical-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "marquee"
@@ -122699,9 +122699,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/mask-input",
-      "source_url": "https://diceui.com/r/mask-input.json",
+      "source_url": "https://diceui.com/r/radix-vega/mask-input.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/mask-input.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/mask-input.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -122740,9 +122740,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/mask-input-card-information",
-      "source_url": "https://diceui.com/r/mask-input-card-information-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/mask-input-card-information-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/mask-input-card-information-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/mask-input-card-information-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "card",
@@ -122782,9 +122782,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/mask-input-custom-pattern",
-      "source_url": "https://diceui.com/r/mask-input-custom-pattern-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/mask-input-custom-pattern-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/mask-input-custom-pattern-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/mask-input-custom-pattern-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "label",
@@ -122823,9 +122823,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/mask-input",
-      "source_url": "https://diceui.com/r/mask-input-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/mask-input-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/mask-input-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/mask-input-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "mask-input"
@@ -122863,9 +122863,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/mask-input-form",
-      "source_url": "https://diceui.com/r/mask-input-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/mask-input-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/mask-input-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/mask-input-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@hookform/resolvers/zod",
@@ -122908,9 +122908,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/mask-input-validation-modes",
-      "source_url": "https://diceui.com/r/mask-input-validation-modes-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/mask-input-validation-modes-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/mask-input-validation-modes-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/mask-input-validation-modes-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "badge",
@@ -122950,9 +122950,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/masonry",
-      "source_url": "https://diceui.com/r/masonry.json",
+      "source_url": "https://diceui.com/r/radix-vega/masonry.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/masonry.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/masonry.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/masonry",
@@ -122991,9 +122991,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/masonry",
-      "source_url": "https://diceui.com/r/masonry-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/masonry-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/masonry-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/masonry-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "masonry"
@@ -123030,9 +123030,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/masonry-linear",
-      "source_url": "https://diceui.com/r/masonry-linear-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/masonry-linear-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/masonry-linear-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/masonry-linear-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "masonry",
@@ -123070,9 +123070,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/masonry-ssr",
-      "source_url": "https://diceui.com/r/masonry-ssr-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/masonry-ssr-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/masonry-ssr-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/masonry-ssr-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "masonry",
@@ -123110,9 +123110,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/media-player",
-      "source_url": "https://diceui.com/r/media-player.json",
+      "source_url": "https://diceui.com/r/radix-vega/media-player.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/media-player.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/media-player.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-lazy-ref",
@@ -123157,9 +123157,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/media-player-audio",
-      "source_url": "https://diceui.com/r/media-player-audio-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/media-player-audio-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/media-player-audio-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/media-player-audio-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -123202,9 +123202,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/media-player",
-      "source_url": "https://diceui.com/r/media-player-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/media-player-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/media-player-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/media-player-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -123247,9 +123247,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/media-player-error",
-      "source_url": "https://diceui.com/r/media-player-error-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/media-player-error-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/media-player-error-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/media-player-error-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -123291,9 +123291,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/media-player-hls",
-      "source_url": "https://diceui.com/r/media-player-hls-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/media-player-hls-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/media-player-hls-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/media-player-hls-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@mux/mux-video-react",
@@ -123337,9 +123337,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/media-player-playlist",
-      "source_url": "https://diceui.com/r/media-player-playlist-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/media-player-playlist-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/media-player-playlist-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/media-player-playlist-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -123380,9 +123380,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/media-player-settings",
-      "source_url": "https://diceui.com/r/media-player-settings-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/media-player-settings-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/media-player-settings-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/media-player-settings-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "badge",
@@ -123427,9 +123427,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/mention",
-      "source_url": "https://diceui.com/r/mention.json",
+      "source_url": "https://diceui.com/r/radix-vega/mention.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/mention.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/mention.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/mention"
@@ -123467,9 +123467,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/mention-custom-filter",
-      "source_url": "https://diceui.com/r/mention-custom-filter-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/mention-custom-filter-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/mention-custom-filter-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/mention-custom-filter-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/mention",
@@ -123507,9 +123507,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/mention-custom-trigger",
-      "source_url": "https://diceui.com/r/mention-custom-trigger-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/mention-custom-trigger-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/mention-custom-trigger-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/mention-custom-trigger-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/mention",
@@ -123547,9 +123547,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/mention",
-      "source_url": "https://diceui.com/r/mention-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/mention-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/mention-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/mention-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/mention",
@@ -123587,9 +123587,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/pending",
-      "source_url": "https://diceui.com/r/pending.json",
+      "source_url": "https://diceui.com/r/radix-vega/pending.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/pending.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/pending.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -123626,9 +123626,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/pending",
-      "source_url": "https://diceui.com/r/pending-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/pending-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/pending-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/pending-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -123667,9 +123667,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/pending-form",
-      "source_url": "https://diceui.com/r/pending-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/pending-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/pending-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/pending-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -123709,9 +123709,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/pending-link",
-      "source_url": "https://diceui.com/r/pending-link-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/pending-link-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/pending-link-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/pending-link-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "pending"
@@ -123748,9 +123748,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/pending-switch",
-      "source_url": "https://diceui.com/r/pending-switch-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/pending-switch-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/pending-switch-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/pending-switch-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "label",
@@ -123789,9 +123789,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/pending-wrapper",
-      "source_url": "https://diceui.com/r/pending-wrapper-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/pending-wrapper-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/pending-wrapper-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/pending-wrapper-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -123830,9 +123830,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/phone-input",
-      "source_url": "https://diceui.com/r/phone-input.json",
+      "source_url": "https://diceui.com/r/radix-vega/phone-input.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/phone-input.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/phone-input.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -123876,9 +123876,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/phone-input-custom-countries",
-      "source_url": "https://diceui.com/r/phone-input-custom-countries-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/phone-input-custom-countries-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/phone-input-custom-countries-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/phone-input-custom-countries-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "phone-input"
@@ -123916,9 +123916,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/phone-input",
-      "source_url": "https://diceui.com/r/phone-input-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/phone-input-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/phone-input-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/phone-input-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "phone-input"
@@ -123956,9 +123956,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/phone-input-form",
-      "source_url": "https://diceui.com/r/phone-input-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/phone-input-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/phone-input-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/phone-input-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@hookform/resolvers",
@@ -124001,9 +124001,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/portal",
-      "source_url": "https://diceui.com/r/portal.json",
+      "source_url": "https://diceui.com/r/radix-vega/portal.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/portal.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/portal.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -124038,9 +124038,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/presence",
-      "source_url": "https://diceui.com/r/presence.json",
+      "source_url": "https://diceui.com/r/radix-vega/presence.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/presence.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/presence.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -124075,9 +124075,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/qr-code",
-      "source_url": "https://diceui.com/r/qr-code.json",
+      "source_url": "https://diceui.com/r/radix-vega/qr-code.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/qr-code.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/qr-code.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-lazy-ref",
@@ -124116,9 +124116,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/qr-code-customization",
-      "source_url": "https://diceui.com/r/qr-code-customization-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/qr-code-customization-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/qr-code-customization-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/qr-code-customization-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "qr-code"
@@ -124155,9 +124155,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/qr-code",
-      "source_url": "https://diceui.com/r/qr-code-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/qr-code-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/qr-code-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/qr-code-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "qr-code"
@@ -124194,9 +124194,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/qr-code-formats",
-      "source_url": "https://diceui.com/r/qr-code-formats-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/qr-code-formats-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/qr-code-formats-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/qr-code-formats-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -124234,9 +124234,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/qr-code-overlay",
-      "source_url": "https://diceui.com/r/qr-code-overlay-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/qr-code-overlay-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/qr-code-overlay-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/qr-code-overlay-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -124274,9 +124274,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/rating",
-      "source_url": "https://diceui.com/r/rating.json",
+      "source_url": "https://diceui.com/r/radix-vega/rating.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/rating.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/rating.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -124316,9 +124316,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/rating-controlled",
-      "source_url": "https://diceui.com/r/rating-controlled-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/rating-controlled-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/rating-controlled-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/rating-controlled-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -124356,9 +124356,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/rating",
-      "source_url": "https://diceui.com/r/rating-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/rating-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/rating-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/rating-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "rating"
@@ -124396,9 +124396,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/rating-form",
-      "source_url": "https://diceui.com/r/rating-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/rating-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/rating-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/rating-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@hookform/resolvers/zod",
@@ -124442,9 +124442,9 @@
         "themes"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/rating-themes",
-      "source_url": "https://diceui.com/r/rating-themes-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/rating-themes-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/rating-themes-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/rating-themes-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -124483,9 +124483,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/relative-time-card",
-      "source_url": "https://diceui.com/r/relative-time-card.json",
+      "source_url": "https://diceui.com/r/radix-vega/relative-time-card.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/relative-time-card.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/relative-time-card.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "hover-card",
@@ -124524,9 +124524,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/relative-time-card",
-      "source_url": "https://diceui.com/r/relative-time-card-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/relative-time-card-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/relative-time-card-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/relative-time-card-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -124565,9 +124565,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/relative-time-card-timezones",
-      "source_url": "https://diceui.com/r/relative-time-card-timezones-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/relative-time-card-timezones-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/relative-time-card-timezones-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/relative-time-card-timezones-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "hover-card",
@@ -124606,9 +124606,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/relative-time-card-variants",
-      "source_url": "https://diceui.com/r/relative-time-card-variants-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/relative-time-card-variants-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/relative-time-card-variants-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/relative-time-card-variants-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -124647,9 +124647,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/responsive-dialog",
-      "source_url": "https://diceui.com/r/responsive-dialog.json",
+      "source_url": "https://diceui.com/r/radix-vega/responsive-dialog.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/responsive-dialog.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/responsive-dialog.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -124693,9 +124693,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/responsive-dialog-confirm",
-      "source_url": "https://diceui.com/r/responsive-dialog-confirm-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/responsive-dialog-confirm-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/responsive-dialog-confirm-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/responsive-dialog-confirm-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -124735,9 +124735,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/responsive-dialog",
-      "source_url": "https://diceui.com/r/responsive-dialog-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/responsive-dialog-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/responsive-dialog-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/responsive-dialog-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -124777,9 +124777,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/scroll-spy",
-      "source_url": "https://diceui.com/r/scroll-spy.json",
+      "source_url": "https://diceui.com/r/radix-vega/scroll-spy.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/scroll-spy.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/scroll-spy.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -124819,9 +124819,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/scroll-spy-controlled",
-      "source_url": "https://diceui.com/r/scroll-spy-controlled-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/scroll-spy-controlled-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/scroll-spy-controlled-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/scroll-spy-controlled-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -124859,9 +124859,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/scroll-spy",
-      "source_url": "https://diceui.com/r/scroll-spy-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/scroll-spy-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/scroll-spy-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/scroll-spy-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "scroll-spy"
@@ -124898,9 +124898,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/scroll-spy-vertical",
-      "source_url": "https://diceui.com/r/scroll-spy-vertical-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/scroll-spy-vertical-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/scroll-spy-vertical-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/scroll-spy-vertical-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "scroll-spy"
@@ -124937,9 +124937,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/scroller",
-      "source_url": "https://diceui.com/r/scroller.json",
+      "source_url": "https://diceui.com/r/radix-vega/scroller.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/scroller.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/scroller.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -124976,9 +124976,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/scroller",
-      "source_url": "https://diceui.com/r/scroller-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/scroller-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/scroller-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/scroller-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "scroller"
@@ -125015,9 +125015,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/scroller-hidden",
-      "source_url": "https://diceui.com/r/scroller-hidden-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/scroller-hidden-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/scroller-hidden-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/scroller-hidden-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "scroller"
@@ -125054,9 +125054,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/scroller-horizontal",
-      "source_url": "https://diceui.com/r/scroller-horizontal-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/scroller-horizontal-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/scroller-horizontal-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/scroller-horizontal-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "scroller"
@@ -125094,9 +125094,9 @@
         "navigation-sidebar"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/scroller-navigation",
-      "source_url": "https://diceui.com/r/scroller-navigation-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/scroller-navigation-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/scroller-navigation-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/scroller-navigation-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "scroller"
@@ -125135,9 +125135,9 @@
         "tabs-segmented"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/segmented-input",
-      "source_url": "https://diceui.com/r/segmented-input.json",
+      "source_url": "https://diceui.com/r/radix-vega/segmented-input.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/segmented-input.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/segmented-input.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "input",
@@ -125177,9 +125177,9 @@
         "tabs-segmented"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/segmented-input",
-      "source_url": "https://diceui.com/r/segmented-input-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/segmented-input-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/segmented-input-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/segmented-input-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "segmented-input"
@@ -125218,9 +125218,9 @@
         "tabs-segmented"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/segmented-input-form",
-      "source_url": "https://diceui.com/r/segmented-input-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/segmented-input-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/segmented-input-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/segmented-input-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -125260,9 +125260,9 @@
         "tabs-segmented"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/segmented-input-rgb",
-      "source_url": "https://diceui.com/r/segmented-input-rgb-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/segmented-input-rgb-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/segmented-input-rgb-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/segmented-input-rgb-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "segmented-input"
@@ -125301,9 +125301,9 @@
         "tabs-segmented"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/segmented-input-vertical",
-      "source_url": "https://diceui.com/r/segmented-input-vertical-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/segmented-input-vertical-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/segmented-input-vertical-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/segmented-input-vertical-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "segmented-input"
@@ -125340,9 +125340,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/selection-toolbar",
-      "source_url": "https://diceui.com/r/selection-toolbar.json",
+      "source_url": "https://diceui.com/r/radix-vega/selection-toolbar.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/selection-toolbar.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/selection-toolbar.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -125384,9 +125384,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/selection-toolbar",
-      "source_url": "https://diceui.com/r/selection-toolbar-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/selection-toolbar-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/selection-toolbar-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/selection-toolbar-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -125424,9 +125424,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/selection-toolbar-info",
-      "source_url": "https://diceui.com/r/selection-toolbar-info-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/selection-toolbar-info-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/selection-toolbar-info-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/selection-toolbar-info-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -125464,9 +125464,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/sortable",
-      "source_url": "https://diceui.com/r/sortable.json",
+      "source_url": "https://diceui.com/r/radix-vega/sortable.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/sortable.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/sortable.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@dnd-kit/core",
@@ -125507,9 +125507,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/sortable",
-      "source_url": "https://diceui.com/r/sortable-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/sortable-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/sortable-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/sortable-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@dnd-kit/core",
@@ -125551,9 +125551,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/sortable-dynamic-overlay",
-      "source_url": "https://diceui.com/r/sortable-dynamic-overlay-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/sortable-dynamic-overlay-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/sortable-dynamic-overlay-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/sortable-dynamic-overlay-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@dnd-kit/core",
@@ -125595,9 +125595,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/sortable-handle",
-      "source_url": "https://diceui.com/r/sortable-handle-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/sortable-handle-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/sortable-handle-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/sortable-handle-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@dnd-kit/core",
@@ -125641,9 +125641,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/sortable-primitive-values",
-      "source_url": "https://diceui.com/r/sortable-primitive-values-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/sortable-primitive-values-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/sortable-primitive-values-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/sortable-primitive-values-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@dnd-kit/core",
@@ -125685,9 +125685,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/speed-dial",
-      "source_url": "https://diceui.com/r/speed-dial.json",
+      "source_url": "https://diceui.com/r/radix-vega/speed-dial.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/speed-dial.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/speed-dial.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -125728,9 +125728,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/speed-dial-controlled",
-      "source_url": "https://diceui.com/r/speed-dial-controlled-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/speed-dial-controlled-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/speed-dial-controlled-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/speed-dial-controlled-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -125770,9 +125770,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/speed-dial",
-      "source_url": "https://diceui.com/r/speed-dial-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/speed-dial-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/speed-dial-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/speed-dial-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -125811,9 +125811,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/speed-dial-hover",
-      "source_url": "https://diceui.com/r/speed-dial-hover-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/speed-dial-hover-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/speed-dial-hover-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/speed-dial-hover-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -125852,9 +125852,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/speed-dial-labels",
-      "source_url": "https://diceui.com/r/speed-dial-labels-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/speed-dial-labels-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/speed-dial-labels-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/speed-dial-labels-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -125893,9 +125893,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/speed-dial-side",
-      "source_url": "https://diceui.com/r/speed-dial-side-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/speed-dial-side-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/speed-dial-side-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/speed-dial-side-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -125934,9 +125934,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stack",
-      "source_url": "https://diceui.com/r/stack.json",
+      "source_url": "https://diceui.com/r/radix-vega/stack.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stack.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stack.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -125973,9 +125973,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stack",
-      "source_url": "https://diceui.com/r/stack-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/stack-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stack-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stack-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "stack"
@@ -126012,9 +126012,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stack-no-expand",
-      "source_url": "https://diceui.com/r/stack-no-expand-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/stack-no-expand-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stack-no-expand-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stack-no-expand-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "stack"
@@ -126051,9 +126051,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stack-side",
-      "source_url": "https://diceui.com/r/stack-side-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/stack-side-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stack-side-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stack-side-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "stack"
@@ -126091,9 +126091,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stat",
-      "source_url": "https://diceui.com/r/stat.json",
+      "source_url": "https://diceui.com/r/radix-vega/stat.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stat.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stat.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "separator"
@@ -126131,9 +126131,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stat",
-      "source_url": "https://diceui.com/r/stat-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/stat-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stat-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stat-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "dropdown-menu",
@@ -126173,9 +126173,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stat-layout",
-      "source_url": "https://diceui.com/r/stat-layout-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/stat-layout-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stat-layout-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stat-layout-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -126214,9 +126214,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stat-variants",
-      "source_url": "https://diceui.com/r/stat-variants-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/stat-variants-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stat-variants-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stat-variants-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -126254,9 +126254,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/status",
-      "source_url": "https://diceui.com/r/status.json",
+      "source_url": "https://diceui.com/r/radix-vega/status.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/status.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/status.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -126293,9 +126293,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/status",
-      "source_url": "https://diceui.com/r/status-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/status-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/status-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/status-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "status"
@@ -126332,9 +126332,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/status-list",
-      "source_url": "https://diceui.com/r/status-list-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/status-list-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/status-list-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/status-list-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "status"
@@ -126371,9 +126371,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/status-text-only",
-      "source_url": "https://diceui.com/r/status-text-only-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/status-text-only-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/status-text-only-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/status-text-only-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "status"
@@ -126410,9 +126410,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/status-variants",
-      "source_url": "https://diceui.com/r/status-variants-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/status-variants-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/status-variants-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/status-variants-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "status"
@@ -126449,9 +126449,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stepper",
-      "source_url": "https://diceui.com/r/stepper.json",
+      "source_url": "https://diceui.com/r/radix-vega/stepper.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stepper.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stepper.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -126492,9 +126492,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stepper",
-      "source_url": "https://diceui.com/r/stepper-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/stepper-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stepper-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stepper-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "stepper"
@@ -126532,9 +126532,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stepper-form",
-      "source_url": "https://diceui.com/r/stepper-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/stepper-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stepper-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stepper-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@hookform/resolvers/zod",
@@ -126578,9 +126578,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stepper-validation",
-      "source_url": "https://diceui.com/r/stepper-validation-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/stepper-validation-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stepper-validation-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stepper-validation-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@hookform/resolvers",
@@ -126622,9 +126622,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/stepper-vertical",
-      "source_url": "https://diceui.com/r/stepper-vertical-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/stepper-vertical-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/stepper-vertical-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/stepper-vertical-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "stepper"
@@ -126661,9 +126661,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/swap",
-      "source_url": "https://diceui.com/r/swap.json",
+      "source_url": "https://diceui.com/r/radix-vega/swap.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/swap.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/swap.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -126703,9 +126703,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/swap-animations",
-      "source_url": "https://diceui.com/r/swap-animations-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/swap-animations-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/swap-animations-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/swap-animations-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -126743,9 +126743,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/swap",
-      "source_url": "https://diceui.com/r/swap-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/swap-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/swap-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/swap-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react",
@@ -126784,9 +126784,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/tags-input",
-      "source_url": "https://diceui.com/r/tags-input.json",
+      "source_url": "https://diceui.com/r/radix-vega/tags-input.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/tags-input.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/tags-input.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/tags-input"
@@ -126824,9 +126824,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/tags-input",
-      "source_url": "https://diceui.com/r/tags-input-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/tags-input-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/tags-input-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/tags-input-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/tags-input",
@@ -126866,9 +126866,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/tags-input-editable",
-      "source_url": "https://diceui.com/r/tags-input-editable-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/tags-input-editable-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/tags-input-editable-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/tags-input-editable-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/tags-input",
@@ -126909,9 +126909,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/tags-input-sortable",
-      "source_url": "https://diceui.com/r/tags-input-sortable-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/tags-input-sortable-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/tags-input-sortable-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/tags-input-sortable-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/tags-input",
@@ -126956,9 +126956,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/tags-input-validation",
-      "source_url": "https://diceui.com/r/tags-input-validation-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/tags-input-validation-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/tags-input-validation-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/tags-input-validation-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/tags-input",
@@ -126998,9 +126998,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/time-picker",
-      "source_url": "https://diceui.com/r/time-picker.json",
+      "source_url": "https://diceui.com/r/radix-vega/time-picker.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/time-picker.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/time-picker.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -127041,9 +127041,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/time-picker-controlled",
-      "source_url": "https://diceui.com/r/time-picker-controlled-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/time-picker-controlled-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/time-picker-controlled-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/time-picker-controlled-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -127078,9 +127078,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/time-picker",
-      "source_url": "https://diceui.com/r/time-picker-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/time-picker-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/time-picker-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/time-picker-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -127116,9 +127116,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/time-picker-form",
-      "source_url": "https://diceui.com/r/time-picker-form-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/time-picker-form-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/time-picker-form-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/time-picker-form-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -127158,9 +127158,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/time-picker-input-group-click-action",
-      "source_url": "https://diceui.com/r/time-picker-input-group-click-action-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/time-picker-input-group-click-action-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/time-picker-input-group-click-action-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/time-picker-input-group-click-action-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "time-picker"
@@ -127197,9 +127197,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/time-picker-open-on-focus",
-      "source_url": "https://diceui.com/r/time-picker-open-on-focus-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/time-picker-open-on-focus-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/time-picker-open-on-focus-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/time-picker-open-on-focus-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "time-picker"
@@ -127236,9 +127236,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/time-picker-placeholder",
-      "source_url": "https://diceui.com/r/time-picker-placeholder-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/time-picker-placeholder-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/time-picker-placeholder-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/time-picker-placeholder-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "time-picker"
@@ -127275,9 +127275,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/time-picker-seconds",
-      "source_url": "https://diceui.com/r/time-picker-seconds-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/time-picker-seconds-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/time-picker-seconds-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/time-picker-seconds-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -127312,9 +127312,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/time-picker-step",
-      "source_url": "https://diceui.com/r/time-picker-step-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/time-picker-step-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/time-picker-step-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/time-picker-step-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -127350,9 +127350,9 @@
         "timeline-activity"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/timeline",
-      "source_url": "https://diceui.com/r/timeline.json",
+      "source_url": "https://diceui.com/r/radix-vega/timeline.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/timeline.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/timeline.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-isomorphic-layout-effect",
@@ -127392,9 +127392,9 @@
         "timeline-activity"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/timeline-alternate",
-      "source_url": "https://diceui.com/r/timeline-alternate-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/timeline-alternate-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/timeline-alternate-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/timeline-alternate-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -127430,9 +127430,9 @@
         "timeline-activity"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/timeline-custom-dot",
-      "source_url": "https://diceui.com/r/timeline-custom-dot-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/timeline-custom-dot-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/timeline-custom-dot-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/timeline-custom-dot-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "lucide-react"
@@ -127470,9 +127470,9 @@
         "timeline-activity"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/timeline",
-      "source_url": "https://diceui.com/r/timeline-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/timeline-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/timeline-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/timeline-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -127508,9 +127508,9 @@
         "timeline-activity"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/timeline-horizontal-alternate",
-      "source_url": "https://diceui.com/r/timeline-horizontal-alternate-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/timeline-horizontal-alternate-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/timeline-horizontal-alternate-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/timeline-horizontal-alternate-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -127546,9 +127546,9 @@
         "timeline-activity"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/timeline-horizontal",
-      "source_url": "https://diceui.com/r/timeline-horizontal-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/timeline-horizontal-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/timeline-horizontal-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/timeline-horizontal-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "timeline"
@@ -127586,9 +127586,9 @@
         "timeline-activity"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/timeline-rtl",
-      "source_url": "https://diceui.com/r/timeline-rtl-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/timeline-rtl-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/timeline-rtl-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/timeline-rtl-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -127623,9 +127623,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/tour",
-      "source_url": "https://diceui.com/r/tour.json",
+      "source_url": "https://diceui.com/r/radix-vega/tour.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/tour.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/tour.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-as-ref",
@@ -127666,9 +127666,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/tour-controlled",
-      "source_url": "https://diceui.com/r/tour-controlled-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/tour-controlled-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/tour-controlled-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/tour-controlled-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -127708,9 +127708,9 @@
         "kind/particle"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/tour",
-      "source_url": "https://diceui.com/r/tour-demo.json",
+      "source_url": "https://diceui.com/r/radix-vega/tour-demo.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/tour-demo.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/tour-demo.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "button",
@@ -127750,9 +127750,9 @@
         "kind/hook"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/use-as-ref",
-      "source_url": "https://diceui.com/r/use-as-ref.json",
+      "source_url": "https://diceui.com/r/radix-vega/use-as-ref.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/use-as-ref.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/use-as-ref.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "@diceui/use-isomorphic-layout-effect"
@@ -127789,9 +127789,9 @@
         "kind/hook"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/use-isomorphic-layout-effect",
-      "source_url": "https://diceui.com/r/use-isomorphic-layout-effect.json",
+      "source_url": "https://diceui.com/r/radix-vega/use-isomorphic-layout-effect.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/use-isomorphic-layout-effect.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/use-isomorphic-layout-effect.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -127826,9 +127826,9 @@
         "kind/hook"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/use-lazy-ref",
-      "source_url": "https://diceui.com/r/use-lazy-ref.json",
+      "source_url": "https://diceui.com/r/radix-vega/use-lazy-ref.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/use-lazy-ref.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/use-lazy-ref.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -127863,9 +127863,9 @@
         "kind/hook"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/use-mobile",
-      "source_url": "https://diceui.com/r/use-mobile.json",
+      "source_url": "https://diceui.com/r/radix-vega/use-mobile.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/use-mobile.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/use-mobile.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",
@@ -127900,9 +127900,9 @@
         "kind/utility"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/utils",
-      "source_url": "https://diceui.com/r/utils.json",
+      "source_url": "https://diceui.com/r/radix-vega/utils.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/utils.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/utils.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "clsx",
@@ -127940,9 +127940,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/visually-hidden",
-      "source_url": "https://diceui.com/r/visually-hidden.json",
+      "source_url": "https://diceui.com/r/radix-vega/visually-hidden.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/visually-hidden.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/visually-hidden.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [
         "radix-ui"
@@ -127980,9 +127980,9 @@
         "kind/primitive"
       ],
       "preview_url": "https://diceui.com/docs/components/radix/visually-hidden-input",
-      "source_url": "https://diceui.com/r/visually-hidden-input.json",
+      "source_url": "https://diceui.com/r/radix-vega/visually-hidden-input.json",
       "guide_path": "guides/dice-ui.md",
-      "install_command": "npx shadcn@latest add https://diceui.com/r/visually-hidden-input.json --cwd apps/web",
+      "install_command": "npx shadcn@latest add https://diceui.com/r/radix-vega/visually-hidden-input.json --cwd apps/web",
       "foundation": "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
       "dependencies": [],
       "license": "MIT",

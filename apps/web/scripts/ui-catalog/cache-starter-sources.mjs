@@ -32,6 +32,30 @@ const REGISTRY_CONFIG = {
     prefixes: ["@aceternity/"],
     baseUrl: "https://ui.aceternity.com/registry/",
   },
+  "ai-elements": {
+    prefixes: ["@ai-elements/"],
+    baseUrl: "https://elements.ai-sdk.dev/api/registry/",
+  },
+  "kibo-ui": {
+    prefixes: ["@kibo-ui/"],
+    baseUrl: "https://www.kibo-ui.com/r/",
+  },
+  "dice-ui": {
+    prefixes: ["@dice-ui/", "@diceui/"],
+    plainNames: ["data-grid"],
+    dependencyUrls: {
+      "data-grid": "https://github.com/sadmann7/diceui/tree/main/docs/components/data-grid",
+    },
+    baseUrl: "https://diceui.com/r/radix-vega/",
+  },
+  "animate-ui": {
+    prefixes: ["@animate-ui/"],
+    baseUrl: "https://animate-ui.com/r/",
+  },
+  "motion-primitives": {
+    prefixes: ["@motion-primitives/"],
+    baseUrl: "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/",
+  },
 };
 
 function sha256(input) {
@@ -123,10 +147,16 @@ export function extractSameSourceDependencies(source, payload) {
     }
 
     const prefix = config.prefixes.find((candidate) => dependency.startsWith(candidate));
-    if (!prefix) continue;
-    const name = dependency.slice(prefix.length);
+    const name = prefix
+      ? dependency.slice(prefix.length)
+      : config.plainNames?.includes(dependency)
+        ? dependency
+        : "";
     if (!name || name.includes("/")) continue;
-    dependencies.set(name, { name, url: `${config.baseUrl}${name}.json` });
+    dependencies.set(name, {
+      name,
+      url: config.dependencyUrls?.[name] ?? `${config.baseUrl}${name}.json`,
+    });
   }
 
   return [...dependencies.values()].sort((a, b) => a.name.localeCompare(b.name));

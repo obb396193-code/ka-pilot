@@ -1009,8 +1009,8 @@ const APPROVED_REGISTRY_CONFIG = {
   },
   "dice-ui": {
     catalogUrl: "https://diceui.com/r/registry.json",
-    itemUrlTemplate: "https://diceui.com/r/{name}.json",
-    installCommandTemplate: "npx shadcn@latest add https://diceui.com/r/{name}.json --cwd apps/web",
+    itemUrlTemplate: "https://diceui.com/r/radix-vega/{name}.json",
+    installCommandTemplate: "npx shadcn@latest add https://diceui.com/r/radix-vega/{name}.json --cwd apps/web",
     foundation: "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
     license: "MIT",
     licenseScope: "Dice UI official Registry under MIT",
@@ -1080,7 +1080,7 @@ export function parseApprovedRegistry(sourceId, registry, context) {
     } else if (sourceId === "dice-ui") {
       normalized.preview_url = dicePreviewUrl(item);
       normalized.category = item.type?.replace("registry:", "") || "component";
-      normalized.upstream_meta = { ...normalized.upstream_meta, variant_family: "radix" };
+      normalized.upstream_meta = { ...normalized.upstream_meta, variant_family: "radix-vega" };
     } else if (sourceId === "animate-ui") {
       normalized.preview_url = animatePreviewUrl(item.name);
       normalized.category = item.name.split("-").slice(0, item.name.startsWith("demo-") ? 3 : 2).join("-");

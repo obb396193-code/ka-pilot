@@ -248,6 +248,111 @@
       "asset_id": "tweakcn:modern-minimal",
       "reason": "该官方源文件包含全部 42 个 presets；以 Modern Minimal 作为缓存入口，后续从同一源挑多风格种子。",
       "use_cases": ["runtime-theme"]
+    },
+    {
+      "asset_id": "ai-elements:conversation",
+      "reason": "内置 Agent 消息流与自动滚动的基础容器。",
+      "use_cases": ["agent-chat", "conversation"]
+    },
+    {
+      "asset_id": "ai-elements:message",
+      "reason": "用户、Agent、流式内容和富内容消息的标准展示层。",
+      "use_cases": ["agent-chat", "streaming-message"]
+    },
+    {
+      "asset_id": "ai-elements:prompt-input",
+      "reason": "悬浮 Agent 和全页 Agent 共用的 Prompt 输入与附件入口。",
+      "use_cases": ["agent-chat", "prompt-input"]
+    },
+    {
+      "asset_id": "ai-elements:reasoning",
+      "reason": "把推理过程作为可折叠、可审计状态展示。",
+      "use_cases": ["agent-chat", "reasoning"]
+    },
+    {
+      "asset_id": "ai-elements:tool",
+      "reason": "展示工具 pending/running/success/error 过程，适合投放查询与操作预览。",
+      "use_cases": ["agent-chat", "tool-call"]
+    },
+    {
+      "asset_id": "ai-elements:sources",
+      "reason": "Agent 回答的来源引用与数据追溯入口。",
+      "use_cases": ["agent-chat", "source-citation"]
+    },
+    {
+      "asset_id": "kibo-ui:gantt",
+      "reason": "投放任务排期、依赖和时间轴的业务级候选。",
+      "use_cases": ["scheduling", "gantt"]
+    },
+    {
+      "asset_id": "kibo-ui:kanban",
+      "reason": "素材、任务与流程协作的业务级看板候选。",
+      "use_cases": ["workflow", "kanban"]
+    },
+    {
+      "asset_id": "kibo-ui:editor",
+      "reason": "知识、规则和任务说明的富文本编辑候选，接入前与现有编辑器比较。",
+      "use_cases": ["editor", "knowledge"]
+    },
+    {
+      "asset_id": "kibo-ui:dropzone",
+      "reason": "素材上传区的完成态、拖放态和错误态候选。",
+      "use_cases": ["file-upload", "materials"]
+    },
+    {
+      "asset_id": "kibo-ui:color-picker",
+      "reason": "主题、图表和素材标注颜色的业务级选择器候选。",
+      "use_cases": ["color-picker", "runtime-theme"]
+    },
+    {
+      "asset_id": "kibo-ui:calendar",
+      "reason": "复杂排期日历候选，不替代简单日期筛选。",
+      "use_cases": ["scheduling", "calendar"]
+    },
+    {
+      "asset_id": "dice-ui:data-grid-demo",
+      "reason": "包含虚拟滚动和 TanStack 集成的 Data Grid 官方完整示例；自动带入其同源 data-grid 依赖。",
+      "use_cases": ["data-grid", "virtual-table"]
+    },
+    {
+      "asset_id": "dice-ui:file-upload",
+      "reason": "素材上传的可访问性与状态交互候选。",
+      "use_cases": ["file-upload", "materials"]
+    },
+    {
+      "asset_id": "dice-ui:kanban",
+      "reason": "与 Kibo Kanban 并排比较拖拽、键盘和适配成本。",
+      "use_cases": ["workflow", "kanban"]
+    },
+    {
+      "asset_id": "animate-ui:components-buttons-ripple",
+      "reason": "代表性的克制按钮反馈，用于检验 Animate UI 的组件与 primitive 依赖链。",
+      "use_cases": ["micro-motion", "feedback"]
+    },
+    {
+      "asset_id": "animate-ui:components-base-dialog",
+      "reason": "代表性的弹层过渡候选，必须保留焦点和 reduced-motion。",
+      "use_cases": ["micro-motion", "dialog"]
+    },
+    {
+      "asset_id": "animate-ui:primitives-texts-counting-number",
+      "reason": "KPI 数字变化的选择性动效候选。",
+      "use_cases": ["micro-motion", "kpi-card"]
+    },
+    {
+      "asset_id": "motion-primitives:text-effect",
+      "reason": "Agent 状态与首次引导的轻量文字过渡候选。",
+      "use_cases": ["micro-motion", "text-motion"]
+    },
+    {
+      "asset_id": "motion-primitives:animated-number",
+      "reason": "与 Magic/React Bits/Animate 数字动效并排比较的 MIT 候选。",
+      "use_cases": ["micro-motion", "kpi-card"]
+    },
+    {
+      "asset_id": "motion-primitives:disclosure",
+      "reason": "筛选说明、推理详情和辅助内容展开的轻量候选。",
+      "use_cases": ["micro-motion", "disclosure"]
     }
   ]
 }

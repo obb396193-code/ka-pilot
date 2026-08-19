@@ -33,6 +33,11 @@ test("starter pack contains only real public-source assets across the approved n
     "magic-ui",
     "react-bits",
     "tweakcn",
+    "ai-elements",
+    "kibo-ui",
+    "dice-ui",
+    "animate-ui",
+    "motion-primitives",
   ]);
   const seenSources = new Set();
   const seenIds = new Set();

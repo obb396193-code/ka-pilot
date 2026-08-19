@@ -11,7 +11,19 @@ const JSON_OUTPUT = new URL("docs/frontend/ui-assets/source-download-manifest.js
 const MARKDOWN_OUTPUT = new URL("docs/frontend/ui-assets/source-download-status.md", REPOSITORY_ROOT);
 const STARTER_CACHE_MANIFEST = new URL("docs/frontend/ui-assets/source-cache/manifest.json", REPOSITORY_ROOT);
 
-const THIRD_PARTY_DIRECTORIES = ["coss", "reui", "tremor", "aceternity", "magic-ui", "react-bits"];
+const THIRD_PARTY_DIRECTORIES = [
+  "coss",
+  "reui",
+  "tremor",
+  "aceternity",
+  "magic-ui",
+  "react-bits",
+  "ai-elements",
+  "kibo-ui",
+  "dice-ui",
+  "animate-ui",
+  "motion-primitives",
+];
 const RELEVANT_PACKAGES = [
   "shadcn",
   "radix-ui",
@@ -20,6 +32,8 @@ const RELEVANT_PACKAGES = [
   "@tremor/react",
   "recharts",
   "echarts",
+  "ai",
+  "motion",
 ];
 
 function sha256(value) {
@@ -133,7 +147,7 @@ export function runtimeManifestMarkdown(manifest) {
     `- ${manifest.catalog_snapshot.item_count.toLocaleString("en-US")} 条目录均是元数据；完整 upstream source cache 为 ${summary.fully_cached_catalog_items}。`,
     `- 运行仓已有 ${summary.runtime_local_ui_source_files} 个 \`components/ui/*.tsx\` 本地源码文件，其中 ${summary.runtime_imported_local_ui_files} 个被当前源码显式引用。`,
     `- 这些文件的 shadcn 来源只能由 \`components.json.style=${manifest.components_config.style}\` 与路径推断；精确 upstream ref/hash 已验证 0 个。`,
-    `- coss、ReUI、Tremor、Aceternity、Magic UI、React Bits 的来源隔离目录当前合计 ${summary.selected_third_party_source_files} 个源码文件。`,
+    `- 11 个第三方来源隔离目录当前合计 ${summary.selected_third_party_source_files} 个源码文件。`,
     `- 独立 starter cache 已保存 ${summary.starter_cached_roots} 个根资产、${summary.starter_cached_entries} 个缓存条目、${summary.starter_cached_files} 份源码文件；失败 ${summary.starter_cache_failures}。这些文件尚未安装进运行仓。`,
     "",
     "所以不能说“所有目录源码已下载”。准确说法是：目录全量可查；高频公开源码已在隔离缓存中可复核；现有 shadcn 风格本地源码可运行但 provenance 待补；第三方缓存尚未接入运行仓。",

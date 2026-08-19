@@ -60,6 +60,27 @@ test("only follows explicit same-source registry dependencies", () => {
   );
 
   assert.deepEqual(extractSameSourceDependencies("magic-ui", { registryDependencies: ["button"] }), []);
+  assert.deepEqual(
+    extractSameSourceDependencies("dice-ui", {
+      registryDependencies: ["data-grid", "button", "@diceui/file-upload"],
+    }),
+    [
+      {
+        name: "data-grid",
+        url: "https://github.com/sadmann7/diceui/tree/main/docs/components/data-grid",
+      },
+      { name: "file-upload", url: "https://diceui.com/r/radix-vega/file-upload.json" },
+    ],
+  );
+  assert.deepEqual(
+    extractSameSourceDependencies("animate-ui", {
+      registryDependencies: ["@animate-ui/primitives-buttons-ripple", "button"],
+    }),
+    [{
+      name: "primitives-buttons-ripple",
+      url: "https://animate-ui.com/r/primitives-buttons-ripple.json",
+    }],
+  );
 });
 
 test("writes the exact public registry payload and verifies its SHA-256", async () => {

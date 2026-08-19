@@ -13,7 +13,7 @@
 | 官方目录快照 | `catalogs/<source>.json`、`catalogs/index.json` | JSON schema v2 | 名称、类型、分类、预览、item URL、安装/获取方式、底层、依赖、许可证、访问层级、上游 ref | 不代表源码已下载 |
 | 跨库能力索引 | `capabilities.json` | JSON | 同一日期选择、表格、筛选、动效等能力的多来源候选 | 不代表已选首选项 |
 | 访问与完整性审计 | `coverage-audit.json/.md` | JSON + Markdown | 官方覆盖口径、Free/Pro/Ultimate、会员/401、动态未知和不能混算的 variant | 不代表能绕过付费或登录 |
-| 高频隔离缓存 | `starter-pack.json`、`source-cache/manifest.json`、`source-cache/<source>/...` | JSON + 官方原始 payload/source | 48 个根资产、41 个传递依赖、93 份源码文件、官方 URL、hash、许可与文件路径 | 不代表已批准、已适配或已进入应用编译 |
+| 高频隔离缓存 | `starter-pack.json`、`source-cache/manifest.json`、`source-cache/<source>/...` | JSON + 官方原始 payload/source | 69 个根资产、55 个传递依赖、137 份源码文件、官方 URL、hash、许可与文件路径 | 不代表已批准、已适配或已进入应用编译 |
 | 付费免费替代 | `free-alternatives.json/.md` | JSON + Markdown | 每个付费能力的同品牌 Free、MIT/Apache/ISC 候选或独立组合层建议 | 不包含付费源码，也不保证视觉一比一复刻 |
 | 展厅与准入记录 | `showroom.html`、`showroom-data.json`、`discovery.json/.md` | 离线 HTML + JSON + Markdown | 可视化筛选、风格比较、缓存/付费边界、新来源准入状态 | 不代表已下载或安装 |
 | 运行时源码账 | `source-download-manifest.json`、`source-download-status.md` | JSON + Markdown | 本地源码路径、SHA-256、引用数、provenance 可信度、第三方隔离目录 | 不把手写/来历不明文件认作官方源码 |
@@ -51,11 +51,11 @@
 
 目录是可重复生成的上游快照，A 方案缓存采用独立 manifest overlay：`source-cache/manifest.json.entries[].asset_id` 命中时才可称“隔离源码已缓存”。不得仅根据目录中的 `source_cache_status` 推断缓存命中，更不得把隔离缓存误标为 `vendored/adapted`。
 
-`local_path` 为空时，不得标运行时 `vendored/adapted`。当前 22 个 `apps/web/components/ui/*.tsx` 是运行时本地源码，但缺精确安装 manifest，所以单列在运行时账中标为 inferred，不反向伪造目录下载状态。A 缓存中的 89 个条目也不写入运行时 manifest，直到某项真正被选定并复制到来源隔离组件目录。
+`local_path` 为空时，不得标运行时 `vendored/adapted`。当前 22 个 `apps/web/components/ui/*.tsx` 是运行时本地源码，但缺精确安装 manifest，所以单列在运行时账中标为 inferred，不反向伪造目录下载状态。A 缓存中的 124 个条目也不写入目录或运行时安装状态，直到某项真正被选定并复制到来源隔离组件目录。
 
 ### A 方案缓存 manifest
 
-每个缓存条目至少保存 `asset_id/source/upstream_name/root_or_dependency/source_url/resolved_url/license/fetched_at/http_status/sha256/hash_scope/local_path/cache_status`。Registry payload 还保留 `files[].content` 与 `registry_dependencies`；GitHub tree 逐个 raw 文件保存 `source_path/resolved_url/sha256/bytes`。当前汇总为 48 roots、41 dependencies、89 entries、93 files、0 failures。
+每个缓存条目至少保存 `asset_id/source/upstream_name/root_or_dependency/source_url/resolved_url/license/fetched_at/http_status/sha256/hash_scope/local_path/cache_status`。Registry payload 还保留 `files[].content` 与 `registry_dependencies`；GitHub tree 逐个 raw 文件保存 `source_path/resolved_url/sha256/bytes`。当前汇总为 69 roots、55 dependencies、124 entries、137 files、0 failures。
 
 ### 免费替代映射
 

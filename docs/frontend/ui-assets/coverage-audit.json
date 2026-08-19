@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-19T15:29:07.580Z",
+  "generated_at": "2026-08-19T15:38:06.845Z",
   "terminology": {
     "catalog_item": "Discoverable normalized metadata record; does not mean source is downloaded.",
     "public_source": "Official source/item endpoint is available without a paid license.",

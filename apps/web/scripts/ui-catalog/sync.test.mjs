@@ -262,4 +262,5 @@ test("routes Dice, Animate and Motion Registry items to official previews", () =
     items: [{ name: "data-grid-demo", type: "registry:example", files: [{ path: "data-grid-demo.tsx" }] }],
   }, context)[0];
   assert.equal(dice.preview_url, "https://diceui.com/docs/components/radix/data-grid");
+  assert.equal(dice.source_url, "https://diceui.com/r/radix-vega/data-grid-demo.json");
 });

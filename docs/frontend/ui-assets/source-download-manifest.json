@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-19T15:29:07.580Z",
+  "generated_at": "2026-08-19T15:38:06.845Z",
   "runtime_root": "apps/web",
   "catalog_snapshot": {
     "item_count": 7056,
@@ -15,10 +15,10 @@
     "provenance_inferred_files": 22,
     "selected_third_party_source_files": 0,
     "fully_cached_catalog_items": 0,
-    "starter_cached_entries": 89,
-    "starter_cached_roots": 48,
-    "starter_cached_dependencies": 41,
-    "starter_cached_files": 93,
+    "starter_cached_entries": 124,
+    "starter_cached_roots": 69,
+    "starter_cached_dependencies": 55,
+    "starter_cached_files": 137,
     "starter_cache_failures": 0
   },
   "components_config": {
@@ -32,7 +32,9 @@
     "@base-ui/react": null,
     "@tremor/react": null,
     "recharts": "^3.8.0",
-    "echarts": null
+    "echarts": null,
+    "ai": null,
+    "motion": null
   },
   "local_ui_components": [
     {
@@ -328,14 +330,19 @@
     "tremor": [],
     "aceternity": [],
     "magic-ui": [],
-    "react-bits": []
+    "react-bits": [],
+    "ai-elements": [],
+    "kibo-ui": [],
+    "dice-ui": [],
+    "animate-ui": [],
+    "motion-primitives": []
   },
   "isolated_starter_cache": {
     "runtime_imported": false,
-    "entries": 89,
-    "roots": 48,
-    "dependencies": 41,
-    "source_files": 93,
+    "entries": 124,
+    "roots": 69,
+    "dependencies": 55,
+    "source_files": 137,
     "failures": [],
     "by_source": {
       "aceternity": {
@@ -344,16 +351,46 @@
         "roots": 6,
         "dependencies": 1
       },
+      "ai-elements": {
+        "entries": 8,
+        "files": 8,
+        "roots": 6,
+        "dependencies": 2
+      },
+      "animate-ui": {
+        "entries": 11,
+        "files": 11,
+        "roots": 3,
+        "dependencies": 8
+      },
       "coss": {
         "entries": 44,
         "files": 44,
         "roots": 12,
         "dependencies": 32
       },
+      "dice-ui": {
+        "entries": 7,
+        "files": 16,
+        "roots": 3,
+        "dependencies": 4
+      },
+      "kibo-ui": {
+        "entries": 6,
+        "files": 6,
+        "roots": 6,
+        "dependencies": 0
+      },
       "magic-ui": {
         "entries": 7,
         "files": 7,
         "roots": 7,
+        "dependencies": 0
+      },
+      "motion-primitives": {
+        "entries": 3,
+        "files": 3,
+        "roots": 3,
         "dependencies": 0
       },
       "react-bits": {
