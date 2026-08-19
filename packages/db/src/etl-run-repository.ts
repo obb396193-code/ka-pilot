@@ -5,7 +5,7 @@ export class EtlRunRepository {
 
   async startRun(
     jobId: string,
-    runKind: "full" | "incr",
+    runKind: "full" | "incr" | "backfill_coordinator" | "backfill_day" | "canonical" | "quality",
     scope: Record<string, unknown>,
   ): Promise<number> {
     const workspaceId =

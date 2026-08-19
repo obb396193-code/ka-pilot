@@ -1,4 +1,5 @@
 import {
+  BackfillRepository,
   JobRepository,
   OutboundMessageRepository,
   createPool,
@@ -15,6 +16,7 @@ async function main(): Promise<void> {
   await runMigrations({ databaseUrl: config.databaseUrl });
   const pool = createPool(config.databaseUrl);
   const recovery = await new JobRepository(pool).recoverStaleLeases(10 * 60);
+  await new BackfillRepository(pool).refreshRunningBatches();
   const notifyFailure = createFailureNotifier(new OutboundMessageRepository(pool));
   await Promise.all(
     recovery.failed.map((job) =>

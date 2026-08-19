@@ -17,7 +17,7 @@ export interface RawMetricRecord {
 export interface EtlRunStore {
   startRun(
     jobId: string,
-    runKind: "full" | "incr",
+    runKind: "full" | "incr" | "backfill_coordinator" | "backfill_day" | "canonical" | "quality",
     scope: Record<string, unknown>,
   ): Promise<number>;
   appendRaw(records: readonly RawMetricRecord[]): Promise<void>;

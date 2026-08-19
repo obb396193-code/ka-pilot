@@ -1,4 +1,5 @@
 import {
+  BackfillRepository,
   CredentialRepository,
   EtlRunRepository,
   JobRepository,
@@ -9,6 +10,8 @@ import {
 } from "@ka/db";
 
 import { createCanonicalHandler } from "./etl/canonical-handler.js";
+import { createBackfillCoordinatorHandler } from "./backfill/coordinator-handler.js";
+import { createBackfillDayHandler } from "./backfill/day-handler.js";
 import { createFullEtlHandler } from "./etl/full-handler.js";
 import { createIncrementalEtlHandler } from "./etl/incr-handler.js";
 import { JobConsumer } from "./jobs/consumer.js";
@@ -33,6 +36,8 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
   const rawMetrics = new RawMetricsRepository(options.pool);
   const metrics = new MetricsRepository(options.pool);
   const outbound = new OutboundMessageRepository(options.pool);
+  const batches = new BackfillRepository(options.pool);
+  const notifyFailure = createFailureNotifier(outbound);
 
   const etlStore = {
     startRun: etlRuns.startRun.bind(etlRuns),
@@ -50,6 +55,17 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
       etl_incr: identity(
         createIncrementalEtlHandler({ qihang: options.qihang, store: etlStore }),
       ),
+      backfill_historical: identity(
+        createBackfillCoordinatorHandler({
+          qihang: options.qihang,
+          batches,
+          jobs,
+          store: etlStore,
+        }),
+      ),
+      backfill_day: identity(
+        createBackfillDayHandler({ qihang: options.qihang, store: etlStore, jobs }),
+      ),
       canonical_merge: createCanonicalHandler({
         store: {
           loadMergeInputs: rawMetrics.loadMergeInputs.bind(rawMetrics),
@@ -61,7 +77,19 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
     },
     {
       leaseSeconds: options.leaseSeconds,
-      onTerminalFailure: createFailureNotifier(outbound),
+      onTerminalFailure: async (job, failure) => {
+        await notifyFailure(job, failure);
+        const backfillId = job.payload.backfillId;
+        if (job.jobType === "backfill_day" && typeof backfillId === "number" && job.workspaceId) {
+          await batches.refreshProgress(job.workspaceId, backfillId);
+        }
+      },
+      onCompleted: async (job) => {
+        const backfillId = job.payload.backfillId;
+        if (job.jobType === "backfill_day" && typeof backfillId === "number" && job.workspaceId) {
+          await batches.refreshProgress(job.workspaceId, backfillId);
+        }
+      },
       ...(options.onNotificationError === undefined
         ? {}
         : { onNotificationError: options.onNotificationError }),

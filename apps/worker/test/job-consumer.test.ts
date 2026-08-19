@@ -109,4 +109,24 @@ describe("JobConsumer", () => {
       vi.useRealTimers();
     }
   });
+
+  it("runs completion bookkeeping only after the job is marked done", async () => {
+    const repository = repositoryFor(job());
+    const order: string[] = [];
+    vi.mocked(repository.markDone).mockImplementation(async () => {
+      order.push("done");
+    });
+    const consumer = new JobConsumer(
+      repository,
+      { etl_incr: vi.fn().mockResolvedValue(undefined) },
+      {
+        onCompleted: vi.fn(async () => {
+          order.push("bookkeeping");
+        }),
+      },
+    );
+
+    await consumer.processOnce();
+    expect(order).toEqual(["done", "bookkeeping"]);
+  });
 });

@@ -11,6 +11,7 @@ export interface JobConsumerOptions {
   onTerminalFailure?: (job: JobRecord, failure: TerminalFailure) => Promise<void>;
   onNotificationError?: (error: unknown) => void;
   heartbeatIntervalMs?: number;
+  onCompleted?: (job: JobRecord) => Promise<void>;
 }
 
 export interface TerminalFailure {
@@ -29,6 +30,7 @@ export class JobConsumer {
   private readonly onTerminalFailure: JobConsumerOptions["onTerminalFailure"];
   private readonly onNotificationError: JobConsumerOptions["onNotificationError"];
   private readonly heartbeatIntervalMs: number;
+  private readonly onCompleted: JobConsumerOptions["onCompleted"];
 
   constructor(
     private readonly repository: JobRepositoryPort,
@@ -42,6 +44,7 @@ export class JobConsumer {
     this.onNotificationError = options.onNotificationError;
     this.heartbeatIntervalMs =
       options.heartbeatIntervalMs ?? Math.max(1_000, Math.floor((this.leaseSeconds * 1_000) / 2));
+    this.onCompleted = options.onCompleted;
   }
 
   async processOnce(): Promise<boolean> {
@@ -58,6 +61,7 @@ export class JobConsumer {
       }
       await this.runWithHeartbeat(job, handler);
       await this.repository.markDone(job.id);
+      await this.afterCompleted(job);
     } catch (error) {
       if (error instanceof BlockedAuthError) {
         const message = errorMessage(error);
@@ -74,6 +78,17 @@ export class JobConsumer {
       }
     }
     return true;
+  }
+
+  private async afterCompleted(job: JobRecord): Promise<void> {
+    if (!this.onCompleted) {
+      return;
+    }
+    try {
+      await this.onCompleted(job);
+    } catch (error) {
+      this.onNotificationError?.(error);
+    }
   }
 
   private async runWithHeartbeat(
