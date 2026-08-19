@@ -9,7 +9,7 @@ export interface AlertDeliveryInput {
   severity: WorkItemSeverity;
   now: Date;
   isQuietHours: boolean;
-  quietHoursEnd?: Date;
+  quietHoursEnd?: Date | undefined;
 }
 
 function requireQuietHoursEnd(input: AlertDeliveryInput): Date {
