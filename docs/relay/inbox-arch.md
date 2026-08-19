@@ -70,3 +70,17 @@
 建议优先级：1/2/3 为 B2 API 与生产扫描前硬门；4/5 可随集成通知接口一起定；6 由 B3 数据/操作史补齐。
 
 **B2 内核交付回执（2026-08-19）**：功能审查 SHA `9563625`。已完成可解释三规则、工作项状态机、PostgreSQL 并发去重/升级、通知分级与幂等扫描 Worker；四包 144 tests，覆盖率均 >80%，Critical/High 0。Web API、真实钉钉、生产扫描注册及上述契约缺口均如实暂缓。报告：`docs/evidence/B2-代码质量报告.md`。
+
+---
+
+### P-006 ⏳B3 安全执行最小契约差异｜be（Codex）
+
+1. `changeset_items` 缺 account_id/父级路径，无法对 campaign/unit/creative 实现“同账户写冲突锁”；请冻结解析来源或补归属快照。
+2. `from_value/to_value TEXT` 无类型和“媒体默认值”标志；请裁决 typed value schema，避免数字/布尔/JSON 字符串歧义。
+3. 请冻结 changeset 完整动作状态机，尤其 dry-run 是否为 confirm 硬前置、failed 是否允许重试、unknown 如何 reconcile、rolled_back 何时写入。
+4. 请冻结 execution_run status 与 item 级 `RESULT_JSON` schema；当前实证只证明标记行可读，不代表业务回执结构已定。
+5. `changesets` 未存 dry-run hash/确认 hash；L2 卡片要求变更集 Hash 校验。请裁决 hash 算法、参与字段和失效条件。
+6. API 需明确 409 冲突 DTO、部分成功 DTO、rollback 仅成功项还是全项、确认幂等响应。
+7. UNKNOWN 必须先只读核媒体态再决定，真实查询接口与超时语义需内网 OS 提供样本。
+
+Codex 本批只实现内部状态、严格字符串快照比较、审计和端口；不修改契约。
