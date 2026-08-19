@@ -12,7 +12,7 @@
 - [x] 设计与 TDD 实施计划
 - [x] 实时优先的任务优先级常量
 - [x] 确定性 job UUID
-- [ ] 幂等入队、lease heartbeat 与启动回收
+- [x] 幂等入队、lease heartbeat 与启动回收
 - [ ] backfill_jobs 仓储与协调器
 - [ ] 独立 backfill_day handler
 - [ ] canonical 批次留痕与质量阶段衔接
@@ -32,3 +32,4 @@
 | 日期 | 检查 | 结果 |
 |---|---|---|
 | 2026-08-19 | 优先级与确定性 UUID TDD | ✅ 2 tests + typecheck + lint |
+| 2026-08-19 | Job 幂等、heartbeat、启动回收 TDD | ✅ DB 6 + Worker 7 tests；typecheck + lint |

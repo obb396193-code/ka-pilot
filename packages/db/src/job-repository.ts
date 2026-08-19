@@ -28,9 +28,11 @@ export interface JobRepositoryPort {
   markDone(id: string): Promise<void>;
   markFailure(job: JobRecord, message: string, retryAt: Date): Promise<void>;
   markBlockedAuth(id: string, message: string): Promise<void>;
+  extendLease(id: string, leaseSeconds: number): Promise<void>;
 }
 
 export interface NewJob {
+  id?: string;
   workspaceId: string | null;
   jobType: string;
   payload: Record<string, unknown>;
@@ -98,11 +100,13 @@ export class JobRepository implements JobRepositoryPort {
   async enqueue(job: NewJob): Promise<string> {
     const result = await this.pool.query<{ id: string }>(
       `INSERT INTO jobs (
-         workspace_id, job_type, payload, priority, credential_owner_user_id,
+         id, workspace_id, job_type, payload, priority, credential_owner_user_id,
          max_attempts, run_after, status
-       ) VALUES ($1, $2, $3, $4, $5, $6, $7, 'queued')
+       ) VALUES (COALESCE($1::uuid, gen_random_uuid()), $2, $3, $4, $5, $6, $7, $8, 'queued')
+       ON CONFLICT (id) DO NOTHING
        RETURNING id`,
       [
+        job.id ?? null,
         job.workspaceId,
         job.jobType,
         job.payload,
@@ -113,10 +117,36 @@ export class JobRepository implements JobRepositoryPort {
       ],
     );
     const id = result.rows[0]?.id;
-    if (!id) {
+    if (id) {
+      return id;
+    }
+    if (!job.id) {
       throw new Error("Failed to enqueue job");
     }
-    return id;
+    const existing = await this.pool.query<{ id: string }>(
+      `SELECT id
+       FROM jobs
+       WHERE id = $1
+         AND workspace_id IS NOT DISTINCT FROM $2::uuid
+         AND job_type = $3
+         AND payload = $4::jsonb
+         AND priority = $5
+         AND credential_owner_user_id IS NOT DISTINCT FROM $6::uuid
+         AND max_attempts = $7`,
+      [
+        job.id,
+        job.workspaceId,
+        job.jobType,
+        job.payload,
+        job.priority ?? 5,
+        job.credentialOwnerUserId,
+        job.maxAttempts ?? 3,
+      ],
+    );
+    if (existing.rows[0]) {
+      return existing.rows[0].id;
+    }
+    throw new Error(`Deterministic job ${job.id} conflicts with an existing job`);
   }
 
   async leaseNext(leaseSeconds: number): Promise<JobRecord | null> {
@@ -199,6 +229,50 @@ export class JobRepository implements JobRepositoryPort {
        WHERE id = $1 AND status IN ('leased', 'running')`,
       [id, message.slice(0, 2_000)],
     );
+  }
+
+  async extendLease(id: string, leaseSeconds: number): Promise<void> {
+    if (!Number.isInteger(leaseSeconds) || leaseSeconds <= 0) {
+      throw new Error("leaseSeconds must be a positive integer");
+    }
+    const result = await this.pool.query(
+      `UPDATE jobs
+       SET lease_until = now() + ($2 * interval '1 second')
+       WHERE id = $1 AND status = 'running'`,
+      [id, leaseSeconds],
+    );
+    if (result.rowCount !== 1) {
+      throw new Error(`Cannot extend lease for non-running job ${id}`);
+    }
+  }
+
+  async recoverStaleLeases(staleSeconds: number): Promise<{
+    requeued: number;
+    failed: JobRecord[];
+  }> {
+    if (!Number.isInteger(staleSeconds) || staleSeconds <= 0) {
+      throw new Error("staleSeconds must be a positive integer");
+    }
+    const result = await this.pool.query<JobRow>(
+      `UPDATE jobs
+       SET status = CASE WHEN attempts >= max_attempts THEN 'failed' ELSE 'queued' END,
+           lease_until = NULL,
+           run_after = CASE WHEN attempts >= max_attempts THEN run_after ELSE now() END,
+           finished_at = CASE WHEN attempts >= max_attempts THEN now() ELSE NULL END,
+           last_error = CASE
+             WHEN attempts >= max_attempts THEN 'Lease expired after maximum attempts'
+             ELSE 'Recovered stale lease at worker startup'
+           END
+       WHERE status IN ('leased', 'running')
+         AND lease_until < now() - ($1 * interval '1 second')
+       RETURNING *`,
+      [staleSeconds],
+    );
+    const recovered = result.rows.map(mapJob);
+    return {
+      requeued: recovered.filter((job) => job.status === "queued").length,
+      failed: recovered.filter((job) => job.status === "failed"),
+    };
   }
 
   private async updateExpectedStatus(

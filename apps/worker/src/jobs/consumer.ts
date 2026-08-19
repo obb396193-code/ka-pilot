@@ -10,6 +10,7 @@ export interface JobConsumerOptions {
   now?: () => Date;
   onTerminalFailure?: (job: JobRecord, failure: TerminalFailure) => Promise<void>;
   onNotificationError?: (error: unknown) => void;
+  heartbeatIntervalMs?: number;
 }
 
 export interface TerminalFailure {
@@ -27,6 +28,7 @@ export class JobConsumer {
   private readonly now: () => Date;
   private readonly onTerminalFailure: JobConsumerOptions["onTerminalFailure"];
   private readonly onNotificationError: JobConsumerOptions["onNotificationError"];
+  private readonly heartbeatIntervalMs: number;
 
   constructor(
     private readonly repository: JobRepositoryPort,
@@ -38,6 +40,8 @@ export class JobConsumer {
     this.now = options.now ?? (() => new Date());
     this.onTerminalFailure = options.onTerminalFailure;
     this.onNotificationError = options.onNotificationError;
+    this.heartbeatIntervalMs =
+      options.heartbeatIntervalMs ?? Math.max(1_000, Math.floor((this.leaseSeconds * 1_000) / 2));
   }
 
   async processOnce(): Promise<boolean> {
@@ -52,7 +56,7 @@ export class JobConsumer {
       if (!handler) {
         throw new Error(`No handler registered for job type ${job.jobType}`);
       }
-      await handler(job);
+      await this.runWithHeartbeat(job, handler);
       await this.repository.markDone(job.id);
     } catch (error) {
       if (error instanceof BlockedAuthError) {
@@ -70,6 +74,35 @@ export class JobConsumer {
       }
     }
     return true;
+  }
+
+  private async runWithHeartbeat(
+    job: JobRecord,
+    handler: JobHandlers[string],
+  ): Promise<void> {
+    let heartbeatError: unknown;
+    let heartbeat = Promise.resolve();
+    const timer = setInterval(() => {
+      if (heartbeatError !== undefined) {
+        return;
+      }
+      heartbeat = heartbeat
+        .then(() => this.repository.extendLease(job.id, this.leaseSeconds))
+        .catch((error: unknown) => {
+          heartbeatError = error;
+        });
+    }, this.heartbeatIntervalMs);
+    try {
+      await handler(job);
+      await heartbeat;
+      if (heartbeatError !== undefined) {
+        throw new Error(`Job lease heartbeat failed: ${errorMessage(heartbeatError)}`, {
+          cause: heartbeatError,
+        });
+      }
+    } finally {
+      clearInterval(timer);
+    }
   }
 
   async run(signal: AbortSignal, pollIntervalMs = 1_000): Promise<void> {

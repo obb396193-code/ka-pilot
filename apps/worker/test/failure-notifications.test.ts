@@ -11,6 +11,7 @@ function repositoryFor(job: Record<string, unknown>) {
     markDone: vi.fn().mockResolvedValue(undefined),
     markFailure: vi.fn().mockResolvedValue(undefined),
     markBlockedAuth: vi.fn().mockResolvedValue(undefined),
+    extendLease: vi.fn().mockResolvedValue(undefined),
   };
 }
 

@@ -122,4 +122,76 @@ describe("JobRepository", () => {
       credential_owner_user_id: user.rows[0]!.id,
     });
   });
+
+  it("enqueues a deterministic job idempotently without changing its owner", async () => {
+    await pool.query("DELETE FROM jobs");
+    const workspace = await pool.query<{ id: string }>(
+      "INSERT INTO workspaces (name) VALUES ('idempotent-workspace') RETURNING id",
+    );
+    const owners = await pool.query<{ id: string }>(
+      `INSERT INTO users (workspace_id, name)
+       VALUES ($1, 'owner-a'), ($1, 'owner-b') RETURNING id`,
+      [workspace.rows[0]!.id],
+    );
+    const deterministicId = "aaaaaaaa-aaaa-5aaa-8aaa-aaaaaaaaaaaa";
+    const input = {
+      id: deterministicId,
+      workspaceId: workspace.rows[0]!.id,
+      jobType: "backfill_day",
+      payload: { backfillId: 7, ds: "2026-08-19" },
+      priority: 9,
+      credentialOwnerUserId: owners.rows[0]!.id,
+    };
+
+    await expect(repository.enqueue(input)).resolves.toBe(deterministicId);
+    await expect(repository.enqueue(input)).resolves.toBe(deterministicId);
+    await expect(
+      repository.enqueue({ ...input, credentialOwnerUserId: owners.rows[1]!.id }),
+    ).rejects.toThrow("conflicts with an existing job");
+
+    const result = await pool.query<{ count: string; credential_owner_user_id: string }>(
+      `SELECT count(*)::text AS count, max(credential_owner_user_id::text) AS credential_owner_user_id
+       FROM jobs WHERE id = $1`,
+      [deterministicId],
+    );
+    expect(result.rows[0]).toEqual({
+      count: "1",
+      credential_owner_user_id: owners.rows[0]!.id,
+    });
+  });
+
+  it("extends active leases and recovers only leases stale beyond the startup threshold", async () => {
+    await pool.query("DELETE FROM jobs");
+    const inserted = await pool.query<{ id: string; job_type: string }>(`
+      INSERT INTO jobs (job_type, status, lease_until, attempts, max_attempts)
+      VALUES
+        ('recover-me', 'running', now() - interval '11 minutes', 1, 3),
+        ('fail-me', 'leased', now() - interval '12 minutes', 3, 3),
+        ('still-fresh', 'running', now() - interval '5 minutes', 1, 3),
+        ('heartbeat', 'running', now() + interval '1 minute', 1, 3)
+      RETURNING id, job_type
+    `);
+    const heartbeat = inserted.rows.find((row) => row.job_type === "heartbeat")!;
+
+    await repository.extendLease(heartbeat.id, 120);
+    const lease = await pool.query<{ extended: boolean }>(
+      "SELECT lease_until > now() + interval '100 seconds' AS extended FROM jobs WHERE id = $1",
+      [heartbeat.id],
+    );
+    expect(lease.rows[0]?.extended).toBe(true);
+
+    const recovery = await repository.recoverStaleLeases(600);
+    expect(recovery.requeued).toBe(1);
+    expect(recovery.failed.map((job) => job.jobType)).toEqual(["fail-me"]);
+
+    const states = await pool.query<{ job_type: string; status: string }>(
+      "SELECT job_type, status FROM jobs ORDER BY job_type",
+    );
+    expect(states.rows).toEqual([
+      { job_type: "fail-me", status: "failed" },
+      { job_type: "heartbeat", status: "running" },
+      { job_type: "recover-me", status: "queued" },
+      { job_type: "still-fresh", status: "running" },
+    ]);
+  });
 });

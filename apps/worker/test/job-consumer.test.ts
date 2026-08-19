@@ -29,6 +29,7 @@ function repositoryFor(nextJob: JobRecord | null): JobRepositoryPort {
     markDone: vi.fn(async () => undefined),
     markFailure: vi.fn(async () => undefined),
     markBlockedAuth: vi.fn(async () => undefined),
+    extendLease: vi.fn(async () => undefined),
   };
 }
 
@@ -79,5 +80,33 @@ describe("JobConsumer", () => {
     const repository = repositoryFor(null);
     const consumer = new JobConsumer(repository, {});
     expect(await consumer.processOnce()).toBe(false);
+  });
+
+  it("keeps a long-running handler leased until it completes", async () => {
+    vi.useFakeTimers();
+    try {
+      const repository = repositoryFor(job());
+      let finish: (() => void) | undefined;
+      const handler = vi.fn(
+        async () =>
+          new Promise<void>((resolve) => {
+            finish = resolve;
+          }),
+      );
+      const consumer = new JobConsumer(
+        repository,
+        { etl_incr: handler },
+        { leaseSeconds: 60, heartbeatIntervalMs: 10 },
+      );
+
+      const processing = consumer.processOnce();
+      await vi.advanceTimersByTimeAsync(11);
+      expect(repository.extendLease).toHaveBeenCalledWith("job-1", 60);
+      finish?.();
+      await processing;
+      expect(repository.markDone).toHaveBeenCalledWith("job-1");
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

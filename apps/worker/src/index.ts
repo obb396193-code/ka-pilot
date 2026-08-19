@@ -1,13 +1,29 @@
-import { createPool, runMigrations } from "@ka/db";
+import {
+  JobRepository,
+  OutboundMessageRepository,
+  createPool,
+  runMigrations,
+} from "@ka/db";
 
 import { loadWorkerConfig } from "./config.js";
 import { QihangClient } from "./qihang/client.js";
 import { createWorkerConsumer } from "./runtime.js";
+import { createFailureNotifier } from "./notifications/failure-notifier.js";
 
 async function main(): Promise<void> {
   const config = loadWorkerConfig(process.env);
   await runMigrations({ databaseUrl: config.databaseUrl });
   const pool = createPool(config.databaseUrl);
+  const recovery = await new JobRepository(pool).recoverStaleLeases(10 * 60);
+  const notifyFailure = createFailureNotifier(new OutboundMessageRepository(pool));
+  await Promise.all(
+    recovery.failed.map((job) =>
+      notifyFailure(job, {
+        kind: "failed",
+        message: "Lease expired after maximum attempts",
+      }),
+    ),
+  );
   const qihang = new QihangClient({
     ...(config.qihangBaseUrl === undefined ? {} : { baseUrl: config.qihangBaseUrl }),
   });
