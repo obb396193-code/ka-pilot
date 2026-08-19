@@ -26,19 +26,29 @@ export class SdkMessageAdapter {
 
   private adaptStreamEvent(value: unknown): AgentRunEvent[] {
     if (!isRecord(value) || typeof value.type !== "string") return [];
-    if (value.type === "content_block_delta" && isRecord(value.delta)) {
-      if (value.delta.type === "text_delta" && typeof value.delta.text === "string") {
-        return [this.event("delta", { text: value.delta.text })];
-      }
-      return [];
+    switch (value.type) {
+      case "content_block_delta":
+        return this.textDelta(value.delta);
+      case "content_block_start":
+        return this.toolStart(value);
+      case "content_block_stop":
+        return this.toolStop(value);
+      case "message_delta":
+        return this.usageDelta(value.usage);
+      default:
+        return [];
     }
-    if (value.type === "content_block_start") return this.toolStart(value);
-    if (value.type === "content_block_stop") return this.toolStop(value);
-    if (value.type === "message_delta" && isRecord(value.usage)) {
-      const payload = usagePayload(value.usage);
-      return Object.keys(payload).length === 0 ? [] : [this.event("usage", payload)];
-    }
-    return [];
+  }
+
+  private textDelta(value: unknown): AgentRunEvent[] {
+    if (!isRecord(value) || value.type !== "text_delta" || typeof value.text !== "string") return [];
+    return [this.event("delta", { text: value.text })];
+  }
+
+  private usageDelta(value: unknown): AgentRunEvent[] {
+    if (!isRecord(value)) return [];
+    const payload = usagePayload(value);
+    return Object.keys(payload).length === 0 ? [] : [this.event("usage", payload)];
   }
 
   private toolStart(value: Record<string, unknown>): AgentRunEvent[] {

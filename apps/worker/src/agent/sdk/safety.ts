@@ -27,6 +27,7 @@ const SAFE_ENV_KEYS = new Set([
   "ANTHROPIC_BASE_URL",
   "ANTHROPIC_CUSTOM_HEADERS",
   "CLAUDE_AGENT_SDK_CLIENT_APP",
+  "CLAUDE_CODE_DISABLE_AUTO_MEMORY",
   "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
   "CLAUDE_CONFIG_DIR",
   "HOME",
@@ -124,6 +125,16 @@ export function createPreToolUseGuard(allowedTools: readonly string[]) {
 }
 
 export function assertSafeAgentOptions(options: Options, allowedToolNames: readonly string[]): void {
+  assertToolIsolation(options, allowedToolNames);
+  assertFilesystemIsolation(options);
+  assertRuntimeIsolation(options);
+  assertSafeEnvironment(options.env);
+  if (!options.hooks?.PreToolUse?.[0]?.hooks[0]) {
+    throw new Error("Agent PreToolUse guard is required");
+  }
+}
+
+function assertToolIsolation(options: Options, allowedToolNames: readonly string[]): void {
   if (!Array.isArray(options.tools) || options.tools.length !== 0) {
     throw new Error("Agent built-in tools must remain disabled");
   }
@@ -133,6 +144,9 @@ export function assertSafeAgentOptions(options: Options, allowedToolNames: reado
   if (options.permissionMode !== "dontAsk" || options.allowDangerouslySkipPermissions === true) {
     throw new Error("Agent permission mode is unsafe");
   }
+}
+
+function assertFilesystemIsolation(options: Options): void {
   if (!Array.isArray(options.settingSources) || options.settingSources.length !== 0) {
     throw new Error("Agent filesystem settings sources must remain disabled");
   }
@@ -142,16 +156,19 @@ export function assertSafeAgentOptions(options: Options, allowedToolNames: reado
   if (!Array.isArray(options.plugins) || options.plugins.length !== 0) {
     throw new Error("Agent plugins must remain disabled");
   }
+}
+
+function assertRuntimeIsolation(options: Options): void {
   if (options.strictMcpConfig !== true || options.persistSession !== false) {
     throw new Error("Agent isolation flags are unsafe");
   }
   assertInProcessMcp(options.mcpServers);
-  const envKeys = Object.keys(options.env ?? {});
+}
+
+function assertSafeEnvironment(environment: Record<string, string | undefined> | undefined): void {
+  const envKeys = Object.keys(environment ?? {});
   if (envKeys.some((key) => !SAFE_ENV_KEYS.has(key)) || envKeys.length !== SAFE_ENV_KEYS.size) {
     throw new Error("Agent subprocess environment contains an unsafe or missing key");
-  }
-  if (!options.hooks?.PreToolUse?.[0]?.hooks[0]) {
-    throw new Error("Agent PreToolUse guard is required");
   }
 }
 
@@ -173,6 +190,7 @@ function buildSubprocessEnvironment(input: SafeAgentOptionsInput): Record<string
     TMPDIR: input.tmpDir,
     CLAUDE_CONFIG_DIR: join(input.home, ".claude"),
     CLAUDE_AGENT_SDK_CLIENT_APP: "ka-operating-platform/0.1.0",
+    CLAUDE_CODE_DISABLE_AUTO_MEMORY: "1",
     CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1",
     MCP_TOOL_TIMEOUT: String(input.toolTimeoutMs),
     NO_PROXY: "127.0.0.1,localhost,::1",
@@ -185,20 +203,39 @@ function buildSubprocessEnvironment(input: SafeAgentOptionsInput): Record<string
 }
 
 function assertSafeInput(input: SafeAgentOptionsInput): void {
+  assertModelBinding(input);
+  assertRuntimePaths(input);
+  assertLocalGateway(input.gateway.baseUrl);
+  assertRuntimeLimits(input);
+  assertHeaderValue(input.gateway.clientKey);
+  assertHeaderValue(input.gateway.credentialEnvelope);
+  Object.values(input.gateway.binding).forEach(assertHeaderValue);
+}
+
+function assertModelBinding(input: SafeAgentOptionsInput): void {
   if (input.model !== input.gateway.binding.model || input.model.trim() === "") {
     throw new Error("Agent runtime model must match the credential binding");
   }
   if (input.systemPrompt.trim() === "") throw new Error("Agent system prompt is required");
+}
+
+function assertRuntimePaths(input: SafeAgentOptionsInput): void {
   if (![input.cwd, input.home, input.tmpDir].every(isAbsolute)) {
     throw new Error("Agent runtime paths must be absolute");
   }
-  const gatewayUrl = new URL(input.gateway.baseUrl);
+}
+
+function assertLocalGateway(baseUrl: string): void {
+  const gatewayUrl = new URL(baseUrl);
   if (
     gatewayUrl.protocol !== "http:" ||
     !["127.0.0.1", "localhost", "[::1]"].includes(gatewayUrl.hostname)
   ) {
     throw new Error("Agent model gateway must be a localhost HTTP endpoint");
   }
+}
+
+function assertRuntimeLimits(input: SafeAgentOptionsInput): void {
   if (
     !Number.isSafeInteger(input.maxTurns) ||
     input.maxTurns <= 0 ||
@@ -211,9 +248,6 @@ function assertSafeInput(input: SafeAgentOptionsInput): void {
   ) {
     throw new Error("Agent limits must be finite positive values");
   }
-  assertHeaderValue(input.gateway.clientKey);
-  assertHeaderValue(input.gateway.credentialEnvelope);
-  Object.values(input.gateway.binding).forEach(assertHeaderValue);
 }
 
 function assertHeaderValue(value: string): void {

@@ -66,10 +66,7 @@ export class ClaudeAgentRuntime {
     input: ClaudeAgentRuntimeInput,
     emit: (event: AgentRunEvent) => void | Promise<void>,
   ): Promise<ClaudeAgentRuntimeResult> {
-    if (input.prompt.trim() === "") throw new Error("Agent prompt is required");
-    if (input.provider.providerId !== input.gateway.binding.providerId) {
-      throw new Error("Agent provider must match the credential binding");
-    }
+    assertRuntimeBinding(input);
     const abortController = new AbortController();
     const adapter = new SdkMessageAdapter();
     const options = buildSafeAgentOptions({
@@ -93,17 +90,36 @@ export class ClaudeAgentRuntime {
       }
       return buildRuntimeResult(finalResult, adapter.unknownMessageCount);
     } catch {
-      return {
-        outcome: "error",
-        code: timedOut ? "timeout" : "sdk_execution_failed",
-        estimatedCostUsd: readEstimatedCost(finalResult),
-        unknownMessageCount: adapter.unknownMessageCount,
-      };
+      return runtimeFailure(timedOut, finalResult, adapter.unknownMessageCount);
     } finally {
       clearTimeout(timer);
-      handle?.close?.();
+      closeQuery(handle);
     }
   }
+}
+
+function assertRuntimeBinding(input: ClaudeAgentRuntimeInput): void {
+  if (input.prompt.trim() === "") throw new Error("Agent prompt is required");
+  if (input.provider.providerId !== input.gateway.binding.providerId) {
+    throw new Error("Agent provider must match the credential binding");
+  }
+}
+
+function runtimeFailure(
+  timedOut: boolean,
+  finalResult: Record<string, unknown> | undefined,
+  unknownMessageCount: number,
+): ClaudeAgentRuntimeResult {
+  return {
+    outcome: "error",
+    code: timedOut ? "timeout" : "sdk_execution_failed",
+    estimatedCostUsd: readEstimatedCost(finalResult),
+    unknownMessageCount,
+  };
+}
+
+function closeQuery(handle: QueryHandle | undefined): void {
+  if (handle?.close !== undefined) handle.close();
 }
 
 export function redactSdkDiagnostic(input: string): string {

@@ -52,6 +52,7 @@ describe("Claude Agent SDK safety clamps", () => {
         "ANTHROPIC_BASE_URL",
         "ANTHROPIC_CUSTOM_HEADERS",
         "CLAUDE_AGENT_SDK_CLIENT_APP",
+        "CLAUDE_CODE_DISABLE_AUTO_MEMORY",
         "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
         "CLAUDE_CONFIG_DIR",
         "HOME",
@@ -64,6 +65,7 @@ describe("Claude Agent SDK safety clamps", () => {
     expect(JSON.stringify(options.env)).not.toContain("DATABASE_URL");
     expect(JSON.stringify(options.env)).not.toContain("MULTICA");
     expect(JSON.stringify(options.env)).not.toContain("provider-private-key");
+    expect(options.env?.CLAUDE_CODE_DISABLE_AUTO_MEMORY).toBe("1");
     expect(() => assertSafeAgentOptions(options, bundle.allowedToolNames)).not.toThrow();
   });
 

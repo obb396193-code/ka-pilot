@@ -210,22 +210,29 @@ function validateObjects(objects: readonly AgentContextObject[], refs: readonly 
 }
 
 function validateFact(fact: AgentEvidenceFact, evidenceIds: Set<string>): void {
-  if (!SAFE_ID.test(fact.evidenceId)) throw new Error("Agent evidence id is invalid");
-  if (evidenceIds.has(fact.evidenceId)) throw new Error(`Duplicate Agent evidence id: ${fact.evidenceId}`);
+  assertEvidenceIdentity(fact.evidenceId, evidenceIds);
   evidenceIds.add(fact.evidenceId);
   safeText(fact.label, "fact label", 200);
   safeText(fact.displayValue, "fact display value", 500);
-  if (typeof fact.value === "number" && fact.definition?.trim() === undefined) {
-    throw new Error("Numeric Agent facts require a metric definition");
-  }
-  if (typeof fact.value === "number" && !Number.isFinite(fact.value)) {
-    throw new Error("Agent numeric fact must be finite");
-  }
+  assertNumericFact(fact.value, fact.definition);
   if (fact.metricKey !== undefined) safeText(fact.metricKey, "metric key", 100);
   if (fact.definition !== undefined) safeText(fact.definition, "metric definition", 1_000);
   if (!Number.isFinite(Date.parse(fact.dataCutoffAt))) {
     throw new Error("Agent fact dataCutoffAt must be a valid timestamp");
   }
+}
+
+function assertEvidenceIdentity(evidenceId: string, evidenceIds: ReadonlySet<string>): void {
+  if (!SAFE_ID.test(evidenceId)) throw new Error("Agent evidence id is invalid");
+  if (evidenceIds.has(evidenceId)) throw new Error(`Duplicate Agent evidence id: ${evidenceId}`);
+}
+
+function assertNumericFact(value: AgentEvidenceFact["value"], definition: string | undefined): void {
+  if (typeof value !== "number") return;
+  if (definition?.trim() === undefined) {
+    throw new Error("Numeric Agent facts require a metric definition");
+  }
+  if (!Number.isFinite(value)) throw new Error("Agent numeric fact must be finite");
 }
 
 function conservativeCutoff(objects: readonly AgentContextObject[], fallback: Date): string {
@@ -240,24 +247,39 @@ function safeJsonClone<T extends Record<string, unknown>>(value: T, label: strin
 
 function inspectJson(value: unknown, label: string, seen: WeakSet<object>, depth: number): void {
   if (depth > 12) throw new Error(`${label} exceeds the nesting limit`);
-  if (typeof value === "string") {
-    safeText(value, label, 100_000);
-    return;
-  }
-  if (typeof value === "number" && !Number.isFinite(value)) throw new Error(`${label} has a non-finite number`);
-  if (value === null || typeof value === "number" || typeof value === "boolean") return;
+  if (value === null) return;
+  if (inspectJsonPrimitive(value, label)) return;
   if (typeof value !== "object") throw new Error(`${label} must contain JSON values only`);
   if (seen.has(value)) throw new Error(`${label} must not contain circular values`);
   seen.add(value);
-  if (Array.isArray(value)) {
-    value.forEach((item) => inspectJson(item, label, seen, depth + 1));
-  } else {
-    for (const [key, nested] of Object.entries(value)) {
-      if (UNSAFE_KEY.test(key)) throw new Error(`${label} contains a credential-shaped key`);
-      inspectJson(nested, label, seen, depth + 1);
-    }
-  }
+  if (Array.isArray(value)) inspectJsonArray(value, label, seen, depth);
+  else inspectJsonRecord(value, label, seen, depth);
   seen.delete(value);
+}
+
+function inspectJsonPrimitive(value: unknown, label: string): boolean {
+  if (typeof value === "string") {
+    safeText(value, label, 100_000);
+    return true;
+  }
+  if (typeof value === "number" && !Number.isFinite(value)) throw new Error(`${label} has a non-finite number`);
+  return typeof value === "number" || typeof value === "boolean";
+}
+
+function inspectJsonArray(value: readonly unknown[], label: string, seen: WeakSet<object>, depth: number): void {
+  value.forEach((item) => inspectJson(item, label, seen, depth + 1));
+}
+
+function inspectJsonRecord(
+  value: object,
+  label: string,
+  seen: WeakSet<object>,
+  depth: number,
+): void {
+  for (const [key, nested] of Object.entries(value)) {
+    if (UNSAFE_KEY.test(key)) throw new Error(`${label} contains a credential-shaped key`);
+    inspectJson(nested, label, seen, depth + 1);
+  }
 }
 
 function safeText(value: string, label: string, maxLength: number): string {
