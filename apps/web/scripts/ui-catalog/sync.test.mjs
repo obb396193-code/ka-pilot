@@ -3,15 +3,18 @@ import test from "node:test";
 
 import {
   assertStableItemCount,
+  buildCatalogIndex,
   buildSnapshot,
   parseCossOrigin,
   parseAceternityHtml,
+  parseApprovedRegistry,
   parseReactBitsProSitemap,
   parseReactBitsTree,
   parseReui,
   parseShadcnRegistries,
   parseTremorLegacySitemap,
   parseTweakcnPresets,
+  parseKiboRegistryAndBlocks,
   shadcnExamplePreviewUrl,
   tremorComponentPreviewUrl,
 } from "./sync.mjs";
@@ -22,6 +25,47 @@ test("stale checks reject both upstream additions and removals", () => {
   assert.doesNotThrow(() => assertStableItemCount(12, 12));
   assert.throws(() => assertStableItemCount(12, 13), /item-count drift 12 -> 13/);
   assert.throws(() => assertStableItemCount(12, 11), /item-count drift 12 -> 11/);
+});
+
+test("catalog index totals every snapshot after a targeted refresh", () => {
+  const snapshots = [
+    {
+      source: "alpha",
+      coverage: "complete",
+      coverage_note: "alpha note",
+      upstream_ref: "sha256:alpha",
+      counts: {
+        total: 2,
+        by_access_status: { "public-source": 2 },
+        by_source_cache_status: { "not-cached": 2 },
+      },
+    },
+    {
+      source: "beta",
+      coverage: "partial",
+      coverage_note: "beta note",
+      upstream_ref: "sha256:beta",
+      counts: {
+        total: 3,
+        by_access_status: { "public-metadata-only": 1, "public-source": 2 },
+        by_source_cache_status: { cached: 1, "not-cached": 2 },
+      },
+    },
+  ];
+
+  const index = buildCatalogIndex(snapshots, {
+    fetchedAt: "2026-08-19T00:00:00.000Z",
+  });
+  assert.equal(index.total_items, 5);
+  assert.deepEqual(index.counts.by_access_status, {
+    "public-metadata-only": 1,
+    "public-source": 4,
+  });
+  assert.deepEqual(index.counts.by_source_cache_status, {
+    cached: 1,
+    "not-cached": 4,
+  });
+  assert.deepEqual(index.sources.map((source) => source.id), ["alpha", "beta"]);
 });
 
 test("routes shadcn and Tremor examples to their real documentation sections", () => {
@@ -175,4 +219,47 @@ test("parses only asset leaves from React Bits Pro and live Tremor legacy sitema
   assert.deepEqual(pro.map((item) => item.upstream_name), ["component/globe", "block/hero/hero-1", "agent-kit/skills/editorial"]);
   assert.equal(legacy.length, 2);
   assert(legacy.every((item) => item.maintenance_status === "maintenance-stale"));
+});
+
+test("normalizes approved Registry sources without losing source and access boundaries", () => {
+  const sample = { items: [
+    { name: "message", title: "Message", type: "registry:component", files: [{ path: "message.tsx" }] },
+    { name: "example-chatbot", type: "registry:block", files: [{ path: "chatbot.tsx" }] },
+  ] };
+  const items = parseApprovedRegistry("ai-elements", sample, context);
+
+  assert.equal(items.length, 2);
+  assert.equal(items[0].source, "ai-elements");
+  assert.equal(items[0].category, "ai-element");
+  assert.equal(items[0].source_url, "https://elements.ai-sdk.dev/api/registry/message.json");
+  assert.equal(items[1].kind, "block");
+  assert.equal(items[1].preview_url, "https://elements.ai-sdk.dev/examples/chatbot");
+});
+
+test("keeps Kibo Registry source separate from docs-only blocks", () => {
+  const registry = { items: [
+    { name: "gantt", type: "registry:ui", files: [{ path: "gantt.tsx" }] },
+  ] };
+  const homepage = `<a href="/blocks/codebase">Codebase</a><a href="/blocks/form">Form</a><a href="/components/gantt">Gantt</a>`;
+  const items = parseKiboRegistryAndBlocks(registry, homepage, context);
+
+  assert.deepEqual(items.map((item) => item.upstream_name), ["gantt", "block/codebase", "block/form"]);
+  assert.equal(items[0].access_status, "public-source");
+  assert(items.slice(1).every((item) => item.access_status === "public-metadata-only"));
+});
+
+test("routes Dice, Animate and Motion Registry items to official previews", () => {
+  const registry = { items: [{ name: "text-effect", type: "registry:ui", files: [{ path: "text-effect.tsx" }] }] };
+  const motion = parseApprovedRegistry("motion-primitives", registry, context)[0];
+  assert.equal(motion.preview_url, "https://motion-primitives.com/docs/text-effect");
+
+  const animate = parseApprovedRegistry("animate-ui", {
+    items: [{ name: "components-buttons-button", type: "registry:ui", files: [{ path: "button.tsx" }] }],
+  }, context)[0];
+  assert.equal(animate.preview_url, "https://animate-ui.com/docs/components/buttons/button");
+
+  const dice = parseApprovedRegistry("dice-ui", {
+    items: [{ name: "data-grid-demo", type: "registry:example", files: [{ path: "data-grid-demo.tsx" }] }],
+  }, context)[0];
+  assert.equal(dice.preview_url, "https://diceui.com/docs/components/radix/data-grid");
 });

@@ -5,7 +5,7 @@
 | 来源 | 权威目录 | 当日机械结果 | 覆盖边界 |
 |---|---|---|---|
 | Vercel AI Elements | `https://elements.ai-sdk.dev/api/registry/registry.json` | 136 条＝48 components + 88 examples | 部署 Registry 路由直接从官方 `packages/elements/src` 与 examples 生成；文档分组标题不另计资产 |
-| Kibo UI | `https://www.kibo-ui.com/r/registry.json` + 官方仓库 block MDX leaves | Registry 41 条＝40 components + 1 style；官方 block 文档另有有限叶子 | block 页面声称可安装，但抽测 `/r/codebase.json`、`form.json`、`hero.json` 等返回 500，因此 block 只记 public-metadata-only；Shadcnblocks patterns 是另一产品，不混入 Kibo |
+| Kibo UI | `https://www.kibo-ui.com/r/registry.json` + 官网服务端渲染的 `/blocks/` 链接 | Registry 41 条＝40 components + 1 style；另有 28 个官网 block 文档叶子 | block 页面声称可安装，但抽测 `/r/codebase.json`、`form.json`、`hero.json` 等返回 500，因此 block 只记 public-metadata-only；Shadcnblocks patterns 是另一产品，不混入 Kibo |
 | Dice UI | `https://diceui.com/r/registry.json` | 242 条＝44 UI + 184 examples + 8 components + 4 hooks + 2 libs | 当前公开 manifest 是 Radix 分发；Base/Radix × Nova/Vega 作为 variant 边界，不把同一逻辑能力重复膨胀 |
 | Animate UI | `https://animate-ui.com/r/registry.json` | 580 条＝573 UI + 5 hooks + 1 lib + 1 style | 包含 components、primitives、demos 和 icons 等可单独安装条目；许可证为 MIT + Commons Clause，应用可用但禁止组件本身转售/再分发 |
 | Motion Primitives | 官方仓库 `public/c/registry.json` | 33 UI components | 官网 `/c/registry.json` 对自动客户端出现 429/403；官方仓库文件与站点构建源同源且可稳定复核，采用仓库 Registry |

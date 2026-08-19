@@ -1,7 +1,7 @@
 # 官方 UI 能力目录快照
 
 > 快照日期：2026-08-19
-> 逻辑资产总计：**5,996 项**
+> 逻辑资产总计：**7,056 项**
 > 源码全量缓存：**0 项**
 
 ## 数量与访问
@@ -20,8 +20,13 @@
 | React Bits Free | 166 | 166 | 0 | 0 | 免费仓库完整，四代码变体已去重 |
 | React Bits Pro | 702 | 0 | 0 | 702 | 134 components + 238 page blocks + 300 app UI + 11 templates + 19 Agent Kit |
 | tweakcn | 42 | 42 | 0 | 0 | 42 个 defaultPresets 完整；社区主题为动态集合 |
+| Vercel AI Elements | 136 | 136 | 0 | 0 | 官方 runtime Registry 完整：48 components + 88 examples |
+| Kibo UI | 69 | 40 | 29 | 0 | 40 components + 1 style；28 个官方 block 页面只有元数据，Registry endpoint 当前 500 |
+| Dice UI | 242 | 242 | 0 | 0 | 当前 Radix Registry 完整；Base/Radix × Nova/Vega 作为 variants |
+| Animate UI | 580 | 579 | 1 | 0 | Registry 完整；MIT + Commons Clause，style 元数据不含源码 payload |
+| Motion Primitives | 33 | 33 | 0 | 0 | 官方仓库 Registry 完整；官网 endpoint 对自动客户端限流 |
 
-总访问分布：公开源码 3,753、公开元数据 67、购买后源码 2,176。这里的“公开源码”表示官方 endpoint/repository 可访问，仍不表示本仓已把 payload 下载下来。
+总访问分布：公开源码 4,783、公开元数据 97、购买后源码 2,176。这里的“公开源码”表示官方 endpoint/repository 可访问，仍不表示本仓已把 payload 下载下来。
 
 ## 不能混算
 
@@ -49,7 +54,7 @@ jq '[.items[] | select(.category == "calendar" or .category == "date-selector") 
 jq '[.items[] | select(.category | contains("app-ui")) | {display_name, preview_url, access_tier}] | .[:20]' \
   docs/frontend/ui-assets/catalogs/react-bits-pro.json
 
-# 跨 12 条产品线按能力查候选
+# 跨 17 条产品线按能力查候选
 node apps/web/scripts/ui-catalog/build-capability-index.mjs --query date-picker --limit 30
 ```
 
@@ -67,4 +72,4 @@ node apps/web/scripts/ui-catalog/build-coverage-audit.mjs --check
 node apps/web/scripts/ui-catalog/audit-runtime-source.mjs --check
 ```
 
-刷新采用原子写入；item 数量倒退会失败，必须人工确认是上游删除还是解析器漏抓。付费 Registry 的 401 是访问边界，不是待绕过的错误。
+刷新采用原子写入；item 数量增加或减少都会失败，必须人工确认是上游变更还是解析器漏抓。即使只刷新一个来源，总索引也会从 17 份本地快照完整重建，避免漏掉未参与本次联网刷新的来源。付费 Registry 的 401 是访问边界，不是待绕过的错误。

@@ -51,6 +51,11 @@ const FIXTURE_FILES = {
   "react-bits": ["ui-react-bits-tree.json"],
   "react-bits-pro": ["ui-react-bits-pro-sitemap.xml"],
   tweakcn: ["ui-tweakcn-theme-presets.ts"],
+  "ai-elements": ["ui-ai-elements-registry.json"],
+  "kibo-ui": ["ui-kibo-registry.json", "ui-kibo-tree.json"],
+  "dice-ui": ["ui-dice-registry.json"],
+  "animate-ui": ["ui-animate-registry.json"],
+  "motion-primitives": ["ui-motion-primitives-registry.json"],
 };
 
 function sha256(parts) {
@@ -982,6 +987,145 @@ export function parseTweakcnPresets(source, context) {
     .sort((a, b) => a.upstream_name.localeCompare(b.upstream_name));
 }
 
+const APPROVED_REGISTRY_CONFIG = {
+  "ai-elements": {
+    catalogUrl: "https://elements.ai-sdk.dev/api/registry/registry.json",
+    itemUrlTemplate: "https://elements.ai-sdk.dev/api/registry/{name}.json",
+    installCommandTemplate: "npx shadcn@latest add @ai-elements/{name} --cwd apps/web",
+    foundation: "shadcn/ui + React 19 + Tailwind CSS v4 + AI SDK",
+    license: "Apache-2.0",
+    licenseScope: "AI Elements official Registry under Apache-2.0",
+    projectFit: "agent-interface-first",
+  },
+  "kibo-ui": {
+    catalogUrl: "https://www.kibo-ui.com/r/registry.json",
+    itemUrlTemplate: "https://www.kibo-ui.com/r/{name}.json",
+    previewUrlTemplate: "https://www.kibo-ui.com/components/{name}",
+    installCommandTemplate: "npx shadcn@latest add https://www.kibo-ui.com/r/{name}.json --cwd apps/web",
+    foundation: "shadcn/ui + React + Tailwind CSS",
+    license: "MIT",
+    licenseScope: "Kibo UI official Registry under MIT",
+    projectFit: "complex-business-component",
+  },
+  "dice-ui": {
+    catalogUrl: "https://diceui.com/r/registry.json",
+    itemUrlTemplate: "https://diceui.com/r/{name}.json",
+    installCommandTemplate: "npx shadcn@latest add https://diceui.com/r/{name}.json --cwd apps/web",
+    foundation: "Dice UI Radix distribution + shadcn/ui + Tailwind CSS",
+    license: "MIT",
+    licenseScope: "Dice UI official Registry under MIT",
+    projectFit: "accessible-complex-interaction",
+  },
+  "animate-ui": {
+    catalogUrl: "https://animate-ui.com/r/registry.json",
+    itemUrlTemplate: "https://animate-ui.com/r/{name}.json",
+    installCommandTemplate: "npx shadcn@latest add https://animate-ui.com/r/{name}.json --cwd apps/web",
+    foundation: "shadcn Registry + Motion + Radix/Base/Headless variants",
+    license: "MIT + Commons Clause",
+    licenseScope: "Application use allowed; component resale/redistribution restricted by Commons Clause",
+    projectFit: "selective-micro-motion",
+  },
+  "motion-primitives": {
+    catalogUrl: "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/registry.json",
+    itemUrlTemplate: "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/{name}.json",
+    previewUrlTemplate: "https://motion-primitives.com/docs/{name}",
+    installCommandTemplate: "npx shadcn@latest add https://motion-primitives.com/c/{name}.json --cwd apps/web",
+    foundation: "React + Tailwind CSS + Motion",
+    license: "MIT",
+    licenseScope: "Motion Primitives official repository Registry under MIT",
+    projectFit: "selective-micro-motion",
+  },
+};
+
+function animatePreviewUrl(name) {
+  const route = name
+    .replace(/^demo-/, "")
+    .replace(/^(components|primitives)-/, "$1/")
+    .replace(/^icons-/, "icons/")
+    .replaceAll("-", "/");
+  return route.includes("/")
+    ? `https://animate-ui.com/docs/${route}`
+    : "https://animate-ui.com/docs";
+}
+
+function dicePreviewUrl(item) {
+  const name = item.name.replace(/-demo.*$/, "");
+  const base = item.meta?.base === "base" ? "base" : "radix";
+  return `https://diceui.com/docs/components/${base}/${name}`;
+}
+
+function aiElementsPreviewUrl(name) {
+  return name.startsWith("example-")
+    ? `https://elements.ai-sdk.dev/examples/${name.replace(/^example-/, "")}`
+    : `https://elements.ai-sdk.dev/components/${name}`;
+}
+
+export function parseApprovedRegistry(sourceId, registry, context) {
+  const config = APPROVED_REGISTRY_CONFIG[sourceId];
+  if (!config) throw new Error(`Unsupported approved Registry source: ${sourceId}`);
+  if (!Array.isArray(registry?.items)) throw new Error(`${sourceId} Registry must include items[]`);
+
+  return registry.items.map((item) => {
+    const hasFiles = Array.isArray(item.files) && item.files.length > 0;
+    const normalized = normalizeRegistryItem(item, registryContext(sourceId, context.upstreamRef, {
+      ...config,
+      accessStatus: hasFiles ? "public-source" : "public-metadata-only",
+      themeReady: "yes",
+      lastVerified: context.lastVerified,
+    }));
+
+    if (sourceId === "ai-elements") {
+      normalized.preview_url = aiElementsPreviewUrl(item.name);
+      normalized.category = item.name.startsWith("example-") ? "example" : "ai-element";
+    } else if (sourceId === "dice-ui") {
+      normalized.preview_url = dicePreviewUrl(item);
+      normalized.category = item.type?.replace("registry:", "") || "component";
+      normalized.upstream_meta = { ...normalized.upstream_meta, variant_family: "radix" };
+    } else if (sourceId === "animate-ui") {
+      normalized.preview_url = animatePreviewUrl(item.name);
+      normalized.category = item.name.split("-").slice(0, item.name.startsWith("demo-") ? 3 : 2).join("-");
+    } else if (sourceId === "motion-primitives") {
+      normalized.category = "motion-primitive";
+    } else if (sourceId === "kibo-ui") {
+      normalized.category = item.type === "registry:style" ? "style" : "component";
+    }
+    return normalized;
+  });
+}
+
+export function parseKiboRegistryAndBlocks(registry, homepageHtml, context) {
+  const items = parseApprovedRegistry("kibo-ui", registry, context);
+  const existing = new Set(items.map((item) => item.upstream_name));
+  const blockNames = [...homepageHtml.matchAll(/href=["']\/blocks\/([^"'?#/]+)["']/g)]
+    .map((match) => match[1])
+    .filter((name, index, values) => values.indexOf(name) === index)
+    .sort();
+
+  for (const name of blockNames) {
+    if (existing.has(name)) continue;
+    items.push(makeItem({
+      source: "kibo-ui",
+      name: `block/${name}`,
+      displayName: name.split("-").map((part) => part[0].toUpperCase() + part.slice(1)).join(" "),
+      description: "Official Kibo block documentation leaf; Registry source endpoint is not currently available.",
+      kind: "block",
+      category: "block",
+      previewUrl: `https://www.kibo-ui.com/blocks/${name}`,
+      sourceUrl: `https://www.kibo-ui.com/blocks/${name}`,
+      foundation: "Kibo UI + shadcn/ui",
+      license: "MIT metadata; source payload unavailable from current Registry",
+      licenseScope: "Documentation metadata only until an official source payload is available",
+      projectFit: "block-reference-only",
+      themeReady: "yes",
+      lastVerified: context.lastVerified,
+      upstreamRef: context.upstreamRef,
+      upstreamMeta: { docs_path: `/blocks/${name}`, registry_probe_status: 500 },
+      accessStatus: "public-metadata-only",
+    }));
+  }
+  return items;
+}
+
 const SHADCN_VARIANTS = ["aria", "base", "radix"]
   .flatMap((foundation) => ["luma", "lyra", "maia", "mira", "nova", "rhea", "sera", "vega"]
     .map((style) => `${foundation}-${style}`));
@@ -1139,6 +1283,14 @@ function parseSource(source, parts, sourceHash) {
       return parseReactBitsProSitemap(parts[0], context);
     case "tweakcn":
       return parseTweakcnPresets(parts[0], context);
+    case "ai-elements":
+      return parseApprovedRegistry(source.id, parseRegistry(parts[0]), context);
+    case "kibo-ui":
+      return parseKiboRegistryAndBlocks(parseRegistry(parts[0]), parts[1], context);
+    case "dice-ui":
+    case "animate-ui":
+    case "motion-primitives":
+      return parseApprovedRegistry(source.id, parseRegistry(parts[0]), context);
     default:
       throw new Error(`Unsupported source: ${source.id}`);
   }
@@ -1166,6 +1318,52 @@ export function assertStableItemCount(previousCount, currentCount) {
       `item-count drift ${previousCount} -> ${currentCount}; review upstream changes before refresh`,
     );
   }
+}
+
+export function buildCatalogIndex(snapshots, { fetchedAt, failures = [] }) {
+  const accessSummary = {};
+  const cacheSummary = {};
+  for (const snapshot of snapshots) {
+    for (const [status, count] of Object.entries(snapshot.counts.by_access_status)) {
+      accessSummary[status] = (accessSummary[status] ?? 0) + count;
+    }
+    for (const [status, count] of Object.entries(snapshot.counts.by_source_cache_status)) {
+      cacheSummary[status] = (cacheSummary[status] ?? 0) + count;
+    }
+  }
+
+  return {
+    schema_version: 2,
+    fetched_at: fetchedAt,
+    total_items: snapshots.reduce((sum, snapshot) => sum + snapshot.counts.total, 0),
+    counts: {
+      by_access_status: Object.fromEntries(Object.entries(accessSummary).sort()),
+      by_source_cache_status: Object.fromEntries(Object.entries(cacheSummary).sort()),
+    },
+    sources: snapshots.map((snapshot) => ({
+      id: snapshot.source,
+      count: snapshot.counts.total,
+      coverage: snapshot.coverage,
+      coverage_note: snapshot.coverage_note,
+      upstream_ref: snapshot.upstream_ref,
+      counts: {
+        by_access_status: snapshot.counts.by_access_status,
+        by_source_cache_status: snapshot.counts.by_source_cache_status,
+      },
+      file: `${snapshot.source}.json`,
+    })),
+    failures,
+  };
+}
+
+async function readAllSnapshots() {
+  return Promise.all(
+    UI_SOURCES.map(async (source) => {
+      const snapshot = await readPrevious(source.id);
+      if (!snapshot) throw new Error(`Missing catalog snapshot: ${source.id}.json`);
+      return snapshot;
+    }),
+  );
 }
 
 async function runCli() {
@@ -1216,39 +1414,9 @@ async function runCli() {
     }
   }
 
-  if (write && failures.length === 0 && !requestedSource) {
-    const accessSummary = {};
-    const cacheSummary = {};
-    for (const snapshot of snapshots) {
-      for (const [status, count] of Object.entries(snapshot.counts.by_access_status)) {
-        accessSummary[status] = (accessSummary[status] ?? 0) + count;
-      }
-      for (const [status, count] of Object.entries(snapshot.counts.by_source_cache_status)) {
-        cacheSummary[status] = (cacheSummary[status] ?? 0) + count;
-      }
-    }
-    const index = {
-      schema_version: 2,
-      fetched_at: fetchedAt,
-      total_items: snapshots.reduce((sum, snapshot) => sum + snapshot.counts.total, 0),
-      counts: {
-        by_access_status: Object.fromEntries(Object.entries(accessSummary).sort()),
-        by_source_cache_status: Object.fromEntries(Object.entries(cacheSummary).sort()),
-      },
-      sources: snapshots.map((snapshot) => ({
-        id: snapshot.source,
-        count: snapshot.counts.total,
-        coverage: snapshot.coverage,
-        coverage_note: snapshot.coverage_note,
-        upstream_ref: snapshot.upstream_ref,
-        counts: {
-          by_access_status: snapshot.counts.by_access_status,
-          by_source_cache_status: snapshot.counts.by_source_cache_status,
-        },
-        file: `${snapshot.source}.json`,
-      })),
-      failures,
-    };
+  if (write && failures.length === 0) {
+    const completeSnapshots = requestedSource ? await readAllSnapshots() : snapshots;
+    const index = buildCatalogIndex(completeSnapshots, { fetchedAt, failures });
     await atomicWrite(new URL("index.json", CATALOG_ROOT), index);
     console.log(`total: ${index.total_items} items`);
   }

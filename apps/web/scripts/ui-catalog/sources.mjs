@@ -300,7 +300,7 @@ export const UI_SOURCES = [
     catalogMode: "registry-plus-official-block-docs",
     catalogUrls: [
       "https://www.kibo-ui.com/r/registry.json",
-      "https://api.github.com/repos/shadcnblocks/kibo/git/trees/main?recursive=1",
+      "https://www.kibo-ui.com/",
     ],
     docsUrl: "https://www.kibo-ui.com/docs",
     previewUrl: "https://www.kibo-ui.com/components",
@@ -315,7 +315,7 @@ export const UI_SOURCES = [
     ],
     coverage: "complete-current-registry-plus-public-block-docs",
     coverageNote:
-      "The current Registry provides 40 components plus one style item. Official block MDX leaves are recorded as public metadata because their /r endpoints currently return 500 and are not source payloads. Shadcnblocks patterns are a separate product and are not counted as Kibo assets.",
+      "The current Registry provides 40 components plus one style item. Official /blocks/ links rendered on the homepage are recorded as public metadata because their /r endpoints currently return 500 and are not source payloads. Shadcnblocks patterns are a separate product and are not counted as Kibo assets.",
     redistribution: "registry-source-mit;docs-metadata-only",
   },
   {

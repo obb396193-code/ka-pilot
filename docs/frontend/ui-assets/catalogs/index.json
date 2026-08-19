@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
-  "fetched_at": "2026-08-19T13:16:16.073Z",
-  "total_items": 5996,
+  "fetched_at": "2026-08-19T15:29:07.580Z",
+  "total_items": 7056,
   "counts": {
     "by_access_status": {
       "paid-source-after-license": 2176,
-      "public-metadata-only": 67,
-      "public-source": 3753
+      "public-metadata-only": 97,
+      "public-source": 4783
     },
     "by_source_cache_status": {
-      "not-cached": 5996
+      "not-cached": 7056
     }
   },
   "sources": [
@@ -210,6 +210,88 @@
         }
       },
       "file": "tweakcn.json"
+    },
+    {
+      "id": "ai-elements",
+      "count": 136,
+      "coverage": "complete-official-runtime-registry",
+      "coverage_note": "Official /api/registry/registry.json lists every current component and example emitted by the deployed Registry route; docs-only headings are not counted as assets.",
+      "upstream_ref": "sha256:4813ba20ae1ea4e4e5de8e84f17bf0203983785e0aaacb213b38a66a91313144",
+      "counts": {
+        "by_access_status": {
+          "public-source": 136
+        },
+        "by_source_cache_status": {
+          "not-cached": 136
+        }
+      },
+      "file": "ai-elements.json"
+    },
+    {
+      "id": "kibo-ui",
+      "count": 69,
+      "coverage": "complete-current-registry-plus-public-block-docs",
+      "coverage_note": "The current Registry provides 40 components plus one style item. Official /blocks/ links rendered on the homepage are recorded as public metadata because their /r endpoints currently return 500 and are not source payloads. Shadcnblocks patterns are a separate product and are not counted as Kibo assets.",
+      "upstream_ref": "sha256:06d493a953a3d084eadd56d14d8bcc43eaa51c3ef1cf8b5a4a4edefc8935c3d3",
+      "counts": {
+        "by_access_status": {
+          "public-metadata-only": 29,
+          "public-source": 40
+        },
+        "by_source_cache_status": {
+          "not-cached": 69
+        }
+      },
+      "file": "kibo-ui.json"
+    },
+    {
+      "id": "dice-ui",
+      "count": 242,
+      "coverage": "complete-current-radix-registry",
+      "coverage_note": "The public r/registry.json is the current Radix Registry and contains UI modules, examples, hooks, utilities and internal component assets. Base/Radix Nova/Vega distributions remain a variant matrix rather than duplicated logical products.",
+      "upstream_ref": "sha256:783b7e8a1d0db30e4004e4f3a54d61c50387c1bd89c1ec522181feb8ee74e511",
+      "counts": {
+        "by_access_status": {
+          "public-source": 242
+        },
+        "by_source_cache_status": {
+          "not-cached": 242
+        }
+      },
+      "file": "dice-ui.json"
+    },
+    {
+      "id": "animate-ui",
+      "count": 580,
+      "coverage": "complete-current-registry",
+      "coverage_note": "The official Registry includes components, primitives, demos, hooks, utilities, styles and icon payloads. Logical/demo entries remain separate because they are separately installable Registry items.",
+      "upstream_ref": "sha256:7e2295daf3d30af25f0904e5ec9865a33ec858e60d3f3a30b23960b8638b5ac2",
+      "counts": {
+        "by_access_status": {
+          "public-metadata-only": 1,
+          "public-source": 579
+        },
+        "by_source_cache_status": {
+          "not-cached": 580
+        }
+      },
+      "file": "animate-ui.json"
+    },
+    {
+      "id": "motion-primitives",
+      "count": 33,
+      "coverage": "complete-official-repository-registry",
+      "coverage_note": "The deployed /c/registry.json may rate-limit automated clients; the identical public/c/registry.json in the official repository is the stable complete Registry source.",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "counts": {
+        "by_access_status": {
+          "public-source": 33
+        },
+        "by_source_cache_status": {
+          "not-cached": 33
+        }
+      },
+      "file": "motion-primitives.json"
     }
   ],
   "failures": []
