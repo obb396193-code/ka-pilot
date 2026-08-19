@@ -36,3 +36,33 @@
 - **保留切换能力**：layout 层抽象 nav 形态（side|top 一个配置切换）；顶栏版本先不做实现，**等 B1c 有真实数据页后 arch 会派 F-00x 任务出一版顶栏对比**，老板真页面对比拍板终选
 - 其余（路由树/mock 层/状态文件/纪律）照 F-001 原指令
 - 状态：待处理（本条为最终执行版）
+
+
+---
+
+### F-002 设计系统落地（2026-08-19 扩充批次）
+
+- 派活方：arch　日期：2026-08-19
+- **前置：F-001 骨架完成；老板原型图拍板视觉方向**（Codex R-002 生图已完成但老板不满意不参考，等老板给新视觉拍板）
+- 交付物（apps/web）：
+  1. **D-CON 设计系统完整落地**：PRD §5.1 所有 token（色阶/字号/间距/圆角/阴影）落 CSS variables；§5.2 组件规范（按钮/chip/表单/提示）全实现；§5.3 五大基础组件升级为生产规格（KPI 卡含趋势箭头+环比动效、数据表格虚拟滚动+列配置+排序导出、状态 chip 七态、数据健康横幅黄条+倒计时、详情抽屉 680px 三区）
+  2. **空态与 demo 态规范**：空态=图标+一句话+解锁条件+CTA；demo 态=「示例」角标+降饱和+说明文案（绝不造假真实感数据）；五个空态场景实现（无权限/无数据/网络错误/搜索无结果/功能未开通）
+  3. **响应式移动端适配**：Tailwind 加法改造（lg+ 值=原桌面值，往窄屏加 base/md 断点）；三禁忌（不改 base/不重构 DOM/不动 token-maxw-字号）；验收=桌面 ≥lg 改前后一致
+  4. **动效细节**：骨架屏加载态、Toast 通知、抽屉滑入、表格行 hover、按钮 loading 态（参考 Aceternity UI 但不过度）
+- 纪律：[fe] 前缀 fe/f002 分支；状态文件 docs/plans/F002-状态.md；**视觉改动交付前必须截图小样先给老板拍板**（规范落地不算"视觉主张"，但整页效果要过目）
+- 状态：待处理
+
+
+---
+
+### F-003 核心数据页三页（2026-08-19 扩充批次）
+
+- 派活方：arch　日期：2026-08-19
+- **前置：F-001 骨架 + F-002 设计系统完成**；契约 `POST /api/v1/query` 已冻结
+- 交付物（apps/web，三个 P0 页面生产实现）：
+  1. **完整数据总表 `/data/table`**（PRD §2.3.2，老板点名）：TanStack Table + 虚拟滚动；列：账户/日期/全部指标字段（real_cpa/cash_cost/cost_space/gap 等 20+ 列）；列配置面板（显示/隐藏/拖拽排序）；筛选器（日期范围/账户多选/任务/owner）；排序（多列）；导出 xlsx（调 `POST /api/v1/export`）；分页（page_size=100）；**不聚合，明细行**
+  2. **数据大盘 `/data`**（PRD §2.3.1）：顶部六 KPI 卡（消耗/真实CPA/达标率/成本空间/BI量级/待处理，含环比）；7 日趋势双轴图（消耗+CPA，ECharts）；健康度横幅（meta.data_as_of 驱动）；mock 调 `POST /api/v1/query?query_type=summary` + `query_type=trend`
+  3. **维度透视 `/data/pivot`**（PRD §2.3.1）：顶部维度切换 tab（8 维度：task/biz/account/agent_type/resource_position/bid_tool/is_ubp/deduction_range）；透视表（TanStack Table，每维度值一行，列=全指标+环比，summary/dimension 同构）；环比口径切换（dod/wow）；筛选器；导出；mock 调 `POST /api/v1/query?query_type=dimension&dimension_type=task`
+- 数据要求：mock 数据**口径自洽**（用 packages/domain 纯函数反推，别造出 real_cpa ≠ cost/real_conversion 的）；脱敏假名（账户A/B、任务X/Y）；环比 NEW/null 边界覆盖
+- 纪律：[fe] 前缀 fe/f003 分支；状态文件 docs/plans/F003-状态.md；三页全部完成交 SHA + 截图（每页桌面+移动端各一张）等老板拍板
+- 状态：待处理
