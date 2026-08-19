@@ -97,7 +97,8 @@ export class MetricsRepository {
     const result = await this.pool.query<{ cost: string | number }>(
       `SELECT cost
        FROM account_metrics_daily
-       WHERE workspace_id = $1 AND account_id = $2 AND ds < $3::date AND cost IS NOT NULL
+       WHERE workspace_id = $1 AND account_id = $2 AND ds < $3::date
+         AND cost IS NOT NULL AND cost <> 0
        ORDER BY ds DESC
        LIMIT $4`,
       [workspaceId, accountId, beforeDs, days],

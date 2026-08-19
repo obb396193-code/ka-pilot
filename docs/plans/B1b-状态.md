@@ -15,7 +15,7 @@
 - [x] 幂等入队、lease heartbeat 与启动回收
 - [x] backfill_jobs 仓储与协调器
 - [x] 独立 backfill_day handler
-- [ ] canonical 批次留痕与质量阶段衔接
+- [x] canonical 批次留痕与质量阶段衔接
 - [ ] 三类 data quality 检查与 outbound 告警
 - [ ] 10 账户 × 90 天 PostgreSQL 冒烟及证据
 - [ ] 全量质量门禁与最终 SHA 回执
@@ -34,3 +34,4 @@
 | 2026-08-19 | 优先级与确定性 UUID TDD | ✅ 2 tests + typecheck + lint |
 | 2026-08-19 | Job 幂等、heartbeat、启动回收 TDD | ✅ DB 6 + Worker 7 tests；typecheck + lint |
 | 2026-08-19 | 90 天批次协调、单日回灌与完成后进度刷新 | ✅ DB 2 + Worker 9 tests；typecheck + lint |
+| 2026-08-19 | canonical 留痕、幂等 quality 衔接与历史零耗过滤 | ✅ DB 3 + Worker 4 tests；typecheck + lint |

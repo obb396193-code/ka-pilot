@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { createCanonicalHandler } from "../src/etl/canonical-handler.js";
+import { deterministicJobId } from "../src/jobs/deterministic-id.js";
 
 const workspaceId = "11111111-1111-4111-8111-111111111111";
 
@@ -38,7 +39,13 @@ describe("canonical handler", () => {
       loadHistoricalSpend: vi.fn().mockResolvedValue([10, 20, 0]),
       upsertCanonical: upsert,
     };
-    const handler = createCanonicalHandler({ store });
+    const runs = {
+      startRun: vi.fn().mockResolvedValue(51),
+      finishRun: vi.fn().mockResolvedValue(undefined),
+      failRun: vi.fn().mockResolvedValue(undefined),
+    };
+    const jobs = { enqueue: vi.fn().mockResolvedValue("quality-job") };
+    const handler = createCanonicalHandler({ store, runs, jobs });
 
     await handler({
       id: "33333333-3333-4333-8333-333333333333",
@@ -49,6 +56,7 @@ describe("canonical handler", () => {
         dateFrom: "2026-08-18",
         dateTo: "2026-08-18",
         reportDate: "2026-08-19",
+        backfillId: 7,
       },
       priority: 5,
       credentialOwnerUserId: null,
@@ -77,5 +85,78 @@ describe("canonical handler", () => {
     const record = upsert.mock.calls[0]?.[0] as { fieldSources: Record<string, string> };
     expect((record as unknown as { gap: number }).gap).toBeCloseTo(0.2);
     expect(record.fieldSources.realCpa).toBe("derived");
+    expect(runs.startRun).toHaveBeenCalledWith(
+      "33333333-3333-4333-8333-333333333333",
+      "canonical",
+      {
+        workspaceId,
+        dateFrom: "2026-08-18",
+        dateTo: "2026-08-18",
+        reportDate: "2026-08-19",
+      },
+    );
+    expect(jobs.enqueue).toHaveBeenCalledWith({
+      id: deterministicJobId("quality:7:2026-08-18:2026-08-18"),
+      workspaceId,
+      jobType: "data_quality_check",
+      payload: {
+        workspaceId,
+        backfillId: 7,
+        dateFrom: "2026-08-18",
+        dateTo: "2026-08-18",
+      },
+      priority: 5,
+      credentialOwnerUserId: null,
+      maxAttempts: 3,
+    });
+    expect(runs.finishRun).toHaveBeenCalledWith(51, 1);
+  });
+
+  it("records the failing canonical stage before retrying", async () => {
+    const store = {
+      loadMergeInputs: vi.fn().mockResolvedValue([
+        {
+          workspaceId,
+          accountId: "a-1",
+          ds: "2026-08-18",
+          reportDate: "2026-08-19",
+          offline: { account_id: "a-1", cost_api: 100 },
+        },
+      ]),
+      loadEffectiveSettings: vi.fn().mockRejectedValue(new Error("settings unavailable")),
+      loadHistoricalSpend: vi.fn().mockResolvedValue([]),
+      upsertCanonical: vi.fn(),
+    };
+    const runs = {
+      startRun: vi.fn().mockResolvedValue(52),
+      finishRun: vi.fn(),
+      failRun: vi.fn().mockResolvedValue(undefined),
+    };
+    const jobs = { enqueue: vi.fn() };
+    const handler = createCanonicalHandler({ store, runs, jobs });
+
+    await expect(
+      handler({
+        id: "44444444-4444-4444-8444-444444444444",
+        workspaceId,
+        jobType: "canonical_merge",
+        payload: {
+          workspaceId,
+          dateFrom: "2026-08-18",
+          dateTo: "2026-08-18",
+          reportDate: "2026-08-19",
+        },
+        priority: 5,
+        credentialOwnerUserId: null,
+        status: "leased",
+        leaseUntil: null,
+        attempts: 1,
+        maxAttempts: 3,
+        runAfter: new Date(),
+      }),
+    ).rejects.toThrow("settings unavailable");
+
+    expect(runs.failRun).toHaveBeenCalledWith(52, "aggregate:settings", "settings unavailable");
+    expect(jobs.enqueue).not.toHaveBeenCalled();
   });
 });

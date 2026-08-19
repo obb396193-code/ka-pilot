@@ -94,4 +94,22 @@ describe("MetricsRepository", () => {
     );
     expect(result.rows[0]).toEqual({ count: "1", cost: "101" });
   });
+
+  it("applies the history limit after excluding zero-spend days", async () => {
+    await pool.query(
+      `INSERT INTO account_metrics_daily (workspace_id, account_id, ds, cost)
+       SELECT $1, 'a-1', day::date, 0
+       FROM generate_series('2026-08-04'::date, '2026-08-17'::date, interval '1 day') AS day`,
+      [workspaceId],
+    );
+    await pool.query(
+      `INSERT INTO account_metrics_daily (workspace_id, account_id, ds, cost)
+       VALUES ($1, 'a-1', '2026-08-03', 100)`,
+      [workspaceId],
+    );
+
+    await expect(
+      repository.loadHistoricalSpend(workspaceId, "a-1", "2026-08-18", 14),
+    ).resolves.toEqual([100]);
+  });
 });

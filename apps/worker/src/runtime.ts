@@ -73,6 +73,8 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
           loadHistoricalSpend: metrics.loadHistoricalSpend.bind(metrics),
           upsertCanonical: metrics.upsertCanonical.bind(metrics),
         },
+        runs: etlRuns,
+        jobs,
       }),
     },
     {
