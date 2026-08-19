@@ -27,12 +27,14 @@ const helpText = [
 export function createMessageHandler(dependencies: MessageHandlerDependencies) {
   return async (message: DingTalkInboundMessage): Promise<void> => {
     const claimed = await dependencies.inbound.claimInbound(
+      dependencies.workspaceId,
       "dingtalk",
       message.eventId,
       "robot_message",
       {
         senderStaffId: message.senderStaffId,
         conversationId: message.conversationId,
+        eventId: message.eventId,
         text: message.text,
       },
     );
@@ -67,6 +69,7 @@ export function createMessageHandler(dependencies: MessageHandlerDependencies) {
         userId: identity.userId,
         qihangUserId: identity.qihangUserId,
         conversationId: message.conversationId,
+        eventId: message.eventId,
       });
       await dependencies.replies.sendText(message.sessionWebhook, result.text);
       await dependencies.inbound.markInboundProcessed(message.eventId);

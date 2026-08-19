@@ -10,6 +10,7 @@ export class GatewayRepository {
   constructor(private readonly pool: Pool) {}
 
   async claimInbound(
+    workspaceId: string,
     provider: string,
     externalEventId: string,
     kind: string,
@@ -17,10 +18,10 @@ export class GatewayRepository {
   ): Promise<boolean> {
     const result = await this.pool.query(
       `INSERT INTO inbound_events
-         (provider, external_event_id, kind, payload, processed)
-       VALUES ($1, $2, $3, $4, false)
+         (workspace_id, provider, external_event_id, kind, payload, processed)
+       VALUES ($1, $2, $3, $4, $5, false)
        ON CONFLICT (external_event_id) DO NOTHING`,
-      [provider, externalEventId, kind, payload],
+      [workspaceId, provider, externalEventId, kind, payload],
     );
     return result.rowCount === 1;
   }

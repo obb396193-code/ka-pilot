@@ -39,10 +39,10 @@ describe("GatewayRepository", () => {
 
   it("claims an inbound event only once", async () => {
     await expect(
-      repository.claimInbound("dingtalk", "event-1", "robot_message", { text: "hello" }),
+      repository.claimInbound(workspaceId, "dingtalk", "event-1", "robot_message", { text: "hello" }),
     ).resolves.toBe(true);
     await expect(
-      repository.claimInbound("dingtalk", "event-1", "robot_message", { text: "hello" }),
+      repository.claimInbound(workspaceId, "dingtalk", "event-1", "robot_message", { text: "hello" }),
     ).resolves.toBe(false);
   });
 

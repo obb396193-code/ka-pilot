@@ -12,6 +12,7 @@ export interface DingTalkInboundMessage {
 
 export interface InboundEventPort {
   claimInbound(
+    workspaceId: string,
     provider: string,
     eventId: string,
     kind: string,
@@ -37,6 +38,7 @@ export interface ProductCommandContext {
   userId: string;
   qihangUserId: string | null;
   conversationId: string;
+  eventId: string;
 }
 
 export interface ProductCommandPort {
