@@ -98,3 +98,24 @@ Codex 本批只实现内部状态、严格字符串快照比较、审计和端�
 5. 考核价变更后的重算范围、确认已读和通知 DTO 需与 B2 通知契约一起冻结。
 
 **B4 内核交付回执（2026-08-19）**：功能审查 SHA `b3b2c49`。已完成日级 pacing、调用方有效日历输入、任务租户读取、任务账户有效期并发防重叠、考核价版本/凭证/同租户 actor、按关系有效期聚合 canonical，以及不绑定 12 模块的日报事实集；四包 183 tests，覆盖率均 >80%，复杂度 0 warning，audit 0。P-007 五项均未擅自改契约，报告：`docs/evidence/B4-代码质量报告.md`。
+
+---
+
+### P-008 ⏳B5 Agent 与多模型网关最小契约差异｜be（Codex）
+
+老板已批准在 Claude 离线期间完成 B5 可审查后端，并要求 Claude Agent SDK、CCSwitch 式多模型切换、流式输出和既有实现复用。本批不修改冻结契约，请 arch 回来后集中裁决：
+
+1. **Agent 会话约束**：`agent_messages`/`agent_context_items` 无 FK、role/object_type/added_by 枚举和删除语义；请冻结 context add/remove DTO、对象类型与“无权限/对象已删”的返回口径。建议至少补 session FK、顺序索引及消息唯一幂等键。
+2. **Run 关联和状态**：`agent_runs` 缺 `session_id`、`provider_id`、`model`、`credential_owner_user_id`、`error_code`、`attempt`、首 token 时间、usage/result 引用；请冻结 run status 和用户可见 DTO。本批只写现有列，扩展信息留在内部事件/安全摘要。
+3. **Run event 持久化**：流式恢复、原始排障和顺序审计需要 `agent_run_events(run_id, seq, kind, safe_payload, raw_ref, created_at)` 或等价外部 event store。请裁决数据库表还是对象存储+索引；本批实现 `RunLogStore`/`AgentEventSink` 端口，不造表。
+4. **通用 Provider 凭证**：`users.idealab_ak_ref` 只能表达一个 IdeaLab key，无法表达 Anthropic 官方/其他 provider、多 key 轮换和状态。建议 `model_provider_credentials(workspace_id,user_id,provider_id,secret_ref,status,last_checked_at)`；原列可迁移为兼容入口。
+5. **Provider Capability Matrix**：请冻结 provider profile 和 `provider_model_capabilities` 的持久化字段（protocol、model、tool/stream/structured/timeout/sdk compatibility、状态、实测时间、错误摘要、测试版本）。本批实现领域模型和存储端口，不造表。
+6. **内部模型网关**：请确认网关是 Worker 部署单元内 localhost sidecar（不新增第四个产品 FaaS），以及内部 `/v1/messages` 不进入公开 OpenAPI。建议真实上游 key 由短时加密信封交给网关注入，Agent 子进程只拿信封和 client token。
+7. **SSE 事件协议**：请冻结 `session|run|delta|tool|evidence|done|error` 的字段、断线取消、消息幂等和重连语义；structured output 仅在 done 帧出现。本批实现内部稳定事件类型，不新增 Web 路由。
+8. **诊断 DTO**：PRD 只有外层字段，需冻结 reason/action 枚举、evidence ref、confidence、expected_effect、constraint_check 和 fallback_reason 的完整 schema。本批按 PRD 最小安全 schema 实现内部校验，不把它声明成公开 API。
+9. **Agent job/OS 工具**：请冻结后台 Agent job_type、`dispatch_os_task` 的请求/回执、只读/写操作确认门和 OS Run 引用。本批只交端口，不伪造 Multica/OS 协议。
+10. **用量与结算**：SDK `total_cost_usd/modelUsage` 是估算值，不能进入结算。请冻结网关 usage 账本/上游对账来源；本批只把 usage 作为运行诊断，不作财务字段。
+
+建议优先级：1/2/6/7/8 是 Web/API 联调前硬门；3/4/5 是正式多租户上线硬门；9 等 B7 内网实证；10 随用量看板冻结。
+
+**B5 当前路线**：`docs/plans/2026-08-19-B5-Agent后端-design.md`。在 arch 裁决前只实现既有表可承载的 Repository、领域/Runtime/网关端口和 fake upstream 集成测试。
