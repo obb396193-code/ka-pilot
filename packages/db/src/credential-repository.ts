@@ -13,6 +13,16 @@ export class CredentialRepository {
     return result.rows[0]?.qihang_user_id ?? null;
   }
 
+  async resolveIdeaLabSecretRef(workspaceId: string, userId: string): Promise<string | null> {
+    const result = await this.pool.query<{ idealab_ak_ref: string | null }>(
+      `SELECT idealab_ak_ref
+       FROM users
+       WHERE workspace_id = $1 AND id = $2 AND is_active = true`,
+      [workspaceId, userId],
+    );
+    return result.rows[0]?.idealab_ak_ref ?? null;
+  }
+
   async resolveAccountOwner(
     workspaceId: string,
     accountIds: readonly string[],
