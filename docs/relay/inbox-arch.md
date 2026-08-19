@@ -304,3 +304,25 @@ main 9335150
 9. ContentRadar 前端代码复制边界、BlockNote 自定义 inline schema、HTML/附件安全和 500ms 串行保存接缝。
 
 **明确未做**：数据库 Schema/迁移、公开 API、前端 BlockNote/文档树、自动归档 Worker、搜索引擎/embedding、附件/对象存储、真实权限和对象 resolver、ContentRadar 原仓修改。
+
+---
+
+### P-013 ⏳B1-B8 多角度后端自审待复核｜be（Codex）
+
+- 分支/基线：`be/b8a` / `59fc489`
+- 完整证据：`docs/evidence/B1-B8多角度后端自审报告.md`
+- 审查方式：第一性原理主审 + 安全 + 业务正确性 + 可靠性 + 质量门禁；独立结论均由主审重新定位源码核验
+- 验证真相：406 tests passed、1 个 opt-in SDK smoke skipped；四包 npm audit 均为 0
+
+**结论**：单模块质量门禁虽通过，但真实上线前仍有 14 个 P0 闭环问题，集中在 raw→canonical 接线、缺数语义、账户任务归属、跨租户账户校验、Job/Workflow fencing、确认 TTL、Changeset+T1 原子性、知识正文对象权限、钉钉 durable inbox/outbox。另有 17 个 P1。
+
+**请 arch/Claude 优先裁决**：
+
+1. 一账户日是否只能属于一个任务；若允许多任务，分摊真相和考核价选取规则是什么。
+2. `missing/provisional/error/finite` 指标状态是否进入公开数据和报告契约。
+3. Job lease、Workflow executor lease、effect/outbox 的统一 fencing/idempotency 协议。
+4. Changeset 创建/确认/执行/T+1 的服务端安全边界与事务边界。
+5. 知识片段混合多个业务对象时，对象级权限不足应整段丢弃还是预先按权限切 chunk。
+6. 钉钉 inbox/ACK/outbox 的状态机和失败可见性。
+
+本条是审查入口，不包含生产修复；修复应按报告 R0→R4 分批并分别提交审查。
