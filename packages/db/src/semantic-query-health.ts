@@ -19,7 +19,6 @@ interface CoverageMetricRow {
   canonical_rows: string | number;
   accounts_with_canonical: string | number;
 }
-
 interface AccountCountRow {
   accounts_in_scope: string | number;
   date_count: string | number;
@@ -210,4 +209,3 @@ export async function querySemanticHealth(
   ]);
   return { coverage, rawResources, etlStatuses, quality };
 }
-

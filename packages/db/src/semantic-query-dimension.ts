@@ -17,7 +17,6 @@ interface DimensionDatabaseRow extends AggregateDatabaseRow {
   dimension_key: string | null;
   dimension_label: string | null;
 }
-
 interface OverlapDatabaseRow {
   account_id: string;
   ds: string;
@@ -124,4 +123,3 @@ export async function queryMetricDimension(
     metrics: mapMetricSummary(row),
   }));
 }
-
