@@ -39,13 +39,58 @@
 
 ---
 
-### P-004 B1a 最终交付待审计｜be（Codex）
+### P-004 ✅B1a 最终交付待审计｜be（Codex）
 
 - 分支：`be/b1a`
-- 审查 SHA：`59e56e0d961c7008bb076a48b4a21eeff34e21ef`（P-001~P-003 裁决前的版本）
+- 最终审查 SHA：`f98952f8cf1daae126e22c431052d688644237c9`
 - 已完成：可重放 SQL 迁移与月分区、指标唯一纯函数、双口径字段级合并、Qihang 四资源 client、DB lease consumer、full/incr handler、etl_runs、失败 outbox、canonical 生效版本读取/计算/幂等 upsert。
 - 提前完成：独立钉钉网关核心（官方 Stream 适配、入站幂等、身份映射、本地命令/agent 分流、任务安全入队、sessionWebhook SSRF 防护）。
-- 验证：56 tests 全绿；四包 TypeScript/ESLint 全绿；V8 coverage domain 92.17% / worker 90.82% / db 80.69% / gateway 83.16%；四包 `npm audit --audit-level=high` 均 0 vulnerabilities；PostgreSQL 16 healthy，迁移 down/up 重放通过。
-- 待补（收到 P-001~P-003 裁决后）：migration 主键变更（复合主键含 workspace_id）、`metrics_raw.resource` 持久化/回放、Worker/gateway composition 对接三新端点。
+- P-001~P-003 已全部落实：migration v1.1 复合租户键；四 resource raw 持久化/回放；固定 credential owner；Worker/Gateway composition；三个冻结 API 的网关客户端。
+- 验证：69 tests 全绿；业务源码行覆盖率 domain 93.39% / worker 85.14% / db 81.32% / gateway 86.62%；四包 TypeScript/ESLint 全绿；四包 npm audit 均 0 vulnerabilities；PostgreSQL 16 healthy，迁移 down/up 重放通过。
 
 **arch 待办**：等 Codex 交最终 SHA，逐条审计 R-007 清单 ✅/❌。
+
+---
+
+### P-005 B1b 回灌设计修正（老板已批准）｜be（Codex）
+
+R-008 原文有两处按字面实现会损害可靠性，老板已批准 Codex 按修正版实施，请审查时以本条为准：
+
+1. **历史回灌不复用现有 `etl_full`**：现有 full 每次会查账户分页、D-1 离线及连续 7 天实时；拆 90 个 full 会造成重复账户发现和约 630 日实时查询。改为 `backfill_historical` 协调器一次发现账户，扇出确定性 `backfill_day` 子 job；每个子 job 只查目标日 `account_offline`。
+2. **优先级修正**：现有 `ORDER BY priority ASC` 表示数字越小越优先。采用 `etl_incr=1`、`rule_scan=3`、`backfill_day=9`，不采用 R-008 原文 `backfill=1/etl_incr=5`，避免 90 天回灌压住实时取数。
+3. **可靠执行补强**：日任务独立重试、失败日不阻塞其他日期；用确定性 job UUID 防 fan-out/阶段衔接重复入队；补 lease heartbeat，避免奇航请求超过 60 秒时被第二 Worker 重复领取；启动时仍回收超 10 分钟陈旧 lease。
+4. **阶段链路**：backfill raw → canonical 聚合 → data quality；总量对账基于每账户/日/resource 最新 raw 快照，不能直接累加重试产生的重复 raw 行。
+5. **边界**：不新增未冻结业务表；回灌日状态使用 `jobs.payload(backfillId, ds)` + `backfill_jobs.cursor_date/status`，失败详情由 jobs/etl_runs 留痕。
+
+Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请在本条下裁决，不要让实现退回字面复用 `etl_full`。
+
+
+---
+
+## F-001 阶段交付（2026-08-19，fe）
+
+**状态**：骨架完成，待截图
+
+**已完成**（分支 `fe/f001`，4 次提交）：
+1. SHA `e8852a6` - shadcn dashboard-01 模板完整安装（New York v4）
+2. SHA `00173f8` - 完全对照官方源码修正样式（核心教训：必须直接复制粘贴，不能对照着写）
+3. SHA `7086014` - 界面中文化（导航/卡片/所有文案）
+4. SHA `0302d93` - 建立 shadcn 组件清单（67个组件 + 业务场景选型指南）
+
+**工程骨架**：
+- Next.js 15.1 + TypeScript + Turbopack + Tailwind
+- shadcn/ui 组件库完整安装
+- 布局结构：侧边栏 + 头部 + 内容区（dashboard-01 原汁原味）
+- 开发服务器运行正常（localhost:3000）
+
+**文档**：
+- `docs/shadcn-component-inventory.md` - 完整组件清单，做页面前先查这里
+- `docs/plans/F001-状态.md` - 任务进度逐条记录
+
+**待交付**：
+- 中文界面截图（Playwright 浏览器正在下载，完成后自动生成）
+
+**下一步**（等老板拍板）：
+- 用 shadcn 现成组件搭建业务页面（工作台/投放任务/数据分析等 9 个页面）
+- 导航布局可切换机制（顶栏 vs 侧栏，等终裁）
+
