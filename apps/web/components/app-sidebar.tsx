@@ -2,20 +2,24 @@
 
 import * as React from "react"
 import {
+  IconCamera,
   IconChartBar,
-  IconRocket,
-  IconBriefcase,
+  IconDashboard,
   IconDatabase,
-  IconRobot,
-  IconPhoto,
-  IconReportAnalytics,
-  IconBooks,
-  IconBell,
-  IconSettings,
+  IconFileAi,
+  IconFileDescription,
+  IconFileWord,
+  IconFolder,
   IconHelp,
+  IconInnerShadowTop,
+  IconListDetails,
+  IconReport,
   IconSearch,
+  IconSettings,
+  IconUsers,
 } from "@tabler/icons-react"
 
+import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
@@ -31,91 +35,134 @@ import {
 
 const data = {
   user: {
-    name: "演示账号",
-    email: "demo@example.com",
+    name: "shadcn",
+    email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
-      title: "工作台",
+      title: "Dashboard",
       url: "#",
-      icon: IconBriefcase,
+      icon: IconDashboard,
     },
     {
-      title: "投放任务",
+      title: "Lifecycle",
       url: "#",
-      icon: IconRocket,
+      icon: IconListDetails,
     },
     {
-      title: "数据分析",
+      title: "Analytics",
       url: "#",
       icon: IconChartBar,
     },
     {
-      title: "账户资源",
+      title: "Projects",
       url: "#",
-      icon: IconDatabase,
+      icon: IconFolder,
     },
     {
-      title: "自动化",
+      title: "Team",
       url: "#",
-      icon: IconRobot,
+      icon: IconUsers,
+    },
+  ],
+  navClouds: [
+    {
+      title: "Capture",
+      icon: IconCamera,
+      isActive: true,
+      url: "#",
+      items: [
+        {
+          title: "Active Proposals",
+          url: "#",
+        },
+        {
+          title: "Archived",
+          url: "#",
+        },
+      ],
     },
     {
-      title: "商品素材",
+      title: "Proposal",
+      icon: IconFileDescription,
       url: "#",
-      icon: IconPhoto,
+      items: [
+        {
+          title: "Active Proposals",
+          url: "#",
+        },
+        {
+          title: "Archived",
+          url: "#",
+        },
+      ],
     },
     {
-      title: "报告",
+      title: "Prompts",
+      icon: IconFileAi,
       url: "#",
-      icon: IconReportAnalytics,
-    },
-    {
-      title: "知识库",
-      url: "#",
-      icon: IconBooks,
-    },
-    {
-      title: "集成与通知",
-      url: "#",
-      icon: IconBell,
+      items: [
+        {
+          title: "Active Proposals",
+          url: "#",
+        },
+        {
+          title: "Archived",
+          url: "#",
+        },
+      ],
     },
   ],
   navSecondary: [
     {
-      title: "设置",
+      title: "Settings",
       url: "#",
       icon: IconSettings,
     },
     {
-      title: "帮助",
+      title: "Get Help",
       url: "#",
       icon: IconHelp,
     },
     {
-      title: "搜索",
+      title: "Search",
       url: "#",
       icon: IconSearch,
+    },
+  ],
+  documents: [
+    {
+      name: "Data Library",
+      url: "#",
+      icon: IconDatabase,
+    },
+    {
+      name: "Reports",
+      url: "#",
+      icon: IconReport,
+    },
+    {
+      name: "Word Assistant",
+      url: "#",
+      icon: IconFileWord,
     },
   ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:p-1.5!"
+            >
               <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <IconRocket className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">投放管理系统</span>
-                  <span className="truncate text-xs">Demo</span>
-                </div>
+                <IconInnerShadowTop className="size-5!" />
+                <span className="text-base font-semibold">Acme Inc.</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -123,6 +170,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
+        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
