@@ -9,3 +9,5 @@ export * from "./raw-metrics-repository.js";
 export * from "./credential-repository.js";
 export * from "./backfill-repository.js";
 export * from "./data-quality-repository.js";
+export * from "./semantic-query-repository.js";
+export * from "./semantic-query-types.js";
