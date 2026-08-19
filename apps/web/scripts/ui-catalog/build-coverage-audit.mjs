@@ -19,6 +19,11 @@ const EXPECTED_COUNTS = {
   "react-bits": 166,
   "react-bits-pro": 702,
   tweakcn: 42,
+  "ai-elements": 136,
+  "kibo-ui": 69,
+  "dice-ui": 242,
+  "animate-ui": 580,
+  "motion-primitives": 33,
 };
 
 const SOURCE_NOTES = {
@@ -107,6 +112,36 @@ const SOURCE_NOTES = {
     evidence: ["https://github.com/jnsahaj/tweakcn/blob/main/utils/theme-presets.ts", "https://tweakcn.com/community", "https://tweakcn.com/pricing"],
     outside_catalog: ["Anonymous community themes are cursor-paginated and continuously growing; no stable finite total or promised public Registry API exists."],
     unresolved: ["A community snapshot can be taken for a dated design review but cannot be called permanent full coverage."],
+  },
+  "ai-elements": {
+    official_scope: "Complete deployed runtime Registry: components and examples",
+    evidence: ["https://elements.ai-sdk.dev/api/registry/registry.json", "https://github.com/vercel/ai-elements"],
+    outside_catalog: ["Documentation headings and prose recipes are not counted as installable assets."],
+    unresolved: [],
+  },
+  "kibo-ui": {
+    official_scope: "Current Registry plus finite official block documentation leaves",
+    evidence: ["https://www.kibo-ui.com/r/registry.json", "https://www.kibo-ui.com/", "https://github.com/shadcnblocks/kibo"],
+    outside_catalog: ["Shadcnblocks patterns are a separate product and are not Kibo Registry assets."],
+    unresolved: ["Twenty-eight documented blocks currently return HTTP 500 at sampled /r endpoints, so they remain public-metadata-only."],
+  },
+  "dice-ui": {
+    official_scope: "Complete current Radix Registry",
+    evidence: ["https://diceui.com/r/registry.json", "https://github.com/sadmann7/diceui"],
+    outside_catalog: ["Base/Radix and Nova/Vega distributions are a variant matrix, not separate logical products."],
+    unresolved: [],
+  },
+  "animate-ui": {
+    official_scope: "Complete current Registry including demos, hooks, styles and icons",
+    evidence: ["https://animate-ui.com/r/registry.json", "https://github.com/imskyleen/animate-ui"],
+    outside_catalog: [],
+    unresolved: ["Commons Clause permits application use but prohibits selling or redistributing the component library itself."],
+  },
+  "motion-primitives": {
+    official_scope: "Complete Registry committed in the official repository",
+    evidence: ["https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/registry.json", "https://github.com/ibelick/motion-primitives"],
+    outside_catalog: [],
+    unresolved: ["The deployed Registry endpoint rate-limits some automated clients; refreshes use the official repository copy."],
   },
 };
 

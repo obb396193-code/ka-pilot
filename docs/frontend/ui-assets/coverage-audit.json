@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-19T13:16:16.073Z",
+  "generated_at": "2026-08-19T15:29:07.580Z",
   "terminology": {
     "catalog_item": "Discoverable normalized metadata record; does not mean source is downloaded.",
     "public_source": "Official source/item endpoint is available without a paid license.",
@@ -9,15 +9,15 @@
     "source_cached": "An exact upstream source payload is cached with a path and hash; catalogued alone is not cached."
   },
   "summary": {
-    "catalog_items": 5996,
-    "source_count": 12,
+    "catalog_items": 7056,
+    "source_count": 17,
     "by_access_status": {
       "paid-source-after-license": 2176,
-      "public-metadata-only": 67,
-      "public-source": 3753
+      "public-metadata-only": 97,
+      "public-source": 4783
     },
     "by_source_cache_status": {
-      "not-cached": 5996
+      "not-cached": 7056
     },
     "fully_cached_catalog_items": 0
   },
@@ -384,6 +384,131 @@
       ],
       "unresolved": [
         "A community snapshot can be taken for a dated design review but cannot be called permanent full coverage."
+      ]
+    },
+    {
+      "id": "ai-elements",
+      "catalog_count": 136,
+      "coverage": "complete-official-runtime-registry",
+      "access": {
+        "public-source": 136
+      },
+      "source_cache": {
+        "not-cached": 136
+      },
+      "maintenance": {
+        "current": 136
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete deployed runtime Registry: components and examples",
+      "evidence": [
+        "https://elements.ai-sdk.dev/api/registry/registry.json",
+        "https://github.com/vercel/ai-elements"
+      ],
+      "outside_catalog": [
+        "Documentation headings and prose recipes are not counted as installable assets."
+      ],
+      "unresolved": []
+    },
+    {
+      "id": "kibo-ui",
+      "catalog_count": 69,
+      "coverage": "complete-current-registry-plus-public-block-docs",
+      "access": {
+        "public-metadata-only": 29,
+        "public-source": 40
+      },
+      "source_cache": {
+        "not-cached": 69
+      },
+      "maintenance": {
+        "current": 69
+      },
+      "variant_matrix": null,
+      "official_scope": "Current Registry plus finite official block documentation leaves",
+      "evidence": [
+        "https://www.kibo-ui.com/r/registry.json",
+        "https://www.kibo-ui.com/",
+        "https://github.com/shadcnblocks/kibo"
+      ],
+      "outside_catalog": [
+        "Shadcnblocks patterns are a separate product and are not Kibo Registry assets."
+      ],
+      "unresolved": [
+        "Twenty-eight documented blocks currently return HTTP 500 at sampled /r endpoints, so they remain public-metadata-only."
+      ]
+    },
+    {
+      "id": "dice-ui",
+      "catalog_count": 242,
+      "coverage": "complete-current-radix-registry",
+      "access": {
+        "public-source": 242
+      },
+      "source_cache": {
+        "not-cached": 242
+      },
+      "maintenance": {
+        "current": 242
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete current Radix Registry",
+      "evidence": [
+        "https://diceui.com/r/registry.json",
+        "https://github.com/sadmann7/diceui"
+      ],
+      "outside_catalog": [
+        "Base/Radix and Nova/Vega distributions are a variant matrix, not separate logical products."
+      ],
+      "unresolved": []
+    },
+    {
+      "id": "animate-ui",
+      "catalog_count": 580,
+      "coverage": "complete-current-registry",
+      "access": {
+        "public-metadata-only": 1,
+        "public-source": 579
+      },
+      "source_cache": {
+        "not-cached": 580
+      },
+      "maintenance": {
+        "current": 580
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete current Registry including demos, hooks, styles and icons",
+      "evidence": [
+        "https://animate-ui.com/r/registry.json",
+        "https://github.com/imskyleen/animate-ui"
+      ],
+      "outside_catalog": [],
+      "unresolved": [
+        "Commons Clause permits application use but prohibits selling or redistributing the component library itself."
+      ]
+    },
+    {
+      "id": "motion-primitives",
+      "catalog_count": 33,
+      "coverage": "complete-official-repository-registry",
+      "access": {
+        "public-source": 33
+      },
+      "source_cache": {
+        "not-cached": 33
+      },
+      "maintenance": {
+        "current": 33
+      },
+      "variant_matrix": null,
+      "official_scope": "Complete Registry committed in the official repository",
+      "evidence": [
+        "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/registry.json",
+        "https://github.com/ibelick/motion-primitives"
+      ],
+      "outside_catalog": [],
+      "unresolved": [
+        "The deployed Registry endpoint rate-limits some automated clients; refreshes use the official repository copy."
       ]
     }
   ]

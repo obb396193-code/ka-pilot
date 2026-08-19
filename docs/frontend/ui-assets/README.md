@@ -17,7 +17,7 @@
 catalogued → approved/preferred → vendored → adapted → deprecated
 ```
 
-当前事实：12 个产品线共 **5,996** 条逻辑资产；A 方案已从 7 个非 shadcn 官方来源缓存 48 个根资产及 41 个必要依赖，共 **89 个缓存条目、93 份源码文件**，逐文件 SHA-256 可复核。缓存位于 `source-cache/`，尚未装入运行仓。运行仓另有 22 个 shadcn 风格本地 UI 文件，但精确 upstream ref/hash 尚未验证；第三方运行时接入仍为 0。
+当前事实：17 个产品线共 **7,056** 条逻辑资产；新入库五源合计 1,060 条，当前仍未进入源码缓存。原 A 方案已从 7 个非 shadcn 官方来源缓存 48 个根资产及 41 个必要依赖，共 **89 个缓存条目、93 份源码文件**，逐文件 SHA-256 可复核。缓存位于 `source-cache/`，尚未装入运行仓。运行仓另有 22 个 shadcn 风格本地 UI 文件，但精确 upstream ref/hash 尚未验证；第三方运行时接入仍为 0。
 
 ## 选型分层
 
@@ -43,7 +43,7 @@ coss current 的 577 条来自当前 `coss.com/ui` Registry，采用 Base UI 新
 - `source-download-manifest.json`、`source-download-status.md`：实际运行时源码、hash、引用与 provenance。
 - `starter-pack.json`、`source-cache/manifest.json`：A 方案的 48 个高频根资产、传递依赖、官方 payload/raw source、逐文件 hash 和缓存状态。
 - `free-alternatives.json/.md`：2,176 条已知付费元数据中，23 条分类节点单列，2,153 个具体能力逐项记录免费候选/组合策略、置信度与复核状态；当前 272 项有同能力候选、638 项按语义选图标、1,237 项需重组、6 项先核许可，不包含或推导付费源码。
-- `discovery.json/.md`：老板已审阅的新来源准入记录。AI Elements、Kibo、Dice 正式进入选型，Animate UI、Motion Primitives 选择性进入对比；五者仍未冒充已全量收录、缓存或安装，Commons Clause 等限制单列。
+- `discovery.json/.md`：老板已审阅的新来源准入记录。AI Elements、Kibo、Dice 正式进入选型，Animate UI、Motion Primitives 选择性进入对比；五者已完成目录收录，仍未冒充缓存或安装，Commons Clause 等限制单列。
 - `frontend-product-standard.md`：数据密集产品的设计交付、组件实现、图表、主题、Storybook、视觉回归、无障碍和 Definition of Done。
 - `showroom.html`：无需服务端、无需联网即可筛选查看的离线展厅；`showroom-data.json` 是其可再生成数据。
 - `guides/`：官方安装、使用、组合、修改/迁移、主题、许可证和 changelog 的项目摘要。
@@ -68,7 +68,7 @@ coss current 的 577 条来自当前 `coss.com/ui` Registry，采用 Base UI 新
 
 ## 当前权威入口
 
-- [12 库数量与查询](catalogs/README.md)
+- [17 库数量与查询](catalogs/README.md)
 - [官方覆盖与会员边界](coverage-audit.md)
 - [源码下载状态](source-download-status.md)
 - [存储格式契约](storage-format.md)

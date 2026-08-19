@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-08-19T13:21:41.146Z",
+  "checked_at": "2026-08-19T15:33:21.985Z",
   "summary": {
-    "total": 12,
-    "verified": 11,
+    "total": 17,
+    "verified": 16,
     "partial": 1,
     "blocked": 0
   },
@@ -501,6 +501,137 @@
           "etag": "W/\"e0c03af64d8c6f2613e45c2049862679aa7f3eb6f06131b17bb1a69d09a92740\"",
           "last_modified": "",
           "content_length": 114849,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "ai-elements",
+      "name": "Vercel AI Elements",
+      "status": "verified",
+      "catalog_mode": "official-runtime-registry",
+      "coverage": "complete-official-runtime-registry",
+      "coverage_note": "Official /api/registry/registry.json lists every current component and example emitted by the deployed Registry route; docs-only headings are not counted as assets.",
+      "license": "Apache-2.0",
+      "redistribution": "permitted-with-apache-2.0",
+      "checked_at": "2026-08-19T15:33:16.907Z",
+      "endpoints": [
+        {
+          "url": "https://elements.ai-sdk.dev/api/registry/registry.json",
+          "final_url": "https://elements.ai-sdk.dev/api/registry/registry.json",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 39255,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "kibo-ui",
+      "name": "Kibo UI",
+      "status": "verified",
+      "catalog_mode": "registry-plus-official-block-docs",
+      "coverage": "complete-current-registry-plus-public-block-docs",
+      "coverage_note": "The current Registry provides 40 components plus one style item. Official /blocks/ links rendered on the homepage are recorded as public metadata because their /r endpoints currently return 500 and are not source payloads. Shadcnblocks patterns are a separate product and are not counted as Kibo assets.",
+      "license": "MIT",
+      "redistribution": "registry-source-mit;docs-metadata-only",
+      "checked_at": "2026-08-19T15:33:18.066Z",
+      "endpoints": [
+        {
+          "url": "https://www.kibo-ui.com/r/registry.json",
+          "final_url": "https://www.kibo-ui.com/r/registry.json",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 380529,
+          "error": ""
+        },
+        {
+          "url": "https://www.kibo-ui.com/",
+          "final_url": "https://www.kibo-ui.com/",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "W/\"12539i476rfkssl\"",
+          "last_modified": "",
+          "content_length": 970437,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "dice-ui",
+      "name": "Dice UI",
+      "status": "verified",
+      "catalog_mode": "complete-current-radix-registry",
+      "coverage": "complete-current-radix-registry",
+      "coverage_note": "The public r/registry.json is the current Radix Registry and contains UI modules, examples, hooks, utilities and internal component assets. Base/Radix Nova/Vega distributions remain a variant matrix rather than duplicated logical products.",
+      "license": "MIT",
+      "redistribution": "permitted-with-mit",
+      "checked_at": "2026-08-19T15:33:19.687Z",
+      "endpoints": [
+        {
+          "url": "https://diceui.com/r/registry.json",
+          "final_url": "https://diceui.com/r/registry.json",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"28e7703cec3832430ff060fd217c6bb7\"",
+          "last_modified": "Thu, 13 Aug 2026 05:17:49 GMT",
+          "content_length": 85102,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "animate-ui",
+      "name": "Animate UI",
+      "status": "verified",
+      "catalog_mode": "complete-current-registry",
+      "coverage": "complete-current-registry",
+      "coverage_note": "The official Registry includes components, primitives, demos, hooks, utilities, styles and icon payloads. Logical/demo entries remain separate because they are separately installable Registry items.",
+      "license": "MIT + Commons Clause",
+      "redistribution": "application-use-with-commons-clause;no-component-resale",
+      "checked_at": "2026-08-19T15:33:20.623Z",
+      "endpoints": [
+        {
+          "url": "https://animate-ui.com/r/registry.json",
+          "final_url": "https://animate-ui.com/r/registry.json",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"a5eb62b90b4cbbf7d09e1ed1d8ef97ee\"",
+          "last_modified": "Tue, 11 Aug 2026 05:17:29 GMT",
+          "content_length": 417298,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "motion-primitives",
+      "name": "Motion Primitives",
+      "status": "verified",
+      "catalog_mode": "official-repository-registry",
+      "coverage": "complete-official-repository-registry",
+      "coverage_note": "The deployed /c/registry.json may rate-limit automated clients; the identical public/c/registry.json in the official repository is the stable complete Registry source.",
+      "license": "MIT",
+      "redistribution": "permitted-with-mit",
+      "checked_at": "2026-08-19T15:33:21.985Z",
+      "endpoints": [
+        {
+          "url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/registry.json",
+          "final_url": "https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/registry.json",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "etag": "W/\"60678b973fe3cc1e42b4869d5f0249ba341f4ebea28a861cf689c0306bc3fcf0\"",
+          "last_modified": "",
+          "content_length": 17909,
           "error": ""
         }
       ]

@@ -250,6 +250,26 @@ const INTEGRATION_PROFILES = {
     adaptation_cost: "medium",
     note: "运行时多风格核心；主题值需映射到稳定语义 token，不能把编辑器状态直接当业务契约。",
   },
+  "ai-elements": {
+    adaptation_cost: "medium",
+    note: "Agent 对话与工具状态首选；视图接项目 token，流式协议、权限与持久化留在业务 adapter。",
+  },
+  "kibo-ui": {
+    adaptation_cost: "medium-high",
+    note: "Gantt/Kanban/Editor 等业务组件；先审依赖、性能、键盘和 token 映射。",
+  },
+  "dice-ui": {
+    adaptation_cost: "medium-high",
+    note: "复杂交互候选；Data Grid/File Upload/Kanban 首次与现有底座同业务容器比较。",
+  },
+  "animate-ui": {
+    adaptation_cost: "medium",
+    note: "选择性微交互；遵守 Commons Clause，并强制 reduced-motion 与 bundle 回归。",
+  },
+  "motion-primitives": {
+    adaptation_cost: "medium",
+    note: "少量局部过渡；避免与现有 Motion 库重复，保留 reduced-motion、焦点和可访问文本。",
+  },
 };
 
 const GUIDE_ALIASES = {

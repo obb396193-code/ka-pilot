@@ -23,6 +23,11 @@ const guideSources = [
   "magic-ui",
   "react-bits",
   "tweakcn",
+  "ai-elements",
+  "kibo-ui",
+  "dice-ui",
+  "animate-ui",
+  "motion-primitives",
 ];
 const requiredGuideSections = [
   "## 安装与获取",

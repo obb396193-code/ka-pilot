@@ -17,6 +17,11 @@
 | React Bits Free | MIT + Commons Clause | 商业项目可用/可改 | 禁止作为竞争性组件库/服务销售或再分发 |
 | React Bits Pro | 独立付费许可 | 购买范围内 | 受鉴权 Registry，不进免费快照源码 |
 | tweakcn | Apache-2.0 | 是 | 社区主题、字体、图片逐项核验 |
+| Vercel AI Elements | Apache-2.0 | 是 | examples 中的模型/API/第三方依赖另核，不带入密钥与 demo 服务 |
+| Kibo UI | 公开 Registry 源码 MIT；docs-only blocks 仅有元数据 | Registry 源码可改 | 28 个 block 当前无可验证 payload，不从页面逆向复制 |
+| Dice UI | MIT | 是 | Base/Radix variants 与外部上传/媒体依赖逐项核验 |
+| Animate UI | MIT + Commons Clause | 应用内可用/可改 | 禁止销售、托管或再分发组件库本身，不发布本地 Registry 镜像 |
+| Motion Primitives | MIT | 是 | `motion` 等依赖另核并记录 |
 
 ## 源码进入仓库前
 

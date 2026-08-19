@@ -1,7 +1,7 @@
 # UI 资产官方覆盖与访问边界审计
 
-> 核验快照：2026-08-19T13:16:16.073Z
-> 目录总量：5,996；全量源码缓存：0
+> 核验快照：2026-08-19T15:29:07.580Z
+> 目录总量：7,056；全量源码缓存：0
 
 目录项是可搜索元数据，不等于源码已下载。付费资产只记录公开名称、预览、产品层级和官方获取入口；未绕过登录、401 或会员限制。
 
@@ -21,6 +21,11 @@
 | react-bits | 166 | 166 | 0 | 0 | complete-free-repository |
 | react-bits-pro | 702 | 0 | 0 | 702 | complete-public-pro-index |
 | tweakcn | 42 | 42 | 0 | 0 | complete-default-presets-partial-dynamic-community |
+| ai-elements | 136 | 136 | 0 | 0 | complete-official-runtime-registry |
+| kibo-ui | 69 | 40 | 29 | 0 | complete-current-registry-plus-public-block-docs |
+| dice-ui | 242 | 242 | 0 | 0 | complete-current-radix-registry |
+| animate-ui | 580 | 579 | 1 | 0 | complete-current-registry |
+| motion-primitives | 33 | 33 | 0 | 0 | complete-official-repository-registry |
 
 ## 不能混算的数量
 
@@ -204,3 +209,73 @@ Complete 42 defaultPresets; dynamic community is a separate discovery surface
 - <https://github.com/jnsahaj/tweakcn/blob/main/utils/theme-presets.ts>
 - <https://tweakcn.com/community>
 - <https://tweakcn.com/pricing>
+
+### ai-elements
+
+Complete deployed runtime Registry: components and examples
+
+已知目录外/另算：
+
+- Documentation headings and prose recipes are not counted as installable assets.
+
+官方证据：
+
+- <https://elements.ai-sdk.dev/api/registry/registry.json>
+- <https://github.com/vercel/ai-elements>
+
+### kibo-ui
+
+Current Registry plus finite official block documentation leaves
+
+已知目录外/另算：
+
+- Shadcnblocks patterns are a separate product and are not Kibo Registry assets.
+
+未消解：
+
+- Twenty-eight documented blocks currently return HTTP 500 at sampled /r endpoints, so they remain public-metadata-only.
+
+官方证据：
+
+- <https://www.kibo-ui.com/r/registry.json>
+- <https://www.kibo-ui.com/>
+- <https://github.com/shadcnblocks/kibo>
+
+### dice-ui
+
+Complete current Radix Registry
+
+已知目录外/另算：
+
+- Base/Radix and Nova/Vega distributions are a variant matrix, not separate logical products.
+
+官方证据：
+
+- <https://diceui.com/r/registry.json>
+- <https://github.com/sadmann7/diceui>
+
+### animate-ui
+
+Complete current Registry including demos, hooks, styles and icons
+
+未消解：
+
+- Commons Clause permits application use but prohibits selling or redistributing the component library itself.
+
+官方证据：
+
+- <https://animate-ui.com/r/registry.json>
+- <https://github.com/imskyleen/animate-ui>
+
+### motion-primitives
+
+Complete Registry committed in the official repository
+
+未消解：
+
+- The deployed Registry endpoint rate-limits some automated clients; refreshes use the official repository copy.
+
+官方证据：
+
+- <https://raw.githubusercontent.com/ibelick/motion-primitives/main/public/c/registry.json>
+- <https://github.com/ibelick/motion-primitives>

@@ -15,7 +15,7 @@
 | 访问与完整性审计 | `coverage-audit.json/.md` | JSON + Markdown | 官方覆盖口径、Free/Pro/Ultimate、会员/401、动态未知和不能混算的 variant | 不代表能绕过付费或登录 |
 | 高频隔离缓存 | `starter-pack.json`、`source-cache/manifest.json`、`source-cache/<source>/...` | JSON + 官方原始 payload/source | 48 个根资产、41 个传递依赖、93 份源码文件、官方 URL、hash、许可与文件路径 | 不代表已批准、已适配或已进入应用编译 |
 | 付费免费替代 | `free-alternatives.json/.md` | JSON + Markdown | 每个付费能力的同品牌 Free、MIT/Apache/ISC 候选或独立组合层建议 | 不包含付费源码，也不保证视觉一比一复刻 |
-| 展厅与候选发现 | `showroom.html`、`showroom-data.json`、`discovery.json/.md` | 离线 HTML + JSON + Markdown | 可视化筛选、风格比较、缓存/付费边界、新开源候选 | 不代表 discovery 来源已全量审计或下载 |
+| 展厅与准入记录 | `showroom.html`、`showroom-data.json`、`discovery.json/.md` | 离线 HTML + JSON + Markdown | 可视化筛选、风格比较、缓存/付费边界、新来源准入状态 | 不代表已下载或安装 |
 | 运行时源码账 | `source-download-manifest.json`、`source-download-status.md` | JSON + Markdown | 本地源码路径、SHA-256、引用数、provenance 可信度、第三方隔离目录 | 不把手写/来历不明文件认作官方源码 |
 
 规范、许可证和人工决策使用 Markdown；官网风格证据使用 PNG。`.firecrawl/`、`.playwright-cli/` 和 `/private/tmp` 抓取物只是当次核验工作底稿，不是长期事实源。
@@ -43,7 +43,7 @@
 
 ### 源码缓存状态
 
-- `not-cached`：目录快照本身没有绑定本地源码路径。当前目录快照 5,996 条仍保持这一状态。
+- `not-cached`：目录快照本身没有绑定本地源码路径。当前目录快照 7,056 条仍保持这一状态；独立 starter overlay 另算。
 - `source-cached`：精确官方 payload 已缓存，必须同时登记 hash/path。
 - `vendored`：源码已进入运行仓，且能追到官方 ref/hash。
 - `adapted`：已进入运行仓并有修改记录。
@@ -75,7 +75,7 @@
 - shadcn：3 foundations × 8 styles＝24 preset；当前上游 5,120 variant records，跨 style 去重 216 个名称。
 - ReUI：Base/Radix × 8 styles＝16 variant；638 icons × 4 icon styles＝2,552 渲染变体。
 
-这些数不能与 5,996 条逻辑目录直接相加。
+这些数不能与 7,056 条逻辑目录直接相加。
 
 ## 下载一项源码后的最小 provenance
 
