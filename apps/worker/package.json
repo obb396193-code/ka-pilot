@@ -15,7 +15,7 @@
     "@ka/domain": "file:../../packages/domain",
     "@the-next-ai/ai-gateway": "1.0.17",
     "pg": "^8.16.3",
-    "zod": "^4.1.5"
+    "zod": "4.1.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
