@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-08-19T08:49:35.834Z",
+  "summary": {
+    "total": 8,
+    "verified": 3,
+    "partial": 5,
+    "blocked": 0
+  },
+  "sources": [
+    {
+      "id": "shadcn",
+      "name": "shadcn/ui",
+      "status": "partial",
+      "catalog_mode": "repository-index",
+      "coverage": "partial",
+      "coverage_note": "官方未公开单一全量 item index；通过官方仓库树提取 Components、Examples、Blocks、Styles。",
+      "license": "MIT",
+      "redistribution": "permitted-with-license",
+      "checked_at": "2026-08-19T08:49:35.834Z",
+      "endpoints": [
+        {
+          "url": "https://api.github.com/repos/shadcn-ui/ui/git/trees/main?recursive=1",
+          "final_url": "https://api.github.com/repos/shadcn-ui/ui/git/trees/main?recursive=1",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"b708135b4d4bb053db457ea2056615db2d646e2f0fb1f61906bf0ab9ca4732c3\"",
+          "last_modified": "Wed, 19 Aug 2026 08:39:26 GMT",
+          "content_length": 1620627,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "coss",
+      "name": "coss/ui",
+      "status": "verified",
+      "catalog_mode": "registry",
+      "coverage": "complete",
+      "coverage_note": "官方 Registry 同时包含 primitives 与 Particles。",
+      "license": "MIT for apps/ui; repository default is AGPL-3.0",
+      "redistribution": "verify-file-is-under-apps-ui",
+      "checked_at": "2026-08-19T08:49:35.834Z",
+      "endpoints": [
+        {
+          "url": "https://coss.com/ui/r/registry.json",
+          "final_url": "https://coss.com/ui/r/registry.json",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"f2f52b23e963b0fedd28cf9e44f8735e\"",
+          "last_modified": "Wed, 19 Aug 2026 08:05:35 GMT",
+          "content_length": 285098,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "reui",
+      "name": "ReUI",
+      "status": "partial",
+      "catalog_mode": "registry-and-repository-index",
+      "coverage": "partial",
+      "coverage_note": "线上 Registry 当前重定向到一个 style；官方仓库树补齐其他 styles 与 1000+ c-* examples。",
+      "license": "MIT",
+      "redistribution": "permitted-with-license",
+      "checked_at": "2026-08-19T08:49:35.834Z",
+      "endpoints": [
+        {
+          "url": "https://reui.io/r/registry.json",
+          "final_url": "https://reui.io/r/styles/base-nova/registry.json?v=dpl_J3s62V4T1YQcX6HVhcXoH98aJLhu",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"69f651ea8dbb301a531f988da44a937a\"",
+          "last_modified": "Mon, 17 Aug 2026 04:34:40 GMT",
+          "content_length": 1612720,
+          "error": ""
+        },
+        {
+          "url": "https://api.github.com/repos/keenthemes/reui/git/trees/main?recursive=1",
+          "final_url": "https://api.github.com/repos/keenthemes/reui/git/trees/main?recursive=1",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"e4bc2be60f0d654d8e6c8c25b592afd7ff9e7c45589a639662c71e1579003471\"",
+          "last_modified": "Wed, 19 Aug 2026 08:45:33 GMT",
+          "content_length": 1871036,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "tremor",
+      "name": "Tremor",
+      "status": "partial",
+      "catalog_mode": "repository-index",
+      "coverage": "partial",
+      "coverage_note": "Components 与 Blocks 分属两个官方仓库；通过仓库树归并，模板仓库另列。",
+      "license": "Apache-2.0 for tremor; MIT for tremor-blocks repository",
+      "redistribution": "verify-subproject-license",
+      "checked_at": "2026-08-19T08:49:35.834Z",
+      "endpoints": [
+        {
+          "url": "https://api.github.com/repos/tremorlabs/tremor/git/trees/main?recursive=1",
+          "final_url": "https://api.github.com/repos/tremorlabs/tremor/git/trees/main?recursive=1",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"a7867252749e080d43cb8786ea5e0afdf9e2605c1a4fbf39027ca85d6221a68e\"",
+          "last_modified": "Mon, 17 Aug 2026 07:08:53 GMT",
+          "content_length": 59482,
+          "error": ""
+        },
+        {
+          "url": "https://api.github.com/repos/tremorlabs/tremor-blocks/git/trees/main?recursive=1",
+          "final_url": "https://api.github.com/repos/tremorlabs/tremor-blocks/git/trees/main?recursive=1",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"126908c7d6a3d4f494ac0ba8d20b6cb40a2a6878c3cfe0b4c202069e9d82f080\"",
+          "last_modified": "Mon, 17 Aug 2026 08:11:02 GMT",
+          "content_length": 228441,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "aceternity",
+      "name": "Aceternity UI",
+      "status": "verified",
+      "catalog_mode": "documented-machine-index",
+      "coverage": "complete",
+      "coverage_note": "官方 AI catalog 声明完整列出 free components、Pro components、templates、Pro blocks 与 hooks；免费与付费项分开保存。",
+      "license": "Aceternity per-item/Pro license; third-party items may differ",
+      "redistribution": "free-items-per-item-check;pro-no-source-redistribution",
+      "checked_at": "2026-08-19T08:49:35.834Z",
+      "endpoints": [
+        {
+          "url": "https://ui.aceternity.com/ai-recommendations",
+          "final_url": "https://ui.aceternity.com/ai-recommendations",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "W/\"de2c2fed24854ef85438882efb8ec816\"",
+          "last_modified": "",
+          "content_length": 2624813,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "magic-ui",
+      "name": "Magic UI",
+      "status": "verified",
+      "catalog_mode": "registry",
+      "coverage": "complete",
+      "coverage_note": "官方 Registry 包含 components、examples 与 templates。",
+      "license": "MIT",
+      "redistribution": "permitted-with-license",
+      "checked_at": "2026-08-19T08:49:35.834Z",
+      "endpoints": [
+        {
+          "url": "https://magicui.design/r/registry.json",
+          "final_url": "https://magicui.design/r/registry.json",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"f4bc4aba2cc544fa53ae94bbd613b367\"",
+          "last_modified": "Mon, 17 Aug 2026 16:54:30 GMT",
+          "content_length": 108423,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "react-bits",
+      "name": "React Bits",
+      "status": "partial",
+      "catalog_mode": "repository-index",
+      "coverage": "partial",
+      "coverage_note": "免费目录由官方仓库 content/code variants 提取；React Bits Pro 是独立付费 Registry，不能混入免费源码。",
+      "license": "MIT + Commons Clause for free React Bits; Pro is separate",
+      "redistribution": "free-commercial-use-with-commons-clause;pro-license-separate",
+      "checked_at": "2026-08-19T08:49:35.834Z",
+      "endpoints": [
+        {
+          "url": "https://api.github.com/repos/DavidHDev/react-bits/git/trees/main?recursive=1",
+          "final_url": "https://api.github.com/repos/DavidHDev/react-bits/git/trees/main?recursive=1",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"dcf2f07a5acc9eaf2ad06f5e7d499f43fe57d1a0ab9b6511a4ad58a6a09cd05b\"",
+          "last_modified": "Wed, 19 Aug 2026 08:46:30 GMT",
+          "content_length": 1122917,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "tweakcn",
+      "name": "tweakcn",
+      "status": "partial",
+      "catalog_mode": "theme-repository-index",
+      "coverage": "partial",
+      "coverage_note": "官方未承诺稳定的全量 theme API；从官方仓库 preset/config 与 editor 可分享数据提取并保留来源。",
+      "license": "Apache-2.0",
+      "redistribution": "permitted-with-license",
+      "checked_at": "2026-08-19T08:49:35.834Z",
+      "endpoints": [
+        {
+          "url": "https://api.github.com/repos/jnsahaj/tweakcn/git/trees/main?recursive=1",
+          "final_url": "https://api.github.com/repos/jnsahaj/tweakcn/git/trees/main?recursive=1",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"0c81ce76c947e140b6155886571268287cd44f8505339b5f3e92dde9541f5765\"",
+          "last_modified": "Wed, 19 Aug 2026 06:49:17 GMT",
+          "content_length": 148628,
+          "error": ""
+        }
+      ]
+    }
+  ]
+}
