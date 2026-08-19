@@ -1,6 +1,6 @@
 # B5 Claude Agent SDK → 本地协议网关烟测
 
-> 日期：2026-08-19  
+> 日期：2026-08-19
 > 性质：本机 fake upstream 集成证据，不代表 IdeaLab、Anthropic 或 Multica 生产联调通过。
 
 ## 结论
