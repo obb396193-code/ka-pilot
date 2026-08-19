@@ -1,0 +1,783 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#151515">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23151515'/%3E%3Ctext x='12' y='44' font-size='34' fill='%23d8ff36'%3EUI%3C/text%3E%3C/svg%3E">
+  <title>投放 Agent · UI 资产展厅</title>
+  <style>
+    :root {
+      --paper: #f2efe8;
+      --paper-2: #e7e2d8;
+      --ink: #151515;
+      --muted: #68645e;
+      --line: #c9c2b6;
+      --white: #fffdf8;
+      --signal: #d8ff36;
+      --orange: #f05a2a;
+      --blue: #214fc6;
+      --green: #087f5b;
+      --red: #b42318;
+      --radius: 18px;
+      --shadow: 0 1px 0 rgba(21, 21, 21, .08), 0 14px 40px rgba(21, 21, 21, .07);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+    }
+    button, input, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; }
+    img { max-width: 100%; display: block; }
+    [hidden] { display: none !important; }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 8px;
+      left: 8px;
+      padding: 8px 12px;
+      background: var(--ink);
+      color: var(--white);
+      transform: translateY(-150%);
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .app-shell { min-height: 100vh; }
+    .rail {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 20;
+      width: 246px;
+      display: flex;
+      flex-direction: column;
+      padding: 22px 16px;
+      border-right: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--white);
+      overflow-y: auto;
+    }
+    .brand {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 0 7px 24px;
+      border-bottom: 1px solid #404040;
+    }
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #777;
+      border-radius: 50%;
+      color: var(--signal);
+      font-family: Georgia, serif;
+      font-size: 21px;
+      font-style: italic;
+    }
+    .brand strong { display: block; font-size: 14px; letter-spacing: .04em; }
+    .brand span { color: #999; font-size: 11px; text-transform: uppercase; letter-spacing: .14em; }
+    .nav { display: grid; gap: 4px; padding: 24px 0; }
+    .nav-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      gap: 9px;
+      align-items: center;
+      min-height: 44px;
+      padding: 8px 10px;
+      border: 0;
+      border-radius: 10px;
+      color: #aaa;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+    .nav-item:hover { color: var(--white); background: #262626; }
+    .nav-item[aria-current="page"] { color: var(--ink); background: var(--signal); }
+    .nav-key { font: 11px ui-monospace, monospace; opacity: .75; }
+    .nav-label { font-weight: 650; }
+    .nav-count { font: 11px ui-monospace, monospace; }
+    .rail-note {
+      margin-top: auto;
+      padding: 14px;
+      border: 1px solid #444;
+      border-radius: 12px;
+      color: #aaa;
+      font-size: 12px;
+    }
+    .rail-note b { color: var(--signal); }
+
+    .main { margin-left: 246px; min-width: 0; }
+    .topline {
+      position: sticky;
+      top: 0;
+      z-index: 15;
+      min-height: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      padding: 8px 28px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(242, 239, 232, .96);
+      backdrop-filter: blur(12px);
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .status-dot { display: inline-block; width: 8px; height: 8px; margin-right: 7px; border-radius: 50%; background: var(--green); }
+    .view { padding: 0 28px 64px; }
+    .content-width { max-width: 1460px; margin: 0 auto; }
+
+    .hero {
+      position: relative;
+      min-height: 470px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr);
+      gap: 28px;
+      align-items: end;
+      padding: 64px 0 42px;
+      border-bottom: 1px solid var(--ink);
+    }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 18px;
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 28px; height: 5px; background: var(--orange); }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 900px;
+      margin-bottom: 24px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(64px, 9vw, 146px);
+      font-weight: 400;
+      line-height: .78;
+      letter-spacing: -.075em;
+    }
+    h1 em { color: var(--blue); font-weight: 400; }
+    .hero-copy { max-width: 720px; margin-bottom: 0; color: var(--muted); font-size: 18px; }
+    .hero-aside {
+      padding: 24px;
+      border: 1px solid var(--ink);
+      border-radius: var(--radius);
+      background: var(--signal);
+      box-shadow: 10px 10px 0 var(--ink);
+    }
+    .hero-aside strong { display: block; margin-bottom: 8px; font-family: Georgia, serif; font-size: 30px; font-weight: 400; }
+    .hero-aside p { margin-bottom: 16px; }
+    .hero-aside code { display: block; padding: 10px; border: 1px solid var(--ink); background: rgba(255,255,255,.38); font: 11px ui-monospace, monospace; overflow-wrap: anywhere; }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      border: 1px solid var(--ink);
+      border-top: 0;
+      background: var(--white);
+    }
+    .metric { min-height: 128px; padding: 20px; border-right: 1px solid var(--ink); }
+    .metric:last-child { border-right: 0; }
+    .metric-value { display: block; font-family: Georgia, serif; font-size: clamp(30px, 3vw, 48px); line-height: 1; }
+    .metric-label { display: block; margin-top: 12px; color: var(--muted); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+
+    .section { padding-top: 64px; }
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, .55fr);
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--ink);
+    }
+    .section-kicker { margin-bottom: 8px; color: var(--orange); font-size: 11px; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
+    .section h1, .section h2 { max-width: none; margin-bottom: 0; font-family: Georgia, serif; font-size: clamp(36px, 5vw, 70px); font-weight: 400; line-height: .96; letter-spacing: -.04em; }
+    .section-intro { margin-bottom: 0; color: var(--muted); }
+
+    .source-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .source-card {
+      --source-accent: var(--ink);
+      position: relative;
+      min-height: 330px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .source-image { aspect-ratio: 16 / 7; overflow: hidden; border-bottom: 1px solid var(--line); background: var(--source-accent); }
+    .source-image img { width: 100%; height: 100%; object-fit: cover; object-position: top; filter: saturate(.72) contrast(1.03); transition: transform .35s ease; }
+    .source-card:hover .source-image img { transform: scale(1.025); }
+    .source-swatch { height: 80px; background: var(--source-accent); position: relative; }
+    .source-swatch::after { content: attr(data-letter); position: absolute; right: 16px; bottom: -22px; color: rgba(255,255,255,.25); font-family: Georgia, serif; font-size: 100px; line-height: 1; }
+    .source-body { flex: 1; padding: 18px; }
+    .source-title-row { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; }
+    .source-title { margin-bottom: 3px; font-family: Georgia, serif; font-size: 28px; font-weight: 400; }
+    .source-family { color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+    .source-copy { margin: 16px 0; color: #3f3c38; }
+    .source-meta { display: grid; gap: 8px; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12px; }
+    .source-meta div { display: grid; grid-template-columns: 72px 1fr; gap: 8px; }
+    .source-meta dt { color: var(--muted); }
+    .source-meta dd { margin: 0; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      width: fit-content;
+      padding: 3px 7px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      color: #45413c;
+      background: transparent;
+      font-size: 10px;
+      font-weight: 750;
+      line-height: 1.2;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .badge.current, .badge.free, .badge.cached { color: var(--green); }
+    .badge.legacy { color: #766c5e; }
+    .badge.paid { color: var(--red); }
+    .badge.metadata { color: #865d00; }
+    .badge.starter { color: var(--blue); }
+
+    .generation-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; margin-top: 14px; border: 1px solid var(--ink); background: var(--ink); }
+    .generation-panel { padding: 24px; background: var(--white); }
+    .generation-panel:first-child { background: var(--signal); }
+    .generation-label { margin-bottom: 24px; font: 11px ui-monospace, monospace; text-transform: uppercase; }
+    .generation-panel h3 { font-family: Georgia, serif; font-size: 34px; font-weight: 400; }
+    .generation-number { float: right; font-family: Georgia, serif; font-size: 56px; line-height: .8; }
+    .generation-panel ul { margin: 16px 0 0; padding-left: 18px; }
+
+    .toolbar {
+      position: sticky;
+      top: 48px;
+      z-index: 12;
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) repeat(4, minmax(140px, .24fr));
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid var(--ink);
+      background: var(--paper);
+      box-shadow: 0 10px 24px rgba(21,21,21,.08);
+    }
+    .toolbar-alternatives { grid-template-columns: minmax(260px, 1fr) repeat(3, minmax(160px, .32fr)); }
+    .toolbar-cache { grid-template-columns: minmax(260px, 1fr) minmax(170px, .35fr); }
+    .toolbar-themes { grid-template-columns: 1fr; }
+    .control { display: grid; gap: 5px; }
+    .control label { color: var(--muted); font-size: 10px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+    .input, .select {
+      width: 100%;
+      height: 42px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      background: var(--white);
+      outline: 0;
+    }
+    .input:focus, .select:focus, button:focus-visible, a:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+    .result-line { display: flex; justify-content: space-between; align-items: center; gap: 16px; min-height: 56px; color: var(--muted); }
+    .result-line strong { color: var(--ink); font-family: Georgia, serif; font-size: 22px; font-weight: 400; }
+
+    .asset-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .asset-card { min-width: 0; display: flex; flex-direction: column; padding: 16px; border: 1px solid var(--line); border-radius: 13px; background: var(--white); }
+    .asset-card:hover { border-color: var(--ink); }
+    .asset-card:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+    .asset-head { display: flex; justify-content: space-between; gap: 12px; }
+    .asset-source { color: var(--muted); font: 10px ui-monospace, monospace; text-transform: uppercase; }
+    .asset-card h3 { margin: 6px 0 9px; font-size: 17px; line-height: 1.2; overflow-wrap: anywhere; }
+    .asset-description { min-height: 44px; display: -webkit-box; overflow: hidden; color: var(--muted); font-size: 12px; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .badge-row { display: flex; flex-wrap: wrap; gap: 5px; margin: 12px 0; }
+    .asset-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: auto 0 14px; font-size: 11px; }
+    .asset-facts div { min-width: 0; padding: 7px; background: var(--paper); }
+    .asset-facts span { display: block; color: var(--muted); }
+    .asset-facts b { display: block; overflow-wrap: anywhere; }
+    .actions { display: flex; flex-wrap: wrap; gap: 7px; }
+    .action {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border: 1px solid var(--ink);
+      border-radius: 7px;
+      background: transparent;
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .action:hover { color: var(--white); background: var(--ink); }
+    .action.primary { background: var(--ink); color: var(--white); }
+    details { margin-top: 12px; border-top: 1px solid var(--line); }
+    summary { padding: 11px 0 0; cursor: pointer; color: var(--blue); font-size: 12px; font-weight: 750; }
+    .alternative-list { display: grid; gap: 8px; padding-top: 10px; }
+    .alternative { padding: 10px; border-left: 4px solid var(--signal); background: var(--paper); }
+    .alternative strong { display: block; }
+    .alternative p { margin: 5px 0; color: var(--muted); font-size: 11px; }
+
+    .pager { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 28px 0; }
+    .pager button { min-width: 44px; height: 44px; border: 1px solid var(--ink); border-radius: 7px; background: var(--white); cursor: pointer; }
+    .pager button:disabled { opacity: .35; cursor: default; }
+    .pager span { min-width: 110px; text-align: center; font: 12px ui-monospace, monospace; }
+
+    .theme-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .theme-card { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); }
+    .theme-preview { min-height: 170px; padding: 18px; color: var(--theme-fg); background: var(--theme-bg); }
+    .theme-mini-nav { display: flex; gap: 5px; margin-bottom: 22px; }
+    .theme-mini-nav span { width: 26px; height: 5px; border-radius: 99px; background: var(--theme-border); }
+    .theme-window { padding: 14px; border: 1px solid var(--theme-border); border-radius: var(--theme-radius); background: var(--theme-card); }
+    .theme-window b { display: block; margin-bottom: 5px; }
+    .theme-window p { width: 74%; height: 5px; margin: 0 0 14px; background: var(--theme-border); }
+    .theme-button { display: inline-block; padding: 6px 11px; border-radius: calc(var(--theme-radius) * .75); color: var(--theme-bg); background: var(--theme-primary); font-size: 10px; font-weight: 750; }
+    .theme-swatches { display: grid; grid-template-columns: repeat(5, 1fr); height: 10px; }
+    .theme-body { padding: 14px; }
+    .theme-body h3 { margin-bottom: 4px; font-family: Georgia, serif; font-size: 20px; font-weight: 400; }
+    .theme-body p { margin-bottom: 0; color: var(--muted); font: 11px ui-monospace, monospace; }
+
+    .discovery-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .discovery-card { padding: 22px; border: 1px solid var(--ink); border-radius: var(--radius); background: var(--white); }
+    .discovery-card:nth-child(1), .discovery-card:nth-child(2) { background: var(--signal); }
+    .discovery-card h3 { margin: 12px 0 6px; font-family: Georgia, serif; font-size: 32px; font-weight: 400; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0; }
+    .tag { padding: 4px 7px; border-radius: 5px; background: rgba(21,21,21,.08); font-size: 11px; }
+    .warning { padding: 12px; border-left: 4px solid var(--orange); background: rgba(240,90,42,.08); font-size: 12px; }
+
+    .cache-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-bottom: 16px; border: 1px solid var(--ink); background: var(--ink); }
+    .cache-stat { padding: 20px; background: var(--white); }
+    .cache-stat b { display: block; font-family: Georgia, serif; font-size: 38px; font-weight: 400; }
+    .cache-stat span { color: var(--muted); font-size: 11px; text-transform: uppercase; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); background: var(--white); }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { position: sticky; top: 0; background: var(--paper-2); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+    td code { overflow-wrap: anywhere; font-size: 10px; }
+    .empty { grid-column: 1 / -1; padding: 48px 24px; border: 1px dashed var(--line); text-align: center; color: var(--muted); }
+    .footnote { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+
+    @media (max-width: 1180px) {
+      .metric-grid { grid-template-columns: repeat(3, 1fr); }
+      .metric:nth-child(3) { border-right: 0; }
+      .metric:nth-child(-n+3) { border-bottom: 1px solid var(--ink); }
+      .source-grid, .asset-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .theme-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .toolbar, .toolbar-alternatives, .toolbar-cache { grid-template-columns: 1fr 1fr; }
+      .toolbar-themes { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 820px) {
+      .rail { position: sticky; top: 0; width: auto; height: auto; padding: 8px; border-right: 0; border-bottom: 1px solid var(--ink); }
+      .brand, .rail-note { display: none; }
+      .nav { display: flex; gap: 4px; overflow-x: auto; padding: 0; }
+      .nav-item { flex: 0 0 auto; width: auto; grid-template-columns: 1fr auto; min-height: 44px; }
+      .nav-key { display: none; }
+      .main { margin-left: 0; }
+      .topline { top: 56px; padding-inline: 14px; }
+      .view { padding-inline: 14px; }
+      .hero { min-height: 0; grid-template-columns: 1fr; padding-top: 44px; }
+      h1 { font-size: clamp(58px, 19vw, 102px); }
+      .hero-aside { box-shadow: 6px 6px 0 var(--ink); }
+      .section-head { grid-template-columns: 1fr; }
+      .toolbar { top: 104px; }
+      .theme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      .topline span:last-child { display: none; }
+      .metric-grid { grid-template-columns: repeat(2, 1fr); }
+      .metric, .metric:nth-child(3) { border-right: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+      .metric:nth-child(2n) { border-right: 0; }
+      .metric:nth-last-child(-n+2) { border-bottom: 0; }
+      .source-grid, .asset-grid, .theme-grid, .discovery-grid, .generation-compare { grid-template-columns: 1fr; }
+      .toolbar, .toolbar-alternatives, .toolbar-cache, .toolbar-themes { position: static; grid-template-columns: 1fr; }
+      .cache-summary { grid-template-columns: repeat(2, 1fr); }
+      .hero-copy { font-size: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到内容</a>
+  <div class="app-shell">
+    <aside class="rail" aria-label="展厅导航">
+      <div class="brand">
+        <div class="brand-mark">UI</div>
+        <div><strong>投放 Agent</strong><span>Asset field guide</span></div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item" data-view="overview" aria-current="page"><span class="nav-key">01</span><span class="nav-label">总览与风格</span><span class="nav-count" id="nav-sources">—</span></button>
+        <button class="nav-item" data-view="catalog"><span class="nav-key">02</span><span class="nav-label">全量清单</span><span class="nav-count" id="nav-assets">—</span></button>
+        <button class="nav-item" data-view="alternatives"><span class="nav-key">03</span><span class="nav-label">付费处置</span><span class="nav-count" id="nav-paid">—</span></button>
+        <button class="nav-item" data-view="cache"><span class="nav-key">04</span><span class="nav-label">本地源码</span><span class="nav-count" id="nav-cache">—</span></button>
+        <button class="nav-item" data-view="themes"><span class="nav-key">05</span><span class="nav-label">主题展厅</span><span class="nav-count" id="nav-themes">—</span></button>
+        <button class="nav-item" data-view="discovery"><span class="nav-key">06</span><span class="nav-label">新库候选</span><span class="nav-count" id="nav-discovery">—</span></button>
+      </nav>
+      <div class="rail-note"><b>离线可用</b><br>本页内嵌全部目录和替代数据，不依赖网络加载；外部链接仅在你主动打开时访问官网。</div>
+    </aside>
+
+    <main class="main" id="main-content">
+      <div class="topline">
+        <span><i class="status-dot"></i>官方目录快照 · <span id="snapshot-date">—</span></span>
+        <span>目录 ≠ 运行时安装 · 缓存 ≠ 已接入</span>
+      </div>
+
+      <section class="view" id="view-overview">
+        <div class="content-width">
+          <header class="hero">
+            <div>
+              <div class="eyebrow">React UI reuse observatory</div>
+              <h1>UI <em>/</em><br>FIELD<br>GUIDE</h1>
+              <p class="hero-copy" id="hero-copy-dynamic"></p>
+            </div>
+            <aside class="hero-aside">
+              <strong>A 方案已落地</strong>
+              <p>高频源码先缓存，完整目录保留发现能力。付费项不绕授权，统一展示合法候选、组合方案和许可证边界。</p>
+              <code>docs/frontend/ui-assets/showroom.html</code>
+            </aside>
+          </header>
+          <div class="metric-grid" id="overview-metrics"></div>
+
+          <section class="section">
+            <div class="section-head">
+              <div><div class="section-kicker">Generation split</div><h2>coss 新版和 Origin 到底差在哪</h2></div>
+              <p class="section-intro">它们都是 MIT 公开源码，但不是同一批东西。current 是现在的 Base UI 体系；Origin 是被保留的 legacy snapshot。</p>
+            </div>
+            <div class="generation-compare" id="coss-compare"></div>
+            <div class="warning" id="reui-variants" style="margin-top:14px"></div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <div><div class="section-kicker">Visual taxonomy</div><h2 id="source-heading"></h2></div>
+              <p class="section-intro">卡片里的“适合”和“注意”是给前端 Agent 的选型边界；截图是官网快照，付费卡片只展示公开预览状态。</p>
+            </div>
+            <div class="source-grid" id="source-grid"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="view-catalog" hidden>
+        <div class="content-width section">
+          <div class="section-head"><div><div class="section-kicker">Complete inventory</div><h1>全量能力清单</h1></div><p class="section-intro" id="catalog-intro"></p></div>
+          <div class="toolbar">
+            <div class="control"><label for="catalog-search">搜索</label><input class="input" id="catalog-search" type="search" autocomplete="off" placeholder="例如 date range、data grid、hero、AI chat"></div>
+            <div class="control"><label for="catalog-source">来源</label><select class="select" id="catalog-source"></select></div>
+            <div class="control"><label for="catalog-access">访问</label><select class="select" id="catalog-access"></select></div>
+            <div class="control"><label for="catalog-tier">层级</label><select class="select" id="catalog-tier"></select></div>
+            <div class="control"><label for="catalog-kind">类型</label><select class="select" id="catalog-kind"></select></div>
+          </div>
+          <div class="result-line"><span id="catalog-result" role="status" aria-live="polite"></span><span>点击“免费替代”可展开对比</span></div>
+          <div class="asset-grid" id="catalog-grid"></div>
+          <div class="pager" id="catalog-pager"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-alternatives" hidden>
+        <div class="content-width section">
+          <div class="section-head"><div><div class="section-kicker">Legal handling</div><h1 id="alt-heading"></h1></div><p class="section-intro" id="alt-intro"></p></div>
+          <div class="toolbar toolbar-alternatives">
+            <div class="control"><label for="alt-search">搜索付费项</label><input class="input" id="alt-search" type="search" autocomplete="off" placeholder="例如 icon、dashboard、hero、agent"></div>
+            <div class="control"><label for="alt-source">付费来源</label><select class="select" id="alt-source"></select></div>
+            <div class="control"><label for="alt-category">分类</label><select class="select" id="alt-category"></select></div>
+            <div class="control"><label for="alt-status">处置</label><select class="select" id="alt-status"></select></div>
+          </div>
+          <div class="result-line"><span id="alt-result" role="status" aria-live="polite"></span><span>每项最多 3 个候选，并明确置信度与是否需组合</span></div>
+          <div class="asset-grid" id="alt-grid"></div>
+          <div class="pager" id="alt-pager"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-cache" hidden>
+        <div class="content-width section">
+          <div class="section-head"><div><div class="section-kicker">Source provenance</div><h1>真正下载到本地的源码</h1></div><p class="section-intro" id="cache-intro"></p></div>
+          <div class="cache-summary" id="cache-summary"></div>
+          <div class="toolbar toolbar-cache">
+            <div class="control"><label for="cache-search">搜索缓存</label><input class="input" id="cache-search" type="search" autocomplete="off" placeholder="组件名或来源"></div>
+            <div class="control"><label for="cache-source">来源</label><select class="select" id="cache-source"></select></div>
+          </div>
+          <div class="result-line"><span id="cache-result" role="status" aria-live="polite"></span><span>打开本地源码不会访问网络</span></div>
+          <div class="table-wrap"><table><thead><tr><th>来源 / 资产</th><th>角色</th><th>物理缓存</th><th>Payload 内源码</th><th>本地路径</th><th>SHA-256</th></tr></thead><tbody id="cache-table"></tbody></table></div>
+          <p class="footnote">注意：运行仓 `apps/web` 里仍没有把这些第三方缓存批量接入。前端真正使用某项时，再从这里复制到来源隔离目录并做业务适配与门禁。</p>
+        </div>
+      </section>
+
+      <section class="view" id="view-themes" hidden>
+        <div class="content-width section">
+          <div class="section-head"><div><div class="section-kicker">tweakcn core</div><h1 id="theme-heading"></h1></div><p class="section-intro">这些卡片直接读取官方 preset 的 light tokens，目的是先看气质差异。最终运行时切换要落到项目自己的语义 token 和版本契约。</p></div>
+          <div class="toolbar toolbar-themes"><div class="control"><label for="theme-search">搜索主题</label><input class="input" id="theme-search" type="search" autocomplete="off" placeholder="例如 minimal、caffeine、clay、nature"></div></div>
+          <div class="result-line"><span id="theme-result" role="status" aria-live="polite"></span><span>颜色为官方 light token 快照</span></div>
+          <div class="theme-grid" id="theme-grid"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-discovery" hidden>
+        <div class="content-width section">
+          <div class="section-head"><div><div class="section-kicker">Next intake</div><h1 id="discovery-heading"></h1></div><p class="section-intro">全部已核官方许可证和定位，但仍是 discovery-only、源码未缓存。AI Elements 和 Kibo UI 最值得优先进入下一批全量审计。</p></div>
+          <div class="discovery-grid" id="discovery-grid"></div>
+          <p class="footnote">候选里的第三方 patterns、模板或 Sponsor 内容如果另有商业授权，必须再次拆分；不能因为主仓 MIT/Apache 就把所有外链内容都当免费。</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script id="showroom-data" type="application/json">__SHOWROOM_DATA__</script>
+  <script>
+    (() => {
+      "use strict";
+      const DATA = JSON.parse(document.getElementById("showroom-data").textContent);
+      const SOURCE = new Map(DATA.sources.map((item) => [item.id, item]));
+      const nf = new Intl.NumberFormat("zh-CN");
+      const PAGE_SIZE = 24;
+      const state = { view: "overview", catalogPage: 1, altPage: 1 };
+
+      const $ = (selector) => document.querySelector(selector);
+      const $$ = (selector) => [...document.querySelectorAll(selector)];
+      const esc = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]);
+      const safeUrl = (value) => {
+        const url = String(value ?? "").trim();
+        if (url.startsWith("https://")) {
+          try { return new URL(url).protocol === "https:" ? esc(url) : "#"; } catch { return "#"; }
+        }
+        if (url === "agent-workflow.md") return url;
+        if (url.startsWith("source-cache/") && !url.split("/").includes("..")) return esc(url);
+        return "#";
+      };
+      const safeColor = (value, fallback) => /^(#[0-9a-f]{3,8}|(?:oklch|hsl|hsla|rgb|rgba)\([0-9.% ,/+\-]+\))$/i.test(String(value)) ? String(value) : fallback;
+      const safeCssLength = (value, fallback = "0.5rem") => /^(?:0|(?:\d+(?:\.\d+)?|\.\d+)(?:px|rem|em|%)?)$/i.test(String(value).trim()) ? String(value).trim() : fallback;
+      const accessLabel = (value) => ({ "public-source": "公开源码", "public-metadata-only": "公开元数据", "paid-source-after-license": "付费源码", "paid-metadata-only": "付费元数据", "inaccessible-unknown": "未知" })[value] || value;
+      const tierLabel = (value) => ({ free: "Free", pro: "Pro", ultimate: "Ultimate", paid: "Paid", starter: "Starter", legacy: "Legacy", unknown: "层级未知" })[value] || value;
+      const badgeClass = (value) => ({ "public-source": "free", "public-metadata-only": "metadata", "paid-source-after-license": "paid", "paid-metadata-only": "paid", "inaccessible-unknown": "metadata" })[value] || "metadata";
+      const resolutionLabel = (value) => ({ "free-candidate-found": "有同能力免费候选", "composition-required": "需要重新组合", "license-check-required": "先核许可证", "semantic-selection-required": "按语义选图标" })[value] || value;
+      const matchLabel = (value) => ({ "exact-family": "同品牌具体近似", "same-capability": "同能力", "collection-selection": "候选库内再挑选", "composition-basis": "组合基础", "visual-material-only": "仅视觉材料", "semantic-library": "语义图标库", "project-composition": "项目组合层" })[value] || value;
+      const reviewLabel = (value) => ({ "preview-required": "需预览核对", "preview-and-composition-required": "需预览并重组", "preview-composition-and-license-required": "需重组且核许可", "license-check-required": "需核许可", "discovery-component-selection-required": "需进库挑组件", "manual-composition-required": "需人工组合", "semantic-icon-selection-required": "需按语义选图标" })[value] || value;
+      const optionList = (values, allLabel) => `<option value="">${esc(allLabel)}</option>` + values.map((value) => `<option value="${esc(value)}">${esc(value)}</option>`).join("");
+      const link = (url, label, className = "action") => `<a class="${className}" href="${safeUrl(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} ↗</a>`;
+
+      DATA.assets.forEach((asset) => {
+        asset.search = [asset.id, asset.name, asset.description, asset.category, asset.kind, ...asset.capabilities].join(" ").toLowerCase();
+      });
+
+      function setView(view, updateHash = true) {
+        const valid = ["overview", "catalog", "alternatives", "cache", "themes", "discovery"];
+        state.view = valid.includes(view) ? view : "overview";
+        $$(".view").forEach((section) => { section.hidden = section.id !== `view-${state.view}`; });
+        let activeButton;
+        $$(".nav-item").forEach((button) => {
+          if (button.dataset.view === state.view) button.setAttribute("aria-current", "page");
+          else button.removeAttribute("aria-current");
+          if (button.dataset.view === state.view) activeButton = button;
+        });
+        if (updateHash) history.replaceState(null, "", `#${state.view}`);
+        if (state.view === "catalog") renderCatalog();
+        if (state.view === "alternatives") renderAlternatives();
+        if (activeButton && matchMedia("(max-width: 820px)").matches) activeButton.scrollIntoView({ block: "nearest", inline: "nearest" });
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }
+
+      function renderDynamicCopy() {
+        $("#snapshot-date").textContent = String(DATA.catalog_fetched_at || DATA.generated_at || "").slice(0, 10) || "未记录";
+        $("#hero-copy-dynamic").textContent = `把 ${DATA.sources.length} 条官方产品线、${nf.format(DATA.summary.total_assets)} 个逻辑资产、${nf.format(DATA.summary.concrete_paid_items)} 个具体付费能力的合法替代策略和 ${nf.format(DATA.summary.cached_files)} 个物理缓存文件放到同一张可筛选地图里。先看风格，再看能力，最后才决定复制哪份源码。`;
+        $("#source-heading").textContent = `${nf.format(DATA.sources.length)} 条产品线，六种主要气质`;
+        $("#catalog-intro").textContent = `搜索名称、分类或能力；按来源、访问状态、Free/Pro/Ultimate 层级和类型过滤。每页只渲染 ${PAGE_SIZE} 项，完整 ${nf.format(DATA.summary.total_assets)} 项都在本页数据里。`;
+        $("#alt-heading").textContent = `${nf.format(DATA.summary.concrete_paid_items)} 个具体付费能力的合法处置`;
+        $("#alt-intro").textContent = `已知付费元数据 ${nf.format(DATA.summary.paid_items)} 条，其中 ${nf.format(DATA.summary.provider_group_records)} 条只是分类节点；具体能力全部有处置策略，但 ${nf.format(DATA.summary.unresolved_paid_items)} 条没有足够证据称为直接替代，已明确标成“需组合/先核许可证”。`;
+        $("#cache-intro").textContent = `当前是隔离缓存，不是运行时安装：${nf.format(DATA.summary.cached_roots)} 个高频根资产带出 ${nf.format(DATA.summary.cached_dependencies)} 个同源依赖，共 ${nf.format(DATA.summary.cached_entries)} 个缓存条目、${nf.format(DATA.summary.cached_files)} 个物理缓存文件。`;
+        $("#theme-heading").textContent = `${nf.format(DATA.summary.theme_presets)} 个官方主题种子`;
+        $("#discovery-heading").textContent = `又找到 ${nf.format(DATA.summary.discovery_sources)} 个值得审计的免费库`;
+      }
+
+      function renderMetrics() {
+        const metrics = [
+          [DATA.summary.total_assets, "逻辑资产"],
+          [DATA.sources.length, "产品线"],
+          [DATA.summary.public_source, "公开源码项"],
+          [DATA.summary.concrete_paid_items, "具体付费能力"],
+          [DATA.summary.cached_files, "已缓存源码文件"],
+          [DATA.summary.theme_presets, "官方主题种子"],
+        ];
+        $("#overview-metrics").innerHTML = metrics.map(([value, label]) => `<div class="metric"><span class="metric-value">${nf.format(value)}</span><span class="metric-label">${esc(label)}</span></div>`).join("");
+      }
+
+      function renderCossCompare() {
+        const current = SOURCE.get("coss");
+        const origin = SOURCE.get("coss-origin");
+        const currentParticles = current.counts?.by_kind?.particle || 0;
+        const originParticles = origin.counts?.by_kind?.particle || 0;
+        $("#coss-compare").innerHTML = [
+          { source: current, label: "Current / first choice", bullets: [`${nf.format(current.count)} = ${nf.format(currentParticles)} Particles + ${nf.format(current.count - currentParticles)} 基础/支持项`, "Base UI 新架构，仍在更新", "细节控件默认先查这里", `本地缓存 ${current.cached_entries} 个条目`] },
+          { source: origin, label: "Legacy / gap filler", bullets: [`${nf.format(origin.count)} = ${nf.format(originParticles)} Components + ${nf.format(origin.count - originParticles)} 支持资产`, "被官方保留的 legacy snapshot", "维护支持有限，不是会员库", "只在 current 缺能力时再查"] },
+        ].map(({ source, label, bullets }) => `<article class="generation-panel"><div class="generation-label">${esc(label)}<span class="generation-number">${nf.format(source.count)}</span></div><h3>${esc(source.name)}</h3><p>${esc(source.visual_style)}</p><ul>${bullets.map((item) => `<li>${esc(item)}</li>`).join("")}</ul></article>`).join("");
+        const variants = DATA.variants.reui;
+        $("#reui-variants").innerHTML = variants ? `<b>ReUI 选源码前还要选具体变体：</b> ${variants.foundation_count} 个底层 × ${variants.style_count} 套风格＝${variants.variants.length} 个 Registry variants；Ultimate 图标有 ${variants.icon_style_count} 种样式（${variants.icon_render_variant_count} 个渲染变体）。<br><code>${variants.variants.map(esc).join(" · ")}</code>` : "ReUI variant 数据缺失，使用前必须回官方核对。";
+      }
+
+      function sourceCard(source) {
+        const access = source.counts?.by_access_status || {};
+        const paid = access["paid-source-after-license"] || 0;
+        const image = source.screenshot
+          ? `<div class="source-image"><img src="${esc(source.screenshot)}" loading="lazy" alt="${esc(source.name)} 官网风格截图"></div>`
+          : `<div class="source-swatch" aria-hidden="true" data-letter="${esc(source.name.slice(0, 1))}"></div>`;
+        const tierBadges = Object.entries(source.counts?.by_access_tier || {}).filter(([, count]) => count > 0).map(([tier, count]) => `<span class="badge ${["pro", "ultimate", "paid"].includes(tier) ? "paid" : tier === "free" ? "free" : "metadata"}">${esc(tierLabel(tier))} ${nf.format(count)}</span>`).join("");
+        return `<article class="source-card" style="--source-accent:${safeColor(source.accent, "#555555")}">${image}<div class="source-body"><div class="source-title-row"><div><h3 class="source-title">${esc(source.name)}</h3><div class="source-family">${esc(source.family)}</div></div><span class="badge ${source.generation === "legacy" ? "legacy" : "current"}">${esc(source.generation)}</span></div><p class="source-copy">${esc(source.visual_style)}</p><div class="badge-row"><span class="badge">${nf.format(source.count)} 项</span>${paid ? `<span class="badge paid">${nf.format(paid)} 付费</span>` : `<span class="badge free">无已知会员墙</span>`}${source.cached_entries ? `<span class="badge cached">缓存 ${source.cached_entries}</span>` : ""}${tierBadges}</div><dl class="source-meta"><div><dt>适合</dt><dd>${esc(source.best_for)}</dd></div><div><dt>底层</dt><dd>${esc(source.foundation)}</dd></div><div><dt>注意</dt><dd>${esc(source.caution)}</dd></div></dl></div></article>`;
+      }
+
+      function renderSources() {
+        $("#source-grid").innerHTML = DATA.sources.map(sourceCard).join("");
+      }
+
+      function alternativeMarkup(candidate) {
+        const local = candidate.source_cache_status === "source-cached" && candidate.local_path ? link(candidate.local_path, "本地缓存") : "";
+        return `<div class="alternative"><div class="badge-row"><span class="badge free">${esc(matchLabel(candidate.match_level))}</span><span class="badge">置信度 ${esc(candidate.confidence)}</span><span class="badge metadata">${esc(reviewLabel(candidate.review_status))}</span><span class="badge ${candidate.license_verified ? "free" : "paid"}">${candidate.license_verified ? "许可证已核" : "许可证待核"}</span>${candidate.redistribution_restricted ? `<span class="badge paid">限制再分发</span>` : ""}${candidate.source_cache_status === "source-cached" ? `<span class="badge cached">已缓存</span>` : ""}</div><strong>${esc(candidate.label)}</strong><p>${esc(candidate.reason)}</p><p><b>取舍：</b>${esc(candidate.tradeoff)}</p><div class="actions">${link(candidate.url, "预览")}${candidate.source_url !== candidate.url ? link(candidate.source_url, "源码") : ""}${local}</div></div>`;
+      }
+
+      function assetCard(asset, forceAlternatives = false) {
+        const accessClass = badgeClass(asset.access_status);
+        const local = asset.cache.status === "source-cached" ? link(asset.cache.local_path, "本地源码", "action primary") : "";
+        const alternatives = asset.alternatives.length
+          ? `<details ${forceAlternatives ? "open" : ""}><summary>${esc(resolutionLabel(asset.alternative_resolution_status))} · ${asset.alternatives.length} 个方案</summary><div class="alternative-list">${asset.alternatives.map(alternativeMarkup).join("")}</div></details>`
+          : "";
+        return `<article class="asset-card" tabindex="-1"><div class="asset-head"><div><div class="asset-source">${esc(asset.source)} / ${esc(asset.kind)}</div><h3>${esc(asset.name)}</h3></div><span class="badge ${accessClass}">${esc(accessLabel(asset.access_status))}</span></div><p class="asset-description">${esc(asset.description || "官方目录未提供说明；请打开真实预览判断。")}</p><div class="badge-row"><span class="badge ${["pro", "ultimate", "paid"].includes(asset.access_tier) ? "paid" : "free"}">${esc(tierLabel(asset.access_tier))}</span>${asset.alternative_resolution_status ? `<span class="badge metadata">${esc(resolutionLabel(asset.alternative_resolution_status))}</span>` : ""}${asset.starter.selected ? `<span class="badge starter">A 启动包</span>` : ""}${asset.cache.status === "source-cached" ? `<span class="badge cached">源码已缓存</span>` : ""}${asset.maintenance_status !== "current" ? `<span class="badge legacy">${esc(asset.maintenance_status)}</span>` : ""}${asset.related_or_duplicate_of ? `<span class="badge metadata">关联变体</span>` : ""}</div><div class="asset-facts"><div><span>分类</span><b>${esc(asset.category)}</b></div><div><span>适配</span><b>${esc(asset.adaptation_cost || "待评估")}</b></div><div><span>底层</span><b>${esc(asset.foundation)}</b></div><div><span>许可证</span><b>${esc(asset.license)}</b></div>${asset.related_or_duplicate_of ? `<div><span>关联/重复</span><b>${esc(asset.related_or_duplicate_of)}</b></div>` : ""}</div><div class="actions">${link(asset.preview_url, "预览")}${link(asset.source_url, asset.access_status === "public-source" ? "官方源码" : "官方入口")}${local}</div>${alternatives}</article>`;
+      }
+
+      function pagerMarkup(page, pages, target) {
+        if (pages <= 1) return "";
+        return `<button data-page-target="${target}" data-page="${page - 1}" ${page <= 1 ? "disabled" : ""} aria-label="上一页">←</button><span>${page} / ${pages}</span><button data-page-target="${target}" data-page="${page + 1}" ${page >= pages ? "disabled" : ""} aria-label="下一页">→</button>`;
+      }
+
+      function renderCatalog() {
+        const query = $("#catalog-search").value.trim().toLowerCase();
+        const source = $("#catalog-source").value;
+        const access = $("#catalog-access").value;
+        const tier = $("#catalog-tier").value;
+        const kind = $("#catalog-kind").value;
+        const matches = DATA.assets.filter((asset) => (!query || asset.search.includes(query)) && (!source || asset.source === source) && (!access || asset.access_status === access) && (!tier || asset.access_tier === tier) && (!kind || asset.kind === kind));
+        const pages = Math.max(1, Math.ceil(matches.length / PAGE_SIZE));
+        state.catalogPage = Math.min(state.catalogPage, pages);
+        const start = (state.catalogPage - 1) * PAGE_SIZE;
+        $("#catalog-result").innerHTML = `<strong>${nf.format(matches.length)}</strong> 个匹配`;
+        $("#catalog-grid").innerHTML = matches.length ? matches.slice(start, start + PAGE_SIZE).map((asset) => assetCard(asset)).join("") : `<div class="empty">没有匹配项。试试清空某个筛选条件。</div>`;
+        $("#catalog-pager").innerHTML = pagerMarkup(state.catalogPage, pages, "catalog");
+      }
+
+      function renderAlternatives() {
+        const query = $("#alt-search").value.trim().toLowerCase();
+        const source = $("#alt-source").value;
+        const category = $("#alt-category").value;
+        const status = $("#alt-status").value;
+        const matches = DATA.assets.filter((asset) => asset.alternatives.length && (!query || asset.search.includes(query)) && (!source || asset.source === source) && (!category || asset.category === category) && (!status || asset.alternative_resolution_status === status));
+        const pages = Math.max(1, Math.ceil(matches.length / PAGE_SIZE));
+        state.altPage = Math.min(state.altPage, pages);
+        const start = (state.altPage - 1) * PAGE_SIZE;
+        $("#alt-result").innerHTML = `<strong>${nf.format(matches.length)}</strong> 个付费项`;
+        $("#alt-grid").innerHTML = matches.length ? matches.slice(start, start + PAGE_SIZE).map((asset) => assetCard(asset, true)).join("") : `<div class="empty">没有匹配的付费项。</div>`;
+        $("#alt-pager").innerHTML = pagerMarkup(state.altPage, pages, "alternatives");
+      }
+
+      function renderCache() {
+        const stats = [[DATA.summary.cached_roots, "根资产"], [DATA.summary.cached_dependencies, "依赖"], [DATA.summary.cached_entries, "缓存条目"], [DATA.summary.cached_files, "物理缓存文件"]];
+        $("#cache-summary").innerHTML = stats.map(([value, label]) => `<div class="cache-stat"><b>${nf.format(value)}</b><span>${esc(label)}</span></div>`).join("");
+        const query = $("#cache-search").value.trim().toLowerCase();
+        const source = $("#cache-source").value;
+        const rows = DATA.cache.entries.filter((entry) => (!query || `${entry.asset_id} ${entry.source}`.toLowerCase().includes(query)) && (!source || entry.source === source));
+        $("#cache-result").innerHTML = `<strong>${nf.format(rows.length)}</strong> 个缓存条目`;
+        $("#cache-table").innerHTML = rows.map((entry) => `<tr><td><b>${esc(entry.source)}</b><br><code>${esc(entry.asset_id)}</code></td><td><span class="badge ${entry.role === "root" ? "starter" : ""}">${esc(entry.role)}</span></td><td>${nf.format(entry.physical_files)}</td><td>${nf.format(entry.payload_source_files)}</td><td><a href="${safeUrl(entry.local_path)}" target="_blank" rel="noopener noreferrer"><code>${esc(entry.local_path)}</code></a></td><td><code>${esc(String(entry.sha256 || "").slice(0, 16))}…</code></td></tr>`).join("");
+      }
+
+      function renderThemes() {
+        const query = $("#theme-search").value.trim().toLowerCase();
+        const themes = DATA.themes.filter((theme) => !query || `${theme.id} ${theme.label}`.toLowerCase().includes(query));
+        $("#theme-result").innerHTML = `<strong>${themes.length}</strong> 个主题`;
+        $("#theme-grid").innerHTML = themes.map((theme) => {
+          const c = theme.colors;
+          const radius = safeCssLength(theme.radius);
+          const style = `--theme-bg:${safeColor(c.background, "#fff")};--theme-fg:${safeColor(c.foreground, "#111")};--theme-primary:${safeColor(c.primary, "#111")};--theme-card:${safeColor(c.secondary, "#f2f2f2")};--theme-border:${safeColor(c.border, "#ddd")};--theme-radius:${radius}`;
+          return `<article class="theme-card" style="${style}"><div class="theme-preview" aria-hidden="true"><div class="theme-mini-nav"><span></span><span></span><span></span></div><div class="theme-window"><b>Campaign pulse</b><p></p><span class="theme-button">查看诊断</span></div></div><div class="theme-swatches" aria-hidden="true"><i style="background:${safeColor(c.primary, "#111")}"></i><i style="background:${safeColor(c.secondary, "#eee")}"></i><i style="background:${safeColor(c.accent, "#eee")}"></i><i style="background:${safeColor(c.border, "#ddd")}"></i><i style="background:${safeColor(c.foreground, "#111")}"></i></div><div class="theme-body"><h3>${esc(theme.label)}</h3><p>${esc(theme.id)} · radius ${esc(theme.radius)}<br>primary ${esc(c.primary)} · background ${esc(c.background)}</p></div></article>`;
+        }).join("");
+      }
+
+      function renderDiscovery() {
+        $("#discovery-grid").innerHTML = DATA.discovery.map((source, index) => `<article class="discovery-card"><div class="badge-row"><span class="badge ${index < 2 ? "starter" : ""}">${esc(source.priority)} priority</span><span class="badge ${source.redistribution_restricted ? "paid" : "free"}">${esc(source.license)}</span>${source.redistribution_restricted ? `<span class="badge paid">限制组件再分发</span>` : ""}<span class="badge metadata">源码未缓存</span></div><h3>${esc(source.name)}</h3><p><b>${esc(source.role)}</b></p><p>${esc(source.visual_style)}</p><div class="tag-list">${source.best_for.map((item) => `<span class="tag">${esc(item)}</span>`).join("")}</div><div class="warning"><b>接入边界：</b>${esc(source.compatibility)}</div><p style="margin:14px 0;color:var(--muted);font-size:12px">${esc(source.next_action)}</p><div class="actions">${link(source.official_url, "官网", "action primary")}${link(source.docs_url, "文档")}${link(source.repository_url, "GitHub")}</div></article>`).join("");
+      }
+
+      function initFilters() {
+        const sources = DATA.source_order;
+        const accesses = [...new Set(DATA.assets.map((item) => item.access_status))].sort();
+        const tiers = [...new Set(DATA.assets.map((item) => item.access_tier).filter(Boolean))].sort();
+        const kinds = [...new Set(DATA.assets.map((item) => item.kind))].sort();
+        $("#catalog-source").innerHTML = optionList(sources, "全部来源");
+        $("#catalog-access").innerHTML = `<option value="">全部访问状态</option>` + accesses.map((value) => `<option value="${esc(value)}">${esc(accessLabel(value))}</option>`).join("");
+        $("#catalog-tier").innerHTML = `<option value="">全部层级</option>` + tiers.map((value) => `<option value="${esc(value)}">${esc(tierLabel(value))}</option>`).join("");
+        $("#catalog-kind").innerHTML = optionList(kinds, "全部类型");
+        const paidSources = [...new Set(DATA.assets.filter((item) => item.alternatives.length).map((item) => item.source))].sort();
+        const paidCategories = [...new Set(DATA.assets.filter((item) => item.alternatives.length).map((item) => item.category))].sort();
+        $("#alt-source").innerHTML = optionList(paidSources, "全部付费来源");
+        $("#alt-category").innerHTML = optionList(paidCategories, "全部分类");
+        const resolutionStatuses = Object.keys(DATA.summary.paid_by_resolution_status || {}).sort();
+        $("#alt-status").innerHTML = `<option value="">全部处置状态</option>` + resolutionStatuses.map((value) => `<option value="${esc(value)}">${esc(resolutionLabel(value))}</option>`).join("");
+        const cacheSources = [...new Set(DATA.cache.entries.map((entry) => entry.source))].sort();
+        $("#cache-source").innerHTML = optionList(cacheSources, "全部缓存来源");
+      }
+
+      function bind() {
+        $$(".nav-item").forEach((button) => button.addEventListener("click", () => setView(button.dataset.view)));
+        ["#catalog-search", "#catalog-source", "#catalog-access", "#catalog-tier", "#catalog-kind"].forEach((selector) => $(selector).addEventListener("input", () => { state.catalogPage = 1; renderCatalog(); }));
+        ["#alt-search", "#alt-source", "#alt-category", "#alt-status"].forEach((selector) => $(selector).addEventListener("input", () => { state.altPage = 1; renderAlternatives(); }));
+        ["#cache-search", "#cache-source"].forEach((selector) => $(selector).addEventListener("input", renderCache));
+        $("#theme-search").addEventListener("input", renderThemes);
+        document.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-page-target]");
+          if (!button || button.disabled) return;
+          const page = Number(button.dataset.page);
+          const target = button.dataset.pageTarget;
+          if (target === "catalog") { state.catalogPage = page; renderCatalog(); }
+          else { state.altPage = page; renderAlternatives(); }
+          const grid = target === "catalog" ? $("#catalog-grid") : $("#alt-grid");
+          grid.querySelector(".asset-card")?.focus({ preventScroll: true });
+          window.scrollTo({ top: 220, behavior: "auto" });
+        });
+        window.addEventListener("hashchange", () => setView(location.hash.slice(1), false));
+      }
+
+      function init() {
+        $("#nav-sources").textContent = nf.format(DATA.sources.length);
+        $("#nav-assets").textContent = nf.format(DATA.summary.total_assets);
+        $("#nav-paid").textContent = nf.format(DATA.summary.concrete_paid_items);
+        $("#nav-cache").textContent = nf.format(DATA.summary.cached_files);
+        $("#nav-themes").textContent = nf.format(DATA.summary.theme_presets);
+        $("#nav-discovery").textContent = nf.format(DATA.summary.discovery_sources);
+        renderDynamicCopy();
+        renderMetrics();
+        renderCossCompare();
+        renderSources();
+        initFilters();
+        renderCache();
+        renderThemes();
+        renderDiscovery();
+        bind();
+        setView(location.hash.slice(1) || "overview", false);
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>

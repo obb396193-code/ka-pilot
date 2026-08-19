@@ -1,7 +1,7 @@
 # 官方 UI 能力目录快照
 
 > 快照日期：2026-08-19
-> 逻辑资产总计：**5,936 项**
+> 逻辑资产总计：**5,996 项**
 > 源码全量缓存：**0 项**
 
 ## 数量与访问
@@ -11,7 +11,7 @@
 | shadcn/ui | 473 | 414 | 59 | 0 | New York v4 471 + 当前 index 独有 2 项；24 variants 另存矩阵 |
 | coss/ui | 577 | 570 | 7 | 0 | 当前 Registry 完整 |
 | coss Origin | 646 | 646 | 0 | 0 | legacy Registry 完整；599 成品组件 + 47 支持资产 |
-| ReUI | 2,255 | 1,105 | 0 | 1,150 | 1,607 Registry + 638 icons + 10 templates；16 variants 另存矩阵 |
+| ReUI | 2,315 | 1,149 | 0 | 1,166 | 1,667 Registry + 638 icons + 10 templates；16 variants 另存矩阵 |
 | Tremor current | 375 | 375 | 0 | 0 | 40 Raw capabilities + 5 utilities + 323 Blocks + 6 templates + 1 related variant |
 | Tremor legacy | 30 | 30 | 0 | 0 | 仍在线的 `@tremor/react` 3.18.7 能力页，maintenance-stale |
 | Aceternity UI | 319 | 112 | 0 | 207 | 官方 AI Index 完整；与定价页 200+ blocks 口径仍冲突 |
@@ -21,7 +21,7 @@
 | React Bits Pro | 702 | 0 | 0 | 702 | 134 components + 238 page blocks + 300 app UI + 11 templates + 19 Agent Kit |
 | tweakcn | 42 | 42 | 0 | 0 | 42 个 defaultPresets 完整；社区主题为动态集合 |
 
-总访问分布：公开源码 3,709、公开元数据 67、购买后源码 2,160。这里的“公开源码”表示官方 endpoint/repository 可访问，仍不表示本仓已把 payload 下载下来。
+总访问分布：公开源码 3,753、公开元数据 67、购买后源码 2,176。这里的“公开源码”表示官方 endpoint/repository 可访问，仍不表示本仓已把 payload 下载下来。
 
 ## 不能混算
 

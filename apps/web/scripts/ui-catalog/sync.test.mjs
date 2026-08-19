@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  assertStableItemCount,
   buildSnapshot,
   parseCossOrigin,
   parseAceternityHtml,
@@ -16,6 +17,12 @@ import {
 } from "./sync.mjs";
 
 const context = { upstreamRef: "test", lastVerified: "2026-08-19" };
+
+test("stale checks reject both upstream additions and removals", () => {
+  assert.doesNotThrow(() => assertStableItemCount(12, 12));
+  assert.throws(() => assertStableItemCount(12, 13), /item-count drift 12 -> 13/);
+  assert.throws(() => assertStableItemCount(12, 11), /item-count drift 12 -> 11/);
+});
 
 test("routes shadcn and Tremor examples to their real documentation sections", () => {
   assert.equal(

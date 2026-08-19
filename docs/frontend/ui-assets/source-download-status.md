@@ -1,10 +1,10 @@
 # 前端 UI 源码下载与运行时状态
 
-> 核验快照：2026-08-19T10:10:47.992Z
+> 核验快照：2026-08-19T13:16:16.073Z
 
 ## 结论
 
-- 5,936 条目录均是元数据；完整 upstream source cache 为 0。
+- 5,996 条目录均是元数据；完整 upstream source cache 为 0。
 - 运行仓已有 22 个 `components/ui/*.tsx` 本地源码文件，其中 20 个被当前源码显式引用。
 - 这些文件的 shadcn 来源只能由 `components.json.style=new-york-v4` 与路径推断；精确 upstream ref/hash 已验证 0 个。
 - coss、ReUI、Tremor、Aceternity、Magic UI、React Bits 的来源隔离目录当前合计 0 个源码文件。

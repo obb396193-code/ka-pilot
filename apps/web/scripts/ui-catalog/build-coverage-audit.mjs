@@ -10,7 +10,7 @@ const EXPECTED_COUNTS = {
   shadcn: 473,
   coss: 577,
   "coss-origin": 646,
-  reui: 2255,
+  reui: 2315,
   tremor: 375,
   "tremor-legacy": 30,
   aceternity: 319,
@@ -209,6 +209,7 @@ export function coverageAuditMarkdown(audit) {
     }
     lines.push("官方证据：", "", ...source.evidence.map((url) => `- <${url}>`), "");
   }
+  while (lines.at(-1) === "") lines.pop();
   return `${lines.join("\n")}\n`;
 }
 

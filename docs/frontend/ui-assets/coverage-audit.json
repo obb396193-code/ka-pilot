@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-19T10:10:47.992Z",
+  "generated_at": "2026-08-19T13:16:16.073Z",
   "terminology": {
     "catalog_item": "Discoverable normalized metadata record; does not mean source is downloaded.",
     "public_source": "Official source/item endpoint is available without a paid license.",
@@ -9,15 +9,15 @@
     "source_cached": "An exact upstream source payload is cached with a path and hash; catalogued alone is not cached."
   },
   "summary": {
-    "catalog_items": 5936,
+    "catalog_items": 5996,
     "source_count": 12,
     "by_access_status": {
-      "paid-source-after-license": 2160,
+      "paid-source-after-license": 2176,
       "public-metadata-only": 67,
-      "public-source": 3709
+      "public-source": 3753
     },
     "by_source_cache_status": {
-      "not-cached": 5936
+      "not-cached": 5996
     },
     "fully_cached_catalog_items": 0
   },
@@ -137,17 +137,17 @@
     },
     {
       "id": "reui",
-      "catalog_count": 2255,
+      "catalog_count": 2315,
       "coverage": "complete-official-llms-index",
       "access": {
-        "paid-source-after-license": 1150,
-        "public-source": 1105
+        "paid-source-after-license": 1166,
+        "public-source": 1149
       },
       "source_cache": {
-        "not-cached": 2255
+        "not-cached": 2315
       },
       "maintenance": {
-        "current": 2255
+        "current": 2315
       },
       "variant_matrix": {
         "variants": [

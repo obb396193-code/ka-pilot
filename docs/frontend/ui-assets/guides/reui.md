@@ -1,7 +1,7 @@
 # ReUI 官方使用与适配指南
 
 > 最后核验：2026-08-19  
-> 目录：`../catalogs/reui.json`（2,255 个逻辑资产）
+> 目录：`../catalogs/reui.json`（2,315 个逻辑资产）
 > 定位：复杂数据工作台、Data Grid、Filters、Kanban/Gantt/Event Calendar
 
 ## 安装与获取
@@ -45,7 +45,7 @@ npx shadcn@latest add @reui/c-data-grid-9 --cwd apps/web
 
 ## 许可证
 
-免费公开 Registry/仓库源码为 MIT。502 Pro Blocks、638 Icons、10 Templates 不属于 MIT，适用 ReUI 商业许可：可在许可范围内修改并用于 end product，禁止公开仓库、镜像 Registry、再分发或转售源码。客户后续开发还可能需要独立席位；交付前按官方条款核对。
+免费公开 Registry/仓库源码为 MIT。518 Pro Blocks、638 Icons、10 Templates 不属于 MIT，适用 ReUI 商业许可：可在许可范围内修改并用于 end product，禁止公开仓库、镜像 Registry、再分发或转售源码。客户后续开发还可能需要独立席位；交付前按官方条款核对。
 
 ## 更新与变更
 

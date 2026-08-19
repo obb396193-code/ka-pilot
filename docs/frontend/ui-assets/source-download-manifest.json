@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-19T10:10:47.992Z",
+  "generated_at": "2026-08-19T13:16:16.073Z",
   "runtime_root": "apps/web",
   "catalog_snapshot": {
-    "item_count": 5936,
+    "item_count": 5996,
     "source_cached_item_count": 0,
-    "not_cached_item_count": 5936,
+    "not_cached_item_count": 5996,
     "note": "Catalog JSON stores discovery metadata; it is not a source mirror."
   },
   "summary": {

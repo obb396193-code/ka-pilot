@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-08-19T10:16:57.396Z",
+  "checked_at": "2026-08-19T13:21:41.146Z",
   "summary": {
     "total": 12,
     "verified": 11,
@@ -119,20 +119,20 @@
       "status": "verified",
       "catalog_mode": "registry-plus-llms-index-plus-dynamic-icon-pages",
       "coverage": "complete-official-llms-index",
-      "coverage_note": "Registry plus official llms.txt covers free examples/modules/hooks, 502 Pro blocks, 638 icon concepts and 10 Ultimate templates; 16 concrete Base/Radix style variants are a separate matrix.",
+      "coverage_note": "Registry plus official llms.txt covers free examples/modules/hooks, 518 Pro blocks, 638 icon concepts and 10 Ultimate templates; 16 concrete Base/Radix style variants are a separate matrix.",
       "license": "MIT for public free source; ReUI commercial license for Pro/Ultimate assets",
       "redistribution": "free-mit-paid-no-source-redistribution",
-      "checked_at": "2026-08-19T10:16:57.396Z",
+      "checked_at": "2026-08-19T13:21:41.146Z",
       "endpoints": [
         {
           "url": "https://reui.io/r/registry.json",
-          "final_url": "https://reui.io/r/styles/base-nova/registry.json?v=dpl_J3s62V4T1YQcX6HVhcXoH98aJLhu",
+          "final_url": "https://reui.io/r/styles/base-nova/registry.json?v=dpl_4yX3NtJE6FB7pUsWcSqV4dabMujD",
           "ok": true,
           "status_code": 200,
           "content_type": "application/json; charset=utf-8",
-          "etag": "W/\"69f651ea8dbb301a531f988da44a937a\"",
-          "last_modified": "Mon, 17 Aug 2026 04:34:40 GMT",
-          "content_length": 1612720,
+          "etag": "W/\"f08cedaf00c0e9c80c0eca9cc103ac44\"",
+          "last_modified": "Wed, 19 Aug 2026 13:12:34 GMT",
+          "content_length": 1707466,
           "error": ""
         },
         {
@@ -143,17 +143,17 @@
           "content_type": "text/plain; charset=utf-8",
           "etag": "",
           "last_modified": "",
-          "content_length": 31445,
+          "content_length": 31895,
           "error": ""
         },
         {
           "url": "https://reui.io/r/styles/index.json",
-          "final_url": "https://reui.io/r/styles/index.json?v=dpl_J3s62V4T1YQcX6HVhcXoH98aJLhu",
+          "final_url": "https://reui.io/r/styles/index.json?v=dpl_4yX3NtJE6FB7pUsWcSqV4dabMujD",
           "ok": true,
           "status_code": 200,
           "content_type": "application/json; charset=utf-8",
           "etag": "W/\"31160331f7c52b9e09d0b3df724abd39\"",
-          "last_modified": "Wed, 19 Aug 2026 09:42:46 GMT",
+          "last_modified": "Wed, 19 Aug 2026 13:12:34 GMT",
           "content_length": 1017,
           "error": ""
         }

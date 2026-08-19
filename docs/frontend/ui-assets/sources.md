@@ -16,7 +16,7 @@
 | shadcn/ui | [Components](https://ui.shadcn.com/docs/components)、[Blocks](https://ui.shadcn.com/blocks) | New York v4 Registry + logical/config indexes | 第一方 MIT；Directory/Figma 第三方另核 | 473 logical items；24 preset variants 另存矩阵 |
 | coss/ui | [Components](https://coss.com/ui)、[Particles](https://coss.com/ui/particles) | [官方 Registry](https://coss.com/ui/r/registry.json) | `apps/ui` MIT；仓库其他目录默认 AGPL | current 577 全收 |
 | coss Origin | [Legacy snapshot](https://coss.com/origin) | Git tree + category map + public item JSON | `apps/origin` MIT | legacy 646 单独记录，maintenance-stale |
-| ReUI | [Components](https://reui.io/components)、[llms index](https://reui.io/llms.txt) | Registry + llms + 30 icon pages | Free MIT；Pro/Ultimate 商业许可 | 2,255 logical items；16 variants 另存矩阵 |
+| ReUI | [Components](https://reui.io/components)、[llms index](https://reui.io/llms.txt) | Registry + llms + 30 icon pages | Free MIT；Pro/Ultimate 商业许可 | 2,315 logical items；16 variants 另存矩阵 |
 | Tremor current | [Blocks](https://blocks.tremor.so/blocks) | Raw + Blocks 树 + Templates | Apache-2.0 / MIT（按子项目） | 375 items |
 | Tremor legacy | [旧 npm docs](https://npm.tremor.so/docs/getting-started/installation) | sitemap | Apache-2.0 | 30 still-live capabilities，maintenance-stale |
 | Aceternity | [AI 完整目录](https://ui.aceternity.com/ai-recommendations) | 官方 machine-readable 页面 | per-item / Pro 自有许可证 | free/pro/templates/blocks/hooks 分栏 |

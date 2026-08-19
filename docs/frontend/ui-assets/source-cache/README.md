@@ -4,7 +4,7 @@
 
 ## 状态词
 
-- `catalogued`：只在 5,936 项目录中有元数据；不代表源码在本地。
+- `catalogued`：只在 5,996 项目录中有元数据；不代表源码在本地。
 - `cached`：官方 payload/源码文件已落在本目录，且 `manifest.json` 有精确 hash。
 - `installed/adapted`：只有源码进入运行仓并完成项目适配后才能使用；当前本目录不产生该状态。
 

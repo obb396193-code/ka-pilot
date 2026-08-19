@@ -1,15 +1,15 @@
 {
   "schema_version": 2,
-  "fetched_at": "2026-08-19T10:10:47.992Z",
-  "total_items": 5936,
+  "fetched_at": "2026-08-19T13:16:16.073Z",
+  "total_items": 5996,
   "counts": {
     "by_access_status": {
-      "paid-source-after-license": 2160,
+      "paid-source-after-license": 2176,
       "public-metadata-only": 67,
-      "public-source": 3709
+      "public-source": 3753
     },
     "by_source_cache_status": {
-      "not-cached": 5936
+      "not-cached": 5996
     }
   },
   "sources": [
@@ -65,17 +65,17 @@
     },
     {
       "id": "reui",
-      "count": 2255,
+      "count": 2315,
       "coverage": "complete-official-llms-index",
-      "coverage_note": "Registry plus official llms.txt covers free examples/modules/hooks, 502 Pro blocks, 638 icon concepts and 10 Ultimate templates; 16 concrete Base/Radix style variants are a separate matrix.",
-      "upstream_ref": "sha256:71f7c55386bcb18718270519ae155eca8a5cc8c4ae8fa4468bedac5a44dcb69b",
+      "coverage_note": "Registry plus official llms.txt covers free examples/modules/hooks, 518 Pro blocks, 638 icon concepts and 10 Ultimate templates; 16 concrete Base/Radix style variants are a separate matrix.",
+      "upstream_ref": "sha256:337faaf2c0dc7e75604ebcbc33c0d3737610dba9433fa76196a2e2bb3458b711",
       "counts": {
         "by_access_status": {
-          "paid-source-after-license": 1150,
-          "public-source": 1105
+          "paid-source-after-license": 1166,
+          "public-source": 1149
         },
         "by_source_cache_status": {
-          "not-cached": 2255
+          "not-cached": 2315
         }
       },
       "file": "reui.json"

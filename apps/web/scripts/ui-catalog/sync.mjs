@@ -1160,6 +1160,14 @@ async function atomicWrite(url, value) {
   await rename(temporaryUrl, url);
 }
 
+export function assertStableItemCount(previousCount, currentCount) {
+  if (previousCount !== currentCount) {
+    throw new Error(
+      `item-count drift ${previousCount} -> ${currentCount}; review upstream changes before refresh`,
+    );
+  }
+}
+
 async function runCli() {
   const write = process.argv.includes("--write");
   const check = process.argv.includes("--check");
@@ -1189,11 +1197,7 @@ async function runCli() {
       const validation = validateCatalog(items);
       if (!validation.ok) throw new Error(validation.errors.join("\n"));
 
-      if (check && previous && items.length < previous.counts.total) {
-        throw new Error(
-          `item-count collapse ${previous.counts.total} -> ${items.length}; review upstream deletion before refresh`,
-        );
-      }
+      if (check && previous) assertStableItemCount(previous.counts.total, items.length);
 
       const snapshot = buildSnapshot(source.id, items, {
         fetchedAt,

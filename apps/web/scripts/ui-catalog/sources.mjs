@@ -95,7 +95,7 @@ export const UI_SOURCES = [
     ],
     coverage: "complete-official-llms-index",
     coverageNote:
-      "Registry plus official llms.txt covers free examples/modules/hooks, 502 Pro blocks, 638 icon concepts and 10 Ultimate templates; 16 concrete Base/Radix style variants are a separate matrix.",
+      "Registry plus official llms.txt covers free examples/modules/hooks, 518 Pro blocks, 638 icon concepts and 10 Ultimate templates; 16 concrete Base/Radix style variants are a separate matrix.",
     redistribution: "free-mit-paid-no-source-redistribution",
   },
   {

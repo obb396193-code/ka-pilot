@@ -1,7 +1,7 @@
 # UI 资产官方覆盖与访问边界审计
 
-> 核验快照：2026-08-19T10:10:47.992Z
-> 目录总量：5,936；全量源码缓存：0
+> 核验快照：2026-08-19T13:16:16.073Z
+> 目录总量：5,996；全量源码缓存：0
 
 目录项是可搜索元数据，不等于源码已下载。付费资产只记录公开名称、预览、产品层级和官方获取入口；未绕过登录、401 或会员限制。
 
@@ -12,7 +12,7 @@
 | shadcn | 473 | 414 | 59 | 0 | complete-new-york-v4-plus-logical-index |
 | coss | 577 | 570 | 7 | 0 | complete-current-registry |
 | coss-origin | 646 | 646 | 0 | 0 | complete-legacy-registry |
-| reui | 2255 | 1105 | 0 | 1150 | complete-official-llms-index |
+| reui | 2315 | 1149 | 0 | 1166 | complete-official-llms-index |
 | tremor | 375 | 375 | 0 | 0 | complete-current-public-surfaces |
 | tremor-legacy | 30 | 30 | 0 | 0 | complete-live-legacy-docs |
 | aceternity | 319 | 112 | 0 | 207 | complete-to-ai-index |

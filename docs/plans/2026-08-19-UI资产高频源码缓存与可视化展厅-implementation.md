@@ -2,7 +2,7 @@
 
 > **For Codex:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** 缓存跨 6+ 非 shadcn 来源的高频公开源码，为付费能力生成合法免费替代，并交付一个可离线浏览 5,936 项目录的 HTML 展厅。
+**Goal:** 缓存跨 6+ 非 shadcn 来源的高频公开源码，为付费能力生成合法免费替代，并交付一个可离线浏览 5,996 项目录的 HTML 展厅。
 
 **Architecture:** 以现有 12 份 catalog JSON 为唯一目录输入；starter spec 只保存经人工选择的根资产，下载器校验访问层级后抓官方 payload、递归公开依赖并写 hash manifest。展示生成器从 catalog、免费替代、source-cache manifest 和截图生成紧凑 JS 数据，HTML 只负责离线筛选与呈现，完全隔离 `apps/web` 运行时代码。
 
@@ -112,7 +112,7 @@ git commit -m "feat: 缓存高频公开UI源码"
 
 **Step 1: Research official sources**
 
-只看官方站、官方仓库和 LICENSE，查找适合 React/Next.js、视觉完成度高且许可清楚的新增候选。记录 Registry/安装方式、底层、许可证、维护状态、React 19/Tailwind v4 风险，不因“好看”自动纳入正式 5,936 目录。
+只看官方站、官方仓库和 LICENSE，查找适合 React/Next.js、视觉完成度高且许可清楚的新增候选。记录 Registry/安装方式、底层、许可证、维护状态、React 19/Tailwind v4 风险，不因“好看”自动纳入正式 5,996 目录。
 
 **Step 2: Write the failing tests**
 
@@ -146,7 +146,7 @@ git commit -m "docs: 建立付费UI免费替代图谱"
 
 **Step 1: Write the failing tests**
 
-断言 12 个来源、5,936 个逻辑资产、付费替代、starter cache、截图和 discovery 均进入展示数据；只保留必要字段；链接协议只允许 `https:` 与安全相对路径。
+断言 12 个来源、5,996 个逻辑资产、付费替代、starter cache、截图和 discovery 均进入展示数据；只保留必要字段；链接协议只允许 `https:` 与安全相对路径。
 
 **Step 2: Implement generator**
 
