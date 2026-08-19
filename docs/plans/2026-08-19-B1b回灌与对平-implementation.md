@@ -24,7 +24,7 @@
 
 **Step 2: Run test to verify it fails**
 
-Run: `npm test -- --run test/job-scheduling.test.ts` in `apps/worker`  
+Run: `npm test -- --run test/job-scheduling.test.ts` in `apps/worker`
 Expected: FAIL，模块不存在。
 
 **Step 3: Write minimal implementation**
@@ -46,7 +46,7 @@ export function deterministicJobId(key: string): string {
 
 **Step 4: Run test to verify it passes**
 
-Run: `npm test -- --run test/job-scheduling.test.ts && npm run typecheck && npm run lint`  
+Run: `npm test -- --run test/job-scheduling.test.ts && npm run typecheck && npm run lint`
 Expected: PASS。
 
 **Step 5: Commit**
@@ -76,7 +76,7 @@ git commit -m "[be] 固化B1b任务优先级与确定性ID"
 
 **Step 2: Run tests to verify they fail**
 
-Run: `npm test -- --run test/job-repository.test.ts` in `packages/db`; `npm test -- --run test/job-consumer.test.ts` in `apps/worker`  
+Run: `npm test -- --run test/job-repository.test.ts` in `packages/db`; `npm test -- --run test/job-consumer.test.ts` in `apps/worker`
 Expected: FAIL，新方法不存在。
 
 **Step 3: Write minimal implementation**
@@ -94,7 +94,7 @@ RETURNING id
 
 **Step 4: Run tests to verify they pass**
 
-Run DB/Worker 对应测试、typecheck、lint。  
+Run DB/Worker 对应测试、typecheck、lint。
 Expected: PASS。
 
 **Step 5: Commit**
@@ -142,7 +142,7 @@ Expected: FAIL，仓储与 handler 不存在。
 
 **Step 4: Run tests to verify they pass**
 
-Run package tests + typecheck + lint。  
+Run package tests + typecheck + lint。
 Expected: PASS。
 
 **Step 5: Commit**
@@ -174,7 +174,7 @@ Expected: FAIL，handler 不存在。
 
 **Step 4: Run tests to verify they pass**
 
-Run worker test/typecheck/lint。  
+Run worker test/typecheck/lint。
 Expected: PASS。
 
 **Step 5: Commit**
@@ -208,7 +208,7 @@ Canonical handler 依旧只调用 domain 函数；repository 只负责查生效�
 
 **Step 4: Run tests to verify they pass**
 
-Run domain/db/worker tests + static checks。  
+Run domain/db/worker tests + static checks。
 Expected: PASS。
 
 **Step 5: Commit**
@@ -249,7 +249,7 @@ Repository 用参数化 SQL 和 latest raw CTE 提供检查输入，handler 依�
 
 **Step 4: Run tests to verify they pass**
 
-Run db/worker tests + static checks。  
+Run db/worker tests + static checks。
 Expected: PASS。
 
 **Step 5: Commit**
@@ -273,7 +273,7 @@ git commit -m "[be] 增加三类数据质量检查与告警"
 
 **Step 2: Run the pipeline**
 
-Run: `npx tsx scripts/b1b-90d-smoke.ts`  
+Run: `npx tsx scripts/b1b-90d-smoke.ts`
 Expected progress: `day 1/90 ... day 90/90`。
 
 **Step 3: Verify exact outcomes**
@@ -306,12 +306,12 @@ git commit -m "[be] 验证90天回灌与数据对平"
 
 **Step 1: Run all package gates**
 
-Run in domain/db/worker/gateway：tests with coverage、typecheck、lint、`npm audit --audit-level=high`。  
+Run in domain/db/worker/gateway：tests with coverage、typecheck、lint、`npm audit --audit-level=high`。
 Expected: 全绿，业务源码行覆盖率均 ≥80%，0 high vulnerabilities。
 
 **Step 2: Run security and complexity checks**
 
-检查明文 token/私钥、动态执行、非参数化 SQL、最长文件、diff whitespace。  
+检查明文 token/私钥、动态执行、非参数化 SQL、最长文件、diff whitespace。
 Expected: 无 Critical/High。
 
 **Step 3: Update records**
@@ -327,5 +327,5 @@ git commit -m "[be] 回执B1b回灌与对平交付"
 
 **Step 5: Final self-check**
 
-Run: `git status --short --branch && git show --stat HEAD`  
+Run: `git status --short --branch && git show --stat HEAD`
 Expected: clean `be/b1b` and reviewable final SHA。
