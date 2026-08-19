@@ -7,3 +7,7 @@ export * from "./notification-policy.js";
 export * from "./changesets.js";
 export * from "./task-pacing.js";
 export * from "./daily-report.js";
+export * from "./agent-events.js";
+export * from "./agent-context.js";
+export * from "./agent-provider.js";
+export * from "./agent-diagnosis.js";
