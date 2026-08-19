@@ -2,3 +2,4 @@ export * from "./metrics.js";
 export * from "./types.js";
 export * from "./canonical.js";
 export * from "./alert-rules.js";
+export * from "./work-items.js";
