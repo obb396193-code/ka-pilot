@@ -20,11 +20,11 @@
 
 | 候选 | 许可证 | 作用 | 状态 |
 |---|---|---|---|
-| [Vercel AI Elements](https://elements.ai-sdk.dev/) | Apache-2.0 | AI-native conversation and agent interaction components | discovery-only，源码未缓存 |
-| [Kibo UI](https://www.kibo-ui.com/) | MIT | shadcn 的高阶功能组件补充 | discovery-only，源码未缓存 |
-| [Dice UI](https://diceui.com/) | MIT | 可访问性优先的复杂交互组件 | discovery-only，源码未缓存 |
-| [Animate UI](https://animate-ui.com/) | MIT + Commons Clause（限制组件本身销售/再分发） | shadcn 体系内的克制动效与动画 primitives | discovery-only，源码未缓存 |
-| [Motion Primitives](https://motion-primitives.com/) | MIT | 精致微交互和文字/布局过渡 | discovery-only，源码未缓存 |
+| [Vercel AI Elements](https://elements.ai-sdk.dev/) | Apache-2.0 | AI-native conversation and agent interaction components | catalogued-136；starter-roots-cached-6；not-installed |
+| [Kibo UI](https://www.kibo-ui.com/) | MIT | shadcn 的高阶功能组件补充 | catalogued-69；starter-roots-cached-6；not-installed |
+| [Dice UI](https://diceui.com/) | MIT | 可访问性优先的复杂交互组件 | catalogued-242；starter-roots-cached-3；not-installed |
+| [Animate UI](https://animate-ui.com/) | MIT + Commons Clause（限制组件本身销售/再分发） | shadcn 体系内的克制动效与动画 primitives | catalogued-580；starter-roots-cached-3；not-installed |
+| [Motion Primitives](https://motion-primitives.com/) | MIT | 精致微交互和文字/布局过渡 | catalogued-33；starter-roots-cached-3；not-installed |
 
 ## 分类级处置摘要
 

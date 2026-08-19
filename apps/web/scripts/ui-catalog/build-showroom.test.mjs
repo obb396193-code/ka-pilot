@@ -131,22 +131,24 @@ test("builds a complete offline browsing model with current/legacy distinctions"
   assert.equal(output.cache.entries[0].payload_source_files, 2);
 });
 
-test("generated showroom is self-contained and carries every catalog and paid mapping", async () => {
+test("generated showroom carries every catalog, paid mapping, and sandboxed live preview", async () => {
   const [html, dataText] = await Promise.all([
     readFile(HTML_URL, "utf8"),
     readFile(DATA_URL, "utf8"),
   ]);
   const data = JSON.parse(dataText);
 
-  assert.equal(data.summary.total_assets, 5996);
-  assert.equal(data.assets.length, 5996);
-  assert.equal(data.sources.length, 12);
+  assert.equal(data.summary.total_assets, 7056);
+  assert.equal(data.assets.length, 7056);
+  assert.equal(data.sources.length, 17);
   assert.equal(data.summary.paid_items, 2176);
   assert.equal(data.summary.provider_group_records, 23);
   assert.equal(data.summary.concrete_paid_items, 2153);
   assert.equal(data.summary.mapped_paid_items, 2153);
-  assert.equal(data.summary.cached_roots, 48);
-  assert.equal(data.summary.cached_files, 93);
+  assert.equal(data.summary.cached_roots, 69);
+  assert.equal(data.summary.cached_entries, 124);
+  assert.equal(data.summary.cached_support_entries, 1);
+  assert.equal(data.summary.cached_files, 137);
   assert.equal(data.discovery.length, 5);
   assert.equal(
     data.discovery.filter((item) => item.decision_status === "approved-for-catalog-and-contextual-use").length,
@@ -157,8 +159,13 @@ test("generated showroom is self-contained and carries every catalog and paid ma
     2,
   );
   assert.equal(data.themes.length, 42);
-  assert.equal(new Set(data.assets.map((item) => item.id)).size, 5996);
+  assert.equal(new Set(data.assets.map((item) => item.id)).size, 7056);
   assert.equal(data.assets.filter((item) => item.alternatives.length > 0).length, 2153);
+  assert.equal(data.summary.live_preview_frames, 5);
+  assert.equal(data.summary.live_preview_assets, 10);
+  assert.equal(data.live_previews.length, 5);
+  assert.ok(data.live_previews.every((preview) => preview.network_required === false));
+  assert.ok(data.live_previews.every((preview) => preview.sandbox === "allow-scripts"));
 
   const sourceCount = data.sources.reduce((sum, source) => sum + source.count, 0);
   assert.equal(sourceCount, data.assets.length);
@@ -189,9 +196,16 @@ test("generated showroom is self-contained and carries every catalog and paid ma
     data.cache.entries.reduce((sum, entry) => sum + entry.payload_source_files, 0) >
       data.summary.cached_files,
   );
+  const catalogAssetIds = new Set(data.assets.map((asset) => asset.id));
   assert.equal(
     data.assets.filter((asset) => asset.cache.status === "source-cached").length,
-    data.summary.cached_entries,
+    data.cache.entries.filter((entry) => catalogAssetIds.has(entry.asset_id)).length,
+  );
+  assert.deepEqual(
+    data.cache.entries
+      .filter((entry) => !catalogAssetIds.has(entry.asset_id))
+      .map((entry) => entry.asset_id),
+    ["dice-ui:data-grid"],
   );
 
   assert.match(html, /<script id="showroom-data" type="application\/json">/);
@@ -203,6 +217,9 @@ test("generated showroom is self-contained and carries every catalog and paid ma
   assert.doesNotMatch(html, /fetch\(/);
   assert.match(html, /id="catalog-tier"/);
   assert.match(html, /id="alt-status"/);
+  assert.match(html, /id="live-preview-grid"/);
+  assert.match(html, /sandbox="allow-scripts"/);
+  assert.doesNotMatch(html, /allow-same-origin/);
   assert.doesNotMatch(html, /class="toolbar" style="grid-template-columns/);
   assert.match(html, /\.toolbar-alternatives/);
   assert.match(html, /\.asset-card:focus-visible/);

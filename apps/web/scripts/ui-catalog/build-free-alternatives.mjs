@@ -516,15 +516,15 @@ function discoveryCandidate(source) {
     license_verified: source.license_verified === true,
     redistribution_restricted: source.redistribution_restricted === true,
     access_status: source.access_status,
-    source_cache_status: source.source_cache_status,
+    source_cache_status: "not-applicable",
     local_path: "",
     match_level: "collection-selection",
     confidence: "medium",
     review_status: "discovery-component-selection-required",
     url: source.official_url,
     source_url: source.repository_url,
-    reason: `${source.role}；当前只确认这个公开组件集值得逐项挑选，还没有定位到具体组件。`,
-    tradeoff: `当前仅为 discovery，尚未全量入库或缓存源码；${source.compatibility}${source.redistribution_restricted ? "；许可证限制组件本身的销售或再分发" : ""}`,
+    reason: `${source.role}；官方完整目录已收录，但当前候选仍只指向组件集，还没有为这条付费能力定位具体组件。`,
+    tradeoff: `目录已入库并选择性缓存代表源码；使用前仍需定位具体组件并核对该项缓存、依赖与适配成本；${source.compatibility}${source.redistribution_restricted ? "；许可证限制组件本身的销售或再分发" : ""}`,
   };
 }
 
@@ -799,7 +799,7 @@ function markdownFor(output, discovery) {
     "| 候选 | 许可证 | 作用 | 状态 |",
     "|---|---|---|---|",
     ...discovery.sources.map(
-      (source) => `| [${source.name}](${source.official_url}) | ${source.license}${source.redistribution_restricted ? "（限制组件本身销售/再分发）" : ""} | ${source.role} | discovery-only，源码未缓存 |`,
+      (source) => `| [${source.name}](${source.official_url}) | ${source.license}${source.redistribution_restricted ? "（限制组件本身销售/再分发）" : ""} | ${source.role} | ${source.catalog_status}；${source.source_cache_status}；${source.runtime_install_status} |`,
     ),
     "",
     "## 分类级处置摘要",

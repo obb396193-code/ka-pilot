@@ -361,6 +361,13 @@
     .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0; }
     .tag { padding: 4px 7px; border-radius: 5px; background: rgba(21,21,21,.08); font-size: 11px; }
     .warning { padding: 12px; border-left: 4px solid var(--orange); background: rgba(240,90,42,.08); font-size: 12px; }
+    .live-preview-grid { display: grid; gap: 18px; margin-bottom: 46px; }
+    .live-preview-card { overflow: hidden; border: 1px solid var(--ink); border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow); }
+    .live-preview-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; align-items: start; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+    .live-preview-head h3 { margin: 4px 0 3px; font-family: Georgia, serif; font-size: 30px; font-weight: 400; }
+    .live-preview-head p { margin: 0; color: var(--muted); font-size: 12px; }
+    .live-preview-frame { display: block; width: 100%; min-height: 650px; border: 0; background: #fff; }
+    .live-preview-note { padding: 10px 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
 
     .cache-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-bottom: 16px; border: 1px solid var(--ink); background: var(--ink); }
     .cache-stat { padding: 20px; background: var(--white); }
@@ -406,6 +413,8 @@
       .metric:nth-child(2n) { border-right: 0; }
       .metric:nth-last-child(-n+2) { border-bottom: 0; }
       .source-grid, .asset-grid, .theme-grid, .discovery-grid, .generation-compare { grid-template-columns: 1fr; }
+      .live-preview-head { grid-template-columns: 1fr; }
+      .live-preview-frame { min-height: 760px; }
       .toolbar, .toolbar-alternatives, .toolbar-cache, .toolbar-themes { position: static; grid-template-columns: 1fr; }
       .cache-summary { grid-template-columns: repeat(2, 1fr); }
       .hero-copy { font-size: 16px; }
@@ -429,7 +438,7 @@
         <button class="nav-item" data-view="alternatives"><span class="nav-key">03</span><span class="nav-label">付费处置</span><span class="nav-count" id="nav-paid">—</span></button>
         <button class="nav-item" data-view="cache"><span class="nav-key">04</span><span class="nav-label">本地源码</span><span class="nav-count" id="nav-cache">—</span></button>
         <button class="nav-item" data-view="themes"><span class="nav-key">05</span><span class="nav-label">主题展厅</span><span class="nav-count" id="nav-themes">—</span></button>
-        <button class="nav-item" data-view="discovery"><span class="nav-key">06</span><span class="nav-label">新库候选</span><span class="nav-count" id="nav-discovery">—</span></button>
+        <button class="nav-item" data-view="discovery"><span class="nav-key">06</span><span class="nav-label">新库实机</span><span class="nav-count" id="nav-discovery">—</span></button>
       </nav>
       <div class="rail-note"><b>离线可用</b><br>本页内嵌全部目录和替代数据，不依赖网络加载；外部链接仅在你主动打开时访问官网。</div>
     </aside>
@@ -531,7 +540,9 @@
 
       <section class="view" id="view-discovery" hidden>
         <div class="content-width section">
-          <div class="section-head"><div><div class="section-kicker">Approved intake</div><h1 id="discovery-heading"></h1></div><p class="section-intro">老板已完成准入拍板：AI Elements、Kibo UI、Dice UI 正式进入具体能力选型，Animate UI、Motion Primitives 只做少量微动效对比。五库仍未全量收录、缓存或安装。</p></div>
+          <div class="section-head"><div><div class="section-kicker">Live / offline</div><h1 id="discovery-heading"></h1></div><p class="section-intro">下面不是截图：它把已缓存的官方源码预编译成五个可交互 frame。每家只展示 2 个代表特性，离线运行、无 CDN、无 fetch，也没有安装进产品运行时。</p></div>
+          <div class="live-preview-grid" id="live-preview-grid"></div>
+          <div class="section-head"><div><div class="section-kicker">Approved intake</div><h2>五库准入与使用边界</h2></div><p class="section-intro">五库完整目录已入库，并选择性缓存 21 个高频根资产；AI Elements、Kibo、Dice 正式进入具体能力选型，Animate UI、Motion Primitives 只做少量微动效对比。</p></div>
           <div class="discovery-grid" id="discovery-grid"></div>
           <p class="footnote">候选里的第三方 patterns、模板或 Sponsor 内容如果另有商业授权，必须再次拆分；不能因为主仓 MIT/Apache 就把所有外链内容都当免费。</p>
         </div>
@@ -559,6 +570,7 @@
         }
         if (url === "agent-workflow.md") return url;
         if (url.startsWith("source-cache/") && !url.split("/").includes("..")) return esc(url);
+        if (url.startsWith("live-previews/") && !url.split("/").includes("..")) return esc(url);
         return "#";
       };
       const safeColor = (value, fallback) => /^(#[0-9a-f]{3,8}|(?:oklch|hsl|hsla|rgb|rgba)\([0-9.% ,/+\-]+\))$/i.test(String(value)) ? String(value) : fallback;
@@ -602,7 +614,7 @@
         $("#alt-intro").textContent = `已知付费元数据 ${nf.format(DATA.summary.paid_items)} 条，其中 ${nf.format(DATA.summary.provider_group_records)} 条只是分类节点；具体能力全部有处置策略，但 ${nf.format(DATA.summary.unresolved_paid_items)} 条没有足够证据称为直接替代，已明确标成“需组合/先核许可证”。`;
         $("#cache-intro").textContent = `当前是隔离缓存，不是运行时安装：${nf.format(DATA.summary.cached_roots)} 个高频根资产带出 ${nf.format(DATA.summary.cached_dependencies)} 个同源依赖，共 ${nf.format(DATA.summary.cached_entries)} 个缓存条目、${nf.format(DATA.summary.cached_files)} 个物理缓存文件。`;
         $("#theme-heading").textContent = `${nf.format(DATA.summary.theme_presets)} 个官方主题种子`;
-        $("#discovery-heading").textContent = `${nf.format(DATA.summary.discovery_sources)} 个已拍板的新来源`;
+        $("#discovery-heading").textContent = `${nf.format(DATA.summary.live_preview_frames)} 家官方源码实机预览`;
       }
 
       function renderMetrics() {
@@ -715,7 +727,8 @@
       }
 
       function renderDiscovery() {
-        $("#discovery-grid").innerHTML = DATA.discovery.map((source) => `<article class="discovery-card"><div class="badge-row"><span class="badge ${source.decision_status === "approved-for-catalog-and-contextual-use" ? "starter" : "metadata"}">${source.decision_status === "approved-for-catalog-and-contextual-use" ? "正式准入" : "选择性准入"}</span><span class="badge ${source.redistribution_restricted ? "paid" : "free"}">${esc(source.license)}</span>${source.redistribution_restricted ? `<span class="badge paid">限制组件再分发</span>` : ""}<span class="badge metadata">未缓存/未安装</span></div><h3>${esc(source.name)}</h3><p><b>${esc(source.role)}</b></p><p>${esc(source.visual_style)}</p><div class="tag-list">${source.best_for.map((item) => `<span class="tag">${esc(item)}</span>`).join("")}</div><div class="warning"><b>项目用法：</b>${esc(source.project_use_policy || source.compatibility)}</div><p style="margin:14px 0;color:var(--muted);font-size:12px">${esc(source.next_action)}</p><div class="actions">${link(source.official_url, "官网", "action primary")}${link(source.docs_url, "文档")}${link(source.repository_url, "GitHub")}</div></article>`).join("");
+        $("#live-preview-grid").innerHTML = DATA.live_previews.map((preview) => `<article class="live-preview-card"><div class="live-preview-head"><div><div class="section-kicker">Compiled official source</div><h3>${esc(preview.title)}</h3><p>${esc(preview.purpose)}</p></div><div class="badge-row"><span class="badge cached">真实交互</span><span class="badge free">离线</span><span class="badge metadata">${nf.format(preview.official_assets.length)} 个官方特性</span></div></div><iframe class="live-preview-frame" src="${safeUrl(preview.frame_path)}" title="${esc(preview.title)} 官方源码交互预览" loading="lazy" sandbox="allow-scripts"></iframe><div class="live-preview-note">代表项：${preview.official_assets.map(esc).join(" · ")}　｜　只用于选型预览，产品运行时尚未安装。</div></article>`).join("");
+        $("#discovery-grid").innerHTML = DATA.discovery.map((source) => `<article class="discovery-card"><div class="badge-row"><span class="badge ${source.decision_status === "approved-for-catalog-and-contextual-use" ? "starter" : "metadata"}">${source.decision_status === "approved-for-catalog-and-contextual-use" ? "正式准入" : "选择性准入"}</span><span class="badge ${source.redistribution_restricted ? "paid" : "free"}">${esc(source.license)}</span>${source.redistribution_restricted ? `<span class="badge paid">限制组件再分发</span>` : ""}<span class="badge cached">已缓存代表源码</span><span class="badge metadata">未安装</span></div><h3>${esc(source.name)}</h3><p><b>${esc(source.role)}</b></p><p>${esc(source.visual_style)}</p><div class="tag-list">${source.best_for.map((item) => `<span class="tag">${esc(item)}</span>`).join("")}</div><div class="warning"><b>项目用法：</b>${esc(source.project_use_policy || source.compatibility)}</div><p style="margin:14px 0;color:var(--muted);font-size:12px">${esc(source.catalog_status)} · ${esc(source.source_cache_status)} · ${esc(source.runtime_install_status)}</p><div class="actions">${link(source.official_url, "官网", "action primary")}${link(source.docs_url, "文档")}${link(source.repository_url, "GitHub")}</div></article>`).join("");
       }
 
       function initFilters() {
@@ -763,7 +776,7 @@
         $("#nav-paid").textContent = nf.format(DATA.summary.concrete_paid_items);
         $("#nav-cache").textContent = nf.format(DATA.summary.cached_files);
         $("#nav-themes").textContent = nf.format(DATA.summary.theme_presets);
-        $("#nav-discovery").textContent = nf.format(DATA.summary.discovery_sources);
+        $("#nav-discovery").textContent = nf.format(DATA.summary.live_preview_frames);
         renderDynamicCopy();
         renderMetrics();
         renderCossCompare();

@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-19T16:01:04.129Z",
+  "strategy": "official-cached-source-plus-project-harness",
+  "preview_count": 5,
+  "represented_official_assets": 10,
+  "css_path": "assets/preview.css",
+  "css_sha256": "d011607a137b121877917d4ef16d06ed7a07cf7ce74760fbce8b13e8e493ee8b",
+  "offline": true,
+  "previews": [
+    {
+      "id": "ai-elements",
+      "source": "ai-elements",
+      "title": "AI Elements",
+      "official_assets": [
+        "conversation",
+        "sources"
+      ],
+      "purpose": "Agent conversation and traceable source disclosure",
+      "mode": "compiled-official-source",
+      "interaction": "live",
+      "frame_path": "frames/ai-elements.html",
+      "bundle_path": "assets/ai-elements.js",
+      "bundle_bytes": 245199,
+      "bundle_sha256": "37e9289e3c7d6d0eb2a7911becc5a14d4f7c6cf2865cbd17275699323e893913",
+      "frame_sha256": "eee6445ccf062199a107550af538a35b18e39945c622f5dd1bd38e777a552a22",
+      "sandbox": "allow-scripts",
+      "network_required": false,
+      "runtime_installed_in_app": false
+    },
+    {
+      "id": "kibo-ui",
+      "source": "kibo-ui",
+      "title": "Kibo UI",
+      "official_assets": [
+        "dropzone",
+        "color-picker"
+      ],
+      "purpose": "Business-grade upload and semantic color controls",
+      "mode": "compiled-official-source",
+      "interaction": "live",
+      "frame_path": "frames/kibo-ui.html",
+      "bundle_path": "assets/kibo-ui.js",
+      "bundle_bytes": 377957,
+      "bundle_sha256": "fa857e3f2dc9c7c79bc756aec9d0796abff14128c171b10d7e33a81e9f94d3f1",
+      "frame_sha256": "fa0390d6391675735411ca2e44a4fddab2d89530f69d052f5a14c07eec9930ad",
+      "sandbox": "allow-scripts",
+      "network_required": false,
+      "runtime_installed_in_app": false
+    },
+    {
+      "id": "dice-ui",
+      "source": "dice-ui",
+      "title": "Dice UI",
+      "official_assets": [
+        "file-upload",
+        "kanban"
+      ],
+      "purpose": "Accessible complex interactions and drag workflows",
+      "mode": "compiled-official-source",
+      "interaction": "live",
+      "frame_path": "frames/dice-ui.html",
+      "bundle_path": "assets/dice-ui.js",
+      "bundle_bytes": 289357,
+      "bundle_sha256": "59a6c75089ce94e769362e61829b9f63ded6c9acf1dd93ddb3f4dac58f2bdacc",
+      "frame_sha256": "9923503e500e8d7729af24904e727143c54d0f9a0d5cd9965d8e7c91bf2ccf18",
+      "sandbox": "allow-scripts",
+      "network_required": false,
+      "runtime_installed_in_app": false
+    },
+    {
+      "id": "animate-ui",
+      "source": "animate-ui",
+      "title": "Animate UI",
+      "official_assets": [
+        "components-buttons-ripple",
+        "primitives-texts-counting-number"
+      ],
+      "purpose": "Controlled shadcn-native micro-interactions",
+      "mode": "compiled-official-source",
+      "interaction": "live",
+      "frame_path": "frames/animate-ui.html",
+      "bundle_path": "assets/animate-ui.js",
+      "bundle_bytes": 349671,
+      "bundle_sha256": "665e6c83d09ef4051fa2eff51b249b20be3d6f05176d04b7f4914f3b6510797f",
+      "frame_sha256": "04b2a8cdb8c10beaf3cde5fae8155a1d8146c5e741c5004062df69e4673c9da2",
+      "sandbox": "allow-scripts",
+      "network_required": false,
+      "runtime_installed_in_app": false
+    },
+    {
+      "id": "motion-primitives",
+      "source": "motion-primitives",
+      "title": "Motion Primitives",
+      "official_assets": [
+        "animated-number",
+        "disclosure"
+      ],
+      "purpose": "Small, refined motion primitives",
+      "mode": "compiled-official-source",
+      "interaction": "live",
+      "frame_path": "frames/motion-primitives.html",
+      "bundle_path": "assets/motion-primitives.js",
+      "bundle_bytes": 351651,
+      "bundle_sha256": "9a3ba95174c8783deba28f492ce2175ab71a0ef5dc32b1a107fa84950788a589",
+      "frame_sha256": "b66b2f15ce3ddce20989db02354f5ebac7f0bbd01cf297a8e247953a1b79b725",
+      "sandbox": "allow-scripts",
+      "network_required": false,
+      "runtime_installed_in_app": false
+    }
+  ]
+}

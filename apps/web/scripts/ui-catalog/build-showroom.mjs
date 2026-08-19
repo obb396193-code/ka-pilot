@@ -12,6 +12,10 @@ const ALTERNATIVES_URL = new URL("free-alternatives.json", UI_ASSETS_ROOT);
 const DISCOVERY_URL = new URL("discovery.json", UI_ASSETS_ROOT);
 const CACHE_MANIFEST_URL = new URL("source-cache/manifest.json", UI_ASSETS_ROOT);
 const STARTER_PACK_URL = new URL("starter-pack.json", UI_ASSETS_ROOT);
+const LIVE_PREVIEW_MANIFEST_URL = new URL(
+  "live-previews/manifest.json",
+  UI_ASSETS_ROOT,
+);
 const DATA_OUTPUT_URL = new URL("showroom-data.json", UI_ASSETS_ROOT);
 const HTML_OUTPUT_URL = new URL("showroom.html", UI_ASSETS_ROOT);
 const TEMPLATE_URL = new URL("showroom-template.html", import.meta.url);
@@ -149,6 +153,61 @@ const SOURCE_PROFILES = {
     accent: "#0f766e",
     screenshot: "screenshots/tweakcn-themes.png",
   },
+  "ai-elements": {
+    name: "Vercel AI Elements",
+    family: "Agent interaction",
+    generation: "current",
+    visual_style: "克制、产品化、接近 Vercel/shadcn 的 AI 工作台气质。",
+    best_for: "Agent 对话、消息、推理折叠、工具调用、来源引用、Prompt 输入",
+    caution: "只作 UI 组件来源，不替代 Agent runtime；当前未安装进产品运行时。",
+    foundation: "React + shadcn Registry + AI SDK UI conventions",
+    accent: "#111111",
+    screenshot: "",
+  },
+  "kibo-ui": {
+    name: "Kibo UI",
+    family: "Business-grade controls",
+    generation: "current",
+    visual_style: "现代、克制、功能密度高，接近成熟 SaaS 的复杂业务控件。",
+    best_for: "Gantt、Kanban、Editor、Dropzone、Color Picker、复杂 Calendar",
+    caution: "官网颜色只是示例；接入时必须映射项目语义 token。",
+    foundation: "React + shadcn + Tailwind",
+    accent: "#6558d3",
+    screenshot: "",
+  },
+  "dice-ui": {
+    name: "Dice UI",
+    family: "Accessible complex interactions",
+    generation: "current",
+    visual_style: "中性、细致、工具型，强调高频复杂交互和无障碍状态。",
+    best_for: "Data Grid、File Upload、Kanban、Time Picker、Tour、Media Player",
+    caution: "首次使用复杂组件时，与 ReUI/coss/TanStack 在同一业务容器比较。",
+    foundation: "React + TypeScript + Tailwind + shadcn pattern",
+    accent: "#2563eb",
+    screenshot: "",
+  },
+  "animate-ui": {
+    name: "Animate UI",
+    family: "Controlled product motion",
+    generation: "current",
+    visual_style: "保留 shadcn 产品感的流畅微动效，比强视觉动效库更克制。",
+    best_for: "按钮反馈、交互过渡、动画图标、轻背景、局部高光",
+    caution: "MIT + Commons Clause；按具体微交互选择，禁止整库默认安装或再分发。",
+    foundation: "React + shadcn Registry + Motion",
+    accent: "#f43f5e",
+    screenshot: "",
+  },
+  "motion-primitives": {
+    name: "Motion Primitives",
+    family: "Refined micro-interactions",
+    generation: "current",
+    visual_style: "极简、细腻，适合给成熟产品补文字、数字和布局过渡。",
+    best_for: "Animated Number、Disclosure、Dock、Tabs、文字与局部布局动画",
+    caution: "不是业务组件底座；只在局部需要时复制并接入 reduced-motion。",
+    foundation: "React + Tailwind + Motion",
+    accent: "#db2777",
+    screenshot: "",
+  },
 };
 
 function candidateSummary(candidate) {
@@ -216,6 +275,11 @@ export function buildShowroomData({
   starterPack,
   tweakcnCatalog,
   reuiCatalog,
+  livePreviewManifest = {
+    preview_count: 0,
+    represented_official_assets: 0,
+    previews: [],
+  },
 }) {
   const alternativeById = new Map(
     alternatives.mappings.map((mapping) => [
@@ -233,8 +297,10 @@ export function buildShowroomData({
   const starterById = new Map(
     starterPack.roots.map((root) => [root.asset_id, root]),
   );
+  const catalogAssetIds = new Set(capabilities.assets.map((asset) => asset.id));
   const cacheCountsBySource = {};
   for (const entry of cacheManifest.entries) {
+    if (!catalogAssetIds.has(entry.asset_id)) continue;
     cacheCountsBySource[entry.source] = (cacheCountsBySource[entry.source] ?? 0) + 1;
   }
 
@@ -346,15 +412,24 @@ export function buildShowroomData({
       cached_roots: cacheManifest.cached_root_count,
       cached_dependencies: cacheManifest.cached_dependency_count,
       cached_entries: cacheManifest.cached_entry_count,
+      cached_support_entries: cacheManifest.entries.filter(
+        (entry) => !catalogAssetIds.has(entry.asset_id),
+      ).length,
       cached_files: cacheManifest.cached_file_count,
       discovery_sources: discovery.sources.length,
       theme_presets: themes.length,
+      live_preview_frames: livePreviewManifest.preview_count,
+      live_preview_assets: livePreviewManifest.represented_official_assets,
     },
     source_order: catalogIndex.sources.map((source) => source.id),
     sources,
     assets,
     themes,
     discovery: discovery.sources,
+    live_previews: livePreviewManifest.previews.map((preview) => ({
+      ...preview,
+      frame_path: `live-previews/${preview.frame_path}`,
+    })),
     variants: {
       reui: reuiCatalog?.variant_matrix ?? null,
     },
@@ -410,6 +485,7 @@ async function main() {
     starterPack,
     tweakcnCatalog,
     reuiCatalog,
+    livePreviewManifest,
   ] = await Promise.all([
     readJson(CATALOG_INDEX_URL),
     readJson(CAPABILITIES_URL),
@@ -419,6 +495,7 @@ async function main() {
     readJson(STARTER_PACK_URL),
     readJson(TWEAKCN_CATALOG_URL),
     readJson(REUI_CATALOG_URL),
+    readJson(LIVE_PREVIEW_MANIFEST_URL),
   ]);
   const data = buildShowroomData({
     catalogIndex,
@@ -429,6 +506,7 @@ async function main() {
     starterPack,
     tweakcnCatalog,
     reuiCatalog,
+    livePreviewManifest,
   });
   const json = `${JSON.stringify(data, null, 2)}\n`;
   const html = await renderHtml(data);

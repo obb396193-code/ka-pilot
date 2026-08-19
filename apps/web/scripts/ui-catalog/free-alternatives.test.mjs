@@ -336,8 +336,8 @@ test("generated discovery shortlist records verified license restrictions and ca
   for (const source of discovery.sources) {
     assert.match(source.official_url, /^https:\/\//);
     assert.match(source.repository_url, /^https:\/\/github\.com\//);
-    assert.equal(source.catalog_status, "discovery-only");
-    assert.equal(source.source_cache_status, "not-cached");
+    assert.match(source.catalog_status, /^catalogued-\d+$/);
+    assert.match(source.source_cache_status, /^starter-roots-cached-\d+$/);
     assert.equal(source.runtime_install_status, "not-installed");
     assert.match(source.decision_status, /^approved-for-/);
     assert.ok(source.project_use_policy.length > 20);
