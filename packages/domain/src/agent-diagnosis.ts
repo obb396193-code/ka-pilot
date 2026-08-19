@@ -70,6 +70,10 @@ export function parseAgentDiagnosis(input: unknown): AgentDiagnosis {
   return agentDiagnosisSchema.parse(input);
 }
 
+export function agentDiagnosisJsonSchema(): Record<string, unknown> {
+  return z.toJSONSchema(agentDiagnosisSchema) as Record<string, unknown>;
+}
+
 export function applyDiagnosisSafety(
   diagnosis: AgentDiagnosis,
   context: { recentlyFailedTargetKeys: readonly string[] },
