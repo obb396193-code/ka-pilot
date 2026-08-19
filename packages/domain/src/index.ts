@@ -15,3 +15,4 @@ export * from "./report-plan.js";
 export * from "./report-dataset.js";
 export * from "./gap-reconciliation.js";
 export * from "./strategy-analysis.js";
+export * from "./capability-registry.js";

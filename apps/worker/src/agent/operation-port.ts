@@ -1,4 +1,8 @@
-import { createAgentRunEvent, type AgentTaskKind } from "@ka/domain";
+import {
+  assertCapabilityMetadata,
+  createAgentRunEvent,
+  type AgentTaskKind,
+} from "@ka/domain";
 import { z } from "zod";
 
 import type {
@@ -78,12 +82,7 @@ export function createOperationToolDefinitions(input: {
 }
 
 function assertCapability(capability: AgentOperationCapability): void {
-  if (!/^[a-z][a-z0-9_]{1,63}$/.test(capability.id)) {
-    throw new Error("Agent capability id must be a safe snake_case token");
-  }
-  if (capability.description.trim() === "" || capability.description.length > 1_000) {
-    throw new Error("Agent capability description is invalid");
-  }
+  assertCapabilityMetadata(capability);
   if (capability.taskKinds.length === 0) throw new Error("Agent capability requires a task kind");
 }
 
