@@ -174,7 +174,12 @@ function validateClaimsInput(input) {
   if (!input || typeof input !== "object") throw new CredentialEnvelopeError("invalid_token");
   for (const field of [...BINDING_FIELDS, "credential"]) {
     const value = input[field];
-    if (typeof value !== "string" || value.trim() === "" || value.length > 16_000) {
+    if (
+      typeof value !== "string" ||
+      value.trim() === "" ||
+      value.length > 16_000 ||
+      /[\r\n]/.test(value)
+    ) {
       throw new CredentialEnvelopeError("invalid_token");
     }
   }

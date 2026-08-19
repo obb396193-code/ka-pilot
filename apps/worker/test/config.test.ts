@@ -12,6 +12,7 @@ describe("worker config", () => {
       agent: {
         enabled: false,
         maxTurns: 8,
+        maxBudgetUsd: 1,
         timeoutMs: 120_000,
         gateway: null,
       },
@@ -34,6 +35,7 @@ describe("worker config", () => {
       DATABASE_URL: "postgres://local/ka",
       AGENT_ENABLED: "true",
       AGENT_MAX_TURNS: "5",
+      AGENT_MAX_BUDGET_USD: "0.75",
       AGENT_TIMEOUT_MS: "45000",
       MODEL_GATEWAY_BASE_URL: "http://127.0.0.1:3456",
       MODEL_GATEWAY_CLIENT_KEY: "g".repeat(32),
@@ -54,6 +56,7 @@ describe("worker config", () => {
     expect(config.agent).toEqual({
       enabled: true,
       maxTurns: 5,
+      maxBudgetUsd: 0.75,
       timeoutMs: 45_000,
       gateway: {
         baseUrl: "http://127.0.0.1:3456",
@@ -102,7 +105,13 @@ describe("worker config", () => {
   it("parses the string false as disabled", () => {
     expect(
       loadWorkerConfig({ DATABASE_URL: "postgres://local/ka", AGENT_ENABLED: "false" }).agent,
-    ).toEqual({ enabled: false, maxTurns: 8, timeoutMs: 120_000, gateway: null });
+    ).toEqual({
+      enabled: false,
+      maxTurns: 8,
+      maxBudgetUsd: 1,
+      timeoutMs: 120_000,
+      gateway: null,
+    });
   });
 });
 

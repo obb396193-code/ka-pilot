@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const positiveInteger = z.coerce.number().int().positive();
+const positiveNumber = z.coerce.number().positive().finite();
 const enabledFlag = z
   .enum(["true", "false"])
   .default("false")
@@ -57,6 +58,7 @@ const workerConfigSchema = z.object({
   WORKER_SERVICE_QIHANG_USER_ID: z.string().trim().min(1).optional(),
   AGENT_ENABLED: enabledFlag,
   AGENT_MAX_TURNS: positiveInteger.default(8),
+  AGENT_MAX_BUDGET_USD: positiveNumber.default(1),
   AGENT_TIMEOUT_MS: positiveInteger.default(120_000),
   MODEL_GATEWAY_BASE_URL: httpUrlSchema.optional(),
   MODEL_GATEWAY_CLIENT_KEY: z.string().min(32).optional(),
@@ -78,6 +80,7 @@ export interface ModelGatewayConfig {
 export interface AgentRuntimeConfig {
   enabled: boolean;
   maxTurns: number;
+  maxBudgetUsd: number;
   timeoutMs: number;
   gateway: ModelGatewayConfig | null;
 }
@@ -110,6 +113,7 @@ function loadAgentConfig(parsed: z.infer<typeof workerConfigSchema>): AgentRunti
   const common = {
     enabled: parsed.AGENT_ENABLED,
     maxTurns: parsed.AGENT_MAX_TURNS,
+    maxBudgetUsd: parsed.AGENT_MAX_BUDGET_USD,
     timeoutMs: parsed.AGENT_TIMEOUT_MS,
   };
   if (!parsed.AGENT_ENABLED) {
