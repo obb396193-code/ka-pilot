@@ -15,7 +15,7 @@
 - [x] summary 与 trend
 - [x] account/task/biz 维度聚合
 - [x] health 数据健康查询
-- [ ] PostgreSQL 与全量质量门禁
+- [x] PostgreSQL 与全量质量门禁
 - [ ] 最终 SHA 和信箱回执
 
 ## 明确暂缓
@@ -34,3 +34,6 @@
 | 2026-08-19 | summary 汇总口径与按日 trend | ✅ PostgreSQL 累计 7 tests；比率按汇总分子/分母计算 |
 | 2026-08-19 | account/task/biz 维度与多任务冲突保护 | ✅ PostgreSQL 累计 10 tests；不支持维度前置拒绝 |
 | 2026-08-19 | canonical/raw/ETL/质量检查健康查询 | ✅ PostgreSQL 累计 12 tests；返回透明组成量，不伪造覆盖率结论 |
+| 2026-08-19 | 任务筛选在 dimension/health 中一致 | ✅ PostgreSQL 语义测试增至 13 个；DB 行覆盖率升至 89.71% |
+| 2026-08-19 | 四包全量 tests + coverage + typecheck + lint | ✅ 101 tests；93.39% / 89.71% / 84.75% / 86.62% |
+| 2026-08-19 | 依赖、安全、复杂度与 diff 门禁 | ✅ Critical 0 / High 0 / Medium 1 非阻断；报告见 `docs/evidence/B1c-代码质量报告.md` |

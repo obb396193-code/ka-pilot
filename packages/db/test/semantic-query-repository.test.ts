@@ -401,4 +401,31 @@ describe("SemanticQueryRepository", () => {
       },
     ]);
   });
+
+  it("applies a task filter consistently to dimensions and coverage", async () => {
+    const dimensions = await repository.queryDimension({
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-19",
+      dimension: "task",
+      filters: { taskId: taskOneId },
+    });
+    const health = await repository.queryHealth({
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-19",
+      filters: { taskId: taskOneId },
+    });
+
+    expect(dimensions.map((row) => [row.dimensionKey, row.metrics.cost])).toEqual([
+      [taskOneId, 100],
+    ]);
+    expect(health.coverage).toMatchObject({
+      canonicalRows: 1,
+      accountsInScope: 1,
+      accountsWithCanonical: 1,
+      expectedAccountDays: 2,
+      missingAccountDays: 1,
+    });
+  });
 });
