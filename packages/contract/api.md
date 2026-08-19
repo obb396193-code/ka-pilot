@@ -2,6 +2,8 @@
 
 > 通用：全部 `GET/POST /api/v1/...`；响应包 `{ok:boolean, data, meta:{data_as_of, coverage, sources}, error?}`；
 > meta.data_as_of=数据截至时间（数据健康横幅数据源）；分页 `page/page_size/total`。
+> **P-001#6 裁决（比率/无穷表示统一）**：所有比率/CPA 字段返回 `{value: number|null, state: "finite"|"infinite"|"undefined"}`；
+> `state=infinite` 表示分母0且分子>0（UI 显 `∞`）；`state=undefined` 表示无意义（UI 显 `—`）；绝不用 `null`/`Infinity`/字符串。
 
 ## 语义层查询（核心，query_type 五类）
 
@@ -25,6 +27,7 @@
 - `GET /api/v1/work-items?status=&severity=&assignee=&type=` 队列（含"其余 N 户在阈值内"计数）
 - `POST /api/v1/work-items/:id/ignore` `{reason_chip?, mute_days?}`
 - `POST /api/v1/work-items/:id/process|reject|escalate|dispatch` `{note?, to_user?, acceptance_criteria?}`
+- `POST /api/v1/work-items/:id/reply` `{target: "dingtalk_group"|"dingtalk_dm"|"web_session", target_id, content}` → 异步回复（**P-002#3 裁决：agent 处理完工作项异步回复至群/单聊/会话**）
 - `GET /api/v1/work-items/:id` 详情（证据快照+诊断+T+1）
 
 ## 变更集与执行
@@ -46,6 +49,8 @@
 ## 任务
 
 - `GET /api/v1/tasks` / `GET /api/v1/tasks/:id`（含 pacing 计算结果）
+- `POST /api/v1/tasks` `{idempotency_key, draft: {task_name, biz_name, period_start, period_end, target_volume, budget, ...}}` → 创建任务草稿（**P-002#2 裁决：群内创建任务用，幂等键必填**）
+- `PATCH /api/v1/tasks/:id` `{...}` → 更新草稿或已发布任务
 - `POST /api/v1/tasks/:id/assessment-price` `{price, effective_date, evidence_url}` → 触发重算+通知
 - `GET /api/v1/tasks/:id/timeline|accounts|funnel`
 
@@ -64,6 +69,7 @@
 
 - `POST /api/v1/agent/sessions` `{page_context?}` → session（**新建默认空上下文**）
 - `POST /api/v1/agent/sessions/:id/messages`（SSE 流式）；`POST .../context` 增删对象
+- `POST /api/v1/agent/sessions/:id/query` `{natural_language}` → 结构化 query JSON（**P-002#1 裁决：群内自然语言→结构化查询端点，agent 先转结构再调 /api/v1/query**）
 - `GET /api/v1/agent/runs?initiator=me` 运行监控
 
 ## 系统
@@ -76,3 +82,8 @@
 ## 错误码
 
 `UNAUTHORIZED | FORBIDDEN | STALE_DATA_WRITE_BLOCKED | CHANGESET_EXPIRED | FROM_VALUE_CHANGED | BLOCKED_AUTH | RATE_LIMITED | NO_CREDENTIAL`
+
+**P-001#5 裁决（鉴权失败判定）**：
+- HTTP 401/403 → 直接 `BLOCKED_AUTH`，不重试
+- HTTP 200 但业务错误码 → **待 B7 内网实证后补充映射表**（Qihang get_data 可能返 HTTP 200 + 业务错误）
+- B1a 阶段：后端只实现 HTTP 401/403 不重试；其余 4xx/5xx 按通用策略（502/503/504 重试 3 次指数退避，其余不重试进 failed）
