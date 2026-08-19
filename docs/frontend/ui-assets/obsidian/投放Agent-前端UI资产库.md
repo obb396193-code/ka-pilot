@@ -1,6 +1,6 @@
 ---
 title: 投放 Agent 前端 UI 资产库
-updated: 2026-08-19
+updated: 2026-08-20
 tags:
   - vibemotion
   - 投放Agent
@@ -14,7 +14,7 @@ tags:
 
 ## 一句话结论
 
-已经把 12 条官方产品线整理成可搜索目录，共 **5,996 个逻辑资产**；这表示“官方有什么可以查”，**不表示 5,996 份源码已经下载**。老板选择的 A 方案已经从 7 个非 shadcn 官方来源缓存 **48 个高频根资产 + 41 个必要依赖＝89 个缓存条目、93 份源码文件**，失败 0，逐文件 SHA-256 可复核。缓存位于文档隔离区，不参与应用编译。项目运行仓仍只有 22 个 shadcn 风格 UI 文件、20 个正被引用，但没有精确上游 ref/hash，只能标为来源推断；第三方运行时接入为 0。
+已经把 17 条官方产品线整理成可搜索目录，共 **7,056 个逻辑资产**；这表示“官方有什么可以查”，**不表示 7,056 份源码已经下载**。老板选择的 A 方案已经从 12 个非 shadcn 官方来源缓存 **69 个高频根资产 + 55 个必要依赖＝124 个缓存条目、137 份源码文件**，失败 0，逐文件 SHA-256 可复核。缓存位于文档隔离区，不参与应用编译。项目运行仓仍只有 22 个 shadcn 风格 UI 文件、20 个正被引用，但没有精确上游 ref/hash，只能标为来源推断；第三方运行时接入为 0。
 
 ## 当前全量目录
 
@@ -32,8 +32,13 @@ tags:
 | React Bits Free | 166 | 免费仓库能力完整，四种代码变体去重 | 全部公开源码 |
 | React Bits Pro | 702 | 公开 Pro 文档索引完整 | 购买授权后源码 |
 | tweakcn | 42 | 官方 defaultPresets 完整 | 全部公开；动态社区主题不宣称固定全量 |
+| Vercel AI Elements | 136 | 官方 Registry 完整 | 全部公开源码，Apache-2.0 |
+| Kibo UI | 69 | 40 个 Registry 源码项 + 29 个公开文档/Block 元数据 | 40 公开源码，29 公开元数据；Block endpoint 当前 500 |
+| Dice UI | 242 | 官方多 style Registry 完整 | 全部公开源码，MIT |
+| Animate UI | 580 | 官方 Registry 完整 | 579 公开源码 + 1 元数据；MIT + Commons Clause |
+| Motion Primitives | 33 | 官方仓库 Registry 完整 | 全部公开源码，MIT |
 
-合计：**3,753 public-source + 67 public-metadata-only + 2,176 paid-source-after-license = 5,996**。目录快照不绑定本地路径；A 缓存是否命中以独立 `source-cache/manifest.json` overlay 为准。
+合计：**4,783 public-source + 97 public-metadata-only + 2,176 paid-source-after-license = 7,056**。目录快照不绑定本地路径；A 缓存是否命中以独立 `source-cache/manifest.json` overlay 为准。
 
 ## coss current 577 与 coss Origin 646 的区别
 
@@ -68,9 +73,14 @@ tags:
 | Magic UI Free | 7 | 0 | 7 | 7 |
 | React Bits Free | 7 | 0 | 7 | 11 |
 | tweakcn | 1 | 0 | 1 | 1 |
-| **合计** | **48** | **41** | **89** | **93** |
+| Vercel AI Elements | 6 | 2 | 8 | 8 |
+| Kibo UI | 6 | 0 | 6 | 6 |
+| Dice UI | 3 | 4 | 7 | 16 |
+| Animate UI | 3 | 8 | 11 | 11 |
+| Motion Primitives | 3 | 0 | 3 | 3 |
+| **合计** | **69** | **55** | **124** | **137** |
 
-准确表达：这些是从官方 Registry/GitHub raw 保存的**隔离源码缓存**，带官方 URL、访问状态、许可证范围和 hash；可以让前端 Agent 直接 inspect、比较并复制。93 是磁盘物理缓存文件数；Registry JSON 内嵌的源码 module 合计 103，展厅分两列显示，避免混算。它们尚未安装进 `apps/web` 运行时，也没有替老板选定某一组件。
+准确表达：这些是从官方 Registry/GitHub raw 保存的**隔离源码缓存**，带官方 URL、访问状态、许可证范围和 hash；可以让前端 Agent 直接 inspect、比较并复制。137 是磁盘物理缓存文件数；124 是缓存记录数，二者不能混算。Dice `data-grid` 是官方 Registry demo 引用但 item endpoint 404 的仓库补源，因此作为支持依赖单列，不伪造 Registry 成功。它们尚未安装进 `apps/web` 运行时，也没有替老板选定某一组件。
 
 ## 2,176 条付费元数据的合法免费替代
 
@@ -81,20 +91,21 @@ tags:
 3. 已收录免费资产的组合；
 4. 确无现成实现时，独立编写业务组合层，但不照抄付费源码和受保护设计。
 
-首批新增公开源码候选为 Kibo UI（复杂 B 端组件）、Dice UI（Data Grid/File Upload 等无障碍交互）、Animate UI（克制的 shadcn 动效）、Motion Primitives（精细微交互）、Vercel AI Elements（AI/Agent 界面）。老板已于 2026-08-19 拍板：**AI Elements、Kibo、Dice 正式准入具体能力选型；Animate UI、Motion Primitives 选择性准入，只少量对比使用**。它们当前仍只在 discovery，尚未全量收录、缓存或安装；准入不等于安装。Animate UI 实际为 **MIT + Commons Clause**，可放进应用，但不能直接销售或再分发组件本身。
+首批新增公开源码候选为 Kibo UI（复杂 B 端组件）、Dice UI（Data Grid/File Upload 等无障碍交互）、Animate UI（克制的 shadcn 动效）、Motion Primitives（精细微交互）、Vercel AI Elements（AI/Agent 界面）。老板已于 2026-08-19 拍板：**AI Elements、Kibo、Dice 正式准入具体能力选型；Animate UI、Motion Primitives 选择性准入，只少量对比使用**。五库已完整进入正式目录并缓存 21 个高频根资产；仍未安装进产品运行时，准入/目录/缓存都不等于安装。Animate UI 实际为 **MIT + Commons Clause**，可放进应用，但不能直接销售或再分发组件本身。
 
 前端质量执行规范另见 `docs/frontend/ui-assets/frontend-product-standard.md`：Storybook 是组件状态试验台，ECharts 是正式报表引擎，Design Tokens/Style Dictionary 是 tweakcn 多主题与 CSS/图表的统一变量层，Playwright 与键盘/无障碍检查是自动验收门禁。前端批次必须按“产品与数据契约 → 信息架构/状态矩阵 → token/组件选择 → Ready for Dev → 组件隔离实现 → 页面/API 集成 → 视觉/键盘/数据/性能验收 → 回写决策”执行。
 
 ## 离线 HTML 展厅
 
-仓库内 `docs/frontend/ui-assets/showroom.html` 可直接查看；页面把数据、样式和脚本全部内嵌，不依赖 CDN 或联网。包括：
+仓库内 `docs/frontend/ui-assets/showroom.html` 可直接查看；主页面把目录数据、样式和脚本内嵌，五库实时预览从同目录的 `live-previews/` 加载本地 bundle，不依赖 CDN 或联网。包括：
 
-- 12 条产品线的风格、维护状态、Free/Pro/Ultimate 边界；ReUI 另显示 Base/Radix × 8 styles＝16 个 Registry variants 与 4 种 icon styles；
-- 5,996 条目录的来源/能力/访问层级筛选与分页；
+- 17 条产品线的风格、维护状态、Free/Pro/Ultimate 边界；ReUI 另显示 Base/Radix × 8 styles＝16 个 Registry variants 与 4 种 icon styles；
+- 7,056 条目录的来源/能力/访问层级筛选与分页；
 - 2,176 条付费元数据、23 条分类节点与 2,153 个具体能力的分级替代/组合策略；
-- 89 个已缓存源码条目与本地路径；
+- 124 个已缓存源码条目与本地路径；
 - 42 个 tweakcn 官方主题的真实色板；
-- 5 个新来源的老板准入状态、项目用法、许可证和官方入口。
+- 5 个新来源的老板准入状态、项目用法、许可证和官方入口；
+- 5 个 sandbox live frame，真实运行 10 个官方代表特性：AI Elements Conversation/Sources、Kibo Dropzone/Color Picker、Dice File Upload/Kanban、Animate Ripple/Counting Number、Motion Animated Number/Disclosure。它们不是截图，也不是运行时安装。
 
 ## 风格与使用定位
 
@@ -116,7 +127,7 @@ tags:
 仓库根：`/Users/aik/Desktop/投放agent`
 
 - 总入口：`docs/frontend/ui-assets/README.md`
-- 12 份逐库 JSON：`docs/frontend/ui-assets/catalogs/*.json`
+- 17 份逐库 JSON：`docs/frontend/ui-assets/catalogs/*.json`
 - JSON schema：`docs/frontend/ui-assets/catalog.schema.json`
 - 跨来源能力索引：`docs/frontend/ui-assets/capabilities.json`
 - 覆盖、会员与未知缺口：`docs/frontend/ui-assets/coverage-audit.json`、`coverage-audit.md`
@@ -125,7 +136,7 @@ tags:
 - A 方案缓存与源码：`docs/frontend/ui-assets/source-cache/manifest.json`、`source-cache/<source>/...`
 - 付费能力免费替代：`docs/frontend/ui-assets/free-alternatives.json`、`free-alternatives.md`
 - 新开源候选：`docs/frontend/ui-assets/discovery.json`、`discovery.md`
-- 离线可视化：`docs/frontend/ui-assets/showroom.html`、`showroom-data.json`
+- 离线可视化：`docs/frontend/ui-assets/showroom.html`、`showroom-data.json`、`live-previews/manifest.json`
 - 安装、修改、主题、许可证规范：`docs/frontend/ui-assets/guides/*.md`、`licenses.md`
 - 三路独立审查与主 Agent 复核：`docs/frontend/ui-assets/reviews/2026-08-19-independent-audit.md`
 - 代码质量复核：`docs/frontend/ui-assets/reviews/2026-08-19-code-quality.md`

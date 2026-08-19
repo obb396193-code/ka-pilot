@@ -1,6 +1,6 @@
 # UI 资产存储格式与状态契约
 
-> 最后核验：2026-08-19
+> 最后核验：2026-08-20
 
 ## 一句话结论
 
@@ -16,9 +16,12 @@
 | 高频隔离缓存 | `starter-pack.json`、`source-cache/manifest.json`、`source-cache/<source>/...` | JSON + 官方原始 payload/source | 69 个根资产、55 个传递依赖、137 份源码文件、官方 URL、hash、许可与文件路径 | 不代表已批准、已适配或已进入应用编译 |
 | 付费免费替代 | `free-alternatives.json/.md` | JSON + Markdown | 每个付费能力的同品牌 Free、MIT/Apache/ISC 候选或独立组合层建议 | 不包含付费源码，也不保证视觉一比一复刻 |
 | 展厅与准入记录 | `showroom.html`、`showroom-data.json`、`discovery.json/.md` | 离线 HTML + JSON + Markdown | 可视化筛选、风格比较、缓存/付费边界、新来源准入状态 | 不代表已下载或安装 |
+| 实时预览层 | `live-previews/manifest.json`、`frames/*.html`、`assets/*.js/.css` | 预编译离线 iframe bundle | 5 个新来源的 10 个官方代表特性真实交互、逐文件 hash、sandbox/断网边界 | 不代表运行时安装，也不等于整库全部渲染 |
 | 运行时源码账 | `source-download-manifest.json`、`source-download-status.md` | JSON + Markdown | 本地源码路径、SHA-256、引用数、provenance 可信度、第三方隔离目录 | 不把手写/来历不明文件认作官方源码 |
 
 规范、许可证和人工决策使用 Markdown；官网风格证据使用 PNG。`.firecrawl/`、`.playwright-cli/` 和 `/private/tmp` 抓取物只是当次核验工作底稿，不是长期事实源。
+
+实时预览采用“已缓存官方源码 + 项目 harness”的两层结构：官方组件实现必须从 `source-cache/manifest.json` 可追溯；harness 只提供脱敏示例数据、布局和触发按钮。主展厅 iframe 固定 `sandbox="allow-scripts"`，不开放 `allow-same-origin`，frame CSP 禁止网络。复制展厅时必须连同 `live-previews/` 目录一起复制。
 
 ## Item 关键字段
 

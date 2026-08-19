@@ -1,7 +1,7 @@
 # 前端 UI 资产总入口
 
 > 状态：全量目录、访问边界、高频隔离源码缓存、付费能力免费替代与离线展厅均已建立；目录收录和缓存都不等于运行时安装
-> 最后更新：2026-08-19
+> 最后更新：2026-08-20
 
 这里是投放 Agent 前端选组件、查官方规范、看真实风格和追溯第三方源码的唯一入口。
 
@@ -43,9 +43,10 @@ coss current 的 577 条来自当前 `coss.com/ui` Registry，采用 Base UI 新
 - `source-download-manifest.json`、`source-download-status.md`：实际运行时源码、hash、引用与 provenance。
 - `starter-pack.json`、`source-cache/manifest.json`：A 方案的 69 个高频根资产、55 个传递依赖、官方 payload/raw source、逐文件 hash 和缓存状态。
 - `free-alternatives.json/.md`：2,176 条已知付费元数据中，23 条分类节点单列，2,153 个具体能力逐项记录免费候选/组合策略、置信度与复核状态；当前 272 项有同能力候选、638 项按语义选图标、1,237 项需重组、6 项先核许可，不包含或推导付费源码。
-- `discovery.json/.md`：老板已审阅的新来源准入记录。AI Elements、Kibo、Dice 正式进入选型，Animate UI、Motion Primitives 选择性进入对比；五者已完成目录收录，仍未冒充缓存或安装，Commons Clause 等限制单列。
+- `discovery.json/.md`：老板已审阅的新来源准入记录。AI Elements、Kibo、Dice 正式进入选型，Animate UI、Motion Primitives 选择性进入对比；五者完整目录已收录并选择性缓存高频源码，但仍未安装，Commons Clause 等限制单列。
 - `frontend-product-standard.md`：数据密集产品的设计交付、组件实现、图表、主题、Storybook、视觉回归、无障碍和 Definition of Done。
-- `showroom.html`：无需服务端、无需联网即可筛选查看的离线展厅；`showroom-data.json` 是其可再生成数据。
+- `showroom.html`：无需服务端、无需联网即可筛选查看的离线展厅；五个新来源另有 5 个 sandbox live frame，真实运行 10 个官方代表特性，不是截图。`showroom-data.json` 是其可再生成数据，`live-previews/` 必须与 HTML 一起复制。
+- `live-previews/manifest.json`：5 个离线 frame、代表官方资产、bundle/frame hash、sandbox 与网络边界；harness 只负责业务语境和布局，不冒充官方源码。
 - `guides/`：官方安装、使用、组合、修改/迁移、主题、许可证和 changelog 的项目摘要。
 - `capabilities.json`：跨来源能力索引，用一个需求找到多个候选。
 - `visual-guide.md`：真实官网截图和风格归类。
@@ -75,6 +76,7 @@ coss current 的 577 条来自当前 `coss.com/ui` Registry，采用 Base UI 新
 - [前端 Agent 使用流程](agent-workflow.md)
 - [数据产品前端执行规范](frontend-product-standard.md)
 - [打开离线 UI 展厅](showroom.html)
+- [五库真实源码预览说明](live-previews/README.md)
 - [高频源码缓存清单](source-cache/manifest.json)
 - [付费能力免费替代](free-alternatives.md)
 - [新开源来源候选](discovery.md)
