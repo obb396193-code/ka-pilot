@@ -84,3 +84,5 @@
 7. UNKNOWN 必须先只读核媒体态再决定，真实查询接口与超时语义需内网 OS 提供样本。
 
 Codex 本批只实现内部状态、严格字符串快照比较、审计和端口；不修改契约。
+
+**B3 内核交付回执（2026-08-19）**：功能审查 SHA `36c72f2`。已完成 TTL/from 冲突/状态机/反向草稿、事务仓储、逐项部分成功、execution_run 审计、歧义超时→UNKNOWN、UNKNOWN 只读 reconcile、T+1 成功项端口；四包 165 tests，覆盖率均 >80%，复杂度 0 warning，audit 0。真实 OS/CLI、同账户锁、API 与真实 T+1/带外检测如实暂缓。报告：`docs/evidence/B3-代码质量报告.md`。
