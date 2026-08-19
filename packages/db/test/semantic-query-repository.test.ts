@@ -170,4 +170,56 @@ describe("SemanticQueryRepository", () => {
     expect(firstPage.total).toBe(3);
     expect(secondPage.total).toBe(3);
   });
+
+  it("builds summary ratios from aggregate numerators instead of averaging row ratios", async () => {
+    const result = await repository.querySummary({
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-19",
+    });
+
+    expect(result).toMatchObject({
+      rowCount: 3,
+      accountCount: 2,
+      cost: 270,
+      exposure: 2700,
+      click: 221,
+      conversion: 27,
+      realConversion: 23,
+      cashCost: 216,
+      costSpace: 34,
+      wakeUv: 110,
+      potentialUv: 55,
+      anomalyRows: 1,
+    });
+    expect(result.ratios.realCpa).toEqual({ value: 270 / 23, state: "finite" });
+    expect(result.ratios.ctr).toEqual({ value: 221 / 2700, state: "finite" });
+    expect(result.ratios.gap).toEqual({ value: 27 / 23 - 1, state: "finite" });
+  });
+
+  it("returns zero totals and undefined ratios for an empty summary", async () => {
+    const result = await repository.querySummary({
+      workspaceId,
+      dateFrom: "2026-07-01",
+      dateTo: "2026-07-02",
+    });
+
+    expect(result.rowCount).toBe(0);
+    expect(result.cost).toBe(0);
+    expect(result.ratios.realCpa).toEqual({ value: null, state: "undefined" });
+  });
+
+  it("returns only persisted dates in a daily aggregate trend", async () => {
+    const rows = await repository.queryTrend({
+      workspaceId,
+      dateFrom: "2026-08-17",
+      dateTo: "2026-08-20",
+      filters: { ownerUserId: ownerId },
+    });
+
+    expect(rows.map((row) => [row.ds, row.metrics.cost, row.metrics.accountCount])).toEqual([
+      ["2026-08-18", 100, 1],
+      ["2026-08-19", 170, 2],
+    ]);
+  });
 });

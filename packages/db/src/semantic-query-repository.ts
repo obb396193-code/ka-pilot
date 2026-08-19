@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 
+import { queryMetricSummary, queryMetricTrend } from "./semantic-query-metrics.js";
 import {
   buildMetricFilter,
   isoTimestamp,
@@ -9,6 +10,9 @@ import {
 } from "./semantic-query-support.js";
 import type {
   RelatedTask,
+  MetricSummary,
+  MetricTrendRow,
+  SemanticQueryScope,
   SemanticTableQuery,
   SemanticTableResult,
   SemanticTableRow,
@@ -136,5 +140,13 @@ export class SemanticQueryRepository {
       page: query.page,
       pageSize: query.pageSize,
     };
+  }
+
+  async querySummary(input: SemanticQueryScope): Promise<MetricSummary> {
+    return queryMetricSummary(this.pool, input);
+  }
+
+  async queryTrend(input: SemanticQueryScope): Promise<MetricTrendRow[]> {
+    return queryMetricTrend(this.pool, input);
   }
 }

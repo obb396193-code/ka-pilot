@@ -1,3 +1,5 @@
+import type { RatioValue } from "@ka/domain";
+
 export type SemanticSortField = "ds" | "accountId" | "cost" | "realCpa" | "computedAt";
 export type SortDirection = "asc" | "desc";
 export type SupportedDimension = "account" | "task" | "biz";
@@ -65,6 +67,37 @@ export interface SemanticTableResult {
   pageSize: number;
 }
 
+export interface MetricRatios {
+  ctr: RatioValue;
+  cvr: RatioValue;
+  realCpa: RatioValue;
+  cashCpa: RatioValue;
+  gap: RatioValue;
+  potentialRate: RatioValue;
+  biConversionRate: RatioValue;
+}
+
+export interface MetricSummary {
+  rowCount: number;
+  accountCount: number;
+  cost: number;
+  exposure: number;
+  click: number;
+  conversion: number;
+  realConversion: number;
+  cashCost: number;
+  costSpace: number;
+  wakeUv: number;
+  potentialUv: number;
+  anomalyRows: number;
+  ratios: MetricRatios;
+}
+
+export interface MetricTrendRow {
+  ds: string;
+  metrics: MetricSummary;
+}
+
 export class AmbiguousTaskMappingError extends Error {
   constructor(
     readonly accountId: string,
@@ -75,4 +108,3 @@ export class AmbiguousTaskMappingError extends Error {
     this.name = "AmbiguousTaskMappingError";
   }
 }
-

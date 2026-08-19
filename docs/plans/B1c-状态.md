@@ -12,7 +12,7 @@
 - [x] TDD 实施计划
 - [x] 输入边界与安全保护
 - [x] table 明细查询
-- [ ] summary 与 trend
+- [x] summary 与 trend
 - [ ] account/task/biz 维度聚合
 - [ ] health 数据健康查询
 - [ ] PostgreSQL 与全量质量门禁
@@ -31,3 +31,4 @@
 |---|---|---|
 | 2026-08-19 | 设计与实施计划 | ✅ 已记录并独立提交 |
 | 2026-08-19 | table 输入、租户隔离、有效期、稳定分页 | ✅ PostgreSQL 4 tests；typecheck + lint |
+| 2026-08-19 | summary 汇总口径与按日 trend | ✅ PostgreSQL 累计 7 tests；比率按汇总分子/分母计算 |
