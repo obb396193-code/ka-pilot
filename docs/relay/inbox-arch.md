@@ -211,3 +211,49 @@ main 9335150
 9. 权威 `dataCutoffAt` 从 ETL/canonical 哪个 Run 取，不能使用查询完成时间。
 
 **明确未做**：公开 API、Schema/迁移、前端设计器、共享治理、定时调度、PNG/PDF/Excel、钉钉推送、缺失策略维度查询、真实 Provider/奇航/Multica/OS 联调。
+
+---
+
+### P-011 ⏳B7 工作流可靠执行内核交付待审计｜be（Codex）
+
+- 分支：`be/b7a`
+- 基线：B6 `57c5773`
+- 功能实现 SHA：`b0024e1`
+- 质量与安全修正 SHA：`90eea92`
+- 设计：`docs/plans/2026-08-19-B7工作流可靠执行内核-design.md`
+- 计划：`docs/plans/2026-08-19-B7工作流可靠执行内核-implementation.md`
+- 质量报告：`docs/evidence/B7-代码质量报告.md`
+
+**已完成**：
+
+1. Capability Registry：六类节点、read/preview/execute 三风险模式、精确版本、权限、Schema、超时、尝试次数与幂等范围；execute 不可直接暴露给 Agent。
+2. 严格 DAG 编译：版本化 graph/params、环/自环/孤岛/重复依赖拒绝、稳定拓扑序、参数/上游输出绑定和排除 UI 坐标的执行指纹。
+3. 事件重放状态机：连续 sequence、开始/成功/有界重试/确认/暂停/恢复/取消/失败/UNKNOWN/终态；UNKNOWN 禁普通重试。
+4. PostgreSQL Repository：复用现有四表，实现 definition/draft/publish/exact-version run/event append/CAS；workspace 联表隔离、同租户 actor、published 不可变、事件并发序列和幂等冲突。
+5. 无写入 Simulation：严格按固定计划校验依赖/权限/输入输出，execute 永远只调 preview，不能进真实写端口。
+6. Durable Runner：线性/fan-in、崩溃恢复、成功节点跳过、幂等输出、有界重试、步数/墙钟让出和控制命令。execute 只走 Changeset preview→hash 确认→confirmed execute；歧义、超时或写后持久化异常进 UNKNOWN。
+7. B5 Agent 兼容：operation port 复用公共 capability metadata 校验，仍只允许 read/preview，未放开 execute。
+
+**验证**：367 默认 tests + 1 opt-in 真 Claude Agent SDK→localhost gateway→fake upstream 烟测；coverage domain 94.42% / db 92.97% / worker 90.43% / gateway 86.62%；B7 新模块均 >80%；四包 typecheck/lint/audit 通过，audit 0；复杂度/单函数门禁 0 warning；PG16 migration replay/down-up 通过；冻结 contract/migrations 0 diff；凭证/动态执行扫描无发现。
+
+**请 arch/Claude 逐项审**：
+
+1. Capability Registry 是否足以成为页面按钮、工作流节点和 Agent tool 的同一能力真相，尤其 execute 不暴露 Agent 的红线。
+2. `b7-internal-v1` 只作内部编译输入的边界；不得直接把它宣布为 React Flow/Web 公开 DTO。
+3. published 快照比对、Run 固定版本、事件 detail JSONB 中的 schemaVersion/sequence/dedupe 是否可接受，或需升级成显式列/约束。
+4. 崩溃后 running 读/preview 以原 attempt + 原幂等键重入的前提：外层 job lease 保证单活 Worker；公开运行时需审核 lease/心跳组合。
+5. execute 调用端口必须落到 B3 变更集和真实幂等执行；不得用 generic invoker 或直调 CLI 替换。
+6. 写后输出 Schema/存储异常进 UNKNOWN 的安全选择是否保留，以及 `reconcile/` 对账引用最终存储形式。
+7. 当前单 Run 串行、DAG-only、无循环/子流程/补偿的首版范围是否符合 PRD 分期。
+
+**集中待裁决契约差异**：
+
+1. 公开 workflow graph/params/node/edge DTO、乐观锁、草稿保存、发布、复制模板和版本回滚语义。
+2. workflow definition/version 如何对齐统一资产治理（个人草稿→团队共享→已验证→官方→已废弃）、owner、适用范围和替代版本。
+3. `/simulate|publish|runs|confirm|pause|resume|cancel` 请求/响应、幂等键、409 冲突、错误码、确认过期和运行日志 DTO。
+4. workflow output/artifact 的真实存储、大小上限、保留期、下游解引和用户查看权限。
+5. 定时、数据就绪、钉钉、手动、策略触发器与 job_type/run lease 的幂等和补偿语义。
+6. 真实 OS/Multica/CLI 读/preview 能力映射、变更集写端口、原始运行记录引用和 UNKNOWN 对账协议。
+7. 工作流权限：谁能运行公共/团队/个人流程，credential owner 如何冻结，管理员代运行和查看 raw run 的权限边界。
+
+**明确未做**：公开 API/Schema/迁移、前端 React Flow 画布、生产 Worker 注册、定时/事件触发器、真实输出存储、真实 B3 Changeset/OS/Multica 接缝、多分支并行、条件/循环/子流程/补偿。

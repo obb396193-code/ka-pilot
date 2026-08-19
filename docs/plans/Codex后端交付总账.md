@@ -4,9 +4,9 @@
 >
 > 维护角色：be（Codex）
 >
-> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6`
+> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a`
 >
-> 最新功能审查提交：`be/b6` / `6dc7ed1`；质量证据提交：`05b8388`
+> 最新功能实现提交：`be/b7a` / `b0024e1`；质量与安全修正提交：`90eea92`
 >
 > 用途：会话恢复、Claude/arch 审查、合并前对账。状态文档和测试结果是快照，合并或上线前仍需重新执行验证。
 
@@ -15,14 +15,14 @@
 1. `AGENTS.md`：工作方法、目录边界和红线。
 2. 本总账：确认 Codex 已经做过什么，避免重复开发。
 3. `docs/plans/B{批次}-状态.md`：看逐批详细任务和验证证据。
-4. `docs/relay/inbox-arch.md` 的“P-009”：看 Claude/arch 总审查入口。
+4. `docs/relay/inbox-arch.md` 的“P-009”和最新 P-011：看 Claude/arch 总审查入口与 B7 专项待审项。
 5. `packages/contract/`：仍是表、指标和公开 API 的唯一契约源。
 
 不要从已经消失的 `/private/tmp/ka-be-*` 路径判断代码是否丢失。临时 worktree 可以被系统清理，Git 分支与提交才是交付物。
 
 ## 2. 分支继承关系
 
-下表各批次是线性继承，不是八套互相独立的实现。`be/b6` 已包含 B1a 至 B6 的全部后端提交。
+下表各批次是线性继承，不是多套互相独立的实现。`be/b7a` 已包含 B1a 至 B7 的全部后端提交。
 
 | 批次 | 最终分支 SHA | 功能审查 SHA | 已完成范围 | 最终记录中的累计测试 | 详细状态/证据 |
 |---|---|---|---|---:|---|
@@ -34,6 +34,7 @@
 | B4 任务经营 | `9f7ecea` | `b3b2c49` | 任务 pacing、任务账户有效期、考核价版本、任务日聚合、日报稳定事实集 | 183 | `B4-状态.md`、`docs/evidence/B4-代码质量报告.md` |
 | B5 Agent 后端 | `53ea264` | `545637c` | 会话/上下文/记忆/Run、诊断双产物、Claude Agent SDK、Provider 路由、能力探针、短时凭证信封、本地协议网关、流式 Orchestrator | 271 默认 + 1 opt-in | `B5-状态.md`、`docs/evidence/B5-代码质量报告.md`、`docs/evidence/B5-SDK-fake-gateway烟测.md` |
 | B6 分析与报表 | 见 `be/b6` HEAD | `6dc7ed1` | 严格内部报表计划、可信组件数据集、Gap 对账、策略样本护栏、B1c 事实适配、幂等报表 Worker | 304 默认 + 1 opt-in | `B6-状态.md`、`docs/evidence/B6-代码质量报告.md`、P-010 |
+| B7 工作流可靠执行 | 见 `be/b7a` HEAD | `b0024e1`；质量 `90eea92` | Capability Registry、严格 DAG 编译、事件重放、固定版本 Repository、无写入 Simulation、可恢复 Runner、Changeset 确认门和 UNKNOWN | 367 默认 + 1 opt-in | `B7-状态.md`、`docs/evidence/B7-代码质量报告.md`、P-011 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -48,6 +49,8 @@
 - Agent 子进程关闭内建 Bash/文件/Web/Task/Skill，关闭自动记忆，只开放服务端闭包绑定的 MCP allowlist。
 - Provider 凭证使用绑定 workspace/user/run/provider/model 的短时 AES-GCM 信封；真实 AK 不进入提示词、SDK 子进程配置或持久化事件。
 - Fake upstream、mock PostgreSQL 和本地协议烟测只证明代码链路，不代表真实奇航、IdeaLab、Anthropic、Multica/OS 已联通。
+- 工作流画布、页面按钮和 Agent tool 共用 Capability Registry；execute 不可直接暴露 Agent，只经 B3 Changeset 预览、hash 确认和幂等执行。
+- 工作流运行以 exact published version + 事件重放为真相；崩溃恢复不重跑成功节点，执行结果含糊时进 UNKNOWN 等待对账。
 
 ## 4. Claude/arch 必审清单
 
@@ -69,6 +72,8 @@ be/b1c..be/b2
 be/b2..be/b3
 be/b3..be/b4
 be/b4..be/b5
+be/b5..be/b6
+be/b6..be/b7a
 ```
 
 审查每批时同时读取对应 `B*-状态.md`、design、implementation 和 evidence，不仅看最终汇报。
@@ -84,10 +89,12 @@ be/b4..be/b5
 - B3：typed changeset value、同账户锁、hash、部分成功/回滚/UNKNOWN DTO。
 - B4：任务主键、pacing 日历、日报 12 模块、考核价重算通知。
 - B5：Agent session/run/event、Provider credential/capability、SSE、诊断 DTO、OS 工具和 usage 账本。
+- B6：报表 config/资产治理/定时/导出、策略维度和 Agent 报表草稿。
+- B7：公开 graph/API、资产治理、输出存储、触发/job lease、权限与真实 Changeset/OS/Multica 接缝。
 
 ## 5. 尚未完成，不能对外宣称完成
 
-- B1a-B6 尚未由 Claude/arch 逐批审计，也尚未合入 `main`。
+- B1a-B7 尚未由 Claude/arch 逐批审计，也尚未合入 `main`。
 - `apps/web` 正式 API Route 和前后端 E2E 尚未完成。
 - 真实奇航、Multica/OS、Secret 服务、IdeaLab/Anthropic 模型通路尚未联调。
 - Agent 生产容器/微虚机沙箱、CPU/RAM/磁盘限制和 egress allowlist 尚未完成。
@@ -104,4 +111,4 @@ Claude 未恢复不等于所有后端都要停。可以在 `be/b5` 之后继续�
 4. 只做可替换的领域纯函数、内部端口、Repository 适配和测试。
 5. 新发现的契约缺口继续写 `inbox-arch.md`，等 Claude 集中裁决。
 
-B6 已在上述边界内完成。B7 涉及工作流版本、运行状态、自动化动作和 OS/Multica 真实执行，继续编码前应先由 Claude/arch 审 B1a-B6 并冻结对应契约。
+B6/B7a 已在上述边界内完成，且均未接入公开 API 或生产 runtime。Claude/arch 恢复后先审 P-010/P-011 并冻结契约；其前只可继续 B8a 知识库的契约无关纯逻辑，不建表、不建公开 API、不碰前端。
