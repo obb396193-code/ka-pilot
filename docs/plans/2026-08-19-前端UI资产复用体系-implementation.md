@@ -239,15 +239,17 @@ git add docs/frontend/ui-assets/guides docs/frontend/ui-assets/licenses.md docs/
 git commit -m "docs: 收录官方UI使用修改与迁移规范"
 ```
 
-## Task 6: Build the cross-source capability index and visual comparison workflow
+## Task 6: Build the cross-source capability index and visual comparison workflow（已完成 2026-08-19）
 
 **Files:**
 
 - Create: `apps/web/scripts/ui-catalog/build-capability-index.mjs`
+- Create: `apps/web/scripts/ui-catalog/capability-index.test.mjs`
 - Create: `docs/frontend/ui-assets/capabilities.json`
 - Create: `docs/frontend/ui-assets/visual-guide.md`
 - Create: `docs/frontend/ui-assets/decisions/README.md`
 - Create: `docs/frontend/ui-assets/decisions/date-picker.md`
+- Create: `docs/frontend/ui-assets/screenshots/*.png`
 
 **Step 1: Normalize capability tags**
 
@@ -263,7 +265,7 @@ Compare at least shadcn and coss using official previews and source facts. Do no
 
 **Step 4: Create the visual guide**
 
-Reference the captured official screenshots under `output/playwright/ui-libraries/` and group libraries by visual style and product fit. Mark screenshots as selection evidence, not vendored UI.
+Copy the selected official screenshots from `output/playwright/ui-libraries/` into the durable documentation directory and group libraries by visual style and product fit. Mark screenshots as selection evidence, not vendored UI.
 
 **Step 5: Commit**
 

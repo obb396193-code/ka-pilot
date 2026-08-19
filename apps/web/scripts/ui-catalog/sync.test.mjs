@@ -6,7 +6,28 @@ import {
   parseAceternityHtml,
   parseReactBitsTree,
   parseTweakcnPresets,
+  shadcnExamplePreviewUrl,
+  tremorComponentPreviewUrl,
 } from "./sync.mjs";
+
+test("routes shadcn and Tremor examples to their real documentation sections", () => {
+  assert.equal(
+    shadcnExamplePreviewUrl("date-picker-with-range"),
+    "https://ui.shadcn.com/docs/components/date-picker",
+  );
+  assert.equal(
+    tremorComponentPreviewUrl("DatePicker"),
+    "https://www.tremor.so/docs/inputs/date-picker",
+  );
+  assert.equal(
+    tremorComponentPreviewUrl("BarChart"),
+    "https://www.tremor.so/docs/visualizations/bar-chart",
+  );
+  assert.equal(
+    tremorComponentPreviewUrl("Accordion"),
+    "https://www.tremor.so/docs/ui/accordion",
+  );
+});
 
 test("parses all Aceternity raw JSON groups and keeps paid state", () => {
   const html = `

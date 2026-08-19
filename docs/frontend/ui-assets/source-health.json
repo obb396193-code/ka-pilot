@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-08-19T08:49:35.834Z",
+  "checked_at": "2026-08-19T09:21:46.259Z",
   "summary": {
     "total": 8,
     "verified": 3,
@@ -204,20 +204,20 @@
       "status": "partial",
       "catalog_mode": "theme-repository-index",
       "coverage": "partial",
-      "coverage_note": "官方未承诺稳定的全量 theme API；从官方仓库 preset/config 与 editor 可分享数据提取并保留来源。",
+      "coverage_note": "完整收录官方仓库 defaultPresets；社区动态主题没有稳定全量 API，另保留 editor/community 入口。",
       "license": "Apache-2.0",
       "redistribution": "permitted-with-license",
-      "checked_at": "2026-08-19T08:49:35.834Z",
+      "checked_at": "2026-08-19T09:21:46.259Z",
       "endpoints": [
         {
-          "url": "https://api.github.com/repos/jnsahaj/tweakcn/git/trees/main?recursive=1",
-          "final_url": "https://api.github.com/repos/jnsahaj/tweakcn/git/trees/main?recursive=1",
+          "url": "https://raw.githubusercontent.com/jnsahaj/tweakcn/main/utils/theme-presets.ts",
+          "final_url": "https://raw.githubusercontent.com/jnsahaj/tweakcn/main/utils/theme-presets.ts",
           "ok": true,
           "status_code": 200,
-          "content_type": "application/json; charset=utf-8",
-          "etag": "W/\"0c81ce76c947e140b6155886571268287cd44f8505339b5f3e92dde9541f5765\"",
-          "last_modified": "Wed, 19 Aug 2026 06:49:17 GMT",
-          "content_length": 148628,
+          "content_type": "text/plain; charset=utf-8",
+          "etag": "W/\"e0c03af64d8c6f2613e45c2049862679aa7f3eb6f06131b17bb1a69d09a92740\"",
+          "last_modified": "",
+          "content_length": 114849,
           "error": ""
         }
       ]

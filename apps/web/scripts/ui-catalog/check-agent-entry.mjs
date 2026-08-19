@@ -7,6 +7,9 @@ const agentFile = new URL("AGENTS.md", root);
 const requiredLinks = [
   "../../docs/frontend/ui-assets/README.md",
   "../../docs/frontend/ui-assets/agent-workflow.md",
+  "../../docs/frontend/ui-assets/capabilities.json",
+  "../../docs/frontend/ui-assets/visual-guide.md",
+  "../../docs/frontend/ui-assets/decisions/README.md",
   "../../docs/frontend/ui-assets/comparison-template.md",
 ];
 

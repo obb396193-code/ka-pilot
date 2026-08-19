@@ -11,6 +11,19 @@
 3. 官方 preview 是否真实覆盖所需交互；
 4. guide 是否指出迁移、主题、portal、许可证或性能限制。
 
+常用命令：
+
+```bash
+# 查一个统一能力族（默认最多返回 50 个候选）
+node apps/web/scripts/ui-catalog/build-capability-index.mjs --query date-picker
+
+# 只看某个官方来源
+node apps/web/scripts/ui-catalog/build-capability-index.mjs --query date-picker --source coss --limit 20
+
+# 名称、描述、官方分类也可直接搜索
+node apps/web/scripts/ui-catalog/build-capability-index.mjs --query virtualization
+```
+
 ## 2. 选择路径
 
 ### 已有首选资产
@@ -19,7 +32,7 @@
 
 ### 多个合格候选，尚未拍板
 
-按 `comparison-template.md` 输出对比。必须使用官方真实预览/截图，不能用自己画的示意代替。老板选择后在 `decisions/<capability>.md` 留痕并把目录状态改为 `preferred`。
+按 `comparison-template.md` 输出对比。必须使用官方真实预览/截图，不能用自己画的示意代替。进入终选的候选还要放进同一个真实业务容器，用相同主题、宽度、中文和状态截图并排展示，避免官网版式差异干扰判断。老板选择后在 `decisions/<capability>.md` 留痕并把目录状态改为 `preferred`。
 
 ### 官方都没有
 
@@ -76,4 +89,3 @@
 - “已复制”＝源码进入运行仓；
 - “已适配”＝业务封装和验证完成；
 - “官方有”不等于“项目已经有”。
-

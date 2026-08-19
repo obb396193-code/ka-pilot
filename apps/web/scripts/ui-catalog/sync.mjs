@@ -107,6 +107,52 @@ function categoryFromName(name) {
   return withoutPrefix.replace(/-\d+$/, "").split("-")[0] || "uncategorized";
 }
 
+export function shadcnExamplePreviewUrl(name) {
+  const category = categoryFromName(name);
+  const slug = category === "date" ? "date-picker" : category;
+  return `https://ui.shadcn.com/docs/components/${slug}`;
+}
+
+const TREMOR_INPUTS = new Set([
+  "Calendar",
+  "Checkbox",
+  "DatePicker",
+  "DropdownMenu",
+  "Input",
+  "Label",
+  "RadioCardGroup",
+  "RadioGroup",
+  "Select",
+  "SelectNative",
+  "Slider",
+  "Switch",
+  "Textarea",
+  "Toggle",
+]);
+
+const TREMOR_VISUALIZATIONS = new Set([
+  "AreaChart",
+  "BarChart",
+  "BarList",
+  "CategoryBar",
+  "ComboChart",
+  "DonutChart",
+  "LineChart",
+  "ProgressBar",
+  "ProgressCircle",
+  "SparkChart",
+  "Tracker",
+]);
+
+export function tremorComponentPreviewUrl(name) {
+  const section = TREMOR_INPUTS.has(name)
+    ? "inputs"
+    : TREMOR_VISUALIZATIONS.has(name)
+      ? "visualizations"
+      : "ui";
+  return `https://www.tremor.so/docs/${section}/${slugify(name)}`;
+}
+
 function parseRegistry(text) {
   const registry = JSON.parse(text);
   if (!Array.isArray(registry.items)) throw new Error("Registry does not include items[]");
@@ -172,7 +218,7 @@ function parseShadcnTree(tree, context) {
       name,
       kind: "particle",
       category: categoryFromName(name),
-      previewUrl: `https://ui.shadcn.com/docs/components/${categoryFromName(name)}`,
+      previewUrl: shadcnExamplePreviewUrl(name),
       sourceUrl: `https://github.com/shadcn-ui/ui/blob/main/${path}`,
       installCommand: `npx shadcn@latest add ${name} --cwd apps/web`,
       foundation: "shadcn New York v4 / Radix",
@@ -290,7 +336,7 @@ function parseTremorTrees(componentTree, blockTree, context) {
       displayName: name,
       kind: "component",
       category: /chart|barlist|tracker/i.test(name) ? "visualization" : categoryFromName(name),
-      previewUrl: `https://www.tremor.so/docs/visualizations/${slugify(name)}`,
+      previewUrl: tremorComponentPreviewUrl(name),
       sourceUrl: `https://github.com/tremorlabs/tremor/tree/main/${entry.path}`,
       foundation: "Tremor React package",
       license: "Apache-2.0",
