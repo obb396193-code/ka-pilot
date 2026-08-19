@@ -155,5 +155,20 @@ describe("ChangeSetRepository", () => {
       startedAt: new Date(),
     });
     expect(run).toEqual({ directive: "reconcile_required" });
+
+    const reconciled = await repository.completeReconciliation({
+      workspaceId,
+      changeSetId: created.id,
+      finishedAt: new Date("2026-08-19T10:05:00Z"),
+      resultPayload: { reconciled: true },
+      items: created.items.map((item) => ({ itemId: item.id, status: "success" })),
+    });
+    expect(reconciled.status).toBe("success");
+    const audit = await pool.query<{ status: string; payload: Record<string, unknown> }>(
+      `SELECT status, request_payload AS payload FROM execution_runs
+       WHERE changeset_id=$1 ORDER BY attempt DESC LIMIT 1`,
+      [created.id],
+    );
+    expect(audit.rows[0]).toEqual({ status: "success", payload: { reconcile: true } });
   });
 });

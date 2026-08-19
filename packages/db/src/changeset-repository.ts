@@ -5,6 +5,7 @@ import {
   transitionChangeSet,
   verifyCurrentValues,
   type ChangeSetItemSnapshot,
+  type ChangeSetAction,
   type ChangeSetStatus,
   type ChangeTargetType,
   type CurrentValueSnapshot,
@@ -140,6 +141,55 @@ async function rollback(client: PoolClient): Promise<void> {
   try { await client.query("ROLLBACK"); } catch { /* preserve original error */ }
 }
 
+function assertCompleteItemCoverage(
+  storedItems: readonly ChangeSetItemSnapshot[],
+  results: readonly ItemExecutionResult[],
+): void {
+  const expected = new Set(storedItems.map((item) => item.id));
+  const received = new Set(results.map((item) => item.itemId));
+  if (expected.size !== received.size || [...expected].some((id) => !received.has(id))) {
+    throw new Error("execution result must cover every changeset item exactly once");
+  }
+}
+
+async function persistItemResults(
+  client: PoolClient,
+  changeSetId: string,
+  results: readonly ItemExecutionResult[],
+): Promise<void> {
+  for (const item of results) {
+    if (item.status === "unknown") continue;
+    await client.query(
+      `UPDATE changeset_items SET item_status=$3, fail_reason=$4
+       WHERE changeset_id=$1 AND id=$2`,
+      [changeSetId, item.itemId, item.status, item.failReason ?? null],
+    );
+  }
+}
+
+function completionAction(
+  aggregate: "success" | "partial" | "failed" | "unknown",
+): ChangeSetAction {
+  const actions: Record<typeof aggregate, ChangeSetAction> = {
+    success: "complete_success",
+    partial: "complete_partial",
+    failed: "complete_failed",
+    unknown: "mark_unknown",
+  };
+  return actions[aggregate];
+}
+
+function reconciliationAction(
+  aggregate: "success" | "partial" | "failed",
+): ChangeSetAction {
+  const actions: Record<typeof aggregate, ChangeSetAction> = {
+    success: "reconcile_success",
+    partial: "reconcile_partial",
+    failed: "reconcile_failed",
+  };
+  return actions[aggregate];
+}
+
 export class ChangeSetRepository {
   constructor(private readonly pool: Pool) {}
 
@@ -182,6 +232,10 @@ export class ChangeSetRepository {
       [workspaceId, changeSetId],
     );
     return assemble(this.pool, requireHeader(result.rows[0], changeSetId));
+  }
+
+  async load(workspaceId: string, changeSetId: string): Promise<ChangeSetRecord> {
+    return this.get(workspaceId, changeSetId);
   }
 
   async confirm(input: {
@@ -296,32 +350,84 @@ export class ChangeSetRepository {
       const header = requireHeader(locked.rows[0], input.changeSetId);
       if (header.status !== "executing") throw new Error(`changeset is not executing: ${header.status}`);
       const storedItems = await loadItems(client, header.id);
-      const expected = new Set(storedItems.map((item) => item.id));
-      const received = new Set(input.items.map((item) => item.itemId));
-      if (expected.size !== received.size || [...expected].some((id) => !received.has(id))) {
-        throw new Error("execution result must cover every changeset item exactly once");
-      }
+      assertCompleteItemCoverage(storedItems, input.items);
       const aggregate = aggregateExecutionResult(input.items);
-      for (const item of input.items) {
-        if (item.status === "unknown") continue;
-        await client.query(
-          `UPDATE changeset_items SET item_status=$3, fail_reason=$4
-           WHERE changeset_id=$1 AND id=$2`,
-          [header.id, item.itemId, item.status, item.failReason ?? null],
-        );
-      }
+      await persistItemResults(client, header.id, input.items);
       await client.query(
         `UPDATE execution_runs SET status=$3,result_payload=$4::jsonb,finished_at=$5
          WHERE id=$1 AND changeset_id=$2`,
         [input.executionRunId, header.id, aggregate, JSON.stringify(input.resultPayload), input.finishedAt],
       );
-      const action = aggregate === "success" ? "complete_success"
-        : aggregate === "partial" ? "complete_partial"
-        : aggregate === "failed" ? "complete_failed" : "mark_unknown";
       const updated = await client.query<HeaderRow>(
         `UPDATE changesets SET status=$3,executed_at=$4
          WHERE workspace_id=$1 AND id=$2 RETURNING ${headerColumns}`,
-        [input.workspaceId, header.id, transitionChangeSet(header.status, action), input.finishedAt],
+        [
+          input.workspaceId,
+          header.id,
+          transitionChangeSet(header.status, completionAction(aggregate)),
+          input.finishedAt,
+        ],
+      );
+      const record = await assemble(client, requireHeader(updated.rows[0], header.id));
+      await client.query("COMMIT");
+      return record;
+    } catch (error) {
+      await rollback(client);
+      throw error;
+    } finally { client.release(); }
+  }
+
+  async completeReconciliation(input: {
+    workspaceId: string;
+    changeSetId: string;
+    finishedAt: Date;
+    resultPayload: Record<string, unknown>;
+    items: ItemExecutionResult[];
+  }): Promise<ChangeSetRecord> {
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      const locked = await client.query<HeaderRow>(
+        `SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2 FOR UPDATE`,
+        [input.workspaceId, input.changeSetId],
+      );
+      const header = requireHeader(locked.rows[0], input.changeSetId);
+      if (header.status !== "unknown" && header.status !== "executing") {
+        throw new Error(`changeset does not require reconciliation: ${header.status}`);
+      }
+      const storedItems = await loadItems(client, header.id);
+      assertCompleteItemCoverage(storedItems, input.items);
+      const aggregate = aggregateExecutionResult(input.items);
+      await persistItemResults(client, header.id, input.items);
+      const status = aggregate === "unknown"
+        ? "unknown"
+        : transitionChangeSet(
+            header.status,
+            header.status === "unknown"
+              ? reconciliationAction(aggregate)
+              : completionAction(aggregate),
+          );
+      const attempt = await client.query<{ attempt: number }>(
+        `SELECT COALESCE(MAX(attempt),0)::int + 1 AS attempt
+         FROM execution_runs WHERE changeset_id=$1`,
+        [header.id],
+      );
+      await client.query(
+        `INSERT INTO execution_runs
+           (changeset_id,attempt,status,dry_run,request_payload,result_payload,started_at,finished_at)
+         VALUES ($1,$2,$3,false,'{"reconcile":true}'::jsonb,$4::jsonb,$5,$5)`,
+        [
+          header.id,
+          attempt.rows[0]?.attempt ?? 1,
+          aggregate,
+          JSON.stringify(input.resultPayload),
+          input.finishedAt,
+        ],
+      );
+      const updated = await client.query<HeaderRow>(
+        `UPDATE changesets SET status=$3,executed_at=$4
+         WHERE workspace_id=$1 AND id=$2 RETURNING ${headerColumns}`,
+        [input.workspaceId, header.id, status, input.finishedAt],
       );
       const record = await assemble(client, requireHeader(updated.rows[0], header.id));
       await client.query("COMMIT");
