@@ -304,4 +304,101 @@ describe("SemanticQueryRepository", () => {
       }),
     ).rejects.toMatchObject({ accountId: "a-1", ds: "2026-08-18" });
   });
+
+  it("reports transparent coverage components and latest pipeline health", async () => {
+    await pool.query(
+      `INSERT INTO metrics_raw (
+         workspace_id, account_id, ds, resource, source, payload, fetched_at
+       ) VALUES
+         ($1, 'a-1', '2026-08-19', 'account_offline', 'offline', '{}', '2026-08-19T10:00:00Z'),
+         ($1, 'a-1', '2026-08-19', 'account_offline', 'offline', '{}', '2026-08-19T11:00:00Z'),
+         ($1, 'a-2', '2026-08-19', 'ad_realtime', 'realtime', '{}', '2026-08-19T09:00:00Z'),
+         ($2, 'a-1', '2026-08-19', 'account_offline', 'offline', '{}', '2026-08-19T23:00:00Z')`,
+      [workspaceId, otherWorkspaceId],
+    );
+    await pool.query(
+      `INSERT INTO etl_runs (
+         workspace_id, run_kind, started_at, finished_at, status, rows_ingested
+       ) VALUES
+         ($1, 'etl_incr', '2026-08-19T08:00:00Z', '2026-08-19T08:01:00Z', 'done', 3),
+         ($1, 'etl_incr', '2026-08-19T09:00:00Z', '2026-08-19T09:01:00Z', 'failed', 0),
+         ($2, 'etl_incr', '2026-08-19T23:00:00Z', '2026-08-19T23:01:00Z', 'failed', 0)`,
+      [workspaceId, otherWorkspaceId],
+    );
+    await pool.query(
+      `INSERT INTO data_quality_checks (
+         workspace_id, ds, check_type, sample, passed, delta, checked_at
+       ) VALUES
+         ($1, '2026-08-19', 'total_reconciliation', '{}', true, '{}', '2026-08-19T10:00:00Z'),
+         ($1, '2026-08-19', 'cpa_outlier', '{}', false, '{}', '2026-08-19T10:05:00Z'),
+         ($1, '2026-08-18', 'missing_consecutive_days', '{}', true, '{}', '2026-08-18T10:00:00Z')`,
+      [workspaceId],
+    );
+
+    const result = await repository.queryHealth({
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-19",
+    });
+
+    expect(result.coverage).toEqual({
+      canonicalRows: 3,
+      accountsInScope: 2,
+      accountsWithCanonical: 2,
+      dateCount: 2,
+      expectedAccountDays: 4,
+      missingAccountDays: 1,
+    });
+    expect(result.rawResources).toEqual([
+      {
+        resource: "account_offline",
+        rowCount: 2,
+        latestFetchedAt: "2026-08-19T11:00:00.000Z",
+      },
+      {
+        resource: "ad_realtime",
+        rowCount: 1,
+        latestFetchedAt: "2026-08-19T09:00:00.000Z",
+      },
+    ]);
+    expect(result.etlStatuses.map((row) => [row.status, row.runCount])).toEqual([
+      ["done", 1],
+      ["failed", 1],
+    ]);
+    expect(result.quality).toMatchObject({ passedChecks: 2, failedChecks: 1 });
+    expect(result.quality.latestCheckedAt).toBe("2026-08-19T10:05:00.000Z");
+  });
+
+  it("applies account filters to health coverage and raw freshness", async () => {
+    await pool.query(
+      `INSERT INTO metrics_raw (
+         workspace_id, account_id, ds, resource, source, payload, fetched_at
+       ) VALUES
+         ($1, 'a-1', '2026-08-19', 'account_realtime', 'realtime', '{}', '2026-08-19T10:00:00Z'),
+         ($1, 'a-2', '2026-08-19', 'account_realtime', 'realtime', '{}', '2026-08-19T11:00:00Z')`,
+      [workspaceId],
+    );
+
+    const result = await repository.queryHealth({
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-19",
+      filters: { accountId: "a-1", media: "KUAISHOU" },
+    });
+
+    expect(result.coverage).toMatchObject({
+      canonicalRows: 2,
+      accountsInScope: 1,
+      accountsWithCanonical: 1,
+      expectedAccountDays: 2,
+      missingAccountDays: 0,
+    });
+    expect(result.rawResources).toEqual([
+      {
+        resource: "account_realtime",
+        rowCount: 1,
+        latestFetchedAt: "2026-08-19T10:00:00.000Z",
+      },
+    ]);
+  });
 });

@@ -108,6 +108,42 @@ export interface SemanticDimensionRow {
   metrics: MetricSummary;
 }
 
+export interface CoverageHealth {
+  canonicalRows: number;
+  accountsInScope: number;
+  accountsWithCanonical: number;
+  dateCount: number;
+  expectedAccountDays: number;
+  missingAccountDays: number;
+}
+
+export interface RawResourceHealth {
+  resource: string;
+  rowCount: number;
+  latestFetchedAt: string;
+}
+
+export interface EtlStatusHealth {
+  status: string;
+  runCount: number;
+  latestStartedAt: string | null;
+  latestFinishedAt: string | null;
+}
+
+export interface QualityHealth {
+  passedChecks: number;
+  failedChecks: number;
+  unknownChecks: number;
+  latestCheckedAt: string | null;
+}
+
+export interface SemanticHealthResult {
+  coverage: CoverageHealth;
+  rawResources: RawResourceHealth[];
+  etlStatuses: EtlStatusHealth[];
+  quality: QualityHealth;
+}
+
 export class AmbiguousTaskMappingError extends Error {
   constructor(
     readonly accountId: string,
