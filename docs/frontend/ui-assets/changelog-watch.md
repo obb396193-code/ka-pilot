@@ -8,12 +8,12 @@
 |---|---|---|
 | shadcn | CLI release、Registry schema、New York v4、foundation | overwrite 本地修改、Radix/Base/ARIA 行为差异 |
 | coss | Changelog、Base UI、DayPicker、Particles | `render` API、portal、DayPicker major、混合许可证路径 |
-| ReUI | Registry build、styles、Data Grid/Filters | style 路由、TanStack/dnd-kit 版本、虚拟化行为 |
-| Tremor | 多仓 commits/releases | 旧 npm vs 新 copy/paste、Recharts/ECharts 重复 |
+| ReUI | Registry、llms.txt、pricing/license、16 styles | Free/Pro/Ultimate 边界、TanStack/dnd-kit 版本、虚拟化行为 |
+| Tremor | Raw/Blocks/Templates/旧 npm 多线 commits | 旧 npm vs Raw、模板许可证文案冲突、Recharts/ECharts 重复 |
 | Aceternity | Changelog、AI catalog、Free/Pro 状态 | Motion/particles/3D 依赖、许可证状态变化 |
-| Magic UI | Registry diff、dependencies | observer/motion cleanup、SSR/hydration |
-| React Bits | `src/content`、license、Pro 边界 | 新重依赖、四代码变体漂移、Commons Clause |
-| tweakcn | `defaultPresets`、token contract | preset 删除/改名、token 缺失、社区主题非稳定 API |
+| Magic UI | Free Registry、Pro section pages/sitemap | Pro 无总 manifest、token 401、observer/motion cleanup、SSR/hydration |
+| React Bits | Free `src/content`、Pro sitemap、license | 新重依赖、四代码变体漂移、Starter/Pro/Ultimate 边界 |
+| tweakcn | `defaultPresets` token、community/pricing | preset 删除/改名、社区动态无 total、服务配额变化 |
 
 ## 更新步骤
 
@@ -23,4 +23,3 @@
 4. 对已 `preferred/vendored/adapted` 资产逐项 diff。
 5. 只更新确有收益的资产，跑验证门。
 6. 更新 `last_verified`、upstream ref、manifest 和决策记录。
-

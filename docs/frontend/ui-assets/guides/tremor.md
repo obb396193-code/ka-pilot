@@ -1,7 +1,7 @@
 # Tremor 官方使用与适配指南
 
 > 最后核验：2026-08-19  
-> 目录：`../catalogs/tremor.json`（362 项）  
+> 目录：`../catalogs/tremor.json`（current 375）+ `../catalogs/tremor-legacy.json`（旧包 30）
 > 定位：KPI、经营驾驶舱、报告版式；业务图表运行时仍以 ECharts 为主
 
 ## 安装与获取
@@ -10,7 +10,9 @@ Tremor 官方资产分散在：
 
 - `tremorlabs/tremor`：copy/paste React components，Apache-2.0；
 - `tremorlabs/tremor-blocks`：Blocks/examples source，MIT；
-- `tremorlabs/tremor-npm`：历史 npm component library，维护状态与新 raw 路径分开看。
+- 官网 6 个完整 Templates：Planner、Solar、Overview、Insights、Dashboard、Database，逐仓 MIT；
+- `template-dashboard-oss`：Dashboard 的相关裁剪变体，Apache-2.0；
+- 旧 `@tremor/react` 3.18.7：30 个仍在线能力页，标 maintenance-stale，但官方未声明 deprecated。
 
 本项目先从官方 Blocks 页面选版式，再从对应官方仓库 ref 复制源码；不默认安装整套 npm runtime。
 
@@ -39,10 +41,11 @@ Tremor 多仓并存，更新前先确认资产来自哪一个仓库及其维护�
 
 ## 官方来源
 
-- Blocks：<https://www.tremor.so/blocks>
+- Blocks：<https://blocks.tremor.so/blocks>
+- Templates：<https://blocks.tremor.so/templates>
 - Docs：<https://www.tremor.so/docs>
 - Copy/paste components：<https://github.com/tremorlabs/tremor>
 - Blocks source：<https://github.com/tremorlabs/tremor-blocks>
 - Tremor organization/templates：<https://github.com/tremorlabs>
+- Legacy package docs：<https://npm.tremor.so/docs/getting-started/installation>
 - Releases/changes：分别查看上述仓库的 releases/commits
-

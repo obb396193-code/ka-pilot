@@ -5,21 +5,25 @@
 
 ## 状态含义
 
-- `verified`：官方提供可直接读取的完整 Registry 或机器目录，且当前连通。
-- `partial`：官方入口连通，但需要从仓库树/多个入口归并，或只覆盖一个 style；不把它伪装成已完整同步。
+- `verified`：当前被检查的官方入口可读取；覆盖范围仍以 catalog 的具体 coverage 字段为准。
+- `partial`：公开目录只能给出下限、动态集合或需要多个入口归并；不把它伪装成品牌全量。
 - `blocked`：官方入口不可用；保留上次成功快照并停止自动覆盖。
 
 ## 来源总表
 
 | 来源 | 能力入口 | 目录方式 | 许可证/边界 | 当前覆盖策略 |
 |---|---|---|---|---|
-| shadcn/ui | [Components](https://ui.shadcn.com/docs/components)、[Blocks](https://ui.shadcn.com/blocks) | 官方仓库树 + CLI Registry | MIT | 归并 v4 components/examples/blocks/styles |
-| coss/ui | [Components](https://coss.com/ui)、[Particles](https://coss.com/ui/particles) | [官方 Registry](https://coss.com/ui/r/registry.json) | `apps/ui` MIT；仓库其他目录默认 AGPL | Registry 全收，复制前核文件路径 |
-| ReUI | [Components](https://reui.io/components) | 线上 Registry + 官方仓库树 | MIT | Registry 当前 style + 仓库全部 styles/examples |
-| Tremor | [Blocks](https://www.tremor.so/blocks) | `tremor` + `tremor-blocks` 官方仓库树 | Apache-2.0 / MIT（按子项目） | 组件、Blocks、模板分开记录 |
+| shadcn/ui | [Components](https://ui.shadcn.com/docs/components)、[Blocks](https://ui.shadcn.com/blocks) | New York v4 Registry + logical/config indexes | 第一方 MIT；Directory/Figma 第三方另核 | 473 logical items；24 preset variants 另存矩阵 |
+| coss/ui | [Components](https://coss.com/ui)、[Particles](https://coss.com/ui/particles) | [官方 Registry](https://coss.com/ui/r/registry.json) | `apps/ui` MIT；仓库其他目录默认 AGPL | current 577 全收 |
+| coss Origin | [Legacy snapshot](https://coss.com/origin) | Git tree + category map + public item JSON | `apps/origin` MIT | legacy 646 单独记录，maintenance-stale |
+| ReUI | [Components](https://reui.io/components)、[llms index](https://reui.io/llms.txt) | Registry + llms + 30 icon pages | Free MIT；Pro/Ultimate 商业许可 | 2,255 logical items；16 variants 另存矩阵 |
+| Tremor current | [Blocks](https://blocks.tremor.so/blocks) | Raw + Blocks 树 + Templates | Apache-2.0 / MIT（按子项目） | 375 items |
+| Tremor legacy | [旧 npm docs](https://npm.tremor.so/docs/getting-started/installation) | sitemap | Apache-2.0 | 30 still-live capabilities，maintenance-stale |
 | Aceternity | [AI 完整目录](https://ui.aceternity.com/ai-recommendations) | 官方 machine-readable 页面 | per-item / Pro 自有许可证 | free/pro/templates/blocks/hooks 分栏 |
-| Magic UI | [Components](https://magicui.design/docs/components) | [官方 Registry](https://magicui.design/r/registry.json) | MIT | Registry 全收 |
-| React Bits | [Free catalog](https://reactbits.dev/) | 官方仓库 content/code 树 | MIT + Commons Clause；Pro 独立 | 四代码变体归一，Free/Pro 分开 |
+| Magic UI Free | [Components](https://magicui.design/docs/components) | [官方 Registry](https://magicui.design/r/registry.json) | MIT | 247 全收 |
+| Magic UI Pro | [Pro docs](https://pro.magicui.design/) | 12 section pages + sitemap | 商业许可；3 个公开模板逐仓核验 | 104 是可复现下限，不宣称品牌全量 |
+| React Bits Free | [Free catalog](https://reactbits.dev/) | 官方仓库 content/code 树 | MIT + Commons Clause | 166 logical items，四代码变体归一 |
+| React Bits Pro | [Pro catalog](https://pro.reactbits.dev/) | 官方 sitemap | 商业许可 | 702 public names，源码需 license key |
 | tweakcn | [Theme editor](https://tweakcn.com/editor/theme) | 官方仓库 preset/config + share 数据 | Apache-2.0 | 主题 token 与 editor 版本一起记录 |
 
 ## 已核实的安装地址
@@ -50,7 +54,7 @@ npx shadcn@latest add @coss/calendar --cwd apps/web
 }
 ```
 
-示例：`npx shadcn@latest add @reui/c-data-grid-9`。当前线上 Registry 的 style 路由曾有公开故障记录，实际加入前必须先 `view`。
+示例：`npx shadcn@latest add @reui/c-data-grid-9 --cwd apps/web`。Free 可公开 view；Pro/Ultimate 需要合法 `REUI_LICENSE_KEY`，不得绕过 401。
 
 ### Aceternity
 
@@ -68,4 +72,3 @@ npx shadcn@latest add @coss/calendar --cwd apps/web
 - 无法确认来源/许可证的截图与代码片段；
 - 付费源码在未购买或不允许再分发时的本地镜像；
 - GitHub 星数、营销文案等不能替代官方 Registry/仓库事实的指标。
-

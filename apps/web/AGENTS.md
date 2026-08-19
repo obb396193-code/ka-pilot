@@ -20,6 +20,8 @@
 5. **保留行为契约**：可以改 token、密度、中文、响应式和业务 props；不要随意改焦点、键盘、ARIA、portal、受控状态等底层行为。
 6. **可追溯**：源码进入仓库时登记官方 URL、上游 ref、许可证、安装命令、本地路径和修改说明。
 7. **先检验再交付**：至少通过 lint、build、多主题、键盘、空/错/加载/禁用、桌面/移动端和 overlay 层级检查。
+8. **访问边界**：目录候选先看 `access_status/access_tier/auth_requirement`；Pro/Ultimate/401 项必须先取得合法许可，禁止用第三方镜像补源码。
+9. **目录不等于下载**：只有 `source-download-manifest.json` 中存在官方 URL、精确 ref/SHA-256 和本地路径，才能汇报“源码已下载/已适配”；`catalogued` 只表示 Agent 知道它存在。
 
 ## 当前优先级
 

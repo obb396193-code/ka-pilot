@@ -39,6 +39,9 @@ test("normalizes a registry item without losing upstream metadata", () => {
   assert.equal(item.install_command, "npx shadcn@latest add @coss/calendar");
   assert.deepEqual(item.dependencies, ["@coss/button", "@daypicker/react"]);
   assert.equal(item.local_status, "catalogued");
+  assert.equal(item.access_status, "public-source");
+  assert.equal(item.source_cache_status, "not-cached");
+  assert.equal(item.maintenance_status, "current");
   assert.deepEqual(item.upstream_meta, upstream);
 });
 
@@ -76,4 +79,17 @@ test("preferred assets require a comparison and decision record", () => {
   assert.equal(result.ok, false);
   assert(result.errors.some((error) => error.includes("decision_record")));
   assert(result.errors.some((error) => error.includes("comparison_record")));
+});
+
+test("rejects unknown access and cache states", () => {
+  const item = {
+    ...normalizeRegistryItem({ name: "calendar", type: "registry:ui" }, context),
+    access_status: "downloaded-maybe",
+    source_cache_status: "somewhere",
+  };
+  const result = validateCatalog([item]);
+
+  assert.equal(result.ok, false);
+  assert(result.errors.some((error) => error.includes("access_status")));
+  assert(result.errors.some((error) => error.includes("source_cache_status")));
 });

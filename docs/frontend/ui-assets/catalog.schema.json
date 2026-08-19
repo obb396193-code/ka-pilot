@@ -23,6 +23,13 @@
     "upstream_ref",
     "local_status",
     "local_path",
+    "access_status",
+    "access_tier",
+    "auth_requirement",
+    "license_scope",
+    "source_cache_status",
+    "maintenance_status",
+    "related_or_duplicate_of",
     "decision_record",
     "comparison_record",
     "upstream_meta"
@@ -34,7 +41,7 @@
     "description": { "type": "string" },
     "kind": {
       "type": "string",
-      "enum": ["primitive", "component", "particle", "block", "page", "template", "theme", "motion", "style", "hook", "utility", "font"]
+      "enum": ["primitive", "component", "particle", "block", "page", "template", "theme", "motion", "style", "hook", "utility", "font", "icon", "internal"]
     },
     "category": { "type": "string", "minLength": 1 },
     "preview_url": { "type": "string", "minLength": 1 },
@@ -52,6 +59,28 @@
       "enum": ["catalogued", "approved", "preferred", "vendored", "adapted", "deprecated"]
     },
     "local_path": { "type": "string" },
+    "access_status": {
+      "type": "string",
+      "enum": ["public-source", "public-metadata-only", "paid-source-after-license", "paid-metadata-only", "inaccessible-unknown"]
+    },
+    "access_tier": {
+      "type": "string",
+      "enum": ["free", "starter", "pro", "ultimate", "paid", "mixed", "not-applicable", "unknown"]
+    },
+    "auth_requirement": {
+      "type": "string",
+      "enum": ["none", "account", "license-key", "subscription", "unknown"]
+    },
+    "license_scope": { "type": "string", "minLength": 1 },
+    "source_cache_status": {
+      "type": "string",
+      "enum": ["not-cached", "source-cached", "vendored", "adapted", "unknown"]
+    },
+    "maintenance_status": {
+      "type": "string",
+      "enum": ["current", "maintenance-stale", "deprecated", "unknown"]
+    },
+    "related_or_duplicate_of": { "type": "string" },
     "decision_record": { "type": "string" },
     "comparison_record": { "type": "string" },
     "upstream_meta": { "type": "object" }

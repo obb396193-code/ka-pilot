@@ -1,70 +1,214 @@
 {
-  "schema_version": 1,
-  "fetched_at": "2026-08-19T09:01:37.215Z",
-  "total_items": 3658,
+  "schema_version": 2,
+  "fetched_at": "2026-08-19T10:10:47.992Z",
+  "total_items": 5936,
+  "counts": {
+    "by_access_status": {
+      "paid-source-after-license": 2160,
+      "public-metadata-only": 67,
+      "public-source": 3709
+    },
+    "by_source_cache_status": {
+      "not-cached": 5936
+    }
+  },
   "sources": [
     {
       "id": "shadcn",
-      "count": 338,
-      "coverage": "partial",
-      "coverage_note": "官方未公开单一全量 item index；通过官方仓库树提取 Components、Examples、Blocks、Styles。",
-      "upstream_ref": "sha256:8653781007ecf76984b573a5ebe7b0da1dace671235abf6bcd58b914e67692f9",
+      "count": 473,
+      "coverage": "complete-new-york-v4-plus-logical-index",
+      "coverage_note": "471-entry New York v4 Registry plus two current base-specific UI items from r/index.json; 24 preset variants are recorded as a matrix, not miscounted as unique components.",
+      "upstream_ref": "sha256:8abcb34837fc377b9c541b01c7090059b08fe5b1bc0b2e44902a4511f1514cf9",
+      "counts": {
+        "by_access_status": {
+          "public-metadata-only": 59,
+          "public-source": 414
+        },
+        "by_source_cache_status": {
+          "not-cached": 473
+        }
+      },
       "file": "shadcn.json"
     },
     {
       "id": "coss",
       "count": 577,
-      "coverage": "complete",
-      "coverage_note": "官方 Registry 同时包含 primitives 与 Particles。",
+      "coverage": "complete-current-registry",
+      "coverage_note": "Current coss Registry is complete; legacy Origin is kept as a separate catalog.",
       "upstream_ref": "sha256:bb3281de9b3ff55c73d95287a33eb16a7a533edeccd7fa93e290130b905c5dc8",
+      "counts": {
+        "by_access_status": {
+          "public-metadata-only": 7,
+          "public-source": 570
+        },
+        "by_source_cache_status": {
+          "not-cached": 577
+        }
+      },
       "file": "coss.json"
     },
     {
+      "id": "coss-origin",
+      "count": 646,
+      "coverage": "complete-legacy-registry",
+      "coverage_note": "646 public Origin Registry JSON items: 599 components plus 47 support assets; legacy/limited-support, not paid.",
+      "upstream_ref": "sha256:0173534cffa93f014825ad1ec187547c83d699a40a5f23894887f842bcb72f6c",
+      "counts": {
+        "by_access_status": {
+          "public-source": 646
+        },
+        "by_source_cache_status": {
+          "not-cached": 646
+        }
+      },
+      "file": "coss-origin.json"
+    },
+    {
       "id": "reui",
-      "count": 1607,
-      "coverage": "partial",
-      "coverage_note": "线上 Registry 当前重定向到一个 style；官方仓库树补齐其他 styles 与 1000+ c-* examples。",
-      "upstream_ref": "sha256:e20bb06e8501c9c96c57c626abf75b5970937d8b27529c374921e5b5d741bfb0",
+      "count": 2255,
+      "coverage": "complete-official-llms-index",
+      "coverage_note": "Registry plus official llms.txt covers free examples/modules/hooks, 502 Pro blocks, 638 icon concepts and 10 Ultimate templates; 16 concrete Base/Radix style variants are a separate matrix.",
+      "upstream_ref": "sha256:71f7c55386bcb18718270519ae155eca8a5cc8c4ae8fa4468bedac5a44dcb69b",
+      "counts": {
+        "by_access_status": {
+          "paid-source-after-license": 1150,
+          "public-source": 1105
+        },
+        "by_source_cache_status": {
+          "not-cached": 2255
+        }
+      },
       "file": "reui.json"
     },
     {
       "id": "tremor",
-      "count": 362,
-      "coverage": "partial",
-      "coverage_note": "Components 与 Blocks 分属两个官方仓库；通过仓库树归并，模板仓库另列。",
-      "upstream_ref": "sha256:1f03d9fea3b0e986f60500630e590d3ec6bcf2d653d22cf511e9be3f6dac5407",
+      "count": 375,
+      "coverage": "complete-current-public-surfaces",
+      "coverage_note": "40 Raw capabilities/39 source dirs, five utilities, 323 Blocks, six official templates and one related dashboard OSS variant.",
+      "upstream_ref": "sha256:5f0251602d9aa23f4cfd0f6f39596ea45cedc5f608233cd89217d8ca6fbf7e03",
+      "counts": {
+        "by_access_status": {
+          "public-source": 375
+        },
+        "by_source_cache_status": {
+          "not-cached": 375
+        }
+      },
       "file": "tremor.json"
+    },
+    {
+      "id": "tremor-legacy",
+      "count": 30,
+      "coverage": "complete-live-legacy-docs",
+      "coverage_note": "30 still-live @tremor/react documentation capabilities; maintenance-stale, not officially deprecated.",
+      "upstream_ref": "sha256:79546296637db394bd107094f2d0a3b0fb08d0917f403ebd153e2c8138bb81b5",
+      "counts": {
+        "by_access_status": {
+          "public-source": 30
+        },
+        "by_source_cache_status": {
+          "not-cached": 30
+        }
+      },
+      "file": "tremor-legacy.json"
     },
     {
       "id": "aceternity",
       "count": 319,
-      "coverage": "complete",
-      "coverage_note": "官方 AI catalog 声明完整列出 free components、Pro components、templates、Pro blocks 与 hooks；免费与付费项分开保存。",
+      "coverage": "complete-to-ai-index",
+      "coverage_note": "Official AI index has 111 free components, one free hook and 207 Pro metadata entries; pricing copy says 200+ blocks and remains an unresolved upstream count conflict.",
       "upstream_ref": "sha256:f3255af3dd992c98afa70b7b9bf7d05e0effd4ca343a48819e4da931805cad58",
+      "counts": {
+        "by_access_status": {
+          "paid-source-after-license": 207,
+          "public-source": 112
+        },
+        "by_source_cache_status": {
+          "not-cached": 319
+        }
+      },
       "file": "aceternity.json"
     },
     {
       "id": "magic-ui",
       "count": 247,
-      "coverage": "complete",
-      "coverage_note": "官方 Registry 包含 components、examples 与 templates。",
+      "coverage": "complete-free-registry",
+      "coverage_note": "247-item free Registry; Magic UI Pro has no public total manifest and is a separate lower-bound catalog.",
       "upstream_ref": "sha256:3791dcc1b24c392b9e906473357338a9ed154300334bae998c0ed7dd46b0ba45",
+      "counts": {
+        "by_access_status": {
+          "public-metadata-only": 1,
+          "public-source": 246
+        },
+        "by_source_cache_status": {
+          "not-cached": 247
+        }
+      },
       "file": "magic-ui.json"
+    },
+    {
+      "id": "magic-ui-pro",
+      "count": 104,
+      "coverage": "partial-public-docs-lower-bound",
+      "coverage_note": "95 exact public block slugs plus nine observed template names; official claims 50+ sections and 9+ templates without a public total Registry.",
+      "upstream_ref": "sha256:d25c5262c1ad489c562243f1ab022f6d02cea14237bef3fb1f1114c940b12d0a",
+      "counts": {
+        "by_access_status": {
+          "paid-source-after-license": 101,
+          "public-source": 3
+        },
+        "by_source_cache_status": {
+          "not-cached": 104
+        }
+      },
+      "file": "magic-ui-pro.json"
     },
     {
       "id": "react-bits",
       "count": 166,
-      "coverage": "partial",
-      "coverage_note": "免费目录由官方仓库 content/code variants 提取；React Bits Pro 是独立付费 Registry，不能混入免费源码。",
+      "coverage": "complete-free-repository",
+      "coverage_note": "166 free logical components, with four code variants deduplicated; Pro is a separate catalog.",
       "upstream_ref": "sha256:de938b4d78403f7017bd1e236c1f60198cd54ea3fc33795e18d6a600f3eeca62",
+      "counts": {
+        "by_access_status": {
+          "public-source": 166
+        },
+        "by_source_cache_status": {
+          "not-cached": 166
+        }
+      },
       "file": "react-bits.json"
+    },
+    {
+      "id": "react-bits-pro",
+      "count": 702,
+      "coverage": "complete-public-pro-index",
+      "coverage_note": "702 paid assets: 134 components, 238 page blocks, 300 app UI blocks, 11 templates and 19 Agent Kit assets.",
+      "upstream_ref": "sha256:34240be1fa348285f054de285d38abc446b7759175a5eb346e8a6127e7e952f8",
+      "counts": {
+        "by_access_status": {
+          "paid-source-after-license": 702
+        },
+        "by_source_cache_status": {
+          "not-cached": 702
+        }
+      },
+      "file": "react-bits-pro.json"
     },
     {
       "id": "tweakcn",
       "count": 42,
-      "coverage": "partial",
-      "coverage_note": "官方未承诺稳定的全量 theme API；从官方仓库 preset/config 与 editor 可分享数据提取并保留来源。",
+      "coverage": "complete-default-presets-partial-dynamic-community",
+      "coverage_note": "All 42 defaultPresets are stored with their token source; anonymous community themes are dynamic and have no stable finite total.",
       "upstream_ref": "sha256:d333858a5a4f1e2fd615f1b73709f552e5a84c12882196456dfc48e1f09376a8",
+      "counts": {
+        "by_access_status": {
+          "public-source": 42
+        },
+        "by_source_cache_status": {
+          "not-cached": 42
+        }
+      },
       "file": "tweakcn.json"
     }
   ],

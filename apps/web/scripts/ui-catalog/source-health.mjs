@@ -92,7 +92,7 @@ async function runCli() {
     const reachable = endpoints.every((endpoint) => endpoint.ok);
     const status = !reachable
       ? "blocked"
-      : source.coverage === "complete"
+      : source.coverage.startsWith("complete")
         ? "verified"
         : "partial";
 

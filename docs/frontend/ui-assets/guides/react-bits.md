@@ -1,7 +1,7 @@
 # React Bits 官方使用与适配指南
 
 > 最后核验：2026-08-19  
-> 目录：`../catalogs/react-bits.json`（166 个免费能力，代码变体去重）  
+> 目录：`../catalogs/react-bits.json`（Free 166）+ `../catalogs/react-bits-pro.json`（Pro 702）
 > 定位：偶尔使用的文字、背景、光标和交互动效
 
 ## 安装与获取
@@ -14,6 +14,8 @@ npx shadcn@latest add @react-bits/BlurText-TS-TW --cwd apps/web
 ```
 
 也可从官方页面手工复制。React Bits Pro 使用独立受鉴权 Registry 和 license key，不能把 Pro 当免费目录 item。
+
+Pro 当前公开目录为 134 Animated Components（Starter）、238 Page Blocks + 300 App UI + 19 Agent Kit（Pro）、11 Templates（Ultimate），合计 702。公开名称和预览可用于选型，源码只在取得相应 license key 后下载到项目。
 
 ## 使用与组合
 
@@ -45,6 +47,6 @@ npx shadcn@latest add @react-bits/BlurText-TS-TW --cwd apps/web
 - Free catalog/docs：<https://reactbits.dev/>
 - Free repository：<https://github.com/DavidHDev/react-bits>
 - Installation 示例：<https://github.com/DavidHDev/react-bits#installation>
-- Free license：<https://github.com/DavidHDev/react-bits/blob/main/LICENSE>
+- Free license：<https://github.com/DavidHDev/react-bits/blob/main/LICENSE.md>
 - Pro installation/边界：<https://pro.reactbits.dev/docs/installation>
-
+- Pro license：<https://pro.reactbits.dev/license>

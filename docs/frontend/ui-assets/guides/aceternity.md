@@ -25,6 +25,8 @@ npx shadcn@latest add @aceternity/bento-grid --cwd apps/web
 
 免费 item 可由 Registry inspect/add；Pro blocks/templates 必须通过已购买的官方渠道获取，目录中的 `Available with Pro license` 不是可下载命令。
 
+当前 AI Index 精确拆分为 111 Free Components + 1 free hook + 23 Pro 分类入口 + 167 Pro leaf blocks + 17 Templates＝319。23 个分类入口不能宣传成 23 个可安装 block。Pricing 的“200+ premium blocks”与公开 Index 的 167 个 leaf blocks 未消解，因此本目录是“完整到 AI Index”，不是对付费下载包的无条件全量声明。
+
 ## 使用与组合
 
 - 官方 AI catalog 给出组件名、类别、依赖、安装命令和 Free/Pro 状态；前端 Agent 先查它，不靠旧博客名单。
@@ -60,4 +62,3 @@ Aceternity Pro 许可明确允许在 end product 中修改、组合和制作 der
 - Licence：<https://ui.aceternity.com/licence>
 - Terms：<https://ui.aceternity.com/terms>
 - Pricing/Free-Pro 边界：<https://ui.aceternity.com/pricing>
-

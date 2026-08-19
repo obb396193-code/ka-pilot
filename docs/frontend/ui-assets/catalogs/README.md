@@ -1,69 +1,70 @@
 # 官方 UI 能力目录快照
 
-> 快照日期：2026-08-19  
-> 总计：3,658 项  
-> 说明：收录是“前端 Agent 可以发现”，不等于源码已装入 `apps/web`
+> 快照日期：2026-08-19
+> 逻辑资产总计：**5,936 项**
+> 源码全量缓存：**0 项**
 
-## 数量
+## 数量与访问
 
-| 来源 | 当前收录 | 覆盖状态 | 主要内容 |
-|---|---:|---|---|
-| shadcn/ui | 338 | partial | New York v4 primitives、Blocks、examples、styles、三种 foundation |
-| coss/ui | 577 | complete | 56 primitives、500+ Particles、fonts/hooks/styles/utilities |
-| ReUI | 1,607 | partial | 当前 base-nova Registry 的 primitives、Blocks、1000+ examples |
-| Tremor | 362 | partial | 39 React components + 323 Blocks/examples |
-| Aceternity UI | 319 | complete | 111 free、23 Pro component groups、17 templates、167 Pro blocks、1 hook |
-| Magic UI | 247 | complete | 77 UI、168 examples、style/lib |
-| React Bits | 166 | partial | Animations 37、Backgrounds 53、Components 44、Text Animations 32 |
-| tweakcn | 42 | partial | 官方仓库全部 defaultPresets；不冒充包含动态社区全部主题 |
+| 来源 | 目录项 | 公开源码 | 公开元数据 | 购买后源码 | 覆盖口径 |
+|---|---:|---:|---:|---:|---|
+| shadcn/ui | 473 | 414 | 59 | 0 | New York v4 471 + 当前 index 独有 2 项；24 variants 另存矩阵 |
+| coss/ui | 577 | 570 | 7 | 0 | 当前 Registry 完整 |
+| coss Origin | 646 | 646 | 0 | 0 | legacy Registry 完整；599 成品组件 + 47 支持资产 |
+| ReUI | 2,255 | 1,105 | 0 | 1,150 | 1,607 Registry + 638 icons + 10 templates；16 variants 另存矩阵 |
+| Tremor current | 375 | 375 | 0 | 0 | 40 Raw capabilities + 5 utilities + 323 Blocks + 6 templates + 1 related variant |
+| Tremor legacy | 30 | 30 | 0 | 0 | 仍在线的 `@tremor/react` 3.18.7 能力页，maintenance-stale |
+| Aceternity UI | 319 | 112 | 0 | 207 | 官方 AI Index 完整；与定价页 200+ blocks 口径仍冲突 |
+| Magic UI Free | 247 | 246 | 1 | 0 | 免费 Registry 完整 |
+| Magic UI Pro | 104 | 3 | 0 | 101 | 公开可复现下限：95 blocks + 9 observed templates，不是 Pro 总量 |
+| React Bits Free | 166 | 166 | 0 | 0 | 免费仓库完整，四代码变体已去重 |
+| React Bits Pro | 702 | 0 | 0 | 702 | 134 components + 238 page blocks + 300 app UI + 11 templates + 19 Agent Kit |
+| tweakcn | 42 | 42 | 0 | 0 | 42 个 defaultPresets 完整；社区主题为动态集合 |
 
-`partial` 不等于只收了一点，而是官方能力分散在多个 style/仓库或还有动态社区数据，当前快照会明确边界。
+总访问分布：公开源码 3,709、公开元数据 67、购买后源码 2,160。这里的“公开源码”表示官方 endpoint/repository 可访问，仍不表示本仓已把 payload 下载下来。
 
-## 这份目录已经能解决什么
+## 不能混算
 
-### coss 日期组件
+- shadcn 5,120 是 24 套 preset 的 variant records，不是 5,120 个不同组件；跨 style 去重后当前 216 个名称。
+- ReUI 2,552 是 638 个 icons × 4 styles；目录只计 638 个逻辑 icon。
+- Magic UI Pro 官方只承诺“50+ sections、9+ templates”，104 是公开页面能复现的**下限**。
+- Aceternity 定价页“200+ blocks”与 AI Index 的 167 个 leaf blocks 未消解，不能自行补造 33 项。
+- tweakcn 社区主题能匿名分页浏览但持续增长，没有稳定永久总数。
 
-当前官方 Registry 中有：
-
-- 25 个 `p-calendar-*` 例子；
-- 9 个 `p-date-picker-*` 例子；
-- `p-date-picker-2`＝Date range picker；
-- `p-date-picker-4`＝带 presets；
-- `p-date-picker-5`＝带输入框；
-- `p-date-picker-9`＝双月范围。
-
-Date Picker 不是 `@coss/date-picker` primitive。要么安装 Calendar + Popover + Button 组合，要么直接 inspect/add 对应 `@coss/p-date-picker-*` Particle。
-
-### ReUI 数据页
-
-目录包含 `data-grid-base-*`、`data-grid-columns-*`、`data-grid-drag-drop-*`、`data-grid-editing-*`、`data-grid-filtering-*` 等成组变体。前端不应再只看一个 Data Grid 首页就开始手写；先按实际需求筛到几项，再给老板看真实对比。
-
-### tweakcn 多风格
-
-目录已收 42 个官方默认 preset，如 Modern Minimal、Graphite、Caffeine、Clean Slate、Claymorphism、Darkmatter、Mono、Soft Pop 等。运行时首批只从中挑适合投放平台的 6 个，不复制 42 套页面。
-
-## 查询示例
+## 常用查询
 
 ```bash
-# 查 coss 日期范围候选
-jq '[.items[] | select(.category == "date picker")]' docs/frontend/ui-assets/catalogs/coss.json
-
-# 查 ReUI Data Grid
-jq '[.items[] | select(.category == "data-grid")]' docs/frontend/ui-assets/catalogs/reui.json
-
-# 查所有 tweakcn 主题名
-jq -r '.items[] | [.upstream_name, .display_name] | @tsv' docs/frontend/ui-assets/catalogs/tweakcn.json
-
-# 看各来源数量和覆盖说明
+# 全部来源数量、访问状态与缓存状态
 jq . docs/frontend/ui-assets/catalogs/index.json
+
+# 只看无需付费即可取得官方源码的候选
+jq '[.items[] | select(.access_status == "public-source")]' \
+  docs/frontend/ui-assets/catalogs/coss.json
+
+# 查 ReUI 日期/范围候选，并看是否需要 Pro
+jq '[.items[] | select(.category == "calendar" or .category == "date-selector") | {upstream_name, access_status, preview_url}]' \
+  docs/frontend/ui-assets/catalogs/reui.json
+
+# 查 React Bits Pro 的公开候选名，不下载付费源码
+jq '[.items[] | select(.category | contains("app-ui")) | {display_name, preview_url, access_tier}] | .[:20]' \
+  docs/frontend/ui-assets/catalogs/react-bits-pro.json
+
+# 跨 12 条产品线按能力查候选
+node apps/web/scripts/ui-catalog/build-capability-index.mjs --query date-picker --limit 30
 ```
 
-## 刷新与防倒退
+## 刷新与核验
 
 ```bash
-node apps/web/scripts/ui-catalog/sync.mjs --all --write
-node apps/web/scripts/ui-catalog/sync.mjs --all --check
+node apps/web/scripts/ui-catalog/sync.mjs --write
+node apps/web/scripts/ui-catalog/build-capability-index.mjs --write
+node apps/web/scripts/ui-catalog/build-coverage-audit.mjs --write
+node apps/web/scripts/ui-catalog/audit-runtime-source.mjs --write
+
+node apps/web/scripts/ui-catalog/sync.mjs --check
+node apps/web/scripts/ui-catalog/build-capability-index.mjs --check
+node apps/web/scripts/ui-catalog/build-coverage-audit.mjs --check
+node apps/web/scripts/ui-catalog/audit-runtime-source.mjs --check
 ```
 
-刷新采用原子写入；单个来源失败时不覆盖旧快照；新 item 数小于旧快照时 check 失败，必须人工确认是上游真实删除而不是解析器漏抓。
-
+刷新采用原子写入；item 数量倒退会失败，必须人工确认是上游删除还是解析器漏抓。付费 Registry 的 401 是访问边界，不是待绕过的错误。

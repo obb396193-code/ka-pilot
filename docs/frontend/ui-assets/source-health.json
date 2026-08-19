@@ -1,33 +1,55 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-08-19T09:21:46.259Z",
+  "checked_at": "2026-08-19T10:16:57.396Z",
   "summary": {
-    "total": 8,
-    "verified": 3,
-    "partial": 5,
+    "total": 12,
+    "verified": 11,
+    "partial": 1,
     "blocked": 0
   },
   "sources": [
     {
       "id": "shadcn",
       "name": "shadcn/ui",
-      "status": "partial",
-      "catalog_mode": "repository-index",
-      "coverage": "partial",
-      "coverage_note": "官方未公开单一全量 item index；通过官方仓库树提取 Components、Examples、Blocks、Styles。",
-      "license": "MIT",
+      "status": "verified",
+      "catalog_mode": "registry-plus-variant-index",
+      "coverage": "complete-new-york-v4-plus-logical-index",
+      "coverage_note": "471-entry New York v4 Registry plus two current base-specific UI items from r/index.json; 24 preset variants are recorded as a matrix, not miscounted as unique components.",
+      "license": "MIT for shadcn first-party Registry assets",
       "redistribution": "permitted-with-license",
-      "checked_at": "2026-08-19T08:49:35.834Z",
+      "checked_at": "2026-08-19T10:16:57.396Z",
       "endpoints": [
         {
-          "url": "https://api.github.com/repos/shadcn-ui/ui/git/trees/main?recursive=1",
-          "final_url": "https://api.github.com/repos/shadcn-ui/ui/git/trees/main?recursive=1",
+          "url": "https://ui.shadcn.com/r/styles/new-york-v4/registry.json",
+          "final_url": "https://ui.shadcn.com/r/styles/new-york-v4/registry.json",
           "ok": true,
           "status_code": 200,
           "content_type": "application/json; charset=utf-8",
-          "etag": "W/\"b708135b4d4bb053db457ea2056615db2d646e2f0fb1f61906bf0ab9ca4732c3\"",
-          "last_modified": "Wed, 19 Aug 2026 08:39:26 GMT",
-          "content_length": 1620627,
+          "etag": "W/\"ed413d73f264ba543abdbdf7d5b9a7cc\"",
+          "last_modified": "Tue, 18 Aug 2026 06:10:23 GMT",
+          "content_length": 177288,
+          "error": ""
+        },
+        {
+          "url": "https://ui.shadcn.com/r/index.json",
+          "final_url": "https://ui.shadcn.com/r/index.json",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"9fefbd85eafa9e8b3c9fa95d826840dd\"",
+          "last_modified": "Tue, 18 Aug 2026 05:57:45 GMT",
+          "content_length": 58355,
+          "error": ""
+        },
+        {
+          "url": "https://ui.shadcn.com/r/config.json",
+          "final_url": "https://ui.shadcn.com/r/config.json",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"8a5caa93d3e7120a3d908d055371fafb\"",
+          "last_modified": "Wed, 19 Aug 2026 09:41:46 GMT",
+          "content_length": 11332,
           "error": ""
         }
       ]
@@ -37,11 +59,11 @@
       "name": "coss/ui",
       "status": "verified",
       "catalog_mode": "registry",
-      "coverage": "complete",
-      "coverage_note": "官方 Registry 同时包含 primitives 与 Particles。",
+      "coverage": "complete-current-registry",
+      "coverage_note": "Current coss Registry is complete; legacy Origin is kept as a separate catalog.",
       "license": "MIT for apps/ui; repository default is AGPL-3.0",
-      "redistribution": "verify-file-is-under-apps-ui",
-      "checked_at": "2026-08-19T08:49:35.834Z",
+      "redistribution": "MIT-only-for-apps-ui-scope",
+      "checked_at": "2026-08-19T10:16:57.396Z",
       "endpoints": [
         {
           "url": "https://coss.com/ui/r/registry.json",
@@ -57,15 +79,50 @@
       ]
     },
     {
+      "id": "coss-origin",
+      "name": "coss Origin",
+      "status": "verified",
+      "catalog_mode": "repository-tree-plus-category-map",
+      "coverage": "complete-legacy-registry",
+      "coverage_note": "646 public Origin Registry JSON items: 599 components plus 47 support assets; legacy/limited-support, not paid.",
+      "license": "MIT for apps/origin; repository default is AGPL-3.0",
+      "redistribution": "MIT-only-for-apps-origin-scope",
+      "checked_at": "2026-08-19T10:16:57.396Z",
+      "endpoints": [
+        {
+          "url": "https://api.github.com/repos/cosscom/coss/git/trees/main?recursive=1",
+          "final_url": "https://api.github.com/repos/cosscom/coss/git/trees/main?recursive=1",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/json; charset=utf-8",
+          "etag": "W/\"c06e67f78f26da4d14d92752d7b2becf77e7221f02650ccae2b6aafb796a046b\"",
+          "last_modified": "Wed, 19 Aug 2026 08:39:15 GMT",
+          "content_length": 816942,
+          "error": ""
+        },
+        {
+          "url": "https://raw.githubusercontent.com/cosscom/coss/main/apps/origin/config/components.ts",
+          "final_url": "https://raw.githubusercontent.com/cosscom/coss/main/apps/origin/config/components.ts",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "etag": "W/\"5a6e83ae8f35b6f32313b7acb5bf4cf88a0f4f5ebeefd4c8060295e21e855a57\"",
+          "last_modified": "",
+          "content_length": 19445,
+          "error": ""
+        }
+      ]
+    },
+    {
       "id": "reui",
       "name": "ReUI",
-      "status": "partial",
-      "catalog_mode": "registry-and-repository-index",
-      "coverage": "partial",
-      "coverage_note": "线上 Registry 当前重定向到一个 style；官方仓库树补齐其他 styles 与 1000+ c-* examples。",
-      "license": "MIT",
-      "redistribution": "permitted-with-license",
-      "checked_at": "2026-08-19T08:49:35.834Z",
+      "status": "verified",
+      "catalog_mode": "registry-plus-llms-index-plus-dynamic-icon-pages",
+      "coverage": "complete-official-llms-index",
+      "coverage_note": "Registry plus official llms.txt covers free examples/modules/hooks, 502 Pro blocks, 638 icon concepts and 10 Ultimate templates; 16 concrete Base/Radix style variants are a separate matrix.",
+      "license": "MIT for public free source; ReUI commercial license for Pro/Ultimate assets",
+      "redistribution": "free-mit-paid-no-source-redistribution",
+      "checked_at": "2026-08-19T10:16:57.396Z",
       "endpoints": [
         {
           "url": "https://reui.io/r/registry.json",
@@ -79,28 +136,39 @@
           "error": ""
         },
         {
-          "url": "https://api.github.com/repos/keenthemes/reui/git/trees/main?recursive=1",
-          "final_url": "https://api.github.com/repos/keenthemes/reui/git/trees/main?recursive=1",
+          "url": "https://reui.io/llms.txt",
+          "final_url": "https://reui.io/llms.txt",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/plain; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 31445,
+          "error": ""
+        },
+        {
+          "url": "https://reui.io/r/styles/index.json",
+          "final_url": "https://reui.io/r/styles/index.json?v=dpl_J3s62V4T1YQcX6HVhcXoH98aJLhu",
           "ok": true,
           "status_code": 200,
           "content_type": "application/json; charset=utf-8",
-          "etag": "W/\"e4bc2be60f0d654d8e6c8c25b592afd7ff9e7c45589a639662c71e1579003471\"",
-          "last_modified": "Wed, 19 Aug 2026 08:45:33 GMT",
-          "content_length": 1871036,
+          "etag": "W/\"31160331f7c52b9e09d0b3df724abd39\"",
+          "last_modified": "Wed, 19 Aug 2026 09:42:46 GMT",
+          "content_length": 1017,
           "error": ""
         }
       ]
     },
     {
       "id": "tremor",
-      "name": "Tremor",
-      "status": "partial",
-      "catalog_mode": "repository-index",
-      "coverage": "partial",
-      "coverage_note": "Components 与 Blocks 分属两个官方仓库；通过仓库树归并，模板仓库另列。",
-      "license": "Apache-2.0 for tremor; MIT for tremor-blocks repository",
+      "name": "Tremor Raw, Blocks and Templates",
+      "status": "verified",
+      "catalog_mode": "repository-index-plus-template-page",
+      "coverage": "complete-current-public-surfaces",
+      "coverage_note": "40 Raw capabilities/39 source dirs, five utilities, 323 Blocks, six official templates and one related dashboard OSS variant.",
+      "license": "Apache-2.0 for Tremor Raw; MIT for Blocks/current full templates",
       "redistribution": "verify-subproject-license",
-      "checked_at": "2026-08-19T08:49:35.834Z",
+      "checked_at": "2026-08-19T10:16:57.396Z",
       "endpoints": [
         {
           "url": "https://api.github.com/repos/tremorlabs/tremor/git/trees/main?recursive=1",
@@ -109,7 +177,7 @@
           "status_code": 200,
           "content_type": "application/json; charset=utf-8",
           "etag": "W/\"a7867252749e080d43cb8786ea5e0afdf9e2605c1a4fbf39027ca85d6221a68e\"",
-          "last_modified": "Mon, 17 Aug 2026 07:08:53 GMT",
+          "last_modified": "Wed, 19 Aug 2026 09:44:48 GMT",
           "content_length": 59482,
           "error": ""
         },
@@ -123,6 +191,41 @@
           "last_modified": "Mon, 17 Aug 2026 08:11:02 GMT",
           "content_length": 228441,
           "error": ""
+        },
+        {
+          "url": "https://blocks.tremor.so/templates",
+          "final_url": "https://blocks.tremor.so/templates",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "W/\"3f5de6eb4c609dc276ce3c426e102a7f\"",
+          "last_modified": "",
+          "content_length": 175648,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "tremor-legacy",
+      "name": "Tremor React legacy package",
+      "status": "verified",
+      "catalog_mode": "legacy-docs-sitemap",
+      "coverage": "complete-live-legacy-docs",
+      "coverage_note": "30 still-live @tremor/react documentation capabilities; maintenance-stale, not officially deprecated.",
+      "license": "Apache-2.0",
+      "redistribution": "permitted-with-license",
+      "checked_at": "2026-08-19T10:16:57.396Z",
+      "endpoints": [
+        {
+          "url": "https://npm.tremor.so/sitemap.xml",
+          "final_url": "https://npm.tremor.so/sitemap.xml",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/xml",
+          "etag": "W/\"fc2f0796683c434e2004d749b5d00545\"",
+          "last_modified": "",
+          "content_length": 6420,
+          "error": ""
         }
       ]
     },
@@ -131,11 +234,11 @@
       "name": "Aceternity UI",
       "status": "verified",
       "catalog_mode": "documented-machine-index",
-      "coverage": "complete",
-      "coverage_note": "官方 AI catalog 声明完整列出 free components、Pro components、templates、Pro blocks 与 hooks；免费与付费项分开保存。",
+      "coverage": "complete-to-ai-index",
+      "coverage_note": "Official AI index has 111 free components, one free hook and 207 Pro metadata entries; pricing copy says 200+ blocks and remains an unresolved upstream count conflict.",
       "license": "Aceternity per-item/Pro license; third-party items may differ",
       "redistribution": "free-items-per-item-check;pro-no-source-redistribution",
-      "checked_at": "2026-08-19T08:49:35.834Z",
+      "checked_at": "2026-08-19T10:16:57.396Z",
       "endpoints": [
         {
           "url": "https://ui.aceternity.com/ai-recommendations",
@@ -143,7 +246,7 @@
           "ok": true,
           "status_code": 200,
           "content_type": "text/html; charset=utf-8",
-          "etag": "W/\"de2c2fed24854ef85438882efb8ec816\"",
+          "etag": "W/\"1ba6274cb702698038954376073e19c3\"",
           "last_modified": "",
           "content_length": 2624813,
           "error": ""
@@ -152,14 +255,14 @@
     },
     {
       "id": "magic-ui",
-      "name": "Magic UI",
+      "name": "Magic UI Free",
       "status": "verified",
       "catalog_mode": "registry",
-      "coverage": "complete",
-      "coverage_note": "官方 Registry 包含 components、examples 与 templates。",
+      "coverage": "complete-free-registry",
+      "coverage_note": "247-item free Registry; Magic UI Pro has no public total manifest and is a separate lower-bound catalog.",
       "license": "MIT",
       "redistribution": "permitted-with-license",
-      "checked_at": "2026-08-19T08:49:35.834Z",
+      "checked_at": "2026-08-19T10:16:57.396Z",
       "endpoints": [
         {
           "url": "https://magicui.design/r/registry.json",
@@ -168,22 +271,178 @@
           "status_code": 200,
           "content_type": "application/json; charset=utf-8",
           "etag": "W/\"f4bc4aba2cc544fa53ae94bbd613b367\"",
-          "last_modified": "Mon, 17 Aug 2026 16:54:30 GMT",
+          "last_modified": "Wed, 19 Aug 2026 09:27:29 GMT",
           "content_length": 108423,
           "error": ""
         }
       ]
     },
     {
-      "id": "react-bits",
-      "name": "React Bits",
+      "id": "magic-ui-pro",
+      "name": "Magic UI Pro",
       "status": "partial",
+      "catalog_mode": "public-doc-pages-lower-bound",
+      "coverage": "partial-public-docs-lower-bound",
+      "coverage_note": "95 exact public block slugs plus nine observed template names; official claims 50+ sections and 9+ templates without a public total Registry.",
+      "license": "Magic UI Pro commercial license; no source redistribution",
+      "redistribution": "paid-no-source-redistribution;three-public-template-repositories",
+      "checked_at": "2026-08-19T10:16:57.396Z",
+      "endpoints": [
+        {
+          "url": "https://pro.magicui.design/sitemap.xml",
+          "final_url": "https://pro.magicui.design/sitemap.xml",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/xml",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 2850,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/call-to-action",
+          "final_url": "https://pro.magicui.design/docs/sections/call-to-action",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 423074,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/carousel",
+          "final_url": "https://pro.magicui.design/docs/sections/carousel",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 326310,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/faq",
+          "final_url": "https://pro.magicui.design/docs/sections/faq",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 175600,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/feature-cards",
+          "final_url": "https://pro.magicui.design/docs/sections/feature-cards",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 348912,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/feature-scroll",
+          "final_url": "https://pro.magicui.design/docs/sections/feature-scroll",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 142339,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/feature-slideshow",
+          "final_url": "https://pro.magicui.design/docs/sections/feature-slideshow",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 171036,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/feature",
+          "final_url": "https://pro.magicui.design/docs/sections/feature",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 126208,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/footer",
+          "final_url": "https://pro.magicui.design/docs/sections/footer",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 367847,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/header",
+          "final_url": "https://pro.magicui.design/docs/sections/header",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 198849,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/hero",
+          "final_url": "https://pro.magicui.design/docs/sections/hero",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 738952,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/pricing",
+          "final_url": "https://pro.magicui.design/docs/sections/pricing",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 321603,
+          "error": ""
+        },
+        {
+          "url": "https://pro.magicui.design/docs/sections/social-proof",
+          "final_url": "https://pro.magicui.design/docs/sections/social-proof",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "text/html; charset=utf-8",
+          "etag": "",
+          "last_modified": "",
+          "content_length": 425207,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "react-bits",
+      "name": "React Bits Free",
+      "status": "verified",
       "catalog_mode": "repository-index",
-      "coverage": "partial",
-      "coverage_note": "免费目录由官方仓库 content/code variants 提取；React Bits Pro 是独立付费 Registry，不能混入免费源码。",
-      "license": "MIT + Commons Clause for free React Bits; Pro is separate",
-      "redistribution": "free-commercial-use-with-commons-clause;pro-license-separate",
-      "checked_at": "2026-08-19T08:49:35.834Z",
+      "coverage": "complete-free-repository",
+      "coverage_note": "166 free logical components, with four code variants deduplicated; Pro is a separate catalog.",
+      "license": "MIT + Commons Clause for free React Bits",
+      "redistribution": "free-commercial-use-with-commons-clause",
+      "checked_at": "2026-08-19T10:16:57.396Z",
       "endpoints": [
         {
           "url": "https://api.github.com/repos/DavidHDev/react-bits/git/trees/main?recursive=1",
@@ -192,8 +451,32 @@
           "status_code": 200,
           "content_type": "application/json; charset=utf-8",
           "etag": "W/\"dcf2f07a5acc9eaf2ad06f5e7d499f43fe57d1a0ab9b6511a4ad58a6a09cd05b\"",
-          "last_modified": "Wed, 19 Aug 2026 08:46:30 GMT",
+          "last_modified": "Wed, 19 Aug 2026 10:09:28 GMT",
           "content_length": 1122917,
+          "error": ""
+        }
+      ]
+    },
+    {
+      "id": "react-bits-pro",
+      "name": "React Bits Pro",
+      "status": "verified",
+      "catalog_mode": "public-pro-docs-sitemap",
+      "coverage": "complete-public-pro-index",
+      "coverage_note": "702 paid assets: 134 components, 238 page blocks, 300 app UI blocks, 11 templates and 19 Agent Kit assets.",
+      "license": "React Bits Pro commercial license; no source redistribution",
+      "redistribution": "paid-no-source-redistribution",
+      "checked_at": "2026-08-19T10:16:57.396Z",
+      "endpoints": [
+        {
+          "url": "https://pro.reactbits.dev/sitemap.xml",
+          "final_url": "https://pro.reactbits.dev/sitemap.xml",
+          "ok": true,
+          "status_code": 200,
+          "content_type": "application/xml",
+          "etag": "W/\"4c5b31304d21da51cea26f9f713ee8f8\"",
+          "last_modified": "",
+          "content_length": 144923,
           "error": ""
         }
       ]
@@ -201,13 +484,13 @@
     {
       "id": "tweakcn",
       "name": "tweakcn",
-      "status": "partial",
+      "status": "verified",
       "catalog_mode": "theme-repository-index",
-      "coverage": "partial",
-      "coverage_note": "完整收录官方仓库 defaultPresets；社区动态主题没有稳定全量 API，另保留 editor/community 入口。",
+      "coverage": "complete-default-presets-partial-dynamic-community",
+      "coverage_note": "All 42 defaultPresets are stored with their token source; anonymous community themes are dynamic and have no stable finite total.",
       "license": "Apache-2.0",
       "redistribution": "permitted-with-license",
-      "checked_at": "2026-08-19T09:21:46.259Z",
+      "checked_at": "2026-08-19T10:16:57.396Z",
       "endpoints": [
         {
           "url": "https://raw.githubusercontent.com/jnsahaj/tweakcn/main/utils/theme-presets.ts",

@@ -14,6 +14,8 @@ https://github.com/jnsahaj/tweakcn/blob/main/utils/theme-presets.ts
 
 在官网选择 preset 或修改 token，通过 Code/share 功能取得 CSS variables；项目必须记录 preset key、share/source URL、Tailwind/color format 和本地修改。
 
+目录不只存 42 个名字，`upstream_meta.token_source` 也保存每个 preset 的完整 light/dark token 源片段，方便离线对照；运行时仍只发布经过组件展厅验证的少数主题。
+
 ## 使用与组合
 
 - tweakcn 主要控制 background/foreground/card/popover/primary/secondary/muted/accent/destructive/border/input/ring、chart、sidebar、font、radius、shadow 等语义 token。
@@ -36,7 +38,7 @@ tweakcn 官方仓库为 Apache-2.0。社区用户发布的主题、字体和图�
 
 ## 更新与变更
 
-官方没有承诺稳定的“全部社区主题 API”。目录完整性口径是：
+社区页可以匿名浏览，官方 Server Action 支持 cursor/offset 分页并返回 styles；但没有承诺稳定公共 REST/Registry、没有公开 total，主题还会持续新增。目录完整性口径是：
 
 - 官方仓库 `defaultPresets` 全收；
 - 社区动态主题只保留入口或按已批准的 theme id 收录；
@@ -44,12 +46,15 @@ tweakcn 官方仓库为 Apache-2.0。社区用户发布的主题、字体和图�
 
 任何 preset 更新后都要回归 shadcn、coss、ReUI、ECharts、light/dark 和核心数据页。
 
+Pro 不是固定主题资产包，而是服务配额：免费层可手工编辑、CSS/Registry 导出、有限 AI 生成与保存；Pro 当前提供无限保存/AI 与图片生成主题等服务。不要把付费服务配额误计成额外主题组件数。
+
 ## 官方来源
 
 - Editor：<https://tweakcn.com/editor/theme>
 - Product：<https://tweakcn.com/>
+- Community：<https://tweakcn.com/community>
+- Pricing：<https://tweakcn.com/pricing>
 - Repository：<https://github.com/jnsahaj/tweakcn>
 - Default presets：<https://github.com/jnsahaj/tweakcn/blob/main/utils/theme-presets.ts>
 - License：<https://github.com/jnsahaj/tweakcn/blob/main/LICENSE>
 - Changes：<https://github.com/jnsahaj/tweakcn/commits/main>
-

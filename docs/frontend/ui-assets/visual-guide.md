@@ -40,7 +40,7 @@
 - 视觉：典型现代 SaaS/金融看板，标题、指标卡、趋势区的比例成熟。
 - 使用：优先借 Blocks 的布局、指标卡和报告节奏；业务图表替换成项目统一的 ECharts。
 - 工程边界：Components 与 Blocks 分属不同官方仓库和许可证，复制前看对应 guide。
-- 官方入口：[Blocks](https://www.tremor.so/blocks)、[Docs](https://www.tremor.so/docs)。
+- 官方入口：[Blocks](https://blocks.tremor.so/blocks)、[Templates](https://blocks.tremor.so/templates)、[Docs](https://www.tremor.so/docs)。
 
 ## Magic UI：Bento 与轻动效
 
@@ -49,7 +49,7 @@
 - 视觉：柔和、精致、偏产品展示；Bento 卡片适合解释能力而不是承载主操作流。
 - 使用：AI 能力总览、提效成果、功能入口可局部采用。
 - 工程边界：统一接项目 token，补 `prefers-reduced-motion`，避免持续动画干扰数据阅读。
-- 官方入口：[Components](https://magicui.design/docs/components)。
+- 官方入口：[Free Components](https://magicui.design/docs/components)、[Pro Preview](https://pro.magicui.design/)；Pro 目录只有公开下限，不代表已购买。
 
 ## React Bits：偶尔使用的强视觉动效
 
@@ -58,7 +58,7 @@
 - 视觉：强烈、创意、偏暗色科技感；好看，但不适合作为整套后台基础视觉。
 - 使用：只在欢迎页、Agent 入口、空态或背景中少量使用；选择 TS + Tailwind 变体。
 - 工程边界：逐项看动画依赖和性能；免费源码遵守 MIT + Commons Clause，Pro 另算。
-- 官方入口：[React Bits](https://reactbits.dev/)。
+- 官方入口：[React Bits Free](https://reactbits.dev/)、[React Bits Pro](https://pro.reactbits.dev/)；Pro 名称可查，源码需对应 license key。
 
 ## tweakcn：多风格运行时核心
 

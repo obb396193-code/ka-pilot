@@ -210,6 +210,10 @@ const INTEGRATION_PROFILES = {
     adaptation_cost: "medium",
     note: "细节组件优先；Base UI 与现有 Radix 并存，须隔离目录、portal root 和同名 primitive。",
   },
+  "coss-origin": {
+    adaptation_cost: "high",
+    note: "仅作 legacy 缺口参考；优先选 current coss，使用前核对维护状态与依赖。",
+  },
   reui: {
     adaptation_cost: "medium-high",
     note: "复杂 Data Grid/筛选优先；先核对 Registry style、TanStack 依赖和数据量边界。",
@@ -217,6 +221,10 @@ const INTEGRATION_PROFILES = {
   tremor: {
     adaptation_cost: "medium",
     note: "KPI/报告版式优先；图表运行时默认改接项目 ECharts，避免双图表体系。",
+  },
+  "tremor-legacy": {
+    adaptation_cost: "high",
+    note: "旧 @tremor/react 仅作能力/迁移参考；新代码优先 Tremor Raw。",
   },
   aceternity: {
     adaptation_cost: "medium-high",
@@ -226,14 +234,29 @@ const INTEGRATION_PROFILES = {
     adaptation_cost: "medium",
     note: "Bento/局部动效；按需复制，接项目 token 并补 reduced-motion。",
   },
+  "magic-ui-pro": {
+    adaptation_cost: "medium-high",
+    note: "公开预览仅是下限目录；购买并取得 Registry token 后才能检查源码和真实依赖。",
+  },
   "react-bits": {
     adaptation_cost: "medium-high",
     note: "偶尔使用的强视觉动效；选择 TS+Tailwind 变体，验证性能并遵守 Commons Clause。",
+  },
+  "react-bits-pro": {
+    adaptation_cost: "medium-high",
+    note: "公开目录可选型；源码需对应 Starter/Pro/Ultimate 许可证，禁止镜像或再分发。",
   },
   tweakcn: {
     adaptation_cost: "medium",
     note: "运行时多风格核心；主题值需映射到稳定语义 token，不能把编辑器状态直接当业务契约。",
   },
+};
+
+const GUIDE_ALIASES = {
+  "coss-origin": "coss",
+  "tremor-legacy": "tremor",
+  "magic-ui-pro": "magic-ui",
+  "react-bits-pro": "react-bits",
 };
 
 function slugify(value) {
@@ -252,6 +275,8 @@ function searchableText(item) {
     item.description,
     item.category,
     item.kind,
+    ...(Array.isArray(item.upstream_meta?.categories) ? item.upstream_meta.categories : []),
+    item.upstream_meta?.category,
   ].filter(Boolean).join(" ");
 }
 
@@ -286,7 +311,7 @@ function summaryForAsset(item) {
     capability_ids: [...new Set(capabilityIds)].sort(),
     preview_url: item.preview_url,
     source_url: item.source_url,
-    guide_path: `guides/${item.source}.md`,
+    guide_path: `guides/${GUIDE_ALIASES[item.source] ?? item.source}.md`,
     install_command: item.install_command,
     foundation: item.foundation,
     dependencies: item.dependencies,
@@ -299,6 +324,13 @@ function summaryForAsset(item) {
     last_verified: item.last_verified,
     local_status: item.local_status,
     local_path: item.local_path,
+    access_status: item.access_status,
+    access_tier: item.access_tier,
+    auth_requirement: item.auth_requirement,
+    license_scope: item.license_scope,
+    source_cache_status: item.source_cache_status,
+    maintenance_status: item.maintenance_status,
+    related_or_duplicate_of: item.related_or_duplicate_of,
     decision_record: item.decision_record,
     comparison_record: item.comparison_record,
   };

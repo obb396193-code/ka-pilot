@@ -9,7 +9,8 @@
 1. `capabilities.json` 是否已有跨库候选；
 2. 是否存在已拍板的 `preferred`；
 3. 官方 preview 是否真实覆盖所需交互；
-4. guide 是否指出迁移、主题、portal、许可证或性能限制。
+4. `access_status` 是公开源码、仅元数据还是购买后源码；
+5. guide 是否指出迁移、主题、portal、许可证或性能限制。
 
 常用命令：
 
@@ -41,11 +42,12 @@ node apps/web/scripts/ui-catalog/build-capability-index.mjs --query virtualizati
 ## 3. 源码获取
 
 1. 只从目录登记的官方 Registry、仓库或 Code 面板获取。
-2. 先运行 view/inspect，不直接 add。
-3. 核对生成文件、依赖、license、版本和是否覆盖现有文件。
-4. 在干净 worktree/分支运行 CLI；第三方默认输出路径不等于项目最终路径。
-5. 按来源移动文件并修正内部 import。
-6. 在 manifest 登记：来源 URL、ref、安装命令、复制日期、许可证、本地修改。
+2. 先读 `access_status/auth_requirement/access_tier`；401/会员墙必须先取得合法许可，不从搬运站补源码。
+3. 先运行 view/inspect，不直接 add。
+4. 核对生成文件、依赖、license、版本、variant 和是否覆盖现有文件。
+5. 在干净 worktree/分支运行 CLI；第三方默认输出路径不等于项目最终路径。
+6. 按来源移动文件并修正内部 import。
+7. 在 manifest 登记：来源 URL、精确 ref/SHA-256、安装命令、复制日期、许可证、本地路径和修改。
 
 ## 4. 修改与适配
 
@@ -88,4 +90,5 @@ node apps/web/scripts/ui-catalog/build-capability-index.mjs --query virtualizati
 - “已批准”＝老板选过；
 - “已复制”＝源码进入运行仓；
 - “已适配”＝业务封装和验证完成；
+- “源码已缓存”＝官方 payload 有本地 path + exact hash；
 - “官方有”不等于“项目已经有”。

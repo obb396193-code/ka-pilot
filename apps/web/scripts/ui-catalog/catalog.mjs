@@ -10,6 +10,12 @@ const REQUIRED_FIELDS = [
   "last_verified",
   "upstream_ref",
   "local_status",
+  "access_status",
+  "access_tier",
+  "auth_requirement",
+  "license_scope",
+  "source_cache_status",
+  "maintenance_status",
 ];
 
 const LOCAL_STATUSES = new Set([
@@ -19,6 +25,48 @@ const LOCAL_STATUSES = new Set([
   "vendored",
   "adapted",
   "deprecated",
+]);
+
+const ACCESS_STATUSES = new Set([
+  "public-source",
+  "public-metadata-only",
+  "paid-source-after-license",
+  "paid-metadata-only",
+  "inaccessible-unknown",
+]);
+
+const ACCESS_TIERS = new Set([
+  "free",
+  "starter",
+  "pro",
+  "ultimate",
+  "paid",
+  "mixed",
+  "not-applicable",
+  "unknown",
+]);
+
+const AUTH_REQUIREMENTS = new Set([
+  "none",
+  "account",
+  "license-key",
+  "subscription",
+  "unknown",
+]);
+
+const SOURCE_CACHE_STATUSES = new Set([
+  "not-cached",
+  "source-cached",
+  "vendored",
+  "adapted",
+  "unknown",
+]);
+
+const MAINTENANCE_STATUSES = new Set([
+  "current",
+  "maintenance-stale",
+  "deprecated",
+  "unknown",
 ]);
 
 function applyTemplate(template, name) {
@@ -76,6 +124,13 @@ export function normalizeRegistryItem(item, context) {
     upstream_ref: context.upstreamRef,
     local_status: "catalogued",
     local_path: "",
+    access_status: context.accessStatus ?? "public-source",
+    access_tier: context.accessTier ?? "free",
+    auth_requirement: context.authRequirement ?? "none",
+    license_scope: context.licenseScope ?? context.license,
+    source_cache_status: context.sourceCacheStatus ?? "not-cached",
+    maintenance_status: context.maintenanceStatus ?? "current",
+    related_or_duplicate_of: context.relatedOrDuplicateOf ?? "",
     decision_record: "",
     comparison_record: "",
     upstream_meta: structuredClone(item),
@@ -114,6 +169,26 @@ export function validateCatalog(items) {
       errors.push(`${label}: unknown local_status ${item?.local_status}`);
     }
 
+    if (!ACCESS_STATUSES.has(item?.access_status)) {
+      errors.push(`${label}: unknown access_status ${item?.access_status}`);
+    }
+
+    if (!ACCESS_TIERS.has(item?.access_tier)) {
+      errors.push(`${label}: unknown access_tier ${item?.access_tier}`);
+    }
+
+    if (!AUTH_REQUIREMENTS.has(item?.auth_requirement)) {
+      errors.push(`${label}: unknown auth_requirement ${item?.auth_requirement}`);
+    }
+
+    if (!SOURCE_CACHE_STATUSES.has(item?.source_cache_status)) {
+      errors.push(`${label}: unknown source_cache_status ${item?.source_cache_status}`);
+    }
+
+    if (!MAINTENANCE_STATUSES.has(item?.maintenance_status)) {
+      errors.push(`${label}: unknown maintenance_status ${item?.maintenance_status}`);
+    }
+
     if (item?.local_status === "preferred") {
       if (!item.decision_record) errors.push(`${label}: preferred requires decision_record`);
       if (!item.comparison_record) errors.push(`${label}: preferred requires comparison_record`);
@@ -121,6 +196,10 @@ export function validateCatalog(items) {
 
     if (["vendored", "adapted"].includes(item?.local_status) && !item.local_path) {
       errors.push(`${label}: ${item.local_status} requires local_path`);
+    }
+
+    if (["vendored", "adapted"].includes(item?.source_cache_status) && !item.local_path) {
+      errors.push(`${label}: ${item.source_cache_status} requires local_path`);
     }
 
     if (!Array.isArray(item?.dependencies)) {

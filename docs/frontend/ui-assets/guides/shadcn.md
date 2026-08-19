@@ -1,7 +1,7 @@
 # shadcn/ui 官方使用与适配指南
 
 > 最后核验：2026-08-19  
-> 目录：`../catalogs/shadcn.json`  
+> 目录：`../catalogs/shadcn.json`（473 条逻辑资产；24 套 preset 另存 variant matrix）
 > 定位：全站基础层、页面壳、官方 Blocks
 
 ## 安装与获取
@@ -17,10 +17,13 @@ npx shadcn@latest add <item> --cwd apps/web
 
 官方 bare name 指向 shadcn item；第三方使用 `@namespace/item`、GitHub address 或完整 Registry URL。`components.json` 的命名空间 URL必须包含 `{name}`。
 
+官方当前机器入口：`r/index.json` 是 63 个逻辑 UI，`r/config.json` 给出 Base UI/Radix/React Aria × 8 styles 的 24 套 preset；每套源码索引为 `/r/styles/{variant}/registry.json`。项目当前 New York v4 Registry 为 471 条，另有 questionnaire/toast 两个仅在 current logical index 的 item。variant records 共 5,120，但不能当成不同组件数量。
+
 ## 使用与组合
 
 - shadcn 是 open code/distribution platform，不是只能通过 npm 黑盒调用的组件包；源码进入项目后由项目持有。
 - 官方 Blocks 是完整页面组合，优先复制 Block 后替换数据/文案，不根据截图重新画。
+- 同一个组件需要换 foundation/style 时，先比较具体 variant item JSON；不要把 24 套实现同时复制进运行仓。
 - 当前 New York v4 主路径使用 Radix 行为模型；trigger 组合遵循相应组件的 `asChild`/Slot 契约。
 - 先用 primitives 组合业务模块，再在 `components/business/` 增加业务语义，不建立一套重复的万能 primitives。
 
@@ -38,7 +41,7 @@ npx shadcn@latest add <item> --cwd apps/web
 
 ## 许可证
 
-官方仓库为 MIT。复制源码需保留项目的第三方许可证记录和上游 URL。社区 Registry 不自动继承 shadcn 的 MIT，必须逐个核其自身许可证。
+官方仓库为 MIT。复制源码需保留项目的第三方许可证记录和上游 URL。社区 Registry 不自动继承 shadcn 的 MIT，必须逐个核其自身许可证。官方 Registry Directory 只提供 280 个 provider 的入口元数据；Figma 页的 3 个免费与 7 个付费第三方 kit 也不属于 shadcn 第一方 MIT 源码。
 
 ## 更新与变更
 
@@ -55,8 +58,11 @@ shadcn 源码复制后不会自动升级。更新流程：
 - 文档：<https://ui.shadcn.com/docs>
 - Components：<https://ui.shadcn.com/docs/components>
 - Blocks：<https://ui.shadcn.com/blocks>
+- Logical index：<https://ui.shadcn.com/r/index.json>
+- Preset config：<https://ui.shadcn.com/r/config.json>
+- Registry Directory：<https://ui.shadcn.com/r/registries.json>
+- Figma：<https://ui.shadcn.com/docs/figma>
 - Registry 规则：<https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/registry.md>
 - Customization：<https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/customization.md>
 - 官方 Agent Skill：<https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/SKILL.md>
 - 仓库/许可证/更新：<https://github.com/shadcn-ui/ui>
-
