@@ -18,6 +18,7 @@ describe("TaskRepository", () => {
   let workspaceId: string;
   let otherWorkspaceId: string;
   let userId: string;
+  let otherUserId: string;
   let taskId: string;
 
   beforeAll(async () => {
@@ -39,6 +40,12 @@ describe("TaskRepository", () => {
       [workspaceId, `owner-${suffix}`],
     );
     userId = user.rows[0]!.id;
+    const otherUser = await pool.query<{ id: string }>(
+      `INSERT INTO users (workspace_id, buc_id, name)
+       VALUES ($1, $2, '其他租户用户') RETURNING id`,
+      [otherWorkspaceId, `other-owner-${suffix}`],
+    );
+    otherUserId = otherUser.rows[0]!.id;
 
     await pool.query(
       `INSERT INTO tasks (
@@ -194,6 +201,16 @@ describe("TaskRepository", () => {
         evidenceUrl: null,
       }),
     ).rejects.toThrow("price");
+    await expect(
+      repository.appendAssessmentPrice({
+        workspaceId,
+        taskId,
+        price: 10,
+        effectiveDate: "2026-08-20",
+        changedBy: otherUserId,
+        evidenceUrl: null,
+      }),
+    ).rejects.toThrow("task or actor not found in workspace");
   });
 
   it("aggregates canonical facts only while a task-account mapping is effective", async () => {

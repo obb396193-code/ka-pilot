@@ -313,6 +313,9 @@ export class TaskRepository {
        WHERE EXISTS (
          SELECT 1 FROM tasks WHERE workspace_id=$1 AND task_id=$2
        )
+         AND EXISTS (
+           SELECT 1 FROM users WHERE workspace_id=$1 AND id=$5
+         )
        RETURNING id, workspace_id, task_id, price,
                  to_char(effective_date, 'YYYY-MM-DD') AS effective_date,
                  changed_by, evidence_url, created_at`,
@@ -326,7 +329,7 @@ export class TaskRepository {
       ],
     );
     const row = result.rows[0];
-    if (!row) throw new Error("task not found in workspace");
+    if (!row) throw new Error("task or actor not found in workspace");
     return mapAssessmentPrice(row);
   }
 
