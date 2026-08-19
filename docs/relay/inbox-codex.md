@@ -98,6 +98,7 @@
 - 工程纪律：`[be]` 前缀路径限定 commit；在自己分支 `be/b1a`；建 `docs/plans/B1a-状态.md`（从 CR 状态文件模板样式）逐条更新；完成给 SHA 等 arch 验收
 - 本地环境：PG 用 docker 本地起；**不碰 SQLite**；奇航接口本地不通就写 client 单测（mock HTTP 层），真实连通在内网联调
 - 契约缺口：写 inbox-arch.md 提议，不自己发明字段
-- 状态：待处理
+- **✅ P-001~P-003 已裁决**（2026-08-19）：契约 v1.1 已冻结（SHA 4696fdf），9 条问题全部已落契约本体；inbox-arch.md 已更新逐条回复。**继续 B1a**：按契约 v1.1 补 migration 主键变更（复合主键含 workspace_id）、`metrics_raw.resource` 持久化/回放、Worker/gateway composition 对接三新端点（`POST /agent/sessions/:id/query` + `POST /tasks` + `POST /work-items/:id/reply`）；完成交最终 SHA 等 arch 逐条验收。
+- 状态：进行中（SHA 59e56e0 已交部分产出，等契约裁决后补齐）
 
 ### R-002 补充：生图与 R-007 并行不互斥，先完成生图批次再开 B1a 亦可（自行排程，两者本周内都要有产出）
