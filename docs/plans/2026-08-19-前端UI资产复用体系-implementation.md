@@ -294,9 +294,10 @@ Run:
 npx shadcn@latest view @coss/calendar --cwd apps/web
 npx shadcn@latest view @coss/popover --cwd apps/web
 npx shadcn@latest view @coss/button --cwd apps/web
+npx shadcn@latest view @coss/p-date-picker-2 --cwd apps/web
 ```
 
-Record exact dependencies/upstream hashes. The official Date Picker composition itself is copied from the coss Code tab/Particle; do not run nonexistent `@coss/date-picker`.
+Record exact dependencies/upstream hashes. coss does not expose a `@coss/date-picker` primitive, but its official Registry currently exposes `@coss/p-date-picker-1` through `@coss/p-date-picker-9`; use `p-date-picker-2` as the date-range sample and preserve its Calendar + Popover + Button composition.
 
 **Step 2: Generate in a temporary clean app or worktree**
 
@@ -460,4 +461,3 @@ git show --stat HEAD
 - The coss date-filter sample proves source vendoring, Base UI/Radix isolation and thin business adaptation.
 - Six tweakcn-derived themes switch on the same component tree and also recolor ECharts.
 - Every vendored source is traceable to an official URL, upstream ref, license and local modifications.
-

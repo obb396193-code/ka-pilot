@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "fetched_at": "2026-08-19T09:01:37.215Z",
+  "total_items": 3658,
+  "sources": [
+    {
+      "id": "shadcn",
+      "count": 338,
+      "coverage": "partial",
+      "coverage_note": "官方未公开单一全量 item index；通过官方仓库树提取 Components、Examples、Blocks、Styles。",
+      "upstream_ref": "sha256:8653781007ecf76984b573a5ebe7b0da1dace671235abf6bcd58b914e67692f9",
+      "file": "shadcn.json"
+    },
+    {
+      "id": "coss",
+      "count": 577,
+      "coverage": "complete",
+      "coverage_note": "官方 Registry 同时包含 primitives 与 Particles。",
+      "upstream_ref": "sha256:bb3281de9b3ff55c73d95287a33eb16a7a533edeccd7fa93e290130b905c5dc8",
+      "file": "coss.json"
+    },
+    {
+      "id": "reui",
+      "count": 1607,
+      "coverage": "partial",
+      "coverage_note": "线上 Registry 当前重定向到一个 style；官方仓库树补齐其他 styles 与 1000+ c-* examples。",
+      "upstream_ref": "sha256:e20bb06e8501c9c96c57c626abf75b5970937d8b27529c374921e5b5d741bfb0",
+      "file": "reui.json"
+    },
+    {
+      "id": "tremor",
+      "count": 362,
+      "coverage": "partial",
+      "coverage_note": "Components 与 Blocks 分属两个官方仓库；通过仓库树归并，模板仓库另列。",
+      "upstream_ref": "sha256:1f03d9fea3b0e986f60500630e590d3ec6bcf2d653d22cf511e9be3f6dac5407",
+      "file": "tremor.json"
+    },
+    {
+      "id": "aceternity",
+      "count": 319,
+      "coverage": "complete",
+      "coverage_note": "官方 AI catalog 声明完整列出 free components、Pro components、templates、Pro blocks 与 hooks；免费与付费项分开保存。",
+      "upstream_ref": "sha256:f3255af3dd992c98afa70b7b9bf7d05e0effd4ca343a48819e4da931805cad58",
+      "file": "aceternity.json"
+    },
+    {
+      "id": "magic-ui",
+      "count": 247,
+      "coverage": "complete",
+      "coverage_note": "官方 Registry 包含 components、examples 与 templates。",
+      "upstream_ref": "sha256:3791dcc1b24c392b9e906473357338a9ed154300334bae998c0ed7dd46b0ba45",
+      "file": "magic-ui.json"
+    },
+    {
+      "id": "react-bits",
+      "count": 166,
+      "coverage": "partial",
+      "coverage_note": "免费目录由官方仓库 content/code variants 提取；React Bits Pro 是独立付费 Registry，不能混入免费源码。",
+      "upstream_ref": "sha256:de938b4d78403f7017bd1e236c1f60198cd54ea3fc33795e18d6a600f3eeca62",
+      "file": "react-bits.json"
+    },
+    {
+      "id": "tweakcn",
+      "count": 42,
+      "coverage": "partial",
+      "coverage_note": "官方未承诺稳定的全量 theme API；从官方仓库 preset/config 与 editor 可分享数据提取并保留来源。",
+      "upstream_ref": "sha256:d333858a5a4f1e2fd615f1b73709f552e5a84c12882196456dfc48e1f09376a8",
+      "file": "tweakcn.json"
+    }
+  ],
+  "failures": []
+}

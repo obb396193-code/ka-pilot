@@ -34,7 +34,7 @@
     "description": { "type": "string" },
     "kind": {
       "type": "string",
-      "enum": ["primitive", "component", "particle", "block", "page", "template", "theme", "motion", "style"]
+      "enum": ["primitive", "component", "particle", "block", "page", "template", "theme", "motion", "style", "hook", "utility", "font"]
     },
     "category": { "type": "string", "minLength": 1 },
     "preview_url": { "type": "string", "minLength": 1 },

@@ -155,7 +155,7 @@ export const UI_SOURCES = [
     name: "tweakcn",
     catalogMode: "theme-repository-index",
     catalogUrls: [
-      "https://api.github.com/repos/jnsahaj/tweakcn/git/trees/main?recursive=1",
+      "https://raw.githubusercontent.com/jnsahaj/tweakcn/main/utils/theme-presets.ts",
     ],
     docsUrl: "https://tweakcn.com/",
     previewUrl: "https://tweakcn.com/editor/theme",
@@ -168,7 +168,7 @@ export const UI_SOURCES = [
     ],
     coverage: "partial",
     coverageNote:
-      "官方未承诺稳定的全量 theme API；从官方仓库 preset/config 与 editor 可分享数据提取并保留来源。",
+      "完整收录官方仓库 defaultPresets；社区动态主题没有稳定全量 API，另保留 editor/community 入口。",
     redistribution: "permitted-with-license",
   },
 ];

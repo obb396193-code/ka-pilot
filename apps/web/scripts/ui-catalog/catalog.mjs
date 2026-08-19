@@ -29,8 +29,11 @@ function inferKind(type = "") {
   const normalized = type.replace("registry:", "");
   if (["ui", "component"].includes(normalized)) return "primitive";
   if (["block", "page"].includes(normalized)) return "block";
-  if (["style", "theme"].includes(normalized)) return "theme";
+  if (["style", "theme", "base"].includes(normalized)) return "theme";
   if (["example", "particle"].includes(normalized)) return "particle";
+  if (normalized === "hook") return "hook";
+  if (normalized === "lib") return "utility";
+  if (normalized === "font") return "font";
   return normalized || "component";
 }
 
@@ -127,4 +130,3 @@ export function validateCatalog(items) {
 
   return { ok: errors.length === 0, errors };
 }
-
