@@ -257,3 +257,50 @@ main 9335150
 7. 工作流权限：谁能运行公共/团队/个人流程，credential owner 如何冻结，管理员代运行和查看 raw run 的权限边界。
 
 **明确未做**：公开 API/Schema/迁移、前端 React Flow 画布、生产 Worker 注册、定时/事件触发器、真实输出存储、真实 B3 Changeset/OS/Multica 接缝、多分支并行、条件/循环/子流程/补偿。
+
+---
+
+### P-012 ⏳B8 知识库领域底座交付待审计｜be（Codex）
+
+- 分支：`be/b8a`
+- 基线：B7a `51a98d7`
+- 功能实现 SHA：`32a82ba`
+- 质量与安全修正 SHA：`8c87530`
+- 设计：`docs/plans/2026-08-20-B8知识库领域底座-design.md`
+- 计划：`docs/plans/2026-08-20-B8知识库领域底座-implementation.md`
+- 质量报告：`docs/evidence/B8-代码质量报告.md`
+
+**已完成**：
+
+1. BlockNote 安全信封：严格 `{blocks}` 外层，未知块前向兼容；JSON/循环/危险 key/accessor/数组异常和五层资源上限 fail-closed，遍历时实时累计总字节。
+2. 派生文本与指纹：只投影正文 text + wikilink title；版本化 canonical SHA-256 忽略 object key 顺序、保留数组语义。
+3. 安全双链：严格 `{type:wikilink,props:{itemId,title}}`，UUID 真相、路径、去重、自链/坏链诊断；resolver 绑定 workspace+actor，跨租户/无权/不存在统一 target unavailable。
+4. KA 业务引用：task/account/report/workflow/workflow_run/dataset/changeset/product/material；受限 opaque ID、label 缓存、snapshot/cutoff 证据版本和稳定去重。
+5. 知识资产语义：manual/ai_report/report_snapshot/workflow_case/lesson/imported 来源，private/team 可见性与统一 asset lifecycle 分离。
+6. Agent citation 边界：请求强制 workspace+actor；citation 带 revision/fragment/score/evidence key/source/visibility/snapshot；检索端口先裁权，领域边界再复核文档和业务对象权限，无权内容不进入 Agent。
+
+**验证**：406 默认 tests + 1 opt-in 真 Claude Agent SDK→localhost gateway→fake upstream 烟测；coverage domain 95.32% / db 92.97% / worker 90.43% / gateway 86.62%；B8 三模块 96.46%/100%/98.96%；四包 typecheck/lint/audit 通过，audit 0；复杂度/单函数门禁 0 warning；PG16 migration 回归通过；冻结 contract/migrations 0 diff；凭证/动态执行扫描无发现。
+
+**请 arch/Claude 逐项审**：
+
+1. blocks 仅约束安全 JSON、custom ref 单独严格校验的前向兼容边界是否保留。
+2. blocks/depth/nodes/string/bytes 默认上限和 canonical fingerprint 版本策略是否合适。
+3. wikilink UUID 真相、全量出链替换、坏链结构化诊断和 `target_unavailable` 防存在性探测是否正确。
+4. 9 类 business ref、opaque ID 规则、snapshot/cutoff 去重键和 label 非真相语义是否满足对象中心设计。
+5. source/visibility/asset lifecycle 分离是否与统一 assets 治理一致，`official` 不应误作 visibility。
+6. SearchPort 先按 workspace/user 返回授权 plaintext，再由 PermissionPort 复核文档/业务对象的双层防御是否保留。
+7. Agent citation 的 revision/fragment/evidence key/score/业务引用/数据截止是否足够支持可回溯回答和报告归档。
+
+**集中待裁决契约差异**：
+
+1. `kb_documents`/树/链接/业务引用/修订表的最终 Schema、索引、软删、workspace 外键和保留期。
+2. 团队共享文档的 revision/ETag/If-Match、409 冲突、自动保存和历史版本/恢复语义；首版不引入 CRDT。
+3. 文档树 parent/position、fractional indexing、跨层拖拽、防环、非空删除与并发排序事务。
+4. 创建/读/保存/移动/删除/双链/反链/搜索 API DTO、分页、错误码、幂等和权限矩阵。
+5. business ref 真实对象权限 resolver、对象删除/改名/合并后的显示缓存和失效诊断。
+6. PostgreSQL FTS、embedding 或混合检索选型；索引刷新、重建、chunk、引用稳定性、召回评测和成本。
+7. 知识文档如何挂统一 assets 的 owner/team/verified/official/deprecated、版本、负责人和替代资产。
+8. 报告/结算单/工作流案例/错题本自动归档的 job_type、幂等键、数据截止、审批和失败恢复。
+9. ContentRadar 前端代码复制边界、BlockNote 自定义 inline schema、HTML/附件安全和 500ms 串行保存接缝。
+
+**明确未做**：数据库 Schema/迁移、公开 API、前端 BlockNote/文档树、自动归档 Worker、搜索引擎/embedding、附件/对象存储、真实权限和对象 resolver、ContentRadar 原仓修改。
