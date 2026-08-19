@@ -4,9 +4,9 @@
 >
 > 维护角色：be（Codex）
 >
-> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5`
+> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6`
 >
-> 最新已完成提交：`be/b5` / `53ea264b4a648829209975dc338cb5f677b492d0`
+> 最新功能审查提交：`be/b6` / `6dc7ed1`；质量证据提交：`05b8388`
 >
 > 用途：会话恢复、Claude/arch 审查、合并前对账。状态文档和测试结果是快照，合并或上线前仍需重新执行验证。
 
@@ -22,7 +22,7 @@
 
 ## 2. 分支继承关系
 
-下表各批次是线性继承，不是七套互相独立的实现。`be/b5` 已包含 B1a 至 B5 的全部后端提交。
+下表各批次是线性继承，不是八套互相独立的实现。`be/b6` 已包含 B1a 至 B6 的全部后端提交。
 
 | 批次 | 最终分支 SHA | 功能审查 SHA | 已完成范围 | 最终记录中的累计测试 | 详细状态/证据 |
 |---|---|---|---|---:|---|
@@ -33,6 +33,7 @@
 | B3 安全执行 | `0af66d0` | `36c72f2` | 变更集、TTL/from-value 冲突、dry-run/确认内核、逐项结果、UNKNOWN 只读对账、反向草稿、T+1 端口 | 165 | `B3-状态.md`、`docs/evidence/B3-代码质量报告.md` |
 | B4 任务经营 | `9f7ecea` | `b3b2c49` | 任务 pacing、任务账户有效期、考核价版本、任务日聚合、日报稳定事实集 | 183 | `B4-状态.md`、`docs/evidence/B4-代码质量报告.md` |
 | B5 Agent 后端 | `53ea264` | `545637c` | 会话/上下文/记忆/Run、诊断双产物、Claude Agent SDK、Provider 路由、能力探针、短时凭证信封、本地协议网关、流式 Orchestrator | 271 默认 + 1 opt-in | `B5-状态.md`、`docs/evidence/B5-代码质量报告.md`、`docs/evidence/B5-SDK-fake-gateway烟测.md` |
+| B6 分析与报表 | 见 `be/b6` HEAD | `6dc7ed1` | 严格内部报表计划、可信组件数据集、Gap 对账、策略样本护栏、B1c 事实适配、幂等报表 Worker | 304 默认 + 1 opt-in | `B6-状态.md`、`docs/evidence/B6-代码质量报告.md`、P-010 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -86,7 +87,7 @@ be/b4..be/b5
 
 ## 5. 尚未完成，不能对外宣称完成
 
-- B1a-B5 尚未由 Claude/arch 逐批审计，也尚未合入 `main`。
+- B1a-B6 尚未由 Claude/arch 逐批审计，也尚未合入 `main`。
 - `apps/web` 正式 API Route 和前后端 E2E 尚未完成。
 - 真实奇航、Multica/OS、Secret 服务、IdeaLab/Anthropic 模型通路尚未联调。
 - Agent 生产容器/微虚机沙箱、CPU/RAM/磁盘限制和 egress allowlist 尚未完成。
@@ -103,4 +104,4 @@ Claude 未恢复不等于所有后端都要停。可以在 `be/b5` 之后继续�
 4. 只做可替换的领域纯函数、内部端口、Repository 适配和测试。
 5. 新发现的契约缺口继续写 `inbox-arch.md`，等 Claude 集中裁决。
 
-B6 的具体可继续/暂停范围记录在 `docs/plans/B6-状态.md`。
+B6 已在上述边界内完成。B7 涉及工作流版本、运行状态、自动化动作和 OS/Multica 真实执行，继续编码前应先由 Claude/arch 审 B1a-B6 并冻结对应契约。

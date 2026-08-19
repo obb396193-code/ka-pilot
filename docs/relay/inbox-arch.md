@@ -164,4 +164,50 @@ main 9335150
 
 **Claude 必须特别检查**：租户隔离、凭证归属、写确认门、UNKNOWN 禁盲重试、Agent 工具白名单、短时凭证信封、fake 与真实通路边界、SDK 许可和生产沙箱缺口。
 
-**B6 状态**：已建立 `be/b6`，当前仅记录可继续性评估，尚未写 B6 产品代码。建议只继续契约安全的内部报表/分析内核；公开 DTO、Schema、共享权限、定时语义和外部联调继续等待 arch 裁决。
+**B6 状态更新**：契约安全的内部报表/分析内核已完成，详见 P-010；公开 DTO、Schema、共享权限、定时语义和外部联调仍等待 arch 裁决。
+
+---
+
+### P-010 ⏳B6 分析与报表内核交付待审计｜be（Codex）
+
+- 分支：`be/b6`
+- 基线：B5 `53ea264`
+- 功能审查 SHA：`6dc7ed1`
+- 质量证据 SHA：`05b8388`
+- 设计：`docs/plans/2026-08-19-B6分析与报表内核-design.md`
+- 计划：`docs/plans/2026-08-19-B6分析与报表内核-implementation.md`
+- 质量报告：`docs/evidence/B6-代码质量报告.md`
+
+**已完成**：
+
+1. `b6-internal-v1` 严格执行计划：KPI/trend/table/bar、现有指标和 account/task/biz 白名单；拒绝 SQL、公式、脚本、URL、预计算数据、schedule/sharing/layout。
+2. 可信组件装配：保留 finite/infinite/undefined/missing，组件独立 ready/empty/missing，不把缺失变 0。
+3. Gap 对账：媒体/真实转化、signed difference、RatioValue 和证据；未发明正常阈值。
+4. 策略矩阵：账户去重、≥3 户且消耗 ≥100 护栏、总量重算 CPA、稳定 winner；不生成未经数据支持的打法文案。
+5. B1c 事实适配：按需加载 summary/trend/dimension、同维度去重、租户隔离、任务归属歧义透传。
+6. 幂等 Worker：Plan/Facts/Artifact/RunLog 四端口，双 workspace 校验，稳定 SHA-256 key，重复运行不重复保存，失败只记录稳定安全码。
+
+**验证**：304 默认 tests + 1 opt-in 真 Claude Agent SDK→localhost gateway→fake upstream 烟测；coverage domain 94.72% / db 92.60% / worker 90.54% / gateway 86.62%；四包 typecheck/lint/audit 全绿；复杂度 0 warning；PG16 migration replay/down-up 通过；冻结 contract/migrations 0 diff。
+
+**请 arch/Claude 逐项审**：
+
+1. `report-plan.ts` 的内部白名单是否足够隔离未来公开 config，尤其不得把它直接宣布为 Web DTO。
+2. `report-dataset.ts` 的缺失/空数据/零值/无穷四态与稳定排序是否符合前端展示预期。
+3. Gap 仅作数学对账、不做阈值的边界是否正确。
+4. 策略 winner 是否必须继续坚持“≥3 户、消耗 ≥100、CPA finite”三条件。
+5. `report-facts-source.ts` 是否正确复用 B1c 比率，未二次计算或重复查询。
+6. Worker 的 workspace/report/plan/asOf 幂等键、日志脱敏和“不注册 runtime”边界。
+
+**集中待裁决契约差异**：
+
+1. 公开 `report_configs.config` 的版本、组件、布局和请求/响应 DTO；内部 plan 只可作为执行层，不应反向成为公开契约。
+2. `report_configs` 的 owner/权限与统一 `assets` 的 draft/shared/verified/official/deprecated 如何关联；PRD 的 `is_shared` 与当前表不一致。
+3. schedule 的时区、错过补跑、重试、订阅目标、幂等和暂停语义；不能只靠一个自由文本字段上线。
+4. 报表运行时是否固定 config version；artifact/snapshot 的 PostgreSQL/对象存储/知识库索引结构与保留期。
+5. `/export` 异步任务 DTO、格式白名单、文件大小、过期和下载鉴权。
+6. 版位、出价方式、负责人等策略维度的数据源、canonical 字段与多任务分摊规则。
+7. Agent 草稿到公开 config 的编译、权限检查、证据引用和预览/应用确认 DTO。
+8. 报表生成 job_type、run 状态、失败恢复和 outbound/钉钉交接；本批未注册生产任务。
+9. 权威 `dataCutoffAt` 从 ETL/canonical 哪个 Run 取，不能使用查询完成时间。
+
+**明确未做**：公开 API、Schema/迁移、前端设计器、共享治理、定时调度、PNG/PDF/Excel、钉钉推送、缺失策略维度查询、真实 Provider/奇航/Multica/OS 联调。
