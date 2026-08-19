@@ -3,6 +3,7 @@ import { Pool } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
 import { SemanticQueryRepository } from "../src/semantic-query-repository.js";
+import { AmbiguousTaskMappingError } from "../src/semantic-query-types.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -221,5 +222,86 @@ describe("SemanticQueryRepository", () => {
       ["2026-08-18", 100, 1],
       ["2026-08-19", 170, 2],
     ]);
+  });
+
+  it("aggregates account, task and biz dimensions without changing metric formulas", async () => {
+    const accounts = await repository.queryDimension({
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-19",
+      dimension: "account",
+    });
+    const tasks = await repository.queryDimension({
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-19",
+      dimension: "task",
+    });
+    const businesses = await repository.queryDimension({
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-19",
+      dimension: "biz",
+    });
+
+    expect(accounts.map((row) => [row.dimensionKey, row.metrics.cost])).toEqual([
+      ["a-1", 220],
+      ["a-2", 50],
+    ]);
+    expect(tasks.map((row) => [row.dimensionKey, row.metrics.cost])).toEqual([
+      [null, 120],
+      [taskOneId, 100],
+      [taskTwoId, 50],
+    ]);
+    expect(businesses.map((row) => [row.dimensionKey, row.metrics.cost])).toEqual([
+      [null, 120],
+      ["业务甲", 100],
+      ["业务乙", 50],
+    ]);
+    expect(accounts[0]!.metrics.ratios.realCpa).toEqual({
+      value: 220 / 18,
+      state: "finite",
+    });
+  });
+
+  it("rejects dimensions that current canonical data cannot support", async () => {
+    await expect(
+      repository.queryDimension({
+        workspaceId,
+        dateFrom: "2026-08-18",
+        dateTo: "2026-08-19",
+        dimension: "bid_tool" as "account",
+      }),
+    ).rejects.toThrow("Unsupported dimension");
+  });
+
+  it("fails task and biz aggregation when an account-day has overlapping mappings", async () => {
+    const overlappingTaskId = `t-overlap-${workspaceId}`;
+    await pool.query(
+      `INSERT INTO tasks (workspace_id, task_id, task_name, biz_name)
+       VALUES ($1, $2, '重叠测试任务', '业务冲突')`,
+      [workspaceId, overlappingTaskId],
+    );
+    await pool.query(
+      `INSERT INTO task_accounts (workspace_id, task_id, account_id, valid_from, valid_to)
+       VALUES ($1, $2, 'a-1', '2026-08-18', '2026-08-18')`,
+      [workspaceId, overlappingTaskId],
+    );
+
+    const taskQuery = repository.queryDimension({
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-18",
+      dimension: "task",
+    });
+    await expect(taskQuery).rejects.toBeInstanceOf(AmbiguousTaskMappingError);
+    await expect(
+      repository.queryDimension({
+        workspaceId,
+        dateFrom: "2026-08-18",
+        dateTo: "2026-08-18",
+        dimension: "biz",
+      }),
+    ).rejects.toMatchObject({ accountId: "a-1", ds: "2026-08-18" });
   });
 });

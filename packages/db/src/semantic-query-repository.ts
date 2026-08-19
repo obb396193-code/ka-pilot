@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 
+import { queryMetricDimension } from "./semantic-query-dimension.js";
 import { queryMetricSummary, queryMetricTrend } from "./semantic-query-metrics.js";
 import {
   buildMetricFilter,
@@ -10,6 +11,8 @@ import {
 } from "./semantic-query-support.js";
 import type {
   RelatedTask,
+  SemanticDimensionQuery,
+  SemanticDimensionRow,
   MetricSummary,
   MetricTrendRow,
   SemanticQueryScope,
@@ -148,5 +151,9 @@ export class SemanticQueryRepository {
 
   async queryTrend(input: SemanticQueryScope): Promise<MetricTrendRow[]> {
     return queryMetricTrend(this.pool, input);
+  }
+
+  async queryDimension(input: SemanticDimensionQuery): Promise<SemanticDimensionRow[]> {
+    return queryMetricDimension(this.pool, input);
   }
 }

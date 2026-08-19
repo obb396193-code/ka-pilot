@@ -9,7 +9,7 @@ import type {
   SemanticQueryScope,
 } from "./semantic-query-types.js";
 
-interface AggregateDatabaseRow {
+export interface AggregateDatabaseRow {
   row_count: string | number;
   account_count: string | number;
   cost: string | number;
@@ -129,4 +129,3 @@ export async function queryMetricTrend(
   );
   return result.rows.map((row) => ({ ds: row.ds, metrics: mapMetricSummary(row) }));
 }
-

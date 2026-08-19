@@ -98,6 +98,16 @@ export interface MetricTrendRow {
   metrics: MetricSummary;
 }
 
+export interface SemanticDimensionQuery extends SemanticQueryScope {
+  dimension: SupportedDimension;
+}
+
+export interface SemanticDimensionRow {
+  dimensionKey: string | null;
+  dimensionLabel: string | null;
+  metrics: MetricSummary;
+}
+
 export class AmbiguousTaskMappingError extends Error {
   constructor(
     readonly accountId: string,

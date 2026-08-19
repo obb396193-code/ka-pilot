@@ -67,7 +67,10 @@ export function normalizeTableQuery(input: SemanticTableQuery): NormalizedTableQ
   return { ...input, page, pageSize, sortBy, sortDirection };
 }
 
-export function buildMetricFilter(scope: SemanticQueryScope): SqlFilter {
+export function buildMetricFilter(
+  scope: SemanticQueryScope,
+  options: { includeTaskFilter?: boolean } = {},
+): SqlFilter {
   validateScope(scope);
   const values: unknown[] = [scope.workspaceId, scope.dateFrom, scope.dateTo];
   const conditions = [
@@ -87,7 +90,7 @@ export function buildMetricFilter(scope: SemanticQueryScope): SqlFilter {
   if (scope.filters?.media) {
     add((placeholder) => `account.media = ${placeholder}`, scope.filters.media);
   }
-  if (scope.filters?.taskId) {
+  if (scope.filters?.taskId && options.includeTaskFilter !== false) {
     add(
       (placeholder) => `EXISTS (
         SELECT 1
@@ -130,4 +133,3 @@ export function nullableNumber(value: string | number | null | undefined): numbe
 export function isoTimestamp(value: string | Date): string {
   return value instanceof Date ? value.toISOString() : value;
 }
-
