@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-08-19T16:01:04.129Z",
+  "generated_at": "2026-08-19T16:22:19.487Z",
   "strategy": "official-cached-source-plus-project-harness",
   "preview_count": 5,
   "represented_official_assets": 10,
@@ -41,8 +41,8 @@
       "interaction": "live",
       "frame_path": "frames/kibo-ui.html",
       "bundle_path": "assets/kibo-ui.js",
-      "bundle_bytes": 377957,
-      "bundle_sha256": "fa857e3f2dc9c7c79bc756aec9d0796abff14128c171b10d7e33a81e9f94d3f1",
+      "bundle_bytes": 377947,
+      "bundle_sha256": "90d8c7bd236f410e7453061af97ae86df4dc27b66047066e4e8762aa43736bf9",
       "frame_sha256": "fa0390d6391675735411ca2e44a4fddab2d89530f69d052f5a14c07eec9930ad",
       "sandbox": "allow-scripts",
       "network_required": false,

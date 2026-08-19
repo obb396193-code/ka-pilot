@@ -23,23 +23,23 @@ Error generating stack: `+a.message+`
     margin-right: `).concat(u,"px ").concat(o,`;
     `),a==="padding"&&"padding-right: ".concat(u,"px ").concat(o,";")].filter(Boolean).join(""),`
   }
-  
+
   .`).concat(Dl,` {
     right: `).concat(u,"px ").concat(o,`;
   }
-  
+
   .`).concat(Ml,` {
     margin-right: `).concat(u,"px ").concat(o,`;
   }
-  
+
   .`).concat(Dl," .").concat(Dl,` {
     right: 0 `).concat(o,`;
   }
-  
+
   .`).concat(Ml," .").concat(Ml,` {
     margin-right: 0 `).concat(o,`;
   }
-  
+
   body[`).concat($r,`] {
     `).concat(Mp,": ").concat(u,`px;
   }

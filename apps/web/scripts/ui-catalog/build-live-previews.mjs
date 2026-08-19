@@ -186,9 +186,10 @@ async function build() {
   await mkdir(join(LIVE_ROOT, "frames"), { recursive: true });
 
   for (const preview of PREVIEWS) {
+    const bundlePath = join(LIVE_ROOT, `assets/${preview.id}.js`);
     await esbuild.build({
       entryPoints: [join(HARNESS_ROOT, `${preview.id}.tsx`)],
-      outfile: join(LIVE_ROOT, `assets/${preview.id}.js`),
+      outfile: bundlePath,
       bundle: true,
       minify: true,
       format: "iife",
@@ -213,6 +214,8 @@ async function build() {
       define: { "process.env.NODE_ENV": '"production"' },
       logLevel: "warning",
     });
+    const bundle = await readFile(bundlePath, "utf8");
+    await write(bundlePath, bundle.replace(/[ \t]+$/gm, ""));
     await write(join(LIVE_ROOT, `frames/${preview.id}.html`), frameHtml(preview));
   }
   await buildCss(tempRoot);
@@ -228,6 +231,7 @@ async function check() {
     const bundle = await readFile(join(LIVE_ROOT, preview.bundle_path));
     const frame = await readFile(join(LIVE_ROOT, preview.frame_path));
     if (hash(bundle) !== preview.bundle_sha256) errors.push(`${preview.id}: bundle hash mismatch`);
+    if (/[ \t]+$/m.test(bundle.toString("utf8"))) errors.push(`${preview.id}: bundle has trailing whitespace`);
     if (hash(frame) !== preview.frame_sha256) errors.push(`${preview.id}: frame hash mismatch`);
     if (preview.network_required !== false) errors.push(`${preview.id}: must be offline`);
   }
