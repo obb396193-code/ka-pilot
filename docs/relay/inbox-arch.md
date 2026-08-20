@@ -830,3 +830,29 @@ main 9335150
 **质量真相**：Domain 381、DB 92、Worker 301、DingTalk 19，共 793 默认 tests；SDK opt-in 1。新增模块 99.69%/85.00%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
 
 **明确未完成**：DB/Repository/API/权限/审查队列/前端、真实资产接入、验证执行器、usage 埋点、依赖图、合并、部署和业务验收。
+
+---
+
+### P-028 ⏳B21 工作流“为什么没触发”诊断内核待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B20 最终交接 `b77076e`
+- 设计/计划：`17b54f5`
+- 领域内核：`f985923`
+- 质量与交接：待回填
+- 状态：`docs/plans/B21-状态.md`
+- 质量：`docs/evidence/B21-代码质量报告.md`
+
+**本批实现**：
+
+1. 绑定 workspace/workflow/version/trigger/evaluation 的 gate 快照。
+2. passed/blocked/not_evaluated 与 eligible/blocked/incomplete；保留全部阻断并选择首个配置 gate 为 primary。
+3. 复用现有 12 个 WorkflowBlockReason，映射稳定 nextActionCode；blocked 带 evidence refs 和可选 retryAt。
+4. 严格时间、唯一原因、连续序号、稳定 fingerprint、深冻结和重算 hash 后语义校验。
+5. 未修改 public Contract、migration、DB/Worker/Gateway Runtime 或前端。
+
+**请重点审查/裁决**：Scheduler gate 生产者和落库幂等；证据对象/data cutoff；API/权限/保留期；reason/action 的 UI 人话与跳转。
+
+**质量真相**：Domain 397、DB 92、Worker 301、DingTalk 19，共 809 默认 tests；SDK opt-in 1。新增模块 98.54%/91.02%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：Scheduler/Trigger、DB/Repository/API、运行中心页面、真实策略门槛、合并、部署和业务验收。

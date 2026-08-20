@@ -6,7 +6,7 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13` → `be/b14` → `codex/b15-material-teardown-semantics`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`；B18 素材 Brief 回测就绪代码终态：`54f5223`；B19 月度结算单代码终态：`c2fed1f`；B20 公共资产治理代码终态：`d22a5d8`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`；B18 素材 Brief 回测就绪代码终态：`54f5223`；B19 月度结算单代码终态：`c2fed1f`；B20 公共资产治理代码终态：`d22a5d8`；B21 未触发诊断代码终态：`f985923`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -52,6 +52,7 @@
 | B18 素材 Brief 与回测就绪 | `54f5223`（代码） | 待 Claude/arch 审查 P-025 | 单变量结构化 Brief、B16 谱系交付绑定、B17 同策略样本就绪判断、稳定指纹与完整性门 | Domain 310 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B18-状态.md`、`docs/evidence/B18-代码质量报告.md`、P-025 |
 | B19 月度结算单内核 | `c2fed1f`（代码） | 待 Claude/arch 审查 P-026 | 版本化字段模板、受限公式、显式总计/容差、offline 事实、修正链、预览与冻结快照 | Domain 352 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B19-状态.md`、`docs/evidence/B19-代码质量报告.md`、P-026 |
 | B20 公共资产治理 | `d22a5d8`（代码） | 待 Claude/arch 审查 P-027 | 五类资产不可变版本、五段状态机、验证/使用事实、完整元数据、替代版本和统一摘要 | Domain 381 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B20-状态.md`、`docs/evidence/B20-代码质量报告.md`、P-027 |
+| B21 工作流未触发诊断 | `f985923`（代码） | 待 Claude/arch 审查 P-028 | 版本绑定 gate 快照、三态评估、第一/全部阻断、证据/retryAt 与稳定 next action | Domain 397 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B21-状态.md`、`docs/evidence/B21-代码质量报告.md`、P-028 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -270,3 +271,11 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - verified 必须有绑定当前版本/定义的最近 passed 证据；成功率仅由显式次数计算，定性验证保留 null。
 - 使用人数/频次只聚合版本绑定 usage facts；废弃必须写原因，可指向非自身替代版本。
 - 代码终态 `d22a5d8`。默认回归 Domain 381 + DB 92 + Worker 301 + DingTalk 19 = 793；SDK opt-in 1。新增模块 99.69%/85.00%/100%，四包静态/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全与冻结目录门禁通过，审查入口 P-027。
+
+## 21. B21 工作流未触发诊断真相
+
+- B21 只做 Scheduler 评估结果的纯 Domain 信封，不代表运行中心页面或触发器已接入。
+- evaluation 固定 workflow/version/trigger；检查顺序连续且原因唯一，保留 passed/blocked/not_evaluated。
+- 输出 eligible/blocked/incomplete、全部阻断、第一阻断、证据、retryAt 和稳定 nextActionCode。
+- eligible 不是 run/execution 成功；门槛由真实数据、权限、冲突、调度器产生，本模块不发明阈值。
+- 代码终态 `f985923`。默认回归 Domain 397 + DB 92 + Worker 301 + DingTalk 19 = 809；SDK opt-in 1。新增模块 98.54%/91.02%/100%，四包静态/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全与冻结目录门禁通过，审查入口 P-028。
