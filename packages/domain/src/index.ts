@@ -26,4 +26,5 @@ export * from "./material-teardown.js";
 export * from "./material-similarity.js";
 export * from "./material-experiment.js";
 export * from "./material-design-brief.js";
+export * from "./settlement.js";
 export * from "./hourly-ad-metrics.js";
