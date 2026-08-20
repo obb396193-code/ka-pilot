@@ -195,3 +195,20 @@ test("second source is cataloged as an internal design reference pending review"
   assert.equal(record.product_kb_publication_status, "not_ready");
   assert.equal(record.storage_ref, "private/knowledge-sources/ka-src-0002/source.txt");
 });
+
+test("third and fourth sources stay confidential and outside the publication queue", async () => {
+  const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+  const catalog = await readFile(path.join(repoRoot, "docs/knowledge/catalog.jsonl"), "utf8");
+  const {records, errors} = parseCatalog(catalog);
+  assert.deepEqual(errors, []);
+  for (const documentId of ["ka-src-0003", "ka-src-0004"]) {
+    const record = records.find((item) => item.document_id === documentId);
+    assert.ok(record, `${documentId} must exist`);
+    assert.equal(record.access_level, "confidential");
+    assert.equal(record.evidence_level, "E3");
+    assert.equal(record.lifecycle_status, "review_pending");
+    assert.equal(record.review_status, "pending");
+    assert.equal(record.product_kb_publication_status, "not_ready");
+    assert.equal(record.allowed_roles.includes("development"), false);
+  }
+});
