@@ -20,6 +20,7 @@ export function createIncrementalEtlHandler(
   return async (job) => {
     const payload = incrementalEtlPayloadSchema.parse(job.payload);
     const runId = await dependencies.store.startRun(job.id, "incr", {
+      workspaceId: payload.workspaceId,
       ds: payload.ds,
       accountIds: payload.accountIds,
       focusAccountIds: payload.focusAccountIds,

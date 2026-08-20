@@ -92,6 +92,11 @@ describe("ETL handlers", () => {
     expect(runStore.records.some((row) => row.resource === "account")).toBe(true);
     expect(runStore.records.every((row) => row.workspaceId === workspaceId)).toBe(true);
     expect(runStore.records.every((row) => !("userId" in row.requestParams))).toBe(true);
+    expect(runStore.value.startRun).toHaveBeenCalledWith(
+      "33333333-3333-4333-8333-333333333333",
+      "full",
+      expect.objectContaining({ workspaceId }),
+    );
     expect(runStore.value.finishRun).toHaveBeenCalledWith(91, runStore.records.length);
     expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
       jobType: "canonical_merge",
@@ -148,6 +153,11 @@ describe("ETL handlers", () => {
       }),
     ]);
     expect(runStore.value.finishRun).toHaveBeenCalledWith(91, 2);
+    expect(runStore.value.startRun).toHaveBeenCalledWith(
+      "33333333-3333-4333-8333-333333333333",
+      "incr",
+      expect.objectContaining({ workspaceId }),
+    );
     expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
       jobType: "canonical_merge",
       payload: {

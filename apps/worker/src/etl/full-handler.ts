@@ -33,6 +33,7 @@ export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHand
   return async (job) => {
     const payload = fullEtlPayloadSchema.parse(job.payload);
     const runId = await dependencies.store.startRun(job.id, "full", {
+      workspaceId: payload.workspaceId,
       asOfDate: payload.asOfDate,
       realtimeDays: payload.realtimeDays,
       requestedAccountIds: payload.accountIds,
