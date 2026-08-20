@@ -589,6 +589,7 @@ main 9335150
 - ASR adapter：`e7592b6`
 - URL 租约：`c740095`
 - 质检代码终态：`6cea3d8`
+- 质量与交接：`24a0784`
 - 状态：`docs/plans/B14-状态.md`
 - 质量：`docs/evidence/B14-代码质量报告.md`
 
