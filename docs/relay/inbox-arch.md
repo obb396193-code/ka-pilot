@@ -441,7 +441,7 @@ main 9335150
 - 状态：`docs/plans/B10-状态.md`
 - 脱敏证据：`docs/evidence/B10-真实奇航只读适配报告.md`
 
-**真实证据边界**：老板转交的 OS Agent 在合法身份下实际执行四类只读 GET；已确认协议、日期、空数组、动态字段和 D-2 延迟。原始 userId、账户/广告/任务标识、金额和精确业务规模未写入仓库。请求不是由本项目 Worker/FaaS 发起，因此仍不能标记 Gate B 完成。
+**真实证据边界**：老板转交的 OS Agent 在合法身份下实际执行四类只读 GET；已确认协议、日期、空数组和动态字段；当天 realtime 命中且 `last_sync_time` 为分钟级，离线仅在本次观察到 D-1 空、D-2 命中。D-2 不是实时延迟也不是固定 SLA。原始 userId、账户/广告/任务标识、金额和精确业务规模未写入仓库。请求不是由本项目 Worker/FaaS 发起，因此仍不能标记 Gate B 完成。
 
 **本批实现**：
 
@@ -453,9 +453,11 @@ main 9335150
 **请重点裁决**：
 
 1. `packages/contract/metrics.md` 仍写“离线 T+1 权威”且 `account_real_conversion` 只列 realtime，是否按真实证据改为“最新已产出分区”和 offline/realtime 双来源。
+   `docs/20-PRD-v1.md` 的“account_offline（昨日结算）→ account_realtime（近 7 日补洞）”也需同步改成“当天 realtime 分钟级 + offline 动态探测最新已产出分区”，并注明历史 realtime `ds` 尚未实测。
 2. 三日回退是当前无分区状态接口下的有界保护；D-1 部分产出无法识别。是否要求奇航提供分区完成标记，或由数据健康层引入跨批稳定性判定。
 3. 当前业务线离线样本没有 `cash/income/rebate`。现有派生逻辑在 compensation 缺失时按 0 计算现金成本；该业务语义本批未改，请业务/arch 明确“缺失=0”还是“现金指标不可用”。
 4. userId 仍是个人身份，OS 只证明内网可调用，不是部门级服务身份。正式推广前应用身份仍是硬门。
+5. 本轮 realtime 只实测当天；Skill 源码虽会用历史 realtime 补洞，但服务端是否正式支持历史 `ds` 尚待探针，不能由实现反推协议。
 
 **质量**：Qihang+ETL 28、Canonical 6 定向 tests；Domain 194、DingTalk 19 全量通过；Worker 获准 localhost 环境执行 158 tests，PG 相关因本机 Docker/55432 未就绪未完成。四包 typecheck/lint/audit 通过且 0 vulnerabilities；变更模块覆盖率 Qihang 95.14%、Full ETL 100%、Canonical 92.50%；复杂度≤10、单函数≤100、敏感扫描通过。
 

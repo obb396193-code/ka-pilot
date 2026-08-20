@@ -28,6 +28,7 @@
 - 耗时、行数、字节数：OS 已测量；为避免真实业务规模入仓，仅记录全部低于当前 Client 的响应/行/ID/URL 保护预算。
 - 空数据：`successful=true` 且 `data=[]`。
 - 日期：请求 `YYYYMMDD`；响应 `ds=YYYYMMDD`。
+- 新鲜度：两类 realtime 均命中当天数据；返回 `last_sync_time`，当次观测为分钟级同步。离线 D-2 观测不得外推为实时链路延迟。
 - 身份：query 显式传 userId；Skill 可从 `JULANG_OS_USER_IDENTITY` / `MOZI_USER_ID` 读取并代填，变量值未回传。
 
 ## Schema 结论
@@ -39,6 +40,7 @@
 
 ## 仍未证实
 
+- realtime 传历史 `ds` 的服务端支持范围；本轮只执行当天。
 - `hh` 真实行为。
 - offline 跨日区间与服务端上限。
 - 分区“部分产出/完整产出”状态。
@@ -48,4 +50,4 @@
 
 ## 结论
 
-协议层真实只读探针通过；产品级 Gate B 未通过。对应兼容修复和质量结论见 `docs/evidence/B10-真实奇航只读适配报告.md`。
+协议层真实只读探针通过；当天 realtime 分钟级、离线结算分区动态产出，两者用途必须分开。产品级 Gate B 未通过。对应兼容修复和质量结论见 `docs/evidence/B10-真实奇航只读适配报告.md`。
