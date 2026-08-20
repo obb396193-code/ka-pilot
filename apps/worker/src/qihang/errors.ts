@@ -31,6 +31,17 @@ export class QihangResourceLimitError extends QihangError {
   readonly code = "RESOURCE_LIMIT";
 }
 
+export class QihangSuspectedTruncationError extends QihangError {
+  readonly code = "SUSPECTED_TRUNCATION";
+
+  constructor(
+    readonly rowCount: number,
+    readonly threshold: number,
+  ) {
+    super(`Qihang ad response exactly hit suspected truncation boundary ${threshold}`);
+  }
+}
+
 export class RetryExhaustedError extends QihangError {
   constructor(
     readonly attempts: number,

@@ -5,6 +5,7 @@ import {
   QihangBusinessError,
   QihangError,
   QihangResourceLimitError,
+  QihangSuspectedTruncationError,
   RetryExhaustedError,
 } from "../src/qihang/errors.js";
 import { QihangClient } from "../src/qihang/client.js";
@@ -240,6 +241,71 @@ describe("QihangClient", () => {
       }),
     ).rejects.toBeInstanceOf(QihangResourceLimitError);
     expect(fetchFn).not.toHaveBeenCalled();
+  });
+
+  it("rejects an unfiltered ad realtime query before sending a request", async () => {
+    const fetchFn = vi.fn<typeof fetch>();
+    const client = new QihangClient({ fetchFn });
+
+    await expect(
+      client.query({ resource: "ad_realtime", userId: "u1", ds: "20260819" }),
+    ).rejects.toThrow(/accountIds or adIds/i);
+    expect(fetchFn).not.toHaveBeenCalled();
+  });
+
+  it("fails closed when a filtered ad response exactly hits the suspected truncation boundary", async () => {
+    const fetchFn = vi.fn(async () =>
+      jsonResponse({
+        successful: true,
+        data: [
+          { account_id: "a1", ad_id: "d1" },
+          { account_id: "a1", ad_id: "d2" },
+        ],
+      }),
+    );
+    const client = new QihangClient({ fetchFn, suspectedAdTruncationRows: 2 });
+
+    await expect(
+      client.query({
+        resource: "ad_realtime",
+        userId: "u1",
+        ds: "20260819",
+        accountIds: ["a1"],
+      }),
+    ).rejects.toBeInstanceOf(QihangSuspectedTruncationError);
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns a bounded observation for a non-boundary response", async () => {
+    const fetchFn = vi.fn(async () =>
+      jsonResponse({
+        successful: true,
+        data: [{ account_id: "a1", ad_id: "d1", last_sync_time: "2026-08-20 14:31:00" }],
+      }),
+    );
+    const client = new QihangClient({
+      fetchFn,
+      suspectedAdTruncationRows: 2,
+      now: () => new Date("2026-08-20T06:32:00.000Z"),
+    });
+
+    const result = await client.query({
+      resource: "ad_realtime",
+      userId: "u1",
+      ds: "20260820",
+      accountIds: ["a1"],
+    });
+
+    expect(result.observation).toEqual({
+      resource: "ad_realtime",
+      rowCount: 1,
+      fingerprint: expect.stringMatching(/^[a-f0-9]{64}$/),
+      observedAt: "2026-08-20T06:32:00.000Z",
+      lastSyncTime: "2026-08-20 14:31:00",
+      availability: "observed",
+    });
+    expect(JSON.stringify(result.observation)).not.toContain("a1");
+    expect(JSON.stringify(result.observation)).not.toContain("d1");
   });
 
   it("rejects an oversized encoded query URL before sending a request", async () => {

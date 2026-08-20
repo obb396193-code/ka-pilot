@@ -9,8 +9,10 @@ import {
   QihangError,
   QihangHttpError,
   QihangResourceLimitError,
+  QihangSuspectedTruncationError,
   RetryExhaustedError,
 } from "./errors.js";
+import { createQihangObservation, type QihangObservation } from "./observation.js";
 
 const DEFAULT_BASE_URL =
   "https://qh.alibaba-inc.com/qihang/api/rta_auto/tmp/get_data";
@@ -60,6 +62,7 @@ export interface QihangQueryResult {
     pageSize: number | null;
   };
   envelope: Record<string, unknown>;
+  observation?: QihangObservation;
 }
 
 type FetchLike = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
@@ -76,6 +79,8 @@ export interface QihangClientOptions {
   maxRows?: number;
   maxIdsPerQuery?: number;
   maxQueryUrlBytes?: number;
+  suspectedAdTruncationRows?: number | null;
+  now?: () => Date;
 }
 
 interface QihangClientConfig {
@@ -89,11 +94,17 @@ interface QihangClientConfig {
   maxRows: number;
   maxIdsPerQuery: number;
   maxQueryUrlBytes: number;
+  suspectedAdTruncationRows: number | null;
+  now: () => Date;
 }
 
 type QihangResourceLimits = Pick<
   QihangClientConfig,
-  "maxResponseBytes" | "maxRows" | "maxIdsPerQuery" | "maxQueryUrlBytes"
+  | "maxResponseBytes"
+  | "maxRows"
+  | "maxIdsPerQuery"
+  | "maxQueryUrlBytes"
+  | "suspectedAdTruncationRows"
 >;
 
 function defaultSleep(milliseconds: number): Promise<void> {
@@ -145,6 +156,8 @@ export class QihangClient {
   private readonly maxRows: number;
   private readonly maxIdsPerQuery: number;
   private readonly maxQueryUrlBytes: number;
+  private readonly suspectedAdTruncationRows: number | null;
+  private readonly now: () => Date;
 
   constructor(options: QihangClientOptions = {}) {
     const config = normalizeClientConfig(options);
@@ -158,6 +171,8 @@ export class QihangClient {
     this.maxRows = config.maxRows;
     this.maxIdsPerQuery = config.maxIdsPerQuery;
     this.maxQueryUrlBytes = config.maxQueryUrlBytes;
+    this.suspectedAdTruncationRows = config.suspectedAdTruncationRows;
+    this.now = config.now;
   }
 
   async query(query: QihangQuery): Promise<QihangQueryResult> {
@@ -176,7 +191,7 @@ export class QihangClient {
 
     for (let attempt = 0; attempt < attempts; attempt += 1) {
       try {
-        return await this.queryOnce(url, query.resource);
+        return await this.queryOnce(url, query);
       } catch (error) {
         lastError = retryableCauseOrThrow(error);
         if (attempt >= this.maxRetries) {
@@ -191,7 +206,7 @@ export class QihangClient {
 
   private async queryOnce(
     url: string,
-    resource: QihangQuery["resource"],
+    query: QihangQuery,
   ): Promise<QihangQueryResult> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
@@ -205,9 +220,13 @@ export class QihangClient {
       const bodyText = await readBoundedResponse(response, this.maxResponseBytes);
       assertSuccessfulHttpResponse(response, bodyText);
       const envelope = parseSuccessfulEnvelope(bodyText);
-      const result = this.extractResult(resource, envelope);
+      const result = this.extractResult(query.resource, envelope);
       assertRowBudget(result.rows, this.maxRows);
-      return result;
+      this.assertNotSuspectedTruncation(query.resource, result.rows.length);
+      return {
+        ...result,
+        observation: createQihangObservation(query.resource, result.rows, this.now()),
+      };
     } finally {
       clearTimeout(timeout);
     }
@@ -217,6 +236,22 @@ export class QihangClient {
     assertIdBudget("accountIds", query.accountIds, this.maxIdsPerQuery);
     if (query.resource === "ad_realtime") {
       assertIdBudget("adIds", query.adIds, this.maxIdsPerQuery);
+      if (!hasValues(query.accountIds) && !hasValues(query.adIds)) {
+        throw new QihangError("ad_realtime requires non-empty accountIds or adIds");
+      }
+    }
+  }
+
+  private assertNotSuspectedTruncation(
+    resource: QihangQuery["resource"],
+    rowCount: number,
+  ): void {
+    if (
+      resource === "ad_realtime" &&
+      this.suspectedAdTruncationRows !== null &&
+      rowCount === this.suspectedAdTruncationRows
+    ) {
+      throw new QihangSuspectedTruncationError(rowCount, this.suspectedAdTruncationRows);
     }
   }
 
@@ -290,6 +325,7 @@ function normalizeClientConfig(options: QihangClientOptions): QihangClientConfig
     maxRetries: options.maxRetries ?? 3,
     retryBaseMs: options.retryBaseMs ?? 2_000,
     timeoutMs: options.timeoutMs ?? 120_000,
+    now: options.now ?? (() => new Date()),
     ...normalizeResourceLimits(options),
   };
 }
@@ -309,6 +345,10 @@ function normalizeResourceLimits(options: QihangClientOptions): QihangResourceLi
       options.maxQueryUrlBytes ?? DEFAULT_MAX_QIHANG_QUERY_URL_BYTES,
       "maxQueryUrlBytes",
     ),
+    suspectedAdTruncationRows:
+      options.suspectedAdTruncationRows === null
+        ? null
+        : positiveInteger(options.suspectedAdTruncationRows ?? 2_000, "suspectedAdTruncationRows"),
   };
 }
 
@@ -378,6 +418,10 @@ function assertIdBudget(
   if (values !== undefined && values.length > limit) {
     throw new QihangResourceLimitError(`${name} exceeds configured limit ${limit}`);
   }
+}
+
+function hasValues(values: readonly string[] | undefined): boolean {
+  return values !== undefined && values.length > 0;
 }
 
 async function readBoundedResponse(response: Response, maxBytes: number): Promise<string> {
