@@ -459,6 +459,7 @@ main 9335150
 3. 当前业务线离线样本没有 `cash/income/rebate`。现有派生逻辑在 compensation 缺失时按 0 计算现金成本；该业务语义本批未改，请业务/arch 明确“缺失=0”还是“现金指标不可用”。
 4. userId 仍是个人身份，OS 只证明内网可调用，不是部门级服务身份。正式推广前应用身份仍是硬门。
 5. 本轮 realtime 只实测当天；Skill 源码虽会用历史 realtime 补洞，但服务端是否正式支持历史 `ds` 尚待探针，不能由实现反推协议。
+6. 名称已补证：OS 真请求基于 `ks-data-queryer` 1.0.2；用户新给的安装入口是 `rta-data-queryer-daemon` 1.0.4，其业务依赖为 `rta-data-queryer` 1.0.4。两者协议同源但实现版本不同，正式部署需明确选定包和版本；`qihang-monitor`/包内 `ad-hourly-monitor` 只作为上层监控参考。
 
 **质量**：Qihang+ETL 28、Canonical 6 定向 tests；Domain 194、DingTalk 19 全量通过；Worker 获准 localhost 环境执行 158 tests，PG 相关因本机 Docker/55432 未就绪未完成。四包 typecheck/lint/audit 通过且 0 vulnerabilities；变更模块覆盖率 Qihang 95.14%、Full ETL 100%、Canonical 92.50%；复杂度≤10、单函数≤100、敏感扫描通过。
 
