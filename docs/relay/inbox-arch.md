@@ -795,3 +795,38 @@ main 9335150
 **质量真相**：Domain 352、DB 92、Worker 301、DingTalk 19，共 764 默认 tests；SDK opt-in 1。新增模块 100%/92.76%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
 
 **明确未完成**：真实模板/数据映射、DB/API/Worker/权限、导出/钉钉/工作项/页面、财务会计功能、合并、部署和业务验收。
+
+---
+
+### P-027 ⏳B20 公共资产治理领域底座待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B19 最终交接 `acd046c`
+- 设计/实施计划：`174a2b8`
+- 领域内核/自审终态：`d22a5d8`
+- 质量与交接：待回填
+- 状态：`docs/plans/B20-状态.md`
+- 质量：`docs/evidence/B20-代码质量报告.md`
+
+**产品依据**：REQ-112/113/114 和验收 14.10 要求报表、工作流、策略、对象组统一经历个人草稿→团队共享→已验证→官方→已废弃，并显示负责人、版本、适用范围、依赖、验证、成功率、使用人数和替代版本。
+
+**本批实现**：
+
+1. report/workflow/strategy/object_group/knowledge 五类资产统一不可变版本、来源、适用范围、依赖和稳定指纹。
+2. 五段严格前进状态机；事件相同重试幂等，冲突 ID、越级、回退和错误时间 fail-closed。
+3. validation 绑定 assetVersionId+definitionFingerprint；最近 failed 不会被更早 passed 掩盖。
+4. usage facts 绑定版本并按事件幂等、用户去重，统一输出人数/频次/最近使用时间。
+5. deprecated 强制原因、可选非自身替代版本；公共修改用新 draft，不覆盖旧版本。
+6. 未修改 public Contract、migration、DB/Worker/Gateway Runtime 或前端。
+
+**请重点审查/裁决**：
+
+1. 统一 assets 表/API 与 report config、workflow version、strategy、object group、knowledge document 的关联。
+2. 五段晋级/废弃的角色权限、复核和 workspace 边界。
+3. 各资产类型的验证执行器、passed 证据、验证失效与重新验证语义。
+4. usage fact 计数口径、预览/试运行过滤和幂等事件来源。
+5. dependency/replacement 的存在性、同租户/同类型兼容和循环检查。
+
+**质量真相**：Domain 381、DB 92、Worker 301、DingTalk 19，共 793 默认 tests；SDK opt-in 1。新增模块 99.69%/85.00%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：DB/Repository/API/权限/审查队列/前端、真实资产接入、验证执行器、usage 埋点、依赖图、合并、部署和业务验收。
