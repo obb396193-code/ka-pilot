@@ -521,6 +521,7 @@ main 9335150
 - 设计与计划：`dc64f68`
 - 功能实现：`f4c55bb`
 - 自审终态：`fb3bf9f`
+- 质量与交接：`ce4206c`
 - 状态：`docs/plans/B12-状态.md`
 - 质量：`docs/evidence/B12-代码质量报告.md`
 - OS 探针：`docs/plans/B12-OS第四轮只读探针.md`
