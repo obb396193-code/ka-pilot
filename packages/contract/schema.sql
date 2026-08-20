@@ -201,7 +201,8 @@ CREATE TABLE jobs (                    -- job/outbox：Worker 消费，DB lease 
                                        -- (3) 纯系统任务无账户归属（全局 rule_scan/data_quality_check）→ NULL（Worker 用服务账号只读凭证，demo 期老板 PAT/正式期 mcn_ 身份）
                                        -- 重试永远用原 job 的此凭证，不换人
   status TEXT DEFAULT 'queued',        -- queued|leased|running|done|failed|blocked_auth
-  lease_until TIMESTAMPTZ, attempts INT DEFAULT 0, max_attempts INT DEFAULT 3,
+  lease_until TIMESTAMPTZ, lease_token UUID, -- 每次领取重生成；所有状态迁移用其 fencing
+  attempts INT DEFAULT 0, max_attempts INT DEFAULT 3,
   last_error TEXT, run_after TIMESTAMPTZ DEFAULT now(),
   created_at TIMESTAMPTZ DEFAULT now(), finished_at TIMESTAMPTZ
 );

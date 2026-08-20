@@ -17,18 +17,31 @@ export interface JobRecord {
   credentialOwnerUserId: string | null;
   status: JobStatus;
   leaseUntil: Date | null;
+  leaseToken: string | null;
   attempts: number;
   maxAttempts: number;
   runAfter: Date;
 }
 
+export interface JobLeaseIdentity {
+  id: string;
+  leaseToken: string | null;
+}
+
+export class LostJobLeaseError extends Error {
+  constructor(id: string) {
+    super(`Job ${id} lease is no longer owned by this worker`);
+    this.name = "LostJobLeaseError";
+  }
+}
+
 export interface JobRepositoryPort {
   leaseNext(leaseSeconds: number): Promise<JobRecord | null>;
-  markRunning(id: string): Promise<void>;
-  markDone(id: string): Promise<void>;
+  markRunning(job: JobLeaseIdentity): Promise<void>;
+  markDone(job: JobLeaseIdentity): Promise<void>;
   markFailure(job: JobRecord, message: string, retryAt: Date): Promise<void>;
-  markBlockedAuth(id: string, message: string): Promise<void>;
-  extendLease(id: string, leaseSeconds: number): Promise<void>;
+  markBlockedAuth(job: JobLeaseIdentity, message: string): Promise<void>;
+  extendLease(job: JobLeaseIdentity, leaseSeconds: number): Promise<void>;
 }
 
 export interface NewJob {
@@ -55,6 +68,7 @@ type JobRow = {
   credential_owner_user_id: string | null;
   status: JobStatus;
   lease_until: Date | null;
+  lease_token: string | null;
   attempts: number | null;
   max_attempts: number | null;
   run_after: Date;
@@ -70,6 +84,7 @@ function mapJob(row: JobRow): JobRecord {
     credentialOwnerUserId: row.credential_owner_user_id,
     status: row.status,
     leaseUntil: row.lease_until,
+    leaseToken: row.lease_token,
     attempts: row.attempts ?? 0,
     maxAttempts: row.max_attempts ?? 3,
     runAfter: row.run_after,
@@ -171,6 +186,7 @@ export class JobRepository implements JobRepositoryPort {
           UPDATE jobs AS job
           SET status = 'leased',
               lease_until = now() + ($1 * interval '1 second'),
+              lease_token = gen_random_uuid(),
               attempts = job.attempts + 1,
               last_error = NULL,
               finished_at = NULL
@@ -185,65 +201,71 @@ export class JobRepository implements JobRepositoryPort {
     });
   }
 
-  async markRunning(id: string): Promise<void> {
+  async markRunning(job: JobLeaseIdentity): Promise<void> {
     await this.updateExpectedStatus(
-      id,
-      "leased",
-      "UPDATE jobs SET status = 'running' WHERE id = $1 AND status = 'leased'",
+      job,
+      "UPDATE jobs SET status = 'running' WHERE id = $1 AND lease_token = $2 AND status = 'leased'",
     );
   }
 
-  async markDone(id: string): Promise<void> {
+  async markDone(job: JobLeaseIdentity): Promise<void> {
     await this.updateExpectedStatus(
-      id,
-      "running",
+      job,
       `UPDATE jobs
-       SET status = 'done', lease_until = NULL, finished_at = now(), last_error = NULL
-       WHERE id = $1 AND status = 'running'`,
+       SET status = 'done', lease_until = NULL, lease_token = NULL,
+           finished_at = now(), last_error = NULL
+       WHERE id = $1 AND lease_token = $2 AND status = 'running'`,
     );
   }
 
   async markFailure(job: JobRecord, message: string, retryAt: Date): Promise<void> {
     const safeMessage = message.slice(0, 2_000);
+    const leaseToken = requireLeaseToken(job);
     if (job.attempts >= job.maxAttempts) {
-      await this.pool.query(
+      const result = await this.pool.query(
         `UPDATE jobs
-         SET status = 'failed', lease_until = NULL, finished_at = now(), last_error = $2
-         WHERE id = $1 AND status IN ('leased', 'running')`,
-        [job.id, safeMessage],
+         SET status = 'failed', lease_until = NULL, lease_token = NULL,
+             finished_at = now(), last_error = $3
+         WHERE id = $1 AND lease_token = $2 AND status IN ('leased', 'running')`,
+        [job.id, leaseToken, safeMessage],
       );
+      assertLeaseMutation(result.rowCount, job.id);
       return;
-    }
-    await this.pool.query(
-      `UPDATE jobs
-       SET status = 'queued', lease_until = NULL, run_after = $2, last_error = $3
-       WHERE id = $1 AND status IN ('leased', 'running')`,
-      [job.id, retryAt, safeMessage],
-    );
-  }
-
-  async markBlockedAuth(id: string, message: string): Promise<void> {
-    await this.pool.query(
-      `UPDATE jobs
-       SET status = 'blocked_auth', lease_until = NULL, finished_at = now(), last_error = $2
-       WHERE id = $1 AND status IN ('leased', 'running')`,
-      [id, message.slice(0, 2_000)],
-    );
-  }
-
-  async extendLease(id: string, leaseSeconds: number): Promise<void> {
-    if (!Number.isInteger(leaseSeconds) || leaseSeconds <= 0) {
-      throw new Error("leaseSeconds must be a positive integer");
     }
     const result = await this.pool.query(
       `UPDATE jobs
-       SET lease_until = now() + ($2 * interval '1 second')
-       WHERE id = $1 AND status = 'running'`,
-      [id, leaseSeconds],
+       SET status = 'queued', lease_until = NULL, lease_token = NULL,
+           run_after = $3, last_error = $4
+       WHERE id = $1 AND lease_token = $2 AND status IN ('leased', 'running')`,
+      [job.id, leaseToken, retryAt, safeMessage],
     );
-    if (result.rowCount !== 1) {
-      throw new Error(`Cannot extend lease for non-running job ${id}`);
+    assertLeaseMutation(result.rowCount, job.id);
+  }
+
+  async markBlockedAuth(job: JobLeaseIdentity, message: string): Promise<void> {
+    const leaseToken = requireLeaseToken(job);
+    const result = await this.pool.query(
+      `UPDATE jobs
+       SET status = 'blocked_auth', lease_until = NULL, lease_token = NULL,
+           finished_at = now(), last_error = $3
+       WHERE id = $1 AND lease_token = $2 AND status IN ('leased', 'running')`,
+      [job.id, leaseToken, message.slice(0, 2_000)],
+    );
+    assertLeaseMutation(result.rowCount, job.id);
+  }
+
+  async extendLease(job: JobLeaseIdentity, leaseSeconds: number): Promise<void> {
+    if (!Number.isInteger(leaseSeconds) || leaseSeconds <= 0) {
+      throw new Error("leaseSeconds must be a positive integer");
     }
+    const leaseToken = requireLeaseToken(job);
+    const result = await this.pool.query(
+      `UPDATE jobs
+       SET lease_until = now() + ($3 * interval '1 second')
+       WHERE id = $1 AND lease_token = $2 AND status = 'running'`,
+      [job.id, leaseToken, leaseSeconds],
+    );
+    assertLeaseMutation(result.rowCount, job.id);
   }
 
   async recoverStaleLeases(staleSeconds: number): Promise<{
@@ -257,6 +279,7 @@ export class JobRepository implements JobRepositoryPort {
       `UPDATE jobs
        SET status = CASE WHEN attempts >= max_attempts THEN 'failed' ELSE 'queued' END,
            lease_until = NULL,
+           lease_token = NULL,
            run_after = CASE WHEN attempts >= max_attempts THEN run_after ELSE now() END,
            finished_at = CASE WHEN attempts >= max_attempts THEN now() ELSE NULL END,
            last_error = CASE
@@ -276,13 +299,19 @@ export class JobRepository implements JobRepositoryPort {
   }
 
   private async updateExpectedStatus(
-    id: string,
-    expected: JobStatus,
+    job: JobLeaseIdentity,
     sql: string,
   ): Promise<void> {
-    const result = await this.pool.query(sql, [id]);
-    if (result.rowCount !== 1) {
-      throw new Error(`Job ${id} is not in expected status ${expected}`);
-    }
+    const result = await this.pool.query(sql, [job.id, requireLeaseToken(job)]);
+    assertLeaseMutation(result.rowCount, job.id);
   }
+}
+
+function requireLeaseToken(job: JobLeaseIdentity): string {
+  if (!job.leaseToken) throw new LostJobLeaseError(job.id);
+  return job.leaseToken;
+}
+
+function assertLeaseMutation(rowCount: number | null, id: string): void {
+  if (rowCount !== 1) throw new LostJobLeaseError(id);
 }

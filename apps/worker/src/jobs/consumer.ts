@@ -1,4 +1,4 @@
-import type { JobRecord, JobRepositoryPort } from "@ka/db";
+import { LostJobLeaseError, type JobRecord, type JobRepositoryPort } from "@ka/db";
 
 import { BlockedAuthError } from "../qihang/errors.js";
 import { retryDelayMs } from "./retry.js";
@@ -54,25 +54,36 @@ export class JobConsumer {
     }
 
     try {
-      await this.repository.markRunning(job.id);
+      await this.repository.markRunning(job);
       const handler = this.handlers[job.jobType];
       if (!handler) {
         throw new Error(`No handler registered for job type ${job.jobType}`);
       }
       await this.runWithHeartbeat(job, handler);
-      await this.repository.markDone(job.id);
+      await this.repository.markDone(job);
       await this.afterCompleted(job);
     } catch (error) {
+      if (error instanceof LostJobLeaseError) return true;
       if (error instanceof BlockedAuthError) {
         const message = errorMessage(error);
-        await this.repository.markBlockedAuth(job.id, message);
+        try {
+          await this.repository.markBlockedAuth(job, message);
+        } catch (markError) {
+          if (markError instanceof LostJobLeaseError) return true;
+          throw markError;
+        }
         await this.notify(job, { kind: "blocked_auth", message });
         return true;
       }
       const retryAt = new Date(
         this.now().getTime() + retryDelayMs(job.attempts, this.retryBaseMs),
       );
-      await this.repository.markFailure(job, errorMessage(error), retryAt);
+      try {
+        await this.repository.markFailure(job, errorMessage(error), retryAt);
+      } catch (markError) {
+        if (markError instanceof LostJobLeaseError) return true;
+        throw markError;
+      }
       if (job.attempts >= job.maxAttempts) {
         await this.notify(job, { kind: "failed", message: errorMessage(error) });
       }
@@ -102,7 +113,7 @@ export class JobConsumer {
         return;
       }
       heartbeat = heartbeat
-        .then(() => this.repository.extendLease(job.id, this.leaseSeconds))
+        .then(() => this.repository.extendLease(job, this.leaseSeconds))
         .catch((error: unknown) => {
           heartbeatError = error;
         });
@@ -111,9 +122,7 @@ export class JobConsumer {
       await handler(job);
       await heartbeat;
       if (heartbeatError !== undefined) {
-        throw new Error(`Job lease heartbeat failed: ${errorMessage(heartbeatError)}`, {
-          cause: heartbeatError,
-        });
+        throw heartbeatError;
       }
     } finally {
       clearInterval(timer);

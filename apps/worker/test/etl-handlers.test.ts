@@ -21,6 +21,7 @@ function job(jobType: "etl_full" | "etl_incr", payload: Record<string, unknown>)
     credentialOwnerUserId: ownerUserId,
     status: "leased" as const,
     leaseUntil: null,
+    leaseToken: "44444444-4444-4444-8444-444444444444",
     attempts: 1,
     maxAttempts: 3,
     runAfter: new Date("2026-08-19T00:00:00Z"),

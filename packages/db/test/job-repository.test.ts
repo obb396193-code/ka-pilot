@@ -33,6 +33,7 @@ describe("JobRepository", () => {
     expect(leased[0]?.id).toBe(inserted.rows[0]?.id);
     expect(leased[0]?.status).toBe("leased");
     expect(leased[0]?.attempts).toBe(1);
+    expect(leased[0]?.leaseToken).toMatch(/^[0-9a-f-]{36}$/);
   });
 
   it("requeues retryable failures and terminally fails exhausted jobs", async () => {
@@ -45,7 +46,7 @@ describe("JobRepository", () => {
     const job = await repository.leaseNext(60);
     expect(job?.id).toBe(first.rows[0]?.id);
 
-    await repository.markRunning(job!.id);
+    await repository.markRunning(job!);
     await repository.markFailure(job!, "gateway timeout", new Date(Date.now() + 5_000));
     let state = await pool.query<{ status: string; last_error: string }>(
       "SELECT status, last_error FROM jobs WHERE id = $1",
@@ -80,7 +81,7 @@ describe("JobRepository", () => {
       [user.rows[0]?.id],
     );
     const job = await repository.leaseNext(60);
-    await repository.markBlockedAuth(job!.id, "credential expired");
+    await repository.markBlockedAuth(job!, "credential expired");
 
     const state = await pool.query<{
       status: string;
@@ -162,18 +163,18 @@ describe("JobRepository", () => {
 
   it("extends active leases and recovers only leases stale beyond the startup threshold", async () => {
     await pool.query("DELETE FROM jobs");
-    const inserted = await pool.query<{ id: string; job_type: string }>(`
-      INSERT INTO jobs (job_type, status, lease_until, attempts, max_attempts)
+    const inserted = await pool.query<{ id: string; job_type: string; lease_token: string }>(`
+      INSERT INTO jobs (job_type, status, lease_until, lease_token, attempts, max_attempts)
       VALUES
-        ('recover-me', 'running', now() - interval '11 minutes', 1, 3),
-        ('fail-me', 'leased', now() - interval '12 minutes', 3, 3),
-        ('still-fresh', 'running', now() - interval '5 minutes', 1, 3),
-        ('heartbeat', 'running', now() + interval '1 minute', 1, 3)
-      RETURNING id, job_type
+        ('recover-me', 'running', now() - interval '11 minutes', gen_random_uuid(), 1, 3),
+        ('fail-me', 'leased', now() - interval '12 minutes', gen_random_uuid(), 3, 3),
+        ('still-fresh', 'running', now() - interval '5 minutes', gen_random_uuid(), 1, 3),
+        ('heartbeat', 'running', now() + interval '1 minute', gen_random_uuid(), 1, 3)
+      RETURNING id, job_type, lease_token
     `);
     const heartbeat = inserted.rows.find((row) => row.job_type === "heartbeat")!;
 
-    await repository.extendLease(heartbeat.id, 120);
+    await repository.extendLease({ id: heartbeat.id, leaseToken: heartbeat.lease_token }, 120);
     const lease = await pool.query<{ extended: boolean }>(
       "SELECT lease_until > now() + interval '100 seconds' AS extended FROM jobs WHERE id = $1",
       [heartbeat.id],
@@ -193,5 +194,34 @@ describe("JobRepository", () => {
       { job_type: "recover-me", status: "queued" },
       { job_type: "still-fresh", status: "running" },
     ]);
+  });
+
+  it("rejects every state mutation from a worker whose lease was fenced out", async () => {
+    await pool.query("DELETE FROM jobs");
+    await pool.query("INSERT INTO jobs (job_type) VALUES ('fenced-job')");
+    const first = await repository.leaseNext(60);
+    if (!first) throw new Error("expected first lease");
+    await repository.markRunning(first);
+    await pool.query("UPDATE jobs SET lease_until = now() - interval '1 second' WHERE id = $1", [first.id]);
+
+    const second = await repository.leaseNext(60);
+    if (!second) throw new Error("expected second lease");
+    expect(second.leaseToken).not.toBe(first.leaseToken);
+
+    await expect(repository.extendLease(first, 60)).rejects.toThrow("no longer owned");
+    await expect(repository.markDone(first)).rejects.toThrow("no longer owned");
+    await expect(repository.markFailure(first, "late failure", new Date())).rejects.toThrow(
+      "no longer owned",
+    );
+    await expect(repository.markBlockedAuth(first, "late auth")).rejects.toThrow("no longer owned");
+
+    await repository.markRunning(second);
+    await repository.extendLease(second, 60);
+    await repository.markDone(second);
+    const state = await pool.query<{ status: string; lease_token: string | null }>(
+      "SELECT status, lease_token FROM jobs WHERE id = $1",
+      [first.id],
+    );
+    expect(state.rows[0]).toEqual({ status: "done", lease_token: null });
   });
 });

@@ -24,6 +24,7 @@ const baseJob = {
   credentialOwnerUserId: "22222222-2222-4222-8222-222222222222",
   status: "leased" as const,
   leaseUntil: null,
+  leaseToken: "44444444-4444-4444-8444-444444444444",
   attempts: 3,
   maxAttempts: 3,
   runAfter: new Date(),

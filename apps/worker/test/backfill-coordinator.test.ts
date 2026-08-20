@@ -59,6 +59,7 @@ describe("backfill coordinator", () => {
       credentialOwnerUserId: ownerId,
       status: "leased",
       leaseUntil: null,
+      leaseToken: "44444444-4444-4444-8444-444444444444",
       attempts: 1,
       maxAttempts: 3,
       runAfter: new Date(),

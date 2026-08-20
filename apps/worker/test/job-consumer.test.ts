@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { JobRecord, JobRepositoryPort } from "@ka/db";
+import { LostJobLeaseError, type JobRecord, type JobRepositoryPort } from "@ka/db";
 
 import { JobConsumer } from "../src/jobs/consumer.js";
 import { BlockedAuthError } from "../src/qihang/errors.js";
@@ -15,6 +15,7 @@ function job(overrides: Partial<JobRecord> = {}): JobRecord {
     credentialOwnerUserId: "user-1",
     status: "leased",
     leaseUntil: new Date(Date.now() + 60_000),
+    leaseToken: "11111111-1111-4111-8111-111111111111",
     attempts: 1,
     maxAttempts: 3,
     runAfter: new Date(),
@@ -40,9 +41,9 @@ describe("JobConsumer", () => {
     const consumer = new JobConsumer(repository, { etl_incr: handler });
 
     expect(await consumer.processOnce()).toBe(true);
-    expect(repository.markRunning).toHaveBeenCalledWith("job-1");
+    expect(repository.markRunning).toHaveBeenCalledWith(expect.objectContaining({ id: "job-1" }));
     expect(handler).toHaveBeenCalledTimes(1);
-    expect(repository.markDone).toHaveBeenCalledWith("job-1");
+    expect(repository.markDone).toHaveBeenCalledWith(expect.objectContaining({ id: "job-1" }));
   });
 
   it("marks credential failures blocked_auth without retry", async () => {
@@ -56,7 +57,7 @@ describe("JobConsumer", () => {
 
     await consumer.processOnce();
 
-    expect(repository.markBlockedAuth).toHaveBeenCalledWith("job-1", "expired");
+    expect(repository.markBlockedAuth).toHaveBeenCalledWith(currentJob, "expired");
     expect(repository.markFailure).not.toHaveBeenCalled();
   });
 
@@ -82,6 +83,19 @@ describe("JobConsumer", () => {
     expect(await consumer.processOnce()).toBe(false);
   });
 
+  it("stops without retrying after another worker fences out its lease", async () => {
+    const currentJob = job();
+    const repository = repositoryFor(currentJob);
+    vi.mocked(repository.markRunning).mockRejectedValue(new LostJobLeaseError(currentJob.id));
+    const handler = vi.fn(async () => undefined);
+    const consumer = new JobConsumer(repository, { etl_incr: handler });
+
+    expect(await consumer.processOnce()).toBe(true);
+    expect(handler).not.toHaveBeenCalled();
+    expect(repository.markFailure).not.toHaveBeenCalled();
+    expect(repository.markBlockedAuth).not.toHaveBeenCalled();
+  });
+
   it("keeps a long-running handler leased until it completes", async () => {
     vi.useFakeTimers();
     try {
@@ -101,10 +115,10 @@ describe("JobConsumer", () => {
 
       const processing = consumer.processOnce();
       await vi.advanceTimersByTimeAsync(11);
-      expect(repository.extendLease).toHaveBeenCalledWith("job-1", 60);
+      expect(repository.extendLease).toHaveBeenCalledWith(expect.objectContaining({ id: "job-1" }), 60);
       finish?.();
       await processing;
-      expect(repository.markDone).toHaveBeenCalledWith("job-1");
+      expect(repository.markDone).toHaveBeenCalledWith(expect.objectContaining({ id: "job-1" }));
     } finally {
       vi.useRealTimers();
     }

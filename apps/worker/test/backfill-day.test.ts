@@ -24,6 +24,7 @@ function leasedJob() {
     credentialOwnerUserId: ownerId,
     status: "leased" as const,
     leaseUntil: null,
+    leaseToken: "44444444-4444-4444-8444-444444444444",
     attempts: 1,
     maxAttempts: 3,
     runAfter: new Date(),

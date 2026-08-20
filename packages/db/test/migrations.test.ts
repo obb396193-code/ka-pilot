@@ -18,7 +18,7 @@ describe("contract migrations", () => {
   it("is replayable and creates the core tables and rolling partitions", async () => {
     const first = await runMigrations({ databaseUrl });
     const second = await runMigrations({ databaseUrl });
-    expect(first).toHaveLength(3);
+    expect(first).toHaveLength(4);
     expect(second).toHaveLength(0);
 
     const client = new Client({ connectionString: databaseUrl });
@@ -51,6 +51,7 @@ describe("contract migrations", () => {
       WHERE table_schema = 'public'
         AND (
           (table_name = 'metrics_raw' AND column_name IN ('resource', 'request_params'))
+          OR (table_name = 'jobs' AND column_name = 'lease_token')
           OR (
             table_name IN (
               'etl_runs', 'backfill_jobs', 'data_quality_checks',
@@ -66,6 +67,7 @@ describe("contract migrations", () => {
       { table_name: "data_quality_checks", column_name: "workspace_id" },
       { table_name: "etl_runs", column_name: "workspace_id" },
       { table_name: "inbound_events", column_name: "workspace_id" },
+      { table_name: "jobs", column_name: "lease_token" },
       { table_name: "metrics_raw", column_name: "request_params" },
       { table_name: "metrics_raw", column_name: "resource" },
       { table_name: "workflow_runs", column_name: "workspace_id" },
@@ -139,8 +141,8 @@ describe("contract migrations", () => {
     await client.query("DELETE FROM workspaces WHERE id IN ($1, $2)", [workspaceA, workspaceB]);
     await client.end();
 
-    await runMigrations({ databaseUrl, direction: "down", count: 3 });
+    await runMigrations({ databaseUrl, direction: "down", count: 4 });
     const replay = await runMigrations({ databaseUrl });
-    expect(replay).toHaveLength(3);
+    expect(replay).toHaveLength(4);
   });
 });
