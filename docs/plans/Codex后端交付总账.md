@@ -198,3 +198,13 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - 不做本地 ASR。`CloudAsrPort` 尚无供应商适配；真实视频帧也因未冻结受信任多模态 Provider/数据边界而保持阻断，Agent 不得假装看过图。
 - Worker 默认 287、Domain 235、DB 92、DingTalk 19 和 SDK opt-in 1 通过；B13 materials 覆盖率为 95.96%/86.75%/98.75%。真实 PG/migration 与真实 FFmpeg 生成视频门禁均通过。
 - 仍未完成：真实产品身份素材 E2E、云 ASR、受信任视觉 Provider、artifact/checkpoint 持久化、任务/API/DB/前端、素材相似检索与复刻、OS 商品/承接页/字幕后续实证。
+
+## 14. B14 单次整段 ASR 与临时 URL 租约真相
+
+- 老板已裁决一期先做诊断：每条视频只调用一次 IdeaLab 风格 ASR，不切块、不等待句级时间戳；因此当前只能做全文级文案与结构诊断。
+- `segment|whole_video` 精度已进入字幕、证据和 fingerprint；无时间戳结果只允许一个全片 `other` 分析段，拒绝虚构具体秒点或镜头归因。
+- `WholeTextCloudAsrAdapter` 已实现一次 transport 调用、严格 `{text}` 输出、Provider/profile 绑定和安全错误；真实 IdeaLab endpoint、AK、multipart 与配额契约尚未实现。
+- Handler 现在以稳定 `sourceRef` 领取临时签名 URL 后立即下载；每次重试重新领取，URL 不进入 checkpoint。OS/Multica source bridge 的真实协议仍待冻结。
+- Prompt 已升级 `teardown-v2` 并固定 SHA；真实视频帧外发仍保持 B13 阻断。
+- 代码终态 `6cea3d8`。默认回归 Domain 244 + DB 92 + Worker 297 + DingTalk 19 = 652；SDK opt-in 1 另行通过。Worker 全仓 92.57%/80.92%/95.71%，materials 96.30%/87.79%/98.90%。
+- 未修改公开 Contract、migration、生产 Runtime 或前端；未合并、未部署、未完成真实 IdeaLab/OS/产品身份 E2E。审查入口 P-021。

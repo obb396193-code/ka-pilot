@@ -576,3 +576,40 @@ main 9335150
 **质量真相**：Domain 235、DB 92、Worker 287、DingTalk 19 默认 tests；真实 SDK opt-in 1。真实 PostgreSQL/migration、真实 FFmpeg 生成视频与 localhost gateway E2E 通过；materials 95.96%/86.75%/98.75% 行/分支/函数覆盖；四包 type/lint/audit 与安全/冻结目录检查通过。
 
 **明确未完成**：合入 main、真实云 ASR、真实多模态 Provider、产品 Worker/FaaS 真实素材 E2E、持久 checkpoint/artifact、公开 API/DB/Job、前端、相似检索/复刻、部署/上线。OS 沙箱实证与本地伪上游均不得冒充产品生产联通。
+
+---
+
+### P-021 ⏳B14 单次整段 ASR 与临时 URL 租约待审计｜be（Codex）
+
+- 分支：`be/b14`
+- 基线：`be/b13@f0a0b9f`
+- 第五轮证据与设计：`446fa3f`
+- 实施计划：`7d6dfe8`
+- 字幕/证据/Prompt：`b830c92` → `19ccce9`
+- ASR adapter：`e7592b6`
+- URL 租约：`c740095`
+- 质检代码终态：`6cea3d8`
+- 状态：`docs/plans/B14-状态.md`
+- 质量：`docs/evidence/B14-代码质量报告.md`
+
+**老板裁决**：一期先做诊断，一条视频只调用一次 IdeaLab 风格 ASR；不切块、不做本地 ASR、不等待句级时间戳。产品必须显示这是整段转写，不能把全文台词伪定位到秒或镜头。
+
+**本批实现**：
+
+1. Domain 增加 `segment|whole_video` 精度，进入字幕、证据和 fingerprint；整段结果只允许一个覆盖全片的 `other` 分析段。
+2. Prompt 升级 `teardown-v2`，固定模板 SHA，明示全文钩子只是位置不确定的候选。
+3. `WholeTextCloudAsrAdapter` 每视频只调用一次可注入 transport，绑定 provider/model/profile；严格接受 `{text}`，非法输入/输出和 transport 错误 fail-closed 且脱敏。
+4. Handler 以稳定 opaque `sourceRef` 每次向 `MaterialUrlLeasePort` 领取新 candidate，再立即下载；同内容 SHA 可复用后续 checkpoint，但签名 URL 永不持久化。
+5. 未修改公开 contract、migration、生产 runtime 或前端；未实现真实 IdeaLab/OS 网络协议。
+
+**请重点审查/裁决**：
+
+1. 提供/确认 IdeaLab Audio `whisper-1` 正式调用契约：endpoint、AK secret reference、multipart 字段、文件/时长限制、超时、配额、费用和数据保留。
+2. 冻结 OS/Multica 稳定 `sourceRef` 与临时 URL 领取协议、服务身份和审计字段；当前端口不能被误写成已联通。
+3. 冻结拆片 Job/API/DB、checkpoint/artifact 保留、清理与重算契约后再注册生产 Runtime。
+4. 前端必须显示 `whole_video` 的“无句级时间戳”状态，禁用精确秒点跳转；未来换时间戳 ASR 时历史结果保留原精度。
+5. 真实投放帧的受信任多模态 Provider/egress 边界仍需单独裁决；本批继续阻断。
+
+**质量真相**：默认 Domain 244、DB 92、Worker 297、DingTalk 19，共 652 passed；SDK opt-in 1 passed。真实 PG/migration、localhost gateway E2E 与真实 FFmpeg 生成视频通过。Domain 95.97%/85.79%/99.27%，Worker 92.57%/80.92%/95.71%，materials 96.30%/87.79%/98.90%；四包 type/lint/audit、安全、复杂度和冻结目录门禁通过。
+
+**明确未完成**：真实 IdeaLab transport、OS source bridge、真实素材产品身份 E2E、视觉多模态外发、持久化 Job/API/DB、前端、合并、部署和上线。
