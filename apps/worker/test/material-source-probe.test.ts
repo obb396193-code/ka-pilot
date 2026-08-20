@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   MaterialSourceBlockedError,
   MaterialSourceProbe,
+  toMaterialSourceCandidate,
 } from "../src/sources/material-source-probe.js";
 
 const candidate = {
@@ -12,6 +13,20 @@ const candidate = {
 };
 
 describe("MaterialSourceProbe", () => {
+  it("normalizes a material-pool video row into a probe candidate", () => {
+    expect(toMaterialSourceCandidate({
+      signature: " material-signature ",
+      material_type: "video",
+      material_url: "https://cdn.example.com/video.mp4",
+    })).toEqual(candidate);
+
+    expect(() => toMaterialSourceCandidate({
+      signature: "material-signature",
+      material_type: "VIDEO",
+      material_url: null,
+    })).toThrow(MaterialSourceBlockedError);
+  });
+
   it("blocks every URL when no deployment host allowlist is configured", async () => {
     const fetchFn = vi.fn<typeof fetch>();
     const probe = new MaterialSourceProbe({ fetchFn, allowedHosts: [] });
@@ -106,6 +121,7 @@ describe("MaterialSourceProbe", () => {
 
   it.each([
     ["unknown length", { "content-type": "video/mp4" }, "unknown_length"],
+    ["zero length", { "content-type": "video/mp4", "content-length": "0" }, "unknown_length"],
     ["oversized", { "content-type": "video/mp4", "content-length": "9999" }, "content_too_large"],
     ["wrong type", { "content-type": "text/html", "content-length": "10" }, "content_type_not_allowed"],
   ])("blocks %s without exposing the URL", async (_label, headers, reason) => {
@@ -125,6 +141,16 @@ describe("MaterialSourceProbe", () => {
     expect(error).toBeInstanceOf(MaterialSourceBlockedError);
     expect(error).toMatchObject({ reason });
     expect(String(error)).not.toContain("cdn.example.com");
+  });
+
+  it("blocks direct IP sources even when someone tries to allowlist one", async () => {
+    const fetchFn = vi.fn<typeof fetch>();
+    const probe = new MaterialSourceProbe({ fetchFn, allowedHosts: ["169.254.169.254"] });
+    await expect(probe.inspect({
+      ...candidate,
+      materialUrl: "http://169.254.169.254/latest/meta-data",
+    })).rejects.toMatchObject({ reason: "host_not_allowed" });
+    expect(fetchFn).not.toHaveBeenCalled();
   });
 
   it("sanitizes transport failures so source URLs do not escape through errors", async () => {

@@ -7,6 +7,12 @@ import {
   requireAuthoritativeAdIds,
 } from "../src/sources/ad-identifiers.js";
 
+const mappingEvidence = {
+  kind: "os_set_equality_probe" as const,
+  fingerprint: "a".repeat(64),
+  verifiedAt: new Date("2026-08-20T07:30:00.000Z"),
+};
+
 describe("ad identifier evidence gate", () => {
   it("normalizes identifiers without exposing them in the evidence fingerprint", () => {
     const discovery = createAdIdentifierDiscovery({
@@ -14,6 +20,7 @@ describe("ad identifier evidence gate", () => {
       identifiers: [" unit-2 ", "unit-1", "unit-2"],
       completeness: "complete",
       mappingToAdId: "confirmed_equal",
+      mappingEvidence,
       observedAt: new Date("2026-08-20T08:00:00.000Z"),
     });
 
@@ -39,6 +46,7 @@ describe("ad identifier evidence gate", () => {
         identifiers: ["candidate-1"],
         completeness,
         mappingToAdId,
+        ...(mappingToAdId === "confirmed_equal" ? { mappingEvidence } : {}),
       });
 
       expect(() => requireAuthoritativeAdIds(discovery)).toThrowError(
@@ -53,11 +61,36 @@ describe("ad identifier evidence gate", () => {
       identifiers: ["ad-1", "ad-2"],
       completeness: "complete",
       mappingToAdId: "confirmed_equal",
+      mappingEvidence,
     });
 
     const ids = requireAuthoritativeAdIds(discovery);
     expect(ids).toEqual(["ad-1", "ad-2"]);
     expect(ids).not.toBe(discovery.identifiers);
+  });
+
+  it("does not allow a confirmed mapping flag without independent evidence", () => {
+    expect(() => createAdIdentifierDiscovery({
+      source: "os_structured_result",
+      identifiers: ["ad-1"],
+      completeness: "complete",
+      mappingToAdId: "confirmed_equal",
+    })).toThrow(AdIdentifierSourceError);
+  });
+
+  it("rejects a structurally forged discovery that bypassed the constructor", () => {
+    expect(() => requireAuthoritativeAdIds({
+      source: "os_structured_result",
+      identifiers: ["ad-1"],
+      completeness: "complete",
+      mappingToAdId: "confirmed_equal",
+      evidence: {
+        source: "os_structured_result",
+        identifierCount: 1,
+        fingerprint: "b".repeat(64),
+        observedAt: "2026-08-20T07:30:00.000Z",
+      },
+    })).toThrow(AdIdentifierSourceError);
   });
 
   it("enumerates structured pages to a stable total before creating evidence", async () => {
@@ -149,6 +182,7 @@ describe("ad identifier evidence gate", () => {
       identifiers,
       completeness: "complete",
       mappingToAdId: "confirmed_equal",
+      mappingEvidence,
     })).toThrow(AdIdentifierSourceError);
   });
 });

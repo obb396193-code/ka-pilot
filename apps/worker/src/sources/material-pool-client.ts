@@ -76,6 +76,13 @@ interface MaterialPage {
   totalNum: number;
 }
 
+interface MaterialPaginationState {
+  merged: Map<string, { row: MaterialPoolRow; canonical: string }>;
+  expectedTotal: number | null;
+  rawRowCount: number;
+  pageCount: number;
+}
+
 export class MaterialPoolClient {
   private readonly baseUrl: string;
   private readonly appCode: string;
@@ -91,63 +98,36 @@ export class MaterialPoolClient {
   private readonly now: () => Date;
 
   constructor(options: MaterialPoolClientOptions = {}) {
-    this.baseUrl = validatedBaseUrl(options.baseUrl ?? DEFAULT_BASE_URL);
-    this.appCode = requiredText(options.appCode ?? DEFAULT_APP_CODE, "appCode");
-    this.fetchFn = options.fetchFn ?? fetch;
-    this.sleep = options.sleep ?? ((milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)));
-    this.pageSize = boundedInteger(options.pageSize ?? 500, 1, 500, "pageSize");
-    this.maxPages = boundedInteger(options.maxPages ?? 1000, 1, 1000, "maxPages");
-    this.maxRows = boundedInteger(options.maxRows ?? 10_000, 1, 1_000_000, "maxRows");
+    this.baseUrl = validatedBaseUrl(valueOr(options.baseUrl, DEFAULT_BASE_URL));
+    this.appCode = requiredText(valueOr(options.appCode, DEFAULT_APP_CODE), "appCode");
+    this.fetchFn = valueOr(options.fetchFn, fetch);
+    this.sleep = valueOr(options.sleep, defaultSleep);
+    this.pageSize = boundedInteger(valueOr(options.pageSize, 500), 1, 500, "pageSize");
+    this.maxPages = boundedInteger(valueOr(options.maxPages, 1000), 1, 1000, "maxPages");
+    this.maxRows = boundedInteger(valueOr(options.maxRows, 10_000), 1, 1_000_000, "maxRows");
     this.maxResponseBytes = boundedInteger(
-      options.maxResponseBytes ?? 10 * 1024 * 1024,
+      valueOr(options.maxResponseBytes, 10 * 1024 * 1024),
       1,
       100 * 1024 * 1024,
       "maxResponseBytes",
     );
-    this.maxRetries = boundedInteger(options.maxRetries ?? 2, 0, 5, "maxRetries");
-    this.retryBaseMs = boundedInteger(options.retryBaseMs ?? 100, 1, 60_000, "retryBaseMs");
-    this.timeoutMs = boundedInteger(options.timeoutMs ?? 30_000, 1, 180_000, "timeoutMs");
-    this.now = options.now ?? (() => new Date());
+    this.maxRetries = boundedInteger(valueOr(options.maxRetries, 2), 0, 5, "maxRetries");
+    this.retryBaseMs = boundedInteger(valueOr(options.retryBaseMs, 100), 1, 60_000, "retryBaseMs");
+    this.timeoutMs = boundedInteger(valueOr(options.timeoutMs, 30_000), 1, 180_000, "timeoutMs");
+    this.now = valueOr(options.now, systemNow);
   }
 
   async listAll(query: MaterialPoolQuery): Promise<MaterialPoolResult> {
     const normalized = normalizeQuery(query);
-    const merged = new Map<string, { row: MaterialPoolRow; canonical: string }>();
-    let expectedTotal: number | null = null;
-    let rawRowCount = 0;
-    let pageCount = 0;
+    const state = createPaginationState();
 
     for (let pageNum = 1; pageNum <= this.maxPages; pageNum += 1) {
       const page = await this.fetchPage(normalized, pageNum);
-      pageCount = pageNum;
-      assertPageMetadata(page, pageNum, this.pageSize, expectedTotal);
-      expectedTotal ??= page.totalNum;
-      if (expectedTotal > this.maxRows) throw resourceLimit("Material row total exceeds limit");
-
-      rawRowCount += page.rows.length;
-      if (rawRowCount > this.maxRows) throw resourceLimit("Material row count exceeds limit");
-      if (rawRowCount > expectedTotal) throw protocolError("Material rows exceed reported total");
-      mergeRows(merged, page.rows);
-
-      if (rawRowCount === expectedTotal) break;
-      if (page.rows.length === 0) throw protocolError("Material pagination stopped before total");
-      if (pageNum === this.maxPages) throw resourceLimit("Material page count exceeds limit");
+      const complete = applyMaterialPage(state, page, pageNum, this.pageSize, this.maxRows);
+      if (complete) return buildMaterialResult(state, this.now);
+      assertMaterialPageCanContinue(page, pageNum, this.maxPages);
     }
-
-    if (expectedTotal === null) throw protocolError("Material pagination returned no page");
-    const rows = [...merged.values()].map(({ row }) => row);
-    const observedAt = this.now();
-    if (Number.isNaN(observedAt.valueOf())) throw protocolError("Material observation time is invalid");
-    return {
-      rows,
-      observation: {
-        pageCount,
-        rawRowCount,
-        uniqueRowCount: rows.length,
-        fingerprint: fingerprintRows(rows),
-        observedAt: observedAt.toISOString(),
-      },
-    };
+    throw protocolError("Material pagination is incomplete");
   }
 
   private async fetchPage(query: NormalizedQuery, pageNum: number): Promise<MaterialPage> {
@@ -192,6 +172,65 @@ export class MaterialPoolClient {
     url.searchParams.set("pageSize", String(this.pageSize));
     return url.toString();
   }
+}
+
+function createPaginationState(): MaterialPaginationState {
+  return {
+    merged: new Map(),
+    expectedTotal: null,
+    rawRowCount: 0,
+    pageCount: 0,
+  };
+}
+
+function applyMaterialPage(
+  state: MaterialPaginationState,
+  page: MaterialPage,
+  requestedPage: number,
+  requestedPageSize: number,
+  maxRows: number,
+): boolean {
+  assertPageMetadata(page, requestedPage, requestedPageSize, state.expectedTotal);
+  state.pageCount = requestedPage;
+  state.expectedTotal = valueOr(state.expectedTotal, page.totalNum);
+  if (state.expectedTotal > maxRows) throw resourceLimit("Material row total exceeds limit");
+  state.rawRowCount += page.rows.length;
+  if (state.rawRowCount > maxRows) throw resourceLimit("Material row count exceeds limit");
+  if (state.rawRowCount > state.expectedTotal) {
+    throw protocolError("Material rows exceed reported total");
+  }
+  mergeRows(state.merged, page.rows);
+  return state.rawRowCount === state.expectedTotal;
+}
+
+function assertMaterialPageCanContinue(
+  page: MaterialPage,
+  pageNum: number,
+  maxPages: number,
+): void {
+  if (page.rows.length === 0) throw protocolError("Material pagination stopped before total");
+  if (pageNum === maxPages) throw resourceLimit("Material page count exceeds limit");
+}
+
+function buildMaterialResult(
+  state: MaterialPaginationState,
+  now: () => Date,
+): MaterialPoolResult {
+  const rows = [...state.merged.values()].map(({ row }) => row);
+  const observedAt = now();
+  if (Number.isNaN(observedAt.valueOf())) {
+    throw protocolError("Material observation time is invalid");
+  }
+  return {
+    rows,
+    observation: {
+      pageCount: state.pageCount,
+      rawRowCount: state.rawRowCount,
+      uniqueRowCount: rows.length,
+      fingerprint: fingerprintRows(rows),
+      observedAt: observedAt.toISOString(),
+    },
+  };
 }
 
 function normalizeQuery(query: MaterialPoolQuery): NormalizedQuery {
@@ -319,4 +358,16 @@ function protocolError(message: string): MaterialPoolError {
 
 function resourceLimit(message: string): MaterialPoolError {
   return new MaterialPoolError("MATERIAL_RESOURCE_LIMIT", message);
+}
+
+function valueOr<T>(value: T | null | undefined, fallback: T): T {
+  return value === null || value === undefined ? fallback : value;
+}
+
+function defaultSleep(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+function systemNow(): Date {
+  return new Date();
 }

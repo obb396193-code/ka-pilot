@@ -42,6 +42,16 @@ export interface MaterialSourceProbeOptions {
   timeoutMs?: number;
 }
 
+export function toMaterialSourceCandidate(row: MaterialPoolRow): MaterialSourceCandidate {
+  const signature = row.signature.trim();
+  const materialType = row.material_type.trim().toUpperCase();
+  const materialUrl = row.material_url?.trim();
+  if (signature === "" || materialUrl === undefined || materialUrl === "") {
+    throw new MaterialSourceBlockedError("unsafe_url");
+  }
+  return { signature, materialType, materialUrl };
+}
+
 interface ProbeResponse {
   response: Response;
   redirectCount: number;
@@ -177,7 +187,8 @@ function hostMatches(hostname: string, pattern: string): boolean {
 
 function isForbiddenHost(hostname: string): boolean {
   const host = hostname.toLowerCase();
-  return host === "localhost" || host === "0.0.0.0" || host === "127.0.0.1" || host === "::1";
+  const unwrapped = host.startsWith("[") && host.endsWith("]") ? host.slice(1, -1) : host;
+  return host === "localhost" || isIP(unwrapped) !== 0;
 }
 
 function responseContentLength(response: Response, method: "HEAD" | "RANGE"): number | null {
@@ -192,7 +203,7 @@ function responseContentLength(response: Response, method: "HEAD" | "RANGE"): nu
 function safeLength(value: string | null): number | null {
   if (value === null || !/^\d+$/.test(value)) return null;
   const parsed = Number(value);
-  return Number.isSafeInteger(parsed) && parsed >= 0 ? parsed : null;
+  return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
 }
 
 function normalizedContentType(value: string | null): string {
@@ -226,3 +237,6 @@ function boundedInteger(value: number, minimum: number, maximum: number, name: s
   }
   return value;
 }
+import { isIP } from "node:net";
+
+import type { MaterialPoolRow } from "./material-schemas.js";
