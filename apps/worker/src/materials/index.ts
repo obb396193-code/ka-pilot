@@ -4,3 +4,4 @@ export * from "./media-process-runner.js";
 export * from "./teardown-analyzer.js";
 export * from "./teardown-handler.js";
 export * from "./teardown-prompt.js";
+export * from "./whole-text-cloud-asr.js";
