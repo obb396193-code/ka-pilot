@@ -1047,3 +1047,142 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - `node scripts/validate-knowledge-catalog.mjs`：通过；
 - `git diff --check`：通过；
 - `git ls-files private/knowledge-sources`：无输出。
+
+### P-KB-008 快手 MAPI 全量语料、CLI 覆盖与产品相关性增量审查｜research/knowledge（Codex）
+
+- 派活方：资料研究与知识资产 Agent（Codex）
+- 日期：2026-08-20
+- 状态：待处理
+- 关系：本条替代 `P-KB-007` 的“31 页首批证据”范围描述；`document_id` 仍为 `ka-src-0007`，不是第二份正文。
+
+#### 1. 角色注册与修改边界
+
+我是 **KA 投放经营平台“资料研究与知识资产 Agent”**，负责把内部/外部资料建设为“项目共享资料库 → 分析审查 → 批准后发布产品知识库”的同源资产。本角色注册提议见 `docs/relay/README.md` 与 `P-KB-001`；本条不假设审查人认识我，也不改变其他角色边界。
+
+- 可改：ignored 的 `private/knowledge-sources/`、`docs/knowledge/`、资料抓取/矩阵生成/校验脚本、自己的状态/台账和审查信箱追加项。
+- 不可改：冻结 PRD、Contract、前端/后端生产代码、媒体生产账户、其他角色边界；不替 arch 把研究候选直接变成产品承诺。
+- 本批只访问快手官方公开文档与本机 CLI 源码：未登录、未获取 token、未调用广告账户业务接口、未执行任何媒体写操作。
+
+#### 2. 分支、基线与提交
+
+- 分支：`codex/shared-source-library`
+- 独立 worktree：`/private/tmp/codex-shared-source-library.j1l066`
+- 基线：`ce1af69`
+- **本轮功能提交 SHA：`2faa8ea`**
+- 上一轮首批证据提交：`f8ffed6`；本轮用同一 `ka-src-0007` revision/hash 更新，不手工维护第二份来源正文。
+- 未修改 Claude 当前工作区 tracked 文件；未修改冻结 PRD/Contract 或生产代码。
+
+#### 3. 资料目录、索引与原始 storage_ref
+
+- `document_id`：`ka-src-0007`
+- 当前标题：《快手磁力引擎 DSP/MAPI 官方文档全量快照与 CLI 覆盖》
+- 当前版本：`dsp-current-and-legacy-2026-08-20`
+- 官方入口：https://developers.e.kuaishou.com/docs?docType=DSP
+- catalog：`docs/knowledge/catalog.jsonl`
+- 独立评估：`docs/knowledge/assessments/ka-src-0007.md`
+- 381 条机器能力矩阵：`docs/knowledge/datasets/ka-src-0007-capability-coverage.jsonl`
+- 聚合统计：`docs/knowledge/datasets/ka-src-0007-capability-summary.json`
+- Agent 检索说明：`docs/knowledge/agent-retrieval-guide.md`
+- 抓取器：`scripts/crawl-kuaishou-mapi-docs.mjs`
+- 覆盖矩阵生成器：`scripts/build-kuaishou-mapi-coverage.mjs`
+- `storage_ref`：`private/knowledge-sources/ka-src-0007/source-manifest.json`
+- worktree private：`/private/tmp/codex-shared-source-library.j1l066/private/knowledge-sources/ka-src-0007/`
+- 正式项目 private：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0007/`
+- manifest SHA-256：`42ca801ea1e2dfb0bd86f37db89d1bfdade75110af62d995c1e05582a3d35723`
+- canonical archive SHA-256：`5964328f906ba388629d705c146488409f58167b776372f28eda96703d61f604`
+- 状态：E1 / `public` / `review_pending` / `pending` / `not_ready`
+
+#### 4. Git、private 与凭证边界
+
+进入 Git：catalog 元数据、全量评估、381 条无凭证机器能力矩阵、聚合统计、检索/发布说明、可复现抓取与矩阵生成脚本、测试、状态台账和本审查单。
+
+只在 ignored private：当前/旧版完整目录、672 个逐页详情 JSON、29 个官方青雀富文本 HTML、逐文档/endpoint inventory、失败清单、708 条逐文件 hash manifest 和 canonical zip。完整网页快照不提交 Git，也不默认发布产品知识库。
+
+凭证清理：共清除 374 处 header 示例、322 处 token/secret assignment、4 处敏感参数示例值；保留字段名、接口说明和结构。catalog validator 对 708 个子文件逐项复扫通过。worktree 与正式项目 private 目录 `diff -qr` 无差异；`git ls-files private/knowledge-sources` 无输出。
+
+#### 5. 已确认事实、合理推断与未证实
+
+已确认事实：
+
+- 当前新版目录有 15 个一级分组、385 个文档挂载、381 个唯一 `documentId`；菜单标 356 个 API、29 个富文本。
+- 旧版目录有 17 个一级分组、296 个挂载、291 个唯一 `documentId`；672/672 个详情抓取成功，29/29 个当前外链富文本抓取成功。
+- 当前提取 352 个唯一 endpoint；旧版提取 276 条 endpoint 记录、271 个唯一值；239 个与当前路径完全相同，32 个只在旧版出现。
+- 本机 CLI 归档 SHA=`fe348e82...d332`；zip 文件名标 v1.0.2，代码 `__version__` 为 1.2.1。
+- CLI base URL 指向快手 MAPI；声明 25 个 endpoint 常量，23 个存在源码调用链，2 个只有常量未暴露命令。
+- 25/25 个 CLI endpoint 均能与当前官方目录精确匹配。因此 CLI 底层确实使用 MAPI，但只是官方能力的子集。
+- README 宣称存在 `raw` 命令，实际 `__main__.py` 没有注册；不能以 README 说明推断可任意透传。
+- 对当前目录的静态覆盖为：23 `wrapped_reachable`、2 `declared_not_exposed`、327 `not_wrapped`、29 富文本 `not_applicable`。
+
+合理推断（待审查）：
+
+- 奇航继续承担一期既定数据主链路；MAPI 作为快手官方能力上限、执行/结构/素材/回查底座，两者不是替代关系。
+- CLI 缺失端点可以按 `constants + client + command` 模式按需补壳；但不应为追求数量一次性封装 327 条。
+- 机器初筛把 381 条分为 59 一期候选、249 后续条件候选、73 参考或排除，能作为业务 owner/架构二次裁剪的起点。
+- 一期最值得补的是 campaign update/status、unit budget、creative update/status/review、四层实时 report；其余按明确产品场景进入后续。
+
+未证实：
+
+- 本公司 AppID/广告账户实际 scope、白名单和每个 endpoint 的授权状态；矩阵 `required_scope` 暂为 `requires_mapping`。
+- CLI 23 个可达端点在当前沙箱代理与测试账户是否全部运行正常。
+- MAPI 与奇航在字段、时效、结算口径上的一致性；MAPI 报表不能据此替换奇航。
+- 327 个未封装 endpoint 的公司账户可用性、当前生产路径和实际业务价值。
+- 官方冲突项的生产真实方法/上限；媒体原生自动化对实验流量和共享学习的影响。
+- 非公开或白名单实验能力是否存在；公开目录仍不足以证明严格 A/B 分流能力。
+
+#### 6. 对产品的处置建议
+
+建议融合进下一版 PRD/Contract **候选**，本批不直接修改：
+
+- Capability Registry 支持 `official_document_id/version/updated_at/endpoint/scope/whitelist/risk/limit/cli_status/verification_state`；
+- 运行状态明确拆分 `documented → authorized → wrapped → verified`；
+- 59 条一期候选由业务 owner 二次裁剪，只把批准项注册为运行能力；
+- 变更集继续执行预览、确认、幂等、回查和 T+1 回收，不因新增 CLI 壳降低写操作门槛；
+- 实验对象明确媒体自动化开关冻结策略。
+
+建议只进入知识库/研发证据：
+
+- 672 篇新旧版文档的受控索引、版本兼容与 deprecated 识别；
+- 381 条能力矩阵、CLI 25 条静态覆盖、README/raw 和版本标签冲突；
+- 249 条后续条件候选，在发生明确需求时检索，不进入默认一期范围；
+- scope/QPM/错误码/频控/创建限制和官方冲突证据。
+
+建议驳回：
+
+- 用 MAPI 替代奇航一期主数据链路；
+- 一次性封装全部 327 个缺失 endpoint；
+- 代理商开户/充值/转账/退款、共享钱包资金写进入当前 KA 产品；
+- CRM 外呼、企微成员、第三方支付进入当前产品或 Agent 工具；
+- 10 个已下线/旧版能力新增封装；
+- 因 `documented` 就宣称 `authorized/verified`；
+- Agent 绕过确认门直接改预算、出价、状态或删除对象；
+- 把媒体原生智能托管或多计划构造宣称为我方严格 AI 实验闭环。
+
+#### 7. 产品知识库发布建议
+
+当前**不允许发布到产品知识库**：catalog 保持 `review_pending/not_ready`。请 arch 先审查来源完整性、机器分类边界、CLI 静态审计和 59 条一期候选的二次裁剪方式。
+
+若后续批准：建议发布无凭证结构化摘要、381 条机器矩阵和官方链接；完整 672 篇网页快照继续受控留在项目 private，不把整站镜像复制为产品正文。产品内 Agent 即使检索到已批准知识，也必须再查运行时 Capability Registry，不能凭知识文档直接执行媒体写操作。
+
+#### 8. 请 arch 审查并回写 ✅/❌
+
+1. 是否接受 `P-KB-008` 替代 `P-KB-007` 的范围描述，并认可同一 `ka-src-0007` revision/hash 更新？
+2. 是否批准 672 篇全量快照为 E1 资料、381 条矩阵为未审查分析附件；是否允许升为 `reviewed`？
+3. 是否接受 CLI 静态结论：代码 1.2.1、25 常量、23 reachable、2 declared-only、327 未封装、raw 未注册？
+4. 是否确认“奇航主读取链路不变，MAPI/CLI 按需补执行、结构、素材和回查能力”？
+5. 59 条一期候选是否必须由业务 owner 二次裁剪；素材共享、AI 推荐、广告语推荐是否移出一期？
+6. 是否批准优先补 campaign update/status、unit budget、creative update/status/review、四层实时 report 的候选顺序？
+7. 谁负责在授权测试账户上做 `authorized/verified` 探针，以及 scope 映射？
+8. 是否明确驳回代理商资金、共享钱包、CRM/企微/支付和已下线能力进入当前产品？
+9. 381 条矩阵获批后能否作为产品知识库机器附件；完整网页快照是否继续只留项目 private？
+10. 是否建立月度或按版本触发的官方目录复抓/hash diff；失败和下线如何通知执行/架构 Agent？
+11. 实验模式是否继续默认冻结 `auto_build/auto_adjust/auto_manage`，等待流量与统计专项补证？
+12. 审查完成后请回写审查人、时间、逐项结论、可融合项、仅知识项、驳回项、补证清单和产出 SHA；未批准前不要修改冻结 PRD/Contract。
+
+#### 9. 验证
+
+- 本轮功能提交：`2faa8ea`；`git show --stat` 已自查。
+- 23/23 Node 测试通过（catalog + 抓取器 + 覆盖生成器）。
+- catalog/bundle validator 通过，逐项核验 708 个子文件、manifest、archive hash 与凭证形态。
+- 381/381 capability_id 唯一；CLI 25/23/2 汇总与逐条矩阵一致。
+- worktree 与正式项目 private `diff -qr` 无差异。
+- `git diff --check` 通过；`git ls-files private/knowledge-sources` 无输出。

@@ -43,7 +43,7 @@
 - [x] 28. 校验、功能提交与 `P-KB-007` 交审
 - [x] 29. 将 `ka-src-0007` 从 31 页首批证据扩展为当前 DSP/MAPI 完整目录与逐页快照
 - [x] 30. 实读 `kuaishou-cli`，形成官方接口全集 × CLI 覆盖 × 产品用途差异矩阵
-- [ ] 31. 校验、功能提交与增量审查回执
+- [x] 31. 校验、功能提交与增量审查回执
 
 ## 完成记录
 
@@ -80,7 +80,8 @@
 - 2026-08-20：完成当前+旧版全量抓取：381+291=672 个唯一文档全部成功，另抓 29 个官方青雀富文本 HTML；提取当前 352、旧版 276 条 endpoint 记录。合规清除 374 处 header、322 处 token/secret assignment、4 处敏感参数示例值，保留字段名与说明；708 个归档条目由 manifest 逐文件 hash，archive hash=`5964328f...f604`。
 - 2026-08-20：实读 `kuaishou-cli` 本机资产。zip 文件名 v1.0.2、代码版本 1.2.1；声明 25 个 MAPI endpoint，23 个存在命令调用链、2 个只定义未暴露，25/25 均与当前官方目录精确匹配。README 宣称 `raw`，但 `__main__.py` 未注册。当前官方 352 endpoint 中 327 未封装；这说明 CLI 是 MAPI 子集，可按需扩展，但不能把 documented 当 authorized/verified。
 - 2026-08-20：生成 381 条机器能力矩阵并逐条标记 endpoint/版本/CLI 状态/读写风险/产品相关性/路线图/采用动作：59 一期候选、249 后续条件候选、73 参考或排除。明确排除代理商资金、共享钱包、CRM 外呼/企微成员、第三方支付和已下线能力；奇航继续做一期数据主链路。
+- 2026-08-20：23/23 测试、catalog/bundle validator、381 条矩阵基数、708 子文件 hash/凭证形态、双份 private diff、ignore/未跟踪和 diff check 通过；功能 SHA=`2faa8ea`。`P-KB-008` 自包含提交全量语料、CLI 静态审计、产品相关性、发布边界和 12 项 arch 裁决问题。
 
 ## 当前状态
 
-`ka-src-0001~0007` 已完成入库评估；`ka-src-0007` 已升级为完整公开目录快照与 CLI 覆盖评估，等待增量审查回执。全部资料仍 `review_pending / not_ready`；未修改冻结 PRD/Contract/生产代码。
+`ka-src-0001~0007` 已完成入库评估；`ka-src-0007` 已升级为完整公开目录快照与 CLI 覆盖评估，`P-KB-008` 已交审。全部资料仍 `review_pending / not_ready`；停止融合与开发，等待 arch/security 裁决。未修改冻结 PRD/Contract/生产代码。
