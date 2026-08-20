@@ -53,7 +53,7 @@ function film(): FilmAnalysisResult {
 function analysis(evidenceFingerprint: string, model = "model-a"): WorkerAnalysis {
   const analysisFingerprint = fingerprintMaterialTeardownAnalysis({
     evidenceFingerprint,
-    promptVersion: "teardown-v1",
+    promptVersion: "teardown-v2",
     schemaVersion: "1",
     providerId: "provider-a",
     model,
@@ -76,7 +76,7 @@ function analysis(evidenceFingerprint: string, model = "model-a"): WorkerAnalysi
     },
     analysisFingerprint,
     evidenceFingerprint,
-    promptVersion: "teardown-v1",
+    promptVersion: "teardown-v2",
     promptTemplateSha256: "a".repeat(64),
     schemaVersion: "1",
     providerId: "provider-a",
@@ -88,7 +88,7 @@ function analysis(evidenceFingerprint: string, model = "model-a"): WorkerAnalysi
 
 function profile(model = "model-a") {
   return {
-    promptVersion: "teardown-v1",
+    promptVersion: "teardown-v2",
     schemaVersion: "1",
     providerId: "provider-a",
     model,

@@ -33,7 +33,7 @@ function evidence() {
       averageShotLengthMs: 1_500,
       hookVisualDensity: 1,
     },
-    promptVersion: "teardown-v1",
+    promptVersion: "teardown-v2",
     schemaVersion: "1",
   });
 }
@@ -52,6 +52,51 @@ function validOutput() {
     ],
     replicationSuggestions: ["复用问题开场结构，不搬运原素材"],
     uncertainties: ["视觉帧尚未授权给模型，无法判断具体画面"],
+  };
+}
+
+function wholeVideoEvidence() {
+  return createMaterialTeardownEvidence({
+    media: { contentSha256: "e".repeat(64), durationMs: 3_000, width: 1080, height: 1920 },
+    transcript: parseTranscriptTimeline({
+      durationMs: 3_000,
+      source: "cloud_asr",
+      timingPrecision: "whole_video",
+      segments: [{ startMs: 0, endMs: 3_000, text: "完整文案包含问题和解决方案" }],
+    }),
+    shots: [{
+      startMs: 0,
+      endMs: 3_000,
+      frame: { index: 0, status: "placeholder", reason: "frame_extract_failed" },
+    }],
+    visualSummary: {
+      hardCutCount: 0,
+      visualEventCount: 0,
+      averageShotLengthMs: 3_000,
+      hookVisualDensity: 0,
+    },
+    promptVersion: "teardown-v2",
+    schemaVersion: "1",
+  });
+}
+
+function wholeVideoOutput() {
+  return {
+    summary: "全文包含问题和解法，但无法逐句定位。",
+    hook: { kind: "other", text: "钩子候选位置不确定", evidenceIds: ["transcript-0000"] },
+    sellingPoints: [{ text: "提供解决方案", evidenceIds: ["transcript-0000"] }],
+    audiences: ["遇到该问题的人群"],
+    rhythm: { description: "仅能依据镜头边界", evidenceIds: ["shot-0000"] },
+    cta: { text: "全文无明确行动号召", evidenceIds: ["transcript-0000"] },
+    segments: [{
+      startMs: 0,
+      endMs: 3_000,
+      role: "other",
+      description: "整段诊断",
+      evidenceIds: ["transcript-0000", "shot-0000"],
+    }],
+    replicationSuggestions: ["复用全文表达逻辑"],
+    uncertainties: ["整段转写没有句级时间戳"],
   };
 }
 
@@ -87,6 +132,24 @@ describe("TeardownAnalyzer", () => {
     const second = await new TeardownAnalyzer(port(validOutput(), "model-b")).analyze(evidence());
 
     expect(second.analysisFingerprint).not.toBe(first.analysisFingerprint);
+  });
+
+  it("accepts whole-video diagnosis but rejects fabricated precise segments", async () => {
+    await expect(new TeardownAnalyzer(port(wholeVideoOutput())).analyze(wholeVideoEvidence()))
+      .resolves.toMatchObject({ result: { segments: [{ startMs: 0, endMs: 3_000 }] } });
+
+    await expect(new TeardownAnalyzer(port({
+      ...wholeVideoOutput(),
+      segments: [
+        { ...wholeVideoOutput().segments[0], endMs: 1_000 },
+        { ...wholeVideoOutput().segments[0], startMs: 1_000 },
+      ],
+    })).analyze(wholeVideoEvidence())).rejects.toMatchObject({ reason: "invalid_output" });
+
+    await expect(new TeardownAnalyzer(port({
+      ...wholeVideoOutput(),
+      segments: [{ ...wholeVideoOutput().segments[0], role: "hook" }],
+    })).analyze(wholeVideoEvidence())).rejects.toMatchObject({ reason: "invalid_output" });
   });
 
   it("rejects free-form, unknown fields and invalid evidence references", async () => {

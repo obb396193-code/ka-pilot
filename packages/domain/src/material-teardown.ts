@@ -301,7 +301,8 @@ function validateResultTimingPrecision(
       evidence.transcriptEvidence.length !== 1 ||
       segments.length !== 1 ||
       segments[0]?.startMs !== 0 ||
-      segments[0]?.endMs !== evidence.media.durationMs
+      segments[0]?.endMs !== evidence.media.durationMs ||
+      segments[0]?.role !== "other"
     )
   ) {
     throw new MaterialTeardownError("invalid_result");
