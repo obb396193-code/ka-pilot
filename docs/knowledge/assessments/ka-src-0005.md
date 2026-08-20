@@ -214,4 +214,3 @@
 8. 是否要求 security 对包内基础设施、账户、数据库表名和历史 signed URL 做专项审查？
 9. 包内 `PUBLIC` 标识是否有正式许可依据；若无，是否一律按 internal confidential？
 10. `ka-src-0005` 是否允许升为 reviewed；是否明确禁止整包发布到产品知识库？
-

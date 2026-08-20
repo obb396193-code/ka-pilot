@@ -327,6 +327,7 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 - `git ls-files private/knowledge-sources/ka-src-0002/source.txt`：无输出；
 - `git diff --check`：通过。
 
+
 ---
 
 ### P-KB-003 快手媒体能力 + 渠道调控工作流两篇 confidential 资料审查｜research/knowledge（Codex）
@@ -466,3 +467,169 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 - `git ls-files private/knowledge-sources/ka-src-0003/source.txt private/knowledge-sources/ka-src-0004/source.txt`：无输出；
 - 评估内内部链接/长业务编号泄露检查：无命中；
 - `git diff --check`：通过。
+
+
+---
+
+### P-KB-004 内部文档包 v2 + 快手广告创建 Excel 资料审查｜research/knowledge（Codex）
+
+- 派活方：资料研究与知识资产 Agent（Codex）
+- 日期：2026-08-20
+- 状态：待处理
+
+#### 1. 角色注册与职责边界
+
+我是 **KA 投放经营平台“资料研究与知识资产 Agent”**，负责“内部/外部资料→私有原始资料→共享 catalog/评估→arch/security 审查→批准后发布产品知识库”的同源资产链。角色注册提议仍在 `P-KB-001` 与 `docs/relay/README.md` 待裁决，本条不假设审查 Agent 认识我，也不扩大任何既有角色权限。
+
+- 可改：Git 忽略的 `private/knowledge-sources/`、`docs/knowledge/`、资料校验器、自己的状态/台账；只向本信箱追加审查事项。
+- 不可改：冻结 PRD、Contract、前端/后端生产代码和其他角色边界；不替 arch/security 把研究结论变成正式口径或可执行能力。
+- 凭证红线：Token、Cookie、AK/SK、PAT、Webhook Token、数据库密码和 signed URL 访问签名不得进入 canonical 或 Git。
+
+#### 2. 分支、基线与功能提交
+
+- 分支：`codex/shared-source-library`
+- 独立 worktree：`/private/tmp/codex-shared-source-library.j1l066`
+- 基线：`ce1af69`（不含 Claude 当前脏工作区未提交改动）
+- **本批功能 SHA：`c10094a`**
+- 资料库框架 SHA：`7731070`
+- 未修改冻结 PRD、Contract、前端、后端生产代码；未修改其他角色边界。
+
+#### 3. 本批输入和去重
+
+老板在 Claude 当前工作区项目根目录新下载 3 个文件：
+
+1. `ka-platform-docs-v2.zip`；
+2. `INDEX.md`；
+3. `快手广告创建指令模板.xlsx`。
+
+`INDEX.md` 与压缩包内导读逐字节一致，hash=`87a1445f...2247`，只作为 `ka-src-0005` 的重复附件，不另分配 `document_id`。原下载入口文件未加入本分支 Git；本分支 `.gitignore` 增加了根目录 zip/INDEX 防误提交，Excel 已由 `*.xlsx` 规则忽略。
+
+#### 4. `ka-src-0005` 资料包位置、状态与安全处理
+
+- 标题：《KA 投放经营平台内部文档包 v2》
+- catalog：`docs/knowledge/catalog.jsonl`
+- 评估：`docs/knowledge/assessments/ka-src-0005.md`
+- `storage_ref`：`private/knowledge-sources/ka-src-0005/source-manifest.json`
+- canonical 私有目录：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0005/`
+- manifest hash：`f26a3d88c03f185a0bccc29307a7ebdd706657e1f9655c861cd23e0c92d060da`
+- sanitized archive hash：`33bfb76477cb8a170da71a811d470ce16aaad925b65a122552b860192b3a1127`
+- 原下载 archive hash：`0d250a5a0f7057c64811f4069a800e224cd19bd9c640924741e1157c2847c3e8`
+- 状态：E3 / `confidential` / `review_pending` / `not_ready`
+- allowed_roles：`product_owner/research_knowledge/architecture_review/security_review`
+
+原包安全事实：729 entries＝671 文件+58 目录；无路径穿越、符号链接、加密条目或重复路径。原包含 signed URL 中的访问标识/签名形状，不能直接入库。canonical 清除了 128 处 access-key query、128 处 signature query、1 处 AK ID 形状和 3 处 named-secret assignment；清除后 671 文件凭证复扫 0。manifest 记录逐文件 path/hash/size/change flag；同级保留可检索 `extracted/` 和 sanitized archive。
+
+质量事实：22 个零字节文件、42 个小于 100 字节的文件、11 个含 NUL 字节的文件；44 个文件落在 11 组重复内容。导读“约 730 篇”实际把目录和文件 entry 混算，不能作为有效文章数。
+
+#### 5. `ka-src-0006` Excel 位置、状态与核验
+
+- 标题：《快手广告创建指令模板》
+- catalog：`docs/knowledge/catalog.jsonl`
+- 评估：`docs/knowledge/assessments/ka-src-0006.md`
+- `storage_ref`：`private/knowledge-sources/ka-src-0006/source.xlsx`
+- canonical 私有路径：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0006/source.xlsx`
+- hash：`3314226789f0e8f66dcd932f038c386f09f5c14983e8d4c40e7969ae0e662ab9`
+- 状态：E3 / `confidential` / `review_pending` / `not_ready`
+- allowed_roles：`product_owner/research_knowledge/architecture_review/security_review`
+
+Excel 安全/功能事实：3 个 sheet、3 个表格对象；无 VBA、外链 part、OLE 和凭证形态。含真实内部账户/任务/素材配置和可生成写操作指令的字段；默认 100 组并预置 20 行。关键字段为空时仍会生成指令，没有权限、限额、预算暴露、dry-run、幂等、执行回执或效果回收。
+
+公式事实：原文件无 cached value；Artifact Tool 与隔离 LibreOffice 均对 8 个 lookup 单元格得到 `#NAME?`，Microsoft Excel 目标环境尚未补证；另有下拉值清空时的自引用/循环风险。不能把该文件当作已验证生产工具。
+
+#### 6. 哪些内容进入 Git，哪些只留私有区
+
+进入 Git：
+
+- 两条 catalog 记录；
+- 两篇独立 20 项评估；
+- 多文件资料包录入/检索/发布规则；
+- bundle manifest/子文件/archive 校验逻辑和测试；
+- 状态、台账和本审查事项。
+
+只留私有区：
+
+- `ka-src-0005` manifest、sanitized archive 和 671 个 extracted 子文件；
+- `ka-src-0006` 完整 Excel 原件；
+- 精确内部下载 URL（只在私有 manifest）；
+- 包内真实账户/系统/数据库/内部链接和基础设施细节。
+
+Git 评估没有复制包内内部 URL、真实 ID 或高风险参数值。一般 development 不在两篇 allowed_roles。
+
+#### 7. 事实、推断、宣传与未证实边界
+
+已确认事实：
+
+- EVO 子资料明确实验设计、流量规划、联调、发布、分析、人工推全/下线和结果报告阶段；
+- 用户增长目录多数是 43 条摘要索引，不是 43 篇完整正文；
+- 当前一期取数主通路是奇航 `get_data`，不是 FBI；
+- Excel 是“人填策略/参数→工具拼指令”的白盒执行样本；当前产品设计仍是可控自治灰盒。
+
+合理推断（待裁决）：
+
+- EVO 流程可补强 `ka-src-0001` 的 Experiment Copilot，但它恰好说明实验设计不要求实时黑盒调控；
+- 资料包应按子文档逐篇提升，不能整包向量化/发布；
+- Excel 字段和三层交互可帮助定义 `create_ad` schema、配置套餐和 Prompt Compiler，但自然语言不能成为执行合同。
+
+宣传性表达：导读的“约 730 篇”“全套”“直接套”“摘要足够知道全文”等未当事实。
+
+未证实：包内每篇作者/版本/有效期/许可；EVO 对快手分流能力；FBI/O2/AIStudio 当前接口；43 条摘要全文；Excel 作者/目标 Microsoft Excel/真实 CLI UAT；配置 ID、限额和套餐有效性。
+
+#### 8. 产品处置建议
+
+建议进入下一版 PRD/Contract 候选（本批不直接改）：
+
+- Experiment Copilot 增加设计→流量规划→联调→发布→分析→决策→报告状态，以及安全终止/不可判定；
+- 基建 Capability schema 补字段类型、必填、枚举、默认版本、媒体限额、权限和风险等级；
+- Prompt Compiler 输出结构化 payload + diff + 人类解释，执行仍走 changeset/dry-run/确认；
+- 配置套餐增加 revision/owner/ACL/适用范围/失效状态；
+- 知识资产支持 bundle manifest 和子文档提升。
+
+只建议进入资料库/研究路线：
+
+- FBI/O2/AIStudio/项目管理/历史广告白皮书原文；
+- 用户增长 43 条摘要；
+- Excel 原件和当前公式实现；
+- 资料包整体及导读判断。
+
+建议明确驳回：
+
+- 整包直接发布或进入产品 Agent 默认召回；
+- 把摘要当正式接口/产品证据；
+- 把 FBI 改成一期主数据通路；
+- 自然语言字符串直接执行、空字段仍生成、100 组默认、“其他默认”；
+- 高风险参数进入 Capability Registry、工作流、模板或 Agent 建议；
+- 把实验中途任意调流包装成普通 A/B 结论。
+
+#### 9. 产品知识库发布建议
+
+- `ka-src-0005`：不允许整包发布；最多升为 reviewed 的受控研究包。需要发布的 EVO/FBI/投放子文档必须另分配 document_id、版本、hash、ACL 和审查。
+- `ka-src-0006`：不建议原件发布；若有价值，派生一份去 ID、去高风险字段、带正式 schema 的“快手基建参数字典”，作为新资产单独审查。
+- 两篇当前均保持 `not_ready`，不得进入产品内 Agent 默认可信知识。
+
+#### 10. 请 arch/security 审查并回写 ✅/❌
+
+1. 两篇 E3/`confidential`/allowed_roles/`not_ready` 是否正确，是否进一步收紧？
+2. manifest 作为资料包 `storage_ref`、逐文件 hash、sanitized archive 和 `extracted/` 模式是否批准？
+3. bundle validator 是否足以作为多文件资料包门禁？
+4. 原下载包含已清除的 signed URL 凭证形状；是否要求工作区责任方把根目录原包移出或销毁？
+5. 是否确认重复 `INDEX.md` 不另分配 document_id？
+6. 哪些子文档优先提升：EVO A/B、FBI 嵌入、SaaS 广告投放摘要、O2 Next.js、AIStudio API？
+7. EVO 是否可进入 Experiment Copilot 下一版候选；固定测量期与实时调控如何裁决？
+8. 是否确认 FBI 只做后续备选，不改变一期奇航主通路？
+9. Excel 哪些字段可进入 `create_ad` schema，100 组默认/“其他默认”是否明确驳回？
+10. 是否对高风险参数维持 deny/quarantine，并由 security/compliance 专项裁决？
+11. 是否批准派生“去 ID/去高风险字段的快手基建参数字典”进入下一轮审查？
+12. 是否只允许两篇升为 reviewed，明确禁止原件/整包 published？
+13. 需要补索哪些作者、版本、当前接口、官方文档、UAT 和授权证据？
+14. 审查完成后请回写审查人、时间、逐项结论、可发布范围、补证清单和产出 SHA；未批准前不要修改冻结 PRD/Contract。
+
+#### 11. 已完成验证
+
+- `node --test scripts/validate-knowledge-catalog.test.mjs`：15/15 通过；
+- `node scripts/validate-knowledge-catalog.mjs`：通过；
+- 671 个子文件 hash、凭证复扫和 sanitized archive hash：通过；
+- Excel 宏/外链/OLE/凭证扫描：0；
+- `git check-ignore`：两篇 canonical 命中；
+- `git ls-files private/knowledge-sources`：无输出；
+- Git 评估内内部 URL/真实 ID/高风险参数值泄露扫描：无命中；
+- `git diff --check`：提交前复核通过。

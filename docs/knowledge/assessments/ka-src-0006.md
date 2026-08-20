@@ -212,4 +212,3 @@ Excel 用结构化表单生成 `ks-create-ad-script` 的自然语言基建指令
 8. 是否需要作者在 Microsoft Excel 和真实 CLI 环境补 UAT 与失败样本？
 9. 是否允许派生去 ID/去高风险字段的“快手基建参数字典”进入后续审查？
 10. `ka-src-0006` 是否只允许 reviewed、禁止原件发布到产品知识库？
-
