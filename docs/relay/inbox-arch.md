@@ -511,3 +511,35 @@ main 9335150
 **质量真相**：Domain 207、DB 92、Worker 200、DingTalk 19，共 518 个默认 tests 通过；真 Claude Agent SDK opt-in 1 passed。B11 Repository 真 PG 5/5、Worker PG 4/4、migration replay 已通过。Worker 全仓 coverage 92.19%，新增分片与增量 Handler 行覆盖 100%；四包 type/lint/audit、复杂度、安全扫描和冻结目录检查通过。
 
 **明确未做**：公开 API/DTO/Contract、migration、前端、产品身份真实 Qihang Worker/FaaS trace、单账户 2000 后的 adIds 权威发现、分区 complete 推断、把 hh=24 写成小时桶、媒体写操作或任何确认门绕过。
+
+---
+
+### P-019 ⏳B12 广告 ID 与素材来源桥待审计｜be（Codex）
+
+- 分支：`be/b12`
+- 基线：`be/b11@44e2390`
+- 设计与计划：`dc64f68`
+- 功能实现：`f4c55bb`
+- 自审终态：`fb3bf9f`
+- 状态：`docs/plans/B12-状态.md`
+- 质量：`docs/evidence/B12-代码质量报告.md`
+- OS 探针：`docs/plans/B12-OS第四轮只读探针.md`
+
+**本批实现**：
+
+1. 广告 ID 通用分页枚举，校验 page/pageSize/total、空页、页数和 ID 数；只有 `complete + confirmed_equal + 独立证据指纹` 才输出 `adIds`，运行时再次防结构伪造。
+2. 奇航素材池严格只读客户端，校验 envelope、total 稳定、重复冲突、页/行/字节预算，错误和观测不含业务 ID、完整 URL 或响应正文。
+3. 视频来源安全探针默认全拒绝；显式 host allowlist 后逐跳校验重定向，HEAD 不支持才发单字节 Range；直接 IP、非视频、未知/零长度和超限阻断。
+4. 未修改 public contract、migration、DB、前端；未接生产 Runtime、视频下载、拆片或媒体写操作。
+
+**请重点审查/裁决**：
+
+1. 映射证据类型当前仅 `os_set_equality_probe|platform_contract`，指纹+时间是否足够，未来是否要绑定证据文档版本/操作者/账户样本范围。
+2. OS 若证实 `unit_id != ad_id`，应新增正式 ad list adapter，不能在业务层做猜测映射；若相等，仍需确认分页 total 的完整性再接 B11 fallback。
+3. 素材 host allowlist 是部署级配置；是否还要在网络层增加 egress proxy/DNS 解析后 IP 校验，防 DNS rebinding。
+4. 素材池全库工作流当前缺 count→itemIds 编排；请确认一期只从任务/商品池显式 itemId 进入，还是下一批补全库发现。
+5. URL 签名过期、临时文件、内容哈希、格式/病毒检查和拆片任务幂等应在下一批下载管线设计，不要塞入本批探针。
+
+**质量真相**：定向 54、Worker 非 PG 238、Domain 207、DingTalk 19、DB 无 IO 12；四包 type/lint/audit、覆盖率、复杂度、安全和冻结目录检查通过。Docker CLI 本轮持续 `EOF`、55432 `ECONNREFUSED`，真实 PG/migration 未重跑；不得引用 B11 历史结果冒充本轮结果。
+
+**明确未完成**：OS 第四轮 ID 映射与素材 URL/FaaS 实证、B11 自动 adIds fallback、素材正文下载、拆片、DB/API/Job/前端、合并、部署和产品身份真实 trace。

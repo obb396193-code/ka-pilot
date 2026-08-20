@@ -178,3 +178,12 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - 释放经老板确认的闲置第三方可再生缓存后，Docker 29.5.2 与 PostgreSQL 16 恢复；B11 Repository 真 PG 5/5、DB 全量 92/92、Worker PG 4/4 和 migration replay 均通过。
 - 最终默认回归 Domain 207 + DB 92 + Worker 200 + DingTalk 19 = 518；另有真实 Claude Agent SDK opt-in 1。Worker 全仓行覆盖 92.19%，新增分片与增量 Handler 行覆盖 100%。
 - 仍未完成：产品 Worker/FaaS 合法身份真实 trace、单账户仍命中 2000 时的权威 adIds 拆分来源、offline complete marker。不得把 OS 沙箱实测写成产品部署完成。
+
+## 12. B12 广告 ID 与素材来源桥真相
+
+- `be/b12` 从 B11 干净终态切出，未修改公开 contract、migration、DB Repository 或前端。
+- 广告对象枚举已具备严格分页/total/空页/资源预算；但 `unit_id == ad_realtime.ad_id` 尚未真实确认，只有附 OS 集合对照或正式平台契约证据指纹的 `complete + confirmed_equal` 才能输出权威 `adIds`。
+- 素材池已按 qihang-cli 源码确认的 dataservice-api 只读协议实现严格分页，支持明确 poolIds + itemIds/NULL；不会把 total 漂移、提前空页或冲突重复伪装成完整结果。
+- 视频来源只做到准入探针：部署默认无 allowlist，逐跳校验 host，HEAD 或单字节 Range 确认类型和大小；未下载正文、未接 ContentRadar 拆片。
+- 代码终态 `fb3bf9f`；定向 54、Worker 非 PG 238、Domain 207、DingTalk 19、DB 无 IO 12 通过；四包静态和 audit 通过。Docker daemon 本轮持续 `EOF`，因此没有重跑真实 PG，必须作为合并前门禁保留。
+- OS 第四轮需确认 ID 映射和素材 URL/FaaS 可达性；在此之前 B11 单账户 2000 行继续 fail-closed，生产素材 host allowlist 保持空。
