@@ -6,8 +6,8 @@
       "asset": "dashboard-01",
       "license": "MIT",
       "upstream_url": "https://ui.shadcn.com/r/styles/new-york-v4/dashboard-01.json",
-      "upstream_ref": "new-york-v4 catalog snapshot verified 2026-08-19",
-      "use": "official sidebar.tsx, input, separator, skeleton, tooltip, use-mobile primitives; business menu mapping; cards, table and interaction primitives"
+      "upstream_ref": "sha256:ec8e10eb0dc64e8c2a3077ca6abb771efc03c8499aa8044811f7a8525141ec0d verified 2026-08-21",
+      "use": "complete official dashboard-01 block: page shell, AppSidebar, navigation modules, SiteHeader, SectionCards, Recharts area chart, draggable DataTable, Drawer and all scoped shadcn UI primitives; local edits are limited to import paths, Chinese business labels and desensitized demo data"
     },
     {
       "source": "coss-origin",
