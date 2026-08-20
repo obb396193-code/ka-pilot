@@ -15,10 +15,10 @@
     "provenance_inferred_files": 22,
     "selected_third_party_source_files": 0,
     "fully_cached_catalog_items": 0,
-    "starter_cached_entries": 124,
-    "starter_cached_roots": 69,
-    "starter_cached_dependencies": 55,
-    "starter_cached_files": 137,
+    "starter_cached_entries": 131,
+    "starter_cached_roots": 73,
+    "starter_cached_dependencies": 58,
+    "starter_cached_files": 144,
     "starter_cache_failures": 0
   },
   "components_config": {
@@ -339,10 +339,10 @@
   },
   "isolated_starter_cache": {
     "runtime_imported": false,
-    "entries": 124,
-    "roots": 69,
-    "dependencies": 55,
-    "source_files": 137,
+    "entries": 131,
+    "roots": 73,
+    "dependencies": 58,
+    "source_files": 144,
     "failures": [],
     "by_source": {
       "aceternity": {
@@ -363,6 +363,12 @@
         "roots": 3,
         "dependencies": 8
       },
+      "coss-origin": {
+        "entries": 2,
+        "files": 2,
+        "roots": 1,
+        "dependencies": 1
+      },
       "coss": {
         "entries": 44,
         "files": 44,
@@ -379,6 +385,12 @@
         "entries": 6,
         "files": 6,
         "roots": 6,
+        "dependencies": 0
+      },
+      "magic-ui-pro": {
+        "entries": 1,
+        "files": 1,
+        "roots": 1,
         "dependencies": 0
       },
       "magic-ui": {
@@ -404,6 +416,18 @@
         "files": 16,
         "roots": 8,
         "dependencies": 8
+      },
+      "shadcn": {
+        "entries": 3,
+        "files": 3,
+        "roots": 1,
+        "dependencies": 2
+      },
+      "tremor-legacy": {
+        "entries": 1,
+        "files": 1,
+        "roots": 1,
+        "dependencies": 0
       },
       "tremor": {
         "entries": 7,

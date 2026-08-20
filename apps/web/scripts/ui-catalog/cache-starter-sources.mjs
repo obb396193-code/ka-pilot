@@ -18,7 +18,7 @@ const MANIFEST_URL = new URL("docs/frontend/ui-assets/source-cache/manifest.json
 const REGISTRY_CONFIG = {
   shadcn: {
     prefixes: [],
-    plainNames: ["calendar"],
+    plainNames: ["button", "calendar"],
     baseUrl: "https://ui.shadcn.com/r/styles/new-york-v4/",
   },
   coss: {
@@ -91,13 +91,28 @@ async function writeAtomic(path, content) {
 }
 
 async function fetchBytes(url, fetchImpl = fetch) {
-  const response = await fetchImpl(url, {
-    headers: {
-      Accept: "application/json, text/plain, */*",
-      "User-Agent": "toufang-agent-ui-source-cache/1.0",
-    },
-    redirect: "follow",
-  });
+  let response;
+  let lastError;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      response = await fetchImpl(url, {
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "User-Agent": "toufang-agent-ui-source-cache/1.0",
+        },
+        redirect: "follow",
+      });
+      if (response.ok || response.status < 500) break;
+      lastError = new Error(`HTTP ${response.status} for ${url}`);
+    } catch (error) {
+      lastError = error;
+    }
+    if (attempt < 3) {
+      await new Promise((resolve) => setTimeout(resolve, attempt * 250));
+    }
+  }
+
+  if (!response) throw lastError ?? new Error(`Fetch failed for ${url}`);
 
   if (!response.ok) {
     throw new Error(`HTTP ${response.status} for ${url}`);

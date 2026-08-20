@@ -148,7 +148,10 @@ export function runtimeManifestMarkdown(manifest) {
     `- 运行仓已有 ${summary.runtime_local_ui_source_files} 个 \`components/ui/*.tsx\` 本地源码文件，其中 ${summary.runtime_imported_local_ui_files} 个被当前源码显式引用。`,
     `- 这些文件的 shadcn 来源只能由 \`components.json.style=${manifest.components_config.style}\` 与路径推断；精确 upstream ref/hash 已验证 0 个。`,
     `- 11 个第三方来源隔离目录当前合计 ${summary.selected_third_party_source_files} 个源码文件。`,
-    `- 独立 starter cache 已保存 ${summary.starter_cached_roots} 个根资产、${summary.starter_cached_entries} 个缓存条目、${summary.starter_cached_files} 份源码文件；失败 ${summary.starter_cache_failures}。这些文件尚未安装进运行仓。`,
+    `- 独立 starter cache 已保存 ${summary.starter_cached_roots} 个根资产、${summary.starter_cached_dependencies} 个依赖、${summary.starter_cached_entries} 个缓存条目、${summary.starter_cached_files} 份源码文件；失败 ${summary.starter_cache_failures}。这些文件尚未安装进运行仓。`,
+    ...(["shadcn", "coss-origin", "tremor-legacy", "magic-ui-pro"].every((source) => manifest.isolated_starter_cache.by_source[source]) && !manifest.isolated_starter_cache.by_source["react-bits-pro"]
+      ? ["- 17 库比较墙已补充 shadcn 当前 Registry、coss Origin、Tremor legacy 官方包和 Magic UI 官方公开 MIT template；React Bits Pro 仍为 0 份源码。"]
+      : []),
     "",
     "所以不能说“所有目录源码已下载”。准确说法是：目录全量可查；高频公开源码已在隔离缓存中可复核；现有 shadcn 风格本地源码可运行但 provenance 待补；第三方缓存尚未接入运行仓。",
     "",

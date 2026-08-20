@@ -34,5 +34,5 @@ test("runtime audit never equates catalog metadata with downloaded source", () =
   assert.equal(manifest.conclusion.starter_source_cache_present, true);
   assert.equal(manifest.local_ui_components[0].provenance_status, "inferred-from-components.json-and-path");
   assert.match(runtimeManifestMarkdown(manifest), /不能说“所有目录源码已下载”/);
-  assert.match(runtimeManifestMarkdown(manifest), /8 个根资产、12 个缓存条目、15 份源码文件/);
+  assert.match(runtimeManifestMarkdown(manifest), /8 个根资产、4 个依赖、12 个缓存条目、15 份源码文件/);
 });

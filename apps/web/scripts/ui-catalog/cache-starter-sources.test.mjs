@@ -62,7 +62,10 @@ test("only follows explicit same-source registry dependencies", () => {
   assert.deepEqual(extractSameSourceDependencies("magic-ui", { registryDependencies: ["button"] }), []);
   assert.deepEqual(
     extractSameSourceDependencies("shadcn", { registryDependencies: ["calendar", "button"] }),
-    [{ name: "calendar", url: "https://ui.shadcn.com/r/styles/new-york-v4/calendar.json" }],
+    [
+      { name: "button", url: "https://ui.shadcn.com/r/styles/new-york-v4/button.json" },
+      { name: "calendar", url: "https://ui.shadcn.com/r/styles/new-york-v4/calendar.json" },
+    ],
   );
   assert.deepEqual(
     extractSameSourceDependencies("coss-origin", {
@@ -138,6 +141,29 @@ test("writes the exact public registry payload and verifies its SHA-256", async 
   const tampered = await verifyCachedEntry(entry, directory);
   assert.equal(tampered.ok, false);
   assert.match(tampered.error, /sha256 mismatch/);
+});
+
+test("retries transient official-source network failures", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "ui-source-cache-retry-"));
+  let attempts = 0;
+  const entry = await cacheRegistryPayload({
+    asset: {
+      source: "shadcn",
+      upstream_name: "button",
+      source_url: "https://ui.shadcn.com/r/styles/new-york-v4/button.json",
+      access_status: "public-source",
+    },
+    rootOrDependency: "dependency",
+    cacheRoot: directory,
+    fetchImpl: async () => {
+      attempts += 1;
+      if (attempts < 3) throw new TypeError("fetch failed");
+      return new Response(JSON.stringify({ name: "button", files: [] }), { status: 200 });
+    },
+  });
+
+  assert.equal(attempts, 3);
+  assert.equal(entry.cache_status, "cached");
 });
 
 test("refuses to cache paid or metadata-only items", async () => {
