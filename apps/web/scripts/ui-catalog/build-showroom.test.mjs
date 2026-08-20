@@ -145,10 +145,10 @@ test("generated showroom carries every catalog, paid mapping, and sandboxed live
   assert.equal(data.summary.provider_group_records, 23);
   assert.equal(data.summary.concrete_paid_items, 2153);
   assert.equal(data.summary.mapped_paid_items, 2153);
-  assert.equal(data.summary.cached_roots, 69);
-  assert.equal(data.summary.cached_entries, 124);
+  assert.equal(data.summary.cached_roots, 73);
+  assert.equal(data.summary.cached_entries, 131);
   assert.equal(data.summary.cached_support_entries, 1);
-  assert.equal(data.summary.cached_files, 137);
+  assert.equal(data.summary.cached_files, 144);
   assert.equal(data.discovery.length, 5);
   assert.equal(
     data.discovery.filter((item) => item.decision_status === "approved-for-catalog-and-contextual-use").length,
@@ -161,11 +161,20 @@ test("generated showroom carries every catalog, paid mapping, and sandboxed live
   assert.equal(data.themes.length, 42);
   assert.equal(new Set(data.assets.map((item) => item.id)).size, 7056);
   assert.equal(data.assets.filter((item) => item.alternatives.length > 0).length, 2153);
-  assert.equal(data.summary.live_preview_frames, 5);
-  assert.equal(data.summary.live_preview_assets, 10);
-  assert.equal(data.live_previews.length, 5);
+  assert.equal(data.summary.live_preview_positions, 17);
+  assert.equal(data.summary.live_preview_frames, 16);
+  assert.equal(data.summary.blocked_preview_positions, 1);
+  assert.equal(data.summary.live_preview_assets, 27);
+  assert.equal(data.live_previews.length, 17);
   assert.ok(data.live_previews.every((preview) => preview.network_required === false));
-  assert.ok(data.live_previews.every((preview) => preview.sandbox === "allow-scripts"));
+  assert.ok(
+    data.live_previews
+      .filter((preview) => preview.render_status === "live")
+      .every((preview) => preview.sandbox === "allow-scripts" && preview.frame_path),
+  );
+  const reactBitsPro = data.live_previews.find((preview) => preview.source === "react-bits-pro");
+  assert.equal(reactBitsPro.render_status, "blocked-paid");
+  assert.equal(reactBitsPro.frame_path, undefined);
 
   const sourceCount = data.sources.reduce((sum, source) => sum + source.count, 0);
   assert.equal(sourceCount, data.assets.length);
@@ -218,6 +227,11 @@ test("generated showroom carries every catalog, paid mapping, and sandboxed live
   assert.match(html, /id="catalog-tier"/);
   assert.match(html, /id="alt-status"/);
   assert.match(html, /id="live-preview-grid"/);
+  assert.match(html, /data-preview-group="foundation"/);
+  assert.match(html, /data-preview-status="blocked"/);
+  assert.match(html, /state\.previewGroup = "all";/);
+  assert.match(html, /item\.dataset\.previewGroup === "all"/);
+  assert.match(html, /付费源码锁定/);
   assert.match(html, /sandbox="allow-scripts"/);
   assert.doesNotMatch(html, /allow-same-origin/);
   assert.doesNotMatch(html, /class="toolbar" style="grid-template-columns/);

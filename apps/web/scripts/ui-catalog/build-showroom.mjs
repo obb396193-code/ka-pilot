@@ -277,6 +277,8 @@ export function buildShowroomData({
   reuiCatalog,
   livePreviewManifest = {
     preview_count: 0,
+    live_count: 0,
+    blocked_count: 0,
     represented_official_assets: 0,
     previews: [],
   },
@@ -418,7 +420,9 @@ export function buildShowroomData({
       cached_files: cacheManifest.cached_file_count,
       discovery_sources: discovery.sources.length,
       theme_presets: themes.length,
-      live_preview_frames: livePreviewManifest.preview_count,
+      live_preview_positions: livePreviewManifest.preview_count,
+      live_preview_frames: livePreviewManifest.live_count ?? livePreviewManifest.preview_count,
+      blocked_preview_positions: livePreviewManifest.blocked_count ?? 0,
       live_preview_assets: livePreviewManifest.represented_official_assets,
     },
     source_order: catalogIndex.sources.map((source) => source.id),
@@ -428,7 +432,9 @@ export function buildShowroomData({
     discovery: discovery.sources,
     live_previews: livePreviewManifest.previews.map((preview) => ({
       ...preview,
-      frame_path: `live-previews/${preview.frame_path}`,
+      ...(preview.frame_path
+        ? { frame_path: `live-previews/${preview.frame_path}` }
+        : {}),
     })),
     variants: {
       reui: reuiCatalog?.variant_matrix ?? null,

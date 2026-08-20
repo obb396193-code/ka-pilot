@@ -14,7 +14,7 @@ tags:
 
 ## 一句话结论
 
-已经把 17 条官方产品线整理成可搜索目录，共 **7,056 个逻辑资产**；这表示“官方有什么可以查”，**不表示 7,056 份源码已经下载**。老板选择的 A 方案已经从 12 个非 shadcn 官方来源缓存 **69 个高频根资产 + 55 个必要依赖＝124 个缓存条目、137 份源码文件**，失败 0，逐文件 SHA-256 可复核。缓存位于文档隔离区，不参与应用编译。项目运行仓仍只有 22 个 shadcn 风格 UI 文件、20 个正被引用，但没有精确上游 ref/hash，只能标为来源推断；第三方运行时接入为 0。
+已经把 17 条官方产品线整理成可搜索目录，共 **7,056 个逻辑资产**；这表示“官方有什么可以查”，**不表示 7,056 份源码已经下载**。老板选择的 A 方案已经从 16 个可合法公开取源的产品线缓存 **73 个高频根资产 + 58 个必要依赖＝131 个缓存条目、144 份源码文件**，失败 0，逐文件 SHA-256 可复核。新增 shadcn Calendar、coss Origin、Tremor 3.18.7 和 Magic UI 官方公开模板用于 17 库真实比较墙；React Bits Pro 继续为 0 文件。缓存位于文档隔离区，不参与应用编译。项目运行仓仍只有 22 个 shadcn 风格 UI 文件、20 个正被引用，但没有精确上游 ref/hash，只能标为来源推断；第三方运行时接入为 0。
 
 ## 当前全量目录
 
@@ -62,15 +62,19 @@ tags:
 - shadcn Registry Directory：另有 280 个第三方 provider 元数据，但每家内部数量、价格、登录和许可证必须逐库审计，不能混进第一方 473。
 - 没有绕过登录、401、会员或商业许可证；付费目录只保存公开名称、预览、层级和官方获取入口。
 
-## A 方案已经下载的非 shadcn 源码
+## A 方案已经下载的隔离官方源码
 
 | 来源 | 高频根资产 | 必要依赖 | 缓存条目 | 实际源码文件 |
 |---|---:|---:|---:|---:|
+| shadcn | 1 | 2 | 3 | 3 |
 | coss current | 12 | 32 | 44 | 44 |
+| coss Origin | 1 | 1 | 2 | 2 |
 | ReUI | 8 | 8 | 16 | 16 |
 | Tremor | 7 | 0 | 7 | 7 |
+| Tremor legacy | 1 | 0 | 1 | 1 |
 | Aceternity | 6 | 1 | 7 | 7 |
 | Magic UI Free | 7 | 0 | 7 | 7 |
+| Magic UI public template | 1 | 0 | 1 | 1 |
 | React Bits Free | 7 | 0 | 7 | 11 |
 | tweakcn | 1 | 0 | 1 | 1 |
 | Vercel AI Elements | 6 | 2 | 8 | 8 |
@@ -78,9 +82,9 @@ tags:
 | Dice UI | 3 | 4 | 7 | 16 |
 | Animate UI | 3 | 8 | 11 | 11 |
 | Motion Primitives | 3 | 0 | 3 | 3 |
-| **合计** | **69** | **55** | **124** | **137** |
+| **合计** | **73** | **58** | **131** | **144** |
 
-准确表达：这些是从官方 Registry/GitHub raw 保存的**隔离源码缓存**，带官方 URL、访问状态、许可证范围和 hash；可以让前端 Agent 直接 inspect、比较并复制。137 是磁盘物理缓存文件数；124 是缓存记录数，二者不能混算。Dice `data-grid` 是官方 Registry demo 引用但 item endpoint 404 的仓库补源，因此作为支持依赖单列，不伪造 Registry 成功。它们尚未安装进 `apps/web` 运行时，也没有替老板选定某一组件。
+准确表达：这些是从官方 Registry/GitHub raw/npm 保存的**隔离源码缓存**，带官方 URL、访问状态、许可证范围和 hash；可以让前端 Agent 直接 inspect、比较并复制。144 是磁盘物理缓存文件数；131 是缓存记录数，二者不能混算。Dice `data-grid` 是官方 Registry demo 引用但 item endpoint 404 的仓库补源，因此作为支持依赖单列，不伪造 Registry 成功。Magic UI Pro 只缓存官方公开 MIT blog template 的一个组件，不代表取得任何私有 Pro block。它们尚未安装进 `apps/web` 运行时，也没有替老板选定某一组件。
 
 ## 2,176 条付费元数据的合法免费替代
 
@@ -97,15 +101,15 @@ tags:
 
 ## 离线 HTML 展厅
 
-仓库内 `docs/frontend/ui-assets/showroom.html` 可直接查看；主页面把目录数据、样式和脚本内嵌，五库实时预览从同目录的 `live-previews/` 加载本地 bundle，不依赖 CDN 或联网。包括：
+仓库内 `docs/frontend/ui-assets/showroom.html` 可直接查看；主页面把目录数据、样式和脚本内嵌，17 库比较墙从同目录的 `live-previews/` 加载本地 bundle，不依赖 CDN 或联网。包括：
 
 - 17 条产品线的风格、维护状态、Free/Pro/Ultimate 边界；ReUI 另显示 Base/Radix × 8 styles＝16 个 Registry variants 与 4 种 icon styles；
 - 7,056 条目录的来源/能力/访问层级筛选与分页；
 - 2,176 条付费元数据、23 条分类节点与 2,153 个具体能力的分级替代/组合策略；
-- 124 个已缓存源码条目与本地路径；
+- 131 个已缓存源码条目与本地路径；
 - 42 个 tweakcn 官方主题的真实色板；
 - 5 个新来源的老板准入状态、项目用法、许可证和官方入口；
-- 5 个 sandbox live frame，真实运行 10 个官方代表特性：AI Elements Conversation/Sources、Kibo Dropzone/Color Picker、Dice File Upload/Kanban、Animate Ripple/Counting Number、Motion Animated Number/Disclosure。它们不是截图，也不是运行时安装。
+- 17 条产品线统一比较：16 个 sandbox live frame 真实运行 27 个官方代表资产，React Bits Pro 单独显示付费锁定卡且本地制品为 0。真实 Chrome 已在 1440×900、390×844 的 `file://` 场景验证 16/16 非空、溢出 0、console error 0、HTTP(S) 请求 0。它们不是截图，也不是运行时安装。
 
 ## 风格与使用定位
 

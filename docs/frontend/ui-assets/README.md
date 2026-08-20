@@ -17,7 +17,7 @@
 catalogued → approved/preferred → vendored → adapted → deprecated
 ```
 
-当前事实：17 个产品线共 **7,056** 条逻辑资产；A 方案已从 12 个非 shadcn 官方来源缓存 69 个高频根资产及 55 个必要依赖，共 **124 个缓存条目、137 份源码文件**，逐文件 SHA-256 可复核。五个新源分别缓存 AI Elements 6、Kibo 6、Dice 3、Animate 3、Motion 3 个根资产。缓存位于 `source-cache/`，尚未装入运行仓。运行仓另有 22 个 shadcn 风格本地 UI 文件，但精确 upstream ref/hash 尚未验证；第三方运行时接入仍为 0。
+当前事实：17 个产品线共 **7,056** 条逻辑资产；A 方案已从 16 个可合法公开取源的产品线缓存 73 个高频根资产及 58 个必要依赖，共 **131 个缓存条目、144 份源码文件**，逐文件 SHA-256 可复核，失败 0。这里新增的 shadcn Calendar、coss Origin、Tremor 3.18.7 与 Magic UI 官方公开模板专门服务 17 库真实比较墙；React Bits Pro 继续为 0 文件。缓存位于 `source-cache/`，尚未装入运行仓。运行仓另有 22 个 shadcn 风格本地 UI 文件，但精确 upstream ref/hash 尚未验证；第三方运行时接入仍为 0。
 
 ## 选型分层
 
@@ -41,12 +41,12 @@ coss current 的 577 条来自当前 `coss.com/ui` Registry，采用 Base UI 新
 - `storage-format.md`：JSON/Markdown/PNG 各存什么，以及目录、访问、缓存、运行时状态的严格定义。
 - `coverage-audit.json/.md`：逐库官方覆盖、会员/Pro/401、动态未知和 variant 矩阵审计。
 - `source-download-manifest.json`、`source-download-status.md`：实际运行时源码、hash、引用与 provenance。
-- `starter-pack.json`、`source-cache/manifest.json`：A 方案的 69 个高频根资产、55 个传递依赖、官方 payload/raw source、逐文件 hash 和缓存状态。
+- `starter-pack.json`、`source-cache/manifest.json`：A 方案的 73 个高频根资产、58 个传递依赖、官方 payload/raw source、逐文件 hash 和缓存状态。
 - `free-alternatives.json/.md`：2,176 条已知付费元数据中，23 条分类节点单列，2,153 个具体能力逐项记录免费候选/组合策略、置信度与复核状态；当前 272 项有同能力候选、638 项按语义选图标、1,237 项需重组、6 项先核许可，不包含或推导付费源码。
 - `discovery.json/.md`：老板已审阅的新来源准入记录。AI Elements、Kibo、Dice 正式进入选型，Animate UI、Motion Primitives 选择性进入对比；五者完整目录已收录并选择性缓存高频源码，但仍未安装，Commons Clause 等限制单列。
 - `frontend-product-standard.md`：数据密集产品的设计交付、组件实现、图表、主题、Storybook、视觉回归、无障碍和 Definition of Done。
-- `showroom.html`：无需服务端、无需联网即可筛选查看的离线展厅；五个新来源另有 5 个 sandbox live frame，真实运行 10 个官方代表特性，不是截图。`showroom-data.json` 是其可再生成数据，`live-previews/` 必须与 HTML 一起复制。
-- `live-previews/manifest.json`：5 个离线 frame、代表官方资产、bundle/frame hash、sandbox 与网络边界；harness 只负责业务语境和布局，不冒充官方源码。
+- `showroom.html`：无需服务端、无需联网即可筛选查看的离线展厅；17 条产品线统一比较，16 个 sandbox live frame 真实运行 27 个官方代表资产，React Bits Pro 单独付费锁定，不是截图。`showroom-data.json` 是其可再生成数据，`live-previews/` 必须与 HTML 一起复制。
+- `live-previews/manifest.json`：17 个比较位置、16 个离线 frame、1 个无本地制品的付费锁定位置，以及代表官方资产、bundle/frame hash、sandbox 与网络边界；harness 只负责业务语境和布局，不冒充官方源码。
 - `guides/`：官方安装、使用、组合、修改/迁移、主题、许可证和 changelog 的项目摘要。
 - `capabilities.json`：跨来源能力索引，用一个需求找到多个候选。
 - `visual-guide.md`：真实官网截图和风格归类。
@@ -76,7 +76,8 @@ coss current 的 577 条来自当前 `coss.com/ui` Registry，采用 Base UI 新
 - [前端 Agent 使用流程](agent-workflow.md)
 - [数据产品前端执行规范](frontend-product-standard.md)
 - [打开离线 UI 展厅](showroom.html)
-- [五库真实源码预览说明](live-previews/README.md)
+- [17 库真实源码比较墙说明](live-previews/README.md)
+- [17 库 `file://` 终验](reviews/2026-08-20-17-library-showroom-qa.md)
 - [高频源码缓存清单](source-cache/manifest.json)
 - [付费能力免费替代](free-alternatives.md)
 - [新开源来源候选](discovery.md)
