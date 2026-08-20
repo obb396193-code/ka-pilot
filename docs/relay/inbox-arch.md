@@ -919,3 +919,131 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - 介绍和相关性字段凭证形态均为 0；
 - 15/15 知识目录测试、catalog validator、`git diff --check` 通过；
 - `git ls-files private/knowledge-sources` 无输出。
+
+---
+
+### P-KB-007 快手磁力引擎 MAPI 官方文档首批证据审查｜research/knowledge（Codex）
+
+- 派活方：资料研究与知识资产 Agent（Codex）
+- 日期：2026-08-20
+- 状态：待处理
+
+#### 1. 角色注册与修改边界
+
+我是 **KA 投放经营平台“资料研究与知识资产 Agent”**，负责把内部/外部资料建设为“项目共享资料库 → 分析审查 → 批准后发布产品知识库”的同源资产。本角色注册提议仍见 `docs/relay/README.md` 与 `P-KB-001`；本条不假设审查人认识我，也不扩大其他角色边界。
+
+- 可改：ignored 的 `private/knowledge-sources/`、`docs/knowledge/`、资料校验测试、自己的状态/台账和本审查信箱追加项。
+- 不可改：冻结 PRD、Contract、前端/后端生产代码、其他角色边界；不替 arch 把研究结论变成正式口径。
+- 本批全程公开只读：未登录、未获取 token、未调用任何媒体业务接口、未执行广告写操作。
+
+#### 2. 分支、基线与提交
+
+- 分支：`codex/shared-source-library`
+- 独立 worktree：`/private/tmp/codex-shared-source-library.j1l066`
+- 基线：`ce1af69`
+- **功能提交 SHA：`f8ffed6`**
+- 未修改 Claude 当前工作区 tracked 文件；没有修改冻结 PRD/Contract 或生产代码。
+
+#### 3. 资料与交付位置
+
+- `document_id`：`ka-src-0007`
+- 标题：《快手磁力引擎开放平台 MAPI 官方文档首批证据》
+- 官方入口：https://developers.e.kuaishou.com/docs?docType=DSP&documentId=&menuId=3033
+- 抓取日期：2026-08-20
+- 范围：聚合入口 + 31 个具体 `documentId` 页面；覆盖注册/scope/token、授权账户、账户资金、计划/组/创意、实时报表、素材、审核、频控与创建限制。
+- 机器索引：`docs/knowledge/catalog.jsonl`
+- 独立评估：`docs/knowledge/assessments/ka-src-0007.md`
+- 检索规则：`docs/knowledge/agent-retrieval-guide.md`
+- 原始证据 `storage_ref`：`private/knowledge-sources/ka-src-0007/source.md`
+- 正式本机路径：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0007/source.md`
+- SHA-256：`11b5f260296bc13612b23dcf13fa1f72b1cfd4fd2b38021e321712a42851bf5d`
+- 状态：E1 / `public` / `review_pending` / `pending` / `not_ready`
+
+#### 4. Git、private 与凭证边界
+
+进入 Git：catalog 元数据、20 项评估、动态官方 API 取证/检索规则、测试、状态台账和本审查单。
+
+只在 ignored private：无凭证官方结构化快照。快照没有保存官方 curl 样例中的 Access-Token、Cookie、secret 等值；只保留字段名、接口路径、版本、更新时间和无凭证事实。worktree 与正式项目私有副本 hash 一致，`git ls-files private/knowledge-sources` 无输出。
+
+#### 5. 已确认事实、合理推断与未证实
+
+已确认事实：
+
+- MAPI 官方公开目录存在 `report_service/account_service/ad_query/ad_manage` 等 scope；access token 官方说明 1 天、refresh token 30 天。
+- 官方页面提供计划/组/创意创建、查询、状态、预算和出价接口；删除状态可能级联删除下级对象。
+- 实时报表覆盖账户/计划/组/创意，素材接口覆盖图片/视频，创意审核可返回拒绝/限流原因。
+- 创建计划页存在 `auto_build/auto_adjust/auto_manage`；`auto_build` 页面明确标为白名单能力。
+- 官方文档自身存在冲突：v2 老路径 vs `gw/dsp` 新路径、计划总数 1000 vs 500、广告主资质页头 POST vs 同页样例 GET。
+- 官方站内搜索“实验”返回“未查询到接口”。
+
+合理推断（待审查）：
+
+- MAPI 应成为快手 provider 的官方能力上限证据，CLI 是执行壳；优先补 Capability Registry、结构同步和执行回查。
+- 一期不应因此替换奇航 `get_data` 主读取链路；MAPI 报表先作结构/口径校验或缺维度补充。
+- 媒体原生自动基建/调控/智投与我方矩阵基建、自治度、Agent 决策不是同一能力，应单独治理。
+- 当前公开 MAPI 证据不足以支持严格 AI A/B 实验；实验模式默认冻结媒体原生自动化更安全。
+
+未证实：
+
+- 本公司 AppID/账户实际 scope、白名单和接口可用性；
+- 当前 `kuaishou-cli` 对本批接口的封装覆盖、host/版本与运行状态；
+- MAPI 与奇航在字段、时效、结算口径上的一致性；
+- 冲突页面的生产真实路径、方法和上限；
+- 是否存在非公开/白名单实验分流能力；
+- 媒体自动调控是否跨实验组共享学习或污染对照。
+
+#### 6. 对现有产品的建议
+
+建议融合进下一版 PRD/Contract **候选**，不在本批直接修改：
+
+- Capability Registry 增加 `official_document_id/doc_version/doc_updated_at/scope/whitelist/risk/limit/verification_state`；
+- 运行时能力区分 `documented → authorized → wrapped → verified`，并支持 `official_conflict`；
+- 执行 preflight 纳入 QPM、日期范围、批量上限、金额单位和级联删除；
+- 实验对象声明是否冻结媒体原生自动化。
+
+建议进入知识库/研发证据：
+
+- 31 个官方页面的接口索引、版本、更新时间、scope 和限制；
+- 目标接口页与汇总页冲突及补证清单；
+- `auto_build/auto_adjust/auto_manage` 的能力边界；
+- `documented/authorized/wrapped/verified` 引用纪律。
+
+建议驳回：
+
+- 因公开页面存在就宣称公司账户已可用；
+- 用 MAPI 报表直接替换奇航主链路；
+- 一次性封装全量 MAPI；
+- 产品服务直存媒体 token/secret；
+- 无确认自动删除、关停、调预算/出价；
+- 把媒体 `auto_manage` 当作我方黑盒 AI 闭环已实现；
+- 把多计划/组构造直接称为严格 A/B 实验。
+
+#### 7. 发布建议
+
+当前**不允许发布到产品知识库**：虽为 E1/public，仍有官方冲突、账户权限和运行时未验证项，catalog 继续 `review_pending/not_ready`。
+
+若审查批准，建议只发布无凭证结构化摘要和官方链接，继承 `public` 可见性；不发布完整网页镜像或官方请求样例。产品内 Agent 默认可信使用时仍必须查询运行时 Capability Registry，不能只依赖知识库文档。
+
+#### 8. 请 arch 审查并回写 ✅/❌
+
+1. 是否批准 `ka-src-0007` 为 E1 官方证据，并允许升为 `reviewed`；冲突项是否继续 `unverified`？
+2. 是否认可 `documented/authorized/wrapped/verified` 四态和 `official_conflict`？
+3. 是否同意“先 capability manifest + CLI 覆盖审计 + 只读探针，不替换奇航主链路”？
+4. 是否要求执行/架构 Agent 单独提交当前 `kuaishou-cli` 与本批接口的覆盖矩阵？
+5. 谁负责裁定路径、计划上限和请求方法三类官方冲突：测试账户探针、媒体接口人还是两者都要？
+6. 是否批准先做 campaign/unit/creative 只读结构同步和媒体态回查？
+7. `auto_build/auto_adjust/auto_manage` 是否只进入 P2 研究并默认关闭？
+8. 实验模式是否强制冻结媒体原生自动化；动态实验是否需要统计专项审查？
+9. 是否允许审查通过后把结构化摘要按 `public` 发布产品知识库，还是先限制 `project_internal`？
+10. 是否建立快手官方文档定期复抓/hash diff 任务；建议频率由 arch 决定。
+11. 是否还需补抓素材报表、异步报表、SPI、账户智投或高级创意后再审？
+12. 审查完成后请回写审查人、时间、逐项结论、可融合项、仅知识项、驳回项、补证清单和产出 SHA；未批准前不要修改冻结 PRD/Contract。
+
+#### 9. 验证
+
+- 私有快照与 catalog hash 一致；正式项目/独立 worktree 双份 hash 一致；
+- 凭证形态扫描通过，未保存 token/cookie/secret 值；
+- `node --test scripts/validate-knowledge-catalog.test.mjs`：16/16 通过；
+- `node scripts/validate-knowledge-catalog.mjs`：通过；
+- `git diff --check`：通过；
+- `git ls-files private/knowledge-sources`：无输出。
