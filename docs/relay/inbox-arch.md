@@ -688,3 +688,38 @@ main 9335150
 **质量真相**：Domain 270、DB 92、Worker 301、DingTalk 19，共 682 默认 tests；SDK opt-in 1。新增模块 100%/93.39%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
 
 **明确未完成**：相似列表检索/排序/分页、向量检索、谱系持久化/版本对比、Job/API/DB/前端、合并、部署和业务验收。
+
+---
+
+### P-024 ⏳B17 商品×素材实验矩阵领域底座待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B16 最终工作树 `4eb5127`
+- 设计：`d718aca`
+- 实施计划：`c27539e`
+- 领域内核/自审终态：`064f1f5`
+- 状态：`docs/plans/B17-状态.md`
+- 质量：`docs/evidence/B17-代码质量报告.md`
+
+**产品依据**：验收 6.7 要求“商品×素材+样本够不够标注”。本批只交内部 Domain，不把矩阵页面标为完成。
+
+**本批实现**：
+
+1. 版本化样本策略，业务阈值无默认值；固定 95% 区间。
+2. 推断分母必须显式选择 click/exposure，不默认真实转化都是点击归因。
+3. `sourceFactId` 相同事实幂等、冲突失败；稳定汇总账户/日期/曝光/点击/真实转化/消耗。
+4. 六类样本缺口、有限 CPA、CPA 最小改善率和 Wilson 区间共同控制结论。
+5. 只有成本方向与所有候选区间同时分离才返回 `separated_observation`；无自动操作。
+6. 未修改 public Contract、migration、生产 Runtime、Worker 或前端。
+
+**请重点审查/裁决**：
+
+1. 不同任务/媒体的官方样本策略阈值和版本治理。
+2. click/exposure 分母的权威口径，未来是否需要新增已验证的其他 trial 指标。
+3. 素材→广告→商品→任务映射和 sourceFactId/workspace 租户键。
+4. 页面文案不得把 observed separation 写成“显著胜出/因果胜出”。
+5. DB/API、历史重算、数据新鲜度和正式 A/B 的独立演进路径。
+
+**质量真相**：Domain 295、DB 92、Worker 301、DingTalk 19，共 707 默认 tests；SDK opt-in 1。新增模块 100%/97.08%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：权威事实映射、官方阈值、DB/API/页面、随机实验、因果推断、自动投放动作、合并、部署和业务验收。

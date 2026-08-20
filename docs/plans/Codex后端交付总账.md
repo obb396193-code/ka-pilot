@@ -6,7 +6,7 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13` → `be/b14` → `codex/b15-material-teardown-semantics`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -48,6 +48,7 @@
 | B14 单次整段 ASR 与 URL 租约 | `6cea3d8`（代码） | 待 Claude/arch 审查 P-021 | `segment/whole_video` 精度、一次整段云 ASR adapter、稳定 sourceRef 换短期 URL 后即取即下 | Domain 244 / DB 92 / Worker 297 / Gateway 19 + 1 opt-in | `B14-状态.md`、`docs/evidence/B14-代码质量报告.md`、P-021 |
 | B15 拆片语义与逐镜头帧墙 | `020a902`（代码） | 待 Claude/arch 审查 P-022 | 无时间多段语义结构、精确时间证据门、Prompt v3、分页逐镜头帧墙、旧缓存升级和页面承接结果信封 | Domain 245 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B15-状态.md`、`docs/evidence/B15-代码质量报告.md`、P-022 |
 | B16 素材相似度与复刻谱系 | `d7a49f8`（代码） | 待 Claude/arch 审查 P-023 | 版本化内容画像、六组件可解释确定性评分、证据不足无总分、独立不可变复刻谱系 | Domain 270 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B16-状态.md`、`docs/evidence/B16-代码质量报告.md`、P-023 |
+| B17 商品×素材实验矩阵 | `064f1f5`（代码） | 待 Claude/arch 审查 P-024 | 无默认阈值样本策略、幂等事实汇总、显式 click/exposure 推断分母、Wilson 95% 区间、保守观察分离 | Domain 295 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B17-状态.md`、`docs/evidence/B17-代码质量报告.md`、P-024 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -230,3 +231,12 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - 复刻谱系是显式、版本化、不可变的业务事实，和算法相似度完全分离；不会按阈值自动认定“复刻自”。
 - 当前采用确定性 n-gram/结构评分作为低成本可解释基线；Embedding/向量库只作为未来候选召回或重排，不在未冻结 Provider 边界前引入。
 - 代码终态 `d7a49f8`。默认回归 Domain 270 + DB 92 + Worker 301 + DingTalk 19 = 682；SDK opt-in 1。四包静态/audit、真实 PG/migration、gateway/FFmpeg 与冻结目录门禁通过，审查入口 P-023。
+
+## 17. B17 商品×素材实验矩阵真相
+
+- B17 只做纯 Domain，验收 6.7 仍缺权威事实映射、业务策略、持久化/API/页面，不能标产品完成。
+- 每套样本策略必须显式带版本、六类门槛、CPA 最小改善率和 click/exposure 推断分母；没有默认业务阈值，也不写死点击归因。
+- 同 sourceFactId 重试幂等，冲突重复失败；所有比率从聚合分子/分母重算，零分母保留 undefined/infinite 状态。
+- 最低 CPA 只给方向；只有达到 CPA 改善门、且其 95% 推断率区间与所有其他合格候选保守分离，才返回 `separated_observation`。
+- 该状态不是随机 A/B、统计因果或自动操作建议；代码无 Agent、媒体写入或通知分支。
+- 代码终态 `064f1f5`。默认回归 Domain 295 + DB 92 + Worker 301 + DingTalk 19 = 707；SDK opt-in 1。新增模块 100%/97.08%/100%，四包静态/audit、真实 PG/migration、复杂度、安全与冻结目录门禁通过，审查入口 P-024。
