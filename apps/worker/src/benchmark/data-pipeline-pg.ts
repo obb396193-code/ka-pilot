@@ -49,34 +49,50 @@ export interface PgBenchmarkReport {
 }
 
 export function parsePgBenchmarkArgs(args: readonly string[]): PgBenchmarkOptions {
-  let databaseUrl = process.env.TEST_DATABASE_URL ?? DEFAULT_DATABASE_URL;
-  let accountCounts = [100, 1_000, 5_000];
-  let iterations = 3;
-  let chunkSize = 250;
+  const options: PgBenchmarkOptions = {
+    databaseUrl: process.env.TEST_DATABASE_URL ?? DEFAULT_DATABASE_URL,
+    accountCounts: [100, 1_000, 5_000],
+    iterations: 3,
+    chunkSize: 250,
+  };
   for (const argument of args) {
-    if (argument.startsWith("--database-url=")) {
-      databaseUrl = argument.slice("--database-url=".length);
-    } else if (argument.startsWith("--accounts=")) {
-      accountCounts = argument.slice("--accounts=".length).split(",").map(Number);
-    } else if (argument.startsWith("--iterations=")) {
-      iterations = Number(argument.slice("--iterations=".length));
-    } else if (argument.startsWith("--chunk-size=")) {
-      chunkSize = Number(argument.slice("--chunk-size=".length));
-    } else {
-      throw new Error(`unknown PostgreSQL benchmark argument: ${argument}`);
-    }
+    applyPgBenchmarkArgument(options, argument);
   }
-  assertLocalTestDatabase(databaseUrl);
-  if (accountCounts.length === 0 || accountCounts.some((count) => !ALLOWED_SCALES.has(count))) {
+  validatePgBenchmarkOptions(options);
+  return options;
+}
+
+function applyPgBenchmarkArgument(
+  options: PgBenchmarkOptions,
+  argument: string,
+): void {
+  const [name, value] = argument.split("=", 2);
+  if (value === undefined) throw new Error(`invalid PostgreSQL benchmark argument: ${argument}`);
+  if (name === "--database-url") options.databaseUrl = value;
+  else if (name === "--accounts") options.accountCounts = value.split(",").map(Number);
+  else if (name === "--iterations") options.iterations = Number(value);
+  else if (name === "--chunk-size") options.chunkSize = Number(value);
+  else throw new Error(`unknown PostgreSQL benchmark argument: ${argument}`);
+}
+
+function validatePgBenchmarkOptions(options: PgBenchmarkOptions): void {
+  assertLocalTestDatabase(options.databaseUrl);
+  if (
+    options.accountCounts.length === 0 ||
+    options.accountCounts.some((count) => !ALLOWED_SCALES.has(count))
+  ) {
     throw new Error("PostgreSQL benchmark accounts must use 100, 1000 or 5000");
   }
-  if (!Number.isInteger(iterations) || iterations < 1 || iterations > 10) {
+  if (!Number.isInteger(options.iterations) || options.iterations < 1 || options.iterations > 10) {
     throw new Error("PostgreSQL benchmark iterations must be between 1 and 10");
   }
-  if (!Number.isInteger(chunkSize) || chunkSize < 1 || chunkSize > 1_000) {
+  if (
+    !Number.isInteger(options.chunkSize) ||
+    options.chunkSize < 1 ||
+    options.chunkSize > 1_000
+  ) {
     throw new Error("PostgreSQL benchmark chunk size must be between 1 and 1000");
   }
-  return { databaseUrl, accountCounts, iterations, chunkSize };
 }
 
 export function assertLocalTestDatabase(databaseUrl: string): void {
@@ -323,17 +339,26 @@ async function explainFixture(
       `EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) ${query.text}`,
       query.values,
     );
-    const root = result.rows[0]?.["QUERY PLAN"]?.[0];
-    const plan = root?.Plan ?? {};
-    plans.push({
-      name: query.name,
-      nodeType: String(plan["Node Type"] ?? "unknown"),
-      executionTimeMs: round(Number(root?.["Execution Time"] ?? 0)),
-      sharedHitBlocks: Number(plan["Shared Hit Blocks"] ?? 0),
-      sharedReadBlocks: Number(plan["Shared Read Blocks"] ?? 0),
-    });
+    plans.push(summarizePlan(query.name, result.rows[0]));
   }
   return plans;
+}
+
+function summarizePlan(
+  name: string,
+  row:
+    | { "QUERY PLAN": [{ Plan: Record<string, unknown>; "Execution Time": number }] }
+    | undefined,
+): QueryPlanSummary {
+  const root = row?.["QUERY PLAN"]?.[0];
+  const plan = root?.Plan ?? {};
+  return {
+    name,
+    nodeType: String(plan["Node Type"] ?? "unknown"),
+    executionTimeMs: round(Number(root?.["Execution Time"] ?? 0)),
+    sharedHitBlocks: Number(plan["Shared Hit Blocks"] ?? 0),
+    sharedReadBlocks: Number(plan["Shared Read Blocks"] ?? 0),
+  };
 }
 
 async function cleanupFixture(pool: Pool, workspaceId: string): Promise<void> {

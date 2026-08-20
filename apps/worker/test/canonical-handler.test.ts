@@ -312,6 +312,81 @@ describe("canonical handler", () => {
     expect(jobs.enqueue).not.toHaveBeenCalled();
   });
 
+  it("keeps a completed prefix retryable when a later batch write is interrupted", async () => {
+    const inputs = ["a-1", "a-2", "a-3"].map((accountId) => ({
+      workspaceId,
+      accountId,
+      ds: "2026-08-18",
+      reportDate: "2026-08-19",
+      offline: { account_id: accountId, cost_api: 100 },
+    }));
+    const rows = (
+      keys: { accountId: string; ds: string }[],
+      kind: "settings" | "history",
+    ) =>
+      keys.map((key) =>
+        kind === "settings"
+          ? {
+              workspaceId,
+              ...key,
+              channelCoefficient: 1,
+              assessmentPrice: 10,
+            }
+          : { workspaceId, ...key, history: [] },
+      );
+    const upsertCanonicalBatch = vi
+      .fn()
+      .mockResolvedValueOnce(undefined)
+      .mockRejectedValueOnce(new Error("batch write interrupted"));
+    const failRun = vi.fn().mockResolvedValue(undefined);
+    const jobs = { enqueue: vi.fn() };
+    const handler = createCanonicalHandler({
+      store: {
+        loadMergeInputs: vi.fn().mockResolvedValue(inputs),
+        loadEffectiveSettingsBatch: vi
+          .fn()
+          .mockImplementation(async (_workspaceId, keys) => rows(keys, "settings")),
+        loadHistoricalSpendBatch: vi
+          .fn()
+          .mockImplementation(async (_workspaceId, keys) => rows(keys, "history")),
+        upsertCanonicalBatch,
+      },
+      runs: {
+        startRun: vi.fn().mockResolvedValue(55),
+        finishRun: vi.fn(),
+        failRun,
+      },
+      jobs,
+      chunkSize: 2,
+    });
+
+    await expect(
+      handler({
+        id: "77777777-7777-4777-8777-777777777777",
+        workspaceId,
+        jobType: "canonical_merge",
+        payload: {
+          workspaceId,
+          dateFrom: "2026-08-18",
+          dateTo: "2026-08-18",
+          reportDate: "2026-08-19",
+        },
+        priority: 5,
+        credentialOwnerUserId: null,
+        status: "leased",
+        leaseUntil: null,
+        leaseToken: "77777777-7777-4777-8777-777777777777",
+        attempts: 1,
+        maxAttempts: 3,
+        runAfter: new Date(),
+      }),
+    ).rejects.toThrow("batch write interrupted");
+
+    expect(upsertCanonicalBatch.mock.calls.map(([records]) => records.length)).toEqual([2, 1]);
+    expect(failRun).toHaveBeenCalledWith(55, "aggregate:upsert", "batch write interrupted");
+    expect(jobs.enqueue).not.toHaveBeenCalled();
+  });
+
   it("rejects unsafe chunk sizes at construction", () => {
     const dependencies = {
       store: {
