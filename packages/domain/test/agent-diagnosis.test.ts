@@ -86,6 +86,30 @@ describe("Agent diagnosis schema and safety", () => {
       ),
     ).toThrow();
   });
+
+  it.each([
+    { status: "insufficient_data" as const, confidence: 0.8, evidenceRefs: ["cost"] },
+    { status: "ok" as const, confidence: 0, evidenceRefs: ["cost"] },
+    { status: "ok" as const, confidence: 0.8, evidenceRefs: [] },
+  ])(
+    "rejects adjustment actions that are not backed by an actionable diagnosis: %o",
+    ({ status, confidence, evidenceRefs }) => {
+      expect(() =>
+        parseAgentDiagnosis(
+          diagnosis({
+            status,
+            confidence,
+            actions: [
+              {
+                ...changeAction("adjust_bid", "unit:alpha:bid", 100, 95),
+                evidenceRefs,
+              },
+            ],
+          }),
+        ),
+      ).toThrow(/adjustment/i);
+    },
+  );
 });
 
 function diagnosis(overrides: Partial<AgentDiagnosis> = {}): AgentDiagnosis {

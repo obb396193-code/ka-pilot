@@ -145,10 +145,11 @@ export function renderDiagnosisMarkdown(diagnosis: AgentDiagnosis): string {
 function validateDiagnosisRelationships(
   diagnosis: {
     status: "ok" | "insufficient_data" | "fallback";
+    confidence: number;
     fallbackReason?: DiagnosisFallbackReason | undefined;
     evidence: Array<{ id: string }>;
     findings: Array<{ evidenceRefs: string[] }>;
-    actions: Array<{ evidenceRefs: string[] }>;
+    actions: Array<{ kind: string; evidenceRefs: string[] }>;
   },
   context: z.RefinementCtx,
 ): void {
@@ -171,6 +172,30 @@ function validateDiagnosisRelationships(
         context.addIssue({ code: "custom", message: `Unknown evidence reference: ${reference}` });
       }
     });
+  });
+  diagnosis.actions.forEach((action, index) => {
+    if (action.kind !== "adjust_bid" && action.kind !== "adjust_budget") return;
+    if (diagnosis.status !== "ok") {
+      context.addIssue({
+        code: "custom",
+        message: "Adjustment actions require an ok diagnosis",
+        path: ["actions", index],
+      });
+    }
+    if (diagnosis.confidence === 0) {
+      context.addIssue({
+        code: "custom",
+        message: "Adjustment actions require non-zero confidence",
+        path: ["actions", index],
+      });
+    }
+    if (action.evidenceRefs.length === 0) {
+      context.addIssue({
+        code: "custom",
+        message: "Adjustment actions require evidence",
+        path: ["actions", index, "evidenceRefs"],
+      });
+    }
   });
 }
 

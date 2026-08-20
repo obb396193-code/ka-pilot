@@ -17,7 +17,7 @@ exports.up = (pgm) => {
         )
         OR
         (
-          status NOT IN ('leased', 'running')
+          COALESCE(status, '') NOT IN ('leased', 'running')
           AND lease_token IS NULL
         )
       );
