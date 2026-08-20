@@ -395,6 +395,7 @@ main 9335150
 - PG 性能 SHA：`42efc5c`
 - 质检补强 SHA：`c85beb8`
 - 质量对平 SHA：`83cf855`
+- 质量与交接 SHA：`df07deb`
 - 设计：`docs/plans/2026-08-20-B9后端纵向闭环与批量性能-design.md`
 - 计划：`docs/plans/2026-08-20-B9后端纵向闭环与批量性能-implementation.md`
 - 状态：`docs/plans/B9-状态.md`
