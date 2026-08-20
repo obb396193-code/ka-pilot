@@ -17,3 +17,4 @@ export * from "./changeset-repository.js";
 export * from "./task-repository.js";
 export * from "./agent-repository.js";
 export * from "./workflow-repository.js";
+export * from "./partition-maintenance.js";

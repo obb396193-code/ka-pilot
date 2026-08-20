@@ -1,6 +1,7 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import { Client } from "pg";
+import { Client, Pool } from "pg";
 
+import { ensureMetricPartitions } from "../src/partition-maintenance.js";
 import { runMigrations } from "../src/migrate.js";
 
 const databaseUrl =
@@ -44,6 +45,17 @@ describe("contract migrations", () => {
       WHERE parent.relname IN ('metrics_raw', 'account_metrics_daily', 'ad_metrics_hourly')
     `);
     expect(Number(partitions.rows[0]?.count)).toBeGreaterThanOrEqual(15);
+
+    const maintenancePool = new Pool({ connectionString: databaseUrl });
+    await ensureMetricPartitions(maintenancePool, {
+      asOf: new Date("2030-01-15T00:00:00Z"),
+      monthsAhead: 2,
+    });
+    const futurePartitions = await maintenancePool.query<{ table_name: string | null }>(
+      `SELECT to_regclass('public.account_metrics_daily_2030_03')::text AS table_name`,
+    );
+    expect(futurePartitions.rows[0]?.table_name).toBe("account_metrics_daily_2030_03");
+    await maintenancePool.end();
 
     const columns = await client.query<{ table_name: string; column_name: string }>(`
       SELECT table_name, column_name

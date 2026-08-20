@@ -3,6 +3,7 @@ import {
   JobRepository,
   OutboundMessageRepository,
   createPool,
+  ensureMetricPartitions,
   runMigrations,
 } from "@ka/db";
 
@@ -15,6 +16,13 @@ async function main(): Promise<void> {
   const config = loadWorkerConfig(process.env);
   await runMigrations({ databaseUrl: config.databaseUrl });
   const pool = createPool(config.databaseUrl);
+  await ensureMetricPartitions(pool);
+  const partitionTimer = setInterval(() => {
+    void ensureMetricPartitions(pool).catch((error: unknown) => {
+      process.stderr.write(`Metric partition maintenance failed: ${String(error)}\n`);
+    });
+  }, 24 * 60 * 60 * 1_000);
+  partitionTimer.unref();
   const recovery = await new JobRepository(pool).recoverStaleLeases(10 * 60);
   await new BackfillRepository(pool).refreshRunningBatches();
   const notifyFailure = createFailureNotifier(new OutboundMessageRepository(pool));
@@ -45,6 +53,7 @@ async function main(): Promise<void> {
   try {
     await consumer.run(controller.signal, config.pollIntervalMs);
   } finally {
+    clearInterval(partitionTimer);
     process.removeListener("SIGINT", stop);
     process.removeListener("SIGTERM", stop);
     await pool.end();

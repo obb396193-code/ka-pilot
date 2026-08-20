@@ -117,6 +117,12 @@ describe("worker config", () => {
     })).toThrow(/localhost/i);
   });
 
+  it("rejects an Agent timeout longer than the credential envelope lifetime", () => {
+    expect(() => loadEnabledConfig([providerProfile("provider")], {
+      AGENT_TIMEOUT_MS: "300001",
+    })).toThrow(/credential envelope TTL/i);
+  });
+
   it("parses the string false as disabled", () => {
     expect(
       loadWorkerConfig({ DATABASE_URL: "postgres://local/ka", AGENT_ENABLED: "false" }).agent,
@@ -144,7 +150,10 @@ function providerProfile(
   };
 }
 
-function loadEnabledConfig(profiles: Record<string, unknown>[]) {
+function loadEnabledConfig(
+  profiles: Record<string, unknown>[],
+  overrides: NodeJS.ProcessEnv = {},
+) {
   return loadWorkerConfig({
     DATABASE_URL: "postgres://local/ka",
     AGENT_ENABLED: "true",
@@ -152,5 +161,6 @@ function loadEnabledConfig(profiles: Record<string, unknown>[]) {
     MODEL_GATEWAY_CLIENT_KEY: "g".repeat(32),
     MODEL_GATEWAY_ENVELOPE_KEY_BASE64: Buffer.alloc(32, 7).toString("base64"),
     MODEL_PROVIDER_PROFILES_JSON: JSON.stringify(profiles),
+    ...overrides,
   });
 }

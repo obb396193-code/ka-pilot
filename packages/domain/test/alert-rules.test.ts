@@ -104,6 +104,15 @@ describe("evaluateOverCostRamp", () => {
     expect(
       evaluateOverCostRamp({
         realCpa: 40,
+        assessmentPrice: 30,
+        cost: 5000,
+        lifecycleStage: "unknown",
+        realConversion: 100,
+      }).outcome,
+    ).toBe("insufficient_data");
+    expect(
+      evaluateOverCostRamp({
+        realCpa: 40,
         assessmentPrice: -1,
         cost: 5000,
         lifecycleStage: "scaling",

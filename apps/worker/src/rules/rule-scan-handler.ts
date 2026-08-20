@@ -74,6 +74,11 @@ export class RuleScanHandler {
         });
       }
     }
+    if (candidates.length > 0 && summary.failures.length === candidates.length) {
+      throw new Error(
+        `Rule scan failed for every candidate: ${summary.failures[0]?.message ?? "unknown error"}`,
+      );
+    }
     return summary;
   }
 

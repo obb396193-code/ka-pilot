@@ -226,6 +226,23 @@ describe("RuleScanHandler", () => {
     ]);
   });
 
+  it("fails the job when every candidate hits an infrastructure-level failure", async () => {
+    const handler = new RuleScanHandler({
+      candidateProvider: new StaticProvider([
+        overCostCandidate({ candidateId: "first" }),
+        overCostCandidate({ candidateId: "second", accountId: "account-2" }),
+      ]),
+      evaluator: { evaluate: () => { throw new Error("metrics store unavailable"); } },
+      workItems: new MemoryWorkItems(),
+      alerts: new IdempotentAlerts(),
+    });
+
+    await expect(handler.run({
+      workspaceId: "workspace-1",
+      now: new Date("2026-08-19T09:15Z"),
+    })).rejects.toThrow("metrics store unavailable");
+  });
+
   it("rejects a candidate leaked from another workspace", async () => {
     const handler = new RuleScanHandler({
       candidateProvider: new StaticProvider([
@@ -236,11 +253,9 @@ describe("RuleScanHandler", () => {
       alerts: new IdempotentAlerts(),
     });
 
-    const summary = await handler.run({
+    await expect(handler.run({
       workspaceId: "workspace-1",
       now: new Date("2026-08-19T09:15Z"),
-    });
-    expect(summary.created).toBe(0);
-    expect(summary.failures[0]?.message).toMatch(/workspace mismatch/);
+    })).rejects.toThrow(/workspace mismatch/);
   });
 });

@@ -41,6 +41,20 @@ function isFiniteNumber(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value);
 }
 
+const KNOWN_LIFECYCLE_STAGES = new Set([
+  "cold_start",
+  "ramping",
+  "scaling",
+  "stable",
+  "declining",
+  "paused",
+  "closed",
+]);
+
+function hasKnownLifecycleStage(value: string | null | undefined): value is string {
+  return typeof value === "string" && KNOWN_LIFECYCLE_STAGES.has(value);
+}
+
 function combineAll(trace: readonly ConditionTrace[]): RuleOutcome {
   if (trace.some((item) => item.outcome === "not_matched")) {
     return "not_matched";
@@ -60,11 +74,11 @@ function result(
 }
 
 function overCostSampleTrace(input: OverCostRampInput): ConditionTrace {
-  if (input.lifecycleStage === null || input.lifecycleStage === undefined) {
+  if (!hasKnownLifecycleStage(input.lifecycleStage)) {
     return {
       condition: "cold_start_sample_guard",
       outcome: "insufficient_data",
-      reason: "账户生命周期缺失，无法选择普通或冷启动阈值",
+      reason: "账户生命周期缺失或未知，无法选择普通或冷启动阈值",
     };
   }
   if (input.lifecycleStage !== "cold_start") {
@@ -131,11 +145,11 @@ function resolveCpaThreshold(input: OverCostRampInput): CpaThreshold | Condition
       reason: "缺少有效考核价，不能计算超成本阈值",
     };
   }
-  if (input.lifecycleStage === null || input.lifecycleStage === undefined) {
+  if (!hasKnownLifecycleStage(input.lifecycleStage)) {
     return {
       condition: "cpa_threshold",
       outcome: "insufficient_data",
-      reason: "账户生命周期缺失，不能确定阈值倍数",
+      reason: "账户生命周期缺失或未知，不能确定阈值倍数",
     };
   }
   const multiplier = input.lifecycleStage === "cold_start" ? 1.5 : 1.2;
