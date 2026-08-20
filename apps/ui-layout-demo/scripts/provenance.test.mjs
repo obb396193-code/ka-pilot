@@ -20,7 +20,7 @@ test("records only license-cleared upstream UI sources", () => {
     ),
   );
   for (const item of manifest.sources) {
-    assert.match(item.license, /MIT|Apache-2\.0/);
+    assert.match(item.license, /MIT|Apache-2\.0|SIL Open Font License 1\.1/);
     assert.match(item.upstream_url, /^https:\/\//);
     assert.ok(item.upstream_ref);
   }

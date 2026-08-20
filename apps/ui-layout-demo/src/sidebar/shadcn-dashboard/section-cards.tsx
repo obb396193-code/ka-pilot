@@ -17,7 +17,7 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>今日消耗</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            ¥128,430.60
+            ¥128,430
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -90,7 +90,8 @@ export function SectionCards() {
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            整体成本仍在考核线内 <IconTrendingUp className="size-4" />
+            整体成本表现稳定，继续保持在任务考核线内
+            <IconTrendingUp className="size-4" />
           </div>
           <div className="text-muted-foreground">Gap 对账完整率 98.2%</div>
         </CardFooter>

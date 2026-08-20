@@ -10,6 +10,22 @@
       "use": "complete official dashboard-01 block: page shell, AppSidebar, navigation modules, SiteHeader, SectionCards, Recharts area chart, draggable DataTable, Drawer and all scoped shadcn UI primitives; local edits are limited to import paths, Chinese business labels and desensitized demo data"
     },
     {
+      "source": "vercel-geist",
+      "asset": "Geist Sans and Geist Mono variable fonts",
+      "license": "SIL Open Font License 1.1",
+      "upstream_url": "https://github.com/vercel/geist-font",
+      "upstream_ref": "geist npm 1.7.2",
+      "use": "match the official shadcn dashboard typography for Latin text and tabular numbers; Chinese glyphs fall back to the system Chinese sans-serif"
+    },
+    {
+      "source": "tw-animate-css",
+      "asset": "Tailwind CSS animation utilities",
+      "license": "MIT",
+      "upstream_url": "https://github.com/Wombosvideo/tw-animate-css",
+      "upstream_ref": "tw-animate-css npm 1.4.0",
+      "use": "official shadcn globals animation utilities for Drawer, menus and state transitions"
+    },
+    {
       "source": "coss-origin",
       "asset": "navigation-menu",
       "license": "MIT",
