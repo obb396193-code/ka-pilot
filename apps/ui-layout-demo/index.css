@@ -1392,3 +1392,189 @@ a,
 select {
   touch-action: manipulation;
 }
+
+/* Official shadcn new-york-v4 neutral theme for sidebar.html only. */
+html[data-layout="shadcn"] {
+  --background: oklch(1 0 0);
+  --surface: oklch(1 0 0);
+  --surface-raised: oklch(0.97 0 0);
+  --foreground: oklch(0.145 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --border: oklch(0.922 0 0);
+  --border-strong: oklch(0.922 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.708 0 0 / 45%);
+  --danger: oklch(0.577 0.245 27.325);
+  --danger-soft: oklch(0.97 0.015 27.325);
+  --warning: oklch(0.55 0.16 65);
+  --warning-soft: oklch(0.975 0.025 80);
+  --success: oklch(0.46 0.13 155);
+  --success-soft: oklch(0.97 0.025 155);
+  --info: oklch(0.38 0 0);
+  --info-soft: oklch(0.97 0 0);
+  --card-shadow: none;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+}
+
+html[data-layout="shadcn"].dark {
+  --background: oklch(0.145 0 0);
+  --surface: oklch(0.205 0 0);
+  --surface-raised: oklch(0.269 0 0);
+  --foreground: oklch(0.985 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --border-strong: oklch(1 0 0 / 15%);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --ring: oklch(0.556 0 0 / 55%);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+}
+
+html[data-layout="shadcn"] body,
+html[data-layout="shadcn"] .sidebar-app {
+  background: var(--background);
+}
+
+html[data-layout="shadcn"] .sidebar-app {
+  grid-template-columns: 256px minmax(0, 1fr);
+}
+
+html[data-layout="shadcn"] .sidebar-app.is-collapsed {
+  grid-template-columns: 48px minmax(0, 1fr);
+}
+
+html[data-layout="shadcn"] .desktop-sidebar {
+  padding: 8px;
+  color: var(--sidebar-foreground);
+  background: var(--sidebar);
+  border-color: var(--sidebar-border);
+}
+
+html[data-layout="shadcn"] .sidebar-brand {
+  min-height: 52px;
+  padding: 8px;
+  border-bottom: 0;
+}
+
+html[data-layout="shadcn"] .brand-mark {
+  width: 32px;
+  height: 32px;
+  flex-basis: 32px;
+  border-radius: 8px;
+  color: var(--sidebar-primary-foreground);
+  background: var(--sidebar-primary);
+  box-shadow: none;
+}
+
+html[data-layout="shadcn"] .sidebar-brand strong,
+html[data-layout="shadcn"] .sidebar-user strong {
+  color: var(--sidebar-foreground);
+}
+
+html[data-layout="shadcn"] .sidebar-brand span:last-child,
+html[data-layout="shadcn"] .sidebar-user small,
+html[data-layout="shadcn"] .nav-group > p {
+  color: var(--muted-foreground);
+}
+
+html[data-layout="shadcn"] .sidebar-nav {
+  padding-top: 8px;
+}
+
+html[data-layout="shadcn"] .nav-group + .nav-group {
+  margin-top: 16px;
+}
+
+html[data-layout="shadcn"] .sidebar-nav button,
+html[data-layout="shadcn"] .sidebar-bottom > button {
+  min-height: 36px;
+  margin-block: 1px;
+  padding-inline: 8px;
+  border-radius: 6px;
+  color: var(--sidebar-foreground);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+html[data-layout="shadcn"] .sidebar-nav button:hover,
+html[data-layout="shadcn"] .sidebar-bottom > button:hover,
+html[data-layout="shadcn"] .sidebar-nav button.active {
+  color: var(--sidebar-accent-foreground);
+  background: var(--sidebar-accent);
+  box-shadow: none;
+}
+
+html[data-layout="shadcn"] .sidebar-nav button.active {
+  font-weight: 500;
+}
+
+html[data-layout="shadcn"] .sidebar-bottom {
+  border-color: var(--sidebar-border);
+}
+
+html[data-layout="shadcn"] .sidebar-user {
+  min-height: 48px;
+  background: transparent;
+}
+
+html[data-layout="shadcn"] .collapse-control {
+  top: 70px;
+  right: -11px;
+  width: 22px;
+  height: 22px;
+  color: var(--muted-foreground);
+  background: var(--background);
+  border-color: var(--sidebar-border);
+}
+
+html[data-layout="shadcn"] .sidebar-header {
+  height: 64px;
+  padding-inline: 24px;
+  background: color-mix(in oklab, var(--background) 95%, transparent);
+}
+
+html[data-layout="shadcn"] .dashboard-content {
+  padding: 24px;
+}
+
+html[data-layout="shadcn"] .metric-card,
+html[data-layout="shadcn"] .chart-card,
+html[data-layout="shadcn"] .queue-card,
+html[data-layout="shadcn"] .table-card {
+  border-radius: 10px !important;
+  box-shadow: none;
+}
+
+html[data-layout="shadcn"] .metric-index {
+  display: none;
+}
+
+html[data-layout="shadcn"] .metric-icon {
+  border-radius: 6px;
+}
+
+html[data-layout="shadcn"] .role-switcher,
+html[data-layout="shadcn"] .chart-tabs {
+  border-radius: 8px;
+}
+
+html[data-layout="shadcn"] .agent-fab.sidebar {
+  border-color: var(--border);
+  border-radius: 8px;
+  color: var(--primary-foreground);
+  background: var(--primary);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+}

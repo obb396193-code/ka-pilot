@@ -339,10 +339,10 @@ function PerformanceChart({
             showSymbol: false,
             symbolSize: 7,
             lineStyle: {
-              width: 3,
-              color: variant === "topbar" ? "#165dff" : "#2563eb",
+              width: variant === "topbar" ? 3 : 2,
+              color: variant === "topbar" ? "#165dff" : "#525252",
             },
-            itemStyle: { color: variant === "topbar" ? "#165dff" : "#2563eb" },
+            itemStyle: { color: variant === "topbar" ? "#165dff" : "#525252" },
             areaStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
@@ -350,9 +350,15 @@ function PerformanceChart({
                   color:
                     variant === "topbar"
                       ? "rgba(22,93,255,.22)"
-                      : "rgba(37,99,235,.18)",
+                      : "rgba(82,82,82,.15)",
                 },
-                { offset: 1, color: "rgba(37,99,235,0)" },
+                {
+                  offset: 1,
+                  color:
+                    variant === "topbar"
+                      ? "rgba(22,93,255,0)"
+                      : "rgba(82,82,82,0)",
+                },
               ]),
             },
             data: trendData.map((item) => (isSpend ? item.spend : item.cpa)),
