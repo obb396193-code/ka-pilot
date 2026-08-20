@@ -63,32 +63,40 @@ export class JobConsumer {
       await this.repository.markDone(job);
       await this.afterCompleted(job);
     } catch (error) {
-      if (error instanceof LostJobLeaseError) return true;
-      if (error instanceof BlockedAuthError) {
-        const message = errorMessage(error);
-        try {
-          await this.repository.markBlockedAuth(job, message);
-        } catch (markError) {
-          if (markError instanceof LostJobLeaseError) return true;
-          throw markError;
-        }
-        await this.notify(job, { kind: "blocked_auth", message });
-        return true;
-      }
-      const retryAt = new Date(
-        this.now().getTime() + retryDelayMs(job.attempts, this.retryBaseMs),
-      );
-      try {
-        await this.repository.markFailure(job, errorMessage(error), retryAt);
-      } catch (markError) {
-        if (markError instanceof LostJobLeaseError) return true;
-        throw markError;
-      }
-      if (job.attempts >= job.maxAttempts) {
-        await this.notify(job, { kind: "failed", message: errorMessage(error) });
-      }
+      await this.handleProcessingError(job, error);
     }
     return true;
+  }
+
+  private async handleProcessingError(job: JobRecord, error: unknown): Promise<void> {
+    if (error instanceof LostJobLeaseError) return;
+    if (error instanceof BlockedAuthError) {
+      await this.markBlockedAuth(job, errorMessage(error));
+      return;
+    }
+    const message = errorMessage(error);
+    const retryAt = new Date(
+      this.now().getTime() + retryDelayMs(job.attempts, this.retryBaseMs),
+    );
+    try {
+      await this.repository.markFailure(job, message, retryAt);
+    } catch (markError) {
+      if (markError instanceof LostJobLeaseError) return;
+      throw markError;
+    }
+    if (job.attempts >= job.maxAttempts) {
+      await this.notify(job, { kind: "failed", message });
+    }
+  }
+
+  private async markBlockedAuth(job: JobRecord, message: string): Promise<void> {
+    try {
+      await this.repository.markBlockedAuth(job, message);
+    } catch (markError) {
+      if (markError instanceof LostJobLeaseError) return;
+      throw markError;
+    }
+    await this.notify(job, { kind: "blocked_auth", message });
   }
 
   private async afterCompleted(job: JobRecord): Promise<void> {

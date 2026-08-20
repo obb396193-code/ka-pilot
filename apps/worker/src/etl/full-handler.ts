@@ -16,6 +16,19 @@ export interface FullEtlDependencies {
   jobs: JobEnqueuerPort;
 }
 
+type FullEtlPayload = ReturnType<typeof fullEtlPayloadSchema.parse>;
+
+interface FullEtlProgress {
+  currentStep: string;
+  rowsIngested: number;
+}
+
+interface FullJobIdentity {
+  id: string;
+  priority: number;
+  credentialOwnerUserId: string | null;
+}
+
 export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHandler {
   return async (job) => {
     const payload = fullEtlPayloadSchema.parse(job.payload);
@@ -25,116 +38,139 @@ export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHand
       requestedAccountIds: payload.accountIds,
       resources: ["account", "account_offline", "account_realtime"],
     });
-    let currentStep = "start";
-    let rowsIngested = 0;
-
-    const ingest = async (query: QihangQuery, fallbackDs: string): Promise<void> => {
-      const result = await dependencies.qihang.query(query);
-      const records = rowsToRawRecords({
-        rows: result.rows,
-        workspaceId: payload.workspaceId,
-        resource: query.resource,
-        requestParams: replayRequestParams(query),
-        fallbackDs,
-        fetchedByUserId: payload.fetchedByUserId,
-      });
-      await dependencies.store.appendRaw(records);
-      rowsIngested += records.length;
-    };
+    const progress: FullEtlProgress = { currentStep: "start", rowsIngested: 0 };
 
     try {
-      const discoveredAccountIds = new Set(payload.accountIds);
-      let pageNum = 1;
-      let fetchedAccounts = 0;
-      for (;;) {
-        currentStep = `account_page_${pageNum}`;
-        const query = {
-          resource: "account" as const,
-          userId: payload.userId,
-          media: payload.media,
-          pageNum,
-          pageSize: payload.pageSize,
-          ...(payload.keyword === undefined ? {} : { keyword: payload.keyword }),
-          ...(payload.bizName === undefined ? {} : { bizName: payload.bizName }),
-        };
-        const result = await dependencies.qihang.query(query);
-        const records = rowsToRawRecords({
-          rows: result.rows,
-          workspaceId: payload.workspaceId,
-          resource: "account",
-          requestParams: replayRequestParams(query),
-          fallbackDs: payload.asOfDate,
-          fetchedByUserId: payload.fetchedByUserId,
-        });
-        await dependencies.store.appendRaw(records);
-        rowsIngested += records.length;
-        fetchedAccounts += records.length;
-        records.forEach((row) => discoveredAccountIds.add(row.accountId));
-
-        if (records.length === 0) {
-          break;
-        }
-        const total = result.pagination?.totalNum;
-        if (total === null || total === undefined) {
-          throw new Error("Qihang account pagination total is missing");
-        }
-        if (fetchedAccounts >= total) break;
-        pageNum += 1;
-        if (pageNum > 10_000) {
-          throw new Error("Qihang account pagination exceeded safety limit");
-        }
-      }
-
-      const accountIds = [...discoveredAccountIds];
-      const yesterday = shiftIsoDate(payload.asOfDate, -1);
-      currentStep = "account_offline_yesterday";
-      await ingest(
-        {
-          resource: "account_offline",
-          userId: payload.userId,
-          media: payload.media,
-          accountIds,
-          beginDate: yesterday,
-          endDate: yesterday,
-        },
-        yesterday,
-      );
-
-      for (const ds of trailingDates(payload.asOfDate, payload.realtimeDays)) {
-        currentStep = `account_realtime_${ds}`;
-        await ingest(
-          {
-            resource: "account_realtime",
-            userId: payload.userId,
-            media: payload.media,
-            accountIds,
-            ds,
-          },
-          ds,
-        );
-      }
-
-      currentStep = "enqueue:canonical";
-      const realtimeFrom = shiftIsoDate(payload.asOfDate, -(payload.realtimeDays - 1));
-      const dateFrom = realtimeFrom < yesterday ? realtimeFrom : yesterday;
-      await dependencies.jobs.enqueue({
-        id: deterministicJobId(`canonical:full:${job.id}:${dateFrom}:${payload.asOfDate}`),
-        workspaceId: payload.workspaceId,
-        jobType: "canonical_merge",
-        payload: {
-          workspaceId: payload.workspaceId,
-          dateFrom,
-          dateTo: payload.asOfDate,
-          reportDate: payload.asOfDate,
-        },
-        priority: job.priority,
-        credentialOwnerUserId: job.credentialOwnerUserId,
-        maxAttempts: 3,
-      });
-      await dependencies.store.finishRun(runId, rowsIngested);
+      const accountIds = await discoverAccountIds(dependencies, payload, progress);
+      await ingestAccountMetrics(dependencies, payload, accountIds, progress);
+      await enqueueCanonical(dependencies, payload, job, progress);
+      await dependencies.store.finishRun(runId, progress.rowsIngested);
     } catch (error) {
-      await dependencies.store.failRun(runId, currentStep, errorSummary(error));
+      await dependencies.store.failRun(runId, progress.currentStep, errorSummary(error));
       throw error;
     }
   };
+}
+
+async function discoverAccountIds(
+  dependencies: FullEtlDependencies,
+  payload: FullEtlPayload,
+  progress: FullEtlProgress,
+): Promise<string[]> {
+  const discovered = new Set(payload.accountIds);
+  let pageNum = 1;
+  let fetchedAccounts = 0;
+  for (;;) {
+    progress.currentStep = `account_page_${pageNum}`;
+    const query = accountQuery(payload, pageNum);
+    const result = await dependencies.qihang.query(query);
+    const records = await persistRows(dependencies, payload, query, payload.asOfDate, result.rows);
+    progress.rowsIngested += records.length;
+    fetchedAccounts += records.length;
+    records.forEach((row) => discovered.add(row.accountId));
+    if (records.length === 0) break;
+    const total = result.pagination?.totalNum;
+    if (total === null || total === undefined) {
+      throw new Error("Qihang account pagination total is missing");
+    }
+    if (fetchedAccounts >= total) break;
+    pageNum += 1;
+    if (pageNum > 10_000) throw new Error("Qihang account pagination exceeded safety limit");
+  }
+  return [...discovered];
+}
+
+function accountQuery(payload: FullEtlPayload, pageNum: number): QihangQuery {
+  return {
+    resource: "account",
+    userId: payload.userId,
+    media: payload.media,
+    pageNum,
+    pageSize: payload.pageSize,
+    ...(payload.keyword === undefined ? {} : { keyword: payload.keyword }),
+    ...(payload.bizName === undefined ? {} : { bizName: payload.bizName }),
+  };
+}
+
+async function ingestAccountMetrics(
+  dependencies: FullEtlDependencies,
+  payload: FullEtlPayload,
+  accountIds: string[],
+  progress: FullEtlProgress,
+): Promise<void> {
+  const yesterday = shiftIsoDate(payload.asOfDate, -1);
+  progress.currentStep = "account_offline_yesterday";
+  progress.rowsIngested += await ingestQuery(dependencies, payload, {
+    resource: "account_offline",
+    userId: payload.userId,
+    media: payload.media,
+    accountIds,
+    beginDate: yesterday,
+    endDate: yesterday,
+  }, yesterday);
+  for (const ds of trailingDates(payload.asOfDate, payload.realtimeDays)) {
+    progress.currentStep = `account_realtime_${ds}`;
+    progress.rowsIngested += await ingestQuery(dependencies, payload, {
+      resource: "account_realtime",
+      userId: payload.userId,
+      media: payload.media,
+      accountIds,
+      ds,
+    }, ds);
+  }
+}
+
+async function ingestQuery(
+  dependencies: FullEtlDependencies,
+  payload: FullEtlPayload,
+  query: QihangQuery,
+  fallbackDs: string,
+): Promise<number> {
+  const result = await dependencies.qihang.query(query);
+  return (await persistRows(dependencies, payload, query, fallbackDs, result.rows)).length;
+}
+
+async function persistRows(
+  dependencies: FullEtlDependencies,
+  payload: FullEtlPayload,
+  query: QihangQuery,
+  fallbackDs: string,
+  rows: Record<string, unknown>[],
+) {
+  const records = rowsToRawRecords({
+    rows,
+    workspaceId: payload.workspaceId,
+    resource: query.resource,
+    requestParams: replayRequestParams(query),
+    fallbackDs,
+    fetchedByUserId: payload.fetchedByUserId,
+  });
+  await dependencies.store.appendRaw(records);
+  return records;
+}
+
+async function enqueueCanonical(
+  dependencies: FullEtlDependencies,
+  payload: FullEtlPayload,
+  job: FullJobIdentity,
+  progress: FullEtlProgress,
+): Promise<void> {
+  progress.currentStep = "enqueue:canonical";
+  const yesterday = shiftIsoDate(payload.asOfDate, -1);
+  const realtimeFrom = shiftIsoDate(payload.asOfDate, -(payload.realtimeDays - 1));
+  const dateFrom = realtimeFrom < yesterday ? realtimeFrom : yesterday;
+  await dependencies.jobs.enqueue({
+    id: deterministicJobId(`canonical:full:${job.id}:${dateFrom}:${payload.asOfDate}`),
+    workspaceId: payload.workspaceId,
+    jobType: "canonical_merge",
+    payload: {
+      workspaceId: payload.workspaceId,
+      dateFrom,
+      dateTo: payload.asOfDate,
+      reportDate: payload.asOfDate,
+    },
+    priority: job.priority,
+    credentialOwnerUserId: job.credentialOwnerUserId,
+    maxAttempts: 3,
+  });
 }

@@ -59,6 +59,17 @@ export interface JobEnqueuerPort {
   enqueue(job: NewJob): Promise<string>;
 }
 
+interface NormalizedNewJob {
+  id: string | null;
+  workspaceId: string | null;
+  jobType: string;
+  payload: Record<string, unknown>;
+  priority: number;
+  credentialOwnerUserId: string | null;
+  maxAttempts: number;
+  runAfter: Date;
+}
+
 type JobRow = {
   id: string;
   workspace_id: string | null;
@@ -113,29 +124,30 @@ export class JobRepository implements JobRepositoryPort {
   constructor(private readonly pool: Pool) {}
 
   async enqueue(job: NewJob): Promise<string> {
+    const normalized = normalizeNewJob(job);
     const result = await this.pool.query<{ id: string }>(
       `INSERT INTO jobs (
          id, workspace_id, job_type, payload, priority, credential_owner_user_id,
          max_attempts, run_after, status
        ) VALUES (COALESCE($1::uuid, gen_random_uuid()), $2, $3, $4, $5, $6, $7, $8, 'queued')
        ON CONFLICT (id) DO NOTHING
-       RETURNING id`,
+      RETURNING id`,
       [
-        job.id ?? null,
-        job.workspaceId,
-        job.jobType,
-        job.payload,
-        job.priority ?? 5,
-        job.credentialOwnerUserId,
-        job.maxAttempts ?? 3,
-        job.runAfter ?? new Date(),
+        normalized.id,
+        normalized.workspaceId,
+        normalized.jobType,
+        normalized.payload,
+        normalized.priority,
+        normalized.credentialOwnerUserId,
+        normalized.maxAttempts,
+        normalized.runAfter,
       ],
     );
     const id = result.rows[0]?.id;
     if (id) {
       return id;
     }
-    if (!job.id) {
+    if (normalized.id === null) {
       throw new Error("Failed to enqueue job");
     }
     const existing = await this.pool.query<{ id: string }>(
@@ -149,19 +161,19 @@ export class JobRepository implements JobRepositoryPort {
          AND credential_owner_user_id IS NOT DISTINCT FROM $6::uuid
          AND max_attempts = $7`,
       [
-        job.id,
-        job.workspaceId,
-        job.jobType,
-        job.payload,
-        job.priority ?? 5,
-        job.credentialOwnerUserId,
-        job.maxAttempts ?? 3,
+        normalized.id,
+        normalized.workspaceId,
+        normalized.jobType,
+        normalized.payload,
+        normalized.priority,
+        normalized.credentialOwnerUserId,
+        normalized.maxAttempts,
       ],
     );
     if (existing.rows[0]) {
       return existing.rows[0].id;
     }
-    throw new Error(`Deterministic job ${job.id} conflicts with an existing job`);
+    throw new Error(`Deterministic job ${normalized.id} conflicts with an existing job`);
   }
 
   async leaseNext(leaseSeconds: number): Promise<JobRecord | null> {
@@ -305,6 +317,19 @@ export class JobRepository implements JobRepositoryPort {
     const result = await this.pool.query(sql, [job.id, requireLeaseToken(job)]);
     assertLeaseMutation(result.rowCount, job.id);
   }
+}
+
+function normalizeNewJob(job: NewJob): NormalizedNewJob {
+  return {
+    id: job.id ?? null,
+    workspaceId: job.workspaceId,
+    jobType: job.jobType,
+    payload: job.payload,
+    priority: job.priority ?? 5,
+    credentialOwnerUserId: job.credentialOwnerUserId,
+    maxAttempts: job.maxAttempts ?? 3,
+    runAfter: job.runAfter ?? new Date(),
+  };
 }
 
 function requireLeaseToken(job: JobLeaseIdentity): string {
