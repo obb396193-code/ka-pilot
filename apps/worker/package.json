@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
+    "benchmark:data": "tsx scripts/benchmark-data-pipeline.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."
