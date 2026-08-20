@@ -256,3 +256,6 @@ git add docs
 git commit -m "[质检] 完成自审问题修复复验"
 ```
 
+## 执行结果
+
+Task 1-6 已完成。修复状态、当前测试与覆盖率、未裁决问题见 `docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口为 `docs/relay/inbox-arch.md` 的 P-014。

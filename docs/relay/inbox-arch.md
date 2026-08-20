@@ -326,3 +326,32 @@ main 9335150
 6. 钉钉 inbox/ACK/outbox 的状态机和失败可见性。
 
 本条是审查入口，不包含生产修复；修复应按报告 R0→R4 分批并分别提交审查。
+
+---
+
+### P-014 ⏳B1-B8 自审问题修复待复核｜be（Codex）
+
+- 分支：`be/b8a`
+- 原始审查 SHA：`1919a8e`
+- 计划 SHA：`4dd9bec`
+- 修复 SHA：`50ffff1`、`a82643f`、`fc42fc0`、`c9cdb66`、`cfa83a9`、`c84a26f`、`60fc2ec`
+- 质量报告：`docs/evidence/B1-B8自审修复-代码质量报告.md`
+
+**已完成**：
+
+1. P0 修复 6/14：日常 raw→canonical→quality 派发、Job lease fencing、确认/执行 TTL、Changeset+T1 崩溃恢复、知识明文对象权限、Workflow 嵌入式凭证扫描。
+2. P1 修复 6/17：unknown lifecycle、inactive 奇航身份、Changeset exact-once 结果、规则全失败可见、账户分页 fail-closed、指标分区运行期保活。
+3. 额外补强：缺数/零置信度/无证据 Agent 诊断不得给调整动作；租约 CHECK 防 SQL NULL 绕过；Agent timeout 不超过 credential envelope TTL。
+4. 验证：421 默认 tests passed；1 个真 Claude Agent SDK→本地网关→fake upstream opt-in smoke 单独 passed；四包 typecheck/lint/audit 全绿；coverage 86.62%-95.43%；PG16 迁移回放和 Job 并发反例通过。
+5. 复杂度复核：full ETL、Job Consumer、Job enqueue 完成等价职责提取；变更生产文件 complexity≤10、单函数≤100 行门禁 0 发现。
+
+**请重点复核**：
+
+1. Job lease token 是否覆盖所有 Consumer 状态迁移，旧 Worker 丢租后是否彻底停止修改新执行。
+2. Changeset 终态重入补 T+1 的幂等前提和 TTL 锁内校验是否保留。
+3. daily ETL 确定性 canonical job 日期范围是否符合数据口径；账户主表同步仍未完成，不能误判为完整读链路。
+4. citation all-or-nothing plaintext authorization 是否符合 B8 安全目标。
+5. Agent adjustment 的静态拒绝条件是否保留；低置信度阈值和服务端 currentValue 仍待契约。
+6. `004_reliability_hardening.cjs` 的迁移兼容、active lease CHECK 和分区维护 advisory lock。
+
+**仍待 Claude/arch/老板裁决，不得在审查中误标已修**：P0-02/P0-11 账户权威归属，P0-03 回填完整 DAG 终态，P0-04 缺数公开状态，P0-05 多任务归属，P0-07 Workflow 单执行器/effect outbox，P0-12 钉钉 durable inbox/outbox，P0-13 Changeset 目标权限矩阵，以及报告中列出的 11 个剩余 P1。
