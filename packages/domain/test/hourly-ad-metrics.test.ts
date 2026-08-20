@@ -119,6 +119,7 @@ describe("deriveHourlyAdMetrics", () => {
     ["missing ad id", { ad_id: undefined }],
     ["missing account id", { account_id: undefined }],
     ["missing date", { ds: undefined }],
+    ["invalid calendar date", { ds: "20260230" }],
     ["null metric", { ad_cost_h: null }],
     ["numeric string", { ad_click_h: "100" }],
     ["non-finite metric", { ad_budget_h: Number.NaN }],

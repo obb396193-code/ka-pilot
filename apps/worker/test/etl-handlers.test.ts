@@ -551,6 +551,40 @@ describe("ETL handlers", () => {
     expect(hourly.upsertHourly).not.toHaveBeenCalled();
   });
 
+  it("fails hourly derivation when Qihang returns an unexpected date", async () => {
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => ({
+        rows: query.resource === "ad_realtime" ? [adRow(Number(query.hh), { ds: "20260818" })] : [],
+        envelope: {},
+      })),
+    };
+    const runStore = store();
+    const downstream = jobs();
+    const hourly = hourlyStore();
+
+    await expect(createIncrementalEtlHandler({
+      qihang,
+      store: runStore.value,
+      jobs: downstream,
+      hourly,
+    })(job("etl_incr", {
+      workspaceId,
+      userId: "u-qihang",
+      ds: "2026-08-19",
+      focusAccountIds: ["a-9"],
+      hh: 9,
+      offlineReconcileDays: 0,
+    }))).rejects.toThrow("outside the requested ds");
+
+    expect(runStore.value.failRun).toHaveBeenCalledWith(
+      91,
+      "hourly_derive",
+      expect.stringContaining("outside the requested ds"),
+    );
+    expect(hourly.upsertHourly).not.toHaveBeenCalled();
+    expect(downstream.enqueue).not.toHaveBeenCalled();
+  });
+
   it("records the failed ETL step before propagating the error", async () => {
     const qihang = {
       query: vi.fn().mockRejectedValue(new Error("offline unavailable")),

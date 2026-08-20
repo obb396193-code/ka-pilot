@@ -53,4 +53,26 @@ describe("AdHourlyMetricsRepository unit", () => {
     expect(query).not.toHaveBeenCalled();
     await expect(repository.upsertHourly([metric])).rejects.toThrow("Failed to upsert hourly batch");
   });
+
+  it.each([
+    ["identifier", { adId: "" }],
+    ["date", { ds: "20260820" }],
+    ["hour", { hh: 24 }],
+    ["finite nonnegative", { cost: Number.NaN }],
+    ["safe integers", { exposure: 1.5 }],
+  ])("rejects invalid %s values before querying", async (_label, overrides) => {
+    const query = vi.fn();
+    const repository = new AdHourlyMetricsRepository({ query } as unknown as Pool);
+
+    await expect(repository.upsertHourly([{ ...metric, ...overrides }])).rejects.toThrow();
+    expect(query).not.toHaveBeenCalled();
+  });
+
+  it("rejects duplicate keys before querying", async () => {
+    const query = vi.fn();
+    const repository = new AdHourlyMetricsRepository({ query } as unknown as Pool);
+
+    await expect(repository.upsertHourly([metric, metric])).rejects.toThrow("duplicate");
+    expect(query).not.toHaveBeenCalled();
+  });
 });
