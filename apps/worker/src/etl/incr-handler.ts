@@ -2,7 +2,10 @@ import type { JobEnqueuerPort } from "@ka/db";
 
 import { deterministicJobId } from "../jobs/deterministic-id.js";
 import type { JobHandler } from "../jobs/types.js";
+import type { QihangQuery } from "../qihang/client.js";
+import { shiftIsoDate } from "./date-range.js";
 import { incrementalEtlPayloadSchema } from "./payload.js";
+import { toEtlQueryObservation } from "./query-observation.js";
 import { rowsToRawRecords } from "./raw-ingest.js";
 import { replayRequestParams } from "./replay-params.js";
 import { errorSummary } from "./run-utils.js";
@@ -24,23 +27,33 @@ export function createIncrementalEtlHandler(
       ds: payload.ds,
       accountIds: payload.accountIds,
       focusAccountIds: payload.focusAccountIds,
-      resources: ["account_realtime", "ad_realtime"],
+      resources: [
+        ...(payload.offlineReconcileDays > 0 ? ["account_offline"] : []),
+        "account_realtime",
+        "ad_realtime",
+      ],
     });
     let currentStep = "start";
     let rowsIngested = 0;
 
     const ingest = async (
-      resource: "account_realtime" | "ad_realtime",
-      query: Parameters<QihangQueryPort["query"]>[0],
+      query: QihangQuery,
+      fallbackDs: string,
     ): Promise<void> => {
-      currentStep = resource;
+      currentStep = query.resource;
       const result = await dependencies.qihang.query(query);
+      if (result.observation !== undefined) {
+        await dependencies.store.recordObservation(
+          runId,
+          toEtlQueryObservation(query, result.observation),
+        );
+      }
       const records = rowsToRawRecords({
         rows: result.rows,
         workspaceId: payload.workspaceId,
-        resource,
+        resource: query.resource,
         requestParams: replayRequestParams(query),
-        fallbackDs: payload.ds,
+        fallbackDs,
         fetchedByUserId: payload.fetchedByUserId,
       });
       await dependencies.store.appendRaw(records);
@@ -48,15 +61,26 @@ export function createIncrementalEtlHandler(
     };
 
     try {
-      await ingest("account_realtime", {
+      for (let offset = 1; offset <= payload.offlineReconcileDays; offset += 1) {
+        const ds = shiftIsoDate(payload.ds, -offset);
+        await ingest({
+          resource: "account_offline",
+          userId: payload.userId,
+          media: payload.media,
+          accountIds: payload.accountIds,
+          beginDate: ds,
+          endDate: ds,
+        }, ds);
+      }
+      await ingest({
         resource: "account_realtime",
         userId: payload.userId,
         media: payload.media,
         accountIds: payload.accountIds,
         ds: payload.ds,
-      });
+      }, payload.ds);
       if (payload.focusAccountIds.length > 0) {
-        await ingest("ad_realtime", {
+        await ingest({
           resource: "ad_realtime",
           userId: payload.userId,
           media: payload.media,
@@ -64,7 +88,7 @@ export function createIncrementalEtlHandler(
           adIds: payload.adIds,
           ds: payload.ds,
           ...(payload.hh === undefined ? {} : { hh: payload.hh }),
-        });
+        }, payload.ds);
       }
       currentStep = "enqueue:canonical";
       await dependencies.jobs.enqueue({
@@ -73,7 +97,7 @@ export function createIncrementalEtlHandler(
         jobType: "canonical_merge",
         payload: {
           workspaceId: payload.workspaceId,
-          dateFrom: payload.ds,
+          dateFrom: shiftIsoDate(payload.ds, -payload.offlineReconcileDays),
           dateTo: payload.ds,
           reportDate: payload.ds,
         },

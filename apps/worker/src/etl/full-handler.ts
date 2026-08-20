@@ -7,6 +7,7 @@ import { shiftIsoDate, trailingDates } from "./date-range.js";
 import { fullEtlPayloadSchema } from "./payload.js";
 import { rowsToRawRecords } from "./raw-ingest.js";
 import { replayRequestParams } from "./replay-params.js";
+import { toEtlQueryObservation } from "./query-observation.js";
 import { errorSummary } from "./run-utils.js";
 import type { EtlRunStore, QihangQueryPort } from "./types.js";
 
@@ -44,12 +45,13 @@ export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHand
     const progress: FullEtlProgress = { currentStep: "start", rowsIngested: 0 };
 
     try {
-      const accountIds = await discoverAccountIds(dependencies, payload, progress);
+      const accountIds = await discoverAccountIds(dependencies, payload, progress, runId);
       const offlineDate = await ingestAccountMetrics(
         dependencies,
         payload,
         accountIds,
         progress,
+        runId,
       );
       await enqueueCanonical(dependencies, payload, job, progress, offlineDate);
       await dependencies.store.finishRun(runId, progress.rowsIngested);
@@ -64,6 +66,7 @@ async function discoverAccountIds(
   dependencies: FullEtlDependencies,
   payload: FullEtlPayload,
   progress: FullEtlProgress,
+  runId: number,
 ): Promise<string[]> {
   const discovered = new Set(payload.accountIds);
   let pageNum = 1;
@@ -72,6 +75,7 @@ async function discoverAccountIds(
     progress.currentStep = `account_page_${pageNum}`;
     const query = accountQuery(payload, pageNum);
     const result = await dependencies.qihang.query(query);
+    await recordObservation(dependencies.store, runId, query, result.observation);
     const records = await persistRows(dependencies, payload, query, payload.asOfDate, result.rows);
     progress.rowsIngested += records.length;
     fetchedAccounts += records.length;
@@ -105,16 +109,18 @@ async function ingestAccountMetrics(
   payload: FullEtlPayload,
   accountIds: string[],
   progress: FullEtlProgress,
+  runId: number,
 ): Promise<string | null> {
   const offlineDate = await ingestLatestAvailableOffline(
     dependencies,
     payload,
     accountIds,
     progress,
+    runId,
   );
   for (const ds of trailingDates(payload.asOfDate, payload.realtimeDays)) {
     progress.currentStep = `account_realtime_${ds}`;
-    progress.rowsIngested += await ingestQuery(dependencies, payload, {
+    progress.rowsIngested += await ingestQuery(dependencies, payload, runId, {
       resource: "account_realtime",
       userId: payload.userId,
       media: payload.media,
@@ -130,11 +136,12 @@ async function ingestLatestAvailableOffline(
   payload: FullEtlPayload,
   accountIds: string[],
   progress: FullEtlProgress,
+  runId: number,
 ): Promise<string | null> {
   for (let offset = 1; offset <= OFFLINE_PARTITION_LOOKBACK_DAYS; offset += 1) {
     const ds = shiftIsoDate(payload.asOfDate, -offset);
     progress.currentStep = `account_offline_${ds}`;
-    const count = await ingestQuery(dependencies, payload, {
+    const count = await ingestQuery(dependencies, payload, runId, {
       resource: "account_offline",
       userId: payload.userId,
       media: payload.media,
@@ -151,11 +158,24 @@ async function ingestLatestAvailableOffline(
 async function ingestQuery(
   dependencies: FullEtlDependencies,
   payload: FullEtlPayload,
+  runId: number,
   query: QihangQuery,
   fallbackDs: string,
 ): Promise<number> {
   const result = await dependencies.qihang.query(query);
+  await recordObservation(dependencies.store, runId, query, result.observation);
   return (await persistRows(dependencies, payload, query, fallbackDs, result.rows)).length;
+}
+
+async function recordObservation(
+  store: EtlRunStore,
+  runId: number,
+  query: QihangQuery,
+  observation: Awaited<ReturnType<QihangQueryPort["query"]>>["observation"],
+): Promise<void> {
+  if (observation !== undefined) {
+    await store.recordObservation(runId, toEtlQueryObservation(query, observation));
+  }
 }
 
 async function persistRows(

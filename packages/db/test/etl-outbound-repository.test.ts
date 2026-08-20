@@ -59,6 +59,55 @@ describe("ETL run and outbound repositories", () => {
     ]);
   });
 
+  it("appends safe query observations while the ETL run is active", async () => {
+    const runId = await etlRuns.startRun(
+      "55555555-5555-4555-8555-555555555555",
+      "incr",
+      { workspaceId, ds: "2026-08-20" },
+    );
+    await etlRuns.recordObservation(runId, {
+      resource: "account_offline",
+      rowCount: 0,
+      fingerprint: "a".repeat(64),
+      observedAt: "2026-08-20T07:00:00.000Z",
+      lastSyncTime: null,
+      availability: "not_observed",
+      beginDate: "2026-08-19",
+      endDate: "2026-08-19",
+      accountIds: ["must-not-be-persisted"],
+    });
+    await etlRuns.recordObservation(runId, {
+      resource: "account_realtime",
+      rowCount: 1,
+      fingerprint: "b".repeat(64),
+      observedAt: "2026-08-20T07:01:00.000Z",
+      lastSyncTime: "2026-08-20 14:58:00",
+      availability: "observed",
+      ds: "2026-08-20",
+    });
+
+    const result = await pool.query<{ scope: { observations: unknown[] } }>(
+      "SELECT scope FROM etl_runs WHERE id = $1",
+      [runId],
+    );
+    expect(result.rows[0]?.scope.observations).toEqual([
+      expect.objectContaining({ resource: "account_offline", availability: "not_observed" }),
+      expect.objectContaining({ resource: "account_realtime", availability: "observed" }),
+    ]);
+    expect(JSON.stringify(result.rows[0]?.scope.observations)).not.toContain("must-not-be-persisted");
+
+    await etlRuns.finishRun(runId, 1);
+    await expect(etlRuns.recordObservation(runId, {
+      resource: "account_realtime",
+      rowCount: 0,
+      fingerprint: "c".repeat(64),
+      observedAt: "2026-08-20T07:02:00.000Z",
+      lastSyncTime: null,
+      availability: "not_observed",
+      ds: "2026-08-20",
+    })).rejects.toThrow("is not running");
+  });
+
   it("queues a structured outbound message without storing a credential", async () => {
     await outbound.enqueue({
       workspaceId: null,

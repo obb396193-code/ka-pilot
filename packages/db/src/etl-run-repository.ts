@@ -37,6 +37,27 @@ export class EtlRunRepository {
     }
   }
 
+  async recordObservation(
+    runId: number,
+    observation: Readonly<Record<string, unknown>>,
+  ): Promise<void> {
+    const safeObservation = pickSafeObservation(observation);
+    const result = await this.pool.query(
+      `UPDATE etl_runs
+       SET scope = jsonb_set(
+         COALESCE(scope, '{}'::jsonb),
+         '{observations}',
+         COALESCE(scope->'observations', '[]'::jsonb) || jsonb_build_array($2::jsonb),
+         true
+       )
+       WHERE id = $1 AND status = 'running'`,
+      [runId, JSON.stringify(safeObservation)],
+    );
+    if (result.rowCount !== 1) {
+      throw new Error(`ETL run ${runId} is not running`);
+    }
+  }
+
   async failRun(runId: number, stepFailed: string, errorSummary: string): Promise<void> {
     const result = await this.pool.query(
       `UPDATE etl_runs
@@ -48,4 +69,30 @@ export class EtlRunRepository {
       throw new Error(`ETL run ${runId} is not running`);
     }
   }
+}
+
+const OBSERVATION_FIELDS = [
+  "resource",
+  "rowCount",
+  "fingerprint",
+  "observedAt",
+  "lastSyncTime",
+  "availability",
+  "ds",
+  "beginDate",
+  "endDate",
+  "hh",
+  "kind",
+  "issueCount",
+  "issueFields",
+] as const;
+
+function pickSafeObservation(
+  observation: Readonly<Record<string, unknown>>,
+): Record<string, unknown> {
+  return Object.fromEntries(
+    OBSERVATION_FIELDS.flatMap((field) =>
+      observation[field] === undefined ? [] : [[field, observation[field]]],
+    ),
+  );
 }

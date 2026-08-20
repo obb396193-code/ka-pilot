@@ -42,6 +42,7 @@ function dependencies() {
     store: {
       startRun: vi.fn().mockResolvedValue(41),
       appendRaw: vi.fn().mockResolvedValue(undefined),
+      recordObservation: vi.fn().mockResolvedValue(undefined),
       finishRun: vi.fn().mockResolvedValue(undefined),
       failRun: vi.fn().mockResolvedValue(undefined),
     },

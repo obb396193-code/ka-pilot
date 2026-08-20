@@ -39,6 +39,7 @@ describe("backfill coordinator", () => {
     const store = {
       startRun: vi.fn().mockResolvedValue(31),
       appendRaw: vi.fn().mockResolvedValue(undefined),
+      recordObservation: vi.fn().mockResolvedValue(undefined),
       finishRun: vi.fn().mockResolvedValue(undefined),
       failRun: vi.fn().mockResolvedValue(undefined),
     };

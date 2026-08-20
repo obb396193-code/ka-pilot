@@ -25,6 +25,7 @@ export const fullEtlPayloadSchema = common.extend({
 
 export const incrementalEtlPayloadSchema = common.extend({
   ds: z.string().regex(isoDate),
+  offlineReconcileDays: z.number().int().min(0).max(3).default(1),
   focusAccountIds: z
     .array(z.string().trim().min(1))
     .max(DEFAULT_MAX_QIHANG_IDS_PER_QUERY)

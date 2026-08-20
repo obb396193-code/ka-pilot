@@ -1,4 +1,5 @@
 import type { QihangQuery, QihangQueryResult } from "../qihang/client.js";
+import type { QihangObservation } from "../qihang/observation.js";
 
 export type MetricResource = QihangQuery["resource"];
 export type MetricSource = "realtime" | "offline" | "metadata";
@@ -21,8 +22,16 @@ export interface EtlRunStore {
     scope: Record<string, unknown>,
   ): Promise<number>;
   appendRaw(records: readonly RawMetricRecord[]): Promise<void>;
+  recordObservation(runId: number, observation: EtlQueryObservation): Promise<void>;
   finishRun(runId: number, rowsIngested: number): Promise<void>;
   failRun(runId: number, stepFailed: string, errorSummary: string): Promise<void>;
+}
+
+export interface EtlQueryObservation extends QihangObservation {
+  ds?: string;
+  beginDate?: string;
+  endDate?: string;
+  hh?: number | string;
 }
 
 export interface QihangQueryPort {

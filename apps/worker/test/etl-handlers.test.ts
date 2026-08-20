@@ -7,6 +7,7 @@ import type {
   RawMetricRecord,
 } from "../src/etl/types.js";
 import type { QihangQuery, QihangQueryResult } from "../src/qihang/client.js";
+import type { QihangObservation } from "../src/qihang/observation.js";
 
 const workspaceId = "11111111-1111-4111-8111-111111111111";
 const ownerUserId = "22222222-2222-4222-8222-222222222222";
@@ -35,10 +36,27 @@ function store() {
     appendRaw: vi.fn(async (rows) => {
       records.push(...rows);
     }),
+    recordObservation: vi.fn().mockResolvedValue(undefined),
     finishRun: vi.fn().mockResolvedValue(undefined),
     failRun: vi.fn().mockResolvedValue(undefined),
   };
   return { value, records };
+}
+
+function observation(
+  resource: QihangQuery["resource"],
+  rowCount: number,
+): QihangObservation {
+  return {
+    resource,
+    rowCount,
+    fingerprint: `${resource}-${rowCount}`.padEnd(64, "0"),
+    observedAt: "2026-08-20T07:00:00.000Z",
+    lastSyncTime: resource.includes("realtime") ? "2026-08-20 14:58:00" : null,
+    availability: rowCount === 0
+      ? "not_observed"
+      : resource === "account_offline" ? "observed_unverified" : "observed",
+  };
 }
 
 function jobs() {
@@ -224,6 +242,7 @@ describe("ETL handlers", () => {
         focusAccountIds: ["a-9"],
         adIds: ["ad-1"],
         hh: 9,
+        offlineReconcileDays: 0,
       }),
     );
 
@@ -255,6 +274,92 @@ describe("ETL handlers", () => {
         dateTo: "2026-08-19",
         reportDate: "2026-08-19",
       },
+    }));
+  });
+
+  it("rechecks D-1 offline by default, records an empty observation, and continues realtime", async () => {
+    const calls: QihangQuery[] = [];
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => {
+        calls.push(query);
+        if (query.resource === "account_offline") {
+          return { rows: [], envelope: {}, observation: observation(query.resource, 0) };
+        }
+        return {
+          rows: [{ account_id: "a-9", ds: "20260820", account_cost: 12 }],
+          envelope: {},
+          observation: observation(query.resource, 1),
+        };
+      }),
+    };
+    const runStore = store();
+    const downstream = jobs();
+
+    await createIncrementalEtlHandler({ qihang, store: runStore.value, jobs: downstream })(
+      job("etl_incr", {
+        workspaceId,
+        userId: "u-qihang",
+        ds: "2026-08-20",
+        accountIds: ["a-9"],
+      }),
+    );
+
+    expect(calls).toEqual([
+      expect.objectContaining({
+        resource: "account_offline",
+        beginDate: "2026-08-19",
+        endDate: "2026-08-19",
+      }),
+      expect.objectContaining({ resource: "account_realtime", ds: "2026-08-20" }),
+    ]);
+    expect(runStore.value.recordObservation).toHaveBeenNthCalledWith(1, 91, {
+      ...observation("account_offline", 0),
+      beginDate: "2026-08-19",
+      endDate: "2026-08-19",
+    });
+    expect(runStore.value.recordObservation).toHaveBeenNthCalledWith(2, 91, {
+      ...observation("account_realtime", 1),
+      ds: "2026-08-20",
+    });
+    expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
+      payload: {
+        workspaceId,
+        dateFrom: "2026-08-19",
+        dateTo: "2026-08-20",
+        reportDate: "2026-08-20",
+      },
+    }));
+  });
+
+  it("persists a newly produced D-1 offline snapshot for canonical revision", async () => {
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => query.resource === "account_offline"
+        ? {
+            rows: [{ account_id: "a-9", ds: "20260819", cost_api: 10 }],
+            envelope: {},
+            observation: observation(query.resource, 1),
+          }
+        : { rows: [], envelope: {}, observation: observation(query.resource, 0) }),
+    };
+    const runStore = store();
+    const downstream = jobs();
+
+    await createIncrementalEtlHandler({ qihang, store: runStore.value, jobs: downstream })(
+      job("etl_incr", {
+        workspaceId,
+        userId: "u-qihang",
+        ds: "2026-08-20",
+        accountIds: ["a-9"],
+      }),
+    );
+
+    expect(runStore.records).toContainEqual(expect.objectContaining({
+      resource: "account_offline",
+      ds: "2026-08-19",
+      payload: expect.objectContaining({ cost_api: 10 }),
+    }));
+    expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
+      payload: expect.objectContaining({ dateFrom: "2026-08-19", dateTo: "2026-08-20" }),
     }));
   });
 
