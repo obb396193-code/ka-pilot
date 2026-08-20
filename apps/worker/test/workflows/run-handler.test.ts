@@ -73,7 +73,7 @@ function capabilities(includeAction = false): CapabilityDefinition[] {
       mode: "execute",
       description: "Change a bid",
       inputSchema: z.object({ bid: z.number() }).strict(),
-      outputSchema: z.object({ changed: z.boolean() }).strict(),
+      outputSchema: z.object({ changed: z.boolean(), note: z.string().optional() }).strict(),
       maxAttempts: 1,
       idempotencyScope: "object",
       requiresConfirmation: true,
@@ -479,9 +479,31 @@ describe("DurableWorkflowRunHandler", () => {
 
     now = new Date("2026-08-20T00:00:00.500Z");
     await setup.handler.confirm({ ...command, nodeId: "change", previewHash: PREVIEW_HASH });
-    expect(await setup.handler.advance(command)).toEqual({ kind: "terminal", runStatus: "unknown" });
-    expect(actions.executeConfirmed).toHaveBeenCalledTimes(1);
+    now = new Date("2026-08-20T00:00:02.000Z");
+    expect(await setup.handler.advance(command)).toEqual({ kind: "terminal", runStatus: "failed" });
+    expect(actions.executeConfirmed).not.toHaveBeenCalled();
     expect(setup.repository.events.filter((event) => event.kind === "node_retry_scheduled")).toHaveLength(0);
+  });
+
+  it("rejects credential-shaped text even when it is embedded after a harmless prefix", async () => {
+    const actions: ChangesetActionPort = {
+      preview: vi.fn(async () => ({
+        kind: "ready" as const,
+        changesetId: CHANGESET_ID,
+        previewHash: PREVIEW_HASH,
+      })),
+      executeConfirmed: vi.fn(async () => ({
+        kind: "succeeded" as const,
+        output: { changed: true, note: "upstream error: Bearer secret-value" },
+      })),
+    };
+    const setup = createHandler({ includeAction: true, actions });
+    await setup.handler.advance(command);
+    await setup.handler.confirm({ ...command, nodeId: "change", previewHash: PREVIEW_HASH });
+
+    expect(await setup.handler.advance(command)).toEqual({ kind: "terminal", runStatus: "unknown" });
+    expect(JSON.stringify(setup.repository.events)).not.toContain("secret-value");
+    expect(JSON.stringify([...setup.outputs.values.values()])).not.toContain("secret-value");
   });
 
   it("supports pause, resume, and cancellation", async () => {

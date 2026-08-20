@@ -362,6 +362,41 @@ describe("workflow run replay", () => {
     expect(() => replayWorkflowRun(workflow, waiting)).toThrow("preview hash");
   });
 
+  it("compares confirmation timestamps by instant instead of ISO string ordering", () => {
+    const workflow = plan();
+    const events: WorkflowRunEvent[] = [
+      event(1, { kind: "run_started" }),
+      event(2, { kind: "node_skipped", nodeId: "load", reasonCode: "condition_false" }),
+      event(3, { kind: "node_skipped", nodeId: "calculate", reasonCode: "condition_false" }),
+      event(4, {
+        kind: "node_started",
+        nodeId: "change",
+        attempt: 1,
+        inputHash: HASH_A,
+        idempotencyKey: "wfnode_change",
+      }),
+      event(5, {
+        kind: "node_waiting_confirmation",
+        nodeId: "change",
+        attempt: 1,
+        changesetId: CHANGESET_ID,
+        previewHash: HASH_A,
+        expiresAt: "2026-08-20T08:30:00+08:00",
+      }),
+      {
+        ...event(6, {
+          kind: "node_confirmation_received",
+          nodeId: "change",
+          previewHash: HASH_A,
+          confirmedBy: USER_ID,
+        }),
+        at: "2026-08-20T00:31:00Z",
+      },
+    ];
+
+    expect(() => replayWorkflowRun(workflow, events)).toThrow("expired");
+  });
+
   it("derives stable node idempotency keys from the full invocation identity", () => {
     const input = {
       runId: "33333333-3333-4333-8333-333333333333",

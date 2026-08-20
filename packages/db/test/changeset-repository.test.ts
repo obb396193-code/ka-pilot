@@ -145,6 +145,61 @@ describe("ChangeSetRepository", () => {
     expect(completed.items.map((item) => item.itemStatus)).toEqual(["success", "failed"]);
   });
 
+  it("rejects duplicate item results and an execution run from another changeset", async () => {
+    const first = await create();
+    const second = await create();
+    for (const changeset of [first, second]) {
+      await repository.confirm({
+        workspaceId,
+        changeSetId: changeset.id,
+        now: new Date("2026-08-19T10:00:00Z"),
+        currentValues: changeset.items.map((item) => ({
+          targetType: item.targetType,
+          targetId: item.targetId,
+          field: item.field,
+          value: item.fromValue,
+        })),
+      });
+    }
+    const firstRun = await repository.beginExecution({
+      workspaceId,
+      changeSetId: first.id,
+      requestPayload: {},
+      startedAt: new Date("2026-08-19T10:01:00Z"),
+    });
+    const secondRun = await repository.beginExecution({
+      workspaceId,
+      changeSetId: second.id,
+      requestPayload: {},
+      startedAt: new Date("2026-08-19T10:01:00Z"),
+    });
+    if (firstRun.directive !== "execute" || secondRun.directive !== "execute") {
+      throw new Error("expected execution runs");
+    }
+
+    await expect(repository.completeExecution({
+      workspaceId,
+      changeSetId: first.id,
+      executionRunId: firstRun.executionRunId,
+      finishedAt: new Date("2026-08-19T10:02:00Z"),
+      resultPayload: {},
+      items: [
+        { itemId: first.items[0]!.id, status: "success" },
+        { itemId: first.items[1]!.id, status: "success" },
+        { itemId: first.items[0]!.id, status: "success" },
+      ],
+    })).rejects.toThrow("exactly once");
+
+    await expect(repository.completeExecution({
+      workspaceId,
+      changeSetId: first.id,
+      executionRunId: secondRun.executionRunId,
+      finishedAt: new Date("2026-08-19T10:02:00Z"),
+      resultPayload: {},
+      items: first.items.map((item) => ({ itemId: item.id, status: "success" as const })),
+    })).rejects.toThrow("execution run");
+  });
+
   it("requires reconciliation instead of blindly beginning UNKNOWN again", async () => {
     const created = await create();
     await pool.query("UPDATE changesets SET status='unknown' WHERE id=$1", [created.id]);

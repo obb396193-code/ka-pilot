@@ -211,14 +211,13 @@ export async function searchKnowledgeForAgent(
     permissionPort,
   );
   return Object.freeze(
-    readableCitations.map((citation) =>
-      freezeCitation(
-        citation,
-        citation.businessRefs.filter((reference) =>
+    readableCitations
+      .filter((citation) =>
+        citation.businessRefs.every((reference) =>
           readableBusinessObjects.has(businessIdentityKey(reference)),
         ),
-      ),
-    ),
+      )
+      .map((citation) => freezeCitation(citation, citation.businessRefs)),
   );
 }
 

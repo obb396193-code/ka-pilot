@@ -147,7 +147,11 @@ function assertCompleteItemCoverage(
 ): void {
   const expected = new Set(storedItems.map((item) => item.id));
   const received = new Set(results.map((item) => item.itemId));
-  if (expected.size !== received.size || [...expected].some((id) => !received.has(id))) {
+  if (
+    results.length !== storedItems.length ||
+    expected.size !== received.size ||
+    [...expected].some((id) => !received.has(id))
+  ) {
     throw new Error("execution result must cover every changeset item exactly once");
   }
 }
@@ -353,11 +357,14 @@ export class ChangeSetRepository {
       assertCompleteItemCoverage(storedItems, input.items);
       const aggregate = aggregateExecutionResult(input.items);
       await persistItemResults(client, header.id, input.items);
-      await client.query(
+      const execution = await client.query(
         `UPDATE execution_runs SET status=$3,result_payload=$4::jsonb,finished_at=$5
          WHERE id=$1 AND changeset_id=$2`,
         [input.executionRunId, header.id, aggregate, JSON.stringify(input.resultPayload), input.finishedAt],
       );
+      if (execution.rowCount !== 1) {
+        throw new Error("execution run does not belong to this changeset");
+      }
       const updated = await client.query<HeaderRow>(
         `UPDATE changesets SET status=$3,executed_at=$4
          WHERE workspace_id=$1 AND id=$2 RETURNING ${headerColumns}`,

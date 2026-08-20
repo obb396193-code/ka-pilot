@@ -378,7 +378,7 @@ function waitForConfirmation(
   if (node.status !== "running") illegal(event.kind, node.status);
   assertAttempt(node, event.attempt);
   if (mode !== "execute") throw new Error("Only execute nodes can wait for confirmation");
-  if (event.expiresAt && event.expiresAt <= event.at) {
+  if (event.expiresAt && isAtOrAfter(event.at, event.expiresAt)) {
     throw new Error("Workflow confirmation expiry must be after the event");
   }
   node.status = "waiting_confirmation";
@@ -401,12 +401,16 @@ function confirmNode(
   if (node.confirmation.previewHash !== event.previewHash) {
     throw new Error("Workflow confirmation preview hash does not match");
   }
-  if (node.confirmation.expiresAt && event.at >= node.confirmation.expiresAt) {
+  if (node.confirmation.expiresAt && isAtOrAfter(event.at, node.confirmation.expiresAt)) {
     throw new Error("Workflow confirmation has expired");
   }
   node.confirmation.confirmedBy = event.confirmedBy;
   node.status = "ready";
   state.status = "running";
+}
+
+function isAtOrAfter(candidate: string, boundary: string): boolean {
+  return Date.parse(candidate) >= Date.parse(boundary);
 }
 
 function skipNode(node: WorkflowNodeRunState, reason: WorkflowBlockReason): void {

@@ -7,7 +7,7 @@ export class CredentialRepository {
     const result = await this.pool.query<{ qihang_user_id: string | null }>(
       `SELECT qihang_user_id
        FROM users
-       WHERE workspace_id = $1 AND id = $2`,
+       WHERE workspace_id = $1 AND id = $2 AND is_active = true`,
       [workspaceId, userId],
     );
     return result.rows[0]?.qihang_user_id ?? null;

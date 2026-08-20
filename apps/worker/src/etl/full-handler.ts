@@ -67,10 +67,14 @@ export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHand
         fetchedAccounts += records.length;
         records.forEach((row) => discoveredAccountIds.add(row.accountId));
 
-        const total = result.pagination?.totalNum;
-        if (records.length === 0 || total === null || total === undefined || fetchedAccounts >= total) {
+        if (records.length === 0) {
           break;
         }
+        const total = result.pagination?.totalNum;
+        if (total === null || total === undefined) {
+          throw new Error("Qihang account pagination total is missing");
+        }
+        if (fetchedAccounts >= total) break;
         pageNum += 1;
         if (pageNum > 10_000) {
           throw new Error("Qihang account pagination exceeded safety limit");

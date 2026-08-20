@@ -227,7 +227,7 @@ export class DurableWorkflowRunHandler {
       throw new Error("workflow confirmation preview hash does not match");
     }
     const at = eventTime(this.clock(), events);
-    if (node.confirmation.expiresAt && at >= node.confirmation.expiresAt) {
+    if (node.confirmation.expiresAt && isAtOrAfter(at, node.confirmation.expiresAt)) {
       throw new Error("workflow confirmation has expired");
     }
     await this.append(events, snapshot, `node_${node.nodeId}_confirmation`, {
@@ -438,6 +438,10 @@ export class DurableWorkflowRunHandler {
     const confirmation = prior.confirmation;
     if (!confirmation?.confirmedBy || capability.mode !== "execute") {
       await this.fail(events, snapshot, node.id, prior.attempt, "confirmation_missing");
+      return;
+    }
+    if (confirmation.expiresAt && this.clock().getTime() >= Date.parse(confirmation.expiresAt)) {
+      await this.fail(events, snapshot, node.id, prior.attempt, "confirmation_expired");
       return;
     }
     const confirmedBy = confirmation.confirmedBy;
@@ -897,7 +901,7 @@ function safeReconciliationRef(value: string | undefined): string | undefined {
 function assertNoCredentialShape(value: unknown, depth = 0): void {
   if (depth > 32) throw new Error("workflow output exceeds depth limit");
   if (typeof value === "string") {
-    if (/^(?:bearer\s+|sk[-_]|ak[-_]|api[_-]?key[:=])/i.test(value.trim())) {
+    if (containsCredentialShape(value)) {
       throw new Error("workflow output contains credential-shaped text");
     }
     return;
@@ -913,6 +917,16 @@ function assertNoCredentialShape(value: unknown, depth = 0): void {
     }
     assertNoCredentialShape(child, depth + 1);
   }
+}
+
+function containsCredentialShape(value: string): boolean {
+  return /\bbearer\s+\S+/i.test(value) ||
+    /\b(?:authorization|api[_-]?key|token)\s*[:=]\s*\S+/i.test(value) ||
+    /(?:^|[^A-Za-z0-9])(?:sk|ak)[-_][A-Za-z0-9_-]{8,}/i.test(value);
+}
+
+function isAtOrAfter(candidate: string, boundary: string): boolean {
+  return Date.parse(candidate) >= Date.parse(boundary);
 }
 
 function boundedRetry(value: number): number {

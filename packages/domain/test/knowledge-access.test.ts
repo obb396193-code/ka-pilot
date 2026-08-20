@@ -202,7 +202,7 @@ describe("searchKnowledgeForAgent", () => {
     ).rejects.toThrow("knowledge permission resolver");
   });
 
-  it("removes unauthorized business references and rejects invented business permissions", async () => {
+  it("drops a citation whose plaintext depends on an unauthorized business reference", async () => {
     const request = { workspaceId: WORKSPACE_ID, actorUserId: USER_ID, query: "跑量" };
     const searchPort: KnowledgeSearchPort = {
       searchAuthorized: async () => [citation(DOCUMENT_A)],
@@ -223,7 +223,7 @@ describe("searchKnowledgeForAgent", () => {
       searchPort,
       withoutBusinessAccess,
     );
-    expect(filtered[0]!.businessRefs).toEqual([]);
+    expect(filtered).toEqual([]);
     await expect(
       searchKnowledgeForAgent(request, searchPort, inventedBusinessAccess),
     ).rejects.toThrow("knowledge permission resolver");

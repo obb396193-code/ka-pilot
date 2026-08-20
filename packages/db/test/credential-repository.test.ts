@@ -40,6 +40,12 @@ describe("CredentialRepository", () => {
     ).resolves.toBeNull();
   });
 
+  it("does not resolve a Qihang identity for an inactive user", async () => {
+    await pool.query("UPDATE users SET is_active = false WHERE id = $1", [ownerId]);
+
+    await expect(repository.resolveQihangUserId(workspaceId, ownerId)).resolves.toBeNull();
+  });
+
   it("selects the common account owner and rejects ambiguous scopes", async () => {
     await pool.query(
       `INSERT INTO accounts (workspace_id, account_id, owner_user_id)

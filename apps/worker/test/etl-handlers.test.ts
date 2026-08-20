@@ -151,4 +151,31 @@ describe("ETL handlers", () => {
       "offline unavailable",
     );
   });
+
+  it("fails closed when account pagination metadata disappears on a non-empty page", async () => {
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => {
+        if (query.resource === "account") {
+          return {
+            rows: [{ account_id: "a-1" }],
+            envelope: {},
+          };
+        }
+        return { rows: [], envelope: {} };
+      }),
+    };
+    const runStore = store();
+    const handler = createFullEtlHandler({ qihang, store: runStore.value });
+
+    await expect(handler(job("etl_full", {
+      workspaceId,
+      userId: "u-qihang",
+      asOfDate: "2026-08-19",
+    }))).rejects.toThrow("pagination total");
+    expect(runStore.value.failRun).toHaveBeenCalledWith(
+      91,
+      "account_page_1",
+      expect.stringContaining("pagination total"),
+    );
+  });
 });
