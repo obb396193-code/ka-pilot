@@ -43,6 +43,7 @@
 `internal`（内部）｜`official`（官方）｜`competitor`（竞品）｜`open_source`（开源）｜`research`（调研）。
 
 - 官方资料必须记录原始 URL、抓取日期、版本和更新时间；未知项写 `null` 或“未标注”，不补造。
+- 动态官方接口站除入口 URL 外，还要记录目标页 `documentId/menuId`、接口版本、页面更新时间、endpoint/method、scope、白名单、限额与抓取日期。目标接口页和汇总说明冲突时不得静默择一，标记 `official_conflict` 并等待只读探针或媒体确认。
 - 第三方、竞品和开源资料必须写许可/引用边界。
 - 内部资料的来源系统、作者/责任方和权限必须明确；未知就标“未知”，不能推断人名。
 
@@ -97,6 +98,8 @@ raw → analyzed → review_pending → reviewed → approved → published → 
 6. 按 `templates/source-card.md` 生成独立评估。
 7. 完成后升为 `review_pending`，写入 `docs/relay/inbox-arch.md`。
 8. 只有审查 Agent 回写批准后才能标 `approved`；实际导入并核验 hash 后才标 `published`。
+
+官方 API 资料额外遵守：网页公开可见只证明 `documented`，不证明当前账户 `authorized`、执行壳 `wrapped` 或运行时 `verified`。凭证形态的官方请求样例不进入快照；只保存字段名、接口定义和无凭证证据。
 
 多文件资料包在第 2–4 步之间还要完成：路径穿越/符号链接/加密条目检查、逐文件凭证清除、重复与空文件统计、manifest 生成。不得把带签名 URL、AK 标识或访问签名的下载原包直接设为 canonical storage。
 

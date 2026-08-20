@@ -271,3 +271,24 @@ test("fifth and sixth sources are confidential research assets pending review", 
     assert.equal(record.allowed_roles.includes("development"), false);
   }
 });
+
+test("seventh source is official MAPI evidence but remains unreviewed and unpublished", async () => {
+  const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+  const catalog = await readFile(path.join(repoRoot, "docs/knowledge/catalog.jsonl"), "utf8");
+  const {records, errors} = parseCatalog(catalog);
+  assert.deepEqual(errors, []);
+  const record = records.find((item) => item.document_id === "ka-src-0007");
+  assert.ok(record, "ka-src-0007 must exist");
+  assert.equal(record.source_type, "official");
+  assert.equal(record.access_level, "public");
+  assert.equal(record.evidence_level, "E1");
+  assert.equal(record.lifecycle_status, "review_pending");
+  assert.equal(record.review_status, "pending");
+  assert.equal(record.product_kb_publication_status, "not_ready");
+  assert.match(record.source_url, /^https:\/\/developers\.e\.kuaishou\.com\/docs/);
+
+  const assessment = await readFile(path.join(repoRoot, record.assessment_ref), "utf8");
+  for (const marker of ["documented", "authorized", "wrapped", "verified", "official_conflict"]) {
+    assert.match(assessment, new RegExp(marker));
+  }
+});

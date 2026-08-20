@@ -66,6 +66,25 @@ jq -c 'select(.product_relevance == "direct_candidate")' \
 - 不得进入产品内 Agent 的默认可信知识范围，不得驱动自动写操作。
 - 发现高价值结论时写补证或融合建议，交 `inbox-arch.md` 裁决。
 
+### 快手 MAPI 官方资料的额外判断
+
+检索 `ka-src-0007` 时，必须区分四个状态：
+
+```text
+documented  官方页面存在
+authorized  当前 AppID/广告账户已获得 scope 或白名单
+wrapped     当前沙箱 CLI/provider 已封装该端点
+verified    已在授权账户做只读或受控写探针并核对响应
+```
+
+只有 `documented` 时，不得回答“我们已经能用”。官方目标接口页与老汇总页冲突时标 `official_conflict`；写操作即使 `verified`，仍必须走变更集、预览和确认门。
+
+```bash
+rg -n 'documentId|scope|auto_build|official_conflict|实验' \
+  docs/knowledge/assessments/ka-src-0007.md \
+  private/knowledge-sources/ka-src-0007/source.md
+```
+
 ## 5. 引用格式
 
 最小引用头：
@@ -75,6 +94,8 @@ jq -c 'select(.product_relevance == "direct_candidate")' \
 来源：<storage_ref 或 source_url>
 评估：<assessment_ref>
 ```
+
+官方接口引用还需附具体 `documentId`、页面版本和更新时间，不能只引用聚合入口。
 
 正文引用必须区分：
 
