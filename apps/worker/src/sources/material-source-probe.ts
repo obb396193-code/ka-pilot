@@ -32,6 +32,7 @@ export interface MaterialSourceProbeResult {
   contentLength: number;
   method: "HEAD" | "RANGE";
   redirectCount: number;
+  requiresContainerValidation: boolean;
 }
 
 export interface MaterialSourceProbeOptions {
@@ -87,7 +88,8 @@ export class MaterialSourceProbe {
     try {
       if (!probe.response.ok) throw new MaterialSourceBlockedError("upstream_status");
       const contentType = normalizedContentType(probe.response.headers.get("content-type"));
-      if (!contentType.startsWith("video/")) {
+      const requiresContainerValidation = contentType === "application/octet-stream";
+      if (!contentType.startsWith("video/") && !requiresContainerValidation) {
         throw new MaterialSourceBlockedError("content_type_not_allowed");
       }
       const contentLength = responseContentLength(probe.response, method);
@@ -101,6 +103,7 @@ export class MaterialSourceProbe {
         contentLength,
         method,
         redirectCount: probe.redirectCount,
+        requiresContainerValidation,
       };
     } finally {
       await cancelBody(probe.response);

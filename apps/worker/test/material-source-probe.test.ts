@@ -57,9 +57,55 @@ describe("MaterialSourceProbe", () => {
       contentLength: 1024,
       method: "HEAD",
       redirectCount: 0,
+      requiresContainerValidation: false,
     });
     expect(fetchFn.mock.calls[0]?.[1]).toMatchObject({ method: "HEAD", redirect: "manual" });
     expect(JSON.stringify(result)).not.toContain("cdn.example.com");
+  });
+
+  it("admits an allowlisted bounded octet-stream video only with container validation", async () => {
+    const fetchFn = vi.fn<typeof fetch>(async () => new Response(null, {
+      status: 200,
+      headers: {
+        "content-type": "application/octet-stream",
+        "content-length": "1024",
+      },
+    }));
+    const probe = new MaterialSourceProbe({
+      fetchFn,
+      allowedHosts: ["cdn.example.com"],
+      maxContentBytes: 2048,
+    });
+
+    await expect(probe.inspect(candidate)).resolves.toMatchObject({
+      ready: true,
+      contentType: "application/octet-stream",
+      contentLength: 1024,
+      requiresContainerValidation: true,
+    });
+  });
+
+  it("still rejects octet-stream before network for non-video material", async () => {
+    const fetchFn = vi.fn<typeof fetch>();
+    const probe = new MaterialSourceProbe({ fetchFn, allowedHosts: ["cdn.example.com"] });
+
+    await expect(probe.inspect({
+      ...candidate,
+      materialType: "IMAGE",
+    })).rejects.toMatchObject({ reason: "not_video_material" });
+    expect(fetchFn).not.toHaveBeenCalled();
+  });
+
+  it("does not treat arbitrary binary content types as opaque video", async () => {
+    const fetchFn = vi.fn<typeof fetch>(async () => new Response(null, {
+      status: 200,
+      headers: { "content-type": "application/zip", "content-length": "1024" },
+    }));
+    const probe = new MaterialSourceProbe({ fetchFn, allowedHosts: ["cdn.example.com"] });
+
+    await expect(probe.inspect(candidate)).rejects.toMatchObject({
+      reason: "content_type_not_allowed",
+    });
   });
 
   it("falls back to a one-byte range probe when HEAD is unsupported", async () => {
