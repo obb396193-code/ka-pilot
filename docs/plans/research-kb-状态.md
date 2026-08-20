@@ -36,6 +36,8 @@
 - [x] 21. bundle 校验门、功能提交与 `P-KB-004` 交审
 - [x] 22. `ka-src-0005` 的 671 个子文件逐项导读、私有机器索引与覆盖报告
 - [x] 23. 逐文档导读总览、检索说明、功能提交与 `P-KB-005` 交审
+- [x] 24. 671 项产品相关性重评、借鉴边界和优先级标注
+- [ ] 25. 私有相关性清单同步、校验、提交与 `P-KB-006` 交审
 
 ## 完成记录
 
@@ -63,7 +65,8 @@
 - 2026-08-20：15/15 Node 测试、catalog/bundle validator、671 子文件/归档 hash、凭证复扫、ignore/未跟踪与 diff check 通过；功能提交 SHA=`c10094a`。`P-KB-004` 自包含登记两篇资产、sanitization、事实/推断/未证实、产品映射、发布禁止和 arch/security 裁决问题。
 - 2026-08-20：逐项读取 `ka-src-0005` 的 671 个 sanitized 子文件，生成 private `derived/document-guide.md`、`document-inventory.jsonl` 和 `coverage-report.json`。每项包含稳定 child asset ID、标题/路径/抽取式介绍/主题/hash/质量与异常/治理状态；402 substantive、207 short、35 stub、27 empty，44 个文件属于 11 个重复组。
 - 2026-08-20：确认 5 个 `.pdf` 是 UTF-8 文本而非 PDF 容器、3 个 `.json` 扩展名文件不是标准 JSON；均保留异常标记，不伪称完成版面或结构化解析。671/671 覆盖、确定性重建、凭证形态 0、私有双份 hash、15/15 知识目录测试和 validator 均通过。功能提交 SHA=`0dd641c`；`P-KB-005` 交审逐篇导读的治理与使用边界。
+- 2026-08-20：按冻结产品定位/功能全景/验收基线重评 671 项价值，不继承 OS Agent 的下载判断。结果：8 direct、173 conditional、405 background、23 not relevant、62 cannot assess；663/671（98.8%）不是直接产品候选。直接候选仅是两种格式的投放摘要索引和 6 份 EVO 实验治理资料；条件候选主要为 97 份 AIStudio、74 份 O2/Aone、2 份 FBI 工程参考。一期不新增功能，全部结论待 arch 审查。
 
 ## 当前状态
 
-`ka-src-0001~0006` 已分别完成入库评估，`P-KB-001~005` 均已交审；`ka-src-0005` 已增加 confidential 逐文档发现层，但全部子文件仍 `extractive_unreviewed / not_ready`。停止融合与开发，等待 arch/security 裁决。未改冻结 PRD/Contract/生产代码。
+`ka-src-0001~0006` 已分别完成入库评估，`P-KB-001~005` 均已交审；`ka-src-0005` 已增加 confidential 逐文档发现层和产品相关性层，全部子文件仍 `arch_unreviewed / not_ready`。当前待完成相关性产物同步、校验、功能提交和 `P-KB-006`，不修改冻结 PRD/Contract/生产代码。

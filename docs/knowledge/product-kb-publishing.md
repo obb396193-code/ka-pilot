@@ -8,6 +8,8 @@
 
 多文件资料包不能以“整包 approved”直接展开成数百篇产品知识。发布前必须从包内选出目标子文档，单独分配 `document_id`、确定正文边界、权限、版本、hash、证据等级和审查结论；包级 manifest 仅用于溯源和完整性校验。
 
+子文档提升前还必须通过产品相关性门：`direct_candidate` 才能直接进入单篇审查队列；`conditional_candidate` 需先补当前接口/版本/权限/适配证据并由审查人确认用途；`background_only/not_relevant/cannot_assess` 默认不得发布到产品知识库或进入产品内 Agent 的可信召回范围。工程排障参考与产品知识是两个用途，不能混为一谈。
+
 ## 2. 发布前置条件
 
 - `lifecycle_status=approved`

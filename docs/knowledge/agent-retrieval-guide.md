@@ -42,11 +42,20 @@ catalog 记录
 
 先读评估中的推荐子目录；若存在 `derived/document-guide.md`，先用它看人读介绍，或用 `derived/document-inventory.jsonl` 按标题、主题、质量和异常筛选，再到 `extracted/` 核原文。不要把整个包一次性塞入上下文。包级 `review_pending/approved` 只说明包的治理状态，不表示每个子文件都是正式口径。`child_asset_id` 只提供包内稳定定位；要引用或发布某一子文件，仍需资料研究 Agent 将它提升为独立 `document_id`。
 
+若存在 `derived/product-relevance-guide.md`，必须先看产品相关性判断：
+
+- 只有 `direct_candidate` 可进入单篇提升候选；
+- `conditional_candidate` 仅在发生明确工程/研究问题时按需检索，并先补当前版本证据；
+- `background_only/not_relevant/cannot_assess` 不进入产品内 Agent 默认召回，不据此新增功能；
+- `use_scope=engineering_reference` 表示“可能帮助实现或排障”，不表示“应该成为产品功能”。
+
 示例：
 
 ```bash
 rg -n '实验|归因|FBI|LLM API' private/knowledge-sources/ka-src-0005/derived/document-guide.md
 jq -c 'select(.quality == "substantive" and (.topics | index("实验设计")))' \
+  private/knowledge-sources/ka-src-0005/derived/document-inventory.jsonl
+jq -c 'select(.product_relevance == "direct_candidate")' \
   private/knowledge-sources/ka-src-0005/derived/document-inventory.jsonl
 ```
 

@@ -36,6 +36,8 @@
 
 资料包可以在同级 `derived/` 生成私有逐文档导读。每个文件分配稳定 `child_asset_id`，记录路径、hash、抽取式介绍、主题、质量异常和子文件治理状态。`child_asset_id` 只用于包内发现和追溯，不等于获批的正式 `document_id`；派生导读不得改变父 manifest hash，也不得因生成了摘要就提升审查或发布状态。
 
+“资料存在”与“对产品有用”必须分开。逐文档索引应额外记录 `product_relevance`、`recommended_action`、`use_scope`、`roadmap_phase`、`related_product_modules`、`relevance_reason`、`product_takeaway`、`adoption_boundary` 和 `relevance_priority`。内部平台资料即使真实，也可能只适合工程按需排障、行业背景或完全无关；不得因为由 OS/内网 Agent 拉取就默认进入 PRD、路线图或产品知识库。
+
 ## 资料类型
 
 `internal`（内部）｜`official`（官方）｜`competitor`（竞品）｜`open_source`（开源）｜`research`（调研）。
@@ -109,6 +111,14 @@ python3 scripts/build-knowledge-bundle-guide.py \
 ```
 
 生成结果仍是未审查的抽取式导读；不能用它替代单篇评估。
+
+生成器同时输出 `product-relevance-guide.md`。相关性分级含义：
+
+- `direct_candidate`：直接对应 KA 产品问题，但仍需单篇审查；
+- `conditional_candidate`：只在版本、接口、权限和适配性补证后按需使用；
+- `background_only`：只作工程/行业/项目背景，不形成产品需求；
+- `not_relevant`：明确排除出产品设计、路线图和默认知识；
+- `cannot_assess`：正文缺失，不能凭标题猜价值。
 
 ## 校验
 

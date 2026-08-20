@@ -226,3 +226,14 @@
 - `private/knowledge-sources/ka-src-0005/derived/coverage-report.json`
 
 Git 内聚合说明见 `docs/knowledge/assessments/ka-src-0005-document-guide-overview.md`。上述介绍均为 `extractive_unreviewed`，只解决资料发现问题，不改变包级或子文件审查/发布状态。
+
+## 22. 产品相关性复核（2026-08-20）
+
+重新以当前 KA 产品定位和冻结功能基线判断，而不是因为资料由内网 OS Agent 拉取就默认可借鉴：8/671 为直接相关候选、173/671 为条件相关候选、405/671 仅背景参考、23/671 与产品无关、62/671 正文不足无法判断。即 98.8% 不是直接产品候选。
+
+- 直接候选集中在用户增长/投放摘要索引和 EVO 实验治理；前者必须回源全文，后者只支持后续实验编排模式，不证明快手实验/实时调流能力。
+- 条件候选集中在 AIStudio、O2/Aone 和 FBI，主要是工程实现/排障参考，不是产品需求。
+- 项目管理、历史广告白皮书、跨境分销和测试占位资料不进入产品内 Agent 默认召回。
+- 一期不因本包新增功能，不修改冻结 PRD/Contract；后续只允许 P1/P2 候选单篇提升。
+
+逐文件判断位于 private `derived/product-relevance-guide.md` 与 `document-inventory.jsonl`；每项均写明相关性、建议动作、用途、路线阶段、模块映射、理由、可提取点和不可照搬边界。状态仍为 `research_agent_assessed_arch_unreviewed`。
