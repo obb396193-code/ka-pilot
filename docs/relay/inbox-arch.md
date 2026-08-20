@@ -369,7 +369,7 @@ main 9335150
 
 **本批完成**：
 
-1. 机械核验 `be/b8a`→`fe/f001` 共同基线与重叠路径；禁止在 Claude 97 个脏路径现场直接 merge。5 个 committed overlap 中，台账、两信箱和 `schema.sql` 有明确文本冲突，`api.md` 仍需契约人工审查。
+1. 机械核验 `be/b8a`→`fe/f001` 共同基线与重叠路径；最终复核时 `fe/f001` 已前进到 `1de9256`，仍有 46 个脏路径，禁止在此现场直接 merge。5 个 committed overlap 中，台账、两信箱和 `schema.sql` 有明确文本冲突，`api.md` 仍需契约人工审查；脏路径与后端交集更新为台账和两信箱。
 2. Qihang 增加响应字节、行数、ID 数与编码 URL 四层资源预算；超限稳定为 `RESOURCE_LIMIT`，不进入网络重试。ETL/Backfill payload 同步 fail-closed。
 3. 增加纯合成、无网络/DB benchmark。当前代码基线暴露 Canonical 每轮 `3N+4` 端口调用；5,000 行是 15,004 次，报告没有把本机毫秒数冒充生产 SLA。
 4. 形成奇航、Multica/OS read/preview/execute、Secret、模型网关、钉钉 Stream、PG/FaaS 的 Gate A-E 准入矩阵，所有未知协议保持未证实。
