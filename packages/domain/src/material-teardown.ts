@@ -5,6 +5,7 @@ import { z } from "zod";
 import {
   parseTranscriptTimeline,
   type TranscriptSource,
+  type TranscriptTimingPrecision,
   type TranscriptTimeline,
 } from "./material-transcript.js";
 
@@ -88,6 +89,7 @@ export interface MaterialTranscriptEvidence {
   readonly endMs: number;
   readonly text: string;
   readonly source: TranscriptSource;
+  readonly timingPrecision: TranscriptTimingPrecision;
 }
 
 export interface MaterialShotEvidence {
@@ -158,6 +160,7 @@ export function createMaterialTeardownEvidence(
     transcript = parseTranscriptTimeline({
       durationMs: input.transcript.durationMs,
       source: input.transcript.source,
+      timingPrecision: input.transcript.timingPrecision,
       segments: input.transcript.segments.map(({ startMs, endMs, text }) => ({
         startMs,
         endMs,
@@ -178,6 +181,7 @@ export function createMaterialTeardownEvidence(
     endMs: segment.endMs,
     text: segment.text,
     source: segment.source,
+    timingPrecision: segment.timingPrecision,
   }));
   const shotEvidence = shots.map((shot, index) => ({
     id: formatEvidenceId("shot", index),
@@ -214,6 +218,7 @@ export function parseMaterialTeardownResult(
     if (!allowedIds.has(evidenceId)) throw new MaterialTeardownError("invalid_result");
   }
   validateResultSegments(parsed.data.segments, evidence.media.durationMs);
+  validateResultTimingPrecision(parsed.data.segments, evidence);
   return deepFreeze(parsed.data);
 }
 
@@ -283,6 +288,26 @@ function validateResultSegments(
   if (expectedStartMs !== durationMs) throw new MaterialTeardownError("invalid_result");
 }
 
+function validateResultTimingPrecision(
+  segments: MaterialTeardownResult["segments"],
+  evidence: MaterialTeardownEvidence,
+): void {
+  const wholeVideoTranscript = evidence.transcriptEvidence.some(
+    ({ timingPrecision }) => timingPrecision === "whole_video",
+  );
+  if (
+    wholeVideoTranscript &&
+    (
+      evidence.transcriptEvidence.length !== 1 ||
+      segments.length !== 1 ||
+      segments[0]?.startMs !== 0 ||
+      segments[0]?.endMs !== evidence.media.durationMs
+    )
+  ) {
+    throw new MaterialTeardownError("invalid_result");
+  }
+}
+
 function collectEvidenceIds(result: MaterialTeardownResult): string[] {
   return [
     ...result.hook.evidenceIds,
@@ -313,12 +338,20 @@ function canonicalEvidenceJson(value: Omit<MaterialTeardownEvidence, "fingerprin
       width: value.media.width,
       height: value.media.height,
     },
-    transcriptEvidence: value.transcriptEvidence.map(({ id, startMs, endMs, text, source }) => ({
+    transcriptEvidence: value.transcriptEvidence.map(({
       id,
       startMs,
       endMs,
       text,
       source,
+      timingPrecision,
+    }) => ({
+      id,
+      startMs,
+      endMs,
+      text,
+      source,
+      timingPrecision,
     })),
     shotEvidence: value.shotEvidence.map(({ id, startMs, endMs, frame }) => ({
       id,

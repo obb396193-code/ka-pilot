@@ -49,6 +49,18 @@ function evidenceInput() {
   } as const;
 }
 
+function wholeVideoEvidenceInput() {
+  return {
+    ...evidenceInput(),
+    transcript: parseTranscriptTimeline({
+      durationMs: 3_000,
+      source: "cloud_asr",
+      timingPrecision: "whole_video",
+      segments: [{ startMs: 0, endMs: 3_000, text: "完整视频文案，没有句级时间戳" }],
+    }),
+  } as const;
+}
+
 function validResult(evidenceIds: string[]) {
   return {
     summary: "素材用问题开场，并用利益点承接。",
@@ -95,6 +107,7 @@ describe("material teardown evidence", () => {
     const result = createMaterialTeardownEvidence(evidenceInput());
 
     expect(result.transcriptEvidence.map((item) => item.id)).toEqual(["transcript-0000", "transcript-0001"]);
+    expect(result.transcriptEvidence.every((item) => item.timingPrecision === "segment")).toBe(true);
     expect(result.shotEvidence.map((item) => item.id)).toEqual(["shot-0000", "shot-0001"]);
     expect(result.shotEvidence[1]?.frame).toEqual({
       index: 1,
@@ -104,6 +117,26 @@ describe("material teardown evidence", () => {
     expect(result.fingerprint).toMatch(/^[a-f0-9]{64}$/);
     expect(Object.isFrozen(result)).toBe(true);
     expect(Object.isFrozen(result.shotEvidence)).toBe(true);
+  });
+
+  it("preserves whole-video timing precision in evidence and its fingerprint", () => {
+    const wholeVideo = createMaterialTeardownEvidence(wholeVideoEvidenceInput());
+    const segmented = createMaterialTeardownEvidence({
+      ...wholeVideoEvidenceInput(),
+      transcript: parseTranscriptTimeline({
+        durationMs: 3_000,
+        source: "cloud_asr",
+        timingPrecision: "segment",
+        segments: [{ startMs: 0, endMs: 3_000, text: "完整视频文案，没有句级时间戳" }],
+      }),
+    });
+
+    expect(wholeVideo.transcriptEvidence).toMatchObject([{
+      startMs: 0,
+      endMs: 3_000,
+      timingPrecision: "whole_video",
+    }]);
+    expect(wholeVideo.fingerprint).not.toBe(segmented.fingerprint);
   });
 
   it("is insensitive to object key order but preserves timeline order", () => {
@@ -180,6 +213,38 @@ describe("material teardown evidence", () => {
     expect(Object.isFrozen(result)).toBe(true);
   });
 
+  it("allows only one full-video result segment for whole-video transcript timing", () => {
+    const evidence = createMaterialTeardownEvidence(wholeVideoEvidenceInput());
+    const transcriptId = evidence.transcriptEvidence[0]?.id as string;
+    const shotId = evidence.shotEvidence[0]?.id as string;
+    const wholeResult = {
+      summary: "完整文案包含问题、卖点和行动引导，但没有句级时间戳。",
+      hook: { kind: "other", text: "存在钩子候选，位置不确定", evidenceIds: [transcriptId] },
+      sellingPoints: [{ text: "完整文案提到核心利益", evidenceIds: [transcriptId] }],
+      audiences: ["目标用户"],
+      rhythm: { description: "仅依据确定性镜头变化", evidenceIds: [shotId] },
+      cta: { text: "完整文案存在行动引导", evidenceIds: [transcriptId] },
+      segments: [{
+        startMs: 0,
+        endMs: 3_000,
+        role: "other",
+        description: "整段诊断，无法逐句定位",
+        evidenceIds: [transcriptId, shotId],
+      }],
+      replicationSuggestions: ["复用全文表达结构，精确时序待时间戳 ASR"],
+      uncertainties: ["整段转写没有句级时间戳"],
+    };
+
+    expect(parseMaterialTeardownResult(wholeResult, evidence).segments).toHaveLength(1);
+    expect(() => parseMaterialTeardownResult({
+      ...wholeResult,
+      segments: [
+        { ...wholeResult.segments[0], endMs: 1_000 },
+        { ...wholeResult.segments[0], startMs: 1_000 },
+      ],
+    }, evidence)).toThrow(MaterialTeardownError);
+  });
+
   it.each(["gmv", "conversionRate", "completionRate"])(
     "rejects unsupported inferred metric %s",
     (metric) => {
@@ -243,4 +308,3 @@ describe("material teardown evidence", () => {
     expect(fingerprintMaterialTeardownAnalysis({ ...base, model: "model-b" })).not.toBe(first);
   });
 });
-
