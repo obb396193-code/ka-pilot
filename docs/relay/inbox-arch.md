@@ -553,6 +553,7 @@ main 9335150
 - 基线：`be/b12@8fba713`
 - 设计：`610e1ba`；CDN 类型纠正：`2a8adcd`；实施计划：`37ede1f`
 - 代码终态：`85c5fbf`
+- 质量与交接：`ff97678`
 - 状态：`docs/plans/B13-状态.md`
 - 质量：`docs/evidence/B13-代码质量报告.md`
 
