@@ -301,7 +301,9 @@ git commit -m "feat: 接入版本化拆片Prompt与结构化Agent"
 
 **Step 1: 写失败测试**
 
-覆盖 download → transcript/visual 并行 → evidence → analysis；平台字幕不调 ASR；无字幕只调一次；失败总会 release；已有 checkpoint 不重复 ASR/FFmpeg；同 fingerprint 复用；Prompt/Provider 版本变化触发新分析；错误不含 URL/字幕全文/凭证；blocked provider、FFmpeg timeout、invalid output 不冒充成功。
+覆盖 download → FFprobe/visual → transcript → evidence → analysis；平台字幕不调 ASR；无字幕只调一次；失败总会 release；已有 checkpoint 不重复 ASR/FFmpeg；同 fingerprint 复用；Prompt/Provider 版本变化触发新分析；错误不含 URL/字幕全文/凭证；blocked provider、FFmpeg timeout、invalid output 不冒充成功。
+
+实施纠正：当前奇航素材行没有已实证可信的 duration，字幕时间轴校验又必须知道总时长，所以首次运行不能安全地把 transcript/visual 并行；先由 FFprobe 得到真实时长，再解析平台字幕或调用云 ASR。checkpoint 命中后可跳过 FFmpeg/ASR。后续若来源契约增加可信 duration，可再恢复并行。视觉 payload 仍阻断时可以复用数值/时间轴 checkpoint；未来启用多模态帧读取时，必须同时增加持久 artifact checkpoint，不能复用已随临时目录释放的帧路径。
 
 **Step 2: 运行确认 RED**
 
