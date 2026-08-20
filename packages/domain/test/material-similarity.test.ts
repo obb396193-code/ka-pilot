@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -246,10 +248,21 @@ describe("material similarity comparison", () => {
 
   it("rejects profile version drift and structurally forged profiles", () => {
     const left = profile();
-    expect(() => compareMaterialSimilarityProfiles(left, {
-      ...left,
+    const futureBody = {
+      materialVersionId: left.materialVersionId,
+      teardownFingerprint: left.teardownFingerprint,
       profileVersion: "2",
-    })).toThrow(MaterialSimilarityError);
+      hookKind: left.hookKind,
+      semanticRoleSequence: left.semanticRoleSequence,
+      textTokens: left.textTokens,
+      visual: left.visual,
+    };
+    const future = {
+      ...futureBody,
+      fingerprint: createHash("sha256").update(JSON.stringify(futureBody)).digest("hex"),
+    };
+
+    expect(() => compareMaterialSimilarityProfiles(left, future)).toThrow(MaterialSimilarityError);
     expect(() => compareMaterialSimilarityProfiles(left, {
       ...left,
       fingerprint: "c".repeat(64),
