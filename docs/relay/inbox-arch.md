@@ -789,3 +789,133 @@ Git 没有加入 confidential 逐篇介绍、原文、内部链接、真实业�
 - `node scripts/validate-knowledge-catalog.mjs`：通过；
 - `git check-ignore` 命中 derived，`git ls-files private/knowledge-sources` 无输出；
 - `git diff --check`：提交前复核通过。
+
+
+---
+
+### P-KB-006 `ka-src-0005` 671 项产品相关性与借鉴边界审查｜research/knowledge（Codex）
+
+- 派活方：资料研究与知识资产 Agent（Codex）
+- 日期：2026-08-20
+- 状态：待处理
+
+#### 1. 角色与边界
+
+我是 **KA 投放经营平台“资料研究与知识资产 Agent”**。本批只判断 OS Agent 从内网拉取的资料是否对当前产品有用，不因来源真实或已下载就默认采纳。
+
+- 可改：ignored 私有资料区、`docs/knowledge/`、资料生成/校验脚本、自己的状态/台账和本信箱追加项。
+- 不可改：冻结 PRD、Contract、前后端生产代码和其他角色边界；不替 arch 把研究判断变成正式产品口径。
+- 本批没有新增产品功能、没有改变一期范围、没有发布任何知识。
+
+#### 2. 分支与功能提交
+
+- 分支：`codex/shared-source-library`
+- worktree：`/private/tmp/codex-shared-source-library.j1l066`
+- 基线：`ce1af69`
+- **本批功能 SHA：`77b89ed`**
+- 父资料：`ka-src-0005`，manifest hash 仍为 `f26a3d88c03f185a0bccc29307a7ebdd706657e1f9655c861cd23e0c92d060da`
+- 父资料仍为 E3 / `confidential` / `review_pending` / `not_ready`。
+
+#### 3. 当前私有产物与 hash
+
+canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0005/derived/`
+
+| 文件 | 用途 | SHA-256 |
+|---|---|---|
+| `product-relevance-guide.md` | 671 项按产品相关性分组的人读清单 | `e6d39d0cf6b78e3e443bd49897d12f2773a9a4fd129ebfbd45b04b025c0bfaa1` |
+| `document-inventory.jsonl` | 含相关性/动作/用途/阶段/模块/边界的机器索引 | `ce379e58886c241fdcb4376e55886e2d004c71448f16fb9f0b3ffeebdc4c3435` |
+| `document-guide.md` | 同步显示每篇“讲什么+对产品是否有用” | `f79bb54758ea04ec8ebcc3d1b3b9663da26ef9acfea3d346ad0c5ab12acbcb13` |
+| `coverage-report.json` | 覆盖、质量、异常、相关性和安全报告 | `7e92dcab3ba815e239457a299cc7355d6383a7637b2aca57a3777ff34c6708ca` |
+
+本批给 derived 增加产品相关性字段，故以上 hash 取代 `P-KB-005` 的旧派生文件 hash；父 manifest 和 671 份 sanitized 原文没有变化。
+
+#### 4. 相关性定义
+
+- `direct_candidate`：直接对应 KA 产品问题，可进入单篇补证/审查候选，但不自动采用。
+- `conditional_candidate`：只在当前版本、接口、权限和适配性补证后按需使用。
+- `background_only`：只作工程/行业/项目背景，不形成产品需求。
+- `not_relevant`：排除出产品设计、路线图、默认 Agent 知识和发布队列。
+- `cannot_assess`：正文缺失/过短，不能凭标题猜价值。
+
+每项另有 `recommended_action/use_scope/roadmap_phase/modules/reason/takeaway/adoption_boundary/priority`。`engineering_reference` 明确不等于产品功能。
+
+#### 5. 已确认结果
+
+| 分类 | 文件数 | 占比 | 处置 |
+|---|---:|---:|---|
+| direct | 8 | 1.2% | 单篇补证候选 |
+| conditional | 173 | 25.8% | 发生具体问题时按需检索 |
+| background | 405 | 60.4% | 不形成需求 |
+| not relevant | 23 | 3.4% | 排除 |
+| cannot assess | 62 | 9.2% | 补原文前不使用 |
+
+**663/671（98.8%）不是直接产品候选。**
+
+8 个 direct 实际集中为：
+
+- 同一批 43 条用户增长/投放搜索摘要的 JSON 与 Markdown 两种表现：只作全文发现入口；
+- 6 份 EVO 实验治理资料：可参考实验生命周期、分流、联调、质量检查、推全/下线和结果沉淀。
+
+173 个 conditional 构成：AIStudio 97、O2/Aone 74、FBI 2，全部标为工程参考而非产品需求。
+
+#### 6. 推断与未证实
+
+研究判断（待 arch 审查）：
+
+- 只有 direct 候选值得启动单篇提升；其余不应进入产品默认召回。
+- EVO 模式可补后续 Experiment Copilot，但不进入一期，也不能证明快手具备同等随机分流或实时调流能力。
+- AIStudio/O2/FBI 只在实现或排障时按需查，不能反向定义产品。
+
+未证实：43 条摘要全文、EVO 对快手对象适配、AIStudio/O2/FBI 当前接口/版本/权限，以及所有子文档责任方和许可。没有把 OS Agent 的打包推荐或“内网资料”身份当作权威性证明。
+
+#### 7. Git 与 private 边界
+
+进入 Git：相关性方法、聚合统计、检索/发布门、父评估补充、生成器、状态台账和本审查单。
+
+只留 private：671 项标题、路径、逐篇介绍、逐项相关性理由/边界、原文和机器索引。Git 没有复制 confidential 逐篇清单或内部链接。
+
+#### 8. 产品处置建议
+
+一期：**不因本包新增任何业务功能**。
+
+后续可补证：
+
+- EVO 实验治理模式，合并到既有 Experiment Copilot 研究，不另造平台；
+- 用户增长投放摘要对应的原始全文；
+- AIStudio 知识库/LLM API、O2 FaaS/Next.js、FBI 嵌入仅在真实实现问题出现时核验。
+
+只作背景：项目管理、历史国际广告架构/结算/稳定性、通用平台说明。
+
+明确驳回：整包借鉴、按目录名新增功能、把工程文档当产品需求、把摘要当正式证据、把历史接口/价格/SDK 写入当前口径、把 background/not relevant/cannot assess 放进产品 Agent 默认召回。
+
+#### 9. 发布建议
+
+- 父包、完整 derived 清单和所有子文件继续 `not_ready`；不允许整包发布。
+- direct 只允许进入单篇补证队列；必须另分配 document_id/hash/ACL/证据/审查。
+- conditional 必须有具体使用问题和当前实证后再申请提升。
+- background/not relevant/cannot assess 默认永久排除出产品知识库可信范围，除非获得新原文或新证据后重新评估。
+
+#### 10. 请 arch/security 审查并回写 ✅/❌
+
+1. 是否批准五级相关性和 action/scope/phase/boundary 字段作为 bundle 标准？
+2. 是否认可 8 direct、173 conditional、405 background、23 not relevant、62 cannot assess 的分类？
+3. 是否确认 663/671 不进入直接产品候选？
+4. 是否批准 direct 仅进入单篇补证队列，不能自动融合 PRD？
+5. 是否确认一期不因本包新增功能？
+6. 是否确认 AIStudio/O2/FBI 只作 on-demand engineering reference？
+7. 哪些 direct 项需要优先补全文/当前接口/快手适配证据？
+8. 是否将 background/not relevant/cannot assess 从产品 Agent 默认召回永久排除？
+9. 是否允许 private relevance guide 仅供 allowed_roles 使用，但不发布产品知识库？
+10. 是否需要 security 对相关性导读再抽查凭证/内部敏感信息？
+11. 是否批准 P1/P2 优先级，还是要求 arch 重新排序？
+12. 审查完成后请回写审查人、时间、逐项结论、补证/排除清单和产出 SHA；未批准前不要修改冻结 PRD/Contract。
+
+#### 11. 验证
+
+- 671/671 均有相关性、动作、用途、阶段、模块、理由、可提取点、边界和优先级；
+- 8 direct 全量人工复核，173 conditional 做分组规则与代表样本复核，并反查潜在漏判标题；
+- 四份 private derived 在独立 worktree 与 canonical hash 一致；
+- 确定性重建四文件逐字节一致；
+- 介绍和相关性字段凭证形态均为 0；
+- 15/15 知识目录测试、catalog validator、`git diff --check` 通过；
+- `git ls-files private/knowledge-sources` 无输出。
