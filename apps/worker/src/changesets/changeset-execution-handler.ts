@@ -40,7 +40,7 @@ export class ChangeSetExecutionHandler {
   async run(workspaceId: string, changeSetId: string): Promise<ChangeSetHandlerResult> {
     const view = await this.dependencies.store.load(workspaceId, changeSetId);
     const directive = executionDirective(view.status);
-    if (directive === "skip_terminal") return { outcome: "skipped" };
+    if (directive === "skip_terminal") return this.finishTerminal(view);
     if (directive === "not_ready") return { outcome: "not_ready" };
     if (directive === "reconcile_required") return this.reconcile(view);
 
@@ -55,7 +55,9 @@ export class ChangeSetExecutionHandler {
       requestPayload: { idempotency_key: changeSetId },
       startedAt,
     });
-    if (begun.directive === "skip_terminal") return { outcome: "skipped" };
+    if (begun.directive === "skip_terminal") {
+      return this.finishTerminal(await this.dependencies.store.load(workspaceId, changeSetId));
+    }
     if (begun.directive === "not_ready") return { outcome: "not_ready" };
     if (begun.directive === "reconcile_required") {
       return this.reconcile(await this.dependencies.store.load(workspaceId, changeSetId));
@@ -64,20 +66,12 @@ export class ChangeSetExecutionHandler {
       throw new Error(`Unexpected begin-execution directive: ${begun.directive}`);
     }
 
+    let result: ChangeExecutorResult;
     try {
-      const result = await this.dependencies.executor.execute({
+      result = await this.dependencies.executor.execute({
         idempotencyKey: changeSetId,
         changeset: begun.changeset,
       });
-      const completed = await this.dependencies.store.completeExecution({
-        workspaceId,
-        changeSetId,
-        executionRunId: begun.executionRunId,
-        finishedAt: this.now(),
-        resultPayload: result.payload,
-        items: result.items,
-      });
-      return this.finish(workspaceId, changeSetId, completed, result);
     } catch (error) {
       await this.dependencies.store.completeExecution({
         workspaceId,
@@ -89,6 +83,15 @@ export class ChangeSetExecutionHandler {
       });
       return { outcome: "unknown" };
     }
+    const completed = await this.dependencies.store.completeExecution({
+      workspaceId,
+      changeSetId,
+      executionRunId: begun.executionRunId,
+      finishedAt: this.now(),
+      resultPayload: result.payload,
+      items: result.items,
+    });
+    return this.finish(workspaceId, changeSetId, completed, result);
   }
 
   private async reconcile(view: ChangeSetExecutionView): Promise<ChangeSetHandlerResult> {
@@ -122,5 +125,19 @@ export class ChangeSetExecutionHandler {
       return { outcome: completed.status, successfulItemIds: ids };
     }
     throw new Error(`Unexpected completed changeset status: ${completed.status}`);
+  }
+
+  private async finishTerminal(view: ChangeSetExecutionView): Promise<ChangeSetHandlerResult> {
+    const ids = view.items
+      .filter((item) => item.itemStatus === "success")
+      .map((item) => item.id);
+    if (ids.length > 0) {
+      await this.dependencies.followUps.scheduleT1({
+        workspaceId: view.workspaceId,
+        changeSetId: view.id,
+        successfulItemIds: ids,
+      });
+    }
+    return { outcome: "skipped" };
   }
 }

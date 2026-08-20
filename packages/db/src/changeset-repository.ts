@@ -310,6 +310,15 @@ export class ChangeSetRepository {
         await client.query("COMMIT");
         return { directive };
       }
+      if (header.ttl_expire_at === null) throw new Error("changeset has no TTL");
+      if (input.startedAt >= header.ttl_expire_at) {
+        await client.query(
+          "UPDATE changesets SET status=$3 WHERE workspace_id=$1 AND id=$2",
+          [input.workspaceId, header.id, transitionChangeSet(header.status, "expire")],
+        );
+        await client.query("COMMIT");
+        return { directive: "skip_terminal" };
+      }
       let next = header.status;
       if (next === "confirmed") next = transitionChangeSet(next, "send");
       next = transitionChangeSet(next, "start_execution");

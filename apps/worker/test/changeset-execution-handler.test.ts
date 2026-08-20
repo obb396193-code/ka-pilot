@@ -25,6 +25,7 @@ class MemoryStore implements ChangeSetStore {
   view = structuredClone(base);
   completed?: Parameters<ChangeSetStore["completeExecution"]>[0];
   reconciled?: Parameters<ChangeSetStore["completeReconciliation"]>[0];
+  completeCalls = 0;
 
   async load() { return structuredClone(this.view); }
   async beginExecution() {
@@ -38,10 +39,15 @@ class MemoryStore implements ChangeSetStore {
     return { directive: "execute" as const, executionRunId: "run-1", changeset: structuredClone(this.view) };
   }
   async completeExecution(input: Parameters<ChangeSetStore["completeExecution"]>[0]) {
+    this.completeCalls += 1;
     this.completed = input;
     this.view.status = input.items.some((item) => item.status === "unknown") ? "unknown"
       : input.items.every((item) => item.status === "success") ? "success"
       : input.items.every((item) => item.status === "failed") ? "failed" : "partial";
+    for (const result of input.items) {
+      const item = this.view.items.find((candidate) => candidate.id === result.itemId);
+      if (item && result.status !== "unknown") item.itemStatus = result.status;
+    }
     return structuredClone(this.view);
   }
   async completeReconciliation(input: Parameters<ChangeSetStore["completeReconciliation"]>[0]) {
@@ -70,7 +76,7 @@ class Executor implements ChangeExecutor {
     payload: { source: "fake" },
     items: [{ itemId: 1, status: "success" }, { itemId: 2, status: "success" }],
   };
-  error?: Error;
+  error: Error | undefined;
   async execute() {
     this.executeCalls += 1;
     if (this.error) throw this.error;
@@ -84,7 +90,11 @@ class Executor implements ChangeExecutor {
 
 class FollowUps implements FollowUpScheduler {
   calls: number[][] = [];
-  async scheduleT1(input: { successfulItemIds: number[] }) { this.calls.push(input.successfulItemIds); }
+  error: Error | undefined;
+  async scheduleT1(input: { successfulItemIds: number[] }) {
+    this.calls.push(input.successfulItemIds);
+    if (this.error) throw this.error;
+  }
 }
 
 function setup() {
@@ -144,9 +154,25 @@ describe("ChangeSetExecutionHandler", () => {
   });
 
   it("skips a terminal changeset idempotently", async () => {
-    const { handler, executor, store } = setup();
+    const { handler, executor, store, followUps } = setup();
     store.view.status = "success";
+    store.view.items.forEach((item) => { item.itemStatus = "success"; });
     expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "skipped" });
     expect(executor.executeCalls).toBe(0);
+    expect(followUps.calls).toEqual([[1, 2]]);
+  });
+
+  it("does not rewrite a completed media action as UNKNOWN when T1 scheduling fails", async () => {
+    const { handler, store, followUps } = setup();
+    followUps.error = new Error("queue unavailable");
+
+    await expect(handler.run("workspace-1", "changeset-1")).rejects.toThrow("queue unavailable");
+    expect(store.view.status).toBe("success");
+    expect(store.completeCalls).toBe(1);
+    expect(store.completed?.resultPayload).toEqual({ source: "fake" });
+
+    followUps.error = undefined;
+    expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "skipped" });
+    expect(followUps.calls).toEqual([[1, 2], [1, 2]]);
   });
 });

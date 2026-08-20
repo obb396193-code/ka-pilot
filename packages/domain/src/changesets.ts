@@ -65,7 +65,7 @@ const transitions: Partial<
 > = {
   draft: { confirm: "confirmed", expire: "expired" },
   confirmed: { send: "sent", expire: "expired" },
-  sent: { start_execution: "executing", mark_unknown: "unknown" },
+  sent: { start_execution: "executing", mark_unknown: "unknown", expire: "expired" },
   executing: {
     complete_success: "success",
     complete_partial: "partial",

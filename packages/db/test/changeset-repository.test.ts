@@ -108,6 +108,29 @@ describe("ChangeSetRepository", () => {
     expect((await repository.get(workspaceId, created.id)).status).toBe("expired");
   });
 
+  it("rechecks TTL under lock immediately before execution", async () => {
+    const created = await create(new Date("2026-08-19T10:30:00Z"));
+    await repository.confirm({
+      workspaceId,
+      changeSetId: created.id,
+      now: new Date("2026-08-19T10:00:00Z"),
+      currentValues: created.items.map((item) => ({
+        targetType: item.targetType,
+        targetId: item.targetId,
+        field: item.field,
+        value: item.fromValue,
+      })),
+    });
+
+    await expect(repository.beginExecution({
+      workspaceId,
+      changeSetId: created.id,
+      requestPayload: {},
+      startedAt: new Date("2026-08-19T10:31:00Z"),
+    })).resolves.toEqual({ directive: "skip_terminal" });
+    expect((await repository.get(workspaceId, created.id)).status).toBe("expired");
+  });
+
   it("records an execution run and item-level partial success", async () => {
     const created = await create();
     await repository.confirm({
