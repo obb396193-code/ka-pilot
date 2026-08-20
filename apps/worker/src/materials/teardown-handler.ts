@@ -60,6 +60,14 @@ export interface TeardownAnalysisProfile {
   readonly profileVersion: string;
 }
 
+export interface MaterialTeardownCompleted {
+  readonly outcome: "completed";
+  readonly film: FilmAnalysisResult;
+  readonly transcript: TranscriptTimeline;
+  readonly analysis: MaterialTeardownAnalysis;
+  readonly reusedAnalysis: boolean;
+}
+
 export class MaterialTeardownHandlerError extends Error {
   constructor(readonly reason:
     | "pipeline_failed"
@@ -86,18 +94,10 @@ export class MaterialTeardownHandler {
     readonly sourceRef: string;
     readonly platformSegments?: unknown;
     readonly analysisProfile: TeardownAnalysisProfile;
-  }): Promise<{
-    readonly outcome: "completed";
-    readonly analysis: MaterialTeardownAnalysis;
-    readonly reusedAnalysis: boolean;
-  }> {
+  }): Promise<MaterialTeardownCompleted> {
     const sourceRef = parseSourceRef(input.sourceRef);
     let media: DownloadedMaterialHandle | undefined;
-    let output: {
-      readonly outcome: "completed";
-      readonly analysis: MaterialTeardownAnalysis;
-      readonly reusedAnalysis: boolean;
-    } | undefined;
+    let output: MaterialTeardownCompleted | undefined;
     let failure: MaterialTeardownHandlerError | undefined;
     try {
       const candidate = await this.ports.urlLease.acquire(sourceRef);
@@ -127,11 +127,7 @@ export class MaterialTeardownHandler {
       readonly analysisProfile: TeardownAnalysisProfile;
     },
     media: DownloadedMaterialHandle,
-  ): Promise<{
-    readonly outcome: "completed";
-    readonly analysis: MaterialTeardownAnalysis;
-    readonly reusedAnalysis: boolean;
-  }> {
+  ): Promise<MaterialTeardownCompleted> {
     const checkpoint = await this.loadCheckpoint(media.contentSha256);
     const film = checkpoint.film ?? await this.runAndSaveFilm(media, checkpoint);
     const transcript = checkpoint.transcript ?? await this.runAndSaveTranscript({
@@ -151,7 +147,13 @@ export class MaterialTeardownHandler {
       evidence,
       input.analysisProfile,
     )) {
-      return { outcome: "completed", analysis: checkpoint.analysis, reusedAnalysis: true };
+      return {
+        outcome: "completed",
+        film,
+        transcript,
+        analysis: checkpoint.analysis,
+        reusedAnalysis: true,
+      };
     }
     const analysis = await this.ports.analyzer.analyze(evidence);
     if (!reusableAnalysis(analysis, evidence, input.analysisProfile)) {
@@ -159,7 +161,7 @@ export class MaterialTeardownHandler {
     }
     checkpoint.analysis = analysis;
     await this.ports.checkpoints.save(media.contentSha256, checkpoint);
-    return { outcome: "completed", analysis, reusedAnalysis: false };
+    return { outcome: "completed", film, transcript, analysis, reusedAnalysis: false };
   }
 
   private async loadCheckpoint(contentSha256: string): Promise<TeardownCheckpoint> {

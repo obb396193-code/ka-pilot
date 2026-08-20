@@ -193,6 +193,9 @@ describe("MaterialTeardownHandler", () => {
 
     expect(result.outcome).toBe("completed");
     expect(result.reusedAnalysis).toBe(false);
+    expect(result.film.shots).toHaveLength(2);
+    expect(result.film.contactSheets.shots).toEqual([]);
+    expect(result.transcript.timingPrecision).toBe("segment");
     expect(subject.cloudAsr.transcribe).not.toHaveBeenCalled();
     expect(subject.urlLease.acquire).toHaveBeenCalledOnce();
     expect(subject.urlLease.acquire).toHaveBeenCalledWith(sourceRef);
@@ -210,6 +213,8 @@ describe("MaterialTeardownHandler", () => {
 
     expect(first.reusedAnalysis).toBe(false);
     expect(second.reusedAnalysis).toBe(true);
+    expect(second.film).toEqual(first.film);
+    expect(second.transcript).toEqual(first.transcript);
     expect(subject.urlLease.acquire).toHaveBeenCalledTimes(2);
     expect(subject.downloader.download).toHaveBeenCalledTimes(2);
     const firstUrl = subject.downloader.download.mock.calls[0]?.[0].materialUrl;
@@ -242,6 +247,26 @@ describe("MaterialTeardownHandler", () => {
     expect(subject.filmAnalyzer.analyze).toHaveBeenCalledOnce();
     expect(subject.cloudAsr.transcribe).toHaveBeenCalledOnce();
     expect(changedAnalyzer.analyze).toHaveBeenCalledOnce();
+  });
+
+  it("rejects a stale B14 analysis checkpoint and only reruns semantic analysis", async () => {
+    const subject = setup();
+    await subject.handler.handle(subject.input);
+    const checkpoint = subject.checkpoints.values.get("b".repeat(64));
+    if (checkpoint?.analysis === undefined) throw new Error("missing analysis checkpoint");
+    const stale = structuredClone(checkpoint.analysis) as unknown as Record<string, unknown>;
+    const result = stale.result as Record<string, unknown>;
+    delete result.alignmentStatus;
+    delete result.semanticSections;
+    checkpoint.analysis = stale as unknown as WorkerAnalysis;
+    subject.checkpoints.values.set("b".repeat(64), checkpoint);
+
+    const rerun = await subject.handler.handle(subject.input);
+
+    expect(rerun.reusedAnalysis).toBe(false);
+    expect(subject.filmAnalyzer.analyze).toHaveBeenCalledOnce();
+    expect(subject.cloudAsr.transcribe).toHaveBeenCalledOnce();
+    expect(subject.analyzer.analyze).toHaveBeenCalledTimes(2);
   });
 
   it("persists film before cloud ASR failure so retry does not repeat FFmpeg", async () => {
