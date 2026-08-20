@@ -327,6 +327,98 @@ describe("ETL handlers", () => {
     }));
   });
 
+  it("loads each hourly snapshot in stable five-account batches before deriving", async () => {
+    const focusAccountIds = Array.from({ length: 12 }, (_, index) => `a-${index + 1}`);
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => ({
+        rows: query.resource === "ad_realtime"
+          ? (query.accountIds ?? []).map((accountId) => adRow(Number(query.hh), {
+              account_id: accountId,
+              ad_id: `ad-${accountId}`,
+            }))
+          : [{ account_id: "a-1", ds: "20260819" }],
+        envelope: {},
+        observation: observation(
+          query.resource,
+          query.resource === "ad_realtime" ? (query.accountIds ?? []).length : 1,
+        ),
+      })),
+    };
+    const runStore = store();
+    const downstream = jobs();
+    const hourly = hourlyStore();
+
+    await createIncrementalEtlHandler({ qihang, store: runStore.value, jobs: downstream, hourly })(
+      job("etl_incr", {
+        workspaceId,
+        userId: "u-qihang",
+        ds: "2026-08-19",
+        focusAccountIds,
+        hh: 9,
+        offlineReconcileDays: 0,
+      }),
+    );
+
+    const adQueries = qihang.query.mock.calls.map(([query]) => query)
+      .filter((query) => query.resource === "ad_realtime");
+    expect(adQueries.map((query) => [query.hh, query.accountIds])).toEqual([
+      [8, focusAccountIds.slice(0, 5)],
+      [8, focusAccountIds.slice(5, 10)],
+      [8, focusAccountIds.slice(10, 12)],
+      [9, focusAccountIds.slice(0, 5)],
+      [9, focusAccountIds.slice(5, 10)],
+      [9, focusAccountIds.slice(10, 12)],
+    ]);
+    expect(hourly.upsertHourly).toHaveBeenCalledWith(expect.arrayContaining([
+      expect.objectContaining({ accountId: "a-1", hh: 9, cost: 10 }),
+      expect.objectContaining({ accountId: "a-12", hh: 9, cost: 10 }),
+    ]));
+    expect(vi.mocked(hourly.upsertHourly).mock.calls[0]?.[0]).toHaveLength(12);
+    expect(runStore.value.recordObservation).toHaveBeenCalledTimes(8);
+    expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
+      jobType: "canonical_merge",
+    }));
+  });
+
+  it("fails the run and suppresses downstream work when an ad batch fails", async () => {
+    const focusAccountIds = Array.from({ length: 6 }, (_, index) => `a-${index + 1}`);
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => {
+        if (query.resource === "ad_realtime" && query.accountIds?.includes("a-6")) {
+          throw new Error("ad batch truncated");
+        }
+        return { rows: [], envelope: {} };
+      }),
+    };
+    const runStore = store();
+    const downstream = jobs();
+    const hourly = hourlyStore();
+
+    await expect(createIncrementalEtlHandler({
+      qihang,
+      store: runStore.value,
+      jobs: downstream,
+      hourly,
+    })(job("etl_incr", {
+      workspaceId,
+      userId: "u-qihang",
+      ds: "2026-08-19",
+      focusAccountIds,
+      hh: 9,
+      offlineReconcileDays: 0,
+    }))).rejects.toThrow("ad batch truncated");
+
+    expect(qihang.query.mock.calls.map(([query]) => query)
+      .filter((query) => query.resource === "ad_realtime")
+      .map((query) => query.accountIds)).toEqual([
+        focusAccountIds.slice(0, 5),
+        focusAccountIds.slice(5, 6),
+      ]);
+    expect(runStore.value.failRun).toHaveBeenCalledWith(91, "ad_realtime", "ad batch truncated");
+    expect(hourly.upsertHourly).not.toHaveBeenCalled();
+    expect(downstream.enqueue).not.toHaveBeenCalled();
+  });
+
   it("rechecks D-1 offline by default, records an empty observation, and continues realtime", async () => {
     const calls: QihangQuery[] = [];
     const qihang = {

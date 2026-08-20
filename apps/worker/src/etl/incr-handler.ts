@@ -4,6 +4,7 @@ import { deriveHourlyAdMetrics, type HourlyMetricIssue } from "@ka/domain";
 import { deterministicJobId } from "../jobs/deterministic-id.js";
 import type { JobHandler } from "../jobs/types.js";
 import type { QihangQuery, QihangQueryResult } from "../qihang/client.js";
+import { mergeAdRealtimeRows, planAdRealtimeBatches } from "./ad-query-batches.js";
 import { shiftIsoDate } from "./date-range.js";
 import { incrementalEtlPayloadSchema } from "./payload.js";
 import { toEtlQueryObservation } from "./query-observation.js";
@@ -112,6 +113,7 @@ export function createIncrementalEtlHandler(
 
 type IncrementalPayload = ReturnType<typeof incrementalEtlPayloadSchema.parse>;
 type IngestQuery = (query: QihangQuery, fallbackDs: string) => Promise<QihangQueryResult>;
+type AdRealtimeQuery = Extract<QihangQuery, { resource: "ad_realtime" }>;
 
 async function ingestFocusedAds(
   dependencies: IncrementalEtlDependencies,
@@ -120,7 +122,7 @@ async function ingestFocusedAds(
   ingest: IngestQuery,
   setStep: (step: string) => void,
 ): Promise<void> {
-  const query = (hh?: number): QihangQuery => ({
+  const query = (hh?: number): AdRealtimeQuery => ({
     resource: "ad_realtime",
     userId: payload.userId,
     media: payload.media,
@@ -130,14 +132,14 @@ async function ingestFocusedAds(
     ...(hh === undefined ? {} : { hh }),
   });
   if (payload.hh === undefined) {
-    await ingest(query(), payload.ds);
+    await ingestAdSnapshot(query(), ingest, payload.ds);
     return;
   }
 
   const previousRows = payload.hh === 0
     ? []
-    : (await ingest(query(payload.hh - 1), payload.ds)).rows;
-  const current = await ingest(query(payload.hh), payload.ds);
+    : (await ingestAdSnapshot(query(payload.hh - 1), ingest, payload.ds)).rows;
+  const current = await ingestAdSnapshot(query(payload.hh), ingest, payload.ds);
   setStep("hourly_derive");
   const derived = deriveHourlyAdMetrics({
     currentHh: payload.hh,
@@ -161,6 +163,21 @@ async function ingestFocusedAds(
     budget: row.budget,
   })));
   await dependencies.store.recordObservation(runId, derivationObservation(payload, current, derived.issues, derived.rows.length));
+}
+
+async function ingestAdSnapshot(
+  query: AdRealtimeQuery,
+  ingest: IngestQuery,
+  fallbackDs: string,
+): Promise<QihangQueryResult> {
+  const results: QihangQueryResult[] = [];
+  for (const batch of planAdRealtimeBatches(query)) {
+    results.push(await ingest(batch, fallbackDs));
+  }
+  return {
+    rows: mergeAdRealtimeRows(results.map((result) => result.rows)),
+    envelope: { batched: true, batchCount: results.length },
+  };
 }
 
 function assertDerivedDate(
