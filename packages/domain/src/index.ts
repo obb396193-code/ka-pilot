@@ -18,6 +18,7 @@ export * from "./strategy-analysis.js";
 export * from "./capability-registry.js";
 export * from "./workflow-graph.js";
 export * from "./workflow-runtime.js";
+export * from "./workflow-trigger-diagnostic.js";
 export * from "./knowledge-document.js";
 export * from "./knowledge-references.js";
 export * from "./knowledge-access.js";
