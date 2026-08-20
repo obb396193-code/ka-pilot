@@ -6,7 +6,9 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a`
 >
-> 最新功能实现提交：`be/b8a` / `32a82ba`；质量与安全修正提交：`8c87530`；质量证据：`d2d7537`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；交接准备开工：`2cc4e8c`
+>
+> 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
 > 用途：会话恢复、Claude/arch 审查、合并前对账。状态文档和测试结果是快照，合并或上线前仍需重新执行验证。
 
@@ -36,6 +38,7 @@
 | B6 分析与报表 | 见 `be/b6` HEAD | `6dc7ed1` | 严格内部报表计划、可信组件数据集、Gap 对账、策略样本护栏、B1c 事实适配、幂等报表 Worker | 304 默认 + 1 opt-in | `B6-状态.md`、`docs/evidence/B6-代码质量报告.md`、P-010 |
 | B7 工作流可靠执行 | 见 `be/b7a` HEAD | `b0024e1`；质量 `90eea92` | Capability Registry、严格 DAG 编译、事件重放、固定版本 Repository、无写入 Simulation、可恢复 Runner、Changeset 确认门和 UNKNOWN | 367 默认 + 1 opt-in | `B7-状态.md`、`docs/evidence/B7-代码质量报告.md`、P-011 |
 | B8 知识库领域底座 | 见 `be/b8a` HEAD | `32a82ba`；质量 `8c87530` | BlockNote 安全信封、文本投影/指纹、ID 双链、KA 业务引用、资产语义、权限化 Agent citation 边界 | 406 默认 + 1 opt-in | `B8-状态.md`、`docs/evidence/B8-代码质量报告.md`、P-012 |
+| B1-B8 自审修复 | `b1bd873` | 原审查 `1919a8e`；复验 `48c7fd5`/`b1bd873` | 修复日常 ETL 派发、Job fencing、确认 TTL、Changeset+T1、知识正文权限、输出凭证、生命周期、身份、分页、分区、上海业务日等；其余契约项明确保留 | 422 默认 + 1 opt-in | `docs/evidence/B1-B8自审修复-代码质量报告.md`、P-014 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -116,3 +119,24 @@ Claude 未恢复不等于所有后端都要停。可以在 `be/b5` 之后继续�
 5. 新发现的契约缺口继续写 `inbox-arch.md`，等 Claude 集中裁决。
 
 B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 runtime。Claude/arch 恢复后先审 P-010/P-011/P-012 并冻结契约；其前不建知识库表、公开 API 或前端接缝。
+
+## 7. 2026-08-20 当前修复与交接真相
+
+### 已独立修复
+
+- 原始 14 个 P0 已修 6 个，17 个 P1 已修 7 个。
+- 当前累计 422 个默认 tests 通过，真 Claude Agent SDK smoke 单独通过。
+- Coverage：Domain 95.43%、DB 93.62%、Worker 90.66%、DingTalk Gateway 86.62%。
+- 四包 typecheck/lint/audit、PG16 migration replay 和变更代码复杂度门禁通过。
+
+### 仍需裁决/接线
+
+- 8 个 P0：账户权威 workspace 归属、回填完整 DAG 终态、缺数公开状态、多任务归属、Workflow 单执行器/effect outbox、钉钉 durable inbox/outbox、Changeset 目标权限矩阵等。
+- 10 个 P1：补偿暂估、质量源、mute、健康度分母、策略模型、Simulation/Changeset preview、租户唯一约束、Agent session 并发、Qihang 资源预算、canonical 批量性能。
+- B2-B8 大量能力仍是内部内核，未统一接生产 Runtime/API/前端。
+
+### 分支状态
+
+- `be/b8a` 尚未被 `fe/f001` 包含，也尚未完成 Claude/arch 审查。
+- 共同基线为 `9335150`；当前 committed 同路径变更 5 个，明确文本冲突集中在工作台账、两信箱和 `schema.sql`。
+- 合并操作必须等 Claude 收口脏工作树后，在独立 integration 分支执行；详见 `docs/plans/2026-08-20-be-b8a与fe-f001合并清单.md`。
