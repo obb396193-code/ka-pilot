@@ -72,9 +72,9 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
       canonical_merge: createCanonicalHandler({
         store: {
           loadMergeInputs: rawMetrics.loadMergeInputs.bind(rawMetrics),
-          loadEffectiveSettings: metrics.loadEffectiveSettings.bind(metrics),
-          loadHistoricalSpend: metrics.loadHistoricalSpend.bind(metrics),
-          upsertCanonical: metrics.upsertCanonical.bind(metrics),
+          loadEffectiveSettingsBatch: metrics.loadEffectiveSettingsBatch.bind(metrics),
+          loadHistoricalSpendBatch: metrics.loadHistoricalSpendBatch.bind(metrics),
+          upsertCanonicalBatch: metrics.upsertCanonicalBatch.bind(metrics),
         },
         runs: etlRuns,
         jobs,

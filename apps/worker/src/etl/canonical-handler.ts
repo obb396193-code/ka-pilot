@@ -33,6 +33,20 @@ export interface CanonicalMergeWork {
   realtime?: RawMetricRow;
 }
 
+export interface CanonicalLookupKey {
+  accountId: string;
+  ds: string;
+}
+
+export interface CanonicalSettingsBatchRow extends CanonicalLookupKey, EffectiveMetricSettings {
+  workspaceId: string;
+}
+
+export interface CanonicalHistoryBatchRow extends CanonicalLookupKey {
+  workspaceId: string;
+  history: number[];
+}
+
 export interface CanonicalStore {
   loadMergeInputs(scope: {
     workspaceId: string;
@@ -40,24 +54,165 @@ export interface CanonicalStore {
     dateTo: string;
     reportDate: string;
   }): Promise<CanonicalMergeWork[]>;
-  loadEffectiveSettings(
+  loadEffectiveSettingsBatch(
     workspaceId: string,
-    accountId: string,
-    ds: string,
-  ): Promise<EffectiveMetricSettings>;
-  loadHistoricalSpend(
+    keys: readonly CanonicalLookupKey[],
+  ): Promise<CanonicalSettingsBatchRow[]>;
+  loadHistoricalSpendBatch(
     workspaceId: string,
-    accountId: string,
-    beforeDs: string,
-  ): Promise<number[]>;
-  upsertCanonical(record: CanonicalMetricRecord): Promise<void>;
+    keys: readonly CanonicalLookupKey[],
+  ): Promise<CanonicalHistoryBatchRow[]>;
+  upsertCanonicalBatch(records: readonly CanonicalMetricRecord[]): Promise<void>;
+}
+
+const DEFAULT_CHUNK_SIZE = 250;
+const MAX_CHUNK_SIZE = 1_000;
+
+function lookupKey(value: CanonicalLookupKey): string {
+  return JSON.stringify([value.accountId, value.ds]);
+}
+
+function indexLookupRows<T extends CanonicalLookupKey & { workspaceId: string }>(input: {
+  workspaceId: string;
+  requested: readonly CanonicalLookupKey[];
+  rows: readonly T[];
+  kind: string;
+}): Map<string, T> {
+  const requested = new Set(input.requested.map(lookupKey));
+  const indexed = new Map<string, T>();
+  for (const row of input.rows) {
+    const key = lookupKey(row);
+    if (row.workspaceId !== input.workspaceId || !requested.has(key)) {
+      throw new Error(`Canonical ${input.kind} returned an out-of-scope key`);
+    }
+    if (indexed.has(key)) {
+      throw new Error(`Canonical ${input.kind} returned a duplicate requested key`);
+    }
+    indexed.set(key, row);
+  }
+  if (indexed.size !== requested.size) {
+    throw new Error(`Canonical ${input.kind} is missing requested key`);
+  }
+  return indexed;
+}
+
+function validateInputs(
+  inputs: readonly CanonicalMergeWork[],
+  workspaceId: string,
+): void {
+  const seen = new Set<string>();
+  for (const input of inputs) {
+    if (input.workspaceId !== workspaceId) {
+      throw new Error("Canonical input escaped requested workspace scope");
+    }
+    const key = lookupKey(input);
+    if (seen.has(key)) {
+      throw new Error("Canonical inputs contain a duplicate account/date key");
+    }
+    seen.add(key);
+  }
+}
+
+function canonicalRecord(input: {
+  work: CanonicalMergeWork;
+  settings: EffectiveMetricSettings;
+  history: readonly number[];
+}): CanonicalMetricRecord {
+  const base = mergeAccountCanonical(input.work);
+  if (base.accountId !== input.work.accountId) {
+    throw new Error("Canonical input account_id does not match its scope");
+  }
+  const derived = computeDerivedMetrics({
+    cost: base.cost,
+    compensation: base.compensation,
+    channelCoefficient: input.settings.channelCoefficient,
+    exposure: base.exposure,
+    click: base.click,
+    conversion: base.conversion,
+    realConversion: base.realConversion,
+    assessmentPrice: input.settings.assessmentPrice,
+    wakeUv: base.wakeUv,
+    potentialUv: base.potentialUv,
+  });
+  return {
+    workspaceId: input.work.workspaceId,
+    accountId: input.work.accountId,
+    ds: input.work.ds,
+    cost: base.cost,
+    exposure: base.exposure,
+    click: base.click,
+    conversion: base.conversion,
+    realConversion: base.realConversion,
+    realCpa: derived.realCpa.value,
+    cashCost: derived.cashCost,
+    cashCpa: derived.cashCpa.value,
+    costSpace: derived.costSpace,
+    gap: derived.gap.value,
+    budget: base.budget,
+    budgetUsageRate: base.budgetUsageRate,
+    deductionRate: base.deductionRate,
+    mainAdCostProportion: base.mainAdCostProportion,
+    assessmentPriceSnapshot: input.settings.assessmentPrice,
+    wakeUv: base.wakeUv,
+    potentialUv: base.potentialUv,
+    fieldSources: {
+      ...base.fieldSources,
+      realCpa: "derived",
+      cashCost: "derived",
+      cashCpa: "derived",
+      costSpace: "derived",
+      gap: "derived",
+    },
+    dataAnomaly: isSpendAnomaly(base.cost, input.history),
+  };
+}
+
+async function mergeChunk(input: {
+  store: CanonicalStore;
+  workspaceId: string;
+  works: readonly CanonicalMergeWork[];
+}): Promise<CanonicalMetricRecord[]> {
+  const keys = input.works.map(({ accountId, ds }) => ({ accountId, ds }));
+  const [settingsRows, historyRows] = await Promise.all([
+    input.store.loadEffectiveSettingsBatch(input.workspaceId, keys),
+    input.store.loadHistoricalSpendBatch(input.workspaceId, keys),
+  ]);
+  const settings = indexLookupRows({
+    workspaceId: input.workspaceId,
+    requested: keys,
+    rows: settingsRows,
+    kind: "settings",
+  });
+  const histories = indexLookupRows({
+    workspaceId: input.workspaceId,
+    requested: keys,
+    rows: historyRows,
+    kind: "history",
+  });
+  return input.works.map((work) => {
+    const key = lookupKey(work);
+    return canonicalRecord({
+      work,
+      settings: settings.get(key)!,
+      history: histories.get(key)!.history,
+    });
+  });
+}
+
+function validChunkSize(value: number): number {
+  if (!Number.isInteger(value) || value < 1 || value > MAX_CHUNK_SIZE) {
+    throw new Error(`chunkSize must be an integer between 1 and ${MAX_CHUNK_SIZE}`);
+  }
+  return value;
 }
 
 export function createCanonicalHandler(dependencies: {
   store: CanonicalStore;
   runs: Pick<EtlRunStore, "startRun" | "finishRun" | "failRun">;
   jobs: JobEnqueuerPort;
+  chunkSize?: number;
 }): JobHandler {
+  const chunkSize = validChunkSize(dependencies.chunkSize ?? DEFAULT_CHUNK_SIZE);
   return async (job) => {
     const scope = payloadSchema.parse(job.payload);
     if (job.workspaceId !== scope.workspaceId) {
@@ -76,73 +231,18 @@ export function createCanonicalHandler(dependencies: {
     let rowsIngested = 0;
     try {
       const inputs = await dependencies.store.loadMergeInputs(scope);
-      for (const input of inputs) {
-        currentStep = "aggregate:merge";
-        if (input.workspaceId !== scope.workspaceId) {
-          throw new Error("Canonical input escaped requested workspace scope");
-        }
-        const base = mergeAccountCanonical(input);
-        if (base.accountId !== input.accountId) {
-          throw new Error("Canonical input account_id does not match its scope");
-        }
+      validateInputs(inputs, scope.workspaceId);
+      for (let offset = 0; offset < inputs.length; offset += chunkSize) {
+        const works = inputs.slice(offset, offset + chunkSize);
         currentStep = "aggregate:settings";
-        const [settings, history] = await Promise.all([
-          dependencies.store.loadEffectiveSettings(
-            input.workspaceId,
-            input.accountId,
-            input.ds,
-          ),
-          dependencies.store.loadHistoricalSpend(
-            input.workspaceId,
-            input.accountId,
-            input.ds,
-          ),
-        ]);
-        const derived = computeDerivedMetrics({
-          cost: base.cost,
-          compensation: base.compensation,
-          channelCoefficient: settings.channelCoefficient,
-          exposure: base.exposure,
-          click: base.click,
-          conversion: base.conversion,
-          realConversion: base.realConversion,
-          assessmentPrice: settings.assessmentPrice,
-          wakeUv: base.wakeUv,
-          potentialUv: base.potentialUv,
+        const records = await mergeChunk({
+          store: dependencies.store,
+          workspaceId: scope.workspaceId,
+          works,
         });
         currentStep = "aggregate:upsert";
-        await dependencies.store.upsertCanonical({
-          workspaceId: input.workspaceId,
-          accountId: input.accountId,
-          ds: input.ds,
-          cost: base.cost,
-          exposure: base.exposure,
-          click: base.click,
-          conversion: base.conversion,
-          realConversion: base.realConversion,
-          realCpa: derived.realCpa.value,
-          cashCost: derived.cashCost,
-          cashCpa: derived.cashCpa.value,
-          costSpace: derived.costSpace,
-          gap: derived.gap.value,
-          budget: base.budget,
-          budgetUsageRate: base.budgetUsageRate,
-          deductionRate: base.deductionRate,
-          mainAdCostProportion: base.mainAdCostProportion,
-          assessmentPriceSnapshot: settings.assessmentPrice,
-          wakeUv: base.wakeUv,
-          potentialUv: base.potentialUv,
-          fieldSources: {
-            ...base.fieldSources,
-            realCpa: "derived",
-            cashCost: "derived",
-            cashCpa: "derived",
-            costSpace: "derived",
-            gap: "derived",
-          },
-          dataAnomaly: isSpendAnomaly(base.cost, history),
-        });
-        rowsIngested += 1;
+        await dependencies.store.upsertCanonicalBatch(records);
+        rowsIngested += records.length;
       }
       currentStep = "enqueue:quality";
       const qualityKey = scope.backfillId ?? job.id;

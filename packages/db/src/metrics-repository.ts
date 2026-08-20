@@ -5,6 +5,22 @@ export interface EffectiveMetricSettings {
   assessmentPrice: number | null;
 }
 
+export interface MetricLookupKey {
+  accountId: string;
+  ds: string;
+}
+
+export interface EffectiveMetricSettingsRow
+  extends MetricLookupKey,
+    EffectiveMetricSettings {
+  workspaceId: string;
+}
+
+export interface HistoricalSpendRow extends MetricLookupKey {
+  workspaceId: string;
+  history: number[];
+}
+
 export interface CanonicalMetricRecord {
   workspaceId: string;
   accountId: string;
@@ -38,26 +54,80 @@ function nullableNumber(value: string | number | null | undefined): number | nul
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+function lookupKey(value: MetricLookupKey): string {
+  return JSON.stringify([value.accountId, value.ds]);
+}
+
+function validateKeys(keys: readonly MetricLookupKey[]): void {
+  const seen = new Set<string>();
+  for (const key of keys) {
+    if (key.accountId.trim() === "" || !/^\d{4}-\d{2}-\d{2}$/.test(key.ds)) {
+      throw new Error("Metric lookup keys require accountId and ISO date");
+    }
+    const encoded = lookupKey(key);
+    if (seen.has(encoded)) {
+      throw new Error("Metric lookup keys contain a duplicate account/date");
+    }
+    seen.add(encoded);
+  }
+}
+
+function requireCompleteBatch(
+  kind: string,
+  requested: readonly MetricLookupKey[],
+  returned: readonly MetricLookupKey[],
+): void {
+  const requestedKeys = new Set(requested.map(lookupKey));
+  const returnedKeys = new Set(returned.map(lookupKey));
+  if (returnedKeys.size !== returned.length) {
+    throw new Error(`${kind} query returned duplicate account/date rows`);
+  }
+  if (requestedKeys.size !== returnedKeys.size) {
+    throw new Error(`${kind} query did not return every requested account/date`);
+  }
+  for (const key of returnedKeys) {
+    if (!requestedKeys.has(key)) {
+      throw new Error(`${kind} query returned an unrequested account/date`);
+    }
+  }
+}
+
+function serializeLookupKeys(keys: readonly MetricLookupKey[]): string {
+  return JSON.stringify(keys.map((key) => ({ account_id: key.accountId, ds: key.ds })));
+}
+
 export class MetricsRepository {
   constructor(private readonly pool: Pool) {}
 
-  async loadEffectiveSettings(
+  async loadEffectiveSettingsBatch(
     workspaceId: string,
-    accountId: string,
-    ds: string,
-  ): Promise<EffectiveMetricSettings> {
+    keys: readonly MetricLookupKey[],
+  ): Promise<EffectiveMetricSettingsRow[]> {
+    validateKeys(keys);
+    if (keys.length === 0) return [];
     const result = await this.pool.query<{
+      workspace_id: string;
+      account_id: string;
+      ds: string;
       coefficient: string | number | null;
       assessment_price: string | number | null;
     }>(
-      `SELECT coefficient.coefficient, assessment.price AS assessment_price
-       FROM accounts AS account
+      `WITH requested AS (
+         SELECT account_id, ds
+         FROM jsonb_to_recordset($2::jsonb) AS value(account_id text, ds date)
+       )
+       SELECT account.workspace_id, account.account_id,
+              to_char(requested.ds, 'YYYY-MM-DD') AS ds,
+              coefficient.coefficient, assessment.price AS assessment_price
+       FROM requested
+       JOIN accounts AS account
+         ON account.workspace_id = $1 AND account.account_id = requested.account_id
        LEFT JOIN LATERAL (
          SELECT value.coefficient
          FROM channel_coefficients AS value
          WHERE value.workspace_id = account.workspace_id
            AND value.media = account.media
-           AND value.effective_date <= $3::date
+           AND value.effective_date <= requested.ds
          ORDER BY value.effective_date DESC, value.id DESC
          LIMIT 1
        ) AS coefficient ON true
@@ -67,83 +137,109 @@ export class MetricsRepository {
          JOIN assessment_price_history AS price
            ON price.workspace_id = relation.workspace_id
           AND price.task_id = relation.task_id
-          AND price.effective_date <= $3::date
+          AND price.effective_date <= requested.ds
          WHERE relation.workspace_id = account.workspace_id
            AND relation.account_id = account.account_id
-           AND relation.valid_from <= $3::date
-           AND (relation.valid_to IS NULL OR relation.valid_to >= $3::date)
+           AND relation.valid_from <= requested.ds
+           AND (relation.valid_to IS NULL OR relation.valid_to >= requested.ds)
          ORDER BY relation.valid_from DESC, price.effective_date DESC, price.id DESC
          LIMIT 1
        ) AS assessment ON true
-       WHERE account.workspace_id = $1 AND account.account_id = $2`,
-      [workspaceId, accountId, ds],
+       ORDER BY requested.ds, account.account_id`,
+      [workspaceId, serializeLookupKeys(keys)],
     );
-    const row = result.rows[0];
-    if (!row) {
-      throw new Error(`Account ${accountId} does not belong to workspace ${workspaceId}`);
-    }
-    return {
+    const rows = result.rows.map((row) => ({
+      workspaceId: row.workspace_id,
+      accountId: row.account_id,
+      ds: row.ds,
       channelCoefficient: nullableNumber(row.coefficient),
       assessmentPrice: nullableNumber(row.assessment_price),
-    };
+    }));
+    requireCompleteBatch("Effective settings", keys, rows);
+    return rows;
   }
 
-  async loadHistoricalSpend(
+  async loadHistoricalSpendBatch(
     workspaceId: string,
-    accountId: string,
-    beforeDs: string,
+    keys: readonly MetricLookupKey[],
     days = 14,
-  ): Promise<number[]> {
-    const result = await this.pool.query<{ cost: string | number }>(
-      `SELECT cost
-       FROM account_metrics_daily
-       WHERE workspace_id = $1 AND account_id = $2 AND ds < $3::date
-         AND cost IS NOT NULL AND cost <> 0
-       ORDER BY ds DESC
-       LIMIT $4`,
-      [workspaceId, accountId, beforeDs, days],
+  ): Promise<HistoricalSpendRow[]> {
+    validateKeys(keys);
+    if (!Number.isInteger(days) || days < 1 || days > 366) {
+      throw new Error("Historical spend days must be an integer between 1 and 366");
+    }
+    if (keys.length === 0) return [];
+    const result = await this.pool.query<{
+      workspace_id: string;
+      account_id: string;
+      ds: string;
+      history: (string | number)[];
+    }>(
+      `WITH requested AS (
+         SELECT account_id, ds
+         FROM jsonb_to_recordset($2::jsonb) AS value(account_id text, ds date)
+       )
+       SELECT account.workspace_id, account.account_id,
+              to_char(requested.ds, 'YYYY-MM-DD') AS ds,
+              ARRAY(
+                SELECT metric.cost
+                FROM account_metrics_daily AS metric
+                WHERE metric.workspace_id = account.workspace_id
+                  AND metric.account_id = account.account_id
+                  AND metric.ds < requested.ds
+                  AND metric.cost IS NOT NULL AND metric.cost <> 0
+                ORDER BY metric.ds DESC
+                LIMIT $3
+              ) AS history
+       FROM requested
+       JOIN accounts AS account
+         ON account.workspace_id = $1 AND account.account_id = requested.account_id
+       ORDER BY requested.ds, account.account_id`,
+      [workspaceId, serializeLookupKeys(keys), days],
     );
-    return result.rows
-      .map((row) => nullableNumber(row.cost))
-      .filter((value): value is number => value !== null);
+    const rows = result.rows.map((row) => ({
+      workspaceId: row.workspace_id,
+      accountId: row.account_id,
+      ds: row.ds,
+      history: row.history
+        .map((value) => nullableNumber(value))
+        .filter((value): value is number => value !== null),
+    }));
+    requireCompleteBatch("Historical spend", keys, rows);
+    return rows;
   }
 
-  async upsertCanonical(record: CanonicalMetricRecord): Promise<void> {
-    const values = [
-      record.workspaceId,
-      record.accountId,
-      record.ds,
-      record.cost,
-      record.exposure,
-      record.click,
-      record.conversion,
-      record.realConversion,
-      record.realCpa,
-      record.cashCost,
-      record.cashCpa,
-      record.costSpace,
-      record.gap,
-      record.budget,
-      record.budgetUsageRate,
-      record.deductionRate,
-      record.mainAdCostProportion,
-      record.assessmentPriceSnapshot,
-      record.wakeUv,
-      record.potentialUv,
-      record.fieldSources,
-      record.dataAnomaly,
-    ];
+  async upsertCanonicalBatch(records: readonly CanonicalMetricRecord[]): Promise<void> {
+    if (records.length === 0) return;
+    const keys = records.map((record) => ({
+      accountId: `${record.workspaceId}\u0000${record.accountId}`,
+      ds: record.ds,
+    }));
+    validateKeys(keys);
     const result = await this.pool.query(
-      `INSERT INTO account_metrics_daily (
+      `WITH incoming AS (
+         SELECT * FROM jsonb_to_recordset($1::jsonb) AS value(
+           workspace_id uuid, account_id text, ds date, cost numeric,
+           exposure bigint, click bigint, conversion numeric, real_conversion numeric,
+           real_cpa numeric, cash_cost numeric, cash_cpa numeric, cost_space numeric,
+           gap numeric, budget numeric, budget_usage_rate numeric, deduction_rate numeric,
+           main_ad_cost_proportion numeric, assessment_price_snapshot numeric,
+           wake_uv numeric, potential_uv numeric, field_sources jsonb, data_anomaly boolean
+         )
+       )
+       INSERT INTO account_metrics_daily (
          workspace_id, account_id, ds, cost, exposure, click, conversion,
          real_conversion, real_cpa, cash_cost, cash_cpa, cost_space, gap,
          budget, budget_usage_rate, deduction_rate, main_ad_cost_proportion,
          assessment_price_snapshot, wake_uv, potential_uv, field_sources,
          data_anomaly, computed_at
-       ) VALUES (
-         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
-         $14, $15, $16, $17, $18, $19, $20, $21, $22, now()
-       )
+       ) SELECT
+         workspace_id, account_id, ds, cost, exposure, click, conversion,
+         real_conversion, real_cpa, cash_cost, cash_cpa, cost_space, gap,
+         budget, budget_usage_rate, deduction_rate, main_ad_cost_proportion,
+         assessment_price_snapshot, wake_uv, potential_uv, field_sources,
+         data_anomaly, now()
+       FROM incoming
        ON CONFLICT (workspace_id, account_id, ds) DO UPDATE SET
          cost = EXCLUDED.cost,
          exposure = EXCLUDED.exposure,
@@ -166,10 +262,37 @@ export class MetricsRepository {
          data_anomaly = EXCLUDED.data_anomaly,
          computed_at = now()
        RETURNING account_id`,
-      values,
+      [
+        JSON.stringify(
+          records.map((record) => ({
+            workspace_id: record.workspaceId,
+            account_id: record.accountId,
+            ds: record.ds,
+            cost: record.cost,
+            exposure: record.exposure,
+            click: record.click,
+            conversion: record.conversion,
+            real_conversion: record.realConversion,
+            real_cpa: record.realCpa,
+            cash_cost: record.cashCost,
+            cash_cpa: record.cashCpa,
+            cost_space: record.costSpace,
+            gap: record.gap,
+            budget: record.budget,
+            budget_usage_rate: record.budgetUsageRate,
+            deduction_rate: record.deductionRate,
+            main_ad_cost_proportion: record.mainAdCostProportion,
+            assessment_price_snapshot: record.assessmentPriceSnapshot,
+            wake_uv: record.wakeUv,
+            potential_uv: record.potentialUv,
+            field_sources: record.fieldSources,
+            data_anomaly: record.dataAnomaly,
+          })),
+        ),
+      ],
     );
-    if (result.rowCount !== 1) {
-      throw new Error(`Failed to upsert canonical account ${record.accountId} on ${record.ds}`);
+    if (result.rowCount !== records.length) {
+      throw new Error(`Failed to upsert canonical batch of ${records.length} rows`);
     }
   }
 }

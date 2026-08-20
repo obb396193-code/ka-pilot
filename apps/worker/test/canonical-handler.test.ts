@@ -32,12 +32,24 @@ describe("canonical handler", () => {
           },
         },
       ]),
-      loadEffectiveSettings: vi.fn().mockResolvedValue({
-        channelCoefficient: 2,
-        assessmentPrice: 11,
-      }),
-      loadHistoricalSpend: vi.fn().mockResolvedValue([10, 20, 0]),
-      upsertCanonical: upsert,
+      loadEffectiveSettingsBatch: vi.fn().mockResolvedValue([
+        {
+          workspaceId,
+          accountId: "a-1",
+          ds: "2026-08-18",
+          channelCoefficient: 2,
+          assessmentPrice: 11,
+        },
+      ]),
+      loadHistoricalSpendBatch: vi.fn().mockResolvedValue([
+        {
+          workspaceId,
+          accountId: "a-1",
+          ds: "2026-08-18",
+          history: [10, 20, 0],
+        },
+      ]),
+      upsertCanonicalBatch: upsert,
     };
     const runs = {
       startRun: vi.fn().mockResolvedValue(51),
@@ -68,7 +80,7 @@ describe("canonical handler", () => {
       runAfter: new Date(),
     });
 
-    expect(upsert).toHaveBeenCalledWith(
+    expect(upsert).toHaveBeenCalledWith([
       expect.objectContaining({
         workspaceId,
         accountId: "a-1",
@@ -82,8 +94,10 @@ describe("canonical handler", () => {
         assessmentPriceSnapshot: 11,
         dataAnomaly: true,
       }),
-    );
-    const record = upsert.mock.calls[0]?.[0] as { fieldSources: Record<string, string> };
+    ]);
+    const record = upsert.mock.calls[0]?.[0]?.[0] as {
+      fieldSources: Record<string, string>;
+    };
     expect((record as unknown as { gap: number }).gap).toBeCloseTo(0.2);
     expect(record.fieldSources.realCpa).toBe("derived");
     expect(runs.startRun).toHaveBeenCalledWith(
@@ -126,9 +140,11 @@ describe("canonical handler", () => {
           offline: { account_id: "a-1", cost_api: 100 },
         },
       ]),
-      loadEffectiveSettings: vi.fn().mockRejectedValue(new Error("settings unavailable")),
-      loadHistoricalSpend: vi.fn().mockResolvedValue([]),
-      upsertCanonical: vi.fn(),
+      loadEffectiveSettingsBatch: vi
+        .fn()
+        .mockRejectedValue(new Error("settings unavailable")),
+      loadHistoricalSpendBatch: vi.fn().mockResolvedValue([]),
+      upsertCanonicalBatch: vi.fn(),
     };
     const runs = {
       startRun: vi.fn().mockResolvedValue(52),
@@ -162,5 +178,157 @@ describe("canonical handler", () => {
 
     expect(runs.failRun).toHaveBeenCalledWith(52, "aggregate:settings", "settings unavailable");
     expect(jobs.enqueue).not.toHaveBeenCalled();
+  });
+
+  it("processes inputs in bounded chunks and only enqueues quality after every batch", async () => {
+    const inputs = ["a-1", "a-2", "a-3"].map((accountId) => ({
+      workspaceId,
+      accountId,
+      ds: "2026-08-18",
+      reportDate: "2026-08-19",
+      offline: { account_id: accountId, cost_api: 100 },
+    }));
+    const loadEffectiveSettingsBatch = vi.fn().mockImplementation(
+      async (_workspaceId: string, keys: { accountId: string; ds: string }[]) =>
+        keys.map((key) => ({
+          workspaceId,
+          ...key,
+          channelCoefficient: 1,
+          assessmentPrice: 10,
+        })),
+    );
+    const loadHistoricalSpendBatch = vi.fn().mockImplementation(
+      async (_workspaceId: string, keys: { accountId: string; ds: string }[]) =>
+        keys.map((key) => ({ workspaceId, ...key, history: [] })),
+    );
+    const upsertCanonicalBatch = vi.fn().mockResolvedValue(undefined);
+    const jobs = { enqueue: vi.fn().mockResolvedValue("quality-job") };
+    const handler = createCanonicalHandler({
+      store: {
+        loadMergeInputs: vi.fn().mockResolvedValue(inputs),
+        loadEffectiveSettingsBatch,
+        loadHistoricalSpendBatch,
+        upsertCanonicalBatch,
+      },
+      runs: {
+        startRun: vi.fn().mockResolvedValue(53),
+        finishRun: vi.fn().mockResolvedValue(undefined),
+        failRun: vi.fn().mockResolvedValue(undefined),
+      },
+      jobs,
+      chunkSize: 2,
+    });
+
+    await handler({
+      id: "55555555-5555-4555-8555-555555555555",
+      workspaceId,
+      jobType: "canonical_merge",
+      payload: {
+        workspaceId,
+        dateFrom: "2026-08-18",
+        dateTo: "2026-08-18",
+        reportDate: "2026-08-19",
+      },
+      priority: 5,
+      credentialOwnerUserId: null,
+      status: "leased",
+      leaseUntil: null,
+      leaseToken: "55555555-5555-4555-8555-555555555555",
+      attempts: 1,
+      maxAttempts: 3,
+      runAfter: new Date(),
+    });
+
+    expect(loadEffectiveSettingsBatch.mock.calls.map((call) => call[1])).toEqual([
+      [
+        { accountId: "a-1", ds: "2026-08-18" },
+        { accountId: "a-2", ds: "2026-08-18" },
+      ],
+      [{ accountId: "a-3", ds: "2026-08-18" }],
+    ]);
+    expect(loadHistoricalSpendBatch).toHaveBeenCalledTimes(2);
+    expect(upsertCanonicalBatch.mock.calls.map((call) => call[0].length)).toEqual([2, 1]);
+    expect(jobs.enqueue).toHaveBeenCalledTimes(1);
+    expect(upsertCanonicalBatch.mock.invocationCallOrder[1]).toBeLessThan(
+      jobs.enqueue.mock.invocationCallOrder[0]!,
+    );
+  });
+
+  it("fails closed when a batch lookup omits a requested composite key", async () => {
+    const failRun = vi.fn().mockResolvedValue(undefined);
+    const jobs = { enqueue: vi.fn() };
+    const handler = createCanonicalHandler({
+      store: {
+        loadMergeInputs: vi.fn().mockResolvedValue([
+          {
+            workspaceId,
+            accountId: "a-1",
+            ds: "2026-08-18",
+            reportDate: "2026-08-19",
+            offline: { account_id: "a-1", cost_api: 100 },
+          },
+        ]),
+        loadEffectiveSettingsBatch: vi.fn().mockResolvedValue([]),
+        loadHistoricalSpendBatch: vi.fn().mockResolvedValue([
+          { workspaceId, accountId: "a-1", ds: "2026-08-18", history: [] },
+        ]),
+        upsertCanonicalBatch: vi.fn(),
+      },
+      runs: {
+        startRun: vi.fn().mockResolvedValue(54),
+        finishRun: vi.fn(),
+        failRun,
+      },
+      jobs,
+    });
+
+    await expect(
+      handler({
+        id: "66666666-6666-4666-8666-666666666666",
+        workspaceId,
+        jobType: "canonical_merge",
+        payload: {
+          workspaceId,
+          dateFrom: "2026-08-18",
+          dateTo: "2026-08-18",
+          reportDate: "2026-08-19",
+        },
+        priority: 5,
+        credentialOwnerUserId: null,
+        status: "leased",
+        leaseUntil: null,
+        leaseToken: "66666666-6666-4666-8666-666666666666",
+        attempts: 1,
+        maxAttempts: 3,
+        runAfter: new Date(),
+      }),
+    ).rejects.toThrow("missing requested key");
+
+    expect(failRun).toHaveBeenCalledWith(
+      54,
+      "aggregate:settings",
+      expect.stringContaining("missing requested key"),
+    );
+    expect(jobs.enqueue).not.toHaveBeenCalled();
+  });
+
+  it("rejects unsafe chunk sizes at construction", () => {
+    const dependencies = {
+      store: {
+        loadMergeInputs: vi.fn(),
+        loadEffectiveSettingsBatch: vi.fn(),
+        loadHistoricalSpendBatch: vi.fn(),
+        upsertCanonicalBatch: vi.fn(),
+      },
+      runs: { startRun: vi.fn(), finishRun: vi.fn(), failRun: vi.fn() },
+      jobs: { enqueue: vi.fn() },
+    };
+
+    expect(() => createCanonicalHandler({ ...dependencies, chunkSize: 0 })).toThrow(
+      "chunkSize",
+    );
+    expect(() => createCanonicalHandler({ ...dependencies, chunkSize: 1001 })).toThrow(
+      "chunkSize",
+    );
   });
 });

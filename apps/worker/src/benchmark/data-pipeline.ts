@@ -1,6 +1,6 @@
 import { performance } from "node:perf_hooks";
 
-import type { EffectiveMetricSettings, JobRecord } from "@ka/db";
+import type { JobRecord } from "@ka/db";
 
 import { createCanonicalHandler, type CanonicalMergeWork } from "../etl/canonical-handler.js";
 import { QihangClient } from "../qihang/client.js";
@@ -9,6 +9,8 @@ const WORKSPACE_ID = "11111111-1111-4111-8111-111111111111";
 
 export interface DataPipelineBenchmarkSample {
   accountCount: number;
+  chunkSize: number;
+  chunkCount: number;
   qihangJsonBytes: number;
   qihangRows: number;
   qihangDurationMs: number;
@@ -17,9 +19,9 @@ export interface DataPipelineBenchmarkSample {
   rowsPerSecond: number;
   canonicalPortCalls: {
     loadMergeInputs: number;
-    loadEffectiveSettings: number;
-    loadHistoricalSpend: number;
-    upsertCanonical: number;
+    loadEffectiveSettingsBatch: number;
+    loadHistoricalSpendBatch: number;
+    upsertCanonicalBatch: number;
     startRun: number;
     finishRun: number;
     failRun: number;
@@ -39,16 +41,20 @@ export interface DataPipelineBenchmarkReport {
 export interface DataPipelineBenchmarkArgs {
   accountCounts: number[];
   iterationsPerSample: number;
+  chunkSize: number;
 }
 
 export function parseDataPipelineBenchmarkArgs(args: readonly string[]): DataPipelineBenchmarkArgs {
   let accountCounts = [100, 1_000, 5_000];
   let iterationsPerSample = 5;
+  let chunkSize = 250;
   for (const argument of args) {
     if (argument.startsWith("--accounts=")) {
       accountCounts = argument.slice("--accounts=".length).split(",").map(Number);
     } else if (argument.startsWith("--iterations=")) {
       iterationsPerSample = Number(argument.slice("--iterations=".length));
+    } else if (argument.startsWith("--chunk-size=")) {
+      chunkSize = Number(argument.slice("--chunk-size=".length));
     } else {
       throw new Error(`unknown benchmark argument: ${argument}`);
     }
@@ -56,19 +62,25 @@ export function parseDataPipelineBenchmarkArgs(args: readonly string[]): DataPip
   if (accountCounts.length === 0) throw new Error("benchmark requires at least one account scale");
   accountCounts.forEach(assertAccountCount);
   assertAccountCount(iterationsPerSample);
-  return { accountCounts, iterationsPerSample };
+  assertAccountCount(chunkSize);
+  return { accountCounts, iterationsPerSample, chunkSize };
 }
 
 export async function runDataPipelineBenchmark(
   accountCounts: readonly number[] = [100, 1_000, 5_000],
   iterationsPerSample = 5,
+  chunkSize = 250,
 ): Promise<DataPipelineBenchmarkReport> {
   assertAccountCount(iterationsPerSample);
-  if (accountCounts.length > 0) await runSample(Math.min(accountCounts[0] ?? 1, 10));
+  assertAccountCount(chunkSize);
+  if (chunkSize > 1_000) throw new Error("benchmark chunk size cannot exceed 1000");
+  if (accountCounts.length > 0) {
+    await runSample(Math.min(accountCounts[0] ?? 1, 10), chunkSize);
+  }
   const samples: DataPipelineBenchmarkSample[] = [];
   for (const accountCount of accountCounts) {
     assertAccountCount(accountCount);
-    samples.push(await runRepeatedSample(accountCount, iterationsPerSample));
+    samples.push(await runRepeatedSample(accountCount, iterationsPerSample, chunkSize));
   }
   return {
     benchmark: "qihang-canonical-synthetic",
@@ -82,16 +94,20 @@ export async function runDataPipelineBenchmark(
 async function runRepeatedSample(
   accountCount: number,
   iterations: number,
+  chunkSize: number,
 ): Promise<DataPipelineBenchmarkSample> {
   const samples: DataPipelineBenchmarkSample[] = [];
   for (let iteration = 0; iteration < iterations; iteration += 1) {
-    samples.push(await runSample(accountCount));
+    samples.push(await runSample(accountCount, chunkSize));
   }
   samples.sort((left, right) => left.totalDurationMs - right.totalDurationMs);
   return samples[Math.floor(samples.length / 2)] as DataPipelineBenchmarkSample;
 }
 
-async function runSample(accountCount: number): Promise<DataPipelineBenchmarkSample> {
+async function runSample(
+  accountCount: number,
+  chunkSize: number,
+): Promise<DataPipelineBenchmarkSample> {
   const sourceRows = createSyntheticRows(accountCount);
   const qihangBody = JSON.stringify({ successful: true, data: sourceRows });
   const qihangJsonBytes = Buffer.byteLength(qihangBody);
@@ -104,7 +120,7 @@ async function runSample(accountCount: number): Promise<DataPipelineBenchmarkSam
   const qihangDurationMs = performance.now() - qihangStarted;
 
   const inputs = qihangResult.rows.map(toCanonicalInput);
-  const { handler, counters } = createSyntheticCanonicalHandler(inputs);
+  const { handler, counters } = createSyntheticCanonicalHandler(inputs, chunkSize);
   const canonicalStarted = performance.now();
   await handler(createCanonicalJob());
   const canonicalDurationMs = performance.now() - canonicalStarted;
@@ -112,6 +128,8 @@ async function runSample(accountCount: number): Promise<DataPipelineBenchmarkSam
 
   return {
     accountCount,
+    chunkSize,
+    chunkCount: Math.ceil(accountCount / chunkSize),
     qihangJsonBytes,
     qihangRows: qihangResult.rows.length,
     qihangDurationMs: roundMilliseconds(qihangDurationMs),
@@ -157,12 +175,15 @@ function toCanonicalInput(row: Record<string, unknown>): CanonicalMergeWork {
   };
 }
 
-function createSyntheticCanonicalHandler(inputs: CanonicalMergeWork[]) {
+function createSyntheticCanonicalHandler(
+  inputs: CanonicalMergeWork[],
+  chunkSize: number,
+) {
   const counters = {
     loadMergeInputs: 0,
-    loadEffectiveSettings: 0,
-    loadHistoricalSpend: 0,
-    upsertCanonical: 0,
+    loadEffectiveSettingsBatch: 0,
+    loadHistoricalSpendBatch: 0,
+    upsertCanonicalBatch: 0,
     startRun: 0,
     finishRun: 0,
     failRun: 0,
@@ -174,16 +195,25 @@ function createSyntheticCanonicalHandler(inputs: CanonicalMergeWork[]) {
         counters.loadMergeInputs += 1;
         return inputs;
       },
-      loadEffectiveSettings: async (): Promise<EffectiveMetricSettings> => {
-        counters.loadEffectiveSettings += 1;
-        return { channelCoefficient: 2, assessmentPrice: 11 };
+      loadEffectiveSettingsBatch: async (workspaceId, keys) => {
+        counters.loadEffectiveSettingsBatch += 1;
+        return keys.map((key) => ({
+          workspaceId,
+          ...key,
+          channelCoefficient: 2,
+          assessmentPrice: 11,
+        }));
       },
-      loadHistoricalSpend: async () => {
-        counters.loadHistoricalSpend += 1;
-        return [90, 100, 110];
+      loadHistoricalSpendBatch: async (workspaceId, keys) => {
+        counters.loadHistoricalSpendBatch += 1;
+        return keys.map((key) => ({
+          workspaceId,
+          ...key,
+          history: [90, 100, 110],
+        }));
       },
-      upsertCanonical: async () => {
-        counters.upsertCanonical += 1;
+      upsertCanonicalBatch: async () => {
+        counters.upsertCanonicalBatch += 1;
       },
     },
     runs: {
@@ -204,6 +234,7 @@ function createSyntheticCanonicalHandler(inputs: CanonicalMergeWork[]) {
         return "synthetic-quality-job";
       },
     },
+    chunkSize,
   });
   return { handler, counters };
 }

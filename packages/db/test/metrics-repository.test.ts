@@ -55,8 +55,18 @@ describe("MetricsRepository", () => {
     );
 
     await expect(
-      repository.loadEffectiveSettings(workspaceId, "a-1", "2026-08-18"),
-    ).resolves.toEqual({ channelCoefficient: 2, assessmentPrice: 11 });
+      repository.loadEffectiveSettingsBatch(workspaceId, [
+        { accountId: "a-1", ds: "2026-08-18" },
+      ]),
+    ).resolves.toEqual([
+      {
+        workspaceId,
+        accountId: "a-1",
+        ds: "2026-08-18",
+        channelCoefficient: 2,
+        assessmentPrice: 11,
+      },
+    ]);
   });
 
   it("upserts one canonical row idempotently", async () => {
@@ -84,8 +94,8 @@ describe("MetricsRepository", () => {
       fieldSources: { cost: "offline", realCpa: "derived" },
       dataAnomaly: false,
     };
-    await repository.upsertCanonical(record);
-    await repository.upsertCanonical({ ...record, cost: 101 });
+    await repository.upsertCanonicalBatch([record]);
+    await repository.upsertCanonicalBatch([{ ...record, cost: 101 }]);
 
     const result = await pool.query<{ count: string; cost: string }>(
       `SELECT count(*)::text AS count, max(cost)::text AS cost
@@ -109,7 +119,59 @@ describe("MetricsRepository", () => {
     );
 
     await expect(
-      repository.loadHistoricalSpend(workspaceId, "a-1", "2026-08-18", 14),
-    ).resolves.toEqual([100]);
+      repository.loadHistoricalSpendBatch(
+        workspaceId,
+        [{ accountId: "a-1", ds: "2026-08-18" }],
+        14,
+      ),
+    ).resolves.toEqual([
+      { workspaceId, accountId: "a-1", ds: "2026-08-18", history: [100] },
+    ]);
+  });
+
+  it("loads multiple account/date settings and histories without crossing workspaces", async () => {
+    await pool.query(
+      "INSERT INTO accounts (account_id, workspace_id, media) VALUES ('a-2', $1, 'KUAISHOU')",
+      [workspaceId],
+    );
+    await pool.query(
+      `INSERT INTO channel_coefficients (workspace_id, media, coefficient, effective_date)
+       VALUES ($1, 'KUAISHOU', 2, '2026-08-01')`,
+      [workspaceId],
+    );
+    await pool.query(
+      `INSERT INTO account_metrics_daily (workspace_id, account_id, ds, cost)
+       VALUES ($1, 'a-1', '2026-08-16', 10), ($1, 'a-2', '2026-08-17', 20)`,
+      [workspaceId],
+    );
+    const keys = [
+      { accountId: "a-2", ds: "2026-08-18" },
+      { accountId: "a-1", ds: "2026-08-17" },
+    ];
+
+    const settings = await repository.loadEffectiveSettingsBatch(workspaceId, keys);
+    const histories = await repository.loadHistoricalSpendBatch(workspaceId, keys);
+
+    expect(settings).toHaveLength(2);
+    expect(settings.every((row) => row.workspaceId === workspaceId)).toBe(true);
+    expect(histories).toEqual([
+      { workspaceId, accountId: "a-1", ds: "2026-08-17", history: [10] },
+      { workspaceId, accountId: "a-2", ds: "2026-08-18", history: [20] },
+    ]);
+  });
+
+  it("fails closed for missing or duplicate batch lookup keys", async () => {
+    await expect(
+      repository.loadEffectiveSettingsBatch(workspaceId, [
+        { accountId: "missing", ds: "2026-08-18" },
+      ]),
+    ).rejects.toThrow("did not return every requested");
+
+    await expect(
+      repository.loadHistoricalSpendBatch(workspaceId, [
+        { accountId: "a-1", ds: "2026-08-18" },
+        { accountId: "a-1", ds: "2026-08-18" },
+      ]),
+    ).rejects.toThrow("duplicate account/date");
   });
 });

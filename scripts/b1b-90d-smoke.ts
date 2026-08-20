@@ -169,9 +169,9 @@ async function main(): Promise<void> {
   const canonicalHandler = createCanonicalHandler({
     store: {
       loadMergeInputs: raw.loadMergeInputs.bind(raw),
-      loadEffectiveSettings: metrics.loadEffectiveSettings.bind(metrics),
-      loadHistoricalSpend: metrics.loadHistoricalSpend.bind(metrics),
-      upsertCanonical: metrics.upsertCanonical.bind(metrics),
+      loadEffectiveSettingsBatch: metrics.loadEffectiveSettingsBatch.bind(metrics),
+      loadHistoricalSpendBatch: metrics.loadHistoricalSpendBatch.bind(metrics),
+      upsertCanonicalBatch: metrics.upsertCanonicalBatch.bind(metrics),
     },
     runs: etlRuns,
     jobs,
