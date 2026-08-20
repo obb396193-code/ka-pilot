@@ -21,6 +21,22 @@ const envelopeKeySchema = z
   .string()
   .trim()
   .refine(isCanonical32ByteBase64, "Expected a canonical base64-encoded 32-byte key");
+const materialHostPatternSchema = z
+  .string()
+  .regex(/^(?:\*\.)?[a-z0-9.-]+$/)
+  .refine((value) => !value.includes(".."), "Invalid material host pattern");
+const materialHostListSchema = z
+  .string()
+  .default("")
+  .transform((value) => [...new Set(value
+    .split(",")
+    .map((host) => host.trim().toLowerCase())
+    .filter((host) => host !== ""))])
+  .pipe(z.array(materialHostPatternSchema));
+const materialPoolUrlSchema = z.string().url().refine(
+  isCredentialFreeHttpsUrl,
+  "Material pool URL must be credential-free HTTPS",
+);
 
 const providerProfileSchema = z
   .object({
@@ -64,6 +80,9 @@ const workerConfigSchema = z.object({
   WORKER_POLL_INTERVAL_MS: positiveInteger.default(1_000),
   WORKER_LEASE_SECONDS: positiveInteger.default(60),
   WORKER_SERVICE_QIHANG_USER_ID: z.string().trim().min(1).optional(),
+  MATERIAL_POOL_BASE_URL: materialPoolUrlSchema.optional(),
+  MATERIAL_SOURCE_ALLOWED_HOSTS: materialHostListSchema,
+  MATERIAL_SOURCE_MAX_BYTES: positiveInteger.default(500 * 1024 * 1024),
   AGENT_ENABLED: enabledFlag,
   AGENT_MAX_TURNS: positiveInteger.default(8),
   AGENT_MAX_BUDGET_USD: positiveNumber.default(1),
@@ -99,6 +118,11 @@ export interface WorkerConfig {
   pollIntervalMs: number;
   leaseSeconds: number;
   serviceQihangUserId: string | null;
+  materialSources: {
+    poolBaseUrl?: string;
+    allowedHosts: string[];
+    maxContentBytes: number;
+  };
   agent: AgentRuntimeConfig;
 }
 
@@ -113,6 +137,13 @@ export function loadWorkerConfig(environment: NodeJS.ProcessEnv): WorkerConfig {
     pollIntervalMs: parsed.WORKER_POLL_INTERVAL_MS,
     leaseSeconds: parsed.WORKER_LEASE_SECONDS,
     serviceQihangUserId: parsed.WORKER_SERVICE_QIHANG_USER_ID ?? null,
+    materialSources: {
+      ...(parsed.MATERIAL_POOL_BASE_URL === undefined
+        ? {}
+        : { poolBaseUrl: parsed.MATERIAL_POOL_BASE_URL }),
+      allowedHosts: parsed.MATERIAL_SOURCE_ALLOWED_HOSTS,
+      maxContentBytes: parsed.MATERIAL_SOURCE_MAX_BYTES,
+    },
     agent,
   };
 }
@@ -167,6 +198,11 @@ function isSafeProviderUrl(value: string): boolean {
   return !url.username && !url.password && (
     url.protocol === "https:" || isLoopbackHttpUrl(value)
   );
+}
+
+function isCredentialFreeHttpsUrl(value: string): boolean {
+  const url = new URL(value);
+  return url.protocol === "https:" && !url.username && !url.password && !url.hash;
 }
 
 function isLoopbackHttpUrl(value: string): boolean {

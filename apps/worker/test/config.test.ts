@@ -9,6 +9,10 @@ describe("worker config", () => {
       pollIntervalMs: 1_000,
       leaseSeconds: 60,
       serviceQihangUserId: null,
+      materialSources: {
+        allowedHosts: [],
+        maxContentBytes: 524_288_000,
+      },
       agent: {
         enabled: false,
         maxTurns: 8,
@@ -21,6 +25,33 @@ describe("worker config", () => {
 
   it("rejects a missing database URL", () => {
     expect(() => loadWorkerConfig({})).toThrow();
+  });
+
+  it("loads an explicit material host allowlist and byte budget", () => {
+    const config = loadWorkerConfig({
+      DATABASE_URL: "postgres://local/ka",
+      MATERIAL_SOURCE_ALLOWED_HOSTS: "cdn.example.com, *.example.org,cdn.example.com",
+      MATERIAL_SOURCE_MAX_BYTES: "1048576",
+      MATERIAL_POOL_BASE_URL: "https://materials.example.internal/list",
+    });
+
+    expect(config.materialSources).toEqual({
+      allowedHosts: ["cdn.example.com", "*.example.org"],
+      maxContentBytes: 1_048_576,
+      poolBaseUrl: "https://materials.example.internal/list",
+    });
+  });
+
+  it.each([
+    { MATERIAL_SOURCE_ALLOWED_HOSTS: "https://cdn.example.com" },
+    { MATERIAL_SOURCE_ALLOWED_HOSTS: "*" },
+    { MATERIAL_SOURCE_MAX_BYTES: "0" },
+    { MATERIAL_POOL_BASE_URL: "http://materials.example.internal/list" },
+  ])("rejects unsafe material source configuration: %s", (override) => {
+    expect(() => loadWorkerConfig({
+      DATABASE_URL: "postgres://local/ka",
+      ...override,
+    })).toThrow();
   });
 
   it("requires a complete gateway configuration when Agent is enabled", () => {
