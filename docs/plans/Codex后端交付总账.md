@@ -4,9 +4,9 @@
 >
 > 维护角色：be（Codex）
 >
-> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13`
+> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13` → `be/b14` → `codex/b15-material-teardown-semantics`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B13 素材拆片内核：`85c5fbf`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -45,6 +45,8 @@
 | B11 时效完整性与小时监控 | `1c87e2e`（第三轮代码） | 待 Claude/arch 审查 P-018 | 历史 realtime 诊断、`hh` 0..24 Client 边界、广告 5/80 分片与 2000 截断 fail-closed、查询观测、D-1 动态重查、累计小时安全差分和幂等落库 | Domain 207 / DB 92 / Worker 200 / Gateway 19 + 1 opt-in | `B11-状态.md`、`docs/evidence/B11-代码质量报告.md`、P-018 |
 | B12 广告 ID 与素材来源桥 | `fb3bf9f`（代码） | 待 Claude/arch 审查 P-019 | 广告对象完整性/映射证据门、奇航素材池严格分页、默认拒绝的视频 URL 来源探针 | 定向 54；非 PG 回归见状态 | `B12-状态.md`、`docs/evidence/B12-代码质量报告.md`、P-019 |
 | B13 素材拆片后端内核 | `85c5fbf`（代码） | 待 Claude/arch 审查 P-020 | 受控下载、字幕/云 ASR 端口、FFmpeg 抽帧、证据 Schema、版本化 Prompt、Claude Agent SDK 结构化分析、可恢复编排 | Domain 235 / DB 92 / Worker 287 / Gateway 19 + 1 opt-in | `B13-状态.md`、`docs/evidence/B13-代码质量报告.md`、P-020 |
+| B14 单次整段 ASR 与 URL 租约 | `6cea3d8`（代码） | 待 Claude/arch 审查 P-021 | `segment/whole_video` 精度、一次整段云 ASR adapter、稳定 sourceRef 换短期 URL 后即取即下 | Domain 244 / DB 92 / Worker 297 / Gateway 19 + 1 opt-in | `B14-状态.md`、`docs/evidence/B14-代码质量报告.md`、P-021 |
+| B15 拆片语义与逐镜头帧墙 | `020a902`（代码） | 待 Claude/arch 审查 P-022 | 无时间多段语义结构、精确时间证据门、Prompt v3、分页逐镜头帧墙、旧缓存升级和页面承接结果信封 | Domain 245 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B15-状态.md`、`docs/evidence/B15-代码质量报告.md`、P-022 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -208,3 +210,13 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - Prompt 已升级 `teardown-v2` 并固定 SHA；真实视频帧外发仍保持 B13 阻断。
 - 代码终态 `6cea3d8`。默认回归 Domain 244 + DB 92 + Worker 297 + DingTalk 19 = 652；SDK opt-in 1 另行通过。Worker 全仓 92.57%/80.92%/95.71%，materials 96.30%/87.79%/98.90%。
 - 未修改公开 Contract、migration、生产 Runtime 或前端；未合并、未部署、未完成真实 IdeaLab/OS/产品身份 E2E。审查入口 P-021。
+
+## 15. B15 拆片语义与逐镜头帧墙真相
+
+- 老板纠正术语：拆片是按指定提示词对文稿和视觉结构做逆向分析；抽帧是逐镜头代表帧集中展示；均不等于导出多个 MP4。
+- B14 的“whole_video 只能一个全片 other 段”已被 Schema v2 替代：整段文稿可以输出多个有序 `semanticSections`，但 `segments` 必须为空，不能伪造秒点。
+- 有时间字幕继续输出完整时间段，且每段引用的字幕/镜头证据必须与其时间真实相交；所有语义段至少包含文稿证据。
+- Prompt `teardown-v3` 按老板原七模块目标整理，并以源/模板 SHA 和 Schema v2 固定；不匹配时在 Agent 调用前阻断。
+- FFmpeg 现在除 Hook/全片帧墙外，还生成每页 36 格的逐镜头帧墙；placeholder 保持槽位，两页并发，页失败诚实降级。
+- Handler 返回 film/transcript/analysis 内部信封；B14 旧 film/analysis checkpoint 根据新清单和 Schema 选择性重建，不盲目全链重跑。
+- 最终默认回归 657 passed，另有 Claude Agent SDK opt-in 1；真实 PG、migration、localhost gateway 和真实 FFmpeg 均通过。未接公开 API/DB/前端和真实外部通路，审查入口 P-022。

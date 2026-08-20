@@ -614,3 +614,40 @@ main 9335150
 **质量真相**：默认 Domain 244、DB 92、Worker 297、DingTalk 19，共 652 passed；SDK opt-in 1 passed。真实 PG/migration、localhost gateway E2E 与真实 FFmpeg 生成视频通过。Domain 95.97%/85.79%/99.27%，Worker 92.57%/80.92%/95.71%，materials 96.30%/87.79%/98.90%；四包 type/lint/audit、安全、复杂度和冻结目录门禁通过。
 
 **明确未完成**：真实 IdeaLab transport、OS source bridge、真实素材产品身份 E2E、视觉多模态外发、持久化 Job/API/DB、前端、合并、部署和上线。
+
+---
+
+### P-022 ⏳B15 拆片语义与逐镜头帧墙待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：`be/b14@e9edd5d`
+- 设计：`562b62c`
+- 实施计划：`f619bcc`
+- 领域/Prompt/帧墙/承接：`28250c1` → `9399c15`
+- 自审代码终态：`020a902`
+- 状态：`docs/plans/B15-状态.md`
+- 质量：`docs/evidence/B15-代码质量报告.md`
+
+**老板裁决**：拆片是按指定 Obsidian 提示词对完整文稿做结构分析；抽帧是像 ContentRadar 一样按真实镜头提取多张代表帧集中展示。不是切出多个 MP4。整段 ASR 可以拆多个语义段，但不得伪造秒点或与镜头的一一映射。
+
+**本批实现**：
+
+1. Schema v2 新增 `alignmentStatus + semanticSections`；whole-video 可多段语义、强制空 timed segments；segment 仍保持精确时间轴。
+2. 所有语义段必须有文稿证据；精确时间段的每个证据必须与本段时间相交，阻断证据 ID 存在但时间错位。
+3. Prompt `teardown-v3` 按老板七模块目标整理，固定源/模板 SHA；Prompt 或 Schema 版本漂移在 Agent 调用前阻断。
+4. FFmpeg 新增逐镜头 6×6 帧墙，多页连续、placeholder 不移位、页级 unavailable、最多两页并发。
+5. Handler 返回 film/transcript/analysis；B14 旧 analysis 只重跑 Agent，旧 film 缺页清单只重跑 FFmpeg。
+6. 未修改 public contract、migration、生产 runtime、前端或 ContentRadar。
+
+**请重点审查/裁决**：
+
+1. Schema v2 是否直接成为未来公开 DTO；若 API 再映射，必须保留“语义顺序”和“视觉真实时间”两套独立字段。
+2. whole-video 前端必须把 `semanticSections` 与 shot timeline 并排展示，不能用行位置暗示一一对应；`segments=[]` 的空态文案需由前端冻结。
+3. 审核帧墙预算：36/页、6 列、500 镜上限、前 216 镜真实帧、后续 placeholder、并发 2。
+4. 冻结 artifact/checkpoint 的对象存储、权限、保留期、删除、重算和历史 Prompt 版本策略，再接 Job/API/DB。
+5. 真实帧外发与多模态 Provider 仍未授权，本批继续阻断；不要为了完整七模块报告绕开数据边界。
+6. IdeaLab transport 和 OS source bridge 仍是内部端口；需真实产品身份 trace 后才能写“已联通”。
+
+**质量真相**：Domain 245、DB 92、Worker 301、DingTalk 19，共 657 个默认 tests；Claude Agent SDK opt-in 1。真实 PostgreSQL/migration、localhost gateway E2E 与真实 FFmpeg 三场景视频通过。Domain 95.97%/85.88%/99.27%，Worker 92.71%/81.12%/95.76%，materials 96.87%/87.90%/98.97%；四包 type/lint/audit、安全、冻结目录和 diff-check 通过。
+
+**明确未完成**：MP4 裁片/自动剪辑、真实多模态、IdeaLab/OS 正式通路、持久 artifact/checkpoint、公开 Job/API/DB、前端、相似检索/复刻、合并、部署和线上业务验收。
