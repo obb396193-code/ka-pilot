@@ -6,7 +6,7 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；交接准备开工：`2cc4e8c`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；交接准备代码基线：`9fce24a`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -39,6 +39,7 @@
 | B7 工作流可靠执行 | 见 `be/b7a` HEAD | `b0024e1`；质量 `90eea92` | Capability Registry、严格 DAG 编译、事件重放、固定版本 Repository、无写入 Simulation、可恢复 Runner、Changeset 确认门和 UNKNOWN | 367 默认 + 1 opt-in | `B7-状态.md`、`docs/evidence/B7-代码质量报告.md`、P-011 |
 | B8 知识库领域底座 | 见 `be/b8a` HEAD | `32a82ba`；质量 `8c87530` | BlockNote 安全信封、文本投影/指纹、ID 双链、KA 业务引用、资产语义、权限化 Agent citation 边界 | 406 默认 + 1 opt-in | `B8-状态.md`、`docs/evidence/B8-代码质量报告.md`、P-012 |
 | B1-B8 自审修复 | `b1bd873` | 原审查 `1919a8e`；复验 `48c7fd5`/`b1bd873` | 修复日常 ETL 派发、Job fencing、确认 TTL、Changeset+T1、知识正文权限、输出凭证、生命周期、身份、分页、分区、上海业务日等；其余契约项明确保留 | 422 默认 + 1 opt-in | `docs/evidence/B1-B8自审修复-代码质量报告.md`、P-014 |
+| B8a 交接与联调准备 | `9fce24a`（代码） | 待 Claude/arch 审查 P-015 | Qihang 响应/行/ID/URL 资源预算，Qihang→Canonical 纯合成基线，前后端合并清单与真实通路准入矩阵 | 434 默认 + 1 opt-in | `docs/evidence/B8a-数据链性能基线.md`、`docs/evidence/B8a-交接准备代码质量报告.md`、P-015 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -125,14 +126,14 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 ### 已独立修复
 
 - 原始 14 个 P0 已修 6 个，17 个 P1 已修 7 个。
-- 当前累计 422 个默认 tests 通过，真 Claude Agent SDK smoke 单独通过。
-- Coverage：Domain 95.43%、DB 93.62%、Worker 90.66%、DingTalk Gateway 86.62%。
+- 当前累计 434 个默认 tests 通过，真 Claude Agent SDK smoke 单独通过。
+- Coverage：Domain 95.43%、DB 93.62%、Worker 91.22%、DingTalk Gateway 86.62%。
 - 四包 typecheck/lint/audit、PG16 migration replay 和变更代码复杂度门禁通过。
 
 ### 仍需裁决/接线
 
 - 8 个 P0：账户权威 workspace 归属、回填完整 DAG 终态、缺数公开状态、多任务归属、Workflow 单执行器/effect outbox、钉钉 durable inbox/outbox、Changeset 目标权限矩阵等。
-- 10 个 P1：补偿暂估、质量源、mute、健康度分母、策略模型、Simulation/Changeset preview、租户唯一约束、Agent session 并发、Qihang 资源预算、canonical 批量性能。
+- 9 个 P1：补偿暂估、质量源、mute、健康度分母、策略模型、Simulation/Changeset preview、租户唯一约束、Agent session 并发、canonical 批量性能。Qihang 资源预算已在 `6c1d65b` 修复。
 - B2-B8 大量能力仍是内部内核，未统一接生产 Runtime/API/前端。
 
 ### 分支状态
@@ -140,3 +141,10 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - `be/b8a` 尚未被 `fe/f001` 包含，也尚未完成 Claude/arch 审查。
 - 共同基线为 `9335150`；当前 committed 同路径变更 5 个，明确文本冲突集中在工作台账、两信箱和 `schema.sql`。
 - 合并操作必须等 Claude 收口脏工作树后，在独立 integration 分支执行；详见 `docs/plans/2026-08-20-be-b8a与fe-f001合并清单.md`。
+
+## 8. 交接准备新增真相
+
+- `6c1d65b`：Qihang 默认响应 10 MiB、10000 行、1000 IDs、64 KiB URL；超限不重试。大于 1000 账户尚未定义正式分片语义。
+- `9fce24a`：合成 benchmark 复用真实 Qihang/Canonical 代码，但不连外网和数据库；它确认当前 Canonical 为 `3N+4` 端口调用，不能当生产 SLA。
+- 真实通路统一按 `docs/plans/2026-08-20-真实通路联调准备清单.md` 放行。Multica/OS 正式协议、Secret 服务、真实 Provider、钉钉 durable 状态机和 FaaS/PG 本项目部署仍是硬阻断。
+- 当前代码审查点是 `9fce24a`，文档审查入口为 P-015；二者均尚未合入 `fe/f001` 或 `main`。

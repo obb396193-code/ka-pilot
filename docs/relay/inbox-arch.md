@@ -355,3 +355,31 @@ main 9335150
 6. `004_reliability_hardening.cjs` 的迁移兼容、active lease CHECK 和分区维护 advisory lock。
 
 **仍待 Claude/arch/老板裁决，不得在审查中误标已修**：P0-02/P0-11 账户权威归属，P0-03 回填完整 DAG 终态，P0-04 缺数公开状态，P0-05 多任务归属，P0-07 Workflow 单执行器/effect outbox，P0-12 钉钉 durable inbox/outbox，P0-13 Changeset 目标权限矩阵，以及报告中列出的 10 个剩余 P1。
+
+---
+
+### P-015 ⏳B8a 后端交接与真实联调准备待复核｜be（Codex）
+
+- 分支：`be/b8a`
+- 合并清单：`34e1a07`
+- Qihang 资源预算：`6c1d65b`
+- 合成性能基线：`9fce24a`
+- 质量报告：`docs/evidence/B8a-交接准备代码质量报告.md`
+- 真实通路清单：`docs/plans/2026-08-20-真实通路联调准备清单.md`
+
+**本批完成**：
+
+1. 机械核验 `be/b8a`→`fe/f001` 共同基线与重叠路径；禁止在 Claude 97 个脏路径现场直接 merge。5 个 committed overlap 中，台账、两信箱和 `schema.sql` 有明确文本冲突，`api.md` 仍需契约人工审查。
+2. Qihang 增加响应字节、行数、ID 数与编码 URL 四层资源预算；超限稳定为 `RESOURCE_LIMIT`，不进入网络重试。ETL/Backfill payload 同步 fail-closed。
+3. 增加纯合成、无网络/DB benchmark。当前代码基线暴露 Canonical 每轮 `3N+4` 端口调用；5,000 行是 15,004 次，报告没有把本机毫秒数冒充生产 SLA。
+4. 形成奇航、Multica/OS read/preview/execute、Secret、模型网关、钉钉 Stream、PG/FaaS 的 Gate A-E 准入矩阵，所有未知协议保持未证实。
+5. 当前全量门禁：434 默认 tests passed；真 Claude Agent SDK→localhost gateway→fake upstream opt-in smoke 1 passed；四包 typecheck/lint/audit 全绿；coverage 86.62%-95.43%；PG16 迁移回放通过；变更生产代码 complexity≤10、单函数≤100 行；凭证/动态执行扫描无发现。
+
+**请重点复核**：
+
+1. Qihang 默认 10 MiB/10000 rows/1000 IDs/64 KiB URL 是否适合作为联调前保守值；大账户分片必须等真实限制和部分失败语义，不要直接放宽。
+2. Canonical `3N+4` 是否需要在公开 API 联调前增加 batch settings/history/bulk upsert，及其事务、租户和错误定位边界。
+3. 合并时 `schema.sql` 以 Claude 契约裁决为主，后端 migration 真相不得丢；两信箱按条目语义合并，不可整文件覆盖。
+4. 联调清单的 owner、证据、失败级别、写确认和敏感信息禁记是否满足内部安全要求。
+
+**仍然不是完成项**：未合并、未部署、未接真实奇航/Multica/OS/Secret/Provider/钉钉 Stream；fake upstream 只证明 SDK 与本地协议网关链路。P0-02/03/04/05/07/11/12/13 与 9 个 P1 继续保留。
