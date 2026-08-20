@@ -32,6 +32,7 @@ async function workspace(): Promise<{ root: string; mediaPath: string; artifactD
 class FakeRunner implements MediaProcessRunner {
   readonly calls: MediaProcessInvocation[] = [];
   failFrameIndex: number | undefined;
+  failContactPage: number | undefined;
   probe = {
     format: { duration: "3.000000" },
     streams: [{ codec_type: "video", width: 1080, height: 1920 }],
@@ -58,6 +59,10 @@ class FakeRunner implements MediaProcessRunner {
     const match = output.match(/shot-(\d{4})\.jpg$/);
     if (match?.[1] !== undefined && Number(match[1]) === this.failFrameIndex) {
       return { exitCode: 1, stdout: "", stderr: "signed-url-must-not-escape", timedOut: false };
+    }
+    const pageMatch = output.match(/contact-shots-(\d{4})\.jpg$/);
+    if (pageMatch?.[1] !== undefined && Number(pageMatch[1]) === this.failContactPage) {
+      return { exitCode: 1, stdout: "", stderr: "page-failed", timedOut: false };
     }
     await writeFile(output, "image");
     return { exitCode: 0, stdout: "", stderr: "", timedOut: false };
@@ -115,7 +120,18 @@ describe("FilmAnalyzer", () => {
     expect(result.contactSheets).toEqual({
       hook: "contact/contact-hook.jpg",
       full: "contact/contact-full.jpg",
+      shots: [{
+        page: 0,
+        fromShotIndex: 0,
+        toShotIndex: 2,
+        frameCount: 3,
+        status: "ready",
+        artifactRef: "contact/contact-shots-0000.jpg",
+      }],
     });
+    const shotSheet = runner.calls.find((call) => call.args.at(-1)?.endsWith("contact-shots-0000.jpg"));
+    expect(shotSheet?.args.join(" ")).toContain("xstack=inputs=3");
+    expect(shotSheet?.args.join(" ")).toContain("color=c=0xd1d5db");
   });
 
   it("uses the ContentRadar thresholds and fixed frame budgets", async () => {
@@ -156,6 +172,47 @@ describe("FilmAnalyzer", () => {
     });
     const shotCommands = runner.calls.filter((call) => call.args.at(-1)?.includes("/frames/shot-"));
     expect(shotCommands).toHaveLength(216);
+    expect(result.contactSheets.shots).toHaveLength(7);
+    expect(result.contactSheets.shots[0]).toMatchObject({
+      page: 0,
+      fromShotIndex: 0,
+      toShotIndex: 35,
+      frameCount: 36,
+      status: "ready",
+    });
+    expect(result.contactSheets.shots.at(-1)).toMatchObject({
+      page: 6,
+      fromShotIndex: 216,
+      toShotIndex: 250,
+      frameCount: 35,
+      status: "ready",
+    });
+  });
+
+  it("degrades one failed shot contact page without shifting later page metadata", async () => {
+    const paths = await workspace();
+    const runner = new FakeRunner();
+    runner.probe.format.duration = "40";
+    runner.sceneStderr = Array.from({ length: 36 }, (_, index) => [
+      `frame:${index} pts_time:${index + 1}`,
+      "lavfi.scene_score=0.8",
+    ].join("\n")).join("\n");
+    runner.failContactPage = 0;
+    const analyzer = new FilmAnalyzer({ runner });
+
+    const result = await analyzer.analyze(paths);
+
+    expect(result.contactSheets.shots).toEqual([
+      { page: 0, fromShotIndex: 0, toShotIndex: 35, frameCount: 36, status: "unavailable" },
+      {
+        page: 1,
+        fromShotIndex: 36,
+        toShotIndex: 36,
+        frameCount: 1,
+        status: "ready",
+        artifactRef: "contact/contact-shots-0001.jpg",
+      },
+    ]);
   });
 
   it("caps pathological cut collections without breaking full timeline coverage", async () => {

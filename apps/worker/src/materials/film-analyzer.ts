@@ -14,6 +14,8 @@ const HOOK_WINDOW_MS = 30_000;
 const MAX_SHOTS = 500;
 const MAX_CUT_POINTS = MAX_SHOTS - 1;
 const MAX_EXTRACTED_SHOT_FRAMES = 216;
+const SHOT_CONTACT_SHEET_SIZE = 36;
+const SHOT_CONTACT_SHEET_COLUMNS = 6;
 const FRAME_CONCURRENCY = 4;
 const PTS_PATTERN = /pts_time:([0-9]+(?:\.[0-9]+)?)/;
 const SCENE_PATTERN = /(?:lavfi\.)?scene_score=([0-9]+(?:\.[0-9]+)?)/;
@@ -73,8 +75,19 @@ export interface FilmAnalysisResult {
   readonly contactSheets: {
     readonly hook?: string;
     readonly full?: string;
+    readonly shots: readonly ShotContactSheet[];
   };
 }
+
+export type ShotContactSheet = Readonly<{
+  page: number;
+  fromShotIndex: number;
+  toShotIndex: number;
+  frameCount: number;
+} & (
+  | { status: "ready"; artifactRef: string }
+  | { status: "unavailable" }
+)>;
 
 export class FilmAnalyzer {
   private readonly runner: MediaProcessRunner;
@@ -100,9 +113,10 @@ export class FilmAnalyzer {
     const allCutPointsMs = normalizedCutPoints(hardCutEvents, media.durationMs);
     const cutPointsMs = allCutPointsMs.slice(0, MAX_CUT_POINTS);
     const boundaries = [0, ...cutPointsMs, media.durationMs];
-    const [shots, contactSheets] = await Promise.all([
-      this.extractShots(paths, boundaries),
+    const shots = await this.extractShots(paths, boundaries);
+    const [summaryContactSheets, shotContactSheets] = await Promise.all([
       this.createContactSheets(paths, media.durationMs),
+      this.createShotContactSheets(paths, shots),
     ]);
     const hookEvents = events.filter(({ atMs }) => atMs < Math.min(HOOK_WINDOW_MS, media.durationMs));
     return deepFreeze({
@@ -116,7 +130,7 @@ export class FilmAnalyzer {
       },
       cutPointsMs,
       cutPointsTruncated: allCutPointsMs.length > MAX_CUT_POINTS,
-      contactSheets,
+      contactSheets: { ...summaryContactSheets, shots: shotContactSheets },
     });
   }
 
@@ -197,7 +211,7 @@ export class FilmAnalyzer {
   private async createContactSheets(
     paths: ControlledPaths,
     durationMs: number,
-  ): Promise<FilmAnalysisResult["contactSheets"]> {
+  ): Promise<{ readonly hook?: string; readonly full?: string }> {
     const hookPath = join(paths.contactDirectory, "contact-hook.jpg");
     const fullPath = join(paths.contactDirectory, "contact-full.jpg");
     const fullInterval = durationMs > 36_000 ? durationMs / 36_000 : 12;
@@ -229,6 +243,67 @@ export class FilmAnalyzer {
     });
     return successful(result) && await nonemptyRegularFile(output);
   }
+
+  private async createShotContactSheets(
+    paths: ControlledPaths,
+    shots: FilmAnalysisResult["shots"],
+  ): Promise<readonly ShotContactSheet[]> {
+    const pages = chunk(shots, SHOT_CONTACT_SHEET_SIZE);
+    return Promise.all(pages.map(async (pageShots, page) => {
+      const filename = `contact-shots-${page.toString().padStart(4, "0")}.jpg`;
+      const artifactRef = `contact/${filename}`;
+      const output = join(paths.contactDirectory, filename);
+      const result = await this.runner.run({
+        binary: "ffmpeg",
+        args: shotContactSheetArgs(paths, pageShots, output),
+        timeoutMs: this.frameTimeoutMs,
+        maxOutputBytes: 256 * 1024,
+      });
+      const metadata = {
+        page,
+        fromShotIndex: pageShots[0]?.frame.index as number,
+        toShotIndex: pageShots.at(-1)?.frame.index as number,
+        frameCount: pageShots.length,
+      };
+      return successful(result) && await nonemptyRegularFile(output)
+        ? { ...metadata, status: "ready" as const, artifactRef }
+        : { ...metadata, status: "unavailable" as const };
+    }));
+  }
+}
+
+function shotContactSheetArgs(
+  paths: ControlledPaths,
+  shots: FilmAnalysisResult["shots"],
+  output: string,
+): string[] {
+  const inputs = shots.flatMap(({ frame }) => frame.status === "ready"
+    ? ["-i", join(paths.artifactDirectory, frame.artifactRef)]
+    : ["-f", "lavfi", "-i", "color=c=0xd1d5db:s=256x144:d=1:r=1"]);
+  const base = ["-hide_banner", "-nostats", "-y", ...inputs];
+  if (shots.length === 1) {
+    return [...base, "-vf", "scale=256:144", "-frames:v", "1", "-an", output];
+  }
+  const scales = shots.map((_, index) => `[${index}:v]scale=256:144[s${index}]`).join(";");
+  const streams = shots.map((_, index) => `[s${index}]`).join("");
+  const layout = shots.map((_, index) => {
+    const column = index % SHOT_CONTACT_SHEET_COLUMNS;
+    const row = Math.floor(index / SHOT_CONTACT_SHEET_COLUMNS);
+    return `${column * 256}_${row * 144}`;
+  }).join("|");
+  return [
+    ...base,
+    "-filter_complex", `${scales};${streams}xstack=inputs=${shots.length}:layout=${layout}:fill=0xd1d5db:shortest=1[grid]`,
+    "-map", "[grid]", "-frames:v", "1", "-an", output,
+  ];
+}
+
+function chunk<T>(values: readonly T[], size: number): readonly (readonly T[])[] {
+  const groups: T[][] = [];
+  for (let index = 0; index < values.length; index += size) {
+    groups.push(values.slice(index, index + size));
+  }
+  return groups;
 }
 
 export function parseSceneEvents(stderr: string): SceneEvent[] {

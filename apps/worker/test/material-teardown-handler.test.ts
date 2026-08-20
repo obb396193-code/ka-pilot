@@ -47,7 +47,7 @@ function film(): FilmAnalysisResult {
     },
     cutPointsMs: [1_000],
     cutPointsTruncated: false,
-    contactSheets: {},
+    contactSheets: { shots: [] },
   };
 }
 

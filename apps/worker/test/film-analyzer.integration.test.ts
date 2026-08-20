@@ -62,6 +62,13 @@ describe("FilmAnalyzer real FFmpeg", () => {
           expect(frame.size).toBeGreaterThan(0);
         }
       }
+      expect(result.contactSheets.shots).toHaveLength(1);
+      expect(result.contactSheets.shots[0]).toMatchObject({ status: "ready", page: 0 });
+      const shotSheet = result.contactSheets.shots[0];
+      if (shotSheet?.status === "ready") {
+        const sheet = await stat(join(artifactDirectory, shotSheet.artifactRef));
+        expect(sheet.size).toBeGreaterThan(0);
+      }
     },
     60_000,
   );
