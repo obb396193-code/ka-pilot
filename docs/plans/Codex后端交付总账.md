@@ -6,7 +6,7 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 小时监控代码：`5595836`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -42,7 +42,7 @@
 | B8a 交接与联调准备 | `9fce24a`（代码） | 待 Claude/arch 审查 P-015 | Qihang 响应/行/ID/URL 资源预算，Qihang→Canonical 纯合成基线，前后端合并清单与真实通路准入矩阵 | 434 默认 + 1 opt-in | `docs/evidence/B8a-数据链性能基线.md`、`docs/evidence/B8a-交接准备代码质量报告.md`、P-015 |
 | B9 纵向闭环与批量性能 | `83cf855`（代码） | 待 Claude/arch 审查 P-016 | Canonical settings/history/upsert 批量化，假奇航→真实 PG→质量/语义/规则/工作项/报告事实闭环，真实 PG 100/1000/5000 基准，realtime/offline source 对平 | 445 默认 + 1 opt-in | `B9-状态.md`、`docs/evidence/B9-数据链真实PG性能基线.md`、`docs/evidence/B9-代码质量报告.md`、P-016 |
 | B10 真实奇航适配 | `878126f` | 待 Claude/arch 审查 P-017 | 日期紧凑格式、离线分区有界回退、历史真实转化来源、双口径事实和 Skill 身份补证 | 变更定向 34；非 PG 回归见状态 | `B10-状态.md`、`docs/evidence/B10-真实奇航只读适配报告.md`、P-017 |
-| B11 时效完整性与小时监控 | `5595836`（代码） | 待 Claude/arch 审查 P-018 | 广告查询防截断、查询观测、D-1 动态重查、累计小时安全差分、`ad_metrics_hourly` 幂等落库 | Domain 207 / Worker非PG 170 / DB单元 12 / Gateway 19 + 1 opt-in | `B11-状态.md`、`docs/evidence/B11-代码质量报告.md`、P-018 |
+| B11 时效完整性与小时监控 | `1c87e2e`（第三轮代码） | 待 Claude/arch 审查 P-018 | 历史 realtime 诊断、`hh` 0..24 Client 边界、广告 5/80 分片与 2000 截断 fail-closed、查询观测、D-1 动态重查、累计小时安全差分和幂等落库 | Domain 207 / DB 92 / Worker 200 / Gateway 19 + 1 opt-in | `B11-状态.md`、`docs/evidence/B11-代码质量报告.md`、P-018 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -168,3 +168,13 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - `hh`、跨日离线、部分分区完整性、现金字段缺失语义和服务身份继续未验证。
 - 真实请求仍由 OS 执行，不等于产品 Worker/FaaS 已联通；Gate B 要等本项目 SHA 的 Raw→Canonical→质量同链 trace。
 - 本轮 PostgreSQL 回归因本机 Docker 引擎未就绪未重跑；相关失败为连接拒绝，非业务断言失败。其余定向/非 PG 回归和四包静态门禁通过，详见 B10 evidence 和 P-017。
+
+## 11. B11 第三轮实证与代码收口真相
+
+- OS 真实确认历史 `account_realtime`/`ad_realtime` 可查；这是诊断回溯能力，不改变结算/对账必须使用 offline 的产品口径。
+- `hh=0/23/24` 有效，25 被服务端静默钳制；原子 Client 因此自校验 0..24，ETL payload、Domain 与小时表仍只接受 0..23。
+- 无过滤 `ad_realtime` 返回 2000 行、5 账户分片并集返回 2017 行，且分页参数被忽略，静默截断已实证。代码禁止无过滤查询，默认 5 账户/80 广告 ID、最多 200 批顺序执行；全部分片成功后才合并和进入小时/Canonical。
+- 合并按 `account_id+ad_id+ds` 去重，相同重复收敛、冲突重复失败，并保留最大 `last_sync_time`；任一分片失败或命中 2000 都 fail-closed。
+- 释放经老板确认的闲置第三方可再生缓存后，Docker 29.5.2 与 PostgreSQL 16 恢复；B11 Repository 真 PG 5/5、DB 全量 92/92、Worker PG 4/4 和 migration replay 均通过。
+- 最终默认回归 Domain 207 + DB 92 + Worker 200 + DingTalk 19 = 518；另有真实 Claude Agent SDK opt-in 1。Worker 全仓行覆盖 92.19%，新增分片与增量 Handler 行覆盖 100%。
+- 仍未完成：产品 Worker/FaaS 合法身份真实 trace、单账户仍命中 2000 时的权威 adIds 拆分来源、offline complete marker。不得把 OS 沙箱实测写成产品部署完成。
