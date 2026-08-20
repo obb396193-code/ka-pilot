@@ -437,6 +437,7 @@ main 9335150
 - 分支：`be/b8a`
 - 基线：`f756140`
 - 功能与证据 SHA：`41c6646`
+- 双口径事实纠偏 SHA：`3167e39`（当天 realtime 分钟级；D-2 仅为本次 offline 观测；BI 为备用/增强）
 - 实施计划：`docs/plans/2026-08-20-B10真实奇航只读适配-implementation.md`
 - 状态：`docs/plans/B10-状态.md`
 - 脱敏证据：`docs/evidence/B10-真实奇航只读适配报告.md`
