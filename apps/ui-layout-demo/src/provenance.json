@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "source": "shadcn",
+      "asset": "dashboard-01",
+      "license": "MIT",
+      "upstream_url": "https://ui.shadcn.com/r/styles/new-york-v4/dashboard-01.json",
+      "upstream_ref": "new-york-v4 catalog snapshot verified 2026-08-19",
+      "use": "sidebar shell, cards, table and interaction primitives"
+    },
+    {
+      "source": "coss-origin",
+      "asset": "navigation-menu",
+      "license": "MIT",
+      "upstream_url": "https://coss.com/origin/r/navigation-menu.json",
+      "upstream_ref": "sha256:0173534cffa93f014825ad1ec187547c83d699a40a5f23894887f842bcb72f6c",
+      "use": "top navigation source pattern"
+    },
+    {
+      "source": "tremor",
+      "asset": "raw-data-display-patterns",
+      "license": "MIT",
+      "upstream_url": "https://github.com/tremorlabs/tremor-raw",
+      "upstream_ref": "catalog snapshot verified 2026-08-19",
+      "use": "metric and analytical card composition"
+    },
+    {
+      "source": "apache-echarts",
+      "asset": "line-bar-dashboard-chart",
+      "license": "Apache-2.0",
+      "upstream_url": "https://github.com/apache/echarts",
+      "upstream_ref": "echarts npm 6.x",
+      "use": "interactive dashboard chart runtime"
+    }
+  ]
+}
