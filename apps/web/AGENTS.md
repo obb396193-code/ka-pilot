@@ -8,6 +8,7 @@
 - [UI 资产总入口](../../docs/frontend/ui-assets/README.md)
 - [前端 Agent 工作流](../../docs/frontend/ui-assets/agent-workflow.md)
 - [数据产品前端执行规范](../../docs/frontend/ui-assets/frontend-product-standard.md)
+- [前端视觉与体验审核清单](../../docs/frontend/ui-assets/前端视觉与体验审核清单.md)
 - [新来源准入与使用边界](../../docs/frontend/ui-assets/discovery.md)
 - [F-004 前端 UI 资产与质量门禁](../../docs/relay/F-004-前端UI资产与质量门禁.md)
 - [跨来源能力索引](../../docs/frontend/ui-assets/capabilities.json)
@@ -28,6 +29,7 @@
 9. **目录不等于下载**：只有 `source-download-manifest.json` 中存在官方 URL、精确 ref/SHA-256 和本地路径，才能汇报“源码已下载/已适配”；`catalogued` 只表示 Agent 知道它存在。
 10. **组件先行、状态齐全**：业务组件先在 Storybook 或等价隔离页覆盖正常/加载/空/错/过期/无权限/禁用状态，再进入页面；页面完成定义以 `frontend-product-standard.md` 为准。
 11. **自动验收**：核心页面必须有桌面/移动视觉回归和键盘/焦点检查；图表、表格、弹窗和筛选器不得只凭鼠标主路径验收。
+12. **交付即审核**：页面或批次完成后按 `前端视觉与体验审核清单.md` 生成审核报告；字体、间距、密度和动画是推荐基线，若真实页面不佳则调整语义 token 并留下跨页面/主题/视口证据，不机械固守参数。
 
 ## 当前优先级
 

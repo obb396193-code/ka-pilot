@@ -15,7 +15,114 @@
 
 “最值得加”指把这四层加入开发流程和验收，不是要求老板亲自操作，也不是现在立刻覆盖前端未交接的工作区。
 
-## 2. 数据页面的信息层级
+### Storybook、ECharts 与 UI 资产展厅不是一回事
+
+| 工具 | 大白话 | 展示对象 | 是否进入用户产品 |
+|---|---|---|---|
+| Storybook | 项目自己的“组件样板间” | KPI 卡、按钮、筛选器、表格、弹窗、Agent 消息及其各种状态 | stories 只用于开发，不进入生产 bundle；被验证的组件会进入产品 |
+| ECharts | 数据图表发动机 | 折线、柱状、散点、漏斗、热力图等 | 图表运行时代码会进入产品 |
+| UI 资产展厅 | 17 家第三方来源的“选型商场” | 每家官方代表组件和能力差异 | 展厅本身不进入产品；选中的合法源码才按需复制 |
+
+Storybook 不能代替 ECharts 画业务图表，ECharts 也不能代替 Storybook 检查按钮、表格、空态和弹窗。官方 Storybook 把一条 story 定义为组件的一个可渲染状态，并在隔离预览中浏览、调参数和测试；story 文件属于开发环境，不进入产品 bundle。参考：[Browse stories](https://storybook.js.org/docs/get-started/browse-stories/)、[Writing stories](https://storybook.js.org/docs/writing-stories)。
+
+## 2. 视觉基线：推荐，不是审美铁板
+
+本节分三种约束：
+
+- **硬门禁**：数据、权限、可访问性、敏感信息、写操作确认和许可证，不得为了好看绕过。
+- **推荐基线**：字体、字号、间距、密度、数字精度和动画时长是默认起点，不是唯一答案。
+- **可调整 token**：真实页面验证后，如果推荐基线不好看、拥挤或影响理解，可以调整语义 token；不得在单个组件散落硬编码值。
+
+调整视觉 token 时必须同时复核：至少 3 个典型页面、1440/1366/390 视口、light/dark 和已发布 preset。记录“为什么改、影响哪些组件、截图差异和是否回写全局 token”。不允许为了一个页面局部好看破坏全站一致性。
+
+### 2.1 文字与字体层级
+
+字体只规定角色和可读范围，不锁死某一款字体。默认使用系统/项目批准的中文无衬线字体栈；品牌页或短标题需要个性字体时，必须验证中文字符、数字、粗细、加载性能和 fallback。
+
+| 角色 | 推荐起点 | 使用原则 |
+|---|---|---|
+| 页面标题 | 24–32px，600–700 | 一页一个主标题；移动端可降一级；长标题允许换行，不压缩成难读小字 |
+| 区块标题 | 18–24px，600 | 表达当前模块解决的问题，不写“模块一”“图表 1” |
+| 卡片/KPI 标签 | 12–14px，500–600 | 先读懂指标名，再看数值；标签不要比数值抢眼 |
+| 正文/说明 | 14–16px，400–500 | 中文行高建议从 1.5 起测；长段落控制行宽，避免横跨整屏 |
+| 表格/高密度数据 | 12–14px | 12px 只用于确有密度需求的辅助信息；核心数据不可因“塞得下”继续缩小 |
+| 辅助/时间/来源 | 12–13px | 对比度仍需可读；不能用极浅灰隐藏重要限制 |
+
+排版规则：
+
+- 标题使用 `text-wrap: balance`，正文可使用 `text-wrap: pretty`；中文禁用机械单词间距。
+- 用户输入和超长账户名要覆盖短、正常、超长三档；使用 wrap、truncate 或 line-clamp 时提供完整内容查看方式。
+- 标题、按钮和状态词使用具体中文，不为了“高级感”滥用英文大写、字间距或全角空格。
+- 图标不能替代关键文字；纯图标按钮必须有可访问名称和 tooltip（若含义不明显）。
+- 加载文案用省略号 `…`；错误文案同时说明下一步，不只写“失败”。
+- 字体加载不得阻塞首屏；定制字体失败时布局不能崩坏或数字跳列。
+
+### 2.2 数字、金额、比例与日期格式
+
+前端只负责格式化，不重新计算 CPA、达成率、Gap、环比或归因结果。格式化统一走项目 formatter，优先 `Intl.NumberFormat` 与 `Intl.DateTimeFormat`，禁止各页面手写 `toFixed()`、千分位和日期字符串。
+
+| 数据 | 推荐展示 | 必须避免 |
+|---|---|---|
+| 金额 | 明确人民币/其他币种；表格保留业务要求精度，总览可用万/亿缩写并在 tooltip 给精确值 | 只写裸数字；同页有的带 ¥ 有的不带；把未知当 0 |
+| 百分比 | 明确 API 返回是 0–1 还是 0–100；通常保留 1–2 位，取决于指标波动和决策需要 | 前端重复乘 100；`12`、`12%`、`0.12` 混用 |
+| CPA/单价 | 与金额精度一致并显示单位；对比考核价时基线清楚 | 用颜色代替“高于/低于目标”的文字 |
+| 计数 | 表格优先精确千分位；KPI 可缩写，hover/详情显示精确值 | 1.2万与 12,034 在同列无规则混用 |
+| 正负变化 | 正负号、箭头、文字和颜色至少两种信号；0 变化写清 | 只靠红绿；把下降一律理解成坏事 |
+| 日期时间 | 显示时区/业务日；相对时间旁可查看绝对时间 | 硬编码 `YYYY-MM-DD` 到处散落；服务端/客户端时区不一致 |
+
+数字列与 KPI 使用 `font-variant-numeric: tabular-nums`，小数点和单位对齐；单位放在列头、数值后或辅助标签中，全页保持一致。不要为了对齐把数字转成图片或逐字符 DOM。
+
+状态语义必须分开：
+
+- `0`：确认有数据且值为零。
+- `null/—`：没有有效值或不适用。
+- `暂无数据`：当前筛选没有记录。
+- `数据更新中/部分数据/已过期`：值可能变化或不能支持动作。
+- `无权限`：不能用空态或 0 伪装。
+
+### 2.3 排版、布局、留白与密度
+
+- 页面先保证“结论 → 证据 → 明细 → 动作”的阅读顺序，再决定卡片样式。
+- 数据工作台默认充分使用横向空间，但避免正文和说明文字跨越整屏；内容区最大宽度由页面类型 token 控制，不写死一个全站数值。
+- 使用 4px 或兼容现有 Tailwind scale 的间距节奏作为起点；同层元素间距小于跨层间距，避免所有缝隙一样大。
+- 页面必须有明确的一级容器、区块、组件内部三层留白，不靠更多边框制造层级。
+- KPI 建议一屏显示 4–6 个核心指标；窄屏按优先级重排，不把桌面卡片机械缩小。
+- 筛选区支持默认、展开和移动收纳；高频筛选可见，低频筛选进入“更多”，当前条件始终能识别和清空。
+- 表格提供 compact/default（必要时 comfortable）密度，而不是为不同页面复制三张表；最小点击目标和焦点区域不能随密度一起缩没。
+- sticky 顶栏、冻结列、弹窗和抽屉不得遮挡焦点、tooltip 或主要动作；全屏与安全区适配移动设备。
+- Flex/Grid 优先于运行时 JS 测量；长文本容器设置 `min-width: 0` 并验证中文、英文、数字和无空格长串。
+
+布局好不好看不能只看空白演示。至少用：正常数据、超长中文、最大数字、空态、错误态、移动端和深色主题复核。
+
+### 2.4 动画与文字/数字动效
+
+动画只在能解释“什么改变了、从哪里来、操作是否成功”时使用。推荐时长是起点，可按真实手感调整：
+
+| 动画层级 | 推荐起点 | 适用场景 |
+|---|---|---|
+| 即时反馈 | 100–180ms | hover、按下、开关、chip 变化 |
+| 状态过渡 | 180–280ms | tooltip、popover、折叠、tab、轻量数字更新 |
+| 布局/层级变化 | 240–400ms | drawer、dialog、列表插入、页面局部重排 |
+| 品牌/引导动效 | 最短可理解时长 | onboarding、空态或极少量重点展示，不进入高频操作主路径 |
+
+硬规则：
+
+- 支持 `prefers-reduced-motion`，提供关闭、缩短或无位移版本。
+- 优先动画 `transform`/`opacity`；不得使用 `transition: all`。
+- 动画可被点击、Escape、路由变化或新状态打断，不得让用户等播完。
+- 超过 5 秒的自动播放装饰动效提供暂停/停止/隐藏方式。
+- 动画不得延迟数据显示、焦点进入、错误呈现和关键动作执行。
+- 数字动画最终 DOM 保留真实可访问文本，读屏不能逐帧播报；实时高频更新改为节流或直接更新。
+
+来源选择：
+
+- Motion Primitives：`animated-number`、`sliding-number`、`text-effect`、`text-loop`、`text-morph`、`text-roll`、`text-scramble`、`text-shimmer`、`text-shimmer-wave`、`spinning-text` 等已进入目录。
+- Animate UI：Counting/Scrolling/Sliding Number、Typing、Morphing、Rolling、Rotating、Shimmering、Splitting 等已进入目录。
+- Aceternity、Magic UI、React Bits：适合少量高级视觉；同能力先在展厅对比许可证、体积、可读性与 reduced motion。
+
+适合使用：Agent 流式状态、工具执行完成、KPI 的低频确认性变化、成功反馈、onboarding、空态引导、展开/折叠。禁止或默认不用：表格正文、长文、错误/权限/警告文案、按钮关键标签、所有 KPI 同时滚动、每次轮询都动画、用户需要复制的内容。
+
+## 3. 数据页面的信息层级
 
 页面默认按以下顺序组织；没有业务理由不得颠倒：
 
@@ -28,7 +135,7 @@
 
 参考：[Ant Design 数据展示](https://ant.design/docs/spec/data-display/)、[Ant Design 可视化页面](https://ant.design/docs/spec/visualization-page/)、[Carbon Dashboard](https://carbondesignsystem.com/data-visualization/dashboards/)。
 
-## 3. 指标、图表和报表规则
+## 4. 指标、图表和报表规则
 
 每个 KPI、图表、表格或导出报表都必须能回答：
 
@@ -48,7 +155,7 @@
 
 参考：[ECharts ARIA](https://echarts.apache.org/handbook/en/best-practices/aria/)、[ECharts 6](https://echarts.apache.org/handbook/en/basics/release-note/v6-feature/)。
 
-## 4. 表格与复杂交互规则
+## 5. 表格与复杂交互规则
 
 - 静态只读信息优先原生 table 语义；可编辑、可选择、可用方向键导航的控件才采用交互式 grid。
 - 大表明确区分服务端分页/筛选/排序与客户端虚拟化；虚拟化不能替代数据接口的分页和筛选。
@@ -58,7 +165,7 @@
 
 参考：[W3C Table Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/table/)、[W3C Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)、[TanStack Virtualization Guide](https://tanstack.com/table/latest/docs/framework/react/guide/virtualization)。
 
-## 5. 组件来源与主题适配
+## 6. 组件来源与主题适配
 
 1. 开发前按 `agent-workflow.md` 查询资产，不先手写。
 2. Kibo、Dice、ReUI、coss 等出现同能力时，用同一业务数据、中文、宽度、主题和状态做并排预览。
@@ -67,7 +174,7 @@
 5. Animate UI、Motion Primitives 只少量用于状态变化和操作反馈；必须支持 `prefers-reduced-motion`，并与现有动效库比较。
 6. 业务差异放薄适配层，第三方组件的焦点、ARIA、portal、受控状态和键盘行为不得随意重写。
 
-## 6. 设计到前端的标准流程
+## 7. 设计到前端的标准流程
 
 ### Gate 1：产品与数据契约
 
@@ -101,7 +208,7 @@
 
 交付写明使用的上游资产、版本/ref、修改点、已验证状态和仍有风险；拍板结果回写 `decisions/`，禁止只留在对话里。
 
-## 7. Storybook 首批范围
+## 8. Storybook 首批范围
 
 F-001R 稳定后，首批不是把所有 primitive 都搬进去，而是覆盖真正影响产品一致性的业务组件：
 
@@ -114,7 +221,7 @@ F-001R 稳定后，首批不是把所有 primitive 都搬进去，而是覆盖�
 
 参考：[Storybook 组件隔离与浏览](https://storybook.js.org/docs/get-started/browse-stories/)、[Storybook 测试](https://storybook.js.org/docs/writing-tests/)。
 
-## 8. 自动验收最小门禁
+## 9. 自动验收最小门禁
 
 核心页面每次交付至少通过：
 
@@ -129,7 +236,7 @@ F-001R 稳定后，首批不是把所有 primitive 都搬进去，而是覆盖�
 
 参考：[Playwright Visual Comparisons](https://playwright.dev/docs/test-snapshots)、[Core Web Vitals 阈值](https://web.dev/articles/defining-core-web-vitals-thresholds)、[Next.js Production Checklist](https://nextjs.org/docs/app/guides/production-checklist)。
 
-## 9. Definition of Done
+## 10. Definition of Done
 
 一个前端页面只有同时满足以下条件才算完成：
 
@@ -140,7 +247,7 @@ F-001R 稳定后，首批不是把所有 primitive 都搬进去，而是覆盖�
 - 核心视觉截图/回归已通过，图表和表格没有误导性表达。
 - 来源、许可证、适配与未解决风险可追溯。
 
-## 10. 外部产品只作模式参考
+## 11. 外部产品只作模式参考
 
 - [Apache Superset](https://github.com/apache/superset)：探索型 dashboard、筛选器、图表组合、语义层。
 - [Metabase](https://github.com/metabase/metabase)：业务提问、钻取、保存问题与报表分发。

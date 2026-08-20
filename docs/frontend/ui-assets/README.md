@@ -45,6 +45,7 @@ coss current 的 577 条来自当前 `coss.com/ui` Registry，采用 Base UI 新
 - `free-alternatives.json/.md`：2,176 条已知付费元数据中，23 条分类节点单列，2,153 个具体能力逐项记录免费候选/组合策略、置信度与复核状态；当前 272 项有同能力候选、638 项按语义选图标、1,237 项需重组、6 项先核许可，不包含或推导付费源码。
 - `discovery.json/.md`：老板已审阅的新来源准入记录。AI Elements、Kibo、Dice 正式进入选型，Animate UI、Motion Primitives 选择性进入对比；五者完整目录已收录并选择性缓存高频源码，但仍未安装，Commons Clause 等限制单列。
 - `frontend-product-standard.md`：数据密集产品的设计交付、组件实现、图表、主题、Storybook、视觉回归、无障碍和 Definition of Done。
+- `前端视觉与体验审核清单.md`：页面做完后的可复制审核模板；检查数据、内容、字体数字、布局密度、组件一致性、动画、美观、响应式和无障碍，并允许用真实页面证据调整不合适的推荐 token。
 - `showroom.html`：无需服务端、无需联网即可筛选查看的离线展厅；17 条产品线统一比较，16 个 sandbox live frame 真实运行 27 个官方代表资产，React Bits Pro 单独付费锁定，不是截图。`showroom-data.json` 是其可再生成数据，`live-previews/` 必须与 HTML 一起复制。
 - `live-previews/manifest.json`：17 个比较位置、16 个离线 frame、1 个无本地制品的付费锁定位置，以及代表官方资产、bundle/frame hash、sandbox 与网络边界；harness 只负责业务语境和布局，不冒充官方源码。
 - `guides/`：官方安装、使用、组合、修改/迁移、主题、许可证和 changelog 的项目摘要。
@@ -76,6 +77,7 @@ coss current 的 577 条来自当前 `coss.com/ui` Registry，采用 Base UI 新
 - [存储格式契约](storage-format.md)
 - [前端 Agent 使用流程](agent-workflow.md)
 - [数据产品前端执行规范](frontend-product-standard.md)
+- [前端视觉与体验审核清单](前端视觉与体验审核清单.md)
 - [打开离线 UI 展厅](showroom.html)
 - [17 库真实源码比较墙说明](live-previews/README.md)
 - [17 库 `file://` 终验](reviews/2026-08-20-17-library-showroom-qa.md)
