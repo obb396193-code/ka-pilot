@@ -760,3 +760,38 @@ main 9335150
 **质量真相**：Domain 310、DB 92、Worker 301、DingTalk 19，共 722 默认 tests；SDK opt-in 1。新增模块 97.19%/85.71%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
 
 **明确未完成**：Agent 生成 Brief、设计师/钉钉/AIGC 集成、DB/API/Worker/页面、权威映射、自动采样、随机 A/B、媒体写操作、合并、部署和业务验收。
+
+---
+
+### P-026 ⏳B19 月度结算单领域底座待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B18 最终交接 `e5fe8de`
+- 设计/实施计划：`049dab5`
+- 领域内核/自审终态：`c2fed1f`
+- 质量与交接：待回填
+- 状态：`docs/plans/B19-状态.md`
+- 质量：`docs/evidence/B19-代码质量报告.md`
+
+**产品依据**：验收 7.3/REQ-110 要求月中试算、实际返点 vs 估算返点、差异转工作项、模板版本不覆盖旧单。老板明确每期字段可能不同、返点系数按渠道/生效日版本化。
+
+**本批实现**：
+
+1. v1 模板显式定义字段/顺序/类型/fact 映射/受限公式/汇总/修正权限和对账检查，输出稳定 fingerprint。
+2. 公式仅支持有界 AST 四则运算；无任意代码或默认 `/1.09`、返点率、容差。
+3. 只接受 offline_settlement，事实幂等去重并逐行输出值、来源、检查、问题和显式总计。
+4. 修正使用 from-value 事件链；同 ID 冲突、不可修字段、错误时间与错误前值 fail-closed。
+5. 冻结只接受 ready 预览并内嵌模板和值快照；语义校验覆盖重算检查/总计，不只信任外层 hash。
+6. 未修改 public Contract、migration、生产 Runtime、Worker 或前端。
+
+**请重点审查/裁决**：
+
+1. 真实期次模板和 factKey/公式/汇总/容差，以及模板发布/废弃权限。
+2. sourceFactId/rowKey 与奇航 offline/语义层的权威映射、完整分区和勘误重算。
+3. 人工修正权限/evidenceRef/双人复核、冻结后勘误生成新 run 的状态机。
+4. DB/API DTO 与 workspace/optimizer/period 唯一键、历史模板和值快照留存。
+5. Excel/PDF/PNG 精度/舍入与导出、差异转工作项、钉钉订阅/推送契约。
+
+**质量真相**：Domain 352、DB 92、Worker 301、DingTalk 19，共 764 默认 tests；SDK opt-in 1。新增模块 100%/92.76%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：真实模板/数据映射、DB/API/Worker/权限、导出/钉钉/工作项/页面、财务会计功能、合并、部署和业务验收。

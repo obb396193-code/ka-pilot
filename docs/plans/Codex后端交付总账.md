@@ -6,7 +6,7 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13` → `be/b14` → `codex/b15-material-teardown-semantics`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`；B18 素材 Brief 回测就绪代码终态：`54f5223`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`；B18 素材 Brief 回测就绪代码终态：`54f5223`；B19 月度结算单代码终态：`c2fed1f`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -50,6 +50,7 @@
 | B16 素材相似度与复刻谱系 | `d7a49f8`（代码） | 待 Claude/arch 审查 P-023 | 版本化内容画像、六组件可解释确定性评分、证据不足无总分、独立不可变复刻谱系 | Domain 270 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B16-状态.md`、`docs/evidence/B16-代码质量报告.md`、P-023 |
 | B17 商品×素材实验矩阵 | `064f1f5`（代码） | 待 Claude/arch 审查 P-024 | 无默认阈值样本策略、幂等事实汇总、显式 click/exposure 推断分母、Wilson 95% 区间、保守观察分离 | Domain 295 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B17-状态.md`、`docs/evidence/B17-代码质量报告.md`、P-024 |
 | B18 素材 Brief 与回测就绪 | `54f5223`（代码） | 待 Claude/arch 审查 P-025 | 单变量结构化 Brief、B16 谱系交付绑定、B17 同策略样本就绪判断、稳定指纹与完整性门 | Domain 310 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B18-状态.md`、`docs/evidence/B18-代码质量报告.md`、P-025 |
+| B19 月度结算单内核 | `c2fed1f`（代码） | 待 Claude/arch 审查 P-026 | 版本化字段模板、受限公式、显式总计/容差、offline 事实、修正链、预览与冻结快照 | Domain 352 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B19-状态.md`、`docs/evidence/B19-代码质量报告.md`、P-026 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -250,3 +251,12 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - 缺交付先返回 `awaiting_delivery`；全部交付后才按同一 policy/商品检查派生素材样本，区分 `awaiting_sample / ready`。
 - `ready` 只表示具备回测样本，不读取胜负、不构成效果或投放建议，代码无 Agent/通知/媒体写入。
 - 代码终态 `54f5223`。默认回归 Domain 310 + DB 92 + Worker 301 + DingTalk 19 = 722；SDK opt-in 1。新增模块 97.19%/85.71%/100%，四包静态/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全与冻结目录门禁通过，审查入口 P-025。
+
+## 19. B19 月度结算单真相
+
+- B19 只做纯 Domain，不代表验收 7.3 的真实模板、自动取数、导出、推送和页面已完成。
+- 模板版本决定字段、顺序、类型、fact 映射、受限四则公式、是否求和、对账容差和严重度；没有默认字段、系数或阈值。
+- 预览只接受 offline_settlement，数据截止不得早于期末；事实重试幂等，缺数/类型/公式/检查问题显式可见。
+- 人工修正是 from-value 一致的不可变事件链；冻结只接受无阻断预览，并内嵌模板和值快照，旧单不随新模板变化。
+- Agent 不参与数字计算；模块无 IO、动态代码、通知或写操作。
+- 代码终态 `c2fed1f`。默认回归 Domain 352 + DB 92 + Worker 301 + DingTalk 19 = 764；SDK opt-in 1。新增模块 100%/92.76%/100%，四包静态/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全与冻结目录门禁通过，审查入口 P-026。
