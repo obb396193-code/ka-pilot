@@ -23,4 +23,5 @@ export * from "./knowledge-references.js";
 export * from "./knowledge-access.js";
 export * from "./material-transcript.js";
 export * from "./material-teardown.js";
+export * from "./material-similarity.js";
 export * from "./hourly-ad-metrics.js";
