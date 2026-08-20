@@ -14,6 +14,7 @@ import type { MaterialTeardownAnalysis } from "./teardown-analyzer.js";
 
 const SAFE_SHA256 = /^[a-f0-9]{64}$/;
 const SAFE_SOURCE_REF = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$/;
+const SHOT_CONTACT_SHEET_SIZE = 36;
 
 export interface MaterialUrlLeasePort {
   acquire(sourceRef: string): Promise<MaterialSourceCandidate>;
@@ -129,7 +130,9 @@ export class MaterialTeardownHandler {
     media: DownloadedMaterialHandle,
   ): Promise<MaterialTeardownCompleted> {
     const checkpoint = await this.loadCheckpoint(media.contentSha256);
-    const film = checkpoint.film ?? await this.runAndSaveFilm(media, checkpoint);
+    const film = reusableFilmCheckpoint(checkpoint.film)
+      ? checkpoint.film
+      : await this.runAndSaveFilm(media, checkpoint);
     const transcript = checkpoint.transcript ?? await this.runAndSaveTranscript({
       media,
       film,
@@ -268,4 +271,38 @@ function reusableAnalysis(
   } catch {
     return false;
   }
+}
+
+function reusableFilmCheckpoint(value: FilmAnalysisResult | undefined): value is FilmAnalysisResult {
+  if (value === undefined || !Array.isArray(value.shots) || !isRecord(value.contactSheets)) return false;
+  const pages = value.contactSheets.shots;
+  if (!Array.isArray(pages) || pages.length !== Math.ceil(value.shots.length / SHOT_CONTACT_SHEET_SIZE)) {
+    return false;
+  }
+  return pages.every((page, index) => validShotContactPage(page, value.shots, index));
+}
+
+function validShotContactPage(
+  value: unknown,
+  shots: FilmAnalysisResult["shots"],
+  page: number,
+): boolean {
+  if (!isRecord(value)) return false;
+  const firstIndex = page * SHOT_CONTACT_SHEET_SIZE;
+  const pageShots = shots.slice(firstIndex, firstIndex + SHOT_CONTACT_SHEET_SIZE);
+  const first = pageShots[0];
+  const last = pageShots.at(-1);
+  if (first === undefined || last === undefined) return false;
+  const commonValid = value.page === page &&
+    value.fromShotIndex === first.frame.index &&
+    value.toShotIndex === last.frame.index &&
+    value.frameCount === pageShots.length;
+  if (!commonValid) return false;
+  if (value.status === "unavailable") return true;
+  return value.status === "ready" &&
+    value.artifactRef === `contact/contact-shots-${page.toString().padStart(4, "0")}.jpg`;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
 }

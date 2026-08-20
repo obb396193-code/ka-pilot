@@ -33,7 +33,7 @@ function evidence(text = "前三秒提出问题，随后说明卖点") {
       hookVisualDensity: 0,
     },
     promptVersion: TEARDOWN_PROMPT_VERSION,
-    schemaVersion: "1",
+    schemaVersion: "2",
   });
 }
 
@@ -58,7 +58,7 @@ function wholeVideoEvidence() {
       hookVisualDensity: 0,
     },
     promptVersion: TEARDOWN_PROMPT_VERSION,
-    schemaVersion: "1",
+    schemaVersion: "2",
   });
 }
 
@@ -108,5 +108,14 @@ describe("teardown prompt registry", () => {
       evidence: evidence(),
       maxPromptChars: 100,
     })).rejects.toMatchObject({ reason: "prompt_too_large" });
+  });
+
+  it("rejects stale prompt and schema identities before calling an Agent", async () => {
+    await expect(renderTeardownPrompt({
+      evidence: { ...evidence(), promptVersion: "teardown-v2" },
+    })).rejects.toMatchObject({ reason: "template_drift" });
+    await expect(renderTeardownPrompt({
+      evidence: { ...evidence(), schemaVersion: "1" },
+    })).rejects.toMatchObject({ reason: "template_drift" });
   });
 });

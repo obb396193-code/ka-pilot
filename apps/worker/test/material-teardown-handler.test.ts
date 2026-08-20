@@ -47,7 +47,16 @@ function film(): FilmAnalysisResult {
     },
     cutPointsMs: [1_000],
     cutPointsTruncated: false,
-    contactSheets: { shots: [] },
+    contactSheets: {
+      shots: [{
+        page: 0,
+        fromShotIndex: 0,
+        toShotIndex: 1,
+        frameCount: 2,
+        status: "ready",
+        artifactRef: "contact/contact-shots-0000.jpg",
+      }],
+    },
   };
 }
 
@@ -55,7 +64,7 @@ function analysis(evidenceFingerprint: string, model = "model-a"): WorkerAnalysi
   const analysisFingerprint = fingerprintMaterialTeardownAnalysis({
     evidenceFingerprint,
     promptVersion: "teardown-v3",
-    schemaVersion: "1",
+    schemaVersion: "2",
     providerId: "provider-a",
     model,
     profileVersion,
@@ -96,7 +105,7 @@ function analysis(evidenceFingerprint: string, model = "model-a"): WorkerAnalysi
     evidenceFingerprint,
     promptVersion: "teardown-v3",
     promptTemplateSha256: "a".repeat(64),
-    schemaVersion: "1",
+    schemaVersion: "2",
     providerId: "provider-a",
     model,
     profileVersion,
@@ -107,7 +116,7 @@ function analysis(evidenceFingerprint: string, model = "model-a"): WorkerAnalysi
 function profile(model = "model-a") {
   return {
     promptVersion: "teardown-v3",
-    schemaVersion: "1",
+    schemaVersion: "2",
     providerId: "provider-a",
     model,
     profileVersion,
@@ -194,7 +203,7 @@ describe("MaterialTeardownHandler", () => {
     expect(result.outcome).toBe("completed");
     expect(result.reusedAnalysis).toBe(false);
     expect(result.film.shots).toHaveLength(2);
-    expect(result.film.contactSheets.shots).toEqual([]);
+    expect(result.film.contactSheets.shots).toHaveLength(1);
     expect(result.transcript.timingPrecision).toBe("segment");
     expect(subject.cloudAsr.transcribe).not.toHaveBeenCalled();
     expect(subject.urlLease.acquire).toHaveBeenCalledOnce();
@@ -267,6 +276,26 @@ describe("MaterialTeardownHandler", () => {
     expect(subject.filmAnalyzer.analyze).toHaveBeenCalledOnce();
     expect(subject.cloudAsr.transcribe).toHaveBeenCalledOnce();
     expect(subject.analyzer.analyze).toHaveBeenCalledTimes(2);
+  });
+
+  it("rebuilds a legacy film checkpoint that has no shot contact-sheet manifest", async () => {
+    const subject = setup();
+    await subject.handler.handle(subject.input);
+    const checkpoint = subject.checkpoints.values.get("b".repeat(64));
+    if (checkpoint?.film === undefined) throw new Error("missing film checkpoint");
+    const legacy = structuredClone(checkpoint.film) as unknown as Record<string, unknown>;
+    const contactSheets = legacy.contactSheets as Record<string, unknown>;
+    delete contactSheets.shots;
+    checkpoint.film = legacy as unknown as FilmAnalysisResult;
+    subject.checkpoints.values.set("b".repeat(64), checkpoint);
+
+    const rerun = await subject.handler.handle(subject.input);
+
+    expect(rerun.reusedAnalysis).toBe(true);
+    expect(rerun.film.contactSheets.shots).toHaveLength(1);
+    expect(subject.filmAnalyzer.analyze).toHaveBeenCalledTimes(2);
+    expect(subject.cloudAsr.transcribe).toHaveBeenCalledOnce();
+    expect(subject.analyzer.analyze).toHaveBeenCalledOnce();
   });
 
   it("persists film before cloud ASR failure so retry does not repeat FFmpeg", async () => {

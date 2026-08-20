@@ -16,6 +16,7 @@ const MAX_CUT_POINTS = MAX_SHOTS - 1;
 const MAX_EXTRACTED_SHOT_FRAMES = 216;
 const SHOT_CONTACT_SHEET_SIZE = 36;
 const SHOT_CONTACT_SHEET_COLUMNS = 6;
+const SHOT_CONTACT_SHEET_CONCURRENCY = 2;
 const FRAME_CONCURRENCY = 4;
 const PTS_PATTERN = /pts_time:([0-9]+(?:\.[0-9]+)?)/;
 const SCENE_PATTERN = /(?:lavfi\.)?scene_score=([0-9]+(?:\.[0-9]+)?)/;
@@ -249,7 +250,9 @@ export class FilmAnalyzer {
     shots: FilmAnalysisResult["shots"],
   ): Promise<readonly ShotContactSheet[]> {
     const pages = chunk(shots, SHOT_CONTACT_SHEET_SIZE);
-    return Promise.all(pages.map(async (pageShots, page) => {
+    const results = new Array<ShotContactSheet>(pages.length);
+    await runWithConcurrency(pages.map((pageShots, page) => ({ pageShots, page })),
+      SHOT_CONTACT_SHEET_CONCURRENCY, async ({ pageShots, page }) => {
       const filename = `contact-shots-${page.toString().padStart(4, "0")}.jpg`;
       const artifactRef = `contact/${filename}`;
       const output = join(paths.contactDirectory, filename);
@@ -259,17 +262,28 @@ export class FilmAnalyzer {
         timeoutMs: this.frameTimeoutMs,
         maxOutputBytes: 256 * 1024,
       });
-      const metadata = {
-        page,
-        fromShotIndex: pageShots[0]?.frame.index as number,
-        toShotIndex: pageShots.at(-1)?.frame.index as number,
-        frameCount: pageShots.length,
-      };
-      return successful(result) && await nonemptyRegularFile(output)
+      const metadata = shotContactSheetMetadata(pageShots, page);
+      results[page] = successful(result) && await nonemptyRegularFile(output)
         ? { ...metadata, status: "ready" as const, artifactRef }
         : { ...metadata, status: "unavailable" as const };
-    }));
+    });
+    return results;
   }
+}
+
+function shotContactSheetMetadata(
+  shots: FilmAnalysisResult["shots"],
+  page: number,
+): Omit<ShotContactSheet, "status" | "artifactRef"> {
+  const first = shots[0];
+  const last = shots.at(-1);
+  if (first === undefined || last === undefined) throw new FilmAnalyzerError("invalid_media");
+  return {
+    page,
+    fromShotIndex: first.frame.index,
+    toShotIndex: last.frame.index,
+    frameCount: shots.length,
+  };
 }
 
 function shotContactSheetArgs(

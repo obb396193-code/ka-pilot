@@ -350,6 +350,31 @@ describe("material teardown evidence", () => {
         evidenceIds: [ids[0]],
       }],
     }, evidence)).toThrow(MaterialTeardownError);
+
+    expect(() => parseMaterialTeardownResult({
+      ...validResult(ids),
+      semanticSections: [{
+        order: 1,
+        role: "hook",
+        title: "伪视觉语义",
+        description: "没有文稿证据",
+        evidenceIds: [ids[2]],
+      }],
+    }, evidence)).toThrow(MaterialTeardownError);
+
+    expect(() => parseMaterialTeardownResult({
+      ...validResult(ids),
+      segments: [
+        {
+          startMs: 0,
+          endMs: 1_000,
+          role: "hook",
+          description: "引用了不相交的后段字幕",
+          evidenceIds: [ids[1]],
+        },
+        validResult(ids).segments[1],
+      ],
+    }, evidence)).toThrow(MaterialTeardownError);
   });
 
   it("exports a strict JSON schema without unsupported business metrics", () => {

@@ -1,7 +1,10 @@
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 
-import type { MaterialTeardownEvidence } from "@ka/domain";
+import {
+  MATERIAL_TEARDOWN_SCHEMA_VERSION,
+  type MaterialTeardownEvidence,
+} from "@ka/domain";
 
 export const TEARDOWN_PROMPT_VERSION = "teardown-v3";
 export const TEARDOWN_SOURCE_SHA256 = "fb30d574a0bc93efa9a812a1d894b09725b69650a2cfbe376bc9730eb97cacff";
@@ -46,6 +49,10 @@ export async function renderTeardownPrompt(input: {
   readonly promptTemplateSha256: string;
 }> {
   const template = await loadTeardownPromptTemplate();
+  if (
+    input.evidence.promptVersion !== template.version ||
+    input.evidence.schemaVersion !== MATERIAL_TEARDOWN_SCHEMA_VERSION
+  ) throw new TeardownPromptError("template_drift");
   const maxPromptChars = positiveInteger(input.maxPromptChars ?? DEFAULT_MAX_PROMPT_CHARS);
   const evidenceJson = JSON.stringify(canonicalPromptEvidence(input.evidence));
   if (containsCredentialLikeValue(evidenceJson)) throw new TeardownPromptError("unsafe_input");

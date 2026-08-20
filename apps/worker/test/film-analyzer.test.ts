@@ -33,6 +33,8 @@ class FakeRunner implements MediaProcessRunner {
   readonly calls: MediaProcessInvocation[] = [];
   failFrameIndex: number | undefined;
   failContactPage: number | undefined;
+  activeContactSheets = 0;
+  maxActiveContactSheets = 0;
   probe = {
     format: { duration: "3.000000" },
     streams: [{ codec_type: "video", width: 1080, height: 1920 }],
@@ -61,8 +63,14 @@ class FakeRunner implements MediaProcessRunner {
       return { exitCode: 1, stdout: "", stderr: "signed-url-must-not-escape", timedOut: false };
     }
     const pageMatch = output.match(/contact-shots-(\d{4})\.jpg$/);
-    if (pageMatch?.[1] !== undefined && Number(pageMatch[1]) === this.failContactPage) {
-      return { exitCode: 1, stdout: "", stderr: "page-failed", timedOut: false };
+    if (pageMatch?.[1] !== undefined) {
+      this.activeContactSheets += 1;
+      this.maxActiveContactSheets = Math.max(this.maxActiveContactSheets, this.activeContactSheets);
+      await new Promise((resolve) => setTimeout(resolve, 2));
+      this.activeContactSheets -= 1;
+      if (Number(pageMatch[1]) === this.failContactPage) {
+        return { exitCode: 1, stdout: "", stderr: "page-failed", timedOut: false };
+      }
     }
     await writeFile(output, "image");
     return { exitCode: 0, stdout: "", stderr: "", timedOut: false };
@@ -187,6 +195,7 @@ describe("FilmAnalyzer", () => {
       frameCount: 35,
       status: "ready",
     });
+    expect(runner.maxActiveContactSheets).toBeLessThanOrEqual(2);
   });
 
   it("degrades one failed shot contact page without shifting later page metadata", async () => {

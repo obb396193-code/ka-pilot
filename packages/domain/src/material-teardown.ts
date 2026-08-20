@@ -16,6 +16,8 @@ const SAFE_VERSION = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/;
 const SAFE_EVIDENCE_ID = /^(?:transcript|shot)-\d{4}$/;
 const SAFE_ARTIFACT_SEGMENT = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
 
+export const MATERIAL_TEARDOWN_SCHEMA_VERSION = "2";
+
 export type MaterialTeardownErrorCode =
   | "invalid_evidence"
   | "invalid_result"
@@ -319,6 +321,7 @@ function validateResultTimingPrecision(
   }
   if (result.segments.length === 0) throw new MaterialTeardownError("invalid_result");
   validateResultSegments(result.segments, evidence.media.durationMs);
+  validateTimedSegmentEvidence(result.segments, evidence);
 }
 
 function validateSemanticSections(
@@ -331,13 +334,33 @@ function validateSemanticSections(
   const wholeVideoTranscript = evidence.transcriptEvidence.some(
     ({ timingPrecision }) => timingPrecision === "whole_video",
   );
-  if (!wholeVideoTranscript) return;
   const transcriptIds = new Set(evidence.transcriptEvidence.map(({ id }) => id));
-  if (sections.some(({ evidenceIds }) => (
-    evidenceIds.some((id) => !transcriptIds.has(id)) ||
-    !evidenceIds.some((id) => transcriptIds.has(id))
-  ))) {
+  if (sections.some(({ evidenceIds }) => !evidenceIds.some((id) => transcriptIds.has(id)))) {
     throw new MaterialTeardownError("invalid_result");
+  }
+  if (
+    wholeVideoTranscript &&
+    sections.some(({ evidenceIds }) => evidenceIds.some((id) => !transcriptIds.has(id)))
+  ) throw new MaterialTeardownError("invalid_result");
+}
+
+function validateTimedSegmentEvidence(
+  segments: MaterialTeardownResult["segments"],
+  evidence: MaterialTeardownEvidence,
+): void {
+  const transcriptIds = new Set(evidence.transcriptEvidence.map(({ id }) => id));
+  const intervals = new Map([
+    ...evidence.transcriptEvidence.map(({ id, startMs, endMs }) => [id, { startMs, endMs }] as const),
+    ...evidence.shotEvidence.map(({ id, startMs, endMs }) => [id, { startMs, endMs }] as const),
+  ]);
+  for (const segment of segments) {
+    if (!segment.evidenceIds.some((id) => transcriptIds.has(id))) {
+      throw new MaterialTeardownError("invalid_result");
+    }
+    if (segment.evidenceIds.some((id) => {
+      const interval = intervals.get(id);
+      return interval === undefined || interval.startMs >= segment.endMs || interval.endMs <= segment.startMs;
+    })) throw new MaterialTeardownError("invalid_result");
   }
 }
 

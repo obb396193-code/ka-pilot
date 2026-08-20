@@ -34,7 +34,7 @@ function evidence() {
       hookVisualDensity: 1,
     },
     promptVersion: "teardown-v3",
-    schemaVersion: "1",
+    schemaVersion: "2",
   });
 }
 
@@ -93,7 +93,7 @@ function wholeVideoEvidence() {
       hookVisualDensity: 0,
     },
     promptVersion: "teardown-v3",
-    schemaVersion: "1",
+    schemaVersion: "2",
   });
 }
 
