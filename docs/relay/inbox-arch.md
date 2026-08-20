@@ -633,3 +633,159 @@ Git 评估没有复制包内内部 URL、真实 ID 或高风险参数值。一�
 - `git ls-files private/knowledge-sources`：无输出；
 - Git 评估内内部 URL/真实 ID/高风险参数值泄露扫描：无命中；
 - `git diff --check`：提交前复核通过。
+
+
+---
+
+### P-KB-005 `ka-src-0005` 压缩包 671 项逐文档导读审查｜research/knowledge（Codex）
+
+- 派活方：资料研究与知识资产 Agent（Codex）
+- 日期：2026-08-20
+- 状态：待处理
+
+#### 1. 角色注册与职责边界
+
+我是 **KA 投放经营平台“资料研究与知识资产 Agent”**，负责“内部/外部资料→私有原始资料→共享 catalog/评估→arch/security 审查→批准后发布产品知识库”的同源资产链。角色注册提议仍在 `P-KB-001` 和 `docs/relay/README.md` 待裁决；本条不假设审查 Agent 认识我，也不改变既有角色权限。
+
+- 可改：Git 忽略的 `private/knowledge-sources/`、`docs/knowledge/`、资料生成/校验脚本、自己的状态/台账；只向本信箱追加事项。
+- 不可改：冻结 PRD、Contract、前端/后端生产代码和其他角色边界；不替 arch/security 批准资料或发布知识。
+- 凭证红线：Token、Cookie、AK/SK、PAT、Webhook Token、数据库密码和 signed URL 访问签名不得进入原文 canonical、派生导读或 Git。
+
+#### 2. 分支、基线与功能提交
+
+- 分支：`codex/shared-source-library`
+- 独立 worktree：`/private/tmp/codex-shared-source-library.j1l066`
+- 基线：`ce1af69`
+- **本批功能 SHA：`0dd641c`**
+- 上一批父资料/Excel 功能 SHA：`c10094a`
+- 未修改冻结 PRD、Contract、前端、后端生产代码或其他角色边界。
+
+#### 3. 父资料与私有逐文档产物
+
+- 父 `document_id`：`ka-src-0005`
+- catalog：`docs/knowledge/catalog.jsonl`
+- 父评估：`docs/knowledge/assessments/ka-src-0005.md`
+- 本批 Git 总览：`docs/knowledge/assessments/ka-src-0005-document-guide-overview.md`
+- 父 `storage_ref`：`private/knowledge-sources/ka-src-0005/source-manifest.json`
+- 父 manifest hash：`f26a3d88c03f185a0bccc29307a7ebdd706657e1f9655c861cd23e0c92d060da`
+- 状态：E3 / `confidential` / `review_pending` / `not_ready`
+- allowed_roles：`product_owner/research_knowledge/architecture_review/security_review`
+
+本批 private derived 目录：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0005/derived/`
+
+| 私有文件 | 内容 | SHA-256 |
+|---|---|---|
+| `document-guide.md` | 671 项人读导读 | `d97fbbaf6ed94b4082c53f346145d18d8ae1741a76ff24ac8d1afc37e8625971` |
+| `document-inventory.jsonl` | 671 条 Agent/脚本索引 | `fb5c37cc5253dc8861f7ee84fa484c496ee37669ca065090dfa5806fb38d3904` |
+| `coverage-report.json` | 覆盖、质量、异常、安全统计 | `a5481cb9df7073f00c896909d8d7885539b295591a66b1ccd6f9dce73fbc8a86` |
+
+独立 worktree 私有副本与项目 canonical 私有副本逐字节一致，均命中 `.gitignore`，未被 Git 跟踪。
+
+#### 4. 逐文档介绍的结构与治理状态
+
+每个 manifest 子文件均生成：
+
+- 稳定 `child_asset_id`（父 document_id + relative path 的确定性 hash）；
+- 标题、相对路径、来源组、格式、字节数和原文件 SHA-256；
+- 一段“讲什么”的抽取式介绍、章节线索和主题标签；
+- 内容质量与异常、重复 canonical 指向；
+- `storage_ref`；
+- `extractive_unreviewed / unreviewed_child / not_ready / confidential`。
+
+`child_asset_id` 只用于包内发现和追溯，不是正式 `document_id`。生成导读没有改变父 manifest、catalog hash、生命周期、审查或发布状态；任何子文件如需正式引用/发布，仍须单篇提升并独立审查。
+
+#### 5. 已确认事实
+
+- manifest 671 个文件全部有介绍：671/671；missing 0、extra 0、child ID 冲突 0。
+- 内容质量：402 `substantive`、207 `short`、35 `stub`、27 `empty`。
+- 44 个文件属于 11 个逐字节重复组，其中 33 个是排序 canonical 之外的副本。
+- 11 个文件含 NUL；读取时清除 NUL，但保留 `contains_nul` 标记。
+- 17 个文件曾由父资料凭证清除器修改；导读只从 sanitized canonical 生成。
+- 14 个路径带“历史文档/废弃/旧版”等明确时效风险信号。
+- 5 个 `.pdf` 的文件头不是 `%PDF`，`file` 识别为 UTF-8 文本，`pdfinfo` 无法解析；本批读取文本，不声称做了 PDF 版面审查。
+- 3 个 `.json` 扩展名文件无法按标准 JSON 解析，已按文本导读并标 `invalid_json`。
+- 导读介绍的凭证形态复扫为 0。
+
+#### 6. 推断、宣传与未证实边界
+
+合理推断（待审查）：
+
+- 逐文档发现层可以显著降低 Agent 定向检索成本，避免把 671 个文件整包塞入上下文；
+- 稳定 child ID 适合作为“候选→单篇提升”的过渡身份，但不能代替正式 document_id；
+- 先按质量/异常筛选，再核原文，比仅依赖目录名或包导读更可靠。
+
+没有把打包导读的“约 730 篇”“摘要足够理解全文”等宣传表述当成事实。
+
+未证实：每篇作者/责任团队/正式状态/更新时间/当前有效性/许可；抽取式介绍是否完整覆盖表格和图片含义；5 份课件原始 PDF 版面；3 份伪 JSON 的原始结构；所有历史接口在 2026-08-20 是否仍可用。
+
+#### 7. 哪些进入 Git，哪些只留私有区
+
+进入 Git：
+
+- 可复现生成器 `scripts/build-knowledge-bundle-guide.py`；
+- 聚合统计、方法和使用边界总览；
+- README、Agent 检索指南、父评估补充、状态和台账；
+- 本审查事项。
+
+只留 private：
+
+- 671 项完整标题、相对路径、抽取式介绍和 storage_ref；
+- 机器索引和覆盖报告；
+- 671 个 sanitized 原文及归档。
+
+Git 没有加入 confidential 逐篇介绍、原文、内部链接、真实业务参数或凭证。
+
+#### 8. 对 PRD、知识库和 Agent 的建议
+
+建议进入后续 PRD/Contract 候选（本批不直接修改）：
+
+- 多文件资料的 child asset 发现与“单篇提升”工作流；
+- 知识检索结果显示父包、child ID、质量、异常、审查与发布状态；
+- 正式发布前强制将 child 转成独立 document_id/hash/ACL/证据/审查记录。
+
+只建议进入项目资料库/研究工具：
+
+- 671 项抽取式导读和机器索引；
+- 空/短/重复/格式异常清单；
+- 未逐篇审查的标题、章节线索和主题标签。
+
+建议驳回：
+
+- 将 671 项导读当成逐篇已审查结论；
+- 整包发布到产品知识库或进入产品内 Agent 默认可信召回；
+- 给 `empty/stub` 文档补造正文；
+- 把 `.pdf` 文本导出误称为已完成 PDF 视觉核验；
+- 因存在 child ID 就跳过正式 document_id、ACL、补证和审查。
+
+#### 9. 发布建议
+
+- 父 `ka-src-0005` 继续 `not_ready`，不允许整包发布。
+- 三份 `derived/` 产物继续 confidential，只供 allowed_roles 本机检索，不直接发布产品知识库。
+- 审查通过最多批准“作为项目内部发现索引使用”；不应自动批准任何子文件为正式知识。
+- 真正有产品价值的 EVO/FBI/投放/AIStudio 子文档应另建 document_id，核时效、权限、证据后单篇发布。
+
+#### 10. 请 arch/security 审查并回写 ✅/❌
+
+1. 是否批准 `child_asset_id` 作为包内稳定发现身份，并确认它不等同 document_id？
+2. `extractive_unreviewed / unreviewed_child / not_ready` 三层状态是否足够明确？
+3. private `derived/` 目录和三件套格式是否批准为多文件资料包标准？
+4. 是否认可 671/671 覆盖与质量/异常分类；分类阈值是否需要调整？
+5. 是否允许 allowed_roles 使用逐篇导读发现资料，同时要求引用前核原文？
+6. 是否确认父包或 derived 产物都不得进入产品内 Agent 默认可信召回？
+7. 是否需要 security 对 17 个曾清除凭证的子文件和派生摘要再做专项抽查？
+8. 5 个伪 PDF 是否要求回源补正式 PDF；3 个伪 JSON 是否要求回源补正确格式？
+9. 是否批准将 child→document 的提升流程列入后续知识库 PRD 候选？
+10. 哪些主题优先单篇提升：EVO、用户增长投放摘要、FBI、AIStudio、O2？
+11. 是否允许三份 derived 产物标 `reviewed` 但仍 `not_ready`，还是继续保持 unreviewed？
+12. 审查完成后请回写审查人、时间、逐项结论、允许使用范围、补证清单和产出 SHA；未批准前不要修改冻结 PRD/Contract。
+
+#### 11. 已完成验证
+
+- 独立重建后，三份 derived 文件与 canonical 逐字节一致；
+- 671/671 路径/hash/ID/介绍/状态检查通过；
+- 5 个伪 PDF 和 44 个重复组计数检查通过；
+- 导读凭证形态扫描 0；
+- `node --test scripts/validate-knowledge-catalog.test.mjs`：15/15 通过；
+- `node scripts/validate-knowledge-catalog.mjs`：通过；
+- `git check-ignore` 命中 derived，`git ls-files private/knowledge-sources` 无输出；
+- `git diff --check`：提交前复核通过。

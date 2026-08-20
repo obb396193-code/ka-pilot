@@ -34,6 +34,8 @@
 - [x] 19. 新下载资料包/导读/Excel 的完整性、凭证与可用性审计
 - [x] 20. `ka-src-0005/0006` canonical 私有留存、catalog 与 20 项独立评估
 - [x] 21. bundle 校验门、功能提交与 `P-KB-004` 交审
+- [x] 22. `ka-src-0005` 的 671 个子文件逐项导读、私有机器索引与覆盖报告
+- [x] 23. 逐文档导读总览、检索说明、功能提交与 `P-KB-005` 交审
 
 ## 完成记录
 
@@ -59,7 +61,9 @@
 - 2026-08-20：生成 `ka-src-0005` sanitized canonical：manifest + archive + 671 个可检索 extracted 文件；清除 128 处 access-key query、128 处 signature query、1 处 AK ID 形状和 3 处 named-secret assignment，清除后复扫 0。`ka-src-0006` 原 Excel 完整保存到 ignored 私有区；两篇均登记 E3/`confidential`/`review_pending`/`not_ready`。
 - 2026-08-20：完成两篇独立评估。资料包建议“包级仅参考、子文档逐篇提升”，EVO 可补实验编排但不支持黑盒自动调控；Excel 仅借字段/交互，驳回直接复制执行、空字段生成、100 组默认、“其他默认”和高风险参数工具化。
 - 2026-08-20：15/15 Node 测试、catalog/bundle validator、671 子文件/归档 hash、凭证复扫、ignore/未跟踪与 diff check 通过；功能提交 SHA=`c10094a`。`P-KB-004` 自包含登记两篇资产、sanitization、事实/推断/未证实、产品映射、发布禁止和 arch/security 裁决问题。
+- 2026-08-20：逐项读取 `ka-src-0005` 的 671 个 sanitized 子文件，生成 private `derived/document-guide.md`、`document-inventory.jsonl` 和 `coverage-report.json`。每项包含稳定 child asset ID、标题/路径/抽取式介绍/主题/hash/质量与异常/治理状态；402 substantive、207 short、35 stub、27 empty，44 个文件属于 11 个重复组。
+- 2026-08-20：确认 5 个 `.pdf` 是 UTF-8 文本而非 PDF 容器、3 个 `.json` 扩展名文件不是标准 JSON；均保留异常标记，不伪称完成版面或结构化解析。671/671 覆盖、确定性重建、凭证形态 0、私有双份 hash、15/15 知识目录测试和 validator 均通过。功能提交 SHA=`0dd641c`；`P-KB-005` 交审逐篇导读的治理与使用边界。
 
 ## 当前状态
 
-`ka-src-0001~0006` 已分别完成入库评估，`P-KB-001~004` 均已交审；停止融合与开发，等待 arch/security 裁决。未改冻结 PRD/Contract/生产代码。
+`ka-src-0001~0006` 已分别完成入库评估，`P-KB-001~005` 均已交审；`ka-src-0005` 已增加 confidential 逐文档发现层，但全部子文件仍 `extractive_unreviewed / not_ready`。停止融合与开发，等待 arch/security 裁决。未改冻结 PRD/Contract/生产代码。
