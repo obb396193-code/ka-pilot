@@ -64,6 +64,7 @@ const COPY_FILES = [
   'free-alternatives.md',
   'frontend-product-standard.md',
   '前端视觉与体验审核清单.md',
+  'github-export.md',
   'licenses.md',
   'showroom-data.json',
   'source-download-manifest.json',

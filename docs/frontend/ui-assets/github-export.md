@@ -1,6 +1,6 @@
 # GitHub 复用仓库导出说明
 
-> 目标仓库：`frontend-ui-asset-kit`（private）
+> 目标仓库：[obb396193-code/frontend-ui-asset-kit](https://github.com/obb396193-code/frontend-ui-asset-kit)（private）
 > 原则：介绍和全量元数据尽量保留；源码、预览和二进制制品只按许可证白名单导出。
 
 ## 为什么不直接推整个投放 Agent 仓库
@@ -46,10 +46,11 @@ gh repo create frontend-ui-asset-kit --private --source . --remote origin --push
 
 如果 `gh auth status` 失败，必须由账号所有者重新完成 GitHub 授权；不得把临时 token 写进仓库或对话。
 
+首次上传已完成：远端默认分支 `main`，首个导出 commit 为 `454b0e7b4ae1a890119632259823b5004d3a3c62`。以后更新仍必须先重建、测试和复核，再在独立导出仓库提交/推送。
+
 ## 公开前必须再做
 
 - 移除或补齐 compiled preview 的所有依赖 notices。
 - 复核第三方截图、字体、图片和图标权利。
 - 重新拉取所有上游 LICENSE/NOTICE，并检查许可证是否变化。
 - 重新跑敏感词、绝对路径、JSON、链接和逐文件 hash 审计。
-
