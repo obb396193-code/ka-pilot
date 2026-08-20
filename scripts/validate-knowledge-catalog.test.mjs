@@ -5,10 +5,18 @@ import path from "node:path";
 import test from "node:test";
 
 import {
+  findCredentialShapes,
   parseCatalog,
   validateCatalogRecords,
   validateRepository,
 } from "./validate-knowledge-catalog.mjs";
+
+test("credential scanner reports type and line without returning secret values", () => {
+  const secret = `TOKEN=${"z".repeat(24)}`;
+  const matches = findCredentialShapes(`safe line\n${secret}\n`);
+  assert.deepEqual(matches, [{type: "named_secret_assignment", line: 2}]);
+  assert.equal(JSON.stringify(matches).includes("z".repeat(8)), false);
+});
 
 const baseRecord = {
   document_id: "ka-src-0001",
@@ -172,4 +180,18 @@ test("first source is cataloged as E3 and pending review", async () => {
   assert.equal(record.review_status, "pending");
   assert.equal(record.product_kb_publication_status, "not_ready");
   assert.equal(record.access_level, "project_internal");
+});
+
+test("second source is cataloged as an internal design reference pending review", async () => {
+  const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+  const catalog = await readFile(path.join(repoRoot, "docs/knowledge/catalog.jsonl"), "utf8");
+  const {records, errors} = parseCatalog(catalog);
+  assert.deepEqual(errors, []);
+  const record = records.find((item) => item.document_id === "ka-src-0002");
+  assert.ok(record, "ka-src-0002 must exist");
+  assert.equal(record.evidence_level, "E3");
+  assert.equal(record.lifecycle_status, "review_pending");
+  assert.equal(record.review_status, "pending");
+  assert.equal(record.product_kb_publication_status, "not_ready");
+  assert.equal(record.storage_ref, "private/knowledge-sources/ka-src-0002/source.txt");
 });

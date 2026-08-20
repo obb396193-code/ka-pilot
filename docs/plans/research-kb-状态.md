@@ -25,6 +25,9 @@
 - [x] 10. research/knowledge 角色注册提议
 - [x] 11. `inbox-arch.md` 自包含审查事项
 - [x] 12. 最终提交、自查并停止等待审查
+- [x] 13. `ka-src-0002` 原文凭证扫描与私有留存
+- [x] 14. `ka-src-0002` 全文核对、现有产品交叉审计与 20 项评估
+- [ ] 15. `ka-src-0002` catalog、校验、提交与 `P-KB-002` 交审
 
 ## 完成记录
 
@@ -38,7 +41,10 @@
 - 2026-08-20：10 项 Node 测试、仓库 validator、ignore 命中、私有区 Git 未跟踪检查全部通过。
 - 2026-08-20：在 relay README 只追加 research/knowledge 角色注册提议，未改变现有角色边界；`inbox-arch.md` 新增 `P-KB-001` 自包含审查单。
 - 2026-08-20：最终复核通过：10/10 测试、validator、双份私有原文 hash、ignore/未跟踪、`git diff --check`；功能 SHA=`f806a03`。
+- 2026-08-20：`ka-src-0002` 凭证形态扫描为 0；原文同步到 worktree 私有区和正式私有区，双份 SHA-256 均为 `928c8f95d998fac66a8697c9fab55fc4dad3ab2798559cfd187587bcd67ca19f`。
+- 2026-08-20：完成全文及 PRD/Contract/代码交叉审计。确认 `docs/18-KA日报规范借鉴.md` 是同源派生分析；大部分设计已吸收，但实际报告/知识库仍占位、数据页为 Mock，不能把设计写成已实现。
+- 2026-08-20：完成 `ka-src-0002` catalog 与 20 项评估，登记 E3/`review_pending`/`not_ready`。新增无泄露凭证扫描明细函数；12/12 Node 测试、validator 和 `git diff --check` 通过。
 
 ## 当前状态
 
-已交审：停止融合与开发，等待 arch 对 `P-KB-001` 回写裁决。
+`P-KB-001` 仍待 arch 裁决；`ka-src-0002` 已完成分析与校验，正在提交功能 SHA 并准备 `P-KB-002`，不据此融合或修改冻结产物。

@@ -64,10 +64,13 @@ const ARRAY_FIELDS = [
 ];
 
 const CREDENTIAL_PATTERNS = [
-  /\bBearer\s+[A-Za-z0-9._~+/=-]{12,}/i,
-  /\b(?:AK|SK|PAT|TOKEN|COOKIE|PASSWORD|SECRET|WEBHOOK_TOKEN)\b\s*[:=]\s*["']?[A-Za-z0-9._~+/=-]{8,}/i,
-  /\b(?:ghp_|github_pat_|sk-|xoxb-|mul_|mcn_)[A-Za-z0-9._-]{10,}/i,
-  /\bpostgres(?:ql)?:\/\/[^\s:/]+:[^\s@]+@/i,
+  {type: "bearer_token", pattern: /\bBearer\s+[A-Za-z0-9._~+/=-]{12,}/i},
+  {
+    type: "named_secret_assignment",
+    pattern: /\b(?:AK|SK|PAT|TOKEN|COOKIE|PASSWORD|SECRET|WEBHOOK_TOKEN)\b\s*[:=]\s*["']?[A-Za-z0-9._~+/=-]{8,}/i,
+  },
+  {type: "known_secret_prefix", pattern: /\b(?:ghp_|github_pat_|sk-|xoxb-|mul_|mcn_)[A-Za-z0-9._-]{10,}/i},
+  {type: "database_url_password", pattern: /\bpostgres(?:ql)?:\/\/[^\s:/]+:[^\s@]+@/i},
 ];
 
 export function parseCatalog(text) {
@@ -223,8 +226,19 @@ export async function validateRepository({repoRoot = process.cwd(), checkGit = t
   return errors;
 }
 
+export function findCredentialShapes(text) {
+  const matches = [];
+  const lines = text.split(/\r?\n/);
+  lines.forEach((lineText, index) => {
+    for (const {type, pattern} of CREDENTIAL_PATTERNS) {
+      if (pattern.test(lineText)) matches.push({type, line: index + 1});
+    }
+  });
+  return matches;
+}
+
 function containsCredential(text) {
-  return CREDENTIAL_PATTERNS.some((pattern) => pattern.test(text));
+  return findCredentialShapes(text).length > 0;
 }
 
 function isPlainObject(value) {
