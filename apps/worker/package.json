@@ -6,6 +6,7 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "benchmark:data": "tsx scripts/benchmark-data-pipeline.ts",
+    "benchmark:data:pg": "tsx scripts/benchmark-data-pipeline-pg.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."
