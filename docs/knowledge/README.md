@@ -19,6 +19,7 @@
 | `docs/knowledge/catalog.jsonl` | 是 | 每行一份资料的机器可读索引 |
 | `docs/knowledge/catalog.schema.json` | 是 | catalog 单条记录字段契约 |
 | `docs/knowledge/assessments/` | 是 | 事实/推断分层后的独立评估 |
+| `docs/knowledge/datasets/` | 是 | 经分析生成的机器可读能力矩阵；不是原始资料，也不自动等于获批产品能力 |
 | `docs/knowledge/templates/source-card.md` | 是 | 录入与 20 项评估模板 |
 | `docs/knowledge/agent-retrieval-guide.md` | 是 | Agent 检索和引用纪律 |
 | `docs/knowledge/product-kb-publishing.md` | 是 | 未来产品知识库发布映射与门禁 |

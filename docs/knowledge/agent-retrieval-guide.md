@@ -82,8 +82,23 @@ verified    已在授权账户做只读或受控写探针并核对响应
 ```bash
 rg -n 'documentId|scope|auto_build|official_conflict|实验' \
   docs/knowledge/assessments/ka-src-0007.md \
-  private/knowledge-sources/ka-src-0007/source.md
+  private/knowledge-sources/ka-src-0007/extracted
+
+# 查当前官方能力、CLI 覆盖与产品阶段
+jq -c 'select(.cli_status == "not_wrapped" and .roadmap_phase == "phase1_candidate")' \
+  docs/knowledge/datasets/ka-src-0007-capability-coverage.jsonl
+
+# 查高风险或明确不纳入当前产品的能力
+jq -c 'select(.risk_level == "critical" or .recommended_action == "reject_for_current_product")' \
+  docs/knowledge/datasets/ka-src-0007-capability-coverage.jsonl
+
+# 按 endpoint、documentId 或标题回到官方原文快照
+rg -n 'advanced_creative/update|"documentId": 2580|修改程序化创意' \
+  private/knowledge-sources/ka-src-0007/extracted/documents \
+  private/knowledge-sources/ka-src-0007/extracted/inventory
 ```
+
+`capability-coverage.jsonl` 的分类是未审查的研究初筛，不是产品批准清单。`phase1_candidate` 仍需业务 owner 裁剪；`not_wrapped` 只表示当前静态 CLI 未封装，不表示接口不可封装。
 
 ## 5. 引用格式
 

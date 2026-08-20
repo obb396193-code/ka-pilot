@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-08-20T11:20:57.796Z",
+  "source_document_id": "ka-src-0007",
+  "current_document_count": 381,
+  "current_endpoint_count": 352,
+  "current_unique_endpoint_count": 352,
+  "cli_asset": {
+    "source_root": "private_ref:kuaishou-cli-local-extracted-asset",
+    "archive_sha256": "fe348e82b57ab272c77e6f5cfc6db4e568cf282be57982bbf1cf0a1df4a4d332",
+    "filename_label": "kuaishou-cli-v1.0.2.zip",
+    "code_version": "1.2.1",
+    "declared_endpoint_count": 25,
+    "wrapped_reachable_count": 23,
+    "declared_not_exposed_count": 2,
+    "readme_claims_raw_command": true,
+    "main_registers_raw_command": false,
+    "version_label_conflict": true
+  },
+  "cli_coverage": {
+    "not_wrapped": 327,
+    "not_applicable": 29,
+    "wrapped_reachable": 23,
+    "declared_not_exposed": 2
+  },
+  "product_relevance": {
+    "conditional_candidate": 249,
+    "background_only": 46,
+    "direct_candidate": 59,
+    "not_relevant": 27
+  },
+  "roadmap_phase": {
+    "later_candidate": 249,
+    "reference_only": 73,
+    "phase1_candidate": 59
+  },
+  "recommended_action": {
+    "investigate_then_wrap": 247,
+    "reference_only": 30,
+    "do_not_wrap_deprecated": 10,
+    "wrap_or_verify": 53,
+    "verify_data_gap_then_wrap": 6,
+    "reject_for_current_product": 35
+  },
+  "operation": {
+    "read": 166,
+    "write": 169,
+    "guide": 8,
+    "delete_or_disable": 28,
+    "financial_write": 10
+  },
+  "risk_level": {
+    "low": 167,
+    "high": 197,
+    "medium": 7,
+    "critical": 10
+  },
+  "deprecated_signal_count": 10,
+  "whitelist_or_application_signal_count": 4,
+  "boundary": "机器分类用于发现和初筛，不等于逐接口产品批准；资金写、CRM、支付、已下线能力默认不纳入当前产品。"
+}
