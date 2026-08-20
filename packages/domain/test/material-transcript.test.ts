@@ -275,6 +275,21 @@ describe("material transcript", () => {
     expect(getter).not.toHaveBeenCalled();
   });
 
+  it("rejects prototype-bearing whole-text output", async () => {
+    class ProviderResponse {
+      kind = "whole_text";
+      text = "hidden transcript";
+    }
+    const cloudAsr = { transcribe: vi.fn().mockResolvedValue(new ProviderResponse()) };
+
+    await expect(resolveTranscriptTimeline({
+      durationMs: 3_000,
+      mediaContentSha256: sha,
+      mediaHandle: "media-handle",
+      cloudAsr,
+    })).rejects.toMatchObject({ code: "cloud_asr_invalid" });
+  });
+
   it("accepts only the two explicit remote transcript sources", () => {
     expect(() => parseTranscriptTimeline({
       durationMs: 3_000,

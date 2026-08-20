@@ -1,11 +1,14 @@
 import type { CloudAsrPort } from "@ka/domain";
 
 const MAX_TRANSCRIPT_CHARS = 200_000;
+const MAX_MEDIA_DURATION_MS = 24 * 60 * 60 * 1_000;
+const MAX_MEDIA_HANDLE_CHARS = 4_096;
 const SAFE_PROVIDER_VALUE = /^[A-Za-z0-9._:/-]{1,200}$/;
 const SAFE_SHA256 = /^[a-f0-9]{64}$/;
 
 export type WholeTextCloudAsrFailureReason =
   | "invalid_config"
+  | "invalid_input"
   | "transport_failed"
   | "invalid_output";
 
@@ -65,6 +68,7 @@ export class WholeTextCloudAsrAdapter implements CloudAsrPort {
     readonly mediaHandle: string;
     readonly durationMs: number;
   }): Promise<Readonly<{ kind: "whole_text"; text: string }>> {
+    assertSafeInput(input);
     let response: unknown;
     try {
       response = await this.transport.transcribe({
@@ -80,28 +84,51 @@ export class WholeTextCloudAsrAdapter implements CloudAsrPort {
   }
 }
 
-function parseWholeText(value: unknown): string {
-  if (value === null || typeof value !== "object" || Array.isArray(value)) {
-    throw new WholeTextCloudAsrError("invalid_output");
-  }
-  const prototype = Object.getPrototypeOf(value);
-  if (prototype !== Object.prototype && prototype !== null) {
-    throw new WholeTextCloudAsrError("invalid_output");
-  }
-  const descriptors = Object.getOwnPropertyDescriptors(value);
+function assertSafeInput(input: {
+  readonly mediaContentSha256: string;
+  readonly mediaHandle: string;
+  readonly durationMs: number;
+}): void {
   if (
-    Object.keys(descriptors).length !== 1 ||
-    descriptors.text?.get !== undefined ||
-    descriptors.text?.set !== undefined ||
-    typeof descriptors.text?.value !== "string"
+    !SAFE_SHA256.test(input.mediaContentSha256) ||
+    input.mediaHandle.trim() === "" ||
+    input.mediaHandle.length > MAX_MEDIA_HANDLE_CHARS ||
+    hasUnsafeControlCharacter(input.mediaHandle) ||
+    !Number.isSafeInteger(input.durationMs) ||
+    input.durationMs <= 0 ||
+    input.durationMs > MAX_MEDIA_DURATION_MS
   ) {
-    throw new WholeTextCloudAsrError("invalid_output");
+    throw new WholeTextCloudAsrError("invalid_input");
   }
-  const text = descriptors.text.value.trim();
+}
+
+function parseWholeText(value: unknown): string {
+  const text = readStrictTextProperty(value).trim();
   if (text === "" || text.length > MAX_TRANSCRIPT_CHARS || hasUnsafeControlCharacter(text)) {
     throw new WholeTextCloudAsrError("invalid_output");
   }
   return text;
+}
+
+function readStrictTextProperty(value: unknown): string {
+  if (!isPlainRecord(value)) throw new WholeTextCloudAsrError("invalid_output");
+  const descriptors = Object.getOwnPropertyDescriptors(value);
+  const textDescriptor = descriptors.text;
+  if (
+    Object.keys(descriptors).length !== 1 ||
+    textDescriptor?.get !== undefined ||
+    textDescriptor?.set !== undefined ||
+    typeof textDescriptor?.value !== "string"
+  ) {
+    throw new WholeTextCloudAsrError("invalid_output");
+  }
+  return textDescriptor.value;
+}
+
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
 }
 
 function hasUnsafeControlCharacter(value: string): boolean {

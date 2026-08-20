@@ -72,14 +72,28 @@ export function parseTranscriptTimeline(input: ParseTranscriptTimelineInput): Tr
   const durationMs = positiveBoundedInteger(input.durationMs, MAX_DURATION_MS);
   const source = parseSource(input.source);
   const timingPrecision = parseTimingPrecision(input.timingPrecision ?? "segment");
-  if (!Array.isArray(input.segments) || input.segments.length === 0 || input.segments.length > MAX_SEGMENTS) {
+  const segments = parseTranscriptSegments(input.segments, durationMs, source, timingPrecision);
+  assertWholeVideoTimeline(timingPrecision, segments, durationMs);
+  const base = { durationMs, source, timingPrecision, segments: Object.freeze(segments) };
+  return Object.freeze({
+    ...base,
+    fingerprint: hashTimeline(base),
+  });
+}
+
+function parseTranscriptSegments(
+  value: unknown,
+  durationMs: number,
+  source: TranscriptSource,
+  timingPrecision: TranscriptTimingPrecision,
+): TranscriptSegment[] {
+  if (!Array.isArray(value) || value.length === 0 || value.length > MAX_SEGMENTS) {
     throw invalidTranscript();
   }
-
   let totalTextLength = 0;
   let previousEndMs = 0;
-  const segments = input.segments.map((value): TranscriptSegment => {
-    const record = safeSegmentRecord(value);
+  return value.map((item): TranscriptSegment => {
+    const record = safeSegmentRecord(item);
     const startMs = nonnegativeInteger(record.startMs);
     const endMs = positiveBoundedInteger(record.endMs, durationMs);
     const text = safeText(record.text);
@@ -89,19 +103,19 @@ export function parseTranscriptTimeline(input: ParseTranscriptTimelineInput): Tr
     if (totalTextLength > MAX_TOTAL_TEXT) throw invalidTranscript();
     return Object.freeze({ startMs, endMs, text, source, timingPrecision });
   });
+}
 
+function assertWholeVideoTimeline(
+  timingPrecision: TranscriptTimingPrecision,
+  segments: readonly TranscriptSegment[],
+  durationMs: number,
+): void {
   if (
     timingPrecision === "whole_video" &&
     (segments.length !== 1 || segments[0]?.startMs !== 0 || segments[0]?.endMs !== durationMs)
   ) {
     throw invalidTranscript();
   }
-
-  const base = { durationMs, source, timingPrecision, segments: Object.freeze(segments) };
-  return Object.freeze({
-    ...base,
-    fingerprint: hashTimeline(base),
-  });
 }
 
 export async function resolveTranscriptTimeline(
@@ -223,6 +237,8 @@ function parseTimingPrecision(value: unknown): TranscriptTimingPrecision {
 
 function isWholeTextOutput(value: unknown): boolean {
   if (value === null || typeof value !== "object" || Array.isArray(value)) return false;
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== null) return false;
   const descriptors = Object.getOwnPropertyDescriptors(value);
   const keys = Object.keys(descriptors);
   return (

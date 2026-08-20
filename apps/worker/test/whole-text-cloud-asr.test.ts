@@ -78,4 +78,17 @@ describe("WholeTextCloudAsrAdapter", () => {
     })).toThrowError(WholeTextCloudAsrError);
     expect(transcribe).not.toHaveBeenCalled();
   });
+
+  it("rejects an unsafe media identity before invoking the transport", async () => {
+    const transcribe = vi.fn(async () => ({ text: "文本" }));
+    const instance = adapter({ transcribe });
+
+    await expect(instance.transcribe({ ...input, mediaContentSha256: "not-a-sha" }))
+      .rejects.toMatchObject({ reason: "invalid_input" });
+    await expect(instance.transcribe({ ...input, mediaHandle: "\0unsafe" }))
+      .rejects.toMatchObject({ reason: "invalid_input" });
+    await expect(instance.transcribe({ ...input, durationMs: 0 }))
+      .rejects.toMatchObject({ reason: "invalid_input" });
+    expect(transcribe).not.toHaveBeenCalled();
+  });
 });
