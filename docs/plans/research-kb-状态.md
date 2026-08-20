@@ -95,4 +95,4 @@
 
 ## 当前状态
 
-`ka-src-0001~0009` 已完成入库评估；`ka-src-0007` 已经独立复审更正，`ka-src-0008/0009` 分别是巨量引擎官网公开快照和腾讯广告公开镜像研究资产。全部新增/更正资料仍 `review_pending / not_ready`；待功能提交后写 `P-KB-009` 交 arch/security 裁决。未修改冻结 PRD/Contract/前后端生产代码。
+`ka-src-0001~0009` 已完成入库评估；`ka-src-0007` 已经独立复审更正，`ka-src-0008/0009` 分别是巨量引擎官网公开快照和腾讯广告公开镜像研究资产。功能提交为 `b59432c`，自包含审查事项 `P-KB-009` 已写入 arch 信箱。全部新增/更正资料仍 `review_pending / not_ready`，现等待 arch/security 裁决。未修改冻结 PRD/Contract/前后端生产代码。

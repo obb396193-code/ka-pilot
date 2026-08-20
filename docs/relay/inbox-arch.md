@@ -1186,3 +1186,144 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - 381/381 capability_id 唯一；CLI 25/23/2 汇总与逐条矩阵一致。
 - worktree 与正式项目 private `diff -qr` 无差异。
 - `git diff --check` 通过；`git ls-files private/knowledge-sources` 无输出。
+
+### P-KB-009 三媒体官方资料扩展、快手 MAPI 独立复审与 AI 实验编排裁决｜research/knowledge（Codex）
+
+- 派活方：资料研究与知识资产 Agent（Codex）
+- 日期：2026-08-21
+- 状态：待处理
+- 关系：本条更正 `P-KB-008` 的 CLI/机器分类口径，并新增 `ka-src-0008/0009`；不删除历史回执。
+
+#### 1. 角色注册与修改边界
+
+我是 **KA 投放经营平台“资料研究与知识资产 Agent”**，负责把内部/外部资料建设为“项目共享资料库 → 分析审查 → 批准后发布产品知识库”的同源资产。本角色注册提议已在 `docs/relay/README.md`/`P-KB-001`；本条不假设审查 Agent 认识我。
+
+- 可改：ignored 的 `private/knowledge-sources/`、`docs/knowledge/`、资料抓取/分类/校验脚本、自己的状态/台账和审查信箱追加项。
+- 不可改：冻结 PRD、Contract、前后端生产代码、媒体生产账户、其他角色边界；不替 arch 把研究候选变成产品承诺。
+- 本批仅匿名读官网公开文档/公开镜像和本机 CLI 源码；未登录媒体，未取业务 token，未调用广告账户接口，未执行任何媒体写操作。
+
+#### 2. 分支、worktree、基线与提交
+
+- 分支：`codex/shared-source-library`
+- 独立 worktree：`/private/tmp/codex-research-kb2`
+- 本轮基线：`d540086`（原 worktree 被系统清理后在同分支重建）
+- **功能提交 SHA：`b59432c`**
+- 上一轮快手功能 SHA：`2faa8ea`；本轮修正其 CLI 方法、版本和机器初筛口径。
+- 未修改主工作区 tracked 文件；未修改冻结 PRD/Contract 或生产代码。
+
+#### 3. 资料目录、索引、评估与 storage_ref
+
+共享入口：
+
+- 目录：`docs/knowledge/README.md`
+- 机器索引：`docs/knowledge/catalog.jsonl`
+- Agent 检索纪律：`docs/knowledge/agent-retrieval-guide.md`
+- 产品知识库发布映射：`docs/knowledge/product-kb-publishing.md`
+- canonical private root：`/Users/aik/Desktop/投放agent/private/knowledge-sources/`
+
+| document_id | 资料/评估 | storage_ref | manifest SHA-256 | archive SHA-256 | 状态 |
+|---|---|---|---|---|---|
+| `ka-src-0007` | `docs/knowledge/assessments/ka-src-0007.md` + `docs/knowledge/guides/ka-src-0007-official-ad-knowledge.md` | `private/knowledge-sources/ka-src-0007/source-manifest.json` | `42ca801ea1e2dfb0bd86f37db89d1bfdade75110af62d995c1e05582a3d35723` | `5964328f906ba388629d705c146488409f58167b776372f28eda96703d61f604` | E1/public/review_pending/not_ready |
+| `ka-src-0008` | `docs/knowledge/assessments/ka-src-0008.md` | `private/knowledge-sources/ka-src-0008/source-manifest.json` | `d6e3b759505d050ad7d7deefddf42b89fec4a5a2d1fd16f9f205ccff499bf82d` | `c488239ccf946960a82d15da81b5d119813df7f344b42aad003ecc40e2cec82f` | E1/public/review_pending/not_ready |
+| `ka-src-0009` | `docs/knowledge/assessments/ka-src-0009.md` | `private/knowledge-sources/ka-src-0009/source-manifest.json` | `149a9865de944af9802f3602b4b9f866ab984e4ee99c8ae2dac0549ed6d2cc67` | `69127e89c9a17a68e96e10fefdb08287cf815e441fd101b83d01c2de88583a02` | E2/public/research/review_pending/not_ready |
+
+机器分析附件：
+
+- `docs/knowledge/datasets/ka-src-0007-capability-coverage.jsonl`
+- `docs/knowledge/datasets/ka-src-0007-capability-summary.json`
+- `docs/knowledge/datasets/ka-src-0008-product-relevance-summary.json`
+- `docs/knowledge/datasets/ka-src-0009-product-relevance-summary.json`
+
+#### 4. 哪些进 Git，哪些只在 private
+
+进入 Git：catalog 元数据、3 篇评估/专题导读、3 份机器摘要/能力矩阵、Agent 检索和发布规则、抓取/分类/校验脚本与测试、状态台账和本审查单。Git 内不包业务凭证或媒体账户数据。
+
+只在 ignored private：
+
+- `ka-src-0007`：381 当前 +291 旧版详情、29 个官方外链富文本 HTML、708 条受 hash 保护归档；早期 31 页首批快照已保留为 `source.initial-snapshot.superseded.md`，`source.md` 只是 canonical 指针。
+- `ka-src-0008`：巨量引擎 1103 篇完整详情、菜单树、结构化/正文引用路径索引、manifest 与 zip。
+- `ka-src-0009`：腾讯广告镜像 315 页 Markdown、endpoint 索引、320 个官方原站引用 URL、冲突清单、manifest 与 zip。
+
+三者的 private 工作副本和 canonical root 已校验 hash/diff；`git ls-files private/knowledge-sources` 无输出。
+
+#### 5. 已确认事实、合理推断与未证实
+
+已确认事实：
+
+- 快手：抓取日官网未登录可访问 DSP 当前目录 15 一级分组/385 挂载/381 唯一文档，旧版 17/296/291；672/672 详情、29/29 外链富文本成功，708 条 manifest/hash 复算通过。这只是“当日公开 DSP 菜单快照”，不是快手全站/登录后/白名单绝对全量。
+- 快手 CLI：25 个常量路径与当前官方目录精确匹配；23 个有注册命令路径，21 个 HTTP 方法对齐，`fund/get` 和 `fund/daily_flows` 官方为 GET 但 CLI 固定 POST，2 个只定义常量，运行验证为 0。版本是 zip 1.0.2 / PKG-INFO 1.2.0 / 代码与 UA 1.2.1 三方冲突。
+- 巨量：官网未登录公开 `BUSINESS + LASTEST_UPDATES` 树去重后为 29 标签节点、2990 挂载、1103 唯一文档，1103/1103 详情成功，815 篇有结构化主接口，715 个结构化唯一路径，失败 0；标签 29 是预期导航节点异常。Scope 清单正文列出 AB 实验 create/update/list/info 4 条路径，但它们不是该页的结构化主接口。
+- 腾讯：公开 Apifox 索引 315=8 指南+307 API，315/315 成功；307 篇为 297 个镜像原始唯一路径，纠正已知冲突后 298。镜像 306 篇存在 Query 参数被 OpenAPI 标为 header 的转换错位，server 也含错域名/占位域名；“运营推荐弹幕”路径与腾讯官方原站冲突，已保留 observed/corrected 双值。
+- 腾讯 split-test：镜像有 add/update/delete/get 四页；创建绑 2–5 广告组，正常运行时不允许更新绑定广告组，全量后不再分流；正常/暂停时删除实验可连带删除关联广告。
+
+合理推断（待 arch/业务/统计审查）：
+
+- 巨量与腾讯文档可用于跨渠道 canonical object model、Capability Registry 和未来 adapter 设计，但不应改变“一期只快手”。
+- AI 实验编排值得进 P2；媒体原生实验只是 provider adapter，我方仍需假设、对照/变体、流量、主指标、guardrail、样本和统计决策的统一治理。
+- 实验设计与实时自动调控不是绝对矛盾；但未受控调价/预算/定向/媒体自动优化会污染实验。建议实验期间默认冻结未声明变更，只允许预注册 guardrail 中止，并标记数据截断/污染。
+- 当前 KA 产品仍应定位为“可控自治灰盒”：AI 可做诊断、策略/实验草案和低风险白名单自动化，写操作仍受变更集、确认门、回查和效果回收约束。
+
+未证实：
+
+- 三媒体任一当前公司 App/账户的 OAuth/Scope/白名单/实际可调用性；所有运行能力仍是 `unknown`。
+- 巨量 AB 4 路径的当前请求/响应 Contract，以及随机化、分层、显著性和污染检测。
+- 腾讯 Apifox 项目 3515798 的所有者是否为腾讯官方；因此不写“官方托管”，不允许其 OpenAPI 生成 Contract/SDK。
+- 腾讯 split-test 的随机分流、可配比例、统计方法、`smart_expand` 灰度范围和当前账户权限。
+- 快手 59/249/73 分类中每一条的业务价值和风险；已确认存在“上传被误标删除”“授权查询被误标写操作”等机器初筛假阳性。
+
+#### 6. 对产品的处置建议
+
+建议进入 PRD/Contract **后续候选**（本批不改冻结文档）：
+
+1. Capability Registry 补 provider/media/document/version/scope/whitelist/authorization/wrapped/method-or-contract-aligned/runtime-verified/product-enabled 状态。
+2. P2 实验编排建统一 experiment/variant/control/traffic/metric/guardrail/statistical decision 状态机，媒体原生 AB 只作 adapter。
+3. 实验运行锁与变更治理：默认冻结未声明调控，guardrail 中止要标数据截断/污染。
+4. 官方/镜像来源优先级、`source_conflict`、`contract_status`、`source_authority` 的知识发布治理。
+
+建议只进入知识库/研发证据：
+
+- 快手 672 篇公开 DSP 当前/旧版快照和 381 条未逐条审批矩阵；只能按具体 documentId/endpoint 引用。
+- 巨量 1103 篇动态快照中的对象、Scope、限制、术语与接口索引；hidden/非当前 KA 产品线默认不召回。
+- 腾讯 315 页 E2 镜像只作官方原站定位和字段线索；实现前必须回 `developers.e.qq.com` 复核。
+- 快手/巨量/腾讯官方对象、授权、报表、实验和写操作语义的专题导读。
+
+建议驳回：
+
+- 因公开文档存在就宣称账户已授权/已封装/已可用。
+- 一期同时开发巨量/腾讯，或为追求“接口全量”一次性封装数百路径。
+- 使用腾讯镜像 OpenAPI 直接生成 SDK/Contract。
+- 让 Agent 绕过变更集/确认门自动调价、调预算、关停或删除对象；腾讯实验 delete 尤其禁止无确认执行。
+- 代理商充值/转账/退款/共享钱包写操作、CRM/企微/第三方支付和已下线/历史能力进入当前 KA 默认工具集。
+- 把媒体“智能”品牌或原生自动优化字段当作我方黑盒 AI 全闭环已实现证据。
+
+#### 7. 产品知识库发布建议
+
+当前**不允许发布**：`ka-src-0007/0008/0009` 均保持 `review_pending/not_ready`。
+
+- `ka-src-0007`：审查通过后可考虑发布无凭证结构化摘要/官方链接；381 条矩阵必须继续显示“机器初筛、运行未验证”。
+- `ka-src-0008`：先由 arch 决定哪些巨量产品线可进默认召回；不建议全量 1103 页直接进产品 Agent 默认知识。
+- `ka-src-0009`：镜像归属和 Contract 错误未解决，当前只建议项目研发检索，不建议发布为正式产品口径。
+- 即使后续发布，产品内 Agent 也必须查运行时 Capability Registry，不得凭知识文档直接执行媒体写操作。
+
+#### 8. 请 arch/security/业务审查并回写 ✅/❌
+
+1. 是否接受快手独立复审更正：25 常量/23 命令路径/21 方法对齐/2 方法冲突/2 只定义/0 运行验证，并用本条覆盖 `P-KB-008` 的 `wrapped_reachable`“可用”暗示？
+2. 是否批准快手 672 篇作为“抓取日公开 DSP 菜单快照” E1 研发证据，但将 381 条能力矩阵保持未逐条批准？
+3. 是否批准巨量 1103 篇快照为 E1 研发检索证据，并同意区分 `structured_endpoint` 与 `referenced_endpoint_candidates`？
+4. 是否同意腾讯资产保持 E2/research、镜像归属待补证、OpenAPI 禁止 SDK/Contract 生成？
+5. 是否将 AI 实验编排放入 P2，并将巨量 AB/腾讯 split-test 仅视为 provider-native adapter 候选？
+6. 是否接受实验与实时调控兼容规则：实验期间默认冻结未声明变更，只允许预注册 guardrail 中止，截断/污染必须入实验事件？
+7. 腾讯 split-test delete 是否一律 L3 + Web 明细确认，严禁 Agent 无人确认执行？
+8. 是否保持一期只快手，巨量/腾讯 adapter 只在后续路线图且完成 OAuth/Scope/沙箱实证后立项？
+9. 是否同意快手 59/249/73、巨量 1103 和腾讯 315 的机器分类都只是发现层，不能整批发布/实现？
+10. 产品知识库是否先只发快手/巨量的审查后结构化摘要，腾讯镜像暂留项目研发检索？
+11. 腾讯官方原站 320 个引用 URL 中的枚举/专题/公告/附件，是建第二批公开归档，还是仅在开发需求时按需抓取？
+12. 请回写审查人/时间、逐项结论、可融合 PRD 候选、仅知识项、驳回项、补证清单、是否允许发布产品知识库及产出 SHA；未批准前不要修改冻结 PRD/Contract。
+
+#### 9. 验证与环境注记
+
+- 本轮功能提交：`b59432c`；`git show --stat` 已自查。
+- 本任务 34/34 Node 测试通过（catalog + 快手/巨量/腾讯抓取与分类）。
+- catalog/bundle validator 通过；0008/0009 zip 完整性通过；manifest 关键计数和 0007 CLI 23/21/2/2 聚合断言通过。
+- 0008/0009 worktree private 与 canonical private `diff -qr` 无差异；`git diff --check` 通过；private 全部命中 `.gitignore`，`git ls-files private/knowledge-sources` 无输出。
+- 全仓 `scripts/*.test.mjs` 额外命中与本任务无关的 UI 资产导出测试，因系统数据盘仅余约 137MiB 而 `ENOSPC`；本任务定向测试/校验全通过，未修改 UI 资产代码。
