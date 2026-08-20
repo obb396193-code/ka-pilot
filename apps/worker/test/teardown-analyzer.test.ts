@@ -33,19 +33,36 @@ function evidence() {
       averageShotLengthMs: 1_500,
       hookVisualDensity: 1,
     },
-    promptVersion: "teardown-v2",
+    promptVersion: "teardown-v3",
     schemaVersion: "1",
   });
 }
 
 function validOutput() {
   return {
+    alignmentStatus: "exact_transcript_timing",
     summary: "用问题开场并给出解决承诺。",
     hook: { kind: "question", text: "问题钩子", evidenceIds: ["transcript-0000"] },
     sellingPoints: [{ text: "提供解决办法", evidenceIds: ["transcript-0001"] }],
     audiences: ["遇到该问题的人群"],
     rhythm: { description: "前段短促，后段承接", evidenceIds: ["shot-0000"] },
     cta: { text: "没有明确行动号召", evidenceIds: ["transcript-0001"] },
+    semanticSections: [
+      {
+        order: 1,
+        role: "hook",
+        title: "问题开场",
+        description: "先提出问题",
+        evidenceIds: ["transcript-0000"],
+      },
+      {
+        order: 2,
+        role: "body",
+        title: "解决承诺",
+        description: "随后承诺给出解决办法",
+        evidenceIds: ["transcript-0001"],
+      },
+    ],
     segments: [
       { startMs: 0, endMs: 1_000, role: "hook", description: "提出问题", evidenceIds: ["transcript-0000"] },
       { startMs: 1_000, endMs: 3_000, role: "body", description: "承诺解法", evidenceIds: ["transcript-0001"] },
@@ -75,26 +92,37 @@ function wholeVideoEvidence() {
       averageShotLengthMs: 3_000,
       hookVisualDensity: 0,
     },
-    promptVersion: "teardown-v2",
+    promptVersion: "teardown-v3",
     schemaVersion: "1",
   });
 }
 
 function wholeVideoOutput() {
   return {
+    alignmentStatus: "unavailable_whole_video",
     summary: "全文包含问题和解法，但无法逐句定位。",
     hook: { kind: "other", text: "钩子候选位置不确定", evidenceIds: ["transcript-0000"] },
     sellingPoints: [{ text: "提供解决方案", evidenceIds: ["transcript-0000"] }],
     audiences: ["遇到该问题的人群"],
     rhythm: { description: "仅能依据镜头边界", evidenceIds: ["shot-0000"] },
     cta: { text: "全文无明确行动号召", evidenceIds: ["transcript-0000"] },
-    segments: [{
-      startMs: 0,
-      endMs: 3_000,
-      role: "other",
-      description: "整段诊断",
-      evidenceIds: ["transcript-0000", "shot-0000"],
-    }],
+    semanticSections: [
+      {
+        order: 1,
+        role: "hook",
+        title: "问题引入",
+        description: "全文先提出问题",
+        evidenceIds: ["transcript-0000"],
+      },
+      {
+        order: 2,
+        role: "body",
+        title: "解决方案",
+        description: "全文随后给出解决方案",
+        evidenceIds: ["transcript-0000"],
+      },
+    ],
+    segments: [],
     replicationSuggestions: ["复用全文表达逻辑"],
     uncertainties: ["整段转写没有句级时间戳"],
   };
@@ -134,21 +162,24 @@ describe("TeardownAnalyzer", () => {
     expect(second.analysisFingerprint).not.toBe(first.analysisFingerprint);
   });
 
-  it("accepts whole-video diagnosis but rejects fabricated precise segments", async () => {
+  it("accepts whole-video semantic sections but rejects fabricated precise segments", async () => {
     await expect(new TeardownAnalyzer(port(wholeVideoOutput())).analyze(wholeVideoEvidence()))
-      .resolves.toMatchObject({ result: { segments: [{ startMs: 0, endMs: 3_000 }] } });
+      .resolves.toMatchObject({ result: { semanticSections: [{ order: 1 }, { order: 2 }], segments: [] } });
 
     await expect(new TeardownAnalyzer(port({
       ...wholeVideoOutput(),
-      segments: [
-        { ...wholeVideoOutput().segments[0], endMs: 1_000 },
-        { ...wholeVideoOutput().segments[0], startMs: 1_000 },
-      ],
+      segments: [{
+        startMs: 0,
+        endMs: 3_000,
+        role: "other",
+        description: "伪造时间段",
+        evidenceIds: ["transcript-0000"],
+      }],
     })).analyze(wholeVideoEvidence())).rejects.toMatchObject({ reason: "invalid_output" });
 
     await expect(new TeardownAnalyzer(port({
       ...wholeVideoOutput(),
-      segments: [{ ...wholeVideoOutput().segments[0], role: "hook" }],
+      alignmentStatus: "exact_transcript_timing",
     })).analyze(wholeVideoEvidence())).rejects.toMatchObject({ reason: "invalid_output" });
   });
 

@@ -3,11 +3,11 @@ import { readFile } from "node:fs/promises";
 
 import type { MaterialTeardownEvidence } from "@ka/domain";
 
-export const TEARDOWN_PROMPT_VERSION = "teardown-v2";
+export const TEARDOWN_PROMPT_VERSION = "teardown-v3";
 export const TEARDOWN_SOURCE_SHA256 = "fb30d574a0bc93efa9a812a1d894b09725b69650a2cfbe376bc9730eb97cacff";
-export const TEARDOWN_TEMPLATE_SHA256 = "e0b8e4fb7450642b8e2818aef71a6b5f8691a374284fdb0e207dec911e9cd194";
+export const TEARDOWN_TEMPLATE_SHA256 = "e4fa13208cb48dc2276fd29910c5f9c0f1aa7e1fdd18ba96ea3fd4fdf3798adb";
 const DEFAULT_MAX_PROMPT_CHARS = 1_000_000;
-const templateUrl = new URL("./prompts/teardown-v2.md", import.meta.url);
+const templateUrl = new URL("./prompts/teardown-v3.md", import.meta.url);
 
 export class TeardownPromptError extends Error {
   constructor(readonly reason: "unsafe_input" | "prompt_too_large" | "template_drift") {

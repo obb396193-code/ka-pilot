@@ -54,7 +54,7 @@ function film(): FilmAnalysisResult {
 function analysis(evidenceFingerprint: string, model = "model-a"): WorkerAnalysis {
   const analysisFingerprint = fingerprintMaterialTeardownAnalysis({
     evidenceFingerprint,
-    promptVersion: "teardown-v2",
+    promptVersion: "teardown-v3",
     schemaVersion: "1",
     providerId: "provider-a",
     model,
@@ -62,12 +62,29 @@ function analysis(evidenceFingerprint: string, model = "model-a"): WorkerAnalysi
   });
   return {
     result: {
+      alignmentStatus: "exact_transcript_timing",
       summary: "问题开场并承诺解决方案",
       hook: { kind: "question", text: "问题钩子", evidenceIds: ["transcript-0000"] },
       sellingPoints: [{ text: "解决方案", evidenceIds: ["transcript-0001"] }],
       audiences: ["目标用户"],
       rhythm: { description: "前快后稳", evidenceIds: ["shot-0000"] },
       cta: { text: "无明确 CTA", evidenceIds: ["transcript-0001"] },
+      semanticSections: [
+        {
+          order: 1,
+          role: "hook",
+          title: "问题开场",
+          description: "提出问题",
+          evidenceIds: ["transcript-0000"],
+        },
+        {
+          order: 2,
+          role: "body",
+          title: "解决方案",
+          description: "说明解法",
+          evidenceIds: ["transcript-0001"],
+        },
+      ],
       segments: [
         { startMs: 0, endMs: 1_000, role: "hook", description: "问题", evidenceIds: ["transcript-0000"] },
         { startMs: 1_000, endMs: 3_000, role: "body", description: "解法", evidenceIds: ["transcript-0001"] },
@@ -77,7 +94,7 @@ function analysis(evidenceFingerprint: string, model = "model-a"): WorkerAnalysi
     },
     analysisFingerprint,
     evidenceFingerprint,
-    promptVersion: "teardown-v2",
+    promptVersion: "teardown-v3",
     promptTemplateSha256: "a".repeat(64),
     schemaVersion: "1",
     providerId: "provider-a",
@@ -89,7 +106,7 @@ function analysis(evidenceFingerprint: string, model = "model-a"): WorkerAnalysi
 
 function profile(model = "model-a") {
   return {
-    promptVersion: "teardown-v2",
+    promptVersion: "teardown-v3",
     schemaVersion: "1",
     providerId: "provider-a",
     model,
