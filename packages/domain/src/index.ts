@@ -21,4 +21,5 @@ export * from "./workflow-runtime.js";
 export * from "./knowledge-document.js";
 export * from "./knowledge-references.js";
 export * from "./knowledge-access.js";
+export * from "./material-transcript.js";
 export * from "./hourly-ad-metrics.js";
