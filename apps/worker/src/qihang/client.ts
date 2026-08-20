@@ -145,6 +145,19 @@ function compactQihangDate(value: string, name: string): string {
   return compact;
 }
 
+function qihangCumulativeHour(value: number | string | undefined): number | undefined {
+  if (value === undefined) return undefined;
+  const parsed = typeof value === "number"
+    ? value
+    : /^\d+$/.test(value)
+      ? Number(value)
+      : Number.NaN;
+  if (!Number.isInteger(parsed) || parsed < 0 || parsed > 24) {
+    throw new QihangError("hh must be an integer between 0 and 24");
+  }
+  return parsed;
+}
+
 export class QihangClient {
   private readonly baseUrl: string;
   private readonly fetchFn: FetchLike;
@@ -287,7 +300,7 @@ export class QihangClient {
         break;
       case "ad_realtime":
         appendParam(url.searchParams, "ds", compactQihangDate(query.ds, "ds"));
-        appendParam(url.searchParams, "hh", query.hh);
+        appendParam(url.searchParams, "hh", qihangCumulativeHour(query.hh));
         appendParam(url.searchParams, "adIds", query.adIds);
         break;
     }

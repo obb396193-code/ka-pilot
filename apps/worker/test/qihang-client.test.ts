@@ -119,6 +119,44 @@ describe("QihangClient", () => {
     expect(realtimeUrl.searchParams.get("ds")).toBe("20260820");
   });
 
+  it.each([0, 23, 24, "0", "23", "24"])(
+    "accepts a confirmed Qihang cumulative hour boundary: %s",
+    async (hh) => {
+      const fetchFn = vi.fn<typeof fetch>(async () =>
+        jsonResponse({ successful: true, data: [] }),
+      );
+      const client = new QihangClient({ fetchFn });
+
+      await client.query({
+        resource: "ad_realtime",
+        userId: "u1",
+        ds: "20260819",
+        accountIds: ["a1"],
+        hh,
+      });
+
+      const calledUrl = new URL(fetchFn.mock.calls[0]?.[0] as string);
+      expect(calledUrl.searchParams.get("hh")).toBe(String(hh));
+    },
+  );
+
+  it.each([-1, 25, 1.5, "-1", "25", "1.5", "", "not-an-hour"])(
+    "rejects an unsafe Qihang cumulative hour before sending a request: %s",
+    async (hh) => {
+      const fetchFn = vi.fn<typeof fetch>();
+      const client = new QihangClient({ fetchFn });
+
+      await expect(client.query({
+        resource: "ad_realtime",
+        userId: "u1",
+        ds: "20260819",
+        accountIds: ["a1"],
+        hh,
+      })).rejects.toThrow(/hh.*0.*24/i);
+      expect(fetchFn).not.toHaveBeenCalled();
+    },
+  );
+
   it.each(["2026/08/20", "2026-02-30"])(
     "rejects malformed or impossible dates before sending a request: %s",
     async (ds) => {
