@@ -1,12 +1,17 @@
 import { z } from "zod";
 
+import { DEFAULT_MAX_QIHANG_IDS_PER_QUERY } from "../qihang/client.js";
+
 const isoDate = /^\d{4}-\d{2}-\d{2}$/;
 
 const common = z.object({
   workspaceId: z.string().uuid(),
   userId: z.string().trim().min(1),
   media: z.string().trim().min(1).default("KUAISHOU"),
-  accountIds: z.array(z.string().trim().min(1)).default([]),
+  accountIds: z
+    .array(z.string().trim().min(1))
+    .max(DEFAULT_MAX_QIHANG_IDS_PER_QUERY)
+    .default([]),
   fetchedByUserId: z.string().uuid().nullable().default(null),
 });
 
@@ -20,8 +25,14 @@ export const fullEtlPayloadSchema = common.extend({
 
 export const incrementalEtlPayloadSchema = common.extend({
   ds: z.string().regex(isoDate),
-  focusAccountIds: z.array(z.string().trim().min(1)).default([]),
-  adIds: z.array(z.string().trim().min(1)).default([]),
+  focusAccountIds: z
+    .array(z.string().trim().min(1))
+    .max(DEFAULT_MAX_QIHANG_IDS_PER_QUERY)
+    .default([]),
+  adIds: z
+    .array(z.string().trim().min(1))
+    .max(DEFAULT_MAX_QIHANG_IDS_PER_QUERY)
+    .default([]),
   hh: z.number().int().min(0).max(23).optional(),
 });
 

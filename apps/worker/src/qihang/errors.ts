@@ -27,6 +27,10 @@ export class QihangBusinessError extends QihangError {
   }
 }
 
+export class QihangResourceLimitError extends QihangError {
+  readonly code = "RESOURCE_LIMIT";
+}
+
 export class RetryExhaustedError extends QihangError {
   constructor(
     readonly attempts: number,

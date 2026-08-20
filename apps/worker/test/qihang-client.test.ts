@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   BlockedAuthError,
   QihangBusinessError,
+  QihangResourceLimitError,
   RetryExhaustedError,
 } from "../src/qihang/errors.js";
 import { QihangClient } from "../src/qihang/client.js";
@@ -140,5 +141,89 @@ describe("QihangClient", () => {
       client.query({ resource: "account_realtime", userId: "u1", ds: "20260819" }),
     ).rejects.toBeInstanceOf(QihangBusinessError);
     expect(fetchFn).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects an oversized declared response before reading its body", async () => {
+    let bodyRead = false;
+    const response = new Response("oversized", {
+      status: 200,
+      headers: { "content-length": "100" },
+    });
+    Object.defineProperty(response, "body", {
+      get() {
+        bodyRead = true;
+        return null;
+      },
+    });
+    const fetchFn = vi.fn(async () => response);
+    const client = new QihangClient({ fetchFn, maxResponseBytes: 10 });
+
+    await expect(
+      client.query({ resource: "account_realtime", userId: "u1", ds: "20260819" }),
+    ).rejects.toBeInstanceOf(QihangResourceLimitError);
+    expect(bodyRead).toBe(false);
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects an oversized streamed response when content-length is absent", async () => {
+    const fetchFn = vi.fn(async () => new Response("x".repeat(40), { status: 200 }));
+    const client = new QihangClient({ fetchFn, maxResponseBytes: 10 });
+
+    await expect(
+      client.query({ resource: "account_realtime", userId: "u1", ds: "20260819" }),
+    ).rejects.toBeInstanceOf(QihangResourceLimitError);
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects successful envelopes that exceed the configured row budget", async () => {
+    const fetchFn = vi.fn(async () =>
+      jsonResponse({ successful: true, data: [{ id: 1 }, { id: 2 }, { id: 3 }] }),
+    );
+    const client = new QihangClient({ fetchFn, maxRows: 2 });
+
+    await expect(
+      client.query({ resource: "account_realtime", userId: "u1", ds: "20260819" }),
+    ).rejects.toBeInstanceOf(QihangResourceLimitError);
+    expect(fetchFn).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects excessive account or ad identifiers before sending a request", async () => {
+    const fetchFn = vi.fn<typeof fetch>();
+    const client = new QihangClient({ fetchFn, maxIdsPerQuery: 1 });
+
+    await expect(
+      client.query({
+        resource: "ad_realtime",
+        userId: "u1",
+        ds: "20260819",
+        accountIds: ["a1", "a2"],
+        adIds: ["d1", "d2"],
+      }),
+    ).rejects.toBeInstanceOf(QihangResourceLimitError);
+    expect(fetchFn).not.toHaveBeenCalled();
+  });
+
+  it("rejects an oversized encoded query URL before sending a request", async () => {
+    const fetchFn = vi.fn<typeof fetch>();
+    const client = new QihangClient({ fetchFn, maxQueryUrlBytes: 100 });
+
+    await expect(
+      client.query({
+        resource: "account_realtime",
+        userId: "u1",
+        ds: "20260819",
+        accountIds: ["x".repeat(200)],
+      }),
+    ).rejects.toBeInstanceOf(QihangResourceLimitError);
+    expect(fetchFn).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { maxResponseBytes: 0 },
+    { maxRows: -1 },
+    { maxIdsPerQuery: 1.5 },
+    { maxQueryUrlBytes: Number.NaN },
+  ])("rejects an invalid resource limit: %o", (options) => {
+    expect(() => new QihangClient(options)).toThrow(/positive integer/i);
   });
 });
