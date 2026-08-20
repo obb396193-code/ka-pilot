@@ -140,6 +140,90 @@ describe("MaterialDownloadService", () => {
     expect(await readdir(root)).toEqual([]);
   });
 
+  it("rejects body content-type drift and removes the task directory", async () => {
+    const root = await testRoot();
+    const fetchFn = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response(null, {
+        status: 200,
+        headers: { "content-type": "video/mp4", "content-length": "3" },
+      }))
+      .mockResolvedValueOnce(new Response(Buffer.from([1, 2, 3]), {
+        status: 200,
+        headers: { "content-type": "video/webm", "content-length": "3" },
+      }));
+    const service = new MaterialDownloadService({
+      allowedHosts: ["cdn.example.com"],
+      fetchFn,
+      tempRoot: root,
+    });
+
+    await expect(service.download(candidate)).rejects.toMatchObject({
+      reason: "content_length_mismatch",
+    });
+    expect(await readdir(root)).toEqual([]);
+  });
+
+  it("rejects a malformed GET length and an empty response body", async () => {
+    const root = await testRoot();
+    const malformedLength = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response(null, {
+        status: 200,
+        headers: { "content-type": "video/mp4", "content-length": "3" },
+      }))
+      .mockResolvedValueOnce(new Response(Buffer.from([1, 2, 3]), {
+        status: 200,
+        headers: { "content-type": "video/mp4", "content-length": "not-a-number" },
+      }));
+    await expect(new MaterialDownloadService({
+      allowedHosts: ["cdn.example.com"],
+      fetchFn: malformedLength,
+      tempRoot: root,
+    }).download(candidate)).rejects.toMatchObject({ reason: "content_length_mismatch" });
+
+    const emptyBody = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response(null, {
+        status: 200,
+        headers: { "content-type": "video/mp4", "content-length": "3" },
+      }))
+      .mockResolvedValueOnce(new Response(null, {
+        status: 200,
+        headers: { "content-type": "video/mp4", "content-length": "3" },
+      }));
+    await expect(new MaterialDownloadService({
+      allowedHosts: ["cdn.example.com"],
+      fetchFn: emptyBody,
+      tempRoot: root,
+    }).download(candidate)).rejects.toMatchObject({ reason: "download_failed" });
+    expect(await readdir(root)).toEqual([]);
+  });
+
+  it("rejects a short body even when GET omits content-length", async () => {
+    const root = await testRoot();
+    const fetchFn = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response(null, {
+        status: 200,
+        headers: { "content-type": "video/mp4", "content-length": "3" },
+      }))
+      .mockResolvedValueOnce(new Response(Buffer.from([1, 2]), {
+        status: 200,
+        headers: { "content-type": "video/mp4" },
+      }));
+    const service = new MaterialDownloadService({
+      allowedHosts: ["cdn.example.com"],
+      fetchFn,
+      tempRoot: root,
+    });
+
+    await expect(service.download(candidate)).rejects.toMatchObject({
+      reason: "content_length_mismatch",
+    });
+    expect(await readdir(root)).toEqual([]);
+  });
+
   it("stops streaming when actual bytes exceed the admitted length and removes partial files", async () => {
     const root = await testRoot();
     const fetchFn = vi
@@ -241,5 +325,20 @@ describe("MaterialDownloadService", () => {
     expect(first.path).not.toBe(second.path);
     await Promise.all([first.release(), second.release()]);
     expect(await readdir(root)).toEqual([]);
+  });
+
+  it("validates resource limits before any network access", () => {
+    expect(() => new MaterialDownloadService({
+      allowedHosts: ["cdn.example.com"],
+      maxContentBytes: 0,
+    })).toThrow("maxContentBytes must be a positive integer");
+    expect(() => new MaterialDownloadService({
+      allowedHosts: ["cdn.example.com"],
+      downloadTimeoutMs: Number.NaN,
+    })).toThrow("maxContentBytes must be a positive integer");
+    expect(() => new MaterialDownloadService({
+      allowedHosts: ["cdn.example.com"],
+      tempRoot: "   ",
+    })).toThrow("tempRoot must not be empty");
   });
 });

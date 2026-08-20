@@ -5,11 +5,12 @@ import type { MaterialTeardownEvidence } from "@ka/domain";
 
 export const TEARDOWN_PROMPT_VERSION = "teardown-v1";
 export const TEARDOWN_SOURCE_SHA256 = "fb30d574a0bc93efa9a812a1d894b09725b69650a2cfbe376bc9730eb97cacff";
+export const TEARDOWN_TEMPLATE_SHA256 = "3a49cc43e1400be6cdb9d346ff5ddaded1a4b812ce794231f77d1c2df6403de3";
 const DEFAULT_MAX_PROMPT_CHARS = 1_000_000;
 const templateUrl = new URL("./prompts/teardown-v1.md", import.meta.url);
 
 export class TeardownPromptError extends Error {
-  constructor(readonly reason: "unsafe_input" | "prompt_too_large") {
+  constructor(readonly reason: "unsafe_input" | "prompt_too_large" | "template_drift") {
     super(`Teardown prompt failed: ${reason}`);
     this.name = "TeardownPromptError";
   }
@@ -24,10 +25,14 @@ export interface TeardownPromptTemplate {
 
 export async function loadTeardownPromptTemplate(): Promise<TeardownPromptTemplate> {
   const content = await readFile(templateUrl, "utf8");
+  const templateSha256 = sha256(content);
+  if (templateSha256 !== TEARDOWN_TEMPLATE_SHA256) {
+    throw new TeardownPromptError("template_drift");
+  }
   return Object.freeze({
     version: TEARDOWN_PROMPT_VERSION,
     sourceSha256: TEARDOWN_SOURCE_SHA256,
-    templateSha256: sha256(content),
+    templateSha256,
     content,
   });
 }

@@ -9,6 +9,7 @@ import {
   renderTeardownPrompt,
   TEARDOWN_PROMPT_VERSION,
   TEARDOWN_SOURCE_SHA256,
+  TEARDOWN_TEMPLATE_SHA256,
   TeardownPromptError,
 } from "../src/materials/teardown-prompt.js";
 
@@ -43,7 +44,7 @@ describe("teardown prompt registry", () => {
     expect(template.version).toBe(TEARDOWN_PROMPT_VERSION);
     expect(template.sourceSha256).toBe(TEARDOWN_SOURCE_SHA256);
     expect(template.sourceSha256).toMatch(/^[a-f0-9]{64}$/);
-    expect(template.templateSha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(template.templateSha256).toBe(TEARDOWN_TEMPLATE_SHA256);
     expect(template.content).toContain("全片总时长");
     expect(template.content).toContain("不得臆造平台后台指标");
   });
