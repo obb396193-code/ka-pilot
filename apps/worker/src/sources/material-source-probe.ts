@@ -35,6 +35,11 @@ export interface MaterialSourceProbeResult {
   requiresContainerValidation: boolean;
 }
 
+export interface MaterialSourceDownloadStream {
+  response: Response;
+  redirectCount: number;
+}
+
 export interface MaterialSourceProbeOptions {
   allowedHosts: readonly string[];
   fetchFn?: FetchLike;
@@ -110,9 +115,40 @@ export class MaterialSourceProbe {
     }
   }
 
+  /**
+   * Opens the actual media body while applying the same URL and redirect policy
+   * as the metadata probe. The caller owns and must consume or cancel the body.
+   */
+  async openDownload(
+    candidate: MaterialSourceCandidate,
+    signal?: AbortSignal,
+  ): Promise<MaterialSourceDownloadStream> {
+    if (candidate.materialType.trim().toUpperCase() !== "VIDEO") {
+      throw new MaterialSourceBlockedError("not_video_material");
+    }
+    const initialUrl = this.admitUrl(candidate.materialUrl);
+    const result = await this.requestFollowingRedirects(initialUrl, "DOWNLOAD", signal);
+    try {
+      if (!result.response.ok) throw new MaterialSourceBlockedError("upstream_status");
+      const contentType = normalizedContentType(result.response.headers.get("content-type"));
+      if (!contentType.startsWith("video/") && contentType !== "application/octet-stream") {
+        throw new MaterialSourceBlockedError("content_type_not_allowed");
+      }
+      const declaredLength = safeLength(result.response.headers.get("content-length"));
+      if (declaredLength !== null && declaredLength > this.maxContentBytes) {
+        throw new MaterialSourceBlockedError("content_too_large");
+      }
+      return result;
+    } catch (error) {
+      await cancelBody(result.response);
+      throw error;
+    }
+  }
+
   private async requestFollowingRedirects(
     initialUrl: URL,
-    method: "HEAD" | "RANGE",
+    method: "HEAD" | "RANGE" | "DOWNLOAD",
+    externalSignal?: AbortSignal,
   ): Promise<ProbeResponse> {
     let currentUrl = initialUrl;
     for (let redirectCount = 0; redirectCount <= this.maxRedirects; redirectCount += 1) {
@@ -125,7 +161,9 @@ export class MaterialSourceProbe {
             method: method === "HEAD" ? "HEAD" : "GET",
             ...(method === "RANGE" ? { headers: { range: "bytes=0-0" } } : {}),
             redirect: "manual",
-            signal: controller.signal,
+            signal: externalSignal === undefined
+              ? controller.signal
+              : AbortSignal.any([controller.signal, externalSignal]),
           });
         } catch {
           throw new MaterialSourceBlockedError("upstream_status");
