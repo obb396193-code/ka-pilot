@@ -6,7 +6,7 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；交接准备代码基线：`9fce24a`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -40,6 +40,7 @@
 | B8 知识库领域底座 | 见 `be/b8a` HEAD | `32a82ba`；质量 `8c87530` | BlockNote 安全信封、文本投影/指纹、ID 双链、KA 业务引用、资产语义、权限化 Agent citation 边界 | 406 默认 + 1 opt-in | `B8-状态.md`、`docs/evidence/B8-代码质量报告.md`、P-012 |
 | B1-B8 自审修复 | `b1bd873` | 原审查 `1919a8e`；复验 `48c7fd5`/`b1bd873` | 修复日常 ETL 派发、Job fencing、确认 TTL、Changeset+T1、知识正文权限、输出凭证、生命周期、身份、分页、分区、上海业务日等；其余契约项明确保留 | 422 默认 + 1 opt-in | `docs/evidence/B1-B8自审修复-代码质量报告.md`、P-014 |
 | B8a 交接与联调准备 | `9fce24a`（代码） | 待 Claude/arch 审查 P-015 | Qihang 响应/行/ID/URL 资源预算，Qihang→Canonical 纯合成基线，前后端合并清单与真实通路准入矩阵 | 434 默认 + 1 opt-in | `docs/evidence/B8a-数据链性能基线.md`、`docs/evidence/B8a-交接准备代码质量报告.md`、P-015 |
+| B9 纵向闭环与批量性能 | `83cf855`（代码） | 待 Claude/arch 审查 P-016 | Canonical settings/history/upsert 批量化，假奇航→真实 PG→质量/语义/规则/工作项/报告事实闭环，真实 PG 100/1000/5000 基准，realtime/offline source 对平 | 445 默认 + 1 opt-in | `B9-状态.md`、`docs/evidence/B9-数据链真实PG性能基线.md`、`docs/evidence/B9-代码质量报告.md`、P-016 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -125,15 +126,15 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 
 ### 已独立修复
 
-- 原始 14 个 P0 已修 6 个，17 个 P1 已修 7 个。
-- 当前累计 434 个默认 tests 通过，真 Claude Agent SDK smoke 单独通过。
-- Coverage：Domain 95.43%、DB 93.62%、Worker 91.22%、DingTalk Gateway 86.62%。
+- 原始 14 个 P0 已修 6 个；17 个 P1 已明确修复 9 个（B9 新增修复 P1-03 实时/离线质量对平、P1-16 Canonical 批量性能）。
+- 当前累计 445 个默认 tests 通过，真 Claude Agent SDK smoke 单独通过。
+- Coverage：Domain 95.43%、DB 93.61%、Worker 91.69%、DingTalk Gateway 86.62%。
 - 四包 typecheck/lint/audit、PG16 migration replay 和变更代码复杂度门禁通过。
 
 ### 仍需裁决/接线
 
 - 8 个 P0：账户权威 workspace 归属、回填完整 DAG 终态、缺数公开状态、多任务归属、Workflow 单执行器/effect outbox、钉钉 durable inbox/outbox、Changeset 目标权限矩阵等。
-- 9 个 P1：补偿暂估、质量源、mute、健康度分母、策略模型、Simulation/Changeset preview、租户唯一约束、Agent session 并发、canonical 批量性能。Qihang 资源预算已在 `6c1d65b` 修复。
+- 8 个 P1：补偿暂估、mute、健康度分母、策略模型、Simulation/Changeset preview、租户唯一约束、Agent session 并发、Qihang/Raw 资源上限的剩余分片。P1-03 与 P1-16 已由 B9 修复。
 - B2-B8 大量能力仍是内部内核，未统一接生产 Runtime/API/前端。
 
 ### 分支状态
@@ -145,6 +146,15 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 ## 8. 交接准备新增真相
 
 - `6c1d65b`：Qihang 默认响应 10 MiB、10000 行、1000 IDs、64 KiB URL；超限不重试。大于 1000 账户尚未定义正式分片语义。
-- `9fce24a`：合成 benchmark 复用真实 Qihang/Canonical 代码，但不连外网和数据库；它确认当前 Canonical 为 `3N+4` 端口调用，不能当生产 SLA。
+- `9fce24a` 的旧合成基线曾确认 Canonical 为 `3N+4`；B9 `83d7e4f` 已将其改为 `3×ceil(N/250)+4`，并由真实 PG 100/1000/5000 基准验证。两者都不能当生产 SLA。
 - 真实通路统一按 `docs/plans/2026-08-20-真实通路联调准备清单.md` 放行。Multica/OS 正式协议、Secret 服务、真实 Provider、钉钉 durable 状态机和 FaaS/PG 本项目部署仍是硬阻断。
 - 当前代码审查点是 `9fce24a`，文档审查入口为 P-015；二者均尚未合入 `fe/f001` 或 `main`。
+
+## 9. B9 纵向闭环与批量性能真相
+
+- 真实 PostgreSQL 纵向测试已连接 Full ETL、Raw、Canonical、质量、语义查询、规则、工作项和报告事实；只有奇航输入、未冻结规则候选和外发告警是测试适配器。
+- Canonical 默认 250 行批次，设置/历史/Upsert 以复合键严格映射；第二批失败不派生质量，重试由 Upsert 收敛。
+- Full/Incr ETL Run 已带 workspace；质量对平按 Canonical cost source 选择 offline/realtime latest Raw，不再每天误报 realtime gap。
+- 真实 PG 5000 行三次中位数 394.974ms、64 次端口调用、5000 最终行；仅为本机热缓存单租户证据。
+- Raw 仍是 append-only，重试可能留下物理重复抓取；latest 读取避免进入 Canonical 双计，但是否增加 request/run idempotency 需 arch 裁决。
+- B9 未新增公开 contract/migration/production job type/API/前端，也未接真实奇航/Multica/OS。审查入口 P-016。

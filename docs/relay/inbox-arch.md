@@ -383,3 +383,48 @@ main 9335150
 4. 联调清单的 owner、证据、失败级别、写确认和敏感信息禁记是否满足内部安全要求。
 
 **仍然不是完成项**：未合并、未部署、未接真实奇航/Multica/OS/Secret/Provider/钉钉 Stream；fake upstream 只证明 SDK 与本地协议网关链路。P0-02/03/04/05/07/11/12/13 与 9 个 P1 继续保留。
+
+---
+
+### P-016 ⏳B9 后端纵向闭环与 Canonical 批量性能待审计｜be（Codex）
+
+- 分支：`be/b8a`
+- 基线：`3d90bed`
+- 批量链路 SHA：`83d7e4f`
+- 纵向闭环 SHA：`8c6d5e1`
+- PG 性能 SHA：`42efc5c`
+- 质检补强 SHA：`c85beb8`
+- 质量对平 SHA：`83cf855`
+- 设计：`docs/plans/2026-08-20-B9后端纵向闭环与批量性能-design.md`
+- 计划：`docs/plans/2026-08-20-B9后端纵向闭环与批量性能-implementation.md`
+- 状态：`docs/plans/B9-状态.md`
+- 质量：`docs/evidence/B9-代码质量报告.md`
+- 性能：`docs/evidence/B9-数据链真实PG性能基线.md`
+
+**已完成**：
+
+1. CanonicalStore/Repository 改为默认 250 的 settings/history/upsert 批量端口；复合 workspace/account/date 缺失、重复、越界 fail-closed。
+2. 真实 PostgreSQL 纵向链：假奇航→Full ETL→Raw→Job→Canonical→质量→语义查询→规则→工作项→报告事实；同 accountId 跨 workspace 隔离实测。
+3. Full/Incr `etl_runs.workspace_id` 补齐；规则首次创建/重扫合并，报告 KPI/趋势/任务维度共用语义事实。
+4. 修复 P1-03：按 Canonical `field_sources.cost` 选择 latest offline `cost_api` 或 realtime `account_cost` 对平，消除当天假异常。
+5. 修复 P1-16：5000 行端口调用从 15004 降到 64；真实 PG 三次中位 394.974ms，最终 5000 行，代表性读计划无根级 Seq Scan。
+6. 当前门禁：445 默认 tests + 1 opt-in 真 SDK smoke；coverage 86.62%-95.43%；四包 type/lint/audit、PG16 migration replay、复杂度和安全扫描通过；contract/migrations/前端 0 diff。
+
+**请重点审查**：
+
+1. 批量 SQL 使用 JSON recordset、默认 250/最大 1000、每 chunk 原子但跨 chunk 非单事务的语义是否保留；后续批次失败时已写前缀可留，Job 失败且不派生质量。
+2. Handler 对 batch 返回结果的复合键 completeness/duplicate/out-of-scope 检查是否足够；是否需要 Repository 层额外 workspace 外键/一致性约束。
+3. Raw append-only 重试语义：当前崩溃重试会保留重复抓取，latest-row + Canonical Upsert 防双计。请裁决这是审计历史还是应增加 request/run identity 去重。
+4. 质量 source 选择：`realtime|gap_filled` 取 `account_cost`，其余优先 offline `cost_api` 再 realtime；请与真实奇航字段和数据日口径核对。
+5. 集成测试的规则候选只从真实语义结果生成，但仍是 test adapter；不要未经契约冻结直接注册生产 rule/report Job。
+6. PG benchmark 只允许本机测试库且会自动清理；结果是热缓存单 workspace，不得写成生产 SLA。
+
+**仍待裁决/联调**：
+
+- production rule/report job payload、触发器、候选 Provider 和输出存储；
+- Raw 大响应分片和 PostgreSQL 参数上限（P1-14 剩余部分）；
+- 真实奇航 1000 IDs 以上分片、限流、字段宽度和失败恢复；
+- 真实 Multica/OS、Secret、Provider、钉钉 Stream、FaaS/共享 PG；
+- Raw 请求幂等、冷缓存/并发/p95/p99 和生产资源预算。
+
+**明确未做**：公开 API/DTO/Schema、migration、生产新 job type、前端、真实媒体写操作或任何确认门绕过。
