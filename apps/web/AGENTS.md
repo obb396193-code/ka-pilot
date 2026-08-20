@@ -4,6 +4,7 @@
 
 ## 开工前必读
 
+- [前端交付总清单与未落地说明](../../docs/frontend/ui-assets/前端交付总清单与未落地说明.md)
 - [UI 资产总入口](../../docs/frontend/ui-assets/README.md)
 - [前端 Agent 工作流](../../docs/frontend/ui-assets/agent-workflow.md)
 - [数据产品前端执行规范](../../docs/frontend/ui-assets/frontend-product-standard.md)
