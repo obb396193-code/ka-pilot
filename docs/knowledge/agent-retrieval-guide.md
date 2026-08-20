@@ -37,9 +37,18 @@ catalog 记录
 <document_id>/source-manifest.json   包级身份、逐文件 hash、安全处理记录
 <document_id>/source.sanitized.zip   合规归档
 <document_id>/extracted/             授权 Agent 的本机全文检索目录
+<document_id>/derived/               逐文档导读、子资产索引和覆盖报告（若已生成）
 ```
 
-先读评估中的推荐子目录，再在 `extracted/` 做定向 `rg`；不要把整个包一次性塞入上下文。包级 `review_pending/approved` 只说明包的治理状态，不表示每个子文件都是正式口径。要引用或发布某一子文件，优先要求资料研究 Agent 将它提升为独立 `document_id`。
+先读评估中的推荐子目录；若存在 `derived/document-guide.md`，先用它看人读介绍，或用 `derived/document-inventory.jsonl` 按标题、主题、质量和异常筛选，再到 `extracted/` 核原文。不要把整个包一次性塞入上下文。包级 `review_pending/approved` 只说明包的治理状态，不表示每个子文件都是正式口径。`child_asset_id` 只提供包内稳定定位；要引用或发布某一子文件，仍需资料研究 Agent 将它提升为独立 `document_id`。
+
+示例：
+
+```bash
+rg -n '实验|归因|FBI|LLM API' private/knowledge-sources/ka-src-0005/derived/document-guide.md
+jq -c 'select(.quality == "substantive" and (.topics | index("实验设计")))' \
+  private/knowledge-sources/ka-src-0005/derived/document-inventory.jsonl
+```
 
 ## 4. 未审查资料怎么用
 

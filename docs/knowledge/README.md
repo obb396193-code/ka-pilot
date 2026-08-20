@@ -15,6 +15,7 @@
 | 位置 | 是否进 Git | 用途 |
 |---|---:|---|
 | `private/knowledge-sources/<document_id>/` | 否 | 内部原文、附件和来源快照 |
+| `private/knowledge-sources/<document_id>/derived/` | 否 | confidential 逐文档导读、子资产索引与覆盖报告 |
 | `docs/knowledge/catalog.jsonl` | 是 | 每行一份资料的机器可读索引 |
 | `docs/knowledge/catalog.schema.json` | 是 | catalog 单条记录字段契约 |
 | `docs/knowledge/assessments/` | 是 | 事实/推断分层后的独立评估 |
@@ -32,6 +33,8 @@
 - `storage_ref` 指向原始资料，`assessment_ref` 指向独立评估；两者不能混写。
 
 多文件资料包使用 `source-manifest.json` 作为 `storage_ref`。manifest 必须列出每个子文件的相对路径与 hash，并在同级保留 `source.sanitized.zip` 和 `extracted/` 可检索副本。catalog 的 `content_hash_sha256` 对 manifest 本身计算；校验器同时复核归档 hash、全部子文件 hash 和凭证形态。资料包通过审查不等于包内每篇文档都获批；需要进入产品知识库的子文档必须单独分配 `document_id`、评估和审查。
+
+资料包可以在同级 `derived/` 生成私有逐文档导读。每个文件分配稳定 `child_asset_id`，记录路径、hash、抽取式介绍、主题、质量异常和子文件治理状态。`child_asset_id` 只用于包内发现和追溯，不等于获批的正式 `document_id`；派生导读不得改变父 manifest hash，也不得因生成了摘要就提升审查或发布状态。
 
 ## 资料类型
 
@@ -94,6 +97,18 @@ raw → analyzed → review_pending → reviewed → approved → published → 
 8. 只有审查 Agent 回写批准后才能标 `approved`；实际导入并核验 hash 后才标 `published`。
 
 多文件资料包在第 2–4 步之间还要完成：路径穿越/符号链接/加密条目检查、逐文件凭证清除、重复与空文件统计、manifest 生成。不得把带签名 URL、AK 标识或访问签名的下载原包直接设为 canonical storage。
+
+若需要让人逐篇了解资料包内容，运行仓库内的导读生成器，把输出写入 ignored 私有目录：
+
+```bash
+python3 scripts/build-knowledge-bundle-guide.py \
+  --document-id ka-src-0005 \
+  --source-root private/knowledge-sources/ka-src-0005/extracted \
+  --manifest private/knowledge-sources/ka-src-0005/source-manifest.json \
+  --output-dir private/knowledge-sources/ka-src-0005/derived
+```
+
+生成结果仍是未审查的抽取式导读；不能用它替代单篇评估。
 
 ## 校验
 

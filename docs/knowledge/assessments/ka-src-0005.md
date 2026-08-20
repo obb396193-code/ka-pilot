@@ -214,3 +214,15 @@
 8. 是否要求 security 对包内基础设施、账户、数据库表名和历史 signed URL 做专项审查？
 9. 包内 `PUBLIC` 标识是否有正式许可依据；若无，是否一律按 internal confidential？
 10. `ka-src-0005` 是否允许升为 reviewed；是否明确禁止整包发布到产品知识库？
+
+## 21. 逐文档导读补充（2026-08-20）
+
+已为 manifest 中 671 个子文件逐一生成 confidential 私有导读和机器索引，覆盖情况为 671/671、缺失 0、`child_asset_id` 冲突 0。质量分类为 402 份较完整正文、207 份短文、35 份占位、27 份无可用正文；44 个文件属于 11 个逐字节重复组。另确认 5 个 `.pdf` 实际是 UTF-8 文本导出，并非可渲染 PDF；3 个 `.json` 扩展名文件不是标准 JSON。
+
+私有产物：
+
+- `private/knowledge-sources/ka-src-0005/derived/document-guide.md`
+- `private/knowledge-sources/ka-src-0005/derived/document-inventory.jsonl`
+- `private/knowledge-sources/ka-src-0005/derived/coverage-report.json`
+
+Git 内聚合说明见 `docs/knowledge/assessments/ka-src-0005-document-guide-overview.md`。上述介绍均为 `extractive_unreviewed`，只解决资料发现问题，不改变包级或子文件审查/发布状态。
