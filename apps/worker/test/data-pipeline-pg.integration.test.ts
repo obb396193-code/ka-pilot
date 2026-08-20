@@ -303,6 +303,13 @@ describe("real PostgreSQL data pipeline", () => {
       [workspaceId],
     );
     expect(qualityCount.rows[0]?.count).toBe("6");
+    const reconciliationChecks = await pool.query<{ passed: boolean }>(
+      `SELECT passed FROM data_quality_checks
+       WHERE workspace_id = $1 AND check_type = 'total_reconciliation'
+       ORDER BY ds`,
+      [workspaceId],
+    );
+    expect(reconciliationChecks.rows).toEqual([{ passed: true }, { passed: true }]);
 
     const semantic = new SemanticQueryRepository(pool);
     const scope = {

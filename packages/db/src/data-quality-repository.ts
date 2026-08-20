@@ -40,19 +40,46 @@ export class DataQualityRepository {
       canonical_total: string | number;
     }>(
       `WITH latest_raw AS (
-         SELECT DISTINCT ON (account_id) account_id, payload
+         SELECT DISTINCT ON (account_id, resource) account_id, resource, payload
          FROM metrics_raw
-         WHERE workspace_id = $1 AND ds = $2::date AND resource = 'account_offline'
-         ORDER BY account_id, fetched_at DESC, id DESC
+         WHERE workspace_id = $1 AND ds = $2::date
+           AND resource IN ('account_offline', 'account_realtime')
+         ORDER BY account_id, resource, fetched_at DESC, id DESC
+       ), source_rows AS (
+         SELECT account_id,
+                (max(payload::text) FILTER (
+                  WHERE resource = 'account_offline'
+                ))::jsonb AS offline,
+                (max(payload::text) FILTER (
+                  WHERE resource = 'account_realtime'
+                ))::jsonb AS realtime
+         FROM latest_raw
+         GROUP BY account_id
+       ), scoped_accounts AS (
+         SELECT account_id FROM source_rows
+         UNION
+         SELECT account_id
+         FROM account_metrics_daily
+         WHERE workspace_id = $1 AND ds = $2::date
        ), raw_total AS (
          SELECT COALESCE(SUM(
            CASE
-             WHEN payload->>'cost_api' ~ '^-?[0-9]+([.][0-9]+)?$'
-               THEN (payload->>'cost_api')::numeric
+             WHEN metric.field_sources->>'cost' IN ('realtime', 'gap_filled')
+               AND source.realtime->>'account_cost' ~ '^-?[0-9]+([.][0-9]+)?$'
+               THEN (source.realtime->>'account_cost')::numeric
+             WHEN source.offline->>'cost_api' ~ '^-?[0-9]+([.][0-9]+)?$'
+               THEN (source.offline->>'cost_api')::numeric
+             WHEN source.realtime->>'account_cost' ~ '^-?[0-9]+([.][0-9]+)?$'
+               THEN (source.realtime->>'account_cost')::numeric
              ELSE 0
            END
          ), 0) AS value
-         FROM latest_raw
+         FROM scoped_accounts AS account
+         LEFT JOIN source_rows AS source USING (account_id)
+         LEFT JOIN account_metrics_daily AS metric
+           ON metric.workspace_id = $1
+          AND metric.account_id = account.account_id
+          AND metric.ds = $2::date
        ), canonical_total AS (
          SELECT COALESCE(SUM(cost), 0) AS value
          FROM account_metrics_daily

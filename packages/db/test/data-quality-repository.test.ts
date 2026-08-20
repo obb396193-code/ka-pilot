@@ -79,6 +79,33 @@ describe("DataQualityRepository", () => {
     expect(failed.passed).toBe(false);
   });
 
+  it("reconciles current-day canonical cost against realtime raw instead of reporting a false gap", async () => {
+    await pool.query(
+      `INSERT INTO metrics_raw (
+         workspace_id, account_id, ds, source, resource, request_params, payload, fetched_at
+       ) VALUES
+         ($1, 'a-1', '2026-08-18', 'offline', 'account_offline', '{}',
+          '{"cost_api":9999}', '2026-08-18T23:59:00Z'),
+         ($1, 'a-1', '2026-08-18', 'realtime', 'account_realtime', '{}',
+          '{"account_cost":100}', '2026-08-19T00:01:00Z')`,
+      [workspaceId],
+    );
+    await pool.query(
+      `INSERT INTO account_metrics_daily (
+         workspace_id, account_id, ds, cost, field_sources
+       ) VALUES ($1, 'a-1', '2026-08-18', 100, '{"cost":"realtime"}')`,
+      [workspaceId],
+    );
+
+    await expect(repository.reconcileTotals(workspaceId, "2026-08-18")).resolves.toEqual({
+      rawTotal: 100,
+      canonicalTotal: 100,
+      delta: 0,
+      tolerance: 0.1,
+      passed: true,
+    });
+  });
+
   it("marks five-times CPA outliers and finds only two-day missing active accounts", async () => {
     await pool.query(
       `INSERT INTO account_metrics_daily (
