@@ -280,6 +280,8 @@ Run: `npm test -- --run test/teardown-prompt.test.ts test/teardown-analyzer.test
 
 `TeardownAnalyzer` 只依赖结构化 Agent 端口。Runtime 适配复用 B5 `ClaudeAgentRuntime` 的 `outputJsonSchema`、Provider binding 和 localhost gateway；built-in tools 保持禁用。默认测试使用 fake QueryFactory，真实云模型调用保持 opt-in。
 
+实施修正：本地 Prompt 已按源 SHA `fb30d574...acff` 快照并收敛到当前 JSON Schema。由于真实素材帧发送给具体模型 Provider 的边界尚未获明确授权，B13a 不接图像读取工具；Agent 只接收字幕、镜头时间边界和确定性统计，并显式返回视觉 payload 阻断状态。此项不是技术完成，待老板指定受信任多模态通路后另开安全适配。
+
 **Step 5: 测试/typecheck/lint 后提交**
 
 ```bash
@@ -366,4 +368,3 @@ git show --stat HEAD
 ## 执行方式
 
 老板已明确“备份完成后继续工程”，因此本轮默认在当前会话顺序执行，不再等待选择；受多 Agent 限制不派子 Agent。每个 Task 完成后本地验证并提交，最终统一交 Claude/arch 审查。
-
