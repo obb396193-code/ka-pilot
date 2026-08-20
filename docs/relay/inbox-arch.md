@@ -652,3 +652,38 @@ main 9335150
 **质量真相**：Domain 245、DB 92、Worker 301、DingTalk 19，共 657 个默认 tests；Claude Agent SDK opt-in 1。真实 PostgreSQL/migration、localhost gateway E2E 与真实 FFmpeg 三场景视频通过。Domain 95.97%/85.88%/99.27%，Worker 92.71%/81.12%/95.76%，materials 96.87%/87.90%/98.97%；四包 type/lint/audit、安全、冻结目录和 diff-check 通过。
 
 **明确未完成**：MP4 裁片/自动剪辑、真实多模态、IdeaLab/OS 正式通路、持久 artifact/checkpoint、公开 Job/API/DB、前端、相似检索/复刻、合并、部署和线上业务验收。
+
+---
+
+### P-023 ⏳B16 素材相似度与复刻谱系领域底座待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B15 最终交接 `99d647f`
+- 设计：`e0b0d2d`
+- 实施计划：`702730c`
+- 领域内核：`452bdc9`
+- 自审测试终态：`d7a49f8`
+- 状态：`docs/plans/B16-状态.md`
+- 质量：`docs/evidence/B16-代码质量报告.md`
+
+**产品依据**：PRD `REQ-052` 与验收 6.3/6.6 已明确拆片后按钩子/卖点/节奏做相似查找，并记录“复刻自”。本批只实现内部 Domain，不把页面功能标为完成。
+
+**本批实现**：
+
+1. 版本化素材内容画像：B15 拆片 fingerprint、语义角色序列、钩子、卖点、人群、节奏、CTA 和视觉节奏值。
+2. 六组件可解释评分，缺项不计 0；证据不足返回 `score=null`；结果左右对称并带稳定 fingerprint。
+3. 中文/英文确定性 n-gram、去重排序和 512 token 上限，不依赖外部分词或模型。
+4. 独立复刻谱系 v1，拒绝自环、非法标识/SHA/时间、超长备注和未知字段；不由相似度自动生成。
+5. 未修改 public Contract、migration、生产 Runtime、Worker 或前端。
+
+**请重点审查/裁决**：
+
+1. 六组件默认权重与解释码是否冻结；后续调整必须新建 scorer/profile version，不能覆盖历史。
+2. 冻结画像、比较缓存、谱系边的 DB/API DTO 和 workspace 租户键。
+3. 一期是否先用 PostgreSQL 结构/token 候选召回；如接 Embedding，需单独裁决 Provider、数据外发、成本、向量版本和重算。
+4. 页面必须展示分项与 unavailable，`insufficient_evidence` 不能显示成 0% 相似。
+5. 谱系创建权限、审计、纠错/撤销和版本对比契约。
+
+**质量真相**：Domain 270、DB 92、Worker 301、DingTalk 19，共 682 默认 tests；SDK opt-in 1。新增模块 100%/93.39%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：相似列表检索/排序/分页、向量检索、谱系持久化/版本对比、Job/API/DB/前端、合并、部署和业务验收。

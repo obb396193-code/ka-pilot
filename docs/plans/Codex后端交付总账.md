@@ -6,7 +6,7 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13` → `be/b14` → `codex/b15-material-teardown-semantics`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -47,6 +47,7 @@
 | B13 素材拆片后端内核 | `85c5fbf`（代码） | 待 Claude/arch 审查 P-020 | 受控下载、字幕/云 ASR 端口、FFmpeg 抽帧、证据 Schema、版本化 Prompt、Claude Agent SDK 结构化分析、可恢复编排 | Domain 235 / DB 92 / Worker 287 / Gateway 19 + 1 opt-in | `B13-状态.md`、`docs/evidence/B13-代码质量报告.md`、P-020 |
 | B14 单次整段 ASR 与 URL 租约 | `6cea3d8`（代码） | 待 Claude/arch 审查 P-021 | `segment/whole_video` 精度、一次整段云 ASR adapter、稳定 sourceRef 换短期 URL 后即取即下 | Domain 244 / DB 92 / Worker 297 / Gateway 19 + 1 opt-in | `B14-状态.md`、`docs/evidence/B14-代码质量报告.md`、P-021 |
 | B15 拆片语义与逐镜头帧墙 | `020a902`（代码） | 待 Claude/arch 审查 P-022 | 无时间多段语义结构、精确时间证据门、Prompt v3、分页逐镜头帧墙、旧缓存升级和页面承接结果信封 | Domain 245 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B15-状态.md`、`docs/evidence/B15-代码质量报告.md`、P-022 |
+| B16 素材相似度与复刻谱系 | `d7a49f8`（代码） | 待 Claude/arch 审查 P-023 | 版本化内容画像、六组件可解释确定性评分、证据不足无总分、独立不可变复刻谱系 | Domain 270 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B16-状态.md`、`docs/evidence/B16-代码质量报告.md`、P-023 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -220,3 +221,12 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - FFmpeg 现在除 Hook/全片帧墙外，还生成每页 36 格的逐镜头帧墙；placeholder 保持槽位，两页并发，页失败诚实降级。
 - Handler 返回 film/transcript/analysis 内部信封；B14 旧 film/analysis checkpoint 根据新清单和 Schema 选择性重建，不盲目全链重跑。
 - 最终默认回归 657 passed，另有 Claude Agent SDK opt-in 1；真实 PG、migration、localhost gateway 和真实 FFmpeg 均通过。未接公开 API/DB/前端和真实外部通路，审查入口 P-022。
+
+## 16. B16 素材相似度与复刻谱系真相
+
+- B16 只做纯 Domain，不代表商品素材页面 6.3/6.6 已完成；相似列表查询、DB/API/前端仍未接。
+- 画像直接来自 B15 已校验拆片结果，按语义结构、钩子、卖点、人群、节奏、CTA 建模；不混入消耗、转化率或 GMV。
+- 六组件按可用信息参与并重新归一；少于 3 个组件或原始权重小于 0.50 时返回 `insufficient_evidence`，不是 0 分。
+- 复刻谱系是显式、版本化、不可变的业务事实，和算法相似度完全分离；不会按阈值自动认定“复刻自”。
+- 当前采用确定性 n-gram/结构评分作为低成本可解释基线；Embedding/向量库只作为未来候选召回或重排，不在未冻结 Provider 边界前引入。
+- 代码终态 `d7a49f8`。默认回归 Domain 270 + DB 92 + Worker 301 + DingTalk 19 = 682；SDK opt-in 1。四包静态/audit、真实 PG/migration、gateway/FFmpeg 与冻结目录门禁通过，审查入口 P-023。
