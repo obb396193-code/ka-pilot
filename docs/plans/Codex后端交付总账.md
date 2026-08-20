@@ -4,9 +4,9 @@
 >
 > 维护角色：be（Codex）
 >
-> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a`
+> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配：`41c6646`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 小时监控代码：`5595836`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -41,6 +41,8 @@
 | B1-B8 自审修复 | `b1bd873` | 原审查 `1919a8e`；复验 `48c7fd5`/`b1bd873` | 修复日常 ETL 派发、Job fencing、确认 TTL、Changeset+T1、知识正文权限、输出凭证、生命周期、身份、分页、分区、上海业务日等；其余契约项明确保留 | 422 默认 + 1 opt-in | `docs/evidence/B1-B8自审修复-代码质量报告.md`、P-014 |
 | B8a 交接与联调准备 | `9fce24a`（代码） | 待 Claude/arch 审查 P-015 | Qihang 响应/行/ID/URL 资源预算，Qihang→Canonical 纯合成基线，前后端合并清单与真实通路准入矩阵 | 434 默认 + 1 opt-in | `docs/evidence/B8a-数据链性能基线.md`、`docs/evidence/B8a-交接准备代码质量报告.md`、P-015 |
 | B9 纵向闭环与批量性能 | `83cf855`（代码） | 待 Claude/arch 审查 P-016 | Canonical settings/history/upsert 批量化，假奇航→真实 PG→质量/语义/规则/工作项/报告事实闭环，真实 PG 100/1000/5000 基准，realtime/offline source 对平 | 445 默认 + 1 opt-in | `B9-状态.md`、`docs/evidence/B9-数据链真实PG性能基线.md`、`docs/evidence/B9-代码质量报告.md`、P-016 |
+| B10 真实奇航适配 | `878126f` | 待 Claude/arch 审查 P-017 | 日期紧凑格式、离线分区有界回退、历史真实转化来源、双口径事实和 Skill 身份补证 | 变更定向 34；非 PG 回归见状态 | `B10-状态.md`、`docs/evidence/B10-真实奇航只读适配报告.md`、P-017 |
+| B11 时效完整性与小时监控 | `5595836`（代码） | 待 Claude/arch 审查 P-018 | 广告查询防截断、查询观测、D-1 动态重查、累计小时安全差分、`ad_metrics_hourly` 幂等落库 | Domain 207 / Worker非PG 170 / DB单元 12 / Gateway 19 + 1 opt-in | `B11-状态.md`、`docs/evidence/B11-代码质量报告.md`、P-018 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 

@@ -464,3 +464,40 @@ main 9335150
 **质量**：Qihang+ETL 28、Canonical 6 定向 tests；Domain 194、DingTalk 19 全量通过；Worker 获准 localhost 环境执行 158 tests，PG 相关因本机 Docker/55432 未就绪未完成。四包 typecheck/lint/audit 通过且 0 vulnerabilities；变更模块覆盖率 Qihang 95.14%、Full ETL 100%、Canonical 92.50%；复杂度≤10、单函数≤100、敏感扫描通过。
 
 **下一实证**：`hh`、跨日 offline、空/部分分区、带合法 userId 的本项目 Worker/FaaS→Raw→Canonical→质量 trace。任何写操作继续禁止。
+
+---
+
+### P-018 ⏳B11 奇航时效完整性与小时监控待审计｜be（Codex）
+
+- 分支：`be/b11`
+- 基线：`878126f`
+- 证据固化：`a3b479b`
+- Client 防护：`e60e719`
+- 动态重查/观测：`c7c6289`
+- 小时差分：`c500771`
+- 小时落库：`b88f6ea`
+- 自审测试：`5595836`
+- 状态：`docs/plans/B11-状态.md`
+- 质量：`docs/evidence/B11-代码质量报告.md`
+- 第三轮 OS：`docs/plans/B11-OS第三轮只读探针.md`
+
+**本批实现**：
+
+1. `ad_realtime` 必须带 accountIds/adIds；恰好命中默认 2000 疑似边界时 fail-closed，不再用可能截断的数据做归因。
+2. 每次成功查询生成不含业务明细和身份的 observation；Repository 二次白名单后追加到 running `etl_runs.scope.observations`。
+3. `etl_incr` 默认单日重查 D-1 offline，可配置 0..3；空结果可见，非空 Raw 纳入 D-1 到当天 Canonical 修订。
+4. `hh` 响应按累计快照处理：N-(N-1)，hh=0 零基线；当前缺行不造数，负差分截 0 并记录修正字段。
+5. 复用现有 `ad_metrics_hourly`，按 workspace+ad+ds+hh 参数化批量 Upsert；同键 account 漂移失败，小时写失败不派发 Canonical。
+
+**请重点审查/裁决**：
+
+1. offline 无 complete marker 时仅有 `not_observed/observed_unverified` 是否符合数据健康语义；不要把非空或跨批稳定升级成 complete。
+2. 默认每次 Incr 重查 D-1 与 0..3 配置是否需要由调度层固定频率/冷却，避免高频任务重复拉离线。
+3. 2000 仍只是第二轮观察到的疑似边界；当前恰好命中即拒绝的保守策略是否保留，待 OS 分片/分页实证后再调整。
+4. `hh=24` 只有 Skill 文档没有真实执行；payload 继续 0..23。第三轮结果回来前不得放宽。
+5. 现有小时表没有 `last_sync_time`/issue 状态列；本批只在 ETL observation 留源更新时间和 aggregate issue。请裁决未来公开数据健康 DTO、保留期和页面展示方式。
+6. 当前小时 Repository 一次 JSON batch；Qihang Client 在 2000 疑似边界前已停止。是否仍需显式 DB batch 上限/分块，等真实响应宽度与 PG 基准后决定。
+
+**质量真相**：Domain 207、Worker 非 PG 170、DingTalk 19、B11 DB 单元 12 tests 通过；变更模块 coverage 97.64%~100%；四包 type/lint/audit、复杂度和安全扫描通过；真 Claude Agent SDK opt-in 1 passed。真实 PG 5 个相关用例因本机 `127.0.0.1:55432 EPERM` 且 Docker Desktop `unable to start` 未执行，必须在可用 PG16 环境补跑。
+
+**明确未做**：公开 API/DTO/Contract、migration、前端、真实 Qihang Worker/FaaS trace、分区 complete 推断、hh=24、媒体写操作或任何确认门绕过。
