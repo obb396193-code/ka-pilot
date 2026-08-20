@@ -55,6 +55,13 @@ describe("ad realtime query batching", () => {
     expect(() => planAdRealtimeBatches(baseQuery)).toThrow(/filter/i);
   });
 
+  it("rejects blank identifiers instead of silently changing the requested scope", () => {
+    expect(() => planAdRealtimeBatches({
+      ...baseQuery,
+      accountIds: ["a-1", " "],
+    })).toThrow(/non-empty identifiers/i);
+  });
+
   it("rejects an excessive account and ad cross-product before execution", () => {
     expect(() => planAdRealtimeBatches({
       ...baseQuery,
