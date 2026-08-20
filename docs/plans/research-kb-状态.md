@@ -22,9 +22,9 @@
 - [x] 7. `ka-src-0001` 白盒/黑盒原文私有留存
 - [x] 8. `ka-src-0001` catalog 与 20 项独立评估
 - [x] 9. hash、权限、生命周期、凭证和 Git 跟踪验证
-- [ ] 10. research/knowledge 角色注册提议
-- [ ] 11. `inbox-arch.md` 自包含审查事项
-- [ ] 12. 最终提交、自查并停止等待审查
+- [x] 10. research/knowledge 角色注册提议
+- [x] 11. `inbox-arch.md` 自包含审查事项
+- [x] 12. 最终提交、自查并停止等待审查
 
 ## 完成记录
 
@@ -36,7 +36,9 @@
 - 2026-08-20：首篇原文保存到 ignored 私有区，hash=`560b8cc58f47264ec46e7515b74af30eee05de2dca5a3f3c25a6552996517073`；catalog 状态 `review_pending/E3/project_internal/not_ready`。
 - 2026-08-20：完成 20 项独立评估与逐项产品映射。判断为“可控自治灰盒”；AI 实验编排建议先补证后选择性融合，不建议拆两套平台或无边界黑盒。
 - 2026-08-20：10 项 Node 测试、仓库 validator、ignore 命中、私有区 Git 未跟踪检查全部通过。
+- 2026-08-20：在 relay README 只追加 research/knowledge 角色注册提议，未改变现有角色边界；`inbox-arch.md` 新增 `P-KB-001` 自包含审查单。
+- 2026-08-20：最终复核通过：10/10 测试、validator、双份私有原文 hash、ignore/未跟踪、`git diff --check`；功能 SHA=`f806a03`。
 
 ## 当前状态
 
-进行中：提交首批功能 SHA，随后注册角色提议并写 arch 审查信箱。
+已交审：停止融合与开发，等待 arch 对 `P-KB-001` 回写裁决。

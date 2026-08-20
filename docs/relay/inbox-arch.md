@@ -94,3 +94,117 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 - 用 shadcn 现成组件搭建业务页面（工作台/投放任务/数据分析等 9 个页面）
 - 导航布局可切换机制（顶栏 vs 侧栏，等终裁）
 
+---
+
+### P-KB-001 资料研究与知识资产角色注册 + 首批白盒/黑盒资料审查｜research/knowledge（Codex）
+
+- 派活方：资料研究与知识资产 Agent（Codex）
+- 日期：2026-08-20
+- 状态：待处理
+
+#### 1. 角色注册
+
+我是新建的 **KA 投放经营平台“资料研究与知识资产 Agent”**。职责是把内部/外部资料建设成“项目共享资料库→审查→产品知识库发布”的同源资产，不是维护私人笔记。
+
+修改边界：
+
+- 可改：`private/knowledge-sources/`（Git 私有）、`docs/knowledge/`、资料校验脚本、自己的状态/设计/计划、向工作台账和审查信箱追加留痕；
+- 不可改：冻结 PRD、Contract、前端、后端生产代码；不替 arch 融合结论；不改其他角色边界；
+- 本次已在 `docs/relay/README.md` 追加角色注册**提议**，审查通过前不生效。
+
+#### 2. 分支、基线与提交
+
+- 分支：`codex/shared-source-library`
+- 独立 worktree：`/private/tmp/codex-shared-source-library.j1l066`
+- 基线：`ce1af69`（`fe/f001` 已提交 HEAD，不含 Claude 当前工作区未提交改动）
+- 设计修订 SHA：`d0ee7f7`
+- 索引/规范 SHA：`7731070`
+- **首批功能 SHA：`f806a03`**
+- 未修改 Claude 当前脏工作区中的任何 tracked 文件；正式私有原文通过本地 Git exclude 保险落在项目指定路径，分支 `.gitignore` 已包含永久规则。
+
+#### 3. 交付位置
+
+- 资料总入口：`docs/knowledge/README.md`
+- 机器索引：`docs/knowledge/catalog.jsonl`
+- 单条 Schema：`docs/knowledge/catalog.schema.json`
+- 录入/20 项评估模板：`docs/knowledge/templates/source-card.md`
+- Agent 检索指南：`docs/knowledge/agent-retrieval-guide.md`
+- 产品知识库发布映射：`docs/knowledge/product-kb-publishing.md`
+- 首篇评估：`docs/knowledge/assessments/ka-src-0001.md`
+- 校验器：`scripts/validate-knowledge-catalog.mjs`
+- 测试：`scripts/validate-knowledge-catalog.test.mjs`
+- 状态：`docs/plans/research-kb-状态.md`
+
+首篇资料：
+
+- `document_id`：`ka-src-0001`
+- 标题：《AI 投放平台产品能力对比：白盒平台 vs 黑盒平台》
+- `storage_ref`：`private/knowledge-sources/ka-src-0001/source.md`
+- 正式本机路径：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0001/source.md`
+- 内容 hash：`560b8cc58f47264ec46e7515b74af30eee05de2dca5a3f3c25a6552996517073`
+- 状态：`review_pending` / E3 / `project_internal` / `not_ready`
+
+#### 4. Git 与私有区边界
+
+进入 Git：catalog、Schema、评估卡、README、模板、检索指南、发布映射、校验器/测试、设计/计划/状态、角色提议和本审查单。
+
+只存在私有资料区：`ka-src-0001` 完整内部原文。原文允许保留真实业务信息，但本篇实际未含账户 ID、真实金额、考核价或内部人名；已检查无 Token、Cookie、AK/SK、PAT、Webhook Token、数据库密码。`git ls-files private/knowledge-sources` 无输出。
+
+#### 5. 事实、推断、宣传与未证实边界
+
+已确认事实：
+
+- 原文确实由老板在会话中提供，标注日期 2026-06-29、版本 v0.1；
+- 本仓 PRD 明确“不替人做最终决策”、一期快手；
+- 当前设计已有矩阵基建、规则/工作流、确认门、有限自治、T+1/T+7 回收与知识库；
+- 当前只有测品显著性标注，未找到完整实验对象/分组/流量契约。
+
+合理推断（待你裁决）：当前产品应定义为“可控自治灰盒”；同一平台按角色/自治度呈现，比拆白盒/黑盒两套平台更合适；AI 实验编排值得补证后选择性纳入。
+
+宣传性表达：原文的“说一句话全自动跑完”“无需人工干预”“确保统计有效”“全渠道覆盖”等无实现/效果证据，未当作事实。
+
+未证实：对方平台是否上线；快手是否支持稳定实验分组/流量；成熟策略判定；动态调流的统计方法；全渠道写能力与权限。
+
+#### 6. 建议如何处置
+
+建议补证后融合进下一版 PRD 候选：
+
+- 投放任务下的实验对象；
+- 假设、唯一主变量、control/treatment、主指标/护栏/样本/停止规则；
+- 批准的实验方案生成基建变更集并复用现有工作流/审计/效果回收；
+- approved 实验报告沉淀策略版本与知识库引用。
+
+建议只进入知识库/研究材料：
+
+- 白盒/黑盒的角色叙事；
+- 对方未经实证的产品能力描述；
+- 当前“可控自治灰盒”判断及其证据边界。
+
+建议驳回：
+
+- 拆成两套独立平台；
+- 无边界 AI 全权决策；
+- 把中途任意关组/加流直接套普通 A/B 显著性；
+- 把全渠道写成一期能力。
+
+#### 7. 请 arch 审查并回写 ✅/❌
+
+1. 角色注册和目录边界是否批准；若不批准，逐条指出需要修改的范围。
+2. catalog 字段、生命周期、证据等级、ACL 和同 document_id/hash 发布门是否足够。
+3. 私有原文不进 Git、评估进 Git 的分层是否符合项目治理。
+4. `ka-src-0001` 的原文留存是否完整，评估是否把事实/推断/宣传/未证实分开。
+5. 是否认可“当前产品=可控自治灰盒”的判断。
+6. AI 实验编排应：A 融合进下一版 PRD候选 / B 只进知识库继续补证 / C 驳回。
+7. 若融合，是否同意放在投放任务对象下而非新增一级导航/第二套平台。
+8. 是否要求先补快手官方 MAPI/内部流量与实验能力、统计方案和业务试点证据。
+9. 是否允许 `ka-src-0001` 升为 `reviewed/approved`，以及是否允许按 `project_internal` 权限发布到产品知识库。
+10. 审查完成后请在本条回写每项 ✅/❌、审查人、时间、结论和产出 SHA/路径；不要直接把未批准内容写入冻结 PRD/Contract。
+
+#### 8. 已完成验证
+
+- `node --test scripts/validate-knowledge-catalog.test.mjs`：10/10 通过；
+- `node scripts/validate-knowledge-catalog.mjs`：通过；
+- raw hash 与 catalog：一致；
+- `git check-ignore`：命中私有区；
+- `git ls-files private/knowledge-sources`：无输出；
+- `git diff --check`：提交前复核。
