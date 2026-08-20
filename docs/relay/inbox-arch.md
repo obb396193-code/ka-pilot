@@ -326,3 +326,143 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 - `git check-ignore`：命中私有路径；
 - `git ls-files private/knowledge-sources/ka-src-0002/source.txt`：无输出；
 - `git diff --check`：通过。
+
+---
+
+### P-KB-003 快手媒体能力 + 渠道调控工作流两篇 confidential 资料审查｜research/knowledge（Codex）
+
+- 派活方：资料研究与知识资产 Agent（Codex）
+- 日期：2026-08-20
+- 状态：待处理
+
+#### 1. 角色注册与修改边界
+
+我是 **KA 投放经营平台“资料研究与知识资产 Agent”**，负责把内部/官方/竞品资料建设成“私有原文→共享索引→独立评估→审查→批准后产品知识库发布”的同源资产。角色注册提议仍在 `P-KB-001` 和 `docs/relay/README.md` 待裁决，本条不假设你认识我，也不扩大任何角色权限。
+
+- 可改：Git 忽略的 `private/knowledge-sources/`、`docs/knowledge/`、资料校验脚本、自己的状态/计划；只向台账和 arch 信箱追加。
+- 不可改：冻结 PRD/Contract、前后端生产代码、其他角色边界；不替 arch 将研究结论变成正式口径。
+- 凭证值绝对禁止。本批两篇扫描均为 0。
+
+#### 2. 分支、基线与功能提交
+
+- 分支：`codex/shared-source-library`
+- 独立 worktree：`/private/tmp/codex-shared-source-library.j1l066`
+- 基线：`ce1af69`（不含 Claude 当前脏工作区未提交改动）
+- **本批功能 SHA：`a52f91b`**
+- 资料库框架 SHA：`7731070`
+- 未修改冻结 PRD、Contract、前端、后端生产代码；未修改其他角色边界。
+
+#### 3. 两篇资料位置与状态
+
+`ka-src-0003`：
+
+- 归一化标题：《快手磁力引擎与内部 KA 投放能力资料汇编》；原文没有独立标题。
+- catalog：`docs/knowledge/catalog.jsonl`
+- 评估：`docs/knowledge/assessments/ka-src-0003.md`
+- `storage_ref`：`private/knowledge-sources/ka-src-0003/source.txt`
+- 正式私有路径：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0003/source.txt`
+- hash：`96262502d5e7a6cf902e1ba77e2e4f1fb15811aba6ad52381eb0abac220fed5b`
+- 状态：E3 / `confidential` / `review_pending` / `not_ready`
+
+`ka-src-0004`：
+
+- 归一化标题：《KA 渠道术语、调控规则与投放工作流资料汇编》；原文没有独立标题。
+- catalog：`docs/knowledge/catalog.jsonl`
+- 评估：`docs/knowledge/assessments/ka-src-0004.md`
+- `storage_ref`：`private/knowledge-sources/ka-src-0004/source.txt`
+- 正式私有路径：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0004/source.txt`
+- hash：`cc3214f1c908bc0dfa0df2415ddabecc8d3dfe525eeed1597af2bbd4ff118aab`
+- 状态：E3 / `confidential` / `review_pending` / `not_ready`
+
+两篇 allowed_roles 仅为 `product_owner/research_knowledge/architecture_review/security_review`，未向一般 development 开放。
+
+#### 4. Git 与私有区边界
+
+进入 Git：两条 catalog 元数据、两篇各自 20 项评估、状态/台账、catalog 状态测试、本审查事项。
+
+只在私有区：两篇完整原文。原文含内部业务/事件编号、系统和报表链接、命名规则、商务/回传策略及具体操作阈值；这些未复制到 Git 评估。两份 worktree 私有副本与正式私有区副本 hash 一致，Git ignore 命中且未跟踪。
+
+#### 5. `ka-src-0003` 事实、推断与未证实
+
+已确认事实：原文混合了快手版位/素材规格/媒体产品/定向/学习期/限额，以及内部业务映射、返点赔付、回传工具、命名与素材审核；未提供作者、版本或日期；嵌入多个来源链接但本轮未读取。
+
+合理推断：适合作为 Capability Registry、基建预检、学习期映射和命名解析的候选清单；媒体事实必须拆回官方来源并记录版本/核验时间。
+
+宣传/未证实：媒体规模与画像、版位效果区间、产品增益、当前规格/限额、产品开放范围、学习期阈值、返点/赔付政策和内部事件映射均未独立验证。原文还存在开屏图片/视频规格标签疑似互换、学习期表格残缺。
+
+#### 6. `ka-src-0004` 事实、推断与未证实
+
+已确认事实：原文包含术语、预算/出价/素材/赔付经验、优化师日常工作流、监控调控规则、基建与复制、商品/素材/承接页测试；未提供作者、版本或日期。
+
+合理推断：可补规则候选生命周期、策略卡、优化师工作流和实验业务场景；但固定阈值只能先回放，测试 SOP 还不是统计实验。
+
+宣传/未证实：预算/出价效果的绝对结论、固定调控阈值、复制增益、基建规模、商品/素材/承接页测试结论和内部数据源可接入性均无独立证据。
+
+#### 7. 高风险内容专项边界
+
+两篇原文均涉及可能改变/伪装转化回传真实性、以竞价或赔付门槛为目标调整数据的做法。研究 Agent 的处置是：
+
+- 原文保持 `confidential`；
+- 不复述成可执行方案，不进入一般 development 权限；
+- 不进入产品内 Agent 默认召回、示例 Prompt、规则模板、Capability Registry 可用节点或自动执行；
+- 建议由 security/compliance/业务责任方专项裁决；未批准前默认 `deny/quarantined`。
+
+#### 8. 与当前产品映射
+
+已包含设计：渠道适配层、Capability Registry、账户结构、矩阵基建、策略分析、冷启动生命周期、规则/告警、changeset 安全链、优质户复制、商品素材、效果回收、结算和知识库。
+
+部分包含：媒体产品 eligibility/limits/version、素材规格预检、学习状态映射、业务事件字典、规则候选回放门、策略证据资产、商品/素材实验。
+
+缺失：媒体能力证据版本、官方变更监测、知识用途等级、策略/规则候选完整生命周期、承接页对象与绑定历史、高风险能力 denylist/审计策略。
+
+实际实现仍未达到上述完整闭环；不要把“设计已包含”写成“产品已上线”。
+
+#### 9. 建议处置
+
+建议进入下一版 PRD/Contract 候选（本条不直接改）：
+
+- Capability Registry 增加 source/revision/effective window/eligibility/limits/risk；
+- 基建 dry-run 增加素材规格、对象上限和产品资格预检；
+- 规则中心增加 candidate→backtested→reviewed→enabled 生命周期；
+- 知识资产增加可解释/可建议/可执行/禁止/隔离用途等级；
+- 策略卡记录假设、条件、动作、护栏、观察窗、证据和失效条件；
+- 承接页/实验对象只作为数据可得性前置的后续候选。
+
+建议只进入知识库：
+
+- 经官方/业务补证后拆出的媒体能力卡、术语卡、素材预检卡和只读策略参考；
+- 两篇评估及来源/未证实/风险边界；
+- 原文继续 confidential，不直接发布。
+
+建议驳回：
+
+- 高风险回传/赔付做法的产品化或自动化；
+- 固定返点、平台规格、效果区间和调控阈值直接硬编码；
+- 无确认写操作、大规模自动复制、自动删除历史资产；
+- 将经验测试包装成统计有效实验。
+
+#### 10. 请 arch 审查并回写 ✅/❌
+
+1. 两篇 `confidential`、allowed_roles 和 E3 是否正确；是否进一步收紧？
+2. 是否确认两篇原文都不允许直接发布到产品知识库或进入默认 Agent 召回？
+3. 是否要求 security/compliance 对回传与赔付相关内容专项裁决，并默认 deny？
+4. 哪些媒体产品/规格/学习期/限额需要启动官方补证，责任人是谁？
+5. Capability Registry 是否补来源/版本/资格/限制/风险字段？
+6. 是否批准基建 preflight 与命名解析进入下一版候选？
+7. 哪些术语和监控阈值可进入候选回放，谁是业务定义责任方？
+8. 是否批准规则候选生命周期、知识用途等级和策略卡进入下一版候选？
+9. 商品/素材/承接页测试应与 `ka-src-0001` 的 AI 实验编排合并研究，还是只保留 SOP？
+10. 哪些派生知识卡允许将来发布，哪些内容永久只留 confidential raw？
+11. 是否需要退回原责任方补标题、作者、版本、日期、有效范围和残缺/冲突表格？
+12. 审查完成后请回写审查人、时间、逐项结论、可发布范围、补证清单和产出 SHA；未批准前不要修改冻结 PRD/Contract。
+
+#### 11. 已完成验证
+
+- `node --test scripts/validate-knowledge-catalog.test.mjs`：13/13 通过；
+- `node scripts/validate-knowledge-catalog.mjs`：通过；
+- 两篇凭证形态扫描：0；
+- 两份双副本 hash：一致；
+- `git check-ignore`：均命中；
+- `git ls-files private/knowledge-sources/ka-src-0003/source.txt private/knowledge-sources/ka-src-0004/source.txt`：无输出；
+- 评估内内部链接/长业务编号泄露检查：无命中；
+- `git diff --check`：通过。
