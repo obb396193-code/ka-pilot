@@ -31,6 +31,16 @@ catalog 记录
 
 原文是“资料说了什么”，评估是“资料研究 Agent 怎么判断”。二者冲突时以原文为来源事实，但不能把原文主张自动升级成我方事实。
 
+若 `storage_ref` 指向 `source-manifest.json`，说明它是多文件资料包：
+
+```text
+<document_id>/source-manifest.json   包级身份、逐文件 hash、安全处理记录
+<document_id>/source.sanitized.zip   合规归档
+<document_id>/extracted/             授权 Agent 的本机全文检索目录
+```
+
+先读评估中的推荐子目录，再在 `extracted/` 做定向 `rg`；不要把整个包一次性塞入上下文。包级 `review_pending/approved` 只说明包的治理状态，不表示每个子文件都是正式口径。要引用或发布某一子文件，优先要求资料研究 Agent 将它提升为独立 `document_id`。
+
 ## 4. 未审查资料怎么用
 
 - `raw/analyzed/review_pending` 可以供研发和审查参考，但必须标“未审查”。
@@ -60,6 +70,7 @@ catalog 记录
 - 同一主题多份资料冲突时并列列出 `document_id/version/hash`，不静默选一个覆盖。
 - `supersedes_document_id` 只表达明确替代关系；旧资料保留并标 deprecated。
 - 资料正文变化但 hash 未更新视为损坏，停止引用并运行校验。
+- 多文件资料包还需校验 manifest、归档和全部子文件 hash；任一漂移都停止引用整个包。
 - 文档快照不是当前系统现状；能实读代码、接口或线上状态时必须复核。
 
 ## 7. 新资料交给资料研究 Agent

@@ -31,6 +31,8 @@
 - `content_hash_sha256` 以清除凭证值后的原始文件字节计算。
 - `storage_ref` 指向原始资料，`assessment_ref` 指向独立评估；两者不能混写。
 
+多文件资料包使用 `source-manifest.json` 作为 `storage_ref`。manifest 必须列出每个子文件的相对路径与 hash，并在同级保留 `source.sanitized.zip` 和 `extracted/` 可检索副本。catalog 的 `content_hash_sha256` 对 manifest 本身计算；校验器同时复核归档 hash、全部子文件 hash 和凭证形态。资料包通过审查不等于包内每篇文档都获批；需要进入产品知识库的子文档必须单独分配 `document_id`、评估和审查。
+
 ## 资料类型
 
 `internal`（内部）｜`official`（官方）｜`competitor`（竞品）｜`open_source`（开源）｜`research`（调研）。
@@ -90,6 +92,8 @@ raw → analyzed → review_pending → reviewed → approved → published → 
 6. 按 `templates/source-card.md` 生成独立评估。
 7. 完成后升为 `review_pending`，写入 `docs/relay/inbox-arch.md`。
 8. 只有审查 Agent 回写批准后才能标 `approved`；实际导入并核验 hash 后才标 `published`。
+
+多文件资料包在第 2–4 步之间还要完成：路径穿越/符号链接/加密条目检查、逐文件凭证清除、重复与空文件统计、manifest 生成。不得把带签名 URL、AK 标识或访问签名的下载原包直接设为 canonical storage。
 
 ## 校验
 

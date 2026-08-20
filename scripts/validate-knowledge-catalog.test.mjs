@@ -153,6 +153,48 @@ test("repository validation accepts a consistent untracked private record", asyn
   assert.deepEqual(errors, []);
 });
 
+test("repository validation verifies bundle entries, archive hash and credential safety", async () => {
+  const repoRoot = await mkdtemp(path.join(os.tmpdir(), "knowledge-catalog-bundle-"));
+  const storage = "private/knowledge-sources/ka-src-0001/source-manifest.json";
+  const assessment = "docs/knowledge/assessments/ka-src-0001.md";
+  const bundleRoot = path.join(repoRoot, path.dirname(storage));
+  const extracted = path.join(bundleRoot, "extracted", "raw", "guide.md");
+  const archive = path.join(bundleRoot, "source.sanitized.zip");
+  const {createHash} = await import("node:crypto");
+  const hash = (value) => createHash("sha256").update(value).digest("hex");
+  const source = "安全的内部资料。\n";
+  const archiveBytes = Buffer.from("test archive bytes");
+
+  await mkdir(path.dirname(extracted), {recursive: true});
+  await mkdir(path.join(repoRoot, path.dirname(assessment)), {recursive: true});
+  await writeFile(extracted, source, "utf8");
+  await writeFile(archive, archiveBytes);
+  const manifest = {
+    entry_count: 1,
+    canonical_archive: {filename: "source.sanitized.zip", sha256: hash(archiveBytes)},
+    entries: [{path: "raw/guide.md", sha256: hash(source)}],
+  };
+  const manifestText = `${JSON.stringify(manifest)}\n`;
+  await writeFile(path.join(repoRoot, storage), manifestText, "utf8");
+  await writeFile(path.join(repoRoot, assessment), "# 评估\n", "utf8");
+  await mkdir(path.join(repoRoot, "docs/knowledge"), {recursive: true});
+  await writeFile(
+    path.join(repoRoot, "docs/knowledge/catalog.jsonl"),
+    `${JSON.stringify({...baseRecord, storage_ref: storage, content_hash_sha256: hash(manifestText)})}\n`,
+    "utf8",
+  );
+
+  assert.deepEqual(
+    await validateRepository({repoRoot, checkGit: false, checkDocs: false}),
+    [],
+  );
+
+  await writeFile(extracted, `TOKEN=${"z".repeat(24)}\n`, "utf8");
+  const errors = await validateRepository({repoRoot, checkGit: false, checkDocs: false});
+  assert.ok(errors.some((error) => error.includes("bundle entry raw/guide.md hash mismatch")));
+  assert.ok(errors.some((error) => error.includes("bundle entry raw/guide.md contains credential-shaped value")));
+});
+
 test("shared knowledge docs define retrieval, assessment and publishing gates", async () => {
   const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
   const expected = new Map([
@@ -202,6 +244,23 @@ test("third and fourth sources stay confidential and outside the publication que
   const {records, errors} = parseCatalog(catalog);
   assert.deepEqual(errors, []);
   for (const documentId of ["ka-src-0003", "ka-src-0004"]) {
+    const record = records.find((item) => item.document_id === documentId);
+    assert.ok(record, `${documentId} must exist`);
+    assert.equal(record.access_level, "confidential");
+    assert.equal(record.evidence_level, "E3");
+    assert.equal(record.lifecycle_status, "review_pending");
+    assert.equal(record.review_status, "pending");
+    assert.equal(record.product_kb_publication_status, "not_ready");
+    assert.equal(record.allowed_roles.includes("development"), false);
+  }
+});
+
+test("fifth and sixth sources are confidential research assets pending review", async () => {
+  const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+  const catalog = await readFile(path.join(repoRoot, "docs/knowledge/catalog.jsonl"), "utf8");
+  const {records, errors} = parseCatalog(catalog);
+  assert.deepEqual(errors, []);
+  for (const documentId of ["ka-src-0005", "ka-src-0006"]) {
     const record = records.find((item) => item.document_id === documentId);
     assert.ok(record, `${documentId} must exist`);
     assert.equal(record.access_level, "confidential");

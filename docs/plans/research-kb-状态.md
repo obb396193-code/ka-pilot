@@ -31,6 +31,9 @@
 - [x] 16. `ka-src-0003/0004` 凭证扫描、敏感度分级与私有原文留存
 - [x] 17. 两篇资料分别全文核对、产品映射与 20 项独立评估
 - [x] 18. catalog、校验、功能提交与 `P-KB-003` 交审
+- [x] 19. 新下载资料包/导读/Excel 的完整性、凭证与可用性审计
+- [x] 20. `ka-src-0005/0006` canonical 私有留存、catalog 与 20 项独立评估
+- [ ] 21. bundle 校验门、功能提交与 `P-KB-004` 交审
 
 ## 完成记录
 
@@ -52,7 +55,10 @@
 - 2026-08-20：两篇按 `confidential` 登记，移除一般 development 访问；完成各自 20 项评估。媒体能力资料建议拆成能力目录/预检/映射候选；业务工作流资料建议拆成安全术语/规则候选/策略卡/实验草案。高风险回传与赔付做法明确禁止进入默认召回、规则和执行能力。
 - 2026-08-20：13/13 Node 测试、catalog validator、评估敏感链接/长编号泄露检查和 `git diff --check` 通过。
 - 2026-08-20：功能提交 SHA=`a52f91b`；`docs/relay/inbox-arch.md` 新增自包含审查事项 `P-KB-003`，合并交审但保持两篇资料/评估/结论独立。
+- 2026-08-20：核验新下载的 `ka-platform-docs-v2.zip`、重复 `INDEX.md` 和《快手广告创建指令模板》Excel。资料包实际为 671 文件+58 目录，存在空/极小/重复/NUL 文件；原包含 signed URL 的 AK 标识与签名形状。Excel 无宏/外链/凭证，但含真实 ID、写操作参数和高风险字段，跨 Artifact Tool/LibreOffice 复现 8 个查找单元格 `#NAME?`，目标 Microsoft Excel 尚待补证。
+- 2026-08-20：生成 `ka-src-0005` sanitized canonical：manifest + archive + 671 个可检索 extracted 文件；清除 128 处 access-key query、128 处 signature query、1 处 AK ID 形状和 3 处 named-secret assignment，清除后复扫 0。`ka-src-0006` 原 Excel 完整保存到 ignored 私有区；两篇均登记 E3/`confidential`/`review_pending`/`not_ready`。
+- 2026-08-20：完成两篇独立评估。资料包建议“包级仅参考、子文档逐篇提升”，EVO 可补实验编排但不支持黑盒自动调控；Excel 仅借字段/交互，驳回直接复制执行、空字段生成、100 组默认、“其他默认”和高风险参数工具化。
 
 ## 当前状态
 
-`ka-src-0001~0004` 已分别完成入库评估，`P-KB-001~003` 均已交审；停止融合与开发，等待 arch/security 裁决。
+`ka-src-0001~0004` 已交审；`ka-src-0005/0006` 已完成安全留存与评估，正在完成 bundle 校验、功能提交和 `P-KB-004` 审查回执。未改冻结 PRD/Contract/生产代码。

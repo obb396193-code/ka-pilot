@@ -204,6 +204,9 @@ export async function validateRepository({repoRoot = process.cwd(), checkGit = t
       if (hash !== record.content_hash_sha256) errors.push(`${record.document_id}: content hash mismatch`);
       const sourceText = source.toString("utf8");
       if (containsCredential(sourceText)) errors.push(`${record.document_id}: storage contains credential-shaped value`);
+      if (path.basename(storagePath) === "source-manifest.json") {
+        errors.push(...await validateBundleManifest(storagePath, record.document_id));
+      }
     }
     if (assessmentExists) {
       const assessment = await readFile(assessmentPath, "utf8");
@@ -258,6 +261,67 @@ async function exists(filePath) {
   } catch {
     return false;
   }
+}
+
+async function validateBundleManifest(manifestPath, documentId) {
+  const errors = [];
+  let manifest;
+  try {
+    manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  } catch (error) {
+    return [`${documentId}: bundle manifest is invalid JSON (${error.message})`];
+  }
+
+  if (!Array.isArray(manifest.entries)) {
+    return [`${documentId}: bundle manifest entries must be an array`];
+  }
+  if (manifest.entry_count !== manifest.entries.length) {
+    errors.push(`${documentId}: bundle manifest entry_count mismatch`);
+  }
+
+  const bundleRoot = path.dirname(manifestPath);
+  const extractedRoot = path.join(bundleRoot, "extracted");
+  for (const entry of manifest.entries) {
+    const entryPath = entry?.path;
+    if (!safeRelativePath(entryPath)) {
+      errors.push(`${documentId}: bundle entry has an unsafe path`);
+      continue;
+    }
+    if (!/^[a-f0-9]{64}$/.test(entry?.sha256 || "")) {
+      errors.push(`${documentId}: bundle entry ${entryPath} has an invalid SHA-256`);
+      continue;
+    }
+
+    const filePath = path.join(extractedRoot, entryPath);
+    if (!(await exists(filePath))) {
+      errors.push(`${documentId}: bundle entry ${entryPath} does not exist`);
+      continue;
+    }
+    const source = await readFile(filePath);
+    const hash = createHash("sha256").update(source).digest("hex");
+    if (hash !== entry.sha256) errors.push(`${documentId}: bundle entry ${entryPath} hash mismatch`);
+    if (containsCredential(source.toString("utf8"))) {
+      errors.push(`${documentId}: bundle entry ${entryPath} contains credential-shaped value`);
+    }
+  }
+
+  const archive = manifest.canonical_archive;
+  if (!isPlainObject(archive)
+    || !safeRelativePath(archive.filename)
+    || !/^[a-f0-9]{64}$/.test(archive.sha256 || "")) {
+    errors.push(`${documentId}: bundle canonical_archive metadata is invalid`);
+  } else {
+    const archivePath = path.join(bundleRoot, archive.filename);
+    if (!(await exists(archivePath))) {
+      errors.push(`${documentId}: bundle canonical archive does not exist`);
+    } else {
+      const archiveBytes = await readFile(archivePath);
+      const archiveHash = createHash("sha256").update(archiveBytes).digest("hex");
+      if (archiveHash !== archive.sha256) errors.push(`${documentId}: bundle canonical archive hash mismatch`);
+    }
+  }
+
+  return errors;
 }
 
 const invokedPath = process.argv[1] ? path.resolve(process.argv[1]) : null;

@@ -6,6 +6,8 @@
 
 内部原文从授权的 `storage_ref` 读取；产品知识库必须继承或收紧 `visibility/allowed_roles`。若要把评估结论作为独立知识正文发布，应给该派生资产单独的 `document_id` 和 hash，不能冒充原始资料正文。
 
+多文件资料包不能以“整包 approved”直接展开成数百篇产品知识。发布前必须从包内选出目标子文档，单独分配 `document_id`、确定正文边界、权限、版本、hash、证据等级和审查结论；包级 manifest 仅用于溯源和完整性校验。
+
 ## 2. 发布前置条件
 
 - `lifecycle_status=approved`

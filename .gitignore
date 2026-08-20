@@ -10,3 +10,7 @@
 
 # 内部原始知识资料：允许保留业务敏感内容，但禁止进入 Git
 /private/knowledge-sources/
+
+# 本次内部资料下载入口文件；canonical 只保留在上方私有区
+/ka-platform-docs-v2.zip
+/INDEX.md
