@@ -159,3 +159,17 @@ test("shared knowledge docs define retrieval, assessment and publishing gates", 
     for (const text of requiredText) assert.match(content, new RegExp(text));
   }
 });
+
+test("first source is cataloged as E3 and pending review", async () => {
+  const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+  const catalog = await readFile(path.join(repoRoot, "docs/knowledge/catalog.jsonl"), "utf8");
+  const {records, errors} = parseCatalog(catalog);
+  assert.deepEqual(errors, []);
+  const record = records.find((item) => item.document_id === "ka-src-0001");
+  assert.ok(record, "ka-src-0001 must exist");
+  assert.equal(record.evidence_level, "E3");
+  assert.equal(record.lifecycle_status, "review_pending");
+  assert.equal(record.review_status, "pending");
+  assert.equal(record.product_kb_publication_status, "not_ready");
+  assert.equal(record.access_level, "project_internal");
+});
