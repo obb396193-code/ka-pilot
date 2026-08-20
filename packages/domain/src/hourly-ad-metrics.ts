@@ -111,10 +111,10 @@ function parseRow(row: Record<string, unknown>): ParsedCumulativeRow {
     accountId: requiredText(row.account_id, "account_id"),
     ds: normalizeDate(requiredText(row.ds, "ds")),
     cost: requiredMetric(row.ad_cost_h, "ad_cost_h"),
-    exposure: requiredMetric(row.ad_exposure_h, "ad_exposure_h"),
-    click: requiredMetric(row.ad_click_h, "ad_click_h"),
-    conversion: requiredMetric(row.ad_conversion_h, "ad_conversion_h"),
-    realConversion: requiredMetric(row.ad_real_conversion_h, "ad_real_conversion_h"),
+    exposure: requiredCount(row.ad_exposure_h, "ad_exposure_h"),
+    click: requiredCount(row.ad_click_h, "ad_click_h"),
+    conversion: requiredCount(row.ad_conversion_h, "ad_conversion_h"),
+    realConversion: requiredCount(row.ad_real_conversion_h, "ad_real_conversion_h"),
     bid: requiredMetric(row.ad_bid_h, "ad_bid_h"),
     budget: requiredMetric(row.ad_budget_h, "ad_budget_h"),
     lastSyncTime: optionalText(row.last_sync_time, "last_sync_time"),
@@ -178,6 +178,12 @@ function requiredMetric(value: unknown, field: string): number {
     throw new Error(`${field} must be a finite nonnegative number`);
   }
   return value;
+}
+
+function requiredCount(value: unknown, field: string): number {
+  const parsed = requiredMetric(value, field);
+  if (!Number.isSafeInteger(parsed)) throw new Error(`${field} must be a safe integer`);
+  return parsed;
 }
 
 function normalizeDate(value: string): string {

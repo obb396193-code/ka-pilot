@@ -63,6 +63,27 @@ function jobs() {
   return { enqueue: vi.fn(async (input: { id?: string }) => input.id ?? "generated-job") };
 }
 
+function hourlyStore() {
+  return { upsertHourly: vi.fn().mockResolvedValue(undefined) };
+}
+
+function adRow(hh: number, overrides: Record<string, unknown> = {}) {
+  return {
+    account_id: "a-9",
+    ad_id: "ad-1",
+    ds: "20260819",
+    ad_cost_h: hh * 10,
+    ad_exposure_h: hh * 100,
+    ad_click_h: hh * 5,
+    ad_conversion_h: hh,
+    ad_real_conversion_h: hh,
+    ad_bid_h: 30,
+    ad_budget_h: 500,
+    last_sync_time: "2026-08-19 09:58:00",
+    ...overrides,
+  };
+}
+
 describe("ETL handlers", () => {
   it("runs account pagination, yesterday offline and a seven-day realtime window", async () => {
     const calls: QihangQuery[] = [];
@@ -224,14 +245,22 @@ describe("ETL handlers", () => {
       query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => {
         calls.push(query);
         return {
-          rows: [{ account_id: "a-9", ad_id: "ad-1", ds: "20260819" }],
+          rows: query.resource === "ad_realtime"
+            ? [adRow(Number(query.hh))]
+            : [{ account_id: "a-9", ds: "20260819" }],
           envelope: {},
         };
       }),
     };
     const runStore = store();
     const downstream = jobs();
-    const handler = createIncrementalEtlHandler({ qihang, store: runStore.value, jobs: downstream });
+    const hourly = hourlyStore();
+    const handler = createIncrementalEtlHandler({
+      qihang,
+      store: runStore.value,
+      jobs: downstream,
+      hourly,
+    });
 
     await handler(
       job("etl_incr", {
@@ -257,10 +286,31 @@ describe("ETL handlers", () => {
         ds: "2026-08-19",
         accountIds: ["a-9"],
         adIds: ["ad-1"],
+        hh: 8,
+      }),
+      expect.objectContaining({
+        resource: "ad_realtime",
+        ds: "2026-08-19",
+        accountIds: ["a-9"],
+        adIds: ["ad-1"],
         hh: 9,
       }),
     ]);
-    expect(runStore.value.finishRun).toHaveBeenCalledWith(91, 2);
+    expect(runStore.value.finishRun).toHaveBeenCalledWith(91, 3);
+    expect(hourly.upsertHourly).toHaveBeenCalledWith([{
+      workspaceId,
+      adId: "ad-1",
+      accountId: "a-9",
+      ds: "2026-08-19",
+      hh: 9,
+      cost: 10,
+      exposure: 100,
+      click: 5,
+      conversion: 1,
+      realConversion: 1,
+      bid: 30,
+      budget: 500,
+    }]);
     expect(runStore.value.startRun).toHaveBeenCalledWith(
       "33333333-3333-4333-8333-333333333333",
       "incr",
@@ -295,7 +345,12 @@ describe("ETL handlers", () => {
     const runStore = store();
     const downstream = jobs();
 
-    await createIncrementalEtlHandler({ qihang, store: runStore.value, jobs: downstream })(
+    await createIncrementalEtlHandler({
+      qihang,
+      store: runStore.value,
+      jobs: downstream,
+      hourly: hourlyStore(),
+    })(
       job("etl_incr", {
         workspaceId,
         userId: "u-qihang",
@@ -344,7 +399,12 @@ describe("ETL handlers", () => {
     const runStore = store();
     const downstream = jobs();
 
-    await createIncrementalEtlHandler({ qihang, store: runStore.value, jobs: downstream })(
+    await createIncrementalEtlHandler({
+      qihang,
+      store: runStore.value,
+      jobs: downstream,
+      hourly: hourlyStore(),
+    })(
       job("etl_incr", {
         workspaceId,
         userId: "u-qihang",
@@ -361,6 +421,134 @@ describe("ETL handlers", () => {
     expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
       payload: expect.objectContaining({ dateFrom: "2026-08-19", dateTo: "2026-08-20" }),
     }));
+  });
+
+  it("uses an empty baseline for hh=0 and records a safe derivation summary", async () => {
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => ({
+        rows: query.resource === "ad_realtime" ? [adRow(0, { ad_cost_h: 7 })] : [],
+        envelope: {},
+        observation: observation(query.resource, query.resource === "ad_realtime" ? 1 : 0),
+      })),
+    };
+    const runStore = store();
+    const hourly = hourlyStore();
+
+    await createIncrementalEtlHandler({ qihang, store: runStore.value, jobs: jobs(), hourly })(
+      job("etl_incr", {
+        workspaceId,
+        userId: "u-qihang",
+        ds: "2026-08-19",
+        focusAccountIds: ["a-9"],
+        hh: 0,
+        offlineReconcileDays: 0,
+      }),
+    );
+
+    expect(qihang.query.mock.calls.map(([query]) => query)).toEqual([
+      expect.objectContaining({ resource: "account_realtime" }),
+      expect.objectContaining({ resource: "ad_realtime", hh: 0 }),
+    ]);
+    expect(hourly.upsertHourly).toHaveBeenCalledWith([
+      expect.objectContaining({ hh: 0, cost: 7 }),
+    ]);
+    expect(runStore.value.recordObservation).toHaveBeenCalledWith(91, expect.objectContaining({
+      kind: "hourly_derivation",
+      issueCount: 0,
+      issueFields: [],
+    }));
+    const serialized = JSON.stringify(vi.mocked(runStore.value.recordObservation).mock.calls);
+    expect(serialized).not.toContain("ad-1");
+  });
+
+  it("does not enqueue canonical work when hourly persistence fails", async () => {
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => ({
+        rows: query.resource === "ad_realtime" ? [adRow(Number(query.hh))] : [],
+        envelope: {},
+      })),
+    };
+    const runStore = store();
+    const downstream = jobs();
+    const hourly = { upsertHourly: vi.fn().mockRejectedValue(new Error("hourly unavailable")) };
+
+    await expect(createIncrementalEtlHandler({
+      qihang,
+      store: runStore.value,
+      jobs: downstream,
+      hourly,
+    })(job("etl_incr", {
+      workspaceId,
+      userId: "u-qihang",
+      ds: "2026-08-19",
+      focusAccountIds: ["a-9"],
+      hh: 9,
+      offlineReconcileDays: 0,
+    }))).rejects.toThrow("hourly unavailable");
+
+    expect(runStore.records.filter((record) => record.resource === "ad_realtime")).toHaveLength(2);
+    expect(runStore.value.failRun).toHaveBeenCalledWith(91, "hourly_upsert", "hourly unavailable");
+    expect(downstream.enqueue).not.toHaveBeenCalled();
+  });
+
+  it("skips a missing current ad row and exposes only aggregate issue metadata", async () => {
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => ({
+        rows: query.resource === "ad_realtime" && query.hh === 8 ? [adRow(8)] : [],
+        envelope: {},
+      })),
+    };
+    const runStore = store();
+    const hourly = hourlyStore();
+
+    await createIncrementalEtlHandler({ qihang, store: runStore.value, jobs: jobs(), hourly })(
+      job("etl_incr", {
+        workspaceId,
+        userId: "u-qihang",
+        ds: "2026-08-19",
+        focusAccountIds: ["a-9"],
+        hh: 9,
+        offlineReconcileDays: 0,
+      }),
+    );
+
+    expect(hourly.upsertHourly).toHaveBeenCalledWith([]);
+    const summary = vi.mocked(runStore.value.recordObservation).mock.calls
+      .map((call) => call[1])
+      .find((value) => "kind" in value);
+    expect(summary).toEqual(expect.objectContaining({
+      kind: "hourly_derivation",
+      rowCount: 0,
+      issueCount: 1,
+      issueFields: [],
+      availability: "observed_unverified",
+    }));
+    expect(JSON.stringify(summary)).not.toContain("ad-1");
+  });
+
+  it("keeps a single raw ad query when no hourly snapshot is requested", async () => {
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => ({
+        rows: query.resource === "ad_realtime" ? [adRow(9)] : [],
+        envelope: {},
+      })),
+    };
+    const hourly = hourlyStore();
+
+    await createIncrementalEtlHandler({ qihang, store: store().value, jobs: jobs(), hourly })(
+      job("etl_incr", {
+        workspaceId,
+        userId: "u-qihang",
+        ds: "2026-08-19",
+        focusAccountIds: ["a-9"],
+        offlineReconcileDays: 0,
+      }),
+    );
+
+    const adQueries = qihang.query.mock.calls.map(([query]) => query)
+      .filter((query) => query.resource === "ad_realtime");
+    expect(adQueries).toEqual([expect.not.objectContaining({ hh: expect.anything() })]);
+    expect(hourly.upsertHourly).not.toHaveBeenCalled();
   });
 
   it("records the failed ETL step before propagating the error", async () => {

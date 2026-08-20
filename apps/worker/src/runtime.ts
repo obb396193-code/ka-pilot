@@ -1,5 +1,6 @@
 import {
   BackfillRepository,
+  AdHourlyMetricsRepository,
   CredentialRepository,
   DataQualityRepository,
   EtlRunRepository,
@@ -37,6 +38,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
   const etlRuns = new EtlRunRepository(options.pool);
   const rawMetrics = new RawMetricsRepository(options.pool);
   const metrics = new MetricsRepository(options.pool);
+  const hourly = new AdHourlyMetricsRepository(options.pool);
   const outbound = new OutboundMessageRepository(options.pool);
   const batches = new BackfillRepository(options.pool);
   const quality = new DataQualityRepository(options.pool);
@@ -58,7 +60,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
     {
       etl_full: identity(createFullEtlHandler({ qihang: options.qihang, store: etlStore, jobs })),
       etl_incr: identity(
-        createIncrementalEtlHandler({ qihang: options.qihang, store: etlStore, jobs }),
+        createIncrementalEtlHandler({ qihang: options.qihang, store: etlStore, jobs, hourly }),
       ),
       backfill_historical: identity(
         createBackfillCoordinatorHandler({

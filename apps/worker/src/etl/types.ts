@@ -1,3 +1,5 @@
+import type { AdHourlyMetricRecord } from "@ka/db";
+
 import type { QihangQuery, QihangQueryResult } from "../qihang/client.js";
 import type { QihangObservation } from "../qihang/observation.js";
 
@@ -22,7 +24,7 @@ export interface EtlRunStore {
     scope: Record<string, unknown>,
   ): Promise<number>;
   appendRaw(records: readonly RawMetricRecord[]): Promise<void>;
-  recordObservation(runId: number, observation: EtlQueryObservation): Promise<void>;
+  recordObservation(runId: number, observation: EtlRunObservation): Promise<void>;
   finishRun(runId: number, rowsIngested: number): Promise<void>;
   failRun(runId: number, stepFailed: string, errorSummary: string): Promise<void>;
 }
@@ -32,6 +34,25 @@ export interface EtlQueryObservation extends QihangObservation {
   beginDate?: string;
   endDate?: string;
   hh?: number | string;
+}
+
+export interface EtlDerivationObservation {
+  kind: "hourly_derivation";
+  resource: "ad_realtime";
+  rowCount: number;
+  observedAt: string;
+  lastSyncTime: string | null;
+  availability: "observed" | "observed_unverified";
+  ds: string;
+  hh: number;
+  issueCount: number;
+  issueFields: readonly string[];
+}
+
+export type EtlRunObservation = EtlQueryObservation | EtlDerivationObservation;
+
+export interface AdHourlyStore {
+  upsertHourly(records: readonly AdHourlyMetricRecord[]): Promise<void>;
 }
 
 export interface QihangQueryPort {
