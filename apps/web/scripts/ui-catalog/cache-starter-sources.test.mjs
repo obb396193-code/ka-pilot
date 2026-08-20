@@ -61,6 +61,16 @@ test("only follows explicit same-source registry dependencies", () => {
 
   assert.deepEqual(extractSameSourceDependencies("magic-ui", { registryDependencies: ["button"] }), []);
   assert.deepEqual(
+    extractSameSourceDependencies("shadcn", { registryDependencies: ["calendar", "button"] }),
+    [{ name: "calendar", url: "https://ui.shadcn.com/r/styles/new-york-v4/calendar.json" }],
+  );
+  assert.deepEqual(
+    extractSameSourceDependencies("coss-origin", {
+      registryDependencies: ["https://coss.com/origin/r/button.json"],
+    }),
+    [{ name: "button", url: "https://coss.com/origin/r/button.json" }],
+  );
+  assert.deepEqual(
     extractSameSourceDependencies("dice-ui", {
       registryDependencies: ["data-grid", "button", "@diceui/file-upload"],
     }),
@@ -80,6 +90,18 @@ test("only follows explicit same-source registry dependencies", () => {
       name: "primitives-buttons-ripple",
       url: "https://animate-ui.com/r/primitives-buttons-ripple.json",
     }],
+  );
+});
+
+test("resolves the Magic UI public template blob without touching private Pro Registry", () => {
+  assert.deepEqual(
+    resolveAssetFetch(
+      "https://github.com/magicuidesign/blog-template/blob/main/components/magicui/flickering-grid.tsx",
+    ),
+    {
+      kind: "file",
+      url: "https://raw.githubusercontent.com/magicuidesign/blog-template/main/components/magicui/flickering-grid.tsx",
+    },
   );
 });
 

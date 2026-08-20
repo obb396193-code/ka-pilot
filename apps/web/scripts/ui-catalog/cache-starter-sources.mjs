@@ -16,9 +16,19 @@ const CACHE_ROOT_URL = new URL("docs/frontend/ui-assets/source-cache/", ROOT);
 const MANIFEST_URL = new URL("docs/frontend/ui-assets/source-cache/manifest.json", ROOT);
 
 const REGISTRY_CONFIG = {
+  shadcn: {
+    prefixes: [],
+    plainNames: ["calendar"],
+    baseUrl: "https://ui.shadcn.com/r/styles/new-york-v4/",
+  },
   coss: {
     prefixes: ["@coss/"],
     baseUrl: "https://coss.com/ui/r/",
+  },
+  "coss-origin": {
+    prefixes: [],
+    plainNames: ["button"],
+    baseUrl: "https://coss.com/origin/r/",
   },
   reui: {
     prefixes: ["@reui/"],
@@ -456,8 +466,11 @@ async function buildManifest({ fetchImpl = fetch } = {}) {
     }
 
     try {
+      const cacheAssetInput = root.source_url_override
+        ? { ...asset, source_url: root.source_url_override }
+        : asset;
       const entry = await cacheAsset({
-        asset,
+        asset: cacheAssetInput,
         rootOrDependency: "root",
         cacheRoot,
         fetchImpl,
@@ -467,7 +480,7 @@ async function buildManifest({ fetchImpl = fetch } = {}) {
       entries.push(entry);
       visited.add(root.asset_id);
       for (const dependency of entry.registry_dependencies) {
-        queuedDependencies.push({ parent: entry.asset_id, source: asset.source, ...dependency });
+        queuedDependencies.push({ parent: entry.asset_id, source: cacheAssetInput.source, ...dependency });
       }
       console.log(`${entry.asset_id}: cached (${entry.files_in_payload} source files)`);
     } catch (error) {

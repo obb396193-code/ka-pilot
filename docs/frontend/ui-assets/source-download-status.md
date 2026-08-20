@@ -1,6 +1,6 @@
 # 前端 UI 源码下载与运行时状态
 
-> 核验快照：2026-08-19T15:38:06.845Z
+> 核验快照：2026-08-20（17 库比较墙源码补充）
 
 ## 结论
 
@@ -8,7 +8,8 @@
 - 运行仓已有 22 个 `components/ui/*.tsx` 本地源码文件，其中 20 个被当前源码显式引用。
 - 这些文件的 shadcn 来源只能由 `components.json.style=new-york-v4` 与路径推断；精确 upstream ref/hash 已验证 0 个。
 - 11 个第三方来源隔离目录当前合计 0 个源码文件。
-- 独立 starter cache 已保存 69 个根资产、124 个缓存条目、137 份源码文件；失败 0。这些文件尚未安装进运行仓。
+- 独立 starter cache 已保存 73 个根资产、130 个缓存条目、143 份源码文件；失败 0。这些文件尚未安装进运行仓。
+- 比较墙已补充 shadcn 当前 Registry、coss Origin、Tremor legacy 官方包和 Magic UI 官方公开 MIT template；React Bits Pro 仍为 0 份源码。
 
 所以不能说“所有目录源码已下载”。准确说法是：目录全量可查；高频公开源码已在隔离缓存中可复核；现有 shadcn 风格本地源码可运行但 provenance 待补；第三方缓存尚未接入运行仓。
 
@@ -19,14 +20,18 @@
 | aceternity | 6 | 1 | 7 | 7 |
 | ai-elements | 6 | 2 | 8 | 8 |
 | animate-ui | 3 | 8 | 11 | 11 |
+| coss-origin | 1 | 1 | 2 | 2 |
 | coss | 12 | 32 | 44 | 44 |
 | dice-ui | 3 | 4 | 7 | 16 |
 | kibo-ui | 6 | 0 | 6 | 6 |
 | magic-ui | 7 | 0 | 7 | 7 |
+| magic-ui-pro（仅公开 MIT template） | 1 | 0 | 1 | 1 |
 | motion-primitives | 3 | 0 | 3 | 3 |
 | react-bits | 7 | 0 | 7 | 11 |
 | reui | 8 | 8 | 16 | 16 |
+| shadcn（当前 Registry 代表项） | 1 | 1 | 2 | 2 |
 | tremor | 7 | 0 | 7 | 7 |
+| tremor-legacy（固定 3.18.7 包） | 1 | 0 | 1 | 1 |
 | tweakcn | 1 | 0 | 1 | 1 |
 
 缓存位置：`docs/frontend/ui-assets/source-cache/`。这里的 Registry JSON 包含实际 `files[].content`；GitHub 资产保存 raw 文件并逐文件记录 SHA-256。缓存不等于选型拍板或运行时接入。

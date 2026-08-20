@@ -10,6 +10,28 @@
   ],
   "roots": [
     {
+      "asset_id": "shadcn:calendar-demo",
+      "reason": "17 库比较墙需要一个来自当前官方 Registry、可反查 exact upstream 的 shadcn 基础控件代表。",
+      "use_cases": ["date-range", "showroom-comparison"]
+    },
+    {
+      "asset_id": "coss-origin:comp-100",
+      "reason": "用一个小型可访问菜单按钮展示 coss Origin 的 legacy particle 写法，并和 current 明确分开。",
+      "use_cases": ["showroom-comparison", "legacy-reference"]
+    },
+    {
+      "asset_id": "tremor-legacy:ui/card",
+      "reason": "固定缓存官方 @tremor/react 3.18.7 发布包，用 Card/Metric 展示旧版分析组件语言。",
+      "use_cases": ["analytics-layout", "showroom-comparison", "legacy-reference"],
+      "source_url_override": "https://registry.npmjs.org/@tremor/react/-/react-3.18.7.tgz"
+    },
+    {
+      "asset_id": "magic-ui-pro:template/blog",
+      "reason": "只缓存 Magic UI 官方公开 MIT blog template 的 FlickeringGrid 源文件，绝不访问私有 Pro Registry。",
+      "use_cases": ["ai-accent", "showroom-comparison"],
+      "source_url_override": "https://github.com/magicuidesign/blog-template/blob/main/components/magicui/flickering-grid.tsx"
+    },
+    {
       "asset_id": "coss:p-date-picker-2",
       "reason": "细节完成度高的单月日期范围选择，是已确认的首轮真实对比候选。",
       "use_cases": ["date-range", "filters"]
