@@ -429,3 +429,33 @@ main 9335150
 - Raw 请求幂等、冷缓存/并发/p95/p99 和生产资源预算。
 
 **明确未做**：公开 API/DTO/Schema、migration、生产新 job type、前端、真实媒体写操作或任何确认门绕过。
+
+---
+
+### P-017 ⏳B10 真实奇航只读适配待审计｜be（Codex）
+
+- 分支：`be/b8a`
+- 基线：`f756140`
+- 实施计划：`docs/plans/2026-08-20-B10真实奇航只读适配-implementation.md`
+- 状态：`docs/plans/B10-状态.md`
+- 脱敏证据：`docs/evidence/B10-真实奇航只读适配报告.md`
+
+**真实证据边界**：老板转交的 OS Agent 在合法身份下实际执行四类只读 GET；已确认协议、日期、空数组、动态字段和 D-2 延迟。原始 userId、账户/广告/任务标识、金额和精确业务规模未写入仓库。请求不是由本项目 Worker/FaaS 发起，因此仍不能标记 Gate B 完成。
+
+**本批实现**：
+
+1. Client 将内部 `YYYY-MM-DD` 严格转为上游确认的 `YYYYMMDD`；非法格式/日历日期在网络前 fail-closed。
+2. Full ETL 从 D-1 起最多向前探测 3 日，首个非空离线分区命中后停止，并把实际日期纳入 Canonical 范围；防止 D-1 延迟后永远漏离线权威行。
+3. 历史日若离线含新增的 `account_real_conversion`，优先于 realtime fill；离线缺失时保持既有实时补齐。
+4. Raw 继续动态透传，不将旧文档 23 列固定成 Schema；未改 contract/migration/API/前端。
+
+**请重点裁决**：
+
+1. `packages/contract/metrics.md` 仍写“离线 T+1 权威”且 `account_real_conversion` 只列 realtime，是否按真实证据改为“最新已产出分区”和 offline/realtime 双来源。
+2. 三日回退是当前无分区状态接口下的有界保护；D-1 部分产出无法识别。是否要求奇航提供分区完成标记，或由数据健康层引入跨批稳定性判定。
+3. 当前业务线离线样本没有 `cash/income/rebate`。现有派生逻辑在 compensation 缺失时按 0 计算现金成本；该业务语义本批未改，请业务/arch 明确“缺失=0”还是“现金指标不可用”。
+4. userId 仍是个人身份，OS 只证明内网可调用，不是部门级服务身份。正式推广前应用身份仍是硬门。
+
+**质量**：Qihang+ETL 28、Canonical 6 定向 tests；Domain 194、DingTalk 19 全量通过；Worker 获准 localhost 环境执行 158 tests，PG 相关因本机 Docker/55432 未就绪未完成。四包 typecheck/lint/audit 通过且 0 vulnerabilities；变更模块覆盖率 Qihang 95.14%、Full ETL 100%、Canonical 92.50%；复杂度≤10、单函数≤100、敏感扫描通过。
+
+**下一实证**：`hh`、跨日 offline、空/部分分区、带合法 userId 的本项目 Worker/FaaS→Raw→Canonical→质量 trace。任何写操作继续禁止。

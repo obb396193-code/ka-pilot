@@ -52,6 +52,22 @@ function accountId(row: RawMetricRow | undefined): string | null {
   return typeof value === "string" || typeof value === "number" ? String(value) : null;
 }
 
+function resolveCanonicalAccount(
+  offline: RawMetricRow | undefined,
+  realtime: RawMetricRow | undefined,
+): string {
+  const offlineAccount = accountId(offline);
+  const realtimeAccount = accountId(realtime);
+  if (offlineAccount && realtimeAccount && offlineAccount !== realtimeAccount) {
+    throw new Error("Cannot merge rows from different accounts");
+  }
+  const resolved = offlineAccount ?? realtimeAccount;
+  if (!resolved) {
+    throw new Error("Cannot merge canonical row without account_id");
+  }
+  return resolved;
+}
+
 function put(
   target: CanonicalAccountBase,
   field: keyof Omit<CanonicalAccountBase, "accountId" | "ds" | "gapFilledByRealtime" | "fieldSources">,
@@ -110,18 +126,22 @@ function applyRealtime(
   put(target, "assessmentPrice", numeric(realtime, "assessment_cost"), source);
 }
 
-export function mergeAccountCanonical(input: CanonicalMergeInput): CanonicalAccountBase {
-  const offlineAccount = accountId(input.offline);
-  const realtimeAccount = accountId(input.realtime);
-  if (offlineAccount && realtimeAccount && offlineAccount !== realtimeAccount) {
-    throw new Error("Cannot merge rows from different accounts");
+function applyOffline(target: CanonicalAccountBase, offline: RawMetricRow): void {
+  put(target, "cost", numeric(offline, "cost_api"), "offline");
+  put(target, "exposure", numeric(offline, "exp_pv_api"), "offline");
+  put(target, "click", numeric(offline, "clk_api"), "offline");
+  put(target, "cash", numeric(offline, "cash"), "offline");
+  put(target, "compensation", numeric(offline, "income"), "offline");
+  put(target, "wakeUv", numeric(offline, "wake_uv"), "offline");
+  put(target, "potentialUv", numeric(offline, "aac_ptt_uv"), "offline");
+  const realConversion = numeric(offline, "account_real_conversion");
+  if (realConversion !== null) {
+    put(target, "realConversion", realConversion, "offline");
   }
-  const resolvedAccount = offlineAccount ?? realtimeAccount;
-  if (!resolvedAccount) {
-    throw new Error("Cannot merge canonical row without account_id");
-  }
+}
 
-  const result = blank(resolvedAccount, input.ds);
+export function mergeAccountCanonical(input: CanonicalMergeInput): CanonicalAccountBase {
+  const result = blank(resolveCanonicalAccount(input.offline, input.realtime), input.ds);
   const isToday = input.ds === input.reportDate;
   if (isToday) {
     if (!input.realtime) {
@@ -140,13 +160,7 @@ export function mergeAccountCanonical(input: CanonicalMergeInput): CanonicalAcco
     return result;
   }
 
-  put(result, "cost", numeric(input.offline, "cost_api"), "offline");
-  put(result, "exposure", numeric(input.offline, "exp_pv_api"), "offline");
-  put(result, "click", numeric(input.offline, "clk_api"), "offline");
-  put(result, "cash", numeric(input.offline, "cash"), "offline");
-  put(result, "compensation", numeric(input.offline, "income"), "offline");
-  put(result, "wakeUv", numeric(input.offline, "wake_uv"), "offline");
-  put(result, "potentialUv", numeric(input.offline, "aac_ptt_uv"), "offline");
   applyRealtime(result, input.realtime, input.realtime ? "realtime_fill" : "unavailable", false);
+  applyOffline(result, input.offline);
   return result;
 }

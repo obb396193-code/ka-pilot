@@ -88,6 +88,7 @@ describe("ETL handlers", () => {
         userId: "u-qihang",
       }),
     );
+    expect(calls.filter((call) => call.resource === "account_offline")).toHaveLength(1);
     expect(calls.filter((call) => call.resource === "account_realtime")).toHaveLength(7);
     expect(runStore.records.some((row) => row.resource === "account")).toBe(true);
     expect(runStore.records.every((row) => row.workspaceId === workspaceId)).toBe(true);
@@ -108,6 +109,94 @@ describe("ETL handlers", () => {
         dateTo: "2026-08-19",
         reportDate: "2026-08-19",
       },
+    }));
+  });
+
+  it("falls back from an empty D-1 offline partition to the latest produced partition", async () => {
+    const calls: QihangQuery[] = [];
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => {
+        calls.push(query);
+        if (query.resource === "account") {
+          return {
+            rows: [{ account_id: "a-1" }],
+            pagination: { totalNum: 1, pageNum: 1, pageSize: 50 },
+            envelope: {},
+          };
+        }
+        if (query.resource === "account_offline") {
+          return query.beginDate === "2026-08-18"
+            ? { rows: [], envelope: {} }
+            : {
+                rows: [{ account_id: "a-1", ds: "20260817", cost_api: 10 }],
+                envelope: {},
+              };
+        }
+        return { rows: [], envelope: {} };
+      }),
+    };
+    const runStore = store();
+    const downstream = jobs();
+    const handler = createFullEtlHandler({ qihang, store: runStore.value, jobs: downstream });
+
+    await handler(job("etl_full", {
+      workspaceId,
+      userId: "u-qihang",
+      asOfDate: "2026-08-19",
+      realtimeDays: 1,
+    }));
+
+    expect(calls.filter((call) => call.resource === "account_offline")).toEqual([
+      expect.objectContaining({ beginDate: "2026-08-18", endDate: "2026-08-18" }),
+      expect.objectContaining({ beginDate: "2026-08-17", endDate: "2026-08-17" }),
+    ]);
+    expect(runStore.records).toContainEqual(expect.objectContaining({
+      resource: "account_offline",
+      ds: "2026-08-17",
+      payload: expect.objectContaining({ cost_api: 10 }),
+    }));
+    expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
+      jobType: "canonical_merge",
+      payload: {
+        workspaceId,
+        dateFrom: "2026-08-17",
+        dateTo: "2026-08-19",
+        reportDate: "2026-08-19",
+      },
+    }));
+  });
+
+  it("bounds offline partition discovery when the upstream returns no historical rows", async () => {
+    const calls: QihangQuery[] = [];
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => {
+        calls.push(query);
+        return query.resource === "account"
+          ? {
+              rows: [{ account_id: "a-1" }],
+              pagination: { totalNum: 1, pageNum: 1, pageSize: 50 },
+              envelope: {},
+            }
+          : { rows: [], envelope: {} };
+      }),
+    };
+    const downstream = jobs();
+    const handler = createFullEtlHandler({ qihang, store: store().value, jobs: downstream });
+
+    await handler(job("etl_full", {
+      workspaceId,
+      userId: "u-qihang",
+      asOfDate: "2026-08-19",
+      realtimeDays: 1,
+    }));
+
+    expect(calls.filter((call) => call.resource === "account_offline")).toEqual([
+      expect.objectContaining({ beginDate: "2026-08-18" }),
+      expect.objectContaining({ beginDate: "2026-08-17" }),
+      expect.objectContaining({ beginDate: "2026-08-16" }),
+    ]);
+    expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
+      payload: expect.objectContaining({ dateFrom: "2026-08-18" }),
     }));
   });
 

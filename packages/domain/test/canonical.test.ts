@@ -73,6 +73,28 @@ describe("mergeAccountCanonical", () => {
     expect(result.gapFilledByRealtime).toBe(false);
   });
 
+  it("prefers the confirmed offline real conversion field for historical dates", () => {
+    const result = mergeAccountCanonical({
+      ds: "2026-08-18",
+      reportDate: "2026-08-20",
+      offline: {
+        account_id: "a-1",
+        cost_api: 100,
+        account_real_conversion: 9,
+      },
+      realtime: {
+        account_id: "a-1",
+        account_conversion: 12,
+        account_real_conversion: 10,
+      },
+    });
+
+    expect(result.realConversion).toBe(9);
+    expect(result.fieldSources.realConversion).toBe("offline");
+    expect(result.conversion).toBe(12);
+    expect(result.fieldSources.conversion).toBe("realtime_fill");
+  });
+
   it("uses realtime only for today", () => {
     const result = mergeAccountCanonical({
       ds: "2026-08-19",

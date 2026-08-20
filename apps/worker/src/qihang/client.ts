@@ -121,6 +121,19 @@ function appendParam(params: URLSearchParams, name: string, value: unknown): voi
   params.set(name, typeof value === "boolean" ? String(value) : `${value as string | number}`);
 }
 
+function compactQihangDate(value: string, name: string): string {
+  if (!/^(?:\d{8}|\d{4}-\d{2}-\d{2})$/.test(value)) {
+    throw new QihangError(`${name} must use YYYY-MM-DD or YYYYMMDD format`);
+  }
+  const compact = value.replaceAll("-", "");
+  const iso = `${compact.slice(0, 4)}-${compact.slice(4, 6)}-${compact.slice(6, 8)}`;
+  const parsed = new Date(`${iso}T00:00:00.000Z`);
+  if (Number.isNaN(parsed.valueOf()) || parsed.toISOString().slice(0, 10) !== iso) {
+    throw new QihangError(`${name} is not a valid calendar date`);
+  }
+  return compact;
+}
+
 export class QihangClient {
   private readonly baseUrl: string;
   private readonly fetchFn: FetchLike;
@@ -223,14 +236,22 @@ export class QihangClient {
         appendParam(url.searchParams, "bizName", query.bizName);
         break;
       case "account_offline":
-        appendParam(url.searchParams, "beginDate", query.beginDate);
-        appendParam(url.searchParams, "endDate", query.endDate);
+        appendParam(
+          url.searchParams,
+          "beginDate",
+          compactQihangDate(query.beginDate, "beginDate"),
+        );
+        appendParam(
+          url.searchParams,
+          "endDate",
+          compactQihangDate(query.endDate, "endDate"),
+        );
         break;
       case "account_realtime":
-        appendParam(url.searchParams, "ds", query.ds);
+        appendParam(url.searchParams, "ds", compactQihangDate(query.ds, "ds"));
         break;
       case "ad_realtime":
-        appendParam(url.searchParams, "ds", query.ds);
+        appendParam(url.searchParams, "ds", compactQihangDate(query.ds, "ds"));
         appendParam(url.searchParams, "hh", query.hh);
         appendParam(url.searchParams, "adIds", query.adIds);
         break;

@@ -6,7 +6,7 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配：待本轮提交
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -158,3 +158,11 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - 真实 PG 5000 行三次中位数 394.974ms、64 次端口调用、5000 最终行；仅为本机热缓存单租户证据。
 - Raw 仍是 append-only，重试可能留下物理重复抓取；latest 读取避免进入 Canonical 双计，但是否增加 request/run idempotency 需 arch 裁决。
 - B9 未新增公开 contract/migration/production job type/API/前端，也未接真实奇航/Multica/OS。审查入口 P-016。
+
+## 10. B10 真实奇航只读适配真相
+
+- OS 在合法身份下真实确认奇航四资源、显式 userId、紧凑日期、结构化返回、空数组语义和 D-2 离线延迟；原始业务规模与数据未进入仓库。
+- 代码修复内部 ISO→`YYYYMMDD`、最多三日离线空分区回退、历史离线 `account_real_conversion` 优先级；不改公开契约、Migration、API 或前端。
+- `hh`、跨日离线、部分分区完整性、现金字段缺失语义和服务身份继续未验证。
+- 真实请求仍由 OS 执行，不等于产品 Worker/FaaS 已联通；Gate B 要等本项目 SHA 的 Raw→Canonical→质量同链 trace。
+- 本轮 PostgreSQL 回归因本机 Docker 引擎未就绪未重跑；相关失败为连接拒绝，非业务断言失败。其余定向/非 PG 回归和四包静态门禁通过，详见 B10 evidence 和 P-017。

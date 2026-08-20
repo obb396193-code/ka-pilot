@@ -29,6 +29,8 @@ interface FullJobIdentity {
   credentialOwnerUserId: string | null;
 }
 
+const OFFLINE_PARTITION_LOOKBACK_DAYS = 3;
+
 export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHandler {
   return async (job) => {
     const payload = fullEtlPayloadSchema.parse(job.payload);
@@ -43,8 +45,13 @@ export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHand
 
     try {
       const accountIds = await discoverAccountIds(dependencies, payload, progress);
-      await ingestAccountMetrics(dependencies, payload, accountIds, progress);
-      await enqueueCanonical(dependencies, payload, job, progress);
+      const offlineDate = await ingestAccountMetrics(
+        dependencies,
+        payload,
+        accountIds,
+        progress,
+      );
+      await enqueueCanonical(dependencies, payload, job, progress, offlineDate);
       await dependencies.store.finishRun(runId, progress.rowsIngested);
     } catch (error) {
       await dependencies.store.failRun(runId, progress.currentStep, errorSummary(error));
@@ -98,17 +105,13 @@ async function ingestAccountMetrics(
   payload: FullEtlPayload,
   accountIds: string[],
   progress: FullEtlProgress,
-): Promise<void> {
-  const yesterday = shiftIsoDate(payload.asOfDate, -1);
-  progress.currentStep = "account_offline_yesterday";
-  progress.rowsIngested += await ingestQuery(dependencies, payload, {
-    resource: "account_offline",
-    userId: payload.userId,
-    media: payload.media,
+): Promise<string | null> {
+  const offlineDate = await ingestLatestAvailableOffline(
+    dependencies,
+    payload,
     accountIds,
-    beginDate: yesterday,
-    endDate: yesterday,
-  }, yesterday);
+    progress,
+  );
   for (const ds of trailingDates(payload.asOfDate, payload.realtimeDays)) {
     progress.currentStep = `account_realtime_${ds}`;
     progress.rowsIngested += await ingestQuery(dependencies, payload, {
@@ -119,6 +122,30 @@ async function ingestAccountMetrics(
       ds,
     }, ds);
   }
+  return offlineDate;
+}
+
+async function ingestLatestAvailableOffline(
+  dependencies: FullEtlDependencies,
+  payload: FullEtlPayload,
+  accountIds: string[],
+  progress: FullEtlProgress,
+): Promise<string | null> {
+  for (let offset = 1; offset <= OFFLINE_PARTITION_LOOKBACK_DAYS; offset += 1) {
+    const ds = shiftIsoDate(payload.asOfDate, -offset);
+    progress.currentStep = `account_offline_${ds}`;
+    const count = await ingestQuery(dependencies, payload, {
+      resource: "account_offline",
+      userId: payload.userId,
+      media: payload.media,
+      accountIds,
+      beginDate: ds,
+      endDate: ds,
+    }, ds);
+    progress.rowsIngested += count;
+    if (count > 0) return ds;
+  }
+  return null;
 }
 
 async function ingestQuery(
@@ -155,11 +182,13 @@ async function enqueueCanonical(
   payload: FullEtlPayload,
   job: FullJobIdentity,
   progress: FullEtlProgress,
+  offlineDate: string | null,
 ): Promise<void> {
   progress.currentStep = "enqueue:canonical";
   const yesterday = shiftIsoDate(payload.asOfDate, -1);
   const realtimeFrom = shiftIsoDate(payload.asOfDate, -(payload.realtimeDays - 1));
-  const dateFrom = realtimeFrom < yesterday ? realtimeFrom : yesterday;
+  const offlineFrom = offlineDate ?? yesterday;
+  const dateFrom = realtimeFrom < offlineFrom ? realtimeFrom : offlineFrom;
   await dependencies.jobs.enqueue({
     id: deterministicJobId(`canonical:full:${job.id}:${dateFrom}:${payload.asOfDate}`),
     workspaceId: payload.workspaceId,

@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   BlockedAuthError,
   QihangBusinessError,
+  QihangError,
   QihangResourceLimitError,
   RetryExhaustedError,
 } from "../src/qihang/errors.js";
@@ -91,6 +92,44 @@ describe("QihangClient", () => {
       expect(calledUrl.searchParams.get("ds")).toBe("20260819");
     }
   });
+
+  it("serializes internal ISO dates to the compact format confirmed by Qihang", async () => {
+    const fetchFn = vi.fn<typeof fetch>(async () =>
+      jsonResponse({ successful: true, data: [] }),
+    );
+    const client = new QihangClient({ fetchFn });
+
+    await client.query({
+      resource: "account_offline",
+      userId: "u1",
+      beginDate: "2026-08-18",
+      endDate: "2026-08-19",
+    });
+    await client.query({
+      resource: "account_realtime",
+      userId: "u1",
+      ds: "2026-08-20",
+    });
+
+    const offlineUrl = new URL(fetchFn.mock.calls[0]?.[0] as string);
+    const realtimeUrl = new URL(fetchFn.mock.calls[1]?.[0] as string);
+    expect(offlineUrl.searchParams.get("beginDate")).toBe("20260818");
+    expect(offlineUrl.searchParams.get("endDate")).toBe("20260819");
+    expect(realtimeUrl.searchParams.get("ds")).toBe("20260820");
+  });
+
+  it.each(["2026/08/20", "2026-02-30"])(
+    "rejects malformed or impossible dates before sending a request: %s",
+    async (ds) => {
+    const fetchFn = vi.fn<typeof fetch>();
+    const client = new QihangClient({ fetchFn });
+
+    await expect(
+      client.query({ resource: "account_realtime", userId: "u1", ds }),
+    ).rejects.toBeInstanceOf(QihangError);
+    expect(fetchFn).not.toHaveBeenCalled();
+    },
+  );
 
   it("retries gateway failures with exponential backoff", async () => {
     const fetchFn = vi
