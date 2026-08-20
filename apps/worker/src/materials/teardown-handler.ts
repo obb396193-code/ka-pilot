@@ -13,6 +13,11 @@ import type { FilmAnalysisResult } from "./film-analyzer.js";
 import type { MaterialTeardownAnalysis } from "./teardown-analyzer.js";
 
 const SAFE_SHA256 = /^[a-f0-9]{64}$/;
+const SAFE_SOURCE_REF = /^[A-Za-z0-9][A-Za-z0-9._:/-]{0,511}$/;
+
+export interface MaterialUrlLeasePort {
+  acquire(sourceRef: string): Promise<MaterialSourceCandidate>;
+}
 
 export interface MaterialDownloaderPort {
   download(candidate: MaterialSourceCandidate): Promise<DownloadedMaterialHandle>;
@@ -59,6 +64,7 @@ export class MaterialTeardownHandlerError extends Error {
   constructor(readonly reason:
     | "pipeline_failed"
     | "cleanup_failed"
+    | "invalid_source_ref"
     | "invalid_checkpoint"
     | "analysis_identity_mismatch") {
     super(`Material teardown pipeline failed: ${reason}`);
@@ -68,6 +74,7 @@ export class MaterialTeardownHandlerError extends Error {
 
 export class MaterialTeardownHandler {
   constructor(private readonly ports: {
+    urlLease: MaterialUrlLeasePort;
     downloader: MaterialDownloaderPort;
     filmAnalyzer: FilmAnalyzerPort;
     transcriptResolver: TranscriptResolverPort;
@@ -76,7 +83,7 @@ export class MaterialTeardownHandler {
   }) {}
 
   async handle(input: {
-    readonly candidate: MaterialSourceCandidate;
+    readonly sourceRef: string;
     readonly platformSegments?: unknown;
     readonly analysisProfile: TeardownAnalysisProfile;
   }): Promise<{
@@ -84,6 +91,7 @@ export class MaterialTeardownHandler {
     readonly analysis: MaterialTeardownAnalysis;
     readonly reusedAnalysis: boolean;
   }> {
+    const sourceRef = parseSourceRef(input.sourceRef);
     let media: DownloadedMaterialHandle | undefined;
     let output: {
       readonly outcome: "completed";
@@ -92,7 +100,8 @@ export class MaterialTeardownHandler {
     } | undefined;
     let failure: MaterialTeardownHandlerError | undefined;
     try {
-      media = await this.ports.downloader.download(input.candidate);
+      const candidate = await this.ports.urlLease.acquire(sourceRef);
+      media = await this.ports.downloader.download(candidate);
       output = await this.executeWithMedia(input, media);
     } catch (error) {
       failure = error instanceof MaterialTeardownHandlerError
@@ -113,7 +122,7 @@ export class MaterialTeardownHandler {
 
   private async executeWithMedia(
     input: {
-      readonly candidate: MaterialSourceCandidate;
+      readonly sourceRef: string;
       readonly platformSegments?: unknown;
       readonly analysisProfile: TeardownAnalysisProfile;
     },
@@ -194,6 +203,17 @@ export class MaterialTeardownHandler {
     await this.ports.checkpoints.save(input.media.contentSha256, input.checkpoint);
     return transcript;
   }
+}
+
+function parseSourceRef(value: unknown): string {
+  if (
+    typeof value !== "string" ||
+    !SAFE_SOURCE_REF.test(value) ||
+    value.includes("://")
+  ) {
+    throw new MaterialTeardownHandlerError("invalid_source_ref");
+  }
+  return value;
 }
 
 function buildEvidence(
