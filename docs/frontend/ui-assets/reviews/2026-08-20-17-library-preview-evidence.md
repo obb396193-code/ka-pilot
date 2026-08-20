@@ -20,7 +20,7 @@
 | ReUI | `c-data-grid-27` | 官方 Free Registry，MIT；只使用已缓存 Free 源码，不调用 Pro key endpoint。 |
 | Tremor current | `kpi-card-01` | 官方 tremor-blocks 源码；Apache-2.0。 |
 | Tremor legacy | `@tremor/react@3.18.7` Card/Metric | npm 官方包仍可下载，Registry 元数据标 Apache 2.0；只作 legacy 比较。 |
-| Aceternity | `card-spotlight` | 官方 Free Registry；MIT Free 边界，未读取 Pro。 |
+| Aceternity | `bento-grid` | 官方 Free Registry；MIT Free 边界，未读取 Pro；选择无远程渲染依赖的代表项保证离线复现。 |
 | Magic UI Free | `number-ticker` | 官方 Free Registry；MIT。 |
 | Magic UI Pro | public `blog-template` 的 `flickering-grid.tsx` | 官方 `magicuidesign/blog-template` 公开仓库 README 与 LICENSE 为 MIT；仅代表公开模板，不代表取得 101 个私有 Pro blocks。 |
 | React Bits Free | `Counter` | 官方公开仓库源码；MIT + Commons Clause 限制继续标注。 |

@@ -62,10 +62,33 @@ test("live selections have official evidence and never point at paid catalog ass
   }
 });
 
-test("React Bits Pro has no cached source or generated frame", async () => {
+test("generated manifest has 16 live frames and one artifact-free paid lock", async () => {
   const cache = await json("docs/frontend/ui-assets/source-cache/manifest.json");
   const manifest = await json("docs/frontend/ui-assets/live-previews/manifest.json");
 
+  assert.equal(manifest.schema_version, 2);
+  assert.equal(manifest.preview_count, 17);
+  assert.equal(manifest.live_count, 16);
+  assert.equal(manifest.blocked_count, 1);
   assert.equal(cache.entries.some((item) => item.source === "react-bits-pro"), false);
-  assert.equal(manifest.previews.some((item) => item.source === "react-bits-pro"), false);
+  const pro = manifest.previews.find((item) => item.source === "react-bits-pro");
+  assert.equal(pro.render_status, "blocked-paid");
+  assert.equal(pro.frame_path, undefined);
+  assert.equal(pro.bundle_path, undefined);
+
+  for (const preview of manifest.previews.filter((item) => item.render_status === "live")) {
+    assert.equal(preview.sandbox, "allow-scripts");
+    assert.equal(preview.network_required, false);
+    assert.ok(preview.frame_path);
+    assert.ok(preview.bundle_path);
+    assert.match(preview.frame_sha256, /^[a-f0-9]{64}$/);
+    assert.match(preview.bundle_sha256, /^[a-f0-9]{64}$/);
+    assert.ok(preview.source_cache_paths?.length > 0);
+  }
+});
+
+test("shared frame CSS contains the narrow-screen containment for the ReUI data grid", async () => {
+  const css = await readFile(new URL("docs/frontend/ui-assets/live-previews/assets/preview.css", ROOT), "utf8");
+  assert.match(css, /\[data-preview-source=.reui.\] \.demo-card/);
+  assert.match(css, /overflow-x: auto/);
 });

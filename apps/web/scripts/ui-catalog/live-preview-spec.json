@@ -16,7 +16,7 @@
       "style_summary": "克制、中性、结构稳定，是最适合统一全站语言的基础层。",
       "best_for": "页面壳、基础表单、弹层、筛选器和产品级 primitives",
       "overlap": "与 coss 的基础控件重叠；shadcn 更像底座，coss 更强调细节成品。",
-      "cache_required": true
+      "source_cache_paths": ["shadcn/calendar-demo.json", "shadcn/calendar.json", "shadcn/button.json"]
     },
     {
       "id": "coss",
@@ -46,7 +46,7 @@
       "style_summary": "覆盖广、案例感强，展示 legacy 粒子库的独立交互写法。",
       "best_for": "只补 current coss 没有的旧交互，不作为新代码默认底座",
       "overlap": "与 coss current 同品牌不同架构；必须明确 legacy 状态。",
-      "cache_required": true
+      "source_cache_paths": ["coss-origin/comp-100.json", "coss-origin/button.json"]
     },
     {
       "id": "reui",
@@ -91,7 +91,7 @@
       "style_summary": "更像早期 SaaS 分析后台，封装度高但维护状态较旧。",
       "best_for": "只用于比较旧版视觉和 API，不作为新页面首选",
       "overlap": "与 Tremor current 同品牌不同代，需显式标记 legacy。",
-      "cache_required": true
+      "source_cache_paths": ["tremor-legacy/ui-card/react-3.18.7.tgz"]
     },
     {
       "id": "aceternity",
@@ -99,14 +99,14 @@
       "title": "Aceternity UI",
       "group": "motion",
       "target_status": "live",
-      "official_assets": ["card-spotlight"],
-      "official_url": "https://ui.aceternity.com/components/card-spotlight",
+      "official_assets": ["bento-grid"],
+      "official_url": "https://ui.aceternity.com/components/bento-grid",
       "license": "MIT for Free components",
-      "purpose": "具有空间感的高光卡片和品牌化视觉",
-      "style_summary": "暗色、电影感、强空间光效，适合少数高价值入口。",
+      "purpose": "具有空间感的品牌化 Bento 能力陈列",
+      "style_summary": "强空间层级和内容陈列感，适合少数高价值入口。",
       "best_for": "Agent 欢迎区、能力入口和成果展示，不用于密集数据主界面",
       "overlap": "与 Magic UI/React Bits 动效重叠，但视觉冲击最强。",
-      "source_cache_paths": ["aceternity/card-spotlight.json"]
+      "source_cache_paths": ["aceternity/bento-grid.json"]
     },
     {
       "id": "magic-ui",
@@ -136,7 +136,7 @@
       "style_summary": "比 Free 组件更接近完整成品页面，但只展示官方公开 MIT 模板。",
       "best_for": "看完整页面风格与营销/内容区组合，不代表已取得 Pro 私有 blocks",
       "overlap": "公开模板与 101 个付费 Pro blocks 必须分开；本卡不解锁私有源码。",
-      "cache_required": true
+      "source_cache_paths": ["magic-ui-pro/template-blog/flickering-grid.tsx"]
     },
     {
       "id": "react-bits",
