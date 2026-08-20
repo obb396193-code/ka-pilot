@@ -477,6 +477,7 @@ main 9335150
 - 小时差分：`c500771`
 - 小时落库：`b88f6ea`
 - 自审测试：`5595836`
+- 质量与交接：`67bdfda`
 - 状态：`docs/plans/B11-状态.md`
 - 质量：`docs/evidence/B11-代码质量报告.md`
 - 第三轮 OS：`docs/plans/B11-OS第三轮只读探针.md`
