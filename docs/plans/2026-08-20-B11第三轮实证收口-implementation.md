@@ -166,4 +166,3 @@ P-018 追加第三轮事实和代码 SHA：2000 截断已证实；默认 5 账�
 git add docs/plans/B11-状态.md docs/evidence/B11-代码质量报告.md docs/plans/Codex后端交付总账.md docs/plans/工作台账.md docs/relay/inbox-arch.md
 git commit -m "完成B11第三轮实证收口"
 ```
-

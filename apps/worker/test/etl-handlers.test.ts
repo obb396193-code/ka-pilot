@@ -335,6 +335,9 @@ describe("ETL handlers", () => {
           ? (query.accountIds ?? []).map((accountId) => adRow(Number(query.hh), {
               account_id: accountId,
               ad_id: `ad-${accountId}`,
+              last_sync_time: accountId === "a-12"
+                ? "2026-08-19 09:59:00"
+                : "2026-08-19 09:58:00",
             }))
           : [{ account_id: "a-1", ds: "20260819" }],
         envelope: {},
@@ -375,6 +378,12 @@ describe("ETL handlers", () => {
     ]));
     expect(vi.mocked(hourly.upsertHourly).mock.calls[0]?.[0]).toHaveLength(12);
     expect(runStore.value.recordObservation).toHaveBeenCalledTimes(8);
+    expect(vi.mocked(runStore.value.recordObservation).mock.calls
+      .map((call) => call[1])
+      .find((value) => "kind" in value)).toEqual(expect.objectContaining({
+        kind: "hourly_derivation",
+        lastSyncTime: "2026-08-19 09:59:00",
+      }));
     expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
       jobType: "canonical_merge",
     }));

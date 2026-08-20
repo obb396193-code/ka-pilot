@@ -48,4 +48,3 @@
 - 接口正式频控、账户批次的长期推荐值和服务端 SLA。
 - 部分产出 offline 分区的权威 complete marker；当前仍不存在。
 - 本项目 Worker/FaaS→Qihang→Raw→Canonical/Hourly→质量的真实身份同链 trace。
-

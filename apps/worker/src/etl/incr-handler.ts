@@ -4,6 +4,7 @@ import { deriveHourlyAdMetrics, type HourlyMetricIssue } from "@ka/domain";
 import { deterministicJobId } from "../jobs/deterministic-id.js";
 import type { JobHandler } from "../jobs/types.js";
 import type { QihangQuery, QihangQueryResult } from "../qihang/client.js";
+import { createQihangObservation } from "../qihang/observation.js";
 import { mergeAdRealtimeRows, planAdRealtimeBatches } from "./ad-query-batches.js";
 import { shiftIsoDate } from "./date-range.js";
 import { incrementalEtlPayloadSchema } from "./payload.js";
@@ -174,9 +175,11 @@ async function ingestAdSnapshot(
   for (const batch of planAdRealtimeBatches(query)) {
     results.push(await ingest(batch, fallbackDs));
   }
+  const rows = mergeAdRealtimeRows(results.map((result) => result.rows));
   return {
-    rows: mergeAdRealtimeRows(results.map((result) => result.rows)),
+    rows,
     envelope: { batched: true, batchCount: results.length },
+    observation: createQihangObservation("ad_realtime", rows, new Date()),
   };
 }
 
