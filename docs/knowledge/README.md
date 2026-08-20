@@ -20,6 +20,7 @@
 | `docs/knowledge/catalog.schema.json` | 是 | catalog 单条记录字段契约 |
 | `docs/knowledge/assessments/` | 是 | 事实/推断分层后的独立评估 |
 | `docs/knowledge/datasets/` | 是 | 经分析生成的机器可读能力矩阵；不是原始资料，也不自动等于获批产品能力 |
+| `docs/knowledge/guides/` | 是 | 对已编号资料的专题导读；不新建原文真相源，必须回链 document_id |
 | `docs/knowledge/templates/source-card.md` | 是 | 录入与 20 项评估模板 |
 | `docs/knowledge/agent-retrieval-guide.md` | 是 | Agent 检索和引用纪律 |
 | `docs/knowledge/product-kb-publishing.md` | 是 | 未来产品知识库发布映射与门禁 |
@@ -82,7 +83,7 @@ raw → analyzed → review_pending → reviewed → approved → published → 
 | 等级 | 定义 |
 |---|---|
 | `E1` | 当前有效的官方一手文档/API 定义 |
-| `E2` | 内部权威制度、正式平台文档、可复现实证 |
+| `E2` | 高可信但非一手或归属待补证的公开镜像、内部权威制度、可复现实证 |
 | `E3` | 内部工作稿、用户提供资料、真实操作经验 |
 | `E4` | 竞品、第三方文章、供应商宣传 |
 | `E5` | Agent 推断或待验证假设 |

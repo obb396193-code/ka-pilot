@@ -11,6 +11,16 @@ jq -c 'select(.source_type == "official" and (.applicable_media | index("快手"
 
 `catalog.jsonl` 每行是独立 JSON，可用 `rg` 快速发现、用 `jq -c` 精确筛选。
 
+### Canonical private root
+
+`storage_ref` 是仓库相对的稳定引用，但私有原文的 canonical 根目录固定为：
+
+```text
+/Users/aik/Desktop/投放agent/private/knowledge-sources/
+```
+
+独立 worktree 可以有校验副本，但其 `/private/tmp/<worktree>/private/...` 不是跨 worktree 共享真相源。其他 Agent 在非主 worktree 读 `storage_ref` 时，必须用上述 canonical root 解析；同步副本只用于构建/校验，不得反向覆盖 canonical 且不得被 Git 跟踪。
+
 ## 2. 读取前检查四件事
 
 1. `access_level` 与 `allowed_roles`：当前 Agent 是否有权限；
@@ -68,12 +78,13 @@ jq -c 'select(.product_relevance == "direct_candidate")' \
 
 ### 快手 MAPI 官方资料的额外判断
 
-检索 `ka-src-0007` 时，必须区分四个状态：
+检索 `ka-src-0007` 时，必须区分下列状态：
 
 ```text
 documented  官方页面存在
 authorized  当前 AppID/广告账户已获得 scope 或白名单
-wrapped     当前沙箱 CLI/provider 已封装该端点
+command_path_reachable  当前 CLI 有已注册命令链路（不代表 HTTP 方法正确）
+method_aligned          CLI 构造的 HTTP 方法与当前官方目标页一致
 verified    已在授权账户做只读或受控写探针并核对响应
 ```
 
@@ -99,6 +110,31 @@ rg -n 'advanced_creative/update|"documentId": 2580|修改程序化创意' \
 ```
 
 `capability-coverage.jsonl` 的分类是未审查的研究初筛，不是产品批准清单。`phase1_candidate` 仍需业务 owner 裁剪；`not_wrapped` 只表示当前静态 CLI 未封装，不表示接口不可封装。
+
+### 巨量引擎与腾讯广告资料
+
+```bash
+# 巨量：查结构化主接口，不要把正文 Scope/示例路径当主接口
+jq -c 'select(.structured_endpoint != null)' \
+  /Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0008/extracted/inventory/documents.jsonl
+rg -n 'ab_test' \
+  /Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0008/extracted/inventory/endpoint-candidates.jsonl
+
+# 腾讯：先查冲突与官方原站引用，镜像 OpenAPI 禁止直接生成 SDK
+jq -c 'select(.source_conflict != null or .resource_action == "split_tests/add")' \
+  /Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0009/extracted/inventory/documents.jsonl
+rg -n 'split_tests|barrage_recommend' docs/knowledge/assessments/ka-src-0009.md
+```
+
+巨量引擎：`detail.path` 才是 `structured_endpoint`；正文出现的路径只是 `referenced_endpoint_candidates`。腾讯广告：`ka-src-0009` 是 E2 公开镜像，镜像归属待补证且 OpenAPI 有系统性转换错误；实现前必须回 `developers.e.qq.com` 官方原站复核。
+
+三媒体统一使用门：
+
+```text
+documented → authorized → white-listed(if required) → wrapped → method/contract aligned → runtime verified → product enabled
+```
+
+任一中间状态缺失时，Agent 不得回答“我们已经能用”。
 
 ## 5. 引用格式
 

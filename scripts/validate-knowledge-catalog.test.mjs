@@ -292,3 +292,31 @@ test("seventh source is official MAPI evidence but remains unreviewed and unpubl
     assert.match(assessment, new RegExp(marker));
   }
 });
+
+test("Ocean and Tencent research corpora preserve source authority and publication gates", async () => {
+  const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+  const catalog = await readFile(path.join(repoRoot, "docs/knowledge/catalog.jsonl"), "utf8");
+  const {records, errors} = parseCatalog(catalog);
+  assert.deepEqual(errors, []);
+
+  const ocean = records.find((item) => item.document_id === "ka-src-0008");
+  assert.equal(ocean.source_type, "official");
+  assert.equal(ocean.evidence_level, "E1");
+  assert.equal(ocean.product_kb_publication_status, "not_ready");
+
+  const tencent = records.find((item) => item.document_id === "ka-src-0009");
+  assert.equal(tencent.source_type, "research");
+  assert.equal(tencent.evidence_level, "E2");
+  assert.match(tencent.license.status, /ownership_unverified/);
+  assert.equal(tencent.product_kb_publication_status, "not_ready");
+
+  const oceanManifest = JSON.parse(await readFile(path.join(repoRoot, ocean.storage_ref), "utf8"));
+  assert.equal(oceanManifest.corpus_summary.unique_documents, 1103);
+  assert.equal(oceanManifest.corpus_summary.failures, 0);
+  assert.deepEqual(oceanManifest.corpus_summary.label_tree_types, ["BUSINESS", "LASTEST_UPDATES"]);
+
+  const tencentManifest = JSON.parse(await readFile(path.join(repoRoot, tencent.storage_ref), "utf8"));
+  assert.equal(tencentManifest.corpus_summary.llms_index_entries, 315);
+  assert.equal(tencentManifest.corpus_summary.mirror_ownership_status, "unverified");
+  assert.equal(tencentManifest.corpus_summary.known_endpoint_conflicts, 1);
+});

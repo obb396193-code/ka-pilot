@@ -183,15 +183,18 @@ async function auditCli(cliRoot) {
         row.source_refs.push(path.relative(cliRoot, file));
       }
     }
-    row.cli_status = row.source_refs.length > 0 ? "wrapped_reachable" : "declared_not_exposed";
+    row.cli_status = row.source_refs.length > 0 ? "command_path_reachable" : "declared_not_exposed";
+    row.cli_http_method = row.source_refs.length > 0 ? "POST" : null;
   }
   const initText = await readFile(path.join(packageRoot, "__init__.py"), "utf8");
+  const packageInfoText = await readFile(path.join(cliRoot, "kuaishou_cli.egg-info", "PKG-INFO"), "utf8");
   const readmeText = await readFile(path.join(cliRoot, "README.md"), "utf8");
   const mainText = await readFile(path.join(packageRoot, "__main__.py"), "utf8");
   return {
     version: initText.match(/__version__\s*=\s*["']([^"']+)["']/)?.[1] || null,
     declared_endpoint_count: constants.length,
-    wrapped_reachable_count: constants.filter((row) => row.cli_status === "wrapped_reachable").length,
+    package_metadata_version: packageInfoText.match(/^Version:\s*(.+)$/m)?.[1]?.trim() || null,
+    command_path_reachable_count: constants.filter((row) => row.cli_status === "command_path_reachable").length,
     declared_not_exposed_count: constants.filter((row) => row.cli_status === "declared_not_exposed").length,
     readme_claims_raw_command: /\braw\b/.test(readmeText),
     main_registers_raw_command: /\braw\.register\s*\(/.test(mainText),
@@ -239,9 +242,14 @@ export async function build({inventoryPath, cliRoot, outputJsonl, outputSummary,
       runtime_verification_state: "unknown",
       adoption_state: "unreviewed_candidate",
       cli_status: cliMatch?.cli_status || (row.endpoint ? "not_wrapped" : "not_applicable"),
+      cli_http_method: cliMatch?.cli_http_method || null,
+      http_method_alignment: cliMatch?.cli_http_method
+        ? (String(row.http_method || "").toUpperCase() === cliMatch.cli_http_method ? "aligned" : "conflict")
+        : "not_applicable",
       cli_constant: cliMatch?.constant || null,
       cli_source_refs: cliMatch?.source_refs || [],
       ...classifyCapability(row),
+      classification_review_status: "machine_initial_screening_unreviewed",
       evidence_boundary: "公开文档存在不等于账户已授权、CLI 已封装或运行时已验证；采用前需只读探针/测试账户验收。",
     };
   });
@@ -258,14 +266,18 @@ export async function build({inventoryPath, cliRoot, outputJsonl, outputSummary,
       archive_sha256: cliArchive ? await sha256(cliArchive) : null,
       filename_label: cliArchive ? path.basename(cliArchive) : null,
       code_version: cli.version,
+      package_metadata_version: cli.package_metadata_version,
       declared_endpoint_count: cli.declared_endpoint_count,
-      wrapped_reachable_count: cli.wrapped_reachable_count,
+      command_path_reachable_count: cli.command_path_reachable_count,
+      official_http_method_aligned_count: rows.filter((row) => row.cli_status === "command_path_reachable" && row.http_method_alignment === "aligned").length,
+      official_http_method_conflict_count: rows.filter((row) => row.cli_status === "command_path_reachable" && row.http_method_alignment === "conflict").length,
       declared_not_exposed_count: cli.declared_not_exposed_count,
       readme_claims_raw_command: cli.readme_claims_raw_command,
       main_registers_raw_command: cli.main_registers_raw_command,
-      version_label_conflict: Boolean(cliArchive && cli.version && !path.basename(cliArchive).includes(cli.version)),
+      version_label_conflict: Boolean(cliArchive && cli.version && (!path.basename(cliArchive).includes(cli.version) || cli.package_metadata_version !== cli.version)),
     },
     cli_coverage: countBy(rows, "cli_status"),
+    cli_http_method_alignment: countBy(rows.filter((row) => row.cli_status === "command_path_reachable"), "http_method_alignment"),
     product_relevance: countBy(rows, "product_relevance"),
     roadmap_phase: countBy(rows, "roadmap_phase"),
     recommended_action: countBy(rows, "recommended_action"),
@@ -273,7 +285,8 @@ export async function build({inventoryPath, cliRoot, outputJsonl, outputSummary,
     risk_level: countBy(rows, "risk_level"),
     deprecated_signal_count: rows.filter((row) => row.deprecated_signal).length,
     whitelist_or_application_signal_count: rows.filter((row) => row.whitelist_or_application_signal).length,
-    boundary: "机器分类用于发现和初筛，不等于逐接口产品批准；资金写、CRM、支付、已下线能力默认不纳入当前产品。",
+    known_classifier_limitations: ["祖先目录关键词可导致上传接口被误标删除", "授权查询类标题可被误标写操作", "phase1_candidate 包含仍需业务 owner 裁剪的边缘能力"],
+    boundary: "机器分类仅用于发现和初筛，operation/risk/59-249-73 均未逐接口人工审查，不等于产品路线图或能力批准；资金写、CRM、支付、已下线能力默认不纳入当前产品。",
   };
   await writeFile(outputSummary, `${JSON.stringify(summary, null, 2)}\n`);
   return summary;

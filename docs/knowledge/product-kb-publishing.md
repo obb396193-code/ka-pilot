@@ -48,6 +48,8 @@
 | `related_business_objects` | `applicable_media/applicable_business/related_product_modules` | 转为媒体、业务、任务/账户等对象关系 |
 | `supersedes_document_id` | `supersedes_document_id` | 仅明确版本替代时填写 |
 
+官方/API 资料建议额外发布 `source_authority`、`contract_status`、`capability_state`、`source_conflicts`、`captured_at`、`source_updated_at`。这些字段从 manifest/评估/审查回执生成，不得用“页面抓取成功”自动填成 `official/executable/verified`。镜像资料必须保留 mirror ownership 和已知转换错误；有冲突的 endpoint 同时保留 observed/corrected 值和官方证据 URL。
+
 ## 4. 发布流程
 
 ```text

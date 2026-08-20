@@ -2,8 +2,8 @@
 
 > 角色：KA 投放经营平台“资料研究与知识资产 Agent”
 > 分支：`codex/shared-source-library`
-> worktree：`/private/tmp/codex-shared-source-library.j1l066`
-> 基线：`ce1af69`（`fe/f001` 已提交 HEAD，不含 Claude 工作区未提交改动）
+> worktree：`/private/tmp/codex-research-kb2`
+> 本轮基线：`d540086`（承接 `P-KB-008`；原 worktree 被系统清理后重建，不含主工作区未提交改动）
 
 ## 修改边界
 
@@ -44,6 +44,11 @@
 - [x] 29. 将 `ka-src-0007` 从 31 页首批证据扩展为当前 DSP/MAPI 完整目录与逐页快照
 - [x] 30. 实读 `kuaishou-cli`，形成官方接口全集 × CLI 覆盖 × 产品用途差异矩阵
 - [x] 31. 校验、功能提交与增量审查回执
+- [x] 32. 独立审查 `ka-src-0007` 的公开目录完整性、CLI 匹配和夸大表述
+- [x] 33. 建立巨量引擎 Marketing API 与官方投放知识资料资产
+- [x] 34. 建立腾讯广告 Marketing API 与官方投放知识资料资产
+- [x] 35. 补建快手磁力引擎投放术语、对象、规则与产品定义资产
+- [ ] 36. 统一完整性声明、产品相关性分类、校验、提交与交审
 
 ## 完成记录
 
@@ -81,7 +86,13 @@
 - 2026-08-20：实读 `kuaishou-cli` 本机资产。zip 文件名 v1.0.2、代码版本 1.2.1；声明 25 个 MAPI endpoint，23 个存在命令调用链、2 个只定义未暴露，25/25 均与当前官方目录精确匹配。README 宣称 `raw`，但 `__main__.py` 未注册。当前官方 352 endpoint 中 327 未封装；这说明 CLI 是 MAPI 子集，可按需扩展，但不能把 documented 当 authorized/verified。
 - 2026-08-20：生成 381 条机器能力矩阵并逐条标记 endpoint/版本/CLI 状态/读写风险/产品相关性/路线图/采用动作：59 一期候选、249 后续条件候选、73 参考或排除。明确排除代理商资金、共享钱包、CRM 外呼/企微成员、第三方支付和已下线能力；奇航继续做一期数据主链路。
 - 2026-08-20：23/23 测试、catalog/bundle validator、381 条矩阵基数、708 子文件 hash/凭证形态、双份 private diff、ignore/未跟踪和 diff check 通过；功能 SHA=`2faa8ea`。`P-KB-008` 自包含提交全量语料、CLI 静态审计、产品相关性、发布边界和 12 项 arch 裁决问题。
+- 2026-08-20：老板要求对快手 MAPI 再做独立审查，并扩展至巨量引擎、腾讯广告官方接口与快手投放定义。已启动三个只读子 Agent：快手完整性反查、巨量官方资料发现、腾讯官方资料发现；子 Agent 不写共享文件，根 Agent 独立复核后才入库。完整性口径冻结为“指定抓取日期官网公开可发现范围内的最大覆盖”，不宣称覆盖白名单、登录后、私有或未索引文档。
+- 2026-08-20：原 `/private/tmp/codex-shared-source-library.j1l066` worktree 被系统清理，已确认分支提交 `d540086/2faa8ea` 完整保留；重新挂载 `/private/tmp/codex-research-kb2` 继续本轮，未改动主工作区。
+- 2026-08-21：快手独立复审确认 381/291 目录与 708 条 manifest/hash 完整，但发现 CLI 余额/流水 2 个 GET/POST 方法冲突、zip/PKG-INFO/代码三方版本冲突、旧版路径语义与 59/249/73 机器初筛过度表述；已修正矩阵为 23 command-path reachable / 21 method aligned / 2 conflict / runtime verified 0，catalog 时间和 superseded 首批快照指针同步更正。
+- 2026-08-21：`ka-src-0008` 完成巨量引擎官网 `BUSINESS + LASTEST_UPDATES` 匿名快照：29 标签节点、2990 挂载、1103 唯一文档、1103/1103 详情成功、815 篇结构化 endpoint 文档、715 个结构化唯一路径；标签 29 导航节点记预期异常、失败 0。独立审查发现并修复原漏 3 篇近期文档、hidden 继承、leaf 命名和正文路径误升主接口。manifest SHA=`d6e3b759...bf82d`，archive SHA=`c488239c...c82f`。
+- 2026-08-21：`ka-src-0009` 完成腾讯广告 Marketing API 公开 Apifox 镜像快照：315=8 指南+307 API，315/315 成功；297 个镜像原始唯一路径、298 个纠正后唯一路径；去重 320 个官方原站引用索引。独立审查确认镜像归属待补证、306 篇 Query/header 转换错位、1 个确定 endpoint 冲突；因此保持 E2/research 且禁止作 SDK/Contract 源。manifest SHA=`149a9865...cc67`，archive SHA=`69127e89...3a02`。
+- 2026-08-21：新增快手官方投放导读、巨量/腾讯 20 项评估、多媒体产品相关性摘要、canonical private root 与三媒体检索纪律。实验编排结论：值得放 P2，但实验期间默认冻结未声明实时调控；仅预注册 guardrail 可中止，并标记数据截断/污染。
 
 ## 当前状态
 
-`ka-src-0001~0007` 已完成入库评估；`ka-src-0007` 已升级为完整公开目录快照与 CLI 覆盖评估，`P-KB-008` 已交审。全部资料仍 `review_pending / not_ready`；停止融合与开发，等待 arch/security 裁决。未修改冻结 PRD/Contract/生产代码。
+`ka-src-0001~0009` 已完成入库评估；`ka-src-0007` 已经独立复审更正，`ka-src-0008/0009` 分别是巨量引擎官网公开快照和腾讯广告公开镜像研究资产。全部新增/更正资料仍 `review_pending / not_ready`；待功能提交后写 `P-KB-009` 交 arch/security 裁决。未修改冻结 PRD/Contract/前后端生产代码。

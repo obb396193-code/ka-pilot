@@ -1,0 +1,29 @@
+{
+  "document_id": "ka-src-0008",
+  "media": "巨量引擎",
+  "total_documents": 1103,
+  "endpoint_documents": 815,
+  "topic_counts_non_exclusive": {
+    "other": 469,
+    "authorization_account": 130,
+    "policy_limits": 30,
+    "finance_agency": 94,
+    "bidding_budget": 42,
+    "reporting_insights": 29,
+    "landing_asset_product": 83,
+    "audience_targeting": 35,
+    "creative_material": 131,
+    "conversion_attribution": 30,
+    "campaign_structure": 106,
+    "automation_experiment": 33
+  },
+  "product_adoption_counts_exclusive": {
+    "cross_channel_reference": 25,
+    "later_channel_candidate": 366,
+    "background_only": 666,
+    "deprecated_reference": 1,
+    "reject_current_product": 45
+  },
+  "product_boundary": "巨量引擎 不属于一期渠道；接口文档现阶段用于跨渠道对象模型、Capability Registry 和后续 adapter 设计，不因官方公开就进入一期开发。",
+  "classification_note": "主题计数可重叠；产品处置数互斥。分类是待审查机器初筛，不是已批准的能力清单。"
+}

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T11:20:57.796Z",
+  "generated_at": "2026-08-20T15:49:26.396Z",
   "source_document_id": "ka-src-0007",
   "current_document_count": 381,
   "current_endpoint_count": 352,
@@ -9,8 +9,11 @@
     "archive_sha256": "fe348e82b57ab272c77e6f5cfc6db4e568cf282be57982bbf1cf0a1df4a4d332",
     "filename_label": "kuaishou-cli-v1.0.2.zip",
     "code_version": "1.2.1",
+    "package_metadata_version": "1.2.0",
     "declared_endpoint_count": 25,
-    "wrapped_reachable_count": 23,
+    "command_path_reachable_count": 23,
+    "official_http_method_aligned_count": 21,
+    "official_http_method_conflict_count": 2,
     "declared_not_exposed_count": 2,
     "readme_claims_raw_command": true,
     "main_registers_raw_command": false,
@@ -19,8 +22,12 @@
   "cli_coverage": {
     "not_wrapped": 327,
     "not_applicable": 29,
-    "wrapped_reachable": 23,
+    "command_path_reachable": 23,
     "declared_not_exposed": 2
+  },
+  "cli_http_method_alignment": {
+    "aligned": 21,
+    "conflict": 2
   },
   "product_relevance": {
     "conditional_candidate": 249,
@@ -56,5 +63,10 @@
   },
   "deprecated_signal_count": 10,
   "whitelist_or_application_signal_count": 4,
-  "boundary": "机器分类用于发现和初筛，不等于逐接口产品批准；资金写、CRM、支付、已下线能力默认不纳入当前产品。"
+  "known_classifier_limitations": [
+    "祖先目录关键词可导致上传接口被误标删除",
+    "授权查询类标题可被误标写操作",
+    "phase1_candidate 包含仍需业务 owner 裁剪的边缘能力"
+  ],
+  "boundary": "机器分类仅用于发现和初筛，operation/risk/59-249-73 均未逐接口人工审查，不等于产品路线图或能力批准；资金写、CRM、支付、已下线能力默认不纳入当前产品。"
 }
