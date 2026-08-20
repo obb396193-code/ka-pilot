@@ -7,3 +7,6 @@
 *.xlsx
 *.xls
 *.csv
+
+# 内部原始知识资料：允许保留业务敏感内容，但禁止进入 Git
+/private/knowledge-sources/
