@@ -121,7 +121,16 @@ const teardownSegmentSchema = z.object({
   evidenceIds: evidenceReferencesSchema,
 }).strict();
 
+const semanticSectionSchema = z.object({
+  order: z.number().int().positive().max(MAX_SHOTS),
+  role: z.enum(["hook", "problem", "body", "proof", "selling_point", "turn", "cta", "other"]),
+  title: boundedText,
+  description: boundedText,
+  evidenceIds: evidenceReferencesSchema,
+}).strict();
+
 export const materialTeardownResultSchema = z.object({
+  alignmentStatus: z.enum(["exact_transcript_timing", "unavailable_whole_video"]),
   summary: boundedText,
   hook: z.object({
     kind: z.enum(["question", "visual", "benefit", "conflict", "other"]),
@@ -141,7 +150,8 @@ export const materialTeardownResultSchema = z.object({
     text: boundedText,
     evidenceIds: evidenceReferencesSchema,
   }).strict(),
-  segments: z.array(teardownSegmentSchema).min(1).max(MAX_SHOTS),
+  semanticSections: z.array(semanticSectionSchema).min(1).max(MAX_SHOTS),
+  segments: z.array(teardownSegmentSchema).max(MAX_SHOTS),
   replicationSuggestions: z.array(boundedText).max(50),
   uncertainties: z.array(boundedText).max(50),
 }).strict();
@@ -217,8 +227,8 @@ export function parseMaterialTeardownResult(
   for (const evidenceId of collectEvidenceIds(parsed.data)) {
     if (!allowedIds.has(evidenceId)) throw new MaterialTeardownError("invalid_result");
   }
-  validateResultSegments(parsed.data.segments, evidence.media.durationMs);
-  validateResultTimingPrecision(parsed.data.segments, evidence);
+  validateSemanticSections(parsed.data.semanticSections, evidence);
+  validateResultTimingPrecision(parsed.data, evidence);
   return deepFreeze(parsed.data);
 }
 
@@ -289,22 +299,44 @@ function validateResultSegments(
 }
 
 function validateResultTimingPrecision(
-  segments: MaterialTeardownResult["segments"],
+  result: MaterialTeardownResult,
   evidence: MaterialTeardownEvidence,
 ): void {
   const wholeVideoTranscript = evidence.transcriptEvidence.some(
     ({ timingPrecision }) => timingPrecision === "whole_video",
   );
-  if (
-    wholeVideoTranscript &&
-    (
-      evidence.transcriptEvidence.length !== 1 ||
-      segments.length !== 1 ||
-      segments[0]?.startMs !== 0 ||
-      segments[0]?.endMs !== evidence.media.durationMs ||
-      segments[0]?.role !== "other"
-    )
-  ) {
+  const expectedStatus = wholeVideoTranscript
+    ? "unavailable_whole_video"
+    : "exact_transcript_timing";
+  if (result.alignmentStatus !== expectedStatus) {
+    throw new MaterialTeardownError("invalid_result");
+  }
+  if (wholeVideoTranscript) {
+    if (evidence.transcriptEvidence.length !== 1 || result.segments.length !== 0) {
+      throw new MaterialTeardownError("invalid_result");
+    }
+    return;
+  }
+  if (result.segments.length === 0) throw new MaterialTeardownError("invalid_result");
+  validateResultSegments(result.segments, evidence.media.durationMs);
+}
+
+function validateSemanticSections(
+  sections: MaterialTeardownResult["semanticSections"],
+  evidence: MaterialTeardownEvidence,
+): void {
+  sections.forEach((section, index) => {
+    if (section.order !== index + 1) throw new MaterialTeardownError("invalid_result");
+  });
+  const wholeVideoTranscript = evidence.transcriptEvidence.some(
+    ({ timingPrecision }) => timingPrecision === "whole_video",
+  );
+  if (!wholeVideoTranscript) return;
+  const transcriptIds = new Set(evidence.transcriptEvidence.map(({ id }) => id));
+  if (sections.some(({ evidenceIds }) => (
+    evidenceIds.some((id) => !transcriptIds.has(id)) ||
+    !evidenceIds.some((id) => transcriptIds.has(id))
+  ))) {
     throw new MaterialTeardownError("invalid_result");
   }
 }
@@ -315,6 +347,7 @@ function collectEvidenceIds(result: MaterialTeardownResult): string[] {
     ...result.sellingPoints.flatMap(({ evidenceIds }) => evidenceIds),
     ...result.rhythm.evidenceIds,
     ...result.cta.evidenceIds,
+    ...result.semanticSections.flatMap(({ evidenceIds }) => evidenceIds),
     ...result.segments.flatMap(({ evidenceIds }) => evidenceIds),
   ];
 }

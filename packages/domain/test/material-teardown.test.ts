@@ -63,6 +63,7 @@ function wholeVideoEvidenceInput() {
 
 function validResult(evidenceIds: string[]) {
   return {
+    alignmentStatus: "exact_transcript_timing",
     summary: "素材用问题开场，并用利益点承接。",
     hook: {
       kind: "question",
@@ -81,6 +82,22 @@ function validResult(evidenceIds: string[]) {
       text: "立即行动",
       evidenceIds: [evidenceIds[1]],
     },
+    semanticSections: [
+      {
+        order: 1,
+        role: "hook",
+        title: "问题钩子",
+        description: "先提出用户问题",
+        evidenceIds: [evidenceIds[0]],
+      },
+      {
+        order: 2,
+        role: "selling_point",
+        title: "利益承接",
+        description: "随后说明卖点和行动号召",
+        evidenceIds: [evidenceIds[1]],
+      },
+    ],
     segments: [
       {
         startMs: 0,
@@ -213,35 +230,86 @@ describe("material teardown evidence", () => {
     expect(Object.isFrozen(result)).toBe(true);
   });
 
-  it("allows only one full-video result segment for whole-video transcript timing", () => {
+  it("allows ordered semantic sections but no timed segments for whole-video transcript timing", () => {
     const evidence = createMaterialTeardownEvidence(wholeVideoEvidenceInput());
     const transcriptId = evidence.transcriptEvidence[0]?.id as string;
     const shotId = evidence.shotEvidence[0]?.id as string;
     const wholeResult = {
+      alignmentStatus: "unavailable_whole_video",
       summary: "完整文案包含问题、卖点和行动引导，但没有句级时间戳。",
       hook: { kind: "other", text: "存在钩子候选，位置不确定", evidenceIds: [transcriptId] },
       sellingPoints: [{ text: "完整文案提到核心利益", evidenceIds: [transcriptId] }],
       audiences: ["目标用户"],
       rhythm: { description: "仅依据确定性镜头变化", evidenceIds: [shotId] },
       cta: { text: "完整文案存在行动引导", evidenceIds: [transcriptId] },
-      segments: [{
-        startMs: 0,
-        endMs: 3_000,
-        role: "other",
-        description: "整段诊断，无法逐句定位",
-        evidenceIds: [transcriptId, shotId],
-      }],
+      semanticSections: [
+        {
+          order: 1,
+          role: "hook",
+          title: "问题引入",
+          description: "文稿先提出问题",
+          evidenceIds: [transcriptId],
+        },
+        {
+          order: 2,
+          role: "selling_point",
+          title: "解决方案",
+          description: "文稿随后说明解决方案",
+          evidenceIds: [transcriptId],
+        },
+      ],
+      segments: [],
       replicationSuggestions: ["复用全文表达结构，精确时序待时间戳 ASR"],
       uncertainties: ["整段转写没有句级时间戳"],
     };
 
-    expect(parseMaterialTeardownResult(wholeResult, evidence).segments).toHaveLength(1);
+    const parsed = parseMaterialTeardownResult(wholeResult, evidence);
+    expect(parsed.semanticSections).toHaveLength(2);
+    expect(parsed.segments).toEqual([]);
     expect(() => parseMaterialTeardownResult({
       ...wholeResult,
-      segments: [
-        { ...wholeResult.segments[0], endMs: 1_000 },
-        { ...wholeResult.segments[0], startMs: 1_000 },
+      segments: [{
+        startMs: 0,
+        endMs: 3_000,
+        role: "other",
+        description: "伪造的时间段",
+        evidenceIds: [transcriptId],
+      }],
+    }, evidence)).toThrow(MaterialTeardownError);
+  });
+
+  it("rejects semantic order gaps, false alignment and shot-only whole-video semantics", () => {
+    const evidence = createMaterialTeardownEvidence(wholeVideoEvidenceInput());
+    const transcriptId = evidence.transcriptEvidence[0]?.id as string;
+    const shotId = evidence.shotEvidence[0]?.id as string;
+    const base = {
+      alignmentStatus: "unavailable_whole_video",
+      summary: "全文结构诊断",
+      hook: { kind: "other", text: "钩子候选", evidenceIds: [transcriptId] },
+      sellingPoints: [],
+      audiences: [],
+      rhythm: { description: "镜头节奏", evidenceIds: [shotId] },
+      cta: { text: "行动引导", evidenceIds: [transcriptId] },
+      semanticSections: [
+        { order: 1, role: "hook", title: "开场", description: "提出问题", evidenceIds: [transcriptId] },
+        { order: 2, role: "body", title: "展开", description: "说明方案", evidenceIds: [transcriptId] },
       ],
+      segments: [],
+      replicationSuggestions: [],
+      uncertainties: ["无句级时间戳"],
+    };
+
+    expect(() => parseMaterialTeardownResult({
+      ...base,
+      semanticSections: [base.semanticSections[0], { ...base.semanticSections[1], order: 3 }],
+    }, evidence)).toThrow(MaterialTeardownError);
+    expect(() => parseMaterialTeardownResult({
+      ...base,
+      alignmentStatus: "exact_transcript_timing",
+    }, evidence)).toThrow(MaterialTeardownError);
+    expect(() => parseMaterialTeardownResult({
+      ...base,
+      semanticSections: [{ ...base.semanticSections[0], evidenceIds: [shotId] }],
     }, evidence)).toThrow(MaterialTeardownError);
   });
 
