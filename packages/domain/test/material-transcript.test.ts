@@ -29,6 +29,7 @@ describe("material transcript", () => {
     });
 
     expect(result.source).toBe("platform_caption");
+    expect(result.timingPrecision).toBe("segment");
     expect(result.platformCaptionStatus).toBe("accepted");
     expect(result.segments).toHaveLength(2);
     expect(cloudAsr.transcribe).not.toHaveBeenCalled();
@@ -45,12 +46,42 @@ describe("material transcript", () => {
     });
 
     expect(result.source).toBe("cloud_asr");
+    expect(result.timingPrecision).toBe("segment");
     expect(result.platformCaptionStatus).toBe("missing");
     expect(cloudAsr.transcribe).toHaveBeenCalledOnce();
     expect(cloudAsr.transcribe).toHaveBeenCalledWith({
       mediaContentSha256: sha,
       mediaHandle: "media-handle",
       durationMs: 3_000,
+    });
+  });
+
+  it("accepts one whole-text cloud response without inventing sentence timestamps", async () => {
+    const cloudAsr = {
+      transcribe: vi.fn().mockResolvedValue({
+        kind: "whole_text",
+        text: "前三秒提出问题，随后说明核心卖点，最后引导行动。",
+      }),
+    };
+
+    const result = await resolveTranscriptTimeline({
+      durationMs: 30_000,
+      mediaContentSha256: sha,
+      mediaHandle: "media-handle",
+      cloudAsr,
+    });
+
+    expect(cloudAsr.transcribe).toHaveBeenCalledOnce();
+    expect(result).toMatchObject({
+      source: "cloud_asr",
+      timingPrecision: "whole_video",
+      platformCaptionStatus: "missing",
+      segments: [{
+        startMs: 0,
+        endMs: 30_000,
+        timingPrecision: "whole_video",
+        text: "前三秒提出问题，随后说明核心卖点，最后引导行动。",
+      }],
     });
   });
 
@@ -194,6 +225,56 @@ describe("material transcript", () => {
     expect(first.segments).not.toBe(segments());
   });
 
+  it("includes timing precision in the stable fingerprint", () => {
+    const segmented = parseTranscriptTimeline({
+      durationMs: 3_000,
+      source: "cloud_asr",
+      timingPrecision: "segment",
+      segments: [{ startMs: 0, endMs: 3_000, text: "完整文案" }],
+    });
+    const wholeVideo = parseTranscriptTimeline({
+      durationMs: 3_000,
+      source: "cloud_asr",
+      timingPrecision: "whole_video",
+      segments: [{ startMs: 0, endMs: 3_000, text: "完整文案" }],
+    });
+
+    expect(segmented.fingerprint).not.toBe(wholeVideo.fingerprint);
+  });
+
+  it.each([
+    { kind: "whole_text", text: "" },
+    { kind: "whole_text", text: "x", extra: true },
+    { kind: "wrong", text: "x" },
+  ])("rejects malformed whole-text cloud output %#", async (output) => {
+    const cloudAsr = { transcribe: vi.fn().mockResolvedValue(output) };
+
+    await expect(resolveTranscriptTimeline({
+      durationMs: 3_000,
+      mediaContentSha256: sha,
+      mediaHandle: "media-handle",
+      cloudAsr,
+    })).rejects.toMatchObject({ code: "cloud_asr_invalid" });
+  });
+
+  it("rejects accessor-backed whole-text output without reading it", async () => {
+    const getter = vi.fn(() => "hidden transcript");
+    const unsafe = Object.create(null) as Record<string, unknown>;
+    Object.defineProperties(unsafe, {
+      kind: { value: "whole_text", enumerable: true },
+      text: { get: getter, enumerable: true },
+    });
+    const cloudAsr = { transcribe: vi.fn().mockResolvedValue(unsafe) };
+
+    await expect(resolveTranscriptTimeline({
+      durationMs: 3_000,
+      mediaContentSha256: sha,
+      mediaHandle: "media-handle",
+      cloudAsr,
+    })).rejects.toMatchObject({ code: "cloud_asr_invalid" });
+    expect(getter).not.toHaveBeenCalled();
+  });
+
   it("accepts only the two explicit remote transcript sources", () => {
     expect(() => parseTranscriptTimeline({
       durationMs: 3_000,
@@ -202,4 +283,3 @@ describe("material transcript", () => {
     })).toThrow(MaterialTranscriptError);
   });
 });
-

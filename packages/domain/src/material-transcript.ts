@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 
 export type TranscriptSource = "platform_caption" | "cloud_asr";
+export type TranscriptTimingPrecision = "segment" | "whole_video";
 export type PlatformCaptionStatus = "accepted" | "missing" | "invalid";
 export type MaterialTranscriptErrorCode =
   | "invalid_transcript"
@@ -13,11 +14,13 @@ export interface TranscriptSegment {
   readonly endMs: number;
   readonly text: string;
   readonly source: TranscriptSource;
+  readonly timingPrecision: TranscriptTimingPrecision;
 }
 
 export interface TranscriptTimeline {
   readonly durationMs: number;
   readonly source: TranscriptSource;
+  readonly timingPrecision: TranscriptTimingPrecision;
   readonly segments: readonly TranscriptSegment[];
   readonly fingerprint: string;
 }
@@ -37,6 +40,7 @@ export interface CloudAsrPort {
 export interface ParseTranscriptTimelineInput {
   durationMs: number;
   source: TranscriptSource;
+  timingPrecision?: TranscriptTimingPrecision;
   segments: unknown;
 }
 
@@ -51,9 +55,11 @@ export interface ResolveTranscriptTimelineInput {
 const MAX_DURATION_MS = 24 * 60 * 60 * 1_000;
 const MAX_SEGMENTS = 10_000;
 const MAX_SEGMENT_TEXT = 4_000;
+const MAX_WHOLE_TEXT = 200_000;
 const MAX_TOTAL_TEXT = 2_000_000;
 const SAFE_SHA256 = /^[a-f0-9]{64}$/;
 const SEGMENT_KEYS = new Set(["startMs", "endMs", "text"]);
+const WHOLE_TEXT_KEYS = new Set(["kind", "text"]);
 
 export class MaterialTranscriptError extends Error {
   constructor(readonly code: MaterialTranscriptErrorCode) {
@@ -65,6 +71,7 @@ export class MaterialTranscriptError extends Error {
 export function parseTranscriptTimeline(input: ParseTranscriptTimelineInput): TranscriptTimeline {
   const durationMs = positiveBoundedInteger(input.durationMs, MAX_DURATION_MS);
   const source = parseSource(input.source);
+  const timingPrecision = parseTimingPrecision(input.timingPrecision ?? "segment");
   if (!Array.isArray(input.segments) || input.segments.length === 0 || input.segments.length > MAX_SEGMENTS) {
     throw invalidTranscript();
   }
@@ -80,10 +87,17 @@ export function parseTranscriptTimeline(input: ParseTranscriptTimelineInput): Tr
     previousEndMs = endMs;
     totalTextLength += text.length;
     if (totalTextLength > MAX_TOTAL_TEXT) throw invalidTranscript();
-    return Object.freeze({ startMs, endMs, text, source });
+    return Object.freeze({ startMs, endMs, text, source, timingPrecision });
   });
 
-  const base = { durationMs, source, segments: Object.freeze(segments) };
+  if (
+    timingPrecision === "whole_video" &&
+    (segments.length !== 1 || segments[0]?.startMs !== 0 || segments[0]?.endMs !== durationMs)
+  ) {
+    throw invalidTranscript();
+  }
+
+  const base = { durationMs, source, timingPrecision, segments: Object.freeze(segments) };
   return Object.freeze({
     ...base,
     fingerprint: hashTimeline(base),
@@ -115,11 +129,14 @@ export async function resolveTranscriptTimeline(
 
   let timeline: TranscriptTimeline;
   try {
-    timeline = parseTranscriptTimeline({
-      durationMs,
-      source: "cloud_asr",
-      segments: cloudOutput,
-    });
+    timeline = isWholeTextOutput(cloudOutput)
+      ? parseWholeTextTimeline(cloudOutput, durationMs)
+      : parseTranscriptTimeline({
+          durationMs,
+          source: "cloud_asr",
+          timingPrecision: "segment",
+          segments: cloudOutput,
+        });
   } catch {
     throw new MaterialTranscriptError("cloud_asr_invalid");
   }
@@ -127,16 +144,18 @@ export async function resolveTranscriptTimeline(
 }
 
 export function fingerprintTranscriptTimeline(
-  timeline: Pick<TranscriptTimeline, "durationMs" | "source" | "segments">,
+  timeline: Pick<TranscriptTimeline, "durationMs" | "source" | "timingPrecision" | "segments">,
 ): string {
   return hashTimeline({
     durationMs: timeline.durationMs,
     source: timeline.source,
-    segments: timeline.segments.map(({ startMs, endMs, text, source }) => ({
+    timingPrecision: timeline.timingPrecision,
+    segments: timeline.segments.map(({ startMs, endMs, text, source, timingPrecision }) => ({
       startMs,
       endMs,
       text,
       source,
+      timingPrecision,
     })),
   });
 }
@@ -154,6 +173,7 @@ function platformCaptionStatus(
       timeline: parseTranscriptTimeline({
         durationMs,
         source: "platform_caption",
+        timingPrecision: "segment",
         segments: value,
       }),
     };
@@ -170,6 +190,7 @@ function withPlatformStatus(
   return Object.freeze({
     durationMs: timeline.durationMs,
     source: timeline.source,
+    timingPrecision: timeline.timingPrecision,
     segments: timeline.segments,
     fingerprint: timeline.fingerprint,
     platformCaptionStatus,
@@ -193,6 +214,35 @@ function assertMediaIdentity(input: ResolveTranscriptTimelineInput): number {
 function parseSource(value: unknown): TranscriptSource {
   if (value !== "platform_caption" && value !== "cloud_asr") throw invalidTranscript();
   return value;
+}
+
+function parseTimingPrecision(value: unknown): TranscriptTimingPrecision {
+  if (value !== "segment" && value !== "whole_video") throw invalidTranscript();
+  return value;
+}
+
+function isWholeTextOutput(value: unknown): boolean {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) return false;
+  const descriptors = Object.getOwnPropertyDescriptors(value);
+  const keys = Object.keys(descriptors);
+  return (
+    keys.length === WHOLE_TEXT_KEYS.size &&
+    keys.every((key) => WHOLE_TEXT_KEYS.has(key)) &&
+    keys.every((key) => descriptors[key]?.get === undefined && descriptors[key]?.set === undefined) &&
+    descriptors.kind?.value === "whole_text"
+  );
+}
+
+function parseWholeTextTimeline(value: unknown, durationMs: number): TranscriptTimeline {
+  if (!isWholeTextOutput(value)) throw invalidTranscript();
+  const record = value as Record<string, unknown>;
+  const text = safeBoundedText(record.text, MAX_WHOLE_TEXT);
+  return parseTranscriptTimeline({
+    durationMs,
+    source: "cloud_asr",
+    timingPrecision: "whole_video",
+    segments: [{ startMs: 0, endMs: durationMs, text }],
+  });
 }
 
 function safeSegmentRecord(value: unknown): Record<string, unknown> {
@@ -224,9 +274,13 @@ function positiveBoundedInteger(value: unknown, maximum: number): number {
 }
 
 function safeText(value: unknown): string {
+  return safeBoundedText(value, MAX_SEGMENT_TEXT);
+}
+
+function safeBoundedText(value: unknown, maximumLength: number): string {
   if (typeof value !== "string") throw invalidTranscript();
   const text = value.trim();
-  if (text === "" || text.length > MAX_SEGMENT_TEXT || hasUnsafeControlCharacter(text)) {
+  if (text === "" || text.length > maximumLength || hasUnsafeControlCharacter(text)) {
     throw invalidTranscript();
   }
   return text;
@@ -243,16 +297,19 @@ function hasUnsafeControlCharacter(value: string): boolean {
 function hashTimeline(value: {
   durationMs: number;
   source: TranscriptSource;
-  segments: readonly Pick<TranscriptSegment, "startMs" | "endMs" | "text" | "source">[];
+  timingPrecision: TranscriptTimingPrecision;
+  segments: readonly Pick<TranscriptSegment, "startMs" | "endMs" | "text" | "source" | "timingPrecision">[];
 }): string {
   return createHash("sha256").update(JSON.stringify({
     durationMs: value.durationMs,
     source: value.source,
-    segments: value.segments.map(({ startMs, endMs, text, source }) => ({
+    timingPrecision: value.timingPrecision,
+    segments: value.segments.map(({ startMs, endMs, text, source, timingPrecision }) => ({
       startMs,
       endMs,
       text,
       source,
+      timingPrecision,
     })),
   })).digest("hex");
 }
