@@ -3,6 +3,7 @@ import type { QihangQueryPort, EtlRunStore } from "../etl/types.js";
 import { rowsToRawRecords } from "../etl/raw-ingest.js";
 import { replayRequestParams } from "../etl/replay-params.js";
 import { errorSummary } from "../etl/run-utils.js";
+import { shanghaiBusinessDate } from "../etl/date-range.js";
 import { deterministicJobId } from "../jobs/deterministic-id.js";
 import { JOB_PRIORITY } from "../jobs/priorities.js";
 import { backfillDayPayloadSchema } from "./payload.js";
@@ -54,7 +55,7 @@ export function createBackfillDayHandler(dependencies: {
           backfillId: payload.backfillId,
           dateFrom: payload.ds,
           dateTo: payload.ds,
-          reportDate: dependencies.today?.() ?? new Date().toISOString().slice(0, 10),
+          reportDate: dependencies.today?.() ?? shanghaiBusinessDate(),
         },
         priority: JOB_PRIORITY.BACKFILL,
         credentialOwnerUserId: job.credentialOwnerUserId,

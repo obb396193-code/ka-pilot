@@ -7,6 +7,17 @@ export function shiftIsoDate(isoDate: string, days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
+export function shanghaiBusinessDate(date = new Date()): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+  const values = new Map(parts.map((part) => [part.type, part.value]));
+  return `${requiredDatePart(values, "year")}-${requiredDatePart(values, "month")}-${requiredDatePart(values, "day")}`;
+}
+
 export function trailingDates(asOfDate: string, count: number): string[] {
   return Array.from({ length: count }, (_, index) => shiftIsoDate(asOfDate, -index));
 }
@@ -23,4 +34,10 @@ export function inclusiveDates(dateFrom: string, dateTo: string): string[] {
     throw new Error("dateFrom must be on or before dateTo");
   }
   return dates;
+}
+
+function requiredDatePart(parts: Map<string, string>, name: string): string {
+  const value = parts.get(name);
+  if (value === undefined) throw new Error(`Missing ${name} in Asia/Shanghai business date`);
+  return value;
 }

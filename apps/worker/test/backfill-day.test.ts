@@ -50,6 +50,23 @@ function dependencies() {
 }
 
 describe("backfill day", () => {
+  it("uses the Asia/Shanghai business day instead of the UTC calendar day", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-08-19T23:00:00.000Z"));
+    try {
+      const deps = dependencies();
+      await createBackfillDayHandler(deps)(leasedJob());
+
+      expect(deps.jobs.enqueue).toHaveBeenCalledWith(
+        expect.objectContaining({
+          payload: expect.objectContaining({ reportDate: "2026-08-20" }),
+        }),
+      );
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("fetches only the target offline day and queues canonical idempotently", async () => {
     const deps = dependencies();
     await createBackfillDayHandler(deps)(leasedJob());
