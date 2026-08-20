@@ -4,9 +4,9 @@
 >
 > 维护角色：be（Codex）
 >
-> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11`
+> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B13 素材拆片内核：`85c5fbf`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -43,6 +43,8 @@
 | B9 纵向闭环与批量性能 | `83cf855`（代码） | 待 Claude/arch 审查 P-016 | Canonical settings/history/upsert 批量化，假奇航→真实 PG→质量/语义/规则/工作项/报告事实闭环，真实 PG 100/1000/5000 基准，realtime/offline source 对平 | 445 默认 + 1 opt-in | `B9-状态.md`、`docs/evidence/B9-数据链真实PG性能基线.md`、`docs/evidence/B9-代码质量报告.md`、P-016 |
 | B10 真实奇航适配 | `878126f` | 待 Claude/arch 审查 P-017 | 日期紧凑格式、离线分区有界回退、历史真实转化来源、双口径事实和 Skill 身份补证 | 变更定向 34；非 PG 回归见状态 | `B10-状态.md`、`docs/evidence/B10-真实奇航只读适配报告.md`、P-017 |
 | B11 时效完整性与小时监控 | `1c87e2e`（第三轮代码） | 待 Claude/arch 审查 P-018 | 历史 realtime 诊断、`hh` 0..24 Client 边界、广告 5/80 分片与 2000 截断 fail-closed、查询观测、D-1 动态重查、累计小时安全差分和幂等落库 | Domain 207 / DB 92 / Worker 200 / Gateway 19 + 1 opt-in | `B11-状态.md`、`docs/evidence/B11-代码质量报告.md`、P-018 |
+| B12 广告 ID 与素材来源桥 | `fb3bf9f`（代码） | 待 Claude/arch 审查 P-019 | 广告对象完整性/映射证据门、奇航素材池严格分页、默认拒绝的视频 URL 来源探针 | 定向 54；非 PG 回归见状态 | `B12-状态.md`、`docs/evidence/B12-代码质量报告.md`、P-019 |
+| B13 素材拆片后端内核 | `85c5fbf`（代码） | 待 Claude/arch 审查 P-020 | 受控下载、字幕/云 ASR 端口、FFmpeg 抽帧、证据 Schema、版本化 Prompt、Claude Agent SDK 结构化分析、可恢复编排 | Domain 235 / DB 92 / Worker 287 / Gateway 19 + 1 opt-in | `B13-状态.md`、`docs/evidence/B13-代码质量报告.md`、P-020 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -187,3 +189,12 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - 视频来源只做到准入探针：部署默认无 allowlist，逐跳校验 host，HEAD 或单字节 Range 确认类型和大小；未下载正文、未接 ContentRadar 拆片。
 - 代码终态 `fb3bf9f`；定向 54、Worker 非 PG 238、Domain 207、DingTalk 19、DB 无 IO 12 通过；四包静态和 audit 通过。Docker daemon 本轮持续 `EOF`，因此没有重跑真实 PG，必须作为合并前门禁保留。
 - OS 第四轮需确认 ID 映射和素材 URL/FaaS 可达性；在此之前 B11 单账户 2000 行继续 fail-closed，生产素材 host allowlist 保持空。
+
+## 13. B13 素材拆片后端内核真相
+
+- B13 已实现安全下载、真实 FFmpeg/FFprobe、平台字幕优先与云 ASR 端口、完整证据时间轴、严格结构化拆解以及内容/版本指纹驱动的可恢复编排；没有接公开 API、DB migration、正式 Job 或生产 Runtime。
+- ContentRadar 只读复用了抽帧方法；老板本地拆片 Prompt 按源 SHA 与模板 SHA 固定快照到 KA，运行时不访问 Obsidian，也没有修改 ContentRadar。
+- Agent 复用唯一 Claude Agent SDK Runtime 和 localhost 多模型网关，默认无 built-in/MCP tool；真实 SDK 子进程经本地伪上游通过，只证明代码链，不证明真实 Provider。
+- 不做本地 ASR。`CloudAsrPort` 尚无供应商适配；真实视频帧也因未冻结受信任多模态 Provider/数据边界而保持阻断，Agent 不得假装看过图。
+- Worker 默认 287、Domain 235、DB 92、DingTalk 19 和 SDK opt-in 1 通过；B13 materials 覆盖率为 95.96%/86.75%/98.75%。真实 PG/migration 与真实 FFmpeg 生成视频门禁均通过。
+- 仍未完成：真实产品身份素材 E2E、云 ASR、受信任视觉 Provider、artifact/checkpoint 持久化、任务/API/DB/前端、素材相似检索与复刻、OS 商品/承接页/字幕后续实证。

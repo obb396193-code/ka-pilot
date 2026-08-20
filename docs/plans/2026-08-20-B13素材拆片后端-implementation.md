@@ -326,6 +326,8 @@ git commit -m "feat: 编排可恢复素材拆片流水线"
 
 ### Task 8: 全量质量门禁、状态和审查回执
 
+> 完成状态：已完成。Worker 默认 287 tests、真实 SDK opt-in 1、Domain 235、DB 92、DingTalk 19；真实 PG/migration、真实 FFmpeg 假视频与 localhost gateway E2E 均通过。B13 materials 行/分支/函数覆盖 95.96%/86.75%/98.75%。交接见 `B13-状态.md`、B13 质量报告与 P-020。
+
 **Files:**
 - Create: `docs/plans/B13-状态.md`
 - Create: `docs/evidence/B13-代码质量报告.md`

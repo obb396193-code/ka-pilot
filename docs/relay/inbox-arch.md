@@ -544,3 +544,34 @@ main 9335150
 **质量真相**：定向 54、Worker 非 PG 238、Domain 207、DingTalk 19、DB 无 IO 12；四包 type/lint/audit、覆盖率、复杂度、安全和冻结目录检查通过。Docker CLI 本轮持续 `EOF`、55432 `ECONNREFUSED`，真实 PG/migration 未重跑；不得引用 B11 历史结果冒充本轮结果。
 
 **明确未完成**：OS 第四轮 ID 映射与素材 URL/FaaS 实证、B11 自动 adIds fallback、素材正文下载、拆片、DB/API/Job/前端、合并、部署和产品身份真实 trace。
+
+---
+
+### P-020 ⏳B13 素材拆片后端内核待审计｜be（Codex）
+
+- 分支：`be/b13`
+- 基线：`be/b12@8fba713`
+- 设计：`610e1ba`；CDN 类型纠正：`2a8adcd`；实施计划：`37ede1f`
+- 代码终态：`85c5fbf`
+- 状态：`docs/plans/B13-状态.md`
+- 质量：`docs/evidence/B13-代码质量报告.md`
+
+**本批实现**：
+
+1. 安全下载：逐跳 host/type/length 重验、流式预算、总超时、随机临时文件、SHA-256 和失败清理；allowlist VIDEO 的 octet-stream 强制 FFprobe。
+2. 平台字幕优先、云 ASR 端口兜底，不存在本地 ASR；字幕与 Shot 形成完整时间轴和稳定证据 ID。
+3. FFmpeg/FFprobe 固定参数数组和 `shell:false`，支持 scene/hard-cut、镜头中点帧、Hook/全片联系表、资源上限和失败占位。
+4. 结构化拆解必须引用证据，禁止无源后台指标；老板拆片 Prompt 使用源/模板双 SHA，漂移 fail-closed。
+5. 复用 B5 Claude Agent SDK + localhost 多模型网关，无 built-in/MCP tools；内容、Prompt、Schema、Provider/model/profile 指纹控制 checkpoint 复用。
+
+**请重点审查/裁决**：
+
+1. 指定可接收真实投放帧的受信任多模态 Provider/内部网关，并冻结保留、审计、egress 边界；未裁决前视觉 payload 必须继续阻断。
+2. 冻结云 ASR 供应商与凭证、费用、超时、缓存、隐私边界；不得以本地 ASR兜底。
+3. 冻结拆片 Job/API/DB、checkpoint/artifact 保留与清理契约；目前只交内部端口，不应直接注册生产 Runtime。
+4. 审核 `teardown-v1` 是否作为一期官方模板，以及模板升级、回滚和历史分析重算规则。
+5. 审核 evidence/result Schema、500 Shot/216 帧/15 Hook/36 全片等预算和错误分类，确认后再接素材中心、知识库和复刻。
+
+**质量真相**：Domain 235、DB 92、Worker 287、DingTalk 19 默认 tests；真实 SDK opt-in 1。真实 PostgreSQL/migration、真实 FFmpeg 生成视频与 localhost gateway E2E 通过；materials 95.96%/86.75%/98.75% 行/分支/函数覆盖；四包 type/lint/audit 与安全/冻结目录检查通过。
+
+**明确未完成**：合入 main、真实云 ASR、真实多模态 Provider、产品 Worker/FaaS 真实素材 E2E、持久 checkpoint/artifact、公开 API/DB/Job、前端、相似检索/复刻、部署/上线。OS 沙箱实证与本地伪上游均不得冒充产品生产联通。
