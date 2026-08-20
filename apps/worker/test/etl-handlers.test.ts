@@ -41,6 +41,10 @@ function store() {
   return { value, records };
 }
 
+function jobs() {
+  return { enqueue: vi.fn(async (input: { id?: string }) => input.id ?? "generated-job") };
+}
+
 describe("ETL handlers", () => {
   it("runs account pagination, yesterday offline and a seven-day realtime window", async () => {
     const calls: QihangQuery[] = [];
@@ -62,7 +66,8 @@ describe("ETL handlers", () => {
       }),
     };
     const runStore = store();
-    const handler = createFullEtlHandler({ qihang, store: runStore.value });
+    const downstream = jobs();
+    const handler = createFullEtlHandler({ qihang, store: runStore.value, jobs: downstream });
 
     await handler(
       job("etl_full", {
@@ -88,6 +93,17 @@ describe("ETL handlers", () => {
     expect(runStore.records.every((row) => row.workspaceId === workspaceId)).toBe(true);
     expect(runStore.records.every((row) => !("userId" in row.requestParams))).toBe(true);
     expect(runStore.value.finishRun).toHaveBeenCalledWith(91, runStore.records.length);
+    expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
+      jobType: "canonical_merge",
+      workspaceId,
+      credentialOwnerUserId: ownerUserId,
+      payload: {
+        workspaceId,
+        dateFrom: "2026-08-13",
+        dateTo: "2026-08-19",
+        reportDate: "2026-08-19",
+      },
+    }));
   });
 
   it("runs current account realtime and focused-account ad realtime", async () => {
@@ -102,7 +118,8 @@ describe("ETL handlers", () => {
       }),
     };
     const runStore = store();
-    const handler = createIncrementalEtlHandler({ qihang, store: runStore.value });
+    const downstream = jobs();
+    const handler = createIncrementalEtlHandler({ qihang, store: runStore.value, jobs: downstream });
 
     await handler(
       job("etl_incr", {
@@ -131,6 +148,15 @@ describe("ETL handlers", () => {
       }),
     ]);
     expect(runStore.value.finishRun).toHaveBeenCalledWith(91, 2);
+    expect(downstream.enqueue).toHaveBeenCalledWith(expect.objectContaining({
+      jobType: "canonical_merge",
+      payload: {
+        workspaceId,
+        dateFrom: "2026-08-19",
+        dateTo: "2026-08-19",
+        reportDate: "2026-08-19",
+      },
+    }));
   });
 
   it("records the failed ETL step before propagating the error", async () => {
@@ -138,7 +164,8 @@ describe("ETL handlers", () => {
       query: vi.fn().mockRejectedValue(new Error("offline unavailable")),
     };
     const runStore = store();
-    const handler = createFullEtlHandler({ qihang, store: runStore.value });
+    const downstream = jobs();
+    const handler = createFullEtlHandler({ qihang, store: runStore.value, jobs: downstream });
     const failingJob = job("etl_full", {
       workspaceId,
       userId: "u-qihang",
@@ -151,6 +178,7 @@ describe("ETL handlers", () => {
       "account_page_1",
       "offline unavailable",
     );
+    expect(downstream.enqueue).not.toHaveBeenCalled();
   });
 
   it("fails closed when account pagination metadata disappears on a non-empty page", async () => {
@@ -166,7 +194,8 @@ describe("ETL handlers", () => {
       }),
     };
     const runStore = store();
-    const handler = createFullEtlHandler({ qihang, store: runStore.value });
+    const downstream = jobs();
+    const handler = createFullEtlHandler({ qihang, store: runStore.value, jobs: downstream });
 
     await expect(handler(job("etl_full", {
       workspaceId,
@@ -178,5 +207,34 @@ describe("ETL handlers", () => {
       "account_page_1",
       expect.stringContaining("pagination total"),
     );
+    expect(downstream.enqueue).not.toHaveBeenCalled();
+  });
+
+  it("uses a deterministic downstream id when the source job is retried", async () => {
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => query.resource === "account"
+        ? {
+            rows: [{ account_id: "a-1" }],
+            pagination: { totalNum: 1, pageNum: 1, pageSize: 50 },
+            envelope: {},
+          }
+        : { rows: [], envelope: {} }),
+    };
+    const downstream = jobs();
+    const payload = {
+      workspaceId,
+      userId: "u-qihang",
+      asOfDate: "2026-08-19",
+      realtimeDays: 1,
+    };
+    await createFullEtlHandler({ qihang, store: store().value, jobs: downstream })(
+      job("etl_full", payload),
+    );
+    await createFullEtlHandler({ qihang, store: store().value, jobs: downstream })(
+      job("etl_full", payload),
+    );
+
+    expect(downstream.enqueue).toHaveBeenCalledTimes(2);
+    expect(downstream.enqueue.mock.calls[0]![0].id).toBe(downstream.enqueue.mock.calls[1]![0].id);
   });
 });

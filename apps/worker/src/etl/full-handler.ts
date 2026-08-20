@@ -1,3 +1,6 @@
+import type { JobEnqueuerPort } from "@ka/db";
+
+import { deterministicJobId } from "../jobs/deterministic-id.js";
 import type { JobHandler } from "../jobs/types.js";
 import type { QihangQuery } from "../qihang/client.js";
 import { shiftIsoDate, trailingDates } from "./date-range.js";
@@ -10,6 +13,7 @@ import type { EtlRunStore, QihangQueryPort } from "./types.js";
 export interface FullEtlDependencies {
   qihang: QihangQueryPort;
   store: EtlRunStore;
+  jobs: JobEnqueuerPort;
 }
 
 export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHandler {
@@ -110,6 +114,23 @@ export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHand
         );
       }
 
+      currentStep = "enqueue:canonical";
+      const realtimeFrom = shiftIsoDate(payload.asOfDate, -(payload.realtimeDays - 1));
+      const dateFrom = realtimeFrom < yesterday ? realtimeFrom : yesterday;
+      await dependencies.jobs.enqueue({
+        id: deterministicJobId(`canonical:full:${job.id}:${dateFrom}:${payload.asOfDate}`),
+        workspaceId: payload.workspaceId,
+        jobType: "canonical_merge",
+        payload: {
+          workspaceId: payload.workspaceId,
+          dateFrom,
+          dateTo: payload.asOfDate,
+          reportDate: payload.asOfDate,
+        },
+        priority: job.priority,
+        credentialOwnerUserId: job.credentialOwnerUserId,
+        maxAttempts: 3,
+      });
       await dependencies.store.finishRun(runId, rowsIngested);
     } catch (error) {
       await dependencies.store.failRun(runId, currentStep, errorSummary(error));

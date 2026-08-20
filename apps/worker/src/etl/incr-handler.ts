@@ -1,3 +1,6 @@
+import type { JobEnqueuerPort } from "@ka/db";
+
+import { deterministicJobId } from "../jobs/deterministic-id.js";
 import type { JobHandler } from "../jobs/types.js";
 import { incrementalEtlPayloadSchema } from "./payload.js";
 import { rowsToRawRecords } from "./raw-ingest.js";
@@ -8,6 +11,7 @@ import type { EtlRunStore, QihangQueryPort } from "./types.js";
 export interface IncrementalEtlDependencies {
   qihang: QihangQueryPort;
   store: EtlRunStore;
+  jobs: JobEnqueuerPort;
 }
 
 export function createIncrementalEtlHandler(
@@ -61,6 +65,21 @@ export function createIncrementalEtlHandler(
           ...(payload.hh === undefined ? {} : { hh: payload.hh }),
         });
       }
+      currentStep = "enqueue:canonical";
+      await dependencies.jobs.enqueue({
+        id: deterministicJobId(`canonical:incr:${job.id}:${payload.ds}`),
+        workspaceId: payload.workspaceId,
+        jobType: "canonical_merge",
+        payload: {
+          workspaceId: payload.workspaceId,
+          dateFrom: payload.ds,
+          dateTo: payload.ds,
+          reportDate: payload.ds,
+        },
+        priority: job.priority,
+        credentialOwnerUserId: job.credentialOwnerUserId,
+        maxAttempts: 3,
+      });
       await dependencies.store.finishRun(runId, rowsIngested);
     } catch (error) {
       await dependencies.store.failRun(runId, currentStep, errorSummary(error));

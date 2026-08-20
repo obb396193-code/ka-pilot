@@ -54,9 +54,9 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
   return new JobConsumer(
     jobs,
     {
-      etl_full: identity(createFullEtlHandler({ qihang: options.qihang, store: etlStore })),
+      etl_full: identity(createFullEtlHandler({ qihang: options.qihang, store: etlStore, jobs })),
       etl_incr: identity(
-        createIncrementalEtlHandler({ qihang: options.qihang, store: etlStore }),
+        createIncrementalEtlHandler({ qihang: options.qihang, store: etlStore, jobs }),
       ),
       backfill_historical: identity(
         createBackfillCoordinatorHandler({
