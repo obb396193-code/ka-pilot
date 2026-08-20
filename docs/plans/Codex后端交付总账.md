@@ -6,7 +6,7 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13` → `be/b14` → `codex/b15-material-teardown-semantics`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`；B18 素材 Brief 回测就绪代码终态：`54f5223`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -49,6 +49,7 @@
 | B15 拆片语义与逐镜头帧墙 | `020a902`（代码） | 待 Claude/arch 审查 P-022 | 无时间多段语义结构、精确时间证据门、Prompt v3、分页逐镜头帧墙、旧缓存升级和页面承接结果信封 | Domain 245 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B15-状态.md`、`docs/evidence/B15-代码质量报告.md`、P-022 |
 | B16 素材相似度与复刻谱系 | `d7a49f8`（代码） | 待 Claude/arch 审查 P-023 | 版本化内容画像、六组件可解释确定性评分、证据不足无总分、独立不可变复刻谱系 | Domain 270 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B16-状态.md`、`docs/evidence/B16-代码质量报告.md`、P-023 |
 | B17 商品×素材实验矩阵 | `064f1f5`（代码） | 待 Claude/arch 审查 P-024 | 无默认阈值样本策略、幂等事实汇总、显式 click/exposure 推断分母、Wilson 95% 区间、保守观察分离 | Domain 295 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B17-状态.md`、`docs/evidence/B17-代码质量报告.md`、P-024 |
+| B18 素材 Brief 与回测就绪 | `54f5223`（代码） | 待 Claude/arch 审查 P-025 | 单变量结构化 Brief、B16 谱系交付绑定、B17 同策略样本就绪判断、稳定指纹与完整性门 | Domain 310 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B18-状态.md`、`docs/evidence/B18-代码质量报告.md`、P-025 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
@@ -240,3 +241,12 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - 最低 CPA 只给方向；只有达到 CPA 改善门、且其 95% 推断率区间与所有其他合格候选保守分离，才返回 `separated_observation`。
 - 该状态不是随机 A/B、统计因果或自动操作建议；代码无 Agent、媒体写入或通知分支。
 - 代码终态 `064f1f5`。默认回归 Domain 295 + DB 92 + Worker 301 + DingTalk 19 = 707；SDK opt-in 1。新增模块 100%/97.08%/100%，四包静态/audit、真实 PG/migration、复杂度、安全与冻结目录门禁通过，审查入口 P-024。
+
+## 18. B18 素材 Brief 与回测就绪真相
+
+- B18 只做纯 Domain，不代表验收 6.5 的设计师派发、素材制作、上线关联和页面已完成。
+- 每个 Brief 固定商品、源素材、B15 teardown/profile 和 B17 policy；每个变体只改变一个维度并声明不变量。
+- 交付必须通过 B16 显式复刻谱系验证；完全重试幂等，来源、变体或派生素材冲突失败。
+- 缺交付先返回 `awaiting_delivery`；全部交付后才按同一 policy/商品检查派生素材样本，区分 `awaiting_sample / ready`。
+- `ready` 只表示具备回测样本，不读取胜负、不构成效果或投放建议，代码无 Agent/通知/媒体写入。
+- 代码终态 `54f5223`。默认回归 Domain 310 + DB 92 + Worker 301 + DingTalk 19 = 722；SDK opt-in 1。新增模块 97.19%/85.71%/100%，四包静态/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全与冻结目录门禁通过，审查入口 P-025。

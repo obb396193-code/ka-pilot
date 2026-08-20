@@ -724,3 +724,39 @@ main 9335150
 **质量真相**：Domain 295、DB 92、Worker 301、DingTalk 19，共 707 默认 tests；SDK opt-in 1。新增模块 100%/97.08%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
 
 **明确未完成**：权威事实映射、官方阈值、DB/API/页面、随机实验、因果推断、自动投放动作、合并、部署和业务验收。
+
+---
+
+### P-025 ⏳B18 素材设计 Brief 与回测就绪领域底座待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B17 最终工作树 `5175a75`
+- 设计：`336a62c`
+- 实施计划：`a254e5f`
+- 领域内核/自审终态：`54f5223`
+- 质量与交接：待回填
+- 状态：`docs/plans/B18-状态.md`
+- 质量：`docs/evidence/B18-代码质量报告.md`
+
+**产品依据**：验收 6.5 要求“跑量素材→brief→设计师→上线自动关联回测”。本批只交内部 Domain，不把派发、制作、上线或页面标为完成。
+
+**本批实现**：
+
+1. v1 严格 Brief 绑定商品、源素材、B15 teardown/profile 和 B17 policy；1~20 个单变量变体稳定排序并生成 fingerprint。
+2. 每个变体只允许 hook/selling_point/audience/rhythm/cta/visual_style 中一个改变维度，且至少声明一个不变量。
+3. 交付重新验证 B16 lineage 的版本、来源、时间和 fingerprint；完全相同重试幂等，冲突 fail-closed。
+4. 回测状态分 awaiting_delivery / awaiting_sample / ready；全部交付后才消费同 policy、同商品的 B17 sampleStatus。
+5. 自审增加未声明变体、重复商品/素材格子和重算外层 hash 后的语义完整性防线。
+6. 未修改 public Contract、migration、生产 Runtime、Worker 或前端。
+
+**请重点审查/裁决**：
+
+1. Brief 草稿/发布/撤回/复制、团队共享和官方资产治理状态机。
+2. Brief/交付/lineage/商品/素材版本的 DB/API DTO、workspace 键和权限。
+3. 设计师/AIGC/钉钉派发与交付文件、上线素材版本的权威绑定方式。
+4. B17 policy 的官方版本治理；历史 Brief 必须固定原策略。
+5. 页面不得把 `ready` 显示为“胜出”；要分开呈现交付、样本、观察结果。
+
+**质量真相**：Domain 310、DB 92、Worker 301、DingTalk 19，共 722 默认 tests；SDK opt-in 1。新增模块 97.19%/85.71%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：Agent 生成 Brief、设计师/钉钉/AIGC 集成、DB/API/Worker/页面、权威映射、自动采样、随机 A/B、媒体写操作、合并、部署和业务验收。
