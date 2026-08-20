@@ -1,32 +1,38 @@
 import {
   Bell,
   Blocks,
-  Bot,
   ChartNoAxesCombined,
-  ChevronLeft,
   CircleUserRound,
   Database,
   FileChartColumn,
   FolderKanban,
   LayoutDashboard,
   Library,
-  Menu,
   Search,
   Settings2,
   Shapes,
   Sparkles,
   Workflow,
 } from "lucide-react";
-import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { DashboardContent } from "@/shared/dashboard-content";
 import { ThemeToggle } from "@/shared/theme-toggle";
 
@@ -35,7 +41,7 @@ const primaryItems = [
   { label: "投放任务", icon: FolderKanban },
   { label: "数据分析", icon: ChartNoAxesCombined },
   { label: "账户资源", icon: Database },
-  { label: "自动化", icon: Workflow },
+  { label: "自动化", icon: Workflow, badge: 3 },
 ];
 
 const resourceItems = [
@@ -44,166 +50,166 @@ const resourceItems = [
   { label: "知识库", icon: Library },
 ];
 
-function Brand({ compact = false }: { compact?: boolean }) {
+function ProductSidebar() {
   return (
-    <div className="sidebar-brand">
-      <span className="brand-mark">
-        <Sparkles />
-      </span>
-      {!compact && (
-        <div>
-          <strong>投放 Agent</strong>
-          <span>运营工作台</span>
-        </div>
-      )}
-    </div>
+    <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" tooltip="投放 Agent">
+              <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                <Sparkles className="size-4" />
+              </span>
+              <span className="grid flex-1 text-left leading-tight">
+                <span className="truncate font-semibold">投放 Agent</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  运营工作台
+                </span>
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>经营与执行</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {primaryItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <SidebarMenuItem key={item.label}>
+                    <SidebarMenuButton
+                      type="button"
+                      isActive={item.active}
+                      tooltip={item.label}
+                    >
+                      <Icon />
+                      <span>{item.label}</span>
+                    </SidebarMenuButton>
+                    {item.badge ? (
+                      <SidebarMenuBadge>{item.badge}</SidebarMenuBadge>
+                    ) : null}
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>资产与沉淀</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {resourceItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <SidebarMenuItem key={item.label}>
+                    <SidebarMenuButton type="button" tooltip={item.label}>
+                      <Icon />
+                      <span>{item.label}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup className="mt-auto">
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton type="button" tooltip="集成与通知">
+                  <Blocks />
+                  <span>集成与通知</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton type="button" tooltip="系统设置">
+                  <Settings2 />
+                  <span>系统设置</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" tooltip="演示用户">
+              <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-muted text-xs font-semibold">
+                演
+              </span>
+              <span className="grid flex-1 text-left leading-tight">
+                <span className="truncate text-sm font-medium">演示用户</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  优化师 · 在线
+                </span>
+              </span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
   );
 }
 
-function Navigation({ compact = false }: { compact?: boolean }) {
+function OfficialSiteHeader() {
   return (
-    <nav className="sidebar-nav" aria-label="主导航">
-      <div className="nav-group">
-        {!compact && <p>经营与执行</p>}
-        {primaryItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              type="button"
-              key={item.label}
-              className={item.active ? "active" : ""}
-              aria-current={item.active ? "page" : undefined}
-              title={compact ? item.label : undefined}
-            >
-              <Icon />
-              {!compact && <span>{item.label}</span>}
-              {item.label === "自动化" && !compact && (
-                <Badge tone="info">3</Badge>
-              )}
-            </button>
-          );
-        })}
-      </div>
-      <div className="nav-group">
-        {!compact && <p>资产与沉淀</p>}
-        {resourceItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              type="button"
-              key={item.label}
-              title={compact ? item.label : undefined}
-            >
-              <Icon />
-              {!compact && <span>{item.label}</span>}
-            </button>
-          );
-        })}
-      </div>
-    </nav>
-  );
-}
-
-function SidebarRail({ compact = false }: { compact?: boolean }) {
-  return (
-    <>
-      <Brand compact={compact} />
-      <Navigation compact={compact} />
-      <div className="sidebar-bottom">
-        <button type="button" title={compact ? "集成与通知" : undefined}>
-          <Blocks />
-          {!compact && <span>集成与通知</span>}
-        </button>
-        <button type="button" title={compact ? "系统设置" : undefined}>
-          <Settings2 />
-          {!compact && <span>系统设置</span>}
-        </button>
-        <div className="sidebar-user">
-          <span>演</span>
-          {!compact && (
-            <div>
-              <strong>演示用户</strong>
-              <small>优化师 · 在线</small>
-            </div>
-          )}
+    <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background transition-[width,height] ease-linear">
+      <div className="flex w-full items-center gap-2 px-4 lg:px-6">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mx-1 h-4" />
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-muted-foreground">投放运营</span>
+          <span className="text-muted-foreground">/</span>
+          <strong className="font-medium">工作台</strong>
+        </div>
+        <div className="ml-auto flex items-center gap-2">
+          <button type="button" className="global-search">
+            <Search />
+            <span>搜索任务、账户或报告</span>
+            <kbd>⌘ K</kbd>
+          </button>
+          <div className="sync-status">
+            <i />
+            数据已同步
+          </div>
+          <ThemeToggle />
+          <Button variant="ghost" size="icon-sm" aria-label="通知">
+            <Bell />
+            <span className="notification-dot" />
+          </Button>
+          <Button
+            className="avatar-button"
+            variant="ghost"
+            size="icon-sm"
+            aria-label="个人中心"
+          >
+            <CircleUserRound />
+          </Button>
         </div>
       </div>
-    </>
+    </header>
   );
 }
 
 export function SidebarShell() {
-  const [collapsed, setCollapsed] = useState(false);
   return (
-    <div className={`app-shell sidebar-app ${collapsed ? "is-collapsed" : ""}`}>
+    <SidebarProvider>
       <a className="skip-link" href="#main-content">
         跳到主要内容
       </a>
-      <aside className="desktop-sidebar">
-        <SidebarRail compact={collapsed} />
-        <button
-          className="collapse-control"
-          aria-label={collapsed ? "展开侧栏" : "收起侧栏"}
-          onClick={() => setCollapsed((value) => !value)}
-        >
-          <ChevronLeft />
-        </button>
-      </aside>
-      <div className="sidebar-workspace">
-        <header className="sidebar-header">
-          <div className="header-leading">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button
-                  className="mobile-menu-button"
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label="打开导航"
-                >
-                  <Menu />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="mobile-nav-sheet">
-                <SheetTitle className="sr-only">主导航</SheetTitle>
-                <SheetDescription className="sr-only">
-                  投放 Agent 产品导航
-                </SheetDescription>
-                <SidebarRail />
-              </SheetContent>
-            </Sheet>
-            <div className="breadcrumb">
-              <span>投放运营</span>
-              <b>/</b>
-              <strong>工作台</strong>
-            </div>
-          </div>
-          <div className="header-actions">
-            <button type="button" className="global-search">
-              <Search />
-              <span>搜索任务、账户或报告</span>
-              <kbd>⌘ K</kbd>
-            </button>
-            <div className="sync-status">
-              <i />
-              数据已同步
-            </div>
-            <ThemeToggle />
-            <Button variant="ghost" size="icon-sm" aria-label="通知">
-              <Bell />
-              <span className="notification-dot" />
-            </Button>
-            <Button
-              className="avatar-button"
-              variant="ghost"
-              size="icon-sm"
-              aria-label="个人中心"
-            >
-              <CircleUserRound />
-            </Button>
-          </div>
-        </header>
+      <ProductSidebar />
+      <SidebarInset>
+        <OfficialSiteHeader />
         <DashboardContent variant="sidebar" />
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

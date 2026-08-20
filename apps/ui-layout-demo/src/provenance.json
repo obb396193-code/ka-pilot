@@ -7,7 +7,7 @@
       "license": "MIT",
       "upstream_url": "https://ui.shadcn.com/r/styles/new-york-v4/dashboard-01.json",
       "upstream_ref": "new-york-v4 catalog snapshot verified 2026-08-19",
-      "use": "sidebar shell, cards, table and interaction primitives"
+      "use": "official sidebar.tsx, input, separator, skeleton, tooltip, use-mobile primitives; business menu mapping; cards, table and interaction primitives"
     },
     {
       "source": "coss-origin",

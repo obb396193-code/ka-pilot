@@ -39,6 +39,16 @@ function SheetContent({
   );
 }
 
+function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="sheet-header"
+      className={cn("flex flex-col gap-1.5 p-4", className)}
+      {...props}
+    />
+  );
+}
+
 const SheetTitle = SheetPrimitive.Title;
 const SheetDescription = SheetPrimitive.Description;
 
@@ -47,6 +57,7 @@ export {
   SheetTrigger,
   SheetClose,
   SheetContent,
+  SheetHeader,
   SheetTitle,
   SheetDescription,
 };

@@ -1,5 +1,34 @@
 @import "tailwindcss";
 
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--surface-raised);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--surface-raised);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--surface-raised);
+  --color-accent-foreground: var(--foreground);
+  --color-destructive: var(--danger);
+  --color-border: var(--border);
+  --color-input: var(--border-strong);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--ring);
+}
+
 :root {
   color-scheme: light;
   --background: #f4f6f8;
@@ -1443,107 +1472,8 @@ html[data-layout="shadcn"].dark {
   --sidebar-border: oklch(1 0 0 / 10%);
 }
 
-html[data-layout="shadcn"] body,
-html[data-layout="shadcn"] .sidebar-app {
+html[data-layout="shadcn"] body {
   background: var(--background);
-}
-
-html[data-layout="shadcn"] .sidebar-app {
-  grid-template-columns: 256px minmax(0, 1fr);
-}
-
-html[data-layout="shadcn"] .sidebar-app.is-collapsed {
-  grid-template-columns: 48px minmax(0, 1fr);
-}
-
-html[data-layout="shadcn"] .desktop-sidebar {
-  padding: 8px;
-  color: var(--sidebar-foreground);
-  background: var(--sidebar);
-  border-color: var(--sidebar-border);
-}
-
-html[data-layout="shadcn"] .sidebar-brand {
-  min-height: 52px;
-  padding: 8px;
-  border-bottom: 0;
-}
-
-html[data-layout="shadcn"] .brand-mark {
-  width: 32px;
-  height: 32px;
-  flex-basis: 32px;
-  border-radius: 8px;
-  color: var(--sidebar-primary-foreground);
-  background: var(--sidebar-primary);
-  box-shadow: none;
-}
-
-html[data-layout="shadcn"] .sidebar-brand strong,
-html[data-layout="shadcn"] .sidebar-user strong {
-  color: var(--sidebar-foreground);
-}
-
-html[data-layout="shadcn"] .sidebar-brand span:last-child,
-html[data-layout="shadcn"] .sidebar-user small,
-html[data-layout="shadcn"] .nav-group > p {
-  color: var(--muted-foreground);
-}
-
-html[data-layout="shadcn"] .sidebar-nav {
-  padding-top: 8px;
-}
-
-html[data-layout="shadcn"] .nav-group + .nav-group {
-  margin-top: 16px;
-}
-
-html[data-layout="shadcn"] .sidebar-nav button,
-html[data-layout="shadcn"] .sidebar-bottom > button {
-  min-height: 36px;
-  margin-block: 1px;
-  padding-inline: 8px;
-  border-radius: 6px;
-  color: var(--sidebar-foreground);
-  font-size: 14px;
-  font-weight: 400;
-}
-
-html[data-layout="shadcn"] .sidebar-nav button:hover,
-html[data-layout="shadcn"] .sidebar-bottom > button:hover,
-html[data-layout="shadcn"] .sidebar-nav button.active {
-  color: var(--sidebar-accent-foreground);
-  background: var(--sidebar-accent);
-  box-shadow: none;
-}
-
-html[data-layout="shadcn"] .sidebar-nav button.active {
-  font-weight: 500;
-}
-
-html[data-layout="shadcn"] .sidebar-bottom {
-  border-color: var(--sidebar-border);
-}
-
-html[data-layout="shadcn"] .sidebar-user {
-  min-height: 48px;
-  background: transparent;
-}
-
-html[data-layout="shadcn"] .collapse-control {
-  top: 70px;
-  right: -11px;
-  width: 22px;
-  height: 22px;
-  color: var(--muted-foreground);
-  background: var(--background);
-  border-color: var(--sidebar-border);
-}
-
-html[data-layout="shadcn"] .sidebar-header {
-  height: 64px;
-  padding-inline: 24px;
-  background: color-mix(in oklab, var(--background) 95%, transparent);
 }
 
 html[data-layout="shadcn"] .dashboard-content {
