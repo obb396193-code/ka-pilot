@@ -866,7 +866,7 @@ main 9335150
 - 设计：`817208e`
 - 实施计划：`0a29af3`
 - 代码终态：`b60e09e`
-- 质量与交接：待回填
+- 质量与交接：`bd49004`
 - 状态：`docs/plans/B22-状态.md`
 - 质量：`docs/evidence/B22-代码质量报告.md`
 - OS 证据：`docs/evidence/integration/2026-08-21-idealab-asr-os-diagnostic.md`
