@@ -14,6 +14,10 @@ const appSidebar = readFileSync(
   new URL("../src/sidebar/shadcn-dashboard/app-sidebar.tsx", import.meta.url),
   "utf8",
 );
+const topbarShell = readFileSync(
+  new URL("../src/topbar/topbar-shell.tsx", import.meta.url),
+  "utf8",
+);
 
 test("layout entries are separate and expose no cross-layout switch", () => {
   assert.doesNotMatch(sidebarHtml, /topbar\.html|切换到顶栏|顶栏版/);
@@ -30,4 +34,10 @@ test("uses the exact local shadcn official account avatar", () => {
 
   assert.ok(existsSync(avatar));
   assert.match(appSidebar, /avatar: "\/avatars\/shadcn-morty-official\.jpg"/);
+});
+
+test("keeps the latest account display name across both layout demos", () => {
+  assert.match(appSidebar, /title: "账户池"/);
+  assert.match(topbarShell, /label: "账户池"/);
+  assert.doesNotMatch(appSidebar, /账户资源|团队协作/);
 });

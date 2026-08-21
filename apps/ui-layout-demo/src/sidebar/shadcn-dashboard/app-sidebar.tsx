@@ -2,19 +2,19 @@
 
 import * as React from "react";
 import {
+  IconAutomation,
+  IconBellRinging,
   IconCamera,
   IconChartBar,
   IconDashboard,
   IconDatabase,
   IconFileWord,
-  IconFolder,
   IconHelp,
   IconInnerShadowTop,
   IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
-  IconUsers,
 } from "@tabler/icons-react";
 
 import { NavDocuments } from "@/sidebar/shadcn-dashboard/nav-documents";
@@ -33,7 +33,7 @@ import {
 
 const data = {
   user: {
-    name: "演示优化师",
+    name: "快手优化师",
     email: "demo@company.local",
     avatar: "/avatars/shadcn-morty-official.jpg",
   },
@@ -54,14 +54,14 @@ const data = {
       icon: IconChartBar,
     },
     {
-      title: "账户资源",
+      title: "账户池",
       url: "#",
-      icon: IconFolder,
+      icon: IconDatabase,
     },
     {
-      title: "团队协作",
+      title: "自动化",
       url: "#",
-      icon: IconUsers,
+      icon: IconAutomation,
     },
   ],
   navSecondary: [
@@ -88,7 +88,7 @@ const data = {
       icon: IconCamera,
     },
     {
-      name: "报告中心",
+      name: "报告",
       url: "#",
       icon: IconReport,
     },
@@ -96,6 +96,11 @@ const data = {
       name: "知识库",
       url: "#",
       icon: IconFileWord,
+    },
+    {
+      name: "集成与通知",
+      url: "#",
+      icon: IconBellRinging,
     },
   ],
 };

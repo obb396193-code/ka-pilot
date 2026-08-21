@@ -40,7 +40,7 @@ const productLinks = [
     detail: "趋势、归因与异常定位",
     icon: ChartNoAxesCombined,
   },
-  { label: "账户资源", detail: "账户、权限与健康状态", icon: Database },
+  { label: "账户池", detail: "账户、权限与健康状态", icon: Database },
 ];
 
 const assetLinks = [
