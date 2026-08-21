@@ -1,0 +1,29 @@
+{
+  "source": "shadcn-ui/ui",
+  "license": "MIT",
+  "upstream_url": "https://github.com/shadcn-ui/ui/tree/79c054ac7a7b2a13acc09d72106fd40663cc9bee/apps/www/app/(app)/examples/dashboard",
+  "upstream_ref": "79c054ac7a7b2a13acc09d72106fd40663cc9bee",
+  "captured_at": "2026-08-21",
+  "sha256": "189e6a58c20f8b14f69d60a5240274f3b83dc489d82c6fa86814778a70c2f4fc",
+  "sha256_method": "concatenate all .tsx files sorted by path, then SHA-256",
+  "page": "page.tsx",
+  "components": [
+    "date-range-picker.tsx",
+    "main-nav.tsx",
+    "overview.tsx",
+    "recent-sales.tsx",
+    "search.tsx",
+    "team-switcher.tsx",
+    "user-nav.tsx"
+  ],
+  "files": {
+    "page.tsx": "0ed31358cf5932cc59ecdb4b4505d99e966bc9b55b02013565b3f063b12b8ee9",
+    "components/date-range-picker.tsx": "413ec2f7830fb3dcaeb71fa6cd6a78b456559bbc7f3fd5cfa8f83bd48c25435a",
+    "components/main-nav.tsx": "23db53358adf4b814d056c38547cada56f32775fda4e9cefbd99d013d042d2d4",
+    "components/overview.tsx": "391dcbbbf93af33d80415cea3928c77d6f14b338112bde71a626620563f20fb9",
+    "components/recent-sales.tsx": "48b50d356d235143f8727844487673a77ca2add75e715c86e54ddf585ac88b5a",
+    "components/search.tsx": "aba4f305dbe9acb7b07c52215d3295c27aa13a112b35c8ae6b752cc10980fd4e",
+    "components/team-switcher.tsx": "28ea8b60f219c74aabbf2b47241d2c1d1857093c2070d4b3ba2da32c648ea9a1",
+    "components/user-nav.tsx": "2b6a6a1b48ca37fede467e28d0ff9fa4b4e0e721c4262a0a89a80d6e411c2685"
+  }
+}

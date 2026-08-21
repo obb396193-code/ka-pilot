@@ -16,7 +16,8 @@ test("records only license-cleared upstream UI sources", () => {
   assert.ok(
     manifest.sources.some(
       (item) =>
-        item.source === "coss-origin" && item.asset.includes("navigation"),
+        item.source === "shadcn" &&
+        item.asset === "historical-dashboard-topbar",
     ),
   );
   for (const item of manifest.sources) {

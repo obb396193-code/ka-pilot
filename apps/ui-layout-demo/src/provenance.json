@@ -10,6 +10,14 @@
       "use": "complete official dashboard-01 block: page shell, AppSidebar, navigation modules, SiteHeader, SectionCards, Recharts area chart, draggable DataTable, Drawer and all scoped shadcn UI primitives; local edits are limited to import paths, Chinese business labels and desensitized demo data"
     },
     {
+      "source": "shadcn",
+      "asset": "historical-dashboard-topbar",
+      "license": "MIT",
+      "upstream_url": "https://github.com/shadcn-ui/ui/tree/79c054ac7a7b2a13acc09d72106fd40663cc9bee/apps/www/app/(app)/examples/dashboard",
+      "upstream_ref": "git:79c054ac7a7b2a13acc09d72106fd40663cc9bee sha256:189e6a58c20f8b14f69d60a5240274f3b83dc489d82c6fa86814778a70c2f4fc verified 2026-08-21",
+      "use": "complete official historical top-navigation Dashboard: TeamSwitcher, MainNav, Search, UserNav, date range, KPI cards, Overview chart and RecentSales; local edits are limited to Vite imports, Chinese business labels and desensitized demo data"
+    },
+    {
       "source": "vercel-geist",
       "asset": "Geist Sans and Geist Mono variable fonts",
       "license": "SIL Open Font License 1.1",
