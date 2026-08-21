@@ -7,3 +7,4 @@ export * from "./teardown-prompt.js";
 export * from "./whole-text-cloud-asr.js";
 export * from "./wav-audio-extractor.js";
 export * from "./idealab-asr-transport.js";
+export * from "./idealab-asr-factory.js";
