@@ -6,6 +6,7 @@ describe("SidebarShell", () => {
   it("renders the official dashboard-01 block with adapted business content", () => {
     const { container } = render(<SidebarShell />);
     expect(container.querySelector('[data-slot="sidebar"]')).not.toBeNull();
+    expect(screen.getByText("KA Pilot")).toBeInTheDocument();
     expect(screen.getAllByText("工作台").length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("投放经营工作台")).toBeInTheDocument();
     expect(screen.getByText("今日消耗")).toBeInTheDocument();
