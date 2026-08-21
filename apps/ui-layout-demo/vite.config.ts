@@ -14,6 +14,7 @@ export default defineConfig({
       input: {
         sidebar: resolve(__dirname, "sidebar.html"),
         topbar: resolve(__dirname, "topbar.html"),
+        topbarCoss: resolve(__dirname, "topbar-coss.html"),
       },
     },
   },

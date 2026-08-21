@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.app.json",
+  "include": [
+    "src/lib/utils.ts",
+    "src/test-setup.ts",
+    "src/topbar-coss",
+    "src/topbar/shadcn-dashboard/demo-data.ts"
+  ]
+}

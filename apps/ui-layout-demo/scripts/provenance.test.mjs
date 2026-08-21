@@ -16,6 +16,14 @@ test("records only license-cleared upstream UI sources", () => {
   assert.ok(
     manifest.sources.some(
       (item) =>
+        item.source === "coss" &&
+        item.asset ===
+          "current-button-card-badge-avatar-input-table-segmented-control",
+    ),
+  );
+  assert.ok(
+    manifest.sources.some(
+      (item) =>
         item.source === "shadcn" &&
         item.asset === "historical-dashboard-topbar",
     ),

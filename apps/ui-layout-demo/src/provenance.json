@@ -34,6 +34,22 @@
       "use": "official shadcn globals animation utilities for Drawer, menus and state transitions"
     },
     {
+      "source": "coss",
+      "asset": "current-button-card-badge-avatar-input-table-segmented-control",
+      "license": "MIT",
+      "upstream_url": "https://coss.com/ui/r/registry.json",
+      "upstream_ref": "registry source copied 2026-08-21 combined-local-sha256:dbe0d1cc7afcc3d0515104c35b0854d7a7437a75747a83fcf8826165593c5a22",
+      "use": "isolated topbar-coss runtime primitives; official source retained with import-path-only changes and composed with desensitized product data"
+    },
+    {
+      "source": "fontsource-inter",
+      "asset": "Inter variable font",
+      "license": "SIL Open Font License 1.1",
+      "upstream_url": "https://fontsource.org/fonts/inter",
+      "upstream_ref": "@fontsource-variable/inter npm 5.3.0",
+      "use": "COSS font-heading and sans typography for the isolated topbar-coss entry"
+    },
+    {
       "source": "coss-origin",
       "asset": "navigation-menu",
       "license": "MIT",
