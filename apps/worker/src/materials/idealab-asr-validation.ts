@@ -45,7 +45,14 @@ export function isSafeIdeaLabEndpoint(value: unknown): value is string {
   if (typeof value !== "string") return false;
   try {
     const url = new URL(value);
-    return url.protocol === "https:" && !url.username && !url.password && !url.search && !url.hash;
+    return url.protocol === "https:" &&
+      url.hostname === "idealab.alibaba-inc.com" &&
+      url.port === "" &&
+      url.pathname === "/api/openai/v1/audio/transcriptions" &&
+      !url.username &&
+      !url.password &&
+      !url.search &&
+      !url.hash;
   } catch {
     return false;
   }

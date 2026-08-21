@@ -51,6 +51,9 @@ describe("worker config", () => {
   it.each([
     { label: "a missing API key", override: {} },
     { label: "an HTTP endpoint", override: { IDEALAB_AK: "a".repeat(32), IDEALAB_ASR_ENDPOINT: "http://idealab.invalid/asr" } },
+    { label: "another HTTPS host", override: { IDEALAB_AK: "a".repeat(32), IDEALAB_ASR_ENDPOINT: "https://example.com/api/openai/v1/audio/transcriptions" } },
+    { label: "another IdeaLab path", override: { IDEALAB_AK: "a".repeat(32), IDEALAB_ASR_ENDPOINT: "https://idealab.alibaba-inc.com/not-asr" } },
+    { label: "a query-bearing endpoint", override: { IDEALAB_AK: "a".repeat(32), IDEALAB_ASR_ENDPOINT: "https://idealab.alibaba-inc.com/api/openai/v1/audio/transcriptions?redirect=1" } },
     { label: "credentials in endpoint", override: { IDEALAB_AK: "a".repeat(32), IDEALAB_ASR_ENDPOINT: "https://user:pass@idealab.invalid/asr" } },
     { label: "a zero WAV budget", override: { IDEALAB_AK: "a".repeat(32), IDEALAB_ASR_MAX_WAV_BYTES: "0" } },
     { label: "a reversed timeout range", override: { IDEALAB_AK: "a".repeat(32), IDEALAB_ASR_MIN_TIMEOUT_MS: "60000", IDEALAB_ASR_MAX_TIMEOUT_MS: "30000" } },

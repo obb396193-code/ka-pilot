@@ -243,4 +243,20 @@ describe("IdeaLabAsrTransport", () => {
       .rejects.toMatchObject({ reason: "invalid_input" });
     expect(extract).not.toHaveBeenCalled();
   });
+
+  it.each([
+    "https://example.com/api/openai/v1/audio/transcriptions",
+    "https://idealab.alibaba-inc.com/not-asr",
+    "https://idealab.alibaba-inc.com/api/openai/v1/audio/transcriptions?redirect=1",
+  ])("rejects an unverified endpoint before exposing the API key: %s", (endpoint) => {
+    expect(() => new IdeaLabAsrTransport({
+      extractor: { extract: vi.fn() },
+      endpoint,
+      apiKey: API_KEY,
+      maxResponseBytes: 64 * 1024,
+      minTimeoutMs: 30_000,
+      maxTimeoutMs: 180_000,
+      timeoutMultiplier: 3,
+    })).toThrowError(new IdeaLabAsrTransportError("invalid_config"));
+  });
 });

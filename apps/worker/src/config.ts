@@ -38,8 +38,8 @@ const materialPoolUrlSchema = z.string().url().refine(
   "Material pool URL must be credential-free HTTPS",
 );
 const idealabAsrUrlSchema = z.string().url().refine(
-  isCredentialFreeHttpsUrl,
-  "IdeaLab ASR URL must be credential-free HTTPS",
+  isVerifiedIdeaLabAsrUrl,
+  "IdeaLab ASR URL must match the verified credential-free HTTPS endpoint",
 );
 const apiKeySchema = z.string().trim().min(1).max(4_096).regex(/^[\x21-\x7e]+$/);
 
@@ -271,6 +271,14 @@ function isSafeProviderUrl(value: string): boolean {
 function isCredentialFreeHttpsUrl(value: string): boolean {
   const url = new URL(value);
   return url.protocol === "https:" && !url.username && !url.password && !url.hash && !url.search;
+}
+
+function isVerifiedIdeaLabAsrUrl(value: string): boolean {
+  const url = new URL(value);
+  return isCredentialFreeHttpsUrl(value) &&
+    url.hostname === "idealab.alibaba-inc.com" &&
+    url.port === "" &&
+    url.pathname === "/api/openai/v1/audio/transcriptions";
 }
 
 function isLoopbackHttpUrl(value: string): boolean {
