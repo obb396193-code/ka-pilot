@@ -37,6 +37,11 @@ const materialPoolUrlSchema = z.string().url().refine(
   isCredentialFreeHttpsUrl,
   "Material pool URL must be credential-free HTTPS",
 );
+const idealabAsrUrlSchema = z.string().url().refine(
+  isCredentialFreeHttpsUrl,
+  "IdeaLab ASR URL must be credential-free HTTPS",
+);
+const apiKeySchema = z.string().trim().min(1).max(4_096).regex(/^[\x21-\x7e]+$/);
 
 const providerProfileSchema = z
   .object({
@@ -83,6 +88,16 @@ const workerConfigSchema = z.object({
   MATERIAL_POOL_BASE_URL: materialPoolUrlSchema.optional(),
   MATERIAL_SOURCE_ALLOWED_HOSTS: materialHostListSchema,
   MATERIAL_SOURCE_MAX_BYTES: positiveInteger.default(500 * 1024 * 1024),
+  IDEALAB_ASR_ENABLED: enabledFlag,
+  IDEALAB_AK: apiKeySchema.optional(),
+  IDEALAB_ASR_ENDPOINT: idealabAsrUrlSchema.default(
+    "https://idealab.alibaba-inc.com/api/openai/v1/audio/transcriptions",
+  ),
+  IDEALAB_ASR_MAX_WAV_BYTES: positiveInteger.default(5 * 1024 * 1024),
+  IDEALAB_ASR_MAX_RESPONSE_BYTES: positiveInteger.default(256 * 1024),
+  IDEALAB_ASR_MIN_TIMEOUT_MS: positiveInteger.default(30_000),
+  IDEALAB_ASR_MAX_TIMEOUT_MS: positiveInteger.default(5 * 60_000),
+  IDEALAB_ASR_TIMEOUT_MULTIPLIER: positiveNumber.max(100).default(3),
   AGENT_ENABLED: enabledFlag,
   AGENT_MAX_TURNS: positiveInteger.default(8),
   AGENT_MAX_BUDGET_USD: positiveNumber.default(1),
@@ -112,6 +127,16 @@ export interface AgentRuntimeConfig {
   gateway: ModelGatewayConfig | null;
 }
 
+export interface IdeaLabAsrConfig {
+  readonly endpoint: string;
+  readonly apiKey: string;
+  readonly maxWavBytes: number;
+  readonly maxResponseBytes: number;
+  readonly minTimeoutMs: number;
+  readonly maxTimeoutMs: number;
+  readonly timeoutMultiplier: number;
+}
+
 export interface WorkerConfig {
   databaseUrl: string;
   qihangBaseUrl?: string;
@@ -123,6 +148,7 @@ export interface WorkerConfig {
     allowedHosts: string[];
     maxContentBytes: number;
   };
+  idealabAsr: IdeaLabAsrConfig | null;
   agent: AgentRuntimeConfig;
 }
 
@@ -144,8 +170,50 @@ export function loadWorkerConfig(environment: NodeJS.ProcessEnv): WorkerConfig {
       allowedHosts: parsed.MATERIAL_SOURCE_ALLOWED_HOSTS,
       maxContentBytes: parsed.MATERIAL_SOURCE_MAX_BYTES,
     },
+    idealabAsr: loadIdeaLabAsrConfig(parsed),
     agent,
   };
+}
+
+function loadIdeaLabAsrConfig(
+  parsed: z.infer<typeof workerConfigSchema>,
+): IdeaLabAsrConfig | null {
+  if (!parsed.IDEALAB_ASR_ENABLED) return null;
+  const values = z.object({
+    apiKey: apiKeySchema,
+    endpoint: idealabAsrUrlSchema,
+    maxWavBytes: positiveInteger,
+    maxResponseBytes: positiveInteger,
+    minTimeoutMs: positiveInteger,
+    maxTimeoutMs: positiveInteger,
+    timeoutMultiplier: positiveNumber.max(100),
+  }).refine(
+    (value) => value.minTimeoutMs <= value.maxTimeoutMs,
+    { message: "IdeaLab ASR minimum timeout cannot exceed maximum timeout" },
+  ).parse({
+    apiKey: parsed.IDEALAB_AK,
+    endpoint: parsed.IDEALAB_ASR_ENDPOINT,
+    maxWavBytes: parsed.IDEALAB_ASR_MAX_WAV_BYTES,
+    maxResponseBytes: parsed.IDEALAB_ASR_MAX_RESPONSE_BYTES,
+    minTimeoutMs: parsed.IDEALAB_ASR_MIN_TIMEOUT_MS,
+    maxTimeoutMs: parsed.IDEALAB_ASR_MAX_TIMEOUT_MS,
+    timeoutMultiplier: parsed.IDEALAB_ASR_TIMEOUT_MULTIPLIER,
+  });
+  const config = {
+    endpoint: values.endpoint,
+    maxWavBytes: values.maxWavBytes,
+    maxResponseBytes: values.maxResponseBytes,
+    minTimeoutMs: values.minTimeoutMs,
+    maxTimeoutMs: values.maxTimeoutMs,
+    timeoutMultiplier: values.timeoutMultiplier,
+  } as IdeaLabAsrConfig;
+  Object.defineProperty(config, "apiKey", {
+    value: values.apiKey,
+    enumerable: false,
+    writable: false,
+    configurable: false,
+  });
+  return Object.freeze(config);
 }
 
 function loadAgentConfig(parsed: z.infer<typeof workerConfigSchema>): AgentRuntimeConfig {
@@ -202,7 +270,7 @@ function isSafeProviderUrl(value: string): boolean {
 
 function isCredentialFreeHttpsUrl(value: string): boolean {
   const url = new URL(value);
-  return url.protocol === "https:" && !url.username && !url.password && !url.hash;
+  return url.protocol === "https:" && !url.username && !url.password && !url.hash && !url.search;
 }
 
 function isLoopbackHttpUrl(value: string): boolean {
