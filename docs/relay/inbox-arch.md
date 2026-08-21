@@ -856,3 +856,40 @@ main 9335150
 **质量真相**：Domain 397、DB 92、Worker 301、DingTalk 19，共 809 默认 tests；SDK opt-in 1。新增模块 98.54%/91.02%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
 
 **明确未完成**：Scheduler/Trigger、DB/Repository/API、运行中心页面、真实策略门槛、合并、部署和业务验收。
+
+---
+
+### P-029 ⏳B22 IdeaLab whole-video ASR Provider 待审计｜be（Codex）
+
+- 分支：`codex/b22-idealab-asr-provider`
+- 基线：B21 私有备份交接 `ed90360`
+- 设计：`817208e`
+- 实施计划：`0a29af3`
+- 代码终态：`b60e09e`
+- 质量与交接：待回填
+- 状态：`docs/plans/B22-状态.md`
+- 质量：`docs/evidence/B22-代码质量报告.md`
+- OS 证据：`docs/evidence/integration/2026-08-21-idealab-asr-os-diagnostic.md`
+
+**老板裁决与真实依据**：拆片是完整文稿的提示词驱动语义拆解，抽帧是独立逐镜头关键帧墙，不导出多个 MP4。OS 真实调用确认 MP4 直传 `CE-009`，PCM s16le/16kHz/mono WAV 成功；endpoint + Bearer + multipart `file/model=whisper/response_format=json` 返回 `{text,usage}`，无时间戳。老板选择独立 WAV Extractor + IdeaLab Transport，复用 B15 whole-video Adapter。
+
+**本批实现**：
+
+1. `IDEALAB_ASR_ENABLED=false` 默认关闭；启用必须有 AK，序列化配置不含 AK。
+2. endpoint 在配置和 Transport 双层固定为已验证 host/path，禁止其他 HTTPS、redirect、query、fragment、内嵌凭证，防止 AK 外泄。
+3. FFmpeg 固定提取 WAV，限制字节/超时/输出并清理临时目录；MP4 不直接发 Provider。
+4. Transport 单次 multipart 调用、有界响应读取、严格 `{text,usage}`、稳定错误分类；内部不重试。
+5. 观测只含数字和枚举；Domain 只输出 `{kind:"whole_text",text}`，不制造 language/duration/timestamp。
+6. 工厂绑定 `idealab-audio/whisper/profile SHA`；opt-in 真实烟测默认跳过，没有接生产 Runtime/Job/API/DB/前端。
+
+**请重点审查/裁决**：
+
+1. 每用户 IdeaLab AK 的 Secret reference、解析时机、轮换、额度和审计；环境变量只能否作为 demo/内部底座。
+2. 产品 Worker/FaaS 的生产网络、素材授权、数据保留与法务边界；由谁执行首次真实 opt-in trace。
+3. Job/API/checkpoint/artifact、幂等、上层 retry/backoff、并发和额度策略。
+4. HTTP 400 业务错误码是否需要细化；Provider 大小/时长硬上限、限流和 SLA 如何取证。
+5. 前端如何并列展示“整段转写/语义结构”和“关键帧墙”，明确无句级时间戳。
+
+**质量真相**：Worker 344、Domain 397、DB 92、DingTalk 19，共 852 默认 tests；真实 PG/migration、gateway/FFmpeg 通过。B22 配置和核心模块 94.43% statements / 82.12% branches / 100% functions；四包 type/lint/audit、复杂度、安全和冻结目录通过。真实 IdeaLab 产品烟测 1 项默认 skipped，未冒充通过。
+
+**明确未完成**：真实产品身份 ASR E2E、每用户 Secret、生产 Job/API/DB/前端、重试/配额/审计、部署、线上验证和业务验收。

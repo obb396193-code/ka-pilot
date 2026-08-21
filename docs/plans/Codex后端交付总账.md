@@ -279,3 +279,13 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - 输出 eligible/blocked/incomplete、全部阻断、第一阻断、证据、retryAt 和稳定 nextActionCode。
 - eligible 不是 run/execution 成功；门槛由真实数据、权限、冲突、调度器产生，本模块不发明阈值。
 - 代码终态 `f985923`。默认回归 Domain 397 + DB 92 + Worker 301 + DingTalk 19 = 809；SDK opt-in 1。新增模块 98.54%/91.02%/100%，四包静态/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全与冻结目录门禁通过，审查入口 P-028。
+
+## 22. B22 IdeaLab whole-video ASR Provider 真相
+
+- OS 真实诊断确认固定 endpoint、Bearer、multipart `file/model=whisper/response_format=json`；MP4 返回 `CE-009`，PCM s16le/16kHz/mono WAV 成功，响应 `{text,usage}` 且无时间戳。
+- Worker 已实现默认关闭的安全配置、受控 WAV 提取、单次 Transport、有界严格响应解析、稳定错误分类、无正文 usage 观测和 whole-video Adapter 工厂。
+- endpoint 在配置和 Transport 双层锁定已验证 host/path；AK 不进入序列化配置、错误、观测、文档或测试输出。
+- `whole_video` 语义不变：文稿拆片可输出无时间语义结构，关键帧墙独立存在，不伪造逐句秒点或镜头对应。
+- 生产函数 complexity≤10、单函数≤100、文件≤300；配置与核心模块覆盖率 94.43%/82.12%/100%。
+- 代码终态 `b60e09e`。默认回归 Domain 397 + DB 92 + Worker 344 + DingTalk 19 = 852；真实 PG/migration、gateway/FFmpeg 和四包静态/audit 通过。
+- 未完成：真实产品身份 ASR 烟测、每用户 Secret、Job/API/DB/前端、重试/配额/审计、部署和业务 E2E。审查入口 P-029。
