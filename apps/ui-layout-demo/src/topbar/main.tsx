@@ -1,9 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "../../index.css";
+import "./topbar.css";
 import { TopbarShell } from "./topbar-shell";
 
-document.documentElement.dataset.layout = "coss";
+document.documentElement.dataset.layout = "shadcn-topbar";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
