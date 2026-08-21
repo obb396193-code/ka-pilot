@@ -65,11 +65,7 @@ export class FfmpegWavAudioExtractor implements WavAudioExtractorPort {
         timeoutMs: this.timeoutMs,
         maxOutputBytes: PROCESS_OUTPUT_BUDGET,
       });
-      if (
-        result.exitCode !== 0 ||
-        result.timedOut ||
-        result.outputTruncated === true
-      ) {
+      if (processFailed(result)) {
         throw new WavAudioExtractorError("ffmpeg_failed");
       }
       const output = await safeOutputStat(outputPath);
@@ -83,6 +79,14 @@ export class FfmpegWavAudioExtractor implements WavAudioExtractorPort {
       throw new WavAudioExtractorError("ffmpeg_failed");
     }
   }
+}
+
+function processFailed(result: {
+  readonly exitCode: number | null;
+  readonly timedOut: boolean;
+  readonly outputTruncated?: boolean;
+}): boolean {
+  return result.exitCode !== 0 || result.timedOut || result.outputTruncated === true;
 }
 
 async function validateInput(value: unknown): Promise<string> {
@@ -142,4 +146,3 @@ function positiveInteger(value: number): number {
 function invalidConfig(): WavAudioExtractorError {
   return new WavAudioExtractorError("invalid_config");
 }
-

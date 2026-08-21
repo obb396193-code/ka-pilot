@@ -5,49 +5,35 @@ import type {
   WholeTextAsrTransportInput,
 } from "./whole-text-cloud-asr.js";
 import {
+  IdeaLabAsrTransportError,
+  type IdeaLabAsrTransportFailureReason,
+} from "./idealab-asr-errors.js";
+import {
+  parseIdeaLabAsrResponse,
+  readBoundedIdeaLabJson,
+  type IdeaLabAsrUsage,
+  type ParsedIdeaLabAsrResponse,
+} from "./idealab-asr-response.js";
+import {
+  assertIdeaLabTransportInput,
+  computeIdeaLabTimeoutMs,
+  isPositiveFinite,
+  isPositiveInteger,
+  isSafeIdeaLabApiKey,
+  isSafeIdeaLabEndpoint,
+} from "./idealab-asr-validation.js";
+import {
   WavAudioExtractorError,
   type ExtractedWavHandle,
   type WavAudioExtractorPort,
 } from "./wav-audio-extractor.js";
 
-const MAX_MEDIA_DURATION_MS = 24 * 60 * 60 * 1_000;
-const MAX_TEXT_CHARACTERS = 200_000;
 const DEFAULT_MAX_WAV_BYTES = 5 * 1024 * 1024;
-const SAFE_SHA256 = /^[a-f0-9]{64}$/;
-const RESPONSE_KEYS = new Set(["text", "usage"]);
-const USAGE_KEYS = new Set([
-  "prompt_tokens",
-  "completion_tokens",
-  "total_tokens",
-  "cacheReadInputTokensCompatible",
-]);
 
-export type IdeaLabAsrTransportFailureReason =
-  | "invalid_config"
-  | "invalid_input"
-  | "auth_failed"
-  | "invalid_request"
-  | "rate_limited"
-  | "retryable_transport"
-  | "invalid_response"
-  | "cleanup_failed";
-
-export class IdeaLabAsrTransportError extends Error {
-  constructor(
-    readonly reason: IdeaLabAsrTransportFailureReason,
-    readonly httpStatus?: number,
-  ) {
-    super(`IdeaLab ASR transport failed: ${reason}`);
-    this.name = "IdeaLabAsrTransportError";
-  }
-}
-
-export interface IdeaLabAsrUsage {
-  readonly promptTokens: number;
-  readonly completionTokens: number;
-  readonly totalTokens: number;
-  readonly cacheReadInputTokensCompatible: number;
-}
+export { IdeaLabAsrTransportError } from "./idealab-asr-errors.js";
+export type { IdeaLabAsrTransportFailureReason } from "./idealab-asr-errors.js";
+export type { IdeaLabAsrUsage } from "./idealab-asr-response.js";
+export { computeIdeaLabTimeoutMs } from "./idealab-asr-validation.js";
 
 export type IdeaLabAsrObservation = Readonly<{
   outcome: "success" | "failure";
@@ -63,9 +49,18 @@ export type IdeaLabAsrObservation = Readonly<{
   usage?: IdeaLabAsrUsage;
 }>;
 
-interface ParsedResponse {
-  readonly text: string;
-  readonly usage: IdeaLabAsrUsage;
+interface IdeaLabAsrTransportOptions {
+  readonly extractor: WavAudioExtractorPort;
+  readonly fetchFn?: typeof fetch;
+  readonly endpoint: string;
+  readonly apiKey: string;
+  readonly maxWavBytes?: number;
+  readonly maxResponseBytes: number;
+  readonly minTimeoutMs: number;
+  readonly maxTimeoutMs: number;
+  readonly timeoutMultiplier: number;
+  readonly now?: () => number;
+  readonly onObservation?: (event: IdeaLabAsrObservation) => void;
 }
 
 export class IdeaLabAsrTransport implements WholeTextAsrTransport {
@@ -81,36 +76,8 @@ export class IdeaLabAsrTransport implements WholeTextAsrTransport {
   private readonly now: () => number;
   private readonly onObservation: ((event: IdeaLabAsrObservation) => void) | undefined;
 
-  constructor(options: {
-    readonly extractor: WavAudioExtractorPort;
-    readonly fetchFn?: typeof fetch;
-    readonly endpoint: string;
-    readonly apiKey: string;
-    readonly maxWavBytes?: number;
-    readonly maxResponseBytes: number;
-    readonly minTimeoutMs: number;
-    readonly maxTimeoutMs: number;
-    readonly timeoutMultiplier: number;
-    readonly now?: () => number;
-    readonly onObservation?: (event: IdeaLabAsrObservation) => void;
-  }) {
-    if (
-      typeof options.extractor?.extract !== "function" ||
-      typeof (options.fetchFn ?? fetch) !== "function" ||
-      !safeEndpoint(options.endpoint) ||
-      !safeApiKey(options.apiKey) ||
-      !positiveInteger(options.maxWavBytes ?? DEFAULT_MAX_WAV_BYTES) ||
-      !positiveInteger(options.maxResponseBytes) ||
-      !positiveInteger(options.minTimeoutMs) ||
-      !positiveInteger(options.maxTimeoutMs) ||
-      options.minTimeoutMs > options.maxTimeoutMs ||
-      !positiveFinite(options.timeoutMultiplier) ||
-      options.timeoutMultiplier > 100 ||
-      (options.now !== undefined && typeof options.now !== "function") ||
-      (options.onObservation !== undefined && typeof options.onObservation !== "function")
-    ) {
-      throw new IdeaLabAsrTransportError("invalid_config");
-    }
+  constructor(options: IdeaLabAsrTransportOptions) {
+    assertValidOptions(options);
     this.extractor = options.extractor;
     this.fetchFn = options.fetchFn ?? fetch;
     this.endpoint = options.endpoint;
@@ -125,7 +92,7 @@ export class IdeaLabAsrTransport implements WholeTextAsrTransport {
   }
 
   async transcribe(input: WholeTextAsrTransportInput): Promise<Readonly<{ text: string }>> {
-    validateTransportInput(input);
+    assertIdeaLabTransportInput(input);
     const timeoutMs = computeIdeaLabTimeoutMs({
       durationMs: input.durationMs,
       minTimeoutMs: this.minTimeoutMs,
@@ -134,7 +101,7 @@ export class IdeaLabAsrTransport implements WholeTextAsrTransport {
     });
     const startedAt = this.now();
     let wav: ExtractedWavHandle | undefined;
-    let parsed: ParsedResponse | undefined;
+    let parsed: ParsedIdeaLabAsrResponse | undefined;
     let failure: IdeaLabAsrTransportError | undefined;
     try {
       wav = await this.extractor.extract({ mediaHandle: input.mediaHandle });
@@ -181,7 +148,10 @@ export class IdeaLabAsrTransport implements WholeTextAsrTransport {
     return Object.freeze({ text: parsed.text });
   }
 
-  private async request(wav: ExtractedWavHandle, timeoutMs: number): Promise<ParsedResponse> {
+  private async request(
+    wav: ExtractedWavHandle,
+    timeoutMs: number,
+  ): Promise<ParsedIdeaLabAsrResponse> {
     const bytes = await readVerifiedWav(wav, this.maxWavBytes);
     const form = new FormData();
     form.set("file", new Blob([Uint8Array.from(bytes)], { type: "audio/wav" }), "audio.wav");
@@ -208,7 +178,9 @@ export class IdeaLabAsrTransport implements WholeTextAsrTransport {
     if (!contentType.includes("application/json")) {
       throw new IdeaLabAsrTransportError("invalid_response", response.status);
     }
-    return parseResponse(await readBoundedJson(response, this.maxResponseBytes));
+    return parseIdeaLabAsrResponse(
+      await readBoundedIdeaLabJson(response, this.maxResponseBytes),
+    );
   }
 
   private observe(event: IdeaLabAsrObservation): void {
@@ -220,25 +192,44 @@ export class IdeaLabAsrTransport implements WholeTextAsrTransport {
   }
 }
 
-export function computeIdeaLabTimeoutMs(input: {
-  readonly durationMs: number;
-  readonly minTimeoutMs: number;
-  readonly maxTimeoutMs: number;
-  readonly timeoutMultiplier: number;
-}): number {
+function assertValidOptions(options: IdeaLabAsrTransportOptions): void {
+  assertCoreOptions(options);
+  assertBudgetOptions(options);
+  assertOptionalHooks(options);
+}
+
+function assertCoreOptions(options: IdeaLabAsrTransportOptions): void {
   if (
-    !positiveInteger(input.durationMs) ||
-    !positiveInteger(input.minTimeoutMs) ||
-    !positiveInteger(input.maxTimeoutMs) ||
-    input.minTimeoutMs > input.maxTimeoutMs ||
-    !positiveFinite(input.timeoutMultiplier)
+    typeof options.extractor?.extract !== "function" ||
+    typeof (options.fetchFn ?? fetch) !== "function" ||
+    !isSafeIdeaLabEndpoint(options.endpoint) ||
+    !isSafeIdeaLabApiKey(options.apiKey)
   ) {
-    throw new IdeaLabAsrTransportError("invalid_input");
+    throw new IdeaLabAsrTransportError("invalid_config");
   }
-  return Math.min(
-    input.maxTimeoutMs,
-    Math.max(input.minTimeoutMs, Math.ceil(input.durationMs * input.timeoutMultiplier)),
-  );
+}
+
+function assertBudgetOptions(options: IdeaLabAsrTransportOptions): void {
+  if (
+    !isPositiveInteger(options.maxWavBytes ?? DEFAULT_MAX_WAV_BYTES) ||
+    !isPositiveInteger(options.maxResponseBytes) ||
+    !isPositiveInteger(options.minTimeoutMs) ||
+    !isPositiveInteger(options.maxTimeoutMs) ||
+    options.minTimeoutMs > options.maxTimeoutMs ||
+    !isPositiveFinite(options.timeoutMultiplier) ||
+    options.timeoutMultiplier > 100
+  ) {
+    throw new IdeaLabAsrTransportError("invalid_config");
+  }
+}
+
+function assertOptionalHooks(options: IdeaLabAsrTransportOptions): void {
+  if (
+    (options.now !== undefined && typeof options.now !== "function") ||
+    (options.onObservation !== undefined && typeof options.onObservation !== "function")
+  ) {
+    throw new IdeaLabAsrTransportError("invalid_config");
+  }
 }
 
 async function readVerifiedWav(handle: ExtractedWavHandle, maximumBytes: number): Promise<Buffer> {
@@ -247,7 +238,7 @@ async function readVerifiedWav(handle: ExtractedWavHandle, maximumBytes: number)
     if (
       !value.isFile() ||
       value.isSymbolicLink() ||
-      !positiveInteger(value.size) ||
+      !isPositiveInteger(value.size) ||
       value.size > maximumBytes ||
       value.size !== handle.byteLength
     ) {
@@ -257,100 +248,6 @@ async function readVerifiedWav(handle: ExtractedWavHandle, maximumBytes: number)
     if (bytes.byteLength !== value.size) throw new Error("WAV changed");
     return bytes;
   } catch {
-    throw new IdeaLabAsrTransportError("invalid_input");
-  }
-}
-
-async function readBoundedJson(response: Response, maximumBytes: number): Promise<unknown> {
-  if (response.body === null) throw new IdeaLabAsrTransportError("invalid_response", response.status);
-  const reader = response.body.getReader();
-  const chunks: Uint8Array[] = [];
-  let total = 0;
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      total += value.byteLength;
-      if (total > maximumBytes) {
-        await reader.cancel();
-        throw new IdeaLabAsrTransportError("invalid_response", response.status);
-      }
-      chunks.push(value);
-    }
-  } catch (error) {
-    if (error instanceof IdeaLabAsrTransportError) throw error;
-    throw new IdeaLabAsrTransportError("invalid_response", response.status);
-  }
-  const combined = new Uint8Array(total);
-  let offset = 0;
-  for (const chunk of chunks) {
-    combined.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
-  try {
-    return JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(combined)) as unknown;
-  } catch {
-    throw new IdeaLabAsrTransportError("invalid_response", response.status);
-  }
-}
-
-function parseResponse(value: unknown): ParsedResponse {
-  const response = strictRecord(value, RESPONSE_KEYS);
-  const text = safeText(response.text);
-  const usage = strictRecord(response.usage, USAGE_KEYS);
-  const parsedUsage = Object.freeze({
-    promptTokens: nonnegativeInteger(usage.prompt_tokens),
-    completionTokens: nonnegativeInteger(usage.completion_tokens),
-    totalTokens: nonnegativeInteger(usage.total_tokens),
-    cacheReadInputTokensCompatible: nonnegativeInteger(usage.cacheReadInputTokensCompatible),
-  });
-  if (parsedUsage.totalTokens < parsedUsage.promptTokens + parsedUsage.completionTokens) {
-    throw new IdeaLabAsrTransportError("invalid_response");
-  }
-  return Object.freeze({ text, usage: parsedUsage });
-}
-
-function strictRecord(value: unknown, allowedKeys: ReadonlySet<string>): Record<string, unknown> {
-  if (value === null || typeof value !== "object" || Array.isArray(value)) {
-    throw new IdeaLabAsrTransportError("invalid_response");
-  }
-  const prototype = Object.getPrototypeOf(value);
-  if (prototype !== Object.prototype && prototype !== null) {
-    throw new IdeaLabAsrTransportError("invalid_response");
-  }
-  const descriptors = Object.getOwnPropertyDescriptors(value);
-  const keys = Object.keys(descriptors);
-  if (
-    keys.length !== allowedKeys.size ||
-    keys.some((key) => !allowedKeys.has(key)) ||
-    keys.some((key) => descriptors[key]?.get !== undefined || descriptors[key]?.set !== undefined)
-  ) {
-    throw new IdeaLabAsrTransportError("invalid_response");
-  }
-  return value as Record<string, unknown>;
-}
-
-function safeText(value: unknown): string {
-  if (typeof value !== "string") throw new IdeaLabAsrTransportError("invalid_response");
-  const text = value.trim();
-  if (text === "" || text.length > MAX_TEXT_CHARACTERS || hasUnsafeControlCharacter(text)) {
-    throw new IdeaLabAsrTransportError("invalid_response");
-  }
-  return text;
-}
-
-function validateTransportInput(input: WholeTextAsrTransportInput): void {
-  if (
-    input.providerId !== "idealab-audio" ||
-    input.model !== "whisper" ||
-    !SAFE_SHA256.test(input.profileVersion) ||
-    !SAFE_SHA256.test(input.mediaContentSha256) ||
-    typeof input.mediaHandle !== "string" ||
-    input.mediaHandle.trim() === "" ||
-    input.mediaHandle.includes("\0") ||
-    !positiveInteger(input.durationMs) ||
-    input.durationMs > MAX_MEDIA_DURATION_MS
-  ) {
     throw new IdeaLabAsrTransportError("invalid_input");
   }
 }
@@ -377,44 +274,7 @@ function classifyHttpStatus(status: number): IdeaLabAsrTransportError {
   return new IdeaLabAsrTransportError("invalid_response", status);
 }
 
-function safeEndpoint(value: unknown): value is string {
-  if (typeof value !== "string") return false;
-  try {
-    const url = new URL(value);
-    return url.protocol === "https:" && !url.username && !url.password && !url.search && !url.hash;
-  } catch {
-    return false;
-  }
-}
-
-function safeApiKey(value: unknown): value is string {
-  return typeof value === "string" && /^[\x21-\x7e]{1,4096}$/.test(value);
-}
-
-function positiveInteger(value: unknown): value is number {
-  return Number.isSafeInteger(value) && (value as number) > 0;
-}
-
-function positiveFinite(value: unknown): value is number {
-  return typeof value === "number" && Number.isFinite(value) && value > 0;
-}
-
-function nonnegativeInteger(value: unknown): number {
-  if (!Number.isSafeInteger(value) || (value as number) < 0) {
-    throw new IdeaLabAsrTransportError("invalid_response");
-  }
-  return value as number;
-}
-
 function safeElapsed(startedAt: number, endedAt: number): number {
   if (!Number.isFinite(startedAt) || !Number.isFinite(endedAt) || endedAt < startedAt) return 0;
   return Math.floor(endedAt - startedAt);
-}
-
-function hasUnsafeControlCharacter(value: string): boolean {
-  for (const character of value) {
-    const code = character.charCodeAt(0);
-    if (code < 32 && ![9, 10, 13].includes(code)) return true;
-  }
-  return false;
 }
