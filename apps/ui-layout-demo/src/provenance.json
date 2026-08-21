@@ -49,5 +49,15 @@
       "upstream_ref": "echarts npm 6.x",
       "use": "interactive dashboard chart runtime"
     }
+  ],
+  "reference_assets": [
+    {
+      "source": "shadcn-cn-preview",
+      "asset": "demo account avatar",
+      "upstream_url": "https://www.shadcn.com.cn/avatars/shadcn.jpg",
+      "upstream_ref": "sha256:c080d627acdedca5ba0b7d8e30ddf4ddcc15aa56c896f67037c273233cde18c3 verified 2026-08-21",
+      "license_scope": "not independently verified",
+      "use": "local UI demo only; excluded from the reusable UI asset export"
+    }
   ]
 }

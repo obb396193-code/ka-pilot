@@ -2,13 +2,13 @@
 
 > **For Codex:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** 把老板提供的莫蒂头像裁为本地资产，并接入 shadcn 侧栏演示用户。
+**Goal:** 把 shadcn 官方 `dashboard-01` 使用的莫蒂账号头像原图保存为本地资产，并接入侧栏演示用户。
 
 **Architecture:** 头像作为 Vite `public/avatars` 静态资产供 `AvatarImage` 读取。保持官方 `NavUser` 不变，只修改 `AppSidebar` 的用户数据；现有 `grayscale` 类负责侧栏灰度，Dropdown 内同一图片保持彩色。
 
 **Tech Stack:** macOS `sips`、React 19、Vite public assets、Vitest、Node test、Playwright CLI。
 
-**Execution adjustment:** built-in imagegen 连续两次在输出阶段拒绝莫蒂本人图片。老板随后直接提供头像图，因此改为裁切该用户输入，不绕过生成安全系统。
+**Execution adjustment:** built-in imagegen 连续两次在输出阶段拒绝莫蒂本人图片。老板随后提供参考截图，但首轮截图裁切不准确；最终按老板指定，使用 Playwright 读取 `https://www.shadcn.com.cn/view/new-york-v4/dashboard-01` 中 `img[alt="shadcn"]` 的 `currentSrc`，得到 `https://www.shadcn.com.cn/avatars/shadcn.jpg`，直接保存 400×400 官方 JPEG，不再裁切截图。
 
 ---
 
@@ -26,16 +26,10 @@
 ```js
 assert.ok(
   existsSync(
-    new URL(
-      "../public/avatars/morty-account-user-provided.png",
-      import.meta.url,
-    ),
+    new URL("../public/avatars/shadcn-morty-official.jpg", import.meta.url),
   ),
 );
-assert.match(
-  appSidebar,
-  /avatar: "\/avatars\/morty-account-user-provided\.png"/,
-);
+assert.match(appSidebar, /avatar: "\/avatars\/shadcn-morty-official\.jpg"/);
 ```
 
 **Step 2: Run test to verify it fails**
@@ -44,23 +38,23 @@ Run: `npm run test:node`
 
 Expected: FAIL，因为头像尚未存在，用户数据也尚未指向它。
 
-### Task 2: 裁切用户提供头像
+### Task 2: 下载并核验官方头像原图
 
 **Files:**
 
-- Create: `apps/ui-layout-demo/public/avatars/morty-account-user-provided.png`
+- Create: `apps/ui-layout-demo/public/avatars/shadcn-morty-official.jpg`
 
-**Step 1: Inspect source image**
+**Step 1: Inspect the official image element**
 
-用 `view_image` 和 `sips -g pixelWidth -g pixelHeight` 确认头像在用户提供图中的边界。
+用 Playwright 读取官网 `img[alt="shadcn"]` 的 `src/currentSrc/naturalWidth/naturalHeight`。
 
-**Step 2: Crop the avatar**
+**Step 2: Download the exact source**
 
-用 `sips --cropToHeightWidth 64 64 --cropOffset 16 16` 裁出 64×64 PNG，不修改内容。
+直接下载 `https://www.shadcn.com.cn/avatars/shadcn.jpg`，不做裁切或重编码。
 
 **Step 3: Inspect the output**
 
-用 `view_image` 和 `sips` 检查 64×64、PNG 格式和小尺寸可识别性。
+用 `view_image`、`sips` 和 SHA-256 检查 400×400 JPEG、小尺寸可识别性与文件稳定性。
 
 ### Task 3: 接入默认头像并终验
 
@@ -73,7 +67,7 @@ Expected: FAIL，因为头像尚未存在，用户数据也尚未指向它。
 **Step 1: Implement the minimal data change**
 
 ```ts
-avatar: "/avatars/morty-account-user-provided.png",
+avatar: "/avatars/shadcn-morty-official.jpg",
 ```
 
 **Step 2: Run automated tests**

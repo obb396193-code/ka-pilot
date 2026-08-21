@@ -22,15 +22,12 @@ test("layout entries are separate and expose no cross-layout switch", () => {
   assert.match(topbarHtml, /src\/topbar\/main\.tsx/);
 });
 
-test("uses the local user-provided Morty account avatar", () => {
+test("uses the exact local shadcn official account avatar", () => {
   const avatar = new URL(
-    "../public/avatars/morty-account-user-provided.png",
+    "../public/avatars/shadcn-morty-official.jpg",
     import.meta.url,
   );
 
   assert.ok(existsSync(avatar));
-  assert.match(
-    appSidebar,
-    /avatar: "\/avatars\/morty-account-user-provided\.png"/,
-  );
+  assert.match(appSidebar, /avatar: "\/avatars\/shadcn-morty-official\.jpg"/);
 });

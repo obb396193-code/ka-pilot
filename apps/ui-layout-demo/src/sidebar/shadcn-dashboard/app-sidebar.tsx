@@ -35,7 +35,7 @@ const data = {
   user: {
     name: "演示优化师",
     email: "demo@company.local",
-    avatar: "/avatars/morty-account-user-provided.png",
+    avatar: "/avatars/shadcn-morty-official.jpg",
   },
   navMain: [
     {
