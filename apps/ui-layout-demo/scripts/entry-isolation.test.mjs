@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
 
 const sidebarHtml = readFileSync(
@@ -10,10 +10,27 @@ const topbarHtml = readFileSync(
   new URL("../topbar.html", import.meta.url),
   "utf8",
 );
+const appSidebar = readFileSync(
+  new URL("../src/sidebar/shadcn-dashboard/app-sidebar.tsx", import.meta.url),
+  "utf8",
+);
 
 test("layout entries are separate and expose no cross-layout switch", () => {
   assert.doesNotMatch(sidebarHtml, /topbar\.html|切换到顶栏|顶栏版/);
   assert.doesNotMatch(topbarHtml, /sidebar\.html|切换到侧栏|侧栏版/);
   assert.match(sidebarHtml, /src\/sidebar\/main\.tsx/);
   assert.match(topbarHtml, /src\/topbar\/main\.tsx/);
+});
+
+test("uses the local user-provided Morty account avatar", () => {
+  const avatar = new URL(
+    "../public/avatars/morty-account-user-provided.png",
+    import.meta.url,
+  );
+
+  assert.ok(existsSync(avatar));
+  assert.match(
+    appSidebar,
+    /avatar: "\/avatars\/morty-account-user-provided\.png"/,
+  );
 });
