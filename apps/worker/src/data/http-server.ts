@@ -1,7 +1,12 @@
 import { timingSafeEqual } from "node:crypto";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 
-import { dataQueryResponseSchema, type DataQueryResponse } from "@ka/domain";
+import {
+  dataQueryResponseSchema,
+  readDetailResponseSchema,
+  type DataQueryResponse,
+  type ReadDetailResponse,
+} from "@ka/domain";
 import { z } from "zod";
 
 import {
@@ -11,6 +16,7 @@ import {
   type DataQueryService,
 } from "./query-service.js";
 import { REQUEST_ID_HEADER, resolveRequestId } from "./request-id.js";
+import type { ReadDetailService } from "./read-detail-service.js";
 
 export const DEFAULT_DATA_API_MAX_REQUEST_BYTES = 1024 * 1024;
 export const DEFAULT_DATA_API_MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
@@ -22,9 +28,19 @@ const accountScopeSchema = z.array(z.object({
 
 export interface DataApiServerOptions {
   service: DataQueryService;
+  detailService: ReadDetailService;
   internalToken: string;
   maxRequestBytes?: number;
   maxResponseBytes?: number;
+}
+
+type DetailRoute = { kind: "work_item" | "changeset"; id: string };
+
+function detailRoute(pathname: string): DetailRoute | null {
+  const workItem = /^\/api\/v1\/work-items\/([^/]+)$/.exec(pathname);
+  if (workItem?.[1] !== undefined) return { kind: "work_item", id: workItem[1] };
+  const changeset = /^\/api\/v1\/changesets\/([^/]+)$/.exec(pathname);
+  return changeset?.[1] === undefined ? null : { kind: "changeset", id: changeset[1] };
 }
 
 class HttpInputError extends Error {
@@ -107,6 +123,26 @@ function errorBody(
   });
 }
 
+function detailErrorBody(
+  code: "INVALID_REQUEST" | "UNAUTHORIZED" | "FORBIDDEN" | "INTERNAL_ERROR",
+  message: string,
+  requestId: string,
+): ReadDetailResponse {
+  return readDetailResponseSchema.parse({
+    ok: false,
+    error: { code, message, retryable: false, requestId },
+  });
+}
+
+function detailStatus(result: ReadDetailResponse): number {
+  if (result.ok) return 200;
+  if (result.error.code === "UNAUTHORIZED") return 401;
+  if (result.error.code === "FORBIDDEN") return 403;
+  if (result.error.code === "NOT_FOUND") return 404;
+  if (result.error.code === "INVALID_REQUEST") return 400;
+  return 500;
+}
+
 function sendJson(
   response: ServerResponse,
   status: number,
@@ -146,7 +182,8 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         sendJson(response, 200, { ok: true }, requestId);
         return;
       }
-      if (url.pathname !== DATA_QUERY_HTTP_PATH) {
+      const resolvedDetailRoute = detailRoute(url.pathname);
+      if (url.pathname !== DATA_QUERY_HTTP_PATH && resolvedDetailRoute === null) {
         sendJson(
           response,
           404,
@@ -166,6 +203,15 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         return;
       }
       if (authentication.auth === null) {
+        if (resolvedDetailRoute !== null) {
+          sendJson(
+            response,
+            401,
+            detailErrorBody("UNAUTHORIZED", "Authentication is required", requestId),
+            requestId,
+          );
+          return;
+        }
         const result = await handler({
           method: request.method ?? "",
           body: {},
@@ -173,6 +219,30 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           requestId,
         });
         sendJson(response, result.status, result.body, requestId);
+        return;
+      }
+      if (resolvedDetailRoute !== null) {
+        if ((request.method ?? "").toUpperCase() !== "GET") {
+          sendJson(
+            response,
+            405,
+            detailErrorBody("INVALID_REQUEST", "Only GET is supported", requestId),
+            requestId,
+          );
+          return;
+        }
+        const result = resolvedDetailRoute.kind === "work_item"
+          ? await options.detailService.getWorkItem(
+              resolvedDetailRoute.id,
+              authentication.auth,
+              requestId,
+            )
+          : await options.detailService.getChangeSet(
+              resolvedDetailRoute.id,
+              authentication.auth,
+              requestId,
+            );
+        sendJson(response, detailStatus(result), result, requestId);
         return;
       }
       if ((request.method ?? "").toUpperCase() !== "POST") {

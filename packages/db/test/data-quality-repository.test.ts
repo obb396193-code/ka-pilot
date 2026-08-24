@@ -24,6 +24,9 @@ describe("DataQualityRepository", () => {
     await pool.query("DELETE FROM account_metrics_daily");
     await pool.query("DELETE FROM account_balance");
     await pool.query("DELETE FROM task_accounts");
+    await pool.query("DELETE FROM changeset_items");
+    await pool.query("DELETE FROM changesets");
+    await pool.query("DELETE FROM work_items");
     await pool.query("DELETE FROM accounts");
     const workspace = await pool.query<{ id: string }>(
       "INSERT INTO workspaces (name) VALUES ('quality-test') RETURNING id",

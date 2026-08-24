@@ -16,8 +16,8 @@ const base: ChangeSetExecutionView = {
   status: "confirmed",
   credentialOwnerUserId: "user-1",
   items: [
-    { id: 1, targetType: "unit", targetId: "u1", field: "bid", fromValue: "30", toValue: "27", itemStatus: "pending" },
-    { id: 2, targetType: "unit", targetId: "u2", field: "budget", fromValue: "1000", toValue: "800", itemStatus: "pending" },
+    { id: 1, targetType: "unit", targetId: "u1", field: "bid", fromValue: "30", toValue: "27", itemStatus: "pending", failReason: null },
+    { id: 2, targetType: "unit", targetId: "u2", field: "budget", fromValue: "1000", toValue: "800", itemStatus: "pending", failReason: null },
   ],
 };
 

@@ -35,6 +35,7 @@ export interface ChangeSetItemSnapshot {
   fromValue: string | null;
   toValue: string | null;
   itemStatus: ChangeSetItemStatus;
+  failReason: string | null;
 }
 
 export interface CurrentValueSnapshot {
@@ -185,7 +186,7 @@ export function executionDirective(
 
 export function buildReverseItems(
   items: readonly ChangeSetItemSnapshot[],
-): Array<Omit<ChangeSetItemSnapshot, "id" | "itemStatus">> {
+): Array<Omit<ChangeSetItemSnapshot, "id" | "itemStatus" | "failReason">> {
   return items
     .filter((item) => item.itemStatus === "success")
     .map((item) => ({

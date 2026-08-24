@@ -106,6 +106,7 @@ function itemRecord(row: ItemRow): ChangeSetItemSnapshot {
     fromValue: row.from_value,
     toValue: row.to_value,
     itemStatus: row.item_status,
+    failReason: row.fail_reason,
   };
 }
 

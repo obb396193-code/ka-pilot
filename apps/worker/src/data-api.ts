@@ -1,4 +1,9 @@
-import { createPool, SemanticQueryRepository } from "@ka/db";
+import {
+  ChangeSetRepository,
+  createPool,
+  SemanticQueryRepository,
+  WorkItemRepository,
+} from "@ka/db";
 
 import { loadDataApiConfig } from "./data/data-api-config.js";
 import { createDataApiServer } from "./data/http-server.js";
@@ -6,6 +11,7 @@ import { createKaDataClientFromEnv } from "./data/ka-data-client.js";
 import { PlatformDataSource } from "./data/platform-data-source.js";
 import { createDataQueryRegistry } from "./data/query-registry.js";
 import { DataQueryService } from "./data/query-service.js";
+import { ReadDetailService } from "./data/read-detail-service.js";
 
 async function main(): Promise<void> {
   const config = loadDataApiConfig(process.env);
@@ -22,6 +28,10 @@ async function main(): Promise<void> {
   });
   const server = createDataApiServer({
     service,
+    detailService: new ReadDetailService({
+      workItems: new WorkItemRepository(pool),
+      changeSets: new ChangeSetRepository(pool),
+    }),
     internalToken: config.internalToken,
     maxRequestBytes: config.maxRequestBytes,
     maxResponseBytes: config.maxResponseBytes,

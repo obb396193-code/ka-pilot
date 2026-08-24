@@ -24,6 +24,9 @@ describe("MetricsRepository", () => {
     await pool.query("DELETE FROM account_balance");
     await pool.query("DELETE FROM assessment_price_history");
     await pool.query("DELETE FROM task_accounts");
+    await pool.query("DELETE FROM changeset_items");
+    await pool.query("DELETE FROM changesets");
+    await pool.query("DELETE FROM work_items");
     await pool.query("DELETE FROM accounts");
     await pool.query("DELETE FROM tasks");
     await pool.query("DELETE FROM channel_coefficients");

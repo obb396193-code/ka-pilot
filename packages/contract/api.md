@@ -187,6 +187,14 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
 - `POST /api/v1/work-items/:id/reply` `{target: "dingtalk_group"|"dingtalk_dm"|"web_session", target_id, content}` → 异步回复（**P-002#3 裁决：agent 处理完工作项异步回复至群/单聊/会话**）
 - `GET /api/v1/work-items/:id` 详情（证据快照+诊断+T+1）
 
+`GET /api/v1/work-items/:id` 为一期只读纵切片：
+
+- 使用与双数据查询相同的服务端 Authorization/workspace/user/account scope header 和 `x-request-id`；
+- 返回持久化的 `(workspaceId,media,accountId)`、`evidenceSnapshot`、`diagnosis`、
+  `t1Result`、状态、SLA 与时间字段；
+- 账户 tuple 与批准 scope 不完全一致返回 403；历史无 scope 对象同样 fail closed；
+- 不存在返回 404 + `NOT_FOUND`，非 UUID 返回 400 + `INVALID_REQUEST`。
+
 ## 变更集与执行
 
 - `POST /api/v1/changesets` `{work_item_id?, items:[{target_type,target_id,field,to_value}], reason_code}` → 服务端补 from_value/TTL/What-if
@@ -194,6 +202,11 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
 - `POST /api/v1/changesets/:id/confirm` → 复核 from 值（变了 409）→ 入 jobs 队列
 - `POST /api/v1/changesets/:id/rollback` → 反向变更集草稿
 - `GET /api/v1/changesets/:id` 状态机全量
+
+`GET /api/v1/changesets/:id` 的一期只读响应包含：账户 tuple、状态、item 级
+from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因码和执行时间。
+它使用与工作项详情相同的 tuple 授权和稳定错误 envelope。
+本批未挂载 `POST create/dry-run/confirm/execute/rollback`，任何对详情路由的非 GET 请求返回 405。
 
 ## 账户与结构
 

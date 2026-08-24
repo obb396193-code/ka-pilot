@@ -19,6 +19,7 @@ const items: ChangeSetItemSnapshot[] = [
     fromValue: "30",
     toValue: "27",
     itemStatus: "pending",
+    failReason: null,
   },
   {
     id: 2,
@@ -28,6 +29,7 @@ const items: ChangeSetItemSnapshot[] = [
     fromValue: "1000",
     toValue: "800",
     itemStatus: "pending",
+    failReason: null,
   },
 ];
 

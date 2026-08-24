@@ -8,6 +8,7 @@ import type { DataQueryId, SourceQueryResult } from "@ka/domain";
 import { createDataApiServer } from "../src/data/http-server.js";
 import { KaDataClientError } from "../src/data/ka-data-client.js";
 import { PlatformDataSource } from "../src/data/platform-data-source.js";
+import { ReadDetailService } from "../src/data/read-detail-service.js";
 import { DataQueryService, type DataSourceQueryPort } from "../src/data/query-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
 import { canonicalRow, readySource } from "./canonical-query-fixtures.js";
@@ -37,6 +38,13 @@ function authHeaders(token = internalToken): Record<string, string> {
   };
 }
 
+function emptyDetailService(): ReadDetailService {
+  return new ReadDetailService({
+    workItems: { find: async () => null },
+    changeSets: { find: async () => null },
+  });
+}
+
 describe("data API HTTP composition", () => {
   const servers: ReturnType<typeof createDataApiServer>[] = [];
   afterEach(async () => {
@@ -50,6 +58,7 @@ describe("data API HTTP composition", () => {
     maxResponseBytes?: number;
     kaData?: DataSourceQueryPort;
     platform?: DataSourceQueryPort;
+    detailService?: ReadDetailService;
   } = {}) {
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
@@ -67,8 +76,11 @@ describe("data API HTTP composition", () => {
     });
     const server = createDataApiServer({
       service,
+      detailService: options.detailService ?? emptyDetailService(),
       internalToken,
-      ...options,
+      ...(options.maxResponseBytes === undefined
+        ? {}
+        : { maxResponseBytes: options.maxResponseBytes }),
     });
     servers.push(server);
     server.listen(0, "127.0.0.1");
@@ -168,6 +180,7 @@ describe("data API HTTP composition", () => {
     });
     const limitedServer = createDataApiServer({
       service,
+      detailService: emptyDetailService(),
       internalToken,
       maxRequestBytes: 8,
     });
@@ -189,9 +202,14 @@ describe("data API HTTP composition", () => {
       kaData: { query: async () => ready("account.summary", "ka_data", []) },
       platform: { query: async () => ready("account.summary", "canonical", []) },
     });
-    expect(() => createDataApiServer({ service, internalToken: "short" })).toThrow(/32/);
     expect(() => createDataApiServer({
       service,
+      detailService: emptyDetailService(),
+      internalToken: "short",
+    })).toThrow(/32/);
+    expect(() => createDataApiServer({
+      service,
+      detailService: emptyDetailService(),
       internalToken,
       maxRequestBytes: 0,
     })).toThrow(/positive integer/);
@@ -319,6 +337,146 @@ describe("data API HTTP composition", () => {
         requestId: "platform-contract-001",
       },
     });
+  });
+
+  it("serves both read-only detail routes with the same auth and requestId boundary", async () => {
+    const workItemId = "00000000-0000-4000-8000-000000000201";
+    const changesetId = "00000000-0000-4000-8000-000000000202";
+    const userId = "00000000-0000-4000-8000-000000000203";
+    const detailService = new ReadDetailService({
+      workItems: {
+        find: async () => ({
+          id: workItemId,
+          workspaceId: auth.workspaceId,
+          type: "diagnosis",
+          media: "KUAISHOU",
+          accountId: "account-1",
+          taskId: null,
+          ruleId: "1",
+          severity: "P1",
+          title: "fixture work item",
+          evidenceSnapshot: { cost: 12 },
+          diagnosis: { reason: "fixture" },
+          status: "open",
+          ignoreReason: null,
+          mutedUntil: null,
+          assignee: null,
+          creator: userId,
+          acceptanceCriteria: null,
+          slaDue: null,
+          rejectReason: null,
+          t1Result: { checked: true },
+          createdAt: new Date("2026-08-25T01:00:00Z"),
+          resolvedAt: null,
+        }),
+      },
+      changeSets: {
+        find: async () => ({
+          id: changesetId,
+          workspaceId: auth.workspaceId,
+          media: "KUAISHOU",
+          accountId: "account-1",
+          workItemId,
+          title: "fixture changeset",
+          status: "draft",
+          initiator: userId,
+          credentialOwnerUserId: userId,
+          executorIdentity: null,
+          multicaIssueId: null,
+          ttlExpireAt: new Date("2026-08-25T01:30:00Z"),
+          reasonCode: "cost_control",
+          simulation: { dryRun: { passed: true } },
+          createdAt: new Date("2026-08-25T01:00:00Z"),
+          executedAt: null,
+          items: [{
+            id: 1,
+            targetType: "unit",
+            targetId: "unit-1",
+            field: "bid",
+            fromValue: "30",
+            toValue: "27",
+            itemStatus: "pending",
+            failReason: null,
+          }],
+        }),
+      },
+    });
+    const baseUrl = await start({ detailService });
+    const workItem = await fetch(`${baseUrl}/api/v1/work-items/${workItemId}`, {
+      headers: { ...authHeaders(), "x-request-id": "work-item-http-001" },
+    });
+    expect(workItem.status).toBe(200);
+    expect(workItem.headers.get("x-request-id")).toBe("work-item-http-001");
+    expect(await workItem.json()).toMatchObject({
+      ok: true,
+      data: { kind: "work_item", workItem: { t1Result: { checked: true } } },
+    });
+
+    const changeset = await fetch(`${baseUrl}/api/v1/changesets/${changesetId}`, {
+      headers: { ...authHeaders(), "x-request-id": "changeset-http-001" },
+    });
+    expect(changeset.status).toBe(200);
+    expect(await changeset.json()).toMatchObject({
+      ok: true,
+      data: { kind: "changeset", changeset: { simulation: { dryRun: { passed: true } } } },
+    });
+  });
+
+  it("keeps detail writes closed and returns stable 401/403/404 envelopes", async () => {
+    const id = "00000000-0000-4000-8000-000000000204";
+    const forbidden = new ReadDetailService({
+      workItems: {
+        find: async () => ({
+          id,
+          workspaceId: auth.workspaceId,
+          type: "diagnosis",
+          media: "TENCENT",
+          accountId: "account-1",
+          taskId: null,
+          ruleId: null,
+          severity: null,
+          title: "forbidden",
+          evidenceSnapshot: null,
+          diagnosis: null,
+          status: "open",
+          ignoreReason: null,
+          mutedUntil: null,
+          assignee: null,
+          creator: null,
+          acceptanceCriteria: null,
+          slaDue: null,
+          rejectReason: null,
+          t1Result: null,
+          createdAt: new Date("2026-08-25T01:00:00Z"),
+          resolvedAt: null,
+        }),
+      },
+      changeSets: { find: async () => null },
+    });
+    const baseUrl = await start({ detailService: forbidden });
+
+    const unauthenticated = await fetch(`${baseUrl}/api/v1/work-items/${id}`);
+    expect(unauthenticated.status).toBe(401);
+    expect(await unauthenticated.json()).toMatchObject({
+      ok: false,
+      error: { code: "UNAUTHORIZED" },
+    });
+
+    const outOfScope = await fetch(`${baseUrl}/api/v1/work-items/${id}`, {
+      headers: authHeaders(),
+    });
+    expect(outOfScope.status).toBe(403);
+
+    const missing = await fetch(`${baseUrl}/api/v1/changesets/${id}`, {
+      headers: authHeaders(),
+    });
+    expect(missing.status).toBe(404);
+
+    const write = await fetch(`${baseUrl}/api/v1/work-items/${id}`, {
+      method: "POST",
+      headers: authHeaders(),
+    });
+    expect(write.status).toBe(405);
   });
 
   it("fails closed with a stable truncated envelope when serialized output exceeds 16MB policy", async () => {
