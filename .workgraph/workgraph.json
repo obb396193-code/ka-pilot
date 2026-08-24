@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "id": "ka",
+  "title": "KA投放经营平台前后端同步与本地验收",
+  "goal": "前后端 Contract 对齐并完成集成，使已设计且当前可实现的核心功能能在本机启动、逐页查看和验证；老板细调后进入内网只读部署联调",
+  "status": "active",
+  "created_at": "2026-08-24T12:00:27+00:00",
+  "updated_at": "2026-08-24T12:01:39+00:00",
+  "approved_at": "2026-08-24T12:01:38+00:00",
+  "nodes": [
+    {
+      "id": "supervise",
+      "title": "持续监督三个 Agent",
+      "kind": "task",
+      "status": "running",
+      "risk": "low",
+      "agent": "root",
+      "depends_on": [],
+      "output": ".workgraph/RUNNING_NOTES.md",
+      "description": "每30分钟检查原任务、分支和交付；可实证问题继续派修，裁决项单列但不阻塞其他工作",
+      "started_at": "2026-08-24T12:01:39+00:00",
+      "completed_at": null
+    },
+    {
+      "id": "audit-backend-r1",
+      "title": "审计后端 R1",
+      "kind": "task",
+      "status": "running",
+      "risk": "medium",
+      "agent": "root",
+      "depends_on": [],
+      "output": "后端SHA审计与测试证据",
+      "description": "逐文件审查 de31f3a/f456acd，验证HTTP、Platform、lineage、租户、截断和错误边界",
+      "started_at": "2026-08-24T12:01:39+00:00",
+      "completed_at": null
+    },
+    {
+      "id": "audit-frontend-r1",
+      "title": "审计前端 R1",
+      "kind": "task",
+      "status": "running",
+      "risk": "medium",
+      "agent": "root",
+      "depends_on": [],
+      "output": "前端SHA审计与浏览器证据",
+      "description": "逐文件审查 fb1a13b，验证BFF、canonical Query、状态、动态路由和写操作禁用",
+      "started_at": "2026-08-24T12:01:39+00:00",
+      "completed_at": null
+    },
+    {
+      "id": "audit-knowledge-r1",
+      "title": "审计知识纠错 R1",
+      "kind": "task",
+      "status": "running",
+      "risk": "low",
+      "agent": "root",
+      "depends_on": [],
+      "output": "知识纠错SHA审计证据",
+      "description": "核验账户同ID、其他对象unresolved、catalog未发布和Git边界",
+      "started_at": "2026-08-24T12:01:39+00:00",
+      "completed_at": null
+    },
+    {
+      "id": "prd-gap-matrix",
+      "title": "形成PRD功能真实差距矩阵",
+      "kind": "task",
+      "status": "running",
+      "risk": "low",
+      "agent": "root",
+      "depends_on": [],
+      "output": "current/partial/gap功能矩阵",
+      "description": "按页面、API、运行时、数据源和验收分层，不把代码底座写成可用功能",
+      "started_at": "2026-08-24T12:01:39+00:00",
+      "completed_at": null
+    },
+    {
+      "id": "contract-merge",
+      "title": "合并并验证前后端 Contract",
+      "kind": "merge",
+      "status": "pending",
+      "risk": "medium",
+      "agent": "root",
+      "depends_on": [
+        "audit-backend-r1",
+        "audit-frontend-r1"
+      ],
+      "output": "integration-control中的可测试集成",
+      "description": "选择性合并已审SHA，解决字段、认证、端口与环境差异，保持真实写关闭",
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "feature-completion",
+      "title": "补齐当前可实现的核心功能",
+      "kind": "task",
+      "status": "pending",
+      "risk": "medium",
+      "agent": "frontend-backend",
+      "depends_on": [
+        "contract-merge",
+        "prd-gap-matrix"
+      ],
+      "output": "本机可查看的核心页面与API",
+      "description": "按PRD差距分批派前后端；需老板裁决的视觉或业务口径单列，不阻塞其他节点",
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "local-e2e",
+      "title": "本地全栈启动与逐页验收",
+      "kind": "merge",
+      "status": "pending",
+      "risk": "medium",
+      "agent": "root",
+      "depends_on": [
+        "feature-completion",
+        "audit-knowledge-r1"
+      ],
+      "output": "本地URL、截图、E2E与缺口清单",
+      "description": "启动数据库、后端API和前端，验证页面、三态、错误降级与只读安全",
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "boss-tuning-gate",
+      "title": "老板页面与功能细调",
+      "kind": "gate",
+      "status": "pending",
+      "risk": "medium",
+      "agent": "boss",
+      "depends_on": [
+        "local-e2e"
+      ],
+      "output": "老板确认的调整批次",
+      "description": "老板在本机逐页体验并决定视觉和业务细调，未裁决项留档",
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "intranet-gate",
+      "title": "内网只读部署确认门",
+      "kind": "gate",
+      "status": "pending",
+      "risk": "high",
+      "agent": "boss",
+      "depends_on": [
+        "boss-tuning-gate"
+      ],
+      "output": "内网部署明确批准",
+      "description": "确认部署目标、认证、Secrets、账户scope和回滚方案后才能执行",
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "intranet-deploy",
+      "title": "内网只读部署与联调",
+      "kind": "task",
+      "status": "pending",
+      "risk": "high",
+      "agent": "root",
+      "depends_on": [
+        "intranet-gate"
+      ],
+      "output": "内网地址、部署证据、运行验证",
+      "description": "只读部署；禁止启用Runtime/Multica真实写操作",
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "id": "write-enable-gate",
+      "title": "真实媒体写操作启用门",
+      "kind": "gate",
+      "status": "pending",
+      "risk": "high",
+      "agent": "boss",
+      "depends_on": [
+        "intranet-deploy"
+      ],
+      "output": "写操作单独批准",
+      "description": "必须完成preview/risk/human confirmation/execution/audit/effect acceptance后另行批准",
+      "started_at": null,
+      "completed_at": null
+    }
+  ],
+  "running_notes": [
+    {
+      "at": "2026-08-24T12:01:39+00:00",
+      "kind": "decision",
+      "node_id": "supervise",
+      "text": "老板已授权离开期间持续监督；每30分钟检查一次，裁决项保留但不阻塞其他低风险工作。"
+    },
+    {
+      "at": "2026-08-24T12:01:39+00:00",
+      "kind": "finding",
+      "node_id": "audit-backend-r1",
+      "text": "后端回交 de31f3a 与 f456acd，进入root逐文件审计。"
+    },
+    {
+      "at": "2026-08-24T12:01:39+00:00",
+      "kind": "finding",
+      "node_id": "audit-frontend-r1",
+      "text": "前端回交 fb1a13b，进入root逐文件审计；老板可能在前端任务追加视觉调整，合并前须读取最新对话和分支。"
+    },
+    {
+      "at": "2026-08-24T12:01:39+00:00",
+      "kind": "finding",
+      "node_id": "audit-knowledge-r1",
+      "text": "知识纠错回交 eb10676 与 7aec380，保持review_pending/not_ready。"
+    }
+  ],
+  "approvals": [
+    {
+      "scope": "graph",
+      "actor": "human",
+      "approved_at": "2026-08-24T12:01:38+00:00"
+    }
+  ]
+}
