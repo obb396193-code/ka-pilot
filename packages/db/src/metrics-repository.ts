@@ -6,6 +6,7 @@ export interface EffectiveMetricSettings {
 }
 
 export interface MetricLookupKey {
+  media: string;
   accountId: string;
   ds: string;
 }
@@ -23,6 +24,7 @@ export interface HistoricalSpendRow extends MetricLookupKey {
 
 export interface CanonicalMetricRecord {
   workspaceId: string;
+  media: string;
   accountId: string;
   ds: string;
   cost: number | null;
@@ -55,14 +57,14 @@ function nullableNumber(value: string | number | null | undefined): number | nul
 }
 
 function lookupKey(value: MetricLookupKey): string {
-  return JSON.stringify([value.accountId, value.ds]);
+  return JSON.stringify([value.media, value.accountId, value.ds]);
 }
 
 function validateKeys(keys: readonly MetricLookupKey[]): void {
   const seen = new Set<string>();
   for (const key of keys) {
-    if (key.accountId.trim() === "" || !/^\d{4}-\d{2}-\d{2}$/.test(key.ds)) {
-      throw new Error("Metric lookup keys require accountId and ISO date");
+    if (key.media.trim() === "" || key.accountId.trim() === "" || !/^\d{4}-\d{2}-\d{2}$/.test(key.ds)) {
+      throw new Error("Metric lookup keys require media, accountId and ISO date");
     }
     const encoded = lookupKey(key);
     if (seen.has(encoded)) {
@@ -93,7 +95,11 @@ function requireCompleteBatch(
 }
 
 function serializeLookupKeys(keys: readonly MetricLookupKey[]): string {
-  return JSON.stringify(keys.map((key) => ({ account_id: key.accountId, ds: key.ds })));
+  return JSON.stringify(keys.map((key) => ({
+    media: key.media,
+    account_id: key.accountId,
+    ds: key.ds,
+  })));
 }
 
 export class MetricsRepository {
@@ -107,21 +113,24 @@ export class MetricsRepository {
     if (keys.length === 0) return [];
     const result = await this.pool.query<{
       workspace_id: string;
+      media: string;
       account_id: string;
       ds: string;
       coefficient: string | number | null;
       assessment_price: string | number | null;
     }>(
       `WITH requested AS (
-         SELECT account_id, ds
-         FROM jsonb_to_recordset($2::jsonb) AS value(account_id text, ds date)
+         SELECT media, account_id, ds
+         FROM jsonb_to_recordset($2::jsonb) AS value(media text, account_id text, ds date)
        )
-       SELECT account.workspace_id, account.account_id,
+       SELECT account.workspace_id, account.media, account.account_id,
               to_char(requested.ds, 'YYYY-MM-DD') AS ds,
               coefficient.coefficient, assessment.price AS assessment_price
        FROM requested
        JOIN accounts AS account
-         ON account.workspace_id = $1 AND account.account_id = requested.account_id
+         ON account.workspace_id = $1
+        AND account.media = requested.media
+        AND account.account_id = requested.account_id
        LEFT JOIN LATERAL (
          SELECT value.coefficient
          FROM channel_coefficients AS value
@@ -139,17 +148,19 @@ export class MetricsRepository {
           AND price.task_id = relation.task_id
           AND price.effective_date <= requested.ds
          WHERE relation.workspace_id = account.workspace_id
+           AND relation.media = account.media
            AND relation.account_id = account.account_id
            AND relation.valid_from <= requested.ds
            AND (relation.valid_to IS NULL OR relation.valid_to >= requested.ds)
          ORDER BY relation.valid_from DESC, price.effective_date DESC, price.id DESC
          LIMIT 1
        ) AS assessment ON true
-       ORDER BY requested.ds, account.account_id`,
+       ORDER BY requested.ds, account.media, account.account_id`,
       [workspaceId, serializeLookupKeys(keys)],
     );
     const rows = result.rows.map((row) => ({
       workspaceId: row.workspace_id,
+      media: row.media,
       accountId: row.account_id,
       ds: row.ds,
       channelCoefficient: nullableNumber(row.coefficient),
@@ -171,20 +182,22 @@ export class MetricsRepository {
     if (keys.length === 0) return [];
     const result = await this.pool.query<{
       workspace_id: string;
+      media: string;
       account_id: string;
       ds: string;
       history: (string | number)[];
     }>(
       `WITH requested AS (
-         SELECT account_id, ds
-         FROM jsonb_to_recordset($2::jsonb) AS value(account_id text, ds date)
+         SELECT media, account_id, ds
+         FROM jsonb_to_recordset($2::jsonb) AS value(media text, account_id text, ds date)
        )
-       SELECT account.workspace_id, account.account_id,
+       SELECT account.workspace_id, account.media, account.account_id,
               to_char(requested.ds, 'YYYY-MM-DD') AS ds,
               ARRAY(
                 SELECT metric.cost
                 FROM account_metrics_daily AS metric
                 WHERE metric.workspace_id = account.workspace_id
+                  AND metric.media = account.media
                   AND metric.account_id = account.account_id
                   AND metric.ds < requested.ds
                   AND metric.cost IS NOT NULL AND metric.cost <> 0
@@ -193,12 +206,15 @@ export class MetricsRepository {
               ) AS history
        FROM requested
        JOIN accounts AS account
-         ON account.workspace_id = $1 AND account.account_id = requested.account_id
-       ORDER BY requested.ds, account.account_id`,
+         ON account.workspace_id = $1
+        AND account.media = requested.media
+        AND account.account_id = requested.account_id
+       ORDER BY requested.ds, account.media, account.account_id`,
       [workspaceId, serializeLookupKeys(keys), days],
     );
     const rows = result.rows.map((row) => ({
       workspaceId: row.workspace_id,
+      media: row.media,
       accountId: row.account_id,
       ds: row.ds,
       history: row.history
@@ -212,6 +228,7 @@ export class MetricsRepository {
   async upsertCanonicalBatch(records: readonly CanonicalMetricRecord[]): Promise<void> {
     if (records.length === 0) return;
     const keys = records.map((record) => ({
+      media: record.media,
       accountId: `${record.workspaceId}\u0000${record.accountId}`,
       ds: record.ds,
     }));
@@ -219,7 +236,7 @@ export class MetricsRepository {
     const result = await this.pool.query(
       `WITH incoming AS (
          SELECT * FROM jsonb_to_recordset($1::jsonb) AS value(
-           workspace_id uuid, account_id text, ds date, cost numeric,
+           workspace_id uuid, media text, account_id text, ds date, cost numeric,
            exposure bigint, click bigint, conversion numeric, real_conversion numeric,
            real_cpa numeric, cash_cost numeric, cash_cpa numeric, cost_space numeric,
            gap numeric, budget numeric, budget_usage_rate numeric, deduction_rate numeric,
@@ -228,19 +245,19 @@ export class MetricsRepository {
          )
        )
        INSERT INTO account_metrics_daily (
-         workspace_id, account_id, ds, cost, exposure, click, conversion,
+         workspace_id, media, account_id, ds, cost, exposure, click, conversion,
          real_conversion, real_cpa, cash_cost, cash_cpa, cost_space, gap,
          budget, budget_usage_rate, deduction_rate, main_ad_cost_proportion,
          assessment_price_snapshot, wake_uv, potential_uv, field_sources,
          data_anomaly, computed_at
        ) SELECT
-         workspace_id, account_id, ds, cost, exposure, click, conversion,
+         workspace_id, media, account_id, ds, cost, exposure, click, conversion,
          real_conversion, real_cpa, cash_cost, cash_cpa, cost_space, gap,
          budget, budget_usage_rate, deduction_rate, main_ad_cost_proportion,
          assessment_price_snapshot, wake_uv, potential_uv, field_sources,
          data_anomaly, now()
        FROM incoming
-       ON CONFLICT (workspace_id, account_id, ds) DO UPDATE SET
+       ON CONFLICT (workspace_id, media, account_id, ds) DO UPDATE SET
          cost = EXCLUDED.cost,
          exposure = EXCLUDED.exposure,
          click = EXCLUDED.click,
@@ -266,6 +283,7 @@ export class MetricsRepository {
         JSON.stringify(
           records.map((record) => ({
             workspace_id: record.workspaceId,
+            media: record.media,
             account_id: record.accountId,
             ds: record.ds,
             cost: record.cost,

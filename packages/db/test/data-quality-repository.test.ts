@@ -26,12 +26,12 @@ describe("DataQualityRepository", () => {
     );
     workspaceId = workspace.rows[0]!.id;
     await pool.query(
-      `INSERT INTO accounts (workspace_id, account_id, status)
+      `INSERT INTO accounts (workspace_id, media, account_id, status)
        VALUES
-         ($1, 'a-1', 'active'),
-         ($1, 'a-5x', 'active'),
-         ($1, 'a-missing', 'active'),
-         ($1, 'a-one-day', 'active')`,
+         ($1, 'KUAISHOU', 'a-1', 'active'),
+         ($1, 'KUAISHOU', 'a-5x', 'active'),
+         ($1, 'KUAISHOU', 'a-missing', 'active'),
+         ($1, 'KUAISHOU', 'a-one-day', 'active')`,
       [workspaceId],
     );
   });
@@ -49,15 +49,15 @@ describe("DataQualityRepository", () => {
   it("reconciles against only the latest offline raw row at the 0.1% boundary", async () => {
     await pool.query(
       `INSERT INTO metrics_raw (
-         workspace_id, account_id, ds, source, resource, request_params, payload, fetched_at
+         workspace_id, media, account_id, ds, source, resource, request_params, payload, fetched_at
        ) VALUES
-         ($1, 'a-1', '2026-08-18', 'offline', 'account_offline', '{}', '{"cost_api":999}', '2026-08-19T00:00:00Z'),
-         ($1, 'a-1', '2026-08-18', 'offline', 'account_offline', '{}', '{"cost_api":1000}', '2026-08-19T00:01:00Z')`,
+         ($1, 'KUAISHOU', 'a-1', '2026-08-18', 'offline', 'account_offline', '{}', '{"cost_api":999}', '2026-08-19T00:00:00Z'),
+         ($1, 'KUAISHOU', 'a-1', '2026-08-18', 'offline', 'account_offline', '{}', '{"cost_api":1000}', '2026-08-19T00:01:00Z')`,
       [workspaceId],
     );
     await pool.query(
-      `INSERT INTO account_metrics_daily (workspace_id, account_id, ds, cost)
-       VALUES ($1, 'a-1', '2026-08-18', 1001)`,
+      `INSERT INTO account_metrics_daily (workspace_id, media, account_id, ds, cost)
+       VALUES ($1, 'KUAISHOU', 'a-1', '2026-08-18', 1001)`,
       [workspaceId],
     );
 
@@ -82,18 +82,18 @@ describe("DataQualityRepository", () => {
   it("reconciles current-day canonical cost against realtime raw instead of reporting a false gap", async () => {
     await pool.query(
       `INSERT INTO metrics_raw (
-         workspace_id, account_id, ds, source, resource, request_params, payload, fetched_at
+         workspace_id, media, account_id, ds, source, resource, request_params, payload, fetched_at
        ) VALUES
-         ($1, 'a-1', '2026-08-18', 'offline', 'account_offline', '{}',
+         ($1, 'KUAISHOU', 'a-1', '2026-08-18', 'offline', 'account_offline', '{}',
           '{"cost_api":9999}', '2026-08-18T23:59:00Z'),
-         ($1, 'a-1', '2026-08-18', 'realtime', 'account_realtime', '{}',
+         ($1, 'KUAISHOU', 'a-1', '2026-08-18', 'realtime', 'account_realtime', '{}',
           '{"account_cost":100}', '2026-08-19T00:01:00Z')`,
       [workspaceId],
     );
     await pool.query(
       `INSERT INTO account_metrics_daily (
-         workspace_id, account_id, ds, cost, field_sources
-       ) VALUES ($1, 'a-1', '2026-08-18', 100, '{"cost":"realtime"}')`,
+         workspace_id, media, account_id, ds, cost, field_sources
+       ) VALUES ($1, 'KUAISHOU', 'a-1', '2026-08-18', 100, '{"cost":"realtime"}')`,
       [workspaceId],
     );
 
@@ -109,20 +109,20 @@ describe("DataQualityRepository", () => {
   it("marks five-times CPA outliers and finds only two-day missing active accounts", async () => {
     await pool.query(
       `INSERT INTO account_metrics_daily (
-         workspace_id, account_id, ds, cost, real_cpa, assessment_price_snapshot
+         workspace_id, media, account_id, ds, cost, real_cpa, assessment_price_snapshot
        ) VALUES
-         ($1, 'a-1', '2026-08-18', 100, 51, 10),
-         ($1, 'a-5x', '2026-08-18', 100, 50, 10),
-         ($1, 'a-one-day', '2026-08-17', 10, 5, 10)`,
+         ($1, 'KUAISHOU', 'a-1', '2026-08-18', 100, 51, 10),
+         ($1, 'KUAISHOU', 'a-5x', '2026-08-18', 100, 50, 10),
+         ($1, 'KUAISHOU', 'a-one-day', '2026-08-17', 10, 5, 10)`,
       [workspaceId],
     );
 
     await expect(repository.markCpaOutliers(workspaceId, "2026-08-18")).resolves.toEqual([
-      { accountId: "a-1", realCpa: 51, assessmentPrice: 10 },
+      { media: "KUAISHOU", accountId: "a-1", realCpa: 51, assessmentPrice: 10 },
     ]);
     await expect(
       repository.findConsecutiveMissingAccounts(workspaceId, "2026-08-18"),
-    ).resolves.toEqual(["a-missing"]);
+    ).resolves.toEqual([{ media: "KUAISHOU", accountId: "a-missing" }]);
 
     const anomaly = await pool.query<{ data_anomaly: boolean }>(
       `SELECT data_anomaly FROM account_metrics_daily

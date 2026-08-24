@@ -187,8 +187,8 @@ describe("real PostgreSQL data pipeline", () => {
       [workspaceId, taskId],
     );
     await pool.query(
-      `INSERT INTO task_accounts (workspace_id, task_id, account_id, valid_from)
-       VALUES ($1, $2, $3, '2026-08-01')`,
+      `INSERT INTO task_accounts (workspace_id, task_id, media, account_id, valid_from)
+       VALUES ($1, $2, 'KUAISHOU', $3, '2026-08-01')`,
       [workspaceId, taskId, accountId],
     );
     await pool.query(
@@ -205,8 +205,8 @@ describe("real PostgreSQL data pipeline", () => {
     );
     await pool.query(
       `INSERT INTO account_metrics_daily (
-         workspace_id, account_id, ds, cost, real_conversion
-       ) VALUES ($1, $2, '2026-08-18', 9999, 1)`,
+         workspace_id, media, account_id, ds, cost, real_conversion
+       ) VALUES ($1, 'KUAISHOU', $2, '2026-08-18', 9999, 1)`,
       [otherWorkspaceId, accountId],
     );
 

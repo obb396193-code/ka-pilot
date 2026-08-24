@@ -57,22 +57,22 @@ describe("SemanticQueryRepository", () => {
       [workspaceId, ownerId, taskOneId, taskTwoId],
     );
     await pool.query(
-      `INSERT INTO task_accounts (workspace_id, task_id, account_id, valid_from, valid_to)
+      `INSERT INTO task_accounts (workspace_id, task_id, media, account_id, valid_from, valid_to)
        VALUES
-         ($1, $2, 'a-1', '2026-08-01', '2026-08-18'),
-         ($1, $3, 'a-2', '2026-08-19', NULL)`,
+         ($1, $2, 'KUAISHOU', 'a-1', '2026-08-01', '2026-08-18'),
+         ($1, $3, 'TENCENT', 'a-2', '2026-08-19', NULL)`,
       [workspaceId, taskOneId, taskTwoId],
     );
     await pool.query(
       `INSERT INTO account_metrics_daily (
-         workspace_id, account_id, ds, cost, exposure, click, conversion,
+         workspace_id, media, account_id, ds, cost, exposure, click, conversion,
          real_conversion, real_cpa, cash_cost, cash_cpa, cost_space, gap,
          budget, wake_uv, potential_uv, data_anomaly
        ) VALUES
-         ($1, 'a-1', '2026-08-18', 100, 1000, 100, 12, 10, 10, 80, 8, 20, .2, 500, 50, 25, false),
-         ($1, 'a-1', '2026-08-19', 120, 1200, 96, 10, 8, 15, 96, 12, 4, .25, 500, 40, 20, true),
-         ($1, 'a-2', '2026-08-19', 50, 500, 25, 5, 5, 10, 40, 8, 10, 0, 200, 20, 10, false),
-         ($2, 'a-1', '2026-08-19', 9999, 1, 1, 1, 1, 9999, 9999, 9999, 0, 0, 1, 1, 1, true)`,
+         ($1, 'KUAISHOU', 'a-1', '2026-08-18', 100, 1000, 100, 12, 10, 10, 80, 8, 20, .2, 500, 50, 25, false),
+         ($1, 'KUAISHOU', 'a-1', '2026-08-19', 120, 1200, 96, 10, 8, 15, 96, 12, 4, .25, 500, 40, 20, true),
+         ($1, 'TENCENT', 'a-2', '2026-08-19', 50, 500, 25, 5, 5, 10, 40, 8, 10, 0, 200, 20, 10, false),
+         ($2, 'KUAISHOU', 'a-1', '2026-08-19', 9999, 1, 1, 1, 1, 9999, 9999, 9999, 0, 0, 1, 1, 1, true)`,
       [workspaceId, otherWorkspaceId],
     );
   });
@@ -145,6 +145,59 @@ describe("SemanticQueryRepository", () => {
       accountId: "a-1",
       ds: "2026-08-19",
       dataAnomaly: true,
+    });
+  });
+
+  it("keeps tuple authorization inside SQL when two media share one account_id", async () => {
+    await pool.query(
+      `INSERT INTO accounts (
+         workspace_id, media, account_id, account_name, owner_user_id, status
+       ) VALUES ($1, 'TENCENT', 'a-1', '跨媒体同号反例', $2, 'active')`,
+      [workspaceId, ownerId],
+    );
+    await pool.query(
+      `INSERT INTO account_metrics_daily (
+         workspace_id, media, account_id, ds, cost, exposure, click, conversion,
+         real_conversion, cash_cost, cost_space, wake_uv, potential_uv, data_anomaly
+       ) VALUES
+         ($1, 'TENCENT', 'a-1', '2026-08-18', 9000, 1, 1, 1, 1, 9000, 0, 1, 1, true),
+         ($1, 'TENCENT', 'a-1', '2026-08-19', 9100, 1, 1, 1, 1, 9100, 0, 1, 1, true)`,
+      [workspaceId],
+    );
+    const scope = {
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-19",
+      filters: { accountScopes: [{ media: "KUAISHOU", accountId: "a-1" }] },
+    };
+
+    const [summary, trend, table, lineage, health] = await Promise.all([
+      repository.querySummary(scope),
+      repository.queryTrend(scope),
+      repository.queryTable(scope),
+      repository.queryLineage(scope),
+      repository.queryHealth(scope),
+    ]);
+
+    expect(summary).toMatchObject({ rowCount: 2, accountCount: 1, cost: 220 });
+    expect(trend.map((row) => [row.ds, row.metrics.cost])).toEqual([
+      ["2026-08-18", 100],
+      ["2026-08-19", 120],
+    ]);
+    expect(table.rows).toHaveLength(2);
+    expect(table.rows.every((row) => row.media === "KUAISHOU")).toBe(true);
+    expect(lineage).toMatchObject({
+      canonicalRows: 2,
+      returnedAccounts: 1,
+      requestedAccountDays: 2,
+      returnedAccountDays: 2,
+    });
+    expect(health.coverage).toMatchObject({
+      canonicalRows: 2,
+      accountsInScope: 1,
+      accountsWithCanonical: 1,
+      expectedAccountDays: 2,
+      missingAccountDays: 0,
     });
   });
 
@@ -317,8 +370,8 @@ describe("SemanticQueryRepository", () => {
       [workspaceId, overlappingTaskId],
     );
     await pool.query(
-      `INSERT INTO task_accounts (workspace_id, task_id, account_id, valid_from, valid_to)
-       VALUES ($1, $2, 'a-1', '2026-08-18', '2026-08-18')`,
+      `INSERT INTO task_accounts (workspace_id, task_id, media, account_id, valid_from, valid_to)
+       VALUES ($1, $2, 'KUAISHOU', 'a-1', '2026-08-18', '2026-08-18')`,
       [workspaceId, overlappingTaskId],
     );
 
@@ -342,12 +395,12 @@ describe("SemanticQueryRepository", () => {
   it("reports transparent coverage components and latest pipeline health", async () => {
     await pool.query(
       `INSERT INTO metrics_raw (
-         workspace_id, account_id, ds, resource, source, payload, fetched_at
+         workspace_id, media, account_id, ds, resource, source, payload, fetched_at
        ) VALUES
-         ($1, 'a-1', '2026-08-19', 'account_offline', 'offline', '{}', '2026-08-19T10:00:00Z'),
-         ($1, 'a-1', '2026-08-19', 'account_offline', 'offline', '{}', '2026-08-19T11:00:00Z'),
-         ($1, 'a-2', '2026-08-19', 'ad_realtime', 'realtime', '{}', '2026-08-19T09:00:00Z'),
-         ($2, 'a-1', '2026-08-19', 'account_offline', 'offline', '{}', '2026-08-19T23:00:00Z')`,
+         ($1, 'KUAISHOU', 'a-1', '2026-08-19', 'account_offline', 'offline', '{}', '2026-08-19T10:00:00Z'),
+         ($1, 'KUAISHOU', 'a-1', '2026-08-19', 'account_offline', 'offline', '{}', '2026-08-19T11:00:00Z'),
+         ($1, 'TENCENT', 'a-2', '2026-08-19', 'ad_realtime', 'realtime', '{}', '2026-08-19T09:00:00Z'),
+         ($2, 'KUAISHOU', 'a-1', '2026-08-19', 'account_offline', 'offline', '{}', '2026-08-19T23:00:00Z')`,
       [workspaceId, otherWorkspaceId],
     );
     await pool.query(
@@ -406,10 +459,10 @@ describe("SemanticQueryRepository", () => {
   it("applies account filters to health coverage and raw freshness", async () => {
     await pool.query(
       `INSERT INTO metrics_raw (
-         workspace_id, account_id, ds, resource, source, payload, fetched_at
+         workspace_id, media, account_id, ds, resource, source, payload, fetched_at
        ) VALUES
-         ($1, 'a-1', '2026-08-19', 'account_realtime', 'realtime', '{}', '2026-08-19T10:00:00Z'),
-         ($1, 'a-2', '2026-08-19', 'account_realtime', 'realtime', '{}', '2026-08-19T11:00:00Z')`,
+         ($1, 'KUAISHOU', 'a-1', '2026-08-19', 'account_realtime', 'realtime', '{}', '2026-08-19T10:00:00Z'),
+         ($1, 'TENCENT', 'a-2', '2026-08-19', 'account_realtime', 'realtime', '{}', '2026-08-19T11:00:00Z')`,
       [workspaceId],
     );
 

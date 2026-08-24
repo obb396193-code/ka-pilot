@@ -36,8 +36,8 @@ describe("MetricsRepository", () => {
       [workspaceId],
     );
     await pool.query(
-      `INSERT INTO task_accounts (workspace_id, task_id, account_id, valid_from)
-       VALUES ($1, 't-1', 'a-1', '2026-01-01')`,
+      `INSERT INTO task_accounts (workspace_id, task_id, media, account_id, valid_from)
+       VALUES ($1, 't-1', 'KUAISHOU', 'a-1', '2026-01-01')`,
       [workspaceId],
     );
   });
@@ -56,11 +56,12 @@ describe("MetricsRepository", () => {
 
     await expect(
       repository.loadEffectiveSettingsBatch(workspaceId, [
-        { accountId: "a-1", ds: "2026-08-18" },
+        { media: "KUAISHOU", accountId: "a-1", ds: "2026-08-18" },
       ]),
     ).resolves.toEqual([
       {
         workspaceId,
+        media: "KUAISHOU",
         accountId: "a-1",
         ds: "2026-08-18",
         channelCoefficient: 2,
@@ -72,6 +73,7 @@ describe("MetricsRepository", () => {
   it("upserts one canonical row idempotently", async () => {
     const record = {
       workspaceId,
+      media: "KUAISHOU",
       accountId: "a-1",
       ds: "2026-08-18",
       cost: 100,
@@ -107,25 +109,25 @@ describe("MetricsRepository", () => {
 
   it("applies the history limit after excluding zero-spend days", async () => {
     await pool.query(
-      `INSERT INTO account_metrics_daily (workspace_id, account_id, ds, cost)
-       SELECT $1, 'a-1', day::date, 0
+      `INSERT INTO account_metrics_daily (workspace_id, media, account_id, ds, cost)
+       SELECT $1, 'KUAISHOU', 'a-1', day::date, 0
        FROM generate_series('2026-08-04'::date, '2026-08-17'::date, interval '1 day') AS day`,
       [workspaceId],
     );
     await pool.query(
-      `INSERT INTO account_metrics_daily (workspace_id, account_id, ds, cost)
-       VALUES ($1, 'a-1', '2026-08-03', 100)`,
+      `INSERT INTO account_metrics_daily (workspace_id, media, account_id, ds, cost)
+       VALUES ($1, 'KUAISHOU', 'a-1', '2026-08-03', 100)`,
       [workspaceId],
     );
 
     await expect(
       repository.loadHistoricalSpendBatch(
         workspaceId,
-        [{ accountId: "a-1", ds: "2026-08-18" }],
+        [{ media: "KUAISHOU", accountId: "a-1", ds: "2026-08-18" }],
         14,
       ),
     ).resolves.toEqual([
-      { workspaceId, accountId: "a-1", ds: "2026-08-18", history: [100] },
+      { workspaceId, media: "KUAISHOU", accountId: "a-1", ds: "2026-08-18", history: [100] },
     ]);
   });
 
@@ -140,13 +142,14 @@ describe("MetricsRepository", () => {
       [workspaceId],
     );
     await pool.query(
-      `INSERT INTO account_metrics_daily (workspace_id, account_id, ds, cost)
-       VALUES ($1, 'a-1', '2026-08-16', 10), ($1, 'a-2', '2026-08-17', 20)`,
+      `INSERT INTO account_metrics_daily (workspace_id, media, account_id, ds, cost)
+       VALUES ($1, 'KUAISHOU', 'a-1', '2026-08-16', 10),
+              ($1, 'KUAISHOU', 'a-2', '2026-08-17', 20)`,
       [workspaceId],
     );
     const keys = [
-      { accountId: "a-2", ds: "2026-08-18" },
-      { accountId: "a-1", ds: "2026-08-17" },
+      { media: "KUAISHOU", accountId: "a-2", ds: "2026-08-18" },
+      { media: "KUAISHOU", accountId: "a-1", ds: "2026-08-17" },
     ];
 
     const settings = await repository.loadEffectiveSettingsBatch(workspaceId, keys);
@@ -155,22 +158,22 @@ describe("MetricsRepository", () => {
     expect(settings).toHaveLength(2);
     expect(settings.every((row) => row.workspaceId === workspaceId)).toBe(true);
     expect(histories).toEqual([
-      { workspaceId, accountId: "a-1", ds: "2026-08-17", history: [10] },
-      { workspaceId, accountId: "a-2", ds: "2026-08-18", history: [20] },
+      { workspaceId, media: "KUAISHOU", accountId: "a-1", ds: "2026-08-17", history: [10] },
+      { workspaceId, media: "KUAISHOU", accountId: "a-2", ds: "2026-08-18", history: [20] },
     ]);
   });
 
   it("fails closed for missing or duplicate batch lookup keys", async () => {
     await expect(
       repository.loadEffectiveSettingsBatch(workspaceId, [
-        { accountId: "missing", ds: "2026-08-18" },
+        { media: "KUAISHOU", accountId: "missing", ds: "2026-08-18" },
       ]),
     ).rejects.toThrow("did not return every requested");
 
     await expect(
       repository.loadHistoricalSpendBatch(workspaceId, [
-        { accountId: "a-1", ds: "2026-08-18" },
-        { accountId: "a-1", ds: "2026-08-18" },
+        { media: "KUAISHOU", accountId: "a-1", ds: "2026-08-18" },
+        { media: "KUAISHOU", accountId: "a-1", ds: "2026-08-18" },
       ]),
     ).rejects.toThrow("duplicate account/date");
   });

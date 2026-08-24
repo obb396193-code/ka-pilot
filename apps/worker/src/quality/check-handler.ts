@@ -1,5 +1,6 @@
 import type {
   CpaOutlier,
+  MissingAccount,
   NewDataQualityCheck,
   ReconciliationResult,
 } from "@ka/db";
@@ -21,7 +22,7 @@ const payloadSchema = z.object({
 export interface DataQualityPort {
   reconcileTotals(workspaceId: string, ds: string): Promise<ReconciliationResult>;
   markCpaOutliers(workspaceId: string, ds: string): Promise<CpaOutlier[]>;
-  findConsecutiveMissingAccounts(workspaceId: string, ds: string): Promise<string[]>;
+  findConsecutiveMissingAccounts(workspaceId: string, ds: string): Promise<MissingAccount[]>;
   recordCheck(check: NewDataQualityCheck): Promise<void>;
 }
 

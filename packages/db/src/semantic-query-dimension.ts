@@ -40,6 +40,7 @@ function dimensionSql(dimension: SupportedDimension): DimensionSql {
   const joins = `
     LEFT JOIN task_accounts AS relation
       ON relation.workspace_id = metric.workspace_id
+     AND relation.media = metric.media
      AND relation.account_id = metric.account_id
      AND relation.valid_from <= metric.ds
      AND (relation.valid_to IS NULL OR relation.valid_to >= metric.ds)
@@ -65,14 +66,16 @@ async function assertNoTaskOverlap(pool: Pool, input: SemanticDimensionQuery): P
      FROM account_metrics_daily AS metric
      JOIN accounts AS account
        ON account.workspace_id = metric.workspace_id
+      AND account.media = metric.media
       AND account.account_id = metric.account_id
      JOIN task_accounts AS relation
        ON relation.workspace_id = metric.workspace_id
+      AND relation.media = metric.media
       AND relation.account_id = metric.account_id
       AND relation.valid_from <= metric.ds
       AND (relation.valid_to IS NULL OR relation.valid_to >= metric.ds)
      WHERE ${filter.whereSql}
-     GROUP BY metric.account_id, metric.ds
+     GROUP BY metric.media, metric.account_id, metric.ds
      HAVING count(relation.id) > 1
      ORDER BY metric.ds, metric.account_id
      LIMIT 1`,
@@ -109,6 +112,7 @@ export async function queryMetricDimension(
      FROM account_metrics_daily AS metric
      JOIN accounts AS account
        ON account.workspace_id = metric.workspace_id
+      AND account.media = metric.media
       AND account.account_id = metric.account_id
      ${sql.joins}
      WHERE ${filter.whereSql}

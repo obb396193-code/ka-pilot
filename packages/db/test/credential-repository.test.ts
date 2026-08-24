@@ -48,15 +48,22 @@ describe("CredentialRepository", () => {
 
   it("selects the common account owner and rejects ambiguous scopes", async () => {
     await pool.query(
-      `INSERT INTO accounts (workspace_id, account_id, owner_user_id)
-       VALUES ($1, 'a-1', $2), ($1, 'a-2', $2), ($1, 'a-3', NULL)`,
+      `INSERT INTO accounts (workspace_id, media, account_id, owner_user_id)
+       VALUES ($1, 'KUAISHOU', 'a-1', $2), ($1, 'KUAISHOU', 'a-2', $2),
+              ($1, 'KUAISHOU', 'a-3', NULL)`,
       [workspaceId, ownerId],
     );
     await expect(
-      repository.resolveAccountOwner(workspaceId, ["a-1", "a-2"]),
+      repository.resolveAccountOwner(workspaceId, [
+        { media: "KUAISHOU", accountId: "a-1" },
+        { media: "KUAISHOU", accountId: "a-2" },
+      ]),
     ).resolves.toBe(ownerId);
     await expect(
-      repository.resolveAccountOwner(workspaceId, ["a-1", "a-3"]),
+      repository.resolveAccountOwner(workspaceId, [
+        { media: "KUAISHOU", accountId: "a-1" },
+        { media: "KUAISHOU", accountId: "a-3" },
+      ]),
     ).rejects.toThrow("unambiguous credential owner");
   });
 });

@@ -30,7 +30,7 @@ interface TrendDatabaseRow extends AggregateDatabaseRow {
 
 export const METRIC_AGGREGATE_SQL = `
   count(*)::text AS row_count,
-  count(DISTINCT metric.account_id)::text AS account_count,
+  count(DISTINCT (metric.media, metric.account_id))::text AS account_count,
   COALESCE(sum(metric.cost), 0) AS cost,
   COALESCE(sum(metric.exposure), 0) AS exposure,
   COALESCE(sum(metric.click), 0) AS click,
@@ -100,6 +100,7 @@ export async function queryMetricSummary(
      FROM account_metrics_daily AS metric
      JOIN accounts AS account
        ON account.workspace_id = metric.workspace_id
+      AND account.media = metric.media
       AND account.account_id = metric.account_id
      WHERE ${filter.whereSql}`,
     filter.values,
@@ -121,6 +122,7 @@ export async function queryMetricTrend(
      FROM account_metrics_daily AS metric
      JOIN accounts AS account
        ON account.workspace_id = metric.workspace_id
+      AND account.media = metric.media
       AND account.account_id = metric.account_id
      WHERE ${filter.whereSql}
      GROUP BY metric.ds

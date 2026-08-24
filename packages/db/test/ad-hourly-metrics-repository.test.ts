@@ -26,6 +26,7 @@ describe("AdHourlyMetricsRepository", () => {
   it("upserts one workspace/ad/hour while preserving another workspace", async () => {
     const metric = {
       workspaceId: firstWorkspace,
+      media: "KUAISHOU",
       adId: "ad-1",
       accountId: "account-1",
       ds: "2026-08-20",
@@ -57,6 +58,7 @@ describe("AdHourlyMetricsRepository", () => {
   it("rejects duplicate keys and invalid hourly values before querying", async () => {
     const metric = {
       workspaceId: firstWorkspace,
+      media: "KUAISHOU",
       adId: "ad-1",
       accountId: "account-1",
       ds: "2026-08-20",

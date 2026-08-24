@@ -5,6 +5,7 @@ import { AdHourlyMetricsRepository } from "../src/ad-hourly-metrics-repository.j
 
 const metric = {
   workspaceId: "11111111-1111-4111-8111-111111111111",
+  media: "KUAISHOU",
   adId: "ad-1",
   accountId: "account-1",
   ds: "2026-08-20",
@@ -31,6 +32,7 @@ describe("AdHourlyMetricsRepository unit", () => {
     expect(sql).toContain("ON CONFLICT (workspace_id, ad_id, ds, hh)");
     expect(values).toEqual([JSON.stringify([{
       workspace_id: metric.workspaceId,
+      media: metric.media,
       ad_id: metric.adId,
       account_id: metric.accountId,
       ds: metric.ds,

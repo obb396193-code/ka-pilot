@@ -55,6 +55,7 @@ export function createIncrementalEtlHandler(
       const records = rowsToRawRecords({
         rows: result.rows,
         workspaceId: payload.workspaceId,
+        media: query.media ?? payload.media,
         resource: query.resource,
         requestParams: replayRequestParams(query),
         fallbackDs,
@@ -151,6 +152,7 @@ async function ingestFocusedAds(
   setStep("hourly_upsert");
   await dependencies.hourly.upsertHourly(derived.rows.map((row): AdHourlyMetricRecord => ({
     workspaceId: payload.workspaceId,
+    media: payload.media,
     adId: row.adId,
     accountId: row.accountId,
     ds: row.ds,

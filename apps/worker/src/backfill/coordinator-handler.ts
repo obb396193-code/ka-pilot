@@ -47,6 +47,7 @@ export function createBackfillCoordinatorHandler(dependencies: {
           const records = rowsToRawRecords({
             rows: result.rows,
             workspaceId: payload.workspaceId,
+            media: payload.media,
             resource: "account",
             requestParams: replayRequestParams(query),
             fallbackDs: batch.dateTo,

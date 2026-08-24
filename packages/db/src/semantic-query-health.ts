@@ -69,6 +69,34 @@ function buildAccountScopeFilter(scope: SemanticQueryScope): {
   if (scope.filters?.accountId) {
     add((placeholder) => `account.account_id = ${placeholder}`, scope.filters.accountId);
   }
+  if (scope.filters?.accountScopes) {
+    const encoded = new Set<string>();
+    for (const scoped of scope.filters.accountScopes) {
+      if (scoped.media.trim() === "" || scoped.accountId.trim() === "") {
+        throw new Error("accountScopes require media and accountId");
+      }
+      const key = JSON.stringify([scoped.media, scoped.accountId]);
+      if (encoded.has(key)) throw new Error("accountScopes contain a duplicate tuple");
+      encoded.add(key);
+    }
+    if (scope.filters.accountScopes.length === 0) {
+      conditions.push("false");
+    } else {
+      add(
+        (placeholder) => `EXISTS (
+          SELECT 1
+          FROM jsonb_to_recordset(${placeholder}::jsonb)
+            AS allowed(media text, account_id text)
+          WHERE allowed.media = account.media
+            AND allowed.account_id = account.account_id
+        )`,
+        JSON.stringify(scope.filters.accountScopes.map((account) => ({
+          media: account.media,
+          account_id: account.accountId,
+        }))),
+      );
+    }
+  }
   if (scope.filters?.ownerUserId) {
     add((placeholder) => `account.owner_user_id = ${placeholder}::uuid`, scope.filters.ownerUserId);
   }
@@ -80,6 +108,7 @@ function buildAccountScopeFilter(scope: SemanticQueryScope): {
       (placeholder) => `EXISTS (
         SELECT 1 FROM task_accounts AS relation
         WHERE relation.workspace_id = account.workspace_id
+          AND relation.media = account.media
           AND relation.account_id = account.account_id
           AND relation.task_id = ${placeholder}
           AND relation.valid_from <= $3::date
@@ -95,10 +124,11 @@ async function queryCoverage(pool: Pool, scope: SemanticQueryScope): Promise<Cov
   const metricFilter = buildMetricFilter(scope);
   const metricResult = await pool.query<CoverageMetricRow>(
     `SELECT count(*)::text AS canonical_rows,
-            count(DISTINCT metric.account_id)::text AS accounts_with_canonical
+            count(DISTINCT (metric.media, metric.account_id))::text AS accounts_with_canonical
      FROM account_metrics_daily AS metric
      JOIN accounts AS account
        ON account.workspace_id = metric.workspace_id
+      AND account.media = metric.media
       AND account.account_id = metric.account_id
      WHERE ${metricFilter.whereSql}`,
     metricFilter.values,
@@ -141,6 +171,7 @@ async function queryRawHealth(
      FROM metrics_raw AS metric
      JOIN accounts AS account
        ON account.workspace_id = metric.workspace_id
+      AND account.media = metric.media
       AND account.account_id = metric.account_id
      WHERE ${filter.whereSql}
      GROUP BY metric.resource

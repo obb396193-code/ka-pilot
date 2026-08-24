@@ -90,6 +90,7 @@ describe("TaskRepository", () => {
     const first = await repository.assignAccount({
       workspaceId,
       taskId,
+      media: "KUAISHOU",
       accountId: "account-1",
       validFrom: "2026-08-01",
       validTo: "2026-08-10",
@@ -97,6 +98,7 @@ describe("TaskRepository", () => {
     const second = await repository.assignAccount({
       workspaceId,
       taskId,
+      media: "KUAISHOU",
       accountId: "account-1",
       validFrom: "2026-08-11",
       validTo: null,
@@ -108,6 +110,7 @@ describe("TaskRepository", () => {
       repository.assignAccount({
         workspaceId,
         taskId,
+        media: "KUAISHOU",
         accountId: "account-1",
         validFrom: "2026-08-20",
         validTo: "2026-08-25",
@@ -120,6 +123,7 @@ describe("TaskRepository", () => {
       repository.assignAccount({
         workspaceId,
         taskId,
+        media: "KUAISHOU",
         accountId: "account-1",
         validFrom: "2026-08-20",
         validTo: "2026-08-19",
@@ -129,6 +133,7 @@ describe("TaskRepository", () => {
       repository.assignAccount({
         workspaceId,
         taskId,
+        media: "KUAISHOU",
         accountId: "other-account",
         validFrom: "2026-08-01",
         validTo: null,
@@ -140,6 +145,7 @@ describe("TaskRepository", () => {
     const input = {
       workspaceId,
       taskId,
+      media: "KUAISHOU",
       accountId: "account-2",
       validFrom: "2026-08-01",
       validTo: null,
@@ -217,6 +223,7 @@ describe("TaskRepository", () => {
     await repository.assignAccount({
       workspaceId,
       taskId,
+      media: "KUAISHOU",
       accountId: "account-1",
       validFrom: "2026-08-01",
       validTo: "2026-08-18",
@@ -224,19 +231,20 @@ describe("TaskRepository", () => {
     await repository.assignAccount({
       workspaceId,
       taskId,
+      media: "KUAISHOU",
       accountId: "account-2",
       validFrom: "2026-08-19",
       validTo: null,
     });
     await pool.query(
       `INSERT INTO account_metrics_daily (
-         workspace_id, account_id, ds, cost, exposure, click, conversion,
+         workspace_id, media, account_id, ds, cost, exposure, click, conversion,
          real_conversion, cash_cost, cost_space, wake_uv, potential_uv, data_anomaly
        ) VALUES
-         ($1, 'account-1', '2026-08-18', 100, 1000, 100, 12, 10, 80, 20, 50, 25, false),
-         ($1, 'account-1', '2026-08-19', 999, 1, 1, 1, 1, 999, 0, 1, 1, true),
-         ($1, 'account-2', '2026-08-19', 50, 500, 25, 5, 5, 40, 10, 20, 10, true),
-         ($2, 'other-account', '2026-08-19', 9000, 1, 1, 1, 1, 9000, 0, 1, 1, true)`,
+         ($1, 'KUAISHOU', 'account-1', '2026-08-18', 100, 1000, 100, 12, 10, 80, 20, 50, 25, false),
+         ($1, 'KUAISHOU', 'account-1', '2026-08-19', 999, 1, 1, 1, 1, 999, 0, 1, 1, true),
+         ($1, 'KUAISHOU', 'account-2', '2026-08-19', 50, 500, 25, 5, 5, 40, 10, 20, 10, true),
+         ($2, 'KUAISHOU', 'other-account', '2026-08-19', 9000, 1, 1, 1, 1, 9000, 0, 1, 1, true)`,
       [workspaceId, otherWorkspaceId],
     );
 

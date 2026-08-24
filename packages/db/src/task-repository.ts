@@ -30,6 +30,7 @@ export interface TaskRecord {
 export interface AssignTaskAccountInput {
   workspaceId: string;
   taskId: string;
+  media: string;
   accountId: string;
   validFrom: string;
   validTo: string | null;
@@ -88,6 +89,7 @@ interface TaskAccountRow {
   id: string | number;
   workspace_id: string;
   task_id: string;
+  media: string;
   account_id: string;
   valid_from: string;
   valid_to: string | null;
@@ -172,6 +174,7 @@ function mapTaskAccount(row: TaskAccountRow): TaskAccountRecord {
     id: Number(row.id),
     workspaceId: row.workspace_id,
     taskId: row.task_id,
+    media: row.media,
     accountId: row.account_id,
     validFrom: row.valid_from,
     validTo: row.valid_to,
@@ -222,6 +225,7 @@ export class TaskRepository {
   async assignAccount(input: AssignTaskAccountInput): Promise<TaskAccountRecord> {
     assertId(input.workspaceId, "workspaceId");
     assertId(input.taskId, "taskId");
+    assertId(input.media, "media");
     assertId(input.accountId, "accountId");
     assertDate(input.validFrom, "validFrom");
     if (input.validTo !== null) {
@@ -236,7 +240,7 @@ export class TaskRepository {
       await client.query("BEGIN");
       await client.query("SELECT pg_advisory_xact_lock(hashtext($1), hashtext($2))", [
         input.workspaceId,
-        JSON.stringify([input.taskId, input.accountId]),
+        JSON.stringify([input.taskId, input.media, input.accountId]),
       ]);
       const task = await client.query(
         `SELECT task_id FROM tasks
@@ -246,20 +250,21 @@ export class TaskRepository {
       if (task.rowCount === 0) throw new Error("task not found in workspace");
       const account = await client.query(
         `SELECT account_id FROM accounts
-         WHERE workspace_id=$1 AND account_id=$2 FOR KEY SHARE`,
-        [input.workspaceId, input.accountId],
+         WHERE workspace_id=$1 AND media=$2 AND account_id=$3 FOR KEY SHARE`,
+        [input.workspaceId, input.media, input.accountId],
       );
       if (account.rowCount === 0) throw new Error("account not found in workspace");
 
       const overlap = await client.query(
         `SELECT 1 FROM task_accounts
-         WHERE workspace_id=$1 AND task_id=$2 AND account_id=$3
-           AND valid_from <= COALESCE($5::date, 'infinity'::date)
-           AND (valid_to IS NULL OR valid_to >= $4::date)
+         WHERE workspace_id=$1 AND task_id=$2 AND media=$3 AND account_id=$4
+           AND valid_from <= COALESCE($6::date, 'infinity'::date)
+           AND (valid_to IS NULL OR valid_to >= $5::date)
          LIMIT 1`,
         [
           input.workspaceId,
           input.taskId,
+          input.media,
           input.accountId,
           input.validFrom,
           input.validTo,
@@ -270,14 +275,15 @@ export class TaskRepository {
       }
       const inserted = await client.query<TaskAccountRow>(
         `INSERT INTO task_accounts
-           (workspace_id, task_id, account_id, valid_from, valid_to)
-         VALUES ($1,$2,$3,$4,$5)
-         RETURNING id, workspace_id, task_id, account_id,
+           (workspace_id, task_id, media, account_id, valid_from, valid_to)
+         VALUES ($1,$2,$3,$4,$5,$6)
+         RETURNING id, workspace_id, task_id, media, account_id,
                    to_char(valid_from, 'YYYY-MM-DD') AS valid_from,
                    to_char(valid_to, 'YYYY-MM-DD') AS valid_to`,
         [
           input.workspaceId,
           input.taskId,
+          input.media,
           input.accountId,
           input.validFrom,
           input.validTo,
@@ -382,6 +388,7 @@ export class TaskRepository {
            SELECT 1 FROM task_accounts AS relation
            WHERE relation.workspace_id=metric.workspace_id
              AND relation.task_id=$2
+             AND relation.media=metric.media
              AND relation.account_id=metric.account_id
              AND relation.valid_from <= metric.ds
              AND (relation.valid_to IS NULL OR relation.valid_to >= metric.ds)

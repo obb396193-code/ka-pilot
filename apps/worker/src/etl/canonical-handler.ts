@@ -26,6 +26,7 @@ const payloadSchema = z.object({
 
 export interface CanonicalMergeWork {
   workspaceId: string;
+  media: string;
   accountId: string;
   ds: string;
   reportDate: string;
@@ -34,6 +35,7 @@ export interface CanonicalMergeWork {
 }
 
 export interface CanonicalLookupKey {
+  media: string;
   accountId: string;
   ds: string;
 }
@@ -69,7 +71,7 @@ const DEFAULT_CHUNK_SIZE = 250;
 const MAX_CHUNK_SIZE = 1_000;
 
 function lookupKey(value: CanonicalLookupKey): string {
-  return JSON.stringify([value.accountId, value.ds]);
+  return JSON.stringify([value.media, value.accountId, value.ds]);
 }
 
 function indexLookupRows<T extends CanonicalLookupKey & { workspaceId: string }>(input: {
@@ -136,6 +138,7 @@ function canonicalRecord(input: {
   });
   return {
     workspaceId: input.work.workspaceId,
+    media: input.work.media,
     accountId: input.work.accountId,
     ds: input.work.ds,
     cost: base.cost,
@@ -172,7 +175,7 @@ async function mergeChunk(input: {
   workspaceId: string;
   works: readonly CanonicalMergeWork[];
 }): Promise<CanonicalMetricRecord[]> {
-  const keys = input.works.map(({ accountId, ds }) => ({ accountId, ds }));
+  const keys = input.works.map(({ media, accountId, ds }) => ({ media, accountId, ds }));
   const [settingsRows, historyRows] = await Promise.all([
     input.store.loadEffectiveSettingsBatch(input.workspaceId, keys),
     input.store.loadHistoricalSpendBatch(input.workspaceId, keys),

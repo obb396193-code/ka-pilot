@@ -13,6 +13,7 @@ function lineage(complete = true) {
   return {
     dataAsOf: "2026-08-24T07:59:00.000Z",
     canonicalRows: 1,
+    returnedAccounts: complete ? 1 : 0,
     requestedAccountDays: 1,
     returnedAccountDays: complete ? 1 : 0,
   };
@@ -33,7 +34,9 @@ describe("PlatformDataSource", () => {
     );
     expect(repository.querySummary).toHaveBeenCalledWith(expect.objectContaining({
       workspaceId: scope.workspaceId,
-      filters: { accountIds: ["account-1"] },
+      filters: {
+        accountScopes: [{ media: "KUAISHOU", accountId: "account-1" }],
+      },
     }));
     expect(result).toMatchObject({
       status: "ready",

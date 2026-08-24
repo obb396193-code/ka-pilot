@@ -299,6 +299,7 @@ describe("ETL handlers", () => {
     expect(runStore.value.finishRun).toHaveBeenCalledWith(91, 3);
     expect(hourly.upsertHourly).toHaveBeenCalledWith([{
       workspaceId,
+      media: "KUAISHOU",
       adId: "ad-1",
       accountId: "a-9",
       ds: "2026-08-19",

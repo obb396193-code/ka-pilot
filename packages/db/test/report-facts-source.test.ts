@@ -61,18 +61,18 @@ describe("SemanticReportFactsSource", () => {
       [workspaceId, taskId],
     );
     await pool.query(
-      `INSERT INTO task_accounts (workspace_id, task_id, account_id, valid_from)
-       VALUES ($1, $2, 'a-1', '2026-08-01')`,
+      `INSERT INTO task_accounts (workspace_id, task_id, media, account_id, valid_from)
+       VALUES ($1, $2, 'KUAISHOU', 'a-1', '2026-08-01')`,
       [workspaceId, taskId],
     );
     await pool.query(
       `INSERT INTO account_metrics_daily (
-         workspace_id, account_id, ds, cost, exposure, click, conversion,
+         workspace_id, media, account_id, ds, cost, exposure, click, conversion,
          real_conversion, cash_cost, cost_space, wake_uv, potential_uv, data_anomaly
        ) VALUES
-         ($1, 'a-1', '2026-08-18', 100, 1000, 100, 12, 10, 80, 20, 50, 25, false),
-         ($1, 'a-1', '2026-08-19', 120, 1200, 96, 10, 8, 96, 4, 40, 20, true),
-         ($2, 'a-1', '2026-08-19', 9999, 1, 1, 1, 1, 9999, 0, 1, 1, true)`,
+         ($1, 'KUAISHOU', 'a-1', '2026-08-18', 100, 1000, 100, 12, 10, 80, 20, 50, 25, false),
+         ($1, 'KUAISHOU', 'a-1', '2026-08-19', 120, 1200, 96, 10, 8, 96, 4, 40, 20, true),
+         ($2, 'KUAISHOU', 'a-1', '2026-08-19', 9999, 1, 1, 1, 1, 9999, 0, 1, 1, true)`,
       [workspaceId, otherWorkspaceId],
     );
   });
@@ -157,8 +157,8 @@ describe("SemanticReportFactsSource", () => {
       [workspaceId, `overlap-${workspaceId}`],
     );
     await pool.query(
-      `INSERT INTO task_accounts (workspace_id, task_id, account_id, valid_from)
-       VALUES ($1, $2, 'a-1', '2026-08-01')`,
+      `INSERT INTO task_accounts (workspace_id, task_id, media, account_id, valid_from)
+       VALUES ($1, $2, 'KUAISHOU', 'a-1', '2026-08-01')`,
       [workspaceId, `overlap-${workspaceId}`],
     );
     const source = new SemanticReportFactsSource(new SemanticQueryRepository(pool), {

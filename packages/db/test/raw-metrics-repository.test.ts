@@ -25,6 +25,7 @@ describe("RawMetricsRepository", () => {
     await repository.appendRaw([
       {
         workspaceId: workspaceA,
+        media: "KUAISHOU",
         accountId: "same-account",
         ds: "2026-08-19",
         resource: "account_offline",
@@ -35,6 +36,7 @@ describe("RawMetricsRepository", () => {
       },
       {
         workspaceId: workspaceA,
+        media: "KUAISHOU",
         accountId: "same-account",
         ds: "2026-08-19",
         resource: "account_offline",
@@ -45,6 +47,7 @@ describe("RawMetricsRepository", () => {
       },
       {
         workspaceId: workspaceA,
+        media: "KUAISHOU",
         accountId: "same-account",
         ds: "2026-08-19",
         resource: "account_realtime",
@@ -55,6 +58,7 @@ describe("RawMetricsRepository", () => {
       },
       {
         workspaceId: workspaceB,
+        media: "KUAISHOU",
         accountId: "same-account",
         ds: "2026-08-19",
         resource: "account_realtime",
@@ -75,6 +79,7 @@ describe("RawMetricsRepository", () => {
     ).resolves.toEqual([
       {
         workspaceId: workspaceA,
+        media: "KUAISHOU",
         accountId: "same-account",
         ds: "2026-08-19",
         reportDate: "2026-08-20",

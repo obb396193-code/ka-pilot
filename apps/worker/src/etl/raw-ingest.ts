@@ -18,6 +18,7 @@ function normalizeDate(value: unknown, fallback: string): string {
 export function rowsToRawRecords(input: {
   rows: readonly QihangRow[];
   workspaceId: string;
+  media: string;
   resource: MetricResource;
   requestParams: Record<string, unknown>;
   fallbackDs: string;
@@ -35,8 +36,15 @@ export function rowsToRawRecords(input: {
     if (typeof accountId !== "string" && typeof accountId !== "number") {
       throw new Error(`${input.resource} row ${index} is missing account_id`);
     }
+    if (
+      row.media !== undefined &&
+      String(row.media).trim().toUpperCase() !== input.media.trim().toUpperCase()
+    ) {
+      throw new Error(`${input.resource} row ${index} media escaped request scope`);
+    }
     return {
       workspaceId: input.workspaceId,
+      media: input.media,
       accountId: String(accountId),
       ds: normalizeDate(row.ds, input.fallbackDs),
       source,

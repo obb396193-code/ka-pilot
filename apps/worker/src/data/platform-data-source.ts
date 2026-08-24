@@ -46,13 +46,15 @@ function semanticScope(
   resolved: ResolvedDataQuery,
   execution: DataQueryExecutionScope,
 ): SemanticQueryScope {
-  const accountIds = execution.accounts.map((account) => account.accountId);
   return {
     workspaceId: execution.workspaceId,
     dateFrom: resolved.params.dateFrom,
     dateTo: resolved.params.dateTo,
     filters: {
-      accountIds,
+      accountScopes: execution.accounts.map((account) => ({
+        media: account.media,
+        accountId: account.accountId,
+      })),
       ...(resolved.params.media === undefined ? {} : { media: resolved.params.media }),
       ...(resolved.params.accountId === undefined
         ? {}
@@ -108,10 +110,7 @@ function sourceLineage(
           ? { reason: "Canonical result exceeded the query row budget" }
           : {}),
       requestedObjects: scope.accounts.length,
-      returnedObjects: Math.min(
-        scope.accounts.length,
-        lineage.returnedAccountDays,
-      ),
+      returnedObjects: Math.min(scope.accounts.length, lineage.returnedAccounts),
     },
     truncated,
     partial,

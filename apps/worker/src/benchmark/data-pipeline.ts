@@ -167,6 +167,7 @@ function toCanonicalInput(row: Record<string, unknown>): CanonicalMergeWork {
   const accountId = String(row.account_id);
   return {
     workspaceId: WORKSPACE_ID,
+    media: "KUAISHOU",
     accountId,
     ds: "2026-08-19",
     reportDate: "2026-08-20",

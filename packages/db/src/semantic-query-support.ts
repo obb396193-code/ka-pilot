@@ -94,6 +94,34 @@ export function buildMetricFilter(
       );
     }
   }
+  if (scope.filters?.accountScopes) {
+    const encoded = new Set<string>();
+    for (const account of scope.filters.accountScopes) {
+      if (account.media.trim() === "" || account.accountId.trim() === "") {
+        throw new Error("accountScopes require media and accountId");
+      }
+      const key = JSON.stringify([account.media, account.accountId]);
+      if (encoded.has(key)) throw new Error("accountScopes contain a duplicate tuple");
+      encoded.add(key);
+    }
+    if (scope.filters.accountScopes.length === 0) {
+      conditions.push("false");
+    } else {
+      add(
+        (placeholder) => `EXISTS (
+          SELECT 1
+          FROM jsonb_to_recordset(${placeholder}::jsonb)
+            AS allowed(media text, account_id text)
+          WHERE allowed.media = metric.media
+            AND allowed.account_id = metric.account_id
+        )`,
+        JSON.stringify(scope.filters.accountScopes.map((account) => ({
+          media: account.media,
+          account_id: account.accountId,
+        }))),
+      );
+    }
+  }
   if (scope.filters?.ownerUserId) {
     add((placeholder) => `account.owner_user_id = ${placeholder}::uuid`, scope.filters.ownerUserId);
   }
@@ -109,6 +137,7 @@ export function buildMetricFilter(
         SELECT 1
         FROM task_accounts AS filtered_relation
         WHERE filtered_relation.workspace_id = metric.workspace_id
+          AND filtered_relation.media = metric.media
           AND filtered_relation.account_id = metric.account_id
           AND filtered_relation.task_id = ${placeholder}
           AND filtered_relation.valid_from <= metric.ds

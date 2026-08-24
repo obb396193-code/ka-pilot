@@ -8,6 +8,7 @@ export type MetricSource = "realtime" | "offline" | "metadata";
 
 export interface RawMetricRecord {
   workspaceId: string;
+  media: string;
   accountId: string;
   ds: string;
   source: MetricSource;

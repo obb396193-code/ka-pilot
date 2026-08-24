@@ -191,8 +191,8 @@ async function seedFixture(pool: Pool, accountCount: number) {
     [workspaceId, taskId],
   );
   await pool.query(
-    `INSERT INTO task_accounts (workspace_id, task_id, account_id, valid_from)
-     SELECT $1, $2, value.account_id, '2026-08-01'
+    `INSERT INTO task_accounts (workspace_id, task_id, media, account_id, valid_from)
+     SELECT $1, $2, 'KUAISHOU', value.account_id, '2026-08-01'
      FROM jsonb_to_recordset($3::jsonb) AS value(account_id text)`,
     [workspaceId, taskId, JSON.stringify(accountIds.map((account_id) => ({ account_id })))],
   );
@@ -220,6 +220,7 @@ async function seedRaw(pool: Pool, workspaceId: string, accountIds: readonly str
         return [
           {
             workspaceId,
+            media: "KUAISHOU",
             accountId,
             ds: "2026-08-18",
             resource: "account_offline" as const,
@@ -238,6 +239,7 @@ async function seedRaw(pool: Pool, workspaceId: string, accountIds: readonly str
           },
           {
             workspaceId,
+            media: "KUAISHOU",
             accountId,
             ds: "2026-08-18",
             resource: "account_realtime" as const,

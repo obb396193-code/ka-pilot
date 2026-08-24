@@ -38,6 +38,7 @@ export function createBackfillDayHandler(dependencies: {
       const records = rowsToRawRecords({
         rows: result.rows,
         workspaceId: payload.workspaceId,
+        media: payload.media,
         resource: "account_offline",
         requestParams: replayRequestParams(query),
         fallbackDs: payload.ds,

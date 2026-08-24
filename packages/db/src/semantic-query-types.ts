@@ -4,10 +4,16 @@ export type SemanticSortField = "ds" | "accountId" | "cost" | "realCpa" | "compu
 export type SortDirection = "asc" | "desc";
 export type SupportedDimension = "account" | "task" | "biz";
 
+export interface SemanticAccountScope {
+  media: string;
+  accountId: string;
+}
+
 export interface SemanticFilters {
   taskId?: string;
   accountId?: string;
   accountIds?: string[];
+  accountScopes?: SemanticAccountScope[];
   ownerUserId?: string;
   media?: string;
   dataAnomaly?: boolean;
@@ -149,6 +155,7 @@ export interface SemanticHealthResult {
 export interface SemanticLineageResult {
   dataAsOf: string | null;
   canonicalRows: number;
+  returnedAccounts: number;
   requestedAccountDays: number;
   returnedAccountDays: number;
 }

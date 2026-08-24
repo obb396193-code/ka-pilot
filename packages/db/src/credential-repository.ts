@@ -1,5 +1,10 @@
 import type { Pool } from "pg";
 
+export interface AccountCredentialScope {
+  media: string;
+  accountId: string;
+}
+
 export class CredentialRepository {
   constructor(private readonly pool: Pool) {}
 
@@ -25,18 +30,42 @@ export class CredentialRepository {
 
   async resolveAccountOwner(
     workspaceId: string,
-    accountIds: readonly string[],
+    accounts: readonly AccountCredentialScope[],
   ): Promise<string> {
-    if (accountIds.length === 0) {
+    if (accounts.length === 0) {
       throw new Error("Account-scoped job requires at least one account");
     }
-    const result = await this.pool.query<{ account_id: string; owner_user_id: string | null }>(
-      `SELECT account_id, owner_user_id
-       FROM accounts
-       WHERE workspace_id = $1 AND account_id = ANY($2::text[])`,
-      [workspaceId, accountIds],
+    const requested = new Map<string, AccountCredentialScope>();
+    for (const account of accounts) {
+      if (account.media.trim() === "" || account.accountId.trim() === "") {
+        throw new Error("Account-scoped job requires media and accountId");
+      }
+      requested.set(JSON.stringify([account.media, account.accountId]), account);
+    }
+    if (requested.size !== accounts.length) {
+      throw new Error("Account-scoped job contains duplicate account scope");
+    }
+    const result = await this.pool.query<{
+      media: string;
+      account_id: string;
+      owner_user_id: string | null;
+    }>(
+      `WITH requested AS (
+         SELECT media, account_id
+         FROM jsonb_to_recordset($2::jsonb) AS value(media text, account_id text)
+       )
+       SELECT account.media, account.account_id, account.owner_user_id
+       FROM requested
+       JOIN accounts AS account
+         ON account.workspace_id = $1
+        AND account.media = requested.media
+        AND account.account_id = requested.account_id`,
+      [workspaceId, JSON.stringify(accounts.map((account) => ({
+        media: account.media,
+        account_id: account.accountId,
+      })))],
     );
-    if (result.rows.length !== new Set(accountIds).size) {
+    if (result.rows.length !== requested.size) {
       throw new Error("One or more accounts do not belong to the requested workspace");
     }
     const owners = new Set(result.rows.map((row) => row.owner_user_id));

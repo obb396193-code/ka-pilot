@@ -2,7 +2,10 @@ import type { HourlyAdMetric } from "@ka/domain";
 import type { Pool } from "pg";
 
 export type AdHourlyMetricRecord = Readonly<
-  Omit<HourlyAdMetric, "lastSyncTime" | "dataCorrectionFields"> & { workspaceId: string }
+  Omit<HourlyAdMetric, "lastSyncTime" | "dataCorrectionFields"> & {
+    workspaceId: string;
+    media: string;
+  }
 >;
 
 export class AdHourlyMetricsRepository {
@@ -14,20 +17,21 @@ export class AdHourlyMetricsRepository {
     const result = await this.pool.query(
       `WITH incoming AS (
          SELECT * FROM jsonb_to_recordset($1::jsonb) AS value(
-           workspace_id uuid, ad_id text, account_id text, ds date, hh smallint,
+           workspace_id uuid, media text, ad_id text, account_id text, ds date, hh smallint,
            cost numeric, exposure bigint, click bigint, conversion bigint,
            real_conversion bigint, bid numeric, budget numeric
          )
        )
        INSERT INTO ad_metrics_hourly (
-         workspace_id, ad_id, account_id, ds, hh, cost, exposure, click,
+         workspace_id, media, ad_id, account_id, ds, hh, cost, exposure, click,
          conversion, real_conversion, bid, budget
        ) SELECT
-         workspace_id, ad_id, account_id, ds, hh, cost, exposure, click,
+         workspace_id, media, ad_id, account_id, ds, hh, cost, exposure, click,
          conversion, real_conversion, bid, budget
        FROM incoming
        ON CONFLICT (workspace_id, ad_id, ds, hh) DO UPDATE SET
          account_id = EXCLUDED.account_id,
+         media = EXCLUDED.media,
          cost = EXCLUDED.cost,
          exposure = EXCLUDED.exposure,
          click = EXCLUDED.click,
@@ -36,6 +40,7 @@ export class AdHourlyMetricsRepository {
          bid = EXCLUDED.bid,
          budget = EXCLUDED.budget
        WHERE ad_metrics_hourly.account_id = EXCLUDED.account_id
+         AND ad_metrics_hourly.media = EXCLUDED.media
        RETURNING ad_id`,
       [JSON.stringify(records.map(toDatabaseRecord))],
     );
@@ -48,6 +53,7 @@ export class AdHourlyMetricsRepository {
 function toDatabaseRecord(record: AdHourlyMetricRecord): Record<string, unknown> {
   return {
     workspace_id: record.workspaceId,
+    media: record.media,
     ad_id: record.adId,
     account_id: record.accountId,
     ds: record.ds,
@@ -66,15 +72,15 @@ function validateRecords(records: readonly AdHourlyMetricRecord[]): void {
   const seen = new Set<string>();
   for (const record of records) {
     validateRecord(record);
-    const key = JSON.stringify([record.workspaceId, record.adId, record.ds, record.hh]);
+    const key = JSON.stringify([record.workspaceId, record.media, record.adId, record.ds, record.hh]);
     if (seen.has(key)) throw new Error("Hourly metrics contain a duplicate workspace/ad/date/hour");
     seen.add(key);
   }
 }
 
 function validateRecord(record: AdHourlyMetricRecord): void {
-  if (record.workspaceId.trim() === "" || record.adId.trim() === "" || record.accountId.trim() === "") {
-    throw new Error("Hourly metrics require workspace, ad and account identifiers");
+  if (record.workspaceId.trim() === "" || record.media.trim() === "" || record.adId.trim() === "" || record.accountId.trim() === "") {
+    throw new Error("Hourly metrics require workspace, media, ad and account identifiers");
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(record.ds)) throw new Error("Hourly metrics require an ISO date");
   if (!Number.isInteger(record.hh) || record.hh < 0 || record.hh > 23) {

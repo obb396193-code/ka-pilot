@@ -188,6 +188,7 @@ async function persistRows(
   const records = rowsToRawRecords({
     rows,
     workspaceId: payload.workspaceId,
+    media: query.media ?? payload.media,
     resource: query.resource,
     requestParams: replayRequestParams(query),
     fallbackDs,

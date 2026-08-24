@@ -9,9 +9,15 @@ export interface ReconciliationResult {
 }
 
 export interface CpaOutlier {
+  media: string;
   accountId: string;
   realCpa: number;
   assessmentPrice: number;
+}
+
+export interface MissingAccount {
+  media: string;
+  accountId: string;
 }
 
 export interface NewDataQualityCheck {
@@ -40,13 +46,13 @@ export class DataQualityRepository {
       canonical_total: string | number;
     }>(
       `WITH latest_raw AS (
-         SELECT DISTINCT ON (account_id, resource) account_id, resource, payload
+         SELECT DISTINCT ON (media, account_id, resource) media, account_id, resource, payload
          FROM metrics_raw
          WHERE workspace_id = $1 AND ds = $2::date
            AND resource IN ('account_offline', 'account_realtime')
-         ORDER BY account_id, resource, fetched_at DESC, id DESC
+         ORDER BY media, account_id, resource, fetched_at DESC, id DESC
        ), source_rows AS (
-         SELECT account_id,
+         SELECT media, account_id,
                 (max(payload::text) FILTER (
                   WHERE resource = 'account_offline'
                 ))::jsonb AS offline,
@@ -54,11 +60,11 @@ export class DataQualityRepository {
                   WHERE resource = 'account_realtime'
                 ))::jsonb AS realtime
          FROM latest_raw
-         GROUP BY account_id
+         GROUP BY media, account_id
        ), scoped_accounts AS (
-         SELECT account_id FROM source_rows
+         SELECT media, account_id FROM source_rows
          UNION
-         SELECT account_id
+         SELECT media, account_id
          FROM account_metrics_daily
          WHERE workspace_id = $1 AND ds = $2::date
        ), raw_total AS (
@@ -75,9 +81,10 @@ export class DataQualityRepository {
            END
          ), 0) AS value
          FROM scoped_accounts AS account
-         LEFT JOIN source_rows AS source USING (account_id)
+         LEFT JOIN source_rows AS source USING (media, account_id)
          LEFT JOIN account_metrics_daily AS metric
            ON metric.workspace_id = $1
+          AND metric.media = account.media
           AND metric.account_id = account.account_id
           AND metric.ds = $2::date
        ), canonical_total AS (
@@ -108,6 +115,7 @@ export class DataQualityRepository {
 
   async markCpaOutliers(workspaceId: string, ds: string): Promise<CpaOutlier[]> {
     const result = await this.pool.query<{
+      media: string;
       account_id: string;
       real_cpa: string | number;
       assessment_price_snapshot: string | number;
@@ -119,11 +127,12 @@ export class DataQualityRepository {
          AND assessment_price_snapshot IS NOT NULL
          AND assessment_price_snapshot > 0
          AND real_cpa > assessment_price_snapshot * 5
-       RETURNING account_id, real_cpa, assessment_price_snapshot`,
+       RETURNING media, account_id, real_cpa, assessment_price_snapshot`,
       [workspaceId, ds],
     );
     return result.rows
       .map((row) => ({
+        media: row.media,
         accountId: row.account_id,
         realCpa: numeric(row.real_cpa),
         assessmentPrice: numeric(row.assessment_price_snapshot),
@@ -131,9 +140,9 @@ export class DataQualityRepository {
       .sort((left, right) => left.accountId.localeCompare(right.accountId));
   }
 
-  async findConsecutiveMissingAccounts(workspaceId: string, ds: string): Promise<string[]> {
-    const result = await this.pool.query<{ account_id: string }>(
-      `SELECT account.account_id
+  async findConsecutiveMissingAccounts(workspaceId: string, ds: string): Promise<MissingAccount[]> {
+    const result = await this.pool.query<{ media: string; account_id: string }>(
+      `SELECT account.media, account.account_id
        FROM accounts AS account
        WHERE account.workspace_id = $1
          AND account.status = 'active'
@@ -141,19 +150,21 @@ export class DataQualityRepository {
          AND NOT EXISTS (
            SELECT 1 FROM account_metrics_daily AS metric
            WHERE metric.workspace_id = account.workspace_id
+             AND metric.media = account.media
              AND metric.account_id = account.account_id
              AND metric.ds = $2::date
          )
          AND NOT EXISTS (
            SELECT 1 FROM account_metrics_daily AS metric
            WHERE metric.workspace_id = account.workspace_id
+             AND metric.media = account.media
              AND metric.account_id = account.account_id
              AND metric.ds = $2::date - 1
          )
-       ORDER BY account.account_id`,
+       ORDER BY account.media, account.account_id`,
       [workspaceId, ds],
     );
-    return result.rows.map((row) => row.account_id);
+    return result.rows.map((row) => ({ media: row.media, accountId: row.account_id }));
   }
 
   async recordCheck(check: NewDataQualityCheck): Promise<void> {

@@ -95,6 +95,7 @@ export class SemanticQueryRepository {
        FROM account_metrics_daily AS metric
        JOIN accounts AS account
          ON account.workspace_id = metric.workspace_id
+        AND account.media = metric.media
         AND account.account_id = metric.account_id
        WHERE ${filter.whereSql}`,
       filter.values,
@@ -104,7 +105,7 @@ export class SemanticQueryRepository {
     const rows = await this.pool.query<TableDatabaseRow>(
       `SELECT
          metric.workspace_id, metric.account_id, account.account_name,
-         account.media, account.owner_user_id, to_char(metric.ds, 'YYYY-MM-DD') AS ds,
+         metric.media, account.owner_user_id, to_char(metric.ds, 'YYYY-MM-DD') AS ds,
          metric.cost, metric.exposure, metric.click, metric.conversion,
          metric.real_conversion, metric.real_cpa, metric.cash_cost, metric.cash_cpa,
          metric.cost_space, metric.gap, metric.budget, metric.budget_usage_rate,
@@ -114,6 +115,7 @@ export class SemanticQueryRepository {
        FROM account_metrics_daily AS metric
        JOIN accounts AS account
          ON account.workspace_id = metric.workspace_id
+        AND account.media = metric.media
         AND account.account_id = metric.account_id
        LEFT JOIN LATERAL (
          SELECT COALESCE(
@@ -131,6 +133,7 @@ export class SemanticQueryRepository {
            ON task.workspace_id = relation.workspace_id
           AND task.task_id = relation.task_id
          WHERE relation.workspace_id = metric.workspace_id
+           AND relation.media = metric.media
            AND relation.account_id = metric.account_id
            AND relation.valid_from <= metric.ds
            AND (relation.valid_to IS NULL OR relation.valid_to >= metric.ds)
@@ -169,20 +172,24 @@ export class SemanticQueryRepository {
     const result = await this.pool.query<{
       data_as_of: string | Date | null;
       canonical_rows: string | number;
+      returned_accounts: string | number;
       account_days: string | number;
     }>(
       `SELECT max(metric.computed_at) AS data_as_of,
               count(*)::text AS canonical_rows,
-              count(DISTINCT (metric.account_id, metric.ds))::text AS account_days
+              count(DISTINCT (metric.media, metric.account_id))::text AS returned_accounts,
+              count(DISTINCT (metric.media, metric.account_id, metric.ds))::text AS account_days
        FROM account_metrics_daily AS metric
        JOIN accounts AS account
          ON account.workspace_id = metric.workspace_id
+        AND account.media = metric.media
         AND account.account_id = metric.account_id
        WHERE ${filter.whereSql}`,
       filter.values,
     );
     const row = result.rows[0];
-    const accountCount = input.filters?.accountIds?.length ??
+    const accountCount = input.filters?.accountScopes?.length ??
+      input.filters?.accountIds?.length ??
       (input.filters?.accountId === undefined ? 0 : 1);
     const dateFrom = Date.parse(`${input.dateFrom}T00:00:00.000Z`);
     const dateTo = Date.parse(`${input.dateTo}T00:00:00.000Z`);
@@ -190,6 +197,7 @@ export class SemanticQueryRepository {
     return {
       dataAsOf: row?.data_as_of == null ? null : isoTimestamp(row.data_as_of),
       canonicalRows: Number(row?.canonical_rows ?? 0),
+      returnedAccounts: Number(row?.returned_accounts ?? 0),
       requestedAccountDays: Math.max(accountCount * days, 0),
       returnedAccountDays: Number(row?.account_days ?? 0),
     };
