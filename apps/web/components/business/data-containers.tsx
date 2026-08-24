@@ -12,7 +12,7 @@ import { PageShell } from "@/components/data-view/page-shell"
 import { Badge } from "@/components/ui/badge"
 import { adaptAccountDetail, adaptAnalysis, adaptChangeSetPreview, adaptWorkbench, adaptWorkItemDetail } from "@/lib/data/adapters"
 import type { DataQueryResponse, QueryRequest } from "@/lib/data/contracts"
-import { readDataState, type DataState, type DataViewMode, type QueryRecord } from "@/lib/data/data-view"
+import { readDataState, shanghaiBusinessDate, type DataState, type DataViewMode, type QueryRecord } from "@/lib/data/data-view"
 import { getMockChangeSetDetail, getMockWorkItemDetail } from "@/lib/data/mock-data"
 import { useDataQuery } from "@/lib/data/use-data-query"
 import { useReadModel } from "@/lib/data/use-read-model"
@@ -24,7 +24,7 @@ function dateParams(query: QueryRecord) {
   const dateFrom = first(query.date_from) ?? first(query.start)
   const dateTo = first(query.date_to) ?? first(query.end)
   if (dateFrom && dateTo) return { dateFrom, dateTo, ...(first(query.media) ? { media: first(query.media) } : {}) }
-  return { date: "2026-08-24", ...(first(query.media) ? { media: first(query.media) } : {}) }
+  return { date: shanghaiBusinessDate(), ...(first(query.media) ? { media: first(query.media) } : {}) }
 }
 function loadingResponse(): DataQueryResponse { return { ok: false, error: { code: "SOURCE_UNAVAILABLE", message: "正在读取数据", retryable: true, requestId: "loading" } } }
 function mockState(query: QueryRecord): DataState { return readDataState(query.state) }

@@ -33,9 +33,19 @@ export type DataResponse<T> = { state: DataState; lineage: LineageBundle; data: 
 export type QueryValue = string | string[] | undefined
 export type QueryRecord = Record<string, QueryValue>
 const compatibleFilterKeys = ["account_id", "start", "end", "date", "date_from", "date_to", "media", "task_id", "product_id", "owner", "state"] as const
+const SHANGHAI_BUSINESS_DAY_CUTOFF_MS = 3 * 60 * 60 * 1_000
+const shanghaiDateFormatter = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Asia/Shanghai",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+})
 function firstValue(value: QueryValue) { return Array.isArray(value) ? value[0] : value }
 export function readDataViewMode(value: QueryValue): DataViewMode { const parsed = dataViewModeSchema.safeParse(firstValue(value)); return parsed.success ? parsed.data : "platform" }
 export function readDataState(value: QueryValue): DataState { const parsed = dataStateSchema.safeParse(firstValue(value)); return parsed.success ? parsed.data : "ready" }
+export function shanghaiBusinessDate(now = new Date()): string {
+  return shanghaiDateFormatter.format(new Date(now.getTime() - SHANGHAI_BUSINESS_DAY_CUTOFF_MS))
+}
 export function buildDataViewHref(pathname: string, dataView: DataViewMode, query: QueryRecord) {
   const params = new URLSearchParams({ data_view: dataView })
   for (const key of compatibleFilterKeys) { const value = firstValue(query[key]); if (value) params.set(key, value) }

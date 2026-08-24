@@ -2,7 +2,7 @@ import assert from "node:assert/strict"
 import test from "node:test"
 
 import { dataQueryRequestSchema, dataQueryResponseSchema, metricValueSchema } from "./contracts.ts"
-import { buildDataViewHref, readDataState, readDataViewMode } from "./data-view.ts"
+import { buildDataViewHref, readDataState, readDataViewMode, shanghaiBusinessDate } from "./data-view.ts"
 import { getMockResponse } from "./mock-data.ts"
 
 test("only the three frozen data views and complete UI states are accepted", () => {
@@ -22,6 +22,12 @@ test("only the six backend query ids are canonical", () => {
 
 test("preserves compatible filters when switching data view", () => {
   assert.equal(buildDataViewHref("/data", "reconcile", { account_id: "demo-account-07", start: "2026-08-18", end: "2026-08-24", media: "KUAISHOU", task_id: "aac-acquisition", product_id: "demo-product-01", state: "partial", ignored: "drop-me" }), "/data?data_view=reconcile&account_id=demo-account-07&start=2026-08-18&end=2026-08-24&media=KUAISHOU&task_id=aac-acquisition&product_id=demo-product-01&state=partial")
+})
+
+test("defaults to the Shanghai business date with a 03:00 cutoff", () => {
+  assert.equal(shanghaiBusinessDate(new Date("2026-08-24T18:59:59.000Z")), "2026-08-24")
+  assert.equal(shanghaiBusinessDate(new Date("2026-08-24T19:00:00.000Z")), "2026-08-25")
+  assert.equal(shanghaiBusinessDate(new Date("2026-12-31T20:00:00.000Z")), "2027-01-01")
 })
 
 test("canonical errors preserve code, message, requestId and retryable", () => {
