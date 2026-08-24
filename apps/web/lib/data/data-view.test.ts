@@ -111,7 +111,16 @@ test("mock missing source value is null and never zero", () => {
   const missing = response.data.rows[2].platform.spend
   assert.equal(missing.availability, "missing")
   assert.equal(missing.value, null)
-  assert.equal(missing.displayValue, "−")
+  assert.equal(missing.displayValue, "该来源缺失")
+})
+
+test("account reconciliation uses one shared account id and never exposes mapping UI state", () => {
+  const response = getMockResponse({ queryId: "analysis", dataView: "reconcile" })
+  const row = response.data.rows[2]
+  assert.equal(row.accountId, "demo-account-18")
+  assert.equal(row.platform.cpa.displayValue, "该来源缺失")
+  assert.match(row.comparison.reason ?? "", /该来源缺失/)
+  assert.doesNotMatch(JSON.stringify(response), /账户待映射|账户映射|kaDataAccountId|platformAccountId|mappingStatus/)
 })
 
 test("decision A keeps single-source views isolated and reconcile has no unified main value", () => {

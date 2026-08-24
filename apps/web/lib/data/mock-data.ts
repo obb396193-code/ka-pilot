@@ -30,7 +30,7 @@ const sourceLineages: Record<"ka_data" | "platform", SourceLineage> = {
     truncated: false,
     partial: true,
     stale: false,
-    warnings: ["2 个账户待补数据源；缺失值不会按 0 展示"],
+    warnings: ["2 个账户该来源缺失；缺失值不会按 0 展示"],
   },
 }
 
@@ -47,7 +47,7 @@ function lineageByView(dataView: QueryRequest["dataView"]): LineageBundle {
 }
 
 const value = (raw: number, displayValue: string): MetricValue => ({ value: raw, displayValue, availability: "available" })
-const missing = (availability: Exclude<MetricValue["availability"], "available"> = "missing"): MetricValue => ({ value: null, displayValue: "−", availability })
+const missing = (availability: Exclude<MetricValue["availability"], "available"> = "missing"): MetricValue => ({ value: null, displayValue: availability === "missing" ? "该来源缺失" : "−", availability })
 const missingSource = () => ({ spend: missing(), conversions: missing(), cpa: missing() })
 
 const authorityByMetric: MetricAuthorityMatrix = {
@@ -96,7 +96,7 @@ const rows = [
     kaData: { spend: value(80274, "¥ 80,274"), conversions: value(2020, "2,020"), cpa: value(39.74, "¥ 39.74") },
     platform: missingSource(),
     assessmentCpa: value(40, "¥ 40.00"),
-    comparison: { comparable: false, reason: "平台侧缺失", delta: missing(), deltaRate: missing() },
+    comparison: { comparable: false, reason: "platform 该来源缺失", delta: missing(), deltaRate: missing() },
     authorityByMetric,
     status: "unavailable" as const,
   },

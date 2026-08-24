@@ -5,8 +5,9 @@ import type { DataViewMode, MetricValue } from "@/lib/data/data-view"
 
 function ValueCell({ cell }: { cell: MetricValue }) {
   if (cell.availability === "available") return <span className="font-mono tabular-nums">{cell.displayValue}</span>
-  const labels: Record<Exclude<MetricValue["availability"], "available">, string> = { missing: "缺失", denominator_zero: "分母为 0", partial: "部分", stale: "过期", error: "错误" }
-  return <span className="text-xs text-muted-foreground" title={labels[cell.availability]}>{cell.displayValue}</span>
+  const labels: Record<Exclude<MetricValue["availability"], "available">, string> = { missing: "该来源缺失", denominator_zero: "分母为 0", partial: "部分", stale: "过期", error: "错误" }
+  const displayValue = cell.availability === "missing" ? "该来源缺失" : cell.displayValue
+  return <span className="text-xs text-muted-foreground" title={labels[cell.availability]}>{displayValue}</span>
 }
 
 const statusLabel = { healthy: "健康", watch: "关注", critical: "高风险", unavailable: "不可判断" }
