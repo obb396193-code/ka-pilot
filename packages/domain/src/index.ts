@@ -30,3 +30,4 @@ export * from "./material-design-brief.js";
 export * from "./settlement.js";
 export * from "./asset-governance.js";
 export * from "./hourly-ad-metrics.js";
+export * from "./data-query-contract.js";

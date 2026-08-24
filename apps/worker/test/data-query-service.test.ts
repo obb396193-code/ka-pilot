@@ -1,0 +1,218 @@
+import { describe, expect, it, vi } from "vitest";
+
+import type { SourceQueryResult } from "@ka/domain";
+
+import {
+  createDataQueryHttpHandler,
+  DataQueryService,
+} from "../src/data/query-service.js";
+import { createDataQueryRegistry } from "../src/data/query-registry.js";
+
+function ready(source: "ka_data" | "canonical", value: number): SourceQueryResult {
+  return {
+    status: "ready",
+    rows: [{ accountId: "allowed-account", cost: value }],
+    returnedRowCount: 1,
+    wholeResultTotal: { value: 1, availability: "available" },
+    lineage: {
+      source,
+      datasetVersion: "fixture-dataset",
+      queryTemplateVersion: "v1",
+      metricVersion: "fixture-metrics",
+      dataAsOf: "2026-08-24T08:00:00.000Z",
+      timezone: "Asia/Shanghai",
+      dayCut: "calendar_day",
+      authority: {
+        policyVersion: "2026-08-24",
+        useCase: "cross_media_operations",
+        role: "default_authoritative",
+      },
+      objectIdentity: {
+        objectType: "account",
+        joinKeys: ["workspace_id", "media", "account_id"],
+      },
+      coverage: { complete: true },
+      truncated: false,
+      partial: false,
+    },
+    warnings: [],
+  };
+}
+
+describe("DataQueryService", () => {
+  const auth = {
+    workspaceId: "workspace-server-side",
+    userId: "user-server-side",
+    allowedAccounts: [{ media: "KUAISHOU", accountId: "allowed-account" }],
+  };
+
+  it("injects workspace/user/account scope from authentication, not request body", async () => {
+    const kaData = { query: vi.fn(async () => ready("ka_data", 10)) };
+    const platform = { query: vi.fn(async () => ready("canonical", 11)) };
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData,
+      platform,
+    });
+
+    const response = await service.execute({
+      queryId: "account.summary",
+      params: { date: "2026-08-24" },
+      dataView: "ka_data",
+    }, auth);
+
+    expect(response.ok).toBe(true);
+    expect(kaData.query).toHaveBeenCalledWith(expect.anything(), {
+      workspaceId: auth.workspaceId,
+      userId: auth.userId,
+      accounts: auth.allowedAccounts,
+    });
+    expect(platform.query).not.toHaveBeenCalled();
+    if (response.ok && response.data.mode === "ka_data") {
+      expect(response.data.source.lineage.authority).toMatchObject({
+        useCase: "realtime_delivery",
+        role: "comparison_reference",
+      });
+    }
+  });
+
+  it("rejects requested accounts outside the authenticated account scope", async () => {
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => ready("ka_data", 10) },
+      platform: { query: async () => ready("canonical", 11) },
+    });
+
+    const response = await service.execute({
+      queryId: "account.table",
+      params: { date: "2026-08-24", accountIds: ["forged-account"] },
+      dataView: "platform",
+    }, auth);
+
+    expect(response).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+  });
+
+  it("rejects forged identity fields before adapters run", async () => {
+    const kaData = { query: vi.fn(async () => ready("ka_data", 10)) };
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData,
+      platform: { query: async () => ready("canonical", 11) },
+    });
+
+    const response = await service.execute({
+      queryId: "account.summary",
+      params: { date: "2026-08-24", workspaceId: "forged" },
+      dataView: "ka_data",
+    }, auth);
+
+    expect(response).toMatchObject({ ok: false, error: { code: "INVALID_REQUEST" } });
+    expect(kaData.query).not.toHaveBeenCalled();
+  });
+
+  it("classifies extra top-level fields as INVALID_REQUEST, not an unknown query", async () => {
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => ready("ka_data", 10) },
+      platform: { query: async () => ready("canonical", 11) },
+    });
+    const response = await service.execute({
+      queryId: "account.summary",
+      params: { date: "2026-08-24" },
+      dataView: "ka_data",
+      sql: "select 1",
+    }, auth);
+    expect(response).toMatchObject({ ok: false, error: { code: "INVALID_REQUEST" } });
+  });
+
+  it("keeps both source payloads and never creates a unified value in reconcile mode", async () => {
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => ready("ka_data", 10) },
+      platform: { query: async () => ready("canonical", 11) },
+    });
+
+    const response = await service.execute({
+      queryId: "reconcile.account_daily",
+      params: { date: "2026-08-24" },
+      dataView: "reconcile",
+    }, auth);
+
+    expect(response.ok).toBe(true);
+    if (response.ok && response.data.mode === "reconcile") {
+      expect(response.data.kaData.rows[0]).toMatchObject({ cost: 10 });
+      expect(response.data.platform.rows[0]).toMatchObject({ cost: 11 });
+      expect(response.data.comparison).toEqual({
+        status: "unavailable",
+        reason: "reconciliation_engine_pending",
+        rows: [],
+      });
+      expect(response.data).not.toHaveProperty("value");
+    }
+  });
+
+  it("distinguishes a source outage from one-sided account absence", async () => {
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => { throw new Error("fixture unavailable"); } },
+      platform: { query: async () => ready("canonical", 11) },
+      requestId: () => "fixture-request",
+      now: () => new Date("2026-08-24T08:00:00.000Z"),
+    });
+
+    const response = await service.execute({
+      queryId: "reconcile.account_daily",
+      params: { date: "2026-08-24", media: "KUAISHOU" },
+      dataView: "reconcile",
+    }, auth);
+
+    expect(response.ok).toBe(true);
+    if (response.ok && response.data.mode === "reconcile") {
+      expect(response.data.kaData.status).toBe("unavailable");
+      expect(response.data.platform.status).toBe("ready");
+      expect(response.data.comparison.reason).toBe("source_unavailable");
+      expect(JSON.stringify(response.data)).not.toMatch(/OBJECT_(?:UNMAPPED|MAPPING)/);
+    }
+  });
+
+  it("marks a successful one-sided empty result as source_missing", async () => {
+    const empty = ready("ka_data", 0);
+    empty.rows = [];
+    empty.returnedRowCount = 0;
+    empty.wholeResultTotal = { value: 0, availability: "available" };
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => empty },
+      platform: { query: async () => ready("canonical", 11) },
+    });
+    const response = await service.execute({
+      queryId: "reconcile.account_daily",
+      params: { date: "2026-08-24", media: "KUAISHOU" },
+      dataView: "reconcile",
+    }, auth);
+    expect(response.ok).toBe(true);
+    if (response.ok && response.data.mode === "reconcile") {
+      expect(response.data.comparison.reason).toBe("source_missing");
+    }
+  });
+
+  it("exposes POST /api/v1/data/query semantics through a mountable handler", async () => {
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => ready("ka_data", 10) },
+      platform: { query: async () => ready("canonical", 11) },
+    });
+    const handler = createDataQueryHttpHandler(service);
+
+    expect((await handler({ method: "GET", body: {}, auth })).status).toBe(405);
+    expect(await handler({
+      method: "POST",
+      body: { queryId: "account.summary", params: { date: "2026-08-24" }, dataView: "platform" },
+      auth,
+    })).toMatchObject({ status: 200, body: { ok: true } });
+    expect(await handler({ method: "POST", body: {}, auth: null })).toMatchObject({
+      status: 401,
+      body: { ok: false, error: { code: "UNAUTHORIZED" } },
+    });
+  });
+});

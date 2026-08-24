@@ -5,6 +5,85 @@
 > **P-001#6 裁决（比率/无穷表示统一）**：所有比率/CPA 字段返回 `{value: number|null, state: "finite"|"infinite"|"undefined"}`；
 > `state=infinite` 表示分母0且分子>0（UI 显 `∞`）；`state=undefined` 表示无意义（UI 显 `—`）；绝不用 `null`/`Infinity`/字符串。
 
+## 受控双数据查询（BE-001）
+
+`POST /api/v1/data/query`
+
+该端点的数值字段使用 `MetricValue={value:number|null, availability}`；`denominator_zero`、`missing`、`partial`、`stale`、`error` 均与真实数值 0 分开表达。旧 `/api/v1/query` 的 `RatioValue.state` 约定不跨端点静默复用。
+
+公开请求严格只接受三个顶层字段：
+
+```jsonc
+{
+  "queryId": "account.summary",
+  "params": {
+    "date": "2026-08-24",
+    "media": "KUAISHOU",
+    "accountIds": ["fixture-account"]
+  },
+  "dataView": "ka_data | platform | reconcile"
+}
+```
+
+- 禁止提交 `sql`、表名、列名、自由表达式、`workspaceId`、`userId`；未知字段按 `INVALID_REQUEST` 拒绝。
+- 首批 Query Registry 仅开放：`account.summary`、`account.trend`、`account.table`、`account.anomalies`、`account.detail`、`reconcile.account_daily`。
+- Registry 为每项冻结参数 Schema、支持视图、最长日期范围、最大行数、账户 scope、查询模板版本、指标版本和逐指标权威策略。
+- `workspaceId/userId/allowedAccounts` 只能从服务端认证上下文注入。账户授权与双源直连键均为 `(workspace_id, media, account_id)`；同号跨媒体不能共享授权。
+- KA Data 上游 SQL 仅由 Registry 生成。共享 reader token 只从服务端 Secret 读取；浏览器、响应、序列化对象和错误中均不得出现。
+- KA Data mapped origin 在服务启动时从 `KA_DATA_BASE_URL` 读取并校验为纯 HTTPS origin，运行期间固定请求 `/api/query`；禁止 redirect。
+
+### 成功响应
+
+单来源响应包含 `mode + source`。每个 source 都必须返回：`status/rows/returnedRowCount/wholeResultTotal/lineage/warnings`。lineage 至少包含：
+
+```jsonc
+{
+  "source": "ka_data",
+  "datasetVersion": "...",
+  "queryTemplateVersion": "v1",
+  "metricVersion": "...",
+  "dataAsOf": "2026-08-24T08:00:00.000Z",
+  "timezone": "Asia/Shanghai",
+  "dayCut": "calendar_day",
+  "authority": {
+    "policyVersion": "2026-08-24",
+    "useCase": "cross_media_operations",
+    "role": "default_authoritative"
+  },
+  "objectIdentity": {
+    "objectType": "account",
+    "joinKeys": ["workspace_id", "media", "account_id"]
+  },
+  "coverage": { "complete": true },
+  "truncated": false,
+  "partial": false
+}
+```
+
+`reconcile` 固定并列返回 `kaData` 与 `platform` 两个独立 source object；禁止 `primary`、混合 `value` 或第三个统一主数。BE-001 在对账内核接入前返回 `comparison.status=unavailable` 与 `reconciliation_engine_pending`；双方查询成功但同一范围仅一侧有行时返回 `source_missing`，整源请求失败返回 `source_unavailable`，二者都不是账户 ID 待映射。
+
+### 截断与全量结论
+
+- 任一响应恰好命中 2,000 行、10,000 行或 16MB，均按疑似截断处理；上游 `truncated=true`、`limit_clamped=true`、行数不一致或超过 Registry budget 同样标 `partial/truncated`。
+- `partial/truncated/coverage.complete=false` 时，`wholeResultTotal` 不得为 `available`，不得输出全量汇总。
+- 账户单侧缺行用 `source_missing`；不得仅按账户名称 join，不得把任务/商品/素材/广告组的 ID 同源性从账户事实外推。
+
+### 稳定错误 envelope
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "QUERY_NOT_ALLOWED",
+    "message": "The requested query is not available",
+    "retryable": false,
+    "requestId": "..."
+  }
+}
+```
+
+错误码：`INVALID_REQUEST | UNAUTHORIZED | FORBIDDEN | QUERY_NOT_ALLOWED | VIEW_UNSUPPORTED | SOURCE_UNAVAILABLE | SOURCE_TRUNCATED | UPSTREAM_INVALID_RESPONSE | UPSTREAM_TIMEOUT | INTERNAL_ERROR`。错误 message 不透传上游响应正文、SQL、token 或内部堆栈。
+
 ## 语义层查询（核心，query_type 五类）
 
 `POST /api/v1/query`

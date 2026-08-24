@@ -1,0 +1,145 @@
+import { describe, expect, it } from "vitest";
+
+import {
+  dataQueryRequestSchema,
+  dataQueryResponseSchema,
+  dataViewModeSchema,
+  metricValueSchema,
+  reconcileMetricSchema,
+  sourceQueryResultSchema,
+} from "../src/data-query-contract.js";
+
+const lineage = {
+  source: "ka_data",
+  datasetVersion: "snapshot-20260824",
+  queryTemplateVersion: "account-summary-v1",
+  metricVersion: "ka-data-v1",
+  dataAsOf: "2026-08-24T08:00:00.000Z",
+  timezone: "Asia/Shanghai",
+  dayCut: "calendar_day",
+  authority: {
+    policyVersion: "2026-08-24",
+    useCase: "cross_media_operations",
+    role: "default_authoritative",
+  },
+  objectIdentity: {
+    objectType: "account",
+    joinKeys: ["workspace_id", "media", "account_id"],
+  },
+  coverage: { complete: true },
+  truncated: false,
+  partial: false,
+} as const;
+
+describe("dual data query contract", () => {
+  it("accepts exactly the three frozen data view modes", () => {
+    for (const mode of ["ka_data", "platform", "reconcile"] as const) {
+      expect(dataViewModeSchema.parse(mode)).toBe(mode);
+    }
+    expect(() => dataViewModeSchema.parse("merged")).toThrow();
+  });
+
+  it("accepts only queryId, params and dataView at the public request boundary", () => {
+    const valid = {
+      queryId: "account.summary",
+      params: { date: "2026-08-24" },
+      dataView: "ka_data",
+    };
+    expect(dataQueryRequestSchema.parse(valid)).toEqual(valid);
+    expect(() => dataQueryRequestSchema.parse({ ...valid, sql: "select 1" })).toThrow();
+    expect(() => dataQueryRequestSchema.parse({ ...valid, workspaceId: "forged" })).toThrow();
+    expect(() => dataQueryRequestSchema.parse({ ...valid, accountId: "forged" })).toThrow();
+  });
+
+  it("represents metric absence and zero as different states", () => {
+    expect(metricValueSchema.parse({ value: 0, availability: "available" })).toEqual({
+      value: 0,
+      availability: "available",
+    });
+    expect(metricValueSchema.parse({ value: null, availability: "missing" })).toEqual({
+      value: null,
+      availability: "missing",
+    });
+    expect(() => metricValueSchema.parse({ value: 0, availability: "missing" })).toThrow();
+  });
+
+  it("requires complete lineage and prevents partial data from claiming a whole total", () => {
+    expect(() => sourceQueryResultSchema.parse({ status: "ready", rows: [] })).toThrow();
+    expect(() => sourceQueryResultSchema.parse({
+      status: "ready",
+      rows: [],
+      returnedRowCount: 2_000,
+      wholeResultTotal: { value: 2_000, availability: "available" },
+      lineage: { ...lineage, coverage: { complete: false }, partial: true, truncated: true },
+      warnings: ["suspected truncation"],
+    })).toThrow(/wholeResultTotal/i);
+  });
+
+  it("requires frozen source-authority metadata instead of an adapter-selected priority", () => {
+    expect(() => sourceQueryResultSchema.parse({
+      status: "ready",
+      rows: [],
+      returnedRowCount: 0,
+      wholeResultTotal: { value: 0, availability: "available" },
+      lineage: { ...lineage, authority: undefined },
+      warnings: [],
+    })).toThrow();
+  });
+
+  it("keeps KA Data and platform independent in reconcile mode", () => {
+    const source = {
+      status: "ready",
+      rows: [{ accountId: "fixture-account", cost: 1 }],
+      returnedRowCount: 1,
+      wholeResultTotal: { value: 1, availability: "available" },
+      lineage,
+      warnings: [],
+    };
+    const response = dataQueryResponseSchema.parse({
+      ok: true,
+      data: {
+        mode: "reconcile",
+        kaData: source,
+        platform: {
+          ...source,
+          lineage: { ...lineage, source: "canonical" },
+        },
+        comparison: {
+          status: "unavailable",
+          reason: "reconciliation_engine_pending",
+          rows: [],
+        },
+      },
+    });
+
+    expect(response.ok).toBe(true);
+    if (response.ok && response.data.mode === "reconcile") {
+      expect(response.data.kaData.rows).toHaveLength(1);
+      expect(response.data.platform.rows).toHaveLength(1);
+      expect(response.data).not.toHaveProperty("value");
+      expect(response.data).not.toHaveProperty("primary");
+    }
+  });
+
+  it("uses a stable non-leaking error envelope", () => {
+    expect(dataQueryResponseSchema.parse({
+      ok: false,
+      error: {
+        code: "QUERY_NOT_ALLOWED",
+        message: "The requested query is not available",
+        retryable: false,
+        requestId: "request-fixture",
+      },
+    })).toMatchObject({ ok: false, error: { code: "QUERY_NOT_ALLOWED" } });
+  });
+
+  it("forbids stale or partial values from being declared comparable", () => {
+    expect(() => reconcileMetricSchema.parse({
+      kaData: { value: 10, availability: "stale" },
+      platform: { value: 11, availability: "available" },
+      delta: { value: 1, availability: "available" },
+      deltaRate: { value: 0.1, availability: "available" },
+      comparable: true,
+    })).toThrow(/available source values/i);
+  });
+});

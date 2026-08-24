@@ -1,5 +1,26 @@
 # 指标字典 v1.0（计算层唯一依据——packages/domain 按此实现，前端与 agent 永不自算）
 
+## 双数据权威与可比性（2026-08-24 冻结）
+
+权威按业务用途和时效决定，不能由前端或某个 Adapter 临时改优先级：
+
+| 场景/指标组 | 默认权威来源 | Contract `authority.useCase` |
+|---|---|---|
+| 跨媒体经营、大盘、部门汇总 | KA Data | `cross_media_operations` |
+| 历史运营分析、历史趋势 | KA Data | `historical_analysis` |
+| 商品、素材、广告组、BI 分析 | KA Data | `product_material_adgroup_bi` |
+| 当日实时消耗、转化、CPA | platform | `realtime_delivery` |
+| 小时 pacing、时段趋势 | platform | `hourly_pacing` |
+| 异常诊断、账户/广告下钻 | platform | `diagnostics` |
+| 执行前检查、媒体对象状态 | platform | `pre_execution_check` |
+| 动作效果回收、T+1/T+7 | platform | `effect_measurement` |
+| 考核价、返点、赔付、现金成本 | 两边各自版本化 | `source_versioned_financials` |
+
+- `ka_data` 和 `platform` 单模式只显示本来源值；主动查看非默认来源时用 `authority.role=comparison_reference` 明示，不自动切换或混算。
+- `reconcile` 只并列双方原值和 lineage。双方完整、非 stale、口径版本可比时才允许后端计算 delta/deltaRate；否则二者 availability 不能是 `available`。
+- 任一侧 `partial/truncated` 时禁止全量总计和差异结论；0 与 missing 必须分别表达。
+- 账户双源同源键固定为 `(workspace_id, media, account_id)`，保留字符串类型与前导零；同一键单侧无行记 `source_missing`。任务、商品、素材、广告组不可套用该结论。
+
 ## 基础字段（来源：奇航 get_data，字段名照抄接口）
 
 | 字段 | 来源 resource | 含义 |
