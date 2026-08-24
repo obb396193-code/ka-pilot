@@ -66,6 +66,7 @@ function uiLineage(source: SourceQueryResult, side: "ka_data" | "platform", isMo
     metricVersion: lineage.metricVersion,
     timezone: lineage.timezone,
     dayCut: lineage.dayCut,
+    metadataAvailability: lineage.metadataAvailability,
     coverage,
     truncated: lineage.truncated,
     partial: lineage.partial || !lineage.coverage.complete,
@@ -74,7 +75,7 @@ function uiLineage(source: SourceQueryResult, side: "ka_data" | "platform", isMo
   }
 }
 function placeholderLineage(mode: DataViewMode, error?: StableDataQueryError): LineageBundle {
-  const source = (side: "ka_data" | "platform"): SourceLineage => ({ source: side, sourceLabel: `${side === "ka_data" ? "KA Data" : "自建平台"} · 未取得血缘`, dataAsOf: "1970-01-01T00:00:00+00:00", datasetVersion: "unavailable", queryTemplateVersion: "unavailable", metricVersion: "unavailable", timezone: "Asia/Shanghai", dayCut: "unavailable", coverage: "不可用", truncated: false, partial: true, stale: false, warnings: error ? [`${error.code} · requestId ${error.requestId}`] : [] })
+  const source = (side: "ka_data" | "platform"): SourceLineage => ({ source: side, sourceLabel: `${side === "ka_data" ? "KA Data" : "自建平台"} · 未取得血缘`, dataAsOf: null, datasetVersion: null, queryTemplateVersion: "unavailable", metricVersion: "unavailable", timezone: null, dayCut: null, metadataAvailability: "unknown", coverage: "不可用", truncated: false, partial: true, stale: false, warnings: error ? [`${error.code} · requestId ${error.requestId}`] : [] })
   return mode === "reconcile" ? { mode: "reconcile", kaData: source("ka_data"), platform: source("platform"), comparability: { comparable: false, reason: "未取得双源结果" } } : { mode: "single", source: source(mode) }
 }
 function envelopeMeta(response: DataQueryResponse, requestedMode: DataViewMode, isMock: boolean, forcedState?: DataState) {

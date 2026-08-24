@@ -47,7 +47,7 @@ function lineage(source: "ka_data" | "platform", state: QueryRequest["mockState"
   const partial = state === "partial" || state === "truncated"
   return {
     source: source === "ka_data" ? "ka_data" as const : "canonical" as const,
-    datasetVersion: `${source}-demo-20260824-r1`, queryTemplateVersion: "v1-mock", metricVersion: "mock-metrics-v1", dataAsOf: AS_OF, timezone: "Asia/Shanghai", dayCut: "calendar_day",
+    datasetVersion: `${source}-demo-20260824-r1`, queryTemplateVersion: "v1-mock", metricVersion: "mock-metrics-v1", dataAsOf: AS_OF, timezone: "Asia/Shanghai", dayCut: "calendar_day", metadataAvailability: "known" as const,
     authority: { policyVersion: "2026-08-24", useCase: "cross_media_operations" as const, role: source === "ka_data" ? "default_authoritative" as const : "comparison_reference" as const },
     objectIdentity: { objectType: "account" as const, joinKeys: ["workspace_id", "media", "account_id"] as ["workspace_id", "media", "account_id"] },
     coverage: { complete: !partial, ...(partial ? { reason: state === "truncated" ? "Mock result hit truncation boundary" : "Mock partial coverage" } : {}), requestedObjects: 20, returnedObjects: partial ? 18 : 20 },

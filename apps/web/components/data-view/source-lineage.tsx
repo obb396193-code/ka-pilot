@@ -3,7 +3,8 @@ import { IconAlertTriangle, IconClock, IconDatabase } from "@tabler/icons-react"
 import { Badge } from "@/components/ui/badge"
 import type { LineageBundle, SourceLineage } from "@/lib/data/data-view"
 
-function formatAsOf(value: string) {
+function formatAsOf(value: string | null) {
+  if (value === null) return "未知"
   const [date, rest] = value.split("T")
   return `${date} ${rest.slice(0, 5)} ${value.slice(-6)}`
 }
@@ -20,10 +21,11 @@ function SourceCard({ lineage }: { lineage: SourceLineage }) {
           <IconClock className="size-4" />
           截止 {formatAsOf(lineage.dataAsOf)}
         </span>
-        <span className="font-mono text-muted-foreground">版本 {lineage.datasetVersion}</span>
+        <span className="font-mono text-muted-foreground">版本 {lineage.datasetVersion ?? "未知"}</span>
         <span className="font-mono text-muted-foreground">查询 {lineage.queryTemplateVersion}</span>
         <span className="font-mono text-muted-foreground">口径 {lineage.metricVersion}</span>
-        <span className="text-muted-foreground">{lineage.timezone} · 日切 {lineage.dayCut}</span>
+        <span className="text-muted-foreground">{lineage.timezone ?? "时区未知"} · 日切 {lineage.dayCut ?? "未知"}</span>
+        {lineage.metadataAvailability === "known" ? null : <Badge variant="secondary">{lineage.metadataAvailability === "partial" ? "来源元数据部分可用" : "来源元数据未知"}</Badge>}
         <span className="text-muted-foreground">覆盖 {lineage.coverage}</span>
         {lineage.truncated ? <Badge variant="outline">结果已截断</Badge> : <Badge variant="outline">未截断</Badge>}
         {lineage.partial ? <Badge variant="secondary">部分覆盖</Badge> : null}

@@ -14,12 +14,13 @@ export type MetricValue = z.infer<typeof displayMetricValueSchema>
 export type SourceLineage = {
   source: "ka_data" | "platform"
   sourceLabel: string
-  dataAsOf: string
-  datasetVersion: string
+  dataAsOf: string | null
+  datasetVersion: string | null
   queryTemplateVersion: string
   metricVersion: string
-  timezone: string
-  dayCut: string
+  timezone: string | null
+  dayCut: string | null
+  metadataAvailability: "known" | "partial" | "unknown"
   coverage: string
   truncated: boolean
   partial: boolean

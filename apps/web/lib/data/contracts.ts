@@ -34,12 +34,13 @@ const authoritySchema = z.object({
 
 export const sourceLineageSchema = z.object({
   source: z.enum(["ka_data", "qihang_realtime", "qihang_offline", "canonical"]),
-  datasetVersion: z.string().min(1),
+  datasetVersion: z.string().min(1).nullable(),
   queryTemplateVersion: z.string().min(1),
   metricVersion: z.string().min(1),
-  dataAsOf: z.string().datetime({ offset: true }),
-  timezone: z.string().min(1),
-  dayCut: z.string().min(1),
+  dataAsOf: z.string().datetime({ offset: true }).nullable(),
+  timezone: z.string().min(1).nullable(),
+  dayCut: z.string().min(1).nullable(),
+  metadataAvailability: z.enum(["known", "partial", "unknown"]),
   authority: authoritySchema,
   objectIdentity: z.object({ objectType: z.literal("account"), joinKeys: z.tuple([z.literal("workspace_id"), z.literal("media"), z.literal("account_id")]) }).strict(),
   coverage: z.object({
@@ -52,6 +53,11 @@ export const sourceLineageSchema = z.object({
   partial: z.boolean(),
 }).strict().superRefine((lineage, context) => {
   if (lineage.truncated && !lineage.partial) context.addIssue({ code: "custom", path: ["partial"], message: "truncated lineage must be partial" })
+  const sourceMetadata = [lineage.datasetVersion, lineage.dataAsOf, lineage.timezone, lineage.dayCut]
+  const known = sourceMetadata.filter((value) => value !== null).length
+  if (lineage.metadataAvailability === "known" && known !== sourceMetadata.length) context.addIssue({ code: "custom", path: ["metadataAvailability"], message: "known lineage requires all source metadata" })
+  if (lineage.metadataAvailability === "unknown" && known !== 0) context.addIssue({ code: "custom", path: ["metadataAvailability"], message: "unknown lineage cannot claim source metadata" })
+  if (lineage.metadataAvailability === "partial" && (known === 0 || known === sourceMetadata.length)) context.addIssue({ code: "custom", path: ["metadataAvailability"], message: "partial lineage requires some but not all source metadata" })
 })
 export type BackendSourceLineage = z.infer<typeof sourceLineageSchema>
 
