@@ -13,9 +13,11 @@ import {
   type FindingDetailData,
   type SourceQueryResult,
   type StableDataQueryError,
+  type WorkItemDetailResponse,
   type WorkbenchData,
 } from "./contracts.ts"
 import type { DataResponse, DataState, DataViewMode, LineageBundle, MetricValue, SourceLineage } from "./data-view.ts"
+import { platformMetricSummarySchema, platformTableRowsSchema, platformTrendRowsSchema, type PlatformTableRow } from "./platform-canonical.ts"
 
 type Row = Record<string, unknown>
 const money = new Intl.NumberFormat("zh-CN", { style: "currency", currency: "CNY", maximumFractionDigits: 2 })
@@ -44,6 +46,13 @@ function sourceMetrics(row: Row | undefined) {
     cpa: metric(numeric(row, "cpa", "real_cpa"), text(row, "cpa_display", "real_cpa_display"), "money"),
   }
 }
+function platformSourceMetrics(row: PlatformTableRow | undefined) {
+  return {
+    spend: row?.cost === null || row?.cost === undefined ? metric(undefined, undefined) : metric(row.cost, undefined, "money"),
+    conversions: row?.realConversion === null || row?.realConversion === undefined ? metric(undefined, undefined) : metric(row.realConversion, undefined),
+    cpa: row?.realCpa === null || row?.realCpa === undefined ? metric(undefined, undefined, "money", "−") : metric(row.realCpa, undefined, "money"),
+  }
+}
 const missingSource = () => ({ spend: metric(undefined, undefined), conversions: metric(undefined, undefined), cpa: metric(undefined, undefined) })
 
 function errorState(error: StableDataQueryError): DataState {
@@ -53,6 +62,9 @@ function errorState(error: StableDataQueryError): DataState {
   if (error.code === "UPSTREAM_INVALID_RESPONSE" && /16\s?MB/i.test(error.message)) return "too-large"
   if (error.code === "SOURCE_UNAVAILABLE") return "unavailable"
   return "error"
+}
+function contractDrift(message: string): DataQueryResponse {
+  return { ok: false, error: { code: "UPSTREAM_INVALID_RESPONSE", message, retryable: false, requestId: "frontend-platform-contract" } }
 }
 function uiLineage(source: SourceQueryResult, side: "ka_data" | "platform", isMock: boolean): SourceLineage {
   const lineage = source.lineage
@@ -106,23 +118,28 @@ function emptyAnalysis(mode: DataViewMode): AnalysisData { return { mode, rows: 
 export function adaptAnalysis(response: DataQueryResponse, mode: DataViewMode, isMock: boolean, forcedState?: DataState): DataResponse<AnalysisData> {
   const base = emptyAnalysis(mode)
   if (!response.ok) return { ...envelopeMeta(response, mode, isMock, forcedState), data: base }
-  const kaRows = rows(sourceFor(response, "ka_data")); const platformRows = rows(sourceFor(response, "platform"))
-  const byId = new Map<string, { ka?: Row; platform?: Row }>()
-  for (const row of kaRows) { const id = text(row, "account_id", "accountId"); if (id) byId.set(id, { ...(byId.get(id) ?? {}), ka: row }) }
-  for (const row of platformRows) { const id = text(row, "account_id", "accountId"); if (id) byId.set(id, { ...(byId.get(id) ?? {}), platform: row }) }
-  const comparisonById = response.data.mode === "reconcile" ? new Map(response.data.comparison.rows.map((row) => [String(row.key.account_id ?? ""), row])) : new Map()
+  const kaRows = rows(sourceFor(response, "ka_data")); const platformSource = sourceFor(response, "platform")
+  const platformBatch = isMock ? null : platformTableRowsSchema.safeParse(rows(platformSource))
+  if (platformBatch && !platformBatch.success) return { ...envelopeMeta(contractDrift("Platform account rows failed the strict canonical contract"), mode, false), data: base }
+  const platformRows = isMock ? rows(platformSource) : platformBatch?.data ?? []
+  const byId = new Map<string, { media: string; ka?: Row; platform?: Row; canonicalPlatform?: PlatformTableRow }>()
+  for (const row of kaRows) { const id = text(row, "account_id"); const media = text(row, "media"); if (id && media) { const key = `${media}\u0000${id}`; byId.set(key, { ...(byId.get(key) ?? { media }), ka: row }) } }
+  for (const row of platformRows) { const id = isMock ? text(row, "account_id") : (row as PlatformTableRow).accountId; const media = isMock ? text(row, "media") : (row as PlatformTableRow).media; if (id && media) { const key = `${media}\u0000${id}`; byId.set(key, { ...(byId.get(key) ?? { media }), ...(isMock ? { platform: row as Row } : { canonicalPlatform: row as PlatformTableRow }) }) } }
+  const comparisonById = response.data.mode === "reconcile" ? new Map(response.data.comparison.rows.map((row) => [`${String(row.key.media ?? "")}\u0000${String(row.key.account_id ?? "")}`, row])) : new Map()
   const authorityValue = authority(response)
-  const resultRows: AnalysisRow[] = [...byId.entries()].map(([accountId, pair]) => {
+  const resultRows: AnalysisRow[] = [...byId.entries()].map(([identityKey, pair]) => {
+    const accountId = identityKey.slice(identityKey.indexOf("\u0000") + 1)
     const displayRow = pair.platform ?? pair.ka
-    const comparison = comparisonById.get(accountId)?.metrics.cpa
+    const canonicalPlatform = pair.canonicalPlatform
+    const comparison = comparisonById.get(identityKey)?.metrics.cpa
     const statusValue = text(displayRow, "status")
     return {
-      accountId, accountName: text(displayRow, "account_name", "accountName") ?? "脱敏账户", owner: text(displayRow, "owner") ?? "未提供",
-      kaData: pair.ka ? sourceMetrics(pair.ka) : missingSource(), platform: pair.platform ? sourceMetrics(pair.platform) : missingSource(),
-      assessmentCpa: metric(numeric(displayRow, "assessment_cpa", "assessment"), text(displayRow, "assessment_cpa_display"), "money"),
+      workspaceId: canonicalPlatform?.workspaceId ?? null, media: pair.media, accountId, accountName: canonicalPlatform?.accountName ?? text(displayRow, "account_name") ?? "脱敏账户", owner: canonicalPlatform?.ownerUserId ?? text(displayRow, "owner") ?? "未提供",
+      kaData: pair.ka ? sourceMetrics(pair.ka) : missingSource(), platform: canonicalPlatform ? platformSourceMetrics(canonicalPlatform) : pair.platform ? sourceMetrics(pair.platform) : missingSource(),
+      assessmentCpa: canonicalPlatform?.assessmentPriceSnapshot === null || canonicalPlatform?.assessmentPriceSnapshot === undefined ? metric(numeric(displayRow, "assessment_cpa", "assessment"), text(displayRow, "assessment_cpa_display"), "money") : metric(canonicalPlatform.assessmentPriceSnapshot, undefined, "money"),
       comparison: comparison ? { comparable: comparison.comparable, reason: comparison.reason ?? null, delta: backendMetric(comparison.delta, "money"), deltaRate: backendMetric(comparison.deltaRate, "percent") } : { comparable: false, reason: mode === "reconcile" ? response.data.mode === "reconcile" ? response.data.comparison.reason ?? "后端未提供可比结果" : "后端未提供可比结果" : "单源视图不生成差异", delta: metric(undefined, undefined), deltaRate: metric(undefined, undefined) },
       authorityByMetric: { spend: authorityValue, conversions: authorityValue, cpa: authorityValue, assessmentCpa: { defaultSource: "source_versioned", status: "versioned", reason: "考核价按后端来源版本展示" } },
-      status: statusValue === "healthy" || statusValue === "watch" || statusValue === "critical" ? statusValue : "unavailable",
+      status: canonicalPlatform?.dataAnomaly ? "critical" : statusValue === "healthy" || statusValue === "watch" || statusValue === "critical" ? statusValue : canonicalPlatform ? "healthy" : "unavailable",
     }
   })
   const data = analysisSchema.parse({ mode, rows: resultRows, summary: `${resultRows.length} 个账户；CPA、差异和权威来源均直接使用 API 字段与元数据。` })
@@ -134,11 +151,19 @@ export function adaptWorkbench(responses: { summary: DataQueryResponse; trend: D
   const response = failed ?? responses.summary
   const base = emptyWorkbench()
   if (!responses.summary.ok || !responses.trend.ok || !responses.anomalies.ok) return { ...envelopeMeta(response, mode, isMock, forcedState), data: base }
-  const summary = rows(sourceFor(responses.summary, mode === "reconcile" ? "platform" : mode))[0]
-  const trendRows = rows(sourceFor(responses.trend, mode === "reconcile" ? "platform" : mode))
+  const summarySource = sourceFor(responses.summary, mode === "reconcile" ? "platform" : mode)
+  const trendSource = sourceFor(responses.trend, mode === "reconcile" ? "platform" : mode)
+  const summary = rows(summarySource)[0]
+  const trendRows = rows(trendSource)
   const anomalySource = sourceFor(responses.anomalies, "platform")
-  const anomalyItems = rows(anomalySource).map((row) => ({ id: text(row, "finding_id") ?? "unknown", accountId: text(row, "account_id") ?? "unknown", accountName: text(row, "account_name") ?? "脱敏账户", title: text(row, "title") ?? "异常待核查", severity: text(row, "severity") === "critical" ? "critical" as const : text(row, "severity") === "info" ? "info" as const : "warning" as const, evidence: text(row, "evidence") ?? "后端未提供证据", attribution: text(row, "attribution") ?? "待调查", suggestedAction: text(row, "suggested_action") ?? "保持只读并复核", cta: "查看诊断" }))
-  const metrics = [
+  const canonicalSummary = !isMock && summary && summarySource?.lineage.source === "canonical" ? platformMetricSummarySchema.safeParse(summary) : null
+  const canonicalTrend = !isMock && trendSource?.lineage.source === "canonical" ? platformTrendRowsSchema.safeParse(trendRows) : null
+  const canonicalAnomalies = !isMock ? platformTableRowsSchema.safeParse(rows(anomalySource)) : null
+  if (canonicalSummary && !canonicalSummary.success || canonicalTrend && !canonicalTrend.success || canonicalAnomalies && !canonicalAnomalies.success) return { ...envelopeMeta(contractDrift("Platform workbench rows failed the strict canonical contract"), mode, false), data: base }
+  const canonicalTrendRows = canonicalTrend?.success ? canonicalTrend.data : []
+  const canonicalAnomalyRows = canonicalAnomalies?.success ? canonicalAnomalies.data : []
+  const anomalyItems = isMock ? rows(anomalySource).map((row) => ({ id: text(row, "finding_id") ?? "unknown", findingId: text(row, "finding_id") ?? null, media: text(row, "media") ?? "KUAISHOU", accountId: text(row, "account_id") ?? "unknown", accountName: text(row, "account_name") ?? "脱敏账户", title: text(row, "title") ?? "异常待核查", severity: text(row, "severity") === "critical" ? "critical" as const : text(row, "severity") === "info" ? "info" as const : "warning" as const, evidence: text(row, "evidence") ?? "后端未提供证据", attribution: text(row, "attribution") ?? "待调查", suggestedAction: text(row, "suggested_action") ?? "保持只读并复核", cta: "查看诊断" })) : canonicalAnomalyRows.map((row) => ({ id: `${row.media}-${row.accountId}-${row.ds}`, findingId: null, media: row.media, accountId: row.accountId, accountName: row.accountName ?? "脱敏账户", title: "数据异常待核查", severity: "warning" as const, evidence: `Platform dataAnomaly=true · ${row.ds}`, attribution: "待工作项详情接口返回诊断归因", suggestedAction: "保持只读，并从账户详情核查指标与来源", cta: "查看账户" }))
+  const legacyMetrics = [
     { key: "spend", label: "今日消耗", value: text(summary, "cost_display") ?? "−", delta: null, tone: "neutral" as const },
     { key: "cpa", label: "真实 CPA", value: text(summary, "real_cpa_display", "cpa_display") ?? "−", delta: text(summary, "assessment_cpa_display") ?? null, tone: "neutral" as const },
     { key: "compliance", label: "达标率", value: text(summary, "compliance_rate_display") ?? "−", delta: null, tone: "neutral" as const },
@@ -146,22 +171,35 @@ export function adaptWorkbench(responses: { summary: DataQueryResponse; trend: D
     { key: "bi_volume", label: "BI 量级", value: text(summary, "bi_volume_display") ?? "−", delta: null, tone: "neutral" as const },
     { key: "risk", label: "待处理", value: text(summary, "risk_count_display") ?? "−", delta: null, tone: "critical" as const },
   ]
-  const data = workbenchSchema.parse({ ...base, greeting: "早上好，KA 经营团队", scopeLabel: isMock ? "脱敏 Mock 数据" : "内网数据", metrics, anomalies: anomalyItems, accountCoverage: text(summary, "account_coverage_display") ?? "−", trend: trendRows.map((row) => ({ label: text(row, "label", "ds") ?? "−", spend: numeric(row, "cost", "cost_yuan") ?? null, realCpa: numeric(row, "real_cpa", "cpa") ?? null })), alerts: [{ level: "P0", label: "高优先级异常", value: String(anomalyItems.filter((item) => item.severity === "critical").length), detail: "数量由异常查询返回" }], healthyAccountMessage: "未返回的账户不自动判定健康" })
+  const canonicalMetrics = canonicalSummary?.success ? [{ key: "spend", label: "今日消耗", value: money.format(canonicalSummary.data.cost), delta: null, tone: "neutral" as const }, { key: "cpa", label: "真实 CPA", value: canonicalSummary.data.ratios.realCpa.state === "finite" ? money.format(canonicalSummary.data.ratios.realCpa.value) : "−", delta: null, tone: "neutral" as const }, { key: "compliance", label: "达标率", value: "−", delta: null, tone: "neutral" as const }, { key: "cost_space", label: "成本空间", value: money.format(canonicalSummary.data.costSpace), delta: null, tone: "neutral" as const }, { key: "bi_volume", label: "BI 量级", value: number.format(canonicalSummary.data.realConversion), delta: null, tone: "neutral" as const }, { key: "risk", label: "待处理", value: number.format(canonicalSummary.data.anomalyRows), delta: null, tone: "critical" as const }] : legacyMetrics
+  const canonicalTrendData = canonicalTrendRows.map((row) => ({ label: row.ds, spend: row.metrics.cost, realCpa: row.metrics.ratios.realCpa.state === "finite" ? row.metrics.ratios.realCpa.value : null }))
+  const data = workbenchSchema.parse({ ...base, greeting: "早上好，KA 经营团队", scopeLabel: isMock ? "脱敏 Mock 数据" : "内网数据", metrics: canonicalMetrics, anomalies: anomalyItems, accountCoverage: canonicalSummary?.success ? `${canonicalSummary.data.accountCount} 个账户` : text(summary, "account_coverage_display") ?? "−", trend: canonicalTrendRows.length ? canonicalTrendData : trendRows.map((row) => ({ label: text(row, "label", "ds") ?? "−", spend: numeric(row, "cost", "cost_yuan") ?? null, realCpa: numeric(row, "real_cpa", "cpa") ?? null })), alerts: [{ level: "P0", label: "高优先级异常", value: String(canonicalSummary?.success ? canonicalSummary.data.anomalyRows : anomalyItems.filter((item) => item.severity === "critical").length), detail: "数量由异常查询返回" }], healthyAccountMessage: "未返回的账户不自动判定健康" })
   return { ...envelopeMeta(responses.summary, mode, isMock, forcedState), data }
 }
 
 export function adaptAccountDetail(response: DataQueryResponse, mode: DataViewMode, isMock: boolean, accountId: string, forcedState?: DataState): DataResponse<AccountDetailData> {
   const source = sourceFor(response, mode === "reconcile" ? "platform" : mode); const sourceRows = rows(source); const row = sourceRows[0]
-  const data = accountDetailSchema.parse({ accountId, accountName: text(row, "account_name", "accountName") ?? "脱敏账户", owner: text(row, "owner") ?? "未提供", status: ["healthy", "watch", "critical"].includes(text(row, "status") ?? "") ? text(row, "status") : "unavailable", metrics: [{ key: "spend", label: "消耗", value: text(row, "cost_display") ?? "−", delta: null, tone: "neutral" }, { key: "cpa", label: "真实 CPA", value: text(row, "cpa_display") ?? "−", delta: text(row, "assessment_cpa_display") ?? null, tone: "neutral" }], trend: sourceRows.map((item) => ({ label: text(item, "ds", "label") ?? "−", cpa: numeric(item, "cpa", "real_cpa") ?? null, assessmentCpa: numeric(item, "assessment_cpa", "assessment") ?? null })), currentFindingId: text(row, "finding_id") ?? null, currentFindingTitle: text(row, "finding_title") ?? null })
+  const canonicalBatch = isMock || source?.lineage.source !== "canonical" ? null : platformTableRowsSchema.safeParse(sourceRows)
+  if (canonicalBatch && !canonicalBatch.success) return { ...envelopeMeta(contractDrift("Platform account detail rows failed the strict canonical contract"), mode, false), data: accountDetailSchema.parse({ media: text(row, "media") ?? "UNKNOWN", accountId, accountName: "脱敏账户", owner: "未提供", status: "unavailable", metrics: [], trend: [], currentFindingId: null, currentFindingTitle: null }) }
+  const canonicalRows = canonicalBatch?.success ? canonicalBatch.data : []
+  const canonical = canonicalRows[0]
+  const data = accountDetailSchema.parse({ media: canonical?.media ?? text(row, "media") ?? "UNKNOWN", accountId, accountName: canonical?.accountName ?? text(row, "account_name") ?? "脱敏账户", owner: canonical?.ownerUserId ?? text(row, "owner") ?? "未提供", status: canonical ? canonical.dataAnomaly ? "critical" : "healthy" : ["healthy", "watch", "critical"].includes(text(row, "status") ?? "") ? text(row, "status") : "unavailable", metrics: [{ key: "spend", label: "消耗", value: canonical?.cost === null || canonical?.cost === undefined ? text(row, "cost_display") ?? "−" : money.format(canonical.cost), delta: null, tone: "neutral" }, { key: "cpa", label: "真实 CPA", value: canonical?.realCpa === null || canonical?.realCpa === undefined ? text(row, "cpa_display") ?? "−" : money.format(canonical.realCpa), delta: canonical?.assessmentPriceSnapshot === null || canonical?.assessmentPriceSnapshot === undefined ? text(row, "assessment_cpa_display") ?? null : money.format(canonical.assessmentPriceSnapshot), tone: "neutral" }], trend: canonicalRows.length ? canonicalRows.map((item) => ({ label: item.ds, cpa: item.realCpa, assessmentCpa: item.assessmentPriceSnapshot })) : sourceRows.map((item) => ({ label: text(item, "ds", "label") ?? "−", cpa: numeric(item, "cpa", "real_cpa") ?? null, assessmentCpa: numeric(item, "assessment_cpa", "assessment") ?? null })), currentFindingId: isMock ? text(row, "finding_id") ?? null : null, currentFindingTitle: isMock ? text(row, "finding_title") ?? null : null })
   return { ...envelopeMeta(response, mode, isMock, forcedState), data }
 }
 
 export function adaptFinding(response: DataQueryResponse, findingId: string, isMock: boolean, forcedState?: DataState): DataResponse<FindingDetailData> {
   const source = sourceFor(response, "platform"); const row = rows(source).find((item) => text(item, "finding_id") === findingId)
   const evidence = Array.isArray(row?.evidence_items) ? row.evidence_items.filter((item): item is Row => !!item && typeof item === "object" && !Array.isArray(item)).map((item) => ({ label: text(item, "label") ?? "证据", value: text(item, "value") ?? "−", source: text(item, "source") ?? "未提供" })) : []
-  const data = findingDetailSchema.parse({ findingId, accountId: text(row, "account_id") ?? "unknown", accountName: text(row, "account_name") ?? "脱敏账户", title: text(row, "title") ?? "诊断详情不可用", severity: text(row, "severity") === "critical" ? "critical" : text(row, "severity") === "info" ? "info" : "warning", deterministicConclusion: text(row, "deterministic_conclusion") ?? "后端未返回确定性诊断结论。", evidence, aiInterpretation: text(row, "ai_interpretation") ?? null, aiConfidence: text(row, "ai_confidence") ?? null, changeSetId: row?.change_set && typeof row.change_set === "object" ? text(row.change_set as Row, "change_set_id") ?? null : null })
+  const data = findingDetailSchema.parse({ findingId, media: text(row, "media") ?? null, accountId: text(row, "account_id") ?? "unknown", accountName: text(row, "account_name") ?? "脱敏账户", title: text(row, "title") ?? "诊断详情不可用", severity: text(row, "severity") === "critical" ? "critical" : text(row, "severity") === "info" ? "info" : "warning", deterministicConclusion: text(row, "deterministic_conclusion") ?? "后端未返回确定性诊断结论。", evidence, aiInterpretation: text(row, "ai_interpretation") ?? null, aiConfidence: text(row, "ai_confidence") ?? null, changeSetId: row?.change_set && typeof row.change_set === "object" ? text(row.change_set as Row, "change_set_id") ?? null : null })
   const adapted = { ...envelopeMeta(response, "platform", isMock, forcedState), data }
   return row ? adapted : { ...adapted, state: adapted.state === "ready" ? "empty" : adapted.state, message: adapted.message ?? "未找到该诊断记录。" }
+}
+
+export function adaptWorkItemDetail(response: WorkItemDetailResponse | null, findingId: string, loading: boolean): DataResponse<FindingDetailData> {
+  const empty = findingDetailSchema.parse({ findingId, media: null, accountId: "unknown", accountName: "脱敏账户", title: "诊断详情暂不可用", severity: "warning", deterministicConclusion: "只读工作项详情接口尚未返回确定性结论。", evidence: [], aiInterpretation: null, aiConfidence: null, changeSetId: null })
+  if (loading || response === null) return { state: "loading", lineage: placeholderLineage("platform"), data: empty, message: "正在读取工作项详情", isMock: false }
+  if (!response.ok) return { state: errorState(response.error), lineage: placeholderLineage("platform", response.error), data: empty, message: response.error.message, error: response.error, isMock: false }
+  return { state: "ready", lineage: placeholderLineage("platform"), data: response.data, isMock: false }
 }
 
 export function adaptChangeSet(response: DataQueryResponse, findingId: string): ChangeSetPreviewData | null {

@@ -45,15 +45,15 @@ export function AnalysisTable({ data, dataView }: { data: AnalysisData; dataView
             {data.rows.map((row) => {
               const selected = dataView === "ka_data" ? row.kaData : row.platform
               return (
-              <TableRow key={row.accountId}>
-                <TableCell><div className="font-medium">{row.accountName}</div><div className="font-mono text-[11px] text-muted-foreground">{row.accountId}</div></TableCell>
+              <TableRow key={`${row.media}:${row.accountId}`}>
+                <TableCell><div className="font-medium">{row.accountName}</div><div className="font-mono text-[11px] text-muted-foreground">{row.media} · {row.accountId}</div></TableCell>
                 <TableCell>{row.owner}</TableCell>
                 {reconcile ? <><TableCell className="text-right"><ValueCell cell={row.kaData.spend} /></TableCell><TableCell className="text-right"><ValueCell cell={row.platform.spend} /></TableCell><TableCell className="text-right"><ValueCell cell={row.kaData.cpa} /></TableCell><TableCell className="text-right"><ValueCell cell={row.platform.cpa} /></TableCell></> : <><TableCell className="text-right"><ValueCell cell={selected.spend} /></TableCell><TableCell className="text-right"><ValueCell cell={selected.cpa} /></TableCell></>}
                 <TableCell className="text-right"><ValueCell cell={row.assessmentCpa} /></TableCell>
                 {reconcile ? <><TableCell className="text-right"><ValueCell cell={row.comparison.delta} /></TableCell><TableCell className="text-right"><ValueCell cell={row.comparison.deltaRate} /></TableCell></> : null}
                 <TableCell><Badge variant={row.status === "critical" ? "destructive" : "outline"}>{statusLabel[row.status]}</Badge></TableCell>
                 <TableCell><div className="text-xs">CPA · {authorityLabel[row.authorityByMetric.cpa.defaultSource]}</div><div className="mt-1 text-xs text-muted-foreground">{row.authorityByMetric.cpa.status}</div></TableCell>
-                <TableCell className="text-right"><Button asChild size="sm" variant="outline"><Link href={`/accounts/${row.accountId}?data_view=${dataView}`}>账户详情</Link></Button></TableCell>
+                <TableCell className="text-right"><Button asChild size="sm" variant="outline"><Link href={`/accounts/${row.accountId}?data_view=${dataView}&media=${encodeURIComponent(row.media)}`}>账户详情</Link></Button></TableCell>
               </TableRow>
             )})}
           </TableBody>

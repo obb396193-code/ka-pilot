@@ -13,9 +13,10 @@ import type { DataResponse } from "@/lib/data/data-view"
 export function DiagnosticDetailView({ response, preview }: { response: DataResponse<FindingDetailData>; preview: ChangeSetPreviewData | null }) {
   const data = response.data
   const blocked = response.state !== "ready"
+  const accountHref = data.accountId === "unknown" ? "/accounts?data_view=platform" : `/accounts/${data.accountId}?data_view=platform${data.media ? `&media=${encodeURIComponent(data.media)}` : ""}`
   return (
-    <PageShell eyebrow="KA Pilot · 异常诊断" title={data.title} description={`${data.accountName} · ${data.accountId}。规则结论与证据来自 account.anomalies，AI 仅解释。`} actions={<div className="flex gap-2"><Badge variant={data.severity === "critical" ? "destructive" : "secondary"}>{data.severity === "critical" ? "P0" : "P1"}</Badge>{response.isMock ? <Badge variant="secondary">脱敏 Mock</Badge> : null}</div>}>
-      <div><Button asChild variant="ghost" size="sm"><Link href={`/accounts/${data.accountId}?data_view=platform`}><IconArrowLeft />返回账户详情</Link></Button></div>
+    <PageShell eyebrow="KA Pilot · 异常诊断" title={data.title} description={`${data.accountName} · ${data.accountId}。规则结论与证据来自只读工作项详情；AI 仅解释。`} actions={<div className="flex gap-2"><Badge variant={data.severity === "critical" ? "destructive" : "secondary"}>{data.severity === "critical" ? "P0" : "P1"}</Badge>{response.isMock ? <Badge variant="secondary">脱敏 Mock</Badge> : null}</div>}>
+      <div><Button asChild variant="ghost" size="sm"><Link href={accountHref}><IconArrowLeft />{data.accountId === "unknown" ? "返回账户池" : "返回账户详情"}</Link></Button></div>
       <DataStateFrame response={response}>
         <div className="grid gap-4 lg:grid-cols-2">
           <Card className="shadow-xs"><CardHeader><CardTitle className="flex items-center gap-2"><IconShieldCheck className="size-4" />确定性结论</CardTitle></CardHeader><CardContent><p className="text-sm leading-6">{data.deterministicConclusion}</p><dl className="mt-4 space-y-3">{data.evidence.map((item) => <div key={`${item.label}-${item.source}`} className="rounded-lg border p-3"><dt className="text-xs text-muted-foreground">{item.label}</dt><dd className="mt-1 font-medium">{item.value}</dd><dd className="mt-1 font-mono text-[11px] text-muted-foreground">{item.source}</dd></div>)}</dl></CardContent></Card>

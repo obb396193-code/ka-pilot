@@ -10,10 +10,11 @@ import { DataStateFrame } from "@/components/data-view/data-state-frame"
 import { DataViewSwitcher } from "@/components/data-view/data-view-switcher"
 import { PageShell } from "@/components/data-view/page-shell"
 import { Badge } from "@/components/ui/badge"
-import { adaptAccountDetail, adaptAnalysis, adaptChangeSet, adaptFinding, adaptWorkbench } from "@/lib/data/adapters"
+import { adaptAccountDetail, adaptAnalysis, adaptChangeSet, adaptFinding, adaptWorkbench, adaptWorkItemDetail } from "@/lib/data/adapters"
 import type { DataQueryResponse, QueryRequest } from "@/lib/data/contracts"
 import { readDataState, type DataState, type DataViewMode, type QueryRecord } from "@/lib/data/data-view"
 import { useDataQuery } from "@/lib/data/use-data-query"
+import { useReadModel } from "@/lib/data/use-read-model"
 
 function first(value: string | string[] | undefined) { return Array.isArray(value) ? value[0] : value }
 function dateParams(query: QueryRecord) {
@@ -61,11 +62,25 @@ export function AccountDetailContainer({ accountId, dataView, query }: { account
   return <AccountDetailView response={response} dataView={dataView} query={query} />
 }
 
-export function DiagnosticDetailContainer({ findingId, query }: { findingId: string; query: QueryRecord }) {
+function MockDiagnosticDetailContainer({ findingId, query }: { findingId: string; query: QueryRecord }) {
   const queryRequest = useMemo(() => request("account.anomalies", "platform", query), [query])
   const result = useDataQuery(queryRequest)
   const raw = result.response ?? loadingResponse()
   const response = adaptFinding(raw, findingId, result.isMock, result.loading ? "loading" : undefined)
   const preview = result.response ? adaptChangeSet(result.response, findingId) : null
   return <DiagnosticDetailView response={response} preview={preview} />
+}
+
+function InternalDiagnosticDetailContainer({ findingId }: { findingId: string }) {
+  const workItem = useReadModel("work-items", findingId)
+  const changeSetId = workItem.response?.ok ? workItem.response.data.changeSetId : null
+  const changeSet = useReadModel("changesets", changeSetId)
+  const response = adaptWorkItemDetail(workItem.response, findingId, workItem.loading)
+  const preview = changeSet.response?.ok ? changeSet.response.data : null
+  return <DiagnosticDetailView response={response} preview={preview} />
+}
+
+export function DiagnosticDetailContainer({ findingId, query }: { findingId: string; query: QueryRecord }) {
+  const isMock = process.env.NEXT_PUBLIC_KA_DATA_PROVIDER === "mock"
+  return isMock ? <MockDiagnosticDetailContainer findingId={findingId} query={query} /> : <InternalDiagnosticDetailContainer findingId={findingId} />
 }

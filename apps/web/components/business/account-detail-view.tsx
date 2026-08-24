@@ -15,7 +15,7 @@ import type { DataResponse, DataViewMode, QueryRecord } from "@/lib/data/data-vi
 export function AccountDetailView({ response, dataView, query }: { response: DataResponse<AccountDetailData>; dataView: DataViewMode; query: QueryRecord }) {
   const data = response.data
   return (
-    <PageShell eyebrow="KA Pilot · 账户详情" title={data.accountName} description={`账户 ${data.accountId} · ${data.owner}。指标由 account.detail 返回；缺失 CPA 保持为 −。`} actions={<div className="flex gap-2"><Badge variant="outline">只读</Badge>{response.isMock ? <Badge variant="secondary">脱敏 Mock</Badge> : null}</div>}>
+    <PageShell eyebrow="KA Pilot · 账户详情" title={data.accountName} description={`账户 ${data.media} · ${data.accountId} · ${data.owner}。指标由 account.detail 返回；缺失 CPA 保持为 −。`} actions={<div className="flex gap-2"><Badge variant="outline">只读</Badge>{response.isMock ? <Badge variant="secondary">脱敏 Mock</Badge> : null}</div>}>
       <div><Button asChild variant="ghost" size="sm"><Link href={`/accounts?data_view=${dataView}`}><IconArrowLeft />返回账户池</Link></Button></div>
       <DataViewSwitcher pathname={`/accounts/${data.accountId}`} current={dataView} query={query} />
       <DataStateFrame response={response}>

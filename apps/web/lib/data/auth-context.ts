@@ -10,6 +10,7 @@ export const serverAuthContextSchema = z.object({
   userId: z.string().trim().min(1),
   allowedAccounts: z.array(scopedAccountSchema).max(1_000),
 }).strict()
+export const internalServiceTokenSchema = z.string().min(32)
 
 export type ServerAuthContext = z.infer<typeof serverAuthContextSchema>
 export type ApprovedAuthContextResolver = () => Promise<unknown>
@@ -48,6 +49,6 @@ export async function resolveServerAuthContext(options: ResolveOptions): Promise
 
   // Production is fail-closed until an approved login/session integration resolves scope.
   // Raw browser headers are deliberately absent from this resolver boundary.
-  if (options.environment.NODE_ENV === "production") return null
+  if (options.environment.NODE_ENV !== "development") return null
   return parseDevelopmentContext(options.environment)
 }

@@ -107,7 +107,7 @@ export type QueryRequest = CanonicalDataQueryRequest & { mockState?: import("./d
 const displayMetricSchema = z.object({ key: z.string(), label: z.string(), value: z.string(), delta: z.string().nullable(), tone: z.enum(["neutral", "positive", "warning", "critical"]) })
 export type DisplayMetric = z.infer<typeof displayMetricSchema>
 
-const anomalySummarySchema = z.object({ id: z.string(), accountId: z.string(), accountName: z.string(), title: z.string(), severity: z.enum(["info", "warning", "critical"]), evidence: z.string(), attribution: z.string(), suggestedAction: z.string(), cta: z.string() })
+const anomalySummarySchema = z.object({ id: z.string(), findingId: z.string().nullable(), media: z.string(), accountId: z.string(), accountName: z.string(), title: z.string(), severity: z.enum(["info", "warning", "critical"]), evidence: z.string(), attribution: z.string(), suggestedAction: z.string(), cta: z.string() })
 export type AnomalySummary = z.infer<typeof anomalySummarySchema>
 
 export const workbenchSchema = z.object({
@@ -125,14 +125,18 @@ const comparisonSchema = z.object({ comparable: z.boolean(), reason: z.string().
 const metricAuthoritySchema = z.object({ defaultSource: z.enum(["ka_data", "platform", "source_versioned"]), status: z.enum(["authoritative", "realtime", "versioned", "unavailable"]), reason: z.string().min(1) }).strict()
 export const metricAuthorityMatrixSchema = z.object({ spend: metricAuthoritySchema, conversions: metricAuthoritySchema, cpa: metricAuthoritySchema, assessmentCpa: metricAuthoritySchema }).strict()
 export type MetricAuthorityMatrix = z.infer<typeof metricAuthorityMatrixSchema>
-export const analysisRowSchema = z.object({ accountId: z.string(), accountName: z.string(), owner: z.string(), kaData: sourceMetricsSchema, platform: sourceMetricsSchema, assessmentCpa: displayMetricValueSchema, comparison: comparisonSchema, authorityByMetric: metricAuthorityMatrixSchema, status: z.enum(["healthy", "watch", "critical", "unavailable"]) }).strict()
+export const analysisRowSchema = z.object({ workspaceId: z.string().uuid().nullable(), media: z.string(), accountId: z.string(), accountName: z.string(), owner: z.string(), kaData: sourceMetricsSchema, platform: sourceMetricsSchema, assessmentCpa: displayMetricValueSchema, comparison: comparisonSchema, authorityByMetric: metricAuthorityMatrixSchema, status: z.enum(["healthy", "watch", "critical", "unavailable"]) }).strict()
 export const analysisSchema = z.object({ mode: dataViewModeSchema, rows: z.array(analysisRowSchema), summary: z.string() })
 export type AnalysisData = z.infer<typeof analysisSchema>
 export type AnalysisRow = z.infer<typeof analysisRowSchema>
 
-export const accountDetailSchema = z.object({ accountId: z.string(), accountName: z.string(), owner: z.string(), status: z.enum(["healthy", "watch", "critical", "unavailable"]), metrics: z.array(displayMetricSchema), trend: z.array(z.object({ label: z.string(), cpa: z.number().nullable(), assessmentCpa: z.number().nullable() })), currentFindingId: z.string().nullable(), currentFindingTitle: z.string().nullable() })
+export const accountDetailSchema = z.object({ media: z.string(), accountId: z.string(), accountName: z.string(), owner: z.string(), status: z.enum(["healthy", "watch", "critical", "unavailable"]), metrics: z.array(displayMetricSchema), trend: z.array(z.object({ label: z.string(), cpa: z.number().nullable(), assessmentCpa: z.number().nullable() })), currentFindingId: z.string().nullable(), currentFindingTitle: z.string().nullable() })
 export type AccountDetailData = z.infer<typeof accountDetailSchema>
-export const findingDetailSchema = z.object({ findingId: z.string(), accountId: z.string(), accountName: z.string(), title: z.string(), severity: z.enum(["info", "warning", "critical"]), deterministicConclusion: z.string(), evidence: z.array(z.object({ label: z.string(), value: z.string(), source: z.string() })), aiInterpretation: z.string().nullable(), aiConfidence: z.string().nullable(), changeSetId: z.string().nullable() })
+export const findingDetailSchema = z.object({ findingId: z.string(), media: z.string().nullable(), accountId: z.string(), accountName: z.string(), title: z.string(), severity: z.enum(["info", "warning", "critical"]), deterministicConclusion: z.string(), evidence: z.array(z.object({ label: z.string(), value: z.string(), source: z.string() })), aiInterpretation: z.string().nullable(), aiConfidence: z.string().nullable(), changeSetId: z.string().nullable() })
 export type FindingDetailData = z.infer<typeof findingDetailSchema>
 export const changeSetPreviewSchema = z.object({ changeSetId: z.string(), accountId: z.string(), accountName: z.string(), status: z.literal("preview_only"), expiresAt: z.string().datetime({ offset: true }), items: z.array(z.object({ field: z.string(), from: z.string(), to: z.string(), reason: z.string() })), riskChecks: z.array(z.object({ label: z.string(), passed: z.boolean(), detail: z.string() })), executionEndpointConfigured: z.literal(false) })
 export type ChangeSetPreviewData = z.infer<typeof changeSetPreviewSchema>
+export const workItemDetailResponseSchema = z.discriminatedUnion("ok", [z.object({ ok: z.literal(true), data: findingDetailSchema }).strict(), z.object({ ok: z.literal(false), error: stableDataQueryErrorSchema }).strict()])
+export const changeSetDetailResponseSchema = z.discriminatedUnion("ok", [z.object({ ok: z.literal(true), data: changeSetPreviewSchema }).strict(), z.object({ ok: z.literal(false), error: stableDataQueryErrorSchema }).strict()])
+export type WorkItemDetailResponse = z.infer<typeof workItemDetailResponseSchema>
+export type ChangeSetDetailResponse = z.infer<typeof changeSetDetailResponseSchema>
