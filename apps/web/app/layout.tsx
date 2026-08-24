@@ -5,8 +5,8 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "投放Agent - KA工作台",
-  description: "信息流投放管理平台",
+  title: "KA Pilot · 投放经营工作台",
+  description: "KA Pilot 快手优化师经营工作台",
 }
 
 export default function RootLayout({

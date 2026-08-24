@@ -1,16 +1,5 @@
+import { ModulePlaceholder } from "@/components/business/module-placeholder"
+
 export default function KnowledgePage() {
-  return (
-    <div className="flex-1 space-y-4 p-4">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">知识库</h1>
-        <p className="text-sm text-muted-foreground">记下来的东西</p>
-      </div>
-      <div className="rounded-lg border border-dashed p-12 text-center">
-        <p className="text-muted-foreground">知识库模块 - 待实现</p>
-        <p className="text-xs text-muted-foreground mt-2">
-          从 ContentRadar 复制编辑器/文档树/@双链代码改造（组8 B8批次）
-        </p>
-      </div>
-    </div>
-  )
+  return <ModulePlaceholder eyebrow="KA Pilot · 知识库" title="知识库" description="投放规则、案例和口径说明的统一入口。" capabilities={["保留九项导航的稳定路由", "不复用其他产品线的业务契约", "正式内容待知识 Contract 接入"]} />
 }

@@ -1,14 +1,5 @@
+import { ModulePlaceholder } from "@/components/business/module-placeholder"
+
 export default function IntegrationsPage() {
-  return (
-    <div className="flex-1 space-y-4 p-4">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">集成与通知</h1>
-        <p className="text-sm text-muted-foreground">外部对接</p>
-      </div>
-      <div className="rounded-lg border border-dashed p-12 text-center">
-        <p className="text-muted-foreground">集成与通知模块 - 待实现</p>
-        <p className="text-xs text-muted-foreground mt-2">钉钉网关 / 飞书 / 企微 / 外部工具</p>
-      </div>
-    </div>
-  )
+  return <ModulePlaceholder eyebrow="KA Pilot · 集成" title="集成与通知" description="内网数据、通知和凭证绑定状态入口。" capabilities={["前端支持 mock / internal_api 双 Provider", "Token 只在 Next.js 服务端使用", "当前不展示任何凭证原文"]} />
 }

@@ -1,25 +1,21 @@
 "use client"
 
-import * as React from "react"
+import Link from "next/link"
 import {
-  IconCamera,
+  IconBell,
   IconChartBar,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
+  IconDots,
   IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
   IconInnerShadowTop,
-  IconListDetails,
-  IconReport,
-  IconSearch,
+  IconPlugConnected,
+  IconRobot,
   IconSettings,
+  IconShoppingBag,
+  IconTargetArrow,
   IconUsers,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
@@ -33,121 +29,27 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-const data = {
-  user: {
-    name: "张三",
-    email: "zhangsan@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "工作台",
-      url: "#",
-      icon: IconDashboard,
-    },
-    {
-      title: "生命周期",
-      url: "#",
-      icon: IconListDetails,
-    },
-    {
-      title: "数据分析",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "项目",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "团队",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
-  navClouds: [
-    {
-      title: "捕获",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "活跃提案",
-          url: "#",
-        },
-        {
-          title: "已归档",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "提案",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "活跃提案",
-          url: "#",
-        },
-        {
-          title: "已归档",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "提示词",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "活跃提案",
-          url: "#",
-        },
-        {
-          title: "已归档",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "设置",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "帮助",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "搜索",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
-  documents: [
-    {
-      name: "数据库",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "报告",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "文档助手",
-      url: "#",
-      icon: IconFileWord,
-    },
-  ],
+const navigation = [
+  { title: "工作台", url: "/", icon: IconDashboard, badge: "7" },
+  { title: "投放任务", url: "/tasks", icon: IconTargetArrow },
+  { title: "数据分析", url: "/data", icon: IconChartBar },
+  { title: "账户池", url: "/accounts", icon: IconUsers },
+  { title: "自动化", url: "/automation", icon: IconRobot },
+  { title: "商品素材", url: "/materials", icon: IconShoppingBag },
+  { title: "报告", url: "/reports", icon: IconFileDescription },
+  { title: "知识库", url: "/knowledge", icon: IconBell },
+  { title: "集成与通知", url: "/integrations", icon: IconPlugConnected, badge: "2" },
+]
+
+const secondary = [
+  { title: "更多", url: "#more", icon: IconDots },
+  { title: "设置", url: "#settings", icon: IconSettings },
+]
+
+const demoUser = {
+  name: "快手优化师",
+  email: "示例工作区",
+  avatar: "/avatars/shadcn-morty-official.jpg",
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -156,25 +58,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
-            >
-              <a href="#">
+            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:p-1.5!">
+              <Link href="/">
                 <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">示例公司</span>
-              </a>
+                <span className="text-base font-semibold">KA Pilot</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={navigation} />
+        <NavSecondary items={secondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={demoUser} />
       </SidebarFooter>
     </Sidebar>
   )

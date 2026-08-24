@@ -1,19 +1,24 @@
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
+import { WorkbenchDashboard } from "@/components/business/workbench/workbench-dashboard"
+import { queryData } from "@/lib/data/client"
+import { readDataState, readDataViewMode, type QueryRecord } from "@/lib/data/data-view"
 
-import data from "../dashboard/data.json"
+export default async function WorkbenchPage({
+  searchParams,
+}: {
+  searchParams: Promise<QueryRecord>
+}) {
+  const query = await searchParams
+  const dataView = readDataViewMode(query.data_view)
+  const state = readDataState(query.state)
+  const response = await queryData({
+    queryId: "workbench",
+    dataView,
+    state,
+    params: {
+      start: Array.isArray(query.start) ? query.start[0] ?? "" : query.start ?? "",
+      end: Array.isArray(query.end) ? query.end[0] ?? "" : query.end ?? "",
+    },
+  })
 
-export default function Page() {
-  return (
-    <div className="@container/main flex flex-1 flex-col gap-2">
-      <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-        <SectionCards />
-        <div className="px-4 lg:px-6">
-          <ChartAreaInteractive />
-        </div>
-        <DataTable data={data} />
-      </div>
-    </div>
-  )
+  return <WorkbenchDashboard response={response} dataView={dataView} query={query} />
 }

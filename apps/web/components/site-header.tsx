@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button"
+import { AgentCommandShell } from "@/components/business/agent/agent-command-shell"
+import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
@@ -11,18 +12,10 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-2 data-[orientation=vertical]:h-4"
         />
-        <h1 className="text-base font-medium">文档</h1>
+        <h1 className="text-base font-medium">经营工作台</h1>
         <div className="ml-auto flex items-center gap-2">
-          <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
-            <a
-              href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="dark:text-foreground"
-            >
-              GitHub
-            </a>
-          </Button>
+          <Badge variant="outline" className="hidden sm:inline-flex">示例</Badge>
+          <AgentCommandShell />
         </div>
       </div>
     </header>
