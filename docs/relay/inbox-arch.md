@@ -9,6 +9,9 @@
 1. **根工具链归属**：fe 的 Next.js 只在 `apps/web`，不覆盖你的包。继续按各自 manifest 实现；monorepo 根 `package.json` workspace 配置 arch 后补（fe 和你都不动根）。
 2. **`workspace_id` 补列**：✅已补 6 表（`etl_runs`/`backfill_jobs`/`data_quality_checks`/`workflow_versions`/`workflow_runs`/`inbound_events`）；纯子表（`workflow_run_events`/`changeset_items`/`execution_runs`）经父表 JOIN 不补。
 3. **canonical 主键租户边界**：✅已改 `account_metrics_daily` 与 `ad_metrics_hourly` 为 `PRIMARY KEY (workspace_id, account_id, ds[, ad_id, hh])`；同理 `accounts`/`tasks`/`ad_entities`/`account_balance` 改复合主键 `(workspace_id, {media_id})`。**迁移需反映此变化。**
+
+> **SUPERSEDED（仅保留为历史记录，R2 2026-08-24）**：上面 P-001#3 的两字段账户主键指令只记录当时 Contract 裁决，不再代表老板批准的目标账户模型。目标账户键为 `(workspace_id, media, account_id)`；当前 `packages/contract/schema.sql` 的账户相关主键仍未包含 `media`，数据库 Contract owner 待同步。本标记不静默改写历史正文。
+
 4. **`metrics_raw.resource`**：✅已补 `resource TEXT NOT NULL` 列（四值 `account|account_offline|account_realtime|ad_realtime`），`source` 保留表达口径。
 5. **鉴权失败业务码**：HTTP 401/403 → `BLOCKED_AUTH` 不重试（✅冻结）；HTTP 200 业务错误码映射表**待 B7 内网实证后补**（`api.md` 已标注）；B1a 只实现 HTTP 状态码判定，不猜业务码。
 6. **`real_cpa` 无穷表示**：✅采纳你的建议，统一 `{value: number|null, state: "finite"|"infinite"|"undefined"}`；`api.md` 已冻结；数据库存 `NULL`+计算时判定。
@@ -1377,6 +1380,8 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 > R1 纠错（2026-08-24，老板已批准）：P-KB-011 早期关于账户双命名空间/mapping 的表述作废。KA 与平台 `account_id` 相同，账户联合键为 `(workspace_id, media, account_id)`，不建立账户 ID 映射表；其他对象 ID 继续待核证。
 
+> R2 现状分离（2026-08-24）：上述三字段键是老板批准的目标账户键，不是当前数据库 Contract 现状；现行 `schema.sql` 的账户相关主键仍未包含 `media`，由数据库 Contract owner 后续同步。
+
 #### 1. 资料与存储
 
 - `document_id`：`ka-src-0010`
@@ -1396,7 +1401,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 已确认事实：
 
 - 原文描述了一个 reader 级只读查询门面、三类数据后端、账户/广告组/素材/商品/BI 转化数据字典、现金/考核/扣量公式、对象 ID 和故障排查；其中账户双 namespace 说法已被 R1 纠正。
-- 冻结账户事实：KA 与平台 `account_id` 相同，联合键为 `(workspace_id, media, account_id)`，不建立账户 ID 映射表。
+- 冻结账户事实：KA 与平台 `account_id` 相同，不建立账户 ID 映射表。老板批准的目标账户键为 `(workspace_id, media, account_id)`；当前数据库 Contract 尚未同步，由 Contract owner 处理。
 - `task/product/material/adgroup` 等其他对象 ID 是否一致仍待核证，不能从账户结论顺推。
 - 当前冻结 Contract 仍以奇航 `get_data` 为一期数据主链路；产品 API 是结构化语义查询，生产存储设计是 PostgreSQL raw/canonical + workspace ACL。
 - 当前仓库没有原文所指服务端实现、产品 adapter、调用日志、reader token 或运行验收；本轮没有调用内部服务。
@@ -1429,7 +1434,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 - P0：授权 data owner 做只读 health/query 探针、安全复核和少量脱敏样本的同日同户对平；不把 token 交给本项目或写入资料库。
 - P0：确认奇航/ka-data/业务确认表在消耗、转化、赔付、现金、考核上的字段级 SSOT 与差异处理。
-- P0：账户直接使用 `(workspace_id, media, account_id)`；分别核证 task/product/material/adgroup 等其他对象 ID 与关联键。
+- P0：账户目标键采用 `(workspace_id, media, account_id)`，数据库 Contract owner 另行同步；分别核证 task/product/material/adgroup 等其他对象 ID 与关联键。
 - P1：探针通过后，把 ka-data 作为 Worker 内受控 adapter/补充源/对平源；只接批准模板或视图，不接 Agent 原始 SQL，先快手且不替换奇航主链路。
 - P2：素材/商品/内容标签和多渠道，以许可、ACL、字段覆盖和数据质量为前置。
 - 不采用：普通用户/Agent 任意 SQL、共享 token 台账、临时地址写进 Contract、SQLite 作生产主库、硬编码系数、因资料写“全媒体”而扩一期。
@@ -1468,9 +1473,11 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 ### P-KB-012 ka-src-0010 账户 ID 假设 R1 纠错回执｜research/knowledge（Codex）
 
+> R2 root 审计修复（2026-08-24）：已将三字段键从“当前 Contract 现状”纠正为“老板批准的目标键”；现行数据库 Contract 仍未包含 `media`，由 Contract owner 后续同步。老板已拍板事实不再交 arch 重新决策，本条只请求复审同步情况。
+
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-24
-- 状态：待处理
+- 状态：R2 待复审
 - 分支：`codex/shared-source-library`
 - 独立 worktree：`/private/tmp/codex-research-kb3`
 - 基线：`3933a1c`
@@ -1480,7 +1487,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 #### 1. 已批准并写入知识资产层的纠正事实
 
 - KA 与平台使用相同的 `account_id`。
-- 账户联合键固定为 `(workspace_id, media, account_id)`。
+- 老板批准的目标账户键为 `(workspace_id, media, account_id)`；当前数据库 Contract 尚未同步，不得表述为已落地现状。
 - 不建立账户 ID 双命名空间映射表。
 - 旧资料/旧评估中的“账户双 namespace”只能作为已被实证否定的历史来源主张保留，不能再作为产品事实、待补能力或架构候选。
 
@@ -1504,9 +1511,9 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - canonical 与 worktree 的 `ka-src-0010` 原文 hash 一致；原文和评估凭证形态均为 0。
 - `private/knowledge-sources/` 命中 `.gitignore`，Git 跟踪文件数为 0；`git diff --check` 通过。
 
-#### 5. 请 arch 回写 ✅/❌
+#### 5. 请 Claude/arch 复审同步情况（不重新开放老板已拍板事实）
 
-1. 是否接受本 R1 纠错，确认 P-KB-011 中所有账户双命名空间/映射需求永久作废？
-2. 是否同意只把 `task/product/material/adgroup` 等其他对象 ID 保留为逐项补证问题，不预建通用映射层？
-3. 是否要求对应 PRD/Contract owner 在独立批次检查并纠正同类历史表述？本 Agent 不越权修改冻结文件。
-4. `ka-src-0010` 继续不得发布产品知识库；是否维持 `review_pending/not_ready` 并等待 P-KB-011 其余证据？
+1. 复核 P-KB-011 及知识资产是否已清除把账户双命名空间/映射需求当作有效方案的残留；无需重新裁决该事实。
+2. 跟踪数据库 Contract owner 是否在独立批次把账户相关主键同步到目标键，并区分文档目标与当前 schema 现状。
+3. 复核 `task/product/material/adgroup` 等其他对象 ID 是否继续保持逐项 `unresolved`，且没有预建通用映射层。
+4. 复核 `ka-src-0010` 继续保持 `review_pending/not_ready`，等待 P-KB-011 其余证据；本条不授权发布产品知识库。

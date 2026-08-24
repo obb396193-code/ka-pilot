@@ -350,4 +350,20 @@ test("ka-data guide stays confidential and cannot enter product knowledge before
   }
   assert.doesNotMatch(assessment, /两套 `account_id` namespace 的稳定映射表/);
   assert.doesNotMatch(assessment, /两套账户 ID namespace 的映射表/);
+  assert.match(assessment, /老板批准的目标账户键/);
+  assert.match(assessment, /当前数据库 Contract[^。]*尚未同步/);
+  assert.doesNotMatch(assessment, /当前 Contract 使用[^\n]*\(workspace_id, media, account_id\)/);
+
+  const relay = await readFile(path.join(repoRoot, "docs/relay/inbox-arch.md"), "utf8");
+  for (const marker of [
+    "SUPERSEDED（仅保留为历史记录",
+    "当前 `packages/contract/schema.sql` 的账户相关主键仍未包含 `media`",
+    "数据库 Contract owner 待同步",
+    "不重新开放老板已拍板事实",
+  ]) {
+    assert.match(relay, new RegExp(marker));
+  }
+  const r2Relay = relay.slice(relay.indexOf("### P-KB-012"));
+  assert.doesNotMatch(r2Relay, /是否接受本 R1 纠错/);
+  assert.doesNotMatch(r2Relay, /是否同意只把/);
 });
