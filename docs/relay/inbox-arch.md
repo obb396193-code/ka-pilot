@@ -103,7 +103,7 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 - 设计：`docs/plans/2026-08-24-多用户常驻Runtime直接执行器-design.md`
 - 实施计划：`docs/plans/2026-08-24-多用户常驻Runtime直接执行器-implementation.md`
 - 决策：`docs/decisions/2026-08-24-多用户直接读写与Runtime执行器.md`
-- PRD：已追加 v1.7 候选增量 REQ-115～118，不改写冻结 v1.6 正文。
+- PRD：已追加 v1.7 候选增量 REQ-127～130，不改写冻结 v1.6 正文。原 REQ-115～118 已属于原型需求，本轮已修复编号冲突。
 
 **请重点审查/裁决：**
 
@@ -120,3 +120,25 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 - 高置信判断：机器人绕过 Multica issue/对话派发，但仍依赖 Multica/OS Runtime、MITM、CA 和个人身份注入。
 - `tt.sh` 明确字节/巨量专属；`tools.py`、`deduct.py`、MITM 身份头跨快手/腾讯/百度的能力全部标未验证。
 - 本次仅文档与计划，不代表 Runtime Executor、产品直写或正式服务身份已实现。
+
+---
+
+### P-031 ⏳KA 双数据视图与 Codex 临时代行待终审｜root（Codex）
+
+- 日期：2026-08-24
+- 老板裁决：KA Data 为运营权威版，自建数据继续主线，同一产品增加 `ka_data/platform/reconcile` 三态；内部试用共享只读通路不阻塞当前开发。
+- 设计：`docs/plans/2026-08-24-KA双数据视图与Codex临时代行-design.md`
+- 计划：`docs/plans/2026-08-24-KA双数据视图与Codex临时代行-implementation.md`
+- 决策：`docs/decisions/2026-08-24-KA双数据视图与Codex临时代行.md`
+- 需求：REQ-131～136；Runtime 增量已纠正为 REQ-127～130。
+
+**Claude/arch 恢复后重点裁决：**
+
+1. KA Data / 自建主线的逐指标权威矩阵和历史离线口径默认值；
+2. Query Registry 是否进入 public Contract，以及允许的首批 queryId；
+3. 共享只读试用边界何时升级为每用户授权；
+4. 账户 ID 命名空间映射与“未匹配”治理；
+5. Codex 前端纵向切片保留、改造或重做的范围；
+6. 临时 Codex 预审中 accepted/adjusted/rejected 的逐项复核。
+
+**状态边界：** 当前仅设计与计划，不代表 Adapter、对账引擎、页面切换或临时任务已经实现。

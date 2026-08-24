@@ -658,7 +658,7 @@ arch（本会话）：契约包（schema+API 合同+类型+脱敏 mock 数据集
 - 外部钉钉机器人“每个人部署自己一套”的身份隔离，升级为平台形态：用户登录后绑定或授权自己的渠道身份、账户范围和执行凭证，平台统一承载状态、协作与审计。
 - 权限属于用户或正式服务身份，不属于 LLM；谁发起就绑定谁的 `credential_owner_user_id + initiator_user_id + workspace_id + 授权快照`。
 
-## A.2 执行器架构（REQ-115）
+## A.2 执行器架构（REQ-127）
 
 Capability Registry 后增加三类可插拔执行器：
 
@@ -668,21 +668,21 @@ Capability Registry 后增加三类可插拔执行器：
 
 前端按钮、钉钉卡片、工作流节点和内置 Agent 只调用 Capability Registry，不根据执行后端写分支。DingTalk Gateway 不持有媒体高权限；Runtime Executor 独立部署，只接受产品签名的结构化白名单请求，不接受任意自然语言、任意 Shell 或任意 URL。
 
-## A.3 多用户授权档案（REQ-116）
+## A.3 多用户授权档案（REQ-128）
 
 - “接入管理”按 `用户 × 渠道 × 执行后端` 展示授权，不假设一套凭证全渠道通用。
 - 每项显示：渠道、账户作用域、可读能力、可写能力、执行后端、验证等级、最后验证时间、失效原因和撤销入口。
 - 正式存储只保存 Secret reference 和元数据；凭证失效后关联 Job 进入 `blocked_auth`，重试不得换成老板或其他用户凭证。
 - 现有奇航 userId、Multica PAT、IdeaLab AK 继续保留；Runtime 直接写所需 avatar/user/bucNo 或平台授权包，只在源码和真实 Runtime 验证后进入正式字段。
 
-## A.4 跨渠道边界（REQ-117）
+## A.4 跨渠道边界（REQ-129）
 
 - 公共能力：钉钉 Stream、身份映射、常驻 Worker、健康检查、结构化协议、确认、幂等、审计、回执、效果回收。
 - 字节专属：外部 SOP 的 `tt.sh`、巨量命令参数和渠道错误码。
 - 待验证：`tools.py`、`deduct.py`、MITM 身份头是否对快手/腾讯/百度通用。
 - 各媒体必须独立 Adapter；Capability Registry 为每项能力记录 `channel + executorKinds + runtimeVerification`，只有真实跑通后才能标 `runtime_verified`。
 
-## A.5 安全与交互（REQ-118）
+## A.5 安全与交互（REQ-130）
 
 - 所有写通路继续遵守变更集、dry-run、风险检查、确认、执行、审计、UNKNOWN 对账和 T+1 回收；不得因 Runtime 可直接调用 CLI 而绕过确认。
 - 群内“记住”只能生成个人/团队知识草稿，不能直接改生产 `CLAUDE.md` 或官方知识。
@@ -693,3 +693,51 @@ Capability Registry 后增加三类可插拔执行器：
 
 - `docs/plans/2026-08-24-多用户常驻Runtime直接执行器-design.md`
 - `docs/plans/2026-08-24-多用户常驻Runtime直接执行器-implementation.md`
+
+---
+
+# 附录 B：v1.7 候选增量——KA 双数据视图与临时 Codex 协作
+
+> 2026-08-24 老板确认方向。它不替换冻结 v1.6，也不表示 KA Data Adapter、对账引擎或前端切片已经实现。
+
+## B.1 KA Data 运营权威视图（REQ-131）
+
+- KA Data 作为运营权威数据源，先提供部门成员可以直接查看和使用的版本。
+- 优先承载跨媒体经营、商品、素材、广告组、BI 转化和历史经营分析。
+- 内部试用阶段允许使用共享只读通路，不等待每用户权限体系完成；凭证仍只存在服务端 Secret/config，不下发浏览器、不进入仓库。
+
+## B.2 自建数据主线（REQ-132）
+
+- 奇航 get_data、我方 ETL、canonical 计算、异常诊断、账户动作和效果回收继续作为产品主线。
+- KA Data 可用不等于自建主线停止；今日实时巡检、小时 pacing、广告下钻和写操作仍由自建主线负责。
+
+## B.3 三态数据视图（REQ-133）
+
+统一 `DataViewMode = ka_data | platform | reconcile`。页面、筛选、报表和 Agent 共用一个 Canonical Query Contract，只切换 Adapter，不复制两套页面。
+
+所有数据结果显示来源、截止时间/分区、数据集版本、覆盖范围、截断/补洞/降级状态。来源不支持的指标显示 unavailable，不静默换字段或补 0。
+
+## B.4 对账比较（REQ-134）
+
+- 相同筛选下并列展示两边原值、差值、差异率、对象匹配率、未匹配数和原因。
+- 不把两边相加或合并成没有来源的单一数值。
+- 原因只来自确定性规则：时间未对齐、口径不同、对象未映射、分区不完整、来源异常、业务差异或待核查；LLM 不编造差异原因。
+
+## B.5 KA Data Query Registry（REQ-135）
+
+- 浏览器、Agent 和自定义报表不得直接提交任意 SQL。
+- 服务端只执行已登记 queryId，其参数、字段、维度、日期范围、行数和允许来源均经过 Schema 与白名单校验。
+- 上游 10,000 行/16MB 等限制必须转成明确的 truncated/partial 元数据，不得把截断结果冒充全量。
+- 不同账户 ID 命名空间使用独立映射与匹配状态，未匹配对象不强行 join。
+
+## B.6 Codex 临时代行（REQ-136）
+
+- Claude 暂不可用期间，临时审查 Codex 只读预审，临时前端 Codex 在隔离 worktree 做可复用纵向切片。
+- 切片范围：工作台 → 数据分析 → 账户详情 → 异常诊断 → 变更预览与确认；不是完整前端。
+- 临时产出状态只能到 `codex_prechecked/candidate_integrated/awaiting_claude_review`，Claude 恢复后仍逐项终审，前端允许重做。
+- Claude Code JSONL 不伪造成 Codex 原生任务；保留原件和 hash，以结构化上下文包创建新 Codex 任务。
+
+详细设计与计划：
+
+- `docs/plans/2026-08-24-KA双数据视图与Codex临时代行-design.md`
+- `docs/plans/2026-08-24-KA双数据视图与Codex临时代行-implementation.md`

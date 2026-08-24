@@ -36,4 +36,10 @@
 
 ## 角色边界
 
-【等真的加角色时再定义】定义时必须写清：这个角色能改哪些目录、不能碰哪些目录。
+| 角色 | 可做 | 禁止 |
+|---|---|---|
+| root Codex | 计划、台账、集成、逐项审计和 Claude 交接 | 默认相信其他 Agent 汇报；覆盖他人脏工作树 |
+| review-codex | 只读审查并回传文本 | 改共享文件、提交代码、冒充 Claude/arch 终审 |
+| fe-codex | 只在独立 `codex/fe-vertical-slice` worktree 修改前端候选 | 触碰当前 `fe/f001`；改后端 Contract；宣称完整前端 |
+| Claude/arch | 最终契约和架构复审 | 未实读文件即沿用临时 Agent 结论 |
+| Claude/fe | 最终前端复审、保留/修改/重做 | 把临时 Codex 视觉当成已拍板正式皮肤 |
