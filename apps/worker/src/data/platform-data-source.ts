@@ -95,6 +95,9 @@ function sourceLineage(
   datasetVersion: string | null,
   truncated: boolean,
 ): SourceLineage {
+  if (lineage.returnedAccounts > scope.accounts.length) {
+    throw new CanonicalQueryRowError();
+  }
   const coverageComplete = lineage.requestedAccountDays === 0 ||
     lineage.returnedAccountDays >= lineage.requestedAccountDays;
   const partial = truncated || !coverageComplete;

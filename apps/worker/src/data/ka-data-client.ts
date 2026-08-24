@@ -37,8 +37,6 @@ export interface KaDataClientOptions {
   timeoutMs?: number;
   maxResponseBytes?: number;
   datasetVersion?: string;
-  timezone?: string;
-  dayCut?: string;
 }
 
 export interface KaDataClientRuntimeOverrides {
@@ -105,21 +103,34 @@ function authorityFor(resolved: ResolvedDataQuery): SourceAuthority {
   };
 }
 
-function accountCount(
+function objectCoverage(
   queryId: ResolvedDataQuery["queryId"],
   rows: readonly Record<string, unknown>[],
-): number {
+  requestedObjects: number,
+): { returnedObjects?: number; incomplete: boolean } {
   if (queryId === "account.summary") {
-    return finiteAccountCount(rows[0]?.accountCount);
+    const returnedObjects = finiteAccountCount(rows[0]?.accountCount);
+    if (returnedObjects > requestedObjects) throw new CanonicalQueryRowError();
+    return { returnedObjects, incomplete: returnedObjects < requestedObjects };
   }
   if (queryId === "account.trend") {
-    return rows.reduce((maximum, row) => {
+    const counts = rows.map((row) => {
       const nested = row.metrics;
-      if (typeof nested !== "object" || nested === null || Array.isArray(nested)) return maximum;
-      return Math.max(maximum, finiteAccountCount((nested as Record<string, unknown>).accountCount));
-    }, 0);
+      if (typeof nested !== "object" || nested === null || Array.isArray(nested)) {
+        throw new CanonicalQueryRowError();
+      }
+      return finiteAccountCount((nested as Record<string, unknown>).accountCount);
+    });
+    if (counts.some((count) => count > requestedObjects)) throw new CanonicalQueryRowError();
+    if (requestedObjects === 0 || counts.length === 0) {
+      return { returnedObjects: 0, incomplete: requestedObjects > 0 };
+    }
+    if (counts.some((count) => count === requestedObjects)) {
+      return { returnedObjects: requestedObjects, incomplete: false };
+    }
+    return { incomplete: true };
   }
-  return new Set(
+  const returnedObjects = new Set(
     rows
       .map((row) => {
         const media = row.media;
@@ -130,6 +141,8 @@ function accountCount(
       })
       .filter((value): value is string => value !== null),
   ).size;
+  if (returnedObjects > requestedObjects) throw new CanonicalQueryRowError();
+  return { returnedObjects, incomplete: returnedObjects < requestedObjects };
 }
 
 function finiteAccountCount(value: unknown): number {
@@ -201,19 +214,18 @@ function sourceLineage(
   scope: DataQueryExecutionScope,
   configuredMetadata: {
     datasetVersion: string | null;
-    timezone: string | null;
-    dayCut: string | null;
   },
   envelope: z.infer<typeof kaDataEnvelopeSchema>,
-  returnedObjects: number,
-  partial: boolean,
+  returnedObjects: number | undefined,
+  transportPartial: boolean,
+  coveragePartial: boolean,
   reason: string | undefined,
 ): SourceLineage {
   const sourceMetadata = {
     datasetVersion: envelope.datasetVersion ?? configuredMetadata.datasetVersion,
     dataAsOf: envelope.dataAsOf ?? null,
-    timezone: envelope.timezone ?? configuredMetadata.timezone,
-    dayCut: envelope.dayCut ?? configuredMetadata.dayCut,
+    timezone: envelope.timezone ?? null,
+    dayCut: envelope.dayCut ?? null,
   };
   const knownMetadata = Object.values(sourceMetadata).filter((value) => value !== null).length;
   return {
@@ -232,13 +244,13 @@ function sourceLineage(
       joinKeys: ["workspace_id", "media", "account_id"],
     },
     coverage: {
-      complete: !partial,
+      complete: !transportPartial && !coveragePartial,
       ...(reason === undefined ? {} : { reason }),
       requestedObjects: scope.accounts.length,
-      returnedObjects,
+      ...(returnedObjects === undefined ? {} : { returnedObjects }),
     },
-    truncated: partial,
-    partial,
+    truncated: transportPartial,
+    partial: transportPartial || coveragePartial,
   };
 }
 
@@ -254,8 +266,6 @@ export class KaDataClient {
   readonly #maxResponseBytes: number;
   readonly #configuredMetadata: {
     datasetVersion: string | null;
-    timezone: string | null;
-    dayCut: string | null;
   };
   readonly #registry = createDataQueryRegistry();
 
@@ -271,8 +281,6 @@ export class KaDataClient {
     );
     this.#configuredMetadata = {
       datasetVersion: options.datasetVersion?.trim() || null,
-      timezone: options.timezone?.trim() || null,
-      dayCut: options.dayCut?.trim() || null,
     };
   }
 
@@ -332,9 +340,8 @@ export class KaDataClient {
       if (envelope.rows.length > resolved.maxRows) warnings.push("Response exceeded the registry row budget");
       const transportPartial = envelope.truncated || envelope.limit_clamped || suspectedRowBoundary ||
         body.exactLimit || envelope.rowCount !== envelope.rows.length || envelope.rows.length > resolved.maxRows;
-      const returnedObjects = accountCount(resolved.queryId, envelope.rows);
-      const objectCoverageIncomplete = scope.accounts.length > 0 &&
-        returnedObjects < scope.accounts.length;
+      const coverage = objectCoverage(resolved.queryId, envelope.rows, scope.accounts.length);
+      const objectCoverageIncomplete = coverage.incomplete;
       if (objectCoverageIncomplete) {
         warnings.push("Requested account scope is not fully represented by source rows");
       }
@@ -357,8 +364,9 @@ export class KaDataClient {
           scope,
           this.#configuredMetadata,
           envelope,
-          returnedObjects,
-          partial,
+          coverage.returnedObjects,
+          transportPartial,
+          objectCoverageIncomplete,
           reason,
         ),
         warnings,
@@ -432,8 +440,6 @@ export function createKaDataClientFromEnv(
     ...(env.KA_DATA_DATASET_VERSION === undefined
       ? {}
       : { datasetVersion: env.KA_DATA_DATASET_VERSION }),
-    ...(env.KA_DATA_TIMEZONE === undefined ? {} : { timezone: env.KA_DATA_TIMEZONE }),
-    ...(env.KA_DATA_DAY_CUT === undefined ? {} : { dayCut: env.KA_DATA_DAY_CUT }),
     ...overrides,
   });
 }

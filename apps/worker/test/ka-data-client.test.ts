@@ -148,8 +148,81 @@ describe("KaDataClient", () => {
         reason: expect.stringMatching(/account scope/i),
       },
       partial: true,
+      truncated: false,
     });
     expect(result.wholeResultTotal).toMatchObject({ value: null, availability: "partial" });
+  });
+
+  it("omits trend returnedObjects when daily aggregates cannot prove the cross-day union", async () => {
+    const resolved = createDataQueryRegistry().resolve(
+      "account.trend",
+      { dateFrom: "2026-08-23", dateTo: "2026-08-24" },
+      "ka_data",
+    );
+    const client = new KaDataClient({
+      baseUrl: "https://ka-data.example.internal",
+      token: "fixture-token",
+      fetchFn: async () => jsonResponse({
+        backend: "sqlite",
+        rowCount: 2,
+        rows: [
+          { ds: "20260823", ...kaSummary(), account_count: 1 },
+          { ds: "20260824", ...kaSummary(), account_count: 1 },
+        ],
+      }),
+    });
+    const result = await client.query(resolved, {
+      workspaceId: "w",
+      userId: "u",
+      accounts: [
+        { media: "KUAISHOU", accountId: "a-1" },
+        { media: "KUAISHOU", accountId: "a-2" },
+      ],
+    });
+    expect(result.lineage.coverage).toMatchObject({
+      complete: false,
+      requestedObjects: 2,
+    });
+    expect(result.lineage.coverage).not.toHaveProperty("returnedObjects");
+    expect(result.lineage).toMatchObject({ partial: true, truncated: false });
+  });
+
+  it("fails closed when an aggregate claims more objects than the authenticated scope", async () => {
+    const client = new KaDataClient({
+      baseUrl: "https://ka-data.example.internal",
+      token: "fixture-token",
+      fetchFn: async () => jsonResponse({
+        backend: "sqlite",
+        rowCount: 1,
+        rows: [{ ...kaSummary(), account_count: 2 }],
+      }),
+    });
+    await expect(client.query(resolvedSummary(), {
+      workspaceId: "w",
+      userId: "u",
+      accounts: [{ media: "KUAISHOU", accountId: "a-1" }],
+    })).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
+  });
+
+  it("does not use deployment timezone or day-cut fallbacks as source lineage", async () => {
+    const client = createKaDataClientFromEnv({
+      KA_DATA_BASE_URL: "https://ka-data.example.internal",
+      KA_DATA_READER_TOKEN: "server-only-token",
+      KA_DATA_TIMEZONE: "Asia/Shanghai",
+      KA_DATA_DAY_CUT: "calendar_day",
+    }, {
+      fetchFn: async () => jsonResponse({
+        backend: "sqlite",
+        rowCount: 1,
+        rows: [kaSummary()],
+      }),
+    });
+    const result = await client.query(resolvedSummary(), {
+      workspaceId: "w",
+      userId: "u",
+      accounts: [{ media: "KUAISHOU", accountId: "a-1" }],
+    });
+    expect(result.lineage).toMatchObject({ timezone: null, dayCut: null });
   });
 
   it("rejects any production access mode other than the frozen shared reader mode", () => {

@@ -177,6 +177,21 @@ function unavailableSource(
   };
 }
 
+function sourceHasNoObjects(source: SourceQueryResult): boolean {
+  if (source.lineage.coverage.returnedObjects === 0) return true;
+  if (source.queryId === "account.summary") {
+    return source.rows[0]?.accountCount === 0;
+  }
+  if (source.queryId === "account.trend" && source.rows.length > 0) {
+    return source.rows.every((row) => {
+      const metrics = row.metrics;
+      return typeof metrics === "object" && metrics !== null && !Array.isArray(metrics) &&
+        (metrics as Record<string, unknown>).accountCount === 0;
+    });
+  }
+  return source.returnedRowCount === 0;
+}
+
 function rowAccountIdentity(row: Record<string, unknown>): {
   workspaceId: string | null;
   media: string | null;
@@ -393,7 +408,7 @@ export class DataQueryService {
         : unavailableSource(resolved, "platform", mapError(platformResult.reason, requestId));
       const comparisonReason = kaData.status === "unavailable" || platform.status === "unavailable"
         ? "source_unavailable"
-        : (kaData.returnedRowCount === 0) !== (platform.returnedRowCount === 0)
+        : sourceHasNoObjects(kaData) !== sourceHasNoObjects(platform)
             ? "source_missing"
           : kaData.lineage.partial || platform.lineage.partial
             ? "partial_source"

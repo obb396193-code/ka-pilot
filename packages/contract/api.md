@@ -127,6 +127,9 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
   `coverage.complete` 必须为 `false`，并明确 requested/returned objects；只有认证 scope
   本身为空时，空响应才可声明“对该空范围完整”。聚合结果行数不得冒充账户对象数。
 - 账户单侧缺行用 `source_missing`；不得仅按账户名称 join，不得把任务/商品/素材/广告组的 ID 同源性从账户事实外推。
+- `coverage.partial` 与 `truncated` 是两个独立事实：账户缺失只标
+  `partial=true,truncated=false`；只有输送/行数/字节边界证据才能标 `truncated=true`。
+- aggregate/trend 只有能证明跨日账户对象集合时才返回 `returnedObjects`。不能证明时省略该字段并标 coverage 不完整；任何 `returnedObjects > requestedObjects` 都 fail closed。
 
 ### 稳定错误 envelope
 

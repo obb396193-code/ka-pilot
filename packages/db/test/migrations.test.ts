@@ -79,8 +79,11 @@ describe("contract migrations", () => {
 
     const identityMigration = await runMigrations({ databaseUrl, count: 1 });
     expect(identityMigration).toHaveLength(1);
+    const foreignKeyStartedAt = performance.now();
     const foreignKeyMigration = await runMigrations({ databaseUrl, count: 1 });
+    const foreignKeyDurationMs = performance.now() - foreignKeyStartedAt;
     expect(foreignKeyMigration).toHaveLength(1);
+    expect(foreignKeyDurationMs).toBeLessThan(10_000);
     const client = new Client({ connectionString: databaseUrl });
     await client.connect();
     const tables = await client.query<{ table_name: string }>(`

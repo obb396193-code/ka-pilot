@@ -256,4 +256,18 @@ describe("PlatformDataSource", () => {
       scope,
     )).rejects.toBeInstanceOf(PlatformDataSourceError);
   });
+
+  it("fails closed when lineage returns more accounts than the authenticated scope", async () => {
+    const repository = {
+      querySummary: vi.fn(async () => summary(12)),
+      queryTrend: vi.fn(),
+      queryTable: vi.fn(),
+      queryLineage: vi.fn(async () => ({ ...lineage(), returnedAccounts: 2 })),
+    };
+    const source = new PlatformDataSource(repository as never);
+    await expect(source.query(
+      createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"),
+      scope,
+    )).rejects.toBeInstanceOf(PlatformDataSourceError);
+  });
 });

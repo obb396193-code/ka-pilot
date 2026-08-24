@@ -12,19 +12,12 @@ const ACCOUNT_REFERENCES = [...NON_PARTITIONED_REFERENCES, ...PARTITIONED_REFERE
 
 exports.up = (pgm) => {
   pgm.sql(`
-    ${NON_PARTITIONED_REFERENCES.map(([table, constraint]) => `
-      ALTER TABLE ${table}
-        ADD CONSTRAINT ${constraint}
-        FOREIGN KEY (workspace_id, media, account_id)
-        REFERENCES accounts(workspace_id, media, account_id)
-        ON UPDATE RESTRICT ON DELETE RESTRICT
-        NOT VALID;
-      ALTER TABLE ${table} VALIDATE CONSTRAINT ${constraint};
-    `).join("\n")}
+    SET LOCAL lock_timeout = '5s';
+    SET LOCAL statement_timeout = '5min';
 
     DO $$
     BEGIN
-      ${PARTITIONED_REFERENCES.map(([table]) => `
+      ${ACCOUNT_REFERENCES.map(([table]) => `
         IF EXISTS (
           SELECT 1
           FROM ${table} AS child
@@ -39,6 +32,16 @@ exports.up = (pgm) => {
       `).join("\n")}
     END;
     $$;
+
+    ${NON_PARTITIONED_REFERENCES.map(([table, constraint]) => `
+      ALTER TABLE ${table}
+        ADD CONSTRAINT ${constraint}
+        FOREIGN KEY (workspace_id, media, account_id)
+        REFERENCES accounts(workspace_id, media, account_id)
+        ON UPDATE RESTRICT ON DELETE RESTRICT
+        NOT VALID;
+      ALTER TABLE ${table} VALIDATE CONSTRAINT ${constraint};
+    `).join("\n")}
 
     ${PARTITIONED_REFERENCES.map(([table, constraint]) => `
       ALTER TABLE ${table}

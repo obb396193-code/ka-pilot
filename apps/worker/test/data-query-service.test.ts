@@ -302,6 +302,35 @@ describe("DataQueryService", () => {
     }
   });
 
+  it("classifies a one-row empty aggregate as source_missing from object coverage", async () => {
+    const emptyAggregate = ready("ka_data", 0, "account.summary");
+    emptyAggregate.rows = [{ ...emptyAggregate.rows[0], accountCount: 0, rowCount: 0 }];
+    emptyAggregate.lineage = {
+      ...emptyAggregate.lineage,
+      coverage: { complete: false, requestedObjects: 1, returnedObjects: 0 },
+      partial: true,
+    };
+    emptyAggregate.wholeResultTotal = {
+      value: null,
+      availability: "partial",
+      reason: "Account scope is missing",
+    };
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => emptyAggregate },
+      platform: { query: async () => ready("canonical", 11, "account.summary") },
+    });
+    const response = await service.execute({
+      queryId: "account.summary",
+      params: { date: "2026-08-24" },
+      dataView: "reconcile",
+    }, auth);
+    expect(response.ok).toBe(true);
+    if (response.ok && response.data.mode === "reconcile") {
+      expect(response.data.comparison.reason).toBe("source_missing");
+    }
+  });
+
   it("exposes POST /api/v1/data/query semantics through a mountable handler", async () => {
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
