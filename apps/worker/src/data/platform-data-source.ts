@@ -38,10 +38,6 @@ export interface PlatformQueryRepository {
   queryLineage: (input: SemanticQueryScope) => Promise<SemanticLineageResult>;
 }
 
-export interface PlatformDataSourceOptions {
-  datasetVersion?: string;
-}
-
 function authorityFor(resolved: ResolvedDataQuery): SourceAuthority {
   const defaultSource = resolved.authorityPolicy.defaultSource;
   return {
@@ -92,7 +88,6 @@ function sourceLineage(
   resolved: ResolvedDataQuery,
   scope: DataQueryExecutionScope,
   lineage: SemanticLineageResult,
-  datasetVersion: string | null,
   truncated: boolean,
 ): SourceLineage {
   if (lineage.returnedAccounts > scope.accounts.length) {
@@ -102,7 +97,7 @@ function sourceLineage(
     lineage.returnedAccountDays >= lineage.requestedAccountDays;
   const partial = truncated || !coverageComplete;
   const sourceMetadata = {
-    datasetVersion,
+    datasetVersion: null,
     dataAsOf: lineage.dataAsOf,
     timezone: null,
     dayCut: null,
@@ -175,14 +170,9 @@ async function queryAllRows(
 }
 
 export class PlatformDataSource {
-  readonly #datasetVersion: string | null;
-
   constructor(
     private readonly repository: PlatformQueryRepository,
-    options: PlatformDataSourceOptions = {},
-  ) {
-    this.#datasetVersion = options.datasetVersion?.trim() || null;
-  }
+  ) {}
 
   async query(
     resolved: ResolvedDataQuery,
@@ -194,9 +184,11 @@ export class PlatformDataSource {
       let rows: Record<string, unknown>[];
       let total: number;
       let truncated = false;
+      let aggregateAccountCount: number | undefined;
 
       if (resolved.queryId === "account.summary") {
         const summary = await this.repository.querySummary(scope);
+        aggregateAccountCount = summary.accountCount;
         rows = [{ ...summary }];
         total = summary.rowCount;
       } else if (resolved.queryId === "account.trend") {
@@ -232,11 +224,17 @@ export class PlatformDataSource {
       }
 
       rows = canonicalizeQueryRows(resolved.queryId, "platform", rows, execution.workspaceId);
+      const semanticLineage = await lineagePromise;
+      if (
+        aggregateAccountCount !== undefined &&
+        aggregateAccountCount !== semanticLineage.returnedAccounts
+      ) {
+        throw new CanonicalQueryRowError();
+      }
       const lineage = sourceLineage(
         resolved,
         execution,
-        await lineagePromise,
-        this.#datasetVersion,
+        semanticLineage,
         truncated,
       );
       const wholeResultTotal = lineage.partial
@@ -257,7 +255,8 @@ export class PlatformDataSource {
         warnings: lineage.partial ? [lineage.coverage.reason ?? "Canonical result is partial"] : [],
       };
     } catch (error) {
-      const invalidCanonical = error instanceof CanonicalQueryRowError;
+      const invalidCanonical = error instanceof CanonicalQueryRowError ||
+        (error instanceof Error && error.name === "SemanticQueryContractError");
       if (invalidCanonical) throw new PlatformDataSourceError();
       return {
         queryId: resolved.queryId,

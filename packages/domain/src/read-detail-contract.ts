@@ -5,7 +5,7 @@ import { requestIdSchema } from "./data-query-contract.js";
 const jsonObjectSchema = z.record(z.string(), z.unknown());
 const nullableDateTimeSchema = z.string().datetime({ offset: true }).nullable();
 const accountScopeFields = {
-  workspaceId: z.string().min(1),
+  workspaceId: z.string().uuid(),
   media: z.string().min(1),
   accountId: z.string().min(1),
 };

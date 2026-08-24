@@ -16,7 +16,7 @@ function error(code: StableDataQueryError["code"], message: string, retryable: b
 }
 
 function endpoint(originValue: string, kind: ReadModelKind, id: string): string | null {
-  if (!/^[A-Za-z0-9_-]{1,128}$/.test(id)) return null
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) return null
   try {
     const origin = new URL(originValue)
     if (!["https:", "http:"].includes(origin.protocol) || origin.username || origin.password || origin.search || origin.hash || (origin.pathname !== "/" && origin.pathname !== "")) return null
@@ -37,17 +37,18 @@ function headers(auth: ServerAuthContext, token: string, requestId: string): Hea
 
 function workItemBelongsToScope(response: WorkItemDetailResponse, id: string, auth: ServerAuthContext): "valid" | "identity_mismatch" | "scope_mismatch" {
   if (!response.ok) return "valid"
-  if (response.data.findingId !== id) return "identity_mismatch"
-  if (response.data.media === null || !auth.allowedAccounts.some((account) => account.media === response.data.media && account.accountId === response.data.accountId)) return "scope_mismatch"
+  const record = response.data.workItem
+  if (record.id !== id || record.workspaceId !== auth.workspaceId) return "identity_mismatch"
+  if (!auth.allowedAccounts.some((account) => account.media === record.media && account.accountId === record.accountId)) return "scope_mismatch"
   return "valid"
 }
 
-function changeSetIdentity(response: ChangeSetDetailResponse, id: string): "valid" | "identity_mismatch" | "scope_unprovable" {
+function changeSetIdentity(response: ChangeSetDetailResponse, id: string, auth: ServerAuthContext): "valid" | "identity_mismatch" | "scope_mismatch" {
   if (!response.ok) return "valid"
-  if (response.data.changeSetId !== id) return "identity_mismatch"
-  // The candidate response has accountId but no media/workspace tuple. Keep the gate off
-  // until the backend GET contract exposes enough identity to prove approved scope.
-  return "scope_unprovable"
+  const record = response.data.changeset
+  if (record.id !== id || record.workspaceId !== auth.workspaceId) return "identity_mismatch"
+  if (!auth.allowedAccounts.some((account) => account.media === record.media && account.accountId === record.accountId)) return "scope_mismatch"
+  return "valid"
 }
 
 export async function handleReadModelRequest(kind: ReadModelKind, id: string, dependencies: Dependencies): Promise<ReadModelBffResult> {
@@ -72,9 +73,9 @@ export async function handleReadModelRequest(kind: ReadModelKind, id: string, de
       if (scope === "identity_mismatch") return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Work-item response identity did not match the path", false, requestId) }
       if (scope === "scope_mismatch") return { status: 403, body: error("FORBIDDEN", "Work-item response is outside the approved account scope", false, requestId) }
     } else {
-      const identity = changeSetIdentity(parsed.data as ChangeSetDetailResponse, id)
+      const identity = changeSetIdentity(parsed.data as ChangeSetDetailResponse, id, auth)
       if (identity === "identity_mismatch") return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Change-set response identity did not match the path", false, requestId) }
-      if (identity === "scope_unprovable") return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Change-set response does not expose the media identity required for scope proof", false, requestId) }
+      if (identity === "scope_mismatch") return { status: 403, body: error("FORBIDDEN", "Change-set response is outside the approved account scope", false, requestId) }
     }
     return { status: upstream.status, body: parsed.data }
   } catch (cause) {

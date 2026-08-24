@@ -1,5 +1,8 @@
 exports.up = (pgm) => {
   pgm.sql(`
+    SET LOCAL lock_timeout = '5s';
+    SET LOCAL statement_timeout = '5min';
+
     ALTER TABLE work_items ADD COLUMN media TEXT;
 
     DO $$
@@ -65,6 +68,9 @@ exports.up = (pgm) => {
 
 exports.down = (pgm) => {
   pgm.sql(`
+    SET LOCAL lock_timeout = '5s';
+    SET LOCAL statement_timeout = '5min';
+
     DROP INDEX idx_changesets_account_scope;
     ALTER TABLE changesets DROP CONSTRAINT changesets_account_fk;
     ALTER TABLE changesets DROP CONSTRAINT changesets_account_scope_pair_ck;

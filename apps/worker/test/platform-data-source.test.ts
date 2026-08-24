@@ -7,7 +7,7 @@ import {
 } from "../src/data/platform-data-source.js";
 
 const scope = {
-  workspaceId: "workspace-fixture",
+  workspaceId: "00000000-0000-4000-8000-000000000024",
   userId: "user-fixture",
   accounts: [{ media: "KUAISHOU", accountId: "account-1" }],
 };
@@ -263,6 +263,36 @@ describe("PlatformDataSource", () => {
       queryTrend: vi.fn(),
       queryTable: vi.fn(),
       queryLineage: vi.fn(async () => ({ ...lineage(), returnedAccounts: 2 })),
+    };
+    const source = new PlatformDataSource(repository as never);
+    await expect(source.query(
+      createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"),
+      scope,
+    )).rejects.toBeInstanceOf(PlatformDataSourceError);
+  });
+
+  it("fails closed when aggregate and lineage object counts come from inconsistent snapshots", async () => {
+    const repository = {
+      querySummary: vi.fn(async () => summary(12)),
+      queryTrend: vi.fn(),
+      queryTable: vi.fn(),
+      queryLineage: vi.fn(async () => ({ ...lineage(), returnedAccounts: 0 })),
+    };
+    const source = new PlatformDataSource(repository as never);
+    await expect(source.query(
+      createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"),
+      scope,
+    )).rejects.toBeInstanceOf(PlatformDataSourceError);
+  });
+
+  it("maps repository numeric contract errors to the stable Platform contract error", async () => {
+    const repositoryError = new Error("database value is invalid");
+    repositoryError.name = "SemanticQueryContractError";
+    const repository = {
+      querySummary: vi.fn(async () => { throw repositoryError; }),
+      queryTrend: vi.fn(),
+      queryTable: vi.fn(),
+      queryLineage: vi.fn(async () => lineage()),
     };
     const source = new PlatformDataSource(repository as never);
     await expect(source.query(

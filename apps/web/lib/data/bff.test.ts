@@ -194,6 +194,18 @@ test("BFF rejects a valid UUID row from a different workspace", async () => {
   assert.equal(response.body.ok ? "" : response.body.error.requestId, "bff-cross-workspace")
 })
 
+test("BFF rejects same-workspace rows outside the approved media-account tuple", async () => {
+  for (const row of [
+    { ...canonicalTableRow, media: "TENCENT" },
+    { ...canonicalTableRow, accountId: "outside-account" },
+  ]) {
+    const escapedEnvelope = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, rows: [row] } } }
+    const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, authContext, requestId: () => "bff-cross-tuple", fetchImpl: async () => Response.json(escapedEnvelope) })
+    assert.equal(response.status, 502)
+    assert.equal(response.body.ok ? "" : response.body.error.code, "UPSTREAM_INVALID_RESPONSE")
+  }
+})
+
 test("BFF rejects a response queryId that does not match the request", async () => {
   const mismatched = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, queryId: "account.detail", rowSchemaVersion: "account.detail/v1" } } }
   const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, authContext, requestId: () => "bff-query-mismatch", fetchImpl: async () => Response.json(mismatched) })

@@ -3,6 +3,7 @@ import { Pool } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
 import { SemanticQueryRepository } from "../src/semantic-query-repository.js";
+import { SemanticQueryContractError } from "../src/semantic-query-support.js";
 import { AmbiguousTaskMappingError } from "../src/semantic-query-types.js";
 
 const databaseUrl =
@@ -78,6 +79,7 @@ describe("SemanticQueryRepository", () => {
   });
 
   it("rejects unsafe ranges, pagination and sort input before querying", async () => {
+    await expect(repository.queryTable({ workspaceId: "not-a-uuid", dateFrom: "2026-08-18", dateTo: "2026-08-19" })).rejects.toThrow("workspaceId must be a UUID");
     await expect(
       repository.queryTable({
         workspaceId,
@@ -128,6 +130,18 @@ describe("SemanticQueryRepository", () => {
       { taskId: taskOneId, taskName: "任务一", bizName: "业务甲" },
     ]);
     expect(result.rows.every((row) => row.workspaceId === workspaceId)).toBe(true);
+  });
+
+  it("fails closed when PostgreSQL numeric NaN is present instead of SQL NULL", async () => {
+    await pool.query(
+      `UPDATE account_metrics_daily
+       SET cost = 'NaN'::numeric
+       WHERE workspace_id = $1 AND media = 'KUAISHOU' AND account_id = 'a-1' AND ds = '2026-08-18'`,
+      [workspaceId],
+    );
+    const scope = { workspaceId, dateFrom: "2026-08-18", dateTo: "2026-08-18", filters: { accountScopes: [{ media: "KUAISHOU", accountId: "a-1" }] } };
+    await expect(repository.queryTable(scope)).rejects.toBeInstanceOf(SemanticQueryContractError);
+    await expect(repository.querySummary(scope)).rejects.toBeInstanceOf(SemanticQueryContractError);
   });
 
   it("applies server-side account-list and anomaly scope to canonical rows", async () => {

@@ -2,6 +2,8 @@ import {
   accountDetailSchema,
   analysisSchema,
   findingDetailSchema,
+  changeSetPreviewSchema,
+  stableDataQueryErrorSchema,
   workbenchSchema,
   type AccountDetailData,
   type AnalysisData,
@@ -9,6 +11,8 @@ import {
   type BackendMetricValue,
   type DataQueryResponse,
   type FindingDetailData,
+  type ChangeSetDetailResponse,
+  type ChangeSetPreviewData,
   type SourceQueryResult,
   type StableDataQueryError,
   type WorkItemDetailResponse,
@@ -172,6 +176,31 @@ export function adaptAccountDetail(response: DataQueryResponse, mode: DataViewMo
 export function adaptWorkItemDetail(response: WorkItemDetailResponse | null, findingId: string, loading: boolean, isMock = false): DataResponse<FindingDetailData> {
   const empty = findingDetailSchema.parse({ findingId, media: null, accountId: "unknown", accountName: "脱敏账户", title: "诊断详情暂不可用", severity: "warning", deterministicConclusion: "只读工作项详情接口尚未返回确定性结论。", evidence: [], aiInterpretation: null, aiConfidence: null, changeSetId: null })
   if (loading || response === null) return { state: "loading", lineage: placeholderLineage("platform"), data: empty, message: "正在读取工作项详情", isMock }
-  if (!response.ok) return { state: errorState(response.error), lineage: placeholderLineage("platform", response.error), data: empty, message: response.error.message, error: response.error, isMock }
-  return { state: "ready", lineage: placeholderLineage("platform"), data: response.data, isMock }
+  if (!response.ok) {
+    const normalizedError = stableDataQueryErrorSchema.parse(response.error.code === "NOT_FOUND"
+      ? { code: "SOURCE_UNAVAILABLE", message: response.error.message, retryable: response.error.retryable, requestId: response.error.requestId }
+      : response.error)
+    return { state: errorState(normalizedError), lineage: placeholderLineage("platform", normalizedError), data: empty, message: response.error.message, error: normalizedError, isMock }
+  }
+  const workItem = response.data.workItem
+  const severity = workItem.severity === "P0" ? "critical" : workItem.severity === "P2" || workItem.severity === "opportunity" ? "info" : "warning"
+  const evidence = Object.entries(workItem.evidenceSnapshot ?? {}).map(([label, value]) => ({ label, value: typeof value === "string" ? value : JSON.stringify(value), source: `workItem.evidenceSnapshot.${label}` }))
+  const deterministicConclusion = workItem.diagnosis === null ? "只读工作项未提供结构化诊断。" : JSON.stringify(workItem.diagnosis)
+  const data = findingDetailSchema.parse({ findingId: workItem.id, media: workItem.media, accountId: workItem.accountId, accountName: "脱敏账户", title: workItem.title, severity, deterministicConclusion, evidence, aiInterpretation: null, aiConfidence: null, changeSetId: null })
+  return { state: "ready", lineage: placeholderLineage("platform"), data, isMock }
+}
+
+export function adaptChangeSetPreview(response: ChangeSetDetailResponse | null): ChangeSetPreviewData | null {
+  if (response === null || !response.ok || response.data.changeset.ttlExpireAt === null) return null
+  const changeSet = response.data.changeset
+  return changeSetPreviewSchema.parse({
+    changeSetId: changeSet.id,
+    accountId: changeSet.accountId,
+    accountName: "脱敏账户",
+    status: "preview_only",
+    expiresAt: changeSet.ttlExpireAt,
+    items: changeSet.items.map((item) => ({ field: item.field, from: item.fromValue ?? "—", to: item.toValue ?? "—", reason: item.failReason ?? changeSet.reasonCode ?? "只读变更预览" })),
+    riskChecks: [{ label: "媒体写端点", passed: false, detail: "当前只读集成未注册执行入口" }],
+    executionEndpointConfigured: false,
+  })
 }

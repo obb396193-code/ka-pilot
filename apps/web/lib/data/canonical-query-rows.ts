@@ -79,7 +79,7 @@ export const accountDailyMetricSetSchema = canonicalMetricSetSchema.extend({
 }).strict()
 
 export const accountDailyRowSchema = z.object({
-  workspaceId: z.string().min(1),
+  workspaceId: z.string().uuid(),
   media: z.string().min(1),
   accountId: z.string().min(1),
   accountName: z.string().nullable(),

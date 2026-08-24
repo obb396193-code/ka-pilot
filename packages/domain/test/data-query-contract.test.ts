@@ -161,7 +161,7 @@ describe("dual data query contract", () => {
       rowSchemaVersion: "reconcile.account_daily/v1",
       status: "ready",
       rows: [{
-        workspaceId: "workspace-fixture",
+        workspaceId: "00000000-0000-4000-8000-000000000024",
         media: "KUAISHOU",
         accountId: "fixture-account",
         accountName: null,

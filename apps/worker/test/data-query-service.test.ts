@@ -28,7 +28,7 @@ function ready(
 
 describe("DataQueryService", () => {
   const auth = {
-    workspaceId: "workspace-server-side",
+    workspaceId: "00000000-0000-4000-8000-000000000024",
     userId: "user-server-side",
     allowedAccounts: [{ media: "KUAISHOU", accountId: "allowed-account" }],
   };

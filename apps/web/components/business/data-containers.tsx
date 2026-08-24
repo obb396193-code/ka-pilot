@@ -10,7 +10,7 @@ import { DataStateFrame } from "@/components/data-view/data-state-frame"
 import { DataViewSwitcher } from "@/components/data-view/data-view-switcher"
 import { PageShell } from "@/components/data-view/page-shell"
 import { Badge } from "@/components/ui/badge"
-import { adaptAccountDetail, adaptAnalysis, adaptWorkbench, adaptWorkItemDetail } from "@/lib/data/adapters"
+import { adaptAccountDetail, adaptAnalysis, adaptChangeSetPreview, adaptWorkbench, adaptWorkItemDetail } from "@/lib/data/adapters"
 import type { DataQueryResponse, QueryRequest } from "@/lib/data/contracts"
 import { readDataState, type DataState, type DataViewMode, type QueryRecord } from "@/lib/data/data-view"
 import { getMockChangeSetDetail, getMockWorkItemDetail } from "@/lib/data/mock-data"
@@ -67,16 +67,16 @@ function MockDiagnosticDetailContainer({ findingId }: { findingId: string }) {
   const workItem = getMockWorkItemDetail(findingId)
   const changeSet = getMockChangeSetDetail()
   const response = adaptWorkItemDetail(workItem, findingId, false, true)
-  const preview = changeSet.ok ? changeSet.data : null
+  const preview = adaptChangeSetPreview(changeSet)
   return <DiagnosticDetailView response={response} preview={preview} />
 }
 
 function InternalDiagnosticDetailContainer({ findingId }: { findingId: string }) {
   const workItem = useReadModel("work-items", findingId)
-  const changeSetId = workItem.response?.ok ? workItem.response.data.changeSetId : null
+  const changeSetId = null
   const changeSet = useReadModel("changesets", changeSetId)
   const response = adaptWorkItemDetail(workItem.response, findingId, workItem.loading)
-  const preview = changeSet.response?.ok ? changeSet.response.data : null
+  const preview = adaptChangeSetPreview(changeSet.response)
   return <DiagnosticDetailView response={response} preview={preview} />
 }
 

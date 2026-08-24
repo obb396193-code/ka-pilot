@@ -17,7 +17,15 @@ export interface SqlFilter {
   values: unknown[];
 }
 
+export class SemanticQueryContractError extends Error {
+  constructor(message = "Semantic query returned a value outside the canonical contract") {
+    super(message);
+    this.name = "SemanticQueryContractError";
+  }
+}
+
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function isValidIsoDate(value: string): boolean {
   if (!ISO_DATE.test(value)) {
@@ -28,8 +36,8 @@ function isValidIsoDate(value: string): boolean {
 }
 
 export function validateScope(scope: SemanticQueryScope): void {
-  if (!scope.workspaceId) {
-    throw new Error("workspaceId is required");
+  if (!UUID.test(scope.workspaceId)) {
+    throw new Error("workspaceId must be a UUID");
   }
   if (!isValidIsoDate(scope.dateFrom) || !isValidIsoDate(scope.dateTo)) {
     throw new Error("dateFrom and dateTo must use valid YYYY-MM-DD dates");
@@ -169,7 +177,10 @@ export function nullableNumber(value: string | number | null | undefined): numbe
     return null;
   }
   const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
+  if (!Number.isFinite(parsed)) {
+    throw new SemanticQueryContractError("Semantic query returned a non-finite numeric value");
+  }
+  return parsed;
 }
 
 export function isoTimestamp(value: string | Date): string {

@@ -36,7 +36,6 @@ export interface KaDataClientOptions {
   fetchFn?: FetchLike;
   timeoutMs?: number;
   maxResponseBytes?: number;
-  datasetVersion?: string;
 }
 
 export interface KaDataClientRuntimeOverrides {
@@ -125,7 +124,7 @@ function objectCoverage(
     if (requestedObjects === 0 || counts.length === 0) {
       return { returnedObjects: 0, incomplete: requestedObjects > 0 };
     }
-    if (counts.some((count) => count === requestedObjects)) {
+    if (counts.every((count) => count === requestedObjects)) {
       return { returnedObjects: requestedObjects, incomplete: false };
     }
     return { incomplete: true };
@@ -212,9 +211,6 @@ function parseEnvelope(body: string): z.infer<typeof kaDataEnvelopeSchema> {
 function sourceLineage(
   resolved: ResolvedDataQuery,
   scope: DataQueryExecutionScope,
-  configuredMetadata: {
-    datasetVersion: string | null;
-  },
   envelope: z.infer<typeof kaDataEnvelopeSchema>,
   returnedObjects: number | undefined,
   transportPartial: boolean,
@@ -222,7 +218,7 @@ function sourceLineage(
   reason: string | undefined,
 ): SourceLineage {
   const sourceMetadata = {
-    datasetVersion: envelope.datasetVersion ?? configuredMetadata.datasetVersion,
+    datasetVersion: envelope.datasetVersion ?? null,
     dataAsOf: envelope.dataAsOf ?? null,
     timezone: envelope.timezone ?? null,
     dayCut: envelope.dayCut ?? null,
@@ -264,9 +260,6 @@ export class KaDataClient {
   readonly #fetchFn: FetchLike;
   readonly #timeoutMs: number;
   readonly #maxResponseBytes: number;
-  readonly #configuredMetadata: {
-    datasetVersion: string | null;
-  };
   readonly #registry = createDataQueryRegistry();
 
   constructor(options: KaDataClientOptions) {
@@ -279,9 +272,6 @@ export class KaDataClient {
       options.maxResponseBytes ?? DEFAULT_KA_DATA_MAX_RESPONSE_BYTES,
       "maxResponseBytes",
     );
-    this.#configuredMetadata = {
-      datasetVersion: options.datasetVersion?.trim() || null,
-    };
   }
 
   toJSON(): Record<string, string> {
@@ -362,7 +352,6 @@ export class KaDataClient {
         lineage: sourceLineage(
           resolved,
           scope,
-          this.#configuredMetadata,
           envelope,
           coverage.returnedObjects,
           transportPartial,
@@ -437,9 +426,6 @@ export function createKaDataClientFromEnv(
       DEFAULT_KA_DATA_MAX_RESPONSE_BYTES,
       "KA_DATA_MAX_RESPONSE_BYTES",
     ),
-    ...(env.KA_DATA_DATASET_VERSION === undefined
-      ? {}
-      : { datasetVersion: env.KA_DATA_DATASET_VERSION }),
     ...overrides,
   });
 }

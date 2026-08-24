@@ -7,10 +7,6 @@ const configSchema = z.object({
   DATA_API_INTERNAL_TOKEN: z.string().min(32),
   DATA_API_MAX_REQUEST_BYTES: z.coerce.number().int().positive().default(1024 * 1024),
   DATA_API_MAX_RESPONSE_BYTES: z.coerce.number().int().positive().default(16 * 1024 * 1024),
-  PLATFORM_DATASET_VERSION: z.preprocess(
-    (value) => value === "" ? undefined : value,
-    z.string().trim().min(1).optional(),
-  ),
 });
 
 export interface DataApiConfig {
@@ -20,7 +16,6 @@ export interface DataApiConfig {
   internalToken: string;
   maxRequestBytes: number;
   maxResponseBytes: number;
-  platformDatasetVersion?: string;
 }
 
 export function loadDataApiConfig(environment: NodeJS.ProcessEnv): DataApiConfig {
@@ -32,8 +27,5 @@ export function loadDataApiConfig(environment: NodeJS.ProcessEnv): DataApiConfig
     internalToken: parsed.DATA_API_INTERNAL_TOKEN,
     maxRequestBytes: parsed.DATA_API_MAX_REQUEST_BYTES,
     maxResponseBytes: parsed.DATA_API_MAX_RESPONSE_BYTES,
-    ...(parsed.PLATFORM_DATASET_VERSION === undefined
-      ? {}
-      : { platformDatasetVersion: parsed.PLATFORM_DATASET_VERSION }),
   };
 }

@@ -19,12 +19,7 @@ async function main(): Promise<void> {
   const service = new DataQueryService({
     registry: createDataQueryRegistry(),
     kaData: createKaDataClientFromEnv(process.env),
-    platform: new PlatformDataSource(
-      new SemanticQueryRepository(pool),
-      config.platformDatasetVersion === undefined
-        ? {}
-        : { datasetVersion: config.platformDatasetVersion },
-    ),
+    platform: new PlatformDataSource(new SemanticQueryRepository(pool)),
   });
   const server = createDataApiServer({
     service,

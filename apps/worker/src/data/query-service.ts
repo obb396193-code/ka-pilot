@@ -12,6 +12,7 @@ import {
   type StableDataQueryError,
   type StableDataQueryErrorCode,
 } from "@ka/domain";
+import { z } from "zod";
 
 import {
   KaDataClientError,
@@ -302,7 +303,7 @@ function executionScope(
 }
 
 function validateAuth(auth: AuthenticatedDataQueryContext): void {
-  if (auth.workspaceId.trim() === "" || auth.userId.trim() === "") {
+  if (!z.string().uuid().safeParse(auth.workspaceId).success || auth.userId.trim() === "") {
     throw new QueryRegistryError("INVALID_REQUEST", "Authenticated workspace and user are required");
   }
   if (auth.allowedAccounts.some(

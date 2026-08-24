@@ -15,7 +15,7 @@ import { canonicalRow, readySource } from "./canonical-query-fixtures.js";
 
 const internalToken = "fixture-internal-token-that-is-long-enough";
 const auth = {
-  workspaceId: "workspace-fixture",
+  workspaceId: "00000000-0000-4000-8000-000000000024",
   userId: "user-fixture",
   allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
 };
@@ -165,6 +165,13 @@ describe("data API HTTP composition", () => {
       body: "{}",
     });
     expect(malformedScope.status).toBe(403);
+
+    const invalidWorkspace = await fetch(`${baseUrl}/api/v1/data/query`, {
+      method: "POST",
+      headers: { ...authHeaders(), "x-ka-workspace-id": "not-a-uuid" },
+      body: "{}",
+    });
+    expect(invalidWorkspace.status).toBe(403);
 
     const invalidJson = await fetch(`${baseUrl}/api/v1/data/query`, {
       method: "POST",

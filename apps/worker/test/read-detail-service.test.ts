@@ -8,7 +8,7 @@ const WORK_ITEM_ID = "00000000-0000-4000-8000-000000000101";
 const CHANGESET_ID = "00000000-0000-4000-8000-000000000102";
 const USER_ID = "00000000-0000-4000-8000-000000000103";
 const auth = {
-  workspaceId: "workspace-1",
+  workspaceId: "00000000-0000-4000-8000-000000000104",
   userId: USER_ID,
   allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
 };
@@ -146,5 +146,10 @@ describe("ReadDetailService", () => {
       ok: false,
       error: { code: "NOT_FOUND", requestId: "missing-001" },
     });
+  });
+
+  it("fails closed when a repository returns a different path id or workspace", async () => {
+    await expect(service({ workItem: workItem({ id: "00000000-0000-4000-8000-000000000199" }) }).getWorkItem(WORK_ITEM_ID, auth, "identity-001")).resolves.toMatchObject({ ok: false, error: { code: "INTERNAL_ERROR" } });
+    await expect(service({ changeset: changeset({ workspaceId: "00000000-0000-4000-8000-000000000999" }) }).getChangeSet(CHANGESET_ID, auth, "identity-002")).resolves.toMatchObject({ ok: false, error: { code: "INTERNAL_ERROR" } });
   });
 });

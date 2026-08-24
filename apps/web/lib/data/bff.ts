@@ -43,8 +43,12 @@ export async function forwardDataQuery(input: unknown, dependencies: Dependencie
     if (envelope.data.ok) {
       const sources = envelope.data.data.mode === "reconcile" ? [envelope.data.data.kaData, envelope.data.data.platform] : [envelope.data.data.source]
       if (sources.some((source) => source.queryId !== parsed.data.queryId)) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Upstream response queryId did not match the request", false, requestId) }
-      const crossedWorkspace = sources.some((source) => source.rows.some((row) => "workspaceId" in row && row.workspaceId !== dependencies.authContext?.workspaceId))
-      if (crossedWorkspace) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Canonical row escaped the approved workspace scope", false, requestId) }
+      const approvedTuples = new Set(dependencies.authContext.allowedAccounts.map((account) => `${account.media}\u0000${account.accountId}`))
+      const escapedScope = sources.some((source) => source.rows.some((row) => {
+        if (!("workspaceId" in row)) return false
+        return row.workspaceId !== dependencies.authContext?.workspaceId || typeof row.media !== "string" || typeof row.accountId !== "string" || !approvedTuples.has(`${row.media}\u0000${row.accountId}`)
+      }))
+      if (escapedScope) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Canonical row escaped the approved account scope", false, requestId) }
     }
     return { status: upstream.status, body: envelope.data }
   } catch (cause) {

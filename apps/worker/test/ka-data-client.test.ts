@@ -65,7 +65,7 @@ describe("KaDataClient", () => {
     });
 
     await client.query(resolvedSummary(), {
-      workspaceId: "workspace-fixture",
+      workspaceId: "00000000-0000-4000-8000-000000000024",
       userId: "user-fixture",
       accounts: [{ media: "KUAISHOU", accountId: "fixture-account" }],
     });
@@ -99,6 +99,12 @@ describe("KaDataClient", () => {
     expect(new Headers(fetchFn.mock.calls[0]?.[1]?.headers).get("authorization"))
       .toBe("Bearer server-only-token");
     expect(JSON.stringify(client)).not.toContain("server-only-token");
+    const result = await client.query(resolvedSummary(), {
+      workspaceId: "00000000-0000-4000-8000-000000000024",
+      userId: "u",
+      accounts: [],
+    });
+    expect(result.lineage.datasetVersion).toBeNull();
   });
 
   it("does not invent dataset freshness metadata absent from the upstream response", async () => {
@@ -185,6 +191,37 @@ describe("KaDataClient", () => {
     });
     expect(result.lineage.coverage).not.toHaveProperty("returnedObjects");
     expect(result.lineage).toMatchObject({ partial: true, truncated: false });
+  });
+
+  it("marks a trend partial when any returned day is missing an authorized account", async () => {
+    const resolved = createDataQueryRegistry().resolve(
+      "account.trend",
+      { dateFrom: "2026-08-23", dateTo: "2026-08-24" },
+      "ka_data",
+    );
+    const client = new KaDataClient({
+      baseUrl: "https://ka-data.example.internal",
+      token: "fixture-token",
+      fetchFn: async () => jsonResponse({
+        backend: "sqlite",
+        rowCount: 2,
+        rows: [
+          { ds: "20260823", ...kaSummary(), account_count: 2 },
+          { ds: "20260824", ...kaSummary(), account_count: 1 },
+        ],
+      }),
+    });
+    const result = await client.query(resolved, {
+      workspaceId: "00000000-0000-4000-8000-000000000024",
+      userId: "u",
+      accounts: [
+        { media: "KUAISHOU", accountId: "a-1" },
+        { media: "KUAISHOU", accountId: "a-2" },
+      ],
+    });
+    expect(result.lineage).toMatchObject({ partial: true, truncated: false, coverage: { complete: false } });
+    expect(result.lineage.coverage).not.toHaveProperty("returnedObjects");
+    expect(result.wholeResultTotal.availability).toBe("partial");
   });
 
   it("fails closed when an aggregate claims more objects than the authenticated scope", async () => {
@@ -381,13 +418,13 @@ describe("KaDataClient", () => {
     });
 
     const result = await client.query(resolved, {
-      workspaceId: "authenticated-workspace",
+      workspaceId: "00000000-0000-4000-8000-000000000024",
       userId: "u",
       accounts: [{ media: "KUAISHOU", accountId: "a-1" }],
     });
 
     expect(result.rows).toEqual([expect.objectContaining({
-      workspaceId: "authenticated-workspace",
+      workspaceId: "00000000-0000-4000-8000-000000000024",
       media: "KUAISHOU",
       accountId: "a-1",
     })]);

@@ -65,7 +65,7 @@ describe("canonical data query rows", () => {
 
   it("requires the account tuple and rejects source-specific daily fields", () => {
     const row = {
-      workspaceId: "workspace-1",
+      workspaceId: "00000000-0000-4000-8000-000000000024",
       media: "KUAISHOU",
       accountId: "account-1",
       accountName: null,

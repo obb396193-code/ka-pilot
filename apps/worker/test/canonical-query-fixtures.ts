@@ -31,7 +31,7 @@ export function canonicalMetrics(value: number) {
 export function canonicalRow(
   queryId: DataQueryId,
   value: number,
-  workspaceId = "workspace-server-side",
+  workspaceId = "00000000-0000-4000-8000-000000000024",
   accountId = "allowed-account",
 ): Record<string, unknown> {
   const metrics = canonicalMetrics(value);

@@ -29,4 +29,4 @@
 - 要求：先补失败测试，再按 `docs/plans/2026-08-24-首次内网只读纵切片集成计划.md` Task 5 修正；完成前不要增加更多业务页面或视觉依赖。
 - 验收：`test/typecheck/lint/build` 全绿；新增 reconcile 双 lineage、筛选保留、missing≠zero、mock mode 一致、任意 endpoint 拒绝、Token 不进客户端测试；回执 SHA 与 `git show --stat`。
 - 边界：继续只动 `codex/fe-vertical-slice`；禁止触碰 `/Users/aik/Desktop/投放agent` 的 `fe/f001`；视觉不在本批裁决范围；所有真实写按钮保持 disabled/preview-only。
-- 状态：待处理
+- 状态：✅ 已完成并合流。前端终态 `776e48b` 已进入 `codex/integration-control`；root 进一步补齐 BFF tuple 输出验权、reconcile/requestId exact parity、后端真实详情 DTO 与 workspace/media/account scope。最终 Web 55 tests、typecheck、lint、production build、九导航与三态/账户/诊断浏览器验收通过；当前仅 `local_verified`，未部署、未接正式登录态和真实内网 KA Data。

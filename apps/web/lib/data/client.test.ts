@@ -42,13 +42,14 @@ test("browser client source cannot reference service credentials", () => {
 })
 
 test("read-model browser client uses a fixed same-origin GET without permission headers", async () => {
+  const workItemId = "00000000-0000-4000-8000-000000000701"
   let requested = ""; let init: RequestInit | undefined
-  const response = await readInternalModel("work-items", "work-item-demo", async (input, requestInit) => {
+  const response = await readInternalModel("work-items", workItemId, async (input, requestInit) => {
     requested = String(input); init = requestInit
     return Response.json({ ok: false, error: { code: "SOURCE_UNAVAILABLE", message: "Not integrated", retryable: true, requestId: "read-client-1" } }, { status: 503 })
   })
   const headers = new Headers(init?.headers)
-  assert.equal(requested, "/api/internal/work-items/work-item-demo")
+  assert.equal(requested, `/api/internal/work-items/${workItemId}`)
   assert.equal(init?.method, "GET")
   assert.equal(headers.has("authorization"), false)
   assert.equal(headers.has("x-ka-workspace-id"), false)

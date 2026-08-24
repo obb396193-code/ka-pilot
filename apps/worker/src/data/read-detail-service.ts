@@ -98,6 +98,9 @@ export class ReadDetailService {
     try {
       const record = await this.dependencies.workItems.find(auth.workspaceId, id);
       if (record === null) return error("NOT_FOUND", "Work item was not found", requestId);
+      if (record.id !== id || record.workspaceId !== auth.workspaceId) {
+        return error("INTERNAL_ERROR", "Work item detail identity could not be verified", requestId);
+      }
       if (!authorized(record.media, record.accountId, auth)) {
         return error("FORBIDDEN", "Work item is outside the approved account scope", requestId);
       }
@@ -120,6 +123,9 @@ export class ReadDetailService {
     try {
       const record = await this.dependencies.changeSets.find(auth.workspaceId, id);
       if (record === null) return error("NOT_FOUND", "Changeset was not found", requestId);
+      if (record.id !== id || record.workspaceId !== auth.workspaceId) {
+        return error("INTERNAL_ERROR", "Changeset detail identity could not be verified", requestId);
+      }
       if (!authorized(record.media, record.accountId, auth)) {
         return error("FORBIDDEN", "Changeset is outside the approved account scope", requestId);
       }
