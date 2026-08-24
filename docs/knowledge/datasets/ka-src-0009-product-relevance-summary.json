@@ -1,0 +1,28 @@
+{
+  "document_id": "ka-src-0009",
+  "media": "腾讯广告",
+  "total_documents": 315,
+  "endpoint_documents": 307,
+  "topic_counts_non_exclusive": {
+    "other": 49,
+    "authorization_account": 45,
+    "bidding_budget": 5,
+    "automation_experiment": 13,
+    "policy_limits": 13,
+    "finance_agency": 16,
+    "reporting_insights": 28,
+    "landing_asset_product": 94,
+    "creative_material": 32,
+    "campaign_structure": 49,
+    "audience_targeting": 33,
+    "conversion_attribution": 30
+  },
+  "product_adoption_counts_exclusive": {
+    "cross_channel_reference": 10,
+    "later_channel_candidate": 257,
+    "background_only": 39,
+    "reject_current_product": 9
+  },
+  "product_boundary": "腾讯广告 不属于一期渠道；接口文档现阶段用于跨渠道对象模型、Capability Registry 和后续 adapter 设计，不因官方公开就进入一期开发。",
+  "classification_note": "主题计数可重叠；产品处置数互斥。分类是待审查机器初筛，不是已批准的能力清单。"
+}

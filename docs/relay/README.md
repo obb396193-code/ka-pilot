@@ -44,3 +44,37 @@
 | fe-codex | 只在独立 `codex/fe-vertical-slice` worktree 修改前端候选 | 触碰当前 `fe/f001`；改后端 Contract；宣称完整前端 |
 | Claude/arch | 后续契约和架构复审 | 未实读文件即沿用临时 Agent 结论；阻塞已通过当前门禁的实现和内网部署 |
 | Claude/fe | 最终前端复审、保留/修改/重做 | 把临时 Codex 视觉当成已拍板正式皮肤 |
+
+## research/knowledge 角色注册提议（待 arch 审查，尚未生效）
+
+> 提议日期：2026-08-20
+> 提议方：KA 投放经营平台“资料研究与知识资产 Agent”
+> 审查入口：`docs/relay/inbox-arch.md` 的 `P-KB-001`
+
+### 职责
+
+- 接收内部、官方、竞品、开源和调研资料；
+- 保存内部原文到 Git 私有区，登记机器索引；
+- 区分来源事实、合理推断、宣传表达和未证实项；
+- 评估对 PRD、架构、前端、Agent、工作流和知识库的影响；
+- 提交 arch 审查，获批后进入产品知识库发布队列。
+
+### 可修改范围
+
+- `private/knowledge-sources/`（Git 永不跟踪）；
+- `docs/knowledge/`；
+- `scripts/validate-knowledge-catalog*`；
+- 自己的 `docs/plans/*research-kb*`、相关设计/实施计划；
+- 只追加工作台账和目标审查信箱条目。
+
+### 禁止范围
+
+- 不直接修改冻结 PRD、Contract；
+- 不修改前端、后端生产代码；
+- 不替 arch 把评估结论融合为正式产品口径；
+- 不修改其他角色的职责和目录边界；
+- 不存 Token、Cookie、AK/SK、PAT、Webhook Token、数据库密码等凭证值。
+
+### 审查门
+
+本角色可以把资料推进到 `review_pending`；只有 arch/指定审查 Agent 可以裁决 `reviewed/approved`。审查通过前，本节只是角色注册提议，不改变既有协作边界。
