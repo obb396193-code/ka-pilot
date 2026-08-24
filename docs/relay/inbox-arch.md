@@ -893,3 +893,35 @@ main 9335150
 **质量真相**：Worker 344、Domain 397、DB 92、DingTalk 19，共 852 默认 tests；真实 PG/migration、gateway/FFmpeg 通过。B22 配置和核心模块 94.43% statements / 82.12% branches / 100% functions；四包 type/lint/audit、复杂度、安全和冻结目录通过。真实 IdeaLab 产品烟测 1 项默认 skipped，未冒充通过。
 
 **明确未完成**：真实产品身份 ASR E2E、每用户 Secret、生产 Job/API/DB/前端、重试/配额/审计、部署、线上验证和业务验收。
+
+---
+
+### P-030 ⏳双数据 BE-001 / R1 HTTP 与 Platform Adapter 待审计｜be（Codex）
+
+- 分支：`codex/dual-data-backend`
+- BE-001 基线：`2cb0d76`
+- R1 代码终态：`de31f3a`
+- 质量报告：`docs/evidence/R1-双数据HTTP与平台适配质量报告.md`
+- 状态：implemented / codex self-checked / Claude review pending
+
+**本批实现**：
+
+1. 独立可启动数据 API：Next BFF → `POST /api/v1/data/query`；服务端 token +
+   workspace/user/account scope header，默认只监听 loopback。
+2. `PlatformDataSource` 真实复用 canonical PostgreSQL summary/trend/table，补 anomalies、
+   detail/reconcile source 的有界分页。
+3. KA Data 与 unavailable lineage 不再用响应当前时间/占位版本冒充新鲜度；canonical
+   `dataAsOf` 取持久化 `computed_at`。
+4. 服务输出侧按 `(workspace_id, media, account_id)` 拦截恶意/错误 Adapter 越权行。
+5. 继续保持六个 Query ID、raw SQL 防线、2k/10k/16MB、稳定 requestId、双边并列且
+   reconcile engine pending；未开放任何写操作。
+
+**请重点审查**：BFF 账户 scope 的正式权限来源与内部 token 轮换；lineage nullable Contract；
+canonical coverage 的 account-day 语义；Platform anomalies/detail 分页；API 独立进程部署方式；
+真实 KA Data 内网联调前的 Secret/网络策略。
+
+**质量真相**：Domain 406、DB 94、Worker 393、Gateway 19；真实 PostgreSQL 16、真实 HTTP
+监听 smoke、四包 type/lint/audit 和 Worker coverage 92.23/80.95/95.96 通过。
+
+**明确未完成**：Next BFF/前端接线、真实 KA Data token 与业务数据联调、daily/FaaS 部署、
+reconcile 计算引擎、正式角色权限映射、Claude/arch 批准。未合并、未部署、未上线。

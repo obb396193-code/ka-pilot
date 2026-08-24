@@ -4,9 +4,9 @@
 >
 > 维护角色：be（Codex）
 >
-> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13` → `be/b14` → `codex/b15-material-teardown-semantics` → `codex/b22-idealab-asr-provider`
+> 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13` → `be/b14` → `codex/b15-material-teardown-semantics` → `codex/b22-idealab-asr-provider` → `codex/dual-data-backend`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`；B18 素材 Brief 回测就绪代码终态：`54f5223`；B19 月度结算单代码终态：`c2fed1f`；B20 公共资产治理代码终态：`d22a5d8`；B21 未触发诊断代码终态：`f985923`；B22 IdeaLab ASR Provider 代码终态：`b60e09e`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`；B18 素材 Brief 回测就绪代码终态：`54f5223`；B19 月度结算单代码终态：`c2fed1f`；B20 公共资产治理代码终态：`d22a5d8`；B21 未触发诊断代码终态：`f985923`；B22 IdeaLab ASR Provider 代码终态：`b60e09e`；双数据 BE-001/R1 代码终态：`de31f3a`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -54,6 +54,7 @@
 | B20 公共资产治理 | `d22a5d8`（代码） | 待 Claude/arch 审查 P-027 | 五类资产不可变版本、五段状态机、验证/使用事实、完整元数据、替代版本和统一摘要 | Domain 381 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B20-状态.md`、`docs/evidence/B20-代码质量报告.md`、P-027 |
 | B21 工作流未触发诊断 | `f985923`（代码） | 待 Claude/arch 审查 P-028 | 版本绑定 gate 快照、三态评估、第一/全部阻断、证据/retryAt 与稳定 next action | Domain 397 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B21-状态.md`、`docs/evidence/B21-代码质量报告.md`、P-028 |
 | B22 IdeaLab whole-video ASR Provider | `b60e09e`（代码） | 待 Claude/arch 审查 P-029 | 默认关闭配置、受控 WAV、固定端点 multipart、有界严格响应、错误/usage 观测、whole-video 工厂 | Domain 397 / DB 92 / Worker 344 / Gateway 19；1 ASR opt-in skipped | `B22-状态.md`、`docs/evidence/B22-代码质量报告.md`、P-029 |
+| 双数据 BE-001 + R1 | `de31f3a`（R1 代码） | 待 Claude/arch 审查 P-030 | 六 Query Registry、KA Data 安全 reader、真实 Platform canonical 适配、独立 HTTP composition、unknown lineage、输出 scope guard、reconcile 明确 pending | Domain 406 / DB 94 / Worker 393 / Gateway 19；2 opt-in skipped | `docs/evidence/BE-001-双数据安全查询质量报告.md`、`docs/evidence/R1-双数据HTTP与平台适配质量报告.md`、P-030 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 
