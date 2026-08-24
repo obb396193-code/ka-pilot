@@ -957,3 +957,44 @@ production scope 是否无 dev fallback；相关 ID 语法是否与内部观测�
 **明确未完成**：BFF parity/真实登录 scope 接线、真实 KA Data 内网 E2E、
 reconcile 计算内核、部署/上线、Claude/arch 批准。R3/P0 已另行登记，
 不在 R2 代码提交中。
+
+---
+
+### P-032 ⏳双数据 R3 联合键、Canonical Rows 与只读详情待审计｜be（Codex）
+
+- 分支：`codex/dual-data-backend`
+- R3 代码终态：`391a5a2`
+- 关键提交：`d392152`、`424fa1d`、`ada510f`、`e2b0f1a`、`d114222`、
+  `921bf56`、`9626545`、`c3766dd`、`8c023cf`、`c4e8bf2`、`391a5a2`
+- 质量报告：`docs/evidence/R3-双数据与只读详情质量报告.md`
+- 状态：implemented / Codex self-checked / root integration pending / Claude review reserved
+
+**本批实现**：
+
+1. 账户主键、Repository、Platform SQL、KA 注入和输出守卫统一
+   `(workspace_id,media,account_id)`；跨媒体同号真实 PG 反例通过。
+2. 六 Query ID 使用版本化 canonical rows；KA/Platform parity，非法类型、数字、日期和
+   契约损坏顶层 fail closed。
+3. lineage/coverage 不再编造：部署默认值不冒充 timezone/dayCut，coverage 与 truncated
+   分离，聚合 returnedObjects 只在可证明时输出，单侧对象为零判 source_missing。
+4. 006 复合 FK 迁移冻结为首次/维护窗口停写、服务启动前执行；007 持久化详情账户 scope，
+   无法确定的历史数据不默认回填。
+5. 已挂载 `GET /api/v1/work-items/:id`、`GET /api/v1/changesets/:id`；服务端 auth、tuple
+   scope、requestId、稳定 401/403/404/502 信封完整。
+6. detail/data 共用 16MB 响应守卫，等于上限也返回 502 `SOURCE_TRUNCATED`。
+7. 未挂载任何写端点；Runtime/Multica/ChangeSet 媒体真实写继续关闭。
+
+**请重点审查**：
+
+1. migration 006 维护窗口/停写部署条件和 007 历史歧义数据治理是否可接受。
+2. 六 Query canonical row v1 与前端 fixtures parity；aggregate coverage/returnedObjects 语义。
+3. 正式 BFF 登录上下文如何生成 tuple scope，生产是否保持 fail closed。
+4. 两个详情 DTO 是否满足页面最小读取需要且没有暴露 credential owner/token/上游 body。
+5. 16MB exact-boundary 的 BFF 与后端一致性。
+
+**质量真相**：Domain 418、DB 97、Worker 444 +2 opt-in skipped；三包
+typecheck/lint/audit 通过，Worker coverage 92.28/81.48/96.29；真实 PG migration/repository、
+007 up/down/up、跨媒体同号、orphan/missing-media 反例通过。
+
+**明确未完成**：reconcile delta、BFF/前端合流、正式登录 scope、真实 KA Data 内网 E2E、
+部署/上线和 Claude/arch 批准。所有真实写继续关闭。
