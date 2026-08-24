@@ -46,8 +46,8 @@ CREATE TABLE channel_coefficients (    -- 返点折算系数，绝不硬编码
 );
 CREATE TABLE accounts (
   account_id TEXT NOT NULL, workspace_id UUID NOT NULL,
-  PRIMARY KEY (workspace_id, account_id),
-  account_name TEXT, media TEXT NOT NULL DEFAULT 'KUAISHOU',
+  account_name TEXT, media TEXT NOT NULL,
+  PRIMARY KEY (workspace_id, media, account_id),
   owner_user_id UUID REFERENCES users(id),
   lifecycle_stage TEXT DEFAULT 'unknown',  -- cold_start|ramping|stable|declining|paused|closed
   is_starred BOOLEAN DEFAULT false, tags TEXT[],
@@ -55,15 +55,15 @@ CREATE TABLE accounts (
 );
 CREATE TABLE task_accounts (           -- 关系表：历史/多任务（替代单值 task_id）
   id BIGSERIAL PRIMARY KEY, workspace_id UUID NOT NULL,
-  task_id TEXT NOT NULL, account_id TEXT NOT NULL,
+  task_id TEXT NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,
   valid_from DATE NOT NULL, valid_to DATE,
-  UNIQUE(task_id, account_id, valid_from)
+  UNIQUE(workspace_id, task_id, media, account_id, valid_from)
 );
 
 -- ═══ 指标（raw / canonical 分离，防 source 双计）═══
 CREATE TABLE metrics_raw (             -- 接口原样落库，按 ds 分区
   id BIGSERIAL, workspace_id UUID NOT NULL,
-  account_id TEXT NOT NULL, ds DATE NOT NULL,
+  media TEXT NOT NULL, account_id TEXT NOT NULL, ds DATE NOT NULL,
   resource TEXT NOT NULL,              -- P-001#4 裁决：account|account_offline|account_realtime|ad_realtime（接口资源，回放依据）
   source TEXT NOT NULL,                -- realtime|offline（数据口径，与 resource 正交）
   request_params JSONB,                -- 该次调用参数（hh/日期范围等），保证可重放
@@ -71,10 +71,10 @@ CREATE TABLE metrics_raw (             -- 接口原样落库，按 ds 分区
   fetched_by_user UUID, fetched_at TIMESTAMPTZ DEFAULT now(),
   PRIMARY KEY (id, ds)
 ) PARTITION BY RANGE (ds);
-CREATE INDEX idx_metrics_raw_replay ON metrics_raw(workspace_id, account_id, ds, resource);
+CREATE INDEX idx_metrics_raw_replay ON metrics_raw(workspace_id, media, account_id, ds, resource);
 CREATE TABLE account_metrics_daily (   -- canonical：一户一日一行
   workspace_id UUID NOT NULL,
-  account_id TEXT NOT NULL, ds DATE NOT NULL,
+  media TEXT NOT NULL, account_id TEXT NOT NULL, ds DATE NOT NULL,
   cost NUMERIC, exposure BIGINT, click BIGINT,
   conversion BIGINT, real_conversion BIGINT,
   real_cpa NUMERIC, cash_cost NUMERIC, cash_cpa NUMERIC, cost_space NUMERIC, gap NUMERIC,
@@ -84,26 +84,26 @@ CREATE TABLE account_metrics_daily (   -- canonical：一户一日一行
   field_sources JSONB,                 -- 每字段来源（offline/realtime/gap_filled）
   data_anomaly BOOLEAN DEFAULT false,
   computed_at TIMESTAMPTZ DEFAULT now(),
-  PRIMARY KEY (workspace_id, account_id, ds)   -- P-001#3 裁决：媒体ID非全局唯一，租户键入主键
+  PRIMARY KEY (workspace_id, media, account_id, ds)
 ) PARTITION BY RANGE (ds);
 CREATE TABLE ad_metrics_hourly (       -- 小时级（保留 90 天→日级 rollup）
   workspace_id UUID NOT NULL,
-  ad_id TEXT NOT NULL, account_id TEXT NOT NULL, ds DATE NOT NULL, hh SMALLINT NOT NULL,
+  media TEXT NOT NULL, ad_id TEXT NOT NULL, account_id TEXT NOT NULL, ds DATE NOT NULL, hh SMALLINT NOT NULL,
   cost NUMERIC, exposure BIGINT, click BIGINT, conversion BIGINT, real_conversion BIGINT,
   bid NUMERIC, budget NUMERIC,
   PRIMARY KEY (workspace_id, ad_id, ds, hh)    -- P-001#3 裁决：同上
 ) PARTITION BY RANGE (ds);
 CREATE TABLE ad_entities (             -- 账户结构（经 agent 同步，强类型层级）
   entity_id TEXT NOT NULL, workspace_id UUID NOT NULL,
-  account_id TEXT NOT NULL,
+  media TEXT NOT NULL, account_id TEXT NOT NULL,
   entity_type TEXT NOT NULL,           -- campaign|unit|creative
   parent_id TEXT, name TEXT, status TEXT, put_status TEXT,
   bid NUMERIC, cpa_bid NUMERIC, day_budget NUMERIC, schedule_time TEXT,  -- 168位串
   synced_at TIMESTAMPTZ, PRIMARY KEY (workspace_id, entity_id, entity_type)
 );
 CREATE TABLE account_balance (
-  account_id TEXT NOT NULL, workspace_id UUID NOT NULL,
-  PRIMARY KEY (workspace_id, account_id),
+  account_id TEXT NOT NULL, media TEXT NOT NULL, workspace_id UUID NOT NULL,
+  PRIMARY KEY (workspace_id, media, account_id),
   balance NUMERIC, recharge_balance NUMERIC,
   contract_rebate NUMERIC, direct_rebate NUMERIC, synced_at TIMESTAMPTZ
 );
