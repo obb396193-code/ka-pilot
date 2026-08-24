@@ -1,48 +1,29 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { SourceQueryResult } from "@ka/domain";
+import type { DataQueryId, SourceQueryResult } from "@ka/domain";
 
 import {
   createDataQueryHttpHandler,
   DataQueryService,
 } from "../src/data/query-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
+import { canonicalRow, readySource } from "./canonical-query-fixtures.js";
 
-function ready(source: "ka_data" | "canonical", value: number): SourceQueryResult {
-  return {
-    status: "ready",
-    rows: [{
-      workspaceId: "workspace-server-side",
-      media: "KUAISHOU",
-      accountId: "allowed-account",
-      cost: value,
-    }],
-    returnedRowCount: 1,
-    wholeResultTotal: { value: 1, availability: "available" },
-    lineage: {
-      source,
-      datasetVersion: "fixture-dataset",
-      queryTemplateVersion: "v1",
-      metricVersion: "fixture-metrics",
-      dataAsOf: "2026-08-24T08:00:00.000Z",
-      timezone: "Asia/Shanghai",
-      dayCut: "calendar_day",
-      metadataAvailability: "known",
-      authority: {
-        policyVersion: "2026-08-24",
-        useCase: "cross_media_operations",
-        role: "default_authoritative",
-      },
-      objectIdentity: {
-        objectType: "account",
-        joinKeys: ["workspace_id", "media", "account_id"],
-      },
-      coverage: { complete: true },
-      truncated: false,
-      partial: false,
-    },
-    warnings: [],
+function ready(
+  source: "ka_data" | "canonical",
+  value: number,
+  queryId: DataQueryId = "account.summary",
+): SourceQueryResult {
+  const result = readySource(queryId, source, [canonicalRow(queryId, value)]);
+  result.lineage = {
+    ...result.lineage,
+    datasetVersion: "fixture-dataset",
+    dataAsOf: "2026-08-24T08:00:00.000Z",
+    timezone: "Asia/Shanghai",
+    dayCut: "calendar_day",
+    metadataAvailability: "known",
   };
+  return result;
 }
 
 describe("DataQueryService", () => {
@@ -102,16 +83,11 @@ describe("DataQueryService", () => {
   });
 
   it("rejects account rows returned outside the authenticated scope", async () => {
-    const malicious = ready("canonical", 11);
-    malicious.rows = [{
-      workspaceId: auth.workspaceId,
-      media: "KUAISHOU",
-      accountId: "forged-account",
-      cost: 11,
-    }];
+    const malicious = ready("canonical", 11, "account.table");
+    malicious.rows = [{ ...malicious.rows[0], accountId: "forged-account" }];
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
-      kaData: { query: async () => ready("ka_data", 10) },
+      kaData: { query: async (resolved) => ready("ka_data", 10, resolved.queryId) },
       platform: { query: async () => malicious },
       requestId: () => "scope-guard-request",
     });
@@ -135,7 +111,7 @@ describe("DataQueryService", () => {
   });
 
   it("requires account identity fields for account-row queries", async () => {
-    const malformed = ready("canonical", 11);
+    const malformed = ready("canonical", 11, "account.detail");
     malformed.rows = [{
       media: "KUAISHOU",
       accountId: "allowed-account",
@@ -143,7 +119,7 @@ describe("DataQueryService", () => {
     }];
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
-      kaData: { query: async () => ready("ka_data", 10) },
+      kaData: { query: async (resolved) => ready("ka_data", 10, resolved.queryId) },
       platform: { query: async () => malformed },
       requestId: () => "missing-scope-request",
     });
@@ -152,11 +128,14 @@ describe("DataQueryService", () => {
       params: { date: "2026-08-24", accountId: "allowed-account" },
       dataView: "platform",
     }, auth);
-    expect(response).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect(response).toMatchObject({
+      ok: false,
+      error: { code: "UPSTREAM_INVALID_RESPONSE" },
+    });
   });
 
   it("classifies one-sided empty data as source_missing before partial_source", async () => {
-    const emptyPartial = ready("ka_data", 0);
+    const emptyPartial = ready("ka_data", 0, "reconcile.account_daily");
     emptyPartial.rows = [];
     emptyPartial.returnedRowCount = 0;
     emptyPartial.wholeResultTotal = {
@@ -173,7 +152,7 @@ describe("DataQueryService", () => {
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
       kaData: { query: async () => emptyPartial },
-      platform: { query: async () => ready("canonical", 11) },
+      platform: { query: async () => ready("canonical", 11, "reconcile.account_daily") },
     });
 
     const response = await service.execute({
@@ -209,8 +188,8 @@ describe("DataQueryService", () => {
   it("classifies extra top-level fields as INVALID_REQUEST, not an unknown query", async () => {
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
-      kaData: { query: async () => ready("ka_data", 10) },
-      platform: { query: async () => ready("canonical", 11) },
+      kaData: { query: async () => ready("ka_data", 10, "reconcile.account_daily") },
+      platform: { query: async () => ready("canonical", 11, "reconcile.account_daily") },
     });
     const response = await service.execute({
       queryId: "account.summary",
@@ -224,8 +203,8 @@ describe("DataQueryService", () => {
   it("keeps both source payloads and never creates a unified value in reconcile mode", async () => {
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
-      kaData: { query: async () => ready("ka_data", 10) },
-      platform: { query: async () => ready("canonical", 11) },
+      kaData: { query: async () => ready("ka_data", 10, "reconcile.account_daily") },
+      platform: { query: async () => ready("canonical", 11, "reconcile.account_daily") },
     });
 
     const response = await service.execute({
@@ -236,8 +215,8 @@ describe("DataQueryService", () => {
 
     expect(response.ok).toBe(true);
     if (response.ok && response.data.mode === "reconcile") {
-      expect(response.data.kaData.rows[0]).toMatchObject({ cost: 10 });
-      expect(response.data.platform.rows[0]).toMatchObject({ cost: 11 });
+      expect(response.data.kaData.rows[0]).toMatchObject({ metrics: { cost: 10 } });
+      expect(response.data.platform.rows[0]).toMatchObject({ metrics: { cost: 11 } });
       expect(response.data.comparison).toEqual({
         status: "unavailable",
         reason: "reconciliation_engine_pending",
@@ -251,7 +230,7 @@ describe("DataQueryService", () => {
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
       kaData: { query: async () => { throw new Error("fixture unavailable"); } },
-      platform: { query: async () => ready("canonical", 11) },
+      platform: { query: async () => ready("canonical", 11, "reconcile.account_daily") },
       requestId: () => "fixture-request",
     });
 
@@ -278,14 +257,14 @@ describe("DataQueryService", () => {
   });
 
   it("marks a successful one-sided empty result as source_missing", async () => {
-    const empty = ready("ka_data", 0);
+    const empty = ready("ka_data", 0, "reconcile.account_daily");
     empty.rows = [];
     empty.returnedRowCount = 0;
     empty.wholeResultTotal = { value: 0, availability: "available" };
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
       kaData: { query: async () => empty },
-      platform: { query: async () => ready("canonical", 11) },
+      platform: { query: async () => ready("canonical", 11, "reconcile.account_daily") },
     });
     const response = await service.execute({
       queryId: "reconcile.account_daily",

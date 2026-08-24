@@ -3,12 +3,13 @@ import type { AddressInfo } from "node:net";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import type { SourceQueryResult } from "@ka/domain";
+import type { DataQueryId, SourceQueryResult } from "@ka/domain";
 
 import { createDataApiServer } from "../src/data/http-server.js";
 import { KaDataClientError } from "../src/data/ka-data-client.js";
 import { DataQueryService, type DataSourceQueryPort } from "../src/data/query-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
+import { canonicalRow, readySource } from "./canonical-query-fixtures.js";
 
 const internalToken = "fixture-internal-token-that-is-long-enough";
 const auth = {
@@ -17,36 +18,12 @@ const auth = {
   allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
 };
 
-function ready(source: "ka_data" | "canonical", rows: Record<string, unknown>[]): SourceQueryResult {
-  return {
-    status: "ready",
-    rows,
-    returnedRowCount: rows.length,
-    wholeResultTotal: { value: rows.length, availability: "available" },
-    lineage: {
-      source,
-      datasetVersion: null,
-      queryTemplateVersion: "v1",
-      metricVersion: "fixture-v1",
-      dataAsOf: null,
-      timezone: null,
-      dayCut: null,
-      metadataAvailability: "unknown",
-      authority: {
-        policyVersion: "2026-08-24",
-        useCase: "cross_media_operations",
-        role: "default_authoritative",
-      },
-      objectIdentity: {
-        objectType: "account",
-        joinKeys: ["workspace_id", "media", "account_id"],
-      },
-      coverage: { complete: true },
-      truncated: false,
-      partial: false,
-    },
-    warnings: [],
-  };
+function ready(
+  queryId: DataQueryId,
+  source: "ka_data" | "canonical",
+  rows: Record<string, unknown>[],
+): SourceQueryResult {
+  return readySource(queryId, source, rows);
 }
 
 function authHeaders(token = internalToken): Record<string, string> {
@@ -76,26 +53,14 @@ describe("data API HTTP composition", () => {
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
       kaData: options.kaData ?? { query: async (resolved) => ready(
+        resolved.queryId,
         "ka_data",
-        resolved.outputShape === "account_rows"
-          ? [{
-              workspace_id: auth.workspaceId,
-              media: "KUAISHOU",
-              account_id: "account-1",
-              cost: 10,
-            }]
-          : [{ cost: 10 }],
+        [canonicalRow(resolved.queryId, 10, auth.workspaceId, "account-1")],
       ) },
       platform: options.platform ?? { query: async (resolved) => ready(
+        resolved.queryId,
         "canonical",
-        resolved.outputShape === "account_rows"
-          ? [{
-              workspaceId: auth.workspaceId,
-              media: "KUAISHOU",
-              accountId: "account-1",
-              cost: 11,
-            }]
-          : [{ cost: 11 }],
+        [canonicalRow(resolved.queryId, 11, auth.workspaceId, "account-1")],
       ) },
       requestId: () => "http-smoke-request",
     });
@@ -197,8 +162,8 @@ describe("data API HTTP composition", () => {
 
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
-      kaData: { query: async () => ready("ka_data", []) },
-      platform: { query: async () => ready("canonical", []) },
+      kaData: { query: async () => ready("account.summary", "ka_data", []) },
+      platform: { query: async () => ready("account.summary", "canonical", []) },
     });
     const limitedServer = createDataApiServer({
       service,
@@ -220,8 +185,8 @@ describe("data API HTTP composition", () => {
   it("rejects weak tokens and invalid byte limits at composition time", () => {
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
-      kaData: { query: async () => ready("ka_data", []) },
-      platform: { query: async () => ready("canonical", []) },
+      kaData: { query: async () => ready("account.summary", "ka_data", []) },
+      platform: { query: async () => ready("account.summary", "canonical", []) },
     });
     expect(() => createDataApiServer({ service, internalToken: "short" })).toThrow(/32/);
     expect(() => createDataApiServer({
@@ -287,11 +252,17 @@ describe("data API HTTP composition", () => {
   it("blocks malicious adapter output at the HTTP boundary", async () => {
     const baseUrl = await start({
       platform: {
-        query: async () => ready("canonical", [{
-          workspaceId: auth.workspaceId,
-          media: "KUAISHOU",
-          accountId: "unauthorized-account",
-        }]),
+        query: async () => {
+          const source = readySource("account.table", "canonical", []);
+          source.rows = [canonicalRow(
+            "account.table",
+            11,
+            auth.workspaceId,
+            "unauthorized-account",
+          )];
+          source.returnedRowCount = 1;
+          return source;
+        },
       },
     });
     const response = await fetch(`${baseUrl}/api/v1/data/query`, {

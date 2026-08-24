@@ -9,6 +9,51 @@ const scope = {
   accounts: [{ media: "KUAISHOU", accountId: "account-1" }],
 };
 
+function summary(cost: number, rowCount = 1) {
+  return {
+    rowCount,
+    accountCount: rowCount === 0 ? 0 : 1,
+    anomalyRows: 0,
+    cost,
+    exposure: rowCount * 100,
+    click: rowCount * 10,
+    conversion: rowCount * 2,
+    realConversion: rowCount,
+    cashCost: cost,
+    costSpace: 0,
+    wakeUv: 0,
+    potentialUv: 0,
+  };
+}
+
+function daily(dataAnomaly = false) {
+  return {
+    workspaceId: scope.workspaceId,
+    media: "KUAISHOU",
+    accountId: "account-1",
+    accountName: null,
+    ownerUserId: null,
+    ds: "2026-08-24",
+    cost: 12,
+    exposure: 100,
+    click: 10,
+    conversion: 2,
+    realConversion: 1,
+    cashCost: 12,
+    costSpace: 0,
+    wakeUv: null,
+    potentialUv: null,
+    budget: null,
+    budgetUsageRate: null,
+    deductionRate: null,
+    mainAdCostProportion: null,
+    assessmentPriceSnapshot: null,
+    dataAnomaly,
+    computedAt: "2026-08-24T08:00:00.000Z",
+    tasks: [],
+  };
+}
+
 function lineage(complete = true) {
   return {
     dataAsOf: "2026-08-24T07:59:00.000Z",
@@ -22,7 +67,7 @@ function lineage(complete = true) {
 describe("PlatformDataSource", () => {
   it("queries canonical summary with the authenticated account scope", async () => {
     const repository = {
-      querySummary: vi.fn(async () => ({ rowCount: 1, cost: 12 })),
+      querySummary: vi.fn(async () => summary(12)),
       queryTrend: vi.fn(),
       queryTable: vi.fn(),
       queryLineage: vi.fn(async () => lineage()),
@@ -40,7 +85,7 @@ describe("PlatformDataSource", () => {
     }));
     expect(result).toMatchObject({
       status: "ready",
-      rows: [{ rowCount: 1, cost: 12 }],
+      rows: [{ rowCount: 1, accountCount: 1, metrics: expect.objectContaining({ cost: 12 }) }],
       lineage: {
         source: "canonical",
         dataAsOf: "2026-08-24T07:59:00.000Z",
@@ -52,7 +97,7 @@ describe("PlatformDataSource", () => {
 
   it("marks incomplete canonical coverage partial and withholds whole-result totals", async () => {
     const repository = {
-      querySummary: vi.fn(async () => ({ rowCount: 0, cost: 0 })),
+      querySummary: vi.fn(async () => summary(0, 0)),
       queryTrend: vi.fn(),
       queryTable: vi.fn(),
       queryLineage: vi.fn(async () => lineage(false)),
@@ -69,7 +114,7 @@ describe("PlatformDataSource", () => {
   it("maps canonical trend rows without inventing a dataset version", async () => {
     const repository = {
       querySummary: vi.fn(),
-      queryTrend: vi.fn(async () => [{ ds: "2026-08-24", metrics: { rowCount: 1, cost: 12 } }]),
+      queryTrend: vi.fn(async () => [{ ds: "2026-08-24", metrics: summary(12) }]),
       queryTable: vi.fn(),
       queryLineage: vi.fn(async () => lineage()),
     };
@@ -78,7 +123,10 @@ describe("PlatformDataSource", () => {
       createDataQueryRegistry().resolve("account.trend", { date: "2026-08-24" }, "platform"),
       scope,
     );
-    expect(result.rows).toEqual([{ ds: "2026-08-24", metrics: { rowCount: 1, cost: 12 } }]);
+    expect(result.rows).toEqual([expect.objectContaining({
+      ds: "2026-08-24",
+      metrics: expect.objectContaining({ rowCount: 1, metrics: expect.objectContaining({ cost: 12 }) }),
+    })]);
     expect(result.lineage.datasetVersion).toBeNull();
   });
 
@@ -87,12 +135,7 @@ describe("PlatformDataSource", () => {
       querySummary: vi.fn(),
       queryTrend: vi.fn(),
       queryTable: vi.fn(async () => ({
-        rows: [{
-          workspaceId: scope.workspaceId,
-          media: "KUAISHOU",
-          accountId: "account-1",
-          ds: "2026-08-24",
-        }],
+        rows: [daily()],
         total: 9,
         page: 2,
         pageSize: 5,
@@ -113,12 +156,7 @@ describe("PlatformDataSource", () => {
   });
 
   it("paginates anomaly rows and marks a result beyond the registry budget truncated", async () => {
-    const row = {
-      workspaceId: scope.workspaceId,
-      media: "KUAISHOU",
-      accountId: "account-1",
-      ds: "2026-08-24",
-    };
+    const row = daily(true);
     const repository = {
       querySummary: vi.fn(),
       queryTrend: vi.fn(),
@@ -152,12 +190,7 @@ describe("PlatformDataSource", () => {
   });
 
   it("keeps an exact 2,000-row result complete when repository total proves no rows are missing", async () => {
-    const row = {
-      workspaceId: scope.workspaceId,
-      media: "KUAISHOU",
-      accountId: "account-1",
-      ds: "2026-08-24",
-    };
+    const row = daily(true);
     const repository = {
       querySummary: vi.fn(),
       queryTrend: vi.fn(),

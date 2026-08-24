@@ -10,9 +10,14 @@ import type {
   SourceLineage,
   SourceQueryResult,
 } from "@ka/domain";
+import { canonicalRowSchemaVersionByQueryId } from "@ka/domain";
 
 import type { DataQueryExecutionScope } from "./ka-data-client.js";
 import type { ResolvedDataQuery } from "./query-registry.js";
+import {
+  CanonicalQueryRowError,
+  canonicalizeQueryRows,
+} from "./canonical-query-rows.js";
 
 const PLATFORM_SOURCE_REQUEST_ID = "platform-source";
 const CANONICAL_TIMEZONE = "Asia/Shanghai";
@@ -215,6 +220,7 @@ export class PlatformDataSource {
         }
       }
 
+      rows = canonicalizeQueryRows(resolved.queryId, "platform", rows, execution.workspaceId);
       const lineage = sourceLineage(
         resolved,
         execution,
@@ -230,6 +236,8 @@ export class PlatformDataSource {
           }
         : { value: total, availability: "available" as const };
       return {
+        queryId: resolved.queryId,
+        rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
         status: "ready",
         rows,
         returnedRowCount: rows.length,
@@ -237,22 +245,27 @@ export class PlatformDataSource {
         lineage,
         warnings: lineage.partial ? [lineage.coverage.reason ?? "Canonical result is partial"] : [],
       };
-    } catch {
+    } catch (error) {
+      const invalidCanonical = error instanceof CanonicalQueryRowError;
       return {
+        queryId: resolved.queryId,
+        rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
         status: "unavailable",
         rows: [],
         returnedRowCount: 0,
         wholeResultTotal: {
           value: null,
           availability: "error",
-          reason: "SOURCE_UNAVAILABLE",
+          reason: invalidCanonical ? "UPSTREAM_INVALID_RESPONSE" : "SOURCE_UNAVAILABLE",
         },
         lineage: unavailableLineage(resolved),
         warnings: ["Platform source is unavailable"],
         error: {
-          code: "SOURCE_UNAVAILABLE",
-          message: "Platform source is unavailable",
-          retryable: true,
+          code: invalidCanonical ? "UPSTREAM_INVALID_RESPONSE" : "SOURCE_UNAVAILABLE",
+          message: invalidCanonical
+            ? "Platform source returned invalid canonical rows"
+            : "Platform source is unavailable",
+          retryable: !invalidCanonical,
           requestId: PLATFORM_SOURCE_REQUEST_ID,
         },
       };

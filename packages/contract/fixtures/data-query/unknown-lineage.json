@@ -3,6 +3,8 @@
   "data": {
     "mode": "ka_data",
     "source": {
+      "queryId": "account.summary",
+      "rowSchemaVersion": "account.summary/v1",
       "status": "ready",
       "rows": [],
       "returnedRowCount": 0,

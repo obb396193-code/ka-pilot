@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+import {
+  canonicalQueryRowSchemaById,
+  canonicalRowSchemaVersionByQueryId,
+} from "./data-query-rows.js";
+
 export const dataViewModeSchema = z.enum(["ka_data", "platform", "reconcile"]);
 export type DataViewMode = z.infer<typeof dataViewModeSchema>;
 
@@ -197,6 +202,8 @@ export type DataQueryRequest = z.infer<typeof dataQueryRequestSchema>;
 
 export const sourceQueryResultSchema = z
   .object({
+    queryId: dataQueryIdSchema,
+    rowSchemaVersion: z.string().min(1),
     status: z.enum(["ready", "unavailable"]),
     rows: z.array(z.record(z.string(), z.unknown())),
     returnedRowCount: z.number().int().nonnegative(),
@@ -207,6 +214,25 @@ export const sourceQueryResultSchema = z
   })
   .strict()
   .superRefine((result, context) => {
+    const expectedVersion = canonicalRowSchemaVersionByQueryId[result.queryId];
+    if (result.rowSchemaVersion !== expectedVersion) {
+      context.addIssue({
+        code: "custom",
+        path: ["rowSchemaVersion"],
+        message: `rowSchemaVersion must be ${expectedVersion}`,
+      });
+    }
+    const rowSchema = canonicalQueryRowSchemaById[result.queryId];
+    result.rows.forEach((row, index) => {
+      const parsed = rowSchema.safeParse(row);
+      if (!parsed.success) {
+        context.addIssue({
+          code: "custom",
+          path: ["rows", index],
+          message: `row does not match the canonical ${result.queryId} schema`,
+        });
+      }
+    });
     if (result.rows.length !== result.returnedRowCount) {
       context.addIssue({
         code: "custom",

@@ -22,12 +22,38 @@ function resolvedSummary() {
   );
 }
 
+function kaSummary(cost = 12) {
+  return {
+    row_count: 1,
+    account_count: 1,
+    cost,
+    exposure: 100,
+    click: 10,
+    conversion: 2,
+    cash_cost: cost,
+  };
+}
+
+function kaDaily(accountId: string, overrides: Record<string, unknown> = {}) {
+  return {
+    media: "KUAISHOU",
+    account_id: accountId,
+    ds: "20260824",
+    cost_yuan: 12,
+    cash_yuan: 12,
+    show: 100,
+    click: 10,
+    conv: 2,
+    ...overrides,
+  };
+}
+
 describe("KaDataClient", () => {
   it("uses a fixed HTTPS origin/path and never serializes its token", async () => {
     const fetchFn = vi.fn<typeof fetch>(async () => jsonResponse({
       backend: "sqlite",
       rowCount: 1,
-      rows: [{ cost: 12 }],
+      rows: [kaSummary()],
       truncated: false,
       limit_clamped: false,
     }));
@@ -82,7 +108,7 @@ describe("KaDataClient", () => {
       fetchFn: async () => jsonResponse({
         backend: "sqlite",
         rowCount: 1,
-        rows: [{ cost: 12 }],
+        rows: [kaSummary()],
       }),
     });
     const result = await client.query(resolvedSummary(), {
@@ -135,7 +161,7 @@ describe("KaDataClient", () => {
   });
 
   it.each([2_000, 10_000])("marks an exact %i-row boundary as suspected truncation", async (rowCount) => {
-    const rows = Array.from({ length: rowCount }, (_, index) => ({ index }));
+    const rows = Array.from({ length: rowCount }, () => kaSummary());
     const client = new KaDataClient({
       baseUrl: "https://ka-data.example.internal",
       token: "fixture-token",
@@ -163,7 +189,7 @@ describe("KaDataClient", () => {
     const base = JSON.stringify({
       backend: "sqlite",
       rowCount: 1,
-      rows: [{ padding: "" }],
+      rows: [{ ...kaSummary(), padding: "" }],
       truncated: false,
       limit_clamped: false,
     });
@@ -225,7 +251,7 @@ describe("KaDataClient", () => {
       fetchFn: async () => jsonResponse({
         backend: "sqlite",
         rowCount: 1,
-        rows: [{ media: "KUAISHOU", account_id: "leading-zero-001" }],
+        rows: [kaDaily("leading-zero-001")],
       }),
     });
 
@@ -250,11 +276,7 @@ describe("KaDataClient", () => {
       fetchFn: async () => jsonResponse({
         backend: "sqlite",
         rowCount: 1,
-        rows: [{
-          workspace_id: "upstream-forged-workspace",
-          media: "KUAISHOU",
-          account_id: "a-1",
-        }],
+        rows: [kaDaily("a-1", { workspace_id: "upstream-forged-workspace" })],
       }),
     });
 
@@ -264,11 +286,12 @@ describe("KaDataClient", () => {
       accounts: [{ media: "KUAISHOU", accountId: "a-1" }],
     });
 
-    expect(result.rows).toEqual([{
-      workspace_id: "authenticated-workspace",
+    expect(result.rows).toEqual([expect.objectContaining({
+      workspaceId: "authenticated-workspace",
       media: "KUAISHOU",
-      account_id: "a-1",
-    }]);
+      accountId: "a-1",
+    })]);
+    expect(result.rows[0]).not.toHaveProperty("workspace_id");
     expect(JSON.stringify(result)).not.toContain("upstream-forged-workspace");
   });
 

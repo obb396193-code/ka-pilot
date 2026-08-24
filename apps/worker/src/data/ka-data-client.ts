@@ -1,4 +1,5 @@
 import {
+  canonicalRowSchemaVersionByQueryId,
   type SourceAuthority,
   type SourceLineage,
   type SourceQueryResult,
@@ -12,6 +13,10 @@ import {
   type ResolvedDataQuery,
   type ScopedAccount,
 } from "./query-registry.js";
+import {
+  CanonicalQueryRowError,
+  canonicalizeQueryRows,
+} from "./canonical-query-rows.js";
 
 export const DEFAULT_KA_DATA_TIMEOUT_MS = 15_000;
 export const DEFAULT_KA_DATA_MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
@@ -291,15 +296,13 @@ export class KaDataClient {
       }
       const body = await readBoundedBody(response, this.#maxResponseBytes);
       const upstreamEnvelope = parseEnvelope(body.text);
-      const envelope = resolved.outputShape === "account_rows"
-        ? {
-            ...upstreamEnvelope,
-            rows: upstreamEnvelope.rows.map((row) => ({
-              ...row,
-              workspace_id: scope.workspaceId,
-            })),
-          }
-        : upstreamEnvelope;
+      const canonicalRows = canonicalizeQueryRows(
+        resolved.queryId,
+        "ka_data",
+        upstreamEnvelope.rows,
+        scope.workspaceId,
+      );
+      const envelope = { ...upstreamEnvelope, rows: canonicalRows };
       const warnings: string[] = [];
       const suspectedRowBoundary = SUSPECTED_ROW_BOUNDARIES.has(envelope.rowCount) ||
         SUSPECTED_ROW_BOUNDARIES.has(envelope.rows.length);
@@ -318,6 +321,8 @@ export class KaDataClient {
           ? { value: null, availability: "missing" as const, reason: "Page response has no total count" }
           : { value: envelope.rowCount, availability: "available" as const };
       return {
+        queryId: resolved.queryId,
+        rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
         status: "ready",
         rows: envelope.rows,
         returnedRowCount: envelope.rows.length,
@@ -334,6 +339,13 @@ export class KaDataClient {
       };
     } catch (error) {
       if (error instanceof KaDataClientError) throw error;
+      if (error instanceof CanonicalQueryRowError) {
+        throw new KaDataClientError(
+          "UPSTREAM_INVALID_RESPONSE",
+          "KA Data returned rows outside the canonical query contract",
+          false,
+        );
+      }
       if (isAbortError(error)) {
         throw new KaDataClientError(
           "UPSTREAM_TIMEOUT",

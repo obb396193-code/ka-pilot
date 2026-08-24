@@ -4,6 +4,7 @@ import {
   dataQueryRequestSchema,
   dataQueryResponseSchema,
   dataQueryIdSchema,
+  sourceQueryResultSchema,
   type DataQueryResponse,
   type SourceAuthority,
   type SourceLineage,
@@ -48,6 +49,13 @@ class OutputScopeError extends Error {
   constructor() {
     super("Data source returned rows outside the authenticated scope");
     this.name = "OutputScopeError";
+  }
+}
+
+class OutputContractError extends Error {
+  constructor() {
+    super("Data source returned an invalid canonical response");
+    this.name = "OutputContractError";
   }
 }
 
@@ -112,6 +120,14 @@ function mapError(error: unknown, requestId: string): StableDataQueryError {
       requestId,
     );
   }
+  if (error instanceof OutputContractError) {
+    return stableError(
+      "UPSTREAM_INVALID_RESPONSE",
+      "Data source returned an invalid canonical response",
+      false,
+      requestId,
+    );
+  }
   return stableError("INTERNAL_ERROR", "The data query could not be completed", false, requestId);
 }
 
@@ -145,6 +161,8 @@ function unavailableSource(
   error: StableDataQueryError,
 ): SourceQueryResult {
   return {
+    queryId: resolved.queryId,
+    rowSchemaVersion: resolved.rowSchemaVersion,
     status: "unavailable",
     rows: [],
     returnedRowCount: 0,
@@ -177,6 +195,11 @@ function guardSourceOutput(
   resolved: ResolvedDataQuery,
   scope: DataQueryExecutionScope,
 ): SourceQueryResult {
+  const parsed = sourceQueryResultSchema.safeParse(result);
+  if (!parsed.success || parsed.data.queryId !== resolved.queryId) {
+    throw new OutputContractError();
+  }
+  result = parsed.data;
   if (result.status === "unavailable") return result;
   const allowed = new Set(
     scope.accounts.map((account) => `${account.media}\u0000${account.accountId}`),

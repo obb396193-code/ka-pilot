@@ -1,5 +1,6 @@
 import {
   authorityUseCaseSchema,
+  canonicalRowSchemaVersionByQueryId,
   dataQueryIdSchema,
   dataViewModeSchema,
   type AuthorityUseCase,
@@ -56,6 +57,7 @@ export interface ResolvedDataQuery {
   readonly outputShape: QueryOutputShape;
   readonly queryTemplateVersion: string;
   readonly metricVersion: string;
+  readonly rowSchemaVersion: string;
   readonly authorityPolicy: QueryAuthorityPolicy;
   readonly [RESOLVED_QUERY]: true;
 }
@@ -211,11 +213,11 @@ function whereClause(
 }
 
 function summarySql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
-  return `SELECT ROUND(SUM(cost_yuan), 6) AS cost, SUM(conv) AS conversions, ROUND(SUM(cash_yuan), 6) AS cash_cost, COUNT(DISTINCT media || ':' || account_id) AS account_count FROM dwd_account_daily WHERE ${whereClause(params, accounts)}`;
+  return `SELECT COUNT(*) AS row_count, COUNT(DISTINCT media || ':' || account_id) AS account_count, ROUND(SUM(cost_yuan), 6) AS cost, SUM(show) AS exposure, SUM(click) AS click, SUM(conv) AS conversion, ROUND(SUM(cash_yuan), 6) AS cash_cost FROM dwd_account_daily WHERE ${whereClause(params, accounts)}`;
 }
 
 function trendSql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
-  return `SELECT ds, ROUND(SUM(cost_yuan), 6) AS cost, SUM(conv) AS conversions, ROUND(SUM(cash_yuan), 6) AS cash_cost FROM dwd_account_daily WHERE ${whereClause(params, accounts)} GROUP BY ds ORDER BY ds`;
+  return `SELECT ds, COUNT(*) AS row_count, COUNT(DISTINCT media || ':' || account_id) AS account_count, ROUND(SUM(cost_yuan), 6) AS cost, SUM(show) AS exposure, SUM(click) AS click, SUM(conv) AS conversion, ROUND(SUM(cash_yuan), 6) AS cash_cost FROM dwd_account_daily WHERE ${whereClause(params, accounts)} GROUP BY ds ORDER BY ds`;
 }
 
 function tableSql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
@@ -346,7 +348,9 @@ export class DataQueryRegistry {
     }).format(new Date()));
   }
 
-  list(): readonly Omit<QueryDefinition, "paramsSchema" | "buildSql">[] {
+  list(): readonly (Omit<QueryDefinition, "paramsSchema" | "buildSql"> & {
+    rowSchemaVersion: string;
+  })[] {
     return DEFINITIONS.map((entry) => ({
       queryId: entry.queryId,
       supportedViews: entry.supportedViews,
@@ -356,6 +360,7 @@ export class DataQueryRegistry {
       outputShape: entry.outputShape,
       queryTemplateVersion: entry.queryTemplateVersion,
       metricVersion: entry.metricVersion,
+      rowSchemaVersion: canonicalRowSchemaVersionByQueryId[entry.queryId],
       authorityPolicy: entry.authorityPolicy,
     }));
   }
@@ -393,6 +398,7 @@ export class DataQueryRegistry {
       outputShape: entry.outputShape,
       queryTemplateVersion: entry.queryTemplateVersion,
       metricVersion: entry.metricVersion,
+      rowSchemaVersion: canonicalRowSchemaVersionByQueryId[entry.queryId],
       authorityPolicy,
       [RESOLVED_QUERY]: true,
     };

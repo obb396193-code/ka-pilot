@@ -14,7 +14,10 @@
 并通过受信服务端 header 注入 workspace/user/account scope。内部 token 与账户 scope
 不得进入浏览器 bundle、页面日志或响应正文。
 
-该端点的数值字段使用 `MetricValue={value:number|null, availability}`；`denominator_zero`、`missing`、`partial`、`stale`、`error` 均与真实数值 0 分开表达。旧 `/api/v1/query` 的 `RatioValue.state` 约定不跨端点静默复用。
+该端点的来源状态/全量计数使用 `MetricValue={value:number|null, availability}`；
+Canonical Row 内的比率/CPA 固定使用
+`RatioValue={value:number|null,state:"finite"|"infinite"|"undefined"}`，由后端计算，
+前端不得用原始分子分母重算。普通可缺指标用 `number|null`，数值 0 与缺失 `null` 分开。
 
 公开请求严格只接受三个顶层字段：
 
@@ -39,7 +42,10 @@
 
 ### 成功响应
 
-单来源响应包含 `mode + source`。每个 source 都必须返回：`status/rows/returnedRowCount/wholeResultTotal/lineage/warnings`。lineage 至少包含：
+单来源响应包含 `mode + source`。每个 source 都必须返回：
+`queryId/rowSchemaVersion/status/rows/returnedRowCount/wholeResultTotal/lineage/warnings`。
+`queryId` 必须与 Registry 已解析请求一致；`rowSchemaVersion` 固定为对应
+`<queryId>/v1`。lineage 至少包含：
 
 ```jsonc
 {
@@ -66,6 +72,19 @@
 }
 ```
 
+六个 Query ID 都有独立 strict row schema：
+
+- `account.summary`：`rowCount/accountCount/anomalyRows/metrics`；
+- `account.trend`：`ds + account.summary` 同构 metrics；
+- `account.table`、`account.detail`、`reconcile.account_daily`：统一账户日行，包含
+  `(workspaceId,media,accountId)`、日期、指标、比率状态、任务关系与异常事实；
+- `account.anomalies`：同一账户日行，但 `dataAnomaly` 必须为 `true`；它不是
+  work-item、finding 或 change-set，前端不得从该行猜测这些对象。
+
+KA Data 的 `snake_case` 与 Platform 的 repository DTO 均只能留在 Adapter 内；响应只允许
+Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本不匹配，整次来源响应按
+`UPSTREAM_INVALID_RESPONSE` fail closed。
+
 `datasetVersion/dataAsOf/timezone/dayCut` 只允许来自上游响应、canonical 持久化记录或
 显式部署配置。来源未提供时必须返回 `null`，并以
 `metadataAvailability=unknown|partial` 表达，不得用接口响应时间或固定占位字符串冒充。
@@ -85,8 +104,9 @@
 - 本机开发 scope 只允许使用明确的假 workspace/user/account fixture。
   production 不得使用默认账户、通配符、空 scope 绕过或 dev fallback；缺失、非法或
   无法从服务端会话证明的 scope 必须 fail closed（`401/403`）。
-- 服务输出侧再次按 `(workspace_id, media, account_id)` 校验所有账户明细行；Adapter
-  返回越权行或缺少联合键时整次请求以 `FORBIDDEN` 失败，响应不回显越权对象。
+- 服务输出侧再次按 `(workspace_id, media, account_id)` 校验所有账户明细行；合法 schema
+  中的越权 tuple 以 `FORBIDDEN` 失败；缺联合键或 row schema 不完整以
+  `UPSTREAM_INVALID_RESPONSE` 失败。两者响应都不回显上游对象。
 - `GET /healthz` 仅返回进程存活；不返回 Secret、上游 URL、SQL 或数据源正文。
 
 `reconcile` 固定并列返回 `kaData` 与 `platform` 两个独立 source object；禁止 `primary`、混合 `value` 或第三个统一主数。BE-001 在对账内核接入前返回 `comparison.status=unavailable` 与 `reconciliation_engine_pending`；双方查询成功但同一范围仅一侧有行时返回 `source_missing`，整源请求失败返回 `source_unavailable`，二者都不是账户 ID 待映射。

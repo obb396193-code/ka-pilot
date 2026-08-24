@@ -31,3 +31,4 @@ export * from "./settlement.js";
 export * from "./asset-governance.js";
 export * from "./hourly-ad-metrics.js";
 export * from "./data-query-contract.js";
+export * from "./data-query-rows.js";

@@ -32,6 +32,32 @@ const lineage = {
   partial: false,
 } as const;
 
+const dailyMetrics = {
+  cost: 1,
+  exposure: 10,
+  click: 2,
+  conversion: 1,
+  realConversion: 1,
+  cashCost: 1,
+  costSpace: 0,
+  wakeUv: null,
+  potentialUv: null,
+  budget: null,
+  budgetUsageRate: null,
+  deductionRate: null,
+  mainAdCostProportion: null,
+  assessmentPrice: null,
+  ratios: {
+    ctr: { value: 0.2, state: "finite" },
+    cvr: { value: 0.5, state: "finite" },
+    realCpa: { value: 1, state: "finite" },
+    cashCpa: { value: 1, state: "finite" },
+    gap: { value: 0, state: "finite" },
+    potentialRate: { value: null, state: "undefined" },
+    biConversionRate: { value: null, state: "undefined" },
+  },
+} as const;
+
 describe("dual data query contract", () => {
   it("accepts exactly the three frozen data view modes", () => {
     for (const mode of ["ka_data", "platform", "reconcile"] as const) {
@@ -67,6 +93,8 @@ describe("dual data query contract", () => {
   it("requires complete lineage and prevents partial data from claiming a whole total", () => {
     expect(() => sourceQueryResultSchema.parse({ status: "ready", rows: [] })).toThrow();
     expect(() => sourceQueryResultSchema.parse({
+      queryId: "account.summary",
+      rowSchemaVersion: "account.summary/v1",
       status: "ready",
       rows: [],
       returnedRowCount: 2_000,
@@ -78,6 +106,8 @@ describe("dual data query contract", () => {
 
   it("represents unavailable source lineage as unknown instead of fabricating freshness", () => {
     const parsed = sourceQueryResultSchema.parse({
+      queryId: "account.summary",
+      rowSchemaVersion: "account.summary/v1",
       status: "unavailable",
       rows: [],
       returnedRowCount: 0,
@@ -114,6 +144,8 @@ describe("dual data query contract", () => {
 
   it("requires frozen source-authority metadata instead of an adapter-selected priority", () => {
     expect(() => sourceQueryResultSchema.parse({
+      queryId: "account.summary",
+      rowSchemaVersion: "account.summary/v1",
       status: "ready",
       rows: [],
       returnedRowCount: 0,
@@ -125,8 +157,21 @@ describe("dual data query contract", () => {
 
   it("keeps KA Data and platform independent in reconcile mode", () => {
     const source = {
+      queryId: "reconcile.account_daily",
+      rowSchemaVersion: "reconcile.account_daily/v1",
       status: "ready",
-      rows: [{ accountId: "fixture-account", cost: 1 }],
+      rows: [{
+        workspaceId: "workspace-fixture",
+        media: "KUAISHOU",
+        accountId: "fixture-account",
+        accountName: null,
+        ownerUserId: null,
+        ds: "2026-08-24",
+        metrics: dailyMetrics,
+        dataAnomaly: false,
+        computedAt: null,
+        tasks: [],
+      }],
       returnedRowCount: 1,
       wholeResultTotal: { value: 1, availability: "available" },
       lineage,

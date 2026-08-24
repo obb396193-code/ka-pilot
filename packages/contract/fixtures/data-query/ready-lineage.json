@@ -3,12 +3,33 @@
   "data": {
     "mode": "platform",
     "source": {
+      "queryId": "account.summary",
+      "rowSchemaVersion": "account.summary/v1",
       "status": "ready",
       "rows": [{
-        "workspace_id": "workspace-fixture",
-        "media": "KUAISHOU",
-        "account_id": "account-fixture-001",
-        "cost": 12.5
+        "rowCount": 1,
+        "accountCount": 1,
+        "anomalyRows": 0,
+        "metrics": {
+          "cost": 12.5,
+          "exposure": 100,
+          "click": 10,
+          "conversion": 2,
+          "realConversion": 1,
+          "cashCost": 12,
+          "costSpace": 0,
+          "wakeUv": null,
+          "potentialUv": null,
+          "ratios": {
+            "ctr": { "value": 0.1, "state": "finite" },
+            "cvr": { "value": 0.2, "state": "finite" },
+            "realCpa": { "value": 12.5, "state": "finite" },
+            "cashCpa": { "value": 12, "state": "finite" },
+            "gap": { "value": 1, "state": "finite" },
+            "potentialRate": { "value": null, "state": "undefined" },
+            "biConversionRate": { "value": null, "state": "undefined" }
+          }
+        }
       }],
       "returnedRowCount": 1,
       "wholeResultTotal": { "value": 1, "availability": "available" },
