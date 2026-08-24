@@ -99,23 +99,6 @@
 - 本地环境：PG 用 docker 本地起；**不碰 SQLite**；奇航接口本地不通就写 client 单测（mock HTTP 层），真实连通在内网联调
 - 契约缺口：写 inbox-arch.md 提议，不自己发明字段
 - **✅ P-001~P-003 已裁决**（2026-08-19）：契约 v1.1 已冻结（SHA 4696fdf），9 条问题全部已落契约本体；inbox-arch.md 已更新逐条回复。**继续 B1a**：按契约 v1.1 补 migration 主键变更（复合主键含 workspace_id）、`metrics_raw.resource` 持久化/回放、Worker/gateway composition 对接三新端点（`POST /agent/sessions/:id/query` + `POST /tasks` + `POST /work-items/:id/reply`）；完成交最终 SHA 等 arch 逐条验收。
-- 状态：进行中（SHA 59e56e0 已交部分产出，等契约裁决后补齐）
+- 状态：✅已完成。契约 v1.1 复合主键与 raw 字段、四资源持久化/回放、固定凭证归属、Worker/Gateway composition、冻结三端点客户端均已补齐；最终 69 tests 全绿，四包业务源码行覆盖率均 ≥80%，依赖审计 0 vulnerabilities。代码审查 SHA：`5b4b937`；完整记录见 `docs/plans/B1a-状态.md`，等待 arch 验收。
 
 ### R-002 补充：生图与 R-007 并行不互斥，先完成生图批次再开 B1a 亦可（自行排程，两者本周内都要有产出）
-
-
----
-
-### R-008 后端 B1b：回灌+口径计算+对平（2026-08-19 扩充批次）
-
-- 派活方：arch　日期：2026-08-19
-- **前置：R-007 B1a 完成**（migration + domain 纯函数 + jobs 骨架 + qihang client + metrics_raw→canonical 合并）
-- 交付物（apps/worker, packages/domain, apps/web/app/api）：
-  1. **90 天历史回灌**：backfill_jobs 表驱动；job handler `backfill_historical`（date_from/date_to 拆分每日 etl_full job 入队）；cursor_date 断点续传；失败单日重试不阻塞全量；backfill 完成触发首次 canonical 全量聚合
-  2. **口径计算完整实现**：packages/domain 现有纯函数接入 Worker 聚合管线；account_metrics_daily 表按日聚合写入（调用 `computeMetrics()` 含 real_cpa/cash_cost/cash_cpa/cost_space/gap/环比）；assessment_price_history + channel_coefficients JOIN 取快照值；零耗日剔除均值（`excludeZeroSpendDays()`）；field_sources JSONB 记录每字段来源（offline/realtime/gap_filled）
-  3. **数据对平自检**：data_quality_checks 表；每日 ETL 完成后自动触发三类检查：①总量对账（sum(account_metrics_daily.cost) vs sum(metrics_raw.cost) 容差 0.1%）②异常值检测（real_cpa > 5×assessment_price 标 data_anomaly=true）③缺失日检测（连续 2 日无数据→outbound 告警）；不通过写 data_quality_checks.passed=false + delta JSONB
-  4. **Worker 调度完善**：jobs 表 priority 字段生效（backfill=1/etl_incr=5/rule_scan=3）；lease_until 超时回收（startup 时扫 leased 超 10min 改 queued）；max_attempts 耗尽→status=failed + outbound 钉钉告警；blocked_auth 单独处理（不重试，outbound 通知绑定凭证）
-  5. **etl_runs 留痕完整**：scope JSONB 记录（user_id/date_range/resource）；step_failed 字段（fetch/parse/merge/aggregate 哪步挂了）；rows_ingested 统计；finished_at - started_at 耗时
-- 测试要求：Worker 单测覆盖（jobs 轮询/lease 竞争/重试指数退避/blocked_auth 分支）；domain 纯函数已有 56 tests 继续保持；**本地 docker PG 跑通 90 天 mock 回灌**（造 10 账户×90 天 metrics_raw，验证 canonical 聚合正确+对平通过）
-- 工程纪律：[be] 前缀 be/b1b 分支；状态文件 docs/plans/B1b-状态.md；完成交 SHA + 本地回灌日志截图（显示 90 天进度+对平结果）
-- 状态：待处理

@@ -42,103 +42,959 @@
 ### P-004 ✅B1a 最终交付待审计｜be（Codex）
 
 - 分支：`be/b1a`
-- 最终审查 SHA：`f98952f8cf1daae126e22c431052d688644237c9`
+- 最终代码审查 SHA：`5b4b937`（其后仅状态/信箱回执）
 - 已完成：可重放 SQL 迁移与月分区、指标唯一纯函数、双口径字段级合并、Qihang 四资源 client、DB lease consumer、full/incr handler、etl_runs、失败 outbox、canonical 生效版本读取/计算/幂等 upsert。
 - 提前完成：独立钉钉网关核心（官方 Stream 适配、入站幂等、身份映射、本地命令/agent 分流、任务安全入队、sessionWebhook SSRF 防护）。
-- P-001~P-003 已全部落实：migration v1.1 复合租户键；四 resource raw 持久化/回放；固定 credential owner；Worker/Gateway composition；三个冻结 API 的网关客户端。
-- 验证：69 tests 全绿；业务源码行覆盖率 domain 93.39% / worker 85.14% / db 81.32% / gateway 86.62%；四包 TypeScript/ESLint 全绿；四包 npm audit 均 0 vulnerabilities；PostgreSQL 16 healthy，迁移 down/up 重放通过。
+- 验证：56 tests 全绿；四包 TypeScript/ESLint 全绿；V8 coverage domain 92.17% / worker 90.82% / db 80.69% / gateway 83.16%；四包 `npm audit --audit-level=high` 均 0 vulnerabilities；PostgreSQL 16 healthy，迁移 down/up 重放通过。
+- P-001~P-003 裁决落实：契约 v1.1 升级迁移（复合租户主键、workspace 补列、raw replay 字段/索引）；四 resource raw 持久化与 canonical 最新快照回放；job 冻结 owner 解析奇航身份、重试不换人、全局任务仅显式只读服务身份；Worker 独立启动组合。
+- 网关落实：独立启动组合；`POST /agent/sessions/:id/query` → `/query`；`POST /tasks`（钉钉 event id 幂等）；`POST /work-items/:id/reply` 客户端；入站事件带 workspace，长期数据不存 sessionWebhook。
+- 最终验证：69 tests 全绿；业务源码行覆盖率 domain 93.39% / worker 85.14% / db 81.32% / gateway 86.62%；四包 TypeScript/ESLint 全绿；四包 npm audit 均 0 vulnerabilities；PG migration down/up 通过；凭证/动态执行扫描无发现。
+- 边界如实：三个产品 API 的服务端实现属 B1c，本批仅完成网关调用侧与 mock 合同测试；HTTP 200 业务鉴权码仍等 B7 内网实证，不猜。
 
 **arch 待办**：等 Codex 交最终 SHA，逐条审计 R-007 清单 ✅/❌。
 
 ---
 
-### P-005 B1b 回灌设计修正（老板已批准）｜be（Codex）
+### P-005 ⏳B2 最小契约差异包｜be（Codex）
 
-R-008 原文有两处按字面实现会损害可靠性，老板已批准 Codex 按修正版实施，请审查时以本条为准：
+老板已批准 Claude 离线期间按“契约安全内核”继续推进。Codex 只实现领域/Repository/Worker 端口，不修改下列冻结契约；请 arch 回来后集中裁决：
 
-1. **历史回灌不复用现有 `etl_full`**：现有 full 每次会查账户分页、D-1 离线及连续 7 天实时；拆 90 个 full 会造成重复账户发现和约 630 日实时查询。改为 `backfill_historical` 协调器一次发现账户，扇出确定性 `backfill_day` 子 job；每个子 job 只查目标日 `account_offline`。
-2. **优先级修正**：现有 `ORDER BY priority ASC` 表示数字越小越优先。采用 `etl_incr=1`、`rule_scan=3`、`backfill_day=9`，不采用 R-008 原文 `backfill=1/etl_incr=5`，避免 90 天回灌压住实时取数。
-3. **可靠执行补强**：日任务独立重试、失败日不阻塞其他日期；用确定性 job UUID 防 fan-out/阶段衔接重复入队；补 lease heartbeat，避免奇航请求超过 60 秒时被第二 Worker 重复领取；启动时仍回收超 10 分钟陈旧 lease。
-4. **阶段链路**：backfill raw → canonical 聚合 → data quality；总量对账基于每账户/日/resource 最新 raw 快照，不能直接累加重试产生的重复 raw 行。
-5. **边界**：不新增未冻结业务表；回灌日状态使用 `jobs.payload(backfillId, ds)` + `backfill_jobs.cursor_date/status`，失败详情由 jobs/etl_runs 留痕。
+1. **复合规则表达**：`alert_rules(metric/operator/threshold)` 无法表达首发规则的多条件、冷启动护栏和排除条件。建议最小新增版本化 `condition_tree JSONB` + `fallback_copy TEXT`；旧三列只作简单规则兼容，不把复合语义塞进 `scope`。
+2. **工作项去重与复发**：PRD 定义规则+账户去重、跨 P 级重弹，但表无稳定 dedupe 字段/发生次数。建议裁决是否增加 `dedupe_key TEXT`、`occurrence_count INT`、`last_triggered_at TIMESTAMPTZ` 及活动态唯一约束；本批暂用事务 advisory lock + 活动态查询。
+3. **工作项动作状态机**：`POST .../process|reject|escalate|dispatch` 未定义 process 是“开始处理”还是“完成”，dispatch 是改 assignee 还是生成派发记录。请冻结 action→状态、允许源状态和响应 DTO。
+4. **户级静音语义**：当前 `work_items.muted_until` 属单工作项，`alert_rules.muted_until` 属整条规则，均不能无歧义表达“某账户静音 3 天且 P0 是否突破”。请裁决静音作用域与 P0 规则。
+5. **通知调度**：`outbound_messages` 无 `run_after`，P2 整点攒批和静默延后只能经 `jobs` 调度。建议冻结“jobs 延时→到点写 outbound”的单一路径，避免两套调度真相。
+6. **生产数据缺口**：0 曝光规则需要计划创建时间+计划级消耗；断崖排除需要主动预算调整记录。当前 B1 canonical 不完整支持。本批只实现输入端口与 `insufficient_data`，不把缺失当 0。
+7. **API DTO**：冻结 `/work-items` 列表/详情/动作与 `/rules/:id/explain` 的完整请求响应后，再由 be 补 Web API；现阶段不猜。
 
-Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请在本条下裁决，不要让实现退回字面复用 `etl_full`。
+建议优先级：1/2/3 为 B2 API 与生产扫描前硬门；4/5 可随集成通知接口一起定；6 由 B3 数据/操作史补齐。
 
-
----
-
-## F-001 阶段交付（2026-08-19，fe）
-
-**状态**：骨架完成，待截图
-
-**已完成**（分支 `fe/f001`，4 次提交）：
-1. SHA `e8852a6` - shadcn dashboard-01 模板完整安装（New York v4）
-2. SHA `00173f8` - 完全对照官方源码修正样式（核心教训：必须直接复制粘贴，不能对照着写）
-3. SHA `7086014` - 界面中文化（导航/卡片/所有文案）
-4. SHA `0302d93` - 建立 shadcn 组件清单（67个组件 + 业务场景选型指南）
-
-**工程骨架**：
-- Next.js 15.1 + TypeScript + Turbopack + Tailwind
-- shadcn/ui 组件库完整安装
-- 布局结构：侧边栏 + 头部 + 内容区（dashboard-01 原汁原味）
-- 开发服务器运行正常（localhost:3000）
-
-**文档**：
-- `docs/shadcn-component-inventory.md` - 完整组件清单，做页面前先查这里
-- `docs/plans/F001-状态.md` - 任务进度逐条记录
-
-**待交付**：
-- 中文界面截图（Playwright 浏览器正在下载，完成后自动生成）
-
-**下一步**（等老板拍板）：
-- 用 shadcn 现成组件搭建业务页面（工作台/投放任务/数据分析等 9 个页面）
-- 导航布局可切换机制（顶栏 vs 侧栏，等终裁）
+**B2 内核交付回执（2026-08-19）**：功能审查 SHA `9563625`。已完成可解释三规则、工作项状态机、PostgreSQL 并发去重/升级、通知分级与幂等扫描 Worker；四包 144 tests，覆盖率均 >80%，Critical/High 0。Web API、真实钉钉、生产扫描注册及上述契约缺口均如实暂缓。报告：`docs/evidence/B2-代码质量报告.md`。
 
 ---
 
-### P-030 ⏳多用户 Runtime 直接执行器增量待审查｜be（Codex）
+### P-006 ⏳B3 安全执行最小契约差异｜be（Codex）
 
-- 日期：2026-08-24
-- 老板裁决：KA 平台最终要具备产品可控的直接读写能力；外部单人钉钉机器人只借鉴常驻沙箱执行模式，不能照搬共享高权凭证、自动写和共享 `CLAUDE.md`。
-- 设计：`docs/plans/2026-08-24-多用户常驻Runtime直接执行器-design.md`
-- 实施计划：`docs/plans/2026-08-24-多用户常驻Runtime直接执行器-implementation.md`
-- 决策：`docs/decisions/2026-08-24-多用户直接读写与Runtime执行器.md`
-- PRD：已追加 v1.7 候选增量 REQ-127～130，不改写冻结 v1.6 正文。原 REQ-115～118 已属于原型需求，本轮已修复编号冲突。
+1. `changeset_items` 缺 account_id/父级路径，无法对 campaign/unit/creative 实现“同账户写冲突锁”；请冻结解析来源或补归属快照。
+2. `from_value/to_value TEXT` 无类型和“媒体默认值”标志；请裁决 typed value schema，避免数字/布尔/JSON 字符串歧义。
+3. 请冻结 changeset 完整动作状态机，尤其 dry-run 是否为 confirm 硬前置、failed 是否允许重试、unknown 如何 reconcile、rolled_back 何时写入。
+4. 请冻结 execution_run status 与 item 级 `RESULT_JSON` schema；当前实证只证明标记行可读，不代表业务回执结构已定。
+5. `changesets` 未存 dry-run hash/确认 hash；L2 卡片要求变更集 Hash 校验。请裁决 hash 算法、参与字段和失效条件。
+6. API 需明确 409 冲突 DTO、部分成功 DTO、rollback 仅成功项还是全项、确认幂等响应。
+7. UNKNOWN 必须先只读核媒体态再决定，真实查询接口与超时语义需内网 OS 提供样本。
 
-**请重点审查/裁决：**
+Codex 本批只实现内部状态、严格字符串快照比较、审计和端口；不修改契约。
 
-1. `execution_credentials` 是否独立成表，还是把现有 users 三凭证扩为通用 credential binding；要求唯一模型能表达 `用户×渠道×执行后端×账户作用域`。
-2. Runtime Executor 是否作为第四部署单元，还是 Worker 的特权部署 profile；DingTalk Gateway 必须继续低权限独立。
-3. 产品→Runtime 的服务认证、签名、Secret 服务和授权撤销由哪个内部平台承载。
-4. Capability Registry 新增 `channel/executorKinds/runtimeVerification` 是否进入 public Contract。
-5. Runtime/Multica 双通路的路由优先级、故障降级、UNKNOWN 对账和业务 envelope。
-6. 取得外部 `dingtalk-bot-migrate.tar.gz` 后，源码及内部接口资料的仓库存放、访问范围和复用许可边界。
-
-**当前证据边界：**
-
-- 只拿到老板提供的 SOP 文本与 OS 解释，尚未取得/实读附件源码。
-- 高置信判断：机器人绕过 Multica issue/对话派发，但仍依赖 Multica/OS Runtime、MITM、CA 和个人身份注入。
-- `tt.sh` 明确字节/巨量专属；`tools.py`、`deduct.py`、MITM 身份头跨快手/腾讯/百度的能力全部标未验证。
-- 本次仅文档与计划，不代表 Runtime Executor、产品直写或正式服务身份已实现。
+**B3 内核交付回执（2026-08-19）**：功能审查 SHA `36c72f2`。已完成 TTL/from 冲突/状态机/反向草稿、事务仓储、逐项部分成功、execution_run 审计、歧义超时→UNKNOWN、UNKNOWN 只读 reconcile、T+1 成功项端口；四包 165 tests，覆盖率均 >80%，复杂度 0 warning，audit 0。真实 OS/CLI、同账户锁、API 与真实 T+1/带外检测如实暂缓。报告：`docs/evidence/B3-代码质量报告.md`。
 
 ---
 
-### P-031 ⏳KA 双数据视图内网交付与 Claude 后续复审｜root（Codex）
+### P-007 ⏳B4 任务与报告契约差异｜be（Codex）
 
-- 日期：2026-08-24
-- 老板裁决：KA Data 为运营权威版，自建数据继续主线，同一产品增加 `ka_data/platform/reconcile` 三态；内部试用共享只读通路不阻塞当前开发。
-- 设计：`docs/plans/2026-08-24-KA双数据视图与Codex临时代行-design.md`
-- 计划：`docs/plans/2026-08-24-KA双数据视图与Codex临时代行-implementation.md`
-- 决策：`docs/decisions/2026-08-24-KA双数据视图与Codex临时代行.md`
-- 需求：REQ-131～136；Runtime 增量已纠正为 REQ-127～130。
+1. 奇航 `task_id` 是否为主数据仍未核验；B4 Repository 只接收 taskId，不绑定来源。
+2. `task_accounts UNIQUE(task_id,account_id,valid_from)` 缺 workspace_id，且无租户 FK/区间排斥约束；建议修正复合唯一与 FK，区间重叠由事务检查兜底。
+3. pacing 请冻结：日历天还是业务日、asOf 是否含当日、7 日零量日是否纳入、任务结束后的显示语义。本批明确采用“asOf=完整结算日，剩余不含 asOf，调用方传有效日序列”。
+4. 日报“12 模块”缺字段、顺序、角色裁剪、缺数状态和版本 schema；本批只做稳定事实集。
+5. 考核价变更后的重算范围、确认已读和通知 DTO 需与 B2 通知契约一起冻结。
 
-**Claude/arch 恢复后重点裁决：**
+**B4 内核交付回执（2026-08-19）**：功能审查 SHA `b3b2c49`。已完成日级 pacing、调用方有效日历输入、任务租户读取、任务账户有效期并发防重叠、考核价版本/凭证/同租户 actor、按关系有效期聚合 canonical，以及不绑定 12 模块的日报事实集；四包 183 tests，覆盖率均 >80%，复杂度 0 warning，audit 0。P-007 五项均未擅自改契约，报告：`docs/evidence/B4-代码质量报告.md`。
 
-1. KA Data / 自建主线的逐指标权威矩阵和历史离线口径默认值；
-2. Query Registry 是否进入 public Contract，以及允许的首批 queryId；
-3. 共享只读试用边界何时升级为每用户授权；
-4. 账户 ID 命名空间映射与“未匹配”治理；
-5. Codex 前端纵向切片保留、改造或重做的范围；
-6. 临时 Codex 预审中 accepted/adjusted/rejected 的逐项复核。
+---
 
-**状态边界：** 当前仅设计与计划，不代表 Adapter、对账引擎、页面切换或内网部署已经实现。Claude 复审不是交付前置门；Codex 将继续实现、联调和部署，届时按真实证据更新状态。
+### P-008 ⏳B5 Agent 与多模型网关最小契约差异｜be（Codex）
+
+老板已批准在 Claude 离线期间完成 B5 可审查后端，并要求 Claude Agent SDK、CCSwitch 式多模型切换、流式输出和既有实现复用。本批不修改冻结契约，请 arch 回来后集中裁决：
+
+1. **Agent 会话约束**：`agent_messages`/`agent_context_items` 无 FK、role/object_type/added_by 枚举和删除语义；请冻结 context add/remove DTO、对象类型与“无权限/对象已删”的返回口径。建议至少补 session FK、顺序索引及消息唯一幂等键。
+2. **Run 关联和状态**：`agent_runs` 缺 `session_id`、`provider_id`、`model`、`credential_owner_user_id`、`error_code`、`attempt`、首 token 时间、usage/result 引用；请冻结 run status 和用户可见 DTO。本批只写现有列，扩展信息留在内部事件/安全摘要。
+3. **Run event 持久化**：流式恢复、原始排障和顺序审计需要 `agent_run_events(run_id, seq, kind, safe_payload, raw_ref, created_at)` 或等价外部 event store。请裁决数据库表还是对象存储+索引；本批实现 `RunLogStore`/`AgentEventSink` 端口，不造表。
+4. **通用 Provider 凭证**：`users.idealab_ak_ref` 只能表达一个 IdeaLab key，无法表达 Anthropic 官方/其他 provider、多 key 轮换和状态。建议 `model_provider_credentials(workspace_id,user_id,provider_id,secret_ref,status,last_checked_at)`；原列可迁移为兼容入口。
+5. **Provider Capability Matrix**：请冻结 provider profile 和 `provider_model_capabilities` 的持久化字段（protocol、model、tool/stream/structured/timeout/sdk compatibility、状态、实测时间、错误摘要、测试版本）。本批实现领域模型和存储端口，不造表。
+6. **内部模型网关**：请确认网关是 Worker 部署单元内 localhost sidecar（不新增第四个产品 FaaS），以及内部 `/v1/messages` 不进入公开 OpenAPI。建议真实上游 key 由短时加密信封交给网关注入，Agent 子进程只拿信封和 client token。
+7. **SSE 事件协议**：请冻结 `session|run|delta|tool|evidence|done|error` 的字段、断线取消、消息幂等和重连语义；structured output 仅在 done 帧出现。本批实现内部稳定事件类型，不新增 Web 路由。
+8. **诊断 DTO**：PRD 只有外层字段，需冻结 reason/action 枚举、evidence ref、confidence、expected_effect、constraint_check 和 fallback_reason 的完整 schema。本批按 PRD 最小安全 schema 实现内部校验，不把它声明成公开 API。
+9. **Agent job/OS 工具**：请冻结后台 Agent job_type、`dispatch_os_task` 的请求/回执、只读/写操作确认门和 OS Run 引用。本批只交端口，不伪造 Multica/OS 协议。
+10. **用量与结算**：SDK `total_cost_usd/modelUsage` 是估算值，不能进入结算。请冻结网关 usage 账本/上游对账来源；本批只把 usage 作为运行诊断，不作财务字段。
+
+建议优先级：1/2/6/7/8 是 Web/API 联调前硬门；3/4/5 是正式多租户上线硬门；9 等 B7 内网实证；10 随用量看板冻结。
+
+**B5 当前路线**：`docs/plans/2026-08-19-B5-Agent后端-design.md`。在 arch 裁决前只实现既有表可承载的 Repository、领域/Runtime/网关端口和 fake upstream 集成测试。
+
+**B5 内核交付回执（2026-08-19）**：功能审查 SHA `545637c`。已完成会话/context/memory/Run 仓储、诊断双产物与安全降级、Provider capability/router/fallback、短时凭证信封、Claude Agent SDK 安全运行时、本地协议 sidecar、Orchestrator 和 read/preview 原子能力端口。四包 271 默认测试 + 1 项 opt-in 真实 SDK 烟测；coverage 全部 >80%；typecheck/lint/audit 通过；复杂度 0 warning。报告：`docs/evidence/B5-代码质量报告.md`。
+
+**arch/Claude 必审红线**：
+
+1. 先裁决 P-008 的 session/run/event/provider credential/API DTO，再接 Web/SSE；当前 `createAgentBackend()` 不在 Worker main 自动启动。
+2. 审核 `tools:[]` + in-process MCP、auto-memory 关闭、12-key env、短时信封插件和 sidecar 进程边界。
+3. 确认 sidecar 仍属 Worker 部署单元内部 localhost，不新增公开服务。
+4. SDK 包为 Anthropic all-rights-reserved/受 Legal Agreements 约束；用它经协议转换驱动 IdeaLab 非 Claude 模型，在正式上线前需公司内部法务/采购确认，不以技术跑通代替许可。
+5. 生产必须补容器/微虚机沙箱、CPU/RAM/磁盘限额和 egress allowlist；本批只有应用层工具/环境/网络地址钳制。
+6. 真实 Provider、Secret 服务和 Multica/OS 未联调；fake 测试不可当生产验收。
+
+---
+
+### P-009 ⏳Codex B1a-B5 后端总审查入口｜be（Codex）
+
+老板要求：Codex 必须持续记录自己做过什么，并把 Claude 恢复后需要审查的内容写清楚，避免会话丢失和漏审。
+
+**唯一总索引**：`docs/plans/Codex后端交付总账.md`。
+
+**连续继承链**：
+
+```text
+main 9335150
+→ be/b1a f98952f
+→ be/b1b 50e3014
+→ be/b1c a699279
+→ be/b2  46b7eec
+→ be/b3  0af66d0
+→ be/b4  9f7ecea
+→ be/b5  53ea264
+```
+
+`be/b5` 已包含 B1a-B5 全部后端代码。历史信箱快照曾复用 `P-005/P-006/P-007` 编号，Claude 审查时请按“批次 + SHA”定位，不要只按 P 编号。
+
+**建议审查顺序**：
+
+1. 先读总账 §3-§5，确认安全边界和未完成项。
+2. 按 `main..be/b1a`、相邻批次 diff 逐批审，不一次看 4 万行总 diff。
+3. 每批对照 `docs/plans/B*-状态.md`、design、implementation 和 evidence。
+4. 先集中裁决 B1c-B5 契约缺口，再接公开 API/SSE/前端；不得让实现反向定义契约。
+5. 审完在本条按批次写 `✅/❌/需修改`，并记录裁决落在哪个契约 SHA。
+
+**Claude 必须特别检查**：租户隔离、凭证归属、写确认门、UNKNOWN 禁盲重试、Agent 工具白名单、短时凭证信封、fake 与真实通路边界、SDK 许可和生产沙箱缺口。
+
+**B6 状态更新**：契约安全的内部报表/分析内核已完成，详见 P-010；公开 DTO、Schema、共享权限、定时语义和外部联调仍等待 arch 裁决。
+
+---
+
+### P-010 ⏳B6 分析与报表内核交付待审计｜be（Codex）
+
+- 分支：`be/b6`
+- 基线：B5 `53ea264`
+- 功能审查 SHA：`6dc7ed1`
+- 质量证据 SHA：`05b8388`
+- 设计：`docs/plans/2026-08-19-B6分析与报表内核-design.md`
+- 计划：`docs/plans/2026-08-19-B6分析与报表内核-implementation.md`
+- 质量报告：`docs/evidence/B6-代码质量报告.md`
+
+**已完成**：
+
+1. `b6-internal-v1` 严格执行计划：KPI/trend/table/bar、现有指标和 account/task/biz 白名单；拒绝 SQL、公式、脚本、URL、预计算数据、schedule/sharing/layout。
+2. 可信组件装配：保留 finite/infinite/undefined/missing，组件独立 ready/empty/missing，不把缺失变 0。
+3. Gap 对账：媒体/真实转化、signed difference、RatioValue 和证据；未发明正常阈值。
+4. 策略矩阵：账户去重、≥3 户且消耗 ≥100 护栏、总量重算 CPA、稳定 winner；不生成未经数据支持的打法文案。
+5. B1c 事实适配：按需加载 summary/trend/dimension、同维度去重、租户隔离、任务归属歧义透传。
+6. 幂等 Worker：Plan/Facts/Artifact/RunLog 四端口，双 workspace 校验，稳定 SHA-256 key，重复运行不重复保存，失败只记录稳定安全码。
+
+**验证**：304 默认 tests + 1 opt-in 真 Claude Agent SDK→localhost gateway→fake upstream 烟测；coverage domain 94.72% / db 92.60% / worker 90.54% / gateway 86.62%；四包 typecheck/lint/audit 全绿；复杂度 0 warning；PG16 migration replay/down-up 通过；冻结 contract/migrations 0 diff。
+
+**请 arch/Claude 逐项审**：
+
+1. `report-plan.ts` 的内部白名单是否足够隔离未来公开 config，尤其不得把它直接宣布为 Web DTO。
+2. `report-dataset.ts` 的缺失/空数据/零值/无穷四态与稳定排序是否符合前端展示预期。
+3. Gap 仅作数学对账、不做阈值的边界是否正确。
+4. 策略 winner 是否必须继续坚持“≥3 户、消耗 ≥100、CPA finite”三条件。
+5. `report-facts-source.ts` 是否正确复用 B1c 比率，未二次计算或重复查询。
+6. Worker 的 workspace/report/plan/asOf 幂等键、日志脱敏和“不注册 runtime”边界。
+
+**集中待裁决契约差异**：
+
+1. 公开 `report_configs.config` 的版本、组件、布局和请求/响应 DTO；内部 plan 只可作为执行层，不应反向成为公开契约。
+2. `report_configs` 的 owner/权限与统一 `assets` 的 draft/shared/verified/official/deprecated 如何关联；PRD 的 `is_shared` 与当前表不一致。
+3. schedule 的时区、错过补跑、重试、订阅目标、幂等和暂停语义；不能只靠一个自由文本字段上线。
+4. 报表运行时是否固定 config version；artifact/snapshot 的 PostgreSQL/对象存储/知识库索引结构与保留期。
+5. `/export` 异步任务 DTO、格式白名单、文件大小、过期和下载鉴权。
+6. 版位、出价方式、负责人等策略维度的数据源、canonical 字段与多任务分摊规则。
+7. Agent 草稿到公开 config 的编译、权限检查、证据引用和预览/应用确认 DTO。
+8. 报表生成 job_type、run 状态、失败恢复和 outbound/钉钉交接；本批未注册生产任务。
+9. 权威 `dataCutoffAt` 从 ETL/canonical 哪个 Run 取，不能使用查询完成时间。
+
+**明确未做**：公开 API、Schema/迁移、前端设计器、共享治理、定时调度、PNG/PDF/Excel、钉钉推送、缺失策略维度查询、真实 Provider/奇航/Multica/OS 联调。
+
+---
+
+### P-011 ⏳B7 工作流可靠执行内核交付待审计｜be（Codex）
+
+- 分支：`be/b7a`
+- 基线：B6 `57c5773`
+- 功能实现 SHA：`b0024e1`
+- 质量与安全修正 SHA：`90eea92`
+- 设计：`docs/plans/2026-08-19-B7工作流可靠执行内核-design.md`
+- 计划：`docs/plans/2026-08-19-B7工作流可靠执行内核-implementation.md`
+- 质量报告：`docs/evidence/B7-代码质量报告.md`
+
+**已完成**：
+
+1. Capability Registry：六类节点、read/preview/execute 三风险模式、精确版本、权限、Schema、超时、尝试次数与幂等范围；execute 不可直接暴露给 Agent。
+2. 严格 DAG 编译：版本化 graph/params、环/自环/孤岛/重复依赖拒绝、稳定拓扑序、参数/上游输出绑定和排除 UI 坐标的执行指纹。
+3. 事件重放状态机：连续 sequence、开始/成功/有界重试/确认/暂停/恢复/取消/失败/UNKNOWN/终态；UNKNOWN 禁普通重试。
+4. PostgreSQL Repository：复用现有四表，实现 definition/draft/publish/exact-version run/event append/CAS；workspace 联表隔离、同租户 actor、published 不可变、事件并发序列和幂等冲突。
+5. 无写入 Simulation：严格按固定计划校验依赖/权限/输入输出，execute 永远只调 preview，不能进真实写端口。
+6. Durable Runner：线性/fan-in、崩溃恢复、成功节点跳过、幂等输出、有界重试、步数/墙钟让出和控制命令。execute 只走 Changeset preview→hash 确认→confirmed execute；歧义、超时或写后持久化异常进 UNKNOWN。
+7. B5 Agent 兼容：operation port 复用公共 capability metadata 校验，仍只允许 read/preview，未放开 execute。
+
+**验证**：367 默认 tests + 1 opt-in 真 Claude Agent SDK→localhost gateway→fake upstream 烟测；coverage domain 94.42% / db 92.97% / worker 90.43% / gateway 86.62%；B7 新模块均 >80%；四包 typecheck/lint/audit 通过，audit 0；复杂度/单函数门禁 0 warning；PG16 migration replay/down-up 通过；冻结 contract/migrations 0 diff；凭证/动态执行扫描无发现。
+
+**请 arch/Claude 逐项审**：
+
+1. Capability Registry 是否足以成为页面按钮、工作流节点和 Agent tool 的同一能力真相，尤其 execute 不暴露 Agent 的红线。
+2. `b7-internal-v1` 只作内部编译输入的边界；不得直接把它宣布为 React Flow/Web 公开 DTO。
+3. published 快照比对、Run 固定版本、事件 detail JSONB 中的 schemaVersion/sequence/dedupe 是否可接受，或需升级成显式列/约束。
+4. 崩溃后 running 读/preview 以原 attempt + 原幂等键重入的前提：外层 job lease 保证单活 Worker；公开运行时需审核 lease/心跳组合。
+5. execute 调用端口必须落到 B3 变更集和真实幂等执行；不得用 generic invoker 或直调 CLI 替换。
+6. 写后输出 Schema/存储异常进 UNKNOWN 的安全选择是否保留，以及 `reconcile/` 对账引用最终存储形式。
+7. 当前单 Run 串行、DAG-only、无循环/子流程/补偿的首版范围是否符合 PRD 分期。
+
+**集中待裁决契约差异**：
+
+1. 公开 workflow graph/params/node/edge DTO、乐观锁、草稿保存、发布、复制模板和版本回滚语义。
+2. workflow definition/version 如何对齐统一资产治理（个人草稿→团队共享→已验证→官方→已废弃）、owner、适用范围和替代版本。
+3. `/simulate|publish|runs|confirm|pause|resume|cancel` 请求/响应、幂等键、409 冲突、错误码、确认过期和运行日志 DTO。
+4. workflow output/artifact 的真实存储、大小上限、保留期、下游解引和用户查看权限。
+5. 定时、数据就绪、钉钉、手动、策略触发器与 job_type/run lease 的幂等和补偿语义。
+6. 真实 OS/Multica/CLI 读/preview 能力映射、变更集写端口、原始运行记录引用和 UNKNOWN 对账协议。
+7. 工作流权限：谁能运行公共/团队/个人流程，credential owner 如何冻结，管理员代运行和查看 raw run 的权限边界。
+
+**明确未做**：公开 API/Schema/迁移、前端 React Flow 画布、生产 Worker 注册、定时/事件触发器、真实输出存储、真实 B3 Changeset/OS/Multica 接缝、多分支并行、条件/循环/子流程/补偿。
+
+---
+
+### P-012 ⏳B8 知识库领域底座交付待审计｜be（Codex）
+
+- 分支：`be/b8a`
+- 基线：B7a `51a98d7`
+- 功能实现 SHA：`32a82ba`
+- 质量与安全修正 SHA：`8c87530`
+- 设计：`docs/plans/2026-08-20-B8知识库领域底座-design.md`
+- 计划：`docs/plans/2026-08-20-B8知识库领域底座-implementation.md`
+- 质量报告：`docs/evidence/B8-代码质量报告.md`
+
+**已完成**：
+
+1. BlockNote 安全信封：严格 `{blocks}` 外层，未知块前向兼容；JSON/循环/危险 key/accessor/数组异常和五层资源上限 fail-closed，遍历时实时累计总字节。
+2. 派生文本与指纹：只投影正文 text + wikilink title；版本化 canonical SHA-256 忽略 object key 顺序、保留数组语义。
+3. 安全双链：严格 `{type:wikilink,props:{itemId,title}}`，UUID 真相、路径、去重、自链/坏链诊断；resolver 绑定 workspace+actor，跨租户/无权/不存在统一 target unavailable。
+4. KA 业务引用：task/account/report/workflow/workflow_run/dataset/changeset/product/material；受限 opaque ID、label 缓存、snapshot/cutoff 证据版本和稳定去重。
+5. 知识资产语义：manual/ai_report/report_snapshot/workflow_case/lesson/imported 来源，private/team 可见性与统一 asset lifecycle 分离。
+6. Agent citation 边界：请求强制 workspace+actor；citation 带 revision/fragment/score/evidence key/source/visibility/snapshot；检索端口先裁权，领域边界再复核文档和业务对象权限，无权内容不进入 Agent。
+
+**验证**：406 默认 tests + 1 opt-in 真 Claude Agent SDK→localhost gateway→fake upstream 烟测；coverage domain 95.32% / db 92.97% / worker 90.43% / gateway 86.62%；B8 三模块 96.46%/100%/98.96%；四包 typecheck/lint/audit 通过，audit 0；复杂度/单函数门禁 0 warning；PG16 migration 回归通过；冻结 contract/migrations 0 diff；凭证/动态执行扫描无发现。
+
+**请 arch/Claude 逐项审**：
+
+1. blocks 仅约束安全 JSON、custom ref 单独严格校验的前向兼容边界是否保留。
+2. blocks/depth/nodes/string/bytes 默认上限和 canonical fingerprint 版本策略是否合适。
+3. wikilink UUID 真相、全量出链替换、坏链结构化诊断和 `target_unavailable` 防存在性探测是否正确。
+4. 9 类 business ref、opaque ID 规则、snapshot/cutoff 去重键和 label 非真相语义是否满足对象中心设计。
+5. source/visibility/asset lifecycle 分离是否与统一 assets 治理一致，`official` 不应误作 visibility。
+6. SearchPort 先按 workspace/user 返回授权 plaintext，再由 PermissionPort 复核文档/业务对象的双层防御是否保留。
+7. Agent citation 的 revision/fragment/evidence key/score/业务引用/数据截止是否足够支持可回溯回答和报告归档。
+
+**集中待裁决契约差异**：
+
+1. `kb_documents`/树/链接/业务引用/修订表的最终 Schema、索引、软删、workspace 外键和保留期。
+2. 团队共享文档的 revision/ETag/If-Match、409 冲突、自动保存和历史版本/恢复语义；首版不引入 CRDT。
+3. 文档树 parent/position、fractional indexing、跨层拖拽、防环、非空删除与并发排序事务。
+4. 创建/读/保存/移动/删除/双链/反链/搜索 API DTO、分页、错误码、幂等和权限矩阵。
+5. business ref 真实对象权限 resolver、对象删除/改名/合并后的显示缓存和失效诊断。
+6. PostgreSQL FTS、embedding 或混合检索选型；索引刷新、重建、chunk、引用稳定性、召回评测和成本。
+7. 知识文档如何挂统一 assets 的 owner/team/verified/official/deprecated、版本、负责人和替代资产。
+8. 报告/结算单/工作流案例/错题本自动归档的 job_type、幂等键、数据截止、审批和失败恢复。
+9. ContentRadar 前端代码复制边界、BlockNote 自定义 inline schema、HTML/附件安全和 500ms 串行保存接缝。
+
+**明确未做**：数据库 Schema/迁移、公开 API、前端 BlockNote/文档树、自动归档 Worker、搜索引擎/embedding、附件/对象存储、真实权限和对象 resolver、ContentRadar 原仓修改。
+
+---
+
+### P-013 ⏳B1-B8 多角度后端自审待复核｜be（Codex）
+
+- 分支/基线：`be/b8a` / `59fc489`
+- 完整证据：`docs/evidence/B1-B8多角度后端自审报告.md`
+- 审查方式：第一性原理主审 + 安全 + 业务正确性 + 可靠性 + 质量门禁；独立结论均由主审重新定位源码核验
+- 验证真相：406 tests passed、1 个 opt-in SDK smoke skipped；四包 npm audit 均为 0
+
+**结论**：单模块质量门禁虽通过，但真实上线前仍有 14 个 P0 闭环问题，集中在 raw→canonical 接线、缺数语义、账户任务归属、跨租户账户校验、Job/Workflow fencing、确认 TTL、Changeset+T1 原子性、知识正文对象权限、钉钉 durable inbox/outbox。另有 17 个 P1。
+
+**请 arch/Claude 优先裁决**：
+
+1. 一账户日是否只能属于一个任务；若允许多任务，分摊真相和考核价选取规则是什么。
+2. `missing/provisional/error/finite` 指标状态是否进入公开数据和报告契约。
+3. Job lease、Workflow executor lease、effect/outbox 的统一 fencing/idempotency 协议。
+4. Changeset 创建/确认/执行/T+1 的服务端安全边界与事务边界。
+5. 知识片段混合多个业务对象时，对象级权限不足应整段丢弃还是预先按权限切 chunk。
+6. 钉钉 inbox/ACK/outbox 的状态机和失败可见性。
+
+本条是审查入口，不包含生产修复；修复应按报告 R0→R4 分批并分别提交审查。
+
+---
+
+### P-014 ⏳B1-B8 自审问题修复待复核｜be（Codex）
+
+- 分支：`be/b8a`
+- 原始审查 SHA：`1919a8e`
+- 计划 SHA：`4dd9bec`
+- 修复 SHA：`50ffff1`、`a82643f`、`fc42fc0`、`c9cdb66`、`cfa83a9`、`c84a26f`、`60fc2ec`、`1ba7c64`
+- 质量报告：`docs/evidence/B1-B8自审修复-代码质量报告.md`
+
+**已完成**：
+
+1. P0 修复 6/14：日常 raw→canonical→quality 派发、Job lease fencing、确认/执行 TTL、Changeset+T1 崩溃恢复、知识明文对象权限、Workflow 嵌入式凭证扫描。
+2. P1 修复 7/17：上海业务日、unknown lifecycle、inactive 奇航身份、Changeset exact-once 结果、规则全失败可见、账户分页 fail-closed、指标分区运行期保活。
+3. 额外补强：缺数/零置信度/无证据 Agent 诊断不得给调整动作；租约 CHECK 防 SQL NULL 绕过；Agent timeout 不超过 credential envelope TTL。
+4. 验证：422 默认 tests passed；1 个真 Claude Agent SDK→本地网关→fake upstream opt-in smoke 单独 passed；四包 typecheck/lint/audit 全绿；coverage 86.62%-95.43%；PG16 迁移回放和 Job 并发反例通过。
+5. 复杂度复核：full ETL、Job Consumer、Job enqueue 完成等价职责提取；变更生产文件 complexity≤10、单函数≤100 行门禁 0 发现。
+
+**请重点复核**：
+
+1. Job lease token 是否覆盖所有 Consumer 状态迁移，旧 Worker 丢租后是否彻底停止修改新执行。
+2. Changeset 终态重入补 T+1 的幂等前提和 TTL 锁内校验是否保留。
+3. daily ETL 确定性 canonical job 日期范围是否符合数据口径；账户主表同步仍未完成，不能误判为完整读链路。
+4. citation all-or-nothing plaintext authorization 是否符合 B8 安全目标。
+5. Agent adjustment 的静态拒绝条件是否保留；低置信度阈值和服务端 currentValue 仍待契约。
+6. `004_reliability_hardening.cjs` 的迁移兼容、active lease CHECK 和分区维护 advisory lock。
+
+**仍待 Claude/arch/老板裁决，不得在审查中误标已修**：P0-02/P0-11 账户权威归属，P0-03 回填完整 DAG 终态，P0-04 缺数公开状态，P0-05 多任务归属，P0-07 Workflow 单执行器/effect outbox，P0-12 钉钉 durable inbox/outbox，P0-13 Changeset 目标权限矩阵，以及报告中列出的 10 个剩余 P1。
+
+---
+
+### P-015 ⏳B8a 后端交接与真实联调准备待复核｜be（Codex）
+
+- 分支：`be/b8a`
+- 合并清单：`34e1a07`
+- Qihang 资源预算：`6c1d65b`
+- 合成性能基线：`9fce24a`
+- 质量报告：`docs/evidence/B8a-交接准备代码质量报告.md`
+- 真实通路清单：`docs/plans/2026-08-20-真实通路联调准备清单.md`
+
+**本批完成**：
+
+1. 机械核验 `be/b8a`→`fe/f001` 共同基线与重叠路径；最终复核时 `fe/f001` 已前进到 `1de9256`，仍有 46 个脏路径，禁止在此现场直接 merge。5 个 committed overlap 中，台账、两信箱和 `schema.sql` 有明确文本冲突，`api.md` 仍需契约人工审查；脏路径与后端交集更新为台账和两信箱。
+2. Qihang 增加响应字节、行数、ID 数与编码 URL 四层资源预算；超限稳定为 `RESOURCE_LIMIT`，不进入网络重试。ETL/Backfill payload 同步 fail-closed。
+3. 增加纯合成、无网络/DB benchmark。当前代码基线暴露 Canonical 每轮 `3N+4` 端口调用；5,000 行是 15,004 次，报告没有把本机毫秒数冒充生产 SLA。
+4. 形成奇航、Multica/OS read/preview/execute、Secret、模型网关、钉钉 Stream、PG/FaaS 的 Gate A-E 准入矩阵，所有未知协议保持未证实。
+5. 当前全量门禁：434 默认 tests passed；真 Claude Agent SDK→localhost gateway→fake upstream opt-in smoke 1 passed；四包 typecheck/lint/audit 全绿；coverage 86.62%-95.43%；PG16 迁移回放通过；变更生产代码 complexity≤10、单函数≤100 行；凭证/动态执行扫描无发现。
+
+**请重点复核**：
+
+1. Qihang 默认 10 MiB/10000 rows/1000 IDs/64 KiB URL 是否适合作为联调前保守值；大账户分片必须等真实限制和部分失败语义，不要直接放宽。
+2. Canonical `3N+4` 是否需要在公开 API 联调前增加 batch settings/history/bulk upsert，及其事务、租户和错误定位边界。
+3. 合并时 `schema.sql` 以 Claude 契约裁决为主，后端 migration 真相不得丢；两信箱按条目语义合并，不可整文件覆盖。
+4. 联调清单的 owner、证据、失败级别、写确认和敏感信息禁记是否满足内部安全要求。
+
+**仍然不是完成项**：未合并、未部署、未接真实奇航/Multica/OS/Secret/Provider/钉钉 Stream；fake upstream 只证明 SDK 与本地协议网关链路。P0-02/03/04/05/07/11/12/13 与 9 个 P1 继续保留。
+
+---
+
+### P-016 ⏳B9 后端纵向闭环与 Canonical 批量性能待审计｜be（Codex）
+
+- 分支：`be/b8a`
+- 基线：`3d90bed`
+- 批量链路 SHA：`83d7e4f`
+- 纵向闭环 SHA：`8c6d5e1`
+- PG 性能 SHA：`42efc5c`
+- 质检补强 SHA：`c85beb8`
+- 质量对平 SHA：`83cf855`
+- 质量与交接 SHA：`df07deb`
+- 设计：`docs/plans/2026-08-20-B9后端纵向闭环与批量性能-design.md`
+- 计划：`docs/plans/2026-08-20-B9后端纵向闭环与批量性能-implementation.md`
+- 状态：`docs/plans/B9-状态.md`
+- 质量：`docs/evidence/B9-代码质量报告.md`
+- 性能：`docs/evidence/B9-数据链真实PG性能基线.md`
+
+**已完成**：
+
+1. CanonicalStore/Repository 改为默认 250 的 settings/history/upsert 批量端口；复合 workspace/account/date 缺失、重复、越界 fail-closed。
+2. 真实 PostgreSQL 纵向链：假奇航→Full ETL→Raw→Job→Canonical→质量→语义查询→规则→工作项→报告事实；同 accountId 跨 workspace 隔离实测。
+3. Full/Incr `etl_runs.workspace_id` 补齐；规则首次创建/重扫合并，报告 KPI/趋势/任务维度共用语义事实。
+4. 修复 P1-03：按 Canonical `field_sources.cost` 选择 latest offline `cost_api` 或 realtime `account_cost` 对平，消除当天假异常。
+5. 修复 P1-16：5000 行端口调用从 15004 降到 64；真实 PG 三次中位 394.974ms，最终 5000 行，代表性读计划无根级 Seq Scan。
+6. 当前门禁：445 默认 tests + 1 opt-in 真 SDK smoke；coverage 86.62%-95.43%；四包 type/lint/audit、PG16 migration replay、复杂度和安全扫描通过；contract/migrations/前端 0 diff。
+
+**请重点审查**：
+
+1. 批量 SQL 使用 JSON recordset、默认 250/最大 1000、每 chunk 原子但跨 chunk 非单事务的语义是否保留；后续批次失败时已写前缀可留，Job 失败且不派生质量。
+2. Handler 对 batch 返回结果的复合键 completeness/duplicate/out-of-scope 检查是否足够；是否需要 Repository 层额外 workspace 外键/一致性约束。
+3. Raw append-only 重试语义：当前崩溃重试会保留重复抓取，latest-row + Canonical Upsert 防双计。请裁决这是审计历史还是应增加 request/run identity 去重。
+4. 质量 source 选择：`realtime|gap_filled` 取 `account_cost`，其余优先 offline `cost_api` 再 realtime；请与真实奇航字段和数据日口径核对。
+5. 集成测试的规则候选只从真实语义结果生成，但仍是 test adapter；不要未经契约冻结直接注册生产 rule/report Job。
+6. PG benchmark 只允许本机测试库且会自动清理；结果是热缓存单 workspace，不得写成生产 SLA。
+
+**仍待裁决/联调**：
+
+- production rule/report job payload、触发器、候选 Provider 和输出存储；
+- Raw 大响应分片和 PostgreSQL 参数上限（P1-14 剩余部分）；
+- 真实奇航 1000 IDs 以上分片、限流、字段宽度和失败恢复；
+- 真实 Multica/OS、Secret、Provider、钉钉 Stream、FaaS/共享 PG；
+- Raw 请求幂等、冷缓存/并发/p95/p99 和生产资源预算。
+
+**明确未做**：公开 API/DTO/Schema、migration、生产新 job type、前端、真实媒体写操作或任何确认门绕过。
+
+---
+
+### P-017 ⏳B10 真实奇航只读适配待审计｜be（Codex）
+
+- 分支：`be/b8a`
+- 基线：`f756140`
+- 功能与证据 SHA：`41c6646`
+- 双口径事实纠偏 SHA：`3167e39`（当天 realtime 分钟级；D-2 仅为本次 offline 观测；BI 为备用/增强）
+- 实施计划：`docs/plans/2026-08-20-B10真实奇航只读适配-implementation.md`
+- 状态：`docs/plans/B10-状态.md`
+- 脱敏证据：`docs/evidence/B10-真实奇航只读适配报告.md`
+
+**真实证据边界**：老板转交的 OS Agent 在合法身份下实际执行四类只读 GET；已确认协议、日期、空数组和动态字段；当天 realtime 命中且 `last_sync_time` 为分钟级，离线仅在本次观察到 D-1 空、D-2 命中。D-2 不是实时延迟也不是固定 SLA。原始 userId、账户/广告/任务标识、金额和精确业务规模未写入仓库。请求不是由本项目 Worker/FaaS 发起，因此仍不能标记 Gate B 完成。
+
+**本批实现**：
+
+1. Client 将内部 `YYYY-MM-DD` 严格转为上游确认的 `YYYYMMDD`；非法格式/日历日期在网络前 fail-closed。
+2. Full ETL 从 D-1 起最多向前探测 3 日，首个非空离线分区命中后停止，并把实际日期纳入 Canonical 范围；防止 D-1 延迟后永远漏离线权威行。
+3. 历史日若离线含新增的 `account_real_conversion`，优先于 realtime fill；离线缺失时保持既有实时补齐。
+4. Raw 继续动态透传，不将旧文档 23 列固定成 Schema；未改 contract/migration/API/前端。
+
+**请重点裁决**：
+
+1. `packages/contract/metrics.md` 仍写“离线 T+1 权威”且 `account_real_conversion` 只列 realtime，是否按真实证据改为“最新已产出分区”和 offline/realtime 双来源。
+   `docs/20-PRD-v1.md` 的“account_offline（昨日结算）→ account_realtime（近 7 日补洞）”也需同步改成“当天 realtime 分钟级 + offline 动态探测最新已产出分区”，并注明历史 realtime `ds` 尚未实测。
+2. 三日回退是当前无分区状态接口下的有界保护；D-1 部分产出无法识别。是否要求奇航提供分区完成标记，或由数据健康层引入跨批稳定性判定。
+3. 当前业务线离线样本没有 `cash/income/rebate`。现有派生逻辑在 compensation 缺失时按 0 计算现金成本；该业务语义本批未改，请业务/arch 明确“缺失=0”还是“现金指标不可用”。
+4. userId 仍是个人身份，OS 只证明内网可调用，不是部门级服务身份。正式推广前应用身份仍是硬门。
+5. 本轮 realtime 只实测当天；Skill 源码虽会用历史 realtime 补洞，但服务端是否正式支持历史 `ds` 尚待探针，不能由实现反推协议。
+6. 名称已补证：OS 真请求基于 `ks-data-queryer` 1.0.2；用户新给的安装入口是 `rta-data-queryer-daemon` 1.0.4，其业务依赖为 `rta-data-queryer` 1.0.4。两者协议同源但实现版本不同，正式部署需明确选定包和版本；`qihang-monitor`/包内 `ad-hourly-monitor` 只作为上层监控参考。
+
+**质量**：Qihang+ETL 28、Canonical 6 定向 tests；Domain 194、DingTalk 19 全量通过；Worker 获准 localhost 环境执行 158 tests，PG 相关因本机 Docker/55432 未就绪未完成。四包 typecheck/lint/audit 通过且 0 vulnerabilities；变更模块覆盖率 Qihang 95.14%、Full ETL 100%、Canonical 92.50%；复杂度≤10、单函数≤100、敏感扫描通过。
+
+**下一实证**：`hh`、跨日 offline、空/部分分区、带合法 userId 的本项目 Worker/FaaS→Raw→Canonical→质量 trace。任何写操作继续禁止。
+
+---
+
+### P-018 ⏳B11 奇航时效完整性与小时监控待审计｜be（Codex）
+
+- 分支：`be/b11`
+- 基线：`878126f`
+- 证据固化：`a3b479b`
+- Client 防护：`e60e719`
+- 动态重查/观测：`c7c6289`
+- 小时差分：`c500771`
+- 小时落库：`b88f6ea`
+- 自审测试：`5595836`
+- 质量与交接：`67bdfda`
+- 第三轮证据：`9775b87`
+- `hh` 边界：`ace828f`
+- 广告分片：`8f46745`
+- 同步时间修复：`f178731`
+- 第三轮代码终态：`1c87e2e`
+- 第三轮质量与交接：`ec320f9`
+- 状态：`docs/plans/B11-状态.md`
+- 质量：`docs/evidence/B11-代码质量报告.md`
+- 第三轮 OS：`docs/plans/B11-OS第三轮只读探针.md`
+- 第三轮实证：`docs/evidence/integration/2026-08-20-qihang-readonly-os-probe-round3.md`
+
+**本批实现**：
+
+1. `ad_realtime` 必须带 accountIds/adIds；第三轮已证实无过滤查询存在 2000 行静默截断，过滤分片恰好命中 2000 时继续 fail-closed，不用可能截断的数据做归因。
+2. 每次成功查询生成不含业务明细和身份的 observation；Repository 二次白名单后追加到 running `etl_runs.scope.observations`。
+3. `etl_incr` 默认单日重查 D-1 offline，可配置 0..3；空结果可见，非空 Raw 纳入 D-1 到当天 Canonical 修订。
+4. `hh` 响应按累计快照处理：N-(N-1)，hh=0 零基线；当前缺行不造数，负差分截 0 并记录修正字段。
+5. 复用现有 `ad_metrics_hourly`，按 workspace+ad+ds+hh 参数化批量 Upsert；同键 account 漂移失败，小时写失败不派发 Canonical。
+6. 第三轮已证实无过滤广告查询在 2000 行静默截断且分页参数无效；ETL 默认按 5 账户/80 广告 ID、最多 200 批顺序查询，逐批 Raw/观测，全部成功后才合并。
+7. 原子 Client 接受实测有效的 `hh=0..24` 并本地拒绝越界；小时 payload/Domain/DB 保持 0..23。历史 realtime 只作为诊断回溯，不替代 offline 结算口径。
+
+**请重点审查/裁决**：
+
+1. offline 无 complete marker 时仅有 `not_observed/observed_unverified` 是否符合数据健康语义；不要把非空或跨批稳定升级成 complete。
+2. 默认每次 Incr 重查 D-1 与 0..3 配置是否需要由调度层固定频率/冷却，避免高频任务重复拉离线。
+3. 默认 5 账户/80 广告 ID、最多 200 批的奇航频控与资源边界是否长期保留；当前没有真实 SLA，故实现选择顺序执行。
+4. 单个账户过滤查询若仍恰好命中 2000，当前缺少权威 adIds 发现来源，只能 fail-closed；请裁决后续由账户基建台账、奇航新接口还是媒体对象清单提供拆分种子。
+5. 现有小时表没有 `last_sync_time`/issue 状态列；本批只在 ETL observation 留源更新时间和 aggregate issue。请裁决未来公开数据健康 DTO、保留期和页面展示方式。
+6. 当前小时 Repository 一次 JSON batch；上游已按最多 5 账户拆分，但单账户仍可能有大量广告。是否增加 DB 分块上限，等真实响应宽度与 PG 基准后决定。
+
+**质量真相**：Domain 207、DB 92、Worker 200、DingTalk 19，共 518 个默认 tests 通过；真 Claude Agent SDK opt-in 1 passed。B11 Repository 真 PG 5/5、Worker PG 4/4、migration replay 已通过。Worker 全仓 coverage 92.19%，新增分片与增量 Handler 行覆盖 100%；四包 type/lint/audit、复杂度、安全扫描和冻结目录检查通过。
+
+**明确未做**：公开 API/DTO/Contract、migration、前端、产品身份真实 Qihang Worker/FaaS trace、单账户 2000 后的 adIds 权威发现、分区 complete 推断、把 hh=24 写成小时桶、媒体写操作或任何确认门绕过。
+
+---
+
+### P-019 ⏳B12 广告 ID 与素材来源桥待审计｜be（Codex）
+
+- 分支：`be/b12`
+- 基线：`be/b11@44e2390`
+- 设计与计划：`dc64f68`
+- 功能实现：`f4c55bb`
+- 自审终态：`fb3bf9f`
+- 质量与交接：`ce4206c`
+- 状态：`docs/plans/B12-状态.md`
+- 质量：`docs/evidence/B12-代码质量报告.md`
+- OS 探针：`docs/plans/B12-OS第四轮只读探针.md`
+
+**本批实现**：
+
+1. 广告 ID 通用分页枚举，校验 page/pageSize/total、空页、页数和 ID 数；只有 `complete + confirmed_equal + 独立证据指纹` 才输出 `adIds`，运行时再次防结构伪造。
+2. 奇航素材池严格只读客户端，校验 envelope、total 稳定、重复冲突、页/行/字节预算，错误和观测不含业务 ID、完整 URL 或响应正文。
+3. 视频来源安全探针默认全拒绝；显式 host allowlist 后逐跳校验重定向，HEAD 不支持才发单字节 Range；直接 IP、非视频、未知/零长度和超限阻断。
+4. 未修改 public contract、migration、DB、前端；未接生产 Runtime、视频下载、拆片或媒体写操作。
+
+**请重点审查/裁决**：
+
+1. 映射证据类型当前仅 `os_set_equality_probe|platform_contract`，指纹+时间是否足够，未来是否要绑定证据文档版本/操作者/账户样本范围。
+2. OS 若证实 `unit_id != ad_id`，应新增正式 ad list adapter，不能在业务层做猜测映射；若相等，仍需确认分页 total 的完整性再接 B11 fallback。
+3. 素材 host allowlist 是部署级配置；是否还要在网络层增加 egress proxy/DNS 解析后 IP 校验，防 DNS rebinding。
+4. 素材池全库工作流当前缺 count→itemIds 编排；请确认一期只从任务/商品池显式 itemId 进入，还是下一批补全库发现。
+5. URL 签名过期、临时文件、内容哈希、格式/病毒检查和拆片任务幂等应在下一批下载管线设计，不要塞入本批探针。
+
+**质量真相**：定向 54、Worker 非 PG 238、Domain 207、DingTalk 19、DB 无 IO 12；四包 type/lint/audit、覆盖率、复杂度、安全和冻结目录检查通过。Docker CLI 本轮持续 `EOF`、55432 `ECONNREFUSED`，真实 PG/migration 未重跑；不得引用 B11 历史结果冒充本轮结果。
+
+**明确未完成**：OS 第四轮 ID 映射与素材 URL/FaaS 实证、B11 自动 adIds fallback、素材正文下载、拆片、DB/API/Job/前端、合并、部署和产品身份真实 trace。
+
+---
+
+### P-020 ⏳B13 素材拆片后端内核待审计｜be（Codex）
+
+- 分支：`be/b13`
+- 基线：`be/b12@8fba713`
+- 设计：`610e1ba`；CDN 类型纠正：`2a8adcd`；实施计划：`37ede1f`
+- 代码终态：`85c5fbf`
+- 质量与交接：`ff97678`
+- 状态：`docs/plans/B13-状态.md`
+- 质量：`docs/evidence/B13-代码质量报告.md`
+
+**本批实现**：
+
+1. 安全下载：逐跳 host/type/length 重验、流式预算、总超时、随机临时文件、SHA-256 和失败清理；allowlist VIDEO 的 octet-stream 强制 FFprobe。
+2. 平台字幕优先、云 ASR 端口兜底，不存在本地 ASR；字幕与 Shot 形成完整时间轴和稳定证据 ID。
+3. FFmpeg/FFprobe 固定参数数组和 `shell:false`，支持 scene/hard-cut、镜头中点帧、Hook/全片联系表、资源上限和失败占位。
+4. 结构化拆解必须引用证据，禁止无源后台指标；老板拆片 Prompt 使用源/模板双 SHA，漂移 fail-closed。
+5. 复用 B5 Claude Agent SDK + localhost 多模型网关，无 built-in/MCP tools；内容、Prompt、Schema、Provider/model/profile 指纹控制 checkpoint 复用。
+
+**请重点审查/裁决**：
+
+1. 指定可接收真实投放帧的受信任多模态 Provider/内部网关，并冻结保留、审计、egress 边界；未裁决前视觉 payload 必须继续阻断。
+2. 冻结云 ASR 供应商与凭证、费用、超时、缓存、隐私边界；不得以本地 ASR兜底。
+3. 冻结拆片 Job/API/DB、checkpoint/artifact 保留与清理契约；目前只交内部端口，不应直接注册生产 Runtime。
+4. 审核 `teardown-v1` 是否作为一期官方模板，以及模板升级、回滚和历史分析重算规则。
+5. 审核 evidence/result Schema、500 Shot/216 帧/15 Hook/36 全片等预算和错误分类，确认后再接素材中心、知识库和复刻。
+
+**质量真相**：Domain 235、DB 92、Worker 287、DingTalk 19 默认 tests；真实 SDK opt-in 1。真实 PostgreSQL/migration、真实 FFmpeg 生成视频与 localhost gateway E2E 通过；materials 95.96%/86.75%/98.75% 行/分支/函数覆盖；四包 type/lint/audit 与安全/冻结目录检查通过。
+
+**明确未完成**：合入 main、真实云 ASR、真实多模态 Provider、产品 Worker/FaaS 真实素材 E2E、持久 checkpoint/artifact、公开 API/DB/Job、前端、相似检索/复刻、部署/上线。OS 沙箱实证与本地伪上游均不得冒充产品生产联通。
+
+---
+
+### P-021 ⏳B14 单次整段 ASR 与临时 URL 租约待审计｜be（Codex）
+
+- 分支：`be/b14`
+- 基线：`be/b13@f0a0b9f`
+- 第五轮证据与设计：`446fa3f`
+- 实施计划：`7d6dfe8`
+- 字幕/证据/Prompt：`b830c92` → `19ccce9`
+- ASR adapter：`e7592b6`
+- URL 租约：`c740095`
+- 质检代码终态：`6cea3d8`
+- 质量与交接：`24a0784`
+- 状态：`docs/plans/B14-状态.md`
+- 质量：`docs/evidence/B14-代码质量报告.md`
+
+**老板裁决**：一期先做诊断，一条视频只调用一次 IdeaLab 风格 ASR；不切块、不做本地 ASR、不等待句级时间戳。产品必须显示这是整段转写，不能把全文台词伪定位到秒或镜头。
+
+**本批实现**：
+
+1. Domain 增加 `segment|whole_video` 精度，进入字幕、证据和 fingerprint；整段结果只允许一个覆盖全片的 `other` 分析段。
+2. Prompt 升级 `teardown-v2`，固定模板 SHA，明示全文钩子只是位置不确定的候选。
+3. `WholeTextCloudAsrAdapter` 每视频只调用一次可注入 transport，绑定 provider/model/profile；严格接受 `{text}`，非法输入/输出和 transport 错误 fail-closed 且脱敏。
+4. Handler 以稳定 opaque `sourceRef` 每次向 `MaterialUrlLeasePort` 领取新 candidate，再立即下载；同内容 SHA 可复用后续 checkpoint，但签名 URL 永不持久化。
+5. 未修改公开 contract、migration、生产 runtime 或前端；未实现真实 IdeaLab/OS 网络协议。
+
+**请重点审查/裁决**：
+
+1. 提供/确认 IdeaLab Audio `whisper-1` 正式调用契约：endpoint、AK secret reference、multipart 字段、文件/时长限制、超时、配额、费用和数据保留。
+2. 冻结 OS/Multica 稳定 `sourceRef` 与临时 URL 领取协议、服务身份和审计字段；当前端口不能被误写成已联通。
+3. 冻结拆片 Job/API/DB、checkpoint/artifact 保留、清理与重算契约后再注册生产 Runtime。
+4. 前端必须显示 `whole_video` 的“无句级时间戳”状态，禁用精确秒点跳转；未来换时间戳 ASR 时历史结果保留原精度。
+5. 真实投放帧的受信任多模态 Provider/egress 边界仍需单独裁决；本批继续阻断。
+
+**质量真相**：默认 Domain 244、DB 92、Worker 297、DingTalk 19，共 652 passed；SDK opt-in 1 passed。真实 PG/migration、localhost gateway E2E 与真实 FFmpeg 生成视频通过。Domain 95.97%/85.79%/99.27%，Worker 92.57%/80.92%/95.71%，materials 96.30%/87.79%/98.90%；四包 type/lint/audit、安全、复杂度和冻结目录门禁通过。
+
+**明确未完成**：真实 IdeaLab transport、OS source bridge、真实素材产品身份 E2E、视觉多模态外发、持久化 Job/API/DB、前端、合并、部署和上线。
+
+---
+
+### P-022 ⏳B15 拆片语义与逐镜头帧墙待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：`be/b14@e9edd5d`
+- 设计：`562b62c`
+- 实施计划：`f619bcc`
+- 领域/Prompt/帧墙/承接：`28250c1` → `9399c15`
+- 自审代码终态：`020a902`
+- 质量与交接：`9169f11`
+- 状态：`docs/plans/B15-状态.md`
+- 质量：`docs/evidence/B15-代码质量报告.md`
+
+**老板裁决**：拆片是按指定 Obsidian 提示词对完整文稿做结构分析；抽帧是像 ContentRadar 一样按真实镜头提取多张代表帧集中展示。不是切出多个 MP4。整段 ASR 可以拆多个语义段，但不得伪造秒点或与镜头的一一映射。
+
+**本批实现**：
+
+1. Schema v2 新增 `alignmentStatus + semanticSections`；whole-video 可多段语义、强制空 timed segments；segment 仍保持精确时间轴。
+2. 所有语义段必须有文稿证据；精确时间段的每个证据必须与本段时间相交，阻断证据 ID 存在但时间错位。
+3. Prompt `teardown-v3` 按老板七模块目标整理，固定源/模板 SHA；Prompt 或 Schema 版本漂移在 Agent 调用前阻断。
+4. FFmpeg 新增逐镜头 6×6 帧墙，多页连续、placeholder 不移位、页级 unavailable、最多两页并发。
+5. Handler 返回 film/transcript/analysis；B14 旧 analysis 只重跑 Agent，旧 film 缺页清单只重跑 FFmpeg。
+6. 未修改 public contract、migration、生产 runtime、前端或 ContentRadar。
+
+**请重点审查/裁决**：
+
+1. Schema v2 是否直接成为未来公开 DTO；若 API 再映射，必须保留“语义顺序”和“视觉真实时间”两套独立字段。
+2. whole-video 前端必须把 `semanticSections` 与 shot timeline 并排展示，不能用行位置暗示一一对应；`segments=[]` 的空态文案需由前端冻结。
+3. 审核帧墙预算：36/页、6 列、500 镜上限、前 216 镜真实帧、后续 placeholder、并发 2。
+4. 冻结 artifact/checkpoint 的对象存储、权限、保留期、删除、重算和历史 Prompt 版本策略，再接 Job/API/DB。
+5. 真实帧外发与多模态 Provider 仍未授权，本批继续阻断；不要为了完整七模块报告绕开数据边界。
+6. IdeaLab transport 和 OS source bridge 仍是内部端口；需真实产品身份 trace 后才能写“已联通”。
+
+**质量真相**：Domain 245、DB 92、Worker 301、DingTalk 19，共 657 个默认 tests；Claude Agent SDK opt-in 1。真实 PostgreSQL/migration、localhost gateway E2E 与真实 FFmpeg 三场景视频通过。Domain 95.97%/85.88%/99.27%，Worker 92.71%/81.12%/95.76%，materials 96.87%/87.90%/98.97%；四包 type/lint/audit、安全、冻结目录和 diff-check 通过。
+
+**明确未完成**：MP4 裁片/自动剪辑、真实多模态、IdeaLab/OS 正式通路、持久 artifact/checkpoint、公开 Job/API/DB、前端、相似检索/复刻、合并、部署和线上业务验收。
+
+---
+
+### P-023 ⏳B16 素材相似度与复刻谱系领域底座待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B15 最终交接 `99d647f`
+- 设计：`e0b0d2d`
+- 实施计划：`702730c`
+- 领域内核：`452bdc9`
+- 自审测试终态：`d7a49f8`
+- 质量与交接：`1533484`
+- 状态：`docs/plans/B16-状态.md`
+- 质量：`docs/evidence/B16-代码质量报告.md`
+
+**产品依据**：PRD `REQ-052` 与验收 6.3/6.6 已明确拆片后按钩子/卖点/节奏做相似查找，并记录“复刻自”。本批只实现内部 Domain，不把页面功能标为完成。
+
+**本批实现**：
+
+1. 版本化素材内容画像：B15 拆片 fingerprint、语义角色序列、钩子、卖点、人群、节奏、CTA 和视觉节奏值。
+2. 六组件可解释评分，缺项不计 0；证据不足返回 `score=null`；结果左右对称并带稳定 fingerprint。
+3. 中文/英文确定性 n-gram、去重排序和 512 token 上限，不依赖外部分词或模型。
+4. 独立复刻谱系 v1，拒绝自环、非法标识/SHA/时间、超长备注和未知字段；不由相似度自动生成。
+5. 未修改 public Contract、migration、生产 Runtime、Worker 或前端。
+
+**请重点审查/裁决**：
+
+1. 六组件默认权重与解释码是否冻结；后续调整必须新建 scorer/profile version，不能覆盖历史。
+2. 冻结画像、比较缓存、谱系边的 DB/API DTO 和 workspace 租户键。
+3. 一期是否先用 PostgreSQL 结构/token 候选召回；如接 Embedding，需单独裁决 Provider、数据外发、成本、向量版本和重算。
+4. 页面必须展示分项与 unavailable，`insufficient_evidence` 不能显示成 0% 相似。
+5. 谱系创建权限、审计、纠错/撤销和版本对比契约。
+
+**质量真相**：Domain 270、DB 92、Worker 301、DingTalk 19，共 682 默认 tests；SDK opt-in 1。新增模块 100%/93.39%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：相似列表检索/排序/分页、向量检索、谱系持久化/版本对比、Job/API/DB/前端、合并、部署和业务验收。
+
+---
+
+### P-024 ⏳B17 商品×素材实验矩阵领域底座待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B16 最终工作树 `4eb5127`
+- 设计：`d718aca`
+- 实施计划：`c27539e`
+- 领域内核/自审终态：`064f1f5`
+- 质量与交接：`e12095c`
+- 状态：`docs/plans/B17-状态.md`
+- 质量：`docs/evidence/B17-代码质量报告.md`
+
+**产品依据**：验收 6.7 要求“商品×素材+样本够不够标注”。本批只交内部 Domain，不把矩阵页面标为完成。
+
+**本批实现**：
+
+1. 版本化样本策略，业务阈值无默认值；固定 95% 区间。
+2. 推断分母必须显式选择 click/exposure，不默认真实转化都是点击归因。
+3. `sourceFactId` 相同事实幂等、冲突失败；稳定汇总账户/日期/曝光/点击/真实转化/消耗。
+4. 六类样本缺口、有限 CPA、CPA 最小改善率和 Wilson 区间共同控制结论。
+5. 只有成本方向与所有候选区间同时分离才返回 `separated_observation`；无自动操作。
+6. 未修改 public Contract、migration、生产 Runtime、Worker 或前端。
+
+**请重点审查/裁决**：
+
+1. 不同任务/媒体的官方样本策略阈值和版本治理。
+2. click/exposure 分母的权威口径，未来是否需要新增已验证的其他 trial 指标。
+3. 素材→广告→商品→任务映射和 sourceFactId/workspace 租户键。
+4. 页面文案不得把 observed separation 写成“显著胜出/因果胜出”。
+5. DB/API、历史重算、数据新鲜度和正式 A/B 的独立演进路径。
+
+**质量真相**：Domain 295、DB 92、Worker 301、DingTalk 19，共 707 默认 tests；SDK opt-in 1。新增模块 100%/97.08%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：权威事实映射、官方阈值、DB/API/页面、随机实验、因果推断、自动投放动作、合并、部署和业务验收。
+
+---
+
+### P-025 ⏳B18 素材设计 Brief 与回测就绪领域底座待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B17 最终工作树 `5175a75`
+- 设计：`336a62c`
+- 实施计划：`a254e5f`
+- 领域内核/自审终态：`54f5223`
+- 质量与交接：`69368f0`
+- 状态：`docs/plans/B18-状态.md`
+- 质量：`docs/evidence/B18-代码质量报告.md`
+
+**产品依据**：验收 6.5 要求“跑量素材→brief→设计师→上线自动关联回测”。本批只交内部 Domain，不把派发、制作、上线或页面标为完成。
+
+**本批实现**：
+
+1. v1 严格 Brief 绑定商品、源素材、B15 teardown/profile 和 B17 policy；1~20 个单变量变体稳定排序并生成 fingerprint。
+2. 每个变体只允许 hook/selling_point/audience/rhythm/cta/visual_style 中一个改变维度，且至少声明一个不变量。
+3. 交付重新验证 B16 lineage 的版本、来源、时间和 fingerprint；完全相同重试幂等，冲突 fail-closed。
+4. 回测状态分 awaiting_delivery / awaiting_sample / ready；全部交付后才消费同 policy、同商品的 B17 sampleStatus。
+5. 自审增加未声明变体、重复商品/素材格子和重算外层 hash 后的语义完整性防线。
+6. 未修改 public Contract、migration、生产 Runtime、Worker 或前端。
+
+**请重点审查/裁决**：
+
+1. Brief 草稿/发布/撤回/复制、团队共享和官方资产治理状态机。
+2. Brief/交付/lineage/商品/素材版本的 DB/API DTO、workspace 键和权限。
+3. 设计师/AIGC/钉钉派发与交付文件、上线素材版本的权威绑定方式。
+4. B17 policy 的官方版本治理；历史 Brief 必须固定原策略。
+5. 页面不得把 `ready` 显示为“胜出”；要分开呈现交付、样本、观察结果。
+
+**质量真相**：Domain 310、DB 92、Worker 301、DingTalk 19，共 722 默认 tests；SDK opt-in 1。新增模块 97.19%/85.71%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：Agent 生成 Brief、设计师/钉钉/AIGC 集成、DB/API/Worker/页面、权威映射、自动采样、随机 A/B、媒体写操作、合并、部署和业务验收。
+
+---
+
+### P-026 ⏳B19 月度结算单领域底座待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B18 最终交接 `e5fe8de`
+- 设计/实施计划：`049dab5`
+- 领域内核/自审终态：`c2fed1f`
+- 质量与交接：`4c4b0dc`
+- 状态：`docs/plans/B19-状态.md`
+- 质量：`docs/evidence/B19-代码质量报告.md`
+
+**产品依据**：验收 7.3/REQ-110 要求月中试算、实际返点 vs 估算返点、差异转工作项、模板版本不覆盖旧单。老板明确每期字段可能不同、返点系数按渠道/生效日版本化。
+
+**本批实现**：
+
+1. v1 模板显式定义字段/顺序/类型/fact 映射/受限公式/汇总/修正权限和对账检查，输出稳定 fingerprint。
+2. 公式仅支持有界 AST 四则运算；无任意代码或默认 `/1.09`、返点率、容差。
+3. 只接受 offline_settlement，事实幂等去重并逐行输出值、来源、检查、问题和显式总计。
+4. 修正使用 from-value 事件链；同 ID 冲突、不可修字段、错误时间与错误前值 fail-closed。
+5. 冻结只接受 ready 预览并内嵌模板和值快照；语义校验覆盖重算检查/总计，不只信任外层 hash。
+6. 未修改 public Contract、migration、生产 Runtime、Worker 或前端。
+
+**请重点审查/裁决**：
+
+1. 真实期次模板和 factKey/公式/汇总/容差，以及模板发布/废弃权限。
+2. sourceFactId/rowKey 与奇航 offline/语义层的权威映射、完整分区和勘误重算。
+3. 人工修正权限/evidenceRef/双人复核、冻结后勘误生成新 run 的状态机。
+4. DB/API DTO 与 workspace/optimizer/period 唯一键、历史模板和值快照留存。
+5. Excel/PDF/PNG 精度/舍入与导出、差异转工作项、钉钉订阅/推送契约。
+
+**质量真相**：Domain 352、DB 92、Worker 301、DingTalk 19，共 764 默认 tests；SDK opt-in 1。新增模块 100%/92.76%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：真实模板/数据映射、DB/API/Worker/权限、导出/钉钉/工作项/页面、财务会计功能、合并、部署和业务验收。
+
+---
+
+### P-027 ⏳B20 公共资产治理领域底座待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B19 最终交接 `acd046c`
+- 设计/实施计划：`174a2b8`
+- 领域内核/自审终态：`d22a5d8`
+- 质量与交接：`d0d4ba3`
+- 状态：`docs/plans/B20-状态.md`
+- 质量：`docs/evidence/B20-代码质量报告.md`
+
+**产品依据**：REQ-112/113/114 和验收 14.10 要求报表、工作流、策略、对象组统一经历个人草稿→团队共享→已验证→官方→已废弃，并显示负责人、版本、适用范围、依赖、验证、成功率、使用人数和替代版本。
+
+**本批实现**：
+
+1. report/workflow/strategy/object_group/knowledge 五类资产统一不可变版本、来源、适用范围、依赖和稳定指纹。
+2. 五段严格前进状态机；事件相同重试幂等，冲突 ID、越级、回退和错误时间 fail-closed。
+3. validation 绑定 assetVersionId+definitionFingerprint；最近 failed 不会被更早 passed 掩盖。
+4. usage facts 绑定版本并按事件幂等、用户去重，统一输出人数/频次/最近使用时间。
+5. deprecated 强制原因、可选非自身替代版本；公共修改用新 draft，不覆盖旧版本。
+6. 未修改 public Contract、migration、DB/Worker/Gateway Runtime 或前端。
+
+**请重点审查/裁决**：
+
+1. 统一 assets 表/API 与 report config、workflow version、strategy、object group、knowledge document 的关联。
+2. 五段晋级/废弃的角色权限、复核和 workspace 边界。
+3. 各资产类型的验证执行器、passed 证据、验证失效与重新验证语义。
+4. usage fact 计数口径、预览/试运行过滤和幂等事件来源。
+5. dependency/replacement 的存在性、同租户/同类型兼容和循环检查。
+
+**质量真相**：Domain 381、DB 92、Worker 301、DingTalk 19，共 793 默认 tests；SDK opt-in 1。新增模块 99.69%/85.00%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：DB/Repository/API/权限/审查队列/前端、真实资产接入、验证执行器、usage 埋点、依赖图、合并、部署和业务验收。
+
+---
+
+### P-028 ⏳B21 工作流“为什么没触发”诊断内核待审计｜be（Codex）
+
+- 分支：`codex/b15-material-teardown-semantics`
+- 基线：B20 最终交接 `b77076e`
+- 设计/计划：`17b54f5`
+- 领域内核：`f985923`
+- 质量与交接：`2e4a219`
+- 状态：`docs/plans/B21-状态.md`
+- 质量：`docs/evidence/B21-代码质量报告.md`
+
+**本批实现**：
+
+1. 绑定 workspace/workflow/version/trigger/evaluation 的 gate 快照。
+2. passed/blocked/not_evaluated 与 eligible/blocked/incomplete；保留全部阻断并选择首个配置 gate 为 primary。
+3. 复用现有 12 个 WorkflowBlockReason，映射稳定 nextActionCode；blocked 带 evidence refs 和可选 retryAt。
+4. 严格时间、唯一原因、连续序号、稳定 fingerprint、深冻结和重算 hash 后语义校验。
+5. 未修改 public Contract、migration、DB/Worker/Gateway Runtime 或前端。
+
+**请重点审查/裁决**：Scheduler gate 生产者和落库幂等；证据对象/data cutoff；API/权限/保留期；reason/action 的 UI 人话与跳转。
+
+**质量真相**：Domain 397、DB 92、Worker 301、DingTalk 19，共 809 默认 tests；SDK opt-in 1。新增模块 98.54%/91.02%/100%；四包 type/lint/audit、真实 PG/migration、gateway/FFmpeg、复杂度、安全和冻结目录通过。
+
+**明确未完成**：Scheduler/Trigger、DB/Repository/API、运行中心页面、真实策略门槛、合并、部署和业务验收。
+
+---
+
+### P-029 ⏳B22 IdeaLab whole-video ASR Provider 待审计｜be（Codex）
+
+- 分支：`codex/b22-idealab-asr-provider`
+- 基线：B21 私有备份交接 `ed90360`
+- 设计：`817208e`
+- 实施计划：`0a29af3`
+- 代码终态：`b60e09e`
+- 质量与交接：`bd49004`
+- 状态：`docs/plans/B22-状态.md`
+- 质量：`docs/evidence/B22-代码质量报告.md`
+- OS 证据：`docs/evidence/integration/2026-08-21-idealab-asr-os-diagnostic.md`
+
+**老板裁决与真实依据**：拆片是完整文稿的提示词驱动语义拆解，抽帧是独立逐镜头关键帧墙，不导出多个 MP4。OS 真实调用确认 MP4 直传 `CE-009`，PCM s16le/16kHz/mono WAV 成功；endpoint + Bearer + multipart `file/model=whisper/response_format=json` 返回 `{text,usage}`，无时间戳。老板选择独立 WAV Extractor + IdeaLab Transport，复用 B15 whole-video Adapter。
+
+**本批实现**：
+
+1. `IDEALAB_ASR_ENABLED=false` 默认关闭；启用必须有 AK，序列化配置不含 AK。
+2. endpoint 在配置和 Transport 双层固定为已验证 host/path，禁止其他 HTTPS、redirect、query、fragment、内嵌凭证，防止 AK 外泄。
+3. FFmpeg 固定提取 WAV，限制字节/超时/输出并清理临时目录；MP4 不直接发 Provider。
+4. Transport 单次 multipart 调用、有界响应读取、严格 `{text,usage}`、稳定错误分类；内部不重试。
+5. 观测只含数字和枚举；Domain 只输出 `{kind:"whole_text",text}`，不制造 language/duration/timestamp。
+6. 工厂绑定 `idealab-audio/whisper/profile SHA`；opt-in 真实烟测默认跳过，没有接生产 Runtime/Job/API/DB/前端。
+
+**请重点审查/裁决**：
+
+1. 每用户 IdeaLab AK 的 Secret reference、解析时机、轮换、额度和审计；环境变量只能否作为 demo/内部底座。
+2. 产品 Worker/FaaS 的生产网络、素材授权、数据保留与法务边界；由谁执行首次真实 opt-in trace。
+3. Job/API/checkpoint/artifact、幂等、上层 retry/backoff、并发和额度策略。
+4. HTTP 400 业务错误码是否需要细化；Provider 大小/时长硬上限、限流和 SLA 如何取证。
+5. 前端如何并列展示“整段转写/语义结构”和“关键帧墙”，明确无句级时间戳。
+
+**质量真相**：Worker 344、Domain 397、DB 92、DingTalk 19，共 852 默认 tests；真实 PG/migration、gateway/FFmpeg 通过。B22 配置和核心模块 94.43% statements / 82.12% branches / 100% functions；四包 type/lint/audit、复杂度、安全和冻结目录通过。真实 IdeaLab 产品烟测 1 项默认 skipped，未冒充通过。
+
+**明确未完成**：真实产品身份 ASR E2E、每用户 Secret、生产 Job/API/DB/前端、重试/配额/审计、部署、线上验证和业务验收。
+
+---
+
+### P-030 ⏳双数据 BE-001 / R1 HTTP 与 Platform Adapter 待审计｜be（Codex）
+
+- 分支：`codex/dual-data-backend`
+- BE-001 基线：`2cb0d76`
+- R1 代码终态：`de31f3a`
+- 质量报告：`docs/evidence/R1-双数据HTTP与平台适配质量报告.md`
+- 状态：implemented / codex self-checked / Claude review pending
+
+**本批实现**：
+
+1. 独立可启动数据 API：Next BFF → `POST /api/v1/data/query`；服务端 token +
+   workspace/user/account scope header，默认只监听 loopback。
+2. `PlatformDataSource` 真实复用 canonical PostgreSQL summary/trend/table，补 anomalies、
+   detail/reconcile source 的有界分页。
+3. KA Data 与 unavailable lineage 不再用响应当前时间/占位版本冒充新鲜度；canonical
+   `dataAsOf` 取持久化 `computed_at`。
+4. 服务输出侧按 `(workspace_id, media, account_id)` 拦截恶意/错误 Adapter 越权行。
+5. 继续保持六个 Query ID、raw SQL 防线、2k/10k/16MB、稳定 requestId、双边并列且
+   reconcile engine pending；未开放任何写操作。
+
+**请重点审查**：BFF 账户 scope 的正式权限来源与内部 token 轮换；lineage nullable Contract；
+canonical coverage 的 account-day 语义；Platform anomalies/detail 分页；API 独立进程部署方式；
+真实 KA Data 内网联调前的 Secret/网络策略。
+
+**质量真相**：Domain 406、DB 94、Worker 393、Gateway 19；真实 PostgreSQL 16、真实 HTTP
+监听 smoke、四包 type/lint/audit 和 Worker coverage 92.23/80.95/95.96 通过。
+
+**明确未完成**：Next BFF/前端接线、真实 KA Data token 与业务数据联调、daily/FaaS 部署、
+reconcile 计算引擎、正式角色权限映射、Claude/arch 批准。未合并、未部署、未上线。
+
+---
+
+### P-031 ⏳双数据 R2 requestId 与 Contract fixtures 待审计｜be（Codex）
+
+- 分支：`codex/dual-data-backend`
+- R2 代码：`a81a176`
+- 质量报告：`docs/evidence/R2-requestId与契约fixtures质量报告.md`
+- 状态：implemented / Codex self-checked / Claude review pending
+
+**本批实现**：
+
+1. BFF `x-request-id` 经真 HTTP server、handler 与 service 传递；成功/失败均回传
+   `x-request-id` header，错误体 ID 与 header 一致。
+2. 只允许 1–128 位日志安全 ASCII；非法、超长、CR/LF、Unicode 值安全重生，
+   不回显、不记录原值。
+3. Contract 发布 ready lineage、unknown/null lineage、reconcile engine pending、stable error
+   四个自包含 fixture，Domain test 直接 Schema 验证，供前端 parity 复用。
+4. 文档冻结 BFF 必传内部 token/workspace/user/account scope/requestId；scope 只能由
+   服务端登录/授权上下文生成，dev 仅假数据，production fail closed。
+5. 未改成功 envelope 或 Query ID，未降低 scope/截断/凭证保护，真实写仍关闭。
+
+**请重点审查**：BFF 是否原样传递合法 requestId 并使用 canonical fixtures；
+production scope 是否无 dev fallback；相关 ID 语法是否与内部观测标准兼容；
+成功 envelope 仅靠 header 相关是否符合冻结 Contract。
+
+**质量真相**：Domain 414、DB 94、Worker 404、Gateway 19；真实 PG16、
+四包 type/lint/audit、Worker coverage 92.23/81.01/95.97 与安全扫描通过。
+
+**明确未完成**：BFF parity/真实登录 scope 接线、真实 KA Data 内网 E2E、
+reconcile 计算内核、部署/上线、Claude/arch 批准。R3/P0 已另行登记，
+不在 R2 代码提交中。
+
+---
+
+### P-032 ⏳双数据 R3 联合键、Canonical Rows 与只读详情待审计｜be（Codex）
+
+- 分支：`codex/dual-data-backend`
+- R3 代码终态：`391a5a2`
+- 关键提交：`d392152`、`424fa1d`、`ada510f`、`e2b0f1a`、`d114222`、
+  `921bf56`、`9626545`、`c3766dd`、`8c023cf`、`c4e8bf2`、`391a5a2`
+- 质量报告：`docs/evidence/R3-双数据与只读详情质量报告.md`
+- 状态：implemented / Codex self-checked / root integration pending / Claude review reserved
+
+**本批实现**：
+
+1. 账户主键、Repository、Platform SQL、KA 注入和输出守卫统一
+   `(workspace_id,media,account_id)`；跨媒体同号真实 PG 反例通过。
+2. 六 Query ID 使用版本化 canonical rows；KA/Platform parity，非法类型、数字、日期和
+   契约损坏顶层 fail closed。
+3. lineage/coverage 不再编造：部署默认值不冒充 timezone/dayCut，coverage 与 truncated
+   分离，聚合 returnedObjects 只在可证明时输出，单侧对象为零判 source_missing。
+4. 006 复合 FK 迁移冻结为首次/维护窗口停写、服务启动前执行；007 持久化详情账户 scope，
+   无法确定的历史数据不默认回填。
+5. 已挂载 `GET /api/v1/work-items/:id`、`GET /api/v1/changesets/:id`；服务端 auth、tuple
+   scope、requestId、稳定 401/403/404/502 信封完整。
+6. detail/data 共用 16MB 响应守卫，等于上限也返回 502 `SOURCE_TRUNCATED`。
+7. 未挂载任何写端点；Runtime/Multica/ChangeSet 媒体真实写继续关闭。
+
+**请重点审查**：
+
+1. migration 006 维护窗口/停写部署条件和 007 历史歧义数据治理是否可接受。
+2. 六 Query canonical row v1 与前端 fixtures parity；aggregate coverage/returnedObjects 语义。
+3. 正式 BFF 登录上下文如何生成 tuple scope，生产是否保持 fail closed。
+4. 两个详情 DTO 是否满足页面最小读取需要且没有暴露 credential owner/token/上游 body。
+5. 16MB exact-boundary 的 BFF 与后端一致性。
+
+**质量真相**：Domain 418、DB 97、Worker 444 +2 opt-in skipped；三包
+typecheck/lint/audit 通过，Worker coverage 92.28/81.48/96.29；真实 PG migration/repository、
+007 up/down/up、跨媒体同号、orphan/missing-media 反例通过。
+
+**明确未完成**：reconcile delta、BFF/前端合流、正式登录 scope、真实 KA Data 内网 E2E、
+部署/上线和 Claude/arch 批准。所有真实写继续关闭。

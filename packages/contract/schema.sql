@@ -46,8 +46,8 @@ CREATE TABLE channel_coefficients (    -- 返点折算系数，绝不硬编码
 );
 CREATE TABLE accounts (
   account_id TEXT NOT NULL, workspace_id UUID NOT NULL,
-  PRIMARY KEY (workspace_id, account_id),
-  account_name TEXT, media TEXT NOT NULL DEFAULT 'KUAISHOU',
+  account_name TEXT, media TEXT NOT NULL,
+  PRIMARY KEY (workspace_id, media, account_id),
   owner_user_id UUID REFERENCES users(id),
   lifecycle_stage TEXT DEFAULT 'unknown',  -- cold_start|ramping|stable|declining|paused|closed
   is_starred BOOLEAN DEFAULT false, tags TEXT[],
@@ -55,26 +55,30 @@ CREATE TABLE accounts (
 );
 CREATE TABLE task_accounts (           -- 关系表：历史/多任务（替代单值 task_id）
   id BIGSERIAL PRIMARY KEY, workspace_id UUID NOT NULL,
-  task_id TEXT NOT NULL, account_id TEXT NOT NULL,
+  task_id TEXT NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,
   valid_from DATE NOT NULL, valid_to DATE,
-  UNIQUE(task_id, account_id, valid_from)
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
+  UNIQUE(workspace_id, task_id, media, account_id, valid_from)
 );
 
 -- ═══ 指标（raw / canonical 分离，防 source 双计）═══
 CREATE TABLE metrics_raw (             -- 接口原样落库，按 ds 分区
   id BIGSERIAL, workspace_id UUID NOT NULL,
-  account_id TEXT NOT NULL, ds DATE NOT NULL,
+  media TEXT NOT NULL, account_id TEXT NOT NULL, ds DATE NOT NULL,
   resource TEXT NOT NULL,              -- P-001#4 裁决：account|account_offline|account_realtime|ad_realtime（接口资源，回放依据）
   source TEXT NOT NULL,                -- realtime|offline（数据口径，与 resource 正交）
   request_params JSONB,                -- 该次调用参数（hh/日期范围等），保证可重放
   payload JSONB NOT NULL,              -- 接口原始行
   fetched_by_user UUID, fetched_at TIMESTAMPTZ DEFAULT now(),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   PRIMARY KEY (id, ds)
 ) PARTITION BY RANGE (ds);
-CREATE INDEX idx_metrics_raw_replay ON metrics_raw(workspace_id, account_id, ds, resource);
+CREATE INDEX idx_metrics_raw_replay ON metrics_raw(workspace_id, media, account_id, ds, resource);
 CREATE TABLE account_metrics_daily (   -- canonical：一户一日一行
   workspace_id UUID NOT NULL,
-  account_id TEXT NOT NULL, ds DATE NOT NULL,
+  media TEXT NOT NULL, account_id TEXT NOT NULL, ds DATE NOT NULL,
   cost NUMERIC, exposure BIGINT, click BIGINT,
   conversion BIGINT, real_conversion BIGINT,
   real_cpa NUMERIC, cash_cost NUMERIC, cash_cpa NUMERIC, cost_space NUMERIC, gap NUMERIC,
@@ -84,26 +88,34 @@ CREATE TABLE account_metrics_daily (   -- canonical：一户一日一行
   field_sources JSONB,                 -- 每字段来源（offline/realtime/gap_filled）
   data_anomaly BOOLEAN DEFAULT false,
   computed_at TIMESTAMPTZ DEFAULT now(),
-  PRIMARY KEY (workspace_id, account_id, ds)   -- P-001#3 裁决：媒体ID非全局唯一，租户键入主键
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
+  PRIMARY KEY (workspace_id, media, account_id, ds)
 ) PARTITION BY RANGE (ds);
 CREATE TABLE ad_metrics_hourly (       -- 小时级（保留 90 天→日级 rollup）
   workspace_id UUID NOT NULL,
-  ad_id TEXT NOT NULL, account_id TEXT NOT NULL, ds DATE NOT NULL, hh SMALLINT NOT NULL,
+  media TEXT NOT NULL, ad_id TEXT NOT NULL, account_id TEXT NOT NULL, ds DATE NOT NULL, hh SMALLINT NOT NULL,
   cost NUMERIC, exposure BIGINT, click BIGINT, conversion BIGINT, real_conversion BIGINT,
   bid NUMERIC, budget NUMERIC,
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   PRIMARY KEY (workspace_id, ad_id, ds, hh)    -- P-001#3 裁决：同上
 ) PARTITION BY RANGE (ds);
 CREATE TABLE ad_entities (             -- 账户结构（经 agent 同步，强类型层级）
   entity_id TEXT NOT NULL, workspace_id UUID NOT NULL,
-  account_id TEXT NOT NULL,
+  media TEXT NOT NULL, account_id TEXT NOT NULL,
   entity_type TEXT NOT NULL,           -- campaign|unit|creative
   parent_id TEXT, name TEXT, status TEXT, put_status TEXT,
   bid NUMERIC, cpa_bid NUMERIC, day_budget NUMERIC, schedule_time TEXT,  -- 168位串
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   synced_at TIMESTAMPTZ, PRIMARY KEY (workspace_id, entity_id, entity_type)
 );
 CREATE TABLE account_balance (
-  account_id TEXT NOT NULL, workspace_id UUID NOT NULL,
-  PRIMARY KEY (workspace_id, account_id),
+  account_id TEXT NOT NULL, media TEXT NOT NULL, workspace_id UUID NOT NULL,
+  PRIMARY KEY (workspace_id, media, account_id),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   balance NUMERIC, recharge_balance NUMERIC,
   contract_rebate NUMERIC, direct_rebate NUMERIC, synced_at TIMESTAMPTZ
 );
@@ -112,7 +124,10 @@ CREATE TABLE account_balance (
 CREATE TABLE work_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
   type TEXT NOT NULL,                  -- diagnosis|dispatch|self|agent_question|external_handled
-  account_id TEXT, task_id TEXT, rule_id BIGINT,
+  media TEXT, account_id TEXT, task_id TEXT, rule_id BIGINT,
+  CHECK ((account_id IS NULL) = (media IS NULL)),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   severity TEXT,                       -- P0|P1|P2|opportunity
   title TEXT NOT NULL,
   evidence_snapshot JSONB,             -- 证据快照（带 snapshot_at）
@@ -125,7 +140,10 @@ CREATE TABLE work_items (
 );
 CREATE TABLE changesets (              -- header
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
-  work_item_id UUID, title TEXT,
+  work_item_id UUID, media TEXT, account_id TEXT, title TEXT,
+  CHECK ((account_id IS NULL) = (media IS NULL)),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   status TEXT DEFAULT 'draft',         -- draft|confirmed|sent|executing|success|partial|failed|unknown|expired|rolled_back
   initiator UUID NOT NULL,
   credential_owner_user_id UUID NOT NULL,   -- 后台归属闭环：重试永远用此凭证
@@ -201,7 +219,8 @@ CREATE TABLE jobs (                    -- job/outbox：Worker 消费，DB lease 
                                        -- (3) 纯系统任务无账户归属（全局 rule_scan/data_quality_check）→ NULL（Worker 用服务账号只读凭证，demo 期老板 PAT/正式期 mcn_ 身份）
                                        -- 重试永远用原 job 的此凭证，不换人
   status TEXT DEFAULT 'queued',        -- queued|leased|running|done|failed|blocked_auth
-  lease_until TIMESTAMPTZ, attempts INT DEFAULT 0, max_attempts INT DEFAULT 3,
+  lease_until TIMESTAMPTZ, lease_token UUID, -- 每次领取重生成；所有状态迁移用其 fencing
+  attempts INT DEFAULT 0, max_attempts INT DEFAULT 3,
   last_error TEXT, run_after TIMESTAMPTZ DEFAULT now(),
   created_at TIMESTAMPTZ DEFAULT now(), finished_at TIMESTAMPTZ
 );

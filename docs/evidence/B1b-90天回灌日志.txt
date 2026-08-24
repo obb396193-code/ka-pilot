@@ -1,0 +1,17 @@
+B1b PostgreSQL smoke evidence
+Generated: 2026-08-19
+Data classification: synthetic fixture only; no real account IDs, names, spend or assessment prices.
+Command: packages/db/node_modules/.bin/tsx scripts/b1b-90d-smoke.ts
+
+[fixture] synthetic raw rows=900 accounts=10 days=90
+[queue] canonical jobs=90 quality jobs=deterministic downstream
+[worker] processed=30/180
+[worker] processed=60/180
+[worker] processed=90/180
+[worker] processed=120/180
+[worker] processed=150/180
+[worker] processed=180/180
+[result] canonical=900 quality=270 passed=270/270
+[result] jobs_failed=0 etl_runs_done=180 outbound=0
+[result] backfill=done cursor=2026-08-18
+B1b 10-account x 90-day PostgreSQL smoke: PASS
