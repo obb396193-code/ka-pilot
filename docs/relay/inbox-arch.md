@@ -1465,3 +1465,48 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - worktree 与 canonical private 原文 hash 一致；private 命中 `.gitignore` 且未被 Git 跟踪；`git diff --check` 通过。
 - 新 worktree 未复制既有 0005/0007/0008/0009 完整大包，因此本轮没有重跑依赖全部历史 private bundle 的全库 repository validator；既有 0001~0009 未修改。本轮对 0010 做了定向 hash/凭证/权限/状态校验。
 - 未访问内部服务、未申请或读取 reader token、未运行 SQL、未修改冻结 PRD/Contract/生产代码。
+
+### P-KB-012 ka-src-0010 账户 ID 假设 R1 纠错回执｜research/knowledge（Codex）
+
+- 派活方：资料研究与知识资产 Agent（Codex）
+- 日期：2026-08-24
+- 状态：待处理
+- 分支：`codex/shared-source-library`
+- 独立 worktree：`/private/tmp/codex-research-kb3`
+- 基线：`3933a1c`
+- 功能提交 SHA：`eb10676`
+- 修改边界：只纠正 `ka-src-0010` 的账户 ID 假设及其评估、检索、审查说明和回归断言；未扩展资料、未修改原文/catalog/冻结 PRD/Contract/生产代码、未发布产品知识库。
+
+#### 1. 已批准并写入知识资产层的纠正事实
+
+- KA 与平台使用相同的 `account_id`。
+- 账户联合键固定为 `(workspace_id, media, account_id)`。
+- 不建立账户 ID 双命名空间映射表。
+- 旧资料/旧评估中的“账户双 namespace”只能作为已被实证否定的历史来源主张保留，不能再作为产品事实、待补能力或架构候选。
+
+#### 2. 没有被本结论覆盖的事项
+
+- `task_id/product_id/material_id/adgroup_id` 等其他对象 ID 是否一致仍为 `unresolved`，必须逐对象取证，不能从账户结论顺推。
+- P-KB-011 的服务 owner、ACL、底层只读性、数据血缘、公式、数据许可、同日同户对平和 adapter 分期等问题仍待 arch/security/data owner 裁决。
+- 10 条 catalog 均继续为 `review_pending` + `pending` + `not_ready`；本回执不代表任何 source owner、业务、安全或架构批准。
+
+#### 3. 本次进入 Git 与未变内容
+
+- 进入 Git：`docs/decisions/2026-08-24-账户ID统一键纠错.md`、`docs/knowledge/assessments/ka-src-0010.md`、`docs/knowledge/agent-retrieval-guide.md`、P-KB-011 纠正标注及回归断言。
+- 未变：`docs/knowledge/catalog.jsonl`、`private/knowledge-sources/ka-src-0010/source.txt`、冻结 PRD/Contract、前后端生产代码。
+- 原文 `storage_ref` 仍为 `private/knowledge-sources/ka-src-0010/source.txt`，SHA-256 仍为 `7c7265c29cfa31d6bd4c22650f198a4405cb1f0e076c007297205bbe8bef43d2`。
+
+#### 4. 验证结果
+
+- `node --test scripts/validate-knowledge-catalog.test.mjs`：18/18 通过，新增账户联合键、禁止账户映射表和其他对象未决的回归断言。
+- `node scripts/validate-knowledge-catalog.mjs`：全库通过；本次已把 canonical private 资料复制到 ignored worktree 私有区后复核全部 bundle/hash。
+- catalog 全量状态断言：全部 `review_pending/pending/not_ready`。
+- canonical 与 worktree 的 `ka-src-0010` 原文 hash 一致；原文和评估凭证形态均为 0。
+- `private/knowledge-sources/` 命中 `.gitignore`，Git 跟踪文件数为 0；`git diff --check` 通过。
+
+#### 5. 请 arch 回写 ✅/❌
+
+1. 是否接受本 R1 纠错，确认 P-KB-011 中所有账户双命名空间/映射需求永久作废？
+2. 是否同意只把 `task/product/material/adgroup` 等其他对象 ID 保留为逐项补证问题，不预建通用映射层？
+3. 是否要求对应 PRD/Contract owner 在独立批次检查并纠正同类历史表述？本 Agent 不越权修改冻结文件。
+4. `ka-src-0010` 继续不得发布产品知识库；是否维持 `review_pending/not_ready` 并等待 P-KB-011 其余证据？
