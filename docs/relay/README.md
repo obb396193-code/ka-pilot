@@ -38,8 +38,9 @@
 
 | 角色 | 可做 | 禁止 |
 |---|---|---|
-| root Codex | 计划、台账、集成、逐项审计和 Claude 交接 | 默认相信其他 Agent 汇报；覆盖他人脏工作树 |
+| root Codex | 项目控制、Contract 冻结、计划、台账、集成、逐项审计、部署门和 Claude 后续交接 | 默认相信其他 Agent 汇报；覆盖他人脏工作树；替老板决定重大产品取舍 |
 | review-codex | 只读审查并回传文本 | 改共享文件、提交代码、冒充 Claude/arch 终审 |
+| be-codex | 只在独立后端实现分支完成已冻结 Contract、Domain、DB、Worker 与测试 | 修改前端；绕过 Contract；把单测称为真实联调；开放未确认写操作 |
 | fe-codex | 只在独立 `codex/fe-vertical-slice` worktree 修改前端候选 | 触碰当前 `fe/f001`；改后端 Contract；宣称完整前端 |
-| Claude/arch | 最终契约和架构复审 | 未实读文件即沿用临时 Agent 结论 |
+| Claude/arch | 后续契约和架构复审 | 未实读文件即沿用临时 Agent 结论；阻塞已通过当前门禁的实现和内网部署 |
 | Claude/fe | 最终前端复审、保留/修改/重做 | 把临时 Codex 视觉当成已拍板正式皮肤 |
