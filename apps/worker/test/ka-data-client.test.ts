@@ -125,6 +125,33 @@ describe("KaDataClient", () => {
     });
   });
 
+  it("does not call an empty aggregate complete when an authorized account is missing", async () => {
+    const client = new KaDataClient({
+      baseUrl: "https://ka-data.example.internal",
+      token: "fixture-token",
+      fetchFn: async () => jsonResponse({
+        backend: "sqlite",
+        rowCount: 1,
+        rows: [{ ...kaSummary(0), row_count: 0, account_count: 0 }],
+      }),
+    });
+    const result = await client.query(resolvedSummary(), {
+      workspaceId: "w",
+      userId: "u",
+      accounts: [{ media: "KUAISHOU", accountId: "missing-account" }],
+    });
+    expect(result.lineage).toMatchObject({
+      coverage: {
+        complete: false,
+        requestedObjects: 1,
+        returnedObjects: 0,
+        reason: expect.stringMatching(/account scope/i),
+      },
+      partial: true,
+    });
+    expect(result.wholeResultTotal).toMatchObject({ value: null, availability: "partial" });
+  });
+
   it("rejects any production access mode other than the frozen shared reader mode", () => {
     expect(() => createKaDataClientFromEnv({
       KA_DATA_BASE_URL: "https://ka-data.example.internal",

@@ -85,8 +85,8 @@ KA Data 的 `snake_case` 与 Platform 的 repository DTO 均只能留在 Adapter
 Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本不匹配，整次来源响应按
 `UPSTREAM_INVALID_RESPONSE` fail closed。
 
-`datasetVersion/dataAsOf/timezone/dayCut` 只允许来自上游响应、canonical 持久化记录或
-显式部署配置。来源未提供时必须返回 `null`，并以
+`datasetVersion/dataAsOf/timezone/dayCut` 只允许来自上游响应或 canonical 持久化/查询
+元数据。尤其 Platform 的 `timezone/dayCut` 不得由代码常量或部署默认值推断。来源未提供时必须返回 `null`，并以
 `metadataAvailability=unknown|partial` 表达，不得用接口响应时间或固定占位字符串冒充。
 
 ### 内部 HTTP composition
@@ -119,6 +119,9 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
   才标 `partial/truncated`。上游 `truncated=true`、`limit_clamped=true`、行数不一致
   或超过 Registry budget 始终标 `partial/truncated`。
 - `partial/truncated/coverage.complete=false` 时，`wholeResultTotal` 不得为 `available`，不得输出全量汇总。
+- 授权账户 scope 非空、但聚合行报告 `accountCount=0` 或返回对象数少于请求对象数时，
+  `coverage.complete` 必须为 `false`，并明确 requested/returned objects；只有认证 scope
+  本身为空时，空响应才可声明“对该空范围完整”。聚合结果行数不得冒充账户对象数。
 - 账户单侧缺行用 `source_missing`；不得仅按账户名称 join，不得把任务/商品/素材/广告组的 ID 同源性从账户事实外推。
 
 ### 稳定错误 envelope

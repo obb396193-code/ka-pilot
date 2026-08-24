@@ -91,6 +91,8 @@ describe("PlatformDataSource", () => {
         dataAsOf: "2026-08-24T07:59:00.000Z",
         datasetVersion: null,
         metadataAvailability: "partial",
+        timezone: null,
+        dayCut: null,
       },
     });
   });

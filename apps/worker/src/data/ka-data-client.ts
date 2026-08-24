@@ -105,7 +105,20 @@ function authorityFor(resolved: ResolvedDataQuery): SourceAuthority {
   };
 }
 
-function accountCount(rows: readonly Record<string, unknown>[]): number {
+function accountCount(
+  queryId: ResolvedDataQuery["queryId"],
+  rows: readonly Record<string, unknown>[],
+): number {
+  if (queryId === "account.summary") {
+    return finiteAccountCount(rows[0]?.accountCount);
+  }
+  if (queryId === "account.trend") {
+    return rows.reduce((maximum, row) => {
+      const nested = row.metrics;
+      if (typeof nested !== "object" || nested === null || Array.isArray(nested)) return maximum;
+      return Math.max(maximum, finiteAccountCount((nested as Record<string, unknown>).accountCount));
+    }, 0);
+  }
   return new Set(
     rows
       .map((row) => {
@@ -117,6 +130,10 @@ function accountCount(rows: readonly Record<string, unknown>[]): number {
       })
       .filter((value): value is string => value !== null),
   ).size;
+}
+
+function finiteAccountCount(value: unknown): number {
+  return typeof value === "number" && Number.isInteger(value) && value >= 0 ? value : 0;
 }
 
 interface BoundedBody {
@@ -188,6 +205,7 @@ function sourceLineage(
     dayCut: string | null;
   },
   envelope: z.infer<typeof kaDataEnvelopeSchema>,
+  returnedObjects: number,
   partial: boolean,
   reason: string | undefined,
 ): SourceLineage {
@@ -217,7 +235,7 @@ function sourceLineage(
       complete: !partial,
       ...(reason === undefined ? {} : { reason }),
       requestedObjects: scope.accounts.length,
-      returnedObjects: accountCount(envelope.rows),
+      returnedObjects,
     },
     truncated: partial,
     partial,
@@ -312,8 +330,15 @@ export class KaDataClient {
       if (envelope.limit_clamped) warnings.push("KA Data clamped the requested row limit");
       if (envelope.rowCount !== envelope.rows.length) warnings.push("KA Data row count did not match returned rows");
       if (envelope.rows.length > resolved.maxRows) warnings.push("Response exceeded the registry row budget");
-      const partial = envelope.truncated || envelope.limit_clamped || suspectedRowBoundary ||
+      const transportPartial = envelope.truncated || envelope.limit_clamped || suspectedRowBoundary ||
         body.exactLimit || envelope.rowCount !== envelope.rows.length || envelope.rows.length > resolved.maxRows;
+      const returnedObjects = accountCount(resolved.queryId, envelope.rows);
+      const objectCoverageIncomplete = scope.accounts.length > 0 &&
+        returnedObjects < scope.accounts.length;
+      if (objectCoverageIncomplete) {
+        warnings.push("Requested account scope is not fully represented by source rows");
+      }
+      const partial = transportPartial || objectCoverageIncomplete;
       const reason = partial ? warnings.join("; ") : undefined;
       const wholeResultTotal = partial
         ? { value: null, availability: "partial" as const, reason: "Whole-result total withheld" }
@@ -332,6 +357,7 @@ export class KaDataClient {
           scope,
           this.#configuredMetadata,
           envelope,
+          returnedObjects,
           partial,
           reason,
         ),

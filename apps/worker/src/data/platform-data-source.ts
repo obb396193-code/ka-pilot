@@ -20,8 +20,6 @@ import {
 } from "./canonical-query-rows.js";
 
 const PLATFORM_SOURCE_REQUEST_ID = "platform-source";
-const CANONICAL_TIMEZONE = "Asia/Shanghai";
-const CANONICAL_DAY_CUT = "calendar_day";
 
 export interface PlatformQueryRepository {
   querySummary: SemanticQueryRepository["querySummary"];
@@ -93,8 +91,8 @@ function sourceLineage(
   const sourceMetadata = {
     datasetVersion,
     dataAsOf: lineage.dataAsOf,
-    timezone: CANONICAL_TIMEZONE,
-    dayCut: CANONICAL_DAY_CUT,
+    timezone: null,
+    dayCut: null,
   };
   return {
     source: "canonical",
