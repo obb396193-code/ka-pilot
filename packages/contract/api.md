@@ -207,6 +207,8 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
 from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因码和执行时间。
 它使用与工作项详情相同的 tuple 授权和稳定错误 envelope。
 本批未挂载 `POST create/dry-run/confirm/execute/rollback`，任何对详情路由的非 GET 请求返回 405。
+工作项与变更集详情和 data query 共用后端响应体上限；序列化正文大于或恰好命中
+16MB 边界时均 fail closed，返回 502 + `SOURCE_TRUNCATED`，不发送部分详情。
 
 ## 账户与结构
 

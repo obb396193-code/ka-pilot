@@ -479,6 +479,100 @@ describe("data API HTTP composition", () => {
     expect(write.status).toBe(405);
   });
 
+  it("fails closed when a work-item detail exactly reaches the response limit", async () => {
+    const id = "00000000-0000-4000-8000-000000000205";
+    const detailService = new ReadDetailService({
+      workItems: {
+        find: async () => ({
+          id,
+          workspaceId: auth.workspaceId,
+          type: "diagnosis",
+          media: "KUAISHOU",
+          accountId: "account-1",
+          taskId: null,
+          ruleId: null,
+          severity: "P1",
+          title: "oversized evidence",
+          evidenceSnapshot: { payload: "x".repeat(2048) },
+          diagnosis: null,
+          status: "open",
+          ignoreReason: null,
+          mutedUntil: null,
+          assignee: null,
+          creator: null,
+          acceptanceCriteria: null,
+          slaDue: null,
+          rejectReason: null,
+          t1Result: null,
+          createdAt: new Date("2026-08-25T01:00:00Z"),
+          resolvedAt: null,
+        }),
+      },
+      changeSets: { find: async () => null },
+    });
+    const canonical = await detailService.getWorkItem(id, auth, "size-probe");
+    const exactBytes = Buffer.byteLength(JSON.stringify(canonical));
+    const baseUrl = await start({ detailService, maxResponseBytes: exactBytes });
+
+    const response = await fetch(`${baseUrl}/api/v1/work-items/${id}`, {
+      headers: authHeaders(),
+    });
+    expect(response.status).toBe(502);
+    expect(await response.json()).toMatchObject({
+      ok: false,
+      error: { code: "SOURCE_TRUNCATED" },
+    });
+  });
+
+  it("fails closed when a changeset detail exactly reaches the response limit", async () => {
+    const id = "00000000-0000-4000-8000-000000000206";
+    const detailService = new ReadDetailService({
+      workItems: { find: async () => null },
+      changeSets: {
+        find: async () => ({
+          id,
+          workspaceId: auth.workspaceId,
+          media: "KUAISHOU",
+          accountId: "account-1",
+          workItemId: null,
+          title: "oversized changeset",
+          status: "draft",
+          initiator: "00000000-0000-4000-8000-000000000207",
+          credentialOwnerUserId: "00000000-0000-4000-8000-000000000207",
+          executorIdentity: null,
+          multicaIssueId: null,
+          ttlExpireAt: null,
+          reasonCode: null,
+          simulation: { payload: "x".repeat(2048) },
+          createdAt: new Date("2026-08-25T01:00:00Z"),
+          executedAt: null,
+          items: [{
+            id: 1,
+            targetType: "unit",
+            targetId: "unit-1",
+            field: "bid",
+            fromValue: "30",
+            toValue: "27",
+            itemStatus: "pending",
+            failReason: null,
+          }],
+        }),
+      },
+    });
+    const canonical = await detailService.getChangeSet(id, auth, "size-probe");
+    const exactBytes = Buffer.byteLength(JSON.stringify(canonical));
+    const baseUrl = await start({ detailService, maxResponseBytes: exactBytes });
+
+    const response = await fetch(`${baseUrl}/api/v1/changesets/${id}`, {
+      headers: authHeaders(),
+    });
+    expect(response.status).toBe(502);
+    expect(await response.json()).toMatchObject({
+      ok: false,
+      error: { code: "SOURCE_TRUNCATED" },
+    });
+  });
+
   it("fails closed with a stable truncated envelope when serialized output exceeds 16MB policy", async () => {
     const baseUrl = await start({ maxResponseBytes: 256 });
     const response = await fetch(`${baseUrl}/api/v1/data/query`, {

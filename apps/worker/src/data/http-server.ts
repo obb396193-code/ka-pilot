@@ -124,7 +124,7 @@ function errorBody(
 }
 
 function detailErrorBody(
-  code: "INVALID_REQUEST" | "UNAUTHORIZED" | "FORBIDDEN" | "INTERNAL_ERROR",
+  code: "INVALID_REQUEST" | "UNAUTHORIZED" | "FORBIDDEN" | "SOURCE_TRUNCATED" | "INTERNAL_ERROR",
   message: string,
   requestId: string,
 ): ReadDetailResponse {
@@ -139,6 +139,7 @@ function detailStatus(result: ReadDetailResponse): number {
   if (result.error.code === "UNAUTHORIZED") return 401;
   if (result.error.code === "FORBIDDEN") return 403;
   if (result.error.code === "NOT_FOUND") return 404;
+  if (result.error.code === "SOURCE_TRUNCATED") return 502;
   if (result.error.code === "INVALID_REQUEST") return 400;
   return 500;
 }
@@ -158,6 +159,22 @@ function sendJson(
     [REQUEST_ID_HEADER]: requestId,
   });
   response.end(body);
+}
+
+function sendBoundedJson(
+  response: ServerResponse,
+  status: number,
+  payload: unknown,
+  requestId: string,
+  maxBytes: number,
+  limitError: () => unknown,
+): void {
+  const serialized = JSON.stringify(payload);
+  if (Buffer.byteLength(serialized) >= maxBytes) {
+    sendJson(response, 502, limitError(), requestId);
+    return;
+  }
+  sendJson(response, status, payload, requestId);
 }
 
 export function createDataApiServer(options: DataApiServerOptions): Server {
@@ -242,7 +259,18 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
               authentication.auth,
               requestId,
             );
-        sendJson(response, detailStatus(result), result, requestId);
+        sendBoundedJson(
+          response,
+          detailStatus(result),
+          result,
+          requestId,
+          maxResponseBytes,
+          () => detailErrorBody(
+            "SOURCE_TRUNCATED",
+            "Detail response reached the configured body limit",
+            requestId,
+          ),
+        );
         return;
       }
       if ((request.method ?? "").toUpperCase() !== "POST") {
@@ -262,21 +290,18 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         auth: authentication.auth,
         requestId,
       });
-      const serialized = JSON.stringify(result.body);
-      if (Buffer.byteLength(serialized) > maxResponseBytes) {
-        sendJson(
-          response,
-          502,
-          errorBody(
+      sendBoundedJson(
+        response,
+        result.status,
+        result.body,
+        requestId,
+        maxResponseBytes,
+        () => errorBody(
             "SOURCE_TRUNCATED",
-            "Data response exceeded the configured body limit",
+            "Data response reached the configured body limit",
             requestId,
           ),
-          requestId,
-        );
-        return;
-      }
-      sendJson(response, result.status, result.body, requestId);
+      );
     } catch (error) {
       if (error instanceof HttpInputError) {
         sendJson(

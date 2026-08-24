@@ -72,6 +72,7 @@ export const readDetailErrorCodeSchema = z.enum([
   "UNAUTHORIZED",
   "FORBIDDEN",
   "NOT_FOUND",
+  "SOURCE_TRUNCATED",
   "INTERNAL_ERROR",
 ]);
 
