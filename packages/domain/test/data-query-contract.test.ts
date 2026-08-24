@@ -17,6 +17,7 @@ const lineage = {
   dataAsOf: "2026-08-24T08:00:00.000Z",
   timezone: "Asia/Shanghai",
   dayCut: "calendar_day",
+  metadataAvailability: "known",
   authority: {
     policyVersion: "2026-08-24",
     useCase: "cross_media_operations",
@@ -73,6 +74,42 @@ describe("dual data query contract", () => {
       lineage: { ...lineage, coverage: { complete: false }, partial: true, truncated: true },
       warnings: ["suspected truncation"],
     })).toThrow(/wholeResultTotal/i);
+  });
+
+  it("represents unavailable source lineage as unknown instead of fabricating freshness", () => {
+    const parsed = sourceQueryResultSchema.parse({
+      status: "unavailable",
+      rows: [],
+      returnedRowCount: 0,
+      wholeResultTotal: { value: null, availability: "error", reason: "SOURCE_UNAVAILABLE" },
+      lineage: {
+        ...lineage,
+        datasetVersion: null,
+        dataAsOf: null,
+        timezone: null,
+        dayCut: null,
+        metadataAvailability: "unknown",
+        coverage: { complete: false, reason: "Source unavailable" },
+        partial: true,
+      },
+      warnings: ["Source unavailable"],
+      error: {
+        code: "SOURCE_UNAVAILABLE",
+        message: "Source unavailable",
+        retryable: true,
+        requestId: "request-fixture",
+      },
+    });
+
+    expect(parsed.lineage.dataAsOf).toBeNull();
+    expect(parsed.lineage.metadataAvailability).toBe("unknown");
+    expect(() => sourceQueryResultSchema.parse({
+      ...parsed,
+      lineage: {
+        ...parsed.lineage,
+        dataAsOf: "2026-08-24T08:00:00.000Z",
+      },
+    })).toThrow(/unknown lineage/i);
   });
 
   it("requires frozen source-authority metadata instead of an adapter-selected priority", () => {

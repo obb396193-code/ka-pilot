@@ -41,7 +41,13 @@ export interface DataQueryServiceDependencies {
   kaData: DataSourceQueryPort;
   platform: DataSourceQueryPort;
   requestId?: () => string;
-  now?: () => Date;
+}
+
+class OutputScopeError extends Error {
+  constructor() {
+    super("Data source returned rows outside the authenticated scope");
+    this.name = "OutputScopeError";
+  }
 }
 
 function authorityRole(
@@ -67,9 +73,13 @@ function withFrozenAuthority(
   result: SourceQueryResult,
   resolved: ResolvedDataQuery,
   source: "ka_data" | "platform",
+  requestId: string,
 ): SourceQueryResult {
   return {
     ...result,
+    ...(result.error === undefined
+      ? {}
+      : { error: { ...result.error, requestId } }),
     lineage: {
       ...result.lineage,
       authority: authorityMetadata(resolved, source),
@@ -93,22 +103,30 @@ function mapError(error: unknown, requestId: string): StableDataQueryError {
   if (error instanceof KaDataClientError) {
     return stableError(error.code, error.message, error.retryable, requestId);
   }
+  if (error instanceof OutputScopeError) {
+    return stableError(
+      "FORBIDDEN",
+      "Data source returned rows outside the authenticated scope",
+      false,
+      requestId,
+    );
+  }
   return stableError("INTERNAL_ERROR", "The data query could not be completed", false, requestId);
 }
 
 function unavailableLineage(
   resolved: ResolvedDataQuery,
   source: "ka_data" | "platform",
-  now: Date,
 ): SourceLineage {
   return {
     source: source === "ka_data" ? "ka_data" : "canonical",
-    datasetVersion: "unavailable",
+    datasetVersion: null,
     queryTemplateVersion: resolved.queryTemplateVersion,
     metricVersion: resolved.metricVersion,
-    dataAsOf: now.toISOString(),
-    timezone: "Asia/Shanghai",
-    dayCut: source === "ka_data" ? "calendar_day" : "platform_versioned",
+    dataAsOf: null,
+    timezone: null,
+    dayCut: null,
+    metadataAvailability: "unknown",
     authority: authorityMetadata(resolved, source),
     objectIdentity: {
       objectType: "account",
@@ -124,16 +142,80 @@ function unavailableSource(
   resolved: ResolvedDataQuery,
   source: "ka_data" | "platform",
   error: StableDataQueryError,
-  now: Date,
 ): SourceQueryResult {
   return {
     status: "unavailable",
     rows: [],
     returnedRowCount: 0,
     wholeResultTotal: { value: null, availability: "error", reason: error.code },
-    lineage: unavailableLineage(resolved, source, now),
+    lineage: unavailableLineage(resolved, source),
     warnings: [error.message],
     error,
+  };
+}
+
+function rowAccountIdentity(row: Record<string, unknown>): {
+  workspaceId: string | null;
+  media: string | null;
+  accountId: string | null;
+} {
+  const workspace = row.workspace_id ?? row.workspaceId;
+  const media = row.media;
+  const account = row.account_id ?? row.accountId;
+  return {
+    workspaceId: typeof workspace === "string" ? workspace : null,
+    media: typeof media === "string" ? media : null,
+    accountId: typeof account === "string" || typeof account === "number"
+      ? String(account)
+      : null,
+  };
+}
+
+function guardSourceOutput(
+  result: SourceQueryResult,
+  resolved: ResolvedDataQuery,
+  scope: DataQueryExecutionScope,
+): SourceQueryResult {
+  if (result.status === "unavailable") return result;
+  const allowed = new Set(
+    scope.accounts.map((account) => `${account.media}\u0000${account.accountId}`),
+  );
+  for (const row of result.rows) {
+    const identity = rowAccountIdentity(row);
+    const carriesIdentity = identity.media !== null || identity.accountId !== null;
+    if (resolved.outputShape === "account_rows" &&
+      (identity.media === null || identity.accountId === null)) {
+      throw new OutputScopeError();
+    }
+    if (identity.workspaceId !== null && identity.workspaceId !== scope.workspaceId) {
+      throw new OutputScopeError();
+    }
+    if (carriesIdentity && (
+      identity.media === null ||
+      identity.accountId === null ||
+      !allowed.has(`${identity.media}\u0000${identity.accountId}`)
+    )) {
+      throw new OutputScopeError();
+    }
+  }
+  if (result.rows.length <= resolved.maxRows) return result;
+  const rows = result.rows.slice(0, resolved.maxRows);
+  return {
+    ...result,
+    rows,
+    returnedRowCount: rows.length,
+    wholeResultTotal: {
+      value: null,
+      availability: "partial",
+      reason: "Result exceeded the registry row budget",
+    },
+    lineage: {
+      ...result.lineage,
+      coverage: { ...result.lineage.coverage, complete: false, reason: "Registry row budget exceeded" },
+      truncated: true,
+      partial: true,
+    },
+    warnings: [...result.warnings, "Result exceeded the registry row budget"],
   };
 }
 
@@ -183,11 +265,9 @@ function validateAuth(auth: AuthenticatedDataQueryContext): void {
 
 export class DataQueryService {
   private readonly requestId: () => string;
-  private readonly now: () => Date;
 
   constructor(private readonly dependencies: DataQueryServiceDependencies) {
     this.requestId = dependencies.requestId ?? randomUUID;
-    this.now = dependencies.now ?? (() => new Date());
   }
 
   async execute(
@@ -229,17 +309,19 @@ export class DataQueryService {
 
       if (request.data.dataView === "ka_data") {
         const source = withFrozenAuthority(
-          await this.dependencies.kaData.query(resolved, scope),
+          guardSourceOutput(await this.dependencies.kaData.query(resolved, scope), resolved, scope),
           resolved,
           "ka_data",
+          requestId,
         );
         return dataQueryResponseSchema.parse({ ok: true, data: { mode: "ka_data", source } });
       }
       if (request.data.dataView === "platform") {
         const source = withFrozenAuthority(
-          await this.dependencies.platform.query(resolved, scope),
+          guardSourceOutput(await this.dependencies.platform.query(resolved, scope), resolved, scope),
           resolved,
           "platform",
+          requestId,
         );
         return dataQueryResponseSchema.parse({ ok: true, data: { mode: "platform", source } });
       }
@@ -249,11 +331,21 @@ export class DataQueryService {
         this.dependencies.platform.query(resolved, scope),
       ]);
       const kaData = kaResult.status === "fulfilled"
-        ? withFrozenAuthority(kaResult.value, resolved, "ka_data")
-        : unavailableSource(resolved, "ka_data", mapError(kaResult.reason, requestId), this.now());
+        ? withFrozenAuthority(
+            guardSourceOutput(kaResult.value, resolved, scope),
+            resolved,
+            "ka_data",
+            requestId,
+          )
+        : unavailableSource(resolved, "ka_data", mapError(kaResult.reason, requestId));
       const platform = platformResult.status === "fulfilled"
-        ? withFrozenAuthority(platformResult.value, resolved, "platform")
-        : unavailableSource(resolved, "platform", mapError(platformResult.reason, requestId), this.now());
+        ? withFrozenAuthority(
+            guardSourceOutput(platformResult.value, resolved, scope),
+            resolved,
+            "platform",
+            requestId,
+          )
+        : unavailableSource(resolved, "platform", mapError(platformResult.reason, requestId));
       const comparisonReason = kaData.status === "unavailable" || platform.status === "unavailable"
         ? "source_unavailable"
         : kaData.lineage.partial || platform.lineage.partial

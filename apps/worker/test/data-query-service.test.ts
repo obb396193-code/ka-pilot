@@ -11,7 +11,7 @@ import { createDataQueryRegistry } from "../src/data/query-registry.js";
 function ready(source: "ka_data" | "canonical", value: number): SourceQueryResult {
   return {
     status: "ready",
-    rows: [{ accountId: "allowed-account", cost: value }],
+    rows: [{ media: "KUAISHOU", accountId: "allowed-account", cost: value }],
     returnedRowCount: 1,
     wholeResultTotal: { value: 1, availability: "available" },
     lineage: {
@@ -22,6 +22,7 @@ function ready(source: "ka_data" | "canonical", value: number): SourceQueryResul
       dataAsOf: "2026-08-24T08:00:00.000Z",
       timezone: "Asia/Shanghai",
       dayCut: "calendar_day",
+      metadataAvailability: "known",
       authority: {
         policyVersion: "2026-08-24",
         useCase: "cross_media_operations",
@@ -92,6 +93,56 @@ describe("DataQueryService", () => {
     expect(response).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
   });
 
+  it("rejects account rows returned outside the authenticated scope", async () => {
+    const malicious = ready("canonical", 11);
+    malicious.rows = [{
+      workspaceId: auth.workspaceId,
+      media: "KUAISHOU",
+      accountId: "forged-account",
+      cost: 11,
+    }];
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => ready("ka_data", 10) },
+      platform: { query: async () => malicious },
+      requestId: () => "scope-guard-request",
+    });
+
+    const response = await service.execute({
+      queryId: "account.table",
+      params: { date: "2026-08-24" },
+      dataView: "platform",
+    }, auth);
+
+    expect(response).toEqual({
+      ok: false,
+      error: {
+        code: "FORBIDDEN",
+        message: "Data source returned rows outside the authenticated scope",
+        retryable: false,
+        requestId: "scope-guard-request",
+      },
+    });
+    expect(JSON.stringify(response)).not.toContain("forged-account");
+  });
+
+  it("requires account identity fields for account-row queries", async () => {
+    const malformed = ready("canonical", 11);
+    malformed.rows = [{ cost: 11 }];
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => ready("ka_data", 10) },
+      platform: { query: async () => malformed },
+      requestId: () => "missing-scope-request",
+    });
+    const response = await service.execute({
+      queryId: "account.detail",
+      params: { date: "2026-08-24", accountId: "allowed-account" },
+      dataView: "platform",
+    }, auth);
+    expect(response).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+  });
+
   it("rejects forged identity fields before adapters run", async () => {
     const kaData = { query: vi.fn(async () => ready("ka_data", 10)) };
     const service = new DataQueryService({
@@ -157,7 +208,6 @@ describe("DataQueryService", () => {
       kaData: { query: async () => { throw new Error("fixture unavailable"); } },
       platform: { query: async () => ready("canonical", 11) },
       requestId: () => "fixture-request",
-      now: () => new Date("2026-08-24T08:00:00.000Z"),
     });
 
     const response = await service.execute({
@@ -169,6 +219,13 @@ describe("DataQueryService", () => {
     expect(response.ok).toBe(true);
     if (response.ok && response.data.mode === "reconcile") {
       expect(response.data.kaData.status).toBe("unavailable");
+      expect(response.data.kaData.lineage).toMatchObject({
+        metadataAvailability: "unknown",
+        datasetVersion: null,
+        dataAsOf: null,
+        timezone: null,
+        dayCut: null,
+      });
       expect(response.data.platform.status).toBe("ready");
       expect(response.data.comparison.reason).toBe("source_unavailable");
       expect(JSON.stringify(response.data)).not.toMatch(/OBJECT_(?:UNMAPPED|MAPPING)/);

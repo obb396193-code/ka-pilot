@@ -14,6 +14,7 @@ const accountIdSchema = z.string().min(1).max(128).regex(/^[A-Za-z0-9_-]+$/);
 const mediaSchema = z.string().min(1).max(32).regex(/^[A-Z0-9_]+$/);
 
 export type AccountScope = "optional_many" | "required_one";
+export type QueryOutputShape = "aggregate" | "account_rows";
 export type AuthorityDefaultSource = "ka_data" | "platform" | "source_versioned";
 
 export interface QueryAuthorityPolicy {
@@ -52,6 +53,7 @@ export interface ResolvedDataQuery {
   readonly maxDateSpanDays: number;
   readonly maxRows: number;
   readonly accountScope: AccountScope;
+  readonly outputShape: QueryOutputShape;
   readonly queryTemplateVersion: string;
   readonly metricVersion: string;
   readonly authorityPolicy: QueryAuthorityPolicy;
@@ -64,6 +66,7 @@ interface QueryDefinition {
   maxDateSpanDays: number;
   maxRows: number;
   accountScope: AccountScope;
+  outputShape: QueryOutputShape;
   queryTemplateVersion: string;
   metricVersion: string;
   paramsSchema: z.ZodType<NormalizedQueryParams>;
@@ -237,6 +240,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     maxDateSpanDays: 7,
     maxRows: 2_000,
     accountScope: "optional_many",
+    outputShape: "account_rows",
     queryTemplateVersion: "v1",
     metricVersion: "platform-diagnostics-v1",
     paramsSchema: intervalSchema,
@@ -248,6 +252,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     maxDateSpanDays: 31,
     maxRows: 2_000,
     accountScope: "required_one",
+    outputShape: "account_rows",
     queryTemplateVersion: "v1",
     metricVersion: "account-detail-v1",
     paramsSchema: detailSchema,
@@ -260,6 +265,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     maxDateSpanDays: 31,
     maxRows: 1,
     accountScope: "optional_many",
+    outputShape: "aggregate",
     queryTemplateVersion: "v1",
     metricVersion: "account-summary-v1",
     paramsSchema: intervalSchema,
@@ -272,6 +278,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     maxDateSpanDays: 31,
     maxRows: 10_000,
     accountScope: "optional_many",
+    outputShape: "account_rows",
     queryTemplateVersion: "v1",
     metricVersion: "account-table-v1",
     paramsSchema: tableSchema,
@@ -284,6 +291,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     maxDateSpanDays: 90,
     maxRows: 366,
     accountScope: "optional_many",
+    outputShape: "aggregate",
     queryTemplateVersion: "v1",
     metricVersion: "account-trend-v1",
     paramsSchema: intervalSchema,
@@ -296,6 +304,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     maxDateSpanDays: 31,
     maxRows: 10_000,
     accountScope: "optional_many",
+    outputShape: "account_rows",
     queryTemplateVersion: "v1",
     metricVersion: "source-versioned-v1",
     paramsSchema: intervalSchema,
@@ -344,6 +353,7 @@ export class DataQueryRegistry {
       maxDateSpanDays: entry.maxDateSpanDays,
       maxRows: entry.maxRows,
       accountScope: entry.accountScope,
+      outputShape: entry.outputShape,
       queryTemplateVersion: entry.queryTemplateVersion,
       metricVersion: entry.metricVersion,
       authorityPolicy: entry.authorityPolicy,
@@ -380,6 +390,7 @@ export class DataQueryRegistry {
       maxDateSpanDays: entry.maxDateSpanDays,
       maxRows: entry.maxRows,
       accountScope: entry.accountScope,
+      outputShape: entry.outputShape,
       queryTemplateVersion: entry.queryTemplateVersion,
       metricVersion: entry.metricVersion,
       authorityPolicy,

@@ -130,6 +130,40 @@ describe("SemanticQueryRepository", () => {
     expect(result.rows.every((row) => row.workspaceId === workspaceId)).toBe(true);
   });
 
+  it("applies server-side account-list and anomaly scope to canonical rows", async () => {
+    const result = await repository.queryTable({
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-19",
+      filters: { accountIds: ["a-1"], dataAnomaly: true },
+    });
+
+    expect(result.total).toBe(1);
+    expect(result.rows[0]).toMatchObject({
+      workspaceId,
+      media: "KUAISHOU",
+      accountId: "a-1",
+      ds: "2026-08-19",
+      dataAnomaly: true,
+    });
+  });
+
+  it("derives lineage freshness from persisted canonical rows", async () => {
+    const result = await repository.queryLineage({
+      workspaceId,
+      dateFrom: "2026-08-18",
+      dateTo: "2026-08-19",
+      filters: { accountIds: ["a-1"] },
+    });
+
+    expect(result).toMatchObject({
+      canonicalRows: 2,
+      requestedAccountDays: 2,
+      returnedAccountDays: 2,
+    });
+    expect(result.dataAsOf).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+  });
+
   it("filters by effective task relationship without duplicating detail rows", async () => {
     const result = await repository.queryTable({
       workspaceId,

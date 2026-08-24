@@ -84,11 +84,24 @@ export function buildMetricFilter(
   if (scope.filters?.accountId) {
     add((placeholder) => `metric.account_id = ${placeholder}`, scope.filters.accountId);
   }
+  if (scope.filters?.accountIds) {
+    if (scope.filters.accountIds.length === 0) {
+      conditions.push("false");
+    } else {
+      add(
+        (placeholder) => `metric.account_id = ANY(${placeholder}::text[])`,
+        scope.filters.accountIds,
+      );
+    }
+  }
   if (scope.filters?.ownerUserId) {
     add((placeholder) => `account.owner_user_id = ${placeholder}::uuid`, scope.filters.ownerUserId);
   }
   if (scope.filters?.media) {
     add((placeholder) => `account.media = ${placeholder}`, scope.filters.media);
+  }
+  if (scope.filters?.dataAnomaly !== undefined) {
+    add((placeholder) => `metric.data_anomaly = ${placeholder}`, scope.filters.dataAnomaly);
   }
   if (scope.filters?.taskId && options.includeTaskFilter !== false) {
     add(

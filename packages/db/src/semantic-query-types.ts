@@ -7,8 +7,10 @@ export type SupportedDimension = "account" | "task" | "biz";
 export interface SemanticFilters {
   taskId?: string;
   accountId?: string;
+  accountIds?: string[];
   ownerUserId?: string;
   media?: string;
+  dataAnomaly?: boolean;
 }
 
 export interface SemanticQueryScope {
@@ -142,6 +144,13 @@ export interface SemanticHealthResult {
   rawResources: RawResourceHealth[];
   etlStatuses: EtlStatusHealth[];
   quality: QualityHealth;
+}
+
+export interface SemanticLineageResult {
+  dataAsOf: string | null;
+  canonicalRows: number;
+  requestedAccountDays: number;
+  returnedAccountDays: number;
 }
 
 export class AmbiguousTaskMappingError extends Error {

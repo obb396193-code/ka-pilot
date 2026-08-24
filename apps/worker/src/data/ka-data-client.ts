@@ -32,12 +32,12 @@ export interface KaDataClientOptions {
   timeoutMs?: number;
   maxResponseBytes?: number;
   datasetVersion?: string;
-  now?: () => Date;
+  timezone?: string;
+  dayCut?: string;
 }
 
 export interface KaDataClientRuntimeOverrides {
   fetchFn?: FetchLike;
-  now?: () => Date;
 }
 
 const kaDataEnvelopeSchema = z
@@ -48,6 +48,10 @@ const kaDataEnvelopeSchema = z
     truncated: z.boolean().optional().default(false),
     limit_clamped: z.boolean().optional().default(false),
     note: z.string().optional(),
+    datasetVersion: z.string().min(1).optional(),
+    dataAsOf: z.string().datetime({ offset: true }).optional(),
+    timezone: z.string().min(1).optional(),
+    dayCut: z.string().min(1).optional(),
   })
   .passthrough();
 
@@ -173,20 +177,32 @@ function parseEnvelope(body: string): z.infer<typeof kaDataEnvelopeSchema> {
 function sourceLineage(
   resolved: ResolvedDataQuery,
   scope: DataQueryExecutionScope,
-  datasetVersion: string,
-  dataAsOf: string,
+  configuredMetadata: {
+    datasetVersion: string | null;
+    timezone: string | null;
+    dayCut: string | null;
+  },
   envelope: z.infer<typeof kaDataEnvelopeSchema>,
   partial: boolean,
   reason: string | undefined,
 ): SourceLineage {
+  const sourceMetadata = {
+    datasetVersion: envelope.datasetVersion ?? configuredMetadata.datasetVersion,
+    dataAsOf: envelope.dataAsOf ?? null,
+    timezone: envelope.timezone ?? configuredMetadata.timezone,
+    dayCut: envelope.dayCut ?? configuredMetadata.dayCut,
+  };
+  const knownMetadata = Object.values(sourceMetadata).filter((value) => value !== null).length;
   return {
     source: "ka_data",
-    datasetVersion,
+    ...sourceMetadata,
+    metadataAvailability: knownMetadata === 0
+      ? "unknown"
+      : knownMetadata === 4
+        ? "known"
+        : "partial",
     queryTemplateVersion: resolved.queryTemplateVersion,
     metricVersion: resolved.metricVersion,
-    dataAsOf,
-    timezone: "Asia/Shanghai",
-    dayCut: "calendar_day",
     authority: authorityFor(resolved),
     objectIdentity: {
       objectType: "account",
@@ -213,8 +229,11 @@ export class KaDataClient {
   readonly #fetchFn: FetchLike;
   readonly #timeoutMs: number;
   readonly #maxResponseBytes: number;
-  readonly #datasetVersion: string;
-  readonly #now: () => Date;
+  readonly #configuredMetadata: {
+    datasetVersion: string | null;
+    timezone: string | null;
+    dayCut: string | null;
+  };
   readonly #registry = createDataQueryRegistry();
 
   constructor(options: KaDataClientOptions) {
@@ -227,8 +246,11 @@ export class KaDataClient {
       options.maxResponseBytes ?? DEFAULT_KA_DATA_MAX_RESPONSE_BYTES,
       "maxResponseBytes",
     );
-    this.#datasetVersion = options.datasetVersion ?? "ka-data-version-unknown";
-    this.#now = options.now ?? (() => new Date());
+    this.#configuredMetadata = {
+      datasetVersion: options.datasetVersion?.trim() || null,
+      timezone: options.timezone?.trim() || null,
+      dayCut: options.dayCut?.trim() || null,
+    };
   }
 
   toJSON(): Record<string, string> {
@@ -294,8 +316,7 @@ export class KaDataClient {
         lineage: sourceLineage(
           resolved,
           scope,
-          this.#datasetVersion,
-          this.#now().toISOString(),
+          this.#configuredMetadata,
           envelope,
           partial,
           reason,
@@ -361,7 +382,11 @@ export function createKaDataClientFromEnv(
       DEFAULT_KA_DATA_MAX_RESPONSE_BYTES,
       "KA_DATA_MAX_RESPONSE_BYTES",
     ),
-    datasetVersion: env.KA_DATA_DATASET_VERSION ?? "ka-data-version-unknown",
+    ...(env.KA_DATA_DATASET_VERSION === undefined
+      ? {}
+      : { datasetVersion: env.KA_DATA_DATASET_VERSION }),
+    ...(env.KA_DATA_TIMEZONE === undefined ? {} : { timezone: env.KA_DATA_TIMEZONE }),
+    ...(env.KA_DATA_DAY_CUT === undefined ? {} : { dayCut: env.KA_DATA_DAY_CUT }),
     ...overrides,
   });
 }

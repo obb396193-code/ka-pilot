@@ -21,6 +21,7 @@ import type {
   SemanticTableQuery,
   SemanticTableResult,
   SemanticTableRow,
+  SemanticLineageResult,
 } from "./semantic-query-types.js";
 
 interface TableDatabaseRow {
@@ -161,5 +162,36 @@ export class SemanticQueryRepository {
 
   async queryHealth(input: SemanticQueryScope): Promise<SemanticHealthResult> {
     return querySemanticHealth(this.pool, input);
+  }
+
+  async queryLineage(input: SemanticQueryScope): Promise<SemanticLineageResult> {
+    const filter = buildMetricFilter(input);
+    const result = await this.pool.query<{
+      data_as_of: string | Date | null;
+      canonical_rows: string | number;
+      account_days: string | number;
+    }>(
+      `SELECT max(metric.computed_at) AS data_as_of,
+              count(*)::text AS canonical_rows,
+              count(DISTINCT (metric.account_id, metric.ds))::text AS account_days
+       FROM account_metrics_daily AS metric
+       JOIN accounts AS account
+         ON account.workspace_id = metric.workspace_id
+        AND account.account_id = metric.account_id
+       WHERE ${filter.whereSql}`,
+      filter.values,
+    );
+    const row = result.rows[0];
+    const accountCount = input.filters?.accountIds?.length ??
+      (input.filters?.accountId === undefined ? 0 : 1);
+    const dateFrom = Date.parse(`${input.dateFrom}T00:00:00.000Z`);
+    const dateTo = Date.parse(`${input.dateTo}T00:00:00.000Z`);
+    const days = Math.floor((dateTo - dateFrom) / 86_400_000) + 1;
+    return {
+      dataAsOf: row?.data_as_of == null ? null : isoTimestamp(row.data_as_of),
+      canonicalRows: Number(row?.canonical_rows ?? 0),
+      requestedAccountDays: Math.max(accountCount * days, 0),
+      returnedAccountDays: Number(row?.account_days ?? 0),
+    };
   }
 }

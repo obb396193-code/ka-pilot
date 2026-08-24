@@ -36,7 +36,6 @@ describe("KaDataClient", () => {
       baseUrl: "https://ka-data.example.internal",
       token,
       fetchFn,
-      now: () => new Date("2026-08-24T08:00:00.000Z"),
     });
 
     await client.query(resolvedSummary(), {
@@ -74,6 +73,30 @@ describe("KaDataClient", () => {
     expect(new Headers(fetchFn.mock.calls[0]?.[1]?.headers).get("authorization"))
       .toBe("Bearer server-only-token");
     expect(JSON.stringify(client)).not.toContain("server-only-token");
+  });
+
+  it("does not invent dataset freshness metadata absent from the upstream response", async () => {
+    const client = new KaDataClient({
+      baseUrl: "https://ka-data.example.internal",
+      token: "fixture-token",
+      fetchFn: async () => jsonResponse({
+        backend: "sqlite",
+        rowCount: 1,
+        rows: [{ cost: 12 }],
+      }),
+    });
+    const result = await client.query(resolvedSummary(), {
+      workspaceId: "w",
+      userId: "u",
+      accounts: [{ media: "KUAISHOU", accountId: "a" }],
+    });
+    expect(result.lineage).toMatchObject({
+      datasetVersion: null,
+      dataAsOf: null,
+      timezone: null,
+      dayCut: null,
+      metadataAvailability: "unknown",
+    });
   });
 
   it("rejects any production access mode other than the frozen shared reader mode", () => {

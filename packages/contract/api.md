@@ -9,6 +9,11 @@
 
 `POST /api/v1/data/query`
 
+浏览器不得直接调用本端点。浏览器只调用 Next BFF 的
+`POST /api/internal/data-query`；BFF 使用服务端 `DATA_API_INTERNAL_TOKEN` 调用本端点，
+并通过受信服务端 header 注入 workspace/user/account scope。内部 token 与账户 scope
+不得进入浏览器 bundle、页面日志或响应正文。
+
 该端点的数值字段使用 `MetricValue={value:number|null, availability}`；`denominator_zero`、`missing`、`partial`、`stale`、`error` 均与真实数值 0 分开表达。旧 `/api/v1/query` 的 `RatioValue.state` 约定不跨端点静默复用。
 
 公开请求严格只接受三个顶层字段：
@@ -39,12 +44,13 @@
 ```jsonc
 {
   "source": "ka_data",
-  "datasetVersion": "...",
+  "datasetVersion": null,
   "queryTemplateVersion": "v1",
   "metricVersion": "...",
-  "dataAsOf": "2026-08-24T08:00:00.000Z",
-  "timezone": "Asia/Shanghai",
-  "dayCut": "calendar_day",
+  "dataAsOf": null,
+  "timezone": null,
+  "dayCut": null,
+  "metadataAvailability": "unknown",
   "authority": {
     "policyVersion": "2026-08-24",
     "useCase": "cross_media_operations",
@@ -59,6 +65,20 @@
   "partial": false
 }
 ```
+
+`datasetVersion/dataAsOf/timezone/dayCut` 只允许来自上游响应、canonical 持久化记录或
+显式部署配置。来源未提供时必须返回 `null`，并以
+`metadataAvailability=unknown|partial` 表达，不得用接口响应时间或固定占位字符串冒充。
+
+### 内部 HTTP composition
+
+- 可启动入口：`npm run start:data-api`（Worker 包中的独立 API 进程，不与后台消费循环混跑）。
+- 默认仅监听 `127.0.0.1:3101`；跨主机部署必须由内网服务发现/网络策略显式开放。
+- BFF 必须发送 `Authorization: Bearer <DATA_API_INTERNAL_TOKEN>`、
+  `x-ka-workspace-id`、`x-ka-user-id` 与 base64url JSON 的 `x-ka-account-scope`。
+- 服务输出侧再次按 `(workspace_id, media, account_id)` 校验所有账户明细行；Adapter
+  返回越权行或缺少联合键时整次请求以 `FORBIDDEN` 失败，响应不回显越权对象。
+- `GET /healthz` 仅返回进程存活；不返回 Secret、上游 URL、SQL 或数据源正文。
 
 `reconcile` 固定并列返回 `kaData` 与 `platform` 两个独立 source object；禁止 `primary`、混合 `value` 或第三个统一主数。BE-001 在对账内核接入前返回 `comparison.status=unavailable` 与 `reconciliation_engine_pending`；双方查询成功但同一范围仅一侧有行时返回 `source_missing`，整源请求失败返回 `source_unavailable`，二者都不是账户 ID 待映射。
 
