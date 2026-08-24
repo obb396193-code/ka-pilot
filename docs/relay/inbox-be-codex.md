@@ -14,6 +14,7 @@
 - 要求：
   1. 在 Domain 建可执行 Zod Contract，冻结 `DataViewMode`、`MetricValue`、单/双 lineage、稳定错误 envelope；同步 `packages/contract` 文档。
      - 老板已裁决 A：`reconcile` 双边并列，不生成统一主数；KA Data 为运营权威版，当日实时诊断/执行检查仍用 platform。详见 `docs/decisions/2026-08-24-双数据对账主数语义.md`。
+     - 逐指标权威矩阵已冻结：跨媒体/历史/商品素材/BI 默认 KA Data；实时/pacing/诊断/下钻/执行检查/效果回收默认 platform；考核价/返点/赔付/现金成本分来源版本化，禁止混算。详见 `docs/decisions/2026-08-24-双数据逐指标权威矩阵.md`。
   2. 新建 `POST /api/v1/data/query`，只接受 `queryId + params + dataView`；禁止 raw SQL、表列名和自由表达式。
   3. Query Registry 首批只开放 `account.summary/trend/table/anomalies/detail` 与 `reconcile.account_daily`，逐项声明参数、视图、日期范围、行数和账户 scope。
   4. workspace/user/account scope 从服务端认证上下文注入；请求体伪造 workspace/account 必须拒绝。
