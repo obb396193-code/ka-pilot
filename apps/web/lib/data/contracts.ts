@@ -3,10 +3,11 @@ import { z } from "zod"
 import {
   dataResponseSchema,
   dataViewModeSchema,
+  metricValueSchema,
   type DataResponse,
   type DataState,
   type DataViewMode,
-} from "./data-view"
+} from "./data-view.ts"
 
 const displayMetricSchema = z.object({
   key: z.string(),
@@ -24,6 +25,8 @@ const anomalySummarySchema = z.object({
   title: z.string(),
   severity: z.enum(["info", "warning", "critical"]),
   evidence: z.string(),
+  attribution: z.string(),
+  suggestedAction: z.string(),
   cta: z.string(),
 })
 
@@ -33,25 +36,79 @@ export const workbenchSchema = z.object({
   metrics: z.array(displayMetricSchema),
   anomalies: z.array(anomalySummarySchema),
   accountCoverage: z.string(),
+  healthyAccountMessage: z.string(),
+  trend: z.array(
+    z.object({
+      label: z.string(),
+      spend: z.number(),
+      realCpa: z.number().nullable(),
+    }),
+  ),
+  yesterdayActions: z.array(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      result: z.enum(["positive", "negative"]),
+      evidence: z.string(),
+    }),
+  ),
+  todos: z.array(
+    z.object({
+      label: z.string(),
+      value: z.string(),
+      kind: z.enum(["assigned", "self_created"]),
+    }),
+  ),
+  morningBrief: z.object({
+    title: z.string(),
+    summary: z.string(),
+    details: z.array(z.string()),
+  }),
+  alerts: z.array(
+    z.object({
+      level: z.enum(["P0", "P1"]),
+      label: z.string(),
+      value: z.string(),
+      detail: z.string(),
+    }),
+  ),
 })
 export type WorkbenchData = z.infer<typeof workbenchSchema>
 
-const analysisCellSchema = z.object({
-  value: z.string().nullable(),
-  availability: z.enum(["available", "unavailable", "not-applicable"]),
+const sourceMetricsSchema = z.object({
+  spend: metricValueSchema,
+  conversions: metricValueSchema,
+  cpa: metricValueSchema,
+}).strict()
+
+const comparisonSchema = z.object({
+  comparable: z.boolean(),
+  reason: z.string().nullable(),
+  delta: metricValueSchema,
+  deltaRate: metricValueSchema,
+}).strict().superRefine((comparison, context) => {
+  if (!comparison.comparable && (comparison.delta.availability === "available" || comparison.deltaRate.availability === "available")) {
+    context.addIssue({ code: "custom", message: "不可比时不得提供差异主数" })
+  }
 })
 
 export const analysisRowSchema = z.object({
   accountId: z.string(),
   accountName: z.string(),
   owner: z.string(),
-  spend: analysisCellSchema,
-  conversions: analysisCellSchema,
-  cpa: analysisCellSchema,
-  assessmentCpa: analysisCellSchema,
-  difference: analysisCellSchema,
-  differenceRate: analysisCellSchema,
+  kaData: sourceMetricsSchema,
+  platform: sourceMetricsSchema,
+  assessmentCpa: metricValueSchema,
+  comparison: comparisonSchema,
   status: z.enum(["healthy", "watch", "critical", "unavailable"]),
+}).strict().superRefine((row, context) => {
+  const sourceValues = [
+    row.kaData.spend, row.kaData.conversions, row.kaData.cpa,
+    row.platform.spend, row.platform.conversions, row.platform.cpa,
+  ]
+  if (row.comparison.comparable && sourceValues.some((metric) => metric.availability !== "available")) {
+    context.addIssue({ code: "custom", message: "双方不完整时不得标记可比" })
+  }
 })
 
 export const analysisSchema = z.object({

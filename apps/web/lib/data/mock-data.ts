@@ -1,14 +1,17 @@
-import type { QueryData, QueryId, QueryRequest } from "./contracts"
-import type { DataResponse, SourceLineage } from "./data-view"
+import type { QueryData, QueryId, QueryRequest } from "./contracts.ts"
+import type { DataResponse, LineageBundle, MetricValue, SourceLineage } from "./data-view.ts"
 
 const DEMO_AS_OF = "2026-08-24T09:30:00+08:00"
 
-const lineageByView: Record<QueryRequest["dataView"], SourceLineage> = {
+const sourceLineages: Record<"ka_data" | "platform", SourceLineage> = {
   ka_data: {
     source: "ka_data",
-    sourceLabel: "KA Data 权威版 · 脱敏演示",
+    sourceLabel: "KA Data 运营权威版 · 脱敏 Mock",
     dataAsOf: DEMO_AS_OF,
     datasetVersion: "ka-demo-20260824-r3",
+    queryTemplateVersion: "account-table-v1-mock",
+    timezone: "Asia/Shanghai",
+    dayCut: "00:00",
     coverage: "20/20 个脱敏账户",
     truncated: false,
     partial: false,
@@ -17,33 +20,43 @@ const lineageByView: Record<QueryRequest["dataView"], SourceLineage> = {
   },
   platform: {
     source: "platform",
-    sourceLabel: "自建平台版 · 脱敏演示",
+    sourceLabel: "自建平台版 · 当日实时诊断/执行检查 · 脱敏 Mock",
     dataAsOf: DEMO_AS_OF,
     datasetVersion: "platform-demo-20260824-r7",
+    queryTemplateVersion: "account-table-v1-mock",
+    timezone: "Asia/Shanghai",
+    dayCut: "00:00",
     coverage: "18/20 个脱敏账户",
     truncated: false,
     partial: true,
     stale: false,
     warnings: ["2 个账户待补数据源；缺失值不会按 0 展示"],
   },
-  reconcile: {
-    source: "reconcile",
-    sourceLabel: "双源对账 · 脱敏演示",
-    dataAsOf: DEMO_AS_OF,
-    datasetVersion: "reconcile-demo-20260824-r2",
-    coverage: "18/20 个账户完成双源匹配",
-    truncated: true,
-    partial: true,
-    stale: false,
-    warnings: ["仅展示差异最大的前 20 行", "差异值由服务端口径层提供，前端不计算"],
-  },
 }
+
+function lineageByView(dataView: QueryRequest["dataView"]): LineageBundle {
+  if (dataView === "reconcile") {
+    return {
+      mode: "reconcile",
+      kaData: { ...sourceLineages.ka_data, truncated: true, warnings: [...sourceLineages.ka_data.warnings, "Mock 对账仅展示前 20 行"] },
+      platform: { ...sourceLineages.platform, truncated: true, warnings: [...sourceLineages.platform.warnings, "Mock 差异值由服务端候选口径提供"] },
+      comparability: { comparable: false, reason: "平台侧仅覆盖 18/20 个脱敏账户" },
+    }
+  }
+  return { mode: "single", source: sourceLineages[dataView] }
+}
+
+const value = (raw: number, displayValue: string): MetricValue => ({ value: raw, displayValue, availability: "available" })
+const missing = (availability: Exclude<MetricValue["availability"], "available"> = "missing"): MetricValue => ({ value: null, displayValue: "−", availability })
+const missingSource = () => ({ spend: missing(), conversions: missing(), cpa: missing() })
 
 const metrics = [
   { key: "spend", label: "今日消耗", value: "¥ 842,600", delta: "+8.2%", tone: "neutral" as const },
-  { key: "cpa", label: "综合 CPA", value: "¥ 36.80", delta: "低于考核价 4.2%", tone: "positive" as const },
-  { key: "risk", label: "高风险账户", value: "3", delta: "较昨日 +1", tone: "critical" as const },
-  { key: "coverage", label: "数据覆盖", value: "18 / 20", delta: "2 个待补源", tone: "warning" as const },
+  { key: "cpa", label: "真实 CPA", value: "¥ 36.80", delta: "考核价 ¥ 38.00", tone: "positive" as const },
+  { key: "compliance", label: "达标率", value: "76.4%", delta: "环比 +2.1pp", tone: "positive" as const },
+  { key: "cost_space", label: "成本空间", value: "¥ 27,400", delta: "服务端口径", tone: "neutral" as const },
+  { key: "bi_volume", label: "BI 量级", value: "18,620", delta: "环比 -3.8%", tone: "warning" as const },
+  { key: "risk", label: "待处理", value: "7", delta: "其中 P0 2 项", tone: "critical" as const },
 ]
 
 const rows = [
@@ -51,36 +64,30 @@ const rows = [
     accountId: "demo-account-07",
     accountName: "演示账户 · 华东 07",
     owner: "优化师 A",
-    spend: { value: "¥ 126,800", availability: "available" as const },
-    conversions: { value: "2,940", availability: "available" as const },
-    cpa: { value: "¥ 43.13", availability: "available" as const },
-    assessmentCpa: { value: "¥ 38.00", availability: "available" as const },
-    difference: { value: "+¥ 5.13", availability: "available" as const },
-    differenceRate: { value: "+13.5%", availability: "available" as const },
+    kaData: { spend: value(126000, "¥ 126,000"), conversions: value(2940, "2,940"), cpa: value(42.86, "¥ 42.86") },
+    platform: { spend: value(126800, "¥ 126,800"), conversions: value(2940, "2,940"), cpa: value(43.13, "¥ 43.13") },
+    assessmentCpa: value(38, "¥ 38.00"),
+    comparison: { comparable: true, reason: null, delta: value(0.27, "+¥ 0.27"), deltaRate: value(0.0063, "+0.63%") },
     status: "critical" as const,
   },
   {
     accountId: "demo-account-12",
     accountName: "演示账户 · 华南 12",
     owner: "优化师 B",
-    spend: { value: "¥ 98,200", availability: "available" as const },
-    conversions: { value: "2,735", availability: "available" as const },
-    cpa: { value: "¥ 35.90", availability: "available" as const },
-    assessmentCpa: { value: "¥ 38.00", availability: "available" as const },
-    difference: { value: "-¥ 2.10", availability: "available" as const },
-    differenceRate: { value: "-5.5%", availability: "available" as const },
+    kaData: { spend: value(99007, "¥ 99,007"), conversions: value(2735, "2,735"), cpa: value(36.2, "¥ 36.20") },
+    platform: { spend: value(98200, "¥ 98,200"), conversions: value(2735, "2,735"), cpa: value(35.9, "¥ 35.90") },
+    assessmentCpa: value(38, "¥ 38.00"),
+    comparison: { comparable: true, reason: null, delta: value(-0.3, "-¥ 0.30"), deltaRate: value(-0.0083, "-0.83%") },
     status: "healthy" as const,
   },
   {
     accountId: "demo-account-18",
     accountName: "演示账户 · 华北 18",
     owner: "优化师 C",
-    spend: { value: null, availability: "unavailable" as const },
-    conversions: { value: null, availability: "unavailable" as const },
-    cpa: { value: null, availability: "unavailable" as const },
-    assessmentCpa: { value: "¥ 40.00", availability: "available" as const },
-    difference: { value: null, availability: "not-applicable" as const },
-    differenceRate: { value: null, availability: "not-applicable" as const },
+    kaData: { spend: value(80274, "¥ 80,274"), conversions: value(2020, "2,020"), cpa: value(39.74, "¥ 39.74") },
+    platform: missingSource(),
+    assessmentCpa: value(40, "¥ 40.00"),
+    comparison: { comparable: false, reason: "平台侧缺失", delta: missing(), deltaRate: missing() },
     status: "unavailable" as const,
   },
 ]
@@ -98,7 +105,9 @@ const dataByQuery: { [K in QueryId]: QueryData<K> } = {
         title: "CPA 连续 3 个时段高于考核价",
         severity: "critical",
         evidence: "服务端规则命中：当前 CPA ¥43.13，考核价 ¥38.00",
-        cta: "查看诊断证据",
+        attribution: "素材疲劳与高成本人群占比同步上升",
+        suggestedAction: "先收紧异常时段预算，再复核素材与人群",
+        cta: "预览调整",
       },
       {
         id: "finding-coverage-002",
@@ -106,11 +115,40 @@ const dataByQuery: { [K in QueryId]: QueryData<K> } = {
         accountName: "演示账户 · 华北 18",
         title: "平台数据源延迟",
         severity: "warning",
-        evidence: "最近成功批次停留在 08:30，当前不按 0 参与判断",
+        evidence: "真实 CPA −；真实转化为 0，最近成功批次停留在 08:30",
+        attribution: "平台取数批次延迟，未取得完整分时数据",
+        suggestedAction: "保持只读，等待数据恢复后重新诊断",
         cta: "查看数据状态",
       },
     ],
     accountCoverage: "18 / 20",
+    healthyAccountMessage: "其余 15 个账户在阈值内，无需逐户查看",
+    trend: [
+      { label: "8/18", spend: 724000, realCpa: 39.1 },
+      { label: "8/19", spend: 768000, realCpa: 38.4 },
+      { label: "8/20", spend: 751000, realCpa: null },
+      { label: "8/21", spend: 796000, realCpa: 37.9 },
+      { label: "8/22", spend: 812000, realCpa: 37.2 },
+      { label: "8/23", spend: 826000, realCpa: 36.9 },
+      { label: "8/24", spend: 842600, realCpa: 36.8 },
+    ],
+    yesterdayActions: [
+      { id: "recovery-01", title: "演示账户 · 华南 12 降低高价人群出价", result: "positive", evidence: "T+1 真实 CPA 回落 6.4%" },
+      { id: "recovery-02", title: "演示账户 · 华北 03 暂停低效素材", result: "negative", evidence: "量级下降 11.2%，需重新评估" },
+    ],
+    todos: [
+      { label: "上级派发", value: "4", kind: "assigned" },
+      { label: "自建待办", value: "3", kind: "self_created" },
+    ],
+    morningBrief: {
+      title: "AAC 拉新 · 今日经营早报",
+      summary: "整体 CPA 处于考核线内，但 2 个账户需要优先核查；平台数据有 1 个批次延迟。",
+      details: ["先处理 P0 成本异常，再核查延迟账户", "昨日 2 个动作中 1 个有效、1 个需回滚评估", "所有数据均为脱敏示例"],
+    },
+    alerts: [
+      { level: "P0", label: "成本异常", value: "2", detail: "连续时段超过考核价" },
+      { level: "P1", label: "数据与余额预警", value: "5", detail: "含 2 个部分数据账户" },
+    ],
   },
   analysis: {
     mode: "platform",
@@ -167,18 +205,32 @@ const dataByQuery: { [K in QueryId]: QueryData<K> } = {
   },
 }
 
-function stateLineage(request: QueryRequest): SourceLineage {
-  const base = lineageByView[request.dataView]
-  const state = request.state ?? "success"
+function applyState(lineage: SourceLineage, state: QueryRequest["state"]): SourceLineage {
   return {
-    ...base,
-    partial: state === "partial" || base.partial,
+    ...lineage,
+    partial: state === "partial" || lineage.partial,
     stale: state === "stale",
-    warnings:
-      state === "stale"
-        ? [...base.warnings, "数据已超过当前演示 SLA，请勿据此确认变更"]
-        : base.warnings,
+    warnings: state === "stale" ? [...lineage.warnings, "数据已超过当前演示 SLA，请勿据此确认变更"] : lineage.warnings,
   }
+}
+
+function stateLineage(request: QueryRequest): LineageBundle {
+  const base = lineageByView(request.dataView)
+  const state = request.state ?? "success"
+  if (base.mode === "single") return { mode: "single", source: applyState(base.source, state) }
+  return { ...base, kaData: applyState(base.kaData, state), platform: applyState(base.platform, state) }
+}
+
+function rowsForMode(dataView: QueryRequest["dataView"]): QueryData<"analysis">["rows"] {
+  return rows.map((row) => {
+    if (dataView === "reconcile") return row
+    return {
+      ...row,
+      kaData: dataView === "ka_data" ? row.kaData : missingSource(),
+      platform: dataView === "platform" ? row.platform : missingSource(),
+      comparison: { comparable: false, reason: "单源视图不生成对账结论", delta: missing(), deltaRate: missing() },
+    }
+  })
 }
 
 export function getMockResponse<T extends QueryId>(
@@ -186,10 +238,14 @@ export function getMockResponse<T extends QueryId>(
 ): DataResponse<QueryData<T>> {
   const state = request.state ?? "success"
   const baseData = dataByQuery[request.queryId] as QueryData<T>
+  const modeAdjustedData =
+    request.queryId === "analysis"
+      ? ({ ...(baseData as QueryData<"analysis">), mode: request.dataView, rows: rowsForMode(request.dataView) } as QueryData<T>)
+      : baseData
   const data =
     state === "empty" && request.queryId === "analysis"
-      ? ({ ...(baseData as QueryData<"analysis">), rows: [] } as QueryData<T>)
-      : baseData
+      ? ({ ...(modeAdjustedData as QueryData<"analysis">), rows: [] } as QueryData<T>)
+      : modeAdjustedData
 
   const messages: Partial<Record<typeof state, string>> = {
     loading: "正在读取查询结果…",

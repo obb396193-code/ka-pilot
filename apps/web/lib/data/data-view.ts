@@ -14,29 +14,71 @@ export const dataStateSchema = z.enum([
 ])
 export type DataState = z.infer<typeof dataStateSchema>
 
+export const availabilitySchema = z.enum([
+  "available",
+  "missing",
+  "denominator_zero",
+  "partial",
+  "stale",
+  "error",
+])
+export type Availability = z.infer<typeof availabilitySchema>
+
+const availableMetricValueSchema = z.object({
+  value: z.number().finite(),
+  displayValue: z.string().min(1),
+  availability: z.literal("available"),
+}).strict()
+
+const unavailableMetricValueSchema = z.object({
+  value: z.null(),
+  displayValue: z.string().min(1),
+  availability: availabilitySchema.exclude(["available"]),
+}).strict()
+
+export const metricValueSchema = z.union([
+  availableMetricValueSchema,
+  unavailableMetricValueSchema,
+])
+export type MetricValue = z.infer<typeof metricValueSchema>
+
 export const sourceLineageSchema = z.object({
-  source: dataViewModeSchema,
+  source: z.enum(["ka_data", "platform"]),
   sourceLabel: z.string().min(1),
   dataAsOf: z.string().datetime({ offset: true }),
   datasetVersion: z.string().min(1),
+  queryTemplateVersion: z.string().min(1),
+  timezone: z.string().min(1),
+  dayCut: z.string().min(1),
   coverage: z.string().min(1),
   truncated: z.boolean(),
   partial: z.boolean(),
   stale: z.boolean(),
   warnings: z.array(z.string()),
-})
+}).strict()
 export type SourceLineage = z.infer<typeof sourceLineageSchema>
+
+export const lineageBundleSchema = z.discriminatedUnion("mode", [
+  z.object({ mode: z.literal("single"), source: sourceLineageSchema }).strict(),
+  z.object({
+    mode: z.literal("reconcile"),
+    kaData: sourceLineageSchema,
+    platform: sourceLineageSchema,
+    comparability: z.object({ comparable: z.boolean(), reason: z.string().nullable() }).strict(),
+  }).strict(),
+])
+export type LineageBundle = z.infer<typeof lineageBundleSchema>
 
 export const dataResponseSchema = z.object({
   state: dataStateSchema,
-  lineage: sourceLineageSchema,
+  lineage: lineageBundleSchema,
   data: z.unknown(),
   message: z.string().optional(),
-})
+}).strict()
 
 export type DataResponse<T> = {
   state: DataState
-  lineage: SourceLineage
+  lineage: LineageBundle
   data: T
   message?: string
 }
@@ -48,6 +90,13 @@ const compatibleFilterKeys = [
   "account_id",
   "start",
   "end",
+  "date",
+  "date_from",
+  "date_to",
+  "media",
+  "task_id",
+  "product_id",
+  "owner",
   "state",
 ] as const
 
