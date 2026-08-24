@@ -55,6 +55,7 @@
 - [x] 40. 校验、功能提交并新增 `P-KB-011` 交审
 - [x] 41. 按老板实证纠正 `ka-src-0010` 账户 ID 双命名空间假设，保留其他对象 ID 待核证并提交 `P-KB-012`
 - [x] 42. 按 root R2 审计区分目标账户键与当前数据库 Contract，标记旧两字段指令 superseded 并加回归门
+- [x] 43. 合流后按 R3 live schema 更新账户键现状，回归直接断言三张关键表主键
 
 ## 完成记录
 
@@ -103,8 +104,9 @@
 - 2026-08-24：完成与奇航一期主链路、现有 API/metrics/schema Contract 的交叉审计。结论：ka-data 可能补 BI 转化、素材/商品、跨媒体和数据对平缺口，但当前只是资料主张；建议先做受控只读探针和同日同户对平，验证通过后才作为 ETL adapter 候选。普通用户/Agent 不开放任意 SQL，临时沙箱地址、reader token 机制、本地 SQLite 和硬编码系数不得直接进入生产设计。
 - 2026-08-24：`ka-src-0010` 定向校验完成：18/18 Node 测试通过，10 条 catalog 结构有效，原文 hash 一致，原文/评估凭证形态 0，private 命中 ignore 且未被 Git 跟踪，`git diff --check` 通过。功能提交 SHA=`c50150f`；`P-KB-011` 已提交 arch/security/data owner 审查。
 - 2026-08-24：R1 账户 ID 纠错完成：老板实证确认 KA 与平台 `account_id` 相同，联合键为 `(workspace_id, media, account_id)`，不建立账户 ID 映射表；`task/product/material/adgroup` 等其他对象继续 `unresolved`。已修正 0010 评估、检索说明、P-KB-011 口径并增加回归断言，功能 SHA=`eb10676`；18/18 测试、全库 validator、catalog 状态、双份原文 hash、凭证形态和 Git 私有区检查全通过；新增 `P-KB-012` 等待 arch 裁决，未发布知识库。
-- 2026-08-24：R2 root 审计确认 R1 把目标键误写为当前 Contract 现状。已纠正为：KA/平台 `account_id` 相同且不建账户映射表是老板已拍板事实；`(workspace_id, media, account_id)` 是老板批准的目标账户键；当前数据库 Contract 的账户相关主键仍未含 `media`，由 Contract owner 待同步。P-001#3 旧两字段指令已加 `SUPERSEDED/仅历史记录` 标记，P-KB-012 不再要求 arch 接受已拍板事实；其他对象继续 `unresolved`，catalog 状态不变。
+- 2026-08-24：R2 root 审计确认 R1 把目标键误写为当时 Contract 现状。已纠正 KA/平台 `account_id` 相同且不建账户映射表是老板已拍板事实，P-001#3 旧两字段指令标为 `SUPERSEDED/仅历史记录`，P-KB-012 不再要求 arch 接受已拍板事实；其他对象继续 `unresolved`，catalog 状态不变。
+- 2026-08-25：R3 已将 `accounts/account_metrics_daily/account_balance` 主键及相关账户外键同步到 `(workspace_id, media, account_id)`，migration 005/006 与真实 PostgreSQL 跨媒体同号、孤儿反例通过。知识资产检索、评估、决策和 relay 已更新为当前现状；这不改变其他对象 ID 的 `unresolved` 状态，也不提升 catalog 审批/发布状态。
 
 ## 当前状态
 
-`ka-src-0001~0010` 已完成入库评估；`ka-src-0010` 已完成 R2 目标/现状分离，`P-KB-012` 等待复审。全部资料继续为 `review_pending/not_ready`，未自动升级为正式产品口径或知识库内容；数据库 Contract owner 尚需同步目标账户键，`task/product/material/adgroup` 等其他对象 ID 仍待核证，未修改冻结 PRD/Contract/前后端生产代码。
+`ka-src-0001~0010` 已完成入库评估；`ka-src-0010` 已完成 R2 纠错并在 R3 同步数据库现状，`P-KB-012` 保留后续复审席位。全部资料继续为 `review_pending/not_ready`，未自动升级为正式产品口径或知识库内容；`task/product/material/adgroup` 等其他对象 ID 仍待核证。

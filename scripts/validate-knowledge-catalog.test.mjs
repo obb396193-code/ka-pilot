@@ -345,16 +345,20 @@ test("ka-data guide stays confidential and cannot enter product knowledge before
   }
   assert.doesNotMatch(assessment, /两套 `account_id` namespace 的稳定映射表/);
   assert.doesNotMatch(assessment, /两套账户 ID namespace 的映射表/);
-  assert.match(assessment, /老板批准的目标账户键/);
-  assert.match(assessment, /当前数据库 Contract[^。]*尚未同步/);
-  assert.doesNotMatch(assessment, /当前 Contract 使用[^\n]*\(workspace_id, media, account_id\)/);
+  assert.match(assessment, /R3 已把[^\n]*统一为 `\(workspace_id, media, account_id\)`/);
+  assert.doesNotMatch(assessment, /当前数据库 Contract[^。]*(?:尚未同步|仍未含)/);
+
+  const schema = await readFile(path.join(repoRoot, "packages/contract/schema.sql"), "utf8");
+  assert.match(schema, /CREATE TABLE accounts[\s\S]*?PRIMARY KEY \(workspace_id, media, account_id\)/);
+  assert.match(schema, /CREATE TABLE account_metrics_daily[\s\S]*?PRIMARY KEY \(workspace_id, media, account_id, ds\)/);
+  assert.match(schema, /CREATE TABLE account_balance[\s\S]*?PRIMARY KEY \(workspace_id, media, account_id\)/);
 
   const relay = await readFile(path.join(repoRoot, "docs/relay/inbox-arch.md"), "utf8");
   for (const marker of [
     "SUPERSEDED（仅保留为历史记录",
-    "当前 `packages/contract/schema.sql` 的账户相关主键仍未包含 `media`",
-    "数据库 Contract owner 待同步",
-    "不重新开放老板已拍板事实",
+    "R3 现状同步（2026-08-25）",
+    "migration 005/006 已完成",
+    "老板已拍板事实不再交 arch 重新决策",
   ]) {
     assert.match(relay, new RegExp(marker));
   }

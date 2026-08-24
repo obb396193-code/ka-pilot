@@ -146,7 +146,7 @@ rg -n '奇航|SQL|SQLite|BI转化|现金口径|account_id|素材|商品' \
 
 `ka-src-0010` 为 confidential/E3 内部工作资料。无 `allowed_roles` 授权时只能看到 catalog 中允许暴露的元数据，不得读取 `storage_ref`。正文描述的服务、表、权限、对平结果和数据范围均未由本项目运行验证；引用时必须写成“资料主张”，不能回答成当前 KA 产品已接入或已可用。产品 Agent 不能依据该文档拼接任意 SQL 或索取 reader token；若 arch 后续批准接入，应只调用受控语义查询/ETL adapter，并继续执行 workspace ACL、来源血缘和字段级口径治理。
 
-R2 账户 ID 纠错：KA 与平台的 `account_id` 相同，不建立账户 ID 映射表；老板批准的目标账户键为 `(workspace_id, media, account_id)`，但当前数据库 Contract 尚未同步 `media` 入账户相关主键，须标记“Contract owner 待同步”，不能回答成现状已落地。`task/product/material/adgroup` 等其他对象 ID 是否一致仍为 `unresolved`（待核证），不得从账户结论顺推，也不得预先创建通用映射层。引用原文的“账户双 namespace”说法时必须同时标注“已被实证否定”。
+账户 ID 纠错：KA 与平台的 `account_id` 相同，不建立账户 ID 映射表；统一账户键为 `(workspace_id, media, account_id)`。R3 已于 2026-08-25 将账户主表、日指标、余额及相关账户外键同步到该键，并通过真实 PostgreSQL 跨媒体同号与孤儿反例。`task/product/material/adgroup` 等其他对象 ID 是否一致仍为 `unresolved`（待核证），不得从账户结论顺推，也不得预先创建通用映射层。引用原文的“账户双 namespace”说法时必须同时标注“已被实证否定”。
 
 ## 5. 引用格式
 

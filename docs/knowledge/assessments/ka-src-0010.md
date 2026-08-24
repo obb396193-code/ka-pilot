@@ -31,7 +31,7 @@
 - 原文把后端分为 Hologres、ODPS 和本地 SQLite 快照，并描述了账户、广告组、素材、商品、转化和维表的数据粒度。
 - 原文列出了 reader/editor/admin 角色、Bearer 鉴权、只读 SQL 护栏、行/字节/超时限制和常见错误处理。
 - 原文曾声称账户存在两套 `account_id` namespace；该说法已被老板提供的实证纠正，不能继续作为事实或待核证假设引用。
-- 已冻结的账户事实是：KA 与平台的 `account_id` 相同，不建立账户 ID 映射表。老板批准的目标账户键为 `(workspace_id, media, account_id)`；当前数据库 Contract 尚未同步 `media` 入账户相关主键，需由 Contract owner 另行处理。
+- 已冻结并落地的账户事实是：KA 与平台的 `account_id` 相同，不建立账户 ID 映射表；R3 已把账户主键与相关外键统一为 `(workspace_id, media, account_id)`。
 - `task_id/product_id/material_id/adgroup_id` 等其他对象 ID 是否与平台一致仍待核证，不能由账户结论顺推。
 - 原文关于部分对象无法直接 JOIN、媒体条件缺失会导致转化放大、赔付 JOIN 需要带 media 的其他主张仍需分别核证。
 - 原文含内部运行地址、内部工程/表、人员称谓和真实业务示例，因此完整正文只保存在 ignored private 区。
@@ -158,7 +158,7 @@
 ### 11.3 存储与数据模型
 
 - 资料把本地 SQLite 快照描述为主要查询源；冻结生产设计使用 PostgreSQL。SQLite 只能作为上游快照或测试夹具，不能成为多用户生产存储。
-- 资料用整数日期、字符串“不限”、未核证的其他对象 ID 和宽表；当前 Contract 已使用强类型日期、比率状态和 canonical 表，但 `accounts`、`account_metrics_daily`、`account_balance` 的现行主键仍不含 `media`。老板批准的目标账户键是 `(workspace_id, media, account_id)`，数据库 Contract owner 待同步；资料接入仍需要显式 adapter。
+- 资料用整数日期、字符串“不限”、未核证的其他对象 ID 和宽表；当前 Contract 已使用强类型日期、比率状态和 canonical 表。R3 已把 `accounts`、`account_metrics_daily`、`account_balance` 的主键及相关账户外键统一为 `(workspace_id, media, account_id)`；资料接入仍需要显式 adapter，且不能把账户结论顺推到 `task/product/material/adgroup`。
 - 资料按源表粒度组织；产品按业务对象、workspace 和字段级来源组织，不能把源表直接等同于产品模型。
 
 ### 11.4 指标口径
@@ -207,7 +207,7 @@
 1. `ka_data_adapter` 仅在 Worker/内部数据服务中使用，服务地址和凭证用环境级 secret_ref；
 2. adapter 只暴露批准的查询模板/视图，输入是结构化参数，不接收 Agent 生成的原始 SQL；
 3. 来源行先进入 `metrics_raw` 或专用 staging，再映射 canonical，保留 source/table/revision/query_run/field_sources；
-4. 账户目标键采用 `(workspace_id, media, account_id)`，不建立账户 ID 映射；当前数据库 Contract 由对应 owner 另批同步，`task/product/material/adgroup` 仅在逐项核证不一致后才建立对应关联，不预设映射层；
+4. 账户键采用 `(workspace_id, media, account_id)`，不建立账户 ID 映射；R3 数据库 Contract 与 migration 005/006 已同步，`task/product/material/adgroup` 仅在逐项核证不一致后才建立对应关联，不预设映射层；
 5. 每个字段登记 authority、freshness、coverage、fallback 和 conflict 状态；
 6. 对现金、转化、赔付和考核建立同日同户/任务自动对平，差异超过阈值进入 data quality work item；
 7. 查询层增加 statement parser、allowlisted view、只读 DB role、行列级 ACL、字节/时间/成本限制和审计；
@@ -244,7 +244,7 @@
 
 - **P0 安全与事实探针**：由授权 data owner 使用只读测试身份验证 health/query、角色权限、审计和底层只读；不在本项目保存 token。
 - **P0 数据对平**：选少量脱敏账户/任务和连续日期，对平奇航、ka-data 与业务确认表的消耗、转化、赔付、现金、考核；记录差异而非只报“相等”。
-- **P0 对象核证**：账户目标键采用 `(workspace_id, media, account_id)`，由数据库 Contract owner 同步现行两字段主键；分别核证 task/product/material/adgroup 等其他对象 ID 及关联键，不能从账户结论顺推。
+- **P0 对象核证**：账户已采用 `(workspace_id, media, account_id)`；继续分别核证 task/product/material/adgroup 等其他对象 ID 及关联键，不能从账户结论顺推。
 - **P1 adapter 候选**：探针通过后，接入 Worker 作为补充源/对平源，先快手、先只读，不替换主链路。
 - **P2 数据扩展**：素材/商品、内容标签和多渠道 adapter，以许可、字段覆盖、ACL 和数据质量为前置。
 - **不排期**：面向普通业务用户的任意 SQL 产品化。
