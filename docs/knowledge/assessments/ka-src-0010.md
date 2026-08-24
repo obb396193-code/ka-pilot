@@ -1,13 +1,13 @@
 # ka-src-0010 独立评估：ka-data 取数指南
 
-> `document_id`：`ka-src-0010`  
-> 来源版本：未标日期工作稿  
-> 内容 hash：`7c7265c29cfa31d6bd4c22650f198a4405cb1f0e076c007297205bbe8bef43d2`  
-> 证据等级：E3（内部资料；没有独立运行日志、代码版本、数据对平附件或责任方签字）  
-> 权限：confidential  
-> 生命周期：`review_pending`  
-> 审查状态：`pending`  
-> 产品知识库发布：`not_ready`  
+> `document_id`：`ka-src-0010`
+> 来源版本：未标日期工作稿
+> 内容 hash：`7c7265c29cfa31d6bd4c22650f198a4405cb1f0e076c007297205bbe8bef43d2`
+> 证据等级：E3（内部资料；没有独立运行日志、代码版本、数据对平附件或责任方签字）
+> 权限：confidential
+> 生命周期：`review_pending`
+> 审查状态：`pending`
+> 产品知识库发布：`not_ready`
 > 原文：`private/knowledge-sources/ka-src-0010/source.txt`（仅限 catalog 授权角色）
 
 ## 1. 原始资料摘要

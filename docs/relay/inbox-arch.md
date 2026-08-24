@@ -1363,3 +1363,101 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 - `validate-knowledge-catalog.test.mjs` 17/17 通过，包含生命周期/发布门、私有资料、bundle、巨量和腾讯来源等级校验。
 - `git diff --check` 通过；未修改 catalog 正文、资料状态、private canonical 原文、冻结 PRD/Contract 或生产代码。
+
+### P-KB-011 ka-data 内部取数指南入库、产品映射与接入边界裁决｜research/knowledge（Codex）
+
+- 派活方：资料研究与知识资产 Agent（Codex）
+- 日期：2026-08-24
+- 状态：待处理
+- 分支：`codex/shared-source-library`
+- 独立 worktree：`/private/tmp/codex-research-kb3`
+- 基线：`6f80279`
+- 功能提交 SHA：`c50150f`
+- 修改边界：只改知识资产、检索规则、测试、自己的状态/台账和本信箱；未改冻结 PRD/Contract、前后端生产代码或媒体账户。
+
+#### 1. 资料与存储
+
+- `document_id`：`ka-src-0010`
+- 标题：《ka-data 取数指南：接口用法、核心数据与易错口径》
+- catalog：`docs/knowledge/catalog.jsonl`
+- 独立评估：`docs/knowledge/assessments/ka-src-0010.md`
+- `storage_ref`：`private/knowledge-sources/ka-src-0010/source.txt`
+- canonical private root：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-0010/source.txt`
+- SHA-256：`7c7265c29cfa31d6bd4c22650f198a4405cb1f0e076c007297205bbe8bef43d2`
+- 状态：E3/confidential/`review_pending`/`not_ready`
+- 允许角色：product owner、research/knowledge、architecture review、security review；development 和产品内 Agent 不在默认范围。
+
+进入 Git：catalog 元数据、20 项评估、Agent 检索纪律、状态/台账和校验测试。只在 private：含内部运行地址、内部表/工程、人员称谓、真实业务示例和完整 SQL 的原文。凭证扫描为 0；原文只有占位符/环境变量，没有实际 token 值。
+
+#### 2. 事实、资料主张、推断与未证实
+
+已确认事实：
+
+- 原文描述了一个 reader 级只读查询门面、三类数据后端、账户/广告组/素材/商品/BI 转化数据字典、现金/考核/扣量公式、ID namespace 和故障排查。
+- 当前冻结 Contract 仍以奇航 `get_data` 为一期数据主链路；产品 API 是结构化语义查询，生产存储设计是 PostgreSQL raw/canonical + workspace ACL。
+- 当前仓库没有原文所指服务端实现、产品 adapter、调用日志、reader token 或运行验收；本轮没有调用内部服务。
+
+资料主张但未独立核实：
+
+- 服务拥有完整 Hologres/ODPS/SQLite 数据，SQLite 低延迟且口径对齐；
+- 五类 BI 转化已与业务确认表全等；
+- reader token、关键词护栏和底层连接构成充分只读保护；
+- 文档中的数据范围、表规模、日期范围和公式当前仍有效。
+
+合理推断：
+
+- 若探针成立，ka-data 可作为 BI 转化、素材/商品和跨媒体的补充/对平 provider；不必立即替换奇航。
+- media 条件、两套 ID namespace、业务日期门槛和截断规则适合转成数据质量检查。
+- 原始 SQL 门面只适合受控数据运维/adapter，不适合直接给普通用户或产品 Agent。
+
+未证实：服务 owner/版本/SLA、reader token 生命周期和 ACL、底层只读性、快照 freshness/血缘、两套 ID 映射、字段覆盖、现金/考核系数定义、数据许可和同日同户对平结果。
+
+#### 3. 对当前产品的判断
+
+有帮助，但不是“已有产品能力”或“可立即替换的数据底座”。
+
+- 已包含：ETL、raw/canonical、数据健康、账户/广告/任务模型、结构化 query、指标版本化、商品素材方向。
+- 部分包含：BI 转化、广告组日级字段、素材/商品表、多渠道、来源血缘和具体数据质量规则。
+- 缺失：ka-data adapter、BUC/workspace/resource ACL 映射、字段级 authority/freshness/coverage、ID namespace mapping、快照 revision 和运行实证。
+- 冲突：任意 SQL vs 结构化 query；共享 reader token vs 多租户 ACL；本地 SQLite vs PostgreSQL 生产存储；固定系数 vs 生效日期版本化；乘/除系数表达可能不是同一口径。
+
+#### 4. 分期建议
+
+- P0：授权 data owner 做只读 health/query 探针、安全复核和少量脱敏样本的同日同户对平；不把 token 交给本项目或写入资料库。
+- P0：确认奇航/ka-data/业务确认表在消耗、转化、赔付、现金、考核上的字段级 SSOT 与差异处理。
+- P0：建立账户/任务/广告组 namespace 和 media/biz mapping。
+- P1：探针通过后，把 ka-data 作为 Worker 内受控 adapter/补充源/对平源；只接批准模板或视图，不接 Agent 原始 SQL，先快手且不替换奇航主链路。
+- P2：素材/商品/内容标签和多渠道，以许可、ACL、字段覆盖和数据质量为前置。
+- 不采用：普通用户/Agent 任意 SQL、共享 token 台账、临时地址写进 Contract、SQLite 作生产主库、硬编码系数、因资料写“全媒体”而扩一期。
+
+#### 5. 产品知识库发布建议
+
+当前不允许发布。若后续审查批准：
+
+- 优先发布派生的字段/粒度字典、经 data owner 批准的公式、namespace/易错口径和排障摘要；
+- 不发布原始运行地址、内部表全名、人员、真实业务样例、token 获取/台账或原始 SQL 手册；
+- 派生知识应另分配 document_id/hash，继承 confidential/restricted ACL，并明确 source revision、reviewed_by/reviewed_at；
+- 产品 Agent 只能检索批准后的语义知识，不能据此生成任意 SQL 或索取凭证。
+
+#### 6. 请 arch/security/data owner 回写 ✅/❌
+
+1. 谁是正式 data owner；资料版本、服务环境和 SLA 是什么？
+2. 是否批准把 ka-data 作为一期补充/对平 provider 候选，而非立即替换奇航？
+3. 是否批准第一批只读探针；测试身份、样本、指标和验收人由谁提供？
+4. reader token 的数据范围、签发/撤销、审计和 BUC/workspace 映射是否合规？
+5. SQL 护栏是否需要 security 绕过测试、底层只读角色和 allowlisted views？
+6. 奇航、ka-data、MAPI、业务确认表的字段级 SSOT 如何裁决？
+7. 现金公式的固定系数与版本化 `channel_coefficients` 是否同一定义？
+8. 两套 `account_id` namespace 是否有正式 mapping；coverage 如何表达？
+9. SQLite 快照生成链、data_as_of、revision、保留期和失败补偿是否可提供？
+10. 素材/商品/URL/内容标签允许哪些角色访问、导出和进入产品知识库？
+11. 探针通过后 adapter 进入 P1 还是 P2；是否继续保持一期只快手？
+12. 产品知识库允许发布哪些派生内容；原文是否永久只留 private？
+
+#### 7. 验证与边界说明
+
+- `validate-knowledge-catalog.test.mjs` 18/18 通过。
+- 10 条 catalog JSONL 结构/枚举/生命周期门有效；`ka-src-0010` 原文 hash 与 catalog 一致，原文/评估凭证形态 0。
+- worktree 与 canonical private 原文 hash 一致；private 命中 `.gitignore` 且未被 Git 跟踪；`git diff --check` 通过。
+- 新 worktree 未复制既有 0005/0007/0008/0009 完整大包，因此本轮没有重跑依赖全部历史 private bundle 的全库 repository validator；既有 0001~0009 未修改。本轮对 0010 做了定向 hash/凭证/权限/状态校验。
+- 未访问内部服务、未申请或读取 reader token、未运行 SQL、未修改冻结 PRD/Contract/生产代码。
