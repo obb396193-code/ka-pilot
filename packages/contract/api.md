@@ -84,6 +84,10 @@ Canonical Row 内的比率/CPA 固定使用
 KA Data 的 `snake_case` 与 Platform 的 repository DTO 均只能留在 Adapter 内；响应只允许
 Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本不匹配，整次来源响应按
 `UPSTREAM_INVALID_RESPONSE` fail closed。
+仅字段缺席或显式 `null` 可映射为 Canonical 缺失值；字段已存在但类型/值非法
+（如非数字成本、非数组 tasks、字符串布尔值或不存在的日历日）必须整个请求 fail closed。
+`ka_data` 与 `platform` 的 Canonical 契约损坏都回顶层 HTTP 502 +
+`UPSTREAM_INVALID_RESPONSE`；不得包装成 HTTP 200 的 `source.unavailable`，`reconcile` 也不例外。
 
 `datasetVersion/dataAsOf/timezone/dayCut` 只允许来自上游响应或 canonical 持久化/查询
 元数据。尤其 Platform 的 `timezone/dayCut` 不得由代码常量或部署默认值推断。来源未提供时必须返回 `null`，并以

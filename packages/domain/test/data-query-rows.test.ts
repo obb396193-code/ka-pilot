@@ -57,6 +57,10 @@ describe("canonical data query rows", () => {
       ...summary,
       cash_cost: 90,
     })).toThrow();
+    expect(() => canonicalQueryRowSchemaById["account.trend"].parse({
+      ds: "2026-02-31",
+      metrics: summary,
+    })).toThrow(/calendar date/i);
   });
 
   it("requires the account tuple and rejects source-specific daily fields", () => {

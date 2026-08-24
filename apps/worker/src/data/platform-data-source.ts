@@ -21,6 +21,16 @@ import {
 
 const PLATFORM_SOURCE_REQUEST_ID = "platform-source";
 
+export class PlatformDataSourceError extends Error {
+  readonly code = "UPSTREAM_INVALID_RESPONSE" as const;
+  readonly retryable = false;
+
+  constructor() {
+    super("Platform source returned rows outside the canonical query contract");
+    this.name = "PlatformDataSourceError";
+  }
+}
+
 export interface PlatformQueryRepository {
   querySummary: SemanticQueryRepository["querySummary"];
   queryTrend: SemanticQueryRepository["queryTrend"];
@@ -245,6 +255,7 @@ export class PlatformDataSource {
       };
     } catch (error) {
       const invalidCanonical = error instanceof CanonicalQueryRowError;
+      if (invalidCanonical) throw new PlatformDataSourceError();
       return {
         queryId: resolved.queryId,
         rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
@@ -254,16 +265,14 @@ export class PlatformDataSource {
         wholeResultTotal: {
           value: null,
           availability: "error",
-          reason: invalidCanonical ? "UPSTREAM_INVALID_RESPONSE" : "SOURCE_UNAVAILABLE",
+          reason: "SOURCE_UNAVAILABLE",
         },
         lineage: unavailableLineage(resolved),
         warnings: ["Platform source is unavailable"],
         error: {
-          code: invalidCanonical ? "UPSTREAM_INVALID_RESPONSE" : "SOURCE_UNAVAILABLE",
-          message: invalidCanonical
-            ? "Platform source returned invalid canonical rows"
-            : "Platform source is unavailable",
-          retryable: !invalidCanonical,
+          code: "SOURCE_UNAVAILABLE",
+          message: "Platform source is unavailable",
+          retryable: true,
           requestId: PLATFORM_SOURCE_REQUEST_ID,
         },
       };

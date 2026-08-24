@@ -17,18 +17,19 @@ export class CanonicalQueryRowError extends Error {
   }
 }
 
-function finite(value: unknown): number | null {
-  if (typeof value === "number") return Number.isFinite(value) ? value : null;
+function finite(value: unknown): number {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
   if (typeof value === "string" && value.trim() !== "" && /^-?\d+(?:\.\d+)?$/.test(value)) {
     const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : null;
+    if (Number.isFinite(parsed)) return parsed;
   }
-  return null;
+  throw new CanonicalQueryRowError();
 }
 
 function firstNumber(row: RawRow, ...keys: string[]): number | null {
   for (const key of keys) {
-    if (row[key] !== undefined && row[key] !== null) return finite(row[key]);
+    if (!Object.hasOwn(row, key) || row[key] === null) continue;
+    return finite(row[key]);
   }
   return null;
 }
@@ -41,8 +42,19 @@ function requiredCount(row: RawRow, ...keys: string[]): number {
 
 function text(row: RawRow, ...keys: string[]): string | null {
   for (const key of keys) {
+    if (!Object.hasOwn(row, key) || row[key] === null) continue;
     const value = row[key];
     if (typeof value === "string" && value.trim() !== "") return value;
+    throw new CanonicalQueryRowError();
+  }
+  return null;
+}
+
+function optionalBoolean(row: RawRow, ...keys: string[]): boolean | null {
+  for (const key of keys) {
+    if (!Object.hasOwn(row, key) || row[key] === null) continue;
+    if (typeof row[key] !== "boolean") throw new CanonicalQueryRowError();
+    return row[key];
   }
   return null;
 }
@@ -123,7 +135,8 @@ function tasks(row: RawRow, source: SourceKind): AccountDailyRow["tasks"] {
       bizName: text(row, "biz_name", "bizName"),
     }];
   }
-  if (!Array.isArray(row.tasks)) return [];
+  if (!Object.hasOwn(row, "tasks") || row.tasks === null) return [];
+  if (!Array.isArray(row.tasks)) throw new CanonicalQueryRowError();
   return row.tasks.map((task) => {
     if (typeof task !== "object" || task === null || Array.isArray(task)) {
       throw new CanonicalQueryRowError();
@@ -139,11 +152,7 @@ function tasks(row: RawRow, source: SourceKind): AccountDailyRow["tasks"] {
 
 function dailyRow(row: RawRow, source: SourceKind, trustedWorkspaceId: string): AccountDailyRow {
   const base = metricSet(row, source);
-  const dataAnomaly = row.dataAnomaly === true || row.data_anomaly === true
-    ? true
-    : row.dataAnomaly === false || row.data_anomaly === false
-      ? false
-      : null;
+  const dataAnomaly = optionalBoolean(row, "dataAnomaly", "data_anomaly");
   const computedAt = text(row, "computedAt");
   return {
     workspaceId: trustedWorkspaceId,

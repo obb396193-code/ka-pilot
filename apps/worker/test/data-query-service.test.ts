@@ -37,7 +37,7 @@ describe("DataQueryService", () => {
     const kaData = { query: vi.fn(async () => ready("ka_data", 10)) };
     const platform = { query: vi.fn(async () => ready("canonical", 11)) };
     const service = new DataQueryService({
-      registry: createDataQueryRegistry(),
+      registry: createDataQueryRegistry({ today: () => "2026-08-24" }),
       kaData,
       platform,
     });
@@ -131,6 +131,31 @@ describe("DataQueryService", () => {
     expect(response).toMatchObject({
       ok: false,
       error: { code: "UPSTREAM_INVALID_RESPONSE" },
+    });
+  });
+
+  it("rejects an impossible canonical date from a malicious data source", async () => {
+    const malformed = ready("canonical", 11, "account.table");
+    malformed.rows = [{ ...malformed.rows[0], ds: "2026-02-31" }];
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async (resolved) => ready("ka_data", 10, resolved.queryId) },
+      platform: { query: async () => malformed },
+      requestId: () => "invalid-calendar-request",
+    });
+    const response = await service.execute({
+      queryId: "account.table",
+      params: { date: "2026-08-24" },
+      dataView: "platform",
+    }, auth);
+    expect(response).toEqual({
+      ok: false,
+      error: {
+        code: "UPSTREAM_INVALID_RESPONSE",
+        message: "Data source returned an invalid canonical response",
+        retryable: false,
+        requestId: "invalid-calendar-request",
+      },
     });
   });
 

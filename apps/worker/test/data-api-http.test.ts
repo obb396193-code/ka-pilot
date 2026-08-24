@@ -7,6 +7,7 @@ import type { DataQueryId, SourceQueryResult } from "@ka/domain";
 
 import { createDataApiServer } from "../src/data/http-server.js";
 import { KaDataClientError } from "../src/data/ka-data-client.js";
+import { PlatformDataSource } from "../src/data/platform-data-source.js";
 import { DataQueryService, type DataSourceQueryPort } from "../src/data/query-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
 import { canonicalRow, readySource } from "./canonical-query-fixtures.js";
@@ -278,6 +279,46 @@ describe("data API HTTP composition", () => {
     const body = await response.json();
     expect(body).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
     expect(JSON.stringify(body)).not.toContain("unauthorized-account");
+  });
+
+  it("returns top-level 502 when the platform source violates the canonical row contract", async () => {
+    const platform = new PlatformDataSource({
+      querySummary: async () => ({
+        rowCount: 1,
+        accountCount: 1,
+        anomalyRows: 0,
+        cost: "not-a-number",
+      }),
+      queryTrend: async () => [],
+      queryTable: async () => ({ rows: [], total: 0, page: 1, pageSize: 50 }),
+      queryLineage: async () => ({
+        dataAsOf: null,
+        canonicalRows: 0,
+        returnedAccounts: 0,
+        requestedAccountDays: 1,
+        returnedAccountDays: 0,
+      }),
+    } as never);
+    const baseUrl = await start({ platform });
+    const response = await fetch(`${baseUrl}/api/v1/data/query`, {
+      method: "POST",
+      headers: { ...authHeaders(), "x-request-id": "platform-contract-001" },
+      body: JSON.stringify({
+        queryId: "account.summary",
+        params: { date: "2026-08-24" },
+        dataView: "platform",
+      }),
+    });
+    expect(response.status).toBe(502);
+    expect(await response.json()).toEqual({
+      ok: false,
+      error: {
+        code: "UPSTREAM_INVALID_RESPONSE",
+        message: "Platform source returned rows outside the canonical query contract",
+        retryable: false,
+        requestId: "platform-contract-001",
+      },
+    });
   });
 
   it("fails closed with a stable truncated envelope when serialized output exceeds 16MB policy", async () => {

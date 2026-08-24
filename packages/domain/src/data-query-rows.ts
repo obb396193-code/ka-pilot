@@ -2,7 +2,13 @@ import { z } from "zod";
 
 const finiteNumber = z.number().finite();
 const nullableFiniteNumber = finiteNumber.nullable();
-const calendarDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+const calendarDateSchema = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/)
+  .refine((value) => {
+    const parsed = new Date(`${value}T00:00:00.000Z`);
+    return !Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === value;
+  }, "date must be a real calendar date");
 
 export const ratioValueSchema = z
   .object({

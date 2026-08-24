@@ -25,6 +25,7 @@ import {
   type ScopedAccount,
 } from "./query-registry.js";
 import { resolveRequestId } from "./request-id.js";
+import { PlatformDataSourceError } from "./platform-data-source.js";
 
 export const DATA_QUERY_HTTP_PATH = "/api/v1/data/query";
 
@@ -110,6 +111,9 @@ function mapError(error: unknown, requestId: string): StableDataQueryError {
     return stableError(error.code, error.message, false, requestId);
   }
   if (error instanceof KaDataClientError) {
+    return stableError(error.code, error.message, error.retryable, requestId);
+  }
+  if (error instanceof PlatformDataSourceError) {
     return stableError(error.code, error.message, error.retryable, requestId);
   }
   if (error instanceof OutputScopeError) {
@@ -200,7 +204,10 @@ function guardSourceOutput(
     throw new OutputContractError();
   }
   result = parsed.data;
-  if (result.status === "unavailable") return result;
+  if (result.status === "unavailable") {
+    if (result.error?.code === "UPSTREAM_INVALID_RESPONSE") throw new OutputContractError();
+    return result;
+  }
   const allowed = new Set(
     scope.accounts.map((account) => `${account.media}\u0000${account.accountId}`),
   );
@@ -358,6 +365,16 @@ export class DataQueryService {
         this.dependencies.kaData.query(resolved, scope),
         this.dependencies.platform.query(resolved, scope),
       ]);
+      for (const result of [kaResult, platformResult]) {
+        if (
+          result.status === "rejected" &&
+          (result.reason instanceof KaDataClientError ||
+            result.reason instanceof PlatformDataSourceError) &&
+          result.reason.code === "UPSTREAM_INVALID_RESPONSE"
+        ) {
+          throw result.reason;
+        }
+      }
       const kaData = kaResult.status === "fulfilled"
         ? withFrozenAuthority(
             guardSourceOutput(kaResult.value, resolved, scope),

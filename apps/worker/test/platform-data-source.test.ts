@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
-import { PlatformDataSource } from "../src/data/platform-data-source.js";
+import {
+  PlatformDataSource,
+  PlatformDataSourceError,
+} from "../src/data/platform-data-source.js";
 
 const scope = {
   workspaceId: "workspace-fixture",
@@ -238,5 +241,19 @@ describe("PlatformDataSource", () => {
       lineage: { metadataAvailability: "unknown", dataAsOf: null },
     });
     expect(JSON.stringify(result)).not.toContain("secret SQL detail");
+  });
+
+  it("throws a stable contract error when canonicalization fails", async () => {
+    const repository = {
+      querySummary: vi.fn(async () => ({ ...summary(12), cost: "not-a-number" })),
+      queryTrend: vi.fn(),
+      queryTable: vi.fn(),
+      queryLineage: vi.fn(async () => lineage()),
+    };
+    const source = new PlatformDataSource(repository as never);
+    await expect(source.query(
+      createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"),
+      scope,
+    )).rejects.toBeInstanceOf(PlatformDataSourceError);
   });
 });
