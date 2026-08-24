@@ -1,0 +1,38 @@
+.surface {
+  --kp-brand: oklch(0.27 0.01 260);
+  --kp-status-critical: oklch(0.58 0.22 27);
+  --kp-status-warning: oklch(0.66 0.16 70);
+  --kp-status-success: oklch(0.55 0.15 151);
+  --kp-status-info: oklch(0.57 0.16 253);
+  --kp-chart-spend: var(--kp-brand);
+  --kp-chart-cpa: oklch(0.68 0.15 70);
+  --kp-chart-grid: oklch(0.88 0.01 250);
+  --background: oklch(0.985 0.003 260);
+  --foreground: oklch(0.19 0.01 260);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--foreground);
+  --primary: var(--kp-brand);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.955 0.006 260);
+  --secondary-foreground: oklch(0.25 0.01 260);
+  --muted: oklch(0.965 0.004 260);
+  --muted-foreground: oklch(0.5 0.015 260);
+  --accent: oklch(0.93 0.012 260);
+  --accent-foreground: oklch(0.22 0.01 260);
+  --border: oklch(0.9 0.008 260);
+  --ring: oklch(0.58 0.02 260);
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface *,
+  .surface *::before,
+  .surface *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

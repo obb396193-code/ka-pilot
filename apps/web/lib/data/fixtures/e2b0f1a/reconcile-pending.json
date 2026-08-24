@@ -1,0 +1,143 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "reconcile",
+    "kaData": {
+      "queryId": "reconcile.account_daily",
+      "rowSchemaVersion": "reconcile.account_daily/v1",
+      "status": "ready",
+      "rows": [{
+        "workspaceId": "workspace-fixture",
+        "media": "KUAISHOU",
+        "accountId": "account-fixture-001",
+        "accountName": null,
+        "ownerUserId": null,
+        "ds": "2026-08-24",
+        "metrics": {
+          "cost": 10,
+          "exposure": 100,
+          "click": 10,
+          "conversion": 2,
+          "realConversion": null,
+          "cashCost": 9,
+          "costSpace": null,
+          "wakeUv": null,
+          "potentialUv": null,
+          "budget": null,
+          "budgetUsageRate": null,
+          "deductionRate": null,
+          "mainAdCostProportion": null,
+          "assessmentPrice": null,
+          "ratios": {
+            "ctr": { "value": 0.1, "state": "finite" },
+            "cvr": { "value": 0.2, "state": "finite" },
+            "realCpa": { "value": null, "state": "undefined" },
+            "cashCpa": { "value": null, "state": "undefined" },
+            "gap": { "value": null, "state": "undefined" },
+            "potentialRate": { "value": null, "state": "undefined" },
+            "biConversionRate": { "value": null, "state": "undefined" }
+          }
+        },
+        "dataAnomaly": null,
+        "computedAt": null,
+        "tasks": []
+      }],
+      "returnedRowCount": 1,
+      "wholeResultTotal": { "value": 1, "availability": "available" },
+      "lineage": {
+        "source": "ka_data",
+        "datasetVersion": "ka-data-20260824-01",
+        "queryTemplateVersion": "reconcile-account-daily-v1",
+        "metricVersion": "reconcile-account-v1",
+        "dataAsOf": "2026-08-24T07:55:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "calendar_day",
+        "metadataAvailability": "known",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": ["workspace_id", "media", "account_id"]
+        },
+        "coverage": { "complete": true, "requestedObjects": 1, "returnedObjects": 1 },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    },
+    "platform": {
+      "queryId": "reconcile.account_daily",
+      "rowSchemaVersion": "reconcile.account_daily/v1",
+      "status": "ready",
+      "rows": [{
+        "workspaceId": "workspace-fixture",
+        "media": "KUAISHOU",
+        "accountId": "account-fixture-001",
+        "accountName": null,
+        "ownerUserId": null,
+        "ds": "2026-08-24",
+        "metrics": {
+          "cost": 11,
+          "exposure": 100,
+          "click": 10,
+          "conversion": 2,
+          "realConversion": 1,
+          "cashCost": 10,
+          "costSpace": 0,
+          "wakeUv": null,
+          "potentialUv": null,
+          "budget": null,
+          "budgetUsageRate": null,
+          "deductionRate": null,
+          "mainAdCostProportion": null,
+          "assessmentPrice": null,
+          "ratios": {
+            "ctr": { "value": 0.1, "state": "finite" },
+            "cvr": { "value": 0.2, "state": "finite" },
+            "realCpa": { "value": 11, "state": "finite" },
+            "cashCpa": { "value": 10, "state": "finite" },
+            "gap": { "value": 1, "state": "finite" },
+            "potentialRate": { "value": null, "state": "undefined" },
+            "biConversionRate": { "value": null, "state": "undefined" }
+          }
+        },
+        "dataAnomaly": false,
+        "computedAt": null,
+        "tasks": []
+      }],
+      "returnedRowCount": 1,
+      "wholeResultTotal": { "value": 1, "availability": "available" },
+      "lineage": {
+        "source": "canonical",
+        "datasetVersion": "canonical-20260824-01",
+        "queryTemplateVersion": "reconcile-account-daily-v1",
+        "metricVersion": "reconcile-account-v1",
+        "dataAsOf": "2026-08-24T08:00:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "calendar_day",
+        "metadataAvailability": "known",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "comparison_reference"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": ["workspace_id", "media", "account_id"]
+        },
+        "coverage": { "complete": true, "requestedObjects": 1, "returnedObjects": 1 },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    },
+    "comparison": {
+      "status": "unavailable",
+      "reason": "reconciliation_engine_pending",
+      "rows": []
+    }
+  }
+}

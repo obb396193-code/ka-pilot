@@ -1,14 +1,5 @@
+import { ModulePlaceholder } from "@/components/business/module-placeholder"
+
 export default function AutomationPage() {
-  return (
-    <div className="flex-1 space-y-4 p-4">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">自动化</h1>
-        <p className="text-sm text-muted-foreground">流程和规则</p>
-      </div>
-      <div className="rounded-lg border border-dashed p-12 text-center">
-        <p className="text-muted-foreground">自动化模块 - 待实现</p>
-        <p className="text-xs text-muted-foreground mt-2">工作流画布 / 自动化规则 / 运行中心</p>
-      </div>
-    </div>
-  )
+  return <ModulePlaceholder eyebrow="KA Pilot · 自动化" title="自动化" description="规则、流程和运行状态的统一入口。" capabilities={["规则解释接口已纳入后端 Contract", "媒体写操作必须先预览和二次确认", "运行中心待后端任务队列联调"]} primaryHref="/diagnostics/finding-cost-001" />
 }
