@@ -93,7 +93,11 @@
 
 ### 截断与全量结论
 
-- 任一响应恰好命中 2,000 行、10,000 行或 16MB，均按疑似截断处理；上游 `truncated=true`、`limit_clamped=true`、行数不一致或超过 Registry budget 同样标 `partial/truncated`。
+- KA Data 等无可信全量 `total` 的上游，恰好命中 2,000/10,000 行或
+  客户端 16MB 边界时保守按疑似截断处理。若 repository 返回可信全量
+  `total`，且 `returned == total == limit`，则可判定完整；`total > returned`
+  才标 `partial/truncated`。上游 `truncated=true`、`limit_clamped=true`、行数不一致
+  或超过 Registry budget 始终标 `partial/truncated`。
 - `partial/truncated/coverage.complete=false` 时，`wholeResultTotal` 不得为 `available`，不得输出全量汇总。
 - 账户单侧缺行用 `source_missing`；不得仅按账户名称 join，不得把任务/商品/素材/广告组的 ID 同源性从账户事实外推。
 

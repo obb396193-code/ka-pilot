@@ -78,13 +78,23 @@ describe("data API HTTP composition", () => {
       kaData: options.kaData ?? { query: async (resolved) => ready(
         "ka_data",
         resolved.outputShape === "account_rows"
-          ? [{ media: "KUAISHOU", account_id: "account-1", cost: 10 }]
+          ? [{
+              workspace_id: auth.workspaceId,
+              media: "KUAISHOU",
+              account_id: "account-1",
+              cost: 10,
+            }]
           : [{ cost: 10 }],
       ) },
       platform: options.platform ?? { query: async (resolved) => ready(
         "canonical",
         resolved.outputShape === "account_rows"
-          ? [{ media: "KUAISHOU", accountId: "account-1", cost: 11 }]
+          ? [{
+              workspaceId: auth.workspaceId,
+              media: "KUAISHOU",
+              accountId: "account-1",
+              cost: 11,
+            }]
           : [{ cost: 11 }],
       ) },
       requestId: () => "http-smoke-request",

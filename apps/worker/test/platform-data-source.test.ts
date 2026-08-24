@@ -148,6 +148,40 @@ describe("PlatformDataSource", () => {
     expect(result.wholeResultTotal).toMatchObject({ value: null, availability: "partial" });
   });
 
+  it("keeps an exact 2,000-row result complete when repository total proves no rows are missing", async () => {
+    const row = {
+      workspaceId: scope.workspaceId,
+      media: "KUAISHOU",
+      accountId: "account-1",
+      ds: "2026-08-24",
+    };
+    const repository = {
+      querySummary: vi.fn(),
+      queryTrend: vi.fn(),
+      queryTable: vi.fn(async (input: { page?: number; pageSize?: number }) => ({
+        rows: Array.from({ length: 500 }, () => ({ ...row })),
+        total: 2_000,
+        page: input.page ?? 1,
+        pageSize: input.pageSize ?? 500,
+      })),
+      queryLineage: vi.fn(async () => lineage()),
+    };
+    const source = new PlatformDataSource(repository as never);
+    const result = await source.query(
+      createDataQueryRegistry().resolve(
+        "account.anomalies",
+        { date: "2026-08-24" },
+        "platform",
+      ),
+      scope,
+    );
+
+    expect(repository.queryTable).toHaveBeenCalledTimes(4);
+    expect(result.returnedRowCount).toBe(2_000);
+    expect(result.lineage).toMatchObject({ truncated: false, partial: false });
+    expect(result.wholeResultTotal).toEqual({ value: 2_000, availability: "available" });
+  });
+
   it("returns an explicit unavailable source when a canonical capability is unavailable", async () => {
     const repository = {
       querySummary: vi.fn(),

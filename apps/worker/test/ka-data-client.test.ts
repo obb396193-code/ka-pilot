@@ -238,6 +238,40 @@ describe("KaDataClient", () => {
     expect(result.lineage.coverage.returnedObjects).toBe(1);
   });
 
+  it("injects the authenticated workspace into account rows and overwrites upstream claims", async () => {
+    const resolved = createDataQueryRegistry().resolve(
+      "account.table",
+      { date: "2026-08-24", page: 1, pageSize: 50 },
+      "ka_data",
+    );
+    const client = new KaDataClient({
+      baseUrl: "https://ka-data.example.internal",
+      token: "fixture-token",
+      fetchFn: async () => jsonResponse({
+        backend: "sqlite",
+        rowCount: 1,
+        rows: [{
+          workspace_id: "upstream-forged-workspace",
+          media: "KUAISHOU",
+          account_id: "a-1",
+        }],
+      }),
+    });
+
+    const result = await client.query(resolved, {
+      workspaceId: "authenticated-workspace",
+      userId: "u",
+      accounts: [{ media: "KUAISHOU", accountId: "a-1" }],
+    });
+
+    expect(result.rows).toEqual([{
+      workspace_id: "authenticated-workspace",
+      media: "KUAISHOU",
+      account_id: "a-1",
+    }]);
+    expect(JSON.stringify(result)).not.toContain("upstream-forged-workspace");
+  });
+
   it("times out with a stable retryable error", async () => {
     const client = new KaDataClient({
       baseUrl: "https://ka-data.example.internal",

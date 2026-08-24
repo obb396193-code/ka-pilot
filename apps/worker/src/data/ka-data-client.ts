@@ -290,7 +290,16 @@ export class KaDataClient {
         );
       }
       const body = await readBoundedBody(response, this.#maxResponseBytes);
-      const envelope = parseEnvelope(body.text);
+      const upstreamEnvelope = parseEnvelope(body.text);
+      const envelope = resolved.outputShape === "account_rows"
+        ? {
+            ...upstreamEnvelope,
+            rows: upstreamEnvelope.rows.map((row) => ({
+              ...row,
+              workspace_id: scope.workspaceId,
+            })),
+          }
+        : upstreamEnvelope;
       const warnings: string[] = [];
       const suspectedRowBoundary = SUSPECTED_ROW_BOUNDARIES.has(envelope.rowCount) ||
         SUSPECTED_ROW_BOUNDARIES.has(envelope.rows.length);

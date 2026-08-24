@@ -184,8 +184,11 @@ function guardSourceOutput(
   for (const row of result.rows) {
     const identity = rowAccountIdentity(row);
     const carriesIdentity = identity.media !== null || identity.accountId !== null;
-    if (resolved.outputShape === "account_rows" &&
-      (identity.media === null || identity.accountId === null)) {
+    if (resolved.outputShape === "account_rows" && (
+      identity.workspaceId === null ||
+      identity.media === null ||
+      identity.accountId === null
+    )) {
       throw new OutputScopeError();
     }
     if (identity.workspaceId !== null && identity.workspaceId !== scope.workspaceId) {
@@ -350,10 +353,10 @@ export class DataQueryService {
         : unavailableSource(resolved, "platform", mapError(platformResult.reason, requestId));
       const comparisonReason = kaData.status === "unavailable" || platform.status === "unavailable"
         ? "source_unavailable"
-        : kaData.lineage.partial || platform.lineage.partial
-          ? "partial_source"
-          : (kaData.returnedRowCount === 0) !== (platform.returnedRowCount === 0)
+        : (kaData.returnedRowCount === 0) !== (platform.returnedRowCount === 0)
             ? "source_missing"
+          : kaData.lineage.partial || platform.lineage.partial
+            ? "partial_source"
           : "reconciliation_engine_pending";
       return dataQueryResponseSchema.parse({
         ok: true,

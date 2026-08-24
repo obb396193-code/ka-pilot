@@ -11,7 +11,12 @@ import { createDataQueryRegistry } from "../src/data/query-registry.js";
 function ready(source: "ka_data" | "canonical", value: number): SourceQueryResult {
   return {
     status: "ready",
-    rows: [{ media: "KUAISHOU", accountId: "allowed-account", cost: value }],
+    rows: [{
+      workspaceId: "workspace-server-side",
+      media: "KUAISHOU",
+      accountId: "allowed-account",
+      cost: value,
+    }],
     returnedRowCount: 1,
     wholeResultTotal: { value: 1, availability: "available" },
     lineage: {
@@ -131,7 +136,11 @@ describe("DataQueryService", () => {
 
   it("requires account identity fields for account-row queries", async () => {
     const malformed = ready("canonical", 11);
-    malformed.rows = [{ cost: 11 }];
+    malformed.rows = [{
+      media: "KUAISHOU",
+      accountId: "allowed-account",
+      cost: 11,
+    }];
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
       kaData: { query: async () => ready("ka_data", 10) },
@@ -144,6 +153,39 @@ describe("DataQueryService", () => {
       dataView: "platform",
     }, auth);
     expect(response).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+  });
+
+  it("classifies one-sided empty data as source_missing before partial_source", async () => {
+    const emptyPartial = ready("ka_data", 0);
+    emptyPartial.rows = [];
+    emptyPartial.returnedRowCount = 0;
+    emptyPartial.wholeResultTotal = {
+      value: null,
+      availability: "partial",
+      reason: "Upstream boundary was hit",
+    };
+    emptyPartial.lineage = {
+      ...emptyPartial.lineage,
+      coverage: { complete: false, reason: "Upstream boundary was hit" },
+      truncated: true,
+      partial: true,
+    };
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => emptyPartial },
+      platform: { query: async () => ready("canonical", 11) },
+    });
+
+    const response = await service.execute({
+      queryId: "reconcile.account_daily",
+      params: { date: "2026-08-24", media: "KUAISHOU" },
+      dataView: "reconcile",
+    }, auth);
+
+    expect(response.ok).toBe(true);
+    if (response.ok && response.data.mode === "reconcile") {
+      expect(response.data.comparison.reason).toBe("source_missing");
+    }
   });
 
   it("rejects forged identity fields before adapters run", async () => {
