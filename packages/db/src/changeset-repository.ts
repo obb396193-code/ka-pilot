@@ -24,6 +24,8 @@ export interface NewChangeSetItem {
 
 export interface NewChangeSet {
   workspaceId: string;
+  media: string;
+  accountId: string;
   workItemId?: string | null | undefined;
   title: string;
   initiator: string;
@@ -37,6 +39,8 @@ export interface NewChangeSet {
 export interface ChangeSetRecord {
   id: string;
   workspaceId: string;
+  media: string | null;
+  accountId: string | null;
   workItemId: string | null;
   title: string | null;
   status: ChangeSetStatus;
@@ -60,6 +64,8 @@ export type ConfirmResult =
 interface HeaderRow {
   id: string;
   workspace_id: string;
+  media: string | null;
+  account_id: string | null;
   work_item_id: string | null;
   title: string | null;
   status: ChangeSetStatus;
@@ -86,7 +92,7 @@ interface ItemRow {
 }
 
 const headerColumns = `
-  id, workspace_id, work_item_id, title, status, initiator,
+  id, workspace_id, work_item_id, media, account_id, title, status, initiator,
   credential_owner_user_id, executor_identity, multica_issue_id,
   ttl_expire_at, reason_code, simulation, created_at, executed_at
 `;
@@ -121,6 +127,8 @@ async function assemble(client: Pool | PoolClient, header: HeaderRow): Promise<C
   return {
     id: header.id,
     workspaceId: header.workspace_id,
+    media: header.media,
+    accountId: header.account_id,
     workItemId: header.work_item_id,
     title: header.title,
     status: header.status,
@@ -199,17 +207,30 @@ export class ChangeSetRepository {
 
   async create(input: NewChangeSet): Promise<ChangeSetRecord> {
     if (input.items.length === 0) throw new Error("changeset requires at least one item");
+    if (input.media.trim() === "" || input.accountId.trim() === "") {
+      throw new Error("changeset requires media and accountId scope");
+    }
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
+      if (input.workItemId !== null && input.workItemId !== undefined) {
+        const linked = await client.query(
+          `SELECT 1 FROM work_items
+           WHERE workspace_id = $1 AND id = $2 AND media = $3 AND account_id = $4`,
+          [input.workspaceId, input.workItemId, input.media, input.accountId],
+        );
+        if (linked.rowCount !== 1) {
+          throw new Error("changeset work item does not match its account scope");
+        }
+      }
       const inserted = await client.query<HeaderRow>(
         `INSERT INTO changesets (
-           workspace_id, work_item_id, title, status, initiator,
+           workspace_id, work_item_id, media, account_id, title, status, initiator,
            credential_owner_user_id, ttl_expire_at, reason_code, simulation
-         ) VALUES ($1,$2,$3,'draft',$4,$5,$6,$7,$8::jsonb)
+         ) VALUES ($1,$2,$3,$4,$5,'draft',$6,$7,$8,$9,$10::jsonb)
          RETURNING ${headerColumns}`,
-        [input.workspaceId, input.workItemId ?? null, input.title, input.initiator,
-          input.credentialOwnerUserId, input.ttlExpireAt, input.reasonCode,
+        [input.workspaceId, input.workItemId ?? null, input.media, input.accountId,
+          input.title, input.initiator, input.credentialOwnerUserId, input.ttlExpireAt, input.reasonCode,
           input.simulation == null ? null : JSON.stringify(input.simulation)],
       );
       const header = requireHeader(inserted.rows[0], "new");
@@ -231,11 +252,17 @@ export class ChangeSetRepository {
   }
 
   async get(workspaceId: string, changeSetId: string): Promise<ChangeSetRecord> {
+    const record = await this.find(workspaceId, changeSetId);
+    if (record === null) throw new Error(`Changeset ${changeSetId} not found in workspace`);
+    return record;
+  }
+
+  async find(workspaceId: string, changeSetId: string): Promise<ChangeSetRecord | null> {
     const result = await this.pool.query<HeaderRow>(
       `SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2`,
       [workspaceId, changeSetId],
     );
-    return assemble(this.pool, requireHeader(result.rows[0], changeSetId));
+    return result.rows[0] === undefined ? null : assemble(this.pool, result.rows[0]);
   }
 
   async load(workspaceId: string, changeSetId: string): Promise<ChangeSetRecord> {

@@ -33,11 +33,18 @@ describe("ChangeSetRepository", () => {
       [workspaceId],
     );
     userId = user.rows[0]!.id;
+    await pool.query(
+      `INSERT INTO accounts (workspace_id, media, account_id)
+       VALUES ($1, 'KUAISHOU', 'account-1')`,
+      [workspaceId],
+    );
   });
 
   async function create(ttl = new Date("2026-08-19T10:30:00Z")) {
     return repository.create({
       workspaceId,
+      media: "KUAISHOU",
+      accountId: "account-1",
       title: "批量降价",
       initiator: userId,
       credentialOwnerUserId: userId,
@@ -52,9 +59,47 @@ describe("ChangeSetRepository", () => {
 
   it("creates the header and items atomically and isolates workspace reads", async () => {
     const created = await create();
-    expect(created).toMatchObject({ status: "draft", title: "批量降价" });
+    expect(created).toMatchObject({
+      status: "draft",
+      title: "批量降价",
+      media: "KUAISHOU",
+      accountId: "account-1",
+    });
     expect(created.items).toHaveLength(2);
     await expect(repository.get(otherWorkspaceId, created.id)).rejects.toThrow(/not found/);
+    await expect(repository.find(otherWorkspaceId, created.id)).resolves.toBeNull();
+  });
+
+  it("rejects a linked work item outside the changeset account scope", async () => {
+    const workItem = await pool.query<{ id: string }>(
+      `INSERT INTO work_items (workspace_id, type, media, account_id, title)
+       VALUES ($1, 'diagnosis', 'KUAISHOU', 'account-1', 'scope-check')
+       RETURNING id`,
+      [workspaceId],
+    );
+    await pool.query(
+      `INSERT INTO accounts (workspace_id, media, account_id)
+       VALUES ($1, 'TENCENT', 'account-1')`,
+      [workspaceId],
+    );
+    await expect(repository.create({
+      workspaceId,
+      media: "TENCENT",
+      accountId: "account-1",
+      workItemId: workItem.rows[0]!.id,
+      title: "scope mismatch",
+      initiator: userId,
+      credentialOwnerUserId: userId,
+      ttlExpireAt: new Date("2026-08-19T10:30:00Z"),
+      reasonCode: "cost_control",
+      items: [{
+        targetType: "account",
+        targetId: "account-1",
+        field: "budget",
+        fromValue: "100",
+        toValue: "90",
+      }],
+    })).rejects.toThrow(/does not match its account scope/i);
   });
 
   it("confirms once after strict current-value verification and is idempotent", async () => {

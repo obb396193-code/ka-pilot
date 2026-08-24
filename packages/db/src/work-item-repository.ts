@@ -19,6 +19,7 @@ export interface WorkItemRecord {
   id: string;
   workspaceId: string;
   type: WorkItemType;
+  media: string | null;
   accountId: string | null;
   taskId: string | null;
   ruleId: string | null;
@@ -42,6 +43,7 @@ export interface WorkItemRecord {
 export interface NewAlertWorkItem {
   workspaceId: string;
   type: WorkItemType;
+  media: string;
   accountId: string;
   taskId?: string | null;
   ruleId: string | number;
@@ -73,6 +75,7 @@ interface WorkItemRow {
   id: string;
   workspace_id: string;
   type: WorkItemType;
+  media: string | null;
   account_id: string | null;
   task_id: string | null;
   rule_id: string | null;
@@ -94,7 +97,7 @@ interface WorkItemRow {
 }
 
 const columns = `
-  id, workspace_id, type, account_id, task_id, rule_id, severity, title,
+  id, workspace_id, type, media, account_id, task_id, rule_id, severity, title,
   evidence_snapshot, diagnosis, status, ignore_reason, muted_until::text AS muted_until,
   assignee, creator, acceptance_criteria, sla_due, reject_reason,
   t1_result, created_at, resolved_at
@@ -105,6 +108,7 @@ function toRecord(row: WorkItemRow): WorkItemRecord {
     id: row.id,
     workspaceId: row.workspace_id,
     type: row.type,
+    media: row.media,
     accountId: row.account_id,
     taskId: row.task_id,
     ruleId: row.rule_id,
@@ -142,8 +146,13 @@ async function rollback(client: PoolClient): Promise<void> {
 }
 
 function validateNewAlert(input: NewAlertWorkItem): void {
-  if (input.workspaceId.length === 0 || input.accountId.length === 0 || input.title.length === 0) {
-    throw new Error("workspaceId, accountId and title are required");
+  if (
+    input.workspaceId.length === 0 ||
+    input.media.length === 0 ||
+    input.accountId.length === 0 ||
+    input.title.length === 0
+  ) {
+    throw new Error("workspaceId, media, accountId and title are required");
   }
 }
 
@@ -164,12 +173,13 @@ async function findActiveAlert(
      FROM work_items
      WHERE workspace_id = $1
        AND rule_id = $2::bigint
-       AND account_id = $3
+       AND media = $3
+       AND account_id = $4
        AND status IN ('open', 'processing', 'escalated')
      ORDER BY created_at DESC, id DESC
      LIMIT 1
      FOR UPDATE`,
-    [input.workspaceId, String(input.ruleId), input.accountId],
+    [input.workspaceId, String(input.ruleId), input.media, input.accountId],
   );
   return active.rows[0];
 }
@@ -224,17 +234,18 @@ async function insertAlert(
 ): Promise<CreateOrMergeResult> {
   const inserted = await client.query<WorkItemRow>(
     `INSERT INTO work_items (
-       workspace_id, type, account_id, task_id, rule_id, severity, title,
+       workspace_id, type, media, account_id, task_id, rule_id, severity, title,
        evidence_snapshot, diagnosis, status, assignee, creator,
        acceptance_criteria, sla_due
      ) VALUES (
-       $1, $2, $3, $4, $5::bigint, $6, $7,
-       $8::jsonb, $9::jsonb, 'open', $10::uuid, $11::uuid, $12, $13::timestamptz
+       $1, $2, $3, $4, $5, $6::bigint, $7, $8,
+       $9::jsonb, $10::jsonb, 'open', $11::uuid, $12::uuid, $13, $14::timestamptz
      )
      RETURNING ${columns}`,
     [
       input.workspaceId,
       input.type,
+      input.media,
       input.accountId,
       optionalValue(input.taskId),
       String(input.ruleId),
@@ -277,6 +288,14 @@ export class WorkItemRepository {
     } finally {
       client.release();
     }
+  }
+
+  async find(workspaceId: string, workItemId: string): Promise<WorkItemRecord | null> {
+    const result = await this.pool.query<WorkItemRow>(
+      `SELECT ${columns} FROM work_items WHERE workspace_id = $1 AND id = $2`,
+      [workspaceId, workItemId],
+    );
+    return result.rows[0] === undefined ? null : toRecord(result.rows[0]);
   }
 
   async transition(input: WorkItemTransitionInput): Promise<WorkItemRecord> {

@@ -40,14 +40,22 @@ describe("work item state transitions", () => {
 });
 
 describe("work item deduplication", () => {
-  it("uses workspace, rule and account in the deterministic key", () => {
-    const base = { workspaceId: "workspace-a", ruleId: 7, accountId: "account-1" };
+  it("uses workspace, media, rule and account in the deterministic key", () => {
+    const base = {
+      workspaceId: "workspace-a",
+      media: "KUAISHOU",
+      ruleId: 7,
+      accountId: "account-1",
+    };
     expect(workItemDedupeKey(base)).toBe(workItemDedupeKey(base));
     expect(workItemDedupeKey(base)).not.toBe(
       workItemDedupeKey({ ...base, workspaceId: "workspace-b" }),
     );
     expect(workItemDedupeKey(base)).not.toBe(
       workItemDedupeKey({ ...base, ruleId: "7:account-1" }),
+    );
+    expect(workItemDedupeKey(base)).not.toBe(
+      workItemDedupeKey({ ...base, media: "TENCENT" }),
     );
   });
 

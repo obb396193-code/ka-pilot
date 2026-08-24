@@ -32,11 +32,17 @@ describe("WorkItemRepository", () => {
     }
     workspaceA = first;
     workspaceB = second;
+    await pool.query(
+      `INSERT INTO accounts (workspace_id, media, account_id)
+       VALUES ($1, 'KUAISHOU', 'account-1'), ($2, 'KUAISHOU', 'account-1')`,
+      [workspaceA, workspaceB],
+    );
   });
 
   const input = () => ({
     workspaceId: workspaceA,
     type: "diagnosis" as const,
+    media: "KUAISHOU",
     accountId: "account-1",
     taskId: "task-1",
     ruleId: 11,
@@ -98,6 +104,24 @@ describe("WorkItemRepository", () => {
 
     expect(left.workItem.id).not.toBe(right.workItem.id);
     expect(right.disposition).toBe("created");
+  });
+
+  it("does not deduplicate the same account id across media and scopes reads by workspace", async () => {
+    await pool.query(
+      `INSERT INTO accounts (workspace_id, media, account_id)
+       VALUES ($1, 'TENCENT', 'account-1')`,
+      [workspaceA],
+    );
+    const kuaishou = await repository.createOrMergeAlert(input());
+    const tencent = await repository.createOrMergeAlert({ ...input(), media: "TENCENT" });
+
+    expect(tencent.workItem.id).not.toBe(kuaishou.workItem.id);
+    expect(await repository.find(workspaceA, tencent.workItem.id)).toMatchObject({
+      workspaceId: workspaceA,
+      media: "TENCENT",
+      accountId: "account-1",
+    });
+    expect(await repository.find(workspaceB, tencent.workItem.id)).toBeNull();
   });
 
   it("transitions atomically and records ignore metadata", async () => {

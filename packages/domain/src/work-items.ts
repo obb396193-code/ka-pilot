@@ -61,13 +61,19 @@ export function assertWorkItemTransition(
 
 export function workItemDedupeKey(input: {
   workspaceId: string;
+  media: string;
   ruleId: string | number;
   accountId: string;
 }): string {
-  if (input.workspaceId.length === 0 || String(input.ruleId).length === 0 || input.accountId.length === 0) {
+  if (
+    input.workspaceId.length === 0 ||
+    input.media.length === 0 ||
+    String(input.ruleId).length === 0 ||
+    input.accountId.length === 0
+  ) {
     throw new Error("work item dedupe key parts must be non-empty");
   }
-  return JSON.stringify([input.workspaceId, String(input.ruleId), input.accountId]);
+  return JSON.stringify([input.workspaceId, input.media, String(input.ruleId), input.accountId]);
 }
 
 export function severityRank(severity: WorkItemSeverity): number {

@@ -57,15 +57,30 @@ describe("contract migrations", () => {
        VALUES ($1, 'legacy-account', 1)`,
       [backfillWorkspace],
     );
+    const legacyUser = "00000000-0000-4000-8000-000000000098";
+    const legacyWorkItem = "00000000-0000-4000-8000-000000000097";
+    const legacyChangeSet = "00000000-0000-4000-8000-000000000096";
+    await legacyClient.query(
+      `INSERT INTO users (id, workspace_id, name) VALUES ($1, $2, 'legacy-user')`,
+      [legacyUser, backfillWorkspace],
+    );
+    await legacyClient.query(
+      `INSERT INTO work_items (id, workspace_id, type, account_id, title)
+       VALUES ($1, $2, 'diagnosis', 'legacy-account', 'legacy-work-item')`,
+      [legacyWorkItem, backfillWorkspace],
+    );
+    await legacyClient.query(
+      `INSERT INTO changesets (
+         id, workspace_id, work_item_id, title, initiator, credential_owner_user_id
+       ) VALUES ($1, $2, $3, 'legacy-changeset', $4, $4)`,
+      [legacyChangeSet, backfillWorkspace, legacyWorkItem, legacyUser],
+    );
     await legacyClient.end();
 
     const identityMigration = await runMigrations({ databaseUrl, count: 1 });
     expect(identityMigration).toHaveLength(1);
     const foreignKeyMigration = await runMigrations({ databaseUrl, count: 1 });
     expect(foreignKeyMigration).toHaveLength(1);
-    const second = await runMigrations({ databaseUrl });
-    expect(second).toHaveLength(0);
-
     const client = new Client({ connectionString: databaseUrl });
     await client.connect();
     const tables = await client.query<{ table_name: string }>(`
@@ -235,6 +250,59 @@ describe("contract migrations", () => {
       [backfillWorkspace],
     )).rejects.toMatchObject({ code: "23503" });
 
+    const ambiguousWorkspace = "00000000-0000-4000-8000-000000000095";
+    await client.query(
+      `INSERT INTO workspaces (id, name) VALUES ($1, 'ambiguous-detail-scope')`,
+      [ambiguousWorkspace],
+    );
+    await client.query(
+      `INSERT INTO accounts (workspace_id, media, account_id)
+       VALUES ($1, 'KUAISHOU', 'same-detail-account'),
+              ($1, 'TENCENT', 'same-detail-account')`,
+      [ambiguousWorkspace],
+    );
+    await client.query(
+      `INSERT INTO work_items (workspace_id, type, account_id, title)
+       VALUES ($1, 'diagnosis', 'same-detail-account', 'ambiguous')`,
+      [ambiguousWorkspace],
+    );
+    await expect(runMigrations({ databaseUrl, count: 1 })).rejects.toThrow(
+      /without deterministic media/i,
+    );
+    await client.query("DELETE FROM work_items WHERE workspace_id = $1", [ambiguousWorkspace]);
+    await client.query("DELETE FROM accounts WHERE workspace_id = $1", [ambiguousWorkspace]);
+    await client.query("DELETE FROM workspaces WHERE id = $1", [ambiguousWorkspace]);
+
+    const detailScopeMigration = await runMigrations({ databaseUrl, count: 1 });
+    expect(detailScopeMigration).toHaveLength(1);
+    expect(await runMigrations({ databaseUrl })).toHaveLength(0);
+    const detailScopes = await client.query<{
+      table_name: string;
+      media: string;
+      account_id: string;
+    }>(`
+      SELECT 'changesets' AS table_name, media, account_id
+      FROM changesets WHERE id = '${legacyChangeSet}'
+      UNION ALL
+      SELECT 'work_items', media, account_id
+      FROM work_items WHERE id = '${legacyWorkItem}'
+      ORDER BY table_name
+    `);
+    expect(detailScopes.rows).toEqual([
+      { table_name: "changesets", media: "TENCENT", account_id: "legacy-account" },
+      { table_name: "work_items", media: "TENCENT", account_id: "legacy-account" },
+    ]);
+    await expect(client.query(
+      `INSERT INTO work_items (workspace_id, type, media, account_id, title)
+       VALUES ($1, 'diagnosis', 'KUAISHOU', 'orphan-detail-account', 'orphan')`,
+      [backfillWorkspace],
+    )).rejects.toMatchObject({ code: "23503" });
+    await expect(client.query(
+      `INSERT INTO work_items (workspace_id, type, account_id, title)
+       VALUES ($1, 'diagnosis', 'legacy-account', 'missing-media')`,
+      [backfillWorkspace],
+    )).rejects.toMatchObject({ code: "23514" });
+
     const workspaceA = "00000000-0000-4000-8000-000000000001";
     const workspaceB = "00000000-0000-4000-8000-000000000002";
     await client.query("INSERT INTO workspaces (id, name) VALUES ($1, 'A'), ($2, 'B')", [
@@ -273,6 +341,7 @@ describe("contract migrations", () => {
     expect(tenantRows.rows[0]?.count).toBe("3");
 
     expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
+    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
     await expect(
       runMigrations({ databaseUrl, direction: "down", count: 1 }),
     ).rejects.toThrow(/same account_id exists in multiple media/i);
@@ -281,6 +350,10 @@ describe("contract migrations", () => {
     await client.query("DELETE FROM account_metrics_daily");
     await client.query("DELETE FROM account_balance");
     await client.query("DELETE FROM task_accounts");
+    await client.query("DELETE FROM changeset_items");
+    await client.query("DELETE FROM changesets");
+    await client.query("DELETE FROM work_items");
+    await client.query("DELETE FROM users");
     await client.query("DELETE FROM accounts");
     await client.query("DELETE FROM tasks");
     await client.query("DELETE FROM workspaces WHERE id IN ($1, $2, $3)", [
@@ -292,6 +365,6 @@ describe("contract migrations", () => {
 
     await runMigrations({ databaseUrl, direction: "down", count: 5 });
     const replay = await runMigrations({ databaseUrl });
-    expect(replay).toHaveLength(6);
+    expect(replay).toHaveLength(7);
   });
 });

@@ -357,6 +357,7 @@ describe("real PostgreSQL data pipeline", () => {
         return table.rows.map((row) => ({
           candidateId: `${row.accountId}:${row.ds}`,
           workspaceId: row.workspaceId,
+          media: row.media,
           accountId: row.accountId,
           taskId,
           ruleId: rule.rows[0]!.id,

@@ -10,6 +10,7 @@ import type {
 interface RuleCandidateBase {
   candidateId: string;
   workspaceId: string;
+  media: string;
   accountId: string;
   taskId?: string | null | undefined;
   ruleId: string | number;
@@ -39,6 +40,7 @@ export interface RuleEvaluator {
 
 export interface WorkItemAlertInput {
   workspaceId: string;
+  media: string;
   type: "diagnosis";
   accountId: string;
   taskId?: string | null | undefined;

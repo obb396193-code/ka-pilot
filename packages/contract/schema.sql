@@ -124,7 +124,10 @@ CREATE TABLE account_balance (
 CREATE TABLE work_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
   type TEXT NOT NULL,                  -- diagnosis|dispatch|self|agent_question|external_handled
-  account_id TEXT, task_id TEXT, rule_id BIGINT,
+  media TEXT, account_id TEXT, task_id TEXT, rule_id BIGINT,
+  CHECK ((account_id IS NULL) = (media IS NULL)),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   severity TEXT,                       -- P0|P1|P2|opportunity
   title TEXT NOT NULL,
   evidence_snapshot JSONB,             -- 证据快照（带 snapshot_at）
@@ -137,7 +140,10 @@ CREATE TABLE work_items (
 );
 CREATE TABLE changesets (              -- header
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
-  work_item_id UUID, title TEXT,
+  work_item_id UUID, media TEXT, account_id TEXT, title TEXT,
+  CHECK ((account_id IS NULL) = (media IS NULL)),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   status TEXT DEFAULT 'draft',         -- draft|confirmed|sent|executing|success|partial|failed|unknown|expired|rolled_back
   initiator UUID NOT NULL,
   credential_owner_user_id UUID NOT NULL,   -- 后台归属闭环：重试永远用此凭证

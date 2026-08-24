@@ -106,6 +106,7 @@ export class RuleScanHandler {
     const workItem = await this.dependencies.workItems.createOrMerge({
       workspaceId: candidate.workspaceId,
       type: "diagnosis",
+      media: candidate.media,
       accountId: candidate.accountId,
       taskId: candidate.taskId,
       ruleId: candidate.ruleId,

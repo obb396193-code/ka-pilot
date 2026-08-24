@@ -28,7 +28,12 @@ class MemoryWorkItems implements WorkItemSink {
   >();
 
   async createOrMerge(input: WorkItemAlertInput) {
-    const key = JSON.stringify([input.workspaceId, String(input.ruleId), input.accountId]);
+    const key = JSON.stringify([
+      input.workspaceId,
+      input.media,
+      String(input.ruleId),
+      input.accountId,
+    ]);
     const existing = this.items.get(key);
     if (existing === undefined) {
       const id = `work-item-${this.items.size + 1}`;
@@ -59,6 +64,7 @@ class IdempotentAlerts implements AlertSink {
 
 const base = {
   workspaceId: "workspace-1",
+  media: "KUAISHOU",
   taskId: "task-1",
   evidenceSnapshot: { snapshot_at: "2026-08-19T09:15:00Z" },
   isQuietHours: false,
