@@ -15,9 +15,9 @@
 | 工作项 | 负责人 | 分支/任务 | 当前状态 | 证据 |
 |---|---|---|---|---|
 | 项目控制与首轮集成计划 | root Codex | `codex/integration-control` | 交付：implemented；审查：codex_prechecked | 基线 `7a69a13`；首轮只读集成计划与前后端信箱已建立 |
-| 双数据后端 Contract/Adapter/对账 | 既有后端任务 `019ffa23-8a94-7373-b48b-7cfc9cb948f2` | `codex/dual-data-backend@a5de536`；worktree `/Users/aik/.codex/worktrees/fffe/投放agent` | draft（BE-001 运行中） | 新建重复任务已零修改停止并归档；BE-002 等 root Codex 验收后放行 |
+| 双数据后端 Contract/Adapter/对账 | 既有后端任务 `019ffa23-8a94-7373-b48b-7cfc9cb948f2` | `codex/dual-data-backend@a5de536`；worktree `/Users/aik/.codex/worktrees/fffe/投放agent` | implemented candidate（BE-001 提交前自审中） | Domain 定向 7/7、Worker 定向 23/23；typecheck/lint 已通过；代码尚未 commit，正在审越权、SQL、截断、错误泄露和跨租户媒体同号 |
 | 临时只读审查 | root Codex 已接管结论 | `codex/integration-control` | 审查：codex_prechecked | 2026-08-24 已在老板对话交付 A/B/C 与 P0/P1/P2 审查结论 |
-| 前端纵向切片 | fe-codex | `codex/fe-vertical-slice@235d31e` | implemented candidate；changes_required | FC-002 已下发：双 lineage、指标状态、凭证出口、mock mode、筛选保留六项修改；`fe/f001` 禁止触碰 |
+| 前端纵向切片 | fe-codex | `codex/fe-vertical-slice@8274924` | FC-002 implemented candidate；页面框架 review_pending | FC-002 候选提交 `d24b104/9343470/88e5b90/5909c03`；页面/UI 大提交 `8274924` 超出本轮范围，已叫停新增工作并拆开审计；`output/` 未跟踪且禁止提交；`fe/f001` 未触碰 |
 | 内网部署与联调 | root Codex + 内网 OS | 待实现版本 | 交付：draft | 目标为 daily/FaaS 部署、真实通路联调和使用验收 |
 | Claude 后续复审 | Claude/arch | 原 Claude 主会话或新恢复会话 | 审查：claude_review_pending | 后续复审；不阻塞当前实现和内网交付 |
 
