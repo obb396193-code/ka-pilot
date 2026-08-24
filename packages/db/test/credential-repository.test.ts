@@ -18,6 +18,12 @@ describe("CredentialRepository", () => {
   });
 
   beforeEach(async () => {
+    await pool.query("DELETE FROM ad_metrics_hourly");
+    await pool.query("DELETE FROM ad_entities");
+    await pool.query("DELETE FROM metrics_raw");
+    await pool.query("DELETE FROM account_metrics_daily");
+    await pool.query("DELETE FROM account_balance");
+    await pool.query("DELETE FROM task_accounts");
     await pool.query("DELETE FROM accounts");
     const workspace = await pool.query<{ id: string }>(
       "INSERT INTO workspaces (name) VALUES ('credential-test') RETURNING id",

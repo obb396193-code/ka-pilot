@@ -57,6 +57,8 @@ CREATE TABLE task_accounts (           -- 关系表：历史/多任务（替代�
   id BIGSERIAL PRIMARY KEY, workspace_id UUID NOT NULL,
   task_id TEXT NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,
   valid_from DATE NOT NULL, valid_to DATE,
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   UNIQUE(workspace_id, task_id, media, account_id, valid_from)
 );
 
@@ -69,6 +71,8 @@ CREATE TABLE metrics_raw (             -- 接口原样落库，按 ds 分区
   request_params JSONB,                -- 该次调用参数（hh/日期范围等），保证可重放
   payload JSONB NOT NULL,              -- 接口原始行
   fetched_by_user UUID, fetched_at TIMESTAMPTZ DEFAULT now(),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   PRIMARY KEY (id, ds)
 ) PARTITION BY RANGE (ds);
 CREATE INDEX idx_metrics_raw_replay ON metrics_raw(workspace_id, media, account_id, ds, resource);
@@ -84,6 +88,8 @@ CREATE TABLE account_metrics_daily (   -- canonical：一户一日一行
   field_sources JSONB,                 -- 每字段来源（offline/realtime/gap_filled）
   data_anomaly BOOLEAN DEFAULT false,
   computed_at TIMESTAMPTZ DEFAULT now(),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   PRIMARY KEY (workspace_id, media, account_id, ds)
 ) PARTITION BY RANGE (ds);
 CREATE TABLE ad_metrics_hourly (       -- 小时级（保留 90 天→日级 rollup）
@@ -91,6 +97,8 @@ CREATE TABLE ad_metrics_hourly (       -- 小时级（保留 90 天→日级 rol
   media TEXT NOT NULL, ad_id TEXT NOT NULL, account_id TEXT NOT NULL, ds DATE NOT NULL, hh SMALLINT NOT NULL,
   cost NUMERIC, exposure BIGINT, click BIGINT, conversion BIGINT, real_conversion BIGINT,
   bid NUMERIC, budget NUMERIC,
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   PRIMARY KEY (workspace_id, ad_id, ds, hh)    -- P-001#3 裁决：同上
 ) PARTITION BY RANGE (ds);
 CREATE TABLE ad_entities (             -- 账户结构（经 agent 同步，强类型层级）
@@ -99,11 +107,15 @@ CREATE TABLE ad_entities (             -- 账户结构（经 agent 同步，强�
   entity_type TEXT NOT NULL,           -- campaign|unit|creative
   parent_id TEXT, name TEXT, status TEXT, put_status TEXT,
   bid NUMERIC, cpa_bid NUMERIC, day_budget NUMERIC, schedule_time TEXT,  -- 168位串
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   synced_at TIMESTAMPTZ, PRIMARY KEY (workspace_id, entity_id, entity_type)
 );
 CREATE TABLE account_balance (
   account_id TEXT NOT NULL, media TEXT NOT NULL, workspace_id UUID NOT NULL,
   PRIMARY KEY (workspace_id, media, account_id),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   balance NUMERIC, recharge_balance NUMERIC,
   contract_rebate NUMERIC, direct_rebate NUMERIC, synced_at TIMESTAMPTZ
 );

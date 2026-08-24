@@ -61,6 +61,8 @@ describe("contract migrations", () => {
 
     const identityMigration = await runMigrations({ databaseUrl, count: 1 });
     expect(identityMigration).toHaveLength(1);
+    const foreignKeyMigration = await runMigrations({ databaseUrl, count: 1 });
+    expect(foreignKeyMigration).toHaveLength(1);
     const second = await runMigrations({ databaseUrl });
     expect(second).toHaveLength(0);
 
@@ -176,6 +178,63 @@ describe("contract migrations", () => {
       { table_name: "task_accounts", media: "TENCENT" },
     ]);
 
+    const accountForeignKeys = await client.query<{ table_name: string; constraint_name: string }>(`
+      SELECT relation.relname AS table_name, constraint_row.conname AS constraint_name
+      FROM pg_constraint AS constraint_row
+      JOIN pg_class AS relation ON relation.oid = constraint_row.conrelid
+      WHERE constraint_row.contype = 'f'
+        AND constraint_row.confrelid = 'accounts'::regclass
+        AND relation.relname IN (
+          'task_accounts', 'metrics_raw', 'account_metrics_daily', 'account_balance',
+          'ad_metrics_hourly', 'ad_entities'
+        )
+      ORDER BY relation.relname
+    `);
+    expect(accountForeignKeys.rows).toEqual([
+      { table_name: "account_balance", constraint_name: "account_balance_account_fk" },
+      { table_name: "account_metrics_daily", constraint_name: "account_metrics_daily_account_fk" },
+      { table_name: "ad_entities", constraint_name: "ad_entities_account_fk" },
+      { table_name: "ad_metrics_hourly", constraint_name: "ad_metrics_hourly_account_fk" },
+      { table_name: "metrics_raw", constraint_name: "metrics_raw_account_fk" },
+      { table_name: "task_accounts", constraint_name: "task_accounts_account_fk" },
+    ]);
+
+    await expect(client.query(
+      `INSERT INTO account_metrics_daily (workspace_id, media, account_id, ds, cost)
+       VALUES ($1, 'KUAISHOU', 'orphan-account', current_date, 1)`,
+      [backfillWorkspace],
+    )).rejects.toMatchObject({ code: "23503" });
+    await expect(client.query(
+      `INSERT INTO account_balance (workspace_id, media, account_id, balance)
+       VALUES ($1, 'KUAISHOU', 'orphan-account', 1)`,
+      [backfillWorkspace],
+    )).rejects.toMatchObject({ code: "23503" });
+    await expect(client.query(
+      `INSERT INTO metrics_raw (
+         workspace_id, media, account_id, ds, resource, source, request_params, payload
+       ) VALUES ($1, 'KUAISHOU', 'orphan-account', current_date,
+                 'account_offline', 'offline', '{}', '{}')`,
+      [backfillWorkspace],
+    )).rejects.toMatchObject({ code: "23503" });
+
+    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
+    await client.query(
+      `INSERT INTO account_balance (workspace_id, media, account_id, balance)
+       VALUES ($1, 'KUAISHOU', 'temporary-orphan', 1)`,
+      [backfillWorkspace],
+    );
+    await client.query(
+      `DELETE FROM account_balance
+       WHERE workspace_id = $1 AND media = 'KUAISHOU' AND account_id = 'temporary-orphan'`,
+      [backfillWorkspace],
+    );
+    expect(await runMigrations({ databaseUrl, count: 1 })).toHaveLength(1);
+    await expect(client.query(
+      `INSERT INTO account_balance (workspace_id, media, account_id, balance)
+       VALUES ($1, 'KUAISHOU', 'temporary-orphan', 1)`,
+      [backfillWorkspace],
+    )).rejects.toMatchObject({ code: "23503" });
+
     const workspaceA = "00000000-0000-4000-8000-000000000001";
     const workspaceB = "00000000-0000-4000-8000-000000000002";
     await client.query("INSERT INTO workspaces (id, name) VALUES ($1, 'A'), ($2, 'B')", [
@@ -213,6 +272,7 @@ describe("contract migrations", () => {
     `);
     expect(tenantRows.rows[0]?.count).toBe("3");
 
+    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
     await expect(
       runMigrations({ databaseUrl, direction: "down", count: 1 }),
     ).rejects.toThrow(/same account_id exists in multiple media/i);
@@ -232,6 +292,6 @@ describe("contract migrations", () => {
 
     await runMigrations({ databaseUrl, direction: "down", count: 5 });
     const replay = await runMigrations({ databaseUrl });
-    expect(replay).toHaveLength(5);
+    expect(replay).toHaveLength(6);
   });
 });

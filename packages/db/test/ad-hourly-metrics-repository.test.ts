@@ -21,6 +21,11 @@ describe("AdHourlyMetricsRepository", () => {
     );
     firstWorkspace = workspaces.rows[0]!.id;
     secondWorkspace = workspaces.rows[1]!.id;
+    await pool.query(
+      `INSERT INTO accounts (workspace_id, media, account_id)
+       VALUES ($1, 'KUAISHOU', 'account-1'), ($2, 'KUAISHOU', 'account-1')`,
+      [firstWorkspace, secondWorkspace],
+    );
   });
 
   it("upserts one workspace/ad/hour while preserving another workspace", async () => {

@@ -19,6 +19,18 @@ describe("RawMetricsRepository", () => {
 
   beforeEach(async () => {
     await pool.query("DELETE FROM metrics_raw");
+    await pool.query(
+      `INSERT INTO workspaces (id, name)
+       VALUES ($1, 'raw-a'), ($2, 'raw-b')
+       ON CONFLICT (id) DO NOTHING`,
+      [workspaceA, workspaceB],
+    );
+    await pool.query(
+      `INSERT INTO accounts (workspace_id, media, account_id)
+       VALUES ($1, 'KUAISHOU', 'same-account'), ($2, 'KUAISHOU', 'same-account')
+       ON CONFLICT (workspace_id, media, account_id) DO NOTHING`,
+      [workspaceA, workspaceB],
+    );
   });
 
   it("persists replay parameters and loads only the latest resource row per tenant", async () => {
