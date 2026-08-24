@@ -88,9 +88,12 @@ describe("DataQueryService", () => {
       queryId: "account.table",
       params: { date: "2026-08-24", accountIds: ["forged-account"] },
       dataView: "platform",
-    }, auth);
+    }, auth, "bff-forbidden-001");
 
-    expect(response).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect(response).toMatchObject({
+      ok: false,
+      error: { code: "FORBIDDEN", requestId: "bff-forbidden-001" },
+    });
   });
 
   it("rejects account rows returned outside the authenticated scope", async () => {

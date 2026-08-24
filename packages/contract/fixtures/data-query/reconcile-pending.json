@@ -1,0 +1,79 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "reconcile",
+    "kaData": {
+      "status": "ready",
+      "rows": [{
+        "workspace_id": "workspace-fixture",
+        "media": "KUAISHOU",
+        "account_id": "account-fixture-001",
+        "cost": 10
+      }],
+      "returnedRowCount": 1,
+      "wholeResultTotal": { "value": 1, "availability": "available" },
+      "lineage": {
+        "source": "ka_data",
+        "datasetVersion": "ka-data-20260824-01",
+        "queryTemplateVersion": "reconcile-account-daily-v1",
+        "metricVersion": "reconcile-account-v1",
+        "dataAsOf": "2026-08-24T07:55:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "calendar_day",
+        "metadataAvailability": "known",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": ["workspace_id", "media", "account_id"]
+        },
+        "coverage": { "complete": true, "requestedObjects": 1, "returnedObjects": 1 },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    },
+    "platform": {
+      "status": "ready",
+      "rows": [{
+        "workspace_id": "workspace-fixture",
+        "media": "KUAISHOU",
+        "account_id": "account-fixture-001",
+        "cost": 11
+      }],
+      "returnedRowCount": 1,
+      "wholeResultTotal": { "value": 1, "availability": "available" },
+      "lineage": {
+        "source": "canonical",
+        "datasetVersion": "canonical-20260824-01",
+        "queryTemplateVersion": "reconcile-account-daily-v1",
+        "metricVersion": "reconcile-account-v1",
+        "dataAsOf": "2026-08-24T08:00:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "calendar_day",
+        "metadataAvailability": "known",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "comparison_reference"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": ["workspace_id", "media", "account_id"]
+        },
+        "coverage": { "complete": true, "requestedObjects": 1, "returnedObjects": 1 },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    },
+    "comparison": {
+      "status": "unavailable",
+      "reason": "reconciliation_engine_pending",
+      "rows": []
+    }
+  }
+}

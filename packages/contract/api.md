@@ -76,6 +76,15 @@
 - 默认仅监听 `127.0.0.1:3101`；跨主机部署必须由内网服务发现/网络策略显式开放。
 - BFF 必须发送 `Authorization: Bearer <DATA_API_INTERNAL_TOKEN>`、
   `x-ka-workspace-id`、`x-ka-user-id` 与 base64url JSON 的 `x-ka-account-scope`。
+- BFF 必须同时发送 `x-request-id`。后端仅接受 1–128 位的
+  `[A-Za-z0-9][A-Za-z0-9._:-]*`；缺失、超长或含换行/控制字符时安全重新生成，
+  绝不回显非法输入。所有 HTTP 响应通过 `x-request-id` 响应头返回最终相关 ID；
+  错误 envelope 中的 `error.requestId` 必须与该响应头完全一致。
+- `x-ka-account-scope` 只能由 BFF 的服务端登录态、已批准授权上下文生成；
+  禁止接受页面、query/body、localStorage 或用户自报的 scope。
+- 本机开发 scope 只允许使用明确的假 workspace/user/account fixture。
+  production 不得使用默认账户、通配符、空 scope 绕过或 dev fallback；缺失、非法或
+  无法从服务端会话证明的 scope 必须 fail closed（`401/403`）。
 - 服务输出侧再次按 `(workspace_id, media, account_id)` 校验所有账户明细行；Adapter
   返回越权行或缺少联合键时整次请求以 `FORBIDDEN` 失败，响应不回显越权对象。
 - `GET /healthz` 仅返回进程存活；不返回 Secret、上游 URL、SQL 或数据源正文。
@@ -103,6 +112,21 @@
 ```
 
 错误码：`INVALID_REQUEST | UNAUTHORIZED | FORBIDDEN | QUERY_NOT_ALLOWED | VIEW_UNSUPPORTED | SOURCE_UNAVAILABLE | SOURCE_TRUNCATED | UPSTREAM_INVALID_RESPONSE | UPSTREAM_TIMEOUT | INTERNAL_ERROR`。错误 message 不透传上游响应正文、SQL、token 或内部堆栈。
+
+### Canonical response fixtures
+
+前后端 parity 测试必须直接读取 `packages/contract/fixtures/data-query/`，
+不得手抄另一套 envelope。当前冻结样例：
+
+- `ready-lineage.json`：真实来源 metadata 全部可得的 ready lineage。
+- `unknown-lineage.json`：`metadataAvailability=unknown`，且
+  `datasetVersion/dataAsOf/timezone/dayCut` 全部为 `null`。
+- `reconcile-pending.json`：双源并列，对账内核尚未实现的
+  `reconciliation_engine_pending`。
+- `stable-error.json`：稳定错误 envelope 与可关联 `requestId`。
+
+这些 fixture 由 Domain 的 `dataQueryResponseSchema` 自动验证；修改 Contract 时
+必须同步修改 fixture 并通过 contract test。
 
 ## 语义层查询（核心，query_type 五类）
 

@@ -1,4 +1,4 @@
-import { randomUUID, timingSafeEqual } from "node:crypto";
+import { timingSafeEqual } from "node:crypto";
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 
 import { dataQueryResponseSchema, type DataQueryResponse } from "@ka/domain";
@@ -10,6 +10,7 @@ import {
   type AuthenticatedDataQueryContext,
   type DataQueryService,
 } from "./query-service.js";
+import { REQUEST_ID_HEADER, resolveRequestId } from "./request-id.js";
 
 export const DEFAULT_DATA_API_MAX_REQUEST_BYTES = 1024 * 1024;
 export const DEFAULT_DATA_API_MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
@@ -98,20 +99,27 @@ async function readJson(request: IncomingMessage, maxBytes: number): Promise<unk
 function errorBody(
   code: "INVALID_REQUEST" | "FORBIDDEN" | "SOURCE_TRUNCATED",
   message: string,
+  requestId: string,
 ): DataQueryResponse {
   return dataQueryResponseSchema.parse({
     ok: false,
-    error: { code, message, retryable: false, requestId: randomUUID() },
+    error: { code, message, retryable: false, requestId },
   });
 }
 
-function sendJson(response: ServerResponse, status: number, payload: unknown): void {
+function sendJson(
+  response: ServerResponse,
+  status: number,
+  payload: unknown,
+  requestId: string,
+): void {
   const body = JSON.stringify(payload);
   response.writeHead(status, {
     "cache-control": "no-store",
     "content-type": "application/json; charset=utf-8",
     "content-length": Buffer.byteLength(body),
     "x-content-type-options": "nosniff",
+    [REQUEST_ID_HEADER]: requestId,
   });
   response.end(body);
 }
@@ -131,24 +139,40 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
   const handler = createDataQueryHttpHandler(options.service);
 
   return createServer(async (request, response) => {
+    const requestId = resolveRequestId(header(request, REQUEST_ID_HEADER));
     try {
       const url = new URL(request.url ?? "/", "http://data-api.internal");
       if (url.pathname === "/healthz" && request.method === "GET") {
-        sendJson(response, 200, { ok: true });
+        sendJson(response, 200, { ok: true }, requestId);
         return;
       }
       if (url.pathname !== DATA_QUERY_HTTP_PATH) {
-        sendJson(response, 404, errorBody("INVALID_REQUEST", "Route not found"));
+        sendJson(
+          response,
+          404,
+          errorBody("INVALID_REQUEST", "Route not found", requestId),
+          requestId,
+        );
         return;
       }
       const authentication = authenticate(request, options.internalToken);
       if (authentication.forbidden) {
-        sendJson(response, 403, errorBody("FORBIDDEN", "Internal caller is not authorized"));
+        sendJson(
+          response,
+          403,
+          errorBody("FORBIDDEN", "Internal caller is not authorized", requestId),
+          requestId,
+        );
         return;
       }
       if (authentication.auth === null) {
-        const result = await handler({ method: request.method ?? "", body: {}, auth: null });
-        sendJson(response, result.status, result.body);
+        const result = await handler({
+          method: request.method ?? "",
+          body: {},
+          auth: null,
+          requestId,
+        });
+        sendJson(response, result.status, result.body, requestId);
         return;
       }
       if ((request.method ?? "").toUpperCase() !== "POST") {
@@ -156,8 +180,9 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           method: request.method ?? "",
           body: {},
           auth: authentication.auth,
+          requestId,
         });
-        sendJson(response, result.status, result.body);
+        sendJson(response, result.status, result.body, requestId);
         return;
       }
       const body = await readJson(request, maxRequestBytes);
@@ -165,31 +190,47 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         method: request.method ?? "",
         body,
         auth: authentication.auth,
+        requestId,
       });
       const serialized = JSON.stringify(result.body);
       if (Buffer.byteLength(serialized) > maxResponseBytes) {
         sendJson(
           response,
           502,
-          errorBody("SOURCE_TRUNCATED", "Data response exceeded the configured body limit"),
+          errorBody(
+            "SOURCE_TRUNCATED",
+            "Data response exceeded the configured body limit",
+            requestId,
+          ),
+          requestId,
         );
         return;
       }
-      sendJson(response, result.status, result.body);
+      sendJson(response, result.status, result.body, requestId);
     } catch (error) {
       if (error instanceof HttpInputError) {
-        sendJson(response, error.status, errorBody(error.code, "Invalid HTTP request"));
+        sendJson(
+          response,
+          error.status,
+          errorBody(error.code, "Invalid HTTP request", requestId),
+          requestId,
+        );
         return;
       }
-      sendJson(response, 500, dataQueryResponseSchema.parse({
-        ok: false,
-        error: {
-          code: "INTERNAL_ERROR",
-          message: "The data API request could not be completed",
-          retryable: false,
-          requestId: randomUUID(),
-        },
-      }));
+      sendJson(
+        response,
+        500,
+        dataQueryResponseSchema.parse({
+          ok: false,
+          error: {
+            code: "INTERNAL_ERROR",
+            message: "The data API request could not be completed",
+            retryable: false,
+            requestId,
+          },
+        }),
+        requestId,
+      );
     }
   });
 }

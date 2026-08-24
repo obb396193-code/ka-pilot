@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "ka_data",
+    "source": {
+      "status": "ready",
+      "rows": [],
+      "returnedRowCount": 0,
+      "wholeResultTotal": { "value": 0, "availability": "available" },
+      "lineage": {
+        "source": "ka_data",
+        "datasetVersion": null,
+        "queryTemplateVersion": "account-summary-v1",
+        "metricVersion": "ka-data-v1",
+        "dataAsOf": null,
+        "timezone": null,
+        "dayCut": null,
+        "metadataAvailability": "unknown",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": ["workspace_id", "media", "account_id"]
+        },
+        "coverage": { "complete": true, "requestedObjects": 0, "returnedObjects": 0 },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    }
+  }
+}

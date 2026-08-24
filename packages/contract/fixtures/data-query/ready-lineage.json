@@ -1,0 +1,40 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "status": "ready",
+      "rows": [{
+        "workspace_id": "workspace-fixture",
+        "media": "KUAISHOU",
+        "account_id": "account-fixture-001",
+        "cost": 12.5
+      }],
+      "returnedRowCount": 1,
+      "wholeResultTotal": { "value": 1, "availability": "available" },
+      "lineage": {
+        "source": "canonical",
+        "datasetVersion": "canonical-20260824-01",
+        "queryTemplateVersion": "account-summary-v1",
+        "metricVersion": "account-metrics-v1",
+        "dataAsOf": "2026-08-24T08:00:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "calendar_day",
+        "metadataAvailability": "known",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "realtime_delivery",
+          "role": "default_authoritative"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": ["workspace_id", "media", "account_id"]
+        },
+        "coverage": { "complete": true, "requestedObjects": 1, "returnedObjects": 1 },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    }
+  }
+}

@@ -107,7 +107,7 @@ describe("data API HTTP composition", () => {
       const baseUrl = await start();
       const response = await fetch(`${baseUrl}/api/v1/data/query`, {
         method: "POST",
-        headers: authHeaders(),
+        headers: { ...authHeaders(), "x-request-id": `bff-${dataView}-001` },
         body: JSON.stringify({
           queryId: dataView === "reconcile" ? "reconcile.account_daily" : "account.summary",
           params: { date: "2026-08-24" },
@@ -115,6 +115,7 @@ describe("data API HTTP composition", () => {
         }),
       });
       expect(response.status).toBe(200);
+      expect(response.headers.get("x-request-id")).toBe(`bff-${dataView}-001`);
       const payload = await response.json();
       expect(payload).toMatchObject({ ok: true, data: { mode: dataView } });
     },
@@ -124,13 +125,22 @@ describe("data API HTTP composition", () => {
     const baseUrl = await start();
     const missing = await fetch(`${baseUrl}/api/v1/data/query`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: {
+        "content-type": "application/json",
+        "x-request-id": "bff-unauthorized-001",
+      },
       body: "{}",
     });
     expect(missing.status).toBe(401);
-    expect(await missing.json()).toMatchObject({
+    expect(missing.headers.get("x-request-id")).toBe("bff-unauthorized-001");
+    expect(await missing.json()).toEqual({
       ok: false,
-      error: { code: "UNAUTHORIZED", requestId: expect.any(String) },
+      error: {
+        code: "UNAUTHORIZED",
+        message: "Authentication is required",
+        retryable: false,
+        requestId: "bff-unauthorized-001",
+      },
     });
 
     const forged = await fetch(`${baseUrl}/api/v1/data/query`, {
@@ -221,13 +231,14 @@ describe("data API HTTP composition", () => {
     });
     const response = await fetch(`${baseUrl}/api/v1/data/query`, {
       method: "POST",
-      headers: authHeaders(),
+      headers: { ...authHeaders(), "x-request-id": "bff-timeout-001" },
       body: JSON.stringify({
         queryId: "account.summary",
         params: { date: "2026-08-24" },
         dataView: "ka_data",
       }),
     });
+    expect(response.headers.get("x-request-id")).toBe("bff-timeout-001");
     expect(response.status).toBe(503);
     expect(await response.json()).toEqual({
       ok: false,
@@ -235,9 +246,32 @@ describe("data API HTTP composition", () => {
         code: "UPSTREAM_TIMEOUT",
         message: "KA Data request timed out",
         retryable: true,
-        requestId: "http-smoke-request",
+        requestId: "bff-timeout-001",
       },
     });
+  });
+
+  it("safely regenerates an overlong correlation ID and never reflects it", async () => {
+    const baseUrl = await start();
+    const unsafe = "x".repeat(129);
+    const response = await fetch(`${baseUrl}/api/v1/data/query`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-request-id": unsafe,
+      },
+      body: "{}",
+    });
+    const body = await response.json();
+    const responseRequestId = response.headers.get("x-request-id");
+    expect(response.status).toBe(401);
+    expect(responseRequestId).toMatch(/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/);
+    expect(responseRequestId).not.toBe(unsafe);
+    expect(body).toMatchObject({
+      ok: false,
+      error: { code: "UNAUTHORIZED", requestId: responseRequestId },
+    });
+    expect(JSON.stringify(body)).not.toContain(unsafe);
   });
 
   it("blocks malicious adapter output at the HTTP boundary", async () => {

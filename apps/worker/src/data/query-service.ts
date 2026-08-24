@@ -23,6 +23,7 @@ import {
   type ResolvedDataQuery,
   type ScopedAccount,
 } from "./query-registry.js";
+import { resolveRequestId } from "./request-id.js";
 
 export const DATA_QUERY_HTTP_PATH = "/api/v1/data/query";
 
@@ -273,8 +274,9 @@ export class DataQueryService {
   async execute(
     requestInput: unknown,
     auth: AuthenticatedDataQueryContext,
+    correlationId?: string,
   ): Promise<DataQueryResponse> {
-    const requestId = this.requestId();
+    const requestId = resolveRequestId(correlationId ?? null, this.requestId);
     try {
       validateAuth(auth);
       const request = dataQueryRequestSchema.safeParse(requestInput);
@@ -376,6 +378,7 @@ export interface DataQueryHttpRequest {
   method: string;
   body: unknown;
   auth: AuthenticatedDataQueryContext | null;
+  requestId?: string;
 }
 
 export interface DataQueryHttpResponse {
@@ -396,12 +399,13 @@ function errorStatus(code: StableDataQueryErrorCode): number {
 
 export function createDataQueryHttpHandler(service: DataQueryService) {
   return async (request: DataQueryHttpRequest): Promise<DataQueryHttpResponse> => {
+    const requestId = resolveRequestId(request.requestId ?? null);
     if (request.method.toUpperCase() !== "POST") {
       return {
         status: 405,
         body: dataQueryResponseSchema.parse({
           ok: false,
-          error: stableError("INVALID_REQUEST", "Only POST is supported", false, randomUUID()),
+          error: stableError("INVALID_REQUEST", "Only POST is supported", false, requestId),
         }),
       };
     }
@@ -410,11 +414,11 @@ export function createDataQueryHttpHandler(service: DataQueryService) {
         status: 401,
         body: dataQueryResponseSchema.parse({
           ok: false,
-          error: stableError("UNAUTHORIZED", "Authentication is required", false, randomUUID()),
+          error: stableError("UNAUTHORIZED", "Authentication is required", false, requestId),
         }),
       };
     }
-    const body = await service.execute(request.body, request.auth);
+    const body = await service.execute(request.body, request.auth, requestId);
     return { status: body.ok ? 200 : errorStatus(body.error.code), body };
   };
 }

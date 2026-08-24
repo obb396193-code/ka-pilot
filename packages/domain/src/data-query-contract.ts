@@ -169,12 +169,19 @@ export const stableDataQueryErrorCodeSchema = z.enum([
 ]);
 export type StableDataQueryErrorCode = z.infer<typeof stableDataQueryErrorCodeSchema>;
 
+export const requestIdSchema = z
+  .string()
+  .min(1)
+  .max(128)
+  .regex(/^[A-Za-z0-9][A-Za-z0-9._:-]*$/);
+export type RequestId = z.infer<typeof requestIdSchema>;
+
 export const stableDataQueryErrorSchema = z
   .object({
     code: stableDataQueryErrorCodeSchema,
     message: z.string().min(1),
     retryable: z.boolean(),
-    requestId: z.string().min(1),
+    requestId: requestIdSchema,
   })
   .strict();
 export type StableDataQueryError = z.infer<typeof stableDataQueryErrorSchema>;
