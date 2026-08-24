@@ -123,7 +123,7 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 
 ---
 
-### P-031 ⏳KA 双数据视图与 Codex 临时代行待终审｜root（Codex）
+### P-031 ⏳KA 双数据视图内网交付与 Claude 后续复审｜root（Codex）
 
 - 日期：2026-08-24
 - 老板裁决：KA Data 为运营权威版，自建数据继续主线，同一产品增加 `ka_data/platform/reconcile` 三态；内部试用共享只读通路不阻塞当前开发。
@@ -141,4 +141,4 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 5. Codex 前端纵向切片保留、改造或重做的范围；
 6. 临时 Codex 预审中 accepted/adjusted/rejected 的逐项复核。
 
-**状态边界：** 当前仅设计与计划，不代表 Adapter、对账引擎、页面切换或临时任务已经实现。
+**状态边界：** 当前仅设计与计划，不代表 Adapter、对账引擎、页面切换或内网部署已经实现。Claude 复审不是交付前置门；Codex 将继续实现、联调和部署，届时按真实证据更新状态。

@@ -650,7 +650,7 @@ arch（本会话）：契约包（schema+API 合同+类型+脱敏 mock 数据集
 
 # 附录 A：v1.7 候选增量——多用户直接读写与 Runtime Executor
 
-> 2026-08-24 老板确认方向。此附录是对冻结 v1.6 的增量变更单，等待 Claude/arch 审查并合入下一版契约；在审查前不改写 v1.6 已冻结正文。
+> 2026-08-24 老板确认方向。此附录是对冻结 v1.6 的增量变更单；Codex 按本增量继续实现、内网联调和部署，Claude/arch 后续复审并决定如何合入下一冻结版，不改写 v1.6 已冻结正文。
 
 ## A.1 产品目标
 
@@ -734,7 +734,7 @@ Capability Registry 后增加三类可插拔执行器：
 
 - Claude 暂不可用期间，临时审查 Codex 只读预审，临时前端 Codex 在隔离 worktree 做可复用纵向切片。
 - 切片范围：工作台 → 数据分析 → 账户详情 → 异常诊断 → 变更预览与确认；不是完整前端。
-- 临时产出状态只能到 `codex_prechecked/candidate_integrated/awaiting_claude_review`，Claude 恢复后仍逐项终审，前端允许重做。
+- 交付状态按 `draft→implemented→integrated→deployed_internal→runtime_verified` 推进；审查状态独立为 `codex_prechecked→claude_review_pending→claude_approved/changes_required`。Claude 恢复后仍逐项复审、前端允许重做，但不阻塞当前内网联调、部署和使用验收。
 - Claude Code JSONL 不伪造成 Codex 原生任务；保留原件和 hash，以结构化上下文包创建新 Codex 任务。
 
 详细设计与计划：

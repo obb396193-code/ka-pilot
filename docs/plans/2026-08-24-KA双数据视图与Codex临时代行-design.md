@@ -1,7 +1,7 @@
 # KA 双数据视图与 Codex 临时代行设计
 
 > 日期：2026-08-24  
-> 状态：老板已确认方向；实现尚未开始；最终仍待 Claude 复审  
+> 状态：老板已确认方向；目标为实现、内网联调、部署并可用；Claude 后续复审不阻塞交付
 > 适用范围：KA Data / 自建数据主线 / 对账视图，以及 Claude 暂不可用期间的临时协作
 
 ## 1. 已拍板目标
@@ -10,7 +10,7 @@
 2. **自建数据体系继续作为产品主线**：奇航 get_data、我方 ETL、确定性计算、诊断与执行闭环继续建设，不因 KA Data 可用而停止。
 3. **一套产品支持两版数据并可对账**：不是复制两套页面，而是在相同页面、筛选和业务对象下切换数据视图，并提供差异比较。
 4. **内部试用不被多人权限方案阻塞**：一期允许使用已确认可用的共享只读通路；每人独立授权、数据范围和正式服务身份进入后续治理，不倒逼当前试用停工。
-5. **Claude 暂不可用期间采用方案 2**：由两个独立 Codex 任务分别做临时审查和可复用纵向切片；它们的结论只能标为 `codex_prechecked`，Claude 恢复后仍需逐项终审，前端允许重做。
+5. **Claude 暂不可用期间采用方案 2**：由两个独立 Codex 任务分别做临时审查和可复用纵向切片；Codex 继续做到功能实现、真实内网联调、部署和可用验收。Claude 恢复后逐项复审，前端允许重做，但不作为当前部署前置门。
 
 ## 2. 为什么不是两套产品
 
@@ -152,23 +152,20 @@ Claude Code 的 JSONL 和 Codex 任务使用不同的会话存储、工具事件
 2. 与自己角色直接相关的 relay 信箱；
 3. Claude 会话索引，记录关键消息行号和对应结论；
 4. 当前分支、SHA、脏工作区状态和禁止触碰范围；
-5. 未决问题、待 Claude 终审项和状态词典。
+5. 未决问题、内网部署门、待 Claude 后续复审项和双轴状态词典。
 
 需要核查细节时，新任务可只读检索原始 JSONL；不得把其中较早、已被老板后续推翻的结论当成当前事实。
 
 ## 8. 状态与验收
 
-统一状态：
+交付与审查使用两条独立状态轴：
 
 ```text
-draft
-→ codex_prechecked
-→ candidate_integrated
-→ awaiting_claude_review
-→ claude_approved | redo_required
+交付：draft → implemented → integrated → deployed_internal → runtime_verified
+审查：codex_prechecked → claude_review_pending → claude_approved | changes_required
 ```
 
-任何临时 Codex 产出都不得标“Claude 已审”“架构已冻结”或“正式完成”。Claude 恢复后复审包必须包含：需求映射、commit 范围、测试、截图、已知缺口、临时审查报告、被否决方案和原 Claude 会话证据入口。
+`claude_review_pending` 不阻塞 `deployed_internal/runtime_verified`。任何临时 Codex 产出都不得标“Claude 已审”或“架构已冻结”；但通过 Codex 预审、自动门禁和真实内网验收后，可以如实标注“内网已部署/已验证”。Claude 恢复后复审包必须包含：需求映射、commit 范围、测试、截图、部署版本、真实联调证据、已知缺口、临时审查报告、被否决方案和原 Claude 会话证据入口。
 
 ## 9. 明确未实现
 
@@ -176,4 +173,4 @@ draft
 - 两个 Codex 任务尚未创建；
 - 当前 `fe/f001` 的已有改动尚未整理或合并；
 - 本设计没有把共享只读通路升级为正式多人权限；
-- Claude 尚未复审本设计及后续候选实现。
+- Claude 尚未复审本设计及后续实现；这不阻塞受控内网交付。

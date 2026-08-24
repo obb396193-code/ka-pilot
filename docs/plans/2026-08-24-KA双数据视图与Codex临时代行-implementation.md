@@ -2,7 +2,7 @@
 
 > **For Codex:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** 在不触碰现有 `fe/f001` 脏工作区的前提下，建立 KA Data / 自建主线 / 对账三态数据 Contract，完成可复用前端纵向切片，并让临时 Codex 审查和 Claude 后续终审都有可追溯交接。
+**Goal:** 在不触碰现有 `fe/f001` 脏工作区的前提下，建立 KA Data / 自建主线 / 对账三态数据能力，完成前后端纵向切片、真实内网联调、daily/FaaS 部署和可用验收，同时为 Claude 后续审核保留完整证据入口。
 
 **Architecture:** 从已完成后端分支建立干净集成基线；在 Contract 层新增 `DataViewMode`、来源元数据和对账响应，KA Data 通过白名单 Query Registry 接入，自建数据保持现有 canonical 查询。前端只消费统一 Contract；两个独立 Codex 任务分别负责只读预审和隔离分支上的纵向切片，根任务审计后再形成候选集成。
 
@@ -45,11 +45,11 @@ Expected: `/private/tmp/ka-dual-data` 为 clean，且包含 `apps/worker`、`pac
 
 **Step 4: 写临时协作状态文件**
 
-状态固定为：
+状态使用两条独立轴：
 
 ```text
-draft -> codex_prechecked -> candidate_integrated
-      -> awaiting_claude_review -> claude_approved | redo_required
+交付：draft -> implemented -> integrated -> deployed_internal -> runtime_verified
+审查：codex_prechecked -> claude_review_pending -> claude_approved | changes_required
 ```
 
 **Step 5: 校验并提交**
@@ -462,14 +462,51 @@ npm run lint
 
 **Step 4: 更新状态并提交**
 
-只有门禁全过才可将状态改为 `candidate_integrated`；随后立即进入 `awaiting_claude_review`。
+只有门禁全过才可将交付状态改为 `integrated`；随后继续做内网联调和部署，不等待 Claude。审查状态同步记为 `claude_review_pending`。
 
 ```bash
 git add docs/reviews docs/relay docs/context docs/plans/工作台账.md
 git commit -m "docs: 完成双数据候选预审与交接"
 ```
 
-### Task 11: 生成 Claude 终审包
+### Task 11: 内网真实联调、部署与使用验收
+
+**Files:**
+- Create: `docs/deploy/dual-data-daily-runbook.md`
+- Create: `docs/reviews/2026-08-24-dual-data-internal-runtime-verification.md`
+- Modify: `docs/context/interim-agent-status.md`
+- Modify: `docs/plans/工作台账.md`
+
+**Step 1: 生成可部署产物**
+
+固定 Node 版本、依赖锁、构建命令、启动命令、health/readiness 路由和所需 Secret 名称；不得把真实值写进包。
+
+**Step 2: 交给内网 OS/Multica Agent 部署 daily/FaaS**
+
+部署内容至少包括 Web/API、Worker/数据任务和必要的 Runtime/Gateway profile；若本批不需要钉钉 Gateway，明确不部署原因，不假装完整上线。
+
+**Step 3: 真实只读联调**
+
+验证：KA Data 查询、自建奇航查询、三态切换、同条件对账、来源/时效/覆盖/截断、账户映射、异常与降级。记录请求模板、trace、数据行数/类型和页面证据，真实业务数据不进可能外发文件。
+
+**Step 4: 受控写链路验收**
+
+先 dry-run/preview，验证风险检查、确认、执行、审计和回执；只有老板明确授权具体写测试后才执行真实媒体写操作。
+
+**Step 5: 使用验收**
+
+至少完成一条真实路径：工作台发现问题 → 数据分析 → 账户详情 → 异常诊断 → 变更预览。验收页面可访问、核心数字可解释、错误可恢复、日志可查。
+
+**Step 6: 更新状态并提交**
+
+部署成功只标 `deployed_internal`；只有真实路径和运行证据都通过才标 `runtime_verified`。
+
+```bash
+git add docs/deploy docs/reviews docs/context docs/plans/工作台账.md
+git commit -m "docs: 完成双数据内网部署与运行验收"
+```
+
+### Task 12: 生成 Claude 后续审核包
 
 **Files:**
 - Create: `docs/reviews/2026-08-24-dual-data-claude-handoff.md`
@@ -487,7 +524,7 @@ git commit -m "docs: 完成双数据候选预审与交接"
 - 已知缺口和可能重做的前端范围；
 - Claude 主会话 JSONL 原件路径、hash 与关键行号。
 
-**Step 2: 明确终审问题**
+**Step 2: 明确后续审核问题**
 
 Claude 必须裁决：双源权威矩阵、Query Registry public Contract、共享只读试用边界、对账对象映射、Runtime 与 Multica 路由、前端切片是否保留/重做。
 
@@ -497,7 +534,7 @@ Run: `git diff --check`
 
 ```bash
 git add docs/reviews docs/relay
-git commit -m "docs: 形成双数据Claude终审包"
+git commit -m "docs: 形成双数据Claude后续审核包"
 ```
 
 ## 完成定义
@@ -506,4 +543,4 @@ git commit -m "docs: 形成双数据Claude终审包"
 - 前端纵向切片能在三种数据视图间切换，并清楚显示来源、时效、覆盖与差异；
 - 当前 `fe/f001` 脏工作区未被改动；
 - 两个 Codex 任务及根任务的所有动作、SHA、验证和问题都有台账；
-- 状态停在 `awaiting_claude_review`，不提前宣称 Claude 已通过。
+- 交付状态达到 `deployed_internal`，目标达到 `runtime_verified`；Claude 审查状态保留 `claude_review_pending`，不影响内网正常使用。
