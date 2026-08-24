@@ -1,157 +1,60 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 
-import {
-  buildDataViewHref,
-  dataResponseSchema,
-  metricValueSchema,
-  readDataState,
-  readDataViewMode,
-} from "./data-view.ts"
+import { dataQueryRequestSchema, dataQueryResponseSchema, metricValueSchema } from "./contracts.ts"
+import { buildDataViewHref, readDataState, readDataViewMode } from "./data-view.ts"
 import { getMockResponse } from "./mock-data.ts"
-import { analysisRowSchema } from "./contracts.ts"
 
-test("only accepts the three frozen data views", () => {
-  assert.equal(readDataViewMode("ka_data"), "ka_data")
-  assert.equal(readDataViewMode("platform"), "platform")
-  assert.equal(readDataViewMode("reconcile"), "reconcile")
+test("only the three frozen data views and complete UI states are accepted", () => {
+  for (const view of ["ka_data", "platform", "reconcile"] as const) assert.equal(readDataViewMode(view), view)
   assert.equal(readDataViewMode("invented"), "platform")
+  for (const state of ["loading", "ready", "empty", "error", "unavailable", "truncated", "partial", "stale"] as const) assert.equal(readDataState(state), state)
+  assert.equal(readDataState("unknown"), "ready")
 })
 
-test("only accepts the seven required data states", () => {
-  for (const state of [
-    "loading",
-    "empty",
-    "error",
-    "no-access",
-    "partial",
-    "stale",
-    "success",
-  ] as const) {
-    assert.equal(readDataState(state), state)
+test("only the six backend query ids are canonical", () => {
+  for (const queryId of ["account.summary", "account.trend", "account.table", "account.anomalies", "account.detail", "reconcile.account_daily"] as const) {
+    assert.equal(dataQueryRequestSchema.parse({ queryId, dataView: queryId.startsWith("reconcile") ? "reconcile" : "platform", params: { date: "2026-08-24" } }).queryId, queryId)
   }
-
-  assert.equal(readDataState("unknown"), "success")
+  for (const legacy of ["workbench", "analysis", "accountDetail", "findingDetail", "changeSetPreview"]) assert.equal(dataQueryRequestSchema.safeParse({ queryId: legacy, dataView: "platform", params: {} }).success, false)
+  assert.equal(dataQueryRequestSchema.safeParse({ queryId: "account.table", dataView: "platform", params: {}, sql: "select 1" }).success, false)
 })
 
 test("preserves compatible filters when switching data view", () => {
-  assert.equal(
-    buildDataViewHref("/data", "reconcile", {
-      account_id: "demo-account-07",
-      start: "2026-08-18",
-      end: "2026-08-24",
-      media: "KUAISHOU",
-      task_id: "aac-acquisition",
-      product_id: "demo-product-01",
-      state: "partial",
-      ignored: "drop-me",
-    }),
-    "/data?data_view=reconcile&account_id=demo-account-07&start=2026-08-18&end=2026-08-24&media=KUAISHOU&task_id=aac-acquisition&product_id=demo-product-01&state=partial",
-  )
+  assert.equal(buildDataViewHref("/data", "reconcile", { account_id: "demo-account-07", start: "2026-08-18", end: "2026-08-24", media: "KUAISHOU", task_id: "aac-acquisition", product_id: "demo-product-01", state: "partial", ignored: "drop-me" }), "/data?data_view=reconcile&account_id=demo-account-07&start=2026-08-18&end=2026-08-24&media=KUAISHOU&task_id=aac-acquisition&product_id=demo-product-01&state=partial")
 })
 
-test("rejects an API payload without visible lineage", () => {
-  const result = dataResponseSchema.safeParse({
-    state: "success",
-    data: {},
-  })
-
-  assert.equal(result.success, false)
+test("canonical errors preserve code, message, requestId and retryable", () => {
+  const parsed = dataQueryResponseSchema.parse({ ok: false, error: { code: "UPSTREAM_TIMEOUT", message: "Timed out", requestId: "req-timeout-1", retryable: true } })
+  assert.deepEqual(parsed, { ok: false, error: { code: "UPSTREAM_TIMEOUT", message: "Timed out", requestId: "req-timeout-1", retryable: true } })
 })
 
-test("accepts reconcile only with two independent lineages", () => {
-  const result = dataResponseSchema.safeParse({
-    state: "success",
-    lineage: {
-      mode: "reconcile",
-      kaData: lineage("ka_data"),
-      platform: lineage("platform"),
-      comparability: { comparable: true, reason: null },
-    },
-    data: {},
-  })
-
-  assert.equal(result.success, true)
+test("MetricValue distinguishes missing and denominator zero from numeric zero", () => {
+  assert.equal(metricValueSchema.parse({ value: 0, availability: "available" }).value, 0)
+  assert.equal(metricValueSchema.parse({ value: null, availability: "missing" }).value, null)
+  assert.equal(metricValueSchema.parse({ value: null, availability: "denominator_zero" }).value, null)
+  assert.equal(metricValueSchema.safeParse({ value: 0, availability: "missing" }).success, false)
 })
 
-function lineage(source: "ka_data" | "platform") {
-  return {
-    source,
-    sourceLabel: source === "ka_data" ? "KA Data" : "自建平台",
-    dataAsOf: "2026-08-24T09:30:00+08:00",
-    datasetVersion: `${source}-demo-v1`,
-    queryTemplateVersion: "account-table-v1",
-    timezone: "Asia/Shanghai",
-    dayCut: "00:00",
-    coverage: "18/20 账户",
-    truncated: false,
-    partial: false,
-    stale: false,
-    warnings: [],
+test("mock mode follows selected view and never invents reconcile deltas when unavailable", () => {
+  const ka = getMockResponse({ queryId: "account.table", dataView: "ka_data", params: { date: "2026-08-24" } })
+  const platform = getMockResponse({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } })
+  const unavailable = getMockResponse({ queryId: "reconcile.account_daily", dataView: "reconcile", params: { date: "2026-08-24" }, mockState: "unavailable" })
+  assert.equal(ka.ok && ka.data.mode, "ka_data")
+  assert.equal(platform.ok && platform.data.mode, "platform")
+  assert.equal(unavailable.ok && unavailable.data.mode, "reconcile")
+  if (unavailable.ok && unavailable.data.mode === "reconcile") { assert.equal(unavailable.data.comparison.status, "unavailable"); assert.equal(unavailable.data.comparison.rows.length, 0) }
+})
+
+test("mock account reconciliation uses shared key and missing is never zero", () => {
+  const response = getMockResponse({ queryId: "reconcile.account_daily", dataView: "reconcile", params: { date: "2026-08-24" } })
+  assert.equal(response.ok, true)
+  if (response.ok && response.data.mode === "reconcile") {
+    const row = response.data.comparison.rows.find((item) => item.key.account_id === "demo-account-18")
+    assert.ok(row)
+    assert.equal(row.metrics.cpa.platform.availability, "missing")
+    assert.equal(row.metrics.cpa.platform.value, null)
+    assert.equal(row.metrics.cpa.delta.availability, "missing")
+    assert.doesNotMatch(JSON.stringify(response), /账户待映射|账户映射|mappingStatus|unified/)
   }
-}
-
-test("MetricValue distinguishes missing from numeric zero", () => {
-  assert.equal(metricValueSchema.parse({ value: 0, displayValue: "0", availability: "available" }).value, 0)
-  assert.equal(metricValueSchema.parse({ value: null, displayValue: "−", availability: "missing" }).value, null)
-  assert.equal(metricValueSchema.safeParse({ value: 0, displayValue: "0", availability: "missing" }).success, false)
-})
-
-test("mock reconcile keeps mode, dual source values and dual lineage aligned", () => {
-  const response = getMockResponse({ queryId: "analysis", dataView: "reconcile" })
-  assert.equal(response.data.mode, "reconcile")
-  assert.equal(response.lineage.mode, "reconcile")
-  assert.equal(response.data.rows[0].kaData.cpa.availability, "available")
-  assert.equal(response.data.rows[0].platform.cpa.availability, "available")
-  assert.notEqual(response.data.rows[0].kaData.cpa.value, response.data.rows[0].platform.cpa.value)
-})
-
-test("mock missing source value is null and never zero", () => {
-  const response = getMockResponse({ queryId: "analysis", dataView: "platform" })
-  const missing = response.data.rows[2].platform.spend
-  assert.equal(missing.availability, "missing")
-  assert.equal(missing.value, null)
-  assert.equal(missing.displayValue, "该来源缺失")
-})
-
-test("account reconciliation uses one shared account id and never exposes mapping UI state", () => {
-  const response = getMockResponse({ queryId: "analysis", dataView: "reconcile" })
-  const row = response.data.rows[2]
-  assert.equal(row.accountId, "demo-account-18")
-  assert.equal(row.platform.cpa.displayValue, "该来源缺失")
-  assert.match(row.comparison.reason ?? "", /该来源缺失/)
-  assert.doesNotMatch(JSON.stringify(response), /账户待映射|账户映射|kaDataAccountId|platformAccountId|mappingStatus/)
-})
-
-test("decision A keeps single-source views isolated and reconcile has no unified main value", () => {
-  const ka = getMockResponse({ queryId: "analysis", dataView: "ka_data" })
-  const platform = getMockResponse({ queryId: "analysis", dataView: "platform" })
-  const reconcile = getMockResponse({ queryId: "analysis", dataView: "reconcile" })
-  assert.equal(ka.data.rows[0].platform.cpa.availability, "missing")
-  assert.equal(platform.data.rows[0].kaData.cpa.availability, "missing")
-  assert.match(ka.lineage.mode === "single" ? ka.lineage.source.sourceLabel : "", /运营权威版/)
-  assert.equal(Object.hasOwn(reconcile.data.rows[0], "unified"), false)
-  assert.equal(analysisRowSchema.safeParse({ ...reconcile.data.rows[0], unified: { cpa: 42 } }).success, false)
-})
-
-test("metric authority is supplied by the response instead of inferred by the frontend", () => {
-  const response = getMockResponse({ queryId: "analysis", dataView: "reconcile" })
-  const authority = response.data.rows[0].authorityByMetric
-  assert.deepEqual(
-    { spend: authority.spend.defaultSource, cpa: authority.cpa.defaultSource, assessment: authority.assessmentCpa.defaultSource },
-    { spend: "platform", cpa: "platform", assessment: "source_versioned" },
-  )
-  assert.equal(authority.cpa.status, "realtime")
-})
-
-test("keeps zero-denominator CPA unavailable instead of rendering zero", () => {
-  const response = getMockResponse({
-    queryId: "workbench",
-    dataView: "ka_data",
-    state: "success",
-  })
-
-  assert.equal(response.data.trend[2].realCpa, null)
-  assert.match(response.data.anomalies[1].evidence, /真实 CPA −/)
-  assert.doesNotMatch(JSON.stringify(response.data), /¥0\.00/)
 })

@@ -22,6 +22,7 @@ function SourceCard({ lineage }: { lineage: SourceLineage }) {
         </span>
         <span className="font-mono text-muted-foreground">版本 {lineage.datasetVersion}</span>
         <span className="font-mono text-muted-foreground">查询 {lineage.queryTemplateVersion}</span>
+        <span className="font-mono text-muted-foreground">口径 {lineage.metricVersion}</span>
         <span className="text-muted-foreground">{lineage.timezone} · 日切 {lineage.dayCut}</span>
         <span className="text-muted-foreground">覆盖 {lineage.coverage}</span>
         {lineage.truncated ? <Badge variant="outline">结果已截断</Badge> : <Badge variant="outline">未截断</Badge>}

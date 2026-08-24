@@ -4,18 +4,24 @@ import test from "node:test"
 
 import { createDataClient, INTERNAL_DATA_QUERY_PATH } from "./client.ts"
 
-test("internal client uses only the fixed same-origin BFF path", async () => {
+const backendError = {
+  ok: false as const,
+  error: { code: "FORBIDDEN" as const, message: "Requested account is not authorized", requestId: "req-forbidden-001", retryable: false },
+}
+
+test("internal client posts only canonical requests to the fixed same-origin BFF", async () => {
   let requested = ""
-  const client = createDataClient({
-    mode: "internal_api",
-    fetchImpl: async (input) => {
-      requested = String(input)
-      return new Response(JSON.stringify({ state: "error", lineage: null, data: null }), { status: 500 })
-    },
-  })
-  await assert.rejects(client.query({ queryId: "analysis", dataView: "platform", params: {} }))
+  let init: RequestInit | undefined
+  const client = createDataClient({ mode: "internal_api", fetchImpl: async (input, requestInit) => {
+    requested = String(input); init = requestInit
+    return Response.json(backendError, { status: 403 })
+  } })
+  const response = await client.query({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24", page: 1, pageSize: 50 }, mockState: "truncated" })
   assert.equal(requested, INTERNAL_DATA_QUERY_PATH)
   assert.equal(requested.startsWith("http"), false)
+  assert.equal(new Headers(init?.headers).has("authorization"), false)
+  assert.deepEqual(JSON.parse(String(init?.body)), { queryId: "account.table", dataView: "platform", params: { date: "2026-08-24", page: 1, pageSize: 50 } })
+  assert.deepEqual(response, backendError)
 })
 
 test("client rejects arbitrary endpoint and shared bearer configuration", () => {
@@ -23,23 +29,13 @@ test("client rejects arbitrary endpoint and shared bearer configuration", () => 
   assert.throws(() => createDataClient({ mode: "internal_api", token: "shared-secret" } as never))
 })
 
-test("internal request contains no authorization header or mock state", async () => {
-  let init: RequestInit | undefined
-  const client = createDataClient({
-    mode: "internal_api",
-    fetchImpl: async (_input, requestInit) => {
-      init = requestInit
-      return new Response("{}", { status: 500 })
-    },
-  })
-  await assert.rejects(client.query({ queryId: "analysis", dataView: "ka_data", state: "stale", params: { account_id: "demo" } }))
-  assert.equal(new Headers(init?.headers).has("authorization"), false)
-  assert.deepEqual(JSON.parse(String(init?.body)), { queryId: "analysis", dataView: "ka_data", params: { account_id: "demo" } })
+test("mock mode requires an explicit local-only enable switch", () => {
+  assert.throws(() => createDataClient({ mode: "mock" }), /explicitly enabled/i)
+  assert.doesNotThrow(() => createDataClient({ mode: "mock", allowMock: true }))
 })
 
-test("web data client source does not reference shared token environment variables", () => {
+test("browser client source cannot reference service credentials", () => {
   const source = readFileSync(new URL("./client.ts", import.meta.url), "utf8")
-  const envExample = readFileSync(new URL("../../.env.example", import.meta.url), "utf8")
-  assert.doesNotMatch(source, /KA_DATA_API_TOKEN|NEXT_PUBLIC_.*TOKEN/)
-  assert.doesNotMatch(envExample, /^KA_DATA_API_(?:URL|TOKEN)=/m)
+  assert.doesNotMatch(source, /SERVICE_TOKEN|authorization\s*:/i)
+  assert.doesNotMatch(source, /NEXT_PUBLIC_.*TOKEN/i)
 })

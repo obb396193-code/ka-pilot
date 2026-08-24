@@ -22,7 +22,7 @@ function LoadingPanel() {
   )
 }
 
-function BlockingPanel({ kind, message }: { kind: "empty" | "error" | "no-access"; message?: string }) {
+function BlockingPanel({ kind, message, requestId, retryable }: { kind: "empty" | "error" | "no-access"; message?: string; requestId?: string; retryable?: boolean }) {
   const content = {
     empty: { title: "当前筛选范围没有数据", description: message ?? "调整账户或时间范围后重试。", icon: IconDatabaseOff },
     error: { title: "数据查询失败", description: message ?? "请稍后重试；系统不会用旧值或 0 静默替代。", icon: IconAlertCircle },
@@ -36,20 +36,26 @@ function BlockingPanel({ kind, message }: { kind: "empty" | "error" | "no-access
         <span className="rounded-full bg-muted p-3"><Icon className="size-6 text-muted-foreground" /></span>
         <CardTitle className="text-lg">{content.title}</CardTitle>
         <p className="max-w-md text-sm leading-6 text-muted-foreground">{content.description}</p>
+        {requestId ? <p className="font-mono text-xs text-muted-foreground">requestId: {requestId}</p> : null}
+        {requestId ? <p className="text-xs text-muted-foreground">{retryable ? "可重试；若持续失败请携问题编号排障。" : "请携问题编号联系数据平台排障。"}</p> : null}
       </CardContent>
     </Card>
   )
 }
 
 export function DataStateFrame<T>({ response, children }: { response: DataResponse<T>; children: ReactNode }) {
+  const noAccess = response.state === "unauthorized" || response.state === "forbidden"
+  const error = ["error", "timeout", "too-large"].includes(response.state)
+  const degraded = ["unavailable", "truncated", "partial", "stale"].includes(response.state)
   return (
     <div className="min-w-0 space-y-4">
       <SourceLineageBar lineage={response.lineage} />
       {response.state === "loading" ? <LoadingPanel /> : null}
       {response.state === "empty" ? <BlockingPanel kind="empty" message={response.message} /> : null}
-      {response.state === "error" ? <BlockingPanel kind="error" message={response.message} /> : null}
-      {response.state === "no-access" ? <BlockingPanel kind="no-access" message={response.message} /> : null}
-      {["partial", "stale", "success"].includes(response.state) ? children : null}
+      {error ? <BlockingPanel kind="error" message={response.message} requestId={response.error?.requestId} retryable={response.error?.retryable} /> : null}
+      {noAccess ? <BlockingPanel kind="no-access" message={response.message} requestId={response.error?.requestId} retryable={response.error?.retryable} /> : null}
+      {degraded ? <div role="alert" className="rounded-lg border bg-muted/45 px-4 py-3 text-sm"><strong>{response.state === "unavailable" ? "来源或对账不可用" : response.state === "truncated" ? "结果已截断" : response.state === "stale" ? "数据已过期" : "仅返回部分数据"}</strong><p className="mt-1 text-muted-foreground">{response.message ?? "当前结果只用于查看，不参与全量判断或写操作。"}</p>{response.error?.requestId ? <p className="mt-2 font-mono text-xs text-muted-foreground">requestId: {response.error.requestId}</p> : null}</div> : null}
+      {["ready", "unavailable", "truncated", "partial", "stale"].includes(response.state) ? children : null}
     </div>
   )
 }

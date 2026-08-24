@@ -1,4 +1,7 @@
+import Link from "next/link"
+
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { AnalysisData } from "@/lib/data/contracts"
 import type { DataViewMode, MetricValue } from "@/lib/data/data-view"
@@ -22,7 +25,7 @@ export function AnalysisTable({ data, dataView }: { data: AnalysisData; dataView
           <h2 className="font-medium">账户经营明细</h2>
           <p className="mt-1 text-xs text-muted-foreground">{data.summary}</p>
         </div>
-        <Badge variant="outline">共 {data.rows.length} 行演示数据</Badge>
+        <Badge variant="outline">共 {data.rows.length} 行</Badge>
       </div>
       <div className="overflow-x-auto">
         <Table>
@@ -35,6 +38,7 @@ export function AnalysisTable({ data, dataView }: { data: AnalysisData; dataView
               {reconcile ? <><TableHead className="text-right">差异</TableHead><TableHead className="text-right">差异率</TableHead></> : null}
               <TableHead>状态</TableHead>
               <TableHead className="min-w-44">后端默认来源</TableHead>
+              <TableHead className="text-right">操作</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -49,6 +53,7 @@ export function AnalysisTable({ data, dataView }: { data: AnalysisData; dataView
                 {reconcile ? <><TableCell className="text-right"><ValueCell cell={row.comparison.delta} /></TableCell><TableCell className="text-right"><ValueCell cell={row.comparison.deltaRate} /></TableCell></> : null}
                 <TableCell><Badge variant={row.status === "critical" ? "destructive" : "outline"}>{statusLabel[row.status]}</Badge></TableCell>
                 <TableCell><div className="text-xs">CPA · {authorityLabel[row.authorityByMetric.cpa.defaultSource]}</div><div className="mt-1 text-xs text-muted-foreground">{row.authorityByMetric.cpa.status}</div></TableCell>
+                <TableCell className="text-right"><Button asChild size="sm" variant="outline"><Link href={`/accounts/${row.accountId}?data_view=${dataView}`}>账户详情</Link></Button></TableCell>
               </TableRow>
             )})}
           </TableBody>
