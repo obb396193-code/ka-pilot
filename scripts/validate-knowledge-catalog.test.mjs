@@ -320,3 +320,24 @@ test("Ocean and Tencent research corpora preserve source authority and publicati
   assert.equal(tencentManifest.corpus_summary.mirror_ownership_status, "unverified");
   assert.equal(tencentManifest.corpus_summary.known_endpoint_conflicts, 1);
 });
+
+test("ka-data guide stays confidential and cannot enter product knowledge before review", async () => {
+  const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+  const catalog = await readFile(path.join(repoRoot, "docs/knowledge/catalog.jsonl"), "utf8");
+  const {records, errors} = parseCatalog(catalog);
+  assert.deepEqual(errors, []);
+
+  const record = records.find((item) => item.document_id === "ka-src-0010");
+  assert.equal(record.source_type, "internal");
+  assert.equal(record.access_level, "confidential");
+  assert.equal(record.evidence_level, "E3");
+  assert.equal(record.lifecycle_status, "review_pending");
+  assert.equal(record.review_status, "pending");
+  assert.equal(record.product_kb_publication_status, "not_ready");
+  assert.equal(record.allowed_roles.includes("development"), false);
+
+  const assessment = await readFile(path.join(repoRoot, record.assessment_ref), "utf8");
+  for (const marker of ["奇航", "SQL", "account_id", "数据血缘", "review_pending"]) {
+    assert.match(assessment, new RegExp(marker));
+  }
+});

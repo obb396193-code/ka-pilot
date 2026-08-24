@@ -136,6 +136,16 @@ documented → authorized → white-listed(if required) → wrapped → method/c
 
 任一中间状态缺失时，Agent 不得回答“我们已经能用”。
 
+### 内部 ka-data 取数指南
+
+```bash
+jq -c 'select(.document_id == "ka-src-0010")' docs/knowledge/catalog.jsonl
+rg -n '奇航|SQL|SQLite|BI转化|现金口径|account_id|素材|商品' \
+  docs/knowledge/assessments/ka-src-0010.md
+```
+
+`ka-src-0010` 为 confidential/E3 内部工作资料。无 `allowed_roles` 授权时只能看到 catalog 中允许暴露的元数据，不得读取 `storage_ref`。正文描述的服务、表、权限、对平结果和数据范围均未由本项目运行验证；引用时必须写成“资料主张”，不能回答成当前 KA 产品已接入或已可用。产品 Agent 不能依据该文档拼接任意 SQL 或索取 reader token；若 arch 后续批准接入，应只调用受控语义查询/ETL adapter，并继续执行 workspace ACL、来源血缘和字段级口径治理。
+
 ## 5. 引用格式
 
 最小引用头：
