@@ -10,4 +10,6 @@
 - 要求：实现工作台→数据分析（三态切换/对账）→账户详情→异常诊断→变更预览确认；业务逻辑、数据 Contract 和视觉组件分层；覆盖 loading/empty/error/no-access/partial/stale/success；复用正式 UI 资产来源。
 - 验收：TypeScript/ESLint/test/build/E2E 通过；1440/1366/390 截图；来源、时效、口径和截断可见；前端不算 CPA/差异率；确认页不真实执行媒体写操作。
 - 边界：不是完整九页；不得把 mock 写成真实已上线；不得标 Claude 已审；视觉可被 Claude 后续重做。
-- 状态：待创建 Codex 任务
+- Codex 任务：`01a032d0-0c9b-7820-a679-3157f0384531`
+- Worktree：`/Users/aik/.codex/worktrees/d61b/投放agent`
+- 状态：进行中

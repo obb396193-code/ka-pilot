@@ -19,8 +19,8 @@ draft
 |---|---|---|---|---|
 | 双数据设计与实施计划 | root Codex | `codex/runtime-executor-docs` | candidate_integrated | 设计 commit `4372596`；计划 commit `cf38766` |
 | 双数据后端 Contract/Adapter/对账 | 待创建实现任务 | 待定 | draft | 尚未实现 |
-| 临时只读审查 | 待创建 Codex 任务 | 待定 | draft | 尚未创建 |
-| 前端纵向切片 | 待创建 Codex 任务 | `codex/fe-vertical-slice`（计划） | draft | 尚未创建；`fe/f001` 禁止触碰 |
+| 临时只读审查 | Codex 任务 `01a032d0-0c9b-7820-a679-316d172df643` | Codex worktree `/Users/aik/.codex/worktrees/e59d/投放agent` | draft（运行中） | 2026-08-24 已创建；等待只读预审回传 |
+| 前端纵向切片 | Codex 任务 `01a032d0-0c9b-7820-a679-3157f0384531` | Codex worktree `/Users/aik/.codex/worktrees/d61b/投放agent` | draft（运行中） | 2026-08-24 已创建；`fe/f001` 禁止触碰 |
 | Claude 终审 | Claude/arch | 原 Claude 主会话或新恢复会话 | awaiting_claude_review | 当前账号未恢复 |
 
 ## 铁律
