@@ -925,3 +925,35 @@ canonical coverage 的 account-day 语义；Platform anomalies/detail 分页；A
 
 **明确未完成**：Next BFF/前端接线、真实 KA Data token 与业务数据联调、daily/FaaS 部署、
 reconcile 计算引擎、正式角色权限映射、Claude/arch 批准。未合并、未部署、未上线。
+
+---
+
+### P-031 ⏳双数据 R2 requestId 与 Contract fixtures 待审计｜be（Codex）
+
+- 分支：`codex/dual-data-backend`
+- R2 代码：`a81a176`
+- 质量报告：`docs/evidence/R2-requestId与契约fixtures质量报告.md`
+- 状态：implemented / Codex self-checked / Claude review pending
+
+**本批实现**：
+
+1. BFF `x-request-id` 经真 HTTP server、handler 与 service 传递；成功/失败均回传
+   `x-request-id` header，错误体 ID 与 header 一致。
+2. 只允许 1–128 位日志安全 ASCII；非法、超长、CR/LF、Unicode 值安全重生，
+   不回显、不记录原值。
+3. Contract 发布 ready lineage、unknown/null lineage、reconcile engine pending、stable error
+   四个自包含 fixture，Domain test 直接 Schema 验证，供前端 parity 复用。
+4. 文档冻结 BFF 必传内部 token/workspace/user/account scope/requestId；scope 只能由
+   服务端登录/授权上下文生成，dev 仅假数据，production fail closed。
+5. 未改成功 envelope 或 Query ID，未降低 scope/截断/凭证保护，真实写仍关闭。
+
+**请重点审查**：BFF 是否原样传递合法 requestId 并使用 canonical fixtures；
+production scope 是否无 dev fallback；相关 ID 语法是否与内部观测标准兼容；
+成功 envelope 仅靠 header 相关是否符合冻结 Contract。
+
+**质量真相**：Domain 414、DB 94、Worker 404、Gateway 19；真实 PG16、
+四包 type/lint/audit、Worker coverage 92.23/81.01/95.97 与安全扫描通过。
+
+**明确未完成**：BFF parity/真实登录 scope 接线、真实 KA Data 内网 E2E、
+reconcile 计算内核、部署/上线、Claude/arch 批准。R3/P0 已另行登记，
+不在 R2 代码提交中。
