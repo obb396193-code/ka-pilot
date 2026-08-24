@@ -94,3 +94,29 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 - 用 shadcn 现成组件搭建业务页面（工作台/投放任务/数据分析等 9 个页面）
 - 导航布局可切换机制（顶栏 vs 侧栏，等终裁）
 
+---
+
+### P-030 ⏳多用户 Runtime 直接执行器增量待审查｜be（Codex）
+
+- 日期：2026-08-24
+- 老板裁决：KA 平台最终要具备产品可控的直接读写能力；外部单人钉钉机器人只借鉴常驻沙箱执行模式，不能照搬共享高权凭证、自动写和共享 `CLAUDE.md`。
+- 设计：`docs/plans/2026-08-24-多用户常驻Runtime直接执行器-design.md`
+- 实施计划：`docs/plans/2026-08-24-多用户常驻Runtime直接执行器-implementation.md`
+- 决策：`docs/decisions/2026-08-24-多用户直接读写与Runtime执行器.md`
+- PRD：已追加 v1.7 候选增量 REQ-115～118，不改写冻结 v1.6 正文。
+
+**请重点审查/裁决：**
+
+1. `execution_credentials` 是否独立成表，还是把现有 users 三凭证扩为通用 credential binding；要求唯一模型能表达 `用户×渠道×执行后端×账户作用域`。
+2. Runtime Executor 是否作为第四部署单元，还是 Worker 的特权部署 profile；DingTalk Gateway 必须继续低权限独立。
+3. 产品→Runtime 的服务认证、签名、Secret 服务和授权撤销由哪个内部平台承载。
+4. Capability Registry 新增 `channel/executorKinds/runtimeVerification` 是否进入 public Contract。
+5. Runtime/Multica 双通路的路由优先级、故障降级、UNKNOWN 对账和业务 envelope。
+6. 取得外部 `dingtalk-bot-migrate.tar.gz` 后，源码及内部接口资料的仓库存放、访问范围和复用许可边界。
+
+**当前证据边界：**
+
+- 只拿到老板提供的 SOP 文本与 OS 解释，尚未取得/实读附件源码。
+- 高置信判断：机器人绕过 Multica issue/对话派发，但仍依赖 Multica/OS Runtime、MITM、CA 和个人身份注入。
+- `tt.sh` 明确字节/巨量专属；`tools.py`、`deduct.py`、MITM 身份头跨快手/腾讯/百度的能力全部标未验证。
+- 本次仅文档与计划，不代表 Runtime Executor、产品直写或正式服务身份已实现。

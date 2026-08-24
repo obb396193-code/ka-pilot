@@ -645,3 +645,51 @@ arch（本会话）：契约包（schema+API 合同+类型+脱敏 mock 数据集
 3. 素材级独立数据源（AIGC 平台接入时确认）
 4. 组织架构接口（上级派发的汇报关系，先手工配置成员表）
 5. RDS 审批时长（三单元需网络库：RDS 未批前用最小自购/临时 PG；SQLite 仅本地开发）
+
+---
+
+# 附录 A：v1.7 候选增量——多用户直接读写与 Runtime Executor
+
+> 2026-08-24 老板确认方向。此附录是对冻结 v1.6 的增量变更单，等待 Claude/arch 审查并合入下一版契约；在审查前不改写 v1.6 已冻结正文。
+
+## A.1 产品目标
+
+- KA 平台最终具备产品可控的直接读写能力；Multica/OS 作为一期执行 Provider 与兜底，不是永久唯一入口。
+- 外部钉钉机器人“每个人部署自己一套”的身份隔离，升级为平台形态：用户登录后绑定或授权自己的渠道身份、账户范围和执行凭证，平台统一承载状态、协作与审计。
+- 权限属于用户或正式服务身份，不属于 LLM；谁发起就绑定谁的 `credential_owner_user_id + initiator_user_id + workspace_id + 授权快照`。
+
+## A.2 执行器架构（REQ-115）
+
+Capability Registry 后增加三类可插拔执行器：
+
+1. `ProductDirectExecutor`：产品已获得正式接口和授权时直接调用；
+2. `RuntimeExecutor`：常驻于经授权的 Multica/OS Runtime，直接使用 CLI/MITM，但不经过 issue/对话/Autopilot 派发；
+3. `MulticaRunExecutor`：通过现有 Multica Run 调 Skill/CLI，作为复杂能力和故障兜底。
+
+前端按钮、钉钉卡片、工作流节点和内置 Agent 只调用 Capability Registry，不根据执行后端写分支。DingTalk Gateway 不持有媒体高权限；Runtime Executor 独立部署，只接受产品签名的结构化白名单请求，不接受任意自然语言、任意 Shell 或任意 URL。
+
+## A.3 多用户授权档案（REQ-116）
+
+- “接入管理”按 `用户 × 渠道 × 执行后端` 展示授权，不假设一套凭证全渠道通用。
+- 每项显示：渠道、账户作用域、可读能力、可写能力、执行后端、验证等级、最后验证时间、失效原因和撤销入口。
+- 正式存储只保存 Secret reference 和元数据；凭证失效后关联 Job 进入 `blocked_auth`，重试不得换成老板或其他用户凭证。
+- 现有奇航 userId、Multica PAT、IdeaLab AK 继续保留；Runtime 直接写所需 avatar/user/bucNo 或平台授权包，只在源码和真实 Runtime 验证后进入正式字段。
+
+## A.4 跨渠道边界（REQ-117）
+
+- 公共能力：钉钉 Stream、身份映射、常驻 Worker、健康检查、结构化协议、确认、幂等、审计、回执、效果回收。
+- 字节专属：外部 SOP 的 `tt.sh`、巨量命令参数和渠道错误码。
+- 待验证：`tools.py`、`deduct.py`、MITM 身份头是否对快手/腾讯/百度通用。
+- 各媒体必须独立 Adapter；Capability Registry 为每项能力记录 `channel + executorKinds + runtimeVerification`，只有真实跑通后才能标 `runtime_verified`。
+
+## A.5 安全与交互（REQ-118）
+
+- 所有写通路继续遵守变更集、dry-run、风险检查、确认、执行、审计、UNKNOWN 对账和 T+1 回收；不得因 Runtime 可直接调用 CLI 而绕过确认。
+- 群内“记住”只能生成个人/团队知识草稿，不能直接改生产 `CLAUDE.md` 或官方知识。
+- 普通用户不感知底层通路；异常时有权限用户可查看执行器、trace、授权所有人和受限原始运行记录。
+- Runtime 不健康或能力未验证时，系统显式切换 Multica 兜底或阻断，并展示原因，禁止假装执行成功。
+
+详细设计与计划：
+
+- `docs/plans/2026-08-24-多用户常驻Runtime直接执行器-design.md`
+- `docs/plans/2026-08-24-多用户常驻Runtime直接执行器-implementation.md`
