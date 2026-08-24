@@ -1327,3 +1327,39 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - catalog/bundle validator 通过；0008/0009 zip 完整性通过；manifest 关键计数和 0007 CLI 23/21/2/2 聚合断言通过。
 - 0008/0009 worktree private 与 canonical private `diff -qr` 无差异；`git diff --check` 通过；private 全部命中 `.gitignore`，`git ls-files private/knowledge-sources` 无输出。
 - 全仓 `scripts/*.test.mjs` 额外命中与本任务无关的 UI 资产导出测试，因系统数据盘仅余约 137MiB 而 `ENOSPC`；本任务定向测试/校验全通过，未修改 UI 资产代码。
+
+### P-KB-010 产品知识库后续发布要求补充｜research/knowledge（Codex）
+
+- 派活方：资料研究与知识资产 Agent（Codex）
+- 日期：2026-08-24
+- 状态：待处理
+- 关系：补充 `P-KB-009` 的发布方向，不改变其中任何资料的当前审查/发布状态。
+- 分支：`codex/shared-source-library`
+- 独立 worktree：`/private/tmp/codex-research-kb3`
+- 基线：`81f4c2d`
+- 功能提交 SHA：`8353898`
+
+#### 1. 产品 owner 新增明确要求
+
+产品 owner 明确：“后面要把我们整理的这些资料上传到知识库。”因此，产品知识库不再只是远期可选目标，而是资料通过审查后的正式发布终点：所有已整理资料进入发布候选队列；达到 `approved/ready` 的版本必须进入后续统一发布任务，不能仅以仓库归档代替产品落库。
+
+#### 2. 不变的发布门与边界
+
+- 当前 `ka-src-0001~0009` 仍为 `review_pending/not_ready`，本条不授权现在上传，也不把未审查材料提升为正式口径。
+- 未审查、被驳回、许可不明、存在来源冲突或 ACL 不满足的资料继续只留项目资料库。
+- private/confidential 资料发布全文、摘要或受控引用，必须由审查结论和 ACL 决定；进入知识库不能自动扩大可见范围。
+- 仓库资料继续是唯一逻辑来源；产品端复用同一 `document_id/revision/content_hash`，禁止手工复制维护第二份漂移正文。
+- 本轮只修改 `docs/knowledge/product-kb-publishing.md`、状态、台账和本信箱，不开发知识库前端、导入 API、数据库或产品 Agent 召回，不修改冻结 PRD/Contract/生产代码。
+
+#### 3. 请 arch 审查并纳入后续实现批次
+
+1. 将“approved/ready 资料必须发布到产品知识库 Tab”登记为后续正式交付要求，而不是可选优化项。
+2. 后续单独立项统一发布器：生成发布包、幂等 upsert、回读 content/hash/ACL、成功后回写 `published`。
+3. 明确 private/confidential 的全文/摘要/引用三种发布策略，以及搜索索引、向量索引、摘要缓存和 Agent 引用的统一 ACL。
+4. 明确首批发布清单、审查 owner、失败回滚与资料更新后重新审查机制。
+5. 在上述机制完成前，请勿把 `ka-src-0001~0009` 标为 `published`；请在裁决中回写允许发布项、需补证项和实现批次。
+
+#### 4. 验证
+
+- `validate-knowledge-catalog.test.mjs` 17/17 通过，包含生命周期/发布门、私有资料、bundle、巨量和腾讯来源等级校验。
+- `git diff --check` 通过；未修改 catalog 正文、资料状态、private canonical 原文、冻结 PRD/Contract 或生产代码。
