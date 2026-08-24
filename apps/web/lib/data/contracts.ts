@@ -92,6 +92,20 @@ const comparisonSchema = z.object({
   }
 })
 
+const metricAuthoritySchema = z.object({
+  defaultSource: z.enum(["ka_data", "platform", "source_versioned"]),
+  status: z.enum(["authoritative", "realtime", "versioned", "unavailable"]),
+  reason: z.string().min(1),
+}).strict()
+
+export const metricAuthorityMatrixSchema = z.object({
+  spend: metricAuthoritySchema,
+  conversions: metricAuthoritySchema,
+  cpa: metricAuthoritySchema,
+  assessmentCpa: metricAuthoritySchema,
+}).strict()
+export type MetricAuthorityMatrix = z.infer<typeof metricAuthorityMatrixSchema>
+
 export const analysisRowSchema = z.object({
   accountId: z.string(),
   accountName: z.string(),
@@ -100,6 +114,7 @@ export const analysisRowSchema = z.object({
   platform: sourceMetricsSchema,
   assessmentCpa: metricValueSchema,
   comparison: comparisonSchema,
+  authorityByMetric: metricAuthorityMatrixSchema,
   status: z.enum(["healthy", "watch", "critical", "unavailable"]),
 }).strict().superRefine((row, context) => {
   const sourceValues = [

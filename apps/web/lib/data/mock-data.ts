@@ -1,4 +1,4 @@
-import type { QueryData, QueryId, QueryRequest } from "./contracts.ts"
+import type { MetricAuthorityMatrix, QueryData, QueryId, QueryRequest } from "./contracts.ts"
 import type { DataResponse, LineageBundle, MetricValue, SourceLineage } from "./data-view.ts"
 
 const DEMO_AS_OF = "2026-08-24T09:30:00+08:00"
@@ -50,6 +50,13 @@ const value = (raw: number, displayValue: string): MetricValue => ({ value: raw,
 const missing = (availability: Exclude<MetricValue["availability"], "available"> = "missing"): MetricValue => ({ value: null, displayValue: "−", availability })
 const missingSource = () => ({ spend: missing(), conversions: missing(), cpa: missing() })
 
+const authorityByMetric: MetricAuthorityMatrix = {
+  spend: { defaultSource: "platform", status: "realtime", reason: "当日实时消耗由后端矩阵指定 platform" },
+  conversions: { defaultSource: "platform", status: "realtime", reason: "当日实时转化由后端矩阵指定 platform" },
+  cpa: { defaultSource: "platform", status: "realtime", reason: "当日实时 CPA 由后端矩阵指定 platform" },
+  assessmentCpa: { defaultSource: "source_versioned", status: "versioned", reason: "考核价按来源与生效版本展示，禁止跨源混算" },
+}
+
 const metrics = [
   { key: "spend", label: "今日消耗", value: "¥ 842,600", delta: "+8.2%", tone: "neutral" as const },
   { key: "cpa", label: "真实 CPA", value: "¥ 36.80", delta: "考核价 ¥ 38.00", tone: "positive" as const },
@@ -68,6 +75,7 @@ const rows = [
     platform: { spend: value(126800, "¥ 126,800"), conversions: value(2940, "2,940"), cpa: value(43.13, "¥ 43.13") },
     assessmentCpa: value(38, "¥ 38.00"),
     comparison: { comparable: true, reason: null, delta: value(0.27, "+¥ 0.27"), deltaRate: value(0.0063, "+0.63%") },
+    authorityByMetric,
     status: "critical" as const,
   },
   {
@@ -78,6 +86,7 @@ const rows = [
     platform: { spend: value(98200, "¥ 98,200"), conversions: value(2735, "2,735"), cpa: value(35.9, "¥ 35.90") },
     assessmentCpa: value(38, "¥ 38.00"),
     comparison: { comparable: true, reason: null, delta: value(-0.3, "-¥ 0.30"), deltaRate: value(-0.0083, "-0.83%") },
+    authorityByMetric,
     status: "healthy" as const,
   },
   {
@@ -88,6 +97,7 @@ const rows = [
     platform: missingSource(),
     assessmentCpa: value(40, "¥ 40.00"),
     comparison: { comparable: false, reason: "平台侧缺失", delta: missing(), deltaRate: missing() },
+    authorityByMetric,
     status: "unavailable" as const,
   },
 ]

@@ -125,6 +125,16 @@ test("decision A keeps single-source views isolated and reconcile has no unified
   assert.equal(analysisRowSchema.safeParse({ ...reconcile.data.rows[0], unified: { cpa: 42 } }).success, false)
 })
 
+test("metric authority is supplied by the response instead of inferred by the frontend", () => {
+  const response = getMockResponse({ queryId: "analysis", dataView: "reconcile" })
+  const authority = response.data.rows[0].authorityByMetric
+  assert.deepEqual(
+    { spend: authority.spend.defaultSource, cpa: authority.cpa.defaultSource, assessment: authority.assessmentCpa.defaultSource },
+    { spend: "platform", cpa: "platform", assessment: "source_versioned" },
+  )
+  assert.equal(authority.cpa.status, "realtime")
+})
+
 test("keeps zero-denominator CPA unavailable instead of rendering zero", () => {
   const response = getMockResponse({
     queryId: "workbench",
