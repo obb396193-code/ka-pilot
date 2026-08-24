@@ -99,7 +99,7 @@ type DataViewMode = "ka_data" | "platform" | "reconcile";
 - 记录 SQL 模板版本、数据集版本、执行耗时、截断标志和 trace；
 - 10,000 行/16MB 等上游边界必须被产品识别并提示，不得把截断结果当全量。
 
-账户 ID 存在不同命名空间时，使用独立映射表和匹配状态；未匹配对象不强行 join。
+老板已确认 KA Data 与奇航/platform 的快手账户 ID 相同。账户级直接按 `(workspace_id, media, account_id)` 对账，不建立映射表；只有一侧有数据时标记来源缺失，不解释为 ID 待映射。任务、商品、素材、广告组等其他对象仍须逐类实证，只有确认存在不同命名空间时才单独设计映射。详见 `docs/decisions/2026-08-24-双数据账户ID同源直连.md`。
 
 ## 6. Codex 临时代行分工
 

@@ -24,16 +24,16 @@
 - 边界：本批不开放媒体写操作，不实现 Runtime/Multica 执行，不接前端页面，不把 mock/HTTP 单测称为真实 KA Data 联调。
 - 状态：待处理
 
-### BE-002 租户级账户映射与对账引擎
+### BE-002 账户同源键验证与对账引擎
 
 - 派活方：root Codex（项目控制/Contract）
 - 日期：2026-08-24
 - 前置：BE-001 Contract 通过 root Codex 审计。
 - 要求：
-  1. 新增 tenant-scoped、时效化账户命名空间映射表与 Repository，保留 match status、证据和人工确认信息。
+  1. 老板已确认两侧快手账户 ID 相同；不得建立账户映射表。按 `(workspace_id, media, account_id)` 直接对账，并验证字符串/数字、前导零和类型规范化不会误配。
   2. 对账纯函数并列保留 KA Data/platform 原值、双方 lineage、差值、差异率和 comparability；不产生混合权威值。
-  3. unmatched 双边保留；分母为零返回明确状态；日切/时区/口径不一致时标不可比；任一侧 partial 时阻断全量结论。
-  4. 覆盖跨租户、一对多、失效映射、未匹配、分母零、截断和来源超时测试。
-- 验收：DB migration 可重放；DB/Domain 全量 test/typecheck/lint 通过；回执 SHA 与测试证据。
-- 边界：未取得真实映射样本时只用脱敏 fixture，不猜账户 ID；未通过本任务前不得在内网打开 reconcile。
+  3. 只有一侧存在时双边保留并标 `source_missing`；分母为零返回明确状态；日切/时区/口径不一致时标不可比；任一侧 partial 时阻断全量结论。
+  4. 覆盖跨租户、跨媒体、格式歧义、单侧缺失、分母零、截断和来源超时测试。
+- 验收：Domain/Worker 全量 test/typecheck/lint 通过；脱敏样本验证两侧 ID 格式一致；回执 SHA 与测试证据。
+- 边界：任务、商品、素材、广告组是否同 ID 尚未确认，不得套用账户结论；未通过本任务前不得在内网打开 reconcile。
 - 状态：待处理（受 BE-001 阻塞）
