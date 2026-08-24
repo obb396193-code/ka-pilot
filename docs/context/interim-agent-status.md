@@ -15,7 +15,7 @@
 | 工作项 | 负责人 | 分支/任务 | 当前状态 | 证据 |
 |---|---|---|---|---|
 | 项目控制与首轮集成计划 | root Codex | `codex/integration-control` | 交付：implemented；审查：codex_prechecked | 基线 `7a69a13`；首轮只读集成计划与前后端信箱已建立 |
-| 双数据后端 Contract/Adapter/对账 | be-codex 任务 `01a03314-5e8a-7b91-94de-17c9ac5daf7c` | `codex/dual-data-backend@a5de536`；worktree `/Users/aik/.codex/worktrees/fffe/投放agent` | draft（BE-001 运行中） | `docs/relay/inbox-be-codex.md` BE-001；BE-002 等 root Codex 验收后放行 |
+| 双数据后端 Contract/Adapter/对账 | 既有后端任务 `019ffa23-8a94-7373-b48b-7cfc9cb948f2` | `codex/dual-data-backend@a5de536`；worktree `/Users/aik/.codex/worktrees/fffe/投放agent` | draft（BE-001 运行中） | 新建重复任务已零修改停止并归档；BE-002 等 root Codex 验收后放行 |
 | 临时只读审查 | root Codex 已接管结论 | `codex/integration-control` | 审查：codex_prechecked | 2026-08-24 已在老板对话交付 A/B/C 与 P0/P1/P2 审查结论 |
 | 前端纵向切片 | fe-codex | `codex/fe-vertical-slice@235d31e` | implemented candidate；changes_required | FC-002 已下发：双 lineage、指标状态、凭证出口、mock mode、筛选保留六项修改；`fe/f001` 禁止触碰 |
 | 内网部署与联调 | root Codex + 内网 OS | 待实现版本 | 交付：draft | 目标为 daily/FaaS 部署、真实通路联调和使用验收 |

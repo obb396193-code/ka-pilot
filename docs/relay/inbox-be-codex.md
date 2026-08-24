@@ -8,11 +8,12 @@
 - 日期：2026-08-24
 - 背景：现有后端是累计领域内核，双数据公开 Contract、服务端 Query Registry、KA Data Adapter、认证作用域和共享读取凭证出口尚未实现。首次内网版本只读，Claude 后审不阻塞。
 - 基线：从 `codex/b22-idealab-asr-provider@a5de536` 建 `codex/dual-data-backend`；不要直接 merge 治理线，所需最新文档以 `codex/integration-control` 为准。
-- Codex 任务：`01a03314-5e8a-7b91-94de-17c9ac5daf7c`
+- Codex 任务：既有后端对话 `019ffa23-8a94-7373-b48b-7cfc9cb948f2`
 - Worktree：`/Users/aik/.codex/worktrees/fffe/投放agent`
 - 必读：`docs/plans/2026-08-24-首次内网只读纵切片集成计划.md` Task 2-3、双数据 design/implementation、`packages/contract/api.md`、`packages/contract/metrics.md`。
 - 要求：
   1. 在 Domain 建可执行 Zod Contract，冻结 `DataViewMode`、`MetricValue`、单/双 lineage、稳定错误 envelope；同步 `packages/contract` 文档。
+     - 老板已裁决 A：`reconcile` 双边并列，不生成统一主数；KA Data 为运营权威版，当日实时诊断/执行检查仍用 platform。详见 `docs/decisions/2026-08-24-双数据对账主数语义.md`。
   2. 新建 `POST /api/v1/data/query`，只接受 `queryId + params + dataView`；禁止 raw SQL、表列名和自由表达式。
   3. Query Registry 首批只开放 `account.summary/trend/table/anomalies/detail` 与 `reconcile.account_daily`，逐项声明参数、视图、日期范围、行数和账户 scope。
   4. workspace/user/account scope 从服务端认证上下文注入；请求体伪造 workspace/account 必须拒绝。
