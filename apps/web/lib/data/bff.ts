@@ -1,10 +1,9 @@
 import { randomUUID } from "node:crypto"
 import { internalServiceTokenSchema, resolveServerAuthContext, type ApprovedAuthContextResolver, type DataQueryServerEnvironment, type ServerAuthContext } from "./auth-context.ts"
+import { readBoundedResponseBody } from "./bounded-response.ts"
 import { dataQueryRequestSchema, dataQueryResponseSchema, type DataQueryResponse, type StableDataQueryError } from "./contracts.ts"
-import { platformRowsSchema } from "./platform-canonical.ts"
 
 export const BACKEND_DATA_QUERY_PATH = "/api/v1/data/query"
-export const MAX_UPSTREAM_BODY_BYTES = 16 * 1024 * 1024
 type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
 type Dependencies = { backendOrigin: string; serviceToken?: string; authContext: ServerAuthContext | null; fetchImpl?: FetchLike; requestId?: () => string }
 type RequestHandlerDependencies = { environment: DataQueryServerEnvironment; approvedAuthContextResolver: ApprovedAuthContextResolver; fetchImpl?: FetchLike; requestId?: () => string }
@@ -14,26 +13,6 @@ function normalizedOrigin(value: string) {
   const url = new URL(value)
   if (!["https:", "http:"].includes(url.protocol) || url.username || url.password || url.search || url.hash || (url.pathname !== "/" && url.pathname !== "")) throw new Error("Backend origin must be an origin without path, credentials, query, or hash")
   return url.origin
-}
-async function readUpstreamBody(upstream: Response): Promise<Uint8Array | null> {
-  if (upstream.body === null) return new Uint8Array()
-  const reader = upstream.body.getReader()
-  const chunks: Uint8Array[] = []
-  let total = 0
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-    total += value.byteLength
-    if (total >= MAX_UPSTREAM_BODY_BYTES) {
-      await reader.cancel()
-      return null
-    }
-    chunks.push(value)
-  }
-  const bytes = new Uint8Array(total)
-  let offset = 0
-  for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength }
-  return bytes
 }
 export async function forwardDataQuery(input: unknown, dependencies: Dependencies): Promise<BffResult> {
   const requestId = (dependencies.requestId ?? randomUUID)()
@@ -51,9 +30,7 @@ export async function forwardDataQuery(input: unknown, dependencies: Dependencie
     headers.set("x-ka-user-id", dependencies.authContext.userId)
     headers.set("x-ka-account-scope", Buffer.from(JSON.stringify(dependencies.authContext.allowedAccounts)).toString("base64url"))
     const upstream = await (dependencies.fetchImpl ?? fetch)(endpoint, { method: "POST", headers, body: JSON.stringify(parsed.data), redirect: "error", cache: "no-store", signal: AbortSignal.timeout(10_000) })
-    const contentLength = Number(upstream.headers.get("content-length") ?? "0")
-    if (Number.isFinite(contentLength) && contentLength >= MAX_UPSTREAM_BODY_BYTES) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Upstream response reached the 16 MB truncation boundary", false, requestId) }
-    const bytes = await readUpstreamBody(upstream)
+    const bytes = await readBoundedResponseBody(upstream)
     if (bytes === null) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Upstream response reached the 16 MB truncation boundary", false, requestId) }
     let json: unknown
     try { json = JSON.parse(new TextDecoder().decode(bytes)) } catch {
@@ -64,13 +41,10 @@ export async function forwardDataQuery(input: unknown, dependencies: Dependencie
     if (!envelope.success) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Upstream response did not match the canonical contract", false, requestId) }
     if (envelope.data.ok && envelope.data.data.mode !== parsed.data.dataView) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Upstream response mode did not match the request", false, requestId) }
     if (envelope.data.ok) {
-      const platformSource = envelope.data.data.mode === "platform" ? envelope.data.data.source : envelope.data.data.mode === "reconcile" ? envelope.data.data.platform : null
-      if (platformSource) {
-        const platformRows = platformRowsSchema(parsed.data.queryId).safeParse(platformSource.rows)
-        if (!platformRows.success) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Platform rows did not match the strict query shape", false, requestId) }
-        const crossedWorkspace = platformRows.data.some((row) => typeof row === "object" && row !== null && "workspaceId" in row && row.workspaceId !== dependencies.authContext?.workspaceId)
-        if (crossedWorkspace) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Platform row escaped the approved workspace scope", false, requestId) }
-      }
+      const sources = envelope.data.data.mode === "reconcile" ? [envelope.data.data.kaData, envelope.data.data.platform] : [envelope.data.data.source]
+      if (sources.some((source) => source.queryId !== parsed.data.queryId)) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Upstream response queryId did not match the request", false, requestId) }
+      const crossedWorkspace = sources.some((source) => source.rows.some((row) => "workspaceId" in row && row.workspaceId !== dependencies.authContext?.workspaceId))
+      if (crossedWorkspace) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Canonical row escaped the approved workspace scope", false, requestId) }
     }
     return { status: upstream.status, body: envelope.data }
   } catch (cause) {

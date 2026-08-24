@@ -2,8 +2,9 @@ import assert from "node:assert/strict"
 import test from "node:test"
 
 import { backendUnknownLineageEnvelope } from "./backend-contract-fixtures.ts"
-import { BACKEND_DATA_QUERY_PATH, MAX_UPSTREAM_BODY_BYTES, forwardDataQuery, handleDataQueryRequest } from "./bff.ts"
-import { platformTableEnvelope, platformTableRow } from "./platform-canonical-fixtures.ts"
+import { BACKEND_DATA_QUERY_PATH, forwardDataQuery, handleDataQueryRequest } from "./bff.ts"
+import { MAX_UPSTREAM_BODY_BYTES } from "./bounded-response.ts"
+import { canonicalTableEnvelope, canonicalTableRow } from "./canonical-query-fixtures.ts"
 
 const request = { queryId: "account.summary", dataView: "platform", params: { date: "2026-08-24" } }
 const authContext = { workspaceId: "00000000-0000-4000-8000-000000000024", userId: "user-demo", allowedAccounts: [{ media: "KUAISHOU", accountId: "account-demo-07" }] }
@@ -147,12 +148,12 @@ test("BFF rejects service tokens shorter than the backend 32-character minimum",
 
 test("BFF rejects an entire Platform batch when one row drifts from the strict shape", async () => {
   const invalidEnvelope = {
-    ...platformTableEnvelope,
+    ...canonicalTableEnvelope,
     data: {
-      ...platformTableEnvelope.data,
+      ...canonicalTableEnvelope.data,
       source: {
-        ...platformTableEnvelope.data.source,
-        rows: [platformTableRow, { ...platformTableRow, workspaceId: "not-a-uuid" }],
+        ...canonicalTableEnvelope.data.source,
+        rows: [canonicalTableRow, { ...canonicalTableRow, metrics: { ...canonicalTableRow.metrics, sourceSpecificCost: 99 } }],
         returnedRowCount: 2,
         wholeResultTotal: { value: 2, availability: "available" },
       },
@@ -173,12 +174,12 @@ test("BFF rejects an entire Platform batch when one row drifts from the strict s
 
 test("BFF rejects a valid UUID row from a different workspace", async () => {
   const crossedEnvelope = {
-    ...platformTableEnvelope,
+    ...canonicalTableEnvelope,
     data: {
-      ...platformTableEnvelope.data,
+      ...canonicalTableEnvelope.data,
       source: {
-        ...platformTableEnvelope.data.source,
-        rows: [{ ...platformTableRow, workspaceId: "00000000-0000-4000-8000-000000000099" }],
+        ...canonicalTableEnvelope.data.source,
+        rows: [{ ...canonicalTableRow, workspaceId: "00000000-0000-4000-8000-000000000099" }],
       },
     },
   }
@@ -191,4 +192,18 @@ test("BFF rejects a valid UUID row from a different workspace", async () => {
   })
   assert.equal(response.status, 502)
   assert.equal(response.body.ok ? "" : response.body.error.requestId, "bff-cross-workspace")
+})
+
+test("BFF rejects a response queryId that does not match the request", async () => {
+  const mismatched = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, queryId: "account.detail", rowSchemaVersion: "account.detail/v1" } } }
+  const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, authContext, requestId: () => "bff-query-mismatch", fetchImpl: async () => Response.json(mismatched) })
+  assert.equal(response.status, 502)
+  assert.equal(response.body.ok ? "" : response.body.error.requestId, "bff-query-mismatch")
+})
+
+test("BFF rejects a rowSchemaVersion that drifts from the canonical query id", async () => {
+  const mismatched = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, rowSchemaVersion: "account.table/v2" } } }
+  const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, authContext, requestId: () => "bff-version-mismatch", fetchImpl: async () => Response.json(mismatched) })
+  assert.equal(response.status, 502)
+  assert.equal(response.body.ok ? "" : response.body.error.requestId, "bff-version-mismatch")
 })

@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "error": {
+    "code": "QUERY_NOT_ALLOWED",
+    "message": "The requested query is not available",
+    "retryable": false,
+    "requestId": "fixture-request-001"
+  }
+}

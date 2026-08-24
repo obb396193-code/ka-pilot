@@ -4,7 +4,7 @@ import test from "node:test"
 import { backendUnknownLineageEnvelope } from "./backend-contract-fixtures.ts"
 import { dataQueryResponseSchema } from "./contracts.ts"
 
-test("frontend accepts the backend unknown-lineage envelope from de31f3a", () => {
+test("frontend accepts the backend unknown-lineage envelope from e2b0f1a", () => {
   const parsed = dataQueryResponseSchema.parse(backendUnknownLineageEnvelope)
 
   assert.equal(parsed.ok, true)

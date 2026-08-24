@@ -1,0 +1,122 @@
+import { z } from "zod"
+
+const finiteNumber = z.number().finite()
+const nullableFiniteNumber = finiteNumber.nullable()
+const calendarDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value) => {
+  const parsed = new Date(`${value}T00:00:00.000Z`)
+  return !Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === value
+}, "date must be a real calendar date")
+
+export const dataQueryIdSchema = z.enum([
+  "account.summary",
+  "account.trend",
+  "account.table",
+  "account.anomalies",
+  "account.detail",
+  "reconcile.account_daily",
+])
+export type DataQueryId = z.infer<typeof dataQueryIdSchema>
+
+export const ratioValueSchema = z.object({
+  value: nullableFiniteNumber,
+  state: z.enum(["finite", "infinite", "undefined"]),
+}).strict().superRefine((ratio, context) => {
+  if (ratio.state === "finite" && ratio.value === null) {
+    context.addIssue({ code: "custom", path: ["value"], message: "finite ratios require a finite value" })
+  }
+  if (ratio.state !== "finite" && ratio.value !== null) {
+    context.addIssue({ code: "custom", path: ["value"], message: `${ratio.state} ratios cannot carry a numeric value` })
+  }
+})
+
+export const canonicalRatioSetSchema = z.object({
+  ctr: ratioValueSchema,
+  cvr: ratioValueSchema,
+  realCpa: ratioValueSchema,
+  cashCpa: ratioValueSchema,
+  gap: ratioValueSchema,
+  potentialRate: ratioValueSchema,
+  biConversionRate: ratioValueSchema,
+}).strict()
+
+export const canonicalMetricSetSchema = z.object({
+  cost: nullableFiniteNumber,
+  exposure: nullableFiniteNumber,
+  click: nullableFiniteNumber,
+  conversion: nullableFiniteNumber,
+  realConversion: nullableFiniteNumber,
+  cashCost: nullableFiniteNumber,
+  costSpace: nullableFiniteNumber,
+  wakeUv: nullableFiniteNumber,
+  potentialUv: nullableFiniteNumber,
+  ratios: canonicalRatioSetSchema,
+}).strict()
+
+export const accountSummaryRowSchema = z.object({
+  rowCount: z.number().int().nonnegative(),
+  accountCount: z.number().int().nonnegative(),
+  anomalyRows: z.number().int().nonnegative().nullable(),
+  metrics: canonicalMetricSetSchema,
+}).strict()
+
+export const accountTrendRowSchema = z.object({
+  ds: calendarDateSchema,
+  metrics: accountSummaryRowSchema,
+}).strict()
+
+export const relatedTaskRowSchema = z.object({
+  taskId: z.string().min(1),
+  taskName: z.string().nullable(),
+  bizName: z.string().nullable(),
+}).strict()
+
+export const accountDailyMetricSetSchema = canonicalMetricSetSchema.extend({
+  budget: nullableFiniteNumber,
+  budgetUsageRate: nullableFiniteNumber,
+  deductionRate: nullableFiniteNumber,
+  mainAdCostProportion: nullableFiniteNumber,
+  assessmentPrice: nullableFiniteNumber,
+}).strict()
+
+export const accountDailyRowSchema = z.object({
+  workspaceId: z.string().min(1),
+  media: z.string().min(1),
+  accountId: z.string().min(1),
+  accountName: z.string().nullable(),
+  ownerUserId: z.string().nullable(),
+  ds: calendarDateSchema,
+  metrics: accountDailyMetricSetSchema,
+  dataAnomaly: z.boolean().nullable(),
+  computedAt: z.string().datetime({ offset: true }).nullable(),
+  tasks: z.array(relatedTaskRowSchema),
+}).strict()
+
+export const accountAnomalyRowSchema = accountDailyRowSchema.extend({
+  dataAnomaly: z.literal(true),
+}).strict()
+
+export const canonicalQueryRowSchemaById = {
+  "account.summary": accountSummaryRowSchema,
+  "account.trend": accountTrendRowSchema,
+  "account.table": accountDailyRowSchema,
+  "account.anomalies": accountAnomalyRowSchema,
+  "account.detail": accountDailyRowSchema,
+  "reconcile.account_daily": accountDailyRowSchema,
+} as const
+
+export const canonicalRowSchemaVersionByQueryId = {
+  "account.summary": "account.summary/v1",
+  "account.trend": "account.trend/v1",
+  "account.table": "account.table/v1",
+  "account.anomalies": "account.anomalies/v1",
+  "account.detail": "account.detail/v1",
+  "reconcile.account_daily": "reconcile.account_daily/v1",
+} as const
+
+export type AccountSummaryRow = z.infer<typeof accountSummaryRowSchema>
+export type AccountTrendRow = z.infer<typeof accountTrendRowSchema>
+export type AccountDailyRow = z.infer<typeof accountDailyRowSchema>
+
+export function canonicalQueryRowsSchema(queryId: DataQueryId) {
+  return z.array(canonicalQueryRowSchemaById[queryId])
+}

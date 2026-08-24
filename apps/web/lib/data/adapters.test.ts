@@ -4,14 +4,17 @@ import test from "node:test"
 import { adaptAccountDetail, adaptAnalysis, adaptWorkbench } from "./adapters.ts"
 import { dataQueryResponseSchema } from "./contracts.ts"
 import { getMockResponse } from "./mock-data.ts"
-import { platformAnomaliesEnvelope, platformSummaryEnvelope, platformTableEnvelope, platformTableRow, platformTrendEnvelope } from "./platform-canonical-fixtures.ts"
+import { canonicalAnomaliesEnvelope, canonicalSummaryEnvelope, canonicalTableEnvelope, canonicalTableRow, canonicalTrendEnvelope } from "./canonical-query-fixtures.ts"
 
 test("adapter never calculates CPA when the backend row omits it", () => {
   const response = getMockResponse({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } })
   assert.equal(response.ok, true)
   if (response.ok && response.data.mode === "platform") {
-    delete response.data.source.rows[0].cpa
-    delete response.data.source.rows[0].cpa_display
+    const row = response.data.source.rows[0]
+    if ("metrics" in row && typeof row.metrics === "object" && row.metrics !== null) {
+      const metrics = row.metrics as Record<string, unknown>
+      metrics.ratios = { ...(metrics.ratios as Record<string, unknown>), realCpa: { value: null, state: "undefined" } }
+    }
   }
   const adapted = adaptAnalysis(response, "platform", true)
   assert.equal(adapted.data.rows[0].platform.cpa.availability, "missing")
@@ -38,11 +41,11 @@ test("adapter preserves stable error fields for troubleshooting", () => {
   assert.deepEqual(adapted.error, { code: "FORBIDDEN", message: "No account scope", requestId: "req-403", retryable: false })
 })
 
-test("workbench consumes the strict Platform MetricSummary and trend shapes", () => {
+test("workbench consumes the strict canonical summary and trend rows", () => {
   const adapted = adaptWorkbench({
-    summary: dataQueryResponseSchema.parse(platformSummaryEnvelope),
-    trend: dataQueryResponseSchema.parse(platformTrendEnvelope),
-    anomalies: dataQueryResponseSchema.parse(platformAnomaliesEnvelope),
+    summary: dataQueryResponseSchema.parse(canonicalSummaryEnvelope),
+    trend: dataQueryResponseSchema.parse(canonicalTrendEnvelope),
+    anomalies: dataQueryResponseSchema.parse(canonicalAnomaliesEnvelope),
   }, "platform", false)
 
   assert.match(adapted.data.metrics.find((item) => item.key === "spend")?.value ?? "", /270/)
@@ -51,8 +54,8 @@ test("workbench consumes the strict Platform MetricSummary and trend shapes", ()
   assert.equal(adapted.data.trend[0].realCpa, 12.5)
 })
 
-test("analysis and account detail consume the strict Platform camelCase table row", () => {
-  const response = dataQueryResponseSchema.parse(platformTableEnvelope)
+test("analysis and account detail consume the strict canonical account daily row", () => {
+  const response = dataQueryResponseSchema.parse(canonicalTableEnvelope)
   const analysis = adaptAnalysis(response, "platform", false)
   const detail = adaptAccountDetail(response, "platform", false, "account-demo-07")
 
@@ -65,12 +68,12 @@ test("analysis and account detail consume the strict Platform camelCase table ro
 
 test("analysis keeps same account id on different media as separate identities", () => {
   const response = dataQueryResponseSchema.parse({
-    ...platformTableEnvelope,
+    ...canonicalTableEnvelope,
     data: {
-      ...platformTableEnvelope.data,
+      ...canonicalTableEnvelope.data,
       source: {
-        ...platformTableEnvelope.data.source,
-        rows: [platformTableRow, { ...platformTableRow, media: "TENCENT", accountName: "脱敏账户 07 · 腾讯" }],
+        ...canonicalTableEnvelope.data.source,
+        rows: [canonicalTableRow, { ...canonicalTableRow, media: "TENCENT", accountName: "脱敏账户 07 · 腾讯" }],
         returnedRowCount: 2,
         wholeResultTotal: { value: 2, availability: "available" },
       },
@@ -82,23 +85,18 @@ test("analysis keeps same account id on different media as separate identities",
   assert.deepEqual(adapted.data.rows.map((row) => `${row.media}:${row.accountId}`).sort(), ["KUAISHOU:account-demo-07", "TENCENT:account-demo-07"])
 })
 
-test("a mixed valid and invalid canonical batch fails as a whole with requestId", () => {
-  const response = dataQueryResponseSchema.parse({
-    ...platformTableEnvelope,
+test("a mixed valid and invalid canonical batch is rejected as a whole", () => {
+  const response = dataQueryResponseSchema.safeParse({
+    ...canonicalTableEnvelope,
     data: {
-      ...platformTableEnvelope.data,
+      ...canonicalTableEnvelope.data,
       source: {
-        ...platformTableEnvelope.data.source,
-        rows: [platformTableRow, { ...platformTableRow, workspaceId: "not-a-uuid" }],
+        ...canonicalTableEnvelope.data.source,
+        rows: [canonicalTableRow, { ...canonicalTableRow, metrics: { ...canonicalTableRow.metrics, sourceSpecificCost: 99 } }],
         returnedRowCount: 2,
         wholeResultTotal: { value: 2, availability: "available" },
       },
     },
   })
-  const adapted = adaptAnalysis(response, "platform", false)
-
-  assert.equal(adapted.state, "error")
-  assert.equal(adapted.data.rows.length, 0)
-  assert.equal(adapted.error?.code, "UPSTREAM_INVALID_RESPONSE")
-  assert.match(adapted.error?.requestId ?? "", /.+/)
+  assert.equal(response.success, false)
 })

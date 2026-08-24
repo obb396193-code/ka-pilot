@@ -1,44 +1,124 @@
-import { dataQueryResponseSchema, type BackendMetricValue, type DataQueryId, type DataQueryResponse, type QueryRequest, type SourceQueryResult } from "./contracts.ts"
+import { canonicalRowSchemaVersionByQueryId, type AccountDailyRow, type AccountSummaryRow, type DataQueryId } from "./canonical-query-rows.ts"
+import {
+  changeSetDetailResponseSchema,
+  dataQueryResponseSchema,
+  workItemDetailResponseSchema,
+  type BackendMetricValue,
+  type ChangeSetDetailResponse,
+  type DataQueryResponse,
+  type QueryRequest,
+  type SourceQueryResult,
+  type WorkItemDetailResponse,
+} from "./contracts.ts"
 
 const AS_OF = "2026-08-24T09:30:00+08:00"
+const WORKSPACE_ID = "00000000-0000-4000-8000-000000000024"
 const available = (value: number): BackendMetricValue => ({ value, availability: "available" })
 const unavailable = (availability: Exclude<BackendMetricValue["availability"], "available" | "stale"> = "missing", reason?: string): BackendMetricValue => ({ value: null, availability, ...(reason ? { reason } : {}) })
+const undefinedRatio = { value: null, state: "undefined" } as const
+
+function ratios(realCpa: number | null) {
+  return {
+    ctr: undefinedRatio,
+    cvr: undefinedRatio,
+    realCpa: realCpa === null ? undefinedRatio : { value: realCpa, state: "finite" as const },
+    cashCpa: undefinedRatio,
+    gap: undefinedRatio,
+    potentialRate: undefinedRatio,
+    biConversionRate: undefinedRatio,
+  }
+}
+
+function summaryRow(cost: number, realCpa: number | null, anomalyRows: number | null): AccountSummaryRow {
+  return {
+    rowCount: 20,
+    accountCount: 20,
+    anomalyRows,
+    metrics: {
+      cost,
+      exposure: null,
+      click: null,
+      conversion: null,
+      realConversion: 18_620,
+      cashCost: null,
+      costSpace: 27_400,
+      wakeUv: null,
+      potentialUv: null,
+      ratios: ratios(realCpa),
+    },
+  }
+}
+
+const summaryRows = [summaryRow(842_600, 36.8, 7)]
+const trendRows = [
+  ["2026-08-18", 724_000, 39.1], ["2026-08-19", 768_000, 38.4], ["2026-08-20", 751_000, null],
+  ["2026-08-21", 796_000, 37.9], ["2026-08-22", 812_000, 37.2], ["2026-08-23", 826_000, 36.9], ["2026-08-24", 842_600, 36.8],
+].map(([ds, cost, realCpa]) => ({ ds: String(ds), metrics: summaryRow(Number(cost), realCpa === null ? null : Number(realCpa), 7) }))
+
+function dailyRow(input: {
+  accountId: string
+  accountName: string
+  ownerUserId: string
+  cost: number
+  realConversion: number
+  realCpa: number | null
+  assessmentPrice: number
+  dataAnomaly: boolean | null
+}): AccountDailyRow {
+  return {
+    workspaceId: WORKSPACE_ID,
+    media: "KUAISHOU",
+    accountId: input.accountId,
+    accountName: input.accountName,
+    ownerUserId: input.ownerUserId,
+    ds: "2026-08-24",
+    metrics: {
+      cost: input.cost,
+      exposure: null,
+      click: null,
+      conversion: null,
+      realConversion: input.realConversion,
+      cashCost: null,
+      costSpace: null,
+      wakeUv: null,
+      potentialUv: null,
+      ratios: ratios(input.realCpa),
+      budget: null,
+      budgetUsageRate: null,
+      deductionRate: null,
+      mainAdCostProportion: null,
+      assessmentPrice: input.assessmentPrice,
+    },
+    dataAnomaly: input.dataAnomaly,
+    computedAt: AS_OF,
+    tasks: [{ taskId: `task-${input.accountId}`, taskName: "AAC 拉新", bizName: "拉新" }],
+  }
+}
 
 const accountRows = [
-  { ds: "2026-08-24", media: "KUAISHOU", account_id: "demo-account-07", account_name: "演示账户 · 华东 07", owner: "优化师 A", cost: 126800, cost_display: "¥ 126,800", conversions: 2940, conversions_display: "2,940", cpa: 43.13, cpa_display: "¥ 43.13", assessment_cpa: 38, assessment_cpa_display: "¥ 38.00", status: "critical", finding_id: "finding-cost-001", finding_title: "CPA 连续 3 个时段高于考核价" },
-  { ds: "2026-08-24", media: "KUAISHOU", account_id: "demo-account-12", account_name: "演示账户 · 华南 12", owner: "优化师 B", cost: 98200, cost_display: "¥ 98,200", conversions: 2735, conversions_display: "2,735", cpa: 35.9, cpa_display: "¥ 35.90", assessment_cpa: 38, assessment_cpa_display: "¥ 38.00", status: "healthy" },
-  { ds: "2026-08-24", media: "KUAISHOU", account_id: "demo-account-18", account_name: "演示账户 · 华北 18", owner: "优化师 C", cost: 80274, cost_display: "¥ 80,274", conversions: 2020, conversions_display: "2,020", cpa: 39.74, cpa_display: "¥ 39.74", assessment_cpa: 40, assessment_cpa_display: "¥ 40.00", status: "unavailable", finding_id: "finding-coverage-002", finding_title: "平台数据源延迟" },
+  dailyRow({ accountId: "demo-account-07", accountName: "演示账户 · 华东 07", ownerUserId: "优化师 A", cost: 126_800, realConversion: 2_940, realCpa: 43.13, assessmentPrice: 38, dataAnomaly: true }),
+  dailyRow({ accountId: "demo-account-12", accountName: "演示账户 · 华南 12", ownerUserId: "优化师 B", cost: 98_200, realConversion: 2_735, realCpa: 35.9, assessmentPrice: 38, dataAnomaly: false }),
+  dailyRow({ accountId: "demo-account-18", accountName: "演示账户 · 华北 18", ownerUserId: "优化师 C", cost: 80_274, realConversion: 2_020, realCpa: null, assessmentPrice: 40, dataAnomaly: null }),
 ]
 
-const anomalyRows = [
-  { finding_id: "finding-cost-001", media: "KUAISHOU", account_id: "demo-account-07", account_name: "演示账户 · 华东 07", title: "CPA 连续 3 个时段高于考核价", severity: "critical", evidence: "服务端规则命中：当前 CPA ¥43.13，考核价 ¥38.00", attribution: "素材疲劳与高成本人群占比同步上升", suggested_action: "先收紧异常时段预算，再复核素材与人群", deterministic_conclusion: "确定性规则 D-CPA-003 已命中；前端只展示后端证据。", ai_interpretation: "可能与午前流量结构变化有关；建议先核查素材与人群分布。", ai_confidence: "中等 · 仅解释，不构成执行指令", evidence_items: [{ label: "当前 CPA", value: "¥ 43.13", source: "platform.metrics.cpa_display" }, { label: "考核价", value: "¥ 38.00", source: "account.assessment_cpa_display" }], change_set: { change_set_id: "changeset-demo-001", expires_at: "2026-08-24T10:00:00+08:00", items: [{ field: "计划预算", from: "¥ 50,000 / 日", to: "¥ 45,000 / 日", reason: "控制异常时段风险敞口" }], risk_checks: [{ label: "媒体写端点", passed: false, detail: "未接执行器" }] } },
-  { finding_id: "finding-coverage-002", media: "KUAISHOU", account_id: "demo-account-18", account_name: "演示账户 · 华北 18", title: "平台数据源延迟", severity: "warning", evidence: "真实 CPA −；平台批次停留在 08:30，当前不可判断", attribution: "平台取数批次延迟", suggested_action: "保持只读，等待数据恢复后重新诊断", deterministic_conclusion: "来源完整性检查未通过，不输出成本结论。", ai_interpretation: null, ai_confidence: null, evidence_items: [{ label: "真实 CPA", value: "−", source: "platform.metrics.cpa" }], change_set: null },
-]
-
-const summaryRows = [{ cost: 842600, cost_display: "¥ 842,600", real_cpa: 36.8, real_cpa_display: "¥ 36.80", assessment_cpa_display: "考核价 ¥ 38.00", compliance_rate_display: "76.4%", cost_space_display: "¥ 27,400", bi_volume_display: "18,620", risk_count_display: "7", account_coverage_display: "18 / 20" }]
-const trendRows = [
-  { ds: "2026-08-18", label: "8/18", cost: 724000, real_cpa: 39.1 }, { ds: "2026-08-19", label: "8/19", cost: 768000, real_cpa: 38.4 },
-  { ds: "2026-08-20", label: "8/20", cost: 751000, real_cpa: null, cpa_availability: "denominator_zero" }, { ds: "2026-08-21", label: "8/21", cost: 796000, real_cpa: 37.9 },
-  { ds: "2026-08-22", label: "8/22", cost: 812000, real_cpa: 37.2 }, { ds: "2026-08-23", label: "8/23", cost: 826000, real_cpa: 36.9 }, { ds: "2026-08-24", label: "8/24", cost: 842600, real_cpa: 36.8 },
-]
-
-function rowsFor(queryId: DataQueryId, request: QueryRequest) {
+function rowsFor(queryId: DataQueryId, request: QueryRequest): Record<string, unknown>[] {
   if (queryId === "account.summary") return summaryRows
   if (queryId === "account.trend") return trendRows
-  if (queryId === "account.anomalies") return anomalyRows
+  if (queryId === "account.anomalies") return accountRows.filter((row) => row.dataAnomaly === true)
   if (queryId === "account.detail") {
     const accountId = String(request.params.accountId ?? "demo-account-07")
-    return accountRows.filter((row) => row.account_id === accountId)
+    return accountRows.filter((row) => row.accountId === accountId)
   }
   return accountRows
 }
 
 function rowsForSource(queryId: DataQueryId, request: QueryRequest, source: "ka_data" | "platform") {
-  const base = rowsFor(queryId, request) as Record<string, unknown>[]
-  if (source === "platform" || (queryId !== "account.table" && queryId !== "account.detail" && queryId !== "reconcile.account_daily")) return base
-  return base.map((row) => {
-    if (row.account_id === "demo-account-07") return { ...row, cost: 126000, cost_display: "¥ 126,000", cpa: 42.86, cpa_display: "¥ 42.86" }
-    if (row.account_id === "demo-account-12") return { ...row, cost: 99007, cost_display: "¥ 99,007", cpa: 36.2, cpa_display: "¥ 36.20" }
+  const base = rowsFor(queryId, request)
+  if (source === "platform" || !["account.table", "account.detail", "reconcile.account_daily"].includes(queryId)) return base
+  return base.map((raw) => {
+    const row = raw as AccountDailyRow
+    if (row.accountId === "demo-account-07") return { ...row, metrics: { ...row.metrics, cost: 126_000, ratios: { ...row.metrics.ratios, realCpa: { value: 42.86, state: "finite" as const } } } }
+    if (row.accountId === "demo-account-12") return { ...row, metrics: { ...row.metrics, cost: 99_007, ratios: { ...row.metrics.ratios, realCpa: { value: 36.2, state: "finite" as const } } } }
     return row
   })
 }
@@ -55,14 +135,15 @@ function lineage(source: "ka_data" | "platform", state: QueryRequest["mockState"
   }
 }
 
-function sourceResult(source: "ka_data" | "platform", rows: Record<string, unknown>[], state: QueryRequest["mockState"]): SourceQueryResult {
+function sourceResult(queryId: DataQueryId, source: "ka_data" | "platform", rows: Record<string, unknown>[], state: QueryRequest["mockState"]): SourceQueryResult {
   const activeRows = state === "empty" ? [] : rows
+  const identity = { queryId, rowSchemaVersion: canonicalRowSchemaVersionByQueryId[queryId] }
   if (state === "unavailable") {
     const sourceError = { code: "SOURCE_UNAVAILABLE" as const, message: `${source} is unavailable in the mock scenario`, retryable: true, requestId: `mock-${source}-unavailable` }
-    return { status: "unavailable", rows: [], returnedRowCount: 0, wholeResultTotal: unavailable("error", "SOURCE_UNAVAILABLE"), lineage: { ...lineage(source, "partial"), coverage: { complete: false, reason: "Source unavailable" } }, warnings: [sourceError.message], error: sourceError }
+    return { ...identity, status: "unavailable", rows: [], returnedRowCount: 0, wholeResultTotal: unavailable("error", "SOURCE_UNAVAILABLE"), lineage: { ...lineage(source, "partial"), coverage: { complete: false, reason: "Source unavailable" } }, warnings: [sourceError.message], error: sourceError }
   }
   const currentLineage = lineage(source, state)
-  return { status: "ready", rows: activeRows, returnedRowCount: activeRows.length, wholeResultTotal: currentLineage.partial ? unavailable("partial", "Partial result") : available(activeRows.length), lineage: currentLineage, warnings: ["脱敏 Mock；不代表内网真实数据"] }
+  return { ...identity, status: "ready", rows: activeRows, returnedRowCount: activeRows.length, wholeResultTotal: currentLineage.partial ? unavailable("partial", "Partial result") : available(activeRows.length), lineage: currentLineage, warnings: ["脱敏 Mock；不代表内网真实数据"] }
 }
 
 function mockError(state: QueryRequest["mockState"]): DataQueryResponse | null {
@@ -78,9 +159,9 @@ function reconcileRows(state: QueryRequest["mockState"]) {
   const comparable = (ka: number, platform: number, delta: number, deltaRate: number) => ({ kaData: available(ka), platform: available(platform), delta: available(delta), deltaRate: available(deltaRate), comparable: true })
   const missingPlatform = { kaData: available(39.74), platform: unavailable("missing", "该来源缺失"), delta: unavailable("missing", "该来源缺失"), deltaRate: unavailable("missing", "该来源缺失"), comparable: false, reason: "source_missing" }
   return [
-    { key: { workspace_id: "demo-workspace", media: "KUAISHOU", account_id: "demo-account-07" }, metrics: { cpa: comparable(42.86, 43.13, 0.27, 0.0063), spend: comparable(126000, 126800, 800, 0.00635) } },
-    { key: { workspace_id: "demo-workspace", media: "KUAISHOU", account_id: "demo-account-12" }, metrics: { cpa: comparable(36.2, 35.9, -0.3, -0.0083), spend: comparable(99007, 98200, -807, -0.00815) } },
-    { key: { workspace_id: "demo-workspace", media: "KUAISHOU", account_id: "demo-account-18" }, metrics: { cpa: missingPlatform, spend: { ...missingPlatform, kaData: available(80274) } } },
+    { key: { workspace_id: WORKSPACE_ID, media: "KUAISHOU", account_id: "demo-account-07" }, metrics: { cpa: comparable(42.86, 43.13, 0.27, 0.0063), spend: comparable(126_000, 126_800, 800, 0.00635) } },
+    { key: { workspace_id: WORKSPACE_ID, media: "KUAISHOU", account_id: "demo-account-12" }, metrics: { cpa: comparable(36.2, 35.9, -0.3, -0.0083), spend: comparable(99_007, 98_200, -807, -0.00815) } },
+    { key: { workspace_id: WORKSPACE_ID, media: "KUAISHOU", account_id: "demo-account-18" }, metrics: { cpa: missingPlatform, spend: { ...missingPlatform, kaData: available(80_274) } } },
   ]
 }
 
@@ -89,9 +170,9 @@ export function getMockResponse(request: QueryRequest): DataQueryResponse {
   if (errorResponse) return errorResponse
   if (request.dataView === "reconcile") {
     const kaRows = rowsForSource(request.queryId, request, "ka_data")
-    const platformRows = rowsForSource(request.queryId, request, "platform").filter((row) => row.account_id !== "demo-account-18")
-    const kaData = sourceResult("ka_data", kaRows, request.mockState)
-    const platform = sourceResult("platform", platformRows, request.mockState)
+    const platformRows = rowsForSource(request.queryId, request, "platform").filter((row) => !("accountId" in row) || row.accountId !== "demo-account-18")
+    const kaData = sourceResult(request.queryId, "ka_data", kaRows, request.mockState)
+    const platform = sourceResult(request.queryId, "platform", platformRows, request.mockState)
     if (request.queryId === "reconcile.account_daily") {
       kaData.lineage.authority = { policyVersion: "2026-08-24", useCase: "source_versioned_financials", role: "source_versioned" }
       platform.lineage.authority = { policyVersion: "2026-08-24", useCase: "source_versioned_financials", role: "source_versioned" }
@@ -99,6 +180,14 @@ export function getMockResponse(request: QueryRequest): DataQueryResponse {
     const isUnavailable = request.mockState === "unavailable" || kaData.status === "unavailable" || platform.status === "unavailable"
     return dataQueryResponseSchema.parse({ ok: true, data: { mode: "reconcile", kaData, platform, comparison: { status: isUnavailable ? "unavailable" : "ready", ...(isUnavailable ? { reason: "source_unavailable" } : {}), rows: isUnavailable ? [] : reconcileRows(request.mockState) } } })
   }
-  const source = sourceResult(request.dataView, rowsForSource(request.queryId, request, request.dataView), request.mockState)
+  const source = sourceResult(request.queryId, request.dataView, rowsForSource(request.queryId, request, request.dataView), request.mockState)
   return dataQueryResponseSchema.parse({ ok: true, data: { mode: request.dataView, source } })
+}
+
+export function getMockWorkItemDetail(findingId: string): WorkItemDetailResponse {
+  return workItemDetailResponseSchema.parse({ ok: true, data: { findingId, media: "KUAISHOU", accountId: "demo-account-07", accountName: "演示账户 · 华东 07", title: "CPA 连续 3 个时段高于考核价", severity: "critical", deterministicConclusion: "确定性规则 D-CPA-003 已命中；前端只展示后端证据。", evidence: [{ label: "当前 CPA", value: "¥ 43.13", source: "work-item.evidence.realCpa" }, { label: "考核价", value: "¥ 38.00", source: "work-item.evidence.assessmentPrice" }], aiInterpretation: "可能与午前流量结构变化有关；建议先核查素材与人群分布。", aiConfidence: "中等 · 仅解释，不构成执行指令", changeSetId: "changeset-demo-001" } })
+}
+
+export function getMockChangeSetDetail(): ChangeSetDetailResponse {
+  return changeSetDetailResponseSchema.parse({ ok: true, data: { changeSetId: "changeset-demo-001", accountId: "demo-account-07", accountName: "演示账户 · 华东 07", status: "preview_only", expiresAt: "2026-08-24T10:00:00+08:00", items: [{ field: "计划预算", from: "¥ 50,000 / 日", to: "¥ 45,000 / 日", reason: "控制异常时段风险敞口" }], riskChecks: [{ label: "媒体写端点", passed: false, detail: "未接执行器" }], executionEndpointConfigured: false } })
 }

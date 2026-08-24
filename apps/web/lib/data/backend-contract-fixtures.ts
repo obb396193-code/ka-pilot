@@ -1,17 +1,18 @@
-// Contract fixture copied field-for-field from the de31f3a backend envelope.
+// Contract fixture copied field-for-field from the e2b0f1a unknown-lineage envelope.
 // Values are synthetic and safe for local regression tests.
 export const backendUnknownLineageEnvelope = {
   ok: true,
   data: {
     mode: "ka_data",
     source: {
-      status: "unavailable",
+      queryId: "account.summary",
+      rowSchemaVersion: "account.summary/v1",
+      status: "ready",
       rows: [],
       returnedRowCount: 0,
       wholeResultTotal: {
-        value: null,
-        availability: "error",
-        reason: "SOURCE_UNAVAILABLE",
+        value: 0,
+        availability: "available",
       },
       lineage: {
         source: "ka_data",
@@ -32,19 +33,14 @@ export const backendUnknownLineageEnvelope = {
           joinKeys: ["workspace_id", "media", "account_id"],
         },
         coverage: {
-          complete: false,
-          reason: "Source unavailable",
+          complete: true,
+          requestedObjects: 0,
+          returnedObjects: 0,
         },
         truncated: false,
-        partial: true,
+        partial: false,
       },
-      warnings: ["Source unavailable"],
-      error: {
-        code: "SOURCE_UNAVAILABLE",
-        message: "Source unavailable",
-        retryable: true,
-        requestId: "request-fixture",
-      },
+      warnings: [],
     },
   },
 } as const

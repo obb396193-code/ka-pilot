@@ -1,16 +1,14 @@
 import { z } from "zod"
 
+import {
+  canonicalQueryRowSchemaById,
+  canonicalRowSchemaVersionByQueryId,
+  dataQueryIdSchema,
+  type DataQueryId,
+} from "./canonical-query-rows.ts"
 import { displayMetricValueSchema, dataViewModeSchema } from "./data-view.ts"
 
-export const dataQueryIdSchema = z.enum([
-  "account.summary",
-  "account.trend",
-  "account.table",
-  "account.anomalies",
-  "account.detail",
-  "reconcile.account_daily",
-])
-export type DataQueryId = z.infer<typeof dataQueryIdSchema>
+export { dataQueryIdSchema, type DataQueryId }
 
 export const availabilitySchema = z.enum(["available", "missing", "denominator_zero", "partial", "stale", "error"])
 export type Availability = z.infer<typeof availabilitySchema>
@@ -69,6 +67,8 @@ export const dataQueryRequestSchema = z.object({ queryId: dataQueryIdSchema, par
 export type CanonicalDataQueryRequest = z.infer<typeof dataQueryRequestSchema>
 
 export const sourceQueryResultSchema = z.object({
+  queryId: dataQueryIdSchema,
+  rowSchemaVersion: z.string().min(1),
   status: z.enum(["ready", "unavailable"]),
   rows: z.array(z.record(z.string(), z.unknown())),
   returnedRowCount: z.number().int().nonnegative(),
@@ -77,6 +77,12 @@ export const sourceQueryResultSchema = z.object({
   warnings: z.array(z.string()),
   error: stableDataQueryErrorSchema.optional(),
 }).strict().superRefine((source, context) => {
+  const expectedVersion = canonicalRowSchemaVersionByQueryId[source.queryId]
+  if (source.rowSchemaVersion !== expectedVersion) context.addIssue({ code: "custom", path: ["rowSchemaVersion"], message: `rowSchemaVersion must be ${expectedVersion}` })
+  const rowSchema = canonicalQueryRowSchemaById[source.queryId]
+  source.rows.forEach((row, index) => {
+    if (!rowSchema.safeParse(row).success) context.addIssue({ code: "custom", path: ["rows", index], message: `row does not match the canonical ${source.queryId} schema` })
+  })
   if (source.rows.length !== source.returnedRowCount) context.addIssue({ code: "custom", path: ["returnedRowCount"], message: "row count mismatch" })
   if (source.status === "unavailable" && !source.error) context.addIssue({ code: "custom", path: ["error"], message: "unavailable source requires error" })
   if (source.status === "unavailable" && source.rows.length) context.addIssue({ code: "custom", path: ["rows"], message: "unavailable source cannot carry rows" })
