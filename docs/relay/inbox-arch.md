@@ -1375,6 +1375,8 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - 功能提交 SHA：`c50150f`
 - 修改边界：只改知识资产、检索规则、测试、自己的状态/台账和本信箱；未改冻结 PRD/Contract、前后端生产代码或媒体账户。
 
+> R1 纠错（2026-08-24，老板已批准）：P-KB-011 早期关于账户双命名空间/mapping 的表述作废。KA 与平台 `account_id` 相同，账户联合键为 `(workspace_id, media, account_id)`，不建立账户 ID 映射表；其他对象 ID 继续待核证。
+
 #### 1. 资料与存储
 
 - `document_id`：`ka-src-0010`
@@ -1393,7 +1395,9 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 已确认事实：
 
-- 原文描述了一个 reader 级只读查询门面、三类数据后端、账户/广告组/素材/商品/BI 转化数据字典、现金/考核/扣量公式、ID namespace 和故障排查。
+- 原文描述了一个 reader 级只读查询门面、三类数据后端、账户/广告组/素材/商品/BI 转化数据字典、现金/考核/扣量公式、对象 ID 和故障排查；其中账户双 namespace 说法已被 R1 纠正。
+- 冻结账户事实：KA 与平台 `account_id` 相同，联合键为 `(workspace_id, media, account_id)`，不建立账户 ID 映射表。
+- `task/product/material/adgroup` 等其他对象 ID 是否一致仍待核证，不能从账户结论顺推。
 - 当前冻结 Contract 仍以奇航 `get_data` 为一期数据主链路；产品 API 是结构化语义查询，生产存储设计是 PostgreSQL raw/canonical + workspace ACL。
 - 当前仓库没有原文所指服务端实现、产品 adapter、调用日志、reader token 或运行验收；本轮没有调用内部服务。
 
@@ -1407,10 +1411,10 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 合理推断：
 
 - 若探针成立，ka-data 可作为 BI 转化、素材/商品和跨媒体的补充/对平 provider；不必立即替换奇航。
-- media 条件、两套 ID namespace、业务日期门槛和截断规则适合转成数据质量检查。
+- media 条件、其他对象 ID 关联、业务日期门槛和截断规则适合转成数据质量检查；账户 ID 不再列入待映射范围。
 - 原始 SQL 门面只适合受控数据运维/adapter，不适合直接给普通用户或产品 Agent。
 
-未证实：服务 owner/版本/SLA、reader token 生命周期和 ACL、底层只读性、快照 freshness/血缘、两套 ID 映射、字段覆盖、现金/考核系数定义、数据许可和同日同户对平结果。
+未证实：服务 owner/版本/SLA、reader token 生命周期和 ACL、底层只读性、快照 freshness/血缘、其他对象 ID 一致性与关联键、字段覆盖、现金/考核系数定义、数据许可和同日同户对平结果。
 
 #### 3. 对当前产品的判断
 
@@ -1418,14 +1422,14 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 - 已包含：ETL、raw/canonical、数据健康、账户/广告/任务模型、结构化 query、指标版本化、商品素材方向。
 - 部分包含：BI 转化、广告组日级字段、素材/商品表、多渠道、来源血缘和具体数据质量规则。
-- 缺失：ka-data adapter、BUC/workspace/resource ACL 映射、字段级 authority/freshness/coverage、ID namespace mapping、快照 revision 和运行实证。
+- 缺失：ka-data adapter、BUC/workspace/resource ACL 映射、字段级 authority/freshness/coverage、其他对象 ID 核证、快照 revision 和运行实证；账户不缺 mapping 层。
 - 冲突：任意 SQL vs 结构化 query；共享 reader token vs 多租户 ACL；本地 SQLite vs PostgreSQL 生产存储；固定系数 vs 生效日期版本化；乘/除系数表达可能不是同一口径。
 
 #### 4. 分期建议
 
 - P0：授权 data owner 做只读 health/query 探针、安全复核和少量脱敏样本的同日同户对平；不把 token 交给本项目或写入资料库。
 - P0：确认奇航/ka-data/业务确认表在消耗、转化、赔付、现金、考核上的字段级 SSOT 与差异处理。
-- P0：建立账户/任务/广告组 namespace 和 media/biz mapping。
+- P0：账户直接使用 `(workspace_id, media, account_id)`；分别核证 task/product/material/adgroup 等其他对象 ID 与关联键。
 - P1：探针通过后，把 ka-data 作为 Worker 内受控 adapter/补充源/对平源；只接批准模板或视图，不接 Agent 原始 SQL，先快手且不替换奇航主链路。
 - P2：素材/商品/内容标签和多渠道，以许可、ACL、字段覆盖和数据质量为前置。
 - 不采用：普通用户/Agent 任意 SQL、共享 token 台账、临时地址写进 Contract、SQLite 作生产主库、硬编码系数、因资料写“全媒体”而扩一期。
@@ -1434,7 +1438,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 当前不允许发布。若后续审查批准：
 
-- 优先发布派生的字段/粒度字典、经 data owner 批准的公式、namespace/易错口径和排障摘要；
+- 优先发布派生的字段/粒度字典、经 data owner 批准的公式、对象 ID 边界/易错口径和排障摘要；
 - 不发布原始运行地址、内部表全名、人员、真实业务样例、token 获取/台账或原始 SQL 手册；
 - 派生知识应另分配 document_id/hash，继承 confidential/restricted ACL，并明确 source revision、reviewed_by/reviewed_at；
 - 产品 Agent 只能检索批准后的语义知识，不能据此生成任意 SQL 或索取凭证。
@@ -1448,7 +1452,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 5. SQL 护栏是否需要 security 绕过测试、底层只读角色和 allowlisted views？
 6. 奇航、ka-data、MAPI、业务确认表的字段级 SSOT 如何裁决？
 7. 现金公式的固定系数与版本化 `channel_coefficients` 是否同一定义？
-8. 两套 `account_id` namespace 是否有正式 mapping；coverage 如何表达？
+8. `task/product/material/adgroup` 等其他对象 ID 是否一致；若不一致，各对象的关联键与 coverage 如何表达？账户不建立 mapping。
 9. SQLite 快照生成链、data_as_of、revision、保留期和失败补偿是否可提供？
 10. 素材/商品/URL/内容标签允许哪些角色访问、导出和进入产品知识库？
 11. 探针通过后 adapter 进入 P1 还是 P2；是否继续保持一期只快手？

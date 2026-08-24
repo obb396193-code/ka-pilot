@@ -337,7 +337,17 @@ test("ka-data guide stays confidential and cannot enter product knowledge before
   assert.equal(record.allowed_roles.includes("development"), false);
 
   const assessment = await readFile(path.join(repoRoot, record.assessment_ref), "utf8");
-  for (const marker of ["奇航", "SQL", "account_id", "数据血缘", "review_pending"]) {
+  for (const marker of [
+    "奇航",
+    "SQL",
+    "\\(workspace_id, media, account_id\\)",
+    "不建立账户 ID 映射表",
+    "task_id/product_id/material_id/adgroup_id",
+    "数据血缘",
+    "review_pending",
+  ]) {
     assert.match(assessment, new RegExp(marker));
   }
+  assert.doesNotMatch(assessment, /两套 `account_id` namespace 的稳定映射表/);
+  assert.doesNotMatch(assessment, /两套账户 ID namespace 的映射表/);
 });
