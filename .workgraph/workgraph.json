@@ -5,7 +5,7 @@
   "goal": "前后端 Contract 对齐并完成集成，使已设计且当前可实现的核心功能能在本机启动、逐页查看和验证；老板细调后进入内网只读部署联调",
   "status": "active",
   "created_at": "2026-08-24T12:00:27+00:00",
-  "updated_at": "2026-08-24T12:01:39+00:00",
+  "updated_at": "2026-08-24T23:42:05+08:00",
   "approved_at": "2026-08-24T12:01:38+00:00",
   "nodes": [
     {
@@ -51,27 +51,27 @@
       "id": "audit-knowledge-r1",
       "title": "审计知识纠错 R1",
       "kind": "task",
-      "status": "running",
+      "status": "done",
       "risk": "low",
       "agent": "root",
       "depends_on": [],
       "output": "知识纠错SHA审计证据",
       "description": "核验账户同ID、其他对象unresolved、catalog未发布和Git边界",
       "started_at": "2026-08-24T12:01:39+00:00",
-      "completed_at": null
+      "completed_at": "2026-08-24T23:42:05+08:00"
     },
     {
       "id": "prd-gap-matrix",
       "title": "形成PRD功能真实差距矩阵",
       "kind": "task",
-      "status": "running",
+      "status": "done",
       "risk": "low",
       "agent": "root",
       "depends_on": [],
       "output": "current/partial/gap功能矩阵",
       "description": "按页面、API、运行时、数据源和验收分层，不把代码底座写成可用功能",
       "started_at": "2026-08-24T12:01:39+00:00",
-      "completed_at": null
+      "completed_at": "2026-08-24T23:42:05+08:00"
     },
     {
       "id": "contract-merge",
@@ -206,6 +206,30 @@
       "kind": "finding",
       "node_id": "audit-knowledge-r1",
       "text": "知识纠错回交 eb10676 与 7aec380，保持review_pending/not_ready。"
+    },
+    {
+      "at": "2026-08-24T23:42:05+08:00",
+      "kind": "finding",
+      "node_id": "audit-knowledge-r1",
+      "text": "知识资产 R2 5abead4 独立复审通过：目标三键与现行两键 Contract 已分离，旧 P-001 标记 SUPERSEDED，catalog 10/10 继续 review_pending/not_ready，18/18 与 validator 通过。"
+    },
+    {
+      "at": "2026-08-24T23:42:05+08:00",
+      "kind": "finding",
+      "node_id": "audit-backend-r1",
+      "text": "R1/R2 已实证三键守卫、tuple scope、联合键迁移和截断/缺源问题；后端以 ada510f 收口 repository/ETL 三键传播，自报 DB 95/95、Worker 407/407，等待 root 独立 PG 复审后才可合流。"
+    },
+    {
+      "at": "2026-08-24T23:42:05+08:00",
+      "kind": "finding",
+      "node_id": "audit-frontend-r1",
+      "text": "前端 3e710d0 的服务端 scope、workspace UUID、unknown lineage 已独立通过 22 tests/typecheck/lint；恰好 16MB、跨媒体同号前端键与非法 canonical row 静默过滤已退回当前 R2 批次修复。"
+    },
+    {
+      "at": "2026-08-24T23:42:05+08:00",
+      "kind": "finding",
+      "node_id": "prd-gap-matrix",
+      "text": "已形成 15 组 PRD 真实差距矩阵与 D0-D4 本机闭环顺序；implemented/partial/gap 分离，Mock 不计 runtime verified。"
     }
   ],
   "approvals": [
