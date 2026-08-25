@@ -1,0 +1,45 @@
+{
+  "ok": true,
+  "data": {
+    "items": [{
+      "taskId": "fixture-task-ready",
+      "taskName": "示例任务",
+      "bizName": "示例业务",
+      "status": "active",
+      "period": {"start": "2026-08-01", "end": "2026-08-31"},
+      "owner": {"userId": "00000000-0000-4000-8000-000000000001", "displayName": "示例优化师"},
+      "assessmentPrice": {"value": 38, "effectiveDate": "2026-08-01"},
+      "volume": {"target": 1000, "completed": 420},
+      "pacing": {
+        "asOf": "2026-08-25",
+        "elapsedDays": 25,
+        "totalDays": 31,
+        "remainingDays": 6,
+        "targetProgress": {"value": 0.42, "state": "finite"},
+        "timeProgress": {"value": 0.8064516129032258, "state": "finite"},
+        "projectedVolume": 610,
+        "projectedCompletion": {"value": 0.61, "state": "finite"},
+        "projectedGap": 390,
+        "requiredDailyVolume": {"value": 96.66666666666667, "state": "finite"},
+        "budgetProgress": {"value": null, "state": "undefined"}
+      },
+      "linkedAccountCount": 1,
+      "workItemSummary": {
+        "openCount": 1,
+        "highestSeverity": "P1",
+        "counts": {"P0": 0, "P1": 1, "P2": 0, "opportunity": 0}
+      }
+    }],
+    "page": 1,
+    "pageSize": 20,
+    "total": 1
+  },
+  "meta": {
+    "dataState": "ready",
+    "businessDate": "2026-08-25",
+    "dataAsOf": "2026-08-25T12:00:00.000Z",
+    "coverage": {"complete": true},
+    "selectedSource": "qihang",
+    "requestId": "fixture-task-ready-001"
+  }
+}

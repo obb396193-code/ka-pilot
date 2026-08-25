@@ -295,3 +295,13 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - 生产函数 complexity≤10、单函数≤100、文件≤300；配置与核心模块覆盖率 94.43%/82.12%/100%。
 - 代码终态 `b60e09e`。默认回归 Domain 397 + DB 92 + Worker 344 + DingTalk 19 = 852；真实 PG/migration、gateway/FFmpeg 和四包静态/audit 通过。
 - 未完成：真实产品身份 ASR 烟测、每用户 Secret、Job/API/DB/前端、重试/配额/审计、部署和业务 E2E。审查入口 P-029。
+
+## 23. TASK-LIST-001 任务列表只读纵切片真相
+
+- 已实现后端 `GET /api/v1/tasks`，不是浏览器 BFF 或前端页面；当前分支相对基线没有 `apps/web`、`apps/ui-layout-demo` 改动。
+- total 与 items 在同一 PostgreSQL `REPEATABLE READ READ ONLY` 快照内产生；默认排序固定，搜索/筛选/分页/scope 全参数化。
+- 账户派生事实按批准 `(media,account_id)` SQL scope 过滤并做 workspace/coverage 输出守卫；空 grant 不泄露账户数量、指标、工作项或 dataAsOf。
+- assessmentPrice 只取业务日已生效最新版本；pacing 唯一复用 `computeTaskPacing`，RatioValue 不重算、不舍入。
+- `dataState` 固定 `partial > stale > empty > ready`，`selectedSource=qihang`，dataAsOf 只来自已授权 Canonical `computed_at`。
+- 代码终态 `891372d`。全量 Domain 451、DB 120、Worker 492 默认 tests 通过，2 个既有 opt-in skipped；三包 type/lint/audit、coverage 与真实 PG 全绿。
+- 未完成：`/api/internal/tasks` 与前端整合、正式 session/BFF 登录链、真实奇航任务源 trace、内网部署；所有任务/媒体写继续关闭。质量报告 `docs/evidence/TASK-LIST-001-后端质量报告.md`，审查入口 P-035。

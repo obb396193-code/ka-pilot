@@ -34,3 +34,4 @@ export * from "./data-query-contract.js";
 export * from "./data-query-rows.js";
 export * from "./read-detail-contract.js";
 export * from "./auth-context.js";
+export * from "./task-list-contract.js";
