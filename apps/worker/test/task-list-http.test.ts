@@ -59,6 +59,7 @@ function taskResult(status = "active"): TaskListRepositoryResult {
     pageSize: 20,
     total: 1,
     coverageComplete: true,
+    initialFullComplete: true,
   };
 }
 

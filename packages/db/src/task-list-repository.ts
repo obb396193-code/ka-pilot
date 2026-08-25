@@ -14,6 +14,7 @@ import { isoTimestamp, nullableNumber } from "./semantic-query-support.js";
 import {
   TASK_LIST_COUNT_SQL,
   TASK_LIST_PAGE_SQL,
+  TASK_LIST_READINESS_SQL,
 } from "./task-list-sql.js";
 
 const UUID_PATTERN =
@@ -26,6 +27,7 @@ export interface TaskListAccountScope {
 
 export interface TaskListRepositoryQuery extends Partial<TaskListRequest> {
   workspaceId: string;
+  requestingUserId: string;
   businessDate: string;
   allowedAccounts: readonly TaskListAccountScope[];
 }
@@ -76,11 +78,16 @@ export interface TaskListRepositoryResult {
   pageSize: number;
   total: number;
   coverageComplete: boolean;
+  initialFullComplete: boolean;
 }
 
 interface CountRow extends QueryResultRow {
   total: string | number;
   coverage_complete: boolean;
+}
+
+interface ReadinessRow extends QueryResultRow {
+  initial_full_complete: boolean;
 }
 
 interface ListRow extends QueryResultRow {
@@ -113,6 +120,7 @@ interface ListRow extends QueryResultRow {
 
 interface NormalizedQuery extends TaskListRequest {
   workspaceId: string;
+  requestingUserId: string;
   businessDate: string;
   allowedAccounts: TaskListAccountScope[];
 }
@@ -143,6 +151,9 @@ function normalizeQuery(input: TaskListRepositoryQuery): NormalizedQuery {
   if (!UUID_PATTERN.test(input.workspaceId)) {
     throw new Error("workspaceId must be a UUID");
   }
+  if (!UUID_PATTERN.test(input.requestingUserId)) {
+    throw new Error("requestingUserId must be a UUID");
+  }
   const businessDate = taskListCalendarDateSchema.parse(input.businessDate);
   const parsed = taskListRequestSchema.parse({
     page: input.page,
@@ -169,6 +180,7 @@ function normalizeQuery(input: TaskListRepositoryQuery): NormalizedQuery {
   return {
     ...parsed,
     workspaceId: input.workspaceId,
+    requestingUserId: input.requestingUserId,
     businessDate,
     allowedAccounts,
   };
@@ -271,6 +283,15 @@ export class TaskListRepository {
       const countResult = await client.query<CountRow>(TASK_LIST_COUNT_SQL, values);
       const count = countResult.rows[0];
       if (!count) throw new Error("task list count query returned no row");
+      const readinessResult = await client.query<ReadinessRow>(TASK_LIST_READINESS_SQL, [
+        query.workspaceId,
+        query.requestingUserId,
+        values[2],
+      ]);
+      const readiness = readinessResult.rows[0];
+      if (!readiness || typeof readiness.initial_full_complete !== "boolean") {
+        throw new Error("task list readiness query returned no row");
+      }
       const pageResult = await client.query<ListRow>(TASK_LIST_PAGE_SQL, [
         ...values,
         query.pageSize,
@@ -283,6 +304,7 @@ export class TaskListRepository {
         pageSize: query.pageSize,
         total: nonnegativeInteger(count.total, "total"),
         coverageComplete: count.coverage_complete,
+        initialFullComplete: readiness.initial_full_complete,
       };
     } catch (error) {
       await rollback(client);

@@ -55,6 +55,32 @@ export const TASK_LIST_COUNT_SQL = `
     ) AS coverage_complete
   FROM filtered_tasks`;
 
+export const TASK_LIST_READINESS_SQL = `
+  /* task-list-initial-full-readiness */
+  SELECT
+    jsonb_array_length($3::jsonb) > 0
+    AND NOT EXISTS (
+      SELECT 1
+      FROM (
+        SELECT DISTINCT allowed.media
+        FROM jsonb_to_recordset($3::jsonb)
+          AS allowed(media text, account_id text)
+      ) AS scoped_media
+      WHERE NOT EXISTS (
+        SELECT 1
+        FROM jobs AS completed_job
+        JOIN etl_runs AS completed_run
+          ON completed_run.job_id = completed_job.id
+         AND completed_run.workspace_id = completed_job.workspace_id
+        WHERE completed_job.workspace_id = $1::uuid
+          AND completed_job.credential_owner_user_id = $2::uuid
+          AND completed_job.job_type = 'etl_full'
+          AND completed_job.payload->>'media' = scoped_media.media
+          AND completed_run.run_kind = 'full'
+          AND completed_run.status = 'done'
+      )
+    ) AS initial_full_complete`;
+
 export const TASK_LIST_PAGE_SQL = `
   WITH ${FILTERED_TASKS_CTE}
   SELECT
