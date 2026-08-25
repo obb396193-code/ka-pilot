@@ -48,4 +48,17 @@
   apps/ui-layout-demo 和视觉文件；禁止媒体真实写与 push。
 - 目标：四表 migration、token hash→active identity/membership/user/grants→approvedAuthContext，
   真实 PG 隔离/撤销/空授权反例；另交 B23-C 真实文件行号 gap matrix。
-- 状态：进行中
+- 代码终态：`72228b4`
+- 质量：`docs/evidence/B23-A-代码质量报告.md`
+- Gap matrix：`docs/evidence/B23-C-奇航只读链Gap矩阵.md`
+- 状态：已实现并完成 Codex 自审；未合并/部署，等待 root 验收。
+
+#### B23-A 回执
+
+- migration `eba1fa7`、Domain `c39eeb4`、Repository/Service `48b6d6d`、基线测试修正
+  `2488dc9`、FK 测试隔离 `72228b4`。
+- Domain 433、DB 107、Worker 453 passed；三包 typecheck/lint/audit、coverage 与真实 PG
+  up/down/up 通过，0 vulnerabilities。
+- 未改 `apps/web`、`apps/ui-layout-demo` 或视觉文件；未 push；媒体写继续关闭。
+- 正式 session/BFF 接线、普通业务 API 和奇航账户主表同步未完成，详见 B23-C，不得把内核完成
+  表述成登录、页面、内网部署或业务 E2E 完成。
