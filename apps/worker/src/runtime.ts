@@ -47,6 +47,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
   const etlStore = {
     startRun: etlRuns.startRun.bind(etlRuns),
     appendRaw: rawMetrics.appendRaw.bind(rawMetrics),
+    syncAccountMetadataAndRaw: rawMetrics.syncAccountMetadataAndRaw.bind(rawMetrics),
     recordObservation: (runId: number, observation: object) =>
       etlRuns.recordObservation(runId, { ...observation }),
     finishRun: etlRuns.finishRun.bind(etlRuns),

@@ -1,5 +1,6 @@
 import type { JobHandler } from "../jobs/types.js";
-import type { QihangQueryPort, EtlRunStore } from "../etl/types.js";
+import type { QihangQueryPort, AccountMetadataEtlStore } from "../etl/types.js";
+import { accountMetadataFromRawRecords } from "../etl/account-metadata.js";
 import { inclusiveDates } from "../etl/date-range.js";
 import { rowsToRawRecords } from "../etl/raw-ingest.js";
 import { replayRequestParams } from "../etl/replay-params.js";
@@ -13,7 +14,7 @@ export function createBackfillCoordinatorHandler(dependencies: {
   qihang: QihangQueryPort;
   batches: BackfillBatchPort;
   jobs: BackfillJobPort;
-  store: EtlRunStore;
+  store: AccountMetadataEtlStore;
 }): JobHandler {
   return async (job) => {
     const payload = backfillCoordinatorPayloadSchema.parse(job.payload);
@@ -36,6 +37,7 @@ export function createBackfillCoordinatorHandler(dependencies: {
         let pageNum = 1;
         let fetched = 0;
         for (;;) {
+          currentStep = `fetch:account_page_${pageNum}`;
           const query = {
             resource: "account" as const,
             userId: payload.userId,
@@ -53,7 +55,9 @@ export function createBackfillCoordinatorHandler(dependencies: {
             fallbackDs: batch.dateTo,
             fetchedByUserId: payload.fetchedByUserId,
           });
-          await dependencies.store.appendRaw(records);
+          const metadata = accountMetadataFromRawRecords(records);
+          currentStep = `persist:account_page_${pageNum}_accounts_and_raw`;
+          await dependencies.store.syncAccountMetadataAndRaw(metadata, records);
           records.forEach((record) => accountIds.add(record.accountId));
           rowsIngested += records.length;
           fetched += records.length;

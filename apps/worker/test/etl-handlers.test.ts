@@ -2,10 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 
 import { createFullEtlHandler } from "../src/etl/full-handler.js";
 import { createIncrementalEtlHandler } from "../src/etl/incr-handler.js";
-import type {
-  EtlRunStore,
-  RawMetricRecord,
-} from "../src/etl/types.js";
+import type { AccountMetadataUpsert } from "@ka/db";
+import type { AccountMetadataEtlStore, RawMetricRecord } from "../src/etl/types.js";
 import type { QihangQuery, QihangQueryResult } from "../src/qihang/client.js";
 import type { QihangObservation } from "../src/qihang/observation.js";
 
@@ -31,16 +29,21 @@ function job(jobType: "etl_full" | "etl_incr", payload: Record<string, unknown>)
 
 function store() {
   const records: RawMetricRecord[] = [];
-  const value: EtlRunStore = {
+  const metadata: AccountMetadataUpsert[] = [];
+  const value: AccountMetadataEtlStore = {
     startRun: vi.fn().mockResolvedValue(91),
     appendRaw: vi.fn(async (rows) => {
+      records.push(...rows);
+    }),
+    syncAccountMetadataAndRaw: vi.fn(async (accounts, rows) => {
+      metadata.push(...accounts);
       records.push(...rows);
     }),
     recordObservation: vi.fn().mockResolvedValue(undefined),
     finishRun: vi.fn().mockResolvedValue(undefined),
     failRun: vi.fn().mockResolvedValue(undefined),
   };
-  return { value, records };
+  return { value, records, metadata };
 }
 
 function observation(
@@ -130,6 +133,13 @@ describe("ETL handlers", () => {
     expect(calls.filter((call) => call.resource === "account_offline")).toHaveLength(1);
     expect(calls.filter((call) => call.resource === "account_realtime")).toHaveLength(7);
     expect(runStore.records.some((row) => row.resource === "account")).toBe(true);
+    expect(runStore.metadata).toEqual([
+      expect.objectContaining({ workspaceId, media: "KUAISHOU", accountId: "a-1" }),
+      expect.objectContaining({ workspaceId, media: "KUAISHOU", accountId: "a-2" }),
+    ]);
+    expect(vi.mocked(runStore.value.syncAccountMetadataAndRaw)).toHaveBeenCalledTimes(2);
+    expect(vi.mocked(runStore.value.syncAccountMetadataAndRaw).mock.invocationCallOrder[0])
+      .toBeLessThan(vi.mocked(runStore.value.appendRaw).mock.invocationCallOrder[0]!);
     expect(runStore.records.every((row) => row.workspaceId === workspaceId)).toBe(true);
     expect(runStore.records.every((row) => !("userId" in row.requestParams))).toBe(true);
     expect(runStore.value.startRun).toHaveBeenCalledWith(
@@ -149,6 +159,37 @@ describe("ETL handlers", () => {
         reportDate: "2026-08-19",
       },
     }));
+  });
+
+  it("stops before metric reads and canonical enqueue when account synchronization fails", async () => {
+    const qihang = {
+      query: vi.fn(async (): Promise<QihangQueryResult> => ({
+        rows: [{ account_id: "a-new" }],
+        pagination: { totalNum: 1, pageNum: 1, pageSize: 50 },
+        envelope: {},
+      })),
+    };
+    const runStore = store();
+    vi.mocked(runStore.value.syncAccountMetadataAndRaw)
+      .mockRejectedValueOnce(new Error("account sync failed"));
+    const downstream = jobs();
+    const handler = createFullEtlHandler({ qihang, store: runStore.value, jobs: downstream });
+
+    await expect(handler(job("etl_full", {
+      workspaceId,
+      userId: "u-qihang",
+      asOfDate: "2026-08-25",
+      realtimeDays: 1,
+    }))).rejects.toThrow("account sync failed");
+
+    expect(qihang.query).toHaveBeenCalledTimes(1);
+    expect(runStore.value.appendRaw).not.toHaveBeenCalled();
+    expect(downstream.enqueue).not.toHaveBeenCalled();
+    expect(runStore.value.failRun).toHaveBeenCalledWith(
+      91,
+      "persist:account_page_1_accounts_and_raw",
+      "account sync failed",
+    );
   });
 
   it("falls back from an empty D-1 offline partition to the latest produced partition", async () => {
@@ -703,7 +744,7 @@ describe("ETL handlers", () => {
     await expect(handler(failingJob)).rejects.toThrow("offline unavailable");
     expect(runStore.value.failRun).toHaveBeenCalledWith(
       91,
-      "account_page_1",
+      "fetch:account_page_1",
       "offline unavailable",
     );
     expect(downstream.enqueue).not.toHaveBeenCalled();
@@ -732,7 +773,7 @@ describe("ETL handlers", () => {
     }))).rejects.toThrow("pagination total");
     expect(runStore.value.failRun).toHaveBeenCalledWith(
       91,
-      "account_page_1",
+      "persist:account_page_1_accounts_and_raw",
       expect.stringContaining("pagination total"),
     );
     expect(downstream.enqueue).not.toHaveBeenCalled();

@@ -232,6 +232,7 @@ describe("real PostgreSQL data pipeline", () => {
     const etlStore = {
       startRun: runs.startRun.bind(runs),
       appendRaw: raw.appendRaw.bind(raw),
+      syncAccountMetadataAndRaw: raw.syncAccountMetadataAndRaw.bind(raw),
       recordObservation: (runId: number, observation: object) =>
         runs.recordObservation(runId, { ...observation }),
       finishRun: runs.finishRun.bind(runs),
