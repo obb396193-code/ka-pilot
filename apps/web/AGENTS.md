@@ -8,6 +8,7 @@
 - 每批可见改动必须分别取得老板视觉签字和 root 功能签字；自动测试不能替代任一人工签字。
 - 旧 API/BFF/schema/adapter/权限/状态/测试只有经 root 标记 canonical 后才可逐文件复用。
 - 复用 ContentRadar 时必须复制 ContentRadar 真实源码、样式、资源与依赖，记录原路径、commit 和修改清单；禁止看图仿写或接入已撤销小样。
+- 官方或 ContentRadar 源码进入 `apps/web` 时，目标文件必须写 `SOURCE_IMPORT_ID`，并在 `docs/frontend/takeover/source-import-manifest.json` 登记完整 40 位上游 SHA、源/目标文件、依赖、授权边界和修改项；未登记不得进入运行时。
 - 权威设计：[前端唯一实现线与视觉门禁](../../docs/plans/2026-08-25-前端唯一实现线与视觉门禁-design.md)。
 
 ## 开工前必读
