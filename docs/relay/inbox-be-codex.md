@@ -37,3 +37,15 @@
 - 验收：Domain/Worker 全量 test/typecheck/lint 通过；脱敏样本验证两侧 ID 格式一致；回执 SHA 与测试证据。
 - 边界：任务、商品、素材、广告组是否同 ID 尚未确认，不得套用账户结论；未通过本任务前不得在内网打开 reconcile。
 - 状态：待处理（受 BE-001 阻塞）
+
+### B23-A 多租户数据库与授权内核
+
+- 派活方：root Codex（Contract/验收/整合）
+- 日期：2026-08-25
+- 分支：`codex/b23-auth-core`，基线 `codex/integration-control@68da060`
+- 实施计划：`docs/plans/2026-08-25-B23-A多租户授权内核-implementation.md`
+- 边界：只改 packages/domain、packages/db、apps/worker 与后端留痕；禁止修改 apps/web、
+  apps/ui-layout-demo 和视觉文件；禁止媒体真实写与 push。
+- 目标：四表 migration、token hash→active identity/membership/user/grants→approvedAuthContext，
+  真实 PG 隔离/撤销/空授权反例；另交 B23-C 真实文件行号 gap matrix。
+- 状态：进行中
