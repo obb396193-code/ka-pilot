@@ -14,8 +14,8 @@ import { isoTimestamp, nullableNumber } from "./semantic-query-support.js";
 import {
   TASK_LIST_COUNT_SQL,
   TASK_LIST_PAGE_SQL,
-  TASK_LIST_READINESS_SQL,
 } from "./task-list-sql.js";
+import { loadWorkspaceSyncReadiness } from "./workspace-sync-readiness.js";
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -84,10 +84,6 @@ export interface TaskListRepositoryResult {
 interface CountRow extends QueryResultRow {
   total: string | number;
   coverage_complete: boolean;
-}
-
-interface ReadinessRow extends QueryResultRow {
-  initial_full_complete: boolean;
 }
 
 interface ListRow extends QueryResultRow {
@@ -283,15 +279,11 @@ export class TaskListRepository {
       const countResult = await client.query<CountRow>(TASK_LIST_COUNT_SQL, values);
       const count = countResult.rows[0];
       if (!count) throw new Error("task list count query returned no row");
-      const readinessResult = await client.query<ReadinessRow>(TASK_LIST_READINESS_SQL, [
-        query.workspaceId,
-        query.requestingUserId,
-        values[2],
-      ]);
-      const readiness = readinessResult.rows[0];
-      if (!readiness || typeof readiness.initial_full_complete !== "boolean") {
-        throw new Error("task list readiness query returned no row");
-      }
+      const initialFullComplete = await loadWorkspaceSyncReadiness(client, {
+        workspaceId: query.workspaceId,
+        requestingUserId: query.requestingUserId,
+        allowedAccounts: query.allowedAccounts,
+      });
       const pageResult = await client.query<ListRow>(TASK_LIST_PAGE_SQL, [
         ...values,
         query.pageSize,
@@ -304,7 +296,7 @@ export class TaskListRepository {
         pageSize: query.pageSize,
         total: nonnegativeInteger(count.total, "total"),
         coverageComplete: count.coverage_complete,
-        initialFullComplete: readiness.initial_full_complete,
+        initialFullComplete,
       };
     } catch (error) {
       await rollback(client);
