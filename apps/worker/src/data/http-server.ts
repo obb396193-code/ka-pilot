@@ -17,6 +17,14 @@ import {
 } from "./query-service.js";
 import { REQUEST_ID_HEADER, resolveRequestId } from "./request-id.js";
 import type { ReadDetailService } from "./read-detail-service.js";
+import {
+  parseTaskListSearch,
+  TASK_LIST_HTTP_PATH,
+  taskListErrorBody,
+  TaskListHttpInputError,
+  taskListHttpStatus,
+} from "../tasks/task-list-http.js";
+import type { TaskListService } from "../tasks/task-list-service.js";
 
 export const DEFAULT_DATA_API_MAX_REQUEST_BYTES = 1024 * 1024;
 export const DEFAULT_DATA_API_MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
@@ -29,6 +37,7 @@ const accountScopeSchema = z.array(z.object({
 export interface DataApiServerOptions {
   service: DataQueryService;
   detailService: ReadDetailService;
+  taskListService: TaskListService;
   internalToken: string;
   maxRequestBytes?: number;
   maxResponseBytes?: number;
@@ -200,7 +209,12 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         return;
       }
       const resolvedDetailRoute = detailRoute(url.pathname);
-      if (url.pathname !== DATA_QUERY_HTTP_PATH && resolvedDetailRoute === null) {
+      const isTaskListRoute = url.pathname === TASK_LIST_HTTP_PATH;
+      if (
+        url.pathname !== DATA_QUERY_HTTP_PATH &&
+        resolvedDetailRoute === null &&
+        !isTaskListRoute
+      ) {
         sendJson(
           response,
           404,
@@ -220,6 +234,11 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         return;
       }
       if (authentication.auth === null) {
+        if (isTaskListRoute) {
+          const result = await options.taskListService.execute({}, null, requestId);
+          sendJson(response, taskListHttpStatus(result), result, requestId);
+          return;
+        }
         if (resolvedDetailRoute !== null) {
           sendJson(
             response,
@@ -236,6 +255,39 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           requestId,
         });
         sendJson(response, result.status, result.body, requestId);
+        return;
+      }
+      if (isTaskListRoute) {
+        if ((request.method ?? "").toUpperCase() !== "GET") {
+          sendJson(
+            response,
+            405,
+            taskListErrorBody(
+              "INVALID_REQUEST",
+              "Only GET is supported",
+              requestId,
+            ),
+            requestId,
+          );
+          return;
+        }
+        const result = await options.taskListService.execute(
+          parseTaskListSearch(url.searchParams),
+          authentication.auth,
+          requestId,
+        );
+        sendBoundedJson(
+          response,
+          taskListHttpStatus(result),
+          result,
+          requestId,
+          maxResponseBytes,
+          () => taskListErrorBody(
+            "SOURCE_TRUNCATED",
+            "Task list response reached the configured body limit",
+            requestId,
+          ),
+        );
         return;
       }
       if (resolvedDetailRoute !== null) {
@@ -303,6 +355,19 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           ),
       );
     } catch (error) {
+      if (error instanceof TaskListHttpInputError) {
+        sendJson(
+          response,
+          400,
+          taskListErrorBody(
+            "INVALID_REQUEST",
+            "Invalid task list request",
+            requestId,
+          ),
+          requestId,
+        );
+        return;
+      }
       if (error instanceof HttpInputError) {
         sendJson(
           response,

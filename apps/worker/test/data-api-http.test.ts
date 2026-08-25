@@ -11,6 +11,7 @@ import { PlatformDataSource } from "../src/data/platform-data-source.js";
 import { ReadDetailService } from "../src/data/read-detail-service.js";
 import { DataQueryService, type DataSourceQueryPort } from "../src/data/query-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
+import { TaskListService } from "../src/tasks/task-list-service.js";
 import { canonicalRow, readySource } from "./canonical-query-fixtures.js";
 
 const internalToken = "fixture-internal-token-that-is-long-enough";
@@ -42,6 +43,20 @@ function emptyDetailService(): ReadDetailService {
   return new ReadDetailService({
     workItems: { find: async () => null },
     changeSets: { find: async () => null },
+  });
+}
+
+function emptyTaskListService(): TaskListService {
+  return new TaskListService({
+    repository: {
+      list: async (query) => ({
+        rows: [],
+        page: query.page ?? 1,
+        pageSize: query.pageSize ?? 20,
+        total: 0,
+        coverageComplete: true,
+      }),
+    },
   });
 }
 
@@ -77,6 +92,7 @@ describe("data API HTTP composition", () => {
     const server = createDataApiServer({
       service,
       detailService: options.detailService ?? emptyDetailService(),
+      taskListService: emptyTaskListService(),
       internalToken,
       ...(options.maxResponseBytes === undefined
         ? {}
@@ -188,6 +204,7 @@ describe("data API HTTP composition", () => {
     const limitedServer = createDataApiServer({
       service,
       detailService: emptyDetailService(),
+      taskListService: emptyTaskListService(),
       internalToken,
       maxRequestBytes: 8,
     });
@@ -212,11 +229,13 @@ describe("data API HTTP composition", () => {
     expect(() => createDataApiServer({
       service,
       detailService: emptyDetailService(),
+      taskListService: emptyTaskListService(),
       internalToken: "short",
     })).toThrow(/32/);
     expect(() => createDataApiServer({
       service,
       detailService: emptyDetailService(),
+      taskListService: emptyTaskListService(),
       internalToken,
       maxRequestBytes: 0,
     })).toThrow(/positive integer/);

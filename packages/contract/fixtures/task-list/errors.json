@@ -1,0 +1,9 @@
+{
+  "401": {"ok": false, "error": {"code": "UNAUTHORIZED", "message": "Authentication is required", "retryable": false, "requestId": "fixture-task-401"}},
+  "403": {"ok": false, "error": {"code": "FORBIDDEN", "message": "Approved authentication context is invalid", "retryable": false, "requestId": "fixture-task-403"}},
+  "400": {"ok": false, "error": {"code": "INVALID_REQUEST", "message": "Invalid task list request", "retryable": false, "requestId": "fixture-task-400"}},
+  "502": {"ok": false, "error": {"code": "UPSTREAM_INVALID_RESPONSE", "message": "The Qihang task source returned an invalid response", "retryable": false, "requestId": "fixture-task-502"}},
+  "503": {"ok": false, "error": {"code": "SOURCE_UNAVAILABLE", "message": "The Qihang task source is unavailable", "retryable": true, "requestId": "fixture-task-503"}},
+  "504": {"ok": false, "error": {"code": "UPSTREAM_TIMEOUT", "message": "The Qihang task source timed out", "retryable": true, "requestId": "fixture-task-504"}},
+  "500": {"ok": false, "error": {"code": "INTERNAL_ERROR", "message": "The task list could not be loaded", "retryable": false, "requestId": "fixture-task-500"}}
+}

@@ -41,6 +41,7 @@ export interface TaskListRepositoryPort {
 
 export interface TaskListServiceDependencies {
   repository: TaskListRepositoryPort;
+  now?: () => Date;
 }
 
 function stableError(
@@ -211,7 +212,7 @@ export class TaskListService {
     requestInput: unknown,
     auth: AuthenticatedDataQueryContext | null,
     correlationId?: string,
-    now: Date = new Date(),
+    now?: Date,
   ): Promise<TaskListResponse> {
     const requestId = resolveRequestId(correlationId ?? null);
     if (auth === null) {
@@ -242,7 +243,9 @@ export class TaskListService {
     let result: TaskListRepositoryResult;
     let businessDate: string;
     try {
-      businessDate = shanghaiTaskBusinessDate(now);
+      businessDate = shanghaiTaskBusinessDate(
+        now ?? this.dependencies.now?.() ?? new Date(),
+      );
       result = await this.dependencies.repository.list({
         workspaceId: auth.workspaceId,
         businessDate,
