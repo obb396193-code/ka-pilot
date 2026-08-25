@@ -87,6 +87,10 @@ describe("workspace sync scheduler with PostgreSQL", () => {
     expect(stored.rows[0]?.credential_owner_user_id).toBe(userId);
     expect(JSON.stringify(stored.rows[0]?.payload)).not.toContain("private-qihang-id");
 
+    await pool.query(
+      "UPDATE jobs SET priority = -32768, run_after = now() - interval '1 second' WHERE id = $1",
+      [stored.rows[0]!.id],
+    );
     const leased = await jobs.leaseNext(60);
     expect(leased?.id).toBe(stored.rows[0]?.id);
     await jobs.markRunning(leased!);

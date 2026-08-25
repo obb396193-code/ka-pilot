@@ -1,8 +1,8 @@
 # B23-C2 普通 Workspace 同步调度内核实施计划
 
-> 日期：2026-08-26  
-> 基线：`codex/integration-control@1950808`  
-> 分支：`codex/b23-c2-workspace-scheduler`  
+> 日期：2026-08-26
+> 基线：`codex/integration-control@1950808`
+> 分支：`codex/b23-c2-workspace-scheduler`
 > 状态：实施中；不代表已部署或真实奇航联调
 
 ## 目标
