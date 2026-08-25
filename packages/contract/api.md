@@ -5,6 +5,70 @@
 > **P-001#6 裁决（比率/无穷表示统一）**：所有比率/CPA 字段返回 `{value: number|null, state: "finite"|"infinite"|"undefined"}`；
 > `state=infinite` 表示分母0且分子>0（UI 显 `∞`）；`state=undefined` 表示无意义（UI 显 `—`）；绝不用 `null`/`Infinity`/字符串。
 
+## 服务端身份与多租户会话（AUTH-001）
+
+前端业务页只消费服务端会话，不接受浏览器自报的 `workspaceId/userId/role/accountIds`。
+一期内网可启用 `internal_test` provider；正式接入 BUC 时只替换身份 provider，下面的
+session、membership、workspace 选择与账户授权响应保持不变。
+
+- `POST /api/internal/auth/login`：仅在显式启用 `internal_test` provider 时接受
+  `{provider:"internal_test", username, password}`；用户名和密码校验材料来自 Secret/config，
+  无默认账号、无 Git 明文、无 production fallback。成功后只设置高熵 `HttpOnly + Secure +
+  SameSite=Lax` session cookie，不把 session token 返回 JSON。
+- `GET /api/internal/auth/session`：返回当前身份、可进入 workspace 列表、active workspace
+  与角色；不返回 credential reference、奇航 userId、BUC subject 或账户 scope 明细。
+- `POST /api/internal/auth/workspace`：`{workspaceId}`；仅可切换到当前 identity 的 active
+  membership，切换后服务端更新 session 的 active workspace。不存在或无权统一返回 403，
+  不泄露 workspace 是否存在。
+- `DELETE /api/internal/auth/session`：撤销服务端 session 并清 cookie；重复调用幂等。
+
+`approvedAuthContext` 必须按每次请求重新从 `auth_sessions → auth_identities →
+workspace_memberships → account_access_grants` 解析，至少得到：
+
+```jsonc
+{
+  "workspaceId": "uuid",
+  "userId": "workspace-local uuid",
+  "role": "optimizer | operator | lead | admin",
+  "allowedAccounts": [{"media": "KUAISHOU", "accountId": "...", "accessLevel": "read"}]
+}
+```
+
+- session 过期/撤销、identity/member/user 任一 inactive、active workspace 不匹配时 401/403
+  fail closed；不得回退到 dev fixture、环境变量 workspace 或全账户通配符。
+- `allowedAccounts` 只能来自 active workspace 的显式 grant；即使 account_id 文本相同，
+  不同 media 也是两份授权。无 grant 表示空范围，不等于整个 workspace。
+- `auth_sessions` 只保存 token hash；日志、Trace、错误和响应均不得出现 cookie/token、登录
+  密码、BUC subject、奇航 userId 或 Secret reference。
+- 内测试点必须预置同一 identity 的至少两个脱敏 workspace，并覆盖同 account_id 跨
+  workspace、同 account_id 跨 media、撤销 membership/session 三类反例。
+
+成功 session 响应冻结为：
+
+```jsonc
+{
+  "ok": true,
+  "data": {
+    "identity": {"displayName": "内测用户"},
+    "activeWorkspace": {"id": "uuid", "name": "脱敏空间 A", "role": "admin"},
+    "workspaces": [{"id": "uuid", "name": "脱敏空间 A", "role": "admin"}]
+  }
+}
+```
+
+未登录统一为 HTTP 401 + `UNAUTHORIZED`；已登录但 membership/scope 不足为 HTTP 403 +
+`FORBIDDEN`。两者均使用现有稳定 error envelope 与 `x-request-id`。
+
+## 一期主数据源路由（DATA-ROUTE-001）
+
+- 普通业务读取默认走既有奇航 `get_data → Raw → Canonical → Semantic Query` 主链。
+- KA Data 是同源的备用读取/管理员诊断路径，默认关闭且不得阻塞工作台、任务、账户、
+  工作流或首次内网部署；普通用户响应和导航不暴露 `ka_data/platform/reconcile` 选择器。
+- 是否切换备用源只能由服务端配置和管理员权限决定；禁止浏览器通过 query/body/header
+  自选共享凭证出口。切换必须留审计字段 `selectedSource/reason/requestId`，但不记录 token、
+  SQL 或上游正文。
+- 现有 `POST /api/v1/data/query` 双数据能力保留为管理员诊断 API，不作为普通页面首屏依赖。
+
 ## 受控双数据查询（BE-001）
 
 `POST /api/v1/data/query`

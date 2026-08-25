@@ -14,7 +14,45 @@ CREATE TABLE users (
   multica_pat_ref TEXT,                -- Secret 服务 reference（绝不存明文）
   idealab_ak_ref TEXT,                 -- 同上
   role TEXT NOT NULL DEFAULT 'optimizer',   -- optimizer|operator|lead|admin
-  is_active BOOLEAN DEFAULT true, created_at TIMESTAMPTZ DEFAULT now()
+  is_active BOOLEAN DEFAULT true, created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(workspace_id, id)
+);
+
+-- 登录身份与业务用户解耦：一个自然人身份可加入多个 workspace；现有 users 继续作为
+-- workspace 内的业务 actor，避免破坏 owner/initiator/credential_owner 等既有外键。
+-- 正式 BUC 接入只新增/替换 provider adapter，不改 membership、session 或业务授权模型。
+CREATE TABLE auth_identities (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  provider TEXT NOT NULL,              -- internal_test|buc
+  provider_subject TEXT NOT NULL,      -- provider 内稳定 subject；不存密码/token
+  display_name TEXT NOT NULL,
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE(provider, provider_subject)
+);
+CREATE TABLE workspace_memberships (
+  workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE RESTRICT,
+  identity_id UUID NOT NULL REFERENCES auth_identities(id) ON DELETE RESTRICT,
+  user_id UUID NOT NULL,
+  role TEXT NOT NULL,                  -- optimizer|operator|lead|admin
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (workspace_id, identity_id),
+  UNIQUE (workspace_id, user_id),
+  FOREIGN KEY (workspace_id, user_id)
+    REFERENCES users(workspace_id, id) ON DELETE RESTRICT
+);
+CREATE TABLE auth_sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  identity_id UUID NOT NULL REFERENCES auth_identities(id) ON DELETE RESTRICT,
+  active_workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE RESTRICT,
+  token_hash TEXT NOT NULL UNIQUE,      -- 仅保存高熵 session token 的 hash，明文只存在 HttpOnly cookie
+  expires_at TIMESTAMPTZ NOT NULL,
+  revoked_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  last_seen_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  FOREIGN KEY (active_workspace_id, identity_id)
+    REFERENCES workspace_memberships(workspace_id, identity_id) ON DELETE RESTRICT
 );
 
 -- ═══ 业务对象 ═══
@@ -52,6 +90,19 @@ CREATE TABLE accounts (
   lifecycle_stage TEXT DEFAULT 'unknown',  -- cold_start|ramping|stable|declining|paused|closed
   is_starred BOOLEAN DEFAULT false, tags TEXT[],
   status TEXT DEFAULT 'active', created_at TIMESTAMPTZ DEFAULT now()
+);
+CREATE TABLE account_access_grants (
+  workspace_id UUID NOT NULL,
+  identity_id UUID NOT NULL,
+  media TEXT NOT NULL,
+  account_id TEXT NOT NULL,
+  access_level TEXT NOT NULL DEFAULT 'read', -- read|preview|execute；execute 仍受确认门约束
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (workspace_id, identity_id, media, account_id),
+  FOREIGN KEY (workspace_id, identity_id)
+    REFERENCES workspace_memberships(workspace_id, identity_id) ON DELETE RESTRICT,
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT
 );
 CREATE TABLE task_accounts (           -- 关系表：历史/多任务（替代单值 task_id）
   id BIGSERIAL PRIMARY KEY, workspace_id UUID NOT NULL,
