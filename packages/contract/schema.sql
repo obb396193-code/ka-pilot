@@ -4,7 +4,8 @@
 -- ═══ 租户与身份 ═══
 CREATE TABLE workspaces (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL, created_at TIMESTAMPTZ DEFAULT now()
+  name TEXT NOT NULL, is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now()
 );
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  blockedSyncAuthorizationSnapshotSchema,
   scheduledSyncAuthorizationSnapshotSchema,
   workspaceSyncTickRequestSchema,
   workspaceSyncTickResultSchema,
@@ -59,6 +60,20 @@ describe("workspace sync scheduler contract", () => {
       ...input,
       qihangUserId: "must-never-be-persisted",
     })).toThrow();
+  });
+
+  it("keeps terminal auth failures auditable without inventing an identity", () => {
+    expect(blockedSyncAuthorizationSnapshotSchema.parse({
+      workspaceId,
+      userId,
+      status: "blocked_auth",
+      reason: "MEMBERSHIP_MISSING",
+    })).toEqual({
+      workspaceId,
+      userId,
+      status: "blocked_auth",
+      reason: "MEMBERSHIP_MISSING",
+    });
   });
 
   it("returns stable queued and blocked_auth outcomes without credentials", () => {

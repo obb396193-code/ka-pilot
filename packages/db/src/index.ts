@@ -22,3 +22,4 @@ export * from "./partition-maintenance.js";
 export * from "./ad-hourly-metrics-repository.js";
 export * from "./auth-repository.js";
 export * from "./task-list-repository.js";
+export * from "./workspace-sync-repository.js";

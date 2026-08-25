@@ -58,6 +58,20 @@ export const workspaceSyncBlockedReasonSchema = z.enum([
   "AUTH_SNAPSHOT_CONFLICT",
 ]);
 
+export const blockedSyncAuthorizationSnapshotSchema = z
+  .object({
+    workspaceId: z.string().uuid(),
+    userId: z.string().uuid(),
+    status: z.literal("blocked_auth"),
+    reason: workspaceSyncBlockedReasonSchema,
+  })
+  .strict();
+
+export const workspaceSyncAuthorizationSnapshotSchema = z.union([
+  scheduledSyncAuthorizationSnapshotSchema,
+  blockedSyncAuthorizationSnapshotSchema,
+]);
+
 const scheduledJobBaseSchema = z
   .object({
     jobId: z.string().uuid(),
@@ -92,6 +106,9 @@ export type WorkspaceSyncJobType = z.infer<typeof workspaceSyncJobTypeSchema>;
 export type WorkspaceSyncTickRequest = z.infer<typeof workspaceSyncTickRequestSchema>;
 export type ScheduledSyncAuthorizationSnapshot = z.infer<
   typeof scheduledSyncAuthorizationSnapshotSchema
+>;
+export type BlockedSyncAuthorizationSnapshot = z.infer<
+  typeof blockedSyncAuthorizationSnapshotSchema
 >;
 export type WorkspaceSyncBlockedReason = z.infer<typeof workspaceSyncBlockedReasonSchema>;
 export type WorkspaceSyncScheduledJob = z.infer<typeof workspaceSyncScheduledJobSchema>;
