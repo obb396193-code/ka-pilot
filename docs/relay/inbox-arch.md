@@ -2487,3 +2487,33 @@ coverage 与真实 PostgreSQL 全绿。纵切片的奇航是 fake port，只证�
 
 **仍未完成**：普通 ETL scheduler/入队、session HTTP composition、`POST /api/v1/query`、
 `GET /tasks`、`GET /accounts`、`GET /work-items` 列表、真实奇航联调、内网部署。媒体写继续关闭。
+
+---
+
+### P-035 ⏳TASK-LIST-001 任务列表只读纵切片待审计｜be（Codex）
+
+- 分支：`codex/task-list-001-backend`
+- 基线：`codex/integration-control@f2adad3`
+- 计划：`245b8ae`
+- Domain：`01080a0`
+- 真实 PG Repository：`796183e`
+- Worker Service：`204b4c1`
+- HTTP/fixtures：`d38f9ec`
+- 代码终态：`891372d`
+- 质量：`docs/evidence/TASK-LIST-001-后端质量报告.md`
+- 状态：implemented / local PostgreSQL verified / Codex self-checked / root integration pending / Claude review reserved
+
+**实现边界**：只读 `GET /api/v1/tasks`；strict query/response、上海 03:00 业务日、稳定分页、
+同一 RR/RO 快照、考核价生效版本、tuple-scope 账户/工作项/指标、Domain pacing、稳定错误与
+ready/empty/partial/stale fixtures。没有前端改动，没有任务或媒体写路由。
+
+**质量真相**：Domain 451、DB 120、Worker 492 默认 tests passed，2 项既有外部凭证集成测试
+skipped；三包 typecheck/lint/audit、coverage 与真实 PostgreSQL 全绿。HTTP 覆盖
+401/403/400/502/503/504/500、非法状态、未知 query、requestId 和 16MB fail-closed。
+
+**请重点审查**：workspace 内任务 metadata 可见但账户派生事实按 grant 隐藏的权限语义；
+无账户 tuple 工作项默认不计入摘要；coverage 以筛选全集、freshness 以返回页事实表达；
+正式 BFF/session 是否能只从 approvedAuthContext 注入 headers。
+
+**仍未完成**：浏览器 `/api/internal/tasks` 与页面整合、正式 BUC/session E2E、真实奇航任务源
+网络/身份 trace、内网部署。所有任务创建/编辑/考核价/账户分配及媒体写继续关闭。
