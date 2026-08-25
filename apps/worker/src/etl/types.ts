@@ -1,4 +1,4 @@
-import type { AdHourlyMetricRecord } from "@ka/db";
+import type { AccountMetadataUpsert, AdHourlyMetricRecord } from "@ka/db";
 
 import type { QihangQuery, QihangQueryResult } from "../qihang/client.js";
 import type { QihangObservation } from "../qihang/observation.js";
@@ -28,6 +28,13 @@ export interface EtlRunStore {
   recordObservation(runId: number, observation: EtlRunObservation): Promise<void>;
   finishRun(runId: number, rowsIngested: number): Promise<void>;
   failRun(runId: number, stepFailed: string, errorSummary: string): Promise<void>;
+}
+
+export interface AccountMetadataEtlStore extends EtlRunStore {
+  syncAccountMetadataAndRaw(
+    metadata: readonly AccountMetadataUpsert[],
+    records: readonly RawMetricRecord[],
+  ): Promise<void>;
 }
 
 export interface EtlQueryObservation extends QihangObservation {

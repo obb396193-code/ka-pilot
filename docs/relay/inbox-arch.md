@@ -2456,6 +2456,34 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 对 API/Capability 的映射；`ON DELETE RESTRICT` 运维生命周期；B23-B HTTP composition；首次内网
 identity/workspace/user/grant seed 与审计。
 
-**关键未完成**：B23-A 还不是登录 E2E。奇航主链仍缺 account metadata→`accounts` 幂等同步、
-普通业务调度、`/api/v1/query`、任务/账户/工作项列表 API 和严格 DTO；详见 B23-C。未合并、未部署、
+**关键未完成**：B23-A 还不是登录 E2E。此处原记账户主表同步缺口已由后续 B23-C1/P-034 关闭；
+仍缺普通业务调度、`/api/v1/query`、任务/账户/工作项列表 API 和严格 DTO；详见 B23-C。未合并、未部署、
 未使用真实 BUC/session/奇航账户，所有媒体写继续关闭。
+
+---
+
+### P-034 ⏳B23-C1 奇航账户主表同步待审计｜be（Codex）
+
+- 分支：`codex/b23-c1-account-sync`
+- 基线：`codex/integration-control@0775a13`
+- 计划：`e3e8148`
+- metadata Adapter：`bdc37cc`
+- DB 原子同步：`20636af`
+- Full/Backfill/Runtime 接线：`0807cd4`
+- 真实 PG 纵切片：`c1e2600`
+- 自审分页修复/代码终态：`ec4934a`
+- 质量：`docs/evidence/B23-C1-奇航账户主表同步质量报告.md`
+- 状态：implemented / local PostgreSQL verified / Codex self-checked / root integration pending / Claude review reserved
+
+**实现边界**：奇航 `resource=account` 只从受信任务取 workspace/media，只接收
+`account_id/account_name/status`；每个非空分页先验 pagination 和整页 tuple，再用短事务 upsert
+`accounts`并写同页 Raw。失败页 0 写入，前页可重放，未完成不派 canonical/fanout。
+
+**质量真相**：DB 112、Worker 467 tests passed，2 项既有 opt-in skipped；两包 typecheck/lint/audit、
+coverage 与真实 PostgreSQL 全绿。纵切片的奇航是 fake port，只证明代码+真 PG，不代表内网真源已联通。
+
+**请重点审计**：上游 metadata 精确字段允许集；每页事务与跨页恢复语义；Raw append-only
+重放对 canonical 取最新行的影响；正式 scheduler 如何从 approvedAuthContext 构造首次/周期 job。
+
+**仍未完成**：普通 ETL scheduler/入队、session HTTP composition、`POST /api/v1/query`、
+`GET /tasks`、`GET /accounts`、`GET /work-items` 列表、真实奇航联调、内网部署。媒体写继续关闭。

@@ -4,16 +4,17 @@ import { deterministicJobId } from "../jobs/deterministic-id.js";
 import type { JobHandler } from "../jobs/types.js";
 import type { QihangQuery } from "../qihang/client.js";
 import { shiftIsoDate, trailingDates } from "./date-range.js";
+import { accountMetadataFromRawRecords } from "./account-metadata.js";
 import { fullEtlPayloadSchema } from "./payload.js";
 import { rowsToRawRecords } from "./raw-ingest.js";
 import { replayRequestParams } from "./replay-params.js";
 import { toEtlQueryObservation } from "./query-observation.js";
 import { errorSummary } from "./run-utils.js";
-import type { EtlRunStore, QihangQueryPort } from "./types.js";
+import type { AccountMetadataEtlStore, EtlRunStore, QihangQueryPort } from "./types.js";
 
 export interface FullEtlDependencies {
   qihang: QihangQueryPort;
-  store: EtlRunStore;
+  store: AccountMetadataEtlStore;
   jobs: JobEnqueuerPort;
 }
 
@@ -72,19 +73,31 @@ async function discoverAccountIds(
   let pageNum = 1;
   let fetchedAccounts = 0;
   for (;;) {
-    progress.currentStep = `account_page_${pageNum}`;
+    progress.currentStep = `fetch:account_page_${pageNum}`;
     const query = accountQuery(payload, pageNum);
     const result = await dependencies.qihang.query(query);
     await recordObservation(dependencies.store, runId, query, result.observation);
-    const records = await persistRows(dependencies, payload, query, payload.asOfDate, result.rows);
-    progress.rowsIngested += records.length;
-    fetchedAccounts += records.length;
-    records.forEach((row) => discovered.add(row.accountId));
+    const records = rowsToRawRecords({
+      rows: result.rows,
+      workspaceId: payload.workspaceId,
+      media: query.media ?? payload.media,
+      resource: query.resource,
+      requestParams: replayRequestParams(query),
+      fallbackDs: payload.asOfDate,
+      fetchedByUserId: payload.fetchedByUserId,
+    });
     if (records.length === 0) break;
     const total = result.pagination?.totalNum;
     if (total === null || total === undefined) {
+      progress.currentStep = `validate:account_page_${pageNum}`;
       throw new Error("Qihang account pagination total is missing");
     }
+    const metadata = accountMetadataFromRawRecords(records);
+    progress.currentStep = `persist:account_page_${pageNum}_accounts_and_raw`;
+    await dependencies.store.syncAccountMetadataAndRaw(metadata, records);
+    progress.rowsIngested += records.length;
+    fetchedAccounts += records.length;
+    records.forEach((row) => discovered.add(row.accountId));
     if (fetchedAccounts >= total) break;
     pageNum += 1;
     if (pageNum > 10_000) throw new Error("Qihang account pagination exceeded safety limit");

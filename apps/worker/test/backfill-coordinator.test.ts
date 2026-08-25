@@ -39,6 +39,7 @@ describe("backfill coordinator", () => {
     const store = {
       startRun: vi.fn().mockResolvedValue(31),
       appendRaw: vi.fn().mockResolvedValue(undefined),
+      syncAccountMetadataAndRaw: vi.fn().mockResolvedValue(undefined),
       recordObservation: vi.fn().mockResolvedValue(undefined),
       finishRun: vi.fn().mockResolvedValue(undefined),
       failRun: vi.fn().mockResolvedValue(undefined),
@@ -67,7 +68,13 @@ describe("backfill coordinator", () => {
     });
 
     expect(qihang.query).toHaveBeenCalledTimes(2);
-    expect(store.appendRaw).toHaveBeenCalledTimes(2);
+    expect(store.syncAccountMetadataAndRaw).toHaveBeenCalledTimes(2);
+    expect(store.syncAccountMetadataAndRaw).toHaveBeenNthCalledWith(
+      1,
+      [expect.objectContaining({ workspaceId, media: "KUAISHOU", accountId: "a-1" })],
+      [expect.objectContaining({ workspaceId, media: "KUAISHOU", accountId: "a-1" })],
+    );
+    expect(store.appendRaw).not.toHaveBeenCalled();
     expect(jobs.enqueue).toHaveBeenCalledTimes(3);
     expect(jobs.enqueue.mock.calls.map(([job]) => job)).toEqual(
       ["2026-08-17", "2026-08-18", "2026-08-19"].map((ds) => ({
@@ -86,5 +93,119 @@ describe("backfill coordinator", () => {
       })),
     );
     expect(store.finishRun).toHaveBeenCalledWith(31, 2);
+  });
+
+  it("does not fan out any day when an account page transaction fails", async () => {
+    const qihang = {
+      query: vi.fn().mockResolvedValue({
+        rows: [{ account_id: "a-1" }],
+        pagination: { totalNum: 1, pageNum: 1, pageSize: 50 },
+        envelope: {},
+      }),
+    };
+    const batches = {
+      get: vi.fn().mockResolvedValue({
+        id: 8,
+        workspaceId,
+        userId: ownerId,
+        dateFrom: "2026-08-17",
+        dateTo: "2026-08-19",
+        cursorDate: null,
+        status: "running",
+      }),
+      refreshProgress: vi.fn(),
+    };
+    const jobs = { enqueue: vi.fn() };
+    const store = {
+      startRun: vi.fn().mockResolvedValue(32),
+      appendRaw: vi.fn(),
+      syncAccountMetadataAndRaw: vi.fn().mockRejectedValue(new Error("page transaction failed")),
+      recordObservation: vi.fn(),
+      finishRun: vi.fn(),
+      failRun: vi.fn(),
+    };
+    const handler = createBackfillCoordinatorHandler({ qihang, batches, jobs, store });
+
+    await expect(handler({
+      id: "33333333-3333-4333-8333-333333333334",
+      workspaceId,
+      jobType: "backfill_historical",
+      payload: {
+        workspaceId,
+        backfillId: 8,
+        userId: "qihang-owner",
+        fetchedByUserId: ownerId,
+        pageSize: 50,
+      },
+      priority: JOB_PRIORITY.BACKFILL,
+      credentialOwnerUserId: ownerId,
+      status: "leased",
+      leaseUntil: null,
+      leaseToken: "44444444-4444-4444-8444-444444444445",
+      attempts: 1,
+      maxAttempts: 3,
+      runAfter: new Date(),
+    })).rejects.toThrow("page transaction failed");
+    expect(jobs.enqueue).not.toHaveBeenCalled();
+    expect(store.failRun).toHaveBeenCalledWith(
+      32,
+      "persist:account_page_1_accounts_and_raw",
+      "page transaction failed",
+    );
+  });
+
+  it("rejects a non-empty account page without pagination before persistence", async () => {
+    const qihang = {
+      query: vi.fn().mockResolvedValue({ rows: [{ account_id: "a-1" }], envelope: {} }),
+    };
+    const batches = {
+      get: vi.fn().mockResolvedValue({
+        id: 9,
+        workspaceId,
+        userId: ownerId,
+        dateFrom: "2026-08-17",
+        dateTo: "2026-08-19",
+        cursorDate: null,
+        status: "running",
+      }),
+      refreshProgress: vi.fn(),
+    };
+    const jobs = { enqueue: vi.fn() };
+    const store = {
+      startRun: vi.fn().mockResolvedValue(33),
+      appendRaw: vi.fn(),
+      syncAccountMetadataAndRaw: vi.fn(),
+      recordObservation: vi.fn(),
+      finishRun: vi.fn(),
+      failRun: vi.fn(),
+    };
+
+    await expect(createBackfillCoordinatorHandler({ qihang, batches, jobs, store })({
+      id: "33333333-3333-4333-8333-333333333335",
+      workspaceId,
+      jobType: "backfill_historical",
+      payload: {
+        workspaceId,
+        backfillId: 9,
+        userId: "qihang-owner",
+        fetchedByUserId: ownerId,
+        pageSize: 50,
+      },
+      priority: JOB_PRIORITY.BACKFILL,
+      credentialOwnerUserId: ownerId,
+      status: "leased",
+      leaseUntil: null,
+      leaseToken: "44444444-4444-4444-8444-444444444446",
+      attempts: 1,
+      maxAttempts: 3,
+      runAfter: new Date(),
+    })).rejects.toThrow("pagination total");
+    expect(store.syncAccountMetadataAndRaw).not.toHaveBeenCalled();
+    expect(jobs.enqueue).not.toHaveBeenCalled();
+    expect(store.failRun).toHaveBeenCalledWith(
+      33,
+      "validate:account_page_1",
+      "Qihang account pagination total is missing",
+    );
   });
 });
