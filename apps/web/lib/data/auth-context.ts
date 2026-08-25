@@ -15,6 +15,10 @@ export const internalServiceTokenSchema = z.string().min(32)
 export type ServerAuthContext = z.infer<typeof serverAuthContextSchema>
 export type ApprovedAuthContextResolver = () => Promise<unknown>
 
+export type ServerAuthResolution =
+  | { status: "approved"; context: ServerAuthContext }
+  | { status: "rejected"; httpStatus: 401 | 403 }
+
 export type DataQueryServerEnvironment = {
   NODE_ENV?: string
   KA_DATA_BACKEND_ORIGIN?: string
@@ -43,12 +47,35 @@ function parseDevelopmentContext(environment: DataQueryServerEnvironment): Serve
   }
 }
 
-export async function resolveServerAuthContext(options: ResolveOptions): Promise<ServerAuthContext | null> {
-  const approved = serverAuthContextSchema.safeParse(await options.approvedAuthContextResolver())
-  if (approved.success) return approved.data
+const rejectedAuthResolutionSchema = z.object({
+  status: z.literal("rejected"),
+  httpStatus: z.union([z.literal(401), z.literal(403)]),
+}).passthrough()
 
-  // Production is fail-closed until an approved login/session integration resolves scope.
-  // Raw browser headers are deliberately absent from this resolver boundary.
-  if (options.environment.NODE_ENV !== "development") return null
-  return parseDevelopmentContext(options.environment)
+export async function resolveServerAuthResolution(options: ResolveOptions): Promise<ServerAuthResolution> {
+  const candidate = await options.approvedAuthContextResolver()
+  const approved = serverAuthContextSchema.safeParse(candidate)
+  if (approved.success) return { status: "approved", context: approved.data }
+
+  const rejected = rejectedAuthResolutionSchema.safeParse(candidate)
+  if (rejected.success) {
+    return { status: "rejected", httpStatus: rejected.data.httpStatus }
+  }
+
+  if (options.environment.NODE_ENV === "development") {
+    const developmentContext = parseDevelopmentContext(options.environment)
+    if (developmentContext !== null) {
+      return { status: "approved", context: developmentContext }
+    }
+  }
+
+  return {
+    status: "rejected",
+    httpStatus: candidate === null || candidate === undefined ? 401 : 403,
+  }
+}
+
+export async function resolveServerAuthContext(options: ResolveOptions): Promise<ServerAuthContext | null> {
+  const resolution = await resolveServerAuthResolution(options)
+  return resolution.status === "approved" ? resolution.context : null
 }
