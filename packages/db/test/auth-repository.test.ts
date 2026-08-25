@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
@@ -77,6 +77,20 @@ describe("AuthSessionRepository", () => {
                 ($1, $4, $5, '2026-08-25T09:00:00Z', '2026-08-25T07:00:00Z', '2026-08-25T07:00:00Z')`,
       [identityId, workspaceA, tokenAHash, workspaceB, tokenBHash],
     );
+  });
+
+  afterEach(async () => {
+    await pool.query("DELETE FROM auth_sessions WHERE identity_id = $1", [identityId]);
+    await pool.query("DELETE FROM account_access_grants WHERE identity_id = $1", [identityId]);
+    await pool.query("DELETE FROM workspace_memberships WHERE identity_id = $1", [identityId]);
+    await pool.query("DELETE FROM accounts WHERE workspace_id = ANY($1::uuid[])", [[workspaceA, workspaceB]]);
+    await pool.query("DELETE FROM users WHERE workspace_id = ANY($1::uuid[])", [[workspaceA, workspaceB]]);
+    await pool.query("DELETE FROM workspaces WHERE id = ANY($1::uuid[])", [[workspaceA, workspaceB]]);
+    await pool.query("DELETE FROM auth_identities WHERE id = $1", [identityId]);
+  });
+
+  afterAll(async () => {
+    await pool.end();
   });
 
   it("resolves only the active workspace grants and keeps media-account tuples distinct", async () => {

@@ -27,6 +27,7 @@ describe("CredentialRepository", () => {
     await pool.query("DELETE FROM changeset_items");
     await pool.query("DELETE FROM changesets");
     await pool.query("DELETE FROM work_items");
+    await pool.query("DELETE FROM account_access_grants");
     await pool.query("DELETE FROM accounts");
     const workspace = await pool.query<{ id: string }>(
       "INSERT INTO workspaces (name) VALUES ('credential-test') RETURNING id",
