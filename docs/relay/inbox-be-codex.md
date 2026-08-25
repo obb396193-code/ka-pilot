@@ -79,3 +79,14 @@
 - 证据：`docs/evidence/B23-C1-奇航账户主表同步质量报告.md`、已更新 B23-C Gap Matrix。
 - 未完成：普通 ETL scheduler/入队、session HTTP composition、四个普通只读 API、真实奇航联调与内网部署。
 - 状态：已实现并完成 Codex 自审；待 root 合流，Claude/arch 后审位保留。
+
+### TASK-LIST-001 任务列表只读纵切片
+
+- 派活方：root Codex（Contract/验收/整合）
+- 日期：2026-08-25
+- 分支：`codex/task-list-001-backend`，基线 `codex/integration-control@f2adad3`
+- 冻结 Contract：`packages/contract/api.md` TASK-LIST-001
+- root 计划：`docs/plans/2026-08-25-TASK-LIST-001任务列表纵切片-implementation.md`
+- 后端 TDD 细化：`docs/plans/2026-08-25-TASK-LIST-001后端TDD-implementation.md`
+- 边界：仅 Domain/DB/Worker/后端 fixture 与留痕；不改 `apps/web`、`apps/ui-layout-demo`，不 push，不挂任务/媒体写路由。
+- 状态：实施中。
