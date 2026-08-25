@@ -49,6 +49,7 @@
 - 目标：四表 migration、token hash→active identity/membership/user/grants→approvedAuthContext，
   真实 PG 隔离/撤销/空授权反例；另交 B23-C 真实文件行号 gap matrix。
 - 代码终态：`72228b4`
+- 质量与交接：`fa84d22`
 - 质量：`docs/evidence/B23-A-代码质量报告.md`
 - Gap matrix：`docs/evidence/B23-C-奇航只读链Gap矩阵.md`
 - 状态：已实现并完成 Codex 自审；未合并/部署，等待 root 验收。

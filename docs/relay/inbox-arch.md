@@ -2433,6 +2433,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - Domain：`c39eeb4`
 - Repository/Worker Service：`48b6d6d`
 - 代码终态：`72228b4`
+- 质量与交接：`fa84d22`
 - 质量：`docs/evidence/B23-A-代码质量报告.md`
 - Gap matrix：`docs/evidence/B23-C-奇航只读链Gap矩阵.md`
 - 状态：implemented / codex self-checked / root integration pending / Claude review reserved
