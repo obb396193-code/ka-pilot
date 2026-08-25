@@ -2,8 +2,18 @@
 
 本目录继承仓库根 `AGENTS.md`，并追加以下前端规则。产品契约、写操作确认和数据脱敏红线仍以根规则为准。
 
+## 前端唯一实现线（2026-08-25 冻结）
+
+- `apps/ui-layout-demo/sidebar.html` 是唯一视觉母版；正式运行时逐批迁入 `apps/web`，旧前端页面不得作为视觉来源或整体合并。
+- 每批可见改动必须分别取得老板视觉签字和 root 功能签字；自动测试不能替代任一人工签字。
+- 旧 API/BFF/schema/adapter/权限/状态/测试只有经 root 标记 canonical 后才可逐文件复用。
+- 复用 ContentRadar 时必须复制 ContentRadar 真实源码、样式、资源与依赖，记录原路径、commit 和修改清单；禁止看图仿写或接入已撤销小样。
+- 权威设计：[前端唯一实现线与视觉门禁](../../docs/plans/2026-08-25-前端唯一实现线与视觉门禁-design.md)。
+
 ## 开工前必读
 
+- [前端唯一实现线与视觉门禁设计](../../docs/plans/2026-08-25-前端唯一实现线与视觉门禁-design.md)
+- [前端接管能力矩阵](../../docs/frontend/takeover/functional-capability-matrix.md)
 - [前端交付总清单与未落地说明](../../docs/frontend/ui-assets/前端交付总清单与未落地说明.md)
 - [UI 资产总入口](../../docs/frontend/ui-assets/README.md)
 - [前端 Agent 工作流](../../docs/frontend/ui-assets/agent-workflow.md)
