@@ -20,7 +20,7 @@
 5. 普通业务主源固定奇航；KA Data/reconcile 默认隐藏、关闭或仅管理员可诊断。
 6. 本批不开放任何媒体写操作；后续所有写能力仍必须 preview → confirm → execute。
 
-## 后端任务批次
+## 交付批次与文件边界
 
 ### B23-A：数据库与授权内核
 
@@ -30,13 +30,15 @@
 - 真实 PG 反例：同 identity 两 workspace、跨 workspace 同号、跨 media 同号、撤销
   membership、撤销 session、无 grant 空范围。
 
-### B23-B：BFF session API
+### F23-B：前端服务层接 session API（唯一前端任务负责）
 
 - 实现 `login/session/workspace/logout` 四个 `/api/internal/auth/*` 接口。
 - `internal_test` provider 仅显式开关启用，校验材料只来自 Secret/config；无默认账号。
 - cookie、CSRF/Origin、requestId、错误 envelope、日志脱敏和 session TTL 全部覆盖负向测试。
 - 替换 `apps/web/lib/data/approved-auth-context.ts` 的 production `return null`，但开发 fixture
   仍只允许 literal development。
+- 这一批属于前端仓库的服务端 BFF，不由后端任务修改；root 只验 Contract、scope 和错误态，
+  视觉与登录页继续由老板在「梳理前端组件与页面库」任务中决定。
 
 ### B23-C：奇航主源业务读链
 
@@ -46,7 +48,7 @@
   状态表达，不静默切换 KA Data、不伪造完整性。
 - 跨 workspace/media/account scope 在查询前和响应后双重守卫。
 
-### B23-D：交付给前端的联调包
+### R23-D：root 交付给前端的联调包
 
 - OpenAPI/Contract fixture：session 四态（loading/authenticated/unauthenticated/forbidden）、
   workspace 切换、空授权、数据未同步、正常 Qihang 数据、稳定错误。
