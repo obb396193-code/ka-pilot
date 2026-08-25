@@ -23,6 +23,31 @@ function job(owner: string | null = ownerUserId) {
   };
 }
 
+function scheduledJob() {
+  return {
+    ...job(),
+    payload: {
+      workspaceId,
+      media: "KUAISHOU",
+      ds: "2026-08-19",
+      businessDate: "2026-08-19",
+      initiatorUserId: ownerUserId,
+      accountIds: ["account-1"],
+      authorizationSnapshot: {
+        workspaceId,
+        identityId: "55555555-5555-4555-8555-555555555555",
+        userId: ownerUserId,
+        role: "optimizer",
+        allowedAccounts: [{
+          media: "KUAISHOU",
+          accountId: "account-1",
+          accessLevel: "read",
+        }],
+      },
+    },
+  };
+}
+
 describe("withQihangIdentity", () => {
   it("replaces payload identity with the immutable credential owner mapping", async () => {
     const handler = vi.fn().mockResolvedValue(undefined);
@@ -68,5 +93,55 @@ describe("withQihangIdentity", () => {
     );
 
     await expect(wrapped(job())).rejects.toBeInstanceOf(BlockedAuthError);
+  });
+
+  it("revalidates a scheduled identity chain without using the service fallback", async () => {
+    const handler = vi.fn().mockResolvedValue(undefined);
+    const credentials = {
+      resolveQihangUserId: vi.fn(),
+      resolveScheduledQihangUserId: vi.fn().mockResolvedValue("qihang-owner"),
+    };
+    const wrapped = withQihangIdentity(handler, credentials, "qihang-service");
+
+    await wrapped(scheduledJob());
+
+    expect(credentials.resolveScheduledQihangUserId).toHaveBeenCalledWith(
+      workspaceId,
+      ownerUserId,
+      "55555555-5555-4555-8555-555555555555",
+    );
+    expect(credentials.resolveQihangUserId).not.toHaveBeenCalled();
+    expect(handler.mock.calls[0]?.[0].payload.userId).toBe("qihang-owner");
+  });
+
+  it("fails closed when a retry cannot revalidate its original owner", async () => {
+    const credentials = {
+      resolveQihangUserId: vi.fn(),
+      resolveScheduledQihangUserId: vi.fn().mockResolvedValue(null),
+    };
+    const wrapped = withQihangIdentity(vi.fn(), credentials, "qihang-service");
+
+    await expect(wrapped(scheduledJob())).rejects.toBeInstanceOf(BlockedAuthError);
+    expect(credentials.resolveScheduledQihangUserId).toHaveBeenCalledWith(
+      workspaceId,
+      ownerUserId,
+      "55555555-5555-4555-8555-555555555555",
+    );
+  });
+
+  it("rejects payload owner and account scope drift before resolving credentials", async () => {
+    const credentials = {
+      resolveQihangUserId: vi.fn(),
+      resolveScheduledQihangUserId: vi.fn(),
+    };
+    const wrapped = withQihangIdentity(vi.fn(), credentials, null);
+    const changedOwner = scheduledJob();
+    changedOwner.payload.initiatorUserId = "66666666-6666-4666-8666-666666666666";
+    const changedScope = scheduledJob();
+    changedScope.payload.accountIds = ["account-2"];
+
+    await expect(wrapped(changedOwner)).rejects.toBeInstanceOf(BlockedAuthError);
+    await expect(wrapped(changedScope)).rejects.toBeInstanceOf(BlockedAuthError);
+    expect(credentials.resolveScheduledQihangUserId).not.toHaveBeenCalled();
   });
 });

@@ -56,6 +56,38 @@ describe("CredentialRepository", () => {
     await expect(repository.resolveQihangUserId(workspaceId, ownerId)).resolves.toBeNull();
   });
 
+  it("revalidates the frozen identity membership for scheduled retries", async () => {
+    const identity = await pool.query<{ id: string }>(
+      `INSERT INTO auth_identities (provider, provider_subject, display_name)
+       VALUES ('internal_test', gen_random_uuid()::text, 'scheduled owner') RETURNING id`,
+    );
+    const identityId = identity.rows[0]!.id;
+    await pool.query(
+      `INSERT INTO workspace_memberships (workspace_id, identity_id, user_id, role)
+       VALUES ($1, $2, $3, 'optimizer')`,
+      [workspaceId, identityId, ownerId],
+    );
+
+    await expect(
+      repository.resolveScheduledQihangUserId(workspaceId, ownerId, identityId),
+    ).resolves.toBe("qihang-owner");
+    await expect(
+      repository.resolveScheduledQihangUserId(
+        "99999999-9999-4999-8999-999999999999",
+        ownerId,
+        identityId,
+      ),
+    ).resolves.toBeNull();
+
+    await pool.query(
+      "UPDATE workspace_memberships SET is_active = false WHERE workspace_id = $1 AND identity_id = $2",
+      [workspaceId, identityId],
+    );
+    await expect(
+      repository.resolveScheduledQihangUserId(workspaceId, ownerId, identityId),
+    ).resolves.toBeNull();
+  });
+
   it("selects the common account owner and rejects ambiguous scopes", async () => {
     await pool.query(
       `INSERT INTO accounts (workspace_id, media, account_id, owner_user_id)

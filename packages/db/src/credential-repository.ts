@@ -18,6 +18,32 @@ export class CredentialRepository {
     return result.rows[0]?.qihang_user_id ?? null;
   }
 
+  async resolveScheduledQihangUserId(
+    workspaceId: string,
+    userId: string,
+    identityId: string,
+  ): Promise<string | null> {
+    const result = await this.pool.query<{ qihang_user_id: string }>(
+      `SELECT actor.qihang_user_id
+       FROM users AS actor
+       JOIN workspace_memberships AS membership
+         ON membership.workspace_id = actor.workspace_id
+        AND membership.user_id = actor.id
+        AND membership.identity_id = $3
+        AND membership.is_active = true
+       JOIN auth_identities AS identity
+         ON identity.id = membership.identity_id
+        AND identity.is_active = true
+       WHERE actor.workspace_id = $1
+         AND actor.id = $2
+         AND actor.is_active = true
+         AND actor.qihang_user_id IS NOT NULL
+         AND btrim(actor.qihang_user_id) <> ''`,
+      [workspaceId, userId, identityId],
+    );
+    return result.rows[0]?.qihang_user_id ?? null;
+  }
+
   async resolveIdeaLabSecretRef(workspaceId: string, userId: string): Promise<string | null> {
     const result = await this.pool.query<{ idealab_ak_ref: string | null }>(
       `SELECT idealab_ak_ref
