@@ -3,7 +3,7 @@
 > 日期：2026-08-26
 > 基线：`codex/integration-control@1950808`
 > 分支：`codex/b23-c2-workspace-scheduler`
-> 状态：实施中；不代表已部署或真实奇航联调
+> 状态：代码完成并通过本地真实 PostgreSQL 自审；不代表已部署或真实奇航联调
 
 ## 目标
 
@@ -74,3 +74,13 @@
 
 - `implemented + local_pg_verified + codex_self_checked` 才可描述为本批完成。
 - 未部署、未真实奇航调用、未接外部 scheduler 时必须继续明确标注；Claude/arch 后审位保留。
+
+## 实施结果
+
+- Domain 已冻结 one-shot tick、不可变授权快照、调度结果和 `blocked_auth` reason。
+- migration 009、`WorkspaceSyncRepository`、`enqueueScheduled`、执行前身份复核与内部 CLI 已完成。
+- 普通任务列表在当前用户、当前授权媒体首次 full 成功前固定返回 `partial`；共享查询
+  `loadWorkspaceSyncReadiness()` 可供后续账户池和工作项列表在其自身只读快照内复用。
+- cadence 仍由部署 config / 外部 scheduler 触发；当前没有内置 cron，没有浏览器写路由。
+- 完整质量证据见 `docs/evidence/B23-C2-普通Workspace同步调度内核质量报告.md`；后续列表
+  Contract 缺口见 `docs/evidence/B23-C2-账户与工作项列表Gap矩阵.md`。
