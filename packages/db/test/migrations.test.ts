@@ -278,6 +278,8 @@ describe("contract migrations", () => {
 
     const detailScopeMigration = await runMigrations({ databaseUrl, count: 1 });
     expect(detailScopeMigration).toHaveLength(1);
+    const authMigration = await runMigrations({ databaseUrl, count: 1 });
+    expect(authMigration).toHaveLength(1);
     expect(await runMigrations({ databaseUrl })).toHaveLength(0);
     const detailScopes = await client.query<{
       table_name: string;
@@ -345,6 +347,7 @@ describe("contract migrations", () => {
 
     expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
     expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
+    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
     await expect(
       runMigrations({ databaseUrl, direction: "down", count: 1 }),
     ).rejects.toThrow(/same account_id exists in multiple media/i);
@@ -368,6 +371,6 @@ describe("contract migrations", () => {
 
     await runMigrations({ databaseUrl, direction: "down", count: 5 });
     const replay = await runMigrations({ databaseUrl });
-    expect(replay).toHaveLength(7);
+    expect(replay).toHaveLength(8);
   });
 });

@@ -92,7 +92,7 @@ describe("KaDataClient", () => {
     }, { fetchFn });
 
     await client.query(resolvedSummary(), {
-      workspaceId: "w",
+      workspaceId: "00000000-0000-4000-8000-000000000024",
       userId: "u",
       accounts: [],
     });
@@ -393,7 +393,7 @@ describe("KaDataClient", () => {
     });
 
     const result = await client.query(resolved, {
-      workspaceId: "w",
+      workspaceId: "00000000-0000-4000-8000-000000000024",
       userId: "u",
       accounts: [{ media: "KUAISHOU", accountId: "leading-zero-001" }],
     });

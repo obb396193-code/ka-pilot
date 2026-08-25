@@ -2421,3 +2421,41 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 2. 复核 R3 已完成的账户相关主键/外键同步与知识资产当前表述是否一致；不得把 8 月 24 日“待同步”快照继续当现状。
 3. 复核 `task/product/material/adgroup` 等其他对象 ID 是否继续保持逐项 `unresolved`，且没有预建通用映射层。
 4. 复核 `ka-src-0010` 继续保持 `review_pending/not_ready`，等待 P-KB-011 其余证据；本条不授权发布产品知识库。
+
+---
+
+### P-033 ⏳B23-A 多租户授权内核与 B23-C 只读 Gap 待审计｜be（Codex）
+
+- 分支：`codex/b23-auth-core`
+- 基线：`codex/integration-control@68da060`
+- 计划：`5a0dcbd`
+- migration：`eba1fa7`
+- Domain：`c39eeb4`
+- Repository/Worker Service：`48b6d6d`
+- 代码终态：`72228b4`
+- 质量与交接：`fa84d22`
+- 质量：`docs/evidence/B23-A-代码质量报告.md`
+- Gap matrix：`docs/evidence/B23-C-奇航只读链Gap矩阵.md`
+- 状态：implemented / codex self-checked / root integration pending / Claude review reserved
+
+**本批实现**：
+
+1. 四表 migration 保留 workspace-local users，用复合 FK 绑定 membership→user、grant→账户三字段键。
+2. Worker 明文 session token 只在内存中即时 SHA-256；DB Repository 只接受 hash，不选择或返回
+   provider subject、奇航 userId、Secret ref、token hash。
+3. Domain 对 expired/revoked/inactive/missing/mismatched/duplicate 全部 fail closed；无 grant 是
+   approved empty scope，不是 workspace 全权。
+4. 同 identity 双 workspace、跨 workspace/跨 media 同 account ID、跨 workspace user FK、撤销和
+   过期均由真实 PostgreSQL 验证。
+
+**质量真相**：Domain 433、DB 107、Worker 453 passed，另有 2 项既有 opt-in 集成测试 skipped；
+三包 test/typecheck/lint/audit、coverage 和真实 PG migration/repository 全绿，0 vulnerabilities。
+代码终态不含前端与媒体写改动。
+
+**请重点审查**：session token 的正式 mint/rotation/cookie/CSRF；membership 角色与账户 access level
+对 API/Capability 的映射；`ON DELETE RESTRICT` 运维生命周期；B23-B HTTP composition；首次内网
+identity/workspace/user/grant seed 与审计。
+
+**关键未完成**：B23-A 还不是登录 E2E。奇航主链仍缺 account metadata→`accounts` 幂等同步、
+普通业务调度、`/api/v1/query`、任务/账户/工作项列表 API 和严格 DTO；详见 B23-C。未合并、未部署、
+未使用真实 BUC/session/奇航账户，所有媒体写继续关闭。
