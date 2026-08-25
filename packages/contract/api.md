@@ -285,6 +285,88 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ## 任务
 
 - `GET /api/v1/tasks` / `GET /api/v1/tasks/:id`（含 pacing 计算结果）
+
+### TASK-LIST-001 任务列表（一期只读）
+
+浏览器只调用 `GET /api/internal/tasks`；BFF 从 AUTH-001 服务端 session 注入批准的
+workspace/user/account scope，再调用 `GET /api/v1/tasks`。浏览器不得提交或覆盖
+`workspaceId/userId/role/accountIds/dataSource`。
+
+允许的 query 参数仅为：`page`（默认 1）、`pageSize`（默认 20，最大 100）、`q`（最大
+100 字符，仅匹配 task_name/biz_name）、`status=preparing|active|ended`、`ownerUserId`
+（UUID）、`periodFrom/periodTo`（有效 YYYY-MM-DD，筛选任务周期相交）、
+`hasOpenWorkItems=true|false`。未知参数、非法日期或 `periodFrom > periodTo` 返回 400
+`INVALID_REQUEST`。
+
+成功响应固定为：
+
+```jsonc
+{
+  "ok": true,
+  "data": {
+    "items": [{
+      "taskId": "opaque-id",
+      "taskName": "任务名称",
+      "bizName": null,
+      "status": "preparing | active | ended",
+      "period": {"start": "2026-08-01", "end": "2026-08-31"},
+      "owner": {"userId": "uuid", "displayName": "脱敏姓名"},
+      "assessmentPrice": {"value": 38, "effectiveDate": "2026-08-01"},
+      "volume": {"target": 1000, "completed": 420},
+      "pacing": {
+        "asOf": "2026-08-25",
+        "elapsedDays": 25,
+        "totalDays": 31,
+        "remainingDays": 6,
+        "targetProgress": {"value": 0.42, "state": "finite"},
+        "timeProgress": {"value": 0.806, "state": "finite"},
+        "projectedVolume": 610,
+        "projectedCompletion": {"value": 0.61, "state": "finite"},
+        "projectedGap": 390,
+        "requiredDailyVolume": {"value": 96.667, "state": "finite"},
+        "budgetProgress": {"value": null, "state": "undefined"}
+      },
+      "linkedAccountCount": 8,
+      "workItemSummary": {
+        "openCount": 2,
+        "highestSeverity": "P1",
+        "counts": {"P0": 0, "P1": 1, "P2": 1, "opportunity": 0}
+      }
+    }],
+    "page": 1,
+    "pageSize": 20,
+    "total": 1
+  },
+  "meta": {
+    "dataState": "ready | empty | partial | stale",
+    "businessDate": "2026-08-25",
+    "dataAsOf": "2026-08-25T12:00:00.000Z",
+    "coverage": {"complete": true},
+    "selectedSource": "qihang",
+    "requestId": "..."
+  }
+}
+```
+
+- `taskId` 是 opaque ID，只允许非空、最大 128 字符；前端不得解析或拼接业务含义。
+- `taskName/period/owner/assessmentPrice/volume` 缺源时用显式 `null`，不得编造；`period`
+  仅在 start/end 都有效时返回，否则为 `null`。
+- `pacing` 必须由后端复用冻结的 `computeTaskPacing` 生成；所有比率沿用
+  `RatioValue`，前端不得重算 pacing、CPA、Gap、达成率或预测。
+- `assessmentPrice` 必须取业务日生效的最新版本；不得取未来版本或任务表占位值。
+- `linkedAccountCount` 只统计业务日落在 task_accounts 有效期内且位于批准账户 scope 的
+  `(media,account_id)`；不得泄露 workspace 内其他用户无权账户数量。
+- `workItemSummary` 只统计当前批准范围内 `open|processing|escalated` 工作项；不存在时返回
+  0 与 `highestSeverity=null`，不得返回标题、诊断或无权账户信息。
+- 默认稳定排序：`active → preparing → ended`，随后 `period.end ASC NULLS LAST`，最后
+  `taskId ASC` 作为唯一 tie-breaker；分页期间禁止不稳定排序。
+- `dataState` 优先级固定为 `partial > stale > empty > ready`：coverage 不完整即 partial；
+  完整但业务日数据未到即 stale；完整且筛选后 total=0 才是 empty。状态不能由前端猜测。
+- 普通任务列表固定 `selectedSource=qihang`；KA Data/reconcile 不进入本接口，也不得由 query
+  参数选择。
+- 401/403/400/502/503/504/500 使用稳定 error envelope，必须携带相同的响应头与正文
+  `requestId`；错误不回显 SQL、上游正文、账户 scope 或 Secret。
+- 本批只读：创建、编辑、改考核价、账户分配和媒体执行端点继续关闭。
 - `POST /api/v1/tasks` `{idempotency_key, draft: {task_name, biz_name, period_start, period_end, target_volume, budget, ...}}` → 创建任务草稿（**P-002#2 裁决：群内创建任务用，幂等键必填**）
 - `PATCH /api/v1/tasks/:id` `{...}` → 更新草稿或已发布任务
 - `POST /api/v1/tasks/:id/assessment-price` `{price, effective_date, evidence_url}` → 触发重算+通知
