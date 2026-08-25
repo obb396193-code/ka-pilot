@@ -51,12 +51,16 @@ function job(input: {
   };
 }
 
-function fakeQihang(accountId: string): QihangQueryPort {
+function fakeQihang(
+  accountId: string,
+  accountName = "合成账户",
+  status = "active",
+): QihangQueryPort {
   return {
     async query(query) {
       if (query.resource === "account") {
         return {
-          rows: [{ account_id: accountId }],
+          rows: [{ account_id: accountId, account_name: accountName, status }],
           pagination: { totalNum: 1, pageNum: 1, pageSize: 50 },
           envelope: { successful: true },
         };
@@ -177,19 +181,14 @@ describe("real PostgreSQL data pipeline", () => {
       `INSERT INTO accounts (
          workspace_id, account_id, account_name, media, lifecycle_stage, status
        ) VALUES
-         ($1, $3, '合成账户', 'KUAISHOU', 'scaling', 'active'),
-         ($2, $3, '隔离账户', 'KUAISHOU', 'scaling', 'active')`,
+         ($2, $3, '隔离账户', 'KUAISHOU', 'scaling', 'active'),
+         ($1, $3, '跨媒体隔离账户', 'TENCENT', 'scaling', 'active')`,
       [workspaceId, otherWorkspaceId, accountId],
     );
     await pool.query(
       `INSERT INTO tasks (workspace_id, task_id, task_name, biz_name)
        VALUES ($1, $2, '合成任务', '合成业务')`,
       [workspaceId, taskId],
-    );
-    await pool.query(
-      `INSERT INTO task_accounts (workspace_id, task_id, media, account_id, valid_from)
-       VALUES ($1, $2, 'KUAISHOU', $3, '2026-08-01')`,
-      [workspaceId, taskId, accountId],
     );
     await pool.query(
       `INSERT INTO channel_coefficients (
@@ -253,6 +252,92 @@ describe("real PostgreSQL data pipeline", () => {
         [workspaceId, accountId],
       ),
     ).toHaveProperty("rowCount", 4);
+
+    const synchronizedAccount = await pool.query<{
+      account_name: string | null;
+      status: string | null;
+      lifecycle_stage: string;
+      is_starred: boolean;
+      tags: string[] | null;
+    }>(
+      `SELECT account_name, status, lifecycle_stage, is_starred, tags
+       FROM accounts
+       WHERE workspace_id = $1 AND media = 'KUAISHOU' AND account_id = $2`,
+      [workspaceId, accountId],
+    );
+    expect(synchronizedAccount.rows).toEqual([{
+      account_name: "合成账户",
+      status: "active",
+      lifecycle_stage: "unknown",
+      is_starred: false,
+      tags: null,
+    }]);
+    await pool.query(
+      `UPDATE accounts
+       SET lifecycle_stage = 'scaling', is_starred = true, tags = ARRAY['protected']::text[]
+       WHERE workspace_id = $1 AND media = 'KUAISHOU' AND account_id = $2`,
+      [workspaceId, accountId],
+    );
+
+    const replayJob = job({
+      id: randomUUID(),
+      workspaceId,
+      jobType: "etl_full",
+      payload: fullJob.payload,
+    });
+    await createFullEtlHandler({
+      qihang: fakeQihang(accountId, "合成账户-更新", "paused"),
+      store: etlStore,
+      jobs,
+    })(replayJob);
+    const replayedAccounts = await pool.query<{
+      workspace_id: string;
+      media: string;
+      account_name: string | null;
+      status: string | null;
+      lifecycle_stage: string;
+      is_starred: boolean;
+      tags: string[];
+    }>(
+      `SELECT workspace_id, media, account_name, status, lifecycle_stage, is_starred, tags
+       FROM accounts
+       WHERE account_id = $1
+       ORDER BY workspace_id, media`,
+      [accountId],
+    );
+    expect(replayedAccounts.rows).toHaveLength(3);
+    expect(replayedAccounts.rows).toContainEqual({
+      workspace_id: workspaceId,
+      media: "KUAISHOU",
+      account_name: "合成账户-更新",
+      status: "paused",
+      lifecycle_stage: "scaling",
+      is_starred: true,
+      tags: ["protected"],
+    });
+    expect(replayedAccounts.rows).toContainEqual(expect.objectContaining({
+      workspace_id: workspaceId,
+      media: "TENCENT",
+      account_name: "跨媒体隔离账户",
+    }));
+    expect(replayedAccounts.rows).toContainEqual(expect.objectContaining({
+      workspace_id: otherWorkspaceId,
+      media: "KUAISHOU",
+      account_name: "隔离账户",
+    }));
+    expect(
+      await pool.query(
+        `SELECT 1 FROM metrics_raw
+         WHERE workspace_id = $1 AND media = 'KUAISHOU' AND account_id = $2`,
+        [workspaceId, accountId],
+      ),
+    ).toHaveProperty("rowCount", 8);
+
+    await pool.query(
+      `INSERT INTO task_accounts (workspace_id, task_id, media, account_id, valid_from)
+       VALUES ($1, $2, 'KUAISHOU', $3, '2026-08-01')`,
+      [workspaceId, taskId, accountId],
+    );
 
     const canonicalJob = await storedJob(pool, workspaceId, "canonical_merge");
     await createCanonicalHandler({
