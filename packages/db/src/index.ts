@@ -20,3 +20,4 @@ export * from "./agent-repository.js";
 export * from "./workflow-repository.js";
 export * from "./partition-maintenance.js";
 export * from "./ad-hourly-metrics-repository.js";
+export * from "./auth-repository.js";
