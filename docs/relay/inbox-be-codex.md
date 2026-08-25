@@ -63,3 +63,15 @@
 - 未改 `apps/web`、`apps/ui-layout-demo` 或视觉文件；未 push；媒体写继续关闭。
 - 正式 session/BFF 接线、普通业务 API 和奇航账户主表同步未完成，详见 B23-C，不得把内核完成
   表述成登录、页面、内网部署或业务 E2E 完成。
+
+### B23-C1 奇航 account metadata → accounts 主表同步
+
+- 派活方：root Codex（Contract/验收/整合）
+- 日期：2026-08-25
+- 分支：`codex/b23-c1-account-sync`，基线 `codex/integration-control@0775a13`
+- 实施计划：`docs/plans/2026-08-25-B23-C1奇航账户主表同步-implementation.md`
+- 边界：只解决 Qihang account metadata→accounts→同页 Raw 的 P0；不改普通 API DTO、前端，
+  不 push，不开放媒体写。
+- 冻结事务：网络请求完成后按 account 分页开短事务，整页校验→upsert accounts→append Raw→
+  commit；该页失败 0 写入，前页可信提交可在 Job 重试时幂等重放，未全部完成不派 canonical/fanout。
+- 状态：进行中。
