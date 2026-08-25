@@ -1,8 +1,8 @@
 # B23-C2 账户与工作项列表 Gap Matrix
 
-> 日期：2026-08-26  
+> 日期：2026-08-26
 > 范围：只读审计 `ACCOUNTS-LIST-001`、`WORK-ITEM-LIST-001` 现有 Contract、Domain、DB、
-> Worker composition；不在本文发明公开 DTO。  
+> Worker composition；不在本文发明公开 DTO。
 > 结论：两个列表都尚未形成可实现的严格纵切片；已有账户主表、Canonical 数据和工作项详情
 > 是可复用底座，但不能等同于列表 API 已实现。
 

@@ -1,8 +1,8 @@
 # B23-C2 普通 Workspace 同步调度内核质量报告
 
-> 日期：2026-08-26  
-> 分支：`codex/b23-c2-workspace-scheduler`  
-> 基线：`codex/integration-control@1950808`  
+> 日期：2026-08-26
+> 分支：`codex/b23-c2-workspace-scheduler`
+> 基线：`codex/integration-control@1950808`
 > 状态：`implemented + local_pg_verified + codex_self_checked`；未部署、未真实奇航联调
 
 ## 交付范围
