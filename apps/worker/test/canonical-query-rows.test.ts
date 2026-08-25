@@ -11,6 +11,7 @@ import {
 } from "../src/data/canonical-query-rows.js";
 
 describe("canonical query row adapters", () => {
+  const workspaceId = "00000000-0000-4000-8000-000000000501";
   const queryIds: DataQueryId[] = [
     "account.summary",
     "account.trend",
@@ -60,7 +61,7 @@ describe("canonical query row adapters", () => {
           data_anomaly: queryId === "account.anomalies" ? true : false,
         }
       : {
-          workspaceId: "workspace-1",
+          workspaceId,
           media: "KUAISHOU",
           accountId: "account-1",
           ds: "2026-08-24",
@@ -92,7 +93,7 @@ describe("canonical query row adapters", () => {
         queryId,
         source,
         [sourceRow(queryId, source)],
-        "workspace-1",
+        workspaceId,
       );
       expect(rows).toHaveLength(1);
       expect(canonicalQueryRowSchemaById[queryId].safeParse(rows[0]).success).toBe(true);
@@ -109,7 +110,7 @@ describe("canonical query row adapters", () => {
       click: 100,
       conversion: 10,
       cash_cost: 90,
-    }], "workspace-1");
+    }], workspaceId);
     const platform = canonicalizeQueryRows("account.summary", "platform", [{
       rowCount: 2,
       accountCount: 1,
@@ -123,7 +124,7 @@ describe("canonical query row adapters", () => {
       costSpace: null,
       wakeUv: null,
       potentialUv: null,
-    }], "workspace-1");
+    }], workspaceId);
 
     expect(ka).toEqual([{ ...platform[0], anomalyRows: null }]);
     expect(ka[0]).not.toHaveProperty("cash_cost");
@@ -143,9 +144,9 @@ describe("canonical query row adapters", () => {
       conv: 10,
       task_id: "task-1",
       biz_name: "业务A",
-    }], "trusted-workspace");
+    }], workspaceId);
     const platform = canonicalizeQueryRows("reconcile.account_daily", "platform", [{
-      workspaceId: "trusted-workspace",
+      workspaceId,
       media: "KUAISHOU",
       accountId: "account-1",
       ds: "2026-08-24",
@@ -168,10 +169,10 @@ describe("canonical query row adapters", () => {
       dataAnomaly: false,
       computedAt: null,
       tasks: [{ taskId: "task-1", taskName: null, bizName: "业务A" }],
-    }], "trusted-workspace");
+    }], workspaceId);
 
     expect(ka[0]).toMatchObject({
-      workspaceId: "trusted-workspace",
+      workspaceId,
       media: "KUAISHOU",
       accountId: "account-1",
     });
@@ -196,7 +197,7 @@ describe("canonical query row adapters", () => {
       costSpace: 0,
       wakeUv: 0,
       potentialUv: 0,
-    }], "workspace-1");
+    }], workspaceId);
     expect(row).toMatchObject({
       metrics: {
         ratios: {
