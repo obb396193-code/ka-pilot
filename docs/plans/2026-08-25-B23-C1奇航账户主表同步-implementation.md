@@ -4,6 +4,8 @@
 
 **Goal:** 让奇航 `resource=account` 的可信任务范围安全、幂等地创建/更新 `accounts`，并在同一短事务中先建户再落同页 Raw，使未预置新账户可进入既有 Canonical 主链。
 
+**Status:** 已实现并完成 Codex 自审；代码终态 `ec4934a`，质量与交接见 `docs/evidence/B23-C1-奇航账户主表同步质量报告.md`。未合入 root、未部署、未联调真实奇航。
+
 **Architecture:** Full ETL 与 Backfill Coordinator 仍负责真实奇航 account 分页。Worker 只从任务范围注入 `workspaceId/media`，从上游精确读取 `account_id` 及允许的可选 `account_name/status`；DB Repository 对每个已取回分页执行短事务：校验整页、upsert accounts、append metrics_raw、commit。网络请求不进入 DB 事务；已提交分页可幂等重放，任一页失败时该页 0 写入且不派 canonical/fanout，前页可信结果保留供 Job 重试恢复。
 
 **Tech Stack:** TypeScript、Zod、PostgreSQL 16、node-postgres、Vitest、现有 Qihang Client/ETL Runtime。

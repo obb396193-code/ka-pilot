@@ -74,4 +74,8 @@
   不 push，不开放媒体写。
 - 冻结事务：网络请求完成后按 account 分页开短事务，整页校验→upsert accounts→append Raw→
   commit；该页失败 0 写入，前页可信提交可在 Job 重试时幂等重放，未全部完成不派 canonical/fanout。
-- 状态：进行中。
+- 代码提交：`bdc37cc`、`20636af`、`0807cd4`、`c1e2600`、`ec4934a`。
+- 质量：DB 112、Worker 467 tests passed，2 opt-in skipped；两包 typecheck/lint/audit、coverage 与真实 PG 全绿。
+- 证据：`docs/evidence/B23-C1-奇航账户主表同步质量报告.md`、已更新 B23-C Gap Matrix。
+- 未完成：普通 ETL scheduler/入队、session HTTP composition、四个普通只读 API、真实奇航联调与内网部署。
+- 状态：已实现并完成 Codex 自审；待 root 合流，Claude/arch 后审位保留。
