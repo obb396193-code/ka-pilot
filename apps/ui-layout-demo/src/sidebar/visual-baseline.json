@@ -1,0 +1,17 @@
+{
+  "route": "/sidebar.html",
+  "viewports": [
+    { "width": 1440, "height": 900 },
+    { "width": 1366, "height": 768 }
+  ],
+  "font": "Geist",
+  "sidebarExpandedWidth": 288,
+  "headerHeight": 48,
+  "kpiCount": 4,
+  "requiredSections": ["sidebar", "header", "kpis", "chart", "tabs", "table"],
+  "bossApproved": true,
+  "approvedAt": "2026-08-25",
+  "source": "apps/ui-layout-demo/sidebar.html",
+  "upstream": "shadcn new-york-v4 dashboard-01",
+  "notes": "Geometry is frozen; business fields and API values remain Contract-dependent."
+}
