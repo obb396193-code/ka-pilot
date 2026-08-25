@@ -86,17 +86,18 @@ async function discoverAccountIds(
       fallbackDs: payload.asOfDate,
       fetchedByUserId: payload.fetchedByUserId,
     });
+    if (records.length === 0) break;
+    const total = result.pagination?.totalNum;
+    if (total === null || total === undefined) {
+      progress.currentStep = `validate:account_page_${pageNum}`;
+      throw new Error("Qihang account pagination total is missing");
+    }
     const metadata = accountMetadataFromRawRecords(records);
     progress.currentStep = `persist:account_page_${pageNum}_accounts_and_raw`;
     await dependencies.store.syncAccountMetadataAndRaw(metadata, records);
     progress.rowsIngested += records.length;
     fetchedAccounts += records.length;
     records.forEach((row) => discovered.add(row.accountId));
-    if (records.length === 0) break;
-    const total = result.pagination?.totalNum;
-    if (total === null || total === undefined) {
-      throw new Error("Qihang account pagination total is missing");
-    }
     if (fetchedAccounts >= total) break;
     pageNum += 1;
     if (pageNum > 10_000) throw new Error("Qihang account pagination exceeded safety limit");

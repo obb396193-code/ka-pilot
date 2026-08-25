@@ -773,9 +773,10 @@ describe("ETL handlers", () => {
     }))).rejects.toThrow("pagination total");
     expect(runStore.value.failRun).toHaveBeenCalledWith(
       91,
-      "persist:account_page_1_accounts_and_raw",
+      "validate:account_page_1",
       expect.stringContaining("pagination total"),
     );
+    expect(runStore.value.syncAccountMetadataAndRaw).not.toHaveBeenCalled();
     expect(downstream.enqueue).not.toHaveBeenCalled();
   });
 

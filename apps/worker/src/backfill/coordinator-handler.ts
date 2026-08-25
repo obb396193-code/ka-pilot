@@ -55,16 +55,19 @@ export function createBackfillCoordinatorHandler(dependencies: {
             fallbackDs: batch.dateTo,
             fetchedByUserId: payload.fetchedByUserId,
           });
+          if (records.length === 0) break;
+          const total = result.pagination?.totalNum;
+          if (total === null || total === undefined) {
+            currentStep = `validate:account_page_${pageNum}`;
+            throw new Error("Qihang account pagination total is missing");
+          }
           const metadata = accountMetadataFromRawRecords(records);
           currentStep = `persist:account_page_${pageNum}_accounts_and_raw`;
           await dependencies.store.syncAccountMetadataAndRaw(metadata, records);
           records.forEach((record) => accountIds.add(record.accountId));
           rowsIngested += records.length;
           fetched += records.length;
-          const total = result.pagination?.totalNum;
-          if (records.length === 0 || total === null || total === undefined || fetched >= total) {
-            break;
-          }
+          if (fetched >= total) break;
           pageNum += 1;
           if (pageNum > 10_000) {
             throw new Error("Qihang account pagination exceeded safety limit");

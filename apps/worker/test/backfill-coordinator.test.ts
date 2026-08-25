@@ -153,4 +153,59 @@ describe("backfill coordinator", () => {
       "page transaction failed",
     );
   });
+
+  it("rejects a non-empty account page without pagination before persistence", async () => {
+    const qihang = {
+      query: vi.fn().mockResolvedValue({ rows: [{ account_id: "a-1" }], envelope: {} }),
+    };
+    const batches = {
+      get: vi.fn().mockResolvedValue({
+        id: 9,
+        workspaceId,
+        userId: ownerId,
+        dateFrom: "2026-08-17",
+        dateTo: "2026-08-19",
+        cursorDate: null,
+        status: "running",
+      }),
+      refreshProgress: vi.fn(),
+    };
+    const jobs = { enqueue: vi.fn() };
+    const store = {
+      startRun: vi.fn().mockResolvedValue(33),
+      appendRaw: vi.fn(),
+      syncAccountMetadataAndRaw: vi.fn(),
+      recordObservation: vi.fn(),
+      finishRun: vi.fn(),
+      failRun: vi.fn(),
+    };
+
+    await expect(createBackfillCoordinatorHandler({ qihang, batches, jobs, store })({
+      id: "33333333-3333-4333-8333-333333333335",
+      workspaceId,
+      jobType: "backfill_historical",
+      payload: {
+        workspaceId,
+        backfillId: 9,
+        userId: "qihang-owner",
+        fetchedByUserId: ownerId,
+        pageSize: 50,
+      },
+      priority: JOB_PRIORITY.BACKFILL,
+      credentialOwnerUserId: ownerId,
+      status: "leased",
+      leaseUntil: null,
+      leaseToken: "44444444-4444-4444-8444-444444444446",
+      attempts: 1,
+      maxAttempts: 3,
+      runAfter: new Date(),
+    })).rejects.toThrow("pagination total");
+    expect(store.syncAccountMetadataAndRaw).not.toHaveBeenCalled();
+    expect(jobs.enqueue).not.toHaveBeenCalled();
+    expect(store.failRun).toHaveBeenCalledWith(
+      33,
+      "validate:account_page_1",
+      "Qihang account pagination total is missing",
+    );
+  });
 });
