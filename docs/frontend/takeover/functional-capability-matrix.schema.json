@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ka-pilot.local/schemas/frontend-capability-matrix.json",
+  "title": "KA Pilot frontend capability matrix",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "capability_id",
+      "route",
+      "prd_status",
+      "contract_status",
+      "root_evidence",
+      "states",
+      "old_non_visual_code",
+      "visual_source",
+      "implementation_status",
+      "boss_visual_signoff",
+      "root_function_signoff"
+    ],
+    "properties": {
+      "capability_id": { "type": "string", "minLength": 1 },
+      "route": { "type": "string", "minLength": 1 },
+      "prd_status": { "enum": ["frozen", "candidate", "not-planned"] },
+      "contract_status": { "enum": ["ready", "blocked", "missing"] },
+      "root_evidence": { "type": "string", "minLength": 1 },
+      "states": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": { "type": "string", "minLength": 1 }
+      },
+      "old_non_visual_code": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": { "type": "string", "minLength": 1 }
+      },
+      "visual_source": { "type": "string", "minLength": 1 },
+      "implementation_status": { "enum": ["not-started", "in-progress", "gated", "approved"] },
+      "boss_visual_signoff": { "type": ["string", "null"] },
+      "root_function_signoff": { "type": ["string", "null"] }
+    }
+  }
+}
