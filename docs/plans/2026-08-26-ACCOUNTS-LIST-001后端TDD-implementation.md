@@ -1,9 +1,9 @@
 # ACCOUNTS-LIST-001 后端 TDD 实施记录
 
-> 日期：2026-08-26  
-> 分支：`codex/accounts-list-001-backend`  
-> 共同基线：`d4402e1`（同时包含 `22467ae` 冻结 Contract 与 `d1a184d` C2 授权修复）  
-> 代码提交：`3a7470f`
+> 日期：2026-08-26
+> 分支：`codex/accounts-list-001-backend`
+> 共同基线：`d4402e1`（同时包含 `22467ae` 冻结 Contract 与 `d1a184d` C2 授权修复）
+> 代码提交：`3a7470f`，R1 修复：`1131f0d`
 
 ## 范围
 
@@ -17,7 +17,7 @@
 ## TDD 顺序
 
 1. Domain Contract/fixtures 先红后绿；
-2. 真实 PG Repository 6 组反例先写入；Docker engine 在执行期持续 `EOF`，测试未删除、未 skip；
+2. 真实 PG Repository 7 组反例先写入；Docker engine 在执行期持续 `EOF`，测试未删除、未 skip；
 3. 增加不依赖 PG 的 transaction/mapping 边界测试，不能替代真实 PG；
 4. Service 授权、RatioValue、dataState、恶意 Repository 测试先红后绿；
 5. HTTP query、401/403、写路由 405、502/503/504/500、exact body limit 回归；
@@ -32,8 +32,17 @@
 - `realCpa` 由 Worker 使用 `safeDivide` 生成；分母为 0 时保留 `infinite/undefined` 状态。
 - dataState 优先级：`partial > stale > empty > ready`；余额缺失不强制整页 partial。
 
+## R1 审查修复
+
+- 以 `task_accounts` 为关联事实，改用 LEFT JOIN；任务主表缺行时保留 taskId，taskName 返回 null。
+- 新增 `AccountListRepositoryContractError`；DB present-invalid 数值映射为 502，上游连接/事务错误仍为 500。
+- HTTP auth 与 AccountListService 在触达 Repository 前统一校验 workspace-local user UUID。
+- SQL 使用 C collation 提供确定性输入，Repository 再按 Domain 的 JS comparator 规范排序并拒绝重复 taskId。
+- `metrics_complete` 要求业务日指标存在且 `computed_at` 非空；非空结果缺 freshness 只能 stale，不能 ready。
+- 新增真实 PG 缺任务主表关系和 numeric NaN 反例；Docker 未恢复，测试仍保留为硬门禁。
+
 ## 未完成外部门禁
 
 - Docker Desktop 官方 restart 后 Docker API 仍 `EOF`，`127.0.0.1:55432` 无 PostgreSQL 响应；
-- `packages/db/test/account-list-repository.test.ts` 的 6 个真实 PG 用例因此尚未通过；
+- `packages/db/test/account-list-repository.test.ts` 的 7 个真实 PG 用例因此尚未通过；
 - 恢复后必须先跑该文件，再跑 DB 全量真实 PG，才能升级为 `local_pg_verified` 或交 root 合流。

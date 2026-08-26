@@ -141,3 +141,11 @@
 - 证据：`docs/evidence/ACCOUNTS-LIST-001-后端质量报告.md`。
 - 状态：`implemented + non_pg_verified + pg_blocked`；root 可先代码审查，恢复 PG 后必须补定向与 DB 全量，
   通过前不建议合流/通知前端按“后端已完成”接入。未 push、未改前端、未开放媒体写。
+
+#### ACCOUNTS-LIST-001 R1 审查退回修复
+
+- 修复 SHA：`1131f0d`。
+- 已修：缺任务主表关系不再丢失；DB 非法数值为 typed contract error→502；userId UUID 在 HTTP/Service 前置拒绝；linkedTasks 单一 canonical 排序；缺 computed_at 不得 ready。
+- 新增反例：taskName=null 关联保留、numeric NaN、非法 userId 403、排序规范化、缺 freshness stale/伪 ready 拒绝。
+- 门禁：Domain 464、Worker 非 PG 530、DB 纯逻辑 20；三包 typecheck/lint/audit 全绿；Worker 定向覆盖率 98.89% statements / 89.65% branches，DB 95% / 69.23%。
+- 阻断未变：Docker daemon 仍 `EOF`，7 个账户真实 PG 测试未通过；不得合流或通知前端按已完成接入。
