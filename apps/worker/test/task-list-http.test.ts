@@ -15,6 +15,7 @@ import {
   TaskListSourceError,
 } from "../src/tasks/task-list-service.js";
 import { readySource } from "./canonical-query-fixtures.js";
+import { WorkItemListService } from "../src/work-items/work-item-list-service.js";
 
 const internalToken = "fixture-task-list-token-that-is-long-enough";
 const workspaceId = "00000000-0000-4000-8000-000000000024";
@@ -99,6 +100,23 @@ function accountListService(): AccountListService {
   });
 }
 
+function workItemListService(): WorkItemListService {
+  return new WorkItemListService({
+    repository: {
+      list: async (query) => ({
+        rows: [],
+        page: query.page ?? 1,
+        pageSize: query.pageSize ?? 20,
+        total: 0,
+        accountItemCount: 0,
+        dataAsOf: null,
+        coverageComplete: true,
+        initialFullComplete: false,
+      }),
+    },
+  });
+}
+
 describe("TASK-LIST-001 HTTP composition", () => {
   const servers: ReturnType<typeof createDataApiServer>[] = [];
 
@@ -127,6 +145,7 @@ describe("TASK-LIST-001 HTTP composition", () => {
       detailService: detailService(),
       taskListService,
       accountListService: accountListService(),
+      workItemListService: workItemListService(),
       internalToken,
       ...(maxResponseBytes === undefined ? {} : { maxResponseBytes }),
     });

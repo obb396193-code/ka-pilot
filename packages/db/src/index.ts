@@ -23,5 +23,6 @@ export * from "./ad-hourly-metrics-repository.js";
 export * from "./auth-repository.js";
 export * from "./task-list-repository.js";
 export * from "./account-list-repository.js";
+export * from "./work-item-list-repository.js";
 export * from "./workspace-sync-repository.js";
 export * from "./workspace-sync-readiness.js";
