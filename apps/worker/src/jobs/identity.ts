@@ -57,6 +57,7 @@ function assertScheduledAccountScope(
     .sort();
   const actual = [...accountIds].sort();
   if (
+    expected.length === 0 ||
     expected.length !== actual.length ||
     expected.some((accountId, index) => accountId !== actual[index])
   ) {

@@ -22,7 +22,7 @@ function snapshot(overrides: Partial<WorkspaceSyncTickSnapshot["candidates"][num
       membershipActive: true,
       membershipRole: "optimizer",
       hasQihangIdentity: true,
-      allowedAccounts: [],
+      allowedAccounts: [{ media: "KUAISHOU", accountId: "a-1", accessLevel: "read" }],
       hasSuccessfulFull: false,
       ...overrides,
     }],
@@ -68,13 +68,13 @@ describe("WorkspaceSyncTickService", () => {
         asOfDate: "2026-08-25",
         businessDate: "2026-08-25",
         initiatorUserId: userId,
-        accountIds: [],
+        accountIds: ["a-1"],
         authorizationSnapshot: {
           workspaceId,
           identityId,
           userId,
           role: "optimizer",
-          allowedAccounts: [],
+          allowedAccounts: [{ media: "KUAISHOU", accountId: "a-1", accessLevel: "read" }],
         },
       },
     });
@@ -106,9 +106,8 @@ describe("WorkspaceSyncTickService", () => {
     });
   });
 
-  it("creates terminal blocked_auth jobs for invalid identities and missing incr scope", async () => {
+  it("creates terminal blocked_auth jobs for invalid identities", async () => {
     const inactive = setup(snapshot({ identityActive: false }));
-    const missingScope = setup(snapshot({ hasSuccessfulFull: true, allowedAccounts: [] }));
 
     const first = await inactive.service.execute({
       workspaceId,
@@ -116,13 +115,6 @@ describe("WorkspaceSyncTickService", () => {
       mode: "auto",
       triggeredAt: "2026-08-25T20:00:00Z",
     });
-    const second = await missingScope.service.execute({
-      workspaceId,
-      media: "KUAISHOU",
-      mode: "incr",
-      triggeredAt: "2026-08-25T20:00:00Z",
-    });
-
     expect(first.jobs[0]).toMatchObject({
       status: "blocked_auth",
       reason: "IDENTITY_INACTIVE",
@@ -131,7 +123,31 @@ describe("WorkspaceSyncTickService", () => {
       status: "blocked_auth",
       reason: "IDENTITY_INACTIVE",
     });
-    expect(second.jobs[0]).toMatchObject({
+  });
+
+  it.each([
+    { mode: "auto" as const, hasSuccessfulFull: false, jobType: "etl_full" },
+    { mode: "full" as const, hasSuccessfulFull: false, jobType: "etl_full" },
+    { mode: "incr" as const, hasSuccessfulFull: true, jobType: "etl_incr" },
+  ])("blocks $mode sync when this media has no explicit grant", async ({
+    mode,
+    hasSuccessfulFull,
+    jobType,
+  }) => {
+    const missingScope = setup(snapshot({ hasSuccessfulFull, allowedAccounts: [] }));
+    const result = await missingScope.service.execute({
+      workspaceId,
+      media: "KUAISHOU",
+      mode,
+      triggeredAt: "2026-08-25T20:00:00Z",
+    });
+
+    expect(result.jobs[0]).toMatchObject({
+      jobType,
+      status: "blocked_auth",
+      reason: "ACCOUNT_SCOPE_MISSING",
+    });
+    expect(missingScope.persisted[0]?.state).toEqual({
       status: "blocked_auth",
       reason: "ACCOUNT_SCOPE_MISSING",
     });
@@ -141,6 +157,7 @@ describe("WorkspaceSyncTickService", () => {
       status: "blocked_auth",
       reason: "ACCOUNT_SCOPE_MISSING",
     });
+    expect(missingScope.persisted[0]?.job.payload).not.toHaveProperty("accountIds");
   });
 
   it("blocks explicit incremental sync until a full sync has succeeded", async () => {

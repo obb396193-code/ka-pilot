@@ -64,6 +64,45 @@ describe("workspace sync scheduler with PostgreSQL", () => {
     await pool.end();
   });
 
+  it("persists blocked_auth and no executable scope when the user has no grant", async () => {
+    const result = await service.execute({
+      workspaceId,
+      media: "KUAISHOU",
+      mode: "auto",
+      triggeredAt: "2026-08-25T20:00:00Z",
+    });
+    expect(result.jobs[0]).toMatchObject({
+      jobType: "etl_full",
+      status: "blocked_auth",
+      reason: "ACCOUNT_SCOPE_MISSING",
+    });
+    const stored = await pool.query<{
+      status: string;
+      payload: Record<string, unknown>;
+    }>("SELECT status, payload FROM jobs WHERE id = $1", [result.jobs[0]!.jobId]);
+    expect(stored.rows[0]?.status).toBe("blocked_auth");
+    expect(stored.rows[0]?.payload).not.toHaveProperty("accountIds");
+    expect(stored.rows[0]?.payload.authorizationSnapshot).toEqual({
+      workspaceId,
+      userId,
+      status: "blocked_auth",
+      reason: "ACCOUNT_SCOPE_MISSING",
+    });
+
+    await pool.query("DELETE FROM jobs WHERE id = $1", [result.jobs[0]!.jobId]);
+    await pool.query(
+      `INSERT INTO accounts (workspace_id, media, account_id)
+       VALUES ($1, 'KUAISHOU', 'account-1')`,
+      [workspaceId],
+    );
+    await pool.query(
+      `INSERT INTO account_access_grants (
+         workspace_id, identity_id, media, account_id, access_level
+       ) VALUES ($1, $2, 'KUAISHOU', 'account-1', 'read')`,
+      [workspaceId, identityId],
+    );
+  });
+
   it("makes concurrent first-full ticks one job and keeps retries on the original owner", async () => {
     const request = {
       workspaceId,
@@ -120,18 +159,6 @@ describe("workspace sync scheduler with PostgreSQL", () => {
        ) VALUES ($1, $2, 'full', '{}'::jsonb, now(), now(), 'done', 1)`,
       [workspaceId, first.rows[0]!.id],
     );
-    await pool.query(
-      `INSERT INTO accounts (workspace_id, media, account_id)
-       VALUES ($1, 'KUAISHOU', 'account-1')`,
-      [workspaceId],
-    );
-    await pool.query(
-      `INSERT INTO account_access_grants (
-         workspace_id, identity_id, media, account_id, access_level
-       ) VALUES ($1, $2, 'KUAISHOU', 'account-1', 'read')`,
-      [workspaceId, identityId],
-    );
-
     const result = await service.execute({
       workspaceId,
       media: "KUAISHOU",

@@ -52,12 +52,12 @@ function planJob(
         : "etl_full";
   const authReason = candidateBlockedReason(snapshot, candidate);
   if (authReason !== null) return { jobType, reason: authReason };
+  const mediaAccounts = candidate.allowedAccounts.filter((account) => account.media === media);
+  if (mediaAccounts.length === 0) {
+    return { jobType, reason: "ACCOUNT_SCOPE_MISSING" };
+  }
   if (jobType === "etl_incr" && !candidate.hasSuccessfulFull) {
     return { jobType, reason: "INITIAL_FULL_REQUIRED" };
-  }
-  const mediaAccounts = candidate.allowedAccounts.filter((account) => account.media === media);
-  if (jobType === "etl_incr" && mediaAccounts.length === 0) {
-    return { jobType, reason: "ACCOUNT_SCOPE_MISSING" };
   }
   return { jobType, reason: null };
 }

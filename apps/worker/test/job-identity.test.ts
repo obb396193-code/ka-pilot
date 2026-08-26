@@ -139,9 +139,13 @@ describe("withQihangIdentity", () => {
     changedOwner.payload.initiatorUserId = "66666666-6666-4666-8666-666666666666";
     const changedScope = scheduledJob();
     changedScope.payload.accountIds = ["account-2"];
+    const emptyScope = scheduledJob();
+    emptyScope.payload.accountIds = [];
+    emptyScope.payload.authorizationSnapshot.allowedAccounts = [];
 
     await expect(wrapped(changedOwner)).rejects.toBeInstanceOf(BlockedAuthError);
     await expect(wrapped(changedScope)).rejects.toBeInstanceOf(BlockedAuthError);
+    await expect(wrapped(emptyScope)).rejects.toBeInstanceOf(BlockedAuthError);
     expect(credentials.resolveScheduledQihangUserId).not.toHaveBeenCalled();
   });
 });
