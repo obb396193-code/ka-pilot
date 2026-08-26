@@ -8,6 +8,7 @@ import {
   type ServerAuthContext,
 } from "./auth-context.ts"
 import { readBoundedResponseBody } from "./bounded-response.ts"
+import { requestIdSchema } from "./contracts.ts"
 import {
   taskListRequestSchema,
   taskListResponseSchema,
@@ -143,6 +144,17 @@ function timeoutCause(cause: unknown): boolean {
   return cause instanceof DOMException && (cause.name === "AbortError" || cause.name === "TimeoutError")
 }
 
+function hasCorrelatedUpstreamRequestId(upstream: Response, requestId: string): boolean {
+  const upstreamRequestId = upstream.headers.get("x-request-id")
+  return upstreamRequestId !== null &&
+    requestIdSchema.safeParse(upstreamRequestId).success &&
+    upstreamRequestId === requestId
+}
+
+function hasCorrelatedBodyRequestId(response: TaskListResponse, requestId: string): boolean {
+  return (response.ok ? response.meta.requestId : response.error.requestId) === requestId
+}
+
 export async function handleTaskListRequest(request: Request, dependencies: Dependencies): Promise<TaskListBffResult> {
   const requestId = (dependencies.requestId ?? randomUUID)()
   let query: TaskListRequest
@@ -188,6 +200,9 @@ export async function handleTaskListRequest(request: Request, dependencies: Depe
       cache: "no-store",
       signal: AbortSignal.timeout(10_000),
     })
+    if (!hasCorrelatedUpstreamRequestId(upstream, requestId)) {
+      return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Task list response requestId did not match the BFF request", false, requestId) }
+    }
     const bytes = await readBoundedResponseBody(upstream)
     if (bytes === null) {
       return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Task list response reached the 16 MB truncation boundary", false, requestId) }
@@ -201,6 +216,9 @@ export async function handleTaskListRequest(request: Request, dependencies: Depe
     const parsed = taskListResponseSchema.safeParse(payload)
     if (!parsed.success) {
       return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Task list response did not match the canonical contract", false, requestId) }
+    }
+    if (!hasCorrelatedBodyRequestId(parsed.data, requestId)) {
+      return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Task list response requestId did not match the BFF request", false, requestId) }
     }
     if (upstream.status !== expectedStatus(parsed.data)) {
       return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Task list response did not match the canonical contract", false, requestId) }
