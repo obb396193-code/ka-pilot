@@ -24,7 +24,7 @@ function authHeaders(token = internalToken): Record<string, string> {
   return {
     authorization: `Bearer ${token}`,
     "x-ka-workspace-id": workspaceId,
-    "x-ka-user-id": "workspace-user",
+    "x-ka-user-id": "00000000-0000-4000-8000-000000000001",
     "x-ka-account-scope": Buffer.from(JSON.stringify(allowedAccounts)).toString("base64url"),
   };
 }

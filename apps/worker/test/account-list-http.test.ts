@@ -3,7 +3,10 @@ import type { AddressInfo } from "node:net";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import type { AccountListRepositoryResult } from "@ka/db";
+import {
+  AccountListRepositoryContractError,
+  type AccountListRepositoryResult,
+} from "@ka/db";
 
 import { AccountListService, AccountListSourceError } from "../src/accounts/account-list-service.js";
 import { createDataApiServer } from "../src/data/http-server.js";
@@ -15,13 +18,14 @@ import { readySource } from "./canonical-query-fixtures.js";
 
 const internalToken = "fixture-account-list-token-that-is-long-enough";
 const workspaceId = "00000000-0000-4000-8000-000000000024";
+const userId = "00000000-0000-4000-8000-000000000001";
 const allowedAccounts = [{ media: "KUAISHOU", accountId: "account-1" }];
 
 function authHeaders(token = internalToken): Record<string, string> {
   return {
     authorization: `Bearer ${token}`,
     "x-ka-workspace-id": workspaceId,
-    "x-ka-user-id": "workspace-user",
+    "x-ka-user-id": userId,
     "x-ka-account-scope": Buffer.from(JSON.stringify(allowedAccounts)).toString("base64url"),
   };
 }
@@ -143,6 +147,9 @@ describe("ACCOUNTS-LIST-001 HTTP composition", () => {
     expect((await fetch(`${await start()}/api/v1/accounts`, {
       headers: authHeaders("wrong-account-list-token-that-is-long-enough"),
     })).status).toBe(403);
+    expect((await fetch(`${await start()}/api/v1/accounts`, {
+      headers: { ...authHeaders(), "x-ka-user-id": "workspace-user" },
+    })).status).toBe(403);
     const baseUrl = await start();
     for (const method of ["POST", "PATCH", "DELETE"]) {
       const response = await fetch(`${baseUrl}/api/v1/accounts`, { method, headers: authHeaders() });
@@ -152,6 +159,7 @@ describe("ACCOUNTS-LIST-001 HTTP composition", () => {
 
   it.each([
     [new AccountListSourceError("UPSTREAM_INVALID_RESPONSE", "bad", false), 502, "UPSTREAM_INVALID_RESPONSE"],
+    [new AccountListRepositoryContractError("NaN"), 502, "UPSTREAM_INVALID_RESPONSE"],
     [new AccountListSourceError("SOURCE_UNAVAILABLE", "offline", true), 503, "SOURCE_UNAVAILABLE"],
     [new AccountListSourceError("UPSTREAM_TIMEOUT", "timeout", true), 504, "UPSTREAM_TIMEOUT"],
     [new Error("postgres://secret select raw"), 500, "INTERNAL_ERROR"],
@@ -171,7 +179,7 @@ describe("ACCOUNTS-LIST-001 HTTP composition", () => {
       now: () => new Date("2026-08-25T04:00:00.000Z"),
     });
     const expected = await service.execute({}, {
-      workspaceId, userId: "workspace-user", allowedAccounts,
+      workspaceId, userId, allowedAccounts,
     }, "account-exact-limit");
     const exactBytes = Buffer.byteLength(JSON.stringify(expected));
     const response = await fetch(`${await start(accountResult(), exactBytes)}/api/v1/accounts`, {
