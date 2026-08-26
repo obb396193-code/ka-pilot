@@ -25,6 +25,14 @@ import {
   taskListHttpStatus,
 } from "../tasks/task-list-http.js";
 import type { TaskListService } from "../tasks/task-list-service.js";
+import {
+  parseWorkItemListSearch,
+  WORK_ITEM_LIST_HTTP_PATH,
+  workItemListErrorBody,
+  WorkItemListHttpInputError,
+  workItemListHttpStatus,
+} from "../work-items/work-item-list-http.js";
+import type { WorkItemListService } from "../work-items/work-item-list-service.js";
 
 export const DEFAULT_DATA_API_MAX_REQUEST_BYTES = 1024 * 1024;
 export const DEFAULT_DATA_API_MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
@@ -38,6 +46,7 @@ export interface DataApiServerOptions {
   service: DataQueryService;
   detailService: ReadDetailService;
   taskListService: TaskListService;
+  workItemListService: WorkItemListService;
   internalToken: string;
   maxRequestBytes?: number;
   maxResponseBytes?: number;
@@ -96,7 +105,10 @@ function authenticate(
   try {
     const decoded = Buffer.from(encodedScope, "base64url").toString("utf8");
     const allowedAccounts = accountScopeSchema.parse(JSON.parse(decoded) as unknown);
-    if (!z.string().uuid().safeParse(workspaceId).success || userId.trim() === "") {
+    if (
+      !z.string().uuid().safeParse(workspaceId).success ||
+      !z.string().uuid().safeParse(userId).success
+    ) {
       return { auth: null, forbidden: true };
     }
     return { auth: { workspaceId, userId, allowedAccounts }, forbidden: false };
@@ -210,10 +222,12 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       }
       const resolvedDetailRoute = detailRoute(url.pathname);
       const isTaskListRoute = url.pathname === TASK_LIST_HTTP_PATH;
+      const isWorkItemListRoute = url.pathname === WORK_ITEM_LIST_HTTP_PATH;
       if (
         url.pathname !== DATA_QUERY_HTTP_PATH &&
         resolvedDetailRoute === null &&
-        !isTaskListRoute
+        !isTaskListRoute &&
+        !isWorkItemListRoute
       ) {
         sendJson(
           response,
@@ -234,6 +248,11 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         return;
       }
       if (authentication.auth === null) {
+        if (isWorkItemListRoute) {
+          const result = await options.workItemListService.execute({}, null, requestId);
+          sendJson(response, workItemListHttpStatus(result), result, requestId);
+          return;
+        }
         if (isTaskListRoute) {
           const result = await options.taskListService.execute({}, null, requestId);
           sendJson(response, taskListHttpStatus(result), result, requestId);
@@ -255,6 +274,35 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           requestId,
         });
         sendJson(response, result.status, result.body, requestId);
+        return;
+      }
+      if (isWorkItemListRoute) {
+        if ((request.method ?? "").toUpperCase() !== "GET") {
+          sendJson(
+            response,
+            405,
+            workItemListErrorBody("INVALID_REQUEST", "Only GET is supported", requestId),
+            requestId,
+          );
+          return;
+        }
+        const result = await options.workItemListService.execute(
+          parseWorkItemListSearch(url.searchParams),
+          authentication.auth,
+          requestId,
+        );
+        sendBoundedJson(
+          response,
+          workItemListHttpStatus(result),
+          result,
+          requestId,
+          maxResponseBytes,
+          () => workItemListErrorBody(
+            "SOURCE_TRUNCATED",
+            "Work item list response reached the configured body limit",
+            requestId,
+          ),
+        );
         return;
       }
       if (isTaskListRoute) {
@@ -355,6 +403,19 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           ),
       );
     } catch (error) {
+      if (error instanceof WorkItemListHttpInputError) {
+        sendJson(
+          response,
+          400,
+          workItemListErrorBody(
+            "INVALID_REQUEST",
+            "Invalid work item list request",
+            requestId,
+          ),
+          requestId,
+        );
+        return;
+      }
       if (error instanceof TaskListHttpInputError) {
         sendJson(
           response,

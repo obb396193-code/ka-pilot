@@ -3,6 +3,7 @@ import {
   createPool,
   SemanticQueryRepository,
   TaskListRepository,
+  WorkItemListRepository,
   WorkItemRepository,
 } from "@ka/db";
 
@@ -14,6 +15,7 @@ import { createDataQueryRegistry } from "./data/query-registry.js";
 import { DataQueryService } from "./data/query-service.js";
 import { ReadDetailService } from "./data/read-detail-service.js";
 import { TaskListService } from "./tasks/task-list-service.js";
+import { WorkItemListService } from "./work-items/work-item-list-service.js";
 
 async function main(): Promise<void> {
   const config = loadDataApiConfig(process.env);
@@ -31,6 +33,9 @@ async function main(): Promise<void> {
     }),
     taskListService: new TaskListService({
       repository: new TaskListRepository(pool),
+    }),
+    workItemListService: new WorkItemListService({
+      repository: new WorkItemListRepository(pool),
     }),
     internalToken: config.internalToken,
     maxRequestBytes: config.maxRequestBytes,

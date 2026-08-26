@@ -12,12 +12,13 @@ import { ReadDetailService } from "../src/data/read-detail-service.js";
 import { DataQueryService, type DataSourceQueryPort } from "../src/data/query-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
 import { TaskListService } from "../src/tasks/task-list-service.js";
+import { WorkItemListService } from "../src/work-items/work-item-list-service.js";
 import { canonicalRow, readySource } from "./canonical-query-fixtures.js";
 
 const internalToken = "fixture-internal-token-that-is-long-enough";
 const auth = {
   workspaceId: "00000000-0000-4000-8000-000000000024",
-  userId: "user-fixture",
+  userId: "00000000-0000-4000-8000-000000000001",
   allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
 };
 
@@ -61,6 +62,23 @@ function emptyTaskListService(): TaskListService {
   });
 }
 
+function emptyWorkItemListService(): WorkItemListService {
+  return new WorkItemListService({
+    repository: {
+      list: async (query) => ({
+        rows: [],
+        page: query.page ?? 1,
+        pageSize: query.pageSize ?? 20,
+        total: 0,
+        accountItemCount: 0,
+        dataAsOf: null,
+        coverageComplete: true,
+        initialFullComplete: false,
+      }),
+    },
+  });
+}
+
 describe("data API HTTP composition", () => {
   const servers: ReturnType<typeof createDataApiServer>[] = [];
   afterEach(async () => {
@@ -94,6 +112,7 @@ describe("data API HTTP composition", () => {
       service,
       detailService: options.detailService ?? emptyDetailService(),
       taskListService: emptyTaskListService(),
+      workItemListService: emptyWorkItemListService(),
       internalToken,
       ...(options.maxResponseBytes === undefined
         ? {}
@@ -206,6 +225,7 @@ describe("data API HTTP composition", () => {
       service,
       detailService: emptyDetailService(),
       taskListService: emptyTaskListService(),
+      workItemListService: emptyWorkItemListService(),
       internalToken,
       maxRequestBytes: 8,
     });
@@ -231,12 +251,14 @@ describe("data API HTTP composition", () => {
       service,
       detailService: emptyDetailService(),
       taskListService: emptyTaskListService(),
+      workItemListService: emptyWorkItemListService(),
       internalToken: "short",
     })).toThrow(/32/);
     expect(() => createDataApiServer({
       service,
       detailService: emptyDetailService(),
       taskListService: emptyTaskListService(),
+      workItemListService: emptyWorkItemListService(),
       internalToken,
       maxRequestBytes: 0,
     })).toThrow(/positive integer/);
