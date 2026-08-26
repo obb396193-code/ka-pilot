@@ -6,7 +6,7 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13` → `be/b14` → `codex/b15-material-teardown-semantics` → `codex/b22-idealab-asr-provider` → `codex/dual-data-backend` → `codex/b23-auth-core` → `codex/b23-c1-account-sync` → `codex/b23-c2-workspace-scheduler`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`；B18 素材 Brief 回测就绪代码终态：`54f5223`；B19 月度结算单代码终态：`c2fed1f`；B20 公共资产治理代码终态：`d22a5d8`；B21 未触发诊断代码终态：`f985923`；B22 IdeaLab ASR Provider 代码终态：`b60e09e`；双数据 R3/只读详情代码终态：`391a5a2`；B23-A 授权内核代码终态：`72228b4`；B23-C1 奇航账户主表同步代码终态：`ec4934a`；B23-C2 同步调度代码终态：`0ec9c99`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`；B18 素材 Brief 回测就绪代码终态：`54f5223`；B19 月度结算单代码终态：`c2fed1f`；B20 公共资产治理代码终态：`d22a5d8`；B21 未触发诊断代码终态：`f985923`；B22 IdeaLab ASR Provider 代码终态：`b60e09e`；双数据 R3/只读详情代码终态：`391a5a2`；B23-A 授权内核代码终态：`72228b4`；B23-C1 奇航账户主表同步代码终态：`ec4934a`；B23-C2 同步调度代码终态：`d1a184d`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -59,7 +59,7 @@
 | 双数据 R3 + 只读详情 | `391a5a2`（代码终态） | 待 root 集成与 Claude/arch 审查 P-032 | 账户三键/tuple scope、复合 FK、六 Query canonical rows、真实 lineage/coverage、详情 scope migration、两个只读 GET、统一 16MB 响应边界 | Domain 418 / DB 97 / Worker 444；2 opt-in skipped | `docs/evidence/R3-双数据与只读详情质量报告.md`、P-032 |
 | B23-A 多租户授权内核 | `72228b4`（代码终态） | 待 root 集成与 Claude/arch 审查 P-033 | 身份四表、workspace-local actor 绑定、token hash Repository、approvedAuthContext、账户三字段 grant、撤销/过期 fail closed | Domain 433 / DB 107 / Worker 453；2 opt-in skipped | `docs/evidence/B23-A-代码质量报告.md`、`docs/evidence/B23-C-奇航只读链Gap矩阵.md`、P-033 |
 | B23-C1 奇航账户主表同步 | `ec4934a`（代码终态） | 待 root 合流与 Claude/arch 后审 P-034 | 受信范围 metadata Adapter、accounts+Raw 每页短事务、Full/Backfill/Runtime 接线、pagination 提交前 fail-closed、新户纵切片与重放隔离 | DB 112 / Worker 467；2 opt-in skipped | `docs/evidence/B23-C1-奇航账户主表同步质量报告.md`、`docs/evidence/B23-C-奇航只读链Gap矩阵.md`、P-034 |
-| B23-C2 Workspace 同步调度 | `0ec9c99`（代码终态）、`02783a9`（测试终态） | 待 root 合流与 Claude/arch 后审 P-036 | active 身份候选、不可变授权快照、确定性并发幂等、blocked_auth、重试 owner 复核、one-shot CLI、首次 full ready 门 | Domain 455 / DB 139 / Worker 505；2 opt-in skipped | `docs/evidence/B23-C2-普通Workspace同步调度内核质量报告.md`、`docs/evidence/B23-C2-账户与工作项列表Gap矩阵.md`、P-036 |
+| B23-C2 Workspace 同步调度 | `d1a184d`（P1 修复后代码终态） | 待 root 合流与 Claude/arch 后审 P-036 | active 身份候选、显式 grant、不可变授权快照、确定性并发幂等、blocked_auth、重试 owner 复核、Full 上游/落库 scope guard、one-shot CLI、首次 full ready 门 | Domain 455 / DB 139 / Worker 510；2 opt-in skipped | `docs/evidence/B23-C2-普通Workspace同步调度内核质量报告.md`、P-036 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
 

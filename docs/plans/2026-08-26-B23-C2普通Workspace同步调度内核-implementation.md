@@ -29,8 +29,8 @@
   active user。可执行 Job 的 initiator 与 credential owner 固定为同一 workspace-local user。
 - `qihang_user_id` 只在 Worker 执行前由 DB 解析并注入内存，不写 Job payload、不输出 CLI、
   不写日志。重试继续使用原 Job 的 credential owner 和授权快照。
-- 首次 full 可以借上游奇航 userId 自身权限发现账户；后续 incr 必须使用冻结的显式
-  `(media, account_id)` grant，不允许空 scope 退化成全量查询。
+- 普通 workspace 的 full/incr 都必须使用冻结的显式 `(media, account_id)` grant；无 grant
+  固定进入 `blocked_auth/ACCOUNT_SCOPE_MISSING`，不得借奇航个人权限做全量发现。
 - 同 `(workspace,user,media,businessDate,jobType)` 生成确定性 Job ID；并发 tick 只保留一条。
 - cadence（频率）由外部 scheduler/config 决定；CLI 每次只执行一个确定性 tick 后退出。
 - 真实媒体写、Multica/OS/ChangeSet 执行仍关闭；不修改 `apps/web`、`apps/ui-layout-demo`。
@@ -81,6 +81,8 @@
 - migration 009、`WorkspaceSyncRepository`、`enqueueScheduled`、执行前身份复核与内部 CLI 已完成。
 - 普通任务列表在当前用户、当前授权媒体首次 full 成功前固定返回 `partial`；共享查询
   `loadWorkspaceSyncReadiness()` 可供后续账户池和工作项列表在其自身只读快照内复用。
+- root 审查发现 Full 空 grant 会触发无过滤账户发现后，`d1a184d` 增加三道 fail-closed：调度
+  阻断空 scope、执行前拒绝空授权快照、Full 请求携带批准 `accountIds` 并在持久化前拒绝越界行。
 - cadence 仍由部署 config / 外部 scheduler 触发；当前没有内置 cron，没有浏览器写路由。
 - 完整质量证据见 `docs/evidence/B23-C2-普通Workspace同步调度内核质量报告.md`；后续列表
   Contract 缺口见 `docs/evidence/B23-C2-账户与工作项列表Gap矩阵.md`。

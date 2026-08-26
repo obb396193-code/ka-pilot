@@ -31,6 +31,7 @@
 | `eb3d4df` | migration/共享库测试收口 |
 | `0ec9c99` | 抽取可复用 workspace sync readiness |
 | `02783a9` | readiness 非法 actor、空响应、非法/重复 tuple 失败路径测试 |
+| `d1a184d` | P1：空 grant 阻断、执行前空快照阻断、Full 越界账户落库阻断 |
 
 ## 验证结果
 
@@ -38,15 +39,19 @@
 |---|---:|---|---|---|---|
 | Domain | 38 files / 455 passed | 通过 | 通过 | 0 vulnerabilities | 96.53 / 87.41 / 99.58 / 96.53 |
 | DB | 25 files / 139 passed（其中 Repository/migration 为真实 PostgreSQL） | 通过 | 通过 | 0 vulnerabilities | 93.58 / 78.65 / 97.11 / 93.58 |
-| Worker | 68 files / 505 passed，2 个既有外部凭证 opt-in skipped | 通过 | 通过 | 0 vulnerabilities | 92.47 / 82.27 / 96.36 / 92.47 |
+| Worker | 68 files / 510 passed，2 个既有外部凭证 opt-in skipped | 通过 | 通过 | 0 vulnerabilities | 92.49 / 82.35 / 96.36 / 92.49 |
 
 真实 PG 覆盖：migration up/down/up、inactive workspace/user/identity/membership、无奇航身份、
 跨 workspace、同号跨 media、空 grant、重复与并发 tick、首次 full 前 ready 门、重试 credential
 owner 不漂移。测试使用本机临时数据库；不包含真实奇航网络调用。
 
+P1 审查修复新增真实 PG 空 grant 反例，并补 Full/Auto/Incr Service 三态、执行前空授权快照、
+上游忽略 `accountIds` 返回越界账户时 0 metadata/Raw 持久化和 0 downstream enqueue。普通
+workspace 的 full/incr 不再存在“发现模式”；legacy 非调度 ETL 的既有行为未在本批扩大。
+
 覆盖率首次并行执行时，Worker 的 PG 用例与 DB coverage 同时争抢 migration lock，出现一次
 `Another migration is already running`；没有修改代码或断言，待 DB 任务结束后以同一命令串行
-复跑，Worker 恢复 68 files / 505 passed、2 opt-in skipped，覆盖率与上表一致。
+复跑，Worker 恢复全绿；P1 修复后最终为 68 files / 510 passed、2 opt-in skipped，覆盖率与上表一致。
 
 ## 安全与边界检查
 
