@@ -1,4 +1,5 @@
 import {
+  AccountListRepository,
   ChangeSetRepository,
   createPool,
   SemanticQueryRepository,
@@ -7,6 +8,7 @@ import {
 } from "@ka/db";
 
 import { loadDataApiConfig } from "./data/data-api-config.js";
+import { AccountListService } from "./accounts/account-list-service.js";
 import { createDataApiServer } from "./data/http-server.js";
 import { createKaDataClientFromEnv } from "./data/ka-data-client.js";
 import { PlatformDataSource } from "./data/platform-data-source.js";
@@ -31,6 +33,9 @@ async function main(): Promise<void> {
     }),
     taskListService: new TaskListService({
       repository: new TaskListRepository(pool),
+    }),
+    accountListService: new AccountListService({
+      repository: new AccountListRepository(pool),
     }),
     internalToken: config.internalToken,
     maxRequestBytes: config.maxRequestBytes,

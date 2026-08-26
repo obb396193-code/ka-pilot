@@ -10,6 +10,14 @@ import {
 import { z } from "zod";
 
 import {
+  ACCOUNT_LIST_HTTP_PATH,
+  accountListErrorBody,
+  AccountListHttpInputError,
+  accountListHttpStatus,
+  parseAccountListSearch,
+} from "../accounts/account-list-http.js";
+import type { AccountListService } from "../accounts/account-list-service.js";
+import {
   createDataQueryHttpHandler,
   DATA_QUERY_HTTP_PATH,
   type AuthenticatedDataQueryContext,
@@ -38,6 +46,7 @@ export interface DataApiServerOptions {
   service: DataQueryService;
   detailService: ReadDetailService;
   taskListService: TaskListService;
+  accountListService: AccountListService;
   internalToken: string;
   maxRequestBytes?: number;
   maxResponseBytes?: number;
@@ -210,10 +219,12 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       }
       const resolvedDetailRoute = detailRoute(url.pathname);
       const isTaskListRoute = url.pathname === TASK_LIST_HTTP_PATH;
+      const isAccountListRoute = url.pathname === ACCOUNT_LIST_HTTP_PATH;
       if (
         url.pathname !== DATA_QUERY_HTTP_PATH &&
         resolvedDetailRoute === null &&
-        !isTaskListRoute
+        !isTaskListRoute &&
+        !isAccountListRoute
       ) {
         sendJson(
           response,
@@ -234,6 +245,11 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         return;
       }
       if (authentication.auth === null) {
+        if (isAccountListRoute) {
+          const result = await options.accountListService.execute({}, null, requestId);
+          sendJson(response, accountListHttpStatus(result), result, requestId);
+          return;
+        }
         if (isTaskListRoute) {
           const result = await options.taskListService.execute({}, null, requestId);
           sendJson(response, taskListHttpStatus(result), result, requestId);
@@ -255,6 +271,35 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           requestId,
         });
         sendJson(response, result.status, result.body, requestId);
+        return;
+      }
+      if (isAccountListRoute) {
+        if ((request.method ?? "").toUpperCase() !== "GET") {
+          sendJson(
+            response,
+            405,
+            accountListErrorBody("INVALID_REQUEST", "Only GET is supported", requestId),
+            requestId,
+          );
+          return;
+        }
+        const result = await options.accountListService.execute(
+          parseAccountListSearch(url.searchParams),
+          authentication.auth,
+          requestId,
+        );
+        sendBoundedJson(
+          response,
+          accountListHttpStatus(result),
+          result,
+          requestId,
+          maxResponseBytes,
+          () => accountListErrorBody(
+            "SOURCE_TRUNCATED",
+            "Account list response reached the configured body limit",
+            requestId,
+          ),
+        );
         return;
       }
       if (isTaskListRoute) {
@@ -355,6 +400,15 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           ),
       );
     } catch (error) {
+      if (error instanceof AccountListHttpInputError) {
+        sendJson(
+          response,
+          400,
+          accountListErrorBody("INVALID_REQUEST", "Invalid account list request", requestId),
+          requestId,
+        );
+        return;
+      }
       if (error instanceof TaskListHttpInputError) {
         sendJson(
           response,
