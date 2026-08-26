@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import type { DataQueryId, SourceQueryResult } from "@ka/domain";
 
 import { createDataApiServer } from "../src/data/http-server.js";
+import { AccountListService } from "../src/accounts/account-list-service.js";
 import { KaDataClientError } from "../src/data/ka-data-client.js";
 import { PlatformDataSource } from "../src/data/platform-data-source.js";
 import { ReadDetailService } from "../src/data/read-detail-service.js";
@@ -61,6 +62,22 @@ function emptyTaskListService(): TaskListService {
   });
 }
 
+function emptyAccountListService(): AccountListService {
+  return new AccountListService({
+    repository: {
+      list: async (query) => ({
+        rows: [],
+        page: query.page ?? 1,
+        pageSize: query.pageSize ?? 20,
+        total: 0,
+        coverageComplete: false,
+        metricsComplete: true,
+        initialFullComplete: false,
+      }),
+    },
+  });
+}
+
 describe("data API HTTP composition", () => {
   const servers: ReturnType<typeof createDataApiServer>[] = [];
   afterEach(async () => {
@@ -94,6 +111,7 @@ describe("data API HTTP composition", () => {
       service,
       detailService: options.detailService ?? emptyDetailService(),
       taskListService: emptyTaskListService(),
+      accountListService: emptyAccountListService(),
       internalToken,
       ...(options.maxResponseBytes === undefined
         ? {}
@@ -206,6 +224,7 @@ describe("data API HTTP composition", () => {
       service,
       detailService: emptyDetailService(),
       taskListService: emptyTaskListService(),
+      accountListService: emptyAccountListService(),
       internalToken,
       maxRequestBytes: 8,
     });
@@ -231,12 +250,14 @@ describe("data API HTTP composition", () => {
       service,
       detailService: emptyDetailService(),
       taskListService: emptyTaskListService(),
+      accountListService: emptyAccountListService(),
       internalToken: "short",
     })).toThrow(/32/);
     expect(() => createDataApiServer({
       service,
       detailService: emptyDetailService(),
       taskListService: emptyTaskListService(),
+      accountListService: emptyAccountListService(),
       internalToken,
       maxRequestBytes: 0,
     })).toThrow(/positive integer/);

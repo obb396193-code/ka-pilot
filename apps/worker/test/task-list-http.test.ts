@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import type { TaskListRepositoryResult } from "@ka/db";
 
 import { createDataApiServer } from "../src/data/http-server.js";
+import { AccountListService } from "../src/accounts/account-list-service.js";
 import { ReadDetailService } from "../src/data/read-detail-service.js";
 import { DataQueryService } from "../src/data/query-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
@@ -82,6 +83,22 @@ function detailService(): ReadDetailService {
   });
 }
 
+function accountListService(): AccountListService {
+  return new AccountListService({
+    repository: {
+      list: async (query) => ({
+        rows: [],
+        page: query.page ?? 1,
+        pageSize: query.pageSize ?? 20,
+        total: 0,
+        coverageComplete: false,
+        metricsComplete: true,
+        initialFullComplete: false,
+      }),
+    },
+  });
+}
+
 describe("TASK-LIST-001 HTTP composition", () => {
   const servers: ReturnType<typeof createDataApiServer>[] = [];
 
@@ -109,6 +126,7 @@ describe("TASK-LIST-001 HTTP composition", () => {
       service: dataService(),
       detailService: detailService(),
       taskListService,
+      accountListService: accountListService(),
       internalToken,
       ...(maxResponseBytes === undefined ? {} : { maxResponseBytes }),
     });
