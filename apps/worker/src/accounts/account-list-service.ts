@@ -13,6 +13,7 @@ import type {
   AccountListRepositoryResult,
   AccountListRepositoryRow,
 } from "@ka/db";
+import { AccountListRepositoryContractError } from "@ka/db";
 import { z } from "zod";
 
 import type { AuthenticatedDataQueryContext } from "../data/query-service.js";
@@ -58,7 +59,10 @@ function stableError(
 }
 
 function validateAuth(auth: AuthenticatedDataQueryContext): boolean {
-  if (!z.string().uuid().safeParse(auth.workspaceId).success || auth.userId.trim() === "") return false;
+  if (
+    !z.string().uuid().safeParse(auth.workspaceId).success ||
+    !z.string().uuid().safeParse(auth.userId).success
+  ) return false;
   const tuples = new Set<string>();
   for (const account of auth.allowedAccounts) {
     if (account.media.trim() === "" || account.accountId.trim() === "") return false;
@@ -155,6 +159,8 @@ function assertRepositoryResult(
       if (result.metricsComplete) throw new Error("metricsComplete conflicts with missing metrics");
     } else if (row.metricDate !== businessDate) {
       throw new Error("metricDate differs from businessDate");
+    } else if (result.metricsComplete && row.dataAsOf === null) {
+      throw new Error("metricsComplete requires dataAsOf");
     }
     if (row.balance !== null && row.balanceSyncedAt === null) {
       throw new Error("balance requires syncedAt");
@@ -201,6 +207,14 @@ export class AccountListService {
       });
     } catch (error) {
       if (error instanceof AccountListSourceError) return mapSourceError(error, requestId);
+      if (error instanceof AccountListRepositoryContractError) {
+        return stableError(
+          "UPSTREAM_INVALID_RESPONSE",
+          "The Qihang account source returned an invalid response",
+          false,
+          requestId,
+        );
+      }
       return stableError("INTERNAL_ERROR", "The account list could not be loaded", false, requestId);
     }
     try {

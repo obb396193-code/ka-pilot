@@ -6,6 +6,7 @@ import { Pool, type PoolClient, type QueryResult, type QueryResultRow } from "pg
 import { runMigrations } from "../src/migrate.js";
 import {
   AccountListRepository,
+  AccountListRepositoryContractError,
   type AccountListRepositoryPool,
 } from "../src/account-list-repository.js";
 
@@ -59,6 +60,7 @@ describe("AccountListRepository", () => {
        ) VALUES
          ($1, 'task-b', 'KUAISHOU', 'decline', '2026-08-01', NULL),
          ($1, 'task-a', 'KUAISHOU', 'decline', '2026-08-01', NULL),
+         ($1, 'task-missing', 'KUAISHOU', 'decline', '2026-08-01', NULL),
          ($1, 'task-a', 'KUAISHOU', 'cold', '2026-08-26', NULL)`,
       [workspaceId],
     );
@@ -108,6 +110,7 @@ describe("AccountListRepository", () => {
       linkedTasks: [
         { taskId: "task-a", taskName: "任务甲" },
         { taskId: "task-b", taskName: "任务乙" },
+        { taskId: "task-missing", taskName: null },
       ],
       metricDate: "2026-08-25",
       cost: 120.5,
@@ -138,6 +141,18 @@ describe("AccountListRepository", () => {
     const stable = rows.find((row) => row.accountId === "stable")!;
     expect(cold).toMatchObject({ cost: 50, realConversion: 0, balance: null, balanceSyncedAt: null });
     expect(stable).toMatchObject({ metricDate: null, cost: null, realConversion: null, dataAsOf: null });
+  });
+
+  it("rejects a present-invalid numeric instead of converting it to missing data", async () => {
+    await pool.query(
+      `UPDATE account_metrics_daily
+       SET cost = 'NaN'::numeric
+       WHERE workspace_id = $1 AND media = 'KUAISHOU' AND account_id = 'decline'`,
+      [workspaceId],
+    );
+    await expect(repository.list(baseQuery())).rejects.toBeInstanceOf(
+      AccountListRepositoryContractError,
+    );
   });
 
   it("reports coverage/readiness conservatively for missing or empty scope", async () => {

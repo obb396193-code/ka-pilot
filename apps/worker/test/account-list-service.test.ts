@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 
 import type { AccountListResponse } from "@ka/domain";
-import type { AccountListRepositoryResult } from "@ka/db";
+import {
+  AccountListRepositoryContractError,
+  type AccountListRepositoryResult,
+} from "@ka/db";
 
 import {
   AccountListService,
@@ -9,9 +12,10 @@ import {
 } from "../src/accounts/account-list-service.js";
 
 const workspaceId = "00000000-0000-4000-8000-000000000024";
+const userId = "00000000-0000-4000-8000-000000000001";
 const auth = {
   workspaceId,
-  userId: "workspace-user",
+  userId,
   allowedAccounts: [
     { media: "KUAISHOU", accountId: "account-1" },
     { media: "TENCENT", accountId: "account-1" },
@@ -134,6 +138,7 @@ describe("AccountListService", () => {
     const { service, list } = serviceFor(readyResult());
     expectError(await service.execute({}, null, "account-401"), "UNAUTHORIZED");
     expectError(await service.execute({}, { ...auth, workspaceId: "forged" }, "account-403"), "FORBIDDEN");
+    expectError(await service.execute({}, { ...auth, userId: "workspace-user" }, "account-user-403"), "FORBIDDEN");
     expectError(await service.execute({ dataSource: "ka_data" }, auth, "account-400"), "INVALID_REQUEST");
     expect(list).not.toHaveBeenCalled();
   });
@@ -170,13 +175,30 @@ describe("AccountListService", () => {
     const timeout = await serviceFor(
       new AccountListSourceError("UPSTREAM_TIMEOUT", "connector timeout", true),
     ).service.execute({}, auth, "account-504");
+    const invalidSource = await serviceFor(
+      new AccountListRepositoryContractError("NaN from numeric column"),
+    ).service.execute({}, auth, "account-502");
     const unknown = await serviceFor(
       new Error("postgres://user:secret@host select raw"),
     ).service.execute({}, auth, "account-500");
     expectError(unavailable, "SOURCE_UNAVAILABLE");
     expectError(timeout, "UPSTREAM_TIMEOUT");
+    expectError(invalidSource, "UPSTREAM_INVALID_RESPONSE");
     expectError(unknown, "INTERNAL_ERROR");
     expect(JSON.stringify(unknown)).not.toContain("secret");
     expect(JSON.stringify(unknown)).not.toContain("select");
+  });
+
+  it("does not declare non-empty metrics ready without a source dataAsOf", async () => {
+    const source = readyResult({ metricsComplete: false });
+    source.rows[0] = { ...source.rows[0]!, dataAsOf: null };
+    const response = await serviceFor(source).service.execute(
+      {}, auth, "account-missing-freshness", new Date("2026-08-25T04:00:00Z"),
+    );
+    expect(response).toMatchObject({ ok: true, meta: { dataState: "stale", dataAsOf: null } });
+
+    expectError(await serviceFor({ ...source, metricsComplete: true }).service.execute(
+      {}, auth, "account-false-ready", new Date("2026-08-25T04:00:00Z"),
+    ), "UPSTREAM_INVALID_RESPONSE");
   });
 });

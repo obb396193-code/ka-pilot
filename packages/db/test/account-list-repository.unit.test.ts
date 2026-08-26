@@ -3,6 +3,7 @@ import type { QueryResult, QueryResultRow } from "pg";
 
 import {
   AccountListRepository,
+  AccountListRepositoryContractError,
   type AccountListRepositoryClient,
   type AccountListRepositoryPool,
 } from "../src/account-list-repository.js";
@@ -52,7 +53,10 @@ describe("AccountListRepository unit boundary", () => {
             tags: ["重点"],
             owner_user_id: null,
             owner_display_name: null,
-            linked_tasks: [{ taskId: "task-1", taskName: null }],
+            linked_tasks: [
+              { taskId: "task-z", taskName: "末项" },
+              { taskId: "task-a", taskName: null },
+            ],
             metric_date: "2026-08-25",
             cost: "10.5",
             real_conversion: "2",
@@ -81,7 +85,15 @@ describe("AccountListRepository unit boundary", () => {
     expect(output).toMatchObject({
       total: 1,
       initialFullComplete: true,
-      rows: [{ accountId: "account-1", cost: 10.5, realConversion: 2 }],
+      rows: [{
+        accountId: "account-1",
+        cost: 10.5,
+        realConversion: 2,
+        linkedTasks: [
+          { taskId: "task-a", taskName: null },
+          { taskId: "task-z", taskName: "末项" },
+        ],
+      }],
     });
     expect(client.release).toHaveBeenCalledOnce();
   });
@@ -120,5 +132,46 @@ describe("AccountListRepository unit boundary", () => {
       ],
     })).rejects.toThrow("duplicate");
     expect(unopened).not.toHaveBeenCalled();
+  });
+
+  it("classifies present-invalid DB numerics as a repository contract error", async () => {
+    const client: AccountListRepositoryClient = {
+      query: async <Row extends QueryResultRow>(sql: string): Promise<QueryResult<Row>> => {
+        if (sql.includes("account-list-total")) {
+          return result([{ total: 1, coverage_complete: true, metrics_complete: true }] as unknown as Row[]) as QueryResult<Row>;
+        }
+        if (sql.includes("workspace-sync-initial-full-readiness")) {
+          return result([{ initial_full_complete: true }] as unknown as Row[]) as QueryResult<Row>;
+        }
+        if (sql.includes("LIMIT $11")) {
+          return result([{
+            workspace_id: workspaceId,
+            media: "KUAISHOU",
+            account_id: "account-1",
+            account_name: null,
+            status: null,
+            lifecycle_stage: "unknown",
+            is_starred: false,
+            tags: [],
+            owner_user_id: null,
+            owner_display_name: null,
+            linked_tasks: [],
+            metric_date: "2026-08-25",
+            cost: "NaN",
+            real_conversion: "1",
+            assessment_price_snapshot: null,
+            data_as_of: new Date("2026-08-25T12:00:00Z"),
+            balance: null,
+            balance_synced_at: null,
+          }] as unknown as Row[]) as QueryResult<Row>;
+        }
+        return result([] as Row[]) as QueryResult<Row>;
+      },
+      release: vi.fn(),
+    };
+    const repository = new AccountListRepository({ connect: async () => client });
+    await expect(repository.list(queryInput())).rejects.toBeInstanceOf(
+      AccountListRepositoryContractError,
+    );
   });
 });

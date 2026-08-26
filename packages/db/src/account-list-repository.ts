@@ -36,6 +36,13 @@ export interface AccountListRepositoryPool {
 
 export interface AccountListLinkedTask { taskId: string; taskName: string | null }
 
+export class AccountListRepositoryContractError extends Error {
+  constructor(message = "Account list repository returned a value outside the canonical contract") {
+    super(message);
+    this.name = "AccountListRepositoryContractError";
+  }
+}
+
 export interface AccountListRepositoryRow {
   workspaceId: string;
   media: string;
@@ -103,31 +110,41 @@ interface NormalizedQuery extends AccountListRequest {
 
 function nonnegativeInteger(value: string | number, field: string): number {
   const parsed = Number(value);
-  if (!Number.isSafeInteger(parsed) || parsed < 0) throw new Error(`${field} returned an invalid count`);
+  if (!Number.isSafeInteger(parsed) || parsed < 0) {
+    throw new AccountListRepositoryContractError(`${field} returned an invalid count`);
+  }
   return parsed;
 }
 
 function normalizeStringArray(value: unknown, field: string): string[] {
   if (!Array.isArray(value) || value.some((item) => typeof item !== "string")) {
-    throw new Error(`${field} returned an invalid value`);
+    throw new AccountListRepositoryContractError(`${field} returned an invalid value`);
   }
   return [...value];
 }
 
 function normalizeLinkedTasks(value: unknown): AccountListLinkedTask[] {
-  if (!Array.isArray(value)) throw new Error("linkedTasks returned an invalid value");
-  return value.map((item) => {
+  if (!Array.isArray(value)) {
+    throw new AccountListRepositoryContractError("linkedTasks returned an invalid value");
+  }
+  const tasks = value.map((item) => {
     if (
       typeof item !== "object" || item === null ||
       typeof (item as { taskId?: unknown }).taskId !== "string" ||
       ((item as { taskName?: unknown }).taskName !== null &&
        typeof (item as { taskName?: unknown }).taskName !== "string")
-    ) throw new Error("linkedTasks returned an invalid item");
+    ) throw new AccountListRepositoryContractError("linkedTasks returned an invalid item");
     return {
       taskId: (item as { taskId: string }).taskId,
       taskName: (item as { taskName: string | null }).taskName,
     };
-  });
+  }).sort((left, right) => left.taskId < right.taskId ? -1 : left.taskId > right.taskId ? 1 : 0);
+  for (let index = 1; index < tasks.length; index += 1) {
+    if (tasks[index - 1]!.taskId === tasks[index]!.taskId) {
+      throw new AccountListRepositoryContractError("linkedTasks returned a duplicate taskId");
+    }
+  }
+  return tasks;
 }
 
 function normalizeQuery(input: AccountListRepositoryQuery): NormalizedQuery {
@@ -185,29 +202,34 @@ function commonValues(query: NormalizedQuery): unknown[] {
 }
 
 function mapListRow(row: ListRow): AccountListRepositoryRow {
-  return {
-    workspaceId: row.workspace_id,
-    media: row.media,
-    accountId: row.account_id,
-    accountName: row.account_name,
-    status: row.status,
-    lifecycleStage: row.lifecycle_stage,
-    starred: row.is_starred,
-    tags: normalizeStringArray(row.tags, "tags"),
-    owner: row.owner_user_id === null || row.owner_display_name === null
-      ? null
-      : { userId: row.owner_user_id, displayName: row.owner_display_name },
-    linkedTasks: normalizeLinkedTasks(row.linked_tasks),
-    metricDate: row.metric_date,
-    cost: nullableNumber(row.cost),
-    realConversion: nullableNumber(row.real_conversion),
-    assessmentPrice: nullableNumber(row.assessment_price_snapshot),
-    dataAsOf: row.data_as_of === null ? null : isoTimestamp(row.data_as_of),
-    balance: nullableNumber(row.balance),
-    balanceSyncedAt: row.balance === null || row.balance_synced_at === null
-      ? null
-      : isoTimestamp(row.balance_synced_at),
-  };
+  try {
+    return {
+      workspaceId: row.workspace_id,
+      media: row.media,
+      accountId: row.account_id,
+      accountName: row.account_name,
+      status: row.status,
+      lifecycleStage: row.lifecycle_stage,
+      starred: row.is_starred,
+      tags: normalizeStringArray(row.tags, "tags"),
+      owner: row.owner_user_id === null || row.owner_display_name === null
+        ? null
+        : { userId: row.owner_user_id, displayName: row.owner_display_name },
+      linkedTasks: normalizeLinkedTasks(row.linked_tasks),
+      metricDate: row.metric_date,
+      cost: nullableNumber(row.cost),
+      realConversion: nullableNumber(row.real_conversion),
+      assessmentPrice: nullableNumber(row.assessment_price_snapshot),
+      dataAsOf: row.data_as_of === null ? null : isoTimestamp(row.data_as_of),
+      balance: nullableNumber(row.balance),
+      balanceSyncedAt: row.balance === null || row.balance_synced_at === null
+        ? null
+        : isoTimestamp(row.balance_synced_at),
+    };
+  } catch (error) {
+    if (error instanceof AccountListRepositoryContractError) throw error;
+    throw new AccountListRepositoryContractError("Account list row is outside the canonical contract");
+  }
 }
 
 async function rollback(client: AccountListRepositoryClient): Promise<void> {
@@ -227,7 +249,9 @@ export class AccountListRepository {
       const values = commonValues(query);
       const countResult = await client.query<CountRow>(ACCOUNT_LIST_COUNT_SQL, values);
       const count = countResult.rows[0];
-      if (!count) throw new Error("account list count query returned no row");
+      if (!count) {
+        throw new AccountListRepositoryContractError("account list count query returned no row");
+      }
       const initialFullComplete = await loadWorkspaceSyncReadiness(client, {
         workspaceId: query.workspaceId,
         requestingUserId: query.requestingUserId,

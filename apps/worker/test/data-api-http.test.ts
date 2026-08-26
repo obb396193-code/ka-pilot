@@ -18,7 +18,7 @@ import { canonicalRow, readySource } from "./canonical-query-fixtures.js";
 const internalToken = "fixture-internal-token-that-is-long-enough";
 const auth = {
   workspaceId: "00000000-0000-4000-8000-000000000024",
-  userId: "user-fixture",
+  userId: "00000000-0000-4000-8000-000000000001",
   allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
 };
 

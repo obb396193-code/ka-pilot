@@ -50,6 +50,7 @@ export const ACCOUNT_LIST_COUNT_SQL = `
           AND metric.media = account.media
           AND metric.account_id = account.account_id
           AND metric.ds = $2::date
+          AND metric.computed_at IS NOT NULL
       )
     ) AS metrics_complete
   FROM filtered_accounts`;
@@ -82,12 +83,12 @@ export const ACCOUNT_LIST_PAGE_SQL = `
   LEFT JOIN LATERAL (
     SELECT jsonb_agg(
       jsonb_build_object('taskId', relation.task_id, 'taskName', relation.task_name)
-      ORDER BY relation.task_id
+      ORDER BY relation.task_id COLLATE "C"
     ) AS tasks
     FROM (
-      SELECT DISTINCT task.task_id, task.task_name
+      SELECT DISTINCT account_task.task_id, task.task_name
       FROM task_accounts AS account_task
-      JOIN tasks AS task
+      LEFT JOIN tasks AS task
         ON task.workspace_id = account_task.workspace_id
        AND task.task_id = account_task.task_id
       WHERE account_task.workspace_id = account.workspace_id

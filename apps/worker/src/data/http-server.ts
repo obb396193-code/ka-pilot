@@ -105,7 +105,10 @@ function authenticate(
   try {
     const decoded = Buffer.from(encodedScope, "base64url").toString("utf8");
     const allowedAccounts = accountScopeSchema.parse(JSON.parse(decoded) as unknown);
-    if (!z.string().uuid().safeParse(workspaceId).success || userId.trim() === "") {
+    if (
+      !z.string().uuid().safeParse(workspaceId).success ||
+      !z.string().uuid().safeParse(userId).success
+    ) {
       return { auth: null, forbidden: true };
     }
     return { auth: { workspaceId, userId, allowedAccounts }, forbidden: false };
