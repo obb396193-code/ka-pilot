@@ -124,3 +124,20 @@
 - 反例：Service Auto/Full/Incr、真实 PG terminal blocked Job、执行前空快照、上游越界账户 0 落库。
 - 门禁：Domain 455、DB 139、Worker 510 passed；2 opt-in skipped；三包 typecheck/lint/audit、
   coverage 全绿。未改 Contract、前端或公开 API，未 push。
+
+### ACCOUNTS-LIST-001 账户池只读纵切片
+
+- 派活方：root Codex（Contract/验收/整合）
+- 日期：2026-08-26
+- 分支：`codex/accounts-list-001-backend`，共同基线 `d4402e1`
+- 冻结 Contract：`packages/contract/api.md` ACCOUNTS-LIST-001
+- 代码提交：`3a7470f`
+- 已实现：strict Domain/fixtures、RR/RO tuple-scope Repository、业务日 metrics/余额/多任务关系、
+  Service 行级 fail-closed、后端 RatioValue、只读 `GET /api/v1/accounts`、requestId 与 exact-16MB。
+- 已通过：Domain 464；Worker 非 PG 528（2 opt-in skipped）；DB 纯逻辑 19；三包
+  typecheck/lint/audit；新文件覆盖率、前端 0 diff 和写路由关闭检查。
+- **阻断**：Docker engine 在官方 restart 后仍 `EOF`，55432 no response；6 个真实 PG 用例已经写入
+  `packages/db/test/account-list-repository.test.ts`，但本轮未通过。不得把旧 C2 PG 证据冒充本批证据。
+- 证据：`docs/evidence/ACCOUNTS-LIST-001-后端质量报告.md`。
+- 状态：`implemented + non_pg_verified + pg_blocked`；root 可先代码审查，恢复 PG 后必须补定向与 DB 全量，
+  通过前不建议合流/通知前端按“后端已完成”接入。未 push、未改前端、未开放媒体写。
