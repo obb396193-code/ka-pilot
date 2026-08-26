@@ -259,6 +259,66 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
 - 账户 tuple 与批准 scope 不完全一致返回 403；历史无 scope 对象同样 fail closed；
 - 不存在返回 404 + `NOT_FOUND`，非 UUID 返回 400 + `INVALID_REQUEST`。
 
+### WORK-ITEM-LIST-001 工作项队列（一期只读）
+
+浏览器只调用 `GET /api/internal/work-items`；BFF 按 AUTH-001 注入批准 session scope，再调用
+`GET /api/v1/work-items`。允许的 query 参数仅为：`page`（默认 1）、`pageSize`（默认 20，
+最大 100）、`q`（最大 100 字符，仅匹配 title）、`status`、`severity`、`type`、
+`assigneeUserId`（UUID）、`taskId`（opaque ID，最大 128 字符）。每个参数只允许出现一次；
+未知或非法参数返回 400 `INVALID_REQUEST`。未传 status 时只返回
+`open|processing|escalated`；显式 status 可取冻结 WorkItemStatus 的任一值。
+
+成功响应固定为：
+
+```jsonc
+{
+  "ok": true,
+  "data": {
+    "items": [{
+      "workItemId": "uuid",
+      "type": "diagnosis | dispatch | self | agent_question | external_handled",
+      "status": "open | processing | done | ignored | expired | external_handled | rejected | escalated",
+      "severity": "P0 | P1 | P2 | opportunity | null",
+      "title": "工作项标题",
+      "account": {"workspaceId": "uuid", "media": "KUAISHOU", "accountId": "opaque-id", "accountName": null},
+      "task": {"taskId": "opaque-id", "taskName": null},
+      "assignee": {"userId": "uuid", "displayName": "脱敏姓名"},
+      "slaDue": "2026-08-26T12:00:00.000Z",
+      "createdAt": "2026-08-25T12:00:00.000Z",
+      "resolvedAt": null
+    }],
+    "page": 1,
+    "pageSize": 20,
+    "total": 1
+  },
+  "meta": {
+    "dataState": "ready | empty | partial | stale",
+    "businessDate": "2026-08-25",
+    "dataAsOf": "2026-08-25T12:00:00.000Z",
+    "coverage": {"complete": true},
+    "selectedSource": "platform",
+    "requestId": "..."
+  }
+}
+```
+
+- 账户型工作项的 `account` 必须完整包含批准的 `(workspaceId,media,accountId)`；不在 scope
+  的行一律不得计入 `total`。Service 逐行守卫，发现 Repository 越界必须整页 fail closed。
+- `media/account_id` 同为 null 的非账户型工作项，只有 `assignee=current user` 或
+  `creator=current user` 时可见；不得把 workspace 内无账户对象当成全员可见。此类 item 的
+  `account=null`。`task/assignee` 缺源时为 null，不伪造展示名。
+- 默认排序：严重度 `P0 → P1 → P2 → opportunity → null`，随后
+  `slaDue ASC NULLS LAST, createdAt ASC, workItemId ASC`；最后 ID 是唯一 tie-breaker。
+- 列表不返回完整 `evidenceSnapshot/diagnosis/t1Result`，点击后走已冻结详情接口。所谓
+  “其余 N 户在阈值内”在阈值版本、分母和时间窗 Contract 冻结前不进入响应，前端不得自行算。
+- `dataState` 只描述工作项持久化查询本身：事务快照完整且筛选后 total=0 为 empty；分页或
+  来源覆盖不完整为 partial；依赖奇航事实生成的账户型工作项在首次 full 未完成时为 stale，
+  但已持久化的本人非账户型工作项仍可返回。count/page/readiness 同一 RR/RO 快照。
+- 401/403/400/502/503/504/500 使用稳定 error envelope；所有成功/错误响应的
+  `x-request-id` 必须与正文 `meta.requestId`/`error.requestId` 完全一致。响应正文大于或恰好
+  16MB 返回 502 `SOURCE_TRUNCATED`，不返回部分页。
+- 本批只读：ignore/process/reject/escalate/dispatch/reply 均不随列表开放。
+
 ## 变更集与执行
 
 - `POST /api/v1/changesets` `{work_item_id?, items:[{target_type,target_id,field,to_value}], reason_code}` → 服务端补 from_value/TTL/What-if
@@ -281,6 +341,84 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - `GET /api/v1/accounts/:id/structure` campaign→unit→creative 树
 - `GET /api/v1/accounts/:id/timeline` 操作史（含 external 带外变更）
 - `POST /api/v1/accounts/:id/star|tags|transfer`
+
+### ACCOUNTS-LIST-001 账户池（一期只读）
+
+浏览器只调用 `GET /api/internal/accounts`；BFF 从 AUTH-001 服务端 session 注入批准的
+workspace/user/account scope，再调用 `GET /api/v1/accounts`。浏览器不得提交或覆盖
+`workspaceId/userId/role/accountIds/dataSource`。
+
+允许的 query 参数仅为：`page`（默认 1）、`pageSize`（默认 20，最大 100）、`q`（最大
+100 字符，仅匹配 account_name/account_id）、`media`（一期仅 `KUAISHOU`）、
+`stage=cold_start|ramping|stable|declining|paused|closed|unknown`、
+`starred=true|false`、`tags`（逗号分隔、去重后最多 10 个；AND 语义，账户必须同时拥有全部
+标签）、`ownerUserId`（UUID）、`status`（非空、最大 64 字符）。未知、重复或非法参数返回
+400 `INVALID_REQUEST`。
+
+成功响应固定为：
+
+```jsonc
+{
+  "ok": true,
+  "data": {
+    "items": [{
+      "workspaceId": "uuid",
+      "media": "KUAISHOU",
+      "accountId": "opaque-id",
+      "accountName": null,
+      "status": "active",
+      "lifecycleStage": "cold_start | ramping | stable | declining | paused | closed | unknown",
+      "starred": false,
+      "tags": ["人工标签"],
+      "owner": {"userId": "uuid", "displayName": "脱敏姓名"},
+      "linkedTasks": [{"taskId": "opaque-id", "taskName": "任务名称"}],
+      "metrics": {
+        "businessDate": "2026-08-25",
+        "cost": 120.5,
+        "realConversion": 8,
+        "realCpa": {"value": 15.0625, "state": "finite"},
+        "assessmentPrice": 38
+      },
+      "balance": {"value": 1000, "syncedAt": "2026-08-25T12:00:00.000Z"}
+    }],
+    "page": 1,
+    "pageSize": 20,
+    "total": 1
+  },
+  "meta": {
+    "dataState": "ready | empty | partial | stale",
+    "businessDate": "2026-08-25",
+    "dataAsOf": "2026-08-25T12:00:00.000Z",
+    "coverage": {"complete": true},
+    "selectedSource": "qihang",
+    "requestId": "..."
+  }
+}
+```
+
+- 每个 item 必须完整携带 `(workspaceId,media,accountId)`，并且恰好命中批准 scope；列表
+  `total` 只统计批准 tuple。Service 必须逐行再次守卫，Repository 漏过滤时 fail closed，
+  不得静默删行后仍返回 `coverage.complete=true`。
+- `accountName/status/owner/metrics/balance` 的类型分别为 `string|null`、`string|null`、
+  `object|null`、`object|null`、`object|null`；`linkedTasks` 始终为数组。metrics 对象存在时，
+  `cost/realConversion/assessmentPrice` 均为 `number|null`，`realCpa` 始终使用 RatioValue。
+  缺源时按上述 null/空数组表达；不得
+  从账户 ID 猜名称，不得用 0 代替缺失金额或指标。`realCpa` 必须由后端生成 `RatioValue`。
+- `linkedTasks` 只返回业务日位于 `task_accounts` 有效期的任务，按 `taskId` 稳定排序；同一
+  账户可关联多个任务，不能压成单值。
+- 默认稳定排序：`starred DESC`，随后生命周期风险顺序
+  `declining → cold_start → ramping → stable → paused → closed → unknown`，再按
+  `accountName ASC NULLS LAST, media ASC, accountId ASC`；最后两个字段是唯一 tie-breaker。
+- count/page/readiness 必须在同一 `REPEATABLE READ READ ONLY` 快照内读取。首次 full 未成功
+  或批准 scope 为空时不得宣称 ready；完整但业务日 Canonical 尚未到为 stale；完整且筛选后
+  `total=0` 才为 empty；任何授权范围/来源覆盖不完整为 partial。
+- 普通账户池固定 `selectedSource=qihang`；KA Data/reconcile 不进入本接口，也不得由 query
+  参数选择。余额来自独立低频源，`balance=null` 不强制把整页判 partial，但必须保留
+  `syncedAt`，前端据此展示“余额未同步/已过期”。
+- 401/403/400/502/503/504/500 使用稳定 error envelope；所有成功/错误响应的
+  `x-request-id` 必须与正文 `meta.requestId`/`error.requestId` 完全一致。响应正文大于或恰好
+  16MB 返回 502 `SOURCE_TRUNCATED`，不返回部分页。
+- 本批只读：星标、标签、转移负责人、加/关账户和任何媒体动作继续关闭。
 
 ## 任务
 
