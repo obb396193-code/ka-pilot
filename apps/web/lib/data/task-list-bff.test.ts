@@ -23,6 +23,31 @@ async function fixture(name: "ready" | "empty" | "partial" | "stale" | "errors")
   return JSON.parse(await readFile(url, "utf8")) as unknown
 }
 
+function correlatedPayload(payload: unknown, requestId: string): unknown {
+  const parsed = taskListResponseSchema.parse(payload)
+  return parsed.ok
+    ? { ...parsed, meta: { ...parsed.meta, requestId } }
+    : { ...parsed, error: { ...parsed.error, requestId } }
+}
+
+function correlatedJson(
+  payload: unknown,
+  requestId: string,
+  status = 200,
+  headerRequestId: string | null = requestId,
+): Response {
+  return Response.json(correlatedPayload(payload, requestId), {
+    status,
+    headers: headerRequestId === null ? undefined : { "x-request-id": headerRequestId },
+  })
+}
+
+function requestIdFromInit(init: RequestInit | undefined): string {
+  const requestId = new Headers(init?.headers).get("x-request-id")
+  assert.ok(requestId)
+  return requestId
+}
+
 test("frontend whole-response schema accepts the canonical task-list fixtures directly", async () => {
   for (const name of ["ready", "empty", "partial", "stale"] as const) {
     assert.equal(taskListResponseSchema.safeParse(await fixture(name)).success, true, name)
@@ -57,7 +82,7 @@ test("task BFF forwards only frozen query parameters and server-approved scope",
     fetchImpl: async (input, requestInit) => {
       target = input
       init = requestInit
-      return Response.json(ready)
+      return correlatedJson(ready, requestIdFromInit(requestInit))
     },
   })
 
@@ -86,7 +111,7 @@ test("task BFF forwards only frozen query parameters and server-approved scope",
   )
   assert.equal(headers.has("x-ka-source"), false)
   assert.equal(result.status, 200)
-  assert.deepEqual(result.body, ready)
+  assert.deepEqual(result.body, correlatedPayload(ready, "bff-task-list-001"))
 })
 
 test("task BFF rejects unknown, duplicate, malformed, and inverted query parameters before upstream", async () => {
@@ -168,9 +193,9 @@ test("development scope works only for literal development with an explicit serv
   const accepted = await handleTaskListRequest(new Request("http://localhost/api/internal/tasks"), {
     environment: development,
     approvedAuthContextResolver: async () => null,
-    fetchImpl: async () => {
+    fetchImpl: async (_input, init) => {
       calls += 1
-      return Response.json(ready)
+      return correlatedJson(ready, requestIdFromInit(init))
     },
   })
   assert.equal(accepted.status, 200)
@@ -196,14 +221,21 @@ test("task BFF rejects declared and streamed bodies at the exact 16 MB boundary"
   }
   const declared = await handleTaskListRequest(request, {
     ...base,
-    fetchImpl: async () => new Response("{}", { headers: { "content-length": String(MAX_UPSTREAM_BODY_BYTES) } }),
+    fetchImpl: async (_input, init) => new Response("{}", {
+      headers: {
+        "content-length": String(MAX_UPSTREAM_BODY_BYTES),
+        "x-request-id": requestIdFromInit(init),
+      },
+    }),
   })
   assert.equal(declared.status, 502)
   assert.match(declared.body.ok ? "" : declared.body.error.message, /16\s?MB/i)
 
   const streamed = await handleTaskListRequest(request, {
     ...base,
-    fetchImpl: async () => new Response(new Uint8Array(MAX_UPSTREAM_BODY_BYTES)),
+    fetchImpl: async (_input, init) => new Response(new Uint8Array(MAX_UPSTREAM_BODY_BYTES), {
+      headers: { "x-request-id": requestIdFromInit(init) },
+    }),
   })
   assert.equal(streamed.status, 502)
   assert.match(streamed.body.ok ? "" : streamed.body.error.message, /16\s?MB/i)
@@ -219,28 +251,85 @@ test("task BFF rejects unknown response fields and upstream status-envelope mism
   }
   const extraField = await handleTaskListRequest(request, {
     ...dependencies,
-    fetchImpl: async () => Response.json({ ...ready, browserDefault: true }),
+    fetchImpl: async () => Response.json(
+      { ...correlatedPayload(ready, "bff-task-strict") as Record<string, unknown>, browserDefault: true },
+      { headers: { "x-request-id": "bff-task-strict" } },
+    ),
   })
   assert.equal(extraField.status, 502)
   assert.equal(extraField.body.ok ? "" : extraField.body.error.code, "UPSTREAM_INVALID_RESPONSE")
 
   const wrongStatus = await handleTaskListRequest(request, {
     ...dependencies,
-    fetchImpl: async () => Response.json(ready, { status: 503 }),
+    fetchImpl: async () => correlatedJson(ready, "bff-task-strict", 503),
   })
   assert.equal(wrongStatus.status, 502)
 })
 
-test("task BFF preserves canonical upstream error status and requestId", async () => {
+test("task BFF rejects missing, malformed, and mismatched upstream requestId correlation", async () => {
+  const request = new Request("http://localhost/api/internal/tasks")
+  const ready = await fixture("ready")
+  const errors = await fixture("errors") as Record<string, unknown>
+  const expectedRequestId = "bff-task-correlation"
+  const base = {
+    environment,
+    approvedAuthContextResolver: async () => authContext,
+    requestId: () => expectedRequestId,
+  }
+  const cases = [
+    {
+      name: "missing success header",
+      response: () => correlatedJson(ready, expectedRequestId, 200, null),
+    },
+    {
+      name: "malformed success header",
+      response: () => correlatedJson(ready, expectedRequestId, 200, "contains a space"),
+    },
+    {
+      name: "mismatched success header",
+      response: () => correlatedJson(ready, expectedRequestId, 200, "other-request-id"),
+    },
+    {
+      name: "mismatched success body",
+      response: () => correlatedJson(ready, "other-request-id", 200, expectedRequestId),
+    },
+    {
+      name: "mismatched error body",
+      response: () => correlatedJson(errors["503"], "other-request-id", 503, expectedRequestId),
+    },
+    {
+      name: "missing error header",
+      response: () => correlatedJson(errors["503"], expectedRequestId, 503, null),
+    },
+    {
+      name: "mismatched error header",
+      response: () => correlatedJson(errors["503"], expectedRequestId, 503, "other-request-id"),
+    },
+  ]
+
+  for (const scenario of cases) {
+    const result = await handleTaskListRequest(request, {
+      ...base,
+      fetchImpl: async () => scenario.response(),
+    })
+    assert.equal(result.status, 502, scenario.name)
+    assert.equal(result.body.ok ? "" : result.body.error.code, "UPSTREAM_INVALID_RESPONSE", scenario.name)
+    assert.equal(result.body.ok ? "" : result.body.error.requestId, expectedRequestId, scenario.name)
+  }
+})
+
+test("task BFF preserves canonical upstream error status after requestId correlation", async () => {
   const errors = await fixture("errors") as Record<string, unknown>
   for (const status of [400, 401, 403, 500, 502, 503, 504]) {
+    const requestId = `bff-task-error-${status}`
     const result = await handleTaskListRequest(new Request("http://localhost/api/internal/tasks"), {
       environment,
       approvedAuthContextResolver: async () => authContext,
-      fetchImpl: async () => Response.json(errors[String(status)], { status }),
+      requestId: () => requestId,
+      fetchImpl: async () => correlatedJson(errors[String(status)], requestId, status),
     })
     assert.equal(result.status, status)
-    assert.deepEqual(result.body, errors[String(status)])
+    assert.deepEqual(result.body, correlatedPayload(errors[String(status)], requestId))
   }
 })
 
