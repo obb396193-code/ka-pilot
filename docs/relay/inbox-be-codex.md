@@ -124,3 +124,21 @@
 - 反例：Service Auto/Full/Incr、真实 PG terminal blocked Job、执行前空快照、上游越界账户 0 落库。
 - 门禁：Domain 455、DB 139、Worker 510 passed；2 opt-in skipped；三包 typecheck/lint/audit、
   coverage 全绿。未改 Contract、前端或公开 API，未 push。
+
+### WORK-ITEM-LIST-001 工作项队列只读纵切片
+
+- 派活方：root Codex（Contract/验收/整合）
+- 日期：2026-08-26
+- 分支：`codex/work-item-list-001-backend`，共同基线 `d4402e1`
+- 冻结 Contract：`packages/contract/api.md` WORK-ITEM-LIST-001
+- 代码提交：`5b5c58c`
+- 已实现：strict Domain/fixtures、RR/RO WorkItemListRepository、账户 tuple/本人无账户工作项授权、
+  Service 行级 fail-closed、只读 `GET /api/v1/work-items`、requestId 与 exact-16MB。
+- 已通过：Domain 464；Worker 非 PG 530（2 opt-in skipped）；DB 纯逻辑 20；三包
+  typecheck/lint/audit；新代码覆盖率、前端 0 diff 和写路由关闭检查。
+- **阻断**：Docker daemon 仍 `EOF`，4 组真实 PG 测试已写但未执行；不得使用旧 PG 证据替代。
+- **已知 Contract 缺口**：列表允许本人无账户工作项，但既有详情只允许账户 tuple；当前点击该类详情
+  会 403，待 root 另行冻结详情语义，本批不擅自扩大返回。
+- 证据：`docs/evidence/WORK-ITEM-LIST-001-后端质量报告.md`。
+- 状态：`implemented + non_pg_verified + pg_blocked`；不通知前端按“后端已完成”接入，不 push，
+  不改前端，不开放工作项或媒体写。
