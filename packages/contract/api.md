@@ -9,10 +9,10 @@
 
 前端业务页只消费服务端会话，不接受浏览器自报的 `workspaceId/userId/role/accountIds`。
 一期内网可启用 `internal_test` provider；正式接入 BUC 时只替换身份 provider，下面的
-session、membership 与账户授权响应保持不变。一期产品策略为**一人一 personal workspace**：
-每个 identity 只进入自己的空间，业务数据默认为空，只能看到本人显式获授的媒体账户及其派生
-对象。可预置官方模板/规则/教学内容，但公共资产不得携带任何用户业务数据。底层多 workspace、
-membership 和 role 结构仅作为未来升级点，一期 UI/API 不开放跨用户共享或 workspace 切换。
+session、membership 与账户授权响应保持不变。一期产品策略为**个人与团队双空间**：每个 identity
+默认进入自己的 personal workspace，业务数据初始为空，只能看到本人显式获授账户及其派生对象；
+也可切换到自己有 active membership 的 team workspace，只读查看该空间持久化的团队业务数据。
+官方模板/规则/教学内容是独立公共只读资产，不得携带用户业务数据。
 
 - `POST /api/internal/auth/login`：仅在显式启用 `internal_test` provider 时接受
   `{provider:"internal_test", username, password}`；用户名和密码校验材料来自 Secret/config，
@@ -20,8 +20,9 @@ membership 和 role 结构仅作为未来升级点，一期 UI/API 不开放跨�
   SameSite=Lax` session cookie，不把 session token 返回 JSON。
 - `GET /api/internal/auth/session`：返回当前身份、可进入 workspace 列表、active workspace
   与角色；不返回 credential reference、奇航 userId、BUC subject 或账户 scope 明细。
-- `POST /api/internal/auth/workspace`：一期前端不调用；若为兼容/测试保留，只允许提交当前
-  identity 唯一的 personal workspace。其他 workspace 统一返回 403，不泄露其是否存在。
+- `POST /api/internal/auth/workspace`：`{workspaceId}`；只允许切换到当前 identity 自己的 active
+  personal workspace 或具有 active membership 的 team workspace。服务端重新解析 workspace kind
+  与 scope，清除前一空间缓存；不存在或无权统一返回 403，不泄露 workspace 是否存在。
 - `DELETE /api/internal/auth/session`：撤销服务端 session 并清 cookie；重复调用幂等。
 
 `approvedAuthContext` 必须按每次请求重新从 `auth_sessions → auth_identities →
@@ -32,19 +33,26 @@ workspace_memberships → account_access_grants` 解析，至少得到：
   "workspaceId": "uuid",
   "userId": "workspace-local uuid",
   "role": "optimizer | operator | lead | admin",
-  "allowedAccounts": [{"media": "KUAISHOU", "accountId": "...", "accessLevel": "read"}]
+  "workspaceKind": "personal | team",
+  "scope": {"kind": "explicit_accounts", "accounts": [{"media": "KUAISHOU", "accountId": "...", "accessLevel": "read"}]}
 }
 ```
 
+team workspace 的 scope 固定为 `{"kind":"team_workspace_readonly"}`，不得携带 execute grant；
+personal workspace 固定为 `explicit_accounts`。scope mode 只能由服务端 session/membership 解析，
+浏览器不得通过 query/body/header 自报。
+
 - session 过期/撤销、identity/member/user 任一 inactive、active workspace 不匹配时 401/403
   fail closed；不得回退到 dev fixture、环境变量 workspace 或全账户通配符。
-- `allowedAccounts` 只能来自 active workspace 的显式 grant；即使 account_id 文本相同，
-  不同 media 也是两份授权。无 grant 表示空范围，不等于整个 workspace。
+- personal 的 accounts 只能来自 active workspace 的显式 grant；即使 account_id 文本相同，不同
+  media 也是两份授权，无 grant 表示空范围。team read-only 范围来自独立 team workspace 的 active
+  membership 与该 workspace 已持久化数据，不把团队全账户列表放进浏览器/header，也绝不跨到
+  personal workspace。
 - `auth_sessions` 只保存 token hash；日志、Trace、错误和响应均不得出现 cookie/token、登录
   密码、BUC subject、奇航 userId 或 Secret reference。
-- 内测试点至少预置两个不同 identity 的独立脱敏 personal workspace，并覆盖同 account_id 跨
-  workspace、同 account_id 跨 media、跨 identity 访问、撤销 membership/session 四类反例；
-  不再以“同一 identity 可切两个 workspace”作为一期 happy path。
+- 内测试点至少预置两个不同 identity 的独立脱敏 personal workspace 和一个共同 team workspace，
+  覆盖同 account_id 跨 workspace、同 account_id 跨 media、未加入团队、撤销 membership/session、
+  team scope 写请求五类反例。
 
 成功 session 响应冻结为：
 
@@ -53,8 +61,11 @@ workspace_memberships → account_access_grants` 解析，至少得到：
   "ok": true,
   "data": {
     "identity": {"displayName": "内测用户"},
-    "activeWorkspace": {"id": "uuid", "name": "脱敏空间 A", "role": "admin"},
-    "workspaces": [{"id": "uuid", "name": "脱敏空间 A", "role": "admin"}]
+    "activeWorkspace": {"id": "uuid", "name": "我的工作台", "kind": "personal", "role": "admin", "readOnly": false},
+    "workspaces": [
+      {"id": "uuid", "name": "我的工作台", "kind": "personal", "role": "admin", "readOnly": false},
+      {"id": "uuid", "name": "团队数据", "kind": "team", "role": "optimizer", "readOnly": true}
+    ]
   }
 }
 ```
