@@ -151,3 +151,18 @@
 - 门禁：Domain 464、Worker 非 PG 532、DB 纯逻辑 20；定向 62；三包 typecheck/lint/audit 全绿；
   Worker 新代码覆盖率 97.13% statements / 91.09% branches。
 - Docker 仍 `EOF`，状态保持 `pg_blocked`；本人无账户工作项详情 403 缺口不在本批修改。
+
+### PERSONAL-WORKSPACE-V1 无账户个人工作项详情收口
+
+- 日期：2026-08-28；权威冻结点：`codex/integration-control@445d2d9`。
+- 代码 SHA：`8502129`；计划/质量与审计：本节所在留痕提交。
+- 已实现：work item 详情允许完整 tuple 或双 null；个人双 null 仅本人 assignee/creator 可读；
+  半空 tuple、跨 workspace/path、他人对象 fail closed；changeset 仍要求完整 tuple。
+- 门禁：Domain 467、Worker 非 PG 534、DB 纯逻辑 20；三包 typecheck/lint/audit、定向 coverage
+  全绿；requestId 与 exact-16MB 回归通过；前端 0 diff、媒体写仍关闭。
+- Docker 仍 `EOF`，状态为 `implemented + non_pg_verified + pg_blocked`，不得称为已合流/部署/真实 PG。
+- AUTH/session 只读审计结论：底层允许同 identity 多 membership，只有 active workspace token-hash
+  解析；workspaceKind/discriminated scope、登录/session 列表/切换/退出、首次 personal workspace
+  建立均未实现。完整行号证据见 `docs/evidence/PERSONAL-WORKSPACE-V1-工作项详情质量报告.md`。
+- 后续严格按 `PERSONAL-TEAM-WORKSPACE-001`：先 Task 1 Domain Contract，再 Task 2 migration 010，
+  分别独立 SHA；不跳 team ingestion，不改前端，不开放 team/media 写。
