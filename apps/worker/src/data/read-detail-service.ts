@@ -40,6 +40,21 @@ function authorized(
   );
 }
 
+type WorkItemScope = "account" | "personal" | "invalid";
+
+function workItemScope(record: WorkItemRecord): WorkItemScope {
+  if (record.media === null && record.accountId === null) return "personal";
+  if (record.media === null || record.accountId === null) return "invalid";
+  return "account";
+}
+
+function personalWorkItemAuthorized(
+  record: WorkItemRecord,
+  auth: AuthenticatedDataQueryContext,
+): boolean {
+  return record.assignee === auth.userId || record.creator === auth.userId;
+}
+
 function error(
   code: "INVALID_REQUEST" | "FORBIDDEN" | "NOT_FOUND" | "INTERNAL_ERROR",
   message: string,
@@ -52,11 +67,8 @@ function error(
 }
 
 function workItemDetail(record: WorkItemRecord): WorkItemDetail {
-  if (record.media === null || record.accountId === null) throw new Error("unscoped work item");
   return {
     ...record,
-    media: record.media,
-    accountId: record.accountId,
     slaDue: iso(record.slaDue),
     createdAt: record.createdAt.toISOString(),
     resolvedAt: iso(record.resolvedAt),
@@ -101,8 +113,15 @@ export class ReadDetailService {
       if (record.id !== id || record.workspaceId !== auth.workspaceId) {
         return error("INTERNAL_ERROR", "Work item detail identity could not be verified", requestId);
       }
-      if (!authorized(record.media, record.accountId, auth)) {
-        return error("FORBIDDEN", "Work item is outside the approved account scope", requestId);
+      const scope = workItemScope(record);
+      if (scope === "invalid") {
+        return error("INTERNAL_ERROR", "Work item detail scope could not be verified", requestId);
+      }
+      if (
+        (scope === "account" && !authorized(record.media, record.accountId, auth)) ||
+        (scope === "personal" && !personalWorkItemAuthorized(record, auth))
+      ) {
+        return error("FORBIDDEN", "Work item is outside the approved scope", requestId);
       }
       return readDetailResponseSchema.parse({
         ok: true,

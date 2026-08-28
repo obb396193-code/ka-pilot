@@ -105,6 +105,51 @@ describe("ReadDetailService", () => {
     });
   });
 
+  it("allows an unscoped personal work item for its assignee and preserves both actors", async () => {
+    const result = await service({
+      workItem: workItem({ media: null, accountId: null, assignee: USER_ID }),
+    }).getWorkItem(WORK_ITEM_ID, auth, "personal-assignee-001");
+
+    expect(result).toMatchObject({
+      ok: true,
+      data: {
+        kind: "work_item",
+        workItem: {
+          media: null,
+          accountId: null,
+          assignee: USER_ID,
+          creator: USER_ID,
+        },
+      },
+    });
+  });
+
+  it("allows an unscoped personal work item for its creator", async () => {
+    const result = await service({
+      workItem: workItem({ media: null, accountId: null, assignee: null, creator: USER_ID }),
+    }).getWorkItem(WORK_ITEM_ID, auth, "personal-creator-001");
+
+    expect(result).toMatchObject({ ok: true, data: { kind: "work_item" } });
+  });
+
+  it("denies another user's unscoped work item and rejects a half-scoped row", async () => {
+    const anotherUser = "00000000-0000-4000-8000-000000000199";
+    const forbidden = await service({
+      workItem: workItem({
+        media: null,
+        accountId: null,
+        assignee: anotherUser,
+        creator: anotherUser,
+      }),
+    }).getWorkItem(WORK_ITEM_ID, auth, "personal-other-001");
+    expect(forbidden).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+
+    const malformed = await service({
+      workItem: workItem({ media: "KUAISHOU", accountId: null }),
+    }).getWorkItem(WORK_ITEM_ID, auth, "personal-half-001");
+    expect(malformed).toMatchObject({ ok: false, error: { code: "INTERNAL_ERROR" } });
+  });
+
   it("returns changeset status, items, simulation and TTL without write actions", async () => {
     const result = await service({ changeset: changeset() }).getChangeSet(
       CHANGESET_ID,
@@ -125,7 +170,7 @@ describe("ReadDetailService", () => {
     });
   });
 
-  it("fails closed for same account id in another media and for legacy unscoped rows", async () => {
+  it("fails closed for same account id in another media and for unscoped changesets", async () => {
     const wrongMedia = await service({
       workItem: workItem({ media: "TENCENT" }),
     }).getWorkItem(WORK_ITEM_ID, auth, "scope-001");
@@ -149,7 +194,22 @@ describe("ReadDetailService", () => {
   });
 
   it("fails closed when a repository returns a different path id or workspace", async () => {
-    await expect(service({ workItem: workItem({ id: "00000000-0000-4000-8000-000000000199" }) }).getWorkItem(WORK_ITEM_ID, auth, "identity-001")).resolves.toMatchObject({ ok: false, error: { code: "INTERNAL_ERROR" } });
+    const wrongId = await service({
+      workItem: workItem({ id: "00000000-0000-4000-8000-000000000199" }),
+    }).getWorkItem(WORK_ITEM_ID, auth, "identity-001");
+    expect(wrongId).toMatchObject({ ok: false, error: { code: "INTERNAL_ERROR" } });
+
+    const wrongWorkspace = await service({
+      workItem: workItem({
+        workspaceId: "00000000-0000-4000-8000-000000000999",
+        media: null,
+        accountId: null,
+        title: "must not leak",
+      }),
+    }).getWorkItem(WORK_ITEM_ID, auth, "identity-003");
+    expect(wrongWorkspace).toMatchObject({ ok: false, error: { code: "INTERNAL_ERROR" } });
+    expect(JSON.stringify(wrongWorkspace)).not.toContain("must not leak");
+
     await expect(service({ changeset: changeset({ workspaceId: "00000000-0000-4000-8000-000000000999" }) }).getChangeSet(CHANGESET_ID, auth, "identity-002")).resolves.toMatchObject({ ok: false, error: { code: "INTERNAL_ERROR" } });
   });
 });
