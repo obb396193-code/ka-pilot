@@ -151,6 +151,35 @@ describe("WorkItemListService", () => {
     }
   });
 
+  it("returns an empty successful page when the requested offset is beyond total", async () => {
+    const source = readyResult({ rows: [], page: 2 });
+    const response = await serviceFor(source).service.execute(
+      { page: 2, pageSize: 20 },
+      auth,
+      "work-list-beyond-last-page",
+      new Date("2026-08-25T04:00:00Z"),
+    );
+    expect(response).toMatchObject({
+      ok: true,
+      data: { items: [], page: 2, pageSize: 20, total: 1 },
+      meta: { dataState: "ready" },
+    });
+  });
+
+  it("rejects empty pages before total and non-empty pages beyond total", async () => {
+    const emptyBeforeTotal = readyResult({ rows: [] });
+    const nonEmptyBeyondTotal = readyResult({ page: 2 });
+    expectError(await serviceFor(emptyBeforeTotal).service.execute(
+      {}, auth, "work-list-empty-before-total", new Date("2026-08-25T04:00:00Z"),
+    ), "UPSTREAM_INVALID_RESPONSE");
+    expectError(await serviceFor(nonEmptyBeyondTotal).service.execute(
+      { page: 2, pageSize: 20 },
+      auth,
+      "work-list-nonempty-beyond-total",
+      new Date("2026-08-25T04:00:00Z"),
+    ), "UPSTREAM_INVALID_RESPONSE");
+  });
+
   it("returns 401/403/400 before Repository access", async () => {
     const { service, list } = serviceFor(readyResult());
     expectError(await service.execute({}, null, "work-401"), "UNAUTHORIZED");
@@ -185,11 +214,10 @@ describe("WorkItemListService", () => {
     invalidTaskJoin.rows[0] = { ...invalidTaskJoin.rows[0]!, taskId: null, taskName: "伪造任务" };
     const invalidTotal = readyResult({ total: 0 });
     const invalidAccountCount = readyResult({ accountItemCount: 0 });
-    const invalidPage = readyResult({ page: 2, total: 1 });
     const staleLineage = readyResult({ dataAsOf: "2026-08-25T11:00:00.000Z" });
     for (const result of [
       invalidStatus, invalidLineage, invalidTaskJoin, invalidTotal,
-      invalidAccountCount, invalidPage, staleLineage,
+      invalidAccountCount, staleLineage,
     ]) {
       expectError(await serviceFor(result).service.execute(
         {}, auth, "work-invalid", new Date("2026-08-25T04:00:00Z"),
