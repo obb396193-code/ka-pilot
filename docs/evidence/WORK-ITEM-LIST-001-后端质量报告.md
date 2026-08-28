@@ -1,6 +1,6 @@
 # WORK-ITEM-LIST-001 后端质量报告
 
-> 代码 SHA：`5b5c58c`
+> 代码 SHA：`5b5c58c`，R1 分页修复：`3ad6e3e`
 > 当前结论：`implemented + non_pg_verified + pg_blocked`
 > 禁止表述为：已合流、已部署、已通过真实 PG、已完成前端接入。
 
@@ -9,12 +9,12 @@
 | 门禁 | 结果 |
 |---|---|
 | Domain 全量 | 40 files / 464 tests passed |
-| Worker 非 PG 全量 | 67 files / 530 tests passed；2 个既有外部凭证 opt-in skipped |
+| Worker 非 PG 全量 | 67 files / 532 tests passed；2 个既有外部凭证 opt-in skipped |
 | DB 纯逻辑 | 4 files / 20 tests passed；WorkItemListRepository 3 tests passed |
-| 定向 Service/HTTP 与回归 | 4 files / 60 tests passed |
+| 定向 Service/HTTP 与回归 | 4 files / 62 tests passed |
 | typecheck / lint | Domain、DB、Worker 全绿 |
 | 生产依赖 audit | Domain、DB、Worker 均 0 vulnerabilities |
-| 新代码覆盖率 | Domain 100%；Worker 97.09% statements / 90.97% branches；DB 97.03% / 71.87% |
+| 新代码覆盖率 | Domain 100%；Worker 97.13% statements / 91.09% branches；DB 97.03% / 71.87% |
 | 边界扫描 | `git diff --check`、凭证/动态执行扫描、前端 0 diff、生产文件均少于 300 行 |
 
 ## 尚未通过
@@ -31,6 +31,7 @@
 - 账户型工作项按批准 `(workspace_id,media,account_id)` 限权；跨媒体同号、跨租户和未授权行不进入 total/page；
 - 无账户工作项只向 assignee/creator 本人可见，其他 workspace 成员不可见；
 - Service 对恶意 Repository 做 workspace、tuple、个人可见性、重复 ID、分页、accountItemCount 和 lineage 二次守卫；
+- 超末页空结果（offset>=total）合法返回 200；offset<total 却空页、或非空页最后一行越过 total 仍 502；
 - count/page/readiness 同一 RR/RO 快照；默认严重度、SLA、创建时间、ID 稳定排序；
 - default active statuses 与显式终态筛选、q/assignee/task 等参数均为参数化 SQL；
 - present-invalid Repository count 是 typed contract error→502，连接/事务故障仍为 500；

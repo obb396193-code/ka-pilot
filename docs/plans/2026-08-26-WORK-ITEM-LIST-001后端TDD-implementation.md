@@ -3,7 +3,7 @@
 > 日期：2026-08-26
 > 分支：`codex/work-item-list-001-backend`
 > 共同基线：`d4402e1`
-> 代码提交：`5b5c58c`
+> 代码提交：`5b5c58c`，R1 分页修复：`3ad6e3e`
 
 ## 范围
 
@@ -32,6 +32,14 @@
 - coverage 不完整优先 partial；total=0 且 lineage=null 才是 empty。
 - dataAsOf 来自筛选集合真实 `created_at/resolved_at` 最大值，不使用响应当前时间。
 - 列表不返回 creator、evidenceSnapshot、diagnosis、t1Result；点击详情继续走冻结详情接口。
+
+## R1 分页边界修复
+
+- root 复现：`page=2,pageSize=20,total=1,rows=[]` 是合法超末页，却被旧守卫误报 502。
+- 新语义：空页仅在 `offset<total` 时视为来源自相矛盾；`offset>=total` 返回 200 和空 items。
+- 非空页继续要求 `offset+rows.length<=total`，同时保留 rows 不超过 pageSize/total 等守卫。
+- 新增超末页空结果 happy path、第一页/中间页空缺和非空页越界反例。
+- R1 门禁：Domain 464、Worker 非 PG 532、DB 纯逻辑 20；定向回归 62，三包 typecheck/lint/audit 全绿。
 
 ## 未完成外部门禁
 

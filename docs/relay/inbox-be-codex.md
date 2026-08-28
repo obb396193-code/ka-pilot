@@ -142,3 +142,12 @@
 - 证据：`docs/evidence/WORK-ITEM-LIST-001-后端质量报告.md`。
 - 状态：`implemented + non_pg_verified + pg_blocked`；不通知前端按“后端已完成”接入，不 push，
   不改前端，不开放工作项或媒体写。
+
+#### WORK-ITEM-LIST-001 R1 分页退修回执
+
+- 日期：2026-08-28；修复 SHA：`3ad6e3e`。
+- 修复：合法超末页空结果不再 502；空页但 offset<total、非空页最后一行越过 total 仍 fail closed。
+- 反例：`page=2,pageSize=20,total=1,rows=[]` 返回 200；第一页 total>0 空页与非空超界返回 502。
+- 门禁：Domain 464、Worker 非 PG 532、DB 纯逻辑 20；定向 62；三包 typecheck/lint/audit 全绿；
+  Worker 新代码覆盖率 97.13% statements / 91.09% branches。
+- Docker 仍 `EOF`，状态保持 `pg_blocked`；本人无账户工作项详情 403 缺口不在本批修改。
