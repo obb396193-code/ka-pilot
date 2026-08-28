@@ -119,13 +119,17 @@ function assertRepositoryResult(
   request: WorkItemListRequest,
   auth: AuthenticatedDataQueryContext,
 ): void {
+  const pageOffset = (result.page - 1) * result.pageSize;
+  const pageRangeInvalid = result.rows.length === 0
+    ? pageOffset < result.total
+    : pageOffset + result.rows.length > result.total;
   if (
     result.page !== request.page || result.pageSize !== request.pageSize ||
     !Number.isSafeInteger(result.total) || result.total < 0 ||
     !Number.isSafeInteger(result.accountItemCount) || result.accountItemCount < 0 ||
     result.accountItemCount > result.total ||
     result.rows.length > result.pageSize || result.rows.length > result.total ||
-    ((result.page - 1) * result.pageSize) + result.rows.length > result.total ||
+    pageRangeInvalid ||
     typeof result.coverageComplete !== "boolean" ||
     typeof result.initialFullComplete !== "boolean" ||
     (result.total === 0 && result.dataAsOf !== null) ||
