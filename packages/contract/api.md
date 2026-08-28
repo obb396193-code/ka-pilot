@@ -9,7 +9,10 @@
 
 前端业务页只消费服务端会话，不接受浏览器自报的 `workspaceId/userId/role/accountIds`。
 一期内网可启用 `internal_test` provider；正式接入 BUC 时只替换身份 provider，下面的
-session、membership、workspace 选择与账户授权响应保持不变。
+session、membership 与账户授权响应保持不变。一期产品策略为**一人一 personal workspace**：
+每个 identity 只进入自己的空间，业务数据默认为空，只能看到本人显式获授的媒体账户及其派生
+对象。可预置官方模板/规则/教学内容，但公共资产不得携带任何用户业务数据。底层多 workspace、
+membership 和 role 结构仅作为未来升级点，一期 UI/API 不开放跨用户共享或 workspace 切换。
 
 - `POST /api/internal/auth/login`：仅在显式启用 `internal_test` provider 时接受
   `{provider:"internal_test", username, password}`；用户名和密码校验材料来自 Secret/config，
@@ -17,9 +20,8 @@ session、membership、workspace 选择与账户授权响应保持不变。
   SameSite=Lax` session cookie，不把 session token 返回 JSON。
 - `GET /api/internal/auth/session`：返回当前身份、可进入 workspace 列表、active workspace
   与角色；不返回 credential reference、奇航 userId、BUC subject 或账户 scope 明细。
-- `POST /api/internal/auth/workspace`：`{workspaceId}`；仅可切换到当前 identity 的 active
-  membership，切换后服务端更新 session 的 active workspace。不存在或无权统一返回 403，
-  不泄露 workspace 是否存在。
+- `POST /api/internal/auth/workspace`：一期前端不调用；若为兼容/测试保留，只允许提交当前
+  identity 唯一的 personal workspace。其他 workspace 统一返回 403，不泄露其是否存在。
 - `DELETE /api/internal/auth/session`：撤销服务端 session 并清 cookie；重复调用幂等。
 
 `approvedAuthContext` 必须按每次请求重新从 `auth_sessions → auth_identities →
@@ -40,8 +42,9 @@ workspace_memberships → account_access_grants` 解析，至少得到：
   不同 media 也是两份授权。无 grant 表示空范围，不等于整个 workspace。
 - `auth_sessions` 只保存 token hash；日志、Trace、错误和响应均不得出现 cookie/token、登录
   密码、BUC subject、奇航 userId 或 Secret reference。
-- 内测试点必须预置同一 identity 的至少两个脱敏 workspace，并覆盖同 account_id 跨
-  workspace、同 account_id 跨 media、撤销 membership/session 三类反例。
+- 内测试点至少预置两个不同 identity 的独立脱敏 personal workspace，并覆盖同 account_id 跨
+  workspace、同 account_id 跨 media、跨 identity 访问、撤销 membership/session 四类反例；
+  不再以“同一 identity 可切两个 workspace”作为一期 happy path。
 
 成功 session 响应冻结为：
 
@@ -256,7 +259,9 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
 - 使用与双数据查询相同的服务端 Authorization/workspace/user/account scope header 和 `x-request-id`；
 - 返回持久化的 `(workspaceId,media,accountId)`、`evidenceSnapshot`、`diagnosis`、
   `t1Result`、状态、SLA 与时间字段；
-- 账户 tuple 与批准 scope 不完全一致返回 403；历史无 scope 对象同样 fail closed；
+- 账户 tuple 与批准 scope 不完全一致返回 403；无账户 tuple 的个人工作项仅在记录属于当前
+  personal workspace，且当前 `userId` 等于记录 `assignee` 或 `creator` 时允许读取；其他历史
+  无 scope 对象仍 fail closed；
 - 不存在返回 404 + `NOT_FOUND`，非 UUID 返回 400 + `INVALID_REQUEST`。
 
 ### WORK-ITEM-LIST-001 工作项队列（一期只读）
