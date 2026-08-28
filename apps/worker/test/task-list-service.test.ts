@@ -54,6 +54,7 @@ function readyResult(overrides: Partial<TaskListRepositoryResult> = {}): TaskLis
     pageSize: 20,
     total: 1,
     coverageComplete: true,
+    initialFullComplete: true,
     ...overrides,
   };
 }
@@ -82,6 +83,7 @@ describe("TaskListService", () => {
 
     expect(list).toHaveBeenCalledWith({
       workspaceId,
+      requestingUserId: auth.userId,
       businessDate: "2026-08-25",
       allowedAccounts: auth.allowedAccounts,
       page: 2,
@@ -188,6 +190,22 @@ describe("TaskListService", () => {
       );
       expect(response.ok && response.meta.dataState).toBe(state);
     }
+  });
+
+  it("never reports ready before this user has a successful initial full sync", async () => {
+    const response = await serviceFor(readyResult({ initialFullComplete: false })).service.execute(
+      {},
+      auth,
+      "task-list-initial-full-required",
+      new Date("2026-08-25T04:00:00Z"),
+    );
+    expect(response).toMatchObject({
+      ok: true,
+      meta: {
+        dataState: "partial",
+        coverage: { complete: false },
+      },
+    });
   });
 
   it("returns 401/403/400 before the repository is called", async () => {

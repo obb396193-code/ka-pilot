@@ -55,6 +55,7 @@ function emptyTaskListService(): TaskListService {
         pageSize: query.pageSize ?? 20,
         total: 0,
         coverageComplete: true,
+        initialFullComplete: true,
       }),
     },
   });

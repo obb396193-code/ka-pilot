@@ -124,6 +124,7 @@ describe("TaskListRepository", () => {
 
   const baseQuery = () => ({
     workspaceId,
+    requestingUserId: ownerId,
     businessDate: "2026-08-25",
     allowedAccounts: [{ media: "KUAISHOU", accountId: "same-id" }],
     page: 1,
@@ -244,6 +245,52 @@ describe("TaskListRepository", () => {
         { media: "KUAISHOU", accountId: "same-id" },
       ],
     })).rejects.toThrow("duplicate");
+  });
+
+  it("keeps readiness false until this user completed full sync for every scoped media", async () => {
+    expect((await repository.list(baseQuery())).initialFullComplete).toBe(false);
+    const kuaishouJob = await pool.query<{ id: string }>(
+      `INSERT INTO jobs (
+         workspace_id, job_type, payload, credential_owner_user_id, status
+       ) VALUES ($1, 'etl_full', '{"media":"KUAISHOU"}'::jsonb, $2, 'done')
+       RETURNING id`,
+      [workspaceId, ownerId],
+    );
+    await pool.query(
+      `INSERT INTO etl_runs (
+         workspace_id, job_id, run_kind, scope, started_at, finished_at, status, rows_ingested
+       ) VALUES ($1, $2, 'full', '{}'::jsonb, now(), now(), 'done', 1)`,
+      [workspaceId, kuaishouJob.rows[0]!.id],
+    );
+    expect((await repository.list(baseQuery())).initialFullComplete).toBe(true);
+    expect((await repository.list({
+      ...baseQuery(),
+      allowedAccounts: [
+        { media: "KUAISHOU", accountId: "same-id" },
+        { media: "TENCENT", accountId: "same-id" },
+      ],
+    })).initialFullComplete).toBe(false);
+
+    const tencentJob = await pool.query<{ id: string }>(
+      `INSERT INTO jobs (
+         workspace_id, job_type, payload, credential_owner_user_id, status
+       ) VALUES ($1, 'etl_full', '{"media":"TENCENT"}'::jsonb, $2, 'done')
+       RETURNING id`,
+      [workspaceId, ownerId],
+    );
+    await pool.query(
+      `INSERT INTO etl_runs (
+         workspace_id, job_id, run_kind, scope, started_at, finished_at, status, rows_ingested
+       ) VALUES ($1, $2, 'full', '{}'::jsonb, now(), now(), 'done', 1)`,
+      [workspaceId, tencentJob.rows[0]!.id],
+    );
+    expect((await repository.list({
+      ...baseQuery(),
+      allowedAccounts: [
+        { media: "KUAISHOU", accountId: "same-id" },
+        { media: "TENCENT", accountId: "same-id" },
+      ],
+    })).initialFullComplete).toBe(true);
   });
 
   it("holds total and page rows in one repeatable-read snapshot", async () => {

@@ -35,3 +35,4 @@ export * from "./data-query-rows.js";
 export * from "./read-detail-contract.js";
 export * from "./auth-context.js";
 export * from "./task-list-contract.js";
+export * from "./workspace-sync-scheduler.js";

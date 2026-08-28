@@ -192,6 +192,44 @@ describe("ETL handlers", () => {
     );
   });
 
+  it("rejects account rows outside the requested full-sync scope before persistence", async () => {
+    const calls: QihangQuery[] = [];
+    const qihang = {
+      query: vi.fn(async (query: QihangQuery): Promise<QihangQueryResult> => {
+        calls.push(query);
+        return {
+          rows: [{ account_id: "outside-grant" }],
+          pagination: { totalNum: 1, pageNum: 1, pageSize: 50 },
+          envelope: {},
+        };
+      }),
+    };
+    const runStore = store();
+    const downstream = jobs();
+    const handler = createFullEtlHandler({ qihang, store: runStore.value, jobs: downstream });
+
+    await expect(handler(job("etl_full", {
+      workspaceId,
+      userId: "u-qihang",
+      asOfDate: "2026-08-25",
+      realtimeDays: 1,
+      accountIds: ["granted-account"],
+    }))).rejects.toThrow("escaped requested account scope");
+
+    expect(calls[0]).toMatchObject({
+      resource: "account",
+      accountIds: ["granted-account"],
+    });
+    expect(runStore.value.syncAccountMetadataAndRaw).not.toHaveBeenCalled();
+    expect(runStore.value.appendRaw).not.toHaveBeenCalled();
+    expect(runStore.value.failRun).toHaveBeenCalledWith(
+      91,
+      "validate:account_page_1_scope",
+      "Qihang account response escaped requested account scope",
+    );
+    expect(downstream.enqueue).not.toHaveBeenCalled();
+  });
+
   it("falls back from an empty D-1 offline partition to the latest produced partition", async () => {
     const calls: QihangQuery[] = [];
     const qihang = {

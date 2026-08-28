@@ -59,6 +59,15 @@ export interface JobEnqueuerPort {
   enqueue(job: NewJob): Promise<string>;
 }
 
+export type ScheduledJobInitialState =
+  | { status: "queued" }
+  | { status: "blocked_auth"; reason: string };
+
+export interface ScheduledJobEnqueueResult {
+  id: string;
+  inserted: boolean;
+}
+
 interface NormalizedNewJob {
   id: string | null;
   workspaceId: string | null;
@@ -173,6 +182,69 @@ export class JobRepository implements JobRepositoryPort {
     if (existing.rows[0]) {
       return existing.rows[0].id;
     }
+    throw new Error(`Deterministic job ${normalized.id} conflicts with an existing job`);
+  }
+
+  async enqueueScheduled(
+    job: NewJob,
+    initialState: ScheduledJobInitialState,
+  ): Promise<ScheduledJobEnqueueResult> {
+    const normalized = normalizeNewJob(job);
+    if (normalized.id === null) {
+      throw new Error("Scheduled job requires a deterministic id");
+    }
+    const reason = initialState.status === "blocked_auth"
+      ? normalizeBlockedReason(initialState.reason)
+      : null;
+    const inserted = await this.pool.query<{ id: string }>(
+      `INSERT INTO jobs (
+         id, workspace_id, job_type, payload, priority, credential_owner_user_id,
+         max_attempts, run_after, status, last_error, finished_at
+       ) VALUES (
+         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+         CASE WHEN $9 = 'blocked_auth' THEN now() ELSE NULL END
+       )
+       ON CONFLICT (id) DO NOTHING
+       RETURNING id`,
+      [
+        normalized.id,
+        normalized.workspaceId,
+        normalized.jobType,
+        normalized.payload,
+        normalized.priority,
+        normalized.credentialOwnerUserId,
+        normalized.maxAttempts,
+        normalized.runAfter,
+        initialState.status,
+        reason,
+      ],
+    );
+    if (inserted.rows[0]) return { id: inserted.rows[0].id, inserted: true };
+    const existing = await this.pool.query<{ id: string }>(
+      `SELECT id
+       FROM jobs
+       WHERE id = $1
+         AND workspace_id IS NOT DISTINCT FROM $2::uuid
+         AND job_type = $3
+         AND payload = $4::jsonb
+         AND priority = $5
+         AND credential_owner_user_id IS NOT DISTINCT FROM $6::uuid
+         AND max_attempts = $7
+         AND status = $8
+         AND last_error IS NOT DISTINCT FROM $9::text`,
+      [
+        normalized.id,
+        normalized.workspaceId,
+        normalized.jobType,
+        normalized.payload,
+        normalized.priority,
+        normalized.credentialOwnerUserId,
+        normalized.maxAttempts,
+        initialState.status,
+        reason,
+      ],
+    );
+    if (existing.rows[0]) return { id: existing.rows[0].id, inserted: false };
     throw new Error(`Deterministic job ${normalized.id} conflicts with an existing job`);
   }
 
@@ -330,6 +402,13 @@ function normalizeNewJob(job: NewJob): NormalizedNewJob {
     maxAttempts: job.maxAttempts ?? 3,
     runAfter: job.runAfter ?? new Date(),
   };
+}
+
+function normalizeBlockedReason(reason: string): string {
+  if (!/^[A-Z0-9_]{1,100}$/.test(reason)) {
+    throw new Error("Blocked auth reason must be a stable code");
+  }
+  return reason;
 }
 
 function requireLeaseToken(job: JobLeaseIdentity): string {

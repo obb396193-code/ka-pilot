@@ -87,6 +87,8 @@ async function discoverAccountIds(
       fetchedByUserId: payload.fetchedByUserId,
     });
     if (records.length === 0) break;
+    progress.currentStep = `validate:account_page_${pageNum}_scope`;
+    assertAccountRowsWithinRequestedScope(records, payload.accountIds);
     const total = result.pagination?.totalNum;
     if (total === null || total === undefined) {
       progress.currentStep = `validate:account_page_${pageNum}`;
@@ -112,9 +114,21 @@ function accountQuery(payload: FullEtlPayload, pageNum: number): QihangQuery {
     media: payload.media,
     pageNum,
     pageSize: payload.pageSize,
+    ...(payload.accountIds.length === 0 ? {} : { accountIds: payload.accountIds }),
     ...(payload.keyword === undefined ? {} : { keyword: payload.keyword }),
     ...(payload.bizName === undefined ? {} : { bizName: payload.bizName }),
   };
+}
+
+function assertAccountRowsWithinRequestedScope(
+  records: readonly { accountId: string }[],
+  requestedAccountIds: readonly string[],
+): void {
+  if (requestedAccountIds.length === 0) return;
+  const requested = new Set(requestedAccountIds);
+  if (records.some((record) => !requested.has(record.accountId))) {
+    throw new Error("Qihang account response escaped requested account scope");
+  }
 }
 
 async function ingestAccountMetrics(

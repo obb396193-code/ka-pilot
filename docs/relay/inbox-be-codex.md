@@ -94,3 +94,33 @@
 - 证据：`docs/evidence/TASK-LIST-001-后端质量报告.md`。
 - 未完成：BFF/前端整合、正式 session 登录链、真实奇航任务源 trace、内网部署；任务/媒体写继续关闭。
 - 状态：已实现并完成 Codex 自审；待 root 合流，Claude/arch 后审位保留。
+
+### B23-C2 普通 Workspace 首次同步与周期调度内核
+
+- 派活方：root Codex（Contract/验收/整合）
+- 日期：2026-08-26
+- 分支：`codex/b23-c2-workspace-scheduler`，基线 `codex/integration-control@1950808`
+- 实施计划：`docs/plans/2026-08-26-B23-C2普通Workspace同步调度内核-implementation.md`
+- 边界：后端 service + one-shot CLI；不加浏览器/公开写 API，不改前端，不 push，不开放媒体写。
+- 代码提交：`252425a`、`e7c407f`、`d225ba4`、`6302cc4`、`10b9e8b`、`eb3d4df`、
+  `0ec9c99`、`02783a9`、P1 修复 `d1a184d`；计划提交 `23ec0ee`。
+- 质量：Domain 455、DB 139、Worker 510 默认 tests passed，2 个既有外部凭证 opt-in skipped；
+  三包 typecheck/lint/audit、coverage 与真实 PG 全绿。
+- 证据：`docs/evidence/B23-C2-普通Workspace同步调度内核质量报告.md`、
+  `docs/evidence/B23-C2-账户与工作项列表Gap矩阵.md`。
+- 已实现：active 身份候选快照、确定性并发幂等、blocked_auth、不可变授权/credential owner、
+  执行前复核、上海 03:00 业务日、one-shot CLI、首次 full ready 门及共享 readiness 查询。
+- 未完成：外部 scheduler 配置、真实 workspace/奇航首次 full、内网部署、BFF；两个后续列表仍待
+  root 冻结严格 DTO。所有媒体写继续关闭。
+- 状态：`implemented + local_pg_verified + codex_self_checked`；待 root 独立验收合流，
+  Claude/arch 后审位保留。
+
+#### C2 P1 授权退回修复回执
+
+- root 发现：首次 Full 在空 grant 时仍会无过滤枚举并落库奇航账户，违反 AUTH-001 空 grant=空范围。
+- 修复 SHA：`d1a184d`。
+- 三道门：调度 Full/Incr 空 scope 均 `blocked_auth/ACCOUNT_SCOPE_MISSING`；执行前空授权快照
+  `BlockedAuthError`；Full 请求携带批准 `accountIds`，上游越界行在 metadata/Raw 持久化前拒绝。
+- 反例：Service Auto/Full/Incr、真实 PG terminal blocked Job、执行前空快照、上游越界账户 0 落库。
+- 门禁：Domain 455、DB 139、Worker 510 passed；2 opt-in skipped；三包 typecheck/lint/audit、
+  coverage 全绿。未改 Contract、前端或公开 API，未 push。

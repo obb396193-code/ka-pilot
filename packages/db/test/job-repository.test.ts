@@ -161,6 +161,80 @@ describe("JobRepository", () => {
     });
   });
 
+  it("idempotently inserts terminal blocked_auth scheduler records", async () => {
+    await pool.query("DELETE FROM jobs");
+    const workspace = await pool.query<{ id: string }>(
+      "INSERT INTO workspaces (name) VALUES ('blocked-scheduler') RETURNING id",
+    );
+    const user = await pool.query<{ id: string }>(
+      "INSERT INTO users (workspace_id, name) VALUES ($1, 'blocked-user') RETURNING id",
+      [workspace.rows[0]!.id],
+    );
+    const input = {
+      id: "bbbbbbbb-bbbb-5bbb-8bbb-bbbbbbbbbbbb",
+      workspaceId: workspace.rows[0]!.id,
+      jobType: "etl_full",
+      payload: {
+        businessDate: "2026-08-25",
+        initiatorUserId: user.rows[0]!.id,
+        authorizationSnapshot: {
+          workspaceId: workspace.rows[0]!.id,
+          userId: user.rows[0]!.id,
+          status: "blocked_auth",
+          reason: "MEMBERSHIP_MISSING",
+        },
+      },
+      priority: 5,
+      credentialOwnerUserId: user.rows[0]!.id,
+    };
+
+    await expect(repository.enqueueScheduled(input, {
+      status: "blocked_auth",
+      reason: "MEMBERSHIP_MISSING",
+    })).resolves.toEqual({ id: input.id, inserted: true });
+    await expect(repository.enqueueScheduled(input, {
+      status: "blocked_auth",
+      reason: "MEMBERSHIP_MISSING",
+    })).resolves.toEqual({ id: input.id, inserted: false });
+
+    const saved = await pool.query<{
+      status: string;
+      last_error: string;
+      credential_owner_user_id: string;
+    }>("SELECT status, last_error, credential_owner_user_id FROM jobs WHERE id = $1", [input.id]);
+    expect(saved.rows[0]).toEqual({
+      status: "blocked_auth",
+      last_error: "MEMBERSHIP_MISSING",
+      credential_owner_user_id: user.rows[0]!.id,
+    });
+    await expect(repository.leaseNext(60)).resolves.toBeNull();
+  });
+
+  it("rejects a same-day scheduler replay whose frozen authorization changed", async () => {
+    await pool.query("DELETE FROM jobs");
+    const workspace = await pool.query<{ id: string }>(
+      "INSERT INTO workspaces (name) VALUES ('scheduler-conflict') RETURNING id",
+    );
+    const user = await pool.query<{ id: string }>(
+      "INSERT INTO users (workspace_id, name) VALUES ($1, 'scheduler-user') RETURNING id",
+      [workspace.rows[0]!.id],
+    );
+    const input = {
+      id: "cccccccc-cccc-5ccc-8ccc-cccccccccccc",
+      workspaceId: workspace.rows[0]!.id,
+      jobType: "etl_incr",
+      payload: { authorizationSnapshot: { allowedAccounts: ["a-1"] } },
+      priority: 1,
+      credentialOwnerUserId: user.rows[0]!.id,
+    };
+
+    await repository.enqueueScheduled(input, { status: "queued" });
+    await expect(repository.enqueueScheduled({
+      ...input,
+      payload: { authorizationSnapshot: { allowedAccounts: ["a-2"] } },
+    }, { status: "queued" })).rejects.toThrow("conflicts with an existing job");
+  });
+
   it("extends active leases and recovers only leases stale beyond the startup threshold", async () => {
     await pool.query("DELETE FROM jobs");
     const inserted = await pool.query<{ id: string; job_type: string; lease_token: string }>(`

@@ -169,7 +169,8 @@ function assertRepositoryResult(
     !Number.isSafeInteger(result.total) ||
     result.total < 0 ||
     result.rows.length > result.pageSize ||
-    result.rows.length > result.total
+    result.rows.length > result.total ||
+    typeof result.initialFullComplete !== "boolean"
   ) {
     throw new Error("invalid repository pagination");
   }
@@ -196,6 +197,7 @@ function dataState(
   result: TaskListRepositoryResult,
   businessDate: string,
 ): "partial" | "stale" | "empty" | "ready" {
+  if (!result.initialFullComplete) return "partial";
   if (!result.coverageComplete) return "partial";
   const stale = result.rows.some((row) =>
     row.linkedAccountCount > 0 && row.latestMetricDate !== businessDate,
@@ -248,6 +250,7 @@ export class TaskListService {
       );
       result = await this.dependencies.repository.list({
         workspaceId: auth.workspaceId,
+        requestingUserId: auth.userId,
         businessDate,
         allowedAccounts: auth.allowedAccounts,
         ...request.data,
@@ -275,7 +278,7 @@ export class TaskListService {
           dataState: dataState(result, businessDate),
           businessDate,
           dataAsOf: latestDataAsOf(result.rows),
-          coverage: { complete: result.coverageComplete },
+          coverage: { complete: result.coverageComplete && result.initialFullComplete },
           selectedSource: "qihang",
           requestId,
         },

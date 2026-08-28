@@ -15,6 +15,7 @@ import {
   TASK_LIST_COUNT_SQL,
   TASK_LIST_PAGE_SQL,
 } from "./task-list-sql.js";
+import { loadWorkspaceSyncReadiness } from "./workspace-sync-readiness.js";
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -26,6 +27,7 @@ export interface TaskListAccountScope {
 
 export interface TaskListRepositoryQuery extends Partial<TaskListRequest> {
   workspaceId: string;
+  requestingUserId: string;
   businessDate: string;
   allowedAccounts: readonly TaskListAccountScope[];
 }
@@ -76,6 +78,7 @@ export interface TaskListRepositoryResult {
   pageSize: number;
   total: number;
   coverageComplete: boolean;
+  initialFullComplete: boolean;
 }
 
 interface CountRow extends QueryResultRow {
@@ -113,6 +116,7 @@ interface ListRow extends QueryResultRow {
 
 interface NormalizedQuery extends TaskListRequest {
   workspaceId: string;
+  requestingUserId: string;
   businessDate: string;
   allowedAccounts: TaskListAccountScope[];
 }
@@ -143,6 +147,9 @@ function normalizeQuery(input: TaskListRepositoryQuery): NormalizedQuery {
   if (!UUID_PATTERN.test(input.workspaceId)) {
     throw new Error("workspaceId must be a UUID");
   }
+  if (!UUID_PATTERN.test(input.requestingUserId)) {
+    throw new Error("requestingUserId must be a UUID");
+  }
   const businessDate = taskListCalendarDateSchema.parse(input.businessDate);
   const parsed = taskListRequestSchema.parse({
     page: input.page,
@@ -169,6 +176,7 @@ function normalizeQuery(input: TaskListRepositoryQuery): NormalizedQuery {
   return {
     ...parsed,
     workspaceId: input.workspaceId,
+    requestingUserId: input.requestingUserId,
     businessDate,
     allowedAccounts,
   };
@@ -271,6 +279,11 @@ export class TaskListRepository {
       const countResult = await client.query<CountRow>(TASK_LIST_COUNT_SQL, values);
       const count = countResult.rows[0];
       if (!count) throw new Error("task list count query returned no row");
+      const initialFullComplete = await loadWorkspaceSyncReadiness(client, {
+        workspaceId: query.workspaceId,
+        requestingUserId: query.requestingUserId,
+        allowedAccounts: query.allowedAccounts,
+      });
       const pageResult = await client.query<ListRow>(TASK_LIST_PAGE_SQL, [
         ...values,
         query.pageSize,
@@ -283,6 +296,7 @@ export class TaskListRepository {
         pageSize: query.pageSize,
         total: nonnegativeInteger(count.total, "total"),
         coverageComplete: count.coverage_complete,
+        initialFullComplete,
       };
     } catch (error) {
       await rollback(client);
