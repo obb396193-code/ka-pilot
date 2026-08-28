@@ -492,6 +492,58 @@ describe("data API HTTP composition", () => {
     });
   });
 
+  it("serves an unscoped personal work item only through the authenticated actor", async () => {
+    const workItemId = "00000000-0000-4000-8000-000000000208";
+    const detailService = new ReadDetailService({
+      workItems: {
+        find: async () => ({
+          id: workItemId,
+          workspaceId: auth.workspaceId,
+          type: "self",
+          media: null,
+          accountId: null,
+          taskId: null,
+          ruleId: null,
+          severity: null,
+          title: "personal fixture",
+          evidenceSnapshot: { private: true },
+          diagnosis: null,
+          status: "open",
+          ignoreReason: null,
+          mutedUntil: null,
+          assignee: null,
+          creator: auth.userId,
+          acceptanceCriteria: null,
+          slaDue: null,
+          rejectReason: null,
+          t1Result: null,
+          createdAt: new Date("2026-08-28T01:00:00Z"),
+          resolvedAt: null,
+        }),
+      },
+      changeSets: { find: async () => null },
+    });
+    const baseUrl = await start({ detailService });
+    const response = await fetch(`${baseUrl}/api/v1/work-items/${workItemId}`, {
+      headers: { ...authHeaders(), "x-request-id": "personal-detail-http-001" },
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-request-id")).toBe("personal-detail-http-001");
+    expect(await response.json()).toMatchObject({
+      ok: true,
+      data: {
+        kind: "work_item",
+        workItem: {
+          media: null,
+          accountId: null,
+          assignee: null,
+          creator: auth.userId,
+        },
+      },
+    });
+  });
+
   it("keeps detail writes closed and returns stable 401/403/404 envelopes", async () => {
     const id = "00000000-0000-4000-8000-000000000204";
     const forbidden = new ReadDetailService({

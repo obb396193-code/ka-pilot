@@ -10,9 +10,15 @@ const accountScopeFields = {
   accountId: z.string().min(1),
 };
 
+const nullableWorkItemScopeFields = {
+  workspaceId: z.string().uuid(),
+  media: z.string().min(1).nullable(),
+  accountId: z.string().min(1).nullable(),
+};
+
 export const workItemDetailSchema = z.object({
   id: z.string().uuid(),
-  ...accountScopeFields,
+  ...nullableWorkItemScopeFields,
   type: z.enum(["diagnosis", "dispatch", "self", "agent_question", "external_handled"]),
   taskId: z.string().nullable(),
   ruleId: z.string().nullable(),
@@ -34,7 +40,15 @@ export const workItemDetailSchema = z.object({
   t1Result: jsonObjectSchema.nullable(),
   createdAt: z.string().datetime({ offset: true }),
   resolvedAt: nullableDateTimeSchema,
-}).strict();
+}).strict().superRefine((value, context) => {
+  if ((value.media === null) !== (value.accountId === null)) {
+    context.addIssue({
+      code: "custom",
+      message: "media and accountId must both be present or both be null",
+      path: [value.media === null ? "media" : "accountId"],
+    });
+  }
+});
 
 export const changeSetDetailItemSchema = z.object({
   id: z.number().int().positive(),
