@@ -136,6 +136,55 @@ describe("AuthSessionRepository", () => {
     });
   });
 
+  it("ignores more than 1000 unrelated grants in a team workspace", async () => {
+    await pool.query(
+      `INSERT INTO accounts (workspace_id, media, account_id)
+       SELECT $1, 'KUAISHOU', 'team-bulk-' || generate_series
+       FROM generate_series(1, 1000)`,
+      [workspaceB],
+    );
+    await pool.query(
+      `INSERT INTO account_access_grants (
+         workspace_id, identity_id, media, account_id, access_level
+       )
+       SELECT $1, $2, 'KUAISHOU', 'team-bulk-' || generate_series, 'execute'
+       FROM generate_series(1, 1000)`,
+      [workspaceB, identityId],
+    );
+
+    await expect(repository.resolveApprovedAuthContext(tokenBHash, NOW)).resolves.toMatchObject({
+      status: "approved",
+      context: {
+        workspaceId: workspaceB,
+        workspaceKind: "team",
+        scope: { kind: "team_workspace_readonly" },
+      },
+    });
+  });
+
+  it("fails closed when a personal workspace has more than 1000 grants", async () => {
+    await pool.query(
+      `INSERT INTO accounts (workspace_id, media, account_id)
+       SELECT $1, 'KUAISHOU', 'personal-bulk-' || generate_series
+       FROM generate_series(1, 999)`,
+      [workspaceA],
+    );
+    await pool.query(
+      `INSERT INTO account_access_grants (
+         workspace_id, identity_id, media, account_id, access_level
+       )
+       SELECT $1, $2, 'KUAISHOU', 'personal-bulk-' || generate_series, 'read'
+       FROM generate_series(1, 999)`,
+      [workspaceA, identityId],
+    );
+
+    await expect(repository.resolveApprovedAuthContext(tokenAHash, NOW)).resolves.toEqual({
+      status: "rejected",
+      httpStatus: 403,
+      reason: "INVALID_AUTH_STATE",
+    });
+  });
+
   it("fails closed for duplicate personal workspaces and a shared personal workspace", async () => {
     const extraWorkspace = (await pool.query<{ id: string }>(
       "INSERT INTO workspaces (name, kind) VALUES ($1, 'personal') RETURNING id",
