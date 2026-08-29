@@ -13,7 +13,8 @@ const approved: AuthResolution = {
     workspaceId: "00000000-0000-4000-8000-000000000401",
     userId: "00000000-0000-4000-8000-000000000402",
     role: "admin",
-    allowedAccounts: [],
+    workspaceKind: "personal",
+    scope: { kind: "explicit_accounts", accounts: [] },
   },
 };
 
@@ -28,6 +29,70 @@ describe("SessionAuthService", () => {
       undefined,
     );
     expect(resolveApprovedAuthContext.mock.calls.flat().join(" ")).not.toContain(TOKEN);
+  });
+
+  it("issues a session through the repository without exposing the opaque token", async () => {
+    const createSessionForIdentity = vi.fn(async () => approved);
+    const service = new SessionAuthService({
+      resolveApprovedAuthContext: vi.fn(async () => approved),
+      createSessionForIdentity,
+      switchSessionWorkspace: vi.fn(async () => approved),
+    }, { now: () => new Date("2026-08-25T08:00:00Z") });
+    const expiresAt = new Date("2026-08-25T10:00:00Z");
+    await expect(service.issueForIdentity({
+      identityId: "00000000-0000-4000-8000-000000000403",
+      token: TOKEN,
+      expiresAt,
+    })).resolves.toEqual(approved);
+    expect(createSessionForIdentity).toHaveBeenCalledWith({
+      identityId: "00000000-0000-4000-8000-000000000403",
+      tokenHash: createHash("sha256").update(TOKEN, "utf8").digest("hex"),
+      now: new Date("2026-08-25T08:00:00Z"),
+      expiresAt,
+    });
+    expect(createSessionForIdentity.mock.calls.flat().join(" ")).not.toContain(TOKEN);
+  });
+
+  it("rotates the session token while switching only by target workspace id", async () => {
+    const switchSessionWorkspace = vi.fn(async () => approved);
+    const service = new SessionAuthService({
+      resolveApprovedAuthContext: vi.fn(async () => approved),
+      createSessionForIdentity: vi.fn(async () => approved),
+      switchSessionWorkspace,
+    }, { now: () => new Date("2026-08-25T08:00:00Z") });
+    const nextToken = "next-session-token-with-at-least-thirty-two-bytes-002";
+    const targetWorkspaceId = "00000000-0000-4000-8000-000000000404";
+    await expect(service.switchWorkspace({
+      token: TOKEN,
+      nextToken,
+      targetWorkspaceId,
+    })).resolves.toEqual(approved);
+    expect(switchSessionWorkspace).toHaveBeenCalledWith({
+      tokenHash: createHash("sha256").update(TOKEN, "utf8").digest("hex"),
+      nextTokenHash: createHash("sha256").update(nextToken, "utf8").digest("hex"),
+      targetWorkspaceId,
+      now: new Date("2026-08-25T08:00:00Z"),
+    });
+    expect(switchSessionWorkspace.mock.calls.flat().join(" ")).not.toContain(TOKEN);
+    expect(switchSessionWorkspace.mock.calls.flat().join(" ")).not.toContain(nextToken);
+  });
+
+  it("treats an invalid current switch token as unauthenticated without touching storage", async () => {
+    const switchSessionWorkspace = vi.fn(async () => approved);
+    const service = new SessionAuthService({
+      resolveApprovedAuthContext: vi.fn(async () => approved),
+      switchSessionWorkspace,
+    });
+    await expect(service.switchWorkspace({
+      token: "short",
+      nextToken: "next-session-token-with-at-least-thirty-two-bytes-002",
+      targetWorkspaceId: "00000000-0000-4000-8000-000000000404",
+    })).resolves.toEqual({
+      status: "rejected",
+      httpStatus: 401,
+      reason: "SESSION_NOT_FOUND",
+    });
+    expect(switchSessionWorkspace).not.toHaveBeenCalled();
   });
 
   it("passes an expected workspace without letting the caller provide grants", async () => {

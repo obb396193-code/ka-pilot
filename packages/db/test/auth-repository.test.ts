@@ -27,7 +27,7 @@ describe("AuthSessionRepository", () => {
   beforeEach(async () => {
     const suffix = randomUUID();
     const workspaces = await pool.query<{ id: string }>(
-      "INSERT INTO workspaces (name) VALUES ($1), ($2) RETURNING id",
+      "INSERT INTO workspaces (name, kind) VALUES ($1, 'personal'), ($2, 'team') RETURNING id",
       [`auth-repo-a-${suffix}`, `auth-repo-b-${suffix}`],
     );
     workspaceA = workspaces.rows[0]!.id;
@@ -100,10 +100,14 @@ describe("AuthSessionRepository", () => {
         workspaceId: workspaceA,
         userId: userA,
         role: "admin",
-        allowedAccounts: [
-          { media: "KUAISHOU", accountId: "same-account", accessLevel: "read" },
-          { media: "TENCENT", accountId: "same-account", accessLevel: "preview" },
-        ],
+        workspaceKind: "personal",
+        scope: {
+          kind: "explicit_accounts",
+          accounts: [
+            { media: "KUAISHOU", accountId: "same-account", accessLevel: "read" },
+            { media: "TENCENT", accountId: "same-account", accessLevel: "preview" },
+          ],
+        },
       },
     });
     const workspaceBResult = await repository.resolveApprovedAuthContext(tokenBHash, NOW);
@@ -111,7 +115,8 @@ describe("AuthSessionRepository", () => {
       status: "approved",
       context: {
         workspaceId: workspaceB,
-        allowedAccounts: [{ media: "KUAISHOU", accountId: "same-account" }],
+        workspaceKind: "team",
+        scope: { kind: "team_workspace_readonly" },
       },
     });
   });
@@ -123,8 +128,160 @@ describe("AuthSessionRepository", () => {
     );
     await expect(repository.resolveApprovedAuthContext(tokenAHash, NOW)).resolves.toMatchObject({
       status: "approved",
-      context: { workspaceId: workspaceA, allowedAccounts: [] },
+      context: {
+        workspaceId: workspaceA,
+        workspaceKind: "personal",
+        scope: { kind: "explicit_accounts", accounts: [] },
+      },
     });
+  });
+
+  it("fails closed for duplicate personal workspaces and a shared personal workspace", async () => {
+    const extraWorkspace = (await pool.query<{ id: string }>(
+      "INSERT INTO workspaces (name, kind) VALUES ($1, 'personal') RETURNING id",
+      [`extra-personal-${randomUUID()}`],
+    )).rows[0]!.id;
+    const extraUser = (await pool.query<{ id: string }>(
+      `INSERT INTO users (workspace_id, name)
+       VALUES ($1, 'extra personal actor') RETURNING id`,
+      [extraWorkspace],
+    )).rows[0]!.id;
+    await pool.query(
+      `INSERT INTO workspace_memberships (workspace_id, identity_id, user_id, role)
+       VALUES ($1, $2, $3, 'optimizer')`,
+      [extraWorkspace, identityId, extraUser],
+    );
+    await expect(repository.resolveApprovedAuthContext(tokenAHash, NOW)).resolves.toMatchObject({
+      status: "rejected",
+      reason: "PERSONAL_WORKSPACE_AMBIGUOUS",
+    });
+    await pool.query("DELETE FROM workspace_memberships WHERE workspace_id = $1", [extraWorkspace]);
+    await pool.query("DELETE FROM users WHERE workspace_id = $1", [extraWorkspace]);
+    await pool.query("DELETE FROM workspaces WHERE id = $1", [extraWorkspace]);
+
+    const otherIdentity = (await pool.query<{ id: string }>(
+      `INSERT INTO auth_identities (provider, provider_subject, display_name)
+       VALUES ('internal_test', $1, 'other identity') RETURNING id`,
+      [`other-${randomUUID()}`],
+    )).rows[0]!.id;
+    const otherUser = (await pool.query<{ id: string }>(
+      `INSERT INTO users (workspace_id, name)
+       VALUES ($1, 'other actor') RETURNING id`,
+      [workspaceA],
+    )).rows[0]!.id;
+    await pool.query(
+      `INSERT INTO workspace_memberships (workspace_id, identity_id, user_id, role)
+       VALUES ($1, $2, $3, 'optimizer')`,
+      [workspaceA, otherIdentity, otherUser],
+    );
+    await expect(repository.resolveApprovedAuthContext(tokenAHash, NOW)).resolves.toMatchObject({
+      status: "rejected",
+      reason: "PERSONAL_WORKSPACE_SHARED",
+    });
+    await pool.query("DELETE FROM workspace_memberships WHERE identity_id = $1", [otherIdentity]);
+    await pool.query("DELETE FROM users WHERE id = $1", [otherUser]);
+    await pool.query("DELETE FROM auth_identities WHERE id = $1", [otherIdentity]);
+  });
+
+  it("issues into the unique personal workspace and atomically rotates on team switch", async () => {
+    const issuedHash = createHash("sha256").update(`issued-${randomUUID()}`).digest("hex");
+    const issue = await repository.createSessionForIdentity({
+      identityId,
+      tokenHash: issuedHash,
+      now: NOW,
+      expiresAt: new Date("2026-08-25T10:00:00Z"),
+    });
+    expect(issue).toMatchObject({
+      status: "approved",
+      context: { workspaceId: workspaceA, workspaceKind: "personal" },
+    });
+
+    const switchedHash = createHash("sha256").update(`switched-${randomUUID()}`).digest("hex");
+    const switched = await repository.switchSessionWorkspace({
+      tokenHash: issuedHash,
+      nextTokenHash: switchedHash,
+      targetWorkspaceId: workspaceB,
+      now: NOW,
+    });
+    expect(switched).toMatchObject({
+      status: "approved",
+      context: {
+        workspaceId: workspaceB,
+        workspaceKind: "team",
+        scope: { kind: "team_workspace_readonly" },
+      },
+    });
+    await expect(repository.resolveApprovedAuthContext(issuedHash, NOW)).resolves.toMatchObject({
+      status: "rejected",
+      reason: "SESSION_NOT_FOUND",
+    });
+    await expect(repository.resolveApprovedAuthContext(switchedHash, NOW)).resolves.toMatchObject({
+      status: "approved",
+      context: { workspaceId: workspaceB },
+    });
+
+    const staleSwitch = await repository.switchSessionWorkspace({
+      tokenHash: issuedHash,
+      nextTokenHash: createHash("sha256").update(`stale-${randomUUID()}`).digest("hex"),
+      targetWorkspaceId: workspaceA,
+      now: NOW,
+    });
+    expect(staleSwitch).toMatchObject({ status: "rejected", reason: "SESSION_NOT_FOUND" });
+    await expect(repository.resolveApprovedAuthContext(switchedHash, NOW)).resolves.toMatchObject({
+      status: "approved",
+      context: { workspaceId: workspaceB },
+    });
+  });
+
+  it("does not issue when the identity has duplicate active personal workspaces", async () => {
+    const extraWorkspace = (await pool.query<{ id: string }>(
+      "INSERT INTO workspaces (name, kind) VALUES ($1, 'personal') RETURNING id",
+      [`duplicate-personal-${randomUUID()}`],
+    )).rows[0]!.id;
+    const extraUser = (await pool.query<{ id: string }>(
+      "INSERT INTO users (workspace_id, name) VALUES ($1, 'duplicate actor') RETURNING id",
+      [extraWorkspace],
+    )).rows[0]!.id;
+    await pool.query(
+      `INSERT INTO workspace_memberships (workspace_id, identity_id, user_id, role)
+       VALUES ($1, $2, $3, 'optimizer')`,
+      [extraWorkspace, identityId, extraUser],
+    );
+    const tokenHash = createHash("sha256").update(`ambiguous-${randomUUID()}`).digest("hex");
+    await expect(repository.createSessionForIdentity({
+      identityId,
+      tokenHash,
+      now: NOW,
+      expiresAt: new Date("2026-08-25T10:00:00Z"),
+    })).resolves.toMatchObject({
+      status: "rejected",
+      reason: "PERSONAL_WORKSPACE_AMBIGUOUS",
+    });
+    await expect(repository.findSnapshotByTokenHash(tokenHash)).resolves.toBeNull();
+    await pool.query("DELETE FROM workspace_memberships WHERE workspace_id = $1", [extraWorkspace]);
+    await pool.query("DELETE FROM users WHERE workspace_id = $1", [extraWorkspace]);
+    await pool.query("DELETE FROM workspaces WHERE id = $1", [extraWorkspace]);
+  });
+
+  it("rejects an inactive team membership without rotating the current session", async () => {
+    await pool.query(
+      `UPDATE workspace_memberships
+       SET is_active = false
+       WHERE workspace_id = $1 AND identity_id = $2`,
+      [workspaceB, identityId],
+    );
+    const nextTokenHash = createHash("sha256").update(`inactive-${randomUUID()}`).digest("hex");
+    await expect(repository.switchSessionWorkspace({
+      tokenHash: tokenAHash,
+      nextTokenHash,
+      targetWorkspaceId: workspaceB,
+      now: NOW,
+    })).resolves.toMatchObject({ status: "rejected", reason: "MEMBERSHIP_MISSING" });
+    await expect(repository.resolveApprovedAuthContext(tokenAHash, NOW)).resolves.toMatchObject({
+      status: "approved",
+      context: { workspaceId: workspaceA },
+    });
+    await expect(repository.findSnapshotByTokenHash(nextTokenHash)).resolves.toBeNull();
   });
 
   it.each([
