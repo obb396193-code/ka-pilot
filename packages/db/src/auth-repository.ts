@@ -54,8 +54,22 @@ function rejected(
   return { status: "rejected", httpStatus, reason };
 }
 
+class AuthSessionSnapshotContractError extends Error {
+  constructor() {
+    super("Auth session snapshot violates the canonical contract");
+    this.name = "AuthSessionSnapshotContractError";
+  }
+}
+
+export function grantsForWorkspaceSnapshot(
+  workspaceKind: AuthSessionRow["workspace_kind"],
+  grants: unknown,
+): unknown {
+  return workspaceKind === "team" ? [] : grants;
+}
+
 function toSnapshot(row: AuthSessionRow): AuthSessionSnapshot {
-  return authSessionSnapshotSchema.parse({
+  const parsed = authSessionSnapshotSchema.safeParse({
     sessionId: row.session_id,
     identityId: row.identity_id,
     activeWorkspaceId: row.active_workspace_id,
@@ -73,8 +87,10 @@ function toSnapshot(row: AuthSessionRow): AuthSessionSnapshot {
     userWorkspaceId: row.user_workspace_id,
     userId: row.user_id,
     userActive: row.user_active,
-    grants: row.grants,
+    grants: grantsForWorkspaceSnapshot(row.workspace_kind, row.grants),
   });
+  if (!parsed.success) throw new AuthSessionSnapshotContractError();
+  return parsed.data;
 }
 
 export class AuthSessionRepository {
@@ -150,7 +166,8 @@ export class AuthSessionRepository {
          ON actor.workspace_id = membership.workspace_id
         AND actor.id = membership.user_id
        LEFT JOIN account_access_grants AS access_grant
-         ON access_grant.workspace_id = membership.workspace_id
+         ON workspace.kind = 'personal'
+        AND access_grant.workspace_id = membership.workspace_id
         AND access_grant.identity_id = membership.identity_id
        WHERE session.token_hash = $1
        GROUP BY
@@ -177,16 +194,32 @@ export class AuthSessionRepository {
     return this.findSnapshot(this.pool, tokenHash);
   }
 
+  private async resolveSnapshot(
+    queryable: Queryable,
+    tokenHash: string,
+    now: Date,
+    expectedWorkspaceId?: string,
+  ): Promise<AuthResolution> {
+    try {
+      return resolveApprovedAuthContext(
+        await this.findSnapshot(queryable, tokenHash),
+        now,
+        expectedWorkspaceId,
+      );
+    } catch (error) {
+      if (error instanceof AuthSessionSnapshotContractError) {
+        return rejected(403, "INVALID_AUTH_STATE");
+      }
+      throw error;
+    }
+  }
+
   async resolveApprovedAuthContext(
     tokenHash: string,
     now: Date,
     expectedWorkspaceId?: string,
   ): Promise<AuthResolution> {
-    return resolveApprovedAuthContext(
-      await this.findSnapshotByTokenHash(tokenHash),
-      now,
-      expectedWorkspaceId,
-    );
+    return this.resolveSnapshot(this.pool, tokenHash, now, expectedWorkspaceId);
   }
 
   async createSessionForIdentity(input: CreateSessionForIdentityInput): Promise<AuthResolution> {
@@ -202,6 +235,10 @@ export class AuthSessionRepository {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
+      // Concurrency invariant: every future workspace_memberships mutation must lock this
+      // identity row in the same transaction before inserting/updating/deleting membership.
+      // Session issue and membership provisioning then serialize on one stable lock target,
+      // preventing a second personal membership from appearing between validation and commit.
       const identity = await client.query<{ is_active: boolean }>(
         "SELECT is_active FROM auth_identities WHERE id = $1 FOR UPDATE",
         [input.identityId],
@@ -259,8 +296,9 @@ export class AuthSessionRepository {
          ) VALUES ($1, $2, $3, $4, $5, $5)`,
         [input.identityId, activeWorkspaceId, input.tokenHash, input.expiresAt, input.now],
       );
-      const resolution = resolveApprovedAuthContext(
-        await this.findSnapshot(client, input.tokenHash),
+      const resolution = await this.resolveSnapshot(
+        client,
+        input.tokenHash,
         input.now,
         activeWorkspaceId,
       );
@@ -299,10 +337,7 @@ export class AuthSessionRepository {
         await client.query("ROLLBACK");
         return rejected(401, "SESSION_NOT_FOUND");
       }
-      const current = resolveApprovedAuthContext(
-        await this.findSnapshot(client, input.tokenHash),
-        input.now,
-      );
+      const current = await this.resolveSnapshot(client, input.tokenHash, input.now);
       if (current.status !== "approved") {
         await client.query("ROLLBACK");
         return current;
@@ -335,8 +370,9 @@ export class AuthSessionRepository {
         await client.query("ROLLBACK");
         return rejected(403, "MEMBERSHIP_MISSING");
       }
-      const resolution = resolveApprovedAuthContext(
-        await this.findSnapshot(client, input.nextTokenHash),
+      const resolution = await this.resolveSnapshot(
+        client,
+        input.nextTokenHash,
         input.now,
         input.targetWorkspaceId,
       );
