@@ -4,7 +4,10 @@
 -- ═══ 租户与身份 ═══
 CREATE TABLE workspaces (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL, is_active BOOLEAN NOT NULL DEFAULT true,
+  name TEXT NOT NULL,
+  kind TEXT NOT NULL DEFAULT 'personal',   -- personal|team；team 一期只读
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  CONSTRAINT workspaces_kind_ck CHECK (kind IN ('personal', 'team')),
   created_at TIMESTAMPTZ DEFAULT now()
 );
 CREATE TABLE users (

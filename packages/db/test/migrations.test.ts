@@ -282,7 +282,23 @@ describe("contract migrations", () => {
     expect(authMigration).toHaveLength(1);
     const schedulerMigration = await runMigrations({ databaseUrl, count: 1 });
     expect(schedulerMigration).toHaveLength(1);
+    const workspaceKindMigration = await runMigrations({ databaseUrl, count: 1 });
+    expect(workspaceKindMigration).toHaveLength(1);
     expect(await runMigrations({ databaseUrl })).toHaveLength(0);
+    const workspaceKind = await client.query<{
+      column_default: string | null;
+      is_nullable: string;
+    }>(`
+      SELECT column_default, is_nullable
+      FROM information_schema.columns
+      WHERE table_schema = 'public'
+        AND table_name = 'workspaces'
+        AND column_name = 'kind'
+    `);
+    expect(workspaceKind.rows).toEqual([{
+      column_default: "'personal'::text",
+      is_nullable: "NO",
+    }]);
     const detailScopes = await client.query<{
       table_name: string;
       media: string;
@@ -351,6 +367,7 @@ describe("contract migrations", () => {
     expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
     expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
     expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
+    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
     await expect(
       runMigrations({ databaseUrl, direction: "down", count: 1 }),
     ).rejects.toThrow(/same account_id exists in multiple media/i);
@@ -374,6 +391,6 @@ describe("contract migrations", () => {
 
     await runMigrations({ databaseUrl, direction: "down", count: 5 });
     const replay = await runMigrations({ databaseUrl });
-    expect(replay).toHaveLength(9);
+    expect(replay).toHaveLength(10);
   });
 });
