@@ -125,7 +125,7 @@
 - 门禁：Domain 455、DB 139、Worker 510 passed；2 opt-in skipped；三包 typecheck/lint/audit、
   coverage 全绿。未改 Contract、前端或公开 API，未 push。
 
-### PERSONAL-TEAM-WORKSPACE-001 Task 1-2
+### PERSONAL-TEAM-WORKSPACE-001 Task 1-3
 
 - 权威冻结点：`codex/integration-control@445d2d9`；分支：
   `codex/personal-team-workspace-001-backend`；未 push。
@@ -134,7 +134,9 @@
 - Task 2 SHA `d970822`：migration 010 为 `workspaces.kind` 增加 personal 默认回填、NOT NULL 与
   personal/team CHECK；同步 schema 和 up/down/up、invalid kind、跨 workspace 同号账户 PG 反例。
 - Task 2 门禁：migration callback、DB 纯逻辑 17、typecheck/lint、audit 0、静态边界通过；
-  Docker `EOF` 且本地 PG 连接 `EPERM`，状态 `implemented + static_verified + pg_blocked`。
-- 后续禁止提前表述为 team session/业务读已完成：Task 3 才接 Auth Repository/Session；Task 5
-  必须保证 team scope 下双 null 私人工作项一律不可见。未改前端、未开放 team/media 写。
+  Docker `EOF` 且本地 PG 连接 `EPERM`，状态 `codex_prechecked + static_verified + pg_blocked`。
+- Task 3 SHA `d88048c`：Repository 读真实 kind/唯一 personal/当前成员链；Session Service 支持唯一 personal 签发与原子切换+token hash 轮换；team 只输出 `team_workspace_readonly`，不投影 grant/execute。
+- Task 3 门禁：Domain 463、Worker 非 PG 505（2 opt-in skipped）、DB 纯逻辑 17；三包 type/lint/audit 全绿；Domain/Worker 覆盖率 96.53%/89.25%。Auth Repository 真实 PG 12 项因 Docker `EOF` 在 beforeAll 超时，状态 `codex_self_checked + non_pg_verified + pg_blocked`。
+- 安全边界：未让旧 HTTP 从 header 自报 workspace kind/role/scope，team context 未接业务读链，双 null 私人工作项当前不可见。Task 4/5 仍需服务端 session composition 和业务 read 显式接线。
+- 未改前端、未开放 team/media 写、未 push。
 - 质量证据：`docs/evidence/PERSONAL-TEAM-WORKSPACE-001-Task1-2质量报告.md`。
