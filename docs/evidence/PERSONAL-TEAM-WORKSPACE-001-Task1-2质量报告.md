@@ -3,7 +3,7 @@
 > 权威冻结点：`codex/integration-control@445d2d9`
 > Task 1：`ae5f620`（root 已独立验收并合入 `4bca364`）
 > Task 2：`d970822`（root 结论：`codex_prechecked + static_verified + pg_blocked`）
-> Task 3：`d88048c`（待 root 复验）
+> Task 3：`d88048c`；R1 修复：`b2a329b`（待 root 复验）
 
 ## Task 1：Domain workspace kind 与 scope Contract
 
@@ -36,10 +36,12 @@
 - identity 缺 personal、多个活跃 personal、personal 被多 identity 共享、当前 personal 与唯一 personal 不一致均 fail closed。
 - 新 session 只能绑定唯一 active personal workspace；切换只接收目标 workspace ID，校验 active identity/membership/user 后在同一事务内更新 active workspace 并轮换 token hash。旧 token 立即失效，重放不会破坏新 session。
 - 仅存 token hash；Repository/Service 不查询、返回或日志输出 provider subject、奇航 userId、Secret ref 或原始 token。
+- R1 修复把 team 与 `account_access_grants` 完全解耦：SQL 只为 personal workspace JOIN grant，Repository mapper 对 team 固定注入空 grants，因此历史/误写的 1001+ 或类型非法 grant 不能让 team 会话 DoS。personal 仍保留 strict `max(1000)` 和字段校验，契约损坏转为受控 `403 INVALID_AUTH_STATE`。
+- 成员变更并发契约：未来任何 `workspace_memberships` 新增/修改/删除，必须在同一事务先 `SELECT auth_identities ... FOR UPDATE` 锁定 identity；`createSessionForIdentity` 已锁同一行。当前仓库尚无 membership mutation 路由，不存在可调用的绕过实现；日后新增该写链时必须在 Repository 与真实 PG 并发测试中同时落实。
 
-门禁：Domain 38 files / 463 tests；Worker 非 PG 65 files / 505 tests（2 个既有外部 opt-in skipped）；DB 纯逻辑 3 files / 17 tests；三包 typecheck/lint/audit 0 vulnerabilities。Domain 全量覆盖率 96.53% statements / 87.43% branches，Worker 非 PG 全量 89.25% / 82.30%；`auth-context.ts` 98.19% statements，`session-auth-service.ts` 95.23%。
+门禁：Domain 38 files / 463 tests；Worker 非 PG 65 files / 506 tests（2 个既有外部 opt-in skipped）；DB 纯逻辑 4 files / 21 tests；三包 typecheck/lint/audit 0 vulnerabilities。Domain 全量覆盖率 96.53% statements / 87.43% branches，Worker 非 PG 全量 89.25% / 82.30%；`auth-context.ts` 98.19% statements，`session-auth-service.ts` 95.23%。
 
-真实 PG 仍被 Docker `EOF` 阻断；`auth-repository.test.ts` 在 `beforeAll` 连接超时，12 个用例未执行。Task 3 当前只能标记 `codex_self_checked + non_pg_verified + pg_blocked`。
+真实 PG 仍被 Docker `EOF` 阻断；`auth-repository.test.ts` 新增 team/personal 1001+ grant 真实反例；限定 10 秒复跑在 `beforeAll` 超时，14 个用例全部未执行。Task 3 当前只能标记 `codex_self_checked + non_pg_verified + pg_blocked`。
 
 安全接线边界：现有 Data API HTTP 仍是旧的内部 header 身份通路，没有可信 session resolver。Task 3 没有让它从请求头自报 `workspaceKind/role/scopeKind`，也没有把 team context 接入业务读链。因此 team 当前看不到双 null 私人工作项；Task 4 先建服务端 session HTTP composition，Task 5 再显式接业务 read Service。
 

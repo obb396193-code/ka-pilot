@@ -140,3 +140,15 @@
 - 安全边界：未让旧 HTTP 从 header 自报 workspace kind/role/scope，team context 未接业务读链，双 null 私人工作项当前不可见。Task 4/5 仍需服务端 session composition 和业务 read 显式接线。
 - 未改前端、未开放 team/media 写、未 push。
 - 质量证据：`docs/evidence/PERSONAL-TEAM-WORKSPACE-001-Task1-2质量报告.md`。
+
+#### Task 3 R1：team grant 解耦修复回执
+
+- root 复现的 P1：team workspace 也聚合并先解析 `account_access_grants`，1001+ 或 present-invalid grant 会在 team readonly scope 生成前触发 ZodError/500。
+- 修复代码 SHA：`b2a329b`（独立、未 push）。
+- SQL 防线：`account_access_grants` 的 JOIN 显式限定 `workspace.kind='personal'`，team 查询不聚合 grant。
+- Mapper 防线：team 无条件注入 `grants=[]`；personal 保留 strict schema/1000 上限，异常快照转为受控 `403 INVALID_AUTH_STATE`。
+- 反例：纯逻辑覆盖 team 1001 grants、team present-invalid、personal 1001 grants、personal present-invalid；真 PG 用例增加 team/personal 1001+ grants。
+- 并发协议：仓库尚无 membership mutation 路由；未来任何 membership 写必须在同事务先锁 `auth_identities` 的 identity 行，与 session issue 共用稳定锁目标。
+- 门禁：DB 纯逻辑 4 files/21 tests；Domain 38/463；Worker 非 PG 65/506，2 opt-in skipped；三包 typecheck/lint/audit 0 vulnerabilities；`diff --check` 和敏感值/动态执行扫描通过。
+- PG 实况：`docker ps` 仍 `EOF`；Auth Repository 限定 10s 复跑在 `beforeAll` 超时，14 项未执行。状态仅 `codex_self_checked + non_pg_verified + pg_blocked`。
+- 未改前端，未开放 team/media 写，未启动 Task 4；等 root 对 exact `b2a329b` 复验。
