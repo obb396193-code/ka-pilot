@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const authRoleSchema = z.enum(["optimizer", "operator", "lead", "admin"]);
 export const accountAccessLevelSchema = z.enum(["read", "preview", "execute"]);
+export const workspaceKindSchema = z.enum(["personal", "team"]);
 
 const mediaSchema = z.string().min(1).max(32).regex(/^[A-Z0-9_]+$/);
 const accountIdSchema = z.string().min(1).max(128).regex(/^[A-Za-z0-9_-]+$/);
@@ -11,6 +12,39 @@ export const approvedAccountAccessSchema = z.object({
   accountId: accountIdSchema,
   accessLevel: accountAccessLevelSchema,
 }).strict();
+
+export const explicitAccountsScopeSchema = z.object({
+  kind: z.literal("explicit_accounts"),
+  accounts: z.array(approvedAccountAccessSchema).max(1_000),
+}).strict();
+
+export const teamWorkspaceReadonlyScopeSchema = z.object({
+  kind: z.literal("team_workspace_readonly"),
+}).strict();
+
+export const approvedWorkspaceScopeSchema = z.discriminatedUnion("kind", [
+  explicitAccountsScopeSchema,
+  teamWorkspaceReadonlyScopeSchema,
+]);
+
+const approvedContextIdentityFields = {
+  workspaceId: z.string().uuid(),
+  userId: z.string().uuid(),
+  role: authRoleSchema,
+};
+
+export const approvedWorkspaceAuthContextSchema = z.discriminatedUnion("workspaceKind", [
+  z.object({
+    ...approvedContextIdentityFields,
+    workspaceKind: z.literal("personal"),
+    scope: explicitAccountsScopeSchema,
+  }).strict(),
+  z.object({
+    ...approvedContextIdentityFields,
+    workspaceKind: z.literal("team"),
+    scope: teamWorkspaceReadonlyScopeSchema,
+  }).strict(),
+]);
 
 export const approvedAuthContextSchema = z.object({
   workspaceId: z.string().uuid(),
@@ -75,6 +109,11 @@ export const authResolutionSchema = z.discriminatedUnion("status", [
 
 export type AuthRole = z.infer<typeof authRoleSchema>;
 export type AccountAccessLevel = z.infer<typeof accountAccessLevelSchema>;
+export type WorkspaceKind = z.infer<typeof workspaceKindSchema>;
+export type ExplicitAccountsScope = z.infer<typeof explicitAccountsScopeSchema>;
+export type TeamWorkspaceReadonlyScope = z.infer<typeof teamWorkspaceReadonlyScopeSchema>;
+export type ApprovedWorkspaceScope = z.infer<typeof approvedWorkspaceScopeSchema>;
+export type ApprovedWorkspaceAuthContext = z.infer<typeof approvedWorkspaceAuthContextSchema>;
 export type ApprovedAuthContext = z.infer<typeof approvedAuthContextSchema>;
 export type AuthSessionSnapshot = z.infer<typeof authSessionSnapshotSchema>;
 export type AuthResolution = z.infer<typeof authResolutionSchema>;
