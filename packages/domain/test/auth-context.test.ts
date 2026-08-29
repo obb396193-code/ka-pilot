@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  approvedWorkspaceAuthContextSchema,
   resolveApprovedAuthContext,
   type AuthSessionSnapshot,
-} from "../src/auth-context.js";
+} from "../src/index.js";
 
 const NOW = new Date("2026-08-25T08:00:00Z");
 const WORKSPACE = "00000000-0000-4000-8000-000000000301";
@@ -134,5 +135,60 @@ describe("resolveApprovedAuthContext", () => {
     const first = snapshot().grants[0]!;
     expect(resolveApprovedAuthContext(snapshot({ grants: [first, { ...first, accessLevel: "execute" }] }), NOW))
       .toMatchObject({ status: "rejected", reason: "DUPLICATE_GRANT" });
+  });
+});
+
+describe("approved workspace auth context contract", () => {
+  const base = {
+    workspaceId: WORKSPACE,
+    userId: USER,
+    role: "optimizer",
+  };
+
+  it("accepts a personal workspace with explicit account grants", () => {
+    expect(approvedWorkspaceAuthContextSchema.safeParse({
+      ...base,
+      workspaceKind: "personal",
+      scope: {
+        kind: "explicit_accounts",
+        accounts: [{ media: "KUAISHOU", accountId: "account-1", accessLevel: "execute" }],
+      },
+    }).success).toBe(true);
+  });
+
+  it("accepts a team workspace only with the read-only workspace scope", () => {
+    expect(approvedWorkspaceAuthContextSchema.safeParse({
+      ...base,
+      workspaceKind: "team",
+      scope: { kind: "team_workspace_readonly" },
+    }).success).toBe(true);
+  });
+
+  it("rejects mismatched workspace kinds and scope modes", () => {
+    expect(approvedWorkspaceAuthContextSchema.safeParse({
+      ...base,
+      workspaceKind: "personal",
+      scope: { kind: "team_workspace_readonly" },
+    }).success).toBe(false);
+    expect(approvedWorkspaceAuthContextSchema.safeParse({
+      ...base,
+      workspaceKind: "team",
+      scope: { kind: "explicit_accounts", accounts: [] },
+    }).success).toBe(false);
+  });
+
+  it("rejects team account grants, execute authority and missing workspace kind", () => {
+    expect(approvedWorkspaceAuthContextSchema.safeParse({
+      ...base,
+      workspaceKind: "team",
+      scope: {
+        kind: "team_workspace_readonly",
+        accounts: [{ media: "KUAISHOU", accountId: "account-1", accessLevel: "execute" }],
+      },
+    }).success).toBe(false);
+    expect(approvedWorkspaceAuthContextSchema.safeParse({
+      ...base,
+      scope: { kind: "explicit_accounts", accounts: [] },
+    }).success).toBe(false);
   });
 });
