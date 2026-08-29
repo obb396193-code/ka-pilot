@@ -124,3 +124,17 @@
 - 反例：Service Auto/Full/Incr、真实 PG terminal blocked Job、执行前空快照、上游越界账户 0 落库。
 - 门禁：Domain 455、DB 139、Worker 510 passed；2 opt-in skipped；三包 typecheck/lint/audit、
   coverage 全绿。未改 Contract、前端或公开 API，未 push。
+
+### PERSONAL-TEAM-WORKSPACE-001 Task 1-2
+
+- 权威冻结点：`codex/integration-control@445d2d9`；分支：
+  `codex/personal-team-workspace-001-backend`；未 push。
+- Task 1 SHA `ae5f620`：additive Domain Contract 冻结 personal/team 与
+  explicit_accounts/team_workspace_readonly 判别式 scope；root 已独立验收并合入 `4bca364`。
+- Task 2 SHA `d970822`：migration 010 为 `workspaces.kind` 增加 personal 默认回填、NOT NULL 与
+  personal/team CHECK；同步 schema 和 up/down/up、invalid kind、跨 workspace 同号账户 PG 反例。
+- Task 2 门禁：migration callback、DB 纯逻辑 17、typecheck/lint、audit 0、静态边界通过；
+  Docker `EOF` 且本地 PG 连接 `EPERM`，状态 `implemented + static_verified + pg_blocked`。
+- 后续禁止提前表述为 team session/业务读已完成：Task 3 才接 Auth Repository/Session；Task 5
+  必须保证 team scope 下双 null 私人工作项一律不可见。未改前端、未开放 team/media 写。
+- 质量证据：`docs/evidence/PERSONAL-TEAM-WORKSPACE-001-Task1-2质量报告.md`。
