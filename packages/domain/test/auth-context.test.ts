@@ -16,6 +16,9 @@ function snapshot(overrides: Partial<AuthSessionSnapshot> = {}): AuthSessionSnap
     sessionId: "00000000-0000-4000-8000-000000000304",
     identityId: IDENTITY,
     activeWorkspaceId: WORKSPACE,
+    workspaceKind: "personal",
+    activePersonalWorkspaceIds: [WORKSPACE],
+    activeWorkspaceMemberCount: 1,
     expiresAt: new Date("2026-08-25T09:00:00Z"),
     revokedAt: null,
     identityActive: true,
@@ -55,10 +58,14 @@ describe("resolveApprovedAuthContext", () => {
         workspaceId: WORKSPACE,
         userId: USER,
         role: "optimizer",
-        allowedAccounts: [
-          { media: "KUAISHOU", accountId: "same-account", accessLevel: "read" },
-          { media: "TENCENT", accountId: "same-account", accessLevel: "preview" },
-        ],
+        workspaceKind: "personal",
+        scope: {
+          kind: "explicit_accounts",
+          accounts: [
+            { media: "KUAISHOU", accountId: "same-account", accessLevel: "read" },
+            { media: "TENCENT", accountId: "same-account", accessLevel: "preview" },
+          ],
+        },
       },
     });
   });
@@ -71,9 +78,76 @@ describe("resolveApprovedAuthContext", () => {
         workspaceId: WORKSPACE,
         userId: USER,
         role: "optimizer",
-        allowedAccounts: [],
+        workspaceKind: "personal",
+        scope: { kind: "explicit_accounts", accounts: [] },
       },
     });
+  });
+
+  it("resolves an active team membership to a workspace-wide read-only scope", () => {
+    const teamWorkspace = "00000000-0000-4000-8000-000000000305";
+    expect(resolveApprovedAuthContext(snapshot({
+      activeWorkspaceId: teamWorkspace,
+      workspaceKind: "team",
+      membershipWorkspaceId: teamWorkspace,
+      userWorkspaceId: teamWorkspace,
+      grants: [],
+    }), NOW)).toEqual({
+      status: "approved",
+      context: {
+        workspaceId: teamWorkspace,
+        userId: USER,
+        role: "optimizer",
+        workspaceKind: "team",
+        scope: { kind: "team_workspace_readonly" },
+      },
+    });
+  });
+
+  it("never projects account grants or execute authority into a team scope", () => {
+    const teamWorkspace = "00000000-0000-4000-8000-000000000305";
+    const grants = [{
+      workspaceId: teamWorkspace,
+      identityId: IDENTITY,
+      media: "KUAISHOU",
+      accountId: "team-account",
+      accessLevel: "execute" as const,
+    }];
+    expect(resolveApprovedAuthContext(snapshot({
+      activeWorkspaceId: teamWorkspace,
+      workspaceKind: "team",
+      membershipWorkspaceId: teamWorkspace,
+      userWorkspaceId: teamWorkspace,
+      grants,
+    }), NOW)).toEqual({
+      status: "approved",
+      context: {
+        workspaceId: teamWorkspace,
+        userId: USER,
+        role: "optimizer",
+        workspaceKind: "team",
+        scope: { kind: "team_workspace_readonly" },
+      },
+    });
+  });
+
+  it("fails closed when the identity has no unique active personal workspace", () => {
+    expect(resolveApprovedAuthContext(snapshot({ activePersonalWorkspaceIds: [] }), NOW))
+      .toMatchObject({ status: "rejected", reason: "PERSONAL_WORKSPACE_MISSING" });
+    expect(resolveApprovedAuthContext(snapshot({
+      activePersonalWorkspaceIds: [
+        WORKSPACE,
+        "00000000-0000-4000-8000-000000000399",
+      ],
+    }), NOW)).toMatchObject({ status: "rejected", reason: "PERSONAL_WORKSPACE_AMBIGUOUS" });
+  });
+
+  it("rejects a shared or mismatched personal workspace", () => {
+    expect(resolveApprovedAuthContext(snapshot({ activeWorkspaceMemberCount: 2 }), NOW))
+      .toMatchObject({ status: "rejected", reason: "PERSONAL_WORKSPACE_SHARED" });
+    expect(resolveApprovedAuthContext(snapshot({
+      activePersonalWorkspaceIds: ["00000000-0000-4000-8000-000000000399"],
+    }), NOW)).toMatchObject({ status: "rejected", reason: "PERSONAL_WORKSPACE_MISMATCH" });
   });
 
   it.each([

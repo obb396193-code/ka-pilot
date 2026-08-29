@@ -46,13 +46,6 @@ export const approvedWorkspaceAuthContextSchema = z.discriminatedUnion("workspac
   }).strict(),
 ]);
 
-export const approvedAuthContextSchema = z.object({
-  workspaceId: z.string().uuid(),
-  userId: z.string().uuid(),
-  role: authRoleSchema,
-  allowedAccounts: z.array(approvedAccountAccessSchema).max(1_000),
-}).strict();
-
 export const authGrantSnapshotSchema = z.object({
   workspaceId: z.string().uuid(),
   identityId: z.string().uuid(),
@@ -65,6 +58,9 @@ export const authSessionSnapshotSchema = z.object({
   sessionId: z.string().uuid(),
   identityId: z.string().uuid(),
   activeWorkspaceId: z.string().uuid(),
+  workspaceKind: workspaceKindSchema,
+  activePersonalWorkspaceIds: z.array(z.string().uuid()).max(1_000),
+  activeWorkspaceMemberCount: z.number().int().nonnegative(),
   expiresAt: z.date(),
   revokedAt: z.date().nullable(),
   identityActive: z.boolean(),
@@ -92,13 +88,17 @@ export const authRejectionReasonSchema = z.enum([
   "AUTH_STATE_MISMATCH",
   "GRANT_SCOPE_MISMATCH",
   "DUPLICATE_GRANT",
+  "PERSONAL_WORKSPACE_MISSING",
+  "PERSONAL_WORKSPACE_AMBIGUOUS",
+  "PERSONAL_WORKSPACE_MISMATCH",
+  "PERSONAL_WORKSPACE_SHARED",
   "INVALID_AUTH_STATE",
 ]);
 
 export const authResolutionSchema = z.discriminatedUnion("status", [
   z.object({
     status: z.literal("approved"),
-    context: approvedAuthContextSchema,
+    context: approvedWorkspaceAuthContextSchema,
   }).strict(),
   z.object({
     status: z.literal("rejected"),
@@ -114,7 +114,6 @@ export type ExplicitAccountsScope = z.infer<typeof explicitAccountsScopeSchema>;
 export type TeamWorkspaceReadonlyScope = z.infer<typeof teamWorkspaceReadonlyScopeSchema>;
 export type ApprovedWorkspaceScope = z.infer<typeof approvedWorkspaceScopeSchema>;
 export type ApprovedWorkspaceAuthContext = z.infer<typeof approvedWorkspaceAuthContextSchema>;
-export type ApprovedAuthContext = z.infer<typeof approvedAuthContextSchema>;
 export type AuthSessionSnapshot = z.infer<typeof authSessionSnapshotSchema>;
 export type AuthResolution = z.infer<typeof authResolutionSchema>;
 export type AuthRejectionReason = z.infer<typeof authRejectionReasonSchema>;
@@ -159,9 +158,9 @@ function validateIdentityChain(snapshot: AuthSessionSnapshot): AuthResolution | 
 
 function accountScope(
   snapshot: AuthSessionSnapshot,
-): ApprovedAuthContext["allowedAccounts"] | AuthResolution {
+): ExplicitAccountsScope["accounts"] | AuthResolution {
   const seen = new Set<string>();
-  const accounts: ApprovedAuthContext["allowedAccounts"] = [];
+  const accounts: ExplicitAccountsScope["accounts"] = [];
   for (const grant of snapshot.grants) {
     if (
       grant.workspaceId !== snapshot.activeWorkspaceId ||
@@ -202,21 +201,50 @@ export function resolveApprovedAuthContext(
   if (snapshot.expiresAt.getTime() <= now.getTime()) return rejected(401, "SESSION_EXPIRED");
   const chainError = validateIdentityChain(snapshot);
   if (chainError !== null) return chainError;
+  const uniquePersonalWorkspaces = new Set(snapshot.activePersonalWorkspaceIds);
+  if (uniquePersonalWorkspaces.size !== snapshot.activePersonalWorkspaceIds.length) {
+    return rejected(403, "INVALID_AUTH_STATE");
+  }
+  if (uniquePersonalWorkspaces.size === 0) {
+    return rejected(403, "PERSONAL_WORKSPACE_MISSING");
+  }
+  if (uniquePersonalWorkspaces.size > 1) {
+    return rejected(403, "PERSONAL_WORKSPACE_AMBIGUOUS");
+  }
   if (
     expectedWorkspaceId !== undefined &&
     snapshot.activeWorkspaceId !== expectedWorkspaceId
   ) {
     return rejected(403, "WORKSPACE_MISMATCH");
   }
-  const allowedAccounts = accountScope(snapshot);
-  if (!Array.isArray(allowedAccounts)) return allowedAccounts;
+  if (snapshot.workspaceKind === "team") {
+    return authResolutionSchema.parse({
+      status: "approved",
+      context: {
+        workspaceId: snapshot.activeWorkspaceId,
+        userId: snapshot.userId,
+        role: snapshot.membershipRole,
+        workspaceKind: "team",
+        scope: { kind: "team_workspace_readonly" },
+      },
+    });
+  }
+  if (snapshot.activeWorkspaceMemberCount !== 1) {
+    return rejected(403, "PERSONAL_WORKSPACE_SHARED");
+  }
+  if (!uniquePersonalWorkspaces.has(snapshot.activeWorkspaceId)) {
+    return rejected(403, "PERSONAL_WORKSPACE_MISMATCH");
+  }
+  const accounts = accountScope(snapshot);
+  if (!Array.isArray(accounts)) return accounts;
   return authResolutionSchema.parse({
     status: "approved",
     context: {
       workspaceId: snapshot.activeWorkspaceId,
       userId: snapshot.userId,
       role: snapshot.membershipRole,
-      allowedAccounts,
+      workspaceKind: "personal",
+      scope: { kind: "explicit_accounts", accounts },
     },
   });
 }
