@@ -2909,3 +2909,19 @@ root 停工前交接全文由老板转交。**arch 逐条校对结果**：
 | "所有媒体写继续关闭；preview/confirm/execute 保留人工确认门" | ✅ 契约 v1.3 状态机 | — |
 
 root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据；但本轮校对未发现 root 陈述失实。
+
+---
+
+### P-038 ⏳待审｜R-009 migration 011、Session BFF、hh 边界与四项定位（2026-09-05）
+
+- 治理已切回 Claude/arch：实现分支 `be/r009` 从 Claude 当前 `main` 建立，不再以 `codex/integration-control` 为权威；Contract 仅认 `packages/contract/`。
+- Session BFF：R-009 代码 SHA `5e91a85`、`2916a91`；Web 77/77、typecheck、lint 通过。
+- migration 011：代码 SHA `351d039`；真实 PG 完整 1→11 replay、011 up/down/up、DB 32 files / 177 tests、typecheck、lint、production audit 0 vulnerabilities 通过。
+- hh 累计小时：代码 SHA `7aea1dc`；payload 接受 0/24、拒绝 -1/25；Worker 定向 58/58，全量 623 passed + 2 opt-in skipped、typecheck、lint、production audit 0 vulnerabilities 通过。
+- 四项待 arch 逐行复核的定位：
+  - B4 零量日剔除：`packages/domain/src/metrics.ts:122-127`、`packages/db/src/metrics-repository.ts:196-205`。
+  - B13 allowlist 默认拒绝：`apps/worker/.env.example:8-10`、`apps/worker/src/config.ts:82-90,164-171`、`apps/worker/src/sources/material-source-probe.ts:193-208`。
+  - B23-C2 首次 full ready 门：`packages/db/src/workspace-sync-repository.ts:163-175`、`apps/worker/src/scheduling/workspace-sync-service.ts:40-60`。
+  - B10 离线分区有界回退：`apps/worker/src/etl/full-handler.ts:34,161-182`。
+- 完整证据与旧 Codex 后端审计入口：`docs/plans/R009-状态.md`、`docs/plans/Codex后端交付总账.md`（P-004～P-035 与后续 root 批次均保留 exact SHA/测试/未完成项）。
+- 当前状态严格为：**be candidate + Codex self-checked + migration 011/相关集成真实 PG verified；尚未 Claude reviewed、尚未合入 main、尚未部署**。
