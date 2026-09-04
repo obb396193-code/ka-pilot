@@ -170,4 +170,4 @@
 
 11. **Task4 P1-1 登录 credential oracle**：`apps/worker/src/auth/session-http.ts:62-68` 密码错 401 与"密码对但身份/空间不可用" 403 外显不同 → 登录阶段全部统一 `401 UNAUTHORIZED` + 同 message + 同响应体尺寸；内部 reason 只进脱敏审计。补测试断言两者响应完全一致。
 12. **hh 上限不一致**：`apps/worker/src/etl/payload.ts:37` `max(23)` → `max(24)`（奇航实证 hh=24 有效=全天，与 `qihang/client.ts:156` 一致）。
-13. 交付时在状态文件逐条定位以下 8 项代码行给 arch 复核：B11 2000 行 fail-closed、B3 confirm from 值复核、B4 pacing 零量日剔除、B5 auto-memory 关闭、R3 输出侧三键 guard、B13 下载 allowlist 默认拒绝、B23-C2 首次 full ready 门、B10 离线分区有界回退。
+13. 交付时在状态文件逐条定位以下 4 项代码行给 arch 复核：B4 pacing 零量日剔除、B13 下载 allowlist 默认拒绝、B23-C2 首次 full ready 门、B10 离线分区有界回退。

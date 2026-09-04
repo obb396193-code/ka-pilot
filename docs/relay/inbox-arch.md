@@ -2771,7 +2771,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 | B10 日期紧凑格式 | `qihang/client.ts:135-145` | ✅ |
 | B10 离线分区有界回退 | 未定位到代码 | 待核（R-009 交付时看） |
 | B11 hh 边界 | `client.ts:156` 0..24 ✓；**`etl/payload.ts:37` schema `max(23)` 与 client 不一致** | ⚠️ 新问题 → R-009 |
-| B11 2000 行截断 fail-closed | 见本轮补核 | 待核 |
+| B11 2000 行截断 fail-closed | `qihang/client.ts:364` `suspectedAdTruncationRows ?? 2_000` 可配阈值 | ✅ |
 
 ### 簇② 执行与规则 B2/B3/B4（P-005/006/007 内核回执）
 
@@ -2780,7 +2780,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 | B2 首发三规则 | `domain/alert-rules.ts:4` `over_cost_ramp|zero_delivery|spend_cliff`；冷启动护栏 `:106` 转化<10 不判超（对 13.5） | ✅ |
 | B2 工作项状态机/去重 | 契约 v1.3 已定；当前实现用活动态查询，partial unique 待 R-010 | ⚠️ 待 R-010 |
 | B3 changeset TTL 为 Date 类型、expired outcome | `changeset-repository.ts:33,62` | ✅ |
-| B3 confirm 时 from 值复核 | 见本轮补核 | 待核 |
+| B3 confirm 时 from 值复核 | `changeset-execution-handler.ts:15,49` + `changeset-repository.ts:61,303` `outcome:"conflict", conflicts:ValueConflict[]` | ✅ |
 | B3 T+1 崩溃恢复（P0-09） | `changeset-execution-handler.ts:43-72,118,135` `skip_terminal` + `idempotency_key=changeSetId` | ✅ 已修 |
 | B3 changeset 租户外键（P0-13） | 未修 | ❌ → R-009#6（v1.2 FK） |
 | B4 pacing 零量日剔除 | 见本轮补核 | 待核 |
@@ -2792,7 +2792,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 |---|---|---|
 | B5 SDK 工具钳制 | `agent/sdk/safety.ts:71-73` `tools:[]` + `allowedTools=[MCP allowlist]` + `disallowedTools=DISALLOWED_BUILT_INS`；`:89` mcpServers 闭包 | ✅ |
 | B5 短时凭证信封 | `orchestrator.ts:289` `sealCredentialEnvelope` + `envelopeKey` | ✅ |
-| B5 auto-memory 关 | 见本轮补核 | 待核 |
+| B5 auto-memory 关 | `agent/sdk/safety.ts:30` `CLAUDE_CODE_DISABLE_AUTO_MEMORY`、`:75` `settingSources:[]`、`:81` `persistSession:false`、`:150` 启动校验 | ✅ |
 | B5 sidecar 不新增 FaaS | 设计文档 + config `MODEL_GATEWAY_BASE_URL=127.0.0.1` | ✅ |
 | B5 **SDK 驱动非 Anthropic 模型许可** | 技术跑通≠许可 | ⚠️ **老板找法务/采购，上线硬门** |
 | B6 策略样本护栏 | `strategy-analysis.ts:5,124-125` `MIN_STRATEGY_COST=100`、`insufficient_accounts` | ✅（对 3.11） |
@@ -2827,7 +2827,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 | **Task4 P1-1 登录 credential oracle** | `session-http.ts:62-68` 密码错 401 "Invalid credentials" vs 身份/空间不可用 403 "Workspace access is not allowed" **仍分开** | ❌ **未修** → R-009 新增 |
 | Task5 P1-2 dataView 浏览器控制 | 老板裁绑空间 | → R-009#8 |
 | Task5 P1-3 集成测试只盖 accounts | `e617271` 加了 340 行 integration test | ⚠️ 待 diff 确认覆盖 tasks/work-items/detail |
-| R3 输出侧三键 scope guard | 见本轮补核 | 待核 |
+| R3 输出侧三键 scope guard | `data/query-service.ts:46,117,369,378` `guardSourceOutput()` 对 kaData/platform 双路 | ✅ |
 | B23-C1 账户主表同步（P0-02） | `full-handler.ts:90-130` 每页 `assertAccountRowsWithinRequestedScope` | ✅ |
 | B23-C2 首次 full ready 门 | 状态文件宣称，代码待核 | 待核 |
 
@@ -2836,7 +2836,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 1. **Task4 P1-1 登录 oracle 未修**：登录阶段所有认证后授权失败统一 `401 UNAUTHORIZED` 同 message 同体积。
 2. **hh 上限不一致**：`etl/payload.ts` `max(23)` → 改 `max(24)` 与 client 一致（奇航实证 hh=24 有效=全天）。
 3. **迁移编号**：v1.2 用 011、v1.3 用 012（008-010 已占用）——契约与派活已改。
-4. B11 2000 截断、B3 from 复核、B4 零量日、B5 auto-memory、R3 输出 guard、B13 allowlist、B23-C2 ready 门、B10 分区回退 —— 8 项"待核"在 R-009 交付审查时逐一定位。
+4. B4 pacing 零量日剔除、B13 下载 allowlist 默认拒绝、B23-C2 首次 full ready 门、B10 离线分区有界回退 —— 4 项"待核"在 R-009 交付审查时定位（另 4 项已当场核实 ✅）。
 
 ### 总判断
 
