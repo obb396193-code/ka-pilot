@@ -2865,3 +2865,27 @@ root 停工前交接全文由老板转交。**arch 逐条校对结果**：
 | "所有媒体写继续关闭；preview/confirm/execute 保留人工确认门" | ✅ 契约 v1.3 状态机 | — |
 
 root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据；但本轮校对未发现 root 陈述失实。
+
+
+---
+
+## 2026-09-04 arch 裁决：契约 v1.4（缺口地图 12 条"待契约补"全冻）
+
+| # | 缺口 | 裁决落点 | 备注 |
+|---|---|---|---|
+| 1.6 | 警报流/值守 | `escalations`、`escalation_policies` + `GET /alerts/stream`、ack/pause、roster、policies | 默认策略 P0 30min 突破静默→备班 / P1 24h→48h 上级 / P2 攒批 |
+| 1.9 | 协作提审 | `dispatches`、`approvals`、`approval_auto_pass_rules` + dispatch/receipt/submit-for-approval/approve/reject | 充值协作只发消息不入审批（REQ-046）；"不同意"是合法结局 |
+| 2.2 | 任务六页签 | `GET /tasks/:id` overview + `/metrics` + `/accounts` capacity；素材/复盘 501 占位 | 不发假数据 |
+| 2.8 | 漏斗 | `GET /tasks/:id/funnel` 在线/离线两条链分开 | 全 MetricValue，离线缺=missing |
+| 2.9 | 时间线 | `GET /tasks/:id/timeline` 五源 UNION 倒序 | 无新表 |
+| 3.3 | 8 维数据源 | accounts +`agent_type/is_ubp`；ad_entities +`resource_position/bid_tool`；deduction_range 派生桶 | **ad 级字段名=OS 联调确认项**，确认前 `DIMENSION_UNSUPPORTED` |
+| 4.5 | 加/关账户 | accounts +claimed/closed 列；import/close 向导/close confirm/open-flow | 关户先给清理向导不直接关 |
+| 6.x | 素材域 | 7 表名+主键冻结 + 9 端点名冻结；**列/DTO 由 Codex 从 B12-B18 domain 提案** | 反向：先内核后契约，这次让做过内核的提 |
+| 7.3 | 结算 | 3 表名冻结 + 6 端点名冻结；**列/公式由 Codex 从 B19 提案** | 模板版本化不覆盖旧单 |
+| 8.x | 知识库 | `kb_documents/kb_revisions/kb_links/kb_business_refs` 对齐 CR `knowledge_items.content_json/content_text`+`document_links` | 前端复制 CR 代码字段直接对上；两个自动归档 job |
+| 9.4 | 卡片中心 | `card_templates/card_instances/card_callbacks` + callback L0-L3 分流、hash 校验、实名溯源 | 四身份对账 14.3b 在此落 |
+| 9.3/9.5 | 推送订阅/值守 | `/subscriptions/mine`、roster、policies | quiet_hours 只压 P1/P2 |
+
+迁移编号：011 v1.2 ｜ 012 v1.3 ｜ 013 Task6 ｜ **014 v1.4**。schema.sql 现 **73 表**。
+
+**留给联调的**：8 维 ad 级字段名、素材视频源探针、Excel 对平、ka-data 同日同户对平、OS 写链路 UNKNOWN 超时样本。

@@ -193,3 +193,20 @@
   5. 真实 PG 反例：中途失败保 snapshot、并发两 run 只发布一个、团队失败不动个人行、unknown lineage 不 ready。
 - 联调硬门（不在本批）：ka-data 服务 owner/ACL/只读性核实、**同日同户对平（奇航 vs ka-data）**交 OS agent。
 - 状态：待处理
+
+
+---
+
+### R-012 后端：契约 v1.4 落地（2026-09-04；顺序 R-009 → R-010a → R-011 → **R-012** → R-010b）
+
+- 派活方：arch　日期：2026-09-04
+- **先读**：`inbox-arch.md`「契约 v1.4」表 → `schema.sql` 末尾「v1.4 新增」→ `api.md` 末尾「v1.4 端点与 DTO」。
+- 交付物：
+  1. **先提案再动手（两周内）**：素材域 7 表、结算 3 表的**列定义 + DTO**——从你已做的 B12-B19 domain 类型反推，写 inbox-arch 提案（表名/主键/端点名已冻不改），arch 审后补进契约再实现。
+  2. **migration 014**：v1.4 其余全部（escalations/policies、dispatches/approvals/auto_pass、accounts 六列、ad_entities 两列、kb 四表 + FTS 索引、card 三表）；seed 三行 escalation_policies；真实 PG up/down/up。
+  3. **HTTP**：警报流 + ack/pause + roster + policies；派发/回执/提审/批驳/免审；任务 `GET /:id` overview、`/metrics`、`/funnel`、`/timeline`、accounts capacity、materials/review 501；账户 import/close 向导/confirm/open-flow；kb 全部 + 两个归档 job；卡片 templates/instances/callback（L0-L3 分流 + hash + identity_mappings 实名）；subscriptions/mine。
+  4. **8 维**：dimension 枚举全开；agent_type/is_ubp/deduction_range 三维接通；resource_position/bid_tool 在 OS 确认字段前返回 `DIMENSION_UNSUPPORTED`。
+  5. **BFF**：以上全部 `/api/internal/*`。
+  6. 反例：升级链倒计时暂停/恢复、派发 T+1 自动关闭、免审计数、关户向导有未关工作项拒绝、卡片 hash 不匹配 409、卡片重复 idempotency_key、kb 双链重建、team 空间 kb 只读。
+- 纪律同前；素材/结算提案期间不实现其 HTTP。
+- 状态：待处理（等 R-011）
