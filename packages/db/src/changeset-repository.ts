@@ -238,9 +238,11 @@ export class ChangeSetRepository {
       for (const item of input.items) {
         await client.query(
           `INSERT INTO changeset_items
-             (changeset_id,target_type,target_id,field,from_value,to_value,item_status)
-           VALUES ($1,$2,$3,$4,$5,$6,'pending')`,
-          [header.id, item.targetType, item.targetId, item.field, item.fromValue, item.toValue],
+             (changeset_id,workspace_id,media,account_id,
+              target_type,target_id,field,from_value,to_value,item_status)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'pending')`,
+          [header.id, input.workspaceId, input.media, input.accountId,
+            item.targetType, item.targetId, item.field, item.fromValue, item.toValue],
         );
       }
       const record = await assemble(client, header);

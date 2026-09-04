@@ -58,9 +58,9 @@ describe("AccountListRepository", () => {
       `INSERT INTO task_accounts (
          workspace_id, task_id, media, account_id, valid_from, valid_to
        ) VALUES
-         ($1, 'task-b', 'KUAISHOU', 'decline', '2026-08-01', NULL),
-         ($1, 'task-a', 'KUAISHOU', 'decline', '2026-08-01', NULL),
-         ($1, 'task-missing', 'KUAISHOU', 'decline', '2026-08-01', NULL),
+         ($1, 'task-b', 'KUAISHOU', 'decline', '2026-08-01', '2026-08-10'),
+         ($1, 'task-a', 'KUAISHOU', 'decline', '2026-08-11', '2026-08-20'),
+         ($1, 'task-missing', 'KUAISHOU', 'decline', '2026-08-21', NULL),
          ($1, 'task-a', 'KUAISHOU', 'cold', '2026-08-26', NULL)`,
       [workspaceId],
     );
@@ -109,8 +109,6 @@ describe("AccountListRepository", () => {
       accountId: "decline",
       owner: { userId: ownerId, displayName: "脱敏优化师" },
       linkedTasks: [
-        { taskId: "task-a", taskName: "任务甲" },
-        { taskId: "task-b", taskName: "任务乙" },
         { taskId: "task-missing", taskName: null },
       ],
       metricDate: "2026-08-25",
