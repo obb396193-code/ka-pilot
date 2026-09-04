@@ -45,3 +45,6 @@ Docker Desktop 已恢复，但投放 Agent 专用 PostgreSQL 容器尚未确认�
 
 2026-09-04 Docker/PG16 已恢复。主管分支 08613c4 已合流账户列表、工作项列表/详情、workspace kind migration、personal/team session auth；合流门禁 Domain 484、Worker 573+2 opt-in skip、真实 PG DB 167 全绿。
 
+## 2026-09-04T12:06:44+08:00 · finding · `feature-completion`
+
+Task4 会话 HTTP 与 R1 安全退修已合入主管分支 `8e1ae56`：KA Data 默认关闭、登录错误同形 401、切换空间同步续期、异步 scrypt、membership SQL 1001 哨兵、Worker 生产依赖 audit 0。root 合流复验 Domain 491、真实 PG DB 171、Worker 非 PG 599 + PG 7，typecheck/lint 全绿；下一步是 Task5 Session 业务读接线和前端 Session BFF/E2E。
