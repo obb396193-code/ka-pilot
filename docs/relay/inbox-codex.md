@@ -210,3 +210,10 @@
   6. 反例：升级链倒计时暂停/恢复、派发 T+1 自动关闭、免审计数、关户向导有未关工作项拒绝、卡片 hash 不匹配 409、卡片重复 idempotency_key、kb 双链重建、team 空间 kb 只读。
 - 纪律同前；素材/结算提案期间不实现其 HTTP。
 - 状态：待处理（等 R-011）
+
+#### R-009 第一批 ✅通过（P-038）→ 继续第二批（2026-09-05）
+
+- **先 `git merge main` 进 be/r009**（main 已含契约 v1.3/v1.4 + api.md 漂移修正 `d070c1d` + 本次合流），再开工。
+- 第二批范围 = R-009 剩余全部：#2 P0-04 三态（按 api.md 新 BE-001：`MetricValue` + row schema **v2** + fixtures 升级）、#3 P0-05 409、#4 P0-07 fencing+effects、#5 P0-12 durable inbox、#6 P0-13 校验、#7 P0-03 五态（**顺手加 status CHECK**）、#8 数据源绑空间（普通请求**拒绝** `dataView`→400；reconcile 走 `POST /api/v1/admin/data/reconcile` entitlement）、#10 双空间集成反例。
+- 附带修 P-038 P2-1：删 `bff.ts:106` 假 token 兜底。
+- 交付方式不变：状态文件逐条 + SHA + 四包测试数 + 真 PG 证据；P-039 起编号。
