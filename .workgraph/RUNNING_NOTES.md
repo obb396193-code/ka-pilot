@@ -33,3 +33,11 @@ R1/R2 已实证三键守卫、tuple scope、联合键迁移和截断/缺源问�
 ## 2026-08-24T23:42:05+08:00 · finding · `prd-gap-matrix`
 
 已形成 15 组 PRD 真实差距矩阵与 D0-D4 本机闭环顺序；implemented/partial/gap 分离，Mock 不计 runtime verified。
+## 2026-09-04T00:38:45+00:00 · decision · `feature-completion`
+
+2026-09-04 老板恢复 Codex 主管推进；前端仅功能接入，不碰用户视觉精修；后端继续 personal/team session、列表详情与联调。
+
+## 2026-09-04T00:38:45+00:00 · blocker · `feature-completion`
+
+Docker Desktop 已恢复，但投放 Agent 专用 PostgreSQL 容器尚未确认启动；候选后端的真 PG 门禁仍待本轮实跑。
+
