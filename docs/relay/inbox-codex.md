@@ -137,7 +137,7 @@
   6. **P0-13**：changeset 创建/确认/执行前校验 initiator 与 credential_owner 为同 workspace active user；items 写入账户三键；补跨 workspace 伪造 ID 反例。
   7. **P0-03**：backfill 协调器按 raw→canonical→quality 三阶段推进 status，任一失败置 failed+failed_stage。
   8. **数据源绑空间**：`query-service` 按 `approvedAuthContext.workspaceKind` 固定 source（personal→platform，team→ka_data），普通业务 BFF 与 `/api/v1/data/query` **不再接受 `dataView`**（收到即 400）；reconcile 仅 entitlement allowlist；Task6 团队数据接入按此调整。
-  9. **Session BFF**：`codex/fe-task5-session-bff@c3ed7b3`（4 个 auth BFF 路由 + session-bff 库，303 行测试）先 exact-SHA 审后合入 be/r009；该工作树 `/private/tmp/ka-fe-task5-session-bff` 里还有 **11 个未提交脏文件**（`lib/data/{bff,task-list-bff,read-model-bff,contracts}.ts` 及 4 条 `app/api/internal/*` route 的 x-ka→cookie 迁移半成品）——**在原工作树续完、补测、提交**，不重做；旧 `codex/fe-functional-bff-v2@110f221` 基于 x-ka 旧鉴权，不合。
+  9. **Session BFF**：`codex/fe-task5-session-bff` 两笔——`c3ed7b3`（4 个 auth BFF 路由 + session-bff 库，303 行测试）+ **`c5df265`（data/tasks/work-items/changesets 四条 route 与 bff/task-list-bff/read-model-bff/contracts 全部改 Cookie Session，366+/397−，工作树已 clean）**——exact-SHA 审后合入 be/r009，跑全门禁；旧 `codex/fe-functional-bff-v2@110f221` 基于 x-ka 旧鉴权，不合。
   10. **补 root 指出的集成测试缺口**：`business-read-session-pg.integration.test.ts` 用真 Repository 覆盖 personal/team 的 query/tasks/work-items/detail、team changeset 403、伪造 x-ka-*、旧 token、跨 workspace、同 accountId 跨 media、logout 后全 401。
 - 纪律：`[be]` 前缀路径限定 commit；不动 `packages/contract/`（缺口写 inbox-arch）；不动 `apps/web` 非 api 部分；状态文件 `docs/plans/R009-状态.md`；完成交 SHA + 四包测试数 + 真实 PG 证据。
 - 状态：待处理
