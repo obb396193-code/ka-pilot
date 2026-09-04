@@ -41,3 +41,7 @@ R1/R2 已实证三键守卫、tuple scope、联合键迁移和截断/缺源问�
 
 Docker Desktop 已恢复，但投放 Agent 专用 PostgreSQL 容器尚未确认启动；候选后端的真 PG 门禁仍待本轮实跑。
 
+## 2026-09-04T01:04:30+00:00 · finding · `feature-completion`
+
+2026-09-04 Docker/PG16 已恢复。主管分支 08613c4 已合流账户列表、工作项列表/详情、workspace kind migration、personal/team session auth；合流门禁 Domain 484、Worker 573+2 opt-in skip、真实 PG DB 167 全绿。
+

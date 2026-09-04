@@ -5,7 +5,7 @@
   "goal": "前后端 Contract 对齐并完成集成，使已设计且当前可实现的核心功能能在本机启动、逐页查看和验证；老板细调后进入内网只读部署联调",
   "status": "active",
   "created_at": "2026-08-24T12:00:27+00:00",
-  "updated_at": "2026-09-04T00:38:45+00:00",
+  "updated_at": "2026-09-04T01:04:30+00:00",
   "approved_at": "2026-08-24T12:01:38+00:00",
   "nodes": [
     {
@@ -242,6 +242,12 @@
       "kind": "blocker",
       "node_id": "feature-completion",
       "text": "Docker Desktop 已恢复，但投放 Agent 专用 PostgreSQL 容器尚未确认启动；候选后端的真 PG 门禁仍待本轮实跑。"
+    },
+    {
+      "at": "2026-09-04T01:04:30+00:00",
+      "kind": "finding",
+      "node_id": "feature-completion",
+      "text": "2026-09-04 Docker/PG16 已恢复。主管分支 08613c4 已合流账户列表、工作项列表/详情、workspace kind migration、personal/team session auth；合流门禁 Domain 484、Worker 573+2 opt-in skip、真实 PG DB 167 全绿。"
     }
   ],
   "approvals": [
