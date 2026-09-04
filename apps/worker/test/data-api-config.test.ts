@@ -15,6 +15,8 @@ describe("data API config", () => {
       port: 3101,
       maxResponseBytes: 16 * 1024 * 1024,
       kaDataEnabled: false,
+      dataDiagnosticEnabled: false,
+      dataDiagnosticEntitlements: [],
       internalTestAuthEnabled: false,
       sessionTtlSeconds: 8 * 60 * 60,
     });
@@ -58,5 +60,39 @@ describe("data API config", () => {
       DATA_API_INTERNAL_TOKEN: "fixture-token-with-at-least-32-characters",
       KA_DATA_ENABLED: "1",
     })).toThrow();
+  });
+
+  it("requires an explicit strict server-side entitlement list for diagnostics", () => {
+    const workspaceId = "00000000-0000-4000-8000-000000000024";
+    const userId = "00000000-0000-4000-8000-000000000001";
+    expect(() => loadDataApiConfig({
+      DATABASE_URL: "postgres://fixture",
+      DATA_API_INTERNAL_TOKEN: "fixture-token-with-at-least-32-characters",
+      DATA_DIAGNOSTIC_ENABLED: "true",
+    })).toThrow("DATA_DIAGNOSTIC_ENTITLEMENTS_JSON");
+
+    const enabled = loadDataApiConfig({
+      DATABASE_URL: "postgres://fixture",
+      DATA_API_INTERNAL_TOKEN: "fixture-token-with-at-least-32-characters",
+      DATA_DIAGNOSTIC_ENABLED: "true",
+      DATA_DIAGNOSTIC_ENTITLEMENTS_JSON: JSON.stringify([{ workspaceId, userId }]),
+    });
+    expect(enabled).toMatchObject({
+      dataDiagnosticEnabled: true,
+      dataDiagnosticEntitlements: [{ workspaceId, userId }],
+    });
+
+    for (const invalid of [
+      "not-json",
+      JSON.stringify([{ workspaceId: "not-a-uuid", userId }]),
+      JSON.stringify([{ workspaceId, userId }, { workspaceId, userId }]),
+    ]) {
+      expect(() => loadDataApiConfig({
+        DATABASE_URL: "postgres://fixture",
+        DATA_API_INTERNAL_TOKEN: "fixture-token-with-at-least-32-characters",
+        DATA_DIAGNOSTIC_ENABLED: "true",
+        DATA_DIAGNOSTIC_ENTITLEMENTS_JSON: invalid,
+      })).toThrow();
+    }
   });
 });

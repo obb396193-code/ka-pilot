@@ -8,6 +8,20 @@ const FILTERED_TASKS_CTE = `
     SELECT task.*
     FROM tasks AS task
     WHERE task.workspace_id = $1::uuid
+      AND (
+        $3::text = 'team_workspace_readonly'
+        OR EXISTS (
+          SELECT 1
+          FROM task_accounts AS visible_relation
+          JOIN allowed_scope AS allowed
+            ON allowed.media = visible_relation.media
+           AND allowed.account_id = visible_relation.account_id
+          WHERE visible_relation.workspace_id = task.workspace_id
+            AND visible_relation.task_id = task.task_id
+            AND visible_relation.valid_from <= $2::date
+            AND (visible_relation.valid_to IS NULL OR visible_relation.valid_to >= $2::date)
+        )
+      )
       AND ($5::text IS NULL
         OR strpos(lower(COALESCE(task.task_name, '')), lower($5::text)) > 0
         OR strpos(lower(COALESCE(task.biz_name, '')), lower($5::text)) > 0)

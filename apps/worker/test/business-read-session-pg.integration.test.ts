@@ -8,6 +8,11 @@ import { Pool } from "pg";
 import {
   AccountListRepository,
   AuthSessionRepository,
+  ChangeSetRepository,
+  SemanticQueryRepository,
+  TaskListRepository,
+  WorkItemListRepository,
+  WorkItemRepository,
   runMigrations,
 } from "@ka/db";
 
@@ -20,9 +25,12 @@ import {
   SessionHttpService,
 } from "../src/auth/session-http.js";
 import { createDataApiServer } from "../src/data/http-server.js";
+import { PlatformDataSource } from "../src/data/platform-data-source.js";
 import { DataQueryService } from "../src/data/query-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
-import { readySource } from "./canonical-query-fixtures.js";
+import { ReadDetailService } from "../src/data/read-detail-service.js";
+import { TaskListService } from "../src/tasks/task-list-service.js";
+import { WorkItemListService } from "../src/work-items/work-item-list-service.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -39,6 +47,19 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
   let teamWorkspaceId: string;
   let server: ReturnType<typeof createDataApiServer> | undefined;
   let baseUrl: string;
+  let personalVisibleTaskId: string;
+  let teamTaskId: string;
+  let personalSelfWorkItemId: string;
+  let teamAccountWorkItemId: string;
+  let teamPrivateWorkItemId: string;
+  const sourceCalls = {
+    accounts: 0,
+    tasks: 0,
+    workItems: 0,
+    workItemDetail: 0,
+    changeSetDetail: 0,
+    platformQuery: 0,
+  };
 
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
@@ -75,7 +96,7 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
       `INSERT INTO accounts (workspace_id, media, account_id, account_name, status)
        VALUES
          ($1, 'KUAISHOU', 'personal-approved', '个人已授权', 'active'),
-         ($1, 'KUAISHOU', 'personal-hidden', '个人未授权', 'active'),
+         ($1, 'KUAISHOU', 'team-one', '个人未授权同号账户', 'active'),
          ($2, 'KUAISHOU', 'team-one', '团队账户一', 'active'),
          ($2, 'KUAISHOU', 'team-two', '团队账户二', 'active'),
          ($2, 'TENCENT', 'team-one', '团队跨媒体同号', 'active')`,
@@ -87,6 +108,71 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
        ) VALUES ($1, $2, 'KUAISHOU', 'personal-approved', 'read')`,
       [personalWorkspaceId, identityId],
     );
+    personalVisibleTaskId = `personal-visible-${suffix}`;
+    const personalHiddenTaskId = `personal-hidden-${suffix}`;
+    teamTaskId = `team-${suffix}`;
+    await pool.query(
+      `INSERT INTO tasks (
+         workspace_id, task_id, task_name, biz_name, period_start, period_end,
+         target_volume, budget, owner_user_id, status
+       ) VALUES
+         ($1, $3, '个人可见任务', '个人业务', '2026-09-01', '2026-09-30', 100, 1000, $5, 'active'),
+         ($1, $4, '个人隐藏任务', '未授权业务', '2026-09-01', '2026-09-30', 200, 2000, $5, 'active'),
+         ($2, $6, '团队任务', '团队业务', '2026-09-01', '2026-09-30', 300, 3000, $7, 'active')`,
+      [
+        personalWorkspaceId,
+        teamWorkspaceId,
+        personalVisibleTaskId,
+        personalHiddenTaskId,
+        personalUserId,
+        teamTaskId,
+        teamUserId,
+      ],
+    );
+    await pool.query(
+      `INSERT INTO task_accounts (
+         workspace_id, task_id, media, account_id, valid_from
+       ) VALUES
+         ($1, $3, 'KUAISHOU', 'personal-approved', '2026-09-01'),
+         ($1, $4, 'KUAISHOU', 'team-one', '2026-09-01'),
+         ($2, $5, 'KUAISHOU', 'team-one', '2026-09-01')`,
+      [personalWorkspaceId, teamWorkspaceId, personalVisibleTaskId, personalHiddenTaskId, teamTaskId],
+    );
+    await pool.query(
+      `INSERT INTO account_metrics_daily (
+         workspace_id, media, account_id, ds, cost, real_conversion, computed_at
+       ) VALUES
+         ($1, 'KUAISHOU', 'personal-approved', '2026-09-04', 10, 1, '2026-09-04T07:00:00Z'),
+         ($1, 'KUAISHOU', 'team-one', '2026-09-04', 20, 2, '2026-09-04T07:00:00Z'),
+         ($2, 'KUAISHOU', 'team-one', '2026-09-04', 30, 3, '2026-09-04T07:00:00Z'),
+         ($2, 'KUAISHOU', 'team-two', '2026-09-04', 40, 4, '2026-09-04T07:00:00Z'),
+         ($2, 'TENCENT', 'team-one', '2026-09-04', 50, 5, '2026-09-04T07:00:00Z')`,
+      [personalWorkspaceId, teamWorkspaceId],
+    );
+    const workItems = await pool.query<{ id: string; title: string }>(
+      `INSERT INTO work_items (
+         workspace_id, type, media, account_id, task_id, severity, title, status,
+         assignee, creator, evidence_snapshot, diagnosis
+       ) VALUES
+         ($1, 'diagnosis', 'KUAISHOU', 'personal-approved', $3, 'P1', '个人账户工作项', 'open', $5, $5, '{"proof":"personal"}', '{"state":"checked"}'),
+         ($1, 'diagnosis', 'KUAISHOU', 'team-one', $4, 'P0', '个人隐藏工作项', 'open', $5, $5, NULL, NULL),
+         ($1, 'self', NULL, NULL, NULL, 'P2', '个人无账户工作项', 'open', $5, $5, '{"proof":"self"}', NULL),
+         ($2, 'diagnosis', 'KUAISHOU', 'team-one', $6, 'P1', '团队账户工作项', 'open', $7, $7, '{"proof":"team"}', NULL),
+         ($2, 'self', NULL, NULL, NULL, 'P2', '团队空间私人工作项', 'open', $7, $7, NULL, NULL)
+       RETURNING id, title`,
+      [
+        personalWorkspaceId,
+        teamWorkspaceId,
+        personalVisibleTaskId,
+        personalHiddenTaskId,
+        personalUserId,
+        teamTaskId,
+        teamUserId,
+      ],
+    );
+    personalSelfWorkItemId = workItems.rows.find((row) => row.title === "个人无账户工作项")!.id;
+    teamAccountWorkItemId = workItems.rows.find((row) => row.title === "团队账户工作项")!.id;
+    teamPrivateWorkItemId = workItems.rows.find((row) => row.title === "团队空间私人工作项")!.id;
 
     const authRepository = new AuthSessionRepository(pool);
     const sessionAuth = new SessionAuthService(authRepository, { now: () => now });
@@ -100,20 +186,66 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
         ttlSeconds: 3_600,
       },
     );
+    const semanticRepository = new SemanticQueryRepository(pool);
+    const platformDataSource = new PlatformDataSource(semanticRepository);
     const dataService = new DataQueryService({
       registry: createDataQueryRegistry(),
-      kaData: { query: async (resolved) => readySource(resolved.queryId, "ka_data", []) },
-      platform: { query: async (resolved) => readySource(resolved.queryId, "canonical", []) },
+      kaData: { query: async () => { throw new Error("ordinary reads must not call KA Data"); } },
+      platform: {
+        query: async (resolved, execution) => {
+          sourceCalls.platformQuery += 1;
+          return platformDataSource.query(resolved, execution);
+        },
+      },
     });
+    const workItemRepository = new WorkItemRepository(pool);
+    const changeSetRepository = new ChangeSetRepository(pool);
+    const taskListRepository = new TaskListRepository(pool);
+    const accountListRepository = new AccountListRepository(pool);
+    const workItemListRepository = new WorkItemListRepository(pool);
     server = createDataApiServer({
       service: dataService,
-      detailService: {} as never,
-      taskListService: {} as never,
-      accountListService: new AccountListService({
-        repository: new AccountListRepository(pool),
+      detailService: new ReadDetailService({
+        workItems: {
+          find: async (workspaceId, workItemId) => {
+            sourceCalls.workItemDetail += 1;
+            return workItemRepository.find(workspaceId, workItemId);
+          },
+        },
+        changeSets: {
+          find: async (workspaceId, changeSetId) => {
+            sourceCalls.changeSetDetail += 1;
+            return changeSetRepository.find(workspaceId, changeSetId);
+          },
+        },
+      }),
+      taskListService: new TaskListService({
+        repository: {
+          list: async (query) => {
+            sourceCalls.tasks += 1;
+            return taskListRepository.list(query);
+          },
+        },
         now: () => now,
       }),
-      workItemListService: {} as never,
+      accountListService: new AccountListService({
+        repository: {
+          list: async (query) => {
+            sourceCalls.accounts += 1;
+            return accountListRepository.list(query);
+          },
+        },
+        now: () => now,
+      }),
+      workItemListService: new WorkItemListService({
+        repository: {
+          list: async (query) => {
+            sourceCalls.workItems += 1;
+            return workItemListRepository.list(query);
+          },
+        },
+        now: () => now,
+      }),
       sessionHttpService: sessionHttp,
       sessionAuthService: sessionAuth,
       internalToken,
@@ -140,6 +272,22 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
     await pool.query(
       "DELETE FROM workspace_memberships WHERE identity_id = $1",
       [identityId],
+    );
+    await pool.query(
+      "DELETE FROM work_items WHERE workspace_id = ANY($1::uuid[])",
+      [cleanupWorkspaceIds],
+    );
+    await pool.query(
+      "DELETE FROM task_accounts WHERE workspace_id = ANY($1::uuid[])",
+      [cleanupWorkspaceIds],
+    );
+    await pool.query(
+      "DELETE FROM tasks WHERE workspace_id = ANY($1::uuid[])",
+      [cleanupWorkspaceIds],
+    );
+    await pool.query(
+      "DELETE FROM account_metrics_daily WHERE workspace_id = ANY($1::uuid[])",
+      [cleanupWorkspaceIds],
     );
     await pool.query(
       "DELETE FROM accounts WHERE workspace_id = ANY($1::uuid[])",
@@ -201,6 +349,81 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
         }],
       },
     });
+    const personalReadBody = await (await fetch(`${baseUrl}/api/v1/accounts`, {
+      headers: headers(personalCookie, "task5-personal-cross-workspace-proof"),
+    })).json() as {
+      data: { items: Array<{ workspaceId: string; media: string; accountId: string }> };
+    };
+    expect(personalReadBody.data.items).toEqual([expect.objectContaining({
+      workspaceId: personalWorkspaceId,
+      media: "KUAISHOU",
+      accountId: "personal-approved",
+    })]);
+    expect(personalReadBody.data.items).not.toContainEqual(expect.objectContaining({
+      accountId: "team-one",
+    }));
+
+    const personalTasks = await fetch(`${baseUrl}/api/v1/tasks`, {
+      headers: headers(personalCookie, "task5-personal-tasks"),
+    });
+    expect(personalTasks.status).toBe(200);
+    expect(await personalTasks.json()).toMatchObject({
+      ok: true,
+      data: {
+        total: 1,
+        items: [{ taskId: personalVisibleTaskId, taskName: "个人可见任务" }],
+      },
+    });
+
+    const personalItems = await fetch(`${baseUrl}/api/v1/work-items`, {
+      headers: headers(personalCookie, "task5-personal-items"),
+    });
+    expect(personalItems.status).toBe(200);
+    const personalItemsBody = await personalItems.json() as {
+      data: { total: number; items: Array<{ title: string }> };
+    };
+    expect(personalItemsBody.data.total).toBe(2);
+    expect(personalItemsBody.data.items.map((item) => item.title).sort()).toEqual([
+      "个人无账户工作项",
+      "个人账户工作项",
+    ]);
+
+    const personalDetail = await fetch(
+      `${baseUrl}/api/v1/work-items/${personalSelfWorkItemId}`,
+      { headers: headers(personalCookie, "task5-personal-detail") },
+    );
+    expect(personalDetail.status).toBe(200);
+    expect(await personalDetail.json()).toMatchObject({
+      ok: true,
+      data: {
+        kind: "work_item",
+        workItem: { id: personalSelfWorkItemId, title: "个人无账户工作项" },
+      },
+    });
+
+    const personalData = await fetch(`${baseUrl}/api/v1/data/query`, {
+      method: "POST",
+      headers: headers(personalCookie, "task5-personal-data"),
+      body: JSON.stringify({
+        queryId: "account.table",
+        params: { date: "2026-09-04" },
+        dataView: "ka_data",
+      }),
+    });
+    expect(personalData.status).toBe(200);
+    expect(await personalData.json()).toMatchObject({
+      ok: true,
+      data: {
+        mode: "platform",
+        source: {
+          rows: [{
+            workspaceId: personalWorkspaceId,
+            media: "KUAISHOU",
+            accountId: "personal-approved",
+          }],
+        },
+      },
+    });
 
     const switched = await fetch(`${baseUrl}${AUTH_WORKSPACE_HTTP_PATH}`, {
       method: "POST",
@@ -232,15 +455,108 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
     expect(teamBody.data.items.map((item) => item.accountId).sort()).toEqual(["team-one", "team-two"]);
     expect(teamBody.data.items.every((item) =>
       item.workspaceId === teamWorkspaceId && item.media === "KUAISHOU")).toBe(true);
+    expect(teamBody.data.items).toContainEqual(expect.objectContaining({
+      workspaceId: teamWorkspaceId,
+      media: "KUAISHOU",
+      accountId: "team-one",
+    }));
+    expect(teamBody.data.items).not.toContainEqual(expect.objectContaining({
+      workspaceId: personalWorkspaceId,
+      accountId: "team-one",
+    }));
+    expect(teamBody.data.items).not.toContainEqual(expect.objectContaining({
+      media: "TENCENT",
+      accountId: "team-one",
+    }));
+
+    const teamTasks = await fetch(`${baseUrl}/api/v1/tasks`, {
+      headers: headers(teamCookie, "task5-team-tasks"),
+    });
+    expect(teamTasks.status).toBe(200);
+    expect(await teamTasks.json()).toMatchObject({
+      ok: true,
+      data: { total: 1, items: [{ taskId: teamTaskId, taskName: "团队任务" }] },
+    });
+
+    const teamItems = await fetch(`${baseUrl}/api/v1/work-items`, {
+      headers: headers(teamCookie, "task5-team-items"),
+    });
+    expect(teamItems.status).toBe(200);
+    expect(await teamItems.json()).toMatchObject({
+      ok: true,
+      data: {
+        total: 1,
+        items: [{ workItemId: teamAccountWorkItemId, title: "团队账户工作项" }],
+      },
+    });
+
+    const teamDetail = await fetch(`${baseUrl}/api/v1/work-items/${teamAccountWorkItemId}`, {
+      headers: headers(teamCookie, "task5-team-detail"),
+    });
+    expect(teamDetail.status).toBe(200);
+    const teamPrivateDetail = await fetch(`${baseUrl}/api/v1/work-items/${teamPrivateWorkItemId}`, {
+      headers: headers(teamCookie, "task5-team-private-detail"),
+    });
+    expect(teamPrivateDetail.status).toBe(403);
+
+    const changeSetFindCallsBefore = sourceCalls.changeSetDetail;
+    const teamChangeSet = await fetch(`${baseUrl}/api/v1/changesets/${randomUUID()}`, {
+      headers: headers(teamCookie, "task5-team-changeset-detail"),
+    });
+    expect(teamChangeSet.status).toBe(403);
+    expect(sourceCalls.changeSetDetail).toBe(changeSetFindCallsBefore);
+
+    const teamData = await fetch(`${baseUrl}/api/v1/data/query`, {
+      method: "POST",
+      headers: headers(teamCookie, "task5-team-data"),
+      body: JSON.stringify({
+        queryId: "account.table",
+        params: { date: "2026-09-04", media: "KUAISHOU" },
+        dataView: "reconcile",
+      }),
+    });
+    expect(teamData.status).toBe(200);
+    const teamDataBody = await teamData.json() as {
+      data: {
+        mode: string;
+        source: { rows: Array<{ workspaceId: string; media: string; accountId: string }> };
+      };
+    };
+    expect(teamDataBody.data.mode).toBe("platform");
+    expect(teamDataBody.data.source.rows).toHaveLength(2);
+    expect(teamDataBody.data.source.rows.every((row) =>
+      row.workspaceId === teamWorkspaceId && row.media === "KUAISHOU")).toBe(true);
+    expect(teamDataBody.data.source.rows.map((row) => row.accountId).sort()).toEqual([
+      "team-one",
+      "team-two",
+    ]);
 
     const loggedOut = await fetch(`${baseUrl}${AUTH_SESSION_HTTP_PATH}`, {
       method: "DELETE",
       headers: headers(teamCookie, "task5-logout-request"),
     });
     expect(loggedOut.status).toBe(200);
-    const afterLogout = await fetch(`${baseUrl}/api/v1/accounts`, {
-      headers: headers(teamCookie, "task5-after-logout"),
-    });
-    expect(afterLogout.status).toBe(401);
+    const callsAfterLogout = { ...sourceCalls };
+    const unauthorizedReads = [
+      { path: "/api/v1/data/query", method: "POST", body: JSON.stringify({
+        queryId: "account.table",
+        params: { date: "2026-09-04" },
+        dataView: "platform",
+      }) },
+      { path: "/api/v1/tasks", method: "GET" },
+      { path: "/api/v1/accounts", method: "GET" },
+      { path: "/api/v1/work-items", method: "GET" },
+      { path: `/api/v1/work-items/${teamAccountWorkItemId}`, method: "GET" },
+    ];
+    for (const [index, input] of unauthorizedReads.entries()) {
+      const afterLogout = await fetch(`${baseUrl}${input.path}`, {
+        method: input.method,
+        headers: headers(teamCookie, `task5-after-logout-${index}`),
+        ...(input.body === undefined ? {} : { body: input.body }),
+      });
+      expect(afterLogout.status).toBe(401);
+      expect(afterLogout.headers.get("x-request-id")).toBe(`task5-after-logout-${index}`);
+    }
+    expect(sourceCalls).toEqual(callsAfterLogout);
   });
 });

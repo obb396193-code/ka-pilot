@@ -85,6 +85,8 @@ describe("Data API production composition", () => {
       DATA_API_INTERNAL_TOKEN: internalToken,
       INTERNAL_TEST_AUTH_ENABLED: "false",
       KA_DATA_ENABLED: "false",
+      DATA_DIAGNOSTIC_ENABLED: "false",
+      DATA_DIAGNOSTIC_ENTITLEMENTS_JSON: undefined,
       KA_DATA_BASE_URL: undefined,
       KA_DATA_READER_TOKEN: undefined,
     });
@@ -109,6 +111,8 @@ describe("Data API production composition", () => {
       DATABASE_URL: databaseUrl,
       DATA_API_INTERNAL_TOKEN: internalToken,
       KA_DATA_ENABLED: "true",
+      DATA_DIAGNOSTIC_ENABLED: "false",
+      DATA_DIAGNOSTIC_ENTITLEMENTS_JSON: undefined,
       KA_DATA_BASE_URL: undefined,
       KA_DATA_READER_TOKEN: undefined,
     });

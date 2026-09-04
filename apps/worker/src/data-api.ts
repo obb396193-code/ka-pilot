@@ -60,6 +60,11 @@ async function main(): Promise<void> {
       { ttlSeconds: config.sessionTtlSeconds },
     ),
     sessionAuthService,
+    dataQueryAccess: {
+      diagnosticEnabled: config.dataDiagnosticEnabled,
+      kaDataEnabled: config.kaDataEnabled,
+      entitlements: config.dataDiagnosticEntitlements,
+    },
     internalToken: config.internalToken,
     maxRequestBytes: config.maxRequestBytes,
     maxResponseBytes: config.maxResponseBytes,

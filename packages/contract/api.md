@@ -82,6 +82,10 @@ personal workspace 固定为 `explicit_accounts`。scope mode 只能由服务端
   自选共享凭证出口。切换必须留审计字段 `selectedSource/reason/requestId`，但不记录 token、
   SQL 或上游正文。
 - 现有 `POST /api/v1/data/query` 双数据能力保留为管理员诊断 API，不作为普通页面首屏依赖。
+- 诊断权限不是 `role=admin` 的隐含能力。服务端必须同时开启诊断总开关，并让当前
+  `(workspaceId,userId)` 命中受控 entitlement allowlist；普通 Session 的请求一律固定为
+  `platform`，body 中的 `dataView` 不能开启 `ka_data/reconcile`。诊断已授权但 KA Data 总开关
+  关闭时，`ka_data/reconcile` 必须在上游调用前返回稳定 `VIEW_UNSUPPORTED`。
 
 ## 受控双数据查询（BE-001）
 

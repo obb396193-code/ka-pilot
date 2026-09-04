@@ -1,11 +1,18 @@
 import { once } from "node:events";
 import type { AddressInfo } from "node:net";
 
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { DataQueryId, SourceQueryResult } from "@ka/domain";
+import type {
+  ApprovedWorkspaceAuthContext,
+  DataQueryId,
+  SourceQueryResult,
+} from "@ka/domain";
 
-import { createDataApiServer } from "../src/data/http-server.js";
+import {
+  createDataApiServer,
+  type DataQueryAccessPolicy,
+} from "../src/data/http-server.js";
 import { AccountListService } from "../src/accounts/account-list-service.js";
 import { KaDataClientError } from "../src/data/ka-data-client.js";
 import { PlatformDataSource } from "../src/data/platform-data-source.js";
@@ -112,18 +119,21 @@ describe("data API HTTP composition", () => {
     kaData?: DataSourceQueryPort;
     platform?: DataSourceQueryPort;
     detailService?: ReadDetailService;
+    auth?: ApprovedWorkspaceAuthContext;
+    dataQueryAccess?: DataQueryAccessPolicy;
   } = {}) {
+    const activeAuth = options.auth ?? auth;
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
       kaData: options.kaData ?? { query: async (resolved) => ready(
         resolved.queryId,
         "ka_data",
-        [canonicalRow(resolved.queryId, 10, auth.workspaceId, "account-1")],
+        [canonicalRow(resolved.queryId, 10, activeAuth.workspaceId, "account-1")],
       ) },
       platform: options.platform ?? { query: async (resolved) => ready(
         resolved.queryId,
         "canonical",
-        [canonicalRow(resolved.queryId, 11, auth.workspaceId, "account-1")],
+        [canonicalRow(resolved.queryId, 11, activeAuth.workspaceId, "account-1")],
       ) },
       requestId: () => "http-smoke-request",
     });
@@ -133,7 +143,10 @@ describe("data API HTTP composition", () => {
       taskListService: emptyTaskListService(),
       accountListService: emptyAccountListService(),
       workItemListService: emptyWorkItemListService(),
-      sessionAuthService: approvedSessionAuth(auth),
+      sessionAuthService: approvedSessionAuth(activeAuth),
+      ...(options.dataQueryAccess === undefined
+        ? {}
+        : { dataQueryAccess: options.dataQueryAccess }),
       internalToken,
       ...(options.maxResponseBytes === undefined
         ? {}
@@ -149,7 +162,13 @@ describe("data API HTTP composition", () => {
   it.each(["ka_data", "platform", "reconcile"] as const)(
     "serves %s through the real POST /api/v1/data/query route",
     async (dataView) => {
-      const baseUrl = await start();
+      const baseUrl = await start({
+        dataQueryAccess: {
+          diagnosticEnabled: true,
+          kaDataEnabled: true,
+          entitlements: [{ workspaceId: auth.workspaceId, userId: auth.userId }],
+        },
+      });
       const response = await fetch(`${baseUrl}/api/v1/data/query`, {
         method: "POST",
         headers: { ...authHeaders(), "x-request-id": `bff-${dataView}-001` },
@@ -165,6 +184,116 @@ describe("data API HTTP composition", () => {
       expect(payload).toMatchObject({ ok: true, data: { mode: dataView } });
     },
   );
+
+  it.each(["optimizer", "operator", "lead", "admin"] as const)(
+    "fixes ordinary %s sessions to platform even when the body requests ka_data",
+    async (role) => {
+      const kaData = { query: vi.fn(async () => { throw new Error("KA must not run"); }) };
+      const platform = { query: vi.fn(async (resolved) => ready(
+        resolved.queryId,
+        "canonical",
+        [canonicalRow(resolved.queryId, 11, auth.workspaceId, "account-1")],
+      )) };
+      const baseUrl = await start({ auth: { ...auth, role }, kaData, platform });
+      const response = await fetch(`${baseUrl}/api/v1/data/query`, {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({
+          queryId: "account.summary",
+          params: { date: "2026-08-24" },
+          dataView: "ka_data",
+        }),
+      });
+      expect(response.status).toBe(200);
+      expect(await response.json()).toMatchObject({ ok: true, data: { mode: "platform" } });
+      expect(kaData.query).not.toHaveBeenCalled();
+      expect(platform.query).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it("does not grant diagnostics when the server flag is off even if an entitlement is configured", async () => {
+    const kaData = { query: vi.fn(async () => { throw new Error("KA must not run"); }) };
+    const platform = { query: vi.fn(async (resolved) => ready(
+      resolved.queryId,
+      "canonical",
+      [canonicalRow(resolved.queryId, 11, auth.workspaceId, "account-1")],
+    )) };
+    const baseUrl = await start({
+      kaData,
+      platform,
+      dataQueryAccess: {
+        diagnosticEnabled: false,
+        kaDataEnabled: true,
+        entitlements: [{ workspaceId: auth.workspaceId, userId: auth.userId }],
+      },
+    });
+    const response = await fetch(`${baseUrl}/api/v1/data/query`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({
+        queryId: "account.summary",
+        params: { date: "2026-08-24" },
+        dataView: "reconcile",
+      }),
+    });
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ ok: true, data: { mode: "platform" } });
+    expect(kaData.query).not.toHaveBeenCalled();
+  });
+
+  it("rejects KA views when the entitled diagnostic path is enabled but KA Data is off", async () => {
+    const kaData = { query: vi.fn(async () => { throw new Error("KA must not run"); }) };
+    const platform = { query: vi.fn(async () => { throw new Error("platform must not run"); }) };
+    const baseUrl = await start({
+      kaData,
+      platform,
+      dataQueryAccess: {
+        diagnosticEnabled: true,
+        kaDataEnabled: false,
+        entitlements: [{ workspaceId: auth.workspaceId, userId: auth.userId }],
+      },
+    });
+    const response = await fetch(`${baseUrl}/api/v1/data/query`, {
+      method: "POST",
+      headers: { ...authHeaders(), "x-request-id": "diagnostic-ka-off" },
+      body: JSON.stringify({
+        queryId: "account.summary",
+        params: { date: "2026-08-24" },
+        dataView: "ka_data",
+      }),
+    });
+    expect(response.status).toBe(422);
+    expect(await response.json()).toEqual({
+      ok: false,
+      error: {
+        code: "VIEW_UNSUPPORTED",
+        message: "KA Data diagnostic views are disabled by server configuration",
+        retryable: false,
+        requestId: "diagnostic-ka-off",
+      },
+    });
+    expect(kaData.query).not.toHaveBeenCalled();
+    expect(platform.query).not.toHaveBeenCalled();
+  });
+
+  it("cannot receive a diagnostic entitlement from the browser body", async () => {
+    const baseUrl = await start();
+    const response = await fetch(`${baseUrl}/api/v1/data/query`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify({
+        queryId: "account.summary",
+        params: { date: "2026-08-24" },
+        dataView: "ka_data",
+        diagnosticEntitlement: true,
+      }),
+    });
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({
+      ok: false,
+      error: { code: "INVALID_REQUEST" },
+    });
+  });
 
   it("returns stable 401/403 envelopes before executing a query", async () => {
     const baseUrl = await start();
@@ -317,6 +446,11 @@ describe("data API HTTP composition", () => {
         query: async () => {
           throw new KaDataClientError("UPSTREAM_TIMEOUT", "KA Data request timed out", true);
         },
+      },
+      dataQueryAccess: {
+        diagnosticEnabled: true,
+        kaDataEnabled: true,
+        entitlements: [{ workspaceId: auth.workspaceId, userId: auth.userId }],
       },
     });
     const response = await fetch(`${baseUrl}/api/v1/data/query`, {

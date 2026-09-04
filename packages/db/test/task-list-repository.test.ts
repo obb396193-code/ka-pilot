@@ -87,8 +87,9 @@ describe("TaskListRepository", () => {
          ($1, $2, 'KUAISHOU', 'same-id', '2026-08-01', NULL),
          ($1, $2, 'TENCENT', 'same-id', '2026-08-01', NULL),
          ($1, $3, 'KUAISHOU', 'unapproved', '2026-08-01', NULL),
+         ($1, $5, 'KUAISHOU', 'same-id', '2026-08-01', '2026-08-24'),
          ($4, $2, 'KUAISHOU', 'same-id', '2026-08-01', NULL)`,
-      [workspaceId, activeTaskId, secondActiveTaskId, otherWorkspaceId],
+      [workspaceId, activeTaskId, secondActiveTaskId, otherWorkspaceId, preparingTaskId],
     );
     await pool.query(
       `INSERT INTO account_metrics_daily (
@@ -135,12 +136,9 @@ describe("TaskListRepository", () => {
   it("returns stable status/end/id ordering with total from the same repository call", async () => {
     const result = await repository.list(baseQuery());
 
-    expect(result.total).toBe(4);
+    expect(result.total).toBe(1);
     expect(result.rows.map((row) => row.taskId)).toEqual([
       activeTaskId,
-      secondActiveTaskId,
-      preparingTaskId,
-      endedTaskId,
     ]);
     expect(result.page).toBe(1);
     expect(result.pageSize).toBe(20);
@@ -148,29 +146,26 @@ describe("TaskListRepository", () => {
     const firstPage = await repository.list({ ...baseQuery(), pageSize: 1 });
     const secondPage = await repository.list({ ...baseQuery(), page: 2, pageSize: 1 });
     expect(firstPage.rows[0]?.taskId).toBe(activeTaskId);
-    expect(secondPage.rows[0]?.taskId).toBe(secondActiveTaskId);
+    expect(secondPage.rows).toEqual([]);
     expect(firstPage.total).toBe(secondPage.total);
   });
 
   it("applies parameterized search, filters, overlap and authorized open-work-item predicates", async () => {
     expect((await repository.list({ ...baseQuery(), q: "核心" })).rows)
       .toHaveLength(1);
-    expect((await repository.list({ ...baseQuery(), status: "preparing" })).rows[0]?.taskId)
-      .toBe(preparingTaskId);
+    expect((await repository.list({ ...baseQuery(), status: "preparing" })).rows)
+      .toEqual([]);
     expect((await repository.list({ ...baseQuery(), ownerUserId: ownerId })).total)
-      .toBe(2);
+      .toBe(1);
     expect((await repository.list({
       ...baseQuery(),
       periodFrom: "2026-08-25",
       periodTo: "2026-09-15",
-    })).rows.map((row) => row.taskId)).toEqual([
-      activeTaskId,
-      preparingTaskId,
-    ]);
+    })).rows.map((row) => row.taskId)).toEqual([activeTaskId]);
     expect((await repository.list({ ...baseQuery(), hasOpenWorkItems: true })).rows)
       .toHaveLength(1);
     expect((await repository.list({ ...baseQuery(), hasOpenWorkItems: false })).total)
-      .toBe(3);
+      .toBe(0);
     expect((await repository.list({ ...baseQuery(), q: "%' OR true --" })).total)
       .toBe(0);
   });
@@ -228,27 +223,31 @@ describe("TaskListRepository", () => {
     expect(row.assessmentPrice?.value).not.toBe(99);
   });
 
-  it("keeps task metadata but reveals no account-derived facts for an empty grant", async () => {
+  it("returns no task metadata or derived facts for an empty personal grant", async () => {
     const result = await repository.list({ ...baseQuery(), allowedAccounts: [] });
-    const row = result.rows[0]!;
 
-    expect(result.total).toBe(4);
-    expect(row).toMatchObject({
-      taskId: activeTaskId,
-      linkedAccountCount: 0,
-      totalLinkedAccountCount: 2,
-      completedVolume: null,
-      spent: null,
-      recentDailyVolumes: [],
-      dataAsOf: null,
-      latestMetricDate: null,
-      workItemSummary: {
-        openCount: 0,
-        highestSeverity: null,
-        counts: { P0: 0, P1: 0, P2: 0, opportunity: 0 },
-      },
-    });
+    expect(result.total).toBe(0);
+    expect(result.rows).toEqual([]);
+    expect(result.coverageComplete).toBe(true);
+  });
+
+  it("hides tasks linked only to unapproved tuples while keeping mixed tasks partial", async () => {
+    const result = await repository.list(baseQuery());
+
+    expect(result.rows.map((row) => row.taskId)).toEqual([activeTaskId]);
+    expect(result.rows.some((row) => row.taskId === secondActiveTaskId)).toBe(false);
     expect(result.coverageComplete).toBe(false);
+
+    const tencentOnly = await repository.list({
+      ...baseQuery(),
+      allowedAccounts: [{ media: "TENCENT", accountId: "same-id" }],
+    });
+    expect(tencentOnly.rows.map((row) => row.taskId)).toEqual([activeTaskId]);
+    expect(tencentOnly.rows[0]).toMatchObject({
+      linkedAccountCount: 1,
+      completedVolume: 900,
+      spent: 9000,
+    });
   });
 
   it("does not cross workspace boundaries even when task/account IDs match", async () => {
@@ -345,6 +344,12 @@ describe("TaskListRepository", () => {
                  ) VALUES ($1, $2, '并发插入任务', 'active', '2026-08-01', '2026-08-15')`,
                 [workspaceId, insertedTaskId],
               );
+              await pool.query(
+                `INSERT INTO task_accounts (
+                   workspace_id, task_id, media, account_id, valid_from
+                 ) VALUES ($1, $2, 'KUAISHOU', 'same-id', '2026-08-01')`,
+                [workspaceId, insertedTaskId],
+              );
             }
             return result as QueryResult<Row>;
           },
@@ -355,8 +360,8 @@ describe("TaskListRepository", () => {
     const snapshotRepository = new TaskListRepository(instrumentedPool);
 
     const result = await snapshotRepository.list(baseQuery());
-    expect(result.total).toBe(4);
+    expect(result.total).toBe(1);
     expect(result.rows.some((row) => row.taskId === insertedTaskId)).toBe(false);
-    expect((await repository.list(baseQuery())).total).toBe(5);
+    expect((await repository.list(baseQuery())).total).toBe(2);
   });
 });
