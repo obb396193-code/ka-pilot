@@ -2772,6 +2772,13 @@ R-009 与 `schema.sql` 头部写“迁移编号从 008 起”，但 main 已有�
 2. `api.md` DATA-ROUTE-001 v1.2 与 R-009 要求普通请求拒绝 `dataView`，但同文件 BE-001 仍把 `dataView` 列为严格必填字段，Domain/BFF/Query Registry 当前也按必填实现。请明确：普通 session 查询应只收 `{queryId,params}`；`reconcile.account_daily` 是否仅由 queryId + entitlement 进入治理诊断。
 
 be 在裁决前不修改上述 Domain/公开 DTO；先处理 R-009 已明确要求合入的 Auth BFF 候选。
+
+#### 2026-09-05 BFF 收口增量
+
+- 已按 R-009 #9 在原 worktree 收口 11 个脏文件：`codex/fe-task5-session-bff@c5df265`。
+- 已并入 `be/r009@2916a91`；Web 77/77、typecheck、lint 全绿。
+- 普通 BFF 只转发服务端 bearer + 单一 `ka_session` Cookie + requestId，不转发浏览器伪造的 `x-ka-*`；data-query 当前仍按旧 DTO 强制写入 `dataView=platform`，待上面“普通请求不接收 dataView”的 Contract 漂移由 arch 裁决后再改。
+- 原 worktree 的 `bff.test.new` 是未引用、被正式 77 项测试覆盖的临时缩减稿，未提交并已清除。
 ---
 
 ## 2026-09-04 arch 六簇审计 · 第一轮（不变量核验，覆盖 P-004～P-035 全部批次）
