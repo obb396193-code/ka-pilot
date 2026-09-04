@@ -2765,3 +2765,10 @@ R-009 与 `schema.sql` 头部写“迁移编号从 008 起”，但 main 已有�
 请冻结 R-009 实际迁移序号，并同步校正 v1.3/R-010 文档里的“migration 009”。be 不会覆盖已有迁移，也不会复用旧 Task6 WIP 的 011。
 
 - 状态：待 arch 裁决迁移编号；不依赖编号的代码审计继续。
+
+#### 同批发现的 Contract 文字/实现漂移
+
+1. `metrics.md` P0-04 要求所有 API/canonical 指标统一 `{value,availability}`，但 `api.md` BE-001 仍写“普通可缺指标用 `number|null`”，`packages/domain/src/data-query-rows.ts` 也仍是 nullable number。R-009 又明确要求改成三态。请确认以 metrics.md/R-009 为准，并确认 canonical row schema 是否升到 v2。
+2. `api.md` DATA-ROUTE-001 v1.2 与 R-009 要求普通请求拒绝 `dataView`，但同文件 BE-001 仍把 `dataView` 列为严格必填字段，Domain/BFF/Query Registry 当前也按必填实现。请明确：普通 session 查询应只收 `{queryId,params}`；`reconcile.account_daily` 是否仅由 queryId + entitlement 进入治理诊断。
+
+be 在裁决前不修改上述 Domain/公开 DTO；先处理 R-009 已明确要求合入的 Auth BFF 候选。
