@@ -1,9 +1,11 @@
 import {
   authSessionSnapshotSchema,
   resolveApprovedAuthContext,
+  sessionViewSchema,
   type AuthResolution,
   type AuthRole,
   type AuthSessionSnapshot,
+  type SessionViewResolution,
 } from "@ka/domain";
 import type { Pool, PoolClient, QueryResultRow } from "pg";
 
@@ -28,6 +30,14 @@ interface AuthSessionRow {
   grants: unknown;
 }
 
+interface SessionWorkspaceRow {
+  display_name: string;
+  workspace_id: string;
+  workspace_name: string;
+  workspace_kind: "personal" | "team";
+  membership_role: AuthRole;
+}
+
 const tokenHashPattern = /^[0-9a-f]{64}$/;
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -50,7 +60,7 @@ export interface SwitchSessionWorkspaceInput {
 function rejected(
   httpStatus: 401 | 403,
   reason: Extract<AuthResolution, { status: "rejected" }>["reason"],
-): AuthResolution {
+): Extract<AuthResolution, { status: "rejected" }> {
   return { status: "rejected", httpStatus, reason };
 }
 
@@ -220,6 +230,91 @@ export class AuthSessionRepository {
     expectedWorkspaceId?: string,
   ): Promise<AuthResolution> {
     return this.resolveSnapshot(this.pool, tokenHash, now, expectedWorkspaceId);
+  }
+
+  async readSessionView(tokenHash: string, now: Date): Promise<SessionViewResolution> {
+    if (!tokenHashPattern.test(tokenHash) || !Number.isFinite(now.getTime())) {
+      return rejected(401, "SESSION_NOT_FOUND");
+    }
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY");
+      const resolution = await this.resolveSnapshot(client, tokenHash, now);
+      if (resolution.status !== "approved") {
+        await client.query("ROLLBACK");
+        return resolution;
+      }
+      const result = await client.query<SessionWorkspaceRow>(
+        `SELECT
+           identity.display_name,
+           workspace.id AS workspace_id,
+           workspace.name AS workspace_name,
+           workspace.kind AS workspace_kind,
+           membership.role AS membership_role
+         FROM auth_sessions AS session
+         JOIN auth_identities AS identity
+           ON identity.id = session.identity_id
+          AND identity.is_active = true
+         JOIN workspace_memberships AS membership
+           ON membership.identity_id = session.identity_id
+          AND membership.is_active = true
+         JOIN workspaces AS workspace
+           ON workspace.id = membership.workspace_id
+         JOIN users AS actor
+           ON actor.workspace_id = membership.workspace_id
+          AND actor.id = membership.user_id
+          AND actor.is_active = true
+         WHERE session.token_hash = $1
+           AND session.revoked_at IS NULL
+           AND session.expires_at > $2
+         ORDER BY workspace.id::text COLLATE "C"`,
+        [tokenHash, now],
+      );
+      const workspaces = result.rows.map((row) => ({
+        id: row.workspace_id,
+        name: row.workspace_name,
+        kind: row.workspace_kind,
+        role: row.membership_role,
+        readOnly: row.workspace_kind === "team",
+      }));
+      const active = workspaces.filter((workspace) =>
+        workspace.id === resolution.context.workspaceId);
+      const displayNames = new Set(result.rows.map((row) => row.display_name));
+      if (active.length !== 1 || displayNames.size !== 1 || result.rows.length > 1_000) {
+        await client.query("ROLLBACK");
+        return rejected(403, "INVALID_AUTH_STATE");
+      }
+      const view = sessionViewSchema.safeParse({
+        identity: { displayName: result.rows[0]!.display_name },
+        activeWorkspace: active[0]!,
+        workspaces,
+      });
+      if (!view.success) {
+        await client.query("ROLLBACK");
+        return rejected(403, "INVALID_AUTH_STATE");
+      }
+      await client.query("COMMIT");
+      return {
+        status: "approved",
+        view: view.data,
+      };
+    } catch (error) {
+      await client.query("ROLLBACK");
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async revokeSession(tokenHash: string, now: Date): Promise<void> {
+    if (!tokenHashPattern.test(tokenHash) || !Number.isFinite(now.getTime())) return;
+    await this.pool.query(
+      `UPDATE auth_sessions
+       SET revoked_at = COALESCE(revoked_at, $2),
+           last_seen_at = GREATEST(last_seen_at, $2)
+       WHERE token_hash = $1`,
+      [tokenHash, now],
+    );
   }
 
   async createSessionForIdentity(input: CreateSessionForIdentityInput): Promise<AuthResolution> {

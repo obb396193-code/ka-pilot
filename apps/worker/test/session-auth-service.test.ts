@@ -109,6 +109,43 @@ describe("SessionAuthService", () => {
     );
   });
 
+  it("reads a redacted session view and revokes only by token hash", async () => {
+    const view = {
+      status: "approved" as const,
+      view: {
+        identity: { displayName: "fixture user" },
+        activeWorkspace: {
+          id: "00000000-0000-4000-8000-000000000401",
+          name: "personal",
+          kind: "personal" as const,
+          role: "admin" as const,
+          readOnly: false,
+        },
+        workspaces: [{
+          id: "00000000-0000-4000-8000-000000000401",
+          name: "personal",
+          kind: "personal" as const,
+          role: "admin" as const,
+          readOnly: false,
+        }],
+      },
+    };
+    const readSessionView = vi.fn(async () => view);
+    const revokeSession = vi.fn(async () => undefined);
+    const service = new SessionAuthService({
+      resolveApprovedAuthContext: vi.fn(async () => approved),
+      readSessionView,
+      revokeSession,
+    }, { now: () => new Date("2026-08-25T08:00:00Z") });
+
+    await expect(service.current(TOKEN)).resolves.toEqual(view);
+    await service.logout(TOKEN);
+    const expectedHash = createHash("sha256").update(TOKEN, "utf8").digest("hex");
+    expect(readSessionView).toHaveBeenCalledWith(expectedHash, new Date("2026-08-25T08:00:00Z"));
+    expect(revokeSession).toHaveBeenCalledWith(expectedHash, new Date("2026-08-25T08:00:00Z"));
+    expect(JSON.stringify([readSessionView.mock.calls, revokeSession.mock.calls])).not.toContain(TOKEN);
+  });
+
   it.each(["", "short", "contains whitespace but is otherwise long enough 001"])(
     "rejects an invalid opaque token without touching storage",
     async (token) => {

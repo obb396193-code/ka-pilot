@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-import type { AuthResolution } from "@ka/domain";
+import type { AuthResolution, SessionViewResolution } from "@ka/domain";
 import { z } from "zod";
 
 const opaqueSessionTokenSchema = z
@@ -27,18 +27,20 @@ export interface ApprovedAuthContextPort {
     targetWorkspaceId: string;
     now: Date;
   }): Promise<AuthResolution>;
+  readSessionView?(tokenHash: string, now: Date): Promise<SessionViewResolution>;
+  revokeSession?(tokenHash: string, now: Date): Promise<void>;
 }
 
 export interface SessionAuthServiceOptions {
   now?: () => Date;
 }
 
-const missingSession: AuthResolution = {
+const missingSession: Extract<AuthResolution, { status: "rejected" }> = {
   status: "rejected",
   httpStatus: 401,
   reason: "SESSION_NOT_FOUND",
 };
-const invalidAuthState: AuthResolution = {
+const invalidAuthState: Extract<AuthResolution, { status: "rejected" }> = {
   status: "rejected",
   httpStatus: 403,
   reason: "INVALID_AUTH_STATE",
@@ -124,5 +126,19 @@ export class SessionAuthService {
       targetWorkspaceId: parsed.data.targetWorkspaceId,
       now,
     });
+  }
+
+  async current(token: unknown): Promise<SessionViewResolution> {
+    const parsed = opaqueSessionTokenSchema.safeParse(token);
+    if (!parsed.success || this.repository.readSessionView === undefined) {
+      return missingSession;
+    }
+    return this.repository.readSessionView(tokenHash(parsed.data), this.now());
+  }
+
+  async logout(token: unknown): Promise<void> {
+    const parsed = opaqueSessionTokenSchema.safeParse(token);
+    if (!parsed.success || this.repository.revokeSession === undefined) return;
+    await this.repository.revokeSession(tokenHash(parsed.data), this.now());
   }
 }

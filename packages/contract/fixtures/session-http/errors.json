@@ -1,0 +1,7 @@
+{
+  "400": {"ok": false, "error": {"code": "INVALID_REQUEST", "message": "Invalid auth request", "retryable": false, "requestId": "fixture-auth-400"}},
+  "401": {"ok": false, "error": {"code": "UNAUTHORIZED", "message": "Authentication is required", "retryable": false, "requestId": "fixture-auth-401"}},
+  "403": {"ok": false, "error": {"code": "FORBIDDEN", "message": "Workspace access is not allowed", "retryable": false, "requestId": "fixture-auth-403"}},
+  "500": {"ok": false, "error": {"code": "INTERNAL_ERROR", "message": "The auth request could not be completed", "retryable": false, "requestId": "fixture-auth-500"}},
+  "502": {"ok": false, "error": {"code": "SOURCE_TRUNCATED", "message": "Session response reached the configured body limit", "retryable": false, "requestId": "fixture-auth-502"}}
+}

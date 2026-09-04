@@ -282,6 +282,51 @@ describe("AuthSessionRepository", () => {
     });
   });
 
+  it("returns a redacted session view with personal and team memberships", async () => {
+    const view = await repository.readSessionView(tokenAHash, NOW);
+    expect(view).toEqual({
+      status: "approved",
+      view: {
+        identity: { displayName: "repo identity" },
+        activeWorkspace: {
+          id: workspaceA,
+          name: expect.stringContaining("auth-repo-a-"),
+          kind: "personal",
+          role: "admin",
+          readOnly: false,
+        },
+        workspaces: expect.arrayContaining([
+          expect.objectContaining({ id: workspaceA, kind: "personal", readOnly: false }),
+          expect.objectContaining({ id: workspaceB, kind: "team", readOnly: true }),
+        ]),
+      },
+    });
+    const serialized = JSON.stringify(view);
+    expect(serialized).not.toContain(tokenAHash);
+    expect(serialized).not.toContain("private-subject");
+    expect(serialized).not.toContain("private-qihang");
+    expect(serialized).not.toContain("secret-ref");
+  });
+
+  it("revokes a session idempotently and session reads fail closed", async () => {
+    await repository.revokeSession(tokenAHash, NOW);
+    await repository.revokeSession(tokenAHash, NOW);
+    await expect(repository.readSessionView(tokenAHash, NOW)).resolves.toEqual({
+      status: "rejected",
+      httpStatus: 401,
+      reason: "SESSION_REVOKED",
+    });
+  });
+
+  it("fails closed when persisted presentation metadata violates the session contract", async () => {
+    await pool.query("UPDATE workspaces SET name = $2 WHERE id = $1", [workspaceA, "x".repeat(201)]);
+    await expect(repository.readSessionView(tokenAHash, NOW)).resolves.toEqual({
+      status: "rejected",
+      httpStatus: 403,
+      reason: "INVALID_AUTH_STATE",
+    });
+  });
+
   it("does not issue when the identity has duplicate active personal workspaces", async () => {
     const extraWorkspace = (await pool.query<{ id: string }>(
       "INSERT INTO workspaces (name, kind) VALUES ($1, 'personal') RETURNING id",

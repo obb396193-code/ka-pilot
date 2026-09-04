@@ -4,6 +4,7 @@ import { createServer, type IncomingMessage, type Server, type ServerResponse } 
 import {
   dataQueryResponseSchema,
   readDetailResponseSchema,
+  sessionErrorResponseSchema,
   type DataQueryResponse,
   type ReadDetailResponse,
 } from "@ka/domain";
@@ -41,6 +42,22 @@ import {
   workItemListHttpStatus,
 } from "../work-items/work-item-list-http.js";
 import type { WorkItemListService } from "../work-items/work-item-list-service.js";
+import {
+  AUTH_LOGIN_HTTP_PATH,
+  AUTH_SESSION_HTTP_PATH,
+  AUTH_WORKSPACES_HTTP_PATH,
+  AUTH_WORKSPACE_HTTP_PATH,
+  clearedSessionCookie,
+  parseSessionCookie,
+  SESSION_HTTP_PATHS,
+  sessionCookie,
+  sessionInputError,
+  sessionInternalError,
+  sessionMethodError,
+  sessionTruncatedError,
+  type SessionHttpResult,
+  type SessionHttpService,
+} from "../auth/session-http.js";
 
 export const DEFAULT_DATA_API_MAX_REQUEST_BYTES = 1024 * 1024;
 export const DEFAULT_DATA_API_MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
@@ -59,6 +76,7 @@ export interface DataApiServerOptions {
   internalToken: string;
   maxRequestBytes?: number;
   maxResponseBytes?: number;
+  sessionHttpService?: SessionHttpService;
 }
 
 type DetailRoute = { kind: "work_item" | "changeset"; id: string };
@@ -126,6 +144,17 @@ function authenticate(
   }
 }
 
+function authenticateInternalCaller(
+  request: IncomingMessage,
+  internalToken: string,
+): "approved" | "missing" | "forbidden" {
+  const authorization = header(request, "authorization");
+  if (authorization === null) return "missing";
+  return constantTimeTokenEquals(authorization, `Bearer ${internalToken}`)
+    ? "approved"
+    : "forbidden";
+}
+
 async function readJson(request: IncomingMessage, maxBytes: number): Promise<unknown> {
   const chunks: Buffer[] = [];
   let bytes = 0;
@@ -179,6 +208,7 @@ function sendJson(
   status: number,
   payload: unknown,
   requestId: string,
+  extraHeaders: Record<string, string> = {},
 ): void {
   const body = JSON.stringify(payload);
   response.writeHead(status, {
@@ -187,6 +217,7 @@ function sendJson(
     "content-length": Buffer.byteLength(body),
     "x-content-type-options": "nosniff",
     [REQUEST_ID_HEADER]: requestId,
+    ...extraHeaders,
   });
   response.end(body);
 }
@@ -198,13 +229,52 @@ function sendBoundedJson(
   requestId: string,
   maxBytes: number,
   limitError: () => unknown,
-): void {
+  extraHeaders: Record<string, string> = {},
+): boolean {
   const serialized = JSON.stringify(payload);
   if (Buffer.byteLength(serialized) >= maxBytes) {
     sendJson(response, 502, limitError(), requestId);
-    return;
+    return false;
   }
-  sendJson(response, status, payload, requestId);
+  sendJson(response, status, payload, requestId, extraHeaders);
+  return true;
+}
+
+function sessionMethodAllowed(pathname: string, method: string): boolean {
+  if (pathname === AUTH_LOGIN_HTTP_PATH || pathname === AUTH_WORKSPACE_HTTP_PATH) {
+    return method === "POST";
+  }
+  if (pathname === AUTH_WORKSPACES_HTTP_PATH) return method === "GET";
+  if (pathname === AUTH_SESSION_HTTP_PATH) return method === "GET" || method === "DELETE";
+  return false;
+}
+
+async function executeSessionRoute(
+  options: DataApiServerOptions,
+  request: IncomingMessage,
+  pathname: string,
+  requestId: string,
+  maxRequestBytes: number,
+): Promise<SessionHttpResult> {
+  const service = options.sessionHttpService;
+  if (service === undefined) return sessionInputError(requestId);
+  const method = (request.method ?? "").toUpperCase();
+  if (!sessionMethodAllowed(pathname, method)) return sessionMethodError(requestId);
+  const token = parseSessionCookie(header(request, "cookie"));
+  if (pathname === AUTH_LOGIN_HTTP_PATH) {
+    return service.login(await readJson(request, maxRequestBytes), requestId);
+  }
+  if (pathname === AUTH_WORKSPACE_HTTP_PATH) {
+    return service.switchWorkspace(
+      token,
+      await readJson(request, maxRequestBytes),
+      requestId,
+    );
+  }
+  if (pathname === AUTH_SESSION_HTTP_PATH && method === "DELETE") {
+    return service.logout(token, requestId);
+  }
+  return service.current(token, requestId);
 }
 
 export function createDataApiServer(options: DataApiServerOptions): Server {
@@ -227,6 +297,82 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       const url = new URL(request.url ?? "/", "http://data-api.internal");
       if (url.pathname === "/healthz" && request.method === "GET") {
         sendJson(response, 200, { ok: true }, requestId);
+        return;
+      }
+      if (SESSION_HTTP_PATHS.has(url.pathname)) {
+        const internalCaller = authenticateInternalCaller(request, options.internalToken);
+        if (internalCaller !== "approved") {
+          const result = internalCaller === "missing"
+            ? {
+                status: 401,
+                body: sessionErrorResponseSchema.parse({
+                  ok: false,
+                  error: {
+                    code: "UNAUTHORIZED",
+                    message: "Authentication is required",
+                    retryable: false,
+                    requestId,
+                  },
+                }),
+              }
+            : {
+                status: 403,
+                body: sessionErrorResponseSchema.parse({
+                  ok: false,
+                  error: {
+                    code: "FORBIDDEN",
+                    message: "Internal caller is not authorized",
+                    retryable: false,
+                    requestId,
+                  },
+                }),
+              };
+          sendJson(response, result.status, result.body, requestId);
+          return;
+        }
+        if ([...url.searchParams].length > 0) {
+          const result = sessionInputError(requestId);
+          sendJson(response, result.status, result.body, requestId);
+          return;
+        }
+        let result: SessionHttpResult;
+        try {
+          result = await executeSessionRoute(
+            options,
+            request,
+            url.pathname,
+            requestId,
+            maxRequestBytes,
+          );
+        } catch (error) {
+          if (error instanceof HttpInputError) throw error;
+          result = sessionInternalError(requestId);
+        }
+        const extraHeaders: Record<string, string> = {};
+        if (result.sessionToken !== undefined && result.cookieMaxAgeSeconds !== undefined) {
+          extraHeaders["set-cookie"] = sessionCookie(
+            result.sessionToken,
+            result.cookieMaxAgeSeconds,
+          );
+        } else if (result.clearCookie === true) {
+          extraHeaders["set-cookie"] = clearedSessionCookie();
+        }
+        const sent = sendBoundedJson(
+          response,
+          result.status,
+          result.body,
+          requestId,
+          maxResponseBytes,
+          () => sessionTruncatedError(requestId).body,
+          extraHeaders,
+        );
+        if (!sent && result.sessionToken !== undefined) {
+          try {
+            await options.sessionHttpService?.discard(result.sessionToken);
+          } catch {
+            // The bounded error is already committed; never leak cleanup failures or tokens.
+          }
+        }
         return;
       }
       const resolvedDetailRoute = detailRoute(url.pathname);

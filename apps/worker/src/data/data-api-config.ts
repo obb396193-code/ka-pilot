@@ -7,6 +7,9 @@ const configSchema = z.object({
   DATA_API_INTERNAL_TOKEN: z.string().min(32),
   DATA_API_MAX_REQUEST_BYTES: z.coerce.number().int().positive().default(1024 * 1024),
   DATA_API_MAX_RESPONSE_BYTES: z.coerce.number().int().positive().default(16 * 1024 * 1024),
+  INTERNAL_TEST_AUTH_ENABLED: z.enum(["true", "false"]).default("false"),
+  INTERNAL_TEST_AUTH_CREDENTIALS_JSON: z.string().min(1).optional(),
+  AUTH_SESSION_TTL_SECONDS: z.coerce.number().int().min(60).max(7 * 24 * 60 * 60).default(8 * 60 * 60),
 });
 
 export interface DataApiConfig {
@@ -16,6 +19,9 @@ export interface DataApiConfig {
   internalToken: string;
   maxRequestBytes: number;
   maxResponseBytes: number;
+  internalTestAuthEnabled: boolean;
+  internalTestAuthCredentialsJson: string | undefined;
+  sessionTtlSeconds: number;
 }
 
 export function loadDataApiConfig(environment: NodeJS.ProcessEnv): DataApiConfig {
@@ -27,5 +33,8 @@ export function loadDataApiConfig(environment: NodeJS.ProcessEnv): DataApiConfig
     internalToken: parsed.DATA_API_INTERNAL_TOKEN,
     maxRequestBytes: parsed.DATA_API_MAX_REQUEST_BYTES,
     maxResponseBytes: parsed.DATA_API_MAX_RESPONSE_BYTES,
+    internalTestAuthEnabled: parsed.INTERNAL_TEST_AUTH_ENABLED === "true",
+    internalTestAuthCredentialsJson: parsed.INTERNAL_TEST_AUTH_CREDENTIALS_JSON,
+    sessionTtlSeconds: parsed.AUTH_SESSION_TTL_SECONDS,
   };
 }

@@ -1,0 +1,5 @@
+{
+  "ok": true,
+  "data": {"loggedOut": true},
+  "meta": {"requestId": "fixture-session-logout-001"}
+}

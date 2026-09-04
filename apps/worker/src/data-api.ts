@@ -1,6 +1,7 @@
 import {
   AccountListRepository,
   ChangeSetRepository,
+  AuthSessionRepository,
   createPool,
   SemanticQueryRepository,
   TaskListRepository,
@@ -17,11 +18,15 @@ import { createDataQueryRegistry } from "./data/query-registry.js";
 import { DataQueryService } from "./data/query-service.js";
 import { ReadDetailService } from "./data/read-detail-service.js";
 import { TaskListService } from "./tasks/task-list-service.js";
+import { InternalTestLoginProvider } from "./auth/internal-test-login-provider.js";
+import { SessionAuthService } from "./auth/session-auth-service.js";
+import { SessionHttpService } from "./auth/session-http.js";
 import { WorkItemListService } from "./work-items/work-item-list-service.js";
 
 async function main(): Promise<void> {
   const config = loadDataApiConfig(process.env);
   const pool = createPool(config.databaseUrl);
+  const authRepository = new AuthSessionRepository(pool);
   const service = new DataQueryService({
     registry: createDataQueryRegistry(),
     kaData: createKaDataClientFromEnv(process.env),
@@ -42,6 +47,14 @@ async function main(): Promise<void> {
     workItemListService: new WorkItemListService({
       repository: new WorkItemListRepository(pool),
     }),
+    sessionHttpService: new SessionHttpService(
+      new SessionAuthService(authRepository),
+      new InternalTestLoginProvider(
+        config.internalTestAuthEnabled,
+        config.internalTestAuthCredentialsJson,
+      ),
+      { ttlSeconds: config.sessionTtlSeconds },
+    ),
     internalToken: config.internalToken,
     maxRequestBytes: config.maxRequestBytes,
     maxResponseBytes: config.maxResponseBytes,

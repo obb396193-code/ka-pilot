@@ -14,7 +14,34 @@ describe("data API config", () => {
       host: "127.0.0.1",
       port: 3101,
       maxResponseBytes: 16 * 1024 * 1024,
+      internalTestAuthEnabled: false,
+      sessionTtlSeconds: 8 * 60 * 60,
     });
     expect(config).not.toHaveProperty("platformDatasetVersion");
+  });
+
+  it("only enables internal test auth explicitly and bounds session ttl", () => {
+    const enabled = loadDataApiConfig({
+      DATABASE_URL: "postgres://fixture",
+      DATA_API_INTERNAL_TOKEN: "fixture-token-with-at-least-32-characters",
+      INTERNAL_TEST_AUTH_ENABLED: "true",
+      INTERNAL_TEST_AUTH_CREDENTIALS_JSON: "[]",
+      AUTH_SESSION_TTL_SECONDS: "3600",
+    });
+    expect(enabled).toMatchObject({
+      internalTestAuthEnabled: true,
+      internalTestAuthCredentialsJson: "[]",
+      sessionTtlSeconds: 3_600,
+    });
+    expect(() => loadDataApiConfig({
+      DATABASE_URL: "postgres://fixture",
+      DATA_API_INTERNAL_TOKEN: "fixture-token-with-at-least-32-characters",
+      INTERNAL_TEST_AUTH_ENABLED: "yes",
+    })).toThrow();
+    expect(() => loadDataApiConfig({
+      DATABASE_URL: "postgres://fixture",
+      DATA_API_INTERNAL_TOKEN: "fixture-token-with-at-least-32-characters",
+      AUTH_SESSION_TTL_SECONDS: "59",
+    })).toThrow();
   });
 });
