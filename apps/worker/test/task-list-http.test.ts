@@ -15,19 +15,24 @@ import {
   TaskListSourceError,
 } from "../src/tasks/task-list-service.js";
 import { readySource } from "./canonical-query-fixtures.js";
+import {
+  approvedSessionAuth,
+  businessHeaders,
+  personalAuth,
+} from "./business-auth-fixtures.js";
 import { WorkItemListService } from "../src/work-items/work-item-list-service.js";
 
 const internalToken = "fixture-task-list-token-that-is-long-enough";
 const workspaceId = "00000000-0000-4000-8000-000000000024";
 const allowedAccounts = [{ media: "KUAISHOU", accountId: "account-1" }];
+const auth = personalAuth({
+  workspaceId,
+  userId: "00000000-0000-4000-8000-000000000001",
+  accounts: allowedAccounts,
+});
 
 function authHeaders(token = internalToken): Record<string, string> {
-  return {
-    authorization: `Bearer ${token}`,
-    "x-ka-workspace-id": workspaceId,
-    "x-ka-user-id": "00000000-0000-4000-8000-000000000001",
-    "x-ka-account-scope": Buffer.from(JSON.stringify(allowedAccounts)).toString("base64url"),
-  };
+  return businessHeaders(token);
 }
 
 function taskResult(status = "active"): TaskListRepositoryResult {
@@ -146,6 +151,7 @@ describe("TASK-LIST-001 HTTP composition", () => {
       taskListService,
       accountListService: accountListService(),
       workItemListService: workItemListService(),
+      sessionAuthService: approvedSessionAuth(auth),
       internalToken,
       ...(maxResponseBytes === undefined ? {} : { maxResponseBytes }),
     });

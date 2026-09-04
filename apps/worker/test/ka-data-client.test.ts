@@ -67,6 +67,7 @@ describe("KaDataClient", () => {
     await client.query(resolvedSummary(), {
       workspaceId: "00000000-0000-4000-8000-000000000024",
       userId: "user-fixture",
+      scopeKind: "explicit_accounts",
       accounts: [{ media: "KUAISHOU", accountId: "fixture-account" }],
     });
 
@@ -94,6 +95,7 @@ describe("KaDataClient", () => {
     await client.query(resolvedSummary(), {
       workspaceId: "00000000-0000-4000-8000-000000000024",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [],
     });
     expect(new Headers(fetchFn.mock.calls[0]?.[1]?.headers).get("authorization"))
@@ -102,6 +104,7 @@ describe("KaDataClient", () => {
     const result = await client.query(resolvedSummary(), {
       workspaceId: "00000000-0000-4000-8000-000000000024",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [],
     });
     expect(result.lineage.datasetVersion).toBeNull();
@@ -120,6 +123,7 @@ describe("KaDataClient", () => {
     const result = await client.query(resolvedSummary(), {
       workspaceId: "w",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [{ media: "KUAISHOU", accountId: "a" }],
     });
     expect(result.lineage).toMatchObject({
@@ -144,6 +148,7 @@ describe("KaDataClient", () => {
     const result = await client.query(resolvedSummary(), {
       workspaceId: "w",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [{ media: "KUAISHOU", accountId: "missing-account" }],
     });
     expect(result.lineage).toMatchObject({
@@ -180,6 +185,7 @@ describe("KaDataClient", () => {
     const result = await client.query(resolved, {
       workspaceId: "w",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [
         { media: "KUAISHOU", accountId: "a-1" },
         { media: "KUAISHOU", accountId: "a-2" },
@@ -214,6 +220,7 @@ describe("KaDataClient", () => {
     const result = await client.query(resolved, {
       workspaceId: "00000000-0000-4000-8000-000000000024",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [
         { media: "KUAISHOU", accountId: "a-1" },
         { media: "KUAISHOU", accountId: "a-2" },
@@ -237,6 +244,7 @@ describe("KaDataClient", () => {
     await expect(client.query(resolvedSummary(), {
       workspaceId: "w",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [{ media: "KUAISHOU", accountId: "a-1" }],
     })).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
   });
@@ -257,6 +265,7 @@ describe("KaDataClient", () => {
     const result = await client.query(resolvedSummary(), {
       workspaceId: "w",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [{ media: "KUAISHOU", accountId: "a-1" }],
     });
     expect(result.lineage).toMatchObject({ timezone: null, dayCut: null });
@@ -292,6 +301,7 @@ describe("KaDataClient", () => {
     await expect(client.query(resolvedSummary(), {
       workspaceId: "w",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [{ media: "KUAISHOU", accountId: "a" }],
     })).rejects.toMatchObject({ code: "SOURCE_UNAVAILABLE" });
     expect(fetchFn.mock.calls[0]?.[1]?.redirect).toBe("manual");
@@ -314,6 +324,7 @@ describe("KaDataClient", () => {
     const result = await client.query(resolvedSummary(), {
       workspaceId: "w",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [{ media: "KUAISHOU", accountId: "a" }],
     });
 
@@ -347,6 +358,7 @@ describe("KaDataClient", () => {
     const result = await client.query(resolvedSummary(), {
       workspaceId: "w",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [{ media: "KUAISHOU", accountId: "a" }],
     });
     expect(result.lineage.truncated).toBe(true);
@@ -366,6 +378,7 @@ describe("KaDataClient", () => {
       await client.query(resolvedSummary(), {
         workspaceId: "w",
         userId: "u",
+        scopeKind: "explicit_accounts",
         accounts: [{ media: "KUAISHOU", accountId: "a" }],
       });
     } catch (error) {
@@ -395,6 +408,7 @@ describe("KaDataClient", () => {
     const result = await client.query(resolved, {
       workspaceId: "00000000-0000-4000-8000-000000000024",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [{ media: "KUAISHOU", accountId: "leading-zero-001" }],
     });
     expect(result.wholeResultTotal).toMatchObject({ value: null, availability: "missing" });
@@ -420,6 +434,7 @@ describe("KaDataClient", () => {
     const result = await client.query(resolved, {
       workspaceId: "00000000-0000-4000-8000-000000000024",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [{ media: "KUAISHOU", accountId: "a-1" }],
     });
 
@@ -445,6 +460,7 @@ describe("KaDataClient", () => {
     await expect(client.query(resolvedSummary(), {
       workspaceId: "w",
       userId: "u",
+      scopeKind: "explicit_accounts",
       accounts: [{ media: "KUAISHOU", accountId: "a" }],
     })).rejects.toMatchObject({ code: "UPSTREAM_TIMEOUT", retryable: true });
   });

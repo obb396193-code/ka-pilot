@@ -1,23 +1,23 @@
 const FILTERED_TASKS_CTE = `
   allowed_scope AS (
     SELECT allowed.media, allowed.account_id
-    FROM jsonb_to_recordset($3::jsonb)
+    FROM jsonb_to_recordset($4::jsonb)
       AS allowed(media text, account_id text)
   ),
   filtered_tasks AS (
     SELECT task.*
     FROM tasks AS task
     WHERE task.workspace_id = $1::uuid
-      AND ($4::text IS NULL
-        OR strpos(lower(COALESCE(task.task_name, '')), lower($4::text)) > 0
-        OR strpos(lower(COALESCE(task.biz_name, '')), lower($4::text)) > 0)
-      AND ($5::text IS NULL OR task.status = $5::text)
-      AND ($6::uuid IS NULL OR task.owner_user_id = $6::uuid)
-      AND ($7::date IS NULL OR task.period_end >= $7::date)
-      AND ($8::date IS NULL OR task.period_start <= $8::date)
+      AND ($5::text IS NULL
+        OR strpos(lower(COALESCE(task.task_name, '')), lower($5::text)) > 0
+        OR strpos(lower(COALESCE(task.biz_name, '')), lower($5::text)) > 0)
+      AND ($6::text IS NULL OR task.status = $6::text)
+      AND ($7::uuid IS NULL OR task.owner_user_id = $7::uuid)
+      AND ($8::date IS NULL OR task.period_end >= $8::date)
+      AND ($9::date IS NULL OR task.period_start <= $9::date)
       AND (
-        $9::boolean IS NULL
-        OR $9::boolean = EXISTS (
+        $10::boolean IS NULL
+        OR $10::boolean = EXISTS (
           SELECT 1
           FROM work_items AS filtered_item
           WHERE filtered_item.workspace_id = task.workspace_id
@@ -25,10 +25,13 @@ const FILTERED_TASKS_CTE = `
             AND filtered_item.status IN ('open', 'processing', 'escalated')
             AND filtered_item.media IS NOT NULL
             AND filtered_item.account_id IS NOT NULL
-            AND EXISTS (
+            AND (
+              $3::text = 'team_workspace_readonly'
+              OR EXISTS (
               SELECT 1 FROM allowed_scope AS allowed
               WHERE allowed.media = filtered_item.media
                 AND allowed.account_id = filtered_item.account_id
+              )
             )
         )
       )
@@ -39,7 +42,7 @@ export const TASK_LIST_COUNT_SQL = `
   /* task-list-total */
   SELECT
     count(*) AS total,
-    NOT EXISTS (
+    $3::text = 'team_workspace_readonly' OR NOT EXISTS (
       SELECT 1
       FROM filtered_tasks AS task
       JOIN task_accounts AS relation
@@ -100,11 +103,14 @@ export const TASK_LIST_PAGE_SQL = `
   LEFT JOIN LATERAL (
     SELECT
       count(DISTINCT (relation.media, relation.account_id)) AS total_count,
-      count(DISTINCT (relation.media, relation.account_id)) FILTER (WHERE EXISTS (
-        SELECT 1 FROM allowed_scope AS allowed
-        WHERE allowed.media = relation.media
-          AND allowed.account_id = relation.account_id
-      )) AS authorized_count
+      count(DISTINCT (relation.media, relation.account_id)) FILTER (WHERE
+        $3::text = 'team_workspace_readonly'
+        OR EXISTS (
+          SELECT 1 FROM allowed_scope AS allowed
+          WHERE allowed.media = relation.media
+            AND allowed.account_id = relation.account_id
+        )
+      ) AS authorized_count
     FROM task_accounts AS relation
     WHERE relation.workspace_id = task.workspace_id
       AND relation.task_id = task.task_id
@@ -133,10 +139,13 @@ export const TASK_LIST_PAGE_SQL = `
         AND task.period_start IS NOT NULL
         AND task.period_end IS NOT NULL
         AND metric.ds BETWEEN task.period_start AND LEAST(task.period_end, $2::date)
-        AND EXISTS (
-          SELECT 1 FROM allowed_scope AS allowed
-          WHERE allowed.media = metric.media
-            AND allowed.account_id = metric.account_id
+        AND (
+          $3::text = 'team_workspace_readonly'
+          OR EXISTS (
+            SELECT 1 FROM allowed_scope AS allowed
+            WHERE allowed.media = metric.media
+              AND allowed.account_id = metric.account_id
+          )
         )
         AND EXISTS (
           SELECT 1
@@ -167,14 +176,17 @@ export const TASK_LIST_PAGE_SQL = `
       AND item.status IN ('open', 'processing', 'escalated')
       AND item.media IS NOT NULL
       AND item.account_id IS NOT NULL
-      AND EXISTS (
-        SELECT 1 FROM allowed_scope AS allowed
-        WHERE allowed.media = item.media
-          AND allowed.account_id = item.account_id
+      AND (
+        $3::text = 'team_workspace_readonly'
+        OR EXISTS (
+          SELECT 1 FROM allowed_scope AS allowed
+          WHERE allowed.media = item.media
+            AND allowed.account_id = item.account_id
+        )
       )
   ) AS items ON true
   ORDER BY
     CASE task.status WHEN 'active' THEN 0 WHEN 'preparing' THEN 1 WHEN 'ended' THEN 2 ELSE 3 END,
     task.period_end ASC NULLS LAST,
     task.task_id ASC
-  LIMIT $10 OFFSET $11`;
+  LIMIT $11 OFFSET $12`;

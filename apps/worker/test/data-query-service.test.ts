@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { DataQueryId, SourceQueryResult } from "@ka/domain";
+import type {
+  ApprovedWorkspaceAuthContext,
+  DataQueryId,
+  SourceQueryResult,
+} from "@ka/domain";
 
 import {
   createDataQueryHttpHandler,
@@ -29,9 +33,14 @@ function ready(
 describe("DataQueryService", () => {
   const auth = {
     workspaceId: "00000000-0000-4000-8000-000000000024",
-    userId: "user-server-side",
-    allowedAccounts: [{ media: "KUAISHOU", accountId: "allowed-account" }],
-  };
+    userId: "00000000-0000-4000-8000-000000000001",
+    role: "admin",
+    workspaceKind: "personal",
+    scope: {
+      kind: "explicit_accounts",
+      accounts: [{ media: "KUAISHOU", accountId: "allowed-account", accessLevel: "read" }],
+    },
+  } satisfies ApprovedWorkspaceAuthContext;
 
   it("injects workspace/user/account scope from authentication, not request body", async () => {
     const kaData = { query: vi.fn(async () => ready("ka_data", 10)) };
@@ -52,7 +61,8 @@ describe("DataQueryService", () => {
     expect(kaData.query).toHaveBeenCalledWith(expect.anything(), {
       workspaceId: auth.workspaceId,
       userId: auth.userId,
-      accounts: auth.allowedAccounts,
+      scopeKind: "explicit_accounts",
+      accounts: auth.scope.accounts,
     });
     expect(platform.query).not.toHaveBeenCalled();
     if (response.ok && response.data.mode === "ka_data") {
@@ -79,6 +89,64 @@ describe("DataQueryService", () => {
     expect(response).toMatchObject({
       ok: false,
       error: { code: "FORBIDDEN", requestId: "bff-forbidden-001" },
+    });
+  });
+
+  it("uses a workspace-only readonly scope for team platform queries", async () => {
+    const team: ApprovedWorkspaceAuthContext = {
+      workspaceId: auth.workspaceId,
+      userId: auth.userId,
+      role: "optimizer",
+      workspaceKind: "team",
+      scope: { kind: "team_workspace_readonly" },
+    };
+    const platform = { query: vi.fn(async (resolved: { queryId: DataQueryId }) =>
+      ready("canonical", 11, resolved.queryId)) };
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => ready("ka_data", 10) },
+      platform,
+    });
+    const response = await service.execute({
+      queryId: "account.table",
+      params: { date: "2026-08-24", accountIds: ["allowed-account"] },
+      dataView: "platform",
+    }, team, "team-platform-query");
+    expect(response).toMatchObject({ ok: true, data: { mode: "platform" } });
+    expect(platform.query).toHaveBeenCalledWith(expect.anything(), {
+      workspaceId: auth.workspaceId,
+      userId: auth.userId,
+      scopeKind: "team_workspace_readonly",
+      accounts: [],
+    });
+  });
+
+  it("rejects a team source row from another workspace", async () => {
+    const team: ApprovedWorkspaceAuthContext = {
+      workspaceId: auth.workspaceId,
+      userId: auth.userId,
+      role: "optimizer",
+      workspaceKind: "team",
+      scope: { kind: "team_workspace_readonly" },
+    };
+    const malicious = ready("canonical", 11, "account.table");
+    malicious.rows = [{
+      ...malicious.rows[0],
+      workspaceId: "00000000-0000-4000-8000-000000000999",
+    }];
+    const service = new DataQueryService({
+      registry: createDataQueryRegistry(),
+      kaData: { query: async () => ready("ka_data", 10) },
+      platform: { query: async () => malicious },
+    });
+    const response = await service.execute({
+      queryId: "account.table",
+      params: { date: "2026-08-24" },
+      dataView: "platform",
+    }, team, "team-cross-workspace");
+    expect(response).toMatchObject({
+      ok: false,
+      error: { code: "FORBIDDEN", requestId: "team-cross-workspace" },
     });
   });
 

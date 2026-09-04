@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { AccountListResponse } from "@ka/domain";
+import type { AccountListResponse, ApprovedWorkspaceAuthContext } from "@ka/domain";
 import {
   AccountListRepositoryContractError,
   type AccountListRepositoryResult,
@@ -16,11 +16,16 @@ const userId = "00000000-0000-4000-8000-000000000001";
 const auth = {
   workspaceId,
   userId,
-  allowedAccounts: [
-    { media: "KUAISHOU", accountId: "account-1" },
-    { media: "TENCENT", accountId: "account-1" },
-  ],
-};
+  role: "admin",
+  workspaceKind: "personal",
+  scope: {
+    kind: "explicit_accounts",
+    accounts: [
+      { media: "KUAISHOU", accountId: "account-1", accessLevel: "read" },
+      { media: "TENCENT", accountId: "account-1", accessLevel: "read" },
+    ],
+  },
+} satisfies ApprovedWorkspaceAuthContext;
 
 function readyResult(overrides: Partial<AccountListRepositoryResult> = {}): AccountListRepositoryResult {
   return {
@@ -66,6 +71,26 @@ function expectError(response: AccountListResponse, code: string): void {
 }
 
 describe("AccountListService", () => {
+  it("uses workspace-bounded readonly scope for a team workspace without account grants", async () => {
+    const teamAuth: ApprovedWorkspaceAuthContext = {
+      workspaceId,
+      userId,
+      role: "optimizer",
+      workspaceKind: "team",
+      scope: { kind: "team_workspace_readonly" },
+    };
+    const { service, list } = serviceFor(readyResult());
+    const response = await service.execute(
+      {}, teamAuth, "account-list-team", new Date("2026-08-25T04:00:00Z"),
+    );
+    expect(response).toMatchObject({ ok: true, data: { total: 1 } });
+    expect(list).toHaveBeenCalledWith(expect.objectContaining({
+      workspaceId,
+      scopeKind: "team_workspace_readonly",
+      allowedAccounts: [],
+    }));
+  });
+
   it("injects only approved KUAISHOU tuples and the Shanghai business date", async () => {
     const { service, list } = serviceFor(readyResult());
     await service.execute(
@@ -78,6 +103,7 @@ describe("AccountListService", () => {
       workspaceId,
       requestingUserId: auth.userId,
       businessDate: "2026-08-25",
+      scopeKind: "explicit_accounts",
       allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
       page: 2,
       pageSize: 10,
@@ -151,6 +177,22 @@ describe("AccountListService", () => {
     );
     expectError(response, "FORBIDDEN");
     expect(JSON.stringify(response)).not.toContain("outside-scope");
+  });
+
+  it("keeps the team output guard bound to the approved workspace", async () => {
+    const source = readyResult();
+    source.rows[0] = {
+      ...source.rows[0]!,
+      workspaceId: "00000000-0000-4000-8000-000000000999",
+    };
+    const response = await serviceFor(source).service.execute({}, {
+      workspaceId,
+      userId,
+      role: "optimizer",
+      workspaceKind: "team",
+      scope: { kind: "team_workspace_readonly" },
+    }, "account-team-workspace-guard");
+    expectError(response, "FORBIDDEN");
   });
 
   it("fails closed for invalid row, pagination or source consistency", async () => {

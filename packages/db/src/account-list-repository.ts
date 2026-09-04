@@ -19,6 +19,7 @@ export interface AccountListRepositoryQuery extends Partial<AccountListRequest> 
   workspaceId: string;
   requestingUserId: string;
   businessDate: string;
+  scopeKind: "explicit_accounts" | "team_workspace_readonly";
   allowedAccounts: readonly AccountListAccountScope[];
 }
 
@@ -105,6 +106,7 @@ interface NormalizedQuery extends AccountListRequest {
   workspaceId: string;
   requestingUserId: string;
   businessDate: string;
+  scopeKind: "explicit_accounts" | "team_workspace_readonly";
   allowedAccounts: AccountListAccountScope[];
 }
 
@@ -151,6 +153,9 @@ function normalizeQuery(input: AccountListRepositoryQuery): NormalizedQuery {
   if (!UUID_PATTERN.test(input.workspaceId)) throw new Error("workspaceId must be a UUID");
   if (!UUID_PATTERN.test(input.requestingUserId)) throw new Error("requestingUserId must be a UUID");
   const businessDate = taskListCalendarDateSchema.parse(input.businessDate);
+  if (input.scopeKind !== "explicit_accounts" && input.scopeKind !== "team_workspace_readonly") {
+    throw new Error("scopeKind is invalid");
+  }
   const parsed = accountListRequestSchema.parse({
     page: input.page,
     pageSize: input.pageSize,
@@ -173,12 +178,16 @@ function normalizeQuery(input: AccountListRepositoryQuery): NormalizedQuery {
     return { media, accountId };
   });
   const media = parsed.media ?? "KUAISHOU";
+  if (input.scopeKind === "team_workspace_readonly" && normalizedScope.length !== 0) {
+    throw new Error("team workspace scope must not carry account grants");
+  }
   return {
     ...parsed,
     media,
     workspaceId: input.workspaceId,
     requestingUserId: input.requestingUserId,
     businessDate,
+    scopeKind: input.scopeKind,
     allowedAccounts: normalizedScope.filter((account) => account.media === media),
   };
 }
@@ -187,6 +196,7 @@ function commonValues(query: NormalizedQuery): unknown[] {
   return [
     query.workspaceId,
     query.businessDate,
+    query.scopeKind,
     JSON.stringify(query.allowedAccounts.map((account) => ({
       media: account.media,
       account_id: account.accountId,

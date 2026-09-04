@@ -29,6 +29,7 @@ export interface TaskListRepositoryQuery extends Partial<TaskListRequest> {
   workspaceId: string;
   requestingUserId: string;
   businessDate: string;
+  scopeKind: "explicit_accounts" | "team_workspace_readonly";
   allowedAccounts: readonly TaskListAccountScope[];
 }
 
@@ -118,6 +119,7 @@ interface NormalizedQuery extends TaskListRequest {
   workspaceId: string;
   requestingUserId: string;
   businessDate: string;
+  scopeKind: "explicit_accounts" | "team_workspace_readonly";
   allowedAccounts: TaskListAccountScope[];
 }
 
@@ -150,6 +152,9 @@ function normalizeQuery(input: TaskListRepositoryQuery): NormalizedQuery {
   if (!UUID_PATTERN.test(input.requestingUserId)) {
     throw new Error("requestingUserId must be a UUID");
   }
+  if (input.scopeKind !== "explicit_accounts" && input.scopeKind !== "team_workspace_readonly") {
+    throw new Error("scopeKind is invalid");
+  }
   const businessDate = taskListCalendarDateSchema.parse(input.businessDate);
   const parsed = taskListRequestSchema.parse({
     page: input.page,
@@ -173,11 +178,15 @@ function normalizeQuery(input: TaskListRepositoryQuery): NormalizedQuery {
     seen.add(key);
     return { media, accountId };
   });
+  if (input.scopeKind === "team_workspace_readonly" && allowedAccounts.length !== 0) {
+    throw new Error("team workspace scope must not carry account grants");
+  }
   return {
     ...parsed,
     workspaceId: input.workspaceId,
     requestingUserId: input.requestingUserId,
     businessDate,
+    scopeKind: input.scopeKind,
     allowedAccounts,
   };
 }
@@ -186,6 +195,7 @@ function commonValues(query: NormalizedQuery): unknown[] {
   return [
     query.workspaceId,
     query.businessDate,
+    query.scopeKind,
     JSON.stringify(query.allowedAccounts.map((account) => ({
       media: account.media,
       account_id: account.accountId,

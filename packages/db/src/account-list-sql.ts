@@ -1,26 +1,31 @@
 const FILTERED_ACCOUNTS_CTE = `
   allowed_scope AS (
     SELECT allowed.media, allowed.account_id
-    FROM jsonb_to_recordset($3::jsonb)
+    FROM jsonb_to_recordset($4::jsonb)
       AS allowed(media text, account_id text)
-    WHERE allowed.media = $5::text
+    WHERE allowed.media = $6::text
   ),
   filtered_accounts AS (
     SELECT account.*
     FROM accounts AS account
-    JOIN allowed_scope AS allowed
-      ON allowed.media = account.media
-     AND allowed.account_id = account.account_id
     WHERE account.workspace_id = $1::uuid
-      AND account.media = $5::text
-      AND ($4::text IS NULL
-        OR strpos(lower(COALESCE(account.account_name, '')), lower($4::text)) > 0
-        OR strpos(lower(account.account_id), lower($4::text)) > 0)
-      AND ($6::text IS NULL OR account.lifecycle_stage = $6::text)
-      AND ($7::boolean IS NULL OR COALESCE(account.is_starred, false) = $7::boolean)
-      AND ($8::text[] IS NULL OR COALESCE(account.tags, ARRAY[]::text[]) @> $8::text[])
-      AND ($9::uuid IS NULL OR account.owner_user_id = $9::uuid)
-      AND ($10::text IS NULL OR account.status = $10::text)
+      AND account.media = $6::text
+      AND (
+        $3::text = 'team_workspace_readonly'
+        OR EXISTS (
+          SELECT 1 FROM allowed_scope AS allowed
+          WHERE allowed.media = account.media
+            AND allowed.account_id = account.account_id
+        )
+      )
+      AND ($5::text IS NULL
+        OR strpos(lower(COALESCE(account.account_name, '')), lower($5::text)) > 0
+        OR strpos(lower(account.account_id), lower($5::text)) > 0)
+      AND ($7::text IS NULL OR account.lifecycle_stage = $7::text)
+      AND ($8::boolean IS NULL OR COALESCE(account.is_starred, false) = $8::boolean)
+      AND ($9::text[] IS NULL OR COALESCE(account.tags, ARRAY[]::text[]) @> $9::text[])
+      AND ($10::uuid IS NULL OR account.owner_user_id = $10::uuid)
+      AND ($11::text IS NULL OR account.status = $11::text)
   )`;
 
 export const ACCOUNT_LIST_COUNT_SQL = `
@@ -28,8 +33,8 @@ export const ACCOUNT_LIST_COUNT_SQL = `
   /* account-list-total */
   SELECT
     count(*) AS total,
-    EXISTS (SELECT 1 FROM allowed_scope)
-      AND NOT EXISTS (
+    ($3::text = 'team_workspace_readonly' OR EXISTS (SELECT 1 FROM allowed_scope))
+      AND ($3::text = 'team_workspace_readonly' OR NOT EXISTS (
         SELECT 1
         FROM allowed_scope AS allowed
         WHERE NOT EXISTS (
@@ -39,7 +44,7 @@ export const ACCOUNT_LIST_COUNT_SQL = `
             AND account.media = allowed.media
             AND account.account_id = allowed.account_id
         )
-      ) AS coverage_complete,
+      )) AS coverage_complete,
     NOT EXISTS (
       SELECT 1
       FROM filtered_accounts AS account
@@ -122,4 +127,4 @@ export const ACCOUNT_LIST_PAGE_SQL = `
     account.account_name ASC NULLS LAST,
     account.media ASC,
     account.account_id ASC
-  LIMIT $11 OFFSET $12`;
+  LIMIT $12 OFFSET $13`;

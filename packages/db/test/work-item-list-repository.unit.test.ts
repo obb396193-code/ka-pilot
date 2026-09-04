@@ -26,7 +26,7 @@ describe("WorkItemListRepository unit boundary", () => {
         if (sql.includes("workspace-sync-initial-full-readiness")) {
           return result([{ initial_full_complete: true }] as unknown as Row[]);
         }
-        if (sql.includes("LIMIT $10")) return result([{
+        if (sql.includes("LIMIT $11")) return result([{
           id: "00000000-0000-4000-8000-000000000201", workspace_id: workspaceId,
           type: "diagnosis", status: "open", severity: "P1", title: "异常",
           media: "KUAISHOU", account_id: "account-1", account_name: null,
@@ -40,6 +40,7 @@ describe("WorkItemListRepository unit boundary", () => {
     const repository = new WorkItemListRepository({ connect: async () => client });
     const output = await repository.list({
       workspaceId, requestingUserId: userId, businessDate: "2026-08-25",
+      scopeKind: "explicit_accounts" as const,
       allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
       page: 1, pageSize: 20,
     });
@@ -58,6 +59,7 @@ describe("WorkItemListRepository unit boundary", () => {
     const repository = new WorkItemListRepository({ connect } as never);
     await expect(repository.list({
       workspaceId, requestingUserId: userId, businessDate: "2026-08-25",
+      scopeKind: "explicit_accounts" as const,
       allowedAccounts: [
         { media: "KUAISHOU", accountId: "same" },
         { media: "KUAISHOU", accountId: "same" },
@@ -82,6 +84,7 @@ describe("WorkItemListRepository unit boundary", () => {
     const repository = new WorkItemListRepository({ connect: async () => client });
     await expect(repository.list({
       workspaceId, requestingUserId: userId, businessDate: "2026-08-25",
+      scopeKind: "explicit_accounts" as const,
       allowedAccounts: [], page: 1, pageSize: 20,
     })).rejects.toBeInstanceOf(WorkItemListRepositoryContractError);
   });

@@ -20,6 +20,7 @@ function queryInput() {
     workspaceId,
     requestingUserId: userId,
     businessDate: "2026-08-25",
+    scopeKind: "explicit_accounts" as const,
     allowedAccounts: [
       { media: "KUAISHOU", accountId: "account-1" },
       { media: "TENCENT", accountId: "account-1" },
@@ -41,7 +42,7 @@ describe("AccountListRepository unit boundary", () => {
         if (sql.includes("workspace-sync-initial-full-readiness")) {
           return result([{ initial_full_complete: true }] as unknown as Row[]) as QueryResult<Row>;
         }
-        if (sql.includes("LIMIT $11")) {
+        if (sql.includes("LIMIT $12")) {
           return result([{
             workspace_id: workspaceId,
             media: "KUAISHOU",
@@ -80,7 +81,8 @@ describe("AccountListRepository unit boundary", () => {
       "WITH",
       "COMMIT",
     ]);
-    const scope = JSON.parse(calls[1]!.values?.[2] as string) as unknown[];
+    expect(calls[1]!.values?.[2]).toBe("explicit_accounts");
+    const scope = JSON.parse(calls[1]!.values?.[3] as string) as unknown[];
     expect(scope).toEqual([{ media: "KUAISHOU", account_id: "account-1" }]);
     expect(output).toMatchObject({
       total: 1,
@@ -109,7 +111,7 @@ describe("AccountListRepository unit boundary", () => {
         if (sql.includes("workspace-sync-initial-full-readiness")) {
           return result([{ initial_full_complete: true }] as unknown as Row[]) as QueryResult<Row>;
         }
-        if (sql.includes("LIMIT $11")) {
+        if (sql.includes("LIMIT $12")) {
           return result([{ tags: [], linked_tasks: "not-an-array" }] as unknown as Row[]) as QueryResult<Row>;
         }
         return result([] as Row[]) as QueryResult<Row>;
@@ -126,6 +128,7 @@ describe("AccountListRepository unit boundary", () => {
     const validatingRepository = new AccountListRepository({ connect: unopened });
     await expect(validatingRepository.list({
       ...queryInput(),
+      scopeKind: "explicit_accounts" as const,
       allowedAccounts: [
         { media: "KUAISHOU", accountId: "same" },
         { media: "KUAISHOU", accountId: "same" },
@@ -143,7 +146,7 @@ describe("AccountListRepository unit boundary", () => {
         if (sql.includes("workspace-sync-initial-full-readiness")) {
           return result([{ initial_full_complete: true }] as unknown as Row[]) as QueryResult<Row>;
         }
-        if (sql.includes("LIMIT $11")) {
+        if (sql.includes("LIMIT $12")) {
           return result([{
             workspace_id: workspaceId,
             media: "KUAISHOU",

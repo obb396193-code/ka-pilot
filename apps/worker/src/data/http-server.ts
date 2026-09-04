@@ -5,10 +5,10 @@ import {
   dataQueryResponseSchema,
   readDetailResponseSchema,
   sessionErrorResponseSchema,
+  type ApprovedWorkspaceAuthContext,
   type DataQueryResponse,
   type ReadDetailResponse,
 } from "@ka/domain";
-import { z } from "zod";
 
 import {
   ACCOUNT_LIST_HTTP_PATH,
@@ -21,7 +21,6 @@ import type { AccountListService } from "../accounts/account-list-service.js";
 import {
   createDataQueryHttpHandler,
   DATA_QUERY_HTTP_PATH,
-  type AuthenticatedDataQueryContext,
   type DataQueryService,
 } from "./query-service.js";
 import { REQUEST_ID_HEADER, resolveRequestId } from "./request-id.js";
@@ -58,14 +57,10 @@ import {
   type SessionHttpResult,
   type SessionHttpService,
 } from "../auth/session-http.js";
+import type { SessionAuthService } from "../auth/session-auth-service.js";
 
 export const DEFAULT_DATA_API_MAX_REQUEST_BYTES = 1024 * 1024;
 export const DEFAULT_DATA_API_MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
-
-const accountScopeSchema = z.array(z.object({
-  media: z.string().min(1).max(32).regex(/^[A-Z0-9_]+$/),
-  accountId: z.string().min(1).max(128).regex(/^[A-Za-z0-9_-]+$/),
-}).strict()).max(1_000);
 
 export interface DataApiServerOptions {
   service: DataQueryService;
@@ -77,6 +72,7 @@ export interface DataApiServerOptions {
   maxRequestBytes?: number;
   maxResponseBytes?: number;
   sessionHttpService?: SessionHttpService;
+  sessionAuthService?: SessionAuthService;
 }
 
 type DetailRoute = { kind: "work_item" | "changeset"; id: string };
@@ -113,35 +109,25 @@ function header(request: IncomingMessage, name: string): string | null {
   return typeof value === "string" ? value : null;
 }
 
-function authenticate(
+type BusinessAuthentication =
+  | { status: "approved"; auth: ApprovedWorkspaceAuthContext }
+  | { status: "missing" }
+  | { status: "forbidden" };
+
+async function authenticateBusinessCaller(
   request: IncomingMessage,
   internalToken: string,
-): { auth: AuthenticatedDataQueryContext | null; forbidden: boolean } {
-  const authorization = header(request, "authorization");
-  if (authorization === null) return { auth: null, forbidden: false };
-  const expected = `Bearer ${internalToken}`;
-  if (!constantTimeTokenEquals(authorization, expected)) {
-    return { auth: null, forbidden: true };
-  }
-  const workspaceId = header(request, "x-ka-workspace-id");
-  const userId = header(request, "x-ka-user-id");
-  const encodedScope = header(request, "x-ka-account-scope");
-  if (workspaceId === null || userId === null || encodedScope === null) {
-    return { auth: null, forbidden: true };
-  }
-  try {
-    const decoded = Buffer.from(encodedScope, "base64url").toString("utf8");
-    const allowedAccounts = accountScopeSchema.parse(JSON.parse(decoded) as unknown);
-    if (
-      !z.string().uuid().safeParse(workspaceId).success ||
-      !z.string().uuid().safeParse(userId).success
-    ) {
-      return { auth: null, forbidden: true };
-    }
-    return { auth: { workspaceId, userId, allowedAccounts }, forbidden: false };
-  } catch {
-    return { auth: null, forbidden: true };
-  }
+  sessionAuthService: SessionAuthService | undefined,
+): Promise<BusinessAuthentication> {
+  const internalCaller = authenticateInternalCaller(request, internalToken);
+  if (internalCaller !== "approved") return { status: internalCaller };
+  if (sessionAuthService === undefined) return { status: "missing" };
+  const token = parseSessionCookie(header(request, "cookie"));
+  if (token === null) return { status: "missing" };
+  const resolution = await sessionAuthService.resolve(token);
+  return resolution.status === "approved"
+    ? { status: "approved", auth: resolution.context }
+    : { status: resolution.httpStatus === 401 ? "missing" : "forbidden" };
 }
 
 function authenticateInternalCaller(
@@ -394,8 +380,12 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         );
         return;
       }
-      const authentication = authenticate(request, options.internalToken);
-      if (authentication.forbidden) {
+      const authentication = await authenticateBusinessCaller(
+        request,
+        options.internalToken,
+        options.sessionAuthService,
+      );
+      if (authentication.status === "forbidden") {
         sendJson(
           response,
           403,
@@ -404,7 +394,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         );
         return;
       }
-      if (authentication.auth === null) {
+      if (authentication.status === "missing") {
         if (isAccountListRoute) {
           const result = await options.accountListService.execute({}, null, requestId);
           sendJson(response, accountListHttpStatus(result), result, requestId);

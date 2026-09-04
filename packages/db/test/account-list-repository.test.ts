@@ -89,6 +89,7 @@ describe("AccountListRepository", () => {
     workspaceId,
     requestingUserId: ownerId,
     businessDate: "2026-08-25",
+    scopeKind: "explicit_accounts" as const,
     allowedAccounts: [
       { media: "KUAISHOU", accountId: "decline" },
       { media: "KUAISHOU", accountId: "cold" },
@@ -122,6 +123,20 @@ describe("AccountListRepository", () => {
     });
     expect(result.rows.some((row) => row.accountName === "未授权账户")).toBe(false);
     expect(result.metricsComplete).toBe(false);
+  });
+
+  it("reads every account only inside the approved team workspace and media", async () => {
+    const result = await repository.list({
+      ...baseQuery(),
+      scopeKind: "team_workspace_readonly",
+      allowedAccounts: [],
+    });
+    expect(result.total).toBe(4);
+    expect(result.rows.every((row) =>
+      row.workspaceId === workspaceId && row.media === "KUAISHOU")).toBe(true);
+    expect(result.rows.some((row) => row.accountName === "未授权账户")).toBe(true);
+    expect(result.rows.some((row) => row.accountName === "跨媒体同号账户")).toBe(false);
+    expect(result.rows.some((row) => row.accountName === "跨租户同号账户")).toBe(false);
   });
 
   it("applies parameterized frozen filters including tag AND semantics", async () => {
@@ -159,6 +174,7 @@ describe("AccountListRepository", () => {
     expect((await repository.list(baseQuery())).initialFullComplete).toBe(false);
     const missing = await repository.list({
       ...baseQuery(),
+      scopeKind: "explicit_accounts" as const,
       allowedAccounts: [...baseQuery().allowedAccounts, { media: "KUAISHOU", accountId: "missing" }],
     });
     expect(missing.coverageComplete).toBe(false);
@@ -184,11 +200,16 @@ describe("AccountListRepository", () => {
     })).rejects.toThrow("allowedAccounts");
     await expect(repository.list({
       ...baseQuery(),
+      scopeKind: "explicit_accounts" as const,
       allowedAccounts: [
         { media: "KUAISHOU", accountId: "decline" },
         { media: "KUAISHOU", accountId: "decline" },
       ],
     })).rejects.toThrow("duplicate");
+    await expect(repository.list({
+      ...baseQuery(),
+      scopeKind: "team_workspace_readonly",
+    })).rejects.toThrow("must not carry account grants");
   });
 
   it("holds total, page and readiness in one repeatable-read read-only snapshot", async () => {

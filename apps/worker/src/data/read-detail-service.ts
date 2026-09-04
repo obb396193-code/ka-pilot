@@ -7,7 +7,11 @@ import {
 } from "@ka/domain";
 import { z } from "zod";
 
-import type { AuthenticatedDataQueryContext } from "./query-service.js";
+import {
+  tupleAllowed,
+  validBusinessReadAuth,
+  type BusinessReadAuth,
+} from "../auth/business-read-auth.js";
 import { resolveRequestId } from "./request-id.js";
 
 const idSchema = z.string().uuid();
@@ -32,12 +36,10 @@ function iso(value: Date | null): string | null {
 function authorized(
   media: string | null,
   accountId: string | null,
-  auth: AuthenticatedDataQueryContext,
+  auth: BusinessReadAuth,
 ): media is string {
   if (media === null || accountId === null) return false;
-  return auth.allowedAccounts.some(
-    (account) => account.media === media && account.accountId === accountId,
-  );
+  return tupleAllowed(auth, media, accountId);
 }
 
 type WorkItemScope = "account" | "personal" | "invalid";
@@ -50,9 +52,10 @@ function workItemScope(record: WorkItemRecord): WorkItemScope {
 
 function personalWorkItemAuthorized(
   record: WorkItemRecord,
-  auth: AuthenticatedDataQueryContext,
+  auth: BusinessReadAuth,
 ): boolean {
-  return record.assignee === auth.userId || record.creator === auth.userId;
+  return auth.workspaceKind === "personal" &&
+    (record.assignee === auth.userId || record.creator === auth.userId);
 }
 
 function error(
@@ -102,11 +105,14 @@ export class ReadDetailService {
 
   async getWorkItem(
     id: string,
-    auth: AuthenticatedDataQueryContext,
+    auth: unknown,
     correlationId?: string,
   ): Promise<ReadDetailResponse> {
     const requestId = resolveRequestId(correlationId ?? null);
     if (!idSchema.safeParse(id).success) return error("INVALID_REQUEST", "Invalid work item id", requestId);
+    if (!validBusinessReadAuth(auth)) {
+      return error("FORBIDDEN", "Approved authentication context is invalid", requestId);
+    }
     try {
       const record = await this.dependencies.workItems.find(auth.workspaceId, id);
       if (record === null) return error("NOT_FOUND", "Work item was not found", requestId);
@@ -134,11 +140,17 @@ export class ReadDetailService {
 
   async getChangeSet(
     id: string,
-    auth: AuthenticatedDataQueryContext,
+    auth: unknown,
     correlationId?: string,
   ): Promise<ReadDetailResponse> {
     const requestId = resolveRequestId(correlationId ?? null);
     if (!idSchema.safeParse(id).success) return error("INVALID_REQUEST", "Invalid changeset id", requestId);
+    if (!validBusinessReadAuth(auth)) {
+      return error("FORBIDDEN", "Approved authentication context is invalid", requestId);
+    }
+    if (auth.workspaceKind === "team") {
+      return error("FORBIDDEN", "Changesets are not available in a read-only team workspace", requestId);
+    }
     try {
       const record = await this.dependencies.changeSets.find(auth.workspaceId, id);
       if (record === null) return error("NOT_FOUND", "Changeset was not found", requestId);

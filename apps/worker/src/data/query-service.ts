@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import {
+  approvedWorkspaceAuthContextSchema,
   dataQueryRequestSchema,
   dataQueryResponseSchema,
   dataQueryIdSchema,
@@ -11,8 +12,8 @@ import {
   type SourceQueryResult,
   type StableDataQueryError,
   type StableDataQueryErrorCode,
+  type ApprovedWorkspaceAuthContext,
 } from "@ka/domain";
-import { z } from "zod";
 
 import {
   KaDataClientError,
@@ -23,18 +24,11 @@ import {
   type DataQueryRegistry,
   type QueryAuthorityPolicy,
   type ResolvedDataQuery,
-  type ScopedAccount,
 } from "./query-registry.js";
 import { resolveRequestId } from "./request-id.js";
 import { PlatformDataSourceError } from "./platform-data-source.js";
 
 export const DATA_QUERY_HTTP_PATH = "/api/v1/data/query";
-
-export interface AuthenticatedDataQueryContext {
-  workspaceId: string;
-  userId: string;
-  allowedAccounts: readonly ScopedAccount[];
-}
 
 export interface DataSourceQueryPort {
   query(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope): Promise<SourceQueryResult>;
@@ -240,12 +234,20 @@ function guardSourceOutput(
     if (identity.workspaceId !== null && identity.workspaceId !== scope.workspaceId) {
       throw new OutputScopeError();
     }
-    if (carriesIdentity && (
-      identity.media === null ||
-      identity.accountId === null ||
-      !allowed.has(`${identity.media}\u0000${identity.accountId}`)
-    )) {
-      throw new OutputScopeError();
+    if (carriesIdentity) {
+      if (
+        identity.workspaceId === null ||
+        identity.media === null ||
+        identity.accountId === null
+      ) {
+        throw new OutputScopeError();
+      }
+      if (
+        scope.scopeKind === "explicit_accounts" &&
+        !allowed.has(`${identity.media}\u0000${identity.accountId}`)
+      ) {
+        throw new OutputScopeError();
+      }
     }
   }
   if (result.rows.length <= resolved.maxRows) return result;
@@ -276,12 +278,20 @@ function requestedAccounts(resolved: ResolvedDataQuery): readonly string[] | und
 
 function executionScope(
   resolved: ResolvedDataQuery,
-  auth: AuthenticatedDataQueryContext,
+  auth: ApprovedWorkspaceAuthContext,
 ): DataQueryExecutionScope {
   const requested = requestedAccounts(resolved);
+  if (auth.workspaceKind === "team") {
+    return {
+      workspaceId: auth.workspaceId,
+      userId: auth.userId,
+      scopeKind: "team_workspace_readonly",
+      accounts: [],
+    };
+  }
   const mediaFiltered = resolved.params.media === undefined
-    ? auth.allowedAccounts
-    : auth.allowedAccounts.filter((account) => account.media === resolved.params.media);
+    ? auth.scope.accounts
+    : auth.scope.accounts.filter((account) => account.media === resolved.params.media);
   const requestedSet = requested === undefined ? undefined : new Set(requested);
   const accounts = requestedSet === undefined
     ? mediaFiltered
@@ -298,18 +308,14 @@ function executionScope(
   return {
     workspaceId: auth.workspaceId,
     userId: auth.userId,
+    scopeKind: "explicit_accounts",
     accounts: [...uniqueAccounts.values()],
   };
 }
 
-function validateAuth(auth: AuthenticatedDataQueryContext): void {
-  if (!z.string().uuid().safeParse(auth.workspaceId).success || auth.userId.trim() === "") {
-    throw new QueryRegistryError("INVALID_REQUEST", "Authenticated workspace and user are required");
-  }
-  if (auth.allowedAccounts.some(
-    (account) => account.accountId.trim() === "" || account.media.trim() === "",
-  )) {
-    throw new QueryRegistryError("INVALID_REQUEST", "Authenticated account scope is invalid");
+function validateAuth(auth: unknown): asserts auth is ApprovedWorkspaceAuthContext {
+  if (!approvedWorkspaceAuthContextSchema.safeParse(auth).success) {
+    throw new QueryRegistryError("INVALID_REQUEST", "Approved authentication context is invalid");
   }
 }
 
@@ -322,7 +328,7 @@ export class DataQueryService {
 
   async execute(
     requestInput: unknown,
-    auth: AuthenticatedDataQueryContext,
+    auth: unknown,
     correlationId?: string,
   ): Promise<DataQueryResponse> {
     const requestId = resolveRequestId(correlationId ?? null, this.requestId);
@@ -436,7 +442,7 @@ export class DataQueryService {
 export interface DataQueryHttpRequest {
   method: string;
   body: unknown;
-  auth: AuthenticatedDataQueryContext | null;
+  auth: ApprovedWorkspaceAuthContext | null;
   requestId?: string;
 }
 

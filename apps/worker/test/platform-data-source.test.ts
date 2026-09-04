@@ -9,6 +9,7 @@ import {
 const scope = {
   workspaceId: "00000000-0000-4000-8000-000000000024",
   userId: "user-fixture",
+  scopeKind: "explicit_accounts" as const,
   accounts: [{ media: "KUAISHOU", accountId: "account-1" }],
 };
 

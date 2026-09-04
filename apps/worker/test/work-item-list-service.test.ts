@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { WorkItemListResponse } from "@ka/domain";
+import type { ApprovedWorkspaceAuthContext, WorkItemListResponse } from "@ka/domain";
 import {
   WorkItemListRepositoryContractError,
   type WorkItemListRepositoryResult,
@@ -16,11 +16,16 @@ const userId = "00000000-0000-4000-8000-000000000001";
 const auth = {
   workspaceId,
   userId,
-  allowedAccounts: [
-    { media: "KUAISHOU", accountId: "account-1" },
-    { media: "TENCENT", accountId: "account-1" },
-  ],
-};
+  role: "admin",
+  workspaceKind: "personal",
+  scope: {
+    kind: "explicit_accounts",
+    accounts: [
+      { media: "KUAISHOU", accountId: "account-1", accessLevel: "read" },
+      { media: "TENCENT", accountId: "account-1", accessLevel: "read" },
+    ],
+  },
+} satisfies ApprovedWorkspaceAuthContext;
 
 function readyResult(
   overrides: Partial<WorkItemListRepositoryResult> = {},
@@ -86,6 +91,29 @@ function expectError(response: WorkItemListResponse, code: string): void {
 }
 
 describe("WorkItemListService", () => {
+  it("accepts account work items but rejects unscoped personal rows in team mode", async () => {
+    const teamAuth: ApprovedWorkspaceAuthContext = {
+      workspaceId,
+      userId,
+      role: "optimizer",
+      workspaceKind: "team",
+      scope: { kind: "team_workspace_readonly" },
+    };
+    const { service, list } = serviceFor(readyResult());
+    const accountResponse = await service.execute(
+      {}, teamAuth, "work-list-team", new Date("2026-08-25T04:00:00Z"),
+    );
+    expect(accountResponse).toMatchObject({ ok: true, data: { total: 1 } });
+    expect(list).toHaveBeenCalledWith(expect.objectContaining({
+      scopeKind: "team_workspace_readonly",
+      allowedAccounts: [],
+    }));
+    const personalResponse = await serviceFor(personalResult()).service.execute(
+      {}, teamAuth, "work-list-team-personal", new Date("2026-08-25T04:00:00Z"),
+    );
+    expectError(personalResponse, "FORBIDDEN");
+  });
+
   it("injects approved tuple scope and the Shanghai 03:00 business date", async () => {
     const { service, list } = serviceFor(readyResult());
     await service.execute(
@@ -98,7 +126,8 @@ describe("WorkItemListService", () => {
       workspaceId,
       requestingUserId: userId,
       businessDate: "2026-08-25",
-      allowedAccounts: auth.allowedAccounts,
+      scopeKind: "explicit_accounts",
+      allowedAccounts: auth.scope.accounts.map(({ media, accountId }) => ({ media, accountId })),
       page: 2,
       pageSize: 10,
       severity: "P1",

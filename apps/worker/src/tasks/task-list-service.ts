@@ -14,9 +14,11 @@ import type {
   TaskListRepositoryResult,
   TaskListRepositoryRow,
 } from "@ka/db";
-import { z } from "zod";
 
-import type { AuthenticatedDataQueryContext } from "../data/query-service.js";
+import {
+  repositoryBusinessReadScope,
+  validBusinessReadAuth,
+} from "../auth/business-read-auth.js";
 import { resolveRequestId } from "../data/request-id.js";
 
 type TaskListSourceErrorCode =
@@ -54,20 +56,6 @@ function stableError(
     ok: false,
     error: { code, message, retryable, requestId },
   });
-}
-
-function validateAuth(auth: AuthenticatedDataQueryContext): boolean {
-  if (!z.string().uuid().safeParse(auth.workspaceId).success || auth.userId.trim() === "") {
-    return false;
-  }
-  const tuples = new Set<string>();
-  for (const account of auth.allowedAccounts) {
-    if (account.media.trim() === "" || account.accountId.trim() === "") return false;
-    const key = `${account.media}\u0000${account.accountId}`;
-    if (tuples.has(key)) return false;
-    tuples.add(key);
-  }
-  return true;
 }
 
 function mapSourceError(error: TaskListSourceError, requestId: string): TaskListResponse {
@@ -212,7 +200,7 @@ export class TaskListService {
 
   async execute(
     requestInput: unknown,
-    auth: AuthenticatedDataQueryContext | null,
+    auth: unknown,
     correlationId?: string,
     now?: Date,
   ): Promise<TaskListResponse> {
@@ -225,7 +213,7 @@ export class TaskListService {
         requestId,
       );
     }
-    if (!validateAuth(auth)) {
+    if (!validBusinessReadAuth(auth)) {
       return stableError(
         "FORBIDDEN",
         "Approved authentication context is invalid",
@@ -245,6 +233,7 @@ export class TaskListService {
     let result: TaskListRepositoryResult;
     let businessDate: string;
     try {
+      const scope = repositoryBusinessReadScope(auth);
       businessDate = shanghaiTaskBusinessDate(
         now ?? this.dependencies.now?.() ?? new Date(),
       );
@@ -252,7 +241,8 @@ export class TaskListService {
         workspaceId: auth.workspaceId,
         requestingUserId: auth.userId,
         businessDate,
-        allowedAccounts: auth.allowedAccounts,
+        scopeKind: scope.scopeKind,
+        allowedAccounts: scope.allowedAccounts,
         ...request.data,
       });
     } catch (error) {

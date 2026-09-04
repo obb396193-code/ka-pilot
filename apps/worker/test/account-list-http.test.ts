@@ -16,19 +16,20 @@ import { DataQueryService } from "../src/data/query-service.js";
 import { TaskListService } from "../src/tasks/task-list-service.js";
 import { WorkItemListService } from "../src/work-items/work-item-list-service.js";
 import { readySource } from "./canonical-query-fixtures.js";
+import {
+  approvedSessionAuth,
+  businessHeaders,
+  personalAuth,
+} from "./business-auth-fixtures.js";
 
 const internalToken = "fixture-account-list-token-that-is-long-enough";
 const workspaceId = "00000000-0000-4000-8000-000000000024";
 const userId = "00000000-0000-4000-8000-000000000001";
 const allowedAccounts = [{ media: "KUAISHOU", accountId: "account-1" }];
+const auth = personalAuth({ workspaceId, userId, accounts: allowedAccounts });
 
 function authHeaders(token = internalToken): Record<string, string> {
-  return {
-    authorization: `Bearer ${token}`,
-    "x-ka-workspace-id": workspaceId,
-    "x-ka-user-id": userId,
-    "x-ka-account-scope": Buffer.from(JSON.stringify(allowedAccounts)).toString("base64url"),
-  };
+  return businessHeaders(token);
 }
 
 function accountResult(): AccountListRepositoryResult {
@@ -121,6 +122,7 @@ describe("ACCOUNTS-LIST-001 HTTP composition", () => {
       taskListService: taskListService(),
       accountListService,
       workItemListService: workItemListService(),
+      sessionAuthService: approvedSessionAuth(auth),
       internalToken,
       ...(maxResponseBytes === undefined ? {} : { maxResponseBytes }),
     });
@@ -159,9 +161,10 @@ describe("ACCOUNTS-LIST-001 HTTP composition", () => {
     expect((await fetch(`${await start()}/api/v1/accounts`, {
       headers: authHeaders("wrong-account-list-token-that-is-long-enough"),
     })).status).toBe(403);
-    expect((await fetch(`${await start()}/api/v1/accounts`, {
+    const forgedLegacy = await fetch(`${await start()}/api/v1/accounts`, {
       headers: { ...authHeaders(), "x-ka-user-id": "workspace-user" },
-    })).status).toBe(403);
+    });
+    expect(forgedLegacy.status).toBe(200);
     const baseUrl = await start();
     for (const method of ["POST", "PATCH", "DELETE"]) {
       const response = await fetch(`${baseUrl}/api/v1/accounts`, { method, headers: authHeaders() });
@@ -190,9 +193,7 @@ describe("ACCOUNTS-LIST-001 HTTP composition", () => {
       repository: { list: async () => accountResult() },
       now: () => new Date("2026-08-25T04:00:00.000Z"),
     });
-    const expected = await service.execute({}, {
-      workspaceId, userId, allowedAccounts,
-    }, "account-exact-limit");
+    const expected = await service.execute({}, auth, "account-exact-limit");
     const exactBytes = Buffer.byteLength(JSON.stringify(expected));
     const response = await fetch(`${await start(accountResult(), exactBytes)}/api/v1/accounts`, {
       headers: { ...authHeaders(), "x-request-id": "account-exact-limit" },

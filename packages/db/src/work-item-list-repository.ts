@@ -19,6 +19,7 @@ export interface WorkItemListRepositoryQuery extends Partial<WorkItemListRequest
   workspaceId: string;
   requestingUserId: string;
   businessDate: string;
+  scopeKind: "explicit_accounts" | "team_workspace_readonly";
   allowedAccounts: readonly WorkItemListAccountScope[];
 }
 
@@ -98,6 +99,7 @@ interface NormalizedQuery extends WorkItemListRequest {
   workspaceId: string;
   requestingUserId: string;
   businessDate: string;
+  scopeKind: "explicit_accounts" | "team_workspace_readonly";
   allowedAccounts: WorkItemListAccountScope[];
 }
 
@@ -112,6 +114,9 @@ function count(value: string | number, field: string): number {
 function normalizeQuery(input: WorkItemListRepositoryQuery): NormalizedQuery {
   if (!UUID_PATTERN.test(input.workspaceId)) throw new Error("workspaceId must be a UUID");
   if (!UUID_PATTERN.test(input.requestingUserId)) throw new Error("requestingUserId must be a UUID");
+  if (input.scopeKind !== "explicit_accounts" && input.scopeKind !== "team_workspace_readonly") {
+    throw new Error("scopeKind is invalid");
+  }
   const businessDate = taskListCalendarDateSchema.parse(input.businessDate);
   const parsed = workItemListRequestSchema.parse({
     page: input.page,
@@ -133,13 +138,24 @@ function normalizeQuery(input: WorkItemListRepositoryQuery): NormalizedQuery {
     seen.add(key);
     return { media, accountId };
   });
-  return { ...parsed, workspaceId: input.workspaceId, requestingUserId: input.requestingUserId, businessDate, allowedAccounts };
+  if (input.scopeKind === "team_workspace_readonly" && allowedAccounts.length !== 0) {
+    throw new Error("team workspace scope must not carry account grants");
+  }
+  return {
+    ...parsed,
+    workspaceId: input.workspaceId,
+    requestingUserId: input.requestingUserId,
+    businessDate,
+    scopeKind: input.scopeKind,
+    allowedAccounts,
+  };
 }
 
 function values(query: NormalizedQuery): unknown[] {
   return [
     query.workspaceId,
     query.requestingUserId,
+    query.scopeKind,
     JSON.stringify(query.allowedAccounts.map((account) => ({ media: account.media, account_id: account.accountId }))),
     query.q === undefined || query.q === "" ? null : query.q,
     query.status ?? null,
@@ -199,11 +215,13 @@ export class WorkItemListRepository {
       if (!summary) {
         throw new WorkItemListRepositoryContractError("work item list count query returned no row");
       }
-      const initialFullComplete = await loadWorkspaceSyncReadiness(client, {
-        workspaceId: query.workspaceId,
-        requestingUserId: query.requestingUserId,
-        allowedAccounts: query.allowedAccounts,
-      });
+      const initialFullComplete = query.scopeKind === "team_workspace_readonly"
+        ? false
+        : await loadWorkspaceSyncReadiness(client, {
+            workspaceId: query.workspaceId,
+            requestingUserId: query.requestingUserId,
+            allowedAccounts: query.allowedAccounts,
+          });
       const pageResult = await client.query<ListRow>(WORK_ITEM_LIST_PAGE_SQL, [
         ...common, query.pageSize, (query.page - 1) * query.pageSize,
       ]);

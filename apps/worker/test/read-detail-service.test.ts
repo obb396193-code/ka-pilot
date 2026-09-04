@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import type { ChangeSetRecord, WorkItemRecord } from "@ka/db";
+import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 
 import { ReadDetailService } from "../src/data/read-detail-service.js";
 
@@ -10,8 +11,13 @@ const USER_ID = "00000000-0000-4000-8000-000000000103";
 const auth = {
   workspaceId: "00000000-0000-4000-8000-000000000104",
   userId: USER_ID,
-  allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
-};
+  role: "admin",
+  workspaceKind: "personal",
+  scope: {
+    kind: "explicit_accounts",
+    accounts: [{ media: "KUAISHOU", accountId: "account-1", accessLevel: "read" }],
+  },
+} satisfies ApprovedWorkspaceAuthContext;
 
 function workItem(overrides: Partial<WorkItemRecord> = {}): WorkItemRecord {
   return {
@@ -84,6 +90,14 @@ function service(input: {
 }
 
 describe("ReadDetailService", () => {
+  const teamAuth: ApprovedWorkspaceAuthContext = {
+    workspaceId: auth.workspaceId,
+    userId: USER_ID,
+    role: "optimizer",
+    workspaceKind: "team",
+    scope: { kind: "team_workspace_readonly" },
+  };
+
   it("returns evidence, diagnosis and T+1 for an exactly scoped work item", async () => {
     const result = await service({ workItem: workItem() }).getWorkItem(
       WORK_ITEM_ID,
@@ -130,6 +144,33 @@ describe("ReadDetailService", () => {
     }).getWorkItem(WORK_ITEM_ID, auth, "personal-creator-001");
 
     expect(result).toMatchObject({ ok: true, data: { kind: "work_item" } });
+  });
+
+  it("allows team account work items but blocks team personal items and all changesets", async () => {
+    await expect(service({ workItem: workItem() }).getWorkItem(
+      WORK_ITEM_ID,
+      teamAuth,
+      "team-account-detail",
+    )).resolves.toMatchObject({ ok: true, data: { kind: "work_item" } });
+
+    await expect(service({
+      workItem: workItem({ media: null, accountId: null }),
+    }).getWorkItem(WORK_ITEM_ID, teamAuth, "team-personal-detail")).resolves.toMatchObject({
+      ok: false,
+      error: { code: "FORBIDDEN" },
+    });
+
+    const find = vi.fn(async () => changeset());
+    const teamService = new ReadDetailService({
+      workItems: { find: async () => null },
+      changeSets: { find },
+    });
+    await expect(teamService.getChangeSet(
+      CHANGESET_ID,
+      teamAuth,
+      "team-changeset-detail",
+    )).resolves.toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect(find).not.toHaveBeenCalled();
   });
 
   it("denies another user's unscoped work item and rejects a half-scoped row", async () => {

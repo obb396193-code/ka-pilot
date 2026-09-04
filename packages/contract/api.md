@@ -89,7 +89,8 @@ personal workspace 固定为 `explicit_accounts`。scope mode 只能由服务端
 
 浏览器不得直接调用本端点。浏览器只调用 Next BFF 的
 `POST /api/internal/data-query`；BFF 使用服务端 `DATA_API_INTERNAL_TOKEN` 调用本端点，
-并通过受信服务端 header 注入 workspace/user/account scope。内部 token 与账户 scope
+并转发后端签发的 `HttpOnly` Session cookie。`Authorization` 只证明调用方是受信 BFF，
+workspace/user/role/scope 必须由后端依据该 Session 重新解析。内部 token 与 Session
 不得进入浏览器 bundle、页面日志或响应正文。
 
 该端点的来源状态/全量计数使用 `MetricValue={value:number|null, availability}`；
@@ -175,17 +176,18 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
 
 - 可启动入口：`npm run start:data-api`（Worker 包中的独立 API 进程，不与后台消费循环混跑）。
 - 默认仅监听 `127.0.0.1:3101`；跨主机部署必须由内网服务发现/网络策略显式开放。
-- BFF 必须发送 `Authorization: Bearer <DATA_API_INTERNAL_TOKEN>`、
-  `x-ka-workspace-id`、`x-ka-user-id` 与 base64url JSON 的 `x-ka-account-scope`。
+- BFF 必须发送 `Authorization: Bearer <DATA_API_INTERNAL_TOKEN>` 并转发后端签发的
+  `HttpOnly` Session cookie。后端对每次业务请求重新解析 `ApprovedWorkspaceAuthContext`。
 - BFF 必须同时发送 `x-request-id`。后端仅接受 1–128 位的
   `[A-Za-z0-9][A-Za-z0-9._:-]*`；缺失、超长或含换行/控制字符时安全重新生成，
   绝不回显非法输入。所有 HTTP 响应通过 `x-request-id` 响应头返回最终相关 ID；
   错误 envelope 中的 `error.requestId` 必须与该响应头完全一致。
-- `x-ka-account-scope` 只能由 BFF 的服务端登录态、已批准授权上下文生成；
-  禁止接受页面、query/body、localStorage 或用户自报的 scope。
+- 旧 `x-ka-workspace-id/x-ka-user-id/x-ka-account-scope` 不再参与生产业务授权；即使请求
+  携带也必须被忽略，不得改变 Session 解析出的 workspace、user、role 或 scope。
+  禁止接受页面、query/body/header/localStorage 或用户自报的 scope。
 - 本机开发 scope 只允许使用明确的假 workspace/user/account fixture。
   production 不得使用默认账户、通配符、空 scope 绕过或 dev fallback；缺失、非法或
-  无法从服务端会话证明的 scope 必须 fail closed（`401/403`）。
+  无法从服务端 Session 证明的 scope 必须 fail closed（`401/403`）。
 - 服务输出侧再次按 `(workspace_id, media, account_id)` 校验所有账户明细行；合法 schema
   中的越权 tuple 以 `FORBIDDEN` 失败；缺联合键或 row schema 不完整以
   `UPSTREAM_INVALID_RESPONSE` 失败。两者响应都不回显上游对象。
@@ -267,7 +269,7 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
 
 `GET /api/v1/work-items/:id` 为一期只读纵切片：
 
-- 使用与双数据查询相同的服务端 Authorization/workspace/user/account scope header 和 `x-request-id`；
+- 使用与双数据查询相同的 internal Authorization + 服务端 Session cookie 和 `x-request-id`；
 - 返回持久化的 `(workspaceId,media,accountId)`、`evidenceSnapshot`、`diagnosis`、
   `t1Result`、状态、SLA 与时间字段；
 - 账户 tuple 与批准 scope 不完全一致返回 403；无账户 tuple 的个人工作项仅在记录属于当前
@@ -277,8 +279,8 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
 
 ### WORK-ITEM-LIST-001 工作项队列（一期只读）
 
-浏览器只调用 `GET /api/internal/work-items`；BFF 按 AUTH-001 注入批准 session scope，再调用
-`GET /api/v1/work-items`。允许的 query 参数仅为：`page`（默认 1）、`pageSize`（默认 20，
+浏览器只调用 `GET /api/internal/work-items`；BFF 转发服务端 Session cookie，再调用
+`GET /api/v1/work-items`，后端按 AUTH-001 解析批准 scope。允许的 query 参数仅为：`page`（默认 1）、`pageSize`（默认 20，
 最大 100）、`q`（最大 100 字符，仅匹配 title）、`status`、`severity`、`type`、
 `assigneeUserId`（UUID）、`taskId`（opaque ID，最大 128 字符）。每个参数只允许出现一次；
 未知或非法参数返回 400 `INVALID_REQUEST`。未传 status 时只返回
@@ -360,8 +362,8 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 
 ### ACCOUNTS-LIST-001 账户池（一期只读）
 
-浏览器只调用 `GET /api/internal/accounts`；BFF 从 AUTH-001 服务端 session 注入批准的
-workspace/user/account scope，再调用 `GET /api/v1/accounts`。浏览器不得提交或覆盖
+浏览器只调用 `GET /api/internal/accounts`；BFF 转发 AUTH-001 服务端 Session cookie，
+后端解析批准的 workspace/user/account scope，再调用 `GET /api/v1/accounts`。浏览器不得提交或覆盖
 `workspaceId/userId/role/accountIds/dataSource`。
 
 允许的 query 参数仅为：`page`（默认 1）、`pageSize`（默认 20，最大 100）、`q`（最大
@@ -442,8 +444,8 @@ workspace/user/account scope，再调用 `GET /api/v1/accounts`。浏览器不�
 
 ### TASK-LIST-001 任务列表（一期只读）
 
-浏览器只调用 `GET /api/internal/tasks`；BFF 从 AUTH-001 服务端 session 注入批准的
-workspace/user/account scope，再调用 `GET /api/v1/tasks`。浏览器不得提交或覆盖
+浏览器只调用 `GET /api/internal/tasks`；BFF 转发 AUTH-001 服务端 Session cookie，
+后端解析批准的 workspace/user/account scope，再调用 `GET /api/v1/tasks`。浏览器不得提交或覆盖
 `workspaceId/userId/role/accountIds/dataSource`。
 
 允许的 query 参数仅为：`page`（默认 1）、`pageSize`（默认 20，最大 100）、`q`（最大

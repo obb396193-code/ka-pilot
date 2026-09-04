@@ -15,13 +15,18 @@ import { createDataQueryRegistry } from "../src/data/query-registry.js";
 import { TaskListService } from "../src/tasks/task-list-service.js";
 import { WorkItemListService } from "../src/work-items/work-item-list-service.js";
 import { canonicalRow, readySource } from "./canonical-query-fixtures.js";
+import {
+  approvedSessionAuth,
+  businessHeaders,
+  personalAuth,
+} from "./business-auth-fixtures.js";
 
 const internalToken = "fixture-internal-token-that-is-long-enough";
-const auth = {
+const auth = personalAuth({
   workspaceId: "00000000-0000-4000-8000-000000000024",
   userId: "00000000-0000-4000-8000-000000000001",
-  allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
-};
+  accounts: [{ media: "KUAISHOU", accountId: "account-1" }],
+});
 
 function ready(
   queryId: DataQueryId,
@@ -33,11 +38,8 @@ function ready(
 
 function authHeaders(token = internalToken): Record<string, string> {
   return {
-    authorization: `Bearer ${token}`,
+    ...businessHeaders(token),
     "content-type": "application/json",
-    "x-ka-workspace-id": auth.workspaceId,
-    "x-ka-user-id": auth.userId,
-    "x-ka-account-scope": Buffer.from(JSON.stringify(auth.allowedAccounts)).toString("base64url"),
   };
 }
 
@@ -131,6 +133,7 @@ describe("data API HTTP composition", () => {
       taskListService: emptyTaskListService(),
       accountListService: emptyAccountListService(),
       workItemListService: emptyWorkItemListService(),
+      sessionAuthService: approvedSessionAuth(auth),
       internalToken,
       ...(options.maxResponseBytes === undefined
         ? {}
@@ -211,21 +214,24 @@ describe("data API HTTP composition", () => {
     expect(wrongMethod.status).toBe(405);
   });
 
-  it("rejects malformed auth scope, invalid JSON, and oversized request bodies", async () => {
+  it("ignores forged legacy scope headers and rejects invalid JSON and oversized request bodies", async () => {
     const baseUrl = await start();
-    const malformedScope = await fetch(`${baseUrl}/api/v1/data/query`, {
+    const forgedLegacyScope = await fetch(`${baseUrl}/api/v1/data/query`, {
       method: "POST",
-      headers: { ...authHeaders(), "x-ka-account-scope": "not-json" },
-      body: "{}",
+      headers: {
+        ...authHeaders(),
+        "x-ka-account-scope": "not-json",
+        "x-ka-workspace-id": "00000000-0000-4000-8000-000000000999",
+        "x-ka-user-id": "00000000-0000-4000-8000-000000000998",
+      },
+      body: JSON.stringify({
+        queryId: "account.summary",
+        params: { date: "2026-08-24" },
+        dataView: "platform",
+      }),
     });
-    expect(malformedScope.status).toBe(403);
-
-    const invalidWorkspace = await fetch(`${baseUrl}/api/v1/data/query`, {
-      method: "POST",
-      headers: { ...authHeaders(), "x-ka-workspace-id": "not-a-uuid" },
-      body: "{}",
-    });
-    expect(invalidWorkspace.status).toBe(403);
+    expect(forgedLegacyScope.status).toBe(200);
+    expect(await forgedLegacyScope.json()).toMatchObject({ ok: true });
 
     const invalidJson = await fetch(`${baseUrl}/api/v1/data/query`, {
       method: "POST",
@@ -245,6 +251,7 @@ describe("data API HTTP composition", () => {
       taskListService: emptyTaskListService(),
       accountListService: emptyAccountListService(),
       workItemListService: emptyWorkItemListService(),
+      sessionAuthService: approvedSessionAuth(auth),
       internalToken,
       maxRequestBytes: 8,
     });
@@ -260,6 +267,23 @@ describe("data API HTTP composition", () => {
     expect(oversized.status).toBe(413);
   });
 
+  it("requires both the internal bearer and a valid server session", async () => {
+    const baseUrl = await start();
+    const missingSession = await fetch(`${baseUrl}/api/v1/data/query`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${internalToken}`,
+        "content-type": "application/json",
+      },
+      body: "{}",
+    });
+    expect(missingSession.status).toBe(401);
+    expect(await missingSession.json()).toMatchObject({
+      ok: false,
+      error: { code: "UNAUTHORIZED" },
+    });
+  });
+
   it("rejects weak tokens and invalid byte limits at composition time", () => {
     const service = new DataQueryService({
       registry: createDataQueryRegistry(),
@@ -272,6 +296,7 @@ describe("data API HTTP composition", () => {
       taskListService: emptyTaskListService(),
       accountListService: emptyAccountListService(),
       workItemListService: emptyWorkItemListService(),
+      sessionAuthService: approvedSessionAuth(auth),
       internalToken: "short",
     })).toThrow(/32/);
     expect(() => createDataApiServer({
@@ -280,6 +305,7 @@ describe("data API HTTP composition", () => {
       taskListService: emptyTaskListService(),
       accountListService: emptyAccountListService(),
       workItemListService: emptyWorkItemListService(),
+      sessionAuthService: approvedSessionAuth(auth),
       internalToken,
       maxRequestBytes: 0,
     })).toThrow(/positive integer/);

@@ -16,19 +16,20 @@ import {
   WorkItemListSourceError,
 } from "../src/work-items/work-item-list-service.js";
 import { readySource } from "./canonical-query-fixtures.js";
+import {
+  approvedSessionAuth,
+  businessHeaders,
+  personalAuth,
+} from "./business-auth-fixtures.js";
 
 const internalToken = "fixture-work-item-list-token-that-is-long-enough";
 const workspaceId = "00000000-0000-4000-8000-000000000024";
 const userId = "00000000-0000-4000-8000-000000000001";
 const allowedAccounts = [{ media: "KUAISHOU", accountId: "account-1" }];
+const auth = personalAuth({ workspaceId, userId, accounts: allowedAccounts });
 
 function authHeaders(token = internalToken): Record<string, string> {
-  return {
-    authorization: `Bearer ${token}`,
-    "x-ka-workspace-id": workspaceId,
-    "x-ka-user-id": userId,
-    "x-ka-account-scope": Buffer.from(JSON.stringify(allowedAccounts)).toString("base64url"),
-  };
+  return businessHeaders(token);
 }
 
 function workItemResult(status = "open"): WorkItemListRepositoryResult {
@@ -127,6 +128,7 @@ describe("WORK-ITEM-LIST-001 HTTP composition", () => {
       taskListService: taskListService(),
       accountListService: accountListService(),
       workItemListService,
+      sessionAuthService: approvedSessionAuth(auth),
       internalToken,
       ...(maxResponseBytes === undefined ? {} : { maxResponseBytes }),
     });
@@ -167,9 +169,10 @@ describe("WORK-ITEM-LIST-001 HTTP composition", () => {
     expect((await fetch(`${await start()}/api/v1/work-items`, {
       headers: authHeaders("wrong-work-item-token-that-is-long-enough"),
     })).status).toBe(403);
-    expect((await fetch(`${await start()}/api/v1/work-items`, {
+    const forgedLegacy = await fetch(`${await start()}/api/v1/work-items`, {
       headers: { ...authHeaders(), "x-ka-user-id": "workspace-user" },
-    })).status).toBe(403);
+    });
+    expect(forgedLegacy.status).toBe(200);
     const baseUrl = await start();
     for (const method of ["POST", "PATCH", "DELETE"]) {
       const response = await fetch(`${baseUrl}/api/v1/work-items`, { method, headers: authHeaders() });
@@ -212,7 +215,7 @@ describe("WORK-ITEM-LIST-001 HTTP composition", () => {
       repository: { list: async () => workItemResult() },
       now: () => new Date("2026-08-25T04:00:00.000Z"),
     });
-    const expected = await service.execute({}, { workspaceId, userId, allowedAccounts }, "work-exact-limit");
+    const expected = await service.execute({}, auth, "work-exact-limit");
     const exactBytes = Buffer.byteLength(JSON.stringify(expected));
     const limited = await fetch(`${await start(workItemResult(), exactBytes)}/api/v1/work-items`, {
       headers: { ...authHeaders(), "x-request-id": "work-exact-limit" },

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   computeTaskPacing,
+  type ApprovedWorkspaceAuthContext,
   type TaskListResponse,
 } from "@ka/domain";
 import type {
@@ -16,9 +17,14 @@ import {
 const workspaceId = "00000000-0000-4000-8000-000000000024";
 const auth = {
   workspaceId,
-  userId: "workspace-user",
-  allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
-};
+  userId: "00000000-0000-4000-8000-000000000001",
+  role: "admin",
+  workspaceKind: "personal",
+  scope: {
+    kind: "explicit_accounts",
+    accounts: [{ media: "KUAISHOU", accountId: "account-1", accessLevel: "read" }],
+  },
+} satisfies ApprovedWorkspaceAuthContext;
 
 function readyResult(overrides: Partial<TaskListRepositoryResult> = {}): TaskListRepositoryResult {
   return {
@@ -72,6 +78,26 @@ function expectError(response: TaskListResponse, code: string): void {
 }
 
 describe("TaskListService", () => {
+  it("passes a grant-free readonly scope for team tasks", async () => {
+    const teamAuth: ApprovedWorkspaceAuthContext = {
+      workspaceId,
+      userId: auth.userId,
+      role: "optimizer",
+      workspaceKind: "team",
+      scope: { kind: "team_workspace_readonly" },
+    };
+    const { service, list } = serviceFor(readyResult());
+    const response = await service.execute(
+      {}, teamAuth, "task-list-team", new Date("2026-08-25T04:00:00Z"),
+    );
+    expect(response).toMatchObject({ ok: true, data: { total: 1 } });
+    expect(list).toHaveBeenCalledWith(expect.objectContaining({
+      workspaceId,
+      scopeKind: "team_workspace_readonly",
+      allowedAccounts: [],
+    }));
+  });
+
   it("injects approved auth scope and Shanghai 03:00 business date", async () => {
     const { service, list } = serviceFor(readyResult());
     await service.execute(
@@ -85,7 +111,8 @@ describe("TaskListService", () => {
       workspaceId,
       requestingUserId: auth.userId,
       businessDate: "2026-08-25",
-      allowedAccounts: auth.allowedAccounts,
+      scopeKind: "explicit_accounts",
+      allowedAccounts: auth.scope.accounts.map(({ media, accountId }) => ({ media, accountId })),
       page: 2,
       pageSize: 10,
       q: "任务",

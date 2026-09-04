@@ -126,6 +126,7 @@ describe("TaskListRepository", () => {
     workspaceId,
     requestingUserId: ownerId,
     businessDate: "2026-08-25",
+    scopeKind: "explicit_accounts" as const,
     allowedAccounts: [{ media: "KUAISHOU", accountId: "same-id" }],
     page: 1,
     pageSize: 20,
@@ -198,6 +199,29 @@ describe("TaskListRepository", () => {
     expect(row.dataAsOf).not.toBe("2026-08-25T15:00:00.000Z");
   });
 
+  it("uses all account tuples from only the approved team workspace", async () => {
+    const result = await repository.list({
+      ...baseQuery(),
+      scopeKind: "team_workspace_readonly",
+      allowedAccounts: [],
+    });
+    expect(result.total).toBe(4);
+    const row = result.rows.find((item) => item.taskId === activeTaskId)!;
+    expect(row).toMatchObject({
+      linkedAccountCount: 2,
+      totalLinkedAccountCount: 2,
+      completedVolume: 930,
+      spent: 9300,
+      workItemSummary: {
+        openCount: 2,
+        highestSeverity: "P0",
+        counts: { P0: 1, P1: 1, P2: 0, opportunity: 0 },
+      },
+    });
+    expect(result.rows.every((item) => item.workspaceId === workspaceId)).toBe(true);
+    expect(result.rows.some((item) => item.taskName === "其他租户同号任务")).toBe(false);
+  });
+
   it("never selects an assessment price that is not yet effective", async () => {
     const row = (await repository.list(baseQuery())).rows[0]!;
     expect(row.assessmentPrice?.value).toBe(39);
@@ -236,15 +260,21 @@ describe("TaskListRepository", () => {
   it("rejects malformed and duplicate tuple scope before opening a query", async () => {
     await expect(repository.list({
       ...baseQuery(),
+      scopeKind: "explicit_accounts" as const,
       allowedAccounts: [{ media: "", accountId: "same-id" }],
     })).rejects.toThrow("allowedAccounts");
     await expect(repository.list({
       ...baseQuery(),
+      scopeKind: "explicit_accounts" as const,
       allowedAccounts: [
         { media: "KUAISHOU", accountId: "same-id" },
         { media: "KUAISHOU", accountId: "same-id" },
       ],
     })).rejects.toThrow("duplicate");
+    await expect(repository.list({
+      ...baseQuery(),
+      scopeKind: "team_workspace_readonly",
+    })).rejects.toThrow("must not carry account grants");
   });
 
   it("keeps readiness false until this user completed full sync for every scoped media", async () => {
@@ -265,6 +295,7 @@ describe("TaskListRepository", () => {
     expect((await repository.list(baseQuery())).initialFullComplete).toBe(true);
     expect((await repository.list({
       ...baseQuery(),
+      scopeKind: "explicit_accounts" as const,
       allowedAccounts: [
         { media: "KUAISHOU", accountId: "same-id" },
         { media: "TENCENT", accountId: "same-id" },
@@ -286,6 +317,7 @@ describe("TaskListRepository", () => {
     );
     expect((await repository.list({
       ...baseQuery(),
+      scopeKind: "explicit_accounts" as const,
       allowedAccounts: [
         { media: "KUAISHOU", accountId: "same-id" },
         { media: "TENCENT", accountId: "same-id" },

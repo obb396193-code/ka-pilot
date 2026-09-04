@@ -1,7 +1,7 @@
 const FILTERED_WORK_ITEMS_CTE = `
   allowed_scope AS (
     SELECT allowed.media, allowed.account_id
-    FROM jsonb_to_recordset($3::jsonb)
+    FROM jsonb_to_recordset($4::jsonb)
       AS allowed(media text, account_id text)
   ),
   filtered_work_items AS (
@@ -9,23 +9,27 @@ const FILTERED_WORK_ITEMS_CTE = `
     FROM work_items AS item
     WHERE item.workspace_id = $1::uuid
       AND (
-        (item.media IS NOT NULL AND item.account_id IS NOT NULL AND EXISTS (
-          SELECT 1 FROM allowed_scope AS allowed
-          WHERE allowed.media = item.media AND allowed.account_id = item.account_id
+        (item.media IS NOT NULL AND item.account_id IS NOT NULL AND (
+          $3::text = 'team_workspace_readonly'
+          OR EXISTS (
+            SELECT 1 FROM allowed_scope AS allowed
+            WHERE allowed.media = item.media AND allowed.account_id = item.account_id
+          )
         ))
         OR
-        (item.media IS NULL AND item.account_id IS NULL
+        ($3::text = 'explicit_accounts'
+          AND item.media IS NULL AND item.account_id IS NULL
           AND (item.assignee = $2::uuid OR item.creator = $2::uuid))
       )
-      AND ($4::text IS NULL OR strpos(lower(item.title), lower($4::text)) > 0)
+      AND ($5::text IS NULL OR strpos(lower(item.title), lower($5::text)) > 0)
       AND (
-        ($5::text IS NULL AND item.status IN ('open', 'processing', 'escalated'))
-        OR item.status = $5::text
+        ($6::text IS NULL AND item.status IN ('open', 'processing', 'escalated'))
+        OR item.status = $6::text
       )
-      AND ($6::text IS NULL OR item.severity = $6::text)
-      AND ($7::text IS NULL OR item.type = $7::text)
-      AND ($8::uuid IS NULL OR item.assignee = $8::uuid)
-      AND ($9::text IS NULL OR item.task_id = $9::text)
+      AND ($7::text IS NULL OR item.severity = $7::text)
+      AND ($8::text IS NULL OR item.type = $8::text)
+      AND ($9::uuid IS NULL OR item.assignee = $9::uuid)
+      AND ($10::text IS NULL OR item.task_id = $10::text)
   )`;
 
 export const WORK_ITEM_LIST_COUNT_SQL = `
@@ -76,4 +80,4 @@ export const WORK_ITEM_LIST_PAGE_SQL = `
     item.sla_due ASC NULLS LAST,
     item.created_at ASC,
     item.id ASC
-  LIMIT $10 OFFSET $11`;
+  LIMIT $11 OFFSET $12`;

@@ -28,6 +28,7 @@ async function main(): Promise<void> {
   const config = loadDataApiConfig(process.env);
   const pool = createPool(config.databaseUrl);
   const authRepository = new AuthSessionRepository(pool);
+  const sessionAuthService = new SessionAuthService(authRepository);
   const service = new DataQueryService({
     registry: createDataQueryRegistry(),
     kaData: config.kaDataEnabled
@@ -51,13 +52,14 @@ async function main(): Promise<void> {
       repository: new WorkItemListRepository(pool),
     }),
     sessionHttpService: new SessionHttpService(
-      new SessionAuthService(authRepository),
+      sessionAuthService,
       new InternalTestLoginProvider(
         config.internalTestAuthEnabled,
         config.internalTestAuthCredentialsJson,
       ),
       { ttlSeconds: config.sessionTtlSeconds },
     ),
+    sessionAuthService,
     internalToken: config.internalToken,
     maxRequestBytes: config.maxRequestBytes,
     maxResponseBytes: config.maxResponseBytes,

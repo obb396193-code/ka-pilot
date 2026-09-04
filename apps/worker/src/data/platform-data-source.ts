@@ -60,10 +60,14 @@ function semanticScope(
     dateFrom: resolved.params.dateFrom,
     dateTo: resolved.params.dateTo,
     filters: {
-      accountScopes: execution.accounts.map((account) => ({
-        media: account.media,
-        accountId: account.accountId,
-      })),
+      ...(execution.scopeKind === "explicit_accounts"
+        ? {
+            accountScopes: execution.accounts.map((account) => ({
+              media: account.media,
+              accountId: account.accountId,
+            })),
+          }
+        : {}),
       ...(resolved.params.media === undefined ? {} : { media: resolved.params.media }),
       ...(resolved.params.accountId === undefined
         ? {}
@@ -90,11 +94,16 @@ function sourceLineage(
   lineage: SemanticLineageResult,
   truncated: boolean,
 ): SourceLineage {
-  if (lineage.returnedAccounts > scope.accounts.length) {
+  if (
+    scope.scopeKind === "explicit_accounts" &&
+    lineage.returnedAccounts > scope.accounts.length
+  ) {
     throw new CanonicalQueryRowError();
   }
-  const coverageComplete = lineage.requestedAccountDays === 0 ||
-    lineage.returnedAccountDays >= lineage.requestedAccountDays;
+  const coverageComplete = scope.scopeKind === "team_workspace_readonly"
+    ? !truncated
+    : lineage.requestedAccountDays === 0 ||
+      lineage.returnedAccountDays >= lineage.requestedAccountDays;
   const partial = truncated || !coverageComplete;
   const sourceMetadata = {
     datasetVersion: null,
@@ -120,8 +129,12 @@ function sourceLineage(
         : truncated
           ? { reason: "Canonical result exceeded the query row budget" }
           : {}),
-      requestedObjects: scope.accounts.length,
-      returnedObjects: Math.min(scope.accounts.length, lineage.returnedAccounts),
+      ...(scope.scopeKind === "explicit_accounts"
+        ? {
+            requestedObjects: scope.accounts.length,
+            returnedObjects: Math.min(scope.accounts.length, lineage.returnedAccounts),
+          }
+        : { returnedObjects: lineage.returnedAccounts }),
     },
     truncated,
     partial,

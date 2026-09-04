@@ -69,6 +69,7 @@ describe("WorkItemListRepository", () => {
 
   const baseQuery = () => ({
     workspaceId, requestingUserId: currentUserId, businessDate: "2026-08-25",
+    scopeKind: "explicit_accounts" as const,
     allowedAccounts: [{ media: "KUAISHOU", accountId: "approved" }],
     page: 1, pageSize: 20,
   });
@@ -83,6 +84,29 @@ describe("WorkItemListRepository", () => {
       assigneeUserId: currentUserId, assigneeDisplayName: "当前用户",
     });
     expect(output.dataAsOf).toBe("2026-08-25T13:00:00.000Z");
+  });
+
+  it("returns team account work items but excludes every unscoped personal item", async () => {
+    const output = await repository.list({
+      ...baseQuery(),
+      scopeKind: "team_workspace_readonly",
+      allowedAccounts: [],
+    });
+    expect(output.total).toBe(3);
+    expect(output.accountItemCount).toBe(3);
+    expect(output.rows.every((row) =>
+      row.workspaceId === workspaceId && row.media !== null && row.accountId !== null)).toBe(true);
+    expect(output.rows.map((row) => row.title)).not.toContain("本人待办");
+    expect(output.rows.map((row) => row.title)).not.toContain("本人提问");
+    expect(output.rows.map((row) => row.title)).not.toContain("他人待办");
+    expect(output.rows.map((row) => row.title)).not.toContain("跨租户越权");
+  });
+
+  it("rejects any account grant carried by team scope", async () => {
+    await expect(repository.list({
+      ...baseQuery(),
+      scopeKind: "team_workspace_readonly",
+    })).rejects.toThrow("must not carry account grants");
   });
 
   it("applies frozen parameterized filters and explicit terminal status", async () => {

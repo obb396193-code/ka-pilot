@@ -25,6 +25,7 @@ const SUSPECTED_ROW_BOUNDARIES = new Set([2_000, 10_000]);
 export interface DataQueryExecutionScope {
   workspaceId: string;
   userId: string;
+  scopeKind: "explicit_accounts" | "team_workspace_readonly";
   accounts: readonly ScopedAccount[];
 }
 
@@ -284,6 +285,13 @@ export class KaDataClient {
   ): Promise<SourceQueryResult> {
     if (!isResolvedDataQuery(resolved)) {
       throw new KaDataClientError("INVALID_REQUEST", "Query was not resolved by the registry", false);
+    }
+    if (scope.scopeKind !== "explicit_accounts") {
+      throw new KaDataClientError(
+        "FORBIDDEN",
+        "KA Data direct queries require an explicit approved account scope",
+        false,
+      );
     }
     const plan = this.#registry.buildKaDataPlan(resolved, scope.accounts);
     const controller = new AbortController();

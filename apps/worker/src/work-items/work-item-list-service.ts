@@ -15,7 +15,12 @@ import type {
 import { WorkItemListRepositoryContractError } from "@ka/db";
 import { z } from "zod";
 
-import type { AuthenticatedDataQueryContext } from "../data/query-service.js";
+import {
+  repositoryBusinessReadScope,
+  tupleAllowed,
+  validBusinessReadAuth,
+  type BusinessReadAuth,
+} from "../auth/business-read-auth.js";
 import { resolveRequestId } from "../data/request-id.js";
 
 type WorkItemListSourceErrorCode =
@@ -55,21 +60,6 @@ function stableError(
     ok: false,
     error: { code, message, retryable, requestId },
   });
-}
-
-function validateAuth(auth: AuthenticatedDataQueryContext): boolean {
-  if (
-    !z.string().uuid().safeParse(auth.workspaceId).success ||
-    !z.string().uuid().safeParse(auth.userId).success
-  ) return false;
-  const tuples = new Set<string>();
-  for (const account of auth.allowedAccounts) {
-    if (account.media.trim() === "" || account.accountId.trim() === "") return false;
-    const key = JSON.stringify([account.media, account.accountId]);
-    if (tuples.has(key)) return false;
-    tuples.add(key);
-  }
-  return true;
 }
 
 function mapSourceError(error: WorkItemListSourceError, requestId: string): WorkItemListResponse {
@@ -117,7 +107,7 @@ function itemFor(row: WorkItemListRepositoryRow): WorkItemListItem {
 function assertRepositoryResult(
   result: WorkItemListRepositoryResult,
   request: WorkItemListRequest,
-  auth: AuthenticatedDataQueryContext,
+  auth: BusinessReadAuth,
 ): void {
   const pageOffset = (result.page - 1) * result.pageSize;
   const pageRangeInvalid = result.rows.length === 0
@@ -139,8 +129,6 @@ function assertRepositoryResult(
     throw new Error("invalid repository dataAsOf");
   }
 
-  const allowed = new Set(auth.allowedAccounts.map((account) =>
-    JSON.stringify([account.media, account.accountId])));
   const ids = new Set<string>();
   let pageAccountItems = 0;
   const lineageTime = result.dataAsOf === null ? null : Date.parse(result.dataAsOf);
@@ -154,9 +142,12 @@ function assertRepositoryResult(
       pageAccountItems += 1;
       if (
         row.media === null || row.accountId === null ||
-        !allowed.has(JSON.stringify([row.media, row.accountId]))
+        !tupleAllowed(auth, row.media, row.accountId)
       ) throw new WorkItemListScopeViolation();
-    } else if (row.assigneeUserId !== auth.userId && row.creatorUserId !== auth.userId) {
+    } else if (
+      auth.workspaceKind === "team" ||
+      (row.assigneeUserId !== auth.userId && row.creatorUserId !== auth.userId)
+    ) {
       throw new WorkItemListScopeViolation();
     }
     if (row.media === null && row.accountName !== null) {
@@ -180,7 +171,8 @@ function assertRepositoryResult(
   }
   if (
     (pageAccountItems > 0 && result.accountItemCount === 0) ||
-    (auth.allowedAccounts.length === 0 && result.accountItemCount > 0)
+    (auth.workspaceKind === "personal" && auth.scope.accounts.length === 0 &&
+      result.accountItemCount > 0)
   ) throw new Error("accountItemCount conflicts with returned or approved account scope");
 }
 
@@ -196,13 +188,13 @@ export class WorkItemListService {
 
   async execute(
     requestInput: unknown,
-    auth: AuthenticatedDataQueryContext | null,
+    auth: unknown,
     correlationId?: string,
     now?: Date,
   ): Promise<WorkItemListResponse> {
     const requestId = resolveRequestId(correlationId ?? null);
     if (auth === null) return stableError("UNAUTHORIZED", "Authentication is required", false, requestId);
-    if (!validateAuth(auth)) {
+    if (!validBusinessReadAuth(auth)) {
       return stableError("FORBIDDEN", "Approved authentication context is invalid", false, requestId);
     }
     const request = workItemListRequestSchema.safeParse(requestInput);
@@ -213,12 +205,14 @@ export class WorkItemListService {
     let result: WorkItemListRepositoryResult;
     let businessDate: string;
     try {
+      const scope = repositoryBusinessReadScope(auth);
       businessDate = shanghaiTaskBusinessDate(now ?? this.dependencies.now?.() ?? new Date());
       result = await this.dependencies.repository.list({
         workspaceId: auth.workspaceId,
         requestingUserId: auth.userId,
         businessDate,
-        allowedAccounts: auth.allowedAccounts,
+        scopeKind: scope.scopeKind,
+        allowedAccounts: scope.allowedAccounts,
         ...request.data,
       });
     } catch (error) {

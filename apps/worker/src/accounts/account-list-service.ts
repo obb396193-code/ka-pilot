@@ -14,9 +14,12 @@ import type {
   AccountListRepositoryRow,
 } from "@ka/db";
 import { AccountListRepositoryContractError } from "@ka/db";
-import { z } from "zod";
 
-import type { AuthenticatedDataQueryContext } from "../data/query-service.js";
+import {
+  repositoryBusinessReadScope,
+  validBusinessReadAuth,
+  type RepositoryBusinessReadScope,
+} from "../auth/business-read-auth.js";
 import { resolveRequestId } from "../data/request-id.js";
 
 type AccountListSourceErrorCode =
@@ -56,21 +59,6 @@ function stableError(
     ok: false,
     error: { code, message, retryable, requestId },
   });
-}
-
-function validateAuth(auth: AuthenticatedDataQueryContext): boolean {
-  if (
-    !z.string().uuid().safeParse(auth.workspaceId).success ||
-    !z.string().uuid().safeParse(auth.userId).success
-  ) return false;
-  const tuples = new Set<string>();
-  for (const account of auth.allowedAccounts) {
-    if (account.media.trim() === "" || account.accountId.trim() === "") return false;
-    const key = JSON.stringify([account.media, account.accountId]);
-    if (tuples.has(key)) return false;
-    tuples.add(key);
-  }
-  return true;
 }
 
 function mapSourceError(error: AccountListSourceError, requestId: string): AccountListResponse {
@@ -132,7 +120,7 @@ function assertRepositoryResult(
   request: AccountListRequest,
   workspaceId: string,
   businessDate: string,
-  allowedAccounts: readonly { media: string; accountId: string }[],
+  scope: RepositoryBusinessReadScope,
 ): void {
   if (
     result.page !== request.page || result.pageSize !== request.pageSize ||
@@ -141,14 +129,19 @@ function assertRepositoryResult(
     typeof result.coverageComplete !== "boolean" ||
     typeof result.metricsComplete !== "boolean" ||
     typeof result.initialFullComplete !== "boolean" ||
-    (allowedAccounts.length === 0 && (result.coverageComplete || result.initialFullComplete))
+    (scope.scopeKind === "explicit_accounts" && scope.allowedAccounts.length === 0 &&
+      (result.coverageComplete || result.initialFullComplete))
   ) throw new Error("invalid repository pagination or coverage");
 
-  const allowed = new Set(allowedAccounts.map((account) => JSON.stringify([account.media, account.accountId])));
+  const allowed = new Set(scope.allowedAccounts.map((account) =>
+    JSON.stringify([account.media, account.accountId])));
   const returned = new Set<string>();
   for (const row of result.rows) {
     const key = JSON.stringify([row.media, row.accountId]);
-    if (row.workspaceId !== workspaceId || !allowed.has(key)) throw new AccountListScopeViolation();
+    if (
+      row.workspaceId !== workspaceId ||
+      (scope.scopeKind === "explicit_accounts" && !allowed.has(key))
+    ) throw new AccountListScopeViolation();
     if (returned.has(key)) throw new Error("duplicate account identity");
     returned.add(key);
     if (row.metricDate === null) {
@@ -180,20 +173,21 @@ export class AccountListService {
 
   async execute(
     requestInput: unknown,
-    auth: AuthenticatedDataQueryContext | null,
+    auth: unknown,
     correlationId?: string,
     now?: Date,
   ): Promise<AccountListResponse> {
     const requestId = resolveRequestId(correlationId ?? null);
     if (auth === null) return stableError("UNAUTHORIZED", "Authentication is required", false, requestId);
-    if (!validateAuth(auth)) {
+    if (!validBusinessReadAuth(auth)) {
       return stableError("FORBIDDEN", "Approved authentication context is invalid", false, requestId);
     }
     const request = accountListRequestSchema.safeParse(requestInput);
     if (!request.success) {
       return stableError("INVALID_REQUEST", "Invalid account list request", false, requestId);
     }
-    const allowedAccounts = auth.allowedAccounts.filter((account) => account.media === "KUAISHOU");
+    const scope = repositoryBusinessReadScope(auth);
+    const allowedAccounts = scope.allowedAccounts.filter((account) => account.media === "KUAISHOU");
     let result: AccountListRepositoryResult;
     let businessDate: string;
     try {
@@ -202,6 +196,7 @@ export class AccountListService {
         workspaceId: auth.workspaceId,
         requestingUserId: auth.userId,
         businessDate,
+        scopeKind: scope.scopeKind,
         allowedAccounts,
         ...request.data,
       });
@@ -218,7 +213,13 @@ export class AccountListService {
       return stableError("INTERNAL_ERROR", "The account list could not be loaded", false, requestId);
     }
     try {
-      assertRepositoryResult(result, request.data, auth.workspaceId, businessDate, allowedAccounts);
+      assertRepositoryResult(
+        result,
+        request.data,
+        auth.workspaceId,
+        businessDate,
+        { scopeKind: scope.scopeKind, allowedAccounts },
+      );
       return accountListResponseSchema.parse({
         ok: true,
         data: {
