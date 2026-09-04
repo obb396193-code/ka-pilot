@@ -2749,7 +2749,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 ## 2026-09-04 arch 六簇审计 · 第一轮（不变量核验，覆盖 P-004～P-035 全部批次）
 
 > 方法：按依赖分六簇，对每簇的**契约不变量**（租户隔离/凭证边界/写操作确认门/口径计算位置/fail-closed）做代码级定点核验（grep 到具体文件行），不信自报。**本轮是不变量级，不是逐行 diff**；逐行 diff 随 R-009/R-010 交付交错进行，结论继续追加到各 P 条目。
-> 单测：domain 491/491、web 66/66 独立复跑绿；db/worker 需 PG，本机 Docker 起不来，**Codex 自报 DB 139 / Worker 510+ 未独立复验**。
+> 单测独立复跑（2026-09-04 全部真跑）：domain 491/491、web 66/66、**db 176/176（真 PG）、worker 621/621 + 2 opt-in skipped（真 PG）**——Codex 自报数字属实，"未复验"关闭。
 
 ### 簇① 数据链 B1a/B1b/B1c/B9/B10/B11（P-004/006a/007a/016/017/018）
 
@@ -2860,7 +2860,7 @@ root 停工前交接全文由老板转交。**arch 逐条校对结果**：
 | `c3ed7b3` Session BFF = candidate + 11 脏文件半成品 | ✅ 实查 11 M + 1 ?? | R-009#9 已改为"审后合 + 原工作树续完" |
 | `fe-functional-bff-v2@110f221` 旧鉴权不可原样合 | ✅ | R-009#9 注明 |
 | Task6 `f009e19` 可独立审；`6d02cfe/feec2ec/4e67315` + 草稿 011 与 v1.2 冲突 | ✅ 草稿 011 与 arch 的 011 撞号 | **R-011** 重做，编号 013，root 六条 staging/publish 要求全采纳 |
-| 复验数：Domain 491 / DB 171 / Worker 604 / PG 11+30 | 491 arch 独立复跑 ✓；DB/Worker 本机无 PG 未复验 | 待 Docker |
+| 复验数：Domain 491 / DB 171 / Worker 604 / PG 11+30 | arch 独立复跑：Domain 491 / DB 176 / Worker 621 ✓（main 比 root 交接时又多了 Task5 退修测试） | ✅ 关闭 |
 | 接手顺序 10 条 | 与 arch 已做/在做一致 | — |
 | "所有媒体写继续关闭；preview/confirm/execute 保留人工确认门" | ✅ 契约 v1.3 状态机 | — |
 
