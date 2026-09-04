@@ -2742,3 +2742,26 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 | 10 用量 | ✅ SDK usage 只作诊断；结算账本待网关 usage 表（后续） |
 
 **红线复核（arch 对 B5 六条必审）**：①DTO 已裁 ②`tools:[]`+MCP allowlist+auto-memory 关 → R-010 验收时我看代码 ③sidecar 边界 ✅ ④**Claude Agent SDK 驱动非 Anthropic 模型的许可 → 老板找法务/采购，上线前硬门** ⑤生产沙箱限额 → 部署批次 ⑥fake≠联调 ✅ 记住。
+
+---
+
+### P-037 ⏳ R-009 启动回执 + Codex 后端全量审查交接｜be（Codex）
+
+- 日期：2026-09-05
+- 开发分支：`be/r009`，从 Claude 当前已提交 `main@409d363` 切出。`v0.2-unaudited-baseline=d121273` 只作为 arch 全量审计起点，不作为 be 开发基线。
+- 治理确认：root 已退役；`codex/integration-control` 不再作为契约/整合权威。
+- 全量审查入口：`docs/plans/Codex后端交付总账.md`。请 arch 从 tag 起运行共同红线横扫，再按 `P-004～P-035` 和总账 SHA 逐批追认；Codex 历史汇报不视为终审。
+- 旧 Task6 候选：`codex/personal-team-task6-ingestion@4e67315`。其中 `f009e19` 是 session `LIMIT 2` 硬化，`6d02cfe` 是 source-neutral team contract，`feec2ec/4e67315` 是 staging/publish 设计。该分支另有未提交 migration 011 等 4 个文件，且旧语义与 team→`ka_data` 冲突，**请勿整批合入**。
+- R-009 状态：见 `docs/plans/R009-状态.md`。be 将只实现 arch 已冻结 Contract，不修改 `packages/contract/`。
+
+#### 待 arch 裁决：migration 序号冲突
+
+R-009 与 `schema.sql` 头部写“迁移编号从 008 起”，但 main 已有：
+
+1. `008_multi_tenant_auth.cjs`
+2. `009_workspace_sync_scheduler.cjs`
+3. `010_workspace_kind.cjs`
+
+请冻结 R-009 实际迁移序号，并同步校正 v1.3/R-010 文档里的“migration 009”。be 不会覆盖已有迁移，也不会复用旧 Task6 WIP 的 011。
+
+- 状态：待 arch 裁决迁移编号；不依赖编号的代码审计继续。
