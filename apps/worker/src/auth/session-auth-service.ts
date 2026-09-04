@@ -26,6 +26,7 @@ export interface ApprovedAuthContextPort {
     nextTokenHash: string;
     targetWorkspaceId: string;
     now: Date;
+    expiresAt: Date;
   }): Promise<AuthResolution>;
   readSessionView?(tokenHash: string, now: Date): Promise<SessionViewResolution>;
   revokeSession?(tokenHash: string, now: Date): Promise<void>;
@@ -101,20 +102,24 @@ export class SessionAuthService {
     token: unknown;
     nextToken: unknown;
     targetWorkspaceId: unknown;
+    expiresAt: unknown;
   }): Promise<AuthResolution> {
     const currentToken = opaqueSessionTokenSchema.safeParse(input.token);
     if (!currentToken.success) return missingSession;
     const parsed = z.object({
       nextToken: opaqueSessionTokenSchema,
       targetWorkspaceId: z.string().uuid(),
+      expiresAt: z.date(),
     }).strict().safeParse({
       nextToken: input.nextToken,
       targetWorkspaceId: input.targetWorkspaceId,
+      expiresAt: input.expiresAt,
     });
     const now = this.now();
     if (
       !parsed.success ||
       !Number.isFinite(now.getTime()) ||
+      parsed.data.expiresAt.getTime() <= now.getTime() ||
       currentToken.data === parsed.data.nextToken ||
       this.repository.switchSessionWorkspace === undefined
     ) {
@@ -125,6 +130,7 @@ export class SessionAuthService {
       nextTokenHash: tokenHash(parsed.data.nextToken),
       targetWorkspaceId: parsed.data.targetWorkspaceId,
       now,
+      expiresAt: parsed.data.expiresAt,
     });
   }
 

@@ -111,7 +111,7 @@ describe("SessionHttpService", () => {
   });
 
   it("returns current memberships and rotates into an approved team workspace", async () => {
-    const { service } = harness();
+    const { service, repository } = harness();
     await service.login({
       provider: "internal_test",
       username: "fixture.user",
@@ -130,6 +130,48 @@ describe("SessionHttpService", () => {
       sessionToken: nextToken,
       body: { ok: true, data: { activeWorkspace: { kind: "team", readOnly: true } } },
     });
+    expect(repository.switchSessionWorkspace).toHaveBeenCalledWith(expect.objectContaining({
+      expiresAt: new Date("2026-08-25T09:00:00Z"),
+    }));
+  });
+
+  it.each([
+    ["SESSION_NOT_FOUND", 401],
+    ["IDENTITY_INACTIVE", 403],
+    ["PERSONAL_WORKSPACE_MISSING", 403],
+    ["PERSONAL_WORKSPACE_AMBIGUOUS", 403],
+    ["PERSONAL_WORKSPACE_SHARED", 403],
+  ] as const)("does not expose credential validity when authorization fails with %s", async (reason, httpStatus) => {
+    const badPassword = harness();
+    const badPasswordResult = await badPassword.service.login({
+      provider: "internal_test",
+      username: "fixture.user",
+      password: "wrong",
+    }, "oracle-a");
+
+    const authorizedPassword = harness();
+    authorizedPassword.repository.createSessionForIdentity.mockResolvedValueOnce({
+      status: "rejected",
+      httpStatus,
+      reason,
+    });
+    const authorizationResult = await authorizedPassword.service.login({
+      provider: "internal_test",
+      username: "fixture.user",
+      password: "runtime-password",
+    }, "oracle-b");
+
+    if (authorizationResult.body.ok || badPasswordResult.body.ok) {
+      throw new Error("login rejection fixture unexpectedly succeeded");
+    }
+    const { requestId: authorizationRequestId, ...authorizationError } = authorizationResult.body.error;
+    const { requestId: passwordRequestId, ...passwordError } = badPasswordResult.body.error;
+    expect(authorizationRequestId).toBe("oracle-b");
+    expect(passwordRequestId).toBe("oracle-a");
+    expect({ ...authorizationResult.body, error: authorizationError })
+      .toEqual({ ...badPasswordResult.body, error: passwordError });
+    expect(authorizationResult.status).toBe(401);
+    expect(authorizationResult).not.toHaveProperty("sessionToken");
   });
 
   it("rejects invalid credentials, missing sessions and browser supplied scope", async () => {

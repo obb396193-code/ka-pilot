@@ -62,16 +62,19 @@ describe("SessionAuthService", () => {
     }, { now: () => new Date("2026-08-25T08:00:00Z") });
     const nextToken = "next-session-token-with-at-least-thirty-two-bytes-002";
     const targetWorkspaceId = "00000000-0000-4000-8000-000000000404";
+    const expiresAt = new Date("2026-08-25T10:00:00Z");
     await expect(service.switchWorkspace({
       token: TOKEN,
       nextToken,
       targetWorkspaceId,
+      expiresAt,
     })).resolves.toEqual(approved);
     expect(switchSessionWorkspace).toHaveBeenCalledWith({
       tokenHash: createHash("sha256").update(TOKEN, "utf8").digest("hex"),
       nextTokenHash: createHash("sha256").update(nextToken, "utf8").digest("hex"),
       targetWorkspaceId,
       now: new Date("2026-08-25T08:00:00Z"),
+      expiresAt,
     });
     expect(switchSessionWorkspace.mock.calls.flat().join(" ")).not.toContain(TOKEN);
     expect(switchSessionWorkspace.mock.calls.flat().join(" ")).not.toContain(nextToken);
@@ -87,6 +90,7 @@ describe("SessionAuthService", () => {
       token: "short",
       nextToken: "next-session-token-with-at-least-thirty-two-bytes-002",
       targetWorkspaceId: "00000000-0000-4000-8000-000000000404",
+      expiresAt: new Date("2026-08-25T10:00:00Z"),
     })).resolves.toEqual({
       status: "rejected",
       httpStatus: 401,

@@ -13,6 +13,7 @@ import { loadDataApiConfig } from "./data/data-api-config.js";
 import { AccountListService } from "./accounts/account-list-service.js";
 import { createDataApiServer } from "./data/http-server.js";
 import { createKaDataClientFromEnv } from "./data/ka-data-client.js";
+import { DisabledKaDataSource } from "./data/disabled-ka-data-source.js";
 import { PlatformDataSource } from "./data/platform-data-source.js";
 import { createDataQueryRegistry } from "./data/query-registry.js";
 import { DataQueryService } from "./data/query-service.js";
@@ -29,7 +30,9 @@ async function main(): Promise<void> {
   const authRepository = new AuthSessionRepository(pool);
   const service = new DataQueryService({
     registry: createDataQueryRegistry(),
-    kaData: createKaDataClientFromEnv(process.env),
+    kaData: config.kaDataEnabled
+      ? createKaDataClientFromEnv(process.env)
+      : new DisabledKaDataSource(),
     platform: new PlatformDataSource(new SemanticQueryRepository(pool)),
   });
   const server = createDataApiServer({

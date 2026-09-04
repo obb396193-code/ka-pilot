@@ -1,4 +1,4 @@
-import { scryptSync, timingSafeEqual } from "node:crypto";
+import { scrypt, timingSafeEqual } from "node:crypto";
 
 import { z } from "zod";
 
@@ -18,6 +18,21 @@ const credentialsSchema = z.array(credentialSchema).max(1_000).superRefine((cred
 
 export interface InternalTestLoginPort {
   authenticate(username: string, password: string): Promise<string | null>;
+}
+
+const SCRYPT_KEY_LENGTH = 32;
+const SCRYPT_OPTIONS = { N: 16_384, r: 8, p: 1, maxmem: 32 * 1024 * 1024 } as const;
+
+function derivePassword(password: string, salt: Buffer): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    scrypt(password, salt, SCRYPT_KEY_LENGTH, SCRYPT_OPTIONS, (error, derivedKey) => {
+      if (error !== null) {
+        reject(error);
+        return;
+      }
+      resolve(derivedKey);
+    });
+  });
 }
 
 export class InternalTestLoginProvider implements InternalTestLoginPort {
@@ -46,7 +61,7 @@ export class InternalTestLoginProvider implements InternalTestLoginPort {
   async authenticate(username: string, password: string): Promise<string | null> {
     const credential = this.credentials.find((item) => item.username === username);
     const salt = Buffer.from(credential?.passwordSalt ?? "AAAAAAAAAAAAAAAAAAAAAA", "base64url");
-    const actual = scryptSync(password, salt, 32);
+    const actual = await derivePassword(password, salt);
     const expected = Buffer.from(credential?.passwordScrypt ?? "0".repeat(64), "hex");
     const matches = timingSafeEqual(actual, expected);
     return matches && credential !== undefined ? credential.identityId : null;

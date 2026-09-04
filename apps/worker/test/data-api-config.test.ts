@@ -14,6 +14,7 @@ describe("data API config", () => {
       host: "127.0.0.1",
       port: 3101,
       maxResponseBytes: 16 * 1024 * 1024,
+      kaDataEnabled: false,
       internalTestAuthEnabled: false,
       sessionTtlSeconds: 8 * 60 * 60,
     });
@@ -42,6 +43,20 @@ describe("data API config", () => {
       DATABASE_URL: "postgres://fixture",
       DATA_API_INTERNAL_TOKEN: "fixture-token-with-at-least-32-characters",
       AUTH_SESSION_TTL_SECONDS: "59",
+    })).toThrow();
+  });
+
+  it("enables KA Data only through server configuration", () => {
+    const enabled = loadDataApiConfig({
+      DATABASE_URL: "postgres://fixture",
+      DATA_API_INTERNAL_TOKEN: "fixture-token-with-at-least-32-characters",
+      KA_DATA_ENABLED: "true",
+    });
+    expect(enabled.kaDataEnabled).toBe(true);
+    expect(() => loadDataApiConfig({
+      DATABASE_URL: "postgres://fixture",
+      DATA_API_INTERNAL_TOKEN: "fixture-token-with-at-least-32-characters",
+      KA_DATA_ENABLED: "1",
     })).toThrow();
   });
 });

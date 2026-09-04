@@ -55,6 +55,7 @@ export interface SwitchSessionWorkspaceInput {
   nextTokenHash: string;
   targetWorkspaceId: string;
   now: Date;
+  expiresAt: Date;
 }
 
 function rejected(
@@ -267,7 +268,8 @@ export class AuthSessionRepository {
          WHERE session.token_hash = $1
            AND session.revoked_at IS NULL
            AND session.expires_at > $2
-         ORDER BY workspace.id::text COLLATE "C"`,
+         ORDER BY workspace.id::text COLLATE "C"
+         LIMIT 1001`,
         [tokenHash, now],
       );
       const workspaces = result.rows.map((row) => ({
@@ -280,7 +282,8 @@ export class AuthSessionRepository {
       const active = workspaces.filter((workspace) =>
         workspace.id === resolution.context.workspaceId);
       const displayNames = new Set(result.rows.map((row) => row.display_name));
-      if (active.length !== 1 || displayNames.size !== 1 || result.rows.length > 1_000) {
+      // Row 1001 is an overflow sentinel. Never materialize an unbounded membership list.
+      if (active.length !== 1 || displayNames.size !== 1 || result.rows.length === 1_001) {
         await client.query("ROLLBACK");
         return rejected(403, "INVALID_AUTH_STATE");
       }
@@ -417,7 +420,9 @@ export class AuthSessionRepository {
       !tokenHashPattern.test(input.nextTokenHash) ||
       input.tokenHash === input.nextTokenHash ||
       !uuidPattern.test(input.targetWorkspaceId) ||
-      !Number.isFinite(input.now.getTime())
+      !Number.isFinite(input.now.getTime()) ||
+      !Number.isFinite(input.expiresAt.getTime()) ||
+      input.expiresAt.getTime() <= input.now.getTime()
     ) {
       return rejected(403, "INVALID_AUTH_STATE");
     }
@@ -441,7 +446,8 @@ export class AuthSessionRepository {
         `UPDATE auth_sessions AS session
          SET active_workspace_id = $2,
              token_hash = $3,
-             last_seen_at = $4
+             last_seen_at = $4,
+             expires_at = $5
          WHERE session.token_hash = $1
            AND session.revoked_at IS NULL
            AND session.expires_at > $4
@@ -459,7 +465,13 @@ export class AuthSessionRepository {
              WHERE identity.id = session.identity_id
                AND identity.is_active = true
            )`,
-        [input.tokenHash, input.targetWorkspaceId, input.nextTokenHash, input.now],
+        [
+          input.tokenHash,
+          input.targetWorkspaceId,
+          input.nextTokenHash,
+          input.now,
+          input.expiresAt,
+        ],
       );
       if (updated.rowCount !== 1) {
         await client.query("ROLLBACK");

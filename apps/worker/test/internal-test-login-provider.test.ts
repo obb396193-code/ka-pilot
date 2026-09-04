@@ -26,6 +26,21 @@ describe("InternalTestLoginProvider", () => {
     await expect(provider.authenticate("missing.user", password)).resolves.toBeNull();
   });
 
+  it("keeps the event loop responsive during concurrent rejected logins", async () => {
+    const provider = new InternalTestLoginProvider(true, JSON.stringify([{
+      username: "fixture.user",
+      passwordSalt,
+      passwordScrypt: scryptSync(password, Buffer.from(passwordSalt, "base64url"), 32).toString("hex"),
+      identityId,
+    }]));
+    let completed = 0;
+    const attempts = Array.from({ length: 8 }, (_, index) =>
+      provider.authenticate("fixture.user", `wrong-${index}`).then(() => { completed += 1; }));
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
+    expect(completed).toBeLessThan(8);
+    await expect(Promise.all(attempts)).resolves.toEqual(Array(8).fill(undefined));
+  });
+
   it("fails startup for missing, malformed, duplicate or plaintext credentials", () => {
     expect(() => new InternalTestLoginProvider(true, undefined)).toThrow(/required/);
     expect(() => new InternalTestLoginProvider(true, "not-json")).toThrow(/valid JSON/);

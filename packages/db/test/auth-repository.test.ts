@@ -251,6 +251,7 @@ describe("AuthSessionRepository", () => {
       nextTokenHash: switchedHash,
       targetWorkspaceId: workspaceB,
       now: NOW,
+      expiresAt: new Date("2026-08-25T11:00:00Z"),
     });
     expect(switched).toMatchObject({
       status: "approved",
@@ -268,12 +269,20 @@ describe("AuthSessionRepository", () => {
       status: "approved",
       context: { workspaceId: workspaceB },
     });
+    await expect(repository.resolveApprovedAuthContext(
+      switchedHash,
+      new Date("2026-08-25T10:30:00Z"),
+    )).resolves.toMatchObject({
+      status: "approved",
+      context: { workspaceId: workspaceB },
+    });
 
     const staleSwitch = await repository.switchSessionWorkspace({
       tokenHash: issuedHash,
       nextTokenHash: createHash("sha256").update(`stale-${randomUUID()}`).digest("hex"),
       targetWorkspaceId: workspaceA,
       now: NOW,
+      expiresAt: new Date("2026-08-25T11:00:00Z"),
     });
     expect(staleSwitch).toMatchObject({ status: "rejected", reason: "SESSION_NOT_FOUND" });
     await expect(repository.resolveApprovedAuthContext(switchedHash, NOW)).resolves.toMatchObject({
@@ -306,6 +315,51 @@ describe("AuthSessionRepository", () => {
     expect(serialized).not.toContain("private-subject");
     expect(serialized).not.toContain("private-qihang");
     expect(serialized).not.toContain("secret-ref");
+  });
+
+  it("uses the 1001st active membership as an overflow sentinel", async () => {
+    const prefix = `membership-overflow-${randomUUID()}-`;
+    try {
+      await pool.query(
+        `INSERT INTO workspaces (name, kind)
+         SELECT $1 || generate_series, 'team'
+         FROM generate_series(1, 999)`,
+        [prefix],
+      );
+      await pool.query(
+        `INSERT INTO users (workspace_id, name)
+         SELECT id, 'overflow actor'
+         FROM workspaces
+         WHERE name LIKE $1`,
+        [`${prefix}%`],
+      );
+      await pool.query(
+        `INSERT INTO workspace_memberships (workspace_id, identity_id, user_id, role)
+         SELECT workspace.id, $2, actor.id, 'operator'
+         FROM workspaces AS workspace
+         JOIN users AS actor ON actor.workspace_id = workspace.id
+         WHERE workspace.name LIKE $1`,
+        [`${prefix}%`, identityId],
+      );
+
+      await expect(repository.readSessionView(tokenAHash, NOW)).resolves.toEqual({
+        status: "rejected",
+        httpStatus: 403,
+        reason: "INVALID_AUTH_STATE",
+      });
+    } finally {
+      await pool.query(
+        `DELETE FROM workspace_memberships
+         WHERE workspace_id IN (SELECT id FROM workspaces WHERE name LIKE $1)`,
+        [`${prefix}%`],
+      );
+      await pool.query(
+        `DELETE FROM users
+         WHERE workspace_id IN (SELECT id FROM workspaces WHERE name LIKE $1)`,
+        [`${prefix}%`],
+      );
+      await pool.query("DELETE FROM workspaces WHERE name LIKE $1", [`${prefix}%`]);
+    }
   });
 
   it("revokes a session idempotently and session reads fail closed", async () => {
@@ -370,6 +424,7 @@ describe("AuthSessionRepository", () => {
       nextTokenHash,
       targetWorkspaceId: workspaceB,
       now: NOW,
+      expiresAt: new Date("2026-08-25T11:00:00Z"),
     })).resolves.toMatchObject({ status: "rejected", reason: "MEMBERSHIP_MISSING" });
     await expect(repository.resolveApprovedAuthContext(tokenAHash, NOW)).resolves.toMatchObject({
       status: "approved",

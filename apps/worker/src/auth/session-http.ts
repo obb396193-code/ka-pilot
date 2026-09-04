@@ -64,6 +64,10 @@ function authFailure(
     : error(403, "FORBIDDEN", "Workspace access is not allowed", requestId);
 }
 
+function loginFailure(requestId: string): SessionHttpResult {
+  return error(401, "UNAUTHORIZED", "Invalid credentials", requestId);
+}
+
 export function sessionMethodError(requestId: string): SessionHttpResult {
   return error(405, "INVALID_REQUEST", "Method is not allowed", requestId);
 }
@@ -116,7 +120,7 @@ export class SessionHttpService {
     if (!parsed.success) return sessionInputError(requestId);
     const identityId = await this.loginProvider.authenticate(parsed.data.username, parsed.data.password);
     if (identityId === null) {
-      return error(401, "UNAUTHORIZED", "Invalid credentials", requestId);
+      return loginFailure(requestId);
     }
     const token = this.token();
     const now = this.now();
@@ -126,9 +130,7 @@ export class SessionHttpService {
       expiresAt: new Date(now.getTime() + this.ttlSeconds * 1_000),
     });
     if (resolution.status !== "approved") {
-      return resolution.httpStatus === 401
-        ? error(401, "UNAUTHORIZED", "Authentication is required", requestId)
-        : error(403, "FORBIDDEN", "Workspace access is not allowed", requestId);
+      return loginFailure(requestId);
     }
     const result = await this.view(token, requestId);
     if (result.status !== 200) {
@@ -148,10 +150,12 @@ export class SessionHttpService {
     const parsed = workspaceSwitchRequestSchema.safeParse(body);
     if (!parsed.success) return sessionInputError(requestId);
     const nextToken = this.token();
+    const now = this.now();
     const resolution = await this.auth.switchWorkspace({
       token,
       nextToken,
       targetWorkspaceId: parsed.data.workspaceId,
+      expiresAt: new Date(now.getTime() + this.ttlSeconds * 1_000),
     });
     if (resolution.status !== "approved") {
       return resolution.httpStatus === 401
