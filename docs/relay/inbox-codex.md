@@ -129,7 +129,7 @@
 - **先读**：`docs/relay/inbox-arch.md`「2026-09-04 arch 接回裁决」全文 → `packages/contract/schema.sql` 头部 v1.2 注释 + 各表 P0-xx 注释 → `metrics.md`「缺数三态」「一账户一任务」→ `api.md` DATA-ROUTE-001 v1.2 修订块。
 - **基线**：`main@v0.2-unaudited-baseline`（=integration-control d121273）。**从 main 拉 `be/r009`**，不再用 integration-control；root 审查会话已退役，契约只认 arch。
 - 交付物：
-  1. **migration 008**：`CREATE EXTENSION btree_gist`；`task_accounts` EXCLUDE gist 区间排斥；`workflow_runs.executor_token/executor_lease_until`；新表 `workflow_effects`；`inbound_events` +`lease_until/attempts/max_attempts/last_error/processed_at`；`changesets` 两个复合 FK→users；`changeset_items` +`workspace_id/media/account_id`+FK；`backfill_jobs.status` 五态 +`failed_stage/finished_at`。真实 PG up/down/up 重放。
+  1. **migration 011**（008-010 已被 B23 占用；Task6 工作树里未提交的草稿 `011_team_data_sync.cjs` 作废，团队数据接入改用 013 见 R-011）：`CREATE EXTENSION btree_gist`；`task_accounts` EXCLUDE gist 区间排斥；`workflow_runs.executor_token/executor_lease_until`；新表 `workflow_effects`；`inbound_events` +`lease_until/attempts/max_attempts/last_error/processed_at`；`changesets` 两个复合 FK→users；`changeset_items` +`workspace_id/media/account_id`+FK；`backfill_jobs.status` 五态 +`failed_stage/finished_at`。真实 PG up/down/up 重放。
   2. **P0-04 缺数三态**：`semantic-query-metrics.ts`、`report-facts-source.ts` 及所有 `COALESCE(sum(...),0)` 改为 `{value, availability}`；聚合含 missing 即 missing；补"某日无行/字段缺/权限内无数据"三类反例，断言 UI 侧拿到 `null + missing` 不是 0。
   3. **P0-05**：task_accounts 写入端捕获排斥冲突→409 `TASK_ACCOUNT_OVERLAP`；任务聚合删多任务分摊分支；考核价查询去 `LIMIT 1` 任取。
   4. **P0-07**：Runner 推进前 `SELECT ... FOR UPDATE` 校验 executor_token；写节点先 INSERT `workflow_effects`，UNIQUE 冲突直接读回结果不重放；补两 Worker 并发 advance 同 run 的真实 PG 反例。
@@ -137,7 +137,7 @@
   6. **P0-13**：changeset 创建/确认/执行前校验 initiator 与 credential_owner 为同 workspace active user；items 写入账户三键；补跨 workspace 伪造 ID 反例。
   7. **P0-03**：backfill 协调器按 raw→canonical→quality 三阶段推进 status，任一失败置 failed+failed_stage。
   8. **数据源绑空间**：`query-service` 按 `approvedAuthContext.workspaceKind` 固定 source（personal→platform，team→ka_data），普通业务 BFF 与 `/api/v1/data/query` **不再接受 `dataView`**（收到即 400）；reconcile 仅 entitlement allowlist；Task6 团队数据接入按此调整。
-  9. **合入 `codex/fe-task5-session-bff@c3ed7b3`** 到 be/r009（4 个 auth BFF 路由属 apps/web/app/api，你的范围），跑其 303 行测试。
+  9. **Session BFF**：`codex/fe-task5-session-bff@c3ed7b3`（4 个 auth BFF 路由 + session-bff 库，303 行测试）先 exact-SHA 审后合入 be/r009；该工作树 `/private/tmp/ka-fe-task5-session-bff` 里还有 **11 个未提交脏文件**（`lib/data/{bff,task-list-bff,read-model-bff,contracts}.ts` 及 4 条 `app/api/internal/*` route 的 x-ka→cookie 迁移半成品）——**在原工作树续完、补测、提交**，不重做；旧 `codex/fe-functional-bff-v2@110f221` 基于 x-ka 旧鉴权，不合。
   10. **补 root 指出的集成测试缺口**：`business-read-session-pg.integration.test.ts` 用真 Repository 覆盖 personal/team 的 query/tasks/work-items/detail、team changeset 403、伪造 x-ka-*、旧 token、跨 workspace、同 accountId 跨 media、logout 后全 401。
 - 纪律：`[be]` 前缀路径限定 commit；不动 `packages/contract/`（缺口写 inbox-arch）；不动 `apps/web` 非 api 部分；状态文件 `docs/plans/R009-状态.md`；完成交 SHA + 四包测试数 + 真实 PG 证据。
 - 状态：进行中（`be/r009@409d363` 已建立；migration 序号与现有 008～010 冲突已回抛 arch，详见 `docs/plans/R009-状态.md`）
@@ -151,7 +151,7 @@
 - **先读**：`docs/relay/inbox-arch.md`「2026-09-04 arch 裁决：root 攒的 B2-B5 契约差异包」（29 问裁决）→ `packages/contract/schema.sql` 末尾「v1.3 新增」→ `api.md` 末尾「v1.3 DTO 与状态机」→ `docs/plans/2026-09-04-契约对齐与缺口地图.md`（哪些是"内核有 HTTP 没接"）。
 - 基线：R-009 完成后的 `be/r009` 头 → 拉 `be/r010`。
 - 交付物：
-  1. **migration 009**（v1.3 全部：alert_rules 条件树、work_items 去重三列+partial unique、account_mutes、ad_entities.created_at、changeset_items JSONB typed value、changesets 双 hash、agent_messages/context FK+seq+client_message_id、agent_runs 九列、agent_run_events、model_provider_credentials、provider_model_capabilities）；真实 PG up/down/up。
+  1. **migration 012**（v1.3 全部：alert_rules 条件树、work_items 去重三列+partial unique、account_mutes、ad_entities.created_at、changeset_items JSONB typed value、changesets 双 hash、agent_messages/context FK+seq+client_message_id、agent_runs 九列、agent_run_events、model_provider_credentials、provider_model_capabilities）；真实 PG up/down/up。
   2. **工作项 HTTP**：`GET /work-items/:id`、`POST .../ignore|process|reject|escalate|dispatch|reply`、`POST /accounts/:media/:id/mute`、`POST /rules/:id/explain`——按 api.md v1.3 状态机与详情 DTO；去重/复发/P0 突破静音落 Repository。
   3. **变更集 HTTP 全流程**：`POST /changesets`、`/dry-run`（写 dry_run_hash）、`/confirm`（hash 校验 + 409 DTO + 幂等）、`/rollback`、`/retry`、`GET /:id`；typed value；execution_run DTO。
   4. **任务 HTTP**：`GET /tasks/:id`（含 pacing v1.3 语义）、`POST /tasks`（幂等）、`PATCH /tasks/:id`、`POST /tasks/:id/assessment-price`（重算+通知 DTO）、`GET /tasks/:id/timeline|accounts`。
@@ -165,3 +165,31 @@
 - 拆批建议：**R-010a**（2-6，页面能用）先交；**R-010b**（7-11）后交。每批 SHA + 四包测试数 + 真实 PG 证据 + HTTP 负向用例（401/403/409/410）。
 - 纪律同 R-009；契约缺口写 inbox-arch，不自造 DTO。
 - 状态：待处理（等 R-009）
+
+#### R-009 追加（2026-09-04 arch 六簇审计新发现）
+
+11. ~~Task4 P1-1 登录 credential oracle~~ **撤回**（arch 2026-09-04 复核：`session-http.ts` `login()` 两条失败路径均走 `loginFailure()` 统一 401，测试 `session-http-service.test.ts:140-170` 已断言一致；我 grep 到的 401/403 分叉是已登录后的 `view()`，属正确行为。root Task4 复验结论成立）。
+12. **hh 上限不一致**：`apps/worker/src/etl/payload.ts:37` `max(23)` → `max(24)`（奇航实证 hh=24 有效=全天，与 `qihang/client.ts:156` 一致）。
+13. 交付时在状态文件逐条定位以下 4 项代码行给 arch 复核：B4 pacing 零量日剔除、B13 下载 allowlist 默认拒绝、B23-C2 首次 full ready 门、B10 离线分区有界回退。
+
+
+---
+
+### R-011 后端：Task6 团队数据接入（按 v1.2「team→ka_data」重做；2026-09-04）
+
+- 派活方：arch　日期：2026-09-04　顺序：R-009 → R-010a → **R-011** → R-010b
+- **现场**：`/private/tmp/ka-personal-team-task6-20260904`（`codex/personal-team-task6-ingestion@4e67315`）。其中 `f009e19`（个人 Session 候选查询 `LIMIT 2` 稳定排序）可独立审后合入；`feec2ec/6d02cfe/4e67315`（source-neutral 团队接入计划/Domain contract/staging 设计）与未提交的 `011_team_data_sync.cjs` 草稿**按旧"奇航主源、KA Data 备用"设计写的，与 v1.2 冲突，作废重做**——但 root 停工前补的六条设计要求**全部保留**：
+  1. 团队同步不逐页直接覆盖当前 canonical；
+  2. run-scoped staging / versioned rows；
+  3. 全部页 + coverage + lineage 验证通过后才原子 publish；
+  4. 失败/中断保留上一个 completed snapshot；
+  5. unknown lineage 可表达但不得宣称 ready；
+  6. 团队失败不影响个人 workspace。
+- 交付物：
+  1. **契约提案先行**（写 inbox-arch，arch 冻结后再动代码）：team workspace 的数据表——是复用 `account_metrics_daily` 加 `source='ka_data'` + `snapshot_run_id` 列，还是独立 `team_account_metrics_daily`？staging 表形状、publish 事务、snapshot 保留策略、lineage 字段。**arch 倾向**：复用 canonical 表 + `snapshot_run_id` + `published_at`，personal 行 `snapshot_run_id IS NULL`，查询按 workspaceKind 过滤；但由你给出两案利弊。
+  2. **migration 013**（编号让开 011/012）。
+  3. `ka_data` → staging → 校验 → publish 的 Worker job 链（`team_sync_run`/`team_sync_page`/`team_sync_publish`），确定性 job id，失败保留上一 snapshot。
+  4. 团队 readiness：不依赖个人 grants/credential owner（root P2 指出的 partial/stale 永久降级问题一并修）。
+  5. 真实 PG 反例：中途失败保 snapshot、并发两 run 只发布一个、团队失败不动个人行、unknown lineage 不 ready。
+- 联调硬门（不在本批）：ka-data 服务 owner/ACL/只读性核实、**同日同户对平（奇航 vs ka-data）**交 OS agent。
+- 状态：待处理

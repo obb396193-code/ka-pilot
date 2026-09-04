@@ -1,7 +1,7 @@
 -- 数据库契约 v1.2（B1a 迁移蓝本；PostgreSQL；与 PRD v1.6 §3.1 硬要求一致）
 -- 纪律：所有业务表带 workspace_id；B 级功能不建表；改动走 arch。
 -- v1.2（2026-09-04 arch 接回裁决）：P0-05 一账户日一任务区间排斥｜P0-07 workflow 单执行器+effect outbox｜
---   P0-12 钉钉 durable inbox｜P0-13 changeset 租户外键｜P0-03 backfill 完整 DAG 终态。迁移编号从 008 起。
+--   P0-12 钉钉 durable inbox｜P0-13 changeset 租户外键｜P0-03 backfill 完整 DAG 终态。迁移编号从 011 起（008-010 已被 B23 授权/调度/空间类型占用）。
 CREATE EXTENSION IF NOT EXISTS btree_gist;   -- P0-05 区间排斥约束依赖
 
 -- ═══ 租户与身份 ═══
@@ -437,7 +437,7 @@ CREATE TABLE audit_log (
 -- kb_documents 见 PRD 3.11，B8 批次建表（B 级不提前建）
 
 -- ═══════════════════════════════════════════════════════════════════
--- v1.3 新增（2026-09-04 arch 裁决 P-005～P-008；Codex R-010 出 migration 009）
+-- v1.3 新增（2026-09-04 arch 裁决 P-005～P-008；Codex R-010 出 migration 012）
 -- ═══════════════════════════════════════════════════════════════════
 
 -- P-005#1 复合规则（版本化条件树；旧 metric/operator/threshold 三列保留兼容简单规则）

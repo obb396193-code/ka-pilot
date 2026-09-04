@@ -2772,3 +2772,124 @@ R-009 与 `schema.sql` 头部写“迁移编号从 008 起”，但 main 已有�
 2. `api.md` DATA-ROUTE-001 v1.2 与 R-009 要求普通请求拒绝 `dataView`，但同文件 BE-001 仍把 `dataView` 列为严格必填字段，Domain/BFF/Query Registry 当前也按必填实现。请明确：普通 session 查询应只收 `{queryId,params}`；`reconcile.account_daily` 是否仅由 queryId + entitlement 进入治理诊断。
 
 be 在裁决前不修改上述 Domain/公开 DTO；先处理 R-009 已明确要求合入的 Auth BFF 候选。
+---
+
+## 2026-09-04 arch 六簇审计 · 第一轮（不变量核验，覆盖 P-004～P-035 全部批次）
+
+> 方法：按依赖分六簇，对每簇的**契约不变量**（租户隔离/凭证边界/写操作确认门/口径计算位置/fail-closed）做代码级定点核验（grep 到具体文件行），不信自报。**本轮是不变量级，不是逐行 diff**；逐行 diff 随 R-009/R-010 交付交错进行，结论继续追加到各 P 条目。
+> 单测：domain 491/491、web 66/66 独立复跑绿；db/worker 需 PG，本机 Docker 起不来，**Codex 自报 DB 139 / Worker 510+ 未独立复验**。
+
+### 簇① 数据链 B1a/B1b/B1c/B9/B10/B11（P-004/006a/007a/016/017/018）
+
+| 项 | 实证 | 结论 |
+|---|---|---|
+| B1a 指标纯函数 | `packages/domain/src/metrics.ts` 逐公式对 metrics.md（离线前已核） | ✅ |
+| B1a 迁移可重放/月分区 | `001_contract_v1.cjs`、`002_metric_partitions.cjs` | ✅ |
+| B1a Job lease fencing（P0-06） | `job-repository.ts:264-299` `FOR UPDATE SKIP LOCKED` + `lease_token=gen_random_uuid()` + 状态迁移 `WHERE lease_token=$2` | ✅ 已修 |
+| B1a raw→canonical 派发（P0-01） | `full-handler.ts:57,228-243`、`incr-handler.ts:93-97` 确定性 job id 入队 `canonical_merge` | ✅ 已修 |
+| B1a 网关身份映射带 workspace | `message-handler.ts:12-89` 全路径传 `workspaceId`（单空间网关配置） | ✅（多租户网关=后续） |
+| B1a 钉钉先 ACK 后处理（P0-12） | 未修 | ❌ → R-009#5 |
+| B1b 三类对平 | `data-quality-repository.ts:26` `total_reconciliation|cpa_outlier|missing_consecutive_days`，容差参数化 | ✅ |
+| B1b 90 天冒烟 | `B1b-90天回灌日志.txt`：900 canonical / 270/270 quality / 0 failed | ✅（合成数据） |
+| B1b 回填终态只看 backfill_day（P0-03） | `runtime.ts:97-105` 仅 `backfill_day` 触发 `refreshProgress` | ❌ → R-009#7（v1.2 五态） |
+| B1c workspace 隔离 | `semantic-query-support.ts:83` `values=[scope.workspaceId,...]` 首绑定；全部 SQL `JOIN accounts ON workspace_id` + `WHERE filter.whereSql` | ✅ |
+| B1c 缺数 COALESCE 0（P0-04） | `semantic-query-metrics.ts:34-42` 九指标 `COALESCE(sum(),0)` | ❌ → R-009#2 |
+| B1c 多任务歧义 | `semantic-query-dimension.ts:86` `AmbiguousTaskMappingError` | ✅（v1.2 EXCLUDE 后成兜底） |
+| B1c dimension 只开 3/8 维 | 契约 v1.4 补数据源 | ⚠️ 待契约 |
+| B10 日期紧凑格式 | `qihang/client.ts:135-145` | ✅ |
+| B10 离线分区有界回退 | 未定位到代码 | 待核（R-009 交付时看） |
+| B11 hh 边界 | `client.ts:156` 0..24 ✓；**`etl/payload.ts:37` schema `max(23)` 与 client 不一致** | ⚠️ 新问题 → R-009 |
+| B11 2000 行截断 fail-closed | `qihang/client.ts:364` `suspectedAdTruncationRows ?? 2_000` 可配阈值 | ✅ |
+
+### 簇② 执行与规则 B2/B3/B4（P-005/006/007 内核回执）
+
+| 项 | 实证 | 结论 |
+|---|---|---|
+| B2 首发三规则 | `domain/alert-rules.ts:4` `over_cost_ramp|zero_delivery|spend_cliff`；冷启动护栏 `:106` 转化<10 不判超（对 13.5） | ✅ |
+| B2 工作项状态机/去重 | 契约 v1.3 已定；当前实现用活动态查询，partial unique 待 R-010 | ⚠️ 待 R-010 |
+| B3 changeset TTL 为 Date 类型、expired outcome | `changeset-repository.ts:33,62` | ✅ |
+| B3 confirm 时 from 值复核 | `changeset-execution-handler.ts:15,49` + `changeset-repository.ts:61,303` `outcome:"conflict", conflicts:ValueConflict[]` | ✅ |
+| B3 T+1 崩溃恢复（P0-09） | `changeset-execution-handler.ts:43-72,118,135` `skip_terminal` + `idempotency_key=changeSetId` | ✅ 已修 |
+| B3 changeset 租户外键（P0-13） | 未修 | ❌ → R-009#6（v1.2 FK） |
+| B4 pacing 零量日剔除 | 见本轮补核 | 待核 |
+| B4 task_accounts 区间排斥（P0-05） | 未修 | ❌ → R-009#3（v1.2 EXCLUDE） |
+
+### 簇③ Agent/报表/工作流/知识库 B5/B6/B7/B8（P-008 回执/P-010/011/012）
+
+| 项 | 实证 | 结论 |
+|---|---|---|
+| B5 SDK 工具钳制 | `agent/sdk/safety.ts:71-73` `tools:[]` + `allowedTools=[MCP allowlist]` + `disallowedTools=DISALLOWED_BUILT_INS`；`:89` mcpServers 闭包 | ✅ |
+| B5 短时凭证信封 | `orchestrator.ts:289` `sealCredentialEnvelope` + `envelopeKey` | ✅ |
+| B5 auto-memory 关 | `agent/sdk/safety.ts:30` `CLAUDE_CODE_DISABLE_AUTO_MEMORY`、`:75` `settingSources:[]`、`:81` `persistSession:false`、`:150` 启动校验 | ✅ |
+| B5 sidecar 不新增 FaaS | 设计文档 + config `MODEL_GATEWAY_BASE_URL=127.0.0.1` | ✅ |
+| B5 **SDK 驱动非 Anthropic 模型许可** | 技术跑通≠许可 | ⚠️ **老板找法务/采购，上线硬门** |
+| B6 策略样本护栏 | `strategy-analysis.ts:5,124-125` `MIN_STRATEGY_COST=100`、`insufficient_accounts` | ✅（对 3.11） |
+| B7 Registry/DAG/确认门 | `workflows/capability-registry.ts`、`workflow-graph.ts`；`run-handler.ts:289-348` `execute_confirmed` phase + `mustMatchPrior` | ✅ |
+| B7 单执行器 fencing（P0-07） | 未修 | ❌ → R-009#4（v1.2 executor_token + effects） |
+| B7 确认 TTL Date 比较（P0-08） | `domain/workflow-runtime.ts:381,404` `isAtOrAfter()` | ✅ 已修 |
+| B8 citation all-or-nothing（P0-10） | `knowledge-access.ts:216-220` `businessRefs.every(...)` | ✅ 已修 |
+| B8 建表 | 未冻（B 级不提前建） | 契约 v1.4 |
+
+### 簇④ 自审修复 P-013/014/015
+
+6/14 P0 自报已修：P0-01 ✅、P0-06 ✅、P0-08 ✅、P0-09 ✅、P0-10 ✅ 本轮实证；P0-14 凭证扫描 `run-handler.ts:892,923` 改为 `\bbearer\s+\S+` + 前缀双正则 ✅（仍是模式匹配，可接受）。**自报属实。** 剩 8 个已在本日裁决（v1.2）→ R-009。
+
+### 簇⑤ 素材链 B12-B22（P-019～P-029）
+
+| 项 | 实证 | 结论 |
+|---|---|---|
+| B14/B22 IdeaLab 端点固定 | `config.ts:94,279` hostname 校验 `idealab.alibaba-inc.com` | ✅ |
+| B22 WAV only + 大小上限 | `config.ts:96` `MAX_WAV_BYTES`、`idealab-asr-factory.ts:14,18` | ✅ |
+| B13 下载 allowlist 默认拒绝 | `.env.example` `MATERIAL_SOURCE_ALLOWED_HOSTS=` 空=拒；代码定点待核 | 待核 |
+| B12-B21 领域内核 | 全部无 HTTP、无生产 runtime 注册（root Live 审计同结论） | ✅ 内核 / 待契约 v1.4 后接线 |
+
+素材链风险低（无生产路径），逐行审排在 R-010 后。
+
+### 簇⑥ 双数据+授权 R1-R3/B23-A/C1/C2/TASK-LIST/Task4-5（P-030～P-035 + root Task5 审计）
+
+| 项 | 实证 | 结论 |
+|---|---|---|
+| B23-A session fail-closed | `auth-repository.ts:114,130-147` token hash 格式校验 + actor/membership/identity `is_active` + `revoked_at` 全查 | ✅ |
+| Task5 旧 x-ka-* 头不再参与授权 | `http-server.ts` 全文无 `x-ka-` 引用（彻底移除） | ✅ |
+| Task5 P1-1 任务元数据越权 | `e617271` 改 `task-list-sql.ts` | ✅ 已修（待 diff 细看） |
+| Task4 P1-1 登录 credential oracle | `session-http.ts` `login()` 两条失败路径均 `loginFailure()`→401 同 message；`view()` 的 401/403 分叉是已登录后 current/switch，属正确；测试 `:140-170` 断言一致 | ✅ 已修（**arch 首轮误判，已撤回 R-009#11**） |
+| Task5 P1-2 dataView 浏览器控制 | 老板裁绑空间 | → R-009#8 |
+| Task5 P1-3 集成测试只盖 accounts | `e617271` 加了 340 行 integration test | ⚠️ 待 diff 确认覆盖 tasks/work-items/detail |
+| R3 输出侧三键 scope guard | `data/query-service.ts:46,117,369,378` `guardSourceOutput()` 对 kaData/platform 双路 | ✅ |
+| B23-C1 账户主表同步（P0-02） | `full-handler.ts:90-130` 每页 `assertAccountRowsWithinRequestedScope` | ✅ |
+| B23-C2 首次 full ready 门 | 状态文件宣称，代码待核 | 待核 |
+
+### 本轮新发现（并入 R-009 追加条）
+
+1. ~~Task4 P1-1 登录 oracle 未修~~ **撤回**：复核 `login()` 已统一 401，root 结论成立。
+2. **hh 上限不一致**：`etl/payload.ts` `max(23)` → 改 `max(24)` 与 client 一致（奇航实证 hh=24 有效=全天）。
+3. **迁移编号**：v1.2 用 011、v1.3 用 012（008-010 已占用）——契约与派活已改。
+4. B4 pacing 零量日剔除、B13 下载 allowlist 默认拒绝、B23-C2 首次 full ready 门、B10 离线分区有界回退 —— 4 项"待核"在 R-009 交付审查时定位（另 4 项已当场核实 ✅）。
+
+### 总判断
+
+- **可保留**：全部。架构决定（SQL-first、agent 不算数、写操作确认门、租户 fail-closed、凭证信封）经代码级核验成立，无一处需要推倒。
+- **不可宣称完成**：8 个 P0 待 R-009、29 个契约问题待 R-010 接 HTTP、真实奇航/IdeaLab/Multica/BUC 零联调。
+- **HTTP 现状**：worker 只有 `/healthz`、`/api/v1/data/query`、auth×4、tasks/accounts/work-items 三个列表；web BFF 4 条。其余 ~35 个契约端点=内核有、HTTP 无 → R-010。
+
+
+---
+
+### P-036 ✅已收｜root（Codex 审查会话）停工交接（2026-09-04）｜arch 校对
+
+root 停工前交接全文由老板转交。**arch 逐条校对结果**：
+
+| root 陈述 | arch 核 | 处置 |
+|---|---|---|
+| main=c66381d、tag=d121273、integration-control 退役 | ✅（main 现已到 c5b34bf） | — |
+| Task4 P1-1 登录 oracle 已关闭、异步 scrypt、TTL 一致、`LIMIT 1001` | ✅ `login()` 实读 + 测试 140-170 | **arch 首轮审计误判撤回** |
+| Task5 五类业务读接 Session、x-ka-* 无效、team changeset 403、logout 后全 401 | ✅ `http-server.ts` 无 x-ka 引用 | 逐行 diff 随 R-009 |
+| Task5 旧"普通用户固定 platform、KA Data 仅诊断"需按 v1.2 改 | ✅ 一致 | R-009#8 |
+| `c3ed7b3` Session BFF = candidate + 11 脏文件半成品 | ✅ 实查 11 M + 1 ?? | R-009#9 已改为"审后合 + 原工作树续完" |
+| `fe-functional-bff-v2@110f221` 旧鉴权不可原样合 | ✅ | R-009#9 注明 |
+| Task6 `f009e19` 可独立审；`6d02cfe/feec2ec/4e67315` + 草稿 011 与 v1.2 冲突 | ✅ 草稿 011 与 arch 的 011 撞号 | **R-011** 重做，编号 013，root 六条 staging/publish 要求全采纳 |
+| 复验数：Domain 491 / DB 171 / Worker 604 / PG 11+30 | 491 arch 独立复跑 ✓；DB/Worker 本机无 PG 未复验 | 待 Docker |
+| 接手顺序 10 条 | 与 arch 已做/在做一致 | — |
+| "所有媒体写继续关闭；preview/confirm/execute 保留人工确认门" | ✅ 契约 v1.3 状态机 | — |
+
+root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据；但本轮校对未发现 root 陈述失实。
