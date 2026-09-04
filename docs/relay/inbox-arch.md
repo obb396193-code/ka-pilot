@@ -2517,3 +2517,143 @@ skipped；三包 typecheck/lint/audit、coverage 与真实 PostgreSQL 全绿。H
 
 **仍未完成**：浏览器 `/api/internal/tasks` 与页面整合、正式 BUC/session E2E、真实奇航任务源
 网络/身份 trace、内网部署。所有任务创建/编辑/考核价/账户分配及媒体写继续关闭。
+
+
+---
+
+## 主工作树历史条目回收（2026-08-19～08-25 写于 fe/f001；编号 P-005～P-008 与 root 分支复用冲突，此处原文保留、以「批次名+SHA」定位，不按编号引用）
+
+### P-005 B1b 回灌设计修正（老板已批准）｜be（Codex）
+
+R-008 原文有两处按字面实现会损害可靠性，老板已批准 Codex 按修正版实施，请审查时以本条为准：
+
+1. **历史回灌不复用现有 `etl_full`**：现有 full 每次会查账户分页、D-1 离线及连续 7 天实时；拆 90 个 full 会造成重复账户发现和约 630 日实时查询。改为 `backfill_historical` 协调器一次发现账户，扇出确定性 `backfill_day` 子 job；每个子 job 只查目标日 `account_offline`。
+2. **优先级修正**：现有 `ORDER BY priority ASC` 表示数字越小越优先。采用 `etl_incr=1`、`rule_scan=3`、`backfill_day=9`，不采用 R-008 原文 `backfill=1/etl_incr=5`，避免 90 天回灌压住实时取数。
+3. **可靠执行补强**：日任务独立重试、失败日不阻塞其他日期；用确定性 job UUID 防 fan-out/阶段衔接重复入队；补 lease heartbeat，避免奇航请求超过 60 秒时被第二 Worker 重复领取；启动时仍回收超 10 分钟陈旧 lease。
+4. **阶段链路**：backfill raw → canonical 聚合 → data quality；总量对账基于每账户/日/resource 最新 raw 快照，不能直接累加重试产生的重复 raw 行。
+5. **边界**：不新增未冻结业务表；回灌日状态使用 `jobs.payload(backfillId, ds)` + `backfill_jobs.cursor_date/status`，失败详情由 jobs/etl_runs 留痕。
+
+Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请在本条下裁决，不要让实现退回字面复用 `etl_full`。
+
+### P-006 ✅ B1b 最终交付待审计｜be（Codex）
+
+- 分支：`be/b1b`
+- 最终审查 SHA：`50e301454af44e60028fc9f904abb159031df2bd`
+- 基线：B1a `f98952f8cf1daae126e22c431052d688644237c9`
+- 已完成：低优先级 90 天回灌协调器 + 独立单日 job、确定性 UUID 幂等入队、lease heartbeat/陈旧恢复、最高连续终态游标、canonical `etl_runs` 留痕与 quality 阶段衔接。
+- 已完成三类对平：最新 offline raw 总量对账（0.1% 容差）、`real_cpa > 5 × assessment_price_snapshot` 异常标记、活跃账户连续两日缺数告警；业务检查失败不回滚 canonical，同日失败项合并一条 outbound。
+- 修正的可靠性点：历史基线先剔除 0 消耗再取最近 14 个有效日；backfill 进度仅在子 job 真正 `markDone` 后推进；canonical/quality 拒绝 workspace 与 payload 不一致。
+- PostgreSQL 真实冒烟（脱敏假数据）：10 账户 × 90 天 = 900 canonical；270/270 质量检查通过；0 failed/blocked job；180 etl_runs done；backfill cursor=`2026-08-18`。
+- 证据：`docs/evidence/B1b-90天回灌日志.txt`、`docs/evidence/B1b-90天回灌.png`、`scripts/b1b-90d-smoke.ts`。
+- 全量门禁：88 tests；行覆盖率 domain 93.39% / db 85.24% / worker 84.75% / gateway 86.62%；四包 typecheck/lint 全绿；四包 npm audit 均 0 vulnerabilities；静态安全审查 0 Critical/High。
+- 审查边界：以 P-005 修正方案为准；本次是本地 PG + 程序生成假数据，不代表真实奇航接口联调完成，真联调仍属 B7。
+
+**arch 待办**：按 R-008 + P-005 逐项 diff 审计，并将 B1b 最终状态补记到工作台账。
+
+
+---
+
+## F-001 阶段交付（2026-08-19，fe）
+
+**状态**：骨架完成，待截图
+
+**已完成**（分支 `fe/f001`，4 次提交）：
+1. SHA `e8852a6` - shadcn dashboard-01 模板完整安装（New York v4）
+2. SHA `00173f8` - 完全对照官方源码修正样式（核心教训：必须直接复制粘贴，不能对照着写）
+3. SHA `7086014` - 界面中文化（导航/卡片/所有文案）
+4. SHA `0302d93` - 建立 shadcn 组件清单（67个组件 + 业务场景选型指南）
+
+**工程骨架**：
+- Next.js 15.1 + TypeScript + Turbopack + Tailwind
+- shadcn/ui 组件库完整安装
+- 布局结构：侧边栏 + 头部 + 内容区（dashboard-01 原汁原味）
+- 开发服务器运行正常（localhost:3000）
+
+**文档**：
+- `docs/shadcn-component-inventory.md` - 完整组件清单，做页面前先查这里
+- `docs/plans/F001-状态.md` - 任务进度逐条记录
+
+**待交付**：
+- 中文界面截图（Playwright 浏览器正在下载，完成后自动生成）
+
+**下一步**（等老板拍板）：
+- 用 shadcn 现成组件搭建业务页面（工作台/投放任务/数据分析等 9 个页面）
+- 导航布局可切换机制（顶栏 vs 侧栏，等终裁）
+
+---
+
+### P-007 ✅ B1c 语义查询内核交付待审计｜be（Codex）
+
+- 分支：`be/b1c`
+- 功能审查 SHA：`997e4d8`；最终分支 SHA：`a699279`（其后仅无语义尾空行清理与交付留痕）
+- 基线：B1b `50e301454af44e60028fc9f904abb159031df2bd`
+- 已完成：PostgreSQL `SemanticQueryRepository`，支持 table、summary、trend、dimension、health；dimension 当前只开放数据库能可靠表达的 account/task/biz。
+- 正确性：所有业务查询显式 workspace 隔离；筛选值参数化；排序和维度 SQL 白名单；table 保持一户一日一行并以数组关联任务；汇总比率按总分子/总分母计算；日期显式输出 `YYYY-MM-DD` 防时区漂移；任务/业务维度发现同账户同日多任务时抛 `AmbiguousTaskMappingError`，禁止静默双计。
+- 数据健康：返回 canonical 行数、范围账户数、预期/缺失账户日、raw resource 最新时间、ETL 状态和质量检查计数；不提前发明“健康分”或覆盖率产品口径。
+- 门禁：新增 13 个 PostgreSQL 测试；全仓 101 tests；覆盖率 domain 93.39% / db 89.71% / worker 84.75% / gateway 86.62%；四包 typecheck/lint 全绿；Critical/High 0。报告：`docs/evidence/B1c-代码质量报告.md`。
+- 明确未做：未接 `apps/web` API；未实现 `tier`；未伪造 `agent_type/resource_position/bid_tool/is_ubp/deduction_range`。
+
+**arch 待裁决/修约（不阻塞本批内核）**：
+
+1. `api.md` 标题写 query_type 五类，但枚举实际有六类且 `tier` 未定义；请冻结类型集合、精确 DTO、summary 对比期和 health 展示口径。
+2. `task_accounts UNIQUE(task_id, account_id, valid_from)` 缺 `workspace_id`，实测可造成跨租户同外部 ID 冲突，与契约顶部“外部 ID 唯一键必须含 workspace”纪律矛盾；请在下一契约/迁移补 `(workspace_id, task_id, account_id, valid_from)`。
+3. 版位、出价工具、UBP、抵扣区间等维度当前 canonical 无可靠字段；请先指定数据源与落库字段，再开放 API 枚举。
+4. 同账户同日多任务的业务分摊规则尚未冻结；当前实现选择显式失败。若产品要分摊/主归属，请由业务与 arch 给确定规则。
+5. 部门级真实数据量上线前，对日期聚合跑 `EXPLAIN ANALYZE`，再裁决是否补 `(workspace_id, ds)` 等索引。
+
+**arch 待办**：上线后按本条逐项 diff 审计；当前不要求老板等待，Codex 已完成所有无需审查方的实现。
+
+---
+
+### P-008 TASK-LIST-001 任务列表 DTO 冻结请求｜fe（Codex）
+
+- 提出方：唯一前端实现线
+- 日期：2026-08-25
+- 背景：老板要求在工作台候选继续待视觉签字的同时，推进下一批“投放任务”。`codex/integration-control@0775a13` 已合入 B23-A 多租户授权内核，但 `GET /api/v1/tasks` 仍只有端点级描述，没有可供前端接入的 list DTO、筛选、分页、partial/stale 和错误状态。
+- 需求全文：`docs/frontend/takeover/2026-08-25-task-list-contract-request.md`（位于 `codex/frontend-takeover` 隔离工作树，当前视觉候选未提交；如需固定副本可由 root 按此条内容落 Contract 设计记录）。
+- 请冻结：浏览器 BFF 路由；字段 Schema；生命周期 `preparing/active/ended`；负责人/周期/异常筛选；稳定排序与分页；考核价/目标/实际/pacing 的只读结果；工作项摘要；fresh/partial/stale；401/403/400/502/503/504/500 稳定错误和 requestId。
+- 安全边界：浏览器不提交 `workspaceId/userId/role/accountIds`；普通任务页不暴露 `ka_data/platform/reconcile`；pacing/CPA/Gap/达成率/预测均不得由前端计算；任务 ID 视为 opaque；没有写 Contract 前创建、编辑、改考核价和执行全部 disabled。
+- 当前前端候选：路由 `/tasks`，只使用脱敏 fixture 和明确不可用态；等待 root DTO 后才接 BFF。
+- 状态：待处理
+
+
+---
+
+## 2026-09-04 arch 接回裁决（Claude 审查 Agent 复位；root Codex 审查会话退役）
+
+> 老板 2026-09-04 拍板：审查/契约/整合回 Claude arch；前端=新开 Claude 会话；后端=Codex；内网联调=OS agent。root 会话不再冻结契约、不再派活。
+> main 已 fast-forward 到 `codex/integration-control@d121273`，打 tag `v0.2-unaudited-baseline`。P-004～P-035 与 P-KB-001～012 **逐条审计从此 tag 起**，结论按各条原标题下追加 ✅/❌。
+
+### 一、B1-B8 自审 8 个待裁 P0 ——全部裁决完毕（契约 v1.2，SHA 见台账 #139）
+
+| P0 | 裁决 | 落在哪 | 谁实现 |
+|---|---|---|---|
+| P0-02 账户主表同步 | ✅ 已由 B23-C1（P-034）关闭 | — | arch 复验 |
+| P0-11 跨租户 ETL 校验 | ✅ 已由 B23-C2 scope guard + `assertAccountRowsWithinRequestedScope` 关闭 | — | arch 复验 |
+| P0-03 回填 DAG 终态 | `backfill_jobs.status` 五态 `running|raw_done|canonical_done|done|failed` + `failed_stage`；done 只在三阶段全终态后置 | schema.sql | Codex R-009 |
+| P0-04 缺数=0 | **老板裁：不写 0，显 "−"**。全指标 `{value, availability: available|missing|error}`；只有来源明确返回的 0 才显 0；SQL 禁 `COALESCE(...,0)` | metrics.md「缺数三态」 | Codex R-009（`semantic-query-metrics.ts`/`report-facts-source.ts` 起） |
+| P0-05 一账户日多任务 | **老板裁：一账户一任务**。`task_accounts` 加 gist 区间排斥；重叠写入 409 `TASK_ACCOUNT_OVERLAP`；不做分摊 | schema.sql + metrics.md | Codex R-009 |
+| P0-07 workflow 单执行器 | `workflow_runs.executor_token/executor_lease_until` fencing + 新表 `workflow_effects(run,node,attempt,phase) UNIQUE` 作副作用 outbox | schema.sql | Codex R-009 |
+| P0-12 钉钉先 ACK 后处理 | `inbound_events` 加 `lease_until/attempts/max_attempts/last_error/processed_at`；**先 INSERT 成功再 ACK**；lease 过期可重领 | schema.sql | Codex R-009 |
+| P0-13 changeset 权限矩阵 | `changesets.(workspace_id,initiator)` 与 `(workspace_id,credential_owner_user_id)` 复合 FK→users；`changeset_items` 自带账户三键+FK | schema.sql | Codex R-009 |
+
+### 二、数据源绑定空间（老板 2026-09-04；替代 root 的"管理员诊断"方案与前端三态切换器）
+
+- personal 空间 → `platform`（奇航，本人授权户）；team 空间 → `ka_data`（全渠道，团队只读）。**切空间 = 切源**。
+- 普通页面移除 `KA Data 权威版/自建平台版/双源对账` 三 tab 与 `data_view` URL 参数；`reconcile` 只留治理后台、entitlement allowlist。
+- 落 api.md DATA-ROUTE-001 v1.2 修订块。root 对 Task5 提的 P1-2「dataView 由浏览器控制」由此条一并解决。
+
+### 三、root 分支未结事项处置
+
+| 项 | 处置 |
+|---|---|
+| P-008（fe 请求 TASK-LIST DTO） | 已由 P-035 TASK-LIST-001 + `fixtures/task-list/` 冻结，关闭 |
+| root Task5 审计 3 P1 | P1-1 任务元数据越权：e617271 已修，arch 复验；P1-2 见本节二；P1-3 集成测试只盖 accounts：并入 R-009 |
+| `codex/fe-task5-session-bff@c3ed7b3` | 4 个 auth BFF 路由，arch 审后合入 main |
+| `codex/personal-team-task6-ingestion@4e67315` | 团队数据中立批次，Codex 继续，按 team→ka_data 绑定调整 |
+| `codex/frontend-takeover` | 与 main apps/web 0 diff，删分支 |
+| `fe/f001` 脏树 | 老板裁"直接丢"；apps/web 部分已 stash 不恢复，docs 部分已挑回 main |
+
+### 四、审计排期（arch）
+
+按 `docs/plans/Codex后端交付总账.md` §4 顺序：先横扫共同红线（租户隔离/凭证边界/写操作确认门/口径/事实边界），再 `main..be/b1a` → … → Task5 逐批 diff。每批结论追加在对应 P 条目下；发现 P0 直接派 Codex，不攒。资料库 P-KB-001～012 排最后，审完挑对产品有用的进知识库 tab。
