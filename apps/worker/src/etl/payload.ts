@@ -34,7 +34,7 @@ export const incrementalEtlPayloadSchema = common.extend({
     .array(z.string().trim().min(1))
     .max(DEFAULT_MAX_QIHANG_IDS_PER_QUERY)
     .default([]),
-  hh: z.number().int().min(0).max(23).optional(),
+  hh: z.number().int().min(0).max(24).optional(),
 });
 
 export type FullEtlPayload = z.infer<typeof fullEtlPayloadSchema>;

@@ -84,7 +84,7 @@ describe("TaskListRepository", () => {
       `INSERT INTO task_accounts (
          workspace_id, task_id, media, account_id, valid_from, valid_to
        ) VALUES
-         ($1, $2, 'KUAISHOU', 'same-id', '2026-08-01', NULL),
+         ($1, $2, 'KUAISHOU', 'same-id', '2026-08-25', NULL),
          ($1, $2, 'TENCENT', 'same-id', '2026-08-01', NULL),
          ($1, $3, 'KUAISHOU', 'unapproved', '2026-08-01', NULL),
          ($1, $5, 'KUAISHOU', 'same-id', '2026-08-01', '2026-08-24'),
@@ -179,9 +179,9 @@ describe("TaskListRepository", () => {
       assessmentPrice: { value: 39, effectiveDate: "2026-08-01" },
       linkedAccountCount: 1,
       totalLinkedAccountCount: 2,
-      completedVolume: 30,
-      spent: 300,
-      recentDailyVolumes: [10, 20],
+      completedVolume: 20,
+      spent: 200,
+      recentDailyVolumes: [20],
       workItemSummary: {
         openCount: 1,
         highestSeverity: "P1",
@@ -190,7 +190,7 @@ describe("TaskListRepository", () => {
       latestMetricDate: "2026-08-25",
       dataAsOf: "2026-08-25T12:00:00.000Z",
     });
-    expect(row.completedVolume).not.toBe(930);
+    expect(row.completedVolume).not.toBe(920);
     expect(row.dataAsOf).not.toBe("2026-08-25T15:00:00.000Z");
   });
 
@@ -205,8 +205,8 @@ describe("TaskListRepository", () => {
     expect(row).toMatchObject({
       linkedAccountCount: 2,
       totalLinkedAccountCount: 2,
-      completedVolume: 930,
-      spent: 9300,
+      completedVolume: 920,
+      spent: 9200,
       workItemSummary: {
         openCount: 2,
         highestSeverity: "P0",
@@ -326,6 +326,7 @@ describe("TaskListRepository", () => {
 
   it("holds total and page rows in one repeatable-read snapshot", async () => {
     const insertedTaskId = `snapshot-${randomUUID()}`;
+    const insertedAccountId = `snapshot-account-${randomUUID()}`;
     let inserted = false;
     const instrumentedPool: TaskListRepositoryPool = {
       connect: async () => {
@@ -339,6 +340,11 @@ describe("TaskListRepository", () => {
             if (!inserted && sql.includes("task-list-total")) {
               inserted = true;
               await pool.query(
+                `INSERT INTO accounts (workspace_id, media, account_id, account_name)
+                 VALUES ($1, 'KUAISHOU', $2, '并发插入账户')`,
+                [workspaceId, insertedAccountId],
+              );
+              await pool.query(
                 `INSERT INTO tasks (
                    workspace_id, task_id, task_name, status, period_start, period_end
                  ) VALUES ($1, $2, '并发插入任务', 'active', '2026-08-01', '2026-08-15')`,
@@ -347,8 +353,8 @@ describe("TaskListRepository", () => {
               await pool.query(
                 `INSERT INTO task_accounts (
                    workspace_id, task_id, media, account_id, valid_from
-                 ) VALUES ($1, $2, 'KUAISHOU', 'same-id', '2026-08-01')`,
-                [workspaceId, insertedTaskId],
+                 ) VALUES ($1, $2, 'KUAISHOU', $3, '2026-08-01')`,
+                [workspaceId, insertedTaskId, insertedAccountId],
               );
             }
             return result as QueryResult<Row>;
@@ -359,9 +365,16 @@ describe("TaskListRepository", () => {
     };
     const snapshotRepository = new TaskListRepository(instrumentedPool);
 
-    const result = await snapshotRepository.list(baseQuery());
+    const snapshotQuery = {
+      ...baseQuery(),
+      allowedAccounts: [
+        ...baseQuery().allowedAccounts,
+        { media: "KUAISHOU", accountId: insertedAccountId },
+      ],
+    };
+    const result = await snapshotRepository.list(snapshotQuery);
     expect(result.total).toBe(1);
     expect(result.rows.some((row) => row.taskId === insertedTaskId)).toBe(false);
-    expect((await repository.list(baseQuery())).total).toBe(2);
+    expect((await repository.list(snapshotQuery)).total).toBe(2);
   });
 });

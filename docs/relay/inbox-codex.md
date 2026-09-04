@@ -140,7 +140,7 @@
   9. **Session BFF**：`codex/fe-task5-session-bff` 两笔——`c3ed7b3`（4 个 auth BFF 路由 + session-bff 库，303 行测试）+ **`c5df265`（data/tasks/work-items/changesets 四条 route 与 bff/task-list-bff/read-model-bff/contracts 全部改 Cookie Session，366+/397−，工作树已 clean）**——exact-SHA 审后合入 be/r009，跑全门禁；旧 `codex/fe-functional-bff-v2@110f221` 基于 x-ka 旧鉴权，不合。
   10. **补 root 指出的集成测试缺口**：`business-read-session-pg.integration.test.ts` 用真 Repository 覆盖 personal/team 的 query/tasks/work-items/detail、team changeset 403、伪造 x-ka-*、旧 token、跨 workspace、同 accountId 跨 media、logout 后全 401。
 - 纪律：`[be]` 前缀路径限定 commit；不动 `packages/contract/`（缺口写 inbox-arch）；不动 `apps/web` 非 api 部分；状态文件 `docs/plans/R009-状态.md`；完成交 SHA + 四包测试数 + 真实 PG 证据。
-- 状态：待处理
+- 状态：进行中（`be/r009`；Session BFF 已收口；migration 011 代码 `351d039` 已完成真实 PG up/down/up 与 DB 全量 177/177；hh 0..24 边界代码 `7aea1dc` 已通过 Worker 623 tests + 2 opt-in skipped；均等待 arch exact-SHA 审查；R-009#13 四项定位见 `docs/plans/R009-状态.md`）
 
 
 ---

@@ -9,7 +9,6 @@ import {
   type SemanticReportQueryPort,
 } from "../src/report-facts-source.js";
 import { SemanticQueryRepository } from "../src/semantic-query-repository.js";
-import { AmbiguousTaskMappingError } from "../src/semantic-query-types.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -150,23 +149,16 @@ describe("SemanticReportFactsSource", () => {
     expect(facts.dimensions.account).toHaveLength(1);
   });
 
-  it("propagates ambiguous task ownership instead of double counting", async () => {
+  it("rejects overlapping task ownership before it can be double counted", async () => {
     await pool.query(
       `INSERT INTO tasks (workspace_id, task_id, task_name)
        VALUES ($1, $2, '重叠任务')`,
       [workspaceId, `overlap-${workspaceId}`],
     );
-    await pool.query(
+    await expect(pool.query(
       `INSERT INTO task_accounts (workspace_id, task_id, media, account_id, valid_from)
        VALUES ($1, $2, 'KUAISHOU', 'a-1', '2026-08-01')`,
       [workspaceId, `overlap-${workspaceId}`],
-    );
-    const source = new SemanticReportFactsSource(new SemanticQueryRepository(pool), {
-      resolve: async () => "2026-08-19T10:30:00.000Z",
-    });
-
-    await expect(source.load({ workspaceId, plan: reportPlan() })).rejects.toBeInstanceOf(
-      AmbiguousTaskMappingError,
-    );
+    )).rejects.toMatchObject({ code: "23P01" });
   });
 });

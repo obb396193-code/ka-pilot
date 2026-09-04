@@ -2743,7 +2743,51 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 
 **红线复核（arch 对 B5 六条必审）**：①DTO 已裁 ②`tools:[]`+MCP allowlist+auto-memory 关 → R-010 验收时我看代码 ③sidecar 边界 ✅ ④Claude Agent SDK 驱动非 Anthropic 模型的许可 → **老板 9-4 裁：内部使用，不等法务；网关非 Claude 路由按设计可开**（条款无明文禁止亦无明文允许，已查 LICENSE/Commercial Terms D.4/法律页） ⑤生产沙箱限额 → 部署批次 ⑥fake≠联调 ✅ 记住。
 
+---
 
+### P-037 ⏳ R-009 启动回执 + Codex 后端全量审查交接｜be（Codex）
+
+- 日期：2026-09-05
+- 开发分支：`be/r009`，从 Claude 当前已提交 `main@409d363` 切出。`v0.2-unaudited-baseline=d121273` 只作为 arch 全量审计起点，不作为 be 开发基线。
+- 治理确认：root 已退役；`codex/integration-control` 不再作为契约/整合权威。
+- 全量审查入口：`docs/plans/Codex后端交付总账.md`。请 arch 从 tag 起运行共同红线横扫，再按 `P-004～P-035` 和总账 SHA 逐批追认；Codex 历史汇报不视为终审。
+- 旧 Task6 候选：`codex/personal-team-task6-ingestion@4e67315`。其中 `f009e19` 是 session `LIMIT 2` 硬化，`6d02cfe` 是 source-neutral team contract，`feec2ec/4e67315` 是 staging/publish 设计。该分支另有未提交 migration 011 等 4 个文件，且旧语义与 team→`ka_data` 冲突，**请勿整批合入**。
+- R-009 状态：见 `docs/plans/R009-状态.md`。be 将只实现 arch 已冻结 Contract，不修改 `packages/contract/`。
+
+#### 待 arch 裁决：migration 序号冲突
+
+R-009 与 `schema.sql` 头部写“迁移编号从 008 起”，但 main 已有：
+
+1. `008_multi_tenant_auth.cjs`
+2. `009_workspace_sync_scheduler.cjs`
+3. `010_workspace_kind.cjs`
+
+请冻结 R-009 实际迁移序号，并同步校正 v1.3/R-010 文档里的“migration 009”。be 不会覆盖已有迁移，也不会复用旧 Task6 WIP 的 011。
+
+- 状态：待 arch 裁决迁移编号；不依赖编号的代码审计继续。
+
+#### 同批发现的 Contract 文字/实现漂移
+
+1. `metrics.md` P0-04 要求所有 API/canonical 指标统一 `{value,availability}`，但 `api.md` BE-001 仍写“普通可缺指标用 `number|null`”，`packages/domain/src/data-query-rows.ts` 也仍是 nullable number。R-009 又明确要求改成三态。请确认以 metrics.md/R-009 为准，并确认 canonical row schema 是否升到 v2。
+2. `api.md` DATA-ROUTE-001 v1.2 与 R-009 要求普通请求拒绝 `dataView`，但同文件 BE-001 仍把 `dataView` 列为严格必填字段，Domain/BFF/Query Registry 当前也按必填实现。请明确：普通 session 查询应只收 `{queryId,params}`；`reconcile.account_daily` 是否仅由 queryId + entitlement 进入治理诊断。
+
+be 在裁决前不修改上述 Domain/公开 DTO；先处理 R-009 已明确要求合入的 Auth BFF 候选。
+
+#### 2026-09-05 BFF 收口增量
+
+- 已按 R-009 #9 在原 worktree 收口 11 个脏文件：`codex/fe-task5-session-bff@c5df265`。
+- 已并入 `be/r009@2916a91`；Web 77/77、typecheck、lint 全绿。
+- 普通 BFF 只转发服务端 bearer + 单一 `ka_session` Cookie + requestId，不转发浏览器伪造的 `x-ka-*`；data-query 当前仍按旧 DTO 强制写入 `dataView=platform`，待上面“普通请求不接收 dataView”的 Contract 漂移由 arch 裁决后再改。
+- 原 worktree 的 `bff.test.new` 是未引用、被正式 77 项测试覆盖的临时缩减稿，未提交并已清除。
+
+#### 2026-09-05 migration 011 交付待审
+
+- exact SHA：`be/r009@351d039`（`[be] 落地契约v1.2数据库P0迁移`）。
+- 范围：`btree_gist` + `task_accounts` 账户区间排斥、Workflow executor 租约列与 `workflow_effects`、钉钉 durable inbox 字段、Changeset 双主体复合 FK 与 item 账户三键、Backfill 阶段失败/完成字段；同步修正 Changeset Repository item 写入。
+- 迁移前对历史重叠任务、跨 workspace 主体、无确定账户范围的 item、旧 Backfill 非五态状态全部 fail closed；未自动猜测或改写历史业务归属。
+- 真 PG：完整 migration 1→11 replay 通过；011 up/down/up + Changeset 定向 10/10；DB 全量 32 files / 177 tests；typecheck、lint 全绿；production dependency audit 0 vulnerabilities。
+- 旧测试中故意制造“同户同日多任务”的场景已改为断言 PostgreSQL `23P01` 写入拒绝；查询层旧歧义兜底未删除。
+- 请 arch 对 exact SHA 做逐行终审；当前仅 `candidate + codex_self_checked + PG verified`，未宣称 merged/deployed。
 ---
 
 ## 2026-09-04 arch 六簇审计 · 第一轮（不变量核验，覆盖 P-004～P-035 全部批次）
@@ -2889,3 +2933,39 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 迁移编号：011 v1.2 ｜ 012 v1.3 ｜ 013 Task6 ｜ **014 v1.4**。schema.sql 现 **73 表**。
 
 **留给联调的**：8 维 ad 级字段名、素材视频源探针、Excel 对平、ka-data 同日同户对平、OS 写链路 UNKNOWN 超时样本。
+---
+
+### P-038 ⏳待审｜R-009 migration 011、Session BFF、hh 边界与四项定位（2026-09-05）
+
+- 治理已切回 Claude/arch：实现分支 `be/r009` 从 Claude 当前 `main` 建立，不再以 `codex/integration-control` 为权威；Contract 仅认 `packages/contract/`。
+- Session BFF：R-009 代码 SHA `5e91a85`、`2916a91`；Web 77/77、typecheck、lint 通过。
+- migration 011：代码 SHA `351d039`；真实 PG 完整 1→11 replay、011 up/down/up、DB 32 files / 177 tests、typecheck、lint、production audit 0 vulnerabilities 通过。
+- hh 累计小时：代码 SHA `7aea1dc`；payload 接受 0/24、拒绝 -1/25；Worker 定向 58/58，全量 623 passed + 2 opt-in skipped、typecheck、lint、production audit 0 vulnerabilities 通过。
+- 四项待 arch 逐行复核的定位：
+  - B4 零量日剔除：`packages/domain/src/metrics.ts:122-127`、`packages/db/src/metrics-repository.ts:196-205`。
+  - B13 allowlist 默认拒绝：`apps/worker/.env.example:8-10`、`apps/worker/src/config.ts:82-90,164-171`、`apps/worker/src/sources/material-source-probe.ts:193-208`。
+  - B23-C2 首次 full ready 门：`packages/db/src/workspace-sync-repository.ts:163-175`、`apps/worker/src/scheduling/workspace-sync-service.ts:40-60`。
+  - B10 离线分区有界回退：`apps/worker/src/etl/full-handler.ts:34,161-182`。
+- 完整证据与旧 Codex 后端审计入口：`docs/plans/R009-状态.md`、`docs/plans/Codex后端交付总账.md`（P-004～P-035 与后续 root 批次均保留 exact SHA/测试/未完成项）。
+- 当前状态严格为：**be candidate + Codex self-checked + migration 011/相关集成真实 PG verified；尚未 Claude reviewed、尚未合入 main、尚未部署**。
+
+
+---
+
+### P-038 ✅审查通过（arch 2026-09-05）｜已合入 main@d070c1d
+
+| 项 | SHA | 实证 | 结论 |
+|---|---|---|---|
+| migration 011 | `351d039` | 逐条对 v1.2：btree_gist + task_accounts EXCLUDE（含 infinity/'[]'）/ workflow_runs executor_token+lease / workflow_effects UNIQUE(run,node,attempt,phase) / inbound_events 五列 / changesets 两复合 FK / changeset_items 三键+FK+索引+从父表回填 / backfill failed_stage+finished_at；**前置数据校验四条**（重叠区间/跨租户 actor/无 scope 明细/legacy status）；down 对称；测试断言 23P01/23503/23505/inbound 默认/down 态/up 重放。arch 真 PG 复跑 DB 177/177 | ✅ |
+| hh 0..24 | `7aea1dc` | payload max 23→24 + 21 行边界测试；与 client:156 一致 | ✅ |
+| Session BFF | `5e91a85` `2916a91` | 四 auth 路由 + session-bff 校验 Set-Cookie 安全契约（不符 502）+ requestId 贯通 + 无 cookie 401；`x-ka-` 仅剩 1 条注释；Web 77/77 arch 复跑 | ✅ |
+| 四项定位 | — | B4 domain:122-127 + SQL `cost IS NOT NULL AND cost<>0` 一致；B13 allowlist 空→[] 且 `!some()` 默认拒 + 私网 host 拒；B23-C2 `has_successful_full` 同 ws/owner/media + `INITIAL_FULL_REQUIRED`；B10 `LOOKBACK_DAYS=3` 首个非空即停 | ✅ 四项关闭 |
+| 全量测试 | — | arch 独立复跑：Domain 491 / DB 177 / Worker 623+2 / Web 77 | ✅ |
+
+**P2（随下一批修，不阻断）**：
+1. `apps/web/lib/data/bff.ts:106` `forwardDataQuery` 的 `?? "legacy-session-token-000000000000000001"`——写死假 token 进生产代码；虽 `handleDataQueryRequest` 会对无效 cookie 返 401（fail-closed 仍成立），但**删掉兜底，无 cookie 直接 401**。
+2. `backfill_jobs.status` 五态只靠迁移前置校验+应用层，**补 CHECK 约束**（随 P0-03 实现）。
+
+**契约漂移 2 条（be 提出）→ arch 已裁并落 api.md `d070c1d`**：①BE-001 普通可缺指标改三态 `MetricValue`，`rowSchemaVersion` 升 `<queryId>/v2`，v1 fixtures 作废 ②普通请求**不接受** `dataView`（收到 400），源由 `workspaceKind` 固定；`reconcile.account_daily` 移出普通 Registry，走治理后台 `POST /api/v1/admin/data/reconcile`。
+
+**合流备注**：主工作树有 3 个同名未跟踪文件（`session-client{,.test}.ts`、`session-contracts.ts`，非 arch 所留），已备份至 scratchpad 后让路。
