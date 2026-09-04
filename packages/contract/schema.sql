@@ -1,5 +1,8 @@
--- 数据库契约 v1.0（B1a 迁移蓝本；PostgreSQL；与 PRD v1.6 §3.1 硬要求一致）
+-- 数据库契约 v1.2（B1a 迁移蓝本；PostgreSQL；与 PRD v1.6 §3.1 硬要求一致）
 -- 纪律：所有业务表带 workspace_id；B 级功能不建表；改动走 arch。
+-- v1.2（2026-09-04 arch 接回裁决）：P0-05 一账户日一任务区间排斥｜P0-07 workflow 单执行器+effect outbox｜
+--   P0-12 钉钉 durable inbox｜P0-13 changeset 租户外键｜P0-03 backfill 完整 DAG 终态。迁移编号从 008 起。
+CREATE EXTENSION IF NOT EXISTS btree_gist;   -- P0-05 区间排斥约束依赖
 
 -- ═══ 租户与身份 ═══
 CREATE TABLE workspaces (
@@ -114,7 +117,12 @@ CREATE TABLE task_accounts (           -- 关系表：历史/多任务（替代�
   valid_from DATE NOT NULL, valid_to DATE,
   FOREIGN KEY (workspace_id, media, account_id)
     REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
-  UNIQUE(workspace_id, task_id, media, account_id, valid_from)
+  UNIQUE(workspace_id, task_id, media, account_id, valid_from),
+  -- P0-05 裁决（老板 2026-09-04）：一个账户同一业务日只归属一个任务；区间重叠写入直接拒绝（API 409 TASK_ACCOUNT_OVERLAP），不做分摊
+  EXCLUDE USING gist (
+    workspace_id WITH =, media WITH =, account_id WITH =,
+    daterange(valid_from, COALESCE(valid_to, 'infinity'::date), '[]') WITH &&
+  )
 );
 
 -- ═══ 指标（raw / canonical 分离，防 source 双计）═══
@@ -202,6 +210,9 @@ CREATE TABLE changesets (              -- header
   status TEXT DEFAULT 'draft',         -- draft|confirmed|sent|executing|success|partial|failed|unknown|expired|rolled_back
   initiator UUID NOT NULL,
   credential_owner_user_id UUID NOT NULL,   -- 后台归属闭环：重试永远用此凭证
+  -- P0-13 裁决：发起人与凭证主体必须是同 workspace 的 active user，由外键兜底；服务端创建/确认/执行前再校验 is_active
+  FOREIGN KEY (workspace_id, initiator) REFERENCES users(workspace_id, id) ON DELETE RESTRICT,
+  FOREIGN KEY (workspace_id, credential_owner_user_id) REFERENCES users(workspace_id, id) ON DELETE RESTRICT,
   executor_identity TEXT,              -- 沙箱执行身份（审计双记录）
   approval_id UUID,                    -- 提审（自愿）关联，可空
   multica_issue_id TEXT,
@@ -214,6 +225,9 @@ CREATE TABLE changesets (              -- header
 -- 允许经父表间接隔离，但查询必须 JOIN 父表带上 workspace_id 条件，不得裸查。
 CREATE TABLE changeset_items (         -- 明细（批量/部分成功）
   id BIGSERIAL PRIMARY KEY, changeset_id UUID NOT NULL REFERENCES changesets(id),
+  workspace_id UUID NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,   -- P0-13 裁决：每条明细自带账户三键，同账户写冲突锁与权限校验依此
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   target_type TEXT NOT NULL,           -- account|campaign|unit|creative
   target_id TEXT NOT NULL, field TEXT NOT NULL,
   from_value TEXT, to_value TEXT,
@@ -256,11 +270,21 @@ CREATE TABLE workflow_runs (          -- 运行监控页列 → 自带 workspace
   version_id UUID NOT NULL,            -- 运行固定版本
   initiator UUID, credential_owner_user_id UUID,
   status TEXT, params JSONB,
+  executor_token UUID,                 -- P0-07 裁决：单执行者 fencing；推进 run 必须携带当前 token，续租/完成/失败均校验
+  executor_lease_until TIMESTAMPTZ,    -- 过期后其他 Worker 才能接管并换新 token
   started_at TIMESTAMPTZ DEFAULT now(), finished_at TIMESTAMPTZ
 );
 CREATE TABLE workflow_run_events (    -- 日志纯子表，经 run JOIN
   id BIGSERIAL PRIMARY KEY, run_id UUID NOT NULL,
   node_id TEXT, event TEXT, detail JSONB, at TIMESTAMPTZ DEFAULT now()
+);
+CREATE TABLE workflow_effects (       -- P0-07 裁决：真实副作用 outbox；写节点先插本表（UNIQUE 冲突=已执行过，直接读结果不重放）
+  id BIGSERIAL PRIMARY KEY, run_id UUID NOT NULL REFERENCES workflow_runs(id),
+  node_id TEXT NOT NULL, attempt INT NOT NULL, phase TEXT NOT NULL,   -- phase: preview|execute|reconcile
+  effect_key TEXT NOT NULL,            -- 幂等键（如 changeset_id / 外部请求 id）
+  status TEXT DEFAULT 'pending',       -- pending|done|failed|unknown
+  result JSONB, created_at TIMESTAMPTZ DEFAULT now(), finished_at TIMESTAMPTZ,
+  UNIQUE (run_id, node_id, attempt, phase)
 );
 
 -- ═══ 任务队列（三应用协作核心）═══
@@ -287,7 +311,11 @@ CREATE TABLE etl_runs (                -- 运行监控页直接列表化 → 自
 );
 CREATE TABLE backfill_jobs (
   id BIGSERIAL PRIMARY KEY, workspace_id UUID, user_id UUID, date_from DATE, date_to DATE,
-  cursor_date DATE, status TEXT DEFAULT 'running', created_at TIMESTAMPTZ DEFAULT now()
+  cursor_date DATE,
+  status TEXT DEFAULT 'running',       -- P0-03 裁决：running|raw_done|canonical_done|done|failed；
+                                       -- done 只在 raw+canonical+quality 三阶段对全部日期都终态后置，任一阶段失败=failed 并留 failed_stage
+  failed_stage TEXT,                   -- raw|canonical|quality
+  created_at TIMESTAMPTZ DEFAULT now(), finished_at TIMESTAMPTZ
 );
 CREATE TABLE data_quality_checks (     -- 每日对平自检（数据健康页读）
   id BIGSERIAL PRIMARY KEY, workspace_id UUID, ds DATE, check_type TEXT,
@@ -375,6 +403,10 @@ CREATE TABLE inbound_events (         -- 回调监控页查 → 自带 workspace
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID,
   provider TEXT, external_event_id TEXT UNIQUE,   -- 回调幂等
   kind TEXT, payload JSONB, processed BOOLEAN DEFAULT false,
+  -- P0-12 裁决（durable inbox）：网关收到消息必须**先 INSERT 本表成功再向钉钉 ACK**；处理走 lease 领取，
+  -- 失败不删行、attempts+1 留 last_error，超过 max_attempts 进 dead；processed=false 且 lease 过期的行可被重领
+  lease_until TIMESTAMPTZ, attempts INT DEFAULT 0, max_attempts INT DEFAULT 5,
+  last_error TEXT, processed_at TIMESTAMPTZ,
   received_at TIMESTAMPTZ DEFAULT now()
 );
 

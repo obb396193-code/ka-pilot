@@ -59,6 +59,20 @@ BI转化率            = real_conversion / aac_ptt_uv
 断量倒计时           = balance / velocity（小时）
 ```
 
+## 缺数三态（P0-04 裁决，老板 2026-09-04：缺数不写 0，显 "−"）
+
+所有指标值在 API 与 canonical 查询层统一为 `{value: number|null, availability: "available"|"missing"|"error"}`：
+
+- `available`：来源明确返回了该字段（**包括真实的 0**）——只有这种 0 才允许显示 0
+- `missing`：ETL 未到、该日无来源行、字段不存在、权限内无数据 → `value=null`，UI 显 `−`
+- `error`：来源失败/被截断/口径不可比 → `value=null`，UI 显 `−` 并带健康条提示
+- **SQL 层禁止 `COALESCE(sum(x), 0)`**；聚合遇任一成员 `missing/error` 时结果为 `missing`，不得静默降为 0
+- 比率/CPA 继续用 `RatioValue.state`（finite/infinite/undefined）表达分母为 0，与本节正交
+
+## 一账户一任务（P0-05 裁决，老板 2026-09-04）
+
+同一 `(workspace_id, media, account_id)` 在同一业务日只能归属一个任务；`task_accounts` 用区间排斥约束兜底，写入重叠区间 → HTTP 409 `TASK_ACCOUNT_OVERLAP`。任务维度聚合因此无需分摊逻辑；考核价取该日唯一归属任务的生效版本。
+
 ## 环比约定（全指标）
 
 - 绝对值指标：`(今−昨)/昨`；**比率指标：百分点差值（今−昨）**

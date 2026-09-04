@@ -75,6 +75,13 @@ personal workspace 固定为 `explicit_accounts`。scope mode 只能由服务端
 
 ## 一期主数据源路由（DATA-ROUTE-001）
 
+> **v1.2 修订（老板 2026-09-04 裁决：数据源绑定空间，不做页面级三态切换）**
+> - `workspaceKind=personal` → 固定 `platform`（奇航，本人授权账户）
+> - `workspaceKind=team` → 固定 `ka_data`（全渠道，团队成员只读）
+> - 用户"切空间"即"切数据源"；普通页面**移除** `KA Data 权威版 / 自建平台版 / 双源对账` 三态切换器与 `data_view` URL 参数
+> - `reconcile` 仍只对 `DATA_DIAGNOSTIC_ENTITLEMENTS_JSON` allowlist 内的管理员开放，入口在治理后台，不在业务页
+> - 下文"KA Data 默认关闭/备用"表述仅对 personal 空间成立；team 空间的 `KA_DATA_ENABLED=true` 是必需配置
+
 - 普通业务读取默认走既有奇航 `get_data → Raw → Canonical → Semantic Query` 主链。
 - KA Data 是同源的备用读取/管理员诊断路径，默认关闭且不得阻塞工作台、任务、账户、
   工作流或首次内网部署；普通用户响应和导航不暴露 `ka_data/platform/reconcile` 选择器。
