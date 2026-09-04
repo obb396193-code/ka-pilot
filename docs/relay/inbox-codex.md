@@ -140,7 +140,7 @@
   9. **Session BFF**：`codex/fe-task5-session-bff@c3ed7b3`（4 个 auth BFF 路由 + session-bff 库，303 行测试）先 exact-SHA 审后合入 be/r009；该工作树 `/private/tmp/ka-fe-task5-session-bff` 里还有 **11 个未提交脏文件**（`lib/data/{bff,task-list-bff,read-model-bff,contracts}.ts` 及 4 条 `app/api/internal/*` route 的 x-ka→cookie 迁移半成品）——**在原工作树续完、补测、提交**，不重做；旧 `codex/fe-functional-bff-v2@110f221` 基于 x-ka 旧鉴权，不合。
   10. **补 root 指出的集成测试缺口**：`business-read-session-pg.integration.test.ts` 用真 Repository 覆盖 personal/team 的 query/tasks/work-items/detail、team changeset 403、伪造 x-ka-*、旧 token、跨 workspace、同 accountId 跨 media、logout 后全 401。
 - 纪律：`[be]` 前缀路径限定 commit；不动 `packages/contract/`（缺口写 inbox-arch）；不动 `apps/web` 非 api 部分；状态文件 `docs/plans/R009-状态.md`；完成交 SHA + 四包测试数 + 真实 PG 证据。
-- 状态：进行中（`be/r009@2916a91`；已同步 `main@67efa96`，migration 已由 arch 冻结为 011；Session BFF 两段已收口并通过 Web 77/77、typecheck、lint，下一步进入 migration 011）
+- 状态：进行中（`be/r009@351d039`；Session BFF 已收口；migration 011 已完成真实 PG up/down/up 与 DB 全量 177/177，等待 arch exact-SHA 审查；下一批按 R-009 继续）
 
 
 ---

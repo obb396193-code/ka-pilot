@@ -2779,6 +2779,15 @@ be 在裁决前不修改上述 Domain/公开 DTO；先处理 R-009 已明确要�
 - 已并入 `be/r009@2916a91`；Web 77/77、typecheck、lint 全绿。
 - 普通 BFF 只转发服务端 bearer + 单一 `ka_session` Cookie + requestId，不转发浏览器伪造的 `x-ka-*`；data-query 当前仍按旧 DTO 强制写入 `dataView=platform`，待上面“普通请求不接收 dataView”的 Contract 漂移由 arch 裁决后再改。
 - 原 worktree 的 `bff.test.new` 是未引用、被正式 77 项测试覆盖的临时缩减稿，未提交并已清除。
+
+#### 2026-09-05 migration 011 交付待审
+
+- exact SHA：`be/r009@351d039`（`[be] 落地契约v1.2数据库P0迁移`）。
+- 范围：`btree_gist` + `task_accounts` 账户区间排斥、Workflow executor 租约列与 `workflow_effects`、钉钉 durable inbox 字段、Changeset 双主体复合 FK 与 item 账户三键、Backfill 阶段失败/完成字段；同步修正 Changeset Repository item 写入。
+- 迁移前对历史重叠任务、跨 workspace 主体、无确定账户范围的 item、旧 Backfill 非五态状态全部 fail closed；未自动猜测或改写历史业务归属。
+- 真 PG：完整 migration 1→11 replay 通过；011 up/down/up + Changeset 定向 10/10；DB 全量 32 files / 177 tests；typecheck、lint 全绿；production dependency audit 0 vulnerabilities。
+- 旧测试中故意制造“同户同日多任务”的场景已改为断言 PostgreSQL `23P01` 写入拒绝；查询层旧歧义兜底未删除。
+- 请 arch 对 exact SHA 做逐行终审；当前仅 `candidate + codex_self_checked + PG verified`，未宣称 merged/deployed。
 ---
 
 ## 2026-09-04 arch 六簇审计 · 第一轮（不变量核验，覆盖 P-004～P-035 全部批次）
