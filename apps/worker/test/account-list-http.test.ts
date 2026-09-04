@@ -14,6 +14,7 @@ import { ReadDetailService } from "../src/data/read-detail-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
 import { DataQueryService } from "../src/data/query-service.js";
 import { TaskListService } from "../src/tasks/task-list-service.js";
+import { WorkItemListService } from "../src/work-items/work-item-list-service.js";
 import { readySource } from "./canonical-query-fixtures.js";
 
 const internalToken = "fixture-account-list-token-that-is-long-enough";
@@ -84,6 +85,16 @@ function taskListService(): TaskListService {
   });
 }
 
+function workItemListService(): WorkItemListService {
+  return new WorkItemListService({
+    repository: { list: async (query) => ({
+      rows: [], page: query.page ?? 1, pageSize: query.pageSize ?? 20,
+      total: 0, accountItemCount: 0, dataAsOf: null,
+      coverageComplete: true, initialFullComplete: false,
+    }) },
+  });
+}
+
 describe("ACCOUNTS-LIST-001 HTTP composition", () => {
   const servers: ReturnType<typeof createDataApiServer>[] = [];
   afterEach(async () => {
@@ -109,6 +120,7 @@ describe("ACCOUNTS-LIST-001 HTTP composition", () => {
       detailService: detailService(),
       taskListService: taskListService(),
       accountListService,
+      workItemListService: workItemListService(),
       internalToken,
       ...(maxResponseBytes === undefined ? {} : { maxResponseBytes }),
     });

@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 
 import type { WorkItemListRepositoryResult } from "@ka/db";
 
+import { AccountListService } from "../src/accounts/account-list-service.js";
 import { createDataApiServer } from "../src/data/http-server.js";
 import { ReadDetailService } from "../src/data/read-detail-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
@@ -87,6 +88,16 @@ function taskListService(): TaskListService {
   });
 }
 
+function accountListService(): AccountListService {
+  return new AccountListService({
+    repository: { list: async (query) => ({
+      rows: [], page: query.page ?? 1, pageSize: query.pageSize ?? 20,
+      total: 0, coverageComplete: false, metricsComplete: true,
+      initialFullComplete: false,
+    }) },
+  });
+}
+
 describe("WORK-ITEM-LIST-001 HTTP composition", () => {
   const servers: ReturnType<typeof createDataApiServer>[] = [];
 
@@ -114,6 +125,7 @@ describe("WORK-ITEM-LIST-001 HTTP composition", () => {
       service: dataService(),
       detailService: detailService(),
       taskListService: taskListService(),
+      accountListService: accountListService(),
       workItemListService,
       internalToken,
       ...(maxResponseBytes === undefined ? {} : { maxResponseBytes }),
