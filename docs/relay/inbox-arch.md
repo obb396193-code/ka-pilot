@@ -58,7 +58,7 @@
 
 ---
 
-### P-005 ⏳B2 最小契约差异包｜be（Codex）
+### P-005 ✅已裁决（2026-09-04 v1.3）｜原B2 最小契约差异包｜be（Codex）
 
 老板已批准 Claude 离线期间按“契约安全内核”继续推进。Codex 只实现领域/Repository/Worker 端口，不修改下列冻结契约；请 arch 回来后集中裁决：
 
@@ -76,7 +76,7 @@
 
 ---
 
-### P-006 ⏳B3 安全执行最小契约差异｜be（Codex）
+### P-006 ✅已裁决（2026-09-04 v1.3）｜原B3 安全执行最小契约差异｜be（Codex）
 
 1. `changeset_items` 缺 account_id/父级路径，无法对 campaign/unit/creative 实现“同账户写冲突锁”；请冻结解析来源或补归属快照。
 2. `from_value/to_value TEXT` 无类型和“媒体默认值”标志；请裁决 typed value schema，避免数字/布尔/JSON 字符串歧义。
@@ -92,7 +92,7 @@ Codex 本批只实现内部状态、严格字符串快照比较、审计和端�
 
 ---
 
-### P-007 ⏳B4 任务与报告契约差异｜be（Codex）
+### P-007 ✅已裁决（2026-09-04 v1.3）｜原B4 任务与报告契约差异｜be（Codex）
 
 1. 奇航 `task_id` 是否为主数据仍未核验；B4 Repository 只接收 taskId，不绑定来源。
 2. `task_accounts UNIQUE(task_id,account_id,valid_from)` 缺 workspace_id，且无租户 FK/区间排斥约束；建议修正复合唯一与 FK，区间重叠由事务检查兜底。
@@ -104,7 +104,7 @@ Codex 本批只实现内部状态、严格字符串快照比较、审计和端�
 
 ---
 
-### P-008 ⏳B5 Agent 与多模型网关最小契约差异｜be（Codex）
+### P-008 ✅已裁决（2026-09-04 v1.3）｜原B5 Agent 与多模型网关最小契约差异｜be（Codex）
 
 老板已批准在 Claude 离线期间完成 B5 可审查后端，并要求 Claude Agent SDK、CCSwitch 式多模型切换、流式输出和既有实现复用。本批不修改冻结契约，请 arch 回来后集中裁决：
 
@@ -1003,7 +1003,7 @@ typecheck/lint/audit 通过，Worker coverage 92.28/81.48/96.29；真实 PG migr
 部署/上线和 Claude/arch 批准。所有真实写继续关闭。
 ---
 
-### P-KB-001 资料研究与知识资产角色注册 + 首批白盒/黑盒资料审查｜research/knowledge（Codex）
+### P-KB-001 ✅已审（2026-09-04）｜资料研究与知识资产角色注册 + 首批白盒/黑盒资料审查｜research/knowledge（Codex）
 
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-20
@@ -1118,7 +1118,7 @@ typecheck/lint/audit 通过，Worker coverage 92.28/81.48/96.29；真实 PG migr
 
 ---
 
-### P-KB-002 KA 日报 Agent 与实时盯盘规范 v2.0 资料审查｜research/knowledge（Codex）
+### P-KB-002 ✅已审（2026-09-04）｜KA 日报 Agent 与实时盯盘规范 v2.0 资料审查｜research/knowledge（Codex）
 
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-20
@@ -1237,7 +1237,7 @@ typecheck/lint/audit 通过，Worker coverage 92.28/81.48/96.29；真实 PG migr
 
 ---
 
-### P-KB-003 快手媒体能力 + 渠道调控工作流两篇 confidential 资料审查｜research/knowledge（Codex）
+### P-KB-003 ✅已审（2026-09-04）｜快手媒体能力 + 渠道调控工作流两篇 confidential 资料审查｜research/knowledge（Codex）
 
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-20
@@ -1378,7 +1378,7 @@ typecheck/lint/audit 通过，Worker coverage 92.28/81.48/96.29；真实 PG migr
 
 ---
 
-### P-KB-004 内部文档包 v2 + 快手广告创建 Excel 资料审查｜research/knowledge（Codex）
+### P-KB-004 ✅已审（2026-09-04）｜内部文档包 v2 + 快手广告创建 Excel 资料审查｜research/knowledge（Codex）
 
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-20
@@ -1544,7 +1544,7 @@ Git 评估没有复制包内内部 URL、真实 ID 或高风险参数值。一�
 
 ---
 
-### P-KB-005 `ka-src-0005` 压缩包 671 项逐文档导读审查｜research/knowledge（Codex）
+### P-KB-005 ✅已审（2026-09-04）｜`ka-src-0005` 压缩包 671 项逐文档导读审查｜research/knowledge（Codex）
 
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-20
@@ -1700,7 +1700,7 @@ Git 没有加入 confidential 逐篇介绍、原文、内部链接、真实业�
 
 ---
 
-### P-KB-006 `ka-src-0005` 671 项产品相关性与借鉴边界审查｜research/knowledge（Codex）
+### P-KB-006 ✅已审（2026-09-04）｜`ka-src-0005` 671 项产品相关性与借鉴边界审查｜research/knowledge（Codex）
 
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-20
@@ -1829,7 +1829,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 ---
 
-### P-KB-007 快手磁力引擎 MAPI 官方文档首批证据审查｜research/knowledge（Codex）
+### P-KB-007 ✅已审（2026-09-04）｜快手磁力引擎 MAPI 官方文档首批证据审查｜research/knowledge（Codex）
 
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-20
@@ -1955,7 +1955,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - `git diff --check`：通过；
 - `git ls-files private/knowledge-sources`：无输出。
 
-### P-KB-008 快手 MAPI 全量语料、CLI 覆盖与产品相关性增量审查｜research/knowledge（Codex）
+### P-KB-008 ✅已审（2026-09-04）｜快手 MAPI 全量语料、CLI 覆盖与产品相关性增量审查｜research/knowledge（Codex）
 
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-20
@@ -2094,7 +2094,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - worktree 与正式项目 private `diff -qr` 无差异。
 - `git diff --check` 通过；`git ls-files private/knowledge-sources` 无输出。
 
-### P-KB-009 三媒体官方资料扩展、快手 MAPI 独立复审与 AI 实验编排裁决｜research/knowledge（Codex）
+### P-KB-009 ✅已审（2026-09-04）｜三媒体官方资料扩展、快手 MAPI 独立复审与 AI 实验编排裁决｜research/knowledge（Codex）
 
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-21
@@ -2235,7 +2235,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - 0008/0009 worktree private 与 canonical private `diff -qr` 无差异；`git diff --check` 通过；private 全部命中 `.gitignore`，`git ls-files private/knowledge-sources` 无输出。
 - 全仓 `scripts/*.test.mjs` 额外命中与本任务无关的 UI 资产导出测试，因系统数据盘仅余约 137MiB 而 `ENOSPC`；本任务定向测试/校验全通过，未修改 UI 资产代码。
 
-### P-KB-010 产品知识库后续发布要求补充｜research/knowledge（Codex）
+### P-KB-010 ✅已审（2026-09-04）｜产品知识库后续发布要求补充｜research/knowledge（Codex）
 
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-24
@@ -2271,7 +2271,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - `validate-knowledge-catalog.test.mjs` 17/17 通过，包含生命周期/发布门、私有资料、bundle、巨量和腾讯来源等级校验。
 - `git diff --check` 通过；未修改 catalog 正文、资料状态、private canonical 原文、冻结 PRD/Contract 或生产代码。
 
-### P-KB-011 ka-data 内部取数指南入库、产品映射与接入边界裁决｜research/knowledge（Codex）
+### P-KB-011 ✅已审（2026-09-04）｜ka-data 内部取数指南入库、产品映射与接入边界裁决｜research/knowledge（Codex）
 
 - 派活方：资料研究与知识资产 Agent（Codex）
 - 日期：2026-08-24
@@ -2375,7 +2375,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - 新 worktree 未复制既有 0005/0007/0008/0009 完整大包，因此本轮没有重跑依赖全部历史 private bundle 的全库 repository validator；既有 0001~0009 未修改。本轮对 0010 做了定向 hash/凭证/权限/状态校验。
 - 未访问内部服务、未申请或读取 reader token、未运行 SQL、未修改冻结 PRD/Contract/生产代码。
 
-### P-KB-012 ka-src-0010 账户 ID 假设 R1 纠错回执｜research/knowledge（Codex）
+### P-KB-012 ✅已审（2026-09-04）｜ka-src-0010 账户 ID 假设 R1 纠错回执｜research/knowledge（Codex）
 
 > R2 root 审计修复（2026-08-24）：已将三字段键从当时的 Contract 现状中区分出来。**R3 现状同步（2026-08-25）**：数据库 Contract 与 migration 005/006 已完成三字段账户键同步。老板已拍板事实不再交 arch 重新决策，本条只保留后续复审席位。
 
@@ -2657,3 +2657,88 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 ### 四、审计排期（arch）
 
 按 `docs/plans/Codex后端交付总账.md` §4 顺序：先横扫共同红线（租户隔离/凭证边界/写操作确认门/口径/事实边界），再 `main..be/b1a` → … → Task5 逐批 diff。每批结论追加在对应 P 条目下；发现 P0 直接派 Codex，不攒。资料库 P-KB-001～012 排最后，审完挑对产品有用的进知识库 tab。
+
+
+---
+
+## 2026-09-04 arch 裁决：资料库 P-KB-001～012（全部审毕）
+
+> 老板 9-4 指令："资料 Agent 的现在去看一下把它写了…有些对我们有用的、后续要用到的、有些要放到知识库。" 资料研究 Agent 角色已并入 arch；`docs/knowledge/` 与 `private/knowledge-sources/`（93MB，gitignore ✅）由 arch 维护。
+
+**总评**：治理模型（三层分离/生命周期/权限/凭证禁入）✅ 采纳为项目资料库规范；10 份评估事实/推断分层清楚、无一处把"资料存在"写成"产品现状"，结论全部保守，**可以直接裁**。
+
+| 文档 | 裁决 | 进产品知识库 tab（B8） | 对开发的动作 |
+|---|---|---|---|
+| ka-src-0001 白盒 vs 黑盒 | ✅ reviewed。采纳评估结论：本产品定位=**可控自治灰盒**（同一平台按角色/自治度呈现），不拆两套；AI 实验编排列 P2 | 否（内部对齐稿） | 无 |
+| ka-src-0002 日报 Agent+盯盘规范 v2.0 | ✅ reviewed→**approved**。对 Contract 的交叉审计项（channel 可选/枚举/扣量区间/compare/报告 snapshot/指标 applicability）已在 v1.1～v1.3 逐项冻结；不硬编码 1.09 | **是**（optimizer/lead 可读） | 日报 12 模块字段以 `docs/18-KA日报规范借鉴.md` 为准（P-007#4） |
+| ka-src-0003 快手能力汇编 | ✅ reviewed，confidential。高风险回传/赔付段 **deny/quarantine**；媒体能力目录/学习期映射/命名解析 → 融合 Capability Registry 候选（B7 后续） | 否（整包）；术语/学习期条目单独提 | Codex 后续批次：基建 preflight 用官方证据项 |
+| ka-src-0004 术语/调控工作流 | ✅ reviewed，confidential。高风险回传 deny；**术语卡→approved**；固定阈值只作规则候选不默认 | **术语卡是**；其余否 | 规则候选进 13.2 候补池，Shadow 回放后才升 |
+| ka-src-0005 内部文档包 671 篇 | ✅ reviewed，confidential。整包不进 KB；8 直接候选（用户增长摘要/EVO 实验治理）逐篇后续；FBI 不做一期主链 | 否 | 无一期动作 |
+| ka-src-0006 广告创建 Excel | ✅ reviewed，confidential。真实 ID deny；字段映射→基建 schema（4.6 Prompt Compiler 已按此设计） | 否 | B7 基建节点字段校验按此 |
+| ka-src-0007 快手 MAPI 官方（381 篇+CLI 覆盖） | ✅ reviewed→**approved**（public 官方）。奇航仍是一期主链，MAPI=能力底座；59 条机器初筛**不整体进一期**，先由老板/业务 owner 裁剪；CLI 2 处 HTTP 方法冲突要修 | **是**（开发者+优化师） | Codex R-010：Capability Registry 录入状态 `documented_unverified`；核心断点 campaign update/status、unit budget、creative update/review、四层实时 report 补 CLI 壳 |
+| ka-src-0008 巨量官方 1103 篇 | ✅ reviewed→**approved**（public）。只融合对象模型/权限状态/实验治理概念；**不开发巨量 adapter** | **是**（参考） | 无一期动作 |
+| ka-src-0009 腾讯 Apifox 镜像 | ✅ reviewed，E2。306/307 参数位置错、1 endpoint 错，不可作 Contract | 是但标 **reference_only/未核** | 无一期动作 |
+| ka-src-0010 ka-data 取数指南 | ✅ reviewed，confidential。**老板已裁：团队空间主源=ka_data**（覆盖评估的"先探针后 adapter"）。安全项保留：reader token 只进 Secret、不开任意 SQL、不依赖临时沙箱 URL、SQLite 快照不作主库。**同日同户对平（奇航 vs ka-data）= 内网联调硬门** | 否（内部运维） | R-009 已含 team→ka_data；对平交 OS agent 联调 |
+| P-KB-010 发布机制 | ✅ 纳入 B8 知识库批次（权限继承/门禁/approved→published 流程） | — | B8 |
+| P-KB-011 六问 | ①ka-data 服务 owner/ACL/只读性 → OS agent 联调核 ②数据血缘/公式 → 对平后定 ③数据许可 → 老板与运营方确认 ④adapter 分期 → 已由 team 绑定裁掉 ⑤字段级 SSOT：**奇航=personal 权威、ka-data=team 权威、业务确认表=考核价/返点权威、MAPI=结构/执行权威** ⑥其他对象 ID（task/product/material/adgroup）继续 unresolved，逐项核证 | — | — |
+| P-KB-012 R1 纠错 | ✅ 关闭（账户三键已落 R3） | — | — |
+
+catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publication_status`。
+
+
+---
+
+## 2026-09-04 arch 裁决：root 攒的 B2-B5 契约差异包 P-005～P-008（29 问全裁 → 契约 v1.3）
+
+> 这 29 问是 Codex 离线期只做内核不接 API 的原因。裁完落 `schema.sql` 末尾「v1.3 新增」与 `api.md` 末尾「v1.3 DTO/状态机」；Codex **R-010** 出 migration 009 并把 B2-B5 内核接成 Web API。
+
+### P-005 B2 队列（7 问）
+
+| # | 裁决 |
+|---|---|
+| 1 复合规则 | ✅ `alert_rules` 加 `condition_tree JSONB`（版本化，`{version, all:[...], any:[...], not:[...]}` 叶子=`{metric,operator,threshold,window_hours?}`）+ `fallback_copy TEXT`；旧三列保留兼容简单规则 |
+| 2 去重/复发 | ✅ `work_items` 加 `dedupe_key TEXT`（=`rule_id:media:account_id`）、`occurrence_count INT DEFAULT 1`、`last_triggered_at`；partial unique `(workspace_id, dedupe_key) WHERE status IN ('open','processing','dispatched')`；同 key 再触发 → occurrence+1 不新建，**严重度升级则新建并关闭旧条**（PRD 1.3 跨级重弹） |
+| 3 动作状态机 | `open →process→ processing`（开始处理）；`processing/open →dispatch→ dispatched`（改 assignee + timeline 派发记录）；`任意活动态 →escalate→ escalated`（assignee=值班表上级 + escalation 记录）；`processing →reject→ rejected`（必填 reject_reason）；`done` 由 T+1 回收或人工「完成」写入；`ignored/expired` 不可再 process。每个动作响应 = work-item 详情 DTO |
+| 4 户级静音 | 新表 `account_mutes(workspace_id, media, account_id, muted_until, muted_by, reason_chip, created_at)` PK 三键；**P0 突破静音**（静音只压 P1/P2/机会）；`work_items.muted_until` 废弃不再写；`alert_rules.muted_until` 保留=规则级 |
+| 5 通知调度 | ✅ 单一路径：`jobs(job_type='push', run_after=整点/静默结束)` → 到点写 `outbound_messages`；outbound 不加 run_after |
+| 6 数据缺口 | `insufficient_data` 正确；`ad_entities` 补 `created_at TIMESTAMPTZ`（0 曝光规则用）；预算调整记录取 `changesets` 成功项 + `accounts/:id/timeline` external 变更（B3 已有） |
+| 7 API DTO | `GET /work-items` 已由 P-035/work-item-list-001 冻结；详情/动作/explain DTO 见 api.md v1.3 |
+
+### P-006 B3 安全执行（7 问）
+
+| # | 裁决 |
+|---|---|
+| 1 items 归属 | ✅ v1.2 已加账户三键；campaign/unit/creative 的 account 由 `ad_entities` 反查落快照，不信任调用方 |
+| 2 typed value | `from_value/to_value` 改 JSONB `{type:"number"|"boolean"|"string"|"json"|"schedule168", value, media_default?:true}`；比较按 type 严格相等 |
+| 3 状态机 | dry-run **是 confirm 硬前置**（必须存在同 `dry_run_hash` 的成功 execution_run(dry_run=true)）；`failed` 可重试=新 execution_run attempt+1 同 changeset；`unknown` → 只读 reconcile（对比 `accounts/:id/structure`）→ success/failed/仍 unknown 转人工；`rolled_back` 在反向变更集 success 后写回原 changeset |
+| 4 run status / RESULT_JSON | execution_runs.status `pending|running|success|partial|failed|unknown|cancelled`；item 回执 `{target_type,target_id,field,applied_value,media_code,media_message,applied_at}` |
+| 5 hash | `dry_run_hash = sha256(canonical_json(sorted items[{target_type,target_id,field,from_value,to_value}]) + ttl_expire_at)`；confirm 重算比对，不等 → 409 `FROM_VALUE_CHANGED`；`changesets` 加 `dry_run_hash TEXT, confirm_hash TEXT` |
+| 6 API DTO | 409 `{code, changed_items:[{target_id,field,expected_from,actual_from}]}`；partial = status partial + items[] 各自 item_status；rollback 只对 success 项生成反向草稿；confirm 幂等=同 hash 重复 confirm 返回既有 execution_run |
+| 7 UNKNOWN 核实 | 只读 structure 对比；超时语义等 OS 样本 → **内网联调硬门**，未定前 unknown 一律转人工 |
+
+### P-007 B4 任务与报告（5 问）
+
+| # | 裁决 |
+|---|---|
+| 1 task_id 主数据 | 先按奇航 task_id；核验列为 OS agent 联调项（B7） |
+| 2 task_accounts | ✅ v1.2 已加 workspace_id + 区间排斥 |
+| 3 pacing | **业务日**（上海 03:00 日切）；asOf=最近完整结算日；剩余天数不含 asOf；7 日均速**剔除零量日**（与 metrics.md 均值规则一致）但标注剔除数；任务结束后显示最终达成率不再外推 |
+| 4 日报 12 模块 | 字段/顺序按 `docs/18-KA日报规范借鉴.md`；角色三版 `optimizer|lead|exec` 裁剪；缺数按三态；schema `daily-report/v1`；具体字段表由 R-010 从 18 号规范抄进 api.md 附录 |
+| 5 考核价变更 | 重算范围=effective_date 起该任务全部账户日；通知=任务 owner + 相关账户 owner；DTO `{task_id, old_price, new_price, effective_date, recomputed_days, notified_user_ids[]}`；已读确认走 work_items(type=agent_question) |
+
+### P-008 B5 Agent 与网关（10 问）
+
+| # | 裁决 |
+|---|---|
+| 1 会话约束 | `agent_messages` 加 `session_id` FK、`seq INT`、`client_message_id TEXT`，`UNIQUE(session_id,seq)`、`UNIQUE(session_id,client_message_id)`；`agent_context_items` 加 session FK；object_type 枚举 `account|task|work_item|changeset|report`；无权限 → 403 不加入；对象已删 → 410 |
+| 2 runs 补列 | `agent_runs` 加 `session_id, provider_id, model, credential_owner_user_id, error_code, attempt INT DEFAULT 1, first_token_at, usage_ref, result_ref`；status `queued|running|succeeded|failed|cancelled|timeout` |
+| 3 run events | **DB 表** `agent_run_events(run_id, seq, kind, safe_payload JSONB, raw_ref TEXT, at)` UNIQUE(run_id,seq)；raw 走对象存储只存 ref |
+| 4 provider 凭证 | ✅ 新表 `model_provider_credentials(workspace_id,user_id,provider_id,secret_ref,status,last_checked_at)` PK(workspace_id,user_id,provider_id)；`users.idealab_ak_ref` 迁移后废弃 |
+| 5 capability matrix | ✅ 新表 `provider_model_capabilities(provider_id, model, protocol, supports_tools, supports_stream, supports_structured, timeout_ms, sdk_compat, status, tested_at, error_summary, test_version)` PK(provider_id,model) |
+| 6 网关 | ✅ Worker 单元内 localhost sidecar，不新增 FaaS；`/v1/messages` 不进公开 API；短时 AES-GCM 信封 ✅ |
+| 7 SSE | 帧 `{type:"session"|"run"|"delta"|"tool"|"evidence"|"done"|"error", run_id, seq, ts, data}`；structured output 只在 `done`；断线后 `GET /api/v1/agent/runs/:id/events?after_seq=` 续；客户端取消 `POST .../runs/:id/cancel`；幂等靠 `client_message_id` |
+| 8 诊断 DTO | 冻结 `diagnosis/v1`：`{reason_code(PRD 归因子类枚举), action(5 动作枚举), evidence_refs[], confidence 0-1, expected_effect{metric,delta_range}, constraint_check{passed,violations[]}, fallback_reason?}`；B5 已实现的最小 schema 即此 |
+| 9 OS 工具 | job_type `agent_task`；`dispatch_os_task` 请求 `{capability, params, account_scope[三键], idempotency_key}` 回执 `{os_run_ref, status, result_ref}`；只读能力直调，写能力必须先有 confirmed changeset；真协议等 B7 联调 |
+| 10 用量 | ✅ SDK usage 只作诊断；结算账本待网关 usage 表（后续） |
+
+**红线复核（arch 对 B5 六条必审）**：①DTO 已裁 ②`tools:[]`+MCP allowlist+auto-memory 关 → R-010 验收时我看代码 ③sidecar 边界 ✅ ④**Claude Agent SDK 驱动非 Anthropic 模型的许可 → 老板找法务/采购，上线前硬门** ⑤生产沙箱限额 → 部署批次 ⑥fake≠联调 ✅ 记住。

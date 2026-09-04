@@ -251,6 +251,7 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - 老板拍板：视觉唯一母版 `apps/ui-layout-demo/sidebar.html`，其他全不要；功能起点 `main` 上的 `apps/web`（九项导航/八模块/六 KPI/⌘K/BFF 已在）；**不重做功能，套母版样式**；视觉老板一对一对话精修不截图，功能交 SHA 给 arch。
 - 本批四页顺序：工作台 `/`（套样式+删三 tab+加个人/团队空间切换）→ 登录页 `/login`（从 ContentRadar 复制改造，接 AUTH-001）→ 账户池/数据分析（套样式+删三 tab）→ 投放任务（接 `fixtures/task-list/` 四态）。
 - 契约依据：api.md AUTH-001 + DATA-ROUTE-001 v1.2；metrics.md 缺数三态（显 −）；前端永不算数。
+- **组件铁律**：先查 `docs/frontend/ui-assets/`（showroom/capabilities/source-cache）从官方源码复制，只写业务适配层，不自写组件；规则 `apps/web/AGENTS.md`，规范 `frontend-product-standard.md`，自检 `前端视觉与体验审核清单.md`。
 - 分支 `fe/f006`（从 `main@v0.2-unaudited-baseline`）；`[fe]` 路径限定；只动 `apps/web` 非 api；状态文件 `docs/plans/F006-状态.md`。
 - F-001/F-001R/F-002/F-003/F-005 全部关闭归档（fe/f001 已废弃；F-005 成果已在 main）。
 - 状态：待处理

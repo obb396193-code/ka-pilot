@@ -141,3 +141,27 @@
   10. **补 root 指出的集成测试缺口**：`business-read-session-pg.integration.test.ts` 用真 Repository 覆盖 personal/team 的 query/tasks/work-items/detail、team changeset 403、伪造 x-ka-*、旧 token、跨 workspace、同 accountId 跨 media、logout 后全 401。
 - 纪律：`[be]` 前缀路径限定 commit；不动 `packages/contract/`（缺口写 inbox-arch）；不动 `apps/web` 非 api 部分；状态文件 `docs/plans/R009-状态.md`；完成交 SHA + 四包测试数 + 真实 PG 证据。
 - 状态：待处理
+
+
+---
+
+### R-010 后端：契约 v1.3 落地 + B2-B5 内核接成 HTTP/BFF（2026-09-04；与 R-009 串行，R-009 先）
+
+- 派活方：arch　日期：2026-09-04
+- **先读**：`docs/relay/inbox-arch.md`「2026-09-04 arch 裁决：root 攒的 B2-B5 契约差异包」（29 问裁决）→ `packages/contract/schema.sql` 末尾「v1.3 新增」→ `api.md` 末尾「v1.3 DTO 与状态机」→ `docs/plans/2026-09-04-契约对齐与缺口地图.md`（哪些是"内核有 HTTP 没接"）。
+- 基线：R-009 完成后的 `be/r009` 头 → 拉 `be/r010`。
+- 交付物：
+  1. **migration 009**（v1.3 全部：alert_rules 条件树、work_items 去重三列+partial unique、account_mutes、ad_entities.created_at、changeset_items JSONB typed value、changesets 双 hash、agent_messages/context FK+seq+client_message_id、agent_runs 九列、agent_run_events、model_provider_credentials、provider_model_capabilities）；真实 PG up/down/up。
+  2. **工作项 HTTP**：`GET /work-items/:id`、`POST .../ignore|process|reject|escalate|dispatch|reply`、`POST /accounts/:media/:id/mute`、`POST /rules/:id/explain`——按 api.md v1.3 状态机与详情 DTO；去重/复发/P0 突破静音落 Repository。
+  3. **变更集 HTTP 全流程**：`POST /changesets`、`/dry-run`（写 dry_run_hash）、`/confirm`（hash 校验 + 409 DTO + 幂等）、`/rollback`、`/retry`、`GET /:id`；typed value；execution_run DTO。
+  4. **任务 HTTP**：`GET /tasks/:id`（含 pacing v1.3 语义）、`POST /tasks`（幂等）、`PATCH /tasks/:id`、`POST /tasks/:id/assessment-price`（重算+通知 DTO）、`GET /tasks/:id/timeline|accounts`。
+  5. **账户 HTTP**：`GET /accounts/:id`（小传+余额+倒计时）、`/structure`、`/timeline`、`POST .../star|tags|transfer`。
+  6. **语义查询 HTTP**：`POST /api/v1/query`（summary/dimension/trend/table/health）接 B1c 内核；dimension 只开 account/task/biz，其余返回 `DIMENSION_UNSUPPORTED`。
+  7. **日报 HTTP**：`GET /reports/daily?date=&role=`；把 `docs/18-KA日报规范借鉴.md` 12 模块字段抄进 api.md 附录并按 `daily-report/v1` 返回。
+  8. **Agent HTTP/SSE**：`POST /agent/sessions`、`POST .../messages`（SSE 七帧）、`POST/DELETE .../context`、`GET /agent/runs`、`GET /runs/:id/events?after_seq=`、`POST /runs/:id/cancel`；诊断按 `diagnosis/v1`。
+  9. **系统 HTTP**：`GET /system/health`、`GET /system/etl-runs`、`POST .../rerun`（admin）、`GET /search?q=`（非 LLM）。
+  10. **Next BFF**：以上全部对应 `/api/internal/*` 路由，转发 Session cookie + requestId，不接受 `dataView`。
+  11. **Capability Registry**：把 ka-src-0007 评估列出的快手 MAPI 核心能力（campaign update/status、unit budget、creative update/status/review、四层实时 report）录入 `provider_model_capabilities` 同构的 capability 表（B7 Registry），状态 `documented_unverified`；修 kuaishou-cli 2 处 HTTP 方法冲突。
+- 拆批建议：**R-010a**（2-6，页面能用）先交；**R-010b**（7-11）后交。每批 SHA + 四包测试数 + 真实 PG 证据 + HTTP 负向用例（401/403/409/410）。
+- 纪律同 R-009；契约缺口写 inbox-arch，不自造 DTO。
+- 状态：待处理（等 R-009）
