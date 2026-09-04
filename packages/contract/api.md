@@ -572,3 +572,41 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - HTTP 401/403 → 直接 `BLOCKED_AUTH`，不重试
 - HTTP 200 但业务错误码 → **待 B7 内网实证后补充映射表**（Qihang get_data 可能返 HTTP 200 + 业务错误）
 - B1a 阶段：后端只实现 HTTP 401/403 不重试；其余 4xx/5xx 按通用策略（502/503/504 重试 3 次指数退避，其余不重试进 failed）
+
+---
+
+## v1.3 DTO 与状态机（2026-09-04 arch 裁决 P-005～P-008；R-010 接 Web API 依此）
+
+### 工作项（P-005）
+
+- 状态机：`open →process→ processing`｜`open/processing →dispatch→ dispatched`（改 assignee + timeline 派发记录）｜`任意活动态 →escalate→ escalated`（assignee=值班表上级）｜`processing →reject→ rejected`（`reject_reason` 必填）｜`done` 由 T+1 回收或人工完成写入｜`ignored/expired` 终态。
+- 去重：同 `dedupe_key` 活动态只一条，再触发 `occurrence_count+1`；严重度升级则关旧建新（`superseded_by`）。
+- 户级静音：`POST /api/v1/accounts/:media/:id/mute {days, reason_chip}` → `account_mutes`；**P0 突破静音**。
+- 详情 DTO：`{id, type, severity, status, title, account{media,account_id,name}, task_id, rule{id,name}, evidence_snapshot, diagnosis(diagnosis/v1), occurrence_count, last_triggered_at, assignee, sla_due, t1_result, timeline[]}`；四个动作端点均返回此 DTO。
+- `POST /rules/:id/explain {media, account_id, ds}` → `{rule_id, ds, triggered:boolean, tree:[{node, passed, actual, threshold, reason:"data_stale|insufficient_sample|cooldown|daily_cap|conflict|no_permission|awaiting_confirm|ok"}]}`（PRD 5.6「为什么没触发」七种原因）。
+
+### 变更集（P-006）
+
+- `changeset_items.from_value/to_value` = `{type:"number"|"boolean"|"string"|"json"|"schedule168", value, media_default?:true}`。
+- 状态机：`draft →dry-run→ draft(dry_run_hash 写入)` → `confirm`（**必须存在成功 dry-run 且 hash 匹配**，否则 409 `DRY_RUN_REQUIRED`；from 值变了 409 `FROM_VALUE_CHANGED {changed_items:[{target_id,field,expected_from,actual_from}]}`）→ `confirmed →jobs→ executing → success|partial|failed|unknown`；`failed` 可 `POST /retry`（新 execution_run attempt+1）；`unknown` 自动只读 reconcile 一次，仍 unknown 转人工；`rollback` 只对 success 项生成反向草稿，原 changeset 在反向 success 后置 `rolled_back`。
+- confirm 幂等：同 `confirm_hash` 重复 confirm 返回既有 execution_run（200 非 201）。
+- execution_run DTO：`{id, changeset_id, attempt, status, dry_run, started_at, finished_at, items:[{target_type,target_id,field,item_status,applied_value,media_code,media_message,applied_at,fail_reason}]}`。
+
+### 任务与日报（P-007）
+
+- pacing：业务日（上海 03:00 日切）；`as_of`=最近完整结算日；`remaining_days` 不含 as_of；7 日均速剔除零量日并返回 `excluded_zero_days`；任务 `ended` 后返回 `final_achievement_rate` 不再外推。
+- `POST /tasks/:id/assessment-price` 响应 `{task_id, old_price, new_price, effective_date, recomputed_days, notified_user_ids[]}`；已读确认走 `work_items(type=agent_question)`。
+- 日报 `GET /reports/daily?date=&role=optimizer|lead|exec` 响应 `{schema:"daily-report/v1", date, role, modules:[{key, title, status:"available"|"missing"|"error", data}]}`；12 模块 key/字段表由 R-010 从 `docs/18-KA日报规范借鉴.md` 抄入本节附录。
+
+### Agent（P-008）
+
+- `POST /agent/sessions/:id/messages {client_message_id, content, context_object_ids?}` → SSE。帧 `{type:"session"|"run"|"delta"|"tool"|"evidence"|"done"|"error", run_id, seq, ts, data}`；structured output 只在 `done.data`；`error.data={code,message}`。
+- 续传 `GET /agent/runs/:id/events?after_seq=N`；取消 `POST /agent/runs/:id/cancel`；`client_message_id` 幂等（重复返回同 run）。
+- `POST/DELETE /agent/sessions/:id/context {object_type:"account"|"task"|"work_item"|"changeset"|"report", object_id}`；无权限 403 不加入；对象已删 410。
+- run DTO：`{id, session_id, status:"queued"|"running"|"succeeded"|"failed"|"cancelled"|"timeout", provider_id, model, attempt, error_code, first_token_at, started_at, finished_at, summary}`；usage 只作诊断字段不进结算。
+- 诊断 `diagnosis/v1`：`{reason_code, action:"reduce_bid"|"increase_budget"|"pause"|"replace_material"|"observe", evidence_refs[], confidence(0-1), expected_effect{metric, delta_range:[lo,hi]}, constraint_check{passed, violations[]}, fallback_reason?}`；`reason_code` 枚举=PRD 归因子类。
+- OS 工具（B7 联调前只冻形状）：`dispatch_os_task {capability, params, account_scope:[{media,account_id}], idempotency_key}` → `{os_run_ref, status, result_ref}`；写能力必须携带 confirmed `changeset_id`。
+
+### 错误码追加
+
+`TASK_ACCOUNT_OVERLAP | DRY_RUN_REQUIRED | OBJECT_GONE(410) | MUTED_BY_ACCOUNT`

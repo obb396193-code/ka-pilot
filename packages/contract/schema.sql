@@ -435,3 +435,88 @@ CREATE TABLE audit_log (
 
 -- ═══ 知识库（B8 建，此处仅预留名）═══
 -- kb_documents 见 PRD 3.11，B8 批次建表（B 级不提前建）
+
+-- ═══════════════════════════════════════════════════════════════════
+-- v1.3 新增（2026-09-04 arch 裁决 P-005～P-008；Codex R-010 出 migration 009）
+-- ═══════════════════════════════════════════════════════════════════
+
+-- P-005#1 复合规则（版本化条件树；旧 metric/operator/threshold 三列保留兼容简单规则）
+ALTER TABLE alert_rules ADD COLUMN condition_tree JSONB;   -- {version, all:[], any:[], not:[]}；叶子 {metric,operator,threshold,window_hours?}
+ALTER TABLE alert_rules ADD COLUMN fallback_copy TEXT;     -- 条件树无法解释时的人话兜底
+
+-- P-005#2 工作项去重与复发
+ALTER TABLE work_items ADD COLUMN dedupe_key TEXT;         -- rule_id:media:account_id
+ALTER TABLE work_items ADD COLUMN occurrence_count INT DEFAULT 1;
+ALTER TABLE work_items ADD COLUMN last_triggered_at TIMESTAMPTZ;
+CREATE UNIQUE INDEX uq_work_items_active_dedupe ON work_items(workspace_id, dedupe_key)
+  WHERE status IN ('open','processing','dispatched');       -- 同 key 活动态只一条；严重度升级=关旧建新
+-- P-005#3 状态机补 dispatched 态：open|processing|dispatched|escalated|rejected|done|ignored|expired|external_handled
+
+-- P-005#4 户级静音（P0 突破静音；work_items.muted_until 废弃）
+CREATE TABLE account_mutes (
+  workspace_id UUID NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,
+  muted_until DATE NOT NULL, muted_by UUID, reason_chip TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, media, account_id),
+  FOREIGN KEY (workspace_id, media, account_id) REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT
+);
+
+-- P-005#6 0 曝光规则需要计划创建时间
+ALTER TABLE ad_entities ADD COLUMN created_at TIMESTAMPTZ;
+
+-- P-006#2 typed value：from_value/to_value 改 JSONB {type:"number"|"boolean"|"string"|"json"|"schedule168", value, media_default?:true}
+ALTER TABLE changeset_items ALTER COLUMN from_value TYPE JSONB USING to_jsonb(from_value);
+ALTER TABLE changeset_items ALTER COLUMN to_value   TYPE JSONB USING to_jsonb(to_value);
+-- P-006#5 hash
+ALTER TABLE changesets ADD COLUMN dry_run_hash TEXT;      -- sha256(canonical_json(sorted items) + ttl_expire_at)；confirm 必须匹配
+ALTER TABLE changesets ADD COLUMN confirm_hash TEXT;
+-- P-006#4 execution_runs.status 枚举：pending|running|success|partial|failed|unknown|cancelled
+
+-- P-008#1 Agent 会话约束
+ALTER TABLE agent_messages ADD COLUMN seq INT;
+ALTER TABLE agent_messages ADD COLUMN client_message_id TEXT;
+ALTER TABLE agent_messages ADD CONSTRAINT fk_agent_messages_session FOREIGN KEY (session_id) REFERENCES agent_sessions(id) ON DELETE CASCADE;
+CREATE UNIQUE INDEX uq_agent_messages_seq ON agent_messages(session_id, seq);
+CREATE UNIQUE INDEX uq_agent_messages_client ON agent_messages(session_id, client_message_id) WHERE client_message_id IS NOT NULL;
+ALTER TABLE agent_context_items ADD CONSTRAINT fk_agent_ctx_session FOREIGN KEY (session_id) REFERENCES agent_sessions(id) ON DELETE CASCADE;
+-- agent_context_items.object_type 枚举：account|task|work_item|changeset|report
+
+-- P-008#2 runs 补列；status 枚举 queued|running|succeeded|failed|cancelled|timeout
+ALTER TABLE agent_runs ADD COLUMN session_id UUID REFERENCES agent_sessions(id);
+ALTER TABLE agent_runs ADD COLUMN provider_id TEXT;
+ALTER TABLE agent_runs ADD COLUMN model TEXT;
+ALTER TABLE agent_runs ADD COLUMN credential_owner_user_id UUID;
+ALTER TABLE agent_runs ADD COLUMN error_code TEXT;
+ALTER TABLE agent_runs ADD COLUMN attempt INT DEFAULT 1;
+ALTER TABLE agent_runs ADD COLUMN first_token_at TIMESTAMPTZ;
+ALTER TABLE agent_runs ADD COLUMN usage_ref TEXT;
+ALTER TABLE agent_runs ADD COLUMN result_ref TEXT;
+
+-- P-008#3 run 事件（流式恢复/审计；raw 走对象存储只存 ref）
+CREATE TABLE agent_run_events (
+  run_id UUID NOT NULL REFERENCES agent_runs(id) ON DELETE CASCADE,
+  seq INT NOT NULL, kind TEXT NOT NULL,   -- session|run|delta|tool|evidence|done|error
+  safe_payload JSONB, raw_ref TEXT, at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (run_id, seq)
+);
+
+-- P-008#4 通用 Provider 凭证（users.idealab_ak_ref 迁移后废弃）
+CREATE TABLE model_provider_credentials (
+  workspace_id UUID NOT NULL, user_id UUID NOT NULL, provider_id TEXT NOT NULL,
+  secret_ref TEXT NOT NULL,              -- 只存 reference
+  status TEXT DEFAULT 'unverified',      -- unverified|active|invalid|revoked
+  last_checked_at TIMESTAMPTZ, created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, user_id, provider_id),
+  FOREIGN KEY (workspace_id, user_id) REFERENCES users(workspace_id, id) ON DELETE RESTRICT
+);
+
+-- P-008#5 Provider Capability Matrix（实测通过才 status=verified）
+CREATE TABLE provider_model_capabilities (
+  provider_id TEXT NOT NULL, model TEXT NOT NULL,
+  protocol TEXT NOT NULL,                -- anthropic_messages|openai_chat_completions
+  supports_tools BOOLEAN, supports_stream BOOLEAN, supports_structured BOOLEAN,
+  timeout_ms INT, sdk_compat TEXT,       -- native|adapter|unsupported
+  status TEXT DEFAULT 'documented_unverified',   -- documented_unverified|verified|failed|disabled
+  tested_at TIMESTAMPTZ, error_summary TEXT, test_version TEXT,
+  PRIMARY KEY (provider_id, model)
+);
