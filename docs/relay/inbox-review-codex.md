@@ -19,7 +19,8 @@
 - 基线：`codex/integration-control@1d2c926`
 - 分支：`codex/personal-team-task5-business-reads-v2`
 - 计划提交：`d8781dd`
-- 代码候选：`b98fa4f`
+- 初始候选：`b98fa4f`
+- R1 修复候选：`29748fa`
 - 证据：`docs/evidence/Task5-双空间业务读授权质量报告.md`
 - 请重点审查：
   1. 旧 `x-ka-*` 是否彻底失去生产授权作用，Session cookie 是否是唯一业务上下文来源；
@@ -27,6 +28,11 @@
   3. team 是否完全排除个人双-null工作项与 Changeset，且未误开媒体写；
   4. Platform team 查询是否始终受 workspace 约束，KA Data team 是否 fail closed；
   5. 真实 PG+HTTP E2E、requestId、exact-16MB 与前端 0 diff 证据是否可复验。
+- R1 退修已处理：
+  1. personal 任务必须命中业务日有效的授权 tuple，空 grant 返回 0；
+  2. 双数据诊断改为服务端 flag + 精确 entitlement，普通 Session 固定 platform；
+  3. 联合真 PG+HTTP 补齐 team Changeset Repository 前 403、logout 后五路 401，
+     以及同号账户跨 workspace/media 不串数。
 - 已知未完成：前端 BFF Session 转发、Task6 team ingestion、真实奇航/KA Data、内网部署。
 - 非阻断 P2：`createSessionForIdentity()` active personal membership 查询后续改稳定 `LIMIT 2`。
-- 状态：`review_requested`；不得据此宣称已合流、已部署或 Claude 已批准。
+- 状态：`r1_resubmitted`；不得据此宣称已合流、已部署或 Claude 已批准。
