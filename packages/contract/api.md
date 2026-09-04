@@ -107,9 +107,9 @@ workspace/user/role/scope 必须由后端依据该 Session 重新解析。内部
 该端点的来源状态/全量计数使用 `MetricValue={value:number|null, availability}`；
 Canonical Row 内的比率/CPA 固定使用
 `RatioValue={value:number|null,state:"finite"|"infinite"|"undefined"}`，由后端计算，
-前端不得用原始分子分母重算。普通可缺指标用 `number|null`，数值 0 与缺失 `null` 分开。
+前端不得用原始分子分母重算。**普通可缺指标一律 `MetricValue={value:number|null, availability:"available"|"missing"|"error"}`（P0-04 三态，与 metrics.md 一致；R-009 裁决 2026-09-05 取代旧"number|null"写法）**；只有 `availability=available` 的 0 才是真 0。
 
-公开请求严格只接受三个顶层字段：
+普通 Session 请求**严格只接受两个顶层字段**（R-009 裁决 2026-09-05：`dataView` 从必填改为**不接受**，收到即 `400 INVALID_REQUEST`；数据源由服务端按 `workspaceKind` 固定 personal→platform / team→ka_data）：
 
 ```jsonc
 {
@@ -118,10 +118,11 @@ Canonical Row 内的比率/CPA 固定使用
     "date": "2026-08-24",
     "media": "KUAISHOU",
     "accountIds": ["fixture-account"]
-  },
-  "dataView": "ka_data | platform | reconcile"
+  }
 }
 ```
+
+`reconcile.account_daily` 不在普通 Query Registry 白名单内；仅治理后台的诊断路由（`DATA_DIAGNOSTIC_ENTITLEMENTS_JSON` 命中）以独立端点 `POST /api/v1/admin/data/reconcile` 进入，请求体同上两字段。
 
 - 禁止提交 `sql`、表名、列名、自由表达式、`workspaceId`、`userId`；未知字段按 `INVALID_REQUEST` 拒绝。
 - 首批 Query Registry 仅开放：`account.summary`、`account.trend`、`account.table`、`account.anomalies`、`account.detail`、`reconcile.account_daily`。
@@ -135,7 +136,7 @@ Canonical Row 内的比率/CPA 固定使用
 单来源响应包含 `mode + source`。每个 source 都必须返回：
 `queryId/rowSchemaVersion/status/rows/returnedRowCount/wholeResultTotal/lineage/warnings`。
 `queryId` 必须与 Registry 已解析请求一致；`rowSchemaVersion` 固定为对应
-`<queryId>/v1`。lineage 至少包含：
+`<queryId>/v2`（v2=指标三态化；v1 fixtures 作废由 R-009 同步升级）。lineage 至少包含：
 
 ```jsonc
 {
