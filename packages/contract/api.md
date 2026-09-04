@@ -610,3 +610,79 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ### 错误码追加
 
 `TASK_ACCOUNT_OVERLAP | DRY_RUN_REQUIRED | OBJECT_GONE(410) | MUTED_BY_ACCOUNT`
+
+---
+
+## v1.4 端点与 DTO（2026-09-04 arch 裁决缺口地图 12 条；R-012 依此）
+
+### 警报流与值守（1.6 / 9.5）
+
+- `GET /api/v1/alerts/stream?since=<iso>` → `{items:[{work_item_id, severity, title, account{media,account_id,name}, created_at, acked_at, escalation?:{id, level, to_user, paused_until, deadline}}], duty:{date, primary:{user_id,name}, backup}, counts:{p0_unacked, p1_open, escalating}}`；只返回活动态 P0/P1。
+- `POST /work-items/:id/ack` → 停止升级倒计时；`POST /escalations/:id/pause {minutes}` → 标"处理中"暂停。
+- `GET /duty/roster?week=YYYY-Www` / `PUT /duty/roster {entries:[{date, primary_user, backup_user}]}`；交接班未关闭 P0 自动转移。
+- `GET /escalation-policies` / `PUT /escalation-policies {severity, ack_timeout_min, remind_after_h, escalate_to, breaks_quiet_hours, batch_hourly}`（admin）。默认 seed：P0 30/—/duty_backup/true/false；P1 —/24→48/lead/false/false；P2 —/—/lead/false/true。
+
+### 协作：派发与提审（1.9 / 3.10）
+
+- `POST /work-items/:id/dispatch {to_user, acceptance_criteria?, acceptance_rule?:{metric,operator,threshold,window_days}, note?}` → dispatches 行 + 接收方工作台出现（来源标"派发"）+ 钉钉通知。
+- `POST /dispatches/:id/receipt {outcome:"done"|"ignored"|"disagreed", reason?}` → 回执自动带变更集与 T+1；`disagreed` 是合法结局，派发方建议同样被回收打分。
+- `GET /dispatches?role=sent|received&status=` 列表；超 SLA 24h 提醒/48h 自动 escalate。
+- `POST /changesets/:id/submit-for-approval {approver, comment?}` → approvals；变更集进入 `awaiting_approval`（**不阻断 dry-run，阻断 confirm**）。
+- `POST /approvals/:id/approve|reject {comment?}`；批/驳可在钉钉 L2 卡片完成；SLA 30min 催办。
+- `GET /approvals?role=requested|pending&status=`。
+- 免审：同 approver 同 `reason_code` 批过 ≥3 次 → `approval_auto_pass_rules.auto_pass=true`，后续同类 `status=auto_passed`；approver 可关。
+- **充值协作**（REQ-046）：`POST /accounts/:media/:id/recharge-request {amount, note}` → 只发 outbound 消息给上级，**不入 approvals、不阻断**。
+
+### 任务详情六页签（2.2 / 2.8 / 2.9）
+
+- `GET /tasks/:id` → `{task, overview:{target_volume, achieved, achievement_rate, time_progress, pacing(v1.3), on_target, anomaly_summary:{p0,p1,opportunity}, assessment_price:{current, effective_date, history_count}}}`。
+- `GET /tasks/:id/metrics?date_from&date_to&compare=dod|wow` → `{summary, trend[]}`（=query summary/trend 以任务为 scope）。
+- `GET /tasks/:id/accounts`（已冻）+ 每户 `capacity:{budget, budget_usage_rate, headroom}`。
+- `GET /tasks/:id/funnel?date_from&date_to` → `{online:{exposure, click, conversion, real_conversion}, offline:{wake_uv, potential_uv, real_conversion}, rates:{ctr, cvr, gap, potential_rate, bi_cvr}}`；值全用 MetricValue/RatioValue；离线链路来源 `account_offline`，缺则 `missing`。
+- `GET /tasks/:id/timeline?cursor=&kinds=` → `{items:[{at, kind:"changeset"|"assessment_price"|"dispatch"|"external_change"|"work_item"|"escalation", actor:{user_id,name}|"system"|"external", summary, ref:{type,id}, detail?}], next_cursor}` 倒序；五源 UNION：changesets(success/partial/failed)、assessment_price_history、dispatches、work_items(created/resolved)、audit_log(action='external_change')。
+- `GET /tasks/:id/materials`、`GET /tasks/:id/review` → 一期 `501 NOT_IMPLEMENTED`（P2/P1 占位，前端显空态不显假数据）。
+
+### 8 维度透视补全（3.3）
+
+- `dimension_type` 枚举全开：`task|biz|account|agent_type|resource_position|bid_tool|is_ubp|deduction_range`。
+- `agent_type` 两级：行=`{agent_type:"agency"|"self", agency_name?}`（agency_name 取 accounts.tags 内 `agency:*`）。
+- `deduction_range` 桶：`[0,10)|[10,30)|[30,+)`（domain 按 `deduction_rate` 分，单位 %）。
+- `resource_position/bid_tool` 数据源=`ad_realtime` payload 字段（**字段名待 OS agent 联调确认**）；确认前返回 `DIMENSION_UNSUPPORTED`，不返回空表冒充。
+
+### 加/关账户（4.5）
+
+- `POST /accounts/import {media, account_ids[], owner_user_id?}` → 认领：写 accounts（若无）+ `account_access_grants`（personal 空间发起人 read/preview）+ 触发首次 ETL；返回 `{imported, already_exists, forbidden}`。
+- `POST /accounts/:media/:id/close {reason}` → **不直接关**，返回清理向导 `{open_work_items[], open_dispatches[], subscriptions[], scheduled_infra[], starred_by[]}`。
+- `POST /accounts/:media/:id/close/confirm {work_items:"close"|"transfer:<user>", dispatches:"close"|"transfer:<user>", unsubscribe:true, stop_infra:true}` → 逐项执行后 `status=closed, lifecycle_stage=closed, closed_at`；写 audit。
+- 开户流程（无 API 段）：`POST /accounts/open-flow {task_id, media, note}` → infra_requests(status=manual_pending) + 工作项；人工标记完成后走 import。
+
+### 素材域（6.x；**DTO 由 Codex R-012 从 B12-B18 domain 类型提案，arch 审后补入**）
+
+端点名冻结：`GET /materials?media&task_id&sort&page`、`GET /materials/:media/:id`、`POST /materials/:media/:id/analyze` → job、`GET /materials/:media/:id/analysis?version=`、`GET /materials/:media/:id/similar?top=`、`POST /materials/:media/:id/brief`、`GET /materials/:media/:id/where-used`（素材反查）、`GET /products?status=`、`GET /experiments?product_id=`。视频文件来源探针=联调硬门（用户上传/内部素材库/媒体可访问地址至少通一种）。
+
+### 结算对账（7.3；**DTO/公式由 Codex R-012 从 B19 提案**）
+
+端点名冻结：`GET /settlements?period=`、`POST /settlements/preview {period, template_version?}`（月中试算，不落 frozen）、`POST /settlements/:id/freeze`、`GET /settlements/:id`、`POST /settlements/:id/lines/:line_id/to-work-item`、`GET/POST /settlement-templates`。
+
+### 知识库（8.x；对齐 CR）
+
+- `GET /kb/documents?parent_id&kind&visibility&q&page` 树/列表；`POST /kb/documents {title, parent_id?, kind, content_json?, visibility}`；`GET /kb/documents/:id`；`PATCH /kb/documents/:id {title?, content_json?, parent_id?, position?, tags?, visibility?}` → 写 `kb_revisions` + 重算 `content_text/fingerprint` + 解析 `[[…]]` 重建 `kb_links`；`DELETE` 软删。
+- `GET /kb/documents/:id/backlinks`；`GET /kb/search?q=&kind=`（FTS，非 LLM）；`GET /kb/by-object/:type/:id`（8.4 反查）。
+- 自动归档 job `kb_archive`：日报/周报/复盘/诊断 → `kind=ai_report`，目录按 任务/日期；案例卡 job `kb_case`：变更集 success + T+1 + 忽略原因 → `kind=case`（错题本 `visibility=private`）。
+- 权限：`visibility` + workspaceKind；team 空间只读；Agent citation 走 B8 权限裁剪。
+
+### 卡片中心（9.4）
+
+- `GET/POST /cards/templates {kind, level, schema}`；`POST /cards/instances {template_id, target:{type,id}, changeset_id?}` → 生成 outbound 消息（L2 写 `changeset_hash`）。
+- `POST /cards/callback {card_instance_id, action, actor_external_id, idempotency_key, changeset_hash?}`（网关→产品，内部 bearer）：
+  - L0：只读直跑，返回结果；L1：低风险动作执行后回卡；L2：校验 `changeset_hash`=当前 `dry_run_hash` 否则 `409 CARD_HASH_MISMATCH`，通过则等价 confirm；L3：返回 web deep link。
+  - `actor_external_id` → `identity_mappings` → `actor_user_id`，无映射拒绝（四身份对账 14.3b）；`idempotency_key` 重复返回既有结果。
+- `GET /cards/callbacks?card_instance_id=`。
+
+### 推送订阅（9.3）
+
+- `GET /subscriptions/mine` / `PUT /subscriptions/mine {items:[{kind:"daily_report"|"alert"|"settlement"|"run_result"|"report_schedule", target:"group"|"dm", config, quiet_hours:{start,end}, task_ids[]}]}`；quiet_hours 只压 P1/P2。
+
+### 错误码追加
+
+`NOT_IMPLEMENTED(501) | DIMENSION_UNSUPPORTED | CARD_HASH_MISMATCH | APPROVAL_REQUIRED | ACCOUNT_HAS_OPEN_ITEMS`

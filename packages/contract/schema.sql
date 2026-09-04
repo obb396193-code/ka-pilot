@@ -520,3 +520,205 @@ CREATE TABLE provider_model_capabilities (
   tested_at TIMESTAMPTZ, error_summary TEXT, test_version TEXT,
   PRIMARY KEY (provider_id, model)
 );
+
+-- ═══════════════════════════════════════════════════════════════════
+-- v1.4 新增（2026-09-04 arch；契约缺口地图 12 条"待契约补"；Codex R-012 出 migration 014）
+-- 编号：011=v1.2 ｜ 012=v1.3 ｜ 013=Task6 团队数据（R-011）｜ 014=v1.4
+-- ═══════════════════════════════════════════════════════════════════
+
+-- ── 1.6 警报流 / 9.5 值守升级链（PRD 3.5：P0 30min 未确认升级、P1 次日催办 48h、P2 攒批）
+CREATE TABLE escalations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  work_item_id UUID NOT NULL REFERENCES work_items(id),
+  level SMALLINT NOT NULL DEFAULT 1,      -- 1=值班主→备 ｜ 2=上级
+  from_user UUID, to_user UUID NOT NULL,
+  reason TEXT NOT NULL,                   -- ack_timeout|sla_breach|manual
+  paused_until TIMESTAMPTZ,               -- 标"处理中"可暂停倒计时
+  created_at TIMESTAMPTZ DEFAULT now(), acked_at TIMESTAMPTZ, resolved_at TIMESTAMPTZ
+);
+CREATE TABLE escalation_policies (        -- 默认三行由 migration 014 seed：P0/P1/P2
+  workspace_id UUID NOT NULL, severity TEXT NOT NULL,   -- P0|P1|P2
+  ack_timeout_min INT, remind_after_h INT,
+  escalate_to TEXT NOT NULL,              -- duty_backup|lead
+  breaks_quiet_hours BOOLEAN DEFAULT false, batch_hourly BOOLEAN DEFAULT false,
+  PRIMARY KEY (workspace_id, severity)
+);
+
+-- ── 1.9 / 3.10 协作：派发 + 主动提审（PRD 3.10 已给列，此处冻结）
+CREATE TABLE dispatches (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  work_item_id UUID NOT NULL REFERENCES work_items(id),
+  from_user UUID NOT NULL, to_user UUID NOT NULL,
+  acceptance_criteria TEXT,
+  acceptance_rule JSONB,                  -- {metric, operator, threshold, window_days}：T+1 自动判定关闭
+  status TEXT DEFAULT 'open',             -- open|done|ignored|disagreed|escalated
+  receipt TEXT, reject_reason TEXT, sla_due TIMESTAMPTZ,
+  evidence_snapshot JSONB,                -- 派发时数据证据快照
+  created_at TIMESTAMPTZ DEFAULT now(), closed_at TIMESTAMPTZ,
+  FOREIGN KEY (workspace_id, from_user) REFERENCES users(workspace_id, id),
+  FOREIGN KEY (workspace_id, to_user) REFERENCES users(workspace_id, id)
+);
+CREATE TABLE approvals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  changeset_id UUID NOT NULL REFERENCES changesets(id),
+  requester UUID NOT NULL, approver UUID NOT NULL,
+  status TEXT DEFAULT 'pending',          -- pending|approved|rejected|expired|auto_passed
+  comment TEXT, sla_due TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now(), decided_at TIMESTAMPTZ,
+  FOREIGN KEY (workspace_id, requester) REFERENCES users(workspace_id, id),
+  FOREIGN KEY (workspace_id, approver) REFERENCES users(workspace_id, id)
+);
+CREATE TABLE approval_auto_pass_rules (   -- 同类批过 3 次可免审（PRD 3.10）
+  workspace_id UUID NOT NULL, approver UUID NOT NULL, kind TEXT NOT NULL,   -- kind=changeset reason_code
+  approved_count INT DEFAULT 0, auto_pass BOOLEAN DEFAULT false, updated_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, approver, kind)
+);
+-- 充值协作（REQ-046）不入 approvals：只发 outbound_messages(kind='recharge_request')
+
+-- ── 3.3 8 维度透视缺失 5 维的数据源（列先冻结；ad 级字段名待 OS agent 联调确认 ad_realtime payload）
+ALTER TABLE accounts ADD COLUMN agent_type TEXT;         -- agency|self；二级"代理商名"存 tags
+ALTER TABLE accounts ADD COLUMN is_ubp BOOLEAN;
+ALTER TABLE ad_entities ADD COLUMN resource_position TEXT;
+ALTER TABLE ad_entities ADD COLUMN bid_tool TEXT;
+-- deduction_range 不落列：domain 按 deduction_rate 分桶 [0,10%)|[10,30%)|[30%,+)
+
+-- ── 4.5 加/关账户
+ALTER TABLE accounts ADD COLUMN claimed_by UUID;
+ALTER TABLE accounts ADD COLUMN claimed_at TIMESTAMPTZ;
+ALTER TABLE accounts ADD COLUMN closed_at TIMESTAMPTZ;
+ALTER TABLE accounts ADD COLUMN close_reason TEXT;
+-- 关户 = status→'closed' + lifecycle_stage→'closed'；关联清理向导见 api.md
+
+-- ── 2.8 漏斗 / 2.9 任务时间线：不新增表（漏斗读 account_metrics_daily 聚合；时间线 UNION 五源见 api.md）
+
+-- ── 6.x 素材域（表名/主键冻结；**列由 Codex R-012 从 B12-B18 已有 domain 类型提契约提案**，arch 审后补入本文件）
+CREATE TABLE materials (
+  workspace_id UUID NOT NULL, media TEXT NOT NULL, material_id TEXT NOT NULL,
+  name TEXT, material_type TEXT,          -- video|image
+  url_ref TEXT, source TEXT,              -- qihang_pool|upload|internal
+  lineage_parent_id TEXT,                 -- 6.6 复刻自
+  created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, media, material_id)
+);
+CREATE TABLE material_metrics_daily (
+  workspace_id UUID NOT NULL, media TEXT NOT NULL, material_id TEXT NOT NULL, ds DATE NOT NULL,
+  cost NUMERIC, exposure BIGINT, click BIGINT, conversion BIGINT, real_conversion BIGINT,
+  account_count INT, field_sources JSONB,
+  PRIMARY KEY (workspace_id, media, material_id, ds)
+) PARTITION BY RANGE (ds);
+CREATE TABLE material_analyses (         -- 6.3 拆片结果（B13-B15）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  media TEXT NOT NULL, material_id TEXT NOT NULL, version INT NOT NULL,
+  prompt_version TEXT, status TEXT,       -- queued|running|done|failed
+  transcript_ref TEXT, frames_ref TEXT,   -- ASR 文稿 / 关键帧墙（对象存储 ref）
+  structure JSONB, evidence JSONB,        -- 钩子/卖点/人群/节奏/CTA + 时间戳证据
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (workspace_id, media, material_id, version)
+);
+CREATE TABLE material_similarity (       -- 6.3 相似（B16）
+  workspace_id UUID NOT NULL, media TEXT NOT NULL, material_id TEXT NOT NULL, similar_material_id TEXT NOT NULL,
+  score NUMERIC, components JSONB, computed_at TIMESTAMPTZ,
+  PRIMARY KEY (workspace_id, media, material_id, similar_material_id)
+);
+CREATE TABLE products (                  -- 6.2
+  workspace_id UUID NOT NULL, product_id TEXT NOT NULL,
+  name TEXT, status TEXT, attrs JSONB, created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, product_id)
+);
+CREATE TABLE product_material_experiments (   -- 6.7（B17）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  product_id TEXT NOT NULL, media TEXT NOT NULL, material_id TEXT NOT NULL,
+  sample_policy JSONB, result JSONB, significance JSONB,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+CREATE TABLE material_briefs (          -- 6.5（B18）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  media TEXT NOT NULL, source_material_id TEXT NOT NULL,
+  brief JSONB, status TEXT,              -- draft|sent|backtest_pending|backtested
+  designer_ref TEXT, backtest_material_id TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ── 7.3 结算对账（表名冻结；**列/公式由 Codex R-012 从 B19 提案**）
+CREATE TABLE settlement_templates (
+  workspace_id UUID NOT NULL, version TEXT NOT NULL,
+  fields JSONB NOT NULL, formulas JSONB, tolerances JSONB,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, version)
+);
+CREATE TABLE settlements (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  period TEXT NOT NULL,                   -- YYYY-MM
+  template_version TEXT NOT NULL,
+  status TEXT DEFAULT 'draft',            -- draft|frozen
+  snapshot JSONB, totals JSONB, created_by UUID,
+  created_at TIMESTAMPTZ DEFAULT now(), frozen_at TIMESTAMPTZ,
+  UNIQUE (workspace_id, period, template_version)   -- 模板版本化不覆盖旧单
+);
+CREATE TABLE settlement_lines (
+  id BIGSERIAL PRIMARY KEY, settlement_id UUID NOT NULL REFERENCES settlements(id),
+  media TEXT, account_id TEXT, task_id TEXT,
+  fields JSONB NOT NULL, diff JSONB,     -- 返点实际 vs 估算差异
+  work_item_id UUID                       -- 差异转工作项
+);
+
+-- ── 8.x 知识库（对齐 CR knowledge_items/document_links 命名 + B8 领域底座；前端复制 CR 代码时字段直接对上）
+CREATE TABLE kb_documents (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  title TEXT NOT NULL,
+  kind TEXT NOT NULL DEFAULT 'manual',    -- manual|ai_report|case|sop
+  parent_id UUID REFERENCES kb_documents(id), position TEXT,   -- 文档树
+  content_json JSONB,                     -- BlockNote blocks = 真相源（CR 同名）
+  content_text TEXT,                      -- 纯文本投影，搜索用（CR 同名）
+  content_fingerprint TEXT,
+  tags TEXT[], owner UUID,
+  visibility TEXT DEFAULT 'private',      -- private|team|workspace；错题本默认 private
+  source_ref JSONB,                       -- ai_report/case 来源 {type,id}
+  created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now()
+);
+CREATE TABLE kb_revisions (
+  id BIGSERIAL PRIMARY KEY, document_id UUID NOT NULL REFERENCES kb_documents(id) ON DELETE CASCADE,
+  revision INT NOT NULL, content_json JSONB, edited_by UUID, created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (document_id, revision)
+);
+CREATE TABLE kb_links (                  -- @双链（CR document_links 同构）
+  workspace_id UUID NOT NULL,
+  source_document_id UUID NOT NULL REFERENCES kb_documents(id) ON DELETE CASCADE,
+  target_document_id UUID NOT NULL REFERENCES kb_documents(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (source_document_id, target_document_id)
+);
+CREATE TABLE kb_business_refs (          -- 8.4 按对象反查
+  workspace_id UUID NOT NULL, document_id UUID NOT NULL REFERENCES kb_documents(id) ON DELETE CASCADE,
+  object_type TEXT NOT NULL,              -- account|task|changeset|work_item|material
+  object_id TEXT NOT NULL, media TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (document_id, object_type, object_id)
+);
+CREATE INDEX idx_kb_documents_fts ON kb_documents
+  USING gin (to_tsvector('simple', coalesce(title,'') || ' ' || coalesce(content_text,'')));
+
+-- ── 9.4 卡片中心（L0 只读直跑｜L1 低风险确认｜L2 变更集确认+hash｜L3 跳 Web）
+CREATE TABLE card_templates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  kind TEXT NOT NULL,                     -- alert|approval|daily_report|dispatch|...
+  level TEXT NOT NULL,                    -- L0|L1|L2|L3
+  schema JSONB NOT NULL, version INT DEFAULT 1, enabled BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (workspace_id, kind, version)
+);
+CREATE TABLE card_instances (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  template_id UUID NOT NULL REFERENCES card_templates(id),
+  target_type TEXT, target_id TEXT,       -- work_item|changeset|approval|dispatch
+  changeset_id UUID, changeset_hash TEXT, -- L2 校验
+  outbound_message_id UUID,
+  created_at TIMESTAMPTZ DEFAULT now(), expires_at TIMESTAMPTZ
+);
+CREATE TABLE card_callbacks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  card_instance_id UUID NOT NULL REFERENCES card_instances(id),
+  action TEXT NOT NULL, actor_external_id TEXT NOT NULL, actor_user_id UUID,   -- 实名溯源：钉钉 id → identity_mappings → user
+  idempotency_key TEXT NOT NULL UNIQUE, hash_verified BOOLEAN,
+  result TEXT, result_ref TEXT, at TIMESTAMPTZ DEFAULT now()
+);
