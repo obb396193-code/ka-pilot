@@ -2824,7 +2824,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 | B23-A session fail-closed | `auth-repository.ts:114,130-147` token hash 格式校验 + actor/membership/identity `is_active` + `revoked_at` 全查 | ✅ |
 | Task5 旧 x-ka-* 头不再参与授权 | `http-server.ts` 全文无 `x-ka-` 引用（彻底移除） | ✅ |
 | Task5 P1-1 任务元数据越权 | `e617271` 改 `task-list-sql.ts` | ✅ 已修（待 diff 细看） |
-| **Task4 P1-1 登录 credential oracle** | `session-http.ts:62-68` 密码错 401 "Invalid credentials" vs 身份/空间不可用 403 "Workspace access is not allowed" **仍分开** | ❌ **未修** → R-009 新增 |
+| Task4 P1-1 登录 credential oracle | `session-http.ts` `login()` 两条失败路径均 `loginFailure()`→401 同 message；`view()` 的 401/403 分叉是已登录后 current/switch，属正确；测试 `:140-170` 断言一致 | ✅ 已修（**arch 首轮误判，已撤回 R-009#11**） |
 | Task5 P1-2 dataView 浏览器控制 | 老板裁绑空间 | → R-009#8 |
 | Task5 P1-3 集成测试只盖 accounts | `e617271` 加了 340 行 integration test | ⚠️ 待 diff 确认覆盖 tasks/work-items/detail |
 | R3 输出侧三键 scope guard | `data/query-service.ts:46,117,369,378` `guardSourceOutput()` 对 kaData/platform 双路 | ✅ |
@@ -2833,7 +2833,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 
 ### 本轮新发现（并入 R-009 追加条）
 
-1. **Task4 P1-1 登录 oracle 未修**：登录阶段所有认证后授权失败统一 `401 UNAUTHORIZED` 同 message 同体积。
+1. ~~Task4 P1-1 登录 oracle 未修~~ **撤回**：复核 `login()` 已统一 401，root 结论成立。
 2. **hh 上限不一致**：`etl/payload.ts` `max(23)` → 改 `max(24)` 与 client 一致（奇航实证 hh=24 有效=全天）。
 3. **迁移编号**：v1.2 用 011、v1.3 用 012（008-010 已占用）——契约与派活已改。
 4. B4 pacing 零量日剔除、B13 下载 allowlist 默认拒绝、B23-C2 首次 full ready 门、B10 离线分区有界回退 —— 4 项"待核"在 R-009 交付审查时定位（另 4 项已当场核实 ✅）。
@@ -2843,3 +2843,25 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 - **可保留**：全部。架构决定（SQL-first、agent 不算数、写操作确认门、租户 fail-closed、凭证信封）经代码级核验成立，无一处需要推倒。
 - **不可宣称完成**：8 个 P0 待 R-009、29 个契约问题待 R-010 接 HTTP、真实奇航/IdeaLab/Multica/BUC 零联调。
 - **HTTP 现状**：worker 只有 `/healthz`、`/api/v1/data/query`、auth×4、tasks/accounts/work-items 三个列表；web BFF 4 条。其余 ~35 个契约端点=内核有、HTTP 无 → R-010。
+
+
+---
+
+### P-036 ✅已收｜root（Codex 审查会话）停工交接（2026-09-04）｜arch 校对
+
+root 停工前交接全文由老板转交。**arch 逐条校对结果**：
+
+| root 陈述 | arch 核 | 处置 |
+|---|---|---|
+| main=c66381d、tag=d121273、integration-control 退役 | ✅（main 现已到 c5b34bf） | — |
+| Task4 P1-1 登录 oracle 已关闭、异步 scrypt、TTL 一致、`LIMIT 1001` | ✅ `login()` 实读 + 测试 140-170 | **arch 首轮审计误判撤回** |
+| Task5 五类业务读接 Session、x-ka-* 无效、team changeset 403、logout 后全 401 | ✅ `http-server.ts` 无 x-ka 引用 | 逐行 diff 随 R-009 |
+| Task5 旧"普通用户固定 platform、KA Data 仅诊断"需按 v1.2 改 | ✅ 一致 | R-009#8 |
+| `c3ed7b3` Session BFF = candidate + 11 脏文件半成品 | ✅ 实查 11 M + 1 ?? | R-009#9 已改为"审后合 + 原工作树续完" |
+| `fe-functional-bff-v2@110f221` 旧鉴权不可原样合 | ✅ | R-009#9 注明 |
+| Task6 `f009e19` 可独立审；`6d02cfe/feec2ec/4e67315` + 草稿 011 与 v1.2 冲突 | ✅ 草稿 011 与 arch 的 011 撞号 | **R-011** 重做，编号 013，root 六条 staging/publish 要求全采纳 |
+| 复验数：Domain 491 / DB 171 / Worker 604 / PG 11+30 | 491 arch 独立复跑 ✓；DB/Worker 本机无 PG 未复验 | 待 Docker |
+| 接手顺序 10 条 | 与 arch 已做/在做一致 | — |
+| "所有媒体写继续关闭；preview/confirm/execute 保留人工确认门" | ✅ 契约 v1.3 状态机 | — |
+
+root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据；但本轮校对未发现 root 陈述失实。
