@@ -129,7 +129,7 @@
 - **先读**：`docs/relay/inbox-arch.md`「2026-09-04 arch 接回裁决」全文 → `packages/contract/schema.sql` 头部 v1.2 注释 + 各表 P0-xx 注释 → `metrics.md`「缺数三态」「一账户一任务」→ `api.md` DATA-ROUTE-001 v1.2 修订块。
 - **基线**：`main@v0.2-unaudited-baseline`（=integration-control d121273）。**从 main 拉 `be/r009`**，不再用 integration-control；root 审查会话已退役，契约只认 arch。
 - 交付物：
-  1. **migration 008**：`CREATE EXTENSION btree_gist`；`task_accounts` EXCLUDE gist 区间排斥；`workflow_runs.executor_token/executor_lease_until`；新表 `workflow_effects`；`inbound_events` +`lease_until/attempts/max_attempts/last_error/processed_at`；`changesets` 两个复合 FK→users；`changeset_items` +`workspace_id/media/account_id`+FK；`backfill_jobs.status` 五态 +`failed_stage/finished_at`。真实 PG up/down/up 重放。
+  1. **migration 011**（008-010 已被 B23 占用）：`CREATE EXTENSION btree_gist`；`task_accounts` EXCLUDE gist 区间排斥；`workflow_runs.executor_token/executor_lease_until`；新表 `workflow_effects`；`inbound_events` +`lease_until/attempts/max_attempts/last_error/processed_at`；`changesets` 两个复合 FK→users；`changeset_items` +`workspace_id/media/account_id`+FK；`backfill_jobs.status` 五态 +`failed_stage/finished_at`。真实 PG up/down/up 重放。
   2. **P0-04 缺数三态**：`semantic-query-metrics.ts`、`report-facts-source.ts` 及所有 `COALESCE(sum(...),0)` 改为 `{value, availability}`；聚合含 missing 即 missing；补"某日无行/字段缺/权限内无数据"三类反例，断言 UI 侧拿到 `null + missing` 不是 0。
   3. **P0-05**：task_accounts 写入端捕获排斥冲突→409 `TASK_ACCOUNT_OVERLAP`；任务聚合删多任务分摊分支；考核价查询去 `LIMIT 1` 任取。
   4. **P0-07**：Runner 推进前 `SELECT ... FOR UPDATE` 校验 executor_token；写节点先 INSERT `workflow_effects`，UNIQUE 冲突直接读回结果不重放；补两 Worker 并发 advance 同 run 的真实 PG 反例。
@@ -151,7 +151,7 @@
 - **先读**：`docs/relay/inbox-arch.md`「2026-09-04 arch 裁决：root 攒的 B2-B5 契约差异包」（29 问裁决）→ `packages/contract/schema.sql` 末尾「v1.3 新增」→ `api.md` 末尾「v1.3 DTO 与状态机」→ `docs/plans/2026-09-04-契约对齐与缺口地图.md`（哪些是"内核有 HTTP 没接"）。
 - 基线：R-009 完成后的 `be/r009` 头 → 拉 `be/r010`。
 - 交付物：
-  1. **migration 009**（v1.3 全部：alert_rules 条件树、work_items 去重三列+partial unique、account_mutes、ad_entities.created_at、changeset_items JSONB typed value、changesets 双 hash、agent_messages/context FK+seq+client_message_id、agent_runs 九列、agent_run_events、model_provider_credentials、provider_model_capabilities）；真实 PG up/down/up。
+  1. **migration 012**（v1.3 全部：alert_rules 条件树、work_items 去重三列+partial unique、account_mutes、ad_entities.created_at、changeset_items JSONB typed value、changesets 双 hash、agent_messages/context FK+seq+client_message_id、agent_runs 九列、agent_run_events、model_provider_credentials、provider_model_capabilities）；真实 PG up/down/up。
   2. **工作项 HTTP**：`GET /work-items/:id`、`POST .../ignore|process|reject|escalate|dispatch|reply`、`POST /accounts/:media/:id/mute`、`POST /rules/:id/explain`——按 api.md v1.3 状态机与详情 DTO；去重/复发/P0 突破静音落 Repository。
   3. **变更集 HTTP 全流程**：`POST /changesets`、`/dry-run`（写 dry_run_hash）、`/confirm`（hash 校验 + 409 DTO + 幂等）、`/rollback`、`/retry`、`GET /:id`；typed value；execution_run DTO。
   4. **任务 HTTP**：`GET /tasks/:id`（含 pacing v1.3 语义）、`POST /tasks`（幂等）、`PATCH /tasks/:id`、`POST /tasks/:id/assessment-price`（重算+通知 DTO）、`GET /tasks/:id/timeline|accounts`。
@@ -165,3 +165,9 @@
 - 拆批建议：**R-010a**（2-6，页面能用）先交；**R-010b**（7-11）后交。每批 SHA + 四包测试数 + 真实 PG 证据 + HTTP 负向用例（401/403/409/410）。
 - 纪律同 R-009；契约缺口写 inbox-arch，不自造 DTO。
 - 状态：待处理（等 R-009）
+
+#### R-009 追加（2026-09-04 arch 六簇审计新发现）
+
+11. **Task4 P1-1 登录 credential oracle**：`apps/worker/src/auth/session-http.ts:62-68` 密码错 401 与"密码对但身份/空间不可用" 403 外显不同 → 登录阶段全部统一 `401 UNAUTHORIZED` + 同 message + 同响应体尺寸；内部 reason 只进脱敏审计。补测试断言两者响应完全一致。
+12. **hh 上限不一致**：`apps/worker/src/etl/payload.ts:37` `max(23)` → `max(24)`（奇航实证 hh=24 有效=全天，与 `qihang/client.ts:156` 一致）。
+13. 交付时在状态文件逐条定位以下 8 项代码行给 arch 复核：B11 2000 行 fail-closed、B3 confirm from 值复核、B4 pacing 零量日剔除、B5 auto-memory 关闭、R3 输出侧三键 guard、B13 下载 allowlist 默认拒绝、B23-C2 首次 full ready 门、B10 离线分区有界回退。
