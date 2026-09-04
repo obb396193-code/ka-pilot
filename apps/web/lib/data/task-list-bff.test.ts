@@ -7,6 +7,7 @@ import { handleTaskListRequest } from "./task-list-bff.ts"
 import { taskListResponseSchema } from "./task-list-contracts.ts"
 
 const SERVICE_TOKEN = "task-list-server-secret-000000000000000"
+const SESSION_COOKIE = "task-session-token-000000000000000000001"
 const authContext = {
   workspaceId: "00000000-0000-4000-8000-000000000024",
   userId: "buc-user-demo",
@@ -16,6 +17,12 @@ const environment = {
   NODE_ENV: "production",
   KA_DATA_BACKEND_ORIGIN: "https://ka-data.internal.example",
   KA_DATA_SERVICE_TOKEN: SERVICE_TOKEN,
+}
+
+function taskRequest(url = "http://localhost/api/internal/tasks", init: RequestInit = {}): Request {
+  const headers = new Headers(init.headers)
+  if (!headers.has("cookie")) headers.set("cookie", `ka_session=${SESSION_COOKIE}`)
+  return new Request(url, { ...init, headers })
 }
 
 async function fixture(name: "ready" | "empty" | "partial" | "stale" | "errors"): Promise<unknown> {
@@ -63,7 +70,7 @@ test("task BFF forwards only frozen query parameters and server-approved scope",
   const ready = await fixture("ready")
   let target = ""
   let init: RequestInit | undefined
-  const request = new Request(
+  const request = taskRequest(
     "http://localhost/api/internal/tasks?page=2&pageSize=50&q=%E7%A7%8B%E5%AD%A3%20%E6%8B%89%E6%96%B0&status=active&ownerUserId=00000000-0000-4000-8000-000000000001&periodFrom=2026-08-01&periodTo=2026-08-31&hasOpenWorkItems=false",
     {
       headers: {
@@ -103,12 +110,10 @@ test("task BFF forwards only frozen query parameters and server-approved scope",
   assert.equal(init?.method, "GET")
   assert.equal(headers.get("authorization"), `Bearer ${SERVICE_TOKEN}`)
   assert.equal(headers.get("x-request-id"), "bff-task-list-001")
-  assert.equal(headers.get("x-ka-workspace-id"), authContext.workspaceId)
-  assert.equal(headers.get("x-ka-user-id"), authContext.userId)
-  assert.deepEqual(
-    JSON.parse(Buffer.from(headers.get("x-ka-account-scope") ?? "", "base64url").toString("utf8")),
-    authContext.allowedAccounts,
-  )
+  assert.equal(headers.get("cookie"), `ka_session=${SESSION_COOKIE}`)
+  assert.equal(headers.has("x-ka-workspace-id"), false)
+  assert.equal(headers.has("x-ka-user-id"), false)
+  assert.equal(headers.has("x-ka-account-scope"), false)
   assert.equal(headers.has("x-ka-source"), false)
   assert.equal(result.status, 200)
   assert.deepEqual(result.body, correlatedPayload(ready, "bff-task-list-001"))
@@ -129,7 +134,7 @@ test("task BFF rejects unknown, duplicate, malformed, and inverted query paramet
   for (const search of searches) {
     let called = false
     const result = await handleTaskListRequest(
-      new Request(`http://localhost/api/internal/tasks?${search}`),
+      taskRequest(`http://localhost/api/internal/tasks?${search}`),
       {
         environment,
         approvedAuthContextResolver: async () => authContext,
@@ -164,22 +169,22 @@ test("production task BFF preserves unauthenticated and forbidden fail-closed st
   assert.equal(unauthenticated.body.ok ? "" : unauthenticated.body.error.code, "UNAUTHORIZED")
 
   const forbidden = await handleTaskListRequest(
-    new Request("http://localhost/api/internal/tasks"),
+    taskRequest(),
     {
       ...dependencies,
-      approvedAuthContextResolver: async () => ({
-        status: "rejected",
-        httpStatus: 403,
-        reason: "MEMBERSHIP_INACTIVE",
-      }),
+      fetchImpl: async (_input, init) => {
+        called = true
+        const requestId = requestIdFromInit(init)
+        return Response.json({ ok: false, error: { code: "FORBIDDEN", message: "Membership inactive", retryable: false, requestId } }, { status: 403, headers: { "x-request-id": requestId } })
+      },
     },
   )
   assert.equal(forbidden.status, 403)
   assert.equal(forbidden.body.ok ? "" : forbidden.body.error.code, "FORBIDDEN")
-  assert.equal(called, false)
+  assert.equal(called, true)
 })
 
-test("development scope works only for literal development with an explicit server fixture", async () => {
+test("development fixtures still require an explicit session cookie", async () => {
   const development = {
     ...environment,
     NODE_ENV: "development",
@@ -190,7 +195,7 @@ test("development scope works only for literal development with an explicit serv
   }
   let calls = 0
   const ready = await fixture("ready")
-  const accepted = await handleTaskListRequest(new Request("http://localhost/api/internal/tasks"), {
+  const accepted = await handleTaskListRequest(taskRequest(), {
     environment: development,
     approvedAuthContextResolver: async () => null,
     fetchImpl: async (_input, init) => {
@@ -213,7 +218,7 @@ test("development scope works only for literal development with an explicit serv
 })
 
 test("task BFF rejects declared and streamed bodies at the exact 16 MB boundary", async () => {
-  const request = new Request("http://localhost/api/internal/tasks")
+  const request = taskRequest()
   const base = {
     environment,
     approvedAuthContextResolver: async () => authContext,
@@ -243,7 +248,7 @@ test("task BFF rejects declared and streamed bodies at the exact 16 MB boundary"
 
 test("task BFF rejects unknown response fields and upstream status-envelope mismatches", async () => {
   const ready = await fixture("ready") as Record<string, unknown>
-  const request = new Request("http://localhost/api/internal/tasks")
+  const request = taskRequest()
   const dependencies = {
     environment,
     approvedAuthContextResolver: async () => authContext,
@@ -267,7 +272,7 @@ test("task BFF rejects unknown response fields and upstream status-envelope mism
 })
 
 test("task BFF rejects missing, malformed, and mismatched upstream requestId correlation", async () => {
-  const request = new Request("http://localhost/api/internal/tasks")
+  const request = taskRequest()
   const ready = await fixture("ready")
   const errors = await fixture("errors") as Record<string, unknown>
   const expectedRequestId = "bff-task-correlation"
@@ -322,7 +327,7 @@ test("task BFF preserves canonical upstream error status after requestId correla
   const errors = await fixture("errors") as Record<string, unknown>
   for (const status of [400, 401, 403, 500, 502, 503, 504]) {
     const requestId = `bff-task-error-${status}`
-    const result = await handleTaskListRequest(new Request("http://localhost/api/internal/tasks"), {
+    const result = await handleTaskListRequest(taskRequest(), {
       environment,
       approvedAuthContextResolver: async () => authContext,
       requestId: () => requestId,
@@ -334,7 +339,7 @@ test("task BFF preserves canonical upstream error status after requestId correla
 })
 
 test("task BFF separates upstream timeout from source unavailability", async () => {
-  const request = new Request("http://localhost/api/internal/tasks")
+  const request = taskRequest()
   const base = {
     environment,
     approvedAuthContextResolver: async () => authContext,
