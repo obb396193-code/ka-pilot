@@ -2741,7 +2741,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 | 9 OS 工具 | job_type `agent_task`；`dispatch_os_task` 请求 `{capability, params, account_scope[三键], idempotency_key}` 回执 `{os_run_ref, status, result_ref}`；只读能力直调，写能力必须先有 confirmed changeset；真协议等 B7 联调 |
 | 10 用量 | ✅ SDK usage 只作诊断；结算账本待网关 usage 表（后续） |
 
-**红线复核（arch 对 B5 六条必审）**：①DTO 已裁 ②`tools:[]`+MCP allowlist+auto-memory 关 → R-010 验收时我看代码 ③sidecar 边界 ✅ ④**Claude Agent SDK 驱动非 Anthropic 模型的许可 → 老板找法务/采购，上线前硬门** ⑤生产沙箱限额 → 部署批次 ⑥fake≠联调 ✅ 记住。
+**红线复核（arch 对 B5 六条必审）**：①DTO 已裁 ②`tools:[]`+MCP allowlist+auto-memory 关 → R-010 验收时我看代码 ③sidecar 边界 ✅ ④Claude Agent SDK 驱动非 Anthropic 模型的许可 → **老板 9-4 裁：内部使用，不等法务；网关非 Claude 路由按设计可开**（条款无明文禁止亦无明文允许，已查 LICENSE/Commercial Terms D.4/法律页） ⑤生产沙箱限额 → 部署批次 ⑥fake≠联调 ✅ 记住。
 
 
 ---
@@ -2794,7 +2794,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 | B5 短时凭证信封 | `orchestrator.ts:289` `sealCredentialEnvelope` + `envelopeKey` | ✅ |
 | B5 auto-memory 关 | `agent/sdk/safety.ts:30` `CLAUDE_CODE_DISABLE_AUTO_MEMORY`、`:75` `settingSources:[]`、`:81` `persistSession:false`、`:150` 启动校验 | ✅ |
 | B5 sidecar 不新增 FaaS | 设计文档 + config `MODEL_GATEWAY_BASE_URL=127.0.0.1` | ✅ |
-| B5 **SDK 驱动非 Anthropic 模型许可** | 技术跑通≠许可 | ⚠️ **老板找法务/采购，上线硬门** |
+| B5 SDK 驱动非 Anthropic 模型许可 | 条款无明文禁/允；老板 9-4 裁内部使用不等法务 | ✅ 关闭 |
 | B6 策略样本护栏 | `strategy-analysis.ts:5,124-125` `MIN_STRATEGY_COST=100`、`insufficient_accounts` | ✅（对 3.11） |
 | B7 Registry/DAG/确认门 | `workflows/capability-registry.ts`、`workflow-graph.ts`；`run-handler.ts:289-348` `execute_confirmed` phase + `mustMatchPrior` | ✅ |
 | B7 单执行器 fencing（P0-07） | 未修 | ❌ → R-009#4（v1.2 executor_token + effects） |
