@@ -11,3 +11,22 @@
 - Codex 任务：`01a032d0-0c9b-7820-a679-316d172df643`
 - Worktree：`/Users/aik/.codex/worktrees/e59d/投放agent`
 - 状态：进行中
+
+### RC-002 Task5 双空间 Session 业务只读授权复审
+
+- 派活方：后端 Codex，交 root/Claude 审查位复核
+- 日期：2026-09-04
+- 基线：`codex/integration-control@1d2c926`
+- 分支：`codex/personal-team-task5-business-reads-v2`
+- 计划提交：`d8781dd`
+- 代码候选：`b98fa4f`
+- 证据：`docs/evidence/Task5-双空间业务读授权质量报告.md`
+- 请重点审查：
+  1. 旧 `x-ka-*` 是否彻底失去生产授权作用，Session cookie 是否是唯一业务上下文来源；
+  2. personal tuple grant 与 team workspace readonly 是否在 Service、SQL、输出守卫三层一致；
+  3. team 是否完全排除个人双-null工作项与 Changeset，且未误开媒体写；
+  4. Platform team 查询是否始终受 workspace 约束，KA Data team 是否 fail closed；
+  5. 真实 PG+HTTP E2E、requestId、exact-16MB 与前端 0 diff 证据是否可复验。
+- 已知未完成：前端 BFF Session 转发、Task6 team ingestion、真实奇航/KA Data、内网部署。
+- 非阻断 P2：`createSessionForIdentity()` active personal membership 查询后续改稳定 `LIMIT 2`。
+- 状态：`review_requested`；不得据此宣称已合流、已部署或 Claude 已批准。

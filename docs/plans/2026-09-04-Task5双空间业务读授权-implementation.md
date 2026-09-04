@@ -85,3 +85,10 @@
 3. Run Domain, DB and Worker full tests, typecheck, lint, production dependency audit and diff/security scan.
 4. Verify `apps/web` and `apps/ui-layout-demo` have zero diff.
 5. Commit evidence/relay/ledger only after the claimed gates pass; do not push or enter Task6.
+
+## 执行结果（2026-09-04）
+
+- Task 1–5 已在代码候选 `b98fa4f` 完成；实际以一个可独立编译、可独立验收的纵切片提交，避免拆出中间不可运行的 HTTP/Service Contract。
+- 真实 PostgreSQL + HTTP 证明了登录、personal 账户授权、team 空间只读、token 轮换、旧 token 失效、伪造 `x-ka-*` 无效及 logout 失效链路。
+- 未进入 Task6 team ingestion；未修改 `apps/web`、`apps/ui-layout-demo`；未开放任何媒体写路由。
+- 前端 BFF 尚未转发 Session cookie，真实奇航/KA Data 与内网部署尚未执行。
