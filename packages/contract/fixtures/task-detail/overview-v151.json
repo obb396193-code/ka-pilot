@@ -1,0 +1,278 @@
+{
+  "ok": true,
+  "data": {
+    "task": {
+      "taskId": "fixture-task-ready",
+      "taskName": "AAC 拉新",
+      "bizName": "AAC",
+      "status": "active",
+      "period": {
+        "start": "2026-09-01",
+        "end": "2026-09-30"
+      },
+      "owner": {
+        "userId": "00000000-0000-4000-8000-000000000001",
+        "displayName": "示例优化师"
+      },
+      "budget": {
+        "value": 3000000,
+        "availability": "available"
+      }
+    },
+    "overview": {
+      "targetVolume": {
+        "value": 120000,
+        "availability": "available"
+      },
+      "achieved": {
+        "value": 18400,
+        "availability": "available"
+      },
+      "achievementRate": {
+        "value": 0.1533,
+        "state": "finite"
+      },
+      "timeProgress": {
+        "value": 0.1667,
+        "state": "finite"
+      },
+      "pacing": {
+        "asOf": "2026-09-04",
+        "elapsedDays": 4,
+        "totalDays": 30,
+        "remainingDays": 26,
+        "targetProgress": {
+          "value": 0.1533,
+          "state": "finite"
+        },
+        "timeProgress": {
+          "value": 0.1667,
+          "state": "finite"
+        },
+        "projectedVolume": 112000,
+        "projectedCompletion": {
+          "value": 0.9333,
+          "state": "finite"
+        },
+        "projectedGap": 8000,
+        "requiredDailyVolume": {
+          "value": 3907.7,
+          "state": "finite"
+        },
+        "sevenDayAvgVolume": {
+          "value": 4600,
+          "state": "finite"
+        },
+        "excludedZeroDays": 1,
+        "finalAchievementRate": null
+      },
+      "onTarget": true,
+      "costStatus": "green",
+      "costStatusReason": "window_ok",
+      "cost": {
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05",
+          "preset": "month_to_date"
+        },
+        "cost": {
+          "value": 698000.0,
+          "availability": "available"
+        },
+        "cashCost": {
+          "value": 545277.6,
+          "availability": "available"
+        },
+        "cashCpa": {
+          "value": 29.63,
+          "state": "finite"
+        },
+        "realCpa": {
+          "value": 37.93,
+          "state": "finite"
+        },
+        "costSpace": {
+          "value": 153922.4,
+          "availability": "available"
+        },
+        "projectedWindowCashCpa": {
+          "value": 30.1,
+          "state": "finite"
+        },
+        "affordableDailyCashCpa": {
+          "value": 45.8,
+          "state": "finite"
+        }
+      },
+      "anomalySummary": {
+        "p0": 1,
+        "p1": 3,
+        "opportunity": 2
+      },
+      "assessmentPrice": {
+        "current": 38.0,
+        "effectiveDate": "2026-09-01",
+        "historyCount": 2
+      },
+      "dailyBudgetCap": {
+        "current": 100000.0,
+        "effectiveDate": "2026-09-03",
+        "historyCount": 2
+      },
+      "budgetUsageRate": {
+        "value": 0.91,
+        "state": "finite"
+      },
+      "budgetUsageDate": "2026-09-05",
+      "stage": {
+        "value": "delivering",
+        "source": "system",
+        "changedAt": "2026-09-03T00:00:00.000+08:00"
+      },
+      "readiness": {
+        "accounts": {
+          "ratio": {
+            "value": 1.0,
+            "state": "finite"
+          },
+          "ready": true,
+          "source": "system",
+          "missing": []
+        },
+        "recharge": {
+          "ratio": {
+            "value": 0.67,
+            "state": "finite"
+          },
+          "ready": false,
+          "source": "system",
+          "missing": [
+            "account-5 余额 0"
+          ]
+        },
+        "products": {
+          "ratio": {
+            "value": 1.0,
+            "state": "finite"
+          },
+          "ready": true,
+          "source": "manual",
+          "missing": []
+        },
+        "materials": {
+          "ratio": {
+            "value": 0.5,
+            "state": "finite"
+          },
+          "ready": false,
+          "source": "manual",
+          "missing": [
+            "候选素材 <3"
+          ]
+        },
+        "strategy": {
+          "ratio": {
+            "value": 1.0,
+            "state": "finite"
+          },
+          "ready": true,
+          "source": "manual",
+          "missing": []
+        },
+        "infra": {
+          "ratio": {
+            "value": 0.8,
+            "state": "finite"
+          },
+          "ready": false,
+          "source": "system",
+          "missing": [
+            "account-3 无 unit"
+          ]
+        },
+        "overall": {
+          "value": 0.83,
+          "state": "finite"
+        }
+      },
+      "sopProgress": {
+        "runId": "00000000-0000-4000-8000-000000001001",
+        "steps": [
+          {
+            "key": "prepare",
+            "status": "done",
+            "at": "2026-08-20T11:20:00.000+08:00"
+          },
+          {
+            "key": "open",
+            "status": "done",
+            "at": "2026-08-20T13:42:00.000+08:00"
+          },
+          {
+            "key": "recharge",
+            "status": "done",
+            "at": "2026-08-20T14:10:00.000+08:00"
+          },
+          {
+            "key": "build",
+            "status": "done",
+            "at": "2026-08-20T16:35:00.000+08:00"
+          },
+          {
+            "key": "cold_start",
+            "status": "done",
+            "at": "2026-08-23T09:00:00.000+08:00"
+          },
+          {
+            "key": "deliver_monitor",
+            "status": "running",
+            "at": null
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "kind": "readiness",
+          "ref": "recharge",
+          "title": "account-5 余额 0，待充值",
+          "severity": "P1"
+        },
+        {
+          "kind": "work_item",
+          "ref": "00000000-0000-4000-8000-000000000201",
+          "title": "account-2 成本超考核",
+          "severity": "P0"
+        }
+      ],
+      "nextActions": [
+        {
+          "kind": "work_item",
+          "ref": "00000000-0000-4000-8000-000000000201",
+          "title": "处理 account-2 超考核"
+        },
+        {
+          "kind": "readiness",
+          "ref": "materials",
+          "title": "补充候选素材至 ≥3"
+        }
+      ]
+    },
+    "tabs": [
+      "overview",
+      "data",
+      "accounts",
+      "materials",
+      "sop",
+      "work_items",
+      "timeline",
+      "reports"
+    ]
+  },
+  "meta": {
+    "requestId": "fixture-task-overview",
+    "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "v1.5.1 ②：stage/readiness/sopProgress/blockers/nextActions；八页签"
+  }
+}

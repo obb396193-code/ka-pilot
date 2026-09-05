@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "data": {
+    "date": "2026-09-05",
+    "status": "ready",
+    "generatedAt": "2026-09-05T03:40:00.000+08:00",
+    "dataAsOf": "2026-09-05T03:20:00.000+08:00",
+    "sections": [
+      {
+        "key": "summary",
+        "title": "昨日概览",
+        "metrics": {
+          "cost": {
+            "value": 14200.0,
+            "availability": "available"
+          },
+          "cashCost": {
+            "value": 11093.0,
+            "availability": "available"
+          },
+          "realConversion": {
+            "value": 340,
+            "availability": "available"
+          },
+          "cashCpa": {
+            "value": 32.6,
+            "state": "finite"
+          }
+        },
+        "text": "昨日现金 CPA 32.6，达标。"
+      },
+      {
+        "key": "anomalies",
+        "title": "异常",
+        "items": [
+          "account-2 成本超考核 +12%",
+          "account-5 余额 0"
+        ]
+      }
+    ],
+    "queueSummary": {
+      "p0": 1,
+      "p1": 3,
+      "opportunity": 2,
+      "coverage": {
+        "accountsInScope": 45,
+        "checked": 45,
+        "pending": 0,
+        "undeterminable": 0
+      }
+    },
+    "pushStatus": "not_sent"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "数据未就绪时 status=pending_data，不生成假早报"
+  }
+}

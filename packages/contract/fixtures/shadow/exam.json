@@ -1,0 +1,55 @@
+{
+  "ok": true,
+  "data": {
+    "ruleId": 3,
+    "days": 14,
+    "sample": 24,
+    "observedImprovedRate": {
+      "value": 0.79,
+      "state": "finite"
+    },
+    "gates": {
+      "observation": {
+        "pass": false,
+        "value": {
+          "value": 0.79,
+          "state": "finite"
+        },
+        "threshold": 0.8,
+        "minSample": 10
+      },
+      "executionReliability": {
+        "pass": true,
+        "successRate": {
+          "value": 0.97,
+          "state": "finite"
+        },
+        "unknownRate": {
+          "value": 0.01,
+          "state": "finite"
+        }
+      },
+      "scope": {
+        "pass": true,
+        "note": "仅防御性动作，限额内"
+      },
+      "lossBound": {
+        "pass": true,
+        "netLoss30d": {
+          "value": 120.0,
+          "availability": "available"
+        },
+        "threshold": 500.0
+      }
+    },
+    "eligibleForAutonomy3": false
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "四门全过才提示可升档；人点确认才升"
+  }
+}

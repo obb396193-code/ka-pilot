@@ -1,0 +1,287 @@
+{
+  "ok": true,
+  "data": {
+    "definitionId": "00000000-0000-4000-8000-000000001701",
+    "version": 1,
+    "status": "published",
+    "paramsSchema": {
+      "type": "object",
+      "required": [
+        "task_id",
+        "confirmer"
+      ],
+      "properties": {
+        "task_id": {
+          "type": "string"
+        },
+        "confirmer": {
+          "type": "string"
+        },
+        "account_scope": {
+          "type": "array"
+        }
+      }
+    },
+    "graph": {
+      "version": "workflow-graph/v1",
+      "nodes": [
+        {
+          "id": "n1",
+          "type": "trigger",
+          "label": "读取任务配置",
+          "params": {
+            "task_id": "$params.task_id"
+          },
+          "executor_identity": "system_automation",
+          "side_effect": "read",
+          "idempotency": "none",
+          "retry": {
+            "max": 0,
+            "backoff": "fixed",
+            "base_ms": 0
+          },
+          "timeout_ms": 10000,
+          "permission_scope": [
+            "tasks:read"
+          ]
+        },
+        {
+          "id": "n2",
+          "type": "query",
+          "label": "检查账户",
+          "params": {
+            "queryId": "account.summary"
+          },
+          "executor_identity": "system_automation",
+          "side_effect": "read",
+          "idempotency": "none",
+          "retry": {
+            "max": 2,
+            "backoff": "exponential",
+            "base_ms": 2000
+          },
+          "timeout_ms": 30000,
+          "permission_scope": [
+            "accounts:read"
+          ]
+        },
+        {
+          "id": "n3",
+          "type": "execute",
+          "label": "开户（Multica 执行）",
+          "params": {
+            "capability": "account.open_flow"
+          },
+          "executor_identity": "credential_owner",
+          "side_effect": "external",
+          "idempotency": "key_required",
+          "retry": {
+            "max": 1,
+            "backoff": "fixed",
+            "base_ms": 5000
+          },
+          "timeout_ms": 120000,
+          "permission_scope": [
+            "capabilities:invoke"
+          ]
+        },
+        {
+          "id": "n4",
+          "type": "execute",
+          "label": "充值",
+          "params": {
+            "capability": "account.recharge_request"
+          },
+          "executor_identity": "credential_owner",
+          "side_effect": "external",
+          "idempotency": "key_required",
+          "retry": {
+            "max": 1,
+            "backoff": "fixed",
+            "base_ms": 5000
+          },
+          "timeout_ms": 120000,
+          "permission_scope": [
+            "capabilities:invoke"
+          ]
+        },
+        {
+          "id": "n5",
+          "type": "changeset",
+          "label": "生成基建变更集",
+          "params": {
+            "template": "infra.matrix"
+          },
+          "executor_identity": "system_automation",
+          "side_effect": "write",
+          "idempotency": "key_required",
+          "retry": {
+            "max": 3,
+            "backoff": "exponential",
+            "base_ms": 2000
+          },
+          "timeout_ms": 120000,
+          "permission_scope": [
+            "changesets:write"
+          ]
+        },
+        {
+          "id": "n6",
+          "type": "human_confirm",
+          "label": "人工确认",
+          "params": {
+            "confirmer": "$params.confirmer"
+          },
+          "executor_identity": "initiator",
+          "side_effect": "read",
+          "idempotency": "none",
+          "retry": {
+            "max": 0,
+            "backoff": "fixed",
+            "base_ms": 0
+          },
+          "timeout_ms": 86400000,
+          "permission_scope": [
+            "changesets:confirm"
+          ]
+        },
+        {
+          "id": "n7",
+          "type": "execute",
+          "label": "执行变更集",
+          "params": {},
+          "executor_identity": "credential_owner",
+          "side_effect": "write",
+          "idempotency": "key_required",
+          "retry": {
+            "max": 1,
+            "backoff": "fixed",
+            "base_ms": 5000
+          },
+          "timeout_ms": 120000,
+          "permission_scope": [
+            "changesets:execute"
+          ]
+        },
+        {
+          "id": "n8",
+          "type": "wait_reconcile",
+          "label": "冷启动等待",
+          "params": {
+            "hours": 24
+          },
+          "executor_identity": "system_automation",
+          "side_effect": "read",
+          "idempotency": "none",
+          "retry": {
+            "max": 0,
+            "backoff": "fixed",
+            "base_ms": 0
+          },
+          "timeout_ms": 90000000,
+          "permission_scope": []
+        },
+        {
+          "id": "n9",
+          "type": "agent_analysis",
+          "label": "效果回收",
+          "params": {
+            "diagnosis": "diagnosis/v1"
+          },
+          "executor_identity": "system_automation",
+          "side_effect": "read",
+          "idempotency": "none",
+          "retry": {
+            "max": 1,
+            "backoff": "fixed",
+            "base_ms": 2000
+          },
+          "timeout_ms": 120000,
+          "permission_scope": [
+            "agent:run"
+          ]
+        },
+        {
+          "id": "n10",
+          "type": "notify",
+          "label": "钉钉报告",
+          "params": {
+            "template": "card.l0.brief"
+          },
+          "executor_identity": "system_automation",
+          "side_effect": "external",
+          "idempotency": "key_required",
+          "retry": {
+            "max": 3,
+            "backoff": "exponential",
+            "base_ms": 2000
+          },
+          "timeout_ms": 15000,
+          "permission_scope": [
+            "notify:send"
+          ]
+        }
+      ],
+      "edges": [
+        {
+          "from": "n1",
+          "to": "n2",
+          "condition": null
+        },
+        {
+          "from": "n2",
+          "to": "n3",
+          "condition": {
+            "expr": "accounts.count == 0"
+          }
+        },
+        {
+          "from": "n2",
+          "to": "n4",
+          "condition": {
+            "expr": "accounts.count > 0"
+          }
+        },
+        {
+          "from": "n3",
+          "to": "n4",
+          "condition": null
+        },
+        {
+          "from": "n4",
+          "to": "n5",
+          "condition": null
+        },
+        {
+          "from": "n5",
+          "to": "n6",
+          "condition": null
+        },
+        {
+          "from": "n6",
+          "to": "n7",
+          "condition": null
+        },
+        {
+          "from": "n7",
+          "to": "n8",
+          "condition": null
+        },
+        {
+          "from": "n8",
+          "to": "n9",
+          "condition": null
+        },
+        {
+          "from": "n9",
+          "to": "n10",
+          "condition": null
+        }
+      ]
+    }
+  },
+  "meta": {
+    "requestId": "fixture-graph",
+    "_note": "workflow-graph/v1：write 节点必须经 human_confirm 再 execute；十类节点各一"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "ok": true,
+  "data": {
+    "root": {
+      "materialId": "m-5001",
+      "name": "云感防晒一件搞定"
+    },
+    "children": [
+      {
+        "materialId": "m-5101",
+        "name": "变体1 强化功能卖点",
+        "method": "script_rewrite",
+        "createdAt": "2026-09-03",
+        "metrics": {
+          "cost": {
+            "value": null,
+            "availability": "missing"
+          },
+          "exposure": {
+            "value": null,
+            "availability": "missing"
+          },
+          "click": {
+            "value": null,
+            "availability": "missing"
+          },
+          "realConversion": {
+            "value": null,
+            "availability": "missing"
+          },
+          "ratios": {
+            "ctr": {
+              "value": null,
+              "state": "undefined"
+            },
+            "realCpa": {
+              "value": null,
+              "state": "undefined"
+            }
+          }
+        }
+      },
+      {
+        "materialId": "m-5102",
+        "name": "变体2 场景切换",
+        "method": "structure_adaptation",
+        "createdAt": "2026-09-03",
+        "metrics": {
+          "cost": {
+            "value": null,
+            "availability": "missing"
+          },
+          "exposure": {
+            "value": null,
+            "availability": "missing"
+          },
+          "click": {
+            "value": null,
+            "availability": "missing"
+          },
+          "realConversion": {
+            "value": null,
+            "availability": "missing"
+          },
+          "ratios": {
+            "ctr": {
+              "value": null,
+              "state": "undefined"
+            },
+            "realCpa": {
+              "value": null,
+              "state": "undefined"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

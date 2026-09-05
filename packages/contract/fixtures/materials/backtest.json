@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "data": {
+    "briefId": "brief-1",
+    "status": "awaiting_sample",
+    "missingVariantKeys": [],
+    "insufficientMaterialVersionIds": [
+      "m-5101",
+      "m-5102"
+    ],
+    "experiment": null
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "样本不足不出结论"
+  }
+}

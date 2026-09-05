@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "claude-sonnet-5",
+        "label": "Claude Sonnet 5（默认）",
+        "provider": "anthropic",
+        "default": true,
+        "status": "verified"
+      },
+      {
+        "id": "qwen3-max-preview",
+        "label": "Qwen3 Max（IdeaLab）",
+        "provider": "idealab",
+        "default": false,
+        "status": "documented_unverified"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture-agent-models",
+    "_note": "来自网关 provider_model_capabilities；前端不写死；unverified 灰显"
+  }
+}

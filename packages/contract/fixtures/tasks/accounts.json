@@ -1,0 +1,86 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-1",
+        "accountName": "AAC拉新_快手_01",
+        "poolStatus": "in_delivery",
+        "lifecycleStage": "stable",
+        "validFrom": "2026-08-20",
+        "validTo": null,
+        "onTarget": true,
+        "costStatus": "green",
+        "capacity": {
+          "dailyBudgetCap": 100000.0,
+          "usage": {
+            "value": 0.62,
+            "state": "finite"
+          }
+        }
+      },
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-2",
+        "accountName": "AAC拉新_快手_02",
+        "poolStatus": "in_delivery",
+        "lifecycleStage": "cold_start",
+        "validFrom": "2026-08-20",
+        "validTo": null,
+        "onTarget": false,
+        "costStatus": "red",
+        "capacity": {
+          "dailyBudgetCap": 100000.0,
+          "usage": {
+            "value": 0.91,
+            "state": "finite"
+          }
+        }
+      },
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-3",
+        "accountName": "闲鱼潜客_快手_07",
+        "poolStatus": "assigned",
+        "lifecycleStage": "unknown",
+        "validFrom": "2026-08-20",
+        "validTo": null,
+        "onTarget": null,
+        "costStatus": null,
+        "capacity": {
+          "dailyBudgetCap": null,
+          "usage": {
+            "value": null,
+            "state": "undefined"
+          }
+        }
+      },
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-5",
+        "accountName": "AAC拉新_快手_05",
+        "poolStatus": "pending_recharge",
+        "lifecycleStage": "unknown",
+        "validFrom": "2026-08-20",
+        "validTo": null,
+        "onTarget": null,
+        "costStatus": null,
+        "capacity": {
+          "dailyBudgetCap": null,
+          "usage": {
+            "value": null,
+            "state": "undefined"
+          }
+        }
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

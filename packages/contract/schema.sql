@@ -831,3 +831,213 @@ ALTER TABLE report_configs ADD COLUMN updated_at TIMESTAMPTZ DEFAULT now();
 ALTER TABLE alert_rules ADD COLUMN availability_policy TEXT NOT NULL DEFAULT 'suppress'
   CHECK (availability_policy IN ('suppress','evaluate_available_only'));   -- 见 metrics.md「缺数期规则抑制」；无"按 0 代入"选项
 ALTER TABLE alert_rules ADD COLUMN data_freshness_max_hours INT;            -- NULL=按源默认（实时 6h / 离线 30h）
+
+
+-- =====================================================================
+-- v1.5.1 新增（2026-09-05 深夜 arch；全量偏差审计后老板拍 A①-⑤；并入 migration 015，R-014）
+-- =====================================================================
+-- ① 账户池：库存态（老板 9-5 按原型 P09 定九态）与投放态并存；系统推导 + 人工可覆盖留痕
+ALTER TABLE accounts ADD COLUMN pool_status TEXT NOT NULL DEFAULT 'available'
+  CHECK (pool_status IN ('available','assigned','pending_open','pending_recharge','pending_build','in_delivery','paused','closed','abnormal'));
+ALTER TABLE accounts ADD COLUMN pool_status_source TEXT NOT NULL DEFAULT 'system' CHECK (pool_status_source IN ('system','manual'));
+ALTER TABLE accounts ADD COLUMN pool_status_overridden_by UUID;
+ALTER TABLE accounts ADD COLUMN pool_status_changed_at TIMESTAMPTZ;
+ALTER TABLE accounts ADD COLUMN product_name TEXT;      -- 产品归属：个人空间人工/导入维护；团队空间同步 ka-data product_name/bound_by
+ALTER TABLE accounts ADD COLUMN product_ref TEXT;
+-- 推导规则（系统每日切+事件触发；manual 覆盖后系统不改，直到人工清除）：
+--   closed_at→closed｜abnormal 规则命中→abnormal｜无有效 task_accounts→available｜有任务 & 无消耗 & 余额≤0→pending_recharge
+--   有余额 & 无 unit→pending_build｜有任务 & 无消耗 & 有 unit→assigned｜有消耗→in_delivery（内再用 lifecycle_stage 细分）｜paused=所有 unit 暂停
+--   pending_open 只由开户流程向导写入
+
+CREATE TABLE changeset_groups (        -- ① 账户池勾选批量 → 一组变更集一次预览一次确认；执行仍逐账户（三键不变）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  initiator UUID NOT NULL, title TEXT, reason_code TEXT,
+  status TEXT NOT NULL DEFAULT 'draft',     -- draft|confirmed|executing|done（=全部终态）
+  created_at TIMESTAMPTZ DEFAULT now(), confirmed_at TIMESTAMPTZ
+);
+ALTER TABLE changesets ADD COLUMN group_id UUID REFERENCES changeset_groups(id);
+
+-- ② 投放任务：准备→投放阶段模型（REQ-028；原型 P03/P04）
+ALTER TABLE tasks ADD COLUMN stage TEXT NOT NULL DEFAULT 'preparing'
+  CHECK (stage IN ('preparing','opening','recharging','building','cold_start','delivering','ended'));
+ALTER TABLE tasks ADD COLUMN stage_source TEXT NOT NULL DEFAULT 'system' CHECK (stage_source IN ('system','manual','workflow'));
+ALTER TABLE tasks ADD COLUMN stage_changed_at TIMESTAMPTZ;
+ALTER TABLE tasks ADD COLUMN sop_run_id UUID;           -- 绑定的「开户到基建」工作流 run（可空）
+ALTER TABLE workflow_runs ADD COLUMN task_id TEXT;      -- run ↔ 任务（SOP 进度来源）
+CREATE TABLE task_readiness_overrides (  -- 就绪度六段里"策略/商品"等无法系统推导的，人工勾
+  workspace_id UUID NOT NULL, task_id TEXT NOT NULL,
+  dimension TEXT NOT NULL CHECK (dimension IN ('accounts','recharge','products','materials','strategy','infra')),
+  ready BOOLEAN NOT NULL, note TEXT, marked_by UUID, marked_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, task_id, dimension),
+  FOREIGN KEY (workspace_id, task_id) REFERENCES tasks(workspace_id, task_id)
+);
+-- stage 推导：无账户→preparing；有 pending_open 户→opening；有户全 pending_recharge→recharging；有户 pending_build→building；
+--   首次消耗 3 日内→cold_start；之后→delivering；period_end 过→ended。workflow 触发（sop_run 节点完成）优先于系统推导；manual 最优先。
+
+-- ③ 工作流节点模型：见 api.md「workflow-graph/v1」；graph JSONB 结构冻结，不新增表
+-- ④ 管理看板=工作台负责人视图：无新表，聚合现有 tasks/work_items/dispatches/escalations/approvals
+-- ⑤ 公共资产：assets 表已存在（B20），本版只冻端点与流转规则；Agent Patch 不落表（存 agent_messages payload）
+
+
+-- =====================================================================
+-- v1.6 新增（2026-09-06 arch；老板 9-5"契约全动了让前端全铺开"；素材/结算列由 arch 从 B12-B19 domain 反推冻结，不再等提案；Codex R-015 出 migration 016）
+-- =====================================================================
+-- 6.x 素材域列补齐（对齐 domain material-teardown/transcript/similarity/experiment/design-brief）
+ALTER TABLE materials ADD COLUMN thumbnail_ref TEXT;
+ALTER TABLE materials ADD COLUMN duration_ms INT;
+ALTER TABLE materials ADD COLUMN width INT;
+ALTER TABLE materials ADD COLUMN height INT;
+ALTER TABLE materials ADD COLUMN content_sha256 TEXT;     -- 下载后持久指纹；URL 每次重签不缓存（OS 第五轮实证）
+ALTER TABLE materials ADD COLUMN product_id TEXT;
+ALTER TABLE materials ADD COLUMN tags TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE materials ADD COLUMN source_status TEXT NOT NULL DEFAULT 'unknown';   -- reachable|unreachable|unknown（视频源探针）
+ALTER TABLE material_analyses ADD COLUMN transcript_source TEXT;        -- platform_caption|cloud_asr
+ALTER TABLE material_analyses ADD COLUMN timing_precision TEXT;         -- segment|whole_video（IdeaLab 无时间戳=whole_video）
+ALTER TABLE material_analyses ADD COLUMN visual_summary JSONB;          -- {hardCutCount, visualEventCount, averageShotLengthMs, hookVisualDensity}
+ALTER TABLE material_analyses ADD COLUMN fingerprint TEXT;
+ALTER TABLE material_analyses ADD COLUMN error TEXT;
+CREATE TABLE material_replication_lineages (   -- 6.6 复刻谱系（B16）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL, media TEXT NOT NULL,
+  source_material_id TEXT NOT NULL, derived_material_id TEXT NOT NULL,
+  method TEXT NOT NULL CHECK (method IN ('script_rewrite','structure_adaptation','visual_remake','mixed')),
+  source_teardown_fingerprint TEXT, note TEXT, created_by UUID, created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (workspace_id, media, derived_material_id)
+);
+CREATE TABLE material_experiment_policies (    -- 6.7 样本护栏（B17）
+  workspace_id UUID NOT NULL, policy_version TEXT NOT NULL,
+  policy JSONB NOT NULL,   -- {minActiveDays,minAccounts,minExposure,minClicks,minRealConversions,minCost,minCpaImprovementRate,conversionRateDenominator}
+  fingerprint TEXT, created_by UUID, created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, policy_version)
+);
+ALTER TABLE product_material_experiments ADD COLUMN policy_version TEXT;
+ALTER TABLE product_material_experiments ADD COLUMN window_from DATE;
+ALTER TABLE product_material_experiments ADD COLUMN window_to DATE;
+ALTER TABLE material_briefs ADD COLUMN product_id TEXT;
+ALTER TABLE material_briefs ADD COLUMN brief_version TEXT;
+ALTER TABLE material_briefs ADD COLUMN deliveries JSONB;                -- [{variantKey, derivedMaterialId, lineageId, deliveredAt}]
+ALTER TABLE material_briefs ADD COLUMN backtest_status TEXT;            -- awaiting_delivery|awaiting_sample|ready
+ALTER TABLE material_briefs ADD COLUMN fingerprint TEXT;
+
+-- 7.3 结算列补齐（对齐 domain settlement.ts）
+ALTER TABLE settlement_templates ADD COLUMN template_id TEXT;
+ALTER TABLE settlement_templates ADD COLUMN name TEXT;
+ALTER TABLE settlement_templates ADD COLUMN currency_code TEXT NOT NULL DEFAULT 'CNY';
+ALTER TABLE settlement_templates ADD COLUMN unit_note TEXT;
+ALTER TABLE settlement_templates ADD COLUMN checks JSONB;               -- [{checkKey,label,order,leftFieldKey,rightFieldKey,tolerance,severity}]
+ALTER TABLE settlement_templates ADD COLUMN fingerprint TEXT;
+ALTER TABLE settlement_templates ADD COLUMN created_by UUID;
+-- fields JSONB = [{fieldKey,label,order,valueType:text|date|number|money|rate, aggregation:none|sum, source:{kind:fact,factKey}|{kind:formula,expression}, required, allowCorrection}]；formulas 列废弃（表达式在 fields.source）
+ALTER TABLE settlements ADD COLUMN run_id TEXT;
+ALTER TABLE settlements ADD COLUMN scope_id TEXT;                       -- 结算范围（优化师/任务/全部）
+ALTER TABLE settlements ADD COLUMN data_basis TEXT NOT NULL DEFAULT 'offline_settlement';
+ALTER TABLE settlements ADD COLUMN data_cutoff_at TIMESTAMPTZ;
+ALTER TABLE settlements ADD COLUMN issues JSONB;                        -- [{code,severity,rowKey,fieldKey,checkKey}]
+ALTER TABLE settlements ADD COLUMN preview_status TEXT;                 -- blocked|ready_to_freeze
+ALTER TABLE settlements ADD COLUMN confirmed_by UUID;
+ALTER TABLE settlements ADD COLUMN confirmed_at TIMESTAMPTZ;
+ALTER TABLE settlements ADD COLUMN fingerprint TEXT;
+ALTER TABLE settlement_lines ADD COLUMN row_key TEXT;
+ALTER TABLE settlement_lines ADD COLUMN source_fact_id TEXT;
+ALTER TABLE settlement_lines ADD COLUMN checks JSONB;                   -- [{checkKey,status:matched|mismatch|undefined,difference,relativeDifference,severity}]
+CREATE TABLE settlement_corrections (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), settlement_id UUID NOT NULL REFERENCES settlements(id),
+  row_key TEXT NOT NULL, field_key TEXT NOT NULL, from_value JSONB, to_value JSONB,
+  reason TEXT NOT NULL, evidence_ref TEXT, corrected_by UUID NOT NULL, corrected_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (settlement_id, row_key, field_key)
+);
+
+-- 14.5/14.6/14.3a/灰度：治理后台最小
+CREATE TABLE workspace_flags (
+  workspace_id UUID PRIMARY KEY,
+  flags JSONB NOT NULL DEFAULT '{}',   -- {write_enabled:false, agent_enabled:false, team_source_enabled:false, materials_enabled:false, dingtalk_enabled:false}
+  updated_by UUID, updated_at TIMESTAMPTZ DEFAULT now()
+);
+-- 成员进出用现有 auth_identities/users/workspace_memberships/account_access_grants；停用=membership.is_active=false + 撤销该 identity 全部 session（不删行）
+
+-- 4.7 开户测试跟踪（P1）
+CREATE TABLE account_tests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  media TEXT NOT NULL, account_id TEXT NOT NULL, task_id TEXT,
+  FOREIGN KEY (workspace_id, media, account_id) REFERENCES accounts(workspace_id, media, account_id),
+  purpose TEXT NOT NULL,               -- 测什么：新任务/新版位/新出价/承接页…
+  hypothesis TEXT, started_at DATE NOT NULL, end_at DATE,
+  status TEXT NOT NULL DEFAULT 'planned',   -- planned|running|passed|failed|stopped
+  verdict_note TEXT, result JSONB,     -- 系统只算窗口指标快照，结论由人填
+  created_by UUID, created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- 4.8 优质户复制（P1；PRD 3.x 优质户复制流程 A）
+CREATE TABLE account_replications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  source_media TEXT NOT NULL, source_account_id TEXT NOT NULL,
+  target_media TEXT NOT NULL, target_account_id TEXT NOT NULL,
+  include JSONB NOT NULL,              -- {structure, bids, schedule}
+  changeset_group_id UUID REFERENCES changeset_groups(id),
+  status TEXT NOT NULL DEFAULT 'draft',    -- draft|confirmed|applied|failed
+  created_by UUID, created_at TIMESTAMPTZ DEFAULT now()
+);
+-- 目标户打标：accounts.tags 加 'replicated_from:<media>:<account_id>'；母子对比走 v3 summary 两次查询并排
+
+
+-- =====================================================================
+-- v1.7 新增（2026-09-06 arch；老板拍 P2 大件全部设计、前端先做；Codex R-016 出 migration 017）
+-- =====================================================================
+CREATE TABLE strategies (                -- 3.11 可保存的投放方案（原型 P07/P08）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  name TEXT NOT NULL, owner UUID, version INT NOT NULL DEFAULT 1, copied_from UUID,
+  asset_id UUID,                          -- 五态流转走 assets（draft/shared/verified/official/deprecated）
+  applicable JSONB NOT NULL,              -- {stages:[cold_start|ramping|stable], biz:[...], objectives:[...], media:[...]}
+  playbook JSONB NOT NULL,                -- {placement:[resource_position], delivery_mode, bid:{tool, style, cpa_hint}, rta:{enabled, audience_packs:[]}, budget_rhythm:{cold_start_days, split:[]}, account_matrix, product_material_rules:[]}
+  conditions JSONB,                       -- {applicable:[text], not_applicable:[text]}
+  evidence JSONB,                         -- {pivot2_snapshot_ref, sample_tasks, window, metrics:<v3 三态>}  只引用，不算"置信度"
+  created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (workspace_id, name, version)
+);
+CREATE TABLE strategy_bindings (         -- 方案 ↔ 任务
+  workspace_id UUID NOT NULL, strategy_id UUID NOT NULL REFERENCES strategies(id), task_id TEXT NOT NULL,
+  bound_by UUID, bound_at TIMESTAMPTZ DEFAULT now(), unbound_at TIMESTAMPTZ,
+  PRIMARY KEY (workspace_id, strategy_id, task_id)
+);
+CREATE TABLE strategy_validations (      -- 历史验证：绑定任务在窗口内的"操作后观察结果"
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  strategy_id UUID NOT NULL REFERENCES strategies(id), task_id TEXT NOT NULL,
+  window_from DATE NOT NULL, window_to DATE NOT NULL,
+  before JSONB, after JSONB,              -- 各 {cash_cpa:RV, volume:MV, on_target}
+  status TEXT NOT NULL,                   -- validating|improved|no_change|worse|insufficient_sample
+  note TEXT, created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE intel_materials (           -- 3.12 竞情（AppGrowing；接入方式待 OS 实证：api|csv_import|link）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  source TEXT NOT NULL DEFAULT 'appgrowing', ingest_mode TEXT NOT NULL,   -- api|csv_import|link
+  competitor TEXT, industry TEXT, material_ref TEXT, thumbnail_ref TEXT,
+  first_seen DATE, last_seen DATE, active_days INT, placements TEXT[], est_cost_tier TEXT,   -- low|mid|high|unknown
+  raw JSONB, linked_task_id TEXT, linked_material_id TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE shadow_decisions (          -- 5.9 Shadow：每个决策点 AI 建议 vs 人实际
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  work_item_id UUID NOT NULL, rule_id BIGINT, media TEXT, account_id TEXT,
+  ai_action JSONB NOT NULL,               -- {kind, target, delta, expected}
+  human_action JSONB,                     -- {kind, source:changeset|external_change|none, ref, at}
+  adopted BOOLEAN,                        -- 人 24h 内做了同向动作
+  t1_result JSONB, t7_result JSONB,       -- {cash_cpa_delta:RV, cost_delta:MV, real_conversion_delta:MV, matured:bool}
+  status TEXT NOT NULL DEFAULT 'observing',   -- observing|matured_t1|matured_t7|insufficient
+  decided_at TIMESTAMPTZ NOT NULL, created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE ai_impact_config (          -- 7.5 动作估时表（人时"估算"依据，可配）
+  workspace_id UUID PRIMARY KEY,
+  action_minutes JSONB NOT NULL,          -- {diagnosis:8, changeset_bid:5, changeset_budget:5, report_daily:20, settlement:60, ...}
+  updated_by UUID, updated_at TIMESTAMPTZ DEFAULT now()
+);
+-- report_runs.kind 枚举扩：daily_brief|report_schedule|weekly|task_review|monthly_exec
+-- 知悉流不落表：由 approvals/escalations/changesets/tasks 里程碑聚合查询
+
+-- v1.7.1（2026-09-06；fe F-006-Q2）用户偏好，identity 级跨空间；进 migration 015（R-014）
+CREATE TABLE identity_preferences (
+  identity_id UUID PRIMARY KEY REFERENCES auth_identities(id) ON DELETE RESTRICT,
+  preferences JSONB NOT NULL DEFAULT '{}',   -- {theme:{mode,hue}, locale}
+  updated_at TIMESTAMPTZ DEFAULT now()
+);

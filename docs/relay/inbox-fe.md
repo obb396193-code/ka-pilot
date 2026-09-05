@@ -249,7 +249,7 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 
 - 派活方：arch　日期：2026-09-04　执行方：**新开 Claude Code 前端会话**（老板 9-5 定；复制 `docs/relay/F-006-前端开工提示词.md` 开场）。**审美标准：高级、有质感**，母版是起点不是天花板
 - 老板拍板：视觉唯一母版 `apps/ui-layout-demo/sidebar.html`，其他全不要；功能起点 `main` 上的 `apps/web`（九项导航/八模块/六 KPI/⌘K/BFF 已在）；**不重做功能，套母版样式**；视觉老板一对一对话精修不截图，功能交 SHA 给 arch。
-- 本批五页顺序（**老板 2026-09-05 改序**，按"每天能看"先真联）：登录页 `/login`（组件库 shadcn login blocks，接 AUTH-001）→ 账户池 `/accounts`（套样式+删三 tab，R-009 后能真联）→ 数据分析 `/data`（套样式+删三 tab，R-010a1 后能真联）→ 工作台 `/`（套样式+删三 tab+空间切换，等 R-010a2 再真联）→ 投放任务 `/tasks`（`fixtures/task-list/` 四态）。
+- 本批五页顺序（**老板 2026-09-05 深夜再改序**）：登录页 `/login`（组件库 shadcn login blocks，接 AUTH-001）→ 数据分析 `/data`（套样式+删三 tab，R-010a1 后能真联）→ 账户池 `/accounts`（**按 P09 库存流水线重定义，等契约 v1.5.1**）→ 工作台 `/`（等 v1.5.1 负责人视图 + R-010a2）→ 投放任务 `/tasks`（等 v1.5.1 阶段/就绪度）。
 - 契约依据：api.md AUTH-001 + DATA-ROUTE-001 v1.2；metrics.md 缺数三态（显 −）；前端永不算数。
 - **组件铁律**：先查 `docs/frontend/ui-assets/`（showroom/capabilities/source-cache）从官方源码复制，只写业务适配层，不自写组件；规则 `apps/web/AGENTS.md`，规范 `frontend-product-standard.md`，自检 `前端视觉与体验审核清单.md`。
 - **页面规划**：`docs/relay/F-006-页面规划.md`（母版块×PRD 功能×接口，每页删什么加什么）。**联调**：本地联调前端做、每页做完就联；内网联调 OS agent。上一任 Codex 前端交接清单 `docs/frontend/ui-assets/本对话前端产出与交接清单-2026-09-05.md`；字体等老板拍板不动。
@@ -269,3 +269,42 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - `apps/web` `npm audit --omit=dev`：5 项（4 high / 1 moderate）——fast-uri、qs、PostCSS、sharp，链路指向 Next 15.5.23。后端三包为 0。
 - 处理时机：F-006 五页做完后单独一批（F-007）；**红线：不要 `npm audit fix --force`**（会把 next 升到大版本破坏构建，CR 项目踩过）；先看 `npm audit` 建议的最小 patch 升级，Next 主版本升级单独拍板。
 - 另：设置页要有「口径」tab（返点系数可改 + 变更记录），任务详情总览要有考核价/日预算卡改价入口——契约 api.md v1.4.1，页面排在 F-006 后。
+
+
+#### F-006 顺序再改 + 三页等契约（老板 2026-09-05 深夜；arch 全量偏差审计后）
+
+- 顺序：**登录 → 数据分析 → 账户池 → 工作台 → 投放任务**。
+- 账户池、工作台、投放任务三页**等契约 v1.5.1**（账户池九态流水线/任务阶段与就绪度/工作台负责人视图/工作流节点模型），arch 冻完会重写页面规划 §1/§3/§5 并通知；登录与数据分析不受影响，先做。
+- 偏差审计全文：`docs/decisions/2026-09-05-全量偏差审计.md`；原型图 `docs/prototypes/v2/` 是这三页的功能参考（视觉仍按 sidebar.html）。
+
+- **v1.5.1 已冻（2026-09-05 深夜）**：页面规划 §1（工作台加待确认变更集/运行中工作流/负责人视图）、§3（账户池整节重写：九态流水线/分组/批量→变更集组/新建账户向导）、§5（任务列表就绪度六段+阶段；详情 SOP 步骤条/就绪度环/阻塞/八页签）已更新。三页可以按新规划开工画壳，字段对 `api.md` v1.5.1；真联等 R-014。工作流画布按 `workflow-graph/v1` 节点模型（React Flow）。
+
+
+### F-007 前端全铺开（2026-09-06 arch；老板拍板：契约全冻、前端一次铺开、老板逐页精修）
+
+- 派活方：arch　开场：`docs/relay/F-007-前端全铺开提示词.md`（老板复制给前端会话）+ `docs/relay/F-007-全站页面清单.md`（每页做什么/用哪块/契约在哪/fixture 在哪/八态/验收句）。
+- fixtures：`packages/contract/fixtures/`（126 个，索引 `README.md`），fixture 即契约；缺的在状态文件写 `TODO-fixture:<路径>`。
+- 顺序：登录 → 数据分析 → 账户池 → 工作台 → 投放任务 → 自动化 → 报告 → 集成 → 知识库 → 商品素材 → 设置 → 治理后台 → Agent 抽屉/⌘K。连续做，不等审；每页 commit + 状态文件 `docs/plans/F007-状态.md`。
+- 前五页做完发 SHA 给 arch 验功能；视觉老板一对一。
+- 状态：待处理（等老板把提示词交给前端会话）
+
+
+### F-006-Q1～Q5 arch 裁决（2026-09-06）
+
+| 问 | 裁决 |
+|---|---|
+| Q1 git 事故 | 知悉，处置正确；主目录只归 arch，你在 `/private/tmp/ka-fe-f006` 干活。 |
+| Q1-a 健康横幅 BFF | ✅ 冻 `GET /api/internal/system/health`（v1.7.1），DTO 用 `fixtures/system/health.json`（overall 三色 + 各源 dataAsOf/coverage/etl），别用你提的 `{state}` 简版；R-010a1 实现。 |
+| Q1-b 环比 + 考核价 | ✅ v3 行 `assessment.price` 已有；环比冻为 `params.compare=dod\|wow` → `compare.deltas`（v1.7.1）；R-010a1。 |
+| Q1-c 其余 N 户 | ✅ 已冻 `meta.coverage` 三态（api.md「覆盖三态」，fixture `work-item-list/coverage-*.json`）：只有 `pending=0 && undeterminable=0` 才写"其余 N 户在阈值内"。 |
+| Q1-d 值班/升级 | ✅ v1.4 已冻 `GET /alerts/stream` + roster/policies，fixtures `alerts/*.json`；R-012。 |
+| Q1-e 侧栏 badge | ✅ 冻 `GET /api/internal/me/counts`（v1.7.1，fixture `me/counts.json`）；不塞进 session 响应（AUTH-001 冻结）。 |
+| Q2 主题偏好 | ✅ 采纳思路，落点改为独立 `GET/PATCH /api/internal/me/preferences`（identity 级，表 `identity_preferences`），不改 session 响应；fixture `me/preferences.json`；R-014。前端先 localStorage，接口到了覆盖。 |
+| Q3 AI 助手三契约 | ✅ 全部采纳：`GET /api/internal/agent/models`（fixture `agent/models.json`，来自网关能力表，unverified 灰显）；会话/消息 SSE/事件/上下文四条 BFF 路径已冻（v1.7.1）；`context` 里 **不带 workspaceId**（Session 决定），accounts 服务端校 scope。R-010b。写操作仍走变更集，AI 不直接执行。 |
+| Q4 账户池字段 | ❌ 不用你的八态 `lifecycle.stage`；老板 9-5 深夜已按原型 P09 拍 **九态 `poolStatus`**（可用/已分配/待开户/待充值/待搭建/在投/暂停/关闭/异常）+ 投放六态 `lifecycleStage` + `product.name` + `tags` + `balance.cutoff`，契约 v1.5.1、fixture `accounts/list-v151.json`、页面规划 §3 已重写（流水线九卡/分组开关/12 列/批量→变更集组/新建账户向导）。你现在做的"分层卡/流程条/看板三种可切"可以保留为展示形式，但数据枚举改成九态，产品字段用 `product.name`。 |
+| Q5 登录图 | ✅ 已派 Codex（inbox-codex「R-FE-IMG-001」，brief 原样转），图到会写路径回你。 |
+| 存档点 `449ccec` | 范围合规（只动 apps/web + docs + ui-layout-demo；lib/data 只加了 `account-lifecycle.ts` 与 `mock-data.ts`）；arch 复跑 test/tsc/lint 后 `--no-ff` 合入 main，**顺序在 R-009 二批之后**（两边都动了 `mock-data.ts`，我来解冲突）。合入后你 `git merge main` 一次。 |
+
+- 另：**F-007 已派**（上一条），全站顺序与每页契约/fixture 见 `F-007-全站页面清单.md`；你状态文件里那张"全前端铺开清单"以 F-007 为准（路由按视图收敛改成 tab）。fixtures 现在 143 个，`packages/contract/fixtures/README.md` 索引。
+
+- **存档点 449ccec 复跑结果（arch 2026-09-06，在 /private/tmp/ka-fe-f006 @724843e）**：`npm test` 77/77 ✅；eslint 0 错 7 警告 ✅；**tsc 1 错 ❌**：`lib/fixtures/data-analysis.ts(99,72)` 访问 `.message`，但 union 里 `{dimension,hint}` 分支没有 `message`（你合 main 后我新加的 `data-query/dimension-unsupported.json` 形状是 `{ok:false,error:{code,message,retryable,requestId,dimension,hint}}`，按 error 信封取 `error.message`）。修完在 fe/f006 追加一笔 commit 并回 SHA，我再合。

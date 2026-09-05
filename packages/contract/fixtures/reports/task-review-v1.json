@@ -1,0 +1,118 @@
+{
+  "ok": true,
+  "data": {
+    "schema": "task-review/v1",
+    "taskId": "fixture-task-ready",
+    "status": "ready",
+    "runId": "00000000-0000-4000-8000-000000003301",
+    "window": {
+      "from": "2026-08-20",
+      "to": "2026-09-05"
+    },
+    "sections": [
+      {
+        "key": "goal",
+        "cards": {
+          "target": {
+            "value": 120000,
+            "availability": "available"
+          },
+          "achieved": {
+            "value": 18400,
+            "availability": "available"
+          },
+          "achievementRate": {
+            "value": 0.1533,
+            "state": "finite"
+          }
+        }
+      },
+      {
+        "key": "cost_trend",
+        "trend": [
+          {
+            "ds": "2026-09-01",
+            "cashCpa": {
+              "value": 31.0,
+              "state": "finite"
+            }
+          },
+          {
+            "ds": "2026-09-05",
+            "cashCpa": {
+              "value": 29.6,
+              "state": "finite"
+            }
+          }
+        ]
+      },
+      {
+        "key": "key_operations",
+        "timeline": [
+          {
+            "at": "2026-09-01",
+            "summary": "考核价 40→38"
+          },
+          {
+            "at": "2026-09-05",
+            "summary": "account-1 降价 5%"
+          }
+        ]
+      },
+      {
+        "key": "attribution",
+        "tree": {
+          "root": {
+            "key": "target_gap",
+            "label": "目标差距",
+            "gap": {
+              "value": 8000,
+              "availability": "available"
+            }
+          }
+        }
+      },
+      {
+        "key": "why",
+        "findings": [
+          {
+            "text": "account-2 出价高于同任务均值 8%，导致 CPA 超线 2 日",
+            "evidenceRefs": [
+              "work_item:00000000-0000-4000-8000-000000000201",
+              "structure:u-11"
+            ]
+          }
+        ]
+      },
+      {
+        "key": "next",
+        "suggestions": [
+          {
+            "text": "account-5 充值后按冷启动阈值观察 3 日",
+            "evidenceRefs": [
+              "readiness:recharge"
+            ],
+            "reversible": true
+          }
+        ]
+      }
+    ],
+    "citations": [
+      {
+        "ref": "work_item:00000000-0000-4000-8000-000000000201",
+        "type": "work_item",
+        "label": "成本超考核 P0"
+      }
+    ],
+    "kbDocumentId": "00000000-0000-4000-8000-000000002704",
+    "humanConfirmed": false
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "why/next 标“待人确认”；生成即归档知识库"
+  }
+}

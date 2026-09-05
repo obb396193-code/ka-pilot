@@ -3275,3 +3275,10 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - 首次排除PG模式遗漏benchmark-data-pipeline-pg.test.ts，连接55432拒绝导致1失败，未执行SQL；之后明确排除该文件重跑非PG全绿。PG继续待，不掩盖失败。日志/tmp/ka-production-guard-{full,full-retry,focused,coverage}.log。
 - 已收到main@a7f98a8 P047三问采纳，转回bootstrap事务/CLI；R-FE-IMG-001已登记空档做。R013b运行时审计：handler无AbortSignal且claim全队列，单轮不能简单Promise.race后宣称已退出；会先补安全截止/领取方案再接线，不擅启现有队列。
 - 需OS补FaaS骨架证据：现部署回收只有build/npm/拓扑，无f.yml真实字段及定时入口形态；请回一份无凭证最小官方模板（web/data-api HTTP与timer），只读即可。安装脚本可先做，此缺口不阻塞bootstrap。未push/合流/部署。
+
+---
+
+### F-006-Q1～Q5 + 存档点 449ccec｜arch 裁决（2026-09-06）
+
+- Q1-a/b/e、Q2、Q3 → 契约 v1.7.1（BFF 同源路径补齐、summary compare 块、me/counts、me/preferences + identity_preferences、agent/models + 四条 Agent BFF 路径、context 不带 workspaceId）；Q1-c/d 已在 v1.3/v1.4；Q4 以 v1.5.1 九态 `poolStatus` 为准，不采纳八态提议；Q5 转派 Codex R-FE-IMG-001。详见 inbox-fe。
+- 存档点 `449ccec`：范围合规；待 arch 复跑 test/tsc/lint 与 R-009 二批合流后 `--no-ff` 合入。

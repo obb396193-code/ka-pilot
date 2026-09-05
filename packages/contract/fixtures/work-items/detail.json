@@ -1,0 +1,202 @@
+{
+  "ok": true,
+  "data": {
+    "workItemId": "00000000-0000-4000-8000-000000000201",
+    "type": "diagnosis",
+    "status": "open",
+    "severity": "P0",
+    "title": "成本超考核 +12%（近 2 日）",
+    "account": {
+      "workspaceId": "00000000-0000-4000-8000-000000000024",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "accountName": "AAC拉新_快手_02"
+    },
+    "task": {
+      "taskId": "fixture-task-ready",
+      "taskName": "AAC 拉新"
+    },
+    "rule": {
+      "ruleId": 3,
+      "name": "成本超考核持续 2 日",
+      "version": "rules-2026-09-01"
+    },
+    "assignee": {
+      "userId": "00000000-0000-4000-8000-000000000001",
+      "name": "示例优化师"
+    },
+    "slaDue": "2026-09-05T18:00:00.000+08:00",
+    "createdAt": "2026-09-05T09:15:00.000+08:00",
+    "occurrenceCount": 2,
+    "lastTriggeredAt": "2026-09-05T09:15:00.000+08:00",
+    "evidenceSnapshot": {
+      "snapshotAt": "2026-09-05T09:15:00.000+08:00",
+      "window": {
+        "from": "2026-09-04",
+        "to": "2026-09-05"
+      },
+      "metrics": {
+        "cost": {
+          "value": 3200.0,
+          "availability": "available"
+        },
+        "cashCost": {
+          "value": 2499.8,
+          "availability": "available"
+        },
+        "exposure": {
+          "value": 26000,
+          "availability": "available"
+        },
+        "click": {
+          "value": 1100,
+          "availability": "available"
+        },
+        "conversion": {
+          "value": 64,
+          "availability": "available"
+        },
+        "realConversion": {
+          "value": 60,
+          "availability": "available"
+        },
+        "costSpace": {
+          "value": -219.8,
+          "availability": "available"
+        },
+        "wakeUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "potentialUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "ratios": {
+          "ctr": {
+            "value": 0.0423,
+            "state": "finite"
+          },
+          "cvr": {
+            "value": 0.0582,
+            "state": "finite"
+          },
+          "realCpa": {
+            "value": 53.33,
+            "state": "finite"
+          },
+          "cashCpa": {
+            "value": 41.66,
+            "state": "finite"
+          },
+          "gap": {
+            "value": 0.0667,
+            "state": "finite"
+          },
+          "potentialRate": {
+            "value": null,
+            "state": "undefined"
+          },
+          "biConversionRate": {
+            "value": null,
+            "state": "undefined"
+          }
+        }
+      },
+      "assessment": {
+        "price": {
+          "value": 38.0,
+          "effectiveDate": "2026-09-01"
+        },
+        "onTarget": false,
+        "costStatus": "red",
+        "costStatusReason": "window_over",
+        "budgetUsageRate": {
+          "value": 0.91,
+          "state": "finite"
+        }
+      },
+      "leaves": [
+        {
+          "metric": "cash_cpa",
+          "operator": ">",
+          "threshold": 38.0,
+          "value": 41.66,
+          "availability": "available",
+          "pass": true
+        },
+        {
+          "metric": "real_conversion",
+          "operator": ">=",
+          "threshold": 10,
+          "value": 60,
+          "availability": "available",
+          "pass": true
+        }
+      ]
+    },
+    "diagnosis": {
+      "schema": "diagnosis/v1",
+      "causeCategory": "bid_too_high",
+      "subCause": "unit u-11 出价高于同任务均值 8%",
+      "confidence": 0.72,
+      "evidenceRefs": [
+        "leaf:cash_cpa",
+        "structure:u-11"
+      ],
+      "suggestions": [
+        {
+          "action": "lower_bid",
+          "target": "u-11",
+          "delta": -0.05,
+          "expected": {
+            "cashCpa": {
+              "value": 39.1,
+              "state": "finite"
+            }
+          },
+          "reversible": true
+        }
+      ],
+      "caveats": [
+        "近 2 日样本，观察结果非因果"
+      ]
+    },
+    "decision": {
+      "tier": "card_confirm",
+      "gates": {
+        "confidence": {
+          "value": 0.72,
+          "state": "finite"
+        },
+        "historicalSuccessRate": {
+          "value": 0.81,
+          "state": "finite"
+        },
+        "recentManualOps": 1,
+        "reversible": true,
+        "withinCap": true
+      },
+      "overriddenBy": null,
+      "reason": "置信度 <0.9，走确认卡"
+    },
+    "actions": [
+      "process",
+      "ignore",
+      "mute_account",
+      "dispatch",
+      "escalate",
+      "generate_changeset",
+      "open_backend"
+    ],
+    "t1Result": null
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "v1.3 工作项详情 + v1.5 decision；suggestions 只到确认卡"
+  }
+}

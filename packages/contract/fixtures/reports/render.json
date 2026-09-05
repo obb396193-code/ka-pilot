@@ -1,0 +1,85 @@
+{
+  "ok": true,
+  "data": {
+    "rows": [
+      {
+        "group": {
+          "task": "AAC 拉新",
+          "owner": "示例优化师"
+        },
+        "metrics": {
+          "cost": {
+            "value": 12500.0,
+            "availability": "available"
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": 32.55,
+              "state": "finite"
+            }
+          }
+        },
+        "assessment": {
+          "onTarget": true
+        }
+      },
+      {
+        "group": {
+          "task": "AAC 拉新",
+          "owner": "示例运营"
+        },
+        "metrics": {
+          "cost": {
+            "value": 3200.0,
+            "availability": "available"
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": 41.66,
+              "state": "finite"
+            }
+          }
+        },
+        "assessment": {
+          "onTarget": false
+        }
+      }
+    ],
+    "columns": [
+      {
+        "key": "cost",
+        "label": "消耗"
+      },
+      {
+        "key": "cashCpa",
+        "label": "现金CPA"
+      },
+      {
+        "key": "onTarget",
+        "label": "达标"
+      }
+    ],
+    "highlights": [
+      {
+        "rowIndex": 1,
+        "metric": "onTarget",
+        "style": "red"
+      }
+    ],
+    "lineage": {
+      "source": "canonical",
+      "window": {
+        "from": "2026-08-30",
+        "to": "2026-09-05",
+        "preset": "last_7d"
+      }
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

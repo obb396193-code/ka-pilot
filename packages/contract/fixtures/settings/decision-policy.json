@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "data": {
+    "policy": {
+      "confidenceMin": 0.9,
+      "historicalSuccessRateMin": 0.8,
+      "recentManualOpsWindowHours": 24,
+      "dailyCapCny": 5000
+    },
+    "updatedBy": {
+      "userId": "00000000-0000-4000-8000-000000000003",
+      "name": "示例负责人"
+    },
+    "updatedAt": "2026-09-01T00:00:00.000+08:00"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

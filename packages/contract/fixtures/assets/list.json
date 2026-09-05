@@ -1,0 +1,56 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000002801",
+        "assetKind": "workflow",
+        "refId": "00000000-0000-4000-8000-000000001701",
+        "name": "新任务开户到基建",
+        "owner": null,
+        "status": "official",
+        "version": 1,
+        "scope": "KUAISHOU",
+        "dependencies": [
+          "capability:account.open_flow"
+        ],
+        "verifiedAt": "2026-09-01",
+        "successRate": {
+          "value": 0.934,
+          "state": "finite"
+        },
+        "usageCount": 0,
+        "supersededBy": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000002802",
+        "assetKind": "report",
+        "refId": "00000000-0000-4000-8000-000000002201",
+        "name": "按任务和负责人的成本达标表",
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "status": "draft",
+        "version": 1,
+        "scope": null,
+        "dependencies": [],
+        "verifiedAt": null,
+        "successRate": {
+          "value": null,
+          "state": "undefined"
+        },
+        "usageCount": 0,
+        "supersededBy": null
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "UI 起步只露 draft/shared 两态"
+  }
+}

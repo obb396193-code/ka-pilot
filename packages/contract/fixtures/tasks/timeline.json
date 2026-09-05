@@ -1,0 +1,61 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "at": "2026-09-05T09:15:00.000+08:00",
+        "kind": "work_item",
+        "actor": "system",
+        "summary": "account-2 成本超考核 P0",
+        "ref": {
+          "type": "work_item",
+          "id": "00000000-0000-4000-8000-000000000201"
+        }
+      },
+      {
+        "at": "2026-09-03T10:12:00.000+08:00",
+        "kind": "daily_budget_cap",
+        "actor": {
+          "user_id": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "summary": "日预算卡 80000→100000",
+        "ref": {
+          "type": "task",
+          "id": "fixture-task-ready"
+        }
+      },
+      {
+        "at": "2026-09-01T09:00:00.000+08:00",
+        "kind": "assessment_price",
+        "actor": {
+          "user_id": "00000000-0000-4000-8000-000000000002",
+          "name": "示例运营"
+        },
+        "summary": "考核价 40→38，重算 5 日",
+        "ref": {
+          "type": "task",
+          "id": "fixture-task-ready"
+        }
+      },
+      {
+        "at": "2026-08-20T16:35:00.000+08:00",
+        "kind": "changeset",
+        "actor": "system",
+        "summary": "SOP 基建完成：2 unit",
+        "ref": {
+          "type": "changeset",
+          "id": "00000000-0000-4000-8000-000000000300"
+        }
+      }
+    ],
+    "next_cursor": null
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

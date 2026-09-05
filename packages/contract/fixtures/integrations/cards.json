@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "data": {
+    "templates": [
+      {
+        "id": "card.l0.brief",
+        "level": "L0",
+        "name": "今日经营简报",
+        "actions": [
+          "查看详情"
+        ]
+      },
+      {
+        "id": "card.l2.changeset_confirm",
+        "level": "L2",
+        "name": "变更集确认卡",
+        "actions": [
+          "确认执行",
+          "拒绝",
+          "查看详情"
+        ],
+        "hashCheck": true
+      },
+      {
+        "id": "card.l1.executing",
+        "level": "L1",
+        "name": "执行中动态卡",
+        "actions": [
+          "取消执行",
+          "查看详情"
+        ]
+      },
+      {
+        "id": "card.l3.result",
+        "level": "L3",
+        "name": "结果卡",
+        "actions": [
+          "重试失败项",
+          "查看运行记录"
+        ]
+      }
+    ],
+    "instances": [
+      {
+        "id": "00000000-0000-4000-8000-000000002501",
+        "templateId": "card.l2.changeset_confirm",
+        "status": "awaiting",
+        "changesetId": "00000000-0000-4000-8000-000000000301",
+        "hash": "3f2e9c0d…",
+        "expiresAt": "2026-09-05T11:02:18.000+08:00",
+        "sentTo": "cid****01"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

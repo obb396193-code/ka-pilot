@@ -1,0 +1,106 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "ruleId": 3,
+        "name": "成本超考核持续 2 日",
+        "type": "monitor",
+        "conditionTree": {
+          "version": "v1",
+          "all": [
+            {
+              "metric": "cash_cpa",
+              "operator": ">",
+              "threshold": "assessment_price",
+              "window_hours": 48
+            },
+            {
+              "metric": "real_conversion",
+              "operator": ">=",
+              "threshold": 10
+            }
+          ]
+        },
+        "nextEvalAt": "2026-09-05T14:30:00.000+08:00",
+        "enabled": true,
+        "autonomyLevel": 1,
+        "availabilityPolicy": "suppress",
+        "notTriggeredReason": null,
+        "last7d": {
+          "triggered": 12,
+          "succeeded": 12
+        },
+        "owner": null
+      },
+      {
+        "ruleId": 7,
+        "name": "低效计划自动暂停",
+        "type": "auto",
+        "conditionTree": {
+          "version": "v1",
+          "all": [
+            {
+              "metric": "real_conversion",
+              "operator": "==",
+              "threshold": 0,
+              "window_hours": 48
+            },
+            {
+              "metric": "cost",
+              "operator": ">",
+              "threshold": 500
+            }
+          ]
+        },
+        "nextEvalAt": "2026-09-05T15:00:00.000+08:00",
+        "enabled": true,
+        "autonomyLevel": 2,
+        "availabilityPolicy": "suppress",
+        "notTriggeredReason": "INSUFFICIENT_SAMPLE",
+        "last7d": {
+          "triggered": 6,
+          "succeeded": 4
+        },
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        }
+      },
+      {
+        "ruleId": 9,
+        "name": "素材 CTR 异常诊断",
+        "type": "monitor",
+        "conditionTree": {
+          "version": "v1",
+          "all": [
+            {
+              "metric": "ctr",
+              "operator": "<",
+              "threshold": 0.7,
+              "window_hours": 24
+            }
+          ]
+        },
+        "nextEvalAt": "2026-09-05T13:45:00.000+08:00",
+        "enabled": true,
+        "autonomyLevel": 1,
+        "availabilityPolicy": "suppress",
+        "notTriggeredReason": "SOURCE_STALE",
+        "last7d": {
+          "triggered": 0,
+          "succeeded": 0
+        },
+        "owner": null
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "未触发原因枚举：CONDITION_FALSE|METRIC_MISSING|SOURCE_STALE|COLD_START_RELAXED|INITIAL_FULL_PENDING|MUTED|DEDUPED|INSUFFICIENT_SAMPLE"
+  }
+}

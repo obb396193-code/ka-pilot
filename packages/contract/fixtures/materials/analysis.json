@@ -1,0 +1,127 @@
+{
+  "ok": true,
+  "data": {
+    "version": 2,
+    "promptVersion": "teardown-v2",
+    "schemaVersion": "1",
+    "status": "done",
+    "media": {
+      "durationMs": 15000,
+      "width": 1080,
+      "height": 1920,
+      "contentSha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    },
+    "transcript": {
+      "source": "cloud_asr",
+      "timingPrecision": "whole_video",
+      "segments": [
+        {
+          "id": "transcript-0",
+          "startMs": 0,
+          "endMs": 15000,
+          "text": "烈日暴晒也不怕，这件防晒外套太轻薄了…"
+        }
+      ]
+    },
+    "shots": [
+      {
+        "id": "shot-0",
+        "startMs": 0,
+        "endMs": 3000,
+        "frame": {
+          "status": "ready",
+          "artifactRef": "asset://frames/m-5001/0"
+        }
+      },
+      {
+        "id": "shot-1",
+        "startMs": 3000,
+        "endMs": 9000,
+        "frame": {
+          "status": "ready",
+          "artifactRef": "asset://frames/m-5001/1"
+        }
+      },
+      {
+        "id": "shot-2",
+        "startMs": 9000,
+        "endMs": 15000,
+        "frame": {
+          "status": "placeholder",
+          "reason": "frame_extract_failed"
+        }
+      }
+    ],
+    "visualSummary": {
+      "hardCutCount": 3,
+      "visualEventCount": 5,
+      "averageShotLengthMs": 5000,
+      "hookVisualDensity": 0.6
+    },
+    "result": {
+      "hook": {
+        "text": "烈日暴晒也不怕",
+        "kind": "pain_point",
+        "evidenceIds": [
+          "transcript-0",
+          "shot-0"
+        ]
+      },
+      "sellingPoints": [
+        {
+          "text": "40+防晒",
+          "evidenceIds": [
+            "transcript-0"
+          ]
+        },
+        {
+          "text": "云感轻薄",
+          "evidenceIds": [
+            "shot-1"
+          ]
+        }
+      ],
+      "audiences": [
+        "都市女性",
+        "户外通勤族"
+      ],
+      "rhythm": {
+        "tempo": "medium_fast",
+        "hookSeconds": 3,
+        "infoDensity": "high"
+      },
+      "cta": {
+        "text": "点击购买 限时优惠",
+        "evidenceIds": [
+          "shot-2"
+        ]
+      },
+      "segments": [
+        {
+          "role": "hook",
+          "startMs": 0,
+          "endMs": 3000
+        },
+        {
+          "role": "selling_point",
+          "startMs": 3000,
+          "endMs": 9000
+        },
+        {
+          "role": "cta",
+          "startMs": 9000,
+          "endMs": 15000
+        }
+      ]
+    },
+    "fingerprint": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "timingPrecision=whole_video → 前端不显句级时间戳"
+  }
+}

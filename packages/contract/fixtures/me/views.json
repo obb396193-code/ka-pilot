@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000001201",
+        "page": "data.table",
+        "name": "我的日常总表",
+        "config": {
+          "version": "view/v1",
+          "filters": {
+            "media": "KUAISHOU"
+          },
+          "columns": [
+            "accountName",
+            "cost",
+            "cashCost",
+            "cashCpa",
+            "onTarget",
+            "balance"
+          ],
+          "sort": [
+            {
+              "by": "cashCpa",
+              "dir": "desc"
+            }
+          ],
+          "window": {
+            "preset": "today"
+          }
+        },
+        "isShared": false,
+        "updatedAt": "2026-09-04T18:00:00.000+08:00"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

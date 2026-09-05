@@ -1,0 +1,137 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000003201",
+        "workItemId": "00000000-0000-4000-8000-000000000201",
+        "rule": {
+          "id": 3,
+          "name": "成本超考核持续 2 日"
+        },
+        "account": {
+          "media": "KUAISHOU",
+          "accountId": "account-2"
+        },
+        "aiAction": {
+          "kind": "lower_bid",
+          "target": "u-11",
+          "delta": -0.05,
+          "expected": {
+            "cashCpa": {
+              "value": 39.1,
+              "state": "finite"
+            }
+          }
+        },
+        "humanAction": {
+          "kind": "lower_bid",
+          "source": "changeset",
+          "ref": "00000000-0000-4000-8000-000000000301",
+          "at": "2026-09-05T08:42:00.000+08:00"
+        },
+        "adopted": true,
+        "t1Result": {
+          "cashCpaDelta": {
+            "value": -2.1,
+            "state": "finite"
+          },
+          "costDelta": {
+            "value": -800.0,
+            "availability": "available"
+          },
+          "realConversionDelta": {
+            "value": 12,
+            "availability": "available"
+          },
+          "matured": true
+        },
+        "t7Result": null,
+        "status": "matured_t1",
+        "decidedAt": "2026-09-05T09:15:00.000+08:00"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000003202",
+        "workItemId": "00000000-0000-4000-8000-000000000205",
+        "rule": {
+          "id": 7,
+          "name": "低效计划自动暂停"
+        },
+        "account": {
+          "media": "KUAISHOU",
+          "accountId": "account-1"
+        },
+        "aiAction": {
+          "kind": "pause_unit",
+          "target": "u-12",
+          "delta": null,
+          "expected": {
+            "cost": {
+              "value": -900.0,
+              "availability": "available"
+            }
+          }
+        },
+        "humanAction": null,
+        "adopted": false,
+        "t1Result": {
+          "cashCpaDelta": {
+            "value": 0.4,
+            "state": "finite"
+          },
+          "costDelta": {
+            "value": 60.0,
+            "availability": "available"
+          },
+          "realConversionDelta": {
+            "value": 0,
+            "availability": "available"
+          },
+          "matured": true
+        },
+        "t7Result": null,
+        "status": "matured_t1",
+        "decidedAt": "2026-09-04T09:15:00.000+08:00"
+      }
+    ],
+    "summary": {
+      "n": 38,
+      "adoptedRate": {
+        "value": 0.61,
+        "state": "finite"
+      },
+      "t1ImprovedRate": {
+        "adopted": {
+          "value": 0.78,
+          "state": "finite"
+        },
+        "notAdopted": {
+          "value": 0.41,
+          "state": "finite"
+        }
+      },
+      "t7ImprovedRate": {
+        "adopted": {
+          "value": null,
+          "state": "undefined"
+        },
+        "notAdopted": {
+          "value": null,
+          "state": "undefined"
+        }
+      },
+      "matured": {
+        "t1": 31,
+        "t7": 0
+      },
+      "caveat": "操作后观察结果，非因果；受流量/素材/预算/回补/他人操作影响"
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

@@ -343,3 +343,45 @@
 - **答 3 团队 reader**：采纳 `KA_DATA_TEAM_WORKSPACE_ID`（UUID）一 reader ↔ 一 team；未配/不匹配 503 SOURCE_UNAVAILABLE；不接受浏览器参数、不依赖 team grants。runbook 已加。
 - **v2/v3 编号**：你的 `bdc5273` = `account.summary/v2`（三态）。我 v1.4.1 的窗口+考核块**改叫 v3**（fixtures 已改名 `summary-window-v3-*`），R-010a1 实现，前端不做双版本兼容。
 - 合流前必须：BFF 改完 + lib/data v2 解包 + KA 启用双空间真实 PG 反例 + 折 011 + merge main + **PG 恢复后全量重跑五包**（55432 拒连期间的非 PG 数字不算门禁）。整批回执 P-045。
+
+
+#### R-014 追加：契约 v1.5.1（2026-09-05 深夜；老板拍 A①-⑤ + B 优先级）
+
+- 读 `schema.sql` 末尾「v1.5.1 新增」+ `api.md` 末尾「v1.5.1 端点与 DTO」+ `docs/decisions/2026-09-05-全量偏差审计.md`。
+- 并入 migration 015：accounts 六列（pool_status 九态 + source/overridden/changed_at + product_name/ref）、changeset_groups + changesets.group_id、tasks 四列（stage/stage_source/stage_changed_at/sop_run_id）、workflow_runs.task_id、task_readiness_overrides。
+- 实现：① pool_status 推导 job（日切+事件）+ pipeline + list 扩 + pool-status/product PATCH + `changesets/batch` 与组 dry-run/confirm（逐账户调用单链，不改三键/单执行者）+ 官方模板「新任务开户到基建」；② tasks.stage 推导 + readiness 六段（accounts/recharge/infra 系统算，products/materials/strategy 先读 overrides）+ sopProgress（绑定 run 节点→步骤）+ blockers/nextActions 只来自真实对象；③ `workflow-graph/v1` schema 校验（zod）+ validate/simulate/publish + run detail + runs 面板；④ `workbench/lead` 聚合（六卡三态、risks/opportunities 只用已冻公式）；⑤ suggestion 帧 + accept/reject、assets 端点与流转规则。
+- 反例：pool_status manual 覆盖后系统不改；batch 中某户有 running 变更集→skipped 不整批失败；stage manual 优先 workflow 优先 system；readiness 缺项列表非空时 ready=false；write 节点未经 human_confirm 直连 execute → validate 失败；lead 视图非 lead/admin 403；assets verified→official 非 admin 403。
+- 验收句：优化师在账户池一眼看到九态分布、按产品分组、勾选多户一次预览确认；任务页看到准备→投放走到哪一步、缺什么；负责人在工作台切「团队」看到目标缺口/风险/阻塞/待拍板；前端画布按节点模型能画能校验。
+
+
+### R-015 后端：契约 v1.6 落地（2026-09-06；排 R-014 后）
+
+- 派活方：arch　**先读** `schema.sql` 末尾「v1.6 新增」+ `api.md` 末尾「v1.6 端点与 DTO」。素材/结算的列与 DTO 由 arch 直接从你 B12-B19 的 domain 类型反推冻结（不再等提案）；**若与 domain 现实现有出入，写 inbox-arch 指出，不自改契约**。
+- 交付物：migration 016（素材 8 列 + analyses 5 列 + 谱系表 + 实验策略表 + brief 4 列；结算模板 7 列 + settlements 9 列 + lines 3 列 + corrections 表；workspace_flags；account_tests；account_replications）；HTTP+BFF：素材 list/detail/analyze/analysis/similar/lineage/brief/deliveries/backtest、products、experiments+policy；结算 templates/preview/corrections/freeze/to-work-item；admin members/grants/calendar/flags；`account.pivot2`；account-tests；replicate + replication-compare。
+- 反例：素材 sourceStatus≠reachable 时 analyze 409；whole_video 分析不产生句级时间戳；实验样本不足不出 leader；结算 blocked 不许 freeze、冻结后快照不随数据变、校正只对 allowCorrection 字段；`write_enabled=false` 时 confirm 403 WRITE_DISABLED；停用成员后其 session 全部 401；replicate 目标户 pool_status 不合法 409。
+- 验收句：优化师能看素材池/商品池示例态变真数据、拆片结果带证据、做一张月度结算单四步走到冻结；admin 能加人/停人/改授权/开灰度；策略页能看版位×任务交叉表；开户测试和优质户复制能发起并回看。
+- 状态：待处理（等 R-014）
+
+
+### R-016 后端：契约 v1.7 落地（2026-09-06；排 R-015 后）
+
+- 派活方：arch　**先读** `schema.sql` 末尾「v1.7 新增」+ `api.md` 末尾「v1.7 端点与 DTO」+ `docs/decisions/2026-09-06-P2大件设计与策略方案对象.md`。
+- 交付物：migration 017（strategies/strategy_bindings/strategy_validations、intel_materials、shadow_decisions、ai_impact_config；report_runs.kind 扩）；HTTP+BFF：策略方案 CRUD/copy/bind/validations/compare + suggestion `strategy_variant`；`/tasks/:id/attribution`（只算有公式节点，其余 undeterminable）+ lead gapTree；intel import/link；shadow decisions 记录（工作项建议→24h 内同向变更集/带外=adopted）+ shadow-exam 四门；ai-impact 四象限 + 估时表；weekly-report/v1；task-review Deep Research（Agent 异步 job，生成即归档 kb）；lead/fyi；monthly-exec + 订阅。
+- 反例：归因节点无公式不出金额；shadow 无人动作 adopted=false 不猜；ai-impact byUser 不进导出；策略验证样本不足=insufficient_sample；复盘 why/next humanConfirmed=false 默认。
+- 状态：待处理（等 R-015）
+
+
+#### P-047 三项初始化边界裁决（arch 2026-09-06）
+
+1. **grants 三键 FK 先要 accounts 行**：✅ 采纳——seed 对显式 grants 里的账户只插 `accounts(workspace_id, media, account_id)` 三键，`account_name/status` 留 NULL，`pool_status` 默认 `available`，不覆盖已有经营字段；首次 full 后由 ETL 富化。不从上游自动授权。
+2. **identity 只有 id/display_name**：✅ 采纳——新行 `provider='internal_test'`, `provider_subject=id`；已有行不改 provider/subject（BUC 接入时按 subject 映射）。
+3. **workspace.id / user_id 可选**：✅ 采纳——workspace 按 (kind,name) 受控唯一解析、歧义拒绝；user_id 按 membership 唯一复用否则生成；示例 JSON 全显式 UUID。
+- P-046（012 迁移）/P-048（discover）/P-049（系数 seed）：arch 待 PG 恢复后逐笔审（Docker 在本机挂了，我正在重启；恢复后你也能跑真 PG）。P-049 发现的 `metrics.ts` 写死除法 → 按你说的 R-010a1 内补 `op`，独立 P-050，✅。
+- **R-009 二批合流**：代码面我看齐了（BFF 去 dataView/按 Session 断言 mode、折 011、v2 解包、team reader 绑定）。PG 恢复后我在自己的工作树独立跑 DB/Worker/Gateway 真 PG 套件，通过即 `--no-ff` 合 main（P-045 整批回执你可以先写，PG 数字由我补）。
+
+### R-FE-IMG-001 登录页品牌图（Codex 生图；fe F-006-Q5 转派；2026-09-06）
+
+- 老板定：登录页 = 品牌视觉图 + 表单；图由 Codex 生成。参考 `docs/frontend/ui-assets/decisions/login-references-2026-09-05.md`。
+- 要 2 张（各出 2–3 版供老板挑）：① 全幅背景 2400×1350（16:9），JPG/WebP ≤600KB → `apps/web/public/brand/login-hero-16x9.jpg`；② 分屏左栏 1200×1600（3:4），≤400KB → `apps/web/public/brand/login-hero-3x4.jpg`。
+- 画面：黑白为主的品牌视觉；一枚玻璃质感的环或丝带穿过几个哑光立方体，一抹 D-CON 橙 `#ff6a2c` 点缀；柔光、浅景深、大量留白；16:9 版右侧 40% 留空放登录卡，3:4 版下方 35% 留空压文案。**不要**文字/logo/蓝紫渐变/赛博风/人物。构图参考巨量引擎登录页，材质参考磁力金牛的丝带，配色换成黑白橙。
+- 交付：文件落到上述路径（路径限定提交到 `be/r010` 或单独分支均可），在 inbox-arch 回一行 SHA/路径；fe 收到后替换占位。不阻塞后端批次，空档做。

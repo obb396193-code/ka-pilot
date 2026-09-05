@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "identityId": "5e5ea046-e7eb-4fed-a07a-fb7631bc498e",
+        "displayName": "示例优化师",
+        "provider": "internal_test",
+        "userId": "00000000-0000-4000-8000-000000000001",
+        "role": "admin",
+        "isActive": true,
+        "joinedAt": "2026-09-05",
+        "grantsCount": 5,
+        "lastSeenAt": "2026-09-05T09:15:00.000+08:00"
+      },
+      {
+        "identityId": "00000000-0000-4000-8000-0000000000a2",
+        "displayName": "示例运营",
+        "provider": "internal_test",
+        "userId": "00000000-0000-4000-8000-000000000002",
+        "role": "operator",
+        "isActive": true,
+        "joinedAt": "2026-09-05",
+        "grantsCount": 2,
+        "lastSeenAt": null
+      },
+      {
+        "identityId": "00000000-0000-4000-8000-0000000000a3",
+        "displayName": "示例负责人",
+        "provider": "internal_test",
+        "userId": "00000000-0000-4000-8000-000000000003",
+        "role": "lead",
+        "isActive": false,
+        "joinedAt": "2026-09-05",
+        "grantsCount": 0,
+        "lastSeenAt": null
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "停用=membership 失活+撤 session，行不删"
+  }
+}

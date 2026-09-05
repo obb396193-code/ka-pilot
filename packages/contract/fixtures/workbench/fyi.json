@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "at": "2026-09-05T10:00:00.000+08:00",
+        "kind": "approval_decided",
+        "summary": "追加预算申请（AAC 拉新 +18 万）已同意",
+        "ref": {
+          "type": "approval",
+          "id": "00000000-0000-4000-8000-000000001301"
+        }
+      },
+      {
+        "at": "2026-09-05T09:50:00.000+08:00",
+        "kind": "escalation_closed",
+        "summary": "account-5 断量升级已关闭（已充值）",
+        "ref": {
+          "type": "escalation",
+          "id": "00000000-0000-4000-8000-000000001402"
+        }
+      },
+      {
+        "at": "2026-09-04T18:00:00.000+08:00",
+        "kind": "milestone",
+        "summary": "闲鱼潜客转化 进入基建阶段",
+        "ref": {
+          "type": "task",
+          "id": "fixture-task-nocap"
+        }
+      }
+    ],
+    "nextCursor": null
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

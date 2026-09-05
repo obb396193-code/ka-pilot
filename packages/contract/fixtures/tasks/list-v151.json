@@ -1,0 +1,229 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "taskId": "fixture-task-ready",
+        "taskName": "AAC 拉新",
+        "bizName": "AAC",
+        "status": "active",
+        "stage": "delivering",
+        "period": {
+          "start": "2026-09-01",
+          "end": "2026-09-30"
+        },
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "displayName": "示例优化师"
+        },
+        "assessmentPrice": {
+          "value": 38,
+          "effectiveDate": "2026-09-01"
+        },
+        "rta": true,
+        "placementPref": "信息流",
+        "accountCount": 3,
+        "volume": {
+          "target": 120000,
+          "completed": 18400
+        },
+        "readiness": {
+          "accounts": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": []
+          },
+          "recharge": {
+            "ratio": {
+              "value": 0.67,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "account-5 余额 0"
+            ]
+          },
+          "products": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "manual",
+            "missing": []
+          },
+          "materials": {
+            "ratio": {
+              "value": 0.5,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "manual",
+            "missing": [
+              "候选素材 <3"
+            ]
+          },
+          "strategy": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "manual",
+            "missing": []
+          },
+          "infra": {
+            "ratio": {
+              "value": 0.8,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "account-3 无 unit"
+            ]
+          },
+          "overall": {
+            "value": 0.83,
+            "state": "finite"
+          }
+        },
+        "pacing": {
+          "asOf": "2026-09-04",
+          "remainingDays": 26,
+          "targetProgress": {
+            "value": 0.1533,
+            "state": "finite"
+          },
+          "timeProgress": {
+            "value": 0.1667,
+            "state": "finite"
+          },
+          "projectedCompletion": {
+            "value": 0.9333,
+            "state": "finite"
+          }
+        },
+        "costStatus": "green",
+        "nextMilestone": {
+          "at": "2026-09-10",
+          "label": "第一次周复盘"
+        }
+      },
+      {
+        "taskId": "fixture-task-nocap",
+        "taskName": "闲鱼潜客转化",
+        "bizName": "闲鱼",
+        "status": "preparing",
+        "stage": "building",
+        "period": {
+          "start": "2026-09-08",
+          "end": "2026-09-30"
+        },
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "displayName": "示例优化师"
+        },
+        "assessmentPrice": null,
+        "rta": false,
+        "placementPref": null,
+        "accountCount": 1,
+        "volume": {
+          "target": null,
+          "completed": 0
+        },
+        "readiness": {
+          "accounts": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": []
+          },
+          "recharge": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": []
+          },
+          "products": {
+            "ratio": {
+              "value": 0.0,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "manual",
+            "missing": [
+              "未选商品"
+            ]
+          },
+          "materials": {
+            "ratio": {
+              "value": 0.0,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "manual",
+            "missing": [
+              "未选素材"
+            ]
+          },
+          "strategy": {
+            "ratio": {
+              "value": 0.0,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "manual",
+            "missing": [
+              "未定策略"
+            ]
+          },
+          "infra": {
+            "ratio": {
+              "value": 0.0,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "account-3 无 unit"
+            ]
+          },
+          "overall": {
+            "value": 0.33,
+            "state": "finite"
+          }
+        },
+        "pacing": null,
+        "costStatus": null,
+        "nextMilestone": {
+          "at": "2026-09-08",
+          "label": "预算生效"
+        }
+      }
+    ],
+    "page": 1,
+    "pageSize": 20,
+    "total": 2
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "dataState": "ready",
+    "_note": "v1.5.1 ②：stage 七态 + readiness 六段"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "ok": true,
+  "data": {
+    "official": [
+      {
+        "id": "00000000-0000-4000-8000-000000001701",
+        "name": "新任务开户到基建",
+        "version": "v1.0",
+        "assetType": "official_template",
+        "risk": "medium",
+        "avgDurationMin": 26,
+        "successRate": {
+          "value": 0.934,
+          "state": "finite"
+        },
+        "useCount": 0,
+        "description": "准备→开户→充值→基建→冷启动观察"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000001702",
+        "name": "垃圾计划清理流",
+        "version": "v2.1",
+        "assetType": "official_template",
+        "risk": "low",
+        "avgDurationMin": 8,
+        "successRate": {
+          "value": 0.962,
+          "state": "finite"
+        },
+        "useCount": 12,
+        "description": "高消耗零转化 unit 关停（变更集确认）"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000001703",
+        "name": "优质户复制流",
+        "version": "v1.2",
+        "assetType": "official_template",
+        "risk": "medium",
+        "avgDurationMin": 12,
+        "successRate": {
+          "value": null,
+          "state": "undefined"
+        },
+        "useCount": 0,
+        "description": "母户结构→目标户变更集组"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000001704",
+        "name": "断量充值协作流",
+        "version": "v1.0",
+        "assetType": "official_template",
+        "risk": "low",
+        "avgDurationMin": 3,
+        "successRate": {
+          "value": null,
+          "state": "undefined"
+        },
+        "useCount": 2,
+        "description": "断量倒计时<2h → 充值协作消息"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000001705",
+        "name": "新户冷启动观察流",
+        "version": "v1.1",
+        "assetType": "official_template",
+        "risk": "low",
+        "avgDurationMin": 5,
+        "successRate": {
+          "value": null,
+          "state": "undefined"
+        },
+        "useCount": 1,
+        "description": "前 3 天宽松阈值观察"
+      }
+    ],
+    "mine": [
+      {
+        "id": "00000000-0000-4000-8000-000000001711",
+        "name": "我的：每日超成本巡检",
+        "version": "draft v3",
+        "assetType": "personal",
+        "risk": "low",
+        "copiedFrom": "00000000-0000-4000-8000-000000001702"
+      }
+    ],
+    "team": []
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

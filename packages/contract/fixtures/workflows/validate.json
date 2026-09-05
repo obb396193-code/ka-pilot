@@ -1,0 +1,73 @@
+{
+  "ok": true,
+  "data": {
+    "schema": [
+      {
+        "check": "节点连接完整性",
+        "pass": true
+      },
+      {
+        "check": "节点类型与参数匹配",
+        "pass": true
+      },
+      {
+        "check": "循环依赖",
+        "pass": true
+      },
+      {
+        "check": "write 节点前置 human_confirm",
+        "pass": true
+      }
+    ],
+    "permissions": [
+      {
+        "check": "accounts:read",
+        "pass": true
+      },
+      {
+        "check": "changesets:write",
+        "pass": true
+      },
+      {
+        "check": "changesets:execute",
+        "pass": true
+      },
+      {
+        "check": "notify:send",
+        "pass": true
+      }
+    ],
+    "links": [
+      {
+        "check": "边条件表达式可解析",
+        "pass": true
+      }
+    ],
+    "missing_params": [
+      {
+        "node_id": "n3",
+        "param": "account_scope",
+        "required": true
+      },
+      {
+        "node_id": "n4",
+        "param": "min_recharge",
+        "required": true
+      },
+      {
+        "node_id": "n6",
+        "param": "confirmer",
+        "required": true
+      }
+    ],
+    "canPublish": false
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "四组全过且 missing_params 空才可发布"
+  }
+}

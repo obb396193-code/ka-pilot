@@ -1,0 +1,736 @@
+{
+  "ok": true,
+  "data": {
+    "days": 7,
+    "source": {
+      "media": "KUAISHOU",
+      "accountId": "account-1",
+      "trend": [
+        {
+          "ds": "2026-09-01",
+          "metrics": {
+            "cost": {
+              "value": 2625.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 2050.65,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 20000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 833,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 64,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 61,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 267.35,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0416,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0768,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 43.03,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.62,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0492,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          }
+        },
+        {
+          "ds": "2026-09-02",
+          "metrics": {
+            "cost": {
+              "value": 2750.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 2148.3,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 20000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 833,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 66,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 63,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 245.7,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0416,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0792,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 43.65,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 34.1,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0476,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          }
+        },
+        {
+          "ds": "2026-09-03",
+          "metrics": {
+            "cost": {
+              "value": 2875.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 2245.95,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 20000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 833,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 68,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 64,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 186.05,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0416,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0816,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 44.92,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 35.09,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0625,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          }
+        },
+        {
+          "ds": "2026-09-04",
+          "metrics": {
+            "cost": {
+              "value": 3000.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 2343.6,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 20000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 833,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 70,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 66,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 164.4,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0416,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.084,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 45.45,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 35.51,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0606,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          }
+        },
+        {
+          "ds": "2026-09-05",
+          "metrics": {
+            "cost": {
+              "value": 3125.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 2441.25,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 20000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 833,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 71,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 68,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 142.75,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0416,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0852,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 45.96,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 35.9,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0441,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "target": {
+      "media": "KUAISHOU",
+      "accountId": "account-3",
+      "trend": [
+        {
+          "ds": "2026-09-01",
+          "metrics": {
+            "cost": {
+              "value": 630.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 492.15600000000006,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 4800,
+              "availability": "available"
+            },
+            "click": {
+              "value": 200,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 15,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 39.84,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.075,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 45.0,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 35.15,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0714,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          }
+        },
+        {
+          "ds": "2026-09-02",
+          "metrics": {
+            "cost": {
+              "value": 660.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 515.5920000000001,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 4800,
+              "availability": "available"
+            },
+            "click": {
+              "value": 200,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 15,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 15,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 54.41,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.075,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 44.0,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 34.37,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          }
+        },
+        {
+          "ds": "2026-09-03",
+          "metrics": {
+            "cost": {
+              "value": 690.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 539.028,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 4800,
+              "availability": "available"
+            },
+            "click": {
+              "value": 200,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 16,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 15,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 30.97,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.08,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 46.0,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 35.94,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0667,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          }
+        },
+        {
+          "ds": "2026-09-04",
+          "metrics": {
+            "cost": {
+              "value": 720.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 562.464,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 4800,
+              "availability": "available"
+            },
+            "click": {
+              "value": 200,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 16,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 16,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 45.54,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.08,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 45.0,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 35.15,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          }
+        },
+        {
+          "ds": "2026-09-05",
+          "metrics": {
+            "cost": {
+              "value": 750.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 585.9000000000001,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 4800,
+              "availability": "available"
+            },
+            "click": {
+              "value": 200,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 17,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 16,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 22.1,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.085,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 46.88,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 36.62,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0625,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "母子 7 日并排（示例只有 5 日）；v3 trend 行"
+  }
+}

@@ -1,0 +1,704 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.hourly",
+      "rowSchemaVersion": "account.hourly/v1",
+      "status": "ready",
+      "rows": [
+        {
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "hh": 0,
+          "cumulative": {
+            "cost": {
+              "value": 535.2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 418.1,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 13,
+              "availability": "available"
+            }
+          },
+          "delta": {
+            "cost": {
+              "value": 535.2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 418.1,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 13,
+              "availability": "available"
+            }
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": 32.2,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 41.2,
+              "state": "finite"
+            }
+          },
+          "velocity": {
+            "costPerHour": {
+              "value": 535.2,
+              "availability": "available"
+            }
+          },
+          "projectedDayCost": {
+            "value": 12844.8,
+            "availability": "available"
+          },
+          "budgetUsage": {
+            "value": 0.0054,
+            "state": "finite"
+          },
+          "lastSyncAt": "2026-09-05T09:13:11.000+08:00"
+        },
+        {
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "hh": 1,
+          "cumulative": {
+            "cost": {
+              "value": 1070.4,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 836.2,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 28,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 26,
+              "availability": "available"
+            }
+          },
+          "delta": {
+            "cost": {
+              "value": 535.2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 418.1,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 13,
+              "availability": "available"
+            }
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": 32.2,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 41.2,
+              "state": "finite"
+            }
+          },
+          "velocity": {
+            "costPerHour": {
+              "value": 535.2,
+              "availability": "available"
+            }
+          },
+          "projectedDayCost": {
+            "value": 12844.8,
+            "availability": "available"
+          },
+          "budgetUsage": {
+            "value": 0.0107,
+            "state": "finite"
+          },
+          "lastSyncAt": "2026-09-05T09:13:11.000+08:00"
+        },
+        {
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "hh": 2,
+          "cumulative": {
+            "cost": {
+              "value": 1605.6000000000001,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 1254.3000000000002,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 42,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 39,
+              "availability": "available"
+            }
+          },
+          "delta": {
+            "cost": {
+              "value": 535.2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 418.1,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 13,
+              "availability": "available"
+            }
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": 32.2,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 41.2,
+              "state": "finite"
+            }
+          },
+          "velocity": {
+            "costPerHour": {
+              "value": 535.2,
+              "availability": "available"
+            }
+          },
+          "projectedDayCost": {
+            "value": 12844.8,
+            "availability": "available"
+          },
+          "budgetUsage": {
+            "value": 0.0161,
+            "state": "finite"
+          },
+          "lastSyncAt": "2026-09-05T09:13:11.000+08:00"
+        },
+        {
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "hh": 3,
+          "cumulative": {
+            "cost": {
+              "value": 2140.8,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 1672.4,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 56,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 52,
+              "availability": "available"
+            }
+          },
+          "delta": {
+            "cost": {
+              "value": 535.2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 418.1,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 13,
+              "availability": "available"
+            }
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": 32.2,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 41.2,
+              "state": "finite"
+            }
+          },
+          "velocity": {
+            "costPerHour": {
+              "value": 535.2,
+              "availability": "available"
+            }
+          },
+          "projectedDayCost": {
+            "value": 12844.8,
+            "availability": "available"
+          },
+          "budgetUsage": {
+            "value": 0.0214,
+            "state": "finite"
+          },
+          "lastSyncAt": "2026-09-05T09:13:11.000+08:00"
+        },
+        {
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "hh": 4,
+          "cumulative": {
+            "cost": {
+              "value": 2676.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 2090.5,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 70,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 65,
+              "availability": "available"
+            }
+          },
+          "delta": {
+            "cost": {
+              "value": 535.2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 418.1,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 13,
+              "availability": "available"
+            }
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": 32.2,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 41.2,
+              "state": "finite"
+            }
+          },
+          "velocity": {
+            "costPerHour": {
+              "value": 535.2,
+              "availability": "available"
+            }
+          },
+          "projectedDayCost": {
+            "value": 12844.8,
+            "availability": "available"
+          },
+          "budgetUsage": {
+            "value": 0.0268,
+            "state": "finite"
+          },
+          "lastSyncAt": "2026-09-05T09:13:11.000+08:00"
+        },
+        {
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "hh": 5,
+          "cumulative": {
+            "cost": {
+              "value": 3211.2000000000003,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 2508.6000000000004,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 84,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 78,
+              "availability": "available"
+            }
+          },
+          "delta": {
+            "cost": {
+              "value": 535.2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 418.1,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 13,
+              "availability": "available"
+            }
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": 32.2,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 41.2,
+              "state": "finite"
+            }
+          },
+          "velocity": {
+            "costPerHour": {
+              "value": 535.2,
+              "availability": "available"
+            }
+          },
+          "projectedDayCost": {
+            "value": 12844.8,
+            "availability": "available"
+          },
+          "budgetUsage": {
+            "value": 0.0321,
+            "state": "finite"
+          },
+          "lastSyncAt": "2026-09-05T09:13:11.000+08:00"
+        },
+        {
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "hh": 6,
+          "cumulative": {
+            "cost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "cashCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "conversion": {
+              "value": 98,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 91,
+              "availability": "available"
+            }
+          },
+          "delta": {
+            "cost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "cashCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "conversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 13,
+              "availability": "available"
+            }
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": null,
+              "state": "undefined"
+            },
+            "realCpa": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "velocity": {
+            "costPerHour": {
+              "value": 535.2,
+              "availability": "available"
+            }
+          },
+          "projectedDayCost": {
+            "value": 12844.8,
+            "availability": "available"
+          },
+          "budgetUsage": {
+            "value": 0.0375,
+            "state": "finite"
+          },
+          "lastSyncAt": "2026-09-05T09:13:11.000+08:00"
+        },
+        {
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "hh": 7,
+          "cumulative": {
+            "cost": {
+              "value": 4281.6,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 3344.8,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 112,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 104,
+              "availability": "available"
+            }
+          },
+          "delta": {
+            "cost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "cashCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "conversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 13,
+              "availability": "available"
+            }
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": 32.2,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 41.2,
+              "state": "finite"
+            }
+          },
+          "velocity": {
+            "costPerHour": {
+              "value": 535.2,
+              "availability": "available"
+            }
+          },
+          "projectedDayCost": {
+            "value": 12844.8,
+            "availability": "available"
+          },
+          "budgetUsage": {
+            "value": 0.0428,
+            "state": "finite"
+          },
+          "lastSyncAt": "2026-09-05T09:13:11.000+08:00"
+        },
+        {
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "hh": 8,
+          "cumulative": {
+            "cost": {
+              "value": 4816.8,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 3762.9,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 126,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 117,
+              "availability": "available"
+            }
+          },
+          "delta": {
+            "cost": {
+              "value": 535.2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 418.1,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 13,
+              "availability": "available"
+            }
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": 32.2,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 41.2,
+              "state": "finite"
+            }
+          },
+          "velocity": {
+            "costPerHour": {
+              "value": 535.2,
+              "availability": "available"
+            }
+          },
+          "projectedDayCost": {
+            "value": 12844.8,
+            "availability": "available"
+          },
+          "budgetUsage": {
+            "value": 0.0482,
+            "state": "finite"
+          },
+          "lastSyncAt": "2026-09-05T09:13:11.000+08:00"
+        },
+        {
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "hh": 9,
+          "cumulative": {
+            "cost": {
+              "value": 5352.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 4181.0,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 140,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 130,
+              "availability": "available"
+            }
+          },
+          "delta": {
+            "cost": {
+              "value": 535.2,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 418.1,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 14,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 13,
+              "availability": "available"
+            }
+          },
+          "ratios": {
+            "cashCpa": {
+              "value": 32.2,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 41.2,
+              "state": "finite"
+            }
+          },
+          "velocity": {
+            "costPerHour": {
+              "value": 535.2,
+              "availability": "available"
+            }
+          },
+          "projectedDayCost": {
+            "value": 12844.8,
+            "availability": "available"
+          },
+          "budgetUsage": {
+            "value": 0.0535,
+            "state": "finite"
+          },
+          "lastSyncAt": "2026-09-05T09:13:11.000+08:00"
+        }
+      ],
+      "returnedRowCount": 10,
+      "wholeResultTotal": {
+        "value": 10,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "canonical",
+        "workspaceKind": "personal",
+        "window": {
+          "from": "2026-09-05",
+          "to": "2026-09-05",
+          "preset": "today"
+        },
+        "metadataAvailability": "known",
+        "coverage": {
+          "complete": false
+        },
+        "truncated": false,
+        "partial": true
+      },
+      "warnings": [
+        "hh=6 缺数（补拉中）"
+      ]
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "缺小时 missing 不补 0；delta 相邻缺一边也 missing"
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "ok": true,
+  "data": {
+    "window": {
+      "from": "2026-09-01",
+      "to": "2026-09-05",
+      "preset": "month_to_date"
+    },
+    "cards": {
+      "targetAchievement": {
+        "value": 0.1533,
+        "state": "finite"
+      },
+      "cumulativeCost": {
+        "value": 698000.0,
+        "availability": "available"
+      },
+      "cashCpa": {
+        "value": {
+          "value": 29.63,
+          "state": "finite"
+        },
+        "assessment": 38.0
+      },
+      "conversions": {
+        "value": 18400,
+        "availability": "available"
+      },
+      "healthyTasks": {
+        "n": 1,
+        "total": 2
+      },
+      "budgetGap": {
+        "value": {
+          "value": 8000.0,
+          "availability": "available"
+        },
+        "basis": "pacing_projection"
+      }
+    },
+    "risks": [
+      {
+        "taskId": "fixture-task-ready",
+        "taskName": "AAC 拉新",
+        "kind": "cost_over",
+        "impact": {
+          "value": 1240.0,
+          "availability": "available"
+        },
+        "suggestion": {
+          "workItemId": "00000000-0000-4000-8000-000000000201"
+        }
+      },
+      {
+        "taskId": "fixture-task-nocap",
+        "taskName": "闲鱼潜客转化",
+        "kind": "budget_short",
+        "impact": {
+          "value": null,
+          "availability": "missing"
+        },
+        "suggestion": null
+      }
+    ],
+    "opportunities": [
+      {
+        "taskId": "fixture-task-ready",
+        "taskName": "AAC 拉新",
+        "kind": "volume_short",
+        "impact": {
+          "value": 153922.4,
+          "availability": "available"
+        },
+        "suggestion": {
+          "workItemId": "00000000-0000-4000-8000-000000000202"
+        }
+      }
+    ],
+    "blockers": [
+      {
+        "kind": "dispatch_overdue",
+        "count": 1,
+        "tasks": [
+          "fixture-task-ready"
+        ]
+      },
+      {
+        "kind": "approval_pending",
+        "count": 2,
+        "tasks": [
+          "fixture-task-ready"
+        ]
+      },
+      {
+        "kind": "readiness_missing",
+        "count": 3,
+        "tasks": [
+          "fixture-task-nocap"
+        ]
+      }
+    ],
+    "approvalsPending": [
+      {
+        "approvalId": "00000000-0000-4000-8000-000000001301",
+        "title": "追加预算申请：AAC 拉新 +18 万",
+        "requester": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "due": "2026-09-06T18:00:00.000+08:00"
+      }
+    ],
+    "brief": {
+      "status": "ready",
+      "sections": [
+        {
+          "key": "cost_pressure",
+          "title": "成本压力",
+          "text": "月累计现金 CPA 29.6，考核 38，达标；account-2 单日超线。"
+        }
+      ]
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "team",
+    "selectedSource": "ka_data",
+    "_note": "v1.5.1 ④；impact 只用 cost_space/pacing 缺口，无则 missing；role≠lead/admin 403"
+  }
+}
