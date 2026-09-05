@@ -62,6 +62,8 @@ export interface ResolvedDataQuery {
   readonly [RESOLVED_QUERY]: true;
 }
 
+type SqlAccountScope = { kind: "explicit_accounts"; accounts: readonly ScopedAccount[] } | { kind: "team_workspace_readonly" };
+
 interface QueryDefinition {
   queryId: DataQueryId;
   supportedViews: readonly DataViewMode[];
@@ -73,7 +75,7 @@ interface QueryDefinition {
   metricVersion: string;
   paramsSchema: z.ZodType<NormalizedQueryParams>;
   authorityPolicy: QueryAuthorityPolicy;
-  buildSql?: (params: NormalizedQueryParams, scopedAccounts: readonly ScopedAccount[]) => string;
+  buildSql?: (params: NormalizedQueryParams, scope: SqlAccountScope) => string;
 }
 
 export class QueryRegistryError extends Error {
@@ -188,15 +190,15 @@ function compactDate(value: string): string {
 
 function whereClause(
   params: NormalizedQueryParams,
-  scopedAccounts: readonly ScopedAccount[],
+  scope: SqlAccountScope,
 ): string {
   const byMedia = new Map<string, string[]>();
-  for (const account of scopedAccounts) {
+  for (const account of scope.kind === "explicit_accounts" ? scope.accounts : []) {
     const accountIds = byMedia.get(account.media) ?? [];
     accountIds.push(account.accountId);
     byMedia.set(account.media, accountIds);
   }
-  const accountScope = byMedia.size === 0
+  const accountScope = scope.kind === "team_workspace_readonly" ? "1 = 1" : byMedia.size === 0
     ? "1 = 0"
     : `(${[...byMedia.entries()]
         .sort(([left], [right]) => left.localeCompare(right))
@@ -209,6 +211,8 @@ function whereClause(
     accountScope,
   ];
   if (params.media !== undefined) filters.push(`media = ${sqlString(params.media)}`);
+  const requested = params.accountId === undefined ? params.accountIds : [params.accountId];
+  if (requested !== undefined) filters.push(`account_id IN (${requested.map(sqlString).join(", ")})`);
   return filters.join(" AND ");
 }
 
@@ -218,11 +222,14 @@ function completeSum(column: "cost_yuan" | "show" | "click" | "conv" | "cash_yua
   return `CASE WHEN MAX(CASE WHEN typeof(${column}) NOT IN ('integer', 'real', 'null') OR ABS(CAST(${column} AS REAL)) > 1.7976931348623157e308 THEN 1 ELSE 0 END) = 1 OR ABS(SUM(${column})) > 1.7976931348623157e308 THEN 'INVALID_METRIC' WHEN COUNT(${column}) = COUNT(*) AND COUNT(*) > 0 THEN ROUND(SUM(${column}), 6) ELSE NULL END`;
 }
 
-function expectedAccountDays(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
+function expectedAccountDays(params: NormalizedQueryParams, accountScope: SqlAccountScope): string {
+  const accounts = accountScope.kind === "explicit_accounts" ? accountScope.accounts : [];
   const tuples = [...new Set(accounts
     .filter((account) => params.media === undefined || account.media === params.media)
     .map((account) => `(${sqlString(account.media)}, ${sqlString(account.accountId)})`))];
-  const scope = tuples.length === 0 ? "SELECT NULL, NULL WHERE 1 = 0" : `VALUES ${tuples.join(", ")}`;
+  const scope = accountScope.kind === "team_workspace_readonly"
+    ? `SELECT DISTINCT media, account_id FROM dwd_account_daily WHERE ${whereClause(params, accountScope)}`
+    : tuples.length === 0 ? "SELECT NULL, NULL WHERE 1 = 0" : `VALUES ${tuples.join(", ")}`;
   return `WITH RECURSIVE dates(day) AS (
     SELECT ${sqlString(params.dateFrom)} UNION ALL
     SELECT date(day, '+1 day') FROM dates WHERE day < ${sqlString(params.dateTo)}
@@ -244,26 +251,26 @@ const AGGREGATE_COLUMNS = `COUNT(observed_account_id) AS row_count,
   ${completeSum("click")} AS click, ${completeSum("conv")} AS conversion,
   ${completeSum("cash_yuan")} AS cash_cost`;
 
-function summarySql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
+function summarySql(params: NormalizedQueryParams, accounts: SqlAccountScope): string {
   return `${expectedAccountDays(params, accounts)} SELECT ${AGGREGATE_COLUMNS} FROM members`;
 }
 
-function trendSql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
+function trendSql(params: NormalizedQueryParams, accounts: SqlAccountScope): string {
   return `${expectedAccountDays(params, accounts)} SELECT ds, ${AGGREGATE_COLUMNS} FROM members GROUP BY ds ORDER BY ds`;
 }
 
-function tableSql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
+function tableSql(params: NormalizedQueryParams, accounts: SqlAccountScope): string {
   const page = params.page ?? 1;
   const pageSize = params.pageSize ?? 50;
   const offset = (page - 1) * pageSize;
-  return `SELECT ds, media, account_id, account_name, task_id, biz_name, sub_biz, cost_yuan, cash_yuan, assessment, cash_assessment, conv, show, click FROM dwd_account_daily WHERE ${whereClause(params, accounts)} ORDER BY ds DESC, account_id LIMIT ${pageSize} OFFSET ${offset}`;
+  return `SELECT CAST(ds AS TEXT) AS ds, media, account_id, account_name, task_id, biz_name, sub_biz, cost_yuan, cash_yuan, assessment, cash_assessment, conv, show, click FROM dwd_account_daily WHERE ${whereClause(params, accounts)} ORDER BY ds DESC, media, account_id, task_id LIMIT ${pageSize} OFFSET ${offset}`;
 }
 
-function detailSql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
-  return `SELECT ds, media, account_id, account_name, task_id, biz_name, sub_biz, cost_yuan, cash_yuan, assessment, cash_assessment, conv, show, click FROM dwd_account_daily WHERE ${whereClause(params, accounts)} ORDER BY ds, task_id`;
+function detailSql(params: NormalizedQueryParams, accounts: SqlAccountScope): string {
+  return `SELECT CAST(ds AS TEXT) AS ds, media, account_id, account_name, task_id, biz_name, sub_biz, cost_yuan, cash_yuan, assessment, cash_assessment, conv, show, click FROM dwd_account_daily WHERE ${whereClause(params, accounts)} ORDER BY ds, media, account_id, task_id`;
 }
 
-function reconciliationSql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
+function reconciliationSql(params: NormalizedQueryParams, accounts: SqlAccountScope): string {
   return `SELECT ds, media, account_id, ${completeSum("cost_yuan")} AS cost, ${completeSum("conv")} AS conversions, ${completeSum("cash_yuan")} AS cash_cost FROM dwd_account_daily WHERE ${whereClause(params, accounts)} GROUP BY ds, media, account_id ORDER BY ds, media, account_id`;
 }
 
@@ -450,6 +457,19 @@ export class DataQueryRegistry {
     return entry.authorityPolicy;
   }
 
+  /** Pure fixed-template builder. Only KaDataClient's server binding authorizes execution. */
+  buildTeamKaDataPlan(resolved: ResolvedDataQuery): KaDataQueryPlan {
+    if (!isResolvedDataQuery(resolved)) throw new QueryRegistryError("INVALID_REQUEST", "Query must be resolved by the registry");
+    const entry = this.entries.get(resolved.queryId);
+    if (entry?.buildSql === undefined) throw new QueryRegistryError("VIEW_UNSUPPORTED", "KA Data does not support this query");
+    return {
+      backend: "sqlite",
+      sql: entry.buildSql(resolved.params, { kind: "team_workspace_readonly" }),
+      limit: entry.maxRows,
+      queryTemplateVersion: `${entry.queryTemplateVersion}-team-bound-v1`,
+    };
+  }
+
   buildKaDataPlan(
     resolved: ResolvedDataQuery,
     scopedAccounts: readonly ScopedAccount[],
@@ -467,7 +487,7 @@ export class DataQueryRegistry {
     }).strict()).max(1_000).parse(scopedAccounts);
     return {
       backend: "sqlite",
-      sql: entry.buildSql(resolved.params, validatedAccounts),
+      sql: entry.buildSql(resolved.params, { kind: "explicit_accounts", accounts: validatedAccounts }),
       limit: entry.maxRows,
       queryTemplateVersion: entry.queryTemplateVersion,
     };

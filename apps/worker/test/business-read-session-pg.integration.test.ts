@@ -1,6 +1,7 @@
 import { once } from "node:events";
 import type { AddressInfo } from "node:net";
 import { randomUUID } from "node:crypto";
+import { DatabaseSync } from "node:sqlite";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Pool } from "pg";
@@ -28,6 +29,7 @@ import { createDataApiServer } from "../src/data/http-server.js";
 import { PlatformDataSource } from "../src/data/platform-data-source.js";
 import { DataQueryService } from "../src/data/query-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
+import { createKaDataClientFromEnv } from "../src/data/ka-data-client.js";
 import { ReadDetailService } from "../src/data/read-detail-service.js";
 import { TaskListService } from "../src/tasks/task-list-service.js";
 import { WorkItemListService } from "../src/work-items/work-item-list-service.js";
@@ -39,7 +41,7 @@ const loginToken = "task5-personal-session-token-with-at-least-thirty-two-chars"
 const teamToken = "task5-team-session-token-with-at-least-thirty-two-characters";
 const now = new Date("2026-09-04T08:00:00.000Z");
 
-describe("Task5 session-backed business reads with PostgreSQL", () => {
+describe.each([false, true])("Session-backed business reads with PostgreSQL (KA enabled=%s)", (kaEnabled) => {
   const pool = new Pool({ connectionString: databaseUrl, max: 4 });
   const cleanupWorkspaceIds: string[] = [];
   let identityId: string;
@@ -59,6 +61,7 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
     workItemDetail: 0,
     changeSetDetail: 0,
     platformQuery: 0,
+    kaQuery: 0,
   };
 
   beforeAll(async () => {
@@ -190,7 +193,28 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
     const platformDataSource = new PlatformDataSource(semanticRepository);
     const dataService = new DataQueryService({
       registry: createDataQueryRegistry(),
-      kaData: { query: async () => { throw new Error("ordinary reads must not call KA Data"); } },
+      sourcePolicy: { kaDataEnabled: kaEnabled, diagnosticEnabled: false, entitlements: [] },
+      kaData: createKaDataClientFromEnv({
+        KA_DATA_BASE_URL: "https://synthetic-team-source.example",
+        KA_DATA_READER_TOKEN: "synthetic-team-reader-token",
+        KA_DATA_TEAM_WORKSPACE_ID: teamWorkspaceId,
+      }, { fetchFn: async (_url, init) => {
+        sourceCalls.kaQuery += 1;
+        // Real registered SQL over a synthetic SQLite source; NOT a live internal reader.
+        const sqlite = new DatabaseSync(":memory:");
+        try {
+          sqlite.exec(`CREATE TABLE dwd_account_daily (ds INTEGER, media TEXT, account_id TEXT,
+            account_name TEXT, task_id TEXT, biz_name TEXT, sub_biz TEXT, cost_yuan REAL,
+            cash_yuan REAL, assessment REAL, cash_assessment REAL, conv REAL, show REAL, click REAL);
+            INSERT INTO dwd_account_daily VALUES
+            (20260904,'KUAISHOU','team-one','Synthetic KA',NULL,NULL,NULL,999,500,10,8,3,10,2),
+            (20260904,'TENCENT','team-one','Synthetic other media',NULL,NULL,NULL,9999,5000,10,8,3,10,2)`);
+          const input = JSON.parse(String(init?.body)) as { backend: string; sql: string };
+          expect(input.backend).toBe("sqlite");
+          const rows = sqlite.prepare(input.sql).all();
+          return Response.json({ backend: "sqlite", rowCount: rows.length, rows });
+        } finally { sqlite.close(); }
+      } }),
       platform: {
         query: async (resolved, execution) => {
           sourceCalls.platformQuery += 1;
@@ -410,6 +434,7 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
       }),
     });
     expect(personalData.status).toBe(200);
+    expect(sourceCalls.kaQuery).toBe(0);
     expect(await personalData.json()).toMatchObject({
       ok: true,
       data: {
@@ -505,6 +530,7 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
     expect(teamChangeSet.status).toBe(403);
     expect(sourceCalls.changeSetDetail).toBe(changeSetFindCallsBefore);
 
+    const platformCallsBeforeTeamData = sourceCalls.platformQuery;
     const teamData = await fetch(`${baseUrl}/api/v1/data/query`, {
       method: "POST",
       headers: headers(teamCookie, "task5-team-data"),
@@ -513,12 +539,20 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
         params: { date: "2026-09-04", media: "KUAISHOU" },
       }),
     });
-    expect(teamData.status).toBe(503);
-    expect(await teamData.json()).toMatchObject({
-      ok: false, error: { code: "SOURCE_UNAVAILABLE" },
-    });
-    // This composition has KA disabled: a team session cannot use personal canonical
-    // as fallback. Enabled team-reader integration is a separate R-009 scenario.
+    expect(teamData.status).toBe(kaEnabled ? 200 : 503);
+    const teamDataBody = await teamData.json();
+    if (kaEnabled) {
+      expect(teamDataBody).toMatchObject({ ok: true, data: { mode: "ka_data", source: {
+        returnedRowCount: 1,
+        rows: [{ workspaceId: teamWorkspaceId, media: "KUAISHOU", accountId: "team-one", metrics: { cost: { value: 999, availability: "available" } } }],
+        lineage: { workspaceKind: "team", partial: true, coverage: { complete: false } },
+      } } });
+      expect(sourceCalls.kaQuery).toBe(1);
+    } else {
+      expect(teamDataBody).toMatchObject({ ok: false, error: { code: "SOURCE_UNAVAILABLE" } });
+      expect(sourceCalls.kaQuery).toBe(0);
+    }
+    expect(sourceCalls.platformQuery).toBe(platformCallsBeforeTeamData);
 
     const loggedOut = await fetch(`${baseUrl}${AUTH_SESSION_HTTP_PATH}`, {
       method: "DELETE",

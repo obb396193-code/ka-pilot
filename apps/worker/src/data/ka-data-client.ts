@@ -35,6 +35,7 @@ type FetchLike = (input: string | URL | Request, init?: RequestInit) => Promise<
 export interface KaDataClientOptions {
   baseUrl: string;
   token: string;
+  teamWorkspaceId?: string;
   fetchFn?: FetchLike;
   timeoutMs?: number;
   maxResponseBytes?: number;
@@ -107,8 +108,17 @@ function authorityFor(resolved: ResolvedDataQuery): SourceAuthority {
 function objectCoverage(
   queryId: ResolvedDataQuery["queryId"],
   rows: readonly Record<string, unknown>[],
-  requestedObjects: number,
+  requestedObjects: number | undefined,
 ): { returnedObjects?: number; incomplete: boolean } {
+  // The shared reader has no authoritative account inventory. Observed rows
+  // cannot prove every team account was returned, nor a cross-day union count.
+  if (requestedObjects === undefined) {
+    if (queryId === "account.trend") return { incomplete: true };
+    const returnedObjects = queryId === "account.summary"
+      ? finiteAccountCount(rows[0]?.accountCount)
+      : new Set(rows.map((row) => `${String(row.media)}\u0000${String(row.accountId)}`)).size;
+    return { returnedObjects, incomplete: true };
+  }
   if (queryId === "account.summary") {
     const returnedObjects = finiteAccountCount(rows[0]?.accountCount);
     if (returnedObjects > requestedObjects) throw new CanonicalQueryRowError();
@@ -148,6 +158,21 @@ function objectCoverage(
 
 function finiteAccountCount(value: unknown): number {
   return typeof value === "number" && Number.isInteger(value) && value >= 0 ? value : 0;
+}
+
+function assertTeamResultFilters(resolved: ResolvedDataQuery, rows: readonly Record<string, unknown>[]): void {
+  const requested = resolved.params.accountId === undefined ? resolved.params.accountIds : [resolved.params.accountId];
+  const dates = new Set<string>();
+  for (const row of rows) {
+    if (typeof row.ds === "string") {
+      if (row.ds < resolved.params.dateFrom || row.ds > resolved.params.dateTo) throw new CanonicalQueryRowError();
+      if (resolved.queryId === "account.trend" && dates.has(row.ds)) throw new CanonicalQueryRowError();
+      dates.add(row.ds);
+    }
+    if (resolved.outputShape !== "account_rows") continue;
+    if (resolved.params.media !== undefined && row.media !== resolved.params.media) throw new CanonicalQueryRowError();
+    if (requested !== undefined && !requested.includes(String(row.accountId))) throw new CanonicalQueryRowError();
+  }
 }
 
 /** Account counts alone do not prove coverage across a requested date window. */
@@ -245,6 +270,7 @@ function sourceLineage(
   transportPartial: boolean,
   coveragePartial: boolean,
   reason: string | undefined,
+  queryTemplateVersion: string,
 ): SourceLineage {
   const sourceMetadata = {
     datasetVersion: envelope.datasetVersion ?? null,
@@ -262,7 +288,7 @@ function sourceLineage(
       : knownMetadata === 4
         ? "known"
         : "partial",
-    queryTemplateVersion: resolved.queryTemplateVersion,
+    queryTemplateVersion,
     metricVersion: resolved.metricVersion,
     authority: authorityFor(resolved),
     objectIdentity: {
@@ -272,7 +298,7 @@ function sourceLineage(
     coverage: {
       complete: !transportPartial && !coveragePartial,
       ...(reason === undefined ? {} : { reason }),
-      requestedObjects: scope.accounts.length,
+      ...(scope.scopeKind === "explicit_accounts" ? { requestedObjects: scope.accounts.length } : {}),
       ...(returnedObjects === undefined ? {} : { returnedObjects }),
     },
     truncated: transportPartial,
@@ -290,12 +316,15 @@ export class KaDataClient {
   readonly #fetchFn: FetchLike;
   readonly #timeoutMs: number;
   readonly #maxResponseBytes: number;
+  readonly #teamWorkspaceId: string | undefined;
   readonly #registry = createDataQueryRegistry();
 
   constructor(options: KaDataClientOptions) {
     this.#queryUrl = fixedQueryUrl(options.baseUrl);
     if (options.token.trim() === "") throw new Error("KA Data reader token is required");
     this.#token = options.token;
+    const binding = z.string().uuid().safeParse(options.teamWorkspaceId);
+    this.#teamWorkspaceId = binding.success ? binding.data : undefined;
     this.#fetchFn = options.fetchFn ?? fetch;
     this.#timeoutMs = positiveInteger(options.timeoutMs ?? DEFAULT_KA_DATA_TIMEOUT_MS, "timeoutMs");
     this.#maxResponseBytes = positiveInteger(
@@ -315,14 +344,24 @@ export class KaDataClient {
     if (!isResolvedDataQuery(resolved)) {
       throw new KaDataClientError("INVALID_REQUEST", "Query was not resolved by the registry", false);
     }
-    if (scope.scopeKind !== "explicit_accounts") {
+    const team = scope.scopeKind === "team_workspace_readonly";
+    if (team && (this.#teamWorkspaceId === undefined || scope.workspaceId !== this.#teamWorkspaceId)) {
+      throw new KaDataClientError(
+        "SOURCE_UNAVAILABLE",
+        "Team data source workspace binding is unavailable",
+        false,
+      );
+    }
+    if (!team && scope.scopeKind !== "explicit_accounts") {
       throw new KaDataClientError(
         "FORBIDDEN",
         "KA Data direct queries require an explicit approved account scope",
         false,
       );
     }
-    const plan = this.#registry.buildKaDataPlan(resolved, scope.accounts);
+    const plan = team
+      ? this.#registry.buildTeamKaDataPlan(resolved)
+      : this.#registry.buildKaDataPlan(resolved, scope.accounts);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.#timeoutMs);
     try {
@@ -349,12 +388,16 @@ export class KaDataClient {
       }
       const body = await readBoundedBody(response, this.#maxResponseBytes);
       const upstreamEnvelope = parseEnvelope(body.text);
+      if (upstreamEnvelope.backend !== "sqlite") {
+        throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "KA Data returned an unexpected backend", false);
+      }
       const canonicalRows = canonicalizeQueryRows(
         resolved.queryId,
         "ka_data",
         upstreamEnvelope.rows,
         scope.workspaceId,
       );
+      if (team) assertTeamResultFilters(resolved, canonicalRows);
       const envelope = { ...upstreamEnvelope, rows: canonicalRows };
       const warnings: string[] = [];
       const suspectedRowBoundary = SUSPECTED_ROW_BOUNDARIES.has(envelope.rowCount) ||
@@ -367,12 +410,14 @@ export class KaDataClient {
       if (envelope.rows.length > resolved.maxRows) warnings.push("Response exceeded the registry row budget");
       const transportPartial = envelope.truncated || envelope.limit_clamped || suspectedRowBoundary ||
         body.exactLimit || envelope.rowCount !== envelope.rows.length || envelope.rows.length > resolved.maxRows;
-      const coverage = objectCoverage(resolved.queryId, envelope.rows, scope.accounts.length);
-      const objectCoverageIncomplete = coverage.incomplete || aggregateDateCoverageIncomplete(
+      const coverage = objectCoverage(resolved.queryId, envelope.rows, team ? undefined : scope.accounts.length);
+      const objectCoverageIncomplete = coverage.incomplete || (!team && aggregateDateCoverageIncomplete(
         resolved, upstreamEnvelope.rows, envelope.rows, scope.accounts.length,
-      );
+      ));
       if (objectCoverageIncomplete) {
-        warnings.push("Requested account scope is not fully represented by source rows");
+        warnings.push(team
+          ? "Team account inventory is unavailable; observed rows do not prove complete coverage"
+          : "Requested account scope is not fully represented by source rows");
       }
       const partial = transportPartial || objectCoverageIncomplete;
       const reason = partial ? warnings.join("; ") : undefined;
@@ -396,6 +441,7 @@ export class KaDataClient {
           transportPartial,
           objectCoverageIncomplete,
           reason,
+          plan.queryTemplateVersion,
         ),
         warnings,
       };
@@ -455,6 +501,7 @@ export function createKaDataClientFromEnv(
   return new KaDataClient({
     baseUrl,
     token,
+    ...(env.KA_DATA_TEAM_WORKSPACE_ID === undefined ? {} : { teamWorkspaceId: env.KA_DATA_TEAM_WORKSPACE_ID }),
     timeoutMs: optionalPositiveInteger(
       env.KA_DATA_TIMEOUT_MS,
       DEFAULT_KA_DATA_TIMEOUT_MS,
