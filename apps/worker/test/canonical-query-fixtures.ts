@@ -1,3 +1,4 @@
+import { metricValue } from "@ka/domain";
 import {
   canonicalRowSchemaVersionByQueryId,
   safeDivide,
@@ -7,15 +8,15 @@ import {
 
 export function canonicalMetrics(value: number) {
   return {
-    cost: value,
-    exposure: 100,
-    click: 10,
-    conversion: 2,
-    realConversion: 1,
-    cashCost: value,
-    costSpace: 0,
-    wakeUv: null,
-    potentialUv: null,
+    cost: metricValue(value),
+    exposure: metricValue(100),
+    click: metricValue(10),
+    conversion: metricValue(2),
+    realConversion: metricValue(1),
+    cashCost: metricValue(value),
+    costSpace: metricValue(0),
+    wakeUv: metricValue(null),
+    potentialUv: metricValue(null),
     ratios: {
       ctr: safeDivide(10, 100),
       cvr: safeDivide(2, 10),
@@ -47,11 +48,11 @@ export function canonicalRow(
     ds: "2026-08-24",
     metrics: {
       ...metrics,
-      budget: null,
-      budgetUsageRate: null,
-      deductionRate: null,
-      mainAdCostProportion: null,
-      assessmentPrice: null,
+      budget: metricValue(null),
+      budgetUsageRate: metricValue(null),
+      deductionRate: metricValue(null),
+      mainAdCostProportion: metricValue(null),
+      assessmentPrice: metricValue(null),
     },
     dataAnomaly: queryId === "account.anomalies" ? true : false,
     computedAt: null,

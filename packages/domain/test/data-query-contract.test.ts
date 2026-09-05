@@ -1,3 +1,4 @@
+import { metricValue } from "../src/metric-value.js";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -33,20 +34,20 @@ const lineage = {
 } as const;
 
 const dailyMetrics = {
-  cost: 1,
-  exposure: 10,
-  click: 2,
-  conversion: 1,
-  realConversion: 1,
-  cashCost: 1,
-  costSpace: 0,
-  wakeUv: null,
-  potentialUv: null,
-  budget: null,
-  budgetUsageRate: null,
-  deductionRate: null,
-  mainAdCostProportion: null,
-  assessmentPrice: null,
+  cost: metricValue(1),
+  exposure: metricValue(10),
+  click: metricValue(2),
+  conversion: metricValue(1),
+  realConversion: metricValue(1),
+  cashCost: metricValue(1),
+  costSpace: metricValue(0),
+  wakeUv: metricValue(null),
+  potentialUv: metricValue(null),
+  budget: metricValue(null),
+  budgetUsageRate: metricValue(null),
+  deductionRate: metricValue(null),
+  mainAdCostProportion: metricValue(null),
+  assessmentPrice: metricValue(null),
   ratios: {
     ctr: { value: 0.2, state: "finite" },
     cvr: { value: 0.5, state: "finite" },
@@ -94,7 +95,7 @@ describe("dual data query contract", () => {
     expect(() => sourceQueryResultSchema.parse({ status: "ready", rows: [] })).toThrow();
     expect(() => sourceQueryResultSchema.parse({
       queryId: "account.summary",
-      rowSchemaVersion: "account.summary/v1",
+      rowSchemaVersion: "account.summary/v2",
       status: "ready",
       rows: [],
       returnedRowCount: 2_000,
@@ -107,7 +108,7 @@ describe("dual data query contract", () => {
   it("represents unavailable source lineage as unknown instead of fabricating freshness", () => {
     const parsed = sourceQueryResultSchema.parse({
       queryId: "account.summary",
-      rowSchemaVersion: "account.summary/v1",
+      rowSchemaVersion: "account.summary/v2",
       status: "unavailable",
       rows: [],
       returnedRowCount: 0,
@@ -145,7 +146,7 @@ describe("dual data query contract", () => {
   it("requires frozen source-authority metadata instead of an adapter-selected priority", () => {
     expect(() => sourceQueryResultSchema.parse({
       queryId: "account.summary",
-      rowSchemaVersion: "account.summary/v1",
+      rowSchemaVersion: "account.summary/v2",
       status: "ready",
       rows: [],
       returnedRowCount: 0,
@@ -158,7 +159,7 @@ describe("dual data query contract", () => {
   it("keeps KA Data and platform independent in reconcile mode", () => {
     const source = {
       queryId: "reconcile.account_daily",
-      rowSchemaVersion: "reconcile.account_daily/v1",
+      rowSchemaVersion: "reconcile.account_daily/v2",
       status: "ready",
       rows: [{
         workspaceId: "00000000-0000-4000-8000-000000000024",

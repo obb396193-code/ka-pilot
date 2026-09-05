@@ -8,6 +8,7 @@ import {
 import {
   CanonicalQueryRowError,
   canonicalizeQueryRows,
+  maskCanonicalQueryRows,
 } from "../src/data/canonical-query-rows.js";
 
 describe("canonical query row adapters", () => {
@@ -87,7 +88,7 @@ describe("canonical query row adapters", () => {
 
   it.each(queryIds.flatMap((queryId) => (["ka_data", "platform"] as const)
     .map((source) => ({ queryId, source }))))(
-    "maps $queryId from $source into its strict canonical v1 schema",
+    "maps $queryId from $source into its strict canonical v2 schema",
     ({ queryId, source }) => {
       const rows = canonicalizeQueryRows(
         queryId,
@@ -98,8 +99,40 @@ describe("canonical query row adapters", () => {
       expect(rows).toHaveLength(1);
       expect(canonicalQueryRowSchemaById[queryId].safeParse(rows[0]).success).toBe(true);
       expect(JSON.stringify(rows[0])).not.toMatch(/account_id|cost_yuan|cash_cost|row_count/);
+      const metrics = queryId === "account.trend"
+        ? (rows[0]?.metrics as { metrics: unknown }).metrics
+        : rows[0]?.metrics;
+      expect(metrics).toMatchObject({ cost: { value: 12, availability: "available" } });
     },
   );
+
+  it.each(queryIds)("marks transport-truncated %s metrics error without losing identity or counts", (queryId) => {
+    const rows = canonicalizeQueryRows(queryId, "platform", [sourceRow(queryId, "platform")], workspaceId);
+    const masked = maskCanonicalQueryRows(queryId, rows, "error");
+    expect(canonicalQueryRowSchemaById[queryId].safeParse(masked[0]).success).toBe(true);
+    const metrics = queryId === "account.trend"
+      ? (masked[0]?.metrics as { metrics: unknown }).metrics
+      : masked[0]?.metrics;
+    expect(metrics).toMatchObject({
+      cost: { value: null, availability: "error" },
+      ratios: { realCpa: { value: null, state: "undefined" } },
+    });
+    if (queryId === "account.summary") expect(masked[0]).toMatchObject({ rowCount: 1, accountCount: 1 });
+    else if (queryId !== "account.trend") expect(masked[0]).toMatchObject({ workspaceId, accountId: "account-1" });
+    expect(rows[0]).not.toEqual(masked[0]);
+  });
+
+  it("keeps genuine zero available, absence missing, and rejects corruption before masking", () => {
+    const [row] = canonicalizeQueryRows("account.summary", "platform", [{
+      rowCount: 1, accountCount: 1, anomalyRows: 0, cost: 0,
+    }], workspaceId);
+    expect(row).toMatchObject({ metrics: {
+      cost: { value: 0, availability: "available" },
+      cashCost: { value: null, availability: "missing" },
+    } });
+    expect(() => maskCanonicalQueryRows("account.summary", [{ ...row, metrics: { cost: "bad" } }], "error"))
+      .toThrow(CanonicalQueryRowError);
+  });
 
   it("maps KA snake_case and platform camelCase summary rows to the same shape", () => {
     const ka = canonicalizeQueryRows("account.summary", "ka_data", [{

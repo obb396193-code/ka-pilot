@@ -16,6 +16,7 @@ import {
 import {
   CanonicalQueryRowError,
   canonicalizeQueryRows,
+  maskCanonicalQueryRows,
 } from "./canonical-query-rows.js";
 
 export const DEFAULT_KA_DATA_TIMEOUT_MS = 15_000;
@@ -147,6 +148,33 @@ function objectCoverage(
 
 function finiteAccountCount(value: unknown): number {
   return typeof value === "number" && Number.isInteger(value) && value >= 0 ? value : 0;
+}
+
+/** Account counts alone do not prove coverage across a requested date window. */
+function aggregateDateCoverageIncomplete(
+  resolved: ResolvedDataQuery,
+  rawRows: readonly Record<string, unknown>[],
+  rows: readonly Record<string, unknown>[],
+  requestedAccounts: number,
+): boolean {
+  const { dateFrom, dateTo } = resolved.params;
+  const days = 1 + Math.round((Date.parse(dateTo) - Date.parse(dateFrom)) / 86_400_000);
+  if (resolved.queryId === "account.summary") {
+    const count = rawRows[0]?.account_day_count;
+    // A single-day account count is sufficient; older responses without the
+    // explicit multi-day count cannot claim a complete window.
+    if (count === undefined || count === null) return days > 1 && requestedAccounts > 0;
+    if (typeof count !== "number" || !Number.isSafeInteger(count) || count < 0 || count > days * requestedAccounts) {
+      throw new CanonicalQueryRowError();
+    }
+    return count < days * requestedAccounts;
+  }
+  if (resolved.queryId !== "account.trend") return false;
+  const dates = new Set(rows.map((row) => row.ds as string));
+  if (dates.size !== rows.length || [...dates].some((ds) => ds < dateFrom || ds > dateTo)) {
+    throw new CanonicalQueryRowError();
+  }
+  return requestedAccounts > 0 && dates.size !== days;
 }
 
 interface BoundedBody {
@@ -339,7 +367,9 @@ export class KaDataClient {
       const transportPartial = envelope.truncated || envelope.limit_clamped || suspectedRowBoundary ||
         body.exactLimit || envelope.rowCount !== envelope.rows.length || envelope.rows.length > resolved.maxRows;
       const coverage = objectCoverage(resolved.queryId, envelope.rows, scope.accounts.length);
-      const objectCoverageIncomplete = coverage.incomplete;
+      const objectCoverageIncomplete = coverage.incomplete || aggregateDateCoverageIncomplete(
+        resolved, upstreamEnvelope.rows, envelope.rows, scope.accounts.length,
+      );
       if (objectCoverageIncomplete) {
         warnings.push("Requested account scope is not fully represented by source rows");
       }
@@ -354,7 +384,7 @@ export class KaDataClient {
         queryId: resolved.queryId,
         rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
         status: "ready",
-        rows: envelope.rows,
+        rows: transportPartial ? maskCanonicalQueryRows(resolved.queryId, envelope.rows, "error") : envelope.rows,
         returnedRowCount: envelope.rows.length,
         wholeResultTotal,
         lineage: sourceLineage(

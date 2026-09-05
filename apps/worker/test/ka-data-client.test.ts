@@ -49,6 +49,32 @@ function kaDaily(accountId: string, overrides: Record<string, unknown> = {}) {
 }
 
 describe("KaDataClient", () => {
+  it.each([-1, 3, "2", 1.5])("rejects impossible account-day coverage metadata %s", async (account_day_count) => {
+    const client = new KaDataClient({
+      baseUrl: "https://ka-data.example.internal", token: "fixture-token",
+      fetchFn: async () => jsonResponse({ backend: "sqlite", rowCount: 1, rows: [{ ...kaSummary(), account_day_count }] }),
+    });
+    await expect(client.query(createDataQueryRegistry().resolve("account.summary", {
+      dateFrom: "2026-08-23", dateTo: "2026-08-24",
+    }, "ka_data"), { workspaceId: "w", userId: "u", scopeKind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "a" }] }))
+      .rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
+  });
+
+  it.each([
+    ["20260823"],
+    ["20260823", "20260823"],
+    ["20260822", "20260823"],
+  ])("does not claim a complete trend window from %j", async (...dates) => {
+    const client = new KaDataClient({
+      baseUrl: "https://ka-data.example.internal", token: "fixture-token",
+      fetchFn: async () => jsonResponse({ backend: "sqlite", rowCount: dates.length, rows: dates.map((ds) => ({ ds, ...kaSummary() })) }),
+    });
+    const request = client.query(createDataQueryRegistry().resolve("account.trend", {
+      dateFrom: "2026-08-23", dateTo: "2026-08-24",
+    }, "ka_data"), { workspaceId: "w", userId: "u", scopeKind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "a" }] });
+    if (dates.length === 1) expect((await request).lineage).toMatchObject({ partial: true, truncated: false });
+    else await expect(request).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
+  });
   it("uses a fixed HTTPS origin/path and never serializes its token", async () => {
     const fetchFn = vi.fn<typeof fetch>(async () => jsonResponse({
       backend: "sqlite",
@@ -330,6 +356,10 @@ describe("KaDataClient", () => {
 
     expect(result.lineage.truncated).toBe(true);
     expect(result.lineage.partial).toBe(true);
+    expect(result.rows[0]).toMatchObject({ metrics: {
+      cost: { value: null, availability: "error" },
+      ratios: { ctr: { value: null, state: "undefined" } },
+    } });
     expect(result.wholeResultTotal).toMatchObject({ value: null, availability: "partial" });
   });
 
@@ -363,6 +393,7 @@ describe("KaDataClient", () => {
     });
     expect(result.lineage.truncated).toBe(true);
     expect(result.warnings.join(" ")).toMatch(/byte/i);
+    expect(result.rows[0]).toMatchObject({ metrics: { cost: { value: null, availability: "error" } } });
   });
 
   it("returns stable redacted errors for non-JSON and upstream failures", async () => {

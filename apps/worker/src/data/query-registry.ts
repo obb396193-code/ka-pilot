@@ -212,12 +212,44 @@ function whereClause(
   return filters.join(" AND ");
 }
 
+// Static identifiers only. SQLite SUM coerces invalid text to zero; expose corruption
+// to the strict adapter before considering missing-member propagation.
+function completeSum(column: "cost_yuan" | "show" | "click" | "conv" | "cash_yuan"): string {
+  return `CASE WHEN MAX(CASE WHEN typeof(${column}) NOT IN ('integer', 'real', 'null') OR ABS(CAST(${column} AS REAL)) > 1.7976931348623157e308 THEN 1 ELSE 0 END) = 1 OR ABS(SUM(${column})) > 1.7976931348623157e308 THEN 'INVALID_METRIC' WHEN COUNT(${column}) = COUNT(*) AND COUNT(*) > 0 THEN ROUND(SUM(${column}), 6) ELSE NULL END`;
+}
+
+function expectedAccountDays(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
+  const tuples = [...new Set(accounts
+    .filter((account) => params.media === undefined || account.media === params.media)
+    .map((account) => `(${sqlString(account.media)}, ${sqlString(account.accountId)})`))];
+  const scope = tuples.length === 0 ? "SELECT NULL, NULL WHERE 1 = 0" : `VALUES ${tuples.join(", ")}`;
+  return `WITH RECURSIVE dates(day) AS (
+    SELECT ${sqlString(params.dateFrom)} UNION ALL
+    SELECT date(day, '+1 day') FROM dates WHERE day < ${sqlString(params.dateTo)}
+  ), approved(media, account_id) AS (${scope}), expected AS (
+    SELECT replace(dates.day, '-', '') AS ds, approved.media, approved.account_id
+    FROM dates CROSS JOIN approved
+  ), members AS (
+    SELECT e.ds, e.media, e.account_id, d.account_id AS observed_account_id,
+      d.cost_yuan, d.show, d.click, d.conv, d.cash_yuan
+    FROM expected e LEFT JOIN dwd_account_daily d
+      ON d.ds = CAST(e.ds AS INTEGER) AND d.media = e.media AND d.account_id = e.account_id
+  )`;
+}
+
+const AGGREGATE_COLUMNS = `COUNT(observed_account_id) AS row_count,
+  COUNT(DISTINCT CASE WHEN observed_account_id IS NOT NULL THEN ds || ':' || media || ':' || account_id END) AS account_day_count,
+  COUNT(DISTINCT CASE WHEN observed_account_id IS NOT NULL THEN media || ':' || account_id END) AS account_count,
+  ${completeSum("cost_yuan")} AS cost, ${completeSum("show")} AS exposure,
+  ${completeSum("click")} AS click, ${completeSum("conv")} AS conversion,
+  ${completeSum("cash_yuan")} AS cash_cost`;
+
 function summarySql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
-  return `SELECT COUNT(*) AS row_count, COUNT(DISTINCT media || ':' || account_id) AS account_count, ROUND(SUM(cost_yuan), 6) AS cost, SUM(show) AS exposure, SUM(click) AS click, SUM(conv) AS conversion, ROUND(SUM(cash_yuan), 6) AS cash_cost FROM dwd_account_daily WHERE ${whereClause(params, accounts)}`;
+  return `${expectedAccountDays(params, accounts)} SELECT ${AGGREGATE_COLUMNS} FROM members`;
 }
 
 function trendSql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
-  return `SELECT ds, COUNT(*) AS row_count, COUNT(DISTINCT media || ':' || account_id) AS account_count, ROUND(SUM(cost_yuan), 6) AS cost, SUM(show) AS exposure, SUM(click) AS click, SUM(conv) AS conversion, ROUND(SUM(cash_yuan), 6) AS cash_cost FROM dwd_account_daily WHERE ${whereClause(params, accounts)} GROUP BY ds ORDER BY ds`;
+  return `${expectedAccountDays(params, accounts)} SELECT ds, ${AGGREGATE_COLUMNS} FROM members GROUP BY ds ORDER BY ds`;
 }
 
 function tableSql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
@@ -232,7 +264,7 @@ function detailSql(params: NormalizedQueryParams, accounts: readonly ScopedAccou
 }
 
 function reconciliationSql(params: NormalizedQueryParams, accounts: readonly ScopedAccount[]): string {
-  return `SELECT ds, media, account_id, ROUND(SUM(cost_yuan), 6) AS cost, SUM(conv) AS conversions, ROUND(SUM(cash_yuan), 6) AS cash_cost FROM dwd_account_daily WHERE ${whereClause(params, accounts)} GROUP BY ds, media, account_id ORDER BY ds, media, account_id`;
+  return `SELECT ds, media, account_id, ${completeSum("cost_yuan")} AS cost, ${completeSum("conv")} AS conversions, ${completeSum("cash_yuan")} AS cash_cost FROM dwd_account_daily WHERE ${whereClause(params, accounts)} GROUP BY ds, media, account_id ORDER BY ds, media, account_id`;
 }
 
 const DEFINITION_INPUT: QueryDefinition[] = [
@@ -268,8 +300,8 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     maxRows: 1,
     accountScope: "optional_many",
     outputShape: "aggregate",
-    queryTemplateVersion: "v1",
-    metricVersion: "account-summary-v1",
+    queryTemplateVersion: "v2",
+    metricVersion: "account-summary-v2",
     paramsSchema: intervalSchema,
     authorityPolicy: authority("cross_media_operations", "ka_data"),
     buildSql: summarySql,
@@ -294,8 +326,8 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     maxRows: 366,
     accountScope: "optional_many",
     outputShape: "aggregate",
-    queryTemplateVersion: "v1",
-    metricVersion: "account-trend-v1",
+    queryTemplateVersion: "v2",
+    metricVersion: "account-trend-v2",
     paramsSchema: intervalSchema,
     authorityPolicy: authority("historical_analysis", "ka_data"),
     buildSql: trendSql,
@@ -307,8 +339,8 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     maxRows: 10_000,
     accountScope: "optional_many",
     outputShape: "account_rows",
-    queryTemplateVersion: "v1",
-    metricVersion: "source-versioned-v1",
+    queryTemplateVersion: "v2",
+    metricVersion: "source-versioned-v2",
     paramsSchema: intervalSchema,
     authorityPolicy: authority("source_versioned_financials", "source_versioned"),
     buildSql: reconciliationSql,

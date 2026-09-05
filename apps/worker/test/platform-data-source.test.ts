@@ -89,7 +89,7 @@ describe("PlatformDataSource", () => {
     }));
     expect(result).toMatchObject({
       status: "ready",
-      rows: [{ rowCount: 1, accountCount: 1, metrics: expect.objectContaining({ cost: 12 }) }],
+      rows: [{ rowCount: 1, accountCount: 1, metrics: expect.objectContaining({ cost: { value: 12, availability: "available" } }) }],
       lineage: {
         source: "canonical",
         dataAsOf: "2026-08-24T07:59:00.000Z",
@@ -131,7 +131,7 @@ describe("PlatformDataSource", () => {
     );
     expect(result.rows).toEqual([expect.objectContaining({
       ds: "2026-08-24",
-      metrics: expect.objectContaining({ rowCount: 1, metrics: expect.objectContaining({ cost: 12 }) }),
+      metrics: expect.objectContaining({ rowCount: 1, metrics: expect.objectContaining({ cost: { value: 12, availability: "available" } }) }),
     })]);
     expect(result.lineage.datasetVersion).toBeNull();
   });
@@ -192,6 +192,7 @@ describe("PlatformDataSource", () => {
     }));
     expect(result.returnedRowCount).toBe(2_000);
     expect(result.lineage).toMatchObject({ truncated: true, partial: true });
+    expect(result.rows[0]).toMatchObject({ metrics: { cost: { value: null, availability: "error" } } });
     expect(result.wholeResultTotal).toMatchObject({ value: null, availability: "partial" });
   });
 
@@ -221,6 +222,7 @@ describe("PlatformDataSource", () => {
     expect(repository.queryTable).toHaveBeenCalledTimes(4);
     expect(result.returnedRowCount).toBe(2_000);
     expect(result.lineage).toMatchObject({ truncated: false, partial: false });
+    expect(result.rows[0]).toMatchObject({ metrics: { cost: { availability: "available" } } });
     expect(result.wholeResultTotal).toEqual({ value: 2_000, availability: "available" });
   });
 

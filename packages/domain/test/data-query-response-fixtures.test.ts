@@ -17,6 +17,13 @@ async function readFixture(name: typeof fixtureNames[number]): Promise<unknown> 
 }
 
 describe("canonical data-query response fixtures", () => {
+  it("rejects a v1 source version even if its rows otherwise match v2", async () => {
+    const parsed = dataQueryResponseSchema.parse(await readFixture("ready-lineage"));
+    if (!parsed.ok || parsed.data.mode === "reconcile") throw new Error("unexpected fixture");
+    expect(dataQueryResponseSchema.safeParse({ ...parsed, data: {
+      ...parsed.data, source: { ...parsed.data.source, rowSchemaVersion: "account.summary/v1" },
+    } }).success).toBe(false);
+  });
   it.each(fixtureNames)("keeps %s aligned with the domain envelope", async (name) => {
     expect(dataQueryResponseSchema.safeParse(await readFixture(name)).success).toBe(true);
   });

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { canonicalMetricValueSchema } from "./metric-value.js";
 
 const finiteNumber = z.number().finite();
 const nullableFiniteNumber = finiteNumber.nullable();
@@ -47,15 +48,15 @@ export const canonicalRatioSetSchema = z
 
 export const canonicalMetricSetSchema = z
   .object({
-    cost: nullableFiniteNumber,
-    exposure: nullableFiniteNumber,
-    click: nullableFiniteNumber,
-    conversion: nullableFiniteNumber,
-    realConversion: nullableFiniteNumber,
-    cashCost: nullableFiniteNumber,
-    costSpace: nullableFiniteNumber,
-    wakeUv: nullableFiniteNumber,
-    potentialUv: nullableFiniteNumber,
+    cost: canonicalMetricValueSchema,
+    exposure: canonicalMetricValueSchema,
+    click: canonicalMetricValueSchema,
+    conversion: canonicalMetricValueSchema,
+    realConversion: canonicalMetricValueSchema,
+    cashCost: canonicalMetricValueSchema,
+    costSpace: canonicalMetricValueSchema,
+    wakeUv: canonicalMetricValueSchema,
+    potentialUv: canonicalMetricValueSchema,
     ratios: canonicalRatioSetSchema,
   })
   .strict();
@@ -85,11 +86,11 @@ export const relatedTaskRowSchema = z
   .strict();
 
 export const accountDailyMetricSetSchema = canonicalMetricSetSchema.extend({
-  budget: nullableFiniteNumber,
-  budgetUsageRate: nullableFiniteNumber,
-  deductionRate: nullableFiniteNumber,
-  mainAdCostProportion: nullableFiniteNumber,
-  assessmentPrice: nullableFiniteNumber,
+  budget: canonicalMetricValueSchema,
+  budgetUsageRate: canonicalMetricValueSchema,
+  deductionRate: canonicalMetricValueSchema,
+  mainAdCostProportion: canonicalMetricValueSchema,
+  assessmentPrice: canonicalMetricValueSchema,
 }).strict();
 
 export const accountDailyRowSchema = z
@@ -121,12 +122,12 @@ export const canonicalQueryRowSchemaById = {
 } as const;
 
 export const canonicalRowSchemaVersionByQueryId = {
-  "account.summary": "account.summary/v1",
-  "account.trend": "account.trend/v1",
-  "account.table": "account.table/v1",
-  "account.anomalies": "account.anomalies/v1",
-  "account.detail": "account.detail/v1",
-  "reconcile.account_daily": "reconcile.account_daily/v1",
+  "account.summary": "account.summary/v2",
+  "account.trend": "account.trend/v2",
+  "account.table": "account.table/v2",
+  "account.anomalies": "account.anomalies/v2",
+  "account.detail": "account.detail/v2",
+  "reconcile.account_daily": "reconcile.account_daily/v2",
 } as const;
 
 export type AccountSummaryRow = z.infer<typeof accountSummaryRowSchema>;

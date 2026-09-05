@@ -308,8 +308,8 @@ describe("DataQueryService", () => {
 
     expect(response.ok).toBe(true);
     if (response.ok && response.data.mode === "reconcile") {
-      expect(response.data.kaData.rows[0]).toMatchObject({ metrics: { cost: 10 } });
-      expect(response.data.platform.rows[0]).toMatchObject({ metrics: { cost: 11 } });
+      expect(response.data.kaData.rows[0]).toMatchObject({ metrics: { cost: { value: 10, availability: "available" } } });
+      expect(response.data.platform.rows[0]).toMatchObject({ metrics: { cost: { value: 11, availability: "available" } } });
       expect(response.data.comparison).toEqual({
         status: "unavailable",
         reason: "reconciliation_engine_pending",

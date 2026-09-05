@@ -17,6 +17,7 @@ import type { ResolvedDataQuery } from "./query-registry.js";
 import {
   CanonicalQueryRowError,
   canonicalizeQueryRows,
+  maskCanonicalQueryRows,
 } from "./canonical-query-rows.js";
 
 const PLATFORM_SOURCE_REQUEST_ID = "platform-source";
@@ -261,7 +262,7 @@ export class PlatformDataSource {
         queryId: resolved.queryId,
         rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
         status: "ready",
-        rows,
+        rows: truncated ? maskCanonicalQueryRows(resolved.queryId, rows, "error") : rows,
         returnedRowCount: rows.length,
         wholeResultTotal,
         lineage,
