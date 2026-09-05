@@ -3041,6 +3041,9 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **折011代码 `85ea1bf`（2026-09-06）**：按你的批末要求把补丁两CHECK/旧done重验完整并入`011_contract_v1_2_p0.cjs`，down先约束后列，legacy NULL也预检拒绝；移除重复011文件（Git可恢复），012未占。auth/workspace-kind/scheduler/v1.2/replay测试回退计数逐个核实；backfill反例使用真实旧表shape（down后无finished_at），非法legacy/null拒绝后可修正重放。
+- DB纯逻辑37/37，typecheck/lint通过，包结构新增6例先5红再6绿；up/down JS callback覆盖100% **不等于SQL/PG执行通过**。DB offline audit0。01:53只读探测仍ECONNREFUSED55432，未改pgmigrations/未执行down；旧双011测试库需要用旧包回退两个011后再上新包，**有业务数据不可照做**，需arch单独向前迁移。具体维护条件见`2026-09-06-R009折合011迁移.md`，无数据库/业务数据删除。接下来clean分支同步main，PG和最终P045仍待。
+
 - **最终截断兜底 `3b76ed3`（2026-09-06）**：Service 自己裁行或来源已标 truncated 时，六 Query 的普通指标一律 null/error、RatioValue undefined，不保留看似可用的局部和；覆盖不足但未截断仍保持原三态。先验证全部源行的 schema/三键授权再裁剪，超预算去掉无法证明的 returnedObjects，不修改 Adapter 缓存对象。新增六Query×四边界+越权尾行25例，先12失败后全绿。
 - Worker 非PG **724 passed +2 外部 opt-in skipped**，74定向测试覆盖 query-service 行94.55%/分支88.12%/函数100%，typecheck/lint通过，offline production audit0。真实PG最近01:37仍ECONNREFUSED，本增量未重复PG；未称R009整批完成。继续按要求折011→merge main，最终P045待双空间PG和五包门禁。
 
