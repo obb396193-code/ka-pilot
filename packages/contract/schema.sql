@@ -578,10 +578,10 @@ CREATE TABLE approval_auto_pass_rules (   -- 同类批过 3 次可免审（PRD 3
 -- 充值协作（REQ-046）不入 approvals：只发 outbound_messages(kind='recharge_request')
 
 -- ── 3.3 8 维度透视缺失 5 维的数据源（列先冻结；ad 级字段名待 OS agent 联调确认 ad_realtime payload）
-ALTER TABLE accounts ADD COLUMN agent_type TEXT;         -- agency|self；二级"代理商名"存 tags
-ALTER TABLE accounts ADD COLUMN is_ubp BOOLEAN;
-ALTER TABLE ad_entities ADD COLUMN resource_position TEXT;
-ALTER TABLE ad_entities ADD COLUMN bid_tool TEXT;
+ALTER TABLE accounts ADD COLUMN agent_type TEXT;         -- agency|self；来源=ka-data custom_tags["代投/自投"]（账户级、稀疏，"无匹配"→NULL；OS 2026-09-05 实证 ad 级无此维）
+ALTER TABLE accounts ADD COLUMN is_ubp BOOLEAN;          -- OS 2026-09-05 实证：**全源无 UBP 字段**；列保留但 ubp 维度永久 DIMENSION_UNSUPPORTED 直到有源
+ALTER TABLE ad_entities ADD COLUMN resource_position TEXT; -- 直取 ka-data dwd_adgroup_daily.resource_position（INVENTORY_UNIVERSAL|KUAI_SHOU_YOU_XUAN|KUAI_SHOU_LIAN_MENG|OPEN_SCREEN|ENCOURAGE_VIDEO…）或 MAPI unit scene_id
+ALTER TABLE ad_entities ADD COLUMN bid_tool TEXT;        -- 派生枚举：ka-data bid_tool 列全空，由 MAPI unit bid_type+ocpx_action_type(+unit_type) 映射，映射表 R-012 从 ka-src-0007 提案
 -- deduction_range 不落列：domain 按 deduction_rate 分桶 [0,10%)|[10,30%)|[30%,+)
 
 -- ── 4.5 加/关账户

@@ -292,3 +292,21 @@
 - 团队空间达标直接用 `dwd_account_daily.cash_assessment`（现金考核，已按 sub_biz×media 富化），不走本库 `assessment_price_history`；考核 SSOT 在 ka-knowledge `assessment_catalog.json`（我们只读，能否拉取待 OS）。
 - 团队空间 8 维：`resource_position/bid_tool/plan_tier/operator_name/channel_type/deduction_rate` 在 `dwd_adgroup_daily`，可直接开资源位/出价工具两维（个人空间仍 `DIMENSION_UNSUPPORTED` 等 OS）。
 - `KA_DATA_BASE_URL` 是沙箱会话地址会变：连不上 → `503 SOURCE_UNAVAILABLE` + 健康页提示「团队数据源地址需更新」，不重试成 platform。
+
+
+### R-013b 后端：FaaS 部署打包与 worker 单轮（2026-09-05；与 R-013 同批交付）
+
+- 派活方：arch　背景：OS 回收 `docs/evidence/integration/2026-09-05-os-部署准备与四项核证回收.md`——a1 faas 构建期 `npm install`（内网 registry、node 20、zip ≤2GB）、无 Procfile、常驻进程会被回收 → 拓扑方案 B。
+- 交付物：
+  1. 仓库根级 `package.json` + `scripts/install-all.sh`：按 domain → db → worker/web 顺序 `npm ci`；在干净克隆验证 `file:` 依赖可解析（OS 未实测）。
+  2. `deploy/faas/` 三份骨架：`web/`（bootstrap: `exec next start -p $PORT`）、`data-api/`（bootstrap: `exec npm run start:data-api`，`DATA_API_HOST=0.0.0.0`）、`worker-once/`（定时函数入口）。每份含 `f.yml` 示例与 env 清单（值留空）。
+  3. **`npm run worker:once`**：一次 tick（入队）+ 消费 jobs 到空或达 `WORKER_ONCE_MAX_MS`（默认 10 分钟）→ 退出码 0；中途被杀依赖现有 lease 重领；日志只打 job id/type/状态不打 payload。
+  4. seed JSON 示例把 identityId 占位换成 OS 回传的 `5e5ea046-e7eb-4fed-a07a-fb7631bc498e`（个人空间 + 团队空间 + membership；grants 待老板 discover 后填）。
+  5. runbook §0 已写拓扑；你补 §2.5 seed、§2.6 worker:once 触发方式、§7 打包步骤。
+- 边界：不改业务代码；不改 data-api 监听逻辑（用现有 `DATA_API_HOST`）。
+- 状态：待处理（R-009 二批后，与 R-013 同批）
+
+#### R-012 追加（2026-09-05 OS 8 维实证）
+- `bid_tool` 派生映射提案：从 ka-src-0007 MAPI 文档取 unit `bid_type`/`ocpx_action_type`/`unit_type` 枚举含义，提一张 → `bid_tool` 枚举（如 手动出价/自动出价/OCPX 一阶/二阶/最大转化…）写 inbox-arch，arch 冻后实现；未冻前 `DIMENSION_UNSUPPORTED`。
+- `agent_type` 从 ka-data `custom_tags["代投/自投"]` 落 accounts（"无匹配"→NULL）；`ubp` 维度永久 UNSUPPORTED（无源），不造。
+- MAPI 业务码含义表同样从 ka-src-0007 提案（api.md「媒体写业务码与 UNKNOWN」）。
