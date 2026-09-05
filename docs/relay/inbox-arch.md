@@ -3041,6 +3041,9 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **最终截断兜底 `3b76ed3`（2026-09-06）**：Service 自己裁行或来源已标 truncated 时，六 Query 的普通指标一律 null/error、RatioValue undefined，不保留看似可用的局部和；覆盖不足但未截断仍保持原三态。先验证全部源行的 schema/三键授权再裁剪，超预算去掉无法证明的 returnedObjects，不修改 Adapter 缓存对象。新增六Query×四边界+越权尾行25例，先12失败后全绿。
+- Worker 非PG **724 passed +2 外部 opt-in skipped**，74定向测试覆盖 query-service 行94.55%/分支88.12%/函数100%，typecheck/lint通过，offline production audit0。真实PG最近01:37仍ECONNREFUSED，本增量未重复PG；未称R009整批完成。继续按要求折011→merge main，最终P045待双空间PG和五包门禁。
+
 - **收到main@f841da4中期审查；团队reader代码 `be93018`（2026-09-06）**：已按答3加入`KA_DATA_TEAM_WORKSPACE_ID`，只绑定一个team UUID；缺失/非法/错workspace在网络前503，不影响个人诊断explicit tuple路径。team不读取grants（测试故意塞非法grant仍不影响）；SQL scope显式判别，不把空个人grants转换为全量。只用sqlite、固定注册模板，team参数仅过滤合法media/account/date，workspace从受信execution注入，错media/account/date回包502。
 - 真SQLite覆盖team summary/trend/table/detail：源观测账户×日期LEFT JOIN，缺日不部分SUM；首次table返回整数ds触发严格拒绝，SQL显式CAST文本后通过。team模板版本后缀`-team-bound-v1`留lineage；共享源没有完整账户目录，所以不捏造requestedObjects，coverage unknown→partial=true/truncated=false，只有传输截断才把指标error。空源仍不宣称完整、trend不拿每日最大count当跨日union。来源无时间字段仍unknown。
 - **门禁** Domain518、Worker非PG699+2外部skip、Web111；Domain/Worker typecheck/lint通过；60核心测试行90.21%/分支84.36%，Worker offline production audit0。新6例先5红1绿，后13例通过；新代码不含运行期SQLite依赖（Node22 SQLite只用于test）、不新增第三方依赖、无前端改动。本轮未重跑DB/Gateway全量，不冒充五包最终门禁。
