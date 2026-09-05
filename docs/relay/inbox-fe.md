@@ -249,7 +249,7 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 
 - 派活方：arch　日期：2026-09-04　执行方：**新开 Claude Code 前端会话**（老板 9-5 定；复制 `docs/relay/F-006-前端开工提示词.md` 开场）。**审美标准：高级、有质感**，母版是起点不是天花板
 - 老板拍板：视觉唯一母版 `apps/ui-layout-demo/sidebar.html`，其他全不要；功能起点 `main` 上的 `apps/web`（九项导航/八模块/六 KPI/⌘K/BFF 已在）；**不重做功能，套母版样式**；视觉老板一对一对话精修不截图，功能交 SHA 给 arch。
-- 本批五页顺序（**老板 2026-09-05 改序**，按"每天能看"先真联）：登录页 `/login`（组件库 shadcn login blocks，接 AUTH-001）→ 账户池 `/accounts`（套样式+删三 tab，R-009 后能真联）→ 数据分析 `/data`（套样式+删三 tab，R-010a1 后能真联）→ 工作台 `/`（套样式+删三 tab+空间切换，等 R-010a2 再真联）→ 投放任务 `/tasks`（`fixtures/task-list/` 四态）。
+- 本批五页顺序（**老板 2026-09-05 深夜再改序**）：登录页 `/login`（组件库 shadcn login blocks，接 AUTH-001）→ 数据分析 `/data`（套样式+删三 tab，R-010a1 后能真联）→ 账户池 `/accounts`（**按 P09 库存流水线重定义，等契约 v1.5.1**）→ 工作台 `/`（等 v1.5.1 负责人视图 + R-010a2）→ 投放任务 `/tasks`（等 v1.5.1 阶段/就绪度）。
 - 契约依据：api.md AUTH-001 + DATA-ROUTE-001 v1.2；metrics.md 缺数三态（显 −）；前端永不算数。
 - **组件铁律**：先查 `docs/frontend/ui-assets/`（showroom/capabilities/source-cache）从官方源码复制，只写业务适配层，不自写组件；规则 `apps/web/AGENTS.md`，规范 `frontend-product-standard.md`，自检 `前端视觉与体验审核清单.md`。
 - **页面规划**：`docs/relay/F-006-页面规划.md`（母版块×PRD 功能×接口，每页删什么加什么）。**联调**：本地联调前端做、每页做完就联；内网联调 OS agent。上一任 Codex 前端交接清单 `docs/frontend/ui-assets/本对话前端产出与交接清单-2026-09-05.md`；字体等老板拍板不动。
@@ -269,3 +269,10 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - `apps/web` `npm audit --omit=dev`：5 项（4 high / 1 moderate）——fast-uri、qs、PostCSS、sharp，链路指向 Next 15.5.23。后端三包为 0。
 - 处理时机：F-006 五页做完后单独一批（F-007）；**红线：不要 `npm audit fix --force`**（会把 next 升到大版本破坏构建，CR 项目踩过）；先看 `npm audit` 建议的最小 patch 升级，Next 主版本升级单独拍板。
 - 另：设置页要有「口径」tab（返点系数可改 + 变更记录），任务详情总览要有考核价/日预算卡改价入口——契约 api.md v1.4.1，页面排在 F-006 后。
+
+
+#### F-006 顺序再改 + 三页等契约（老板 2026-09-05 深夜；arch 全量偏差审计后）
+
+- 顺序：**登录 → 数据分析 → 账户池 → 工作台 → 投放任务**。
+- 账户池、工作台、投放任务三页**等契约 v1.5.1**（账户池九态流水线/任务阶段与就绪度/工作台负责人视图/工作流节点模型），arch 冻完会重写页面规划 §1/§3/§5 并通知；登录与数据分析不受影响，先做。
+- 偏差审计全文：`docs/decisions/2026-09-05-全量偏差审计.md`；原型图 `docs/prototypes/v2/` 是这三页的功能参考（视觉仍按 sidebar.html）。
