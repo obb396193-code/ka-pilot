@@ -330,3 +330,6 @@
 - **R-010a2 追加**：① domain `transitions.failed` 加 `retry → confirmed`，`POST /changesets/:id/retry` 重走 from 复核 + begin，attempt+1；② confirm/retry 在非法状态 → 409 `INVALID_STATE`（现在是通用 Error→500）；③ 确认 `FollowUpScheduler.scheduleT1` 按 (changeset_id,item_id) 幂等，终态重跑不重复排 T+1；④ unknown 只读 reconcile 一次仍 unknown → 建 `work_items(type=agent_question)` 转人工。
 - **R-013b 追加**：① `NODE_ENV=production` 且存在任一 `KA_DATA_DEV_*` → 启动拒绝；② session 清理 job（expired/revoked 超 30 天删）。
 - P3 不阻塞：reconcile 的 execution_run 建议 `dry_run=true` 或加 kind。
+
+#### 12.8 缺数期规则抑制已冻（2026-09-05）→ R-010a1 迁移 + R-010a2 引擎
+- migration 012 加 `alert_rules.availability_policy/data_freshness_max_hours`；引擎按 metrics.md 六条：指标缺→undeterminable 不触发不消触不递增 occurrence；源过期→pending 整体跳过、恢复不回溯补发、SLA 暂停；首次 full 未 done→全 pending；explain 带 availability + not_triggered_reason。**禁止缺数按 0/上次值代入**——现有 `semantic-query-metrics.ts` 的 `COALESCE(sum,0)`（R-009#2 三态）改完后规则层不得再补 0。

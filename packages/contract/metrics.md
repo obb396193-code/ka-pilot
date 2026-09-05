@@ -81,6 +81,17 @@ budget_usage(d) = 当日任务消耗 / 当日生效 daily_budget_cap    （无�
 
 **容忍带（老板：今天超一点明天拉回来是常态）**：颜色按**窗口累计**判，不按单日——单日超线但 W 累计仍达标 → 黄「单日超线，累计仍达标」；W 累计超 → 红；都在线内 → 绿。容忍百分比在个人视图可设，默认 0。产品只算只标色，**不判该关该开**。
 
+## 缺数期规则抑制（12.8，2026-09-05 arch 冻结；coverage 三态的另一半）
+
+规则引擎只在证据完整时说话，缺数时**既不触发也不消触**：
+
+1. **评估前置**：规则 `condition_tree` 引用的每个指标，在评估窗口内对该账户 `availability=available` 才评估。任一指标 `missing|error` → 该账户本轮记 `undeterminable`（进 `meta.coverage.undeterminable`），不产生工作项、不递增 `occurrence_count`、已有 open 工作项不自动 done/expired。
+2. **源过期（缺数期）**：`system/health` 判定某源 `data_as_of` 早于规则 `data_freshness_max_hours`（默认 实时源 6h / 离线源 30h）→ 依赖该源的规则本轮整体跳过，涉及账户记 `pending`（进 `coverage.pending`）。**恢复后只评估当前窗口，不回溯补发缺数期内的触发**（不 flood）；缺数期内已存在的工作项 SLA 暂停计时。
+3. **冷启动**：`lifecycle_stage=cold_start`（前 3 天）沿用 PRD 宽松阈值（成本容忍 ±50%、转化<10 不判超）；这是阈值放宽，不是抑制，账户仍计 `checked`。
+4. **首次 full 未完成**：workspace 首次 `etl_full` 未 done → 全部账户型规则不评估，`coverage` 全为 pending，队列 `dataState=stale`（与 work-items 契约一致）。
+5. **可解释**：`POST /rules/:id/explain` 的真值表每个叶子带 `availability`；未触发原因枚举加 `METRIC_MISSING | SOURCE_STALE | COLD_START_RELAXED | INITIAL_FULL_PENDING`。
+6. **策略可配但默认抑制**：`alert_rules.availability_policy`：`suppress`（默认，上述行为）| `evaluate_available_only`（只对指标齐全的账户评估，缺的仍记 undeterminable，永不把缺数当 0）。**禁止**任何"缺数按 0/上次值代入"的策略。
+
 ## 缺数三态（P0-04 裁决，老板 2026-09-04：缺数不写 0，显 "−"）
 
 所有指标值在 API 与 canonical 查询层统一为 `{value: number|null, availability: "available"|"missing"|"error"}`：

@@ -826,3 +826,8 @@ CREATE TABLE report_runs (              -- 1.8 早报 / 3.10 定时推 的生成
 ALTER TABLE report_configs ADD COLUMN is_shared BOOLEAN DEFAULT false;   -- 3.8
 ALTER TABLE report_configs ADD COLUMN version TEXT DEFAULT 'report-config/v1';
 ALTER TABLE report_configs ADD COLUMN updated_at TIMESTAMPTZ DEFAULT now();
+
+-- 12.8 缺数期规则抑制（2026-09-05 arch；进 migration 012，R-010a1 出、R-010a2 引擎实现）
+ALTER TABLE alert_rules ADD COLUMN availability_policy TEXT NOT NULL DEFAULT 'suppress'
+  CHECK (availability_policy IN ('suppress','evaluate_available_only'));   -- 见 metrics.md「缺数期规则抑制」；无"按 0 代入"选项
+ALTER TABLE alert_rules ADD COLUMN data_freshness_max_hours INT;            -- NULL=按源默认（实时 6h / 离线 30h）

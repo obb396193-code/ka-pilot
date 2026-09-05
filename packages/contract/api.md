@@ -796,3 +796,5 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - `POST /api/v1/reports/render {config|config_id, window?}` → `{rows:[canonical 行], columns:[...], highlights:[{rowIndex, metric, style}], lineage}`；Agent 帮做表（3.9）不在本版。
 
 派活：以上 → **R-014**（migration 015 + HTTP + BFF），排 R-012 后；fixtures 由 arch 随 R-014 开工前补。
+
+- **缺数期规则抑制（12.8，2026-09-05）**：语义在 `metrics.md`「缺数期规则抑制」；`POST /api/v1/rules/:id/explain` 响应 `leaves[].availability` + `not_triggered_reason ∈ CONDITION_FALSE | METRIC_MISSING | SOURCE_STALE | COLD_START_RELAXED | INITIAL_FULL_PENDING | MUTED | DEDUPED`；`GET /work-items` 的 `meta.coverage.pending/undeterminable` 由本规则产生；规则表加 `availability_policy/data_freshness_max_hours`。
