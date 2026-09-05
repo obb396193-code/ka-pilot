@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { assertProductionEnvironment } from "./production-environment.js";
 
 const positiveInteger = z.coerce.number().int().positive();
 const positiveNumber = z.coerce.number().positive().finite();
@@ -153,6 +154,7 @@ export interface WorkerConfig {
 }
 
 export function loadWorkerConfig(environment: NodeJS.ProcessEnv): WorkerConfig {
+  assertProductionEnvironment(environment);
   const parsed = workerConfigSchema.parse(environment);
   const agent = loadAgentConfig(parsed);
   return {
