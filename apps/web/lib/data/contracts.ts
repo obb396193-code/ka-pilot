@@ -31,6 +31,7 @@ const authoritySchema = z.object({
 }).strict()
 
 export const sourceLineageSchema = z.object({
+  workspaceKind: z.enum(["personal", "team"]),
   source: z.enum(["ka_data", "qihang_realtime", "qihang_offline", "canonical"]),
   datasetVersion: z.string().min(1).nullable(),
   queryTemplateVersion: z.string().min(1),

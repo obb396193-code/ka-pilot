@@ -1,4 +1,4 @@
-// Contract fixture copied field-for-field from the e2b0f1a unknown-lineage envelope.
+// Synthetic canonical v2 unknown-lineage fixture; direct backend parity is tested separately.
 // Values are synthetic and safe for local regression tests.
 export const backendUnknownLineageEnvelope = {
   ok: true,
@@ -6,7 +6,7 @@ export const backendUnknownLineageEnvelope = {
     mode: "ka_data",
     source: {
       queryId: "account.summary",
-      rowSchemaVersion: "account.summary/v1",
+      rowSchemaVersion: "account.summary/v2",
       status: "ready",
       rows: [],
       returnedRowCount: 0,
@@ -15,6 +15,7 @@ export const backendUnknownLineageEnvelope = {
         availability: "available",
       },
       lineage: {
+        workspaceKind: "team",
         source: "ka_data",
         datasetVersion: null,
         queryTemplateVersion: "account-summary-v1",

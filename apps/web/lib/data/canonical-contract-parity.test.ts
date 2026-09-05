@@ -3,6 +3,7 @@ import { createHash } from "node:crypto"
 import { readFile } from "node:fs/promises"
 import test from "node:test"
 
+import { canonicalTableRow } from "./canonical-query-fixtures.ts"
 import { accountDailyRowSchema, canonicalRowSchemaVersionByQueryId } from "./canonical-query-rows.ts"
 import { dataQueryResponseSchema } from "./contracts.ts"
 
@@ -21,36 +22,33 @@ const fixtureSha256 = {
 } as const
 
 for (const name of fixtureNames) {
-  test(`frontend contract accepts the e2b0f1a ${name} fixture`, async () => {
+  test(`frontend retains immutable e2b0f1a ${name} as a legacy rejection boundary`, async () => {
     const path = new URL(`./fixtures/e2b0f1a/${name}.json`, import.meta.url)
     const raw = await readFile(path)
     assert.equal(createHash("sha256").update(raw).digest("hex"), fixtureSha256[name])
-    assert.equal(dataQueryResponseSchema.safeParse(JSON.parse(raw.toString("utf8"))).success, true)
+    assert.equal(dataQueryResponseSchema.safeParse(JSON.parse(raw.toString("utf8"))).success, name === "stable-error")
   })
 }
 
-test("frontend freezes all six e2b0f1a row schema versions", () => {
+test("frontend freezes all six current v2 row schema versions", () => {
   assert.deepEqual(canonicalRowSchemaVersionByQueryId, {
-    "account.summary": "account.summary/v1",
-    "account.trend": "account.trend/v1",
-    "account.table": "account.table/v1",
-    "account.anomalies": "account.anomalies/v1",
-    "account.detail": "account.detail/v1",
-    "reconcile.account_daily": "reconcile.account_daily/v1",
+    "account.summary": "account.summary/v2",
+    "account.trend": "account.trend/v2",
+    "account.table": "account.table/v2",
+    "account.anomalies": "account.anomalies/v2",
+    "account.detail": "account.detail/v2",
+    "reconcile.account_daily": "reconcile.account_daily/v2",
   })
 })
 
 test("frontend mirrors the 9626545 real-calendar-date failure boundary", () => {
-  const fixture = {
-    workspaceId: "00000000-0000-4000-8000-000000000024", media: "KUAISHOU", accountId: "account-1", accountName: null, ownerUserId: null,
-    ds: "2026-02-31", metrics: { cost: null, exposure: null, click: null, conversion: null, realConversion: null, cashCost: null, costSpace: null, wakeUv: null, potentialUv: null, budget: null, budgetUsageRate: null, deductionRate: null, mainAdCostProportion: null, assessmentPrice: null, ratios: { ctr: { value: null, state: "undefined" }, cvr: { value: null, state: "undefined" }, realCpa: { value: null, state: "undefined" }, cashCpa: { value: null, state: "undefined" }, gap: { value: null, state: "undefined" }, potentialRate: { value: null, state: "undefined" }, biConversionRate: { value: null, state: "undefined" } } },
-    dataAnomaly: null, computedAt: null, tasks: [],
-  }
+  const fixture = { ...canonicalTableRow, ds: "2026-02-31" }
+  assert.equal(accountDailyRowSchema.safeParse(canonicalTableRow).success, true)
   assert.equal(accountDailyRowSchema.safeParse(fixture).success, false)
 })
 
 test("frontend mirrors backend reconcile semantic refinements", async () => {
-  const raw = await readFile(new URL("./fixtures/e2b0f1a/reconcile-pending.json", import.meta.url), "utf8")
+  const raw = await readFile(new URL("../../../../packages/contract/fixtures/data-query/reconcile-pending.json", import.meta.url), "utf8")
   const invalid = JSON.parse(raw)
   const missing = { value: null, availability: "missing" }
   const available = { value: 1, availability: "available" }

@@ -232,14 +232,14 @@ test("BFF rejects same-workspace rows outside the approved media-account tuple",
 })
 
 test("BFF rejects a response queryId that does not match the request", async () => {
-  const mismatched = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, queryId: "account.detail", rowSchemaVersion: "account.detail/v1" } } }
+  const mismatched = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, queryId: "account.detail", rowSchemaVersion: "account.detail/v2" } } }
   const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, authContext, requestId: () => "bff-query-mismatch", fetchImpl: async () => Response.json(mismatched, { headers: { "x-request-id": "bff-query-mismatch" } }) })
   assert.equal(response.status, 502)
   assert.equal(response.body.ok ? "" : response.body.error.requestId, "bff-query-mismatch")
 })
 
 test("BFF rejects a rowSchemaVersion that drifts from the canonical query id", async () => {
-  const mismatched = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, rowSchemaVersion: "account.table/v2" } } }
+  const mismatched = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, rowSchemaVersion: "account.table/v1" } } }
   const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, authContext, requestId: () => "bff-version-mismatch", fetchImpl: async () => Response.json(mismatched, { headers: { "x-request-id": "bff-version-mismatch" } }) })
   assert.equal(response.status, 502)
   assert.equal(response.body.ok ? "" : response.body.error.requestId, "bff-version-mismatch")
