@@ -3022,3 +3022,17 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - **全量** Domain497 / DB199（真PG套件含unit）/ Worker641+2外部opt-in skipped / Web78；四包typecheck/lint全通过；后端三包npm audit --omit=dev均0。核心coverage：execution Repository行100%分支85%，Runner行89%分支73.91%，Postgres适配行100%分支94.44%。Web已有依赖问题继续由fe处理，本批不宣称整体安全门全绿。
 - 未开放/注册媒体写或HTTP写；生产ActionPort/输出存储与unknown回查消费仍待后批接线，不将本内核修复冒充完整可用工作流产品。当前业务读/session/旧媒体写关闭门回归保持。
 - 下一项P0-12 durable inbox，再P0-04/v2→绑源→双空间→折011；非R009整批完成。用户验收句：重复点击或两台Worker同时接流程，不重复建变更集/发投放动作；结果不确定停未知态。详见R009-状态与本批实施计划。
+
+---
+
+### P-043 ⏳待审｜R-009 P0-12 钉钉 durable inbox（be，2026-09-05）
+
+- **代码SHA `c6603d3`**，be/r009，19文件602+/257-。main仍d3466c7，遵循P041继续令；未push/合main/部署。本批前端/视觉/Contract/迁移/锁文件0 diff。
+- 接收Promise先INSERT完成再ACK；SDK本地源码确认robot callback不自动ACK，并测试真实注册wrapper。旧claim仅去重、无恢复入口已移除。
+- DB领取workspace/provider/kind限定+SKIP LOCKED；attempts领取递增兼fencing，更新先锁行后用DB clock查lease；跨scope/旧代/过期无新接管者均拒绝。耗尽未processed+lease到期即dead，留行留固定code，不添加未冻结status列。
+- 加密message/reply checkpoint以安全恢复临时webhook；AES-GCM绑定workspace/provider/event/purpose，新增必填Secret env `GATEWAY_INBOX_KEY_HEX`、轮换登记runbook§6。网关启动不再自动跑migration，先维护步骤迁移。
+- 后台恢复+有限重试；结果已checkpoint则只重发回复、不重新查业务；**远端回复成功但本地complete前崩溃仍可能重复文本，未宣称远程exactly-once**。任务创建/Agent enqueue明确关闭，本批不借旧未接通客户端开放写；以后按冻结写链路接回。
+- **门禁** Domain497 / DB205（真实PG套件含unit）/ Worker641+2外部opt-in skipped / Gateway36（含2真实PG，无skip）/ Web78；五包typecheck/lint全过。后端三包+Gateway生产audit本轮均0；Web依赖仍归fe，未重扫不冒充整体0。
+- 新PG覆盖ACK前崩溃重投一行、新worker恢复、并发领取、claim后失败跨进程重试、checkpoint后reply失败不重查、dead保留、过期旧代拒绝、跨workspace/provider及事件类型隔离。首次PG因EPERM批准后得到真正缺实现红灯；网关依赖安装问题不算业务红灯，首轮typecheck缺pg声明已改用createPool再全跑通过。
+- 核心覆盖率Repository行100%/分支97.29%，网关四文件行98.98%/分支94.44%。详见 `docs/plans/R009-状态.md` P043与durable-inbox计划；用户验收句：先保存再确认，崩溃可恢复，耗尽失败保留证据。
+- **需后批接线**：ProductApiClient旧Agent/query端点与正式Session/tuple身份授权、webhook失效安全主动推送、撤销后通知策略、卡片/死信UI；不能把可靠收件当真实群查数已可用。下一项三态/v2→绑源→双空间→折011+merge main，非R009整批完成；最终仍由arch审查整合。
