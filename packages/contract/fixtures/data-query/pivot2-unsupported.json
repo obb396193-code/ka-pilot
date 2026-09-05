@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "error": {
+    "code": "DIMENSION_UNSUPPORTED",
+    "message": "维度 bid_tool 为派生枚举，映射表未提案前无数据源",
+    "retryable": false,
+    "requestId": "fixture-pivot2-unsupported",
+    "dimension": "bid_tool",
+    "hint": "显示空态：出价工具维度待映射表提案；预设「出价工具×任务」整张显示示例角标"
+  }
+}

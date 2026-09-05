@@ -58,9 +58,18 @@
 ## data-query
 - `data-query/dimension-unsupported.json`
 - `data-query/dimension-v3.json` — 8 维之一：资源位（团队空间有源）
+- `data-query/dimension-v3-task.json` — 8 维：任务
+- `data-query/dimension-v3-biz.json` — 8 维：业务（product.name 聚合）
+- `data-query/dimension-v3-account.json` — 8 维：账户（含一行缺数 missing/gray）
+- `data-query/dimension-v3-agent_type.json` — 8 维：代理/自投（agency_name）
+- `data-query/dimension-v3-deduction_range.json` — 8 维：扣量桶 [0,10)|[10,30)|[30,+)
 - `data-query/gap.json`
+- `data-query/gap-task.json` — Gap 按任务
+- `data-query/gap-biz.json` — Gap 按业务（备用户 missing）
 - `data-query/hourly.json` — 缺小时 missing 不补 0；delta 相邻缺一边也 missing
 - `data-query/pivot2.json` — 策略分析视图：预设 版位×任务；不做最优推荐
+- `data-query/pivot2-biz-resource_position.json` — 策略分析预设 业务×版位（4 格 1 undeterminable）
+- `data-query/pivot2-unsupported.json` — 预设 出价工具×任务 → DIMENSION_UNSUPPORTED（bid_tool 派生枚举待映射表）
 - `data-query/ready-lineage.json`
 - `data-query/reconcile-pending.json`
 - `data-query/stable-error.json`
