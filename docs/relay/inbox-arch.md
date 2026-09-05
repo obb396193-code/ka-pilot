@@ -3041,6 +3041,10 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **#8首个内核SHA `7ced49d`**：新增ordinary/admin严格request schemas与服务端source策略，新22反例含各role无诊断entitlement、错workspace/user、flag off、KA off、未知输入，不把role=admin当诊断权。核心行/分支/函数100%；Domain514、Worker非PG670+2外部skip、两包type/lint绿。**尚未接Service/HTTP/BFF**，旧入口改动留到接线批，不冒充#8完成。逐文件计划已落`2026-09-05-空间绑源与管理员对账接线.md`；目标继续，不push/未合流/未部署。
+- #8团队reader风险提醒：现在KaDataClient只允许explicit_accounts，team进来会403；不能简单删这道检查，使任意team workspace均借用同一reader。计划以服务端`KA_DATA_TEAM_WORKSPACE_ID`绑定单一团队源（一期一reader→一team），未配置/不匹配明确unavailable/forbidden；不接受浏览器workspace参数，也不依赖team grants。请arch确认此部署映射名称/范围；可以先继续纯查询/HTTP/非视觉BFF接线，不放宽到无绑定team全量。
+- CTE证据补正：刚实读主仓`private/knowledge-sources/ka-src-0011/source.txt:13`，上游**文档明确允许单条SELECT/WITH**，非之前写的能力未知；bdc5273本地SQLite证明已具备，仍未执行内网新SQL模板，性能/快照一致性不冒充实测。
+
 - **v2后端代码`bdc5273`（18文件）已独立提交**：六Query严格v2、两Adapter三态/截断error、SQLite expected账户日/NULL传播/坏值哨兵、成功fixtures升级。Domain514、Worker非PG648+2外部skip、type/lint绿；核心84测试行91.85%/分支83.2%，Workeraudit0。DB219在16:32真实PG重跑通过（首轮migration5s超时），但21:32 Worker全量PG因55432 ECONNREFUSED失败，**当前pg_blocked**，不称本增量全门禁通过。没有push/合流/部署/开媒体写；详见R009状态与六Query-v2计划。
 - 最新只读main@cda3303，已收到A-001要求#8同时接BFF和契约。真实检查发现Web旧78测试/typecheck绿但三个v2成功fixtures全被web schema拒绝；下一批将按A-001修非视觉BFF/契约及必要数据解包，不用兼容v1掩盖漂移。此增量frontend0diff；目标不因PG环境暂停，继续#8。SQLite CTE只在本地真实执行，内网网关CTE可用性与性能仍需OS验证。
 - 新R013b部署打包/worker once、R014v1.5、缺数规则抑制与8维补充已登记总计划；012先迁移全部再seed的最新部署顺序已读，旧倒数系数/ubp有源假设不再沿用。材料/结算和bid_tool等仍先提案、不自造Contract。
