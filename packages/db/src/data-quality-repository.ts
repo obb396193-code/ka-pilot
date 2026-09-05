@@ -1,11 +1,13 @@
 import type { Pool } from "pg";
+import { RECONCILE_TOTALS_SQL } from "./data-quality-reconciliation.js";
+import { nullableNumber, SemanticQueryContractError } from "./semantic-query-support.js";
 
 export interface ReconciliationResult {
-  rawTotal: number;
-  canonicalTotal: number;
-  delta: number;
-  tolerance: number;
-  passed: boolean;
+  rawTotal: number | null;
+  canonicalTotal: number | null;
+  delta: number | null;
+  tolerance: number | null;
+  passed: boolean | null;
 }
 
 export interface CpaOutlier {
@@ -25,7 +27,7 @@ export interface NewDataQualityCheck {
   ds: string;
   checkType: "total_reconciliation" | "cpa_outlier" | "missing_consecutive_days";
   sample: Record<string, unknown>;
-  passed: boolean;
+  passed: boolean | null;
   delta: Record<string, unknown>;
 }
 
@@ -42,75 +44,28 @@ export class DataQualityRepository {
 
   async reconcileTotals(workspaceId: string, ds: string): Promise<ReconciliationResult> {
     const result = await this.pool.query<{
-      raw_total: string | number;
-      canonical_total: string | number;
-    }>(
-      `WITH latest_raw AS (
-         SELECT DISTINCT ON (media, account_id, resource) media, account_id, resource, payload
-         FROM metrics_raw
-         WHERE workspace_id = $1 AND ds = $2::date
-           AND resource IN ('account_offline', 'account_realtime')
-         ORDER BY media, account_id, resource, fetched_at DESC, id DESC
-       ), source_rows AS (
-         SELECT media, account_id,
-                (max(payload::text) FILTER (
-                  WHERE resource = 'account_offline'
-                ))::jsonb AS offline,
-                (max(payload::text) FILTER (
-                  WHERE resource = 'account_realtime'
-                ))::jsonb AS realtime
-         FROM latest_raw
-         GROUP BY media, account_id
-       ), scoped_accounts AS (
-         SELECT media, account_id FROM source_rows
-         UNION
-         SELECT media, account_id
-         FROM account_metrics_daily
-         WHERE workspace_id = $1 AND ds = $2::date
-       ), raw_total AS (
-         SELECT COALESCE(SUM(
-           CASE
-             WHEN metric.field_sources->>'cost' IN ('realtime', 'gap_filled')
-               AND source.realtime->>'account_cost' ~ '^-?[0-9]+([.][0-9]+)?$'
-               THEN (source.realtime->>'account_cost')::numeric
-             WHEN source.offline->>'cost_api' ~ '^-?[0-9]+([.][0-9]+)?$'
-               THEN (source.offline->>'cost_api')::numeric
-             WHEN source.realtime->>'account_cost' ~ '^-?[0-9]+([.][0-9]+)?$'
-               THEN (source.realtime->>'account_cost')::numeric
-             ELSE 0
-           END
-         ), 0) AS value
-         FROM scoped_accounts AS account
-         LEFT JOIN source_rows AS source USING (media, account_id)
-         LEFT JOIN account_metrics_daily AS metric
-           ON metric.workspace_id = $1
-          AND metric.media = account.media
-          AND metric.account_id = account.account_id
-          AND metric.ds = $2::date
-       ), canonical_total AS (
-         SELECT COALESCE(SUM(cost), 0) AS value
-         FROM account_metrics_daily
-         WHERE workspace_id = $1 AND ds = $2::date
-       )
-       SELECT raw_total.value AS raw_total, canonical_total.value AS canonical_total
-       FROM raw_total CROSS JOIN canonical_total`,
-      [workspaceId, ds],
-    );
+      raw_total: string | number | null;
+      canonical_total: string | number | null;
+      invalid: boolean | null;
+    }>(RECONCILE_TOTALS_SQL, [workspaceId, ds]).catch((error: unknown) => {
+      if (typeof error === "object" && error !== null && "code" in error &&
+        (error.code === "22003" || error.code === "22P02")) {
+        throw new SemanticQueryContractError();
+      }
+      throw error;
+    });
     const row = result.rows[0];
-    if (!row) {
-      throw new Error("Data quality reconciliation did not return a row");
+    if (!row) throw new SemanticQueryContractError();
+    if (row.invalid) throw new SemanticQueryContractError();
+    const rawTotal = nullableNumber(row.raw_total);
+    const canonicalTotal = nullableNumber(row.canonical_total);
+    if (rawTotal === null || canonicalTotal === null) {
+      return { rawTotal, canonicalTotal, delta: null, tolerance: null, passed: null };
     }
-    const rawTotal = numeric(row.raw_total);
-    const canonicalTotal = numeric(row.canonical_total);
     const delta = Math.abs(canonicalTotal - rawTotal);
     const tolerance = Math.abs(rawTotal) * 0.001;
-    return {
-      rawTotal,
-      canonicalTotal,
-      delta,
-      tolerance,
-      passed: delta <= tolerance,
-    };
+    if (!Number.isFinite(delta) || !Number.isFinite(tolerance)) throw new SemanticQueryContractError();
+    return { rawTotal, canonicalTotal, delta, tolerance, passed: delta <= tolerance };
   }
 
   async markCpaOutliers(workspaceId: string, ds: string): Promise<CpaOutlier[]> {

@@ -12,7 +12,8 @@ describe("backfill runtime / real PG", () => {
   beforeAll(async () => { await runMigrations({ databaseUrl }); });
   afterAll(async () => { await pool.end(); });
 
-  it.each([false, true])("only finishes after persisted quality success (failure=%s)", async (failQuality) => {
+  it.each(["complete", "mismatch", "missing"])("only finishes after persisted quality success (%s)", async (qualityState) => {
+    const failQuality = qualityState !== "complete";
     // This suite runs only in a synthetic test database, never an application DB.
     await pool.query("DELETE FROM jobs");
     const workspaceId = (await pool.query("INSERT INTO workspaces(name) VALUES ($1) RETURNING id", [randomUUID()])).rows[0].id;
@@ -41,7 +42,8 @@ describe("backfill runtime / real PG", () => {
       expect((await batches.get(workspaceId, backfillId)).finishedAt).toBeNull();
     }
     if (failQuality) {
-      await pool.query("UPDATE account_metrics_daily SET cost=999 WHERE workspace_id=$1", [workspaceId]);
+      await pool.query("UPDATE account_metrics_daily SET cost=$2 WHERE workspace_id=$1",
+        [workspaceId, qualityState === "missing" ? null : 999]);
       await pool.query("UPDATE jobs SET max_attempts=1 WHERE workspace_id=$1 AND job_type='data_quality_check'", [workspaceId]);
     }
     expect(await processDue()).toBe(true);
@@ -53,6 +55,10 @@ describe("backfill runtime / real PG", () => {
       .toEqual([{ status: failQuality ? "failed" : "done" }]);
     expect((await pool.query("SELECT passed FROM data_quality_checks WHERE workspace_id=$1", [workspaceId])).rows)
       .toHaveLength(3);
+    if (qualityState === "missing") {
+      expect((await pool.query("SELECT passed FROM data_quality_checks WHERE workspace_id=$1 AND check_type='total_reconciliation'", [workspaceId])).rows)
+        .toEqual([{ passed: null }]);
+    }
     expect(fetchFn).toHaveBeenCalledTimes(1);
     expect(callbackError).not.toHaveBeenCalled();
     expect(await worker.processOnce()).toBe(false);

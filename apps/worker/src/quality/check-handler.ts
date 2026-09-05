@@ -61,7 +61,7 @@ export function createDataQualityHandler(dependencies: {
           delta: { absolute: totals.delta, tolerance: totals.tolerance },
         });
         checksRecorded += 1;
-        if (!totals.passed) {
+        if (totals.passed !== true) {
           failedChecks.push("total_reconciliation");
         }
 
