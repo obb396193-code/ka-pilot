@@ -26,6 +26,7 @@ import {
 import { resolveRequestId } from "./request-id.js";
 import { PlatformDataSourceError } from "./platform-data-source.js";
 import { DataSourceRoutingError, selectDataSourceRoute, type ServerDataSourcePolicy, type SelectedDataSourceRoute } from "./data-source-routing.js";
+import { maskCanonicalQueryRows } from "./canonical-query-rows.js";
 
 export const DATA_QUERY_HTTP_PATH = "/api/v1/data/query";
 export const ADMIN_RECONCILE_HTTP_PATH = "/api/v1/admin/data/reconcile";
@@ -260,8 +261,15 @@ function guardSourceOutput(
       }
     }
   }
-  if (result.rows.length <= resolved.maxRows) return result;
-  const rows = result.rows.slice(0, resolved.maxRows);
+  const overBudget = result.rows.length > resolved.maxRows;
+  if (!overBudget && !result.lineage.truncated) return result;
+  // Validate every source row/scope above before slicing. A third-party adapter
+  // must not bypass v2 masking by setting truncated but leaving numeric values.
+  const rows = maskCanonicalQueryRows(resolved.queryId, result.rows.slice(0, resolved.maxRows), "error");
+  const reason = overBudget ? "Result exceeded the registry row budget" : "Source response was truncated";
+  const coverage = { ...result.lineage.coverage, complete: false, reason };
+  // Counts before a local slice do not prove the object set of the returned page.
+  if (overBudget) delete coverage.returnedObjects;
   return {
     ...result,
     rows,
@@ -269,15 +277,15 @@ function guardSourceOutput(
     wholeResultTotal: {
       value: null,
       availability: "partial",
-      reason: "Result exceeded the registry row budget",
+      reason,
     },
     lineage: {
       ...result.lineage,
-      coverage: { ...result.lineage.coverage, complete: false, reason: "Registry row budget exceeded" },
+      coverage,
       truncated: true,
       partial: true,
     },
-    warnings: [...result.warnings, "Result exceeded the registry row budget"],
+    warnings: [...new Set([...result.warnings, reason])],
   };
 }
 
