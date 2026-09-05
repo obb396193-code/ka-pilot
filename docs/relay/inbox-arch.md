@@ -3267,3 +3267,11 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - Domain587、DBunit89、Worker非PG763+2外部opt-in skipped，三包typecheck/lint；metrics行96.74%/分支93.22%，canonical行93.87%/分支83.33%。Domain8新例、DB settings12例、Worker canonical新增2例。Domain/DB新增断言实际先红后绿。
 - PG新增生效方向版本/未来版本排除/跨媒体同号/跨workspace，尚未跑。最近获准55432 TCP于02:51仍ECONNREFUSED；未执行seed/迁移/ETL。上线需012+seed+本修复整体门禁，不能seed配旧固定除法计算。
 - 依赖零变更、最近DBoffline audit0，diff --check通过，无前端/媒体写。未push/合流/部署；P047三项裁决继续待答，先做R013b。main新71b9231的R015/R016已纳入总目标，不提前发明其公开DTO。
+
+### P-051 R013b 生产配置硬门｜Codex 2026-09-06，待审
+
+- **a77b224**，6文件，Data API/Worker config/KA reader工厂一致：production只要有KA_DATA_DEV_*自有键就拒绝（空值/false亦然），检查先于其他配置；固定错误不打印键或值。未改监听/业务路由/媒体写。
+- Worker非PG774+2外部opt-in skipped、typecheck/lint、核心行/分支100%；新增逻辑10例实际6红→10绿，子进程1例证明KA关闭也在缺DB配置前失败；保留健康启动及缺KA配置回归。
+- 首次排除PG模式遗漏benchmark-data-pipeline-pg.test.ts，连接55432拒绝导致1失败，未执行SQL；之后明确排除该文件重跑非PG全绿。PG继续待，不掩盖失败。日志/tmp/ka-production-guard-{full,full-retry,focused,coverage}.log。
+- 已收到main@a7f98a8 P047三问采纳，转回bootstrap事务/CLI；R-FE-IMG-001已登记空档做。R013b运行时审计：handler无AbortSignal且claim全队列，单轮不能简单Promise.race后宣称已退出；会先补安全截止/领取方案再接线，不擅启现有队列。
+- 需OS补FaaS骨架证据：现部署回收只有build/npm/拓扑，无f.yml真实字段及定时入口形态；请回一份无凭证最小官方模板（web/data-api HTTP与timer），只读即可。安装脚本可先做，此缺口不阻塞bootstrap。未push/合流/部署。
