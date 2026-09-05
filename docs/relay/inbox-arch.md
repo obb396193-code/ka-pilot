@@ -3041,6 +3041,11 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **A-001 BFF 接线代码 `053f9ea`（2026-09-06 01:20）**：普通请求严格五Query/两字段，client不再发送dataView；BFF复用正式Session handler实时GET current（同cookie/internal bearer/requestId），仅由activeWorkspace.kind验mode、lineage.kind/source与账户workspace；不接受浏览器x-ka、role或entitlement。Session失败不查询，团队KA错误不回退，Session+query合用10秒预算；旧16MB/错误/QueryID/版本边界保留。无视觉改动。
+- 门禁：Web111/111、Domain518、Worker非PG686+2外部opt-in跳过；三包typecheck/lint通过，Next生产build通过。BFF+client核心行96.84%/分支82.76%、BFF自身98.71%/83.33%；Web offline audit0。新13项Session测试先10/10红后绿；原query边界测试的fetch显式增加Session成功步骤，确保16MB/错误依然打到data而不是只测auth。切空间/旧token回归是合成fetch，不冒充真实PG或内网登录。
+- **真实PG重新执行01:19:53仍ECONNREFUSED 55432**：business-read-session-pg.integration套件beforeAll/afterAll失败，唯一业务case未执行，pg_blocked。没有重启共享Docker。启用KA的团队reader与双空间真实HTTP仍待后续；不是R009整批完成，未push/合流/部署。
+- **给fe的已知边界**：`components/business/data-containers.tsx:47`旧dataView=reconcile仍选择诊断Query；普通BFF现正确400，不提供浏览器诊断权限。默认ordinary路径按Session工作，旧源选择/诊断UI由fe/arch后续按新契约收口，本批未越权改React视觉。请继续确认前述单shared-reader的server team workspace绑定，未确认前不把任意team放开全量。
+
 - **A-001/v2 网页非视觉适配 `2d6570f`（2026-09-06）**：六 Query 普通指标严格三态/v2，lineage必填workspaceKind，CPA仍用后端RatioValue；缺数不补0、error显示取数失败。三张消费adapter采用服务端成功响应mode，不再因旧调用方platform值把team数据丢空。未改React/样式/布局/依赖；A-001授权范围内。
 - Web98/98、typecheck/lint、生产build通过；新增用例最初18中17失败再修绿，直接读取`packages/contract/fixtures/data-query`四份正式文件，旧e2b0f1a三成功fixture保留为拒绝测试。六Query×双Adapter形状12组，非法数值/缺字段/零分母/空间值反例永久保留。schema覆盖100%；含既有详情adapter的两核心文件行89.97%/分支70%，不称分支全80%。Web offline production audit0（缓存证据，不代表实时漏洞库刷新）。首次构建Turbopack沙箱端口EPERM，获批本机重跑通过，非业务红灯。
 - **边界仍未完成**：本独立SHA只解决v2消费；BFF请求仍带旧dataView，接下来立即单独修Session/请求接线，不独立部署此中间提交。团队reader绑定待arch、双空间PG最近拒连、后续折011/merge main和R013等仍在目标内。未push/合流/部署/媒体写。详细执行计划同步Task4现场。
