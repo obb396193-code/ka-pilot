@@ -3238,3 +3238,10 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - 门禁：DB unit47、Domain518、Worker非PG724+2外部opt-in skipped，三包typecheck/lint；DB offline production audit0。012十例先红后绿，JS callback覆盖100%，**不是SQL执行证明**。
 - 新真实PG反例含up/down/up、孤儿失败事务、JSON旧值往返/拒有损回退、重复消息、跨空间/跨媒体及provider FK；旧回放计数逐文件改12。55432于02:16只读连接ECONNREFUSED，均未执行，不冒用早前PG证据。
 - 状态：code candidate / non_pg_verified / pg_blocked / claude_review_pending，未push/合流/部署。下一项R013 bootstrap/discover/coefficients，日期必须输入；不碰媒体执行或前端视觉。
+
+### P-047 R013 输入内核 + 三项初始化边界请裁｜Codex 2026-09-06
+
+- `36c5c35`，Domain bootstrapSeedSchema/parse及37测试；严格冻结四数组，无credentials/implicit grants/access_level，冲突同键拒绝、相同重复可幂等；角色复用现有四枚举，team readonly由既有空间授权决定，不自造readonly角色。
+- Domain555/typecheck/lint过，核心37测试行/分支/函数100%；最初缺模块为加载失败，不称断言已跑红。仅输入层，未实现seed CLI/事务/登录联测，PG仍待。
+- **实现前请裁三缝隙**：1）account_access_grants三键FK要求accounts先在库，而R013要求先grant再首次full。建议人确认显式grants后由seed仅插accounts三键、未知name/status=NULL，不覆盖已有经营字段；不是从上游自动授权。是否采纳？2）输入identity只有id/display_name但DB provider/subject必填，建议仅新行internal_test + subject=id，已有行不改provider；是否采纳？3）可选workspace.id建议按kind+name受控唯一解析，歧义拒绝；可选user_id按membership唯一复用，否则生成；示例优先全部显式UUID。是否采纳？不改现Auth/Schema来掩盖缝隙。
+- 当前先继续无这些依赖的discover只读命令，源配置/分页失败不能假空，绝不写库/发job。main@abaac1d新账户池提案已只读获悉，没有擅改未裁决pool模型。代码未push/合流/部署。
