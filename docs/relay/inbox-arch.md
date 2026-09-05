@@ -3245,3 +3245,11 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - Domain555/typecheck/lint过，核心37测试行/分支/函数100%；最初缺模块为加载失败，不称断言已跑红。仅输入层，未实现seed CLI/事务/登录联测，PG仍待。
 - **实现前请裁三缝隙**：1）account_access_grants三键FK要求accounts先在库，而R013要求先grant再首次full。建议人确认显式grants后由seed仅插accounts三键、未知name/status=NULL，不覆盖已有经营字段；不是从上游自动授权。是否采纳？2）输入identity只有id/display_name但DB provider/subject必填，建议仅新行internal_test + subject=id，已有行不改provider；是否采纳？3）可选workspace.id建议按kind+name受控唯一解析，歧义拒绝；可选user_id按membership唯一复用，否则生成；示例优先全部显式UUID。是否采纳？不改现Auth/Schema来掩盖缝隙。
 - 当前先继续无这些依赖的discover只读命令，源配置/分页失败不能假空，绝不写库/发job。main@abaac1d新账户池提案已只读获悉，没有擅改未裁决pool模型。代码未push/合流/部署。
+
+### P-048 R013 只读账户发现｜Codex 2026-09-06，待审
+
+- 代码 **7c08b97**，Worker三文件；`npm run --silent discover:accounts -- --media KUAISHOU`。复用QihangClient account GET，强制server URL/user identity配置，无DB依赖/写库/job/grant。未知配置或源失败不能返回假空。
+- 50/页、10000总预算、可信total需稳定，页码/行数必须对齐且无重复ID；上游坏字段、错媒体、truncate/limit_clamped拒绝；响应/最终输出严格小于16MB。完整后才输出五字段JSON，未知描述null；no retry/no redirect，错误统一固定文本不带URL/userId/body。总数一致不是对上游权限完整性的独立证明，实际范围仍由奇航服务端控制。
+- 37新反例含真进程CLI缺配置退出；Worker非PG **761+2 opt-in skipped**、typecheck/lint、offline audit0。行覆盖93.61%/分支89.15%；37新增测试并未调用真实奇航。首轮全回归listen EPERM造成100失败，获准本机假服务后同套重跑全绿，记录在`/tmp/ka-discover-worker{,-retry}.log`。
+- 02:37获准TCP probe：55432 ECONNREFUSED（首次沙箱EPERM不算PG拒连证据）；真实PG/真实奇航/首次部署均未验。命令与数据处理写唯一runbook §2.5，bootstrap尚不能执行，P047三项待裁不掩盖。
+- 下一项独立coefficients输入/幂等（显式有效日期），继续目标；不push/合流/部署/改视觉。用户验收句：首次部署前能拿到本人账户清单供确认，而不是为了首跑给全空间默认授权。
