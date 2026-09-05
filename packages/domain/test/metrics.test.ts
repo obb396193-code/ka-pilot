@@ -45,6 +45,7 @@ describe("computeDerivedMetrics", () => {
       cost: 1_000,
       compensation: 109,
       channelCoefficient: 1.09,
+      channelCoefficientOp: "divide",
       exposure: 20_000,
       click: 1_000,
       conversion: 120,
@@ -81,12 +82,38 @@ describe("computeDerivedMetrics", () => {
       conversion: 0,
       assessmentPrice: 20,
       channelCoefficient: 1,
+      channelCoefficientOp: "divide",
     });
 
     expect(output.realCpa).toEqual({ value: null, state: "infinite" });
     expect(output.onTarget).toBe(false);
     expect(output.cashCpa).toEqual({ value: null, state: "infinite" });
     expect(output.gap).toEqual({ value: null, state: "undefined" });
+  });
+
+  it.each([
+    { op: "multiply" as const, coefficient: 0.7812, expected: 70.308 },
+    { op: "divide" as const, coefficient: 1.045, expected: 90 / 1.045 },
+    { op: "divide" as const, coefficient: 1.09, expected: 90 / 1.09 },
+    { op: "divide" as const, coefficient: 1.51, expected: 90 / 1.51 },
+  ])("uses frozen configured direction $op/$coefficient", ({ op, coefficient, expected }) => {
+    const output = computeDerivedMetrics({ cost: 100, compensation: 10, realConversion: 1, assessmentPrice: 90, channelCoefficient: coefficient, channelCoefficientOp: op });
+    expect(output.cashCost).toBeCloseTo(expected);
+    expect(output.cashCpa.value).toBeCloseTo(expected);
+    expect(output.realCpa.value).toBe(100);
+    expect(output.onTarget).toBe(true);
+    expect(output.costSpace).toBeCloseTo(90 - expected);
+  });
+  it.each([undefined, null])("does not infer direction from coefficient if missing %j", (channelCoefficientOp) => {
+    const output = computeDerivedMetrics({ cost: 100, realConversion: 1, assessmentPrice: 100, channelCoefficient: 0.7812, ...(channelCoefficientOp === undefined ? {} : { channelCoefficientOp }) });
+    expect(output.cashCost).toBeNull(); expect(output.cashCpa.state).toBe("undefined"); expect(output.onTarget).toBeNull();
+  });
+  it("does not judge target without a known assessment price even for infinite CPA", () => {
+    expect(computeDerivedMetrics({ cost: 100, realConversion: 0, channelCoefficient: 1, channelCoefficientOp: "divide" }).onTarget).toBeNull();
+  });
+  it("keeps an overflowed cash amount unknown rather than Infinity", () => {
+    const output = computeDerivedMetrics({ cost: Number.MAX_VALUE, channelCoefficient: 2, channelCoefficientOp: "multiply", realConversion: 1, assessmentPrice: 100 });
+    expect(output.cashCost).toBeNull(); expect(output.onTarget).toBeNull();
   });
 });
 

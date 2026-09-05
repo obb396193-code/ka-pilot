@@ -6,7 +6,11 @@ import { deterministicJobId } from "../src/jobs/deterministic-id.js";
 const workspaceId = "11111111-1111-4111-8111-111111111111";
 
 describe("canonical handler", () => {
-  it("merges raw fields, applies effective settings and persists derived metrics", async () => {
+  it.each([
+    { op: "divide" as const, coefficient: 2, cashCost: 47.5 },
+    { op: "multiply" as const, coefficient: 0.7812, cashCost: 74.214 },
+    { op: null, coefficient: 0.7812, cashCost: null },
+  ])("merges raw fields with $op effective settings without guessing missing direction", async ({ op, coefficient, cashCost }) => {
     const upsert = vi.fn().mockResolvedValue(undefined);
     const store = {
       loadMergeInputs: vi.fn().mockResolvedValue([
@@ -37,7 +41,8 @@ describe("canonical handler", () => {
           workspaceId,
           accountId: "a-1",
           ds: "2026-08-18",
-          channelCoefficient: 2,
+          channelCoefficient: coefficient,
+          channelCoefficientOp: op,
           assessmentPrice: 11,
         },
       ]),
@@ -88,9 +93,9 @@ describe("canonical handler", () => {
         conversion: 12,
         realConversion: 10,
         realCpa: 10,
-        cashCost: 47.5,
-        cashCpa: 4.75,
-        costSpace: 62.5,
+        cashCost: cashCost === null ? null : expect.closeTo(cashCost, 8),
+        cashCpa: cashCost === null ? null : expect.closeTo(cashCost / 10, 8),
+        costSpace: cashCost === null ? null : expect.closeTo(110 - cashCost, 8),
         assessmentPriceSnapshot: 11,
         dataAnomaly: true,
       }),
@@ -194,6 +199,7 @@ describe("canonical handler", () => {
           workspaceId,
           ...key,
           channelCoefficient: 1,
+          channelCoefficientOp: "divide",
           assessmentPrice: 10,
         })),
     );
@@ -330,6 +336,7 @@ describe("canonical handler", () => {
               workspaceId,
               ...key,
               channelCoefficient: 1,
+              channelCoefficientOp: "divide",
               assessmentPrice: 10,
             }
           : { workspaceId, ...key, history: [] },
