@@ -3,9 +3,6 @@
 import { useMemo, useState } from "react"
 
 import { AccountsTable } from "@/components/business/accounts/accounts-table"
-import { DataDashboard } from "@/components/business/data/data-dashboard"
-import { FullDataTable } from "@/components/business/data/full-data-table"
-import { PivotView } from "@/components/business/data/pivot-view"
 import { PageBody, PageHeader } from "@/components/business/page-header"
 
 import { AccountDetailView } from "@/components/business/account-detail-view"
@@ -77,30 +74,7 @@ export function AccountsContainer({ query }: { query: QueryRecord }) {
   )
 }
 
-// 数据大盘：summary + trend（与工作台同源，不重算）
-export function DashboardContainer({ query }: { query: QueryRecord }) {
-  const dataView = useRoutedDataView()
-  const summaryRequest = useMemo(() => request("account.summary", dataView, query), [dataView, query])
-  const trendRequest = useMemo(() => request("account.trend", dataView, query), [dataView, query])
-  const anomaliesRequest = useMemo(() => request("account.anomalies", "platform", query), [query])
-  const summary = useDataQuery(summaryRequest); const trend = useDataQuery(trendRequest); const anomalies = useDataQuery(anomaliesRequest)
-  const loading = summary.loading || trend.loading || anomalies.loading
-  const response = adaptWorkbench({ summary: summary.response ?? loadingResponse(), trend: trend.response ?? loadingResponse(), anomalies: anomalies.response ?? loadingResponse() }, dataView, summary.isMock, loading ? "loading" : undefined)
-  return <DataDashboard response={response} query={query} />
-}
 
-// 数据总表：account.table 全字段 + 自定义列
-export function DataTableContainer({ query, pivot = false }: { query: QueryRecord; pivot?: boolean }) {
-  const dataView = useRoutedDataView()
-  const queryRequest = useMemo(() => request("account.table", dataView, query, { page: 1, pageSize: 100 }), [dataView, query])
-  const result = useDataQuery(queryRequest)
-  const response = adaptAnalysis(result.response ?? loadingResponse(), dataView, result.isMock, result.loading ? "loading" : undefined)
-  return (
-    <DataStateFrame response={response} lineage="inline">
-      <div className="px-4 lg:px-6">{pivot ? <PivotView rows={response.data.rows} /> : <FullDataTable rows={response.data.rows} />}</div>
-    </DataStateFrame>
-  )
-}
 
 export function AccountDetailContainer({ accountId, query }: { accountId: string; query: QueryRecord }) {
   const dataView = useRoutedDataView()

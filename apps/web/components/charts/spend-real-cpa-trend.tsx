@@ -20,7 +20,7 @@ function token(element: HTMLElement, name: string) {
 }
 
 // colorKey：主题模式/主色变化时重新读取 CSS 变量重画（ECharts 不认 CSS 变量，只在 init 时取一次）
-export function SpendRealCpaTrend({ data, colorKey }: { data: WorkbenchData["trend"]; colorKey?: string }) {
+export function SpendRealCpaTrend({ data, colorKey, labels = { spend: "消耗", cpa: "真实 CPA" } }: { data: WorkbenchData["trend"]; colorKey?: string; labels?: { spend: string; cpa: string } }) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -28,26 +28,26 @@ export function SpendRealCpaTrend({ data, colorKey }: { data: WorkbenchData["tre
     const element = ref.current
     const chart = init(element)
     chart.setOption({
-      aria: { enabled: true, description: "最近七天消耗与真实 CPA 趋势，8 月 20 日真实 CPA 数据缺失并显示为空。" },
+      aria: { enabled: true, description: `${labels.spend}与${labels.cpa}趋势，缺失日显示为空。` },
       animationDuration: 220,
       color: [token(element, "--kp-chart-spend"), token(element, "--kp-chart-cpa")],
       grid: { left: 8, right: 8, top: 40, bottom: 8, containLabel: true },
-      legend: { top: 2, data: ["消耗", "真实 CPA"] },
+      legend: { top: 2, data: [labels.spend, labels.cpa] },
       tooltip: { trigger: "axis" },
       xAxis: { type: "category", boundaryGap: false, data: data.map((point) => point.label), axisLabel: { formatter: (value: string) => value.slice(5).replace("-", "/") }, axisLine: { lineStyle: { color: token(element, "--kp-chart-grid") } } },
       yAxis: [
-        { type: "value", name: "消耗", axisLabel: { formatter: (value: number) => `${Math.round(value / 10000)}万` }, splitLine: { lineStyle: { color: token(element, "--kp-chart-grid") } } },
-        { type: "value", name: "真实 CPA", axisLabel: { formatter: "¥{value}" }, splitLine: { show: false } },
+        { type: "value", name: labels.spend, axisLabel: { formatter: (value: number) => (value >= 10000 ? `${(value / 10000).toFixed(Number.isInteger(value / 10000) ? 0 : 1)}万` : value.toLocaleString("zh-CN")) }, splitLine: { lineStyle: { color: token(element, "--kp-chart-grid") } } },
+        { type: "value", name: labels.cpa, axisLabel: { formatter: "¥{value}" }, splitLine: { show: false } },
       ],
       series: [
-        { name: "消耗", type: "line", yAxisIndex: 0, data: data.map((point) => point.spend), smooth: true, symbolSize: 6, lineStyle: { width: 3 }, areaStyle: { opacity: 0.08 } },
-        { name: "真实 CPA", type: "line", yAxisIndex: 1, data: data.map((point) => point.realCpa), connectNulls: false, symbolSize: 7, lineStyle: { width: 2 } },
+        { name: labels.spend, type: "line", yAxisIndex: 0, data: data.map((point) => point.spend), smooth: true, symbolSize: 6, lineStyle: { width: 3 }, areaStyle: { opacity: 0.08 } },
+        { name: labels.cpa, type: "line", yAxisIndex: 1, data: data.map((point) => point.realCpa), connectNulls: false, symbolSize: 7, lineStyle: { width: 2 } },
       ],
     })
     const observer = new ResizeObserver(() => chart.resize())
     observer.observe(element)
     return () => { observer.disconnect(); chart.dispose() }
-  }, [data, colorKey])
+  }, [data, colorKey, labels.spend, labels.cpa])
 
-  return <div ref={ref} role="img" aria-label="消耗与真实 CPA 趋势" className="h-72 w-full min-w-0 max-w-full overflow-hidden" />
+  return <div ref={ref} role="img" aria-label={`${labels.spend}与${labels.cpa}趋势`} className="h-72 w-full min-w-0 max-w-full overflow-hidden" />
 }

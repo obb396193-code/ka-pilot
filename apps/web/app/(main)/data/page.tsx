@@ -1,7 +1,7 @@
-import { DashboardContainer } from "@/components/business/data-containers"
-import type { QueryRecord } from "@/lib/data/data-view"
+import { Suspense } from "react"
 
-export default async function DataDashboardPage({ searchParams }: { searchParams: Promise<QueryRecord> }) {
-  const query = await searchParams
-  return <DashboardContainer query={query} />
+import { DataPage } from "@/components/business/data/data-page"
+
+export default function DataAnalysisPage() {
+  return <Suspense fallback={null}><DataPage /></Suspense>
 }

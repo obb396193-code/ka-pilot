@@ -1,12 +1,4 @@
-import { DataNav } from "@/components/business/data/data-nav"
-import { PageBody } from "@/components/business/page-header"
-
-// 数据分析：页内收敛 tab（大盘 / 数据总表 / 维度透视），路由按 PRD 2.2
+// 数据分析：七个视图 tab 收敛在 /data?tab=（F-007 视图收敛规则）；旧 /data/table、/data/pivot 路由改为重定向
 export default function DataLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <PageBody>
-      <DataNav />
-      {children}
-    </PageBody>
-  )
+  return children
 }
