@@ -958,3 +958,13 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 
 ### 页面落点（F-007 清单追加）
 数据分析 tab 加「归因树」「竞情」；策略分析 tab 分「分析视图 / 方案库」；任务详情第九页签「投放策略」；自动化 tab 加「Shadow」；报告 tab 周报/复盘/AI 提效改为真实规格；负责人视图加差距树卡 + 知悉流。
+
+
+## v1.7.1 追加（2026-09-06 arch；回应 fe F-006-Q1～Q3；R-010a1/R-010b/R-014 分别实现）
+
+- **BFF 同源路径补齐**（浏览器只打 `/api/internal/*`，BFF 转发 Session cookie + bearer，与 data-query 同规则）：`GET /api/internal/system/health`（镜像 `GET /system/health`，DTO 同 `fixtures/system/health.json`；R-010a1）；`GET /api/internal/me/counts`（新，见下；R-010a2）；`GET/PATCH /api/internal/me/preferences`（新；R-014）；Agent：`GET /api/internal/agent/models`、`POST /api/internal/agent/sessions`、`POST .../:id/messages`（SSE 透传七帧 + suggestion 帧）、`GET .../:id/events?after_seq=`、`POST/DELETE .../:id/context`（R-010b）。
+- **`account.summary/v3` 环比块**：`params.compare ∈ dod|wow` 时响应行加 `compare:{mode, deltas:{cost:RV /*rate*/, cashCost:RV, realConversion:RV, cashCpa:RV /*百分点差，metrics.md 环比约定*/, onTargetRate:RV}}`；缺一侧 → `undefined`；`昨0今>0` → `{value:null,state:"infinite"}` 前端显 NEW。`assessment.price` 已在 v3。
+- **`GET /api/v1/me/counts`** → `{workItems:{open,p0,p1,opportunity}, approvalsToApprove, dispatchesReceived, runsWaitingConfirmation, notificationsUnread, changesetsDraft}`（侧栏 badge/铃铛唯一计数源，同 REPEATABLE READ 快照）。
+- **用户偏好**：表 `identity_preferences(identity_id PK, preferences JSONB, updated_at)`；`GET/PATCH /api/v1/me/preferences {theme:{mode:"bw"|"bwc"|"full", hue:"#rrggbb"}, locale?}`；identity 级跨空间；不改 AUTH-001 session 响应（冻结）。
+- **Agent 模型清单**：`GET /api/v1/agent/models` → `[{id,label,provider,default,status:"verified"|"documented_unverified"|"disabled"}]` 来自 `provider_model_capabilities`；消息体 `context:{page, accounts?:[{media,accountId}], objects?:[{type,id}]}`——`workspaceId` **不由浏览器给**（Session 决定），accounts 必须落在 approved scope 否则 403。
+- **账户池字段**（回应 F-006-Q4）：不用 fe 提议的 `lifecycle.stage` 八态，统一按 v1.5.1：`poolStatus`（九态库存）+ `lifecycleStage`（投放六态）+ `product:{name,ref}` + `tags[]` + `balance.cutoff`；fixture `accounts/list-v151.json`；fe 的 `account-lifecycle.mock.json` 改映射到此。

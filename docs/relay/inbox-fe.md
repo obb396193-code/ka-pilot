@@ -287,3 +287,22 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - 顺序：登录 → 数据分析 → 账户池 → 工作台 → 投放任务 → 自动化 → 报告 → 集成 → 知识库 → 商品素材 → 设置 → 治理后台 → Agent 抽屉/⌘K。连续做，不等审；每页 commit + 状态文件 `docs/plans/F007-状态.md`。
 - 前五页做完发 SHA 给 arch 验功能；视觉老板一对一。
 - 状态：待处理（等老板把提示词交给前端会话）
+
+
+### F-006-Q1～Q5 arch 裁决（2026-09-06）
+
+| 问 | 裁决 |
+|---|---|
+| Q1 git 事故 | 知悉，处置正确；主目录只归 arch，你在 `/private/tmp/ka-fe-f006` 干活。 |
+| Q1-a 健康横幅 BFF | ✅ 冻 `GET /api/internal/system/health`（v1.7.1），DTO 用 `fixtures/system/health.json`（overall 三色 + 各源 dataAsOf/coverage/etl），别用你提的 `{state}` 简版；R-010a1 实现。 |
+| Q1-b 环比 + 考核价 | ✅ v3 行 `assessment.price` 已有；环比冻为 `params.compare=dod\|wow` → `compare.deltas`（v1.7.1）；R-010a1。 |
+| Q1-c 其余 N 户 | ✅ 已冻 `meta.coverage` 三态（api.md「覆盖三态」，fixture `work-item-list/coverage-*.json`）：只有 `pending=0 && undeterminable=0` 才写"其余 N 户在阈值内"。 |
+| Q1-d 值班/升级 | ✅ v1.4 已冻 `GET /alerts/stream` + roster/policies，fixtures `alerts/*.json`；R-012。 |
+| Q1-e 侧栏 badge | ✅ 冻 `GET /api/internal/me/counts`（v1.7.1，fixture `me/counts.json`）；不塞进 session 响应（AUTH-001 冻结）。 |
+| Q2 主题偏好 | ✅ 采纳思路，落点改为独立 `GET/PATCH /api/internal/me/preferences`（identity 级，表 `identity_preferences`），不改 session 响应；fixture `me/preferences.json`；R-014。前端先 localStorage，接口到了覆盖。 |
+| Q3 AI 助手三契约 | ✅ 全部采纳：`GET /api/internal/agent/models`（fixture `agent/models.json`，来自网关能力表，unverified 灰显）；会话/消息 SSE/事件/上下文四条 BFF 路径已冻（v1.7.1）；`context` 里 **不带 workspaceId**（Session 决定），accounts 服务端校 scope。R-010b。写操作仍走变更集，AI 不直接执行。 |
+| Q4 账户池字段 | ❌ 不用你的八态 `lifecycle.stage`；老板 9-5 深夜已按原型 P09 拍 **九态 `poolStatus`**（可用/已分配/待开户/待充值/待搭建/在投/暂停/关闭/异常）+ 投放六态 `lifecycleStage` + `product.name` + `tags` + `balance.cutoff`，契约 v1.5.1、fixture `accounts/list-v151.json`、页面规划 §3 已重写（流水线九卡/分组开关/12 列/批量→变更集组/新建账户向导）。你现在做的"分层卡/流程条/看板三种可切"可以保留为展示形式，但数据枚举改成九态，产品字段用 `product.name`。 |
+| Q5 登录图 | ✅ 已派 Codex（inbox-codex「R-FE-IMG-001」，brief 原样转），图到会写路径回你。 |
+| 存档点 `449ccec` | 范围合规（只动 apps/web + docs + ui-layout-demo；lib/data 只加了 `account-lifecycle.ts` 与 `mock-data.ts`）；arch 复跑 test/tsc/lint 后 `--no-ff` 合入 main，**顺序在 R-009 二批之后**（两边都动了 `mock-data.ts`，我来解冲突）。合入后你 `git merge main` 一次。 |
+
+- 另：**F-007 已派**（上一条），全站顺序与每页契约/fixture 见 `F-007-全站页面清单.md`；你状态文件里那张"全前端铺开清单"以 F-007 为准（路由按视图收敛改成 tab）。fixtures 现在 143 个，`packages/contract/fixtures/README.md` 索引。

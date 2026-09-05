@@ -369,3 +369,19 @@
 - 交付物：migration 017（strategies/strategy_bindings/strategy_validations、intel_materials、shadow_decisions、ai_impact_config；report_runs.kind 扩）；HTTP+BFF：策略方案 CRUD/copy/bind/validations/compare + suggestion `strategy_variant`；`/tasks/:id/attribution`（只算有公式节点，其余 undeterminable）+ lead gapTree；intel import/link；shadow decisions 记录（工作项建议→24h 内同向变更集/带外=adopted）+ shadow-exam 四门；ai-impact 四象限 + 估时表；weekly-report/v1；task-review Deep Research（Agent 异步 job，生成即归档 kb）；lead/fyi；monthly-exec + 订阅。
 - 反例：归因节点无公式不出金额；shadow 无人动作 adopted=false 不猜；ai-impact byUser 不进导出；策略验证样本不足=insufficient_sample；复盘 why/next humanConfirmed=false 默认。
 - 状态：待处理（等 R-015）
+
+
+#### P-047 三项初始化边界裁决（arch 2026-09-06）
+
+1. **grants 三键 FK 先要 accounts 行**：✅ 采纳——seed 对显式 grants 里的账户只插 `accounts(workspace_id, media, account_id)` 三键，`account_name/status` 留 NULL，`pool_status` 默认 `available`，不覆盖已有经营字段；首次 full 后由 ETL 富化。不从上游自动授权。
+2. **identity 只有 id/display_name**：✅ 采纳——新行 `provider='internal_test'`, `provider_subject=id`；已有行不改 provider/subject（BUC 接入时按 subject 映射）。
+3. **workspace.id / user_id 可选**：✅ 采纳——workspace 按 (kind,name) 受控唯一解析、歧义拒绝；user_id 按 membership 唯一复用否则生成；示例 JSON 全显式 UUID。
+- P-046（012 迁移）/P-048（discover）/P-049（系数 seed）：arch 待 PG 恢复后逐笔审（Docker 在本机挂了，我正在重启；恢复后你也能跑真 PG）。P-049 发现的 `metrics.ts` 写死除法 → 按你说的 R-010a1 内补 `op`，独立 P-050，✅。
+- **R-009 二批合流**：代码面我看齐了（BFF 去 dataView/按 Session 断言 mode、折 011、v2 解包、team reader 绑定）。PG 恢复后我在自己的工作树独立跑 DB/Worker/Gateway 真 PG 套件，通过即 `--no-ff` 合 main（P-045 整批回执你可以先写，PG 数字由我补）。
+
+### R-FE-IMG-001 登录页品牌图（Codex 生图；fe F-006-Q5 转派；2026-09-06）
+
+- 老板定：登录页 = 品牌视觉图 + 表单；图由 Codex 生成。参考 `docs/frontend/ui-assets/decisions/login-references-2026-09-05.md`。
+- 要 2 张（各出 2–3 版供老板挑）：① 全幅背景 2400×1350（16:9），JPG/WebP ≤600KB → `apps/web/public/brand/login-hero-16x9.jpg`；② 分屏左栏 1200×1600（3:4），≤400KB → `apps/web/public/brand/login-hero-3x4.jpg`。
+- 画面：黑白为主的品牌视觉；一枚玻璃质感的环或丝带穿过几个哑光立方体，一抹 D-CON 橙 `#ff6a2c` 点缀；柔光、浅景深、大量留白；16:9 版右侧 40% 留空放登录卡，3:4 版下方 35% 留空压文案。**不要**文字/logo/蓝紫渐变/赛博风/人物。构图参考巨量引擎登录页，材质参考磁力金牛的丝带，配色换成黑白橙。
+- 交付：文件落到上述路径（路径限定提交到 `be/r010` 或单独分支均可），在 inbox-arch 回一行 SHA/路径；fe 收到后替换占位。不阻塞后端批次，空档做。

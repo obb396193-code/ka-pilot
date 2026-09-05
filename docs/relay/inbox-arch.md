@@ -3122,3 +3122,11 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 4. CTE：ka-src-0011 明确 sqlite 后端接受单条 WITH；性能/一致性交 OS 内网验。
 
 **剩余（合流前必须）**：BFF 去 dataView + 按 workspaceKind 断言 mode（A-001 P1-2）；`apps/web/lib/data` v2 解包；KA 启用双空间真实 PG 反例；折 011；merge main；**Docker/PG 恢复后四包+Gateway 全量重跑**（Codex 本地 55432 拒连期间的"非 PG 通过"不算门禁）。
+
+
+---
+
+### F-006-Q1～Q5 + 存档点 449ccec｜arch 裁决（2026-09-06）
+
+- Q1-a/b/e、Q2、Q3 → 契约 v1.7.1（BFF 同源路径补齐、summary compare 块、me/counts、me/preferences + identity_preferences、agent/models + 四条 Agent BFF 路径、context 不带 workspaceId）；Q1-c/d 已在 v1.3/v1.4；Q4 以 v1.5.1 九态 `poolStatus` 为准，不采纳八态提议；Q5 转派 Codex R-FE-IMG-001。详见 inbox-fe。
+- 存档点 `449ccec`：范围合规；待 arch 复跑 test/tsc/lint 与 R-009 二批合流后 `--no-ff` 合入。

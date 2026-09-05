@@ -1034,3 +1034,10 @@ CREATE TABLE ai_impact_config (          -- 7.5 动作估时表（人时"估算"
 );
 -- report_runs.kind 枚举扩：daily_brief|report_schedule|weekly|task_review|monthly_exec
 -- 知悉流不落表：由 approvals/escalations/changesets/tasks 里程碑聚合查询
+
+-- v1.7.1（2026-09-06；fe F-006-Q2）用户偏好，identity 级跨空间；进 migration 015（R-014）
+CREATE TABLE identity_preferences (
+  identity_id UUID PRIMARY KEY REFERENCES auth_identities(id) ON DELETE RESTRICT,
+  preferences JSONB NOT NULL DEFAULT '{}',   -- {theme:{mode,hue}, locale}
+  updated_at TIMESTAMPTZ DEFAULT now()
+);

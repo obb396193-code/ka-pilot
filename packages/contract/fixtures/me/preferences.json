@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "data": {
+    "theme": {
+      "mode": "bwc",
+      "hue": "#ff6a2c"
+    },
+    "locale": "zh-CN",
+    "updatedAt": "2026-09-05T20:00:00.000+08:00"
+  },
+  "meta": {
+    "requestId": "fixture-me-prefs",
+    "_note": "identity 级，跨 workspace；PATCH 只改自己的；前端覆盖 localStorage"
+  }
+}

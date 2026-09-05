@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "data": {
+    "workItems": {
+      "open": 12,
+      "p0": 1,
+      "p1": 3,
+      "opportunity": 2
+    },
+    "approvalsToApprove": 1,
+    "dispatchesReceived": 1,
+    "runsWaitingConfirmation": 1,
+    "notificationsUnread": 7,
+    "changesetsDraft": 2
+  },
+  "meta": {
+    "requestId": "fixture-me-counts",
+    "asOf": "2026-09-05T09:15:00.000+08:00",
+    "_note": "侧栏 badge 与顶栏铃铛的唯一计数源；30s 轮询或随 session 刷新"
+  }
+}
