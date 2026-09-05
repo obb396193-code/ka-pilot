@@ -23,7 +23,7 @@ describe("workspace sync migration", () => {
     );
     expect(workspace.rows[0]?.is_active).toBe(true);
 
-    await runMigrations({ databaseUrl, direction: "down", count: 3 });
+    await runMigrations({ databaseUrl, direction: "down", count: 4 });
     const removed = await pool.query<{ exists: boolean }>(
       `SELECT EXISTS (
          SELECT 1 FROM information_schema.columns
@@ -32,7 +32,7 @@ describe("workspace sync migration", () => {
     );
     expect(removed.rows[0]?.exists).toBe(false);
 
-    await runMigrations({ databaseUrl, direction: "up", count: 3 });
+    await runMigrations({ databaseUrl, direction: "up", count: 4 });
     const restored = await pool.query<{ is_active: boolean }>(
       "SELECT is_active FROM workspaces WHERE id = $1",
       [workspace.rows[0]!.id],

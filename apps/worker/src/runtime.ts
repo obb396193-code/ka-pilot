@@ -14,6 +14,7 @@ import {
 import { createCanonicalHandler } from "./etl/canonical-handler.js";
 import { createBackfillCoordinatorHandler } from "./backfill/coordinator-handler.js";
 import { createBackfillDayHandler } from "./backfill/day-handler.js";
+import { refreshBackfillJobProgress } from "./backfill/progress.js";
 import { createFullEtlHandler } from "./etl/full-handler.js";
 import { createIncrementalEtlHandler } from "./etl/incr-handler.js";
 import { JobConsumer } from "./jobs/consumer.js";
@@ -93,17 +94,11 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
     {
       leaseSeconds: options.leaseSeconds,
       onTerminalFailure: async (job, failure) => {
+        await refreshBackfillJobProgress(batches, job);
         await notifyFailure(job, failure);
-        const backfillId = job.payload.backfillId;
-        if (job.jobType === "backfill_day" && typeof backfillId === "number" && job.workspaceId) {
-          await batches.refreshProgress(job.workspaceId, backfillId);
-        }
       },
       onCompleted: async (job) => {
-        const backfillId = job.payload.backfillId;
-        if (job.jobType === "backfill_day" && typeof backfillId === "number" && job.workspaceId) {
-          await batches.refreshProgress(job.workspaceId, backfillId);
-        }
+        await refreshBackfillJobProgress(batches, job);
       },
       ...(options.onNotificationError === undefined
         ? {}

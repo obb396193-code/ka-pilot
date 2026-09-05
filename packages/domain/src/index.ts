@@ -39,3 +39,4 @@ export * from "./account-list-contract.js";
 export * from "./work-item-list-contract.js";
 export * from "./workspace-sync-scheduler.js";
 export * from "./session-http-contract.js";
+export * from "./backfill-progress.js";

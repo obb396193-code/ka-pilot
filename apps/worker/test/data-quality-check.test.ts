@@ -26,6 +26,23 @@ function leasedJob() {
 }
 
 describe("data quality handler", () => {
+  it("does not complete a backfill quality stage when validation fails", async () => {
+    const quality = {
+      reconcileTotals: vi.fn().mockResolvedValue({ rawTotal: 100, canonicalTotal: 102, delta: 2, tolerance: 0.1, passed: false }),
+      markCpaOutliers: vi.fn().mockResolvedValue([]),
+      findConsecutiveMissingAccounts: vi.fn().mockResolvedValue([]),
+      recordCheck: vi.fn(),
+    };
+    const runs = { startRun: vi.fn().mockResolvedValue(63), finishRun: vi.fn(), failRun: vi.fn() };
+    const outbound = { enqueue: vi.fn() };
+    const job = leasedJob();
+    await expect(createDataQualityHandler({ quality, runs, outbound })({
+      ...job, payload: { ...job.payload, backfillId: 9 },
+    })).rejects.toThrow("Backfill quality checks did not pass");
+    expect(quality.recordCheck).toHaveBeenCalledTimes(3);
+    expect(runs.finishRun).not.toHaveBeenCalled();
+    expect(runs.failRun).toHaveBeenCalledWith(63, "quality:validation_failed", "Backfill quality checks did not pass");
+  });
   it("records all checks and emits one alert without failing the completed canonical data", async () => {
     const quality = {
       reconcileTotals: vi.fn().mockResolvedValue({

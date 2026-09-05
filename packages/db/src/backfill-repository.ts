@@ -1,4 +1,6 @@
 import type { Pool, PoolClient } from "pg";
+import { computeBackfillProgress, type BackfillProgress, type BackfillJobEvidence, type BackfillStage } from "@ka/domain";
+export type { BackfillProgress } from "@ka/domain";
 
 export interface BackfillBatch {
   id: number;
@@ -8,6 +10,8 @@ export interface BackfillBatch {
   dateTo: string;
   cursorDate: string | null;
   status: string;
+  failedStage: BackfillStage | null;
+  finishedAt: Date | null;
 }
 
 export interface NewBackfillBatch {
@@ -15,14 +19,6 @@ export interface NewBackfillBatch {
   userId: string;
   dateFrom: string;
   dateTo: string;
-}
-
-export interface BackfillProgress {
-  cursorDate: string | null;
-  status: "running" | "done" | "partial_failed";
-  terminalDays: number;
-  failedDays: number;
-  totalDays: number;
 }
 
 type BackfillRow = {
@@ -33,6 +29,8 @@ type BackfillRow = {
   date_to: string;
   cursor_date: string | null;
   status: string;
+  failed_stage: BackfillStage | null;
+  finished_at: Date | null;
 };
 
 function inclusiveDates(dateFrom: string, dateTo: string): string[] {
@@ -60,6 +58,8 @@ function mapBatch(row: BackfillRow): BackfillBatch {
     dateTo: row.date_to,
     cursorDate: row.cursor_date,
     status: row.status,
+    failedStage: row.failed_stage,
+    finishedAt: row.finished_at,
   };
 }
 
@@ -88,7 +88,7 @@ export class BackfillRepository {
               to_char(date_from, 'YYYY-MM-DD') AS date_from,
               to_char(date_to, 'YYYY-MM-DD') AS date_to,
               to_char(cursor_date, 'YYYY-MM-DD') AS cursor_date,
-              status
+              status, failed_stage, finished_at
        FROM backfill_jobs
        WHERE workspace_id = $1 AND id = $2`,
       [workspaceId, id],
@@ -106,39 +106,26 @@ export class BackfillRepository {
       await client.query("BEGIN");
       const batch = await this.getForUpdate(client, workspaceId, id);
       const dates = inclusiveDates(batch.dateFrom, batch.dateTo);
-      const jobs = await client.query<{ ds: string; status: string }>(
-        `SELECT payload->>'ds' AS ds, status
+      const jobs = await client.query<BackfillJobEvidence>(
+        `SELECT job_type AS "jobType", status,
+                COALESCE(payload->>'ds', payload->>'dateFrom') AS "dateFrom",
+                COALESCE(payload->>'ds', payload->>'dateTo') AS "dateTo"
          FROM jobs
          WHERE workspace_id = $1
-           AND job_type = 'backfill_day'
-           AND payload->>'backfillId' = $2`,
-        [workspaceId, String(id)],
+           AND job_type IN ('backfill_historical', 'backfill_day', 'canonical_merge', 'data_quality_check')
+           AND payload->>'backfillId' = $2
+           AND credential_owner_user_id = $3`,
+        [workspaceId, String(id), batch.userId],
       );
-      const byDate = new Map(jobs.rows.map((row) => [row.ds, row.status]));
-      const terminal = new Set(["done", "failed", "blocked_auth"]);
-      const failed = new Set(["failed", "blocked_auth"]);
-      let cursorDate: string | null = null;
-      for (const ds of dates) {
-        if (!terminal.has(byDate.get(ds) ?? "")) {
-          break;
-        }
-        cursorDate = ds;
-      }
-      const terminalDays = dates.filter((ds) => terminal.has(byDate.get(ds) ?? "")).length;
-      const failedDays = dates.filter((ds) => failed.has(byDate.get(ds) ?? "")).length;
-      const status =
-        terminalDays === dates.length
-          ? failedDays > 0
-            ? "partial_failed"
-            : "done"
-          : "running";
+      const progress = computeBackfillProgress(dates, jobs.rows);
       await client.query(
-        `UPDATE backfill_jobs SET cursor_date = $3::date, status = $4
+        `UPDATE backfill_jobs SET cursor_date = $3::date, status = $4, failed_stage = $5,
+           finished_at = CASE WHEN $4 IN ('done', 'failed') THEN COALESCE(finished_at, now()) ELSE NULL END
          WHERE workspace_id = $1 AND id = $2`,
-        [workspaceId, id, cursorDate, status],
+        [workspaceId, id, progress.cursorDate, progress.status, progress.failedStage],
       );
       await client.query("COMMIT");
-      return { cursorDate, status, terminalDays, failedDays, totalDays: dates.length };
+      return progress;
     } catch (error) {
       await client.query("ROLLBACK");
       throw error;
@@ -151,7 +138,7 @@ export class BackfillRepository {
     const result = await this.pool.query<{ workspace_id: string; id: string }>(
       `SELECT workspace_id, id
        FROM backfill_jobs
-       WHERE status = 'running'
+       WHERE status IN ('running', 'raw_done', 'canonical_done')
        ORDER BY id`,
     );
     for (const row of result.rows) {
@@ -170,7 +157,7 @@ export class BackfillRepository {
               to_char(date_from, 'YYYY-MM-DD') AS date_from,
               to_char(date_to, 'YYYY-MM-DD') AS date_to,
               to_char(cursor_date, 'YYYY-MM-DD') AS cursor_date,
-              status
+              status, failed_stage, finished_at
        FROM backfill_jobs
        WHERE workspace_id = $1 AND id = $2
        FOR UPDATE`,

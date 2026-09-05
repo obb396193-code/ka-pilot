@@ -21,7 +21,9 @@ describe("real PostgreSQL benchmark safety", () => {
       iterations: 3,
       chunkSize: 250,
     });
-    expect(() => parsePgBenchmarkArgs(["--accounts=200"])).toThrow("100, 1000 or 5000");
+    expect(() => parsePgBenchmarkArgs([
+      "--database-url=postgres://ka:ka@127.0.0.1:55432/ka", "--accounts=200",
+    ])).toThrow("100, 1000 or 5000");
   });
 
   it("rejects non-local or unexpected database targets", () => {
