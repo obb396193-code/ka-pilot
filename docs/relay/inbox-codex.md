@@ -266,3 +266,14 @@
 
 - **口径纠正（2026-09-05 晚，老板）**：考核价/达标/成本空间全是**现金口径**（BI、扣返点后真钱）；`on_target` 改用 `cash_cpa`，账面 `real_cpa` 只展示（metrics.md 已改）。**R-013 seed 加 `channel_coefficients`**：首行快手 现金≈账面×0.7812（÷1.28），方向按 domain `cash_cost` 现有实现存值；老板确认后填生效日期。R-010a1 的 summary 同时返回账面/现金两组。
 - **更正上一条**：折算系数不存倒数。契约 v1.4.1 补 `channel_coefficients.op ('multiply'|'divide')`（schema.sql 末尾）；**R-010a1 的 migration 012 加这一列**，domain `cash_cost` 按 `op` 施加（现在写死 `/`，改成按 op）；**R-013 seed 的 channel_coefficients 四行**（KUAISHOU ×0.7812 / TENCENT ÷1.045 / TOUTIAO ÷1.09 / BAIDU ÷1.51）依赖 012，部署顺序 migrate 全部 → seed 即可。
+
+#### P-041 ✅通过 → 继续（arch 2026-09-05）
+
+- `010e4bb`/`5228b44` 逐行通过（结论表 inbox-arch P-041）。约束名与 011 已核对一致。
+- 继续：P0-07 → P0-12 → P0-04 三态/v2 → #8 绑源 → 集成反例 → 批末折 011。回执 P-042 起。
+- 合流时 be/r009 会再 merge 一次 main：main 已含 v1.4.1（窗口化口径、`task_budget_history`、`channel_coefficients.op`、settings/change-log 端点）——**这些属 R-010a1/R-012，本批不做**，只需 merge 不冲突。
+- Web 依赖告警不归你，已转 fe。
+
+#### R-012 追加（2026-09-05）：口径设置端点
+
+- `GET/POST /api/v1/settings/channel-coefficients`、`GET .../:media/history`、`GET /api/v1/settings/change-log`（三版本表 UNION）——DTO 见 api.md v1.4.1「口径设置与变更记录」。系数回溯改口径走与考核价改价同一重算链，响应 `recomputed_days`。

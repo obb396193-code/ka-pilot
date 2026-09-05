@@ -690,3 +690,12 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
   - 工作台六 KPI 的 `summary` 加 `budget_usage_rate`（个人空间：本人任务加权；无卡任务不计）。（R-012）
 - **考核口径=现金**（2026-09-05 老板纠正）：`on_target/cost_space/cost_status/外推` 全部按 `cash_cost`；`summary` 同时返回 `cost`（账面）与 `cash_cost` 两组，前端并排展示不混用。
 - **色标规则**（前端只按后端给的 `status` 上色，不自算）：`summary`/任务 overview 返回 `cost_status: "green"|"yellow"|"red"` + `cost_status_reason`（`"day_over_window_ok"` 等），按 metrics.md 容忍带规则由后端算；容忍百分比来自个人视图设置（默认 0）。
+
+- **口径设置与变更记录**（老板 2026-09-05："系数不常变但要有地方改；考核价这类常变的都要留变更记录"）：
+  - 三张版本表都已是"只增不改"：`assessment_price_history`（考核价）、`task_budget_history`（日预算卡）、`channel_coefficients`（返点折算，含 `op`）——每行 `effective_date + changed_by + evidence_url + created_at`，改一次落一行，旧行永不覆盖。
+  - 编辑入口：考核价/日预算卡在**任务详情·总览**（已有 `POST /tasks/:id/assessment-price`、`/daily-budget-cap`）；返点折算在**设置 · 口径**：
+    - `GET /api/v1/settings/channel-coefficients` → `{items:[{media, op, coefficient, effective_date, changed_by, evidence_url, history_count}]}`（每媒体当前生效行）
+    - `GET /api/v1/settings/channel-coefficients/:media/history` → 全部版本倒序
+    - `POST /api/v1/settings/channel-coefficients` `{media, op, coefficient, effective_date, evidence_url?}` → 追加新版本；权限 personal 空间 admin；team 空间 403（团队数据用 ka-data 已算好的 `cash_yuan`，不在本系统改系数）；`effective_date` 早于已有最新生效日 → 允许（回溯改口径）但响应带 `recomputed_days`，与考核价改价同一重算链。
+  - **统一变更记录** `GET /api/v1/settings/change-log?kinds=assessment_price|daily_budget_cap|channel_coefficient&task_id=&media=&cursor=` → `{items:[{at, kind, scope:{task_id?|media?}, old_value, new_value, effective_date, changed_by:{user_id,name}, evidence_url}], next_cursor}`，三表 UNION 倒序；任务详情 timeline 里的 `assessment_price/daily_budget_cap` 是它的子集。
+  - 落点：R-012（端点）；前端 设置页「口径」tab + 任务详情总览（F-006 后续页）。

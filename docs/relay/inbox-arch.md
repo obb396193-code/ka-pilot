@@ -3009,3 +3009,18 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 | 部署条件 | ✅ 采纳「停 Worker → 迁移 → 启动恢复」，写进 runbook 由 R-013 一并补 §2.5 |
 
 **继续指令**：不等审，按 #3 P0-05 → #4 → #5 → #6 → #2 三态 → #8 绑源 继续；折 011 在批次末做即可。#8 绑源必须按 2026-09-05 重写后的 DATA-ROUTE-001：team + `KA_DATA_ENABLED=false` → `503 SOURCE_UNAVAILABLE`，**不回退 platform**；lineage 顺手加 `workspaceKind`。批次末一次 `--no-ff` 合流；若 fe 账户池页先需要 #8，arch 会提前合一次。
+
+
+---
+
+### P-041 ✅审查通过｜R-009 P0-05 + P0-13 子交付 `010e4bb` + `5228b44`｜arch 2026-09-05
+
+| 项 | 结论 |
+|---|---|
+| `010e4bb` P0-05 排斥 | ✅ 重叠检查改为按 (media, account) 跨任务；advisory lock 键改 [media, accountId]；只捕获 `23P01` 且约束名 = 011 的 `task_accounts_account_validity_excl`（已核对，映射会真触发）→ typed `TASK_ACCOUNT_OVERLAP` 409。**HTTP 409 待 R-010a2 接线**，be 未冒充 |
+| `010e4bb` 考核价取值 | ✅ 先按三键+有效期取当日唯一 relation，再取该任务 `effective_date<=ds` 最新版；无价不借他任务、未来价排除 |
+| `5228b44` P0-13 双主体 | ✅ `assertActiveActors`：workspace 必须 personal、initiator 与 credential owner 必须同空间 active（FOR SHARE）；在 create/confirm/beginExecution/Worker 读当前值前/begin 各校一次；items 三键必须等父记录否则 403 `FORBIDDEN` |
+| 已发出的媒体操作不因撤销回滚 | ✅ 如实声明，不宣称远程原子撤回 |
+| 测试 | 自报 Domain 497 / DB 196 真 PG / Worker 636+2 / Web 78；arch 批末合流时独立复跑 |
+| 依赖门 | Web `npm audit` 5 项（fast-uri/qs/PostCSS/sharp，Next 15.5.23 链路）**是前端范围**，转 inbox-fe；后端三包 0 |
+| 接下来 | P0-07 → P0-12 → P0-04 三态/v2 → 绑源（按 9-5 重写的 DATA-ROUTE-001）→ 双空间集成反例 → 折 011。窗口化口径 v1.4.1（含 `op` 列）已冻，属 R-010a1/R-012，不进本批 |
