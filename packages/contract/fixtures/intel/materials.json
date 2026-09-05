@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000003101",
+        "source": "appgrowing",
+        "ingestMode": "csv_import",
+        "competitor": "竞品A",
+        "industry": "电商-综合",
+        "materialRef": "https://example.internal/intel/m1",
+        "thumbnailRef": null,
+        "firstSeen": "2026-08-28",
+        "lastSeen": "2026-09-04",
+        "activeDays": 8,
+        "placements": [
+          "信息流"
+        ],
+        "estCostTier": "high",
+        "linked": {
+          "taskId": "fixture-task-ready",
+          "materialId": null
+        }
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000003102",
+        "source": "appgrowing",
+        "ingestMode": "link",
+        "competitor": "竞品B",
+        "industry": "电商-综合",
+        "materialRef": "https://example.internal/intel/m2",
+        "thumbnailRef": null,
+        "firstSeen": "2026-09-01",
+        "lastSeen": "2026-09-05",
+        "activeDays": 5,
+        "placements": [
+          "信息流",
+          "联盟"
+        ],
+        "estCostTier": "unknown",
+        "linked": {
+          "taskId": null,
+          "materialId": null
+        }
+      }
+    ],
+    "sourceStatus": {
+      "mode": "csv_import",
+      "lastIngestAt": "2026-09-04T20:00:00.000+08:00",
+      "note": "AppGrowing API 接入待 OS 实证；当前手工导入"
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_example": true,
+    "_note": "示例态：解锁条件=AppGrowing 接入方式实证"
+  }
+}

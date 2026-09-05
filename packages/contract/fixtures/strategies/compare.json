@@ -1,0 +1,58 @@
+{
+  "ok": true,
+  "data": {
+    "left": {
+      "id": "00000000-0000-4000-8000-000000003001",
+      "name": "双成本控量起量 v3"
+    },
+    "right": {
+      "id": "00000000-0000-4000-8000-000000003002",
+      "name": "信息流冷启动 v2"
+    },
+    "fields": [
+      {
+        "key": "placement",
+        "left": "信息流+优选",
+        "right": "信息流"
+      },
+      {
+        "key": "bid.tool",
+        "left": "ocpm 双出价",
+        "right": "ocpm"
+      },
+      {
+        "key": "budget_rhythm",
+        "left": "冷启 20%/起量 80%",
+        "right": "冷启 30%/起量 70%"
+      },
+      {
+        "key": "rta",
+        "left": "2 人群包",
+        "right": "1 人群包"
+      }
+    ],
+    "evidence": {
+      "left": {
+        "cashCpa": {
+          "value": 36.56,
+          "state": "finite"
+        },
+        "sampleTasks": 12
+      },
+      "right": {
+        "cashCpa": {
+          "value": 39.2,
+          "state": "finite"
+        },
+        "sampleTasks": 8
+      }
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

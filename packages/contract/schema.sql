@@ -977,3 +977,60 @@ CREATE TABLE account_replications (
   created_by UUID, created_at TIMESTAMPTZ DEFAULT now()
 );
 -- 目标户打标：accounts.tags 加 'replicated_from:<media>:<account_id>'；母子对比走 v3 summary 两次查询并排
+
+
+-- =====================================================================
+-- v1.7 新增（2026-09-06 arch；老板拍 P2 大件全部设计、前端先做；Codex R-016 出 migration 017）
+-- =====================================================================
+CREATE TABLE strategies (                -- 3.11 可保存的投放方案（原型 P07/P08）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  name TEXT NOT NULL, owner UUID, version INT NOT NULL DEFAULT 1, copied_from UUID,
+  asset_id UUID,                          -- 五态流转走 assets（draft/shared/verified/official/deprecated）
+  applicable JSONB NOT NULL,              -- {stages:[cold_start|ramping|stable], biz:[...], objectives:[...], media:[...]}
+  playbook JSONB NOT NULL,                -- {placement:[resource_position], delivery_mode, bid:{tool, style, cpa_hint}, rta:{enabled, audience_packs:[]}, budget_rhythm:{cold_start_days, split:[]}, account_matrix, product_material_rules:[]}
+  conditions JSONB,                       -- {applicable:[text], not_applicable:[text]}
+  evidence JSONB,                         -- {pivot2_snapshot_ref, sample_tasks, window, metrics:<v3 三态>}  只引用，不算"置信度"
+  created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (workspace_id, name, version)
+);
+CREATE TABLE strategy_bindings (         -- 方案 ↔ 任务
+  workspace_id UUID NOT NULL, strategy_id UUID NOT NULL REFERENCES strategies(id), task_id TEXT NOT NULL,
+  bound_by UUID, bound_at TIMESTAMPTZ DEFAULT now(), unbound_at TIMESTAMPTZ,
+  PRIMARY KEY (workspace_id, strategy_id, task_id)
+);
+CREATE TABLE strategy_validations (      -- 历史验证：绑定任务在窗口内的"操作后观察结果"
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  strategy_id UUID NOT NULL REFERENCES strategies(id), task_id TEXT NOT NULL,
+  window_from DATE NOT NULL, window_to DATE NOT NULL,
+  before JSONB, after JSONB,              -- 各 {cash_cpa:RV, volume:MV, on_target}
+  status TEXT NOT NULL,                   -- validating|improved|no_change|worse|insufficient_sample
+  note TEXT, created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE intel_materials (           -- 3.12 竞情（AppGrowing；接入方式待 OS 实证：api|csv_import|link）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  source TEXT NOT NULL DEFAULT 'appgrowing', ingest_mode TEXT NOT NULL,   -- api|csv_import|link
+  competitor TEXT, industry TEXT, material_ref TEXT, thumbnail_ref TEXT,
+  first_seen DATE, last_seen DATE, active_days INT, placements TEXT[], est_cost_tier TEXT,   -- low|mid|high|unknown
+  raw JSONB, linked_task_id TEXT, linked_material_id TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE shadow_decisions (          -- 5.9 Shadow：每个决策点 AI 建议 vs 人实际
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  work_item_id UUID NOT NULL, rule_id BIGINT, media TEXT, account_id TEXT,
+  ai_action JSONB NOT NULL,               -- {kind, target, delta, expected}
+  human_action JSONB,                     -- {kind, source:changeset|external_change|none, ref, at}
+  adopted BOOLEAN,                        -- 人 24h 内做了同向动作
+  t1_result JSONB, t7_result JSONB,       -- {cash_cpa_delta:RV, cost_delta:MV, real_conversion_delta:MV, matured:bool}
+  status TEXT NOT NULL DEFAULT 'observing',   -- observing|matured_t1|matured_t7|insufficient
+  decided_at TIMESTAMPTZ NOT NULL, created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE ai_impact_config (          -- 7.5 动作估时表（人时"估算"依据，可配）
+  workspace_id UUID PRIMARY KEY,
+  action_minutes JSONB NOT NULL,          -- {diagnosis:8, changeset_bid:5, changeset_budget:5, report_daily:20, settlement:60, ...}
+  updated_by UUID, updated_at TIMESTAMPTZ DEFAULT now()
+);
+-- report_runs.kind 枚举扩：daily_brief|report_schedule|weekly|task_review|monthly_exec
+-- 知悉流不落表：由 approvals/escalations/changesets/tasks 里程碑聚合查询

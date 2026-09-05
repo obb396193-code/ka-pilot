@@ -906,3 +906,55 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 前置：目标户 `pool_status ∈ available|assigned|pending_build`；母户需 `structure` 同步成功（4.4 结构同步=联调）。
 
 派活：R-015（migration 016 + 以上 HTTP/BFF），排 R-014 后。前端页面全部先按 fixtures 与示例态铺开，不等 R-015。
+
+
+## v1.7 端点与 DTO（2026-09-06 arch；P2 大件 + 策略方案对象，老板拍；Codex R-016 出 migration 017；前端按 fixtures 先做）
+
+### 3.11b 策略方案（可保存；原型 P07/P08）
+- `GET /api/v1/strategies?status=official|team_verified|mine|draft&stage&biz&placement` → items `{id, name, version, status /*来自 assets*/, owner, applicable, playbook, evidence:{sampleTasks, window, metrics:<v3>, pivot2SnapshotRef}, validations:{count, improved, noChange, worse, insufficient}, boundTasks:[{taskId,taskName}], updatedAt}`。**不返回"置信度"**；只返回样本数与验证计数。
+- `GET /strategies/:id` → 详情 + `playbookMap`（策略地图七步：placement/delivery_mode/bid/rta/budget_rhythm/account_matrix/stages）+ `conditions` + `validations[]` + `versions[]`。
+- `POST /strategies {name, applicable, playbook, conditions?, evidence?:{pivot2_snapshot_ref}}` → draft；`POST /strategies/:id/copy` → 新草稿 copied_from；`PATCH /strategies/:id` 只改 draft；发布/验证/官方走 `assets/:id/transition`。
+- `POST /strategies/:id/bind {task_id}` / `DELETE .../bind/:task_id`；任务详情第九页签「投放策略」显示已绑方案 + playbook + 与实际配置的差异（`diff:[{field, playbook, actual}]`，actual 来自 structure 同步）。
+- `POST /strategies/:id/validations {task_id, window_from, window_to}` → 系统算 before/after（绑定前后各窗口的 cash_cpa/volume/on_target）→ status（`insufficient_sample` 按 metrics.md 样本护栏）；页面文案"操作后观察结果"。
+- Agent 对比方案：suggestion 帧 `kind="strategy_variant"`：`{base_strategy_id, variant:{playbook 差异}, rationale:[evidence refs]}` → 接受=新草稿。
+- `GET /strategies/:id/compare?with=<id>` → 逐字段并排。
+
+### 3.7 归因树（原型 P02；只算有公式的节点）
+- `GET /api/v1/tasks/:id/attribution?window_from&window_to&mode=volume|cost` →
+```jsonc
+{ "root": {"key":"target_gap","label":"目标差距","gap": MV /*量：target−projected；成本：Σ(cash_cpa−price)×conv over-target*/, "gapRate": RV},
+  "children": [
+    {"key":"cost_gap","label":"成本差距","gap":MV,"share":RV,"children":[
+       {"key":"cpa_over","label":"CPA 偏高","gap":MV,"share":RV,"evidence":{"accounts":[{"media","accountId","cashCpa":RV,"price"}]},
+        "children":[{"key":"bid_targeting","label":"出价/定向效率","gap":MV,"availability":"available|undeterminable"}, {"key":"cost_volatility","label":"成本波动影响","gap":MV,"availability":"undeterminable"}]}]},
+    {"key":"volume_gap","label":"量级差距","gap":MV,"share":RV,"children":[{"key":"conversion_short","label":"转化量不足","gap":MV,"children":[{"key":"traffic_opportunity","label":"流量机会缺口","gap":MV,"availability":"undeterminable"},{"key":"cvr_room","label":"转化率优化空间","gap":MV}]}]},
+    {"key":"structure_gap","label":"结构差距","gap":MV,"share":RV,"children":[{"key":"account_contribution","label":"账户贡献不足","gap":MV,"evidence":{"accounts":[...]}},{"key":"material_efficiency","label":"素材效率偏低","gap":MV,"availability":"undeterminable /*无素材级数据时*/"}]}
+  ],
+  "lineage": {"window":..., "adLevelSource":"platform.ad_realtime|ka_data.dwd_adgroup_daily|none"} }
+```
+- 节点 `availability=undeterminable` 时 `gap=missing`，前端灰显"数据不足"，**不显示"可优化空间"金额**。负责人视图 `workbench/lead` 加 `gapTree`（任务聚合版，同 DTO）。
+
+### 3.12 竞情（AppGrowing；接入方式=OS 联调项，未定前示例态）
+- `GET /api/v1/intel/materials?industry&competitor&placement&window&linked=` → `{items:[{id, source, ingestMode, competitor, industry, materialRef, thumbnailRef, firstSeen, lastSeen, activeDays, placements[], estCostTier, linked:{taskId?, materialId?}}], sourceStatus:{mode, lastIngestAt|null, note}}`。
+- `POST /intel/import`（csv_import，multipart）→ `{imported, skipped}`；`POST /intel/materials {link}`（link 模式手工登记）；`POST /intel/materials/:id/link {task_id?|material_id?}`。
+- 一期不做"竞品消耗估算"数值展示，只有 `estCostTier` 档位；接入 API 后再加。
+
+### 5.9 Shadow Mode（自动化 tab「Shadow」；举证引擎，用词"操作后观察结果"）
+- `GET /api/v1/shadow/decisions?window_from&window_to&rule_id&adopted=` → `{items:[{id, workItemId, rule:{id,name}, account:{media,accountId}, aiAction:{kind,target,delta,expected}, humanAction:{kind,source,ref,at}|null, adopted:bool|null, t1Result:{cashCpaDelta:RV,costDelta:MV,realConversionDelta:MV,matured}|null, t7Result:...|null, status, decidedAt}], summary:{n, adoptedRate:RV, t1ImprovedRate:{adopted:RV, notAdopted:RV}, t7ImprovedRate:{...}, matured:{t1:n,t7:n}}}`；`summary` 附固定 `caveat:"操作后观察结果，非因果；受流量/素材/预算/回补/他人操作影响"`。
+- `GET /rules/:id/shadow-exam` → `{days, sample, observedImprovedRate:RV, gates:{observation:{pass,value}, executionReliability:{pass,successRate:RV,unknownRate:RV}, scope:{pass}, lossBound:{pass,netLoss30d:MV}}, eligibleForAutonomy3:bool}`（v1.4.1 四门）。
+- 记录规则：工作项带 `diagnosis.suggestions` 即生成 shadow_decision；24h 内同账户同字段同向变更集或带外变更 → `adopted=true` 并记 human_action；无动作 → `adopted=false, human_action=null`。
+
+### 7.5 AI 提效看板 `/reports?tab=ai-impact`
+- `GET /api/v1/reports/ai-impact?window_from&window_to` → `{quadrants:{automatedRules:{executed:MV, succeeded:MV, unknown:MV}, anomaliesIntercepted:{count:MV, p0:MV, avgAckMinutes:RV}, hoursSaved:{value:MV, basis:"action_minutes_table", detail:[{action, count, minutes}]}, observedCostDiff:{adoptedVsNot:{cashCpaDelta:RV, sample:{adopted:n, notAdopted:n}}, caveat:"操作后观察结果，非因果"}}, trend:[{ds, executed, intercepted, hoursSaved}], byUser:[{userId, name, executed, hoursSaved}] /*仅本人与 lead 可见，不进导出*/}`；`GET/PUT /reports/ai-impact/config` → `action_minutes`。
+
+### 7.2 周报 / 任务复盘 + Deep Research
+- `GET /api/v1/reports/weekly?week=2026-W36&role=optimizer|lead` → `{schema:"weekly-report/v1", week, sections:[{key:"overview",cards:<v3 汇总>},{key:"tasks",rows:[{taskId, achievementRate:RV, costStatus, stage}]},{key:"anomalies",items:[...处理与回收]},{key:"operations",items:[...变更集+观察结果]},{key:"nextWeek",items:[...仅来自 pacing/就绪缺项/阻塞]}], generatedAt, dataAsOf, pushStatus}`；`report_runs kind=weekly`。
+- `POST /tasks/:id/review {window_from?, window_to?}` → `{runId, status:"queued"}`（Agent Deep Research，异步 5–10 分钟）；`GET /tasks/:id/review/latest` → `{schema:"task-review/v1", status:"queued|running|ready|failed", sections:[{key:"goal",...},{key:"cost_trend",...},{key:"key_operations",timeline:[...]},{key:"attribution",tree:<归因树摘要>},{key:"why",findings:[{text, evidenceRefs[]}]},{key:"next",suggestions:[{text, evidenceRefs[], reversible}]}], citations:[{ref, type, label}], kbDocumentId /*生成即归档知识库*/, humanConfirmed:false}`；`why/next` 标"待人确认"。
+- 任务详情第八页签「报告与结算」= 复盘 + 该任务相关报告/结算行。
+
+### 7.6 知悉流 + 月度推送
+- `GET /api/v1/workbench/lead/fyi?cursor=` → `{items:[{at, kind:"approval_decided"|"escalation_closed"|"major_change"|"milestone"|"member_change", summary, ref}]}`（负责人视图右栏；不需处理）。
+- 月度推送：`report_runs kind=monthly_exec`，`GET /reports/monthly-exec?month=` → `{triples:[{goal, status, needDecision:bool}], decisions:[{approvalId, title, options:["同意","拒绝","再议"]}], diffSinceLast:[...]}`；推送走 `subscriptions.kind="monthly_exec"` 生成 L2 卡（拍板三键）+ PNG。
+
+### 页面落点（F-007 清单追加）
+数据分析 tab 加「归因树」「竞情」；策略分析 tab 分「分析视图 / 方案库」；任务详情第九页签「投放策略」；自动化 tab 加「Shadow」；报告 tab 周报/复盘/AI 提效改为真实规格；负责人视图加差距树卡 + 知悉流。

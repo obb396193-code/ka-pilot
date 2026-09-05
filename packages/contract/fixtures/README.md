@@ -86,6 +86,9 @@
 - `integrations/messages.json` — dead 保留行；retry：出站 failed 重排队，入站 dead admin 重置
 - `integrations/subscriptions.json` — quiet_hours 只压 P1/P2
 
+## intel
+- `intel/materials.json` — 示例态：解锁条件=AppGrowing 接入方式实证
+
 ## kb
 - `kb/document.json` — 对齐 CR knowledge_items.content_json/content_text + document_links；team 空间 readOnly=true
 - `kb/search.json`
@@ -107,12 +110,16 @@
 - `me/watchlist.json`
 
 ## reports
+- `reports/ai-impact.json` — 人时=估算；byUser 只本人与 lead 可见，不进导出
 - `reports/config-v1.json`
 - `reports/daily-brief-pending.json`
 - `reports/daily-brief.json` — 数据未就绪时 status=pending_data，不生成假早报
 - `reports/daily-v1.json` — 12 模块；unsupported 模块显空态不显 0
 - `reports/library.json`
+- `reports/monthly-exec.json`
 - `reports/render.json`
+- `reports/task-review-v1.json` — why/next 标“待人确认”；生成即归档知识库
+- `reports/weekly-v1.json`
 
 ## rules
 - `rules/explain.json` — 12.8：任一叶子 missing → 不触发不消触，账户计入 undeterminable
@@ -136,6 +143,16 @@
 - `settlements/preview-ready.json`
 - `settlements/template.json` — 新版本=新行，旧结算单绑旧版本
 
+## shadow
+- `shadow/decisions.json`
+- `shadow/exam.json` — 四门全过才提示可升档；人点确认才升
+
+## strategies
+- `strategies/compare.json`
+- `strategies/detail.json`
+- `strategies/list.json` — 不返回置信度；只有样本数与验证计数
+- `strategies/task-binding.json` — actual 来自 structure 同步；未同步=null
+
 ## system
 - `system/etl-runs.json`
 - `system/health.json`
@@ -155,6 +172,7 @@
 
 ## tasks
 - `tasks/accounts.json`
+- `tasks/attribution.json` — undeterminable 节点灰显“数据不足”，不显金额
 - `tasks/funnel.json` — 离线链缺=missing，不显 0
 - `tasks/list-v151.json` — v1.5.1 ②：stage 七态 + readiness 六段
 - `tasks/metrics.json`
@@ -175,6 +193,8 @@
 - `work-items/detail.json` — v1.3 工作项详情 + v1.5 decision；suggestions 只到确认卡
 
 ## workbench
+- `workbench/fyi.json`
+- `workbench/lead-gaptree.json`
 - `workbench/lead.json` — v1.5.1 ④；impact 只用 cost_space/pacing 缺口，无则 missing；role≠lead/admin 403
 
 ## workflows

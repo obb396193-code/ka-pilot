@@ -1,0 +1,92 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "volume",
+    "root": {
+      "key": "target_gap",
+      "label": "团队目标差距",
+      "gap": {
+        "value": 21000,
+        "availability": "available"
+      },
+      "gapRate": {
+        "value": 0.12,
+        "state": "finite"
+      }
+    },
+    "children": [
+      {
+        "key": "cost_gap",
+        "label": "成本差距",
+        "gap": {
+          "value": 9000,
+          "availability": "available"
+        },
+        "share": {
+          "value": 0.43,
+          "state": "finite"
+        },
+        "availability": "available"
+      },
+      {
+        "key": "volume_gap",
+        "label": "量级差距",
+        "gap": {
+          "value": 8500,
+          "availability": "available"
+        },
+        "share": {
+          "value": 0.4,
+          "state": "finite"
+        },
+        "availability": "available"
+      },
+      {
+        "key": "structure_gap",
+        "label": "结构差距",
+        "gap": {
+          "value": 3500,
+          "availability": "available"
+        },
+        "share": {
+          "value": 0.17,
+          "state": "finite"
+        },
+        "availability": "available"
+      }
+    ],
+    "byTask": [
+      {
+        "taskId": "fixture-task-ready",
+        "taskName": "AAC 拉新",
+        "gap": {
+          "value": 8000,
+          "availability": "available"
+        }
+      },
+      {
+        "taskId": "fixture-task-nocap",
+        "taskName": "闲鱼潜客转化",
+        "gap": {
+          "value": null,
+          "availability": "missing"
+        }
+      }
+    ],
+    "lineage": {
+      "window": {
+        "from": "2026-09-01",
+        "to": "2026-09-05",
+        "preset": "month_to_date"
+      },
+      "adLevelSource": "ka_data.dwd_adgroup_daily"
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "team",
+    "selectedSource": "ka_data"
+  }
+}

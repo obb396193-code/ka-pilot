@@ -1,0 +1,312 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000003001",
+        "name": "双成本控量起量",
+        "version": 3,
+        "status": "official",
+        "owner": null,
+        "applicable": {
+          "stages": [
+            "cold_start",
+            "ramping"
+          ],
+          "biz": [
+            "AAC"
+          ],
+          "objectives": [
+            "拉新"
+          ],
+          "media": [
+            "KUAISHOU"
+          ]
+        },
+        "playbook": {
+          "placement": [
+            "INVENTORY_UNIVERSAL",
+            "KUAI_SHOU_YOU_XUAN"
+          ],
+          "delivery_mode": "standard",
+          "bid": {
+            "tool": "ocpm",
+            "style": "dual_cost",
+            "cpa_hint": "考核价 ×0.95 起"
+          },
+          "rta": {
+            "enabled": true,
+            "audience_packs": [
+              "近7天浏览未购",
+              "加购未购"
+            ]
+          },
+          "budget_rhythm": {
+            "cold_start_days": 3,
+            "split": [
+              {
+                "phase": "cold_start",
+                "share": 0.2
+              },
+              {
+                "phase": "ramping",
+                "share": 0.8
+              }
+            ]
+          },
+          "account_matrix": {
+            "accounts": 1,
+            "campaigns_per_account": 3,
+            "units_per_campaign": 4
+          },
+          "product_material_rules": [
+            "每计划≥4 条候选素材",
+            "同版位保留最优 2 条"
+          ]
+        },
+        "evidence": {
+          "sampleTasks": 12,
+          "window": {
+            "from": "2026-08-01",
+            "to": "2026-08-31"
+          },
+          "metrics": {
+            "cost": {
+              "value": 1235680.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 965313.2,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 26400,
+              "availability": "available"
+            },
+            "ratios": {
+              "cashCpa": {
+                "value": 36.56,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 46.8,
+                "state": "finite"
+              }
+            }
+          },
+          "pivot2SnapshotRef": "pivot2:2026-08:resource_position×task"
+        },
+        "validations": {
+          "count": 6,
+          "improved": 4,
+          "noChange": 1,
+          "worse": 0,
+          "insufficient": 1
+        },
+        "boundTasks": [
+          {
+            "taskId": "fixture-task-ready",
+            "taskName": "AAC 拉新"
+          }
+        ],
+        "updatedAt": "2026-09-01T10:00:00.000+08:00"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000003002",
+        "name": "信息流冷启动",
+        "version": 2,
+        "status": "team_verified",
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "applicable": {
+          "stages": [
+            "cold_start",
+            "ramping"
+          ],
+          "biz": [
+            "AAC"
+          ],
+          "objectives": [
+            "拉新"
+          ],
+          "media": [
+            "KUAISHOU"
+          ]
+        },
+        "playbook": {
+          "placement": [
+            "INVENTORY_UNIVERSAL",
+            "KUAI_SHOU_YOU_XUAN"
+          ],
+          "delivery_mode": "standard",
+          "bid": {
+            "tool": "ocpm",
+            "style": "dual_cost",
+            "cpa_hint": "考核价 ×0.95 起"
+          },
+          "rta": {
+            "enabled": true,
+            "audience_packs": [
+              "近7天浏览未购",
+              "加购未购"
+            ]
+          },
+          "budget_rhythm": {
+            "cold_start_days": 3,
+            "split": [
+              {
+                "phase": "cold_start",
+                "share": 0.2
+              },
+              {
+                "phase": "ramping",
+                "share": 0.8
+              }
+            ]
+          },
+          "account_matrix": {
+            "accounts": 1,
+            "campaigns_per_account": 3,
+            "units_per_campaign": 4
+          },
+          "product_material_rules": [
+            "每计划≥4 条候选素材",
+            "同版位保留最优 2 条"
+          ]
+        },
+        "evidence": {
+          "sampleTasks": 12,
+          "window": {
+            "from": "2026-08-01",
+            "to": "2026-08-31"
+          },
+          "metrics": {
+            "cost": {
+              "value": 1235680.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 965313.2,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 26400,
+              "availability": "available"
+            },
+            "ratios": {
+              "cashCpa": {
+                "value": 36.56,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 46.8,
+                "state": "finite"
+              }
+            }
+          },
+          "pivot2SnapshotRef": "pivot2:2026-08:resource_position×task"
+        },
+        "validations": {
+          "count": 6,
+          "improved": 4,
+          "noChange": 1,
+          "worse": 0,
+          "insufficient": 1
+        },
+        "boundTasks": [
+          {
+            "taskId": "fixture-task-ready",
+            "taskName": "AAC 拉新"
+          }
+        ],
+        "updatedAt": "2026-09-01T10:00:00.000+08:00"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000003003",
+        "name": "我的：联盟位试投",
+        "version": 1,
+        "status": "draft",
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "applicable": {
+          "stages": [
+            "cold_start",
+            "ramping"
+          ],
+          "biz": [
+            "AAC"
+          ],
+          "objectives": [
+            "拉新"
+          ],
+          "media": [
+            "KUAISHOU"
+          ]
+        },
+        "playbook": {
+          "placement": [
+            "INVENTORY_UNIVERSAL",
+            "KUAI_SHOU_YOU_XUAN"
+          ],
+          "delivery_mode": "standard",
+          "bid": {
+            "tool": "ocpm",
+            "style": "dual_cost",
+            "cpa_hint": "考核价 ×0.95 起"
+          },
+          "rta": {
+            "enabled": true,
+            "audience_packs": [
+              "近7天浏览未购",
+              "加购未购"
+            ]
+          },
+          "budget_rhythm": {
+            "cold_start_days": 3,
+            "split": [
+              {
+                "phase": "cold_start",
+                "share": 0.2
+              },
+              {
+                "phase": "ramping",
+                "share": 0.8
+              }
+            ]
+          },
+          "account_matrix": {
+            "accounts": 1,
+            "campaigns_per_account": 3,
+            "units_per_campaign": 4
+          },
+          "product_material_rules": [
+            "每计划≥4 条候选素材",
+            "同版位保留最优 2 条"
+          ]
+        },
+        "evidence": null,
+        "validations": {
+          "count": 0,
+          "improved": 0,
+          "noChange": 0,
+          "worse": 0,
+          "insufficient": 0
+        },
+        "boundTasks": [],
+        "updatedAt": "2026-09-01T10:00:00.000+08:00"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "不返回置信度；只有样本数与验证计数"
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "ok": true,
+  "data": {
+    "window": {
+      "from": "2026-08-30",
+      "to": "2026-09-05",
+      "preset": "last_7d"
+    },
+    "quadrants": {
+      "automatedRules": {
+        "executed": {
+          "value": 126,
+          "availability": "available"
+        },
+        "succeeded": {
+          "value": 118,
+          "availability": "available"
+        },
+        "unknown": {
+          "value": 2,
+          "availability": "available"
+        }
+      },
+      "anomaliesIntercepted": {
+        "count": {
+          "value": 23,
+          "availability": "available"
+        },
+        "p0": {
+          "value": 4,
+          "availability": "available"
+        },
+        "avgAckMinutes": {
+          "value": 18.5,
+          "state": "finite"
+        }
+      },
+      "hoursSaved": {
+        "value": {
+          "value": 18.6,
+          "availability": "available"
+        },
+        "basis": "action_minutes_table",
+        "detail": [
+          {
+            "action": "diagnosis",
+            "count": 23,
+            "minutes": 8
+          },
+          {
+            "action": "changeset_bid",
+            "count": 31,
+            "minutes": 5
+          },
+          {
+            "action": "report_daily",
+            "count": 7,
+            "minutes": 20
+          }
+        ]
+      },
+      "observedCostDiff": {
+        "adoptedVsNot": {
+          "cashCpaDelta": {
+            "value": -1.7,
+            "state": "finite"
+          },
+          "sample": {
+            "adopted": 19,
+            "notAdopted": 12
+          }
+        },
+        "caveat": "操作后观察结果，非因果"
+      }
+    },
+    "trend": [
+      {
+        "ds": "2026-09-01",
+        "executed": {
+          "value": 19,
+          "availability": "available"
+        },
+        "intercepted": {
+          "value": 3,
+          "availability": "available"
+        },
+        "hoursSaved": {
+          "value": 2.6,
+          "availability": "available"
+        }
+      },
+      {
+        "ds": "2026-09-02",
+        "executed": {
+          "value": 20,
+          "availability": "available"
+        },
+        "intercepted": {
+          "value": 3,
+          "availability": "available"
+        },
+        "hoursSaved": {
+          "value": 2.6,
+          "availability": "available"
+        }
+      },
+      {
+        "ds": "2026-09-03",
+        "executed": {
+          "value": 21,
+          "availability": "available"
+        },
+        "intercepted": {
+          "value": 3,
+          "availability": "available"
+        },
+        "hoursSaved": {
+          "value": 2.6,
+          "availability": "available"
+        }
+      },
+      {
+        "ds": "2026-09-04",
+        "executed": {
+          "value": 22,
+          "availability": "available"
+        },
+        "intercepted": {
+          "value": 3,
+          "availability": "available"
+        },
+        "hoursSaved": {
+          "value": 2.6,
+          "availability": "available"
+        }
+      },
+      {
+        "ds": "2026-09-05",
+        "executed": {
+          "value": 23,
+          "availability": "available"
+        },
+        "intercepted": {
+          "value": 3,
+          "availability": "available"
+        },
+        "hoursSaved": {
+          "value": 2.6,
+          "availability": "available"
+        }
+      }
+    ],
+    "byUser": [
+      {
+        "userId": "00000000-0000-4000-8000-000000000001",
+        "name": "示例优化师",
+        "executed": 80,
+        "hoursSaved": 11.2
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "人时=估算；byUser 只本人与 lead 可见，不进导出"
+  }
+}

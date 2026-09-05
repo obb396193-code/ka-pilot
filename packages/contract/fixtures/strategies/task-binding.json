@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "data": {
+    "taskId": "fixture-task-ready",
+    "strategy": {
+      "id": "00000000-0000-4000-8000-000000003001",
+      "name": "双成本控量起量",
+      "version": 3,
+      "status": "official"
+    },
+    "boundAt": "2026-08-20T10:00:00.000+08:00",
+    "diff": [
+      {
+        "field": "bid.tool",
+        "playbook": "ocpm 双出价",
+        "actual": "ocpm 双出价",
+        "match": true
+      },
+      {
+        "field": "placement",
+        "playbook": "信息流+优选",
+        "actual": "信息流",
+        "match": false
+      },
+      {
+        "field": "budget_rhythm",
+        "playbook": "冷启 3 天 20%",
+        "actual": null,
+        "match": null
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "actual 来自 structure 同步；未同步=null"
+  }
+}

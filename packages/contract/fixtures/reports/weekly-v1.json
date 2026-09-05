@@ -1,0 +1,102 @@
+{
+  "ok": true,
+  "data": {
+    "schema": "weekly-report/v1",
+    "week": "2026-W36",
+    "role": "optimizer",
+    "sections": [
+      {
+        "key": "overview",
+        "cards": {
+          "cost": {
+            "value": 698000.0,
+            "availability": "available"
+          },
+          "cashCost": {
+            "value": 545277.6,
+            "availability": "available"
+          },
+          "realConversion": {
+            "value": 18400,
+            "availability": "available"
+          },
+          "cashCpa": {
+            "value": 29.63,
+            "state": "finite"
+          },
+          "onTargetRate": {
+            "value": 0.87,
+            "state": "finite"
+          }
+        }
+      },
+      {
+        "key": "tasks",
+        "rows": [
+          {
+            "taskId": "fixture-task-ready",
+            "taskName": "AAC 拉新",
+            "achievementRate": {
+              "value": 0.1533,
+              "state": "finite"
+            },
+            "costStatus": "green",
+            "stage": "delivering"
+          },
+          {
+            "taskId": "fixture-task-nocap",
+            "taskName": "闲鱼潜客转化",
+            "achievementRate": {
+              "value": null,
+              "state": "undefined"
+            },
+            "costStatus": null,
+            "stage": "building"
+          }
+        ]
+      },
+      {
+        "key": "anomalies",
+        "items": [
+          {
+            "title": "account-2 成本超考核",
+            "handled": true,
+            "t1": "改善"
+          }
+        ]
+      },
+      {
+        "key": "operations",
+        "items": [
+          {
+            "summary": "account-1 降价 5%",
+            "observed": "现金 CPA −2.1（T+1）"
+          }
+        ]
+      },
+      {
+        "key": "nextWeek",
+        "items": [
+          {
+            "text": "闲鱼潜客转化 待补候选素材 ≥3",
+            "source": "readiness"
+          },
+          {
+            "text": "AAC 拉新 按当前速度月末达成 93%，缺口 8000",
+            "source": "pacing"
+          }
+        ]
+      }
+    ],
+    "generatedAt": "2026-09-06T03:40:00.000+08:00",
+    "dataAsOf": "2026-09-06T03:20:00.000+08:00",
+    "pushStatus": "not_sent"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

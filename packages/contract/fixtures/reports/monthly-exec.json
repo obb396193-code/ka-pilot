@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "data": {
+    "month": "2026-08",
+    "triples": [
+      {
+        "goal": "AAC 拉新 12 万",
+        "status": "达成 93%，成本达标",
+        "needDecision": false
+      },
+      {
+        "goal": "闲鱼潜客 转化",
+        "status": "基建中，9-8 预算生效",
+        "needDecision": true
+      }
+    ],
+    "decisions": [
+      {
+        "approvalId": "00000000-0000-4000-8000-000000001301",
+        "title": "追加预算申请：AAC 拉新 +18 万",
+        "options": [
+          "同意",
+          "拒绝",
+          "再议"
+        ]
+      }
+    ],
+    "diffSinceLast": [
+      {
+        "item": "现金 CPA",
+        "from": {
+          "value": 31.0,
+          "state": "finite"
+        },
+        "to": {
+          "value": 29.6,
+          "state": "finite"
+        }
+      },
+      {
+        "item": "健康任务数",
+        "from": "1/2",
+        "to": "1/2"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

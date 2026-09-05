@@ -361,3 +361,11 @@
 - 反例：素材 sourceStatus≠reachable 时 analyze 409；whole_video 分析不产生句级时间戳；实验样本不足不出 leader；结算 blocked 不许 freeze、冻结后快照不随数据变、校正只对 allowCorrection 字段；`write_enabled=false` 时 confirm 403 WRITE_DISABLED；停用成员后其 session 全部 401；replicate 目标户 pool_status 不合法 409。
 - 验收句：优化师能看素材池/商品池示例态变真数据、拆片结果带证据、做一张月度结算单四步走到冻结；admin 能加人/停人/改授权/开灰度；策略页能看版位×任务交叉表；开户测试和优质户复制能发起并回看。
 - 状态：待处理（等 R-014）
+
+
+### R-016 后端：契约 v1.7 落地（2026-09-06；排 R-015 后）
+
+- 派活方：arch　**先读** `schema.sql` 末尾「v1.7 新增」+ `api.md` 末尾「v1.7 端点与 DTO」+ `docs/decisions/2026-09-06-P2大件设计与策略方案对象.md`。
+- 交付物：migration 017（strategies/strategy_bindings/strategy_validations、intel_materials、shadow_decisions、ai_impact_config；report_runs.kind 扩）；HTTP+BFF：策略方案 CRUD/copy/bind/validations/compare + suggestion `strategy_variant`；`/tasks/:id/attribution`（只算有公式节点，其余 undeterminable）+ lead gapTree；intel import/link；shadow decisions 记录（工作项建议→24h 内同向变更集/带外=adopted）+ shadow-exam 四门；ai-impact 四象限 + 估时表；weekly-report/v1；task-review Deep Research（Agent 异步 job，生成即归档 kb）；lead/fyi；monthly-exec + 订阅。
+- 反例：归因节点无公式不出金额；shadow 无人动作 adopted=false 不猜；ai-impact byUser 不进导出；策略验证样本不足=insufficient_sample；复盘 why/next humanConfirmed=false 默认。
+- 状态：待处理（等 R-015）
