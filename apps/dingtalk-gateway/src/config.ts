@@ -4,6 +4,7 @@ const configSchema = z.object({
   DATABASE_URL: z.string().trim().min(1),
   DINGTALK_CLIENT_ID: z.string().trim().min(1),
   DINGTALK_CLIENT_SECRET: z.string().trim().min(1),
+  GATEWAY_INBOX_KEY_HEX: z.string().regex(/^[a-f0-9]{64}$/i),
   KA_WORKSPACE_ID: z.string().uuid(),
   KA_API_BASE_URL: z.string().url(),
   KA_API_BEARER_TOKEN: z.string().trim().min(1).optional(),
@@ -18,12 +19,14 @@ export interface GatewayConfig {
   apiBaseUrl: string;
   apiBearerToken?: string;
   apiTimeoutMs: number;
+  inboxKeyHex: string;
 }
 
 export function loadGatewayConfig(environment: NodeJS.ProcessEnv): GatewayConfig {
   const parsed = configSchema.parse(environment);
   return {
     databaseUrl: parsed.DATABASE_URL,
+    inboxKeyHex: parsed.GATEWAY_INBOX_KEY_HEX,
     dingtalkClientId: parsed.DINGTALK_CLIENT_ID,
     dingtalkClientSecret: parsed.DINGTALK_CLIENT_SECRET,
     workspaceId: parsed.KA_WORKSPACE_ID,

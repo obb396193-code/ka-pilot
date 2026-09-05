@@ -1,4 +1,4 @@
-import type { Pool } from "pg";
+import { InboundEventRepository } from "./inbound-event-repository.js";
 
 export interface GatewayIdentity {
   userId: string;
@@ -6,37 +6,7 @@ export interface GatewayIdentity {
   hasMulticaCredential: boolean;
 }
 
-export class GatewayRepository {
-  constructor(private readonly pool: Pool) {}
-
-  async claimInbound(
-    workspaceId: string,
-    provider: string,
-    externalEventId: string,
-    kind: string,
-    payload: Record<string, unknown>,
-  ): Promise<boolean> {
-    const result = await this.pool.query(
-      `INSERT INTO inbound_events
-         (workspace_id, provider, external_event_id, kind, payload, processed)
-       VALUES ($1, $2, $3, $4, $5, false)
-       ON CONFLICT (external_event_id) DO NOTHING`,
-      [workspaceId, provider, externalEventId, kind, payload],
-    );
-    return result.rowCount === 1;
-  }
-
-  async markInboundProcessed(externalEventId: string): Promise<void> {
-    const result = await this.pool.query(
-      `UPDATE inbound_events SET processed = true
-       WHERE external_event_id = $1 AND processed = false`,
-      [externalEventId],
-    );
-    if (result.rowCount !== 1) {
-      throw new Error(`Inbound event ${externalEventId} is missing or already processed`);
-    }
-  }
-
+export class GatewayRepository extends InboundEventRepository {
   async resolveIdentity(
     workspaceId: string,
     provider: string,

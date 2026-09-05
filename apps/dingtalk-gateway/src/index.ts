@@ -1,14 +1,14 @@
 import {
   GatewayRepository,
-  JobRepository,
   createPool,
-  runMigrations,
 } from "@ka/db";
 
 import { loadGatewayConfig } from "./config.js";
 import { connectDingTalkStream, DingTalkSessionReply } from "./dingtalk-adapter.js";
 import { createMessageHandler } from "./message-handler.js";
 import { ProductApiClient } from "./product-api-client.js";
+import { InboxCodec } from "./inbox-codec.js";
+import { createInboxReceiver, createInboxWorker } from "./inbox-worker.js";
 
 function waitForShutdown(): Promise<void> {
   return new Promise((resolve) => {
@@ -24,7 +24,7 @@ function waitForShutdown(): Promise<void> {
 
 async function main(): Promise<void> {
   const config = loadGatewayConfig(process.env);
-  await runMigrations({ databaseUrl: config.databaseUrl });
+  // Migrations run separately in the deployment maintenance step, never on reconnect/startup.
   const pool = createPool(config.databaseUrl);
   const gateway = new GatewayRepository(pool);
   const commands = new ProductApiClient({
@@ -36,33 +36,37 @@ async function main(): Promise<void> {
   });
   const handler = createMessageHandler({
     workspaceId: config.workspaceId,
-    inbound: gateway,
     identities: gateway,
-    jobs: new JobRepository(pool),
     commands,
-    replies: new DingTalkSessionReply(),
   });
+  const inbox = { workspaceId: config.workspaceId, inbound: gateway, codec: new InboxCodec(config.inboxKeyHex) };
+  const worker = createInboxWorker({ ...inbox, processMessage: handler, replies: new DingTalkSessionReply() });
+  const controller = new AbortController();
+  let processing: Promise<void> | undefined;
 
   let connection: Awaited<ReturnType<typeof connectDingTalkStream>> | undefined;
   try {
     connection = await connectDingTalkStream({
       clientId: config.dingtalkClientId,
       clientSecret: config.dingtalkClientSecret,
-      onMessage: handler,
-      onProcessingError: (error) => {
-        process.stderr.write(`DingTalk message failed: ${String(error)}\n`);
+      onMessage: createInboxReceiver(inbox),
+      onProcessingError: () => {
+        process.stderr.write("DingTalk receive/ACK not confirmed\n");
       },
+    });
+    processing = worker.run(controller.signal, () => {
+      process.stderr.write("DingTalk inbox polling failed\n");
     });
     await waitForShutdown();
   } finally {
     connection?.disconnect();
+    controller.abort();
+    await processing;
     await pool.end();
   }
 }
 
-await main().catch((error: unknown) => {
-  process.stderr.write(
-    `DingTalk gateway failed: ${error instanceof Error ? error.stack : String(error)}\n`,
-  );
+await main().catch(() => {
+  process.stderr.write("DingTalk gateway failed; check deployment configuration/connectivity\n");
   process.exitCode = 1;
 });

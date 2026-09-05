@@ -36,7 +36,7 @@ describe("DingTalk adapter", () => {
   });
 
   it("sends the documented text message shape", async () => {
-    const fetchFn = vi.fn<typeof fetch>(async () => new Response("ok", { status: 200 }));
+    const fetchFn = vi.fn<typeof fetch>(async () => Response.json({ errcode: 0 }));
     const reply = new DingTalkSessionReply({ fetchFn });
     const url = "https://oapi.dingtalk.com/robot/sendBySession?session=redacted";
     await reply.sendText(url, "处理完成");
@@ -48,5 +48,15 @@ describe("DingTalk adapter", () => {
         body: JSON.stringify({ msgtype: "text", text: { content: "处理完成" } }),
       }),
     );
+  });
+  it.each(["https://user:pass@oapi.dingtalk.com/path", "https://oapi.dingtalk.com:8443/path", "http://oapi.dingtalk.com/path"])("rejects unsafe webhook %s", async (url) => {
+    const fetchFn = vi.fn();
+    await expect(new DingTalkSessionReply({ fetchFn }).sendText(url, "text")).rejects.toThrow();
+    expect(fetchFn).not.toHaveBeenCalled();
+  });
+  it.each([Response.json({ errcode: 123 }), Response.json({}), new Response("fail", { status: 503 })])("rejects failed/invalid replies including HTTP 200 business failure", async (response) => {
+    const fetchFn = vi.fn(async () => response);
+    await expect(new DingTalkSessionReply({ fetchFn }).sendText("https://oapi.dingtalk.com/path", "text")).rejects.toThrow();
+    expect(fetchFn).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ redirect: "error" }));
   });
 });

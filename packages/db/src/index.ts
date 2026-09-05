@@ -27,3 +27,4 @@ export * from "./account-list-repository.js";
 export * from "./work-item-list-repository.js";
 export * from "./workspace-sync-repository.js";
 export * from "./workspace-sync-readiness.js";
+export * from "./inbound-event-repository.js";
