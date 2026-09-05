@@ -3010,3 +3010,15 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - **独立安全项须 arch/fe 接手**：本轮后端三包 `npm audit --omit=dev` 为0；Web 为 **5项（4 high/1 moderate）**，fast-uri/qs/PostCSS/sharp/Next链路，部分建议 Next16.3.4 主升级。没有改前端锁或强制升级；整体依赖安全门不能报绿。公告编号/命令/覆盖率见 `docs/plans/R009-状态.md` P-041。
 - 已只读看到 main@677e4b2 的 P-039 裁决和 main@7b418cb：接受批末把追加 CHECK/重验折回011、总数恢复11；窗口化成本口径未冻不改。当前 P0-13 已按先前计划做完，后续恢复新顺序 P0-07→P0-12→三态/v2→空间绑源→双空间回归；**不是 R-009 整批交付**。
 - 用户验收句：同一账户同一天不误绑两任务、不串考核价；停用操作人或凭证所有人后，变更集不能继续借旧身份执行。真实媒体写继续关闭。
+
+---
+
+### P-042 ⏳待审｜R-009 P0-07 工作流单执行器与effect去重（be，2026-09-05）
+
+- **代码 SHA `a044e54`**，be/r009，10文件443+/65-。最新main@d3466c7的P041通过/继续指令已只读核对，本批不改v1.4.1口径/settings；批末再merge main。未push/未合main/未部署，前端/视觉/Contract/依赖文件0 diff。
+- 单run executor token+lease：原子领取，过期才能换token；event/status/effect/续租写先锁run再用DB时钟校验。confirm/control同门。旧token即便无新接管者也不能续活或提交；没有无token兼容入口。
+- 写节点preview/execute先写workflow_effects.pending，唯一冲突done/failed读回归一化结果，pending/unknown流程停unknown，绝不重发；结果落库后event崩溃可恢复结果。未知时可能仍留pending effect作为待回查证据，不声称已执行或远程exactly-once。
+- 补PostgresWorkflowRunStore，固定published版本编译，剥离databaseId后交Domain strict事件。真实PG联合首轮4红确实暴露该接线问题，修后5PG+11Runner全过；DB新租约3+原Repository6全过。不是只有mock通过。
+- **全量** Domain497 / DB199（真PG套件含unit）/ Worker641+2外部opt-in skipped / Web78；四包typecheck/lint全通过；后端三包npm audit --omit=dev均0。核心coverage：execution Repository行100%分支85%，Runner行89%分支73.91%，Postgres适配行100%分支94.44%。Web已有依赖问题继续由fe处理，本批不宣称整体安全门全绿。
+- 未开放/注册媒体写或HTTP写；生产ActionPort/输出存储与unknown回查消费仍待后批接线，不将本内核修复冒充完整可用工作流产品。当前业务读/session/旧媒体写关闭门回归保持。
+- 下一项P0-12 durable inbox，再P0-04/v2→绑源→双空间→折011；非R009整批完成。用户验收句：重复点击或两台Worker同时接流程，不重复建变更集/发投放动作；结果不确定停未知态。详见R009-状态与本批实施计划。
