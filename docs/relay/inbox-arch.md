@@ -3041,6 +3041,11 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **#8 Service/HTTP 接线 SHA `9b7968b`**：普通POST只收queryId/params，Session personal→platform/team→ka_data；浏览器dataView/data_view拒400，不再静默改platform。新`POST /api/v1/admin/data/reconcile`只收reconcile.account_daily，entitlement+flag在Service内判断，role=admin不等于诊断权。日志只selectedSource/reason/requestId；Session/internal bearer、405、exact-byte上限共用。
+- 本次实测 Domain514、Worker非PG683+2外部opt-in skip，type/lint均通过；核心75用例行90.89%/分支89.47%/函数100%，HTTP34含诊断角色拒绝/KA关闭/冒充字段/同一exact-byte上限。无KA环境真实启动smoke2通过。Worker生产offline audit0（根目录无lock误跑ENOLOCK后到Worker正确执行，不以根目录结果冒充通过）。
+- **PG当前失败**：22:18 `business-read-session-pg.integration.test.ts`在beforeAll/清理均ECONNREFUSED 127.0.0.1:55432，没有执行到业务反例，不能算PG通过。该既有集成场景改为“KA关闭时team data503不fallback”，保留账户/任务/工作项/详情的真实PG/session断言；KA启用团队reader双空间另补，未用平台fixture伪造团队KA通路。
+- **不是#8整体交付**：实际KaDataClient仍只支持explicit_accounts，team可信reader部署绑定待确认/接线；lineage.workspaceKind及v2/BFF消费仍待接，当前BFF旧dataView会被新后端400，禁止独立部署此中间SHA。继续执行同一目标；本批frontend/DB源码/迁移/依赖0diff，未push/合流/部署/开媒体写。
+
 - **#8首个内核SHA `7ced49d`**：新增ordinary/admin严格request schemas与服务端source策略，新22反例含各role无诊断entitlement、错workspace/user、flag off、KA off、未知输入，不把role=admin当诊断权。核心行/分支/函数100%；Domain514、Worker非PG670+2外部skip、两包type/lint绿。**尚未接Service/HTTP/BFF**，旧入口改动留到接线批，不冒充#8完成。逐文件计划已落`2026-09-05-空间绑源与管理员对账接线.md`；目标继续，不push/未合流/未部署。
 - #8团队reader风险提醒：现在KaDataClient只允许explicit_accounts，team进来会403；不能简单删这道检查，使任意team workspace均借用同一reader。计划以服务端`KA_DATA_TEAM_WORKSPACE_ID`绑定单一团队源（一期一reader→一team），未配置/不匹配明确unavailable/forbidden；不接受浏览器workspace参数，也不依赖team grants。请arch确认此部署映射名称/范围；可以先继续纯查询/HTTP/非视觉BFF接线，不放宽到无绑定team全量。
 - CTE证据补正：刚实读主仓`private/knowledge-sources/ka-src-0011/source.txt:13`，上游**文档明确允许单条SELECT/WITH**，非之前写的能力未知；bdc5273本地SQLite证明已具备，仍未执行内网新SQL模板，性能/快照一致性不冒充实测。
