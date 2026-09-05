@@ -1,9 +1,8 @@
-import { WorkbenchContainer } from "@/components/business/data-containers"
-import type { QueryRecord } from "@/lib/data/data-view"
+import { Suspense } from "react"
 
-// v1.2 DATA-ROUTE-001：数据源绑定空间（personal→platform / team→ka_data）由服务端解析；
-// 页面不再读 data_view，也不再提供三态切换器。
-export default async function WorkbenchPage({ searchParams }: { searchParams: Promise<QueryRecord> }) {
-  const query = await searchParams
-  return <WorkbenchContainer query={query} />
+import { WorkbenchPage } from "@/components/business/workbench/workbench-page"
+
+// 工作台（F-007 §3）：我的视图 ⇄ 负责人视图；今日｜协作 tab；数据源绑空间由服务端解析（DATA-ROUTE-001）
+export default function Workbench() {
+  return <Suspense fallback={null}><WorkbenchPage /></Suspense>
 }

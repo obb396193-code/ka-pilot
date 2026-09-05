@@ -1,56 +1,12 @@
 "use client"
 
-import { useMemo, useState } from "react"
-
-import { PageBody, PageHeader } from "@/components/business/page-header"
-
-import { useSession } from "@/components/business/session/session-provider"
 import { DiagnosticDetailView } from "@/components/business/diagnostic-detail-view"
-import { WorkbenchDashboard } from "@/components/business/workbench/workbench-dashboard"
-import { DataStateFrame } from "@/components/data-view/data-state-frame"
-import { adaptAccountDetail, adaptAnalysis, adaptChangeSetPreview, adaptWorkbench, adaptWorkItemDetail } from "@/lib/data/adapters"
-import type { DataQueryResponse, QueryRequest } from "@/lib/data/contracts"
-import { readDataState, shanghaiBusinessDate, type DataState, type DataViewMode, type QueryRecord } from "@/lib/data/data-view"
+import { adaptChangeSetPreview, adaptWorkItemDetail } from "@/lib/data/adapters"
+import type { QueryRecord } from "@/lib/data/data-view"
 import { getMockChangeSetDetail, getMockWorkItemDetail } from "@/lib/data/mock-data"
-import { useDataQuery } from "@/lib/data/use-data-query"
 import { useReadModel } from "@/lib/data/use-read-model"
 
-function first(value: string | string[] | undefined) { return Array.isArray(value) ? value[0] : value }
-function dateParams(query: QueryRecord) {
-  const date = first(query.date)
-  if (date) return { date, ...(first(query.media) ? { media: first(query.media) } : {}) }
-  const dateFrom = first(query.date_from) ?? first(query.start)
-  const dateTo = first(query.date_to) ?? first(query.end)
-  if (dateFrom && dateTo) return { dateFrom, dateTo, ...(first(query.media) ? { media: first(query.media) } : {}) }
-  return { date: shanghaiBusinessDate(), ...(first(query.media) ? { media: first(query.media) } : {}) }
-}
-function loadingResponse(): DataQueryResponse { return { ok: false, error: { code: "SOURCE_UNAVAILABLE", message: "正在读取数据", retryable: true, requestId: "loading" } } }
-function mockState(query: QueryRecord): DataState { return readDataState(query.state) }
-function request(queryId: QueryRequest["queryId"], dataView: DataViewMode, query: QueryRecord, extra: Record<string, unknown> = {}): QueryRequest {
-  const state = mockState(query)
-  return { queryId, dataView, params: { ...dateParams(query), ...extra }, ...(state === "ready" ? {} : { mockState: state }) }
-}
-
-// 工作台：数据源由服务端按空间路由（DATA-ROUTE-001 v1.2），浏览器固定发 platform。
-// mock 模式下按当前空间模拟这条路由（team→ka_data），让「切空间即切源」在本地可见；真实模式不由浏览器选源。
-function WorkbenchQueries({ query, onRefresh }: { query: QueryRecord; onRefresh: () => void }) {
-  const { session, isMock } = useSession()
-  const dataView: DataViewMode = isMock && session?.activeWorkspace.kind === "team" ? "ka_data" : "platform"
-  const summaryRequest = useMemo(() => request("account.summary", dataView, query), [dataView, query])
-  const trendRequest = useMemo(() => request("account.trend", dataView, query), [dataView, query])
-  const anomaliesRequest = useMemo(() => request("account.anomalies", "platform", query), [query])
-  const summary = useDataQuery(summaryRequest); const trend = useDataQuery(trendRequest); const anomalies = useDataQuery(anomaliesRequest)
-  const loading = summary.loading || trend.loading || anomalies.loading
-  const response = adaptWorkbench({ summary: summary.response ?? loadingResponse(), trend: trend.response ?? loadingResponse(), anomalies: anomalies.response ?? loadingResponse() }, dataView, summary.isMock, loading ? "loading" : undefined)
-  return <WorkbenchDashboard response={response} query={query} onRefresh={onRefresh} />
-}
-
-export function WorkbenchContainer({ query }: { query: QueryRecord }) {
-  const [reload, setReload] = useState(0)
-  return <WorkbenchQueries key={reload} query={query} onRefresh={() => setReload((value) => value + 1)} />
-}
-
-
+// 只剩工作项详情（/diagnostics/[id]）还走 lib/data 读模型；工作台 / 账户池 / 数据分析已改读契约 fixtures（F-007）
 function MockDiagnosticDetailContainer({ findingId }: { findingId: string }) {
   const workItem = getMockWorkItemDetail(findingId)
   const changeSet = getMockChangeSetDetail()
