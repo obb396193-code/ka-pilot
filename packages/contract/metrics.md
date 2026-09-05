@@ -44,8 +44,8 @@
 ```
 ctr                = click / exposure                      （分母0→null）
 cvr                = conversion / click
-真实CPA real_cpa    = cost / real_conversion                （分母0且cost>0→显示∞标记）
-达标 on_target      = real_cpa <= assessment_price(生效版本)
+账面CPA real_cpa    = cost / real_conversion                （分母0且cost>0→显示∞标记；**只展示，不用于考核**）
+达标 on_target      = cash_cpa <= assessment_price(生效版本)  （**考核价是现金口径**：BI 后端、扣返点后真钱——老板 2026-09-05 纠正）
 现金消耗 cash_cost   = (账面消耗 − compensation) / channel_coefficient
                       channel_coefficient=渠道返点折算系数，channel_coefficients 表版本化，绝不硬编码
 现金成本 cash_cpa    = cash_cost / bi_volume(=real_conversion)
@@ -65,18 +65,19 @@ BI转化率            = real_conversion / aac_ptt_uv
 
 **先聚合再相除**（不是日比率求平均）：
 ```
-real_cpa(W)     = Σ_W cost / Σ_W real_conversion
-on_target(W)    = real_cpa(W) <= assessment_price            （考核价按生效版本逐日取，价改期内各日各用各的）
+cash_cpa(W)     = Σ_W cash_cost / Σ_W real_conversion       （考核用）
+real_cpa(W)     = Σ_W cost / Σ_W real_conversion            （账面，只展示）
+on_target(W)    = cash_cpa(W) <= assessment_price            （考核价按生效版本逐日取，价改期内各日各用各的）
 cost_space(W)   = Σ_W assessment_price(d) × real_conversion(d) − Σ_W cash_cost(d)   （>0 = 窗口内还没超线的钱）
 achievement(W)  = Σ_W real_conversion / target_volume（任务）
 budget_usage(d) = 当日任务消耗 / 当日生效 daily_budget_cap    （无卡 → availability=missing，不显 0）
 ```
 外推类（与 pacing 同源，7 日均速剔零量日；R-010a1 实现）：
 ```
-窗口末外推 CPA        = (Σ_W cost + 日均消耗 × 剩余天) / (Σ_W real_conv + 日均转化 × 剩余天)
-剩余天可承受日 CPA    = (assessment_price × (Σ_W real_conv + 日均转化 × 剩余天) − Σ_W cost) / (日均转化 × 剩余天)
+窗口末外推 CPA        = (Σ_W cash_cost + 日均现金消耗 × 剩余天) / (Σ_W real_conv + 日均转化 × 剩余天)
+剩余天可承受日 CPA    = (assessment_price × (Σ_W real_conv + 日均转化 × 剩余天) − Σ_W cash_cost) / (日均转化 × 剩余天)
 ```
-两个"消耗"不是打架：`real_cpa/on_target` 用账面 `cost`（考核对的是账面真实 CPA）；`cost_space` 用 `cash_cost`（赔付概念，扣返点后的真钱）。
+**考核口径全部是现金**（老板 2026-09-05：考核价、达标、成本空间都是 BI 后端扣返点后的真钱）：`on_target/cost_space/cost_status/外推` 一律用 `cash_cost`；账面 `cost` 只做展示（账面消耗、账面 CPA 两张卡并排放，让优化师看得到差）。当前快手折算：**现金 ≈ 账面 × 0.7812（= ÷1.28）**，作为 `channel_coefficients` 首行 seed（渠道/生效日期版本化，绝不硬编码；表里存的方向以 domain `cash_cost` 函数为准）。
 
 **容忍带（老板：今天超一点明天拉回来是常态）**：颜色按**窗口累计**判，不按单日——单日超线但 W 累计仍达标 → 黄「单日超线，累计仍达标」；W 累计超 → 红；都在线内 → 绿。容忍百分比在个人视图可设，默认 0。产品只算只标色，**不判该关该开**。
 

@@ -40,8 +40,8 @@ team workspace，只读查看团队账户、任务、指标和账户型异常。
 核心口径（计算层唯一实现，前端不算数）：
 
 ```
-真实 CPA        = account_cost / account_real_conversion        （已确认=FBI 的 BI 数，同源）
-达标判定        = 真实 CPA ≤ assessment_cost（考核价，版本化）
+账面 CPA        = account_cost / account_real_conversion        （只展示；real_conversion 已确认=FBI 的 BI 数，同源）
+达标判定        = 现金成本 ≤ assessment_cost（**考核价是现金口径**：BI 后端扣返点后真钱，老板 2026-09-05 纠正；版本化）
 现金消耗        = (账面消耗 − 赔付) / 渠道折算系数                （系数=返点折算，渠道级可配+版本化，绝不硬编码）
 现金成本        = 现金消耗 / bi_volume
 成本空间        = assessment_cost × real_conversion − 现金消耗    （业务赔付缺值的正形式）

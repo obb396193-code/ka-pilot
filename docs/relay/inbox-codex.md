@@ -263,3 +263,5 @@
 - **R-010a1**：`summary/trend/table/dimension` 接受 `date_from/date_to`；窗口内指标先聚合再相除（不是日比率平均）；`lineage.window`；`cost_status` 三色 + reason 由后端按容忍带算。外推两式与 pacing 同源。
 - **R-012**：`task_budget_history` 进 migration 014；`POST /tasks/:id/daily-budget-cap`；overview `daily_budget_cap` + `budget_usage_rate`；timeline kind；summary `budget_usage_rate`。无卡任务 → missing 不显 0。
 - 不影响 R-009 二批。
+
+- **口径纠正（2026-09-05 晚，老板）**：考核价/达标/成本空间全是**现金口径**（BI、扣返点后真钱）；`on_target` 改用 `cash_cpa`，账面 `real_cpa` 只展示（metrics.md 已改）。**R-013 seed 加 `channel_coefficients`**：首行快手 现金≈账面×0.7812（÷1.28），方向按 domain `cash_cost` 现有实现存值；老板确认后填生效日期。R-010a1 的 summary 同时返回账面/现金两组。
