@@ -3041,6 +3041,8 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **质量对账增量 `35d2482`**：空源/缺字段/跨媒体同号观测不齐→unknown，真实0才可通过；field_sources已指定来源不跨口径补；坏值/PG数字溢出稳定拒绝。passed=NULL沿既有DB列落库，真实回灌unknown停质量失败。TDD3红+超大指数红后修，Domain512/DB219真PG套件/Worker643+2外部skip/Web78，四包type/lint绿，核心行93.05%分支73.91%，DBaudit0。无前端/迁移/Contract/依赖改动，未push/合流/部署。对平仅证明raw/canonical观测tuple并集一致，不冒称全workspace已齐；完整coverage仍独立。详见R009状态和质量对账计划。继续v2/绑源，P044非整批完成。
+
 - **SQL增量 `3e7f932` 已自测**：预期账户日左连canonical，授权tuple/有效任务过滤；九指标缺任一成员/字段→NULL，真实0保留，NaN不被NULL掩盖。observed计数不算预期占位；Summary/Trend/Dimension/Task日报/ReportFacts均接通缺数，公开v2未切。全量Domain512 / DB211真实PG套件 / Worker641+2外部跳过 / Web78，五包typecheck/lint绿；核心行95.4%分支86.3%，DBaudit0（首次网络EPERM批准重试）。Worker原fixture只有accountId不区分媒体被新缺数测试揭出，已加tuple/混合媒体missing/跨workspace缺日，完整记录见R009状态。前端/Contract/依赖/迁移0diff，未push/合main/部署；继续data-quality空对账、v2和绑源，不等待本小增量审查。
 
 - **P043 冻结跟进 `9715125`**：已实读 main@8c240f7 的 P042/P043 通过及 dead 定义。发现 c6603d3 实际最终显式失败仍记 PROCESSING_FAILED，且先失败再最终崩溃也不补标；并非全部符合新增注释。已修为最终失败立即 ATTEMPTS_EXHAUSTED+失效租约、过期崩溃含旧错误统一补标，活跃最后租约不提前 dead。TDD 真PG首轮2失败、修后DB全量206/206、Gateway36/36（含PG2），两包typecheck/lint通过；其余包本小补丁未重跑，不冒充全门禁。3文件限定提交、未push/合流/部署。runbook§6原已有密钥生成/轮换，本次同步dead定义；无新状态列、真实写未开。
