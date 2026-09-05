@@ -73,26 +73,17 @@ personal workspace 固定为 `explicit_accounts`。scope mode 只能由服务端
 未登录统一为 HTTP 401 + `UNAUTHORIZED`；已登录但 membership/scope 不足为 HTTP 403 +
 `FORBIDDEN`。两者均使用现有稳定 error envelope 与 `x-request-id`。
 
-## 一期主数据源路由（DATA-ROUTE-001）
+## 一期主数据源路由（DATA-ROUTE-001，v1.2 定稿；2026-09-05 合并旧表述为唯一规则）
 
-> **v1.2 修订（老板 2026-09-04 裁决：数据源绑定空间，不做页面级三态切换）**
-> - `workspaceKind=personal` → 固定 `platform`（奇航，本人授权账户）
-> - `workspaceKind=team` → 固定 `ka_data`（全渠道，团队成员只读）
-> - 用户"切空间"即"切数据源"；普通页面**移除** `KA Data 权威版 / 自建平台版 / 双源对账` 三态切换器与 `data_view` URL 参数
-> - `reconcile` 仍只对 `DATA_DIAGNOSTIC_ENTITLEMENTS_JSON` allowlist 内的管理员开放，入口在治理后台，不在业务页
-> - 下文"KA Data 默认关闭/备用"表述仅对 personal 空间成立；team 空间的 `KA_DATA_ENABLED=true` 是必需配置
+规则只有这一套（取代 root 2026-08-25「KA Data 备用/诊断、普通 Session 一律 platform」旧文；老板 9-4「数据源绑空间」裁决覆盖 8-25 裁决，历史见台账 #320/#139）：
 
-- 普通业务读取默认走既有奇航 `get_data → Raw → Canonical → Semantic Query` 主链。
-- KA Data 是同源的备用读取/管理员诊断路径，默认关闭且不得阻塞工作台、任务、账户、
-  工作流或首次内网部署；普通用户响应和导航不暴露 `ka_data/platform/reconcile` 选择器。
-- 是否切换备用源只能由服务端配置和管理员权限决定；禁止浏览器通过 query/body/header
-  自选共享凭证出口。切换必须留审计字段 `selectedSource/reason/requestId`，但不记录 token、
-  SQL 或上游正文。
-- 现有 `POST /api/v1/data/query` 双数据能力保留为管理员诊断 API，不作为普通页面首屏依赖。
-- 诊断权限不是 `role=admin` 的隐含能力。服务端必须同时开启诊断总开关，并让当前
-  `(workspaceId,userId)` 命中受控 entitlement allowlist；普通 Session 的请求一律固定为
-  `platform`，body 中的 `dataView` 不能开启 `ka_data/reconcile`。诊断已授权但 KA Data 总开关
-  关闭时，`ka_data/reconcile` 必须在上游调用前返回稳定 `VIEW_UNSUPPORTED`。
+- **源由服务端按 `workspaceKind` 固定**：`personal` → `platform`（奇航，本人授权账户）；`team` → `ka_data`（全渠道，只读）。切空间即切源。
+- **浏览器不能选源**：普通请求只接受 `{queryId, params}`；出现 `dataView`/`data_view` → `400 INVALID_REQUEST`；导航与响应不暴露 `ka_data/platform/reconcile` 选择器。
+- **每个数据响应必带来源标识**（BE-001 lineage 已有 `source/metricVersion/dataAsOf/timezone/dayCut`；R-010a 补齐 `workspaceKind`）；前端页头**常显**「空间 · 来源 · 数据日期 · 更新时间 · 口径 ⓘ」，不只在首次说明——切空间后金额不同是换源不是算错，要让用户一眼看出。
+- **team 空间只读**：变更集/任务编辑/授权变更在 Repository 前拒绝 → `403 FORBIDDEN`（已由 Task5 实现）；团队数据只用于观察，**不驱动个人账户写操作**。
+- **reconcile 不是业务视图**：只在治理后台 `POST /api/v1/admin/data/reconcile`；需 `DATA_DIAGNOSTIC_ENABLED=true` 且 `(workspaceId,userId)` 命中 `DATA_DIAGNOSTIC_ENTITLEMENTS_JSON`；KA Data 总开关关闭时在上游调用前返回 `422 VIEW_UNSUPPORTED`。诊断不是 `role=admin` 的隐含能力。
+- **配置含义**：`KA_DATA_ENABLED=false` 时 personal 空间不受影响；team 空间此时返回 `503 SOURCE_UNAVAILABLE` 并显示「团队数据源未配置」，**不得回退到 platform 伪装团队数据**。
+- **切源审计**：服务端记录 `selectedSource/reason/requestId`；不记录 token、SQL、上游正文。共享 reader token 只从服务端 Secret 读取。
 
 ## 受控双数据查询（BE-001）
 
@@ -273,7 +264,7 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
 
 ## 工作项
 
-- `GET /api/v1/work-items?status=&severity=&assignee=&type=` 队列（含"其余 N 户在阈值内"计数）
+- `GET /api/v1/work-items?status=&severity=&assignee=&type=` 队列；响应 `meta.coverage` 见下（取代旧"其余 N 户在阈值内"计数）
 - `POST /api/v1/work-items/:id/ignore` `{reason_chip?, mute_days?}`
 - `POST /api/v1/work-items/:id/process|reject|escalate|dispatch` `{note?, to_user?, acceptance_criteria?}`
 - `POST /api/v1/work-items/:id/reply` `{target: "dingtalk_group"|"dingtalk_dm"|"web_session", target_id, content}` → 异步回复（**P-002#3 裁决：agent 处理完工作项异步回复至群/单聊/会话**）
@@ -339,8 +330,8 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
   `account=null`。`task/assignee` 缺源时为 null，不伪造展示名。
 - 默认排序：严重度 `P0 → P1 → P2 → opportunity → null`，随后
   `slaDue ASC NULLS LAST, createdAt ASC, workItemId ASC`；最后 ID 是唯一 tie-breaker。
-- 列表不返回完整 `evidenceSnapshot/diagnosis/t1Result`，点击后走已冻结详情接口。所谓
-  “其余 N 户在阈值内”在阈值版本、分母和时间窗 Contract 冻结前不进入响应，前端不得自行算。
+- 列表不返回完整 `evidenceSnapshot/diagnosis/t1Result`，点击后走已冻结详情接口。
+- **覆盖三态（2026-09-05 冻结，取代"其余 N 户在阈值内"）**：响应 `meta.coverage = {accountsInScope, checked, pending, undeterminable, ruleSetVersion, window:{from,to}, checkedAt}`，全部由服务端算：`accountsInScope`=本空间本媒体授权账户数；`checked`=规则已在本窗口跑完且数据完整的账户；`pending`=规则未跑/取数未完成；`undeterminable`=缺数三态非 available 的账户。**前端只有在 `pending=0 && undeterminable=0` 时才允许显示"其余 N 户在阈值内"**（N=checked−有工作项的账户数）；否则显示「已检查 checked · 待检查 pending · 缺数无法判断 undeterminable」。前端不得自行算。
 - `dataState` 只描述工作项持久化查询本身：事务快照完整且筛选后 total=0 为 empty；分页或
   来源覆盖不完整为 partial；依赖奇航事实生成的账户型工作项在首次 full 未完成时为 stale，
   但已持久化的本人非账户型工作项仍可返回。count/page/readiness 同一 RR/RO 快照。
