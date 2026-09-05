@@ -35,7 +35,8 @@ export interface SemanticReportFactsInput {
   plan: ReportExecutionPlan;
 }
 
-function finite(value: number): ReportMetricValue {
+function finite(value: number | null): ReportMetricValue {
+  if (value === null) return { value: null, state: "missing" };
   if (!Number.isFinite(value)) throw new Error("Semantic metric must be finite");
   return { value, state: "finite" };
 }

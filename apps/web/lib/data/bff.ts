@@ -17,6 +17,8 @@ import {
   type DataQueryResponse,
   type StableDataQueryError,
 } from "./contracts.ts"
+import { handleSessionRequest } from "./session-bff.ts"
+import { sessionSuccessResponseSchema } from "./session-contracts.ts"
 
 export const BACKEND_DATA_QUERY_PATH = "/api/v1/data/query"
 
@@ -58,6 +60,8 @@ function expectedStatus(response: DataQueryResponse): number {
 
 export async function handleDataQueryRequest(request: Request, dependencies: Dependencies): Promise<BffResult> {
   const requestId = createRequestId(dependencies.requestId)
+  if (request.method !== "POST") return { status: 405, body: error("INVALID_REQUEST", "Method is not allowed", false, requestId), requestId }
+  if ([...new URL(request.url).searchParams].length) return { status: 400, body: error("INVALID_REQUEST", "Invalid data query parameters", false, requestId), requestId }
   const input = await readBoundedRequestJson(request)
   const parsed = dataQueryRequestSchema.safeParse(input)
   if (!parsed.success) return { status: 400, body: error("INVALID_REQUEST", "Invalid canonical data query request", false, requestId), requestId }
@@ -68,8 +72,18 @@ export async function handleDataQueryRequest(request: Request, dependencies: Dep
   const config = resolveInternalApiConfig(dependencies.environment)
   if (config === null) return { status: 503, body: error("INTERNAL_ERROR", "Data query upstream is not configured safely", false, requestId), requestId }
 
-  // Ordinary pages are platform-only. Browser input cannot grant diagnostic access.
-  const upstreamRequest = { ...parsed.data, dataView: "platform" as const }
+  // Resolve afresh with the same backend-issued cookie. No browser identity headers,
+  // cached workspace, inferred role or local default can select a data source.
+  const startedAt = Date.now()
+  const current = await handleSessionRequest("session", new Request("http://localhost/api/internal/auth/session", {
+    headers: { cookie: session.header },
+  }), { environment: dependencies.environment, fetchImpl: dependencies.fetchImpl, requestId: () => requestId })
+  if (!current.body.ok) return { status: current.status, body: current.body, requestId }
+  const sessionView = sessionSuccessResponseSchema.safeParse(current.body)
+  if (!sessionView.success) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Session view did not match the canonical contract", false, requestId), requestId }
+  const workspace = sessionView.data.data.activeWorkspace
+  const expectedMode = workspace.kind === "personal" ? "platform" : "ka_data"
+  const upstreamRequest = parsed.data
   try {
     const upstream = await (dependencies.fetchImpl ?? fetch)(`${config.origin}${BACKEND_DATA_QUERY_PATH}`, {
       method: "POST",
@@ -77,7 +91,8 @@ export async function handleDataQueryRequest(request: Request, dependencies: Dep
       body: JSON.stringify(upstreamRequest),
       redirect: "error",
       cache: "no-store",
-      signal: AbortSignal.timeout(10_000),
+      // Session + query share the original 10s budget (browser budget is 12s).
+      signal: AbortSignal.timeout(Math.max(1, 10_000 - (Date.now() - startedAt))),
     })
     if (!hasCorrelatedRequestId(upstream, requestId)) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query response requestId did not match the BFF request", false, requestId), requestId }
     const payload = await readBoundedJson(upstream)
@@ -87,8 +102,14 @@ export async function handleDataQueryRequest(request: Request, dependencies: Dep
     if (!envelope.data.ok && bodyRequestId(envelope.data) !== requestId) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query error requestId did not match the BFF request", false, requestId), requestId }
     if (upstream.status !== expectedStatus(envelope.data)) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query status did not match the canonical contract", false, requestId), requestId }
     if (envelope.data.ok) {
-      if (envelope.data.data.mode !== "platform") return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Ordinary data query returned a non-platform view", false, requestId), requestId }
-      if (envelope.data.data.source.queryId !== upstreamRequest.queryId) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query response queryId did not match the request", false, requestId), requestId }
+      const result = envelope.data.data
+      if (result.mode === "reconcile" || result.mode !== expectedMode) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query mode did not match the current Session", false, requestId), requestId }
+      const source = result.source
+      const wrongSource = expectedMode === "ka_data" ? source.lineage.source !== "ka_data" : source.lineage.source === "ka_data"
+      if (source.lineage.workspaceKind !== workspace.kind || wrongSource || source.rows.some((row) => "workspaceId" in row && row.workspaceId !== workspace.id)) {
+        return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query source identity did not match the current Session", false, requestId), requestId }
+      }
+      if (source.queryId !== upstreamRequest.queryId) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query response queryId did not match the request", false, requestId), requestId }
     }
     return { status: upstream.status, body: envelope.data, requestId }
   } catch (cause) {
@@ -104,7 +125,10 @@ export async function handleDataQueryRequest(request: Request, dependencies: Dep
 export async function forwardDataQuery(input: unknown, dependencies: ForwardDependencies): Promise<BffResult> {
   const request = new Request("http://localhost/api/internal/data-query", {
     method: "POST",
-    headers: { "content-type": "application/json", cookie: `ka_session=${dependencies.sessionCookie ?? "legacy-session-token-000000000000000001"}` },
+    headers: {
+      "content-type": "application/json",
+      ...(dependencies.sessionCookie === undefined ? {} : { cookie: `ka_session=${dependencies.sessionCookie}` }),
+    },
     body: JSON.stringify(input),
   })
   const response = await handleDataQueryRequest(request, {

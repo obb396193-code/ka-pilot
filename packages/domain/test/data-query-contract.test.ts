@@ -1,3 +1,4 @@
+import { metricValue } from "../src/metric-value.js";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -7,9 +8,11 @@ import {
   metricValueSchema,
   reconcileMetricSchema,
   sourceQueryResultSchema,
+  sourceLineageSchema,
 } from "../src/data-query-contract.js";
 
 const lineage = {
+  workspaceKind: "personal",
   source: "ka_data",
   datasetVersion: "snapshot-20260824",
   queryTemplateVersion: "account-summary-v1",
@@ -33,20 +36,20 @@ const lineage = {
 } as const;
 
 const dailyMetrics = {
-  cost: 1,
-  exposure: 10,
-  click: 2,
-  conversion: 1,
-  realConversion: 1,
-  cashCost: 1,
-  costSpace: 0,
-  wakeUv: null,
-  potentialUv: null,
-  budget: null,
-  budgetUsageRate: null,
-  deductionRate: null,
-  mainAdCostProportion: null,
-  assessmentPrice: null,
+  cost: metricValue(1),
+  exposure: metricValue(10),
+  click: metricValue(2),
+  conversion: metricValue(1),
+  realConversion: metricValue(1),
+  cashCost: metricValue(1),
+  costSpace: metricValue(0),
+  wakeUv: metricValue(null),
+  potentialUv: metricValue(null),
+  budget: metricValue(null),
+  budgetUsageRate: metricValue(null),
+  deductionRate: metricValue(null),
+  mainAdCostProportion: metricValue(null),
+  assessmentPrice: metricValue(null),
   ratios: {
     ctr: { value: 0.2, state: "finite" },
     cvr: { value: 0.5, state: "finite" },
@@ -59,6 +62,14 @@ const dailyMetrics = {
 } as const;
 
 describe("dual data query contract", () => {
+  it("requires an explicit approved workspace kind without defaulting to personal", () => {
+    const missingKind = Object.fromEntries(Object.entries(lineage).filter(([key]) => key !== "workspaceKind"));
+    expect(sourceLineageSchema.safeParse(missingKind).success).toBe(false);
+    for (const workspaceKind of ["personal", "team"]) {
+      expect(sourceLineageSchema.safeParse({ ...lineage, workspaceKind }).success).toBe(true);
+    }
+    expect(sourceLineageSchema.safeParse({ ...lineage, workspaceKind: "shared" }).success).toBe(false);
+  });
   it("accepts exactly the three frozen data view modes", () => {
     for (const mode of ["ka_data", "platform", "reconcile"] as const) {
       expect(dataViewModeSchema.parse(mode)).toBe(mode);
@@ -66,13 +77,15 @@ describe("dual data query contract", () => {
     expect(() => dataViewModeSchema.parse("merged")).toThrow();
   });
 
-  it("accepts only queryId, params and dataView at the public request boundary", () => {
+  it("accepts only queryId and params at the ordinary request boundary", () => {
     const valid = {
       queryId: "account.summary",
       params: { date: "2026-08-24" },
-      dataView: "ka_data",
     };
     expect(dataQueryRequestSchema.parse(valid)).toEqual(valid);
+    expect(() => dataQueryRequestSchema.parse({ ...valid, dataView: "platform" })).toThrow();
+    expect(() => dataQueryRequestSchema.parse({ ...valid, data_view: "ka_data" })).toThrow();
+    expect(() => dataQueryRequestSchema.parse({ ...valid, queryId: "reconcile.account_daily" })).toThrow();
     expect(() => dataQueryRequestSchema.parse({ ...valid, sql: "select 1" })).toThrow();
     expect(() => dataQueryRequestSchema.parse({ ...valid, workspaceId: "forged" })).toThrow();
     expect(() => dataQueryRequestSchema.parse({ ...valid, accountId: "forged" })).toThrow();
@@ -94,7 +107,7 @@ describe("dual data query contract", () => {
     expect(() => sourceQueryResultSchema.parse({ status: "ready", rows: [] })).toThrow();
     expect(() => sourceQueryResultSchema.parse({
       queryId: "account.summary",
-      rowSchemaVersion: "account.summary/v1",
+      rowSchemaVersion: "account.summary/v2",
       status: "ready",
       rows: [],
       returnedRowCount: 2_000,
@@ -107,7 +120,7 @@ describe("dual data query contract", () => {
   it("represents unavailable source lineage as unknown instead of fabricating freshness", () => {
     const parsed = sourceQueryResultSchema.parse({
       queryId: "account.summary",
-      rowSchemaVersion: "account.summary/v1",
+      rowSchemaVersion: "account.summary/v2",
       status: "unavailable",
       rows: [],
       returnedRowCount: 0,
@@ -145,7 +158,7 @@ describe("dual data query contract", () => {
   it("requires frozen source-authority metadata instead of an adapter-selected priority", () => {
     expect(() => sourceQueryResultSchema.parse({
       queryId: "account.summary",
-      rowSchemaVersion: "account.summary/v1",
+      rowSchemaVersion: "account.summary/v2",
       status: "ready",
       rows: [],
       returnedRowCount: 0,
@@ -158,7 +171,7 @@ describe("dual data query contract", () => {
   it("keeps KA Data and platform independent in reconcile mode", () => {
     const source = {
       queryId: "reconcile.account_daily",
-      rowSchemaVersion: "reconcile.account_daily/v1",
+      rowSchemaVersion: "reconcile.account_daily/v2",
       status: "ready",
       rows: [{
         workspaceId: "00000000-0000-4000-8000-000000000024",

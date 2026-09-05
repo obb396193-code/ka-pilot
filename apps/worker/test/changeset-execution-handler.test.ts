@@ -26,6 +26,9 @@ class MemoryStore implements ChangeSetStore {
   completed?: Parameters<ChangeSetStore["completeExecution"]>[0];
   reconciled?: Parameters<ChangeSetStore["completeReconciliation"]>[0];
   completeCalls = 0;
+  authError: Error | undefined;
+
+  async assertExecutionAuthorized() { if (this.authError) throw this.authError; }
 
   async load() { return structuredClone(this.view); }
   async beginExecution() {
@@ -107,6 +110,23 @@ function setup() {
 }
 
 describe("ChangeSetExecutionHandler", () => {
+  it.each(["workspaceId", "id"] as const)("rejects a store returning the wrong %s before media access", async (field) => {
+    const { handler, store, executor, values } = setup();
+    store.view[field] = "wrong-scope";
+    values.readCurrentValues = async () => { throw new Error("Should not query media"); };
+    await expect(handler.run("workspace-1", "changeset-1")).rejects.toThrow("requested scope");
+    expect(executor.executeCalls).toBe(0);
+    expect(executor.reconcileCalls).toBe(0);
+  });
+  it.each(["confirmed", "unknown"] as const)("rejects revoked actors before any media read/write for %s", async (status) => {
+    const { handler, store, executor, values } = setup();
+    store.view.status = status;
+    store.authError = new Error("FORBIDDEN");
+    values.readCurrentValues = async () => { throw new Error("Should not query media"); };
+    await expect(handler.run("workspace-1","changeset-1")).rejects.toThrow("FORBIDDEN");
+    expect(executor.executeCalls).toBe(0);
+    expect(executor.reconcileCalls).toBe(0);
+  });
   it("executes with the changeset idempotency key and schedules successful items", async () => {
     const { handler, executor, followUps, store } = setup();
     const result = await handler.run("workspace-1", "changeset-1");

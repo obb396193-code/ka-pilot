@@ -1,4 +1,4 @@
-import type { GatewayIdentity, NewJob } from "@ka/db";
+import type { GatewayIdentity, InboundEventRepository, NewJob } from "@ka/db";
 
 import type { RoutedIntent } from "./intent-router.js";
 
@@ -10,16 +10,8 @@ export interface DingTalkInboundMessage {
   sessionWebhook: string;
 }
 
-export interface InboundEventPort {
-  claimInbound(
-    workspaceId: string,
-    provider: string,
-    eventId: string,
-    kind: string,
-    payload: Record<string, unknown>,
-  ): Promise<boolean>;
-  markInboundProcessed(eventId: string): Promise<void>;
-}
+export type InboundEventPort = Pick<InboundEventRepository,
+  "receiveInbound" | "leaseInbound" | "renewInbound" | "checkpointInbound" | "completeInbound" | "failInbound">;
 
 export interface IdentityPort {
   resolveIdentity(

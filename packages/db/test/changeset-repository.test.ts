@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import { ChangeSetRepository } from "../src/changeset-repository.js";
@@ -19,6 +19,7 @@ describe("ChangeSetRepository", () => {
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
   });
+  afterAll(async () => { await pool.end(); });
 
   beforeEach(async () => {
     const suffix = randomUUID();
@@ -68,6 +69,62 @@ describe("ChangeSetRepository", () => {
     expect(created.items).toHaveLength(2);
     await expect(repository.get(otherWorkspaceId, created.id)).rejects.toThrow(/not found/);
     await expect(repository.find(otherWorkspaceId, created.id)).resolves.toBeNull();
+  });
+
+  it.each(["initiator", "credentialOwnerUserId"] as const)("rejects inactive %s at create without partial rows", async (actor) => {
+    const inactive = (await pool.query("INSERT INTO users(workspace_id,name,is_active) VALUES ($1,'inactive',false) RETURNING id", [workspaceId])).rows[0].id;
+    await expect(repository.create({ workspaceId, media: "KUAISHOU", accountId: "account-1", title: "rejected",
+      initiator: userId, credentialOwnerUserId: userId, [actor]: inactive,
+      ttlExpireAt: new Date("2026-08-19T10:30:00Z"), reasonCode: "test",
+      items: [{ targetType: "unit", targetId: "unit-1", field: "bid", fromValue: "1", toValue: "2" }],
+    })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect((await pool.query("SELECT id FROM changesets WHERE workspace_id=$1", [workspaceId])).rows).toHaveLength(0);
+  });
+
+  it("rejects cross-workspace actors before attempting inserts", async () => {
+    const other = (await pool.query("INSERT INTO users(workspace_id,name,is_active) VALUES ($1,'other',true) RETURNING id", [otherWorkspaceId])).rows[0].id;
+    for (const actor of ["initiator", "credentialOwnerUserId"]) {
+      await expect(repository.create({ workspaceId, media: "KUAISHOU", accountId: "account-1", title: "rejected",
+        initiator: userId, credentialOwnerUserId: userId, [actor]: other,
+        ttlExpireAt: new Date("2026-08-19T10:30:00Z"), reasonCode: "test",
+        items: [{ targetType: "unit", targetId: "unit-1", field: "bid", fromValue: "1", toValue: "2" }],
+      })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    }
+  });
+
+  it.each(["initiator", "credential_owner_user_id"])("rechecks revoked %s at confirm and execution", async (actorColumn) => {
+    const created = await create();
+    const second = (await pool.query("INSERT INTO users(workspace_id,name) VALUES ($1,'second-active') RETURNING id", [workspaceId])).rows[0].id;
+    // Test-only column selected from the fixed two-value list above.
+    await pool.query(`UPDATE changesets SET ${actorColumn}=$2 WHERE id=$1`, [created.id, second]);
+    const input = { workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:00:00Z"), currentValues: created.items.map((item) => ({
+      targetType: item.targetType, targetId: item.targetId, field: item.field, value: item.fromValue,
+    })) };
+    await pool.query("UPDATE users SET is_active=false WHERE id=$1", [second]);
+    await expect(repository.confirm(input)).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await pool.query("UPDATE users SET is_active=true WHERE id=$1", [second]);
+    await repository.confirm(input);
+    await pool.query("UPDATE users SET is_active=false WHERE id=$1", [second]);
+    await expect(repository.confirm(input)).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(repository.beginExecution({ workspaceId, changeSetId: created.id, requestPayload: {}, startedAt: input.now }))
+      .rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1", [created.id])).rows).toHaveLength(0);
+  });
+
+  it.each(["workspace", "media", "account"])("rejects mismatched child %s scope on read, confirm and execute", async (dimension) => {
+    const created = await create();
+    const childWorkspace = dimension === "workspace" ? otherWorkspaceId : workspaceId;
+    const childMedia = dimension === "media" ? "TENCENT" : "KUAISHOU";
+    const childAccount = dimension === "account" ? "account-2" : "account-1";
+    await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES ($1,$2,$3)", [childWorkspace,childMedia,childAccount]);
+    await pool.query("UPDATE changeset_items SET workspace_id=$2,media=$3,account_id=$4 WHERE changeset_id=$1", [created.id,childWorkspace,childMedia,childAccount]);
+    await expect(repository.get(workspaceId,created.id)).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(repository.confirm({ workspaceId,changeSetId:created.id,now:new Date("2026-08-19T10:00Z"),currentValues:[] }))
+      .rejects.toMatchObject({ code: "FORBIDDEN" });
+    await pool.query("UPDATE changesets SET status='confirmed' WHERE id=$1", [created.id]);
+    await expect(repository.beginExecution({ workspaceId,changeSetId:created.id,startedAt:new Date("2026-08-19T10:00Z"),requestPayload:{} }))
+      .rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1", [created.id])).rows).toHaveLength(0);
   });
 
   it("rejects a linked work item outside the changeset account scope", async () => {

@@ -39,9 +39,13 @@ export class ChangeSetExecutionHandler {
 
   async run(workspaceId: string, changeSetId: string): Promise<ChangeSetHandlerResult> {
     const view = await this.dependencies.store.load(workspaceId, changeSetId);
+    if (view.workspaceId !== workspaceId || view.id !== changeSetId) {
+      throw new Error("Changeset does not match requested scope");
+    }
     const directive = executionDirective(view.status);
     if (directive === "skip_terminal") return this.finishTerminal(view);
     if (directive === "not_ready") return { outcome: "not_ready" };
+    await this.dependencies.store.assertExecutionAuthorized(workspaceId, changeSetId);
     if (directive === "reconcile_required") return this.reconcile(view);
 
     const current = await this.dependencies.values.readCurrentValues(view);
@@ -95,6 +99,7 @@ export class ChangeSetExecutionHandler {
   }
 
   private async reconcile(view: ChangeSetExecutionView): Promise<ChangeSetHandlerResult> {
+    await this.dependencies.store.assertExecutionAuthorized(view.workspaceId, view.id);
     const result = await this.dependencies.executor.reconcileUnknown(view);
     const completed = await this.dependencies.store.completeReconciliation({
       workspaceId: view.workspaceId,

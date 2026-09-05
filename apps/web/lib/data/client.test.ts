@@ -21,7 +21,7 @@ test("internal client posts only canonical requests to the fixed same-origin BFF
   assert.equal(requested, INTERNAL_DATA_QUERY_PATH)
   assert.equal(requested.startsWith("http"), false)
   assert.equal(new Headers(init?.headers).has("authorization"), false)
-  assert.deepEqual(JSON.parse(String(init?.body)), { queryId: "account.table", dataView: "platform", params: { date: "2026-08-24", page: 1, pageSize: 50 } })
+  assert.deepEqual(JSON.parse(String(init?.body)), { queryId: "account.table", params: { date: "2026-08-24", page: 1, pageSize: 50 } })
   assert.deepEqual(response, backendError)
 })
 

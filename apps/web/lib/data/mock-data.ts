@@ -1,3 +1,6 @@
+const canonicalAvailable = (value: number) => ({ value, availability: "available" as const })
+const missingMetric = { value: null, availability: "missing" } as const
+
 import { canonicalRowSchemaVersionByQueryId, type AccountDailyRow, type AccountSummaryRow, type DataQueryId } from "./canonical-query-rows.ts"
 import {
   changeSetDetailResponseSchema,
@@ -35,15 +38,15 @@ function summaryRow(cost: number, realCpa: number | null, anomalyRows: number | 
     accountCount: 20,
     anomalyRows,
     metrics: {
-      cost,
-      exposure: null,
-      click: null,
-      conversion: null,
-      realConversion: 18_620,
-      cashCost: null,
-      costSpace: 27_400,
-      wakeUv: null,
-      potentialUv: null,
+      cost: canonicalAvailable(cost),
+      exposure: missingMetric,
+      click: missingMetric,
+      conversion: missingMetric,
+      realConversion: canonicalAvailable(18_620),
+      cashCost: missingMetric,
+      costSpace: canonicalAvailable(27_400),
+      wakeUv: missingMetric,
+      potentialUv: missingMetric,
       ratios: ratios(realCpa),
     },
   }
@@ -73,21 +76,21 @@ function dailyRow(input: {
     ownerUserId: input.ownerUserId,
     ds: "2026-08-24",
     metrics: {
-      cost: input.cost,
-      exposure: null,
-      click: null,
-      conversion: null,
-      realConversion: input.realConversion,
-      cashCost: null,
-      costSpace: null,
-      wakeUv: null,
-      potentialUv: null,
+      cost: canonicalAvailable(input.cost),
+      exposure: missingMetric,
+      click: missingMetric,
+      conversion: missingMetric,
+      realConversion: canonicalAvailable(input.realConversion),
+      cashCost: missingMetric,
+      costSpace: missingMetric,
+      wakeUv: missingMetric,
+      potentialUv: missingMetric,
       ratios: ratios(input.realCpa),
-      budget: null,
-      budgetUsageRate: null,
-      deductionRate: null,
-      mainAdCostProportion: null,
-      assessmentPrice: input.assessmentPrice,
+      budget: missingMetric,
+      budgetUsageRate: missingMetric,
+      deductionRate: missingMetric,
+      mainAdCostProportion: missingMetric,
+      assessmentPrice: canonicalAvailable(input.assessmentPrice),
     },
     dataAnomaly: input.dataAnomaly,
     computedAt: AS_OF,
@@ -117,8 +120,8 @@ function rowsForSource(queryId: DataQueryId, request: QueryRequest, source: "ka_
   if (source === "platform" || !["account.table", "account.detail", "reconcile.account_daily"].includes(queryId)) return base
   return base.map((raw) => {
     const row = raw as AccountDailyRow
-    if (row.accountId === "demo-account-07") return { ...row, metrics: { ...row.metrics, cost: 126_000, ratios: { ...row.metrics.ratios, realCpa: { value: 42.86, state: "finite" as const } } } }
-    if (row.accountId === "demo-account-12") return { ...row, metrics: { ...row.metrics, cost: 99_007, ratios: { ...row.metrics.ratios, realCpa: { value: 36.2, state: "finite" as const } } } }
+    if (row.accountId === "demo-account-07") return { ...row, metrics: { ...row.metrics, cost: canonicalAvailable(126_000), ratios: { ...row.metrics.ratios, realCpa: { value: 42.86, state: "finite" as const } } } }
+    if (row.accountId === "demo-account-12") return { ...row, metrics: { ...row.metrics, cost: canonicalAvailable(99_007), ratios: { ...row.metrics.ratios, realCpa: { value: 36.2, state: "finite" as const } } } }
     return row
   })
 }
@@ -126,6 +129,7 @@ function rowsForSource(queryId: DataQueryId, request: QueryRequest, source: "ka_
 function lineage(source: "ka_data" | "platform", state: QueryRequest["mockState"]) {
   const partial = state === "partial" || state === "truncated"
   return {
+    workspaceKind: source === "ka_data" ? "team" as const : "personal" as const,
     source: source === "ka_data" ? "ka_data" as const : "canonical" as const,
     datasetVersion: `${source}-demo-20260824-r1`, queryTemplateVersion: "v1-mock", metricVersion: "mock-metrics-v1", dataAsOf: AS_OF, timezone: "Asia/Shanghai", dayCut: "calendar_day", metadataAvailability: "known" as const,
     authority: { policyVersion: "2026-08-24", useCase: "cross_media_operations" as const, role: source === "ka_data" ? "default_authoritative" as const : "comparison_reference" as const },

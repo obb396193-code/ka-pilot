@@ -11,8 +11,8 @@ class InternalApiDataClient implements DataClient {
   private readonly fetchImpl: FetchLike
   constructor(fetchImpl: FetchLike) { this.fetchImpl = fetchImpl }
   async query(request: QueryRequest) {
-    const { queryId, dataView, params } = request
-    const response = await this.fetchImpl(INTERNAL_DATA_QUERY_PATH, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ queryId, dataView, params }), cache: "no-store", signal: AbortSignal.timeout(12_000) })
+    const { queryId, params } = request
+    const response = await this.fetchImpl(INTERNAL_DATA_QUERY_PATH, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ queryId, params }), cache: "no-store", signal: AbortSignal.timeout(12_000) })
     const payload = await response.json()
     return dataQueryResponseSchema.parse(payload)
   }

@@ -22,6 +22,7 @@ import type {
   DurableWorkflowCapabilityInvoker,
   DurableWorkflowRunSnapshot,
   WorkflowActionPreviewResult,
+  WorkflowActionExecutionResult,
   WorkflowAdvanceResult,
   WorkflowInvocationResult,
   WorkflowOutputStore,
@@ -127,7 +128,10 @@ export class DurableWorkflowRunHandler {
   }
 
   async advance(command: WorkflowRunCommand): Promise<WorkflowAdvanceResult> {
-    const snapshot = await this.loadAuthorized(command);
+    return this.withExecutor(command, (snapshot) => this.advanceLeased(command, snapshot));
+  }
+
+  private async advanceLeased(command: WorkflowRunCommand, snapshot: DurableWorkflowRunSnapshot): Promise<WorkflowAdvanceResult> {
     const auth = authContext(command);
     const events = [...await this.repository.listEvents(command.workspaceId, command.runId)];
     let storedStatus = snapshot.status;
@@ -135,6 +139,7 @@ export class DurableWorkflowRunHandler {
     let effects = 0;
 
     while (true) {
+      await this.repository.renewExecutor({ ...executorScope(snapshot), leaseMs: 60_000 });
       const state = replayWorkflowRun(snapshot.plan, events);
       const budget = executionBudgetResult(
         state.status,
@@ -216,7 +221,10 @@ export class DurableWorkflowRunHandler {
   }
 
   async confirm(command: WorkflowConfirmationCommand): Promise<void> {
-    const snapshot = await this.loadAuthorized(command);
+    return this.withExecutor(command, (snapshot) => this.confirmLeased(command, snapshot));
+  }
+
+  private async confirmLeased(command: WorkflowConfirmationCommand, snapshot: DurableWorkflowRunSnapshot): Promise<void> {
     const events = [...await this.repository.listEvents(command.workspaceId, command.runId)];
     const state = replayWorkflowRun(snapshot.plan, events);
     const node = state.nodes[command.nodeId];
@@ -253,7 +261,10 @@ export class DurableWorkflowRunHandler {
   }
 
   private async control(command: WorkflowRunCommand, action: "pause" | "resume" | "cancel"): Promise<void> {
-    const snapshot = await this.loadAuthorized(command);
+    return this.withExecutor(command, (snapshot) => this.controlLeased(command, action, snapshot));
+  }
+
+  private async controlLeased(command: WorkflowRunCommand, action: "pause" | "resume" | "cancel", snapshot: DurableWorkflowRunSnapshot): Promise<void> {
     const events = [...await this.repository.listEvents(command.workspaceId, command.runId)];
     const state = replayWorkflowRun(snapshot.plan, events);
     const at = eventTime(this.clock(), events);
@@ -362,6 +373,7 @@ export class DurableWorkflowRunHandler {
     values: Record<string, unknown>,
     idempotencyKey: string,
   ): Promise<void> {
+    await this.repository.renewExecutor({ ...executorScope(snapshot), leaseMs: capability.timeoutMs + 30_000 });
     let result: WorkflowInvocationResult;
     try {
       result = await withTimeout(
@@ -394,23 +406,30 @@ export class DurableWorkflowRunHandler {
     values: Record<string, unknown>,
     idempotencyKey: string,
   ): Promise<void> {
-    let result: WorkflowActionPreviewResult;
-    try {
-      result = await withTimeout(
-        (signal) => this.actions.preview({ auth, capability, values, idempotencyKey, signal }),
-        capability.timeoutMs,
-      );
-    } catch (error) {
-      result = {
-        kind: "retryable_failure",
-        errorCode: error instanceof InvocationTimeoutError ? "preview_timeout" : "preview_error",
-      };
+    await this.repository.renewExecutor({ ...executorScope(snapshot), leaseMs: capability.timeoutMs + 30_000 });
+    const effect = { ...executorScope(snapshot), nodeId: node.id, attempt, phase: "preview" as const, effectKey: `${idempotencyKey}:preview` };
+    const reserved = await this.repository.reserveEffect(effect);
+    if (!reserved.acquired && (reserved.status === "pending" || reserved.status === "unknown")) {
+      await this.unknown(events, snapshot, node.id, attempt);
+      return;
     }
-    if (result.kind === "ready") {
-      if (!UUID.test(result.changesetId) || !HASH.test(result.previewHash)) {
-        await this.fail(events, snapshot, node.id, attempt, "preview_invalid");
+    let result: WorkflowActionPreviewResult;
+    if (!reserved.acquired) {
+      result = parsePreviewResult(reserved.result);
+    } else {
+      try {
+        result = parsePreviewResult(await withTimeout(
+          (signal) => this.actions.preview({ auth, capability, values, idempotencyKey, signal }),
+          capability.timeoutMs,
+        ));
+      } catch {
+        await this.repository.finishEffect({ ...effect, status: "unknown", result: { kind: "unknown" } });
+        await this.unknown(events, snapshot, node.id, attempt);
         return;
       }
+      await this.repository.finishEffect({ ...effect, status: result.kind === "ready" ? "done" : "failed", result });
+    }
+    if (result.kind === "ready") {
       await this.append(events, snapshot, `node_${node.id}_attempt_${attempt}_waiting`, {
         kind: "node_waiting_confirmation",
         nodeId: node.id,
@@ -445,35 +464,36 @@ export class DurableWorkflowRunHandler {
       return;
     }
     const confirmedBy = confirmation.confirmedBy;
-    try {
-      const result = await withTimeout(
-        (signal) => this.actions.executeConfirmed({
-          auth,
-          capability,
-          values,
-          idempotencyKey,
-          changesetId: confirmation.changesetId,
-          previewHash: confirmation.previewHash,
-          confirmedBy,
-          signal,
-        }),
-        capability.timeoutMs,
-      );
-      if (result.kind === "succeeded") {
-        await this.succeed(snapshot, events, node, capability, prior.attempt, idempotencyKey, result.output);
-      } else if (result.kind === "permanent_failure") {
-        await this.fail(events, snapshot, node.id, prior.attempt, safeErrorCode(result.errorCode));
-      } else {
-        await this.unknown(
-          events,
-          snapshot,
-          node.id,
-          prior.attempt,
-          safeReconciliationRef(result.reconciliationRef),
+    await this.repository.renewExecutor({ ...executorScope(snapshot), leaseMs: capability.timeoutMs + 30_000 });
+    const effect = { ...executorScope(snapshot), nodeId: node.id, attempt: prior.attempt, phase: "execute" as const, effectKey: `${idempotencyKey}:execute` };
+    const reserved = await this.repository.reserveEffect(effect);
+    let result: WorkflowActionExecutionResult;
+    if (!reserved.acquired) {
+      result = reserved.status === "pending" || reserved.status === "unknown"
+        ? { kind: "unknown" } : parseExecutionResult(reserved.result, capability, this.maxOutputBytes);
+    } else {
+      try {
+        result = await withTimeout(
+          (signal) => this.actions.executeConfirmed({
+            auth, capability, values, idempotencyKey,
+            changesetId: confirmation.changesetId,
+            previewHash: confirmation.previewHash,
+            confirmedBy, signal,
+          }),
+          capability.timeoutMs,
         );
+        result = parseExecutionResult(result, capability, this.maxOutputBytes);
+      } catch {
+        result = { kind: "unknown" };
       }
-    } catch {
-      await this.unknown(events, snapshot, node.id, prior.attempt);
+      await this.repository.finishEffect({ ...effect, status: result.kind === "succeeded" ? "done" : result.kind === "unknown" ? "unknown" : "failed", result });
+    }
+    if (result.kind === "succeeded") {
+      await this.succeed(snapshot, events, node, capability, prior.attempt, idempotencyKey, result.output);
+    } else if (result.kind === "permanent_failure") {
+      await this.fail(events, snapshot, node.id, prior.attempt, safeErrorCode(result.errorCode));
+    } else {
+      await this.unknown(events, snapshot, node.id, prior.attempt, safeReconciliationRef(result.reconciliationRef));
     }
   }
 
@@ -529,6 +549,7 @@ export class DurableWorkflowRunHandler {
     idempotencyKey: string,
     output: unknown,
   ): Promise<void> {
+    await this.repository.renewExecutor({ ...executorScope(snapshot), leaseMs: 60_000 });
     let outputBytes: number;
     try {
       assertNoCredentialShape(output);
@@ -651,6 +672,7 @@ export class DurableWorkflowRunHandler {
     event: WorkflowRunEventDraft,
   ): Promise<void> {
     const stored = await this.repository.appendEvent({
+      ...executorScope(snapshot),
       workspaceId: snapshot.workspaceId,
       runId: snapshot.runId,
       dedupeKey,
@@ -669,6 +691,7 @@ export class DurableWorkflowRunHandler {
   ): Promise<WorkflowRunStatus> {
     if (current === next) return next;
     const changed = await this.repository.compareAndSetStatus({
+      ...executorScope(snapshot),
       workspaceId: snapshot.workspaceId,
       runId: snapshot.runId,
       expected: current,
@@ -690,6 +713,47 @@ export class DurableWorkflowRunHandler {
     }
     return snapshot;
   }
+
+  private async withExecutor<T>(command: WorkflowRunCommand, operation: (snapshot: DurableWorkflowRunSnapshot) => Promise<T>): Promise<T> {
+    await this.loadAuthorized(command);
+    const executorToken = await this.repository.claimExecutor({workspaceId:command.workspaceId,runId:command.runId,leaseMs:60_000});
+    if (!executorToken) throw new Error("Workflow executor is busy");
+    const scope = {workspaceId:command.workspaceId,runId:command.runId,executorToken};
+    try { return await operation({ ...await this.loadAuthorized(command), executorToken }); }
+    finally { await this.repository.releaseExecutor(scope).catch(() => false); }
+  }
+}
+
+function executorScope(snapshot: DurableWorkflowRunSnapshot) {
+  if (!snapshot.executorToken) throw new Error("Missing workflow executor token");
+  return {workspaceId:snapshot.workspaceId,runId:snapshot.runId,executorToken:snapshot.executorToken};
+}
+
+function parsePreviewResult(value: unknown): WorkflowActionPreviewResult {
+  if (!value || typeof value !== "object") throw new Error("Invalid stored preview result");
+  const result = value as WorkflowActionPreviewResult;
+  if (result.kind === "ready" && UUID.test(result.changesetId) && HASH.test(result.previewHash) &&
+    (result.expiresAt === undefined || (typeof result.expiresAt === "string" && Number.isFinite(Date.parse(result.expiresAt))))) {
+    return {kind:"ready",changesetId:result.changesetId,previewHash:result.previewHash,...(result.expiresAt?{expiresAt:result.expiresAt}:{})};
+  }
+  if (result.kind === "permanent_failure" || result.kind === "retryable_failure") {
+    return {kind:result.kind,errorCode:safeErrorCode(result.errorCode),...(result.kind === "retryable_failure" && result.retryAfterMs !== undefined ? {retryAfterMs:boundedRetry(result.retryAfterMs)} : {})};
+  }
+  throw new Error("Invalid stored preview result");
+}
+function parseExecutionResult(value: unknown, capability: CapabilityDefinition, maxBytes: number): WorkflowActionExecutionResult {
+  if (!value || typeof value !== "object") return {kind:"unknown"};
+  const result = value as WorkflowActionExecutionResult;
+  if (result.kind === "permanent_failure") return {kind:result.kind,errorCode:safeErrorCode(result.errorCode)};
+  if (result.kind === "unknown") {
+    const ref = typeof result.reconciliationRef === "string" ? safeReconciliationRef(result.reconciliationRef) : undefined;
+    return {kind:"unknown",...(ref ? {reconciliationRef:ref} : {})};
+  }
+  if (result.kind !== "succeeded") return {kind:"unknown"};
+  assertNoCredentialShape(result.output);
+  if (jsonBytes(result.output) > Math.min(maxBytes, 900_000)) return {kind:"unknown"};
+  const parsed = capability.outputSchema.safeParse(result.output);
+  return parsed.success ? {kind:"succeeded",output:parsed.data} : {kind:"unknown"};
 }
 
 function normalizeAdvanceDecision(

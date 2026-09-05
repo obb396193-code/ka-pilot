@@ -82,6 +82,7 @@ export type SourceAuthority = z.infer<typeof sourceAuthoritySchema>;
 
 export const sourceLineageSchema = z
   .object({
+    workspaceKind: z.enum(["personal", "team"]),
     source: z.enum([
       "ka_data",
       "qihang_realtime",
@@ -191,13 +192,20 @@ export const stableDataQueryErrorSchema = z
   .strict();
 export type StableDataQueryError = z.infer<typeof stableDataQueryErrorSchema>;
 
-export const dataQueryRequestSchema = z
-  .object({
-    queryId: dataQueryIdSchema,
-    params: z.record(z.string(), z.unknown()),
-    dataView: dataViewModeSchema,
-  })
-  .strict();
+/** DATA-ROUTE-001: public source selection is never a request field. */
+export const ordinaryDataQueryIdSchema = dataQueryIdSchema.exclude(["reconcile.account_daily"]);
+export const ordinaryDataQueryRequestSchema = z.object({
+  queryId: ordinaryDataQueryIdSchema,
+  params: z.record(z.string(), z.unknown()),
+}).strict();
+export const adminReconcileRequestSchema = z.object({
+  queryId: z.literal("reconcile.account_daily"),
+  params: z.record(z.string(), z.unknown()),
+}).strict();
+export type OrdinaryDataQueryRequest = z.infer<typeof ordinaryDataQueryRequestSchema>;
+export type AdminReconcileRequest = z.infer<typeof adminReconcileRequestSchema>;
+
+export const dataQueryRequestSchema = ordinaryDataQueryRequestSchema;
 export type DataQueryRequest = z.infer<typeof dataQueryRequestSchema>;
 
 export const sourceQueryResultSchema = z

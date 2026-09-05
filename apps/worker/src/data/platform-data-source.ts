@@ -17,6 +17,7 @@ import type { ResolvedDataQuery } from "./query-registry.js";
 import {
   CanonicalQueryRowError,
   canonicalizeQueryRows,
+  maskCanonicalQueryRows,
 } from "./canonical-query-rows.js";
 
 const PLATFORM_SOURCE_REQUEST_ID = "platform-source";
@@ -113,6 +114,7 @@ function sourceLineage(
   };
   return {
     source: "canonical",
+    workspaceKind: scope.scopeKind === "team_workspace_readonly" ? "team" : "personal",
     ...sourceMetadata,
     metadataAvailability: metadataAvailability(sourceMetadata),
     queryTemplateVersion: resolved.queryTemplateVersion,
@@ -141,9 +143,10 @@ function sourceLineage(
   };
 }
 
-function unavailableLineage(resolved: ResolvedDataQuery): SourceLineage {
+function unavailableLineage(resolved: ResolvedDataQuery, execution: DataQueryExecutionScope): SourceLineage {
   return {
     source: "canonical",
+    workspaceKind: execution.scopeKind === "team_workspace_readonly" ? "team" : "personal",
     datasetVersion: null,
     queryTemplateVersion: resolved.queryTemplateVersion,
     metricVersion: resolved.metricVersion,
@@ -261,7 +264,7 @@ export class PlatformDataSource {
         queryId: resolved.queryId,
         rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
         status: "ready",
-        rows,
+        rows: truncated ? maskCanonicalQueryRows(resolved.queryId, rows, "error") : rows,
         returnedRowCount: rows.length,
         wholeResultTotal,
         lineage,
@@ -282,7 +285,7 @@ export class PlatformDataSource {
           availability: "error",
           reason: "SOURCE_UNAVAILABLE",
         },
-        lineage: unavailableLineage(resolved),
+        lineage: unavailableLineage(resolved, execution),
         warnings: ["Platform source is unavailable"],
         error: {
           code: "SOURCE_UNAVAILABLE",

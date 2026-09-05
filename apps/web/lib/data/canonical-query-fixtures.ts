@@ -1,6 +1,10 @@
+const canonicalAvailable = (value: number) => ({ value, availability: "available" as const })
+const missingMetric = { value: null, availability: "missing" } as const
+
 import { canonicalRowSchemaVersionByQueryId, type DataQueryId } from "./canonical-query-rows.ts"
 
 const lineage = {
+  workspaceKind: "personal",
   source: "canonical",
   datasetVersion: "canonical-20260824-01",
   queryTemplateVersion: "v1",
@@ -27,15 +31,15 @@ const ratios = {
 } as const
 
 const summaryMetrics = {
-  cost: 270,
-  exposure: 2700,
-  click: 221,
-  conversion: 27,
-  realConversion: 23,
-  cashCost: 216,
-  costSpace: 34,
-  wakeUv: 110,
-  potentialUv: 55,
+  cost: canonicalAvailable(270),
+  exposure: canonicalAvailable(2700),
+  click: canonicalAvailable(221),
+  conversion: canonicalAvailable(27),
+  realConversion: canonicalAvailable(23),
+  cashCost: canonicalAvailable(216),
+  costSpace: canonicalAvailable(34),
+  wakeUv: canonicalAvailable(110),
+  potentialUv: canonicalAvailable(55),
   ratios,
 } as const
 
@@ -67,7 +71,7 @@ function singleSource(queryId: DataQueryId, rows: readonly Record<string, unknow
 
 export const canonicalSummaryEnvelope = singleSource("account.summary", [canonicalSummaryRow], 3)
 export const canonicalTrendEnvelope = singleSource("account.trend", [
-  { ds: "2026-08-23", metrics: { ...canonicalSummaryRow, metrics: { ...summaryMetrics, cost: 250, ratios: { ...ratios, realCpa: { value: 12.5, state: "finite" } } } } },
+  { ds: "2026-08-23", metrics: { ...canonicalSummaryRow, metrics: { ...summaryMetrics, cost: canonicalAvailable(250), ratios: { ...ratios, realCpa: { value: 12.5, state: "finite" } } } } },
   { ds: "2026-08-24", metrics: canonicalSummaryRow },
 ], 2)
 
@@ -80,14 +84,14 @@ export const canonicalTableRow = {
   ds: "2026-08-24",
   metrics: {
     ...summaryMetrics,
-    cost: 120,
-    realConversion: 8,
+    cost: canonicalAvailable(120),
+    realConversion: canonicalAvailable(8),
     ratios: { ...ratios, realCpa: { value: 15, state: "finite" }, cashCpa: { value: 12, state: "finite" } },
-    budget: 500,
-    budgetUsageRate: 0.24,
-    deductionRate: null,
-    mainAdCostProportion: null,
-    assessmentPrice: 38,
+    budget: canonicalAvailable(500),
+    budgetUsageRate: canonicalAvailable(0.24),
+    deductionRate: missingMetric,
+    mainAdCostProportion: missingMetric,
+    assessmentPrice: canonicalAvailable(38),
   },
   dataAnomaly: true,
   computedAt: null,

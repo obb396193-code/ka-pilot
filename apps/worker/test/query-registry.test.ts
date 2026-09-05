@@ -126,7 +126,7 @@ describe("DataQueryRegistry", () => {
         { media: "KUAISHOU", accountId: "same-id" },
         { media: "TENCENT", accountId: "same-id" },
       ],
-    ).sql).toContain("COUNT(DISTINCT media || ':' || account_id)");
+    ).sql).toContain("COUNT(DISTINCT CASE WHEN observed_account_id IS NOT NULL THEN media || ':' || account_id END)");
     expect(plan.sql).not.toContain("undefined");
   });
 });

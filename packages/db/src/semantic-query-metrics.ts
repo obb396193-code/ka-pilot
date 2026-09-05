@@ -12,15 +12,15 @@ import type {
 export interface AggregateDatabaseRow {
   row_count: string | number;
   account_count: string | number;
-  cost: string | number;
-  exposure: string | number;
-  click: string | number;
-  conversion: string | number;
-  real_conversion: string | number;
-  cash_cost: string | number;
-  cost_space: string | number;
-  wake_uv: string | number;
-  potential_uv: string | number;
+  cost: string | number | null;
+  exposure: string | number | null;
+  click: string | number | null;
+  conversion: string | number | null;
+  real_conversion: string | number | null;
+  cash_cost: string | number | null;
+  cost_space: string | number | null;
+  wake_uv: string | number | null;
+  potential_uv: string | number | null;
   anomaly_rows: string | number;
 }
 
@@ -28,19 +28,33 @@ interface TrendDatabaseRow extends AggregateDatabaseRow {
   ds: string;
 }
 
+const SUM_COLUMNS = ["cost", "exposure", "click", "conversion", "real_conversion",
+  "cash_cost", "cost_space", "wake_uv", "potential_uv"] as const;
+
+// These identifiers are code-owned, never request SQL. NULL cannot conceal a corrupt NaN/Infinity.
 export const METRIC_AGGREGATE_SQL = `
-  count(*)::text AS row_count,
-  count(DISTINCT (metric.media, metric.account_id))::text AS account_count,
-  COALESCE(sum(metric.cost), 0) AS cost,
-  COALESCE(sum(metric.exposure), 0) AS exposure,
-  COALESCE(sum(metric.click), 0) AS click,
-  COALESCE(sum(metric.conversion), 0) AS conversion,
-  COALESCE(sum(metric.real_conversion), 0) AS real_conversion,
-  COALESCE(sum(metric.cash_cost), 0) AS cash_cost,
-  COALESCE(sum(metric.cost_space), 0) AS cost_space,
-  COALESCE(sum(metric.wake_uv), 0) AS wake_uv,
-  COALESCE(sum(metric.potential_uv), 0) AS potential_uv,
+  count(*) FILTER (WHERE metric.observed)::text AS row_count,
+  count(DISTINCT (metric.media, metric.account_id)) FILTER (WHERE metric.observed)::text AS account_count,
+  ${SUM_COLUMNS.map((column) => `CASE WHEN count(metric.${column})=count(*)
+    OR bool_or(metric.${column}::text IN ('NaN','Infinity','-Infinity'))
+    THEN sum(metric.${column}) ELSE NULL END AS ${column}`).join(",\n  ")},
   count(*) FILTER (WHERE metric.data_anomaly)::text AS anomaly_rows`;
+
+/** Expected account-days remain visible even when ETL has no row; observed counts stay factual.
+ * Date arithmetic is date+integer, independent of the database session timezone/DST.
+ * Outer buildMetricFilter retains the trusted workspace/media/account tuple and effective task scope.
+ */
+export const EXPECTED_METRIC_CTE = `WITH expected_metric AS (
+  SELECT account.workspace_id, account.media, account.account_id,
+    $2::date+day.day_index AS ds, stored.account_id IS NOT NULL AS observed,
+    ${SUM_COLUMNS.map((column) => `stored.${column}`).join(", ")}, stored.data_anomaly
+  FROM accounts AS account
+  CROSS JOIN generate_series(0, $3::date-$2::date) AS day(day_index)
+  LEFT JOIN account_metrics_daily AS stored
+    ON stored.workspace_id=account.workspace_id AND stored.media=account.media
+    AND stored.account_id=account.account_id AND stored.ds=$2::date+day.day_index
+  WHERE account.workspace_id=$1
+)`;
 
 function requiredNumber(value: string | number): number {
   const parsed = nullableNumber(value);
@@ -76,15 +90,15 @@ export function mapMetricSummary(row: AggregateDatabaseRow): MetricSummary {
   const values: Omit<MetricSummary, "ratios"> = {
     rowCount: requiredNumber(row.row_count),
     accountCount: requiredNumber(row.account_count),
-    cost: requiredNumber(row.cost),
-    exposure: requiredNumber(row.exposure),
-    click: requiredNumber(row.click),
-    conversion: requiredNumber(row.conversion),
-    realConversion: requiredNumber(row.real_conversion),
-    cashCost: requiredNumber(row.cash_cost),
-    costSpace: requiredNumber(row.cost_space),
-    wakeUv: requiredNumber(row.wake_uv),
-    potentialUv: requiredNumber(row.potential_uv),
+    cost: nullableNumber(row.cost),
+    exposure: nullableNumber(row.exposure),
+    click: nullableNumber(row.click),
+    conversion: nullableNumber(row.conversion),
+    realConversion: nullableNumber(row.real_conversion),
+    cashCost: nullableNumber(row.cash_cost),
+    costSpace: nullableNumber(row.cost_space),
+    wakeUv: nullableNumber(row.wake_uv),
+    potentialUv: nullableNumber(row.potential_uv),
     anomalyRows: requiredNumber(row.anomaly_rows),
   };
   return { ...values, ratios: buildRatios(values) };
@@ -96,8 +110,8 @@ export async function queryMetricSummary(
 ): Promise<MetricSummary> {
   const filter = buildMetricFilter(scope);
   const result = await pool.query<AggregateDatabaseRow>(
-    `SELECT ${METRIC_AGGREGATE_SQL}
-     FROM account_metrics_daily AS metric
+    `${EXPECTED_METRIC_CTE} SELECT ${METRIC_AGGREGATE_SQL}
+     FROM expected_metric AS metric
      JOIN accounts AS account
        ON account.workspace_id = metric.workspace_id
       AND account.media = metric.media
@@ -118,8 +132,8 @@ export async function queryMetricTrend(
 ): Promise<MetricTrendRow[]> {
   const filter = buildMetricFilter(scope);
   const result = await pool.query<TrendDatabaseRow>(
-    `SELECT to_char(metric.ds, 'YYYY-MM-DD') AS ds, ${METRIC_AGGREGATE_SQL}
-     FROM account_metrics_daily AS metric
+    `${EXPECTED_METRIC_CTE} SELECT to_char(metric.ds, 'YYYY-MM-DD') AS ds, ${METRIC_AGGREGATE_SQL}
+     FROM expected_metric AS metric
      JOIN accounts AS account
        ON account.workspace_id = metric.workspace_id
       AND account.media = metric.media

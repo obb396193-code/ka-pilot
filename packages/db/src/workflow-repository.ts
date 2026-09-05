@@ -1,4 +1,5 @@
 import type { Pool, PoolClient } from "pg";
+import { WorkflowExecutionRepository, lockWorkflowExecutor } from "./workflow-execution-repository.js";
 
 import {
   workflowRunEventSchema,
@@ -99,8 +100,8 @@ interface EventRow {
   at: Date | string;
 }
 
-export class WorkflowRepository {
-  constructor(private readonly pool: Pool) {}
+export class WorkflowRepository extends WorkflowExecutionRepository {
+  constructor(pool: Pool) { super(pool); }
 
   async createDefinition(input: {
     workspaceId: string;
@@ -288,18 +289,13 @@ export class WorkflowRepository {
   async appendEvent(input: {
     workspaceId: string;
     runId: string;
+    executorToken: string;
     dedupeKey: string;
     event: WorkflowRunEventDraft;
   }): Promise<StoredWorkflowEvent> {
     assertDedupeKey(input.dedupeKey);
     return withTransaction(this.pool, async (client) => {
-      const run = await client.query(
-        `SELECT id FROM workflow_runs
-         WHERE id = $1 AND workspace_id = $2
-         FOR UPDATE`,
-        [input.runId, input.workspaceId],
-      );
-      if (run.rowCount !== 1) throw new Error("workflow run not found in workspace");
+      await lockWorkflowExecutor(client, input);
 
       const duplicate = await client.query<EventRow>(
         `SELECT * FROM workflow_run_events
@@ -366,20 +362,24 @@ export class WorkflowRepository {
   async compareAndSetRunStatus(input: {
     workspaceId: string;
     runId: string;
+    executorToken: string;
     expected: WorkflowRunStatus;
     next: WorkflowRunStatus;
   }): Promise<boolean> {
     assertRunStatus(input.expected);
     assertRunStatus(input.next);
     const terminal = ["succeeded", "failed", "unknown", "cancelled"].includes(input.next);
-    const result = await this.pool.query(
-      `UPDATE workflow_runs
-       SET status = $4,
-           finished_at = CASE WHEN $5::boolean THEN now() ELSE NULL END
-       WHERE id = $1 AND workspace_id = $2 AND status = $3`,
-      [input.runId, input.workspaceId, input.expected, input.next, terminal],
-    );
-    return result.rowCount === 1;
+    return withTransaction(this.pool, async (client) => {
+      await lockWorkflowExecutor(client, input);
+      const result = await client.query(
+        `UPDATE workflow_runs
+         SET status = $4,
+             finished_at = CASE WHEN $5::boolean THEN now() ELSE NULL END
+         WHERE id = $1 AND workspace_id = $2 AND status = $3`,
+        [input.runId, input.workspaceId, input.expected, input.next, terminal],
+      );
+      return result.rowCount === 1;
+    });
   }
 }
 

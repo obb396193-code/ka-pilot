@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import { GatewayRepository } from "../src/gateway-repository.js";
@@ -12,6 +12,7 @@ describe("GatewayRepository", () => {
   const repository = new GatewayRepository(pool);
   let workspaceId: string;
   let userId: string;
+  afterAll(async () => { await pool.end(); });
 
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
@@ -39,10 +40,10 @@ describe("GatewayRepository", () => {
 
   it("claims an inbound event only once", async () => {
     await expect(
-      repository.claimInbound(workspaceId, "dingtalk", "event-1", "robot_message", { text: "hello" }),
+      repository.receiveInbound(workspaceId, "dingtalk", "event-1", "robot_message", { text: "hello" }),
     ).resolves.toBe(true);
     await expect(
-      repository.claimInbound(workspaceId, "dingtalk", "event-1", "robot_message", { text: "hello" }),
+      repository.receiveInbound(workspaceId, "dingtalk", "event-1", "robot_message", { text: "hello" }),
     ).resolves.toBe(false);
   });
 

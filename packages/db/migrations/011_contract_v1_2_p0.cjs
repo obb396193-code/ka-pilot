@@ -1,3 +1,5 @@
+// First-deployment/maintenance-window migration. The reviewed R009 backfill
+// supplement is folded here before batch release; 012 remains reserved for arch.
 exports.up = (pgm) => {
   pgm.sql(`
     SET LOCAL lock_timeout = '5s';
@@ -61,7 +63,7 @@ exports.up = (pgm) => {
 
       IF EXISTS (
         SELECT 1 FROM backfill_jobs
-        WHERE status NOT IN ('running', 'raw_done', 'canonical_done', 'done', 'failed')
+        WHERE status IS NULL OR status NOT IN ('running', 'raw_done', 'canonical_done', 'done', 'failed')
       ) THEN
         RAISE EXCEPTION 'backfill_jobs contains a legacy status that must be resolved before migration';
       END IF;
@@ -139,6 +141,19 @@ exports.up = (pgm) => {
     ALTER TABLE backfill_jobs
       ADD COLUMN failed_stage TEXT,
       ADD COLUMN finished_at TIMESTAMPTZ;
+
+    ALTER TABLE backfill_jobs
+      ADD CONSTRAINT backfill_jobs_status_check CHECK (
+        status IS NOT NULL AND status IN ('running', 'raw_done', 'canonical_done', 'done', 'failed')
+      ),
+      ADD CONSTRAINT backfill_jobs_failed_stage_check CHECK (
+        failed_stage IS NULL OR failed_stage IN ('raw', 'canonical', 'quality')
+      );
+
+    -- Legacy done only proved raw completion. Startup derives the new state
+    -- from all three stages; never grandfather an unverified completion.
+    UPDATE backfill_jobs SET status = 'running', finished_at = NULL, failed_stage = NULL
+    WHERE status = 'done';
   `);
 };
 
@@ -148,6 +163,8 @@ exports.down = (pgm) => {
     SET LOCAL statement_timeout = '5min';
 
     ALTER TABLE backfill_jobs
+      DROP CONSTRAINT backfill_jobs_failed_stage_check,
+      DROP CONSTRAINT backfill_jobs_status_check,
       DROP COLUMN finished_at,
       DROP COLUMN failed_stage;
 

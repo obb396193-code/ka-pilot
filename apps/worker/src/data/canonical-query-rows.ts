@@ -1,6 +1,7 @@
 import {
   canonicalQueryRowSchemaById,
   safeDivide,
+  metricValue,
   type AccountDailyRow,
   type AccountSummaryRow,
   type DataQueryId,
@@ -94,15 +95,15 @@ function metricSet(row: RawRow, source: SourceKind) {
   const wakeUv = source === "platform" ? firstNumber(row, "wakeUv") : null;
   const potentialUv = source === "platform" ? firstNumber(row, "potentialUv") : null;
   return {
-    cost,
-    exposure,
-    click,
-    conversion,
-    realConversion,
-    cashCost,
-    costSpace,
-    wakeUv,
-    potentialUv,
+    cost: metricValue(cost),
+    exposure: metricValue(exposure),
+    click: metricValue(click),
+    conversion: metricValue(conversion),
+    realConversion: metricValue(realConversion),
+    cashCost: metricValue(cashCost),
+    costSpace: metricValue(costSpace),
+    wakeUv: metricValue(wakeUv),
+    potentialUv: metricValue(potentialUv),
     ratios: {
       ctr: safeDivide(click, exposure),
       cvr: safeDivide(conversion, click),
@@ -163,15 +164,15 @@ function dailyRow(row: RawRow, source: SourceKind, trustedWorkspaceId: string): 
     ds: calendarDate(row.ds),
     metrics: {
       ...base,
-      budget: firstNumber(row, "budget"),
-      budgetUsageRate: firstNumber(row, "budgetUsageRate", "budget_usage_rate"),
-      deductionRate: firstNumber(row, "deductionRate", "deduction_rate"),
-      mainAdCostProportion: firstNumber(
+      budget: metricValue(firstNumber(row, "budget")),
+      budgetUsageRate: metricValue(firstNumber(row, "budgetUsageRate", "budget_usage_rate")),
+      deductionRate: metricValue(firstNumber(row, "deductionRate", "deduction_rate")),
+      mainAdCostProportion: metricValue(firstNumber(
         row,
         "mainAdCostProportion",
         "main_ad_cost_proportion",
-      ),
-      assessmentPrice: firstNumber(row, "assessmentPriceSnapshot", "assessment"),
+      )),
+      assessmentPrice: metricValue(firstNumber(row, "assessmentPriceSnapshot", "assessment")),
     },
     dataAnomaly,
     computedAt,
@@ -212,5 +213,34 @@ export function canonicalizeQueryRows(
     const parsed = schema.safeParse(row);
     if (!parsed.success) throw new CanonicalQueryRowError();
     return parsed.data as Record<string, unknown>;
+  });
+}
+
+/** Only call on canonical rows: corruption must fail before transport masking. */
+export function maskCanonicalQueryRows(
+  queryId: DataQueryId,
+  rows: readonly RawRow[],
+  availability: "missing" | "error",
+): RawRow[] {
+  const schema = canonicalQueryRowSchemaById[queryId];
+  function maskedMetrics(metrics: RawRow): RawRow {
+    return Object.fromEntries(Object.entries(metrics).map(([key, value]) => [
+      key,
+      key === "ratios"
+        ? Object.fromEntries(Object.keys(value as RawRow).map((name) => [name, { value: null, state: "undefined" }]))
+        : { value: null, availability },
+    ]));
+  }
+  return rows.map((row) => {
+    const parsed = schema.safeParse(row);
+    if (!parsed.success) throw new CanonicalQueryRowError();
+    const clean = parsed.data as RawRow;
+    const container = clean.metrics as RawRow;
+    const result = queryId === "account.trend"
+      ? { ...clean, metrics: { ...container, metrics: maskedMetrics(container.metrics as RawRow) } }
+      : { ...clean, metrics: maskedMetrics(container) };
+    const masked = schema.safeParse(result);
+    if (!masked.success) throw new CanonicalQueryRowError();
+    return masked.data as RawRow;
   });
 }

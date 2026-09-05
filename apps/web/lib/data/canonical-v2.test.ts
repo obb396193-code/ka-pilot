@@ -1,0 +1,87 @@
+import assert from "node:assert/strict"
+import { readFile } from "node:fs/promises"
+import test from "node:test"
+import { dataQueryResponseSchema } from "./contracts.ts"
+import { canonicalQueryRowSchemaById, canonicalQueryRowsSchema, canonicalRowSchemaVersionByQueryId, ratioValueSchema } from "./canonical-query-rows.ts"
+import { adaptAnalysis, adaptWorkbench } from "./adapters.ts"
+import { getMockResponse } from "./mock-data.ts"
+
+for (const name of ["ready-lineage", "unknown-lineage", "reconcile-pending", "stable-error"]) {
+  test(`v2 consumes authoritative backend fixture ${name} without local copies`, async () => {
+    const raw = await readFile(new URL(`../../../../packages/contract/fixtures/data-query/${name}.json`, import.meta.url), "utf8")
+    assert.equal(dataQueryResponseSchema.safeParse(JSON.parse(raw)).success, true)
+  })
+}
+
+for (const queryId of Object.keys(canonicalQueryRowSchemaById) as (keyof typeof canonicalQueryRowSchemaById)[]) {
+  for (const side of ["ka_data", "platform"] as const) {
+    test(`${queryId}/${side} is strict v2 and distinguishes zero/missing/error`, () => {
+      const result = getMockResponse({ queryId, dataView: side, params: {} })
+      assert.ok(result.ok && result.data.mode !== "reconcile")
+      const source = result.data.source
+      assert.equal(source.rowSchemaVersion, `${queryId}/v2`)
+      const row = structuredClone(source.rows[0])
+      const metrics = (queryId === "account.trend" ? (row.metrics as Record<string, unknown>).metrics : row.metrics) as Record<string, unknown>
+      for (const value of [{ value: 0, availability: "available" }, { value: null, availability: "missing" }, { value: null, availability: "error" }]) {
+        metrics.cost = value
+        assert.equal(canonicalQueryRowSchemaById[queryId].safeParse(row).success, true)
+      }
+      for (const value of [0, null, { value: null, availability: "available" }, { value: 1, availability: "error" }, { value: 2, availability: "stale" }, { value: "0", availability: "available" }, { value: Infinity, availability: "available" }]) {
+        metrics.cost = value
+        assert.equal(canonicalQueryRowSchemaById[queryId].safeParse(row).success, false)
+      }
+      const legacy = structuredClone(result)
+      if (legacy.ok && legacy.data.mode !== "reconcile") legacy.data.source.rowSchemaVersion = `${queryId}/v1`
+      assert.equal(dataQueryResponseSchema.safeParse(legacy).success, false)
+      assert.equal(canonicalRowSchemaVersionByQueryId[queryId], `${queryId}/v2`)
+    })
+  }
+}
+
+test("v2 analysis preserves error and real zero instead of silently treating them as missing", () => {
+  const response = getMockResponse({ queryId: "account.table", dataView: "platform", params: {} })
+  assert.ok(response.ok && response.data.mode !== "reconcile")
+  const metrics = response.data.source.rows[0].metrics as Record<string, unknown>
+  metrics.cost = { value: null, availability: "error" }
+  metrics.realConversion = { value: 0, availability: "available" }
+  metrics.assessmentPrice = { value: null, availability: "missing" }
+  const row = adaptAnalysis(response, "platform", true).data.rows[0]
+  assert.equal(row.platform.spend.availability, "error")
+  assert.equal(row.platform.spend.displayValue, "取数失败")
+  assert.equal(row.platform.conversions.value, 0)
+  assert.equal(row.platform.conversions.availability, "available")
+  assert.equal(row.assessmentCpa.availability, "missing")
+})
+
+test("server-selected team source is consumed even when the old caller asked for platform", () => {
+  const request = { dataView: "ka_data" as const, params: {} }
+  const responses = {
+    summary: getMockResponse({ ...request, queryId: "account.summary" }),
+    trend: getMockResponse({ ...request, queryId: "account.trend" }),
+    anomalies: getMockResponse({ ...request, queryId: "account.anomalies" }),
+  }
+  const adapted = adaptWorkbench(responses, "platform", true)
+  assert.equal(adapted.state, "ready")
+  assert.ok(adapted.data.metrics.length > 0)
+  assert.ok(adapted.data.anomalies.length > 0)
+})
+
+test("ratios retain finite/infinite/undefined without allowing contradictory values", () => {
+  for (const ratio of [{ value: 0, state: "finite" }, { value: null, state: "infinite" }, { value: null, state: "undefined" }]) {
+    assert.equal(ratioValueSchema.safeParse(ratio).success, true)
+  }
+  for (const ratio of [{ value: null, state: "finite" }, { value: 0, state: "infinite" }, { value: 2, state: "undefined" }]) {
+    assert.equal(ratioValueSchema.safeParse(ratio).success, false)
+  }
+  assert.equal(canonicalQueryRowsSchema("account.table").safeParse([]).success, true)
+})
+
+test("lineage requires explicit valid workspaceKind, not a default personal value", () => {
+  const response = getMockResponse({ queryId: "account.summary", dataView: "platform", params: {} })
+  assert.ok(response.ok && response.data.mode !== "reconcile")
+  const lineage = response.data.source.lineage as Record<string, unknown>
+  for (const value of [undefined, null, "shared", "admin"]) {
+    lineage.workspaceKind = value
+    assert.equal(dataQueryResponseSchema.safeParse(response).success, false)
+  }
+})

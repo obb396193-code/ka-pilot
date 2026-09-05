@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
@@ -15,6 +15,7 @@ describe("MetricsRepository", () => {
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
   });
+  afterAll(async () => { await pool.end(); });
 
   beforeEach(async () => {
     await pool.query("DELETE FROM ad_metrics_hourly");
@@ -75,6 +76,21 @@ describe("MetricsRepository", () => {
         channelCoefficient: 2,
         assessmentPrice: 11,
       },
+    ]);
+  });
+
+  it("resolves only the assigned task's effective version, never a previous task's price", async () => {
+    await pool.query("UPDATE task_accounts SET valid_to='2026-08-17' WHERE workspace_id=$1", [workspaceId]);
+    await pool.query("INSERT INTO tasks(workspace_id,task_id) VALUES ($1,'t-2')", [workspaceId]);
+    await pool.query(`INSERT INTO task_accounts(workspace_id,task_id,media,account_id,valid_from)
+      VALUES ($1,'t-2','KUAISHOU','a-1','2026-08-18')`, [workspaceId]);
+    await pool.query(`INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date)
+      VALUES ($1,'t-1',9,'2026-08-01'),($1,'t-2',20,'2026-08-19'),
+             ($1,'t-2',21,'2026-08-19'),($1,'t-2',999,'2026-09-01')`, [workspaceId]);
+    const rows = await repository.loadEffectiveSettingsBatch(workspaceId,
+      ["2026-08-17","2026-08-18","2026-08-19"].map((ds) => ({ media: "KUAISHOU", accountId: "a-1", ds })));
+    expect(rows.map((row) => [row.ds,row.assessmentPrice])).toEqual([
+      ["2026-08-17",9],["2026-08-18",null],["2026-08-19",21],
     ]);
   });
 

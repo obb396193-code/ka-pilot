@@ -37,15 +37,15 @@ function finiteRatioValue(ratio: { value: number | null; state: "finite" | "infi
 function backendMetric(value: BackendMetricValue | undefined, kind: "money" | "number" | "percent" = "number"): MetricValue {
   if (!value || value.value === null) {
     const availability = !value || value.availability === "available" ? "missing" : value.availability
-    return { value: null, displayValue: availability === "denominator_zero" ? "−" : "该来源缺失", availability }
+    return { value: null, displayValue: availability === "denominator_zero" ? "−" : availability === "error" ? "取数失败" : "该来源缺失", availability }
   }
   return metric(value.value, undefined, kind)
 }
 function canonicalSourceMetrics(row: AccountDailyRow | undefined) {
   const realCpa = finiteRatioValue(row?.metrics.ratios.realCpa)
   return {
-    spend: row?.metrics.cost === null || row?.metrics.cost === undefined ? metric(undefined, undefined) : metric(row.metrics.cost, undefined, "money"),
-    conversions: row?.metrics.realConversion === null || row?.metrics.realConversion === undefined ? metric(undefined, undefined) : metric(row.metrics.realConversion, undefined),
+    spend: backendMetric(row?.metrics.cost, "money"),
+    conversions: backendMetric(row?.metrics.realConversion),
     cpa: realCpa === undefined ? metric(undefined, undefined, "money", "−") : metric(realCpa, undefined, "money"),
   }
 }
@@ -112,6 +112,7 @@ function emptyWorkbench(): WorkbenchData { return { greeting: "KA 经营团队",
 function emptyAnalysis(mode: DataViewMode): AnalysisData { return { mode, rows: [], summary: "当前筛选范围暂无可展示记录。" } }
 
 export function adaptAnalysis(response: DataQueryResponse, mode: DataViewMode, isMock: boolean, forcedState?: DataState): DataResponse<AnalysisData> {
+  if (response.ok) mode = response.data.mode
   const base = emptyAnalysis(mode)
   if (!response.ok) return { ...envelopeMeta(response, mode, isMock, forcedState), data: base }
   const kaBatch = accountDailyRowSchema.array().safeParse(rows(sourceFor(response, "ka_data")))
@@ -129,7 +130,7 @@ export function adaptAnalysis(response: DataQueryResponse, mode: DataViewMode, i
     return {
       workspaceId: displayRow?.workspaceId ?? null, media: pair.media, accountId, accountName: displayRow?.accountName ?? "脱敏账户", owner: displayRow?.ownerUserId ?? "未提供",
       kaData: pair.ka ? canonicalSourceMetrics(pair.ka) : missingSource(), platform: pair.platform ? canonicalSourceMetrics(pair.platform) : missingSource(),
-      assessmentCpa: displayRow?.metrics.assessmentPrice === null || displayRow?.metrics.assessmentPrice === undefined ? metric(undefined, undefined, "money") : metric(displayRow.metrics.assessmentPrice, undefined, "money"),
+      assessmentCpa: backendMetric(displayRow?.metrics.assessmentPrice, "money"),
       comparison: comparison ? { comparable: comparison.comparable, reason: comparison.reason ?? null, delta: backendMetric(comparison.delta, "money"), deltaRate: backendMetric(comparison.deltaRate, "percent") } : { comparable: false, reason: mode === "reconcile" ? response.data.mode === "reconcile" ? response.data.comparison.reason ?? "后端未提供可比结果" : "后端未提供可比结果" : "单源视图不生成差异", delta: metric(undefined, undefined), deltaRate: metric(undefined, undefined) },
       authorityByMetric: { spend: authorityValue, conversions: authorityValue, cpa: authorityValue, assessmentCpa: { defaultSource: "source_versioned", status: "versioned", reason: "考核价按后端来源版本展示" } },
       status: displayRow?.dataAnomaly === true ? "critical" : displayRow?.dataAnomaly === false ? "healthy" : "unavailable",
@@ -144,11 +145,13 @@ export function adaptWorkbench(responses: { summary: DataQueryResponse; trend: D
   const response = failed ?? responses.summary
   const base = emptyWorkbench()
   if (!responses.summary.ok || !responses.trend.ok || !responses.anomalies.ok) return { ...envelopeMeta(response, mode, isMock, forcedState), data: base }
+  mode = responses.summary.data.mode
+  if (responses.trend.data.mode !== mode || responses.anomalies.data.mode !== mode) return { ...envelopeMeta(contractDrift("Workbench source modes do not match"), mode, isMock), data: base }
   const summarySource = sourceFor(responses.summary, mode === "reconcile" ? "platform" : mode)
   const trendSource = sourceFor(responses.trend, mode === "reconcile" ? "platform" : mode)
   const summary = rows(summarySource)[0]
   const trendRows = rows(trendSource)
-  const anomalySource = sourceFor(responses.anomalies, "platform")
+  const anomalySource = sourceFor(responses.anomalies, mode === "reconcile" ? "platform" : mode)
   const canonicalSummary = accountSummaryRowSchema.safeParse(summary)
   const canonicalTrend = accountTrendRowSchema.array().safeParse(trendRows)
   const canonicalAnomalies = accountDailyRowSchema.array().safeParse(rows(anomalySource))
@@ -156,20 +159,21 @@ export function adaptWorkbench(responses: { summary: DataQueryResponse; trend: D
   const summaryMetrics = canonicalSummary.data.metrics
   const anomalyItems = canonicalAnomalies.data.map((row) => ({ id: `${row.media}-${row.accountId}-${row.ds}`, findingId: null, media: row.media, accountId: row.accountId, accountName: row.accountName ?? "脱敏账户", title: "数据异常待核查", severity: "warning" as const, evidence: `dataAnomaly=true · ${row.ds}`, attribution: "待工作项详情接口返回诊断归因", suggestedAction: "保持只读，并从账户详情核查指标与来源", cta: "查看账户" }))
   const summaryRealCpa = finiteRatioValue(summaryMetrics.ratios.realCpa)
-  const canonicalMetrics = [{ key: "spend", label: "今日消耗", value: summaryMetrics.cost === null ? "−" : money.format(summaryMetrics.cost), delta: null, tone: "neutral" as const }, { key: "cpa", label: "真实 CPA", value: summaryRealCpa === undefined ? "−" : money.format(summaryRealCpa), delta: null, tone: "neutral" as const }, { key: "compliance", label: "达标率", value: "−", delta: null, tone: "neutral" as const }, { key: "cost_space", label: "成本空间", value: summaryMetrics.costSpace === null ? "−" : money.format(summaryMetrics.costSpace), delta: null, tone: "neutral" as const }, { key: "bi_volume", label: "BI 量级", value: summaryMetrics.realConversion === null ? "−" : number.format(summaryMetrics.realConversion), delta: null, tone: "neutral" as const }, { key: "risk", label: "待处理", value: canonicalSummary.data.anomalyRows === null ? "−" : number.format(canonicalSummary.data.anomalyRows), delta: null, tone: "critical" as const }]
-  const canonicalTrendData = canonicalTrend.data.map((row) => ({ label: row.ds, spend: row.metrics.metrics.cost, realCpa: finiteRatioValue(row.metrics.metrics.ratios.realCpa) ?? null }))
+  const canonicalMetrics = [{ key: "spend", label: "今日消耗", value: backendMetric(summaryMetrics.cost, "money").displayValue, delta: null, tone: "neutral" as const }, { key: "cpa", label: "真实 CPA", value: summaryRealCpa === undefined ? "−" : money.format(summaryRealCpa), delta: null, tone: "neutral" as const }, { key: "compliance", label: "达标率", value: "−", delta: null, tone: "neutral" as const }, { key: "cost_space", label: "成本空间", value: backendMetric(summaryMetrics.costSpace, "money").displayValue, delta: null, tone: "neutral" as const }, { key: "bi_volume", label: "BI 量级", value: backendMetric(summaryMetrics.realConversion, "number").displayValue, delta: null, tone: "neutral" as const }, { key: "risk", label: "待处理", value: canonicalSummary.data.anomalyRows === null ? "−" : number.format(canonicalSummary.data.anomalyRows), delta: null, tone: "critical" as const }]
+  const canonicalTrendData = canonicalTrend.data.map((row) => ({ label: row.ds, spend: row.metrics.metrics.cost.value, realCpa: finiteRatioValue(row.metrics.metrics.ratios.realCpa) ?? null }))
   const data = workbenchSchema.parse({ ...base, greeting: "早上好，KA 经营团队", scopeLabel: isMock ? "脱敏 Mock 数据" : "内网数据", metrics: canonicalMetrics, anomalies: anomalyItems, accountCoverage: `${canonicalSummary.data.accountCount} 个账户`, trend: canonicalTrendData, alerts: [{ level: "P0", label: "高优先级异常", value: canonicalSummary.data.anomalyRows === null ? "−" : String(canonicalSummary.data.anomalyRows), detail: "数量由异常查询返回" }], healthyAccountMessage: "未返回的账户不自动判定健康" })
   return { ...envelopeMeta(responses.summary, mode, isMock, forcedState), data }
 }
 
 export function adaptAccountDetail(response: DataQueryResponse, mode: DataViewMode, isMock: boolean, accountId: string, forcedState?: DataState): DataResponse<AccountDetailData> {
+  if (response.ok) mode = response.data.mode
   const source = sourceFor(response, mode === "reconcile" ? "platform" : mode); const sourceRows = rows(source)
   const canonicalBatch = accountDailyRowSchema.array().safeParse(sourceRows)
   if (!canonicalBatch.success) return { ...envelopeMeta(contractDrift("Account detail rows failed the strict canonical contract"), mode, isMock), data: accountDetailSchema.parse({ media: "UNKNOWN", accountId, accountName: "脱敏账户", owner: "未提供", status: "unavailable", metrics: [], trend: [], currentFindingId: null, currentFindingTitle: null }) }
   const canonicalRows = canonicalBatch.data
   const canonical = canonicalRows[0]
   const realCpa = finiteRatioValue(canonical?.metrics.ratios.realCpa)
-  const data = accountDetailSchema.parse({ media: canonical?.media ?? "UNKNOWN", accountId, accountName: canonical?.accountName ?? "脱敏账户", owner: canonical?.ownerUserId ?? "未提供", status: canonical?.dataAnomaly === true ? "critical" : canonical?.dataAnomaly === false ? "healthy" : "unavailable", metrics: [{ key: "spend", label: "消耗", value: canonical?.metrics.cost === null || canonical?.metrics.cost === undefined ? "−" : money.format(canonical.metrics.cost), delta: null, tone: "neutral" }, { key: "cpa", label: "真实 CPA", value: realCpa === undefined ? "−" : money.format(realCpa), delta: canonical?.metrics.assessmentPrice === null || canonical?.metrics.assessmentPrice === undefined ? null : money.format(canonical.metrics.assessmentPrice), tone: "neutral" }], trend: canonicalRows.map((item) => ({ label: item.ds, cpa: finiteRatioValue(item.metrics.ratios.realCpa) ?? null, assessmentCpa: item.metrics.assessmentPrice })), currentFindingId: null, currentFindingTitle: null })
+  const data = accountDetailSchema.parse({ media: canonical?.media ?? "UNKNOWN", accountId, accountName: canonical?.accountName ?? "脱敏账户", owner: canonical?.ownerUserId ?? "未提供", status: canonical?.dataAnomaly === true ? "critical" : canonical?.dataAnomaly === false ? "healthy" : "unavailable", metrics: [{ key: "spend", label: "消耗", value: backendMetric(canonical?.metrics.cost, "money").displayValue, delta: null, tone: "neutral" }, { key: "cpa", label: "真实 CPA", value: realCpa === undefined ? "−" : money.format(realCpa), delta: canonical?.metrics.assessmentPrice.value === null || canonical?.metrics.assessmentPrice === undefined ? null : money.format(canonical.metrics.assessmentPrice.value), tone: "neutral" }], trend: canonicalRows.map((item) => ({ label: item.ds, cpa: finiteRatioValue(item.metrics.ratios.realCpa) ?? null, assessmentCpa: item.metrics.assessmentPrice.value })), currentFindingId: null, currentFindingTitle: null })
   return { ...envelopeMeta(response, mode, isMock, forcedState), data }
 }
 

@@ -4,11 +4,14 @@
     "mode": "ka_data",
     "source": {
       "queryId": "account.summary",
-      "rowSchemaVersion": "account.summary/v1",
+      "rowSchemaVersion": "account.summary/v2",
       "status": "ready",
       "rows": [],
       "returnedRowCount": 0,
-      "wholeResultTotal": { "value": 0, "availability": "available" },
+      "wholeResultTotal": {
+        "value": 0,
+        "availability": "available"
+      },
       "lineage": {
         "source": "ka_data",
         "datasetVersion": null,
@@ -25,11 +28,20 @@
         },
         "objectIdentity": {
           "objectType": "account",
-          "joinKeys": ["workspace_id", "media", "account_id"]
+          "joinKeys": [
+            "workspace_id",
+            "media",
+            "account_id"
+          ]
         },
-        "coverage": { "complete": true, "requestedObjects": 0, "returnedObjects": 0 },
+        "coverage": {
+          "complete": true,
+          "requestedObjects": 0,
+          "returnedObjects": 0
+        },
         "truncated": false,
-        "partial": false
+        "partial": false,
+        "workspaceKind": "team"
       },
       "warnings": []
     }

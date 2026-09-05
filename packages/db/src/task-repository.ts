@@ -1,9 +1,6 @@
 import type { Pool, PoolClient } from "pg";
 
-import {
-  METRIC_AGGREGATE_SQL,
-  mapMetricSummary,
-} from "./semantic-query-metrics.js";
+import { queryMetricTrend } from "./semantic-query-metrics.js";
 import type { MetricTrendRow } from "./semantic-query-types.js";
 import { isoTimestamp, nullableNumber } from "./semantic-query-support.js";
 
@@ -106,28 +103,14 @@ interface AssessmentPriceRow {
   created_at: Date | string | null;
 }
 
-interface TaskMetricRow {
-  ds: string;
-  row_count: string | number;
-  account_count: string | number;
-  cost: string | number;
-  exposure: string | number;
-  click: string | number;
-  conversion: string | number;
-  real_conversion: string | number;
-  cash_cost: string | number;
-  cost_space: string | number;
-  wake_uv: string | number;
-  potential_uv: string | number;
-  anomaly_rows: string | number;
-}
-
 export class TaskAccountOverlapError extends Error {
+  readonly code = "TASK_ACCOUNT_OVERLAP";
+  readonly statusCode = 409;
   constructor(
     readonly taskId: string,
     readonly accountId: string,
   ) {
-    super(`task-account period overlaps for ${taskId}/${accountId}`);
+    super("Account is already assigned to a task during this period");
     this.name = "TaskAccountOverlapError";
   }
 }
@@ -240,7 +223,7 @@ export class TaskRepository {
       await client.query("BEGIN");
       await client.query("SELECT pg_advisory_xact_lock(hashtext($1), hashtext($2))", [
         input.workspaceId,
-        JSON.stringify([input.taskId, input.media, input.accountId]),
+        JSON.stringify([input.media, input.accountId]),
       ]);
       const task = await client.query(
         `SELECT task_id FROM tasks
@@ -257,13 +240,12 @@ export class TaskRepository {
 
       const overlap = await client.query(
         `SELECT 1 FROM task_accounts
-         WHERE workspace_id=$1 AND task_id=$2 AND media=$3 AND account_id=$4
-           AND valid_from <= COALESCE($6::date, 'infinity'::date)
-           AND (valid_to IS NULL OR valid_to >= $5::date)
+         WHERE workspace_id=$1 AND media=$2 AND account_id=$3
+           AND valid_from <= COALESCE($5::date, 'infinity'::date)
+           AND (valid_to IS NULL OR valid_to >= $4::date)
          LIMIT 1`,
         [
           input.workspaceId,
-          input.taskId,
           input.media,
           input.accountId,
           input.validFrom,
@@ -295,6 +277,11 @@ export class TaskRepository {
       return mapTaskAccount(row);
     } catch (error) {
       await rollback(client);
+      if (error !== null && typeof error === "object" &&
+          "code" in error && error.code === "23P01" &&
+          "constraint" in error && error.constraint === "task_accounts_account_validity_excl") {
+        throw new TaskAccountOverlapError(input.taskId, input.accountId);
+      }
       throw error;
     } finally {
       client.release();
@@ -374,29 +361,10 @@ export class TaskRepository {
   }
 
   async queryDailyMetrics(input: TaskMetricQuery): Promise<MetricTrendRow[]> {
-    assertDate(input.dateFrom, "dateFrom");
-    assertDate(input.dateTo, "dateTo");
-    if (input.dateFrom > input.dateTo) {
-      throw new Error("dateFrom must not be after dateTo");
+    if (typeof input.taskId !== "string" || input.taskId.trim() === "") {
+      throw new Error("taskId is required");
     }
-    const result = await this.pool.query<TaskMetricRow>(
-      `SELECT to_char(metric.ds, 'YYYY-MM-DD') AS ds, ${METRIC_AGGREGATE_SQL}
-       FROM account_metrics_daily AS metric
-       WHERE metric.workspace_id=$1
-         AND metric.ds BETWEEN $3::date AND $4::date
-         AND EXISTS (
-           SELECT 1 FROM task_accounts AS relation
-           WHERE relation.workspace_id=metric.workspace_id
-             AND relation.task_id=$2
-             AND relation.media=metric.media
-             AND relation.account_id=metric.account_id
-             AND relation.valid_from <= metric.ds
-             AND (relation.valid_to IS NULL OR relation.valid_to >= metric.ds)
-         )
-       GROUP BY metric.ds
-       ORDER BY metric.ds ASC`,
-      [input.workspaceId, input.taskId, input.dateFrom, input.dateTo],
-    );
-    return result.rows.map((row) => ({ ds: row.ds, metrics: mapMetricSummary(row) }));
+    return queryMetricTrend(this.pool, { workspaceId: input.workspaceId,
+      dateFrom: input.dateFrom, dateTo: input.dateTo, filters: { taskId: input.taskId } });
   }
 }

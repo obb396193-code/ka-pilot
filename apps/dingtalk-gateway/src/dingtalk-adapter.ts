@@ -21,6 +21,7 @@ export function parseRobotMessage(input: {
   headers: { messageId: string };
   data: string;
 }): ParsedRobotMessage {
+  if (Buffer.byteLength(input.data) >= 262_144) throw new Error("DingTalk payload exceeds limit");
   let data: unknown;
   try {
     data = JSON.parse(input.data);
@@ -44,6 +45,7 @@ function assertTrustedWebhook(rawUrl: string): URL {
   const url = new URL(rawUrl);
   const trusted =
     url.protocol === "https:" &&
+    url.username === "" && url.password === "" && url.port === "" &&
     (url.hostname === "dingtalk.com" || url.hostname.endsWith(".dingtalk.com"));
   if (!trusted) {
     throw new Error("DingTalk session webhook has an untrusted destination");
@@ -73,10 +75,13 @@ export class DingTalkSessionReply implements ReplyPort {
           text: { content: text.slice(0, 5_000) },
         }),
         signal: controller.signal,
+        redirect: "error",
       });
       if (!response.ok) {
         throw new Error(`DingTalk session reply failed with HTTP ${response.status}`);
       }
+      const body = z.object({ errcode: z.number().int() }).parse(await response.json());
+      if (body.errcode !== 0) throw new Error("DingTalk reply rejected");
     } finally {
       clearTimeout(timeout);
     }
@@ -85,6 +90,17 @@ export class DingTalkSessionReply implements ReplyPort {
 
 export interface DingTalkStreamConnection {
   disconnect(): void;
+}
+
+/** Resolve only after durable INSERT then ACK; persistence failure stays unacknowledged. */
+export async function receiveRobotMessage(
+  downstream: { headers: { messageId: string }; data: string },
+  persist: (message: DingTalkInboundMessage) => Promise<void>,
+  ack: (messageId: string, response: { status: string }) => void,
+): Promise<void> {
+  const parsed = parseRobotMessage(downstream);
+  await persist(parsed.message);
+  ack(parsed.streamMessageId, { status: "SUCCESS" });
 }
 
 export async function connectDingTalkStream(options: {
@@ -97,21 +113,13 @@ export async function connectDingTalkStream(options: {
     clientId: options.clientId,
     clientSecret: options.clientSecret,
     keepAlive: true,
+    debug: false,
   });
   client.registerCallbackListener(TOPIC_ROBOT, (downstream: DWClientDownStream) => {
-    try {
-      const parsed = parseRobotMessage(downstream);
-      client.socketCallBackResponse(parsed.streamMessageId, { status: "SUCCESS" });
-      void options.onMessage(parsed.message).catch((error: unknown) => {
-        options.onProcessingError?.(error);
-      });
-    } catch (error) {
-      client.socketCallBackResponse(downstream.headers.messageId, {
-        status: "SUCCESS",
-        message: "unsupported message",
-      });
+    void receiveRobotMessage(downstream, options.onMessage,
+      (id, response) => { client.socketCallBackResponse(id, response); }).catch((error: unknown) => {
       options.onProcessingError?.(error);
-    }
+    });
   });
   await client.connect();
   return { disconnect: () => client.disconnect() };

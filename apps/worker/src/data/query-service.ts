@@ -2,9 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import {
   approvedWorkspaceAuthContextSchema,
-  dataQueryRequestSchema,
   dataQueryResponseSchema,
-  dataQueryIdSchema,
   sourceQueryResultSchema,
   type DataQueryResponse,
   type SourceAuthority,
@@ -27,8 +25,11 @@ import {
 } from "./query-registry.js";
 import { resolveRequestId } from "./request-id.js";
 import { PlatformDataSourceError } from "./platform-data-source.js";
+import { DataSourceRoutingError, selectDataSourceRoute, type ServerDataSourcePolicy, type SelectedDataSourceRoute } from "./data-source-routing.js";
+import { maskCanonicalQueryRows } from "./canonical-query-rows.js";
 
 export const DATA_QUERY_HTTP_PATH = "/api/v1/data/query";
+export const ADMIN_RECONCILE_HTTP_PATH = "/api/v1/admin/data/reconcile";
 
 export interface DataSourceQueryPort {
   query(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope): Promise<SourceQueryResult>;
@@ -39,6 +40,8 @@ export interface DataQueryServiceDependencies {
   kaData: DataSourceQueryPort;
   platform: DataSourceQueryPort;
   requestId?: () => string;
+  sourcePolicy?: ServerDataSourcePolicy;
+  audit?: (event: Pick<SelectedDataSourceRoute, "selectedSource" | "reason"> & { requestId: string }) => void;
 }
 
 class OutputScopeError extends Error {
@@ -79,6 +82,7 @@ function withFrozenAuthority(
   resolved: ResolvedDataQuery,
   source: "ka_data" | "platform",
   requestId: string,
+  workspaceKind: ApprovedWorkspaceAuthContext["workspaceKind"],
 ): SourceQueryResult {
   return {
     ...result,
@@ -87,6 +91,7 @@ function withFrozenAuthority(
       : { error: { ...result.error, requestId } }),
     lineage: {
       ...result.lineage,
+      workspaceKind,
       authority: authorityMetadata(resolved, source),
     },
   };
@@ -102,6 +107,9 @@ function stableError(
 }
 
 function mapError(error: unknown, requestId: string): StableDataQueryError {
+  if (error instanceof DataSourceRoutingError) {
+    return stableError(error.code, error.message, error.retryable, requestId);
+  }
   if (error instanceof QueryRegistryError) {
     return stableError(error.code, error.message, false, requestId);
   }
@@ -133,8 +141,10 @@ function mapError(error: unknown, requestId: string): StableDataQueryError {
 function unavailableLineage(
   resolved: ResolvedDataQuery,
   source: "ka_data" | "platform",
+  workspaceKind: ApprovedWorkspaceAuthContext["workspaceKind"],
 ): SourceLineage {
   return {
+    workspaceKind,
     source: source === "ka_data" ? "ka_data" : "canonical",
     datasetVersion: null,
     queryTemplateVersion: resolved.queryTemplateVersion,
@@ -158,6 +168,7 @@ function unavailableSource(
   resolved: ResolvedDataQuery,
   source: "ka_data" | "platform",
   error: StableDataQueryError,
+  workspaceKind: ApprovedWorkspaceAuthContext["workspaceKind"],
 ): SourceQueryResult {
   return {
     queryId: resolved.queryId,
@@ -166,7 +177,7 @@ function unavailableSource(
     rows: [],
     returnedRowCount: 0,
     wholeResultTotal: { value: null, availability: "error", reason: error.code },
-    lineage: unavailableLineage(resolved, source),
+    lineage: unavailableLineage(resolved, source, workspaceKind),
     warnings: [error.message],
     error,
   };
@@ -250,8 +261,15 @@ function guardSourceOutput(
       }
     }
   }
-  if (result.rows.length <= resolved.maxRows) return result;
-  const rows = result.rows.slice(0, resolved.maxRows);
+  const overBudget = result.rows.length > resolved.maxRows;
+  if (!overBudget && !result.lineage.truncated) return result;
+  // Validate every source row/scope above before slicing. A third-party adapter
+  // must not bypass v2 masking by setting truncated but leaving numeric values.
+  const rows = maskCanonicalQueryRows(resolved.queryId, result.rows.slice(0, resolved.maxRows), "error");
+  const reason = overBudget ? "Result exceeded the registry row budget" : "Source response was truncated";
+  const coverage = { ...result.lineage.coverage, complete: false, reason };
+  // Counts before a local slice do not prove the object set of the returned page.
+  if (overBudget) delete coverage.returnedObjects;
   return {
     ...result,
     rows,
@@ -259,15 +277,15 @@ function guardSourceOutput(
     wholeResultTotal: {
       value: null,
       availability: "partial",
-      reason: "Result exceeded the registry row budget",
+      reason,
     },
     lineage: {
       ...result.lineage,
-      coverage: { ...result.lineage.coverage, complete: false, reason: "Registry row budget exceeded" },
+      coverage,
       truncated: true,
       partial: true,
     },
-    warnings: [...result.warnings, "Result exceeded the registry row budget"],
+    warnings: [...new Set([...result.warnings, reason])],
   };
 }
 
@@ -331,25 +349,29 @@ export class DataQueryService {
     auth: unknown,
     correlationId?: string,
   ): Promise<DataQueryResponse> {
+    return this.executeRoute("ordinary", requestInput, auth, correlationId);
+  }
+
+  async executeReconcile(requestInput: unknown, auth: unknown, correlationId?: string): Promise<DataQueryResponse> {
+    return this.executeRoute("admin_reconcile", requestInput, auth, correlationId);
+  }
+
+  private async executeRoute(
+    endpoint: "ordinary" | "admin_reconcile",
+    requestInput: unknown,
+    auth: unknown,
+    correlationId?: string,
+  ): Promise<DataQueryResponse> {
     const requestId = resolveRequestId(correlationId ?? null, this.requestId);
     try {
+      const route = selectDataSourceRoute(endpoint, requestInput, auth, this.dependencies.sourcePolicy);
       validateAuth(auth);
-      const request = dataQueryRequestSchema.safeParse(requestInput);
-      if (!request.success) {
-        const rawQueryId = typeof requestInput === "object" && requestInput !== null &&
-          "queryId" in requestInput ? requestInput.queryId : undefined;
-        const code = typeof rawQueryId === "string" && !dataQueryIdSchema.safeParse(rawQueryId).success
-          ? "QUERY_NOT_ALLOWED"
-          : "INVALID_REQUEST";
-        return dataQueryResponseSchema.parse({
-          ok: false,
-          error: stableError(code, "Invalid data query request", false, requestId),
-        });
-      }
+      this.dependencies.audit?.({ selectedSource: route.selectedSource, reason: route.reason, requestId });
+      const request = route.request;
       const resolved = this.dependencies.registry.resolve(
-        request.data.queryId,
-        request.data.params,
-        request.data.dataView,
+        request.queryId,
+        request.params,
+        route.selectedSource,
       );
       let scope: DataQueryExecutionScope;
       try {
@@ -364,21 +386,24 @@ export class DataQueryService {
         throw error;
       }
 
-      if (request.data.dataView === "ka_data") {
+      if (route.selectedSource === "ka_data") {
         const source = withFrozenAuthority(
           guardSourceOutput(await this.dependencies.kaData.query(resolved, scope), resolved, scope),
           resolved,
           "ka_data",
           requestId,
+          auth.workspaceKind,
         );
+        if (source.status === "unavailable") throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Team data source is unavailable");
         return dataQueryResponseSchema.parse({ ok: true, data: { mode: "ka_data", source } });
       }
-      if (request.data.dataView === "platform") {
+      if (route.selectedSource === "platform") {
         const source = withFrozenAuthority(
           guardSourceOutput(await this.dependencies.platform.query(resolved, scope), resolved, scope),
           resolved,
           "platform",
           requestId,
+          auth.workspaceKind,
         );
         return dataQueryResponseSchema.parse({ ok: true, data: { mode: "platform", source } });
       }
@@ -403,16 +428,18 @@ export class DataQueryService {
             resolved,
             "ka_data",
             requestId,
+            auth.workspaceKind,
           )
-        : unavailableSource(resolved, "ka_data", mapError(kaResult.reason, requestId));
+        : unavailableSource(resolved, "ka_data", mapError(kaResult.reason, requestId), auth.workspaceKind);
       const platform = platformResult.status === "fulfilled"
         ? withFrozenAuthority(
             guardSourceOutput(platformResult.value, resolved, scope),
             resolved,
             "platform",
             requestId,
+            auth.workspaceKind,
           )
-        : unavailableSource(resolved, "platform", mapError(platformResult.reason, requestId));
+        : unavailableSource(resolved, "platform", mapError(platformResult.reason, requestId), auth.workspaceKind);
       const comparisonReason = kaData.status === "unavailable" || platform.status === "unavailable"
         ? "source_unavailable"
         : sourceHasNoObjects(kaData) !== sourceHasNoObjects(platform)
@@ -462,7 +489,7 @@ function errorStatus(code: StableDataQueryErrorCode): number {
   return 400;
 }
 
-export function createDataQueryHttpHandler(service: DataQueryService) {
+export function createDataQueryHttpHandler(service: DataQueryService, endpoint: "ordinary" | "admin_reconcile" = "ordinary") {
   return async (request: DataQueryHttpRequest): Promise<DataQueryHttpResponse> => {
     const requestId = resolveRequestId(request.requestId ?? null);
     if (request.method.toUpperCase() !== "POST") {
@@ -483,7 +510,9 @@ export function createDataQueryHttpHandler(service: DataQueryService) {
         }),
       };
     }
-    const body = await service.execute(request.body, request.auth, requestId);
+    const body = endpoint === "admin_reconcile"
+      ? await service.executeReconcile(request.body, request.auth, requestId)
+      : await service.execute(request.body, request.auth, requestId);
     return { status: body.ok ? 200 : errorStatus(body.error.code), body };
   };
 }

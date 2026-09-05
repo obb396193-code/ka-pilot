@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
@@ -41,6 +41,7 @@ describe("WorkflowRepository", () => {
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
   });
+  afterAll(async () => { await pool.end(); });
 
   beforeEach(async () => {
     const suffix = randomUUID();
@@ -185,13 +186,16 @@ describe("WorkflowRepository", () => {
       credentialOwnerUserId,
       params: { account_id: "account-1" },
     });
+    const executorToken = (await repository.claimExecutor({workspaceId,runId:run.id,leaseMs:60000}))!;
     const started = await repository.appendEvent({
+      executorToken,
       workspaceId,
       runId: run.id,
       dedupeKey: "run-started",
       event: { kind: "run_started", at: "2026-08-19T00:00:01.000Z" },
     });
     const duplicate = await repository.appendEvent({
+      executorToken,
       workspaceId,
       runId: run.id,
       dedupeKey: "run-started",
@@ -204,6 +208,7 @@ describe("WorkflowRepository", () => {
         workspaceId,
         runId: run.id,
         dedupeKey: "skip-a",
+        executorToken,
         event: {
           kind: "node_skipped",
           at: "2026-08-19T00:00:02.000Z",
@@ -215,6 +220,7 @@ describe("WorkflowRepository", () => {
         workspaceId,
         runId: run.id,
         dedupeKey: "skip-b",
+        executorToken,
         event: {
           kind: "node_skipped",
           at: "2026-08-19T00:00:02.000Z",
@@ -231,6 +237,7 @@ describe("WorkflowRepository", () => {
         workspaceId,
         runId: run.id,
         dedupeKey: "run-started",
+        executorToken,
         event: { kind: "run_cancelled", at: "2026-08-19T00:00:03.000Z" },
       }),
     ).rejects.toBeInstanceOf(WorkflowRepositoryConflictError);
@@ -239,9 +246,10 @@ describe("WorkflowRepository", () => {
         workspaceId: otherWorkspaceId,
         runId: run.id,
         dedupeKey: "cross-tenant",
+        executorToken,
         event: { kind: "run_cancelled", at: "2026-08-19T00:00:03.000Z" },
       }),
-    ).rejects.toThrow("run not found");
+    ).rejects.toThrow("lease");
   });
 
   it("compare-and-sets run status without accepting stale writers", async () => {
@@ -253,8 +261,10 @@ describe("WorkflowRepository", () => {
       credentialOwnerUserId,
       params: {},
     });
+    const executorToken = (await repository.claimExecutor({workspaceId,runId:run.id,leaseMs:60000}))!;
     expect(
       await repository.compareAndSetRunStatus({
+        executorToken,
         workspaceId,
         runId: run.id,
         expected: "queued",
@@ -267,6 +277,7 @@ describe("WorkflowRepository", () => {
         runId: run.id,
         expected: "queued",
         next: "cancelled",
+        executorToken,
       }),
     ).toBe(false);
     expect((await repository.getRun(workspaceId, run.id))?.status).toBe("running");

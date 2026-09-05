@@ -1,3 +1,4 @@
+import { metricValue } from "../src/metric-value.js";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -8,15 +9,15 @@ import {
 
 const undefinedRatio = { value: null, state: "undefined" } as const;
 const metrics = {
-  cost: 100,
-  exposure: 1_000,
-  click: 100,
-  conversion: 10,
-  realConversion: 5,
-  cashCost: 90,
-  costSpace: 10,
-  wakeUv: null,
-  potentialUv: null,
+  cost: metricValue(100),
+  exposure: metricValue(1_000),
+  click: metricValue(100),
+  conversion: metricValue(10),
+  realConversion: metricValue(5),
+  cashCost: metricValue(90),
+  costSpace: metricValue(10),
+  wakeUv: metricValue(null),
+  potentialUv: metricValue(null),
   ratios: {
     ctr: { value: 0.1, state: "finite" },
     cvr: { value: 0.1, state: "finite" },
@@ -29,6 +30,20 @@ const metrics = {
 } as const;
 
 describe("canonical data query rows", () => {
+  it("requires strict v2 metric availability and rejects bare v1 numbers", () => {
+    const v2 = { rowCount: 1, accountCount: 1, anomalyRows: 0, metrics };
+    expect(canonicalQueryRowSchemaById["account.summary"].safeParse(v2).success).toBe(true);
+    expect(canonicalQueryRowSchemaById["account.summary"].safeParse({ ...v2, metrics: { ...metrics, cost: 100 } }).success).toBe(false);
+    expect(Object.values(canonicalRowSchemaVersionByQueryId).every((value) => value.endsWith("/v2"))).toBe(true);
+    for (const cost of [
+      { value: 1, availability: "missing" },
+      { value: 0, availability: "error" },
+      { value: null, availability: "available" },
+      { value: 1, availability: "unknown" },
+    ]) {
+      expect(canonicalQueryRowSchemaById["account.summary"].safeParse({ ...v2, metrics: { ...metrics, cost } }).success).toBe(false);
+    }
+  });
   it("freezes one strict versioned row schema for every canonical query id", () => {
     expect(Object.keys(canonicalQueryRowSchemaById).sort()).toEqual([
       "account.anomalies",
@@ -73,11 +88,11 @@ describe("canonical data query rows", () => {
       ds: "2026-08-24",
       metrics: {
         ...metrics,
-        budget: null,
-        budgetUsageRate: null,
-        deductionRate: null,
-        mainAdCostProportion: null,
-        assessmentPrice: null,
+        budget: metricValue(null),
+        budgetUsageRate: metricValue(null),
+        deductionRate: metricValue(null),
+        mainAdCostProportion: metricValue(null),
+        assessmentPrice: metricValue(null),
       },
       dataAnomaly: false,
       computedAt: null,

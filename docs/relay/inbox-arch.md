@@ -2970,6 +2970,17 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 **合流备注**：主工作树有 3 个同名未跟踪文件（`session-client{,.test}.ts`、`session-contracts.ts`，非 arch 所留），已备份至 scratchpad 后让路。
 
+---
+
+### P-039 ⏳待审｜R-009 第二批子交付：P2 Session + P0-03 回灌（be，2026-09-05）
+
+- 分支 `be/r009`；基线已含 main@d7b6260。代码 SHA **`e69ea1e`**（删 BFF 假 token）+ **`5dfbbad`**（三阶段回灌 + CHECK）。未 push、未合 main、未部署；Contract/视觉 0 diff。
+- 回灌不再在 raw 完成时置 done；所有日期 raw/canonical/quality 持久化 job 均成功才 done；失败/blocked_auth 记 failed_stage；运行期重试保持中间态。scope = workspace + batch + credential owner。成功和最终失败回调覆盖协调器及三阶段，重启恢复同样推导。
+- 真 PG 新反例：并发刷新/断点恢复/跨 workspace 与 credential owner；实际 createWorkerConsumer 队列全链成功和质量失败；迁移 up/down/up 与非法状态拒绝。
+- 追加 **`011_r009_backfill_state.cjs`**，不修改已合 011、不占 012；完整 replay 共 12 个文件。部署需停 Worker→迁移→启动恢复；旧 done 置 running 重新证明，历史证据不足不虚报完成。请 arch 审查该追加迁移命名和上线步骤；细节见状态文件。
+- 本轮四包全量：Domain **497**；DB **182 真实 PG**；Worker **628 + 2 opt-in skipped**（含 PG/HTTP）；Web **78**。四包 typecheck/lint 全通过。普通 PG 使用 ka_r009_test；旧 benchmark 单独在本机 ka 自有合成 workspace 测试并清理。首轮测试失败及修正完整记在 `docs/plans/R009-状态.md`，没有隐去失败或伪报外部联调。
+- 本轮未重跑 dependency audit；没有依赖变更。静态 diff/check、路径/凭证/注入面自查通过，仅为 be 自查，不冒充 Claude 终审。
+- **不是 R-009 整批交付**：P0-04/v2、P0-05、P0-13、P0-07、P0-12、按空间绑源及升级后的双空间集成仍待实现。下一子批为 P0-05，不等待审查才开始写；最终合流仅由 arch。
 
 ---
 
@@ -2990,6 +3001,101 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 坚定保留项（审查也认可）：看板为主对话为辅、确定性计算与 Agent 分工、四入口共用原子能力、官方模板与自由编排共存、执行未知态/凭证归属/账户三键/失败保旧快照、CR 复用。对外表达改为「复用技术已有执行能力，把 KA 的经营场景、数据口径和工作流程产品化」——老板定。
 
+---
+
+### P-041 ⏳待审｜R-009 P0-05 + P0-13 子交付（be，2026-09-05）
+
+- 分支 `be/r009`；已同步 main@8b155a1（merge `48c79a7`）。代码 SHA **`010e4bb`**（任务排斥/唯一任务价）+ **`5228b44`**（变更集双主体/items 三键）。不 push、未合 main、未部署；本子批前端/视觉/Contract/依赖锁 0 diff。
+- P0-05：任务锁改 workspace/media/account；不同任务重叠统一 typed `TASK_ACCOUNT_OVERLAP`、statusCode409，只捕获指定23P01。考核价只取当天唯一 relation 下该任务最新生效版本，无价不借其他任务，未来价排除；尚无公开 assignAccount 写路由，**HTTP409 待 R-010 接线，不冒充完成**。
+- P0-13：create/confirm/beginExecution 校验同 workspace active initiator/credential owner；personal workspace only；item 每行三键必须等父记录；Worker 读当前值/UNKNOWN回查前复检，begin 再检。DB17 反例 + Worker11/真实PG4，包含读当前值期间撤销后不进入 execute/no execution_runs。已发出操作的结果落账不被撤销阻断，不声称远程撤回原子性。
+- TDD 红灯：A 两项旧行为失败后修；B 六项旧行为失败后修。最新全量 **Domain497 / DB196（真实PG套件）/ Worker636+2 opt-in skipped / Web78**；四包 typecheck/lint 全过。核心文件行覆盖率93.56%/93.91%，分支76.92%/77.27%，未夸大为全仓覆盖率。
+- **独立安全项须 arch/fe 接手**：本轮后端三包 `npm audit --omit=dev` 为0；Web 为 **5项（4 high/1 moderate）**，fast-uri/qs/PostCSS/sharp/Next链路，部分建议 Next16.3.4 主升级。没有改前端锁或强制升级；整体依赖安全门不能报绿。公告编号/命令/覆盖率见 `docs/plans/R009-状态.md` P-041。
+- 已只读看到 main@677e4b2 的 P-039 裁决和 main@7b418cb：接受批末把追加 CHECK/重验折回011、总数恢复11；窗口化成本口径未冻不改。当前 P0-13 已按先前计划做完，后续恢复新顺序 P0-07→P0-12→三态/v2→空间绑源→双空间回归；**不是 R-009 整批交付**。
+- 用户验收句：同一账户同一天不误绑两任务、不串考核价；停用操作人或凭证所有人后，变更集不能继续借旧身份执行。真实媒体写继续关闭。
+
+---
+
+### P-042 ⏳待审｜R-009 P0-07 工作流单执行器与effect去重（be，2026-09-05）
+
+- **代码 SHA `a044e54`**，be/r009，10文件443+/65-。最新main@d3466c7的P041通过/继续指令已只读核对，本批不改v1.4.1口径/settings；批末再merge main。未push/未合main/未部署，前端/视觉/Contract/依赖文件0 diff。
+- 单run executor token+lease：原子领取，过期才能换token；event/status/effect/续租写先锁run再用DB时钟校验。confirm/control同门。旧token即便无新接管者也不能续活或提交；没有无token兼容入口。
+- 写节点preview/execute先写workflow_effects.pending，唯一冲突done/failed读回归一化结果，pending/unknown流程停unknown，绝不重发；结果落库后event崩溃可恢复结果。未知时可能仍留pending effect作为待回查证据，不声称已执行或远程exactly-once。
+- 补PostgresWorkflowRunStore，固定published版本编译，剥离databaseId后交Domain strict事件。真实PG联合首轮4红确实暴露该接线问题，修后5PG+11Runner全过；DB新租约3+原Repository6全过。不是只有mock通过。
+- **全量** Domain497 / DB199（真PG套件含unit）/ Worker641+2外部opt-in skipped / Web78；四包typecheck/lint全通过；后端三包npm audit --omit=dev均0。核心coverage：execution Repository行100%分支85%，Runner行89%分支73.91%，Postgres适配行100%分支94.44%。Web已有依赖问题继续由fe处理，本批不宣称整体安全门全绿。
+- 未开放/注册媒体写或HTTP写；生产ActionPort/输出存储与unknown回查消费仍待后批接线，不将本内核修复冒充完整可用工作流产品。当前业务读/session/旧媒体写关闭门回归保持。
+- 下一项P0-12 durable inbox，再P0-04/v2→绑源→双空间→折011；非R009整批完成。用户验收句：重复点击或两台Worker同时接流程，不重复建变更集/发投放动作；结果不确定停未知态。详见R009-状态与本批实施计划。
+
+---
+
+### P-043 ⏳待审｜R-009 P0-12 钉钉 durable inbox（be，2026-09-05）
+
+- **代码SHA `c6603d3`**，be/r009，19文件602+/257-。main仍d3466c7，遵循P041继续令；未push/合main/部署。本批前端/视觉/Contract/迁移/锁文件0 diff。
+- 接收Promise先INSERT完成再ACK；SDK本地源码确认robot callback不自动ACK，并测试真实注册wrapper。旧claim仅去重、无恢复入口已移除。
+- DB领取workspace/provider/kind限定+SKIP LOCKED；attempts领取递增兼fencing，更新先锁行后用DB clock查lease；跨scope/旧代/过期无新接管者均拒绝。耗尽未processed+lease到期即dead，留行留固定code，不添加未冻结status列。
+- 加密message/reply checkpoint以安全恢复临时webhook；AES-GCM绑定workspace/provider/event/purpose，新增必填Secret env `GATEWAY_INBOX_KEY_HEX`、轮换登记runbook§6。网关启动不再自动跑migration，先维护步骤迁移。
+- 后台恢复+有限重试；结果已checkpoint则只重发回复、不重新查业务；**远端回复成功但本地complete前崩溃仍可能重复文本，未宣称远程exactly-once**。任务创建/Agent enqueue明确关闭，本批不借旧未接通客户端开放写；以后按冻结写链路接回。
+- **门禁** Domain497 / DB205（真实PG套件含unit）/ Worker641+2外部opt-in skipped / Gateway36（含2真实PG，无skip）/ Web78；五包typecheck/lint全过。后端三包+Gateway生产audit本轮均0；Web依赖仍归fe，未重扫不冒充整体0。
+- 新PG覆盖ACK前崩溃重投一行、新worker恢复、并发领取、claim后失败跨进程重试、checkpoint后reply失败不重查、dead保留、过期旧代拒绝、跨workspace/provider及事件类型隔离。首次PG因EPERM批准后得到真正缺实现红灯；网关依赖安装问题不算业务红灯，首轮typecheck缺pg声明已改用createPool再全跑通过。
+- 核心覆盖率Repository行100%/分支97.29%，网关四文件行98.98%/分支94.44%。详见 `docs/plans/R009-状态.md` P043与durable-inbox计划；用户验收句：先保存再确认，崩溃可恢复，耗尽失败保留证据。
+- **需后批接线**：ProductApiClient旧Agent/query端点与正式Session/tuple身份授权、webhook失效安全主动推送、撤销后通知策略、卡片/死信UI；不能把可靠收件当真实群查数已可用。下一项三态/v2→绑源→双空间→折011+merge main，非R009整批完成；最终仍由arch审查整合。
+
+---
+
+### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
+
+- **已按要求合main：11faf95（main@f841da4→be/r009，2026-09-06 02:00）**。两处信箱/台账都是追加冲突，双方记录全部保留；Contract/fixtures保持你的v3后批定义，不自改。合并后真实非PG门禁：Domain518、DB纯逻辑37、Worker724+2外部skip、Web111、Gateway34，五包typecheck/lint过。SQL迁移和Gateway两PG用例没有执行，不能算你的五包最终门禁；P045暂不冒充完整交付。be/r009仍未合入main、无push/部署/写操作。
+- 继续总目标中无PG依赖的012迁移-only与seed分批准备，按你的次序不混开业务API；R009剩余的真实PG、旧双011测试库历史核对，以及已报team anomalies规则缺口继续明确保留。所有本次测试原始日志 `/tmp/ka-merged-{domain,db-unit,worker,web,gateway}.log`，最新连接错误为01:53ECONNREFUSED55432。
+
+- **折011代码 `85ea1bf`（2026-09-06）**：按你的批末要求把补丁两CHECK/旧done重验完整并入`011_contract_v1_2_p0.cjs`，down先约束后列，legacy NULL也预检拒绝；移除重复011文件（Git可恢复），012未占。auth/workspace-kind/scheduler/v1.2/replay测试回退计数逐个核实；backfill反例使用真实旧表shape（down后无finished_at），非法legacy/null拒绝后可修正重放。
+- DB纯逻辑37/37，typecheck/lint通过，包结构新增6例先5红再6绿；up/down JS callback覆盖100% **不等于SQL/PG执行通过**。DB offline audit0。01:53只读探测仍ECONNREFUSED55432，未改pgmigrations/未执行down；旧双011测试库需要用旧包回退两个011后再上新包，**有业务数据不可照做**，需arch单独向前迁移。具体维护条件见`2026-09-06-R009折合011迁移.md`，无数据库/业务数据删除。接下来clean分支同步main，PG和最终P045仍待。
+
+- **最终截断兜底 `3b76ed3`（2026-09-06）**：Service 自己裁行或来源已标 truncated 时，六 Query 的普通指标一律 null/error、RatioValue undefined，不保留看似可用的局部和；覆盖不足但未截断仍保持原三态。先验证全部源行的 schema/三键授权再裁剪，超预算去掉无法证明的 returnedObjects，不修改 Adapter 缓存对象。新增六Query×四边界+越权尾行25例，先12失败后全绿。
+- Worker 非PG **724 passed +2 外部 opt-in skipped**，74定向测试覆盖 query-service 行94.55%/分支88.12%/函数100%，typecheck/lint通过，offline production audit0。真实PG最近01:37仍ECONNREFUSED，本增量未重复PG；未称R009整批完成。继续按要求折011→merge main，最终P045待双空间PG和五包门禁。
+
+- **收到main@f841da4中期审查；团队reader代码 `be93018`（2026-09-06）**：已按答3加入`KA_DATA_TEAM_WORKSPACE_ID`，只绑定一个team UUID；缺失/非法/错workspace在网络前503，不影响个人诊断explicit tuple路径。team不读取grants（测试故意塞非法grant仍不影响）；SQL scope显式判别，不把空个人grants转换为全量。只用sqlite、固定注册模板，team参数仅过滤合法media/account/date，workspace从受信execution注入，错media/account/date回包502。
+- 真SQLite覆盖team summary/trend/table/detail：源观测账户×日期LEFT JOIN，缺日不部分SUM；首次table返回整数ds触发严格拒绝，SQL显式CAST文本后通过。team模板版本后缀`-team-bound-v1`留lineage；共享源没有完整账户目录，所以不捏造requestedObjects，coverage unknown→partial=true/truncated=false，只有传输截断才把指标error。空源仍不宣称完整、trend不拿每日最大count当跨日union。来源无时间字段仍unknown。
+- **门禁** Domain518、Worker非PG699+2外部skip、Web111；Domain/Worker typecheck/lint通过；60核心测试行90.21%/分支84.36%，Worker offline production audit0。新6例先5红1绿，后13例通过；新代码不含运行期SQLite依赖（Node22 SQLite只用于test）、不新增第三方依赖、无前端改动。本轮未重跑DB/Gateway全量，不冒充五包最终门禁。
+- **真实PG01:37:28仍拒连**：已有session业务集成现分别跑KA false/true两种composition；true用真实KaDataClient+固定SQL在合成SQLite源，personal不触KA、team返回999与PG平台30不同、同号TENCENT9999不串入、旧token/logout仍不触源。当前beforeAll/afterAll `ECONNREFUSED 55432`，两业务case未执行，不能称PG/内网联调通过。待恢复后按你的P045要求五包全量。
+- **待确认的实际缺口**：Registry `account.anomalies`仍仅platform支持，KA数据无已确认异常字段/阈值，team这一个Query当前422 VIEW_UNSUPPORTED；未自造规则或fallback platform。建议团队工作台先将“异常卡不可用”与summary/trend展示解耦，正式异常由R010a2规则引擎提供；请arch冻结归属/语义。四个已具备KA模板已可由绑定reader执行，不把这一项算完成。
+- 下一步继续最终风险复核（Service二次行预算截断与v2状态一致性）→折011→merge main；PG恢复后最终双空间+五包；R013 bootstrap/012/coefficients按本次答1顺序，v3留R010a1，不做v2/v3双兼容。全信箱目标active，未push/合流/部署/媒体写。
+
+- **A-001 BFF 接线代码 `053f9ea`（2026-09-06 01:20）**：普通请求严格五Query/两字段，client不再发送dataView；BFF复用正式Session handler实时GET current（同cookie/internal bearer/requestId），仅由activeWorkspace.kind验mode、lineage.kind/source与账户workspace；不接受浏览器x-ka、role或entitlement。Session失败不查询，团队KA错误不回退，Session+query合用10秒预算；旧16MB/错误/QueryID/版本边界保留。无视觉改动。
+- 门禁：Web111/111、Domain518、Worker非PG686+2外部opt-in跳过；三包typecheck/lint通过，Next生产build通过。BFF+client核心行96.84%/分支82.76%、BFF自身98.71%/83.33%；Web offline audit0。新13项Session测试先10/10红后绿；原query边界测试的fetch显式增加Session成功步骤，确保16MB/错误依然打到data而不是只测auth。切空间/旧token回归是合成fetch，不冒充真实PG或内网登录。
+- **真实PG重新执行01:19:53仍ECONNREFUSED 55432**：business-read-session-pg.integration套件beforeAll/afterAll失败，唯一业务case未执行，pg_blocked。没有重启共享Docker。启用KA的团队reader与双空间真实HTTP仍待后续；不是R009整批完成，未push/合流/部署。
+- **给fe的已知边界**：`components/business/data-containers.tsx:47`旧dataView=reconcile仍选择诊断Query；普通BFF现正确400，不提供浏览器诊断权限。默认ordinary路径按Session工作，旧源选择/诊断UI由fe/arch后续按新契约收口，本批未越权改React视觉。请继续确认前述单shared-reader的server team workspace绑定，未确认前不把任意team放开全量。
+
+- **A-001/v2 网页非视觉适配 `2d6570f`（2026-09-06）**：六 Query 普通指标严格三态/v2，lineage必填workspaceKind，CPA仍用后端RatioValue；缺数不补0、error显示取数失败。三张消费adapter采用服务端成功响应mode，不再因旧调用方platform值把team数据丢空。未改React/样式/布局/依赖；A-001授权范围内。
+- Web98/98、typecheck/lint、生产build通过；新增用例最初18中17失败再修绿，直接读取`packages/contract/fixtures/data-query`四份正式文件，旧e2b0f1a三成功fixture保留为拒绝测试。六Query×双Adapter形状12组，非法数值/缺字段/零分母/空间值反例永久保留。schema覆盖100%；含既有详情adapter的两核心文件行89.97%/分支70%，不称分支全80%。Web offline production audit0（缓存证据，不代表实时漏洞库刷新）。首次构建Turbopack沙箱端口EPERM，获批本机重跑通过，非业务红灯。
+- **边界仍未完成**：本独立SHA只解决v2消费；BFF请求仍带旧dataView，接下来立即单独修Session/请求接线，不独立部署此中间提交。团队reader绑定待arch、双空间PG最近拒连、后续折011/merge main和R013等仍在目标内。未push/合流/部署/媒体写。详细执行计划同步Task4现场。
+
+- **来源身份子批 `8f28a2a`**：SourceLineage必带workspaceKind，无默认personal；两Adapter从受信execution scope生成，Service最终以Session覆盖（含reconcile失败侧），恶意上游自报team不能把个人响应改成团队。三份成功JSON fixtures同步。Domain518、Worker非PG686+2skip、两包type/lint通过；116定向核心行90.45%/分支83.77%/函数100%，Worker offline audit0。初始Domain/Worker各1条真实红灯，后修绿；首轮Domain lint unused变量已修，不隐去失败。
+- 这个字段属于已冻DATA-ROUTE-001/R010a要求，与#8接线一起完成来源身份部分；没有新增公开DTO决策/更改source优先级。PG仍沿最近55432拒连状态，**本次未重新执行PG**；无DB代码或迁移变动，不称全门禁通过。BFF还没改、不单独部署；团队reader绑定仍待确认，不因完成身份字段就开放team直连。下一步优先按A-001非视觉BFF与v2消费，目标active。
+
+- **#8 Service/HTTP 接线 SHA `9b7968b`**：普通POST只收queryId/params，Session personal→platform/team→ka_data；浏览器dataView/data_view拒400，不再静默改platform。新`POST /api/v1/admin/data/reconcile`只收reconcile.account_daily，entitlement+flag在Service内判断，role=admin不等于诊断权。日志只selectedSource/reason/requestId；Session/internal bearer、405、exact-byte上限共用。
+- 本次实测 Domain514、Worker非PG683+2外部opt-in skip，type/lint均通过；核心75用例行90.89%/分支89.47%/函数100%，HTTP34含诊断角色拒绝/KA关闭/冒充字段/同一exact-byte上限。无KA环境真实启动smoke2通过。Worker生产offline audit0（根目录无lock误跑ENOLOCK后到Worker正确执行，不以根目录结果冒充通过）。
+- **PG当前失败**：22:18 `business-read-session-pg.integration.test.ts`在beforeAll/清理均ECONNREFUSED 127.0.0.1:55432，没有执行到业务反例，不能算PG通过。该既有集成场景改为“KA关闭时team data503不fallback”，保留账户/任务/工作项/详情的真实PG/session断言；KA启用团队reader双空间另补，未用平台fixture伪造团队KA通路。
+- **不是#8整体交付**：实际KaDataClient仍只支持explicit_accounts，team可信reader部署绑定待确认/接线；lineage.workspaceKind及v2/BFF消费仍待接，当前BFF旧dataView会被新后端400，禁止独立部署此中间SHA。继续执行同一目标；本批frontend/DB源码/迁移/依赖0diff，未push/合流/部署/开媒体写。
+
+- **#8首个内核SHA `7ced49d`**：新增ordinary/admin严格request schemas与服务端source策略，新22反例含各role无诊断entitlement、错workspace/user、flag off、KA off、未知输入，不把role=admin当诊断权。核心行/分支/函数100%；Domain514、Worker非PG670+2外部skip、两包type/lint绿。**尚未接Service/HTTP/BFF**，旧入口改动留到接线批，不冒充#8完成。逐文件计划已落`2026-09-05-空间绑源与管理员对账接线.md`；目标继续，不push/未合流/未部署。
+- #8团队reader风险提醒：现在KaDataClient只允许explicit_accounts，team进来会403；不能简单删这道检查，使任意team workspace均借用同一reader。计划以服务端`KA_DATA_TEAM_WORKSPACE_ID`绑定单一团队源（一期一reader→一team），未配置/不匹配明确unavailable/forbidden；不接受浏览器workspace参数，也不依赖team grants。请arch确认此部署映射名称/范围；可以先继续纯查询/HTTP/非视觉BFF接线，不放宽到无绑定team全量。
+- CTE证据补正：刚实读主仓`private/knowledge-sources/ka-src-0011/source.txt:13`，上游**文档明确允许单条SELECT/WITH**，非之前写的能力未知；bdc5273本地SQLite证明已具备，仍未执行内网新SQL模板，性能/快照一致性不冒充实测。
+
+- **v2后端代码`bdc5273`（18文件）已独立提交**：六Query严格v2、两Adapter三态/截断error、SQLite expected账户日/NULL传播/坏值哨兵、成功fixtures升级。Domain514、Worker非PG648+2外部skip、type/lint绿；核心84测试行91.85%/分支83.2%，Workeraudit0。DB219在16:32真实PG重跑通过（首轮migration5s超时），但21:32 Worker全量PG因55432 ECONNREFUSED失败，**当前pg_blocked**，不称本增量全门禁通过。没有push/合流/部署/开媒体写；详见R009状态与六Query-v2计划。
+- 最新只读main@cda3303，已收到A-001要求#8同时接BFF和契约。真实检查发现Web旧78测试/typecheck绿但三个v2成功fixtures全被web schema拒绝；下一批将按A-001修非视觉BFF/契约及必要数据解包，不用兼容v1掩盖漂移。此增量frontend0diff；目标不因PG环境暂停，继续#8。SQLite CTE只在本地真实执行，内网网关CTE可用性与性能仍需OS验证。
+- 新R013b部署打包/worker once、R014v1.5、缺数规则抑制与8维补充已登记总计划；012先迁移全部再seed的最新部署顺序已读，旧倒数系数/ubp有源假设不再沿用。材料/结算和bid_tool等仍先提案、不自造Contract。
+
+- **质量对账增量 `35d2482`**：空源/缺字段/跨媒体同号观测不齐→unknown，真实0才可通过；field_sources已指定来源不跨口径补；坏值/PG数字溢出稳定拒绝。passed=NULL沿既有DB列落库，真实回灌unknown停质量失败。TDD3红+超大指数红后修，Domain512/DB219真PG套件/Worker643+2外部skip/Web78，四包type/lint绿，核心行93.05%分支73.91%，DBaudit0。无前端/迁移/Contract/依赖改动，未push/合流/部署。对平仅证明raw/canonical观测tuple并集一致，不冒称全workspace已齐；完整coverage仍独立。详见R009状态和质量对账计划。继续v2/绑源，P044非整批完成。
+
+- **SQL增量 `3e7f932` 已自测**：预期账户日左连canonical，授权tuple/有效任务过滤；九指标缺任一成员/字段→NULL，真实0保留，NaN不被NULL掩盖。observed计数不算预期占位；Summary/Trend/Dimension/Task日报/ReportFacts均接通缺数，公开v2未切。全量Domain512 / DB211真实PG套件 / Worker641+2外部跳过 / Web78，五包typecheck/lint绿；核心行95.4%分支86.3%，DBaudit0（首次网络EPERM批准重试）。Worker原fixture只有accountId不区分媒体被新缺数测试揭出，已加tuple/混合媒体missing/跨workspace缺日，完整记录见R009状态。前端/Contract/依赖/迁移0diff，未push/合main/部署；继续data-quality空对账、v2和绑源，不等待本小增量审查。
+
+- **P043 冻结跟进 `9715125`**：已实读 main@8c240f7 的 P042/P043 通过及 dead 定义。发现 c6603d3 实际最终显式失败仍记 PROCESSING_FAILED，且先失败再最终崩溃也不补标；并非全部符合新增注释。已修为最终失败立即 ATTEMPTS_EXHAUSTED+失效租约、过期崩溃含旧错误统一补标，活跃最后租约不提前 dead。TDD 真PG首轮2失败、修后DB全量206/206、Gateway36/36（含PG2），两包typecheck/lint通过；其余包本小补丁未重跑，不冒充全门禁。3文件限定提交、未push/合流/部署。runbook§6原已有密钥生成/轮换，本次同步dead定义；无新状态列、真实写未开。
+
+- 老板新指令：设置持续目标，把信箱内Claude派给后端的有效任务全部做完。已建立active goal，执行总表 `docs/plans/2026-09-05-Claude信箱全量执行目标.md`。不改角色/终审权，不回integration-control，不因单一待裁点停止其他工作。
+- **基础代码SHA `ee62db2`**：新增普通指标严格三态schema、缺失/真0归一化、聚合任一missing/error→missing、比率复用RatioValue；不更改旧来源健康MetricValue的六态，不混淆来源状态与普通指标。首轮缺module红灯，最终新增15/15、Domain全量512/512；核心V8行/分支/函数100%，Domainaudit0、五包typecheck/lint通过。本基础提交没碰DB/Worker运行码，未重跑PG，不能引用P043数字称本次PG重验。
+- **不是P0-04交付完成**：SQL仍待从现存行扩到expected account-days，避免缺日丢成员；report-facts/六Query v2/双Adapter/fixtures尚待接线。继续推进此部分，不等基础审查。
+- **请确认R013顺序**：原要求R009后、R010前seed；最新追加四渠道系数seed依赖R010a1的012.op。建议保持业务顺序，把012迁移基础先落（不提前开业务路由），再R013空库验收，再R010a1功能；或将系数seed分后补子批。不会自造有效日期或倒数系数。此点不阻塞当前R009。
+- **请确认v2机械适配路径**：R009纪律写apps/web非api不动，但之前已许可SessionBFF库；v2普通指标变对象，`apps/web/lib/data`现有contracts/adapters/types与测试需要同步解包available值，否则旧页面把对象当数字。建议授权只改这些非视觉的数据契约适配（不改React页面/布局/样式），或由fe承担；后端先完成Domain/DB/Worker。本批不会静默越过视觉边界。
+- R011团队staging与R012素材/结算将按先提案后冻结执行；旧source-neutral Task6草稿不直接复用，内网验证仍交OS。所有未审SHA保留，最终由arch整合，真实媒体写不因持续目标而开启。
 
 ---
 

@@ -140,19 +140,19 @@ export class MetricsRepository {
          ORDER BY value.effective_date DESC, value.id DESC
          LIMIT 1
        ) AS coefficient ON true
+       LEFT JOIN task_accounts AS relation
+         ON relation.workspace_id = account.workspace_id
+        AND relation.media = account.media
+        AND relation.account_id = account.account_id
+        AND relation.valid_from <= requested.ds
+        AND (relation.valid_to IS NULL OR relation.valid_to >= requested.ds)
        LEFT JOIN LATERAL (
          SELECT price.price
-         FROM task_accounts AS relation
-         JOIN assessment_price_history AS price
-           ON price.workspace_id = relation.workspace_id
-          AND price.task_id = relation.task_id
-          AND price.effective_date <= requested.ds
-         WHERE relation.workspace_id = account.workspace_id
-           AND relation.media = account.media
-           AND relation.account_id = account.account_id
-           AND relation.valid_from <= requested.ds
-           AND (relation.valid_to IS NULL OR relation.valid_to >= requested.ds)
-         ORDER BY relation.valid_from DESC, price.effective_date DESC, price.id DESC
+         FROM assessment_price_history AS price
+         WHERE price.workspace_id = relation.workspace_id
+           AND price.task_id = relation.task_id
+           AND price.effective_date <= requested.ds
+         ORDER BY price.effective_date DESC, price.id DESC
          LIMIT 1
        ) AS assessment ON true
        ORDER BY requested.ds, account.media, account.account_id`,

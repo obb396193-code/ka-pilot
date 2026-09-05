@@ -32,6 +32,7 @@ export interface ChangeExecutor {
 
 export interface ChangeSetStore {
   load(workspaceId: string, changeSetId: string): Promise<ChangeSetExecutionView>;
+  assertExecutionAuthorized(workspaceId: string, changeSetId: string): Promise<void>;
   beginExecution(input: {
     workspaceId: string;
     changeSetId: string;

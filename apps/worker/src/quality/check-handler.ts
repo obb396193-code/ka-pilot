@@ -45,6 +45,7 @@ export function createDataQualityHandler(dependencies: {
     });
     let currentStep = "quality:start";
     let checksRecorded = 0;
+    let backfillQualityFailed = false;
     try {
       for (const ds of inclusiveDates(payload.dateFrom, payload.dateTo)) {
         const failedChecks: string[] = [];
@@ -60,7 +61,7 @@ export function createDataQualityHandler(dependencies: {
           delta: { absolute: totals.delta, tolerance: totals.tolerance },
         });
         checksRecorded += 1;
-        if (!totals.passed) {
+        if (totals.passed !== true) {
           failedChecks.push("total_reconciliation");
         }
 
@@ -100,6 +101,7 @@ export function createDataQualityHandler(dependencies: {
         }
 
         if (failedChecks.length > 0) {
+          backfillQualityFailed = true;
           currentStep = "quality:notify";
           await dependencies.outbound.enqueue({
             workspaceId: payload.workspaceId,
@@ -109,6 +111,10 @@ export function createDataQualityHandler(dependencies: {
             payload: { ds, failedChecks },
           });
         }
+      }
+      if (payload.backfillId !== undefined && backfillQualityFailed) {
+        currentStep = "quality:validation_failed";
+        throw new Error("Backfill quality checks did not pass");
       }
       await dependencies.runs.finishRun(runId, checksRecorded);
     } catch (error) {

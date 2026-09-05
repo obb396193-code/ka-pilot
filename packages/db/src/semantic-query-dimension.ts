@@ -2,6 +2,7 @@ import type { Pool } from "pg";
 
 import {
   METRIC_AGGREGATE_SQL,
+  EXPECTED_METRIC_CTE,
   mapMetricSummary,
   type AggregateDatabaseRow,
 } from "./semantic-query-metrics.js";
@@ -107,9 +108,9 @@ export async function queryMetricDimension(
       ? `AND relation.task_id = $${values.push(input.filters.taskId)}`
       : "";
   const result = await pool.query<DimensionDatabaseRow>(
-    `SELECT ${sql.key} AS dimension_key, ${sql.label} AS dimension_label,
+    `${EXPECTED_METRIC_CTE} SELECT ${sql.key} AS dimension_key, ${sql.label} AS dimension_label,
             ${METRIC_AGGREGATE_SQL}
-     FROM account_metrics_daily AS metric
+     FROM expected_metric AS metric
      JOIN accounts AS account
        ON account.workspace_id = metric.workspace_id
       AND account.media = metric.media
@@ -118,7 +119,7 @@ export async function queryMetricDimension(
      WHERE ${filter.whereSql}
        ${taskCondition}
      GROUP BY ${sql.key}, ${sql.label}
-     ORDER BY sum(metric.cost) DESC NULLS LAST, ${sql.key} ASC NULLS FIRST`,
+     ORDER BY cost DESC NULLS LAST, ${sql.key} ASC NULLS FIRST`,
     values,
   );
   return result.rows.map((row) => ({

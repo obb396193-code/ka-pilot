@@ -35,6 +35,11 @@ const auth = personalAuth({
   accounts: [{ media: "KUAISHOU", accountId: "account-1" }],
 });
 
+const teamAuth: ApprovedWorkspaceAuthContext = {
+  workspaceId: auth.workspaceId, userId: auth.userId, role: "optimizer",
+  workspaceKind: "team", scope: { kind: "team_workspace_readonly" },
+};
+
 function ready(
   queryId: DataQueryId,
   source: "ka_data" | "canonical",
@@ -136,6 +141,7 @@ describe("data API HTTP composition", () => {
         [canonicalRow(resolved.queryId, 11, activeAuth.workspaceId, "account-1")],
       ) },
       requestId: () => "http-smoke-request",
+      ...(options.dataQueryAccess === undefined ? {} : { sourcePolicy: options.dataQueryAccess }),
     });
     const server = createDataApiServer({
       service,
@@ -144,9 +150,6 @@ describe("data API HTTP composition", () => {
       accountListService: emptyAccountListService(),
       workItemListService: emptyWorkItemListService(),
       sessionAuthService: approvedSessionAuth(activeAuth),
-      ...(options.dataQueryAccess === undefined
-        ? {}
-        : { dataQueryAccess: options.dataQueryAccess }),
       internalToken,
       ...(options.maxResponseBytes === undefined
         ? {}
@@ -160,33 +163,40 @@ describe("data API HTTP composition", () => {
   }
 
   it.each(["ka_data", "platform", "reconcile"] as const)(
-    "serves %s through the real POST /api/v1/data/query route",
+    "serves %s through its server-selected HTTP route",
     async (dataView) => {
       const baseUrl = await start({
+        auth: dataView === "ka_data" ? teamAuth : auth,
         dataQueryAccess: {
           diagnosticEnabled: true,
           kaDataEnabled: true,
           entitlements: [{ workspaceId: auth.workspaceId, userId: auth.userId }],
         },
       });
-      const response = await fetch(`${baseUrl}/api/v1/data/query`, {
+      const path = dataView === "reconcile" ? "/api/v1/admin/data/reconcile" : "/api/v1/data/query";
+      const response = await fetch(`${baseUrl}${path}`, {
         method: "POST",
         headers: { ...authHeaders(), "x-request-id": `bff-${dataView}-001` },
         body: JSON.stringify({
           queryId: dataView === "reconcile" ? "reconcile.account_daily" : "account.summary",
           params: { date: "2026-08-24" },
-          dataView,
         }),
       });
       expect(response.status).toBe(200);
       expect(response.headers.get("x-request-id")).toBe(`bff-${dataView}-001`);
       const payload = await response.json();
       expect(payload).toMatchObject({ ok: true, data: { mode: dataView } });
+      if (dataView === "reconcile") {
+        expect(payload.data.kaData.lineage.workspaceKind).toBe("personal");
+        expect(payload.data.platform.lineage.workspaceKind).toBe("personal");
+      } else {
+        expect(payload.data.source.lineage.workspaceKind).toBe(dataView === "ka_data" ? "team" : "personal");
+      }
     },
   );
 
   it.each(["optimizer", "operator", "lead", "admin"] as const)(
-    "fixes ordinary %s sessions to platform even when the body requests ka_data",
+    "rejects browser source selection for ordinary %s sessions",
     async (role) => {
       const kaData = { query: vi.fn(async () => { throw new Error("KA must not run"); }) };
       const platform = { query: vi.fn(async (resolved) => ready(
@@ -204,10 +214,10 @@ describe("data API HTTP composition", () => {
           dataView: "ka_data",
         }),
       });
-      expect(response.status).toBe(200);
-      expect(await response.json()).toMatchObject({ ok: true, data: { mode: "platform" } });
+      expect(response.status).toBe(400);
+      expect(await response.json()).toMatchObject({ ok: false, error: { code: "INVALID_REQUEST" } });
       expect(kaData.query).not.toHaveBeenCalled();
-      expect(platform.query).toHaveBeenCalledTimes(1);
+      expect(platform.query).not.toHaveBeenCalled();
     },
   );
 
@@ -227,17 +237,17 @@ describe("data API HTTP composition", () => {
         entitlements: [{ workspaceId: auth.workspaceId, userId: auth.userId }],
       },
     });
-    const response = await fetch(`${baseUrl}/api/v1/data/query`, {
+    const response = await fetch(`${baseUrl}/api/v1/admin/data/reconcile`, {
       method: "POST",
       headers: authHeaders(),
       body: JSON.stringify({
-        queryId: "account.summary",
+        queryId: "reconcile.account_daily",
         params: { date: "2026-08-24" },
-        dataView: "reconcile",
       }),
     });
-    expect(response.status).toBe(200);
-    expect(await response.json()).toMatchObject({ ok: true, data: { mode: "platform" } });
+    expect(response.status).toBe(403);
+    expect(await response.json()).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect(platform.query).not.toHaveBeenCalled();
     expect(kaData.query).not.toHaveBeenCalled();
   });
 
@@ -253,13 +263,12 @@ describe("data API HTTP composition", () => {
         entitlements: [{ workspaceId: auth.workspaceId, userId: auth.userId }],
       },
     });
-    const response = await fetch(`${baseUrl}/api/v1/data/query`, {
+    const response = await fetch(`${baseUrl}/api/v1/admin/data/reconcile`, {
       method: "POST",
       headers: { ...authHeaders(), "x-request-id": "diagnostic-ka-off" },
       body: JSON.stringify({
-        queryId: "account.summary",
+        queryId: "reconcile.account_daily",
         params: { date: "2026-08-24" },
-        dataView: "ka_data",
       }),
     });
     expect(response.status).toBe(422);
@@ -293,6 +302,69 @@ describe("data API HTTP composition", () => {
       ok: false,
       error: { code: "INVALID_REQUEST" },
     });
+  });
+
+  it.each(["optimizer", "operator", "lead", "admin"] as const)(
+    "denies the dedicated diagnostic route to %s without an exact entitlement",
+    async (role) => {
+      const kaData = { query: vi.fn() };
+      const platform = { query: vi.fn() };
+      const baseUrl = await start({
+        auth: { ...auth, role }, kaData, platform,
+        dataQueryAccess: { kaDataEnabled: true, diagnosticEnabled: true, entitlements: [] },
+      });
+      const response = await fetch(`${baseUrl}/api/v1/admin/data/reconcile`, {
+        method: "POST", headers: authHeaders(),
+        body: JSON.stringify({ queryId: "reconcile.account_daily", params: { date: "2026-08-24" } }),
+      });
+      expect(response.status).toBe(403);
+      expect(await response.json()).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+      expect(kaData.query).not.toHaveBeenCalled();
+      expect(platform.query).not.toHaveBeenCalled();
+    },
+  );
+
+  it("keeps team source failure separate from personal reads and never falls back", async () => {
+    const kaData = { query: vi.fn() };
+    const platform = { query: vi.fn() };
+    const baseUrl = await start({ auth: teamAuth, kaData, platform });
+    const response = await fetch(`${baseUrl}/api/v1/data/query`, {
+      method: "POST", headers: authHeaders(),
+      body: JSON.stringify({ queryId: "account.summary", params: { date: "2026-08-24" } }),
+    });
+    expect(response.status).toBe(503);
+    expect(await response.json()).toMatchObject({ ok: false, error: { code: "SOURCE_UNAVAILABLE" } });
+    expect(kaData.query).not.toHaveBeenCalled();
+    expect(platform.query).not.toHaveBeenCalled();
+  });
+
+  it.each(["dataView", "data_view"])("rejects %s even from an entitled diagnostic caller", async (key) => {
+    const kaData = { query: vi.fn() };
+    const platform = { query: vi.fn() };
+    const baseUrl = await start({
+      kaData, platform,
+      dataQueryAccess: { diagnosticEnabled: true, kaDataEnabled: true, entitlements: [auth] },
+    });
+    const response = await fetch(`${baseUrl}/api/v1/admin/data/reconcile`, {
+      method: "POST", headers: authHeaders(),
+      body: JSON.stringify({ queryId: "reconcile.account_daily", params: {}, [key]: "reconcile" }),
+    });
+    expect(response.status).toBe(400);
+    expect(kaData.query).not.toHaveBeenCalled();
+    expect(platform.query).not.toHaveBeenCalled();
+  });
+
+  it("applies authentication and method boundaries to the dedicated diagnostic route", async () => {
+    const baseUrl = await start();
+    for (const method of ["GET", "PATCH", "DELETE"]) {
+      const result = await fetch(`${baseUrl}/api/v1/admin/data/reconcile`, { method, headers: authHeaders() });
+      expect(result.status).toBe(405);
+    }
+    const result = await fetch(`${baseUrl}/api/v1/admin/data/reconcile`, {
+      method: "POST", headers: { "x-request-id": "admin-auth-1" }, body: "{}",
+    });
+    expect(result.status).toBe(401);
+    expect(await result.json()).toMatchObject({ ok: false, error: { requestId: "admin-auth-1" } });
   });
 
   it("returns stable 401/403 envelopes before executing a query", async () => {
@@ -356,7 +428,6 @@ describe("data API HTTP composition", () => {
       body: JSON.stringify({
         queryId: "account.summary",
         params: { date: "2026-08-24" },
-        dataView: "platform",
       }),
     });
     expect(forgedLegacyScope.status).toBe(200);
@@ -442,6 +513,7 @@ describe("data API HTTP composition", () => {
 
   it("returns a redacted timeout envelope over HTTP", async () => {
     const baseUrl = await start({
+      auth: teamAuth,
       kaData: {
         query: async () => {
           throw new KaDataClientError("UPSTREAM_TIMEOUT", "KA Data request timed out", true);
@@ -459,7 +531,6 @@ describe("data API HTTP composition", () => {
       body: JSON.stringify({
         queryId: "account.summary",
         params: { date: "2026-08-24" },
-        dataView: "ka_data",
       }),
     });
     expect(response.headers.get("x-request-id")).toBe("bff-timeout-001");
@@ -520,7 +591,6 @@ describe("data API HTTP composition", () => {
       body: JSON.stringify({
         queryId: "account.table",
         params: { date: "2026-08-24" },
-        dataView: "platform",
       }),
     });
     expect(response.status).toBe(403);
@@ -554,7 +624,6 @@ describe("data API HTTP composition", () => {
       body: JSON.stringify({
         queryId: "account.summary",
         params: { date: "2026-08-24" },
-        dataView: "platform",
       }),
     });
     expect(response.status).toBe(502);
@@ -863,7 +932,6 @@ describe("data API HTTP composition", () => {
       body: JSON.stringify({
         queryId: "account.summary",
         params: { date: "2026-08-24" },
-        dataView: "ka_data",
       }),
     });
     expect(response.status).toBe(502);
@@ -873,5 +941,31 @@ describe("data API HTTP composition", () => {
       error: { code: "SOURCE_TRUNCATED", requestId: expect.any(String) },
     });
     expect(JSON.stringify(body)).not.toContain("fixture-internal-token");
+  });
+
+  it("fails closed at the exact serialized boundary on the administrator endpoint too", async () => {
+    const options = {
+      dataQueryAccess: {
+        diagnosticEnabled: true, kaDataEnabled: true,
+        entitlements: [{ workspaceId: auth.workspaceId, userId: auth.userId }],
+      },
+    };
+    const payload = { queryId: "reconcile.account_daily", params: { date: "2026-08-24" } };
+    const first = await start(options);
+    const probe = await fetch(`${first}/api/v1/admin/data/reconcile`, {
+      method: "POST", headers: { ...authHeaders(), "x-request-id": "admin-size-probe" },
+      body: JSON.stringify(payload),
+    });
+    expect(probe.status).toBe(200);
+    const exactBytes = Buffer.byteLength(await probe.text());
+    const limited = await start({ ...options, maxResponseBytes: exactBytes });
+    const response = await fetch(`${limited}/api/v1/admin/data/reconcile`, {
+      method: "POST", headers: { ...authHeaders(), "x-request-id": "admin-size-probe" },
+      body: JSON.stringify(payload),
+    });
+    expect(response.status).toBe(502);
+    expect(await response.json()).toMatchObject({
+      ok: false, error: { code: "SOURCE_TRUNCATED", requestId: "admin-size-probe" },
+    });
   });
 });
