@@ -3260,3 +3260,10 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - Domain579、DB unit77、Worker非PG761+2外部opt-in，三包type/lint过；DBoffline audit0。新Domain24/DB+CLI30，核心Domain100%、DB Repository98.66%/CLI83.87%；真实PG7例（并发/隔离/精度/回滚/团队拒绝）未执行，02:51获准TCP仍拒连。套件初始缺模块是加载失败，新增并发重试两断言实际先红后绿。
 - **部署依赖实读发现**：现metrics.ts写死除法，settings query未select op。不能把seed单独上线后开始ETL；现继续按已授权R010a1补op→canonical，并修现金口径onTarget，独立P050；无新Contract要求。bootstrap仍等P047三问，脚本不创建身份/空间。
 - 最新main已到150af26：新增v1.5.1/R015v1.6已只读登记（原素材结算先提案被新冻结覆盖），本批不混014/015/016或视觉。下一步先op依赖，再部署打包/worker once等已派项。未push/合流/部署。
+
+### P-050 R010a1 op依赖与现金达标收口｜Codex 2026-09-06，待审
+
+- 代码 **739658f**，9文件。settings同一生效版本读取coefficient/op，不按渠道名猜方向；缺配置null，present-invalid十进制/op及越workspace拒绝。canonical透传，cash_cost按配置乘除，onTarget改现金CPA；无现金/价不判达标，账面CPA只展示。未实现v3公开窗口，不能将本子批当全部R010a1完成。
+- Domain587、DBunit89、Worker非PG763+2外部opt-in skipped，三包typecheck/lint；metrics行96.74%/分支93.22%，canonical行93.87%/分支83.33%。Domain8新例、DB settings12例、Worker canonical新增2例。Domain/DB新增断言实际先红后绿。
+- PG新增生效方向版本/未来版本排除/跨媒体同号/跨workspace，尚未跑。最近获准55432 TCP于02:51仍ECONNREFUSED；未执行seed/迁移/ETL。上线需012+seed+本修复整体门禁，不能seed配旧固定除法计算。
+- 依赖零变更、最近DBoffline audit0，diff --check通过，无前端/媒体写。未push/合流/部署；P047三项裁决继续待答，先做R013b。main新71b9231的R015/R016已纳入总目标，不提前发明其公开DTO。
