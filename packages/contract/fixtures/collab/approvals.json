@@ -1,0 +1,49 @@
+{
+  "ok": true,
+  "data": {
+    "mine": [
+      {
+        "approvalId": "00000000-0000-4000-8000-000000001301",
+        "kind": "budget_increase",
+        "title": "追加预算申请：AAC 拉新 +18 万",
+        "status": "pending",
+        "approver": {
+          "userId": "00000000-0000-4000-8000-000000000003",
+          "name": "示例负责人"
+        },
+        "createdAt": "2026-09-05T08:00:00.000+08:00",
+        "autoPass": false
+      }
+    ],
+    "toApprove": [
+      {
+        "approvalId": "00000000-0000-4000-8000-000000001302",
+        "kind": "changeset",
+        "title": "account-2 降价 10%",
+        "status": "pending",
+        "requester": {
+          "userId": "00000000-0000-4000-8000-000000000002",
+          "name": "示例运营"
+        },
+        "createdAt": "2026-09-05T09:30:00.000+08:00",
+        "autoPass": false,
+        "changesetId": "00000000-0000-4000-8000-000000000302"
+      }
+    ],
+    "autoPassRules": [
+      {
+        "kind": "changeset",
+        "condition": "影响金额 < 500 且防御性动作",
+        "count7d": 4
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "充值协作不入审批；提审是自愿动作"
+  }
+}

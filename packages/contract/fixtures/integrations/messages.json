@@ -1,0 +1,74 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "out-1",
+        "direction": "out",
+        "channel": "dingtalk",
+        "target": "cid****01",
+        "kind": "daily_report",
+        "status": "sent",
+        "attempts": 1,
+        "failReason": null,
+        "createdAt": "2026-09-05T08:30:00.000+08:00",
+        "sentAt": "2026-09-05T08:30:02.000+08:00",
+        "ref": {
+          "type": "report_run",
+          "id": "00000000-0000-4000-8000-000000002101"
+        }
+      },
+      {
+        "id": "out-2",
+        "direction": "out",
+        "channel": "dingtalk",
+        "target": "cid****01",
+        "kind": "alert",
+        "status": "failed",
+        "attempts": 3,
+        "failReason": "DingTalk reply rejected",
+        "createdAt": "2026-09-05T09:16:00.000+08:00",
+        "sentAt": null,
+        "ref": {
+          "type": "escalation",
+          "id": "00000000-0000-4000-8000-000000001401"
+        }
+      },
+      {
+        "id": "in-1",
+        "direction": "in",
+        "channel": "dingtalk",
+        "target": "staff****01",
+        "kind": "robot_message",
+        "status": "processed",
+        "attempts": 1,
+        "failReason": null,
+        "createdAt": "2026-09-05T09:20:00.000+08:00",
+        "processedAt": "2026-09-05T09:20:03.000+08:00",
+        "ref": null
+      },
+      {
+        "id": "in-2",
+        "direction": "in",
+        "channel": "dingtalk",
+        "target": "staff****02",
+        "kind": "robot_message",
+        "status": "dead",
+        "attempts": 5,
+        "failReason": "ATTEMPTS_EXHAUSTED",
+        "createdAt": "2026-09-04T18:00:00.000+08:00",
+        "processedAt": null,
+        "ref": null
+      }
+    ],
+    "next_cursor": null
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "dead 保留行；retry：出站 failed 重排队，入站 dead admin 重置"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": 1,
+        "kind": "daily_report",
+        "target": "group",
+        "targetRef": "cid****01",
+        "config": {
+          "role": "optimizer",
+          "time": "08:30"
+        },
+        "quietHours": {
+          "from": "23:00",
+          "to": "07:00"
+        },
+        "enabled": true
+      },
+      {
+        "id": 2,
+        "kind": "alert",
+        "target": "dm",
+        "targetRef": null,
+        "config": {
+          "severities": [
+            "P0",
+            "P1"
+          ]
+        },
+        "quietHours": {
+          "from": "23:00",
+          "to": "07:00"
+        },
+        "enabled": true
+      },
+      {
+        "id": 3,
+        "kind": "report_schedule",
+        "target": "group",
+        "targetRef": "cid****01",
+        "config": {
+          "view_id": "00000000-0000-4000-8000-000000001201",
+          "cron": "0 9 * * 1",
+          "format": "png"
+        },
+        "quietHours": null,
+        "enabled": true
+      },
+      {
+        "id": 4,
+        "kind": "settlement",
+        "target": "group",
+        "targetRef": "cid****01",
+        "config": {},
+        "quietHours": null,
+        "enabled": false
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "quiet_hours 只压 P1/P2"
+  }
+}

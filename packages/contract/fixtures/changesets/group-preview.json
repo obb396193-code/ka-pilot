@@ -1,0 +1,63 @@
+{
+  "ok": true,
+  "data": {
+    "groupId": "00000000-0000-4000-8000-000000000901",
+    "title": "批量：3 户提预算 +15%",
+    "status": "draft",
+    "reasonCode": "volume_short_with_cost_space",
+    "expiresAt": "2026-09-05T11:02:18.000+08:00",
+    "changesets": [
+      {
+        "changesetId": "00000000-0000-4000-8000-000000000301",
+        "media": "KUAISHOU",
+        "accountId": "account-1",
+        "status": "draft",
+        "items": 1,
+        "riskLevel": "low",
+        "dataAsOf": "2026-09-05T10:32:12.000+08:00"
+      },
+      {
+        "changesetId": "00000000-0000-4000-8000-000000000302",
+        "media": "KUAISHOU",
+        "accountId": "account-2",
+        "status": "draft",
+        "items": 1,
+        "riskLevel": "medium",
+        "dataAsOf": "2026-09-05T10:32:12.000+08:00"
+      }
+    ],
+    "skipped": [
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-5",
+        "reason": "RUNNING_CHANGESET_EXISTS"
+      }
+    ],
+    "permissionChecks": [
+      {
+        "check": "changesets:write",
+        "pass": true
+      },
+      {
+        "check": "account_scope",
+        "pass": true
+      }
+    ],
+    "accountLocks": [
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-1",
+        "conflict": false,
+        "lockedBy": null
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "v1.5.1 变更集组：一次预览一次确认，执行仍逐账户"
+  }
+}

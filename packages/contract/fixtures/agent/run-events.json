@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "data": {
+    "runId": "00000000-0000-4000-8000-000000001801",
+    "events": [
+      {
+        "seq": 1,
+        "kind": "run_started",
+        "at": "2026-09-05T09:16:00.000+08:00"
+      },
+      {
+        "seq": 2,
+        "kind": "tool_call",
+        "at": "2026-09-05T09:16:01.000+08:00",
+        "tool": "query.account_summary",
+        "argsExcerpt": {
+          "accountIds": [
+            "account-2"
+          ]
+        }
+      },
+      {
+        "seq": 3,
+        "kind": "tool_result",
+        "at": "2026-09-05T09:16:03.000+08:00",
+        "ok": true
+      },
+      {
+        "seq": 4,
+        "kind": "diagnosis",
+        "at": "2026-09-05T09:16:08.000+08:00",
+        "schema": "diagnosis/v1"
+      },
+      {
+        "seq": 5,
+        "kind": "run_finished",
+        "at": "2026-09-05T09:16:08.200+08:00",
+        "status": "done"
+      }
+    ],
+    "rawLogAccess": "restricted"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

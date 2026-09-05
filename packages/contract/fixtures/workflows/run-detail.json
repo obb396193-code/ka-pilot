@@ -1,0 +1,170 @@
+{
+  "ok": true,
+  "data": {
+    "run": {
+      "id": "00000000-0000-4000-8000-000000001001",
+      "version": "v1.0（不可变）",
+      "initiator": {
+        "userId": "00000000-0000-4000-8000-000000000001",
+        "name": "示例优化师"
+      },
+      "executor_identity": "system_automation",
+      "status": "WAITING_CONFIRMATION",
+      "taskId": "fixture-task-ready"
+    },
+    "stages": [
+      {
+        "node_id": "n1",
+        "label": "准备",
+        "status": "done",
+        "started_at": "2026-09-05T10:30:12.000+08:00",
+        "finished_at": "2026-09-05T10:31:05.000+08:00",
+        "input_excerpt": {
+          "task_id": "fixture-task-ready"
+        },
+        "output_excerpt": {
+          "budget": 30000
+        }
+      },
+      {
+        "node_id": "n3",
+        "label": "开户",
+        "status": "done",
+        "started_at": "2026-09-05T10:31:05.000+08:00",
+        "finished_at": "2026-09-05T10:31:42.000+08:00",
+        "input_excerpt": null,
+        "output_excerpt": {
+          "accounts": 2
+        }
+      },
+      {
+        "node_id": "n4",
+        "label": "充值",
+        "status": "done",
+        "started_at": "2026-09-05T10:31:42.000+08:00",
+        "finished_at": "2026-09-05T10:32:10.000+08:00",
+        "input_excerpt": null,
+        "output_excerpt": null
+      },
+      {
+        "node_id": "n5",
+        "label": "生成变更集",
+        "status": "done",
+        "started_at": "2026-09-05T10:32:10.000+08:00",
+        "finished_at": "2026-09-05T10:32:18.000+08:00",
+        "input_excerpt": null,
+        "output_excerpt": {
+          "group_id": "00000000-0000-4000-8000-000000000901"
+        }
+      },
+      {
+        "node_id": "n6",
+        "label": "待确认",
+        "status": "running",
+        "started_at": "2026-09-05T10:32:20.000+08:00",
+        "finished_at": null,
+        "input_excerpt": null,
+        "output_excerpt": null
+      },
+      {
+        "node_id": "n7",
+        "label": "执行",
+        "status": "pending",
+        "started_at": null,
+        "finished_at": null,
+        "input_excerpt": null,
+        "output_excerpt": null
+      }
+    ],
+    "changeset_preview": {
+      "group_id": "00000000-0000-4000-8000-000000000901",
+      "items": [
+        {
+          "targetType": "unit",
+          "targetId": "u-11",
+          "field": "bid",
+          "from": {
+            "type": "number",
+            "value": 40
+          },
+          "to": {
+            "type": "number",
+            "value": 38
+          },
+          "riskLevel": "low",
+          "dataAsOf": "2026-09-05T10:32:12.000+08:00"
+        }
+      ],
+      "hash": "3f2e9c0d6a4e7b9c8f1a2d3b5e6f7a9b2c4d6e8f0a1b2c3d4e5f60718293a4b5",
+      "expires_at": "2026-09-05T11:02:18.000+08:00"
+    },
+    "permission_checks": [
+      {
+        "check": "流程权限",
+        "pass": true
+      },
+      {
+        "check": "账户权限 2/2",
+        "pass": true
+      },
+      {
+        "check": "变更集写入",
+        "pass": true
+      }
+    ],
+    "account_locks": [
+      {
+        "media": "KUAISHOU",
+        "account_id": "account-1",
+        "conflict": false,
+        "locked_by": null
+      },
+      {
+        "media": "KUAISHOU",
+        "account_id": "account-5",
+        "conflict": true,
+        "locked_by": "00000000-0000-4000-8000-000000001002"
+      }
+    ],
+    "trace": {
+      "correlation_id": "a1b2c3d4",
+      "trace_id": "t-20260905-1",
+      "span_id": "s-06-wait-confirm"
+    },
+    "audit": [
+      {
+        "at": "2026-09-05T10:20:11.000+08:00",
+        "actor": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "action": "触发运行",
+        "detail": "手动触发"
+      },
+      {
+        "at": "2026-09-05T10:32:20.000+08:00",
+        "actor": "system",
+        "action": "等待确认",
+        "detail": "暂停执行"
+      }
+    ],
+    "retry_policy": {
+      "max": 3,
+      "backoff": "exponential",
+      "base_ms": 2000
+    },
+    "reconcile_policy": {
+      "on_unknown": "read_back_then_decide",
+      "window_min": 30
+    },
+    "unknown_explain": "执行过程若超时或返回不明，标记 UNKNOWN，先回读媒体态再决定，不重发"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "原型 P13 运行详情"
+  }
+}

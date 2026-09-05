@@ -1,0 +1,45 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "escalationId": "00000000-0000-4000-8000-000000001401",
+        "severity": "P0",
+        "title": "account-2 成本超考核持续 2 日",
+        "workItemId": "00000000-0000-4000-8000-000000000201",
+        "status": "open",
+        "ackBy": null,
+        "escalateAt": "2026-09-05T09:45:00.000+08:00",
+        "policy": "P0 30min 突破静默→备班"
+      },
+      {
+        "escalationId": "00000000-0000-4000-8000-000000001402",
+        "severity": "P1",
+        "title": "account-5 余额 0 断量",
+        "workItemId": "00000000-0000-4000-8000-000000000203",
+        "status": "acked",
+        "ackBy": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "escalateAt": "2026-09-06T09:15:00.000+08:00",
+        "policy": "P1 24h→48h 上级"
+      }
+    ],
+    "summary": {
+      "onDuty": {
+        "userId": "00000000-0000-4000-8000-000000000001",
+        "name": "示例优化师"
+      },
+      "p0Unacked": 1,
+      "escalating": 0
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

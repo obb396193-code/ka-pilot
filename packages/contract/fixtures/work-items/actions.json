@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "data": {
+    "ignore": {
+      "reasons": [
+        "已知波动",
+        "数据未刷新",
+        "已在后台处理",
+        "误报"
+      ],
+      "muteDays": [
+        1,
+        3,
+        7
+      ]
+    },
+    "process": {
+      "transitions": "open→processing"
+    },
+    "dispatch": {
+      "acceptanceRuleMetrics": [
+        "cash_cpa",
+        "cost",
+        "real_conversion"
+      ]
+    },
+    "escalate": {
+      "rosterTarget": {
+        "userId": "00000000-0000-4000-8000-000000000003",
+        "name": "示例负责人"
+      }
+    }
+  },
+  "meta": {
+    "requestId": "fixture-wi-actions",
+    "_note": "动作枚举与忽略原因 chip；3 秒点选不打字"
+  }
+}

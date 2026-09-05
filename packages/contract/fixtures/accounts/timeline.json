@@ -1,0 +1,101 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "at": "2026-09-05T08:42:00.000+08:00",
+        "kind": "changeset",
+        "actor": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "summary": "unit 出价 40→38（-5%）",
+        "ref": {
+          "type": "changeset",
+          "id": "00000000-0000-4000-8000-000000000301"
+        },
+        "t1Result": {
+          "observedAt": "2026-09-06T08:00:00.000+08:00",
+          "metricDeltas": {
+            "cashCpa": {
+              "value": -2.1,
+              "state": "finite"
+            },
+            "cost": {
+              "value": -800.0,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 12,
+              "availability": "available"
+            }
+          },
+          "note": "操作后观察结果，非因果"
+        }
+      },
+      {
+        "at": "2026-09-04T14:10:00.000+08:00",
+        "kind": "external_change",
+        "actor": "external",
+        "summary": "后台手动：campaign 日预算 8000→10000",
+        "ref": {
+          "type": "external_change",
+          "id": "41"
+        },
+        "detail": {
+          "target_type": "campaign",
+          "target_id": "c-1",
+          "field": "budget"
+        }
+      },
+      {
+        "at": "2026-09-03T10:12:00.000+08:00",
+        "kind": "daily_budget_cap",
+        "actor": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "summary": "任务日预算卡 80000→100000",
+        "ref": {
+          "type": "task",
+          "id": "fixture-task-ready"
+        }
+      },
+      {
+        "at": "2026-09-01T09:00:00.000+08:00",
+        "kind": "assessment_price",
+        "actor": {
+          "userId": "00000000-0000-4000-8000-000000000002",
+          "name": "示例运营"
+        },
+        "summary": "考核价 40→38",
+        "ref": {
+          "type": "task",
+          "id": "fixture-task-ready"
+        }
+      },
+      {
+        "at": "2026-08-20T10:00:00.000+08:00",
+        "kind": "transfer",
+        "actor": {
+          "userId": "00000000-0000-4000-8000-000000000003",
+          "name": "示例负责人"
+        },
+        "summary": "从 示例运营 转给 示例优化师",
+        "ref": {
+          "type": "transfer",
+          "id": "00000000-0000-4000-8000-000000000501"
+        }
+      }
+    ],
+    "nextCursor": null
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "v1.5 4.3 十种 kind"
+  }
+}

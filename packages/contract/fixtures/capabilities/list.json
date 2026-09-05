@@ -1,0 +1,116 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "key": "account.query_summary",
+        "name": "查数：账户汇总",
+        "category": "query",
+        "status": "verified",
+        "executor": "product_direct",
+        "media": [
+          "KUAISHOU"
+        ],
+        "permission": "accounts:read",
+        "version": "1.0",
+        "form_schema": {
+          "type": "object",
+          "required": [
+            "window"
+          ],
+          "properties": {
+            "window": {
+              "type": "string",
+              "enum": [
+                "today",
+                "yesterday",
+                "last_7d",
+                "month_to_date"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "key": "unit.update_bid",
+        "name": "改价：unit 出价",
+        "category": "write",
+        "status": "verified",
+        "executor": "runtime",
+        "media": [
+          "KUAISHOU"
+        ],
+        "permission": "changesets:write",
+        "version": "1.2",
+        "form_schema": {
+          "type": "object",
+          "required": [
+            "unit_ids",
+            "bid"
+          ],
+          "properties": {
+            "unit_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "bid": {
+              "type": "number",
+              "minimum": 0.1
+            }
+          }
+        }
+      },
+      {
+        "key": "infra.matrix_build",
+        "name": "基建：矩阵搭建",
+        "category": "infra",
+        "status": "documented_unverified",
+        "executor": "multica_run",
+        "media": [
+          "KUAISHOU"
+        ],
+        "permission": "infra:write",
+        "version": "0.9",
+        "form_schema": {
+          "type": "object",
+          "properties": {
+            "materials": {
+              "type": "array"
+            },
+            "targeting": {
+              "type": "array"
+            },
+            "bids": {
+              "type": "array"
+            }
+          }
+        }
+      },
+      {
+        "key": "account.close",
+        "name": "关户",
+        "category": "account",
+        "status": "disabled",
+        "executor": "product_direct",
+        "media": [
+          "KUAISHOU"
+        ],
+        "permission": "accounts:close",
+        "version": "0.1",
+        "form_schema": {
+          "type": "object"
+        }
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "write 类 invoke 只出变更集草稿；disabled 灰"
+  }
+}

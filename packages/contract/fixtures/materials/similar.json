@@ -1,0 +1,74 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "materialId": "m-5012",
+        "status": "scored",
+        "score": 0.78,
+        "components": [
+          {
+            "kind": "structure",
+            "status": "compared",
+            "score": 0.9,
+            "reasonCode": "role_sequence_similarity"
+          },
+          {
+            "kind": "hook",
+            "status": "compared",
+            "score": 0.7,
+            "reasonCode": "hook_kind_match"
+          },
+          {
+            "kind": "selling_points",
+            "status": "compared",
+            "score": 0.6,
+            "reasonCode": "selling_point_token_overlap"
+          },
+          {
+            "kind": "audience",
+            "status": "compared",
+            "score": 0.9,
+            "reasonCode": "audience_token_overlap"
+          },
+          {
+            "kind": "rhythm",
+            "status": "compared",
+            "score": 0.8,
+            "reasonCode": "rhythm_text_and_visual_similarity"
+          },
+          {
+            "kind": "cta",
+            "status": "unavailable",
+            "score": null,
+            "reasonCode": "missing_feature"
+          }
+        ],
+        "missingComponents": [
+          "cta"
+        ]
+      },
+      {
+        "materialId": "m-5101",
+        "status": "insufficient_evidence",
+        "score": null,
+        "components": [],
+        "missingComponents": [
+          "structure",
+          "hook",
+          "selling_points",
+          "audience",
+          "rhythm",
+          "cta"
+        ]
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

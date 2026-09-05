@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-1"
+      },
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-2"
+      }
+    ],
+    "updatedAt": "2026-09-05T08:30:00.000+08:00"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

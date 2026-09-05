@@ -1,0 +1,114 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000000701",
+        "media": "KUAISHOU",
+        "accountId": "account-2",
+        "taskId": "fixture-task-ready",
+        "purpose": "新版位：联盟",
+        "hypothesis": "联盟位现金 CPA 可 ≤ 36",
+        "startedAt": "2026-09-01",
+        "endAt": "2026-09-10",
+        "status": "running",
+        "verdictNote": null,
+        "result": {
+          "window": {
+            "from": "2026-09-01",
+            "to": "2026-09-05"
+          },
+          "metrics": {
+            "cost": {
+              "value": 3200.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 2499.8,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 26000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 1100,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 64,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 60,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": -219.8,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0423,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0582,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 53.33,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 41.66,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0667,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": false,
+            "costStatus": "yellow",
+            "costStatusReason": "day_over_window_ok",
+            "budgetUsageRate": {
+              "value": 0.91,
+              "state": "finite"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "结论 verdictNote 由人填；系统只算窗口指标"
+  }
+}

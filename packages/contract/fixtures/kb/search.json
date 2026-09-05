@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000002702",
+        "title": "新任务开户到基建 SOP",
+        "kind": "sop",
+        "snippet": "准备 → 开户 → 充值 → …",
+        "score": 0.91
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

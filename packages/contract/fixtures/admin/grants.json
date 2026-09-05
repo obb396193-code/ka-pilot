@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "data": {
+    "identityId": "5e5ea046-e7eb-4fed-a07a-fb7631bc498e",
+    "items": [
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-1",
+        "accessLevel": "execute",
+        "grantedAt": "2026-09-05"
+      },
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-2",
+        "accessLevel": "read",
+        "grantedAt": "2026-09-05"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

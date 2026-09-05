@@ -1,0 +1,46 @@
+{
+  "ok": true,
+  "data": {
+    "queue": [
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-3",
+        "poolStatus": "pending_build",
+        "source": "open_flow",
+        "since": "2026-09-04"
+      }
+    ],
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000002601",
+        "accountId": "account-3",
+        "threadId": null,
+        "params": {
+          "materials": 3,
+          "targeting": 2,
+          "bids": [
+            38,
+            42
+          ]
+        },
+        "templateVersion": "matrix-v1",
+        "compiledPrompt": "（结构化指令摘要：3 素材 × 2 定向 × 2 出价 = 12 unit）",
+        "status": "generated_unsent",
+        "initiator": "00000000-0000-4000-8000-000000000001",
+        "credentialOwnerUserId": "00000000-0000-4000-8000-000000000001",
+        "result": null,
+        "itemResults": null,
+        "scheduled": false,
+        "dailyCap": 20
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "B 主 A 兜底：未取得回执不显'配置成功'"
+  }
+}

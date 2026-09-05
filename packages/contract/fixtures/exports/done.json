@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "data": {
+    "exportId": "00000000-0000-4000-8000-000000001101",
+    "status": "done",
+    "kind": "query",
+    "format": "xlsx",
+    "file": {
+      "url": "https://example.internal/exports/signed/abc",
+      "bytes": 184320,
+      "expiresAt": "2026-09-05T09:25:00.000+08:00"
+    },
+    "error": null
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "url 临时签名 10 分钟；过期 410"
+  }
+}

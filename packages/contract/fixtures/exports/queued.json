@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "data": {
+    "exportId": "00000000-0000-4000-8000-000000001101",
+    "status": "queued",
+    "kind": "query",
+    "format": "xlsx"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

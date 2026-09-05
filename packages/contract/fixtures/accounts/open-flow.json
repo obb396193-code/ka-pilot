@@ -1,0 +1,47 @@
+{
+  "ok": true,
+  "data": {
+    "flowId": "00000000-0000-4000-8000-000000000601",
+    "steps": [
+      {
+        "key": "apply",
+        "label": "提交开户申请（媒体后台，手工）",
+        "status": "done",
+        "at": "2026-09-04"
+      },
+      {
+        "key": "approve",
+        "label": "媒体审核",
+        "status": "running"
+      },
+      {
+        "key": "bind",
+        "label": "回填账户 ID 并认领",
+        "status": "pending"
+      },
+      {
+        "key": "recharge",
+        "label": "充值到位",
+        "status": "pending"
+      },
+      {
+        "key": "build",
+        "label": "基建",
+        "status": "pending"
+      }
+    ],
+    "account": {
+      "media": "KUAISHOU",
+      "accountId": null,
+      "poolStatus": "pending_open"
+    },
+    "note": "快手无开户 API（OS 实证），本流程只跟踪状态"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

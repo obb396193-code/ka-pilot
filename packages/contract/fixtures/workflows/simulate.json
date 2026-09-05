@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "data": {
+    "steps": [
+      {
+        "node_id": "n1",
+        "status": "ok",
+        "preview": {
+          "task": "fixture-task-ready"
+        }
+      },
+      {
+        "node_id": "n2",
+        "status": "ok",
+        "preview": {
+          "accounts": 3
+        }
+      },
+      {
+        "node_id": "n4",
+        "status": "skipped",
+        "preview": "external 节点模拟不执行"
+      },
+      {
+        "node_id": "n5",
+        "status": "ok",
+        "preview": {
+          "changesetDraft": {
+            "items": 2,
+            "riskLevel": "low"
+          }
+        }
+      },
+      {
+        "node_id": "n6",
+        "status": "would_wait",
+        "preview": "等待 示例优化师 确认"
+      },
+      {
+        "node_id": "n7",
+        "status": "skipped",
+        "preview": "write 节点模拟不执行"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "无副作用；write/external 只出预览"
+  }
+}

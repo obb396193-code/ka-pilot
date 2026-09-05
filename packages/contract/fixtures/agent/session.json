@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "data": {
+    "sessionId": "00000000-0000-4000-8000-000000001901",
+    "context": [
+      {
+        "type": "task",
+        "id": "fixture-task-ready",
+        "label": "AAC 拉新"
+      },
+      {
+        "type": "accounts",
+        "ids": [
+          "account-1",
+          "account-2"
+        ],
+        "label": "2 个账户"
+      },
+      {
+        "type": "window",
+        "from": "2026-08-30",
+        "to": "2026-09-05",
+        "label": "近 7 天"
+      },
+      {
+        "type": "anomaly",
+        "id": "00000000-0000-4000-8000-000000000201",
+        "label": "成本超考核"
+      }
+    ],
+    "messages": []
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "新建默认空上下文；chips 可增删"
+  }
+}

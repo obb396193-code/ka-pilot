@@ -1,0 +1,127 @@
+{
+  "ok": true,
+  "data": {
+    "frames": [
+      {
+        "event": "session",
+        "data": {
+          "sessionId": "00000000-0000-4000-8000-000000001901",
+          "runId": "00000000-0000-4000-8000-000000001803",
+          "seq": 1
+        }
+      },
+      {
+        "event": "context",
+        "data": {
+          "items": 4
+        }
+      },
+      {
+        "event": "token",
+        "data": {
+          "text": "近 7 天现金 CPA 32.6…"
+        }
+      },
+      {
+        "event": "tool",
+        "data": {
+          "name": "query.account_summary",
+          "status": "done"
+        }
+      },
+      {
+        "event": "diagnosis",
+        "data": {
+          "schema": "diagnosis/v1",
+          "conclusion": "account-2 出价偏高",
+          "evidence": [
+            {
+              "ref": "leaf:cash_cpa",
+              "text": "现金 CPA 41.7 > 考核 38"
+            }
+          ],
+          "actions": [
+            {
+              "kind": "generate_report",
+              "label": "生成分析表"
+            },
+            {
+              "kind": "create_work_item",
+              "label": "创建待办"
+            },
+            {
+              "kind": "generate_changeset",
+              "label": "形成调价变更集"
+            },
+            {
+              "kind": "save_view",
+              "label": "保存个人视图"
+            }
+          ]
+        }
+      },
+      {
+        "event": "suggestion",
+        "data": {
+          "suggestion_id": "00000000-0000-4000-8000-000000002001",
+          "kind": "view_patch",
+          "target_ref": "view:00000000-0000-4000-8000-000000001201",
+          "before": {
+            "window": {
+              "preset": "today"
+            },
+            "columns": [
+              "accountName",
+              "cost"
+            ]
+          },
+          "after": {
+            "window": {
+              "preset": "last_7d"
+            },
+            "columns": [
+              "accountName",
+              "cost",
+              "cashCpa",
+              "onTarget"
+            ]
+          },
+          "diff": [
+            {
+              "path": "window.preset",
+              "before": "today",
+              "after": "last_7d"
+            },
+            {
+              "path": "columns",
+              "before": [
+                "accountName",
+                "cost"
+              ],
+              "after": [
+                "accountName",
+                "cost",
+                "cashCpa",
+                "onTarget"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "event": "done",
+        "data": {
+          "seq": 6,
+          "usage": {
+            "in": 3900,
+            "out": 700
+          }
+        }
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture-sse",
+    "_note": "v1.3 七帧之外加 suggestion 帧（v1.5.1 ⑤）"
+  }
+}

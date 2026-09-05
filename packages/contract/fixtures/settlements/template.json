@@ -1,0 +1,287 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "templateId": "monthly-settlement",
+        "templateVersion": "v3.2",
+        "name": "月度结算单模板",
+        "currencyCode": "CNY",
+        "unitNote": "元",
+        "fields": [
+          {
+            "fieldKey": "task_name",
+            "label": "任务",
+            "order": 1,
+            "valueType": "text",
+            "aggregation": "none",
+            "source": {
+              "kind": "fact",
+              "factKey": "task_id"
+            },
+            "required": true,
+            "allowCorrection": false
+          },
+          {
+            "fieldKey": "cost",
+            "label": "账面消耗",
+            "order": 2,
+            "valueType": "money",
+            "aggregation": "sum",
+            "source": {
+              "kind": "fact",
+              "factKey": "cost"
+            },
+            "required": true,
+            "allowCorrection": false
+          },
+          {
+            "fieldKey": "cash_cost",
+            "label": "现金消耗",
+            "order": 3,
+            "valueType": "money",
+            "aggregation": "sum",
+            "source": {
+              "kind": "fact",
+              "factKey": "cash_cost"
+            },
+            "required": true,
+            "allowCorrection": false
+          },
+          {
+            "fieldKey": "contract_rebate",
+            "label": "框架返点（实际）",
+            "order": 4,
+            "valueType": "money",
+            "aggregation": "sum",
+            "source": {
+              "kind": "fact",
+              "factKey": "contract_rebate"
+            },
+            "required": false,
+            "allowCorrection": true
+          },
+          {
+            "fieldKey": "rebate_est",
+            "label": "返点（折算估算）",
+            "order": 5,
+            "valueType": "money",
+            "aggregation": "sum",
+            "source": {
+              "kind": "formula",
+              "expression": {
+                "kind": "subtract",
+                "left": {
+                  "kind": "field",
+                  "fieldKey": "cost"
+                },
+                "right": {
+                  "kind": "field",
+                  "fieldKey": "cash_cost"
+                }
+              }
+            },
+            "required": true,
+            "allowCorrection": false
+          },
+          {
+            "fieldKey": "real_conversion",
+            "label": "真实转化",
+            "order": 6,
+            "valueType": "number",
+            "aggregation": "sum",
+            "source": {
+              "kind": "fact",
+              "factKey": "real_conversion"
+            },
+            "required": true,
+            "allowCorrection": false
+          },
+          {
+            "fieldKey": "cash_cpa",
+            "label": "现金成本",
+            "order": 7,
+            "valueType": "money",
+            "aggregation": "none",
+            "source": {
+              "kind": "formula",
+              "expression": {
+                "kind": "divide",
+                "left": {
+                  "kind": "field",
+                  "fieldKey": "cash_cost"
+                },
+                "right": {
+                  "kind": "field",
+                  "fieldKey": "real_conversion"
+                }
+              }
+            },
+            "required": true,
+            "allowCorrection": false
+          }
+        ],
+        "checks": [
+          {
+            "checkKey": "rebate_match",
+            "label": "返点实际 vs 估算",
+            "order": 1,
+            "leftFieldKey": "contract_rebate",
+            "rightFieldKey": "rebate_est",
+            "tolerance": {
+              "mode": "either",
+              "amount": 100,
+              "rate": 0.02
+            },
+            "severity": "warn"
+          }
+        ],
+        "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "templateId": "monthly-settlement",
+        "templateVersion": "v3.1",
+        "name": "月度结算单模板",
+        "currencyCode": "CNY",
+        "unitNote": "元",
+        "fields": [
+          {
+            "fieldKey": "task_name",
+            "label": "任务",
+            "order": 1,
+            "valueType": "text",
+            "aggregation": "none",
+            "source": {
+              "kind": "fact",
+              "factKey": "task_id"
+            },
+            "required": true,
+            "allowCorrection": false
+          },
+          {
+            "fieldKey": "cost",
+            "label": "账面消耗",
+            "order": 2,
+            "valueType": "money",
+            "aggregation": "sum",
+            "source": {
+              "kind": "fact",
+              "factKey": "cost"
+            },
+            "required": true,
+            "allowCorrection": false
+          },
+          {
+            "fieldKey": "cash_cost",
+            "label": "现金消耗",
+            "order": 3,
+            "valueType": "money",
+            "aggregation": "sum",
+            "source": {
+              "kind": "fact",
+              "factKey": "cash_cost"
+            },
+            "required": true,
+            "allowCorrection": false
+          },
+          {
+            "fieldKey": "contract_rebate",
+            "label": "框架返点（实际）",
+            "order": 4,
+            "valueType": "money",
+            "aggregation": "sum",
+            "source": {
+              "kind": "fact",
+              "factKey": "contract_rebate"
+            },
+            "required": false,
+            "allowCorrection": true
+          },
+          {
+            "fieldKey": "rebate_est",
+            "label": "返点（折算估算）",
+            "order": 5,
+            "valueType": "money",
+            "aggregation": "sum",
+            "source": {
+              "kind": "formula",
+              "expression": {
+                "kind": "subtract",
+                "left": {
+                  "kind": "field",
+                  "fieldKey": "cost"
+                },
+                "right": {
+                  "kind": "field",
+                  "fieldKey": "cash_cost"
+                }
+              }
+            },
+            "required": true,
+            "allowCorrection": false
+          },
+          {
+            "fieldKey": "real_conversion",
+            "label": "真实转化",
+            "order": 6,
+            "valueType": "number",
+            "aggregation": "sum",
+            "source": {
+              "kind": "fact",
+              "factKey": "real_conversion"
+            },
+            "required": true,
+            "allowCorrection": false
+          },
+          {
+            "fieldKey": "cash_cpa",
+            "label": "现金成本",
+            "order": 7,
+            "valueType": "money",
+            "aggregation": "none",
+            "source": {
+              "kind": "formula",
+              "expression": {
+                "kind": "divide",
+                "left": {
+                  "kind": "field",
+                  "fieldKey": "cash_cost"
+                },
+                "right": {
+                  "kind": "field",
+                  "fieldKey": "real_conversion"
+                }
+              }
+            },
+            "required": true,
+            "allowCorrection": false
+          }
+        ],
+        "checks": [
+          {
+            "checkKey": "rebate_match",
+            "label": "返点实际 vs 估算",
+            "order": 1,
+            "leftFieldKey": "contract_rebate",
+            "rightFieldKey": "rebate_est",
+            "tolerance": {
+              "mode": "either",
+              "amount": 100,
+              "rate": 0.02
+            },
+            "severity": "warn"
+          }
+        ],
+        "fingerprint": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "新版本=新行，旧结算单绑旧版本"
+  }
+}

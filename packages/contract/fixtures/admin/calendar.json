@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": 1,
+        "eventDate": "2026-10-01",
+        "eventType": "holiday",
+        "label": "国庆",
+        "affectsBaseline": true,
+        "thresholdProfile": "holiday"
+      },
+      {
+        "id": 2,
+        "eventDate": "2026-09-01",
+        "eventType": "coefficient_change",
+        "label": "考核价 40→38",
+        "affectsBaseline": true,
+        "thresholdProfile": null
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

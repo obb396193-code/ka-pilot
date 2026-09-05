@@ -1,0 +1,120 @@
+{
+  "ok": true,
+  "data": {
+    "schema": "daily-report/v1",
+    "date": "2026-09-05",
+    "role": "optimizer",
+    "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+    "modules": [
+      {
+        "key": "executive_summary",
+        "title": "Executive Summary",
+        "cards": {
+          "cost": {
+            "value": 14200.0,
+            "availability": "available"
+          },
+          "cashCost": {
+            "value": 11093.0,
+            "availability": "available"
+          },
+          "realConversion": {
+            "value": 340,
+            "availability": "available"
+          },
+          "cashCpa": {
+            "value": 32.6,
+            "state": "finite"
+          },
+          "onTargetRate": {
+            "value": 0.87,
+            "state": "finite"
+          },
+          "costSpace": {
+            "value": 1827.0,
+            "availability": "available"
+          }
+        },
+        "anomalies": [
+          "account-2 成本超考核 +12%（P0）",
+          "account-5 余额 0（P1）"
+        ]
+      },
+      {
+        "key": "overview",
+        "title": "大盘",
+        "trend": []
+      },
+      {
+        "key": "dim_task",
+        "title": "按任务",
+        "rows": []
+      },
+      {
+        "key": "dim_biz",
+        "title": "按业务",
+        "rows": []
+      },
+      {
+        "key": "dim_account",
+        "title": "按账户",
+        "rows": []
+      },
+      {
+        "key": "dim_agent",
+        "title": "代理/自投",
+        "rows": [],
+        "unsupported": false
+      },
+      {
+        "key": "dim_resource_position",
+        "title": "资源位",
+        "rows": []
+      },
+      {
+        "key": "dim_bid_tool",
+        "title": "出价工具",
+        "rows": [],
+        "unsupported": true
+      },
+      {
+        "key": "dim_ubp",
+        "title": "UBP",
+        "rows": [],
+        "unsupported": true
+      },
+      {
+        "key": "dim_deduction",
+        "title": "扣量区间",
+        "rows": []
+      },
+      {
+        "key": "deduction_analysis",
+        "title": "扣量分析",
+        "rows": []
+      },
+      {
+        "key": "health",
+        "title": "健康度",
+        "status": "p1_pending"
+      },
+      {
+        "key": "cost_tiers",
+        "title": "消耗分层",
+        "rows": []
+      }
+    ],
+    "actions": {
+      "pushDingtalk": true,
+      "exportPdf": true
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "12 模块；unsupported 模块显空态不显 0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "error": {
+    "code": "DIMENSION_UNSUPPORTED",
+    "message": "维度 ubp 暂无数据源",
+    "retryable": false,
+    "requestId": "fixture-dim-unsupported",
+    "dimension": "ubp",
+    "hint": "显示空态：数据源待确认"
+  }
+}

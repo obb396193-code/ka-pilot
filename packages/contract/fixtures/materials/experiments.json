@@ -1,0 +1,119 @@
+{
+  "ok": true,
+  "data": {
+    "policy": {
+      "policyVersion": "exp-v1",
+      "minActiveDays": 3,
+      "minAccounts": 2,
+      "minExposure": 10000,
+      "minClicks": 300,
+      "minRealConversions": 30,
+      "minCost": 500,
+      "minCpaImprovementRate": 0.1,
+      "conversionRateDenominator": "click",
+      "confidenceLevel": 0.95
+    },
+    "products": [
+      {
+        "productVersionId": "p-1001",
+        "cells": [
+          {
+            "materialVersionId": "m-5001",
+            "accountCount": 3,
+            "activeDayCount": 6,
+            "exposure": {
+              "value": 1488000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 46500,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 1000,
+              "availability": "available"
+            },
+            "cost": {
+              "value": 18600.0,
+              "availability": "available"
+            },
+            "ctr": {
+              "value": 0.0312,
+              "state": "finite"
+            },
+            "inferenceRate": {
+              "value": 0.0215,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 18.6,
+              "state": "finite"
+            },
+            "inferenceRateInterval95": {
+              "lower": 0.0202,
+              "upper": 0.0229
+            },
+            "sampleStatus": "sufficient",
+            "exclusionReasons": []
+          },
+          {
+            "materialVersionId": "m-5101",
+            "accountCount": 1,
+            "activeDayCount": 1,
+            "exposure": {
+              "value": 1200,
+              "availability": "available"
+            },
+            "click": {
+              "value": 30,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 1,
+              "availability": "available"
+            },
+            "cost": {
+              "value": 20.0,
+              "availability": "available"
+            },
+            "ctr": {
+              "value": 0.025,
+              "state": "finite"
+            },
+            "inferenceRate": {
+              "value": null,
+              "state": "undefined"
+            },
+            "realCpa": {
+              "value": 20.0,
+              "state": "finite"
+            },
+            "inferenceRateInterval95": null,
+            "sampleStatus": "insufficient",
+            "exclusionReasons": [
+              "insufficient_active_days",
+              "insufficient_accounts",
+              "insufficient_exposure",
+              "insufficient_clicks",
+              "insufficient_real_conversions",
+              "insufficient_cost"
+            ]
+          }
+        ],
+        "conclusion": {
+          "status": "insufficient_candidates",
+          "directionalLeaderMaterialVersionId": null,
+          "observedLeaderMaterialVersionId": "m-5001",
+          "cpaImprovementRate": null
+        }
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

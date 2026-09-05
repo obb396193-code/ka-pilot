@@ -1,0 +1,47 @@
+{
+  "ok": true,
+  "data": {
+    "cards": {
+      "generatedThisMonth": 28,
+      "pendingCheck": 5,
+      "scheduled": 12,
+      "shared": 36,
+      "archived": 102
+    },
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000002101",
+        "name": "每日投放报告",
+        "kind": "daily",
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "period": "2026-09-05",
+        "templateVersion": "v2.8",
+        "dataStatus": "ready",
+        "deliveryStatus": "sent_dingtalk"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000002102",
+        "name": "月度结算单",
+        "kind": "settlement",
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "period": "2026-08",
+        "templateVersion": "v3.2",
+        "dataStatus": "pending_check",
+        "deliveryStatus": null
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}
