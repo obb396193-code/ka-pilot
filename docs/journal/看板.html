@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KA Pilot 开发看板</title>
+<style>
+  :root {
+    --bg: #F4F6F9;
+    --surface: #FFFFFF;
+    --ink: #172029;
+    --muted: #61707F;
+    --line: #D9DFE7;
+    --line-soft: #E8ECF1;
+    --accent: #1E5EB8;
+    --accent-soft: #E3ECF9;
+    --amber: #B9671B;
+    --amber-soft: #FBEFE0;
+    --green: #2C7A4B;
+    --green-soft: #E3F1E8;
+    --gray: #8A96A3;
+    --gray-soft: #ECEFF3;
+    --shadow: 0 1px 2px rgba(23, 32, 41, .06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1319; --surface: #151C25; --ink: #E5EAF0; --muted: #93A0AE;
+      --line: #253040; --line-soft: #1D2735; --accent: #6FA4F0; --accent-soft: #1B2B44;
+      --amber: #E4A052; --amber-soft: #3A2A16; --green: #6CC08B; --green-soft: #17301F;
+      --gray: #7C8996; --gray-soft: #1C242E; --shadow: none;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1319; --surface: #151C25; --ink: #E5EAF0; --muted: #93A0AE;
+    --line: #253040; --line-soft: #1D2735; --accent: #6FA4F0; --accent-soft: #1B2B44;
+    --amber: #E4A052; --amber-soft: #3A2A16; --green: #6CC08B; --green-soft: #17301F;
+    --gray: #7C8996; --gray-soft: #1C242E; --shadow: none;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 24px 56px; display: grid; gap: 28px; }
+  h1, h2, h3 { margin: 0; text-wrap: balance; font-weight: 600; }
+  h1 { font-size: 22px; letter-spacing: -.01em; }
+  h2 { font-size: 15px; }
+  h3 { font-size: 13px; }
+  .eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  a { color: var(--accent); text-decoration: none; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* header */
+  .head { display: grid; gap: 14px; }
+  .head-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; }
+  .stamp { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--muted); font-size: 12.5px; }
+  .stamp b { color: var(--ink); font-weight: 500; }
+
+  /* stacked bar */
+  .bar { display: flex; height: 22px; border-radius: 4px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+  .bar span { display: block; height: 100%; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: var(--muted); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  .legend b { color: var(--ink); font-weight: 500; }
+  .s-wire { background: var(--accent); }
+  .s-shell { background: #7FA6E0; }
+  .s-todo { background: var(--gray); }
+  .s-join { background: var(--amber); }
+  .s-done { background: var(--green); }
+
+  /* lanes */
+  .lanes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 860px) { .lanes { grid-template-columns: 1fr; } }
+  .lane { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .lane-head { padding: 12px 14px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .lane-head small { color: var(--muted); font-weight: 400; }
+  .rows { padding: 6px 0; display: flex; flex-direction: column; }
+  .row { display: grid; grid-template-columns: 64px 1fr; gap: 10px; padding: 7px 14px; border-bottom: 1px solid var(--line-soft); align-items: start; }
+  .row:last-child { border-bottom: 0; }
+  .row .t { color: var(--ink); }
+  .row .t small { display: block; color: var(--muted); font-size: 12px; }
+  .chip { display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: .02em; padding: 2px 7px; border-radius: 3px; line-height: 1.5; white-space: nowrap; }
+  .c-done { background: var(--green-soft); color: var(--green); }
+  .c-run { background: var(--accent-soft); color: var(--accent); }
+  .c-wait { background: var(--gray-soft); color: var(--muted); }
+  .c-boss { background: var(--amber-soft); color: var(--amber); }
+  .c-zero { background: transparent; color: var(--muted); border: 1px dashed var(--line); }
+
+  /* pipeline */
+  .pipe { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .step { flex: 1 1 150px; min-width: 150px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; position: relative; }
+  .step.now { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+  .step.gate { border-style: dashed; }
+  .step .k { font-size: 11px; color: var(--muted); letter-spacing: .04em; }
+  .step .v { font-weight: 500; margin-top: 2px; }
+  .step .d { color: var(--muted); font-size: 12px; margin-top: 4px; }
+
+  /* boss box */
+  .boss { background: var(--amber-soft); border: 1px solid color-mix(in srgb, var(--amber) 40%, transparent); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; }
+  .boss ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+  .boss li::marker { color: var(--amber); font-weight: 600; }
+
+  /* journal */
+  .journal { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .ph { display: grid; grid-template-columns: 92px 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line-soft); }
+  @media (max-width: 640px) { .ph { grid-template-columns: 1fr; gap: 6px; } }
+  .ph .when { color: var(--muted); font-size: 12.5px; padding-top: 2px; }
+  .ph .when b { display: block; color: var(--ink); font-weight: 500; }
+  .ph .what { color: var(--ink); margin: 2px 0 8px; max-width: 72ch; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-size: 12px; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+  .tag.pit { border-color: color-mix(in srgb, var(--amber) 45%, transparent); color: var(--amber); }
+  .tag.way { border-color: color-mix(in srgb, var(--accent) 45%, transparent); color: var(--accent); }
+
+  /* tables */
+  .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
+  .tbl { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+  th { font-weight: 500; color: var(--muted); font-size: 12px; letter-spacing: .03em; }
+  tr:last-child td { border-bottom: 0; }
+  .cap { color: var(--muted); font-size: 12.5px; }
+  .foot { color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .sec { display: grid; gap: 12px; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="head">
+    <div class="head-row">
+      <div>
+        <div class="eyebrow">KA 投放经营平台 · 从 0 到 1</div>
+        <h1>KA Pilot 开发看板</h1>
+      </div>
+      <div class="stamp">
+        <span>更新 <b>2026-09-05</b></span>
+        <span>main <b class="mono">0ed776f</b></span>
+        <span>契约 <b>v1.4 · 73 表</b></span>
+        <span>测试 <b class="mono">491 / 177 / 625 / 77</b> <span class="cap">domain / db / worker / web</span></span>
+      </div>
+    </div>
+    <div>
+      <div class="bar" role="img" aria-label="验收基线 105 条：底座待接线 44，页面壳 9，未开发 40，联调项 6，已核 6">
+        <span class="s-wire" style="width:41.9%"></span>
+        <span class="s-shell" style="width:8.6%"></span>
+        <span class="s-todo" style="width:38.1%"></span>
+        <span class="s-join" style="width:5.7%"></span>
+        <span class="s-done" style="width:5.7%"></span>
+      </div>
+      <div class="legend" style="margin-top:8px">
+        <span><i class="s-wire"></i>底座完成·待接 HTTP/页面 <b>44</b></span>
+        <span><i class="s-shell"></i>页面壳/mock <b>9</b></span>
+        <span><i class="s-todo"></i>未开发 <b>40</b></span>
+        <span><i class="s-join"></i>只能内网联调 <b>6</b></span>
+        <span><i class="s-done"></i>已核/部署项 <b>6</b></span>
+        <span class="cap">验收基线 105 条 · 待契约补 <b>0</b>（v1.4 清零）</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="lanes" aria-label="三条线">
+    <div class="lane">
+      <div class="lane-head"><h2>后端 <small>Codex</small></h2><span class="chip c-run">R-009 二批进行中</span></div>
+      <div class="rows">
+        <div class="row"><span class="chip c-done">在 main</span><div class="t">B1a→B23 全部 + Task4/5 + R-009 一批<small>migration 001–011 · hh 0..24 · Session Cookie BFF</small></div></div>
+        <div class="row"><span class="chip c-done">已审</span><div class="t">31 条交付六簇不变量级 · P-038 逐行<small>其余逐行随新交付交错</small></div></div>
+        <div class="row"><span class="chip c-run">进行中</span><div class="t">R-009 二批：六 P0 实现 + 数据源绑空间<small>三态 MetricValue · 一账户一任务 409 · fencing · durable inbox</small></div></div>
+        <div class="row"><span class="chip c-wait">排队</span><div class="t">R-013 seed → R-010a → R-011 → R-012 → R-010b<small>seed 是首次部署硬前置（空库无登录路径）</small></div></div>
+        <div class="row"><span class="chip c-zero">HTTP</span><div class="t">已露 9 个端点，契约里还有 ~35 个内核有壳没露<small>R-010 专门干这个</small></div></div>
+      </div>
+    </div>
+
+    <div class="lane">
+      <div class="lane-head"><h2>前端 <small>Claude Code 新会话</small></h2><span class="chip c-run">F-006 已开工</span></div>
+      <div class="rows">
+        <div class="row"><span class="chip c-done">在 main</span><div class="t">功能底座 apps/web<small>九项导航+角标 · 工作台八模块 · 六 KPI · ⌘K 壳 · BFF · 77 测试</small></div></div>
+        <div class="row"><span class="chip c-done">母版</span><div class="t">sidebar.html（起点不是天花板）<small>组件库 17 库 · 7,056 条目录 · 131 条官方源码缓存</small></div></div>
+        <div class="row"><span class="chip c-run">进行中</span><div class="t">F-006 四页套母版<small>工作台 → 登录（shadcn login blocks）→ 账户池 → 数据分析 → 投放任务</small></div></div>
+        <div class="row"><span class="chip c-wait">未做</span><div class="t">素材 / 报告 / 自动化 / 知识库 / 集成 五页<small>Storybook · ECharts 主题桥 · Playwright 视觉回归 · 字体</small></div></div>
+        <div class="row"><span class="chip c-zero">视觉</span><div class="t">老板与前端一对一定，不截图<small>每页做完老板看一眼再下一页</small></div></div>
+      </div>
+    </div>
+
+    <div class="lane">
+      <div class="lane-head"><h2>内网 <small>OS agent</small></h2><span class="chip c-boss">等老板转发</span></div>
+      <div class="rows">
+        <div class="row"><span class="chip c-done">已实证</span><div class="t">奇航五轮 · 写链路 · LLM 通路 · ASR · kuaishou-cli · 钉钉出网<small>总账 docs/19 · 证据五级</small></div></div>
+        <div class="row"><span class="chip c-run">本轮</span><div class="t">环境 6 问：PG16+扩展 · npm ci · <b>3 进程拓扑</b> · FFmpeg · Secret 谁给 · 出网<small>docs/plans/发给内网agent-2026-09-05</small></div></div>
+        <div class="row"><span class="chip c-run">本轮</span><div class="t">四项只读核证<small>8 维 ad 字段名 · ka-data owner/ACL/对平 · Excel 对平 · 写链路 UNKNOWN 语义</small></div></div>
+        <div class="row"><span class="chip c-wait">等 zip</span><div class="t">部署 7 步 + 脱敏烟测<small>migrate → seed → data-api 探针 → web 登录 → etl_full → 账户池出真数据</small></div></div>
+        <div class="row"><span class="chip c-zero">部署</span><div class="t">内网部署 = 0 次<small>真实数据一条没进来</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><h2>到上线的路</h2><span class="cap">实线 = 在跑 · 虚线 = 门</span></div>
+    <div class="pipe">
+      <div class="step now"><div class="k">现在</div><div class="v">R-009 二批 ∥ F-006 工作台</div><div class="d">后端六 P0 · 前端第一页</div></div>
+      <div class="step gate"><div class="k">门 ①</div><div class="v">本地联调 工作台/登录/账户池</div><div class="d">真 payload 打真端点，Mock≠真 API</div></div>
+      <div class="step"><div class="k">然后</div><div class="v">R-013 seed → R-010a</div><div class="d">数据分析 / 任务详情 / 变更集能联</div></div>
+      <div class="step gate"><div class="k">门 ②</div><div class="v">内网部署 + 真奇航</div><div class="d">Excel 对平 · ka-data 同日同户对平</div></div>
+      <div class="step"><div class="k">再</div><div class="v">R-011 团队空间 → R-012 v1.4</div><div class="d">警报 / 协作 / 六页签 / 知识库 / 卡片</div></div>
+      <div class="step gate"><div class="k">门 ③</div><div class="v">灰度：老板一人写权限</div><div class="d">其他人只读 → BUC 正式登录</div></div>
+    </div>
+  </section>
+
+  <section class="boss" aria-label="卡在老板这">
+    <div class="sec-head"><h2>卡在老板这</h2><span class="cap">没这些，后端只能对 mock</span></div>
+    <ol>
+      <li>把 OS 消息转给内网 agent（<span class="mono">docs/plans/发给内网agent-2026-09-05-部署准备与联调门.md</span> 代码块整段复制）</li>
+      <li>给 OS：本人奇航 userId、内测账号用户名/密码、日常 Excel 的列名清单（+ 一天的行）、一个账户 + 一个 D-2 日期</li>
+      <li>申请 IdeaLab 个人 AK（08-18 就挂着）；Multica 里删除/rotate 那个暴露过 token 的测试 webhook trigger</li>
+      <li>本机磁盘 7.2 GB 可用，Docker 再胀一次 PG 门禁又停</li>
+    </ol>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><h2>开发日志</h2><span class="cap">事实源 docs/journal/开发日志.md + 工作台账 · 蓝=方法 · 橙=坑</span></div>
+    <div class="journal">
+      <div class="ph"><div class="when"><b>08-13</b>立项与可行性</div><div><div class="what">靠内网 OS agent 三轮问答把"能不能做"问清：token 不借、a1 faas 是主路径、异步 ETL 落自有库。</div><div class="tags"><span class="tag way">先问硬边界再设计</span><span class="tag way">冲突登记不猜</span><span class="tag way">找内部先例</span><span class="tag pit">文档架构 ≠ 实测架构</span></div></div></div>
+      <div class="ph"><div class="when"><b>08-14</b>数据通路真相</div><div><div class="what">实读 5 份 CLI 源码：奇航 get_data 是裸 userId、无 token 无签名；FaaS 出网两个域名都通。定型"外网设计、内网部署、老板中转"。</div><div class="tags"><span class="tag way">读代码不读说明</span><span class="tag way">OS 贴原始输出、凭证打码</span></div></div></div>
+      <div class="ph"><div class="when"><b>08-17～18</b>PRD v1.6 冻结</div><div><div class="what">八路 sub agent 并行审查 → 老板分批处置 → Codex 交叉复核 grep 清零 → 105 条验收基线。/1.09 是返点系数不是税。</div><div class="tags"><span class="tag way">多视角审、人来处置</span><span class="tag way">另一家模型复核</span><span class="tag way">grep 清零</span><span class="tag pit">术语反复互相打架</span></div></div></div>
+      <div class="ph"><div class="when"><b>08-18～19</b>开工三件套</div><div><div class="what">协作规范（信箱/台账/SHA 审计/路径限定 commit/不 push）+ 契约包唯一出口 + 契约 v1.1 九条裁决。</div><div class="tags"><span class="tag way">契约先行</span><span class="tag way">agent 不算数</span><span class="tag way">派活写进对方 inbox</span></div></div></div>
+      <div class="ph"><div class="when"><b>08-19～21</b>后端 B1–B22</div><div><div class="what">Codex 三天 22 批、台账单日 82 条。OS 五轮只读探针改掉五条"文档说的"：YYYYMMDD、D-2 分区、hh 0..24、2000 行截断、CDN octet-stream、ASR 要 WAV。</div><div class="tags"><span class="tag way">设计→TDD 计划→Task→门禁→交审</span><span class="tag way">实测驱动修 bug</span><span class="tag way">自审 + 架构裁决分层</span><span class="tag pit">Docker 磁盘 99% 停 PG 门禁</span><span class="tag pit">31 条交付无人独立审</span></div></div></div>
+      <div class="ph"><div class="when"><b>08-24～09-04</b>arch 离线</div><div><div class="what">Codex 一个会话兼 root/后端/前端/资料四角色。双数据、B23 多租户、双空间落地；三版前端全被否，只认 sidebar.html。</div><div class="tags"><span class="tag way">最小契约先冻</span><span class="tag way">exact-SHA 复验</span><span class="tag pit">审查权与实现权合一</span><span class="tag pit">三版前端无小样</span><span class="tag pit">双源对账阻断主链</span></div></div></div>
+      <div class="ph"><div class="when"><b>09-04～05</b>arch 接回</div><div><div class="what">93 会话考古抽老板原话 185 条；契约 v1.2→1.4 两天冻 73 表；六簇审计；缺口地图；R-009 一批逐行审合；OS 消息；发现空库无 seed。</div><div class="tags"><span class="tag way">先不变量后逐行</span><span class="tag way">缺口地图五列</span><span class="tag way">视觉与功能分离</span><span class="tag pit">迁移编号撞</span><span class="tag pit">grep 判控制流误判</span><span class="tag pit">merge 被未跟踪文件挡</span><span class="tag pit">听错执行方</span><span class="tag pit">空库无 seed</span></div></div></div>
+    </div>
+  </section>
+
+  <section class="two">
+    <div class="sec">
+      <h2>可复用方法</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>方法</th><th>一句话</th></tr></thead>
+        <tbody>
+          <tr><td>内网 agent 当传感器</td><td>只读探针贴原始输出，证据分五级，设计只引用前三级</td></tr>
+          <tr><td>契约唯一出口</td><td>schema/api/metrics 冻结，谁都不发明字段和端点</td></tr>
+          <tr><td>信箱 + 台账 + SHA 审计</td><td>派活写对方 inbox，交付 SHA 逐条 ✅/❌</td></tr>
+          <tr><td>agent 不算数</td><td>指标全在 domain 纯函数，前端和 Agent 只展示</td></tr>
+          <tr><td>先不变量后逐行</td><td>积压交付先按簇核不变量，再随新交付逐行 diff</td></tr>
+          <tr><td>视觉先小样再 commit</td><td>被否整颗回退不辩护</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="sec">
+      <h2>坑，按代价排</h2>
+      <div class="tbl"><table>
+        <thead><tr><th>坑</th><th>代价 → 解法</th></tr></thead>
+        <tbody>
+          <tr><td>审查权与实现权合一</td><td>16 天 31 条交付零独立审计 → 审查角色独立</td></tr>
+          <tr><td>三版前端无小样</td><td>三版全废 → 先截图小样拍板</td></tr>
+          <tr><td>双源对账阻断主链</td><td>页面一周不可用 → 主通路先通，对账当诊断</td></tr>
+          <tr><td>空库无 seed</td><td>首次部署必卡登录 → R-013，部署前空库跑登录</td></tr>
+          <tr><td>Docker 磁盘 99%</td><td>PG 门禁停摆 → 门禁不可用不算通过</td></tr>
+          <tr><td>grep 判控制流</td><td>误判撤回 → 读函数</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    事实源：<span class="mono">docs/plans/工作台账.md</span> · <span class="mono">docs/plans/2026-09-04-契约对齐与缺口地图.md</span> · <span class="mono">docs/journal/开发日志.md</span> · <span class="mono">docs/relay/inbox-*.md</span>。本地文件，arch 在里程碑手动重渲染，不是实时；不联网、无外部依赖。
+  </footer>
+</div>
+</body>
+</html>
