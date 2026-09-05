@@ -57,10 +57,11 @@ describe("durable inbound repository (real PG)", () => {
     await repo.failInbound(first, "PROCESSING_FAILED", 0);
     const second = (await claim())!;
     expect(second.payload.checkpoint).toEqual({ reply: "done" });
-    await repo.failInbound(second, "PROCESSING_FAILED", 0);
+    await repo.failInbound(second, "PROCESSING_FAILED", 60);
+    await expect(repo.completeInbound(second)).rejects.toThrow("lease");
     expect(await claim()).toBeNull();
     const row = (await pool.query("SELECT * FROM inbound_events WHERE id=$1", [first.id])).rows[0];
-    expect(row).toMatchObject({ processed: false, attempts: 2, last_error: "PROCESSING_FAILED" });
+    expect(row).toMatchObject({ processed: false, attempts: 2, last_error: "ATTEMPTS_EXHAUSTED" });
   });
   it("counts crash claims toward max and quarantines exhausted leases", async () => {
     await receive();
@@ -79,6 +80,21 @@ describe("durable inbound repository (real PG)", () => {
     await expect(repo.failInbound(first, "https://secret" as "PROCESSING_FAILED", 0)).rejects.toThrow();
     await repo.failInbound(first, "PROCESSING_FAILED", 60);
     expect(await claim()).toBeNull();
+  });
+  it("quarantines a final crash after an earlier error, but not a live final lease", async () => {
+    await receive();
+    await pool.query("UPDATE inbound_events SET max_attempts=2 WHERE workspace_id=$1", [workspace]);
+    const first = (await claim())!;
+    await repo.failInbound(first, "INVALID_PAYLOAD", 0);
+    const final = (await claim())!;
+    expect(await claim()).toBeNull();
+    expect((await pool.query("SELECT last_error FROM inbound_events WHERE id=$1", [final.id])).rows[0].last_error)
+      .toBe("INVALID_PAYLOAD");
+    await expire(final.id);
+    expect(await claim()).toBeNull();
+    expect((await pool.query("SELECT last_error FROM inbound_events WHERE id=$1", [final.id])).rows[0].last_error)
+      .toBe("ATTEMPTS_EXHAUSTED");
+    await expect(repo.completeInbound(final)).rejects.toThrow("lease");
   });
   it("does not consume other event kinds or workspaces", async () => {
     await repo.receiveInbound(workspace, "dingtalk", `card:${workspace}`, "card_callback", {});

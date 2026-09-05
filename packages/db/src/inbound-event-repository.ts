@@ -19,7 +19,7 @@ function seconds(value: number): void {
   if (!Number.isInteger(value) || value < 0 || value > 3600) throw new Error("Invalid inbound duration");
 }
 
-/** attempts is the monotonic fencing generation; exhausted unprocessed rows are dead. */
+/** attempts is the fencing generation; exhausted failures carry the frozen dead sentinel. */
 export class InboundEventRepository {
   constructor(protected readonly pool: Pool) {}
 
@@ -46,7 +46,8 @@ export class InboundEventRepository {
     await this.pool.query(
       `UPDATE inbound_events SET last_error='ATTEMPTS_EXHAUSTED'
        WHERE workspace_id=$1 AND provider=$2 AND kind='robot_message' AND processed=false AND attempts>=max_attempts
-         AND lease_until<=clock_timestamp() AND last_error IS NULL`, [workspaceId, provider],
+         AND (lease_until IS NULL OR lease_until<=clock_timestamp())
+         AND last_error IS DISTINCT FROM 'ATTEMPTS_EXHAUSTED'`, [workspaceId, provider],
     );
     const result = await this.pool.query(
       `WITH candidate AS (
@@ -106,8 +107,10 @@ export class InboundEventRepository {
     if (code !== "PROCESSING_FAILED" && code !== "INVALID_PAYLOAD") throw new Error("Invalid inbound failure code");
     seconds(retrySeconds);
     await this.mutate(lease,
-      `UPDATE inbound_events SET last_error=$2::jsonb->>'code',
-       lease_until=clock_timestamp()+make_interval(secs=>($2::jsonb->>'delay')::int) WHERE id=$1`,
+      `UPDATE inbound_events SET last_error=CASE WHEN attempts>=max_attempts
+         THEN 'ATTEMPTS_EXHAUSTED' ELSE $2::jsonb->>'code' END,
+       lease_until=clock_timestamp()+make_interval(secs=>CASE WHEN attempts>=max_attempts
+         THEN 0 ELSE ($2::jsonb->>'delay')::int END) WHERE id=$1`,
       JSON.stringify({ code, delay: retrySeconds }));
   }
 }

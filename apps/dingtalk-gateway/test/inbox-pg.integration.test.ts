@@ -49,7 +49,7 @@ describe.skipIf(!databaseUrl)("inbox receive/restart real PG integration", () =>
     expect(await createInboxWorker(deps).tick()).toBe(false);
     expect(deps.processMessage).toHaveBeenCalledTimes(2); // failed read + successful read; never repeated after checkpoint
     const row = (await pool.query("SELECT * FROM inbound_events WHERE workspace_id=$1", [deps.workspaceId])).rows[0];
-    expect(row).toMatchObject({ processed: false, attempts: 5, last_error: "PROCESSING_FAILED" });
+    expect(row).toMatchObject({ processed: false, attempts: 5, last_error: "ATTEMPTS_EXHAUSTED" });
     expect(JSON.stringify(row)).not.toContain("private error");
   });
 });
