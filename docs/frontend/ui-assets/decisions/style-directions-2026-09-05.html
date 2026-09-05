@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KA Pilot 风格方向 · 三版对比</title>
+<style>
+@font-face { font-family: "Geist"; src: url("/apps/web/app/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("/apps/web/app/fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+* { box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body { margin: 0; background: #e9e9e9; color: #1a1a1a; font-family: "Geist", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-size: 14px; line-height: 1.5; }
+a { color: inherit; text-decoration: none; }
+.board { max-width: 1320px; margin: 0 auto; padding: 32px 24px 80px; }
+.board-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+.board-head h1 { margin: 0; font-size: 26px; letter-spacing: -0.01em; }
+.board-head p { margin: 6px 0 0; color: #666; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #fff; border: 1px solid #ccc; font-size: 12px; color: #666; vertical-align: middle; margin-left: 8px; }
+.jump { position: sticky; top: 0; z-index: 10; display: flex; gap: 8px; padding: 10px 0; background: linear-gradient(#e9e9e9 70%, rgba(233,233,233,0)); }
+.jump a { padding: 6px 12px; border-radius: 999px; background: #fff; border: 1px solid #d0d0d0; font-size: 13px; font-weight: 500; }
+.jump a:hover { background: #111; color: #fff; border-color: #111; }
+table.cmp { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; font-size: 13px; margin: 8px 0 36px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+table.cmp th, table.cmp td { text-align: left; padding: 10px 14px; border-bottom: 1px solid #eee; vertical-align: top; }
+table.cmp th { background: #f7f7f7; font-weight: 600; white-space: nowrap; }
+table.cmp td:first-child { color: #666; white-space: nowrap; width: 110px; }
+table.cmp tr:last-child td { border-bottom: 0; }
+.variant { margin-bottom: 56px; }
+.vhead { display: flex; align-items: baseline; gap: 14px; margin: 0 0 14px 4px; }
+.vhead .letter { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; }
+.vhead h2 { margin: 0; font-size: 20px; }
+.vhead p { margin: 0; color: #666; }
+.foot { background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.foot h3 { margin: 0 0 8px; font-size: 16px; }
+.foot li { margin: 4px 0; }
+
+/* ===== 共用结构：同一份工作台内容，三套 token ===== */
+.app { display: flex; background: var(--bg); color: var(--text); font-family: var(--font); font-size: var(--fs); border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.14), 0 0 0 1px rgba(0,0,0,.06); }
+.side { width: 224px; flex: none; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 14px 12px; display: flex; flex-direction: column; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; padding: 2px 6px; }
+.logo { width: 18px; height: 18px; border-radius: 50%; background: var(--logo); }
+.new { display: flex; align-items: center; gap: 8px; background: var(--accent); color: var(--accent-fg); border: 0; border-radius: var(--r-btn); padding: 8px 12px; font: inherit; font-weight: 500; }
+.new i { font-style: normal; font-size: 16px; line-height: 1; }
+nav { display: flex; flex-direction: column; gap: 2px; }
+nav a { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: var(--r-btn); color: var(--text-2); }
+nav a::before { content: ""; width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid currentColor; opacity: .55; }
+nav a.active { background: var(--nav-active-bg); color: var(--nav-active-fg); font-weight: 500; }
+.side-foot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+.ws { border: 1px solid var(--border); border-radius: var(--r-btn); padding: 8px 10px; background: var(--surface); font-weight: 500; }
+.ws small { display: block; font-weight: 400; color: var(--text-3); font-size: 11px; margin-top: 2px; }
+.user { display: flex; align-items: center; gap: 10px; padding: 4px 6px; }
+.avatar { width: 30px; height: 30px; border-radius: 8px; background: var(--accent-soft); color: var(--nav-active-fg); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.user small { display: block; color: var(--text-3); font-size: 11px; }
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.top { height: 50px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; padding: 0 22px; background: var(--surface); }
+.crumb { font-weight: 500; }
+.health { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; color: var(--text-3); font-size: 12px; }
+.health i { width: 7px; height: 7px; border-radius: 50%; background: var(--pos); }
+.search { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: var(--r-btn); padding: 5px 10px; font-size: 12.5px; color: var(--text-2); background: var(--bg); }
+.search kbd { font: 10px var(--font-num); border: 1px solid var(--border); border-radius: 4px; padding: 1px 4px; color: var(--text-3); background: var(--surface); }
+.content { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 16px; }
+.hgroup { display: flex; align-items: flex-end; justify-content: space-between; }
+.hgroup h1 { margin: 0; font-size: var(--h1); font-weight: 600; letter-spacing: -0.01em; }
+.hgroup p { margin: 4px 0 0; color: var(--text-3); font-size: 13px; }
+.btn { border: 1px solid var(--border); background: var(--surface); border-radius: var(--r-btn); padding: 6px 12px; font: inherit; font-size: 13px; color: var(--text); }
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.kpi { position: relative; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-card); box-shadow: var(--shadow); padding: 14px 16px 12px; min-width: 0; }
+.kpi-label { font-size: 12px; color: var(--text-3); }
+.kpi-num { font-family: var(--font-num); font-weight: 600; font-size: var(--kpi-num); letter-spacing: -0.015em; margin-top: 4px; font-variant-numeric: tabular-nums; line-height: 1.15; white-space: nowrap; }
+.kpi-num.neg { color: var(--neg); }
+.delta { position: absolute; top: 12px; right: 12px; font-size: 11px; font-variant-numeric: tabular-nums; font-weight: 500; }
+.kpi-sub { font-size: 11.5px; color: var(--text-3); margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.spark { display: none; width: 100%; height: 26px; margin-top: 8px; }
+.bar { display: none; height: 4px; border-radius: 2px; background: var(--accent-soft); margin-top: 10px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 82%; background: var(--pos); }
+.grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-card); box-shadow: var(--shadow); padding: 16px 18px; min-width: 0; }
+.card > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.card h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.card h2 small { display: block; font-weight: 400; color: var(--text-3); font-size: 12px; margin-top: 2px; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: var(--r-btn); overflow: hidden; font-size: 12px; }
+.seg span, .seg b { padding: 4px 10px; font-weight: 400; color: var(--text-3); }
+.seg b { background: var(--accent-soft); color: var(--nav-active-fg); font-weight: 500; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart-grid line { stroke: var(--grid); stroke-width: 1; }
+.axis text { font-family: var(--font-num); font-size: 10px; fill: var(--text-3); }
+.line1 { fill: none; stroke: var(--line-1); stroke-width: var(--line-w); stroke-linejoin: round; stroke-linecap: round; }
+.line2 { fill: none; stroke: var(--line-2); stroke-width: var(--line-w); stroke-linejoin: round; stroke-linecap: round; }
+.area1 { fill: var(--line-1); opacity: var(--area-op); }
+.dots circle { fill: var(--surface); stroke-width: 2; }
+.dots .d1 { stroke: var(--line-1); } .dots .d2 { stroke: var(--line-2); }
+.legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-2); margin-top: 8px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+.legend .l1::before { background: var(--line-1); } .legend .l2::before { background: var(--line-2); }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.stats div { border: 1px solid var(--border); border-radius: var(--r-btn); padding: 8px 10px; background: var(--bg); }
+.stats small { display: block; color: var(--text-3); font-size: 11px; }
+.stats b { display: block; white-space: nowrap; font-family: var(--font-num); font-size: 16px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.alist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.alist li { display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: var(--r-btn); padding: 8px 10px; }
+.alist li b { margin-left: auto; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.chip { display: inline-flex; align-items: center; padding: 1px 7px; border-radius: var(--r-chip); font-size: 11px; font-weight: 600; line-height: 1.6; }
+.chip.p0 { background: var(--neg); color: #fff; }
+.chip.p1 { background: var(--warn); color: #fff; }
+.chip.opp { background: var(--pos); color: #fff; }
+.tabs { display: inline-flex; gap: 2px; background: var(--accent-soft); border-radius: var(--r-btn); padding: 3px; font-size: 12px; }
+.tabs span, .tabs b { padding: 3px 10px; border-radius: calc(var(--r-btn) - 2px); color: var(--text-3); font-weight: 400; }
+.tabs b { background: var(--surface); color: var(--text); font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.item { display: grid; grid-template-columns: minmax(150px, .55fr) minmax(0, 1.2fr) auto; gap: 14px; border: 1px solid var(--border); border-radius: var(--r-card); padding: 12px 14px; margin-bottom: 8px; position: relative; background: var(--surface); }
+.item .who { min-width: 0; }
+.item .who .t { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-3); }
+.item .who .n { font-weight: 500; margin-top: 6px; }
+.item .who .id { font-family: var(--font-num); font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.item dl { margin: 0; display: grid; gap: 4px; font-size: 12.5px; }
+.item dl div { display: flex; gap: 8px; }
+.item dt { color: var(--text-3); flex: none; width: 28px; }
+.item dd { margin: 0; min-width: 0; }
+.item dd.ev { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-weight: 500; }
+.item .acts { display: flex; flex-direction: column; gap: 6px; width: 132px; }
+.item .acts .btn { font-size: 12px; padding: 5px 10px; text-align: center; }
+.ok { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--r-btn); background: var(--bg); color: var(--text-3); font-size: 12.5px; }
+.ok i { color: var(--pos); font-style: normal; }
+.t1 { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; }
+.t1 li { border: 1px solid var(--border); border-radius: var(--r-btn); padding: 8px 10px; display: flex; gap: 8px; }
+.t1 li i { font-style: normal; font-weight: 700; }
+.t1 li i.y { color: var(--pos); } .t1 li i.n { color: var(--neg); }
+.t1 small { display: block; color: var(--text-3); }
+
+/* ===== A · 冷静黑白（Linear / Vercel 工程感） ===== */
+.v-a { --font: "Geist", "PingFang SC", "Hiragino Sans GB", sans-serif; --font-num: "Geist Mono", "Geist", ui-monospace, monospace; --fs: 13px; --h1: 20px; --kpi-num: 22px;
+  --bg: #fafafa; --surface: #ffffff; --sidebar-bg: #fafafa; --border: #e5e5e5; --text: #0a0a0a; --text-2: #3f3f46; --text-3: #71717a;
+  --accent: #0a0a0a; --accent-fg: #fff; --accent-soft: #f1f1f1; --nav-active-bg: #ececec; --nav-active-fg: #0a0a0a; --logo: #0a0a0a;
+  --pos: #15803d; --neg: #dc2626; --warn: #b45309;
+  --r-card: 8px; --r-btn: 6px; --r-chip: 4px; --shadow: none;
+  --line-1: #0a0a0a; --line-2: #6366f1; --grid: #e5e5e5; --area-op: 0; --line-w: 1.5; }
+.v-a .delta { font-family: var(--font-num); }
+.v-a .delta.up { color: var(--pos); } .v-a .delta.down { color: var(--neg); } .v-a .delta.flat { color: var(--text-3); }
+.v-a .chip { background: transparent; border: 1px solid currentColor; font-family: var(--font-num); letter-spacing: .04em; font-weight: 500; }
+.v-a .chip.p0 { color: var(--neg); } .v-a .chip.p1 { color: var(--warn); } .v-a .chip.opp { color: var(--pos); }
+.v-a .chart-grid line { stroke-dasharray: 2 4; }
+.v-a .dots { display: none; }
+.v-a .item { border-left-width: 2px; }
+.v-a .item.p0 { border-left-color: var(--neg); } .v-a .item.p1 { border-left-color: var(--warn); }
+.v-a .kpi-label { letter-spacing: .02em; }
+
+/* ===== B · Apple 白灰暖（PRD D-CON，橙色只做 CTA） ===== */
+.v-b { --font: -apple-system, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; --font-num: -apple-system, "SF Pro Display", "PingFang SC", sans-serif; --fs: 14px; --h1: 24px; --kpi-num: 28px;
+  --bg: #f5f5f7; --surface: #ffffff; --sidebar-bg: #ffffff; --border: #e8e8ed; --text: #1d1d1f; --text-2: #424245; --text-3: #86868b;
+  --accent: #ff6a2c; --accent-fg: #fff; --accent-soft: #fff1ea; --nav-active-bg: #fff1ea; --nav-active-fg: #e8571a; --logo: #ff6a2c;
+  --pos: #00875f; --neg: #e5484d; --warn: #c77800;
+  --r-card: 12px; --r-btn: 8px; --r-chip: 999px; --shadow: 0 1px 3px rgba(0,0,0,.06);
+  --line-1: #ff6a2c; --line-2: #86868b; --grid: #f2f2f4; --area-op: .14; --line-w: 2; }
+.v-b .delta { border-radius: 999px; padding: 2px 8px; }
+.v-b .delta.up { background: #e3f3ec; color: var(--pos); } .v-b .delta.down { background: #fdeaea; color: var(--neg); } .v-b .delta.flat { background: #f0f0f2; color: var(--text-3); }
+.v-b .chip { padding: 1px 9px; }
+.v-b .line2 { stroke-dasharray: 5 4; }
+.v-b .item { border-left-width: 4px; }
+.v-b .item.p0 { border-left-color: var(--neg); } .v-b .item.p1 { border-left-color: var(--warn); }
+.v-b .btn.primary { border-radius: 8px; }
+.v-b .new { border-radius: 10px; }
+
+/* ===== C · 数据感彩色（Stripe / Tremor 看板） ===== */
+.v-c { --font: "Geist", "PingFang SC", "Hiragino Sans GB", sans-serif; --font-num: "Geist", "PingFang SC", sans-serif; --fs: 13.5px; --h1: 22px; --kpi-num: 22px;
+  --bg: #f4f6fa; --surface: #ffffff; --sidebar-bg: #ffffff; --border: #e2e8f0; --text: #0f172a; --text-2: #334155; --text-3: #64748b;
+  --accent: #2563eb; --accent-fg: #fff; --accent-soft: #e8f0fe; --nav-active-bg: #e8f0fe; --nav-active-fg: #1d4ed8; --logo: #2563eb;
+  --pos: #059669; --neg: #dc2626; --warn: #d97706;
+  --r-card: 10px; --r-btn: 8px; --r-chip: 6px; --shadow: 0 1px 2px rgba(15,23,42,.05), 0 2px 6px rgba(15,23,42,.04);
+  --line-1: #2563eb; --line-2: #7c3aed; --grid: #eef2f7; --area-op: .16; --line-w: 2; }
+.v-c .spark { display: block; }
+.v-c .bar { display: block; }
+.v-c .delta { border-radius: 6px; padding: 2px 7px; }
+.v-c .delta.up { background: #dcfce7; color: #15803d; } .v-c .delta.down { background: #fee2e2; color: #b91c1c; } .v-c .delta.flat { background: #f1f5f9; color: var(--text-3); }
+.v-c .delta.up::before { content: "↑ "; } .v-c .delta.down::before { content: "↓ "; }
+.v-c .chip.p0 { background: #fee2e2; color: #b91c1c; } .v-c .chip.p1 { background: #fef3c7; color: #b45309; } .v-c .chip.opp { background: #dcfce7; color: #15803d; }
+.v-c .item.p0 { background: #fffafa; } .v-c .item.p1 { background: #fffdf7; }
+.v-c .stats div { background: var(--surface); }
+.v-c .stats div:nth-child(2) b { color: var(--neg); }
+.v-c .kpi:nth-child(6) .kpi-num { color: var(--neg); }
+.v-c .spark polyline { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+.v-c .spark path { fill: var(--accent); opacity: .12; }
+.v-c .kpi:nth-child(2) .spark polyline { stroke: var(--line-2); } .v-c .kpi:nth-child(2) .spark path { fill: var(--line-2); }
+.v-c .kpi:nth-child(6) .spark polyline { stroke: var(--neg); } .v-c .kpi:nth-child(6) .spark path { fill: var(--neg); }
+
+/* ===== D · shadcn 壳 + 彩色数据（壳 = 页 1 现状的 shadcn 中性 token，一点颜色不加；颜色只进数据墨水） ===== */
+.v-d { --font: "Geist", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; --font-num: "Geist", "PingFang SC", sans-serif; --fs: 14px; --h1: 24px; --kpi-num: 24px;
+  --bg: #ffffff; --surface: #ffffff; --sidebar-bg: #fafafa; --border: #e5e5e5; --text: #0a0a0a; --text-2: #404040; --text-3: #737373;
+  --accent: #171717; --accent-fg: #fafafa; --accent-soft: #f5f5f5; --nav-active-bg: #f5f5f5; --nav-active-fg: #0a0a0a; --logo: #0a0a0a;
+  --r-card: 10px; --r-btn: 8px; --r-chip: 999px; --shadow: 0 1px 2px rgba(0,0,0,.05);
+  --grid: #ececec; --area-op: .14; --line-w: 2; }
+.pal-cool { --line-1: #3b5bdb; --line-2: #6b4fbb; --line-3: #2b9c8e; --pos: #2b8a3e; --neg: #c92a2a; --warn: #b8760a; }
+.pal-warm { --line-1: #c8551f; --line-2: #8c4a2b; --line-3: #b8912c; --pos: #2b8a3e; --neg: #b3261e; --warn: #a8690b; }
+.v-d .app { box-shadow: 0 24px 60px rgba(0,0,0,.14), 0 0 0 1px rgba(0,0,0,.06); }
+.v-d .main { background: #fff; }
+.v-d .kpi { background: linear-gradient(to top, rgba(10,10,10,.035), #fff); }
+.v-d .spark { display: block; }
+.v-d .bar { display: block; background: #f0f0f0; }
+.v-d .bar i { background: var(--pos); }
+.v-d .spark polyline { fill: none; stroke: var(--line-1); stroke-width: 1.5; }
+.v-d .spark path { fill: var(--line-1); opacity: .12; }
+.v-d .kpi:nth-child(2) .spark polyline { stroke: var(--line-2); } .v-d .kpi:nth-child(2) .spark path { fill: var(--line-2); }
+.v-d .kpi:nth-child(4) .spark polyline { stroke: var(--text-3); } .v-d .kpi:nth-child(4) .spark path { fill: var(--text-3); }
+.v-d .kpi:nth-child(5) .spark polyline { stroke: var(--line-3); } .v-d .kpi:nth-child(5) .spark path { fill: var(--line-3); }
+.v-d .kpi:nth-child(6) .spark polyline { stroke: var(--neg); } .v-d .kpi:nth-child(6) .spark path { fill: var(--neg); }
+.v-d .delta { border-radius: 999px; padding: 2px 8px; }
+.v-d .delta.up { background: var(--pos-soft); color: var(--pos); } .v-d .delta.down { background: var(--neg-soft); color: var(--neg); } .v-d .delta.flat { background: #f5f5f5; color: var(--text-3); }
+.v-d .delta.up::before { content: "↑ "; } .v-d .delta.down::before { content: "↓ "; }
+.v-d .chip { padding: 1px 9px; }
+.v-d .chip.p0 { background: var(--neg-soft); color: var(--neg); } .v-d .chip.p1 { background: var(--warn-soft); color: var(--warn); } .v-d .chip.opp { background: var(--pos-soft); color: var(--pos); }
+.v-d .item { border-left-width: 3px; }
+.v-d .item.p0 { border-left-color: var(--neg); } .v-d .item.p1 { border-left-color: var(--warn); }
+.v-d .stats div { background: #fafafa; }
+.v-d .stats div:nth-child(2) b { color: var(--neg); }
+.v-d .seg b, .v-d .tabs b { color: var(--text); }
+.v-d .avatar { background: #f5f5f5; color: var(--text); }
+/* 黑白开关：只去掉“区分序列”的装饰色（图表、迷你趋势、圆点），红绿黄这类“表含义”的色保留 */
+body.mono .v-d { --line-1: #0a0a0a; --line-2: #9a9a9a; --line-3: #c4c4c4; --area-op: .06; }
+body.mono .v-d .dots { display: none; }
+body.mono .v-d .chart-grid line { stroke-dasharray: 2 4; }
+body.mono .v-d .kpi:nth-child(6) .spark polyline { stroke: #0a0a0a; } body.mono .v-d .kpi:nth-child(6) .spark path { fill: #0a0a0a; }
+body.mono .v-d .bar i { background: #0a0a0a; }
+body.mono .v-d .delta { background: transparent; border: 1px solid var(--border); }
+body.mono .v-d .chip { background: transparent; border: 1px solid var(--border); }
+body.mono .v-d .delta.flat { border-color: transparent; }
+
+/* D 质感层：颜色当墨水用，不当油漆用 */
+.v-d { --area-op: 1; --line-w: 1.75; --grid: #f0f0f0; }
+.v-d .kpi-num { letter-spacing: -0.02em; }
+.v-d .delta { background: color-mix(in srgb, currentColor 7%, white); border: 1px solid color-mix(in srgb, currentColor 22%, white); }
+.v-d .delta.up { color: var(--pos); } .v-d .delta.down { color: var(--neg); } .v-d .delta.flat { color: var(--text-3); border-color: var(--border); background: #fafafa; }
+.v-d .chip { background: color-mix(in srgb, currentColor 8%, white); border: 1px solid color-mix(in srgb, currentColor 24%, white); font-weight: 500; }
+.v-d .chip.p0 { color: var(--neg); } .v-d .chip.p1 { color: var(--warn); } .v-d .chip.opp { color: var(--pos); }
+.v-d .spark path { opacity: .09; }
+.v-d .area1 { fill: url(#area-grad); }
+.v-d .dots circle { r: 2.6; stroke-width: 1.75; }
+.v-d .bar { background: #ececec; }
+.v-d .item { box-shadow: none; }
+.v-d .item.p0, .v-d .item.p1 { background: #fff; }
+.v-d .stats div { background: #fafafa; border-color: #ececec; }
+.v-d .alist li { border-color: #ececec; }
+.v-d .legend span::before { height: 2px; }
+body.mono .v-d .delta, body.mono .v-d .chip { background: transparent; border-color: var(--border); }
+.mono-btn { margin-left: auto; padding: 6px 14px; border-radius: 999px; border: 1px solid #111; background: #111; color: #fff; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; }
+.mono-btn:hover { background: #333; }
+.vnote { margin: -6px 0 12px 4px; font-size: 12.5px; color: #777; }
+</style>
+</head>
+<body>
+<div class="board">
+  <div class="board-head">
+    <div>
+      <h1>KA Pilot 风格方向 · 三版对比 <span class="tag">示例数据 · 脱敏</span></h1>
+      <p>同一个工作台、同一份内容、三套设计变量（字体 / 颜色 / 圆角阴影 / 密度 / 图表 / 卡片）。看的是气质差别，不是最终像素。</p>
+    </div>
+  </div>
+  <div class="jump"><a href="#va">A · 冷静黑白</a><a href="#vb">B · Apple 白灰暖</a><a href="#vc">C · 数据感彩色</a><a href="#vd1">D1 · shadcn 壳 + 冷色</a><a href="#vd2">D2 · shadcn 壳 + 暖色</a><a href="#how">怎么拍板</a><button class="mono-btn" id="mono-toggle" type="button">D 版切到黑白</button></div>
+
+  <table class="cmp">
+    <tr><th></th><th>A · 冷静黑白</th><th>B · Apple 白灰暖</th><th>C · 数据感彩色</th><th>D1 · shadcn 壳 + 冷色</th><th>D2 · shadcn 壳 + 暖色</th></tr>
+    <tr><td>像谁</td><td>Linear、Vercel、Raycast</td><td>Apple 官网后台、钉钉网关那套 D-CON（PRD 5.1）</td><td>Stripe Dashboard、Tremor、Metabase</td><td>Vercel Analytics、Stripe（壳灰、数据蓝）</td><td>D-CON 橙的延伸，偏淘系看板</td></tr>
+    <tr><td>字体</td><td>Geist + 等宽数字（Geist Mono）</td><td>系统苹方 / SF，数字偏大偏粗</td><td>Geist，数字与正文同族</td><td>Geist（同页 1）</td><td>Geist（同页 1）</td></tr>
+    <tr><td>颜色</td><td>纯黑白灰，唯一强调色靛蓝只出现在图表第二条线和链接</td><td>白底浅灰分区，橙色只做 CTA / 选中 / 主线</td><td>蓝为主，紫作第二序列，红绿黄做状态底色</td><td>壳中性灰一点不加；数据蓝 · 紫 · 青，饱和度压一档；红绿黄只表状态</td><td>壳同左；数据橙 · 红棕 · 芥黄；注意橙和黄色预警容易撞</td></tr>
+    <tr><td>圆角与阴影</td><td>8px / 无阴影，全靠 1px 线</td><td>12px 卡、胶囊 chip，极轻阴影</td><td>10px，双层轻阴影，卡片浮起来</td><td>shadcn 默认：10px、极轻 shadow-xs（同页 1）</td><td>同左</td></tr>
+    <tr><td>密度</td><td>最密（13px），一屏塞最多</td><td>最松（14px），呼吸感</td><td>中等（13.5px），靠迷你趋势图补信息</td><td>14px（同页 1）</td><td>同左</td></tr>
+    <tr><td>KPI 卡</td><td>标签 + 数字 + 等宽环比，极简</td><td>大数字 + 胶囊环比</td><td>数字 + 带底色环比 + 迷你趋势 / 进度条</td><td>C 式卡：带底色环比 + 迷你趋势 / 进度条，放在 shadcn 卡壳里</td><td>同左</td></tr>
+    <tr><td>图表</td><td>细线、虚线网格、无填充、无圆点</td><td>橙色主线带柔和面积，灰色虚线做第二条</td><td>双色线带面积，圆点标记</td><td>蓝 / 紫双线带面积 + 圆点；黑白模式退成黑 / 灰细线</td><td>橙 / 红棕双线</td></tr>
+    <tr><td>队列卡</td><td>2px 左边线 + 描边 chip</td><td>4px 左色条 + 实心胶囊 chip（PRD 5.3 原文）</td><td>整卡淡色底 + 浅底 chip</td><td>3px 左色条 + 浅底 chip，卡底保持白</td><td>同左</td></tr>
+    <tr><td>适合</td><td>每天盯几百个数的人，要冷静不要花</td><td>给领导看、要体面有格调</td><td>要一眼看出涨跌好坏、偏 BI 的人</td><td>你描述的方向：壳安静、数据有色、还得高级</td><td>同左，暖一点</td></tr>
+  </table>
+
+  <template id="app">
+    <div class="app">
+      <aside class="side">
+        <div class="brand"><span class="logo"></span>KA Pilot</div>
+        <button class="new"><i>＋</i>快速新建</button>
+        <nav><a class="active">工作台</a><a>投放任务</a><a>数据分析</a><a>账户池</a><a>自动化</a><a>商品素材</a><a>报告</a><a>知识库</a><a>集成与通知</a></nav>
+        <div class="side-foot">
+          <div class="ws">我的工作台<small>个人 · 本人授权账户</small></div>
+          <div class="user"><span class="avatar">内</span><div>内测用户<small>我的工作台 · 管理员</small></div></div>
+        </div>
+      </aside>
+      <main class="main">
+        <header class="top"><span class="crumb">经营工作台</span><span class="health"><i></i>数据截至 09:30 ✓</span><span class="search">搜索与 Agent <kbd>⌘K</kbd></span></header>
+        <div class="content">
+          <div class="hgroup">
+            <div><h1>早上好，内测用户</h1><p>脱敏示例 · 20 个账户 · 报告日 08/24 09:30 · 我的工作台</p></div>
+            <div><button class="btn">刷新</button></div>
+          </div>
+          <section class="kpis">
+            <article class="kpi"><div class="kpi-label">今日消耗</div><div class="kpi-num">¥842,600</div><span class="delta up">+8.2%</span><div class="kpi-sub">账面消耗 · 当日实时</div><svg class="spark" viewBox="0 0 80 26" preserveAspectRatio="none"><path d="M0,18 L13,14 L27,15 L40,10 L53,9 L67,6 L80,4 L80,26 L0,26 Z"/><polyline points="0,18 13,14 27,15 40,10 53,9 67,6 80,4"/></svg></article>
+            <article class="kpi"><div class="kpi-label">真实 CPA</div><div class="kpi-num">¥36.80</div><span class="delta down">−1.4%</span><div class="kpi-sub">考核 ¥38 · 达标 ✓</div><svg class="spark" viewBox="0 0 80 26" preserveAspectRatio="none"><path d="M0,6 L13,9 L27,10 L40,12 L53,15 L67,17 L80,18 L80,26 L0,26 Z"/><polyline points="0,6 13,9 27,10 40,12 53,15 67,17 80,18"/></svg></article>
+            <article class="kpi"><div class="kpi-label">达标率</div><div class="kpi-num">82.4%</div><span class="delta up">+3.1pp</span><div class="kpi-sub">达标 = 真实 CPA ≤ 考核价</div><div class="bar"><i></i></div></article>
+            <article class="kpi"><div class="kpi-label">成本空间</div><div class="kpi-num">¥27,400</div><span class="delta flat">—</span><div class="kpi-sub">正值 = 仍有降价空间</div><svg class="spark" viewBox="0 0 80 26" preserveAspectRatio="none"><path d="M0,14 L13,16 L27,12 L40,13 L53,10 L67,11 L80,8 L80,26 L0,26 Z"/><polyline points="0,14 13,16 27,12 40,13 53,10 67,11 80,8"/></svg></article>
+            <article class="kpi"><div class="kpi-label">BI 量级</div><div class="kpi-num">18,620</div><span class="delta down">−2.1%</span><div class="kpi-sub">真实转化 · 与 FBI 同源</div><svg class="spark" viewBox="0 0 80 26" preserveAspectRatio="none"><path d="M0,10 L13,8 L27,11 L40,9 L53,12 L67,13 L80,14 L80,26 L0,26 Z"/><polyline points="0,10 13,8 27,11 40,9 53,12 67,13 80,14"/></svg></article>
+            <article class="kpi"><div class="kpi-label">待处理</div><div class="kpi-num neg">7</div><span class="delta up">+2</span><div class="kpi-sub">2 条 P0，先处理</div><svg class="spark" viewBox="0 0 80 26" preserveAspectRatio="none"><path d="M0,20 L13,18 L27,19 L40,14 L53,15 L67,9 L80,6 L80,26 L0,26 Z"/><polyline points="0,20 13,18 27,19 40,14 53,15 67,9 80,6"/></svg></article>
+          </section>
+          <div class="grid">
+            <section class="card chart">
+              <header><h2>消耗与真实 CPA<small>近 7 天 · 左轴消耗、右轴 CPA · 08/20 缺失留空</small></h2><div class="seg"><span>近 3 个月</span><span>近 30 天</span><b>近 7 天</b></div></header>
+              <svg viewBox="0 0 640 220" aria-label="消耗与真实 CPA 趋势示意"><defs><linearGradient id="area-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color: var(--line-1); stop-opacity: .22"/><stop offset="1" style="stop-color: var(--line-1); stop-opacity: 0"/></linearGradient></defs>
+                <g class="chart-grid"><line x1="40" y1="16" x2="600" y2="16"/><line x1="40" y1="59.5" x2="600" y2="59.5"/><line x1="40" y1="103" x2="600" y2="103"/><line x1="40" y1="146.5" x2="600" y2="146.5"/><line x1="40" y1="190" x2="600" y2="190"/></g>
+                <g class="axis"><text x="34" y="20" text-anchor="end">90万</text><text x="34" y="107" text-anchor="end">75万</text><text x="34" y="194" text-anchor="end">60万</text><text x="606" y="20">¥40</text><text x="606" y="107">¥37.5</text><text x="606" y="194">¥35</text><text x="40" y="212" text-anchor="middle">08/18</text><text x="133" y="212" text-anchor="middle">08/19</text><text x="227" y="212" text-anchor="middle">08/20</text><text x="320" y="212" text-anchor="middle">08/21</text><text x="413" y="212" text-anchor="middle">08/22</text><text x="507" y="212" text-anchor="middle">08/23</text><text x="600" y="212" text-anchor="middle">08/24</text></g>
+                <path class="area1" d="M40,120 L133,91 L227,103 L320,74 L413,68 L507,57 L600,51 L600,190 L40,190 Z"/>
+                <path class="line1" d="M40,120 L133,91 L227,103 L320,74 L413,68 L507,57 L600,51"/>
+                <path class="line2" d="M40,47 L133,72"/><path class="line2" d="M320,89 L413,113 L507,124 L600,127"/>
+                <g class="dots"><circle class="d1" cx="40" cy="120" r="3"/><circle class="d1" cx="133" cy="91" r="3"/><circle class="d1" cx="227" cy="103" r="3"/><circle class="d1" cx="320" cy="74" r="3"/><circle class="d1" cx="413" cy="68" r="3"/><circle class="d1" cx="507" cy="57" r="3"/><circle class="d1" cx="600" cy="51" r="3"/><circle class="d2" cx="40" cy="47" r="3"/><circle class="d2" cx="133" cy="72" r="3"/><circle class="d2" cx="320" cy="89" r="3"/><circle class="d2" cx="413" cy="113" r="3"/><circle class="d2" cx="507" cy="124" r="3"/><circle class="d2" cx="600" cy="127" r="3"/></g>
+              </svg>
+              <div class="legend"><span class="l1">消耗</span><span class="l2">真实 CPA</span></div>
+            </section>
+            <section class="card alerts">
+              <header><h2>P0 / P1 警报监控<small>今天谁值班、几条未确认、几条在升级</small></h2></header>
+              <div class="stats"><div><small>今日值班</small><b>优化师 A</b></div><div><small>P0 未确认</small><b>2</b></div><div><small>升级中</small><b>1</b></div></div>
+              <ul class="alist"><li><span class="chip p0">P0</span>成本超考核 30% 以上<b>2</b></li><li><span class="chip p1">P1</span>消耗断崖 / 转化波动<b>4</b></li><li><span class="chip opp">机会</span>优质可扩量<b>1</b></li></ul>
+            </section>
+            <section class="card queue">
+              <header><h2>今日待处理队列<small>按严重度排序；每一项都带证据、归因与建议</small></h2><div class="tabs"><b>全部 7</b><span>P0 2</span><span>P1 4</span><span>机会 1</span></div></header>
+              <article class="item p0">
+                <div class="who"><div class="t"><span class="chip p0">P0</span>超成本起量</div><div class="n">演示账户 · 华东 07</div><div class="id">KUAISHOU · demo-account-07</div></div>
+                <dl><div><dt>证据</dt><dd class="ev">真实 CPA ¥41.2，超考核 37%，今日已耗 ¥8,200</dd></div><div><dt>归因</dt><dd>CTR 2.1% → 1.4%，主力素材第 9 天</dd></div><div><dt>建议</dt><dd>降价至 ¥26（−13%）｜同型操作 3 次 2 次见效</dd></div></dl>
+                <div class="acts"><button class="btn primary">生成变更集</button><button class="btn">查看证据</button><button class="btn">忽略 ▾</button></div>
+              </article>
+              <article class="item p1">
+                <div class="who"><div class="t"><span class="chip p1">P1</span>消耗断崖</div><div class="n">演示账户 · 华南 12</div><div class="id">KUAISHOU · demo-account-12</div></div>
+                <dl><div><dt>证据</dt><dd class="ev">近 3 小时消耗 −62%，余额 ¥4,300</dd></div><div><dt>归因</dt><dd>预计 14:00 断量</dd></div><div><dt>建议</dt><dd>申请充值协作</dd></div></dl>
+                <div class="acts"><button class="btn primary">申请充值</button><button class="btn">查看证据</button><button class="btn">静音 3 天</button></div>
+              </article>
+              <div class="ok"><i>✓</i>其余 43 个账户在阈值内，无需关注（数据 09:15 校验）</div>
+            </section>
+            <section class="card side2">
+              <header><h2>昨日动作回收 · T+1<small>昨天做过的调整，今天看结果</small></h2></header>
+              <ul class="t1"><li><i class="y">✓</i><div>账户 B 降价 −10%<small>成本 ¥34 → ¥28，量级 −8%（可接受）</small></div></li><li><i class="n">✕</i><div>账户 C 换素材<small>CTR 未回升，建议进一步排查定向</small></div></li></ul>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </template>
+
+  <section class="variant v-a" id="va">
+    <div class="vhead"><span class="letter">A</span><div><h2>冷静黑白 · 工程感</h2><p>只用黑白灰，靠字重、线和留白分层；数字全部等宽对齐。安静、耐看、不抢眼。</p></div></div>
+    <div class="mount"></div>
+  </section>
+  <section class="variant v-b" id="vb">
+    <div class="vhead"><span class="letter">B</span><div><h2>Apple 白灰暖 · D-CON</h2><p>PRD 5.1 那套：白底浅灰分区、橙色只做行动点、圆角大一点、极轻阴影。体面、有格调。</p></div></div>
+    <div class="mount"></div>
+  </section>
+  <section class="variant v-c" id="vc">
+    <div class="vhead"><span class="letter">C</span><div><h2>数据感彩色 · 看板</h2><p>涨跌好坏用颜色直接说，KPI 卡带迷你趋势，卡片浮起来。信息密度高，一眼读结论。</p></div></div>
+    <div class="mount"></div>
+  </section>
+
+  <section class="variant v-d pal-cool" id="vd1">
+    <div class="vhead"><span class="letter">D1</span><div><h2>shadcn 壳 + 彩色数据 · 冷色</h2><p>侧栏、顶栏、卡片、字体 = 页 1 现在的 shadcn 中性灰，一点颜色不加；颜色只进图表线、迷你趋势、环比和状态。蓝 · 紫 · 青，饱和度压一档。</p></div></div>
+    <p class="vnote">迷你趋势线是示意：正式版只在后端有日序列的指标上显示（现在只有消耗和 CPA 有），其余卡等数据到了再出现，不画假线。右上角「切到黑白」可看同一页的黑白预设。</p>
+    <div class="mount"></div>
+  </section>
+  <section class="variant v-d pal-warm" id="vd2">
+    <div class="vhead"><span class="letter">D2</span><div><h2>shadcn 壳 + 彩色数据 · 暖色</h2><p>同样的壳，数据换成橙 · 红棕 · 芥黄，延续 PRD 里 D-CON 的橙。留意橙色主线和黄色预警、红色 P0 之间是否打架。</p></div></div>
+    <div class="mount"></div>
+  </section>
+
+  <section class="foot" id="how">
+    <h3>怎么拍板</h3>
+    <ul>
+      <li>直接回 <b>A / B / C</b>；或者混搭，例如「B 的颜色 + A 的密度 + C 的 KPI 卡」。</li>
+      <li>也可以只说感受：「太花」「太素」「数字要更大」「卡片太圆」，我按感受改一版再看。</li>
+      <li>定了之后写进 <code>docs/frontend/ui-assets/decisions/</code>，页 1 立刻按该版重刷，后面每页都按它来，不再问。</li>
+      <li>D 版的「黑白」只是同一套组件换一组调色板：装饰色（区分序列）退成黑灰，表含义的红绿黄保留。要做成用户可切换的设置项也是这一个开关。</li>
+      <li>字体是独立决定：这里 A/C 用 Geist、B 用系统苹方，7 套字体的对比页另开了标签。</li>
+    </ul>
+  </section>
+</div>
+<script>
+  const tpl = document.getElementById("app");
+  document.querySelectorAll(".mount").forEach((m, i) => {
+    const node = tpl.content.cloneNode(true);
+    node.querySelectorAll("#area-grad").forEach((g) => { g.id = "area-grad-" + i; });
+    node.querySelectorAll(".area1").forEach((a) => { a.style.fill = "url(#area-grad-" + i + ")"; });
+    if (!m.closest(".v-d")) node.querySelectorAll(".area1").forEach((a) => { a.style.fill = ""; });
+    m.appendChild(node);
+  });
+  const monoBtn = document.getElementById("mono-toggle");
+  monoBtn.addEventListener("click", () => {
+    const on = document.body.classList.toggle("mono");
+    monoBtn.textContent = on ? "D 版切回彩色" : "D 版切到黑白";
+  });
+</script>
+</body>
+</html>

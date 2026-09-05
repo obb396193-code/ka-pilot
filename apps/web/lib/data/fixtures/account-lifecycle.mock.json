@@ -1,0 +1,122 @@
+{
+  "demo-account-07": {
+    "stage": "stable",
+    "since": "2026-07-15",
+    "productName": "淘宝"
+  },
+  "demo-account-12": {
+    "stage": "stable",
+    "since": "2026-07-15",
+    "productName": "淘宝"
+  },
+  "demo-account-18": {
+    "stage": "cold_start",
+    "since": "2026-08-19",
+    "productName": "手淘软件"
+  },
+  "demo-account-21": {
+    "stage": "ramping",
+    "since": "2026-08-12",
+    "productName": "淘宝"
+  },
+  "demo-account-22": {
+    "stage": "declining",
+    "since": "2026-08-16",
+    "productName": "淘宝"
+  },
+  "demo-account-23": {
+    "stage": "idle",
+    "since": "2026-08-10",
+    "productName": "淘宝"
+  },
+  "demo-account-24": {
+    "stage": "infra",
+    "since": "2026-08-21",
+    "productName": "淘宝"
+  },
+  "demo-account-31": {
+    "stage": "stable",
+    "since": "2026-07-15",
+    "productName": "手淘软件"
+  },
+  "demo-account-32": {
+    "stage": "ramping",
+    "since": "2026-08-12",
+    "productName": "手淘软件"
+  },
+  "demo-account-33": {
+    "stage": "idle",
+    "since": "2026-08-10",
+    "productName": "手淘软件"
+  },
+  "demo-account-34": {
+    "stage": "idle",
+    "since": "2026-08-10",
+    "productName": "手淘软件"
+  },
+  "demo-account-35": {
+    "stage": "closing",
+    "since": "2026-08-22",
+    "productName": "手淘软件"
+  },
+  "demo-account-41": {
+    "stage": "stable",
+    "since": "2026-07-15",
+    "productName": "闲鱼"
+  },
+  "demo-account-42": {
+    "stage": "ramping",
+    "since": "2026-08-12",
+    "productName": "闲鱼"
+  },
+  "demo-account-43": {
+    "stage": "cold_start",
+    "since": "2026-08-19",
+    "productName": "闲鱼"
+  },
+  "demo-account-44": {
+    "stage": "idle",
+    "since": "2026-08-10",
+    "productName": "闲鱼"
+  },
+  "demo-account-45": {
+    "stage": "infra",
+    "since": "2026-08-21",
+    "productName": "闲鱼"
+  },
+  "demo-account-46": {
+    "stage": "closed",
+    "since": "2026-08-01",
+    "productName": "闲鱼"
+  },
+  "demo-account-51": {
+    "stage": "stable",
+    "since": "2026-07-15",
+    "productName": "淘特"
+  },
+  "demo-account-52": {
+    "stage": "declining",
+    "since": "2026-08-16",
+    "productName": "淘特"
+  },
+  "demo-account-53": {
+    "stage": "closing",
+    "since": "2026-08-22",
+    "productName": "淘特"
+  },
+  "demo-account-54": {
+    "stage": "idle",
+    "since": "2026-08-10",
+    "productName": "淘特"
+  },
+  "demo-account-55": {
+    "stage": "idle",
+    "since": "2026-08-10",
+    "productName": "淘特"
+  },
+  "demo-account-56": {
+    "stage": "infra",
+    "since": "2026-08-21",
+    "productName": "淘特"
+  }
+}

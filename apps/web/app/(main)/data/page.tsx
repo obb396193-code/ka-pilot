@@ -1,7 +1,7 @@
-import { AnalysisContainer } from "@/components/business/data-containers"
-import { readDataViewMode, type QueryRecord } from "@/lib/data/data-view"
+import { DashboardContainer } from "@/components/business/data-containers"
+import type { QueryRecord } from "@/lib/data/data-view"
 
-export default async function DataPage({ searchParams }: { searchParams: Promise<QueryRecord> }) {
+export default async function DataDashboardPage({ searchParams }: { searchParams: Promise<QueryRecord> }) {
   const query = await searchParams
-  return <AnalysisContainer pathname="/data" dataView={readDataViewMode(query.data_view)} query={query} />
+  return <DashboardContainer query={query} />
 }

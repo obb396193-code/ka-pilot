@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 生成物：Windows 兜底中文字体切片（scripts/fonts/prepare-misans.mjs）
+/app/fonts/misans/

@@ -1,0 +1,177 @@
+[
+ {
+  "key": "modern-minimal",
+  "label": "Modern Minimal",
+  "primary": "#3b82f6",
+  "chart1": "#3b82f6",
+  "chart2": "#2563eb"
+ },
+ {
+  "key": "violet-bloom",
+  "label": "Violet Bloom",
+  "primary": "#7033ff",
+  "chart1": "#4ac885",
+  "chart2": "#7033ff"
+ },
+ {
+  "key": "t3-chat",
+  "label": "T3 Chat",
+  "primary": "#a84370",
+  "chart1": "#d926a2",
+  "chart2": "#6c12b9"
+ },
+ {
+  "key": "mocha-mousse",
+  "label": "Mocha Mousse",
+  "primary": "#A37764",
+  "chart1": "#A37764",
+  "chart2": "#8A655A"
+ },
+ {
+  "key": "amethyst-haze",
+  "label": "Amethyst Haze",
+  "primary": "#8a79ab",
+  "chart1": "#8a79ab",
+  "chart2": "#e6a5b8"
+ },
+ {
+  "key": "doom-64",
+  "label": "Doom 64",
+  "primary": "#b71c1c",
+  "chart1": "#b71c1c",
+  "chart2": "#556b2f"
+ },
+ {
+  "key": "kodama-grove",
+  "label": "Kodama Grove",
+  "primary": "#8d9d4f",
+  "chart1": "#9db18c",
+  "chart2": "#8a9f7b"
+ },
+ {
+  "key": "cosmic-night",
+  "label": "Cosmic Night",
+  "primary": "#6e56cf",
+  "chart1": "#6e56cf",
+  "chart2": "#9e8cfc"
+ },
+ {
+  "key": "quantum-rose",
+  "label": "Quantum Rose",
+  "primary": "#e6067a",
+  "chart1": "#e6067a",
+  "chart2": "#c44b97"
+ },
+ {
+  "key": "bold-tech",
+  "label": "Bold Tech",
+  "primary": "#8b5cf6",
+  "chart1": "#8b5cf6",
+  "chart2": "#7c3aed"
+ },
+ {
+  "key": "elegant-luxury",
+  "label": "Elegant Luxury",
+  "primary": "#9b2c2c",
+  "chart1": "#b91c1c",
+  "chart2": "#9b2c2c"
+ },
+ {
+  "key": "amber-minimal",
+  "label": "Amber Minimal",
+  "primary": "#f59e0b",
+  "chart1": "#f59e0b",
+  "chart2": "#d97706"
+ },
+ {
+  "key": "neo-brutalism",
+  "label": "Neo Brutalism",
+  "primary": "#ff3333",
+  "chart1": "#ff3333",
+  "chart2": "#ffff00"
+ },
+ {
+  "key": "solar-dusk",
+  "label": "Solar Dusk",
+  "primary": "#B45309",
+  "chart1": "#B45309",
+  "chart2": "#78716C"
+ },
+ {
+  "key": "pastel-dreams",
+  "label": "Pastel Dreams",
+  "primary": "#a78bfa",
+  "chart1": "#a78bfa",
+  "chart2": "#8b5cf6"
+ },
+ {
+  "key": "clean-slate",
+  "label": "Clean Slate",
+  "primary": "#6366f1",
+  "chart1": "#6366f1",
+  "chart2": "#4f46e5"
+ },
+ {
+  "key": "ocean-breeze",
+  "label": "Ocean Breeze",
+  "primary": "#22c55e",
+  "chart1": "#22c55e",
+  "chart2": "#10b981"
+ },
+ {
+  "key": "retro-arcade",
+  "label": "Retro Arcade",
+  "primary": "#d33682",
+  "chart1": "#268bd2",
+  "chart2": "#2aa198"
+ },
+ {
+  "key": "midnight-bloom",
+  "label": "Midnight Bloom",
+  "primary": "#6c5ce7",
+  "chart1": "#6c5ce7",
+  "chart2": "#8e44ad"
+ },
+ {
+  "key": "northern-lights",
+  "label": "Northern Lights",
+  "primary": "#34a85a",
+  "chart1": "#34a85a",
+  "chart2": "#6495ed"
+ },
+ {
+  "key": "vintage-paper",
+  "label": "Vintage Paper",
+  "primary": "#a67c52",
+  "chart1": "#a67c52",
+  "chart2": "#8d6e4c"
+ },
+ {
+  "key": "sunset-horizon",
+  "label": "Sunset Horizon",
+  "primary": "#ff7e5f",
+  "chart1": "#ff7e5f",
+  "chart2": "#feb47b"
+ },
+ {
+  "key": "starry-night",
+  "label": "Starry Night",
+  "primary": "#3a5ba0",
+  "chart1": "#3a5ba0",
+  "chart2": "#f7c873"
+ },
+ {
+  "key": "soft-pop",
+  "label": "Soft Pop",
+  "primary": "#4f46e5",
+  "chart1": "#4f46e5",
+  "chart2": "#14b8a6"
+ },
+ {
+  "key": "sage-garden",
+  "label": "Sage Garden",
+  "primary": "#7c9082",
+  "chart1": "#7c9082",
+  "chart2": "#a0aa88"
+ }
+]

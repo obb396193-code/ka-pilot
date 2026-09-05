@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { IconBellOff, IconCheck, IconEye, IconX } from "@tabler/icons-react"
+import Link from "next/link"
+import { IconBellOff, IconCheck, IconExternalLink, IconEye, IconGitBranch, IconX } from "@tabler/icons-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -15,17 +16,21 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 const ignoreReasons = ["已知波动", "等待数据", "暂不处理"]
 
+// 四件套的「入口」：查看证据 / 生成变更集（只到预览确认，不发媒体）/ 跳后台（深链待接）/ 忽略（一键 + 可选原因 chip）/ 静音 3 天
 export function WorkItemActions({
   accountName,
   suggestion,
   disabled,
+  evidenceHref = null,
 }: {
   accountName: string
   suggestion: string
   disabled: boolean
+  evidenceHref?: string | null
 }) {
   const [ignored, setIgnored] = useState(false)
   const [reason, setReason] = useState<string | null>(null)
@@ -34,13 +39,13 @@ export function WorkItemActions({
   const [previewConfirmed, setPreviewConfirmed] = useState(false)
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2 @3xl/main:w-60">
       <div className="flex flex-wrap gap-2">
         <Drawer onOpenChange={(open) => { if (!open) setRiskRead(false) }}>
           <DrawerTrigger asChild>
             <Button size="sm" disabled={disabled}>
-              <IconEye />
-              预览调整
+              <IconGitBranch />
+              生成变更集
             </Button>
           </DrawerTrigger>
           <DrawerContent>
@@ -73,6 +78,20 @@ export function WorkItemActions({
             </div>
           </DrawerContent>
         </Drawer>
+        {evidenceHref ? (
+          <Button size="sm" variant="outline" asChild>
+            <Link href={evidenceHref}><IconEye />查看证据</Link>
+          </Button>
+        ) : (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span tabIndex={0} className="inline-flex"><Button size="sm" variant="outline" disabled><IconEye />查看证据</Button></span>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">工作项详情生成后可查看证据快照</TooltipContent>
+          </Tooltip>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-2">
         <Button size="sm" variant="outline" onClick={() => setIgnored((value) => !value)}>
           <IconX />
           {ignored ? "取消忽略" : "忽略"}
@@ -81,6 +100,12 @@ export function WorkItemActions({
           <IconBellOff />
           {muted ? "已静音 3 天" : "静音 3 天"}
         </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span tabIndex={0} className="inline-flex"><Button size="sm" variant="ghost" disabled aria-label="跳快手后台"><IconExternalLink /></Button></span>
+          </TooltipTrigger>
+          <TooltipContent side="bottom">跳快手后台的深链接入后开放</TooltipContent>
+        </Tooltip>
       </div>
       {ignored ? (
         <div className="flex flex-wrap items-center gap-1.5" aria-label="忽略原因">

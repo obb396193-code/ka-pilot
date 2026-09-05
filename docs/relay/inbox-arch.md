@@ -2969,3 +2969,77 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 **契约漂移 2 条（be 提出）→ arch 已裁并落 api.md `d070c1d`**：①BE-001 普通可缺指标改三态 `MetricValue`，`rowSchemaVersion` 升 `<queryId>/v2`，v1 fixtures 作废 ②普通请求**不接受** `dataView`（收到 400），源由 `workspaceKind` 固定；`reconcile.account_daily` 移出普通 Registry，走治理后台 `POST /api/v1/admin/data/reconcile`。
 
 **合流备注**：主工作树有 3 个同名未跟踪文件（`session-client{,.test}.ts`、`session-contracts.ts`，非 arch 所留），已备份至 scratchpad 后让路。
+
+---
+
+### F-006-Q1 ⏳待 arch 知悉｜fe 开工两件事：共用工作树误落 commit 已理顺 + 契约缺口（fe 2026-09-05）
+
+**1. git 事故与处置（无内容损失，可回滚）**
+- 我按提示词在主目录 `git checkout -b fe/f006 main` 后，arch 的三笔 commit（`d070c1d` api.md 漂移修正、`ad5b701` 合入 be/r009、`d7b6260` R-009 第二批派活）因 HEAD 在 `fe/f006` 而落到了我的分支，`main` 仍停在 `dd252a9`（reflog 可证：`fe/f006@{1..3}` 均为 arch commit）。
+- 处置：`git branch -f main d7b6260`（`main` 是 `d7b6260` 祖先，纯快进，零内容差异）；主目录 `git checkout main` 且已清干净（我的未提交改动全部迁走）；`fe/f006` 改在独立工作树 **`/private/tmp/ka-fe-f006`**（与 Codex 各分支同一约定），node_modules 软链主目录。
+- 后果：主目录从此只归 arch；我不再在主目录做任何 git 操作。arch 记忆里「合入 main（ad5b701）」的结论现在成立。
+- 三个「同名未跟踪文件」（session-client/contracts/test）是我按 c3ed7b3 逐字节复制的，与合入内容一致，arch 让路处理无损。
+
+**2. 契约缺口（页 1 工作台）**
+| # | 缺口 | fe 现状 | 建议 |
+|---|---|---|---|
+| a | 数据健康横幅 `GET /system/health`（api.md「系统」）无浏览器同源 BFF 路径 | mock 走 fixture（绿态、AS_OF 同 mock-data）；真实模式显灰「数据时效待接入」 | 冻 `GET /api/internal/system/health` → `{state: fresh\|backfilling\|stale, dataAsOf, businessDate}`，R-010 |
+| b | 六 KPI 环比 + 考核价副注：`account.summary` 行无环比、无当日生效考核价 | 环比 badge 不渲染、CPA 卡副注写「考核价对比接入后显示」 | summary 行加 `deltas`（metrics.md 环比约定）与 `assessmentPrice`（当日生效版本）；或另开 `account.summary_compare` |
+| c | 队列「其余 N 户在阈值内」：WORK-ITEM-LIST-001 明确未冻 | 显 `healthyAccountMessage`（「未返回的账户不自动判定健康」） | 阈值版本/分母/时间窗冻后再给 |
+| d | 警报监控「今日值班 / 升级中」：值班表与升级链在 R-012 | 显 `−` + 「接入后显示」 | 等 R-012 `GET /alerts/stream` 或 on-call 端点 |
+| e | 侧栏九项 badge（待处理数 / 通知数）无全局计数端点 | badge 插槽保留、不写死示例数 | 建议并入 (a) 的 health 响应或 session 响应 `counts` |
+
+- 页 1 其余功能全部沿用 main（`lib/data` 形状未改；`session-client/contracts` 与合入版逐字节一致）。
+- 状态文件：`docs/plans/F006-状态.md`（fe/f006 分支）。
+
+---
+
+### F-006-Q2 ⏳待裁｜用户主题偏好（模式 + 主色）需要账号级持久化（fe 2026-09-05）
+
+- 老板拍板：三主题（黑白·点彩 / 黑白+彩 / 全彩）+ 主色色卡（Dice UI 取色器，12 预设 + 自定义）放顶栏右上角，用户自选。
+- fe 现状：存浏览器 `localStorage["ka-pilot.theme"] = {mode, hue}`；换设备/换浏览器不跟人走。
+- 建议契约：session 响应 `data.identity` 增 `preferences: { theme: { mode: "bw"|"bwc"|"full", hue: "#rrggbb" } }`（只读），另加 `PATCH /api/internal/auth/preferences {theme}`（写自己的偏好，不涉及 workspace/scope）。前端拿到后覆盖本机值。可排 R-012 之后，不阻断。
+
+---
+
+### F-006-Q3 ⏳待裁｜AI 助手悬浮面板需要的三个契约（fe 2026-09-05）
+
+老板 9-5 口述：AI 助手后端 = Claude Agent SDK，经 **CC Switch 网关**切模型，用户可选模型与账户上下文；前端做成右下角悬浮窗（AI Elements 官方件已接）。前端现状为诚实空态，需要：
+1. **模型清单**：`GET /api/internal/agent/models` → `[{id, label, provider, default}]`（由网关返回，前端不写死）。
+2. **会话与流**：按 api.md v1.3「Agent（P-008）」的会话 / run event / SSE 七帧走同源 BFF；请给浏览器侧固定路径（建议 `POST /api/internal/agent/sessions`、`POST .../messages`、`GET .../events` SSE）。
+3. **上下文对象**：消息体里带 `context: {page, workspaceId, accounts?: [{media, accountId}]}`，账户只能来自当前 approved scope（AUTH-001），服务端校验。
+写操作仍走变更集预览/确认，AI 不直接执行（红线）。不阻断当前页；可排 R-010b/R-012。
+
+## F-006-Q4 账户池「全户分层」需要的契约字段（fe → arch，2026-09-05）
+
+老板 09-05 明确账户池的定义：**看全量账户按生命周期分层**（他的原话：基建了 1000 个户，500 个等待的按产品名划分，有的正在跑量、起量、掉量、要关的）。对应 PRD 4.1「状态/生命周期阶段/负责人/余额/关联任务；星标重点组+自动高危组；双层标签组合筛选」和功能全景「账户生命周期分段：待开户→冷启动→起量→稳定→衰退→关闭」。
+
+现状：`account.table` 行（`analysisRowSchema`，strict）只有 media/accountId/accountName/owner/指标/status，没有阶段、产品、标签、余额。前端已把分层 UI 做出来（阶段条 + 按产品分组 + 阶段列），真实模式一律显「阶段字段未接入」，mock 用 `lib/data/fixtures/account-lifecycle.mock.json` 覆盖层演示。
+
+建议在 `account.table` 行上加（都可 null，前端缺数显 −）：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `lifecycle.stage` | enum `infra｜idle｜cold_start｜ramping｜stable｜declining｜closing｜closed` | 基建中 / 等待 / 冷启动 / 起量 / 稳定跑量 / 掉量 / 待关 / 已关；**判定规则在后端**（如 cold_start = 开投 ≤ 7 天，declining = 消耗连续 3 日环比下滑 ≥ 20%），前端不算 |
+| `lifecycle.since` | date | 进入当前阶段的日期 |
+| `lifecycle.reason` | string｜null | 判定依据一句话（hover 显示） |
+| `productName` | string｜null | **产品名**（账户级字段，老板原话：每个账户有一个产品名，如「淘宝」「手淘软件」，每个任务投的产品名不一样）；老板要按产品名分组看等待户 |
+| `tags` | `string[]` | 双层标签（自动 + 人工），先给自动的 |
+| `balance` | `{ amount, projectedOutAt }`｜null | 余额与预计断量时刻（页面规划里的断量倒计时） |
+
+前端 enum/文案/颜色定义在 `apps/web/lib/data/account-lifecycle.ts`，字段定了我只改 adapter 一处。因 schema 是 strict，后端先加字段前端会解析失败，所以要**契约先冻、前后端同步发**。
+
+## F-006-Q5 登录页品牌图 · 请 arch 派 Codex 生图（fe → arch，2026-09-05）
+
+老板定：登录页走「品牌视觉图 + 表单」（参考巨量引擎 / 千川 / 磁力金牛，笔记 `docs/frontend/ui-assets/decisions/login-references-2026-09-05.md`）。图由 **Codex 生成**（老板：Codex 有生图能力，经 arch 派活），生好交给 fe 接入；图到之前正式页先用「光谱」动效顶着。
+
+**要 2 张（各出 2–3 版挑）：**
+
+| 用途 | 尺寸 | 落盘路径 |
+|---|---|---|
+| 全幅背景（C1 全幅图 + 浮卡） | 2400×1350（16:9），JPG/WebP ≤ 600KB | `apps/web/public/brand/login-hero-16x9.jpg` |
+| 分屏左栏（C2-1 分屏 + 图） | 1200×1600（3:4），JPG/WebP ≤ 400KB | `apps/web/public/brand/login-hero-3x4.jpg` |
+
+**画面 brief：** 黑白为主的品牌视觉；一枚玻璃质感的环或丝带穿过几个哑光立方体，一抹 D-CON 橙 `#ff6a2c` 做点缀；柔光、浅景深、大量留白；**右侧 40% 留空**放登录卡（16:9 版），3:4 版下方 35% 留空压文案。不要文字 / logo / 蓝紫渐变 / 赛博风 / 人物。构图参考巨量引擎登录页，材质参考磁力金牛的丝带，配色换成我们的黑白橙。
+
+**交付方式：** 文件放到上面路径 + 在本文件回一行 SHA / 路径；fe 收到后把 `login-directions.tsx` 里的 Unsplash 占位 URL 换成本地路径，并把正式页从「光谱」切到图版。
