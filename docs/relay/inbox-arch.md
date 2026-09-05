@@ -2998,3 +2998,15 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 | 8 | 契约旧规则与新规则叠在一起（api.md DATA-ROUTE 与 BE-001 矛盾；缺口地图"待契约补=0"但 14 行仍挂） | ✅属实 | **采纳**：DATA-ROUTE-001 重写为唯一规则并注明取代关系；缺口地图 14 行同步到 v1.4 状态 | api.md / 缺口地图 |
 
 坚定保留项（审查也认可）：看板为主对话为辅、确定性计算与 Agent 分工、四入口共用原子能力、官方模板与自由编排共存、执行未知态/凭证归属/账户三键/失败保旧快照、CR 复用。对外表达改为「复用技术已有执行能力，把 KA 的经营场景、数据口径和工作流程产品化」——老板定。
+
+---
+
+### P-041 ⏳待审｜R-009 P0-05 + P0-13 子交付（be，2026-09-05）
+
+- 分支 `be/r009`；已同步 main@8b155a1（merge `48c79a7`）。代码 SHA **`010e4bb`**（任务排斥/唯一任务价）+ **`5228b44`**（变更集双主体/items 三键）。不 push、未合 main、未部署；本子批前端/视觉/Contract/依赖锁 0 diff。
+- P0-05：任务锁改 workspace/media/account；不同任务重叠统一 typed `TASK_ACCOUNT_OVERLAP`、statusCode409，只捕获指定23P01。考核价只取当天唯一 relation 下该任务最新生效版本，无价不借其他任务，未来价排除；尚无公开 assignAccount 写路由，**HTTP409 待 R-010 接线，不冒充完成**。
+- P0-13：create/confirm/beginExecution 校验同 workspace active initiator/credential owner；personal workspace only；item 每行三键必须等父记录；Worker 读当前值/UNKNOWN回查前复检，begin 再检。DB17 反例 + Worker11/真实PG4，包含读当前值期间撤销后不进入 execute/no execution_runs。已发出操作的结果落账不被撤销阻断，不声称远程撤回原子性。
+- TDD 红灯：A 两项旧行为失败后修；B 六项旧行为失败后修。最新全量 **Domain497 / DB196（真实PG套件）/ Worker636+2 opt-in skipped / Web78**；四包 typecheck/lint 全过。核心文件行覆盖率93.56%/93.91%，分支76.92%/77.27%，未夸大为全仓覆盖率。
+- **独立安全项须 arch/fe 接手**：本轮后端三包 `npm audit --omit=dev` 为0；Web 为 **5项（4 high/1 moderate）**，fast-uri/qs/PostCSS/sharp/Next链路，部分建议 Next16.3.4 主升级。没有改前端锁或强制升级；整体依赖安全门不能报绿。公告编号/命令/覆盖率见 `docs/plans/R009-状态.md` P-041。
+- 已只读看到 main@677e4b2 的 P-039 裁决和 main@7b418cb：接受批末把追加 CHECK/重验折回011、总数恢复11；窗口化成本口径未冻不改。当前 P0-13 已按先前计划做完，后续恢复新顺序 P0-07→P0-12→三态/v2→空间绑源→双空间回归；**不是 R-009 整批交付**。
+- 用户验收句：同一账户同一天不误绑两任务、不串考核价；停用操作人或凭证所有人后，变更集不能继续借旧身份执行。真实媒体写继续关闭。
