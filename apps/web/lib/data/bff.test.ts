@@ -2,14 +2,33 @@ import assert from "node:assert/strict"
 import test from "node:test"
 
 import { backendUnknownLineageEnvelope } from "./backend-contract-fixtures.ts"
-import { BACKEND_DATA_QUERY_PATH, forwardDataQuery, handleDataQueryRequest } from "./bff.ts"
+import { BACKEND_DATA_QUERY_PATH, forwardDataQuery as rawForwardDataQuery, handleDataQueryRequest as rawHandleDataQueryRequest } from "./bff.ts"
 import { MAX_UPSTREAM_BODY_BYTES } from "./bounded-response.ts"
 import { canonicalTableEnvelope, canonicalTableRow } from "./canonical-query-fixtures.ts"
 
-const request = { queryId: "account.summary", dataView: "platform", params: { date: "2026-08-24" } }
+const request = { queryId: "account.summary", params: { date: "2026-08-24" } }
 const authContext = { workspaceId: "00000000-0000-4000-8000-000000000024", userId: "user-demo", allowedAccounts: [{ media: "KUAISHOU", accountId: "account-demo-07" }] }
 const SESSION_COOKIE = "personal-session-token-0000000000000001"
 const SERVICE_TOKEN = "server-secret-000000000000000000000000"
+// Existing query-boundary cases explicitly simulate the separate successful Session
+// read so their corrupt/oversized responses still exercise DATA, not only auth.
+function withPersonalSession(fetchImpl: typeof fetch | undefined) {
+  return async (url: string, init?: RequestInit) => {
+    if (url.endsWith("/api/v1/auth/session")) {
+      const workspace = { id: authContext.workspaceId, name: "Synthetic personal", kind: "personal", role: "optimizer", readOnly: false }
+      const requestId = new Headers(init?.headers).get("x-request-id")
+      return Response.json({ ok: true, data: { identity: { displayName: "Synthetic" }, activeWorkspace: workspace, workspaces: [workspace] }, meta: { requestId } }, { headers: { "x-request-id": requestId! } })
+    }
+    return fetchImpl!(url, init)
+  }
+}
+function forwardDataQuery(input: unknown, dependencies: Parameters<typeof rawForwardDataQuery>[1]) {
+  return rawForwardDataQuery(input, { ...dependencies, fetchImpl: withPersonalSession(dependencies.fetchImpl as typeof fetch) })
+}
+function handleDataQueryRequest(input: Request, dependencies: Parameters<typeof rawHandleDataQueryRequest>[1]) {
+  return rawHandleDataQueryRequest(input, { ...dependencies, fetchImpl: withPersonalSession(dependencies.fetchImpl as typeof fetch) })
+}
+
 
 test("direct forwarder requires a real session and never sends a fabricated token", async () => {
   for (const sessionCookie of [undefined, "", "old-token"]) {
@@ -62,7 +81,7 @@ test("production fails closed when the session cookie is missing", async () => {
   const incoming = new Request("http://localhost/api/internal/data-query", {
     method: "POST",
     headers: { "content-type": "application/json", "x-ka-workspace-id": "browser-forged" },
-    body: JSON.stringify({ ...request, dataView: "ka_data" }),
+    body: JSON.stringify(request),
   })
   const response = await handleDataQueryRequest(incoming, {
     environment: { NODE_ENV: "production", KA_DATA_BACKEND_ORIGIN: "https://ka-data.internal.example", KA_DATA_SERVICE_TOKEN: SERVICE_TOKEN },
@@ -74,7 +93,7 @@ test("production fails closed when the session cookie is missing", async () => {
   assert.equal(response.body.ok ? "" : response.body.error.code, "UNAUTHORIZED")
 })
 
-test("session-cookie BFF ignores forged browser permission headers and forces platform", async () => {
+test("session-cookie BFF ignores forged browser permission headers and follows a personal Session", async () => {
   let upstreamHeaders = new Headers()
   const incoming = new Request("http://localhost/api/internal/data-query", {
     method: "POST",
@@ -86,7 +105,7 @@ test("session-cookie BFF ignores forged browser permission headers and forces pl
       "x-ka-user-id": "browser-user",
       "x-ka-account-scope": Buffer.from(JSON.stringify([{ media: "KUAISHOU", accountId: "browser-account" }])).toString("base64url"),
     },
-    body: JSON.stringify({ ...request, dataView: "ka_data" }),
+    body: JSON.stringify(request),
   })
   const response = await handleDataQueryRequest(incoming, {
     environment: {
@@ -97,7 +116,7 @@ test("session-cookie BFF ignores forged browser permission headers and forces pl
     requestId: () => "bff-browser-forgery",
     fetchImpl: async (_input, init) => {
       upstreamHeaders = new Headers(init?.headers)
-      assert.equal(JSON.parse(String(init?.body)).dataView, "platform")
+      assert.deepEqual(JSON.parse(String(init?.body)), request)
       return Response.json({
         ...backendUnknownLineageEnvelope,
         data: {
@@ -108,6 +127,7 @@ test("session-cookie BFF ignores forged browser permission headers and forces pl
             lineage: {
               ...backendUnknownLineageEnvelope.data.source.lineage,
               source: "canonical",
+              workspaceKind: "personal",
             },
           },
         },
@@ -182,7 +202,7 @@ test("BFF rejects an entire Platform batch when one row drifts from the strict s
       },
     },
   }
-  const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, {
+  const response = await forwardDataQuery({ queryId: "account.table", params: { date: "2026-08-24" } }, {
     environment: {},
     backendOrigin: "https://ka-data.internal.example",
     serviceToken: SERVICE_TOKEN,
@@ -207,7 +227,7 @@ test("BFF rejects a valid UUID row from a different workspace", async () => {
       },
     },
   }
-  const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, {
+  const response = await forwardDataQuery({ queryId: "account.table", params: { date: "2026-08-24" } }, {
     backendOrigin: "https://ka-data.internal.example",
     serviceToken: SERVICE_TOKEN,
     authContext,
@@ -225,7 +245,7 @@ test("BFF rejects same-workspace rows outside the approved media-account tuple",
     { ...canonicalTableRow, accountId: "outside-account" },
   ]) {
     const escapedEnvelope = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, rows: [row] } } }
-    const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, authContext, requestId: () => "bff-cross-tuple", fetchImpl: async () => Response.json(escapedEnvelope, { headers: { "x-request-id": "bff-cross-tuple" } }) })
+    const response = await forwardDataQuery({ queryId: "account.table", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, authContext, requestId: () => "bff-cross-tuple", fetchImpl: async () => Response.json(escapedEnvelope, { headers: { "x-request-id": "bff-cross-tuple" } }) })
     assert.equal(response.status, 502)
     assert.equal(response.body.ok ? "" : response.body.error.code, "UPSTREAM_INVALID_RESPONSE")
   }
@@ -233,14 +253,14 @@ test("BFF rejects same-workspace rows outside the approved media-account tuple",
 
 test("BFF rejects a response queryId that does not match the request", async () => {
   const mismatched = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, queryId: "account.detail", rowSchemaVersion: "account.detail/v2" } } }
-  const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, authContext, requestId: () => "bff-query-mismatch", fetchImpl: async () => Response.json(mismatched, { headers: { "x-request-id": "bff-query-mismatch" } }) })
+  const response = await forwardDataQuery({ queryId: "account.table", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, authContext, requestId: () => "bff-query-mismatch", fetchImpl: async () => Response.json(mismatched, { headers: { "x-request-id": "bff-query-mismatch" } }) })
   assert.equal(response.status, 502)
   assert.equal(response.body.ok ? "" : response.body.error.requestId, "bff-query-mismatch")
 })
 
 test("BFF rejects a rowSchemaVersion that drifts from the canonical query id", async () => {
   const mismatched = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, rowSchemaVersion: "account.table/v1" } } }
-  const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, authContext, requestId: () => "bff-version-mismatch", fetchImpl: async () => Response.json(mismatched, { headers: { "x-request-id": "bff-version-mismatch" } }) })
+  const response = await forwardDataQuery({ queryId: "account.table", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, authContext, requestId: () => "bff-version-mismatch", fetchImpl: async () => Response.json(mismatched, { headers: { "x-request-id": "bff-version-mismatch" } }) })
   assert.equal(response.status, 502)
   assert.equal(response.body.ok ? "" : response.body.error.requestId, "bff-version-mismatch")
 })

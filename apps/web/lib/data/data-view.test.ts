@@ -12,12 +12,13 @@ test("only the three frozen data views and complete UI states are accepted", () 
   assert.equal(readDataState("unknown"), "ready")
 })
 
-test("only the six backend query ids are canonical", () => {
-  for (const queryId of ["account.summary", "account.trend", "account.table", "account.anomalies", "account.detail", "reconcile.account_daily"] as const) {
-    assert.equal(dataQueryRequestSchema.parse({ queryId, dataView: queryId.startsWith("reconcile") ? "reconcile" : "platform", params: { date: "2026-08-24" } }).queryId, queryId)
+test("ordinary requests allow five frozen ids and exclude the admin diagnostic query", () => {
+  for (const queryId of ["account.summary", "account.trend", "account.table", "account.anomalies", "account.detail"] as const) {
+    assert.equal(dataQueryRequestSchema.parse({ queryId, params: { date: "2026-08-24" } }).queryId, queryId)
   }
-  for (const legacy of ["workbench", "analysis", "accountDetail", "findingDetail", "changeSetPreview"]) assert.equal(dataQueryRequestSchema.safeParse({ queryId: legacy, dataView: "platform", params: {} }).success, false)
-  assert.equal(dataQueryRequestSchema.safeParse({ queryId: "account.table", dataView: "platform", params: {}, sql: "select 1" }).success, false)
+  for (const legacy of ["workbench", "analysis", "accountDetail", "findingDetail", "changeSetPreview", "reconcile.account_daily"]) assert.equal(dataQueryRequestSchema.safeParse({ queryId: legacy, params: {} }).success, false)
+  assert.equal(dataQueryRequestSchema.safeParse({ queryId: "account.table", params: {}, sql: "select 1" }).success, false)
+  assert.equal(dataQueryRequestSchema.safeParse({ queryId: "account.table", dataView: "platform", params: {} }).success, false)
 })
 
 test("preserves compatible filters when switching data view", () => {

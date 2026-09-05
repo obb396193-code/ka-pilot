@@ -65,7 +65,10 @@ export const requestIdSchema = z.string().min(1).max(128).regex(/^[A-Za-z0-9][A-
 export const stableDataQueryErrorSchema = z.object({ code: stableDataQueryErrorCodeSchema, message: z.string().min(1), retryable: z.boolean(), requestId: requestIdSchema }).strict()
 export type StableDataQueryError = z.infer<typeof stableDataQueryErrorSchema>
 
-export const dataQueryRequestSchema = z.object({ queryId: dataQueryIdSchema, params: z.record(z.string(), z.unknown()), dataView: dataViewModeSchema }).strict()
+export const dataQueryRequestSchema = z.object({
+  queryId: dataQueryIdSchema.exclude(["reconcile.account_daily"]),
+  params: z.record(z.string(), z.unknown()),
+}).strict()
 export type CanonicalDataQueryRequest = z.infer<typeof dataQueryRequestSchema>
 
 export const sourceQueryResultSchema = z.object({
@@ -113,7 +116,8 @@ export const dataQueryResponseSchema = z.discriminatedUnion("ok", [
 ])
 export type DataQueryResponse = z.infer<typeof dataQueryResponseSchema>
 
-export type QueryRequest = CanonicalDataQueryRequest & { mockState?: import("./data-view.ts").DataState }
+// Local mock/display preference only. InternalApiDataClient never sends dataView.
+export type QueryRequest = { queryId: DataQueryId; params: Record<string, unknown>; dataView: import("./data-view.ts").DataViewMode; mockState?: import("./data-view.ts").DataState }
 
 const displayMetricSchema = z.object({ key: z.string(), label: z.string(), value: z.string(), delta: z.string().nullable(), tone: z.enum(["neutral", "positive", "warning", "critical"]) })
 export type DisplayMetric = z.infer<typeof displayMetricSchema>
