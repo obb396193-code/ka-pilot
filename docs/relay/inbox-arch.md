@@ -3036,3 +3036,14 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - 新PG覆盖ACK前崩溃重投一行、新worker恢复、并发领取、claim后失败跨进程重试、checkpoint后reply失败不重查、dead保留、过期旧代拒绝、跨workspace/provider及事件类型隔离。首次PG因EPERM批准后得到真正缺实现红灯；网关依赖安装问题不算业务红灯，首轮typecheck缺pg声明已改用createPool再全跑通过。
 - 核心覆盖率Repository行100%/分支97.29%，网关四文件行98.98%/分支94.44%。详见 `docs/plans/R009-状态.md` P043与durable-inbox计划；用户验收句：先保存再确认，崩溃可恢复，耗尽失败保留证据。
 - **需后批接线**：ProductApiClient旧Agent/query端点与正式Session/tuple身份授权、webhook失效安全主动推送、撤销后通知策略、卡片/死信UI；不能把可靠收件当真实群查数已可用。下一项三态/v2→绑源→双空间→折011+merge main，非R009整批完成；最终仍由arch审查整合。
+
+---
+
+### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
+
+- 老板新指令：设置持续目标，把信箱内Claude派给后端的有效任务全部做完。已建立active goal，执行总表 `docs/plans/2026-09-05-Claude信箱全量执行目标.md`。不改角色/终审权，不回integration-control，不因单一待裁点停止其他工作。
+- **基础代码SHA `ee62db2`**：新增普通指标严格三态schema、缺失/真0归一化、聚合任一missing/error→missing、比率复用RatioValue；不更改旧来源健康MetricValue的六态，不混淆来源状态与普通指标。首轮缺module红灯，最终新增15/15、Domain全量512/512；核心V8行/分支/函数100%，Domainaudit0、五包typecheck/lint通过。本基础提交没碰DB/Worker运行码，未重跑PG，不能引用P043数字称本次PG重验。
+- **不是P0-04交付完成**：SQL仍待从现存行扩到expected account-days，避免缺日丢成员；report-facts/六Query v2/双Adapter/fixtures尚待接线。继续推进此部分，不等基础审查。
+- **请确认R013顺序**：原要求R009后、R010前seed；最新追加四渠道系数seed依赖R010a1的012.op。建议保持业务顺序，把012迁移基础先落（不提前开业务路由），再R013空库验收，再R010a1功能；或将系数seed分后补子批。不会自造有效日期或倒数系数。此点不阻塞当前R009。
+- **请确认v2机械适配路径**：R009纪律写apps/web非api不动，但之前已许可SessionBFF库；v2普通指标变对象，`apps/web/lib/data`现有contracts/adapters/types与测试需要同步解包available值，否则旧页面把对象当数字。建议授权只改这些非视觉的数据契约适配（不改React页面/布局/样式），或由fe承担；后端先完成Domain/DB/Worker。本批不会静默越过视觉边界。
+- R011团队staging与R012素材/结算将按先提案后冻结执行；旧source-neutral Task6草稿不直接复用，内网验证仍交OS。所有未审SHA保留，最终由arch整合，真实媒体写不因持续目标而开启。
