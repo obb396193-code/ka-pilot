@@ -3041,6 +3041,13 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **收到main@f841da4中期审查；团队reader代码 `be93018`（2026-09-06）**：已按答3加入`KA_DATA_TEAM_WORKSPACE_ID`，只绑定一个team UUID；缺失/非法/错workspace在网络前503，不影响个人诊断explicit tuple路径。team不读取grants（测试故意塞非法grant仍不影响）；SQL scope显式判别，不把空个人grants转换为全量。只用sqlite、固定注册模板，team参数仅过滤合法media/account/date，workspace从受信execution注入，错media/account/date回包502。
+- 真SQLite覆盖team summary/trend/table/detail：源观测账户×日期LEFT JOIN，缺日不部分SUM；首次table返回整数ds触发严格拒绝，SQL显式CAST文本后通过。team模板版本后缀`-team-bound-v1`留lineage；共享源没有完整账户目录，所以不捏造requestedObjects，coverage unknown→partial=true/truncated=false，只有传输截断才把指标error。空源仍不宣称完整、trend不拿每日最大count当跨日union。来源无时间字段仍unknown。
+- **门禁** Domain518、Worker非PG699+2外部skip、Web111；Domain/Worker typecheck/lint通过；60核心测试行90.21%/分支84.36%，Worker offline production audit0。新6例先5红1绿，后13例通过；新代码不含运行期SQLite依赖（Node22 SQLite只用于test）、不新增第三方依赖、无前端改动。本轮未重跑DB/Gateway全量，不冒充五包最终门禁。
+- **真实PG01:37:28仍拒连**：已有session业务集成现分别跑KA false/true两种composition；true用真实KaDataClient+固定SQL在合成SQLite源，personal不触KA、team返回999与PG平台30不同、同号TENCENT9999不串入、旧token/logout仍不触源。当前beforeAll/afterAll `ECONNREFUSED 55432`，两业务case未执行，不能称PG/内网联调通过。待恢复后按你的P045要求五包全量。
+- **待确认的实际缺口**：Registry `account.anomalies`仍仅platform支持，KA数据无已确认异常字段/阈值，team这一个Query当前422 VIEW_UNSUPPORTED；未自造规则或fallback platform。建议团队工作台先将“异常卡不可用”与summary/trend展示解耦，正式异常由R010a2规则引擎提供；请arch冻结归属/语义。四个已具备KA模板已可由绑定reader执行，不把这一项算完成。
+- 下一步继续最终风险复核（Service二次行预算截断与v2状态一致性）→折011→merge main；PG恢复后最终双空间+五包；R013 bootstrap/012/coefficients按本次答1顺序，v3留R010a1，不做v2/v3双兼容。全信箱目标active，未push/合流/部署/媒体写。
+
 - **A-001 BFF 接线代码 `053f9ea`（2026-09-06 01:20）**：普通请求严格五Query/两字段，client不再发送dataView；BFF复用正式Session handler实时GET current（同cookie/internal bearer/requestId），仅由activeWorkspace.kind验mode、lineage.kind/source与账户workspace；不接受浏览器x-ka、role或entitlement。Session失败不查询，团队KA错误不回退，Session+query合用10秒预算；旧16MB/错误/QueryID/版本边界保留。无视觉改动。
 - 门禁：Web111/111、Domain518、Worker非PG686+2外部opt-in跳过；三包typecheck/lint通过，Next生产build通过。BFF+client核心行96.84%/分支82.76%、BFF自身98.71%/83.33%；Web offline audit0。新13项Session测试先10/10红后绿；原query边界测试的fetch显式增加Session成功步骤，确保16MB/错误依然打到data而不是只测auth。切空间/旧token回归是合成fetch，不冒充真实PG或内网登录。
 - **真实PG重新执行01:19:53仍ECONNREFUSED 55432**：business-read-session-pg.integration套件beforeAll/afterAll失败，唯一业务case未执行，pg_blocked。没有重启共享Docker。启用KA的团队reader与双空间真实HTTP仍待后续；不是R009整批完成，未push/合流/部署。
