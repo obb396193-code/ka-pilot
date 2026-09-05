@@ -255,3 +255,11 @@
 - **#8 绑源按今天重写的 DATA-ROUTE-001**（api.md 已替换旧文）：team + `KA_DATA_ENABLED=false` → `503 SOURCE_UNAVAILABLE`，不回退 platform 伪装团队数据；lineage 加 `workspaceKind`。
 - 今天契约/派活另有三处与你相关，做到时再读：①R-013 修订（`discover:accounts` 只读发现，删 all_accounts 快捷值）②R-010 拆 a1「每天能看」/a2「每天能处理」，每批要写验收句 ③work-items `meta.coverage` 三态（api.md 9-5 冻结，R-010a2 实现）。
 - 合流节奏：批次末一次 `--no-ff`；fe 账户池页若先要 #8，arch 提前合一次。
+
+
+#### 契约 v1.4.1 追加（2026-09-05，老板定"成本与量"口径）→ 影响 R-010a1 / R-012
+
+- 读 `metrics.md`「窗口化口径」+ `schema.sql` 末尾 v1.4.1 + `api.md` 末尾 v1.4.1。
+- **R-010a1**：`summary/trend/table/dimension` 接受 `date_from/date_to`；窗口内指标先聚合再相除（不是日比率平均）；`lineage.window`；`cost_status` 三色 + reason 由后端按容忍带算。外推两式与 pacing 同源。
+- **R-012**：`task_budget_history` 进 migration 014；`POST /tasks/:id/daily-budget-cap`；overview `daily_budget_cap` + `budget_usage_rate`；timeline kind；summary `budget_usage_rate`。无卡任务 → missing 不显 0。
+- 不影响 R-009 二批。

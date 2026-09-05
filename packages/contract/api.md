@@ -678,3 +678,14 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ### 错误码追加
 
 `NOT_IMPLEMENTED(501) | DIMENSION_UNSUPPORTED | CARD_HASH_MISMATCH | APPROVAL_REQUIRED | ACCOUNT_HAS_OPEN_ITEMS`
+
+
+## v1.4.1 追加（2026-09-05 arch；窗口化口径 + 日预算卡）
+
+- **语义查询窗口**：`summary/trend/table/dimension` 的 `params` 统一接受 `date_from/date_to`（`date` 单日 = 两者相等的糖）；Registry 冻结每个 queryId 的最长范围。窗口内指标按 `metrics.md`「窗口化口径」**先聚合再相除**，响应 `lineage` 加 `window:{from,to,preset?}`。前端不得用日值自己累加。（R-010a1）
+- **日预算卡**（任务级、版本化，`task_budget_history`）：
+  - `POST /api/v1/tasks/:id/daily-budget-cap` `{daily_budget_cap, effective_date, evidence_url?}` → `{task_id, old_cap, new_cap, effective_date}`；不触发重算（预算不影响历史指标），写 timeline。
+  - `GET /tasks/:id` overview 加 `daily_budget_cap:{current, effective_date, history_count}`（无卡 → null）与 `budget_usage_rate`（`RatioValue`，当日）。
+  - timeline `kind` 枚举加 `daily_budget_cap`。
+  - 工作台六 KPI 的 `summary` 加 `budget_usage_rate`（个人空间：本人任务加权；无卡任务不计）。（R-012）
+- **色标规则**（前端只按后端给的 `status` 上色，不自算）：`summary`/任务 overview 返回 `cost_status: "green"|"yellow"|"red"` + `cost_status_reason`（`"day_over_window_ok"` 等），按 metrics.md 容忍带规则由后端算；容忍百分比来自个人视图设置（默认 0）。

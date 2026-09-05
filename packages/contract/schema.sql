@@ -722,3 +722,19 @@ CREATE TABLE card_callbacks (
   idempotency_key TEXT NOT NULL UNIQUE, hash_verified BOOLEAN,
   result TEXT, result_ref TEXT, at TIMESTAMPTZ DEFAULT now()
 );
+
+
+-- =====================================================================
+-- v1.4.1 新增（2026-09-05 arch；老板口径：日预算卡任务级、会中途改；Codex R-012 并入 migration 014）
+-- =====================================================================
+CREATE TABLE task_budget_history (   -- 日预算卡版本化，写法与 assessment_price_history 完全对称
+  id BIGSERIAL PRIMARY KEY, workspace_id UUID NOT NULL,
+  task_id TEXT NOT NULL,
+  FOREIGN KEY (workspace_id, task_id) REFERENCES tasks(workspace_id, task_id),
+  daily_budget_cap NUMERIC NOT NULL,   -- 元/日；任务级；无卡的任务不落行（使用率显 missing）
+  effective_date DATE NOT NULL,
+  changed_by UUID, evidence_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (workspace_id, task_id, effective_date)
+);
+-- tasks.budget 仍是任务期总预算，二者并存：日预算卡管"今天最多花多少"，总预算管"整期最多花多少"

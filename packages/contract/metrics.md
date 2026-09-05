@@ -59,9 +59,26 @@ BI转化率            = real_conversion / aac_ptt_uv
 断量倒计时           = balance / velocity（小时）
 ```
 
-## 待定：窗口化口径（2026-09-05 老板口径，公式未冻）
+## 窗口化口径（2026-09-05 老板定：结算按月、消耗按天、看什么窗口由日期组件选）
 
-上表 `on_target`/`cost_space` 未标时间窗口（隐含按日）。老板 9-5 口径：考核按月结算、成本线内尽量跑量、部分任务有日预算卡。定稿前**不改上表**；候选公式、待老板定的 4 问见 `docs/decisions/2026-09-05-成本与量的动态口径-待定.md`。实现方不得自行给 `cost_space` 加窗口。
+**窗口 W = 查询的日期范围 `[date_from, date_to]`**（页面上的日期组件），不是固定的"月"。预设：今天 / 昨天 / 近 7 天 / 本月至今 / 上月 / 任务期 / 自定义。默认：工作台=今天；结算视角=本月至今。
+
+**先聚合再相除**（不是日比率求平均）：
+```
+real_cpa(W)     = Σ_W cost / Σ_W real_conversion
+on_target(W)    = real_cpa(W) <= assessment_price            （考核价按生效版本逐日取，价改期内各日各用各的）
+cost_space(W)   = Σ_W assessment_price(d) × real_conversion(d) − Σ_W cash_cost(d)   （>0 = 窗口内还没超线的钱）
+achievement(W)  = Σ_W real_conversion / target_volume（任务）
+budget_usage(d) = 当日任务消耗 / 当日生效 daily_budget_cap    （无卡 → availability=missing，不显 0）
+```
+外推类（与 pacing 同源，7 日均速剔零量日；R-010a1 实现）：
+```
+窗口末外推 CPA        = (Σ_W cost + 日均消耗 × 剩余天) / (Σ_W real_conv + 日均转化 × 剩余天)
+剩余天可承受日 CPA    = (assessment_price × (Σ_W real_conv + 日均转化 × 剩余天) − Σ_W cost) / (日均转化 × 剩余天)
+```
+两个"消耗"不是打架：`real_cpa/on_target` 用账面 `cost`（考核对的是账面真实 CPA）；`cost_space` 用 `cash_cost`（赔付概念，扣返点后的真钱）。
+
+**容忍带（老板：今天超一点明天拉回来是常态）**：颜色按**窗口累计**判，不按单日——单日超线但 W 累计仍达标 → 黄「单日超线，累计仍达标」；W 累计超 → 红；都在线内 → 绿。容忍百分比在个人视图可设，默认 0。产品只算只标色，**不判该关该开**。
 
 ## 缺数三态（P0-04 裁决，老板 2026-09-04：缺数不写 0，显 "−"）
 
