@@ -35,6 +35,12 @@ async function main(): Promise<void> {
       ? createKaDataClientFromEnv(process.env)
       : new DisabledKaDataSource(),
     platform: new PlatformDataSource(new SemanticQueryRepository(pool)),
+    sourcePolicy: {
+      diagnosticEnabled: config.dataDiagnosticEnabled,
+      kaDataEnabled: config.kaDataEnabled,
+      entitlements: config.dataDiagnosticEntitlements,
+    },
+    audit: (event) => { process.stdout.write(`${JSON.stringify(event)}\n`); },
   });
   const server = createDataApiServer({
     service,
@@ -60,11 +66,6 @@ async function main(): Promise<void> {
       { ttlSeconds: config.sessionTtlSeconds },
     ),
     sessionAuthService,
-    dataQueryAccess: {
-      diagnosticEnabled: config.dataDiagnosticEnabled,
-      kaDataEnabled: config.kaDataEnabled,
-      entitlements: config.dataDiagnosticEntitlements,
-    },
     internalToken: config.internalToken,
     maxRequestBytes: config.maxRequestBytes,
     maxResponseBytes: config.maxResponseBytes,

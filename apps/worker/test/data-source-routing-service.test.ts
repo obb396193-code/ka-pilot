@@ -1,0 +1,51 @@
+import { describe, expect, it, vi } from "vitest";
+import { DataQueryService } from "../src/data/query-service.js";
+import { createDataQueryRegistry } from "../src/data/query-registry.js";
+import type { ResolvedDataQuery } from "../src/data/query-registry.js";
+import { readySource, canonicalRow } from "./canonical-query-fixtures.js";
+import { personalAuth, teamAuth } from "./business-auth-fixtures.js";
+
+const ids = { workspaceId: "00000000-0000-4000-8000-000000000024", userId: "00000000-0000-4000-8000-000000000001" };
+const personal = personalAuth({ ...ids, accounts: [{ media: "KUAISHOU", accountId: "a" }] });
+const team = teamAuth(ids);
+const request = { queryId: "account.summary", params: { date: "2026-09-05" } };
+function setup(kaDataEnabled = true, diagnosticEnabled = false) {
+  const kaData = { query: vi.fn(async (resolved: ResolvedDataQuery) => readySource(resolved.queryId, "ka_data", [canonicalRow(resolved.queryId, 10, ids.workspaceId, "a")])) };
+  const platform = { query: vi.fn(async (resolved: ResolvedDataQuery) => readySource(resolved.queryId, "canonical", [canonicalRow(resolved.queryId, 11, ids.workspaceId, "a")])) };
+  const audit = vi.fn();
+  const service = new DataQueryService({ registry: createDataQueryRegistry(), kaData, platform, sourcePolicy: { kaDataEnabled, diagnosticEnabled, entitlements: [ids] }, audit });
+  return { service, kaData, platform, audit };
+}
+describe("workspace source policy wired into DataQueryService", () => {
+  it("selects sources from approved workspace kind and logs only bounded route facts", async () => {
+    const { service, kaData, platform, audit } = setup();
+    expect(await service.execute(request, personal, "route-personal-1")).toMatchObject({ ok: true, data: { mode: "platform" } });
+    expect(kaData.query).not.toHaveBeenCalled();
+    expect(await service.execute(request, team, "route-team-1")).toMatchObject({ ok: true, data: { mode: "ka_data" } });
+    expect(platform.query).toHaveBeenCalledTimes(1);
+    expect(audit.mock.calls).toEqual([
+      [{ selectedSource: "platform", reason: "personal_workspace", requestId: "route-personal-1" }],
+      [{ selectedSource: "ka_data", reason: "team_workspace", requestId: "route-team-1" }],
+    ]);
+  });
+  it("never lets a browser choose a source or reach reconcile via the normal method", async () => {
+    const { service, kaData, platform } = setup(true, true);
+    expect(await service.execute({ ...request, dataView: "platform" }, personal)).toMatchObject({ ok: false, error: { code: "INVALID_REQUEST" } });
+    expect(await service.execute({ ...request, queryId: "reconcile.account_daily" }, personal)).toMatchObject({ ok: false, error: { code: "QUERY_NOT_ALLOWED" } });
+    expect(kaData.query).not.toHaveBeenCalled(); expect(platform.query).not.toHaveBeenCalled();
+  });
+  it("uses the independent diagnostic method and requires entitlement before either adapter", async () => {
+    const denied = setup();
+    const input = { ...request, queryId: "reconcile.account_daily" };
+    expect(await denied.service.executeReconcile(input, personal)).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+    expect(denied.kaData.query).not.toHaveBeenCalled(); expect(denied.platform.query).not.toHaveBeenCalled();
+    const allowed = setup(true, true);
+    expect(await allowed.service.executeReconcile(input, personal)).toMatchObject({ ok: true, data: { mode: "reconcile" } });
+  });
+  it("keeps personal usable but fails team closed when KA is disabled", async () => {
+    const { service, kaData } = setup(false);
+    expect(await service.execute(request, team)).toMatchObject({ ok: false, error: { code: "SOURCE_UNAVAILABLE" } });
+    expect(await service.execute(request, personal)).toMatchObject({ ok: true, data: { mode: "platform" } });
+    expect(kaData.query).not.toHaveBeenCalled();
+  });
+});

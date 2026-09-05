@@ -21,6 +21,7 @@ import type { AccountListService } from "../accounts/account-list-service.js";
 import {
   createDataQueryHttpHandler,
   DATA_QUERY_HTTP_PATH,
+  ADMIN_RECONCILE_HTTP_PATH,
   type DataQueryService,
 } from "./query-service.js";
 import { REQUEST_ID_HEADER, resolveRequestId } from "./request-id.js";
@@ -73,14 +74,9 @@ export interface DataApiServerOptions {
   maxResponseBytes?: number;
   sessionHttpService?: SessionHttpService;
   sessionAuthService?: SessionAuthService;
-  dataQueryAccess?: DataQueryAccessPolicy;
 }
 
-export interface DataQueryAccessPolicy {
-  diagnosticEnabled: boolean;
-  kaDataEnabled: boolean;
-  entitlements: readonly { workspaceId: string; userId: string }[];
-}
+export type { ServerDataSourcePolicy as DataQueryAccessPolicy } from "./data-source-routing.js";
 
 type DetailRoute = { kind: "work_item" | "changeset"; id: string };
 
@@ -173,46 +169,6 @@ function errorBody(
     ok: false,
     error: { code, message, retryable: false, requestId },
   });
-}
-
-type DataQueryPolicyDecision =
-  | { status: "allowed"; body: unknown }
-  | { status: "rejected"; body: DataQueryResponse };
-
-function requestedDataView(body: unknown): "ka_data" | "platform" | "reconcile" | null {
-  if (typeof body !== "object" || body === null || Array.isArray(body)) return null;
-  const value = (body as Record<string, unknown>).dataView;
-  return value === "ka_data" || value === "platform" || value === "reconcile" ? value : null;
-}
-
-function applyDataQueryAccessPolicy(
-  body: unknown,
-  auth: ApprovedWorkspaceAuthContext,
-  policy: DataQueryAccessPolicy | undefined,
-  requestId: string,
-): DataQueryPolicyDecision {
-  const view = requestedDataView(body);
-  if (view === null) return { status: "allowed", body };
-  const entitled = policy?.diagnosticEnabled === true && policy.entitlements.some(
-    (entry) => entry.workspaceId === auth.workspaceId && entry.userId === auth.userId,
-  );
-  if (!entitled) {
-    return {
-      status: "allowed",
-      body: { ...(body as Record<string, unknown>), dataView: "platform" },
-    };
-  }
-  if ((view === "ka_data" || view === "reconcile") && policy?.kaDataEnabled !== true) {
-    return {
-      status: "rejected",
-      body: errorBody(
-        "VIEW_UNSUPPORTED",
-        "KA Data diagnostic views are disabled by server configuration",
-        requestId,
-      ),
-    };
-  }
-  return { status: "allowed", body };
 }
 
 function detailErrorBody(
@@ -323,6 +279,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
     DEFAULT_DATA_API_MAX_RESPONSE_BYTES,
   );
   const handler = createDataQueryHttpHandler(options.service);
+  const reconcileHandler = createDataQueryHttpHandler(options.service, "admin_reconcile");
 
   return createServer(async (request, response) => {
     const requestId = resolveRequestId(header(request, REQUEST_ID_HEADER));
@@ -414,6 +371,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       const isWorkItemListRoute = url.pathname === WORK_ITEM_LIST_HTTP_PATH;
       if (
         url.pathname !== DATA_QUERY_HTTP_PATH &&
+        url.pathname !== ADMIN_RECONCILE_HTTP_PATH &&
         resolvedDetailRoute === null &&
         !isTaskListRoute &&
         !isAccountListRoute &&
@@ -611,20 +569,12 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         sendJson(response, result.status, result.body, requestId);
         return;
       }
+      if ([...url.searchParams].length > 0) throw new HttpInputError(400, "INVALID_REQUEST");
       const body = await readJson(request, maxRequestBytes);
-      const policyDecision = applyDataQueryAccessPolicy(
-        body,
-        authentication.auth,
-        options.dataQueryAccess,
-        requestId,
-      );
-      if (policyDecision.status === "rejected") {
-        sendJson(response, 422, policyDecision.body, requestId);
-        return;
-      }
-      const result = await handler({
+      const queryHandler = url.pathname === ADMIN_RECONCILE_HTTP_PATH ? reconcileHandler : handler;
+      const result = await queryHandler({
         method: request.method ?? "",
-        body: policyDecision.body,
+        body,
         auth: authentication.auth,
         requestId,
       });

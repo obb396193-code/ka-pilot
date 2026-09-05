@@ -2,9 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import {
   approvedWorkspaceAuthContextSchema,
-  dataQueryRequestSchema,
   dataQueryResponseSchema,
-  dataQueryIdSchema,
   sourceQueryResultSchema,
   type DataQueryResponse,
   type SourceAuthority,
@@ -27,8 +25,10 @@ import {
 } from "./query-registry.js";
 import { resolveRequestId } from "./request-id.js";
 import { PlatformDataSourceError } from "./platform-data-source.js";
+import { DataSourceRoutingError, selectDataSourceRoute, type ServerDataSourcePolicy, type SelectedDataSourceRoute } from "./data-source-routing.js";
 
 export const DATA_QUERY_HTTP_PATH = "/api/v1/data/query";
+export const ADMIN_RECONCILE_HTTP_PATH = "/api/v1/admin/data/reconcile";
 
 export interface DataSourceQueryPort {
   query(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope): Promise<SourceQueryResult>;
@@ -39,6 +39,8 @@ export interface DataQueryServiceDependencies {
   kaData: DataSourceQueryPort;
   platform: DataSourceQueryPort;
   requestId?: () => string;
+  sourcePolicy?: ServerDataSourcePolicy;
+  audit?: (event: Pick<SelectedDataSourceRoute, "selectedSource" | "reason"> & { requestId: string }) => void;
 }
 
 class OutputScopeError extends Error {
@@ -102,6 +104,9 @@ function stableError(
 }
 
 function mapError(error: unknown, requestId: string): StableDataQueryError {
+  if (error instanceof DataSourceRoutingError) {
+    return stableError(error.code, error.message, error.retryable, requestId);
+  }
   if (error instanceof QueryRegistryError) {
     return stableError(error.code, error.message, false, requestId);
   }
@@ -331,25 +336,29 @@ export class DataQueryService {
     auth: unknown,
     correlationId?: string,
   ): Promise<DataQueryResponse> {
+    return this.executeRoute("ordinary", requestInput, auth, correlationId);
+  }
+
+  async executeReconcile(requestInput: unknown, auth: unknown, correlationId?: string): Promise<DataQueryResponse> {
+    return this.executeRoute("admin_reconcile", requestInput, auth, correlationId);
+  }
+
+  private async executeRoute(
+    endpoint: "ordinary" | "admin_reconcile",
+    requestInput: unknown,
+    auth: unknown,
+    correlationId?: string,
+  ): Promise<DataQueryResponse> {
     const requestId = resolveRequestId(correlationId ?? null, this.requestId);
     try {
+      const route = selectDataSourceRoute(endpoint, requestInput, auth, this.dependencies.sourcePolicy);
       validateAuth(auth);
-      const request = dataQueryRequestSchema.safeParse(requestInput);
-      if (!request.success) {
-        const rawQueryId = typeof requestInput === "object" && requestInput !== null &&
-          "queryId" in requestInput ? requestInput.queryId : undefined;
-        const code = typeof rawQueryId === "string" && !dataQueryIdSchema.safeParse(rawQueryId).success
-          ? "QUERY_NOT_ALLOWED"
-          : "INVALID_REQUEST";
-        return dataQueryResponseSchema.parse({
-          ok: false,
-          error: stableError(code, "Invalid data query request", false, requestId),
-        });
-      }
+      this.dependencies.audit?.({ selectedSource: route.selectedSource, reason: route.reason, requestId });
+      const request = route.request;
       const resolved = this.dependencies.registry.resolve(
-        request.data.queryId,
-        request.data.params,
-        request.data.dataView,
+        request.queryId,
+        request.params,
+        route.selectedSource,
       );
       let scope: DataQueryExecutionScope;
       try {
@@ -364,16 +373,17 @@ export class DataQueryService {
         throw error;
       }
 
-      if (request.data.dataView === "ka_data") {
+      if (route.selectedSource === "ka_data") {
         const source = withFrozenAuthority(
           guardSourceOutput(await this.dependencies.kaData.query(resolved, scope), resolved, scope),
           resolved,
           "ka_data",
           requestId,
         );
+        if (source.status === "unavailable") throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Team data source is unavailable");
         return dataQueryResponseSchema.parse({ ok: true, data: { mode: "ka_data", source } });
       }
-      if (request.data.dataView === "platform") {
+      if (route.selectedSource === "platform") {
         const source = withFrozenAuthority(
           guardSourceOutput(await this.dependencies.platform.query(resolved, scope), resolved, scope),
           resolved,
@@ -462,7 +472,7 @@ function errorStatus(code: StableDataQueryErrorCode): number {
   return 400;
 }
 
-export function createDataQueryHttpHandler(service: DataQueryService) {
+export function createDataQueryHttpHandler(service: DataQueryService, endpoint: "ordinary" | "admin_reconcile" = "ordinary") {
   return async (request: DataQueryHttpRequest): Promise<DataQueryHttpResponse> => {
     const requestId = resolveRequestId(request.requestId ?? null);
     if (request.method.toUpperCase() !== "POST") {
@@ -483,7 +493,9 @@ export function createDataQueryHttpHandler(service: DataQueryService) {
         }),
       };
     }
-    const body = await service.execute(request.body, request.auth, requestId);
+    const body = endpoint === "admin_reconcile"
+      ? await service.executeReconcile(request.body, request.auth, requestId)
+      : await service.execute(request.body, request.auth, requestId);
     return { status: body.ok ? 200 : errorStatus(body.error.code), body };
   };
 }

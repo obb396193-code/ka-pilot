@@ -67,13 +67,15 @@ describe("dual data query contract", () => {
     expect(() => dataViewModeSchema.parse("merged")).toThrow();
   });
 
-  it("accepts only queryId, params and dataView at the public request boundary", () => {
+  it("accepts only queryId and params at the ordinary request boundary", () => {
     const valid = {
       queryId: "account.summary",
       params: { date: "2026-08-24" },
-      dataView: "ka_data",
     };
     expect(dataQueryRequestSchema.parse(valid)).toEqual(valid);
+    expect(() => dataQueryRequestSchema.parse({ ...valid, dataView: "platform" })).toThrow();
+    expect(() => dataQueryRequestSchema.parse({ ...valid, data_view: "ka_data" })).toThrow();
+    expect(() => dataQueryRequestSchema.parse({ ...valid, queryId: "reconcile.account_daily" })).toThrow();
     expect(() => dataQueryRequestSchema.parse({ ...valid, sql: "select 1" })).toThrow();
     expect(() => dataQueryRequestSchema.parse({ ...valid, workspaceId: "forged" })).toThrow();
     expect(() => dataQueryRequestSchema.parse({ ...valid, accountId: "forged" })).toThrow();

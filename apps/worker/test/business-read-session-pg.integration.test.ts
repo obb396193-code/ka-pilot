@@ -407,7 +407,6 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
       body: JSON.stringify({
         queryId: "account.table",
         params: { date: "2026-09-04" },
-        dataView: "ka_data",
       }),
     });
     expect(personalData.status).toBe(200);
@@ -512,24 +511,14 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
       body: JSON.stringify({
         queryId: "account.table",
         params: { date: "2026-09-04", media: "KUAISHOU" },
-        dataView: "reconcile",
       }),
     });
-    expect(teamData.status).toBe(200);
-    const teamDataBody = await teamData.json() as {
-      data: {
-        mode: string;
-        source: { rows: Array<{ workspaceId: string; media: string; accountId: string }> };
-      };
-    };
-    expect(teamDataBody.data.mode).toBe("platform");
-    expect(teamDataBody.data.source.rows).toHaveLength(2);
-    expect(teamDataBody.data.source.rows.every((row) =>
-      row.workspaceId === teamWorkspaceId && row.media === "KUAISHOU")).toBe(true);
-    expect(teamDataBody.data.source.rows.map((row) => row.accountId).sort()).toEqual([
-      "team-one",
-      "team-two",
-    ]);
+    expect(teamData.status).toBe(503);
+    expect(await teamData.json()).toMatchObject({
+      ok: false, error: { code: "SOURCE_UNAVAILABLE" },
+    });
+    // This composition has KA disabled: a team session cannot use personal canonical
+    // as fallback. Enabled team-reader integration is a separate R-009 scenario.
 
     const loggedOut = await fetch(`${baseUrl}${AUTH_SESSION_HTTP_PATH}`, {
       method: "DELETE",
@@ -541,7 +530,6 @@ describe("Task5 session-backed business reads with PostgreSQL", () => {
       { path: "/api/v1/data/query", method: "POST", body: JSON.stringify({
         queryId: "account.table",
         params: { date: "2026-09-04" },
-        dataView: "platform",
       }) },
       { path: "/api/v1/tasks", method: "GET" },
       { path: "/api/v1/accounts", method: "GET" },

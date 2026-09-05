@@ -204,13 +204,7 @@ export const adminReconcileRequestSchema = z.object({
 export type OrdinaryDataQueryRequest = z.infer<typeof ordinaryDataQueryRequestSchema>;
 export type AdminReconcileRequest = z.infer<typeof adminReconcileRequestSchema>;
 
-export const dataQueryRequestSchema = z
-  .object({
-    queryId: dataQueryIdSchema,
-    params: z.record(z.string(), z.unknown()),
-    dataView: dataViewModeSchema,
-  })
-  .strict();
+export const dataQueryRequestSchema = ordinaryDataQueryRequestSchema;
 export type DataQueryRequest = z.infer<typeof dataQueryRequestSchema>;
 
 export const sourceQueryResultSchema = z

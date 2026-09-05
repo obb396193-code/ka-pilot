@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { DisabledKaDataSource } from "../src/data/disabled-ka-data-source.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
 import { DataQueryService } from "../src/data/query-service.js";
-import { personalAuth } from "./business-auth-fixtures.js";
+import { teamAuth } from "./business-auth-fixtures.js";
 
 describe("DisabledKaDataSource", () => {
   it("reports an explicit unavailable source without fabricating data", async () => {
@@ -24,16 +24,14 @@ describe("DisabledKaDataSource", () => {
     await expect(service.execute({
       queryId: "account.summary",
       params: { date: "2026-09-04" },
-      dataView: "ka_data",
-    }, personalAuth({
+    }, teamAuth({
       workspaceId: "00000000-0000-4000-8000-000000000904",
       userId: "00000000-0000-4000-8000-000000000905",
-      accounts: [],
     }))).resolves.toEqual({
       ok: false,
       error: {
         code: "SOURCE_UNAVAILABLE",
-        message: "KA Data is disabled by server configuration",
+        message: "Team data source is not configured",
         retryable: false,
         requestId: "ka-disabled-001",
       },
