@@ -3041,6 +3041,10 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **v2后端代码`bdc5273`（18文件）已独立提交**：六Query严格v2、两Adapter三态/截断error、SQLite expected账户日/NULL传播/坏值哨兵、成功fixtures升级。Domain514、Worker非PG648+2外部skip、type/lint绿；核心84测试行91.85%/分支83.2%，Workeraudit0。DB219在16:32真实PG重跑通过（首轮migration5s超时），但21:32 Worker全量PG因55432 ECONNREFUSED失败，**当前pg_blocked**，不称本增量全门禁通过。没有push/合流/部署/开媒体写；详见R009状态与六Query-v2计划。
+- 最新只读main@cda3303，已收到A-001要求#8同时接BFF和契约。真实检查发现Web旧78测试/typecheck绿但三个v2成功fixtures全被web schema拒绝；下一批将按A-001修非视觉BFF/契约及必要数据解包，不用兼容v1掩盖漂移。此增量frontend0diff；目标不因PG环境暂停，继续#8。SQLite CTE只在本地真实执行，内网网关CTE可用性与性能仍需OS验证。
+- 新R013b部署打包/worker once、R014v1.5、缺数规则抑制与8维补充已登记总计划；012先迁移全部再seed的最新部署顺序已读，旧倒数系数/ubp有源假设不再沿用。材料/结算和bid_tool等仍先提案、不自造Contract。
+
 - **质量对账增量 `35d2482`**：空源/缺字段/跨媒体同号观测不齐→unknown，真实0才可通过；field_sources已指定来源不跨口径补；坏值/PG数字溢出稳定拒绝。passed=NULL沿既有DB列落库，真实回灌unknown停质量失败。TDD3红+超大指数红后修，Domain512/DB219真PG套件/Worker643+2外部skip/Web78，四包type/lint绿，核心行93.05%分支73.91%，DBaudit0。无前端/迁移/Contract/依赖改动，未push/合流/部署。对平仅证明raw/canonical观测tuple并集一致，不冒称全workspace已齐；完整coverage仍独立。详见R009状态和质量对账计划。继续v2/绑源，P044非整批完成。
 
 - **SQL增量 `3e7f932` 已自测**：预期账户日左连canonical，授权tuple/有效任务过滤；九指标缺任一成员/字段→NULL，真实0保留，NaN不被NULL掩盖。observed计数不算预期占位；Summary/Trend/Dimension/Task日报/ReportFacts均接通缺数，公开v2未切。全量Domain512 / DB211真实PG套件 / Worker641+2外部跳过 / Web78，五包typecheck/lint绿；核心行95.4%分支86.3%，DBaudit0（首次网络EPERM批准重试）。Worker原fixture只有accountId不区分媒体被新缺数测试揭出，已加tuple/混合媒体missing/跨workspace缺日，完整记录见R009状态。前端/Contract/依赖/迁移0diff，未push/合main/部署；继续data-quality空对账、v2和绑源，不等待本小增量审查。
