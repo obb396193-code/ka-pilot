@@ -46,8 +46,8 @@ ctr                = click / exposure                      （分母0→null）
 cvr                = conversion / click
 账面CPA real_cpa    = cost / real_conversion                （分母0且cost>0→显示∞标记；**只展示，不用于考核**）
 达标 on_target      = cash_cpa <= assessment_price(生效版本)  （**考核价是现金口径**：BI 后端、扣返点后真钱——老板 2026-09-05 纠正）
-现金消耗 cash_cost   = (账面消耗 − compensation) / channel_coefficient
-                      channel_coefficient=渠道返点折算系数，channel_coefficients 表版本化，绝不硬编码
+现金消耗 cash_cost   = (账面消耗 − compensation) ⊕ coefficient       ⊕ = channel_coefficients.op（multiply|divide），系数与方向按资料原样存
+                      首批：KUAISHOU ×0.7812 ｜ TENCENT ÷1.045 ｜ TOUTIAO ÷1.09 ｜ BAIDU ÷1.51（ka-src-0010 / ka-src-0003 §3.1）；按渠道+生效日期版本化，绝不硬编码
 现金成本 cash_cpa    = cash_cost / bi_volume(=real_conversion)
 成本空间 cost_space  = assessment_price × real_conversion − cash_cost
 GAP                = conversion / real_conversion − 1
@@ -77,7 +77,7 @@ budget_usage(d) = 当日任务消耗 / 当日生效 daily_budget_cap    （无�
 窗口末外推 CPA        = (Σ_W cash_cost + 日均现金消耗 × 剩余天) / (Σ_W real_conv + 日均转化 × 剩余天)
 剩余天可承受日 CPA    = (assessment_price × (Σ_W real_conv + 日均转化 × 剩余天) − Σ_W cash_cost) / (日均转化 × 剩余天)
 ```
-**考核口径全部是现金**（老板 2026-09-05：考核价、达标、成本空间都是 BI 后端扣返点后的真钱）：`on_target/cost_space/cost_status/外推` 一律用 `cash_cost`；账面 `cost` 只做展示（账面消耗、账面 CPA 两张卡并排放，让优化师看得到差）。当前快手折算：**现金 ≈ 账面 × 0.7812（= ÷1.28）**，作为 `channel_coefficients` 首行 seed（渠道/生效日期版本化，绝不硬编码；表里存的方向以 domain `cash_cost` 函数为准）。
+**考核口径全部是现金**（老板 2026-09-05：考核价、达标、成本空间都是 BI 后端扣返点后的真钱）：`on_target/cost_space/cost_status/外推` 一律用 `cash_cost`；账面 `cost` 只做展示（账面消耗、账面 CPA 两张卡并排放，让优化师看得到差）。折算系数四渠道见上表，`op` 列记乘/除，domain 按 `op` 施加，不存倒数。资料另注：BAIDU/TENCENT 赔付≈消耗 → 现金贡献≈0。
 
 **容忍带（老板：今天超一点明天拉回来是常态）**：颜色按**窗口累计**判，不按单日——单日超线但 W 累计仍达标 → 黄「单日超线，累计仍达标」；W 累计超 → 红；都在线内 → 绿。容忍百分比在个人视图可设，默认 0。产品只算只标色，**不判该关该开**。
 

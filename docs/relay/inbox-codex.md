@@ -265,3 +265,4 @@
 - 不影响 R-009 二批。
 
 - **口径纠正（2026-09-05 晚，老板）**：考核价/达标/成本空间全是**现金口径**（BI、扣返点后真钱）；`on_target` 改用 `cash_cpa`，账面 `real_cpa` 只展示（metrics.md 已改）。**R-013 seed 加 `channel_coefficients`**：首行快手 现金≈账面×0.7812（÷1.28），方向按 domain `cash_cost` 现有实现存值；老板确认后填生效日期。R-010a1 的 summary 同时返回账面/现金两组。
+- **更正上一条**：折算系数不存倒数。契约 v1.4.1 补 `channel_coefficients.op ('multiply'|'divide')`（schema.sql 末尾）；**R-010a1 的 migration 012 加这一列**，domain `cash_cost` 按 `op` 施加（现在写死 `/`，改成按 op）；**R-013 seed 的 channel_coefficients 四行**（KUAISHOU ×0.7812 / TENCENT ÷1.045 / TOUTIAO ÷1.09 / BAIDU ÷1.51）依赖 012，部署顺序 migrate 全部 → seed 即可。

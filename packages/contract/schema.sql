@@ -738,3 +738,9 @@ CREATE TABLE task_budget_history (   -- 日预算卡版本化，写法与 assess
   UNIQUE (workspace_id, task_id, effective_date)
 );
 -- tasks.budget 仍是任务期总预算，二者并存：日预算卡管"今天最多花多少"，总预算管"整期最多花多少"
+
+-- v1.4.1 补（2026-09-05 晚）：返点折算按资料原样存"乘/除 + 系数"，不让人记倒数。进 migration 012（R-010a1），seed 由 R-013 在 012 之后写
+ALTER TABLE channel_coefficients ADD COLUMN op TEXT NOT NULL DEFAULT 'divide' CHECK (op IN ('multiply','divide'));
+-- cash_cost = (账面消耗 − 赔付) op coefficient。首批四行（来源 ka-src-0010 ka-data cash_formulas + ka-src-0003 §3.1）：
+--   KUAISHOU multiply 0.7812 ｜ TENCENT divide 1.045 ｜ TOUTIAO divide 1.09 ｜ BAIDU divide 1.51
+-- 备注：BAIDU/TENCENT 赔付≈消耗 → 现金贡献≈0（资料原话）；生效日期由老板给
