@@ -798,3 +798,65 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 派活：以上 → **R-014**（migration 015 + HTTP + BFF），排 R-012 后；fixtures 由 arch 随 R-014 开工前补。
 
 - **缺数期规则抑制（12.8，2026-09-05）**：语义在 `metrics.md`「缺数期规则抑制」；`POST /api/v1/rules/:id/explain` 响应 `leaves[].availability` + `not_triggered_reason ∈ CONDITION_FALSE | METRIC_MISSING | SOURCE_STALE | COLD_START_RELAXED | INITIAL_FULL_PENDING | MUTED | DEDUPED`；`GET /work-items` 的 `meta.coverage.pending/undeterminable` 由本规则产生；规则表加 `availability_policy/data_freshness_max_hours`。
+
+
+## v1.5.1 端点与 DTO（2026-09-05 深夜 arch；全量偏差审计 A①-⑤，老板拍板；R-014 一并实现）
+
+### ① 账户池（原型 P09；老板 9-5"看全量户各在哪个阶段、哪些没用、按产品、哪些备用"）
+- `GET /api/v1/accounts` 筛选加 `poolStatus`（多值）、`product`、`groupBy=none|lifecycle|product|owner|task`；响应 item 加 `poolStatus, poolStatusSource, product:{name,ref}|null, balance 加 cutoff:{hours:MV,state}`、`dailyBudgetCap`（当前任务卡）、`capacityLoad`（RatioValue，=当日消耗/日预算卡）、`lastAction:{at,kind,summary}|null`、`nextSuggestion:{workItemId,title}|null`（来自 open 工作项，无则 null，**不生成假建议**）。
+- `GET /api/v1/accounts/pipeline?media=` → `{stages:[{poolStatus, count, deltaVsYesterday:MV}] /*九态固定顺序*/, asOf}`；点卡即 `poolStatus=` 筛选。
+- `PATCH /api/v1/accounts/:media/:id/pool-status` `{pool_status, note}` → 人工覆盖（`pool_status_source=manual`，写 timeline kind `pool_status`）；`DELETE` 同路径清除覆盖回系统推导。
+- `PATCH /api/v1/accounts/:media/:id/product` `{product_name, product_ref?}`。
+- **批量 → 变更集组**：`POST /api/v1/changesets/batch` `{accounts:[{media,account_id}], items:[{target_type,field,to_value}] /*对每户同样的改动*/ | per_account:[{media,account_id,items:[...]}], reason_code, title?}` → `{group_id, changesets:[{changeset_id, media, account_id, status}], skipped:[{media,account_id,reason}]}`；`POST /changesets/groups/:id/dry-run|confirm` 按组逐条调用单账户链，响应汇总 `{results:[{changeset_id,status,conflicts?}]}`；组状态 done=全部终态。执行仍逐账户，三键与单执行者不变。
+- 主按钮「新建账户」= `POST /accounts/open-flow`（v1.4，开户向导，写 `pool_status=pending_open`）；「导入认领」= `POST /accounts/import`（v1.4）。
+- 官方工作流模板清单加 **「新任务开户到基建」**（准备→开户→充值→基建→冷启动观察），与 PRD 3.9 四条并列为五条。
+
+### ② 投放任务阶段/就绪度/SOP/阻塞（REQ-028；原型 P03/P04）
+- 列表 item 加 `stage`（七态）、`readiness:{accounts,recharge,products,materials,strategy,infra}`（每项 `{ratio:RV, ready:bool, source:"system"|"manual", missing:[string]}`）、`nextMilestone:{at,label}|null`。
+- `GET /tasks/:id` overview 加 `stage:{value, source, changedAt}`、`readiness`（同上，含 `overall:RV`）、`sopProgress:{runId|null, steps:[{key:"prepare"|"open"|"recharge"|"build"|"cold_start"|"deliver_monitor", status:"done"|"running"|"pending"|"skipped", at}]}`（无绑定 run 时按 stage 推导 steps，`runId=null`）、`blockers:[{kind:"work_item"|"dispatch"|"escalation"|"readiness", ref, title, severity}]`、`nextActions:[{kind, ref, title}]`（只来自真实工作项/派发/就绪缺项，不生成）。
+- `PATCH /tasks/:id/stage {stage, note}` 人工置阶段（`stage_source=manual`）；`PUT /tasks/:id/readiness/:dimension {ready, note}` 人工勾就绪。
+- `POST /tasks/:id/sop-run {template:"official.open_to_build", params}` → 用官方模板起 run 并绑定 `sop_run_id`；run 节点完成写 `stage_source=workflow`。
+- 页签定稿（替换 v1.4 六页签）：总览｜数据｜账户｜商品与素材（501 占位）｜**SOP 与自动化**（sopProgress + 绑定的规则）｜异常与工作项｜时间线｜报告与结算（501 占位）——共八页签；「投放策略」页签等策略中心定义后再加。
+
+### ③ 工作流节点模型 `workflow-graph/v1`（原型 P12/P13；前端画布依此）
+```jsonc
+{
+  "version": "workflow-graph/v1",
+  "nodes": [{
+    "id": "node_6", "type": "changeset",          // trigger|query|compute|condition|agent_analysis|changeset|human_confirm|execute|wait_reconcile|notify
+    "label": "生成变更集", "params": {...},          // 按 type 的 params schema（Registry 冻结）
+    "executor_identity": "system_automation",     // system_automation|initiator|credential_owner
+    "side_effect": "write",                        // read|write|external   （write 必须经 changeset→human_confirm→execute）
+    "idempotency": "key_required",                 // key_required|none   （write/external 必须 key_required）
+    "retry": {"max": 3, "backoff": "exponential", "base_ms": 2000},
+    "timeout_ms": 120000,
+    "permission_scope": ["accounts:read","changesets:write"]
+  }],
+  "edges": [{"from": "node_5", "to": "node_6", "condition": null | {"expr": "..."}}]
+}
+```
+- 校验：`POST /api/v1/workflows/:id/versions/:v/validate` → `{schema:[{check,pass,detail}], permissions:[...], links:[...], missing_params:[{node_id,param,required}]}`；四组全过才允许 publish。
+- 模拟：`POST .../simulate {params}` → 无副作用 trace `{steps:[{node_id,status,preview}]}`（write 节点只出变更集草稿预览，不落库）。
+- 发布：`POST .../publish` → status=published，不可变；运行固定版本。
+- Agent 帮编（5.3，升 P1）：`POST /agent/sessions/:id/workflow-draft {goal}` → graph 草稿 + `missing_params[]`，用户应用后仍须 validate。
+- 运行详情 `GET /api/v1/workflows/runs/:id` → `{run:{id,version,initiator,executor_identity,status}, stages:[{node_id,label,status,started_at,finished_at,input_excerpt,output_excerpt}], changeset_preview:{group_id|changeset_id, items[], hash, expires_at}|null, permission_checks[], account_locks:[{media,account_id,conflict:bool,locked_by}], trace:{correlation_id,trace_id,span_id}, audit:[{at,actor,action,detail}], retry_policy, reconcile_policy, unknown_explain}`。
+- 工作台面板 `GET /api/v1/workflows/runs?status=running|waiting_confirmation&mine=true` → `[{run_id, name, step_index, step_total, status, eta}]`。
+
+### ④ 管理看板 = 工作台负责人视图（REQ-018/022；原型 P02 简化；不加导航）
+- `GET /api/v1/workbench/lead?window_from&window_to` （role ∈ lead|admin；personal 空间聚合本人负责任务，team 空间聚合团队只读）→
+  `{cards:{targetAchievement:RV, cumulativeCost:MV, cashCpa:{value:RV, assessment}, conversions:MV, healthyTasks:{n,total}, budgetGap:{value:MV, basis:"pacing_projection"}},
+    risks:[{taskId,taskName,kind:"cost_over"|"volume_short"|"budget_short"|"structure", impact:MV /*来自 cost_space 或 pacing 缺口，无则 missing*/, suggestion:{workItemId}|null}],
+    opportunities:[...同构...],
+    blockers:[{kind:"dispatch_overdue"|"escalation"|"approval_pending"|"readiness_missing", count, tasks:[...]}],
+    approvalsPending:[{approvalId, title, requester, due}],
+    brief:{status:"ready"|"pending_data", sections:[...]}}`。
+- 六卡全部 MetricValue/RatioValue，缺数显 −；`impact` 只用 metrics.md 已冻公式，**不做"预估收益"类臆算**。差距树（3.7）与 AI 提效（7.5）仍 P2。
+
+### ⑤ Agent Patch 建议 + 公共资产端点
+- Agent 消息事件加 `suggestion` 帧：`{suggestion_id, kind:"view_patch"|"report_config_patch"|"workflow_draft", target_ref, before, after, diff:[{path,before,after}]}`；`POST /agent/sessions/:id/suggestions/:sid/accept {mode:"all"|"partial", paths?:[...]}` → 应用到 saved_views/report_configs（新版本），`reject` 记原因。
+- 公共资产（`assets` 表已存在）：`GET /api/v1/assets?kind=&status=&owner=me|team|official`；`POST /assets/:id/transition {to}`：`draft→shared` 本人；`shared→verified` lead/admin 且 `verified_at` 写入；`verified→official` admin；任意→`deprecated` owner/admin 且须填 `superseded_by`。UI 起步只露 draft/shared 两态（老板裁），其余状态只在治理后台可见。
+
+### 优先级重排（老板 2026-09-05 拍 B）
+- 4.7 开户测试跟踪、4.8 优质户复制 → **P1**（老板 8-24 每日闭环：开户测试、优质户复制、关垃圾计划）。
+- 3.9 Agent 帮做表、5.3 Agent 帮编 → **P1**（REQ-036/064 明确要求）。
+- 3.11 策略中心：标「明确要求 · 待定义」，不写 P2；定义待老板。

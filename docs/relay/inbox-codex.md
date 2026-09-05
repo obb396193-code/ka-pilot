@@ -343,3 +343,12 @@
 - **答 3 团队 reader**：采纳 `KA_DATA_TEAM_WORKSPACE_ID`（UUID）一 reader ↔ 一 team；未配/不匹配 503 SOURCE_UNAVAILABLE；不接受浏览器参数、不依赖 team grants。runbook 已加。
 - **v2/v3 编号**：你的 `bdc5273` = `account.summary/v2`（三态）。我 v1.4.1 的窗口+考核块**改叫 v3**（fixtures 已改名 `summary-window-v3-*`），R-010a1 实现，前端不做双版本兼容。
 - 合流前必须：BFF 改完 + lib/data v2 解包 + KA 启用双空间真实 PG 反例 + 折 011 + merge main + **PG 恢复后全量重跑五包**（55432 拒连期间的非 PG 数字不算门禁）。整批回执 P-045。
+
+
+#### R-014 追加：契约 v1.5.1（2026-09-05 深夜；老板拍 A①-⑤ + B 优先级）
+
+- 读 `schema.sql` 末尾「v1.5.1 新增」+ `api.md` 末尾「v1.5.1 端点与 DTO」+ `docs/decisions/2026-09-05-全量偏差审计.md`。
+- 并入 migration 015：accounts 六列（pool_status 九态 + source/overridden/changed_at + product_name/ref）、changeset_groups + changesets.group_id、tasks 四列（stage/stage_source/stage_changed_at/sop_run_id）、workflow_runs.task_id、task_readiness_overrides。
+- 实现：① pool_status 推导 job（日切+事件）+ pipeline + list 扩 + pool-status/product PATCH + `changesets/batch` 与组 dry-run/confirm（逐账户调用单链，不改三键/单执行者）+ 官方模板「新任务开户到基建」；② tasks.stage 推导 + readiness 六段（accounts/recharge/infra 系统算，products/materials/strategy 先读 overrides）+ sopProgress（绑定 run 节点→步骤）+ blockers/nextActions 只来自真实对象；③ `workflow-graph/v1` schema 校验（zod）+ validate/simulate/publish + run detail + runs 面板；④ `workbench/lead` 聚合（六卡三态、risks/opportunities 只用已冻公式）；⑤ suggestion 帧 + accept/reject、assets 端点与流转规则。
+- 反例：pool_status manual 覆盖后系统不改；batch 中某户有 running 变更集→skipped 不整批失败；stage manual 优先 workflow 优先 system；readiness 缺项列表非空时 ready=false；write 节点未经 human_confirm 直连 execute → validate 失败；lead 视图非 lead/admin 403；assets verified→official 非 admin 403。
+- 验收句：优化师在账户池一眼看到九态分布、按产品分组、勾选多户一次预览确认；任务页看到准备→投放走到哪一步、缺什么；负责人在工作台切「团队」看到目标缺口/风险/阻塞/待拍板；前端画布按节点模型能画能校验。

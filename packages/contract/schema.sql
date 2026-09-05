@@ -831,3 +831,49 @@ ALTER TABLE report_configs ADD COLUMN updated_at TIMESTAMPTZ DEFAULT now();
 ALTER TABLE alert_rules ADD COLUMN availability_policy TEXT NOT NULL DEFAULT 'suppress'
   CHECK (availability_policy IN ('suppress','evaluate_available_only'));   -- 见 metrics.md「缺数期规则抑制」；无"按 0 代入"选项
 ALTER TABLE alert_rules ADD COLUMN data_freshness_max_hours INT;            -- NULL=按源默认（实时 6h / 离线 30h）
+
+
+-- =====================================================================
+-- v1.5.1 新增（2026-09-05 深夜 arch；全量偏差审计后老板拍 A①-⑤；并入 migration 015，R-014）
+-- =====================================================================
+-- ① 账户池：库存态（老板 9-5 按原型 P09 定九态）与投放态并存；系统推导 + 人工可覆盖留痕
+ALTER TABLE accounts ADD COLUMN pool_status TEXT NOT NULL DEFAULT 'available'
+  CHECK (pool_status IN ('available','assigned','pending_open','pending_recharge','pending_build','in_delivery','paused','closed','abnormal'));
+ALTER TABLE accounts ADD COLUMN pool_status_source TEXT NOT NULL DEFAULT 'system' CHECK (pool_status_source IN ('system','manual'));
+ALTER TABLE accounts ADD COLUMN pool_status_overridden_by UUID;
+ALTER TABLE accounts ADD COLUMN pool_status_changed_at TIMESTAMPTZ;
+ALTER TABLE accounts ADD COLUMN product_name TEXT;      -- 产品归属：个人空间人工/导入维护；团队空间同步 ka-data product_name/bound_by
+ALTER TABLE accounts ADD COLUMN product_ref TEXT;
+-- 推导规则（系统每日切+事件触发；manual 覆盖后系统不改，直到人工清除）：
+--   closed_at→closed｜abnormal 规则命中→abnormal｜无有效 task_accounts→available｜有任务 & 无消耗 & 余额≤0→pending_recharge
+--   有余额 & 无 unit→pending_build｜有任务 & 无消耗 & 有 unit→assigned｜有消耗→in_delivery（内再用 lifecycle_stage 细分）｜paused=所有 unit 暂停
+--   pending_open 只由开户流程向导写入
+
+CREATE TABLE changeset_groups (        -- ① 账户池勾选批量 → 一组变更集一次预览一次确认；执行仍逐账户（三键不变）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  initiator UUID NOT NULL, title TEXT, reason_code TEXT,
+  status TEXT NOT NULL DEFAULT 'draft',     -- draft|confirmed|executing|done（=全部终态）
+  created_at TIMESTAMPTZ DEFAULT now(), confirmed_at TIMESTAMPTZ
+);
+ALTER TABLE changesets ADD COLUMN group_id UUID REFERENCES changeset_groups(id);
+
+-- ② 投放任务：准备→投放阶段模型（REQ-028；原型 P03/P04）
+ALTER TABLE tasks ADD COLUMN stage TEXT NOT NULL DEFAULT 'preparing'
+  CHECK (stage IN ('preparing','opening','recharging','building','cold_start','delivering','ended'));
+ALTER TABLE tasks ADD COLUMN stage_source TEXT NOT NULL DEFAULT 'system' CHECK (stage_source IN ('system','manual','workflow'));
+ALTER TABLE tasks ADD COLUMN stage_changed_at TIMESTAMPTZ;
+ALTER TABLE tasks ADD COLUMN sop_run_id UUID;           -- 绑定的「开户到基建」工作流 run（可空）
+ALTER TABLE workflow_runs ADD COLUMN task_id TEXT;      -- run ↔ 任务（SOP 进度来源）
+CREATE TABLE task_readiness_overrides (  -- 就绪度六段里"策略/商品"等无法系统推导的，人工勾
+  workspace_id UUID NOT NULL, task_id TEXT NOT NULL,
+  dimension TEXT NOT NULL CHECK (dimension IN ('accounts','recharge','products','materials','strategy','infra')),
+  ready BOOLEAN NOT NULL, note TEXT, marked_by UUID, marked_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, task_id, dimension),
+  FOREIGN KEY (workspace_id, task_id) REFERENCES tasks(workspace_id, task_id)
+);
+-- stage 推导：无账户→preparing；有 pending_open 户→opening；有户全 pending_recharge→recharging；有户 pending_build→building；
+--   首次消耗 3 日内→cold_start；之后→delivering；period_end 过→ended。workflow 触发（sop_run 节点完成）优先于系统推导；manual 最优先。
+
+-- ③ 工作流节点模型：见 api.md「workflow-graph/v1」；graph JSONB 结构冻结，不新增表
+-- ④ 管理看板=工作台负责人视图：无新表，聚合现有 tasks/work_items/dispatches/escalations/approvals
+-- ⑤ 公共资产：assets 表已存在（B20），本版只冻端点与流转规则；Agent Patch 不落表（存 agent_messages payload）
