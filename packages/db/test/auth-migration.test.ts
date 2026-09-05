@@ -98,7 +98,7 @@ describe("multi-tenant auth migration", () => {
     )).rejects.toMatchObject({ code: "23514" });
 
     await client.end();
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 5 })).toHaveLength(5);
+    expect(await runMigrations({ databaseUrl, direction: "down", count: 4 })).toHaveLength(4);
     const downClient = new Client({ connectionString: databaseUrl });
     await downClient.connect();
     const dropped = await downClient.query<{ table_name: string | null }>(
@@ -106,6 +106,6 @@ describe("multi-tenant auth migration", () => {
     );
     expect(dropped.rows[0]?.table_name).toBeNull();
     await downClient.end();
-    expect(await runMigrations({ databaseUrl, count: 5 })).toHaveLength(5);
+    expect(await runMigrations({ databaseUrl, count: 4 })).toHaveLength(4);
   });
 });

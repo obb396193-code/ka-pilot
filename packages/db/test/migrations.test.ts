@@ -286,8 +286,6 @@ describe("contract migrations", () => {
     expect(workspaceKindMigration).toHaveLength(1);
     const contractV12Migration = await runMigrations({ databaseUrl, count: 1 });
     expect(contractV12Migration).toHaveLength(1);
-    const backfillStateMigration = await runMigrations({ databaseUrl, count: 1 });
-    expect(backfillStateMigration).toHaveLength(1);
     expect(await runMigrations({ databaseUrl })).toHaveLength(0);
     const workspaceKind = await client.query<{
       column_default: string | null;
@@ -373,7 +371,6 @@ describe("contract migrations", () => {
     expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
     expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
     expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
     await expect(
       runMigrations({ databaseUrl, direction: "down", count: 1 }),
     ).rejects.toThrow(/same account_id exists in multiple media/i);
@@ -397,6 +394,6 @@ describe("contract migrations", () => {
 
     await runMigrations({ databaseUrl, direction: "down", count: 5 });
     const replay = await runMigrations({ databaseUrl });
-    expect(replay).toHaveLength(12);
+    expect(replay).toHaveLength(11);
   });
 });
