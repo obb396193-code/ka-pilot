@@ -99,28 +99,6 @@ const accountRows = [
   dailyRow({ accountId: "demo-account-07", accountName: "演示账户 · 华东 07", ownerUserId: "优化师 A", cost: 126_800, realConversion: 2_940, realCpa: 43.13, assessmentPrice: 38, dataAnomaly: true }),
   dailyRow({ accountId: "demo-account-12", accountName: "演示账户 · 华南 12", ownerUserId: "优化师 B", cost: 98_200, realConversion: 2_735, realCpa: 35.9, assessmentPrice: 38, dataAnomaly: false }),
   dailyRow({ accountId: "demo-account-18", accountName: "演示账户 · 华北 18", ownerUserId: "优化师 C", cost: 80_274, realConversion: 2_020, realCpa: null, assessmentPrice: 40, dataAnomaly: null }),
-  // 以下 21 户为账户池「全户分层」演示补的脱敏样本（生命周期/产品在 fixtures/account-lifecycle.mock.json）；等待/基建/已关户消耗为真 0
-  dailyRow({ accountId: "demo-account-21", accountName: "演示账户 · 华东 21", ownerUserId: "优化师 A", cost: 41_200, realConversion: 1_060, realCpa: 38.87, assessmentPrice: 38, dataAnomaly: false }),
-  dailyRow({ accountId: "demo-account-22", accountName: "演示账户 · 华东 22", ownerUserId: "优化师 A", cost: 23_900, realConversion: 540, realCpa: 44.26, assessmentPrice: 38, dataAnomaly: false }),
-  dailyRow({ accountId: "demo-account-23", accountName: "演示账户 · 华东 23", ownerUserId: "优化师 B", cost: 0, realConversion: 0, realCpa: null, assessmentPrice: 38, dataAnomaly: null }),
-  dailyRow({ accountId: "demo-account-24", accountName: "演示账户 · 华东 24", ownerUserId: "优化师 B", cost: 0, realConversion: 0, realCpa: null, assessmentPrice: 38, dataAnomaly: null }),
-  dailyRow({ accountId: "demo-account-31", accountName: "演示账户 · 华南 31", ownerUserId: "优化师 B", cost: 76_400, realConversion: 2_010, realCpa: 38.01, assessmentPrice: 40, dataAnomaly: false }),
-  dailyRow({ accountId: "demo-account-32", accountName: "演示账户 · 华南 32", ownerUserId: "优化师 C", cost: 18_600, realConversion: 470, realCpa: 39.57, assessmentPrice: 40, dataAnomaly: false }),
-  dailyRow({ accountId: "demo-account-33", accountName: "演示账户 · 华南 33", ownerUserId: "优化师 C", cost: 0, realConversion: 0, realCpa: null, assessmentPrice: 40, dataAnomaly: null }),
-  dailyRow({ accountId: "demo-account-34", accountName: "演示账户 · 华南 34", ownerUserId: "优化师 C", cost: 0, realConversion: 0, realCpa: null, assessmentPrice: 40, dataAnomaly: null }),
-  dailyRow({ accountId: "demo-account-35", accountName: "演示账户 · 华南 35", ownerUserId: "优化师 D", cost: 4_100, realConversion: 60, realCpa: 68.33, assessmentPrice: 40, dataAnomaly: false }),
-  dailyRow({ accountId: "demo-account-41", accountName: "演示账户 · 华北 41", ownerUserId: "优化师 D", cost: 58_300, realConversion: 1_420, realCpa: 41.06, assessmentPrice: 42, dataAnomaly: false }),
-  dailyRow({ accountId: "demo-account-42", accountName: "演示账户 · 华北 42", ownerUserId: "优化师 D", cost: 12_800, realConversion: 300, realCpa: 42.67, assessmentPrice: 42, dataAnomaly: false }),
-  dailyRow({ accountId: "demo-account-43", accountName: "演示账户 · 华北 43", ownerUserId: "优化师 A", cost: 2_300, realConversion: 50, realCpa: 46.0, assessmentPrice: 42, dataAnomaly: null }),
-  dailyRow({ accountId: "demo-account-44", accountName: "演示账户 · 华北 44", ownerUserId: "优化师 A", cost: 0, realConversion: 0, realCpa: null, assessmentPrice: 42, dataAnomaly: null }),
-  dailyRow({ accountId: "demo-account-45", accountName: "演示账户 · 华北 45", ownerUserId: "优化师 B", cost: 0, realConversion: 0, realCpa: null, assessmentPrice: 42, dataAnomaly: null }),
-  dailyRow({ accountId: "demo-account-46", accountName: "演示账户 · 华北 46", ownerUserId: "优化师 B", cost: 0, realConversion: 0, realCpa: null, assessmentPrice: 42, dataAnomaly: null }),
-  dailyRow({ accountId: "demo-account-51", accountName: "演示账户 · 西南 51", ownerUserId: "优化师 C", cost: 33_700, realConversion: 900, realCpa: 37.44, assessmentPrice: 38, dataAnomaly: false }),
-  dailyRow({ accountId: "demo-account-52", accountName: "演示账户 · 西南 52", ownerUserId: "优化师 C", cost: 9_800, realConversion: 210, realCpa: 46.67, assessmentPrice: 38, dataAnomaly: false }),
-  dailyRow({ accountId: "demo-account-53", accountName: "演示账户 · 西南 53", ownerUserId: "优化师 D", cost: 1_900, realConversion: 30, realCpa: 63.33, assessmentPrice: 38, dataAnomaly: false }),
-  dailyRow({ accountId: "demo-account-54", accountName: "演示账户 · 西南 54", ownerUserId: "优化师 D", cost: 0, realConversion: 0, realCpa: null, assessmentPrice: 38, dataAnomaly: null }),
-  dailyRow({ accountId: "demo-account-55", accountName: "演示账户 · 西南 55", ownerUserId: "优化师 A", cost: 0, realConversion: 0, realCpa: null, assessmentPrice: 38, dataAnomaly: null }),
-  dailyRow({ accountId: "demo-account-56", accountName: "演示账户 · 西南 56", ownerUserId: "优化师 A", cost: 0, realConversion: 0, realCpa: null, assessmentPrice: 38, dataAnomaly: null }),
 ]
 
 function rowsFor(queryId: DataQueryId, request: QueryRequest): Record<string, unknown>[] {

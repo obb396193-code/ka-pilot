@@ -1,76 +1,60 @@
 "use client"
 
-import { useMemo } from "react"
 import Link from "next/link"
-import { IconAlertTriangle, IconArrowUpRight } from "@tabler/icons-react"
+import { IconArrowUpRight } from "@tabler/icons-react"
 
-import { StatusChip } from "@/components/business/data-grid/data-grid"
+import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
-import { AccountCpaTrend } from "@/components/charts/account-cpa-trend"
 import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import { getAccountLifecycle, lifecycleStageMap } from "@/lib/data/account-lifecycle"
-import { adaptAccountDetail } from "@/lib/data/adapters"
-import type { AccountDetailData, AnalysisRow, DisplayMetric, QueryRequest } from "@/lib/data/contracts"
-import { shanghaiBusinessDate, type DataResponse, type DataViewMode } from "@/lib/data/data-view"
-import { useDataQuery } from "@/lib/data/use-data-query"
-import { accountStatus } from "./account-status"
+import type { DisplayMetric } from "@/lib/data/contracts"
+import { accountHref, cutoffLabel, lifecycleLabel, poolStatusMap, timelineFixture, type AccountItem } from "@/lib/fixtures/accounts"
+import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
+import { cn } from "@/lib/utils"
+import { accountStatusTone, mediaLabel } from "./account-status"
+import { TimelineList } from "./timeline-list"
 
-// 账户小传 = 行内展开（老板 09-05 定）。KPI 卡与工作台同一个组件（老板：别又换一种卡），数据来源 account.detail，不重算。
-function useAccountPeek(row: AnalysisRow, dataView: DataViewMode): DataResponse<AccountDetailData> & { isMock: boolean } {
-  const request = useMemo<QueryRequest>(() => ({ queryId: "account.detail", dataView, params: { date: shanghaiBusinessDate(), accountId: row.accountId, media: row.media } }), [row, dataView])
-  const result = useDataQuery(request)
-  const response = adaptAccountDetail(result.response ?? { ok: false, error: { code: "SOURCE_UNAVAILABLE", message: "正在读取", retryable: true, requestId: "loading" } }, dataView, result.isMock, row.accountId, result.loading ? "loading" : undefined)
-  return { ...response, isMock: result.isMock }
-}
-
-export function accountPageHref(row: Pick<AnalysisRow, "accountId" | "media">) {
-  return `/accounts/${encodeURIComponent(row.accountId)}?media=${encodeURIComponent(row.media)}`
-}
-
+// 账户小传 = 行内展开（老板 09-05 定）。六张卡与工作台同一个 KpiCards；数据全部来自 GET /accounts 列表项（v1.5.1 扩展字段），不重算。
+// 操作史 / 结构树 / 趋势在完整账户页；这里只给最近操作与「打开完整账户页」。
 const missing = (key: string, label: string): DisplayMetric => ({ key, label, value: "−", delta: null, tone: "neutral" })
+const tone = (status: "green" | "yellow" | "red" | null | undefined): DisplayMetric["tone"] => status === "green" ? "positive" : status === "yellow" ? "warning" : status === "red" ? "critical" : "neutral"
 
-export function AccountInlinePeek({ row, dataView }: { row: AnalysisRow; dataView: DataViewMode }) {
-  const response = useAccountPeek(row, dataView)
-  const data = response.data
-  const chip = accountStatus[data.status]
-  const lifecycle = getAccountLifecycle(row.accountId, response.isMock)
-  const loading = response.state === "loading"
-  // 六张卡与首页同构：后端给的指标 + 缺数占位（阶段 / 余额·断量 / 计划层 / 关联任务），走势线只画有日序列的 CPA
+export function AccountInlinePeek({ item }: { item: AccountItem }) {
+  const chip = accountStatusTone(item.assessment)
+  const cutoff = item.balance?.cutoff
   const metrics: DisplayMetric[] = [
-    ...data.metrics,
-    { key: "stage", label: "阶段", value: lifecycle ? lifecycleStageMap[lifecycle.stage].label : "−", delta: lifecycle ? `自 ${lifecycle.since.slice(5).replace("-", "/")}` : null, tone: "neutral" },
-    missing("balance", "余额 · 断量"),
-    missing("plan", "计划层"),
-    missing("tasks", "关联任务"),
+    { key: "cashCost", label: "现金消耗", value: mv(item.metrics?.cashCost, "money0"), delta: null, tone: "neutral" },
+    { key: "cashCpa", label: "现金 CPA", value: rv(item.metrics?.ratios.cashCpa, "money"), delta: item.assessment?.price ? `考核 ¥${item.assessment.price.value.toFixed(2)}` : null, tone: tone(item.assessment?.costStatus) },
+    { key: "realConversion", label: "真实转化", value: mv(item.metrics?.realConversion), delta: null, tone: "neutral" },
+    item.balance ? { key: "balance", label: "余额", value: item.balance.value === null ? "−" : `¥${Math.round(item.balance.value).toLocaleString("zh-CN")}`, delta: cutoff ? `${cutoffLabel[cutoff.state].label}${cutoff.hours.availability === "available" ? ` · ${mv(cutoff.hours, "num")}h` : ""}` : null, tone: cutoff?.state === "critical" ? "critical" : cutoff?.state === "warning" ? "warning" : "neutral" } : missing("balance", "余额"),
+    { key: "budgetCap", label: "日预算卡", value: item.dailyBudgetCap === null ? "−" : `¥${Math.round(item.dailyBudgetCap).toLocaleString("zh-CN")}`, delta: rv(item.capacityLoad) === "−" ? null : `负载 ${rv(item.capacityLoad)}`, tone: "neutral" },
+    { key: "costSpace", label: "成本空间", value: mv(item.metrics?.costSpace, "money0"), delta: null, tone: "neutral" },
   ]
-  const sparklines = { cpa: data.trend.map((point) => point.cpa) }
+  const timeline = isOk(timelineFixture) && item.accountId === "account-1" ? timelineFixture.data.items.slice(0, 3) : []
 
   return (
     <div className="@container/main flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-sm font-medium">
-          {data.accountName}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2 text-sm font-medium">
+          {item.accountName}
           <StatusChip tone={chip.tone}>{chip.label}</StatusChip>
-          <span className="font-mono text-[11px] font-normal text-muted-foreground">{data.media} · {data.accountId} · {data.owner}</span>
+          <TypeChip><span className={cn("mr-1 inline-block size-1.5 rounded-full", poolStatusMap[item.poolStatus].dot)} />{poolStatusMap[item.poolStatus].label}</TypeChip>
+          {item.lifecycleStage !== "unknown" ? <TypeChip>{lifecycleLabel[item.lifecycleStage]}</TypeChip> : null}
+          <span className="font-mono text-[11px] font-normal text-muted-foreground">{mediaLabel(item.media)} · {item.accountId} · {item.owner?.displayName ?? "待分配"}{item.linkedTasks[0] ? ` · ${item.linkedTasks[0].taskName}` : ""}</span>
         </div>
-        <Button asChild variant="outline" size="sm"><Link href={accountPageHref(row)}>打开完整账户页<IconArrowUpRight /></Link></Button>
+        <Button asChild variant="outline" size="sm"><Link href={accountHref(item)}>打开完整账户页<IconArrowUpRight /></Link></Button>
       </div>
-      {loading ? (
-        <div className="grid grid-cols-2 gap-3 @5xl/main:grid-cols-6">{Array.from({ length: 6 }).map((_, index) => <Skeleton key={index} className="h-[104px] rounded-xl" />)}</div>
-      ) : (
-        <KpiCards metrics={metrics} sparklines={sparklines} className="px-0 lg:px-0" />
-      )}
+      <KpiCards metrics={metrics} className="px-0 lg:px-0" />
       <div className="grid gap-4 @5xl/main:grid-cols-12">
-        <div className="rounded-xl border bg-card p-4 @5xl/main:col-span-8">
-          <div className="text-sm font-medium">CPA 与考核价趋势</div>
-          {data.trend.length ? <div className="mt-2"><AccountCpaTrend data={data.trend} /></div> : <p className="mt-2 text-xs text-muted-foreground">后端未返回可展示趋势</p>}
+        <div className="rounded-xl border bg-card p-4 @5xl/main:col-span-7">
+          <div className="flex items-center justify-between"><div className="text-sm font-medium">最近操作</div><span className="text-xs text-muted-foreground">{item.lastAction ? `${fmtTime(item.lastAction.at)} · ${item.lastAction.summary}` : "−"}</span></div>
+          {timeline.length ? <div className="mt-3"><TimelineList items={timeline} compact /></div> : <p className="mt-2 text-xs text-muted-foreground">{item.accountId === "account-1" ? "暂无操作史" : "操作史样例只有 account-1（TODO-fixture:accounts/timeline-<id>.json）；完整账户页可看"}</p>}
         </div>
-        <div className="rounded-xl border bg-card p-4 @5xl/main:col-span-4">
-          <div className="text-sm font-medium">当前诊断</div>
-          {data.currentFindingId ? (
-            <Button asChild variant="outline" size="sm" className="mt-2"><Link href={`/diagnostics/${data.currentFindingId}`}><IconAlertTriangle />{data.currentFindingTitle ?? "查看诊断详情"}</Link></Button>
-          ) : <p className="mt-2 text-xs text-muted-foreground">当前没有关联的诊断工作项</p>}
+        <div className="rounded-xl border bg-card p-4 @5xl/main:col-span-5">
+          <div className="text-sm font-medium">建议下一步</div>
+          {item.nextSuggestion ? (
+            <Button asChild variant="outline" size="sm" className="mt-2"><Link href={`/diagnostics/${item.nextSuggestion.workItemId}`}>{item.nextSuggestion.title}</Link></Button>
+          ) : <p className="mt-2 text-xs text-muted-foreground">没有待处理的工作项；系统不生成假建议。</p>}
+          <div className="mt-3 flex flex-wrap gap-1.5">{item.tags.map((tag) => <TypeChip key={tag}>{tag}</TypeChip>)}{item.starred ? <TypeChip>★ 星标</TypeChip> : null}</div>
         </div>
       </div>
     </div>

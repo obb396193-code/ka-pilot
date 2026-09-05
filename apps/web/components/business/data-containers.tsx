@@ -2,10 +2,8 @@
 
 import { useMemo, useState } from "react"
 
-import { AccountsTable } from "@/components/business/accounts/accounts-table"
 import { PageBody, PageHeader } from "@/components/business/page-header"
 
-import { AccountDetailView } from "@/components/business/account-detail-view"
 import { useSession } from "@/components/business/session/session-provider"
 import { DiagnosticDetailView } from "@/components/business/diagnostic-detail-view"
 import { WorkbenchDashboard } from "@/components/business/workbench/workbench-dashboard"
@@ -52,37 +50,6 @@ export function WorkbenchContainer({ query }: { query: QueryRecord }) {
   return <WorkbenchQueries key={reload} query={query} onRefresh={() => setReload((value) => value + 1)} />
 }
 
-// 数据源由服务端按空间路由；mock 下按当前空间模拟（team→ka_data）
-function useRoutedDataView(): DataViewMode {
-  const { session, isMock } = useSession()
-  return isMock && session?.activeWorkspace.kind === "team" ? "ka_data" : "platform"
-}
-
-// 账户池：account.table → 母版 DataTable 壳 + 账户小传抽屉
-export function AccountsContainer({ query }: { query: QueryRecord }) {
-  const dataView = useRoutedDataView()
-  const queryRequest = useMemo(() => request("account.table", dataView, query, { page: 1, pageSize: 100 }), [dataView, query])
-  const result = useDataQuery(queryRequest)
-  const response = adaptAnalysis(result.response ?? loadingResponse(), dataView, result.isMock, result.loading ? "loading" : undefined)
-  return (
-    <PageBody>
-      <PageHeader title="账户池" description="全量账户按生命周期分层；缺失值显 −，不用 0 或达标替代" isMock={result.isMock} />
-      <DataStateFrame response={response} lineage="inline">
-        <div className="px-4 lg:px-6"><AccountsTable rows={response.data.rows} dataView={dataView} isMock={result.isMock} initialView={(["tiles", "pipeline", "kanban"] as const).find((item) => item === (Array.isArray(query.view) ? query.view[0] : query.view)) ?? "tiles"} /></div>
-      </DataStateFrame>
-    </PageBody>
-  )
-}
-
-
-
-export function AccountDetailContainer({ accountId, query }: { accountId: string; query: QueryRecord }) {
-  const dataView = useRoutedDataView()
-  const queryRequest = useMemo(() => request("account.detail", dataView, query, { accountId }), [accountId, dataView, query])
-  const result = useDataQuery(queryRequest)
-  const response = adaptAccountDetail(result.response ?? loadingResponse(), dataView, result.isMock, accountId, result.loading ? "loading" : undefined)
-  return <AccountDetailView response={response} />
-}
 
 function MockDiagnosticDetailContainer({ findingId }: { findingId: string }) {
   const workItem = getMockWorkItemDetail(findingId)

@@ -1,7 +1,7 @@
-import { AccountsContainer } from "@/components/business/data-containers"
-import type { QueryRecord } from "@/lib/data/data-view"
+import { Suspense } from "react"
 
-export default async function AccountsPage({ searchParams }: { searchParams: Promise<QueryRecord> }) {
-  const query = await searchParams
-  return <AccountsContainer query={query} />
+import { AccountsPage } from "@/components/business/accounts/accounts-page"
+
+export default function AccountsRoute() {
+  return <Suspense fallback={null}><AccountsPage /></Suspense>
 }

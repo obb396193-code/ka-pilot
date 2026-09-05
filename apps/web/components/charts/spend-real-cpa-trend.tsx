@@ -20,7 +20,7 @@ function token(element: HTMLElement, name: string) {
 }
 
 // colorKey：主题模式/主色变化时重新读取 CSS 变量重画（ECharts 不认 CSS 变量，只在 init 时取一次）
-export function SpendRealCpaTrend({ data, colorKey, labels = { spend: "消耗", cpa: "真实 CPA" } }: { data: WorkbenchData["trend"]; colorKey?: string; labels?: { spend: string; cpa: string } }) {
+export function SpendRealCpaTrend({ data, colorKey, labels = { spend: "消耗", cpa: "真实 CPA" }, markers = [] }: { data: WorkbenchData["trend"]; colorKey?: string; labels?: { spend: string; cpa: string }; markers?: { label: string; x: string }[] }) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -40,14 +40,14 @@ export function SpendRealCpaTrend({ data, colorKey, labels = { spend: "消耗", 
         { type: "value", name: labels.cpa, axisLabel: { formatter: "¥{value}" }, splitLine: { show: false } },
       ],
       series: [
-        { name: labels.spend, type: "line", yAxisIndex: 0, data: data.map((point) => point.spend), smooth: true, symbolSize: 6, lineStyle: { width: 3 }, areaStyle: { opacity: 0.08 } },
+        { name: labels.spend, type: "line", yAxisIndex: 0, data: data.map((point) => point.spend), smooth: true, symbolSize: 6, lineStyle: { width: 3 }, areaStyle: { opacity: 0.08 }, markLine: markers.length ? { symbol: "none", silent: true, lineStyle: { type: "dashed", color: token(element, "--foreground"), opacity: 0.5 }, label: { formatter: (params: { name: string }) => params.name, position: "insideEndTop", fontSize: 10 }, data: markers.map((marker) => ({ name: marker.label, xAxis: marker.x })) } : undefined },
         { name: labels.cpa, type: "line", yAxisIndex: 1, data: data.map((point) => point.realCpa), connectNulls: false, symbolSize: 7, lineStyle: { width: 2 } },
       ],
     })
     const observer = new ResizeObserver(() => chart.resize())
     observer.observe(element)
     return () => { observer.disconnect(); chart.dispose() }
-  }, [data, colorKey, labels.spend, labels.cpa])
+  }, [data, colorKey, labels.spend, labels.cpa, markers])
 
   return <div ref={ref} role="img" aria-label={`${labels.spend}与${labels.cpa}趋势`} className="h-72 w-full min-w-0 max-w-full overflow-hidden" />
 }
