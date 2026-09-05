@@ -3228,3 +3228,13 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 4. CTE：ka-src-0011 明确 sqlite 后端接受单条 WITH；性能/一致性交 OS 内网验。
 
 **剩余（合流前必须）**：BFF 去 dataView + 按 workspaceKind 断言 mode（A-001 P1-2）；`apps/web/lib/data` v2 解包；KA 启用双空间真实 PG 反例；折 011；merge main；**Docker/PG 恢复后四包+Gateway 全量重跑**（Codex 本地 55432 拒连期间的"非 PG 通过"不算门禁）。
+
+### P-046 R010a1 012迁移基础｜Codex 2026-09-06，待arch审查
+
+- 按P044顺序先落012；候选分支be/r010，从be/r009@b8f87d3（含main@f841da4）创建。R009原分支保留，P045整批PG回执仍待；不是提前宣称R009已接受。
+- 代码 **eaca65e**，11文件。冻结v1.3 DDL完整复制、四新表/session幂等/去重/mute三键FK、op和缺数抑制列；没有014/015或业务写路由。逐文件清单见git show --stat与R010状态。
+- 必要旧Repository序列化桥：旧string/null参数显式to_jsonb(text)，保留001/true/JSON-looking文本为字符串，避免PG解释成JSON数字；typed DTO留a2。必须先迁移012再运行该Worker版本。
+- up拒绝孤儿session引用；down拒绝typed JSON和multiply语义丢失。down仍会删除新表/列数据，不是全库无损回退；只在可丢弃测试库up/down/up，业务停写备份并另审回退。
+- 门禁：DB unit47、Domain518、Worker非PG724+2外部opt-in skipped，三包typecheck/lint；DB offline production audit0。012十例先红后绿，JS callback覆盖100%，**不是SQL执行证明**。
+- 新真实PG反例含up/down/up、孤儿失败事务、JSON旧值往返/拒有损回退、重复消息、跨空间/跨媒体及provider FK；旧回放计数逐文件改12。55432于02:16只读连接ECONNREFUSED，均未执行，不冒用早前PG证据。
+- 状态：code candidate / non_pg_verified / pg_blocked / claude_review_pending，未push/合流/部署。下一项R013 bootstrap/discover/coefficients，日期必须输入；不碰媒体执行或前端视觉。
