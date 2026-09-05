@@ -1,0 +1,301 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.dimension",
+      "rowSchemaVersion": "account.dimension/v3",
+      "status": "ready",
+      "dimension": "account",
+      "rows": [
+        {
+          "key": "account-1",
+          "label": "AAC拉新_快手_01",
+          "metrics": {
+            "cost": {
+              "value": 5200.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 4062.24,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 41000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 1750,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 130,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 124,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 649.76,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0427,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0743,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 41.94,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 32.76,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0484,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "key": "account-2",
+          "label": "AAC拉新_快手_02",
+          "metrics": {
+            "cost": {
+              "value": 4200.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 3281.04,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 30000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 1400,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 92,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 80,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": -241.04,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0467,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0657,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 52.5,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 41.01,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.15,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": false,
+            "costStatus": "red",
+            "costStatusReason": "window_over",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": true
+        },
+        {
+          "key": "account-5",
+          "label": "AAC拉新_快手_05",
+          "metrics": {
+            "cost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "cashCost": {
+              "value": null,
+              "availability": "missing"
+            },
+            "exposure": {
+              "value": null,
+              "availability": "missing"
+            },
+            "click": {
+              "value": null,
+              "availability": "missing"
+            },
+            "conversion": {
+              "value": null,
+              "availability": "missing"
+            },
+            "realConversion": {
+              "value": null,
+              "availability": "missing"
+            },
+            "costSpace": {
+              "value": null,
+              "availability": "missing"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": null,
+                "state": "undefined"
+              },
+              "cvr": {
+                "value": null,
+                "state": "undefined"
+              },
+              "realCpa": {
+                "value": null,
+                "state": "undefined"
+              },
+              "cashCpa": {
+                "value": null,
+                "state": "undefined"
+              },
+              "gap": {
+                "value": null,
+                "state": "undefined"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": null,
+            "costStatus": "gray",
+            "costStatusReason": "no_data",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        }
+      ],
+      "returnedRowCount": 3,
+      "wholeResultTotal": {
+        "value": 3,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "canonical",
+        "workspaceKind": "team",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05",
+          "preset": "month_to_date"
+        },
+        "metadataAvailability": "known",
+        "coverage": {
+          "complete": true
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "8 维之一：账户；account-5 当日缺数 → 三态 missing、比率 undefined、achievement gray/no_data，前端显 −"
+  }
+}

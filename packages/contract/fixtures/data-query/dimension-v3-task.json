@@ -1,0 +1,215 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.dimension",
+      "rowSchemaVersion": "account.dimension/v3",
+      "status": "ready",
+      "dimension": "task",
+      "rows": [
+        {
+          "key": "fixture-task-ready",
+          "label": "AAC 拉新",
+          "metrics": {
+            "cost": {
+              "value": 9000.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 7030.8,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 72000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 3000,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 225,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 214,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 1101.2,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0417,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.075,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.06,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 32.85,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0514,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "key": "fixture-task-nocap",
+          "label": "闲鱼潜客转化",
+          "metrics": {
+            "cost": {
+              "value": 4200.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 3281.04,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 30000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 1400,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 92,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 80,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": -241.04,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0467,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0657,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 52.5,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 41.01,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.15,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": false,
+            "costStatus": "red",
+            "costStatusReason": "window_over",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": true
+        }
+      ],
+      "returnedRowCount": 2,
+      "wholeResultTotal": {
+        "value": 2,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "canonical",
+        "workspaceKind": "team",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05",
+          "preset": "month_to_date"
+        },
+        "metadataAvailability": "known",
+        "coverage": {
+          "complete": true
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "8 维之一：任务（team 空间有源；行 = 任务，label = 任务名）"
+  }
+}

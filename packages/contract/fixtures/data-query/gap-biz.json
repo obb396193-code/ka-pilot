@@ -1,0 +1,125 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.gap",
+      "rowSchemaVersion": "account.gap/v1",
+      "status": "ready",
+      "groupBy": "biz",
+      "rows": [
+        {
+          "group": {
+            "key": "biz-aac",
+            "label": "AAC 拉新包"
+          },
+          "conversion": {
+            "value": 317,
+            "availability": "available"
+          },
+          "realConversion": {
+            "value": 294,
+            "availability": "available"
+          },
+          "gap": {
+            "value": 0.0782,
+            "state": "finite"
+          },
+          "preDeductionGap": {
+            "value": null,
+            "state": "undefined"
+          },
+          "deductionRate": {
+            "value": 0.1,
+            "state": "finite"
+          },
+          "gapStatus": "normal"
+        },
+        {
+          "group": {
+            "key": "biz-xianyu",
+            "label": "闲鱼潜客"
+          },
+          "conversion": {
+            "value": 44,
+            "availability": "available"
+          },
+          "realConversion": {
+            "value": 36,
+            "availability": "available"
+          },
+          "gap": {
+            "value": 0.2222,
+            "state": "finite"
+          },
+          "preDeductionGap": {
+            "value": null,
+            "state": "undefined"
+          },
+          "deductionRate": {
+            "value": 0.1,
+            "state": "finite"
+          },
+          "gapStatus": "high"
+        },
+        {
+          "group": {
+            "key": "biz-backup",
+            "label": "备用（未分配产品）"
+          },
+          "conversion": {
+            "value": null,
+            "availability": "missing"
+          },
+          "realConversion": {
+            "value": null,
+            "availability": "missing"
+          },
+          "gap": {
+            "value": null,
+            "state": "undefined"
+          },
+          "preDeductionGap": {
+            "value": null,
+            "state": "undefined"
+          },
+          "deductionRate": {
+            "value": null,
+            "state": "undefined"
+          },
+          "gapStatus": "missing"
+        }
+      ],
+      "returnedRowCount": 3,
+      "wholeResultTotal": {
+        "value": 3,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "canonical",
+        "workspaceKind": "personal",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05",
+          "preset": "month_to_date"
+        },
+        "metadataAvailability": "known",
+        "coverage": {
+          "complete": true
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "ruleSetVersion": "rules-2026-09-01",
+    "_note": "Gap 对账按业务分组；未分配产品的备用户归 missing"
+  }
+}
