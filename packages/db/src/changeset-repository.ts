@@ -265,7 +265,7 @@ export class ChangeSetRepository {
           `INSERT INTO changeset_items
              (changeset_id,workspace_id,media,account_id,
               target_type,target_id,field,from_value,to_value,item_status)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'pending')`,
+           VALUES ($1,$2,$3,$4,$5,$6,$7,to_jsonb($8::text),to_jsonb($9::text),'pending')`,
           [header.id, input.workspaceId, input.media, input.accountId,
             item.targetType, item.targetId, item.field, item.fromValue, item.toValue],
         );
