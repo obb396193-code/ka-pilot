@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
@@ -24,6 +24,7 @@ describe("TaskRepository", () => {
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
   });
+  afterAll(async () => { await pool.end(); });
 
   beforeEach(async () => {
     const suffix = randomUUID();
@@ -158,6 +159,33 @@ describe("TaskRepository", () => {
     expect(results.filter((result) => result.status === "fulfilled")).toHaveLength(1);
     const rejected = results.find((result) => result.status === "rejected");
     expect(rejected).toMatchObject({ reason: expect.any(TaskAccountOverlapError) });
+  });
+
+  it("serializes different tasks for one tuple and returns the stable conflict", async () => {
+    const secondTask = `${taskId}-second`;
+    await pool.query("INSERT INTO tasks(workspace_id,task_id) VALUES ($1,$2)", [workspaceId, secondTask]);
+    const base = { workspaceId, media: "KUAISHOU", accountId: "account-1", validFrom: "2026-08-01", validTo: null };
+    const results = await Promise.allSettled([
+      repository.assignAccount({ ...base, taskId }), repository.assignAccount({ ...base, taskId: secondTask }),
+    ]);
+    expect(results.filter((value) => value.status === "fulfilled")).toHaveLength(1);
+    expect(results.find((value) => value.status === "rejected")).toMatchObject({
+      reason: { name: "TaskAccountOverlapError", code: "TASK_ACCOUNT_OVERLAP", statusCode: 409 },
+    });
+    const rows = await pool.query("SELECT task_id FROM task_accounts WHERE workspace_id=$1 AND account_id='account-1'", [workspaceId]);
+    expect(rows.rows).toHaveLength(1);
+  });
+
+  it("keeps same account ids independent across media and workspaces", async () => {
+    await pool.query(`INSERT INTO accounts(workspace_id,media,account_id)
+      VALUES ($1,'TENCENT','account-1'),($2,'KUAISHOU','account-1')`, [workspaceId, otherWorkspaceId]);
+    const base = { taskId, accountId: "account-1", validFrom: "2026-08-01", validTo: null };
+    const results = await Promise.all([
+      repository.assignAccount({ ...base, workspaceId, media: "KUAISHOU" }),
+      repository.assignAccount({ ...base, workspaceId, media: "TENCENT" }),
+      repository.assignAccount({ ...base, workspaceId: otherWorkspaceId, media: "KUAISHOU" }),
+    ]);
+    expect(new Set(results.map((row) => JSON.stringify([row.workspaceId,row.media,row.accountId]))).size).toBe(3);
   });
 
   it("appends assessment-price versions with evidence and resolves by date", async () => {

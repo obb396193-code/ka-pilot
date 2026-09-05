@@ -123,11 +123,13 @@ interface TaskMetricRow {
 }
 
 export class TaskAccountOverlapError extends Error {
+  readonly code = "TASK_ACCOUNT_OVERLAP";
+  readonly statusCode = 409;
   constructor(
     readonly taskId: string,
     readonly accountId: string,
   ) {
-    super(`task-account period overlaps for ${taskId}/${accountId}`);
+    super("Account is already assigned to a task during this period");
     this.name = "TaskAccountOverlapError";
   }
 }
@@ -240,7 +242,7 @@ export class TaskRepository {
       await client.query("BEGIN");
       await client.query("SELECT pg_advisory_xact_lock(hashtext($1), hashtext($2))", [
         input.workspaceId,
-        JSON.stringify([input.taskId, input.media, input.accountId]),
+        JSON.stringify([input.media, input.accountId]),
       ]);
       const task = await client.query(
         `SELECT task_id FROM tasks
@@ -257,13 +259,12 @@ export class TaskRepository {
 
       const overlap = await client.query(
         `SELECT 1 FROM task_accounts
-         WHERE workspace_id=$1 AND task_id=$2 AND media=$3 AND account_id=$4
-           AND valid_from <= COALESCE($6::date, 'infinity'::date)
-           AND (valid_to IS NULL OR valid_to >= $5::date)
+         WHERE workspace_id=$1 AND media=$2 AND account_id=$3
+           AND valid_from <= COALESCE($5::date, 'infinity'::date)
+           AND (valid_to IS NULL OR valid_to >= $4::date)
          LIMIT 1`,
         [
           input.workspaceId,
-          input.taskId,
           input.media,
           input.accountId,
           input.validFrom,
@@ -295,6 +296,11 @@ export class TaskRepository {
       return mapTaskAccount(row);
     } catch (error) {
       await rollback(client);
+      if (error !== null && typeof error === "object" &&
+          "code" in error && error.code === "23P01" &&
+          "constraint" in error && error.constraint === "task_accounts_account_validity_excl") {
+        throw new TaskAccountOverlapError(input.taskId, input.accountId);
+      }
       throw error;
     } finally {
       client.release();
