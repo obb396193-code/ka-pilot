@@ -43,3 +43,4 @@ export * from "./backfill-progress.js";
 export * from "./metric-value.js";
 export * from "./bootstrap-seed.js";
 export * from "./coefficient-seed.js";
+export * from "./summary-window.js";
