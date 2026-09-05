@@ -3130,3 +3130,17 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 - Q1-a/b/e、Q2、Q3 → 契约 v1.7.1（BFF 同源路径补齐、summary compare 块、me/counts、me/preferences + identity_preferences、agent/models + 四条 Agent BFF 路径、context 不带 workspaceId）；Q1-c/d 已在 v1.3/v1.4；Q4 以 v1.5.1 九态 `poolStatus` 为准，不采纳八态提议；Q5 转派 Codex R-FE-IMG-001。详见 inbox-fe。
 - 存档点 `449ccec`：范围合规；待 arch 复跑 test/tsc/lint 与 R-009 二批合流后 `--no-ff` 合入。
+
+
+---
+
+### P-046 / P-048 / P-049 代码级审查（arch 2026-09-06；真 PG 数字待 arch 本机复跑补）
+
+| SHA | 内容 | 结论 |
+|---|---|---|
+| `eaca65e` 012 迁移 | v1.3 全部 DDL（条件树/去重三列+partial unique/account_mutes 三键 FK/ad_entities.created_at/typed value JSONB `to_jsonb(text)` 桥/双 hash/agent_messages seq+client_message_id+FK/agent_runs 九列/agent_run_events/model_provider_credentials/provider_model_capabilities）+ v1.4.1 `channel_coefficients.op` + 12.8 两列；up 前置孤儿 session 检查；down 拒绝 typed JSON 与 multiply 语义丢失（有损回退不做）| ✅ 与契约逐条对上；"先迁移 012 再跑该 Worker 版本"采纳进 runbook |
+| `7c08b97` discover CLI | 只读 GET，无 DB/job/grant；HTTPS/无凭证 URL；50/页、10000 上限、total 稳定、页码/行数对齐、无重复 ID；truncated/limit_clamped 拒；输出 <16MB；错误固定文本 | ✅ 正是 R-013 修订要的"人确认清单" |
+| `d16906a` 系数 seed | 独立 `seed:coefficients`，显式 workspace+effective_date；SERIALIZABLE + workspace FOR UPDATE；只 personal；四行按冻结值/op 原样；NUMERIC 文本精确比较；重放幂等、异值拒绝；`changed_by=NULL` | ✅；初始四行硬编码在 domain `initialCoefficientSeedRows()` 属"初始 seed 常量"不是运行时口径，可接受 |
+| 发现 | `metrics.ts` 写死除法、settings 未 select op → Codex 自提 P-050 在 R-010a1 内补 | ✅ 采纳 |
+
+PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门禁 arch 正在独立复跑；be/r010 的 012 真 PG 套件随后复跑。
