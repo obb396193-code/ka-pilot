@@ -1,0 +1,60 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "at": "2026-09-03T10:12:00.000+08:00",
+        "kind": "daily_budget_cap",
+        "scope": {
+          "taskId": "fixture-task-ready"
+        },
+        "oldValue": 80000.0,
+        "newValue": 100000.0,
+        "effectiveDate": "2026-09-03",
+        "changedBy": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "evidenceUrl": null
+      },
+      {
+        "at": "2026-09-01T09:00:00.000+08:00",
+        "kind": "assessment_price",
+        "scope": {
+          "taskId": "fixture-task-ready"
+        },
+        "oldValue": 40.0,
+        "newValue": 38.0,
+        "effectiveDate": "2026-09-01",
+        "changedBy": {
+          "userId": "00000000-0000-4000-8000-000000000002",
+          "name": "示例运营"
+        },
+        "evidenceUrl": "https://example.internal/evidence/1",
+        "recomputedDays": 5
+      },
+      {
+        "at": "2026-07-01T00:00:00.000+08:00",
+        "kind": "channel_coefficient",
+        "scope": {
+          "media": "KUAISHOU"
+        },
+        "oldValue": null,
+        "newValue": {
+          "op": "multiply",
+          "coefficient": 0.7812
+        },
+        "effectiveDate": "2026-07-01",
+        "changedBy": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "evidenceUrl": null
+      }
+    ],
+    "nextCursor": null
+  },
+  "meta": {
+    "requestId": "fixture-change-log"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "media": "KUAISHOU",
+        "op": "multiply",
+        "coefficient": 0.7812,
+        "effectiveDate": "2026-07-01",
+        "changedBy": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "evidenceUrl": null,
+        "historyCount": 1
+      },
+      {
+        "media": "TENCENT",
+        "op": "divide",
+        "coefficient": 1.045,
+        "effectiveDate": "2026-07-01",
+        "changedBy": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "evidenceUrl": null,
+        "historyCount": 1
+      },
+      {
+        "media": "TOUTIAO",
+        "op": "divide",
+        "coefficient": 1.09,
+        "effectiveDate": "2026-07-01",
+        "changedBy": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "evidenceUrl": null,
+        "historyCount": 1
+      },
+      {
+        "media": "BAIDU",
+        "op": "divide",
+        "coefficient": 1.51,
+        "effectiveDate": "2026-07-01",
+        "changedBy": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "evidenceUrl": null,
+        "historyCount": 1
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture-coefficients",
+    "workspaceKind": "personal",
+    "editable": true,
+    "_note": "team 空间 editable=false，POST 返回 403 FORBIDDEN；生效日期为占位，老板给真值后替换"
+  }
+}

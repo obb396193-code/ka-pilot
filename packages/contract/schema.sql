@@ -405,6 +405,8 @@ CREATE TABLE inbound_events (         -- 回调监控页查 → 自带 workspace
   kind TEXT, payload JSONB, processed BOOLEAN DEFAULT false,
   -- P0-12 裁决（durable inbox）：网关收到消息必须**先 INSERT 本表成功再向钉钉 ACK**；处理走 lease 领取，
   -- 失败不删行、attempts+1 留 last_error，超过 max_attempts 进 dead；processed=false 且 lease 过期的行可被重领
+  -- dead 的定义（2026-09-05 arch 按 P-043 实现冻结，不加 status 列）：processed=false AND attempts>=max_attempts AND last_error='ATTEMPTS_EXHAUSTED'；行永久保留作证据
+  -- 本表消费按 kind 分：robot_message 由钉钉网关 inbox worker 领取；card 回调走 v1.4 card_callbacks（各自消费者，不混领）
   lease_until TIMESTAMPTZ, attempts INT DEFAULT 0, max_attempts INT DEFAULT 5,
   last_error TEXT, processed_at TIMESTAMPTZ,
   received_at TIMESTAMPTZ DEFAULT now()
@@ -576,10 +578,10 @@ CREATE TABLE approval_auto_pass_rules (   -- 同类批过 3 次可免审（PRD 3
 -- 充值协作（REQ-046）不入 approvals：只发 outbound_messages(kind='recharge_request')
 
 -- ── 3.3 8 维度透视缺失 5 维的数据源（列先冻结；ad 级字段名待 OS agent 联调确认 ad_realtime payload）
-ALTER TABLE accounts ADD COLUMN agent_type TEXT;         -- agency|self；二级"代理商名"存 tags
-ALTER TABLE accounts ADD COLUMN is_ubp BOOLEAN;
-ALTER TABLE ad_entities ADD COLUMN resource_position TEXT;
-ALTER TABLE ad_entities ADD COLUMN bid_tool TEXT;
+ALTER TABLE accounts ADD COLUMN agent_type TEXT;         -- agency|self；来源=ka-data custom_tags["代投/自投"]（账户级、稀疏，"无匹配"→NULL；OS 2026-09-05 实证 ad 级无此维）
+ALTER TABLE accounts ADD COLUMN is_ubp BOOLEAN;          -- OS 2026-09-05 实证：**全源无 UBP 字段**；列保留但 ubp 维度永久 DIMENSION_UNSUPPORTED 直到有源
+ALTER TABLE ad_entities ADD COLUMN resource_position TEXT; -- 直取 ka-data dwd_adgroup_daily.resource_position（INVENTORY_UNIVERSAL|KUAI_SHOU_YOU_XUAN|KUAI_SHOU_LIAN_MENG|OPEN_SCREEN|ENCOURAGE_VIDEO…）或 MAPI unit scene_id
+ALTER TABLE ad_entities ADD COLUMN bid_tool TEXT;        -- 派生枚举：ka-data bid_tool 列全空，由 MAPI unit bid_type+ocpx_action_type(+unit_type) 映射，映射表 R-012 从 ka-src-0007 提案
 -- deduction_range 不落列：domain 按 deduction_rate 分桶 [0,10%)|[10,30%)|[30%,+)
 
 -- ── 4.5 加/关账户
@@ -722,3 +724,110 @@ CREATE TABLE card_callbacks (
   idempotency_key TEXT NOT NULL UNIQUE, hash_verified BOOLEAN,
   result TEXT, result_ref TEXT, at TIMESTAMPTZ DEFAULT now()
 );
+
+
+-- =====================================================================
+-- v1.4.1 新增（2026-09-05 arch；老板口径：日预算卡任务级、会中途改；Codex R-012 并入 migration 014）
+-- =====================================================================
+CREATE TABLE task_budget_history (   -- 日预算卡版本化，写法与 assessment_price_history 完全对称
+  id BIGSERIAL PRIMARY KEY, workspace_id UUID NOT NULL,
+  task_id TEXT NOT NULL,
+  FOREIGN KEY (workspace_id, task_id) REFERENCES tasks(workspace_id, task_id),
+  daily_budget_cap NUMERIC NOT NULL,   -- 元/日；任务级；无卡的任务不落行（使用率显 missing）
+  effective_date DATE NOT NULL,
+  changed_by UUID, evidence_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (workspace_id, task_id, effective_date)
+);
+-- tasks.budget 仍是任务期总预算，二者并存：日预算卡管"今天最多花多少"，总预算管"整期最多花多少"
+
+-- v1.4.1 补（2026-09-05 晚）：返点折算按资料原样存"乘/除 + 系数"，不让人记倒数。进 migration 012（R-010a1），seed 由 R-013 在 012 之后写
+ALTER TABLE channel_coefficients ADD COLUMN op TEXT NOT NULL DEFAULT 'divide' CHECK (op IN ('multiply','divide'));
+-- cash_cost = (账面消耗 − 赔付) op coefficient。首批四行（来源 ka-src-0010 ka-data cash_formulas + ka-src-0003 §3.1）：
+--   KUAISHOU multiply 0.7812 ｜ TENCENT divide 1.045 ｜ TOUTIAO divide 1.09 ｜ BAIDU divide 1.51
+-- 备注：BAIDU/TENCENT 赔付≈消耗 → 现金贡献≈0（资料原话）；生效日期由老板给
+
+
+-- =====================================================================
+-- v1.5 新增（2026-09-05 arch；13 条"有名无 DTO"冻结；Codex R-014 出 migration 015）
+-- =====================================================================
+CREATE TABLE external_changes (        -- 4.3/11.7 带外变更：结构同步比对出的非本系统变更
+  id BIGSERIAL PRIMARY KEY, workspace_id UUID NOT NULL,
+  media TEXT NOT NULL, account_id TEXT NOT NULL,
+  FOREIGN KEY (workspace_id, media, account_id) REFERENCES accounts(workspace_id, media, account_id),
+  target_type TEXT NOT NULL, target_id TEXT NOT NULL, field TEXT NOT NULL,   -- campaign|unit|creative；bid|budget|status|schedule
+  from_value JSONB, to_value JSONB,     -- typed value，与 changeset_items 同构
+  detected_at TIMESTAMPTZ NOT NULL DEFAULT now(), sync_run_id UUID,
+  linked_work_item_id UUID
+);
+CREATE INDEX idx_external_changes_account ON external_changes(workspace_id, media, account_id, detected_at DESC);
+
+CREATE TABLE account_transfers (        -- 4.10 交接
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  from_user_id UUID NOT NULL, to_user_id UUID NOT NULL, initiated_by UUID NOT NULL,
+  items JSONB NOT NULL,                 -- [{media, account_id}]
+  include JSONB NOT NULL,               -- {work_items, dispatches, starred}
+  moved JSONB,                          -- {accounts, work_items, dispatches}
+  note TEXT, created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE user_watchlists (          -- 3.5 盯盘名单（个人）
+  workspace_id UUID NOT NULL, user_id UUID NOT NULL,
+  items JSONB NOT NULL DEFAULT '[]',    -- [{media, account_id}]
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, user_id)
+);
+
+CREATE TABLE saved_views (              -- 3.10 个人视图（列/筛选/排序/窗口）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  owner_user_id UUID NOT NULL, page TEXT NOT NULL,   -- data.table|data.pivot|accounts|tasks|work_items|data.live
+  name TEXT NOT NULL, config JSONB NOT NULL,         -- {version:"view/v1", filters, columns, sort, window}
+  is_shared BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (workspace_id, owner_user_id, page, name)
+);
+
+CREATE TABLE exports (                  -- 7.4 任务化导出
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL, user_id UUID NOT NULL,
+  kind TEXT NOT NULL,                   -- query|view|report
+  ref JSONB NOT NULL, format TEXT NOT NULL,        -- xlsx|png|pdf
+  status TEXT NOT NULL DEFAULT 'queued', -- queued|running|done|failed
+  file_ref TEXT, bytes BIGINT, error TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(), finished_at TIMESTAMPTZ, expires_at TIMESTAMPTZ
+);
+
+CREATE TABLE capabilities (             -- 5.7 Capability Registry（B7 内核的持久化）
+  key TEXT PRIMARY KEY, name TEXT NOT NULL,
+  category TEXT NOT NULL,               -- query|write|infra|account|material
+  form_schema JSONB NOT NULL,           -- JSON Schema
+  permission TEXT NOT NULL, version TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'documented_unverified',   -- documented_unverified|verified|disabled
+  executor TEXT NOT NULL,               -- product_direct|runtime|multica_run
+  media TEXT[] NOT NULL DEFAULT '{}',
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE decision_policies (        -- 10.11 分级决策阈值（每 workspace 一行）
+  workspace_id UUID PRIMARY KEY,
+  policy JSONB NOT NULL,                -- {confidenceMin, historicalSuccessRateMin, recentManualOpsWindowHours, dailyCapCny}
+  updated_by UUID, updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE report_runs (              -- 1.8 早报 / 3.10 定时推 的生成记录
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL, user_id UUID,
+  kind TEXT NOT NULL,                   -- daily_brief|report_schedule
+  ref JSONB,                            -- {date} | {subscription_id, view_id|report_config_id}
+  status TEXT NOT NULL,                 -- pending_data|running|ready|failed
+  data_as_of TIMESTAMPTZ, output_ref TEXT, error TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(), finished_at TIMESTAMPTZ,
+  UNIQUE (workspace_id, user_id, kind, ref)
+);
+
+ALTER TABLE report_configs ADD COLUMN is_shared BOOLEAN DEFAULT false;   -- 3.8
+ALTER TABLE report_configs ADD COLUMN version TEXT DEFAULT 'report-config/v1';
+ALTER TABLE report_configs ADD COLUMN updated_at TIMESTAMPTZ DEFAULT now();
+
+-- 12.8 缺数期规则抑制（2026-09-05 arch；进 migration 012，R-010a1 出、R-010a2 引擎实现）
+ALTER TABLE alert_rules ADD COLUMN availability_policy TEXT NOT NULL DEFAULT 'suppress'
+  CHECK (availability_policy IN ('suppress','evaluate_available_only'));   -- 见 metrics.md「缺数期规则抑制」；无"按 0 代入"选项
+ALTER TABLE alert_rules ADD COLUMN data_freshness_max_hours INT;            -- NULL=按源默认（实时 6h / 离线 30h）

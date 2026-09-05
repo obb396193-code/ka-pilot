@@ -678,3 +678,123 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ### 错误码追加
 
 `NOT_IMPLEMENTED(501) | DIMENSION_UNSUPPORTED | CARD_HASH_MISMATCH | APPROVAL_REQUIRED | ACCOUNT_HAS_OPEN_ITEMS`
+
+
+## v1.4.1 追加（2026-09-05 arch；窗口化口径 + 日预算卡）
+
+- **语义查询窗口**：`summary/trend/table/dimension` 的 `params` 统一接受 `date_from/date_to`（`date` 单日 = 两者相等的糖）；Registry 冻结每个 queryId 的最长范围。窗口内指标按 `metrics.md`「窗口化口径」**先聚合再相除**，响应 `lineage` 加 `window:{from,to,preset?}`。前端不得用日值自己累加。（R-010a1）
+- **日预算卡**（任务级、版本化，`task_budget_history`）：
+  - `POST /api/v1/tasks/:id/daily-budget-cap` `{daily_budget_cap, effective_date, evidence_url?}` → `{task_id, old_cap, new_cap, effective_date}`；不触发重算（预算不影响历史指标），写 timeline。
+  - `GET /tasks/:id` overview 加 `daily_budget_cap:{current, effective_date, history_count}`（无卡 → null）与 `budget_usage_rate`（`RatioValue`，当日）。
+  - timeline `kind` 枚举加 `daily_budget_cap`。
+  - 工作台六 KPI 的 `summary` 加 `budget_usage_rate`（个人空间：本人任务加权；无卡任务不计）。（R-012）
+- **考核口径=现金**（2026-09-05 老板纠正）：`on_target/cost_space/cost_status/外推` 全部按 `cash_cost`；`summary` 同时返回 `cost`（账面）与 `cash_cost` 两组，前端并排展示不混用。
+- **色标规则**（前端只按后端给的 `status` 上色，不自算）：`summary`/任务 overview 返回 `cost_status: "green"|"yellow"|"red"` + `cost_status_reason`（`"day_over_window_ok"` 等），按 metrics.md 容忍带规则由后端算；容忍百分比来自个人视图设置（默认 0）。
+
+- **口径设置与变更记录**（老板 2026-09-05："系数不常变但要有地方改；考核价这类常变的都要留变更记录"）：
+  - 三张版本表都已是"只增不改"：`assessment_price_history`（考核价）、`task_budget_history`（日预算卡）、`channel_coefficients`（返点折算，含 `op`）——每行 `effective_date + changed_by + evidence_url + created_at`，改一次落一行，旧行永不覆盖。
+  - 编辑入口：考核价/日预算卡在**任务详情·总览**（已有 `POST /tasks/:id/assessment-price`、`/daily-budget-cap`）；返点折算在**设置 · 口径**：
+    - `GET /api/v1/settings/channel-coefficients` → `{items:[{media, op, coefficient, effective_date, changed_by, evidence_url, history_count}]}`（每媒体当前生效行）
+    - `GET /api/v1/settings/channel-coefficients/:media/history` → 全部版本倒序
+    - `POST /api/v1/settings/channel-coefficients` `{media, op, coefficient, effective_date, evidence_url?}` → 追加新版本；权限 personal 空间 admin；team 空间 403（团队数据用 ka-data 已算好的 `cash_yuan`，不在本系统改系数）；`effective_date` 早于已有最新生效日 → 允许（回溯改口径）但响应带 `recomputed_days`，与考核价改价同一重算链。
+  - **统一变更记录** `GET /api/v1/settings/change-log?kinds=assessment_price|daily_budget_cap|channel_coefficient&task_id=&media=&cursor=` → `{items:[{at, kind, scope:{task_id?|media?}, old_value, new_value, effective_date, changed_by:{user_id,name}, evidence_url}], next_cursor}`，三表 UNION 倒序；任务详情 timeline 里的 `assessment_price/daily_budget_cap` 是它的子集。
+  - 落点：R-012（端点）；前端 设置页「口径」tab + 任务详情总览（F-006 后续页）。
+
+- **媒体写业务码与 UNKNOWN（2026-09-05 OS 实证后定稿）**：kuaishou-cli 无本地错误码表，只透传 MAPI `{code, message, request_id}`（`code≠0` 抛错）；读超时为裸 `TimeoutError`（未包裹）、连接超时为 `KuaishouApiError`。契约：执行器把**任何非成功返回（含裸异常）一律记 `unknown`**；`request_id` 仅成功响应才有，**无客户端幂等键**，所以 UNKNOWN 不得盲目重试——必须先回读（`accounts/:media/:id/structure` 或 unit list）比对目标字段，回读显示未生效才允许重试一次并记 `attempt+1`，仍 unknown 转人工。业务码含义表由 R-012 从 ka-src-0007 MAPI 文档提案后追加此处。真写测试广告主：89059600（有 unit）。
+- **8 维透视枚举（2026-09-05 定稿）**：`dimension ∈ task|biz|account|agent_type|resource_position|bid_tool|ubp|deduction_range`；`ubp` 永久 `DIMENSION_UNSUPPORTED`（无源）；`agent_type` 只支持账户级聚合（ad 级请求 → `DIMENSION_UNSUPPORTED`）；`bid_tool` 为派生枚举，映射表未提案前返回 `DIMENSION_UNSUPPORTED`。
+
+
+## v1.4.1 补：`account.summary/v3` 行结构与 fixtures（2026-09-05 arch；fixture 即契约；**编号 v3**——v2 已由 Codex R-009 `bdc5273` 落地为"九指标三态"，本节是 v2 之上加窗口与考核块，strict schema 下加字段即破坏兼容，故升 v3，R-010a1 实现）
+
+`packages/contract/fixtures/data-query/summary-window-v3-{green,yellow,cash-missing}.json`、`work-item-list/coverage-{complete,pending,undeterminable}.json`、`task-detail/overview{,-no-cap}.json`、`settings/{channel-coefficients,change-log}.json` 为**唯一权威样例**；后端 parity 测试直接读，前端 mock 直接用。
+
+`account.summary/v3` 单行（= v2 三态 metrics + `assessment` 块 + `lineage.window/workspaceKind`）：
+```jsonc
+{
+  "rowCount": 3, "accountCount": 3, "anomalyRows": 1,
+  "metrics": {                        // 全部 MetricValue 三态；账面与现金两组并排，不混
+    "cost": MV, "cashCost": MV, "exposure": MV, "click": MV, "conversion": MV, "realConversion": MV,
+    "costSpace": MV,                  // = Σ考核价×真实转化 − Σ现金消耗（窗口内）
+    "wakeUv": MV, "potentialUv": MV,
+    "ratios": { "ctr": RV, "cvr": RV, "realCpa": RV /*账面，只展示*/, "cashCpa": RV /*考核用*/, "gap": RV, "potentialRate": RV, "biConversionRate": RV }
+  },
+  "assessment": {
+    "price": {"value": 38.0, "effectiveDate": "2026-09-01"} | null,
+    "onTarget": true | false | null,  // null = 现金或考核价缺
+    "costStatus": "green" | "yellow" | "red" | null,
+    "costStatusReason": "window_ok" | "day_over_window_ok" | "window_over" | "cash_missing" | "assessment_missing",
+    "budgetUsageRate": RV             // 当日消耗 / 当日生效日预算卡；无卡 → undefined
+  }
+}
+```
+`lineage` 加 `workspaceKind` 与 `window:{from,to,preset}`；`preset ∈ today|yesterday|last_7d|month_to_date|last_month|task_period|custom`。`account.trend/v3` = `ds + 同构 metrics`（不含 assessment）。v2（R-009）→ v3（R-010a1）切换时 fixtures 整体升级，前端不做双版本兼容。
+
+`GET /work-items` 的 `meta.coverage` 见「覆盖三态」；`GET /tasks/:id` overview 字段以 `task-detail/overview.json` 为准（`cost.projectedWindowCashCpa`/`affordableDailyCashCpa` 为 metrics.md 外推两式）。
+
+## v1.5 端点与 DTO（2026-09-05 arch；13 条"有名无 DTO"冻结；Codex R-014 出 migration 015）
+
+路径规范：账户级端点统一 `:media/:id` 三键形态；旧 `/accounts/:id` 形态作废。
+
+### 4.2 账户小传 `GET /api/v1/accounts/:media/:id?window_from&window_to`
+```jsonc
+{ "account": {"workspaceId","media","accountId","accountName","agentType","lifecycleStage","claimedAt","owner":{"userId","name"},"tags":[],"starred":bool},
+  "bio": { "openedAt": date|null, "openedBy": {"userId","name"}|null,
+           "tasks": [{"taskId","taskName","validFrom","validTo","current":bool}],
+           "assessment": {"price","effectiveDate"}|null, "onTarget": bool|null, "costStatus": "green|yellow|red"|null },
+  "balance": { "asOf": ts|null, "balance": MV, "rechargeBalance": MV, "contractRebate": MV, "directRebate": MV, "extendedBalance": MV, "sharedWallet": MV },  // fund 七字段，缺=missing
+  "velocity": { "costPerHour": MV, "asOf": ts|null },
+  "cutoff": { "hours": MV, "at": ts|null, "state": "ok|warning|critical|unknown" },   // 断量倒计时 = balance/velocity；velocity=0 或缺 → unknown
+  "summary": <account.summary/v2 单行，窗口=参数> }
+```
+
+### 4.3 操作史 `GET /api/v1/accounts/:media/:id/timeline?from&to&kinds&cursor` 与图上叠加层
+- items：`{at, kind: "changeset"|"external_change"|"assessment_price"|"daily_budget_cap"|"dispatch"|"work_item"|"escalation"|"infra"|"transfer"|"mute", actor: {userId,name}|"system"|"external", summary, ref:{type,id}, detail?, t1Result?: {"observedAt","metricDeltas":{"cashCpa":RV,"cost":MV,"realConversion":MV},"note"}}`，倒序，`next_cursor`。
+- `GET .../timeline/overlay?from&to` → `{points:[{at, kind, label, ref}]}`，供趋势图打点（只回 kind∈changeset|external_change|assessment_price|daily_budget_cap）。
+- `external_change`（带外变更，11.7 检测语义一并冻）：结构同步每轮比对 `ad_entities` 的 bid/budget/status/schedule 快照，非本系统变更集产生的差异 → 写 `external_changes` 一行 + 关联工作项标「已在后台处理」。
+
+### 4.10 交接
+- `POST /api/v1/accounts/transfer` `{items:[{media,account_id}], to_user_id, include:{work_items:true, dispatches:true, starred:true}, note?}` → `{transfer_id, moved:{accounts, work_items, dispatches}, notified_user_ids[]}`。语义：personal 空间内 `account_access_grants` 从 from→to（原 grant 置 revoked_at，新建 grant）；相关 open 工作项 assignee 改 to；派发单 receiver 改 to；星标随账户；写 timeline `transfer`；双方各一条 outbound 通知。
+- `POST /api/v1/users/:id/transfer-all` `{to_user_id, note?}`（admin；离职场景）= 该用户全部账户按上式打包。
+- 冲突：目标用户非 active 或非同空间 → 403；账户有 running 变更集 → 409 `TRANSFER_BLOCKED_BY_CHANGESET`。
+
+### 3.5 小时盯盘 `POST /api/v1/query {queryId:"account.hourly", params:{date, media, accountIds?, hhFrom?, hhTo?}}`
+- 行 `(media, accountId, hh)`：`{cumulative:{cost:MV, cashCost:MV, conversion:MV, realConversion:MV}, delta:{同上四项}, ratios:{cashCpa:RV, realCpa:RV}, velocity:{costPerHour:MV}, projectedDayCost:MV, budgetUsage:RV, lastSyncAt}`；hh 0..23，24=全天。缺小时=missing 不补 0。
+- 盯盘名单：`GET/PUT /api/v1/me/watchlist` `{items:[{media,account_id}]}`（个人视图的一种，表 `user_watchlists`）。
+
+### 3.6 Gap 对账 `POST /api/v1/query {queryId:"account.gap", params:{date_from,date_to,media,accountIds?,groupBy:"account"|"task"|"biz"}}`
+- 行：`{group, conversion:MV /*回传*/, realConversion:MV /*BI*/, gap:RV /*conv/real−1*/, preDeductionGap:RV, deductionRate:RV, gapStatus:"normal"|"high"|"missing"}`；`high` 阈值来自规则引擎 gap 规则当前版本（响应 `meta.ruleSetVersion`）。
+
+### 3.10 个人视图 + 定时推
+- 表 `saved_views`；`GET /api/v1/me/views?page=` / `POST` `{page, name, config:{filters, columns, sort, window}, is_shared?}` / `PATCH /:id` / `DELETE /:id`。`config.version="view/v1"`。
+- 定时推 = `subscriptions.kind="report_schedule"`：`POST /api/v1/subscriptions` `{kind:"report_schedule", config:{view_id|report_config_id, cron, format:"png"|"xlsx", target:"group"|"dm", target_ref}}`；到点生成 `report_runs` 一行 → 渲染 → `outbound_messages`。
+
+### 7.4 导出
+- `POST /api/v1/export` `{kind:"query"|"view"|"report", ref:{queryId,params}|{view_id}|{report_config_id}, format:"xlsx"|"png"|"pdf"}` → `{export_id, status:"queued"}`；`GET /api/v1/exports/:id` → `{status:"queued"|"running"|"done"|"failed", file:{url /*临时签名，TTL 10 分钟*/, bytes, expires_at}|null, error|null}`。PNG/PDF 走网关 Chromium 渲染管线，必带口径戳 + 数据日期 + 空间/来源水印；xlsx 模板化（表头=中文指标名+口径徽章列）。表 `exports`。
+
+### 9.1 接入管理
+- `GET /api/v1/integrations/connections` → `[{id, provider, status:"connected"|"degraded"|"disconnected", health, lastCheckedAt, config:{clientIdMasked, robots:[{robot_id,name}], groups:[{conversation_id,name}]}}]`；`POST .../:id/check` → 主动探活写 `health/last_checked_at`。
+- 身份映射：`GET/POST /api/v1/integrations/identity-mappings` `{external_user_id, provider, user_id}` → 落 `identity_mappings`（v1.4 已有表），`verified_at` 由首次回调实名命中写。secret 只存 ref。
+
+### 9.6 消息记录
+- `GET /api/v1/integrations/messages?direction=in|out&status=&kind=&cursor=` → `{items:[{id, direction, channel, target /*脱敏*/, kind, status:"queued"|"sent"|"failed"|"dead"|"received"|"processed", attempts, failReason, createdAt, sentAt|processedAt, ref}], next_cursor}`（`outbound_messages` ∪ `inbound_events`）。
+- `POST .../messages/:id/retry`：出站 failed → 重排队；入站 dead → admin 重置 `attempts=0, last_error=NULL`（留原行，加一条 `retried_by`）。
+
+### 5.7 操作工具箱（Capability Registry）
+- 表 `capabilities`；`GET /api/v1/capabilities?category=` → `[{key, name, category:"query"|"write"|"infra"|"account"|"material", form_schema /*JSON Schema*/, permission, version, status:"documented_unverified"|"verified"|"disabled", executor:"product_direct"|"runtime"|"multica_run", media:[]}]`。
+- `POST /api/v1/capabilities/:key/invoke` `{params, account:{media,account_id}}`：`category=query` → `{result_ref}`；`write` → **只生成变更集草稿** `{changeset_id}`（走 dry-run/confirm 链，永不直接执行）；`infra` → `infra_requests` 一行；`disabled/unverified` → 409 `CAPABILITY_UNAVAILABLE`。页面按钮与工作流节点同源调用。
+
+### 10.11 分级决策
+- 工作项详情加 `decision:{tier:"auto"|"card_confirm"|"proposal"|"investigate"|"escalate", gates:{confidence:RV, historicalSuccessRate:RV, recentManualOps:int, reversible:bool, withinCap:bool}, overriddenBy:"history"|null, reason}`。`auto` 只在规则处于自治度第 3 档且四门全过（PRD §3.9）；否则最高 `card_confirm`。
+- 策略：`GET/PUT /api/v1/settings/decision-policy` → `decision_policies` 一行 JSONB（阈值：confidence≥0.9、historicalSuccessRate≥0.8、recentManualOpsWindowHours=24、dailyCapCny）。
+
+### 1.8 早报 job
+- `GET /api/v1/reports/daily-brief?date=` → `{date, status:"ready"|"pending_data"|"failed", generatedAt, dataAsOf, sections:[...日报 12 模块的 optimizer 子集], queueSummary:{p0,p1,opportunity,coverage:<meta.coverage>}, pushStatus:"not_sent"|"sent"|"failed"}`。
+- job `daily_brief_generate`（每 workspace×user）：触发=业务日切 03:00 后且该 workspace 当日 `etl_full` done；数据未就绪 → `pending_data` 不生成假早报；推送走 `subscriptions.kind="daily_report"`；记录 `report_runs`。
+
+### 3.8 报表 configs
+- `report_configs.config` 冻结为 `report-config/v1`：`{version, dataset:{queryId, params}, groupBy:[dim], columns:[{metric, label?, format?}], sort:[{by,dir}], filters:[...], highlight:[{metric, op, value, style}], layout:{type:"table"|"chart", chart?:{kind, x, y[]}}}`；表加 `is_shared BOOLEAN, version TEXT, updated_at`。
+- `POST /api/v1/reports/render {config|config_id, window?}` → `{rows:[canonical 行], columns:[...], highlights:[{rowIndex, metric, style}], lineage}`；Agent 帮做表（3.9）不在本版。
+
+派活：以上 → **R-014**（migration 015 + HTTP + BFF），排 R-012 后；fixtures 由 arch 随 R-014 开工前补。
+
+- **缺数期规则抑制（12.8，2026-09-05）**：语义在 `metrics.md`「缺数期规则抑制」；`POST /api/v1/rules/:id/explain` 响应 `leaves[].availability` + `not_triggered_reason ∈ CONDITION_FALSE | METRIC_MISSING | SOURCE_STALE | COLD_START_RELAXED | INITIAL_FULL_PENDING | MUTED | DEDUPED`；`GET /work-items` 的 `meta.coverage.pending/undeterminable` 由本规则产生；规则表加 `availability_policy/data_freshness_max_hours`。

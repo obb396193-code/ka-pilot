@@ -2997,6 +2997,8 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 | 7 | 工程风险=模块多、首次闭环靠后；每批加"用户验收句"；R-010a 太大 | ✅ | **采纳**：协作规范加验收句规则；R-010a 拆 a1「每天能看」/a2「每天能处理」 | 协作规范 / inbox-codex R-010 |
 | 8 | 契约旧规则与新规则叠在一起（api.md DATA-ROUTE 与 BE-001 矛盾；缺口地图"待契约补=0"但 14 行仍挂） | ✅属实 | **采纳**：DATA-ROUTE-001 重写为唯一规则并注明取代关系；缺口地图 14 行同步到 v1.4 状态 | api.md / 缺口地图 |
 
+**老板答复（2026-09-05）**：#2 不设北极星——"判断是优化师自己做的，产品把数据呈现给他们"→ PRD §1.3 改为「优化师三问」；#3 改：命名「操作后观察结果」+ 升档四独立门（PRD §3.9 已改）；#6 顺序改为登录→账户池→数据分析→工作台→任务（inbox-fe/提示词/页面规划已改）。
+
 坚定保留项（审查也认可）：看板为主对话为辅、确定性计算与 Agent 分工、四入口共用原子能力、官方模板与自由编排共存、执行未知态/凭证归属/账户三键/失败保旧快照、CR 复用。对外表达改为「复用技术已有执行能力，把 KA 的经营场景、数据口径和工作流程产品化」——老板定。
 
 ---
@@ -3091,3 +3093,135 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - **请确认R013顺序**：原要求R009后、R010前seed；最新追加四渠道系数seed依赖R010a1的012.op。建议保持业务顺序，把012迁移基础先落（不提前开业务路由），再R013空库验收，再R010a1功能；或将系数seed分后补子批。不会自造有效日期或倒数系数。此点不阻塞当前R009。
 - **请确认v2机械适配路径**：R009纪律写apps/web非api不动，但之前已许可SessionBFF库；v2普通指标变对象，`apps/web/lib/data`现有contracts/adapters/types与测试需要同步解包available值，否则旧页面把对象当数字。建议授权只改这些非视觉的数据契约适配（不改React页面/布局/样式），或由fe承担；后端先完成Domain/DB/Worker。本批不会静默越过视觉边界。
 - R011团队staging与R012素材/结算将按先提案后冻结执行；旧source-neutral Task6草稿不直接复用，内网验证仍交OS。所有未审SHA保留，最终由arch整合，真实媒体写不因持续目标而开启。
+
+---
+
+### P-039 ✅审查通过（有 1 条改动要求）｜R-009 第二批子交付 `e69ea1e` + `5dfbbad`｜arch 2026-09-05
+
+> Codex 的 P-039 回执写在 `be/r009` 分支的本文件（合流时会再冲突一次，保留双方）。以下是 arch 逐行审查结论。
+
+| 项 | 结论 |
+|---|---|
+| `e69ea1e` BFF 假 token | ✅ `forwardDataQuery` 只在 `sessionCookie` 存在时带 cookie；缺失/空/畸形直接 401 不调上游，测试覆盖 |
+| `5dfbbad` 域函数 `computeBackfillProgress` | ✅ 纯函数，从四类持久化 job（backfill_historical/backfill_day/canonical_merge/data_quality_check）推导五态 + failed_stage；raw 完成只到 raw_done、质量过才 done；任一阶段失败 → failed + 阶段。与 schema v1.2 枚举一致 |
+| `5dfbbad` Repository | ✅ 证据查询限定 `workspace_id + backfillId + credential_owner_user_id`；`finished_at` 仅终态写、非终态清空；恢复扫描扩到 running/raw_done/canonical_done |
+| CHECK 约束 | ✅ 补了 P-038 P2-2；拒绝 null/partial_failed/未知 stage |
+| 旧 `done` 置 `running` 重验 | ✅ 方向对（旧 done 只证明 raw）；生产无历史数据，实际是 no-op |
+| **迁移文件命名** | ❌ `011_r009_backfill_state.cjs` 与已合 `011_contract_v1_2_p0.cjs` 撞号。契约约定 **011 = v1.2 整体**，一版一文件；同号靠文件名排序是隐式约定，后人看不出顺序。**要求：把 CHECK + 重验 UPDATE 折进 `011_contract_v1_2_p0.cjs`**（011 尚未部署到任何环境，本地库 `down` 再 `up`），删追加文件；迁移总数回到 11；相关 up/down 计数测试改回。不接受 011a/011b，不占 012 |
+| 测试 | Codex 自报 Domain 497 / DB 182 真 PG / Worker 628+2 / Web 78，四包 typecheck/lint 过。arch **在批次合流时统一独立复跑**（与 P-038 同法），子交付阶段不复跑 |
+| 部署条件 | ✅ 采纳「停 Worker → 迁移 → 启动恢复」，写进 runbook 由 R-013 一并补 §2.5 |
+
+**继续指令**：不等审，按 #3 P0-05 → #4 → #5 → #6 → #2 三态 → #8 绑源 继续；折 011 在批次末做即可。#8 绑源必须按 2026-09-05 重写后的 DATA-ROUTE-001：team + `KA_DATA_ENABLED=false` → `503 SOURCE_UNAVAILABLE`，**不回退 platform**；lineage 顺手加 `workspaceKind`。批次末一次 `--no-ff` 合流；若 fe 账户池页先需要 #8，arch 会提前合一次。
+
+
+---
+
+### P-041 ✅审查通过｜R-009 P0-05 + P0-13 子交付 `010e4bb` + `5228b44`｜arch 2026-09-05
+
+| 项 | 结论 |
+|---|---|
+| `010e4bb` P0-05 排斥 | ✅ 重叠检查改为按 (media, account) 跨任务；advisory lock 键改 [media, accountId]；只捕获 `23P01` 且约束名 = 011 的 `task_accounts_account_validity_excl`（已核对，映射会真触发）→ typed `TASK_ACCOUNT_OVERLAP` 409。**HTTP 409 待 R-010a2 接线**，be 未冒充 |
+| `010e4bb` 考核价取值 | ✅ 先按三键+有效期取当日唯一 relation，再取该任务 `effective_date<=ds` 最新版；无价不借他任务、未来价排除 |
+| `5228b44` P0-13 双主体 | ✅ `assertActiveActors`：workspace 必须 personal、initiator 与 credential owner 必须同空间 active（FOR SHARE）；在 create/confirm/beginExecution/Worker 读当前值前/begin 各校一次；items 三键必须等父记录否则 403 `FORBIDDEN` |
+| 已发出的媒体操作不因撤销回滚 | ✅ 如实声明，不宣称远程原子撤回 |
+| 测试 | 自报 Domain 497 / DB 196 真 PG / Worker 636+2 / Web 78；arch 批末合流时独立复跑 |
+| 依赖门 | Web `npm audit` 5 项（fast-uri/qs/PostCSS/sharp，Next 15.5.23 链路）**是前端范围**，转 inbox-fe；后端三包 0 |
+| 接下来 | P0-07 → P0-12 → P0-04 三态/v2 → 绑源（按 9-5 重写的 DATA-ROUTE-001）→ 双空间集成反例 → 折 011。窗口化口径 v1.4.1（含 `op` 列）已冻，属 R-010a1/R-012，不进本批 |
+
+
+---
+
+### P-042 ✅审查通过｜R-009 P0-07 工作流单执行器 + effect outbox `a044e54`｜arch 2026-09-05
+
+| 项 | 结论 |
+|---|---|
+| 单执行者 fencing | ✅ `claimExecutor` 原子 UPDATE（token 为空或 lease 过期才能领，DB 时钟）；`lockWorkflowExecutor` 先 `FOR UPDATE` 再比 token、再用 `clock_timestamp()` 校 lease——顺序对（锁后校时，不吃等锁时间） |
+| 无 token 入口 | ✅ `compareAndSetRunStatus`/`appendEvent`/renew/release/reserve/finish 全部过锁；旧 token 即使无人接管也不能续活 |
+| effect outbox | ✅ `reserveEffect` INSERT pending `ON CONFLICT (run_id,node_id,attempt,phase) DO NOTHING` → 读回；effect_key 不一致抛错；`acquired=false` 且 pending/unknown → 流程停 unknown **不重发**；done/failed → 读回归一化结果不重放。与 v1.2 裁决逐字一致 |
+| 崩溃恢复 | ✅ 调用异常 → `finishEffect(unknown)` + run unknown；结果落库后 event 崩溃可从 effect 读回 |
+| 续租 | ✅ 长操作前 `renewExecutor(timeout+30s)`；命令结束 release |
+| P2（不阻塞） | `claimExecutor` 不看 run 终态（可领已结束的 run，后续 CAS 会失败，无害）；`withExecutor` 里 `loadAuthorized` 调两次，可合一 |
+| 测试 | 自报 Domain 497 / DB 199 / Worker 641+2 / Web 78；真 PG 首轮 4 红暴露接线问题后修——这是真跑过的证据 |
+
+### P-043 ✅审查通过｜R-009 P0-12 钉钉 durable inbox `c6603d3`｜arch 2026-09-05
+
+| 项 | 结论 |
+|---|---|
+| 先落库再 ACK | ✅ `receiveRobotMessage`：`await persist()` 成功才 `ack(SUCCESS)`；持久化失败不 ACK 让钉钉重投；同 event_id 不同 workspace/provider → 抛错不 ACK（防串租户） |
+| 领取/fencing | ✅ `SKIP LOCKED` 领取，`attempts+1` 当代际；`mutate` 先按 id+scope+attempts `FOR UPDATE` 再用 DB 时钟校 lease |
+| 失败/dead | ✅ 失败不删行，`lease_until` 退避 min(300, 2^attempts)s；耗尽标 `last_error=ATTEMPTS_EXHAUSTED`，不加未冻结 status 列——**arch 已把这个 dead 定义写进 schema.sql 注释冻结** |
+| 落盘加密 | ✅ payload/回复 checkpoint AES-256-GCM，AAD 绑 workspace/provider/event/purpose；新必填 Secret `GATEWAY_INBOX_KEY_HEX`（网关第二阶段部署时进 OS 配置表） |
+| 回复幂等 | ✅ 先 checkpoint 回复文本再发；重试只重发不重查业务；"远端发成功本地 complete 前崩溃可能重复文本"如实声明 |
+| 启动不跑 migration | ✅ 改为部署维护步骤；runbook 已加 |
+| 边界 | ✅ 任务创建/Agent enqueue 仍关；`kind='robot_message'` 专用消费者，卡片回调走 v1.4 `card_callbacks`（schema 注释已注明） |
+| P2（不阻塞） | dead 标记是懒触发（下次领取时才标）；死信可见性等 R-012 卡片/死信 UI |
+| 测试 | 自报 Domain 497 / DB 205 / Worker 641+2 / Gateway 36（含 2 真 PG）/ Web 78；五包 typecheck/lint 过 |
+
+**继续**：P0-04 三态/v2（fixtures 升 v2）→ #8 绑源（按重写后 DATA-ROUTE-001：team 无源 503 不回退，lineage 加 workspaceKind）→ 双空间集成反例 → 折 011 → merge main → 整批回执。arch 批末独立复跑五包后一次 `--no-ff` 合流。
+
+
+---
+
+### A-001 老批次逐行审计：B3 安全执行 + B23 鉴权（arch 2026-09-05；读的是 be/r009 头，含 P0-13 改动）
+
+读过的文件：`packages/domain/src/changesets.ts`、`packages/db/src/changeset-repository.ts`、`apps/worker/src/changesets/{types,changeset-execution-handler}.ts`、`packages/db/src/auth-repository.ts`、`apps/worker/src/auth/{session-http,session-auth-service,internal-test-login-provider,business-read-auth}.ts`、`apps/web/lib/data/{auth-context,internal-api-bff,bff,session-client}.ts`、`apps/web/app/api/internal/auth/*`、`http-server.ts` 鉴权行。
+
+#### B3 变更集 — ✅ 可保留；1 P1 缺口 + 2 P2 + 3 条已知待接线
+
+| 项 | 结论 |
+|---|---|
+| 状态机 | ✅ draft→confirmed→sent→executing→success/partial/failed/unknown；unknown→reconcile_*；success/partial→rolled_back；draft/confirmed/sent 可 expire；executing 崩溃后按 reconcile_required 处理（好） |
+| 聚合 | ✅ 任一 unknown→unknown；全成功→success；全失败→failed；否则 partial。反向草稿只取 success 项 |
+| create | ✅ 必带 media/account；双主体 active；work_item 必须同账户；items 三键落库 |
+| confirm | ✅ FOR UPDATE；已 confirmed 幂等返回；TTL 过期→expired；from 值复核→conflict；CAS status=draft |
+| beginExecution | ✅ 执行时再复核 TTL；attempt=MAX+1；execution_run 先落再置 executing |
+| completeExecution | ✅ 必须 executing；结果必须覆盖全部 item 恰一次；unknown 项不落 item_status（留给 reconcile） |
+| handler | ✅ 授权→读当前值→冲突则不执行→begin→执行；**执行器抛任何异常 = 全部 item unknown**（与 OS 实证后的 UNKNOWN 策略一致）；成功项排 T+1 |
+| **P1-1 `failed` 无 retry 迁移** | 契约 v1.3：`failed` 可 `POST /retry`（新 execution_run attempt+1）。domain `transitions.failed` 为空。→ **R-010a2 加 `retry: failed→confirmed`**（重走 from 复核+begin） |
+| P2-1 confirm 非 draft | `assertChangeSetConfirmable` 抛通用 Error → HTTP 会变 500。R-010a2 映射 409 `INVALID_STATE` |
+| P2-2 T+1 重复排程 | `finishTerminal` 每次重跑终态变更集都 `scheduleT1`；请 Codex 确认 FollowUpScheduler 按 (changeset,item) 幂等，否则重复 T+1 job |
+| P3 reconcile run | reconcile 记为 execution_run `dry_run=false`，语义上它是只读回查；建议 `request_payload.reconcile=true` 之外把 `dry_run` 置 true 或加 kind 列（不阻塞） |
+| 已知待接线（非缺陷） | dry-run 硬前置 + `dry_run_hash/confirm_hash`（v1.3，R-010a2#3）；typed value JSONB（同上）；"unknown 只读 reconcile 一次仍 unknown → 转人工 work_item"（R-010a2） |
+
+#### B23 鉴权 — ✅ 可保留；1 P1 漂移 + 3 P2
+
+| 项 | 结论 |
+|---|---|
+| token | ✅ 32 字节随机 base64url；库里只存 sha256 hash；lookup 先校 64hex |
+| cookie | ✅ `HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age`；BFF 回传时逐属性校验（无 Domain、恰一个 ka_session） |
+| 登录 | ✅ scrypt N=16384/r=8/p=1/32B + timingSafeEqual；未知用户名也走一次 scrypt（不泄露存在性）；失败与签发失败统一 401；凭证 JSON `.strict()` 拒绝多余键（明文密码字段进不来） |
+| 会话解析 | ✅ 每次请求 session→identity→membership→users(actor)→grants 全链 active；team 空间 grants 强制 []；personal 必须恰一个且成员数=1；schema 不合→403 INVALID_AUTH_STATE |
+| 切空间 | ✅ 锁行、校 revoked/expired/目标 membership active、**轮换 token**；不存在与无权同 403 |
+| 注销 | ✅ 幂等 COALESCE(revoked_at) |
+| BFF | ✅ origin 归一（无路径/凭证/query）；bearer ≥32 + timingSafeEqual；x-request-id 校验回显；请求/响应体有界；dev fallback 只在 `NODE_ENV=development` 且显式开关 |
+| **P1-2 BFF 契约漂移（合流后必炸）** | `apps/web/lib/data/bff.ts` 仍**强制注入 `dataView:"platform"`** 并断言 `mode==="platform"`。api.md（R-009 裁决）：普通请求出现 `dataView` → 后端 `400 INVALID_REQUEST`；团队空间 `mode=ka_data`。→ R-009 #8 绑源必须同时改 BFF（去 dataView；mode 按 session 的 workspaceKind 断言）+ `contracts.ts` 枚举，否则 #8 一合，所有数据查询 400 |
+| P2-3 登录无限速 | 内网 internal_test 阶段可接受；BUC 前加 per-username 失败退避（契约已有 `RATE_LIMITED` 码） |
+| P2-4 session 表无清理 | 过期/撤销行永不删；R-013b 加日清理 job（保留 30 天审计） |
+| P2-5 Secure cookie 依赖 https | 内网 web 若走 http，浏览器丢 cookie 登录必失败；runbook 已加"web 必须 https（a1 faas 域名默认 https）" |
+| P3 生产硬失败 | `KA_DATA_DEV_*` 在 production 被静默忽略；建议启动时若 `NODE_ENV=production` 且这些变量存在直接拒绝启动（R-013b） |
+
+**总判**：两簇不变量与逐行都成立，可进内网部署；P1-1/P1-2 进 R-009#8 与 R-010a2，未修前不合流 R-009 二批（#8 是二批内容，正好一起改）。
+
+
+---
+
+### P-044 中期审查（arch 2026-09-05 深夜；子交付逐笔看过，整批未合流）
+
+| SHA | 内容 | 结论 |
+|---|---|---|
+| `ee62db2` | 普通指标严格三态 schema + 聚合传播（任一 missing/error → missing；真 0 保留） | ✅ |
+| `3e7f932` | `semantic-query-metrics.ts` 去 `COALESCE(sum,0)`（全仓已无残留）；`CASE WHEN count(col)=count(*) THEN sum ELSE NULL`；**EXPECTED_METRIC_CTE** 按授权 tuple × 日期 `generate_series` LEFT JOIN，缺日缺户显 missing 不被省略；NaN/Infinity 不被 NULL 掩盖 | ✅ 正是 P0-04 要的"缺数期不能被 0 或省略掩盖" |
+| `35d2482` | 质量对账：任一 raw 缺/坏 → 总量 NULL、passed=NULL；回灌质量 job 因 unknown 失败 → 不能假 done | ✅ 与 P0-03 三阶段一致 |
+| `bdc5273` | 六 Query `/v2` 三态；两 Adapter 截断→指标 error、ratios undefined；KA SQL tuple×日期 LEFT JOIN；SQLite 坏值哨兵；三成功 fixtures 升 v2 | ✅；**编号冲突已由 arch 解决**：v1.4.1 窗口+考核块改为 **v3**（R-010a1），v2 = 本批三态 |
+| `9715125` | inbox 耗尽标记对齐冻结定义（最终失败立即 ATTEMPTS_EXHAUSTED + 失效租约；崩溃补标） | ✅ 比我注释更严，采纳 |
+| `7ced49d` | 路由策略内核：普通/管理员 strict schema；未知字段 400；admin 需 flag+entitlement，role=admin 不算；team 无 KA → 503 不回退 | ✅ 逐字对 DATA-ROUTE-001 重写版 |
+| `9b7968b` | HTTP：`POST /api/v1/admin/data/reconcile` 独立；删旧静默改 platform；审计只记 selectedSource/reason/requestId | ✅ |
+| `8f28a2a` | lineage.workspaceKind 由 Session 覆盖，上游自报不能改 | ✅ |
+
+**三个裁决（回答 Codex 追问）**
+1. **R-013 顺序**：采纳 Codex 建议——migration 012 作为 R-010a1 **第一子批先落**（只迁移不开业务路由）→ R-013 seed（bootstrap + 四渠道系数）→ R-010a1 功能。seed 拆两个命令：`seed:bootstrap`（身份/空间/成员/grants，不依赖 012）与 `seed:coefficients`（依赖 012 的 `op` 列）。
+2. **`apps/web/lib/data` 归 be**：授权 Codex 改 contracts/adapters/types/测试做 v2 解包与 BFF 去 dataView；不碰 React 页面/组件/样式。协作规范 §1 已改。
+3. **团队 reader 绑定**：采纳 `KA_DATA_TEAM_WORKSPACE_ID`（UUID，服务端配置）：一枚 reader ↔ 一个 team workspace；未配置或不匹配 → `503 SOURCE_UNAVAILABLE`；不接受浏览器参数、不依赖 team grants。runbook 已加。
+4. CTE：ka-src-0011 明确 sqlite 后端接受单条 WITH；性能/一致性交 OS 内网验。
+
+**剩余（合流前必须）**：BFF 去 dataView + 按 workspaceKind 断言 mode（A-001 P1-2）；`apps/web/lib/data` v2 解包；KA 启用双空间真实 PG 反例；折 011；merge main；**Docker/PG 恢复后四包+Gateway 全量重跑**（Codex 本地 55432 拒连期间的"非 PG 通过"不算门禁）。
