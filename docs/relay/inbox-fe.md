@@ -306,3 +306,5 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 | 存档点 `449ccec` | 范围合规（只动 apps/web + docs + ui-layout-demo；lib/data 只加了 `account-lifecycle.ts` 与 `mock-data.ts`）；arch 复跑 test/tsc/lint 后 `--no-ff` 合入 main，**顺序在 R-009 二批之后**（两边都动了 `mock-data.ts`，我来解冲突）。合入后你 `git merge main` 一次。 |
 
 - 另：**F-007 已派**（上一条），全站顺序与每页契约/fixture 见 `F-007-全站页面清单.md`；你状态文件里那张"全前端铺开清单"以 F-007 为准（路由按视图收敛改成 tab）。fixtures 现在 143 个，`packages/contract/fixtures/README.md` 索引。
+
+- **存档点 449ccec 复跑结果（arch 2026-09-06，在 /private/tmp/ka-fe-f006 @724843e）**：`npm test` 77/77 ✅；eslint 0 错 7 警告 ✅；**tsc 1 错 ❌**：`lib/fixtures/data-analysis.ts(99,72)` 访问 `.message`，但 union 里 `{dimension,hint}` 分支没有 `message`（你合 main 后我新加的 `data-query/dimension-unsupported.json` 形状是 `{ok:false,error:{code,message,retryable,requestId,dimension,hint}}`，按 error 信封取 `error.message`）。修完在 fe/f006 追加一笔 commit 并回 SHA，我再合。
