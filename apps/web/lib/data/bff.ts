@@ -104,7 +104,10 @@ export async function handleDataQueryRequest(request: Request, dependencies: Dep
 export async function forwardDataQuery(input: unknown, dependencies: ForwardDependencies): Promise<BffResult> {
   const request = new Request("http://localhost/api/internal/data-query", {
     method: "POST",
-    headers: { "content-type": "application/json", cookie: `ka_session=${dependencies.sessionCookie ?? "legacy-session-token-000000000000000001"}` },
+    headers: {
+      "content-type": "application/json",
+      ...(dependencies.sessionCookie === undefined ? {} : { cookie: `ka_session=${dependencies.sessionCookie}` }),
+    },
     body: JSON.stringify(input),
   })
   const response = await handleDataQueryRequest(request, {

@@ -11,6 +11,21 @@ const authContext = { workspaceId: "00000000-0000-4000-8000-000000000024", userI
 const SESSION_COOKIE = "personal-session-token-0000000000000001"
 const SERVICE_TOKEN = "server-secret-000000000000000000000000"
 
+test("direct forwarder requires a real session and never sends a fabricated token", async () => {
+  for (const sessionCookie of [undefined, "", "old-token"]) {
+    let calls = 0
+    const result = await forwardDataQuery(request, {
+      backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN,
+      sessionCookie, requestId: () => "missing-forward-session",
+      fetchImpl: async () => { calls += 1; return Response.json({}) },
+    })
+    assert.equal(calls, 0)
+    assert.equal(result.status, 401)
+    assert.equal(result.body.ok ? "" : result.body.error.code, "UNAUTHORIZED")
+    assert.equal(result.requestId, "missing-forward-session")
+  }
+})
+
 test("BFF forwards to fixed backend path and keeps service bearer server-side", async () => {
   let url = ""; let init: RequestInit | undefined
   const response = await forwardDataQuery(request, { environment: {}, backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, requestId: () => "bff-forward-403", fetchImpl: async (input, requestInit) => {
@@ -196,8 +211,9 @@ test("BFF rejects a valid UUID row from a different workspace", async () => {
     backendOrigin: "https://ka-data.internal.example",
     serviceToken: SERVICE_TOKEN,
     authContext,
+    sessionCookie: SESSION_COOKIE,
     requestId: () => "bff-cross-workspace",
-    fetchImpl: async () => Response.json(crossedEnvelope),
+    fetchImpl: async () => Response.json(crossedEnvelope, { headers: { "x-request-id": "bff-cross-workspace" } }),
   })
   assert.equal(response.status, 502)
   assert.equal(response.body.ok ? "" : response.body.error.requestId, "bff-cross-workspace")
@@ -209,7 +225,7 @@ test("BFF rejects same-workspace rows outside the approved media-account tuple",
     { ...canonicalTableRow, accountId: "outside-account" },
   ]) {
     const escapedEnvelope = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, rows: [row] } } }
-    const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, authContext, requestId: () => "bff-cross-tuple", fetchImpl: async () => Response.json(escapedEnvelope) })
+    const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, authContext, requestId: () => "bff-cross-tuple", fetchImpl: async () => Response.json(escapedEnvelope, { headers: { "x-request-id": "bff-cross-tuple" } }) })
     assert.equal(response.status, 502)
     assert.equal(response.body.ok ? "" : response.body.error.code, "UPSTREAM_INVALID_RESPONSE")
   }
@@ -217,14 +233,14 @@ test("BFF rejects same-workspace rows outside the approved media-account tuple",
 
 test("BFF rejects a response queryId that does not match the request", async () => {
   const mismatched = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, queryId: "account.detail", rowSchemaVersion: "account.detail/v1" } } }
-  const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, authContext, requestId: () => "bff-query-mismatch", fetchImpl: async () => Response.json(mismatched) })
+  const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, authContext, requestId: () => "bff-query-mismatch", fetchImpl: async () => Response.json(mismatched, { headers: { "x-request-id": "bff-query-mismatch" } }) })
   assert.equal(response.status, 502)
   assert.equal(response.body.ok ? "" : response.body.error.requestId, "bff-query-mismatch")
 })
 
 test("BFF rejects a rowSchemaVersion that drifts from the canonical query id", async () => {
   const mismatched = { ...canonicalTableEnvelope, data: { ...canonicalTableEnvelope.data, source: { ...canonicalTableEnvelope.data.source, rowSchemaVersion: "account.table/v2" } } }
-  const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, authContext, requestId: () => "bff-version-mismatch", fetchImpl: async () => Response.json(mismatched) })
+  const response = await forwardDataQuery({ queryId: "account.table", dataView: "platform", params: { date: "2026-08-24" } }, { backendOrigin: "https://ka-data.internal.example", serviceToken: SERVICE_TOKEN, sessionCookie: SESSION_COOKIE, authContext, requestId: () => "bff-version-mismatch", fetchImpl: async () => Response.json(mismatched, { headers: { "x-request-id": "bff-version-mismatch" } }) })
   assert.equal(response.status, 502)
   assert.equal(response.body.ok ? "" : response.body.error.requestId, "bff-version-mismatch")
 })
