@@ -284,3 +284,11 @@
 - dead 定义已按你的实现冻进 schema.sql 注释（processed=false ∧ attempts≥max ∧ last_error=ATTEMPTS_EXHAUSTED），以后别加 status 列。
 - `GATEWAY_INBOX_KEY_HEX` 生成命令请补进 runbook 网关节（和 R-013 的 §2.5 一起）。
 - 继续：P0-04 三态/v2 → #8 绑源 → 双空间反例 → 折 011 → merge main（main 已到 v1.4.1，含 `op` 列/settings 端点，本批不实现只要不冲突）→ 整批回执 P-044。
+
+#### R-011 追加铁律（2026-09-05，来自 ka-data owner「给开发」文档 ka-src-0011，OS 已实跑）
+
+- adapter 请求/响应契约与现有 `ka-data-client.ts` 一致，不改；`backend` 固定 `sqlite`（毫秒级、口径已对齐），holo/odps 不进产品路径。
+- 团队空间 SQL 模板六条：①转化/账户查询必带 `media=` 过滤（fact_conv 存全媒体，不加差 12 倍）②现金直接 `SUM(cash_yuan)`，**不再施加 `channel_coefficients`**（源已按系数算好，否则双算）③`cash_yuan` 可能 null → 三态 missing，不 COALESCE 0 ④`dwd_adgroup_daily` 与 `dwd_account_daily/fact_conv_daily` 的 account_id 是两套 namespace，**禁止 JOIN**；ad 级与账户级分别查 ⑤赔付 JOIN 必带 media ⑥`truncated/limit_clamped` → partial 三态，按 ds/账户分批。
+- 团队空间达标直接用 `dwd_account_daily.cash_assessment`（现金考核，已按 sub_biz×media 富化），不走本库 `assessment_price_history`；考核 SSOT 在 ka-knowledge `assessment_catalog.json`（我们只读，能否拉取待 OS）。
+- 团队空间 8 维：`resource_position/bid_tool/plan_tier/operator_name/channel_type/deduction_rate` 在 `dwd_adgroup_daily`，可直接开资源位/出价工具两维（个人空间仍 `DIMENSION_UNSUPPORTED` 等 OS）。
+- `KA_DATA_BASE_URL` 是沙箱会话地址会变：连不上 → `503 SOURCE_UNAVAILABLE` + 健康页提示「团队数据源地址需更新」，不重试成 platform。
