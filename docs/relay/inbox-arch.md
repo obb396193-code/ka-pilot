@@ -3041,6 +3041,9 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **来源身份子批 `8f28a2a`**：SourceLineage必带workspaceKind，无默认personal；两Adapter从受信execution scope生成，Service最终以Session覆盖（含reconcile失败侧），恶意上游自报team不能把个人响应改成团队。三份成功JSON fixtures同步。Domain518、Worker非PG686+2skip、两包type/lint通过；116定向核心行90.45%/分支83.77%/函数100%，Worker offline audit0。初始Domain/Worker各1条真实红灯，后修绿；首轮Domain lint unused变量已修，不隐去失败。
+- 这个字段属于已冻DATA-ROUTE-001/R010a要求，与#8接线一起完成来源身份部分；没有新增公开DTO决策/更改source优先级。PG仍沿最近55432拒连状态，**本次未重新执行PG**；无DB代码或迁移变动，不称全门禁通过。BFF还没改、不单独部署；团队reader绑定仍待确认，不因完成身份字段就开放team直连。下一步优先按A-001非视觉BFF与v2消费，目标active。
+
 - **#8 Service/HTTP 接线 SHA `9b7968b`**：普通POST只收queryId/params，Session personal→platform/team→ka_data；浏览器dataView/data_view拒400，不再静默改platform。新`POST /api/v1/admin/data/reconcile`只收reconcile.account_daily，entitlement+flag在Service内判断，role=admin不等于诊断权。日志只selectedSource/reason/requestId；Session/internal bearer、405、exact-byte上限共用。
 - 本次实测 Domain514、Worker非PG683+2外部opt-in skip，type/lint均通过；核心75用例行90.89%/分支89.47%/函数100%，HTTP34含诊断角色拒绝/KA关闭/冒充字段/同一exact-byte上限。无KA环境真实启动smoke2通过。Worker生产offline audit0（根目录无lock误跑ENOLOCK后到Worker正确执行，不以根目录结果冒充通过）。
 - **PG当前失败**：22:18 `business-read-session-pg.integration.test.ts`在beforeAll/清理均ECONNREFUSED 127.0.0.1:55432，没有执行到业务反例，不能算PG通过。该既有集成场景改为“KA关闭时team data503不fallback”，保留账户/任务/工作项/详情的真实PG/session断言；KA启用团队reader双空间另补，未用平台fixture伪造团队KA通路。
