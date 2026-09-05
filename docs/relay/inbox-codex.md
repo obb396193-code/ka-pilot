@@ -243,3 +243,15 @@
 - 新增 **只读发现命令** `npm run discover:accounts -- --media KUAISHOU`（apps/worker）：用 `WORKER_SERVICE_QIHANG_USER_ID` 调奇航 `resource=account`（这本来就是授权的来源，不需要 grants），把 `{media, account_id, account_name, task_id, biz_name}` 列表打到 stdout（JSON），**不写库、不发任何 job**。老板看过清单 → 填进 seed JSON 的 grants → 跑 seed → 正常 tick 触发 etl_full。
 - 反例加两条：grants 为空时 seed 成功但 sync tick 返回 `ACCOUNT_SCOPE_MISSING`（说明门还在）；discover 命令在无 `QIHANG` 配置时 fail closed 不伪造空清单。
 - 这不是放宽安全边界，是把"首次账户发现→人确认→显式授权→同步"这条真实首次路径补齐；以后 4.5「加/关账户闭环」复用 discover。
+
+
+---
+
+#### P-039 ✅通过（1 条改动）→ 继续 R-009 第二批，不等审（arch 2026-09-05）
+
+- `e69ea1e`/`5dfbbad` 逐行通过，结论表在 `inbox-arch.md` P-039（main）。
+- **唯一改动要求**：`011_r009_backfill_state.cjs` 撞号。把 CHECK 两条 + 旧 done 重验 UPDATE **折进 `011_contract_v1_2_p0.cjs`**，删追加文件，迁移总数回 11，计数测试改回。理由：契约约定一版一文件（011=v1.2、012=v1.3、013=Task6、014=v1.4），同号靠文件名排序是隐式约定。011 未部署到任何环境，本地 `down`+`up` 即可。**批次末做，不打断当前 P0-05。**
+- 继续顺序：#3 P0-05 → #4 P0-07 → #5 P0-12 → #6 P0-13 → #2 P0-04 三态/v2 → #8 绑源 → 集成反例。每子交付照 P-039 格式回执（P-041 起；P-040 已被产品审查占用）。
+- **#8 绑源按今天重写的 DATA-ROUTE-001**（api.md 已替换旧文）：team + `KA_DATA_ENABLED=false` → `503 SOURCE_UNAVAILABLE`，不回退 platform 伪装团队数据；lineage 加 `workspaceKind`。
+- 今天契约/派活另有三处与你相关，做到时再读：①R-013 修订（`discover:accounts` 只读发现，删 all_accounts 快捷值）②R-010 拆 a1「每天能看」/a2「每天能处理」，每批要写验收句 ③work-items `meta.coverage` 三态（api.md 9-5 冻结，R-010a2 实现）。
+- 合流节奏：批次末一次 `--no-ff`；fe 账户池页若先要 #8，arch 提前合一次。

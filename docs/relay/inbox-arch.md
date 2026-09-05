@@ -2989,3 +2989,23 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 **老板答复（2026-09-05）**：#2 不设北极星——"判断是优化师自己做的，产品把数据呈现给他们"→ PRD §1.3 改为「优化师三问」；#3 改：命名「操作后观察结果」+ 升档四独立门（PRD §3.9 已改）；#6 顺序改为登录→账户池→数据分析→工作台→任务（inbox-fe/提示词/页面规划已改）。
 
 坚定保留项（审查也认可）：看板为主对话为辅、确定性计算与 Agent 分工、四入口共用原子能力、官方模板与自由编排共存、执行未知态/凭证归属/账户三键/失败保旧快照、CR 复用。对外表达改为「复用技术已有执行能力，把 KA 的经营场景、数据口径和工作流程产品化」——老板定。
+
+
+---
+
+### P-039 ✅审查通过（有 1 条改动要求）｜R-009 第二批子交付 `e69ea1e` + `5dfbbad`｜arch 2026-09-05
+
+> Codex 的 P-039 回执写在 `be/r009` 分支的本文件（合流时会再冲突一次，保留双方）。以下是 arch 逐行审查结论。
+
+| 项 | 结论 |
+|---|---|
+| `e69ea1e` BFF 假 token | ✅ `forwardDataQuery` 只在 `sessionCookie` 存在时带 cookie；缺失/空/畸形直接 401 不调上游，测试覆盖 |
+| `5dfbbad` 域函数 `computeBackfillProgress` | ✅ 纯函数，从四类持久化 job（backfill_historical/backfill_day/canonical_merge/data_quality_check）推导五态 + failed_stage；raw 完成只到 raw_done、质量过才 done；任一阶段失败 → failed + 阶段。与 schema v1.2 枚举一致 |
+| `5dfbbad` Repository | ✅ 证据查询限定 `workspace_id + backfillId + credential_owner_user_id`；`finished_at` 仅终态写、非终态清空；恢复扫描扩到 running/raw_done/canonical_done |
+| CHECK 约束 | ✅ 补了 P-038 P2-2；拒绝 null/partial_failed/未知 stage |
+| 旧 `done` 置 `running` 重验 | ✅ 方向对（旧 done 只证明 raw）；生产无历史数据，实际是 no-op |
+| **迁移文件命名** | ❌ `011_r009_backfill_state.cjs` 与已合 `011_contract_v1_2_p0.cjs` 撞号。契约约定 **011 = v1.2 整体**，一版一文件；同号靠文件名排序是隐式约定，后人看不出顺序。**要求：把 CHECK + 重验 UPDATE 折进 `011_contract_v1_2_p0.cjs`**（011 尚未部署到任何环境，本地库 `down` 再 `up`），删追加文件；迁移总数回到 11；相关 up/down 计数测试改回。不接受 011a/011b，不占 012 |
+| 测试 | Codex 自报 Domain 497 / DB 182 真 PG / Worker 628+2 / Web 78，四包 typecheck/lint 过。arch **在批次合流时统一独立复跑**（与 P-038 同法），子交付阶段不复跑 |
+| 部署条件 | ✅ 采纳「停 Worker → 迁移 → 启动恢复」，写进 runbook 由 R-013 一并补 §2.5 |
+
+**继续指令**：不等审，按 #3 P0-05 → #4 → #5 → #6 → #2 三态 → #8 绑源 继续；折 011 在批次末做即可。#8 绑源必须按 2026-09-05 重写后的 DATA-ROUTE-001：team + `KA_DATA_ENABLED=false` → `503 SOURCE_UNAVAILABLE`，**不回退 platform**；lineage 顺手加 `workspaceKind`。批次末一次 `--no-ff` 合流；若 fe 账户池页先需要 #8，arch 会提前合一次。
