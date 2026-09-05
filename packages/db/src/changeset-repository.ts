@@ -82,6 +82,9 @@ interface HeaderRow {
 
 interface ItemRow {
   id: string | number;
+  workspace_id: string;
+  media: string;
+  account_id: string;
   target_type: ChangeTargetType;
   target_id: string;
   field: string;
@@ -115,12 +118,33 @@ function requireHeader(row: HeaderRow | undefined, id: string): HeaderRow {
   return row;
 }
 
-async function loadItems(client: Pool | PoolClient, changeSetId: string): Promise<ChangeSetItemSnapshot[]> {
+export class ChangeSetAuthorizationError extends Error {
+  readonly code = "FORBIDDEN";
+  readonly statusCode = 403;
+  constructor() {
+    super("Changeset scope or active actors are not authorized");
+    this.name = "ChangeSetAuthorizationError";
+  }
+}
+
+async function assertActiveActors(client: PoolClient, workspaceId: string, initiator: string, owner: string): Promise<void> {
+  const workspace = await client.query("SELECT id FROM workspaces WHERE id=$1 AND kind='personal' FOR SHARE", [workspaceId]);
+  if (workspace.rowCount !== 1) throw new ChangeSetAuthorizationError();
+  const actorIds = [...new Set([initiator, owner])].sort();
+  const actors = await client.query(`SELECT id FROM users
+    WHERE workspace_id=$1 AND id=ANY($2::uuid[]) AND is_active=true ORDER BY id FOR SHARE`, [workspaceId,actorIds]);
+  if (actors.rowCount !== actorIds.length) throw new ChangeSetAuthorizationError();
+}
+
+async function loadItems(client: Pool | PoolClient, header: HeaderRow): Promise<ChangeSetItemSnapshot[]> {
   const result = await client.query<ItemRow>(
-    `SELECT id, target_type, target_id, field, from_value, to_value, item_status, fail_reason
+    `SELECT id, workspace_id, media, account_id, target_type, target_id, field, from_value, to_value, item_status, fail_reason
      FROM changeset_items WHERE changeset_id=$1 ORDER BY id`,
-    [changeSetId],
+    [header.id],
   );
+  if (header.media === null || header.account_id === null || result.rows.some((row) =>
+    row.workspace_id !== header.workspace_id || row.media !== header.media || row.account_id !== header.account_id
+  )) throw new ChangeSetAuthorizationError();
   return result.rows.map(itemRecord);
 }
 
@@ -142,7 +166,7 @@ async function assemble(client: Pool | PoolClient, header: HeaderRow): Promise<C
     simulation: header.simulation,
     createdAt: header.created_at,
     executedAt: header.executed_at,
-    items: await loadItems(client, header.id),
+    items: await loadItems(client, header),
   };
 }
 
@@ -214,6 +238,7 @@ export class ChangeSetRepository {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
+      await assertActiveActors(client, input.workspaceId, input.initiator, input.credentialOwnerUserId);
       if (input.workItemId !== null && input.workItemId !== undefined) {
         const linked = await client.query(
           `SELECT 1 FROM work_items
@@ -272,6 +297,22 @@ export class ChangeSetRepository {
     return this.get(workspaceId, changeSetId);
   }
 
+  async assertExecutionAuthorized(workspaceId: string, changeSetId: string): Promise<void> {
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      const row = await client.query<HeaderRow>(`SELECT ${headerColumns} FROM changesets
+        WHERE workspace_id=$1 AND id=$2 FOR UPDATE`, [workspaceId,changeSetId]);
+      const header = requireHeader(row.rows[0], changeSetId);
+      await assertActiveActors(client, workspaceId, header.initiator, header.credential_owner_user_id);
+      await loadItems(client, header);
+      await client.query("COMMIT");
+    } catch (error) {
+      await rollback(client);
+      throw error;
+    } finally { client.release(); }
+  }
+
   async confirm(input: {
     workspaceId: string;
     changeSetId: string;
@@ -287,6 +328,8 @@ export class ChangeSetRepository {
         [input.workspaceId, input.changeSetId],
       );
       const header = requireHeader(locked.rows[0], input.changeSetId);
+      await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
+      const storedItems = await loadItems(client, header);
       if (header.status === "confirmed") {
         const changeset = await assemble(client, header);
         await client.query("COMMIT");
@@ -299,7 +342,7 @@ export class ChangeSetRepository {
         return { outcome: "expired" };
       }
       assertChangeSetConfirmable({ status: header.status, ttlExpireAt: header.ttl_expire_at, now: input.now });
-      const verification = verifyCurrentValues(await loadItems(client, header.id), input.currentValues);
+      const verification = verifyCurrentValues(storedItems, input.currentValues);
       if (!verification.ok) {
         await client.query("COMMIT");
         return { outcome: "conflict", conflicts: verification.conflicts };
@@ -335,6 +378,8 @@ export class ChangeSetRepository {
         [input.workspaceId, input.changeSetId],
       );
       const header = requireHeader(locked.rows[0], input.changeSetId);
+      await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
+      await loadItems(client, header);
       const directive = executionDirective(header.status);
       if (directive !== "execute") {
         await client.query("COMMIT");
@@ -392,7 +437,7 @@ export class ChangeSetRepository {
       );
       const header = requireHeader(locked.rows[0], input.changeSetId);
       if (header.status !== "executing") throw new Error(`changeset is not executing: ${header.status}`);
-      const storedItems = await loadItems(client, header.id);
+      const storedItems = await loadItems(client, header);
       assertCompleteItemCoverage(storedItems, input.items);
       const aggregate = aggregateExecutionResult(input.items);
       await persistItemResults(client, header.id, input.items);
@@ -441,7 +486,7 @@ export class ChangeSetRepository {
       if (header.status !== "unknown" && header.status !== "executing") {
         throw new Error(`changeset does not require reconciliation: ${header.status}`);
       }
-      const storedItems = await loadItems(client, header.id);
+      const storedItems = await loadItems(client, header);
       assertCompleteItemCoverage(storedItems, input.items);
       const aggregate = aggregateExecutionResult(input.items);
       await persistItemResults(client, header.id, input.items);
