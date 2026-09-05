@@ -100,8 +100,9 @@ export function assertLocalTestDatabase(databaseUrl: string): void {
   if (!new Set(["127.0.0.1", "localhost", "::1"]).has(parsed.hostname)) {
     throw new Error("PostgreSQL benchmark only permits a local test database");
   }
-  if (parsed.port !== "55432" || parsed.pathname !== "/ka") {
-    throw new Error("PostgreSQL benchmark requires the local ka test database on port 55432");
+  if (!new Set(["postgres:", "postgresql:"]).has(parsed.protocol) || parsed.search || parsed.hash ||
+    parsed.port !== "55432" || (parsed.pathname !== "/ka" && !/^\/ka_[a-z0-9_]{1,45}_test$/.test(parsed.pathname))) {
+    throw new Error("PostgreSQL benchmark requires a local ka or ka_*_test database on port 55432");
   }
 }
 
