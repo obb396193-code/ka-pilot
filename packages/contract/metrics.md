@@ -59,6 +59,10 @@ BI转化率            = real_conversion / aac_ptt_uv
 断量倒计时           = balance / velocity（小时）
 ```
 
+## 待定：窗口化口径（2026-09-05 老板口径，公式未冻）
+
+上表 `on_target`/`cost_space` 未标时间窗口（隐含按日）。老板 9-5 口径：考核按月结算、成本线内尽量跑量、部分任务有日预算卡。定稿前**不改上表**；候选公式、待老板定的 4 问见 `docs/decisions/2026-09-05-成本与量的动态口径-待定.md`。实现方不得自行给 `cost_space` 加窗口。
+
 ## 缺数三态（P0-04 裁决，老板 2026-09-04：缺数不写 0，显 "−"）
 
 所有指标值在 API 与 canonical 查询层统一为 `{value: number|null, availability: "available"|"missing"|"error"}`：
