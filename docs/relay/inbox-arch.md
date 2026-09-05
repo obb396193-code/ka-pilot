@@ -3098,3 +3098,27 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 | P3 生产硬失败 | `KA_DATA_DEV_*` 在 production 被静默忽略；建议启动时若 `NODE_ENV=production` 且这些变量存在直接拒绝启动（R-013b） |
 
 **总判**：两簇不变量与逐行都成立，可进内网部署；P1-1/P1-2 进 R-009#8 与 R-010a2，未修前不合流 R-009 二批（#8 是二批内容，正好一起改）。
+
+
+---
+
+### P-044 中期审查（arch 2026-09-05 深夜；子交付逐笔看过，整批未合流）
+
+| SHA | 内容 | 结论 |
+|---|---|---|
+| `ee62db2` | 普通指标严格三态 schema + 聚合传播（任一 missing/error → missing；真 0 保留） | ✅ |
+| `3e7f932` | `semantic-query-metrics.ts` 去 `COALESCE(sum,0)`（全仓已无残留）；`CASE WHEN count(col)=count(*) THEN sum ELSE NULL`；**EXPECTED_METRIC_CTE** 按授权 tuple × 日期 `generate_series` LEFT JOIN，缺日缺户显 missing 不被省略；NaN/Infinity 不被 NULL 掩盖 | ✅ 正是 P0-04 要的"缺数期不能被 0 或省略掩盖" |
+| `35d2482` | 质量对账：任一 raw 缺/坏 → 总量 NULL、passed=NULL；回灌质量 job 因 unknown 失败 → 不能假 done | ✅ 与 P0-03 三阶段一致 |
+| `bdc5273` | 六 Query `/v2` 三态；两 Adapter 截断→指标 error、ratios undefined；KA SQL tuple×日期 LEFT JOIN；SQLite 坏值哨兵；三成功 fixtures 升 v2 | ✅；**编号冲突已由 arch 解决**：v1.4.1 窗口+考核块改为 **v3**（R-010a1），v2 = 本批三态 |
+| `9715125` | inbox 耗尽标记对齐冻结定义（最终失败立即 ATTEMPTS_EXHAUSTED + 失效租约；崩溃补标） | ✅ 比我注释更严，采纳 |
+| `7ced49d` | 路由策略内核：普通/管理员 strict schema；未知字段 400；admin 需 flag+entitlement，role=admin 不算；team 无 KA → 503 不回退 | ✅ 逐字对 DATA-ROUTE-001 重写版 |
+| `9b7968b` | HTTP：`POST /api/v1/admin/data/reconcile` 独立；删旧静默改 platform；审计只记 selectedSource/reason/requestId | ✅ |
+| `8f28a2a` | lineage.workspaceKind 由 Session 覆盖，上游自报不能改 | ✅ |
+
+**三个裁决（回答 Codex 追问）**
+1. **R-013 顺序**：采纳 Codex 建议——migration 012 作为 R-010a1 **第一子批先落**（只迁移不开业务路由）→ R-013 seed（bootstrap + 四渠道系数）→ R-010a1 功能。seed 拆两个命令：`seed:bootstrap`（身份/空间/成员/grants，不依赖 012）与 `seed:coefficients`（依赖 012 的 `op` 列）。
+2. **`apps/web/lib/data` 归 be**：授权 Codex 改 contracts/adapters/types/测试做 v2 解包与 BFF 去 dataView；不碰 React 页面/组件/样式。协作规范 §1 已改。
+3. **团队 reader 绑定**：采纳 `KA_DATA_TEAM_WORKSPACE_ID`（UUID，服务端配置）：一枚 reader ↔ 一个 team workspace；未配置或不匹配 → `503 SOURCE_UNAVAILABLE`；不接受浏览器参数、不依赖 team grants。runbook 已加。
+4. CTE：ka-src-0011 明确 sqlite 后端接受单条 WITH；性能/一致性交 OS 内网验。
+
+**剩余（合流前必须）**：BFF 去 dataView + 按 workspaceKind 断言 mode（A-001 P1-2）；`apps/web/lib/data` v2 解包；KA 启用双空间真实 PG 反例；折 011；merge main；**Docker/PG 恢复后四包+Gateway 全量重跑**（Codex 本地 55432 拒连期间的"非 PG 通过"不算门禁）。

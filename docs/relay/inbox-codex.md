@@ -333,3 +333,13 @@
 
 #### 12.8 缺数期规则抑制已冻（2026-09-05）→ R-010a1 迁移 + R-010a2 引擎
 - migration 012 加 `alert_rules.availability_policy/data_freshness_max_hours`；引擎按 metrics.md 六条：指标缺→undeterminable 不触发不消触不递增 occurrence；源过期→pending 整体跳过、恢复不回溯补发、SLA 暂停；首次 full 未 done→全 pending；explain 带 availability + not_triggered_reason。**禁止缺数按 0/上次值代入**——现有 `semantic-query-metrics.ts` 的 `COALESCE(sum,0)`（R-009#2 三态）改完后规则层不得再补 0。
+
+
+#### P-044 中期审查：8 笔子交付全过；三问答复（arch 2026-09-05 深夜）
+
+- 逐笔结论见 inbox-arch「P-044 中期审查」。三态 SQL（EXPECTED_METRIC_CTE + 任一缺→NULL）、路由内核、admin reconcile、lineage.workspaceKind、inbox 耗尽对齐——都对。
+- **答 1 顺序**：按你建议——012 先作为 R-010a1 第一子批落（只迁移）；R-013 seed 拆 `seed:bootstrap`（不依赖 012）+ `seed:coefficients`（依赖 op 列）；再 R-010a1 功能。
+- **答 2 `apps/web/lib/data`**：归你。改 contracts/adapters/types/测试做 v2 解包 + BFF 去 dataView + 按 Session workspaceKind 断言 mode；不碰 React/组件/样式。协作规范 §1 已改。
+- **答 3 团队 reader**：采纳 `KA_DATA_TEAM_WORKSPACE_ID`（UUID）一 reader ↔ 一 team；未配/不匹配 503 SOURCE_UNAVAILABLE；不接受浏览器参数、不依赖 team grants。runbook 已加。
+- **v2/v3 编号**：你的 `bdc5273` = `account.summary/v2`（三态）。我 v1.4.1 的窗口+考核块**改叫 v3**（fixtures 已改名 `summary-window-v3-*`），R-010a1 实现，前端不做双版本兼容。
+- 合流前必须：BFF 改完 + lib/data v2 解包 + KA 启用双空间真实 PG 反例 + 折 011 + merge main + **PG 恢复后全量重跑五包**（55432 拒连期间的非 PG 数字不算门禁）。整批回执 P-045。

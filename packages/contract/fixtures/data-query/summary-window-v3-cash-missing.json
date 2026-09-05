@@ -1,11 +1,11 @@
 {
   "ok": true,
   "data": {
-    "mode": "platform",
+    "mode": "ka_data",
     "source": {
       "queryId": "account.summary",
-      "rowSchemaVersion": "account.summary/v2",
-      "status": "ready",
+      "rowSchemaVersion": "account.summary/v3",
+      "status": "partial",
       "rows": [
         {
           "rowCount": 3,
@@ -17,8 +17,8 @@
               "availability": "available"
             },
             "cashCost": {
-              "value": 9765.0,
-              "availability": "available"
+              "value": null,
+              "availability": "missing"
             },
             "exposure": {
               "value": 100000,
@@ -37,8 +37,8 @@
               "availability": "available"
             },
             "costSpace": {
-              "value": 1635.0,
-              "availability": "available"
+              "value": null,
+              "availability": "missing"
             },
             "wakeUv": {
               "value": null,
@@ -62,8 +62,8 @@
                 "state": "finite"
               },
               "cashCpa": {
-                "value": 32.55,
-                "state": "finite"
+                "value": null,
+                "state": "undefined"
               },
               "gap": {
                 "value": 0.0667,
@@ -84,12 +84,12 @@
               "value": 38.0,
               "effectiveDate": "2026-09-01"
             },
-            "onTarget": true,
-            "costStatus": "green",
-            "costStatusReason": "window_ok",
+            "onTarget": null,
+            "costStatus": null,
+            "costStatusReason": "cash_missing",
             "budgetUsageRate": {
-              "value": 0.62,
-              "state": "finite"
+              "value": null,
+              "state": "undefined"
             }
           }
         }
@@ -100,19 +100,19 @@
         "availability": "available"
       },
       "lineage": {
-        "source": "canonical",
-        "workspaceKind": "personal",
+        "source": "ka_data",
+        "workspaceKind": "team",
         "datasetVersion": "canonical-20260905-01",
-        "queryTemplateVersion": "account-summary-v2",
+        "queryTemplateVersion": "account-summary-v3",
         "metricVersion": "account-metrics-v2",
         "dataAsOf": "2026-09-05T08:00:00.000+08:00",
         "timezone": "Asia/Shanghai",
         "dayCut": "business_day_0300",
         "metadataAvailability": "known",
         "window": {
-          "from": "2026-09-01",
+          "from": "2026-09-05",
           "to": "2026-09-05",
-          "preset": "month_to_date"
+          "preset": "today"
         },
         "objectIdentity": {
           "objectType": "account",
@@ -128,10 +128,12 @@
         "truncated": false,
         "partial": false
       },
-      "warnings": []
+      "warnings": [
+        "cash_yuan 为 null：现金口径缺数，达标与色标不判"
+      ]
     }
   },
   "meta": {
-    "requestId": "fixture-summary-v2-green"
+    "requestId": "fixture-summary-v3-cash-missing"
   }
 }

@@ -704,11 +704,11 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **8 维透视枚举（2026-09-05 定稿）**：`dimension ∈ task|biz|account|agent_type|resource_position|bid_tool|ubp|deduction_range`；`ubp` 永久 `DIMENSION_UNSUPPORTED`（无源）；`agent_type` 只支持账户级聚合（ad 级请求 → `DIMENSION_UNSUPPORTED`）；`bid_tool` 为派生枚举，映射表未提案前返回 `DIMENSION_UNSUPPORTED`。
 
 
-## v1.4.1 补：`account.summary/v2` 行结构与 fixtures（2026-09-05 arch；fixture 即契约）
+## v1.4.1 补：`account.summary/v3` 行结构与 fixtures（2026-09-05 arch；fixture 即契约；**编号 v3**——v2 已由 Codex R-009 `bdc5273` 落地为"九指标三态"，本节是 v2 之上加窗口与考核块，strict schema 下加字段即破坏兼容，故升 v3，R-010a1 实现）
 
-`packages/contract/fixtures/data-query/summary-window-v2-{green,yellow,cash-missing}.json`、`work-item-list/coverage-{complete,pending,undeterminable}.json`、`task-detail/overview{,-no-cap}.json`、`settings/{channel-coefficients,change-log}.json` 为**唯一权威样例**；后端 parity 测试直接读，前端 mock 直接用。
+`packages/contract/fixtures/data-query/summary-window-v3-{green,yellow,cash-missing}.json`、`work-item-list/coverage-{complete,pending,undeterminable}.json`、`task-detail/overview{,-no-cap}.json`、`settings/{channel-coefficients,change-log}.json` 为**唯一权威样例**；后端 parity 测试直接读，前端 mock 直接用。
 
-`account.summary/v2` 单行：
+`account.summary/v3` 单行（= v2 三态 metrics + `assessment` 块 + `lineage.window/workspaceKind`）：
 ```jsonc
 {
   "rowCount": 3, "accountCount": 3, "anomalyRows": 1,
@@ -727,7 +727,7 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
   }
 }
 ```
-`lineage` 加 `workspaceKind` 与 `window:{from,to,preset}`；`preset ∈ today|yesterday|last_7d|month_to_date|last_month|task_period|custom`。`account.trend/v2` = `ds + 同构 metrics`（不含 assessment）。
+`lineage` 加 `workspaceKind` 与 `window:{from,to,preset}`；`preset ∈ today|yesterday|last_7d|month_to_date|last_month|task_period|custom`。`account.trend/v3` = `ds + 同构 metrics`（不含 assessment）。v2（R-009）→ v3（R-010a1）切换时 fixtures 整体升级，前端不做双版本兼容。
 
 `GET /work-items` 的 `meta.coverage` 见「覆盖三态」；`GET /tasks/:id` overview 字段以 `task-detail/overview.json` 为准（`cost.projectedWindowCashCpa`/`affordableDailyCashCpa` 为 metrics.md 外推两式）。
 

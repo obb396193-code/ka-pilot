@@ -1,11 +1,11 @@
 {
   "ok": true,
   "data": {
-    "mode": "ka_data",
+    "mode": "platform",
     "source": {
       "queryId": "account.summary",
-      "rowSchemaVersion": "account.summary/v2",
-      "status": "partial",
+      "rowSchemaVersion": "account.summary/v3",
+      "status": "ready",
       "rows": [
         {
           "rowCount": 3,
@@ -13,32 +13,32 @@
           "anomalyRows": 1,
           "metrics": {
             "cost": {
-              "value": 12500.0,
+              "value": 13100.0,
               "availability": "available"
             },
             "cashCost": {
-              "value": null,
-              "availability": "missing"
+              "value": 10233.7,
+              "availability": "available"
             },
             "exposure": {
-              "value": 100000,
+              "value": 98000,
               "availability": "available"
             },
             "click": {
-              "value": 4000,
+              "value": 3900,
               "availability": "available"
             },
             "conversion": {
-              "value": 320,
-              "availability": "available"
-            },
-            "realConversion": {
               "value": 300,
               "availability": "available"
             },
+            "realConversion": {
+              "value": 270,
+              "availability": "available"
+            },
             "costSpace": {
-              "value": null,
-              "availability": "missing"
+              "value": 26.3,
+              "availability": "available"
             },
             "wakeUv": {
               "value": null,
@@ -50,23 +50,23 @@
             },
             "ratios": {
               "ctr": {
-                "value": 0.04,
+                "value": 0.0398,
                 "state": "finite"
               },
               "cvr": {
-                "value": 0.08,
+                "value": 0.0769,
                 "state": "finite"
               },
               "realCpa": {
-                "value": 41.67,
+                "value": 48.52,
                 "state": "finite"
               },
               "cashCpa": {
-                "value": null,
-                "state": "undefined"
+                "value": 37.9,
+                "state": "finite"
               },
               "gap": {
-                "value": 0.0667,
+                "value": 0.1111,
                 "state": "finite"
               },
               "potentialRate": {
@@ -84,12 +84,12 @@
               "value": 38.0,
               "effectiveDate": "2026-09-01"
             },
-            "onTarget": null,
-            "costStatus": null,
-            "costStatusReason": "cash_missing",
+            "onTarget": true,
+            "costStatus": "yellow",
+            "costStatusReason": "day_over_window_ok",
             "budgetUsageRate": {
-              "value": null,
-              "state": "undefined"
+              "value": 0.91,
+              "state": "finite"
             }
           }
         }
@@ -100,19 +100,19 @@
         "availability": "available"
       },
       "lineage": {
-        "source": "ka_data",
-        "workspaceKind": "team",
+        "source": "canonical",
+        "workspaceKind": "personal",
         "datasetVersion": "canonical-20260905-01",
-        "queryTemplateVersion": "account-summary-v2",
+        "queryTemplateVersion": "account-summary-v3",
         "metricVersion": "account-metrics-v2",
         "dataAsOf": "2026-09-05T08:00:00.000+08:00",
         "timezone": "Asia/Shanghai",
         "dayCut": "business_day_0300",
         "metadataAvailability": "known",
         "window": {
-          "from": "2026-09-05",
+          "from": "2026-09-01",
           "to": "2026-09-05",
-          "preset": "today"
+          "preset": "month_to_date"
         },
         "objectIdentity": {
           "objectType": "account",
@@ -129,11 +129,11 @@
         "partial": false
       },
       "warnings": [
-        "cash_yuan 为 null：现金口径缺数，达标与色标不判"
+        "2026-09-05 单日现金 CPA 41.2 超考核价，窗口累计 37.9 仍达标"
       ]
     }
   },
   "meta": {
-    "requestId": "fixture-summary-v2-cash-missing"
+    "requestId": "fixture-summary-v3-yellow"
   }
 }
