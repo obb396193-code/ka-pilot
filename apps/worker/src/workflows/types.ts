@@ -7,6 +7,7 @@ import type {
   WorkflowRunEventDraft,
   WorkflowRunStatus,
 } from "@ka/domain";
+import type { WorkflowExecutionRepository } from "@ka/db";
 
 export interface WorkflowAuthContext {
   workspaceId: string;
@@ -76,6 +77,7 @@ export interface WorkflowSimulationInput {
 }
 
 export interface DurableWorkflowRunSnapshot {
+  executorToken?: string;
   runId: string;
   workspaceId: string;
   initiatorUserId: string;
@@ -85,16 +87,19 @@ export interface DurableWorkflowRunSnapshot {
   plan: CompiledWorkflowPlan;
 }
 
-export interface WorkflowRunRepositoryPort {
+export interface WorkflowRunRepositoryPort extends Pick<WorkflowExecutionRepository,
+  "claimExecutor" | "renewExecutor" | "releaseExecutor" | "reserveEffect" | "finishEffect"> {
   loadRun(workspaceId: string, runId: string): Promise<DurableWorkflowRunSnapshot | null>;
   listEvents(workspaceId: string, runId: string): Promise<readonly WorkflowRunEvent[]>;
   appendEvent(input: {
+    executorToken: string;
     workspaceId: string;
     runId: string;
     dedupeKey: string;
     event: WorkflowRunEventDraft;
   }): Promise<WorkflowRunEvent>;
   compareAndSetStatus(input: {
+    executorToken: string;
     workspaceId: string;
     runId: string;
     expected: WorkflowRunStatus;

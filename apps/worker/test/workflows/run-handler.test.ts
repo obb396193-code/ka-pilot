@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 
 import { describe, expect, it, vi } from "vitest";
 import { z } from "zod";
@@ -132,6 +132,20 @@ function fixture(includeAction = false) {
 }
 
 class MemoryRepository implements WorkflowRunRepositoryPort {
+  private token: string | null = null;
+  private effects = new Map<string, {status:"pending"|"done"|"failed"|"unknown";result:unknown}>();
+  async claimExecutor() { if (this.token) return null; this.token = randomUUID(); return this.token; }
+  async renewExecutor(input: Parameters<WorkflowRunRepositoryPort["renewExecutor"]>[0]) { if (this.token !== input.executorToken) throw new Error("lease"); }
+  async releaseExecutor(input: Parameters<WorkflowRunRepositoryPort["releaseExecutor"]>[0]) { if (this.token !== input.executorToken) return false; this.token=null; return true; }
+  async reserveEffect(input: Parameters<WorkflowRunRepositoryPort["reserveEffect"]>[0]) {
+    const key = `${input.nodeId}/${input.attempt}/${input.phase}`;
+    const prior = this.effects.get(key);
+    if (prior) return { acquired:false,...prior };
+    const value = {status:"pending" as const,result:null}; this.effects.set(key,value); return {acquired:true,...value};
+  }
+  async finishEffect(input: Parameters<WorkflowRunRepositoryPort["finishEffect"]>[0]) {
+    this.effects.set(`${input.nodeId}/${input.attempt}/${input.phase}`,{status:input.status,result:input.result});
+  }
   readonly events: WorkflowRunEvent[] = [];
   private readonly dedupe = new Map<string, WorkflowRunEvent>();
 
