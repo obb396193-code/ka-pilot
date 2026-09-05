@@ -3290,3 +3290,42 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - 新隔离合成库ka_be_r013_20260906；旧ka_r009_test双011历史原样保留。DB331、Domain587、Gateway36、Web111；Worker794+2外部skip（暂排除写死共享/ka的benchmark）；五包typecheck/lint全绿。012PG4（含up/down/up；另十例是JS callback），系数7+settings7=14PG通过含P050四反例。数字为累积候选，不冒充R009 exact数字。
 - benchmark需独立小修：现test写死127.0.0.1:55432/ka并自动runMigrations，guard也只准/ka。拟允许显式隔离测试库命名ka_*_test、test读取TEST_DATABASE_URL；不改公开Contract/业务SQL，不对旧库迁移，补完整Worker门禁。当前794不称全测试通过。
 - 首轮PG42P08显式uuid/text修复；测试scope/logout误用和composition依赖修正，最终全绿，详见R013计划。候选未push/合流/部署；先merge main，再v3公开窗口。
+
+---
+
+### P-046 / P-048 / P-049 代码级审查（arch 2026-09-06；真 PG 数字待 arch 本机复跑补）
+
+| SHA | 内容 | 结论 |
+|---|---|---|
+| `eaca65e` 012 迁移 | v1.3 全部 DDL（条件树/去重三列+partial unique/account_mutes 三键 FK/ad_entities.created_at/typed value JSONB `to_jsonb(text)` 桥/双 hash/agent_messages seq+client_message_id+FK/agent_runs 九列/agent_run_events/model_provider_credentials/provider_model_capabilities）+ v1.4.1 `channel_coefficients.op` + 12.8 两列；up 前置孤儿 session 检查；down 拒绝 typed JSON 与 multiply 语义丢失（有损回退不做）| ✅ 与契约逐条对上；"先迁移 012 再跑该 Worker 版本"采纳进 runbook |
+| `7c08b97` discover CLI | 只读 GET，无 DB/job/grant；HTTPS/无凭证 URL；50/页、10000 上限、total 稳定、页码/行数对齐、无重复 ID；truncated/limit_clamped 拒；输出 <16MB；错误固定文本 | ✅ 正是 R-013 修订要的"人确认清单" |
+| `d16906a` 系数 seed | 独立 `seed:coefficients`，显式 workspace+effective_date；SERIALIZABLE + workspace FOR UPDATE；只 personal；四行按冻结值/op 原样；NUMERIC 文本精确比较；重放幂等、异值拒绝；`changed_by=NULL` | ✅；初始四行硬编码在 domain `initialCoefficientSeedRows()` 属"初始 seed 常量"不是运行时口径，可接受 |
+| 发现 | `metrics.ts` 写死除法、settings 未 select op → Codex 自提 P-050 在 R-010a1 内补 | ✅ 采纳 |
+
+PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门禁 arch 正在独立复跑；be/r010 的 012 真 PG 套件随后复跑。
+
+
+---
+
+### P-045 ✅合流｜R-009 二批整批（be/r009 @ b8f87d3 → main `232aca5`，--no-ff）｜arch 2026-09-06
+
+| 项 | 结果 |
+|---|---|
+| 门禁（arch 隔离工作树 + 独立库 `ka_arch_r009`，真 PG） | domain 518 / db 225 / worker 745+2 skip / gateway 36 / web 111；五包 tsc+eslint exit 0。合流后在 main `232aca5` 上再跑一遍，数字相同 |
+| 首轮假阳性 | worker 2 fail + tsc 1 错（`channelCoefficientOp` 缺）= 我的 node_modules 整目录软链到 Codex 工作树，`@ka/domain` 相对链落到 be/r010 源码；改成真目录 + `@ka/*` 指回本工作树后消失。教训记 docs/journal |
+| 范围 | 123 文件：worker 40 / db 30 / gateway 14 / domain 10 / `apps/web/lib/data` 14 / docs 12；web UI 0 |
+| 越界 | `packages/contract/fixtures/data-query/{ready-lineage,reconcile-pending,unknown-lineage}.json` 由 Codex 升 v2 三态 + lineage.workspaceKind——与冻结一致，arch 背书收下。**规则重申：contract 目录归 arch，fixture 要改先写信箱** |
+| 迁移 | main 现 011 个（001–011），011 已折入 backfill 三阶段；012–017 随 R-010a1/R-011/R-012/R-014/R-015/R-016 |
+| A-001 P1-2 | BFF 已去 dataView / 按 session 定 mode，二批合流前置条件满足 |
+
+### P-050 ✅ / P-051 ✅ 代码级｜be/r010｜arch 2026-09-06
+
+- **P-050 `739658f`**：`metrics.ts` cash_cost = (账面−赔付) ⊕ coefficient，op 缺→cashCost null 不猜方向；onTarget 改现金 CPA（cashCpa infinite 且有价→false；无价→null）；账面 CPA 只展示。`metrics-repository` 同一 LATERAL 行取 coefficient+op（同生效版本），present-invalid 十进制/op、coefficient≤0、越 workspace 全抛。canonical/benchmark 透传 op。✅ 与 v1.4.1 逐条对上。Codex 自述"未实现 v3 公开窗口"属实，R-010a1 未完。
+- **P-051 `a77b224`**：`assertProductionEnvironment`：NODE_ENV=production 且存在任意 `KA_DATA_DEV_*` 键（含空值/false）→ 固定文本抛错、不打印键值；在 worker config / data-api config / ka-data client 三入口 parse 之前调用。✅
+- 待补：Docker 已修，Codex 在 be/r010 跑真 PG（012 up/down/up 十例、P-050 四例、benchmark PG）后补数字；FaaS 骨架模板（P-051 提的）已列进老板给 OS 的清单。
+
+### fe `a4fcbc9`（F-007 底座 + 页 1 数据分析七 tab）｜arch 复跑 2026-09-06
+
+- test 77/0、tsc 0 错、eslint 0 错 7 warn ✅；25 文件全在 apps/web，未碰 app/api 与 lib/data；F-006 那个 tsc 错已修。
+- 状态文件 TODO-fixture 三组 → arch 已补 9 个（`89649fa`）：dimension-v3 ×5（task/biz/account/agent_type/deduction_range）、gap-task/gap-biz、pivot2-biz-resource_position、pivot2-unsupported（bid_tool）。fixtures 共 152。
+- C3（顶部分层叫法：九态 poolStatus vs 老板口述八档）转老板拍。

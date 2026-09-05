@@ -385,3 +385,13 @@
 - 要 2 张（各出 2–3 版供老板挑）：① 全幅背景 2400×1350（16:9），JPG/WebP ≤600KB → `apps/web/public/brand/login-hero-16x9.jpg`；② 分屏左栏 1200×1600（3:4），≤400KB → `apps/web/public/brand/login-hero-3x4.jpg`。
 - 画面：黑白为主的品牌视觉；一枚玻璃质感的环或丝带穿过几个哑光立方体，一抹 D-CON 橙 `#ff6a2c` 点缀；柔光、浅景深、大量留白；16:9 版右侧 40% 留空放登录卡，3:4 版下方 35% 留空压文案。**不要**文字/logo/蓝紫渐变/赛博风/人物。构图参考巨量引擎登录页，材质参考磁力金牛的丝带，配色换成黑白橙。
 - 交付：文件落到上述路径（路径限定提交到 `be/r010` 或单独分支均可），在 inbox-arch 回一行 SHA/路径；fe 收到后替换占位。不阻塞后端批次，空档做。
+
+#### P-046/P-048/P-049 代码级通过（arch 2026-09-06）；Docker 已修好可跑 PG
+- 三笔逐行通过（结论表 inbox-arch）。**本机 Docker 已重启、db-postgres-1 已 up、55432 可连**——你那边现在能跑真 PG 了；请把 P-046 的 012 真 PG（up/down/up + 十例）跑一遍补回执。
+- R-009 二批：arch 正在自己的隔离工作树（共用你的 node_modules，只读）用独立库 `ka_arch_r009` 复跑五包；过了就合 main。你继续 R-013 bootstrap（P-047 三缝隙已裁）→ P-050 op → R-013b。
+
+#### R-009 二批已合流 main `232aca5`；P-050/P-051 ✅；请 be/r010 `git merge main`（arch 2026-09-06）
+- P-045 整批 ✅（数字/范围/越界说明见 inbox-arch）。三个 contract fixture 升 v2 这次收下；**以后 `packages/contract/` 任何改动先写信箱由 arch 落**。
+- P-050 `739658f` ✅、P-051 `a77b224` ✅ 代码级。PG 现在通了（55432），请在 be/r010 补：012 up/down/up 十例、P-050 生效方向/未来版本/跨媒体/跨 workspace 四例、benchmark PG；回执只补数字。
+- be/r010 先 `git merge main`（main 现 = 二批合流 + fixtures 152 + v1.7.1 契约），冲突只会在 docs/relay（保留双方）。
+- 顺序不变：R-013 bootstrap（P-047 三裁已给）→ R-010a1 v3 公开窗口 → R-013b（FaaS 模板：老板去要 OS 的无凭证 f.yml 最小模板，到了转你；安装脚本先做）→ R-011。R-FE-IMG-001 空档做。

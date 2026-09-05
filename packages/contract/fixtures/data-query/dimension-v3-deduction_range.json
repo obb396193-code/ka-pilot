@@ -1,0 +1,301 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.dimension",
+      "rowSchemaVersion": "account.dimension/v3",
+      "status": "ready",
+      "dimension": "deduction_range",
+      "rows": [
+        {
+          "key": "[0,10)",
+          "label": "扣量 0–10%",
+          "metrics": {
+            "cost": {
+              "value": 9600.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 7499.52,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 76000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 3200,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 236,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 226,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 1088.48,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0421,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0738,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 42.48,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 33.18,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0442,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "key": "[10,30)",
+          "label": "扣量 10–30%",
+          "metrics": {
+            "cost": {
+              "value": 1800.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 1406.16,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 14000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 600,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 44,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 36,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": -38.16,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0429,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0733,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 50.0,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 39.06,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.2222,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": false,
+            "costStatus": "yellow",
+            "costStatusReason": "day_over_window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false
+        },
+        {
+          "key": "[30,+)",
+          "label": "扣量 ≥30%",
+          "metrics": {
+            "cost": {
+              "value": 4200.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 3281.04,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 30000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 1400,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 120,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 80,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": -241.04,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0467,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0857,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 52.5,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 41.01,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.5,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": false,
+            "costStatus": "red",
+            "costStatusReason": "window_over",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": true
+        }
+      ],
+      "returnedRowCount": 3,
+      "wholeResultTotal": {
+        "value": 3,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "canonical",
+        "workspaceKind": "team",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05",
+          "preset": "month_to_date"
+        },
+        "metadataAvailability": "known",
+        "coverage": {
+          "complete": true
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "8 维之一：扣量区间桶 [0,10)|[10,30)|[30,+)（domain 按 deduction_rate % 分桶，桶键即契约）"
+  }
+}

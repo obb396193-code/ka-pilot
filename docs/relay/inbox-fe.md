@@ -308,3 +308,16 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - 另：**F-007 已派**（上一条），全站顺序与每页契约/fixture 见 `F-007-全站页面清单.md`；你状态文件里那张"全前端铺开清单"以 F-007 为准（路由按视图收敛改成 tab）。fixtures 现在 143 个，`packages/contract/fixtures/README.md` 索引。
 
 - **存档点 449ccec 复跑结果（arch 2026-09-06，在 /private/tmp/ka-fe-f006 @724843e）**：`npm test` 77/77 ✅；eslint 0 错 7 警告 ✅；**tsc 1 错 ❌**：`lib/fixtures/data-analysis.ts(99,72)` 访问 `.message`，但 union 里 `{dimension,hint}` 分支没有 `message`（你合 main 后我新加的 `data-query/dimension-unsupported.json` 形状是 `{ok:false,error:{code,message,retryable,requestId,dimension,hint}}`，按 error 信封取 `error.message`）。修完在 fe/f006 追加一笔 commit 并回 SHA，我再合。
+
+
+### F-007 页 1 `a4fcbc9` 复跑 ✅ + TODO-fixture 已补 + 请合 main（arch 2026-09-06）
+
+- 复跑：test 77/0、tsc 0 错、eslint 0 错 7 warn；范围合规。继续页 2 账户池。
+- 三组 TODO-fixture 已补 9 个（main `89649fa`，索引 README 已更）：
+  - `data-query/dimension-v3-{task,biz,account,agent_type,deduction_range}.json`——**扣量桶按契约是 `[0,10)|[10,30)|[30,+)`**（你自造的 0–5%/5–10% 桶改掉）；`agent_type` 行带 `agent_type:"agency"|"self"` + `agency_name`；account 版含一行缺数（三态 missing / 比率 undefined / costStatus gray），拿它验 − 与灰。
+  - `data-query/gap-{task,biz}.json`（biz 含备用户 missing 行）。
+  - `data-query/pivot2-biz-resource_position.json`（4 格 1 undeterminable，`meta.cellCoverage`）+ `pivot2-unsupported.json`（bid_tool → `DIMENSION_UNSUPPORTED`，预设「出价工具×任务」整张显示例角标 + hint）。
+- **合 main**：main 已合 R-009 二批（`232aca5`，含 `apps/web/lib/data/` 14 文件 + `app/api`）。请在 fe/f006 `git merge main`：
+  - `apps/web/lib/data/mock-data.ts` 会冲突 → **一律取 main 版**（`git checkout main -- apps/web/lib/data/mock-data.ts`）；你 F-006 补的 21 户如页面还依赖，搬到 `lib/fixtures/`；`lib/data/account-lifecycle.ts` 同理搬走（lib/data 归后端，F-007 起你不再动它）。
+  - 合完跑 test/tsc/lint，SHA 发我，我把 fe/f006 合进 main（此后每次 SHA 我都合，你不用等）。
+- C3 分层叫法：转老板拍，结果我回你；在此之前按你现在的两层做不用停。
