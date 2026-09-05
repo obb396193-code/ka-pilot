@@ -3024,3 +3024,34 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 | 测试 | 自报 Domain 497 / DB 196 真 PG / Worker 636+2 / Web 78；arch 批末合流时独立复跑 |
 | 依赖门 | Web `npm audit` 5 项（fast-uri/qs/PostCSS/sharp，Next 15.5.23 链路）**是前端范围**，转 inbox-fe；后端三包 0 |
 | 接下来 | P0-07 → P0-12 → P0-04 三态/v2 → 绑源（按 9-5 重写的 DATA-ROUTE-001）→ 双空间集成反例 → 折 011。窗口化口径 v1.4.1（含 `op` 列）已冻，属 R-010a1/R-012，不进本批 |
+
+
+---
+
+### P-042 ✅审查通过｜R-009 P0-07 工作流单执行器 + effect outbox `a044e54`｜arch 2026-09-05
+
+| 项 | 结论 |
+|---|---|
+| 单执行者 fencing | ✅ `claimExecutor` 原子 UPDATE（token 为空或 lease 过期才能领，DB 时钟）；`lockWorkflowExecutor` 先 `FOR UPDATE` 再比 token、再用 `clock_timestamp()` 校 lease——顺序对（锁后校时，不吃等锁时间） |
+| 无 token 入口 | ✅ `compareAndSetRunStatus`/`appendEvent`/renew/release/reserve/finish 全部过锁；旧 token 即使无人接管也不能续活 |
+| effect outbox | ✅ `reserveEffect` INSERT pending `ON CONFLICT (run_id,node_id,attempt,phase) DO NOTHING` → 读回；effect_key 不一致抛错；`acquired=false` 且 pending/unknown → 流程停 unknown **不重发**；done/failed → 读回归一化结果不重放。与 v1.2 裁决逐字一致 |
+| 崩溃恢复 | ✅ 调用异常 → `finishEffect(unknown)` + run unknown；结果落库后 event 崩溃可从 effect 读回 |
+| 续租 | ✅ 长操作前 `renewExecutor(timeout+30s)`；命令结束 release |
+| P2（不阻塞） | `claimExecutor` 不看 run 终态（可领已结束的 run，后续 CAS 会失败，无害）；`withExecutor` 里 `loadAuthorized` 调两次，可合一 |
+| 测试 | 自报 Domain 497 / DB 199 / Worker 641+2 / Web 78；真 PG 首轮 4 红暴露接线问题后修——这是真跑过的证据 |
+
+### P-043 ✅审查通过｜R-009 P0-12 钉钉 durable inbox `c6603d3`｜arch 2026-09-05
+
+| 项 | 结论 |
+|---|---|
+| 先落库再 ACK | ✅ `receiveRobotMessage`：`await persist()` 成功才 `ack(SUCCESS)`；持久化失败不 ACK 让钉钉重投；同 event_id 不同 workspace/provider → 抛错不 ACK（防串租户） |
+| 领取/fencing | ✅ `SKIP LOCKED` 领取，`attempts+1` 当代际；`mutate` 先按 id+scope+attempts `FOR UPDATE` 再用 DB 时钟校 lease |
+| 失败/dead | ✅ 失败不删行，`lease_until` 退避 min(300, 2^attempts)s；耗尽标 `last_error=ATTEMPTS_EXHAUSTED`，不加未冻结 status 列——**arch 已把这个 dead 定义写进 schema.sql 注释冻结** |
+| 落盘加密 | ✅ payload/回复 checkpoint AES-256-GCM，AAD 绑 workspace/provider/event/purpose；新必填 Secret `GATEWAY_INBOX_KEY_HEX`（网关第二阶段部署时进 OS 配置表） |
+| 回复幂等 | ✅ 先 checkpoint 回复文本再发；重试只重发不重查业务；"远端发成功本地 complete 前崩溃可能重复文本"如实声明 |
+| 启动不跑 migration | ✅ 改为部署维护步骤；runbook 已加 |
+| 边界 | ✅ 任务创建/Agent enqueue 仍关；`kind='robot_message'` 专用消费者，卡片回调走 v1.4 `card_callbacks`（schema 注释已注明） |
+| P2（不阻塞） | dead 标记是懒触发（下次领取时才标）；死信可见性等 R-012 卡片/死信 UI |
+| 测试 | 自报 Domain 497 / DB 205 / Worker 641+2 / Gateway 36（含 2 真 PG）/ Web 78；五包 typecheck/lint 过 |
+
+**继续**：P0-04 三态/v2（fixtures 升 v2）→ #8 绑源（按重写后 DATA-ROUTE-001：team 无源 503 不回退，lineage 加 workspaceKind）→ 双空间集成反例 → 折 011 → merge main → 整批回执。arch 批末独立复跑五包后一次 `--no-ff` 合流。

@@ -277,3 +277,10 @@
 #### R-012 追加（2026-09-05）：口径设置端点
 
 - `GET/POST /api/v1/settings/channel-coefficients`、`GET .../:media/history`、`GET /api/v1/settings/change-log`（三版本表 UNION）——DTO 见 api.md v1.4.1「口径设置与变更记录」。系数回溯改口径走与考核价改价同一重算链，响应 `recomputed_days`。
+
+#### P-042 / P-043 ✅通过 → 继续（arch 2026-09-05）
+
+- `a044e54`（P0-07）、`c6603d3`（P0-12）逐行通过，结论表 inbox-arch。两条 P2 不阻塞：claimExecutor 可加 run 终态过滤；withExecutor 的 loadAuthorized 合一。
+- dead 定义已按你的实现冻进 schema.sql 注释（processed=false ∧ attempts≥max ∧ last_error=ATTEMPTS_EXHAUSTED），以后别加 status 列。
+- `GATEWAY_INBOX_KEY_HEX` 生成命令请补进 runbook 网关节（和 R-013 的 §2.5 一起）。
+- 继续：P0-04 三态/v2 → #8 绑源 → 双空间反例 → 折 011 → merge main（main 已到 v1.4.1，含 `op` 列/settings 端点，本批不实现只要不冲突）→ 整批回执 P-044。

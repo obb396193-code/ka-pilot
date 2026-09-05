@@ -405,6 +405,8 @@ CREATE TABLE inbound_events (         -- 回调监控页查 → 自带 workspace
   kind TEXT, payload JSONB, processed BOOLEAN DEFAULT false,
   -- P0-12 裁决（durable inbox）：网关收到消息必须**先 INSERT 本表成功再向钉钉 ACK**；处理走 lease 领取，
   -- 失败不删行、attempts+1 留 last_error，超过 max_attempts 进 dead；processed=false 且 lease 过期的行可被重领
+  -- dead 的定义（2026-09-05 arch 按 P-043 实现冻结，不加 status 列）：processed=false AND attempts>=max_attempts AND last_error='ATTEMPTS_EXHAUSTED'；行永久保留作证据
+  -- 本表消费按 kind 分：robot_message 由钉钉网关 inbox worker 领取；card 回调走 v1.4 card_callbacks（各自消费者，不混领）
   lease_until TIMESTAMPTZ, attempts INT DEFAULT 0, max_attempts INT DEFAULT 5,
   last_error TEXT, processed_at TIMESTAMPTZ,
   received_at TIMESTAMPTZ DEFAULT now()
