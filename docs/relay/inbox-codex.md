@@ -217,3 +217,19 @@
 - 第二批范围 = R-009 剩余全部：#2 P0-04 三态（按 api.md 新 BE-001：`MetricValue` + row schema **v2** + fixtures 升级）、#3 P0-05 409、#4 P0-07 fencing+effects、#5 P0-12 durable inbox、#6 P0-13 校验、#7 P0-03 五态（**顺手加 status CHECK**）、#8 数据源绑空间（普通请求**拒绝** `dataView`→400；reconcile 走 `POST /api/v1/admin/data/reconcile` entitlement）、#10 双空间集成反例。
 - 附带修 P-038 P2-1：删 `bff.ts:106` 假 token 兜底。
 - 交付方式不变：状态文件逐条 + SHA + 四包测试数 + 真 PG 证据；P-039 起编号。
+
+---
+
+### R-013 后端：首次部署 seed 脚本（2026-09-05；小活，插在 R-009 第二批之后、R-010a 之前）
+
+- 派活方：arch　日期：2026-09-05
+- 背景：arch 核实空库登录路径——`createSessionForIdentity` 要求 `auth_identities` 行存在且 active、且恰好一个 active 的 personal membership（`workspaces.kind='personal'` + `workspace_users` actor），**代码里没有任何创建路径**（只有 benchmark 脚本 insert workspaces）。首次内网部署必卡登录。OS 消息见 `docs/plans/发给内网agent-2026-09-05-部署准备与联调门.md` 三.3。
+- 交付物：
+  1. `packages/db` 新增 `npm run seed:bootstrap -- <json>`：输入 JSON = `{identities:[{id, display_name}], workspaces:[{id?, kind, name}], memberships:[{identity_id, workspace_id, user_id?, role}], grants:[{workspace_id, media, account_id, user_id}]}`；**幂等**（重复跑不重复插、不改已有行），单事务，不接受任何密码/token 字段（出现即拒绝）。
+  2. 个人空间账户授权：一期裁决 = **credential owner 拿到 ETL 拉回的该 workspace 全部账户**（老板 userId 名下本来只看得到自己的户）。seed 支持 `grants: "all_accounts_in_workspace"` 快捷值，在 ETL 首跑后再执行一次即补齐。
+  3. 团队空间：seed 一个 `kind='team'` workspace + 该 identity 的 readonly membership（R-011 接 ka_data 前就要能切进去看空态）。
+  4. 示例 JSON 放 `packages/contract/fixtures/seed/bootstrap.example.json`（UUID 全是 `00000000-0000-4000-8000-0000000000xx` 形态，不含真实身份）；runbook `docs/runbooks/2026-09-04-DataAPI内网部署与环境变量.md` 加"§2.5 首次 seed"一节（migrate 之后、start:data-api 之前）。
+  5. 反例：identity 重复 → 幂等不报错；一个 identity 两个 personal membership → 拒绝；grants 引用不存在的 workspace → 整批回滚；JSON 含 `password|token|secret` 键 → 拒绝启动。
+- 边界：不动 auth 逻辑本身；不动 migration；不给默认账号（没有 seed JSON 就什么都不做）。
+- 验收：真 PG 空库 → migrate → seed → `POST /api/v1/auth/login`（internal_test）200 → `GET /session` 显示 personal 空间 → switch 到 team 200 readonly。
+- 状态：待处理（R-009 第二批交付后做，P-04x 编号继续）
