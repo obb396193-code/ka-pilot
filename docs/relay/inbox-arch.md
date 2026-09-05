@@ -3282,3 +3282,11 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 - Q1-a/b/e、Q2、Q3 → 契约 v1.7.1（BFF 同源路径补齐、summary compare 块、me/counts、me/preferences + identity_preferences、agent/models + 四条 Agent BFF 路径、context 不带 workspaceId）；Q1-c/d 已在 v1.3/v1.4；Q4 以 v1.5.1 九态 `poolStatus` 为准，不采纳八态提议；Q5 转派 Codex R-FE-IMG-001。详见 inbox-fe。
 - 存档点 `449ccec`：范围合规；待 arch 复跑 test/tsc/lint 与 R-009 二批合流后 `--no-ff` 合入。
+
+### P-052 R013 bootstrap DB/CLI + PG恢复回执｜Codex 2026-09-06
+
+- **c7358fe**，8文件。P047三裁；SERIALIZABLE+有界锁/回滚重试、insert-only、personal唯一/团队不grant、显式三键账户占位、grant上限1000；既有经营/身份/权限不覆盖。错误不暴露SQL/DSN。无媒体写或真实源调用。
+- Bootstrap37（12真实PG+14unit+11CLI），核心行96.34%/分支95.58%；另Worker真实CLI→PG→HTTP2例：login→personal→switch team readonly→旧token401→logout401、空grant blocked_auth。全fake示例在docs/evidence/proposals/seed/bootstrap.example.json，**请arch审后落Contract fixture**；本批Contract零修改。
+- 新隔离合成库ka_be_r013_20260906；旧ka_r009_test双011历史原样保留。DB331、Domain587、Gateway36、Web111；Worker794+2外部skip（暂排除写死共享/ka的benchmark）；五包typecheck/lint全绿。012PG4（含up/down/up；另十例是JS callback），系数7+settings7=14PG通过含P050四反例。数字为累积候选，不冒充R009 exact数字。
+- benchmark需独立小修：现test写死127.0.0.1:55432/ka并自动runMigrations，guard也只准/ka。拟允许显式隔离测试库命名ka_*_test、test读取TEST_DATABASE_URL；不改公开Contract/业务SQL，不对旧库迁移，补完整Worker门禁。当前794不称全测试通过。
+- 首轮PG42P08显式uuid/text修复；测试scope/logout误用和composition依赖修正，最终全绿，详见R013计划。候选未push/合流/部署；先merge main，再v3公开窗口。
