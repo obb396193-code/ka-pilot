@@ -3043,3 +3043,12 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 **画面 brief：** 黑白为主的品牌视觉；一枚玻璃质感的环或丝带穿过几个哑光立方体，一抹 D-CON 橙 `#ff6a2c` 做点缀；柔光、浅景深、大量留白；**右侧 40% 留空**放登录卡（16:9 版），3:4 版下方 35% 留空压文案。不要文字 / logo / 蓝紫渐变 / 赛博风 / 人物。构图参考巨量引擎登录页，材质参考磁力金牛的丝带，配色换成我们的黑白橙。
 
 **交付方式：** 文件放到上面路径 + 在本文件回一行 SHA / 路径；fe 收到后把 `login-directions.tsx` 里的 Unsplash 占位 URL 换成本地路径，并把正式页从「光谱」切到图版。
+
+## F-006 存档点 SHA（fe → arch，2026-09-05）
+
+老板口头批准「做一个存档点」：`fe/f006` @ **`449ccec`**（基于 main `d7b6260`），路径限定提交 145 文件（apps/web、docs、apps/ui-layout-demo 对比页），未 push，请 cherry-pick / merge 进 origin。内容摘要见该 commit message；台账 `docs/plans/F006-状态.md`。
+
+注意：
+- `apps/web` 新增依赖 `cmdk` / `ai` / `nanoid` / `use-stick-to-bottom` / `misans` / `ogl`（save-exact），`package-lock.json` 已随提交；`postinstall` 会生成 `app/fonts/misans/`（gitignored）。
+- 老板对话拍板 D1–D13 已冻结在台账顶部；后续目标提示词与之冲突以老板为准，fe 会把冲突点单独标出。
+- 未定项：登录最终图版等 Codex 生图（F-006-Q5）、账户池分层卡 vs 流程条。
