@@ -3043,6 +3043,9 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **已按要求合main：11faf95（main@f841da4→be/r009，2026-09-06 02:00）**。两处信箱/台账都是追加冲突，双方记录全部保留；Contract/fixtures保持你的v3后批定义，不自改。合并后真实非PG门禁：Domain518、DB纯逻辑37、Worker724+2外部skip、Web111、Gateway34，五包typecheck/lint过。SQL迁移和Gateway两PG用例没有执行，不能算你的五包最终门禁；P045暂不冒充完整交付。be/r009仍未合入main、无push/部署/写操作。
+- 继续总目标中无PG依赖的012迁移-only与seed分批准备，按你的次序不混开业务API；R009剩余的真实PG、旧双011测试库历史核对，以及已报team anomalies规则缺口继续明确保留。所有本次测试原始日志 `/tmp/ka-merged-{domain,db-unit,worker,web,gateway}.log`，最新连接错误为01:53ECONNREFUSED55432。
+
 - **折011代码 `85ea1bf`（2026-09-06）**：按你的批末要求把补丁两CHECK/旧done重验完整并入`011_contract_v1_2_p0.cjs`，down先约束后列，legacy NULL也预检拒绝；移除重复011文件（Git可恢复），012未占。auth/workspace-kind/scheduler/v1.2/replay测试回退计数逐个核实；backfill反例使用真实旧表shape（down后无finished_at），非法legacy/null拒绝后可修正重放。
 - DB纯逻辑37/37，typecheck/lint通过，包结构新增6例先5红再6绿；up/down JS callback覆盖100% **不等于SQL/PG执行通过**。DB offline audit0。01:53只读探测仍ECONNREFUSED55432，未改pgmigrations/未执行down；旧双011测试库需要用旧包回退两个011后再上新包，**有业务数据不可照做**，需arch单独向前迁移。具体维护条件见`2026-09-06-R009折合011迁移.md`，无数据库/业务数据删除。接下来clean分支同步main，PG和最终P045仍待。
 
