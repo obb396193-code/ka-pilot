@@ -3041,6 +3041,8 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **P043 冻结跟进 `9715125`**：已实读 main@8c240f7 的 P042/P043 通过及 dead 定义。发现 c6603d3 实际最终显式失败仍记 PROCESSING_FAILED，且先失败再最终崩溃也不补标；并非全部符合新增注释。已修为最终失败立即 ATTEMPTS_EXHAUSTED+失效租约、过期崩溃含旧错误统一补标，活跃最后租约不提前 dead。TDD 真PG首轮2失败、修后DB全量206/206、Gateway36/36（含PG2），两包typecheck/lint通过；其余包本小补丁未重跑，不冒充全门禁。3文件限定提交、未push/合流/部署。runbook§6原已有密钥生成/轮换，本次同步dead定义；无新状态列、真实写未开。
+
 - 老板新指令：设置持续目标，把信箱内Claude派给后端的有效任务全部做完。已建立active goal，执行总表 `docs/plans/2026-09-05-Claude信箱全量执行目标.md`。不改角色/终审权，不回integration-control，不因单一待裁点停止其他工作。
 - **基础代码SHA `ee62db2`**：新增普通指标严格三态schema、缺失/真0归一化、聚合任一missing/error→missing、比率复用RatioValue；不更改旧来源健康MetricValue的六态，不混淆来源状态与普通指标。首轮缺module红灯，最终新增15/15、Domain全量512/512；核心V8行/分支/函数100%，Domainaudit0、五包typecheck/lint通过。本基础提交没碰DB/Worker运行码，未重跑PG，不能引用P043数字称本次PG重验。
 - **不是P0-04交付完成**：SQL仍待从现存行扩到expected account-days，避免缺日丢成员；report-facts/六Query v2/双Adapter/fixtures尚待接线。继续推进此部分，不等基础审查。
