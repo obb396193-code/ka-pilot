@@ -73,6 +73,7 @@ export function readySource(
     returnedRowCount: rows.length,
     wholeResultTotal: { value: rows.length, availability: "available" },
     lineage: {
+      workspaceKind: "personal",
       source,
       datasetVersion: null,
       queryTemplateVersion: "v1",

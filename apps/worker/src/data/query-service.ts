@@ -81,6 +81,7 @@ function withFrozenAuthority(
   resolved: ResolvedDataQuery,
   source: "ka_data" | "platform",
   requestId: string,
+  workspaceKind: ApprovedWorkspaceAuthContext["workspaceKind"],
 ): SourceQueryResult {
   return {
     ...result,
@@ -89,6 +90,7 @@ function withFrozenAuthority(
       : { error: { ...result.error, requestId } }),
     lineage: {
       ...result.lineage,
+      workspaceKind,
       authority: authorityMetadata(resolved, source),
     },
   };
@@ -138,8 +140,10 @@ function mapError(error: unknown, requestId: string): StableDataQueryError {
 function unavailableLineage(
   resolved: ResolvedDataQuery,
   source: "ka_data" | "platform",
+  workspaceKind: ApprovedWorkspaceAuthContext["workspaceKind"],
 ): SourceLineage {
   return {
+    workspaceKind,
     source: source === "ka_data" ? "ka_data" : "canonical",
     datasetVersion: null,
     queryTemplateVersion: resolved.queryTemplateVersion,
@@ -163,6 +167,7 @@ function unavailableSource(
   resolved: ResolvedDataQuery,
   source: "ka_data" | "platform",
   error: StableDataQueryError,
+  workspaceKind: ApprovedWorkspaceAuthContext["workspaceKind"],
 ): SourceQueryResult {
   return {
     queryId: resolved.queryId,
@@ -171,7 +176,7 @@ function unavailableSource(
     rows: [],
     returnedRowCount: 0,
     wholeResultTotal: { value: null, availability: "error", reason: error.code },
-    lineage: unavailableLineage(resolved, source),
+    lineage: unavailableLineage(resolved, source, workspaceKind),
     warnings: [error.message],
     error,
   };
@@ -379,6 +384,7 @@ export class DataQueryService {
           resolved,
           "ka_data",
           requestId,
+          auth.workspaceKind,
         );
         if (source.status === "unavailable") throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Team data source is unavailable");
         return dataQueryResponseSchema.parse({ ok: true, data: { mode: "ka_data", source } });
@@ -389,6 +395,7 @@ export class DataQueryService {
           resolved,
           "platform",
           requestId,
+          auth.workspaceKind,
         );
         return dataQueryResponseSchema.parse({ ok: true, data: { mode: "platform", source } });
       }
@@ -413,16 +420,18 @@ export class DataQueryService {
             resolved,
             "ka_data",
             requestId,
+            auth.workspaceKind,
           )
-        : unavailableSource(resolved, "ka_data", mapError(kaResult.reason, requestId));
+        : unavailableSource(resolved, "ka_data", mapError(kaResult.reason, requestId), auth.workspaceKind);
       const platform = platformResult.status === "fulfilled"
         ? withFrozenAuthority(
             guardSourceOutput(platformResult.value, resolved, scope),
             resolved,
             "platform",
             requestId,
+            auth.workspaceKind,
           )
-        : unavailableSource(resolved, "platform", mapError(platformResult.reason, requestId));
+        : unavailableSource(resolved, "platform", mapError(platformResult.reason, requestId), auth.workspaceKind);
       const comparisonReason = kaData.status === "unavailable" || platform.status === "unavailable"
         ? "source_unavailable"
         : sourceHasNoObjects(kaData) !== sourceHasNoObjects(platform)

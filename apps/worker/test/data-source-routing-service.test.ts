@@ -48,4 +48,49 @@ describe("workspace source policy wired into DataQueryService", () => {
     expect(await service.execute(request, personal)).toMatchObject({ ok: true, data: { mode: "platform" } });
     expect(kaData.query).not.toHaveBeenCalled();
   });
+
+  it("binds both ordinary and diagnostic lineage to Session rather than adapter claims", async () => {
+    const { service, kaData, platform } = setup(true, true);
+    for (const [adapter, source] of [[kaData, "ka_data"], [platform, "canonical"]] as const) {
+      adapter.query.mockImplementation(async (resolved) => {
+        const response = readySource(resolved.queryId, source, [canonicalRow(resolved.queryId, 1, ids.workspaceId, "a")]);
+        return { ...response, lineage: { ...response.lineage, workspaceKind: "team" } };
+      });
+    }
+    expect(await service.execute(request, personal)).toMatchObject({
+      ok: true, data: { source: { lineage: { workspaceKind: "personal" } } },
+    });
+    expect(await service.executeReconcile({ ...request, queryId: "reconcile.account_daily" }, personal)).toMatchObject({
+      ok: true, data: {
+        kaData: { lineage: { workspaceKind: "personal" } },
+        platform: { lineage: { workspaceKind: "personal" } },
+      },
+    });
+    // Same upstream claims cannot determine a team Session either.
+    platform.query.mockReset();
+    kaData.query.mockImplementation(async (resolved) => readySource(
+      resolved.queryId, "ka_data", [canonicalRow(resolved.queryId, 1, ids.workspaceId, "a")],
+    ));
+    expect(await service.execute(request, team)).toMatchObject({
+      ok: true, data: { source: { lineage: { workspaceKind: "team", metadataAvailability: "unknown" } } },
+    });
+  });
+
+  it("preserves authenticated kind when either reconciliation source fails", async () => {
+    for (const currentAuth of [personal, team]) {
+      const { service, kaData, platform } = setup(true, true);
+      kaData.query.mockRejectedValue(new Error("private upstream details"));
+      platform.query.mockRejectedValue(new Error("private DB details"));
+      const response = await service.executeReconcile(
+        { ...request, queryId: "reconcile.account_daily" }, currentAuth,
+      );
+      expect(response).toMatchObject({
+        ok: true, data: {
+          kaData: { status: "unavailable", lineage: { workspaceKind: currentAuth.workspaceKind, metadataAvailability: "unknown" } },
+          platform: { status: "unavailable", lineage: { workspaceKind: currentAuth.workspaceKind, metadataAvailability: "unknown" } },
+        },
+      });
+      expect(JSON.stringify(response)).not.toContain("private");
+    }
+  });
 });

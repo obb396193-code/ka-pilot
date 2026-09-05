@@ -82,6 +82,7 @@ export type SourceAuthority = z.infer<typeof sourceAuthoritySchema>;
 
 export const sourceLineageSchema = z
   .object({
+    workspaceKind: z.enum(["personal", "team"]),
     source: z.enum([
       "ka_data",
       "qihang_realtime",

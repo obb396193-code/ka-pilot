@@ -114,7 +114,8 @@
           "returnedObjects": 1
         },
         "truncated": false,
-        "partial": false
+        "partial": false,
+        "workspaceKind": "personal"
       },
       "warnings": []
     }

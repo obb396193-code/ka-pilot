@@ -49,6 +49,21 @@ function kaDaily(accountId: string, overrides: Record<string, unknown> = {}) {
 }
 
 describe("KaDataClient", () => {
+  it("derives workspace kind from execution scope, not upstream metadata", async () => {
+    const client = new KaDataClient({
+      baseUrl: "https://ka-data.example.internal", token: "fixture-token",
+      fetchFn: async () => jsonResponse({
+        backend: "sqlite", rowCount: 1, rows: [kaSummary()],
+        workspaceKind: "team",
+      }),
+    });
+    const response = await client.query(resolvedSummary(), {
+      workspaceId: "00000000-0000-4000-8000-000000000024",
+      userId: "00000000-0000-4000-8000-000000000001",
+      scopeKind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "a" }],
+    });
+    expect(response.lineage).toMatchObject({ workspaceKind: "personal", metadataAvailability: "unknown" });
+  });
   it.each([-1, 3, "2", 1.5])("rejects impossible account-day coverage metadata %s", async (account_day_count) => {
     const client = new KaDataClient({
       baseUrl: "https://ka-data.example.internal", token: "fixture-token",

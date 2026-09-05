@@ -255,6 +255,7 @@ function sourceLineage(
   const knownMetadata = Object.values(sourceMetadata).filter((value) => value !== null).length;
   return {
     source: "ka_data",
+    workspaceKind: scope.scopeKind === "team_workspace_readonly" ? "team" : "personal",
     ...sourceMetadata,
     metadataAvailability: knownMetadata === 0
       ? "unknown"

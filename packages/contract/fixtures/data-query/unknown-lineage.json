@@ -40,7 +40,8 @@
           "returnedObjects": 0
         },
         "truncated": false,
-        "partial": false
+        "partial": false,
+        "workspaceKind": "team"
       },
       "warnings": []
     }

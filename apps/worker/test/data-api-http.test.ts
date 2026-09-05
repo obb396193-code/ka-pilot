@@ -186,6 +186,12 @@ describe("data API HTTP composition", () => {
       expect(response.headers.get("x-request-id")).toBe(`bff-${dataView}-001`);
       const payload = await response.json();
       expect(payload).toMatchObject({ ok: true, data: { mode: dataView } });
+      if (dataView === "reconcile") {
+        expect(payload.data.kaData.lineage.workspaceKind).toBe("personal");
+        expect(payload.data.platform.lineage.workspaceKind).toBe("personal");
+      } else {
+        expect(payload.data.source.lineage.workspaceKind).toBe(dataView === "ka_data" ? "team" : "personal");
+      }
     },
   );
 

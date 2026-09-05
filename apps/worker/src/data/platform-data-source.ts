@@ -114,6 +114,7 @@ function sourceLineage(
   };
   return {
     source: "canonical",
+    workspaceKind: scope.scopeKind === "team_workspace_readonly" ? "team" : "personal",
     ...sourceMetadata,
     metadataAvailability: metadataAvailability(sourceMetadata),
     queryTemplateVersion: resolved.queryTemplateVersion,
@@ -142,9 +143,10 @@ function sourceLineage(
   };
 }
 
-function unavailableLineage(resolved: ResolvedDataQuery): SourceLineage {
+function unavailableLineage(resolved: ResolvedDataQuery, execution: DataQueryExecutionScope): SourceLineage {
   return {
     source: "canonical",
+    workspaceKind: execution.scopeKind === "team_workspace_readonly" ? "team" : "personal",
     datasetVersion: null,
     queryTemplateVersion: resolved.queryTemplateVersion,
     metricVersion: resolved.metricVersion,
@@ -283,7 +285,7 @@ export class PlatformDataSource {
           availability: "error",
           reason: "SOURCE_UNAVAILABLE",
         },
-        lineage: unavailableLineage(resolved),
+        lineage: unavailableLineage(resolved, execution),
         warnings: ["Platform source is unavailable"],
         error: {
           code: "SOURCE_UNAVAILABLE",

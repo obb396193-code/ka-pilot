@@ -17,6 +17,21 @@ async function readFixture(name: typeof fixtureNames[number]): Promise<unknown> 
 }
 
 describe("canonical data-query response fixtures", () => {
+  it.each(["ready-lineage", "unknown-lineage", "reconcile-pending"] as const)(
+    "rejects %s if any source omits its workspace kind",
+    async (name) => {
+      const fixture = dataQueryResponseSchema.parse(await readFixture(name));
+      if (!fixture.ok) throw new Error("unexpected fixture");
+      const sources = fixture.data.mode === "reconcile"
+        ? [fixture.data.kaData, fixture.data.platform] : [fixture.data.source];
+      for (const source of sources) {
+        const previous = source.lineage.workspaceKind;
+        Reflect.deleteProperty(source.lineage, "workspaceKind");
+        expect(dataQueryResponseSchema.safeParse(fixture).success).toBe(false);
+        source.lineage.workspaceKind = previous;
+      }
+    },
+  );
   it("rejects a v1 source version even if its rows otherwise match v2", async () => {
     const parsed = dataQueryResponseSchema.parse(await readFixture("ready-lineage"));
     if (!parsed.ok || parsed.data.mode === "reconcile") throw new Error("unexpected fixture");

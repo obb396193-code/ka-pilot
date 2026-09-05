@@ -92,6 +92,7 @@ describe("PlatformDataSource", () => {
       rows: [{ rowCount: 1, accountCount: 1, metrics: expect.objectContaining({ cost: { value: 12, availability: "available" } }) }],
       lineage: {
         source: "canonical",
+        workspaceKind: "personal",
         dataAsOf: "2026-08-24T07:59:00.000Z",
         datasetVersion: null,
         metadataAvailability: "partial",

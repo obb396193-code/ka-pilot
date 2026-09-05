@@ -8,9 +8,11 @@ import {
   metricValueSchema,
   reconcileMetricSchema,
   sourceQueryResultSchema,
+  sourceLineageSchema,
 } from "../src/data-query-contract.js";
 
 const lineage = {
+  workspaceKind: "personal",
   source: "ka_data",
   datasetVersion: "snapshot-20260824",
   queryTemplateVersion: "account-summary-v1",
@@ -60,6 +62,14 @@ const dailyMetrics = {
 } as const;
 
 describe("dual data query contract", () => {
+  it("requires an explicit approved workspace kind without defaulting to personal", () => {
+    const missingKind = Object.fromEntries(Object.entries(lineage).filter(([key]) => key !== "workspaceKind"));
+    expect(sourceLineageSchema.safeParse(missingKind).success).toBe(false);
+    for (const workspaceKind of ["personal", "team"]) {
+      expect(sourceLineageSchema.safeParse({ ...lineage, workspaceKind }).success).toBe(true);
+    }
+    expect(sourceLineageSchema.safeParse({ ...lineage, workspaceKind: "shared" }).success).toBe(false);
+  });
   it("accepts exactly the three frozen data view modes", () => {
     for (const mode of ["ka_data", "platform", "reconcile"] as const) {
       expect(dataViewModeSchema.parse(mode)).toBe(mode);
