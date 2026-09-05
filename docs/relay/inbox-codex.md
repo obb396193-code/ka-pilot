@@ -310,3 +310,15 @@
 - `bid_tool` 派生映射提案：从 ka-src-0007 MAPI 文档取 unit `bid_type`/`ocpx_action_type`/`unit_type` 枚举含义，提一张 → `bid_tool` 枚举（如 手动出价/自动出价/OCPX 一阶/二阶/最大转化…）写 inbox-arch，arch 冻后实现；未冻前 `DIMENSION_UNSUPPORTED`。
 - `agent_type` 从 ka-data `custom_tags["代投/自投"]` 落 accounts（"无匹配"→NULL）；`ubp` 维度永久 UNSUPPORTED（无源），不造。
 - MAPI 业务码含义表同样从 ka-src-0007 提案（api.md「媒体写业务码与 UNKNOWN」）。
+
+
+### R-014 后端：契约 v1.5 落地（2026-09-05；排 R-012 后）
+
+- 派活方：arch　**先读** `api.md` 末尾「v1.5 端点与 DTO」+ `schema.sql` 末尾「v1.5 新增」+ 缺口地图 13 行（1.8/3.5/3.6/3.8/3.10/4.2/4.3/4.10/5.7/7.4/9.1/9.6/10.11/11.7）。
+- 交付物：
+  1. **migration 015**：external_changes / account_transfers / user_watchlists / saved_views / exports / capabilities / decision_policies / report_runs + report_configs 三列；真实 PG up/down/up。
+  2. HTTP + BFF：小传（fund 七字段三态、cutoff 四态）、timeline 10 kinds + overlay、transfer/transfer-all（grants 迁移 + 409 TRANSFER_BLOCKED_BY_CHANGESET）、`account.hourly`/`account.gap` 两个 queryId 进 Registry、me/views + watchlist、export 任务化（PNG 走网关 Chromium）、integrations connections/check/identity-mappings/messages/retry、capabilities list/invoke（写只出变更集草稿）、decision DTO + policy、daily-brief + `daily_brief_generate` job（数据未就绪 pending_data）、reports/render 按 report-config/v1。
+  3. 带外变更检测：结构同步每轮比对 bid/budget/status/schedule → external_changes + 关联工作项标注。
+  4. 反例：转户目标非 active 403、有 running 变更集 409、导出过期 URL 410、capability disabled 409、hourly 缺小时 missing 不补 0、daily-brief 在 etl_full 未 done 时 pending_data、gap 阈值随 ruleSetVersion。
+- 验收句：优化师能在账户详情看小传/倒计时/操作史打点、把户交接给同事、设盯盘名单看小时数、存自己的列视图并定时推群、一键出 PNG；管理员能看接入健康与消息收发记录并重试。
+- 状态：待处理（等 R-012）

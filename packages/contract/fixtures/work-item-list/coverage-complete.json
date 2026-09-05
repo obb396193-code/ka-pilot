@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "workItemId": "00000000-0000-4000-8000-000000000201",
+        "type": "diagnosis",
+        "status": "open",
+        "severity": "P0",
+        "title": "成本异常",
+        "account": {
+          "workspaceId": "00000000-0000-4000-8000-000000000024",
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "accountName": null
+        },
+        "task": {
+          "taskId": "fixture-task-ready",
+          "taskName": "AAC 拉新"
+        },
+        "assignee": null,
+        "slaDue": null,
+        "createdAt": "2026-09-05T01:00:00.000Z",
+        "resolvedAt": null
+      },
+      {
+        "workItemId": "00000000-0000-4000-8000-000000000202",
+        "type": "diagnosis",
+        "status": "open",
+        "severity": "opportunity",
+        "title": "缺量但有成本空间",
+        "account": {
+          "workspaceId": "00000000-0000-4000-8000-000000000024",
+          "media": "KUAISHOU",
+          "accountId": "account-2",
+          "accountName": null
+        },
+        "task": {
+          "taskId": "fixture-task-ready",
+          "taskName": "AAC 拉新"
+        },
+        "assignee": null,
+        "slaDue": null,
+        "createdAt": "2026-09-05T01:00:00.000Z",
+        "resolvedAt": null
+      }
+    ],
+    "page": 1,
+    "pageSize": 20,
+    "total": 2
+  },
+  "meta": {
+    "dataState": "ready",
+    "businessDate": "2026-09-05",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "coverage": {
+      "accountsInScope": 45,
+      "checked": 45,
+      "pending": 0,
+      "undeterminable": 0,
+      "ruleSetVersion": "rules-2026-09-01",
+      "window": {
+        "from": "2026-09-05",
+        "to": "2026-09-05"
+      },
+      "checkedAt": "2026-09-05T09:15:00.000+08:00"
+    },
+    "selectedSource": "platform",
+    "requestId": "fixture-work-coverage-complete",
+    "_note": "pending=0 且 undeterminable=0 → 前端允许显示「其余 43 户在阈值内（09:15 校验）」，43 = checked(45) − 有工作项账户数(2)"
+  }
+}

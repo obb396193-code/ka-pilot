@@ -1,0 +1,99 @@
+{
+  "ok": true,
+  "data": {
+    "task": {
+      "taskId": "fixture-task-nocap",
+      "taskName": "闲鱼潜客转化",
+      "bizName": "闲鱼",
+      "status": "active",
+      "period": {
+        "start": "2026-09-01",
+        "end": "2026-09-30"
+      },
+      "owner": {
+        "userId": "00000000-0000-4000-8000-000000000001",
+        "displayName": "示例优化师"
+      },
+      "budget": {
+        "value": null,
+        "availability": "missing"
+      }
+    },
+    "overview": {
+      "targetVolume": {
+        "value": null,
+        "availability": "missing"
+      },
+      "achieved": {
+        "value": 5200,
+        "availability": "available"
+      },
+      "achievementRate": {
+        "value": null,
+        "state": "undefined"
+      },
+      "timeProgress": {
+        "value": 0.1667,
+        "state": "finite"
+      },
+      "pacing": null,
+      "onTarget": null,
+      "costStatus": null,
+      "costStatusReason": "assessment_missing",
+      "cost": {
+        "window": {
+          "from": "2026-09-05",
+          "to": "2026-09-05",
+          "preset": "today"
+        },
+        "cost": {
+          "value": 41000.0,
+          "availability": "available"
+        },
+        "cashCost": {
+          "value": 32029.2,
+          "availability": "available"
+        },
+        "cashCpa": {
+          "value": null,
+          "state": "undefined"
+        },
+        "realCpa": {
+          "value": null,
+          "state": "undefined"
+        },
+        "costSpace": {
+          "value": null,
+          "availability": "missing"
+        },
+        "projectedWindowCashCpa": {
+          "value": null,
+          "state": "undefined"
+        },
+        "affordableDailyCashCpa": {
+          "value": null,
+          "state": "undefined"
+        }
+      },
+      "anomalySummary": {
+        "p0": 0,
+        "p1": 0,
+        "opportunity": 0
+      },
+      "assessmentPrice": null,
+      "dailyBudgetCap": null,
+      "budgetUsageRate": {
+        "value": null,
+        "state": "undefined"
+      },
+      "budgetUsageDate": "2026-09-05"
+    }
+  },
+  "meta": {
+    "requestId": "fixture-task-overview-nocap",
+    "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "无考核价/无日预算卡/无目标量：全部 missing/undefined，显 −，不显 0，不判色"
+  }
+}

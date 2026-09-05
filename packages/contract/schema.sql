@@ -746,3 +746,83 @@ ALTER TABLE channel_coefficients ADD COLUMN op TEXT NOT NULL DEFAULT 'divide' CH
 -- cash_cost = (账面消耗 − 赔付) op coefficient。首批四行（来源 ka-src-0010 ka-data cash_formulas + ka-src-0003 §3.1）：
 --   KUAISHOU multiply 0.7812 ｜ TENCENT divide 1.045 ｜ TOUTIAO divide 1.09 ｜ BAIDU divide 1.51
 -- 备注：BAIDU/TENCENT 赔付≈消耗 → 现金贡献≈0（资料原话）；生效日期由老板给
+
+
+-- =====================================================================
+-- v1.5 新增（2026-09-05 arch；13 条"有名无 DTO"冻结；Codex R-014 出 migration 015）
+-- =====================================================================
+CREATE TABLE external_changes (        -- 4.3/11.7 带外变更：结构同步比对出的非本系统变更
+  id BIGSERIAL PRIMARY KEY, workspace_id UUID NOT NULL,
+  media TEXT NOT NULL, account_id TEXT NOT NULL,
+  FOREIGN KEY (workspace_id, media, account_id) REFERENCES accounts(workspace_id, media, account_id),
+  target_type TEXT NOT NULL, target_id TEXT NOT NULL, field TEXT NOT NULL,   -- campaign|unit|creative；bid|budget|status|schedule
+  from_value JSONB, to_value JSONB,     -- typed value，与 changeset_items 同构
+  detected_at TIMESTAMPTZ NOT NULL DEFAULT now(), sync_run_id UUID,
+  linked_work_item_id UUID
+);
+CREATE INDEX idx_external_changes_account ON external_changes(workspace_id, media, account_id, detected_at DESC);
+
+CREATE TABLE account_transfers (        -- 4.10 交接
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  from_user_id UUID NOT NULL, to_user_id UUID NOT NULL, initiated_by UUID NOT NULL,
+  items JSONB NOT NULL,                 -- [{media, account_id}]
+  include JSONB NOT NULL,               -- {work_items, dispatches, starred}
+  moved JSONB,                          -- {accounts, work_items, dispatches}
+  note TEXT, created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE user_watchlists (          -- 3.5 盯盘名单（个人）
+  workspace_id UUID NOT NULL, user_id UUID NOT NULL,
+  items JSONB NOT NULL DEFAULT '[]',    -- [{media, account_id}]
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, user_id)
+);
+
+CREATE TABLE saved_views (              -- 3.10 个人视图（列/筛选/排序/窗口）
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  owner_user_id UUID NOT NULL, page TEXT NOT NULL,   -- data.table|data.pivot|accounts|tasks|work_items|data.live
+  name TEXT NOT NULL, config JSONB NOT NULL,         -- {version:"view/v1", filters, columns, sort, window}
+  is_shared BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (workspace_id, owner_user_id, page, name)
+);
+
+CREATE TABLE exports (                  -- 7.4 任务化导出
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL, user_id UUID NOT NULL,
+  kind TEXT NOT NULL,                   -- query|view|report
+  ref JSONB NOT NULL, format TEXT NOT NULL,        -- xlsx|png|pdf
+  status TEXT NOT NULL DEFAULT 'queued', -- queued|running|done|failed
+  file_ref TEXT, bytes BIGINT, error TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(), finished_at TIMESTAMPTZ, expires_at TIMESTAMPTZ
+);
+
+CREATE TABLE capabilities (             -- 5.7 Capability Registry（B7 内核的持久化）
+  key TEXT PRIMARY KEY, name TEXT NOT NULL,
+  category TEXT NOT NULL,               -- query|write|infra|account|material
+  form_schema JSONB NOT NULL,           -- JSON Schema
+  permission TEXT NOT NULL, version TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'documented_unverified',   -- documented_unverified|verified|disabled
+  executor TEXT NOT NULL,               -- product_direct|runtime|multica_run
+  media TEXT[] NOT NULL DEFAULT '{}',
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE decision_policies (        -- 10.11 分级决策阈值（每 workspace 一行）
+  workspace_id UUID PRIMARY KEY,
+  policy JSONB NOT NULL,                -- {confidenceMin, historicalSuccessRateMin, recentManualOpsWindowHours, dailyCapCny}
+  updated_by UUID, updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE report_runs (              -- 1.8 早报 / 3.10 定时推 的生成记录
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL, user_id UUID,
+  kind TEXT NOT NULL,                   -- daily_brief|report_schedule
+  ref JSONB,                            -- {date} | {subscription_id, view_id|report_config_id}
+  status TEXT NOT NULL,                 -- pending_data|running|ready|failed
+  data_as_of TIMESTAMPTZ, output_ref TEXT, error TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(), finished_at TIMESTAMPTZ,
+  UNIQUE (workspace_id, user_id, kind, ref)
+);
+
+ALTER TABLE report_configs ADD COLUMN is_shared BOOLEAN DEFAULT false;   -- 3.8
+ALTER TABLE report_configs ADD COLUMN version TEXT DEFAULT 'report-config/v1';
+ALTER TABLE report_configs ADD COLUMN updated_at TIMESTAMPTZ DEFAULT now();

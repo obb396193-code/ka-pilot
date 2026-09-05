@@ -1,0 +1,139 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.summary",
+      "rowSchemaVersion": "account.summary/v2",
+      "status": "ready",
+      "rows": [
+        {
+          "rowCount": 3,
+          "accountCount": 3,
+          "anomalyRows": 1,
+          "metrics": {
+            "cost": {
+              "value": 13100.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 10233.7,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 98000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 3900,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 300,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 270,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 26.3,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0398,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0769,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 48.52,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 37.9,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.1111,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": true,
+            "costStatus": "yellow",
+            "costStatusReason": "day_over_window_ok",
+            "budgetUsageRate": {
+              "value": 0.91,
+              "state": "finite"
+            }
+          }
+        }
+      ],
+      "returnedRowCount": 1,
+      "wholeResultTotal": {
+        "value": 1,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "canonical",
+        "workspaceKind": "personal",
+        "datasetVersion": "canonical-20260905-01",
+        "queryTemplateVersion": "account-summary-v2",
+        "metricVersion": "account-metrics-v2",
+        "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "business_day_0300",
+        "metadataAvailability": "known",
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05",
+          "preset": "month_to_date"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": [
+            "workspace_id",
+            "media",
+            "account_id"
+          ]
+        },
+        "coverage": {
+          "complete": true
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": [
+        "2026-09-05 单日现金 CPA 41.2 超考核价，窗口累计 37.9 仍达标"
+      ]
+    }
+  },
+  "meta": {
+    "requestId": "fixture-summary-v2-yellow"
+  }
+}
