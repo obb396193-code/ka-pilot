@@ -28,3 +28,4 @@ export * from "./work-item-list-repository.js";
 export * from "./workspace-sync-repository.js";
 export * from "./workspace-sync-readiness.js";
 export * from "./inbound-event-repository.js";
+export * from "./coefficient-seed-repository.js";
