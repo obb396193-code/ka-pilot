@@ -191,6 +191,19 @@ export const stableDataQueryErrorSchema = z
   .strict();
 export type StableDataQueryError = z.infer<typeof stableDataQueryErrorSchema>;
 
+/** DATA-ROUTE-001: public source selection is never a request field. */
+export const ordinaryDataQueryIdSchema = dataQueryIdSchema.exclude(["reconcile.account_daily"]);
+export const ordinaryDataQueryRequestSchema = z.object({
+  queryId: ordinaryDataQueryIdSchema,
+  params: z.record(z.string(), z.unknown()),
+}).strict();
+export const adminReconcileRequestSchema = z.object({
+  queryId: z.literal("reconcile.account_daily"),
+  params: z.record(z.string(), z.unknown()),
+}).strict();
+export type OrdinaryDataQueryRequest = z.infer<typeof ordinaryDataQueryRequestSchema>;
+export type AdminReconcileRequest = z.infer<typeof adminReconcileRequestSchema>;
+
 export const dataQueryRequestSchema = z
   .object({
     queryId: dataQueryIdSchema,
