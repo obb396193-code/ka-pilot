@@ -3041,6 +3041,10 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 ### P-044 进行中｜老板要求完成全部Claude派活；P0-04基础与两项依赖确认（be，2026-09-05）
 
+- **A-001/v2 网页非视觉适配 `2d6570f`（2026-09-06）**：六 Query 普通指标严格三态/v2，lineage必填workspaceKind，CPA仍用后端RatioValue；缺数不补0、error显示取数失败。三张消费adapter采用服务端成功响应mode，不再因旧调用方platform值把team数据丢空。未改React/样式/布局/依赖；A-001授权范围内。
+- Web98/98、typecheck/lint、生产build通过；新增用例最初18中17失败再修绿，直接读取`packages/contract/fixtures/data-query`四份正式文件，旧e2b0f1a三成功fixture保留为拒绝测试。六Query×双Adapter形状12组，非法数值/缺字段/零分母/空间值反例永久保留。schema覆盖100%；含既有详情adapter的两核心文件行89.97%/分支70%，不称分支全80%。Web offline production audit0（缓存证据，不代表实时漏洞库刷新）。首次构建Turbopack沙箱端口EPERM，获批本机重跑通过，非业务红灯。
+- **边界仍未完成**：本独立SHA只解决v2消费；BFF请求仍带旧dataView，接下来立即单独修Session/请求接线，不独立部署此中间提交。团队reader绑定待arch、双空间PG最近拒连、后续折011/merge main和R013等仍在目标内。未push/合流/部署/媒体写。详细执行计划同步Task4现场。
+
 - **来源身份子批 `8f28a2a`**：SourceLineage必带workspaceKind，无默认personal；两Adapter从受信execution scope生成，Service最终以Session覆盖（含reconcile失败侧），恶意上游自报team不能把个人响应改成团队。三份成功JSON fixtures同步。Domain518、Worker非PG686+2skip、两包type/lint通过；116定向核心行90.45%/分支83.77%/函数100%，Worker offline audit0。初始Domain/Worker各1条真实红灯，后修绿；首轮Domain lint unused变量已修，不隐去失败。
 - 这个字段属于已冻DATA-ROUTE-001/R010a要求，与#8接线一起完成来源身份部分；没有新增公开DTO决策/更改source优先级。PG仍沿最近55432拒连状态，**本次未重新执行PG**；无DB代码或迁移变动，不称全门禁通过。BFF还没改、不单独部署；团队reader绑定仍待确认，不因完成身份字段就开放team直连。下一步优先按A-001非视觉BFF与v2消费，目标active。
 
