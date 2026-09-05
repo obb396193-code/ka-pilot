@@ -3,6 +3,14 @@ import { describe, expect, it, vi } from "vitest";
 import { TaskRepository } from "../src/task-repository.js";
 
 describe("task assignment DB conflict translation", () => {
+  it("rejects an empty task scope before it can degrade into a workspace summary", async () => {
+    const query = vi.fn();
+    await expect(new TaskRepository({ query } as unknown as Pool).queryDailyMetrics({
+      workspaceId: "00000000-0000-4000-8000-000000000001", taskId: " ",
+      dateFrom: "2026-08-18", dateTo: "2026-08-19",
+    })).rejects.toThrow("taskId is required");
+    expect(query).not.toHaveBeenCalled();
+  });
   it.each([
     ["23P01", "task_accounts_account_validity_excl", true],
     ["23P01", "unrelated_constraint", false],

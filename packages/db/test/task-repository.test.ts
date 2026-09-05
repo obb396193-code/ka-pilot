@@ -288,5 +288,11 @@ describe("TaskRepository", () => {
       ["2026-08-19", 50, 5],
     ]);
     expect(rows[1]!.metrics.anomalyRows).toBe(1);
+    await pool.query("DELETE FROM account_metrics_daily WHERE workspace_id=$1 AND media='KUAISHOU' AND account_id='account-2'", [workspaceId]);
+    const missing = await repository.queryDailyMetrics({ workspaceId, taskId,
+      dateFrom: "2026-08-18", dateTo: "2026-08-19" });
+    expect(missing.map((row) => [row.ds, row.metrics.cost, row.metrics.rowCount])).toEqual([
+      ["2026-08-18", 100, 1], ["2026-08-19", null, 0],
+    ]);
   });
 });

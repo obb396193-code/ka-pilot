@@ -404,12 +404,18 @@ describe("real PostgreSQL data pipeline", () => {
       workspaceId,
       dateFrom: "2026-08-18",
       dateTo: "2026-08-19",
-      filters: { accountId },
+      filters: { accountScopes: [{ media: "KUAISHOU", accountId }] },
     };
     const summary = await semantic.querySummary(scope);
     expect(summary.cost).toBe(5_100);
     expect(summary.realConversion).toBe(51);
-    const isolated = await semantic.querySummary({ ...scope, workspaceId: otherWorkspaceId });
+    // Same account ID in the other media has no facts; never silently drop that missing member.
+    const mixed = await semantic.querySummary({ ...scope, filters: { accountId } });
+    expect(mixed.cost).toBeNull();
+    expect(mixed.accountCount).toBe(1);
+    const missingDay = await semantic.querySummary({ ...scope, workspaceId: otherWorkspaceId });
+    expect(missingDay.cost).toBeNull();
+    const isolated = await semantic.querySummary({ ...scope, workspaceId: otherWorkspaceId, dateTo: "2026-08-18" });
     expect(isolated.cost).toBe(9_999);
 
     const rule = await pool.query<{ id: string }>(
@@ -483,7 +489,7 @@ describe("real PostgreSQL data pipeline", () => {
     const plan = parseReportExecutionPlan({
       version: "b6-internal-v1",
       title: "合成投放报告",
-      scope: { dateFrom: "2026-08-18", dateTo: "2026-08-19", filters: { accountId } },
+      scope: { dateFrom: "2026-08-18", dateTo: "2026-08-19", filters: { media: "KUAISHOU", accountId } },
       components: [
         { id: "cost", title: "消耗", kind: "kpi", metric: "cost" },
         { id: "trend", title: "趋势", kind: "trend", metric: "realCpa" },

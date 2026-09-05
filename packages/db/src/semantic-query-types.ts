@@ -88,15 +88,15 @@ export interface MetricRatios {
 export interface MetricSummary {
   rowCount: number;
   accountCount: number;
-  cost: number;
-  exposure: number;
-  click: number;
-  conversion: number;
-  realConversion: number;
-  cashCost: number;
-  costSpace: number;
-  wakeUv: number;
-  potentialUv: number;
+  cost: number | null;
+  exposure: number | null;
+  click: number | null;
+  conversion: number | null;
+  realConversion: number | null;
+  cashCost: number | null;
+  costSpace: number | null;
+  wakeUv: number | null;
+  potentialUv: number | null;
   anomalyRows: number;
   ratios: MetricRatios;
 }

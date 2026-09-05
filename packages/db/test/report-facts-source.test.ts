@@ -149,6 +149,19 @@ describe("SemanticReportFactsSource", () => {
     expect(facts.dimensions.account).toHaveLength(1);
   });
 
+  it("preserves missing account-days through report summary, trend and dimensions", async () => {
+    await pool.query("DELETE FROM account_metrics_daily WHERE workspace_id=$1 AND ds='2026-08-18'", [workspaceId]);
+    const source = new SemanticReportFactsSource(new SemanticQueryRepository(pool), {
+      resolve: async () => "2026-08-19T10:30:00.000Z",
+    });
+    const facts = await source.load({ workspaceId, plan: reportPlan() });
+    expect(facts.summary?.cost).toEqual({ value: null, state: "missing" });
+    expect(facts.summary?.realCpa).toEqual({ value: null, state: "undefined" });
+    expect(facts.trend?.[0]?.metrics.cost).toEqual({ value: null, state: "missing" });
+    expect(facts.trend?.[1]?.metrics.cost).toEqual({ value: 120, state: "finite" });
+    expect(facts.dimensions.task?.[0]?.metrics.cost).toEqual({ value: null, state: "missing" });
+  });
+
   it("rejects overlapping task ownership before it can be double counted", async () => {
     await pool.query(
       `INSERT INTO tasks (workspace_id, task_id, task_name)

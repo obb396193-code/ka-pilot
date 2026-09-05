@@ -1,9 +1,6 @@
 import type { Pool, PoolClient } from "pg";
 
-import {
-  METRIC_AGGREGATE_SQL,
-  mapMetricSummary,
-} from "./semantic-query-metrics.js";
+import { queryMetricTrend } from "./semantic-query-metrics.js";
 import type { MetricTrendRow } from "./semantic-query-types.js";
 import { isoTimestamp, nullableNumber } from "./semantic-query-support.js";
 
@@ -104,22 +101,6 @@ interface AssessmentPriceRow {
   changed_by: string | null;
   evidence_url: string | null;
   created_at: Date | string | null;
-}
-
-interface TaskMetricRow {
-  ds: string;
-  row_count: string | number;
-  account_count: string | number;
-  cost: string | number;
-  exposure: string | number;
-  click: string | number;
-  conversion: string | number;
-  real_conversion: string | number;
-  cash_cost: string | number;
-  cost_space: string | number;
-  wake_uv: string | number;
-  potential_uv: string | number;
-  anomaly_rows: string | number;
 }
 
 export class TaskAccountOverlapError extends Error {
@@ -380,29 +361,10 @@ export class TaskRepository {
   }
 
   async queryDailyMetrics(input: TaskMetricQuery): Promise<MetricTrendRow[]> {
-    assertDate(input.dateFrom, "dateFrom");
-    assertDate(input.dateTo, "dateTo");
-    if (input.dateFrom > input.dateTo) {
-      throw new Error("dateFrom must not be after dateTo");
+    if (typeof input.taskId !== "string" || input.taskId.trim() === "") {
+      throw new Error("taskId is required");
     }
-    const result = await this.pool.query<TaskMetricRow>(
-      `SELECT to_char(metric.ds, 'YYYY-MM-DD') AS ds, ${METRIC_AGGREGATE_SQL}
-       FROM account_metrics_daily AS metric
-       WHERE metric.workspace_id=$1
-         AND metric.ds BETWEEN $3::date AND $4::date
-         AND EXISTS (
-           SELECT 1 FROM task_accounts AS relation
-           WHERE relation.workspace_id=metric.workspace_id
-             AND relation.task_id=$2
-             AND relation.media=metric.media
-             AND relation.account_id=metric.account_id
-             AND relation.valid_from <= metric.ds
-             AND (relation.valid_to IS NULL OR relation.valid_to >= metric.ds)
-         )
-       GROUP BY metric.ds
-       ORDER BY metric.ds ASC`,
-      [input.workspaceId, input.taskId, input.dateFrom, input.dateTo],
-    );
-    return result.rows.map((row) => ({ ds: row.ds, metrics: mapMetricSummary(row) }));
+    return queryMetricTrend(this.pool, { workspaceId: input.workspaceId,
+      dateFrom: input.dateFrom, dateTo: input.dateTo, filters: { taskId: input.taskId } });
   }
 }

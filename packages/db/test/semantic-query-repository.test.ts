@@ -273,6 +273,11 @@ describe("SemanticQueryRepository", () => {
   });
 
   it("builds summary ratios from aggregate numerators instead of averaging row ratios", async () => {
+    // A real zero row makes the requested two-account/two-day window complete.
+    await pool.query(`INSERT INTO account_metrics_daily
+      (workspace_id,media,account_id,ds,cost,exposure,click,conversion,real_conversion,
+       cash_cost,cost_space,wake_uv,potential_uv,data_anomaly)
+      VALUES ($1,'TENCENT','a-2','2026-08-18',0,0,0,0,0,0,0,0,0,false)`, [workspaceId]);
     const result = await repository.querySummary({
       workspaceId,
       dateFrom: "2026-08-18",
@@ -280,7 +285,7 @@ describe("SemanticQueryRepository", () => {
     });
 
     expect(result).toMatchObject({
-      rowCount: 3,
+      rowCount: 4,
       accountCount: 2,
       cost: 270,
       exposure: 2700,
@@ -298,7 +303,7 @@ describe("SemanticQueryRepository", () => {
     expect(result.ratios.gap).toEqual({ value: 27 / 23 - 1, state: "finite" });
   });
 
-  it("returns zero totals and undefined ratios for an empty summary", async () => {
+  it("returns missing totals and undefined ratios for an empty summary", async () => {
     const result = await repository.querySummary({
       workspaceId,
       dateFrom: "2026-07-01",
@@ -306,11 +311,40 @@ describe("SemanticQueryRepository", () => {
     });
 
     expect(result.rowCount).toBe(0);
-    expect(result.cost).toBe(0);
+    expect(result.cost).toBeNull();
     expect(result.ratios.realCpa).toEqual({ value: null, state: "undefined" });
   });
 
-  it("returns only persisted dates in a daily aggregate trend", async () => {
+  it("propagates a missing account-day instead of summing only observed members", async () => {
+    const result = await repository.querySummary({ workspaceId,
+      dateFrom: "2026-08-18", dateTo: "2026-08-19" });
+    expect(result).toMatchObject({ rowCount: 3, accountCount: 2, cost: null, realConversion: null });
+    expect(result.ratios.realCpa).toEqual({ value: null, state: "undefined" });
+  });
+
+  it("an empty approved tuple scope cannot obtain values or expected-day rows", async () => {
+    const scope = { workspaceId, dateFrom: "2026-08-18", dateTo: "2026-08-19",
+      filters: { accountScopes: [] } };
+    expect(await repository.querySummary(scope)).toMatchObject({ rowCount: 0, accountCount: 0, cost: null });
+    expect(await repository.queryTrend(scope)).toEqual([]);
+    expect(await repository.queryDimension({ ...scope, dimension: "account" })).toEqual([]);
+  });
+
+  it("keeps true zeros, propagates individual NULL fields and rejects NaN hidden by NULL", async () => {
+    const scope = { workspaceId, dateFrom: "2026-08-18", dateTo: "2026-08-19",
+      filters: { accountScopes: [{ media: "KUAISHOU", accountId: "a-1" }] } };
+    await pool.query("UPDATE account_metrics_daily SET cost=0 WHERE workspace_id=$1", [workspaceId]);
+    expect((await repository.querySummary(scope)).cost).toBe(0);
+    await pool.query("UPDATE account_metrics_daily SET cost=NULL WHERE workspace_id=$1 AND ds='2026-08-18'", [workspaceId]);
+    const partial = await repository.querySummary(scope);
+    expect(partial.cost).toBeNull();
+    expect(partial.exposure).toBe(2200);
+    expect(partial.ratios.realCpa).toEqual({ value: null, state: "undefined" });
+    await pool.query("UPDATE account_metrics_daily SET cost='NaN'::numeric WHERE workspace_id=$1 AND ds='2026-08-19'", [workspaceId]);
+    await expect(repository.querySummary(scope)).rejects.toBeInstanceOf(SemanticQueryContractError);
+  });
+
+  it("keeps missing dates in the trend without counting expected placeholders as source rows", async () => {
     const rows = await repository.queryTrend({
       workspaceId,
       dateFrom: "2026-08-17",
@@ -319,8 +353,10 @@ describe("SemanticQueryRepository", () => {
     });
 
     expect(rows.map((row) => [row.ds, row.metrics.cost, row.metrics.accountCount])).toEqual([
-      ["2026-08-18", 100, 1],
+      ["2026-08-17", null, 0],
+      ["2026-08-18", null, 1],
       ["2026-08-19", 170, 2],
+      ["2026-08-20", null, 0],
     ]);
   });
 
@@ -346,17 +382,17 @@ describe("SemanticQueryRepository", () => {
 
     expect(accounts.map((row) => [row.dimensionKey, row.metrics.cost])).toEqual([
       ["a-1", 220],
-      ["a-2", 50],
+      ["a-2", null],
     ]);
     expect(tasks.map((row) => [row.dimensionKey, row.metrics.cost])).toEqual([
-      [null, 120],
       [taskOneId, 100],
       [taskTwoId, 50],
+      [null, null],
     ]);
     expect(businesses.map((row) => [row.dimensionKey, row.metrics.cost])).toEqual([
-      [null, 120],
       ["业务甲", 100],
       ["业务乙", 50],
+      [null, null],
     ]);
     expect(accounts[0]!.metrics.ratios.realCpa).toEqual({
       value: 220 / 18,
