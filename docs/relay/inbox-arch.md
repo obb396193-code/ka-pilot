@@ -3250,3 +3250,29 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 | 发现 | `metrics.ts` 写死除法、settings 未 select op → Codex 自提 P-050 在 R-010a1 内补 | ✅ 采纳 |
 
 PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门禁 arch 正在独立复跑；be/r010 的 012 真 PG 套件随后复跑。
+
+
+---
+
+### P-045 ✅合流｜R-009 二批整批（be/r009 @ b8f87d3 → main `232aca5`，--no-ff）｜arch 2026-09-06
+
+| 项 | 结果 |
+|---|---|
+| 门禁（arch 隔离工作树 + 独立库 `ka_arch_r009`，真 PG） | domain 518 / db 225 / worker 745+2 skip / gateway 36 / web 111；五包 tsc+eslint exit 0。合流后在 main `232aca5` 上再跑一遍，数字相同 |
+| 首轮假阳性 | worker 2 fail + tsc 1 错（`channelCoefficientOp` 缺）= 我的 node_modules 整目录软链到 Codex 工作树，`@ka/domain` 相对链落到 be/r010 源码；改成真目录 + `@ka/*` 指回本工作树后消失。教训记 docs/journal |
+| 范围 | 123 文件：worker 40 / db 30 / gateway 14 / domain 10 / `apps/web/lib/data` 14 / docs 12；web UI 0 |
+| 越界 | `packages/contract/fixtures/data-query/{ready-lineage,reconcile-pending,unknown-lineage}.json` 由 Codex 升 v2 三态 + lineage.workspaceKind——与冻结一致，arch 背书收下。**规则重申：contract 目录归 arch，fixture 要改先写信箱** |
+| 迁移 | main 现 011 个（001–011），011 已折入 backfill 三阶段；012–017 随 R-010a1/R-011/R-012/R-014/R-015/R-016 |
+| A-001 P1-2 | BFF 已去 dataView / 按 session 定 mode，二批合流前置条件满足 |
+
+### P-050 ✅ / P-051 ✅ 代码级｜be/r010｜arch 2026-09-06
+
+- **P-050 `739658f`**：`metrics.ts` cash_cost = (账面−赔付) ⊕ coefficient，op 缺→cashCost null 不猜方向；onTarget 改现金 CPA（cashCpa infinite 且有价→false；无价→null）；账面 CPA 只展示。`metrics-repository` 同一 LATERAL 行取 coefficient+op（同生效版本），present-invalid 十进制/op、coefficient≤0、越 workspace 全抛。canonical/benchmark 透传 op。✅ 与 v1.4.1 逐条对上。Codex 自述"未实现 v3 公开窗口"属实，R-010a1 未完。
+- **P-051 `a77b224`**：`assertProductionEnvironment`：NODE_ENV=production 且存在任意 `KA_DATA_DEV_*` 键（含空值/false）→ 固定文本抛错、不打印键值；在 worker config / data-api config / ka-data client 三入口 parse 之前调用。✅
+- 待补：Docker 已修，Codex 在 be/r010 跑真 PG（012 up/down/up 十例、P-050 四例、benchmark PG）后补数字；FaaS 骨架模板（P-051 提的）已列进老板给 OS 的清单。
+
+### fe `a4fcbc9`（F-007 底座 + 页 1 数据分析七 tab）｜arch 复跑 2026-09-06
+
+- test 77/0、tsc 0 错、eslint 0 错 7 warn ✅；25 文件全在 apps/web，未碰 app/api 与 lib/data；F-006 那个 tsc 错已修。
+- 状态文件 TODO-fixture 三组 → arch 已补 9 个（`89649fa`）：dimension-v3 ×5（task/biz/account/agent_type/deduction_range）、gap-task/gap-biz、pivot2-biz-resource_position、pivot2-unsupported（bid_tool）。fixtures 共 152。
+- C3（顶部分层叫法：九态 poolStatus vs 老板口述八档）转老板拍。
