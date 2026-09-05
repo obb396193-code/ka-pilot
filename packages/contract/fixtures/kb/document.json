@@ -1,0 +1,71 @@
+{
+  "ok": true,
+  "data": {
+    "id": "00000000-0000-4000-8000-000000002702",
+    "title": "新任务开户到基建 SOP",
+    "kind": "sop",
+    "parentId": "00000000-0000-4000-8000-000000002701",
+    "contentJson": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 1
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "新任务开户到基建"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "准备 → 开户 → 充值 → 基建 → 冷启动观察。关联任务 "
+            },
+            {
+              "type": "mention",
+              "attrs": {
+                "type": "task",
+                "id": "fixture-task-ready",
+                "label": "AAC 拉新"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "contentText": "新任务开户到基建 准备 → 开户 → 充值 → 基建 → 冷启动观察。关联任务 AAC 拉新",
+    "documentLinks": [
+      {
+        "toId": "00000000-0000-4000-8000-000000002704",
+        "label": "2026-09-05 日报"
+      }
+    ],
+    "businessRefs": [
+      {
+        "type": "task",
+        "id": "fixture-task-ready"
+      }
+    ],
+    "revision": 3,
+    "updatedBy": {
+      "userId": "00000000-0000-4000-8000-000000000001",
+      "name": "示例优化师"
+    },
+    "updatedAt": "2026-09-05T09:00:00.000+08:00",
+    "readOnly": false
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "对齐 CR knowledge_items.content_json/content_text + document_links；team 空间 readOnly=true"
+  }
+}

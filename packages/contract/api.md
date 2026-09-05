@@ -73,26 +73,17 @@ personal workspace 固定为 `explicit_accounts`。scope mode 只能由服务端
 未登录统一为 HTTP 401 + `UNAUTHORIZED`；已登录但 membership/scope 不足为 HTTP 403 +
 `FORBIDDEN`。两者均使用现有稳定 error envelope 与 `x-request-id`。
 
-## 一期主数据源路由（DATA-ROUTE-001）
+## 一期主数据源路由（DATA-ROUTE-001，v1.2 定稿；2026-09-05 合并旧表述为唯一规则）
 
-> **v1.2 修订（老板 2026-09-04 裁决：数据源绑定空间，不做页面级三态切换）**
-> - `workspaceKind=personal` → 固定 `platform`（奇航，本人授权账户）
-> - `workspaceKind=team` → 固定 `ka_data`（全渠道，团队成员只读）
-> - 用户"切空间"即"切数据源"；普通页面**移除** `KA Data 权威版 / 自建平台版 / 双源对账` 三态切换器与 `data_view` URL 参数
-> - `reconcile` 仍只对 `DATA_DIAGNOSTIC_ENTITLEMENTS_JSON` allowlist 内的管理员开放，入口在治理后台，不在业务页
-> - 下文"KA Data 默认关闭/备用"表述仅对 personal 空间成立；team 空间的 `KA_DATA_ENABLED=true` 是必需配置
+规则只有这一套（取代 root 2026-08-25「KA Data 备用/诊断、普通 Session 一律 platform」旧文；老板 9-4「数据源绑空间」裁决覆盖 8-25 裁决，历史见台账 #320/#139）：
 
-- 普通业务读取默认走既有奇航 `get_data → Raw → Canonical → Semantic Query` 主链。
-- KA Data 是同源的备用读取/管理员诊断路径，默认关闭且不得阻塞工作台、任务、账户、
-  工作流或首次内网部署；普通用户响应和导航不暴露 `ka_data/platform/reconcile` 选择器。
-- 是否切换备用源只能由服务端配置和管理员权限决定；禁止浏览器通过 query/body/header
-  自选共享凭证出口。切换必须留审计字段 `selectedSource/reason/requestId`，但不记录 token、
-  SQL 或上游正文。
-- 现有 `POST /api/v1/data/query` 双数据能力保留为管理员诊断 API，不作为普通页面首屏依赖。
-- 诊断权限不是 `role=admin` 的隐含能力。服务端必须同时开启诊断总开关，并让当前
-  `(workspaceId,userId)` 命中受控 entitlement allowlist；普通 Session 的请求一律固定为
-  `platform`，body 中的 `dataView` 不能开启 `ka_data/reconcile`。诊断已授权但 KA Data 总开关
-  关闭时，`ka_data/reconcile` 必须在上游调用前返回稳定 `VIEW_UNSUPPORTED`。
+- **源由服务端按 `workspaceKind` 固定**：`personal` → `platform`（奇航，本人授权账户）；`team` → `ka_data`（全渠道，只读）。切空间即切源。
+- **浏览器不能选源**：普通请求只接受 `{queryId, params}`；出现 `dataView`/`data_view` → `400 INVALID_REQUEST`；导航与响应不暴露 `ka_data/platform/reconcile` 选择器。
+- **每个数据响应必带来源标识**（BE-001 lineage 已有 `source/metricVersion/dataAsOf/timezone/dayCut`；R-010a 补齐 `workspaceKind`）；前端页头**常显**「空间 · 来源 · 数据日期 · 更新时间 · 口径 ⓘ」，不只在首次说明——切空间后金额不同是换源不是算错，要让用户一眼看出。
+- **team 空间只读**：变更集/任务编辑/授权变更在 Repository 前拒绝 → `403 FORBIDDEN`（已由 Task5 实现）；团队数据只用于观察，**不驱动个人账户写操作**。
+- **reconcile 不是业务视图**：只在治理后台 `POST /api/v1/admin/data/reconcile`；需 `DATA_DIAGNOSTIC_ENABLED=true` 且 `(workspaceId,userId)` 命中 `DATA_DIAGNOSTIC_ENTITLEMENTS_JSON`；KA Data 总开关关闭时在上游调用前返回 `422 VIEW_UNSUPPORTED`。诊断不是 `role=admin` 的隐含能力。
+- **配置含义**：`KA_DATA_ENABLED=false` 时 personal 空间不受影响；team 空间此时返回 `503 SOURCE_UNAVAILABLE` 并显示「团队数据源未配置」，**不得回退到 platform 伪装团队数据**。
+- **切源审计**：服务端记录 `selectedSource/reason/requestId`；不记录 token、SQL、上游正文。共享 reader token 只从服务端 Secret 读取。
 
 ## 受控双数据查询（BE-001）
 
@@ -273,7 +264,7 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
 
 ## 工作项
 
-- `GET /api/v1/work-items?status=&severity=&assignee=&type=` 队列（含"其余 N 户在阈值内"计数）
+- `GET /api/v1/work-items?status=&severity=&assignee=&type=` 队列；响应 `meta.coverage` 见下（取代旧"其余 N 户在阈值内"计数）
 - `POST /api/v1/work-items/:id/ignore` `{reason_chip?, mute_days?}`
 - `POST /api/v1/work-items/:id/process|reject|escalate|dispatch` `{note?, to_user?, acceptance_criteria?}`
 - `POST /api/v1/work-items/:id/reply` `{target: "dingtalk_group"|"dingtalk_dm"|"web_session", target_id, content}` → 异步回复（**P-002#3 裁决：agent 处理完工作项异步回复至群/单聊/会话**）
@@ -339,8 +330,8 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
   `account=null`。`task/assignee` 缺源时为 null，不伪造展示名。
 - 默认排序：严重度 `P0 → P1 → P2 → opportunity → null`，随后
   `slaDue ASC NULLS LAST, createdAt ASC, workItemId ASC`；最后 ID 是唯一 tie-breaker。
-- 列表不返回完整 `evidenceSnapshot/diagnosis/t1Result`，点击后走已冻结详情接口。所谓
-  “其余 N 户在阈值内”在阈值版本、分母和时间窗 Contract 冻结前不进入响应，前端不得自行算。
+- 列表不返回完整 `evidenceSnapshot/diagnosis/t1Result`，点击后走已冻结详情接口。
+- **覆盖三态（2026-09-05 冻结，取代"其余 N 户在阈值内"）**：响应 `meta.coverage = {accountsInScope, checked, pending, undeterminable, ruleSetVersion, window:{from,to}, checkedAt}`，全部由服务端算：`accountsInScope`=本空间本媒体授权账户数；`checked`=规则已在本窗口跑完且数据完整的账户；`pending`=规则未跑/取数未完成；`undeterminable`=缺数三态非 available 的账户。**前端只有在 `pending=0 && undeterminable=0` 时才允许显示"其余 N 户在阈值内"**（N=checked−有工作项的账户数）；否则显示「已检查 checked · 待检查 pending · 缺数无法判断 undeterminable」。前端不得自行算。
 - `dataState` 只描述工作项持久化查询本身：事务快照完整且筛选后 total=0 为 empty；分页或
   来源覆盖不完整为 partial；依赖奇航事实生成的账户型工作项在首次 full 未完成时为 stale，
   但已持久化的本人非账户型工作项仍可返回。count/page/readiness 同一 RR/RO 快照。
@@ -687,3 +678,231 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ### 错误码追加
 
 `NOT_IMPLEMENTED(501) | DIMENSION_UNSUPPORTED | CARD_HASH_MISMATCH | APPROVAL_REQUIRED | ACCOUNT_HAS_OPEN_ITEMS`
+
+
+## v1.4.1 追加（2026-09-05 arch；窗口化口径 + 日预算卡）
+
+- **语义查询窗口**：`summary/trend/table/dimension` 的 `params` 统一接受 `date_from/date_to`（`date` 单日 = 两者相等的糖）；Registry 冻结每个 queryId 的最长范围。窗口内指标按 `metrics.md`「窗口化口径」**先聚合再相除**，响应 `lineage` 加 `window:{from,to,preset?}`。前端不得用日值自己累加。（R-010a1）
+- **日预算卡**（任务级、版本化，`task_budget_history`）：
+  - `POST /api/v1/tasks/:id/daily-budget-cap` `{daily_budget_cap, effective_date, evidence_url?}` → `{task_id, old_cap, new_cap, effective_date}`；不触发重算（预算不影响历史指标），写 timeline。
+  - `GET /tasks/:id` overview 加 `daily_budget_cap:{current, effective_date, history_count}`（无卡 → null）与 `budget_usage_rate`（`RatioValue`，当日）。
+  - timeline `kind` 枚举加 `daily_budget_cap`。
+  - 工作台六 KPI 的 `summary` 加 `budget_usage_rate`（个人空间：本人任务加权；无卡任务不计）。（R-012）
+- **考核口径=现金**（2026-09-05 老板纠正）：`on_target/cost_space/cost_status/外推` 全部按 `cash_cost`；`summary` 同时返回 `cost`（账面）与 `cash_cost` 两组，前端并排展示不混用。
+- **色标规则**（前端只按后端给的 `status` 上色，不自算）：`summary`/任务 overview 返回 `cost_status: "green"|"yellow"|"red"` + `cost_status_reason`（`"day_over_window_ok"` 等），按 metrics.md 容忍带规则由后端算；容忍百分比来自个人视图设置（默认 0）。
+
+- **口径设置与变更记录**（老板 2026-09-05："系数不常变但要有地方改；考核价这类常变的都要留变更记录"）：
+  - 三张版本表都已是"只增不改"：`assessment_price_history`（考核价）、`task_budget_history`（日预算卡）、`channel_coefficients`（返点折算，含 `op`）——每行 `effective_date + changed_by + evidence_url + created_at`，改一次落一行，旧行永不覆盖。
+  - 编辑入口：考核价/日预算卡在**任务详情·总览**（已有 `POST /tasks/:id/assessment-price`、`/daily-budget-cap`）；返点折算在**设置 · 口径**：
+    - `GET /api/v1/settings/channel-coefficients` → `{items:[{media, op, coefficient, effective_date, changed_by, evidence_url, history_count}]}`（每媒体当前生效行）
+    - `GET /api/v1/settings/channel-coefficients/:media/history` → 全部版本倒序
+    - `POST /api/v1/settings/channel-coefficients` `{media, op, coefficient, effective_date, evidence_url?}` → 追加新版本；权限 personal 空间 admin；team 空间 403（团队数据用 ka-data 已算好的 `cash_yuan`，不在本系统改系数）；`effective_date` 早于已有最新生效日 → 允许（回溯改口径）但响应带 `recomputed_days`，与考核价改价同一重算链。
+  - **统一变更记录** `GET /api/v1/settings/change-log?kinds=assessment_price|daily_budget_cap|channel_coefficient&task_id=&media=&cursor=` → `{items:[{at, kind, scope:{task_id?|media?}, old_value, new_value, effective_date, changed_by:{user_id,name}, evidence_url}], next_cursor}`，三表 UNION 倒序；任务详情 timeline 里的 `assessment_price/daily_budget_cap` 是它的子集。
+  - 落点：R-012（端点）；前端 设置页「口径」tab + 任务详情总览（F-006 后续页）。
+
+- **媒体写业务码与 UNKNOWN（2026-09-05 OS 实证后定稿）**：kuaishou-cli 无本地错误码表，只透传 MAPI `{code, message, request_id}`（`code≠0` 抛错）；读超时为裸 `TimeoutError`（未包裹）、连接超时为 `KuaishouApiError`。契约：执行器把**任何非成功返回（含裸异常）一律记 `unknown`**；`request_id` 仅成功响应才有，**无客户端幂等键**，所以 UNKNOWN 不得盲目重试——必须先回读（`accounts/:media/:id/structure` 或 unit list）比对目标字段，回读显示未生效才允许重试一次并记 `attempt+1`，仍 unknown 转人工。业务码含义表由 R-012 从 ka-src-0007 MAPI 文档提案后追加此处。真写测试广告主：89059600（有 unit）。
+- **8 维透视枚举（2026-09-05 定稿）**：`dimension ∈ task|biz|account|agent_type|resource_position|bid_tool|ubp|deduction_range`；`ubp` 永久 `DIMENSION_UNSUPPORTED`（无源）；`agent_type` 只支持账户级聚合（ad 级请求 → `DIMENSION_UNSUPPORTED`）；`bid_tool` 为派生枚举，映射表未提案前返回 `DIMENSION_UNSUPPORTED`。
+
+
+## v1.4.1 补：`account.summary/v3` 行结构与 fixtures（2026-09-05 arch；fixture 即契约；**编号 v3**——v2 已由 Codex R-009 `bdc5273` 落地为"九指标三态"，本节是 v2 之上加窗口与考核块，strict schema 下加字段即破坏兼容，故升 v3，R-010a1 实现）
+
+`packages/contract/fixtures/data-query/summary-window-v3-{green,yellow,cash-missing}.json`、`work-item-list/coverage-{complete,pending,undeterminable}.json`、`task-detail/overview{,-no-cap}.json`、`settings/{channel-coefficients,change-log}.json` 为**唯一权威样例**；后端 parity 测试直接读，前端 mock 直接用。
+
+`account.summary/v3` 单行（= v2 三态 metrics + `assessment` 块 + `lineage.window/workspaceKind`）：
+```jsonc
+{
+  "rowCount": 3, "accountCount": 3, "anomalyRows": 1,
+  "metrics": {                        // 全部 MetricValue 三态；账面与现金两组并排，不混
+    "cost": MV, "cashCost": MV, "exposure": MV, "click": MV, "conversion": MV, "realConversion": MV,
+    "costSpace": MV,                  // = Σ考核价×真实转化 − Σ现金消耗（窗口内）
+    "wakeUv": MV, "potentialUv": MV,
+    "ratios": { "ctr": RV, "cvr": RV, "realCpa": RV /*账面，只展示*/, "cashCpa": RV /*考核用*/, "gap": RV, "potentialRate": RV, "biConversionRate": RV }
+  },
+  "assessment": {
+    "price": {"value": 38.0, "effectiveDate": "2026-09-01"} | null,
+    "onTarget": true | false | null,  // null = 现金或考核价缺
+    "costStatus": "green" | "yellow" | "red" | null,
+    "costStatusReason": "window_ok" | "day_over_window_ok" | "window_over" | "cash_missing" | "assessment_missing",
+    "budgetUsageRate": RV             // 当日消耗 / 当日生效日预算卡；无卡 → undefined
+  }
+}
+```
+`lineage` 加 `workspaceKind` 与 `window:{from,to,preset}`；`preset ∈ today|yesterday|last_7d|month_to_date|last_month|task_period|custom`。`account.trend/v3` = `ds + 同构 metrics`（不含 assessment）。v2（R-009）→ v3（R-010a1）切换时 fixtures 整体升级，前端不做双版本兼容。
+
+`GET /work-items` 的 `meta.coverage` 见「覆盖三态」；`GET /tasks/:id` overview 字段以 `task-detail/overview.json` 为准（`cost.projectedWindowCashCpa`/`affordableDailyCashCpa` 为 metrics.md 外推两式）。
+
+## v1.5 端点与 DTO（2026-09-05 arch；13 条"有名无 DTO"冻结；Codex R-014 出 migration 015）
+
+路径规范：账户级端点统一 `:media/:id` 三键形态；旧 `/accounts/:id` 形态作废。
+
+### 4.2 账户小传 `GET /api/v1/accounts/:media/:id?window_from&window_to`
+```jsonc
+{ "account": {"workspaceId","media","accountId","accountName","agentType","lifecycleStage","claimedAt","owner":{"userId","name"},"tags":[],"starred":bool},
+  "bio": { "openedAt": date|null, "openedBy": {"userId","name"}|null,
+           "tasks": [{"taskId","taskName","validFrom","validTo","current":bool}],
+           "assessment": {"price","effectiveDate"}|null, "onTarget": bool|null, "costStatus": "green|yellow|red"|null },
+  "balance": { "asOf": ts|null, "balance": MV, "rechargeBalance": MV, "contractRebate": MV, "directRebate": MV, "extendedBalance": MV, "sharedWallet": MV },  // fund 七字段，缺=missing
+  "velocity": { "costPerHour": MV, "asOf": ts|null },
+  "cutoff": { "hours": MV, "at": ts|null, "state": "ok|warning|critical|unknown" },   // 断量倒计时 = balance/velocity；velocity=0 或缺 → unknown
+  "summary": <account.summary/v2 单行，窗口=参数> }
+```
+
+### 4.3 操作史 `GET /api/v1/accounts/:media/:id/timeline?from&to&kinds&cursor` 与图上叠加层
+- items：`{at, kind: "changeset"|"external_change"|"assessment_price"|"daily_budget_cap"|"dispatch"|"work_item"|"escalation"|"infra"|"transfer"|"mute", actor: {userId,name}|"system"|"external", summary, ref:{type,id}, detail?, t1Result?: {"observedAt","metricDeltas":{"cashCpa":RV,"cost":MV,"realConversion":MV},"note"}}`，倒序，`next_cursor`。
+- `GET .../timeline/overlay?from&to` → `{points:[{at, kind, label, ref}]}`，供趋势图打点（只回 kind∈changeset|external_change|assessment_price|daily_budget_cap）。
+- `external_change`（带外变更，11.7 检测语义一并冻）：结构同步每轮比对 `ad_entities` 的 bid/budget/status/schedule 快照，非本系统变更集产生的差异 → 写 `external_changes` 一行 + 关联工作项标「已在后台处理」。
+
+### 4.10 交接
+- `POST /api/v1/accounts/transfer` `{items:[{media,account_id}], to_user_id, include:{work_items:true, dispatches:true, starred:true}, note?}` → `{transfer_id, moved:{accounts, work_items, dispatches}, notified_user_ids[]}`。语义：personal 空间内 `account_access_grants` 从 from→to（原 grant 置 revoked_at，新建 grant）；相关 open 工作项 assignee 改 to；派发单 receiver 改 to；星标随账户；写 timeline `transfer`；双方各一条 outbound 通知。
+- `POST /api/v1/users/:id/transfer-all` `{to_user_id, note?}`（admin；离职场景）= 该用户全部账户按上式打包。
+- 冲突：目标用户非 active 或非同空间 → 403；账户有 running 变更集 → 409 `TRANSFER_BLOCKED_BY_CHANGESET`。
+
+### 3.5 小时盯盘 `POST /api/v1/query {queryId:"account.hourly", params:{date, media, accountIds?, hhFrom?, hhTo?}}`
+- 行 `(media, accountId, hh)`：`{cumulative:{cost:MV, cashCost:MV, conversion:MV, realConversion:MV}, delta:{同上四项}, ratios:{cashCpa:RV, realCpa:RV}, velocity:{costPerHour:MV}, projectedDayCost:MV, budgetUsage:RV, lastSyncAt}`；hh 0..23，24=全天。缺小时=missing 不补 0。
+- 盯盘名单：`GET/PUT /api/v1/me/watchlist` `{items:[{media,account_id}]}`（个人视图的一种，表 `user_watchlists`）。
+
+### 3.6 Gap 对账 `POST /api/v1/query {queryId:"account.gap", params:{date_from,date_to,media,accountIds?,groupBy:"account"|"task"|"biz"}}`
+- 行：`{group, conversion:MV /*回传*/, realConversion:MV /*BI*/, gap:RV /*conv/real−1*/, preDeductionGap:RV, deductionRate:RV, gapStatus:"normal"|"high"|"missing"}`；`high` 阈值来自规则引擎 gap 规则当前版本（响应 `meta.ruleSetVersion`）。
+
+### 3.10 个人视图 + 定时推
+- 表 `saved_views`；`GET /api/v1/me/views?page=` / `POST` `{page, name, config:{filters, columns, sort, window}, is_shared?}` / `PATCH /:id` / `DELETE /:id`。`config.version="view/v1"`。
+- 定时推 = `subscriptions.kind="report_schedule"`：`POST /api/v1/subscriptions` `{kind:"report_schedule", config:{view_id|report_config_id, cron, format:"png"|"xlsx", target:"group"|"dm", target_ref}}`；到点生成 `report_runs` 一行 → 渲染 → `outbound_messages`。
+
+### 7.4 导出
+- `POST /api/v1/export` `{kind:"query"|"view"|"report", ref:{queryId,params}|{view_id}|{report_config_id}, format:"xlsx"|"png"|"pdf"}` → `{export_id, status:"queued"}`；`GET /api/v1/exports/:id` → `{status:"queued"|"running"|"done"|"failed", file:{url /*临时签名，TTL 10 分钟*/, bytes, expires_at}|null, error|null}`。PNG/PDF 走网关 Chromium 渲染管线，必带口径戳 + 数据日期 + 空间/来源水印；xlsx 模板化（表头=中文指标名+口径徽章列）。表 `exports`。
+
+### 9.1 接入管理
+- `GET /api/v1/integrations/connections` → `[{id, provider, status:"connected"|"degraded"|"disconnected", health, lastCheckedAt, config:{clientIdMasked, robots:[{robot_id,name}], groups:[{conversation_id,name}]}}]`；`POST .../:id/check` → 主动探活写 `health/last_checked_at`。
+- 身份映射：`GET/POST /api/v1/integrations/identity-mappings` `{external_user_id, provider, user_id}` → 落 `identity_mappings`（v1.4 已有表），`verified_at` 由首次回调实名命中写。secret 只存 ref。
+
+### 9.6 消息记录
+- `GET /api/v1/integrations/messages?direction=in|out&status=&kind=&cursor=` → `{items:[{id, direction, channel, target /*脱敏*/, kind, status:"queued"|"sent"|"failed"|"dead"|"received"|"processed", attempts, failReason, createdAt, sentAt|processedAt, ref}], next_cursor}`（`outbound_messages` ∪ `inbound_events`）。
+- `POST .../messages/:id/retry`：出站 failed → 重排队；入站 dead → admin 重置 `attempts=0, last_error=NULL`（留原行，加一条 `retried_by`）。
+
+### 5.7 操作工具箱（Capability Registry）
+- 表 `capabilities`；`GET /api/v1/capabilities?category=` → `[{key, name, category:"query"|"write"|"infra"|"account"|"material", form_schema /*JSON Schema*/, permission, version, status:"documented_unverified"|"verified"|"disabled", executor:"product_direct"|"runtime"|"multica_run", media:[]}]`。
+- `POST /api/v1/capabilities/:key/invoke` `{params, account:{media,account_id}}`：`category=query` → `{result_ref}`；`write` → **只生成变更集草稿** `{changeset_id}`（走 dry-run/confirm 链，永不直接执行）；`infra` → `infra_requests` 一行；`disabled/unverified` → 409 `CAPABILITY_UNAVAILABLE`。页面按钮与工作流节点同源调用。
+
+### 10.11 分级决策
+- 工作项详情加 `decision:{tier:"auto"|"card_confirm"|"proposal"|"investigate"|"escalate", gates:{confidence:RV, historicalSuccessRate:RV, recentManualOps:int, reversible:bool, withinCap:bool}, overriddenBy:"history"|null, reason}`。`auto` 只在规则处于自治度第 3 档且四门全过（PRD §3.9）；否则最高 `card_confirm`。
+- 策略：`GET/PUT /api/v1/settings/decision-policy` → `decision_policies` 一行 JSONB（阈值：confidence≥0.9、historicalSuccessRate≥0.8、recentManualOpsWindowHours=24、dailyCapCny）。
+
+### 1.8 早报 job
+- `GET /api/v1/reports/daily-brief?date=` → `{date, status:"ready"|"pending_data"|"failed", generatedAt, dataAsOf, sections:[...日报 12 模块的 optimizer 子集], queueSummary:{p0,p1,opportunity,coverage:<meta.coverage>}, pushStatus:"not_sent"|"sent"|"failed"}`。
+- job `daily_brief_generate`（每 workspace×user）：触发=业务日切 03:00 后且该 workspace 当日 `etl_full` done；数据未就绪 → `pending_data` 不生成假早报；推送走 `subscriptions.kind="daily_report"`；记录 `report_runs`。
+
+### 3.8 报表 configs
+- `report_configs.config` 冻结为 `report-config/v1`：`{version, dataset:{queryId, params}, groupBy:[dim], columns:[{metric, label?, format?}], sort:[{by,dir}], filters:[...], highlight:[{metric, op, value, style}], layout:{type:"table"|"chart", chart?:{kind, x, y[]}}}`；表加 `is_shared BOOLEAN, version TEXT, updated_at`。
+- `POST /api/v1/reports/render {config|config_id, window?}` → `{rows:[canonical 行], columns:[...], highlights:[{rowIndex, metric, style}], lineage}`；Agent 帮做表（3.9）不在本版。
+
+派活：以上 → **R-014**（migration 015 + HTTP + BFF），排 R-012 后；fixtures 由 arch 随 R-014 开工前补。
+
+- **缺数期规则抑制（12.8，2026-09-05）**：语义在 `metrics.md`「缺数期规则抑制」；`POST /api/v1/rules/:id/explain` 响应 `leaves[].availability` + `not_triggered_reason ∈ CONDITION_FALSE | METRIC_MISSING | SOURCE_STALE | COLD_START_RELAXED | INITIAL_FULL_PENDING | MUTED | DEDUPED`；`GET /work-items` 的 `meta.coverage.pending/undeterminable` 由本规则产生；规则表加 `availability_policy/data_freshness_max_hours`。
+
+
+## v1.5.1 端点与 DTO（2026-09-05 深夜 arch；全量偏差审计 A①-⑤，老板拍板；R-014 一并实现）
+
+### ① 账户池（原型 P09；老板 9-5"看全量户各在哪个阶段、哪些没用、按产品、哪些备用"）
+- `GET /api/v1/accounts` 筛选加 `poolStatus`（多值）、`product`、`groupBy=none|lifecycle|product|owner|task`；响应 item 加 `poolStatus, poolStatusSource, product:{name,ref}|null, balance 加 cutoff:{hours:MV,state}`、`dailyBudgetCap`（当前任务卡）、`capacityLoad`（RatioValue，=当日消耗/日预算卡）、`lastAction:{at,kind,summary}|null`、`nextSuggestion:{workItemId,title}|null`（来自 open 工作项，无则 null，**不生成假建议**）。
+- `GET /api/v1/accounts/pipeline?media=` → `{stages:[{poolStatus, count, deltaVsYesterday:MV}] /*九态固定顺序*/, asOf}`；点卡即 `poolStatus=` 筛选。
+- `PATCH /api/v1/accounts/:media/:id/pool-status` `{pool_status, note}` → 人工覆盖（`pool_status_source=manual`，写 timeline kind `pool_status`）；`DELETE` 同路径清除覆盖回系统推导。
+- `PATCH /api/v1/accounts/:media/:id/product` `{product_name, product_ref?}`。
+- **批量 → 变更集组**：`POST /api/v1/changesets/batch` `{accounts:[{media,account_id}], items:[{target_type,field,to_value}] /*对每户同样的改动*/ | per_account:[{media,account_id,items:[...]}], reason_code, title?}` → `{group_id, changesets:[{changeset_id, media, account_id, status}], skipped:[{media,account_id,reason}]}`；`POST /changesets/groups/:id/dry-run|confirm` 按组逐条调用单账户链，响应汇总 `{results:[{changeset_id,status,conflicts?}]}`；组状态 done=全部终态。执行仍逐账户，三键与单执行者不变。
+- 主按钮「新建账户」= `POST /accounts/open-flow`（v1.4，开户向导，写 `pool_status=pending_open`）；「导入认领」= `POST /accounts/import`（v1.4）。
+- 官方工作流模板清单加 **「新任务开户到基建」**（准备→开户→充值→基建→冷启动观察），与 PRD 3.9 四条并列为五条。
+
+### ② 投放任务阶段/就绪度/SOP/阻塞（REQ-028；原型 P03/P04）
+- 列表 item 加 `stage`（七态）、`readiness:{accounts,recharge,products,materials,strategy,infra}`（每项 `{ratio:RV, ready:bool, source:"system"|"manual", missing:[string]}`）、`nextMilestone:{at,label}|null`。
+- `GET /tasks/:id` overview 加 `stage:{value, source, changedAt}`、`readiness`（同上，含 `overall:RV`）、`sopProgress:{runId|null, steps:[{key:"prepare"|"open"|"recharge"|"build"|"cold_start"|"deliver_monitor", status:"done"|"running"|"pending"|"skipped", at}]}`（无绑定 run 时按 stage 推导 steps，`runId=null`）、`blockers:[{kind:"work_item"|"dispatch"|"escalation"|"readiness", ref, title, severity}]`、`nextActions:[{kind, ref, title}]`（只来自真实工作项/派发/就绪缺项，不生成）。
+- `PATCH /tasks/:id/stage {stage, note}` 人工置阶段（`stage_source=manual`）；`PUT /tasks/:id/readiness/:dimension {ready, note}` 人工勾就绪。
+- `POST /tasks/:id/sop-run {template:"official.open_to_build", params}` → 用官方模板起 run 并绑定 `sop_run_id`；run 节点完成写 `stage_source=workflow`。
+- 页签定稿（替换 v1.4 六页签）：总览｜数据｜账户｜商品与素材（501 占位）｜**SOP 与自动化**（sopProgress + 绑定的规则）｜异常与工作项｜时间线｜报告与结算（501 占位）——共八页签；「投放策略」页签等策略中心定义后再加。
+
+### ③ 工作流节点模型 `workflow-graph/v1`（原型 P12/P13；前端画布依此）
+```jsonc
+{
+  "version": "workflow-graph/v1",
+  "nodes": [{
+    "id": "node_6", "type": "changeset",          // trigger|query|compute|condition|agent_analysis|changeset|human_confirm|execute|wait_reconcile|notify
+    "label": "生成变更集", "params": {...},          // 按 type 的 params schema（Registry 冻结）
+    "executor_identity": "system_automation",     // system_automation|initiator|credential_owner
+    "side_effect": "write",                        // read|write|external   （write 必须经 changeset→human_confirm→execute）
+    "idempotency": "key_required",                 // key_required|none   （write/external 必须 key_required）
+    "retry": {"max": 3, "backoff": "exponential", "base_ms": 2000},
+    "timeout_ms": 120000,
+    "permission_scope": ["accounts:read","changesets:write"]
+  }],
+  "edges": [{"from": "node_5", "to": "node_6", "condition": null | {"expr": "..."}}]
+}
+```
+- 校验：`POST /api/v1/workflows/:id/versions/:v/validate` → `{schema:[{check,pass,detail}], permissions:[...], links:[...], missing_params:[{node_id,param,required}]}`；四组全过才允许 publish。
+- 模拟：`POST .../simulate {params}` → 无副作用 trace `{steps:[{node_id,status,preview}]}`（write 节点只出变更集草稿预览，不落库）。
+- 发布：`POST .../publish` → status=published，不可变；运行固定版本。
+- Agent 帮编（5.3，升 P1）：`POST /agent/sessions/:id/workflow-draft {goal}` → graph 草稿 + `missing_params[]`，用户应用后仍须 validate。
+- 运行详情 `GET /api/v1/workflows/runs/:id` → `{run:{id,version,initiator,executor_identity,status}, stages:[{node_id,label,status,started_at,finished_at,input_excerpt,output_excerpt}], changeset_preview:{group_id|changeset_id, items[], hash, expires_at}|null, permission_checks[], account_locks:[{media,account_id,conflict:bool,locked_by}], trace:{correlation_id,trace_id,span_id}, audit:[{at,actor,action,detail}], retry_policy, reconcile_policy, unknown_explain}`。
+- 工作台面板 `GET /api/v1/workflows/runs?status=running|waiting_confirmation&mine=true` → `[{run_id, name, step_index, step_total, status, eta}]`。
+
+### ④ 管理看板 = 工作台负责人视图（REQ-018/022；原型 P02 简化；不加导航）
+- `GET /api/v1/workbench/lead?window_from&window_to` （role ∈ lead|admin；personal 空间聚合本人负责任务，team 空间聚合团队只读）→
+  `{cards:{targetAchievement:RV, cumulativeCost:MV, cashCpa:{value:RV, assessment}, conversions:MV, healthyTasks:{n,total}, budgetGap:{value:MV, basis:"pacing_projection"}},
+    risks:[{taskId,taskName,kind:"cost_over"|"volume_short"|"budget_short"|"structure", impact:MV /*来自 cost_space 或 pacing 缺口，无则 missing*/, suggestion:{workItemId}|null}],
+    opportunities:[...同构...],
+    blockers:[{kind:"dispatch_overdue"|"escalation"|"approval_pending"|"readiness_missing", count, tasks:[...]}],
+    approvalsPending:[{approvalId, title, requester, due}],
+    brief:{status:"ready"|"pending_data", sections:[...]}}`。
+- 六卡全部 MetricValue/RatioValue，缺数显 −；`impact` 只用 metrics.md 已冻公式，**不做"预估收益"类臆算**。差距树（3.7）与 AI 提效（7.5）仍 P2。
+
+### ⑤ Agent Patch 建议 + 公共资产端点
+- Agent 消息事件加 `suggestion` 帧：`{suggestion_id, kind:"view_patch"|"report_config_patch"|"workflow_draft", target_ref, before, after, diff:[{path,before,after}]}`；`POST /agent/sessions/:id/suggestions/:sid/accept {mode:"all"|"partial", paths?:[...]}` → 应用到 saved_views/report_configs（新版本），`reject` 记原因。
+- 公共资产（`assets` 表已存在）：`GET /api/v1/assets?kind=&status=&owner=me|team|official`；`POST /assets/:id/transition {to}`：`draft→shared` 本人；`shared→verified` lead/admin 且 `verified_at` 写入；`verified→official` admin；任意→`deprecated` owner/admin 且须填 `superseded_by`。UI 起步只露 draft/shared 两态（老板裁），其余状态只在治理后台可见。
+
+### 优先级重排（老板 2026-09-05 拍 B）
+- 4.7 开户测试跟踪、4.8 优质户复制 → **P1**（老板 8-24 每日闭环：开户测试、优质户复制、关垃圾计划）。
+- 3.9 Agent 帮做表、5.3 Agent 帮编 → **P1**（REQ-036/064 明确要求）。
+- 3.11 策略中心：标「明确要求 · 待定义」，不写 P2；定义待老板。
+
+
+## v1.6 端点与 DTO（2026-09-06 arch；老板 9-5"契约能动的全动，让前端全铺开"；Codex R-015 出 migration 016）
+
+### 6.x 素材域（列/DTO 由 arch 从 B12-B18 domain 反推冻结；原型 P10；老板 8-24"占位 demo + 接内部 AIGC"——页面按示例态做，字段按此）
+- `GET /api/v1/materials?media&task_id&product_id&type&sort&page&window_from&window_to` → items `{media, materialId, name, type:"video"|"image", source:"qihang_pool"|"upload"|"internal", thumbnailRef|null, durationMs|null, productId|null, tags[], lineageParentId|null, sourceStatus:"reachable"|"unreachable"|"unknown", metrics:{cost:MV, exposure:MV, click:MV, realConversion:MV, ratios:{ctr:RV, realCpa:RV}}, analysis:{latestVersion|null, status:"none"|"queued"|"running"|"done"|"failed"}}`；`meta` 同 v3。
+- `GET /materials/:media/:id` → `{material, metrics, analysis:{latest 摘要}, lineage:{parent|null, children:[{materialId, method}]}, whereUsed:[{taskId, accountId, adCount}]}`。
+- `POST /materials/:media/:id/analyze {prompt_version?}` → `{jobId, version}`；`sourceStatus!=reachable` → `409 MATERIAL_SOURCE_UNAVAILABLE`（视频源探针=联调硬门）。
+- `GET /materials/:media/:id/analysis?version=` →
+  `{version, promptVersion, schemaVersion, status, media:{durationMs,width,height,contentSha256}, transcript:{source:"platform_caption"|"cloud_asr", timingPrecision:"segment"|"whole_video", segments:[{id,startMs,endMs,text}]}, shots:[{id,startMs,endMs,frame:{status:"ready",artifactRef}|{status:"placeholder",reason}}], visualSummary:{hardCutCount,visualEventCount,averageShotLengthMs,hookVisualDensity}, result:{hook:{text,kind,evidenceIds[]}, sellingPoints:[{text,evidenceIds[]}], audiences:[string], rhythm:{...}, cta:{text,evidenceIds[]}, segments:[{role:"hook"|"problem"|"body"|"proof"|"selling_point"|"turn"|"cta"|"other", startMs,endMs}]}, fingerprint}`；`timingPrecision=whole_video` 时前端**不显示句级时间戳**（IdeaLab 实证无时间戳）。
+- `GET /materials/:media/:id/similar?top=` → `[{materialId, status:"scored"|"insufficient_evidence", score|null, components:[{kind:"structure"|"hook"|"selling_points"|"audience"|"rhythm"|"cta", status:"compared"|"unavailable", score|null, reasonCode}], missingComponents[]}]`。
+- 复刻谱系：`POST /materials/:media/:id/lineage {derived_material_id, method:"script_rewrite"|"structure_adaptation"|"visual_remake"|"mixed", note?}`；`GET .../lineage` → 树。
+- 设计 brief：`POST /materials/:media/:id/brief {product_id, objective, global_constraints[], variants:[{variantKey, changeDimension:"hook"|"selling_point"|"audience"|"rhythm"|"cta", hypothesis, instruction, keepDimensions[]}]}` → brief（含 fingerprint，status draft）；`POST /briefs/:id/send {designer_ref}`；`POST /briefs/:id/deliveries {variantKey, derived_material_id, method, note?}`；`GET /briefs/:id/backtest` → `{status:"awaiting_delivery"|"awaiting_sample"|"ready", missingVariantKeys[], insufficientMaterialVersionIds[], experiment|null}`。
+- 商品：`GET /products?status&q` → `{productId, name, status, attrs, materialCount, metrics}`；`GET /products/:id`；商品主数据来源=ka-data `dim_product`（团队）/人工（个人），**快手侧无商品 API（OS 第五轮实证）**。
+- 测品矩阵：`GET /experiments?product_id&policy_version&window_from&window_to` → `{policy, products:[{productVersionId, cells:[{materialVersionId, accountCount, activeDayCount, exposure:MV, click:MV, realConversion:MV, cost:MV, ctr:RV, inferenceRate:RV, realCpa:RV, inferenceRateInterval95:{lower,upper}|null, sampleStatus:"sufficient"|"insufficient", exclusionReasons[]}], conclusion:{status:"insufficient_sample"|"insufficient_candidates"|"effect_too_small"|"intervals_overlap"|"separated_observation", directionalLeaderMaterialVersionId|null, observedLeaderMaterialVersionId|null, cpaImprovementRate|null}}]}`；`GET/PUT /experiments/policy`。样本不足**不出结论**。
+- AIGC 下单（6.4）：iframe 内嵌内部 material-order-platform，本产品只做入口与回链，不冻 DTO。
+
+### 7.3 结算对账（DTO/公式由 arch 从 B19 domain 反推冻结；原型 P14 四步向导）
+- 模板 `GET/POST /api/v1/settlement-templates` → `{templateId, templateVersion, name, currencyCode, unitNote, fields:[{fieldKey,label,order,valueType:"text"|"date"|"number"|"money"|"rate", aggregation:"none"|"sum", source:{kind:"fact",factKey}|{kind:"formula",expression:<field|constant|add|subtract|multiply|divide 树>}, required, allowCorrection}], checks:[{checkKey,label,order,leftFieldKey,rightFieldKey,tolerance:{mode:"absolute",amount}|{mode:"relative",rate}|{mode:"either",amount,rate}, severity:"block"|"warn"}], fingerprint}`；新版本=新行，**旧结算单绑旧版本不覆盖**。
+- 事实来源（factKey 白名单，Registry 冻）：`cost`（账面）、`cash_cost`、`income`（赔付）、`contract_rebate`、`direct_rebate`（fund 七字段）、`real_conversion`、`assessment_price`、`account_count`、`task_id/media/account_id` 维度；周期内按 `(media,account_id,task_id)` 一行。
+- 预览 `POST /settlements/preview {period:"YYYY-MM", template_version?, scope_id?}` → `{runId, templateFingerprint, period, dataBasis:"offline_settlement", dataCutoffAt, rows:[{rowKey, sourceFactId, fields:[{fieldKey, value, source:"fact"|"formula"|"correction", correctionId?}], checks:[{checkKey, status:"matched"|"mismatch"|"undefined", difference|null, relativeDifference|null, severity}]}], totals:[{fieldKey,value|null}], issues:[{code:"missing_required"|"invalid_field_value"|"undefined_formula"|"check_mismatch"|"check_undefined", severity, rowKey, fieldKey|null, checkKey|null}], status:"blocked"|"ready_to_freeze"}`（月中试算同此，不落 frozen）。
+- 校正 `POST /settlements/:id/corrections {rowKey, fieldKey, fromValue, toValue, reason, evidenceRef?}`（仅 `allowCorrection` 字段；留痕不覆盖事实）。
+- 冻结 `POST /settlements/:id/freeze` → 需 `status=ready_to_freeze`，否则 `409 SETTLEMENT_BLOCKED {issues}`；写 `confirmed_by/at` + 快照 fingerprint；`GET /settlements/:id` 返回冻结快照（不再随数据变）。
+- 差异转工作项 `POST /settlements/:id/lines/:line_id/to-work-item` → `work_items(type=self)` 带 checks 证据。
+- 分发：`POST /export {kind:"report", ref:{settlement_id}, format:"xlsx"|"png"}` + `subscriptions.kind="settlement"` 推群。
+
+### 14.5/14.6/14.3a/12.10 治理后台最小（admin）
+- 成员：`GET /api/v1/admin/members` → `[{identityId, displayName, provider, userId, role, isActive, joinedAt, grantsCount, lastSeenAt}]`；`POST /admin/members {display_name, provider:"internal_test"|"buc", provider_subject, role}` → 建 identity+user+personal workspace+membership（凭证由部署配置提供，不在此设密码）；`PATCH /admin/members/:identityId {role?, is_active?}`（停用=membership 失活 + 撤销全部 session，行不删）；`POST /admin/members/:identityId/transfer-all {to_user_id}`（= v1.5 users/:id/transfer-all）。
+- 授权档案（14.3a）：`GET /admin/members/:identityId/grants` → `[{media, accountId, accessLevel:"read"|"preview"|"execute", grantedAt}]`；`PUT` 整体替换（差集写 timeline）；team 空间无 grants。
+- 业务日历（12.10）：`GET/POST/DELETE /admin/calendar` → `{id, eventDate, eventType:"holiday"|"promo"|"coefficient_change"|"metric_change", label, affectsBaseline, thresholdProfile}`。
+- 灰度开关：`GET/PUT /admin/flags` → `workspace_flags.flags`：`write_enabled`（默认 false；老板一人 true = 灰度）、`agent_enabled`、`team_source_enabled`、`materials_enabled`、`dingtalk_enabled`；`write_enabled=false` 时所有 confirm 返回 `403 WRITE_DISABLED`。
+- 已有：`admin/data/reconcile`、`system/etl-runs` + rerun、`settings/channel-coefficients`、`settings/change-log`、`settings/decision-policy`、`integrations/*`。治理后台页 = 以上聚合，头像菜单入口，仅 admin。
+
+### 3.11 策略中心（最小：分析视图；老板 8-24"不同版位不同任务不同出价的账户数据分析"；"可保存方案"仍待定义）
+- `POST /api/v1/query {queryId:"account.pivot2", params:{dimA, dimB, window_from, window_to, media, taskIds?, filters?}}`，`dimA/dimB ∈ 8 维枚举`（`ubp` UNSUPPORTED）→ rows `{a:{key,label}, b:{key,label}, metrics:<v3 三态>, assessment:<v3>}` + `meta.cellCoverage:{cells, withData, undeterminable}`；预设三张：版位×任务、出价工具×任务、业务×版位（第三维用 filters）。
+- 页面 `/data/strategy`：预设 tab + 自定义两维 + 异常单元格着色 + 勾选 → 「分析这 N 个」唤 Agent。不做"最优投法"推荐、不做策略对象。
+
+### 4.7 开户测试跟踪（P1）
+- `GET /api/v1/account-tests?status&task_id` → `[{id, media, accountId, taskId, purpose, hypothesis, startedAt, endAt, status:"planned"|"running"|"passed"|"failed"|"stopped", verdictNote, result:{window, metrics:<v3>, assessment:<v3>}|null}]`；`POST /account-tests {media, account_id, task_id?, purpose, hypothesis?, started_at, end_at?}`；`PATCH /account-tests/:id {status, verdict_note}`；系统每日刷新 `result`（只算不判），结论由人填。账户池 `pool_status` 不因测试改变；测试户加 tag `testing`。
+
+### 4.8 优质户复制（P1；PRD 复制流程 A）
+- `POST /api/v1/accounts/:media/:id/replicate {target:{media,account_id}, include:{structure:true, bids:true, schedule:true}}`（素材不复制，人工选）→ 读母户 `structure` → 生成目标户变更集组 `{replication_id, changeset_group_id, plan:{campaigns:n, units:n, fields:[...]}}`；走组 dry-run/confirm；applied 后目标户 `tags += replicated_from:<media>:<account_id>` 并进 `lifecycle_stage=cold_start`。
+- `GET /accounts/:media/:id/replication-compare?days=7` → `{source:<v3 trend 7 日>, target:<v3 trend 7 日>}` 母子并排；`GET /account-replications?source=|target=`。
+- 前置：目标户 `pool_status ∈ available|assigned|pending_build`；母户需 `structure` 同步成功（4.4 结构同步=联调）。
+
+派活：R-015（migration 016 + 以上 HTTP/BFF），排 R-014 后。前端页面全部先按 fixtures 与示例态铺开，不等 R-015。

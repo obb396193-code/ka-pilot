@@ -1,0 +1,330 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.table",
+      "rowSchemaVersion": "account.table/v3",
+      "status": "ready",
+      "rows": [
+        {
+          "workspaceId": "00000000-0000-4000-8000-000000000024",
+          "media": "KUAISHOU",
+          "accountId": "account-1",
+          "accountName": "AAC拉新_快手_01",
+          "ds": "2026-09-05",
+          "tasks": [
+            {
+              "taskId": "fixture-task-ready",
+              "taskName": "AAC 拉新"
+            }
+          ],
+          "dataAnomaly": false,
+          "metrics": {
+            "cost": {
+              "value": 2500.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 1953.0,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 20000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 800,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 64,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 60,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": 327.0,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.04,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.08,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 41.67,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 32.55,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0667,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": 0.62,
+              "state": "finite"
+            }
+          }
+        },
+        {
+          "workspaceId": "00000000-0000-4000-8000-000000000024",
+          "media": "KUAISHOU",
+          "accountId": "account-2",
+          "accountName": "AAC拉新_快手_02",
+          "ds": "2026-09-05",
+          "tasks": [
+            {
+              "taskId": "fixture-task-ready",
+              "taskName": "AAC 拉新"
+            }
+          ],
+          "dataAnomaly": true,
+          "metrics": {
+            "cost": {
+              "value": 3200.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 2499.8,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 26000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 1100,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 64,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 60,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": -219.8,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0423,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.0582,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 53.33,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 41.66,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0667,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": false,
+            "costStatus": "red",
+            "costStatusReason": "window_over",
+            "budgetUsageRate": {
+              "value": 0.91,
+              "state": "finite"
+            }
+          }
+        },
+        {
+          "workspaceId": "00000000-0000-4000-8000-000000000024",
+          "media": "KUAISHOU",
+          "accountId": "account-3",
+          "accountName": "闲鱼潜客_快手_07",
+          "ds": "2026-09-05",
+          "tasks": [
+            {
+              "taskId": "fixture-task-ready",
+              "taskName": "AAC 拉新"
+            }
+          ],
+          "dataAnomaly": false,
+          "metrics": {
+            "cost": {
+              "value": 0.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 0.0,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 0,
+              "availability": "available"
+            },
+            "click": {
+              "value": 0,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 0,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 0,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": null,
+              "availability": "missing"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": null,
+                "state": "undefined"
+              },
+              "cvr": {
+                "value": null,
+                "state": "undefined"
+              },
+              "realCpa": {
+                "value": null,
+                "state": "undefined"
+              },
+              "cashCpa": {
+                "value": null,
+                "state": "undefined"
+              },
+              "gap": {
+                "value": null,
+                "state": "undefined"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "onTarget": null,
+            "costStatus": null,
+            "costStatusReason": "cash_missing",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          }
+        }
+      ],
+      "returnedRowCount": 3,
+      "wholeResultTotal": {
+        "value": 3,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "canonical",
+        "workspaceKind": "personal",
+        "window": {
+          "from": "2026-09-05",
+          "to": "2026-09-05",
+          "preset": "today"
+        },
+        "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "business_day_0300",
+        "metadataAvailability": "known",
+        "coverage": {
+          "complete": true
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": []
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "账户日行：账面/现金两组并排；dataAnomaly 行着色"
+  }
+}

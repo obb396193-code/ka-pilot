@@ -1,0 +1,523 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "workspaceId": "00000000-0000-4000-8000-000000000024",
+        "media": "KUAISHOU",
+        "accountId": "account-1",
+        "accountName": "AAC拉新_快手_01",
+        "status": "active",
+        "poolStatus": "in_delivery",
+        "poolStatusSource": "system",
+        "lifecycleStage": "stable",
+        "product": {
+          "name": "AAC 拉新包",
+          "ref": null
+        },
+        "starred": true,
+        "tags": [
+          "优质户"
+        ],
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "displayName": "示例优化师"
+        },
+        "linkedTasks": [
+          {
+            "taskId": "fixture-task-ready",
+            "taskName": "AAC 拉新"
+          }
+        ],
+        "metrics": {
+          "businessDate": "2026-09-05",
+          "window": {
+            "from": "2026-09-01",
+            "to": "2026-09-05",
+            "preset": "month_to_date"
+          },
+          "cost": {
+            "value": 12500.0,
+            "availability": "available"
+          },
+          "cashCost": {
+            "value": 9765.0,
+            "availability": "available"
+          },
+          "exposure": {
+            "value": 100000,
+            "availability": "available"
+          },
+          "click": {
+            "value": 4000,
+            "availability": "available"
+          },
+          "conversion": {
+            "value": 318,
+            "availability": "available"
+          },
+          "realConversion": {
+            "value": 300,
+            "availability": "available"
+          },
+          "costSpace": {
+            "value": 1635.0,
+            "availability": "available"
+          },
+          "wakeUv": {
+            "value": null,
+            "availability": "missing"
+          },
+          "potentialUv": {
+            "value": null,
+            "availability": "missing"
+          },
+          "ratios": {
+            "ctr": {
+              "value": 0.04,
+              "state": "finite"
+            },
+            "cvr": {
+              "value": 0.0795,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 41.67,
+              "state": "finite"
+            },
+            "cashCpa": {
+              "value": 32.55,
+              "state": "finite"
+            },
+            "gap": {
+              "value": 0.06,
+              "state": "finite"
+            },
+            "potentialRate": {
+              "value": null,
+              "state": "undefined"
+            },
+            "biConversionRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          }
+        },
+        "assessment": {
+          "price": {
+            "value": 38.0,
+            "effectiveDate": "2026-09-01"
+          },
+          "onTarget": true,
+          "costStatus": "green",
+          "costStatusReason": "window_ok",
+          "budgetUsageRate": {
+            "value": 0.62,
+            "state": "finite"
+          }
+        },
+        "balance": {
+          "value": 15200.0,
+          "syncedAt": "2026-09-05T08:00:00.000+08:00",
+          "cutoff": {
+            "hours": {
+              "value": 28.4,
+              "availability": "available"
+            },
+            "state": "ok"
+          }
+        },
+        "dailyBudgetCap": 100000.0,
+        "capacityLoad": {
+          "value": 0.62,
+          "state": "finite"
+        },
+        "lastAction": {
+          "at": "2026-09-05T08:42:00.000+08:00",
+          "kind": "changeset",
+          "summary": "降价 5%"
+        },
+        "nextSuggestion": null
+      },
+      {
+        "workspaceId": "00000000-0000-4000-8000-000000000024",
+        "media": "KUAISHOU",
+        "accountId": "account-2",
+        "accountName": "AAC拉新_快手_02",
+        "status": "active",
+        "poolStatus": "in_delivery",
+        "poolStatusSource": "system",
+        "lifecycleStage": "cold_start",
+        "product": {
+          "name": "AAC 拉新包",
+          "ref": null
+        },
+        "starred": false,
+        "tags": [
+          "replicated_from:KUAISHOU:account-1"
+        ],
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "displayName": "示例优化师"
+        },
+        "linkedTasks": [
+          {
+            "taskId": "fixture-task-ready",
+            "taskName": "AAC 拉新"
+          }
+        ],
+        "metrics": {
+          "businessDate": "2026-09-05",
+          "window": {
+            "from": "2026-09-01",
+            "to": "2026-09-05",
+            "preset": "month_to_date"
+          },
+          "cost": {
+            "value": 3200.0,
+            "availability": "available"
+          },
+          "cashCost": {
+            "value": 2499.8,
+            "availability": "available"
+          },
+          "exposure": {
+            "value": 100000,
+            "availability": "available"
+          },
+          "click": {
+            "value": 4000,
+            "availability": "available"
+          },
+          "conversion": {
+            "value": 63,
+            "availability": "available"
+          },
+          "realConversion": {
+            "value": 60,
+            "availability": "available"
+          },
+          "costSpace": {
+            "value": -219.8,
+            "availability": "available"
+          },
+          "wakeUv": {
+            "value": null,
+            "availability": "missing"
+          },
+          "potentialUv": {
+            "value": null,
+            "availability": "missing"
+          },
+          "ratios": {
+            "ctr": {
+              "value": 0.04,
+              "state": "finite"
+            },
+            "cvr": {
+              "value": 0.0158,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 53.33,
+              "state": "finite"
+            },
+            "cashCpa": {
+              "value": 41.66,
+              "state": "finite"
+            },
+            "gap": {
+              "value": 0.05,
+              "state": "finite"
+            },
+            "potentialRate": {
+              "value": null,
+              "state": "undefined"
+            },
+            "biConversionRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          }
+        },
+        "assessment": {
+          "price": {
+            "value": 38.0,
+            "effectiveDate": "2026-09-01"
+          },
+          "onTarget": false,
+          "costStatus": "yellow",
+          "costStatusReason": "day_over_window_ok",
+          "budgetUsageRate": {
+            "value": 0.91,
+            "state": "finite"
+          }
+        },
+        "balance": {
+          "value": 2180.5,
+          "syncedAt": "2026-09-05T08:00:00.000+08:00",
+          "cutoff": {
+            "hours": {
+              "value": 6.5,
+              "availability": "available"
+            },
+            "state": "warning"
+          }
+        },
+        "dailyBudgetCap": 100000.0,
+        "capacityLoad": {
+          "value": 0.91,
+          "state": "finite"
+        },
+        "lastAction": null,
+        "nextSuggestion": {
+          "workItemId": "00000000-0000-4000-8000-000000000201",
+          "title": "成本超考核，建议降价"
+        }
+      },
+      {
+        "workspaceId": "00000000-0000-4000-8000-000000000024",
+        "media": "KUAISHOU",
+        "accountId": "account-3",
+        "accountName": "闲鱼潜客_快手_07",
+        "status": "active",
+        "poolStatus": "assigned",
+        "poolStatusSource": "system",
+        "lifecycleStage": "unknown",
+        "product": {
+          "name": "闲鱼潜客",
+          "ref": null
+        },
+        "starred": false,
+        "tags": [],
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "displayName": "示例优化师"
+        },
+        "linkedTasks": [
+          {
+            "taskId": "fixture-task-ready",
+            "taskName": "AAC 拉新"
+          }
+        ],
+        "metrics": null,
+        "assessment": {
+          "price": {
+            "value": 38.0,
+            "effectiveDate": "2026-09-01"
+          },
+          "onTarget": null,
+          "costStatus": null,
+          "costStatusReason": "assessment_missing",
+          "budgetUsageRate": {
+            "value": null,
+            "state": "undefined"
+          }
+        },
+        "balance": {
+          "value": 0.0,
+          "syncedAt": "2026-09-05T08:00:00.000+08:00",
+          "cutoff": {
+            "hours": {
+              "value": null,
+              "availability": "missing"
+            },
+            "state": "unknown"
+          }
+        },
+        "dailyBudgetCap": null,
+        "capacityLoad": {
+          "value": null,
+          "state": "undefined"
+        },
+        "lastAction": null,
+        "nextSuggestion": null
+      },
+      {
+        "workspaceId": "00000000-0000-4000-8000-000000000024",
+        "media": "KUAISHOU",
+        "accountId": "account-4",
+        "accountName": "备用_快手_11",
+        "status": "active",
+        "poolStatus": "available",
+        "poolStatusSource": "manual",
+        "lifecycleStage": "unknown",
+        "product": null,
+        "starred": false,
+        "tags": [],
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "displayName": "示例优化师"
+        },
+        "linkedTasks": [],
+        "metrics": null,
+        "assessment": null,
+        "balance": {
+          "value": 50000.0,
+          "syncedAt": "2026-09-05T08:00:00.000+08:00",
+          "cutoff": {
+            "hours": {
+              "value": null,
+              "availability": "missing"
+            },
+            "state": "unknown"
+          }
+        },
+        "dailyBudgetCap": null,
+        "capacityLoad": {
+          "value": null,
+          "state": "undefined"
+        },
+        "lastAction": null,
+        "nextSuggestion": null
+      },
+      {
+        "workspaceId": "00000000-0000-4000-8000-000000000024",
+        "media": "KUAISHOU",
+        "accountId": "account-5",
+        "accountName": "AAC拉新_快手_05",
+        "status": "active",
+        "poolStatus": "pending_recharge",
+        "poolStatusSource": "system",
+        "lifecycleStage": "unknown",
+        "product": {
+          "name": "AAC 拉新包",
+          "ref": null
+        },
+        "starred": false,
+        "tags": [],
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "displayName": "示例优化师"
+        },
+        "linkedTasks": [
+          {
+            "taskId": "fixture-task-ready",
+            "taskName": "AAC 拉新"
+          }
+        ],
+        "metrics": {
+          "businessDate": "2026-09-05",
+          "window": {
+            "from": "2026-09-01",
+            "to": "2026-09-05",
+            "preset": "month_to_date"
+          },
+          "cost": {
+            "value": 0.0,
+            "availability": "available"
+          },
+          "cashCost": {
+            "value": 0.0,
+            "availability": "available"
+          },
+          "exposure": {
+            "value": null,
+            "availability": "missing"
+          },
+          "click": {
+            "value": null,
+            "availability": "missing"
+          },
+          "conversion": {
+            "value": 0,
+            "availability": "available"
+          },
+          "realConversion": {
+            "value": 0,
+            "availability": "available"
+          },
+          "costSpace": {
+            "value": null,
+            "availability": "missing"
+          },
+          "wakeUv": {
+            "value": null,
+            "availability": "missing"
+          },
+          "potentialUv": {
+            "value": null,
+            "availability": "missing"
+          },
+          "ratios": {
+            "ctr": {
+              "value": null,
+              "state": "undefined"
+            },
+            "cvr": {
+              "value": null,
+              "state": "undefined"
+            },
+            "realCpa": {
+              "value": null,
+              "state": "undefined"
+            },
+            "cashCpa": {
+              "value": null,
+              "state": "undefined"
+            },
+            "gap": {
+              "value": null,
+              "state": "undefined"
+            },
+            "potentialRate": {
+              "value": null,
+              "state": "undefined"
+            },
+            "biConversionRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          }
+        },
+        "assessment": {
+          "price": {
+            "value": 38.0,
+            "effectiveDate": "2026-09-01"
+          },
+          "onTarget": null,
+          "costStatus": null,
+          "costStatusReason": "cash_missing",
+          "budgetUsageRate": {
+            "value": 0.0,
+            "state": "finite"
+          }
+        },
+        "balance": {
+          "value": 0.0,
+          "syncedAt": "2026-09-05T08:00:00.000+08:00",
+          "cutoff": {
+            "hours": {
+              "value": 0.0,
+              "availability": "available"
+            },
+            "state": "critical"
+          }
+        },
+        "dailyBudgetCap": null,
+        "capacityLoad": {
+          "value": null,
+          "state": "undefined"
+        },
+        "lastAction": null,
+        "nextSuggestion": null
+      }
+    ],
+    "page": 1,
+    "pageSize": 20,
+    "total": 5,
+    "groupBy": "none"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "dataState": "ready",
+    "coverage": {
+      "complete": true
+    },
+    "_note": "v1.5.1 扩展项：poolStatus/product/cutoff/dailyBudgetCap/capacityLoad/lastAction/nextSuggestion；nextSuggestion 无则 null 不生成"
+  }
+}

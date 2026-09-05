@@ -1,0 +1,71 @@
+{
+  "ok": true,
+  "data": {
+    "window": {
+      "from": "2026-09-01",
+      "to": "2026-09-05"
+    },
+    "online": {
+      "exposure": {
+        "value": 5600000,
+        "availability": "available"
+      },
+      "click": {
+        "value": 224000,
+        "availability": "available"
+      },
+      "conversion": {
+        "value": 19600,
+        "availability": "available"
+      },
+      "realConversion": {
+        "value": 18400,
+        "availability": "available"
+      }
+    },
+    "offline": {
+      "wakeUv": {
+        "value": null,
+        "availability": "missing"
+      },
+      "potentialUv": {
+        "value": null,
+        "availability": "missing"
+      },
+      "realConversion": {
+        "value": 18400,
+        "availability": "available"
+      }
+    },
+    "rates": {
+      "ctr": {
+        "value": 0.04,
+        "state": "finite"
+      },
+      "cvr": {
+        "value": 0.0875,
+        "state": "finite"
+      },
+      "gap": {
+        "value": 0.0652,
+        "state": "finite"
+      },
+      "potentialRate": {
+        "value": null,
+        "state": "undefined"
+      },
+      "biConversionRate": {
+        "value": null,
+        "state": "undefined"
+      }
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "离线链缺=missing，不显 0"
+  }
+}

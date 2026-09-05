@@ -1,0 +1,88 @@
+{
+  "ok": true,
+  "data": {
+    "stages": [
+      {
+        "poolStatus": "available",
+        "count": 6,
+        "deltaVsYesterday": {
+          "value": 1,
+          "availability": "available"
+        }
+      },
+      {
+        "poolStatus": "assigned",
+        "count": 2,
+        "deltaVsYesterday": {
+          "value": 0,
+          "availability": "available"
+        }
+      },
+      {
+        "poolStatus": "pending_open",
+        "count": 1,
+        "deltaVsYesterday": {
+          "value": 1,
+          "availability": "available"
+        }
+      },
+      {
+        "poolStatus": "pending_recharge",
+        "count": 3,
+        "deltaVsYesterday": {
+          "value": -1,
+          "availability": "available"
+        }
+      },
+      {
+        "poolStatus": "pending_build",
+        "count": 2,
+        "deltaVsYesterday": {
+          "value": 0,
+          "availability": "available"
+        }
+      },
+      {
+        "poolStatus": "in_delivery",
+        "count": 18,
+        "deltaVsYesterday": {
+          "value": 2,
+          "availability": "available"
+        }
+      },
+      {
+        "poolStatus": "paused",
+        "count": 1,
+        "deltaVsYesterday": {
+          "value": 0,
+          "availability": "available"
+        }
+      },
+      {
+        "poolStatus": "closed",
+        "count": 4,
+        "deltaVsYesterday": {
+          "value": 0,
+          "availability": "available"
+        }
+      },
+      {
+        "poolStatus": "abnormal",
+        "count": 2,
+        "deltaVsYesterday": {
+          "value": 1,
+          "availability": "available"
+        }
+      }
+    ],
+    "asOf": "2026-09-05T09:15:00.000+08:00"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "九态固定顺序；点卡即 poolStatus 筛选；count 缺=missing"
+  }
+}

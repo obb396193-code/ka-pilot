@@ -1,0 +1,101 @@
+{
+  "ok": true,
+  "data": {
+    "id": "00000000-0000-4000-8000-000000002301",
+    "period": "2026-08",
+    "templateVersion": "v3.2",
+    "status": "frozen",
+    "confirmedBy": {
+      "userId": "00000000-0000-4000-8000-000000000001",
+      "name": "示例优化师"
+    },
+    "confirmedAt": "2026-09-03T10:00:00.000+08:00",
+    "fingerprint": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "snapshot": {
+      "rows": [
+        {
+          "rowKey": "row-1",
+          "sourceFactId": "fact-1",
+          "fields": [
+            {
+              "fieldKey": "task_name",
+              "value": "AAC 拉新",
+              "source": "fact"
+            },
+            {
+              "fieldKey": "cost",
+              "value": 698000.0,
+              "source": "fact"
+            },
+            {
+              "fieldKey": "cash_cost",
+              "value": 545277.6,
+              "source": "fact"
+            },
+            {
+              "fieldKey": "contract_rebate",
+              "value": 152000.0,
+              "source": "fact"
+            },
+            {
+              "fieldKey": "rebate_est",
+              "value": 152722.4,
+              "source": "formula"
+            },
+            {
+              "fieldKey": "real_conversion",
+              "value": 18400,
+              "source": "fact"
+            },
+            {
+              "fieldKey": "cash_cpa",
+              "value": 29.63,
+              "source": "formula"
+            }
+          ],
+          "checks": [
+            {
+              "checkKey": "rebate_match",
+              "status": "mismatch",
+              "difference": -722.4,
+              "relativeDifference": -0.0047,
+              "severity": "warn"
+            }
+          ],
+          "fingerprint": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      ],
+      "totals": [
+        {
+          "fieldKey": "cost",
+          "value": 698000.0
+        }
+      ]
+    },
+    "lines": [
+      {
+        "lineId": 1,
+        "rowKey": "row-1",
+        "taskId": "fixture-task-ready",
+        "checks": [
+          {
+            "checkKey": "rebate_match",
+            "status": "mismatch",
+            "difference": -722.4,
+            "relativeDifference": -0.0047,
+            "severity": "warn"
+          }
+        ],
+        "workItemId": null
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "冻结后快照不随数据变；差异转工作项按 line"
+  }
+}

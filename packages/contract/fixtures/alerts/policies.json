@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "severity": "P0",
+        "breakMute": true,
+        "ackWithinMin": 30,
+        "escalateTo": "backup",
+        "then": "lead"
+      },
+      {
+        "severity": "P1",
+        "breakMute": false,
+        "ackWithinMin": 1440,
+        "escalateTo": "lead",
+        "thenAfterMin": 2880
+      },
+      {
+        "severity": "P2",
+        "breakMute": false,
+        "batchDigest": true
+      }
+    ],
+    "quietHours": {
+      "from": "23:00",
+      "to": "07:00",
+      "suppress": [
+        "P1",
+        "P2"
+      ]
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

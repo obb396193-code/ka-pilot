@@ -1,0 +1,65 @@
+{
+  "ok": true,
+  "data": {
+    "id": "00000000-0000-4000-8000-000000002201",
+    "name": "按任务和负责人的成本达标表",
+    "config": {
+      "version": "report-config/v1",
+      "dataset": {
+        "queryId": "account.table",
+        "params": {
+          "window": {
+            "preset": "last_7d"
+          },
+          "media": "KUAISHOU"
+        }
+      },
+      "groupBy": [
+        "task",
+        "owner"
+      ],
+      "columns": [
+        {
+          "metric": "cost",
+          "label": "消耗"
+        },
+        {
+          "metric": "cashCpa",
+          "label": "现金CPA"
+        },
+        {
+          "metric": "onTarget",
+          "label": "达标"
+        }
+      ],
+      "sort": [
+        {
+          "by": "cashCpa",
+          "dir": "desc"
+        }
+      ],
+      "filters": [],
+      "highlight": [
+        {
+          "metric": "onTarget",
+          "op": "==",
+          "value": false,
+          "style": "red"
+        }
+      ],
+      "layout": {
+        "type": "table"
+      }
+    },
+    "isShared": false,
+    "version": "report-config/v1",
+    "updatedAt": "2026-09-04T18:00:00.000+08:00"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

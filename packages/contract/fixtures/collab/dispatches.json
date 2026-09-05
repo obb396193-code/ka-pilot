@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "data": {
+    "sent": [
+      {
+        "dispatchId": "00000000-0000-4000-8000-000000001501",
+        "workItemId": "00000000-0000-4000-8000-000000000202",
+        "to": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "from": {
+          "userId": "00000000-0000-4000-8000-000000000003",
+          "name": "示例负责人"
+        },
+        "acceptanceCriteria": "account-1 现金 CPA 3 日内 ≤36",
+        "acceptanceRule": {
+          "metric": "cash_cpa",
+          "operator": "<=",
+          "threshold": 36,
+          "windowDays": 3
+        },
+        "status": "received",
+        "slaDue": "2026-09-06T09:15:00.000+08:00",
+        "receipt": null
+      }
+    ],
+    "received": [
+      {
+        "dispatchId": "00000000-0000-4000-8000-000000001502",
+        "workItemId": "00000000-0000-4000-8000-000000000201",
+        "to": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "from": {
+          "userId": "00000000-0000-4000-8000-000000000003",
+          "name": "示例负责人"
+        },
+        "acceptanceCriteria": "处理 account-2 超考核",
+        "acceptanceRule": null,
+        "status": "done",
+        "slaDue": "2026-09-05T18:00:00.000+08:00",
+        "receipt": {
+          "outcome": "disagreed",
+          "reason": "冷启动期波动，建议观察 2 日",
+          "at": "2026-09-05T10:00:00.000+08:00",
+          "changesetId": null,
+          "t1": null
+        }
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "disagreed 是合法结局"
+  }
+}

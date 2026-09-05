@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "data": {
+    "suggestionId": "00000000-0000-4000-8000-000000002001",
+    "kind": "view_patch",
+    "targetRef": "view:00000000-0000-4000-8000-000000001201",
+    "accepted": {
+      "mode": "partial",
+      "paths": [
+        "window.preset"
+      ]
+    },
+    "resultRef": "view:00000000-0000-4000-8000-000000001201@v2"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

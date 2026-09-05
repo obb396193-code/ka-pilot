@@ -162,7 +162,11 @@
   9. **系统 HTTP**：`GET /system/health`、`GET /system/etl-runs`、`POST .../rerun`（admin）、`GET /search?q=`（非 LLM）。
   10. **Next BFF**：以上全部对应 `/api/internal/*` 路由，转发 Session cookie + requestId，不接受 `dataView`。
   11. **Capability Registry**：把 ka-src-0007 评估列出的快手 MAPI 核心能力（campaign update/status、unit budget、creative update/status/review、四层实时 report）录入 `provider_model_capabilities` 同构的 capability 表（B7 Registry），状态 `documented_unverified`；修 kuaishou-cli 2 处 HTTP 方法冲突。
-- 拆批建议：**R-010a**（2-6，页面能用）先交；**R-010b**（7-11）后交。每批 SHA + 四包测试数 + 真实 PG 证据 + HTTP 负向用例（401/403/409/410）。
+- 拆批（**2026-09-05 修订**，按"用户闭环"切，不按模块切）：
+  - **R-010a1「每天能看」**：#6 语义查询（summary/trend/table/dimension/health，`meta` 补 `workspaceKind`）+ #9 `GET /system/health`/`etl-runs` + #5 `GET /accounts/:id` 小传/余额 + BFF。**验收句**：合入后老板能在数据总表/大盘/账户池用真实奇航数据看全字段、下钻账户、导出 Excel。
+  - **R-010a2「每天能处理」**：#2 工作项动作 + `meta.coverage` 三态（api.md 9-5 冻结）+ #3 变更集全流程 + #4 任务详情/写 + #5 其余。**验收句**：老板能在工作台看到有证据的队列、处理或跳后台、T+1 看到回收。
+  - **R-010b**：#7 日报、#8 Agent SSE、#9 rerun/search、#11 Registry。
+  - 每批 SHA + 四包测试数 + 真实 PG 证据 + HTTP 负向用例（401/403/409/410）。**不能写出验收句的项标"基础建设"，不计入可用功能。**
 - 纪律同 R-009；契约缺口写 inbox-arch，不自造 DTO。
 - 状态：待处理（等 R-009）
 
@@ -217,3 +221,143 @@
 - 第二批范围 = R-009 剩余全部：#2 P0-04 三态（按 api.md 新 BE-001：`MetricValue` + row schema **v2** + fixtures 升级）、#3 P0-05 409、#4 P0-07 fencing+effects、#5 P0-12 durable inbox、#6 P0-13 校验、#7 P0-03 五态（**顺手加 status CHECK**）、#8 数据源绑空间（普通请求**拒绝** `dataView`→400；reconcile 走 `POST /api/v1/admin/data/reconcile` entitlement）、#10 双空间集成反例。
 - 附带修 P-038 P2-1：删 `bff.ts:106` 假 token 兜底。
 - 交付方式不变：状态文件逐条 + SHA + 四包测试数 + 真 PG 证据；P-039 起编号。
+
+---
+
+### R-013 后端：首次部署 seed 脚本（2026-09-05；小活，插在 R-009 第二批之后、R-010a 之前）
+
+- 派活方：arch　日期：2026-09-05
+- 背景：arch 核实空库登录路径——`createSessionForIdentity` 要求 `auth_identities` 行存在且 active、且恰好一个 active 的 personal membership（`workspaces.kind='personal'` + `workspace_users` actor），**代码里没有任何创建路径**（只有 benchmark 脚本 insert workspaces）。首次内网部署必卡登录。OS 消息见 `docs/plans/发给内网agent-2026-09-05-部署准备与联调门.md` 三.3。
+- 交付物：
+  1. `packages/db` 新增 `npm run seed:bootstrap -- <json>`：输入 JSON = `{identities:[{id, display_name}], workspaces:[{id?, kind, name}], memberships:[{identity_id, workspace_id, user_id?, role}], grants:[{workspace_id, media, account_id, user_id}]}`；**幂等**（重复跑不重复插、不改已有行），单事务，不接受任何密码/token 字段（出现即拒绝）。
+  2. 个人空间账户授权：一期裁决 = **credential owner 拿到 ETL 拉回的该 workspace 全部账户**（老板 userId 名下本来只看得到自己的户）。seed 支持 `grants: "all_accounts_in_workspace"` 快捷值，在 ETL 首跑后再执行一次即补齐。
+  3. 团队空间：seed 一个 `kind='team'` workspace + 该 identity 的 readonly membership（R-011 接 ka_data 前就要能切进去看空态）。
+  4. 示例 JSON 放 `packages/contract/fixtures/seed/bootstrap.example.json`（UUID 全是 `00000000-0000-4000-8000-0000000000xx` 形态，不含真实身份）；runbook `docs/runbooks/2026-09-04-DataAPI内网部署与环境变量.md` 加"§2.5 首次 seed"一节（migrate 之后、start:data-api 之前）。
+  5. 反例：identity 重复 → 幂等不报错；一个 identity 两个 personal membership → 拒绝；grants 引用不存在的 workspace → 整批回滚；JSON 含 `password|token|secret` 键 → 拒绝启动。
+- 边界：不动 auth 逻辑本身；不动 migration；不给默认账号（没有 seed JSON 就什么都不做）。
+- 验收：真 PG 空库 → migrate → seed → `POST /api/v1/auth/login`（internal_test）200 → `GET /session` 显示 personal 空间 → switch 到 team 200 readonly。
+- 状态：待处理（R-009 第二批交付后做，P-04x 编号继续）
+
+**R-013 修订（2026-09-05，Codex 审查会话指出的死循环，arch 核实属实）**：`workspace-sync-service.ts` `planJob` 在授权账户为空时返回 `ACCOUNT_SCOPE_MISSING` 不发首次全量——所以"ETL 首跑后再补授权"走不通。改为：
+- **删除** `grants: "all_accounts_in_workspace"` 快捷值；grants 必须显式列账户。
+- 新增 **只读发现命令** `npm run discover:accounts -- --media KUAISHOU`（apps/worker）：用 `WORKER_SERVICE_QIHANG_USER_ID` 调奇航 `resource=account`（这本来就是授权的来源，不需要 grants），把 `{media, account_id, account_name, task_id, biz_name}` 列表打到 stdout（JSON），**不写库、不发任何 job**。老板看过清单 → 填进 seed JSON 的 grants → 跑 seed → 正常 tick 触发 etl_full。
+- 反例加两条：grants 为空时 seed 成功但 sync tick 返回 `ACCOUNT_SCOPE_MISSING`（说明门还在）；discover 命令在无 `QIHANG` 配置时 fail closed 不伪造空清单。
+- 这不是放宽安全边界，是把"首次账户发现→人确认→显式授权→同步"这条真实首次路径补齐；以后 4.5「加/关账户闭环」复用 discover。
+
+
+---
+
+#### P-039 ✅通过（1 条改动）→ 继续 R-009 第二批，不等审（arch 2026-09-05）
+
+- `e69ea1e`/`5dfbbad` 逐行通过，结论表在 `inbox-arch.md` P-039（main）。
+- **唯一改动要求**：`011_r009_backfill_state.cjs` 撞号。把 CHECK 两条 + 旧 done 重验 UPDATE **折进 `011_contract_v1_2_p0.cjs`**，删追加文件，迁移总数回 11，计数测试改回。理由：契约约定一版一文件（011=v1.2、012=v1.3、013=Task6、014=v1.4），同号靠文件名排序是隐式约定。011 未部署到任何环境，本地 `down`+`up` 即可。**批次末做，不打断当前 P0-05。**
+- 继续顺序：#3 P0-05 → #4 P0-07 → #5 P0-12 → #6 P0-13 → #2 P0-04 三态/v2 → #8 绑源 → 集成反例。每子交付照 P-039 格式回执（P-041 起；P-040 已被产品审查占用）。
+- **#8 绑源按今天重写的 DATA-ROUTE-001**（api.md 已替换旧文）：team + `KA_DATA_ENABLED=false` → `503 SOURCE_UNAVAILABLE`，不回退 platform 伪装团队数据；lineage 加 `workspaceKind`。
+- 今天契约/派活另有三处与你相关，做到时再读：①R-013 修订（`discover:accounts` 只读发现，删 all_accounts 快捷值）②R-010 拆 a1「每天能看」/a2「每天能处理」，每批要写验收句 ③work-items `meta.coverage` 三态（api.md 9-5 冻结，R-010a2 实现）。
+- 合流节奏：批次末一次 `--no-ff`；fe 账户池页若先要 #8，arch 提前合一次。
+
+
+#### 契约 v1.4.1 追加（2026-09-05，老板定"成本与量"口径）→ 影响 R-010a1 / R-012
+
+- 读 `metrics.md`「窗口化口径」+ `schema.sql` 末尾 v1.4.1 + `api.md` 末尾 v1.4.1。
+- **R-010a1**：`summary/trend/table/dimension` 接受 `date_from/date_to`；窗口内指标先聚合再相除（不是日比率平均）；`lineage.window`；`cost_status` 三色 + reason 由后端按容忍带算。外推两式与 pacing 同源。
+- **R-012**：`task_budget_history` 进 migration 014；`POST /tasks/:id/daily-budget-cap`；overview `daily_budget_cap` + `budget_usage_rate`；timeline kind；summary `budget_usage_rate`。无卡任务 → missing 不显 0。
+- 不影响 R-009 二批。
+
+- **口径纠正（2026-09-05 晚，老板）**：考核价/达标/成本空间全是**现金口径**（BI、扣返点后真钱）；`on_target` 改用 `cash_cpa`，账面 `real_cpa` 只展示（metrics.md 已改）。**R-013 seed 加 `channel_coefficients`**：首行快手 现金≈账面×0.7812（÷1.28），方向按 domain `cash_cost` 现有实现存值；老板确认后填生效日期。R-010a1 的 summary 同时返回账面/现金两组。
+- **更正上一条**：折算系数不存倒数。契约 v1.4.1 补 `channel_coefficients.op ('multiply'|'divide')`（schema.sql 末尾）；**R-010a1 的 migration 012 加这一列**，domain `cash_cost` 按 `op` 施加（现在写死 `/`，改成按 op）；**R-013 seed 的 channel_coefficients 四行**（KUAISHOU ×0.7812 / TENCENT ÷1.045 / TOUTIAO ÷1.09 / BAIDU ÷1.51）依赖 012，部署顺序 migrate 全部 → seed 即可。
+
+#### P-041 ✅通过 → 继续（arch 2026-09-05）
+
+- `010e4bb`/`5228b44` 逐行通过（结论表 inbox-arch P-041）。约束名与 011 已核对一致。
+- 继续：P0-07 → P0-12 → P0-04 三态/v2 → #8 绑源 → 集成反例 → 批末折 011。回执 P-042 起。
+- 合流时 be/r009 会再 merge 一次 main：main 已含 v1.4.1（窗口化口径、`task_budget_history`、`channel_coefficients.op`、settings/change-log 端点）——**这些属 R-010a1/R-012，本批不做**，只需 merge 不冲突。
+- Web 依赖告警不归你，已转 fe。
+
+#### R-012 追加（2026-09-05）：口径设置端点
+
+- `GET/POST /api/v1/settings/channel-coefficients`、`GET .../:media/history`、`GET /api/v1/settings/change-log`（三版本表 UNION）——DTO 见 api.md v1.4.1「口径设置与变更记录」。系数回溯改口径走与考核价改价同一重算链，响应 `recomputed_days`。
+
+#### P-042 / P-043 ✅通过 → 继续（arch 2026-09-05）
+
+- `a044e54`（P0-07）、`c6603d3`（P0-12）逐行通过，结论表 inbox-arch。两条 P2 不阻塞：claimExecutor 可加 run 终态过滤；withExecutor 的 loadAuthorized 合一。
+- dead 定义已按你的实现冻进 schema.sql 注释（processed=false ∧ attempts≥max ∧ last_error=ATTEMPTS_EXHAUSTED），以后别加 status 列。
+- `GATEWAY_INBOX_KEY_HEX` 生成命令请补进 runbook 网关节（和 R-013 的 §2.5 一起）。
+- 继续：P0-04 三态/v2 → #8 绑源 → 双空间反例 → 折 011 → merge main（main 已到 v1.4.1，含 `op` 列/settings 端点，本批不实现只要不冲突）→ 整批回执 P-044。
+
+#### R-011 追加铁律（2026-09-05，来自 ka-data owner「给开发」文档 ka-src-0011，OS 已实跑）
+
+- adapter 请求/响应契约与现有 `ka-data-client.ts` 一致，不改；`backend` 固定 `sqlite`（毫秒级、口径已对齐），holo/odps 不进产品路径。
+- 团队空间 SQL 模板六条：①转化/账户查询必带 `media=` 过滤（fact_conv 存全媒体，不加差 12 倍）②现金直接 `SUM(cash_yuan)`，**不再施加 `channel_coefficients`**（源已按系数算好，否则双算）③`cash_yuan` 可能 null → 三态 missing，不 COALESCE 0 ④`dwd_adgroup_daily` 与 `dwd_account_daily/fact_conv_daily` 的 account_id 是两套 namespace，**禁止 JOIN**；ad 级与账户级分别查 ⑤赔付 JOIN 必带 media ⑥`truncated/limit_clamped` → partial 三态，按 ds/账户分批。
+- 团队空间达标直接用 `dwd_account_daily.cash_assessment`（现金考核，已按 sub_biz×media 富化），不走本库 `assessment_price_history`；考核 SSOT 在 ka-knowledge `assessment_catalog.json`（我们只读，能否拉取待 OS）。
+- 团队空间 8 维：`resource_position/bid_tool/plan_tier/operator_name/channel_type/deduction_rate` 在 `dwd_adgroup_daily`，可直接开资源位/出价工具两维（个人空间仍 `DIMENSION_UNSUPPORTED` 等 OS）。
+- `KA_DATA_BASE_URL` 是沙箱会话地址会变：连不上 → `503 SOURCE_UNAVAILABLE` + 健康页提示「团队数据源地址需更新」，不重试成 platform。
+
+
+### R-013b 后端：FaaS 部署打包与 worker 单轮（2026-09-05；与 R-013 同批交付）
+
+- 派活方：arch　背景：OS 回收 `docs/evidence/integration/2026-09-05-os-部署准备与四项核证回收.md`——a1 faas 构建期 `npm install`（内网 registry、node 20、zip ≤2GB）、无 Procfile、常驻进程会被回收 → 拓扑方案 B。
+- 交付物：
+  1. 仓库根级 `package.json` + `scripts/install-all.sh`：按 domain → db → worker/web 顺序 `npm ci`；在干净克隆验证 `file:` 依赖可解析（OS 未实测）。
+  2. `deploy/faas/` 三份骨架：`web/`（bootstrap: `exec next start -p $PORT`）、`data-api/`（bootstrap: `exec npm run start:data-api`，`DATA_API_HOST=0.0.0.0`）、`worker-once/`（定时函数入口）。每份含 `f.yml` 示例与 env 清单（值留空）。
+  3. **`npm run worker:once`**：一次 tick（入队）+ 消费 jobs 到空或达 `WORKER_ONCE_MAX_MS`（默认 10 分钟）→ 退出码 0；中途被杀依赖现有 lease 重领；日志只打 job id/type/状态不打 payload。
+  4. seed JSON 示例把 identityId 占位换成 OS 回传的 `5e5ea046-e7eb-4fed-a07a-fb7631bc498e`（个人空间 + 团队空间 + membership；grants 待老板 discover 后填）。
+  5. runbook §0 已写拓扑；你补 §2.5 seed、§2.6 worker:once 触发方式、§7 打包步骤。
+- 边界：不改业务代码；不改 data-api 监听逻辑（用现有 `DATA_API_HOST`）。
+- 状态：待处理（R-009 二批后，与 R-013 同批）
+
+#### R-012 追加（2026-09-05 OS 8 维实证）
+- `bid_tool` 派生映射提案：从 ka-src-0007 MAPI 文档取 unit `bid_type`/`ocpx_action_type`/`unit_type` 枚举含义，提一张 → `bid_tool` 枚举（如 手动出价/自动出价/OCPX 一阶/二阶/最大转化…）写 inbox-arch，arch 冻后实现；未冻前 `DIMENSION_UNSUPPORTED`。
+- `agent_type` 从 ka-data `custom_tags["代投/自投"]` 落 accounts（"无匹配"→NULL）；`ubp` 维度永久 UNSUPPORTED（无源），不造。
+- MAPI 业务码含义表同样从 ka-src-0007 提案（api.md「媒体写业务码与 UNKNOWN」）。
+
+
+### R-014 后端：契约 v1.5 落地（2026-09-05；排 R-012 后）
+
+- 派活方：arch　**先读** `api.md` 末尾「v1.5 端点与 DTO」+ `schema.sql` 末尾「v1.5 新增」+ 缺口地图 13 行（1.8/3.5/3.6/3.8/3.10/4.2/4.3/4.10/5.7/7.4/9.1/9.6/10.11/11.7）。
+- 交付物：
+  1. **migration 015**：external_changes / account_transfers / user_watchlists / saved_views / exports / capabilities / decision_policies / report_runs + report_configs 三列；真实 PG up/down/up。
+  2. HTTP + BFF：小传（fund 七字段三态、cutoff 四态）、timeline 10 kinds + overlay、transfer/transfer-all（grants 迁移 + 409 TRANSFER_BLOCKED_BY_CHANGESET）、`account.hourly`/`account.gap` 两个 queryId 进 Registry、me/views + watchlist、export 任务化（PNG 走网关 Chromium）、integrations connections/check/identity-mappings/messages/retry、capabilities list/invoke（写只出变更集草稿）、decision DTO + policy、daily-brief + `daily_brief_generate` job（数据未就绪 pending_data）、reports/render 按 report-config/v1。
+  3. 带外变更检测：结构同步每轮比对 bid/budget/status/schedule → external_changes + 关联工作项标注。
+  4. 反例：转户目标非 active 403、有 running 变更集 409、导出过期 URL 410、capability disabled 409、hourly 缺小时 missing 不补 0、daily-brief 在 etl_full 未 done 时 pending_data、gap 阈值随 ruleSetVersion。
+- 验收句：优化师能在账户详情看小传/倒计时/操作史打点、把户交接给同事、设盯盘名单看小时数、存自己的列视图并定时推群、一键出 PNG；管理员能看接入健康与消息收发记录并重试。
+- 状态：待处理（等 R-012）
+
+
+#### A-001 逐行审计 B3/B23 结论 → 落到你手上的（arch 2026-09-05）
+
+- **R-009 #8 绑源必须一起改 BFF**：`apps/web/lib/data/bff.ts` 仍注入 `dataView:"platform"` 且断言 `mode==="platform"`；你的 #8 让后端拒 dataView 后这里会全 400。改：去掉注入；`mode` 按 session 的 `workspaceKind` 断言（personal→platform / team→ka_data）；`contracts.ts` mode 枚举同步；BFF 测试加团队空间用例。**这条不改，二批不合流。**
+- **R-010a2 追加**：① domain `transitions.failed` 加 `retry → confirmed`，`POST /changesets/:id/retry` 重走 from 复核 + begin，attempt+1；② confirm/retry 在非法状态 → 409 `INVALID_STATE`（现在是通用 Error→500）；③ 确认 `FollowUpScheduler.scheduleT1` 按 (changeset_id,item_id) 幂等，终态重跑不重复排 T+1；④ unknown 只读 reconcile 一次仍 unknown → 建 `work_items(type=agent_question)` 转人工。
+- **R-013b 追加**：① `NODE_ENV=production` 且存在任一 `KA_DATA_DEV_*` → 启动拒绝；② session 清理 job（expired/revoked 超 30 天删）。
+- P3 不阻塞：reconcile 的 execution_run 建议 `dry_run=true` 或加 kind。
+
+#### 12.8 缺数期规则抑制已冻（2026-09-05）→ R-010a1 迁移 + R-010a2 引擎
+- migration 012 加 `alert_rules.availability_policy/data_freshness_max_hours`；引擎按 metrics.md 六条：指标缺→undeterminable 不触发不消触不递增 occurrence；源过期→pending 整体跳过、恢复不回溯补发、SLA 暂停；首次 full 未 done→全 pending；explain 带 availability + not_triggered_reason。**禁止缺数按 0/上次值代入**——现有 `semantic-query-metrics.ts` 的 `COALESCE(sum,0)`（R-009#2 三态）改完后规则层不得再补 0。
+
+
+#### P-044 中期审查：8 笔子交付全过；三问答复（arch 2026-09-05 深夜）
+
+- 逐笔结论见 inbox-arch「P-044 中期审查」。三态 SQL（EXPECTED_METRIC_CTE + 任一缺→NULL）、路由内核、admin reconcile、lineage.workspaceKind、inbox 耗尽对齐——都对。
+- **答 1 顺序**：按你建议——012 先作为 R-010a1 第一子批落（只迁移）；R-013 seed 拆 `seed:bootstrap`（不依赖 012）+ `seed:coefficients`（依赖 op 列）；再 R-010a1 功能。
+- **答 2 `apps/web/lib/data`**：归你。改 contracts/adapters/types/测试做 v2 解包 + BFF 去 dataView + 按 Session workspaceKind 断言 mode；不碰 React/组件/样式。协作规范 §1 已改。
+- **答 3 团队 reader**：采纳 `KA_DATA_TEAM_WORKSPACE_ID`（UUID）一 reader ↔ 一 team；未配/不匹配 503 SOURCE_UNAVAILABLE；不接受浏览器参数、不依赖 team grants。runbook 已加。
+- **v2/v3 编号**：你的 `bdc5273` = `account.summary/v2`（三态）。我 v1.4.1 的窗口+考核块**改叫 v3**（fixtures 已改名 `summary-window-v3-*`），R-010a1 实现，前端不做双版本兼容。
+- 合流前必须：BFF 改完 + lib/data v2 解包 + KA 启用双空间真实 PG 反例 + 折 011 + merge main + **PG 恢复后全量重跑五包**（55432 拒连期间的非 PG 数字不算门禁）。整批回执 P-045。
+
+
+#### R-014 追加：契约 v1.5.1（2026-09-05 深夜；老板拍 A①-⑤ + B 优先级）
+
+- 读 `schema.sql` 末尾「v1.5.1 新增」+ `api.md` 末尾「v1.5.1 端点与 DTO」+ `docs/decisions/2026-09-05-全量偏差审计.md`。
+- 并入 migration 015：accounts 六列（pool_status 九态 + source/overridden/changed_at + product_name/ref）、changeset_groups + changesets.group_id、tasks 四列（stage/stage_source/stage_changed_at/sop_run_id）、workflow_runs.task_id、task_readiness_overrides。
+- 实现：① pool_status 推导 job（日切+事件）+ pipeline + list 扩 + pool-status/product PATCH + `changesets/batch` 与组 dry-run/confirm（逐账户调用单链，不改三键/单执行者）+ 官方模板「新任务开户到基建」；② tasks.stage 推导 + readiness 六段（accounts/recharge/infra 系统算，products/materials/strategy 先读 overrides）+ sopProgress（绑定 run 节点→步骤）+ blockers/nextActions 只来自真实对象；③ `workflow-graph/v1` schema 校验（zod）+ validate/simulate/publish + run detail + runs 面板；④ `workbench/lead` 聚合（六卡三态、risks/opportunities 只用已冻公式）；⑤ suggestion 帧 + accept/reject、assets 端点与流转规则。
+- 反例：pool_status manual 覆盖后系统不改；batch 中某户有 running 变更集→skipped 不整批失败；stage manual 优先 workflow 优先 system；readiness 缺项列表非空时 ready=false；write 节点未经 human_confirm 直连 execute → validate 失败；lead 视图非 lead/admin 403；assets verified→official 非 admin 403。
+- 验收句：优化师在账户池一眼看到九态分布、按产品分组、勾选多户一次预览确认；任务页看到准备→投放走到哪一步、缺什么；负责人在工作台切「团队」看到目标缺口/风险/阻塞/待拍板；前端画布按节点模型能画能校验。
+
+
+### R-015 后端：契约 v1.6 落地（2026-09-06；排 R-014 后）
+
+- 派活方：arch　**先读** `schema.sql` 末尾「v1.6 新增」+ `api.md` 末尾「v1.6 端点与 DTO」。素材/结算的列与 DTO 由 arch 直接从你 B12-B19 的 domain 类型反推冻结（不再等提案）；**若与 domain 现实现有出入，写 inbox-arch 指出，不自改契约**。
+- 交付物：migration 016（素材 8 列 + analyses 5 列 + 谱系表 + 实验策略表 + brief 4 列；结算模板 7 列 + settlements 9 列 + lines 3 列 + corrections 表；workspace_flags；account_tests；account_replications）；HTTP+BFF：素材 list/detail/analyze/analysis/similar/lineage/brief/deliveries/backtest、products、experiments+policy；结算 templates/preview/corrections/freeze/to-work-item；admin members/grants/calendar/flags；`account.pivot2`；account-tests；replicate + replication-compare。
+- 反例：素材 sourceStatus≠reachable 时 analyze 409；whole_video 分析不产生句级时间戳；实验样本不足不出 leader；结算 blocked 不许 freeze、冻结后快照不随数据变、校正只对 allowCorrection 字段；`write_enabled=false` 时 confirm 403 WRITE_DISABLED；停用成员后其 session 全部 401；replicate 目标户 pool_status 不合法 409。
+- 验收句：优化师能看素材池/商品池示例态变真数据、拆片结果带证据、做一张月度结算单四步走到冻结；admin 能加人/停人/改授权/开灰度；策略页能看版位×任务交叉表；开户测试和优质户复制能发起并回看。
+- 状态：待处理（等 R-014）

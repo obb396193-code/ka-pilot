@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "escalationId": "00000000-0000-4000-8000-000000001401",
+        "chain": [
+          {
+            "level": 1,
+            "to": {
+              "userId": "00000000-0000-4000-8000-000000000001",
+              "name": "示例优化师"
+            },
+            "at": "2026-09-05T09:15:00.000+08:00",
+            "status": "unacked"
+          },
+          {
+            "level": 2,
+            "to": {
+              "userId": "00000000-0000-4000-8000-000000000002",
+              "name": "示例运营"
+            },
+            "at": "2026-09-05T09:45:00.000+08:00",
+            "status": "pending"
+          }
+        ],
+        "paused": false
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

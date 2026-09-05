@@ -1,0 +1,56 @@
+{
+  "ok": true,
+  "data": {
+    "overall": "yellow",
+    "sources": [
+      {
+        "source": "platform",
+        "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+        "businessDate": "2026-09-05",
+        "coverage": {
+          "accounts": 45,
+          "withData": 43
+        },
+        "etl": {
+          "lastRun": "etl_incr",
+          "status": "done",
+          "at": "2026-09-05T09:00:00.000+08:00"
+        },
+        "status": "yellow",
+        "note": "2 户补拉中"
+      },
+      {
+        "source": "ka_data",
+        "dataAsOf": "2026-09-04T00:00:00.000+08:00",
+        "businessDate": "2026-09-04",
+        "coverage": null,
+        "etl": null,
+        "status": "green",
+        "note": "团队源 D-1"
+      }
+    ],
+    "connectors": {
+      "total": 8,
+      "ok": 8
+    },
+    "executors": {
+      "total": 12,
+      "ok": 12
+    },
+    "queue": {
+      "pending": 23
+    },
+    "agent": {
+      "instances": 3,
+      "ok": 3
+    },
+    "healthScore": 98
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
+  }
+}

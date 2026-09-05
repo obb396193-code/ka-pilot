@@ -1,0 +1,92 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "productId": "p-1001",
+        "name": "凉感防晒外套",
+        "status": "testing",
+        "attrs": {
+          "category": "服饰",
+          "priceTier": "49-299"
+        },
+        "materialCount": 186,
+        "metrics": {
+          "cost": {
+            "value": 52000.0,
+            "availability": "available"
+          },
+          "exposure": {
+            "value": 4160000,
+            "availability": "available"
+          },
+          "click": {
+            "value": 130000,
+            "availability": "available"
+          },
+          "realConversion": {
+            "value": 2600,
+            "availability": "available"
+          },
+          "ratios": {
+            "ctr": {
+              "value": 0.031,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 20.0,
+              "state": "finite"
+            }
+          }
+        }
+      },
+      {
+        "productId": "p-1002",
+        "name": "城市通勤双肩包",
+        "status": "scalable",
+        "attrs": {
+          "category": "箱包",
+          "priceTier": "99-199"
+        },
+        "materialCount": 154,
+        "metrics": {
+          "cost": {
+            "value": 41000.0,
+            "availability": "available"
+          },
+          "exposure": {
+            "value": 3280000,
+            "availability": "available"
+          },
+          "click": {
+            "value": 102500,
+            "availability": "available"
+          },
+          "realConversion": {
+            "value": 1500,
+            "availability": "available"
+          },
+          "ratios": {
+            "ctr": {
+              "value": 0.031,
+              "state": "finite"
+            },
+            "realCpa": {
+              "value": 27.33,
+              "state": "finite"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_example": true,
+    "_note": "主数据=ka-data dim_product/人工；快手无商品 API"
+  }
+}
