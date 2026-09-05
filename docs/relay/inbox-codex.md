@@ -322,3 +322,11 @@
   4. 反例：转户目标非 active 403、有 running 变更集 409、导出过期 URL 410、capability disabled 409、hourly 缺小时 missing 不补 0、daily-brief 在 etl_full 未 done 时 pending_data、gap 阈值随 ruleSetVersion。
 - 验收句：优化师能在账户详情看小传/倒计时/操作史打点、把户交接给同事、设盯盘名单看小时数、存自己的列视图并定时推群、一键出 PNG；管理员能看接入健康与消息收发记录并重试。
 - 状态：待处理（等 R-012）
+
+
+#### A-001 逐行审计 B3/B23 结论 → 落到你手上的（arch 2026-09-05）
+
+- **R-009 #8 绑源必须一起改 BFF**：`apps/web/lib/data/bff.ts` 仍注入 `dataView:"platform"` 且断言 `mode==="platform"`；你的 #8 让后端拒 dataView 后这里会全 400。改：去掉注入；`mode` 按 session 的 `workspaceKind` 断言（personal→platform / team→ka_data）；`contracts.ts` mode 枚举同步；BFF 测试加团队空间用例。**这条不改，二批不合流。**
+- **R-010a2 追加**：① domain `transitions.failed` 加 `retry → confirmed`，`POST /changesets/:id/retry` 重走 from 复核 + begin，attempt+1；② confirm/retry 在非法状态 → 409 `INVALID_STATE`（现在是通用 Error→500）；③ 确认 `FollowUpScheduler.scheduleT1` 按 (changeset_id,item_id) 幂等，终态重跑不重复排 T+1；④ unknown 只读 reconcile 一次仍 unknown → 建 `work_items(type=agent_question)` 转人工。
+- **R-013b 追加**：① `NODE_ENV=production` 且存在任一 `KA_DATA_DEV_*` → 启动拒绝；② session 清理 job（expired/revoked 超 30 天删）。
+- P3 不阻塞：reconcile 的 execution_run 建议 `dry_run=true` 或加 kind。

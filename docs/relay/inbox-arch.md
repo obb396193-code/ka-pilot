@@ -3055,3 +3055,46 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 | 测试 | 自报 Domain 497 / DB 205 / Worker 641+2 / Gateway 36（含 2 真 PG）/ Web 78；五包 typecheck/lint 过 |
 
 **继续**：P0-04 三态/v2（fixtures 升 v2）→ #8 绑源（按重写后 DATA-ROUTE-001：team 无源 503 不回退，lineage 加 workspaceKind）→ 双空间集成反例 → 折 011 → merge main → 整批回执。arch 批末独立复跑五包后一次 `--no-ff` 合流。
+
+
+---
+
+### A-001 老批次逐行审计：B3 安全执行 + B23 鉴权（arch 2026-09-05；读的是 be/r009 头，含 P0-13 改动）
+
+读过的文件：`packages/domain/src/changesets.ts`、`packages/db/src/changeset-repository.ts`、`apps/worker/src/changesets/{types,changeset-execution-handler}.ts`、`packages/db/src/auth-repository.ts`、`apps/worker/src/auth/{session-http,session-auth-service,internal-test-login-provider,business-read-auth}.ts`、`apps/web/lib/data/{auth-context,internal-api-bff,bff,session-client}.ts`、`apps/web/app/api/internal/auth/*`、`http-server.ts` 鉴权行。
+
+#### B3 变更集 — ✅ 可保留；1 P1 缺口 + 2 P2 + 3 条已知待接线
+
+| 项 | 结论 |
+|---|---|
+| 状态机 | ✅ draft→confirmed→sent→executing→success/partial/failed/unknown；unknown→reconcile_*；success/partial→rolled_back；draft/confirmed/sent 可 expire；executing 崩溃后按 reconcile_required 处理（好） |
+| 聚合 | ✅ 任一 unknown→unknown；全成功→success；全失败→failed；否则 partial。反向草稿只取 success 项 |
+| create | ✅ 必带 media/account；双主体 active；work_item 必须同账户；items 三键落库 |
+| confirm | ✅ FOR UPDATE；已 confirmed 幂等返回；TTL 过期→expired；from 值复核→conflict；CAS status=draft |
+| beginExecution | ✅ 执行时再复核 TTL；attempt=MAX+1；execution_run 先落再置 executing |
+| completeExecution | ✅ 必须 executing；结果必须覆盖全部 item 恰一次；unknown 项不落 item_status（留给 reconcile） |
+| handler | ✅ 授权→读当前值→冲突则不执行→begin→执行；**执行器抛任何异常 = 全部 item unknown**（与 OS 实证后的 UNKNOWN 策略一致）；成功项排 T+1 |
+| **P1-1 `failed` 无 retry 迁移** | 契约 v1.3：`failed` 可 `POST /retry`（新 execution_run attempt+1）。domain `transitions.failed` 为空。→ **R-010a2 加 `retry: failed→confirmed`**（重走 from 复核+begin） |
+| P2-1 confirm 非 draft | `assertChangeSetConfirmable` 抛通用 Error → HTTP 会变 500。R-010a2 映射 409 `INVALID_STATE` |
+| P2-2 T+1 重复排程 | `finishTerminal` 每次重跑终态变更集都 `scheduleT1`；请 Codex 确认 FollowUpScheduler 按 (changeset,item) 幂等，否则重复 T+1 job |
+| P3 reconcile run | reconcile 记为 execution_run `dry_run=false`，语义上它是只读回查；建议 `request_payload.reconcile=true` 之外把 `dry_run` 置 true 或加 kind 列（不阻塞） |
+| 已知待接线（非缺陷） | dry-run 硬前置 + `dry_run_hash/confirm_hash`（v1.3，R-010a2#3）；typed value JSONB（同上）；"unknown 只读 reconcile 一次仍 unknown → 转人工 work_item"（R-010a2） |
+
+#### B23 鉴权 — ✅ 可保留；1 P1 漂移 + 3 P2
+
+| 项 | 结论 |
+|---|---|
+| token | ✅ 32 字节随机 base64url；库里只存 sha256 hash；lookup 先校 64hex |
+| cookie | ✅ `HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age`；BFF 回传时逐属性校验（无 Domain、恰一个 ka_session） |
+| 登录 | ✅ scrypt N=16384/r=8/p=1/32B + timingSafeEqual；未知用户名也走一次 scrypt（不泄露存在性）；失败与签发失败统一 401；凭证 JSON `.strict()` 拒绝多余键（明文密码字段进不来） |
+| 会话解析 | ✅ 每次请求 session→identity→membership→users(actor)→grants 全链 active；team 空间 grants 强制 []；personal 必须恰一个且成员数=1；schema 不合→403 INVALID_AUTH_STATE |
+| 切空间 | ✅ 锁行、校 revoked/expired/目标 membership active、**轮换 token**；不存在与无权同 403 |
+| 注销 | ✅ 幂等 COALESCE(revoked_at) |
+| BFF | ✅ origin 归一（无路径/凭证/query）；bearer ≥32 + timingSafeEqual；x-request-id 校验回显；请求/响应体有界；dev fallback 只在 `NODE_ENV=development` 且显式开关 |
+| **P1-2 BFF 契约漂移（合流后必炸）** | `apps/web/lib/data/bff.ts` 仍**强制注入 `dataView:"platform"`** 并断言 `mode==="platform"`。api.md（R-009 裁决）：普通请求出现 `dataView` → 后端 `400 INVALID_REQUEST`；团队空间 `mode=ka_data`。→ R-009 #8 绑源必须同时改 BFF（去 dataView；mode 按 session 的 workspaceKind 断言）+ `contracts.ts` 枚举，否则 #8 一合，所有数据查询 400 |
+| P2-3 登录无限速 | 内网 internal_test 阶段可接受；BUC 前加 per-username 失败退避（契约已有 `RATE_LIMITED` 码） |
+| P2-4 session 表无清理 | 过期/撤销行永不删；R-013b 加日清理 job（保留 30 天审计） |
+| P2-5 Secure cookie 依赖 https | 内网 web 若走 http，浏览器丢 cookie 登录必失败；runbook 已加"web 必须 https（a1 faas 域名默认 https）" |
+| P3 生产硬失败 | `KA_DATA_DEV_*` 在 production 被静默忽略；建议启动时若 `NODE_ENV=production` 且这些变量存在直接拒绝启动（R-013b） |
+
+**总判**：两簇不变量与逐行都成立，可进内网部署；P1-1/P1-2 进 R-009#8 与 R-010a2，未修前不合流 R-009 二批（#8 是二批内容，正好一起改）。
