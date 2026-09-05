@@ -162,7 +162,11 @@
   9. **系统 HTTP**：`GET /system/health`、`GET /system/etl-runs`、`POST .../rerun`（admin）、`GET /search?q=`（非 LLM）。
   10. **Next BFF**：以上全部对应 `/api/internal/*` 路由，转发 Session cookie + requestId，不接受 `dataView`。
   11. **Capability Registry**：把 ka-src-0007 评估列出的快手 MAPI 核心能力（campaign update/status、unit budget、creative update/status/review、四层实时 report）录入 `provider_model_capabilities` 同构的 capability 表（B7 Registry），状态 `documented_unverified`；修 kuaishou-cli 2 处 HTTP 方法冲突。
-- 拆批建议：**R-010a**（2-6，页面能用）先交；**R-010b**（7-11）后交。每批 SHA + 四包测试数 + 真实 PG 证据 + HTTP 负向用例（401/403/409/410）。
+- 拆批（**2026-09-05 修订**，按"用户闭环"切，不按模块切）：
+  - **R-010a1「每天能看」**：#6 语义查询（summary/trend/table/dimension/health，`meta` 补 `workspaceKind`）+ #9 `GET /system/health`/`etl-runs` + #5 `GET /accounts/:id` 小传/余额 + BFF。**验收句**：合入后老板能在数据总表/大盘/账户池用真实奇航数据看全字段、下钻账户、导出 Excel。
+  - **R-010a2「每天能处理」**：#2 工作项动作 + `meta.coverage` 三态（api.md 9-5 冻结）+ #3 变更集全流程 + #4 任务详情/写 + #5 其余。**验收句**：老板能在工作台看到有证据的队列、处理或跳后台、T+1 看到回收。
+  - **R-010b**：#7 日报、#8 Agent SSE、#9 rerun/search、#11 Registry。
+  - 每批 SHA + 四包测试数 + 真实 PG 证据 + HTTP 负向用例（401/403/409/410）。**不能写出验收句的项标"基础建设"，不计入可用功能。**
 - 纪律同 R-009；契约缺口写 inbox-arch，不自造 DTO。
 - 状态：待处理（等 R-009）
 
@@ -233,3 +237,9 @@
 - 边界：不动 auth 逻辑本身；不动 migration；不给默认账号（没有 seed JSON 就什么都不做）。
 - 验收：真 PG 空库 → migrate → seed → `POST /api/v1/auth/login`（internal_test）200 → `GET /session` 显示 personal 空间 → switch 到 team 200 readonly。
 - 状态：待处理（R-009 第二批交付后做，P-04x 编号继续）
+
+**R-013 修订（2026-09-05，Codex 审查会话指出的死循环，arch 核实属实）**：`workspace-sync-service.ts` `planJob` 在授权账户为空时返回 `ACCOUNT_SCOPE_MISSING` 不发首次全量——所以"ETL 首跑后再补授权"走不通。改为：
+- **删除** `grants: "all_accounts_in_workspace"` 快捷值；grants 必须显式列账户。
+- 新增 **只读发现命令** `npm run discover:accounts -- --media KUAISHOU`（apps/worker）：用 `WORKER_SERVICE_QIHANG_USER_ID` 调奇航 `resource=account`（这本来就是授权的来源，不需要 grants），把 `{media, account_id, account_name, task_id, biz_name}` 列表打到 stdout（JSON），**不写库、不发任何 job**。老板看过清单 → 填进 seed JSON 的 grants → 跑 seed → 正常 tick 触发 etl_full。
+- 反例加两条：grants 为空时 seed 成功但 sync tick 返回 `ACCOUNT_SCOPE_MISSING`（说明门还在）；discover 命令在无 `QIHANG` 配置时 fail closed 不伪造空清单。
+- 这不是放宽安全边界，是把"首次账户发现→人确认→显式授权→同步"这条真实首次路径补齐；以后 4.5「加/关账户闭环」复用 discover。
