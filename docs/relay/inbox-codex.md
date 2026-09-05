@@ -352,3 +352,12 @@
 - 实现：① pool_status 推导 job（日切+事件）+ pipeline + list 扩 + pool-status/product PATCH + `changesets/batch` 与组 dry-run/confirm（逐账户调用单链，不改三键/单执行者）+ 官方模板「新任务开户到基建」；② tasks.stage 推导 + readiness 六段（accounts/recharge/infra 系统算，products/materials/strategy 先读 overrides）+ sopProgress（绑定 run 节点→步骤）+ blockers/nextActions 只来自真实对象；③ `workflow-graph/v1` schema 校验（zod）+ validate/simulate/publish + run detail + runs 面板；④ `workbench/lead` 聚合（六卡三态、risks/opportunities 只用已冻公式）；⑤ suggestion 帧 + accept/reject、assets 端点与流转规则。
 - 反例：pool_status manual 覆盖后系统不改；batch 中某户有 running 变更集→skipped 不整批失败；stage manual 优先 workflow 优先 system；readiness 缺项列表非空时 ready=false；write 节点未经 human_confirm 直连 execute → validate 失败；lead 视图非 lead/admin 403；assets verified→official 非 admin 403。
 - 验收句：优化师在账户池一眼看到九态分布、按产品分组、勾选多户一次预览确认；任务页看到准备→投放走到哪一步、缺什么；负责人在工作台切「团队」看到目标缺口/风险/阻塞/待拍板；前端画布按节点模型能画能校验。
+
+
+### R-015 后端：契约 v1.6 落地（2026-09-06；排 R-014 后）
+
+- 派活方：arch　**先读** `schema.sql` 末尾「v1.6 新增」+ `api.md` 末尾「v1.6 端点与 DTO」。素材/结算的列与 DTO 由 arch 直接从你 B12-B19 的 domain 类型反推冻结（不再等提案）；**若与 domain 现实现有出入，写 inbox-arch 指出，不自改契约**。
+- 交付物：migration 016（素材 8 列 + analyses 5 列 + 谱系表 + 实验策略表 + brief 4 列；结算模板 7 列 + settlements 9 列 + lines 3 列 + corrections 表；workspace_flags；account_tests；account_replications）；HTTP+BFF：素材 list/detail/analyze/analysis/similar/lineage/brief/deliveries/backtest、products、experiments+policy；结算 templates/preview/corrections/freeze/to-work-item；admin members/grants/calendar/flags；`account.pivot2`；account-tests；replicate + replication-compare。
+- 反例：素材 sourceStatus≠reachable 时 analyze 409；whole_video 分析不产生句级时间戳；实验样本不足不出 leader；结算 blocked 不许 freeze、冻结后快照不随数据变、校正只对 allowCorrection 字段；`write_enabled=false` 时 confirm 403 WRITE_DISABLED；停用成员后其 session 全部 401；replicate 目标户 pool_status 不合法 409。
+- 验收句：优化师能看素材池/商品池示例态变真数据、拆片结果带证据、做一张月度结算单四步走到冻结；admin 能加人/停人/改授权/开灰度；策略页能看版位×任务交叉表；开户测试和优质户复制能发起并回看。
+- 状态：待处理（等 R-014）

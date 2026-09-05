@@ -860,3 +860,49 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 4.7 开户测试跟踪、4.8 优质户复制 → **P1**（老板 8-24 每日闭环：开户测试、优质户复制、关垃圾计划）。
 - 3.9 Agent 帮做表、5.3 Agent 帮编 → **P1**（REQ-036/064 明确要求）。
 - 3.11 策略中心：标「明确要求 · 待定义」，不写 P2；定义待老板。
+
+
+## v1.6 端点与 DTO（2026-09-06 arch；老板 9-5"契约能动的全动，让前端全铺开"；Codex R-015 出 migration 016）
+
+### 6.x 素材域（列/DTO 由 arch 从 B12-B18 domain 反推冻结；原型 P10；老板 8-24"占位 demo + 接内部 AIGC"——页面按示例态做，字段按此）
+- `GET /api/v1/materials?media&task_id&product_id&type&sort&page&window_from&window_to` → items `{media, materialId, name, type:"video"|"image", source:"qihang_pool"|"upload"|"internal", thumbnailRef|null, durationMs|null, productId|null, tags[], lineageParentId|null, sourceStatus:"reachable"|"unreachable"|"unknown", metrics:{cost:MV, exposure:MV, click:MV, realConversion:MV, ratios:{ctr:RV, realCpa:RV}}, analysis:{latestVersion|null, status:"none"|"queued"|"running"|"done"|"failed"}}`；`meta` 同 v3。
+- `GET /materials/:media/:id` → `{material, metrics, analysis:{latest 摘要}, lineage:{parent|null, children:[{materialId, method}]}, whereUsed:[{taskId, accountId, adCount}]}`。
+- `POST /materials/:media/:id/analyze {prompt_version?}` → `{jobId, version}`；`sourceStatus!=reachable` → `409 MATERIAL_SOURCE_UNAVAILABLE`（视频源探针=联调硬门）。
+- `GET /materials/:media/:id/analysis?version=` →
+  `{version, promptVersion, schemaVersion, status, media:{durationMs,width,height,contentSha256}, transcript:{source:"platform_caption"|"cloud_asr", timingPrecision:"segment"|"whole_video", segments:[{id,startMs,endMs,text}]}, shots:[{id,startMs,endMs,frame:{status:"ready",artifactRef}|{status:"placeholder",reason}}], visualSummary:{hardCutCount,visualEventCount,averageShotLengthMs,hookVisualDensity}, result:{hook:{text,kind,evidenceIds[]}, sellingPoints:[{text,evidenceIds[]}], audiences:[string], rhythm:{...}, cta:{text,evidenceIds[]}, segments:[{role:"hook"|"problem"|"body"|"proof"|"selling_point"|"turn"|"cta"|"other", startMs,endMs}]}, fingerprint}`；`timingPrecision=whole_video` 时前端**不显示句级时间戳**（IdeaLab 实证无时间戳）。
+- `GET /materials/:media/:id/similar?top=` → `[{materialId, status:"scored"|"insufficient_evidence", score|null, components:[{kind:"structure"|"hook"|"selling_points"|"audience"|"rhythm"|"cta", status:"compared"|"unavailable", score|null, reasonCode}], missingComponents[]}]`。
+- 复刻谱系：`POST /materials/:media/:id/lineage {derived_material_id, method:"script_rewrite"|"structure_adaptation"|"visual_remake"|"mixed", note?}`；`GET .../lineage` → 树。
+- 设计 brief：`POST /materials/:media/:id/brief {product_id, objective, global_constraints[], variants:[{variantKey, changeDimension:"hook"|"selling_point"|"audience"|"rhythm"|"cta", hypothesis, instruction, keepDimensions[]}]}` → brief（含 fingerprint，status draft）；`POST /briefs/:id/send {designer_ref}`；`POST /briefs/:id/deliveries {variantKey, derived_material_id, method, note?}`；`GET /briefs/:id/backtest` → `{status:"awaiting_delivery"|"awaiting_sample"|"ready", missingVariantKeys[], insufficientMaterialVersionIds[], experiment|null}`。
+- 商品：`GET /products?status&q` → `{productId, name, status, attrs, materialCount, metrics}`；`GET /products/:id`；商品主数据来源=ka-data `dim_product`（团队）/人工（个人），**快手侧无商品 API（OS 第五轮实证）**。
+- 测品矩阵：`GET /experiments?product_id&policy_version&window_from&window_to` → `{policy, products:[{productVersionId, cells:[{materialVersionId, accountCount, activeDayCount, exposure:MV, click:MV, realConversion:MV, cost:MV, ctr:RV, inferenceRate:RV, realCpa:RV, inferenceRateInterval95:{lower,upper}|null, sampleStatus:"sufficient"|"insufficient", exclusionReasons[]}], conclusion:{status:"insufficient_sample"|"insufficient_candidates"|"effect_too_small"|"intervals_overlap"|"separated_observation", directionalLeaderMaterialVersionId|null, observedLeaderMaterialVersionId|null, cpaImprovementRate|null}}]}`；`GET/PUT /experiments/policy`。样本不足**不出结论**。
+- AIGC 下单（6.4）：iframe 内嵌内部 material-order-platform，本产品只做入口与回链，不冻 DTO。
+
+### 7.3 结算对账（DTO/公式由 arch 从 B19 domain 反推冻结；原型 P14 四步向导）
+- 模板 `GET/POST /api/v1/settlement-templates` → `{templateId, templateVersion, name, currencyCode, unitNote, fields:[{fieldKey,label,order,valueType:"text"|"date"|"number"|"money"|"rate", aggregation:"none"|"sum", source:{kind:"fact",factKey}|{kind:"formula",expression:<field|constant|add|subtract|multiply|divide 树>}, required, allowCorrection}], checks:[{checkKey,label,order,leftFieldKey,rightFieldKey,tolerance:{mode:"absolute",amount}|{mode:"relative",rate}|{mode:"either",amount,rate}, severity:"block"|"warn"}], fingerprint}`；新版本=新行，**旧结算单绑旧版本不覆盖**。
+- 事实来源（factKey 白名单，Registry 冻）：`cost`（账面）、`cash_cost`、`income`（赔付）、`contract_rebate`、`direct_rebate`（fund 七字段）、`real_conversion`、`assessment_price`、`account_count`、`task_id/media/account_id` 维度；周期内按 `(media,account_id,task_id)` 一行。
+- 预览 `POST /settlements/preview {period:"YYYY-MM", template_version?, scope_id?}` → `{runId, templateFingerprint, period, dataBasis:"offline_settlement", dataCutoffAt, rows:[{rowKey, sourceFactId, fields:[{fieldKey, value, source:"fact"|"formula"|"correction", correctionId?}], checks:[{checkKey, status:"matched"|"mismatch"|"undefined", difference|null, relativeDifference|null, severity}]}], totals:[{fieldKey,value|null}], issues:[{code:"missing_required"|"invalid_field_value"|"undefined_formula"|"check_mismatch"|"check_undefined", severity, rowKey, fieldKey|null, checkKey|null}], status:"blocked"|"ready_to_freeze"}`（月中试算同此，不落 frozen）。
+- 校正 `POST /settlements/:id/corrections {rowKey, fieldKey, fromValue, toValue, reason, evidenceRef?}`（仅 `allowCorrection` 字段；留痕不覆盖事实）。
+- 冻结 `POST /settlements/:id/freeze` → 需 `status=ready_to_freeze`，否则 `409 SETTLEMENT_BLOCKED {issues}`；写 `confirmed_by/at` + 快照 fingerprint；`GET /settlements/:id` 返回冻结快照（不再随数据变）。
+- 差异转工作项 `POST /settlements/:id/lines/:line_id/to-work-item` → `work_items(type=self)` 带 checks 证据。
+- 分发：`POST /export {kind:"report", ref:{settlement_id}, format:"xlsx"|"png"}` + `subscriptions.kind="settlement"` 推群。
+
+### 14.5/14.6/14.3a/12.10 治理后台最小（admin）
+- 成员：`GET /api/v1/admin/members` → `[{identityId, displayName, provider, userId, role, isActive, joinedAt, grantsCount, lastSeenAt}]`；`POST /admin/members {display_name, provider:"internal_test"|"buc", provider_subject, role}` → 建 identity+user+personal workspace+membership（凭证由部署配置提供，不在此设密码）；`PATCH /admin/members/:identityId {role?, is_active?}`（停用=membership 失活 + 撤销全部 session，行不删）；`POST /admin/members/:identityId/transfer-all {to_user_id}`（= v1.5 users/:id/transfer-all）。
+- 授权档案（14.3a）：`GET /admin/members/:identityId/grants` → `[{media, accountId, accessLevel:"read"|"preview"|"execute", grantedAt}]`；`PUT` 整体替换（差集写 timeline）；team 空间无 grants。
+- 业务日历（12.10）：`GET/POST/DELETE /admin/calendar` → `{id, eventDate, eventType:"holiday"|"promo"|"coefficient_change"|"metric_change", label, affectsBaseline, thresholdProfile}`。
+- 灰度开关：`GET/PUT /admin/flags` → `workspace_flags.flags`：`write_enabled`（默认 false；老板一人 true = 灰度）、`agent_enabled`、`team_source_enabled`、`materials_enabled`、`dingtalk_enabled`；`write_enabled=false` 时所有 confirm 返回 `403 WRITE_DISABLED`。
+- 已有：`admin/data/reconcile`、`system/etl-runs` + rerun、`settings/channel-coefficients`、`settings/change-log`、`settings/decision-policy`、`integrations/*`。治理后台页 = 以上聚合，头像菜单入口，仅 admin。
+
+### 3.11 策略中心（最小：分析视图；老板 8-24"不同版位不同任务不同出价的账户数据分析"；"可保存方案"仍待定义）
+- `POST /api/v1/query {queryId:"account.pivot2", params:{dimA, dimB, window_from, window_to, media, taskIds?, filters?}}`，`dimA/dimB ∈ 8 维枚举`（`ubp` UNSUPPORTED）→ rows `{a:{key,label}, b:{key,label}, metrics:<v3 三态>, assessment:<v3>}` + `meta.cellCoverage:{cells, withData, undeterminable}`；预设三张：版位×任务、出价工具×任务、业务×版位（第三维用 filters）。
+- 页面 `/data/strategy`：预设 tab + 自定义两维 + 异常单元格着色 + 勾选 → 「分析这 N 个」唤 Agent。不做"最优投法"推荐、不做策略对象。
+
+### 4.7 开户测试跟踪（P1）
+- `GET /api/v1/account-tests?status&task_id` → `[{id, media, accountId, taskId, purpose, hypothesis, startedAt, endAt, status:"planned"|"running"|"passed"|"failed"|"stopped", verdictNote, result:{window, metrics:<v3>, assessment:<v3>}|null}]`；`POST /account-tests {media, account_id, task_id?, purpose, hypothesis?, started_at, end_at?}`；`PATCH /account-tests/:id {status, verdict_note}`；系统每日刷新 `result`（只算不判），结论由人填。账户池 `pool_status` 不因测试改变；测试户加 tag `testing`。
+
+### 4.8 优质户复制（P1；PRD 复制流程 A）
+- `POST /api/v1/accounts/:media/:id/replicate {target:{media,account_id}, include:{structure:true, bids:true, schedule:true}}`（素材不复制，人工选）→ 读母户 `structure` → 生成目标户变更集组 `{replication_id, changeset_group_id, plan:{campaigns:n, units:n, fields:[...]}}`；走组 dry-run/confirm；applied 后目标户 `tags += replicated_from:<media>:<account_id>` 并进 `lifecycle_stage=cold_start`。
+- `GET /accounts/:media/:id/replication-compare?days=7` → `{source:<v3 trend 7 日>, target:<v3 trend 7 日>}` 母子并排；`GET /account-replications?source=|target=`。
+- 前置：目标户 `pool_status ∈ available|assigned|pending_build`；母户需 `structure` 同步成功（4.4 结构同步=联调）。
+
+派活：R-015（migration 016 + 以上 HTTP/BFF），排 R-014 后。前端页面全部先按 fixtures 与示例态铺开，不等 R-015。
