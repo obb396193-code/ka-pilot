@@ -2969,3 +2969,15 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 **契约漂移 2 条（be 提出）→ arch 已裁并落 api.md `d070c1d`**：①BE-001 普通可缺指标改三态 `MetricValue`，`rowSchemaVersion` 升 `<queryId>/v2`，v1 fixtures 作废 ②普通请求**不接受** `dataView`（收到 400），源由 `workspaceKind` 固定；`reconcile.account_daily` 移出普通 Registry，走治理后台 `POST /api/v1/admin/data/reconcile`。
 
 **合流备注**：主工作树有 3 个同名未跟踪文件（`session-client{,.test}.ts`、`session-contracts.ts`，非 arch 所留），已备份至 scratchpad 后让路。
+
+---
+
+### P-039 ⏳待审｜R-009 第二批子交付：P2 Session + P0-03 回灌（be，2026-09-05）
+
+- 分支 `be/r009`；基线已含 main@d7b6260。代码 SHA **`e69ea1e`**（删 BFF 假 token）+ **`5dfbbad`**（三阶段回灌 + CHECK）。未 push、未合 main、未部署；Contract/视觉 0 diff。
+- 回灌不再在 raw 完成时置 done；所有日期 raw/canonical/quality 持久化 job 均成功才 done；失败/blocked_auth 记 failed_stage；运行期重试保持中间态。scope = workspace + batch + credential owner。成功和最终失败回调覆盖协调器及三阶段，重启恢复同样推导。
+- 真 PG 新反例：并发刷新/断点恢复/跨 workspace 与 credential owner；实际 createWorkerConsumer 队列全链成功和质量失败；迁移 up/down/up 与非法状态拒绝。
+- 追加 **`011_r009_backfill_state.cjs`**，不修改已合 011、不占 012；完整 replay 共 12 个文件。部署需停 Worker→迁移→启动恢复；旧 done 置 running 重新证明，历史证据不足不虚报完成。请 arch 审查该追加迁移命名和上线步骤；细节见状态文件。
+- 本轮四包全量：Domain **497**；DB **182 真实 PG**；Worker **628 + 2 opt-in skipped**（含 PG/HTTP）；Web **78**。四包 typecheck/lint 全通过。普通 PG 使用 ka_r009_test；旧 benchmark 单独在本机 ka 自有合成 workspace 测试并清理。首轮测试失败及修正完整记在 `docs/plans/R009-状态.md`，没有隐去失败或伪报外部联调。
+- 本轮未重跑 dependency audit；没有依赖变更。静态 diff/check、路径/凭证/注入面自查通过，仅为 be 自查，不冒充 Claude 终审。
+- **不是 R-009 整批交付**：P0-04/v2、P0-05、P0-13、P0-07、P0-12、按空间绑源及升级后的双空间集成仍待实现。下一子批为 P0-05，不等待审查才开始写；最终合流仅由 arch。
