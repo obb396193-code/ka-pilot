@@ -3253,3 +3253,10 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - 37新反例含真进程CLI缺配置退出；Worker非PG **761+2 opt-in skipped**、typecheck/lint、offline audit0。行覆盖93.61%/分支89.15%；37新增测试并未调用真实奇航。首轮全回归listen EPERM造成100失败，获准本机假服务后同套重跑全绿，记录在`/tmp/ka-discover-worker{,-retry}.log`。
 - 02:37获准TCP probe：55432 ECONNREFUSED（首次沙箱EPERM不算PG拒连证据）；真实PG/真实奇航/首次部署均未验。命令与数据处理写唯一runbook §2.5，bootstrap尚不能执行，P047三项待裁不掩盖。
 - 下一项独立coefficients输入/幂等（显式有效日期），继续目标；不push/合流/部署/改视觉。用户验收句：首次部署前能拿到本人账户清单供确认，而不是为了首跑给全空间默认授权。
+
+### P-049 R013 四渠道系数seed｜Codex 2026-09-06，待审
+
+- 代码 **d16906a**，10文件；独立`seed:coefficients`、显式workspace/date，四行值/op按冻结原样写，team拒绝。SERIALIZABLE+空间FOR UPDATE，历史LIMIT5哨兵；只补空行、精确初始重放不写；其他版本/值/重复历史拒绝，不偷偷回溯重算。NUMERIC字符串精确比较，不能浮点抹平不同系数；changed_by=NULL，不冒用会话主体。
+- Domain579、DB unit77、Worker非PG761+2外部opt-in，三包type/lint过；DBoffline audit0。新Domain24/DB+CLI30，核心Domain100%、DB Repository98.66%/CLI83.87%；真实PG7例（并发/隔离/精度/回滚/团队拒绝）未执行，02:51获准TCP仍拒连。套件初始缺模块是加载失败，新增并发重试两断言实际先红后绿。
+- **部署依赖实读发现**：现metrics.ts写死除法，settings query未select op。不能把seed单独上线后开始ETL；现继续按已授权R010a1补op→canonical，并修现金口径onTarget，独立P050；无新Contract要求。bootstrap仍等P047三问，脚本不创建身份/空间。
+- 最新main已到150af26：新增v1.5.1/R015v1.6已只读登记（原素材结算先提案被新冻结覆盖），本批不混014/015/016或视觉。下一步先op依赖，再部署打包/worker once等已派项。未push/合流/部署。
