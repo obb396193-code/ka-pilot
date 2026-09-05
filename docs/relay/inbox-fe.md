@@ -249,10 +249,16 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 
 - 派活方：arch　日期：2026-09-04　执行方：**新开 Claude Code 前端会话**（老板 9-5 定；复制 `docs/relay/F-006-前端开工提示词.md` 开场）。**审美标准：高级、有质感**，母版是起点不是天花板
 - 老板拍板：视觉唯一母版 `apps/ui-layout-demo/sidebar.html`，其他全不要；功能起点 `main` 上的 `apps/web`（九项导航/八模块/六 KPI/⌘K/BFF 已在）；**不重做功能，套母版样式**；视觉老板一对一对话精修不截图，功能交 SHA 给 arch。
-- 本批四页顺序：工作台 `/`（套样式+删三 tab+加个人/团队空间切换）→ 登录页 `/login`（从组件库拿 shadcn login blocks，接 AUTH-001）→ 账户池/数据分析（套样式+删三 tab）→ 投放任务（接 `fixtures/task-list/` 四态）。
+- 本批五页顺序（**老板 2026-09-05 改序**，按"每天能看"先真联）：登录页 `/login`（组件库 shadcn login blocks，接 AUTH-001）→ 账户池 `/accounts`（套样式+删三 tab，R-009 后能真联）→ 数据分析 `/data`（套样式+删三 tab，R-010a1 后能真联）→ 工作台 `/`（套样式+删三 tab+空间切换，等 R-010a2 再真联）→ 投放任务 `/tasks`（`fixtures/task-list/` 四态）。
 - 契约依据：api.md AUTH-001 + DATA-ROUTE-001 v1.2；metrics.md 缺数三态（显 −）；前端永不算数。
 - **组件铁律**：先查 `docs/frontend/ui-assets/`（showroom/capabilities/source-cache）从官方源码复制，只写业务适配层，不自写组件；规则 `apps/web/AGENTS.md`，规范 `frontend-product-standard.md`，自检 `前端视觉与体验审核清单.md`。
 - **页面规划**：`docs/relay/F-006-页面规划.md`（母版块×PRD 功能×接口，每页删什么加什么）。**联调**：本地联调前端做、每页做完就联；内网联调 OS agent。上一任 Codex 前端交接清单 `docs/frontend/ui-assets/本对话前端产出与交接清单-2026-09-05.md`；字体等老板拍板不动。
 - 分支 `fe/f006`（从 `main@v0.2-unaudited-baseline`）；`[fe]` 路径限定；只动 `apps/web` 非 api；状态文件 `docs/plans/F006-状态.md`。
 - F-001/F-001R/F-002/F-003/F-005 全部关闭归档（fe/f001 已废弃；F-005 成果已在 main）。
 - 状态：待处理
+
+#### F-006 顺序修订（老板 2026-09-05；arch 记录）
+
+- 新顺序：**登录 → 账户池 → 数据分析 → 工作台 → 投放任务**。理由：先做能用真实奇航数据看的页面去联调（账户池 R-009 后、数据分析 R-010a1 后就能真联），工作台依赖 R-010a2 的工作项动作/coverage，放第四。
+- 已经动手的工作台不作废：停在布局壳状态，视觉基调保留，转做登录页。
+- 页头横幅按 `F-006-页面规划.md` 9-5 更新：常显「空间 · 来源 · 数据日期 · 更新时间 · 口径」；队列底部改「已检查 · 待检查 · 缺数无法判断」三数（api.md `meta.coverage`）。
