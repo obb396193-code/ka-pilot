@@ -11,6 +11,8 @@
 
 ## accounts
 - `accounts/detail.json` — v1.5 4.2 小传；fund 七字段三态；cutoff 四态 ok|warning|critical|unknown
+- `accounts/detail-account-2.json` — 小传：窗口超线 red + cutoff critical
+- `accounts/detail-account-5.json` — 小传：当日缺数全 −（cash_missing / cutoff unknown）
 - `accounts/list-v151.json` — v1.5.1 扩展项：poolStatus/product/cutoff/dailyBudgetCap/capacityLoad/lastAction/nextSuggestion；nextSuggestion 无则 null 不生成
 - `accounts/open-flow.json`
 - `accounts/overlay.json`
@@ -18,8 +20,11 @@
 - `accounts/replicate.json`
 - `accounts/replication-compare.json` — 母子 7 日并排（示例只有 5 日）；v3 trend 行
 - `accounts/structure.json` — junk=垃圾计划标记，勾选→批量关停变更集
+- `accounts/structure-account-2.json` — 结构树：含 junk 单元
+- `accounts/trend-account-1.json` — account.trend/v3 单账户
 - `accounts/tests.json` — 结论 verdictNote 由人填；系统只算窗口指标
 - `accounts/timeline.json` — v1.5 4.3 十种 kind
+- `accounts/timeline-account-2.json` — 时间线：alert/recharge/changeset
 - `accounts/transfer.json`
 
 ## admin
@@ -133,6 +138,7 @@
 ## rules
 - `rules/explain.json` — 12.8：任一叶子 missing → 不触发不消触，账户计入 undeterminable
 - `rules/list.json` — 未触发原因枚举：CONDITION_FALSE|METRIC_MISSING|SOURCE_STALE|COLD_START_RELAXED|INITIAL_FULL_PENDING|MUTED|DEDUPED|INSUFFICIENT_SAMPLE
+- `rules/bindings-fixture-task-ready.json` — 任务绑定的规则/工作流/SOP（v1.7.3 `GET /tasks/:id/bindings`）
 
 ## session-http
 - `session-http/errors.json`

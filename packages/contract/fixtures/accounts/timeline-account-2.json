@@ -1,0 +1,65 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "at": "2026-09-05T09:10:00.000+08:00",
+        "kind": "alert",
+        "actor": null,
+        "summary": "成本超考核持续 2 日（规则 #3 触发）",
+        "ref": {
+          "type": "work_item",
+          "id": "00000000-0000-4000-8000-000000000402"
+        },
+        "t1Result": null
+      },
+      {
+        "at": "2026-09-04T16:20:00.000+08:00",
+        "kind": "recharge",
+        "actor": {
+          "userId": "00000000-0000-4000-8000-000000000002",
+          "name": "示例运营"
+        },
+        "summary": "充值 5,000（现金）",
+        "ref": null,
+        "t1Result": null
+      },
+      {
+        "at": "2026-09-02T10:05:00.000+08:00",
+        "kind": "changeset",
+        "actor": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "name": "示例优化师"
+        },
+        "summary": "campaign 日预算 8000→6000",
+        "ref": {
+          "type": "changeset",
+          "id": "00000000-0000-4000-8000-000000000305"
+        },
+        "t1Result": {
+          "observedAt": "2026-09-03T08:00:00.000+08:00",
+          "metricDeltas": {
+            "cashCpa": {
+              "value": 1.4,
+              "state": "finite"
+            },
+            "cost": {
+              "value": -1200.0,
+              "availability": "available"
+            }
+          },
+          "note": "操作后观察结果，非因果"
+        }
+      }
+    ],
+    "nextCursor": null
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "account-2 时间线：alert/recharge/changeset 三种 kind"
+  }
+}

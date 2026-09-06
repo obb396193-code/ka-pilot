@@ -975,3 +975,9 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **compare 对齐**：`dod` = 窗口两端各平移 1 天、`wow` = 各平移 7 天（等长平移，与"上周同日"一致；不是"前一等长窗口"）。`preset=today` 的 compare 需要昨日**同时段**快照，canonical 只有日累计 → 未具备前 `compare.deltas.*` 全部 `undefined`，**不得**拿昨日全天冒充；小时快照走 `account.hourly`，另议。
 - **lineage.authority**：`sourceLineageSchema` 必填，后端不得删；arch 已给 17 个 v3/gap/pivot2/hourly fixture 补 `{policyVersion:"2026-08-24", useCase:"cross_media_operations", role:"default_authoritative"}`。`window.preset` 可选，未指定 → `custom`。公开 `POST /api/v1/query` 旧 `query_type` 与 `data/query queryId` 共用一套 Registry 与权限路径，不生成第二套。
 - **costStatus/reason 映射冻结**（Codex 2790fc1 的 superRefine 即契约）：`window_ok→(true,green)`、`day_over_window_ok→(true,yellow)`、`window_over→(false,red)`、`cash_missing/assessment_missing→(null,null)`；cashCost 非 available 时 onTarget 必 null。fixtures 已全部按此校验（arch 自己造的 8 处违例已修）。
+
+## v1.7.3 追加（2026-09-06 arch；回应 fe F-007 前五页 TODO-fixture；R-014 实现）
+
+- **`GET /api/v1/tasks/:id/bindings`** → `{taskId, rules:[{ruleId,name,type,enabled,autonomyLevel,scope:"task"|"account",boundAt}], workflows:[{workflowId,name,version,status,scope,lastRun:{runId,status,at}|null}], sop:{sopRunId,template,progress:RV}|null}`；无绑定 → 空数组/null，**不用全局规则冒充**。fixture `rules/bindings-fixture-task-ready.json`。
+- `account.trend/v3` 单账户：`params.accountIds=[id]`，lineage 加 `accountScope:{media,accountIds}`；fixture `accounts/trend-account-1.json`。
+- 小传/时间线/结构树按账户各一份 fixture 是样例不是契约：`accounts/{detail,timeline,structure}-<id>.json` 由 `GET /accounts/:media/:id/{bio|timeline|structure}` 同一 DTO 返回；无数据的账户显诚实空态。

@@ -211,11 +211,234 @@
           "at": "2026-09-08",
           "label": "预算生效"
         }
+      },
+      {
+        "taskId": "fixture-task-ended",
+        "taskName": "闲鱼潜客转化（8 月）",
+        "bizName": "闲鱼潜客",
+        "status": "ended",
+        "stage": "closed",
+        "period": {
+          "start": "2026-08-01",
+          "end": "2026-08-31"
+        },
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "displayName": "示例优化师"
+        },
+        "assessmentPrice": {
+          "value": 42.0,
+          "effectiveDate": "2026-08-01"
+        },
+        "rta": false,
+        "placementPref": "信息流",
+        "accountCount": 2,
+        "volume": {
+          "target": 60000,
+          "completed": 58200
+        },
+        "readiness": {
+          "accounts": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": []
+          },
+          "recharge": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": [
+              "account-5 余额 0"
+            ]
+          },
+          "products": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "manual",
+            "missing": []
+          },
+          "materials": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "manual",
+            "missing": [
+              "候选素材 <3"
+            ]
+          },
+          "strategy": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "manual",
+            "missing": []
+          },
+          "infra": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": [
+              "account-3 无 unit"
+            ]
+          },
+          "overall": {
+            "value": 1.0,
+            "state": "finite"
+          }
+        },
+        "pacing": {
+          "asOf": "2026-08-31",
+          "remainingDays": 0,
+          "targetProgress": {
+            "value": 0.97,
+            "state": "finite"
+          },
+          "timeProgress": {
+            "value": 1.0,
+            "state": "finite"
+          },
+          "projectedCompletion": {
+            "value": 0.97,
+            "state": "finite"
+          }
+        },
+        "costStatus": "green",
+        "nextMilestone": null
+      },
+      {
+        "taskId": "fixture-task-review",
+        "taskName": "会员续费召回",
+        "bizName": "会员",
+        "status": "ended",
+        "stage": "reviewing",
+        "period": {
+          "start": "2026-08-10",
+          "end": "2026-09-03"
+        },
+        "owner": {
+          "userId": "00000000-0000-4000-8000-000000000001",
+          "displayName": "示例优化师"
+        },
+        "assessmentPrice": {
+          "value": 55.0,
+          "effectiveDate": "2026-08-10"
+        },
+        "rta": true,
+        "placementPref": "搜索+信息流",
+        "accountCount": 1,
+        "volume": {
+          "target": 8000,
+          "completed": 9100
+        },
+        "readiness": {
+          "accounts": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "system",
+            "missing": []
+          },
+          "recharge": {
+            "ratio": {
+              "value": 0.67,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "account-5 余额 0"
+            ]
+          },
+          "products": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "manual",
+            "missing": []
+          },
+          "materials": {
+            "ratio": {
+              "value": 0.5,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "manual",
+            "missing": [
+              "候选素材 <3"
+            ]
+          },
+          "strategy": {
+            "ratio": {
+              "value": 1.0,
+              "state": "finite"
+            },
+            "ready": true,
+            "source": "manual",
+            "missing": []
+          },
+          "infra": {
+            "ratio": {
+              "value": 0.8,
+              "state": "finite"
+            },
+            "ready": false,
+            "source": "system",
+            "missing": [
+              "account-3 无 unit"
+            ]
+          },
+          "overall": {
+            "value": 0.83,
+            "state": "finite"
+          }
+        },
+        "pacing": {
+          "asOf": "2026-09-03",
+          "remainingDays": 0,
+          "targetProgress": {
+            "value": 1.1375,
+            "state": "finite"
+          },
+          "timeProgress": {
+            "value": 1.0,
+            "state": "finite"
+          },
+          "projectedCompletion": {
+            "value": 1.1375,
+            "state": "finite"
+          }
+        },
+        "costStatus": "red",
+        "nextMilestone": {
+          "at": "2026-09-08",
+          "label": "复盘会"
+        }
       }
     ],
     "page": 1,
     "pageSize": 20,
-    "total": 2
+    "total": 4
   },
   "meta": {
     "requestId": "fixture",
@@ -224,6 +447,6 @@
     "workspaceKind": "personal",
     "selectedSource": "platform",
     "dataState": "ready",
-    "_note": "v1.5.1 ②：stage 七态 + readiness 六段"
+    "_note": "v1.5.1 ②：stage 七态 + readiness 六段；+2：closed（已结束 tab）与 reviewing（复盘中）"
   }
 }
