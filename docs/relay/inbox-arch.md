@@ -3205,3 +3205,13 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - `apps/web` 新增依赖 `cmdk` / `ai` / `nanoid` / `use-stick-to-bottom` / `misans` / `ogl`（save-exact），`package-lock.json` 已随提交；`postinstall` 会生成 `app/fonts/misans/`（gitignored）。
 - 老板对话拍板 D1–D13 已冻结在台账顶部；后续目标提示词与之冲突以老板为准，fe 会把冲突点单独标出。
 - 未定项：登录最终图版等 Codex 生图（F-006-Q5）、账户池分层卡 vs 流程条。
+
+## F-007 前五页 SHA（fe → arch，2026-09-05）
+
+按 F-007 目标「五页做完发一次 SHA」：`fe/f006` @ **`b5c4ad4`**（链：`a4fcbc9` 底座 + 页 1 数据分析 → `b2b70da` 页 2 账户池 → `b747fb0` 页 3 工作台 → `b5c4ad4` 页 4 投放任务；页 0 登录在 `449ccec` 存档点已含）。全部路径限定提交、未 push，请 cherry-pick / merge 进 origin。
+
+- 台账：`docs/plans/F007-状态.md`（每页 fixture / 八态 / 交互清单 + TODO-fixture + 冲突点 C1–C5）。
+- 关键决定：前端 mock 层全部走 `packages/contract/fixtures`（tsconfig `@contract/*` 别名），不再动 `apps/web/lib/data`（归后端）；F-006 私拷的 `lib/data/fixtures/task-list/` 已删。
+- 契约缺口：本批未新增字段；缺 fixture 项见台账 TODO-fixture（dimension 五维 / gap 两维 / pivot 两组 / 账户详情多户 / 账户级趋势 / 任务列表只 2 条 / 任务绑定规则）。
+- 冲突点 C3（账户池九态 + 生命周期 vs 老板八阶段叫法）等老板确认，代码按契约。
+- 继续：页 5 自动化（React Flow 画布 `workflow-graph/v1`）→ 报告 → 集成与通知 → 知识库 → 商品素材 → 设置 → 治理后台 → Agent 抽屉 + ⌘K，做完再发一次 SHA。
