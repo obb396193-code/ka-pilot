@@ -3654,3 +3654,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - `817fee6`只新增一份16测试，生产0diff。执行/对账四结果、非法状态/覆盖/tuple、错误run、rollback保留原异常、读和授权wrapper均覆盖。首轮测试断言误把FOR UPDATE看作写已修，未修改生产逻辑。
 - 四份unit67过，Repository整体95.49%行/87.26%分支/100%函数，80%覆盖门已过（替代P08871.84%状态），DB纯逻辑298过、type/lint/diff绿。日志`/tmp/ka-completion-coverage.log`、`/tmp/ka-completion-db.log`；质量续记同失败重试计划。
 - PG拒连仍未关，mock不证明SQL/并发。Domain/Worker代码没动，沿用P088结果，未重报新运行；无push/合流/部署/真实媒体写。下一段原信箱12.7：T1 scheduler实体缺失、unknown回收不限一次且不转人工，需继续；本SHA只是测试，不冒充这些功能完成。
+
+### P-090｜T1按成功item持久化幂等调度候选（be，2026-09-06）
+
+- `1466dcd`，DB5文件。新增FollowUpScheduler结构兼容实现，同父行锁/事务验证personal、三键、成功item、executed_at与原owner；固定namespace+workspace/changeset/item UUID，复用JobRepository.enqueue并传同transactionClient。done/queued等重复调用都不改status/run_after/credential；已有键但payload不符即整批rollback。
+- 原owner即使停用也不换人，**消费前必须复核授权/凭证→blocked_auth，本模块没有执行消费者**。firstCheckDelayMs为显式部署构造策略，没有硬编码24小时承诺；初次唤醒不代表离线成熟。jobs保留时幂等，未来清理done行须保留去重证明。
+- 定向33过，模块100%行/96.36%分支；DB纯逻辑331过，Domain676过/10旧P073失败，Worker非PG1077过+2opt-in skip，三包type/lint全过、offlineaudit0。PG仍拒连，6个并发/完整回滚/固定owner/跨scope反例未执行；日志/性能风险见`docs/plans/2026-09-06-R010a2-T1持久化调度.md`。
+- 上限1万item逐项enqueue持锁时间未实测，不宣称在线高吞吐/短锁通过。尚未挂真实写Runtime/消费者、未写t1_result/数据成熟度，不能称T1闭环完成。无Contract/前端/依赖/真实凭证/push/合流/部署；继续unknown人工与其余已冻项。
