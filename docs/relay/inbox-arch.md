@@ -3668,3 +3668,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - Worker execute报错/unknown立即只读核查一次，仍unknown/核查异常/非法结果集→manual，不靠重开进程计数；并发waiting/manual直接返回unknown不调用Provider。异常原文不落run，关键record回复再守workspace/id。public Contract/前端/依赖0diff。
 - DB纯逻辑350过、Worker非PG1086过+2opt-in skip、Domain676过/10旧P073失败；三包type/lint绿、DBofflineaudit0。DB定向86过（helper100%行、Repository95.54%），Handler22过92.19%行。PG仍拒连38例未执行成功，其中3个新并发/迟到/跨scope/重试再核查反例。完整命令/风险在`docs/plans/2026-09-06-R010a2-未知结果一次核查.md`。
 - 进程claim后崩溃/永久挂起依赖后续job重投再次进入begin触发lease过期manual，目前未另挂扫描器；未接真实Provider/写HTTP/队列生产执行。历史unknown无actual证据则INVALID_STATE，不猜造。完整confirm pending run/job、rollback、T1消费仍待。candidate未push/合流/部署，不能称安全执行全链生产验证。
+
+### P-092｜确认原子入队与执行attempt绑定候选（be，2026-09-06）
+
+- `d873b6c`，10文件。confirm/retry父锁内同事务写confirmed header/pending actual run/jobs；runID=jobID，固定workspace/media/account/原两actor/hash。confirmed replay要求原run+job存在，不修补旧半成品；begin原地pending→running，context嵌套不能覆写metadata。内部ConfirmedExecutionRun不是P006公开完整DTO。
+- 旧队列消息绑定attempt：Worker读当前值前校验、DB begin/TTL/readonly claim父锁内再验latest actual；旧run不得开始/过期/核查重试的新attempt。future job adapter必须传executionRunId（兼容旧内部无参数调用，但不是生产消费者）。Runtime仍未注册changeset_execute；公共写HTTP/flag/provider未开，不能先接入口让无handler任务落生产队列。
+- DB370过、Worker非PG1091过+2opt-in skip、Domain676过/10旧P073失败；三包type/lint绿，DBofflineaudit0。DB核心90过：helper100%行/93.44%分支，Repository95.33%行；Handler27过92.41%行。PG55432拒连DB41+Worker4例未执行，新增并发同run/job、真实事务队列fault回滚、missingjob拒绝、stale attempt/跨scope反例待PG补证。
+- 完整命令/质量/性能风险见`docs/plans/2026-09-06-R010a2-确认原子入队.md`。无Contract/前端/依赖/真实秘密/push；candidate、claude_review_pending、未merged/deployed。**请裁一处：P006同hash confirm幂等是否覆盖executing/终态？与后发非法状态409边界优先级尚不明，本批只保留confirmed回放，未偷偷放宽。** 继续rollback/其余合法未完成项，原总目标不结束。
