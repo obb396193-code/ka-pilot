@@ -616,7 +616,10 @@ describe("data API HTTP composition", () => {
         requestedAccountDays: 1,
         returnedAccountDays: 0,
       }),
-    } as never);
+    } as never, undefined, { summary: async () => ({
+      row: { ...canonicalRow("account.summary", 1), metrics: { cost: "not-a-number" } },
+      window: { from: "2026-08-24", to: "2026-08-24", preset: "custom" }, warnings: [],
+    }) } as never);
     const baseUrl = await start({ platform });
     const response = await fetch(`${baseUrl}/api/v1/data/query`, {
       method: "POST",

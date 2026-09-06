@@ -34,6 +34,8 @@ export interface NormalizedQueryParams {
   accountId?: string;
   page?: number;
   pageSize?: number;
+  preset?: z.infer<typeof queryWindowSchema>["preset"];
+  compare?: "dod" | "wow";
 }
 
 export interface KaDataQueryPlan {
@@ -136,6 +138,8 @@ function normalizeDateParams(input: {
   accountId?: string;
   page?: number;
   pageSize?: number;
+  preset?: z.infer<typeof queryWindowSchema>["preset"];
+  compare?: "dod" | "wow";
 }): NormalizedQueryParams {
   const camel = input.dateFrom !== undefined || input.dateTo !== undefined;
   const snake = input.date_from !== undefined || input.date_to !== undefined;
@@ -151,6 +155,8 @@ function normalizeDateParams(input: {
   return {
     dateFrom,
     dateTo,
+    ...(input.preset === undefined ? {} : { preset: input.preset }),
+    ...(input.compare === undefined ? {} : { compare: input.compare }),
     ...(input.media === undefined ? {} : { media: input.media }),
     ...(input.accountIds === undefined ? {} : { accountIds: input.accountIds }),
     ...(input.accountId === undefined ? {} : { accountId: input.accountId }),
@@ -174,6 +180,9 @@ function normalizedSchema<Shape extends z.ZodRawShape>(shape: Shape): z.ZodType<
 }
 
 const intervalSchema = normalizedSchema(commonDateFields);
+const windowFields = { ...commonDateFields, preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
+const summarySchema = normalizedSchema({ ...windowFields, compare: z.enum(["dod", "wow"]).optional() });
+const trendSchema = normalizedSchema(windowFields);
 const tableSchema = normalizedSchema({
   ...commonDateFields,
   page: z.number().int().min(1).default(1),
@@ -325,7 +334,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     outputShape: "aggregate",
     queryTemplateVersion: "v2",
     metricVersion: "account-summary-v2",
-    paramsSchema: intervalSchema,
+    paramsSchema: summarySchema,
     authorityPolicy: authority("cross_media_operations", "ka_data"),
     buildSql: summarySql,
   },
@@ -351,7 +360,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     outputShape: "aggregate",
     queryTemplateVersion: "v2",
     metricVersion: "account-trend-v2",
-    paramsSchema: intervalSchema,
+    paramsSchema: trendSchema,
     authorityPolicy: authority("historical_analysis", "ka_data"),
     buildSql: trendSql,
   },
@@ -491,7 +500,7 @@ export class DataQueryRegistry {
    * Byte/row cap or duplicate account-days must be rejected by the reader before assessment.
    */
   buildTeamKaWindowPlan(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow"): KaDataWindowQueryPlan {
-    if (!isResolvedDataQuery(resolved) || resolved.queryId !== "account.summary") {
+    if (!isResolvedDataQuery(resolved) || (resolved.queryId !== "account.summary" && resolved.queryId !== "account.trend")) {
       throw new QueryRegistryError("INVALID_REQUEST", "Window query requires a registered account summary");
     }
     const window = queryWindowSchema.parse(windowInput);

@@ -8,6 +8,8 @@ import {
 } from "../src/data-query-rows.js";
 
 const undefinedRatio = { value: null, state: "undefined" } as const;
+const assessment = { priceSource: "history", price: null, onTarget: null, costStatus: null,
+  costStatusReason: "assessment_missing", budgetUsageRate: undefinedRatio } as const;
 const metrics = {
   cost: metricValue(100),
   exposure: metricValue(1_000),
@@ -30,11 +32,12 @@ const metrics = {
 } as const;
 
 describe("canonical data query rows", () => {
-  it("requires strict v2 metric availability and rejects bare v1 numbers", () => {
-    const v2 = { rowCount: 1, accountCount: 1, anomalyRows: 0, metrics };
+  it("requires strict metric availability and a v3 assessment, rejecting bare v1 numbers", () => {
+    const v2 = { rowCount: 1, accountCount: 1, anomalyRows: 0, metrics, assessment };
     expect(canonicalQueryRowSchemaById["account.summary"].safeParse(v2).success).toBe(true);
     expect(canonicalQueryRowSchemaById["account.summary"].safeParse({ ...v2, metrics: { ...metrics, cost: 100 } }).success).toBe(false);
-    expect(Object.values(canonicalRowSchemaVersionByQueryId).every((value) => value.endsWith("/v2"))).toBe(true);
+    expect(canonicalRowSchemaVersionByQueryId["account.summary"]).toBe("account.summary/v3");
+    expect(canonicalRowSchemaVersionByQueryId["account.table"]).toBe("account.table/v2");
     for (const cost of [
       { value: 1, availability: "missing" },
       { value: 0, availability: "error" },
@@ -62,11 +65,12 @@ describe("canonical data query rows", () => {
       accountCount: 1,
       anomalyRows: 0,
       metrics,
+      assessment,
     };
     expect(canonicalQueryRowSchemaById["account.summary"].parse(summary)).toEqual(summary);
     expect(canonicalQueryRowSchemaById["account.trend"].parse({
       ds: "2026-08-24",
-      metrics: summary,
+      metrics,
     })).toMatchObject({ ds: "2026-08-24" });
     expect(() => canonicalQueryRowSchemaById["account.summary"].parse({
       ...summary,
@@ -74,7 +78,7 @@ describe("canonical data query rows", () => {
     })).toThrow();
     expect(() => canonicalQueryRowSchemaById["account.trend"].parse({
       ds: "2026-02-31",
-      metrics: summary,
+      metrics,
     })).toThrow(/calendar date/i);
   });
 

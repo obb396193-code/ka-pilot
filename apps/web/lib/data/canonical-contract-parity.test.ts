@@ -30,10 +30,10 @@ for (const name of fixtureNames) {
   })
 }
 
-test("frontend freezes all six current v2 row schema versions", () => {
+test("frontend freezes v3 windows and v2 daily rows without dual version compatibility", () => {
   assert.deepEqual(canonicalRowSchemaVersionByQueryId, {
-    "account.summary": "account.summary/v2",
-    "account.trend": "account.trend/v2",
+    "account.summary": "account.summary/v3",
+    "account.trend": "account.trend/v3",
     "account.table": "account.table/v2",
     "account.anomalies": "account.anomalies/v2",
     "account.detail": "account.detail/v2",

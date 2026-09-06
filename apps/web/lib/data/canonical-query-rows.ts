@@ -64,11 +64,35 @@ export const accountSummaryRowSchema = z.object({
   accountCount: z.number().int().nonnegative(),
   anomalyRows: z.number().int().nonnegative().nullable(),
   metrics: canonicalMetricSetSchema,
-}).strict()
+  assessment: z.object({
+    priceSource: z.enum(["history", "ka_daily"]),
+    price: z.object({ value: finiteNumber, effectiveDate: calendarDateSchema.nullable() }).strict().nullable(),
+    priceVersions: z.number().int().min(2).optional(),
+    onTarget: z.boolean().nullable(), costStatus: z.enum(["green", "yellow", "red"]).nullable(),
+    costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing"]),
+    budgetUsageRate: ratioValueSchema,
+  }).strict().superRefine((value, ctx) => {
+    const expected = { window_ok: [true, "green"], day_over_window_ok: [true, "yellow"], window_over: [false, "red"],
+      cash_missing: [null, null], conversion_missing: [null, null], assessment_missing: [null, null] } as const
+    const [target, color] = expected[value.costStatusReason]
+    if (value.onTarget !== target || value.costStatus !== color) ctx.addIssue({ code: "custom", message: "Assessment reason mismatch" })
+    if (value.price !== null && ((value.priceSource === "history") !== (value.price.effectiveDate !== null))) ctx.addIssue({ code: "custom", message: "Price source/date mismatch" })
+    if (value.priceVersions !== undefined && value.price !== null) ctx.addIssue({ code: "custom", message: "Mixed prices have no representative price" })
+    if (value.onTarget !== null && value.price === null && value.priceVersions === undefined) ctx.addIssue({ code: "custom", message: "Missing price evidence" })
+    if (value.costStatusReason === "assessment_missing" && (value.price !== null || value.priceVersions !== undefined)) ctx.addIssue({ code: "custom", message: "Missing assessment cannot have complete prices" })
+  }),
+  compare: z.object({ mode: z.enum(["dod", "wow"]), deltas: z.object({
+    cost: ratioValueSchema, cashCost: ratioValueSchema, realConversion: ratioValueSchema, cashCpa: ratioValueSchema, onTargetRate: ratioValueSchema,
+  }).strict() }).strict().optional(),
+}).strict().superRefine((row, ctx) => {
+  if (row.assessment.onTarget !== null && (row.metrics.cashCost.availability !== "available" || row.metrics.realConversion.availability !== "available")) ctx.addIssue({ code: "custom", message: "Unavailable metrics cannot determine assessment" })
+  if (row.assessment.costStatusReason === "cash_missing" && row.metrics.cashCost.availability === "available") ctx.addIssue({ code: "custom", message: "cash_missing requires missing cash" })
+  if (row.assessment.costStatusReason === "conversion_missing" && (row.metrics.cashCost.availability !== "available" || row.metrics.realConversion.availability === "available")) ctx.addIssue({ code: "custom", message: "conversion_missing requires known cash and missing conversion" })
+})
 
 export const accountTrendRowSchema = z.object({
   ds: calendarDateSchema,
-  metrics: accountSummaryRowSchema,
+  metrics: canonicalMetricSetSchema,
 }).strict()
 
 export const relatedTaskRowSchema = z.object({
@@ -112,8 +136,8 @@ export const canonicalQueryRowSchemaById = {
 } as const
 
 export const canonicalRowSchemaVersionByQueryId = {
-  "account.summary": "account.summary/v2",
-  "account.trend": "account.trend/v2",
+  "account.summary": "account.summary/v3",
+  "account.trend": "account.trend/v3",
   "account.table": "account.table/v2",
   "account.anomalies": "account.anomalies/v2",
   "account.detail": "account.detail/v2",

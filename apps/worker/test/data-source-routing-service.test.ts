@@ -8,7 +8,7 @@ import { personalAuth, teamAuth } from "./business-auth-fixtures.js";
 const ids = { workspaceId: "00000000-0000-4000-8000-000000000024", userId: "00000000-0000-4000-8000-000000000001" };
 const personal = personalAuth({ ...ids, accounts: [{ media: "KUAISHOU", accountId: "a" }] });
 const team = teamAuth(ids);
-const request = { queryId: "account.summary", params: { date: "2026-09-05" } };
+const request = { queryId: "account.summary", params: { date: "2026-08-24" } };
 function setup(kaDataEnabled = true, diagnosticEnabled = false) {
   const kaData = { query: vi.fn(async (resolved: ResolvedDataQuery) => readySource(resolved.queryId, "ka_data", [canonicalRow(resolved.queryId, 10, ids.workspaceId, "a")])) };
   const platform = { query: vi.fn(async (resolved: ResolvedDataQuery) => readySource(resolved.queryId, "canonical", [canonicalRow(resolved.queryId, 11, ids.workspaceId, "a")])) };

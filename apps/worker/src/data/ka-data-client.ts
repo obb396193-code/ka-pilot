@@ -16,7 +16,7 @@ import {
   type KaDataQueryPlan,
 } from "./query-registry.js";
 import { decodeKaWindowMembers } from "./ka-window-members.js";
-import { summarizeKaWindowMembers } from "./ka-window-summary.js";
+import { summarizeKaWindowMembers, trendKaWindowMembers } from "./ka-window-summary.js";
 import {
   CanonicalQueryRowError,
   canonicalizeQueryRows,
@@ -427,6 +427,21 @@ export class KaDataClient {
         "KA Data direct queries require an explicit approved account scope",
         false,
       );
+    }
+    if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend") {
+      const window = { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" };
+      const result = resolved.queryId === "account.summary"
+        ? await this.queryTeamWindowSummary(resolved, scope, window, resolved.params.compare)
+        : await this.queryTeamWindowMembers(resolved, scope, window);
+      let rows: Record<string, unknown>[];
+      try { rows = "row" in result ? [result.row] : trendKaWindowMembers(result.members); }
+      catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid window response", false); }
+      return {
+        queryId: resolved.queryId, rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
+        status: "ready", rows, returnedRowCount: rows.length,
+        wholeResultTotal: { value: null, availability: "partial", reason: "Team inventory coverage is unknown" },
+        lineage: { ...result.lineage, window: result.window, warnings: result.warnings }, warnings: result.warnings,
+      };
     }
     const plan = team
       ? this.#registry.buildTeamKaDataPlan(resolved)

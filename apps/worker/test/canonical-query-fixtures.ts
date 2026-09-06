@@ -37,8 +37,11 @@ export function canonicalRow(
 ): Record<string, unknown> {
   const metrics = canonicalMetrics(value);
   const summary = { rowCount: 1, accountCount: 1, anomalyRows: 0, metrics };
-  if (queryId === "account.summary") return summary;
-  if (queryId === "account.trend") return { ds: "2026-08-24", metrics: summary };
+  if (queryId === "account.summary") return { ...summary, assessment: {
+    priceSource: "history", price: null, onTarget: null, costStatus: null,
+    costStatusReason: "assessment_missing", budgetUsageRate: { value: null, state: "undefined" },
+  } };
+  if (queryId === "account.trend") return { ds: "2026-08-24", metrics };
   return {
     workspaceId,
     media: "KUAISHOU",
@@ -69,11 +72,14 @@ export function readySource(
     queryId,
     rowSchemaVersion: canonicalRowSchemaVersionByQueryId[queryId],
     status: "ready",
-    rows,
+    rows: queryId === "account.summary" && source === "ka_data" ? rows.map((row) => ({ ...row,
+      assessment: { ...(row.assessment as Record<string, unknown>), priceSource: "ka_daily" },
+    })) : rows,
     returnedRowCount: rows.length,
     wholeResultTotal: { value: rows.length, availability: "available" },
     lineage: {
-      workspaceKind: "personal",
+      workspaceKind: source === "ka_data" ? "team" : "personal",
+      ...((queryId === "account.summary" || queryId === "account.trend") ? { window: { from: "2026-08-24", to: "2026-08-24", preset: "custom" as const } } : {}),
       source,
       datasetVersion: null,
       queryTemplateVersion: "v1",

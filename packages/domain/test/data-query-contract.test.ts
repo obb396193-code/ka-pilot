@@ -120,13 +120,14 @@ describe("dual data query contract", () => {
   it("represents unavailable source lineage as unknown instead of fabricating freshness", () => {
     const parsed = sourceQueryResultSchema.parse({
       queryId: "account.summary",
-      rowSchemaVersion: "account.summary/v2",
+      rowSchemaVersion: "account.summary/v3",
       status: "unavailable",
       rows: [],
       returnedRowCount: 0,
       wholeResultTotal: { value: null, availability: "error", reason: "SOURCE_UNAVAILABLE" },
       lineage: {
         ...lineage,
+        window: { from: "2026-08-24", to: "2026-08-24", preset: "custom" },
         datasetVersion: null,
         dataAsOf: null,
         timezone: null,

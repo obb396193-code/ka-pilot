@@ -93,7 +93,7 @@ export class PlatformWindowQuery {
         new Set(history.map((row) => row.ds)).size !== (input.accounts.length ? expectedDays : 0)) return invalid();
       if (!equalMetric(sumMetricValues(history.map((row) => row.cashCost)), summary.metrics.cashCost) ||
         !equalMetric(sumMetricValues(history.map((row) => row.realConversion)), summary.metrics.realConversion)) return invalid();
-      const assessment = computeWindowAssessment(history);
+      const assessment = (() => { try { return computeWindowAssessment(history); } catch { return invalid(); } })();
       const onTargetRate = targetRate(await repository.loadAccountCounts(scope), input.accounts.length, summary.accountCount);
       let compare: SummaryWindowRow["compare"];
       if (input.compare) {

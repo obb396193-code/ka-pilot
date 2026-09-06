@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { queryWindowSchema } from "./summary-window.js";
 
 import {
   canonicalQueryRowSchemaById,
@@ -83,6 +84,8 @@ export type SourceAuthority = z.infer<typeof sourceAuthoritySchema>;
 export const sourceLineageSchema = z
   .object({
     workspaceKind: z.enum(["personal", "team"]),
+    window: queryWindowSchema.optional(),
+    warnings: z.array(z.string()).optional(),
     source: z.enum([
       "ka_data",
       "qihang_realtime",
@@ -222,6 +225,9 @@ export const sourceQueryResultSchema = z
   })
   .strict()
   .superRefine((result, context) => {
+    if ((result.queryId === "account.summary" || result.queryId === "account.trend") && !result.lineage.window) {
+      context.addIssue({ code: "custom", path: ["lineage", "window"], message: "Window queries require their resolved window" });
+    }
     const expectedVersion = canonicalRowSchemaVersionByQueryId[result.queryId];
     if (result.rowSchemaVersion !== expectedVersion) {
       context.addIssue({
@@ -232,6 +238,15 @@ export const sourceQueryResultSchema = z
     }
     const rowSchema = canonicalQueryRowSchemaById[result.queryId];
     result.rows.forEach((row, index) => {
+      if (result.queryId === "account.summary") {
+        const assessment = row.assessment as { priceSource?: unknown } | undefined;
+        const expectedSource = result.lineage.workspaceKind === "team" ? "ka_daily" : "history";
+        if (assessment?.priceSource !== expectedSource) context.addIssue({ code: "custom", path: ["rows", index], message: "Assessment price source does not match workspace kind" });
+      }
+      if (result.queryId === "account.trend" && result.lineage.window &&
+        (typeof row.ds !== "string" || row.ds < result.lineage.window.from || row.ds > result.lineage.window.to)) {
+        context.addIssue({ code: "custom", path: ["rows", index], message: "Trend row is outside the requested window" });
+      }
       const parsed = rowSchema.safeParse(row);
       if (!parsed.success) {
         context.addIssue({

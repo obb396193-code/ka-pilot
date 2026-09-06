@@ -22,6 +22,7 @@ function success(kind: "personal" | "team", table = false) {
   value.data.mode = kind === "team" ? "ka_data" : "platform"
   value.data.source.lineage.workspaceKind = kind
   value.data.source.lineage.source = kind === "team" ? "ka_data" : "canonical"
+  if (!table) for (const row of value.data.source.rows) (row.assessment as Record<string, unknown>).priceSource = kind === "team" ? "ka_daily" : "history"
   return value
 }
 

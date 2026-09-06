@@ -46,3 +46,9 @@ export function summarizeKaWindowMembers(members: readonly KaWindowMember[], win
     warnings: [...current.warnings, "BUDGET_SOURCE_NOT_READY"],
   };
 }
+
+export function trendKaWindowMembers(members: readonly KaWindowMember[]) {
+  return [...new Set(members.map((member) => member.ds))].sort().map((ds) => ({
+    ds, metrics: summarize(members.filter((member) => member.ds === ds), { from: ds, to: ds }).row.metrics,
+  }));
+}

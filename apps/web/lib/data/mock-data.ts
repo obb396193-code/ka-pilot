@@ -37,6 +37,8 @@ function summaryRow(cost: number, realCpa: number | null, anomalyRows: number | 
     rowCount: 20,
     accountCount: 20,
     anomalyRows,
+    assessment: { priceSource: "history", price: null, onTarget: null, costStatus: null,
+      costStatusReason: "assessment_missing", budgetUsageRate: undefinedRatio },
     metrics: {
       cost: canonicalAvailable(cost),
       exposure: missingMetric,
@@ -56,7 +58,7 @@ const summaryRows = [summaryRow(842_600, 36.8, 7)]
 const trendRows = [
   ["2026-08-18", 724_000, 39.1], ["2026-08-19", 768_000, 38.4], ["2026-08-20", 751_000, null],
   ["2026-08-21", 796_000, 37.9], ["2026-08-22", 812_000, 37.2], ["2026-08-23", 826_000, 36.9], ["2026-08-24", 842_600, 36.8],
-].map(([ds, cost, realCpa]) => ({ ds: String(ds), metrics: summaryRow(Number(cost), realCpa === null ? null : Number(realCpa), 7) }))
+].map(([ds, cost, realCpa]) => ({ ds: String(ds), metrics: summaryRow(Number(cost), realCpa === null ? null : Number(realCpa), 7).metrics }))
 
 function dailyRow(input: {
   accountId: string
@@ -117,6 +119,9 @@ function rowsFor(queryId: DataQueryId, request: QueryRequest): Record<string, un
 
 function rowsForSource(queryId: DataQueryId, request: QueryRequest, source: "ka_data" | "platform") {
   const base = rowsFor(queryId, request)
+  if (queryId === "account.summary" && source === "ka_data") return base.map((row) => ({ ...row,
+    assessment: { ...(row.assessment as Record<string, unknown>), priceSource: "ka_daily" },
+  }))
   if (source === "platform" || !["account.table", "account.detail", "reconcile.account_daily"].includes(queryId)) return base
   return base.map((raw) => {
     const row = raw as AccountDailyRow
@@ -130,6 +135,7 @@ function lineage(source: "ka_data" | "platform", state: QueryRequest["mockState"
   const partial = state === "partial" || state === "truncated"
   return {
     workspaceKind: source === "ka_data" ? "team" as const : "personal" as const,
+    window: { from: "2026-08-18", to: "2026-08-24", preset: "custom" as const },
     source: source === "ka_data" ? "ka_data" as const : "canonical" as const,
     datasetVersion: `${source}-demo-20260824-r1`, queryTemplateVersion: "v1-mock", metricVersion: "mock-metrics-v1", dataAsOf: AS_OF, timezone: "Asia/Shanghai", dayCut: "calendar_day", metadataAvailability: "known" as const,
     authority: { policyVersion: "2026-08-24", useCase: "cross_media_operations" as const, role: source === "ka_data" ? "default_authoritative" as const : "comparison_reference" as const },

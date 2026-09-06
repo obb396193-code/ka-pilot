@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { accountSummaryRowSchema, calendarDateSchema, canonicalMetricSetSchema, ratioValueSchema } from "./data-query-rows.js";
+import { accountSummaryRowSchema, calendarDateSchema, canonicalMetricSetSchema, ratioValueSchema } from "./data-query-base-rows.js";
 import { canonicalMetricValueSchema, divideMetricValues, sumMetricValues, type CanonicalMetricValue } from "./metric-value.js";
 import { compareAbsolute, compareRate } from "./metrics.js";
 
-/** Additive v3 building blocks. The public source boundary remains v2 until both adapters are wired. */
+/** Strict public v3 window and assessment values. */
 export const queryWindowSchema = z.object({
   from: calendarDateSchema,
   to: calendarDateSchema,
