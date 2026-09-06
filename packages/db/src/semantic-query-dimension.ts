@@ -6,7 +6,7 @@ import {
   mapMetricSummary,
   type AggregateDatabaseRow,
 } from "./semantic-query-metrics.js";
-import { buildMetricFilter, validateScope } from "./semantic-query-support.js";
+import { buildMetricFilter, validateScope, SemanticQueryContractError } from "./semantic-query-support.js";
 import {
   AmbiguousTaskMappingError,
   type SemanticDimensionQuery,
@@ -15,6 +15,8 @@ import {
 } from "./semantic-query-types.js";
 
 interface DimensionDatabaseRow extends AggregateDatabaseRow {
+  workspace_id?: string;
+  media?: string;
   dimension_key: string | null;
   dimension_label: string | null;
 }
@@ -108,7 +110,8 @@ export async function queryMetricDimension(
       ? `AND relation.task_id = $${values.push(input.filters.taskId)}`
       : "";
   const result = await pool.query<DimensionDatabaseRow>(
-    `${EXPECTED_METRIC_CTE} SELECT ${sql.key} AS dimension_key, ${sql.label} AS dimension_label,
+    `${EXPECTED_METRIC_CTE} SELECT ${input.dimension === "account" ? "metric.workspace_id, metric.media," : ""}
+            ${sql.key} AS dimension_key, ${sql.label} AS dimension_label,
             ${METRIC_AGGREGATE_SQL}
      FROM expected_metric AS metric
      JOIN accounts AS account
@@ -118,13 +121,49 @@ export async function queryMetricDimension(
      ${sql.joins}
      WHERE ${filter.whereSql}
        ${taskCondition}
-     GROUP BY ${sql.key}, ${sql.label}
-     ORDER BY cost DESC NULLS LAST, ${sql.key} ASC NULLS FIRST`,
+     GROUP BY ${input.dimension === "account" ? "metric.workspace_id, metric.media, " : ""}${sql.key}, ${sql.label}
+     ORDER BY cost DESC NULLS LAST, ${sql.key} COLLATE "C" ASC NULLS FIRST
+       ${input.dimension === "account" ? ', metric.media COLLATE "C" ASC' : ""}
+     LIMIT 10001`,
     values,
   );
-  return result.rows.map((row) => ({
-    dimensionKey: row.dimension_key,
-    dimensionLabel: row.dimension_label,
-    metrics: mapMetricSummary(row),
-  }));
+  if (result.rows.length > 10000 || Buffer.byteLength(JSON.stringify(result.rows)) >= 16 * 1024 * 1024) {
+    throw new SemanticQueryContractError("Dimension result exceeds query boundary");
+  }
+  const seen = new Set<string>();
+  return result.rows.map((row) => decodeDimensionRow(row, input, seen));
+}
+
+function invalidDimension(): never { throw new SemanticQueryContractError("Invalid dimension result"); }
+
+function decodeDimensionRow(row: DimensionDatabaseRow, input: SemanticDimensionQuery, seen: Set<string>): SemanticDimensionRow {
+  if ((row.dimension_key !== null && typeof row.dimension_key !== "string") ||
+      (row.dimension_label !== null && typeof row.dimension_label !== "string")) return invalidDimension();
+  // Present invalid values cannot coerce to zero or disappear as missing metrics.
+  for (const key of ["row_count", "account_count", "anomaly_rows", "cost", "exposure", "click", "conversion",
+    "real_conversion", "cash_cost", "cost_space", "wake_uv", "potential_uv"] as const) {
+    const value = row[key];
+    if (value === null && !["row_count", "account_count", "anomaly_rows"].includes(key)) continue;
+    if ((typeof value !== "string" && typeof value !== "number") ||
+      (typeof value === "string" && !/^-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?$/.test(value)) || !Number.isFinite(Number(value))) return invalidDimension();
+  }
+  const metrics = mapMetricSummary(row);
+  if (![metrics.rowCount, metrics.accountCount, metrics.anomalyRows].every((n) => Number.isSafeInteger(n) && n >= 0) ||
+    metrics.accountCount > metrics.rowCount || metrics.anomalyRows > metrics.rowCount) return invalidDimension();
+  let accountIdentity: SemanticDimensionRow["accountIdentity"];
+  if (input.dimension === "account") {
+    const filters = input.filters;
+    if (row.workspace_id !== input.workspaceId || typeof row.media !== "string" || !/^[A-Z0-9_]{1,32}$/.test(row.media) ||
+      typeof row.dimension_key !== "string" || !/^[A-Za-z0-9_-]{1,128}$/.test(row.dimension_key) || metrics.accountCount > 1 ||
+      (filters?.media !== undefined && row.media !== filters.media) ||
+      (filters?.accountId !== undefined && row.dimension_key !== filters.accountId) ||
+      (filters?.accountIds !== undefined && !filters.accountIds.includes(row.dimension_key)) ||
+      (filters?.accountScopes !== undefined && !filters.accountScopes.some((a) => a.media === row.media && a.accountId === row.dimension_key))) return invalidDimension();
+    accountIdentity = { workspaceId: input.workspaceId, media: row.media, accountId: row.dimension_key };
+  }
+  const identity = JSON.stringify(accountIdentity ?? row.dimension_key);
+  if (seen.has(identity)) return invalidDimension();
+  seen.add(identity);
+  return { dimensionKey: row.dimension_key, dimensionLabel: row.dimension_label, metrics,
+    ...(accountIdentity ? { accountIdentity } : {}) };
 }

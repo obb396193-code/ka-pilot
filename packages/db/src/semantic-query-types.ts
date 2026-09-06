@@ -113,6 +113,8 @@ export interface SemanticDimensionQuery extends SemanticQueryScope {
 export interface SemanticDimensionRow {
   dimensionKey: string | null;
   dimensionLabel: string | null;
+  /** Internal account grouping identity; never infer media from dimensionKey. */
+  accountIdentity?: SemanticAccountScope & { workspaceId: string };
   metrics: MetricSummary;
 }
 
