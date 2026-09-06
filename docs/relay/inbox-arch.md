@@ -3393,3 +3393,18 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 保留失败：DB首次334/2fail（迁移5s和即时runAfter），固定已到期fixture+测试30s重跑336；未证明时钟漂移。PG首次sandbox EPERM审批后实跑；新测试误用markDone签名修正；mjs fixture显式Node import修lint。日志`/tmp/ka-once-{worker-full,domain-full,coverage}.log`、`/tmp/ka-lease-scope-db-retry.log`。
 - **eb109fd**已merge main@829f2bc；以上全量为merge前bcb67e7范围证据，新v1.7.2接线另批再验。后端不再写主管总台账；runbook仅新增本人命令§2.6。详细证据见R013b计划补记。
 - 未push/部署/真实源验证；OS f.yml、session30天清理未完；单轮注册表仅现有ETL/quality，不称所有Agent/规则job都可部署。已读P056与P053三裁，下一项恢复 **R010a1 v3公开路由**，不先开R011。
+
+### P-058 v3剩余细口径确认（不阻塞逐日价格与RR读链）｜Codex 2026-09-06
+
+已按P053实现多版本展示/逐日加权/等长平移，并用真实PG验证历史价与同号跨媒体范围，正在全量回归。公开接线还有三点需arch定，不擅改Contract：
+1. cash可得、price可得但realConversion缺时不能判达标；现reason只有cash_missing/assessment_missing，无conversion_missing。当前**尚未接公开路由的内部计算**暂归cash_missing（现金考核不可算），请确认这个归类，或由arch加新reason；onTarget/costStatus/costSpace均null，不补零。
+2. compare.onTargetRate没找到比例分母的冻结定义。建议“窗口内可判定账户中达标账户占比”，不按账户日占比或转化权重猜；确认前对该delta返回undefined（其他有定义的比较照算）。
+3. budgetUsageRate依赖task_budget_history，但schema把该表分配R012/migration014，R010a1当前012后尚无表。拟在读链检测未提供此源时undefined+明确未就绪提示，不拿tasks.budget总预算或媒体账户budget代替；等014落地接真实每日生效卡。请确认或前移迁移边界。
+
+### P-059 R010a1逐日加权考核与实际价读取｜Codex 2026-09-06，待审
+
+- **aa577ac**：严格priceVersions≥2、混合展示不能带单价，preset默认custom；真实versionKey区分同价同日期但不同历史版本。逐日Σprice×conv−Σcash，日聚合超但窗口未超为黄；未来价/同versionKey元数据矛盾/溢出拒绝。dod/wow等长平移1/7天；today无同小时输入返回不可比。不修改公开v2边界，尚不是v3 API完成。
+- **19359b0**：WindowAssessmentRepository单SQL快照读取expected account-days与每日有效唯一任务/最新history（effective_date,id倒序）；按日+version组而非拉全量明细，缺账户日/缺字段仍保留missing，不把它们丢掉。只接显式个人tuple范围≤1000、日期≤366天；team走KA reader，不走此repo。边界LIMIT10001 sentinel（10k可完整，10001拒绝）、恰好16MB拒绝；present-invalid布尔/对象/空串/hex/NaN拒绝，数值缺失只认SQL NULL。
+- **真实PG4例**含跨workspace同ID、同workspace跨media同ID、空scope、实际中途改价/未来排除、缺日/缺考核、numeric NaN；DB边界unit10例。Domain新增10例，最初模块不存在为加载红；边界unit实际5fail/4pass→补类型/范围防线后10pass。
+- 合main@829f2bc后完整门禁：**Domain617 / DB真实PG350 / Worker828+2外部opt-in skipped**，三包typecheck/lint全过；控制内核30例覆盖97.35%行/93.97%分支。日志`/tmp/ka-window-{domain-final,db-final,worker-final,coverage}.log`。仅合成PG，未真实源/媒体写。Gateway/Web本批未改未重跑。
+- 还需公开Service把summary/考核/compare/lineage放同一个RR/RO事务、两Adapter与Registry/HTTP/BFF切v3；当前repo一条SQL自身一致，不冒称多查询已同快照。P058三个细口径待裁，不阻塞共享只读事务接线。未push/部署，候选等arch。
