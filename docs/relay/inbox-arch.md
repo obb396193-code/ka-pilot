@@ -3487,3 +3487,9 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - DB全量**未过**：第一次361过/5文件ENOSPC；空间自行回到2.8GiB后串行再跑，Docker再次退出，37套ECONNREFUSED/150过/240skip。未删除缓存/其他项目文件，未降断言。Worker首轮HTTP EPERM已提升本地端口权限重跑通过。完整PG须环境恢复后重跑，不以旧arch数字替代。
 - 范围：只删本workspace失效严格超过720小时的auth_sessions，job租约行锁+session SKIP LOCKED，1000/批，runId幂等，CLI硬截止+最多10job，不需要媒体身份且不领取媒体job；stdout只报告一轮不是全量清空。
 - 文档：`docs/plans/2026-09-06-R013b会话清理质量报告.md`；runbook仅新增本人§7，env登记3项。大规模保留期扫描无专用索引与性能实证；f.yml仍等OS。当前candidate/focused_pg_verified/full_pg_pending，未push/合流/部署；随后继续R010a1公开v3，不等待已裁P058/P061。
+
+### P-067｜v3 P058缺转化原因先行（be，2026-09-06）
+
+- `893c26b` 三个Domain文件：现金/价格存在但真实转化缺失 → conversion_missing，onTarget/costStatus都null；cash_missing仅现金缺失。缺考核仍assessment_missing，双缺优先现金；三态字段error也不产生达标结论。没有改公开v2边界或Contract。
+- TDD先红2/12；修后Domain619全过、两核心32测试/行97.36%/分支94.25%；Domain typecheck/lint、DB/Worker typecheck、Worker窗口/mapper44过，非PG全量891+2skip过。无数据库改动，当前Docker故障不伪报PG全量。
+- 这只关闭P058第1条内核，**不代表R010a1已全部完成**。下一步priceSource/团队逐日cash_assessment、onTargetRate真实账户分母、BUDGET_SOURCE_NOT_READY，再两Adapter/HTTP/BFF同时切v3；不擅改arch fixtures。清理批留痕SHA9a5591b。
