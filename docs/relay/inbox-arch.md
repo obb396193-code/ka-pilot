@@ -3576,3 +3576,11 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 内置imagegen：横版玻璃环A/丝带B、竖版A/B，共4候选（竖B修2次背景/留白）。已问老板选型，不替他选。不修改页面/正式brand路径，不提交待拍板图片；后端总任务不因此暂停。
 - 可读文件在`/Users/aik/Desktop/投放agent/.worktrees/be-r010/output/brand-candidates/2026-09-06/login-{16x9,3x4}-{A,B}.png`；逐文件SHA256、像素和bytes在`docs/plans/2026-09-06-R-FE-IMG-001候选计划.md`，实际完整提示词另存。原始PNG1672×941/1086×1448，约1–1.45MB，**还不满足正式2400×1350/1200×1600及600KB/400KB预算**。
 - candidate_pending_visual_approval，不称最终交付；确认后才做最终格式/像素/体积及正式资产SHA，fe当前不要替换占位。本批只提交非视觉留痕文档，无生产代码变化。
+
+### P-080｜数据总表任务筛选候选（be，2026-09-06）
+
+- `104e8fc`八文件：api.md已冻filters.task_id→旧入口语法adapter→同一Registry taskId→account.table。KA按真实task_id列安全转义，个人按有效task_accounts EXISTS参数化查询；仍与Session批准tuple求交。Service拒绝响应中不含请求任务的行，真实handler返回502/同requestId；不会信任Adapter静默漏筛。
+- 分页与lineage共用现有RR/RO读路径。task筛选的expected_account_days在同SQL按有效关系求，非grant数×全窗；缺日仍partial，无生效关系是真空。count证据非法/超scope/自相矛盾拒绝。不能证明筛后请求账户数时省略requestedObjects，不拿全部grants冒充任务账户数。
+- TDD：Worker5红/7过→12全过；DB新proof10红→最终11过。SQLite实际SQL证明任务/日期/tuple交集、空grant和带引号taskId；纯逻辑DB200过，Worker非PG全量1037过+2外部opt-in skip；DB/Worker typecheck/lint过，Worker离线production audit0。5套82测试覆盖三修改Worker模块91.3%行/81.26%分支（其后只将control-regex改等价charCode校验，最终全量重跑）。日志`/tmp/ka-task-filter-worker-final.log`、`ka-task-filter-db-unit.log`。
+- PG+真实public handler三例已写（不是Session登录E2E），显式合成库仍ECONNREFUSED55432，一套初始化失败/3跳过，`/tmp/ka-task-filter-pg.log`；不宣称PG验证。最初新PG测试readonly数组typecheck、control-regex lint失败均已修并重跑，不削弱输入限制。
+- 旧table“task_id未实现应拒绝”测试迁移为正向同Registry测试，owner/columns/dimensionType未实现仍拒。**summary/trend taskId尚未接**：跨日有效归属、考核与分母须专门实现，不能套table后冒称全部任务查询已完成。candidate_non_pg_verified/pg_pending，未合流/部署/真源/媒体写/push；Contract/前端0diff。
