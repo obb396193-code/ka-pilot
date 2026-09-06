@@ -3675,3 +3675,16 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 旧队列消息绑定attempt：Worker读当前值前校验、DB begin/TTL/readonly claim父锁内再验latest actual；旧run不得开始/过期/核查重试的新attempt。future job adapter必须传executionRunId（兼容旧内部无参数调用，但不是生产消费者）。Runtime仍未注册changeset_execute；公共写HTTP/flag/provider未开，不能先接入口让无handler任务落生产队列。
 - DB370过、Worker非PG1091过+2opt-in skip、Domain676过/10旧P073失败；三包type/lint绿，DBofflineaudit0。DB核心90过：helper100%行/93.44%分支，Repository95.33%行；Handler27过92.41%行。PG55432拒连DB41+Worker4例未执行，新增并发同run/job、真实事务队列fault回滚、missingjob拒绝、stale attempt/跨scope反例待PG补证。
 - 完整命令/质量/性能风险见`docs/plans/2026-09-06-R010a2-确认原子入队.md`。无Contract/前端/依赖/真实秘密/push；candidate、claude_review_pending、未merged/deployed。**请裁一处：P006同hash confirm幂等是否覆盖executing/终态？与后发非法状态409边界优先级尚不明，本批只保留confirmed回放，未偷偷放宽。** 继续rollback/其余合法未完成项，原总目标不结束。
+
+### P-093｜rollback持久化关联与执行明细缺口，请arch冻结（be，2026-09-06）
+
+- 实读`api.md:583-585`要求成功项反向草稿、反向success才置原rolled_back；`schema.sql:203-242`目前changesets无original/reverse关联、execution_runs仅自由result_payload，changeset_items没有逐attempt applied_value/media_code/media_message/applied_at。Domain `changesets.ts:212` buildReverseItems只是交换计划from/to，不是完整rollback流程。
+- 建议显式关联而不复用simulation/reasonCode：nullable `changesets.rollback_of_id` + 同workspace父FK，或独立`changeset_reversals(workspace_id,original_id,reverse_id,source_execution_run_id,created_at)`关联表；推荐独立表便于约束source实际run与审计，字段/迁移编号请arch定。必须保存成功原item↔反向item对应，防错误更新原header。
+- 请同时裁：①原changeset是否只允许一份反向草稿（expired之后如何重建/失败重试）；②反向partial/unknown时原保持原success/partial，只有完整反向success才能rolled_back；③每次执行item结果是有版本JSON schema存result_payload还是新明细表，不能把可变changeset_items最新状态冒充历史attempt；④applied_value无实证时是否仅允许生成需新dry-run/from复核的计划反向草稿，不能声称媒体真实应用值已知道。
+- 尚未新增列/迁移/写HTTP，避免后端反向定义契约；该项proposal_pending_arch，其余已冻规则门继续。P092的跨运行阶段confirm replay裁决同样未决。
+
+### P-094｜规则缺数/首轮同步/来源时间硬门候选（be，2026-09-06）
+
+- `0fb209c`，Domain/Worker9文件。readiness内部strict输入含初次full完成、source/dataAsOf/可配6h或30h阈值、完整引用指标availability；missing/error不补0，未知/未来时间pending，policy两种都抑制缺数。Worker在evaluator前拦住，不调createOrMerge/alerts，coverage账户三键去重且保守取值；失败evaluator不计checked。Domain AND原先false盖过missing已由红测试修正。
+- 定向Domain29过/readiness100%行/alert-rules97.2%；Worker14过/handler98.57%行。全量Domain694过/10旧P073fixture失败、DB370过、Worker1099过+2opt-in skip；三包type/lint通过，Domainofflineaudit0。PG55432拒连，data-pipeline综合例未执行；其readiness是注明的合成provider，不能当DB health实证。
+- `docs/plans/2026-09-06-R010a2-规则缺数抑制.md`含命令/风险。尚无正式condition_tree→requiredMetrics/health provider、SLA暂停持久化、public explain/mute；另实读发现旧over_cost_ramp仍以realCpa与现金考核价比，现金阈值接线需继续纠偏，不能称规则生产可用。无Contract/前端/依赖/真实写/push/合流/部署，candidate待审，信箱总目标仍active。
