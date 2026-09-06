@@ -3648,3 +3648,9 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - TTL过期failed返回内部expired并保留failed历史，不偷加failed→expired状态转移。无新增HTTP/队列/外部凭证/Contract/视觉/依赖；write_enabled与账户写授权仍由将来的写Service落实，当前没有媒体写入口。confirm/retry pending run+job原子排队及返回execution_run未完成。
 - Domain676过/10旧P073失败，DB纯逻辑282过，Worker非PG1077过+2opt-in skip，三包typecheck/lint过，DB offline audit0。定向retry14+dryrun24过；三份Repository unit51过，**整个Repository覆盖71.84%未达80%门，命令退出1**；本批approve/wrapper63/63语句覆盖。未修改门槛，旧complete/reconciliation覆盖欠账仍须补，不称全门禁通过。
 - PG显式合成库55432拒连，35例跳过（包括新增并发retry/attempt2/值变/过期两例），真实并发/rollback未验证。详见`docs/plans/2026-09-06-R010a2-失败重试内核.md`完整命令与报告。candidate未合流/部署/push；继续其余冻结任务，不标总目标完成。
+
+### P-089｜关闭P088非PG覆盖门（be，2026-09-06）
+
+- `817fee6`只新增一份16测试，生产0diff。执行/对账四结果、非法状态/覆盖/tuple、错误run、rollback保留原异常、读和授权wrapper均覆盖。首轮测试断言误把FOR UPDATE看作写已修，未修改生产逻辑。
+- 四份unit67过，Repository整体95.49%行/87.26%分支/100%函数，80%覆盖门已过（替代P08871.84%状态），DB纯逻辑298过、type/lint/diff绿。日志`/tmp/ka-completion-coverage.log`、`/tmp/ka-completion-db.log`；质量续记同失败重试计划。
+- PG拒连仍未关，mock不证明SQL/并发。Domain/Worker代码没动，沿用P088结果，未重报新运行；无push/合流/部署/真实媒体写。下一段原信箱12.7：T1 scheduler实体缺失、unknown回收不限一次且不转人工，需继续；本SHA只是测试，不冒充这些功能完成。
