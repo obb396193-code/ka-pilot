@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+
 import {
   IconDotsVertical,
   IconLogout,
@@ -84,29 +86,33 @@ export function NavUser() {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem disabled>
-                <IconUserCircle />
-                个人与授权
+              <DropdownMenuItem asChild>
+                <Link href="/settings?tab=credentials">
+                  <IconUserCircle />
+                  个人与授权
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem disabled>
-                <IconNotification />
-                通知偏好
+              <DropdownMenuItem asChild>
+                <Link href="/settings?tab=notifications">
+                  <IconNotification />
+                  通知偏好
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <a href="#settings">
+                <Link href="/settings">
                   <IconSettings />
                   设置
-                </a>
+                </Link>
               </DropdownMenuItem>
               {isAdmin ? (
                 <DropdownMenuItem asChild>
-                  <a href="#admin">
+                  <Link href="/admin">
                     <IconShieldCog />
                     治理后台
-                  </a>
+                  </Link>
                 </DropdownMenuItem>
               ) : null}
             </DropdownMenuGroup>
