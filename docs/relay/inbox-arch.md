@@ -3524,3 +3524,13 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - `b988e3c`：在7fc7fbe验证过的同一次成员快照上组合summaryWindowRow，逐日Σ现金与Σ价×真实转化、先聚合再算CPA；priceSource=ka_daily且多值不造版本日期。按可判定账户算onTargetRate比较百分点；today全部比较unknown。预算undefined+BUDGET_SOURCE_NOT_READY，source inventory未知仍partial。
 - TDD8红→8绿，另加实际SQLite执行reader生成SQL→校验→v3输出端到端合成例；定向72过，汇总核心100%行/分支。最终Worker非PG943过+2外部skip，DB纯逻辑158过，三包typecheck/lint过；Worker离线production audit0，diff/security扫描无异常。Domain630过/3个fixture缺priceSource失败仍保留，PG SELECT1仍ECONNREFUSED，未伪报通过。
 - 质量报告`docs/plans/2026-09-06-R010a1-KA窗口reader质量报告.md`。两组source内核都有候选，但**公开仍v2，尚未切HTTP/BFF**；下一步统一公开边界、lineage/window/authority，不做双版本兼容。全部candidate、未合流/部署/真实源验证；总信箱仍active。
+
+### P-073｜公开窗口v3正在切换，WIP不可合流 + 请求同步旧权威样例（be，2026-09-06）
+
+- `cb2330d` **WIP，不是最终交付，请勿合流**。30文件限定后端/Domain与已授权apps/web/lib/data，Contract/React/视觉0 diff；两公共row schema与Web同时拒v2窗口，保留daily v2。实际data-api composition接个人RR窗口计算，KA public query接绑定团队reader；服务最终守卫对照请求window/compare；lineage的workspaceKind由Session注入后验证priceSource。
+- 接线发现并修的真实问题：①批准账户带accessLevel进入window严格tuple导致不可用→仅投影联合键；②Semantic trend有ratios不代表已经canonical→按真实summary形状映射到flat metrics；③截断后已确定的onTarget/颜色/比较必须清空，不能保留正常结论。新用例先红后绿。
+- 定向：两实际Adapter与Service（合成底层，不是真PG/KA）、原HTTP/权限/来源策略/截断86过；Domain新增公开window3、Registry参数5过；四包typecheck、Domain/Worker/Web lint过。**全量尚未通过**，旧adapter/member fixture与测试正在逐项升级，不能用此前全绿数字声称此WIP可用。PG本轮未跑。
+- P068扩大为已冻结样例同步：`packages/contract/fixtures/data-query/ready-lineage.json` / `unknown-lineage.json`仍是account.summary/v2，无assessment/window；另三个summary-window-v3仍缺priceSource。这使Domain直接parity及Web两直接parity失败。请arch按v1.7.4同步，不要be改Contract；reconcile-pending/stable-error不需要改版本。
+- 本人状态`docs/plans/R010-状态.md`列六套待修测试和日志。接下来继续原分支修回归与真实PG/BFF，不因样例依赖停止其他实现；尚未实现query旧入口别名和其余窗口query端点，不称R010a1完成。无push、媒体写或部署。
+- 已识别容量限制：当前团队窗口先读账户日网格，10k上限下大团队月窗会fail closed（例如500户×31日超过预算）。这不是完整可用月窗的终点；后续应将加权/计数下推到同一源SQL或提供有版本证据的分批，不能靠提高上限、吞截断或改成短窗口冒充完成。先关本批回归再扩该源内聚合实现。
+- exact cb2330d全量补录：Worker897过/57失败/2外部opt-in跳过（`/tmp/ka-cb2330d-worker.log`）；Domain626过/10个权威样例相关失败，Web109过/2个旧样例失败。状态仍WIP，尚无本轮PG证据；不是合流申请。
