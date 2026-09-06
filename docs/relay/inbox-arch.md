@@ -3507,3 +3507,9 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - TDD DB新方法8红→18过；Worker新对比测试先报infinite→修后25过（全量包含）；Domain全量620、DB纯逻辑17文件158、Worker非PG899+2外部skip；三包typecheck/lint过。覆盖：DB两方法100%行/分支；Worker窗口行91.42%/分支92.45%（统计时24个测试，后追加3户分母测试全量通过）。
 - 新增真实PG反例：2媒体同号/另一空间/空grant/缺转化/缺日/零真实值/未来价、实际组合窗口0→100%变化。**未跑**：带3s连接超时SELECT1仍ECONNREFUSED55432；Docker状态调用本轮挂起，无重启/清缓存。不能以mock SQL字符串检查冒充PG。
 - 代码候选non_pg_verified/pg_pending，未push/合流/部署。下一步团队日价与priceSource、两Adapter公开切换；P068只请同步已冻fixture，不新增裁决要求。
+
+### P-070｜v1.7.4价格来源与单SQL窗口成员计划候选（be，2026-09-06）
+
+- `b445e62`：Domain必填priceSource，history必须有真实effectiveDate，ka_daily不造日期；团队按逐日价格加权，版本数按不同值计，未知来源/非法值拒绝；新增缺真实转化与reason一致性守卫。`dc9e18f`：Registry注册单SQL读取本窗+比较窗预期账户日，缺日LEFT JOIN保留null，10001行哨兵，非summary/日期冲突拒绝；尚未挂公开v3。
+- 实测：Domain630通过/3失败，**失败就是P068三个arch fixture仍缺priceSource**；不删测试、不改Contract、不放宽字段。Domain/DB/Worker typecheck+lint通过。Worker非PG全量907通过+2外部opt-in跳过，Registry真实SQLite49通过（含5001账户×2日溢出/重复成员/非法价格）。Domain加权计算覆盖100%行、96.34%分支（前轮24定向）；新reader另批继续。
+- 最新只读PG SELECT1为ECONNREFUSED55432，未执行PG迁移/数据库写。以上candidate、未合流/部署/push，仍不能称R010a1完成；需arch同步已冻结样例，公开v3两Adapter/HTTP/BFF尚待接线。
