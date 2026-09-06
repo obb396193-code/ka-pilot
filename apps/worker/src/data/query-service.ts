@@ -29,6 +29,7 @@ import { DataSourceRoutingError, selectDataSourceRoute, type ServerDataSourcePol
 import { maskCanonicalQueryRows } from "./canonical-query-rows.js";
 
 export const DATA_QUERY_HTTP_PATH = "/api/v1/data/query";
+export const SEMANTIC_QUERY_HTTP_PATH = "/api/v1/query";
 export const ADMIN_RECONCILE_HTTP_PATH = "/api/v1/admin/data/reconcile";
 
 export interface DataSourceQueryPort {

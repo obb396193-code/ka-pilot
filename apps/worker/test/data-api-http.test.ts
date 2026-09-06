@@ -162,6 +162,86 @@ describe("data API HTTP composition", () => {
     return `http://127.0.0.1:${address.port}`;
   }
 
+  it.each(["summary", "trend", "table"] as const)("public semantic alias reuses canonical %s and strict Session source selection", async (kind) => {
+    const platform = { query: vi.fn<DataSourceQueryPort["query"]>(async (resolved) => ready(resolved.queryId, "canonical",
+      [canonicalRow(resolved.queryId, 11, auth.workspaceId, "account-1")])) };
+    const baseUrl = await start({ platform });
+    const queryId = `account.${kind}`;
+    const bodies = [
+      { queryId, params: { date: "2026-08-24", media: "KUAISHOU", accountIds: ["account-1"] } },
+      { query_type: kind, date: "2026-08-24", filters: { media: "KUAISHOU", account_id: "account-1" } },
+    ];
+    for (const body of bodies) {
+      const response = await fetch(`${baseUrl}/api/v1/query`, { method: "POST", headers: {
+        ...authHeaders(), "x-request-id": "semantic-alias", "x-ka-workspace-id": "forged", "x-ka-scope-kind": "team_workspace_readonly",
+      }, body: JSON.stringify(body) });
+      expect(response.status).toBe(200);
+      expect(response.headers.get("x-request-id")).toBe("semantic-alias");
+      expect(await response.json()).toMatchObject({ ok: true, data: { mode: "platform", source: {
+        queryId, rowSchemaVersion: `${queryId}/${kind === "table" ? "v2" : "v3"}`,
+        lineage: { workspaceKind: "personal" },
+      } } });
+    }
+    expect(platform.query).toHaveBeenCalledTimes(2);
+    for (const [resolved, scope] of platform.query.mock.calls) {
+      expect(resolved.params).toMatchObject({ dateFrom: "2026-08-24", dateTo: "2026-08-24", media: "KUAISHOU", accountIds: ["account-1"] });
+      expect(scope).toMatchObject({ workspaceId: auth.workspaceId, scopeKind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "account-1" }] });
+    }
+  });
+
+  it.each([
+    { query_type: "summary", date: "2026-08-24", sql: "SELECT * FROM secret" },
+    { query_type: "summary", date: "2026-08-24", workspaceId: "forged" },
+    { query_type: "summary", date: "2026-08-24", dataView: "ka_data" },
+    { query_type: "summary", queryId: "account.summary", params: {} },
+    { query_type: "summary", date: "2026-08-24", filters: { media: "KUAISHOU", account_id: "not-granted" } },
+    { query_type: "summary", date: "2026-08-24", filters: { task_id: "unsupported-yet" } },
+    { query_type: "summary", date: "2026-08-24", filters: { owner: "unsupported-yet" } },
+    { query_type: "summary", date: "2026-02-31" },
+    { queryId: "reconcile.account_daily", params: { date: "2026-08-24" } },
+  ])("semantic alias never drops unimplemented/unsafe filters or opens diagnostics: %j", async (body) => {
+    const platform = { query: vi.fn() }, kaData = { query: vi.fn() };
+    const baseUrl = await start({ platform, kaData });
+    const response = await fetch(`${baseUrl}/api/v1/query`, { method: "POST", headers: authHeaders(), body: JSON.stringify(body) });
+    expect([400, 403, 404]).toContain(response.status);
+    expect(await response.json()).toMatchObject({ ok: false, error: { requestId: expect.any(String) } });
+    expect(platform.query).not.toHaveBeenCalled(); expect(kaData.query).not.toHaveBeenCalled();
+  });
+
+  it("semantic alias keeps authentication, method and exact byte boundaries", async () => {
+    const body = JSON.stringify({ query_type: "summary", date: "2026-08-24" });
+    const headers = { ...authHeaders(), "x-request-id": "alias-limit" };
+    const probe = await start();
+    const original = await fetch(`${probe}/api/v1/query`, { method: "POST", headers, body });
+    expect(original.status).toBe(200);
+    const byteLimit = Buffer.byteLength(await original.text());
+    const baseUrl = await start({ maxResponseBytes: byteLimit });
+    const missing = await fetch(`${baseUrl}/api/v1/query`, { method: "POST", body });
+    expect(missing.status).toBe(401);
+    const method = await fetch(`${baseUrl}/api/v1/query`, { headers: authHeaders() });
+    expect(method.status).toBe(405);
+    const bounded = await fetch(`${baseUrl}/api/v1/query`, { method: "POST", headers, body });
+    expect(bounded.status).toBe(502);
+    expect(await bounded.json()).toMatchObject({ ok: false, error: { code: "SOURCE_TRUNCATED", requestId: "alias-limit" } });
+  });
+
+  it("semantic alias reads the approved team source and cannot switch it by forged headers", async () => {
+    const platform = { query: vi.fn() };
+    const kaData = { query: vi.fn<DataSourceQueryPort["query"]>(async (resolved) => ready(resolved.queryId, "ka_data",
+      [canonicalRow(resolved.queryId, 10, teamAuth.workspaceId, "account-1")])) };
+    const baseUrl = await start({ auth: teamAuth, platform, kaData,
+      dataQueryAccess: { kaDataEnabled: true, diagnosticEnabled: false, entitlements: [] } });
+    const response = await fetch(`${baseUrl}/api/v1/query`, { method: "POST", headers: {
+      ...authHeaders(), "x-ka-workspace-kind": "personal", "x-ka-account-scope": "forged",
+    }, body: JSON.stringify({ query_type: "summary", date: "2026-08-24" }) });
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ ok: true, data: { mode: "ka_data", source: {
+      rowSchemaVersion: "account.summary/v3", lineage: { workspaceKind: "team" }, rows: [{ assessment: { priceSource: "ka_daily" } }],
+    } } });
+    expect(platform.query).not.toHaveBeenCalled();
+    expect(kaData.query.mock.calls[0]?.[1]).toMatchObject({ scopeKind: "team_workspace_readonly", workspaceId: teamAuth.workspaceId });
+  });
+
   it.each(["ka_data", "platform", "reconcile"] as const)(
     "serves %s through its server-selected HTTP route",
     async (dataView) => {

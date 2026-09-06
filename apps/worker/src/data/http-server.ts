@@ -21,10 +21,12 @@ import type { AccountListService } from "../accounts/account-list-service.js";
 import {
   createDataQueryHttpHandler,
   DATA_QUERY_HTTP_PATH,
+  SEMANTIC_QUERY_HTTP_PATH,
   ADMIN_RECONCILE_HTTP_PATH,
   type DataQueryService,
 } from "./query-service.js";
 import { REQUEST_ID_HEADER, resolveRequestId } from "./request-id.js";
+import { semanticQueryRequestSchema } from "./semantic-query-request.js";
 import type { ReadDetailService } from "./read-detail-service.js";
 import {
   parseTaskListSearch,
@@ -371,6 +373,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       const isWorkItemListRoute = url.pathname === WORK_ITEM_LIST_HTTP_PATH;
       if (
         url.pathname !== DATA_QUERY_HTTP_PATH &&
+        url.pathname !== SEMANTIC_QUERY_HTTP_PATH &&
         url.pathname !== ADMIN_RECONCILE_HTTP_PATH &&
         resolvedDetailRoute === null &&
         !isTaskListRoute &&
@@ -570,7 +573,12 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         return;
       }
       if ([...url.searchParams].length > 0) throw new HttpInputError(400, "INVALID_REQUEST");
-      const body = await readJson(request, maxRequestBytes);
+      let body = await readJson(request, maxRequestBytes);
+      if (url.pathname === SEMANTIC_QUERY_HTTP_PATH) {
+        const parsed = semanticQueryRequestSchema.safeParse(body);
+        if (!parsed.success) throw new HttpInputError(400, "INVALID_REQUEST");
+        body = parsed.data;
+      }
       const queryHandler = url.pathname === ADMIN_RECONCILE_HTTP_PATH ? reconcileHandler : handler;
       const result = await queryHandler({
         method: request.method ?? "",
