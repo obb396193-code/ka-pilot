@@ -3241,3 +3241,8 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - ⚠️ 2026-09-06 机器重启清空了 `/private/tmp`：fe 工作树已按 `git worktree add /private/tmp/ka-fe-f006 fe/f006` 重建，所有 commit 无损；**Codex 的 `/private/tmp/ka-be-r009-20260905` 等工作树同样消失**（分支 `be/r010` 等 ref 仍在，未提交改动需 Codex 自查）。
 - 待老板：视觉逐块精修顺序按台账「老板精修状态」列；C3 账户池九态叫法；分层卡 vs 流程条；登录图版（Q5）。
 - 2026-09-06 老板拍板：fe 工作树已从 `/private/tmp/ka-fe-f006` 搬到 **`/Users/aik/ka-fe-f006`**（`git worktree move`，分支不变 `fe/f006`）。盘点：清空只影响目录，各分支 ref 完好；`be/r010` 最后提交 08a18bf（09-06 17:51），重启约 20:22，Codex 最多丢这之间未提交的改动；`codex/fe-functional-bff-v2`、`codex/fe-task5-session-bff`、`codex/personal-team-task4/5/6` 五支旧分支仍未并入 main（各领先 3–5 commit），请 arch 确认是否已被替代。
+
+## 老板拍板（2026-09-06，经 fe 转达）：工作树一律放持久路径
+
+- 所有角色（fe / Codex be / 其他）的 git worktree **不再放 `/private/tmp`**（重启即清空，09-06 已发生一次），统一放 `~/` 下，例如 `/Users/aik/ka-fe-f006`、`/Users/aik/ka-be-r010`。请 arch 写进 `docs/23-开发协作规范.md` 并转告 Codex；Codex 现有 `/private/tmp/ka-be-r009-20260905` 已消失，重建时直接 `git worktree add /Users/aik/ka-be-r010 be/r010`。
+- 配套纪律：每完成一个可交付单元立即路径限定 commit，不攒。
