@@ -1,5 +1,8 @@
 import { once } from "node:events";
 import type { AddressInfo } from "node:net";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import type { SessionHttpService } from "../src/auth/session-http.js";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -126,6 +129,7 @@ describe("data API HTTP composition", () => {
     detailService?: ReadDetailService;
     auth?: ApprovedWorkspaceAuthContext;
     dataQueryAccess?: DataQueryAccessPolicy;
+    sessionHttpService?: SessionHttpService;
   } = {}) {
     const activeAuth = options.auth ?? auth;
     const service = new DataQueryService({
@@ -151,6 +155,7 @@ describe("data API HTTP composition", () => {
       workItemListService: emptyWorkItemListService(),
       sessionAuthService: approvedSessionAuth(activeAuth),
       internalToken,
+      ...(options.sessionHttpService === undefined ? {} : { sessionHttpService: options.sessionHttpService }),
       ...(options.maxResponseBytes === undefined
         ? {}
         : { maxResponseBytes: options.maxResponseBytes }),
@@ -161,6 +166,37 @@ describe("data API HTTP composition", () => {
     const address = server.address() as AddressInfo;
     return `http://127.0.0.1:${address.port}`;
   }
+
+  it("runs the actual Web BFF through loopback Session and query HTTP composition", async () => {
+    const platform = { query: vi.fn<DataSourceQueryPort["query"]>(async (resolved) => ready(resolved.queryId, "canonical",
+      [canonicalRow(resolved.queryId, 11, auth.workspaceId, "account-1")])) };
+    // Synthetic auth/data ports; the BFF, fetch transport, HTTP handler, Registry,
+    // query service and each package's response decoder are real, not a PG test.
+    const sessionHttpService = { current: async (_token: string, requestId: string) => {
+      const workspace = { id: auth.workspaceId, name: "Synthetic", kind: "personal", role: "admin", readOnly: false };
+      return { status: 200, body: { ok: true, data: { identity: { displayName: "Synthetic" }, activeWorkspace: workspace,
+        workspaces: [workspace] }, meta: { requestId } } };
+    } } as unknown as SessionHttpService;
+    const baseUrl = await start({ platform, sessionHttpService });
+    const moduleUrl = new URL("../../web/lib/data/bff.ts", import.meta.url).href;
+    const script = `
+      const {handleSemanticQueryRequest} = await import(process.argv[1]);
+      const results=[];
+      for (const query_type of ['summary','trend','table']) {
+        const request=new Request('http://localhost/api/internal/query', {method:'POST',headers:{cookie:'ka_session=synthetic-session-token-at-least-32-characters'},
+          body:JSON.stringify({query_type,date:'2026-08-24',filters:{media:'KUAISHOU',account_id:'account-1'}})});
+        results.push(await handleSemanticQueryRequest(request,{environment:{KA_DATA_BACKEND_ORIGIN:process.argv[2],KA_DATA_SERVICE_TOKEN:process.argv[3]},requestId:()=> 'bff-real-http'}));
+      }
+      process.stdout.write(JSON.stringify(results));
+    `;
+    const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e", script, moduleUrl, baseUrl, internalToken],
+      { timeout: 15000, maxBuffer: 1024 * 1024 });
+    const results = JSON.parse(stdout) as { status: number; requestId: string; body: { ok: boolean; data?: { source: { queryId: string } } } }[];
+    expect(results.map((item) => item.status)).toEqual([200, 200, 200]);
+    expect(results.map((item) => item.body.data?.source.queryId)).toEqual(["account.summary", "account.trend", "account.table"]);
+    expect(results.every((item) => item.requestId === "bff-real-http")).toBe(true);
+    expect(platform.query).toHaveBeenCalledTimes(3);
+  });
 
   it.each(["summary", "trend", "table"] as const)("public semantic alias reuses canonical %s and strict Session source selection", async (kind) => {
     const platform = { query: vi.fn<DataSourceQueryPort["query"]>(async (resolved) => ready(resolved.queryId, "canonical",

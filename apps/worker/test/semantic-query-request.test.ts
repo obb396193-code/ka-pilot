@@ -1,8 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { semanticQueryRequestSchema } from "../src/data/semantic-query-request.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
+import { readFileSync } from "node:fs";
 
 describe("semantic query syntax adapter", () => {
+  const vectors = JSON.parse(readFileSync(new URL("../../../packages/domain/test/fixtures/semantic-query-syntax.json", import.meta.url), "utf8")) as { input: unknown; expected: unknown }[];
+  it.each(vectors)("matches the shared BFF/Worker syntax vector $input", ({ input, expected }) => {
+    const actual = semanticQueryRequestSchema.safeParse(input);
+    if (expected === null) expect(actual.success).toBe(false);
+    else { expect(actual.success).toBe(true); if (actual.success) expect(actual.data).toEqual(expected); }
+  });
   it("preserves date endpoints, preset and comparison for the same registry", () => {
     const body = semanticQueryRequestSchema.parse({ query_type: "summary", date_from: "2026-08-23", date_to: "2026-08-24",
       compare: "wow", preset: "custom", filters: { media: "KUAISHOU", account_id: "same" } });

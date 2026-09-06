@@ -1,0 +1,36 @@
+import { z } from "zod"
+import { dataQueryRequestSchema } from "./contracts.ts"
+
+// Transport syntax only. The backend Registry alone validates capabilities,
+// parameter types, scopes and limits. Shared test vectors prevent mapping drift.
+const legacySchema = z.object({
+  query_type: z.enum(["summary", "dimension", "health", "tier", "trend", "table"]),
+  date: z.unknown().optional(), date_from: z.unknown().optional(), date_to: z.unknown().optional(),
+  compare: z.unknown().optional(), preset: z.unknown().optional(), dimension_type: z.unknown().optional(),
+  page: z.unknown().optional(), page_size: z.unknown().optional(), columns: z.unknown().optional(),
+  filters: z.object({ media: z.unknown().optional(), account_id: z.unknown().optional(),
+    task_id: z.unknown().optional(), owner: z.unknown().optional() }).strict().optional(),
+}).strict()
+
+export const semanticQueryRequestSchema = z.preprocess((input, context) => {
+  if (typeof input !== "object" || input === null || !Object.hasOwn(input, "query_type")) return input
+  const parsed = legacySchema.safeParse(input)
+  if (!parsed.success) {
+    context.addIssue({ code: "custom", message: "Invalid semantic query request" })
+    return z.NEVER
+  }
+  const value = parsed.data, params: Record<string, unknown> = {}
+  const keys = { date: "date", date_from: "date_from", date_to: "date_to", compare: "compare", preset: "preset",
+    dimension_type: "dimensionType", page: "page", page_size: "pageSize", columns: "columns" } as const
+  for (const [from, to] of Object.entries(keys)) {
+    if (Object.hasOwn(value, from)) params[to] = value[from as keyof typeof keys]
+  }
+  const filters = value.filters
+  if (filters !== undefined) {
+    if (Object.hasOwn(filters, "media")) params.media = filters.media
+    if (Object.hasOwn(filters, "account_id")) params.accountIds = [filters.account_id]
+    if (Object.hasOwn(filters, "task_id")) params.taskId = filters.task_id
+    if (Object.hasOwn(filters, "owner")) params.owner = filters.owner
+  }
+  return { queryId: `account.${value.query_type}`, params }
+}, dataQueryRequestSchema)

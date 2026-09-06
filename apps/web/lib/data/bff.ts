@@ -19,8 +19,10 @@ import {
 } from "./contracts.ts"
 import { handleSessionRequest } from "./session-bff.ts"
 import { sessionSuccessResponseSchema } from "./session-contracts.ts"
+import { semanticQueryRequestSchema } from "./semantic-query-request.ts"
 
 export const BACKEND_DATA_QUERY_PATH = "/api/v1/data/query"
+export const BACKEND_SEMANTIC_QUERY_PATH = "/api/v1/query"
 
 type Dependencies = {
   environment: InternalApiEnvironment & Record<string, string | undefined>
@@ -59,11 +61,19 @@ function expectedStatus(response: DataQueryResponse): number {
 }
 
 export async function handleDataQueryRequest(request: Request, dependencies: Dependencies): Promise<BffResult> {
+  return handleQueryRequest(request, dependencies, "canonical")
+}
+
+export async function handleSemanticQueryRequest(request: Request, dependencies: Dependencies): Promise<BffResult> {
+  return handleQueryRequest(request, dependencies, "semantic")
+}
+
+async function handleQueryRequest(request: Request, dependencies: Dependencies, syntax: "canonical" | "semantic"): Promise<BffResult> {
   const requestId = createRequestId(dependencies.requestId)
   if (request.method !== "POST") return { status: 405, body: error("INVALID_REQUEST", "Method is not allowed", false, requestId), requestId }
   if ([...new URL(request.url).searchParams].length) return { status: 400, body: error("INVALID_REQUEST", "Invalid data query parameters", false, requestId), requestId }
   const input = await readBoundedRequestJson(request)
-  const parsed = dataQueryRequestSchema.safeParse(input)
+  const parsed = (syntax === "semantic" ? semanticQueryRequestSchema : dataQueryRequestSchema).safeParse(input)
   if (!parsed.success) return { status: 400, body: error("INVALID_REQUEST", "Invalid canonical data query request", false, requestId), requestId }
 
   const session = resolveSessionCookie(request)
@@ -85,7 +95,8 @@ export async function handleDataQueryRequest(request: Request, dependencies: Dep
   const expectedMode = workspace.kind === "personal" ? "platform" : "ka_data"
   const upstreamRequest = parsed.data
   try {
-    const upstream = await (dependencies.fetchImpl ?? fetch)(`${config.origin}${BACKEND_DATA_QUERY_PATH}`, {
+    const path = syntax === "semantic" ? BACKEND_SEMANTIC_QUERY_PATH : BACKEND_DATA_QUERY_PATH
+    const upstream = await (dependencies.fetchImpl ?? fetch)(`${config.origin}${path}`, {
       method: "POST",
       headers: internalApiHeaders({ config, requestId, session, json: true }),
       body: JSON.stringify(upstreamRequest),
