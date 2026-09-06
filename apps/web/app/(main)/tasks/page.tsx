@@ -1,7 +1,7 @@
-import { TasksContainer } from "@/components/business/tasks/tasks-container"
-import type { QueryRecord } from "@/lib/data/data-view"
+import { Suspense } from "react"
 
-export default async function TasksPage({ searchParams }: { searchParams: Promise<QueryRecord> }) {
-  const query = await searchParams
-  return <TasksContainer query={query} />
+import { TasksPage } from "@/components/business/tasks/tasks-page"
+
+export default function TasksRoute() {
+  return <Suspense fallback={null}><TasksPage /></Suspense>
 }

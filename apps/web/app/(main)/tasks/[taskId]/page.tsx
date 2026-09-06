@@ -1,7 +1,9 @@
-import { TaskDetail } from "@/components/business/tasks/task-detail"
-import type { QueryRecord } from "@/lib/data/data-view"
+import { Suspense } from "react"
 
-export default async function TaskDetailPage({ params, searchParams }: { params: Promise<{ taskId: string }>; searchParams: Promise<QueryRecord> }) {
-  const [{ taskId }, query] = await Promise.all([params, searchParams])
-  return <TaskDetail taskId={decodeURIComponent(taskId)} query={query} />
+import { TaskDetailPage } from "@/components/business/tasks/task-detail-page"
+
+// 任务详情八页签（v1.5.1 ②），?tab= 收敛
+export default async function TaskDetailRoute({ params }: { params: Promise<{ taskId: string }> }) {
+  const { taskId } = await params
+  return <Suspense fallback={null}><TaskDetailPage taskId={decodeURIComponent(taskId)} /></Suspense>
 }
