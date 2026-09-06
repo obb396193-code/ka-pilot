@@ -3408,3 +3408,11 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - **真实PG4例**含跨workspace同ID、同workspace跨media同ID、空scope、实际中途改价/未来排除、缺日/缺考核、numeric NaN；DB边界unit10例。Domain新增10例，最初模块不存在为加载红；边界unit实际5fail/4pass→补类型/范围防线后10pass。
 - 合main@829f2bc后完整门禁：**Domain617 / DB真实PG350 / Worker828+2外部opt-in skipped**，三包typecheck/lint全过；控制内核30例覆盖97.35%行/93.97%分支。日志`/tmp/ka-window-{domain-final,db-final,worker-final,coverage}.log`。仅合成PG，未真实源/媒体写。Gateway/Web本批未改未重跑。
 - 还需公开Service把summary/考核/compare/lineage放同一个RR/RO事务、两Adapter与Registry/HTTP/BFF切v3；当前repo一条SQL自身一致，不冒称多查询已同快照。P058三个细口径待裁，不阻塞共享只读事务接线。未push/部署，候选等arch。
+
+### P-060 R010a1共享快照与R013b时钟修复｜Codex 2026-09-06，待审
+
+- **b05ea60**：真实Data API composition注入共享RR/RO connection；Platform lineage、summary/trend、table count/pages都在同快照，callback/COMMIT成功才交付。query-only类型复用现有semantic与history仓储，不造第二套SQL；statement15s/lock5s/idle15s为各SQL/空闲限额，不宣称总请求15秒硬截止。临时error listener捕获断连、损坏连接destroy；Canonical损坏仍顶层502，数据库故障只给固定SOURCE_UNAVAILABLE，不带SQL/body。
+- 新增7DB unit、2真实PG（并发改metric/history，旧请求仍旧值+时间；RO拒写25006）、1Worker真实PG（实际adapter和snapshot连接，同ID跨媒体不串）、3adapter unit（不使用fallback pool、commit失败不发旧成功、坏row仍顶层错误）。snapshot行100%/分支86.66%，Platform行96.91%/分支78.87%；性能新增顺序lineage SQL，保持相同总查询数，没有逐行N+1。
+- **657803c**独立修复回归中发现的即时队列时钟问题：默认enqueue/enqueueScheduled用DB now而非Node new Date；显式runAfter不变。真实PG3例把应用时钟前移到2099，两个即时入口仍可领、显式未来不可领。现场5次只读时钟样本含Node领先PG约1.5ms；不是凭猜测改定时器。未放宽lease scope/fence/重试。
+- 失败保留：首次Worker全量831pass/1fail（单轮ETL下游未即刻领取）；clock反例先2fail/1pass，再因测试漏markRunning触发2个LostLease，修测试合法状态流后3pass。最终完整门禁 **Domain617 / DB真实PG362 / Worker832+2外部opt-in skipped**，三包typecheck/lint全过；Worker offline production audit0。日志`/tmp/ka-snapshot-{domain-final,db-final2,worker-final2,coverage}.log`、`/tmp/ka-platform-snapshot-coverage.log`、`/tmp/ka-enqueue-clock-{red,green}.log`。
+- 仅合成PG；Contract/前端/runbook均0diff，无push/部署/真实媒体写。b05ea60当前公开source仍v2，窗口v3/compare/两Adapter/非视觉BFF下一批；P058三项待裁不阻塞参数归一与统一Registry等独立工作。后端状态只写R010-状态，未碰总台账。
