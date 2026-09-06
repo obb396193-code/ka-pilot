@@ -3541,3 +3541,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - Worker非PG全量958过+2外部opt-in跳过，日志`/tmp/ka-public-v3-regression-closed.log`；定向147过；核心覆盖186测试，合计96.78%行/94.11%分支（mapper97.95%、member100%、team summary100%、personal window91.42%行），`/tmp/ka-public-v3-coverage.log`。Worker typecheck/lint、diff check过，无依赖修改。
 - PG限时只读SELECT1仍ECONNREFUSED55432；不借历史PG数字。Domain/Web仍因P068/P073列出的权威fixture不匹配失败，main当前b8d2b0b未变；请同步后我合main复跑。旧cb2330d不能单独合，当前仍candidate_pending_contract_pg，不称R010a1全部完成、未部署/推送/真写。
 - 后续继续同分支公开query入口、其余R010a1与团队月窗容量，不缩减老板总信箱目标。
+
+### P-075｜公开query共用入口候选（be，2026-09-06）
+
+- `8a16bc0`五文件，`POST /api/v1/query`接现有Http composition，与data/query共用Session/来源/Registry/响应/envelope/max字节。严格旧query_type→canonical输入转接，summary/trend/table已通；不设第二套Query ID执行器，data/query本身仍拒旧顶层语法。
+- 安全/口径反例：auth先于业务解析；无session401、错误method405；精确等于响应字节上限502；同requestId；个人/团队分别固定来源、x-ka伪头不变scope；reconcile仅管理员独立入口；未知SQL/dataView/混拼拒绝。task/owner/columns等尚未实现筛选不静默忽略，而由strict Registry拒绝。dimension/health/tier与其余query仍待实现，不能称R010a1完成。
+- TDD HTTP路由4红→HTTP48+语法18全过；语法转换100%行/分支；Worker全量990过+2外部opt-in跳过（`/tmp/ka-query-alias-full.log`），typecheck/lint/diff检查过；Worker离线production audit0。PG本轮只读探针ECONNREFUSED，Domain/Web权威fixture仍P073依赖，不报五包全绿。
+- candidate_pending_contract_pg、未合流/部署/真实源验证；Contract/前端视觉0diff，未push/媒体写。继续原信箱剩余任务，不等旧root。
