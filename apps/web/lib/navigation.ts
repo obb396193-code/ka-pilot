@@ -14,6 +14,8 @@ export const primaryNavigation = [
 export function pageTitleFor(pathname: string): string {
   if (pathname === "/") return "经营工作台"
   if (pathname.startsWith("/diagnostics")) return "工作项详情"
+  if (pathname.startsWith("/settings")) return "设置"
+  if (pathname.startsWith("/admin")) return "治理后台"
   const hit = primaryNavigation.find((item) => item.url !== "/" && (pathname === item.url || pathname.startsWith(`${item.url}/`)))
   return hit ? hit.title : "KA Pilot"
 }

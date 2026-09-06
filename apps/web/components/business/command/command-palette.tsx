@@ -33,12 +33,12 @@ import { primaryNavigation } from "@/lib/navigation"
 import { themeModes } from "@/lib/theme/theme"
 import { OPEN_COMMAND_EVENT, openAgentDrawer } from "./events"
 
-// ⌘K 命令面板 = 对象直达 + 页面 + 动作。对象搜索接口（GET /search?q=，R-010）接入前用脱敏示例，行尾标「示例」。
-const recentObjects = [
-  { kind: "账户", label: "演示账户 · 华东 07", href: "/accounts/demo-account-07?media=KUAISHOU", icon: IconDatabase },
-  { kind: "任务", label: "AAC 拉新", href: "/tasks", icon: IconTargetArrow },
-  { kind: "异常", label: "成本异常 P0 · 华东 07", href: "/diagnostics/finding-cost-001", icon: IconAlertTriangle },
-] as const
+import { isOk } from "@/lib/fixtures/contract"
+import { searchFixture, searchTypeLabel, type SearchItem } from "@/lib/fixtures/agent"
+
+// ⌘K 命令面板 = 对象直达（GET /search?q= · system/search.json）+ 最近访问 + 页面 + 动作；命中为空 → 问 AI
+const typeIcon: Record<SearchItem["type"], typeof IconDatabase> = { account: IconDatabase, task: IconTargetArrow, work_item: IconAlertTriangle, material: IconBook2, document: IconBook2 }
+const searchData = isOk(searchFixture) ? searchFixture.data : { items: [], recent: [] }
 
 export function CommandPalette() {
   const router = useRouter()
@@ -93,18 +93,27 @@ export function CommandPalette() {
           </CommandGroup>
         ) : null}
 
-        <CommandGroup heading="最近访问">
-          {recentObjects.map((item) => (
-            <CommandItem key={item.label} value={`${item.kind} ${item.label}`} onSelect={() => go(item.href)}>
-              <item.icon />
-              <span className="truncate">{item.label}</span>
-              <span className="ml-auto flex items-center gap-1.5">
-                <Badge variant="outline" className="h-5 px-1.5 text-[10px] text-muted-foreground">{item.kind}</Badge>
-                <Badge variant="secondary" className="h-5 px-1.5 text-[10px]">示例</Badge>
-              </span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        {query.trim() ? (
+          <CommandGroup heading="对象">
+            {searchData.items.map((item) => { const Icon = typeIcon[item.type]; return (
+              <CommandItem key={item.id} value={`${searchTypeLabel[item.type]} ${item.label} ${item.id}`} onSelect={() => go(item.href)}>
+                <Icon />
+                <span className="truncate">{item.label}</span>
+                <span className="ml-auto flex items-center gap-1.5"><Badge variant="outline" className="h-5 px-1.5 text-[10px] text-muted-foreground">{searchTypeLabel[item.type]}</Badge><span className="font-mono text-[10px] text-muted-foreground">{item.id}</span></span>
+              </CommandItem>
+            ) })}
+          </CommandGroup>
+        ) : (
+          <CommandGroup heading="最近访问">
+            {searchData.recent.map((item) => { const Icon = typeIcon[item.type]; return (
+              <CommandItem key={item.id} value={`最近 ${searchTypeLabel[item.type]} ${item.label}`} onSelect={() => go(item.href)}>
+                <Icon />
+                <span className="truncate">{item.label}</span>
+                <span className="ml-auto flex items-center gap-1.5"><Badge variant="outline" className="h-5 px-1.5 text-[10px] text-muted-foreground">{searchTypeLabel[item.type]}</Badge></span>
+              </CommandItem>
+            ) })}
+          </CommandGroup>
+        )}
 
         <CommandSeparator />
         <CommandGroup heading="页面">
@@ -145,7 +154,7 @@ export function CommandPalette() {
       </CommandList>
       <div className="flex items-center justify-between border-t bg-muted/40 px-3 py-2 text-[11px] text-muted-foreground">
         <span className="flex items-center gap-3"><Key>↑↓</Key>选择<Key>↵</Key>打开<Key>esc</Key>关闭</span>
-        <span>对象搜索接口接入后覆盖全量账户与任务</span>
+        <span>GET /search?q= · fixture 只有 2 个对象；接入后覆盖全量账户 / 任务 / 工作项 / 素材 / 文档</span>
       </div>
     </CommandDialog>
   )
