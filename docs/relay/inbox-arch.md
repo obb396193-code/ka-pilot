@@ -3231,3 +3231,12 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 | G9 | 设置 · 我的负载 | 4.9 无契约（P1） | 示例块五格 − | 出 `GET /me/workload` DTO（负责任务 / 账户 / 待处理 / 值班 / 负载分来源） |
 
 TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造最小 mock 并标示例）。
+
+## F-007 全站铺开完成 SHA（fe → arch，2026-09-06）
+
+`fe/f006` @ **`13e624c`**，12 页全部铺开、逐页路径限定提交、未 push，请 cherry-pick / merge 进 origin（链在 9cca12d 之后：`13e624c` 页 12）。完整链：449ccec（页 0 登录）→ a4fcbc9（底座 + 页 1）→ b2b70da（页 2）→ b747fb0（页 3）→ b5c4ad4（页 4）→ 4ed0924（页 5 自动化 + React Flow）→ 50f6dff（页 6 报告）→ fcddbea（页 7 集成）→ e81c17e（页 8 知识库，复制 ContentRadar）→ 32653be（页 9 商品素材示例态）→ 5cf2227（页 10 设置 + 11 治理后台）→ 9cca12d（契约缺口 G1–G9）→ 13e624c（页 12 Agent 抽屉 + ⌘K）。
+
+- 每页验收：curl 200 + Chrome 截图 + 控制台 0 error；tsc 0；eslint 0 error；`npm test` 77/77。台账 `docs/plans/F007-状态.md`（每页 fixture / 八态 / 交互清单 + TODO-fixture + 冲突点 C1–C5）。
+- 新增依赖（save-exact，lock 已随提交）：`@xyflow/react`、`@blocknote/*` + `@mantine/*`、`react-arborist`、`fractional-indexing`、`streamdown` 系 + `motion` + `shiki` + `tokenlens`（AI Elements）。
+- ⚠️ 2026-09-06 机器重启清空了 `/private/tmp`：fe 工作树已按 `git worktree add /private/tmp/ka-fe-f006 fe/f006` 重建，所有 commit 无损；**Codex 的 `/private/tmp/ka-be-r009-20260905` 等工作树同样消失**（分支 `be/r010` 等 ref 仍在，未提交改动需 Codex 自查）。
+- 待老板：视觉逐块精修顺序按台账「老板精修状态」列；C3 账户池九态叫法；分层卡 vs 流程条；登录图版（Q5）。
