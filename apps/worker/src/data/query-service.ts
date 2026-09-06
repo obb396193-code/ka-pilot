@@ -248,6 +248,10 @@ function guardSourceOutput(
     scope.accounts.map((account) => `${account.media}\u0000${account.accountId}`),
   );
   for (const row of result.rows) {
+    if (resolved.params.taskId !== undefined && (!Array.isArray(row.tasks) || !row.tasks.some((task: unknown) =>
+      typeof task === "object" && task !== null && "taskId" in task && task.taskId === resolved.params.taskId))) {
+      throw new OutputContractError();
+    }
     const identity = rowAccountIdentity(row);
     const carriesIdentity = identity.media !== null || identity.accountId !== null;
     if (resolved.outputShape === "account_rows" && (

@@ -75,6 +75,7 @@ function semanticScope(
           }
         : {}),
       ...(resolved.params.media === undefined ? {} : { media: resolved.params.media }),
+      ...(resolved.params.taskId === undefined ? {} : { taskId: resolved.params.taskId }),
       ...(resolved.params.accountId === undefined
         ? {}
         : { accountId: resolved.params.accountId }),
@@ -138,7 +139,7 @@ function sourceLineage(
           : {}),
       ...(scope.scopeKind === "explicit_accounts"
         ? {
-            requestedObjects: scope.accounts.length,
+            ...(resolved.params.taskId === undefined ? { requestedObjects: scope.accounts.length } : {}),
             returnedObjects: Math.min(scope.accounts.length, lineage.returnedAccounts),
           }
         : { returnedObjects: lineage.returnedAccounts }),

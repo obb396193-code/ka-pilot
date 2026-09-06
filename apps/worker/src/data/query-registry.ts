@@ -33,6 +33,7 @@ export interface NormalizedQueryParams {
   media?: string;
   accountIds?: string[];
   accountId?: string;
+  taskId?: string;
   page?: number;
   pageSize?: number;
   preset?: z.infer<typeof queryWindowSchema>["preset"];
@@ -137,6 +138,7 @@ function normalizeDateParams(input: {
   media?: string;
   accountIds?: string[];
   accountId?: string;
+  taskId?: string;
   page?: number;
   pageSize?: number;
   preset?: z.infer<typeof queryWindowSchema>["preset"];
@@ -161,6 +163,7 @@ function normalizeDateParams(input: {
     ...(input.media === undefined ? {} : { media: input.media }),
     ...(input.accountIds === undefined ? {} : { accountIds: input.accountIds }),
     ...(input.accountId === undefined ? {} : { accountId: input.accountId }),
+    ...(input.taskId === undefined ? {} : { taskId: input.taskId }),
     ...(input.page === undefined ? {} : { page: input.page }),
     ...(input.pageSize === undefined ? {} : { pageSize: input.pageSize }),
   };
@@ -186,6 +189,8 @@ const summarySchema = normalizedSchema({ ...windowFields, compare: z.enum(["dod"
 const trendSchema = normalizedSchema(windowFields);
 const tableSchema = normalizedSchema({
   ...commonDateFields,
+  taskId: z.string().min(1).max(256).refine((value) => [...value].every((character) =>
+    character.charCodeAt(0) >= 32 && character.charCodeAt(0) !== 127), "Invalid task identifier").optional(),
   page: z.number().int().min(1).default(1),
   pageSize: z.number().int().min(1).max(500).default(50),
 });
@@ -239,6 +244,7 @@ function whereClause(
   if (params.media !== undefined) filters.push(`media = ${sqlString(params.media)}`);
   const requested = params.accountId === undefined ? params.accountIds : [params.accountId];
   if (requested !== undefined) filters.push(`account_id IN (${requested.map(sqlString).join(", ")})`);
+  if (params.taskId !== undefined) filters.push(`task_id = ${sqlString(params.taskId)}`);
   return filters.join(" AND ");
 }
 
