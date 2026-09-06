@@ -3641,3 +3641,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - hash使用DB `to_char(... AT TIME ZONE 'UTC', ...SS.US...)`固定六位微秒，不从JS Date丢精度重建。预检和实际执行attempt独立计数；actual complete仅匹配dry_run=false且running，防误改预检记录。新增expectedHash是内部可选参数供调用方绑定已展示预览，不是擅自新增HTTP DTO；未提供时同样强制持久化证据匹配，不免预检。
 - 24核心unit过、独立硬门模块100%行/分支；Domain675过/10旧P073 fixture失败，DB纯逻辑268过，Worker非PG1077过+2外部skip，三包type/lint绿，offline DB audit0。真PG显式隔离库55432拒连，33例跳过；不能将mock SQL/静态锁认作真实并发证据。计划+完整报告`docs/plans/2026-09-06-R010a2-dry-run硬前置.md`。
 - 当前Repository只接受受信服务端预检结果，没有真实媒体预检Adapter/写HTTP；生产create绝不自动造成功（PG测试helper显式提交合成结果）。confirm尚未返回execution_run/原子排job，retry/unknown/T1仍后续，本批不冒充完整安全执行闭环。无Contract/前端/依赖/真实写/push/合流/部署；candidate待审、PG门禁待补。
+
+### P-088｜failed重试复核内核候选（be，2026-09-06）
+
+- `d4d8b18`，5文件；failed→retry→confirmed，未知/部分成功/成功等不准retry。confirm/retry共用父行锁内批准流程；retry额外要求workspace内已完成failed实际run与原confirm_hash，重验TTL/成功dry-run/hash/current from。成功后一次reset items pending+清失败原因/header executedAt，旧run保留；重复confirmed回放不再次reset，actual begin产生attempt2。
+- TTL过期failed返回内部expired并保留failed历史，不偷加failed→expired状态转移。无新增HTTP/队列/外部凭证/Contract/视觉/依赖；write_enabled与账户写授权仍由将来的写Service落实，当前没有媒体写入口。confirm/retry pending run+job原子排队及返回execution_run未完成。
+- Domain676过/10旧P073失败，DB纯逻辑282过，Worker非PG1077过+2opt-in skip，三包typecheck/lint过，DB offline audit0。定向retry14+dryrun24过；三份Repository unit51过，**整个Repository覆盖71.84%未达80%门，命令退出1**；本批approve/wrapper63/63语句覆盖。未修改门槛，旧complete/reconciliation覆盖欠账仍须补，不称全门禁通过。
+- PG显式合成库55432拒连，35例跳过（包括新增并发retry/attempt2/值变/过期两例），真实并发/rollback未验证。详见`docs/plans/2026-09-06-R010a2-失败重试内核.md`完整命令与报告。candidate未合流/部署/push；继续其余冻结任务，不标总目标完成。
