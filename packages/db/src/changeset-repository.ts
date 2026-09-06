@@ -4,6 +4,7 @@ import {
   executionDirective,
   transitionChangeSet,
   verifyCurrentValues,
+  parseDryRunItems,
   type ChangeValue,
   type ChangeSetItemSnapshot,
   type ChangeSetAction,
@@ -15,6 +16,8 @@ import {
 } from "@ka/domain";
 import type { Pool, PoolClient } from "pg";
 import { decodeChangeSetValues, encodeChangeSetItems } from "./changeset-item-values.js";
+import { ChangeSetPreconditionError, draftHash, requireSuccessfulDryRun, requireValidClock } from "./changeset-dry-run.js";
+export { ChangeSetPreconditionError } from "./changeset-dry-run.js";
 
 export interface NewChangeSetItem {
   targetType: ChangeTargetType;
@@ -76,6 +79,9 @@ interface HeaderRow {
   executor_identity: string | null;
   multica_issue_id: string | null;
   ttl_expire_at: Date | null;
+  ttl_expire_at_text: string | null;
+  dry_run_hash: string | null;
+  confirm_hash: string | null;
   reason_code: string | null;
   simulation: Record<string, unknown> | null;
   created_at: Date;
@@ -99,7 +105,9 @@ interface ItemRow {
 const headerColumns = `
   id, workspace_id, work_item_id, media, account_id, title, status, initiator,
   credential_owner_user_id, executor_identity, multica_issue_id,
-  ttl_expire_at, reason_code, simulation, created_at, executed_at
+  ttl_expire_at, reason_code, simulation, created_at, executed_at,
+  to_char(ttl_expire_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"') AS ttl_expire_at_text,
+  dry_run_hash, confirm_hash
 `;
 
 function itemRecord(row: ItemRow): ChangeSetItemSnapshot {
@@ -231,6 +239,56 @@ function reconciliationAction(
 export class ChangeSetRepository {
   constructor(private readonly pool: Pool) {}
 
+  /** Preparation and result persistence never hold a DB lock during media preflight. */
+  async prepareDryRun(input: { workspaceId: string; changeSetId: string; now: Date }): Promise<{ changeset: ChangeSetRecord; hash: string }> {
+    requireValidClock(input.now);
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      const row = await client.query<HeaderRow>(`SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2 FOR UPDATE`, [input.workspaceId, input.changeSetId]);
+      const header = requireHeader(row.rows[0], input.changeSetId);
+      await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
+      if (header.status !== "draft") throw new ChangeSetPreconditionError("INVALID_STATE");
+      if (header.ttl_expire_at === null) throw new Error("changeset has no TTL");
+      assertChangeSetConfirmable({ status: header.status, ttlExpireAt: header.ttl_expire_at, now: input.now });
+      const changeset = await assemble(client, header);
+      const hash = draftHash(header, changeset.items);
+      await client.query("COMMIT");
+      return { changeset, hash };
+    } catch (error) { await rollback(client); throw error; } finally { client.release(); }
+  }
+
+  /** Only trusted server-side preflight code may call this. No HTTP exposes it. */
+  async recordDryRun(input: { workspaceId: string; changeSetId: string; expectedHash: string; now: Date; items: ItemExecutionResult[] }): Promise<{ executionRunId: string; hash: string; status: "success" | "partial" | "failed" | "unknown" }> {
+    requireValidClock(input.now);
+    const expectedHash = input.expectedHash;
+    if (typeof expectedHash !== "string" || !/^[a-f0-9]{64}$/.test(expectedHash)) throw new Error("Invalid dry-run hash");
+    const items = parseDryRunItems(input.items);
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      const row = await client.query<HeaderRow>(`SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2 FOR UPDATE`, [input.workspaceId, input.changeSetId]);
+      const header = requireHeader(row.rows[0], input.changeSetId);
+      await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
+      if (header.status !== "draft") throw new ChangeSetPreconditionError("INVALID_STATE");
+      if (header.ttl_expire_at === null) throw new Error("changeset has no TTL");
+      assertChangeSetConfirmable({ status: header.status, ttlExpireAt: header.ttl_expire_at, now: input.now });
+      const storedItems = await loadItems(client, header);
+      const hash = draftHash(header, storedItems);
+      if (hash !== expectedHash) throw new ChangeSetPreconditionError("FROM_VALUE_CHANGED");
+      assertCompleteItemCoverage(storedItems, items);
+      const status = aggregateExecutionResult(items);
+      const attempt = await client.query<{ attempt: number }>("SELECT COALESCE(MAX(attempt),0)::int + 1 AS attempt FROM execution_runs WHERE changeset_id=$1 AND dry_run=true", [header.id]);
+      const run = await client.query<{ id: string }>(`INSERT INTO execution_runs(changeset_id,attempt,status,dry_run,request_payload,result_payload,started_at,finished_at)
+        VALUES($1,$2,$3,true,$4::jsonb,$5::jsonb,$6,$6) RETURNING id`, [header.id, attempt.rows[0]!.attempt, status, JSON.stringify({ dry_run_hash: hash }), JSON.stringify({ items }), input.now]);
+      if (run.rows.length !== 1) throw new Error("Dry-run result was not persisted");
+      const updated = await client.query("UPDATE changesets SET dry_run_hash=$3,confirm_hash=NULL WHERE workspace_id=$1 AND id=$2 AND status='draft'", [input.workspaceId, header.id, status === "success" ? hash : null]);
+      if (updated.rowCount !== 1) throw new Error("Dry-run draft changed while persisting");
+      await client.query("COMMIT");
+      return { executionRunId: run.rows[0]!.id, hash, status };
+    } catch (error) { await rollback(client); throw error; } finally { client.release(); }
+  }
+
   async create(input: NewChangeSet): Promise<ChangeSetRecord> {
     const items = encodeChangeSetItems(input.items);
     if (input.media.trim() === "" || input.accountId.trim() === "") {
@@ -319,7 +377,9 @@ export class ChangeSetRepository {
     changeSetId: string;
     now: Date;
     currentValues: CurrentValueSnapshot[];
+    expectedHash?: string;
   }): Promise<ConfirmResult> {
+    requireValidClock(input.now);
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
@@ -331,7 +391,9 @@ export class ChangeSetRepository {
       const header = requireHeader(locked.rows[0], input.changeSetId);
       await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
       const storedItems = await loadItems(client, header);
+      if (header.status !== "draft" && header.status !== "confirmed") throw new ChangeSetPreconditionError("INVALID_STATE");
       if (header.status === "confirmed") {
+        await requireSuccessfulDryRun(client, header, storedItems, input.expectedHash, true);
         const changeset = await assemble(client, header);
         await client.query("COMMIT");
         return { outcome: "confirmed", idempotent: true, changeset };
@@ -343,15 +405,16 @@ export class ChangeSetRepository {
         return { outcome: "expired" };
       }
       assertChangeSetConfirmable({ status: header.status, ttlExpireAt: header.ttl_expire_at, now: input.now });
+      const hash = await requireSuccessfulDryRun(client, header, storedItems, input.expectedHash);
       const verification = verifyCurrentValues(storedItems, input.currentValues);
       if (!verification.ok) {
         await client.query("COMMIT");
         return { outcome: "conflict", conflicts: verification.conflicts };
       }
       const updated = await client.query<HeaderRow>(
-        `UPDATE changesets SET status='confirmed'
+        `UPDATE changesets SET status='confirmed',confirm_hash=$3
          WHERE workspace_id=$1 AND id=$2 AND status='draft' RETURNING ${headerColumns}`,
-        [input.workspaceId, input.changeSetId],
+        [input.workspaceId, input.changeSetId, hash],
       );
       const changeset = await assemble(client, requireHeader(updated.rows[0], input.changeSetId));
       await client.query("COMMIT");
@@ -371,6 +434,7 @@ export class ChangeSetRepository {
     | { directive: "execute"; executionRunId: string; changeset: ChangeSetRecord }
     | { directive: "reconcile_required" | "skip_terminal" | "not_ready" }
   > {
+    requireValidClock(input.startedAt);
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
@@ -380,7 +444,7 @@ export class ChangeSetRepository {
       );
       const header = requireHeader(locked.rows[0], input.changeSetId);
       await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
-      await loadItems(client, header);
+      const storedItems = await loadItems(client, header);
       const directive = executionDirective(header.status);
       if (directive !== "execute") {
         await client.query("COMMIT");
@@ -395,12 +459,13 @@ export class ChangeSetRepository {
         await client.query("COMMIT");
         return { directive: "skip_terminal" };
       }
+      await requireSuccessfulDryRun(client, header, storedItems, undefined, true);
       let next = header.status;
       if (next === "confirmed") next = transitionChangeSet(next, "send");
       next = transitionChangeSet(next, "start_execution");
       const attempt = await client.query<{ attempt: number }>(
         `SELECT COALESCE(MAX(attempt),0)::int + 1 AS attempt
-         FROM execution_runs WHERE changeset_id=$1`, [header.id],
+         FROM execution_runs WHERE changeset_id=$1 AND dry_run=false`, [header.id],
       );
       const run = await client.query<{ id: string }>(
         `INSERT INTO execution_runs
@@ -444,7 +509,7 @@ export class ChangeSetRepository {
       await persistItemResults(client, header.id, input.items);
       const execution = await client.query(
         `UPDATE execution_runs SET status=$3,result_payload=$4::jsonb,finished_at=$5
-         WHERE id=$1 AND changeset_id=$2`,
+         WHERE id=$1 AND changeset_id=$2 AND dry_run=false AND status='running'`,
         [input.executionRunId, header.id, aggregate, JSON.stringify(input.resultPayload), input.finishedAt],
       );
       if (execution.rowCount !== 1) {

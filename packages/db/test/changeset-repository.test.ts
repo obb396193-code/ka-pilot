@@ -42,8 +42,8 @@ describe("ChangeSetRepository", () => {
     );
   });
 
-  async function create(ttl = new Date("2026-08-19T10:30:00Z")) {
-    return repository.create({
+  async function create(ttl = new Date("2026-08-19T10:30:00Z"), withPreview = true) {
+    const created = await repository.create({
       workspaceId,
       media: "KUAISHOU",
       accountId: "account-1",
@@ -57,7 +57,59 @@ describe("ChangeSetRepository", () => {
         { targetType: "unit", targetId: "unit-2", field: "budget", fromValue: { type: "number" as const, value: 1000 }, toValue: { type: "number" as const, value: 800 } },
       ],
     });
+    // Explicit synthetic preflight for these PG tests, never production create behavior.
+    if (withPreview) await preview(created.id);
+    return created;
   }
+
+  async function preview(changeSetId: string) {
+    const at = new Date("2026-08-19T09:00:00Z");
+    const prepared = await repository.prepareDryRun({ workspaceId, changeSetId, now: at });
+    await repository.recordDryRun({ workspaceId, changeSetId, now: at, expectedHash: prepared.hash,
+      items: prepared.changeset.items.map((item) => ({ itemId: item.id, status: "success" })) });
+    return prepared;
+  }
+
+  it("does not confirm without a successful persisted preview", async () => {
+    const created = await create(undefined, false);
+    await expect(repository.confirm({ workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:00:00Z"), currentValues: [] })).rejects.toMatchObject({ code: "DRY_RUN_REQUIRED" });
+    expect((await repository.get(workspaceId, created.id)).status).toBe("draft");
+  });
+
+  it.each(["item", "ttl"])("rejects a prepared preview after persisted %s changes", async (kind) => {
+    const created = await create();
+    const prepared = await preview(created.id);
+    if (kind === "item") await pool.query("UPDATE changeset_items SET to_value=$2::jsonb WHERE changeset_id=$1", [created.id, JSON.stringify({ type: "number", value: 99 })]);
+    else await pool.query("UPDATE changesets SET ttl_expire_at=ttl_expire_at+interval '1 microsecond' WHERE id=$1", [created.id]);
+    await expect(repository.recordDryRun({ workspaceId, changeSetId: created.id, now: new Date("2026-08-19T09:01:00Z"), expectedHash: prepared.hash,
+      items: created.items.map((item) => ({ itemId: item.id, status: "success" })) })).rejects.toMatchObject({ code: "FROM_VALUE_CHANGED" });
+    await expect(repository.confirm({ workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:00:00Z"), currentValues: [] })).rejects.toMatchObject({ code: "FROM_VALUE_CHANGED" });
+  });
+
+  it("invalidates an older successful run when the latest preview fails", async () => {
+    const created = await create(), prepared = await preview(created.id);
+    await repository.recordDryRun({ workspaceId, changeSetId: created.id, now: new Date("2026-08-19T09:01:00Z"), expectedHash: prepared.hash,
+      items: created.items.map((item) => ({ itemId: item.id, status: "failed" })) });
+    await expect(repository.confirm({ workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:00:00Z"), currentValues: [] })).rejects.toMatchObject({ code: "DRY_RUN_REQUIRED" });
+    const rows = await pool.query("SELECT dry_run,status FROM execution_runs WHERE changeset_id=$1 ORDER BY attempt", [created.id]);
+    expect(rows.rows.map((row) => row.status)).toEqual(["success", "success", "failed"]);
+    expect(rows.rows.every((row) => row.dry_run)).toBe(true);
+  });
+
+  it("checks the successful run itself, not only the changeset hash", async () => {
+    const created = await create();
+    await pool.query("UPDATE execution_runs SET status='failed' WHERE changeset_id=$1 AND dry_run=true", [created.id]);
+    await expect(repository.confirm({ workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:00:00Z"), currentValues: [] })).rejects.toMatchObject({ code: "DRY_RUN_REQUIRED" });
+  });
+
+  it("serializes parallel confirmation of one preview", async () => {
+    const created = await create();
+    const input = { workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:00:00Z"), currentValues: created.items.map((item) => ({ targetType: item.targetType, targetId: item.targetId, field: item.field, value: item.fromValue })) };
+    const results = await Promise.all([repository.confirm(input), repository.confirm(input)]);
+    expect(results.filter((result) => result.outcome === "confirmed" && result.idempotent)).toHaveLength(1);
+    const hashes = (await pool.query("SELECT dry_run_hash,confirm_hash FROM changesets WHERE id=$1", [created.id])).rows[0];
+    expect(hashes.dry_run_hash).toBe(hashes.confirm_hash);
+  });
 
   it("creates the header and items atomically and isolates workspace reads", async () => {
     const created = await create();
@@ -128,7 +180,7 @@ describe("ChangeSetRepository", () => {
     await expect(repository.confirm(input)).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(repository.beginExecution({ workspaceId, changeSetId: created.id, requestPayload: {}, startedAt: input.now }))
       .rejects.toMatchObject({ code: "FORBIDDEN" });
-    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1", [created.id])).rows).toHaveLength(0);
+    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1 AND dry_run=false", [created.id])).rows).toHaveLength(0);
   });
 
   it.each(["workspace", "media", "account"])("rejects mismatched child %s scope on read, confirm and execute", async (dimension) => {
@@ -144,7 +196,7 @@ describe("ChangeSetRepository", () => {
     await pool.query("UPDATE changesets SET status='confirmed' WHERE id=$1", [created.id]);
     await expect(repository.beginExecution({ workspaceId,changeSetId:created.id,startedAt:new Date("2026-08-19T10:00Z"),requestPayload:{} }))
       .rejects.toMatchObject({ code: "FORBIDDEN" });
-    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1", [created.id])).rows).toHaveLength(0);
+    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1 AND dry_run=false", [created.id])).rows).toHaveLength(0);
   });
 
   it("rejects a linked work item outside the changeset account scope", async () => {
@@ -274,6 +326,11 @@ describe("ChangeSetRepository", () => {
     });
     expect(run.directive).toBe("execute");
     if (run.directive !== "execute") throw new Error("expected execution run");
+
+    const previewRun = (await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1 AND dry_run=true LIMIT 1", [created.id])).rows[0];
+    await expect(repository.completeExecution({ workspaceId, changeSetId: created.id, executionRunId: previewRun.id,
+      finishedAt: new Date("2026-08-19T10:02:00Z"), resultPayload: {}, items: created.items.map((item) => ({ itemId: item.id, status: "success" })) })).rejects.toThrow("execution run");
+    expect((await repository.get(workspaceId, created.id)).items.every((item) => item.itemStatus === "pending")).toBe(true);
 
     const completed = await repository.completeExecution({
       workspaceId,

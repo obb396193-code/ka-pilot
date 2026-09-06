@@ -7,6 +7,7 @@ import {
   executionDirective,
   transitionChangeSet,
   verifyCurrentValues,
+  parseDryRunItems,
   type ChangeSetItemSnapshot,
 } from "../src/changesets.js";
 
@@ -91,6 +92,15 @@ describe("confirmation guards", () => {
 });
 
 describe("execution result", () => {
+  it("validates and snapshots preflight results without coercion", () => {
+    const input = [{ itemId: 1, status: "success", failReason: "synthetic" }];
+    const snapshot = parseDryRunItems(input);
+    input[0]!.status = "failed";
+    expect(snapshot[0]!.status).toBe("success");
+    for (const bad of [[], [{ itemId: "1", status: "success" }], [{ itemId: 1, status: "invented" }], [{ itemId: 1, status: "success", secret: "must reject extra" }]]) {
+      expect(() => parseDryRunItems(bad)).toThrow();
+    }
+  });
   it("aggregates success, failure, partial and unknown", () => {
     expect(aggregateExecutionResult([{ itemId: 1, status: "success" }])).toBe("success");
     expect(aggregateExecutionResult([{ itemId: 1, status: "failed" }])).toBe("failed");

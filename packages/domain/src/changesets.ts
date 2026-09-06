@@ -1,4 +1,5 @@
 import { changeValueSchema, sameChangeValue, type ChangeValue } from "./changeset-values.js";
+import { z } from "zod";
 
 export type ChangeSetStatus =
   | "draft"
@@ -61,6 +62,16 @@ export interface ItemExecutionResult {
   itemId: number;
   status: "success" | "failed" | "unknown";
   failReason?: string | undefined;
+}
+
+const dryRunItemsSchema = z.array(z.object({
+  itemId: z.number().int().positive().safe(),
+  status: z.enum(["success", "failed", "unknown"]),
+  failReason: z.string().max(1024).optional(),
+}).strict()).min(1).max(10000);
+
+export function parseDryRunItems(input: unknown): ItemExecutionResult[] {
+  return dryRunItemsSchema.parse(input);
 }
 
 const transitions: Partial<
