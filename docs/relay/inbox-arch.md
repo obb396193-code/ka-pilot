@@ -3720,3 +3720,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 同提案§2–3对R010全部11项、R011–016及品牌图逐组保留范围；现场main b8d2b0b，be62aa431。真实HTTP composition只含Session/查询/列表/旧详情，/healthz不是产品健康页；migrations到012；执行/规则类存在但未进生产consumer，不能拿测试量冒充用户闭环。
 - 优先请关P073/P077读DTO样例与数据健康、P083动作状态/关联字段、P082团队快照（当前显式阻塞R011→R012→R014→R015→R016）。规则六問P098、静音P096、rollback P092/093可并行裁；PG/OS模板仍外部依赖。
 - 如要先推进014或R010b独立切片，请在信箱改依赖顺序；be不擅自绕过“排在R011/R012之后”。本次只读审计+提案，非代码交付，无新测试或PG通过声明；旧候选均待审/未部署，总目标未完成。
+
+### P-100｜R012 bid_tool映射提案：官方字段不是同一分类轴（be，2026-09-06）
+
+- 已完成信箱要求的只读映射提案：`docs/plans/2026-09-06-R012-快手出价维度映射提案.md`。实读原仓ka-src-0007归档文档2565/2568/2570/2571/2572，附版本/SHA256/JSON Pointer/行号；不是当前官网或真实账户回包验证。
+- 新关键证据：unit_type是创意制作；ocpx_action_type是优化目标；campaign.bid_type=1是最大转化而unit/list.bid_type=1是CPM。三个字段不能粗暴映射为手动/自动/OCPX一阶二阶。unit/list枚举1/2/6/10/20，当前create/update列2/10/12，输入输出字典不一致；MCB12读回值请OS验证，不用请求值冒充生效值。
+- 推荐A：bid_tool限出价机制族，优化目标/创意方式/智能开关分轴；备选B复合标签需新分类版本，不能偷偷加。请先裁A/B与候选enum/unknown/粒度；个人仍DIMENSION_UNSUPPORTED。team直接读ka源bid_tool，不用MAPI推导覆盖，更不可JOIN不同namespace的ad与账户日表。
+- 提案含最多6次已授权对象只读OS探针，无账户样本则标未验证、不制造媒体写。代码/Contract/迁移/前端0改，raw官方快照只读未复制/外发；本轮只有proposal，不声称8维实现/PG/上线。依赖仍按P099，后续编码等arch冻结。
