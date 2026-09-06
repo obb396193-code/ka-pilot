@@ -30,7 +30,7 @@ describe("frozen v3 window row boundary (not the public route switch)", () => {
   });
   it("rejects reversed windows and unknown fields/presets", () => {
     for (const window of [{ from: "2026-09-02", to: "2026-09-01" }, { from: "2026-09-01", to: "2026-09-02", preset: "weekly" }, { from: "2026-09-01", to: "2026-09-02", workspaceId: "spoof" }]) expect(queryWindowSchema.safeParse(window).success).toBe(false);
-    expect(queryWindowSchema.parse({ from: "2024-02-29", to: "2024-02-29" })).toEqual({ from: "2024-02-29", to: "2024-02-29" });
+    expect(queryWindowSchema.parse({ from: "2024-02-29", to: "2024-02-29" })).toEqual({ from: "2024-02-29", to: "2024-02-29", preset: "custom" });
   });
   it("rejects missing blocks, invalid numbers and impossible assessment states", () => {
     const row = fixture("summary-window-v3-green").data.source.rows[0];
