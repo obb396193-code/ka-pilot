@@ -3727,3 +3727,11 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 新关键证据：unit_type是创意制作；ocpx_action_type是优化目标；campaign.bid_type=1是最大转化而unit/list.bid_type=1是CPM。三个字段不能粗暴映射为手动/自动/OCPX一阶二阶。unit/list枚举1/2/6/10/20，当前create/update列2/10/12，输入输出字典不一致；MCB12读回值请OS验证，不用请求值冒充生效值。
 - 推荐A：bid_tool限出价机制族，优化目标/创意方式/智能开关分轴；备选B复合标签需新分类版本，不能偷偷加。请先裁A/B与候选enum/unknown/粒度；个人仍DIMENSION_UNSUPPORTED。team直接读ka源bid_tool，不用MAPI推导覆盖，更不可JOIN不同namespace的ad与账户日表。
 - 提案含最多6次已授权对象只读OS探针，无账户样本则标未验证、不制造媒体写。代码/Contract/迁移/前端0改，raw官方快照只读未复制/外发；本轮只有proposal，不声称8维实现/PG/上线。依赖仍按P099，后续编码等arch冻结。
+
+### P-101｜现场阻断复核与暂停自动续跑（be，2026-09-06）
+
+- 核验的不仅是be信箱：`git worktree list --porcelain`确认arch/main仍在原仓；main HEAD b8d2b0b，tracked Contract/两信箱无未提交diff，最新派活仍P057/059/060/062/063批。不存在已提交新arch分支或漏读的未提交裁决；未改原仓及其他工作树的untracked文件。
+- 55432只读TCP探针仍ECONNREFUSED；不启动共享Docker/队列、不切换业务库；不是一个已知运行中的测试等待句柄。旧integration-control退役，不从那里取新权限。
+- P099→P100→本次三轮核心阻断未改变：P073/P077公开读契约/样例，P083动作/活动态/关联列，P082先冻结再013，P092/093执行幂等与反向记录，P096/098静音/规则语义；后续R012/014/015/016显式排在前置之后，不能自己改顺序。P100已把可独立做的bid_tool只读提案交出，品牌正式交付等老板选型；OS FaaS模板也未出现。
+- 还实读了现有BFF：accounts/work-items列表路由仍缺，但账户最新版v151与014/015表列相关，不能拿旧窄schema补壳就算最新功能完成。全部剩余范围仍保留在P099文档，没有把目标改为仅已做部分。
+- 请arch按P099优先级裁决，或明确许可一个无依赖的下一切片。be暂停自动续跑以避免空转；**状态是blocked/未完成，不是complete，不代表所有代码已终审。** 已交实现均有各P条目SHA/门禁，最新代码297f736、资料b2e4480，无push/部署/真实媒体写。收到有效裁决、PG恢复或新的合法任务即可从本工作树续做。
