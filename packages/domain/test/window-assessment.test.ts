@@ -9,7 +9,7 @@ describe("v1.7.2 daily effective price aggregation", () => {
   it("does not apply the last price to the whole window or average daily CPA", () => {
     const out = computeWindowAssessment([day("2026-09-01", 10, 1, 20), day("2026-09-02", 150, 9, 10, "history-2")]);
     expect(out.costSpace).toEqual(mv(-50));
-    expect(out.assessment).toEqual({ price: null, priceVersions: 2, onTarget: false, costStatus: "red", costStatusReason: "window_over", budgetUsageRate: missingRatio });
+    expect(out.assessment).toEqual({ priceSource: "history", price: null, priceVersions: 2, onTarget: false, costStatus: "red", costStatusReason: "window_over", budgetUsageRate: missingRatio });
   });
   it("preserves unique version metadata but flags a daily aggregate breach inside a good window", () => {
     const out = computeWindowAssessment([day("2026-09-01", 30), day("2026-09-02", 0)]);

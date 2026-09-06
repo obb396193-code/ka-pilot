@@ -12,10 +12,20 @@ export const dailyAssessmentInputSchema = z.object({
   price: z.object({ value: z.number().finite(), effectiveDate: calendarDateSchema, versionKey: z.string().min(1).max(256) }).strict().nullable(),
 }).strict().refine((row) => row.price === null || row.price.effectiveDate <= row.ds, "future assessment version");
 export type DailyAssessmentInput = z.infer<typeof dailyAssessmentInputSchema>;
+export const kaDailyAssessmentInputSchema = z.object({
+  ds: calendarDateSchema, cashCost: canonicalMetricValueSchema, realConversion: canonicalMetricValueSchema,
+  price: z.number().finite().nullable(),
+}).strict();
+type WeightedDay = Omit<DailyAssessmentInput, "price"> & { price: { value: number } | null };
+interface PriceEvidence {
+  priceSource: "history" | "ka_daily";
+  price: { value: number; effectiveDate: string | null } | null;
+  priceVersions?: number;
+}
 
 /** Input must include missing expected account-days. No scope or completeness is inferred here. */
 export function computeWindowAssessment(input: readonly unknown[], budgetUsageRate: unknown = undefinedRatio) {
-  const rows = input.map((row) => dailyAssessmentInputSchema.parse(row));
+  const rows = z.array(dailyAssessmentInputSchema).max(10000).parse(input);
   const versions = new Map<string, { value: number; effectiveDate: string }>();
   for (const row of rows) if (row.price) {
     const { versionKey, ...value } = row.price, previous = versions.get(versionKey);
@@ -24,6 +34,28 @@ export function computeWindowAssessment(input: readonly unknown[], budgetUsageRa
   }
   const completePrices = rows.length > 0 && rows.every((row) => row.price !== null);
   const price = completePrices && versions.size === 1 ? [...versions.values()][0]! : null;
+  return computeWeightedAssessment(rows, {
+    priceSource: "history", price, ...(completePrices && versions.size > 1 ? { priceVersions: versions.size } : {}),
+  }, budgetUsageRate);
+}
+
+/** KA supplies daily cash prices, not version IDs or effective dates. Never manufacture history. */
+export function computeKaDailyWindowAssessment(input: readonly unknown[], budgetUsageRate: unknown = undefinedRatio) {
+  const parsed = z.array(kaDailyAssessmentInputSchema).max(10000).parse(input);
+  const prices = new Set(parsed.flatMap((row) => row.price === null ? [] : [row.price]));
+  const complete = parsed.length > 0 && parsed.every((row) => row.price !== null);
+  const evidence: PriceEvidence = {
+    priceSource: "ka_daily", price: complete && prices.size === 1 ? { value: [...prices][0]!, effectiveDate: null } : null,
+    ...(complete && prices.size > 1 ? { priceVersions: prices.size } : {}),
+  };
+  return {
+    ...computeWeightedAssessment(parsed.map((row) => ({ ...row, price: row.price === null ? null : { value: row.price } })), evidence, budgetUsageRate),
+    warnings: complete && prices.size > 1 ? ["ASSESSMENT_VERSION_UNKNOWN"] : [],
+  };
+}
+
+function computeWeightedAssessment(rows: readonly WeightedDay[], evidence: PriceEvidence, budgetUsageRate: unknown) {
+  const completePrices = rows.length > 0 && rows.every((row) => row.price !== null);
   const cash = sumMetricValues(rows.map((row) => row.cashCost));
   const target = sumMetricValues(rows.map((row) => row.price && row.realConversion.availability === "available"
     ? metricValue(row.price.value * row.realConversion.value) : metricValue(null)));
@@ -48,7 +80,7 @@ export function computeWindowAssessment(input: readonly unknown[], budgetUsageRa
   return {
     costSpace,
     assessment: windowAssessmentSchema.parse({
-      price, ...(completePrices && versions.size > 1 ? { priceVersions: versions.size } : {}),
+      ...evidence,
       onTarget: determined ? reason !== "window_over" : null,
       costStatus: !determined ? null : reason === "window_over" ? "red" : reason === "day_over_window_ok" ? "yellow" : "green",
       costStatusReason: reason, budgetUsageRate: ratioValueSchema.parse(budgetUsageRate),
