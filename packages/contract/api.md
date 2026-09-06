@@ -968,3 +968,10 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **用户偏好**：表 `identity_preferences(identity_id PK, preferences JSONB, updated_at)`；`GET/PATCH /api/v1/me/preferences {theme:{mode:"bw"|"bwc"|"full", hue:"#rrggbb"}, locale?}`；identity 级跨空间；不改 AUTH-001 session 响应（冻结）。
 - **Agent 模型清单**：`GET /api/v1/agent/models` → `[{id,label,provider,default,status:"verified"|"documented_unverified"|"disabled"}]` 来自 `provider_model_capabilities`；消息体 `context:{page, accounts?:[{media,accountId}], objects?:[{type,id}]}`——`workspaceId` **不由浏览器给**（Session 决定），accounts 必须落在 approved scope 否则 403。
 - **账户池字段**（回应 F-006-Q4）：不用 fe 提议的 `lifecycle.stage` 八态，统一按 v1.5.1：`poolStatus`（九态库存）+ `lifecycleStage`（投放六态）+ `product:{name,ref}` + `tags[]` + `balance.cutoff`；fixture `accounts/list-v151.json`；fe 的 `account-lifecycle.mock.json` 改映射到此。
+
+## v1.7.2 追加（2026-09-06 arch；回应 Codex P-053 三问；R-010a1 实现）
+
+- **考核价多版本（窗口内多任务/多版本）**：`assessment.price` 只在窗口内所有账户日**同一价同一生效版本**时给 `{value,effectiveDate}`；否则 `price = null` 且加 **`priceVersions: N`**（N≥2，可选字段，只在混合时出现）。达标不看展示价：`onTarget = Σ_W cash_cost ≤ Σ_W price(d)×real_conv(d)`（逐日各用各的生效价，等价于 `cash_cpa(W) ≤ 转化加权考核价`），`costSpace` 同式；因此 `price=null` 时 `costStatusReason` **不是** `assessment_missing`（那只留给"窗口内任一账户日无考核价"）。前端 price=null 且 priceVersions≥2 显「多版本(N)」并可点开 `assessment_price_history`。跨天有效价**禁止**用窗口末价乘全窗口。
+- **compare 对齐**：`dod` = 窗口两端各平移 1 天、`wow` = 各平移 7 天（等长平移，与"上周同日"一致；不是"前一等长窗口"）。`preset=today` 的 compare 需要昨日**同时段**快照，canonical 只有日累计 → 未具备前 `compare.deltas.*` 全部 `undefined`，**不得**拿昨日全天冒充；小时快照走 `account.hourly`，另议。
+- **lineage.authority**：`sourceLineageSchema` 必填，后端不得删；arch 已给 17 个 v3/gap/pivot2/hourly fixture 补 `{policyVersion:"2026-08-24", useCase:"cross_media_operations", role:"default_authoritative"}`。`window.preset` 可选，未指定 → `custom`。公开 `POST /api/v1/query` 旧 `query_type` 与 `data/query queryId` 共用一套 Registry 与权限路径，不生成第二套。
+- **costStatus/reason 映射冻结**（Codex 2790fc1 的 superRefine 即契约）：`window_ok→(true,green)`、`day_over_window_ok→(true,yellow)`、`window_over→(false,red)`、`cash_missing/assessment_missing→(null,null)`；cashCost 非 available 时 onTarget 必 null。fixtures 已全部按此校验（arch 自己造的 8 处违例已修）。

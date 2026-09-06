@@ -214,3 +214,7 @@
 - `workflows/runs.json`
 - `workflows/simulate.json` — 无副作用；write/external 只出预览
 - `workflows/validate.json` — 四组全过且 missing_params 空才可发布
+
+## ops（运维输入，非 API DTO）
+
+- `ops/bootstrap-seed.json` — `seed:bootstrap` 输入形状（identities/workspaces/memberships/grants；来自 Codex P-052 提案，arch 落）

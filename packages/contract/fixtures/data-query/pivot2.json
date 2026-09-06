@@ -272,7 +272,7 @@
             "price": null,
             "onTarget": null,
             "costStatus": null,
-            "costStatusReason": "assessment_missing",
+            "costStatusReason": "cash_missing",
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
@@ -294,6 +294,11 @@
           "preset": "month_to_date"
         },
         "metadataAvailability": "known",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
         "coverage": {
           "complete": true
         },

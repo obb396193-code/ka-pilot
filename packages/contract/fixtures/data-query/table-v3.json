@@ -310,6 +310,11 @@
         "timezone": "Asia/Shanghai",
         "dayCut": "business_day_0300",
         "metadataAvailability": "known",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
         "coverage": {
           "complete": true
         },
