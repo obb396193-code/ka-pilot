@@ -3688,3 +3688,9 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - `0fb209c`，Domain/Worker9文件。readiness内部strict输入含初次full完成、source/dataAsOf/可配6h或30h阈值、完整引用指标availability；missing/error不补0，未知/未来时间pending，policy两种都抑制缺数。Worker在evaluator前拦住，不调createOrMerge/alerts，coverage账户三键去重且保守取值；失败evaluator不计checked。Domain AND原先false盖过missing已由红测试修正。
 - 定向Domain29过/readiness100%行/alert-rules97.2%；Worker14过/handler98.57%行。全量Domain694过/10旧P073fixture失败、DB370过、Worker1099过+2opt-in skip；三包type/lint通过，Domainofflineaudit0。PG55432拒连，data-pipeline综合例未执行；其readiness是注明的合成provider，不能当DB health实证。
 - `docs/plans/2026-09-06-R010a2-规则缺数抑制.md`含命令/风险。尚无正式condition_tree→requiredMetrics/health provider、SLA暂停持久化、public explain/mute；另实读发现旧over_cost_ramp仍以realCpa与现金考核价比，现金阈值接线需继续纠偏，不能称规则生产可用。无Contract/前端/依赖/真实写/push/合流/部署，candidate待审，信箱总目标仍active。
+
+### P-095｜超成本规则现金口径修复候选（be，2026-09-06）
+
+- `f3ee185`，5文件。按metrics.md:48-51/85，OverCostRampInput移除realCpa/cost，收cashCost/realConversion→safeDivide现金CPA；仅账面旧输入insufficient，不自动当现金。缺/非法现金/转化、负转化、计算溢出均不触发；零转化真实infinite保留。3000起量门按“账面cost只展示”明确现金，普通1.2/冷启动1.5/10样本不改，trace不再混称真实CPA。
+- 新16现金反例，先10红后绿；core28过97.14%行/95.06%分支。全量Domain710过/10旧P073失败，DB370过，Worker1099过+2skip；三包type/lint绿、Domainofflineaudit0。PG仍55432拒连综合例未执行；原合成账面5000/现金2500保留，改断言不触发/不合并，新增cashCost实际读取断言（未声称已执行）。
+- 详细命令/风险`docs/plans/2026-09-06-R010a2-规则现金口径.md`。无Contract/前端/依赖/真实写/push，candidate未merged/deployed。正式provider/SLA/public explain仍待；本批不把多日混价窗口伪装为单日考核。P092/093与PG外部依赖未关，继续总信箱目标。
