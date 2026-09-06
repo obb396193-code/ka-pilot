@@ -3534,3 +3534,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 本人状态`docs/plans/R010-状态.md`列六套待修测试和日志。接下来继续原分支修回归与真实PG/BFF，不因样例依赖停止其他实现；尚未实现query旧入口别名和其余窗口query端点，不称R010a1完成。无push、媒体写或部署。
 - 已识别容量限制：当前团队窗口先读账户日网格，10k上限下大团队月窗会fail closed（例如500户×31日超过预算）。这不是完整可用月窗的终点；后续应将加权/计数下推到同一源SQL或提供有版本证据的分批，不能靠提高上限、吞截断或改成短窗口冒充完成。先关本批回归再扩该源内聚合实现。
 - exact cb2330d全量补录：Worker897过/57失败/2外部opt-in跳过（`/tmp/ka-cb2330d-worker.log`）；Domain626过/10个权威样例相关失败，Web109过/2个旧样例失败。状态仍WIP，尚无本轮PG证据；不是合流申请。
+
+### P-074｜公开v3 Worker回归已收口，仍非全门禁交付（be，2026-09-06）
+
+- `a9356f6`六套测试迁移，配套公开代码`cb2330d`。不是删57个失败测试：raw summary基础数学与公开v3验证分层；Platform测试实际注入同快照窗口计算；真实SQLite成员SQL→Client保留；KA summary/trend使用冻结team绑定+UUID而非旧个人scope；部分成员/跨日union/零转换/非法类型/重定向/隐私/2k/10k/exact字节均仍有反例。
+- Worker非PG全量958过+2外部opt-in跳过，日志`/tmp/ka-public-v3-regression-closed.log`；定向147过；核心覆盖186测试，合计96.78%行/94.11%分支（mapper97.95%、member100%、team summary100%、personal window91.42%行），`/tmp/ka-public-v3-coverage.log`。Worker typecheck/lint、diff check过，无依赖修改。
+- PG限时只读SELECT1仍ECONNREFUSED55432；不借历史PG数字。Domain/Web仍因P068/P073列出的权威fixture不匹配失败，main当前b8d2b0b未变；请同步后我合main复跑。旧cb2330d不能单独合，当前仍candidate_pending_contract_pg，不称R010a1全部完成、未部署/推送/真写。
+- 后续继续同分支公开query入口、其余R010a1与团队月窗容量，不缩减老板总信箱目标。
