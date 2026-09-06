@@ -3595,3 +3595,11 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - DB纯逻辑 **20files/208passed**：`npm --prefix packages/db test -- --run unit.test.ts window-assessment-counts.test.ts window-assessment-boundary.test.ts semantic-dimension-boundary.test.ts --maxWorkers=1`，`/tmp/ka-task-window-db-unit.log`；DB+Worker typecheck/lint绿。五套90测试测四核心 **94.31%行/85.1%分支**，task-window-coverage 100%（随后仅补两条team拒绝测试，production代码不变），`/tmp/ka-task-window-coverage-final.log`。Worker offline `npm audit --omit=dev --offline`=0，非实时漏洞情报；静态改动无新env读取/日志/执行命令/秘密字段，固定SQL参数化、无N+1、日期证据<=366，10k/exact16MB不放宽。
 - 真PG+actual public handler测试扩到5例（非登录E2E）：任务中途换绑、两有效价格+未来版本、同号双媒体/另一空间、空grant/空任务、缺指标日、compare。显式合成库`ka_be_r013_20260906`连接仍ECONNREFUSED55432，**一套初始化失败/5跳过**，`/tmp/ka-task-window-pg.log`，不得称PG完成；table原三例也未获新PG证据。无真实KA调用。
 - candidate_non_pg_verified/pg_pending，未merged/deployed/push。main仍b8d2b0b；Domain/Web权威fixture同步仍P073/P077待arch（本批未重跑其全量，不能沿用旧数字冒称五包绿）。完整信箱仍active，后续两源任务窗口与其余R010a1/R011–R016逐批继续；品牌候选等待老板选择不阻塞后端。
+
+### P-082｜R011 契约提案交审，未启动013（be，2026-09-06）
+
+- 提案 `docs/plans/2026-09-06-R011团队KA快照接入-契约提案.md`，实读main b8d2b0b/be 0f55c6e。按派活先比较A复用canonical与B独立versioned team表，建议A当前投影+run staging+按日head；明确失败保旧、全页证明、同事务元数据/指标/head发布、双run CAS、旧lease拒绝、历史日期保留及GC引用保护。
+- 请裁三组：①A/B与候选表列/任务关系来源标记；②普通team query改读已发布KA镜像、三列表readiness、source/snapshot/freshness DTO；③不可变源版本/完整库存证明、空源/unknown发布规则与保留。方案字段只在提案，未改Contract，未启动migration013/新同步代码。
+- 实读缺口：query仍live KA；accounts/tasks读取个人full/grants判ready，work-items team直接false；accounts/tasks selectedSource literal qihang。只同步不接读路径会让失败保旧失效、团队仍永久partial，列入同批验收。
+- 当前reader `{backend,sql,limit}`/可选datasetVersion没有不可变分页pinning证据。请沿既有OS渠道补证“固定不可变版本的库存+日事实全集/版本导出/单statement一致性保证”；count相同或本地hash不能证明跨页同版本。unknown允许暂存但不替换completed，不编造接口、不增加个人凭证门。
+- 本次仅只读审计+提案，无代码测试/真实PG/KA调用，不声称implemented或合流。R010其余已冻结任务继续；R011实现等待arch裁决。旧Task6废案不复用，真实媒体写仍关，不push。

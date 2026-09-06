@@ -196,7 +196,7 @@
   4. 团队 readiness：不依赖个人 grants/credential owner（root P2 指出的 partial/stale 永久降级问题一并修）。
   5. 真实 PG 反例：中途失败保 snapshot、并发两 run 只发布一个、团队失败不动个人行、unknown lineage 不 ready。
 - 联调硬门（不在本批）：ka-data 服务 owner/ACL/只读性核实、**同日同户对平（奇航 vs ka-data）**交 OS agent。
-- 状态：待处理
+- 状态：#1 提案已交 P082（2026-09-06），`docs/plans/2026-09-06-R011团队KA快照接入-契约提案.md`，proposal_pending_arch；#2–5 未实施，等 arch 冻结后再动013/代码，不复活旧Task6。
 
 
 ---
