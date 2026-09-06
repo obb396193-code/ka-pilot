@@ -3429,3 +3429,11 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 严格检查总计与history现金/真实转化一致（允许NUMERIC→浮点微误差）、counts与lineage一致、missing day不能丢、非法history/metadata fail closed；缺预算卡undefined，compare.onTargetRate undefined待P058；today无同小时快照不查询昨日全天。不改变公开v2边界，P058/P061未裁前不伪造团队版本。不是第二个API/Registry。
 - Registry支持冻结date_from/date_to并归一同dateFrom/dateTo；混合两种拼写（即使同值）、单日+范围、缺端点、非标准多连字符日期、超期拒绝；六Query全对照，同SQL。16新例先8fail/16pass→24pass。模块初次缺文件仅加载红，第一次lint有unused mock参数，已修。
 - 全量 **Domain617/DB真实PG362/Worker868+2外部opt-in skip**，三包type/lint通过；窗口模块91.3%行/90.69%分支，factory有3PG但不在unit覆盖统计；Worker offline production audit0。日志`/tmp/ka-window-assembly-{domain,db,worker}-final.log`与`/tmp/ka-window-composition-{pg,coverage}.log`。无新增依赖/N+1；没有Contract/前端视觉/runbook/真实源操作。下个独立子批按P061原文纠正KA BI转化映射。
+
+### P-063 KA BI口径纠偏591ab67｜Codex 2026-09-06，待审
+
+- 按P061补记原文实证，KA账户conv来自fact_conv BI，现只映射realConversion；媒体回传无源则conversion missing，cvr/gap undefined。账户summary/trend/reconcile聚合SQL别名改real_conversion；table/detail raw conv由同mapper处理。不同BI别名冲突或present-invalid直接Canonical错误，不重复累计、不让合法首别名掩盖坏字段。
+- 原样SQLite→客户端反例查到reconcile的整数ds造成502，SQL显式CAST为TEXT；保留真实SQLite JSON、不在测试里预修字段。三类实际SQL+客户端共6新例；六Query映射/零/缺失/非法/同值/冲突17新例。KA account.anomalies仍不开放，mapper覆盖不等于Registry新能力。三键scope、cash_yuan不二次折算、截断/缺数不补0均保持。
+- 最终 **Domain617 / DB真实PG362 / Worker891+2外部opt-in skip**，三包type/lint过；定向89、覆盖113，核心两文件行95%/分支88.78%；Worker production offline audit0。日志/tmp/ka-bi-{domain-final,db-retry,worker-final,coverage}.log。Gateway/Web没改没重跑，不混旧数。
+- 失败如实保留：映射初次15fail含1个新anomaly fixture漏标志；原样client再锁定1个整数日期失败；alias先2fail/15pass。DB首轮beforeAll 10s超时，在测试库schema重建间打断，36套失败/131pass/231skip；原隔离合成库加hookTimeout30s后362过，没改生产限额。10k定向默认5s一次超时，30s全量/覆盖过。
+- 仅6代码/测试文件，Contract/视觉/runbook/依赖0diff；未push/合流/部署/真实源访问。行schema仍v2，不宣称公开v3完成。P058/P061细口径仍待您，先继续已派R013b产品登录session清理；下一批计划见docs/plans/2026-09-06-R013b会话保留期清理.md，尚未执行清理，不涉及聊天记录。
