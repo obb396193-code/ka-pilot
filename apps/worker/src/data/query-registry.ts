@@ -89,6 +89,7 @@ export class QueryRegistryError extends Error {
 }
 
 function parseCalendarDate(value: string): string {
+  if (!/^(?:\d{8}|\d{4}-\d{2}-\d{2})$/.test(value)) throw new Error("date must use YYYY-MM-DD or YYYYMMDD");
   const compact = value.replaceAll("-", "");
   if (!/^\d{8}$/.test(compact)) throw new Error("date must use YYYY-MM-DD or YYYYMMDD");
   const iso = `${compact.slice(0, 4)}-${compact.slice(4, 6)}-${compact.slice(6, 8)}`;
@@ -112,6 +113,8 @@ const commonDateFields = {
   date: dateInputSchema.optional(),
   dateFrom: dateInputSchema.optional(),
   dateTo: dateInputSchema.optional(),
+  date_from: dateInputSchema.optional(),
+  date_to: dateInputSchema.optional(),
   media: mediaSchema.optional(),
   accountIds: z.array(accountIdSchema).min(1).max(1_000).optional(),
 };
@@ -120,18 +123,23 @@ function normalizeDateParams(input: {
   date?: string;
   dateFrom?: string;
   dateTo?: string;
+  date_from?: string;
+  date_to?: string;
   media?: string;
   accountIds?: string[];
   accountId?: string;
   page?: number;
   pageSize?: number;
 }): NormalizedQueryParams {
-  const dateFrom = input.date ?? input.dateFrom;
-  const dateTo = input.date ?? input.dateTo;
+  const camel = input.dateFrom !== undefined || input.dateTo !== undefined;
+  const snake = input.date_from !== undefined || input.date_to !== undefined;
+  if (camel && snake) throw new Error("date range spellings cannot be mixed");
+  const dateFrom = input.date ?? input.dateFrom ?? input.date_from;
+  const dateTo = input.date ?? input.dateTo ?? input.date_to;
   if (dateFrom === undefined || dateTo === undefined) {
     throw new Error("provide date or both dateFrom and dateTo");
   }
-  if (input.date !== undefined && (input.dateFrom !== undefined || input.dateTo !== undefined)) {
+  if (input.date !== undefined && (camel || snake)) {
     throw new Error("date cannot be combined with dateFrom/dateTo");
   }
   return {
@@ -169,6 +177,8 @@ const detailSchema = normalizedSchema({
   date: commonDateFields.date,
   dateFrom: commonDateFields.dateFrom,
   dateTo: commonDateFields.dateTo,
+  date_from: commonDateFields.date_from,
+  date_to: commonDateFields.date_to,
   media: mediaSchema.optional(),
   accountId: accountIdSchema,
 });

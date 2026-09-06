@@ -1,5 +1,6 @@
 import {
   canonicalQueryRowSchemaById,
+  accountSummaryRowSchema,
   safeDivide,
   metricValue,
   type AccountDailyRow,
@@ -116,15 +117,18 @@ function metricSet(row: RawRow, source: SourceKind) {
   };
 }
 
-function summaryRow(row: RawRow, source: SourceKind): AccountSummaryRow {
-  return {
+/** Reusable strict metric/count base for v2 and the v3 window assembler. */
+export function canonicalSummaryBaseRow(row: RawRow, source: SourceKind): AccountSummaryRow {
+  const parsed = accountSummaryRowSchema.safeParse({
     rowCount: requiredCount(row, "rowCount", "row_count"),
     accountCount: requiredCount(row, "accountCount", "account_count"),
     anomalyRows: source === "platform"
       ? requiredCount(row, "anomalyRows", "anomaly_rows")
       : null,
     metrics: metricSet(row, source),
-  };
+  });
+  if (!parsed.success) throw new CanonicalQueryRowError();
+  return parsed.data;
 }
 
 function tasks(row: RawRow, source: SourceKind): AccountDailyRow["tasks"] {
@@ -187,7 +191,7 @@ function mappedRows(
   trustedWorkspaceId: string,
 ): unknown[] {
   if (queryId === "account.summary") {
-    return rows.map((row) => summaryRow(row, source));
+    return rows.map((row) => canonicalSummaryBaseRow(row, source));
   }
   if (queryId === "account.trend") {
     return rows.map((row) => {
@@ -195,7 +199,7 @@ function mappedRows(
       const metrics = typeof nested === "object" && nested !== null && !Array.isArray(nested)
         ? nested as RawRow
         : row;
-      return { ds: calendarDate(row.ds), metrics: summaryRow(metrics, source) };
+      return { ds: calendarDate(row.ds), metrics: canonicalSummaryBaseRow(metrics, source) };
     });
   }
   return rows.map((row) => dailyRow(row, source, trustedWorkspaceId));
