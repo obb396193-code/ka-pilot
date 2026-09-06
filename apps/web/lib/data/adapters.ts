@@ -1,3 +1,4 @@
+import { formatChangeValue } from "./change-value.ts"
 import {
   accountDetailSchema,
   analysisSchema,
@@ -203,7 +204,7 @@ export function adaptChangeSetPreview(response: ChangeSetDetailResponse | null):
     accountName: "脱敏账户",
     status: "preview_only",
     expiresAt: changeSet.ttlExpireAt,
-    items: changeSet.items.map((item) => ({ field: item.field, from: item.fromValue ?? "—", to: item.toValue ?? "—", reason: item.failReason ?? changeSet.reasonCode ?? "只读变更预览" })),
+    items: changeSet.items.map((item) => ({ field: item.field, from: formatChangeValue(item.fromValue), to: formatChangeValue(item.toValue), reason: item.failReason ?? changeSet.reasonCode ?? "只读变更预览" })),
     riskChecks: [{ label: "媒体写端点", passed: false, detail: "当前只读集成未注册执行入口" }],
     executionEndpointConfigured: false,
   })

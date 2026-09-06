@@ -20,7 +20,7 @@ describe("changeset authorization / real PG and Worker", () => {
     const created = await store.create({ workspaceId, media: "KUAISHOU", accountId: "synthetic",
       initiator: userId, credentialOwnerUserId: userId, title: "synthetic", reasonCode: "test",
       ttlExpireAt: new Date("2026-09-05T02:00:00Z"),
-      items: [{ targetType: "unit", targetId: "synthetic-unit", field: "bid", fromValue: "1", toValue: "2" }],
+      items: [{ targetType: "unit", targetId: "synthetic-unit", field: "bid", fromValue: { type: "number" as const, value: 1 }, toValue: { type: "number" as const, value: 2 } }],
     });
     const currentValues = created.items.map((item) => ({ targetType: item.targetType,
       targetId: item.targetId, field: item.field, value: item.fromValue }));

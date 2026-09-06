@@ -16,8 +16,8 @@ const items: ChangeSetItemSnapshot[] = [
     targetType: "unit",
     targetId: "unit-1",
     field: "bid",
-    fromValue: "30",
-    toValue: "27",
+    fromValue: { type: "number" as const, value: 30 },
+    toValue: { type: "number" as const, value: 27 },
     itemStatus: "pending",
     failReason: null,
   },
@@ -26,8 +26,8 @@ const items: ChangeSetItemSnapshot[] = [
     targetType: "unit",
     targetId: "unit-2",
     field: "budget",
-    fromValue: "1000",
-    toValue: "800",
+    fromValue: { type: "number" as const, value: 1000 },
+    toValue: { type: "number" as const, value: 800 },
     itemStatus: "pending",
     failReason: null,
   },
@@ -80,12 +80,12 @@ describe("confirmation guards", () => {
 
   it("reports every changed or missing current value", () => {
     const verification = verifyCurrentValues(items, [
-      { targetType: "unit", targetId: "unit-1", field: "bid", value: "31" },
+      { targetType: "unit", targetId: "unit-1", field: "bid", value: { type: "number" as const, value: 31 } },
     ]);
     expect(verification.ok).toBe(false);
     expect(verification.conflicts).toEqual([
-      expect.objectContaining({ itemId: 1, expected: "30", actual: "31", kind: "changed" }),
-      expect.objectContaining({ itemId: 2, expected: "1000", actual: null, kind: "missing" }),
+      expect.objectContaining({ itemId: 1, expected: { type: "number" as const, value: 30 }, actual: { type: "number" as const, value: 31 }, kind: "changed" }),
+      expect.objectContaining({ itemId: 2, expected: { type: "number" as const, value: 1000 }, actual: null, kind: "missing" }),
     ]);
   });
 });
@@ -126,8 +126,8 @@ describe("execution result", () => {
         targetType: "unit",
         targetId: "unit-1",
         field: "bid",
-        fromValue: "27",
-        toValue: "30",
+        fromValue: { type: "number" as const, value: 27 },
+        toValue: { type: "number" as const, value: 30 },
       },
     ]);
   });

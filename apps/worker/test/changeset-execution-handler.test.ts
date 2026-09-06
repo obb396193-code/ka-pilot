@@ -16,8 +16,8 @@ const base: ChangeSetExecutionView = {
   status: "confirmed",
   credentialOwnerUserId: "user-1",
   items: [
-    { id: 1, targetType: "unit", targetId: "u1", field: "bid", fromValue: "30", toValue: "27", itemStatus: "pending", failReason: null },
-    { id: 2, targetType: "unit", targetId: "u2", field: "budget", fromValue: "1000", toValue: "800", itemStatus: "pending", failReason: null },
+    { id: 1, targetType: "unit", targetId: "u1", field: "bid", fromValue: { type: "number" as const, value: 30 }, toValue: { type: "number" as const, value: 27 }, itemStatus: "pending", failReason: null },
+    { id: 2, targetType: "unit", targetId: "u2", field: "budget", fromValue: { type: "number" as const, value: 1000 }, toValue: { type: "number" as const, value: 800 }, itemStatus: "pending", failReason: null },
   ],
 };
 
@@ -67,7 +67,7 @@ class Values implements CurrentValueProvider {
       targetType: item.targetType,
       targetId: item.targetId,
       field: item.field,
-      value: this.changed && item.id === 1 ? "31" : item.fromValue,
+      value: this.changed && item.id === 1 ? { type: "number" as const, value: 31 } : item.fromValue,
     }));
   }
 }
@@ -110,6 +110,21 @@ function setup() {
 }
 
 describe("ChangeSetExecutionHandler", () => {
+  it("rejects duplicate provider observations before executing", async () => {
+    const { handler, values, executor } = setup();
+    const original = values.readCurrentValues.bind(values);
+    values.readCurrentValues = async (view) => { const rows = await original(view); return [...rows, rows[0]!]; };
+    await expect(handler.run("workspace-1", "changeset-1")).rejects.toThrow("Duplicate current-value");
+    expect(executor.executeCalls).toBe(0);
+  });
+  it("does not treat string 30 as number 30 when verifying current state", async () => {
+    const { store, executor, followUps } = setup();
+    const handler = new ChangeSetExecutionHandler({ store, executor, followUps, values: {
+      readCurrentValues: async (view) => view.items.map((item) => ({ targetType: item.targetType, targetId: item.targetId, field: item.field, value: { type: "string", value: "30" } })),
+    } });
+    await expect(handler.run("workspace-1", "changeset-1")).resolves.toMatchObject({ outcome: "conflict" });
+    expect(executor.executeCalls).toBe(0);
+  });
   it.each(["workspaceId", "id"] as const)("rejects a store returning the wrong %s before media access", async (field) => {
     const { handler, store, executor, values } = setup();
     store.view[field] = "wrong-scope";

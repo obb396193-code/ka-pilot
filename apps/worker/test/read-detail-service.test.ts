@@ -70,8 +70,8 @@ function changeset(overrides: Partial<ChangeSetRecord> = {}): ChangeSetRecord {
       targetType: "unit",
       targetId: "unit-1",
       field: "bid",
-      fromValue: "30",
-      toValue: "27",
+      fromValue: { type: "number" as const, value: 30 },
+      toValue: { type: "number" as const, value: 27 },
       itemStatus: "pending",
       failReason: null,
     }],
@@ -221,6 +221,14 @@ describe("ReadDetailService", () => {
       changeset: changeset({ media: null, accountId: null }),
     }).getChangeSet(CHANGESET_ID, auth, "scope-002");
     expect(unscoped).toMatchObject({ ok: false, error: { code: "FORBIDDEN" } });
+  });
+  it.each(["legacy-sensitive-value", null, { type: "number", value: "private-invalid" }])("does not expose an untyped or malformed item from the repository", async (fromValue) => {
+    const record = changeset();
+    record.items[0]!.fromValue = fromValue as unknown as ChangeSetRecord["items"][number]["fromValue"];
+    const result = await service({ changeset: record }).getChangeSet(CHANGESET_ID, auth, "typed-detail-invalid");
+    expect(result).toEqual({ ok: false, error: { code: "INTERNAL_ERROR", message: "Changeset detail could not be loaded", retryable: false, requestId: "typed-detail-invalid" } });
+    expect(JSON.stringify(result)).not.toContain("private-invalid");
+    expect(JSON.stringify(result)).not.toContain("legacy-sensitive-value");
   });
 
   it("returns stable invalid-id and not-found envelopes", async () => {

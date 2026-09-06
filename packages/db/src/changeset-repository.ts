@@ -4,6 +4,7 @@ import {
   executionDirective,
   transitionChangeSet,
   verifyCurrentValues,
+  type ChangeValue,
   type ChangeSetItemSnapshot,
   type ChangeSetAction,
   type ChangeSetStatus,
@@ -13,13 +14,14 @@ import {
   type ValueConflict,
 } from "@ka/domain";
 import type { Pool, PoolClient } from "pg";
+import { decodeChangeSetValues, encodeChangeSetItems } from "./changeset-item-values.js";
 
 export interface NewChangeSetItem {
   targetType: ChangeTargetType;
   targetId: string;
   field: string;
-  fromValue: string | null;
-  toValue: string | null;
+  fromValue: ChangeValue;
+  toValue: ChangeValue;
 }
 
 export interface NewChangeSet {
@@ -88,8 +90,8 @@ interface ItemRow {
   target_type: ChangeTargetType;
   target_id: string;
   field: string;
-  from_value: string | null;
-  to_value: string | null;
+  from_value: unknown;
+  to_value: unknown;
   item_status: "pending" | "success" | "failed";
   fail_reason: string | null;
 }
@@ -106,8 +108,7 @@ function itemRecord(row: ItemRow): ChangeSetItemSnapshot {
     targetType: row.target_type,
     targetId: row.target_id,
     field: row.field,
-    fromValue: row.from_value,
-    toValue: row.to_value,
+    ...decodeChangeSetValues(row.from_value, row.to_value),
     itemStatus: row.item_status,
     failReason: row.fail_reason,
   };
@@ -231,7 +232,7 @@ export class ChangeSetRepository {
   constructor(private readonly pool: Pool) {}
 
   async create(input: NewChangeSet): Promise<ChangeSetRecord> {
-    if (input.items.length === 0) throw new Error("changeset requires at least one item");
+    const items = encodeChangeSetItems(input.items);
     if (input.media.trim() === "" || input.accountId.trim() === "") {
       throw new Error("changeset requires media and accountId scope");
     }
@@ -260,14 +261,14 @@ export class ChangeSetRepository {
           input.simulation == null ? null : JSON.stringify(input.simulation)],
       );
       const header = requireHeader(inserted.rows[0], "new");
-      for (const item of input.items) {
+      for (const item of items) {
         await client.query(
           `INSERT INTO changeset_items
              (changeset_id,workspace_id,media,account_id,
               target_type,target_id,field,from_value,to_value,item_status)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,to_jsonb($8::text),to_jsonb($9::text),'pending')`,
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8::jsonb,$9::jsonb,'pending')`,
           [header.id, input.workspaceId, input.media, input.accountId,
-            item.targetType, item.targetId, item.field, item.fromValue, item.toValue],
+            item.targetType, item.targetId, item.field, item.fromJson, item.toJson],
         );
       }
       const record = await assemble(client, header);

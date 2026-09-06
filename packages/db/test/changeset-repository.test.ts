@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { Pool } from "pg";
+import type { ChangeValue } from "@ka/domain";
 
 import { ChangeSetRepository } from "../src/changeset-repository.js";
 import { runMigrations } from "../src/migrate.js";
@@ -52,8 +53,8 @@ describe("ChangeSetRepository", () => {
       ttlExpireAt: ttl,
       reasonCode: "cost_control",
       items: [
-        { targetType: "unit", targetId: "unit-1", field: "bid", fromValue: "30", toValue: "27" },
-        { targetType: "unit", targetId: "unit-2", field: "budget", fromValue: "1000", toValue: "800" },
+        { targetType: "unit", targetId: "unit-1", field: "bid", fromValue: { type: "number" as const, value: 30 }, toValue: { type: "number" as const, value: 27 } },
+        { targetType: "unit", targetId: "unit-2", field: "budget", fromValue: { type: "number" as const, value: 1000 }, toValue: { type: "number" as const, value: 800 } },
       ],
     });
   }
@@ -71,14 +72,23 @@ describe("ChangeSetRepository", () => {
     await expect(repository.find(otherWorkspaceId, created.id)).resolves.toBeNull();
   });
 
-  it.each([null, "001", "true", '{"x":1}', 'quote"\n中文'])("preserves legacy string/null %j after 012 JSONB storage", async (value) => {
+  const typedValues: ChangeValue[] = [{ type: "json", value: null }, { type: "number", value: 1 }, { type: "boolean", value: false },
+    { type: "string", value: 'quote"\n中文' }, { type: "json", value: { x: 1 } }, { type: "schedule168", value: "01".repeat(84) }];
+  it.each(typedValues)("preserves the typed object %j in JSONB", async (value) => {
     const created = await repository.create({ workspaceId, media: "KUAISHOU", accountId: "account-1", title: "synthetic",
       initiator: userId, credentialOwnerUserId: userId, ttlExpireAt: new Date("2026-09-07T00:00:00Z"), reasonCode: "test",
       items: [{ targetType: "account", targetId: "account-1", field: "budget", fromValue: value, toValue: value }],
     });
     expect(created.items[0]).toMatchObject({ fromValue: value, toValue: value });
     const saved = (await pool.query("SELECT from_value, jsonb_typeof(from_value) AS kind FROM changeset_items WHERE changeset_id=$1", [created.id])).rows[0];
-    expect(saved).toEqual({ from_value: value, kind: value === null ? null : "string" });
+    expect(saved).toEqual({ from_value: value, kind: "object" });
+  });
+
+  it.each([null, "001", "true", '{"x":1}'])("rejects a historical string/null row %j without rewriting it", async (legacy) => {
+    const created = await create();
+    await pool.query("UPDATE changeset_items SET from_value=to_jsonb($2::text) WHERE changeset_id=$1", [created.id, legacy]);
+    await expect(repository.find(workspaceId, created.id)).rejects.toThrow("invalid or legacy untyped values");
+    expect((await pool.query("SELECT from_value FROM changeset_items WHERE changeset_id=$1", [created.id])).rows.every((row) => row.from_value === legacy)).toBe(true);
   });
 
   it.each(["initiator", "credentialOwnerUserId"] as const)("rejects inactive %s at create without partial rows", async (actor) => {
@@ -86,7 +96,7 @@ describe("ChangeSetRepository", () => {
     await expect(repository.create({ workspaceId, media: "KUAISHOU", accountId: "account-1", title: "rejected",
       initiator: userId, credentialOwnerUserId: userId, [actor]: inactive,
       ttlExpireAt: new Date("2026-08-19T10:30:00Z"), reasonCode: "test",
-      items: [{ targetType: "unit", targetId: "unit-1", field: "bid", fromValue: "1", toValue: "2" }],
+      items: [{ targetType: "unit", targetId: "unit-1", field: "bid", fromValue: { type: "number" as const, value: 1 }, toValue: { type: "number" as const, value: 2 } }],
     })).rejects.toMatchObject({ code: "FORBIDDEN" });
     expect((await pool.query("SELECT id FROM changesets WHERE workspace_id=$1", [workspaceId])).rows).toHaveLength(0);
   });
@@ -97,7 +107,7 @@ describe("ChangeSetRepository", () => {
       await expect(repository.create({ workspaceId, media: "KUAISHOU", accountId: "account-1", title: "rejected",
         initiator: userId, credentialOwnerUserId: userId, [actor]: other,
         ttlExpireAt: new Date("2026-08-19T10:30:00Z"), reasonCode: "test",
-        items: [{ targetType: "unit", targetId: "unit-1", field: "bid", fromValue: "1", toValue: "2" }],
+        items: [{ targetType: "unit", targetId: "unit-1", field: "bid", fromValue: { type: "number" as const, value: 1 }, toValue: { type: "number" as const, value: 2 } }],
       })).rejects.toMatchObject({ code: "FORBIDDEN" });
     }
   });
@@ -163,8 +173,8 @@ describe("ChangeSetRepository", () => {
         targetType: "account",
         targetId: "account-1",
         field: "budget",
-        fromValue: "100",
-        toValue: "90",
+        fromValue: { type: "number" as const, value: 100 },
+        toValue: { type: "number" as const, value: 90 },
       }],
     })).rejects.toThrow(/does not match its account scope/i);
   });
@@ -172,8 +182,8 @@ describe("ChangeSetRepository", () => {
   it("confirms once after strict current-value verification and is idempotent", async () => {
     const created = await create();
     const values = [
-      { targetType: "unit" as const, targetId: "unit-1", field: "bid", value: "30" },
-      { targetType: "unit" as const, targetId: "unit-2", field: "budget", value: "1000" },
+      { targetType: "unit" as const, targetId: "unit-1", field: "bid", value: { type: "number" as const, value: 30 } },
+      { targetType: "unit" as const, targetId: "unit-2", field: "budget", value: { type: "number" as const, value: 1000 } },
     ];
     const first = await repository.confirm({
       workspaceId,
@@ -198,7 +208,7 @@ describe("ChangeSetRepository", () => {
       changeSetId: created.id,
       now: new Date("2026-08-19T10:00:00Z"),
       currentValues: [
-        { targetType: "unit", targetId: "unit-1", field: "bid", value: "31" },
+        { targetType: "unit", targetId: "unit-1", field: "bid", value: { type: "number" as const, value: 31 } },
       ],
     });
     expect(result.outcome).toBe("conflict");
