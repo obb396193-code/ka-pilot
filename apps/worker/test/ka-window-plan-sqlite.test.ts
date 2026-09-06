@@ -3,6 +3,7 @@ import { DatabaseSync } from "node:sqlite";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { computeKaDailyWindowAssessment, metricValue } from "@ka/domain";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
+import { KaDataClient } from "../src/data/ka-data-client.js";
 
 describe("team window one-query member snapshot", () => {
   let db: DatabaseSync;
@@ -26,6 +27,25 @@ describe("team window one-query member snapshot", () => {
     expect(rows.map((row) => row.media)).toEqual(["KUAISHOU", "KUAISHOU"]);
     const result = computeKaDailyWindowAssessment(rows.map((row) => ({ ds: row.ds, cashCost: metricValue(row.cash_yuan), realConversion: metricValue(row.conv), price: row.cash_assessment })));
     expect(result).toMatchObject({ costSpace: { value: -50 }, assessment: { priceSource: "ka_daily", price: null, priceVersions: 2, onTarget: false } });
+  });
+  it("executes reader-generated SQL through strict decoding and v3 summary with one request", async () => {
+    insert(20260901, 10, 20, 1); insert(20260902, 150, 10, 9); insert(20260902, 500, 800, 99, "TENCENT");
+    const workspaceId = "00000000-0000-4000-8000-000000000091";
+    let requests = 0;
+    const client = new KaDataClient({ baseUrl: "https://ka.test.invalid", token: "synthetic", teamWorkspaceId: workspaceId,
+      fetchFn: async (_url, init) => {
+        requests++;
+        const request = JSON.parse(String(init?.body)) as { sql: string; limit: number };
+        expect(request.limit).toBe(10000);
+        const rows = db.prepare(request.sql).all();
+        return new Response(JSON.stringify({ backend: "sqlite", rowCount: rows.length, rows }));
+      } });
+    const resolved = registry.resolve("account.summary", { date_from: current.from, date_to: current.to, media: "KUAISHOU", accountIds: ["same"] }, "ka_data");
+    const result = await client.queryTeamWindowSummary(resolved, { workspaceId,
+      userId: "00000000-0000-4000-8000-000000000092", scopeKind: "team_workspace_readonly", accounts: [] }, current);
+    expect(requests).toBe(1);
+    expect(result.row.metrics.costSpace).toEqual({ value: -50, availability: "available" });
+    expect(result.row).toMatchObject({ accountCount: 1, assessment: { priceSource: "ka_daily", priceVersions: 2 } });
   });
   it("keeps a missing expected account-day instead of claiming the observed remainder complete", () => {
     insert(20260901, 10, 20);

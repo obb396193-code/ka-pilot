@@ -16,6 +16,7 @@ import {
   type KaDataQueryPlan,
 } from "./query-registry.js";
 import { decodeKaWindowMembers } from "./ka-window-members.js";
+import { summarizeKaWindowMembers } from "./ka-window-summary.js";
 import {
   CanonicalQueryRowError,
   canonicalizeQueryRows,
@@ -365,6 +366,15 @@ export class KaDataClient {
       lineage: sourceLineage(resolved, scope, envelope, returnedObjects, false, true, reason, plan.queryTemplateVersion),
       warnings: [reason],
     };
+  }
+
+  async queryTeamWindowSummary(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: "dod" | "wow") {
+    const snapshot = await this.queryTeamWindowMembers(resolved, scope, window, compare);
+    try {
+      const summary = summarizeKaWindowMembers(snapshot.members, snapshot.window, snapshot.previousWindow, compare);
+      return { row: summary.row, window: snapshot.window, lineage: snapshot.lineage,
+        warnings: [...snapshot.warnings, ...summary.warnings] };
+    } catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid window summary response", false); }
   }
 
   async #readPlan(plan: KaDataQueryPlan) {
