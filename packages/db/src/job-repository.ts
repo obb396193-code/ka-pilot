@@ -76,7 +76,7 @@ interface NormalizedNewJob {
   priority: number;
   credentialOwnerUserId: string | null;
   maxAttempts: number;
-  runAfter: Date;
+  runAfter: Date | null;
 }
 
 type JobRow = {
@@ -158,7 +158,7 @@ export class JobRepository implements JobRepositoryPort {
       `INSERT INTO jobs (
          id, workspace_id, job_type, payload, priority, credential_owner_user_id,
          max_attempts, run_after, status
-       ) VALUES (COALESCE($1::uuid, gen_random_uuid()), $2, $3, $4, $5, $6, $7, $8, 'queued')
+       ) VALUES (COALESCE($1::uuid, gen_random_uuid()), $2, $3, $4, $5, $6, $7, COALESCE($8::timestamptz, now()), 'queued')
        ON CONFLICT (id) DO NOTHING
       RETURNING id`,
       [
@@ -221,7 +221,7 @@ export class JobRepository implements JobRepositoryPort {
          id, workspace_id, job_type, payload, priority, credential_owner_user_id,
          max_attempts, run_after, status, last_error, finished_at
        ) VALUES (
-         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+         $1, $2, $3, $4, $5, $6, $7, COALESCE($8::timestamptz, now()), $9, $10,
          CASE WHEN $9 = 'blocked_auth' THEN now() ELSE NULL END
        )
        ON CONFLICT (id) DO NOTHING
@@ -425,7 +425,8 @@ function normalizeNewJob(job: NewJob): NormalizedNewJob {
     priority: job.priority ?? 5,
     credentialOwnerUserId: job.credentialOwnerUserId,
     maxAttempts: job.maxAttempts ?? 3,
-    runAfter: job.runAfter ?? new Date(),
+    // Immediate work must use the same clock as leaseNext, not the application host clock.
+    runAfter: job.runAfter ?? null,
   };
 }
 
