@@ -3,6 +3,8 @@ import {
   canonicalRowSchemaVersionByQueryId,
   dataQueryIdSchema,
   dataViewModeSchema,
+  queryWindowSchema,
+  comparisonWindow,
   type AuthorityUseCase,
   type DataQueryId,
   type DataViewMode,
@@ -39,6 +41,10 @@ export interface KaDataQueryPlan {
   sql: string;
   limit: number;
   queryTemplateVersion: string;
+}
+export interface KaDataWindowQueryPlan extends KaDataQueryPlan {
+  window: z.infer<typeof queryWindowSchema>;
+  previousWindow: z.infer<typeof queryWindowSchema> | null;
 }
 
 export interface ScopedAccount {
@@ -477,6 +483,44 @@ export class DataQueryRegistry {
       sql: entry.buildSql(resolved.params, { kind: "team_workspace_readonly" }),
       limit: entry.maxRows,
       queryTemplateVersion: `${entry.queryTemplateVersion}-team-bound-v1`,
+    };
+  }
+
+  /** Internal v3 snapshot plan only; the client must enforce the configured team binding.
+   * One statement returns both windows, avoiding two independently refreshed source snapshots.
+   * Byte/row cap or duplicate account-days must be rejected by the reader before assessment.
+   */
+  buildTeamKaWindowPlan(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow"): KaDataWindowQueryPlan {
+    if (!isResolvedDataQuery(resolved) || resolved.queryId !== "account.summary") {
+      throw new QueryRegistryError("INVALID_REQUEST", "Window query requires a registered account summary");
+    }
+    const window = queryWindowSchema.parse(windowInput);
+    const compare = z.enum(["dod", "wow"]).optional().parse(compareInput);
+    if (window.from !== resolved.params.dateFrom || window.to !== resolved.params.dateTo) {
+      throw new QueryRegistryError("INVALID_REQUEST", "Window must match resolved query dates");
+    }
+    const previousWindow = compare === undefined ? null : comparisonWindow(window, compare);
+    const windows = previousWindow === null ? [window] : [previousWindow, window];
+    const first = windows.map((item) => item.from).sort()[0]!;
+    const last = windows.map((item) => item.to).sort().at(-1)!;
+    const observedFilters = windows.map((item) => `(${whereClause({ ...resolved.params, dateFrom: item.from, dateTo: item.to }, { kind: "team_workspace_readonly" })})`).join(" OR ");
+    const dateFilters = windows.map((item) => `(day BETWEEN ${sqlString(item.from)} AND ${sqlString(item.to)})`).join(" OR ");
+    return {
+      backend: "sqlite", limit: 10000, queryTemplateVersion: "account-summary-window-members-v1",
+      window, previousWindow,
+      sql: `WITH RECURSIVE selected AS (
+        SELECT ds, media, account_id, cost_yuan, cash_yuan, show, click, conv, cash_assessment
+        FROM dwd_account_daily WHERE ${observedFilters}
+      ), dates(day) AS (
+        SELECT ${sqlString(first)} UNION ALL SELECT date(day,'+1 day') FROM dates WHERE day<${sqlString(last)}
+      ), scoped_accounts AS (SELECT DISTINCT media,account_id FROM selected), expected AS (
+        SELECT day AS ds, media, account_id FROM dates CROSS JOIN scoped_accounts WHERE ${dateFilters}
+      ) SELECT expected.ds, expected.media, expected.account_id,
+          selected.account_id IS NOT NULL AS observed,
+          selected.cost_yuan, selected.cash_yuan, selected.show, selected.click, selected.conv, selected.cash_assessment
+        FROM expected LEFT JOIN selected ON selected.ds=CAST(replace(expected.ds,'-','') AS INTEGER)
+          AND selected.media=expected.media AND selected.account_id=expected.account_id
+        ORDER BY expected.ds,expected.media,expected.account_id LIMIT 10001`,
     };
   }
 
