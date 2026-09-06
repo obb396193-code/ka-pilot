@@ -7,6 +7,7 @@ import {
   TaskListRepository,
   WorkItemListRepository,
   WorkItemRepository,
+  withSemanticReadSnapshot,
 } from "@ka/db";
 
 import { loadDataApiConfig } from "./data/data-api-config.js";
@@ -34,7 +35,8 @@ async function main(): Promise<void> {
     kaData: config.kaDataEnabled
       ? createKaDataClientFromEnv(process.env)
       : new DisabledKaDataSource(),
-    platform: new PlatformDataSource(new SemanticQueryRepository(pool)),
+    platform: new PlatformDataSource(new SemanticQueryRepository(pool), (read) =>
+      withSemanticReadSnapshot(pool, (connection) => read(new SemanticQueryRepository(connection)))),
     sourcePolicy: {
       diagnosticEnabled: config.dataDiagnosticEnabled,
       kaDataEnabled: config.kaDataEnabled,

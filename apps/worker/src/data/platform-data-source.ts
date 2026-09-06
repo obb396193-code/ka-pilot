@@ -39,6 +39,10 @@ export interface PlatformQueryRepository {
   queryLineage: (input: SemanticQueryScope) => Promise<SemanticLineageResult>;
 }
 
+export type PlatformReadSnapshot = (
+  read: (repository: PlatformQueryRepository) => Promise<SourceQueryResult>,
+) => Promise<SourceQueryResult>;
+
 function authorityFor(resolved: ResolvedDataQuery): SourceAuthority {
   const defaultSource = resolved.authorityPolicy.defaultSource;
   return {
@@ -188,27 +192,57 @@ async function queryAllRows(
 export class PlatformDataSource {
   constructor(
     private readonly repository: PlatformQueryRepository,
+    private readonly snapshot?: PlatformReadSnapshot,
   ) {}
 
   async query(
     resolved: ResolvedDataQuery,
     execution: DataQueryExecutionScope,
   ): Promise<SourceQueryResult> {
-    const scope = semanticScope(resolved, execution);
     try {
-      const lineagePromise = this.repository.queryLineage(scope);
+      return await (this.snapshot
+        ? this.snapshot((repository) => this.read(repository, resolved, execution))
+        : this.read(this.repository, resolved, execution));
+    } catch (error) {
+      const invalidCanonical = error instanceof CanonicalQueryRowError ||
+        (error instanceof Error && error.name === "SemanticQueryContractError");
+      if (invalidCanonical) throw new PlatformDataSourceError();
+      return {
+        queryId: resolved.queryId,
+        rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
+        status: "unavailable",
+        rows: [],
+        returnedRowCount: 0,
+        wholeResultTotal: { value: null, availability: "error", reason: "SOURCE_UNAVAILABLE" },
+        lineage: unavailableLineage(resolved, execution),
+        warnings: ["Platform source is unavailable"],
+        error: {
+          code: "SOURCE_UNAVAILABLE", message: "Platform source is unavailable",
+          retryable: true, requestId: PLATFORM_SOURCE_REQUEST_ID,
+        },
+      };
+    }
+  }
+
+  private async read(
+    repository: PlatformQueryRepository,
+    resolved: ResolvedDataQuery,
+    execution: DataQueryExecutionScope,
+  ): Promise<SourceQueryResult> {
+      const scope = semanticScope(resolved, execution);
+      const semanticLineage = await repository.queryLineage(scope);
       let rows: Record<string, unknown>[];
       let total: number;
       let truncated = false;
       let aggregateAccountCount: number | undefined;
 
       if (resolved.queryId === "account.summary") {
-        const summary = await this.repository.querySummary(scope);
+        const summary = await repository.querySummary(scope);
         aggregateAccountCount = summary.accountCount;
         rows = [{ ...summary }];
         total = summary.rowCount;
       } else if (resolved.queryId === "account.trend") {
-        const trend = await this.repository.queryTrend(scope);
+        const trend = await repository.queryTrend(scope);
         rows = trend.map((row) => ({ ...row }));
         total = rows.length;
       } else {
@@ -222,7 +256,7 @@ export class PlatformDataSource {
           sortDirection: "desc",
         };
         if (resolved.queryId === "account.table") {
-          const result = await this.repository.queryTable({
+          const result = await repository.queryTable({
             ...tableInput,
             ...(resolved.params.page === undefined ? {} : { page: resolved.params.page }),
             ...(resolved.params.pageSize === undefined
@@ -232,7 +266,7 @@ export class PlatformDataSource {
           rows = result.rows.map((row) => ({ ...row }));
           total = result.total;
         } else {
-          const result = await queryAllRows(this.repository, tableInput, resolved.maxRows);
+          const result = await queryAllRows(repository, tableInput, resolved.maxRows);
           rows = result.result.rows.map((row) => ({ ...row }));
           total = result.result.total;
           truncated = result.truncated;
@@ -240,7 +274,6 @@ export class PlatformDataSource {
       }
 
       rows = canonicalizeQueryRows(resolved.queryId, "platform", rows, execution.workspaceId);
-      const semanticLineage = await lineagePromise;
       if (
         aggregateAccountCount !== undefined &&
         aggregateAccountCount !== semanticLineage.returnedAccounts
@@ -270,30 +303,5 @@ export class PlatformDataSource {
         lineage,
         warnings: lineage.partial ? [lineage.coverage.reason ?? "Canonical result is partial"] : [],
       };
-    } catch (error) {
-      const invalidCanonical = error instanceof CanonicalQueryRowError ||
-        (error instanceof Error && error.name === "SemanticQueryContractError");
-      if (invalidCanonical) throw new PlatformDataSourceError();
-      return {
-        queryId: resolved.queryId,
-        rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
-        status: "unavailable",
-        rows: [],
-        returnedRowCount: 0,
-        wholeResultTotal: {
-          value: null,
-          availability: "error",
-          reason: "SOURCE_UNAVAILABLE",
-        },
-        lineage: unavailableLineage(resolved, execution),
-        warnings: ["Platform source is unavailable"],
-        error: {
-          code: "SOURCE_UNAVAILABLE",
-          message: "Platform source is unavailable",
-          retryable: true,
-          requestId: PLATFORM_SOURCE_REQUEST_ID,
-        },
-      };
-    }
   }
 }

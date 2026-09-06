@@ -105,7 +105,7 @@ export function mapMetricSummary(row: AggregateDatabaseRow): MetricSummary {
 }
 
 export async function queryMetricSummary(
-  pool: Pool,
+  pool: Pick<Pool, "query">,
   scope: SemanticQueryScope,
 ): Promise<MetricSummary> {
   const filter = buildMetricFilter(scope);
@@ -127,7 +127,7 @@ export async function queryMetricSummary(
 }
 
 export async function queryMetricTrend(
-  pool: Pool,
+  pool: Pick<Pool, "query">,
   scope: SemanticQueryScope,
 ): Promise<MetricTrendRow[]> {
   const filter = buildMetricFilter(scope);

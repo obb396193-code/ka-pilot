@@ -69,6 +69,43 @@ function lineage(complete = true) {
 }
 
 describe("PlatformDataSource", () => {
+  it("runs every read through the provided snapshot repository, never the pool fallback", async () => {
+    const fallback = { querySummary: vi.fn(), queryTrend: vi.fn(), queryTable: vi.fn(), queryLineage: vi.fn() };
+    const transaction = {
+      querySummary: vi.fn(async () => summary(12)), queryTrend: vi.fn(), queryTable: vi.fn(),
+      queryLineage: vi.fn(async () => lineage()),
+    };
+    const snapshot = vi.fn(async (read: (repository: typeof transaction) => Promise<unknown>) => read(transaction));
+    const result = await new PlatformDataSource(fallback as never, snapshot as never).query(
+      createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"), scope,
+    );
+    expect(result.status).toBe("ready"); expect(snapshot).toHaveBeenCalledTimes(1);
+    expect(transaction.querySummary).toHaveBeenCalledTimes(1); expect(transaction.queryLineage).toHaveBeenCalledTimes(1);
+    for (const fn of Object.values(fallback)) expect(fn).not.toHaveBeenCalled();
+  });
+
+  it("commit/connect failure withholds previously read rows and does not leak DB error details", async () => {
+    const repository = {
+      querySummary: vi.fn(async () => summary(12)), queryTrend: vi.fn(), queryTable: vi.fn(),
+      queryLineage: vi.fn(async () => lineage()),
+    };
+    const source = new PlatformDataSource(repository as never, async (read) => {
+      await read(repository as never); throw new Error("synthetic secret SQL commit failure");
+    });
+    const result = await source.query(createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"), scope);
+    expect(result).toMatchObject({ status: "unavailable", rows: [], lineage: { dataAsOf: null } });
+    expect(JSON.stringify(result)).not.toContain("secret SQL");
+  });
+
+  it("canonical corruption escapes the snapshot as the same top-level contract error", async () => {
+    const repository = {
+      querySummary: vi.fn(async () => ({ ...summary(12), cost: "invalid" })), queryTrend: vi.fn(), queryTable: vi.fn(),
+      queryLineage: vi.fn(async () => lineage()),
+    };
+    const source = new PlatformDataSource(repository as never, async (read) => read(repository as never));
+    await expect(source.query(createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"), scope)).rejects.toBeInstanceOf(PlatformDataSourceError);
+  });
+
   it("queries canonical summary with the authenticated account scope", async () => {
     const repository = {
       querySummary: vi.fn(async () => summary(12)),
