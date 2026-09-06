@@ -18,3 +18,6 @@
 # 本次内部资料下载入口文件；canonical 只保留在上方私有区
 /ka-platform-docs-v2.zip
 /INDEX.md
+
+# linked worktrees kept inside the repo dir
+.worktrees/
