@@ -15,6 +15,7 @@ export type ChangeSetStatus =
 
 export type ChangeSetAction =
   | "confirm"
+  | "retry"
   | "send"
   | "start_execution"
   | "complete_success"
@@ -93,6 +94,7 @@ const transitions: Partial<
   },
   success: { mark_rolled_back: "rolled_back" },
   partial: { mark_rolled_back: "rolled_back" },
+  failed: { retry: "confirmed" },
 };
 
 export function transitionChangeSet(

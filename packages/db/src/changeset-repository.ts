@@ -66,6 +66,14 @@ export type ConfirmResult =
   | { outcome: "conflict"; conflicts: ValueConflict[] }
   | { outcome: "expired" };
 
+export interface ConfirmChangeSetInput {
+  workspaceId: string;
+  changeSetId: string;
+  now: Date;
+  currentValues: CurrentValueSnapshot[];
+  expectedHash?: string;
+}
+
 interface HeaderRow {
   id: string;
   workspace_id: string;
@@ -372,13 +380,15 @@ export class ChangeSetRepository {
     } finally { client.release(); }
   }
 
-  async confirm(input: {
-    workspaceId: string;
-    changeSetId: string;
-    now: Date;
-    currentValues: CurrentValueSnapshot[];
-    expectedHash?: string;
-  }): Promise<ConfirmResult> {
+  async confirm(input: ConfirmChangeSetInput): Promise<ConfirmResult> {
+    return this.approve(input, "confirm");
+  }
+
+  async retry(input: ConfirmChangeSetInput): Promise<ConfirmResult> {
+    return this.approve(input, "retry");
+  }
+
+  private async approve(input: ConfirmChangeSetInput, action: "confirm" | "retry"): Promise<ConfirmResult> {
     requireValidClock(input.now);
     const client = await this.pool.connect();
     try {
@@ -391,7 +401,13 @@ export class ChangeSetRepository {
       const header = requireHeader(locked.rows[0], input.changeSetId);
       await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
       const storedItems = await loadItems(client, header);
-      if (header.status !== "draft" && header.status !== "confirmed") throw new ChangeSetPreconditionError("INVALID_STATE");
+      const sourceStatus = action === "retry" ? "failed" : "draft";
+      if (header.status !== sourceStatus && header.status !== "confirmed") throw new ChangeSetPreconditionError("INVALID_STATE");
+      if (action === "retry") {
+        const failedRun = await client.query(`SELECT r.id FROM execution_runs r JOIN changesets c ON c.id=r.changeset_id
+          WHERE c.workspace_id=$1 AND c.id=$2 AND r.dry_run=false AND r.status='failed' AND r.finished_at IS NOT NULL LIMIT 1`, [input.workspaceId, header.id]);
+        if (failedRun.rows.length !== 1) throw new ChangeSetPreconditionError("INVALID_STATE");
+      }
       if (header.status === "confirmed") {
         await requireSuccessfulDryRun(client, header, storedItems, input.expectedHash, true);
         const changeset = await assemble(client, header);
@@ -399,22 +415,28 @@ export class ChangeSetRepository {
         return { outcome: "confirmed", idempotent: true, changeset };
       }
       if (header.ttl_expire_at === null) throw new Error("changeset has no TTL");
+      requireValidClock(header.ttl_expire_at);
       if (input.now >= header.ttl_expire_at) {
-        await client.query("UPDATE changesets SET status='expired' WHERE id=$1", [header.id]);
+        if (action === "confirm") await client.query("UPDATE changesets SET status='expired' WHERE id=$1", [header.id]);
         await client.query("COMMIT");
         return { outcome: "expired" };
       }
-      assertChangeSetConfirmable({ status: header.status, ttlExpireAt: header.ttl_expire_at, now: input.now });
-      const hash = await requireSuccessfulDryRun(client, header, storedItems, input.expectedHash);
+      const hash = await requireSuccessfulDryRun(client, header, storedItems, input.expectedHash, action === "retry");
       const verification = verifyCurrentValues(storedItems, input.currentValues);
       if (!verification.ok) {
         await client.query("COMMIT");
         return { outcome: "conflict", conflicts: verification.conflicts };
       }
+      if (action === "retry") {
+        const reset = await client.query(`UPDATE changeset_items SET item_status='pending',fail_reason=NULL
+          WHERE changeset_id=$1 AND workspace_id=$2 AND media=$3 AND account_id=$4`, [header.id, input.workspaceId, header.media, header.account_id]);
+        if (reset.rowCount !== storedItems.length) throw new Error("Changeset retry item coverage changed");
+      }
+      transitionChangeSet(header.status, action);
       const updated = await client.query<HeaderRow>(
-        `UPDATE changesets SET status='confirmed',confirm_hash=$3
-         WHERE workspace_id=$1 AND id=$2 AND status='draft' RETURNING ${headerColumns}`,
-        [input.workspaceId, input.changeSetId, hash],
+        `UPDATE changesets SET status='confirmed',confirm_hash=$3,executed_at=NULL
+         WHERE workspace_id=$1 AND id=$2 AND status=$4 RETURNING ${headerColumns}`,
+        [input.workspaceId, input.changeSetId, hash, sourceStatus],
       );
       const changeset = await assemble(client, requireHeader(updated.rows[0], input.changeSetId));
       await client.query("COMMIT");

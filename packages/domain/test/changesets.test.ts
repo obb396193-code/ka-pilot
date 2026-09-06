@@ -52,6 +52,10 @@ describe("changeset transitions", () => {
     expect(transitionChangeSet("unknown", "reconcile_success")).toBe("success");
     expect(() => transitionChangeSet("unknown", "send")).toThrow(/invalid changeset transition/);
   });
+  it("permits failed retry only through the newly frozen retry transition", () => {
+    expect(transitionChangeSet("failed", "retry")).toBe("confirmed");
+    for (const status of ["unknown", "partial", "success", "draft", "executing"] as const) expect(() => transitionChangeSet(status, "retry")).toThrow();
+  });
 });
 
 describe("confirmation guards", () => {

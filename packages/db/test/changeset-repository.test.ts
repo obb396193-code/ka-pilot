@@ -124,6 +124,46 @@ describe("ChangeSetRepository", () => {
     await expect(repository.find(otherWorkspaceId, created.id)).resolves.toBeNull();
   });
 
+  async function failedExecution() {
+    const created = await create();
+    const input = { workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:00:00Z"), currentValues: created.items.map((item) => ({
+      targetType: item.targetType, targetId: item.targetId, field: item.field, value: item.fromValue,
+    })) };
+    await repository.confirm(input);
+    const run = await repository.beginExecution({ workspaceId, changeSetId: created.id, startedAt: new Date("2026-08-19T10:01:00Z"), requestPayload: {} });
+    if (run.directive !== "execute") throw new Error("expected execution");
+    await repository.completeExecution({ workspaceId, changeSetId: created.id, executionRunId: run.executionRunId,
+      finishedAt: new Date("2026-08-19T10:02:00Z"), resultPayload: { source: "synthetic" },
+      items: created.items.map((item) => ({ itemId: item.id, status: "failed", failReason: "synthetic failure" })) });
+    return { created, input: { ...input, now: new Date("2026-08-19T10:03:00Z") }, run };
+  }
+
+  it("serializes failed retry and retains failed run evidence before attempt two", async () => {
+    const { created, input } = await failedExecution();
+    const results = await Promise.all([repository.retry(input), repository.retry(input)]);
+    expect(results.filter((result) => result.outcome === "confirmed" && result.idempotent)).toHaveLength(1);
+    const saved = await repository.get(workspaceId, created.id);
+    expect(saved.items.every((item) => item.itemStatus === "pending" && item.failReason === null)).toBe(true);
+    expect(saved.credentialOwnerUserId).toBe(userId);
+    expect(saved.executedAt).toBeNull();
+    const next = await repository.beginExecution({ workspaceId, changeSetId: created.id, startedAt: new Date("2026-08-19T10:04:00Z"), requestPayload: {} });
+    expect(next.directive).toBe("execute");
+    const runs = await pool.query("SELECT attempt,status,result_payload FROM execution_runs WHERE changeset_id=$1 AND dry_run=false ORDER BY attempt", [created.id]);
+    expect(runs.rows.map((row) => [row.attempt, row.status])).toEqual([[1, "failed"], [2, "running"]]);
+    expect(runs.rows[0]!.result_payload).toEqual({ source: "synthetic" });
+  });
+
+  it("preserves failed evidence when retry current values conflict or TTL expires", async () => {
+    const { created, input } = await failedExecution();
+    await expect(repository.retry({ ...input, currentValues: [] })).resolves.toMatchObject({ outcome: "conflict" });
+    await expect(repository.retry({ ...input, now: new Date("2026-08-19T10:30:00Z") })).resolves.toEqual({ outcome: "expired" });
+    const saved = await repository.get(workspaceId, created.id);
+    expect(saved.status).toBe("failed");
+    expect(saved.items.every((item) => item.itemStatus === "failed" && item.failReason === "synthetic failure")).toBe(true);
+    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1 AND dry_run=false", [created.id])).rows).toHaveLength(1);
+    await expect(repository.retry({ ...input, workspaceId: otherWorkspaceId })).rejects.toThrow(/not found/);
+  });
+
   const typedValues: ChangeValue[] = [{ type: "json", value: null }, { type: "number", value: 1 }, { type: "boolean", value: false },
     { type: "string", value: 'quote"\n中文' }, { type: "json", value: { x: 1 } }, { type: "schedule168", value: "01".repeat(84) }];
   it.each(typedValues)("preserves the typed object %j in JSONB", async (value) => {
