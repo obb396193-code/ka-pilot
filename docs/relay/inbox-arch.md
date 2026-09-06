@@ -3619,3 +3619,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 实际Web BFF在独立Node进程调用本机Worker Session+query HTTP，经过真实Registry/QueryService，两包decoder，summary/trend/table三次200，同requestId。**auth/data端口合成，不是真PG或真实KA**，未启动Next页面服务；不能当生产验证。HTTP50过，`/tmp/ka-semantic-bff-http.log`。
 - 最终Worker1072过+2外部opt-in skip，`/tmp/ka-semantic-bff-worker-final.log`；Web135过/2个旧权威fixture失败仍P073，`/tmp/ka-semantic-bff-web-full.log`；Worker/Web typecheck/lint绿。coverage53定向通过，BFF100%行/96.55%分支、语法100%/100%、共用helper86.08%行；Web offline production audit0（不是实时漏洞查询）。本批无DB/Domain生产改动，不重跑PG、不借旧PG数字。
 - 无Contract/React/视觉/真实媒体写/push；candidate待审，未merged/deployed。详细计划+质量报告`docs/plans/2026-09-06-R010a1-统一查询BFF.md`。R010其余能力及后续信箱仍未完成，不以本入口就绪宣告总任务结束。
+
+### P-085｜变更集typed值与确认哈希内核候选（be，2026-09-06）
+
+- `61abbcf`仅Domain3文件。按P006五类型严格校验/比较；JSON对象键序无关、数组保序，NaN/类型错/循环/访问器/隐藏属性/超资源拒绝。草稿条目按目标三元组稳定排序、重复同字段拒绝，sha256(canonical snake_case items+原样合法TTL)。微秒TTL不能转Date丢失。哈希不是授权凭据。
+- TDD模块缺失先红；33过后Zod输入typecheck问题修复，最终36过、100%行/98.36%分支。直接读取arch detail fixture验证from/to，但示例hash不是实算golden。Domain669过/10个旧P073失败；Worker1072过+2外部opt-in skip；三包typecheck/lint过，Domain offline audit0；日志/质量报告见`docs/plans/2026-09-06-R010a2-变更集typed值与哈希.md`。
+- 当前**未接旧字符串Repository/JSONB桥/HTTP**，不是dry-run/confirm执行链完成。后续统一typed链时，TTL读写必须保留同一字符串（微秒不失）；请审canonical排序/TTL编码约定，持久化前不能拿现示例hash验证成功。既有字符串不猜number，不新旧混执行。
+- PG本轮55432拒连，Docker只读ps超时；未重启/删缓存/起Worker。clean install/FaaS遵从arch后续等OS模板，不本机重装。无Contract/视觉/依赖变更、未push/合流/部署，真实媒体写仍关。继续其余已冻任务；P073/P077/P082/P083及PG外部依赖未消失。
