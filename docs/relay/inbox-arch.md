@@ -3416,3 +3416,16 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - **657803c**独立修复回归中发现的即时队列时钟问题：默认enqueue/enqueueScheduled用DB now而非Node new Date；显式runAfter不变。真实PG3例把应用时钟前移到2099，两个即时入口仍可领、显式未来不可领。现场5次只读时钟样本含Node领先PG约1.5ms；不是凭猜测改定时器。未放宽lease scope/fence/重试。
 - 失败保留：首次Worker全量831pass/1fail（单轮ETL下游未即刻领取）；clock反例先2fail/1pass，再因测试漏markRunning触发2个LostLease，修测试合法状态流后3pass。最终完整门禁 **Domain617 / DB真实PG362 / Worker832+2外部opt-in skipped**，三包typecheck/lint全过；Worker offline production audit0。日志`/tmp/ka-snapshot-{domain-final,db-final2,worker-final2,coverage}.log`、`/tmp/ka-platform-snapshot-coverage.log`、`/tmp/ka-enqueue-clock-{red,green}.log`。
 - 仅合成PG；Contract/前端/runbook均0diff，无push/部署/真实媒体写。b05ea60当前公开source仍v2，窗口v3/compare/两Adapter/非视觉BFF下一批；P058三项待裁不阻塞参数归一与统一Registry等独立工作。后端状态只写R010-状态，未碰总台账。
+
+### P-061 团队v3考核版本来源缺口（不阻塞个人窗口组合）｜Codex 2026-09-06
+
+实读ka-src-0011已审assessment：dwd_account_daily有assessment/cash_assessment，来源assessment_catalog；当前Registry table SQL确实选取这些列。但v1.7.2要求price={value,effectiveDate}且按真实版本计priceVersions，资料未提供effectiveDate/versionKey字段。不能把ds/窗口from/MIN(ds)冒充生效日期，亦不能把每天相同价算多个版本。请arch确认KA查询哪些已证实字段/表取得版本；若源不提供，需冻结“考核值可算但版本未知”的合法展示schema/策略。另当前KA Aggregate SQL只选conv→conversion，未选real_conversion；需确认conv是否真实BI数及回传字段来源，不能两种转化都填同值猜口径。个人空间有真实assessment_price_history，先组合其v3计算；公开两Adapter整体切换前不伪造团队版本或BI字段。
+
+补记（本轮继续找原文后）：原始资料只在main工作树的private/knowledge-sources中（隔离worktree不含）。只读定向核验ka-src-0010/source.txt:80-81明确conv来自fact_conv JOIN，:102为BI转化，:132起列五业务口径；**conv→realConversion已找到依据，不再作为待确认项**。下一独立代码子批纠正KA conv误投conversion，缺OCPX回传字段时conversion保持missing；不把BI同时填两列。真实版本/effectiveDate仍无字段证据，P061主要裁决项不变。未复制原文/运行地址/真实数据进Git。
+
+### P-062 个人窗口组合候选ea69779｜Codex 2026-09-06，待审
+
+- `PlatformWindowQuery`内部read模型+真实PG factory：当前summary/lineage/history/比较窗复用一个RR只读会话；scope仅受信显式tuple，空范围不发现全workspace。17unit/3PG，实际中途改价20→10按每天加权，未来999排除，现金25/目标30→空间5及黄；旧缓存空间999不采用；wow25/20现金比例、cashCPA12.5−5差额；同号跨workspace/media只返回已选tuple。
+- 严格检查总计与history现金/真实转化一致（允许NUMERIC→浮点微误差）、counts与lineage一致、missing day不能丢、非法history/metadata fail closed；缺预算卡undefined，compare.onTargetRate undefined待P058；today无同小时快照不查询昨日全天。不改变公开v2边界，P058/P061未裁前不伪造团队版本。不是第二个API/Registry。
+- Registry支持冻结date_from/date_to并归一同dateFrom/dateTo；混合两种拼写（即使同值）、单日+范围、缺端点、非标准多连字符日期、超期拒绝；六Query全对照，同SQL。16新例先8fail/16pass→24pass。模块初次缺文件仅加载红，第一次lint有unused mock参数，已修。
+- 全量 **Domain617/DB真实PG362/Worker868+2外部opt-in skip**，三包type/lint通过；窗口模块91.3%行/90.69%分支，factory有3PG但不在unit覆盖统计；Worker offline production audit0。日志`/tmp/ka-window-assembly-{domain,db,worker}-final.log`与`/tmp/ka-window-composition-{pg,coverage}.log`。无新增依赖/N+1；没有Contract/前端视觉/runbook/真实源操作。下个独立子批按P061原文纠正KA BI转化映射。
