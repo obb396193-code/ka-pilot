@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { createKaDataClientFromEnv } from "../src/data/ka-data-client.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
 import { createDataQueryHttpHandler, DataQueryService } from "../src/data/query-service.js";
+import { windowFixtureRows } from "./ka-window-fixture.js";
 
 const workspaceId = "00000000-0000-4000-8000-000000000024";
 const scope = { workspaceId, userId: "00000000-0000-4000-8000-000000000001", scopeKind: "team_workspace_readonly" as const, accounts: [] };
@@ -44,7 +45,7 @@ describe("server-bound team reader", () => {
       expect(summary.lineage).toMatchObject({ workspaceKind: "team", metadataAvailability: "unknown", partial: true, truncated: false, coverage: { complete: false, returnedObjects: 2 } });
       expect(summary.lineage.coverage.requestedObjects).toBeUndefined();
       expect(summary.rowSchemaVersion).toBe("account.summary/v3");
-      expect(summary.lineage.queryTemplateVersion).toBe("account-summary-window-members-v1");
+      expect(summary.lineage.queryTemplateVersion).toBe("account-window-aggregate-v1");
       const filtered = { ...params, accountIds: ["same"] };
       const one = await client.query(registry.resolve("account.summary", filtered, "ka_data"), scope);
       expect(one.rows[0]).toMatchObject({ accountCount: 1, metrics: { cost: { value: 7, availability: "available" } } });
@@ -106,9 +107,11 @@ describe("server-bound team reader", () => {
   });
 
   it("real client + service + HTTP handler bind the approved team and never fall back", async () => {
-    const fetchFn = vi.fn<typeof fetch>(async () => Response.json({ backend: "sqlite", rowCount: 2,
-      rows: ["2026-08-23", "2026-08-24"].map((ds) => ({ ds, media: "KUAISHOU", account_id: "same",
-        observed: 1, cost_yuan: 9, cash_yuan: 9, conv: 1, show: 10, click: 1, cash_assessment: 10 })) }));
+    const fetchFn = vi.fn<typeof fetch>(async (_url, init) => {
+      const rows = windowFixtureRows(JSON.parse(String(init?.body)).sql, ["2026-08-23", "2026-08-24"].map((ds) => ({
+        ds, media: "KUAISHOU", account_id: "same", observed: 1, cost_yuan: 9, cash_yuan: 9, conv: 1, show: 10, click: 1, cash_assessment: 10 })));
+      return Response.json({ backend: "sqlite", rowCount: rows.length, rows });
+    });
     const platform = { query: vi.fn() };
     const handler = createDataQueryHttpHandler(new DataQueryService({
       registry, kaData: createKaDataClientFromEnv(env, { fetchFn }), platform,

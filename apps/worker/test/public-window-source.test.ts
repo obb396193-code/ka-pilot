@@ -6,6 +6,7 @@ import { PlatformWindowQuery } from "../src/data/platform-window-query.js";
 import { DataQueryService, createDataQueryHttpHandler } from "../src/data/query-service.js";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
 import { personalAuth, teamAuth } from "./business-auth-fixtures.js";
+import { windowFixtureRows } from "./ka-window-fixture.js";
 
 const workspaceId = "00000000-0000-4000-8000-000000000031", userId = "00000000-0000-4000-8000-000000000032";
 const params = { date_from: "2026-09-01", date_to: "2026-09-01", compare: "dod" };
@@ -23,9 +24,12 @@ function setup() {
     loadAccountCounts: async () => ({ total: 1, determinable: 1, onTarget: 1 }),
   }));
   const kaData = new KaDataClient({ baseUrl: "https://ka.test.invalid", token: "synthetic", teamWorkspaceId: workspaceId,
-    fetchFn: async () => new Response(JSON.stringify({ backend: "sqlite", rowCount: 2, rows: ["2026-08-31", "2026-09-01"].map((ds) => ({
-      ds, media: "KUAISHOU", account_id: "a", observed: 1, cost_yuan: 12, cash_yuan: 10, show: 100, click: 10, conv: 2, cash_assessment: 20,
-    })) })) });
+    fetchFn: async (_url, init) => {
+      const rows = windowFixtureRows(JSON.parse(String(init?.body)).sql, ["2026-08-31", "2026-09-01"].map((ds) => ({
+        ds, media: "KUAISHOU", account_id: "a", observed: 1, cost_yuan: 12, cash_yuan: 10, show: 100, click: 10, conv: 2, cash_assessment: 20,
+      })));
+      return Response.json({ backend: "sqlite", rowCount: rows.length, rows });
+    } });
   const platform = new PlatformDataSource(repository, undefined, window);
   const registry = createDataQueryRegistry();
   const service = new DataQueryService({ registry, platform, kaData, sourcePolicy: { kaDataEnabled: true, diagnosticEnabled: false, entitlements: [] } });

@@ -10,6 +10,7 @@ import {
   type DataViewMode,
 } from "@ka/domain";
 import { z } from "zod";
+import { buildKaWindowAggregateSql } from "./ka-window-aggregate-sql.js";
 
 const RESOLVED_QUERY = Symbol("resolved-data-query");
 const AUTHORITY_POLICY_VERSION = "2026-08-24";
@@ -499,7 +500,7 @@ export class DataQueryRegistry {
    * One statement returns both windows, avoiding two independently refreshed source snapshots.
    * Byte/row cap or duplicate account-days must be rejected by the reader before assessment.
    */
-  buildTeamKaWindowPlan(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow"): KaDataWindowQueryPlan {
+  private teamKaWindowBase(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow", aggregate = false): KaDataWindowQueryPlan {
     if (!isResolvedDataQuery(resolved) || (resolved.queryId !== "account.summary" && resolved.queryId !== "account.trend")) {
       throw new QueryRegistryError("INVALID_REQUEST", "Window query requires a registered account summary");
     }
@@ -525,12 +526,24 @@ export class DataQueryRegistry {
       ), scoped_accounts AS (SELECT DISTINCT media,account_id FROM selected), expected AS (
         SELECT day AS ds, media, account_id FROM dates CROSS JOIN scoped_accounts WHERE ${dateFilters}
       ) SELECT expected.ds, expected.media, expected.account_id,
+          ${aggregate ? "(SELECT COUNT(*) FROM selected) AS source_row_count," : ""}
           selected.account_id IS NOT NULL AS observed,
           selected.cost_yuan, selected.cash_yuan, selected.show, selected.click, selected.conv, selected.cash_assessment
         FROM expected LEFT JOIN selected ON selected.ds=CAST(replace(expected.ds,'-','') AS INTEGER)
           AND selected.media=expected.media AND selected.account_id=expected.account_id
-        ORDER BY expected.ds,expected.media,expected.account_id LIMIT 10001`,
+        ORDER BY expected.ds,expected.media,expected.account_id`,
     };
+  }
+
+  buildTeamKaWindowPlan(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow"): KaDataWindowQueryPlan {
+    const base = this.teamKaWindowBase(resolved, windowInput, compareInput);
+    return { ...base, sql: `${base.sql} LIMIT 10001` };
+  }
+
+  buildTeamKaWindowAggregatePlan(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow"): KaDataWindowQueryPlan {
+    const base = this.teamKaWindowBase(resolved, windowInput, compareInput, true);
+    return { ...base, queryTemplateVersion: "account-window-aggregate-v1",
+      sql: buildKaWindowAggregateSql(base.sql, base.window, base.previousWindow) };
   }
 
   buildKaDataPlan(

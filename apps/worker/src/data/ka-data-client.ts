@@ -16,7 +16,8 @@ import {
   type KaDataQueryPlan,
 } from "./query-registry.js";
 import { decodeKaWindowMembers } from "./ka-window-members.js";
-import { summarizeKaWindowMembers, trendKaWindowMembers } from "./ka-window-summary.js";
+import { summarizeKaWindowMembers } from "./ka-window-summary.js";
+import { assembleKaWindowAggregates } from "./ka-window-aggregate.js";
 import {
   CanonicalQueryRowError,
   canonicalizeQueryRows,
@@ -377,6 +378,28 @@ export class KaDataClient {
     } catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid window summary response", false); }
   }
 
+  private async queryTeamWindowAggregate(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: "dod" | "wow") {
+    if (scope.scopeKind !== "team_workspace_readonly" || !z.string().uuid().safeParse(scope.userId).success) {
+      throw new KaDataClientError("FORBIDDEN", "Team window query requires approved team context", false);
+    }
+    if (this.#teamWorkspaceId === undefined || scope.workspaceId !== this.#teamWorkspaceId) {
+      throw new KaDataClientError("SOURCE_UNAVAILABLE", "Team data source workspace binding is unavailable", false);
+    }
+    const plan = this.#registry.buildTeamKaWindowAggregatePlan(resolved, window, compare);
+    const { envelope, exactLimit } = await this.#readPlan(plan);
+    if (exactLimit || envelope.truncated || envelope.limit_clamped || envelope.rowCount !== envelope.rows.length ||
+      envelope.rows.length >= plan.limit || SUSPECTED_ROW_BOUNDARIES.has(envelope.rows.length) || SUSPECTED_ROW_BOUNDARIES.has(envelope.rowCount)) {
+      throw new KaDataClientError("SOURCE_TRUNCATED", "Window aggregate response is incomplete", false);
+    }
+    let result;
+    try { result = assembleKaWindowAggregates(envelope.rows, plan, compare); }
+    catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid window aggregate response", false); }
+    const reason = "Team account inventory is unavailable; observed rows do not prove complete coverage";
+    return { ...result, window: plan.window,
+      lineage: sourceLineage(resolved, scope, envelope, result.returnedObjects, false, true, reason, plan.queryTemplateVersion),
+      warnings: [reason, ...result.warnings] };
+  }
+
   async #readPlan(plan: KaDataQueryPlan) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), this.#timeoutMs);
@@ -430,12 +453,8 @@ export class KaDataClient {
     }
     if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend") {
       const window = { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" };
-      const result = resolved.queryId === "account.summary"
-        ? await this.queryTeamWindowSummary(resolved, scope, window, resolved.params.compare)
-        : await this.queryTeamWindowMembers(resolved, scope, window);
-      let rows: Record<string, unknown>[];
-      try { rows = "row" in result ? [result.row] : trendKaWindowMembers(result.members); }
-      catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid window response", false); }
+      const result = await this.queryTeamWindowAggregate(resolved, scope, window, resolved.params.compare);
+      const rows: Record<string, unknown>[] = resolved.queryId === "account.summary" ? [result.row] : result.trend;
       return {
         queryId: resolved.queryId, rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
         status: "ready", rows, returnedRowCount: rows.length,

@@ -3,6 +3,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
 import { KaDataClient, KaDataClientError, createKaDataClientFromEnv } from "../src/data/ka-data-client.js";
+import { windowFixtureRows } from "./ka-window-fixture.js";
 
 const workspaceId = "00000000-0000-4000-8000-000000000024";
 const userId = "00000000-0000-4000-8000-000000000001";
@@ -27,8 +28,14 @@ function daily(accountId = "a", overrides: Record<string, unknown> = {}) {
 function envelope(rows: unknown[], metadata: Record<string, unknown> = {}) {
   return { backend: "sqlite", rowCount: rows.length, rows, ...metadata };
 }
-function setup(rows: unknown[] = [member()], metadata: Record<string, unknown> = {}) {
-  const fetchFn = vi.fn<typeof fetch>(async () => Response.json(envelope(rows, metadata)));
+function setup(rows: unknown[] = [member()], metadata: Record<string, unknown> = {}, rawTransport = false) {
+  const fetchFn = vi.fn<typeof fetch>(async (_url, init) => {
+    const { sql } = JSON.parse(String(init?.body));
+    const validMembers = rows.every((row) => typeof row === "object" && row !== null && Object.hasOwn(row, "observed"));
+    const output = !rawTransport && sql.startsWith("WITH grid AS") && validMembers
+      ? windowFixtureRows(sql, rows as Record<string, unknown>[]) : rows;
+    return Response.json(envelope(output, metadata));
+  });
   const client = new KaDataClient({ baseUrl: env.KA_DATA_BASE_URL, token: "fixture-secret-token",
     teamWorkspaceId: workspaceId, fetchFn });
   return { client, fetchFn };
@@ -46,10 +53,16 @@ describe("KaDataClient", () => {
     await expect(setup([{ row_count: 1, account_count: 1, cost: 12, account_day_count }]).client.query(summary(), team))
       .rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
   });
-  it.each([
-    ["2026-08-23"], ["2026-08-23", "2026-08-23"], ["2026-08-22", "2026-08-23"],
-  ])("rejects incomplete, duplicate or out-of-window member dates %j", async (...dates) => {
-    await expect(setup(dates.map((ds) => member(ds))).client.query(trend(), team))
+  it.each(["missing-day", "duplicate-day", "out-of-window"])("rejects corrupt aggregate dates %s", async (kind) => {
+    const client = createKaDataClientFromEnv(env, { fetchFn: async (_url, init) => {
+      const { sql } = JSON.parse(String(init?.body));
+      const rows = windowFixtureRows(sql, [member("2026-08-23"), member("2026-08-24")]);
+      if (kind === "missing-day") rows.pop();
+      if (kind === "duplicate-day") rows.push({ ...rows.at(-1)! });
+      if (kind === "out-of-window") rows.at(-1)!.ds = "2026-08-22";
+      return Response.json(envelope(rows));
+    } });
+    await expect(client.query(trend(), team))
       .rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
   });
   it("uses a fixed HTTPS origin/path and never serializes its token", async () => {
@@ -62,7 +75,7 @@ describe("KaDataClient", () => {
     expect(JSON.stringify({ client, response })).not.toContain("fixture-secret-token");
   });
   it("creates the production reader only from server-side environment secrets", async () => {
-    const fetchFn = vi.fn<typeof fetch>(async () => Response.json(envelope([])));
+    const fetchFn = vi.fn<typeof fetch>(async (_url, init) => Response.json(envelope(windowFixtureRows(JSON.parse(String(init?.body)).sql, []))));
     const client = createKaDataClientFromEnv({ ...env, KA_DATA_DATASET_VERSION: "deployment-not-lineage" }, { fetchFn });
     const result = await client.query(summary(), team);
     expect(new Headers(fetchFn.mock.calls[0]?.[1]?.headers).get("authorization")).toBe("Bearer server-only-token");
@@ -111,7 +124,7 @@ describe("KaDataClient", () => {
   });
   it("does not use deployment timezone or day-cut fallbacks as source lineage", async () => {
     const client = createKaDataClientFromEnv({ ...env, KA_DATA_TIMEZONE: "Asia/Shanghai", KA_DATA_DAY_CUT: "calendar_day" }, {
-      fetchFn: async () => Response.json(envelope([member()])),
+      fetchFn: async (_url, init) => Response.json(envelope(windowFixtureRows(JSON.parse(String(init?.body)).sql, [member()]))),
     });
     expect((await client.query(summary(), team)).lineage).toMatchObject({ timezone: null, dayCut: null });
   });
@@ -132,7 +145,7 @@ describe("KaDataClient", () => {
   });
   it.each([2_000, 10_000])("rejects an exact %i-row window boundary before assessment", async (rowCount) => {
     const rows = Array.from({ length: rowCount }, (_, index) => member("2026-08-24", `a-${index}`));
-    await expect(setup(rows).client.query(summary(), team)).rejects.toMatchObject({ code: "SOURCE_TRUNCATED" });
+    await expect(setup(rows, {}, true).client.query(summary(), team)).rejects.toMatchObject({ code: "SOURCE_TRUNCATED" });
   });
   it.each([2_000, 10_000])("keeps the daily %i-row truncation masking guard", async (rowCount) => {
     const result = await setup(Array.from({ length: rowCount }, () => daily())).client.query(table(), personal);
