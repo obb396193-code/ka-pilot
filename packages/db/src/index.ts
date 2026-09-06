@@ -15,6 +15,7 @@ export * from "./semantic-query-types.js";
 export * from "./report-facts-source.js";
 export * from "./work-item-repository.js";
 export * from "./changeset-repository.js";
+export * from "./changeset-follow-up.js";
 export * from "./task-repository.js";
 export * from "./agent-repository.js";
 export * from "./workflow-repository.js";
