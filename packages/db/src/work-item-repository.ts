@@ -299,6 +299,10 @@ export class WorkItemRepository {
   }
 
   async transition(input: WorkItemTransitionInput): Promise<WorkItemRecord> {
+    if (input.action === "reject" &&
+      (typeof input.rejectReason !== "string" || input.rejectReason.trim().length === 0)) {
+      throw new Error("A non-empty rejection reason is required");
+    }
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
@@ -337,8 +341,9 @@ export class WorkItemRepository {
           current.status,
         ],
       );
+      const record = requiredRow(updated.rows[0], "Work item changed concurrently");
       await client.query("COMMIT");
-      return requiredRow(updated.rows[0], "Work item changed concurrently");
+      return record;
     } catch (error) {
       await rollback(client);
       throw error;

@@ -16,7 +16,6 @@ describe("work item state transitions", () => {
 
   it.each([
     ["ignore", "ignored"],
-    ["reject", "rejected"],
     ["escalate", "escalated"],
     ["mark_external_handled", "external_handled"],
   ] as const)("allows %s from an active work item", (action, expected) => {
@@ -28,6 +27,16 @@ describe("work item state transitions", () => {
     expect(assertWorkItemTransition("escalated", "start_processing")).toBe("processing");
     expect(assertWorkItemTransition("escalated", "complete")).toBe("done");
   });
+
+  it("only permits rejection after processing has started", () => {
+    expect(assertWorkItemTransition("processing", "reject")).toBe("rejected");
+  });
+
+  it.each(["open", "escalated", "done", "ignored", "expired", "external_handled", "rejected"] as const)(
+    "does not reject an item in %s", (status) => {
+      expect(() => assertWorkItemTransition(status, "reject")).toThrow(/invalid work item transition/);
+    },
+  );
 
   it.each(["done", "ignored", "expired", "external_handled", "rejected"] as const)(
     "protects terminal status %s from ordinary processing",

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
@@ -10,7 +10,7 @@ const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
 
 describe("WorkItemRepository", () => {
-  const pool = new Pool({ connectionString: databaseUrl, max: 8 });
+  const pool = new Pool({ connectionString: databaseUrl, max: 8, connectionTimeoutMillis: 3000 });
   const repository = new WorkItemRepository(pool);
   let workspaceA: string;
   let workspaceB: string;
@@ -18,6 +18,8 @@ describe("WorkItemRepository", () => {
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
   });
+
+  afterAll(async () => { await pool.end(); });
 
   beforeEach(async () => {
     const suffix = randomUUID();
@@ -176,5 +178,19 @@ describe("WorkItemRepository", () => {
         action: "start_processing",
       }),
     ).rejects.toThrow(/invalid work item transition/);
+  });
+
+  it("requires processing and a nonblank reason without mutating rejected requests", async () => {
+    const { workItem } = await repository.createOrMergeAlert(input());
+    const request = { workspaceId: workspaceA, workItemId: workItem.id, action: "reject" as const };
+    await expect(repository.transition({ ...request, rejectReason: "证据不足" })).rejects.toThrow(/transition/);
+    expect(await repository.find(workspaceA, workItem.id)).toMatchObject({ status: "open", rejectReason: null, resolvedAt: null });
+    await repository.transition({ ...request, action: "start_processing" });
+    for (const reason of [undefined, null, "", " \n\t "]) {
+      await expect(repository.transition({ ...request, ...(reason === undefined ? {} : { rejectReason: reason }) })).rejects.toThrow(/reason/i);
+    }
+    expect(await repository.find(workspaceA, workItem.id)).toMatchObject({ status: "processing", rejectReason: null, resolvedAt: null });
+    await repository.transition({ ...request, rejectReason: "核对后不采纳" });
+    expect(await repository.find(workspaceA, workItem.id)).toMatchObject({ status: "rejected", rejectReason: "核对后不采纳", resolvedAt: expect.any(Date) });
   });
 });
