@@ -128,6 +128,7 @@ function canonicalRecord(input: {
     cost: base.cost,
     compensation: base.compensation,
     channelCoefficient: input.settings.channelCoefficient,
+    channelCoefficientOp: input.settings.channelCoefficientOp,
     exposure: base.exposure,
     click: base.click,
     conversion: base.conversion,

@@ -1,0 +1,11 @@
+{
+  "name": "ka-platform-deployment",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "postinstall": "bash scripts/install-all.sh",
+    "install:all": "bash scripts/install-all.sh",
+    "test:install": "node --test scripts/test/install-all.test.mjs"
+  }
+}

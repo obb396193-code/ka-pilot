@@ -6,6 +6,7 @@ import {
   type StableDataQueryErrorCode,
 } from "@ka/domain";
 import { z } from "zod";
+import { assertProductionEnvironment } from "../production-environment.js";
 
 import {
   createDataQueryRegistry,
@@ -484,6 +485,7 @@ export function createKaDataClientFromEnv(
   env: NodeJS.ProcessEnv = process.env,
   overrides: KaDataClientRuntimeOverrides = {},
 ): KaDataClient {
+  assertProductionEnvironment(env);
   const baseUrl = env.KA_DATA_BASE_URL;
   const token = env.KA_DATA_READER_TOKEN;
   if (baseUrl === undefined || baseUrl.trim() === "") {

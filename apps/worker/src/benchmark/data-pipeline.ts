@@ -202,6 +202,7 @@ function createSyntheticCanonicalHandler(
           workspaceId,
           ...key,
           channelCoefficient: 2,
+          channelCoefficientOp: "divide",
           assessmentPrice: 11,
         }));
       },

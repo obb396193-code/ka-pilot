@@ -62,19 +62,22 @@ export function computeDerivedMetrics(input: DerivedMetricInput): DerivedMetrics
 
   const coefficient = input.channelCoefficient;
   const compensation = isFiniteNumber(input.compensation) ? input.compensation : 0;
-  const cashCost =
-    isFiniteNumber(input.cost) && isFiniteNumber(coefficient) && coefficient > 0
-      ? (input.cost - compensation) / coefficient
-      : null;
+  let cashCost: number | null = null;
+  if (isFiniteNumber(input.cost) && isFiniteNumber(coefficient) && coefficient > 0) {
+    const netCost = input.cost - compensation;
+    if (input.channelCoefficientOp === "multiply") cashCost = netCost * coefficient;
+    else if (input.channelCoefficientOp === "divide") cashCost = netCost / coefficient;
+    if (!isFiniteNumber(cashCost)) cashCost = null;
+  }
   const cashCpa = safeDivide(cashCost, input.realConversion, {
     infiniteWhenPositiveNumerator: true,
   });
 
   let onTarget: boolean | null = null;
-  if (realCpa.state === "infinite") {
+  if (cashCpa.state === "infinite" && isFiniteNumber(input.assessmentPrice)) {
     onTarget = false;
-  } else if (realCpa.state === "finite" && isFiniteNumber(input.assessmentPrice)) {
-    onTarget = realCpa.value !== null && realCpa.value <= input.assessmentPrice;
+  } else if (cashCpa.state === "finite" && isFiniteNumber(input.assessmentPrice)) {
+    onTarget = cashCpa.value !== null && cashCpa.value <= input.assessmentPrice;
   }
 
   const costSpace =

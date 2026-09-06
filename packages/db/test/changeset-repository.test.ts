@@ -71,6 +71,16 @@ describe("ChangeSetRepository", () => {
     await expect(repository.find(otherWorkspaceId, created.id)).resolves.toBeNull();
   });
 
+  it.each([null, "001", "true", '{"x":1}', 'quote"\n中文'])("preserves legacy string/null %j after 012 JSONB storage", async (value) => {
+    const created = await repository.create({ workspaceId, media: "KUAISHOU", accountId: "account-1", title: "synthetic",
+      initiator: userId, credentialOwnerUserId: userId, ttlExpireAt: new Date("2026-09-07T00:00:00Z"), reasonCode: "test",
+      items: [{ targetType: "account", targetId: "account-1", field: "budget", fromValue: value, toValue: value }],
+    });
+    expect(created.items[0]).toMatchObject({ fromValue: value, toValue: value });
+    const saved = (await pool.query("SELECT from_value, jsonb_typeof(from_value) AS kind FROM changeset_items WHERE changeset_id=$1", [created.id])).rows[0];
+    expect(saved).toEqual({ from_value: value, kind: value === null ? null : "string" });
+  });
+
   it.each(["initiator", "credentialOwnerUserId"] as const)("rejects inactive %s at create without partial rows", async (actor) => {
     const inactive = (await pool.query("INSERT INTO users(workspace_id,name,is_active) VALUES ($1,'inactive',false) RETURNING id", [workspaceId])).rows[0].id;
     await expect(repository.create({ workspaceId, media: "KUAISHOU", accountId: "account-1", title: "rejected",

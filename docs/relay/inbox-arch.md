@@ -3229,6 +3229,52 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 
 **剩余（合流前必须）**：BFF 去 dataView + 按 workspaceKind 断言 mode（A-001 P1-2）；`apps/web/lib/data` v2 解包；KA 启用双空间真实 PG 反例；折 011；merge main；**Docker/PG 恢复后四包+Gateway 全量重跑**（Codex 本地 55432 拒连期间的"非 PG 通过"不算门禁）。
 
+### P-046 R010a1 012迁移基础｜Codex 2026-09-06，待arch审查
+
+- 按P044顺序先落012；候选分支be/r010，从be/r009@b8f87d3（含main@f841da4）创建。R009原分支保留，P045整批PG回执仍待；不是提前宣称R009已接受。
+- 代码 **eaca65e**，11文件。冻结v1.3 DDL完整复制、四新表/session幂等/去重/mute三键FK、op和缺数抑制列；没有014/015或业务写路由。逐文件清单见git show --stat与R010状态。
+- 必要旧Repository序列化桥：旧string/null参数显式to_jsonb(text)，保留001/true/JSON-looking文本为字符串，避免PG解释成JSON数字；typed DTO留a2。必须先迁移012再运行该Worker版本。
+- up拒绝孤儿session引用；down拒绝typed JSON和multiply语义丢失。down仍会删除新表/列数据，不是全库无损回退；只在可丢弃测试库up/down/up，业务停写备份并另审回退。
+- 门禁：DB unit47、Domain518、Worker非PG724+2外部opt-in skipped，三包typecheck/lint；DB offline production audit0。012十例先红后绿，JS callback覆盖100%，**不是SQL执行证明**。
+- 新真实PG反例含up/down/up、孤儿失败事务、JSON旧值往返/拒有损回退、重复消息、跨空间/跨媒体及provider FK；旧回放计数逐文件改12。55432于02:16只读连接ECONNREFUSED，均未执行，不冒用早前PG证据。
+- 状态：code candidate / non_pg_verified / pg_blocked / claude_review_pending，未push/合流/部署。下一项R013 bootstrap/discover/coefficients，日期必须输入；不碰媒体执行或前端视觉。
+
+### P-047 R013 输入内核 + 三项初始化边界请裁｜Codex 2026-09-06
+
+- `36c5c35`，Domain bootstrapSeedSchema/parse及37测试；严格冻结四数组，无credentials/implicit grants/access_level，冲突同键拒绝、相同重复可幂等；角色复用现有四枚举，team readonly由既有空间授权决定，不自造readonly角色。
+- Domain555/typecheck/lint过，核心37测试行/分支/函数100%；最初缺模块为加载失败，不称断言已跑红。仅输入层，未实现seed CLI/事务/登录联测，PG仍待。
+- **实现前请裁三缝隙**：1）account_access_grants三键FK要求accounts先在库，而R013要求先grant再首次full。建议人确认显式grants后由seed仅插accounts三键、未知name/status=NULL，不覆盖已有经营字段；不是从上游自动授权。是否采纳？2）输入identity只有id/display_name但DB provider/subject必填，建议仅新行internal_test + subject=id，已有行不改provider；是否采纳？3）可选workspace.id建议按kind+name受控唯一解析，歧义拒绝；可选user_id按membership唯一复用，否则生成；示例优先全部显式UUID。是否采纳？不改现Auth/Schema来掩盖缝隙。
+- 当前先继续无这些依赖的discover只读命令，源配置/分页失败不能假空，绝不写库/发job。main@abaac1d新账户池提案已只读获悉，没有擅改未裁决pool模型。代码未push/合流/部署。
+
+### P-048 R013 只读账户发现｜Codex 2026-09-06，待审
+
+- 代码 **7c08b97**，Worker三文件；`npm run --silent discover:accounts -- --media KUAISHOU`。复用QihangClient account GET，强制server URL/user identity配置，无DB依赖/写库/job/grant。未知配置或源失败不能返回假空。
+- 50/页、10000总预算、可信total需稳定，页码/行数必须对齐且无重复ID；上游坏字段、错媒体、truncate/limit_clamped拒绝；响应/最终输出严格小于16MB。完整后才输出五字段JSON，未知描述null；no retry/no redirect，错误统一固定文本不带URL/userId/body。总数一致不是对上游权限完整性的独立证明，实际范围仍由奇航服务端控制。
+- 37新反例含真进程CLI缺配置退出；Worker非PG **761+2 opt-in skipped**、typecheck/lint、offline audit0。行覆盖93.61%/分支89.15%；37新增测试并未调用真实奇航。首轮全回归listen EPERM造成100失败，获准本机假服务后同套重跑全绿，记录在`/tmp/ka-discover-worker{,-retry}.log`。
+- 02:37获准TCP probe：55432 ECONNREFUSED（首次沙箱EPERM不算PG拒连证据）；真实PG/真实奇航/首次部署均未验。命令与数据处理写唯一runbook §2.5，bootstrap尚不能执行，P047三项待裁不掩盖。
+- 下一项独立coefficients输入/幂等（显式有效日期），继续目标；不push/合流/部署/改视觉。用户验收句：首次部署前能拿到本人账户清单供确认，而不是为了首跑给全空间默认授权。
+
+### P-049 R013 四渠道系数seed｜Codex 2026-09-06，待审
+
+- 代码 **d16906a**，10文件；独立`seed:coefficients`、显式workspace/date，四行值/op按冻结原样写，team拒绝。SERIALIZABLE+空间FOR UPDATE，历史LIMIT5哨兵；只补空行、精确初始重放不写；其他版本/值/重复历史拒绝，不偷偷回溯重算。NUMERIC字符串精确比较，不能浮点抹平不同系数；changed_by=NULL，不冒用会话主体。
+- Domain579、DB unit77、Worker非PG761+2外部opt-in，三包type/lint过；DBoffline audit0。新Domain24/DB+CLI30，核心Domain100%、DB Repository98.66%/CLI83.87%；真实PG7例（并发/隔离/精度/回滚/团队拒绝）未执行，02:51获准TCP仍拒连。套件初始缺模块是加载失败，新增并发重试两断言实际先红后绿。
+- **部署依赖实读发现**：现metrics.ts写死除法，settings query未select op。不能把seed单独上线后开始ETL；现继续按已授权R010a1补op→canonical，并修现金口径onTarget，独立P050；无新Contract要求。bootstrap仍等P047三问，脚本不创建身份/空间。
+- 最新main已到150af26：新增v1.5.1/R015v1.6已只读登记（原素材结算先提案被新冻结覆盖），本批不混014/015/016或视觉。下一步先op依赖，再部署打包/worker once等已派项。未push/合流/部署。
+
+### P-050 R010a1 op依赖与现金达标收口｜Codex 2026-09-06，待审
+
+- 代码 **739658f**，9文件。settings同一生效版本读取coefficient/op，不按渠道名猜方向；缺配置null，present-invalid十进制/op及越workspace拒绝。canonical透传，cash_cost按配置乘除，onTarget改现金CPA；无现金/价不判达标，账面CPA只展示。未实现v3公开窗口，不能将本子批当全部R010a1完成。
+- Domain587、DBunit89、Worker非PG763+2外部opt-in skipped，三包typecheck/lint；metrics行96.74%/分支93.22%，canonical行93.87%/分支83.33%。Domain8新例、DB settings12例、Worker canonical新增2例。Domain/DB新增断言实际先红后绿。
+- PG新增生效方向版本/未来版本排除/跨媒体同号/跨workspace，尚未跑。最近获准55432 TCP于02:51仍ECONNREFUSED；未执行seed/迁移/ETL。上线需012+seed+本修复整体门禁，不能seed配旧固定除法计算。
+- 依赖零变更、最近DBoffline audit0，diff --check通过，无前端/媒体写。未push/合流/部署；P047三项裁决继续待答，先做R013b。main新71b9231的R015/R016已纳入总目标，不提前发明其公开DTO。
+
+### P-051 R013b 生产配置硬门｜Codex 2026-09-06，待审
+
+- **a77b224**，6文件，Data API/Worker config/KA reader工厂一致：production只要有KA_DATA_DEV_*自有键就拒绝（空值/false亦然），检查先于其他配置；固定错误不打印键或值。未改监听/业务路由/媒体写。
+- Worker非PG774+2外部opt-in skipped、typecheck/lint、核心行/分支100%；新增逻辑10例实际6红→10绿，子进程1例证明KA关闭也在缺DB配置前失败；保留健康启动及缺KA配置回归。
+- 首次排除PG模式遗漏benchmark-data-pipeline-pg.test.ts，连接55432拒绝导致1失败，未执行SQL；之后明确排除该文件重跑非PG全绿。PG继续待，不掩盖失败。日志/tmp/ka-production-guard-{full,full-retry,focused,coverage}.log。
+- 已收到main@a7f98a8 P047三问采纳，转回bootstrap事务/CLI；R-FE-IMG-001已登记空档做。R013b运行时审计：handler无AbortSignal且claim全队列，单轮不能简单Promise.race后宣称已退出；会先补安全截止/领取方案再接线，不擅启现有队列。
+- 需OS补FaaS骨架证据：现部署回收只有build/npm/拓扑，无f.yml真实字段及定时入口形态；请回一份无凭证最小官方模板（web/data-api HTTP与timer），只读即可。安装脚本可先做，此缺口不阻塞bootstrap。未push/合流/部署。
 
 ---
 
@@ -3237,6 +3283,13 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - Q1-a/b/e、Q2、Q3 → 契约 v1.7.1（BFF 同源路径补齐、summary compare 块、me/counts、me/preferences + identity_preferences、agent/models + 四条 Agent BFF 路径、context 不带 workspaceId）；Q1-c/d 已在 v1.3/v1.4；Q4 以 v1.5.1 九态 `poolStatus` 为准，不采纳八态提议；Q5 转派 Codex R-FE-IMG-001。详见 inbox-fe。
 - 存档点 `449ccec`：范围合规；待 arch 复跑 test/tsc/lint 与 R-009 二批合流后 `--no-ff` 合入。
 
+### P-052 R013 bootstrap DB/CLI + PG恢复回执｜Codex 2026-09-06
+
+- **c7358fe**，8文件。P047三裁；SERIALIZABLE+有界锁/回滚重试、insert-only、personal唯一/团队不grant、显式三键账户占位、grant上限1000；既有经营/身份/权限不覆盖。错误不暴露SQL/DSN。无媒体写或真实源调用。
+- Bootstrap37（12真实PG+14unit+11CLI），核心行96.34%/分支95.58%；另Worker真实CLI→PG→HTTP2例：login→personal→switch team readonly→旧token401→logout401、空grant blocked_auth。全fake示例在docs/evidence/proposals/seed/bootstrap.example.json，**请arch审后落Contract fixture**；本批Contract零修改。
+- 新隔离合成库ka_be_r013_20260906；旧ka_r009_test双011历史原样保留。DB331、Domain587、Gateway36、Web111；Worker794+2外部skip（暂排除写死共享/ka的benchmark）；五包typecheck/lint全绿。012PG4（含up/down/up；另十例是JS callback），系数7+settings7=14PG通过含P050四反例。数字为累积候选，不冒充R009 exact数字。
+- benchmark需独立小修：现test写死127.0.0.1:55432/ka并自动runMigrations，guard也只准/ka。拟允许显式隔离测试库命名ka_*_test、test读取TEST_DATABASE_URL；不改公开Contract/业务SQL，不对旧库迁移，补完整Worker门禁。当前794不称全测试通过。
+- 首轮PG42P08显式uuid/text修复；测试scope/logout误用和composition依赖修正，最终全绿，详见R013计划。候选未push/合流/部署；先merge main，再v3公开窗口。
 
 ---
 
@@ -3276,3 +3329,24 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - test 77/0、tsc 0 错、eslint 0 错 7 warn ✅；25 文件全在 apps/web，未碰 app/api 与 lib/data；F-006 那个 tsc 错已修。
 - 状态文件 TODO-fixture 三组 → arch 已补 9 个（`89649fa`）：dimension-v3 ×5（task/biz/account/agent_type/deduction_range）、gap-task/gap-biz、pivot2-biz-resource_position、pivot2-unsupported（bid_tool）。fixtures 共 152。
 - C3（顶部分层叫法：九态 poolStatus vs 老板口述八档）转老板拍。
+
+### P-053 R010a1 v3接线前契约缝隙｜Codex 2026-09-06
+
+- 已merge main@ca11db0，merge SHA4df6ab9。接着v3，先做已明确的strict行/窗口/纯计算，不改packages/contract。
+- 请裁1：多任务/窗口内多个考核价版本时，summary.assessment.price仅{value,effectiveDate}如何表达？建议只在同价同版本时展示，否则price=null，但onTarget按Σ逐日price×conv对Σcash判（不把展示不唯一误称assessment_missing）。现注释null价→null onTarget与此冲突，需要正式定；另外跨天有效价不能取窗口末价乘全窗口。
+- 请裁2：v1.7.1 compare=dod/wow对多日窗口，是两端平移1/7天还是前一等长窗口？建议前者与“上周同日”一致。今日对比要求昨日同时段，但canonical只有日累计，没有同小时快照；未具备时compare相关比率undefined，不用昨日全天冒充。请确认。
+- 请裁3：三份summary-window-v3 fixture lineage没有现sourceLineageSchema/api.md:142必填authority；后端不应静默删审查后的authority。建议arch补fixture authority；window preset可选（API前节写可选后节fixture必有，建议未指定时custom）。public POST /query旧query_type与data/query queryId入口将共用Registry，不生成第二套权限路径。
+- 以上不阻塞独立严格行/窗口schema、先聚合再相除与比较算子；未裁前不猜公开聚合price语义。另benchmark首次新空库迁移+sample超原5秒单测时限，改仅该PG用例为30秒并保留失败日志；安全目标限制不放宽为任意库。
+
+### P-054 Benchmark完整PG + v3基础内核｜Codex 2026-09-06，待审
+
+- **73ddbdc**：PG benchmark显式TEST_DATABASE_URL，保留localhost55432/受限ka_*_test名称；新合成ka_be_r010_test，未对旧ka库迁移。首次全套797过/1失败是新库迁移超原5s；仅该case30s后完整**Worker798+2外部opt-in skip**、type/lint全绿。不是跳过benchmark；/tmp/ka-r010-worker-all-pg{,-retry}.log。
+- **2790fc1**：Domain严格v3行/窗口/趋势+先聚合再相除+比较；直接读arch三summary和trend fixture行，20定向测试，核心行/分支100%。缺cash不得判断状态、坏日期/数值/额外字段拒绝、真实零/缺数/infinite分开。**仅基础，不改公开v2边界，不宣称v3路由已可用**；price/窗口compare/authority等P053裁决。
+- 最新Domain607、DB真实PG331、Worker真实PG798+2skip及三包typecheck/lint通过；Gateway36/Web111是本轮较早回归，未在2790fc1后重跑，不混exact证据。DBoffline production audit0；日志/tmp/ka-v3-{domain-final,db-regression,worker-regression}.log。最初新增模块是加载失败；cash缺失却onTarget非空这一断言实际先红后绿。
+- 没有packages/contract/React/媒体写变更；未push/合流/部署。现保持已审方案，v3缝隙待裁时推进R013b独立安装/单轮Worker。
+
+### P-055 R013b 安装入口候选｜Codex 2026-09-06，待审
+
+- **e6bfc45**：根package/lock + install-all.sh +6个node:test。npm生命周期按Domain→DB→Worker→Web→Gateway串行npm ci，先检查全部manifest/lock；任一失败停止并保留退出码；无自定义package/registry参数。显式include=dev因为当前tsx与编译工具在devDependencies，production否则启动不了；未升级任何子包依赖。
+- 六例通过，bash -n通过；最初文件缺失6失败，后2例因macOS /var符号路径与pwd -P差异失败，测试用realpath对齐后通过。root package-lock-only使用offline+ignore-scripts生成，无真实安装。**mock npm顺序测试不等于干净克隆真实安装验证**。
+- 实读磁盘仅2.7GiB，现五包node_modules约1.5GiB；未冒险再执行全量安装，未清用户缓存。干净克隆file:解析与Node20/FaaS发布仍待；f.yml仍待OS真实模板，不造字段。工具审批曾短暂返回额度错误；只读复核后原apply_patch重试获准，现场未丢。下一独立子批准备scoped lease + worker once硬截止，不启动现有业务队列。

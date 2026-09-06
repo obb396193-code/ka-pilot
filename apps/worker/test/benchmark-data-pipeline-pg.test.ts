@@ -35,9 +35,16 @@ describe("real PostgreSQL benchmark safety", () => {
     ).toThrow("port 55432");
   });
 
+  it("allows explicitly named isolated test databases, not arbitrary local databases", () => {
+    expect(() => assertLocalTestDatabase("postgres://ka:ka@127.0.0.1:55432/ka_be_r010_test")).not.toThrow();
+    for (const name of ["production", "ka_r009", "ka_test", "ka_be_test/extra", "ka_be_test%00", "ka_be_test?host=remote"]) {
+      expect(() => assertLocalTestDatabase(`postgres://ka:ka@127.0.0.1:55432/${name}`)).toThrow();
+    }
+  });
+
   it("runs a bounded real PostgreSQL sample and cleans its synthetic workspace", async () => {
     const report = await runPgDataPipelineBenchmark({
-      databaseUrl: "postgres://ka:ka@127.0.0.1:55432/ka",
+      databaseUrl: process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka",
       accountCounts: [100],
       iterations: 1,
       chunkSize: 50,
@@ -57,5 +64,5 @@ describe("real PostgreSQL benchmark safety", () => {
     expect(report.samples[0]?.plans.every((plan) => plan.nodeType !== "unknown")).toBe(
       true,
     );
-  });
+  }, 30_000); // Includes a fresh isolated database migration, not only the measured sample.
 });

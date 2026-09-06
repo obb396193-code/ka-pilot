@@ -13,6 +13,7 @@ export interface DerivedMetricInput {
   cost?: NumericInput;
   compensation?: NumericInput;
   channelCoefficient?: NumericInput;
+  channelCoefficientOp?: "multiply" | "divide" | null;
   exposure?: NumericInput;
   click?: NumericInput;
   conversion?: NumericInput;

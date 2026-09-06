@@ -2,6 +2,7 @@ import type { Pool } from "pg";
 
 export interface EffectiveMetricSettings {
   channelCoefficient: number | null;
+  channelCoefficientOp: "multiply" | "divide" | null;
   assessmentPrice: number | null;
 }
 
@@ -54,6 +55,23 @@ function nullableNumber(value: string | number | null | undefined): number | nul
   }
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function settingNumber(value: string | number | null): number | null {
+  if (value === null) return null;
+  if ((typeof value !== "string" && typeof value !== "number") ||
+    (typeof value === "string" && !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(value)) || !Number.isFinite(Number(value))) {
+    throw new Error("Invalid effective metric settings");
+  }
+  return Number(value);
+}
+
+function coefficientDirection(value: unknown, coefficient: number | null): "multiply" | "divide" | null {
+  if (coefficient === null && value === null) return null;
+  if (coefficient === null || coefficient <= 0 || (value !== "multiply" && value !== "divide")) {
+    throw new Error("Invalid effective metric settings");
+  }
+  return value;
 }
 
 function lookupKey(value: MetricLookupKey): string {
@@ -117,6 +135,7 @@ export class MetricsRepository {
       account_id: string;
       ds: string;
       coefficient: string | number | null;
+      coefficient_op: unknown;
       assessment_price: string | number | null;
     }>(
       `WITH requested AS (
@@ -125,14 +144,14 @@ export class MetricsRepository {
        )
        SELECT account.workspace_id, account.media, account.account_id,
               to_char(requested.ds, 'YYYY-MM-DD') AS ds,
-              coefficient.coefficient, assessment.price AS assessment_price
+              coefficient.coefficient, coefficient.op AS coefficient_op, assessment.price AS assessment_price
        FROM requested
        JOIN accounts AS account
          ON account.workspace_id = $1
         AND account.media = requested.media
         AND account.account_id = requested.account_id
        LEFT JOIN LATERAL (
-         SELECT value.coefficient
+         SELECT value.coefficient, value.op
          FROM channel_coefficients AS value
          WHERE value.workspace_id = account.workspace_id
            AND value.media = account.media
@@ -158,14 +177,19 @@ export class MetricsRepository {
        ORDER BY requested.ds, account.media, account.account_id`,
       [workspaceId, serializeLookupKeys(keys)],
     );
-    const rows = result.rows.map((row) => ({
-      workspaceId: row.workspace_id,
-      media: row.media,
-      accountId: row.account_id,
-      ds: row.ds,
-      channelCoefficient: nullableNumber(row.coefficient),
-      assessmentPrice: nullableNumber(row.assessment_price),
-    }));
+    const rows = result.rows.map((row) => {
+      if (row.workspace_id !== workspaceId) throw new Error("Effective metric settings escaped workspace");
+      const coefficient = settingNumber(row.coefficient);
+      return {
+        workspaceId: row.workspace_id,
+        media: row.media,
+        accountId: row.account_id,
+        ds: row.ds,
+        channelCoefficient: coefficient,
+        channelCoefficientOp: coefficientDirection(row.coefficient_op, coefficient),
+        assessmentPrice: settingNumber(row.assessment_price),
+      };
+    });
     requireCompleteBatch("Effective settings", keys, rows);
     return rows;
   }

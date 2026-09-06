@@ -74,6 +74,7 @@ describe("MetricsRepository", () => {
         accountId: "a-1",
         ds: "2026-08-18",
         channelCoefficient: 2,
+        channelCoefficientOp: "divide",
         assessmentPrice: 11,
       },
     ]);
@@ -92,6 +93,25 @@ describe("MetricsRepository", () => {
     expect(rows.map((row) => [row.ds,row.assessmentPrice])).toEqual([
       ["2026-08-17",9],["2026-08-18",null],["2026-08-19",21],
     ]);
+  });
+
+  it("takes coefficient and op from one effective version without crossing workspace/media", async () => {
+    await pool.query(`INSERT INTO channel_coefficients(workspace_id,media,coefficient,op,effective_date)
+      VALUES($1,'KUAISHOU',1.5,'divide','2026-07-01'),($1,'KUAISHOU',0.7812,'multiply','2026-08-01'),
+            ($1,'KUAISHOU',2,'divide','2026-09-01'),($1,'TENCENT',1.045,'divide','2026-07-01')`, [workspaceId]);
+    await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'TENCENT','a-1')", [workspaceId]);
+    const other = (await pool.query("INSERT INTO workspaces(name) VALUES('synthetic other coefficient') RETURNING id")).rows[0].id;
+    await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'KUAISHOU','a-1')", [other]);
+    await pool.query("INSERT INTO channel_coefficients(workspace_id,media,coefficient,op,effective_date) VALUES($1,'KUAISHOU',9,'multiply','2026-07-01')", [other]);
+    const rows = await repository.loadEffectiveSettingsBatch(workspaceId, [
+      ...["2026-06-30", "2026-07-31", "2026-08-01"].map((ds) => ({ media: "KUAISHOU", accountId: "a-1", ds })),
+      { media: "TENCENT", accountId: "a-1", ds: "2026-08-01" },
+    ]);
+    expect(rows.map((row) => [row.media,row.ds,row.channelCoefficient,row.channelCoefficientOp])).toEqual([
+      ["KUAISHOU","2026-06-30",null,null], ["KUAISHOU","2026-07-31",1.5,"divide"],
+      ["KUAISHOU","2026-08-01",0.7812,"multiply"], ["TENCENT","2026-08-01",1.045,"divide"],
+    ]);
+    expect((await repository.loadEffectiveSettingsBatch(other, [{ media: "KUAISHOU", accountId: "a-1", ds: "2026-08-01" }]))[0]?.channelCoefficient).toBe(9);
   });
 
   it("upserts one canonical row idempotently", async () => {

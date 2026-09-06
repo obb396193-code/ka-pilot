@@ -76,6 +76,16 @@ afterEach(async () => {
 });
 
 describe("Data API production composition", () => {
+  it("rejects production dev settings even with KA off, before missing DB credentials are parsed", async () => {
+    const child = startDataApi({
+      NODE_ENV: "production", DATABASE_URL: undefined, DATA_API_INTERNAL_TOKEN: undefined,
+      KA_DATA_ENABLED: "false", KA_DATA_DEV_FAKE_TOKEN: "synthetic-must-not-be-logged",
+    });
+    const output = await waitForOutput(child, /Development data configuration is forbidden in production/);
+    expect(await waitForClose(child)).toBe(1);
+    expect(output).not.toMatch(/synthetic-must-not-be-logged|FAKE_TOKEN|listening|DATABASE_URL/);
+  }, 20_000);
+
   it("starts without KA Data credentials when the optional source is disabled", async () => {
     const port = await unusedPort();
     const child = startDataApi({

@@ -6,6 +6,7 @@
   "scripts": {
     "start": "tsx src/index.ts",
     "sync:tick": "tsx src/scheduling/sync-tick-cli.ts",
+    "discover:accounts": "tsx src/qihang/discover-accounts.ts",
     "start:data-api": "tsx src/data-api.ts",
     "benchmark:data": "tsx scripts/benchmark-data-pipeline.ts",
     "benchmark:data:pg": "tsx scripts/benchmark-data-pipeline-pg.ts",

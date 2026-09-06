@@ -3,7 +3,7 @@ import { canonicalMetricValueSchema } from "./metric-value.js";
 
 const finiteNumber = z.number().finite();
 const nullableFiniteNumber = finiteNumber.nullable();
-const calendarDateSchema = z
+export const calendarDateSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/)
   .refine((value) => {

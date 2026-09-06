@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { assertProductionEnvironment } from "../production-environment.js";
 
 const configSchema = z.object({
   DATABASE_URL: z.string().trim().min(1),
@@ -51,6 +52,7 @@ export interface DataApiConfig {
 }
 
 export function loadDataApiConfig(environment: NodeJS.ProcessEnv): DataApiConfig {
+  assertProductionEnvironment(environment);
   const parsed = configSchema.parse(environment);
   const dataDiagnosticEnabled = parsed.DATA_DIAGNOSTIC_ENABLED === "true";
   if (dataDiagnosticEnabled && parsed.DATA_DIAGNOSTIC_ENTITLEMENTS_JSON === undefined) {
