@@ -3493,3 +3493,17 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - `893c26b` 三个Domain文件：现金/价格存在但真实转化缺失 → conversion_missing，onTarget/costStatus都null；cash_missing仅现金缺失。缺考核仍assessment_missing，双缺优先现金；三态字段error也不产生达标结论。没有改公开v2边界或Contract。
 - TDD先红2/12；修后Domain619全过、两核心32测试/行97.36%/分支94.25%；Domain typecheck/lint、DB/Worker typecheck、Worker窗口/mapper44过，非PG全量891+2skip过。无数据库改动，当前Docker故障不伪报PG全量。
 - 这只关闭P058第1条内核，**不代表R010a1已全部完成**。下一步priceSource/团队逐日cash_assessment、onTargetRate真实账户分母、BUDGET_SOURCE_NOT_READY，再两Adapter/HTTP/BFF同时切v3；不擅改arch fixtures。清理批留痕SHA9a5591b。
+
+### P-068｜v1.7.4 priceSource 样例同步请求（be，2026-09-06）
+
+- 已读v1.7.4，按新增必填priceSource实现。实读 `packages/contract/fixtures/data-query/summary-window-v3-{green,yellow,cash-missing}.json` 的assessment仍没有priceSource，当前Domain测试逐字解析arch fixture。请arch补history/ka_daily来源与团队null effectiveDate样例；无需再裁口径，只同步已冻fixture。
+- be不会改Contract，也不会把字段改optional或默认history来绕过。先做同快照账户级达标率与BUDGET_SOURCE_NOT_READY，后续严格v3切换等样例同步，计划 `docs/plans/2026-09-06-R010a1-v3剩余接线.md`。
+
+### P-069｜P058达标率/预算未知先行候选（be，2026-09-06）
+
+- 代码 `a4c48c3`，8文件。`WindowAssessmentRepository.loadAccountCounts` 复用expected account-day/有效价格/三键scope，一条参数化SQL按账户聚合Σcash与Σprice×realConv；total/determinable/onTarget独立计数，缺任何预期日指标不进分母，NaN/Infinity/重复关联产生额外account-day拒绝。
+- `PlatformWindowQuery`同一RR/RO快照读当前与前窗counts；0分母undefined，total不得大于批准scope或小于已观测账户；today仍不查昨日全天。新增内部warnings `BUDGET_SOURCE_NOT_READY`，不拿tasks当前budget替历史预算。尚未接公开lineage，不能称公开v3完成。
+- 顺便实证修一旧bug：compareRate将上期0映射NEW，不能用于冻结的onTargetRate百分点差；现在此字段直接finite差值，0→1返回1而非infinite，其他金额/CPA旧语义本批不改。
+- TDD DB新方法8红→18过；Worker新对比测试先报infinite→修后25过（全量包含）；Domain全量620、DB纯逻辑17文件158、Worker非PG899+2外部skip；三包typecheck/lint过。覆盖：DB两方法100%行/分支；Worker窗口行91.42%/分支92.45%（统计时24个测试，后追加3户分母测试全量通过）。
+- 新增真实PG反例：2媒体同号/另一空间/空grant/缺转化/缺日/零真实值/未来价、实际组合窗口0→100%变化。**未跑**：带3s连接超时SELECT1仍ECONNREFUSED55432；Docker状态调用本轮挂起，无重启/清缓存。不能以mock SQL字符串检查冒充PG。
+- 代码候选non_pg_verified/pg_pending，未push/合流/部署。下一步团队日价与priceSource、两Adapter公开切换；P068只请同步已冻fixture，不新增裁决要求。
