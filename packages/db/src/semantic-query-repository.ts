@@ -1,4 +1,5 @@
 import type { Pool } from "pg";
+import { calendarDateSchema } from "@ka/domain";
 
 import { queryMetricDimension } from "./semantic-query-dimension.js";
 import { querySemanticHealth } from "./semantic-query-health.js";
@@ -176,15 +177,19 @@ export class SemanticQueryRepository {
       returned_accounts: string | number;
       account_days: string | number;
       expected_account_days?: string | number;
+      requested_dates?: unknown;
     }>(
-      `${input.filters?.taskId === undefined ? "" : EXPECTED_METRIC_CTE} SELECT max(metric.computed_at) AS data_as_of,
+      `${input.filters?.taskId === undefined ? "" : `${EXPECTED_METRIC_CTE}, task_expected AS (
+        SELECT metric.ds FROM expected_metric AS metric
+        JOIN accounts AS account ON account.workspace_id=metric.workspace_id
+          AND account.media=metric.media AND account.account_id=metric.account_id
+        WHERE ${filter.whereSql}
+      )`} SELECT max(metric.computed_at) AS data_as_of,
               count(*)::text AS canonical_rows,
               count(DISTINCT (metric.media, metric.account_id))::text AS returned_accounts,
               count(DISTINCT (metric.media, metric.account_id, metric.ds))::text AS account_days
-              ${input.filters?.taskId === undefined ? "" : `, (SELECT count(*)::text FROM expected_metric AS metric
-                JOIN accounts AS account ON account.workspace_id=metric.workspace_id
-                  AND account.media=metric.media AND account.account_id=metric.account_id
-                WHERE ${filter.whereSql}) AS expected_account_days`}
+              ${input.filters?.taskId === undefined ? "" : `, (SELECT count(*)::text FROM task_expected) AS expected_account_days,
+                (SELECT coalesce(array_agg(DISTINCT ds::text ORDER BY ds::text),ARRAY[]::text[]) FROM task_expected) AS requested_dates`}
        FROM account_metrics_daily AS metric
        JOIN accounts AS account
          ON account.workspace_id = metric.workspace_id
@@ -201,6 +206,7 @@ export class SemanticQueryRepository {
     const dateTo = Date.parse(`${input.dateTo}T00:00:00.000Z`);
     const days = Math.floor((dateTo - dateFrom) / 86_400_000) + 1;
     let expectedDays = Math.max(accountCount * days, 0);
+    let requestedDates: string[] | undefined;
     if (input.filters?.taskId !== undefined) {
       const raw = row?.expected_account_days;
       if ((typeof raw !== "number" && (typeof raw !== "string" || !/^\d+$/.test(raw))) ||
@@ -215,6 +221,13 @@ export class SemanticQueryRepository {
         (input.filters.accountScopes !== undefined && expectedDays > input.filters.accountScopes.length * days)) {
         throw new SemanticQueryContractError("Inconsistent task coverage proof");
       }
+      const dates = calendarDateSchema.array().max(366).safeParse(row?.requested_dates);
+      if (!dates.success || dates.data.length > expectedDays || (dates.data.length === 0) !== (expectedDays === 0) ||
+        dates.data.some((date, index) => date < input.dateFrom || date > input.dateTo || (index > 0 && date <= dates.data[index - 1]!)) ||
+        (input.filters.accountScopes !== undefined && expectedDays > input.filters.accountScopes.length * dates.data.length)) {
+        throw new SemanticQueryContractError("Invalid task effective dates");
+      }
+      requestedDates = dates.data;
     }
     return {
       dataAsOf: row?.data_as_of == null ? null : isoTimestamp(row.data_as_of),
@@ -222,6 +235,7 @@ export class SemanticQueryRepository {
       returnedAccounts: Number(row?.returned_accounts ?? 0),
       requestedAccountDays: expectedDays,
       returnedAccountDays: Number(row?.account_days ?? 0),
+      ...(requestedDates === undefined ? {} : { requestedDates }),
     };
   }
 }

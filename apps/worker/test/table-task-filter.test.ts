@@ -22,8 +22,16 @@ describe("table task selector vertical slice", () => {
   it.each([null, "", "x".repeat(257), [], 2, "invalid\nidentifier"])("rejects invalid task selector %j", (taskId) => {
     expect(() => registry.resolve(body.queryId, { ...body.params, taskId }, "platform")).toThrow();
   });
-  it("does not pretend task-aware window assessment has been implemented yet", () => {
-    for (const id of ["account.summary", "account.trend"]) expect(() => registry.resolve(id, body.params, "platform")).toThrow();
+  it("enables personal task windows but refuses unsupported KA/reconcile task windows", () => {
+    for (const id of ["account.summary", "account.trend"]) {
+      expect(registry.resolve(id, body.params, "platform").params.taskId).toBe("task-a");
+      for (const source of ["ka_data", "reconcile"]) expect(() => registry.resolve(id, body.params, source)).toThrow();
+      const resolved = registry.resolve(id, body.params, "platform");
+      expect(() => registry.buildTeamKaWindowPlan(resolved, { from: "2026-08-24", to: "2026-08-24" })).toThrow();
+      expect(() => registry.buildTeamKaWindowAggregatePlan(resolved, { from: "2026-08-24", to: "2026-08-24" })).toThrow();
+      expect(() => registry.buildTeamKaDataPlan(resolved)).toThrow();
+      expect(() => registry.buildKaDataPlan(resolved, accounts)).toThrow();
+    }
   });
   it("executes actual KA task SQL intersected with approved tuple, dates and paging", () => {
     const db = new DatabaseSync(":memory:");

@@ -160,6 +160,8 @@ export interface SemanticLineageResult {
   returnedAccounts: number;
   requestedAccountDays: number;
   returnedAccountDays: number;
+  /** Internal task-effective date proof, from the expected grid in the same read snapshot. */
+  requestedDates?: string[] | undefined;
 }
 
 export class AmbiguousTaskMappingError extends Error {

@@ -56,6 +56,7 @@ export class WindowAssessmentRepository {
     const result = await this.connection.query(`${EXPECTED_METRIC_CTE}, account_totals AS (
       SELECT metric.media, metric.account_id,
         count(*) AS members,
+        count(DISTINCT metric.ds) AS eligible_days,
         count(metric.cash_cost)=count(*) AND count(metric.real_conversion)=count(*)
           AND count(assessment.price)=count(*) AS complete,
         bool_or(coalesce(metric.cash_cost::text IN ('NaN','Infinity','-Infinity'),false)
@@ -69,9 +70,9 @@ export class WindowAssessmentRepository {
     ) SELECT count(*)::int AS total,
       count(*) FILTER(WHERE complete)::int AS determinable,
       count(*) FILTER(WHERE complete AND cash<=target)::int AS on_target,
-      coalesce(bool_or(corrupt OR members<>$${filter.values.length + 1}
+      coalesce(bool_or(corrupt OR members<>${scope.filters?.taskId === undefined ? `$${filter.values.length + 1}` : "eligible_days"}
         OR cash::text IN ('NaN','Infinity','-Infinity') OR target::text IN ('NaN','Infinity','-Infinity')),false) AS invalid
-      FROM account_totals`, [...filter.values, filter.span]);
+      FROM account_totals`, scope.filters?.taskId === undefined ? [...filter.values, filter.span] : filter.values);
     const row = result.rows[0] as Record<string, unknown> | undefined;
     if (result.rows.length !== 1 || !row || row.invalid !== false ||
       ![row.total, row.determinable, row.on_target].every((v) => typeof v === "number" && Number.isInteger(v) && v >= 0 && v <= 1000) ||

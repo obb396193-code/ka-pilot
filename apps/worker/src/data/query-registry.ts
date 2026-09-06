@@ -16,6 +16,8 @@ const RESOLVED_QUERY = Symbol("resolved-data-query");
 const AUTHORITY_POLICY_VERSION = "2026-08-24";
 const accountIdSchema = z.string().min(1).max(128).regex(/^[A-Za-z0-9_-]+$/);
 const mediaSchema = z.string().min(1).max(32).regex(/^[A-Z0-9_]+$/);
+export const taskQueryIdSchema = z.string().min(1).max(256).refine((value) => [...value].every((character) =>
+  character.charCodeAt(0) >= 32 && character.charCodeAt(0) !== 127), "Invalid task identifier");
 
 export type AccountScope = "optional_many" | "required_one";
 export type QueryOutputShape = "aggregate" | "account_rows";
@@ -184,13 +186,12 @@ function normalizedSchema<Shape extends z.ZodRawShape>(shape: Shape): z.ZodType<
 }
 
 const intervalSchema = normalizedSchema(commonDateFields);
-const windowFields = { ...commonDateFields, preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
+const windowFields = { ...commonDateFields, taskId: taskQueryIdSchema.optional(), preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
 const summarySchema = normalizedSchema({ ...windowFields, compare: z.enum(["dod", "wow"]).optional() });
 const trendSchema = normalizedSchema(windowFields);
 const tableSchema = normalizedSchema({
   ...commonDateFields,
-  taskId: z.string().min(1).max(256).refine((value) => [...value].every((character) =>
-    character.charCodeAt(0) >= 32 && character.charCodeAt(0) !== 127), "Invalid task identifier").optional(),
+  taskId: taskQueryIdSchema.optional(),
   page: z.number().int().min(1).default(1),
   pageSize: z.number().int().min(1).max(500).default(50),
 });
@@ -457,6 +458,10 @@ export class DataQueryRegistry {
       throw new QueryRegistryError("INVALID_REQUEST", "Invalid query parameter set");
     }
     assertDateBudget(parsedParams.data, entry.maxDateSpanDays);
+    if (parsedParams.data.taskId !== undefined && dataView.data !== "platform" &&
+      (queryId.data === "account.summary" || queryId.data === "account.trend")) {
+      throw new QueryRegistryError("VIEW_UNSUPPORTED", "Task windows are not available for this source");
+    }
     const authorityPolicy = this.resolveAuthorityPolicy(entry, parsedParams.data);
     return {
       queryId: entry.queryId,
@@ -492,6 +497,7 @@ export class DataQueryRegistry {
   /** Pure fixed-template builder. Only KaDataClient's server binding authorizes execution. */
   buildTeamKaDataPlan(resolved: ResolvedDataQuery): KaDataQueryPlan {
     if (!isResolvedDataQuery(resolved)) throw new QueryRegistryError("INVALID_REQUEST", "Query must be resolved by the registry");
+    rejectKaTaskWindow(resolved);
     const entry = this.entries.get(resolved.queryId);
     if (entry?.buildSql === undefined) throw new QueryRegistryError("VIEW_UNSUPPORTED", "KA Data does not support this query");
     return {
@@ -510,6 +516,7 @@ export class DataQueryRegistry {
     if (!isResolvedDataQuery(resolved) || (resolved.queryId !== "account.summary" && resolved.queryId !== "account.trend")) {
       throw new QueryRegistryError("INVALID_REQUEST", "Window query requires a registered account summary");
     }
+    rejectKaTaskWindow(resolved);
     const window = queryWindowSchema.parse(windowInput);
     const compare = z.enum(["dod", "wow"]).optional().parse(compareInput);
     if (window.from !== resolved.params.dateFrom || window.to !== resolved.params.dateTo) {
@@ -559,6 +566,7 @@ export class DataQueryRegistry {
     if (resolved[RESOLVED_QUERY] !== true) {
       throw new QueryRegistryError("INVALID_REQUEST", "Query must be resolved by the registry");
     }
+    rejectKaTaskWindow(resolved);
     const entry = this.entries.get(resolved.queryId);
     if (entry?.buildSql === undefined) {
       throw new QueryRegistryError("VIEW_UNSUPPORTED", "KA Data does not support this query");
@@ -578,6 +586,12 @@ export class DataQueryRegistry {
 
 export function createDataQueryRegistry(options: { today?: () => string } = {}): DataQueryRegistry {
   return new DataQueryRegistry(options);
+}
+
+function rejectKaTaskWindow(resolved: ResolvedDataQuery): void {
+  if (resolved.params.taskId !== undefined && (resolved.queryId === "account.summary" || resolved.queryId === "account.trend")) {
+    throw new QueryRegistryError("VIEW_UNSUPPORTED", "Task windows are not available for this source");
+  }
 }
 
 export function isResolvedDataQuery(value: unknown): value is ResolvedDataQuery {

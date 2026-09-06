@@ -195,7 +195,6 @@ describe("data API HTTP composition", () => {
     { query_type: "summary", date: "2026-08-24", dataView: "ka_data" },
     { query_type: "summary", queryId: "account.summary", params: {} },
     { query_type: "summary", date: "2026-08-24", filters: { media: "KUAISHOU", account_id: "not-granted" } },
-    { query_type: "summary", date: "2026-08-24", filters: { task_id: "unsupported-yet" } },
     { query_type: "summary", date: "2026-08-24", filters: { owner: "unsupported-yet" } },
     { query_type: "summary", date: "2026-02-31" },
     { queryId: "reconcile.account_daily", params: { date: "2026-08-24" } },
@@ -206,6 +205,18 @@ describe("data API HTTP composition", () => {
     expect([400, 403, 404]).toContain(response.status);
     expect(await response.json()).toMatchObject({ ok: false, error: { requestId: expect.any(String) } });
     expect(platform.query).not.toHaveBeenCalled(); expect(kaData.query).not.toHaveBeenCalled();
+  });
+
+  it.each(["summary", "trend"] as const)("semantic %s task filter reaches only the personal adapter", async (kind) => {
+    const platform = { query: vi.fn<DataSourceQueryPort["query"]>(async (resolved) => ready(resolved.queryId, "canonical",
+      [canonicalRow(resolved.queryId, 11, auth.workspaceId, "account-1")])) }, kaData = { query: vi.fn() };
+    const baseUrl = await start({ platform, kaData });
+    const response = await fetch(`${baseUrl}/api/v1/query`, { method: "POST", headers: { ...authHeaders(), "x-request-id": "task-alias" },
+      body: JSON.stringify({ query_type: kind, date: "2026-08-24", filters: { task_id: "task-a" } }) });
+    expect(response.status).toBe(200); expect(response.headers.get("x-request-id")).toBe("task-alias");
+    expect(platform.query.mock.calls[0]?.[0].params.taskId).toBe("task-a");
+    expect(platform.query.mock.calls[0]?.[1]).toMatchObject({ workspaceId: auth.workspaceId, scopeKind: "explicit_accounts" });
+    expect(kaData.query).not.toHaveBeenCalled();
   });
 
   it("semantic alias keeps authentication, method and exact byte boundaries", async () => {

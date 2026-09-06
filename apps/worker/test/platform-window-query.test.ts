@@ -22,6 +22,43 @@ function setup() {
   return { repository, snapshot, query: new PlatformWindowQuery(snapshot as never) };
 }
 describe("personal window query composition", () => {
+  it("filters a task to its effective days, not the full calendar window", async () => {
+    const { query, repository } = setup();
+    repository.queryLineage.mockResolvedValue({ dataAsOf: null, canonicalRows: 1, returnedAccounts: 1,
+      requestedAccountDays: 1, returnedAccountDays: 1, requestedDates: ["2026-09-01"] } as never);
+    repository.querySummary.mockResolvedValue({ ...summary(22, 1), rowCount: 1 });
+    repository.loadAssessment.mockResolvedValue([
+      { ds: "2026-09-01", cashCost: metricValue(22), realConversion: metricValue(1), price: { value: 20, effectiveDate: "2026-09-01", versionKey: "p1" } },
+    ]);
+    const result = await query.summary({ ...input, taskId: "task-a" });
+    expect(result.row.metrics.costSpace).toEqual(metricValue(-2));
+    expect(result.row.assessment.price).toMatchObject({ value: 20, effectiveDate: "2026-09-01" });
+    for (const fn of Object.values(repository)) expect(fn).toHaveBeenCalledWith(expect.objectContaining({
+      filters: { accountScopes: input.accounts, taskId: "task-a" },
+    }));
+  });
+  it("requires effective dates for a task and refuses missing/duplicate/out-of-window evidence", async () => {
+    for (const dates of [undefined, [], ["2026-09-01"], ["2026-09-01", "2026-09-01"], ["2026-09-01", "2026-09-03"], ["2026-02-31"]]) {
+      const { query, repository } = setup();
+      repository.queryLineage.mockResolvedValue({ dataAsOf: null, canonicalRows: 2, returnedAccounts: 1,
+        requestedAccountDays: 2, returnedAccountDays: 2, ...(dates === undefined ? {} : { requestedDates: dates }) } as never);
+      await expect(query.summary({ ...input, taskId: "task-a" })).rejects.toThrow("Invalid window source result");
+    }
+  });
+  it("comparison task scope and effective-day proof are loaded for each window separately", async () => {
+    const { query, repository } = setup();
+    repository.queryLineage.mockResolvedValueOnce({ dataAsOf: null, canonicalRows: 2, returnedAccounts: 1,
+      requestedAccountDays: 2, returnedAccountDays: 2, requestedDates: ["2026-09-01", "2026-09-02"] } as never)
+      .mockResolvedValueOnce({ dataAsOf: null, canonicalRows: 1, returnedAccounts: 1,
+        requestedAccountDays: 1, returnedAccountDays: 1, requestedDates: ["2026-08-26"] } as never);
+    repository.querySummary.mockResolvedValueOnce(summary()).mockResolvedValueOnce({ ...summary(10, 1), rowCount: 1 });
+    const result = await query.summary({ ...input, taskId: "task-a", compare: "wow" });
+    expect(repository.queryLineage).toHaveBeenCalledTimes(2);
+    expect(repository.loadAccountCounts).toHaveBeenLastCalledWith(expect.objectContaining({
+      dateFrom: "2026-08-25", dateTo: "2026-08-26", filters: { taskId: "task-a", accountScopes: input.accounts },
+    }));
+    expect(result.row.compare?.deltas.cashCost).toEqual({ value: 1.5, state: "finite" });
+  });
   it("uses actual daily prices, replaces cached costSpace, and keeps one approved tuple snapshot", async () => {
     const { query, repository, snapshot } = setup();
     const result = await query.summary(input);

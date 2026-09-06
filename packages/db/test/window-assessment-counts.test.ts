@@ -4,6 +4,15 @@ import { WindowAssessmentRepository } from "../src/window-assessment-repository.
 const scope = { workspaceId: "00000000-0000-4000-8000-000000000003", dateFrom: "2026-09-01", dateTo: "2026-09-02",
   filters: { accountScopes: [{ media: "KUAISHOU", accountId: "synthetic" }] } };
 describe("account window target counts SQL contract", () => {
+  it("counts task-effective dates while rejecting duplicate same-day task joins", async () => {
+    const query = vi.fn().mockResolvedValue({ rows: [{ total: 1, determinable: 1, on_target: 1, invalid: false }] });
+    await new WindowAssessmentRepository({ query } as never).loadAccountCounts({ ...scope, filters: { ...scope.filters, taskId: "task-a" } });
+    const [sql, values] = query.mock.calls[0]!;
+    expect(sql).toContain("count(DISTINCT metric.ds) AS eligible_days");
+    expect(sql).toContain("members<>eligible_days");
+    expect(sql).not.toContain("task-a"); expect(values).toContain("task-a");
+    expect(values.at(-1)).not.toBe(2);
+  });
   it("uses one parameterized expected-day query and preserves authorized tuples", async () => {
     const query = vi.fn().mockResolvedValue({ rows: [{ total: 1, determinable: 1, on_target: 0, invalid: false }] });
     expect(await new WindowAssessmentRepository({ query } as never).loadAccountCounts(scope)).toEqual({ total: 1, determinable: 1, onTarget: 0 });

@@ -8,9 +8,11 @@ import {
   queryWindowSchema, summaryWindowRowSchema, dailyAssessmentInputSchema,
   comparisonWindow, computeWindowAssessment, compareWindowPoints, unavailableWindowComparison,
   sumMetricValues, type SummaryWindowRow,
+  calendarDateSchema,
 } from "@ka/domain";
 import { canonicalSummaryBaseRow } from "./canonical-query-rows.js";
-import { createDataQueryRegistry } from "./query-registry.js";
+import { createDataQueryRegistry, taskQueryIdSchema } from "./query-registry.js";
+import { assertTaskWindowDates, taskWindowDates } from "./task-window-coverage.js";
 
 const ratioUnknown = { value: null, state: "undefined" } as const;
 const accountCountsSchema = z.object({ total: z.number().int().min(0).max(1000),
@@ -26,6 +28,7 @@ const tuple = z.object({ media: z.string().regex(/^[A-Z0-9_]{1,32}$/), accountId
 const inputSchema = z.object({
   workspaceId: z.string().uuid(), accounts: z.array(tuple).max(1000), window: queryWindowSchema,
   compare: z.enum(["dod", "wow"]).optional(),
+  taskId: taskQueryIdSchema.optional(),
 }).strict().superRefine((input, context) => {
   if (new Set(input.accounts.map((account) => JSON.stringify([account.media, account.accountId]))).size !== input.accounts.length) {
     context.addIssue({ code: "custom", message: "Duplicate approved account tuple" });
@@ -35,6 +38,7 @@ const lineageSchema = z.object({
   dataAsOf: z.string().datetime({ offset: true }).nullable(), canonicalRows: z.number().int().nonnegative(),
   returnedAccounts: z.number().int().nonnegative(), requestedAccountDays: z.number().int().nonnegative(),
   returnedAccountDays: z.number().int().nonnegative(),
+  requestedDates: calendarDateSchema.array().max(366).optional(),
 }).strict();
 interface WindowReadRepository {
   querySummary: SemanticQueryRepository["querySummary"];
@@ -74,7 +78,7 @@ export class PlatformWindowQuery {
     this.registry.resolve("account.summary", { dateFrom: input.window.from, dateTo: input.window.to }, "platform");
     const scope: SemanticQueryScope = {
       workspaceId: input.workspaceId, dateFrom: input.window.from, dateTo: input.window.to,
-      filters: { accountScopes: input.accounts },
+      filters: { accountScopes: input.accounts, ...(input.taskId === undefined ? {} : { taskId: input.taskId }) },
     };
     return this.snapshot(async (repository) => {
       const expectedDays = dayCount(scope.dateFrom, scope.dateTo), expectedMembers = input.accounts.length * expectedDays;
@@ -86,11 +90,12 @@ export class PlatformWindowQuery {
       const parsedHistory = z.array(dailyAssessmentInputSchema).max(10_000).safeParse(rawHistory);
       if (!parsedHistory.success) return invalid();
       const history = parsedHistory.data;
-      if (lineage.requestedAccountDays !== expectedMembers || lineage.returnedAccounts > input.accounts.length ||
+      if (input.taskId !== undefined) assertTaskWindowDates(scope, lineage, history.map((row) => row.ds));
+      if ((input.taskId === undefined && lineage.requestedAccountDays !== expectedMembers) || lineage.returnedAccounts > input.accounts.length ||
         lineage.returnedAccountDays > expectedMembers || lineage.canonicalRows > expectedMembers ||
         summary.accountCount !== lineage.returnedAccounts || summary.rowCount !== lineage.canonicalRows ||
         history.some((row) => row.ds < scope.dateFrom || row.ds > scope.dateTo) ||
-        new Set(history.map((row) => row.ds)).size !== (input.accounts.length ? expectedDays : 0)) return invalid();
+        (input.taskId === undefined && new Set(history.map((row) => row.ds)).size !== (input.accounts.length ? expectedDays : 0))) return invalid();
       if (!equalMetric(sumMetricValues(history.map((row) => row.cashCost)), summary.metrics.cashCost) ||
         !equalMetric(sumMetricValues(history.map((row) => row.realConversion)), summary.metrics.realConversion)) return invalid();
       const assessment = (() => { try { return computeWindowAssessment(history); } catch { return invalid(); } })();
@@ -103,6 +108,12 @@ export class PlatformWindowQuery {
           const previousScope = { ...scope, dateFrom: previousWindow.from, dateTo: previousWindow.to };
           const previous = canonicalSummary(await repository.querySummary(previousScope));
           if (previous.accountCount > input.accounts.length || previous.rowCount > expectedMembers) return invalid();
+          if (input.taskId !== undefined) {
+            const proof = lineageSchema.safeParse(await repository.queryLineage(previousScope));
+            if (!proof.success) return invalid();
+            taskWindowDates(previousScope, proof.data);
+            if (previous.accountCount !== proof.data.returnedAccounts || previous.rowCount !== proof.data.canonicalRows) return invalid();
+          }
           const previousRate = targetRate(await repository.loadAccountCounts(previousScope), input.accounts.length, previous.accountCount);
           const point = (metrics: typeof summary.metrics, rate: ReturnType<typeof targetRate>) => ({
             cost: metrics.cost, cashCost: metrics.cashCost, realConversion: metrics.realConversion,
