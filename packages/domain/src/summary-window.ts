@@ -95,6 +95,9 @@ export function compareWindowPoints(mode: "dod" | "wow", current: unknown, previ
     cashCost: toRatio(compareAbsolute(now.cashCost.value, before.cashCost.value)),
     realConversion: toRatio(compareAbsolute(now.realConversion.value, before.realConversion.value)),
     cashCpa: toRatio(compareRate(now.cashCpa.value, before.cashCpa.value)),
-    onTargetRate: toRatio(compareRate(now.onTargetRate.value, before.onTargetRate.value)),
+    // v1.7.4: percentage-point difference; zero is an observed rate, not a NEW denominator.
+    onTargetRate: now.onTargetRate.state === "finite" && before.onTargetRate.state === "finite"
+      ? ratioValueSchema.parse({ value: now.onTargetRate.value! - before.onTargetRate.value!, state: "finite" })
+      : { value: null, state: "undefined" },
   } });
 }

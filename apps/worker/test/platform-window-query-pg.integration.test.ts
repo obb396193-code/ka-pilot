@@ -54,4 +54,12 @@ describe("personal summary window composition / synthetic real PG", () => {
     expect(result.row.assessment.onTarget).toBeNull();
     expect(result.lineage).toMatchObject({ requestedAccountDays: 3, returnedAccountDays: 2 });
   });
+  it("compares real account target rates with effective historical prices in the same window snapshot", async () => {
+    await pool.query("INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date) VALUES($1,'synthetic-task',1,'2026-08-01')", [workspaceId]);
+    const result = await createPlatformWindowQuery(pool).summary({ ...input, compare: "wow" });
+    // Prior window: 20 cash > 1*4 conversions. Current: 25 cash <= 20*1+10*1.
+    expect(result.row.compare?.deltas.onTargetRate).toEqual({ value: 1, state: "finite" });
+    expect(result.warnings).toContain("BUDGET_SOURCE_NOT_READY");
+    expect(result.row.assessment.budgetUsageRate).toEqual({ value: null, state: "undefined" });
+  });
 });

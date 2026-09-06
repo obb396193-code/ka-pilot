@@ -78,6 +78,11 @@ describe("window arithmetic never averages daily CPA", () => {
 });
 
 describe("v3 compare canonical ratios", () => {
+  it("onTargetRate is a percentage-point difference even when the previous rate is zero", () => {
+    const previous = { ...point(), onTargetRate: finite(0) };
+    expect(compareWindowPoints("dod", { ...point(), onTargetRate: finite(1) }, previous).deltas.onTargetRate).toEqual(finite(1));
+    expect(compareWindowPoints("dod", previous, previous).deltas.onTargetRate).toEqual(finite(0));
+  });
   it.each(["dod", "wow"] as const)("%s uses relative amounts but absolute ratio differences", (mode) => {
     const current = point(); current.cost = mv(120); current.cashCpa = finite(42); current.onTargetRate = finite(0.8);
     const result = compareWindowPoints(mode, current, point());
