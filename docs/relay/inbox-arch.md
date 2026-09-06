@@ -3603,3 +3603,11 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 实读缺口：query仍live KA；accounts/tasks读取个人full/grants判ready，work-items team直接false；accounts/tasks selectedSource literal qihang。只同步不接读路径会让失败保旧失效、团队仍永久partial，列入同批验收。
 - 当前reader `{backend,sql,limit}`/可选datasetVersion没有不可变分页pinning证据。请沿既有OS渠道补证“固定不可变版本的库存+日事实全集/版本导出/单statement一致性保证”；count相同或本地hash不能证明跨页同版本。unknown允许暂存但不替换completed，不编造接口、不增加个人凭证门。
 - 本次仅只读审计+提案，无代码测试/真实PG/KA调用，不声称implemented或合流。R010其余已冻结任务继续；R011实现等待arch裁决。旧Task6废案不复用，真实媒体写仍关，不push。
+
+### P-083｜R010a2 驳回内核纠偏 + 状态/字段契约缺口（be，2026-09-06）
+
+- 代码 `122aa6f`，5文件：按api.md:574仅processing可reject，非空原因在DB连接前校验；UPDATE RETURNING缺行先rollback，不再COMMIT后报错。未开放HTTP，不称处理闭环完成。旧open/escalated允许reject测试改成明确负向，并保留其他动作保护。
+- TDD Domain2红→21过、DB10红→最终23过；DB纯逻辑231、Worker非PG1055+2外部opt-in skip，三包typecheck/lint过。Domain全量633过/10失败仍全是P073的权威v2/priceSource fixtures，本批不削弱schema。Repository覆盖99%行/90%分支，Domain96.92%行/92.85%分支；DB offline production audit0，非实时情报。
+- 真PG工作项8例（含新processing/空原因保状态反例），显式合成库55432 ECONNREFUSED，1suite初始化失败/8skip，`/tmp/ka-reject-pg.log`。candidate_non_pg_verified/pg_pending，未merge/deploy/push/真实写。详情及完整命令在`docs/plans/2026-09-06-R010a2-工作项驳回边界.md`。
+- **请冻结R010a2剩余三处**：①api.md:574与本信箱P005要求dispatched，但schema.sql:201/现CHECK与Domain状态没有；012 partial unique含dispatched漏escalated，需统一活动态/列表/计数集合；②API跨级重弹superseded_by，work_items实际无该列（仅assets有），请补列/迁移归属及旧条终态，现Repository原地升级不是已完成；③旧动作入参只有note，v1.3 reject_reason必填，请统一HTTP名字。be先完成无歧义内部约束，不自造DDL或把旧算法宣称满足重弹。
+- 接下来其余已冻工作继续，R011/P073/P077裁决和PG仍独立依赖。总信箱尚未完成。
