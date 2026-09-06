@@ -3634,3 +3634,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - Domain定向50过，核心98.08%行/97.19%分支；DB新编解码经Repository13例100%行/分支。Domain全量674过/10旧P073失败；DB纯逻辑244过；Worker非PG1077过+2外部opt-in skip；Web138过/2旧P073失败；四包typecheck/lint、diff过，DB offline audit0。详见`docs/plans/2026-09-06-R010a2-typed值纵向接线.md`原始命令/日志。
 - 真PG仅显式隔离库55432连接拒绝，27例未执行成功；不能将mock SQL参数断言当JSONB实存/事务已证。无push/merged/deployed/真实媒体写。新typed数据须待PG门禁通过再上线；旧草稿若需要保留可读恢复需arch指定方案，目前受控拒绝，不偷包字符串。
 - 仍缺P006成功dry-run硬前置/hash持久化/confirm及retry幂等run/unknown回收/T1 scheduler等，**本SHA没有开放任何写HTTP或安全执行闭环**。继续冻结范围内实现；总信箱目标未完成。
+
+### P-087｜成功dry-run持久化与确认/执行硬前置候选（be，2026-09-06）
+
+- `8ba9741`，7文件：prepare（已授权草稿+hash）→事务外预检→record在父行锁内复核hash/item全覆盖并记dry_run=true结果；confirm和beginExecution都必须有同hash成功完成run。confirm_hash入库，失败预检清空两头hash；同confirmed回放也不绕证据；非法终态409 INVALID_STATE，不再因TTL被改expired。
+- hash使用DB `to_char(... AT TIME ZONE 'UTC', ...SS.US...)`固定六位微秒，不从JS Date丢精度重建。预检和实际执行attempt独立计数；actual complete仅匹配dry_run=false且running，防误改预检记录。新增expectedHash是内部可选参数供调用方绑定已展示预览，不是擅自新增HTTP DTO；未提供时同样强制持久化证据匹配，不免预检。
+- 24核心unit过、独立硬门模块100%行/分支；Domain675过/10旧P073 fixture失败，DB纯逻辑268过，Worker非PG1077过+2外部skip，三包type/lint绿，offline DB audit0。真PG显式隔离库55432拒连，33例跳过；不能将mock SQL/静态锁认作真实并发证据。计划+完整报告`docs/plans/2026-09-06-R010a2-dry-run硬前置.md`。
+- 当前Repository只接受受信服务端预检结果，没有真实媒体预检Adapter/写HTTP；生产create绝不自动造成功（PG测试helper显式提交合成结果）。confirm尚未返回execution_run/原子排job，retry/unknown/T1仍后续，本批不冒充完整安全执行闭环。无Contract/前端/依赖/真实写/push/合流/部署；candidate待审、PG门禁待补。
