@@ -1,7 +1,7 @@
 // Synthetic only. ka-src-0010 defines account conv as fact_conv BI conversions.
 import { describe, expect, it } from "vitest";
 import { type DataQueryId } from "@ka/domain";
-import { CanonicalQueryRowError, canonicalizeQueryRows } from "../src/data/canonical-query-rows.js";
+import { CanonicalQueryRowError, canonicalSummaryBaseRow, canonicalizeQueryRows } from "../src/data/canonical-query-rows.js";
 
 const workspaceId = "00000000-0000-4000-8000-000000000501";
 const queryIds: DataQueryId[] = ["account.summary", "account.trend", "account.table", "account.anomalies", "account.detail", "reconcile.account_daily"];
@@ -10,8 +10,15 @@ const identity = { media: "KUAISHOU", account_id: "fixture-account", ds: "202608
 function mapped(queryId: DataQueryId, fields: Record<string, unknown>) {
   const raw = { ...identity, row_count: 1, account_count: 1, cost_yuan: 12, cash_yuan: 10, click: 4,
     data_anomaly: queryId === "account.anomalies", ...fields };
-  const [row] = canonicalizeQueryRows(queryId, "ka_data", [raw], workspaceId);
-  return queryId === "account.trend" ? (row!.metrics as { metrics: unknown }).metrics : row!.metrics;
+  // Summary arithmetic is a base for the v3 window calculator; the public mapper
+  // must not manufacture assessment metadata from an aggregate SQL row.
+  const input = queryId === "account.summary" ? {
+    ...canonicalSummaryBaseRow(raw, "ka_data"),
+    assessment: { priceSource: "ka_daily", price: null, onTarget: null, costStatus: null,
+      costStatusReason: "assessment_missing", budgetUsageRate: { value: null, state: "undefined" } },
+  } : raw;
+  const [row] = canonicalizeQueryRows(queryId, "ka_data", [input], workspaceId);
+  return row!.metrics;
 }
 
 describe("KA account BI conversion lineage", () => {
@@ -25,10 +32,10 @@ describe("KA account BI conversion lineage", () => {
         cvr: { value: null, state: "undefined" }, gap: { value: null, state: "undefined" },
       },
     });
-    const platform = canonicalizeQueryRows("account.summary", "platform", [{
+    const platform = canonicalSummaryBaseRow({
       rowCount: 1, accountCount: 1, anomalyRows: 0, cost: 12, cashCost: 10, click: 4,
       realConversion: 2, conversion: null,
-    }], workspaceId)[0]!;
+    }, "platform");
     expect(metrics).toMatchObject(platform.metrics as Record<string, unknown>);
   });
 

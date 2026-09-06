@@ -1,513 +1,186 @@
+// Synthetic source responses only. Window v3 uses team member snapshots;
+// daily v2 still serves the separately authorized diagnostic reader.
 import { describe, expect, it, vi } from "vitest";
-
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
-import {
-  KaDataClient,
-  KaDataClientError,
-  createKaDataClientFromEnv,
-} from "../src/data/ka-data-client.js";
+import { KaDataClient, KaDataClientError, createKaDataClientFromEnv } from "../src/data/ka-data-client.js";
 
-function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
-  return new Response(JSON.stringify(body), {
-    status: init.status ?? 200,
-    headers: { "content-type": "application/json", ...init.headers },
-  });
+const workspaceId = "00000000-0000-4000-8000-000000000024";
+const userId = "00000000-0000-4000-8000-000000000001";
+const team = { workspaceId, userId, scopeKind: "team_workspace_readonly" as const, accounts: [] };
+const personal = { workspaceId, userId, scopeKind: "explicit_accounts" as const,
+  accounts: [{ media: "KUAISHOU", accountId: "a" }] };
+const registry = createDataQueryRegistry();
+const env = { KA_DATA_BASE_URL: "https://ka-data.example.internal", KA_DATA_READER_TOKEN: "server-only-token",
+  KA_DATA_TEAM_WORKSPACE_ID: workspaceId };
+const summary = () => registry.resolve("account.summary", { date: "2026-08-24", media: "KUAISHOU" }, "ka_data");
+const table = () => registry.resolve("account.table", { date: "2026-08-24", page: 1, pageSize: 50 }, "ka_data");
+const trend = () => registry.resolve("account.trend", { dateFrom: "2026-08-23", dateTo: "2026-08-24", media: "KUAISHOU" }, "ka_data");
+function member(ds = "2026-08-24", account_id = "a", observed = true) {
+  return { ds, account_id, media: "KUAISHOU", observed: observed ? 1 : 0,
+    cost_yuan: observed ? 12 : null, cash_yuan: observed ? 12 : null, show: observed ? 100 : null,
+    click: observed ? 10 : null, conv: observed ? 2 : null, cash_assessment: observed ? 10 : null };
 }
-
-function resolvedSummary() {
-  return createDataQueryRegistry().resolve(
-    "account.summary",
-    { date: "2026-08-24" },
-    "ka_data",
-  );
+function daily(accountId = "a", overrides: Record<string, unknown> = {}) {
+  return { ds: "20260824", account_id: accountId, media: "KUAISHOU", cost_yuan: 12,
+    cash_yuan: 12, show: 100, click: 10, conv: 2, ...overrides };
 }
-
-function kaSummary(cost = 12) {
-  return {
-    row_count: 1,
-    account_count: 1,
-    cost,
-    exposure: 100,
-    click: 10,
-    real_conversion: 2,
-    cash_cost: cost,
-  };
+function envelope(rows: unknown[], metadata: Record<string, unknown> = {}) {
+  return { backend: "sqlite", rowCount: rows.length, rows, ...metadata };
 }
-
-function kaDaily(accountId: string, overrides: Record<string, unknown> = {}) {
-  return {
-    media: "KUAISHOU",
-    account_id: accountId,
-    ds: "20260824",
-    cost_yuan: 12,
-    cash_yuan: 12,
-    show: 100,
-    click: 10,
-    conv: 2,
-    ...overrides,
-  };
+function setup(rows: unknown[] = [member()], metadata: Record<string, unknown> = {}) {
+  const fetchFn = vi.fn<typeof fetch>(async () => Response.json(envelope(rows, metadata)));
+  const client = new KaDataClient({ baseUrl: env.KA_DATA_BASE_URL, token: "fixture-secret-token",
+    teamWorkspaceId: workspaceId, fetchFn });
+  return { client, fetchFn };
 }
 
 describe("KaDataClient", () => {
   it("derives workspace kind from execution scope, not upstream metadata", async () => {
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal", token: "fixture-token",
-      fetchFn: async () => jsonResponse({
-        backend: "sqlite", rowCount: 1, rows: [kaSummary()],
-        workspaceKind: "team",
-      }),
-    });
-    const response = await client.query(resolvedSummary(), {
-      workspaceId: "00000000-0000-4000-8000-000000000024",
-      userId: "00000000-0000-4000-8000-000000000001",
-      scopeKind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "a" }],
-    });
-    expect(response.lineage).toMatchObject({ workspaceKind: "personal", metadataAvailability: "unknown" });
+    const result = await setup([daily()], { workspaceKind: "team" }).client.query(table(), personal);
+    expect(result.lineage).toMatchObject({ workspaceKind: "personal", metadataAvailability: "unknown" });
+    const window = await setup([member()], { workspaceKind: "personal" }).client.query(summary(), team);
+    expect(window.lineage.workspaceKind).toBe("team");
+    expect(window.rows[0]).toMatchObject({ assessment: { priceSource: "ka_daily" } });
   });
-  it.each([-1, 3, "2", 1.5])("rejects impossible account-day coverage metadata %s", async (account_day_count) => {
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal", token: "fixture-token",
-      fetchFn: async () => jsonResponse({ backend: "sqlite", rowCount: 1, rows: [{ ...kaSummary(), account_day_count }] }),
-    });
-    await expect(client.query(createDataQueryRegistry().resolve("account.summary", {
-      dateFrom: "2026-08-23", dateTo: "2026-08-24",
-    }, "ka_data"), { workspaceId: "w", userId: "u", scopeKind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "a" }] }))
+  it.each([-1, 3, "2", 1.5])("rejects obsolete unproven aggregate account-day counts %s", async (account_day_count) => {
+    await expect(setup([{ row_count: 1, account_count: 1, cost: 12, account_day_count }]).client.query(summary(), team))
       .rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
   });
-
   it.each([
-    ["20260823"],
-    ["20260823", "20260823"],
-    ["20260822", "20260823"],
-  ])("does not claim a complete trend window from %j", async (...dates) => {
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal", token: "fixture-token",
-      fetchFn: async () => jsonResponse({ backend: "sqlite", rowCount: dates.length, rows: dates.map((ds) => ({ ds, ...kaSummary() })) }),
-    });
-    const request = client.query(createDataQueryRegistry().resolve("account.trend", {
-      dateFrom: "2026-08-23", dateTo: "2026-08-24",
-    }, "ka_data"), { workspaceId: "w", userId: "u", scopeKind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "a" }] });
-    if (dates.length === 1) expect((await request).lineage).toMatchObject({ partial: true, truncated: false });
-    else await expect(request).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
+    ["2026-08-23"], ["2026-08-23", "2026-08-23"], ["2026-08-22", "2026-08-23"],
+  ])("rejects incomplete, duplicate or out-of-window member dates %j", async (...dates) => {
+    await expect(setup(dates.map((ds) => member(ds))).client.query(trend(), team))
+      .rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
   });
   it("uses a fixed HTTPS origin/path and never serializes its token", async () => {
-    const fetchFn = vi.fn<typeof fetch>(async () => jsonResponse({
-      backend: "sqlite",
-      rowCount: 1,
-      rows: [kaSummary()],
-      truncated: false,
-      limit_clamped: false,
-    }));
-    const token = "fixture-secret-token";
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token,
-      fetchFn,
-    });
-
-    await client.query(resolvedSummary(), {
-      workspaceId: "00000000-0000-4000-8000-000000000024",
-      userId: "user-fixture",
-      scopeKind: "explicit_accounts",
-      accounts: [{ media: "KUAISHOU", accountId: "fixture-account" }],
-    });
-
-    const [input, init] = fetchFn.mock.calls[0] ?? [];
+    const { client, fetchFn } = setup();
+    const response = await client.query(summary(), team);
+    const [input, init] = fetchFn.mock.calls[0]!;
     expect(String(input)).toBe("https://ka-data.example.internal/api/query");
     expect(init?.redirect).toBe("manual");
-    expect(new Headers(init?.headers).get("authorization")).toBe(`Bearer ${token}`);
-    expect(JSON.stringify(client)).not.toContain(token);
+    expect(new Headers(init?.headers).get("authorization")).toBe("Bearer fixture-secret-token");
+    expect(JSON.stringify({ client, response })).not.toContain("fixture-secret-token");
   });
-
   it("creates the production reader only from server-side environment secrets", async () => {
-    const fetchFn = vi.fn<typeof fetch>(async () => jsonResponse({
-      backend: "sqlite",
-      rowCount: 0,
-      rows: [],
-      truncated: false,
-      limit_clamped: false,
-    }));
-    const client = createKaDataClientFromEnv({
-      KA_DATA_BASE_URL: "https://ka-data.example.internal",
-      KA_DATA_READER_TOKEN: "server-only-token",
-      KA_DATA_DATASET_VERSION: "fixture-version",
-    }, { fetchFn });
-
-    await client.query(resolvedSummary(), {
-      workspaceId: "00000000-0000-4000-8000-000000000024",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [],
-    });
-    expect(new Headers(fetchFn.mock.calls[0]?.[1]?.headers).get("authorization"))
-      .toBe("Bearer server-only-token");
-    expect(JSON.stringify(client)).not.toContain("server-only-token");
-    const result = await client.query(resolvedSummary(), {
-      workspaceId: "00000000-0000-4000-8000-000000000024",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [],
-    });
+    const fetchFn = vi.fn<typeof fetch>(async () => Response.json(envelope([])));
+    const client = createKaDataClientFromEnv({ ...env, KA_DATA_DATASET_VERSION: "deployment-not-lineage" }, { fetchFn });
+    const result = await client.query(summary(), team);
+    expect(new Headers(fetchFn.mock.calls[0]?.[1]?.headers).get("authorization")).toBe("Bearer server-only-token");
+    expect(JSON.stringify({ client, result })).not.toContain("server-only-token");
     expect(result.lineage.datasetVersion).toBeNull();
   });
-
   it("does not invent dataset freshness metadata absent from the upstream response", async () => {
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      fetchFn: async () => jsonResponse({
-        backend: "sqlite",
-        rowCount: 1,
-        rows: [kaSummary()],
-      }),
-    });
-    const result = await client.query(resolvedSummary(), {
-      workspaceId: "w",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [{ media: "KUAISHOU", accountId: "a" }],
-    });
-    expect(result.lineage).toMatchObject({
-      datasetVersion: null,
-      dataAsOf: null,
-      timezone: null,
-      dayCut: null,
-      metadataAvailability: "unknown",
+    expect((await setup().client.query(summary(), team)).lineage).toMatchObject({
+      datasetVersion: null, dataAsOf: null, timezone: null, dayCut: null, metadataAvailability: "unknown",
     });
   });
-
-  it("does not call an empty aggregate complete when an authorized account is missing", async () => {
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      fetchFn: async () => jsonResponse({
-        backend: "sqlite",
-        rowCount: 1,
-        rows: [{ ...kaSummary(0), row_count: 0, account_count: 0 }],
-      }),
-    });
-    const result = await client.query(resolvedSummary(), {
-      workspaceId: "w",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [{ media: "KUAISHOU", accountId: "missing-account" }],
-    });
-    expect(result.lineage).toMatchObject({
-      coverage: {
-        complete: false,
-        requestedObjects: 1,
-        returnedObjects: 0,
-        reason: expect.stringMatching(/account scope/i),
-      },
-      partial: true,
-      truncated: false,
-    });
+  it("does not call an empty source complete when an explicitly selected account is missing", async () => {
+    const result = await setup([]).client.query(registry.resolve("account.summary", {
+      date: "2026-08-24", media: "KUAISHOU", accountIds: ["missing-account"],
+    }, "ka_data"), team);
+    expect(result.rows[0]).toMatchObject({ accountCount: 0, rowCount: 0 });
+    expect(result.lineage).toMatchObject({ coverage: { complete: false, returnedObjects: 0 }, partial: true, truncated: false });
+    expect(result.lineage.coverage.requestedObjects).toBeUndefined();
     expect(result.wholeResultTotal).toMatchObject({ value: null, availability: "partial" });
   });
-
-  it("omits trend returnedObjects when daily aggregates cannot prove the cross-day union", async () => {
-    const resolved = createDataQueryRegistry().resolve(
-      "account.trend",
-      { dateFrom: "2026-08-23", dateTo: "2026-08-24" },
-      "ka_data",
-    );
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      fetchFn: async () => jsonResponse({
-        backend: "sqlite",
-        rowCount: 2,
-        rows: [
-          { ds: "20260823", ...kaSummary(), account_count: 1 },
-          { ds: "20260824", ...kaSummary(), account_count: 1 },
-        ],
-      }),
-    });
-    const result = await client.query(resolved, {
-      workspaceId: "w",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [
-        { media: "KUAISHOU", accountId: "a-1" },
-        { media: "KUAISHOU", accountId: "a-2" },
-      ],
-    });
-    expect(result.lineage.coverage).toMatchObject({
-      complete: false,
-      requestedObjects: 2,
-    });
-    expect(result.lineage.coverage).not.toHaveProperty("returnedObjects");
+  it("counts the proven cross-day union rather than the maximum daily count", async () => {
+    const rows = [member("2026-08-23", "a"), member("2026-08-24", "a", false),
+      member("2026-08-23", "b", false), member("2026-08-24", "b")];
+    const result = await setup(rows).client.query(trend(), team);
+    expect(result.lineage.coverage).toMatchObject({ complete: false, returnedObjects: 2 });
+    expect(result.lineage.coverage.requestedObjects).toBeUndefined();
     expect(result.lineage).toMatchObject({ partial: true, truncated: false });
   });
-
-  it("marks a trend partial when any returned day is missing an authorized account", async () => {
-    const resolved = createDataQueryRegistry().resolve(
-      "account.trend",
-      { dateFrom: "2026-08-23", dateTo: "2026-08-24" },
-      "ka_data",
-    );
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      fetchFn: async () => jsonResponse({
-        backend: "sqlite",
-        rowCount: 2,
-        rows: [
-          { ds: "20260823", ...kaSummary(), account_count: 2 },
-          { ds: "20260824", ...kaSummary(), account_count: 1 },
-        ],
-      }),
-    });
-    const result = await client.query(resolved, {
-      workspaceId: "00000000-0000-4000-8000-000000000024",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [
-        { media: "KUAISHOU", accountId: "a-1" },
-        { media: "KUAISHOU", accountId: "a-2" },
-      ],
-    });
+  it("retains a missing expected account-day instead of presenting its partial sum as available", async () => {
+    const result = await setup([member("2026-08-23"), member("2026-08-24", "a", false)]).client.query(trend(), team);
+    expect(result.rows).toMatchObject([
+      { ds: "2026-08-23", metrics: { cost: { value: 12, availability: "available" } } },
+      { ds: "2026-08-24", metrics: { cost: { value: null, availability: "missing" } } },
+    ]);
     expect(result.lineage).toMatchObject({ partial: true, truncated: false, coverage: { complete: false } });
-    expect(result.lineage.coverage).not.toHaveProperty("returnedObjects");
     expect(result.wholeResultTotal.availability).toBe("partial");
   });
-
-  it("fails closed when an aggregate claims more objects than the authenticated scope", async () => {
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      fetchFn: async () => jsonResponse({
-        backend: "sqlite",
-        rowCount: 1,
-        rows: [{ ...kaSummary(), account_count: 2 }],
-      }),
-    });
-    await expect(client.query(resolvedSummary(), {
-      workspaceId: "w",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [{ media: "KUAISHOU", accountId: "a-1" }],
-    })).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
+  it("refuses public KA window queries from a personal context before source access", async () => {
+    const { client, fetchFn } = setup();
+    await expect(client.query(summary(), personal)).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(fetchFn).not.toHaveBeenCalled();
   });
-
+  it("fails closed when daily output claims more objects than the approved diagnostic scope", async () => {
+    await expect(setup([daily("a"), daily("b")]).client.query(table(), personal))
+      .rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" });
+  });
   it("does not use deployment timezone or day-cut fallbacks as source lineage", async () => {
-    const client = createKaDataClientFromEnv({
-      KA_DATA_BASE_URL: "https://ka-data.example.internal",
-      KA_DATA_READER_TOKEN: "server-only-token",
-      KA_DATA_TIMEZONE: "Asia/Shanghai",
-      KA_DATA_DAY_CUT: "calendar_day",
-    }, {
-      fetchFn: async () => jsonResponse({
-        backend: "sqlite",
-        rowCount: 1,
-        rows: [kaSummary()],
-      }),
+    const client = createKaDataClientFromEnv({ ...env, KA_DATA_TIMEZONE: "Asia/Shanghai", KA_DATA_DAY_CUT: "calendar_day" }, {
+      fetchFn: async () => Response.json(envelope([member()])),
     });
-    const result = await client.query(resolvedSummary(), {
-      workspaceId: "w",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [{ media: "KUAISHOU", accountId: "a-1" }],
-    });
-    expect(result.lineage).toMatchObject({ timezone: null, dayCut: null });
+    expect((await client.query(summary(), team)).lineage).toMatchObject({ timezone: null, dayCut: null });
   });
-
-  it("rejects any production access mode other than the frozen shared reader mode", () => {
-    expect(() => createKaDataClientFromEnv({
-      KA_DATA_BASE_URL: "https://ka-data.example.internal",
-      KA_DATA_READER_TOKEN: "server-only-token",
-      KA_DATA_ACCESS_MODE: "editor",
-    })).toThrow(/access_mode/i);
+  it("rejects access modes other than the frozen shared reader mode", () => {
+    expect(() => createKaDataClientFromEnv({ ...env, KA_DATA_ACCESS_MODE: "editor" })).toThrow(/access_mode/i);
   });
-
-  it.each([
-    "http://ka-data.example.internal",
-    "https://user:pass@ka-data.example.internal",
-    "https://ka-data.example.internal/not-the-origin",
-  ])("rejects an unsafe base URL: %s", (baseUrl) => {
-    expect(() => new KaDataClient({ baseUrl, token: "fixture-token" })).toThrow(/base URL/i);
-  });
-
+  it.each(["http://ka-data.example.internal", "https://user:pass@ka-data.example.internal", "https://ka-data.example.internal/not-the-origin"])(
+    "rejects an unsafe base URL: %s", (baseUrl) => {
+      expect(() => new KaDataClient({ baseUrl, token: "fixture-token" })).toThrow(/base URL/i);
+    },
+  );
   it("rejects redirects without following them", async () => {
-    const fetchFn = vi.fn<typeof fetch>(async () => new Response(null, {
-      status: 302,
-      headers: { location: "https://attacker.example/query" },
-    }));
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      fetchFn,
-    });
-
-    await expect(client.query(resolvedSummary(), {
-      workspaceId: "w",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [{ media: "KUAISHOU", accountId: "a" }],
-    })).rejects.toMatchObject({ code: "SOURCE_UNAVAILABLE" });
+    const fetchFn = vi.fn<typeof fetch>(async () => new Response(null, { status: 302, headers: { location: "https://attacker.example/query" } }));
+    const client = createKaDataClientFromEnv(env, { fetchFn });
+    await expect(client.query(summary(), team)).rejects.toMatchObject({ code: "SOURCE_UNAVAILABLE" });
     expect(fetchFn.mock.calls[0]?.[1]?.redirect).toBe("manual");
+    expect(fetchFn).toHaveBeenCalledTimes(1);
   });
-
-  it.each([2_000, 10_000])("marks an exact %i-row boundary as suspected truncation", async (rowCount) => {
-    const rows = Array.from({ length: rowCount }, () => kaSummary());
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      fetchFn: async () => jsonResponse({
-        backend: "sqlite",
-        rowCount,
-        rows,
-        truncated: false,
-        limit_clamped: false,
-      }),
-    });
-
-    const result = await client.query(resolvedSummary(), {
-      workspaceId: "w",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [{ media: "KUAISHOU", accountId: "a" }],
-    });
-
-    expect(result.lineage.truncated).toBe(true);
-    expect(result.lineage.partial).toBe(true);
-    expect(result.rows[0]).toMatchObject({ metrics: {
-      cost: { value: null, availability: "error" },
-      ratios: { ctr: { value: null, state: "undefined" } },
-    } });
+  it.each([2_000, 10_000])("rejects an exact %i-row window boundary before assessment", async (rowCount) => {
+    const rows = Array.from({ length: rowCount }, (_, index) => member("2026-08-24", `a-${index}`));
+    await expect(setup(rows).client.query(summary(), team)).rejects.toMatchObject({ code: "SOURCE_TRUNCATED" });
+  });
+  it.each([2_000, 10_000])("keeps the daily %i-row truncation masking guard", async (rowCount) => {
+    const result = await setup(Array.from({ length: rowCount }, () => daily())).client.query(table(), personal);
+    expect(result.lineage).toMatchObject({ partial: true, truncated: true });
+    expect(result.rows[0]).toMatchObject({ metrics: { cost: { value: null, availability: "error" }, ratios: { ctr: { value: null, state: "undefined" } } } });
     expect(result.wholeResultTotal).toMatchObject({ value: null, availability: "partial" });
   });
-
-  it("treats an exact body byte limit as suspected truncation", async () => {
-    const base = JSON.stringify({
-      backend: "sqlite",
-      rowCount: 1,
-      rows: [{ ...kaSummary(), padding: "" }],
-      truncated: false,
-      limit_clamped: false,
-    });
-    const byteLimit = 512;
-    const marker = '"}],"truncated"';
-    const padding = "x".repeat(byteLimit - new TextEncoder().encode(base).byteLength);
-    const body = base.replace(marker, `${padding}"}],"truncated"`);
-    expect(new TextEncoder().encode(body).byteLength).toBe(byteLimit);
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      maxResponseBytes: byteLimit,
-      fetchFn: async () => new Response(body, {
-        headers: { "content-type": "application/json" },
-      }),
-    });
-
-    const result = await client.query(resolvedSummary(), {
-      workspaceId: "w",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [{ media: "KUAISHOU", accountId: "a" }],
-    });
-    expect(result.lineage.truncated).toBe(true);
-    expect(result.warnings.join(" ")).toMatch(/byte/i);
-    expect(result.rows[0]).toMatchObject({ metrics: { cost: { value: null, availability: "error" } } });
-  });
-
-  it("returns stable redacted errors for non-JSON and upstream failures", async () => {
-    const secretBody = "upstream leaked internal details";
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      fetchFn: async () => new Response(secretBody, { status: 500 }),
-    });
-
-    let thrown: unknown;
-    try {
-      await client.query(resolvedSummary(), {
-        workspaceId: "w",
-        userId: "u",
-        scopeKind: "explicit_accounts",
-        accounts: [{ media: "KUAISHOU", accountId: "a" }],
-      });
-    } catch (error) {
-      thrown = error;
+  it("rejects exact window response bytes and preserves exact daily byte masking", async () => {
+    for (const window of [true, false]) {
+      const body = JSON.stringify(envelope([window ? member() : daily()]));
+      const client = new KaDataClient({ baseUrl: env.KA_DATA_BASE_URL, token: "synthetic", teamWorkspaceId: workspaceId,
+        maxResponseBytes: Buffer.byteLength(body), fetchFn: async () => new Response(body) });
+      if (window) await expect(client.query(summary(), team)).rejects.toMatchObject({ code: "SOURCE_TRUNCATED" });
+      else {
+        const result = await client.query(table(), personal);
+        expect(result.lineage.truncated).toBe(true);
+        expect(result.warnings.join(" ")).toMatch(/byte/i);
+        expect(result.rows[0]).toMatchObject({ metrics: { cost: { value: null, availability: "error" } } });
+      }
     }
-    expect(thrown).toBeInstanceOf(KaDataClientError);
-    expect(thrown).toMatchObject({ code: "SOURCE_UNAVAILABLE" });
-    expect(String(thrown)).not.toContain(secretBody);
   });
-
+  it.each([[200, "UPSTREAM_INVALID_RESPONSE"], [500, "SOURCE_UNAVAILABLE"]] as const)(
+    "sanitizes non-JSON/upstream error HTTP %i", async (status, code) => {
+      const secretBody = "upstream leaked internal details";
+      const client = createKaDataClientFromEnv(env, { fetchFn: async () => new Response(secretBody, { status }) });
+      let thrown: unknown;
+      try { await client.query(summary(), team); } catch (error) { thrown = error; }
+      expect(thrown).toBeInstanceOf(KaDataClientError);
+      expect(thrown).toMatchObject({ code });
+      expect(String(thrown)).not.toContain(secretBody);
+    },
+  );
   it("does not claim a whole total for paginated account.table responses", async () => {
-    const resolved = createDataQueryRegistry().resolve(
-      "account.table",
-      { date: "2026-08-24", page: 1, pageSize: 50 },
-      "ka_data",
-    );
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      fetchFn: async () => jsonResponse({
-        backend: "sqlite",
-        rowCount: 1,
-        rows: [kaDaily("leading-zero-001")],
-      }),
-    });
-
-    const result = await client.query(resolved, {
-      workspaceId: "00000000-0000-4000-8000-000000000024",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [{ media: "KUAISHOU", accountId: "leading-zero-001" }],
-    });
+    const result = await setup([daily()]).client.query(table(), personal);
     expect(result.wholeResultTotal).toMatchObject({ value: null, availability: "missing" });
     expect(result.lineage.coverage.returnedObjects).toBe(1);
   });
-
   it("injects the authenticated workspace into account rows and overwrites upstream claims", async () => {
-    const resolved = createDataQueryRegistry().resolve(
-      "account.table",
-      { date: "2026-08-24", page: 1, pageSize: 50 },
-      "ka_data",
-    );
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      fetchFn: async () => jsonResponse({
-        backend: "sqlite",
-        rowCount: 1,
-        rows: [kaDaily("a-1", { workspace_id: "upstream-forged-workspace" })],
-      }),
-    });
-
-    const result = await client.query(resolved, {
-      workspaceId: "00000000-0000-4000-8000-000000000024",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [{ media: "KUAISHOU", accountId: "a-1" }],
-    });
-
-    expect(result.rows).toEqual([expect.objectContaining({
-      workspaceId: "00000000-0000-4000-8000-000000000024",
-      media: "KUAISHOU",
-      accountId: "a-1",
-    })]);
+    const result = await setup([daily("a", { workspace_id: "upstream-forged-workspace" })]).client.query(table(), personal);
+    expect(result.rows[0]).toMatchObject({ workspaceId, media: "KUAISHOU", accountId: "a" });
     expect(result.rows[0]).not.toHaveProperty("workspace_id");
     expect(JSON.stringify(result)).not.toContain("upstream-forged-workspace");
   });
-
   it("times out with a stable retryable error", async () => {
-    const client = new KaDataClient({
-      baseUrl: "https://ka-data.example.internal",
-      token: "fixture-token",
-      timeoutMs: 5,
+    const client = new KaDataClient({ baseUrl: env.KA_DATA_BASE_URL, token: "synthetic", teamWorkspaceId: workspaceId, timeoutMs: 5,
       fetchFn: async (_input, init) => new Promise((_resolve, reject) => {
         init?.signal?.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError")));
-      }),
-    });
-
-    await expect(client.query(resolvedSummary(), {
-      workspaceId: "w",
-      userId: "u",
-      scopeKind: "explicit_accounts",
-      accounts: [{ media: "KUAISHOU", accountId: "a" }],
-    })).rejects.toMatchObject({ code: "UPSTREAM_TIMEOUT", retryable: true });
+      }) });
+    await expect(client.query(summary(), team)).rejects.toMatchObject({ code: "UPSTREAM_TIMEOUT", retryable: true });
   });
 });

@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
+import { metricValue } from "@ka/domain";
+import { PlatformWindowQuery } from "../src/data/platform-window-query.js";
 
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
 import {
@@ -68,6 +70,24 @@ function lineage(complete = true) {
   };
 }
 
+// The public summary now executes the real window calculator. These synthetic
+// history/count ports share the same snapshot callback as the semantic ports.
+function windowSource(
+  repository: ConstructorParameters<typeof PlatformDataSource>[0],
+  snapshot?: <T>(read: (r: ConstructorParameters<typeof PlatformDataSource>[0]) => Promise<T>) => Promise<T>,
+  empty = false,
+) {
+  const history = {
+    loadAssessment: vi.fn(async () => [{ ds: "2026-08-24", price: null,
+      cashCost: metricValue(empty ? 0 : 12), realConversion: metricValue(empty ? 0 : 1) }]),
+    loadAccountCounts: vi.fn(async () => ({ total: 1, determinable: 0, onTarget: 0 })),
+  };
+  const query = new PlatformWindowQuery((read) => snapshot
+    ? snapshot((transaction) => read({ ...transaction, ...history }))
+    : read({ ...repository, ...history }));
+  return new PlatformDataSource(repository, snapshot, query);
+}
+
 describe("PlatformDataSource", () => {
   it("runs every read through the provided snapshot repository, never the pool fallback", async () => {
     const fallback = { querySummary: vi.fn(), queryTrend: vi.fn(), queryTable: vi.fn(), queryLineage: vi.fn() };
@@ -76,7 +96,7 @@ describe("PlatformDataSource", () => {
       queryLineage: vi.fn(async () => lineage()),
     };
     const snapshot = vi.fn(async (read: (repository: typeof transaction) => Promise<unknown>) => read(transaction));
-    const result = await new PlatformDataSource(fallback as never, snapshot as never).query(
+    const result = await windowSource(fallback as never, snapshot as never).query(
       createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"), scope,
     );
     expect(result.status).toBe("ready"); expect(snapshot).toHaveBeenCalledTimes(1);
@@ -89,7 +109,7 @@ describe("PlatformDataSource", () => {
       querySummary: vi.fn(async () => summary(12)), queryTrend: vi.fn(), queryTable: vi.fn(),
       queryLineage: vi.fn(async () => lineage()),
     };
-    const source = new PlatformDataSource(repository as never, async (read) => {
+    const source = windowSource(repository as never, async (read) => {
       await read(repository as never); throw new Error("synthetic secret SQL commit failure");
     });
     const result = await source.query(createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"), scope);
@@ -102,7 +122,7 @@ describe("PlatformDataSource", () => {
       querySummary: vi.fn(async () => ({ ...summary(12), cost: "invalid" })), queryTrend: vi.fn(), queryTable: vi.fn(),
       queryLineage: vi.fn(async () => lineage()),
     };
-    const source = new PlatformDataSource(repository as never, async (read) => read(repository as never));
+    const source = windowSource(repository as never, async (read) => read(repository as never));
     await expect(source.query(createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"), scope)).rejects.toBeInstanceOf(PlatformDataSourceError);
   });
 
@@ -113,7 +133,7 @@ describe("PlatformDataSource", () => {
       queryTable: vi.fn(),
       queryLineage: vi.fn(async () => lineage()),
     };
-    const source = new PlatformDataSource(repository as never);
+    const source = windowSource(repository as never);
     const result = await source.query(
       createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"),
       scope,
@@ -144,9 +164,9 @@ describe("PlatformDataSource", () => {
       querySummary: vi.fn(async () => summary(0, 0)),
       queryTrend: vi.fn(),
       queryTable: vi.fn(),
-      queryLineage: vi.fn(async () => lineage(false)),
+      queryLineage: vi.fn(async () => ({ ...lineage(false), canonicalRows: 0 })),
     };
-    const source = new PlatformDataSource(repository as never);
+    const source = windowSource(repository as never, undefined, true);
     const result = await source.query(
       createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"),
       scope,
@@ -169,7 +189,7 @@ describe("PlatformDataSource", () => {
     );
     expect(result.rows).toEqual([expect.objectContaining({
       ds: "2026-08-24",
-      metrics: expect.objectContaining({ rowCount: 1, metrics: expect.objectContaining({ cost: { value: 12, availability: "available" } }) }),
+      metrics: expect.objectContaining({ cost: { value: 12, availability: "available" } }),
     })]);
     expect(result.lineage.datasetVersion).toBeNull();
   });
@@ -291,7 +311,7 @@ describe("PlatformDataSource", () => {
       queryTable: vi.fn(),
       queryLineage: vi.fn(async () => lineage()),
     };
-    const source = new PlatformDataSource(repository as never);
+    const source = windowSource(repository as never);
     await expect(source.query(
       createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"),
       scope,
@@ -305,7 +325,7 @@ describe("PlatformDataSource", () => {
       queryTable: vi.fn(),
       queryLineage: vi.fn(async () => ({ ...lineage(), returnedAccounts: 2 })),
     };
-    const source = new PlatformDataSource(repository as never);
+    const source = windowSource(repository as never);
     await expect(source.query(
       createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"),
       scope,
@@ -319,7 +339,7 @@ describe("PlatformDataSource", () => {
       queryTable: vi.fn(),
       queryLineage: vi.fn(async () => ({ ...lineage(), returnedAccounts: 0 })),
     };
-    const source = new PlatformDataSource(repository as never);
+    const source = windowSource(repository as never);
     await expect(source.query(
       createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"),
       scope,
@@ -335,7 +355,7 @@ describe("PlatformDataSource", () => {
       queryTable: vi.fn(),
       queryLineage: vi.fn(async () => lineage()),
     };
-    const source = new PlatformDataSource(repository as never);
+    const source = windowSource(repository as never);
     await expect(source.query(
       createDataQueryRegistry().resolve("account.summary", { date: "2026-08-24" }, "platform"),
       scope,

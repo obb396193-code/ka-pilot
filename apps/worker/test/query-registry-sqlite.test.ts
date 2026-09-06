@@ -2,7 +2,7 @@
 import { DatabaseSync } from "node:sqlite";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createDataQueryRegistry } from "../src/data/query-registry.js";
-import { canonicalizeQueryRows, CanonicalQueryRowError } from "../src/data/canonical-query-rows.js";
+import { canonicalizeQueryRows, canonicalSummaryBaseRow, CanonicalQueryRowError } from "../src/data/canonical-query-rows.js";
 import { KaDataClient } from "../src/data/ka-data-client.js";
 
 describe("KA registered SQLite aggregates preserve missing members", () => {
@@ -11,13 +11,13 @@ describe("KA registered SQLite aggregates preserve missing members", () => {
     db = new DatabaseSync(":memory:");
     db.exec(`CREATE TABLE dwd_account_daily (
       ds INTEGER, media TEXT, account_id TEXT, cost_yuan REAL, show REAL,
-      click REAL, conv REAL, cash_yuan REAL
+      click REAL, conv REAL, cash_yuan REAL, cash_assessment REAL
     )`);
   });
   afterEach(() => db.close());
   const accounts = [{ media: "KUAISHOU", accountId: "same" }];
   function insert(ds: number, cost: number | string | null, media = "KUAISHOU") {
-    db.prepare("INSERT INTO dwd_account_daily VALUES (?, ?, 'same', ?, 10, 1, 1, 1)")
+    db.prepare("INSERT INTO dwd_account_daily VALUES (?, ?, 'same', ?, 10, 1, 1, 1, 10)")
       .run(ds, media, cost);
   }
   function run(queryId: "account.summary" | "account.trend" | "reconcile.account_daily", scope = accounts) {
@@ -38,11 +38,11 @@ describe("KA registered SQLite aggregates preserve missing members", () => {
         expect(row).not.toHaveProperty("conversions");
         expect(row.real_conversion).toBe(queryId === "account.summary" ? 2 : 1);
       }
-      const canonical = canonicalizeQueryRows(queryId, "ka_data", rows.map((row) => ({
+      const canonical = queryId === "account.summary" ? rows.map((row) => canonicalSummaryBaseRow(row, "ka_data")) : canonicalizeQueryRows(queryId, "ka_data", rows.map((row) => ({
         ...row, ...(row.ds === undefined ? {} : { ds: String(row.ds) }),
       })), "00000000-0000-4000-8000-000000000024");
       for (const row of canonical) {
-        const metrics = queryId === "account.trend" ? (row.metrics as { metrics: unknown }).metrics : row.metrics;
+        const metrics = row.metrics;
         expect(metrics).toMatchObject({
           conversion: { value: null, availability: "missing" },
           ratios: { realCpa: { value: 6, state: "finite" }, cashCpa: { value: 1, state: "finite" } },
@@ -55,6 +55,7 @@ describe("KA registered SQLite aggregates preserve missing members", () => {
       insert(20260823, 6); insert(20260824, 6);
       const client = new KaDataClient({
         baseUrl: "https://synthetic.example.internal", token: "synthetic-token",
+        teamWorkspaceId: "00000000-0000-4000-8000-000000000024",
         fetchFn: async (_url, init) => {
           const { sql } = JSON.parse(String(init?.body)) as { sql: string };
           const rows = db.prepare(sql).all();
@@ -62,12 +63,13 @@ describe("KA registered SQLite aggregates preserve missing members", () => {
         },
       });
       const result = await client.query(createDataQueryRegistry().resolve(queryId, {
-        dateFrom: "2026-08-23", dateTo: "2026-08-24",
+        dateFrom: "2026-08-23", dateTo: "2026-08-24", media: "KUAISHOU",
       }, queryId === "reconcile.account_daily" ? "reconcile" : "ka_data"), {
-        workspaceId: "00000000-0000-4000-8000-000000000024", userId: "fixture", scopeKind: "explicit_accounts", accounts,
+        workspaceId: "00000000-0000-4000-8000-000000000024", userId: "00000000-0000-4000-8000-000000000001",
+        scopeKind: queryId === "reconcile.account_daily" ? "explicit_accounts" : "team_workspace_readonly", accounts,
       });
       for (const row of result.rows) {
-        const metrics = queryId === "account.trend" ? (row.metrics as { metrics: unknown }).metrics : row.metrics;
+        const metrics = row.metrics;
         expect(metrics).toMatchObject({
           realConversion: { value: queryId === "account.summary" ? 2 : 1, availability: "available" },
           conversion: { value: null, availability: "missing" },
@@ -84,10 +86,11 @@ describe("KA registered SQLite aggregates preserve missing members", () => {
       { ds: "20260824", cost: null, row_count: 0 },
     ]);
   });
-  it("carries the real SQLite missing-day proof into client lineage and v2 metrics", async () => {
+  it("carries the real SQLite missing-day proof into client lineage and v3 metrics", async () => {
     insert(20260823, 10);
     const client = new KaDataClient({
       baseUrl: "https://synthetic.example.internal", token: "synthetic-token",
+      teamWorkspaceId: "00000000-0000-4000-8000-000000000024",
       fetchFn: async (_url, init) => {
         const { sql } = JSON.parse(String(init?.body)) as { sql: string };
         const rows = db.prepare(sql).all();
@@ -98,10 +101,11 @@ describe("KA registered SQLite aggregates preserve missing members", () => {
     });
     for (const queryId of ["account.summary", "account.trend"] as const) {
       const result = await client.query(createDataQueryRegistry().resolve(queryId, {
-        dateFrom: "2026-08-23", dateTo: "2026-08-24",
-      }, "ka_data"), { workspaceId: "00000000-0000-4000-8000-000000000024", userId: "fixture", scopeKind: "explicit_accounts", accounts });
+        dateFrom: "2026-08-23", dateTo: "2026-08-24", media: "KUAISHOU",
+      }, "ka_data"), { workspaceId: "00000000-0000-4000-8000-000000000024",
+        userId: "00000000-0000-4000-8000-000000000001", scopeKind: "team_workspace_readonly", accounts: [] });
       expect(result.lineage).toMatchObject({ truncated: false, partial: true, coverage: { complete: false } });
-      expect(result.rowSchemaVersion).toBe(`${queryId}/v2`);
+      expect(result.rowSchemaVersion).toBe(`${queryId}/v3`);
       if (queryId === "account.summary") expect(result.rows[0]).toMatchObject({
         metrics: { cost: { value: null, availability: "missing" } },
       });
@@ -130,6 +134,8 @@ describe("KA registered SQLite aggregates preserve missing members", () => {
     insert(20260823, cost); insert(20260824, null);
     for (const queryId of ["account.summary", "account.trend", "reconcile.account_daily"] as const) {
       const rows = run(queryId).map((row) => ({ ...row, ...(row.ds === undefined ? {} : { ds: String(row.ds) }) }));
+      if (queryId === "account.summary") expect(() => canonicalSummaryBaseRow(rows[0]!, "ka_data"))
+        .toThrow(CanonicalQueryRowError);
       expect(() => canonicalizeQueryRows(queryId, "ka_data", rows, "fixture-workspace"))
         .toThrow(CanonicalQueryRowError);
     }
@@ -137,6 +143,8 @@ describe("KA registered SQLite aggregates preserve missing members", () => {
   it.each([Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.MAX_VALUE])(
     "surfaces non-finite or overflowing sums instead of JSON null for %s", (cost) => {
       insert(20260823, cost); insert(20260824, cost);
+      expect(() => canonicalSummaryBaseRow(run("account.summary")[0]!, "ka_data"))
+        .toThrow(CanonicalQueryRowError);
       expect(() => canonicalizeQueryRows("account.summary", "ka_data", run("account.summary"), "fixture-workspace"))
         .toThrow(CanonicalQueryRowError);
       expect(run("account.summary")[0]?.cost).toBe("INVALID_METRIC");
