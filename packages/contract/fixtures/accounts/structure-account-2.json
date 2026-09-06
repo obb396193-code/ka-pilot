@@ -1,0 +1,100 @@
+{
+  "ok": true,
+  "data": {
+    "media": "KUAISHOU",
+    "accountId": "account-2",
+    "syncedAt": "2026-09-05T06:00:00.000+08:00",
+    "campaigns": [
+      {
+        "campaignId": "c-2",
+        "name": "AAC-信息流-B",
+        "status": "active",
+        "dayBudget": {
+          "value": 6000.0,
+          "availability": "available"
+        },
+        "units": [
+          {
+            "unitId": "u-21",
+            "name": "B-优选-1",
+            "status": "active",
+            "bid": {
+              "value": 41.0,
+              "availability": "available"
+            },
+            "cpaBid": {
+              "value": 41.0,
+              "availability": "available"
+            },
+            "dayBudget": {
+              "value": 3000.0,
+              "availability": "available"
+            },
+            "schedule168": "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+            "metrics": {
+              "cost": {
+                "value": 2100.0,
+                "availability": "available"
+              },
+              "realConversion": {
+                "value": 40,
+                "availability": "available"
+              },
+              "ratios": {
+                "cashCpa": {
+                  "value": 32.3,
+                  "state": "finite"
+                }
+              }
+            },
+            "junk": false
+          },
+          {
+            "unitId": "u-22",
+            "name": "B-优选-2",
+            "status": "paused",
+            "bid": {
+              "value": 41.0,
+              "availability": "available"
+            },
+            "cpaBid": {
+              "value": 41.0,
+              "availability": "available"
+            },
+            "dayBudget": {
+              "value": 3000.0,
+              "availability": "available"
+            },
+            "schedule168": "111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+            "metrics": {
+              "cost": {
+                "value": 2100.0,
+                "availability": "available"
+              },
+              "realConversion": {
+                "value": 40,
+                "availability": "available"
+              },
+              "ratios": {
+                "cashCpa": {
+                  "value": 176.0,
+                  "state": "finite"
+                }
+              }
+            },
+            "junk": true,
+            "junkReason": "高消耗零转化"
+          }
+        ]
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "account-2 结构：一条 junk 单元（paused）"
+  }
+}

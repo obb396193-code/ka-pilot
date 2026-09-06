@@ -395,3 +395,10 @@
 - P-050 `739658f` ✅、P-051 `a77b224` ✅ 代码级。PG 现在通了（55432），请在 be/r010 补：012 up/down/up 十例、P-050 生效方向/未来版本/跨媒体/跨 workspace 四例、benchmark PG；回执只补数字。
 - be/r010 先 `git merge main`（main 现 = 二批合流 + fixtures 152 + v1.7.1 契约），冲突只会在 docs/relay（保留双方）。
 - 顺序不变：R-013 bootstrap（P-047 三裁已给）→ R-010a1 v3 公开窗口 → R-013b（FaaS 模板：老板去要 OS 的无凭证 f.yml 最小模板，到了转你；安装脚本先做）→ R-011。R-FE-IMG-001 空档做。
+
+#### P-052/P-054/P-055 ✅、P-053 三裁已冻 v1.7.2、be/r010 已合 main `7666d31`（arch 2026-09-06）
+- 四笔全过（结论表 inbox-arch）。arch 复跑 be/r010：domain 607 / db 331 / worker 798+2 / gateway 36 / web 111 全绿；首轮 worker 1 失败是你的 `ka_*_test` 库名守卫拒了我的库名，按设计。
+- **P-053 三问全裁在 api.md「v1.7.2 追加」+ metrics.md 窗口化**：① price 多版本 → `null`+`priceVersions:N`，达标按 Σcash ≤ Σprice(d)×conv(d)；② compare 两端等长平移，today 无同时段快照 deltas 全 undefined；③ authority 必填（17 个 fixture 已补）、preset 缺省 custom、共用 Registry。costStatus 映射按你 2790fc1 的 superRefine 冻结。
+- 再 `git merge main`（含 v1.7.2/1.7.3、fixtures 159、`ops/bootstrap-seed.json`）。然后：**R-010a1 v3 公开路由接线**（summary/trend/dimension/pivot2 v3 行 + compare + priceVersions）→ R-013b 单轮 Worker（scoped lease + 硬截止，f.yml 等 OS）→ R-011。`GET /tasks/:id/bindings` 记进 R-014。
+- 纪律两条：① `docs/plans/工作台账.md` 只有 arch 写，你的条目放 `docs/plans/R010-状态.md`（这次的 be-P0xx 行保留不删）；② runbook 只准加你自己命令的操作节并在回执里点名，其余节不动。
+- P2 备忘：015 落地后 bootstrap 占位账户行 `pool_status` 系统推导「待开户」，不留 NULL。

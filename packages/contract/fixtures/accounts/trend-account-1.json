@@ -11,31 +11,31 @@
           "ds": "2026-09-01",
           "metrics": {
             "cost": {
-              "value": 15750.0,
+              "value": 6300.0,
               "availability": "available"
             },
             "cashCost": {
-              "value": 12303.9,
+              "value": 4921.56,
               "availability": "available"
             },
             "exposure": {
-              "value": 120000,
+              "value": 48000,
               "availability": "available"
             },
             "click": {
-              "value": 5000,
+              "value": 2000,
               "availability": "available"
             },
             "conversion": {
-              "value": 386,
+              "value": 154,
               "availability": "available"
             },
             "realConversion": {
-              "value": 367,
+              "value": 146,
               "availability": "available"
             },
             "costSpace": {
-              "value": 1642.1,
+              "value": 656.84,
               "availability": "available"
             },
             "wakeUv": {
@@ -82,31 +82,31 @@
           "ds": "2026-09-02",
           "metrics": {
             "cost": {
-              "value": 16500.0,
+              "value": 6600.0,
               "availability": "available"
             },
             "cashCost": {
-              "value": 12889.800000000001,
+              "value": 5155.92,
               "availability": "available"
             },
             "exposure": {
-              "value": 120000,
+              "value": 48000,
               "availability": "available"
             },
             "click": {
-              "value": 5000,
+              "value": 2000,
               "availability": "available"
             },
             "conversion": {
-              "value": 397,
+              "value": 158,
               "availability": "available"
             },
             "realConversion": {
-              "value": 378,
+              "value": 151,
               "availability": "available"
             },
             "costSpace": {
-              "value": 1474.2,
+              "value": 589.68,
               "availability": "available"
             },
             "wakeUv": {
@@ -153,31 +153,31 @@
           "ds": "2026-09-03",
           "metrics": {
             "cost": {
-              "value": 17250.0,
+              "value": 6900.0,
               "availability": "available"
             },
             "cashCost": {
-              "value": 13475.699999999999,
+              "value": 5390.28,
               "availability": "available"
             },
             "exposure": {
-              "value": 120000,
+              "value": 48000,
               "availability": "available"
             },
             "click": {
-              "value": 5000,
+              "value": 2000,
               "availability": "available"
             },
             "conversion": {
-              "value": 408,
+              "value": 163,
               "availability": "available"
             },
             "realConversion": {
-              "value": 389,
+              "value": 155,
               "availability": "available"
             },
             "costSpace": {
-              "value": 1306.3,
+              "value": 522.52,
               "availability": "available"
             },
             "wakeUv": {
@@ -224,31 +224,31 @@
           "ds": "2026-09-04",
           "metrics": {
             "cost": {
-              "value": 18000.0,
+              "value": 7200.0,
               "availability": "available"
             },
             "cashCost": {
-              "value": 14061.6,
+              "value": 5624.64,
               "availability": "available"
             },
             "exposure": {
-              "value": 120000,
+              "value": 48000,
               "availability": "available"
             },
             "click": {
-              "value": 5000,
+              "value": 2000,
               "availability": "available"
             },
             "conversion": {
-              "value": 420,
+              "value": 168,
               "availability": "available"
             },
             "realConversion": {
-              "value": 400,
+              "value": 160,
               "availability": "available"
             },
             "costSpace": {
-              "value": 1138.4,
+              "value": 455.36,
               "availability": "available"
             },
             "wakeUv": {
@@ -295,31 +295,31 @@
           "ds": "2026-09-05",
           "metrics": {
             "cost": {
-              "value": 18750.0,
+              "value": 7500.0,
               "availability": "available"
             },
             "cashCost": {
-              "value": 14647.5,
+              "value": 5859.0,
               "availability": "available"
             },
             "exposure": {
-              "value": 120000,
+              "value": 48000,
               "availability": "available"
             },
             "click": {
-              "value": 5000,
+              "value": 2000,
               "availability": "available"
             },
             "conversion": {
-              "value": 431,
+              "value": 172,
               "availability": "available"
             },
             "realConversion": {
-              "value": 410,
+              "value": 164,
               "availability": "available"
             },
             "costSpace": {
-              "value": 932.5,
+              "value": 373.0,
               "availability": "available"
             },
             "wakeUv": {
@@ -386,7 +386,13 @@
           "complete": true
         },
         "truncated": false,
-        "partial": false
+        "partial": false,
+        "accountScope": {
+          "media": "KUAISHOU",
+          "accountIds": [
+            "account-1"
+          ]
+        }
       },
       "warnings": []
     }
@@ -396,6 +402,7 @@
     "dataAsOf": "2026-09-05T09:15:00.000+08:00",
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
-    "selectedSource": "platform"
+    "selectedSource": "platform",
+    "_note": "account.trend/v3 单账户（account-1）：params.accountIds=[account-1]，行=ds+同构 metrics；比率来自后端逐日重算（此处沿用整体样例的比率）"
   }
 }

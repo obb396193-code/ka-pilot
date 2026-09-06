@@ -171,8 +171,8 @@
               "effectiveDate": "2026-09-01"
             },
             "onTarget": true,
-            "costStatus": "red",
-            "costStatusReason": "window_over",
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
@@ -281,6 +281,11 @@
           "preset": "month_to_date"
         },
         "metadataAvailability": "known",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
         "coverage": {
           "complete": true
         },

@@ -321,3 +321,22 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
   - `apps/web/lib/data/mock-data.ts` 会冲突 → **一律取 main 版**（`git checkout main -- apps/web/lib/data/mock-data.ts`）；你 F-006 补的 21 户如页面还依赖，搬到 `lib/fixtures/`；`lib/data/account-lifecycle.ts` 同理搬走（lib/data 归后端，F-007 起你不再动它）。
   - 合完跑 test/tsc/lint，SHA 发我，我把 fe/f006 合进 main（此后每次 SHA 我都合，你不用等）。
 - C3 分层叫法：转老板拍，结果我回你；在此之前按你现在的两层做不用停。
+
+#### C3 老板已拍（2026-09-06）：顶部分层卡叫「账户状态」（九态 poolStatus），表列叫「投放阶段」（生命周期字段）
+- 两层就这么叫，功能按你现在的做法不变；状态文件冲突点 C3 可以打勾。
+
+
+### F-007 前五页 `b5c4ad4` 复跑 ✅ + 第二批 TODO-fixture 已补 + 三件要你做（arch 2026-09-06）
+
+- 复跑（f0e417a）：test 77/0、tsc 0 错、eslint 0 错 12 warn ✅。范围：页 2/4 对 `lib/data` 只有删私拷 + `mock-data.ts` 一处改，可接受；F-007 起 lib/data 不再动。
+- TODO-fixture 第二批已补（main HEAD，README 已索引，fixtures 159）：
+  - `accounts/detail-account-2.json`（red + cutoff critical）、`accounts/detail-account-5.json`（当日缺数全 −）、`accounts/timeline-account-2.json`、`accounts/structure-account-2.json`（含 junk 单元）——其他账户显诚实空态即可，契约同一 DTO。
+  - `accounts/trend-account-1.json`（account.trend/v3 单账户，lineage.accountScope）。
+  - `tasks/list-v151.json` +2 条：`fixture-task-ended`（closed，进「已结束」tab）、`fixture-task-review`（reviewing，红）；关注 tab 用 `me/watchlist.json`（已有，按 media+accountId 过滤任务账户）。
+  - `rules/bindings-fixture-task-ready.json` —— 新端点 `GET /tasks/:id/bindings`（v1.7.3），详情「SOP 与自动化」改读它，**别再显全局规则冒充**。
+  - 上一批 9 个（8 维/gap/pivot2）里 **8 处 costStatus 我造错了已修**（yellow 必须 onTarget=true/`day_over_window_ok`；缺数 = `costStatus:null` + `cash_missing`，没有 gray/no_data）；`lineage.authority` 补齐。你页 1 若按旧值写死了色标映射，改成只读 `costStatus`。
+- **三件要你做**：
+  1. 工作树里未提交的 `package.json` 多了 `"cn": "^0.2.5"`——这是个无关的 npm 包，不是 `cn()` 工具（仓里 `lib/utils` 已有），删掉再装；`@xyflow/react` 保留（画布用）。
+  2. **合 main**：`git merge main`。`apps/web/lib/data/mock-data.ts` 会冲突 → 取 main 版（`git checkout main -- apps/web/lib/data/mock-data.ts`），页面如依赖你改的那几行，搬到 `lib/fixtures/`。合完 test/tsc/lint，SHA 发我，我合 fe/f006 进 main；之后每个 SHA 我即合，你不用攒五页。
+  3. C3 老板已拍：顶部「账户状态」、列「投放阶段」（前一条）。
+- 继续页 5 自动化。画布节点模型按 `workflows/graph-v1.json`。

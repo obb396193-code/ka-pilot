@@ -1,0 +1,185 @@
+{
+  "ok": true,
+  "data": {
+    "account": {
+      "workspaceId": "00000000-0000-4000-8000-000000000024",
+      "media": "KUAISHOU",
+      "accountId": "account-5",
+      "accountName": "AAC拉新_快手_05",
+      "agentType": "self",
+      "lifecycleStage": "cold_start",
+      "poolStatus": "in_delivery",
+      "claimedAt": "2026-08-20T10:00:00.000+08:00",
+      "owner": {
+        "userId": "00000000-0000-4000-8000-000000000001",
+        "name": "示例优化师"
+      },
+      "tags": [
+        "优质户"
+      ],
+      "starred": false,
+      "product": {
+        "name": "AAC 拉新包",
+        "ref": null
+      }
+    },
+    "bio": {
+      "openedAt": "2026-08-18",
+      "openedBy": {
+        "userId": "00000000-0000-4000-8000-000000000002",
+        "name": "示例运营"
+      },
+      "tasks": [
+        {
+          "taskId": "fixture-task-ready",
+          "taskName": "AAC 拉新",
+          "validFrom": "2026-08-20",
+          "validTo": null,
+          "current": true
+        }
+      ],
+      "assessment": {
+        "price": 38.0,
+        "effectiveDate": "2026-09-01"
+      },
+      "onTarget": null,
+      "costStatus": null
+    },
+    "balance": {
+      "asOf": "2026-09-05T08:00:00.000+08:00",
+      "balance": {
+        "value": null,
+        "availability": "missing"
+      },
+      "rechargeBalance": {
+        "value": null,
+        "availability": "missing"
+      },
+      "contractRebate": {
+        "value": null,
+        "availability": "missing"
+      },
+      "directRebate": {
+        "value": null,
+        "availability": "missing"
+      },
+      "extendedBalance": {
+        "value": null,
+        "availability": "missing"
+      },
+      "sharedWallet": {
+        "value": null,
+        "availability": "missing"
+      }
+    },
+    "velocity": {
+      "costPerHour": {
+        "value": null,
+        "availability": "missing"
+      },
+      "asOf": "2026-09-05T09:00:00.000+08:00"
+    },
+    "cutoff": {
+      "hours": {
+        "value": null,
+        "availability": "missing"
+      },
+      "at": null,
+      "state": "unknown"
+    },
+    "summary": {
+      "rowCount": 5,
+      "accountCount": 1,
+      "anomalyRows": 0,
+      "metrics": {
+        "cost": {
+          "value": null,
+          "availability": "missing"
+        },
+        "cashCost": {
+          "value": null,
+          "availability": "missing"
+        },
+        "exposure": {
+          "value": null,
+          "availability": "missing"
+        },
+        "click": {
+          "value": null,
+          "availability": "missing"
+        },
+        "conversion": {
+          "value": null,
+          "availability": "missing"
+        },
+        "realConversion": {
+          "value": null,
+          "availability": "missing"
+        },
+        "costSpace": {
+          "value": null,
+          "availability": "missing"
+        },
+        "wakeUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "potentialUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "ratios": {
+          "ctr": {
+            "value": null,
+            "state": "undefined"
+          },
+          "cvr": {
+            "value": null,
+            "state": "undefined"
+          },
+          "realCpa": {
+            "value": null,
+            "state": "undefined"
+          },
+          "cashCpa": {
+            "value": null,
+            "state": "undefined"
+          },
+          "gap": {
+            "value": null,
+            "state": "undefined"
+          },
+          "potentialRate": {
+            "value": null,
+            "state": "undefined"
+          },
+          "biConversionRate": {
+            "value": null,
+            "state": "undefined"
+          }
+        }
+      },
+      "assessment": {
+        "price": {
+          "value": 38.0,
+          "effectiveDate": "2026-09-01"
+        },
+        "onTarget": null,
+        "costStatus": null,
+        "costStatusReason": "cash_missing",
+        "budgetUsageRate": {
+          "value": null,
+          "state": "undefined"
+        }
+      }
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "account-5：当日缺数——全部三态 missing、比率 undefined、assessment cash_missing、cutoff unknown；前端全显 −"
+  }
+}

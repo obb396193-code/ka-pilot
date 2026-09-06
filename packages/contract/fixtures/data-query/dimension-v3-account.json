@@ -257,8 +257,8 @@
               "effectiveDate": "2026-09-01"
             },
             "onTarget": null,
-            "costStatus": "gray",
-            "costStatusReason": "no_data",
+            "costStatus": null,
+            "costStatusReason": "cash_missing",
             "budgetUsageRate": {
               "value": null,
               "state": "undefined"
@@ -281,6 +281,11 @@
           "preset": "month_to_date"
         },
         "metadataAvailability": "known",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
         "coverage": {
           "complete": true
         },

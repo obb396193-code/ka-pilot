@@ -1,0 +1,56 @@
+{
+  "ok": true,
+  "data": {
+    "taskId": "fixture-task-ready",
+    "rules": [
+      {
+        "ruleId": 3,
+        "name": "成本超考核持续 2 日",
+        "type": "monitor",
+        "enabled": true,
+        "autonomyLevel": 1,
+        "scope": "task",
+        "boundAt": "2026-08-20T10:00:00.000+08:00"
+      },
+      {
+        "ruleId": 7,
+        "name": "余额低于 8 小时",
+        "type": "monitor",
+        "enabled": true,
+        "autonomyLevel": 2,
+        "scope": "task",
+        "boundAt": "2026-08-20T10:00:00.000+08:00"
+      }
+    ],
+    "workflows": [
+      {
+        "workflowId": "00000000-0000-4000-8000-000000000501",
+        "name": "官方模板：新任务开户到基建",
+        "version": 3,
+        "status": "published",
+        "scope": "task",
+        "lastRun": {
+          "runId": "00000000-0000-4000-8000-000000000601",
+          "status": "success",
+          "at": "2026-08-21T09:00:00.000+08:00"
+        }
+      }
+    ],
+    "sop": {
+      "sopRunId": "00000000-0000-4000-8000-000000000701",
+      "template": "新任务开户到基建",
+      "progress": {
+        "value": 0.8,
+        "state": "finite"
+      }
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "GET /api/v1/tasks/:id/bindings（v1.7.3 新增最小 DTO）：任务绑定的规则 + 工作流 + SOP 运行；无绑定 → 三个空数组/null，不显全局规则冒充"
+  }
+}

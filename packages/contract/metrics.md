@@ -67,7 +67,9 @@ BI转化率            = real_conversion / aac_ptt_uv
 ```
 cash_cpa(W)     = Σ_W cash_cost / Σ_W real_conversion       （考核用）
 real_cpa(W)     = Σ_W cost / Σ_W real_conversion            （账面，只展示）
-on_target(W)    = cash_cpa(W) <= assessment_price            （考核价按生效版本逐日取，价改期内各日各用各的）
+on_target(W)    = Σ_W cash_cost(d) <= Σ_W assessment_price(d) × real_conversion(d)   （考核价按生效版本逐日取，价改期内各日各用各的；等价 cash_cpa(W) <= 转化加权考核价；v1.7.2 定稿）
+展示价 price(W)  = 窗口内唯一价+唯一版本时给值；多版本 → null + priceVersions=N（不影响 on_target）
+compare(W)      = dod：两端各平移 1 天；wow：各平移 7 天（等长平移）；today 无同时段快照 → deltas 全 undefined
 cost_space(W)   = Σ_W assessment_price(d) × real_conversion(d) − Σ_W cash_cost(d)   （>0 = 窗口内还没超线的钱）
 achievement(W)  = Σ_W real_conversion / target_volume（任务）
 budget_usage(d) = 当日任务消耗 / 当日生效 daily_budget_cap    （无卡 → availability=missing，不显 0）

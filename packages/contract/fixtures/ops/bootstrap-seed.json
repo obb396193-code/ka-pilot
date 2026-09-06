@@ -1,0 +1,36 @@
+{
+  "identities": [
+    {
+      "id": "00000000-0000-4000-8000-000000000090",
+      "display_name": "示例优化师（合成假数据）"
+    }
+  ],
+  "workspaces": [
+    {
+      "id": "00000000-0000-4000-8000-000000000091",
+      "kind": "personal",
+      "name": "示例个人空间（假数据）"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000093",
+      "kind": "team",
+      "name": "示例团队空间（假数据）"
+    }
+  ],
+  "memberships": [
+    {
+      "identity_id": "00000000-0000-4000-8000-000000000090",
+      "workspace_id": "00000000-0000-4000-8000-000000000091",
+      "user_id": "00000000-0000-4000-8000-000000000092",
+      "role": "optimizer"
+    },
+    {
+      "identity_id": "00000000-0000-4000-8000-000000000090",
+      "workspace_id": "00000000-0000-4000-8000-000000000093",
+      "user_id": "00000000-0000-4000-8000-000000000094",
+      "role": "optimizer"
+    }
+  ],
+  "grants": [],
+  "_note": "seed:bootstrap 输入形状（Domain bootstrapSeedSchema）；全假数据。部署时 identities[].id 换成 OS 生成的 identityId；grants 先空，discover:accounts 人工确认后再显式 seed"
+}

@@ -1,0 +1,185 @@
+{
+  "ok": true,
+  "data": {
+    "account": {
+      "workspaceId": "00000000-0000-4000-8000-000000000024",
+      "media": "KUAISHOU",
+      "accountId": "account-2",
+      "accountName": "AAC拉新_快手_02",
+      "agentType": "self",
+      "lifecycleStage": "declining",
+      "poolStatus": "in_delivery",
+      "claimedAt": "2026-08-20T10:00:00.000+08:00",
+      "owner": {
+        "userId": "00000000-0000-4000-8000-000000000001",
+        "name": "示例优化师"
+      },
+      "tags": [
+        "优质户"
+      ],
+      "starred": false,
+      "product": {
+        "name": "AAC 拉新包",
+        "ref": null
+      }
+    },
+    "bio": {
+      "openedAt": "2026-08-18",
+      "openedBy": {
+        "userId": "00000000-0000-4000-8000-000000000002",
+        "name": "示例运营"
+      },
+      "tasks": [
+        {
+          "taskId": "fixture-task-ready",
+          "taskName": "AAC 拉新",
+          "validFrom": "2026-08-20",
+          "validTo": null,
+          "current": true
+        }
+      ],
+      "assessment": {
+        "price": 38.0,
+        "effectiveDate": "2026-09-01"
+      },
+      "onTarget": false,
+      "costStatus": "red"
+    },
+    "balance": {
+      "asOf": "2026-09-05T08:00:00.000+08:00",
+      "balance": {
+        "value": 2100.0,
+        "availability": "available"
+      },
+      "rechargeBalance": {
+        "value": 1800.0,
+        "availability": "available"
+      },
+      "contractRebate": {
+        "value": 2100.0,
+        "availability": "available"
+      },
+      "directRebate": {
+        "value": 1100.0,
+        "availability": "available"
+      },
+      "extendedBalance": {
+        "value": 0.0,
+        "availability": "available"
+      },
+      "sharedWallet": {
+        "value": null,
+        "availability": "missing"
+      }
+    },
+    "velocity": {
+      "costPerHour": {
+        "value": 437.5,
+        "availability": "available"
+      },
+      "asOf": "2026-09-05T09:00:00.000+08:00"
+    },
+    "cutoff": {
+      "hours": {
+        "value": 4.8,
+        "availability": "available"
+      },
+      "at": "2026-09-05T13:48:00.000+08:00",
+      "state": "critical"
+    },
+    "summary": {
+      "rowCount": 5,
+      "accountCount": 1,
+      "anomalyRows": 0,
+      "metrics": {
+        "cost": {
+          "value": 4200.0,
+          "availability": "available"
+        },
+        "cashCost": {
+          "value": 3281.04,
+          "availability": "available"
+        },
+        "exposure": {
+          "value": 30000,
+          "availability": "available"
+        },
+        "click": {
+          "value": 1400,
+          "availability": "available"
+        },
+        "conversion": {
+          "value": 92,
+          "availability": "available"
+        },
+        "realConversion": {
+          "value": 80,
+          "availability": "available"
+        },
+        "costSpace": {
+          "value": -241.04,
+          "availability": "available"
+        },
+        "wakeUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "potentialUv": {
+          "value": null,
+          "availability": "missing"
+        },
+        "ratios": {
+          "ctr": {
+            "value": 0.0467,
+            "state": "finite"
+          },
+          "cvr": {
+            "value": 0.0657,
+            "state": "finite"
+          },
+          "realCpa": {
+            "value": 52.5,
+            "state": "finite"
+          },
+          "cashCpa": {
+            "value": 41.01,
+            "state": "finite"
+          },
+          "gap": {
+            "value": 0.15,
+            "state": "finite"
+          },
+          "potentialRate": {
+            "value": null,
+            "state": "undefined"
+          },
+          "biConversionRate": {
+            "value": null,
+            "state": "undefined"
+          }
+        }
+      },
+      "assessment": {
+        "price": {
+          "value": 38.0,
+          "effectiveDate": "2026-09-01"
+        },
+        "onTarget": false,
+        "costStatus": "red",
+        "costStatusReason": "window_over",
+        "budgetUsageRate": {
+          "value": 0.91,
+          "state": "finite"
+        }
+      }
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "account-2：窗口超线 red + 余额 cutoff critical"
+  }
+}
