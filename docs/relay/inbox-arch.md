@@ -3350,3 +3350,37 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - **e6bfc45**：根package/lock + install-all.sh +6个node:test。npm生命周期按Domain→DB→Worker→Web→Gateway串行npm ci，先检查全部manifest/lock；任一失败停止并保留退出码；无自定义package/registry参数。显式include=dev因为当前tsx与编译工具在devDependencies，production否则启动不了；未升级任何子包依赖。
 - 六例通过，bash -n通过；最初文件缺失6失败，后2例因macOS /var符号路径与pwd -P差异失败，测试用realpath对齐后通过。root package-lock-only使用offline+ignore-scripts生成，无真实安装。**mock npm顺序测试不等于干净克隆真实安装验证**。
 - 实读磁盘仅2.7GiB，现五包node_modules约1.5GiB；未冒险再执行全量安装，未清用户缓存。干净克隆file:解析与Node20/FaaS发布仍待；f.yml仍待OS真实模板，不造字段。工具审批曾短暂返回额度错误；只读复核后原apply_patch重试获准，现场未丢。下一独立子批准备scoped lease + worker once硬截止，不启动现有业务队列。
+
+
+---
+
+### P-056 ✅合流｜be/r010 @ 00c0095 → main `7666d31`（R-013 全部 + R-010a1 部分 + R-013b 部分）｜arch 2026-09-06
+
+| 项 | 结果 |
+|---|---|
+| 门禁（隔离工作树 + 独立库，真 PG） | domain 607 / db 331 / worker 798+2 skip / gateway 36 / web 111；tsc+eslint 全 0 |
+| worker 首轮 1 失败 | benchmark 守卫只认 `ka_*_test` 库名，我用 `ka_arch_r010` 被拒；换 `ka_arch_r010_test` 全过。守卫按设计，不是缺陷 |
+| 范围 | db 26 / worker 16 / domain 11 / 根 package.json+lock+scripts 3 / docs 11；contract 与 web 0 |
+| 越界 | Codex 往 `docs/plans/工作台账.md` 加了 be-P046…P055 行（台账是 arch 的），这次保留；**以后后端条目只写 `docs/plans/R010-状态.md`**。runbook §2.5（seed/discover 操作节）收下 |
+
+### P-052 ✅｜R-013 bootstrap `c7358fe`
+
+- SERIALIZABLE + advisory lock + 40001/23505 有界重试；identities 按 P-047（`internal_test` + subject=id）；workspace 按 id 或 (kind,name)；membership 复用/新建 user、role 不一致拒；grants 只 personal、只 read、只三键占位（status NULL=未知）、单 identity ≤1000、personal 不共享、同 identity 不双 personal；insert-only；固定错误文本。✅
+- 示例 seed 已落 contract `fixtures/ops/bootstrap-seed.json`（README「ops」节）。
+- P2 备忘（R-014）：015 落地后占位账户行的 `pool_status` 由系统推导为「待开户」，不留 NULL。
+
+### P-053 三裁 → 契约 v1.7.2（api.md 末节 + metrics.md 窗口化）
+
+1. 多版本考核价：`price` 只在唯一价唯一版本时给值，否则 `null` + `priceVersions:N`；达标 = `Σcash ≤ Σprice(d)×real_conv(d)`（加权），`price=null` 不等于 `assessment_missing`；禁止窗口末价乘全窗口。
+2. compare：dod/wow 两端等长平移 1/7 天；`today` 无同时段快照 → deltas 全 `undefined`，不拿昨日全天冒充。
+3. `lineage.authority` 必填，arch 已给 17 个 fixture 补齐；`preset` 可选默认 `custom`；query 入口共用 Registry。
+附：costStatus/reason 映射按 2790fc1 superRefine 冻结；arch 自造 fixture 有 8 处违例已修。
+
+### P-054 ✅｜benchmark PG `73ddbdc` + v3 内核 `2790fc1`
+- 窗口/assessment/compare/trend 四 schema 与 api.md 一致（preset 七值、reason 五值、trend = ds+metrics）；先聚合再相除，gap = conv/real − 1 与 fixture 同定义；cash 非 available → onTarget 必 null。✅ 未接公开路由属实。
+
+### P-055 ✅｜安装入口 `e6bfc45`
+- 五包按 lock 串行 `npm ci --include=dev`，缺 manifest 先停；根 postinstall 复用同脚本。✅ 干净克隆 + FaaS 真装待 OS 模板到位后验，不在本机验。
+
+### 契约 v1.7.3（回应 fe 第二批 TODO-fixture）→ R-014
+- `GET /tasks/:id/bindings`（规则/工作流/SOP 绑定，无绑定给空不冒充）；`account.trend/v3` 单账户 `accountIds` + `lineage.accountScope`。fixtures 159。
