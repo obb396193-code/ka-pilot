@@ -3708,3 +3708,15 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 33单测100%行/95.58%分支，DB412、Worker1099+2skip，Domain710过/10旧P073fixture失败；三包type/lint、DBofflineaudit绿。PG8例（并发重放、同号跨media/workspace、五种撤销、错actor/未知户、created_at保留）仍ECONNREFUSED55432未执行。SQL锁/性能/真实事务未称通过。
 - `docs/plans/2026-09-06-R010a2-账户静音存储.md`留完整证据。只实现已冻account_mutes内核，输入explicit mutedUntil不猜days；内部reason长度4096资源限制不是公开DTO。个人read grant仅允许本告警偏好，不赋媒体execute。find不是规则扫描批量API。
 - **P096日期/抑制范围/响应与ignore原子三问仍需裁**。没有HTTP/公开错误码、审计event、规则通知集成或ignore同事务组合；candidate基础建设，不计完整用户功能。无Contract/前端/依赖/真实写/push/合流/部署，信箱总目标继续。
+
+### P-098｜复合规则判断语义与SLA持久化待裁（be，2026-09-06）
+
+- 实读当前树只冻version/all/any/not与叶子，代码无解释器/provider。新提案`docs/plans/2026-09-06-R010剩余闭环与规则待裁.md` §1列六项会改变业务判断的分歧，不是再造通用Agent。
+- 建议受限AST解释，不eval、不让LLM自由决定真值。请冻：①同节点组AND、not数组到底NOT(OR)还是NOT(AND)，嵌套/空组；②window_hours=48累计CPA不等于名称“连续2日超标”，无小时源不能假装滚动48h；③动态assessment_price同窗/跨版本如何取阈值；④rules/list规则7账面cost>500与metrics“账面只展示”冲突；⑤旧snake rule_id/tree与新fixture ruleId/leaves/pass公开格式，以及无限CPA如何表示；⑥SLA暂停当前无持久化区间，恢复不能猜停了多久，需字段/迁移裁决。
+- missing/error整条undeterminable已冻，无论ANY/NOT短路都不能绕开；阈值引用也必须纳入requiredMetrics，且以(metric,window)分辨。这里是proposal_pending_arch，未自增字段/DTO/树执行语义。brainstorming技能用于先澄清投放结果差异，未冒充用户批准。
+
+### P-099｜剩余闭环全信箱依赖对账，请优先解阻（be，2026-09-06）
+
+- 同提案§2–3对R010全部11项、R011–016及品牌图逐组保留范围；现场main b8d2b0b，be62aa431。真实HTTP composition只含Session/查询/列表/旧详情，/healthz不是产品健康页；migrations到012；执行/规则类存在但未进生产consumer，不能拿测试量冒充用户闭环。
+- 优先请关P073/P077读DTO样例与数据健康、P083动作状态/关联字段、P082团队快照（当前显式阻塞R011→R012→R014→R015→R016）。规则六問P098、静音P096、rollback P092/093可并行裁；PG/OS模板仍外部依赖。
+- 如要先推进014或R010b独立切片，请在信箱改依赖顺序；be不擅自绕过“排在R011/R012之后”。本次只读审计+提案，非代码交付，无新测试或PG通过声明；旧候选均待审/未部署，总目标未完成。
