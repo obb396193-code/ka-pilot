@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Pool } from "pg";
-import { WorkItemRepository } from "../src/work-item-repository.js";
+import { DeprecatedWorkItemMuteError, WorkItemRepository } from "../src/work-item-repository.js";
 
 const workspaceId = "00000000-0000-4000-8000-000000000081";
 const workItemId = "00000000-0000-4000-8000-000000000082";
@@ -14,7 +14,7 @@ function setup(status = "processing", updateReturnsRow = true) {
     created_at: new Date("2026-09-06T00:00:00Z"), resolved_at: null };
   const query = vi.fn(async (sql: string, params?: unknown[]) => {
     if (sql.includes("FOR UPDATE")) return { rows: [row] };
-    if (sql.includes("UPDATE work_items")) return { rows: updateReturnsRow ? [{ ...row, status: params?.[2], reject_reason: params?.[5] }] : [] };
+    if (sql.includes("UPDATE work_items")) return { rows: updateReturnsRow ? [{ ...row, status: params?.[2], ignore_reason: params?.[3], reject_reason: params?.[4] }] : [] };
     return { rows: [] };
   });
   const release = vi.fn();
@@ -44,8 +44,8 @@ describe("work item rejection transaction boundary", () => {
     const reason = "已核对：不采纳这条建议";
     expect(await repo.transition({ ...base, rejectReason: reason })).toMatchObject({ status: "rejected", rejectReason: reason });
     const update = query.mock.calls.find(([sql]) => sql.includes("UPDATE work_items"))!;
-    expect(update[0]).toContain("workspace_id = $1 AND id = $2 AND status = $8");
-    expect(update[1]).toEqual([workspaceId, workItemId, "rejected", null, null, reason, true, "processing"]);
+    expect(update[0]).toContain("workspace_id = $1 AND id = $2 AND status = $7");
+    expect(update[1]).toEqual([workspaceId, workItemId, "rejected", null, reason, true, "processing"]);
     expect(query).toHaveBeenCalledWith("COMMIT");
     expect(query).not.toHaveBeenCalledWith("ROLLBACK");
     expect(release).toHaveBeenCalledOnce();
@@ -75,6 +75,32 @@ describe("work item rejection transaction boundary", () => {
     query.mockRejectedValueOnce(failure).mockRejectedValueOnce(new Error("rollback unavailable"));
     await expect(repo.transition({ ...base, rejectReason: "证据不足" })).rejects.toBe(failure);
     expect(release).toHaveBeenCalledOnce();
+  });
+});
+
+describe("deprecated work-item-local mute writes", () => {
+  it.each(["2026-09-09", "", 0, false, {}, []])("rejects non-null legacy input %j before connecting", async (mutedUntil) => {
+    const { repo, connect } = setup();
+    await expect(repo.transition({ ...base, action: "ignore", mutedUntil: mutedUntil as string }))
+      .rejects.toBeInstanceOf(DeprecatedWorkItemMuteError);
+    expect(connect).not.toHaveBeenCalled();
+  });
+  it("also rejects legacy input on other actions instead of silently accepting it", async () => {
+    const { repo, connect } = setup("open");
+    await expect(repo.transition({ ...base, action: "start_processing", mutedUntil: "2026-09-09" }))
+      .rejects.toMatchObject({ code: "ACCOUNT_MUTE_REQUIRED" });
+    expect(connect).not.toHaveBeenCalled();
+  });
+  it.each([undefined, null])("allows plain ignore with %s and never overwrites historical mute evidence", async (mutedUntil) => {
+    const { repo, row, query } = setup();
+    Object.assign(row, { muted_until: "2026-08-01" });
+    expect(await repo.transition({ ...base, action: "ignore", ignoreReason: "已人工处理",
+      ...(mutedUntil === undefined ? {} : { mutedUntil }) }))
+      .toMatchObject({ status: "ignored", ignoreReason: "已人工处理", mutedUntil: "2026-08-01" });
+    const update = query.mock.calls.find(([sql]) => sql.includes("UPDATE work_items"))!;
+    expect(update[0].split("RETURNING")[0]).not.toContain("muted_until");
+    expect(update[1]).toEqual([workspaceId, workItemId, "ignored", "已人工处理", null, true, "processing"]);
+    expect(query).toHaveBeenCalledWith("COMMIT");
   });
 });
 

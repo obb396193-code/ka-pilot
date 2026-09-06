@@ -135,20 +135,31 @@ describe("WorkItemRepository", () => {
     });
     expect(processing.status).toBe("processing");
 
-    const mutedUntil = "2026-08-22";
     const ignored = await repository.transition({
       workspaceId: workspaceA,
       workItemId: created.workItem.id,
       action: "ignore",
       ignoreReason: "已人工调整",
-      mutedUntil,
     });
     expect(ignored).toMatchObject({
       status: "ignored",
       ignoreReason: "已人工调整",
-      mutedUntil,
+      mutedUntil: null,
     });
     expect(ignored.resolvedAt).toBeInstanceOf(Date);
+  });
+
+  it("rejects legacy mute without mutation and preserves historical evidence on plain ignore", async () => {
+    const created = await repository.createOrMergeAlert(input());
+    await pool.query("UPDATE work_items SET muted_until = '2026-08-01'::date WHERE workspace_id=$1 AND id=$2",
+      [workspaceA, created.workItem.id]);
+    await expect(repository.transition({ workspaceId: workspaceA, workItemId: created.workItem.id,
+      action: "ignore", mutedUntil: "2026-09-09" })).rejects.toMatchObject({ code: "ACCOUNT_MUTE_REQUIRED" });
+    expect(await repository.find(workspaceA, created.workItem.id)).toMatchObject({ status: "open", mutedUntil: "2026-08-01" });
+    expect(await repository.transition({ workspaceId: workspaceA, workItemId: created.workItem.id,
+      action: "ignore", ignoreReason: "合成历史证据" })).toMatchObject({ status: "ignored", mutedUntil: "2026-08-01" });
+    const mutes = await pool.query("SELECT * FROM account_mutes WHERE workspace_id=$1", [workspaceA]);
+    expect(mutes.rows).toEqual([]);
   });
 
   it("rejects a transition in the wrong workspace and protects terminal states", async () => {
