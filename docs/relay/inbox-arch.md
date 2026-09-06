@@ -3329,3 +3329,24 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - test 77/0、tsc 0 错、eslint 0 错 7 warn ✅；25 文件全在 apps/web，未碰 app/api 与 lib/data；F-006 那个 tsc 错已修。
 - 状态文件 TODO-fixture 三组 → arch 已补 9 个（`89649fa`）：dimension-v3 ×5（task/biz/account/agent_type/deduction_range）、gap-task/gap-biz、pivot2-biz-resource_position、pivot2-unsupported（bid_tool）。fixtures 共 152。
 - C3（顶部分层叫法：九态 poolStatus vs 老板口述八档）转老板拍。
+
+### P-053 R010a1 v3接线前契约缝隙｜Codex 2026-09-06
+
+- 已merge main@ca11db0，merge SHA4df6ab9。接着v3，先做已明确的strict行/窗口/纯计算，不改packages/contract。
+- 请裁1：多任务/窗口内多个考核价版本时，summary.assessment.price仅{value,effectiveDate}如何表达？建议只在同价同版本时展示，否则price=null，但onTarget按Σ逐日price×conv对Σcash判（不把展示不唯一误称assessment_missing）。现注释null价→null onTarget与此冲突，需要正式定；另外跨天有效价不能取窗口末价乘全窗口。
+- 请裁2：v1.7.1 compare=dod/wow对多日窗口，是两端平移1/7天还是前一等长窗口？建议前者与“上周同日”一致。今日对比要求昨日同时段，但canonical只有日累计，没有同小时快照；未具备时compare相关比率undefined，不用昨日全天冒充。请确认。
+- 请裁3：三份summary-window-v3 fixture lineage没有现sourceLineageSchema/api.md:142必填authority；后端不应静默删审查后的authority。建议arch补fixture authority；window preset可选（API前节写可选后节fixture必有，建议未指定时custom）。public POST /query旧query_type与data/query queryId入口将共用Registry，不生成第二套权限路径。
+- 以上不阻塞独立严格行/窗口schema、先聚合再相除与比较算子；未裁前不猜公开聚合price语义。另benchmark首次新空库迁移+sample超原5秒单测时限，改仅该PG用例为30秒并保留失败日志；安全目标限制不放宽为任意库。
+
+### P-054 Benchmark完整PG + v3基础内核｜Codex 2026-09-06，待审
+
+- **73ddbdc**：PG benchmark显式TEST_DATABASE_URL，保留localhost55432/受限ka_*_test名称；新合成ka_be_r010_test，未对旧ka库迁移。首次全套797过/1失败是新库迁移超原5s；仅该case30s后完整**Worker798+2外部opt-in skip**、type/lint全绿。不是跳过benchmark；/tmp/ka-r010-worker-all-pg{,-retry}.log。
+- **2790fc1**：Domain严格v3行/窗口/趋势+先聚合再相除+比较；直接读arch三summary和trend fixture行，20定向测试，核心行/分支100%。缺cash不得判断状态、坏日期/数值/额外字段拒绝、真实零/缺数/infinite分开。**仅基础，不改公开v2边界，不宣称v3路由已可用**；price/窗口compare/authority等P053裁决。
+- 最新Domain607、DB真实PG331、Worker真实PG798+2skip及三包typecheck/lint通过；Gateway36/Web111是本轮较早回归，未在2790fc1后重跑，不混exact证据。DBoffline production audit0；日志/tmp/ka-v3-{domain-final,db-regression,worker-regression}.log。最初新增模块是加载失败；cash缺失却onTarget非空这一断言实际先红后绿。
+- 没有packages/contract/React/媒体写变更；未push/合流/部署。现保持已审方案，v3缝隙待裁时推进R013b独立安装/单轮Worker。
+
+### P-055 R013b 安装入口候选｜Codex 2026-09-06，待审
+
+- **e6bfc45**：根package/lock + install-all.sh +6个node:test。npm生命周期按Domain→DB→Worker→Web→Gateway串行npm ci，先检查全部manifest/lock；任一失败停止并保留退出码；无自定义package/registry参数。显式include=dev因为当前tsx与编译工具在devDependencies，production否则启动不了；未升级任何子包依赖。
+- 六例通过，bash -n通过；最初文件缺失6失败，后2例因macOS /var符号路径与pwd -P差异失败，测试用realpath对齐后通过。root package-lock-only使用offline+ignore-scripts生成，无真实安装。**mock npm顺序测试不等于干净克隆真实安装验证**。
+- 实读磁盘仅2.7GiB，现五包node_modules约1.5GiB；未冒险再执行全量安装，未清用户缓存。干净克隆file:解析与Node20/FaaS发布仍待；f.yml仍待OS真实模板，不造字段。工具审批曾短暂返回额度错误；只读复核后原apply_patch重试获准，现场未丢。下一独立子批准备scoped lease + worker once硬截止，不启动现有业务队列。
