@@ -258,7 +258,7 @@ const AGGREGATE_COLUMNS = `COUNT(observed_account_id) AS row_count,
   COUNT(DISTINCT CASE WHEN observed_account_id IS NOT NULL THEN ds || ':' || media || ':' || account_id END) AS account_day_count,
   COUNT(DISTINCT CASE WHEN observed_account_id IS NOT NULL THEN media || ':' || account_id END) AS account_count,
   ${completeSum("cost_yuan")} AS cost, ${completeSum("show")} AS exposure,
-  ${completeSum("click")} AS click, ${completeSum("conv")} AS conversion,
+  ${completeSum("click")} AS click, ${completeSum("conv")} AS real_conversion,
   ${completeSum("cash_yuan")} AS cash_cost`;
 
 function summarySql(params: NormalizedQueryParams, accounts: SqlAccountScope): string {
@@ -281,7 +281,7 @@ function detailSql(params: NormalizedQueryParams, accounts: SqlAccountScope): st
 }
 
 function reconciliationSql(params: NormalizedQueryParams, accounts: SqlAccountScope): string {
-  return `SELECT ds, media, account_id, ${completeSum("cost_yuan")} AS cost, ${completeSum("conv")} AS conversions, ${completeSum("cash_yuan")} AS cash_cost FROM dwd_account_daily WHERE ${whereClause(params, accounts)} GROUP BY ds, media, account_id ORDER BY ds, media, account_id`;
+  return `SELECT CAST(ds AS TEXT) AS ds, media, account_id, ${completeSum("cost_yuan")} AS cost, ${completeSum("conv")} AS real_conversion, ${completeSum("cash_yuan")} AS cash_cost FROM dwd_account_daily WHERE ${whereClause(params, accounts)} GROUP BY ds, media, account_id ORDER BY ds, media, account_id`;
 }
 
 const DEFINITION_INPUT: QueryDefinition[] = [
