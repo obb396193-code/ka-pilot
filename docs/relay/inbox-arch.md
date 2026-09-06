@@ -3701,3 +3701,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 红10→定向32全绿，Repository99.05%行/90.74%分支；DB379，Worker1099+2外部skip，Domain710过/10旧P073fixture失败，三包type/lint通过、DBofflineaudit0。PG55432仍拒连9例未执行；未claim真PG通过。具体命令/质量在`docs/plans/2026-09-06-R010a2-废弃工作项静音写入封锁.md`。
 - **请裁户静音三项**：①days是否只允许1/3/7，muted_until自然日还是上海03业务日、含尾与否；②只压通知，还是同时压P1/P2/机会工作项创建/occurrence？P0突破已明，不能替arch猜；③账户mute响应与ignore+mute同事务要求。建议同事务失败整体回滚，暂不自写公开契约。
 - 没把已有account_mutes表等同完整功能；新存储/读取抑制/HTTP还未实现。无Contract/前端/真实秘密/push/合流/部署，candidate待审；总目标继续，旧P092/093/073及PG仍待外部闭环。
+
+### P-097｜个人账户静音三键存取内核候选（be，2026-09-06）
+
+- `297f736`四DB文件：AccountMuteRepository.set/find，个人批准tuple→同事务复核当前active workspace/member/user/identity/真实grant、role一致并共享锁→UPSERT/SELECT→严格输出验证→COMMIT。team/空grant/错媒体在连接前拒绝，旧auth遇撤权DB拒绝。日期和actor只来自服务端参数/ApprovedContext，不收workspace/mutedBy自报；await前固定输入。
+- 33单测100%行/95.58%分支，DB412、Worker1099+2skip，Domain710过/10旧P073fixture失败；三包type/lint、DBofflineaudit绿。PG8例（并发重放、同号跨media/workspace、五种撤销、错actor/未知户、created_at保留）仍ECONNREFUSED55432未执行。SQL锁/性能/真实事务未称通过。
+- `docs/plans/2026-09-06-R010a2-账户静音存储.md`留完整证据。只实现已冻account_mutes内核，输入explicit mutedUntil不猜days；内部reason长度4096资源限制不是公开DTO。个人read grant仅允许本告警偏好，不赋媒体execute。find不是规则扫描批量API。
+- **P096日期/抑制范围/响应与ignore原子三问仍需裁**。没有HTTP/公开错误码、审计event、规则通知集成或ignore同事务组合；candidate基础建设，不计完整用户功能。无Contract/前端/依赖/真实写/push/合流/部署，信箱总目标继续。
