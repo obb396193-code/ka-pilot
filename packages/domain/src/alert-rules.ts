@@ -1,4 +1,5 @@
-import type { NumericInput, RatioValue } from "./types.js";
+import type { NumericInput } from "./types.js";
+import { safeDivide } from "./metrics.js";
 
 export type RuleOutcome = "matched" | "not_matched" | "insufficient_data";
 export type AlertRuleCode = "over_cost_ramp" | "zero_delivery" | "spend_cliff";
@@ -20,9 +21,8 @@ export interface RuleEvaluation {
 }
 
 export interface OverCostRampInput {
-  realCpa?: NumericInput | RatioValue;
   assessmentPrice?: NumericInput;
-  cost?: NumericInput;
+  cashCost?: NumericInput;
   lifecycleStage?: string | null;
   realConversion?: NumericInput;
 }
@@ -112,7 +112,7 @@ function overCostSpendTrace(cost: NumericInput): ConditionTrace {
     return {
       condition: "minimum_spend",
       outcome: "insufficient_data",
-      reason: "缺少当日消耗，不能判断起量门槛",
+      reason: "缺少当日现金消耗，不能判断起量门槛",
     };
   }
   const matched = cost > 3000;
@@ -121,18 +121,8 @@ function overCostSpendTrace(cost: NumericInput): ConditionTrace {
     outcome: matched ? "matched" : "not_matched",
     actual: cost,
     expected: 3000,
-    reason: matched ? "当日消耗超过 3000" : "当日消耗未超过 3000",
+    reason: matched ? "当日现金消耗超过 3000" : "当日现金消耗未超过 3000",
   };
-}
-
-function normalizeRatio(value: OverCostRampInput["realCpa"]): RatioValue {
-  if (isFiniteNumber(value)) {
-    return { value, state: "finite" };
-  }
-  if (typeof value === "object" && value !== null && "state" in value) {
-    return value;
-  }
-  return { value: null, state: "undefined" };
 }
 
 type CpaThreshold = { threshold: number; multiplier: number };
@@ -153,7 +143,9 @@ function resolveCpaThreshold(input: OverCostRampInput): CpaThreshold | Condition
     };
   }
   const multiplier = input.lifecycleStage === "cold_start" ? 1.5 : 1.2;
-  return { threshold: input.assessmentPrice * multiplier, multiplier };
+  const threshold = input.assessmentPrice * multiplier;
+  if (!Number.isFinite(threshold)) return { condition: "cpa_threshold", outcome: "insufficient_data", reason: "现金考核阈值超出可计算范围" };
+  return { threshold, multiplier };
 }
 
 function overCostCpaTrace(input: OverCostRampInput): ConditionTrace {
@@ -162,14 +154,15 @@ function overCostCpaTrace(input: OverCostRampInput): ConditionTrace {
     return thresholdResult;
   }
   const { threshold, multiplier } = thresholdResult;
-  const ratio = normalizeRatio(input.realCpa);
+  const ratio = safeDivide(input.cashCost, isFiniteNumber(input.realConversion) && input.realConversion >= 0 ? input.realConversion : null,
+    { infiniteWhenPositiveNumerator: true });
   if (ratio.state === "infinite") {
     return {
       condition: "cpa_threshold",
       outcome: "matched",
       actual: "infinite",
       expected: threshold,
-      reason: "真实 CPA 为无穷，已超过有限考核阈值",
+      reason: "现金 CPA 为无穷，已超过有限现金考核阈值",
     };
   }
   if (ratio.state !== "finite" || !isFiniteNumber(ratio.value)) {
@@ -178,7 +171,7 @@ function overCostCpaTrace(input: OverCostRampInput): ConditionTrace {
       outcome: "insufficient_data",
       actual: ratio.state,
       expected: threshold,
-      reason: "真实 CPA 无有效数值",
+      reason: "现金 CPA 无有效数值",
     };
   }
   const matched = ratio.value > threshold;
@@ -188,15 +181,15 @@ function overCostCpaTrace(input: OverCostRampInput): ConditionTrace {
     actual: ratio.value,
     expected: threshold,
     reason: matched
-      ? `真实 CPA 超过考核价的 ${multiplier} 倍`
-      : `真实 CPA 未超过考核价的 ${multiplier} 倍`,
+      ? `现金 CPA 超过现金考核价的 ${multiplier} 倍`
+      : `现金 CPA 未超过现金考核价的 ${multiplier} 倍`,
   };
 }
 
 export function evaluateOverCostRamp(input: OverCostRampInput): RuleEvaluation {
   return result("over_cost_ramp", "P0", [
     overCostSampleTrace(input),
-    overCostSpendTrace(input.cost),
+    overCostSpendTrace(input.cashCost),
     overCostCpaTrace(input),
   ]);
 }

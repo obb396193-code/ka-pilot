@@ -79,10 +79,10 @@ function overCostCandidate(overrides: Partial<RuleCandidate> = {}): RuleCandidat
     ruleId: 1,
     title: "超成本起量",
     ruleCode: "over_cost_ramp",
+    readiness: { ...base.readiness, requiredMetrics: { cashCost: "available", realConversion: "available", assessmentPrice: "available" } },
     facts: {
-      realCpa: 42,
       assessmentPrice: 30,
-      cost: 5000,
+      cashCost: 5000,
       lifecycleStage: "scaling",
       realConversion: 100,
     },

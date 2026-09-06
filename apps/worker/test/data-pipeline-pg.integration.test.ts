@@ -444,7 +444,7 @@ describe("real PostgreSQL data pipeline", () => {
           workspaceId: input.workspaceId,
           dateFrom: "2026-08-18",
           dateTo: "2026-08-18",
-          filters: { accountId },
+          filters: { accountScopes: [{ media: "KUAISHOU", accountId }] },
         });
         return table.rows.map((row) => ({
           candidateId: `${row.accountId}:${row.ds}`,
@@ -454,18 +454,17 @@ describe("real PostgreSQL data pipeline", () => {
           taskId,
           ruleId: rule.rows[0]!.id,
           title: "合成账户超成本",
-          evidenceSnapshot: { ds: row.ds, cost: row.cost, realCpa: row.realCpa },
+          evidenceSnapshot: { ds: row.ds, cost: row.cost, cashCost: row.cashCost, realCpa: row.realCpa },
           // Synthetic readiness port for this PG pipeline fixture; not the production health provider.
           readiness: { initialFullDone: true, source: { kind: "offline" as const, dataAsOf: new Date("2026-08-19T08:00Z") },
-            requiredMetrics: { cost: row.cost === null ? "missing" as const : "available" as const,
-              realCpa: row.realCpa === null ? "missing" as const : "available" as const,
+            requiredMetrics: { cashCost: row.cashCost === null ? "missing" as const : "available" as const,
+              realConversion: row.realConversion === null ? "missing" as const : "available" as const,
               assessmentPrice: row.assessmentPriceSnapshot === null ? "missing" as const : "available" as const } },
           isQuietHours: false,
           ruleCode: "over_cost_ramp" as const,
           facts: {
-            realCpa: row.realCpa,
             assessmentPrice: row.assessmentPriceSnapshot,
-            cost: row.cost,
+            cashCost: row.cashCost,
             lifecycleStage: "scaling",
             realConversion: row.realConversion,
           },
@@ -487,9 +486,13 @@ describe("real PostgreSQL data pipeline", () => {
       workspaceId,
       now: new Date("2026-08-19T09:05:00Z"),
     });
-    expect(firstScan).toMatchObject({ matched: 1, created: 1 });
-    expect(retryScan).toMatchObject({ matched: 1, merged: 1 });
-    expect(alerts.deliveries).toHaveLength(1);
+    // Same original synthetic facts: book cost=5000, coefficient /2 => cash=2500.
+    // High book CPA must not bypass the cash-spend floor or create occurrences.
+    const cashRow = await semantic.queryTable({ workspaceId, dateFrom: "2026-08-18", dateTo: "2026-08-18", filters: { accountScopes: [{ media: "KUAISHOU", accountId }] } });
+    expect(cashRow.rows[0]?.cashCost).toBe(2500);
+    expect(firstScan).toMatchObject({ matched: 0, created: 0, notMatched: 1 });
+    expect(retryScan).toMatchObject({ matched: 0, merged: 0, notMatched: 1 });
+    expect(alerts.deliveries).toHaveLength(0);
 
     const plan = parseReportExecutionPlan({
       version: "b6-internal-v1",
