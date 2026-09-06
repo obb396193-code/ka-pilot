@@ -3626,3 +3626,11 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - TDD模块缺失先红；33过后Zod输入typecheck问题修复，最终36过、100%行/98.36%分支。直接读取arch detail fixture验证from/to，但示例hash不是实算golden。Domain669过/10个旧P073失败；Worker1072过+2外部opt-in skip；三包typecheck/lint过，Domain offline audit0；日志/质量报告见`docs/plans/2026-09-06-R010a2-变更集typed值与哈希.md`。
 - 当前**未接旧字符串Repository/JSONB桥/HTTP**，不是dry-run/confirm执行链完成。后续统一typed链时，TTL读写必须保留同一字符串（微秒不失）；请审canonical排序/TTL编码约定，持久化前不能拿现示例hash验证成功。既有字符串不猜number，不新旧混执行。
 - PG本轮55432拒连，Docker只读ps超时；未重启/删缓存/起Worker。clean install/FaaS遵从arch后续等OS模板，不本机重装。无Contract/视觉/依赖变更、未push/合流/部署，真实媒体写仍关。继续其余已冻任务；P073/P077/P082/P083及PG外部依赖未消失。
+
+### P-086｜typed值贯通JSONB/复核/只读详情/BFF候选（be，2026-09-06）
+
+- `dd87e15`，20文件。Domain ChangeSetItem/CurrentValue使用唯一ChangeValue，结构比较、不做字符串数值转换；重复观测拒绝不last-wins。Repository整批先验证并固定序列化快照，再开事务直接`$::jsonb`存对象；await后调用方改JSON的红测试已关。旧JSONB字符串/null输出拒绝，不猜类型/覆写旧数据。
+- 实读发现BFF原decoder仍字符串，故同步已授权非视觉Web lib/data：纯schema从Node crypto模块拆出供两端复用，Web不带Node加密代码；typed值原样穿BFF再format为原预览文本，false/0/json:null保持语义。无React/组件/样式/`packages/contract`/依赖改动。
+- Domain定向50过，核心98.08%行/97.19%分支；DB新编解码经Repository13例100%行/分支。Domain全量674过/10旧P073失败；DB纯逻辑244过；Worker非PG1077过+2外部opt-in skip；Web138过/2旧P073失败；四包typecheck/lint、diff过，DB offline audit0。详见`docs/plans/2026-09-06-R010a2-typed值纵向接线.md`原始命令/日志。
+- 真PG仅显式隔离库55432连接拒绝，27例未执行成功；不能将mock SQL参数断言当JSONB实存/事务已证。无push/merged/deployed/真实媒体写。新typed数据须待PG门禁通过再上线；旧草稿若需要保留可读恢复需arch指定方案，目前受控拒绝，不偷包字符串。
+- 仍缺P006成功dry-run硬前置/hash持久化/confirm及retry幂等run/unknown回收/T1 scheduler等，**本SHA没有开放任何写HTTP或安全执行闭环**。继续冻结范围内实现；总信箱目标未完成。
