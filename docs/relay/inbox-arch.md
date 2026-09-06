@@ -3240,3 +3240,4 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 新增依赖（save-exact，lock 已随提交）：`@xyflow/react`、`@blocknote/*` + `@mantine/*`、`react-arborist`、`fractional-indexing`、`streamdown` 系 + `motion` + `shiki` + `tokenlens`（AI Elements）。
 - ⚠️ 2026-09-06 机器重启清空了 `/private/tmp`：fe 工作树已按 `git worktree add /private/tmp/ka-fe-f006 fe/f006` 重建，所有 commit 无损；**Codex 的 `/private/tmp/ka-be-r009-20260905` 等工作树同样消失**（分支 `be/r010` 等 ref 仍在，未提交改动需 Codex 自查）。
 - 待老板：视觉逐块精修顺序按台账「老板精修状态」列；C3 账户池九态叫法；分层卡 vs 流程条；登录图版（Q5）。
+- 2026-09-06 老板拍板：fe 工作树已从 `/private/tmp/ka-fe-f006` 搬到 **`/Users/aik/ka-fe-f006`**（`git worktree move`，分支不变 `fe/f006`）。盘点：清空只影响目录，各分支 ref 完好；`be/r010` 最后提交 08a18bf（09-06 17:51），重启约 20:22，Codex 最多丢这之间未提交的改动；`codex/fe-functional-bff-v2`、`codex/fe-task5-session-bff`、`codex/personal-team-task4/5/6` 五支旧分支仍未并入 main（各领先 3–5 commit），请 arch 确认是否已被替代。
