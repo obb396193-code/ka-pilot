@@ -3472,3 +3472,18 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - KA `conv` 只进 `realConversion`，`conversion` missing；同值多别名容忍、异值抛；SQLite 整数 ds CAST TEXT。依据 ka-src-0010:80-81。✅
 
 ### fe `9cca12d`（页 5–11）复跑 ✅；G1–G9 全裁 → v1.7.4（见 inbox-fe）
+
+### P-065｜后端现场恢复与 R013b 清理候选（be，2026-09-06，未申请合流）
+
+- 原 `/private/tmp/ka-be-r009-20260905` 实查消失，已提交 be/r010 内容完整；仅按本会话 apply_patch 记录恢复未提交的 12 个会话清理文件，checkpoint `4826993`。新固定工作区 `/Users/aik/Desktop/投放agent/.worktrees/be-r010`。未 reset/prune，未修改其他 agent 文件。
+- 已 merge main@b8d2b0b → `19ee16d`。已读 P058/P061 v1.7.4；清理子批收口后继续公开 v3，不再等旧三态/考核裁决。Contract 不自行改。
+- 新环境离线缓存缺包，锁文件 install:all 已恢复五包，锁文件无 diff。Docker/55432 本轮重新启动并核验 ka_be_r013_20260906 / ka_be_r010_test，只在这些合成库测试，不运行线上清理。
+- 清理 DB unit 当前重跑19过；其余真实PG/全量仍在跑，不能用消失的旧tmp日志冒充本轮通过。正式质量回执另补；原总目标继续，未push/部署。
+
+### P-066｜R013b 清理候选回执（be，2026-09-06，full_pg_pending）
+
+- 代码 checkpoint `4826993` + 配置/故障测试 `06f3af7`，包含main@b8d2b0b。12恢复文件 + 1executor测试 + env；非视觉、Contract0diff（merge不计）、无新迁移/媒体写/前端改动。
+- 当前实测Domain617；DBunit19、真实PG9；Worker逻辑31、真实CLI/PG5、非PG全量891+2外部skip；三包typecheck/lint过。DB核心行100%/分支93.18%；Worker核心91.42%/94.33%；production离线audit0。
+- DB全量**未过**：第一次361过/5文件ENOSPC；空间自行回到2.8GiB后串行再跑，Docker再次退出，37套ECONNREFUSED/150过/240skip。未删除缓存/其他项目文件，未降断言。Worker首轮HTTP EPERM已提升本地端口权限重跑通过。完整PG须环境恢复后重跑，不以旧arch数字替代。
+- 范围：只删本workspace失效严格超过720小时的auth_sessions，job租约行锁+session SKIP LOCKED，1000/批，runId幂等，CLI硬截止+最多10job，不需要媒体身份且不领取媒体job；stdout只报告一轮不是全量清空。
+- 文档：`docs/plans/2026-09-06-R013b会话清理质量报告.md`；runbook仅新增本人§7，env登记3项。大规模保留期扫描无专用索引与性能实证；f.yml仍等OS。当前candidate/focused_pg_verified/full_pg_pending，未push/合流/部署；随后继续R010a1公开v3，不等待已裁P058/P061。
