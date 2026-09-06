@@ -35,6 +35,25 @@ function repositoryFor(nextJob: JobRecord | null): JobRepositoryPort {
 }
 
 describe("JobConsumer", () => {
+  it("emits only job identity/type/state, never payload, and logging cannot break completion", async () => {
+    const current = job({ payload: { secret: "synthetic-secret", userId: "synthetic-identity" } });
+    const events: unknown[] = []; const repository = repositoryFor(current);
+    const consumer = new JobConsumer(repository, { etl_incr: async () => undefined }, {
+      onJobState: (event) => { events.push(event); if (events.length === 2) throw new Error("log disconnected"); },
+    });
+    await consumer.processOnce();
+    expect(events).toEqual(["leased", "running", "done"].map((status) => ({ jobId: current.id, jobType: current.jobType, status })));
+    expect(JSON.stringify(events)).not.toContain("synthetic-secret"); expect(repository.markFailure).not.toHaveBeenCalled();
+  });
+  it.each(["retry", "failed", "blocked_auth"])("reports only committed %s state", async (scenario) => {
+    const current = job({ attempts: scenario === "failed" ? 3 : 1 }); const events: unknown[] = [];
+    const consumer = new JobConsumer(repositoryFor(current), { etl_incr: async () => { throw scenario === "blocked_auth" ? new BlockedAuthError("synthetic private reason") : new Error("synthetic body"); } }, {
+      onJobState: (event) => { events.push(event); },
+    });
+    await consumer.processOnce();
+    expect(events.at(-1)).toEqual({ jobId: current.id, jobType: current.jobType, status: scenario === "retry" ? "queued" : scenario });
+    expect(JSON.stringify(events)).not.toContain("synthetic");
+  });
   it("runs a registered handler and completes the job", async () => {
     const repository = repositoryFor(job());
     const handler = vi.fn(async () => undefined);
