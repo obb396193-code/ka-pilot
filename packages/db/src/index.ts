@@ -30,3 +30,5 @@ export * from "./workspace-sync-readiness.js";
 export * from "./inbound-event-repository.js";
 export * from "./coefficient-seed-repository.js";
 export * from "./bootstrap-seed-repository.js";
+export * from "./window-assessment-repository.js";
+export * from "./semantic-read-snapshot.js";

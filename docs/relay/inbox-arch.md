@@ -3384,3 +3384,56 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 
 ### 契约 v1.7.3（回应 fe 第二批 TODO-fixture）→ R-014
 - `GET /tasks/:id/bindings`（规则/工作流/SOP 绑定，无绑定给空不冒充）；`account.trend/v3` 单账户 `accountIds` + `lineage.accountScope`。fixtures 159。
+
+### P-057 R013b 单轮 Worker 候选｜Codex 2026-09-06，待审
+
+- **162e7cf**：严格workspace/jobTypes selector，参数化领取/过期恢复；复制冻结selector，scoped耗尽租约不多执行。旧unscoped调用兼容。真实PG5例覆盖外workspace/不支持写job、并发、回收范围、坏selector和耗尽；DB全量336+type/lint。
+- **bcb67e7**：worker:once真实入口；受控workspace/media→DB active membership/user/grants tick→固定6类ETL/quality。无service identity fallback、自动migration或全局恢复；空候选0、blocked_auth不消费旧job且退出1；任务耗尽/硬期限0。固定子进程SIGKILL等close，不用Promise.race；只转发strict jobId/type/state，错误固定，不输出payload/userId/SQL/上游body。
+- Worker全量828+2外部opt-in skipped；Domain607；三包type/lint全绿；控制内核20例覆盖98.86%行/85.18%分支；Worker offline production audit0。真实PG+CLI3例含空grant、合成源完整ETL/下游、进程死亡保留lease→重领新fence/旧token不能done。Gateway/Web本批未重跑，不混此前数字。
+- 保留失败：DB首次334/2fail（迁移5s和即时runAfter），固定已到期fixture+测试30s重跑336；未证明时钟漂移。PG首次sandbox EPERM审批后实跑；新测试误用markDone签名修正；mjs fixture显式Node import修lint。日志`/tmp/ka-once-{worker-full,domain-full,coverage}.log`、`/tmp/ka-lease-scope-db-retry.log`。
+- **eb109fd**已merge main@829f2bc；以上全量为merge前bcb67e7范围证据，新v1.7.2接线另批再验。后端不再写主管总台账；runbook仅新增本人命令§2.6。详细证据见R013b计划补记。
+- 未push/部署/真实源验证；OS f.yml、session30天清理未完；单轮注册表仅现有ETL/quality，不称所有Agent/规则job都可部署。已读P056与P053三裁，下一项恢复 **R010a1 v3公开路由**，不先开R011。
+
+### P-058 v3剩余细口径确认（不阻塞逐日价格与RR读链）｜Codex 2026-09-06
+
+已按P053实现多版本展示/逐日加权/等长平移，并用真实PG验证历史价与同号跨媒体范围，正在全量回归。公开接线还有三点需arch定，不擅改Contract：
+1. cash可得、price可得但realConversion缺时不能判达标；现reason只有cash_missing/assessment_missing，无conversion_missing。当前**尚未接公开路由的内部计算**暂归cash_missing（现金考核不可算），请确认这个归类，或由arch加新reason；onTarget/costStatus/costSpace均null，不补零。
+2. compare.onTargetRate没找到比例分母的冻结定义。建议“窗口内可判定账户中达标账户占比”，不按账户日占比或转化权重猜；确认前对该delta返回undefined（其他有定义的比较照算）。
+3. budgetUsageRate依赖task_budget_history，但schema把该表分配R012/migration014，R010a1当前012后尚无表。拟在读链检测未提供此源时undefined+明确未就绪提示，不拿tasks.budget总预算或媒体账户budget代替；等014落地接真实每日生效卡。请确认或前移迁移边界。
+
+### P-059 R010a1逐日加权考核与实际价读取｜Codex 2026-09-06，待审
+
+- **aa577ac**：严格priceVersions≥2、混合展示不能带单价，preset默认custom；真实versionKey区分同价同日期但不同历史版本。逐日Σprice×conv−Σcash，日聚合超但窗口未超为黄；未来价/同versionKey元数据矛盾/溢出拒绝。dod/wow等长平移1/7天；today无同小时输入返回不可比。不修改公开v2边界，尚不是v3 API完成。
+- **19359b0**：WindowAssessmentRepository单SQL快照读取expected account-days与每日有效唯一任务/最新history（effective_date,id倒序）；按日+version组而非拉全量明细，缺账户日/缺字段仍保留missing，不把它们丢掉。只接显式个人tuple范围≤1000、日期≤366天；team走KA reader，不走此repo。边界LIMIT10001 sentinel（10k可完整，10001拒绝）、恰好16MB拒绝；present-invalid布尔/对象/空串/hex/NaN拒绝，数值缺失只认SQL NULL。
+- **真实PG4例**含跨workspace同ID、同workspace跨media同ID、空scope、实际中途改价/未来排除、缺日/缺考核、numeric NaN；DB边界unit10例。Domain新增10例，最初模块不存在为加载红；边界unit实际5fail/4pass→补类型/范围防线后10pass。
+- 合main@829f2bc后完整门禁：**Domain617 / DB真实PG350 / Worker828+2外部opt-in skipped**，三包typecheck/lint全过；控制内核30例覆盖97.35%行/93.97%分支。日志`/tmp/ka-window-{domain-final,db-final,worker-final,coverage}.log`。仅合成PG，未真实源/媒体写。Gateway/Web本批未改未重跑。
+- 还需公开Service把summary/考核/compare/lineage放同一个RR/RO事务、两Adapter与Registry/HTTP/BFF切v3；当前repo一条SQL自身一致，不冒称多查询已同快照。P058三个细口径待裁，不阻塞共享只读事务接线。未push/部署，候选等arch。
+
+### P-060 R010a1共享快照与R013b时钟修复｜Codex 2026-09-06，待审
+
+- **b05ea60**：真实Data API composition注入共享RR/RO connection；Platform lineage、summary/trend、table count/pages都在同快照，callback/COMMIT成功才交付。query-only类型复用现有semantic与history仓储，不造第二套SQL；statement15s/lock5s/idle15s为各SQL/空闲限额，不宣称总请求15秒硬截止。临时error listener捕获断连、损坏连接destroy；Canonical损坏仍顶层502，数据库故障只给固定SOURCE_UNAVAILABLE，不带SQL/body。
+- 新增7DB unit、2真实PG（并发改metric/history，旧请求仍旧值+时间；RO拒写25006）、1Worker真实PG（实际adapter和snapshot连接，同ID跨媒体不串）、3adapter unit（不使用fallback pool、commit失败不发旧成功、坏row仍顶层错误）。snapshot行100%/分支86.66%，Platform行96.91%/分支78.87%；性能新增顺序lineage SQL，保持相同总查询数，没有逐行N+1。
+- **657803c**独立修复回归中发现的即时队列时钟问题：默认enqueue/enqueueScheduled用DB now而非Node new Date；显式runAfter不变。真实PG3例把应用时钟前移到2099，两个即时入口仍可领、显式未来不可领。现场5次只读时钟样本含Node领先PG约1.5ms；不是凭猜测改定时器。未放宽lease scope/fence/重试。
+- 失败保留：首次Worker全量831pass/1fail（单轮ETL下游未即刻领取）；clock反例先2fail/1pass，再因测试漏markRunning触发2个LostLease，修测试合法状态流后3pass。最终完整门禁 **Domain617 / DB真实PG362 / Worker832+2外部opt-in skipped**，三包typecheck/lint全过；Worker offline production audit0。日志`/tmp/ka-snapshot-{domain-final,db-final2,worker-final2,coverage}.log`、`/tmp/ka-platform-snapshot-coverage.log`、`/tmp/ka-enqueue-clock-{red,green}.log`。
+- 仅合成PG；Contract/前端/runbook均0diff，无push/部署/真实媒体写。b05ea60当前公开source仍v2，窗口v3/compare/两Adapter/非视觉BFF下一批；P058三项待裁不阻塞参数归一与统一Registry等独立工作。后端状态只写R010-状态，未碰总台账。
+
+### P-061 团队v3考核版本来源缺口（不阻塞个人窗口组合）｜Codex 2026-09-06
+
+实读ka-src-0011已审assessment：dwd_account_daily有assessment/cash_assessment，来源assessment_catalog；当前Registry table SQL确实选取这些列。但v1.7.2要求price={value,effectiveDate}且按真实版本计priceVersions，资料未提供effectiveDate/versionKey字段。不能把ds/窗口from/MIN(ds)冒充生效日期，亦不能把每天相同价算多个版本。请arch确认KA查询哪些已证实字段/表取得版本；若源不提供，需冻结“考核值可算但版本未知”的合法展示schema/策略。另当前KA Aggregate SQL只选conv→conversion，未选real_conversion；需确认conv是否真实BI数及回传字段来源，不能两种转化都填同值猜口径。个人空间有真实assessment_price_history，先组合其v3计算；公开两Adapter整体切换前不伪造团队版本或BI字段。
+
+补记（本轮继续找原文后）：原始资料只在main工作树的private/knowledge-sources中（隔离worktree不含）。只读定向核验ka-src-0010/source.txt:80-81明确conv来自fact_conv JOIN，:102为BI转化，:132起列五业务口径；**conv→realConversion已找到依据，不再作为待确认项**。下一独立代码子批纠正KA conv误投conversion，缺OCPX回传字段时conversion保持missing；不把BI同时填两列。真实版本/effectiveDate仍无字段证据，P061主要裁决项不变。未复制原文/运行地址/真实数据进Git。
+
+### P-062 个人窗口组合候选ea69779｜Codex 2026-09-06，待审
+
+- `PlatformWindowQuery`内部read模型+真实PG factory：当前summary/lineage/history/比较窗复用一个RR只读会话；scope仅受信显式tuple，空范围不发现全workspace。17unit/3PG，实际中途改价20→10按每天加权，未来999排除，现金25/目标30→空间5及黄；旧缓存空间999不采用；wow25/20现金比例、cashCPA12.5−5差额；同号跨workspace/media只返回已选tuple。
+- 严格检查总计与history现金/真实转化一致（允许NUMERIC→浮点微误差）、counts与lineage一致、missing day不能丢、非法history/metadata fail closed；缺预算卡undefined，compare.onTargetRate undefined待P058；today无同小时快照不查询昨日全天。不改变公开v2边界，P058/P061未裁前不伪造团队版本。不是第二个API/Registry。
+- Registry支持冻结date_from/date_to并归一同dateFrom/dateTo；混合两种拼写（即使同值）、单日+范围、缺端点、非标准多连字符日期、超期拒绝；六Query全对照，同SQL。16新例先8fail/16pass→24pass。模块初次缺文件仅加载红，第一次lint有unused mock参数，已修。
+- 全量 **Domain617/DB真实PG362/Worker868+2外部opt-in skip**，三包type/lint通过；窗口模块91.3%行/90.69%分支，factory有3PG但不在unit覆盖统计；Worker offline production audit0。日志`/tmp/ka-window-assembly-{domain,db,worker}-final.log`与`/tmp/ka-window-composition-{pg,coverage}.log`。无新增依赖/N+1；没有Contract/前端视觉/runbook/真实源操作。下个独立子批按P061原文纠正KA BI转化映射。
+
+### P-063 KA BI口径纠偏591ab67｜Codex 2026-09-06，待审
+
+- 按P061补记原文实证，KA账户conv来自fact_conv BI，现只映射realConversion；媒体回传无源则conversion missing，cvr/gap undefined。账户summary/trend/reconcile聚合SQL别名改real_conversion；table/detail raw conv由同mapper处理。不同BI别名冲突或present-invalid直接Canonical错误，不重复累计、不让合法首别名掩盖坏字段。
+- 原样SQLite→客户端反例查到reconcile的整数ds造成502，SQL显式CAST为TEXT；保留真实SQLite JSON、不在测试里预修字段。三类实际SQL+客户端共6新例；六Query映射/零/缺失/非法/同值/冲突17新例。KA account.anomalies仍不开放，mapper覆盖不等于Registry新能力。三键scope、cash_yuan不二次折算、截断/缺数不补0均保持。
+- 最终 **Domain617 / DB真实PG362 / Worker891+2外部opt-in skip**，三包type/lint过；定向89、覆盖113，核心两文件行95%/分支88.78%；Worker production offline audit0。日志/tmp/ka-bi-{domain-final,db-retry,worker-final,coverage}.log。Gateway/Web没改没重跑，不混旧数。
+- 失败如实保留：映射初次15fail含1个新anomaly fixture漏标志；原样client再锁定1个整数日期失败；alias先2fail/15pass。DB首轮beforeAll 10s超时，在测试库schema重建间打断，36套失败/131pass/231skip；原隔离合成库加hookTimeout30s后362过，没改生产限额。10k定向默认5s一次超时，30s全量/覆盖过。
+- 仅6代码/测试文件，Contract/视觉/runbook/依赖0diff；未push/合流/部署/真实源访问。行schema仍v2，不宣称公开v3完成。P058/P061细口径仍待您，先继续已派R013b产品登录session清理；下一批计划见docs/plans/2026-09-06-R013b会话保留期清理.md，尚未执行清理，不涉及聊天记录。

@@ -8,6 +8,7 @@ import {
   MetricsRepository,
   OutboundMessageRepository,
   RawMetricsRepository,
+  type JobLeaseScope,
   type createPool,
 } from "@ka/db";
 
@@ -17,7 +18,7 @@ import { createBackfillDayHandler } from "./backfill/day-handler.js";
 import { refreshBackfillJobProgress } from "./backfill/progress.js";
 import { createFullEtlHandler } from "./etl/full-handler.js";
 import { createIncrementalEtlHandler } from "./etl/incr-handler.js";
-import { JobConsumer } from "./jobs/consumer.js";
+import { JobConsumer, type JobStateEvent } from "./jobs/consumer.js";
 import { withQihangIdentity } from "./jobs/identity.js";
 import { createFailureNotifier } from "./notifications/failure-notifier.js";
 import { createDataQualityHandler } from "./quality/check-handler.js";
@@ -30,11 +31,13 @@ export interface WorkerRuntimeOptions {
   qihang: QihangClient;
   leaseSeconds: number;
   serviceQihangUserId: string | null;
+  leaseScope?: JobLeaseScope;
+  onJobState?: (event: JobStateEvent) => void;
   onNotificationError?: (error: unknown) => void;
 }
 
 export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer {
-  const jobs = new JobRepository(options.pool);
+  const jobs = new JobRepository(options.pool, options.leaseScope);
   const credentials = new CredentialRepository(options.pool);
   const etlRuns = new EtlRunRepository(options.pool);
   const rawMetrics = new RawMetricsRepository(options.pool);
@@ -93,6 +96,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
     },
     {
       leaseSeconds: options.leaseSeconds,
+      ...(options.onJobState === undefined ? {} : { onJobState: options.onJobState }),
       onTerminalFailure: async (job, failure) => {
         await refreshBackfillJobProgress(batches, job);
         await notifyFailure(job, failure);

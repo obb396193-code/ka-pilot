@@ -59,7 +59,7 @@ function assertSupportedDimension(value: string): asserts value is SupportedDime
   }
 }
 
-async function assertNoTaskOverlap(pool: Pool, input: SemanticDimensionQuery): Promise<void> {
+async function assertNoTaskOverlap(pool: Pick<Pool, "query">, input: SemanticDimensionQuery): Promise<void> {
   const filter = buildMetricFilter(input, { includeTaskFilter: false });
   const result = await pool.query<OverlapDatabaseRow>(
     `SELECT metric.account_id, to_char(metric.ds, 'YYYY-MM-DD') AS ds,
@@ -89,7 +89,7 @@ async function assertNoTaskOverlap(pool: Pool, input: SemanticDimensionQuery): P
 }
 
 export async function queryMetricDimension(
-  pool: Pool,
+  pool: Pick<Pool, "query">,
   input: SemanticDimensionQuery,
 ): Promise<SemanticDimensionRow[]> {
   validateScope(input);

@@ -5,6 +5,7 @@ import { retryDelayMs } from "./retry.js";
 import type { JobHandlers } from "./types.js";
 
 export interface JobConsumerOptions {
+  onJobState?: (event: JobStateEvent) => void;
   leaseSeconds?: number;
   retryBaseMs?: number;
   now?: () => Date;
@@ -12,6 +13,12 @@ export interface JobConsumerOptions {
   onNotificationError?: (error: unknown) => void;
   heartbeatIntervalMs?: number;
   onCompleted?: (job: JobRecord) => Promise<void>;
+}
+
+export interface JobStateEvent {
+  jobId: string;
+  jobType: string;
+  status: "leased" | "running" | "done" | "queued" | "failed" | "blocked_auth";
 }
 
 export interface TerminalFailure {
@@ -31,6 +38,7 @@ export class JobConsumer {
   private readonly onNotificationError: JobConsumerOptions["onNotificationError"];
   private readonly heartbeatIntervalMs: number;
   private readonly onCompleted: JobConsumerOptions["onCompleted"];
+  private readonly onJobState: JobConsumerOptions["onJobState"];
 
   constructor(
     private readonly repository: JobRepositoryPort,
@@ -45,6 +53,7 @@ export class JobConsumer {
     this.heartbeatIntervalMs =
       options.heartbeatIntervalMs ?? Math.max(1_000, Math.floor((this.leaseSeconds * 1_000) / 2));
     this.onCompleted = options.onCompleted;
+    this.onJobState = options.onJobState;
   }
 
   async processOnce(): Promise<boolean> {
@@ -52,15 +61,18 @@ export class JobConsumer {
     if (!job) {
       return false;
     }
+    this.reportState(job, "leased");
 
     try {
       await this.repository.markRunning(job);
+      this.reportState(job, "running");
       const handler = this.handlers[job.jobType];
       if (!handler) {
         throw new Error(`No handler registered for job type ${job.jobType}`);
       }
       await this.runWithHeartbeat(job, handler);
       await this.repository.markDone(job);
+      this.reportState(job, "done");
       await this.afterCompleted(job);
     } catch (error) {
       await this.handleProcessingError(job, error);
@@ -80,6 +92,7 @@ export class JobConsumer {
     );
     try {
       await this.repository.markFailure(job, message, retryAt);
+      this.reportState(job, job.attempts >= job.maxAttempts ? "failed" : "queued");
     } catch (markError) {
       if (markError instanceof LostJobLeaseError) return;
       throw markError;
@@ -92,6 +105,7 @@ export class JobConsumer {
   private async markBlockedAuth(job: JobRecord, message: string): Promise<void> {
     try {
       await this.repository.markBlockedAuth(job, message);
+      this.reportState(job, "blocked_auth");
     } catch (markError) {
       if (markError instanceof LostJobLeaseError) return;
       throw markError;
@@ -108,6 +122,11 @@ export class JobConsumer {
     } catch (error) {
       this.onNotificationError?.(error);
     }
+  }
+
+  private reportState(job: JobRecord, status: JobStateEvent["status"]): void {
+    try { this.onJobState?.({ jobId: job.id, jobType: job.jobType, status }); }
+    catch { /* Telemetry cannot change the already committed job state. */ }
   }
 
   private async runWithHeartbeat(

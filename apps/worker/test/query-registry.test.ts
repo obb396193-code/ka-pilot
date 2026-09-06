@@ -54,6 +54,35 @@ describe("DataQueryRegistry", () => {
     }, "ka_data")).toThrow(/date range/i);
   });
 
+  it.each(["account.summary", "account.trend", "account.table", "account.anomalies", "account.detail", "reconcile.account_daily"])("normalizes frozen date_from/date_to in the existing %s definition", (queryId) => {
+    const extra = queryId === "account.detail" ? { accountId: "synthetic" } : {};
+    const mode = queryId === "reconcile.account_daily" ? "reconcile" : "platform";
+    const snake = registry.resolve(queryId, { date_from: "20260824", date_to: "2026-08-25", ...extra }, mode);
+    const camel = registry.resolve(queryId, { dateFrom: "2026-08-24", dateTo: "2026-08-25", ...extra }, mode);
+    expect(snake.params).toEqual(camel.params);
+    expect(snake.params).not.toHaveProperty("date_from");
+    expect(snake.rowSchemaVersion).toBe(camel.rowSchemaVersion);
+  });
+
+  it.each([
+    { date: "2026-08-24", date_from: "2026-08-24", date_to: "2026-08-24" },
+    { dateFrom: "2026-08-24", dateTo: "2026-08-25", date_from: "2026-08-24", date_to: "2026-08-25" },
+    { date_from: "2026-08-24", dateTo: "2026-08-25" },
+    { date_from: "2026-08-24" }, { date_to: "2026-08-24" },
+    { date_from: "2026-08-25", date_to: "2026-08-24" },
+    { date_from: "2026-01-01", date_to: "2026-12-31" },
+    { date: "2026--08-24" }, { date: "2026-8-24" },
+  ])("rejects ambiguous, malformed or unbounded date inputs", (params) => {
+    expect(() => registry.resolve("account.summary", params, "platform")).toThrow(QueryRegistryError);
+  });
+
+  it("generates identical scoped SQL for snake/camel date inputs without a parallel query path", () => {
+    const snake = registry.resolve("account.summary", { date_from: "2026-08-24", date_to: "2026-08-25" }, "ka_data");
+    const camel = registry.resolve("account.summary", { dateFrom: "2026-08-24", dateTo: "2026-08-25" }, "ka_data");
+    const accounts = [{ media: "KUAISHOU", accountId: "synthetic" }];
+    expect(registry.buildKaDataPlan(snake, accounts)).toEqual(registry.buildKaDataPlan(camel, accounts));
+  });
+
   it("enforces view support and declares account scope", () => {
     expect(() => registry.resolve("reconcile.account_daily", {
       date: "2026-08-24",

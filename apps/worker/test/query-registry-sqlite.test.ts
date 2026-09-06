@@ -28,6 +28,54 @@ describe("KA registered SQLite aggregates preserve missing members", () => {
     return db.prepare(plan.sql).all();
   }
 
+  it.each(["account.summary", "account.trend", "reconcile.account_daily"] as const)(
+    "%s actual SQL returns BI real_conversion, never media conversion", (queryId) => {
+      insert(20260823, 6); insert(20260824, 6);
+      insert(20260823, 900, "TENCENT");
+      const rows = run(queryId);
+      for (const row of rows) {
+        expect(row).not.toHaveProperty("conversion");
+        expect(row).not.toHaveProperty("conversions");
+        expect(row.real_conversion).toBe(queryId === "account.summary" ? 2 : 1);
+      }
+      const canonical = canonicalizeQueryRows(queryId, "ka_data", rows.map((row) => ({
+        ...row, ...(row.ds === undefined ? {} : { ds: String(row.ds) }),
+      })), "00000000-0000-4000-8000-000000000024");
+      for (const row of canonical) {
+        const metrics = queryId === "account.trend" ? (row.metrics as { metrics: unknown }).metrics : row.metrics;
+        expect(metrics).toMatchObject({
+          conversion: { value: null, availability: "missing" },
+          ratios: { realCpa: { value: 6, state: "finite" }, cashCpa: { value: 1, state: "finite" } },
+        });
+      }
+    },
+  );
+  it.each(["account.summary", "account.trend", "reconcile.account_daily"] as const)(
+    "%s maps actual SQLite JSON through the client without rewriting raw fields", async (queryId) => {
+      insert(20260823, 6); insert(20260824, 6);
+      const client = new KaDataClient({
+        baseUrl: "https://synthetic.example.internal", token: "synthetic-token",
+        fetchFn: async (_url, init) => {
+          const { sql } = JSON.parse(String(init?.body)) as { sql: string };
+          const rows = db.prepare(sql).all();
+          return new Response(JSON.stringify({ backend: "sqlite", rowCount: rows.length, rows }));
+        },
+      });
+      const result = await client.query(createDataQueryRegistry().resolve(queryId, {
+        dateFrom: "2026-08-23", dateTo: "2026-08-24",
+      }, queryId === "reconcile.account_daily" ? "reconcile" : "ka_data"), {
+        workspaceId: "00000000-0000-4000-8000-000000000024", userId: "fixture", scopeKind: "explicit_accounts", accounts,
+      });
+      for (const row of result.rows) {
+        const metrics = queryId === "account.trend" ? (row.metrics as { metrics: unknown }).metrics : row.metrics;
+        expect(metrics).toMatchObject({
+          realConversion: { value: queryId === "account.summary" ? 2 : 1, availability: "available" },
+          conversion: { value: null, availability: "missing" },
+          ratios: { realCpa: { value: 6, state: "finite" } },
+        });
+      }
+    },
+  );
   it("does not replace an absent account-day with a partial available sum", () => {
     insert(20260823, 10);
     expect(run("account.summary")).toMatchObject([{ cost: null, row_count: 1, account_count: 1 }]);

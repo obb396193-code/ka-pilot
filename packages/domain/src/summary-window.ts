@@ -7,16 +7,26 @@ import { compareAbsolute, compareRate } from "./metrics.js";
 export const queryWindowSchema = z.object({
   from: calendarDateSchema,
   to: calendarDateSchema,
-  preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional(),
+  preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).default("custom"),
 }).strict().refine((window) => window.from <= window.to, "window must be ordered");
 
 export const windowAssessmentSchema = z.object({
   price: z.object({ value: z.number().finite(), effectiveDate: calendarDateSchema }).strict().nullable(),
+  priceVersions: z.number().int().min(2).optional(),
   onTarget: z.boolean().nullable(),
   costStatus: z.enum(["green", "yellow", "red"]).nullable(),
   costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "assessment_missing"]),
   budgetUsageRate: ratioValueSchema,
 }).strict().superRefine((assessment, context) => {
+  if (assessment.priceVersions !== undefined && assessment.price !== null) {
+    context.addIssue({ code: "custom", message: "mixed versions cannot have a representative price" });
+  }
+  if (assessment.onTarget !== null && assessment.price === null && assessment.priceVersions === undefined) {
+    context.addIssue({ code: "custom", message: "determined assessment requires a price or mixed version evidence" });
+  }
+  if (assessment.costStatusReason === "assessment_missing" && (assessment.price !== null || assessment.priceVersions !== undefined)) {
+    context.addIssue({ code: "custom", message: "incomplete prices cannot claim complete representative versions" });
+  }
   const expected = {
     window_ok: [true, "green"], day_over_window_ok: [true, "yellow"], window_over: [false, "red"],
     cash_missing: [null, null], assessment_missing: [null, null],

@@ -85,7 +85,7 @@ function mapTableRow(row: TableDatabaseRow): SemanticTableRow {
 }
 
 export class SemanticQueryRepository {
-  constructor(private readonly pool: Pool) {}
+  constructor(private readonly pool: Pick<Pool, "query">) {}
 
   async queryTable(input: SemanticTableQuery): Promise<SemanticTableResult> {
     const query = normalizeTableQuery(input);

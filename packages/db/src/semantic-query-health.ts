@@ -120,7 +120,7 @@ function buildAccountScopeFilter(scope: SemanticQueryScope): {
   return { whereSql: conditions.join("\n       AND "), values };
 }
 
-async function queryCoverage(pool: Pool, scope: SemanticQueryScope): Promise<CoverageHealth> {
+async function queryCoverage(pool: Pick<Pool, "query">, scope: SemanticQueryScope): Promise<CoverageHealth> {
   const metricFilter = buildMetricFilter(scope);
   const metricResult = await pool.query<CoverageMetricRow>(
     `SELECT count(*)::text AS canonical_rows,
@@ -161,7 +161,7 @@ async function queryCoverage(pool: Pool, scope: SemanticQueryScope): Promise<Cov
 }
 
 async function queryRawHealth(
-  pool: Pool,
+  pool: Pick<Pool, "query">,
   scope: SemanticQueryScope,
 ): Promise<RawResourceHealth[]> {
   const filter = buildMetricFilter(scope);
@@ -186,7 +186,7 @@ async function queryRawHealth(
 }
 
 async function queryEtlHealth(
-  pool: Pool,
+  pool: Pick<Pool, "query">,
   scope: SemanticQueryScope,
 ): Promise<EtlStatusHealth[]> {
   const result = await pool.query<EtlHealthRow>(
@@ -208,7 +208,7 @@ async function queryEtlHealth(
   }));
 }
 
-async function queryQualityHealth(pool: Pool, scope: SemanticQueryScope): Promise<QualityHealth> {
+async function queryQualityHealth(pool: Pick<Pool, "query">, scope: SemanticQueryScope): Promise<QualityHealth> {
   const result = await pool.query<QualityHealthRow>(
     `SELECT count(*) FILTER (WHERE passed IS TRUE)::text AS passed_checks,
             count(*) FILTER (WHERE passed IS FALSE)::text AS failed_checks,
@@ -228,7 +228,7 @@ async function queryQualityHealth(pool: Pool, scope: SemanticQueryScope): Promis
 }
 
 export async function querySemanticHealth(
-  pool: Pool,
+  pool: Pick<Pool, "query">,
   scope: SemanticQueryScope,
 ): Promise<SemanticHealthResult> {
   validateScope(scope);

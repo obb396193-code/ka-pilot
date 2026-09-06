@@ -29,7 +29,7 @@ function kaSummary(cost = 12) {
     cost,
     exposure: 100,
     click: 10,
-    conversion: 2,
+    real_conversion: 2,
     cash_cost: cost,
   };
 }

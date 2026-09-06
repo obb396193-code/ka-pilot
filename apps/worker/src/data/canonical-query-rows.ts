@@ -1,5 +1,6 @@
 import {
   canonicalQueryRowSchemaById,
+  accountSummaryRowSchema,
   safeDivide,
   metricValue,
   type AccountDailyRow,
@@ -39,6 +40,17 @@ function requiredCount(row: RawRow, ...keys: string[]): number {
   const value = firstNumber(row, ...keys);
   if (value === null || !Number.isInteger(value) || value < 0) throw new CanonicalQueryRowError();
   return value;
+}
+
+function kaBiConversion(row: RawRow): number | null {
+  let result: number | null = null;
+  for (const key of ["realConversion", "real_conversion", "conv"]) {
+    if (!Object.hasOwn(row, key) || row[key] === null) continue;
+    const value = finite(row[key]);
+    if (result !== null && result !== value) throw new CanonicalQueryRowError();
+    result = value;
+  }
+  return result;
 }
 
 function text(row: RawRow, ...keys: string[]): string | null {
@@ -88,8 +100,12 @@ function metricSet(row: RawRow, source: SourceKind) {
   const cost = firstNumber(row, "cost", "cost_yuan");
   const exposure = firstNumber(row, "exposure", "show");
   const click = firstNumber(row, "click");
-  const conversion = firstNumber(row, "conversion", "conversions", "conv");
-  const realConversion = firstNumber(row, "realConversion", "real_conversion");
+  const conversion = firstNumber(row, "conversion", "conversions");
+  // KA account conv comes from fact_conv (BI), not OCPX/media conversions.
+  // Do not use it for both metrics or infer a missing media conversion count.
+  const realConversion = source === "ka_data"
+    ? kaBiConversion(row)
+    : firstNumber(row, "realConversion", "real_conversion");
   const cashCost = firstNumber(row, "cashCost", "cash_cost", "cash_yuan");
   const costSpace = source === "platform" ? firstNumber(row, "costSpace") : null;
   const wakeUv = source === "platform" ? firstNumber(row, "wakeUv") : null;
@@ -116,15 +132,18 @@ function metricSet(row: RawRow, source: SourceKind) {
   };
 }
 
-function summaryRow(row: RawRow, source: SourceKind): AccountSummaryRow {
-  return {
+/** Reusable strict metric/count base for v2 and the v3 window assembler. */
+export function canonicalSummaryBaseRow(row: RawRow, source: SourceKind): AccountSummaryRow {
+  const parsed = accountSummaryRowSchema.safeParse({
     rowCount: requiredCount(row, "rowCount", "row_count"),
     accountCount: requiredCount(row, "accountCount", "account_count"),
     anomalyRows: source === "platform"
       ? requiredCount(row, "anomalyRows", "anomaly_rows")
       : null,
     metrics: metricSet(row, source),
-  };
+  });
+  if (!parsed.success) throw new CanonicalQueryRowError();
+  return parsed.data;
 }
 
 function tasks(row: RawRow, source: SourceKind): AccountDailyRow["tasks"] {
@@ -187,7 +206,7 @@ function mappedRows(
   trustedWorkspaceId: string,
 ): unknown[] {
   if (queryId === "account.summary") {
-    return rows.map((row) => summaryRow(row, source));
+    return rows.map((row) => canonicalSummaryBaseRow(row, source));
   }
   if (queryId === "account.trend") {
     return rows.map((row) => {
@@ -195,7 +214,7 @@ function mappedRows(
       const metrics = typeof nested === "object" && nested !== null && !Array.isArray(nested)
         ? nested as RawRow
         : row;
-      return { ds: calendarDate(row.ds), metrics: summaryRow(metrics, source) };
+      return { ds: calendarDate(row.ds), metrics: canonicalSummaryBaseRow(metrics, source) };
     });
   }
   return rows.map((row) => dailyRow(row, source, trustedWorkspaceId));

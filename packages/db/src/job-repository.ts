@@ -76,7 +76,7 @@ interface NormalizedNewJob {
   priority: number;
   credentialOwnerUserId: string | null;
   maxAttempts: number;
-  runAfter: Date;
+  runAfter: Date | null;
 }
 
 type JobRow = {
@@ -129,8 +129,28 @@ async function withTransaction<T>(
   }
 }
 
+/** Code-owned selector for one-shot deployments; never accepted from a browser job payload. */
+export interface JobLeaseScope {
+  readonly workspaceId: string;
+  readonly jobTypes: readonly string[];
+}
+
+function normalizeLeaseScope(scope: JobLeaseScope | undefined): JobLeaseScope | null {
+  if (scope === undefined) return null; // Preserve existing unscoped background-worker API.
+  if (scope === null || typeof scope !== "object" ||
+    Object.keys(scope).some((key) => key !== "workspaceId" && key !== "jobTypes") ||
+    typeof scope.workspaceId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(scope.workspaceId) ||
+    !Array.isArray(scope.jobTypes) || scope.jobTypes.length === 0 || scope.jobTypes.length > 64 ||
+    scope.jobTypes.some((type) => typeof type !== "string" || !/^[a-z][a-z0-9_]{0,63}$/.test(type)) ||
+    new Set(scope.jobTypes).size !== scope.jobTypes.length) throw new Error("Invalid job lease scope");
+  return Object.freeze({ workspaceId: scope.workspaceId, jobTypes: Object.freeze([...scope.jobTypes]) });
+}
+
 export class JobRepository implements JobRepositoryPort {
-  constructor(private readonly pool: Pool) {}
+  private readonly leaseScope: JobLeaseScope | null;
+  constructor(private readonly pool: Pool, leaseScope?: JobLeaseScope) {
+    this.leaseScope = normalizeLeaseScope(leaseScope);
+  }
 
   async enqueue(job: NewJob): Promise<string> {
     const normalized = normalizeNewJob(job);
@@ -138,7 +158,7 @@ export class JobRepository implements JobRepositoryPort {
       `INSERT INTO jobs (
          id, workspace_id, job_type, payload, priority, credential_owner_user_id,
          max_attempts, run_after, status
-       ) VALUES (COALESCE($1::uuid, gen_random_uuid()), $2, $3, $4, $5, $6, $7, $8, 'queued')
+       ) VALUES (COALESCE($1::uuid, gen_random_uuid()), $2, $3, $4, $5, $6, $7, COALESCE($8::timestamptz, now()), 'queued')
        ON CONFLICT (id) DO NOTHING
       RETURNING id`,
       [
@@ -201,7 +221,7 @@ export class JobRepository implements JobRepositoryPort {
          id, workspace_id, job_type, payload, priority, credential_owner_user_id,
          max_attempts, run_after, status, last_error, finished_at
        ) VALUES (
-         $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+         $1, $2, $3, $4, $5, $6, $7, COALESCE($8::timestamptz, now()), $9, $10,
          CASE WHEN $9 = 'blocked_auth' THEN now() ELSE NULL END
        )
        ON CONFLICT (id) DO NOTHING
@@ -259,11 +279,14 @@ export class JobRepository implements JobRepositoryPort {
             SELECT id
             FROM jobs
             WHERE run_after <= now()
+              AND ($2::uuid IS NULL OR workspace_id = $2)
+              AND ($3::text[] IS NULL OR job_type = ANY($3))
+              AND ($2::uuid IS NULL OR attempts < max_attempts)
               AND (
                 status = 'queued'
                 OR (status IN ('leased', 'running') AND lease_until < now())
               )
-            ORDER BY priority ASC, run_after ASC, created_at ASC
+            ORDER BY priority ASC, run_after ASC, created_at ASC, id ASC
             FOR UPDATE SKIP LOCKED
             LIMIT 1
           )
@@ -278,7 +301,7 @@ export class JobRepository implements JobRepositoryPort {
           WHERE job.id = candidate.id
           RETURNING job.*
         `,
-        [leaseSeconds],
+        [leaseSeconds, this.leaseScope?.workspaceId ?? null, this.leaseScope?.jobTypes ?? null],
       );
       const row = result.rows[0];
       return row ? mapJob(row) : null;
@@ -372,8 +395,10 @@ export class JobRepository implements JobRepositoryPort {
            END
        WHERE status IN ('leased', 'running')
          AND lease_until < now() - ($1 * interval '1 second')
+         AND ($2::uuid IS NULL OR workspace_id = $2)
+         AND ($3::text[] IS NULL OR job_type = ANY($3))
        RETURNING *`,
-      [staleSeconds],
+      [staleSeconds, this.leaseScope?.workspaceId ?? null, this.leaseScope?.jobTypes ?? null],
     );
     const recovered = result.rows.map(mapJob);
     return {
@@ -400,7 +425,8 @@ function normalizeNewJob(job: NewJob): NormalizedNewJob {
     priority: job.priority ?? 5,
     credentialOwnerUserId: job.credentialOwnerUserId,
     maxAttempts: job.maxAttempts ?? 3,
-    runAfter: job.runAfter ?? new Date(),
+    // Immediate work must use the same clock as leaseNext, not the application host clock.
+    runAfter: job.runAfter ?? null,
   };
 }
 

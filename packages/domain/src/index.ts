@@ -44,3 +44,4 @@ export * from "./metric-value.js";
 export * from "./bootstrap-seed.js";
 export * from "./coefficient-seed.js";
 export * from "./summary-window.js";
+export * from "./window-assessment.js";
