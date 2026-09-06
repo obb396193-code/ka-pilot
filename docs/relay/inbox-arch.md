@@ -3555,3 +3555,18 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 严格内部聚合证据校验：日期/period/成员去重数/账户数/每日窗口和/跨窗重叠/有限值；加法溢出被SQLite转null仍拒绝，非法日期被JOIN漏掉由source_row_count守卫识别。既有2k/10k/exact16MB/unknown inventory与Session绑定保持。逐日加权、多价、缺日/缺数/零值、比较窗与旧成员算法逐字段parity。
 - Worker非PG全量1026过+2外部opt-in跳过（`/tmp/ka-aggregate-worker-full.log`）；核心覆盖63测试、100%行/95.91%分支（`/tmp/ka-aggregate-coverage.log`）；Worker typecheck/lint、diff check过，离线production audit0。SQLite性能仅本机合成证据，不承诺真实KA时延。
 - 本批无Domain/DB/Contract/前端/依赖修改；未跑真实PG/远端KA。P073权威fixture待同步，不能报五包全绿。candidate_pending_contract_pg，未合流/部署/push/媒体写；下一步R010a1剩余只读能力，总目标仍active。
+
+### P-077｜R010a1剩余只读契约对齐请求（be，2026-09-06）
+
+- dimension账户fixture只给`key=accountId`，没有media；当前B1c SQL还按accountId+name分组，同空间两媒体同号同名会合成一行。请明确公开账户维度row保留三键的字段（建议保留key并加workspaceId/media/accountId），不由be发明拼接key。be先修**内部Repository**按三键分组和bounded结果，不先扩公开DTO。
+- 所有dimension-v3样例assessment仍缺v1.7.4必填priceSource；task样例ratios仅3项，未与严格7项MetricSet同构；部分dimension lineage标team但mode/meta为platform/personal且known metadata字段不全。请连同P073同步，be不把required改optional绕过。
+- system/etl-runs fixture id为UUID，但etl_runs.id是BIGSERIAL，job_id为UUID且重试可多次run。请冻返回的是job聚合还是具体attempt，raw/canonical双计数对应哪次stage；仅rows_ingested不能捏造两者。system/health的healthScore/connector/executor/agent计数缺源时如何表达unknown、跨源可见范围也请补，不能默认健康值。
+- 账户小传fixture已v3但api.md §4.2仍标summary/v2，且poolStatus/product要015；按最新版v3实现方向无需改回v2，请同步样例priceSource与未知字段规则。先继续无这些公开歧义的内部三键/边界修复，不停止总信箱工作。
+
+### P-078｜账户维度内部三键候选（be，2026-09-06）
+
+- `1d7a226`四文件：账户dimension按workspace/media/account分组（旧版同号同名会合并）；仅内部SemanticDimensionRow附accountIdentity，未自行改公开key/DTO。账户tuple与当前scope二次校验，重复/非法数值/计数失败；任务/业务null组和缺名称保留，不制造账户身份。排序用C collation与media tie-break。
+- SQL LIMIT10001、结果10000可完整（本地可信extra-row哨兵，不是上游静默hardcap）；10001与exact16MB拒绝。已有报表适配器未换公开key：若跨媒体同号导致旧报表key重复，会由既有Domain重复守卫拒绝，不再把两户混算；公开字段仍等P077。
+- TDD初始13失败/3通过→最终21边界用例通过。DB纯逻辑19文件189过，维度模块100%行/分支；DB/Worker typecheck/lint通过，DB离线production audit0。Worker非PG全量1026过+2外部opt-in跳过，`/tmp/ka-dimension-worker-full.log`。
+- 新真实PG4例（同号同名双媒体、跨workspace、单/空grant、任务/业务聚合、缺日），连同报表4例**未执行成功**：显式合成库55432 ECONNREFUSED，2套初始化失败/8跳过，`/tmp/ka-dimension-pg.log`。初次误选PG套件在sandbox被EPERM拒绝，已改显式隔离库重跑；没有使用默认共享库写数据。新测试exactOptionalPropertyTypes报错修正后typecheck重跑过，未隐藏失败。
+- 本批是内部安全基础，不冒充dimension公开可用；candidate_non_pg_verified/pg_pending，未合流/部署/真源/push/媒体写。质量检查技能用于数值/权限/容量/覆盖与依赖审计。继续R010a1与原总信箱，P073/P077等arch契约同步。
