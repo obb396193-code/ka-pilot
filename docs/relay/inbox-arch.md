@@ -3611,3 +3611,11 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 真PG工作项8例（含新processing/空原因保状态反例），显式合成库55432 ECONNREFUSED，1suite初始化失败/8skip，`/tmp/ka-reject-pg.log`。candidate_non_pg_verified/pg_pending，未merge/deploy/push/真实写。详情及完整命令在`docs/plans/2026-09-06-R010a2-工作项驳回边界.md`。
 - **请冻结R010a2剩余三处**：①api.md:574与本信箱P005要求dispatched，但schema.sql:201/现CHECK与Domain状态没有；012 partial unique含dispatched漏escalated，需统一活动态/列表/计数集合；②API跨级重弹superseded_by，work_items实际无该列（仅assets有），请补列/迁移归属及旧条终态，现Repository原地升级不是已完成；③旧动作入参只有note，v1.3 reject_reason必填，请统一HTTP名字。be先完成无歧义内部约束，不自造DDL或把旧算法宣称满足重弹。
 - 接下来其余已冻工作继续，R011/P073/P077裁决和PG仍独立依赖。总信箱尚未完成。
+
+### P-084｜统一查询BFF候选 + 本机跨进程HTTP通过（be，2026-09-06）
+
+- `0b4f345`，8文件（非视觉apps/web route/lib+Worker测试+合成语法向量）：`/api/internal/query`固定调用`/api/v1/query`，与data-query共用原Session/来源/超时/16MB/requestId/schema；仅旧语法字段转换，SQL/能力/筛选校验仍唯一Registry。16组输入Web/Worker分别精确parity，不制造第二套业务Query ID。team任务窗口未支持仍422不fallback。
+- TDD缺函数先红；质量检查另复现请求体arrayBuffer全量读取/异常抛出2红，改逐chunk>1MB取消、exact1MB原语义不变、流错误稳定400。新路由非POST稳定405；来源/身份/SQL/混拼拒绝，返回错误queryId/source/status/关联ID/exact16MB失败；业务错误按既有envelope透传。
+- 实际Web BFF在独立Node进程调用本机Worker Session+query HTTP，经过真实Registry/QueryService，两包decoder，summary/trend/table三次200，同requestId。**auth/data端口合成，不是真PG或真实KA**，未启动Next页面服务；不能当生产验证。HTTP50过，`/tmp/ka-semantic-bff-http.log`。
+- 最终Worker1072过+2外部opt-in skip，`/tmp/ka-semantic-bff-worker-final.log`；Web135过/2个旧权威fixture失败仍P073，`/tmp/ka-semantic-bff-web-full.log`；Worker/Web typecheck/lint绿。coverage53定向通过，BFF100%行/96.55%分支、语法100%/100%、共用helper86.08%行；Web offline production audit0（不是实时漏洞查询）。本批无DB/Domain生产改动，不重跑PG、不借旧PG数字。
+- 无Contract/React/视觉/真实媒体写/push；candidate待审，未merged/deployed。详细计划+质量报告`docs/plans/2026-09-06-R010a1-统一查询BFF.md`。R010其余能力及后续信箱仍未完成，不以本入口就绪宣告总任务结束。
