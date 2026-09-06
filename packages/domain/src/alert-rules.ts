@@ -56,11 +56,11 @@ function hasKnownLifecycleStage(value: string | null | undefined): value is stri
 }
 
 function combineAll(trace: readonly ConditionTrace[]): RuleOutcome {
-  if (trace.some((item) => item.outcome === "not_matched")) {
-    return "not_matched";
-  }
   if (trace.some((item) => item.outcome === "insufficient_data")) {
     return "insufficient_data";
+  }
+  if (trace.some((item) => item.outcome === "not_matched")) {
+    return "not_matched";
   }
   return "matched";
 }

@@ -455,6 +455,11 @@ describe("real PostgreSQL data pipeline", () => {
           ruleId: rule.rows[0]!.id,
           title: "合成账户超成本",
           evidenceSnapshot: { ds: row.ds, cost: row.cost, realCpa: row.realCpa },
+          // Synthetic readiness port for this PG pipeline fixture; not the production health provider.
+          readiness: { initialFullDone: true, source: { kind: "offline" as const, dataAsOf: new Date("2026-08-19T08:00Z") },
+            requiredMetrics: { cost: row.cost === null ? "missing" as const : "available" as const,
+              realCpa: row.realCpa === null ? "missing" as const : "available" as const,
+              assessmentPrice: row.assessmentPriceSnapshot === null ? "missing" as const : "available" as const } },
           isQuietHours: false,
           ruleCode: "over_cost_ramp" as const,
           facts: {

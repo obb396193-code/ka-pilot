@@ -5,6 +5,8 @@ import type {
   SpendCliffInput,
   WorkItemSeverity,
   ZeroDeliveryInput,
+  RuleReadiness,
+  RuleReadinessDecision,
 } from "@ka/domain";
 
 interface RuleCandidateBase {
@@ -16,6 +18,7 @@ interface RuleCandidateBase {
   ruleId: string | number;
   title: string;
   evidenceSnapshot: Record<string, unknown>;
+  readiness: RuleReadiness;
   isQuietHours: boolean;
   quietHoursEnd?: Date | undefined;
 }
@@ -82,6 +85,8 @@ export interface RuleScanFailure {
 }
 
 export interface RuleScanSummary {
+  coverage: { checked: number; pending: number; undeterminable: number };
+  skipped: Array<{ candidateId: string; decision: RuleReadinessDecision }>;
   evaluated: number;
   matched: number;
   notMatched: number;

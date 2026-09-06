@@ -131,6 +131,10 @@ describe("evaluateOverCostRamp", () => {
 });
 
 describe("evaluateZeroDelivery", () => {
+  it("does not classify a missing metric as false when another condition is false", () => {
+    expect(evaluateZeroDelivery({ entityAgeHours: 1 }).outcome).toBe("insufficient_data");
+    expect(evaluateSpendCliff({ spendChange: -0.1 }).outcome).toBe("insufficient_data");
+  });
   it("matches a zero-spend entity after 24 hours", () => {
     const result = evaluateZeroDelivery({ entityAgeHours: 24, cost: 0 });
     expect(result.outcome).toBe("matched");

@@ -3,6 +3,8 @@ import {
   evaluateOverCostRamp,
   evaluateSpendCliff,
   evaluateZeroDelivery,
+  assessRuleReadiness,
+  type RuleCoverageState,
 } from "@ka/domain";
 
 import type {
@@ -37,6 +39,8 @@ export interface RuleScanDependencies {
 
 function emptySummary(): RuleScanSummary {
   return {
+    coverage: { checked: 0, pending: 0, undeterminable: 0 },
+    skipped: [],
     evaluated: 0,
     matched: 0,
     notMatched: 0,
@@ -57,16 +61,26 @@ function deliveryKey(workItemId: string, severity: string): string {
   return JSON.stringify(["work_item_alert", workItemId, severity]);
 }
 
+function recordCoverage(states: Map<string, RuleCoverageState>, candidate: RuleCandidate, state: RuleCoverageState): void {
+  const key = JSON.stringify([candidate.workspaceId, candidate.media, candidate.accountId]);
+  const rank = { checked: 0, undeterminable: 1, pending: 2 };
+  const previous = states.get(key);
+  if (previous === undefined || rank[state] > rank[previous]) states.set(key, state);
+}
+
 export class RuleScanHandler {
   constructor(private readonly dependencies: RuleScanDependencies) {}
 
   async run(input: RuleScanInput): Promise<RuleScanSummary> {
-    const candidates = await this.dependencies.candidateProvider.listCandidates(input);
+    if (typeof input.workspaceId !== "string" || !input.workspaceId.trim() || !(input.now instanceof Date) || !Number.isFinite(input.now.getTime())) throw new Error("Invalid rule scan scope or clock");
+    const scope = { workspaceId: input.workspaceId, now: new Date(input.now) };
+    const candidates = await this.dependencies.candidateProvider.listCandidates({ ...scope, now: new Date(scope.now) });
     const summary = emptySummary();
+    const coverage = new Map<string, RuleCoverageState>();
     for (const candidate of candidates) {
       summary.evaluated += 1;
       try {
-        await this.processCandidate(input, candidate, summary);
+        await this.processCandidate(scope, candidate, summary, coverage);
       } catch (error) {
         summary.failures.push({
           candidateId: candidate.candidateId,
@@ -74,6 +88,7 @@ export class RuleScanHandler {
         });
       }
     }
+    for (const state of coverage.values()) summary.coverage[state] += 1;
     if (candidates.length > 0 && summary.failures.length === candidates.length) {
       throw new Error(
         `Rule scan failed for every candidate: ${summary.failures[0]?.message ?? "unknown error"}`,
@@ -86,18 +101,32 @@ export class RuleScanHandler {
     input: RuleScanInput,
     candidate: RuleCandidate,
     summary: RuleScanSummary,
+    coverage: Map<string, RuleCoverageState>,
   ): Promise<void> {
     if (candidate.workspaceId !== input.workspaceId) {
       throw new Error(
         `Rule candidate workspace mismatch: expected ${input.workspaceId}, received ${candidate.workspaceId}`,
       );
     }
-    const evaluation = this.dependencies.evaluator.evaluate(candidate);
+    let gate;
+    try { gate = assessRuleReadiness(candidate.readiness, input.now); }
+    catch (error) { recordCoverage(coverage, candidate, "undeterminable"); throw error; }
+    if (gate.coverage !== "checked") {
+      recordCoverage(coverage, candidate, gate.coverage);
+      summary.skipped.push({ candidateId: candidate.candidateId, decision: gate });
+      if (gate.coverage === "undeterminable") summary.insufficient += 1;
+      return;
+    }
+    let evaluation;
+    try { evaluation = this.dependencies.evaluator.evaluate(candidate); }
+    catch (error) { recordCoverage(coverage, candidate, "undeterminable"); throw error; }
+    recordCoverage(coverage, candidate, "checked");
     if (evaluation.outcome === "not_matched") {
       summary.notMatched += 1;
       return;
     }
     if (evaluation.outcome === "insufficient_data") {
+      recordCoverage(coverage, candidate, "undeterminable");
       summary.insufficient += 1;
       return;
     }
