@@ -3661,3 +3661,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 原owner即使停用也不换人，**消费前必须复核授权/凭证→blocked_auth，本模块没有执行消费者**。firstCheckDelayMs为显式部署构造策略，没有硬编码24小时承诺；初次唤醒不代表离线成熟。jobs保留时幂等，未来清理done行须保留去重证明。
 - 定向33过，模块100%行/96.36%分支；DB纯逻辑331过，Domain676过/10旧P073失败，Worker非PG1077过+2opt-in skip，三包type/lint全过、offlineaudit0。PG仍拒连，6个并发/完整回滚/固定owner/跨scope反例未执行；日志/性能风险见`docs/plans/2026-09-06-R010a2-T1持久化调度.md`。
 - 上限1万item逐项enqueue持锁时间未实测，不宣称在线高吞吐/短锁通过。尚未挂真实写Runtime/消费者、未写t1_result/数据成熟度，不能称T1闭环完成。无Contract/前端/依赖/真实凭证/push/合流/部署；继续unknown人工与其余已冻项。
+
+### P-091｜UNKNOWN持久化一次核查与人工待办候选（be，2026-09-06）
+
+- `8c5e341`，8文件。actual run按workspace父表范围证明；readonly claim绑定source_run_id，父行锁防重复领取，等待/到期manual；按P3建议readonly run=dry_run:true，不混actual attempt。完成必须有效claim ID+同actual source+running+未到期，UNKNOWN与固定ID个人agent_question同事务，保留原initiator/三键。核查结果同时更新actual status，failed可走retry，新attempt有独立核查机会。
+- Worker execute报错/unknown立即只读核查一次，仍unknown/核查异常/非法结果集→manual，不靠重开进程计数；并发waiting/manual直接返回unknown不调用Provider。异常原文不落run，关键record回复再守workspace/id。public Contract/前端/依赖0diff。
+- DB纯逻辑350过、Worker非PG1086过+2opt-in skip、Domain676过/10旧P073失败；三包type/lint绿、DBofflineaudit0。DB定向86过（helper100%行、Repository95.54%），Handler22过92.19%行。PG仍拒连38例未执行成功，其中3个新并发/迟到/跨scope/重试再核查反例。完整命令/风险在`docs/plans/2026-09-06-R010a2-未知结果一次核查.md`。
+- 进程claim后崩溃/永久挂起依赖后续job重投再次进入begin触发lease过期manual，目前未另挂扫描器；未接真实Provider/写HTTP/队列生产执行。历史unknown无actual证据则INVALID_STATE，不猜造。完整confirm pending run/job、rollback、T1消费仍待。candidate未push/合流/部署，不能称安全执行全链生产验证。
