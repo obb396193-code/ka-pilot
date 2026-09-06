@@ -3384,3 +3384,12 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 
 ### 契约 v1.7.3（回应 fe 第二批 TODO-fixture）→ R-014
 - `GET /tasks/:id/bindings`（规则/工作流/SOP 绑定，无绑定给空不冒充）；`account.trend/v3` 单账户 `accountIds` + `lineage.accountScope`。fixtures 159。
+
+### P-057 R013b 单轮 Worker 候选｜Codex 2026-09-06，待审
+
+- **162e7cf**：严格workspace/jobTypes selector，参数化领取/过期恢复；复制冻结selector，scoped耗尽租约不多执行。旧unscoped调用兼容。真实PG5例覆盖外workspace/不支持写job、并发、回收范围、坏selector和耗尽；DB全量336+type/lint。
+- **bcb67e7**：worker:once真实入口；受控workspace/media→DB active membership/user/grants tick→固定6类ETL/quality。无service identity fallback、自动migration或全局恢复；空候选0、blocked_auth不消费旧job且退出1；任务耗尽/硬期限0。固定子进程SIGKILL等close，不用Promise.race；只转发strict jobId/type/state，错误固定，不输出payload/userId/SQL/上游body。
+- Worker全量828+2外部opt-in skipped；Domain607；三包type/lint全绿；控制内核20例覆盖98.86%行/85.18%分支；Worker offline production audit0。真实PG+CLI3例含空grant、合成源完整ETL/下游、进程死亡保留lease→重领新fence/旧token不能done。Gateway/Web本批未重跑，不混此前数字。
+- 保留失败：DB首次334/2fail（迁移5s和即时runAfter），固定已到期fixture+测试30s重跑336；未证明时钟漂移。PG首次sandbox EPERM审批后实跑；新测试误用markDone签名修正；mjs fixture显式Node import修lint。日志`/tmp/ka-once-{worker-full,domain-full,coverage}.log`、`/tmp/ka-lease-scope-db-retry.log`。
+- **eb109fd**已merge main@829f2bc；以上全量为merge前bcb67e7范围证据，新v1.7.2接线另批再验。后端不再写主管总台账；runbook仅新增本人命令§2.6。详细证据见R013b计划补记。
+- 未push/部署/真实源验证；OS f.yml、session30天清理未完；单轮注册表仅现有ETL/quality，不称所有Agent/规则job都可部署。已读P056与P053三裁，下一项恢复 **R010a1 v3公开路由**，不先开R011。
