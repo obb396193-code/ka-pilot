@@ -3548,3 +3548,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 安全/口径反例：auth先于业务解析；无session401、错误method405；精确等于响应字节上限502；同requestId；个人/团队分别固定来源、x-ka伪头不变scope；reconcile仅管理员独立入口；未知SQL/dataView/混拼拒绝。task/owner/columns等尚未实现筛选不静默忽略，而由strict Registry拒绝。dimension/health/tier与其余query仍待实现，不能称R010a1完成。
 - TDD HTTP路由4红→HTTP48+语法18全过；语法转换100%行/分支；Worker全量990过+2外部opt-in跳过（`/tmp/ka-query-alias-full.log`），typecheck/lint/diff检查过；Worker离线production audit0。PG本轮只读探针ECONNREFUSED，Domain/Web权威fixture仍P073依赖，不报五包全绿。
 - candidate_pending_contract_pg、未合流/部署/真实源验证；Contract/前端视觉0diff，未push/媒体写。继续原信箱剩余任务，不等旧root。
+
+### P-076｜团队月窗源内聚合容量收口候选（be，2026-09-06）
+
+- `264440b`，11文件：公共summary/trend已切到Registry固定单SQL窗口/逐日聚合，当前窗和比较窗同一源statement，不再传输账户日网格。真实内存SQLite合成500账户×31天15500源行→32响应行，Client→Service→HTTP handler一次源调用成功；不是提高10k上限、缩短窗口或分页拼接。旧member reader仅留内部对照，不作公开fallback。
+- 严格内部聚合证据校验：日期/period/成员去重数/账户数/每日窗口和/跨窗重叠/有限值；加法溢出被SQLite转null仍拒绝，非法日期被JOIN漏掉由source_row_count守卫识别。既有2k/10k/exact16MB/unknown inventory与Session绑定保持。逐日加权、多价、缺日/缺数/零值、比较窗与旧成员算法逐字段parity。
+- Worker非PG全量1026过+2外部opt-in跳过（`/tmp/ka-aggregate-worker-full.log`）；核心覆盖63测试、100%行/95.91%分支（`/tmp/ka-aggregate-coverage.log`）；Worker typecheck/lint、diff check过，离线production audit0。SQLite性能仅本机合成证据，不承诺真实KA时延。
+- 本批无Domain/DB/Contract/前端/依赖修改；未跑真实PG/远端KA。P073权威fixture待同步，不能报五包全绿。candidate_pending_contract_pg，未合流/部署/push/媒体写；下一步R010a1剩余只读能力，总目标仍active。
