@@ -27,6 +27,13 @@ class MemoryStore implements ChangeSetStore {
   reconciled?: Parameters<ChangeSetStore["completeReconciliation"]>[0];
   completeCalls = 0;
   authError: Error | undefined;
+  claimed = false;
+  manualCount = 0;
+  async beginReconciliation() {
+    if (this.claimed) return { directive: "manual_required" as const, workItemId: "manual-1" };
+    this.claimed = true;
+    return { directive: "reconcile" as const, executionRunId: "claim-1" };
+  }
 
   async assertExecutionAuthorized() { if (this.authError) throw this.authError; }
 
@@ -55,7 +62,8 @@ class MemoryStore implements ChangeSetStore {
   }
   async completeReconciliation(input: Parameters<ChangeSetStore["completeReconciliation"]>[0]) {
     this.reconciled = input;
-    this.view.status = input.items.every((item) => item.status === "success") ? "success" : "partial";
+    this.view.status = input.items.some((item) => item.status === "unknown") ? "unknown" : input.items.every((item) => item.status === "success") ? "success" : "partial";
+    if (this.view.status === "unknown") this.manualCount = 1;
     return structuredClone(this.view);
   }
 }
@@ -87,6 +95,7 @@ class Executor implements ChangeExecutor {
   }
   async reconcileUnknown() {
     this.reconcileCalls += 1;
+    if (this.error) throw this.error;
     return this.result;
   }
 }
@@ -174,7 +183,18 @@ describe("ChangeSetExecutionHandler", () => {
     executor.error = new Error("timeout after submit");
     expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "unknown" });
     expect(store.completed?.items.every((item) => item.status === "unknown")).toBe(true);
+    expect(executor.reconcileCalls).toBe(1);
+    expect(store.manualCount).toBe(1);
+    expect(JSON.stringify(store.completed)).not.toContain("timeout after submit");
     expect(followUps.calls).toEqual([]);
+  });
+  it("immediately reads back an unknown execution result without an infinite loop", async () => {
+    const { handler, store, executor } = setup();
+    executor.result.items = [{ itemId: 1, status: "unknown" }, { itemId: 2, status: "unknown" }];
+    expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "unknown" });
+    expect(executor.executeCalls).toBe(1);
+    expect(executor.reconcileCalls).toBe(1);
+    expect(store.manualCount).toBe(1);
   });
 
   it("reconciles UNKNOWN and never calls execute", async () => {
@@ -186,6 +206,37 @@ describe("ChangeSetExecutionHandler", () => {
     expect(executor.reconcileCalls).toBe(1);
     expect(store.reconciled).toBeDefined();
     expect(followUps.calls).toEqual([[1, 2]]);
+  });
+
+  it.each(["unknown", "error", "invalid"])("only reconciles once then leaves a manual question: %s", async (kind) => {
+    const { handler, store, executor } = setup();
+    store.view.status = "unknown";
+    executor.result = { payload: {}, items: [{ itemId: 1, status: "unknown" }, { itemId: 2, status: "unknown" }] };
+    if (kind === "error") executor.error = new Error("synthetic-token-DO-NOT-LOG");
+    if (kind === "invalid") executor.result.items = [];
+    expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "unknown" });
+    expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "unknown" });
+    expect(executor.reconcileCalls).toBe(1);
+    expect(executor.executeCalls).toBe(0);
+    expect(store.manualCount).toBe(1);
+    expect(JSON.stringify(store.reconciled)).not.toContain("DO-NOT-LOG");
+  });
+  it("waits behind an existing claim without making a read-back call", async () => {
+    const { handler, store, executor } = setup();
+    store.view.status = "unknown";
+    store.beginReconciliation = async () => ({ directive: "waiting" }) as never;
+    expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "unknown" });
+    expect(executor.reconcileCalls).toBe(0);
+  });
+  it("reloads the terminal result when a concurrent operation finished first", async () => {
+    const { handler, store, executor } = setup();
+    store.view.status = "unknown";
+    store.beginReconciliation = async () => { store.view.status = "success"; return { directive: "not_needed" } as never; };
+    expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "skipped" });
+    expect(executor.reconcileCalls).toBe(0);
+  });
+  it.each([0, NaN, 3600001])("rejects invalid reconciliation lease %s", (lease) => {
+    expect(() => new ChangeSetExecutionHandler({ ...setup(), reconciliationLeaseMs: lease })).toThrow("Invalid reconciliation lease");
   });
 
   it("skips a terminal changeset idempotently", async () => {

@@ -53,10 +53,14 @@ export interface ChangeSetStore {
   completeReconciliation(input: {
     workspaceId: string;
     changeSetId: string;
+    executionRunId: string;
     finishedAt: Date;
     resultPayload: Record<string, unknown>;
     items: ItemExecutionResult[];
   }): Promise<ChangeSetExecutionView>;
+  beginReconciliation(input: { workspaceId: string; changeSetId: string; now: Date; leaseMs: number }): Promise<
+    { directive: "reconcile"; executionRunId: string } | { directive: "waiting" | "not_needed" } | { directive: "manual_required"; workItemId: string }
+  >;
 }
 
 export interface FollowUpScheduler {

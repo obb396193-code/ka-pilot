@@ -445,6 +445,7 @@ describe("ChangeSetRepository", () => {
   it("requires reconciliation instead of blindly beginning UNKNOWN again", async () => {
     const created = await create();
     await pool.query("UPDATE changesets SET status='unknown' WHERE id=$1", [created.id]);
+    const actual = (await pool.query("INSERT INTO execution_runs(changeset_id,attempt,status,dry_run,started_at,finished_at) VALUES($1,1,'unknown',false,'2026-08-19T10:00:00Z','2026-08-19T10:01:00Z') RETURNING id", [created.id])).rows[0];
     const run = await repository.beginExecution({
       workspaceId,
       changeSetId: created.id,
@@ -453,9 +454,12 @@ describe("ChangeSetRepository", () => {
     });
     expect(run).toEqual({ directive: "reconcile_required" });
 
+    const claim = await repository.beginReconciliation({ workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:05:00Z"), leaseMs: 60000 });
+    if (claim.directive !== "reconcile") throw new Error("expected claim");
     const reconciled = await repository.completeReconciliation({
       workspaceId,
       changeSetId: created.id,
+      executionRunId: claim.executionRunId,
       finishedAt: new Date("2026-08-19T10:05:00Z"),
       resultPayload: { reconciled: true },
       items: created.items.map((item) => ({ itemId: item.id, status: "success" })),
@@ -466,6 +470,56 @@ describe("ChangeSetRepository", () => {
        WHERE changeset_id=$1 ORDER BY attempt DESC LIMIT 1`,
       [created.id],
     );
-    expect(audit.rows[0]).toEqual({ status: "success", payload: { reconcile: true } });
+    expect(audit.rows[0]).toMatchObject({ status: "success", payload: { reconcile: true, source_run_id: actual.id } });
+  });
+
+  it("claims once concurrently and generates only one manual question for unresolved results", async () => {
+    const created = await create();
+    await pool.query("UPDATE changesets SET status='unknown' WHERE id=$1", [created.id]);
+    await pool.query("INSERT INTO execution_runs(changeset_id,attempt,status,dry_run,started_at) VALUES($1,1,'unknown',false,'2026-08-19T10:00Z')", [created.id]);
+    const request = { workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:05Z"), leaseMs: 60000 };
+    const claims = await Promise.all([repository.beginReconciliation(request), repository.beginReconciliation(request)]);
+    const won = claims.find((result) => result.directive === "reconcile");
+    if (!won || won.directive !== "reconcile") throw new Error("expected claim");
+    expect(claims.filter((result) => result.directive === "waiting")).toHaveLength(1);
+    await repository.completeReconciliation({ workspaceId, changeSetId: created.id, executionRunId: won.executionRunId, finishedAt: request.now, resultPayload: {},
+      items: created.items.map((item) => ({ itemId: item.id, status: "unknown" })) });
+    await expect(repository.beginReconciliation(request)).resolves.toMatchObject({ directive: "manual_required" });
+    await expect(repository.beginReconciliation(request)).resolves.toMatchObject({ directive: "manual_required" });
+    const manual = (await pool.query("SELECT type,assignee,creator,media,account_id FROM work_items WHERE workspace_id=$1 AND evidence_snapshot->>'changesetId'=$2", [workspaceId, created.id])).rows;
+    expect(manual).toEqual([{ type: "agent_question", assignee: userId, creator: userId, media: "KUAISHOU", account_id: "account-1" }]);
+    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1 AND request_payload->>'reconcile'='true'", [created.id])).rows).toHaveLength(1);
+  });
+
+  it("expires a claimed read-back to manual and fences a late result", async () => {
+    const created = await create();
+    await pool.query("UPDATE changesets SET status='unknown' WHERE id=$1", [created.id]);
+    await pool.query("INSERT INTO execution_runs(changeset_id,attempt,status,dry_run,started_at) VALUES($1,1,'unknown',false,'2026-08-19T10:00Z')", [created.id]);
+    const request = { workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:05Z"), leaseMs: 1000 };
+    const claim = await repository.beginReconciliation(request);
+    if (claim.directive !== "reconcile") throw new Error("expected claim");
+    const after = new Date("2026-08-19T10:05:01Z");
+    await expect(repository.beginReconciliation({ ...request, now: after })).resolves.toMatchObject({ directive: "manual_required" });
+    const finish = { workspaceId, changeSetId: created.id, executionRunId: claim.executionRunId, finishedAt: after, resultPayload: {}, items: created.items.map((item) => ({ itemId: item.id, status: "success" as const })) };
+    await expect(repository.completeReconciliation(finish)).rejects.toMatchObject({ code: "INVALID_STATE" });
+    await expect(repository.completeReconciliation({ ...finish, workspaceId: otherWorkspaceId })).rejects.toThrow(/not found/);
+    expect((await repository.get(workspaceId, created.id)).status).toBe("unknown");
+  });
+  it("allows a separate one-shot read-back after a proven failure is retried", async () => {
+    const created = await create();
+    await pool.query("UPDATE changesets SET status='unknown',confirm_hash=dry_run_hash WHERE id=$1", [created.id]);
+    await pool.query("INSERT INTO execution_runs(changeset_id,attempt,status,dry_run,started_at) VALUES($1,1,'unknown',false,'2026-08-19T10:00Z')", [created.id]);
+    const request = { workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:05Z"), leaseMs: 60000 };
+    const first = await repository.beginReconciliation(request);
+    if (first.directive !== "reconcile") throw new Error("expected claim");
+    await repository.completeReconciliation({ workspaceId, changeSetId: created.id, executionRunId: first.executionRunId, finishedAt: request.now, resultPayload: {},
+      items: created.items.map((item) => ({ itemId: item.id, status: "failed" })) });
+    await repository.retry({ ...request, currentValues: created.items.map((item) => ({ targetType: item.targetType, targetId: item.targetId, field: item.field, value: item.fromValue })) });
+    const run = await repository.beginExecution({ workspaceId, changeSetId: created.id, startedAt: request.now, requestPayload: {} });
+    if (run.directive !== "execute") throw new Error("expected execution");
+    await repository.completeExecution({ workspaceId, changeSetId: created.id, executionRunId: run.executionRunId, finishedAt: request.now, resultPayload: {}, items: created.items.map((item) => ({ itemId: item.id, status: "unknown" })) });
+    const second = await repository.beginReconciliation(request);
+    expect(second.directive).toBe("reconcile");
+    if (second.directive === "reconcile") expect(second.executionRunId).not.toBe(first.executionRunId);
   });
 });

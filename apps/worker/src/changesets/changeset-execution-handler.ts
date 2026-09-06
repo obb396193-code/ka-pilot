@@ -1,4 +1,4 @@
-import { executionDirective, verifyCurrentValues, type ValueConflict } from "@ka/domain";
+import { executionDirective, verifyCurrentValues, parseDryRunItems, type ValueConflict } from "@ka/domain";
 
 import type {
   ChangeExecutorResult,
@@ -20,28 +20,30 @@ export interface ChangeSetExecutionDependencies {
   executor: ChangeExecutor;
   followUps: FollowUpScheduler;
   now?: () => Date;
-}
-
-function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+  reconciliationLeaseMs?: number;
 }
 
 function successfulIds(result: ChangeExecutorResult): number[] {
   return result.items.filter((item) => item.status === "success").map((item) => item.itemId);
 }
 
+function assertScope(view: ChangeSetExecutionView, workspaceId: string, changeSetId: string): void {
+  if (view.workspaceId !== workspaceId || view.id !== changeSetId) throw new Error("Changeset does not match requested scope");
+}
+
 export class ChangeSetExecutionHandler {
   private readonly now: () => Date;
+  private readonly reconciliationLeaseMs: number;
 
   constructor(private readonly dependencies: ChangeSetExecutionDependencies) {
     this.now = dependencies.now ?? (() => new Date());
+    this.reconciliationLeaseMs = dependencies.reconciliationLeaseMs ?? 60_000;
+    if (!Number.isSafeInteger(this.reconciliationLeaseMs) || this.reconciliationLeaseMs < 1000 || this.reconciliationLeaseMs > 3_600_000) throw new Error("Invalid reconciliation lease");
   }
 
   async run(workspaceId: string, changeSetId: string): Promise<ChangeSetHandlerResult> {
     const view = await this.dependencies.store.load(workspaceId, changeSetId);
-    if (view.workspaceId !== workspaceId || view.id !== changeSetId) {
-      throw new Error("Changeset does not match requested scope");
-    }
+    assertScope(view, workspaceId, changeSetId);
     const directive = executionDirective(view.status);
     if (directive === "skip_terminal") return this.finishTerminal(view);
     if (directive === "not_ready") return { outcome: "not_ready" };
@@ -60,15 +62,20 @@ export class ChangeSetExecutionHandler {
       startedAt,
     });
     if (begun.directive === "skip_terminal") {
-      return this.finishTerminal(await this.dependencies.store.load(workspaceId, changeSetId));
+      const latest = await this.dependencies.store.load(workspaceId, changeSetId);
+      assertScope(latest, workspaceId, changeSetId);
+      return this.finishTerminal(latest);
     }
     if (begun.directive === "not_ready") return { outcome: "not_ready" };
     if (begun.directive === "reconcile_required") {
-      return this.reconcile(await this.dependencies.store.load(workspaceId, changeSetId));
+      const latest = await this.dependencies.store.load(workspaceId, changeSetId);
+      assertScope(latest, workspaceId, changeSetId);
+      return this.reconcile(latest);
     }
     if (begun.directive !== "execute") {
       throw new Error(`Unexpected begin-execution directive: ${begun.directive}`);
     }
+    assertScope(begun.changeset, workspaceId, changeSetId);
 
     let result: ChangeExecutorResult;
     try {
@@ -76,16 +83,17 @@ export class ChangeSetExecutionHandler {
         idempotencyKey: changeSetId,
         changeset: begun.changeset,
       });
-    } catch (error) {
-      await this.dependencies.store.completeExecution({
+    } catch {
+      const completed = await this.dependencies.store.completeExecution({
         workspaceId,
         changeSetId,
         executionRunId: begun.executionRunId,
         finishedAt: this.now(),
-        resultPayload: { error: errorMessage(error), ambiguous: true },
+        resultPayload: { error: "EXECUTION_RESULT_UNKNOWN", ambiguous: true },
         items: begun.changeset.items.map((item) => ({ itemId: item.id, status: "unknown" })),
       });
-      return { outcome: "unknown" };
+      assertScope(completed, workspaceId, changeSetId);
+      return this.reconcile(completed);
     }
     const completed = await this.dependencies.store.completeExecution({
       workspaceId,
@@ -95,19 +103,38 @@ export class ChangeSetExecutionHandler {
       resultPayload: result.payload,
       items: result.items,
     });
+    assertScope(completed, workspaceId, changeSetId);
+    if (completed.status === "unknown") return this.reconcile(completed);
     return this.finish(workspaceId, changeSetId, completed, result);
   }
 
   private async reconcile(view: ChangeSetExecutionView): Promise<ChangeSetHandlerResult> {
     await this.dependencies.store.assertExecutionAuthorized(view.workspaceId, view.id);
-    const result = await this.dependencies.executor.reconcileUnknown(view);
+    const claim = await this.dependencies.store.beginReconciliation({ workspaceId: view.workspaceId, changeSetId: view.id, now: this.now(), leaseMs: this.reconciliationLeaseMs });
+    if (claim.directive === "not_needed") {
+      const latest = await this.dependencies.store.load(view.workspaceId, view.id);
+      assertScope(latest, view.workspaceId, view.id);
+      return this.finishTerminal(latest);
+    }
+    if (claim.directive !== "reconcile") return { outcome: "unknown" };
+    let result: ChangeExecutorResult;
+    try {
+      result = await this.dependencies.executor.reconcileUnknown(view);
+      result = { payload: result.payload, items: parseDryRunItems(result.items) };
+      const expected = new Set(view.items.map((item) => item.id));
+      if (result.items.length !== expected.size || new Set(result.items.map((item) => item.itemId)).size !== expected.size || result.items.some((item) => !expected.has(item.itemId))) throw new Error("Invalid reconciliation coverage");
+    } catch {
+      result = { payload: { error: "RECONCILIATION_UNAVAILABLE" }, items: view.items.map((item) => ({ itemId: item.id, status: "unknown" })) };
+    }
     const completed = await this.dependencies.store.completeReconciliation({
       workspaceId: view.workspaceId,
       changeSetId: view.id,
+      executionRunId: claim.executionRunId,
       finishedAt: this.now(),
       resultPayload: result.payload,
       items: result.items,
     });
+    assertScope(completed, view.workspaceId, view.id);
     return this.finish(view.workspaceId, view.id, completed, result);
   }
 

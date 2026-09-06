@@ -25,6 +25,9 @@ function setup(options: { status?: string; missing?: boolean; wrongScope?: boole
       return { rows: [], rowCount: 1 };
     }
     if (sql.includes("SELECT COALESCE(MAX(attempt)")) return { rows: [{ attempt: 2 }], rowCount: 1 };
+    if (sql.includes("r.dry_run=false")) return { rows: [{ id: "actual-run", status: "unknown", started_at: now }], rowCount: 1 };
+    if (sql.includes("FROM execution_runs")) return { rows: [{ id: base.executionRunId, status: "running", request_payload: { source_run_id: "actual-run", lease_until: new Date(now.getTime() + 60000).toISOString() } }], rowCount: 1 };
+    if (sql.includes("FROM work_items")) return { rows: [{ id: "manual" }], rowCount: 1 };
     if (sql.includes("UPDATE execution_runs")) return { rows: [], rowCount: options.runMissing ? 0 : 1 };
     if (sql.includes("INSERT INTO execution_runs")) return { rows: [{ id: "synthetic-reconcile" }], rowCount: 1 };
     if (sql.includes("UPDATE changesets")) { header.status = params[2] as string; header.executed_at = params[3] as Date; }
@@ -43,6 +46,17 @@ const outcomes: Array<{ status: string; results: ItemExecutionResult[] }> = [
 ];
 
 describe("changeset completion/reconciliation existing kernel", () => {
+  it.each(["unknown", "success"])("checks authorization under the parent lock before read-back: %s", async (status) => {
+    const context = setup({ status });
+    await expect(context.repository.beginReconciliation({ workspaceId: ws, changeSetId: id, now, leaseMs: 60000 })).resolves.toEqual({ directive: status === "unknown" ? "waiting" : "not_needed" });
+    expect(context.query.mock.calls.some(([sql]) => sql.includes("FROM changesets") && sql.includes("FOR UPDATE"))).toBe(true);
+    expect(context.query.mock.calls.at(-1)![0]).toBe("COMMIT");
+  });
+  it("rolls back read-back claims with invalid child scope", async () => {
+    const context = setup({ status: "unknown", wrongScope: true });
+    await expect(context.repository.beginReconciliation({ workspaceId: ws, changeSetId: id, now, leaseMs: 60000 })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(context.query.mock.calls.at(-1)![0]).toBe("ROLLBACK");
+  });
   it.each(outcomes)("persists actual completion $status with full item coverage", async ({ status, results }) => {
     const context = setup();
     await expect(context.repository.completeExecution({ ...base, items: results })).resolves.toMatchObject({ status, executedAt: now });
@@ -57,9 +71,9 @@ describe("changeset completion/reconciliation existing kernel", () => {
     it.each(outcomes)(`maps ${from} read-back to $status without a media call`, async ({ status, results }) => {
       const context = setup({ status: from });
       await expect(context.repository.completeReconciliation({ ...base, items: results })).resolves.toMatchObject({ status });
-      const audit = context.query.mock.calls.find(([sql]) => sql.includes("INSERT INTO execution_runs"))!;
-      expect(audit[0]).toContain('"reconcile":true');
-      expect(audit[1]).toEqual([id, 2, status, JSON.stringify(base.resultPayload), now]);
+      const audit = context.query.mock.calls.find(([sql]) => sql.includes("UPDATE execution_runs"))!;
+      expect(audit[0]).toContain("dry_run=true");
+      expect(audit[1]).toEqual([base.executionRunId, id, status, JSON.stringify(base.resultPayload), now]);
       expect(context.query.mock.calls.at(-1)![0]).toBe("COMMIT");
     });
   }

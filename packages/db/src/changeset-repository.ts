@@ -17,6 +17,7 @@ import {
 import type { Pool, PoolClient } from "pg";
 import { decodeChangeSetValues, encodeChangeSetItems } from "./changeset-item-values.js";
 import { ChangeSetPreconditionError, draftHash, requireSuccessfulDryRun, requireValidClock } from "./changeset-dry-run.js";
+import { claimReconciliation, finishReconciliationClaim, type ReconciliationClaim } from "./changeset-reconciliation.js";
 export { ChangeSetPreconditionError } from "./changeset-dry-run.js";
 
 export interface NewChangeSetItem {
@@ -556,13 +557,32 @@ export class ChangeSetRepository {
     } finally { client.release(); }
   }
 
+  async beginReconciliation(input: { workspaceId: string; changeSetId: string; now: Date; leaseMs: number }): Promise<ReconciliationClaim | { directive: "not_needed" }> {
+    requireValidClock(input.now);
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      const locked = await client.query<HeaderRow>(`SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2 FOR UPDATE`, [input.workspaceId,input.changeSetId]);
+      const header = requireHeader(locked.rows[0], input.changeSetId);
+      await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
+      await loadItems(client, header);
+      const result = header.status === "unknown" || header.status === "executing"
+        ? await claimReconciliation(client, header, input.now, input.leaseMs) : { directive: "not_needed" as const };
+      await client.query("COMMIT");
+      return result;
+    } catch (error) { await rollback(client); throw error; } finally { client.release(); }
+  }
+
   async completeReconciliation(input: {
     workspaceId: string;
     changeSetId: string;
+    executionRunId: string;
     finishedAt: Date;
     resultPayload: Record<string, unknown>;
     items: ItemExecutionResult[];
   }): Promise<ChangeSetRecord> {
+    requireValidClock(input.finishedAt);
+    const items = parseDryRunItems(input.items);
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
@@ -575,9 +595,10 @@ export class ChangeSetRepository {
         throw new Error(`changeset does not require reconciliation: ${header.status}`);
       }
       const storedItems = await loadItems(client, header);
-      assertCompleteItemCoverage(storedItems, input.items);
-      const aggregate = aggregateExecutionResult(input.items);
-      await persistItemResults(client, header.id, input.items);
+      assertCompleteItemCoverage(storedItems, items);
+      const aggregate = aggregateExecutionResult(items);
+      await finishReconciliationClaim(client, header, input.executionRunId, input.finishedAt, aggregate, input.resultPayload);
+      await persistItemResults(client, header.id, items);
       const status = aggregate === "unknown"
         ? "unknown"
         : transitionChangeSet(
@@ -586,23 +607,6 @@ export class ChangeSetRepository {
               ? reconciliationAction(aggregate)
               : completionAction(aggregate),
           );
-      const attempt = await client.query<{ attempt: number }>(
-        `SELECT COALESCE(MAX(attempt),0)::int + 1 AS attempt
-         FROM execution_runs WHERE changeset_id=$1`,
-        [header.id],
-      );
-      await client.query(
-        `INSERT INTO execution_runs
-           (changeset_id,attempt,status,dry_run,request_payload,result_payload,started_at,finished_at)
-         VALUES ($1,$2,$3,false,'{"reconcile":true}'::jsonb,$4::jsonb,$5,$5)`,
-        [
-          header.id,
-          attempt.rows[0]?.attempt ?? 1,
-          aggregate,
-          JSON.stringify(input.resultPayload),
-          input.finishedAt,
-        ],
-      );
       const updated = await client.query<HeaderRow>(
         `UPDATE changesets SET status=$3,executed_at=$4
          WHERE workspace_id=$1 AND id=$2 RETURNING ${headerColumns}`,
