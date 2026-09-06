@@ -32,12 +32,13 @@ export interface ChangeExecutor {
 
 export interface ChangeSetStore {
   load(workspaceId: string, changeSetId: string): Promise<ChangeSetExecutionView>;
-  assertExecutionAuthorized(workspaceId: string, changeSetId: string): Promise<void>;
+  assertExecutionAuthorized(workspaceId: string, changeSetId: string, executionRunId?: string): Promise<void>;
   beginExecution(input: {
     workspaceId: string;
     changeSetId: string;
     requestPayload: Record<string, unknown>;
     startedAt: Date;
+    executionRunId?: string;
   }): Promise<
     | { directive: "execute"; executionRunId: string; changeset: ChangeSetExecutionView }
     | { directive: "reconcile_required" | "skip_terminal" | "not_ready" }
@@ -58,7 +59,7 @@ export interface ChangeSetStore {
     resultPayload: Record<string, unknown>;
     items: ItemExecutionResult[];
   }): Promise<ChangeSetExecutionView>;
-  beginReconciliation(input: { workspaceId: string; changeSetId: string; now: Date; leaseMs: number }): Promise<
+  beginReconciliation(input: { workspaceId: string; changeSetId: string; now: Date; leaseMs: number; sourceExecutionRunId?: string }): Promise<
     { directive: "reconcile"; executionRunId: string } | { directive: "waiting" | "not_needed" } | { directive: "manual_required"; workItemId: string }
   >;
 }

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { ChangeSetExecutionHandler } from "../src/changesets/changeset-execution-handler.js";
 import type {
@@ -119,6 +119,31 @@ function setup() {
 }
 
 describe("ChangeSetExecutionHandler", () => {
+  it("rejects a store returning a different begun attempt before media execution", async () => {
+    const c = setup();
+    await expect(c.handler.run(base.workspaceId, base.id, "different-run")).rejects.toThrow("attempt mismatch");
+    expect(c.executor.executeCalls).toBe(0);
+  });
+  it("propagates the queue attempt id to authorization, begin and immediate readback", async () => {
+    const c = setup();
+    const auth = vi.spyOn(c.store, "assertExecutionAuthorized");
+    const begin = vi.spyOn(c.store, "beginExecution");
+    const claim = vi.spyOn(c.store, "beginReconciliation");
+    c.executor.error = new Error("synthetic unavailable");
+    await c.handler.run(base.workspaceId, base.id, "run-1");
+    expect(auth).toHaveBeenCalledWith(base.workspaceId, base.id, "run-1");
+    expect(begin).toHaveBeenCalledWith(expect.objectContaining({ executionRunId: "run-1" }));
+    expect(claim).toHaveBeenCalledWith(expect.objectContaining({ sourceExecutionRunId: "run-1" }));
+  });
+  it.each(["confirmed", "unknown", "success"] as const)("rejects an old job before any %s side effect", async (status) => {
+    const c = setup(); c.store.view.status = status;
+    const read = vi.spyOn(c.values, "readCurrentValues");
+    const follow = vi.spyOn(c.followUps, "scheduleT1");
+    c.store.authError = new Error("old attempt");
+    await expect(c.handler.run(base.workspaceId, base.id, "old-run")).rejects.toThrow("old attempt");
+    expect(read).not.toHaveBeenCalled(); expect(follow).not.toHaveBeenCalled();
+    expect(c.executor.executeCalls).toBe(0); expect(c.executor.reconcileCalls).toBe(0);
+  });
   it("rejects duplicate provider observations before executing", async () => {
     const { handler, values, executor } = setup();
     const original = values.readCurrentValues.bind(values);

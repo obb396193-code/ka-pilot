@@ -46,6 +46,6 @@ describe("changeset authorization / real PG and Worker", () => {
     expect(execute).not.toHaveBeenCalled();
     expect(reconcileUnknown).not.toHaveBeenCalled();
     expect(scheduleT1).not.toHaveBeenCalled();
-    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1 AND dry_run=false", [created.id])).rows).toHaveLength(0);
+    expect((await pool.query("SELECT status FROM execution_runs WHERE changeset_id=$1 AND dry_run=false", [created.id])).rows).toEqual([{ status: "pending" }]);
   });
 });

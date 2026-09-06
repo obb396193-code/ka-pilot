@@ -18,6 +18,8 @@ import type { Pool, PoolClient } from "pg";
 import { decodeChangeSetValues, encodeChangeSetItems } from "./changeset-item-values.js";
 import { ChangeSetPreconditionError, draftHash, requireSuccessfulDryRun, requireValidClock } from "./changeset-dry-run.js";
 import { claimReconciliation, finishReconciliationClaim, type ReconciliationClaim } from "./changeset-reconciliation.js";
+import { assertExecutionRunBinding, enqueueConfirmedExecution, findConfirmedExecution, startConfirmedExecution, type ConfirmedExecutionRun } from "./changeset-execution-queue.js";
+import { JobRepository } from "./job-repository.js";
 export { ChangeSetPreconditionError } from "./changeset-dry-run.js";
 
 export interface NewChangeSetItem {
@@ -63,7 +65,7 @@ export interface ChangeSetRecord {
 }
 
 export type ConfirmResult =
-  | { outcome: "confirmed"; idempotent: boolean; changeset: ChangeSetRecord }
+  | { outcome: "confirmed"; idempotent: boolean; changeset: ChangeSetRecord; executionRun: ConfirmedExecutionRun }
   | { outcome: "conflict"; conflicts: ValueConflict[] }
   | { outcome: "expired" };
 
@@ -365,7 +367,7 @@ export class ChangeSetRepository {
     return this.get(workspaceId, changeSetId);
   }
 
-  async assertExecutionAuthorized(workspaceId: string, changeSetId: string): Promise<void> {
+  async assertExecutionAuthorized(workspaceId: string, changeSetId: string, executionRunId?: string): Promise<void> {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
@@ -374,6 +376,7 @@ export class ChangeSetRepository {
       const header = requireHeader(row.rows[0], changeSetId);
       await assertActiveActors(client, workspaceId, header.initiator, header.credential_owner_user_id);
       await loadItems(client, header);
+      if (executionRunId !== undefined) await assertExecutionRunBinding(client, header, executionRunId);
       await client.query("COMMIT");
     } catch (error) {
       await rollback(client);
@@ -410,10 +413,11 @@ export class ChangeSetRepository {
         if (failedRun.rows.length !== 1) throw new ChangeSetPreconditionError("INVALID_STATE");
       }
       if (header.status === "confirmed") {
-        await requireSuccessfulDryRun(client, header, storedItems, input.expectedHash, true);
+        const hash = await requireSuccessfulDryRun(client, header, storedItems, input.expectedHash, true);
+        const executionRun = await findConfirmedExecution(client, header, hash);
         const changeset = await assemble(client, header);
         await client.query("COMMIT");
-        return { outcome: "confirmed", idempotent: true, changeset };
+        return { outcome: "confirmed", idempotent: true, changeset, executionRun };
       }
       if (header.ttl_expire_at === null) throw new Error("changeset has no TTL");
       requireValidClock(header.ttl_expire_at);
@@ -440,8 +444,9 @@ export class ChangeSetRepository {
         [input.workspaceId, input.changeSetId, hash, sourceStatus],
       );
       const changeset = await assemble(client, requireHeader(updated.rows[0], input.changeSetId));
+      const executionRun = await enqueueConfirmedExecution(client, new JobRepository(this.pool), header, hash, input.now);
       await client.query("COMMIT");
-      return { outcome: "confirmed", idempotent: false, changeset };
+      return { outcome: "confirmed", idempotent: false, changeset, executionRun };
     } catch (error) {
       await rollback(client);
       throw error;
@@ -453,6 +458,7 @@ export class ChangeSetRepository {
     changeSetId: string;
     requestPayload: Record<string, unknown>;
     startedAt: Date;
+    executionRunId?: string;
   }): Promise<
     | { directive: "execute"; executionRunId: string; changeset: ChangeSetRecord }
     | { directive: "reconcile_required" | "skip_terminal" | "not_ready" }
@@ -469,12 +475,14 @@ export class ChangeSetRepository {
       await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
       const storedItems = await loadItems(client, header);
       const directive = executionDirective(header.status);
+      if (input.executionRunId !== undefined) await assertExecutionRunBinding(client, header, input.executionRunId);
       if (directive !== "execute") {
         await client.query("COMMIT");
         return { directive };
       }
       if (header.ttl_expire_at === null) throw new Error("changeset has no TTL");
       if (input.startedAt >= header.ttl_expire_at) {
+        await client.query("UPDATE execution_runs SET status='failed',finished_at=$3,result_payload=$4::jsonb WHERE changeset_id=$1 AND dry_run=false AND status='pending' AND ($2::uuid IS NULL OR id=$2)", [header.id, input.executionRunId ?? null, input.startedAt, JSON.stringify({ reason: "CHANGESET_EXPIRED" })]);
         await client.query(
           "UPDATE changesets SET status=$3 WHERE workspace_id=$1 AND id=$2",
           [input.workspaceId, header.id, transitionChangeSet(header.status, "expire")],
@@ -482,27 +490,18 @@ export class ChangeSetRepository {
         await client.query("COMMIT");
         return { directive: "skip_terminal" };
       }
-      await requireSuccessfulDryRun(client, header, storedItems, undefined, true);
+      const hash = await requireSuccessfulDryRun(client, header, storedItems, undefined, true);
+      const run = await startConfirmedExecution(client, header, hash, input.startedAt, input.requestPayload, input.executionRunId);
       let next = header.status;
       if (next === "confirmed") next = transitionChangeSet(next, "send");
       next = transitionChangeSet(next, "start_execution");
-      const attempt = await client.query<{ attempt: number }>(
-        `SELECT COALESCE(MAX(attempt),0)::int + 1 AS attempt
-         FROM execution_runs WHERE changeset_id=$1 AND dry_run=false`, [header.id],
-      );
-      const run = await client.query<{ id: string }>(
-        `INSERT INTO execution_runs
-           (changeset_id,attempt,status,dry_run,request_payload,started_at)
-         VALUES ($1,$2,'running',false,$3::jsonb,$4) RETURNING id`,
-        [header.id, attempt.rows[0]?.attempt ?? 1, JSON.stringify(input.requestPayload), input.startedAt],
-      );
       const updated = await client.query<HeaderRow>(
         `UPDATE changesets SET status=$3 WHERE workspace_id=$1 AND id=$2 RETURNING ${headerColumns}`,
         [input.workspaceId, input.changeSetId, next],
       );
       const changeset = await assemble(client, requireHeader(updated.rows[0], input.changeSetId));
       await client.query("COMMIT");
-      return { directive: "execute", executionRunId: run.rows[0]!.id, changeset };
+      return { directive: "execute", executionRunId: run.id, changeset };
     } catch (error) {
       await rollback(client);
       throw error;
@@ -557,7 +556,7 @@ export class ChangeSetRepository {
     } finally { client.release(); }
   }
 
-  async beginReconciliation(input: { workspaceId: string; changeSetId: string; now: Date; leaseMs: number }): Promise<ReconciliationClaim | { directive: "not_needed" }> {
+  async beginReconciliation(input: { workspaceId: string; changeSetId: string; now: Date; leaseMs: number; sourceExecutionRunId?: string }): Promise<ReconciliationClaim | { directive: "not_needed" }> {
     requireValidClock(input.now);
     const client = await this.pool.connect();
     try {
@@ -566,6 +565,7 @@ export class ChangeSetRepository {
       const header = requireHeader(locked.rows[0], input.changeSetId);
       await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
       await loadItems(client, header);
+      if (input.sourceExecutionRunId !== undefined) await assertExecutionRunBinding(client, header, input.sourceExecutionRunId);
       const result = header.status === "unknown" || header.status === "executing"
         ? await claimReconciliation(client, header, input.now, input.leaseMs) : { directive: "not_needed" as const };
       await client.query("COMMIT");

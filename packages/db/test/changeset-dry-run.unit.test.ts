@@ -10,14 +10,23 @@ const item = { id: 1, workspace_id: ws, media: "KUAISHOU", account_id: "syntheti
 const hash = hashChangeSetDraft({ items: [{ target_type: item.target_type, target_id: item.target_id, field: item.field, from_value: value, to_value: value }], ttlExpireAt: ttl });
 const currentValues = [{ targetType: "unit" as const, targetId: item.target_id, field: item.field, value }];
 
-function setup(options: { status?: string; hash?: string | null; evidence?: boolean; ttl?: string; confirmHash?: string | null; missingRun?: boolean; updateFails?: boolean } = {}) {
+function setup(options: { status?: string; hash?: string | null; evidence?: boolean; ttl?: string; confirmHash?: string | null; missingRun?: boolean; updateFails?: boolean; queueFails?: boolean } = {}) {
   const header = { id, workspace_id: ws, media: "KUAISHOU", account_id: "synthetic", status: options.status ?? "draft", initiator: user, credential_owner_user_id: user,
     ttl_expire_at: new Date(options.ttl ?? ttl), ttl_expire_at_text: options.ttl ?? ttl, dry_run_hash: options.hash ?? null, confirm_hash: options.confirmHash ?? null };
   let evidence = options.evidence ?? false;
+  let actual: Record<string, unknown> | undefined;
   const query = vi.fn(async (sql: string, params: unknown[] = []) => {
     if (sql.includes("FROM workspaces") || sql.includes("FROM users")) return { rows: [{ id: user }], rowCount: 1 };
     if (sql.includes("FROM changeset_items")) return { rows: [item], rowCount: 1 };
-    if (sql.includes("SELECT COALESCE(MAX(attempt)")) return { rows: [{ attempt: 1 }], rowCount: 1 };
+    if (sql.includes("SELECT COALESCE(MAX(")) return { rows: [{ attempt: 1 }], rowCount: 1 };
+    if (sql.includes("INSERT INTO execution_runs") && sql.includes("'pending',false")) {
+      actual = { id: "00000000-0000-4000-8000-000000000004", changeset_id: id, attempt: params[1], status: "pending", dry_run: false, started_at: null, finished_at: null, request_payload: JSON.parse(params[2] as string) };
+      return { rows: [actual], rowCount: 1 };
+    }
+    if (sql.includes("SELECT r.* FROM execution_runs") || (sql.includes("SELECT r.id FROM execution_runs") && sql.includes("ORDER BY r.attempt DESC"))) return { rows: actual ? [actual] : [], rowCount: actual ? 1 : 0 };
+    if (sql.includes("INSERT INTO jobs") && options.queueFails) throw new Error("synthetic queue failure");
+    if (sql.includes("INSERT INTO jobs") || sql.includes("FROM jobs")) return { rows: [{ id: actual?.id }], rowCount: 1 };
+    if (sql.includes("UPDATE execution_runs SET status='running'") && actual) { actual.status = "running"; actual.started_at = params[2]; return { rows: [actual], rowCount: 1 }; }
     if (sql.includes("FROM execution_runs")) return { rows: evidence ? [{ id: "successful-preview" }] : [], rowCount: evidence ? 1 : 0 };
     if (sql.includes("INSERT INTO execution_runs")) { evidence = true; return { rows: options.missingRun ? [] : [{ id: "new-preview" }], rowCount: options.missingRun ? 0 : 1 }; }
     if (sql.includes("UPDATE changesets SET dry_run_hash")) { header.dry_run_hash = params[2] as string | null; header.confirm_hash = null; return { rows: [header], rowCount: options.updateFails ? 0 : 1 }; }
@@ -32,6 +41,26 @@ function setup(options: { status?: string; hash?: string | null; evidence?: bool
 
 describe("changeset dry-run hard gate (mock SQL)", () => {
   const result = { workspaceId: ws, changeSetId: id, now, expectedHash: hash, items: [{ itemId: 1, status: "success" as const }] };
+  it("rolls back and releases the same transaction when queue creation fails", async () => {
+    const c = setup({ hash, evidence: true, queueFails: true });
+    await expect(c.repository.confirm({ workspaceId: ws, changeSetId: id, now, currentValues })).rejects.toThrow("synthetic queue failure");
+    expect(c.query.mock.calls.at(-1)![0]).toBe("ROLLBACK");
+    expect(c.query.mock.calls.some(([sql]) => sql === "COMMIT")).toBe(false);
+    expect(c.release).toHaveBeenCalledOnce();
+  });
+  it("checks the queued attempt under lock before start, expiry and reconciliation", async () => {
+    const c = setup({ hash, evidence: true });
+    const confirmation = await c.repository.confirm({ workspaceId: ws, changeSetId: id, now, currentValues });
+    if (confirmation.outcome !== "confirmed") throw new Error("expected confirmed");
+    const executionRunId = confirmation.executionRun.id;
+    await expect(c.repository.assertExecutionAuthorized(ws, id, executionRunId)).resolves.toBeUndefined();
+    for (const startedAt of [now, new Date("2026-09-08T00:00Z")]) {
+      await expect(c.repository.beginExecution({ workspaceId: ws, changeSetId: id, executionRunId: "old-run", startedAt, requestPayload: {} })).rejects.toMatchObject({ code: "INVALID_STATE" });
+    }
+    await expect(c.repository.beginReconciliation({ workspaceId: ws, changeSetId: id, sourceExecutionRunId: "old-run", now, leaseMs: 1000 })).rejects.toMatchObject({ code: "INVALID_STATE" });
+    expect(c.query.mock.calls.some(([sql]) => sql.includes("status='failed'") || sql.includes("status='running'"))).toBe(false);
+    await expect(c.repository.beginExecution({ workspaceId: ws, changeSetId: id, executionRunId, startedAt: now, requestPayload: {} })).resolves.toMatchObject({ directive: "execute", executionRunId });
+  });
   it("prepares the actual DB microsecond TTL and persists a matching preview before confirmation", async () => {
     const context = setup();
     expect((await context.repository.prepareDryRun({ workspaceId: ws, changeSetId: id, now })).hash).toBe(hash);
@@ -94,9 +123,10 @@ describe("changeset dry-run hard gate (mock SQL)", () => {
     await expect(setup({ status: "confirmed", hash, confirmHash: "0".repeat(64), evidence: true }).repository.beginExecution({ workspaceId: ws, changeSetId: id, startedAt: now, requestPayload: {} })).rejects.toMatchObject({ code: "FROM_VALUE_CHANGED" });
   });
   it("keeps actual execution attempt counting separate from preview attempts", async () => {
-    const context = setup({ status: "confirmed", hash, confirmHash: hash, evidence: true });
+    const context = setup({ hash, evidence: true });
+    await context.repository.confirm({ workspaceId: ws, changeSetId: id, now, currentValues });
     await expect(context.repository.beginExecution({ workspaceId: ws, changeSetId: id, startedAt: now, requestPayload: {} })).resolves.toMatchObject({ directive: "execute" });
-    expect(context.query.mock.calls.find(([sql]) => sql.includes("SELECT COALESCE(MAX(attempt)"))![0]).toContain("dry_run=false");
+    expect(context.query.mock.calls.find(([sql]) => sql.includes("SELECT COALESCE(MAX("))![0]).toContain("dry_run=false");
   });
   it("requires a running non-dry-run row when persisting actual execution results", async () => {
     const context = setup({ status: "executing" });

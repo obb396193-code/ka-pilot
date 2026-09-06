@@ -109,6 +109,40 @@ describe("ChangeSetRepository", () => {
     expect(results.filter((result) => result.outcome === "confirmed" && result.idempotent)).toHaveLength(1);
     const hashes = (await pool.query("SELECT dry_run_hash,confirm_hash FROM changesets WHERE id=$1", [created.id])).rows[0];
     expect(hashes.dry_run_hash).toBe(hashes.confirm_hash);
+    const confirmed = results.filter((r) => r.outcome === "confirmed");
+    expect(confirmed).toHaveLength(2);
+    expect(confirmed[0]!.executionRun.id).toBe(confirmed[1]!.executionRun.id);
+    const queued = await pool.query("SELECT id,payload,credential_owner_user_id FROM jobs WHERE workspace_id=$1 AND job_type='changeset_execute'", [workspaceId]);
+    expect(queued.rows).toHaveLength(1);
+    expect(queued.rows[0]).toMatchObject({ id: confirmed[0]!.executionRun.id, credential_owner_user_id: userId,
+      payload: { workspaceId, changeSetId: created.id, executionRunId: confirmed[0]!.executionRun.id, media: "KUAISHOU", accountId: "account-1" } });
+  });
+
+  it("rolls back the confirmation and pending run if queue persistence fails", async () => {
+    const created = await create();
+    const faultPool = { connect: async () => {
+      const client = await pool.connect();
+      return { release: () => client.release(), query: (sql: string, args: unknown[]) => {
+        if (sql.includes("INSERT INTO jobs")) throw new Error("synthetic queue fault");
+        return client.query(sql, args);
+      } };
+    } } as unknown as Pool;
+    await expect(new ChangeSetRepository(faultPool).confirm({ workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:00Z"),
+      currentValues: created.items.map((item) => ({ targetType: item.targetType, targetId: item.targetId, field: item.field, value: item.fromValue })) })).rejects.toThrow("synthetic queue fault");
+    expect((await repository.get(workspaceId, created.id)).status).toBe("draft");
+    expect((await pool.query("SELECT confirm_hash FROM changesets WHERE id=$1", [created.id])).rows[0].confirm_hash).toBeNull();
+    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1 AND dry_run=false", [created.id])).rows).toHaveLength(0);
+    expect((await pool.query("SELECT id FROM jobs WHERE workspace_id=$1", [workspaceId])).rows).toHaveLength(0);
+  });
+
+  it("rejects confirmed replay without its original job and does not recreate it", async () => {
+    const created = await create();
+    const input = { workspaceId, changeSetId: created.id, now: new Date("2026-08-19T10:00Z"), currentValues: created.items.map((item) => ({ targetType: item.targetType, targetId: item.targetId, field: item.field, value: item.fromValue })) };
+    const result = await repository.confirm(input);
+    if (result.outcome !== "confirmed") throw new Error("expected confirmed");
+    await pool.query("DELETE FROM jobs WHERE workspace_id=$1 AND id=$2", [workspaceId, result.executionRun.id]);
+    await expect(repository.confirm(input)).rejects.toMatchObject({ code: "INVALID_STATE" });
+    expect((await pool.query("SELECT id FROM jobs WHERE workspace_id=$1", [workspaceId])).rows).toHaveLength(0);
   });
 
   it("creates the header and items atomically and isolates workspace reads", async () => {
@@ -151,6 +185,22 @@ describe("ChangeSetRepository", () => {
     const runs = await pool.query("SELECT attempt,status,result_payload FROM execution_runs WHERE changeset_id=$1 AND dry_run=false ORDER BY attempt", [created.id]);
     expect(runs.rows.map((row) => [row.attempt, row.status])).toEqual([[1, "failed"], [2, "running"]]);
     expect(runs.rows[0]!.result_payload).toEqual({ source: "synthetic" });
+  });
+
+  it("rejects the old attempt before a new retry can be started, expired or reconciled", async () => {
+    const { created, input, run } = await failedExecution();
+    const retry = await repository.retry(input);
+    if (retry.outcome !== "confirmed") throw new Error("expected retry");
+    expect(retry.executionRun.id).not.toBe(run.executionRunId);
+    for (const startedAt of [input.now, new Date("2026-08-19T11:00Z")]) {
+      await expect(repository.beginExecution({ workspaceId, changeSetId: created.id, executionRunId: run.executionRunId, startedAt, requestPayload: {} })).rejects.toMatchObject({ code: "INVALID_STATE" });
+    }
+    await expect(repository.assertExecutionAuthorized(workspaceId, created.id, run.executionRunId)).rejects.toMatchObject({ code: "INVALID_STATE" });
+    await expect(repository.beginReconciliation({ workspaceId, changeSetId: created.id, sourceExecutionRunId: run.executionRunId, now: input.now, leaseMs: 1000 })).rejects.toMatchObject({ code: "INVALID_STATE" });
+    await expect(repository.assertExecutionAuthorized(otherWorkspaceId, created.id, retry.executionRun.id)).rejects.toThrow(/not found/);
+    expect((await repository.get(workspaceId, created.id)).status).toBe("confirmed");
+    expect((await pool.query("SELECT status FROM execution_runs WHERE id=$1", [retry.executionRun.id])).rows[0].status).toBe("pending");
+    await expect(repository.beginExecution({ workspaceId, changeSetId: created.id, executionRunId: retry.executionRun.id, startedAt: input.now, requestPayload: {} })).resolves.toMatchObject({ directive: "execute", executionRunId: retry.executionRun.id });
   });
 
   it("preserves failed evidence when retry current values conflict or TTL expires", async () => {
@@ -220,7 +270,7 @@ describe("ChangeSetRepository", () => {
     await expect(repository.confirm(input)).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(repository.beginExecution({ workspaceId, changeSetId: created.id, requestPayload: {}, startedAt: input.now }))
       .rejects.toMatchObject({ code: "FORBIDDEN" });
-    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1 AND dry_run=false", [created.id])).rows).toHaveLength(0);
+    expect((await pool.query("SELECT status FROM execution_runs WHERE changeset_id=$1 AND dry_run=false", [created.id])).rows).toEqual([{ status: "pending" }]);
   });
 
   it.each(["workspace", "media", "account"])("rejects mismatched child %s scope on read, confirm and execute", async (dimension) => {
@@ -291,6 +341,14 @@ describe("ChangeSetRepository", () => {
     });
     expect(first).toMatchObject({ outcome: "confirmed", idempotent: false });
     expect(second).toMatchObject({ outcome: "confirmed", idempotent: true });
+    if (first.outcome !== "confirmed" || second.outcome !== "confirmed") throw new Error("expected confirmed");
+    expect(second.executionRun.id).toBe(first.executionRun.id);
+    await expect(repository.beginExecution({ workspaceId, changeSetId: created.id, executionRunId: first.executionRun.id,
+      startedAt: new Date("2026-08-19T10:06Z"), requestPayload: { confirm_hash: "cannot-override" } })).resolves.toMatchObject({ directive: "execute", executionRunId: first.executionRun.id });
+    const runs = await pool.query("SELECT id,status,request_payload FROM execution_runs WHERE changeset_id=$1 AND dry_run=false", [created.id]);
+    expect(runs.rows).toHaveLength(1);
+    expect(runs.rows[0]).toMatchObject({ id: first.executionRun.id, status: "running", request_payload: { execution_context: { confirm_hash: "cannot-override" } } });
+    expect(runs.rows[0].request_payload.confirm_hash).not.toBe("cannot-override");
   });
 
   it("keeps a conflicting draft unconfirmed and returns every conflict", async () => {

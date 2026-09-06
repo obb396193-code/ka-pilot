@@ -41,14 +41,15 @@ export class ChangeSetExecutionHandler {
     if (!Number.isSafeInteger(this.reconciliationLeaseMs) || this.reconciliationLeaseMs < 1000 || this.reconciliationLeaseMs > 3_600_000) throw new Error("Invalid reconciliation lease");
   }
 
-  async run(workspaceId: string, changeSetId: string): Promise<ChangeSetHandlerResult> {
+  async run(workspaceId: string, changeSetId: string, executionRunId?: string): Promise<ChangeSetHandlerResult> {
     const view = await this.dependencies.store.load(workspaceId, changeSetId);
     assertScope(view, workspaceId, changeSetId);
+    if (executionRunId !== undefined) await this.dependencies.store.assertExecutionAuthorized(workspaceId, changeSetId, executionRunId);
     const directive = executionDirective(view.status);
     if (directive === "skip_terminal") return this.finishTerminal(view);
     if (directive === "not_ready") return { outcome: "not_ready" };
-    await this.dependencies.store.assertExecutionAuthorized(workspaceId, changeSetId);
-    if (directive === "reconcile_required") return this.reconcile(view);
+    if (executionRunId === undefined) await this.dependencies.store.assertExecutionAuthorized(workspaceId, changeSetId);
+    if (directive === "reconcile_required") return this.reconcile(view, executionRunId);
 
     const current = await this.dependencies.values.readCurrentValues(view);
     const verification = verifyCurrentValues(view.items, current);
@@ -60,6 +61,7 @@ export class ChangeSetExecutionHandler {
       changeSetId,
       requestPayload: { idempotency_key: changeSetId },
       startedAt,
+      ...(executionRunId === undefined ? {} : { executionRunId }),
     });
     if (begun.directive === "skip_terminal") {
       const latest = await this.dependencies.store.load(workspaceId, changeSetId);
@@ -70,12 +72,13 @@ export class ChangeSetExecutionHandler {
     if (begun.directive === "reconcile_required") {
       const latest = await this.dependencies.store.load(workspaceId, changeSetId);
       assertScope(latest, workspaceId, changeSetId);
-      return this.reconcile(latest);
+      return this.reconcile(latest, executionRunId);
     }
     if (begun.directive !== "execute") {
       throw new Error(`Unexpected begin-execution directive: ${begun.directive}`);
     }
     assertScope(begun.changeset, workspaceId, changeSetId);
+    if (executionRunId !== undefined && begun.executionRunId !== executionRunId) throw new Error("Changeset execution attempt mismatch");
 
     let result: ChangeExecutorResult;
     try {
@@ -93,7 +96,7 @@ export class ChangeSetExecutionHandler {
         items: begun.changeset.items.map((item) => ({ itemId: item.id, status: "unknown" })),
       });
       assertScope(completed, workspaceId, changeSetId);
-      return this.reconcile(completed);
+      return this.reconcile(completed, begun.executionRunId);
     }
     const completed = await this.dependencies.store.completeExecution({
       workspaceId,
@@ -104,13 +107,14 @@ export class ChangeSetExecutionHandler {
       items: result.items,
     });
     assertScope(completed, workspaceId, changeSetId);
-    if (completed.status === "unknown") return this.reconcile(completed);
+    if (completed.status === "unknown") return this.reconcile(completed, begun.executionRunId);
     return this.finish(workspaceId, changeSetId, completed, result);
   }
 
-  private async reconcile(view: ChangeSetExecutionView): Promise<ChangeSetHandlerResult> {
-    await this.dependencies.store.assertExecutionAuthorized(view.workspaceId, view.id);
-    const claim = await this.dependencies.store.beginReconciliation({ workspaceId: view.workspaceId, changeSetId: view.id, now: this.now(), leaseMs: this.reconciliationLeaseMs });
+  private async reconcile(view: ChangeSetExecutionView, executionRunId?: string): Promise<ChangeSetHandlerResult> {
+    await this.dependencies.store.assertExecutionAuthorized(view.workspaceId, view.id, executionRunId);
+    const claim = await this.dependencies.store.beginReconciliation({ workspaceId: view.workspaceId, changeSetId: view.id, now: this.now(), leaseMs: this.reconciliationLeaseMs,
+      ...(executionRunId === undefined ? {} : { sourceExecutionRunId: executionRunId }) });
     if (claim.directive === "not_needed") {
       const latest = await this.dependencies.store.load(view.workspaceId, view.id);
       assertScope(latest, view.workspaceId, view.id);

@@ -14,10 +14,18 @@ function setup(options: { status?: string; failedRun?: boolean; preview?: boolea
   const header = { id, workspace_id: ws, media: "KUAISHOU", account_id: "synthetic", status: options.status ?? "failed", initiator: user, credential_owner_user_id: user,
     ttl_expire_at: new Date(ttl), ttl_expire_at_text: ttl, dry_run_hash: options.hash ?? hash, confirm_hash: "confirmHash" in options ? options.confirmHash : hash };
   const row = { ...item };
+  let actual: Record<string, unknown> | undefined;
   const query = vi.fn(async (sql: string, params: unknown[] = []) => {
     if (sql.includes("FROM workspaces") || sql.includes("FROM users")) return { rows: options.authorized === false ? [] : [{ id: user }], rowCount: options.authorized === false ? 0 : 1 };
     if (sql.includes("FROM changeset_items")) return { rows: [row], rowCount: 1 };
-    if (sql.includes("SELECT COALESCE(MAX(attempt)")) return { rows: [{ attempt: 2 }], rowCount: 1 };
+    if (sql.includes("SELECT COALESCE(MAX(")) return { rows: [{ attempt: 2 }], rowCount: 1 };
+    if (sql.includes("INSERT INTO execution_runs") && sql.includes("'pending',false")) {
+      actual = { id: "00000000-0000-4000-8000-000000000004", changeset_id: id, attempt: params[1], status: "pending", dry_run: false, started_at: null, finished_at: null, request_payload: JSON.parse(params[2] as string) };
+      return { rows: [actual], rowCount: 1 };
+    }
+    if (sql.includes("SELECT r.* FROM execution_runs")) return { rows: actual ? [actual] : [], rowCount: actual ? 1 : 0 };
+    if (sql.includes("INSERT INTO jobs") || sql.includes("FROM jobs")) return { rows: [{ id: actual?.id }], rowCount: 1 };
+    if (sql.includes("UPDATE execution_runs SET status='running'") && actual) { actual.status = "running"; actual.started_at = params[2]; return { rows: [actual], rowCount: 1 }; }
     if (sql.includes("FROM execution_runs")) { const exists = sql.includes("r.status='failed'") ? options.failedRun !== false : options.preview !== false; return { rows: exists ? [{ id: "old-run" }] : [], rowCount: exists ? 1 : 0 }; }
     if (sql.includes("INSERT INTO execution_runs")) return { rows: [{ id: "attempt-2" }], rowCount: 1 };
     if (sql.includes("UPDATE changeset_items SET item_status='pending'")) { row.item_status = "pending"; row.fail_reason = null as unknown as string; return { rows: [], rowCount: options.resetCount ?? 1 }; }
@@ -38,7 +46,7 @@ describe("failed retry guarded flow (mock SQL)", () => {
     expect(context.row.item_status).toBe("pending");
     await expect(context.repository.retry(input)).resolves.toMatchObject({ outcome: "confirmed", idempotent: true });
     expect(context.query.mock.calls.filter(([sql]) => sql.includes("UPDATE changeset_items SET item_status='pending'"))).toHaveLength(1);
-    await expect(context.repository.beginExecution({ workspaceId: ws, changeSetId: id, startedAt: now, requestPayload: {} })).resolves.toMatchObject({ executionRunId: "attempt-2" });
+    await expect(context.repository.beginExecution({ workspaceId: ws, changeSetId: id, startedAt: now, requestPayload: {} })).resolves.toMatchObject({ executionRunId: "00000000-0000-4000-8000-000000000004" });
     expect(context.query.mock.calls.find(([sql]) => sql.includes("INSERT INTO execution_runs"))![1]![1]).toBe(2);
   });
   it.each(["draft", "partial", "success", "unknown", "executing", "expired", "rolled_back"])("rejects retry from %s", async (status) => {
