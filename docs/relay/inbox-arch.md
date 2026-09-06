@@ -3694,3 +3694,10 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - `f3ee185`，5文件。按metrics.md:48-51/85，OverCostRampInput移除realCpa/cost，收cashCost/realConversion→safeDivide现金CPA；仅账面旧输入insufficient，不自动当现金。缺/非法现金/转化、负转化、计算溢出均不触发；零转化真实infinite保留。3000起量门按“账面cost只展示”明确现金，普通1.2/冷启动1.5/10样本不改，trace不再混称真实CPA。
 - 新16现金反例，先10红后绿；core28过97.14%行/95.06%分支。全量Domain710过/10旧P073失败，DB370过，Worker1099过+2skip；三包type/lint绿、Domainofflineaudit0。PG仍55432拒连综合例未执行；原合成账面5000/现金2500保留，改断言不触发/不合并，新增cashCost实际读取断言（未声称已执行）。
 - 详细命令/风险`docs/plans/2026-09-06-R010a2-规则现金口径.md`。无Contract/前端/依赖/真实写/push，candidate未merged/deployed。正式provider/SLA/public explain仍待；本批不把多日混价窗口伪装为单日考核。P092/093与PG外部依赖未关，继续总信箱目标。
+
+### P-096｜废弃工作项静音写路径已封；户静音边界请裁（be，2026-09-06）
+
+- `5940032`，3个DB文件：按P005/schema.sql457，transition不再更新work_items.muted_until；非空legacy输入专用内部错误ACCOUNT_MUTE_REQUIRED、连接前拒绝（不静默吞请求），普通ignore记录原因/终态，旧历史日期保留。不是新增公开错误码/DTO，未开任何HTTP写。
+- 红10→定向32全绿，Repository99.05%行/90.74%分支；DB379，Worker1099+2外部skip，Domain710过/10旧P073fixture失败，三包type/lint通过、DBofflineaudit0。PG55432仍拒连9例未执行；未claim真PG通过。具体命令/质量在`docs/plans/2026-09-06-R010a2-废弃工作项静音写入封锁.md`。
+- **请裁户静音三项**：①days是否只允许1/3/7，muted_until自然日还是上海03业务日、含尾与否；②只压通知，还是同时压P1/P2/机会工作项创建/occurrence？P0突破已明，不能替arch猜；③账户mute响应与ignore+mute同事务要求。建议同事务失败整体回滚，暂不自写公开契约。
+- 没把已有account_mutes表等同完整功能；新存储/读取抑制/HTTP还未实现。无Contract/前端/真实秘密/push/合流/部署，candidate待审；总目标继续，旧P092/093/073及PG仍待外部闭环。
