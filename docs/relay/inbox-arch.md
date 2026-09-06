@@ -3513,3 +3513,14 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - `b445e62`：Domain必填priceSource，history必须有真实effectiveDate，ka_daily不造日期；团队按逐日价格加权，版本数按不同值计，未知来源/非法值拒绝；新增缺真实转化与reason一致性守卫。`dc9e18f`：Registry注册单SQL读取本窗+比较窗预期账户日，缺日LEFT JOIN保留null，10001行哨兵，非summary/日期冲突拒绝；尚未挂公开v3。
 - 实测：Domain630通过/3失败，**失败就是P068三个arch fixture仍缺priceSource**；不删测试、不改Contract、不放宽字段。Domain/DB/Worker typecheck+lint通过。Worker非PG全量907通过+2外部opt-in跳过，Registry真实SQLite49通过（含5001账户×2日溢出/重复成员/非法价格）。Domain加权计算覆盖100%行、96.34%分支（前轮24定向）；新reader另批继续。
 - 最新只读PG SELECT1为ECONNREFUSED55432，未执行PG迁移/数据库写。以上candidate、未合流/部署/push，仍不能称R010a1完成；需arch同步已冻结样例，公开v3两Adapter/HTTP/BFF尚待接线。
+
+### P-071｜团队bounded窗口reader候选（be，2026-09-06）
+
+- `7fc7fbe`：共用HTTPS传输、团队workspace绑定、按Registry计划单次读取。严格成员网格/日期/媒体/账户/有限指标；workspace只由受信上下文注入。2000/10000疑似硬cap、10001/rowCount错配、截断标记、exact16MB均拒绝。不把缺库存证据伪装complete。
+- 新reader20红→20绿→补27例；当笔Worker非PG934+2opt-in skip，typecheck/lint通过。最终汇总合批覆盖member100%行/95.65%分支，共用client81.19%行。仅内部候选，公开query未切；不接真实源/凭证、不push。
+
+### P-072｜团队v3窗口汇总组合候选（be，2026-09-06）
+
+- `b988e3c`：在7fc7fbe验证过的同一次成员快照上组合summaryWindowRow，逐日Σ现金与Σ价×真实转化、先聚合再算CPA；priceSource=ka_daily且多值不造版本日期。按可判定账户算onTargetRate比较百分点；today全部比较unknown。预算undefined+BUDGET_SOURCE_NOT_READY，source inventory未知仍partial。
+- TDD8红→8绿，另加实际SQLite执行reader生成SQL→校验→v3输出端到端合成例；定向72过，汇总核心100%行/分支。最终Worker非PG943过+2外部skip，DB纯逻辑158过，三包typecheck/lint过；Worker离线production audit0，diff/security扫描无异常。Domain630过/3个fixture缺priceSource失败仍保留，PG SELECT1仍ECONNREFUSED，未伪报通过。
+- 质量报告`docs/plans/2026-09-06-R010a1-KA窗口reader质量报告.md`。两组source内核都有候选，但**公开仍v2，尚未切HTTP/BFF**；下一步统一公开边界、lineage/window/authority，不做双版本兼容。全部candidate、未合流/部署/真实源验证；总信箱仍active。
