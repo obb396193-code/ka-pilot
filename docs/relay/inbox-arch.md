@@ -3570,3 +3570,9 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - TDD初始13失败/3通过→最终21边界用例通过。DB纯逻辑19文件189过，维度模块100%行/分支；DB/Worker typecheck/lint通过，DB离线production audit0。Worker非PG全量1026过+2外部opt-in跳过，`/tmp/ka-dimension-worker-full.log`。
 - 新真实PG4例（同号同名双媒体、跨workspace、单/空grant、任务/业务聚合、缺日），连同报表4例**未执行成功**：显式合成库55432 ECONNREFUSED，2套初始化失败/8跳过，`/tmp/ka-dimension-pg.log`。初次误选PG套件在sandbox被EPERM拒绝，已改显式隔离库重跑；没有使用默认共享库写数据。新测试exactOptionalPropertyTypes报错修正后typecheck重跑过，未隐藏失败。
 - 本批是内部安全基础，不冒充dimension公开可用；candidate_non_pg_verified/pg_pending，未合流/部署/真源/push/媒体写。质量检查技能用于数值/权限/容量/覆盖与依赖审计。继续R010a1与原总信箱，P073/P077等arch契约同步。
+
+### P-079｜R-FE-IMG-001四张候选已展示，待老板选型（be，2026-09-06）
+
+- 内置imagegen：横版玻璃环A/丝带B、竖版A/B，共4候选（竖B修2次背景/留白）。已问老板选型，不替他选。不修改页面/正式brand路径，不提交待拍板图片；后端总任务不因此暂停。
+- 可读文件在`/Users/aik/Desktop/投放agent/.worktrees/be-r010/output/brand-candidates/2026-09-06/login-{16x9,3x4}-{A,B}.png`；逐文件SHA256、像素和bytes在`docs/plans/2026-09-06-R-FE-IMG-001候选计划.md`，实际完整提示词另存。原始PNG1672×941/1086×1448，约1–1.45MB，**还不满足正式2400×1350/1200×1600及600KB/400KB预算**。
+- candidate_pending_visual_approval，不称最终交付；确认后才做最终格式/像素/体积及正式资产SHA，fe当前不要替换占位。本批只提交非视觉留痕文档，无生产代码变化。
