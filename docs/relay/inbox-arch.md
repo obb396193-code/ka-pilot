@@ -3215,3 +3215,19 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 - 契约缺口：本批未新增字段；缺 fixture 项见台账 TODO-fixture（dimension 五维 / gap 两维 / pivot 两组 / 账户详情多户 / 账户级趋势 / 任务列表只 2 条 / 任务绑定规则）。
 - 冲突点 C3（账户池九态 + 生命周期 vs 老板八阶段叫法）等老板确认，代码按契约。
 - 继续：页 5 自动化（React Flow 画布 `workflow-graph/v1`）→ 报告 → 集成与通知 → 知识库 → 商品素材 → 设置 → 治理后台 → Agent 抽屉 + ⌘K，做完再发一次 SHA。
+
+## F-007 契约缺口（fe → arch，2026-09-05；不自造字段，页面先显 − / 示例）
+
+| # | 页 | 缺口 | 前端现状 | 建议 |
+|---|---|---|---|---|
+| G1 | 商品素材 · 素材池 | 清单要「CPA / CTR / CVR」，`GET /materials` 列表 DTO 的 `ratios` 只有 `ctr` / `realCpa`，无 cvr | CVR 列显 − | 加 `ratios.cvr`（分母口径按 experiments policy `conversionRateDenominator`），或明确用 `inferenceRate` |
+| G2 | 投放任务 · 列表 | tab「关注」无契约：任务级关注 / `me/watchlist` 只有账户 | 关注 tab 空 + toast | `me/watchlist` 支持 `{type: task, id}`，或 `GET /tasks?starred=true` |
+| G3 | 任务详情 · SOP 与自动化 | 「绑定规则 / 工作流」无端点（rules 无 task 维度） | 暂显 rules/list 全部启用规则 + 官方模板一行 | `GET /tasks/:id/rules` 或 `GET /rules?task_id=`；workflow_definitions 绑定任务的关系表 |
+| G4 | 自动化 · 运行中心 | `GET /workflows/runs` items 无 `taskId`，不能链回任务 | 运行详情才有 taskId | 列表加 `taskId`（可空） |
+| G5 | Agent 抽屉 | 上下文「+ 账户」：`agent/sessions` 的 context 只在创建时给，无追加端点 | 本地加 chip | `POST /agent/sessions/:id/context {items}` 或 messages 帧携带 context 覆盖 |
+| G6 | ⌘K | `GET /search?q=` 的 `type` 枚举（fixture 只 account / task） | 按 account/task/work_item/material/document 五类渲染 | 冻结枚举 = account｜task｜work_item｜material｜document |
+| G7 | 知识库 | 树无 Category 表：父文档当文件夹（与 ContentRadar 的 categories + items 不同） | 按「有子节点的文档 = 文件夹」做 | 确认这就是设计；若要独立文件夹实体需加 `kind: folder` |
+| G8 | 报告 · 日报 | `actions.pushDingtalk / exportPdf` 是布尔，无「已推送 / 推送时间」 | 按钮只 toast | 日报返回 `delivery: {status, at, target}` 与 report_runs 对齐 |
+| G9 | 设置 · 我的负载 | 4.9 无契约（P1） | 示例块五格 − | 出 `GET /me/workload` DTO（负责任务 / 账户 / 待处理 / 值班 / 负载分来源） |
+
+TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造最小 mock 并标示例）。
