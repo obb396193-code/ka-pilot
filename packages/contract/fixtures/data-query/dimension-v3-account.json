@@ -9,8 +9,10 @@
       "dimension": "account",
       "rows": [
         {
-          "key": "account-1",
+          "key": "KUAISHOU:account-1",
           "label": "AAC拉新_快手_01",
+          "media": "KUAISHOU",
+          "accountId": "account-1",
           "metrics": {
             "cost": {
               "value": 5200.0,
@@ -84,6 +86,7 @@
               "value": 38.0,
               "effectiveDate": "2026-09-01"
             },
+            "priceSource": "history",
             "onTarget": true,
             "costStatus": "green",
             "costStatusReason": "window_ok",
@@ -95,8 +98,10 @@
           "anomaly": false
         },
         {
-          "key": "account-2",
+          "key": "KUAISHOU:account-2",
           "label": "AAC拉新_快手_02",
+          "media": "KUAISHOU",
+          "accountId": "account-2",
           "metrics": {
             "cost": {
               "value": 4200.0,
@@ -170,6 +175,7 @@
               "value": 38.0,
               "effectiveDate": "2026-09-01"
             },
+            "priceSource": "history",
             "onTarget": false,
             "costStatus": "red",
             "costStatusReason": "window_over",
@@ -181,8 +187,10 @@
           "anomaly": true
         },
         {
-          "key": "account-5",
+          "key": "KUAISHOU:account-5",
           "label": "AAC拉新_快手_05",
+          "media": "KUAISHOU",
+          "accountId": "account-5",
           "metrics": {
             "cost": {
               "value": null,
@@ -256,6 +264,7 @@
               "value": 38.0,
               "effectiveDate": "2026-09-01"
             },
+            "priceSource": "history",
             "onTarget": null,
             "costStatus": null,
             "costStatusReason": "cash_missing",
@@ -274,17 +283,20 @@
       },
       "lineage": {
         "source": "canonical",
-        "workspaceKind": "team",
-        "window": {
-          "from": "2026-09-01",
-          "to": "2026-09-05",
-          "preset": "month_to_date"
-        },
+        "workspaceKind": "personal",
+        "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "business_day_0300",
         "metadataAvailability": "known",
         "authority": {
           "policyVersion": "2026-08-24",
           "useCase": "cross_media_operations",
           "role": "default_authoritative"
+        },
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05",
+          "preset": "month_to_date"
         },
         "coverage": {
           "complete": true
@@ -301,6 +313,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "8 维之一：账户；account-5 当日缺数 → 三态 missing、比率 undefined、achievement gray/no_data，前端显 −"
+    "_note": "8 维之一：账户；行带三键 media/accountId，key=media:accountId（v1.7.5，跨媒体同号不合并）；account-5 当日缺数 → 三态 missing、比率 undefined、assessment cash_missing"
   }
 }

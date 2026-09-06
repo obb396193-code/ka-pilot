@@ -84,6 +84,7 @@
               "value": 38.0,
               "effectiveDate": "2026-09-01"
             },
+            "priceSource": "history",
             "onTarget": true,
             "costStatus": "yellow",
             "costStatusReason": "day_over_window_ok",
@@ -139,6 +140,8 @@
     }
   },
   "meta": {
-    "requestId": "fixture-summary-v3-yellow"
+    "requestId": "fixture-summary-v3-yellow",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
   }
 }

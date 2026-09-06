@@ -1,7 +1,7 @@
 {
   "ok": true,
   "data": {
-    "mode": "ka_data",
+    "mode": "platform",
     "source": {
       "queryId": "account.summary",
       "rowSchemaVersion": "account.summary/v3",
@@ -84,6 +84,7 @@
               "value": 38.0,
               "effectiveDate": "2026-09-01"
             },
+            "priceSource": "history",
             "onTarget": null,
             "costStatus": null,
             "costStatusReason": "cash_missing",
@@ -100,8 +101,8 @@
         "availability": "available"
       },
       "lineage": {
-        "source": "ka_data",
-        "workspaceKind": "team",
+        "source": "canonical",
+        "workspaceKind": "personal",
         "datasetVersion": "canonical-20260905-01",
         "queryTemplateVersion": "account-summary-v3",
         "metricVersion": "account-metrics-v2",
@@ -139,6 +140,8 @@
     }
   },
   "meta": {
-    "requestId": "fixture-summary-v3-cash-missing"
+    "requestId": "fixture-summary-v3-cash-missing",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
   }
 }

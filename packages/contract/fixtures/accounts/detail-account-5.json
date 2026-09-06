@@ -164,6 +164,7 @@
           "value": 38.0,
           "effectiveDate": "2026-09-01"
         },
+        "priceSource": "history",
         "onTarget": null,
         "costStatus": null,
         "costStatusReason": "cash_missing",
