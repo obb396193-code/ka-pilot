@@ -29,9 +29,10 @@ export function computeWindowAssessment(input: readonly unknown[], budgetUsageRa
     ? metricValue(row.price.value * row.realConversion.value) : metricValue(null)));
   const costSpace = cash.availability === "available" && target.availability === "available"
     ? metricValue(target.value - cash.value) : metricValue(null);
-  let reason: "assessment_missing" | "cash_missing" | "window_over" | "day_over_window_ok" | "window_ok";
+  let reason: "assessment_missing" | "cash_missing" | "conversion_missing" | "window_over" | "day_over_window_ok" | "window_ok";
   if (!completePrices) reason = "assessment_missing";
-  else if (costSpace.availability !== "available") reason = "cash_missing";
+  else if (cash.availability !== "available") reason = "cash_missing";
+  else if (costSpace.availability !== "available") reason = "conversion_missing";
   else if (costSpace.value < 0) reason = "window_over";
   else {
     const daily = new Map<string, { cash: number; target: number }>();
@@ -43,7 +44,7 @@ export function computeWindowAssessment(input: readonly unknown[], budgetUsageRa
     }
     reason = [...daily.values()].some((day) => day.cash > day.target) ? "day_over_window_ok" : "window_ok";
   }
-  const determined = reason !== "cash_missing" && reason !== "assessment_missing";
+  const determined = reason !== "cash_missing" && reason !== "conversion_missing" && reason !== "assessment_missing";
   return {
     costSpace,
     assessment: windowAssessmentSchema.parse({

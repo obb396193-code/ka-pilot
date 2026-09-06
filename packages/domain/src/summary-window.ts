@@ -15,7 +15,7 @@ export const windowAssessmentSchema = z.object({
   priceVersions: z.number().int().min(2).optional(),
   onTarget: z.boolean().nullable(),
   costStatus: z.enum(["green", "yellow", "red"]).nullable(),
-  costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "assessment_missing"]),
+  costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing"]),
   budgetUsageRate: ratioValueSchema,
 }).strict().superRefine((assessment, context) => {
   if (assessment.priceVersions !== undefined && assessment.price !== null) {
@@ -29,7 +29,7 @@ export const windowAssessmentSchema = z.object({
   }
   const expected = {
     window_ok: [true, "green"], day_over_window_ok: [true, "yellow"], window_over: [false, "red"],
-    cash_missing: [null, null], assessment_missing: [null, null],
+    cash_missing: [null, null], conversion_missing: [null, null], assessment_missing: [null, null],
   } as const;
   const [target, status] = expected[assessment.costStatusReason];
   if (assessment.onTarget !== target || assessment.costStatus !== status) {
