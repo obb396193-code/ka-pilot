@@ -981,3 +981,26 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **`GET /api/v1/tasks/:id/bindings`** → `{taskId, rules:[{ruleId,name,type,enabled,autonomyLevel,scope:"task"|"account",boundAt}], workflows:[{workflowId,name,version,status,scope,lastRun:{runId,status,at}|null}], sop:{sopRunId,template,progress:RV}|null}`；无绑定 → 空数组/null，**不用全局规则冒充**。fixture `rules/bindings-fixture-task-ready.json`。
 - `account.trend/v3` 单账户：`params.accountIds=[id]`，lineage 加 `accountScope:{media,accountIds}`；fixture `accounts/trend-account-1.json`。
 - 小传/时间线/结构树按账户各一份 fixture 是样例不是契约：`accounts/{detail,timeline,structure}-<id>.json` 由 `GET /accounts/:media/:id/{bio|timeline|structure}` 同一 DTO 返回；无数据的账户显诚实空态。
+
+## v1.7.4 追加（2026-09-06 arch；回应 fe F-007 契约缺口 G1–G9 + Codex P-058/P-061；R-014/R-015/R-010a1 分别实现）
+
+**fe G1–G9**
+- G1 `GET /materials` items 加 `ratios.cvr: RV`（分母按 `material_experiment_policies.conversionRateDenominator`，默认 click；无策略 → 默认口径并在 `lineage.warnings` 注明）。→ R-015。
+- G2 关注任务：`me/watchlist.items[]` 升为 `{type:"account"|"task", media?, accountId?, taskId?}`（无 `type` 视为 account，老数据兼容；JSONB 不动表）；`GET /tasks?starred=true` 按当前用户 watchlist 过滤。→ R-014。
+- G3 已冻 v1.7.3 `GET /tasks/:id/bindings`。
+- G4 `GET /workflows/runs` 与工作台面板 items 加 `taskId: uuid|null`（源 `workflow_runs.task_id`）。→ R-010b。
+- G5 不加端点：v1.7.1 已定消息体带 `context:{page, accounts?}`，抽屉「+账户」chip = 下一条消息的 context；会话级 context 只在创建时给。
+- G6 `GET /api/v1/search?q=&type?` 冻结：`type ∈ account|task|work_item|material|document`，items `{type, id, title, subtitle, href, workspaceKind}`，每类 ≤5，无 LLM。→ R-014。
+- G7 确认设计：知识库无独立文件夹实体，`parent_id` 有子节点的文档即"文件夹"（对齐 CR `knowledge_items` 自引用），不加 `kind:folder`。
+- G8 日报 `daily-v1` 加 `delivery:{status:"not_sent"|"queued"|"sent"|"failed", at, target}`（源 `outbound_messages` 中 ref 指向该 report_run 的最新一条；无 → not_sent）；`actions.pushDingtalk/exportPdf` 布尔保留表示"可用"。→ R-014。
+- G9 `GET /api/v1/me/workload` → `{tasks:{owned, participating}, accounts:{owned, watching}, pending:{workItems, approvals, dispatches, runsWaitingConfirmation}, oncall:{today:boolean, next:{at, role}|null}, loadScore:{value:RV, source:"not_configured"|"formula"|"manual", formula:string|null}}`；全部从现有表计数，**负载分公式老板未定 → `loadScore.value` undefined + `source:"not_configured"`，不造分**。→ R-014。
+
+**Codex P-058**
+1. `costStatusReason` 加 **`conversion_missing`**（现金与考核价可得、真实转化缺）→ `(onTarget null, costStatus null)`；`cash_missing` 只指现金缺。映射表相应加一行；fixtures 现无此例，arch 后补一份。
+2. `compare.deltas.onTargetRate` 分母冻结 = **窗口内可判定账户数**（onTarget 非 null），分子 = 其中 onTarget=true；delta 为百分点差（同 cashCpa 约定）。
+3. `budgetUsageRate` 依赖 `task_budget_history`（migration 014 / R-012）；014 未落前 R-010a1 返回 `undefined` 并在 `lineage.warnings` 加 `BUDGET_SOURCE_NOT_READY`；**不前移迁移编号，不拿 `tasks.budget` 或媒体账户 budget 代替**。
+
+**Codex P-061（团队源考核版本）**
+- 团队空间 price(d) = `dwd_account_daily.cash_assessment(d)`（现金口径考核价，ka-src-0011 §考核价）；达标/costSpace 仍按逐日 Σ 式，不需要版本。
+- 展示价：`assessment.price.effectiveDate` 改为 `calendarDate | null`——**null 只允许团队源**（源无版本信息），并加 `assessment.priceSource: "history"|"ka_daily"`；窗口内 `cash_assessment` 唯一值 → `{value, effectiveDate:null}`；多个不同值 → `price=null` + `priceVersions = 不同值个数`（不是天数）+ `lineage.warnings: ASSESSMENT_VERSION_UNKNOWN`。个人空间仍走 `assessment_price_history` 真版本。
+- KA `conv` = fact_conv BI 转化 → 只映射 `realConversion`；媒体回传无源 → `conversion` missing、cvr/gap undefined（P-063 已实现，冻结）。

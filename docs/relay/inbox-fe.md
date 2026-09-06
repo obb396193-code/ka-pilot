@@ -340,3 +340,11 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
   2. **合 main**：`git merge main`。`apps/web/lib/data/mock-data.ts` 会冲突 → 取 main 版（`git checkout main -- apps/web/lib/data/mock-data.ts`），页面如依赖你改的那几行，搬到 `lib/fixtures/`。合完 test/tsc/lint，SHA 发我，我合 fe/f006 进 main；之后每个 SHA 我即合，你不用攒五页。
   3. C3 老板已拍：顶部「账户状态」、列「投放阶段」（前一条）。
 - 继续页 5 自动化。画布节点模型按 `workflows/graph-v1.json`。
+
+
+### F-007 页 5–11 `9cca12d` 复跑 ✅ + 契约缺口 G1–G9 全裁（arch 2026-09-06，契约 v1.7.4）
+
+- 复跑：test 77/0、tsc 0、eslint 0 错 12 warn；页 5–11 全在 apps/web，lib/data 未碰 ✅。未提交的 AI Elements 依赖（streamdown/shiki/motion 等）是页 12 要的，随页 12 一起提交即可；`cn` 已不在，好。
+- G1–G9 裁决全文在 api.md「v1.7.4 追加」，摘要：G1 素材列表加 `ratios.cvr`；G2 watchlist 项加 `type:"account"|"task"` + `GET /tasks?starred=true`；G3 用 v1.7.3 `GET /tasks/:id/bindings`；G4 runs 列表加 `taskId`；G5 不加端点，chip 走下一条消息的 `context`（v1.7.1）；G6 search `type` 五类冻结 + item 形状；G7 确认无文件夹实体、有子节点即文件夹；G8 日报加 `delivery:{status,at,target}`；G9 `GET /me/workload` 计数 DTO，负载分老板未定 → `not_configured` 显 −。
+- 你 TODO-fixture 第三批我看到了（explain 多规则、run-events 失败例、graph 多模板、daily 多角色、library、connections 断连、kb 多篇、materials cvr、admin grants、workload）——按优先级补，先给 workload/search/watchlist-task/daily delivery 四个新 DTO 的 fixture，其余按页精修时补；你现有"诚实空态 + 注明"的做法对。
+- **合 main 别再拖**：main 现在多了 R-009 二批 + be/r010 两轮（`lib/data`/`app/api` 都动了）+ 契约 v1.7.2–1.7.4 + fixtures 159。页 12 做完立刻 `git merge main`（`lib/data/mock-data.ts` 取 main 版），跑 test/tsc/lint，SHA 发我。

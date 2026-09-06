@@ -3437,3 +3437,38 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - 最终 **Domain617 / DB真实PG362 / Worker891+2外部opt-in skip**，三包type/lint过；定向89、覆盖113，核心两文件行95%/分支88.78%；Worker production offline audit0。日志/tmp/ka-bi-{domain-final,db-retry,worker-final,coverage}.log。Gateway/Web没改没重跑，不混旧数。
 - 失败如实保留：映射初次15fail含1个新anomaly fixture漏标志；原样client再锁定1个整数日期失败；alias先2fail/15pass。DB首轮beforeAll 10s超时，在测试库schema重建间打断，36套失败/131pass/231skip；原隔离合成库加hookTimeout30s后362过，没改生产限额。10k定向默认5s一次超时，30s全量/覆盖过。
 - 仅6代码/测试文件，Contract/视觉/runbook/依赖0diff；未push/合流/部署/真实源访问。行schema仍v2，不宣称公开v3完成。P058/P061细口径仍待您，先继续已派R013b产品登录session清理；下一批计划见docs/plans/2026-09-06-R013b会话保留期清理.md，尚未执行清理，不涉及聊天记录。
+
+
+---
+
+### P-064 ✅合流｜be/r010 @ 2eb9983 → main `f9bb6ef`｜arch 2026-09-06
+
+| 项 | 结果 |
+|---|---|
+| 门禁（隔离工作树 + `ka_arch_r010_test` 真 PG） | domain 617 / db 362 / worker 891+2 skip / gateway 36 / web 111；tsc+eslint 全 0 |
+| 范围 | worker 29 / db 14 / domain 5 / docs 7；Codex 独有提交只碰 runbook §2.6（合规）；contract 0；台账 0（纪律已落实） |
+
+### P-057 ✅｜R-013b 单轮 Worker `162e7cf` + `bcb67e7`
+- 租约 scope（workspace + jobTypes 白名单）参数绑定、只在 scoped 时加 `attempts<max`，unscoped 老路径不变；worker:once = 父进程 fork 子进程 + 硬截止 SIGKILL + **等 close 才算结束**，blocked_auth 退出 1，无 service identity、无自动迁移、无全局恢复，只转发 strict 事件。✅ f.yml 仍等 OS。
+
+### P-058 三裁 → 契约 v1.7.4
+1. 新 reason `conversion_missing`（现金/价可得、真实转化缺）→ (null,null)；`cash_missing` 只指现金缺。
+2. `onTargetRate` = 达标账户 / 可判定账户（onTarget 非 null）；delta 百分点差。
+3. 014 未落前 `budgetUsageRate` undefined + `lineage.warnings: BUDGET_SOURCE_NOT_READY`；不前移迁移、不拿 tasks.budget 代替。
+
+### P-059 ✅｜逐日加权考核 `aa577ac` + 历史版本读取 `19359b0`
+- `computeWindowAssessment`：versionKey 区分版本、唯一版本才给展示价、`priceVersions` 只在混合时；target=Σprice(d)×conv(d)、costSpace、日超窗口内→黄；未来价/版本元数据矛盾/溢出拒绝；compare 等长平移、today→不可比。Repository 单 SQL：expected 账户日 × task_accounts 有效期 × history 逐日 LATERAL 最新版（effective_date,id 倒序）、10001 哨兵、16MB、≤1000 户 ≤366 天。✅ 与 v1.7.2 逐条对上。
+
+### P-060 ✅｜共享只读快照 `b05ea60` + 入队时钟 `657803c`
+- `withSemanticReadSnapshot`：RR READ ONLY + statement/lock/idle 三限额 + error listener 损坏即 destroy；platform source 的 lineage/summary/trend/table 同快照；DB 故障固定 SOURCE_UNAVAILABLE。enqueue 默认 `run_after=now()`（DB 时钟）✅。
+
+### P-061 裁 → 契约 v1.7.4
+- 团队 price(d)=`cash_assessment(d)`；`effectiveDate` 允许 null（仅团队源）+ `priceSource`；唯一值给值、多值 → `priceVersions=不同值个数` + warning `ASSESSMENT_VERSION_UNKNOWN`；KA conv→realConversion 冻结（P-063 实现）。
+
+### P-062 ✅｜个人窗口组合 `ea69779`
+- 一个 RR 会话内 lineage/summary/history/上一窗口；总计与 history 现金/真实转化一致性校验（NUMERIC 微差容忍）、账户日计数一致、缺日不丢、越界 fail closed；Registry 接 `date_from/date_to` 且禁混拼。✅ onTargetRate 待 P-058（已裁）。
+
+### P-063 ✅｜KA BI 转化纠偏 `591ab67`
+- KA `conv` 只进 `realConversion`，`conversion` missing；同值多别名容忍、异值抛；SQLite 整数 ds CAST TEXT。依据 ka-src-0010:80-81。✅
+
+### fe `9cca12d`（页 5–11）复跑 ✅；G1–G9 全裁 → v1.7.4（见 inbox-fe）
