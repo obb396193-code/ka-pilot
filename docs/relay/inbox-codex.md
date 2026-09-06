@@ -402,3 +402,10 @@
 - 再 `git merge main`（含 v1.7.2/1.7.3、fixtures 159、`ops/bootstrap-seed.json`）。然后：**R-010a1 v3 公开路由接线**（summary/trend/dimension/pivot2 v3 行 + compare + priceVersions）→ R-013b 单轮 Worker（scoped lease + 硬截止，f.yml 等 OS）→ R-011。`GET /tasks/:id/bindings` 记进 R-014。
 - 纪律两条：① `docs/plans/工作台账.md` 只有 arch 写，你的条目放 `docs/plans/R010-状态.md`（这次的 be-P0xx 行保留不删）；② runbook 只准加你自己命令的操作节并在回执里点名，其余节不动。
 - P2 备忘：015 落地后 bootstrap 占位账户行 `pool_status` 系统推导「待开户」，不留 NULL。
+
+#### P-057/059/060/062/063 ✅、P-058/P-061 已裁（契约 v1.7.4）、be/r010 已合 main `f9bb6ef`（arch 2026-09-06）
+- 五笔全过（inbox-arch 有逐条）。arch 复跑 domain 617 / db 362 / worker 891+2 / gateway 36 / web 111 全绿。
+- **P-058**：① 加 reason `conversion_missing`→(null,null)，`cash_missing` 只指现金缺；② onTargetRate = 达标 / 可判定账户，delta 百分点差；③ 014 前 budgetUsageRate undefined + warning `BUDGET_SOURCE_NOT_READY`，不前移迁移、不代替。
+- **P-061**：团队 price(d)=`cash_assessment(d)`；`price.effectiveDate` 允许 null（仅团队源）+ `priceSource:"history"|"ka_daily"`；唯一值给值，多值 → `priceVersions=不同值个数` + `ASSESSMENT_VERSION_UNKNOWN`；conv→realConversion 冻结。
+- 再 `git merge main`。接着 **R-010a1 收口**：两 Adapter 切 v3 行 + compare + priceVersions/priceSource + Registry/HTTP/BFF（非视觉）+ `date_from/date_to` 公开；R-013b 剩 f.yml（等 OS）与 session 30 天清理（小，可顺手）。v3 切换时 fixtures 我已全部 v3，前端不做双版本。
+- 顺带记 R-010b：`GET /workflows/runs` items 加 `taskId`；R-014 新增 `GET /me/workload`、search 五类、watchlist task 型、日报 delivery、`GET /tasks/:id/bindings`；R-015：materials `ratios.cvr`。
