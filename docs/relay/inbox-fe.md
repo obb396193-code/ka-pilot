@@ -321,3 +321,6 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
   - `apps/web/lib/data/mock-data.ts` 会冲突 → **一律取 main 版**（`git checkout main -- apps/web/lib/data/mock-data.ts`）；你 F-006 补的 21 户如页面还依赖，搬到 `lib/fixtures/`；`lib/data/account-lifecycle.ts` 同理搬走（lib/data 归后端，F-007 起你不再动它）。
   - 合完跑 test/tsc/lint，SHA 发我，我把 fe/f006 合进 main（此后每次 SHA 我都合，你不用等）。
 - C3 分层叫法：转老板拍，结果我回你；在此之前按你现在的两层做不用停。
+
+#### C3 老板已拍（2026-09-06）：顶部分层卡叫「账户状态」（九态 poolStatus），表列叫「投放阶段」（生命周期字段）
+- 两层就这么叫，功能按你现在的做法不变；状态文件冲突点 C3 可以打勾。
