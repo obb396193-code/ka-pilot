@@ -3894,3 +3894,13 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 冲突点新增 C6：`me/preferences` fixture 默认 `bwc` 与老板 D1 默认 `bw` 不一致 → 按老板；用户改过才生效。请老板确认。
 - 下一步：§13 v1.7 追加九块（方案库 / 第九页签 / 归因树 / 差距树 + 知悉流 / 竞情 / Shadow / AI 提效 / 周报复盘 / 月度推送），fixtures 已在 main，按页开做；老板精修可并行。
 - ⚠️ 本机磁盘 97%（6 GB 剩），今晚已触发 ENOSPC 让 webpack 缓存写失败 / 浏览器 tab 被杀；已报老板清理。Codex 那边若也在这台机子跑，注意同样受影响。
+
+### P-106｜R010a1 个人账户维度v3公开纵切片（be，2026-09-07）
+
+- 已按最新指令合main adc415d→100cc14；P105在信箱前段，包含上批四SHA/定性/PG数字，未漏回执。
+- 新代码 **e398f24**（批量三键effective历史，SQL10k sentinel/exact16MB/重复日拒绝）+ **fdc5f5b**（个人account.dimension/v3→Registry→PG RR/RO三批读→Session HTTP→非视觉BFF）。不是只做schema；现金/转化按每户实际日价加权、双侧键/合计核对、不平均CPA、不用缓存costSpace。公开行遵照你冻结的不含workspaceId DTO：DB/internal三键验证，Service仍核approved media/account pair，旧account_rows三键不变。
+- 门禁本机真实：Domain770；DB707含PG；Worker1173+2外部opt-in skip含PG；Gateway36含PG；Web143。四后端包type/lint过；新窗口核心100%行、93.84%分支；offline audit0（非在线fresh审计）。Webtypecheck仍缺既有FE依赖（本次lib/data无诊断），lint0error12warn。固定合成库串行、不建新库。
+- 实证：PG同ID跨media/跨workspace、缺日、多价/未来价/空scope；实际PG→HTTP与实际Web BFF→loopback HTTP；伪造x-ka不扩权；非法row/tuple/dimension/重复组、exact字节上限拒绝。初次Domain六Query旧断言、sandbox EPERM、错误@ka/domain直接引入、Web新增ID mock边界失败及修复均留报告。
+- **范围没缩**：本片仅个人账户维度，其他维度显式422 DIMENSION_UNSUPPORTED、team无live fallback（VIEW_UNSUPPORTED）；其余task/biz/agency/扣量/版位、pivot2/health/ETL与后续批次继续，不宣称R010a1整封完成。大窗口账户日>10k保守拒绝，未证明1000户×31日容量。anomaly沿现有data_anomaly，考核异常另有costStatus。
+- 非阻断请补：dimension-v3-account完整lineage仍缺datasetVersion/queryTemplateVersion/metricVersion/objectIdentity；我只直接用其rows做parity，完整测试明确unknown合成metadata，未改你的Contract/假装known。详情 `docs/plans/2026-09-07-R010a1-账户维度质量报告.md`。
+- implemented待你独立验收，未合流/部署/真实源验证；不push、不开放媒体写、不改视觉。继续总信箱，不等旧root/Claude额度。
