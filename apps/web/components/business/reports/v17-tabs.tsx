@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { DisplayMetric } from "@/lib/data/contracts"
-import { costStatusLabel, fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
+import { costStatusLabel, fmtTime, isOk, mv, rv, schemaText } from "@/lib/fixtures/contract"
 import { tasksFixture, taskStageMap, type TaskStage } from "@/lib/fixtures/tasks"
 import { aiActionLabel, aiImpactFixture, monthlyExecFixture, weeklyFixture } from "@/lib/fixtures/v17"
 import { TaskReviewPanel } from "./review-panel"
@@ -33,7 +33,7 @@ export function WeeklyTab() {
   ] : []
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-2 text-sm"><TypeChip>{report.schema}</TypeChip><span>{report.week} · {report.role === "lead" ? "负责人版" : "优化师版"}</span><span className="text-xs text-muted-foreground">生成 {fmtTime(report.generatedAt)} · 数据截至 {fmtTime(report.dataAsOf)}</span><StatusChip tone={report.pushStatus === "sent" ? "success" : "pending"}>{report.pushStatus === "sent" ? "已推送" : "未推送"}</StatusChip><Button size="sm" className="ml-auto" onClick={() => toast.success("已推送周报", { description: "周报生成后推送到群" })}><IconBrandDingtalk />推钉钉群</Button></div>
+      <div className="flex flex-wrap items-center gap-2 text-sm"><TypeChip>{schemaText(report.schema)}</TypeChip><span>{report.week} · {report.role === "lead" ? "负责人版" : "优化师版"}</span><span className="text-xs text-muted-foreground">生成 {fmtTime(report.generatedAt)} · 数据截至 {fmtTime(report.dataAsOf)}</span><StatusChip tone={report.pushStatus === "sent" ? "success" : "pending"}>{report.pushStatus === "sent" ? "已推送" : "未推送"}</StatusChip><Button size="sm" className="ml-auto" onClick={() => toast.success("已推送周报", { description: "周报生成后推送到群" })}><IconBrandDingtalk />推钉钉群</Button></div>
       {cards.length ? <KpiCards metrics={cards} className="px-0 lg:px-0" /> : null}
       {report.sections.map((section) => {
         if (section.key === "tasks") return <Card key="tasks"><CardHeader><CardTitle>任务</CardTitle><CardDescription>达成率 / 成本状态 / 阶段</CardDescription></CardHeader><CardContent className="p-0"><Table><TableHeader className="bg-muted"><TableRow><TableHead>任务</TableHead><TableHead className="text-right">达成率</TableHead><TableHead>成本状态</TableHead><TableHead>阶段</TableHead></TableRow></TableHeader><TableBody>{section.rows.map((row) => <TableRow key={row.taskId}><TableCell><Link href={`/tasks/${encodeURIComponent(row.taskId)}`} className="underline-offset-4 hover:underline">{row.taskName}</Link></TableCell><TableCell className="text-right tabular-nums">{rv(row.achievementRate)}</TableCell><TableCell>{row.costStatus ? <StatusChip tone={row.costStatus === "green" ? "success" : row.costStatus === "yellow" ? "warning" : "critical"}>{costStatusLabel[row.costStatus]}</StatusChip> : <StatusChip tone="muted">不可判断</StatusChip>}</TableCell><TableCell><TypeChip>{taskStageMap[row.stage as TaskStage]?.label ?? row.stage}</TypeChip></TableCell></TableRow>)}</TableBody></Table></CardContent></Card>

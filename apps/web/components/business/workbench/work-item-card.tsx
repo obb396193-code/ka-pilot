@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { fmtTime, isOk, mv, rv, changesetStatusText, reasonCodeLabel, itemStatusLabel, targetTypeLabel } from "@/lib/fixtures/contract"
+import { fmtTime, isOk, mv, rv, changesetStatusText, reasonCodeLabel, itemStatusLabel, targetTypeLabel, schemaText } from "@/lib/fixtures/contract"
 import { changesetFixture, severityMeta, workItemActionsFixture, workItemDetailFixture, type WorkItem, type WorkItemDetail } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
 
@@ -90,7 +90,7 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
               </div>
               <div className="grid gap-3 md:grid-cols-2">
                 <div className="rounded-lg border p-3"><div className="text-xs font-medium">窗口指标</div><dl className="mt-1 grid grid-cols-2 gap-y-1 text-xs"><dt className="text-muted-foreground">现金消耗</dt><dd className="text-right tabular-nums">{mv(detail.evidenceSnapshot.metrics.cashCost, "money0")}</dd><dt className="text-muted-foreground">真实转化</dt><dd className="text-right tabular-nums">{mv(detail.evidenceSnapshot.metrics.realConversion)}</dd><dt className="text-muted-foreground">现金 CPA</dt><dd className="text-right tabular-nums">{rv(detail.evidenceSnapshot.metrics.ratios.cashCpa, "money")}</dd><dt className="text-muted-foreground">考核价</dt><dd className="text-right tabular-nums">{detail.evidenceSnapshot.assessment.price ? `¥${detail.evidenceSnapshot.assessment.price.value.toFixed(2)}` : "−"}</dd></dl></div>
-                <div className="rounded-lg border p-3"><div className="text-xs font-medium">诊断（{detail.diagnosis?.schema}）</div>{detail.diagnosis ? <div className="mt-1 text-xs"><div>{causeLabel[detail.diagnosis.causeCategory] ?? detail.diagnosis.causeCategory} · {detail.diagnosis.subCause}</div><div className="mt-1 text-muted-foreground">{detail.diagnosis.caveats.join("；")}</div></div> : <div className="text-xs text-muted-foreground">无</div>}</div>
+                <div className="rounded-lg border p-3"><div className="text-xs font-medium">诊断（{detail.diagnosis ? schemaText(detail.diagnosis.schema) : "−"}）</div>{detail.diagnosis ? <div className="mt-1 text-xs"><div>{causeLabel[detail.diagnosis.causeCategory] ?? detail.diagnosis.causeCategory} · {detail.diagnosis.subCause}</div><div className="mt-1 text-muted-foreground">{detail.diagnosis.caveats.join("；")}</div></div> : <div className="text-xs text-muted-foreground">无</div>}</div>
               </div>
               {detail.decision ? <div className="rounded-lg bg-muted/50 p-3 text-xs"><span className="font-medium">分级决策 {decisionTierLabel[detail.decision.tier] ?? detail.decision.tier}</span> · 置信 {rv(detail.decision.gates.confidence)} · 历史成功率 {rv(detail.decision.gates.historicalSuccessRate)} · 近 24h 人工操作 {detail.decision.gates.recentManualOps} · {detail.decision.gates.reversible ? "可回滚" : "不可回滚"} · {detail.decision.gates.withinCap ? "在日上限内" : "超日上限"} · {detail.decision.reason}</div> : null}
             </div>

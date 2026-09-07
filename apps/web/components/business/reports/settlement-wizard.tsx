@@ -64,9 +64,9 @@ export function SettlementWizard() {
         <Card>
           <CardHeader><CardTitle>模板与期间</CardTitle><CardDescription>新版本 = 新行；旧结算单绑旧版本不覆盖</CardDescription></CardHeader>
           <CardContent className="grid gap-4 @3xl/main:grid-cols-3">
-            <div className="grid gap-1.5"><Label>模板版本</Label><Select value={template.templateVersion} onValueChange={setVersion}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{templates.map((item) => <SelectItem key={item.templateVersion} value={item.templateVersion}>{item.name} {item.templateVersion}</SelectItem>)}</SelectContent></Select><p className="text-xs text-muted-foreground">{template.currencyCode} · 单位 {template.unitNote} · {template.fields.length} 字段 · {template.checks.length} 校验 · 指纹 {template.fingerprint.slice(0, 8)}…</p></div>
+            <div className="grid gap-1.5"><Label>模板版本</Label><Select value={template.templateVersion} onValueChange={setVersion}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{templates.map((item) => <SelectItem key={item.templateVersion} value={item.templateVersion}>{item.name} {item.templateVersion}</SelectItem>)}</SelectContent></Select><p className="text-xs text-muted-foreground">币种 {template.currencyCode === "CNY" ? "人民币" : template.currencyCode} · 单位 {template.unitNote} · {template.fields.length} 个字段 · {template.checks.length} 项校验 · 模板指纹 {template.fingerprint.slice(0, 8)}…</p></div>
             <div className="grid gap-1.5"><Label>结算期间</Label><Input type="month" value={period} onChange={(event) => setPeriod(event.target.value)} /></div>
-            <div className="grid gap-1.5"><Label>样例（mock）</Label><Select value={sample} onValueChange={(value) => { setSample(value as typeof sample); setFrozenDone(false) }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="blocked">preview-blocked（有必填缺失）</SelectItem><SelectItem value="ready">preview-ready（可冻结）</SelectItem></SelectContent></Select></div>
+            <div className="grid gap-1.5"><Label>样例</Label><Select value={sample} onValueChange={(value) => { setSample(value as typeof sample); setFrozenDone(false) }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="blocked">有必填缺失（不能冻结）</SelectItem><SelectItem value="ready">校验通过（可冻结）</SelectItem></SelectContent></Select></div>
           </CardContent>
         </Card>
       ) : null}
@@ -111,7 +111,7 @@ export function SettlementWizard() {
               {frozenDone && frozen ? (
                 <>
                   <p className="text-sm"><StatusChip tone="success">已冻结</StatusChip> {frozen.period} · 模板 {frozen.templateVersion} · {frozen.confirmedBy.name} · {fmtTime(frozen.confirmedAt)}</p>
-                  <p className="font-mono text-xs text-muted-foreground">指纹 {frozen.fingerprint.slice(0, 16)}…</p>
+                  <p className="font-mono text-xs text-muted-foreground">快照指纹 {frozen.fingerprint.slice(0, 16)}…</p>
                   <div><p className="mb-1 text-xs font-medium text-muted-foreground">结算行</p>{frozen.lines.map((line) => <div key={line.lineId} className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"><span>行 {line.rowKey}{line.taskId ? ` · 任务 ${line.taskId}` : ""} · {line.checks.map((check) => `${template.checks.find((item) => item.checkKey === check.checkKey)?.label ?? check.checkKey} ${checkLabel[check.status]}`).join("，")}</span>{line.workItemId ? <TypeChip>已转工作项</TypeChip> : <Button size="sm" variant="outline" onClick={() => toast("已转工作项", { description: `接口接入后生效（当前为示例）` })}>差异转工作项</Button>}</div>)}</div>
                 </>
               ) : (

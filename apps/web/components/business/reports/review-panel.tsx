@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import type { DisplayMetric } from "@/lib/data/contracts"
-import { isOk, mv, rv } from "@/lib/fixtures/contract"
+import { isOk, mv, rv, schemaText } from "@/lib/fixtures/contract"
 import { taskReviewFixtures, type TaskReview } from "@/lib/fixtures/v17"
 
 // 任务复盘（v1.7 7.2）：发起 Deep Research → 状态 → 六段带溯源（goal / cost_trend / key_operations / attribution / why / next）；why / next 标「待人确认」；生成即归档知识库
@@ -48,7 +48,7 @@ export function TaskReviewPanel({ taskId, taskName }: { taskId: string; taskName
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <TypeChip>{review.schema}</TypeChip>
+        <TypeChip>{schemaText(review.schema)}</TypeChip>
         <StatusChip tone={reviewStatusMeta[review.status].tone}>{reviewStatusMeta[review.status].label}</StatusChip>
         <span className="text-xs text-muted-foreground">窗口 {review.window.from} ～ {review.window.to} · run …{review.runId.slice(-4)}</span>
         {review.kbDocumentId ? <Button asChild size="sm" variant="ghost" className="h-7"><Link href={`/knowledge/${encodeURIComponent(review.kbDocumentId)}`}><IconBook2 />已归档知识库</Link></Button> : null}
