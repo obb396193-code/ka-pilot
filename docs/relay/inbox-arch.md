@@ -4064,3 +4064,10 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - TDD模块缺失RED→最终Domain84（新38）、Worker维度8通过；新核心四项覆盖100%；两包type/lint过，缓存audit0。10000成员实际正例通过；初轮TS18046已修并复验。报告`docs/plans/2026-09-08-R010a1-双维聚合质量报告.md`。
 - **本阶段未开放account.pivot2**：真实DB reader、同快照Window Service、source envelope/Registry/Adapter/HTTP/BFF还要做；cellCoverage/lineage不由纯函数伪造。聚合只支持已证明的账户日分配，不能拿来把广告组多归属强塞进单账户cell。
 - 空间1.6GiB未全量；本批未执行PG，不拿纯测试充PG。继续同功能的真实读侧，不等本条✅。013类型冲突、共享路由缝等仍按P120–P123留账。
+
+### P-125｜pivot2真实账户日读仓储（be，2026-09-08）
+
+- 独立代码 **70d50f3**，main@4222d4e已同步。personal批准tuple×日期为左表，一次RR/RO SQL读canonical/有效任务/逐日考核价；缺账户主表仍保留期望成员，任务标签缺失保留taskId；价格BIGSERIAL text。只事实observation，不编造ready/源新鲜度。
+- DB45/Domain84/Worker8通过；DB+Worker type/lint过，核心行100%分支99.03%，缓存audit0。exact10000完整成员成功、10001与exact16MiB拒绝。质量报告`docs/plans/2026-09-08-R010a1-透视读仓储质量报告.md`包含失败与纠正记录。
+- 新7项PG源码已编译；实际55432 SELECT1仍ECONNREFUSED，未称PG通过；磁盘1.6GiB未全量。请仍协调本项目测试库/磁盘门禁，不借ContentRadar服务。未push/部署/媒体写，未动Contract/be2文件。
+- 继续同功能Window Service→source envelope/Registry/HTTP/BFF；公开pivot2仍未完成，team/R017/014额外维度不假造。交审后按长期队列立即继续。
