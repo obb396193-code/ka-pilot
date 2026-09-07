@@ -79,7 +79,7 @@ export function ReportsTab({ views, onSaveView }: { views: SavedView[]; onSaveVi
                 <span className="text-sm font-medium">从空白</span>
                 <span className="text-xs text-muted-foreground">自己选分组与列</span>
               </button>
-              <ExampleBlock unlock="Agent 帮做表（3.9）随 R-010b 开放" inline>
+              <ExampleBlock unlock="Agent 帮做表随助手写作能力一起开放" inline>
                 <div className="flex flex-col gap-1 rounded-xl border p-4"><span className="flex items-center gap-1.5 text-sm font-medium"><IconSparkles className="size-4" />让 Agent 帮搭</span><span className="text-xs text-muted-foreground">一句话描述想看的表</span></div>
               </ExampleBlock>
             </div>
@@ -122,7 +122,7 @@ export function ReportsTab({ views, onSaveView }: { views: SavedView[]; onSaveVi
                 <span className="font-medium">{name || "未命名报表"}</span>
                 <Badge variant="outline">{windowLabel(preset)}</Badge>
                 <Badge variant="outline">{groupBy.map((key) => groupOptions.find((option) => option.key === key)?.label).join(" × ") || "无分组"}</Badge>
-                <span className="text-xs text-muted-foreground">预览 = fixture reports/render.json（按模板分组），配置改动接 render 接口后实时生效</span>
+                <span className="text-xs text-muted-foreground">预览为示例数据（按模板分组）；配置改动接入渲染接口后实时生效</span>
               </div>
               <div className="overflow-x-auto rounded-xl border">
                 <Table>

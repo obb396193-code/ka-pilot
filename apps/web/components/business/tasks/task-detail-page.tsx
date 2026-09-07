@@ -96,12 +96,12 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
       />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-014（任务阶段 / 就绪度 / SOP）+ R-010（任务详情接口）接入后切换为真数据" empty={{ title: "没有这个任务", description: "检查任务 ID，或回列表重新选。" }}>
+        <StateFrame state={state} unlock="任务阶段 / 就绪度 / SOP + 任务详情接口接入后切换为真数据" empty={{ title: "没有这个任务", description: "检查任务 ID，或回列表重新选。" }}>
           {tab === "overview" ? (
             <div className="flex flex-col gap-4">
               <KpiCards metrics={headline} className="px-0 lg:px-0" />
               <Card>
-                <CardHeader><CardTitle>SOP 执行进度</CardTitle><CardDescription>准备 → 开户 → 充值 → 基建 → 冷启动 → 跑量监控{ov.sopProgress?.runId ? ` · 绑定 run ${ov.sopProgress.runId.slice(-4)}` : " · 未绑定 run，按阶段推导"}</CardDescription></CardHeader>
+                <CardHeader><CardTitle>SOP 执行进度</CardTitle><CardDescription>准备 → 开户 → 充值 → 基建 → 冷启动 → 跑量监控{ov.sopProgress?.runId ? ` · 绑定运行 ${ov.sopProgress.runId.slice(-4)}` : " · 未绑定 run，按阶段推导"}</CardDescription></CardHeader>
                 <CardContent>
                   {ov.sopProgress ? (
                     <ol className="flex flex-wrap items-center gap-2">
@@ -117,12 +117,12 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
                       ))}
                       {!ov.sopProgress.runId ? <Button size="sm" variant="outline" onClick={() => toast("已用官方模板起 run", { description: "接口接入后生效（当前为示例）" })}><IconPlayerPlay />起「开户到基建」SOP</Button> : null}
                     </ol>
-                  ) : <p className="text-sm text-muted-foreground">SOP 进度未返回（v1.5.1 后有）。</p>}
+                  ) : <p className="text-sm text-muted-foreground">SOP 进度未返回。</p>}
                 </CardContent>
               </Card>
               <div className="grid gap-4 @5xl/main:grid-cols-12">
                 <Card className="@5xl/main:col-span-4">
-                  <CardHeader><CardTitle>目标进度 · pacing</CardTitle><CardDescription>后端 computeTaskPacing，前端不外推</CardDescription></CardHeader>
+                  <CardHeader><CardTitle>目标进度</CardTitle><CardDescription>进度与缺口由后端按实际数据算，前端不外推</CardDescription></CardHeader>
                   <CardContent className="flex flex-col gap-3">
                     {ov.pacing ? (
                       <>
@@ -148,7 +148,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
                         <ReadinessRing readiness={ov.readiness} />
                         <ul className="flex flex-col gap-1 text-xs">{readinessKeys.filter(({ key }) => !ov.readiness![key].ready).map(({ key, label }) => <li key={key} className="flex items-center justify-between gap-2"><span><span className="font-medium">{label}</span> 缺：{ov.readiness![key].missing.join("；") || "−"}</span><Button size="sm" variant="ghost" className="h-6 text-xs" onClick={() => toast(`已人工勾就绪：${label}`, { description: "接口接入后生效（当前为示例）" })}>勾就绪</Button></li>)}</ul>
                       </>
-                    ) : <p className="text-sm text-muted-foreground">就绪度未返回（v1.5.1 后有）。</p>}
+                    ) : <p className="text-sm text-muted-foreground">就绪度未返回。</p>}
                   </CardContent>
                 </Card>
                 <div className="flex flex-col gap-4 @5xl/main:col-span-4">
@@ -222,7 +222,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
           ) : null}
 
           {tab === "materials" ? (
-            <ExampleBlock unlock="素材域（R-012 / R-015）接入后：这里显示任务关联素材的表现与复刻链路">
+            <ExampleBlock unlock="素材接口接入后：这里显示任务关联素材的表现与复刻链路">
               <Card><CardHeader><CardTitle>商品与素材</CardTitle><CardDescription>501 占位 · 素材池 / 复刻 / brief 在「商品素材」页</CardDescription></CardHeader><CardContent className="text-sm text-muted-foreground">关联素材 · 商品 × 素材效果矩阵 · 设计 brief</CardContent></Card>
             </ExampleBlock>
           ) : null}
@@ -230,7 +230,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
           {tab === "sop" ? (
             <div className="grid gap-4 @5xl/main:grid-cols-2">
               <Card>
-                <CardHeader><CardTitle>SOP 步骤</CardTitle><CardDescription>{ov.sopProgress?.runId ? `绑定 run ${ov.sopProgress.runId}` : "未绑定 run"}</CardDescription></CardHeader>
+                <CardHeader><CardTitle>SOP 步骤</CardTitle><CardDescription>{ov.sopProgress?.runId ? `绑定运行 ${ov.sopProgress.runId}` : "未绑定运行"}</CardDescription></CardHeader>
                 <CardContent>
                   <ol className="flex flex-col gap-2">{ov.sopProgress?.steps.map((step) => <li key={step.key} className="flex items-center gap-2 text-sm"><StatusChip tone={step.status === "done" ? "success" : step.status === "running" ? "progress" : step.status === "skipped" ? "muted" : "pending"}>{step.status === "done" ? "完成" : step.status === "running" ? "进行中" : step.status === "skipped" ? "跳过" : "待"}</StatusChip>{sopStepLabel[step.key] ?? step.key}<span className="ml-auto text-xs text-muted-foreground tabular-nums">{fmtTime(step.at)}</span></li>)}</ol>
                   {ov.sopProgress?.runId ? <Button asChild variant="outline" size="sm" className="mt-3"><Link href={`/automation/runs/${ov.sopProgress.runId}`}>打开运行详情</Link></Button> : null}
@@ -246,7 +246,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
                       {bindings.sop ? <p className="text-xs text-muted-foreground">SOP run …{bindings.sop.sopRunId.slice(-4)} · {bindings.sop.template} · 进度 {rv(bindings.sop.progress)}</p> : null}
                       {!bindings.workflows.length && !bindings.rules.length ? <p className="text-muted-foreground">本任务没有绑定规则或工作流</p> : null}
                     </>
-                  ) : <p className="text-muted-foreground">本任务没有绑定样例（fixture 只有 fixture-task-ready）；接口接入后按任务返回，无绑定 = 空。</p>}
+                  ) : <p className="text-muted-foreground">本任务没有绑定样例（示例只给了「AAC 拉新」）；接口接入后按任务返回，无绑定 = 空。</p>}
                   <p className="text-xs text-muted-foreground">规则详情与「为什么未触发」在自动化页。</p>
                 </CardContent>
               </Card>

@@ -253,12 +253,12 @@ export function SettingsPage() {
       <PageHeader title="设置" description="个人资料与界面偏好 · 三凭证只显绑定状态 · 通知偏好 · 我的负载 · 口径（返点系数 + 统一变更记录）· 个人视图" isMock={isMock} actions={<StateSwitch />} />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="me/credentials · subscriptions · channel-coefficients · me/views 接入后切换为真数据" empty={{ title: "没有设置项", description: "先绑定凭证。" }}>
+        <StateFrame state={state} unlock="凭证 / 订阅 / 返点系数 / 个人视图接口接入后切换为真数据" empty={{ title: "没有设置项", description: "先绑定凭证。" }}>
           {tab === "profile" ? <ProfileTab /> : null}
           {tab === "credentials" ? <CredentialsTab /> : null}
           {tab === "notifications" ? <NotificationsTab /> : null}
           {tab === "workload" ? (
-            <ExampleBlock unlock="我的负载（4.9，P1）：按负责任务 / 账户数 / 待处理工作项算负载分，接口接入后显示">
+            <ExampleBlock unlock="我的负载：按负责任务数 / 账户数 / 待处理工作项算负载分，接口接入后显示">
               <Card><CardHeader><CardTitle>我的负载</CardTitle><CardDescription>负责任务数 · 账户数 · 待处理 · 值班 · 负载分</CardDescription></CardHeader><CardContent><dl className="grid grid-cols-2 gap-3 text-sm @3xl/main:grid-cols-5">{["负责任务", "负责账户", "待处理", "本周值班", "负载分"].map((label) => <div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="text-lg font-semibold">−</dd></div>)}</dl></CardContent></Card>
             </ExampleBlock>
           ) : null}

@@ -51,7 +51,7 @@ const columns = helper.columns([
   helper.accessor((row) => row.readiness.overall?.value ?? null, { id: "readiness", header: "就绪度", meta: { label: "就绪度" }, cell: ({ row }) => <ReadinessBar readiness={row.original.readiness} /> }),
   helper.accessor((row) => row.volume?.target ?? null, { id: "target", header: "目标", meta: { label: "目标", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{row.original.volume?.target == null ? "−" : number0.format(row.original.volume.target)}</span> }),
   helper.accessor((row) => row.volume?.completed ?? null, { id: "completed", header: "已完成", meta: { label: "已完成", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{row.original.volume?.completed == null ? "−" : number0.format(row.original.volume.completed)}</span> }),
-  helper.display({ id: "pacing", header: "达成 / pacing", meta: { label: "达成 / pacing" }, cell: ({ row }) => <PacingCell pacing={row.original.pacing} /> }),
+  helper.display({ id: "pacing", header: "达成 / 进度", meta: { label: "达成 / 进度" }, cell: ({ row }) => <PacingCell pacing={row.original.pacing} /> }),
   helper.accessor((row) => row.assessmentPrice?.value ?? null, { id: "assessment", header: "考核价", meta: { label: "考核价", align: "right" }, cell: ({ row }) => <span className="tabular-nums" title={row.original.assessmentPrice ? `生效 ${row.original.assessmentPrice.effectiveDate}` : undefined}>{row.original.assessmentPrice ? `¥${row.original.assessmentPrice.value.toFixed(2)}` : "−"}</span> }),
   helper.accessor((row) => row.costStatus ?? "", { id: "costStatus", header: "成本状态", meta: { label: "成本状态" }, cell: ({ row }) => { const status = row.original.costStatus; return status ? <StatusChip tone={status === "green" ? "success" : status === "yellow" ? "warning" : "critical"}>{costStatusLabel[status]}</StatusChip> : <StatusChip tone="muted">不可判断</StatusChip> } }),
   helper.accessor("rta", { header: "RTA", meta: { label: "RTA" }, cell: ({ getValue }) => getValue() ? <TypeChip>RTA</TypeChip> : <span className="text-xs text-muted-foreground">—</span> }),
@@ -64,10 +64,10 @@ const columns = helper.columns([
   actionsColumn<TaskItem>((task) => (
     <>
       <DropdownMenuItem asChild><Link href={taskHref(task)}>查看详情</Link></DropdownMenuItem>
-      <DropdownMenuItem onSelect={() => openAgentDrawer(`分析任务「${task.taskName}」的达成、pacing 与就绪缺项`)}><IconSparkles />问 AI</DropdownMenuItem>
+      <DropdownMenuItem onSelect={() => openAgentDrawer(`分析任务「${task.taskName}」的达成率、投放进度与就绪缺项`)}><IconSparkles />问 AI</DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem onSelect={() => toast("已关注", { description: "关注列表接入后保存" })}><IconStar />关注</DropdownMenuItem>
-      <DropdownMenuItem disabled title="任务编辑接口（R-010）开放后启用">编辑</DropdownMenuItem>
+      <DropdownMenuItem disabled title="任务编辑接口开放后启用">编辑</DropdownMenuItem>
       <DropdownMenuItem disabled title="归档接口开放后启用">归档</DropdownMenuItem>
     </>
   )),
@@ -101,27 +101,27 @@ export function TasksPage() {
 
   return (
     <PageBody>
-      <PageHeader title="投放任务" description="任务是业务信息中心：从准备到投放全过程可追踪（阶段 · 就绪度 · SOP · 阻塞）；达成与 pacing 由后端算" isMock={isMock} actions={
+      <PageHeader title="投放任务" description="任务是业务信息中心：从准备到投放全过程可追踪（阶段 · 就绪度 · SOP · 阻塞）；达成率与进度由后端算，前端不外推" isMock={isMock} actions={
         <>
           <Select value={legacyState} onValueChange={(value) => setLegacyState(value as typeof legacyState)}>
             <SelectTrigger size="sm" className="w-40" aria-label="样例"><span className="text-muted-foreground">样例</span><SelectValue /></SelectTrigger>
-            <SelectContent align="end"><SelectItem value="v151">v1.5.1 列表</SelectItem><SelectItem value="ready">TASK-LIST-001 ready</SelectItem><SelectItem value="partial">partial</SelectItem><SelectItem value="stale">stale</SelectItem><SelectItem value="empty">empty</SelectItem></SelectContent>
+            <SelectContent align="end"><SelectItem value="v151">标准列表</SelectItem><SelectItem value="ready">四态 · 正常</SelectItem><SelectItem value="partial">四态 · 覆盖不全</SelectItem><SelectItem value="stale">四态 · 数据过期</SelectItem><SelectItem value="empty">四态 · 空</SelectItem></SelectContent>
           </Select>
           <StateSwitch />
         </>
       } />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-014（v1.5.1 任务阶段 / 就绪度 / SOP）接入后切换为真数据" empty={{ title: "没有任务", description: "任务由运营在创建接口开放后新建；个人空间只看本人授权账户挂载的任务。" }}>
+        <StateFrame state={state} unlock="任务阶段 / 就绪度 / SOP 接口接入后切换为真数据" empty={{ title: "没有任务", description: "任务由运营在创建接口开放后新建；个人空间只看本人授权账户挂载的任务。" }}>
           <div className="grid gap-4 @6xl/main:grid-cols-12">
             <div className="min-w-0 @6xl/main:col-span-9">
               {legacy ? (
                 <div className={cn("mb-3 rounded-lg border px-4 py-2.5 text-sm", degraded ? (legacy.meta?.dataState === "stale" ? "border-status-critical/30 bg-status-critical/10 text-status-critical" : "border-status-warning/30 bg-status-warning/10 text-status-warning") : "text-muted-foreground")}>
-                  TASK-LIST-001 {legacy.meta?.dataState} 样例：{legacy.meta?.dataState === "stale" ? "业务日数据未到，展示上一次同步结果，pacing 可能滞后" : legacy.meta?.dataState === "partial" ? "覆盖不完整：只展示已返回的任务，执行入口置灰" : legacy.meta?.dataState === "empty" ? "当前范围内没有任务" : "覆盖完整"} · requestId {legacy.meta?.requestId}（旧版列表字段少，展示走 v1.5.1）
+                  四态样例：{legacy.meta?.dataState === "stale" ? "当天数据未到，展示上一次同步结果，进度可能滞后" : legacy.meta?.dataState === "partial" ? "覆盖不完整：只展示已返回的任务，执行入口置灰" : legacy.meta?.dataState === "empty" ? "当前范围内没有任务" : "覆盖完整"}（这组样例字段少，表格仍按标准列表展示）
                 </div>
               ) : null}
               <DataGrid
                 table={table}
-                empty={legacy ? "该样例没有可展示的 v1.5.1 任务行" : "没有符合条件的任务"}
+                empty={legacy ? "该样例没有可展示的任务行" : "没有符合条件的任务"}
                 onReorder={reorder}
                 toolbar={
                   <>
@@ -140,17 +140,17 @@ export function TasksPage() {
             <aside className="flex flex-col gap-4 @6xl/main:col-span-3">
               <Card>
                 <CardHeader><CardTitle className="text-sm">任务分布</CardTitle><CardDescription>按阶段（只数任务个数）</CardDescription></CardHeader>
-                <CardContent className="flex flex-col gap-1.5">{stageDistribution.map(({ stage, count }) => <div key={stage.value} className="flex items-center gap-2 text-xs"><span className={cn("size-1.5 rounded-full", stage.dot)} /><span className="w-12 text-muted-foreground">{stage.label}</span><span className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-foreground" style={{ width: `${(count / Math.max(1, all.length)) * 100}%` }} /></span><span className="w-5 text-right tabular-nums">{count}</span></div>)}</CardContent>
+                <CardContent className="flex flex-col gap-1.5">{stageDistribution.map(({ stage, count }) => <div key={stage.value} className="flex items-center gap-2 text-xs"><span className={cn("size-1.5 rounded-full", stage.dot)} /><span className="w-12 text-muted-foreground">{stage.label}</span><span className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted"><span className={cn("block h-full rounded-full", stage.dot)} style={{ width: `${(count / Math.max(1, all.length)) * 100}%` }} /></span><span className="w-5 text-right tabular-nums">{count}</span></div>)}</CardContent>
               </Card>
               <Card>
-                <CardHeader><CardTitle className="text-sm">健康分布</CardTitle><CardDescription>costStatus 三色 + 不可判断</CardDescription></CardHeader>
+                <CardHeader><CardTitle className="text-sm">健康分布</CardTitle><CardDescription>按成本状态（含不可判断）</CardDescription></CardHeader>
                 <CardContent className="flex flex-col gap-1.5">
                   {health.map(({ status, count }) => <div key={status} className="flex items-center gap-2 text-xs"><span className={cn("size-1.5 rounded-full", costStatusDot[status])} /><span className="w-24 text-muted-foreground">{costStatusLabel[status]}</span><span className="ml-auto tabular-nums">{count}</span></div>)}
                   <div className="flex items-center gap-2 text-xs"><span className="size-1.5 rounded-full border border-muted-foreground" /><span className="w-24 text-muted-foreground">不可判断</span><span className="ml-auto tabular-nums">{unknown}</span></div>
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader><CardTitle className="text-sm">即将到达的里程碑</CardTitle><CardDescription>nextMilestone</CardDescription></CardHeader>
+                <CardHeader><CardTitle className="text-sm">即将到达的里程碑</CardTitle><CardDescription>最近要发生的节点</CardDescription></CardHeader>
                 <CardContent className="flex flex-col gap-1.5">{milestones.length ? milestones.map((task) => <Link key={task.taskId} href={taskHref(task)} className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-xs hover:bg-muted/50"><span className="truncate">{task.taskName} · {task.nextMilestone!.label}</span><span className="tabular-nums text-muted-foreground">{task.nextMilestone!.at.slice(5)}</span></Link>) : <p className="text-xs text-muted-foreground">没有里程碑</p>}</CardContent>
               </Card>
             </aside>

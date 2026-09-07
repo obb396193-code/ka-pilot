@@ -42,7 +42,7 @@ const tabs = [
   { value: "rules", label: "自动化规则" },
   { value: "runs", label: "运行中心" },
   { value: "capabilities", label: "原子能力" },
-  { value: "shadow", label: "Shadow" },
+  { value: "shadow", label: "影子验证" },
 ] as const
 type Tab = (typeof tabs)[number]["value"]
 const canvasHref = (id: string) => `/automation/workflows/${encodeURIComponent(id)}`
@@ -123,7 +123,7 @@ function RulesTab() {
               </Table>
               <p className="rounded-lg bg-muted px-3 py-2 text-sm">{explainData.fallbackCopy}</p>
             </div>
-          ) : <p className="text-sm text-muted-foreground">该规则没有 explain 样例（fixture 只给了规则 3 · account-5）；接口接入后按账户 × 日期查看。</p>}
+          ) : <p className="text-sm text-muted-foreground">该规则没有判定样例（示例只给了规则 3 · account-5）；接口接入后按账户 × 日期查看。</p>}
         </DialogContent>
       </Dialog>
     </>
@@ -186,7 +186,7 @@ function RunsTab() {
       <Dialog open={events !== null} onOpenChange={(open) => { if (!open) setEvents(null) }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader><DialogTitle>运行事件 · …{events?.runId.slice(-4)}</DialogTitle><DialogDescription>只显示事件骨架，不含 prompt / 原始日志</DialogDescription></DialogHeader>
-          {eventData ? <ol className="flex flex-col gap-2">{eventData.events.map((event) => <li key={event.seq} className="flex items-start gap-3 text-sm"><span className="w-5 text-right text-xs text-muted-foreground tabular-nums">{event.seq}</span><TypeChip>{event.kind}</TypeChip><span className="flex-1 text-xs">{event.tool ?? event.schema ?? event.status ?? ""}{event.argsExcerpt ? ` · ${JSON.stringify(event.argsExcerpt)}` : ""}{event.ok === true ? " · ok" : ""}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(event.at)}</span></li>)}</ol> : <p className="text-sm text-muted-foreground">该 Run 没有事件样例（fixture 只给了 …1801）。</p>}
+          {eventData ? <ol className="flex flex-col gap-2">{eventData.events.map((event) => <li key={event.seq} className="flex items-start gap-3 text-sm"><span className="w-5 text-right text-xs text-muted-foreground tabular-nums">{event.seq}</span><TypeChip>{event.kind}</TypeChip><span className="flex-1 text-xs">{event.tool ?? event.schema ?? event.status ?? ""}{event.argsExcerpt ? ` · ${JSON.stringify(event.argsExcerpt)}` : ""}{event.ok === true ? " · ok" : ""}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(event.at)}</span></li>)}</ol> : <p className="text-sm text-muted-foreground">该 Run 没有事件样例（示例只给了 …1801）。</p>}
         </DialogContent>
       </Dialog>
     </div>
@@ -282,7 +282,7 @@ export function AutomationPage() {
       {cards.length ? <KpiCards metrics={cards} /> : null}
       <PageTabs tabs={tabBadges} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-014（工作流画布 / capabilities）+ v1.3 rules 接入后切换为真数据" empty={{ title: "还没有自动化资产", description: "从官方模板复制一份开始，或用 Agent 帮编生成草稿。" }}>
+        <StateFrame state={state} unlock="工作流画布 / 原子能力 / 规则接口接入后切换为真数据" empty={{ title: "还没有自动化资产", description: "从官方模板复制一份开始，或用 Agent 帮编生成草稿。" }}>
           {tab === "official" || tab === "mine" || tab === "team" ? (
             defs[tab].length ? (
               <div className="grid gap-4 @3xl/main:grid-cols-2 @6xl/main:grid-cols-3">{defs[tab].map((item) => <TemplateCard key={item.id} item={item} kind={tab} />)}</div>

@@ -72,12 +72,12 @@ export function DataHealthPill() {
           className="inline-flex h-8 items-center gap-2 rounded-md border border-transparent px-2 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
         >
           <span className={cn("size-2 shrink-0 rounded-full", dotOf[health.state])} aria-hidden />
-          <span className="hidden items-center gap-1.5 lg:inline-flex">
+          <span className="hidden items-center gap-1.5 2xl:inline-flex">
             {items.map((item, index) => <span key={item} className="inline-flex items-center gap-1.5">{index > 0 ? <span className="text-border">·</span> : null}{item}</span>)}
             <span className="text-border">·</span>
             <span className="inline-flex items-center gap-0.5">口径<IconInfoCircle className="size-3.5" /></span>
           </span>
-          <span className="lg:hidden">{health.businessDate ? health.businessDate.slice(5) : "−"}</span>
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap 2xl:hidden">数据日 {health.businessDate ? health.businessDate.slice(5) : "−"}<span className="text-border">·</span><span className="inline-flex items-center gap-0.5">口径<IconInfoCircle className="size-3.5" /></span></span>
         </button>
       </TooltipTrigger>
       <TooltipContent side="bottom" className="max-w-80">

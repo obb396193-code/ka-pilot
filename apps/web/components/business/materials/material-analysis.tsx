@@ -92,7 +92,7 @@ export function MaterialAnalysisPanel({ material }: { material: MaterialItem }) 
                   <p className="mt-1 text-xs text-muted-foreground">用在哪</p>
                   {detail.whereUsed.map((use) => <p key={`${use.taskId}-${use.accountId}`} className="flex items-center gap-2"><Link href={`/tasks/${encodeURIComponent(use.taskId)}`} className="underline-offset-4 hover:underline">{use.taskId}</Link><span className="text-muted-foreground">·</span><Link href={`/accounts/KUAISHOU/${encodeURIComponent(use.accountId)}`} className="underline-offset-4 hover:underline">{use.accountId}</Link><span className="text-xs text-muted-foreground tabular-nums">{use.adCount} 条广告</span></p>)}
                 </>
-              ) : <MissingValue title="无 detail fixture" />}
+              ) : <MissingValue title="该素材没有拆片详情样例" />}
             </CardContent>
           </Card>
         </div>

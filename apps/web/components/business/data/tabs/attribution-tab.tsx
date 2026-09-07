@@ -31,7 +31,7 @@ export function AttributionTab() {
       {tree ? <GapTree tree={tree} /> : (
         <div className="flex min-h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-6 py-10 text-center text-sm">
           <p className="font-medium">{task?.taskName ?? taskId} 的{mode === "cost" ? "成本" : "量级"}归因树没有样例</p>
-          <p className="max-w-md text-xs text-muted-foreground">fixture 只有 fixture-task-ready 的 volume 模式；接口接入后按任务 × 模式返回，数据不足的节点灰显。</p>
+          <p className="max-w-md text-xs text-muted-foreground">示例只有「AAC 拉新」的量级模式；接口接入后按任务 × 模式返回，数据不足的节点灰显。</p>
         </div>
       )}
     </div>

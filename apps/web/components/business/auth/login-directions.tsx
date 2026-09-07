@@ -71,7 +71,7 @@ function Slogan({ dark, size = "md" }: { dark: boolean; size?: "md" | "lg" }) {
     <div className="relative flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
       <p className={cn("text-xs font-medium tracking-[0.2em] uppercase", dark ? "text-white/60" : "text-muted-foreground")}>KA Pilot · 投放经营工作台</p>
       <h2 className={cn("font-semibold tracking-tight text-balance", size === "lg" ? "max-w-xl text-5xl leading-[1.12]" : "max-w-md text-[2.5rem] leading-[1.15]")}>账户、任务、异常，<br />一处看完，一处处理。</h2>
-      <p className={cn("max-w-sm text-sm leading-6", dark ? "text-white/60" : "text-muted-foreground")}>达标与 pacing 由后端算好再展示，待处理按严重度排队，随时带着上下文问 AI。</p>
+      <p className={cn("max-w-sm text-sm leading-6", dark ? "text-white/60" : "text-muted-foreground")}>达标判定与投放进度由后端算好再展示，待处理按严重度排队，随时带着上下文问 AI。</p>
     </div>
   )
 }

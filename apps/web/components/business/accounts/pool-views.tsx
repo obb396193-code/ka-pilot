@@ -20,7 +20,7 @@ export const poolViews: { value: PoolView; label: string; hint: string }[] = [
   { value: "kanban", label: "看板", hint: "一态一列，账户是卡片" },
 ]
 export type StatusFilter = "all" | PoolStatus
-type SummaryProps = { stages: PipelineStage[]; total: number; value: StatusFilter; onChange: (value: StatusFilter) => void; asOf: string }
+type SummaryProps = { stages: PipelineStage[]; total: number | null; value: StatusFilter; onChange: (value: StatusFilter) => void; asOf: string }
 
 const ordered = (stages: PipelineStage[]) => poolStatuses.map((meta) => ({ meta, stage: stages.find((item) => item.poolStatus === meta.value) ?? null }))
 
@@ -39,13 +39,13 @@ export function PoolTiles({ stages, total, value, onChange }: SummaryProps) {
     <div className="grid gap-2 @3xl/main:grid-cols-[minmax(150px,180px)_1fr]" role="tablist" aria-label="账户状态">
       <button type="button" role="tab" aria-selected={allActive} onClick={() => onChange("all")} className={cn("flex flex-col justify-between gap-3 rounded-xl border px-4 py-3 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring", allActive ? "border-foreground bg-foreground text-background" : "bg-card hover:bg-muted/50")}>
         <span className={cn("text-xs", allActive ? "text-background/70" : "text-muted-foreground")}>全部账户</span>
-        <span className="text-3xl font-semibold tabular-nums tracking-tight">{total}</span>
+        <span className="text-3xl font-semibold tabular-nums tracking-tight">{total ?? "−"}</span>
       </button>
       <div className="grid grid-cols-3 gap-2 @xl/main:grid-cols-5 @6xl/main:grid-cols-9">
         {ordered(stages).map(({ meta, stage }) => {
           const active = value === meta.value
           const count = stage?.count ?? null
-          const share = count === null || total === 0 ? 0 : count / total
+          const share = count === null || !total ? 0 : count / total
           return (
             <button key={meta.value} type="button" role="tab" aria-selected={active} title={meta.hint} onClick={() => onChange(meta.value)} className={cn("flex flex-col gap-1.5 rounded-xl border bg-card px-3 py-2.5 text-left transition-colors hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring", active && "border-foreground ring-1 ring-foreground")}>
               <span className="flex items-center gap-1.5 text-xs text-muted-foreground"><span className={cn("size-1.5 rounded-full", meta.dot)} />{meta.label}</span>
@@ -86,7 +86,7 @@ export function PoolPipeline({ stages, total, value, onChange, asOf }: SummaryPr
         })}
       </div>
       <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-muted" aria-hidden>
-        {list.map(({ meta, stage }) => (stage?.count ?? 0) > 0 ? <span key={meta.value} className={cn("h-full", meta.dot)} style={{ width: `${((stage?.count ?? 0) / Math.max(1, total)) * 100}%` }} title={`${meta.label} ${stage?.count}`} /> : null)}
+        {list.map(({ meta, stage }) => (stage?.count ?? 0) > 0 ? <span key={meta.value} className={cn("h-full", meta.dot)} style={{ width: `${((stage?.count ?? 0) / Math.max(1, total ?? 0)) * 100}%` }} title={`${meta.label} ${stage?.count}`} /> : null)}
       </div>
     </div>
   )

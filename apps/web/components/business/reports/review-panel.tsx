@@ -29,7 +29,7 @@ export function TaskReviewPanel({ taskId, taskName }: { taskId: string; taskName
       <Card>
         <CardHeader><CardTitle>任务复盘</CardTitle><CardDescription>发起后由 Agent 做 Deep Research，约 5–10 分钟；结果六段带溯源并归档知识库</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-3 text-sm">
-          {launched ? <p className="flex items-center gap-2"><StatusChip tone="pending">排队</StatusChip>已发起（示例：fixture 只有 fixture-task-ready 的结果，此任务不会有回执）</p> : <p className="text-muted-foreground">{taskName ?? taskId} 还没有复盘。周期结束或手动发起后生成。</p>}
+          {launched ? <p className="flex items-center gap-2"><StatusChip tone="pending">排队</StatusChip>已发起（示例只给了「AAC 拉新」的结果，此任务不会有回执）</p> : <p className="text-muted-foreground">{taskName ?? taskId} 还没有复盘。周期结束或手动发起后生成。</p>}
           <Button size="sm" className="w-fit" disabled={launched} onClick={() => { setLaunched(true); toast("已发起复盘", { description: "已提交，稍后在运行记录里看结果" }) }}><IconPlayerPlay />发起复盘</Button>
         </CardContent>
       </Card>

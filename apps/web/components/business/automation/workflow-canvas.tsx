@@ -214,7 +214,7 @@ function Canvas({ definitionId }: { definitionId: string }) {
           )}
         </DialogContent>
       </Dialog>
-      {definition || isNew ? null : <p className="@5xl/main:col-span-3 text-xs text-muted-foreground">定义 {definitionId} 不在 fixture 里；画布显示 graph-v1 样例（新任务开户到基建）。</p>}
+      {definition || isNew ? null : <p className="@5xl/main:col-span-3 text-xs text-muted-foreground">定义 {definitionId} 没有样例；画布显示 graph-v1 样例（新任务开户到基建）。</p>}
     </div>
   )
 }
@@ -230,7 +230,7 @@ export function WorkflowCanvasPage({ definitionId }: { definitionId: string }) {
     <PageBody>
       <PageHeader title={<span className="flex items-center gap-2">{isNew ? "新建工作流" : definition?.name ?? "工作流画布"}{!isNew && version ? <StatusChip tone={version.status === "published" ? "success" : "pending"}>{version.status === "published" ? `v${version.version} 已发布` : `v${version.version} 草稿`}</StatusChip> : null}</span>} description={isNew ? "从空白画布开始；也可以回官方模板复制" : definition?.description ?? "workflow-graph/v1"} isMock={isMock} actions={<><StateSwitch /><Button asChild variant="outline" size="sm"><Link href="/automation"><IconArrowLeft />自动化</Link></Button></>} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-014 工作流画布接口（graph / validate / simulate / publish）接入后切换为真数据" empty={{ title: "没有这个工作流", description: "回自动化页从模板创建。" }}>
+        <StateFrame state={state} unlock="工作流画布接口（读图 / 校验 / 模拟 / 发布）接入后切换为真数据" empty={{ title: "没有这个工作流", description: "回自动化页从模板创建。" }}>
           <ReactFlowProvider><Canvas definitionId={definitionId} /></ReactFlowProvider>
         </StateFrame>
       </div>
