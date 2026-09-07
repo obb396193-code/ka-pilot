@@ -3878,3 +3878,11 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 ### P-104 ✅合流｜be/r010 @ b46ae5d → main `7691819`（F-P103-1 修 + PG 残留隔离 + 维度行身份）｜arch 2026-09-07
 - F-P103-1 定性 = 用例过期（旧 v2 注入路径），非 v3 bug：用例改接 `PlatformWindowQuery` 生产路径 + 合成 task/assessment_price_history/task_accounts，期望 v3 形状（ready + assessment），未改成 unavailable ✅。e1702e3 隔离静音/变更集 PG 残留（F-P103-2 部分）✅。c30f6f1 维度行复用 v3 考核校验 + 身份边界 ✅。
 - 门禁（真 PG，db 串行）：domain 765 / db 692 / worker 1141+2 / gateway 36 / web 140，tsc/eslint 全 0。**main 零红。**
+
+### P-105｜F-P103-1 原始异常补证 + 全量真实PG回补完成（be，2026-09-07）
+
+- 收到P104合流；前三笔c30f6f1/e1702e3/b46ae5d已在main。补充候选 **1f4a974**：仅PG测试临时观测Error构造，finally恢复；实际捕捉 `Error: Window reader unavailable`，定位platform-data-source.ts:211，旧构造器未传v3 window reader，第二参数普通snapshot根本没调用。不是靠补假指标/改unavailable期望过测试。新路径真实RR/RO+window/assessment两个Repository验证新旧金额/时间/考核一致。
+- 最终本机：Domain765；DB69文件692（含真实PG）；Worker1142+2外部opt-in skip；Gateway36（含PG2）；Web140。后端三包/Gateway type/lint通过，缓存audit0。**本机Web typecheck缺合流前端依赖**（shiki/ai/ReactFlow/BlockNote等，package已声明），lint0error12warn；未本地重装/未改视觉，不借arch环境数字掩盖本机缺口。
+- 精确PG回补：变更集41/T1调度6/静音8/session清理9/窗口history5/维度tuple4/012迁移4；Worker单轮3/session CLI5/快照2/窗口4/table任务5/业务Session2/bootstrap2/changeset auth4/workflow5/backfill3/pipeline1/benchmark4（100账户样本）。串行专用合成库ka_be_r010_20260907_test，不使用共享ka。
+- 失败留痕：DB首轮typed残留+mute FK触发8失败→按owned UUID清理后692绿；teardown初次错误假设execution_runs有workspace列已修JOIN。Worker首轮旧测试1红→中途ENOSPC/PG拒连大量红→空间恢复后最终1142+2绿。日志与逐SHA见 `docs/plans/2026-09-07-R010恢复门禁质量报告.md`。F-P103-2默认fileParallelism:false本来已在DB/Worker；跨进程共库DDL仍需隔离，未放宽迁移/锁安全门。
+- 本笔继续总目标active；下一步R010a1公开维度/剩余读链，不把行Schema算完整功能；a2/013/后续全部仍在范围。收到R-FE-IMG-002与新参考，旧暗色图不再算pending交付，将按新方向做候选。没有push/部署/真实媒体写。
