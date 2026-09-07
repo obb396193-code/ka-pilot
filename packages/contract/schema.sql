@@ -1106,3 +1106,27 @@ CREATE TABLE execution_run_items (             -- 逐 attempt 执行明细（历
   media_code TEXT, media_message TEXT, applied_value JSONB, applied_at TIMESTAMPTZ,
   PRIMARY KEY (workspace_id, execution_run_id, item_id, attempt)
 );
+
+-- ===== v1.8（2026-09-07 arch；账户昵称解析主源 + 归属人工可改；migration 018 = R-017） =====
+CREATE TABLE naming_rules (            -- 按渠道版本化的命名规范模板（快手/腾讯/字节各一套）
+  workspace_id UUID NOT NULL, media TEXT NOT NULL, version INTEGER NOT NULL,
+  segments JSONB NOT NULL,             -- [{key,label,order,source:enum|regex|free,values[],pattern,required,multi,mapsTo}]
+  separators TEXT[] NOT NULL DEFAULT ARRAY['-'],   -- 允许的分隔符：半角/全角减号、下划线、空格…
+  effective_from DATE NOT NULL, created_by UUID, note TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, media, version)
+);
+CREATE TABLE account_name_parses (     -- 每个账户昵称的解析结果与人工确认
+  workspace_id UUID NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,
+  account_name TEXT NOT NULL,          -- 解析时的原名（改名后重解析、留旧行做历史）
+  rule_version INTEGER NOT NULL,
+  status TEXT NOT NULL,                -- parsed|partial|failed|conflict|confirmed|overridden
+  segments JSONB NOT NULL DEFAULT '{}'::jsonb,     -- 解析出的各段
+  task_ids TEXT[],                     -- 业务段括号里的任务 ID（校验用，不直接写归属）
+  conflicts JSONB,                     -- [{field, fromNickname, fromPlatform, source}]
+  override JSONB,                      -- 人工改过的段；永远优先，重解析不覆盖
+  parsed_at TIMESTAMPTZ DEFAULT now(), confirmed_by UUID, confirmed_at TIMESTAMPTZ,
+  PRIMARY KEY (workspace_id, media, account_id),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE CASCADE
+);
