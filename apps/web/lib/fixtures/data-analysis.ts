@@ -5,10 +5,19 @@ import summaryYellow from "@contract/fixtures/data-query/summary-window-v3-yello
 import summaryCashMissing from "@contract/fixtures/data-query/summary-window-v3-cash-missing.json"
 import trendV3 from "@contract/fixtures/data-query/trend-v3.json"
 import dimensionV3 from "@contract/fixtures/data-query/dimension-v3.json"
+import dimensionTask from "@contract/fixtures/data-query/dimension-v3-task.json"
+import dimensionBiz from "@contract/fixtures/data-query/dimension-v3-biz.json"
+import dimensionAccount from "@contract/fixtures/data-query/dimension-v3-account.json"
+import dimensionAgentType from "@contract/fixtures/data-query/dimension-v3-agent_type.json"
+import dimensionDeduction from "@contract/fixtures/data-query/dimension-v3-deduction_range.json"
 import dimensionUnsupported from "@contract/fixtures/data-query/dimension-unsupported.json"
 import hourly from "@contract/fixtures/data-query/hourly.json"
 import gap from "@contract/fixtures/data-query/gap.json"
+import gapTask from "@contract/fixtures/data-query/gap-task.json"
+import gapBiz from "@contract/fixtures/data-query/gap-biz.json"
 import pivot2 from "@contract/fixtures/data-query/pivot2.json"
+import pivot2BizPosition from "@contract/fixtures/data-query/pivot2-biz-resource_position.json"
+import pivot2Unsupported from "@contract/fixtures/data-query/pivot2-unsupported.json"
 import exportQueued from "@contract/fixtures/exports/queued.json"
 import watchlist from "@contract/fixtures/me/watchlist.json"
 import views from "@contract/fixtures/me/views.json"
@@ -18,7 +27,8 @@ import reportRender from "@contract/fixtures/reports/render.json"
 // 数据分析页的 fixture 读取层（fixture 即契约）。类型按 api.md v3 手写，JSON 用 as 断言；不算数。
 export type Ratios = { ctr: RatioValue; cvr: RatioValue; realCpa: RatioValue; cashCpa: RatioValue; gap: RatioValue; potentialRate: RatioValue; biConversionRate: RatioValue }
 export type MetricsV3 = { cost: MetricValue; cashCost: MetricValue; exposure: MetricValue; click: MetricValue; conversion: MetricValue; realConversion: MetricValue; costSpace: MetricValue; wakeUv: MetricValue; potentialUv: MetricValue; ratios: Ratios }
-export type AssessmentV3 = { price: { value: number; effectiveDate: string } | null; onTarget: boolean | null; costStatus: CostStatus; costStatusReason: string; budgetUsageRate?: RatioValue }
+// v1.7.2/1.7.4：price=null 且 priceVersions≥2 = 窗口内多版本考核价（显「多版本(N)」）；effectiveDate 只在团队源（priceSource=ka_daily）可为 null
+export type AssessmentV3 = { price: { value: number; effectiveDate: string | null } | null; priceSource?: "history" | "ka_daily"; priceVersions?: number; onTarget: boolean | null; costStatus: CostStatus; costStatusReason: string; budgetUsageRate?: RatioValue }
 export type WindowPreset = "today" | "yesterday" | "last_7d" | "month_to_date" | "last_month" | "task_period" | "custom"
 export type Lineage = { source: string; workspaceKind?: "personal" | "team"; window?: { from: string; to: string; preset?: WindowPreset }; dataAsOf?: string; metricVersion?: string; coverage?: { complete: boolean }; truncated?: boolean; partial?: boolean }
 export type QuerySource<TRow> = { queryId: string; rowSchemaVersion: string; status: "ready" | "partial" | "stale" | "empty"; rows: TRow[]; returnedRowCount: number; wholeResultTotal: MetricValue; lineage: Lineage; warnings: string[]; dimension?: string; groupBy?: string; dimA?: string; dimB?: string }
@@ -27,7 +37,7 @@ export type QueryFixture<TRow> = Fixture<{ mode: string; source: QuerySource<TRo
 export type TableRow = { workspaceId: string; media: string; accountId: string; accountName: string; ds: string; tasks: { taskId: string; taskName: string }[]; dataAnomaly: boolean; metrics: MetricsV3; assessment: AssessmentV3 }
 export type SummaryRow = { rowCount: number; accountCount: number; anomalyRows: number; metrics: MetricsV3; assessment: AssessmentV3 }
 export type TrendRow = { ds: string; metrics: MetricsV3 }
-export type DimensionRow = { key: string; label: string; metrics: MetricsV3; assessment: AssessmentV3; anomaly: boolean }
+export type DimensionRow = { key: string; label: string; metrics: MetricsV3; assessment: AssessmentV3; anomaly: boolean; agent_type?: "agency" | "self"; agency_name?: string | null }
 export type HourlyRow = { media: string; accountId: string; hh: number; cumulative: { cost: MetricValue; cashCost: MetricValue; conversion: MetricValue; realConversion: MetricValue }; delta: { cost: MetricValue; cashCost: MetricValue; conversion: MetricValue; realConversion: MetricValue }; ratios: { cashCpa: RatioValue; realCpa: RatioValue }; velocity: { costPerHour: MetricValue }; projectedDayCost: MetricValue; budgetUsage: RatioValue; lastSyncAt: string | null }
 export type GapRow = { group: { key: string; label: string }; conversion: MetricValue; realConversion: MetricValue; gap: RatioValue; preDeductionGap: RatioValue; deductionRate: RatioValue; gapStatus: "normal" | "high" | "missing" }
 export type Pivot2Row = { a: { key: string; label: string }; b: { key: string; label: string }; metrics: MetricsV3; assessment: AssessmentV3 }
@@ -52,8 +62,14 @@ export const summaryFixtures = {
 export type SummaryVariant = keyof typeof summaryFixtures
 export const trendFixture = trendV3 as unknown as QueryFixture<TrendRow>
 export const hourlyFixture = hourly as unknown as QueryFixture<HourlyRow>
-export const gapFixture = gap as unknown as QueryFixture<GapRow> & { meta?: { ruleSetVersion?: string } }
-export const pivot2Fixture = pivot2 as unknown as QueryFixture<Pivot2Row> & { meta?: { cellCoverage?: { cells: number; withData: number; undeterminable: number } } }
+export type GapFixture = QueryFixture<GapRow> & { meta?: { ruleSetVersion?: string } }
+export const gapFixture = gap as unknown as GapFixture
+export const gapFixtures: Record<"account" | "task" | "biz", GapFixture> = { account: gapFixture, task: gapTask as unknown as GapFixture, biz: gapBiz as unknown as GapFixture }
+export type Pivot2Fixture = QueryFixture<Pivot2Row> & { meta?: { cellCoverage?: { cells: number; withData: number; undeterminable: number } } }
+export const pivot2Fixture = pivot2 as unknown as Pivot2Fixture
+/** 交叉表按 dimA-dimB 取样例；缺的组合显诚实空态 */
+export const pivot2Fixtures: Record<string, Pivot2Fixture> = { "resource_position-task": pivot2Fixture, "biz-resource_position": pivot2BizPosition as unknown as Pivot2Fixture }
+export const pivot2UnsupportedFixture = pivot2Unsupported as unknown as { ok: false; error: { code: string; message: string; dimension: string; hint: string } }
 export const exportQueuedFixture = exportQueued as unknown as Fixture<{ exportId: string; status: string; kind: string; format: string }>
 export const watchlistFixture = watchlist as unknown as Fixture<{ items: { media: string; accountId: string }[]; updatedAt: string }>
 export type SavedView = { id: string; page: string; name: string; config: { version: string; filters: Record<string, string>; columns: string[]; sort: { by: string; dir: string }[]; window: { preset: WindowPreset } }; isShared: boolean; updatedAt: string }
@@ -78,24 +94,15 @@ export const dimensions: { value: Dimension; label: string }[] = [
 const dimensionReady = dimensionV3 as unknown as QueryFixture<DimensionRow>
 const dimensionUnsupportedFixture = dimensionUnsupported as unknown as { ok: false; error: { code: string; message: string; dimension: string; hint: string } }
 
-const missing: MetricValue = { value: null, availability: "missing" }
-const undef: RatioValue = { value: null, state: "undefined" }
-const emptyMetrics = (): MetricsV3 => ({ cost: missing, cashCost: missing, exposure: missing, click: missing, conversion: missing, realConversion: missing, costSpace: missing, wakeUv: missing, potentialUv: missing, ratios: { ctr: undef, cvr: undef, realCpa: undef, cashCpa: undef, gap: undef, potentialRate: undef, biConversionRate: undef } })
-const emptyAssessment = (): AssessmentV3 => ({ price: null, onTarget: null, costStatus: null, costStatusReason: "assessment_missing" })
-
-// TODO-fixture:data-query/dimension-v3-{task,biz,account,agent_type,deduction_range}.json —— 契约只给了资源位一维样例；
-// 这里按 api.md 自造最小 mock：只有维度值，指标全部 missing（显 −），不造真实感数据。arch 补 fixture 后删。
-function minimalDimension(dimension: Dimension, labels: string[]): QueryFixture<DimensionRow> {
-  return { ok: true, data: { mode: "platform", source: { queryId: "account.dimension", rowSchemaVersion: "account.dimension/v3", status: "partial", dimension, rows: labels.map((label, index) => ({ key: `${dimension}-${index + 1}`, label, metrics: emptyMetrics(), assessment: emptyAssessment(), anomaly: false })), returnedRowCount: labels.length, wholeResultTotal: { value: labels.length, availability: "available" }, lineage: { source: "canonical", workspaceKind: "personal", window: { from: "2026-09-01", to: "2026-09-05", preset: "month_to_date" }, coverage: { complete: false }, truncated: false, partial: true }, warnings: ["TODO-fixture：该维度样例待 arch 补，指标先显 −"] } }, meta: { requestId: "fe-minimal-mock", _note: "前端自造最小 mock" } }
-}
+const dimensionFixture = (json: unknown) => json as unknown as QueryFixture<DimensionRow>
 export const dimensionFixtures: Record<Dimension, QueryFixture<DimensionRow> | { unsupported: true; message: string }> = {
   resource_position: dimensionReady,
-  task: minimalDimension("task", ["AAC 拉新", "示例任务 B"]),
-  biz: minimalDimension("biz", ["拉新", "促活"]),
-  account: minimalDimension("account", ["AAC拉新_快手_01", "AAC拉新_快手_02"]),
-  agent_type: minimalDimension("agent_type", ["代理", "自投"]),
-  deduction_range: minimalDimension("deduction_range", ["0–5%", "5–10%", ">10%"]),
-  bid_tool: { unsupported: true, message: "出价工具为派生枚举，映射表未提案前无数据源" },
+  task: dimensionFixture(dimensionTask),
+  biz: dimensionFixture(dimensionBiz),
+  account: dimensionFixture(dimensionAccount),
+  agent_type: dimensionFixture(dimensionAgentType),
+  deduction_range: dimensionFixture(dimensionDeduction),
+  bid_tool: { unsupported: true, message: pivot2UnsupportedFixture.error.message },
   ubp: { unsupported: true, message: dimensionUnsupportedFixture.error.message },
 }
 

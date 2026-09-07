@@ -3886,3 +3886,11 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 精确PG回补：变更集41/T1调度6/静音8/session清理9/窗口history5/维度tuple4/012迁移4；Worker单轮3/session CLI5/快照2/窗口4/table任务5/业务Session2/bootstrap2/changeset auth4/workflow5/backfill3/pipeline1/benchmark4（100账户样本）。串行专用合成库ka_be_r010_20260907_test，不使用共享ka。
 - 失败留痕：DB首轮typed残留+mute FK触发8失败→按owned UUID清理后692绿；teardown初次错误假设execution_runs有workspace列已修JOIN。Worker首轮旧测试1红→中途ENOSPC/PG拒连大量红→空间恢复后最终1142+2绿。日志与逐SHA见 `docs/plans/2026-09-07-R010恢复门禁质量报告.md`。F-P103-2默认fileParallelism:false本来已在DB/Worker；跨进程共库DDL仍需隔离，未放宽迁移/锁安全门。
 - 本笔继续总目标active；下一步R010a1公开维度/剩余读链，不把行Schema算完整功能；a2/013/后续全部仍在范围。收到R-FE-IMG-002与新参考，旧暗色图不再算pending交付，将按新方向做候选。没有push/部署/真实媒体写。
+
+## F-007 合 main + 三批回改完成 SHA（fe → arch，2026-09-07）
+
+- `git merge main`（快进到 492b5c4）后 → `fe/f006` @ **3d7fef5**（路径限定，未 push）。packages/domain、packages/db 已 `npm ci`（apps/web 的 tsc 会跟着 lib/data 走进 domain）；tsc 0、eslint 0 错、`npm test` 140/140。
+- 回改清单（全部按你三条信箱 + v1.7.1–1.7.4）：五维 dimension 真样例（扣量桶按契约）、gap-task/biz、pivot2 biz×版位 + bid_tool UNSUPPORTED 整张示例角标 + hint、accounts detail/timeline/structure-account-2 + detail-account-5 + trend-account-1（按 id 取，无样例诚实空态）、tasks +2（stage 加 closed / reviewing）、关注 tab（watchlist 账户 ∩ 任务挂载账户；`type:"task"` 已兼容）、任务详情「SOP 与自动化」改读 `GET /tasks/:id/bindings`（不再显全局规则）、C3 文案（顶部「账户状态」/ 列「投放阶段」）、侧栏 badge = me/counts、Agent 模型清单 = agent/models（未验证灰显）、assessment.priceSource / priceVersions（多版本(N)）、时间线 actor 可空（timeline-account-2 有 null）。
+- 冲突点新增 C6：`me/preferences` fixture 默认 `bwc` 与老板 D1 默认 `bw` 不一致 → 按老板；用户改过才生效。请老板确认。
+- 下一步：§13 v1.7 追加九块（方案库 / 第九页签 / 归因树 / 差距树 + 知悉流 / 竞情 / Shadow / AI 提效 / 周报复盘 / 月度推送），fixtures 已在 main，按页开做；老板精修可并行。
+- ⚠️ 本机磁盘 97%（6 GB 剩），今晚已触发 ENOSPC 让 webpack 缓存写失败 / 浏览器 tab 被杀；已报老板清理。Codex 那边若也在这台机子跑，注意同样受影响。

@@ -7,7 +7,7 @@ import { DataGrid, selectionColumn, StatusChip, useGridTable, type GridFeatures 
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { isOk, mv, rv } from "@/lib/fixtures/contract"
-import { gapFixture, type GapRow } from "@/lib/fixtures/data-analysis"
+import { gapFixtures, type GapRow } from "@/lib/fixtures/data-analysis"
 import { LineageFooter, MetricDefinitionHint, metricFormulas } from "./shared"
 
 // Gap 对账：回传 vs 真实 vs gap 三态（normal / high / missing）；high 阈值来自规则引擎当前版本（meta.ruleSetVersion）
@@ -33,8 +33,9 @@ const columns = helper.columns([
 
 export function GapTab() {
   const [groupBy, setGroupBy] = useState<(typeof groupings)[number]["value"]>("account")
+  const gapFixture = gapFixtures[groupBy]
   const supported = isOk(gapFixture) && gapFixture.data.source.groupBy === groupBy
-  const rows = useMemo(() => (supported && isOk(gapFixture) ? gapFixture.data.source.rows : []), [supported])
+  const rows = useMemo(() => (supported && isOk(gapFixture) ? gapFixture.data.source.rows : []), [supported, gapFixture])
   const table = useGridTable({ data: rows, columns, pageSize: 50, getRowId: (row) => row.group.key })
   if (!isOk(gapFixture)) return null
   return (
@@ -43,7 +44,7 @@ export function GapTab() {
         table={table}
         density="compact"
         showPagination={false}
-        empty={supported ? "当前窗口没有对账行" : `TODO-fixture：${groupings.find((item) => item.value === groupBy)?.label}的样例待 arch 补（data-query/gap-${groupBy}.json），不用猜的数`}
+        empty="当前窗口没有对账行"
         toolbar={
           <>
             <Select value={groupBy} onValueChange={(value) => setGroupBy(value as typeof groupBy)}>

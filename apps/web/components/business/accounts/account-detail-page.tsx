@@ -18,7 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { DisplayMetric } from "@/lib/data/contracts"
-import { accountsFixture, accountTrendFixture, cutoffLabel, detailFixture, lifecycleLabel, overlayFixture, poolStatusMap, structureFixture, timelineFixture, type AccountItem, type StructureUnit } from "@/lib/fixtures/accounts"
+import { accountsFixture, accountTrendFixtures, cutoffLabel, detailFixtures, lifecycleLabel, overlayFixture, poolStatusMap, structureFixtures, timelineFixtures, type AccountItem, type StructureUnit } from "@/lib/fixtures/accounts"
 import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
 import { AccountDialogs, type DialogKind } from "./account-dialogs"
@@ -33,11 +33,15 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
   const { isMock } = useSession()
   const state = usePageState()
   const listItem = useMemo(() => (isOk(accountsFixture) ? accountsFixture.data.items.find((item) => item.accountId === accountId && item.media === media) ?? null : null), [media, accountId])
-  const detail = isOk(detailFixture) && detailFixture.data.account.accountId === accountId ? detailFixture.data : null
-  const structure = isOk(structureFixture) && structureFixture.data.accountId === accountId ? structureFixture.data : null
-  const timeline = isOk(timelineFixture) && accountId === "account-1" ? timelineFixture.data.items : []
+  const detailFixture = detailFixtures[accountId]
+  const detail = detailFixture && isOk(detailFixture) ? detailFixture.data : null
+  const structureFixture = structureFixtures[accountId]
+  const structure = structureFixture && isOk(structureFixture) ? structureFixture.data : null
+  const timelineFixture = timelineFixtures[accountId]
+  const timeline = timelineFixture && isOk(timelineFixture) ? timelineFixture.data.items : []
   const overlay = isOk(overlayFixture) && accountId === "account-1" ? overlayFixture.data.points : []
-  const trendRows = isOk(accountTrendFixture) ? accountTrendFixture.data.source.rows : []
+  const accountTrendFixture = accountTrendFixtures[accountId]
+  const trendRows = accountTrendFixture && isOk(accountTrendFixture) ? accountTrendFixture.data.source.rows : []
   const [junkSelected, setJunkSelected] = useState<string[]>([])
   const [dialog, setDialog] = useState<DialogKind>(null)
   const name = detail?.account.accountName ?? listItem?.accountName ?? accountId
@@ -112,7 +116,7 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
                       </div>
                       <div className="flex flex-wrap gap-1.5">{detail.account.tags.map((tag) => <TypeChip key={tag}>{tag}</TypeChip>)}{detail.account.starred ? <TypeChip>★ 星标</TypeChip> : null}</div>
                     </>
-                  ) : <p className="text-xs text-muted-foreground">小传样例只有 account-1（TODO-fixture:accounts/detail-{accountId}.json）；余额 / 断量取自列表项。</p>}
+                  ) : <p className="text-xs text-muted-foreground">该账户没有小传样例（fixture 只有 account-1 / 2 / 5，契约同一 DTO `GET /accounts/:media/:id/bio`）；余额 / 断量取自列表项。</p>}
                 </CardContent>
               </Card>
             </div>
@@ -134,13 +138,13 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
                       ))}
                     </TableBody>
                   </Table>
-                ) : <p className="px-4 py-6 text-sm text-muted-foreground">结构样例只有 account-1（TODO-fixture:accounts/structure-{accountId}.json）；结构同步（4.4）联调后自动出现。</p>}
+                ) : <p className="px-4 py-6 text-sm text-muted-foreground">该账户没有结构样例（fixture 只有 account-1 / 2）；结构同步（4.4）联调后自动出现。</p>}
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader><CardTitle>操作史</CardTitle><CardDescription>变更集 / 后台手动（带外变更）/ 考核价 / 日预算卡 / 派发 / 交接 … 倒序；T+1 回收挂在项下</CardDescription></CardHeader>
-              <CardContent>{timeline.length ? <TimelineList items={timeline} /> : <p className="text-sm text-muted-foreground">操作史样例只有 account-1（TODO-fixture:accounts/timeline-{accountId}.json）。</p>}</CardContent>
+              <CardContent>{timeline.length ? <TimelineList items={timeline} /> : <p className="text-sm text-muted-foreground">该账户没有操作史样例（fixture 只有 account-1 / 2）。</p>}</CardContent>
             </Card>
           </div>
         </StateFrame>

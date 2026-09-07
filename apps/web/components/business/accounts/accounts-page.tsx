@@ -32,7 +32,7 @@ const tabs = [
 ] as const
 type Tab = (typeof tabs)[number]["value"]
 type GroupBy = "none" | "lifecycle" | "product" | "owner" | "task"
-const groupLabels: Record<GroupBy, string> = { none: "不分组", lifecycle: "按生命周期", product: "按产品名", owner: "按负责人", task: "按任务" }
+const groupLabels: Record<GroupBy, string> = { none: "不分组", lifecycle: "按投放阶段", product: "按产品名", owner: "按负责人", task: "按任务" }
 const UNASSIGNED = "未填"
 
 function CapacityDistribution({ items }: { items: AccountItem[] }) {
@@ -101,7 +101,7 @@ export function AccountsPage() {
       <Select value={media} onValueChange={setMedia}><SelectTrigger size="sm" className="w-24" aria-label="渠道"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部渠道</SelectItem><SelectItem value="KUAISHOU">快手</SelectItem></SelectContent></Select>
       <Select value={product} onValueChange={setProduct}><SelectTrigger size="sm" className="w-32" aria-label="产品名"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部产品名</SelectItem>{products.map((name) => <SelectItem key={name} value={name}>{name}</SelectItem>)}<SelectItem value={UNASSIGNED}>未填产品名</SelectItem></SelectContent></Select>
       <Select value={owner} onValueChange={setOwner}><SelectTrigger size="sm" className="w-32" aria-label="负责人"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部负责人</SelectItem>{owners.map((name) => <SelectItem key={name} value={name}>{name}</SelectItem>)}</SelectContent></Select>
-      <Select value={lifecycle} onValueChange={(value) => setLifecycle(value as typeof lifecycle)}><SelectTrigger size="sm" className="w-32" aria-label="生命周期"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部生命周期</SelectItem>{(Object.keys(lifecycleLabel) as LifecycleStage[]).filter((key) => key !== "unknown").map((key) => <SelectItem key={key} value={key}>{lifecycleLabel[key]}</SelectItem>)}</SelectContent></Select>
+      <Select value={lifecycle} onValueChange={(value) => setLifecycle(value as typeof lifecycle)}><SelectTrigger size="sm" className="w-32" aria-label="投放阶段"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部投放阶段</SelectItem>{(Object.keys(lifecycleLabel) as LifecycleStage[]).filter((key) => key !== "unknown").map((key) => <SelectItem key={key} value={key}>{lifecycleLabel[key]}</SelectItem>)}</SelectContent></Select>
       <Button variant={starredOnly ? "default" : "outline"} size="sm" onClick={() => setStarredOnly((prev) => !prev)}><IconStar />星标</Button>
       <Tooltip><TooltipTrigger asChild><span className="inline-flex"><Button variant="outline" size="sm" disabled><IconTag />标签</Button></span></TooltipTrigger><TooltipContent side="bottom">双层标签筛选随 tags 组合查询接口开放</TooltipContent></Tooltip>
       <Select value={groupBy} onValueChange={(value) => setGroupBy(value as GroupBy)}><SelectTrigger size="sm" className="w-36" aria-label="分组"><span className="text-muted-foreground">分组</span><SelectValue /></SelectTrigger><SelectContent>{(Object.keys(groupLabels) as GroupBy[]).map((key) => <SelectItem key={key} value={key}>{groupLabels[key]}</SelectItem>)}</SelectContent></Select>
@@ -141,7 +141,7 @@ export function AccountsPage() {
           {tab === "pool" ? (
             <div className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="text-sm font-medium">库存流水线 <span className="text-xs font-normal text-muted-foreground">GET /accounts/pipeline · 点一态即筛</span></div>
+                <div className="text-sm font-medium">账户状态 <span className="text-xs font-normal text-muted-foreground">九态 · GET /accounts/pipeline · 点一态即筛</span></div>
                 <ToggleGroup type="single" variant="outline" size="sm" value={view} onValueChange={(value) => { if (value) setView(value as PoolView) }} aria-label="表达">
                   {poolViews.map((item) => <ToggleGroupItem key={item.value} value={item.value} title={item.hint} className="px-3 text-xs">{item.label}</ToggleGroupItem>)}
                 </ToggleGroup>

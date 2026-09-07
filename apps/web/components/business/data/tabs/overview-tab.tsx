@@ -33,7 +33,7 @@ export function OverviewTab({ colorKey }: { colorKey?: string }) {
   const metrics = useMemo<DisplayMetric[]>(() => {
     if (!row) return []
     const a = row.assessment
-    const price = a.price ? `考核 ¥${a.price.value.toFixed(2)}` : null
+    const price = a.price ? `考核 ¥${a.price.value.toFixed(2)}${a.priceSource === "ka_daily" ? "（团队日价）" : ""}` : a.priceVersions && a.priceVersions >= 2 ? `考核价多版本(${a.priceVersions})` : null
     return [
       { key: "cost", label: "账面消耗", value: mv(row.metrics.cost, "money0"), delta: null, tone: "neutral" },
       { key: "cashCost", label: "现金消耗", value: mv(row.metrics.cashCost, "money0"), delta: null, tone: "neutral" },

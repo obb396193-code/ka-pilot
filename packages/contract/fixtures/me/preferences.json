@@ -2,7 +2,7 @@
   "ok": true,
   "data": {
     "theme": {
-      "mode": "bwc",
+      "mode": "bw",
       "hue": "#ff6a2c"
     },
     "locale": "zh-CN",
@@ -10,6 +10,6 @@
   },
   "meta": {
     "requestId": "fixture-me-prefs",
-    "_note": "identity 级，跨 workspace；PATCH 只改自己的；前端覆盖 localStorage"
+    "_note": "identity 级，跨 workspace；PATCH 只改自己的；前端覆盖 localStorage；默认主题 mode=bw（老板 D1），用户改过才变"
   }
 }
