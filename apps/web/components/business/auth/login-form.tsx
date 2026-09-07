@@ -7,6 +7,7 @@ import { IconInnerShadowTop } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator } from "@/components/ui/field"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { loginSession, readSession } from "@/lib/data/session-client"
 import { cn } from "@/lib/utils"
@@ -20,6 +21,7 @@ export function LoginForm({ className, frame = "card", ...props }: React.Compone
   const isMock = process.env.NEXT_PUBLIC_KA_DATA_PROVIDER === "mock"
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [helpOpen, setHelpOpen] = useState(false)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const nextPath = (() => { const next = searchParams.get("next"); return next && next.startsWith("/") && !next.startsWith("//") ? next : "/" })()
@@ -51,7 +53,10 @@ export function LoginForm({ className, frame = "card", ...props }: React.Compone
           <Input id="username" autoComplete="username" placeholder="内测账号" required={!isMock} value={username} onChange={(event) => setUsername(event.target.value)} disabled={pending} />
         </Field>
         <Field>
-          <FieldLabel htmlFor="password">密码</FieldLabel>
+          <div className="flex items-center justify-between gap-2">
+            <FieldLabel htmlFor="password">密码</FieldLabel>
+            <button type="button" className="text-xs text-muted-foreground underline-offset-2 hover:underline" onClick={() => setHelpOpen(true)}>忘记密码？</button>
+          </div>
           <Input id="password" type="password" autoComplete="current-password" required={!isMock} value={password} onChange={(event) => setPassword(event.target.value)} disabled={pending} />
         </Field>
         {error ? <p role="alert" className="text-sm text-status-critical">{error}</p> : null}
@@ -67,6 +72,18 @@ export function LoginForm({ className, frame = "card", ...props }: React.Compone
           <FieldDescription className="text-center">登录后默认进入你的个人空间；团队数据可在侧栏切换。</FieldDescription>
         </Field>
       </FieldGroup>
+
+      <Dialog open={helpOpen} onOpenChange={setHelpOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader><DialogTitle>忘记密码</DialogTitle><DialogDescription>内测期账号由管理员统一发放，还没有自助找回。</DialogDescription></DialogHeader>
+          <ol className="flex list-decimal flex-col gap-1.5 pl-4 text-sm">
+            <li>找你们的对接人或工作区管理员，说明用户名，请他在「治理后台 · 成员与授权」里重置。</li>
+            <li>重置后会给你一个临时密码，登录后尽快在「设置 · 个人资料」里改掉（改密接口开放后可自助改）。</li>
+            <li>连续输错不会锁号，但会记一条登录失败审计。</li>
+          </ol>
+          <p className="text-xs text-muted-foreground">正式期切 BUC 登录后，密码由公司统一身份管理，这里不再有密码。</p>
+        </DialogContent>
+      </Dialog>
     </form>
   )
 

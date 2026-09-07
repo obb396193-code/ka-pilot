@@ -86,14 +86,14 @@ export function KpiCards({ metrics, sparklines = {}, className }: { metrics: Dis
                   </Tooltip>
                 ) : null}
               </CardDescription>
-              <CardTitle title={metric.value} className={cn("text-[22px] font-semibold tabular-nums tracking-tight @[220px]/card:text-2xl", missing ? "text-muted-foreground" : toneClass[metric.tone])}>
+              <CardTitle title={metric.value} className={cn("text-[22px] font-semibold tabular-nums tracking-tight whitespace-nowrap @[220px]/card:text-2xl", missing ? "text-muted-foreground" : toneClass[metric.tone])}>
                 {overviewValue(metric.value)}
               </CardTitle>
               <CardAction>
                 {metric.delta ? (
-                  <Badge variant="outline" className={cn("kp-tint tabular-nums", toneClass[metric.tone])}>
+                  <Badge variant="outline" className={cn("kp-tint max-w-28 tabular-nums", toneClass[metric.tone])} title={metric.delta}>
                     {deltaIcon(metric.delta)}
-                    {metric.delta}
+                    <span className="truncate">{metric.delta}</span>
                   </Badge>
                 ) : (
                   // 环比后端未返回：按缺数规矩显「—」，不留空、不造数

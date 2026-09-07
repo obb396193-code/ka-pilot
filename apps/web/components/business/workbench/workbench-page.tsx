@@ -19,17 +19,19 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import type { DisplayMetric } from "@/lib/data/contracts"
 import { timelineFixture } from "@/lib/fixtures/accounts"
-import { fmtTime, isOk, mv, rv, costStatusReasonText } from "@/lib/fixtures/contract"
+import { fmtTime, isOk, mv, rv, costStatusReasonShort, costStatusReasonText } from "@/lib/fixtures/contract"
 import { summaryFixtures, trendFixture, windowLabel } from "@/lib/fixtures/data-analysis"
 import { alertsStreamFixture, approvalsFixture, briefFixtures, changesetFixture, dispatchesFixture, rosterFixture, runsRunningFixture, severityMeta, workItemDetailFixture, workItemListVariants, workItemLists, type Severity, type WorkItem, type WorkItemListVariant } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
 import { CollabTab } from "./collab-tab"
 import { KpiCards } from "./kpi-cards"
 import { LeadView } from "./lead-view"
+import { OnboardingCard } from "./onboarding-card"
+import { StarredTab } from "./starred-tab"
 import { WorkItemCard } from "./work-item-card"
 
 // 工作台（F-007 §3）：我的视图 ⇄ 负责人视图（role ∈ lead|admin 才显）；tab 今日｜协作；六卡 + 今日队列 + 右栏五卡
-const tabs = [{ value: "today", label: "今日" }, { value: "collab", label: "协作" }] as const
+const tabs = [{ value: "today", label: "今日" }, { value: "collab", label: "协作" }, { value: "starred", label: "我关注的" }] as const
 type Tab = (typeof tabs)[number]["value"]
 type QueueFilter = "all" | "P0" | "P1" | "opportunity"
 const tone = (status: "green" | "yellow" | "red" | null): DisplayMetric["tone"] => status === "green" ? "positive" : status === "yellow" ? "warning" : status === "red" ? "critical" : "neutral"
@@ -66,7 +68,7 @@ export function WorkbenchPage() {
     return [
       { key: "cost", label: "账面消耗", value: mv(row.metrics.cost, "money0"), delta: null, tone: "neutral" },
       { key: "cashCpa", label: "现金 CPA", value: rv(row.metrics.ratios.cashCpa, "money"), delta: a.price ? `考核 ¥${a.price.value.toFixed(2)}` : null, tone: tone(a.costStatus) },
-      { key: "onTarget", label: "达标", value: a.onTarget === null ? "−" : a.onTarget ? "达标" : "超线", delta: costStatusReasonText(a.costStatusReason), tone: tone(a.costStatus) },
+      { key: "onTarget", label: "达标", value: a.onTarget === null ? "−" : a.onTarget ? "达标" : "超线", delta: a.costStatusReason ? costStatusReasonShort[a.costStatusReason] ?? costStatusReasonText(a.costStatusReason) : null, tone: tone(a.costStatus) },
       { key: "costSpace", label: "成本空间", value: mv(row.metrics.costSpace, "money0"), delta: null, tone: "neutral" },
       { key: "realConversion", label: "BI 量级", value: mv(row.metrics.realConversion), delta: null, tone: "neutral" },
       { key: "pending", label: "待处理", value: String(counts.all), delta: counts.P0 ? `${counts.P0} 条 P0` : null, tone: counts.P0 ? "critical" : "neutral" },
@@ -104,8 +106,9 @@ export function WorkbenchPage() {
       {view === "mine" ? <PageTabs tabs={tabs} value={tab} onChange={setTab} /> : null}
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="R-010 工作项动作 + R-012 警报 / 早报接入后切换为真数据" empty={{ title: "今天没有待处理", description: "队列空 ≠ 全部健康；看底部覆盖三数。" }}>
-          {view === "lead" ? <LeadView /> : tab === "collab" ? <CollabTab /> : (
+          {view === "lead" ? <LeadView /> : tab === "collab" ? <CollabTab /> : tab === "starred" ? <StarredTab /> : (
             <div className="flex flex-col gap-4">
+              <OnboardingCard />
               <KpiCards metrics={kpis} sparklines={sparklines} className="px-0 lg:px-0" />
               <div className="grid gap-4 @5xl/main:grid-cols-12">
                 <div className="flex flex-col gap-4 @5xl/main:col-span-8">

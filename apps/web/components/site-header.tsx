@@ -5,6 +5,7 @@ import { Fragment } from "react"
 import { usePathname } from "next/navigation"
 
 import { CommandEntry } from "@/components/business/command/command-entry"
+import { NotificationBell } from "@/components/business/notifications/notification-bell"
 import { DataHealthBar, DataHealthPill } from "@/components/business/system/data-health-banner"
 import { ThemeSwitch } from "@/components/business/theme/theme-switch"
 import {
@@ -61,6 +62,7 @@ export function SiteHeader() {
           </Breadcrumb>
           <div className="ml-auto flex items-center gap-1 lg:gap-2">
             <DataHealthPill />
+            <NotificationBell />
             <ThemeSwitch />
             <CommandEntry />
           </div>
