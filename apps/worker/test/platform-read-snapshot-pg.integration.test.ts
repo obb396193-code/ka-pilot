@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { runMigrations, SemanticQueryRepository, WindowAssessmentRepository, withSemanticReadSnapshot } from "@ka/db";
 import { PlatformDataSource } from "../src/data/platform-data-source.js";
 import { createPlatformWindowQuery, PlatformWindowQuery } from "../src/data/platform-window-query.js";
@@ -34,6 +34,28 @@ describe("Platform adapter production snapshot / synthetic real PG", () => {
       await pool.query(`DELETE FROM ${table} WHERE ${table === "workspaces" ? "id" : "workspace_id"}=$1`, [workspaceId]);
     }
     await pool.end();
+  });
+  it("diagnoses the legacy constructor failure before any snapshot query (F-P103-1)", async () => {
+    const originalError = globalThis.Error;
+    const captured: Error[] = [];
+    // Test-only observation of the actual Error before the production safe envelope
+    // catches it. Do not expose arbitrary source exceptions in production logs/responses.
+    vi.stubGlobal("Error", new Proxy(originalError, {
+      construct(target, args) {
+        const error = Reflect.construct(target, args) as Error;
+        if (error.message === "Window reader unavailable") captured.push(error);
+        return error;
+      },
+    }));
+    const legacySnapshot = vi.fn(async () => { throw new originalError("Legacy snapshot must not run"); });
+    try {
+      const source = new PlatformDataSource(new SemanticQueryRepository(pool), legacySnapshot);
+      const resolved = createDataQueryRegistry().resolve("account.summary", { date: "2026-09-01" }, "platform");
+      await source.query(resolved, execution);
+      expect(captured).toHaveLength(1);
+      expect(legacySnapshot).not.toHaveBeenCalled();
+      console.info("F-P103-1 synthetic diagnostic:", captured[0]!.stack);
+    } finally { vi.unstubAllGlobals(); }
   });
   it("a concurrent refresh after lineage cannot mix old timestamps with new metric values", async () => {
     const fallback = new SemanticQueryRepository(pool);
