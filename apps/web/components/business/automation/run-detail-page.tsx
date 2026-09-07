@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { executorLabel, runDetailFixture, runStatusMeta, runsFixture, fieldText } from "@/lib/fixtures/automation"
-import { fmtTime, isOk } from "@/lib/fixtures/contract"
+import { fmtTime, isOk, targetTypeLabel } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
 
 // 运行详情（契约 ③ GET /workflows/runs/:id）：阶段条 + 节点日志 + 变更集预览 + 权限 + 账户锁 + 链路 + 审计 + 重试 / 回读策略 + UNKNOWN 说明
@@ -21,7 +21,6 @@ const stageTone = { done: "success", running: "progress", pending: "pending", fa
 const stageLabel = { done: "完成", running: "进行中", pending: "待执行", failed: "失败", skipped: "跳过" } as const
 const excerpt = (value: unknown) => (value == null ? "−" : typeof value === "string" ? value : JSON.stringify(value))
 
-const targetTypeLabel: Record<string, string> = { unit: "单元", campaign: "计划", account: "账户", creative: "创意" }
 
 export function RunDetailPage({ runId }: { runId: string }) {
   const { isMock } = useSession()
