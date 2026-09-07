@@ -150,7 +150,7 @@ function CardsTab() {
         ))}
       </div>
       <Card>
-        <CardHeader><CardTitle>卡片实例</CardTitle><CardDescription>已发出的卡片；L2 带 hash + TTL，过期不可确认</CardDescription></CardHeader>
+        <CardHeader><CardTitle>卡片实例</CardTitle><CardDescription>已发出的卡片；L2 卡带校验指纹和有效期，过期不可确认</CardDescription></CardHeader>
         <CardContent><DataGrid table={instTable} empty="没有卡片实例" showPagination={false} showColumnPicker={false} /></CardContent>
       </Card>
       <Card>

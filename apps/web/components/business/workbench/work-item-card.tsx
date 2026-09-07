@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
+import { fmtTime, isOk, mv, rv, changesetStatusText } from "@/lib/fixtures/contract"
 import { changesetFixture, severityMeta, workItemActionsFixture, workItemDetailFixture, type WorkItem, type WorkItemDetail } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
 
@@ -94,10 +94,10 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
 
       <Dialog open={changesetOpen} onOpenChange={setChangesetOpen}>
         <DialogContent className="sm:max-w-xl">
-          <DialogHeader><DialogTitle>变更集草稿 · {changeset?.title}</DialogTitle><DialogDescription>只到草稿：dry-run 是 confirm 的硬前置；TTL 到期作废；执行由单执行者逐项做。</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>变更集草稿 · {changeset?.title}</DialogTitle><DialogDescription>只到草稿：先 dry-run（试运行）通过才能确认；过了有效期自动作废；确认后由一个执行者逐项做。</DialogDescription></DialogHeader>
           {changeset ? (
             <div className="flex flex-col gap-3 text-sm">
-              <div className="flex flex-wrap items-center gap-2"><TypeChip>{changeset.status}</TypeChip><span className="text-xs text-muted-foreground">账户 {changeset.accountId} · 原因码 {changeset.reasonCode} · TTL {fmtTime(changeset.ttlExpireAt)}</span></div>
+              <div className="flex flex-wrap items-center gap-2"><TypeChip>{changesetStatusText(changeset.status)}</TypeChip><span className="text-xs text-muted-foreground">账户 {changeset.accountId} · 原因码 {changeset.reasonCode} · {fmtTime(changeset.ttlExpireAt)} 前有效</span></div>
               <div className="overflow-hidden rounded-lg border">
                 <Table>
                   <TableHeader className="bg-muted"><TableRow><TableHead>目标</TableHead><TableHead>字段</TableHead><TableHead className="text-right">从</TableHead><TableHead className="text-right">到</TableHead><TableHead>状态</TableHead></TableRow></TableHeader>
