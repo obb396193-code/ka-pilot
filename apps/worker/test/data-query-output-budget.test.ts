@@ -11,7 +11,7 @@ const auth: ApprovedWorkspaceAuthContext = {
 };
 const ids: DataQueryId[] = ["account.summary", "account.trend", "account.table", "account.anomalies", "account.detail", "reconcile.account_daily"];
 
-describe("service is the final v2 truncation boundary", () => {
+describe("service is the final canonical truncation boundary", () => {
   for (const queryId of ids) {
     it.each(["over_budget", "source_truncated", "coverage_only", "exact_complete"] as const)(`${queryId}: %s`, async (kind) => {
       const registry = createDataQueryRegistry();
@@ -36,7 +36,7 @@ describe("service is the final v2 truncation boundary", () => {
       const results = response.data.mode === "reconcile" ? [response.data.kaData, response.data.platform] : [response.data.source];
       for (const result of results) {
         expect(result.rows).toHaveLength(1);
-        const metrics = queryId === "account.trend" ? (result.rows[0]?.metrics as { metrics: Record<string, unknown> }).metrics : result.rows[0]?.metrics as Record<string, unknown>;
+        const metrics = result.rows[0]?.metrics as Record<string, unknown>;
         const truncated = kind === "over_budget" || kind === "source_truncated";
         expect(metrics.cost).toEqual(truncated ? { value: null, availability: "error" } : { value: 17, availability: "available" });
         expect((metrics.ratios as { realCpa: unknown }).realCpa).toEqual(truncated ? { value: null, state: "undefined" } : { value: 17, state: "finite" });

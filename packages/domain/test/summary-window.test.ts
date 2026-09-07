@@ -12,6 +12,12 @@ const metrics = () => structuredClone(fixture("summary-window-v3-green").data.so
 const finite = (value: number): RatioValue => ({ value, state: "finite" });
 const missing = { value: null, state: "undefined" as const };
 const point = () => ({ cost: mv(100), cashCost: mv(80), realConversion: mv(2), cashCpa: finite(40), onTargetRate: finite(0.5) });
+// Synthetic v1.7.4 row for invariant tests; the three direct arch fixture gates below stay unchanged.
+const personalRow = () => {
+  const row = structuredClone(fixture("summary-window-v3-green").data.source.rows[0]);
+  row.assessment.priceSource = "history";
+  return row;
+};
 
 describe("frozen v3 window row boundary (not the public route switch)", () => {
   it.each(["green", "yellow", "cash-missing"])("reads arch %s fixture directly", (kind) => {
@@ -33,14 +39,20 @@ describe("frozen v3 window row boundary (not the public route switch)", () => {
     expect(queryWindowSchema.parse({ from: "2024-02-29", to: "2024-02-29" })).toEqual({ from: "2024-02-29", to: "2024-02-29", preset: "custom" });
   });
   it("rejects missing blocks, invalid numbers and impossible assessment states", () => {
-    const row = fixture("summary-window-v3-green").data.source.rows[0];
+    const row = personalRow(); expect(summaryWindowRowSchema.safeParse(row).success).toBe(true);
     for (const bad of [{ ...row, assessment: undefined }, { ...row, arbitrary: 1 }, { ...row, assessment: { ...row.assessment, costStatus: "red" } }, { ...row, assessment: { ...row.assessment, price: { value: 38, effectiveDate: "2026-02-31" } } }, { ...row, metrics: { ...row.metrics, cost: { value: "100", availability: "available" } } }]) expect(summaryWindowRowSchema.safeParse(bad).success).toBe(false);
   });
   it("cannot declare an on-target status when cash is unavailable", () => {
-    const row = fixture("summary-window-v3-green").data.source.rows[0];
+    const row = personalRow(); expect(summaryWindowRowSchema.safeParse(row).success).toBe(true);
     for (const availability of ["missing", "error"]) {
       expect(summaryWindowRowSchema.safeParse({ ...row, metrics: { ...row.metrics, cashCost: { value: null, availability } } }).success).toBe(false);
     }
+  });
+  it("cannot determine target with missing real conversions or mislabel a known cash value as missing", () => {
+    const row = personalRow();
+    expect(summaryWindowRowSchema.safeParse({ ...row, metrics: { ...row.metrics, realConversion: mv(null) } }).success).toBe(false);
+    expect(summaryWindowRowSchema.safeParse({ ...row, assessment: { ...row.assessment, onTarget: null, costStatus: null, costStatusReason: "cash_missing" } }).success).toBe(false);
+    expect(summaryWindowRowSchema.safeParse({ ...row, assessment: { ...row.assessment, onTarget: null, costStatus: null, costStatusReason: "conversion_missing" } }).success).toBe(false);
   });
 });
 
@@ -78,6 +90,11 @@ describe("window arithmetic never averages daily CPA", () => {
 });
 
 describe("v3 compare canonical ratios", () => {
+  it("onTargetRate is a percentage-point difference even when the previous rate is zero", () => {
+    const previous = { ...point(), onTargetRate: finite(0) };
+    expect(compareWindowPoints("dod", { ...point(), onTargetRate: finite(1) }, previous).deltas.onTargetRate).toEqual(finite(1));
+    expect(compareWindowPoints("dod", previous, previous).deltas.onTargetRate).toEqual(finite(0));
+  });
   it.each(["dod", "wow"] as const)("%s uses relative amounts but absolute ratio differences", (mode) => {
     const current = point(); current.cost = mv(120); current.cashCpa = finite(42); current.onTargetRate = finite(0.8);
     const result = compareWindowPoints(mode, current, point());

@@ -7,6 +7,7 @@ import {
 
 import {
   CanonicalQueryRowError,
+  canonicalSummaryBaseRow,
   canonicalizeQueryRows,
   maskCanonicalQueryRows,
 } from "../src/data/canonical-query-rows.js";
@@ -48,7 +49,14 @@ describe("canonical query row adapters", () => {
           wakeUv: null,
           potentialUv: null,
         };
-    if (queryId === "account.summary") return summary;
+    if (queryId === "account.summary") return {
+      ...canonicalSummaryBaseRow(summary, source),
+      assessment: {
+        priceSource: source === "ka_data" ? "ka_daily" : "history",
+        price: null, onTarget: null, costStatus: null, costStatusReason: "assessment_missing",
+        budgetUsageRate: { value: null, state: "undefined" },
+      },
+    };
     if (queryId === "account.trend") return { ds: "2026-08-24", metrics: summary };
     return source === "ka_data"
       ? {
@@ -88,7 +96,7 @@ describe("canonical query row adapters", () => {
 
   it.each(queryIds.flatMap((queryId) => (["ka_data", "platform"] as const)
     .map((source) => ({ queryId, source }))))(
-    "maps $queryId from $source into its strict canonical v2 schema",
+    "maps $queryId from $source into its frozen canonical schema (window v3, daily v2)",
     ({ queryId, source }) => {
       const rows = canonicalizeQueryRows(
         queryId,
@@ -99,9 +107,7 @@ describe("canonical query row adapters", () => {
       expect(rows).toHaveLength(1);
       expect(canonicalQueryRowSchemaById[queryId].safeParse(rows[0]).success).toBe(true);
       expect(JSON.stringify(rows[0])).not.toMatch(/account_id|cost_yuan|cash_cost|row_count/);
-      const metrics = queryId === "account.trend"
-        ? (rows[0]?.metrics as { metrics: unknown }).metrics
-        : rows[0]?.metrics;
+      const metrics = rows[0]?.metrics;
       expect(metrics).toMatchObject({ cost: { value: 12, availability: "available" } });
     },
   );
@@ -110,9 +116,7 @@ describe("canonical query row adapters", () => {
     const rows = canonicalizeQueryRows(queryId, "platform", [sourceRow(queryId, "platform")], workspaceId);
     const masked = maskCanonicalQueryRows(queryId, rows, "error");
     expect(canonicalQueryRowSchemaById[queryId].safeParse(masked[0]).success).toBe(true);
-    const metrics = queryId === "account.trend"
-      ? (masked[0]?.metrics as { metrics: unknown }).metrics
-      : masked[0]?.metrics;
+    const metrics = masked[0]?.metrics;
     expect(metrics).toMatchObject({
       cost: { value: null, availability: "error" },
       ratios: { realCpa: { value: null, state: "undefined" } },
@@ -123,8 +127,11 @@ describe("canonical query row adapters", () => {
   });
 
   it("keeps genuine zero available, absence missing, and rejects corruption before masking", () => {
-    const [row] = canonicalizeQueryRows("account.summary", "platform", [{
+    const base = canonicalSummaryBaseRow({
       rowCount: 1, accountCount: 1, anomalyRows: 0, cost: 0,
+    }, "platform");
+    const [row] = canonicalizeQueryRows("account.summary", "platform", [{
+      ...sourceRow("account.summary", "platform"), ...base,
     }], workspaceId);
     expect(row).toMatchObject({ metrics: {
       cost: { value: 0, availability: "available" },
@@ -134,8 +141,8 @@ describe("canonical query row adapters", () => {
       .toThrow(CanonicalQueryRowError);
   });
 
-  it("maps KA snake_case and platform camelCase summary rows to the same shape", () => {
-    const ka = canonicalizeQueryRows("account.summary", "ka_data", [{
+  it("maps raw summary bases without guessing a public window assessment", () => {
+    const ka = canonicalSummaryBaseRow({
       row_count: 2,
       account_count: 1,
       cost: 100,
@@ -143,8 +150,8 @@ describe("canonical query row adapters", () => {
       click: 100,
       real_conversion: 10,
       cash_cost: 90,
-    }], workspaceId);
-    const platform = canonicalizeQueryRows("account.summary", "platform", [{
+    }, "ka_data");
+    const platform = canonicalSummaryBaseRow({
       rowCount: 2,
       accountCount: 1,
       anomalyRows: 0,
@@ -157,10 +164,12 @@ describe("canonical query row adapters", () => {
       costSpace: null,
       wakeUv: null,
       potentialUv: null,
-    }], workspaceId);
+    }, "platform");
 
-    expect(ka).toEqual([{ ...platform[0], anomalyRows: null }]);
-    expect(ka[0]).not.toHaveProperty("cash_cost");
+    expect(ka).toEqual({ ...platform, anomalyRows: null });
+    expect(ka).not.toHaveProperty("cash_cost");
+    expect(() => canonicalizeQueryRows("account.summary", "ka_data", [ka], workspaceId))
+      .toThrow(CanonicalQueryRowError);
   });
 
   it("maps both account-day sources to one strict identity and metric shape", () => {
@@ -217,7 +226,7 @@ describe("canonical query row adapters", () => {
   });
 
   it("preserves denominator-zero CPA states without frontend calculation", () => {
-    const [row] = canonicalizeQueryRows("account.summary", "platform", [{
+    const row = canonicalSummaryBaseRow({
       rowCount: 1,
       accountCount: 1,
       anomalyRows: 0,
@@ -230,7 +239,7 @@ describe("canonical query row adapters", () => {
       costSpace: 0,
       wakeUv: 0,
       potentialUv: 0,
-    }], workspaceId);
+    }, "platform");
     expect(row).toMatchObject({
       metrics: {
         ratios: {
@@ -255,6 +264,7 @@ describe("canonical query row adapters", () => {
     ["platform", { rowCount: 1, accountCount: 1, anomalyRows: 0, cost: "not-a-number" }],
     ["ka_data", { row_count: 1, account_count: 1, cost: "not-a-number" }],
   ] as const)("rejects a present invalid numeric field from %s", (source, row) => {
+    expect(() => canonicalSummaryBaseRow(row, source)).toThrow(CanonicalQueryRowError);
     expect(() => canonicalizeQueryRows("account.summary", source, [row], "w"))
       .toThrow(CanonicalQueryRowError);
   });

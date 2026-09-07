@@ -3,16 +3,21 @@ import {
   canonicalRowSchemaVersionByQueryId,
   dataQueryIdSchema,
   dataViewModeSchema,
+  queryWindowSchema,
+  comparisonWindow,
   type AuthorityUseCase,
   type DataQueryId,
   type DataViewMode,
 } from "@ka/domain";
 import { z } from "zod";
+import { buildKaWindowAggregateSql } from "./ka-window-aggregate-sql.js";
 
 const RESOLVED_QUERY = Symbol("resolved-data-query");
 const AUTHORITY_POLICY_VERSION = "2026-08-24";
 const accountIdSchema = z.string().min(1).max(128).regex(/^[A-Za-z0-9_-]+$/);
 const mediaSchema = z.string().min(1).max(32).regex(/^[A-Z0-9_]+$/);
+export const taskQueryIdSchema = z.string().min(1).max(256).refine((value) => [...value].every((character) =>
+  character.charCodeAt(0) >= 32 && character.charCodeAt(0) !== 127), "Invalid task identifier");
 
 export type AccountScope = "optional_many" | "required_one";
 export type QueryOutputShape = "aggregate" | "account_rows";
@@ -30,8 +35,11 @@ export interface NormalizedQueryParams {
   media?: string;
   accountIds?: string[];
   accountId?: string;
+  taskId?: string;
   page?: number;
   pageSize?: number;
+  preset?: z.infer<typeof queryWindowSchema>["preset"];
+  compare?: "dod" | "wow";
 }
 
 export interface KaDataQueryPlan {
@@ -39,6 +47,10 @@ export interface KaDataQueryPlan {
   sql: string;
   limit: number;
   queryTemplateVersion: string;
+}
+export interface KaDataWindowQueryPlan extends KaDataQueryPlan {
+  window: z.infer<typeof queryWindowSchema>;
+  previousWindow: z.infer<typeof queryWindowSchema> | null;
 }
 
 export interface ScopedAccount {
@@ -128,8 +140,11 @@ function normalizeDateParams(input: {
   media?: string;
   accountIds?: string[];
   accountId?: string;
+  taskId?: string;
   page?: number;
   pageSize?: number;
+  preset?: z.infer<typeof queryWindowSchema>["preset"];
+  compare?: "dod" | "wow";
 }): NormalizedQueryParams {
   const camel = input.dateFrom !== undefined || input.dateTo !== undefined;
   const snake = input.date_from !== undefined || input.date_to !== undefined;
@@ -145,9 +160,12 @@ function normalizeDateParams(input: {
   return {
     dateFrom,
     dateTo,
+    ...(input.preset === undefined ? {} : { preset: input.preset }),
+    ...(input.compare === undefined ? {} : { compare: input.compare }),
     ...(input.media === undefined ? {} : { media: input.media }),
     ...(input.accountIds === undefined ? {} : { accountIds: input.accountIds }),
     ...(input.accountId === undefined ? {} : { accountId: input.accountId }),
+    ...(input.taskId === undefined ? {} : { taskId: input.taskId }),
     ...(input.page === undefined ? {} : { page: input.page }),
     ...(input.pageSize === undefined ? {} : { pageSize: input.pageSize }),
   };
@@ -168,8 +186,12 @@ function normalizedSchema<Shape extends z.ZodRawShape>(shape: Shape): z.ZodType<
 }
 
 const intervalSchema = normalizedSchema(commonDateFields);
+const windowFields = { ...commonDateFields, taskId: taskQueryIdSchema.optional(), preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
+const summarySchema = normalizedSchema({ ...windowFields, compare: z.enum(["dod", "wow"]).optional() });
+const trendSchema = normalizedSchema(windowFields);
 const tableSchema = normalizedSchema({
   ...commonDateFields,
+  taskId: taskQueryIdSchema.optional(),
   page: z.number().int().min(1).default(1),
   pageSize: z.number().int().min(1).max(500).default(50),
 });
@@ -223,6 +245,7 @@ function whereClause(
   if (params.media !== undefined) filters.push(`media = ${sqlString(params.media)}`);
   const requested = params.accountId === undefined ? params.accountIds : [params.accountId];
   if (requested !== undefined) filters.push(`account_id IN (${requested.map(sqlString).join(", ")})`);
+  if (params.taskId !== undefined) filters.push(`task_id = ${sqlString(params.taskId)}`);
   return filters.join(" AND ");
 }
 
@@ -319,7 +342,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     outputShape: "aggregate",
     queryTemplateVersion: "v2",
     metricVersion: "account-summary-v2",
-    paramsSchema: intervalSchema,
+    paramsSchema: summarySchema,
     authorityPolicy: authority("cross_media_operations", "ka_data"),
     buildSql: summarySql,
   },
@@ -345,7 +368,7 @@ const DEFINITION_INPUT: QueryDefinition[] = [
     outputShape: "aggregate",
     queryTemplateVersion: "v2",
     metricVersion: "account-trend-v2",
-    paramsSchema: intervalSchema,
+    paramsSchema: trendSchema,
     authorityPolicy: authority("historical_analysis", "ka_data"),
     buildSql: trendSql,
   },
@@ -435,6 +458,10 @@ export class DataQueryRegistry {
       throw new QueryRegistryError("INVALID_REQUEST", "Invalid query parameter set");
     }
     assertDateBudget(parsedParams.data, entry.maxDateSpanDays);
+    if (parsedParams.data.taskId !== undefined && dataView.data !== "platform" &&
+      (queryId.data === "account.summary" || queryId.data === "account.trend")) {
+      throw new QueryRegistryError("VIEW_UNSUPPORTED", "Task windows are not available for this source");
+    }
     const authorityPolicy = this.resolveAuthorityPolicy(entry, parsedParams.data);
     return {
       queryId: entry.queryId,
@@ -470,6 +497,7 @@ export class DataQueryRegistry {
   /** Pure fixed-template builder. Only KaDataClient's server binding authorizes execution. */
   buildTeamKaDataPlan(resolved: ResolvedDataQuery): KaDataQueryPlan {
     if (!isResolvedDataQuery(resolved)) throw new QueryRegistryError("INVALID_REQUEST", "Query must be resolved by the registry");
+    rejectKaTaskWindow(resolved);
     const entry = this.entries.get(resolved.queryId);
     if (entry?.buildSql === undefined) throw new QueryRegistryError("VIEW_UNSUPPORTED", "KA Data does not support this query");
     return {
@@ -480,6 +508,57 @@ export class DataQueryRegistry {
     };
   }
 
+  /** Internal v3 snapshot plan only; the client must enforce the configured team binding.
+   * One statement returns both windows, avoiding two independently refreshed source snapshots.
+   * Byte/row cap or duplicate account-days must be rejected by the reader before assessment.
+   */
+  private teamKaWindowBase(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow", aggregate = false): KaDataWindowQueryPlan {
+    if (!isResolvedDataQuery(resolved) || (resolved.queryId !== "account.summary" && resolved.queryId !== "account.trend")) {
+      throw new QueryRegistryError("INVALID_REQUEST", "Window query requires a registered account summary");
+    }
+    rejectKaTaskWindow(resolved);
+    const window = queryWindowSchema.parse(windowInput);
+    const compare = z.enum(["dod", "wow"]).optional().parse(compareInput);
+    if (window.from !== resolved.params.dateFrom || window.to !== resolved.params.dateTo) {
+      throw new QueryRegistryError("INVALID_REQUEST", "Window must match resolved query dates");
+    }
+    const previousWindow = compare === undefined ? null : comparisonWindow(window, compare);
+    const windows = previousWindow === null ? [window] : [previousWindow, window];
+    const first = windows.map((item) => item.from).sort()[0]!;
+    const last = windows.map((item) => item.to).sort().at(-1)!;
+    const observedFilters = windows.map((item) => `(${whereClause({ ...resolved.params, dateFrom: item.from, dateTo: item.to }, { kind: "team_workspace_readonly" })})`).join(" OR ");
+    const dateFilters = windows.map((item) => `(day BETWEEN ${sqlString(item.from)} AND ${sqlString(item.to)})`).join(" OR ");
+    return {
+      backend: "sqlite", limit: 10000, queryTemplateVersion: "account-summary-window-members-v1",
+      window, previousWindow,
+      sql: `WITH RECURSIVE selected AS (
+        SELECT ds, media, account_id, cost_yuan, cash_yuan, show, click, conv, cash_assessment
+        FROM dwd_account_daily WHERE ${observedFilters}
+      ), dates(day) AS (
+        SELECT ${sqlString(first)} UNION ALL SELECT date(day,'+1 day') FROM dates WHERE day<${sqlString(last)}
+      ), scoped_accounts AS (SELECT DISTINCT media,account_id FROM selected), expected AS (
+        SELECT day AS ds, media, account_id FROM dates CROSS JOIN scoped_accounts WHERE ${dateFilters}
+      ) SELECT expected.ds, expected.media, expected.account_id,
+          ${aggregate ? "(SELECT COUNT(*) FROM selected) AS source_row_count," : ""}
+          selected.account_id IS NOT NULL AS observed,
+          selected.cost_yuan, selected.cash_yuan, selected.show, selected.click, selected.conv, selected.cash_assessment
+        FROM expected LEFT JOIN selected ON selected.ds=CAST(replace(expected.ds,'-','') AS INTEGER)
+          AND selected.media=expected.media AND selected.account_id=expected.account_id
+        ORDER BY expected.ds,expected.media,expected.account_id`,
+    };
+  }
+
+  buildTeamKaWindowPlan(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow"): KaDataWindowQueryPlan {
+    const base = this.teamKaWindowBase(resolved, windowInput, compareInput);
+    return { ...base, sql: `${base.sql} LIMIT 10001` };
+  }
+
+  buildTeamKaWindowAggregatePlan(resolved: ResolvedDataQuery, windowInput: unknown, compareInput?: "dod" | "wow"): KaDataWindowQueryPlan {
+    const base = this.teamKaWindowBase(resolved, windowInput, compareInput, true);
+    return { ...base, queryTemplateVersion: "account-window-aggregate-v1",
+      sql: buildKaWindowAggregateSql(base.sql, base.window, base.previousWindow) };
+  }
+
   buildKaDataPlan(
     resolved: ResolvedDataQuery,
     scopedAccounts: readonly ScopedAccount[],
@@ -487,6 +566,7 @@ export class DataQueryRegistry {
     if (resolved[RESOLVED_QUERY] !== true) {
       throw new QueryRegistryError("INVALID_REQUEST", "Query must be resolved by the registry");
     }
+    rejectKaTaskWindow(resolved);
     const entry = this.entries.get(resolved.queryId);
     if (entry?.buildSql === undefined) {
       throw new QueryRegistryError("VIEW_UNSUPPORTED", "KA Data does not support this query");
@@ -506,6 +586,12 @@ export class DataQueryRegistry {
 
 export function createDataQueryRegistry(options: { today?: () => string } = {}): DataQueryRegistry {
   return new DataQueryRegistry(options);
+}
+
+function rejectKaTaskWindow(resolved: ResolvedDataQuery): void {
+  if (resolved.params.taskId !== undefined && (resolved.queryId === "account.summary" || resolved.queryId === "account.trend")) {
+    throw new QueryRegistryError("VIEW_UNSUPPORTED", "Task windows are not available for this source");
+  }
 }
 
 export function isResolvedDataQuery(value: unknown): value is ResolvedDataQuery {

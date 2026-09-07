@@ -13,7 +13,11 @@ import {
   isResolvedDataQuery,
   type ResolvedDataQuery,
   type ScopedAccount,
+  type KaDataQueryPlan,
 } from "./query-registry.js";
+import { decodeKaWindowMembers } from "./ka-window-members.js";
+import { summarizeKaWindowMembers } from "./ka-window-summary.js";
+import { assembleKaWindowAggregates } from "./ka-window-aggregate.js";
 import {
   CanonicalQueryRowError,
   canonicalizeQueryRows,
@@ -338,6 +342,93 @@ export class KaDataClient {
     return { kind: "KaDataClient" };
   }
 
+  /** Internal v3 source reader. Public summary switches only with Platform/HTTP/BFF. */
+  async queryTeamWindowMembers(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: "dod" | "wow") {
+    if (scope.scopeKind !== "team_workspace_readonly" || !z.string().uuid().safeParse(scope.userId).success) {
+      throw new KaDataClientError("FORBIDDEN", "Team window query requires approved team context", false);
+    }
+    if (this.#teamWorkspaceId === undefined || scope.workspaceId !== this.#teamWorkspaceId) {
+      throw new KaDataClientError("SOURCE_UNAVAILABLE", "Team data source workspace binding is unavailable", false);
+    }
+    const plan = this.#registry.buildTeamKaWindowPlan(resolved, window, compare);
+    const { envelope, exactLimit } = await this.#readPlan(plan);
+    if (exactLimit || envelope.truncated || envelope.limit_clamped || envelope.rowCount !== envelope.rows.length ||
+      envelope.rows.length >= plan.limit || SUSPECTED_ROW_BOUNDARIES.has(envelope.rows.length) || SUSPECTED_ROW_BOUNDARIES.has(envelope.rowCount)) {
+      throw new KaDataClientError("SOURCE_TRUNCATED", "Window member response is incomplete", false);
+    }
+    let members;
+    try { members = decodeKaWindowMembers(envelope.rows, plan, resolved, scope.workspaceId); }
+    catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid window member response", false); }
+    const returnedObjects = new Set(members.filter((row) => row.observed && row.ds >= plan.window.from && row.ds <= plan.window.to)
+      .map((row) => JSON.stringify([row.media, row.accountId]))).size;
+    const reason = "Team account inventory is unavailable; observed rows do not prove complete coverage";
+    return {
+      members, window: plan.window, previousWindow: plan.previousWindow,
+      lineage: sourceLineage(resolved, scope, envelope, returnedObjects, false, true, reason, plan.queryTemplateVersion),
+      warnings: [reason],
+    };
+  }
+
+  async queryTeamWindowSummary(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: "dod" | "wow") {
+    const snapshot = await this.queryTeamWindowMembers(resolved, scope, window, compare);
+    try {
+      const summary = summarizeKaWindowMembers(snapshot.members, snapshot.window, snapshot.previousWindow, compare);
+      return { row: summary.row, window: snapshot.window, lineage: snapshot.lineage,
+        warnings: [...snapshot.warnings, ...summary.warnings] };
+    } catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid window summary response", false); }
+  }
+
+  private async queryTeamWindowAggregate(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope, window: unknown, compare?: "dod" | "wow") {
+    if (scope.scopeKind !== "team_workspace_readonly" || !z.string().uuid().safeParse(scope.userId).success) {
+      throw new KaDataClientError("FORBIDDEN", "Team window query requires approved team context", false);
+    }
+    if (this.#teamWorkspaceId === undefined || scope.workspaceId !== this.#teamWorkspaceId) {
+      throw new KaDataClientError("SOURCE_UNAVAILABLE", "Team data source workspace binding is unavailable", false);
+    }
+    const plan = this.#registry.buildTeamKaWindowAggregatePlan(resolved, window, compare);
+    const { envelope, exactLimit } = await this.#readPlan(plan);
+    if (exactLimit || envelope.truncated || envelope.limit_clamped || envelope.rowCount !== envelope.rows.length ||
+      envelope.rows.length >= plan.limit || SUSPECTED_ROW_BOUNDARIES.has(envelope.rows.length) || SUSPECTED_ROW_BOUNDARIES.has(envelope.rowCount)) {
+      throw new KaDataClientError("SOURCE_TRUNCATED", "Window aggregate response is incomplete", false);
+    }
+    let result;
+    try { result = assembleKaWindowAggregates(envelope.rows, plan, compare); }
+    catch { throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "Invalid window aggregate response", false); }
+    const reason = "Team account inventory is unavailable; observed rows do not prove complete coverage";
+    return { ...result, window: plan.window,
+      lineage: sourceLineage(resolved, scope, envelope, result.returnedObjects, false, true, reason, plan.queryTemplateVersion),
+      warnings: [reason, ...result.warnings] };
+  }
+
+  async #readPlan(plan: KaDataQueryPlan) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.#timeoutMs);
+    try {
+      const response = await this.#fetchFn(this.#queryUrl, {
+        method: "POST", redirect: "manual", signal: controller.signal,
+        headers: { accept: "application/json", authorization: `Bearer ${this.#token}`, "content-type": "application/json" },
+        body: JSON.stringify({ backend: plan.backend, sql: plan.sql, limit: plan.limit }),
+      });
+      if (response.status >= 300 && response.status < 400) {
+        throw new KaDataClientError("SOURCE_UNAVAILABLE", "KA Data redirect was rejected", false);
+      }
+      if (!response.ok) {
+        throw new KaDataClientError(response.status === 401 || response.status === 403 ? "FORBIDDEN" : "SOURCE_UNAVAILABLE",
+          "KA Data request failed", response.status >= 500);
+      }
+      const body = await readBoundedBody(response, this.#maxResponseBytes);
+      const envelope = parseEnvelope(body.text);
+      if (envelope.backend !== "sqlite") {
+        throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "KA Data returned an unexpected backend", false);
+      }
+      return { envelope, exactLimit: body.exactLimit };
+    } catch (error) {
+      if (error instanceof KaDataClientError) throw error;
+      if (isAbortError(error)) throw new KaDataClientError("UPSTREAM_TIMEOUT", "KA Data request timed out", true);
+      throw new KaDataClientError("SOURCE_UNAVAILABLE", "KA Data request failed", true);
+    } finally { clearTimeout(timeout); }
+  }
+
   async query(
     resolved: ResolvedDataQuery,
     scope: DataQueryExecutionScope,
@@ -360,38 +451,22 @@ export class KaDataClient {
         false,
       );
     }
+    if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend") {
+      const window = { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" };
+      const result = await this.queryTeamWindowAggregate(resolved, scope, window, resolved.params.compare);
+      const rows: Record<string, unknown>[] = resolved.queryId === "account.summary" ? [result.row] : result.trend;
+      return {
+        queryId: resolved.queryId, rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
+        status: "ready", rows, returnedRowCount: rows.length,
+        wholeResultTotal: { value: null, availability: "partial", reason: "Team inventory coverage is unknown" },
+        lineage: { ...result.lineage, window: result.window, warnings: result.warnings }, warnings: result.warnings,
+      };
+    }
     const plan = team
       ? this.#registry.buildTeamKaDataPlan(resolved)
       : this.#registry.buildKaDataPlan(resolved, scope.accounts);
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.#timeoutMs);
     try {
-      const response = await this.#fetchFn(this.#queryUrl, {
-        method: "POST",
-        redirect: "manual",
-        signal: controller.signal,
-        headers: {
-          accept: "application/json",
-          authorization: `Bearer ${this.#token}`,
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({ backend: plan.backend, sql: plan.sql, limit: plan.limit }),
-      });
-      if (response.status >= 300 && response.status < 400) {
-        throw new KaDataClientError("SOURCE_UNAVAILABLE", "KA Data redirect was rejected", false);
-      }
-      if (!response.ok) {
-        throw new KaDataClientError(
-          response.status === 401 || response.status === 403 ? "FORBIDDEN" : "SOURCE_UNAVAILABLE",
-          "KA Data request failed",
-          response.status >= 500,
-        );
-      }
-      const body = await readBoundedBody(response, this.#maxResponseBytes);
-      const upstreamEnvelope = parseEnvelope(body.text);
-      if (upstreamEnvelope.backend !== "sqlite") {
-        throw new KaDataClientError("UPSTREAM_INVALID_RESPONSE", "KA Data returned an unexpected backend", false);
-      }
+      const { envelope: upstreamEnvelope, exactLimit } = await this.#readPlan(plan);
       const canonicalRows = canonicalizeQueryRows(
         resolved.queryId,
         "ka_data",
@@ -404,13 +479,13 @@ export class KaDataClient {
       const suspectedRowBoundary = SUSPECTED_ROW_BOUNDARIES.has(envelope.rowCount) ||
         SUSPECTED_ROW_BOUNDARIES.has(envelope.rows.length);
       if (suspectedRowBoundary) warnings.push("Response exactly hit a suspected row boundary");
-      if (body.exactLimit) warnings.push("Response exactly hit the configured byte boundary");
+      if (exactLimit) warnings.push("Response exactly hit the configured byte boundary");
       if (envelope.truncated) warnings.push("KA Data reported a truncated response");
       if (envelope.limit_clamped) warnings.push("KA Data clamped the requested row limit");
       if (envelope.rowCount !== envelope.rows.length) warnings.push("KA Data row count did not match returned rows");
       if (envelope.rows.length > resolved.maxRows) warnings.push("Response exceeded the registry row budget");
       const transportPartial = envelope.truncated || envelope.limit_clamped || suspectedRowBoundary ||
-        body.exactLimit || envelope.rowCount !== envelope.rows.length || envelope.rows.length > resolved.maxRows;
+        exactLimit || envelope.rowCount !== envelope.rows.length || envelope.rows.length > resolved.maxRows;
       const coverage = objectCoverage(resolved.queryId, envelope.rows, team ? undefined : scope.accounts.length);
       const objectCoverageIncomplete = coverage.incomplete || (!team && aggregateDateCoverageIncomplete(
         resolved, upstreamEnvelope.rows, envelope.rows, scope.accounts.length,
@@ -469,8 +544,6 @@ export class KaDataClient {
         true,
         { cause: error },
       );
-    } finally {
-      clearTimeout(timeout);
     }
   }
 }

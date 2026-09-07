@@ -9,9 +9,8 @@ import {
 describe("evaluateOverCostRamp", () => {
   it("matches a scaling account only when CPA and spend both cross the rule", () => {
     const result = evaluateOverCostRamp({
-      realCpa: 36.01,
       assessmentPrice: 30,
-      cost: 3000.01,
+      cashCost: 3601,
       lifecycleStage: "scaling",
       realConversion: 100,
     });
@@ -23,9 +22,8 @@ describe("evaluateOverCostRamp", () => {
 
   it("does not judge a cold-start account before ten real conversions", () => {
     const result = evaluateOverCostRamp({
-      realCpa: 45,
       assessmentPrice: 30,
-      cost: 5000,
+      cashCost: 5000,
       lifecycleStage: "cold_start",
       realConversion: 9,
     });
@@ -42,20 +40,18 @@ describe("evaluateOverCostRamp", () => {
   it("uses the wider 1.5x CPA threshold after a cold-start account has enough samples", () => {
     expect(
       evaluateOverCostRamp({
-        realCpa: 44,
         assessmentPrice: 30,
-        cost: 5000,
+        cashCost: 4400,
         lifecycleStage: "cold_start",
-        realConversion: 10,
+        realConversion: 100,
       }).outcome,
     ).toBe("not_matched");
     expect(
       evaluateOverCostRamp({
-        realCpa: 45.01,
         assessmentPrice: 30,
-        cost: 5000,
+        cashCost: 4501,
         lifecycleStage: "cold_start",
-        realConversion: 10,
+        realConversion: 100,
       }).outcome,
     ).toBe("matched");
   });
@@ -63,18 +59,16 @@ describe("evaluateOverCostRamp", () => {
   it("treats an infinite CPA as over threshold but an undefined CPA as insufficient", () => {
     expect(
       evaluateOverCostRamp({
-        realCpa: { value: null, state: "infinite" },
         assessmentPrice: 30,
-        cost: 5000,
+        cashCost: 5000,
         lifecycleStage: "scaling",
         realConversion: 0,
       }).outcome,
     ).toBe("matched");
     expect(
       evaluateOverCostRamp({
-        realCpa: { value: null, state: "undefined" },
         assessmentPrice: 30,
-        cost: 5000,
+        cashCost: 0,
         lifecycleStage: "scaling",
         realConversion: 0,
       }).outcome,
@@ -84,7 +78,6 @@ describe("evaluateOverCostRamp", () => {
   it("returns insufficient data instead of replacing a missing metric with zero", () => {
     const result = evaluateOverCostRamp({
       assessmentPrice: 30,
-      cost: 5000,
       lifecycleStage: "scaling",
       realConversion: 100,
     });
@@ -95,33 +88,29 @@ describe("evaluateOverCostRamp", () => {
   it("requires lifecycle, assessment price and spend inputs independently", () => {
     expect(
       evaluateOverCostRamp({
-        realCpa: 40,
         assessmentPrice: 30,
-        cost: 5000,
+        cashCost: 5000,
         realConversion: 100,
       }).outcome,
     ).toBe("insufficient_data");
     expect(
       evaluateOverCostRamp({
-        realCpa: 40,
         assessmentPrice: 30,
-        cost: 5000,
+        cashCost: 5000,
         lifecycleStage: "unknown",
         realConversion: 100,
       }).outcome,
     ).toBe("insufficient_data");
     expect(
       evaluateOverCostRamp({
-        realCpa: 40,
         assessmentPrice: -1,
-        cost: 5000,
+        cashCost: 5000,
         lifecycleStage: "scaling",
         realConversion: 100,
       }).outcome,
     ).toBe("insufficient_data");
     expect(
       evaluateOverCostRamp({
-        realCpa: 40,
         assessmentPrice: 30,
         lifecycleStage: "scaling",
         realConversion: 100,
@@ -131,6 +120,10 @@ describe("evaluateOverCostRamp", () => {
 });
 
 describe("evaluateZeroDelivery", () => {
+  it("does not classify a missing metric as false when another condition is false", () => {
+    expect(evaluateZeroDelivery({ entityAgeHours: 1 }).outcome).toBe("insufficient_data");
+    expect(evaluateSpendCliff({ spendChange: -0.1 }).outcome).toBe("insufficient_data");
+  });
   it("matches a zero-spend entity after 24 hours", () => {
     const result = evaluateZeroDelivery({ entityAgeHours: 24, cost: 0 });
     expect(result.outcome).toBe("matched");

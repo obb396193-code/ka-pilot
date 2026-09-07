@@ -62,6 +62,7 @@ export interface WorkItemTransitionInput {
   workItemId: string;
   action: WorkItemAction;
   ignoreReason?: string | null;
+  /** @deprecated Account mute must use account_mutes; non-null values are rejected. */
   mutedUntil?: string | null;
   rejectReason?: string | null;
 }
@@ -265,6 +266,14 @@ async function insertAlert(
   };
 }
 
+export class DeprecatedWorkItemMuteError extends Error {
+  readonly code = "ACCOUNT_MUTE_REQUIRED";
+  constructor() {
+    super("Work-item-local mute is deprecated; use the account mute workflow");
+    this.name = "DeprecatedWorkItemMuteError";
+  }
+}
+
 export class WorkItemRepository {
   constructor(private readonly pool: Pool) {}
 
@@ -299,6 +308,15 @@ export class WorkItemRepository {
   }
 
   async transition(input: WorkItemTransitionInput): Promise<WorkItemRecord> {
+    // Keep the legacy read field for historical evidence, but never accept a
+    // request that would pretend a work-item-local date is an account mute.
+    if (input.mutedUntil !== undefined && input.mutedUntil !== null) {
+      throw new DeprecatedWorkItemMuteError();
+    }
+    if (input.action === "reject" &&
+      (typeof input.rejectReason !== "string" || input.rejectReason.trim().length === 0)) {
+      throw new Error("A non-empty rejection reason is required");
+    }
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
@@ -321,24 +339,23 @@ export class WorkItemRepository {
         `UPDATE work_items
          SET status = $3,
              ignore_reason = CASE WHEN $3 = 'ignored' THEN $4 ELSE ignore_reason END,
-             muted_until = CASE WHEN $3 = 'ignored' THEN $5::date ELSE muted_until END,
-             reject_reason = CASE WHEN $3 = 'rejected' THEN $6 ELSE reject_reason END,
-             resolved_at = CASE WHEN $7::boolean THEN now() ELSE NULL END
-         WHERE workspace_id = $1 AND id = $2 AND status = $8
+             reject_reason = CASE WHEN $3 = 'rejected' THEN $5 ELSE reject_reason END,
+             resolved_at = CASE WHEN $6::boolean THEN now() ELSE NULL END
+         WHERE workspace_id = $1 AND id = $2 AND status = $7
          RETURNING ${columns}`,
         [
           input.workspaceId,
           input.workItemId,
           next,
           input.ignoreReason ?? null,
-          input.mutedUntil ?? null,
           input.rejectReason ?? null,
           terminal,
           current.status,
         ],
       );
+      const record = requiredRow(updated.rows[0], "Work item changed concurrently");
       await client.query("COMMIT");
-      return requiredRow(updated.rows[0], "Work item changed concurrently");
+      return record;
     } catch (error) {
       await rollback(client);
       throw error;

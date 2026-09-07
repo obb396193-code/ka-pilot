@@ -20,10 +20,13 @@ describe("changeset authorization / real PG and Worker", () => {
     const created = await store.create({ workspaceId, media: "KUAISHOU", accountId: "synthetic",
       initiator: userId, credentialOwnerUserId: userId, title: "synthetic", reasonCode: "test",
       ttlExpireAt: new Date("2026-09-05T02:00:00Z"),
-      items: [{ targetType: "unit", targetId: "synthetic-unit", field: "bid", fromValue: "1", toValue: "2" }],
+      items: [{ targetType: "unit", targetId: "synthetic-unit", field: "bid", fromValue: { type: "number" as const, value: 1 }, toValue: { type: "number" as const, value: 2 } }],
     });
     const currentValues = created.items.map((item) => ({ targetType: item.targetType,
       targetId: item.targetId, field: item.field, value: item.fromValue }));
+    const prepared = await store.prepareDryRun({ workspaceId, changeSetId: created.id, now });
+    await store.recordDryRun({ workspaceId, changeSetId: created.id, now, expectedHash: prepared.hash,
+      items: created.items.map((item) => ({ itemId: item.id, status: "success" })) });
     await store.confirm({ workspaceId, changeSetId: created.id, now, currentValues });
     if (mode === "team") await pool.query("UPDATE workspaces SET kind='team' WHERE id=$1", [workspaceId]);
     else if (mode !== "during_read") await pool.query("UPDATE users SET is_active=false WHERE id=$1", [userId]);
@@ -43,6 +46,6 @@ describe("changeset authorization / real PG and Worker", () => {
     expect(execute).not.toHaveBeenCalled();
     expect(reconcileUnknown).not.toHaveBeenCalled();
     expect(scheduleT1).not.toHaveBeenCalled();
-    expect((await pool.query("SELECT id FROM execution_runs WHERE changeset_id=$1", [created.id])).rows).toHaveLength(0);
+    expect((await pool.query("SELECT status FROM execution_runs WHERE changeset_id=$1 AND dry_run=false", [created.id])).rows).toEqual([{ status: "pending" }]);
   });
 });

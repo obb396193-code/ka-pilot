@@ -1,3 +1,4 @@
+import { formatChangeValue } from "./change-value.ts"
 import {
   accountDetailSchema,
   analysisSchema,
@@ -160,7 +161,7 @@ export function adaptWorkbench(responses: { summary: DataQueryResponse; trend: D
   const anomalyItems = canonicalAnomalies.data.map((row) => ({ id: `${row.media}-${row.accountId}-${row.ds}`, findingId: null, media: row.media, accountId: row.accountId, accountName: row.accountName ?? "脱敏账户", title: "数据异常待核查", severity: "warning" as const, evidence: `dataAnomaly=true · ${row.ds}`, attribution: "待工作项详情接口返回诊断归因", suggestedAction: "保持只读，并从账户详情核查指标与来源", cta: "查看账户" }))
   const summaryRealCpa = finiteRatioValue(summaryMetrics.ratios.realCpa)
   const canonicalMetrics = [{ key: "spend", label: "今日消耗", value: backendMetric(summaryMetrics.cost, "money").displayValue, delta: null, tone: "neutral" as const }, { key: "cpa", label: "真实 CPA", value: summaryRealCpa === undefined ? "−" : money.format(summaryRealCpa), delta: null, tone: "neutral" as const }, { key: "compliance", label: "达标率", value: "−", delta: null, tone: "neutral" as const }, { key: "cost_space", label: "成本空间", value: backendMetric(summaryMetrics.costSpace, "money").displayValue, delta: null, tone: "neutral" as const }, { key: "bi_volume", label: "BI 量级", value: backendMetric(summaryMetrics.realConversion, "number").displayValue, delta: null, tone: "neutral" as const }, { key: "risk", label: "待处理", value: canonicalSummary.data.anomalyRows === null ? "−" : number.format(canonicalSummary.data.anomalyRows), delta: null, tone: "critical" as const }]
-  const canonicalTrendData = canonicalTrend.data.map((row) => ({ label: row.ds, spend: row.metrics.metrics.cost.value, realCpa: finiteRatioValue(row.metrics.metrics.ratios.realCpa) ?? null }))
+  const canonicalTrendData = canonicalTrend.data.map((row) => ({ label: row.ds, spend: row.metrics.cost.value, realCpa: finiteRatioValue(row.metrics.ratios.realCpa) ?? null }))
   const data = workbenchSchema.parse({ ...base, greeting: "早上好，KA 经营团队", scopeLabel: isMock ? "脱敏 Mock 数据" : "内网数据", metrics: canonicalMetrics, anomalies: anomalyItems, accountCoverage: `${canonicalSummary.data.accountCount} 个账户`, trend: canonicalTrendData, alerts: [{ level: "P0", label: "高优先级异常", value: canonicalSummary.data.anomalyRows === null ? "−" : String(canonicalSummary.data.anomalyRows), detail: "数量由异常查询返回" }], healthyAccountMessage: "未返回的账户不自动判定健康" })
   return { ...envelopeMeta(responses.summary, mode, isMock, forcedState), data }
 }
@@ -203,7 +204,7 @@ export function adaptChangeSetPreview(response: ChangeSetDetailResponse | null):
     accountName: "脱敏账户",
     status: "preview_only",
     expiresAt: changeSet.ttlExpireAt,
-    items: changeSet.items.map((item) => ({ field: item.field, from: item.fromValue ?? "—", to: item.toValue ?? "—", reason: item.failReason ?? changeSet.reasonCode ?? "只读变更预览" })),
+    items: changeSet.items.map((item) => ({ field: item.field, from: formatChangeValue(item.fromValue), to: formatChangeValue(item.toValue), reason: item.failReason ?? changeSet.reasonCode ?? "只读变更预览" })),
     riskChecks: [{ label: "媒体写端点", passed: false, detail: "当前只读集成未注册执行入口" }],
     executionEndpointConfigured: false,
   })

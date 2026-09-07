@@ -5,6 +5,7 @@ import { canonicalRowSchemaVersionByQueryId, type DataQueryId } from "./canonica
 
 const lineage = {
   workspaceKind: "personal",
+  window: { from: "2026-08-23", to: "2026-08-24", preset: "custom" },
   source: "canonical",
   datasetVersion: "canonical-20260824-01",
   queryTemplateVersion: "v1",
@@ -48,6 +49,8 @@ export const canonicalSummaryRow = {
   accountCount: 2,
   anomalyRows: 1,
   metrics: summaryMetrics,
+  assessment: { priceSource: "history", price: null, onTarget: null, costStatus: null,
+    costStatusReason: "assessment_missing", budgetUsageRate: { value: null, state: "undefined" } },
 } as const
 
 function singleSource(queryId: DataQueryId, rows: readonly Record<string, unknown>[], wholeResultTotal: number) {
@@ -71,8 +74,8 @@ function singleSource(queryId: DataQueryId, rows: readonly Record<string, unknow
 
 export const canonicalSummaryEnvelope = singleSource("account.summary", [canonicalSummaryRow], 3)
 export const canonicalTrendEnvelope = singleSource("account.trend", [
-  { ds: "2026-08-23", metrics: { ...canonicalSummaryRow, metrics: { ...summaryMetrics, cost: canonicalAvailable(250), ratios: { ...ratios, realCpa: { value: 12.5, state: "finite" } } } } },
-  { ds: "2026-08-24", metrics: canonicalSummaryRow },
+  { ds: "2026-08-23", metrics: { ...summaryMetrics, cost: canonicalAvailable(250), ratios: { ...ratios, realCpa: { value: 12.5, state: "finite" } } } },
+  { ds: "2026-08-24", metrics: summaryMetrics },
 ], 2)
 
 export const canonicalTableRow = {

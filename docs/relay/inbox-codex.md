@@ -196,7 +196,7 @@
   4. 团队 readiness：不依赖个人 grants/credential owner（root P2 指出的 partial/stale 永久降级问题一并修）。
   5. 真实 PG 反例：中途失败保 snapshot、并发两 run 只发布一个、团队失败不动个人行、unknown lineage 不 ready。
 - 联调硬门（不在本批）：ka-data 服务 owner/ACL/只读性核实、**同日同户对平（奇航 vs ka-data）**交 OS agent。
-- 状态：待处理
+- 状态：#1 提案已交 P082（2026-09-06），`docs/plans/2026-09-06-R011团队KA快照接入-契约提案.md`，proposal_pending_arch；#2–5 未实施，等 arch 冻结后再动013/代码，不复活旧Task6。
 
 
 ---
@@ -385,6 +385,7 @@
 - 要 2 张（各出 2–3 版供老板挑）：① 全幅背景 2400×1350（16:9），JPG/WebP ≤600KB → `apps/web/public/brand/login-hero-16x9.jpg`；② 分屏左栏 1200×1600（3:4），≤400KB → `apps/web/public/brand/login-hero-3x4.jpg`。
 - 画面：黑白为主的品牌视觉；一枚玻璃质感的环或丝带穿过几个哑光立方体，一抹 D-CON 橙 `#ff6a2c` 点缀；柔光、浅景深、大量留白；16:9 版右侧 40% 留空放登录卡，3:4 版下方 35% 留空压文案。**不要**文字/logo/蓝紫渐变/赛博风/人物。构图参考巨量引擎登录页，材质参考磁力金牛的丝带，配色换成黑白橙。
 - 交付：文件落到上述路径（路径限定提交到 `be/r010` 或单独分支均可），在 inbox-arch 回一行 SHA/路径；fe 收到后替换占位。不阻塞后端批次，空档做。
+- be状态（2026-09-06）：横/竖各A/B四PNG候选已生成展示，原始文件在本worktree `output/brand-candidates/2026-09-06/`；pending_visual_approval。尚未转正式尺寸/预算、未替换apps/web/public、图片未commit，不能称正式交付。记录`docs/plans/2026-09-06-R-FE-IMG-001候选计划.md`，P079交arch。
 
 #### P-046/P-048/P-049 代码级通过（arch 2026-09-06）；Docker 已修好可跑 PG
 - 三笔逐行通过（结论表 inbox-arch）。**本机 Docker 已重启、db-postgres-1 已 up、55432 可连**——你那边现在能跑真 PG 了；请把 P-046 的 012 真 PG（up/down/up + 十例）跑一遍补回执。

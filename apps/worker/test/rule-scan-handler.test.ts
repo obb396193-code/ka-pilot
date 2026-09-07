@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { decideDuplicate, type RuleEvaluation, type WorkItemSeverity } from "@ka/domain";
 
@@ -68,6 +68,7 @@ const base = {
   taskId: "task-1",
   evidenceSnapshot: { snapshot_at: "2026-08-19T09:15:00Z" },
   isQuietHours: false,
+  readiness: { initialFullDone: true, source: { kind: "realtime" as const, dataAsOf: new Date("2026-08-19T09:00Z") }, requiredMetrics: { cost: "available" as const } },
 };
 
 function overCostCandidate(overrides: Partial<RuleCandidate> = {}): RuleCandidate {
@@ -78,10 +79,10 @@ function overCostCandidate(overrides: Partial<RuleCandidate> = {}): RuleCandidat
     ruleId: 1,
     title: "超成本起量",
     ruleCode: "over_cost_ramp",
+    readiness: { ...base.readiness, requiredMetrics: { cashCost: "available", realConversion: "available", assessmentPrice: "available" } },
     facts: {
-      realCpa: 42,
       assessmentPrice: 30,
-      cost: 5000,
+      cashCost: 5000,
       lifecycleStage: "scaling",
       realConversion: 100,
     },
@@ -90,6 +91,58 @@ function overCostCandidate(overrides: Partial<RuleCandidate> = {}): RuleCandidat
 }
 
 describe("RuleScanHandler", () => {
+  it("fails closed on missing readiness without treating another account as unchecked", async () => {
+    const handler = new RuleScanHandler({ candidateProvider: new StaticProvider([
+      overCostCandidate({ readiness: undefined } as unknown as Partial<RuleCandidate>),
+      overCostCandidate({ candidateId: "healthy", accountId: "other" }),
+    ]), evaluator: builtInRuleEvaluator, workItems: new MemoryWorkItems(), alerts: new IdempotentAlerts() });
+    const result = await handler.run({ workspaceId: base.workspaceId, now: new Date("2026-08-19T09:15Z") });
+    expect(result.coverage).toEqual({ checked: 1, pending: 0, undeterminable: 1 });
+    expect(result.failures).toHaveLength(1); expect(result.created).toBe(1);
+  });
+  it("validates scope/clock even with no candidates and snapshots them before provider calls", async () => {
+    const provider = new StaticProvider([]);
+    const list = vi.spyOn(provider, "listCandidates");
+    const handler = new RuleScanHandler({ candidateProvider: provider, evaluator: builtInRuleEvaluator, workItems: new MemoryWorkItems(), alerts: new IdempotentAlerts() });
+    await expect(handler.run({ workspaceId: "", now: new Date() })).rejects.toThrow("scope or clock");
+    await expect(handler.run({ workspaceId: base.workspaceId, now: new Date(NaN) })).rejects.toThrow("scope or clock");
+    expect(list).not.toHaveBeenCalled();
+    const input = { workspaceId: base.workspaceId, now: new Date("2026-08-19T09:15Z") };
+    list.mockImplementation(async () => { input.workspaceId = "changed"; input.now.setFullYear(2000); return [overCostCandidate()]; });
+    expect((await handler.run(input)).coverage.checked).toBe(1);
+  });
+  it.each([
+    { readiness: { ...base.readiness, initialFullDone: false }, state: "pending", reason: "INITIAL_FULL_PENDING" },
+    { readiness: { ...base.readiness, source: { kind: "realtime" as const, dataAsOf: null } }, state: "pending", reason: "SOURCE_STALE" },
+    { readiness: { ...base.readiness, requiredMetrics: { cost: "missing" as const } }, state: "undeterminable", reason: "METRIC_MISSING" },
+    { readiness: { ...base.readiness, requiredMetrics: { cost: "error" as const } }, state: "undeterminable", reason: "METRIC_MISSING" },
+  ])("suppresses before threshold, occurrence and delivery: $reason", async ({ readiness, state, reason }) => {
+    const workItems = new MemoryWorkItems(), alerts = new IdempotentAlerts();
+    const merge = vi.spyOn(workItems, "createOrMerge"), notify = vi.spyOn(alerts, "enqueue");
+    const evaluate = vi.fn(builtInRuleEvaluator.evaluate);
+    const handler = new RuleScanHandler({ candidateProvider: new StaticProvider([overCostCandidate({ readiness })]), evaluator: { evaluate }, workItems, alerts });
+    const result = await handler.run({ workspaceId: base.workspaceId, now: new Date("2026-08-19T09:15Z") });
+    expect(result.coverage).toMatchObject({ [state]: 1 });
+    expect(result.skipped).toEqual([{ candidateId: "candidate-over-cost", decision: expect.objectContaining({ reason }) }]);
+    expect(evaluate).not.toHaveBeenCalled(); expect(merge).not.toHaveBeenCalled(); expect(notify).not.toHaveBeenCalled();
+  });
+  it("counts unique account tuples and uses the most conservative state across rules", async () => {
+    const handler = new RuleScanHandler({ candidateProvider: new StaticProvider([
+      overCostCandidate(), overCostCandidate({ ruleId: 2, candidateId: "missing", readiness: { ...base.readiness, requiredMetrics: { cost: "missing" } } }),
+      overCostCandidate({ media: "TENCENT", candidateId: "other-media" }),
+    ]), evaluator: builtInRuleEvaluator, workItems: new MemoryWorkItems(), alerts: new IdempotentAlerts() });
+    const result = await handler.run({ workspaceId: base.workspaceId, now: new Date("2026-08-19T09:15Z") });
+    expect(result.coverage).toEqual({ checked: 1, pending: 0, undeterminable: 1 });
+  });
+  it("only evaluates the new current window after evidence recovers", async () => {
+    const provider = new StaticProvider([overCostCandidate({ readiness: { ...base.readiness, source: { kind: "realtime", dataAsOf: null } } })]);
+    const evaluate = vi.fn(builtInRuleEvaluator.evaluate);
+    const handler = new RuleScanHandler({ candidateProvider: provider, evaluator: { evaluate }, workItems: new MemoryWorkItems(), alerts: new IdempotentAlerts() });
+    await handler.run({ workspaceId: base.workspaceId, now: new Date("2026-08-19T09:15Z") });
+    provider.candidates = [overCostCandidate()];
+    expect((await handler.run({ workspaceId: base.workspaceId, now: new Date("2026-08-19T09:20Z") })).coverage.checked).toBe(1);
+    expect(evaluate).toHaveBeenCalledOnce();
+  });
   it("creates and idempotently enqueues a matched alert across scan retries", async () => {
     const provider = new StaticProvider([overCostCandidate()]);
     const workItems = new MemoryWorkItems();
@@ -227,6 +280,7 @@ describe("RuleScanHandler", () => {
     });
     expect(summary.evaluated).toBe(2);
     expect(summary.created).toBe(1);
+    expect(summary.coverage).toEqual({ checked: 1, pending: 0, undeterminable: 1 });
     expect(summary.failures).toEqual([
       { candidateId: "boom", message: "bad candidate payload" },
     ]);

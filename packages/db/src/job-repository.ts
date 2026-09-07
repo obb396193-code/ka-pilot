@@ -152,9 +152,10 @@ export class JobRepository implements JobRepositoryPort {
     this.leaseScope = normalizeLeaseScope(leaseScope);
   }
 
-  async enqueue(job: NewJob): Promise<string> {
+  async enqueue(job: NewJob, transactionClient?: PoolClient): Promise<string> {
+    const executor = transactionClient ?? this.pool;
     const normalized = normalizeNewJob(job);
-    const result = await this.pool.query<{ id: string }>(
+    const result = await executor.query<{ id: string }>(
       `INSERT INTO jobs (
          id, workspace_id, job_type, payload, priority, credential_owner_user_id,
          max_attempts, run_after, status
@@ -179,7 +180,7 @@ export class JobRepository implements JobRepositoryPort {
     if (normalized.id === null) {
       throw new Error("Failed to enqueue job");
     }
-    const existing = await this.pool.query<{ id: string }>(
+    const existing = await executor.query<{ id: string }>(
       `SELECT id
        FROM jobs
        WHERE id = $1

@@ -3595,3 +3595,266 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 
 - 所有角色（fe / Codex be / 其他）的 git worktree **不再放 `/private/tmp`**（重启即清空，09-06 已发生一次），统一放 `~/` 下，例如 `/Users/aik/ka-fe-f006`、`/Users/aik/ka-be-r010`。请 arch 写进 `docs/23-开发协作规范.md` 并转告 Codex；Codex 现有 `/private/tmp/ka-be-r009-20260905` 已消失，重建时直接 `git worktree add /Users/aik/ka-be-r010 be/r010`。
 - 配套纪律：每完成一个可交付单元立即路径限定 commit，不攒。
+
+### P-065｜后端现场恢复与 R013b 清理候选（be，2026-09-06，未申请合流）
+
+- 原 `/private/tmp/ka-be-r009-20260905` 实查消失，已提交 be/r010 内容完整；仅按本会话 apply_patch 记录恢复未提交的 12 个会话清理文件，checkpoint `4826993`。新固定工作区 `/Users/aik/Desktop/投放agent/.worktrees/be-r010`。未 reset/prune，未修改其他 agent 文件。
+- 已 merge main@b8d2b0b → `19ee16d`。已读 P058/P061 v1.7.4；清理子批收口后继续公开 v3，不再等旧三态/考核裁决。Contract 不自行改。
+- 新环境离线缓存缺包，锁文件 install:all 已恢复五包，锁文件无 diff。Docker/55432 本轮重新启动并核验 ka_be_r013_20260906 / ka_be_r010_test，只在这些合成库测试，不运行线上清理。
+- 清理 DB unit 当前重跑19过；其余真实PG/全量仍在跑，不能用消失的旧tmp日志冒充本轮通过。正式质量回执另补；原总目标继续，未push/部署。
+
+### P-066｜R013b 清理候选回执（be，2026-09-06，full_pg_pending）
+
+- 代码 checkpoint `4826993` + 配置/故障测试 `06f3af7`，包含main@b8d2b0b。12恢复文件 + 1executor测试 + env；非视觉、Contract0diff（merge不计）、无新迁移/媒体写/前端改动。
+- 当前实测Domain617；DBunit19、真实PG9；Worker逻辑31、真实CLI/PG5、非PG全量891+2外部skip；三包typecheck/lint过。DB核心行100%/分支93.18%；Worker核心91.42%/94.33%；production离线audit0。
+- DB全量**未过**：第一次361过/5文件ENOSPC；空间自行回到2.8GiB后串行再跑，Docker再次退出，37套ECONNREFUSED/150过/240skip。未删除缓存/其他项目文件，未降断言。Worker首轮HTTP EPERM已提升本地端口权限重跑通过。完整PG须环境恢复后重跑，不以旧arch数字替代。
+- 范围：只删本workspace失效严格超过720小时的auth_sessions，job租约行锁+session SKIP LOCKED，1000/批，runId幂等，CLI硬截止+最多10job，不需要媒体身份且不领取媒体job；stdout只报告一轮不是全量清空。
+- 文档：`docs/plans/2026-09-06-R013b会话清理质量报告.md`；runbook仅新增本人§7，env登记3项。大规模保留期扫描无专用索引与性能实证；f.yml仍等OS。当前candidate/focused_pg_verified/full_pg_pending，未push/合流/部署；随后继续R010a1公开v3，不等待已裁P058/P061。
+
+### P-067｜v3 P058缺转化原因先行（be，2026-09-06）
+
+- `893c26b` 三个Domain文件：现金/价格存在但真实转化缺失 → conversion_missing，onTarget/costStatus都null；cash_missing仅现金缺失。缺考核仍assessment_missing，双缺优先现金；三态字段error也不产生达标结论。没有改公开v2边界或Contract。
+- TDD先红2/12；修后Domain619全过、两核心32测试/行97.36%/分支94.25%；Domain typecheck/lint、DB/Worker typecheck、Worker窗口/mapper44过，非PG全量891+2skip过。无数据库改动，当前Docker故障不伪报PG全量。
+- 这只关闭P058第1条内核，**不代表R010a1已全部完成**。下一步priceSource/团队逐日cash_assessment、onTargetRate真实账户分母、BUDGET_SOURCE_NOT_READY，再两Adapter/HTTP/BFF同时切v3；不擅改arch fixtures。清理批留痕SHA9a5591b。
+
+### P-068｜v1.7.4 priceSource 样例同步请求（be，2026-09-06）
+
+- 已读v1.7.4，按新增必填priceSource实现。实读 `packages/contract/fixtures/data-query/summary-window-v3-{green,yellow,cash-missing}.json` 的assessment仍没有priceSource，当前Domain测试逐字解析arch fixture。请arch补history/ka_daily来源与团队null effectiveDate样例；无需再裁口径，只同步已冻fixture。
+- be不会改Contract，也不会把字段改optional或默认history来绕过。先做同快照账户级达标率与BUDGET_SOURCE_NOT_READY，后续严格v3切换等样例同步，计划 `docs/plans/2026-09-06-R010a1-v3剩余接线.md`。
+
+### P-069｜P058达标率/预算未知先行候选（be，2026-09-06）
+
+- 代码 `a4c48c3`，8文件。`WindowAssessmentRepository.loadAccountCounts` 复用expected account-day/有效价格/三键scope，一条参数化SQL按账户聚合Σcash与Σprice×realConv；total/determinable/onTarget独立计数，缺任何预期日指标不进分母，NaN/Infinity/重复关联产生额外account-day拒绝。
+- `PlatformWindowQuery`同一RR/RO快照读当前与前窗counts；0分母undefined，total不得大于批准scope或小于已观测账户；today仍不查昨日全天。新增内部warnings `BUDGET_SOURCE_NOT_READY`，不拿tasks当前budget替历史预算。尚未接公开lineage，不能称公开v3完成。
+- 顺便实证修一旧bug：compareRate将上期0映射NEW，不能用于冻结的onTargetRate百分点差；现在此字段直接finite差值，0→1返回1而非infinite，其他金额/CPA旧语义本批不改。
+- TDD DB新方法8红→18过；Worker新对比测试先报infinite→修后25过（全量包含）；Domain全量620、DB纯逻辑17文件158、Worker非PG899+2外部skip；三包typecheck/lint过。覆盖：DB两方法100%行/分支；Worker窗口行91.42%/分支92.45%（统计时24个测试，后追加3户分母测试全量通过）。
+- 新增真实PG反例：2媒体同号/另一空间/空grant/缺转化/缺日/零真实值/未来价、实际组合窗口0→100%变化。**未跑**：带3s连接超时SELECT1仍ECONNREFUSED55432；Docker状态调用本轮挂起，无重启/清缓存。不能以mock SQL字符串检查冒充PG。
+- 代码候选non_pg_verified/pg_pending，未push/合流/部署。下一步团队日价与priceSource、两Adapter公开切换；P068只请同步已冻fixture，不新增裁决要求。
+
+### P-070｜v1.7.4价格来源与单SQL窗口成员计划候选（be，2026-09-06）
+
+- `b445e62`：Domain必填priceSource，history必须有真实effectiveDate，ka_daily不造日期；团队按逐日价格加权，版本数按不同值计，未知来源/非法值拒绝；新增缺真实转化与reason一致性守卫。`dc9e18f`：Registry注册单SQL读取本窗+比较窗预期账户日，缺日LEFT JOIN保留null，10001行哨兵，非summary/日期冲突拒绝；尚未挂公开v3。
+- 实测：Domain630通过/3失败，**失败就是P068三个arch fixture仍缺priceSource**；不删测试、不改Contract、不放宽字段。Domain/DB/Worker typecheck+lint通过。Worker非PG全量907通过+2外部opt-in跳过，Registry真实SQLite49通过（含5001账户×2日溢出/重复成员/非法价格）。Domain加权计算覆盖100%行、96.34%分支（前轮24定向）；新reader另批继续。
+- 最新只读PG SELECT1为ECONNREFUSED55432，未执行PG迁移/数据库写。以上candidate、未合流/部署/push，仍不能称R010a1完成；需arch同步已冻结样例，公开v3两Adapter/HTTP/BFF尚待接线。
+
+### P-071｜团队bounded窗口reader候选（be，2026-09-06）
+
+- `7fc7fbe`：共用HTTPS传输、团队workspace绑定、按Registry计划单次读取。严格成员网格/日期/媒体/账户/有限指标；workspace只由受信上下文注入。2000/10000疑似硬cap、10001/rowCount错配、截断标记、exact16MB均拒绝。不把缺库存证据伪装complete。
+- 新reader20红→20绿→补27例；当笔Worker非PG934+2opt-in skip，typecheck/lint通过。最终汇总合批覆盖member100%行/95.65%分支，共用client81.19%行。仅内部候选，公开query未切；不接真实源/凭证、不push。
+
+### P-072｜团队v3窗口汇总组合候选（be，2026-09-06）
+
+- `b988e3c`：在7fc7fbe验证过的同一次成员快照上组合summaryWindowRow，逐日Σ现金与Σ价×真实转化、先聚合再算CPA；priceSource=ka_daily且多值不造版本日期。按可判定账户算onTargetRate比较百分点；today全部比较unknown。预算undefined+BUDGET_SOURCE_NOT_READY，source inventory未知仍partial。
+- TDD8红→8绿，另加实际SQLite执行reader生成SQL→校验→v3输出端到端合成例；定向72过，汇总核心100%行/分支。最终Worker非PG943过+2外部skip，DB纯逻辑158过，三包typecheck/lint过；Worker离线production audit0，diff/security扫描无异常。Domain630过/3个fixture缺priceSource失败仍保留，PG SELECT1仍ECONNREFUSED，未伪报通过。
+- 质量报告`docs/plans/2026-09-06-R010a1-KA窗口reader质量报告.md`。两组source内核都有候选，但**公开仍v2，尚未切HTTP/BFF**；下一步统一公开边界、lineage/window/authority，不做双版本兼容。全部candidate、未合流/部署/真实源验证；总信箱仍active。
+
+### P-073｜公开窗口v3正在切换，WIP不可合流 + 请求同步旧权威样例（be，2026-09-06）
+
+- `cb2330d` **WIP，不是最终交付，请勿合流**。30文件限定后端/Domain与已授权apps/web/lib/data，Contract/React/视觉0 diff；两公共row schema与Web同时拒v2窗口，保留daily v2。实际data-api composition接个人RR窗口计算，KA public query接绑定团队reader；服务最终守卫对照请求window/compare；lineage的workspaceKind由Session注入后验证priceSource。
+- 接线发现并修的真实问题：①批准账户带accessLevel进入window严格tuple导致不可用→仅投影联合键；②Semantic trend有ratios不代表已经canonical→按真实summary形状映射到flat metrics；③截断后已确定的onTarget/颜色/比较必须清空，不能保留正常结论。新用例先红后绿。
+- 定向：两实际Adapter与Service（合成底层，不是真PG/KA）、原HTTP/权限/来源策略/截断86过；Domain新增公开window3、Registry参数5过；四包typecheck、Domain/Worker/Web lint过。**全量尚未通过**，旧adapter/member fixture与测试正在逐项升级，不能用此前全绿数字声称此WIP可用。PG本轮未跑。
+- P068扩大为已冻结样例同步：`packages/contract/fixtures/data-query/ready-lineage.json` / `unknown-lineage.json`仍是account.summary/v2，无assessment/window；另三个summary-window-v3仍缺priceSource。这使Domain直接parity及Web两直接parity失败。请arch按v1.7.4同步，不要be改Contract；reconcile-pending/stable-error不需要改版本。
+- 本人状态`docs/plans/R010-状态.md`列六套待修测试和日志。接下来继续原分支修回归与真实PG/BFF，不因样例依赖停止其他实现；尚未实现query旧入口别名和其余窗口query端点，不称R010a1完成。无push、媒体写或部署。
+- 已识别容量限制：当前团队窗口先读账户日网格，10k上限下大团队月窗会fail closed（例如500户×31日超过预算）。这不是完整可用月窗的终点；后续应将加权/计数下推到同一源SQL或提供有版本证据的分批，不能靠提高上限、吞截断或改成短窗口冒充完成。先关本批回归再扩该源内聚合实现。
+- exact cb2330d全量补录：Worker897过/57失败/2外部opt-in跳过（`/tmp/ka-cb2330d-worker.log`）；Domain626过/10个权威样例相关失败，Web109过/2个旧样例失败。状态仍WIP，尚无本轮PG证据；不是合流申请。
+
+### P-074｜公开v3 Worker回归已收口，仍非全门禁交付（be，2026-09-06）
+
+- `a9356f6`六套测试迁移，配套公开代码`cb2330d`。不是删57个失败测试：raw summary基础数学与公开v3验证分层；Platform测试实际注入同快照窗口计算；真实SQLite成员SQL→Client保留；KA summary/trend使用冻结team绑定+UUID而非旧个人scope；部分成员/跨日union/零转换/非法类型/重定向/隐私/2k/10k/exact字节均仍有反例。
+- Worker非PG全量958过+2外部opt-in跳过，日志`/tmp/ka-public-v3-regression-closed.log`；定向147过；核心覆盖186测试，合计96.78%行/94.11%分支（mapper97.95%、member100%、team summary100%、personal window91.42%行），`/tmp/ka-public-v3-coverage.log`。Worker typecheck/lint、diff check过，无依赖修改。
+- PG限时只读SELECT1仍ECONNREFUSED55432；不借历史PG数字。Domain/Web仍因P068/P073列出的权威fixture不匹配失败，main当前b8d2b0b未变；请同步后我合main复跑。旧cb2330d不能单独合，当前仍candidate_pending_contract_pg，不称R010a1全部完成、未部署/推送/真写。
+- 后续继续同分支公开query入口、其余R010a1与团队月窗容量，不缩减老板总信箱目标。
+
+### P-075｜公开query共用入口候选（be，2026-09-06）
+
+- `8a16bc0`五文件，`POST /api/v1/query`接现有Http composition，与data/query共用Session/来源/Registry/响应/envelope/max字节。严格旧query_type→canonical输入转接，summary/trend/table已通；不设第二套Query ID执行器，data/query本身仍拒旧顶层语法。
+- 安全/口径反例：auth先于业务解析；无session401、错误method405；精确等于响应字节上限502；同requestId；个人/团队分别固定来源、x-ka伪头不变scope；reconcile仅管理员独立入口；未知SQL/dataView/混拼拒绝。task/owner/columns等尚未实现筛选不静默忽略，而由strict Registry拒绝。dimension/health/tier与其余query仍待实现，不能称R010a1完成。
+- TDD HTTP路由4红→HTTP48+语法18全过；语法转换100%行/分支；Worker全量990过+2外部opt-in跳过（`/tmp/ka-query-alias-full.log`），typecheck/lint/diff检查过；Worker离线production audit0。PG本轮只读探针ECONNREFUSED，Domain/Web权威fixture仍P073依赖，不报五包全绿。
+- candidate_pending_contract_pg、未合流/部署/真实源验证；Contract/前端视觉0diff，未push/媒体写。继续原信箱剩余任务，不等旧root。
+
+### P-076｜团队月窗源内聚合容量收口候选（be，2026-09-06）
+
+- `264440b`，11文件：公共summary/trend已切到Registry固定单SQL窗口/逐日聚合，当前窗和比较窗同一源statement，不再传输账户日网格。真实内存SQLite合成500账户×31天15500源行→32响应行，Client→Service→HTTP handler一次源调用成功；不是提高10k上限、缩短窗口或分页拼接。旧member reader仅留内部对照，不作公开fallback。
+- 严格内部聚合证据校验：日期/period/成员去重数/账户数/每日窗口和/跨窗重叠/有限值；加法溢出被SQLite转null仍拒绝，非法日期被JOIN漏掉由source_row_count守卫识别。既有2k/10k/exact16MB/unknown inventory与Session绑定保持。逐日加权、多价、缺日/缺数/零值、比较窗与旧成员算法逐字段parity。
+- Worker非PG全量1026过+2外部opt-in跳过（`/tmp/ka-aggregate-worker-full.log`）；核心覆盖63测试、100%行/95.91%分支（`/tmp/ka-aggregate-coverage.log`）；Worker typecheck/lint、diff check过，离线production audit0。SQLite性能仅本机合成证据，不承诺真实KA时延。
+- 本批无Domain/DB/Contract/前端/依赖修改；未跑真实PG/远端KA。P073权威fixture待同步，不能报五包全绿。candidate_pending_contract_pg，未合流/部署/push/媒体写；下一步R010a1剩余只读能力，总目标仍active。
+
+### P-077｜R010a1剩余只读契约对齐请求（be，2026-09-06）
+
+- dimension账户fixture只给`key=accountId`，没有media；当前B1c SQL还按accountId+name分组，同空间两媒体同号同名会合成一行。请明确公开账户维度row保留三键的字段（建议保留key并加workspaceId/media/accountId），不由be发明拼接key。be先修**内部Repository**按三键分组和bounded结果，不先扩公开DTO。
+- 所有dimension-v3样例assessment仍缺v1.7.4必填priceSource；task样例ratios仅3项，未与严格7项MetricSet同构；部分dimension lineage标team但mode/meta为platform/personal且known metadata字段不全。请连同P073同步，be不把required改optional绕过。
+- system/etl-runs fixture id为UUID，但etl_runs.id是BIGSERIAL，job_id为UUID且重试可多次run。请冻返回的是job聚合还是具体attempt，raw/canonical双计数对应哪次stage；仅rows_ingested不能捏造两者。system/health的healthScore/connector/executor/agent计数缺源时如何表达unknown、跨源可见范围也请补，不能默认健康值。
+- 账户小传fixture已v3但api.md §4.2仍标summary/v2，且poolStatus/product要015；按最新版v3实现方向无需改回v2，请同步样例priceSource与未知字段规则。先继续无这些公开歧义的内部三键/边界修复，不停止总信箱工作。
+
+### P-078｜账户维度内部三键候选（be，2026-09-06）
+
+- `1d7a226`四文件：账户dimension按workspace/media/account分组（旧版同号同名会合并）；仅内部SemanticDimensionRow附accountIdentity，未自行改公开key/DTO。账户tuple与当前scope二次校验，重复/非法数值/计数失败；任务/业务null组和缺名称保留，不制造账户身份。排序用C collation与media tie-break。
+- SQL LIMIT10001、结果10000可完整（本地可信extra-row哨兵，不是上游静默hardcap）；10001与exact16MB拒绝。已有报表适配器未换公开key：若跨媒体同号导致旧报表key重复，会由既有Domain重复守卫拒绝，不再把两户混算；公开字段仍等P077。
+- TDD初始13失败/3通过→最终21边界用例通过。DB纯逻辑19文件189过，维度模块100%行/分支；DB/Worker typecheck/lint通过，DB离线production audit0。Worker非PG全量1026过+2外部opt-in跳过，`/tmp/ka-dimension-worker-full.log`。
+- 新真实PG4例（同号同名双媒体、跨workspace、单/空grant、任务/业务聚合、缺日），连同报表4例**未执行成功**：显式合成库55432 ECONNREFUSED，2套初始化失败/8跳过，`/tmp/ka-dimension-pg.log`。初次误选PG套件在sandbox被EPERM拒绝，已改显式隔离库重跑；没有使用默认共享库写数据。新测试exactOptionalPropertyTypes报错修正后typecheck重跑过，未隐藏失败。
+- 本批是内部安全基础，不冒充dimension公开可用；candidate_non_pg_verified/pg_pending，未合流/部署/真源/push/媒体写。质量检查技能用于数值/权限/容量/覆盖与依赖审计。继续R010a1与原总信箱，P073/P077等arch契约同步。
+
+### P-079｜R-FE-IMG-001四张候选已展示，待老板选型（be，2026-09-06）
+
+- 内置imagegen：横版玻璃环A/丝带B、竖版A/B，共4候选（竖B修2次背景/留白）。已问老板选型，不替他选。不修改页面/正式brand路径，不提交待拍板图片；后端总任务不因此暂停。
+- 可读文件在`/Users/aik/Desktop/投放agent/.worktrees/be-r010/output/brand-candidates/2026-09-06/login-{16x9,3x4}-{A,B}.png`；逐文件SHA256、像素和bytes在`docs/plans/2026-09-06-R-FE-IMG-001候选计划.md`，实际完整提示词另存。原始PNG1672×941/1086×1448，约1–1.45MB，**还不满足正式2400×1350/1200×1600及600KB/400KB预算**。
+- candidate_pending_visual_approval，不称最终交付；确认后才做最终格式/像素/体积及正式资产SHA，fe当前不要替换占位。本批只提交非视觉留痕文档，无生产代码变化。
+
+### P-080｜数据总表任务筛选候选（be，2026-09-06）
+
+- `104e8fc`八文件：api.md已冻filters.task_id→旧入口语法adapter→同一Registry taskId→account.table。KA按真实task_id列安全转义，个人按有效task_accounts EXISTS参数化查询；仍与Session批准tuple求交。Service拒绝响应中不含请求任务的行，真实handler返回502/同requestId；不会信任Adapter静默漏筛。
+- 分页与lineage共用现有RR/RO读路径。task筛选的expected_account_days在同SQL按有效关系求，非grant数×全窗；缺日仍partial，无生效关系是真空。count证据非法/超scope/自相矛盾拒绝。不能证明筛后请求账户数时省略requestedObjects，不拿全部grants冒充任务账户数。
+- TDD：Worker5红/7过→12全过；DB新proof10红→最终11过。SQLite实际SQL证明任务/日期/tuple交集、空grant和带引号taskId；纯逻辑DB200过，Worker非PG全量1037过+2外部opt-in skip；DB/Worker typecheck/lint过，Worker离线production audit0。5套82测试覆盖三修改Worker模块91.3%行/81.26%分支（其后只将control-regex改等价charCode校验，最终全量重跑）。日志`/tmp/ka-task-filter-worker-final.log`、`ka-task-filter-db-unit.log`。
+- PG+真实public handler三例已写（不是Session登录E2E），显式合成库仍ECONNREFUSED55432，一套初始化失败/3跳过，`/tmp/ka-task-filter-pg.log`；不宣称PG验证。最初新PG测试readonly数组typecheck、control-regex lint失败均已修并重跑，不削弱输入限制。
+- 旧table“task_id未实现应拒绝”测试迁移为正向同Registry测试，owner/columns/dimensionType未实现仍拒。**summary/trend taskId尚未接**：跨日有效归属、考核与分母须专门实现，不能套table后冒称全部任务查询已完成。candidate_non_pg_verified/pg_pending，未合流/部署/真源/媒体写/push；Contract/前端0diff。
+
+### P-081｜个人任务窗口汇总/趋势候选（be，2026-09-06）
+
+- `a496a2d`，15文件：Registry+公开query别名接personal summary/trend taskId；有效task_accounts与approved三键求交贯穿Semantic scope、历史考核、当前/比较窗口。内部lineage增加requestedDates（同SQL expected grid，不是公开字段），拒缺/重复/越窗日期、计数不一致；账户达标计数按实际eligible dates，重复关联仍invalid。任务转出后的日期不当缺数，缺应有metric日仍missing/partial。
+- 输出不伪造aggregate.tasks：Service的任务关系行守卫限account_rows；aggregate由可信Adapter同RR/RO SQL scope与内部日期/计数证明保障。趋势坏数组/null行、漏日/多日/重复/计数漂移均顶层502 UPSTREAM_INVALID_RESPONSE，同requestId，不降级成成功unavailable。summary当前与compare分别读同task的有效范围，未来价格不使用。
+- 本次**只完成个人窗口**。team/KA/reconcile的task-window expected grid仍待专门实现，不以数据总表where代替：resolve和所有KA builder均拒，真实HTTP handler确认422 VIEW_UNSUPPORTED、无reader调用。无task的团队月窗保持既有聚合。未改冻结Contract/非视觉BFF/页面或媒体写。
+- TDD：Window/Registry起始4红；DB proof/counts起始9红；趋势漏日等4红、后补坏数组2红、KA内部builder1红，均修为绿；旧HTTP“summary task未实现”断言替换成真实loopback正向alias测试，不删授权/非法筛选保护。类型检查发现optional undefined与test ratios类型问题已修后重跑。
+- 提交前Worker非PG **102 files/1055 passed +2外部opt-in skipped**：`npm --prefix apps/worker test -- --run --exclude '**/*-pg.integration.test.ts' --exclude '**/benchmark-data-pipeline-pg.test.ts' --testTimeout=30000 --hookTimeout=30000 --maxWorkers=1`，`/tmp/ka-task-window-worker-release.log`。第一次未提权监听EPERM，第二次发现旧HTTP断言失败，最终均按真实结果修正/重跑，不用失败轮计绿。
+- DB纯逻辑 **20files/208passed**：`npm --prefix packages/db test -- --run unit.test.ts window-assessment-counts.test.ts window-assessment-boundary.test.ts semantic-dimension-boundary.test.ts --maxWorkers=1`，`/tmp/ka-task-window-db-unit.log`；DB+Worker typecheck/lint绿。五套90测试测四核心 **94.31%行/85.1%分支**，task-window-coverage 100%（随后仅补两条team拒绝测试，production代码不变），`/tmp/ka-task-window-coverage-final.log`。Worker offline `npm audit --omit=dev --offline`=0，非实时漏洞情报；静态改动无新env读取/日志/执行命令/秘密字段，固定SQL参数化、无N+1、日期证据<=366，10k/exact16MB不放宽。
+- 真PG+actual public handler测试扩到5例（非登录E2E）：任务中途换绑、两有效价格+未来版本、同号双媒体/另一空间、空grant/空任务、缺指标日、compare。显式合成库`ka_be_r013_20260906`连接仍ECONNREFUSED55432，**一套初始化失败/5跳过**，`/tmp/ka-task-window-pg.log`，不得称PG完成；table原三例也未获新PG证据。无真实KA调用。
+- candidate_non_pg_verified/pg_pending，未merged/deployed/push。main仍b8d2b0b；Domain/Web权威fixture同步仍P073/P077待arch（本批未重跑其全量，不能沿用旧数字冒称五包绿）。完整信箱仍active，后续两源任务窗口与其余R010a1/R011–R016逐批继续；品牌候选等待老板选择不阻塞后端。
+
+### P-082｜R011 契约提案交审，未启动013（be，2026-09-06）
+
+- 提案 `docs/plans/2026-09-06-R011团队KA快照接入-契约提案.md`，实读main b8d2b0b/be 0f55c6e。按派活先比较A复用canonical与B独立versioned team表，建议A当前投影+run staging+按日head；明确失败保旧、全页证明、同事务元数据/指标/head发布、双run CAS、旧lease拒绝、历史日期保留及GC引用保护。
+- 请裁三组：①A/B与候选表列/任务关系来源标记；②普通team query改读已发布KA镜像、三列表readiness、source/snapshot/freshness DTO；③不可变源版本/完整库存证明、空源/unknown发布规则与保留。方案字段只在提案，未改Contract，未启动migration013/新同步代码。
+- 实读缺口：query仍live KA；accounts/tasks读取个人full/grants判ready，work-items team直接false；accounts/tasks selectedSource literal qihang。只同步不接读路径会让失败保旧失效、团队仍永久partial，列入同批验收。
+- 当前reader `{backend,sql,limit}`/可选datasetVersion没有不可变分页pinning证据。请沿既有OS渠道补证“固定不可变版本的库存+日事实全集/版本导出/单statement一致性保证”；count相同或本地hash不能证明跨页同版本。unknown允许暂存但不替换completed，不编造接口、不增加个人凭证门。
+- 本次仅只读审计+提案，无代码测试/真实PG/KA调用，不声称implemented或合流。R010其余已冻结任务继续；R011实现等待arch裁决。旧Task6废案不复用，真实媒体写仍关，不push。
+
+### P-083｜R010a2 驳回内核纠偏 + 状态/字段契约缺口（be，2026-09-06）
+
+- 代码 `122aa6f`，5文件：按api.md:574仅processing可reject，非空原因在DB连接前校验；UPDATE RETURNING缺行先rollback，不再COMMIT后报错。未开放HTTP，不称处理闭环完成。旧open/escalated允许reject测试改成明确负向，并保留其他动作保护。
+- TDD Domain2红→21过、DB10红→最终23过；DB纯逻辑231、Worker非PG1055+2外部opt-in skip，三包typecheck/lint过。Domain全量633过/10失败仍全是P073的权威v2/priceSource fixtures，本批不削弱schema。Repository覆盖99%行/90%分支，Domain96.92%行/92.85%分支；DB offline production audit0，非实时情报。
+- 真PG工作项8例（含新processing/空原因保状态反例），显式合成库55432 ECONNREFUSED，1suite初始化失败/8skip，`/tmp/ka-reject-pg.log`。candidate_non_pg_verified/pg_pending，未merge/deploy/push/真实写。详情及完整命令在`docs/plans/2026-09-06-R010a2-工作项驳回边界.md`。
+- **请冻结R010a2剩余三处**：①api.md:574与本信箱P005要求dispatched，但schema.sql:201/现CHECK与Domain状态没有；012 partial unique含dispatched漏escalated，需统一活动态/列表/计数集合；②API跨级重弹superseded_by，work_items实际无该列（仅assets有），请补列/迁移归属及旧条终态，现Repository原地升级不是已完成；③旧动作入参只有note，v1.3 reject_reason必填，请统一HTTP名字。be先完成无歧义内部约束，不自造DDL或把旧算法宣称满足重弹。
+- 接下来其余已冻工作继续，R011/P073/P077裁决和PG仍独立依赖。总信箱尚未完成。
+
+### P-084｜统一查询BFF候选 + 本机跨进程HTTP通过（be，2026-09-06）
+
+- `0b4f345`，8文件（非视觉apps/web route/lib+Worker测试+合成语法向量）：`/api/internal/query`固定调用`/api/v1/query`，与data-query共用原Session/来源/超时/16MB/requestId/schema；仅旧语法字段转换，SQL/能力/筛选校验仍唯一Registry。16组输入Web/Worker分别精确parity，不制造第二套业务Query ID。team任务窗口未支持仍422不fallback。
+- TDD缺函数先红；质量检查另复现请求体arrayBuffer全量读取/异常抛出2红，改逐chunk>1MB取消、exact1MB原语义不变、流错误稳定400。新路由非POST稳定405；来源/身份/SQL/混拼拒绝，返回错误queryId/source/status/关联ID/exact16MB失败；业务错误按既有envelope透传。
+- 实际Web BFF在独立Node进程调用本机Worker Session+query HTTP，经过真实Registry/QueryService，两包decoder，summary/trend/table三次200，同requestId。**auth/data端口合成，不是真PG或真实KA**，未启动Next页面服务；不能当生产验证。HTTP50过，`/tmp/ka-semantic-bff-http.log`。
+- 最终Worker1072过+2外部opt-in skip，`/tmp/ka-semantic-bff-worker-final.log`；Web135过/2个旧权威fixture失败仍P073，`/tmp/ka-semantic-bff-web-full.log`；Worker/Web typecheck/lint绿。coverage53定向通过，BFF100%行/96.55%分支、语法100%/100%、共用helper86.08%行；Web offline production audit0（不是实时漏洞查询）。本批无DB/Domain生产改动，不重跑PG、不借旧PG数字。
+- 无Contract/React/视觉/真实媒体写/push；candidate待审，未merged/deployed。详细计划+质量报告`docs/plans/2026-09-06-R010a1-统一查询BFF.md`。R010其余能力及后续信箱仍未完成，不以本入口就绪宣告总任务结束。
+
+### P-085｜变更集typed值与确认哈希内核候选（be，2026-09-06）
+
+- `61abbcf`仅Domain3文件。按P006五类型严格校验/比较；JSON对象键序无关、数组保序，NaN/类型错/循环/访问器/隐藏属性/超资源拒绝。草稿条目按目标三元组稳定排序、重复同字段拒绝，sha256(canonical snake_case items+原样合法TTL)。微秒TTL不能转Date丢失。哈希不是授权凭据。
+- TDD模块缺失先红；33过后Zod输入typecheck问题修复，最终36过、100%行/98.36%分支。直接读取arch detail fixture验证from/to，但示例hash不是实算golden。Domain669过/10个旧P073失败；Worker1072过+2外部opt-in skip；三包typecheck/lint过，Domain offline audit0；日志/质量报告见`docs/plans/2026-09-06-R010a2-变更集typed值与哈希.md`。
+- 当前**未接旧字符串Repository/JSONB桥/HTTP**，不是dry-run/confirm执行链完成。后续统一typed链时，TTL读写必须保留同一字符串（微秒不失）；请审canonical排序/TTL编码约定，持久化前不能拿现示例hash验证成功。既有字符串不猜number，不新旧混执行。
+- PG本轮55432拒连，Docker只读ps超时；未重启/删缓存/起Worker。clean install/FaaS遵从arch后续等OS模板，不本机重装。无Contract/视觉/依赖变更、未push/合流/部署，真实媒体写仍关。继续其余已冻任务；P073/P077/P082/P083及PG外部依赖未消失。
+
+### P-086｜typed值贯通JSONB/复核/只读详情/BFF候选（be，2026-09-06）
+
+- `dd87e15`，20文件。Domain ChangeSetItem/CurrentValue使用唯一ChangeValue，结构比较、不做字符串数值转换；重复观测拒绝不last-wins。Repository整批先验证并固定序列化快照，再开事务直接`$::jsonb`存对象；await后调用方改JSON的红测试已关。旧JSONB字符串/null输出拒绝，不猜类型/覆写旧数据。
+- 实读发现BFF原decoder仍字符串，故同步已授权非视觉Web lib/data：纯schema从Node crypto模块拆出供两端复用，Web不带Node加密代码；typed值原样穿BFF再format为原预览文本，false/0/json:null保持语义。无React/组件/样式/`packages/contract`/依赖改动。
+- Domain定向50过，核心98.08%行/97.19%分支；DB新编解码经Repository13例100%行/分支。Domain全量674过/10旧P073失败；DB纯逻辑244过；Worker非PG1077过+2外部opt-in skip；Web138过/2旧P073失败；四包typecheck/lint、diff过，DB offline audit0。详见`docs/plans/2026-09-06-R010a2-typed值纵向接线.md`原始命令/日志。
+- 真PG仅显式隔离库55432连接拒绝，27例未执行成功；不能将mock SQL参数断言当JSONB实存/事务已证。无push/merged/deployed/真实媒体写。新typed数据须待PG门禁通过再上线；旧草稿若需要保留可读恢复需arch指定方案，目前受控拒绝，不偷包字符串。
+- 仍缺P006成功dry-run硬前置/hash持久化/confirm及retry幂等run/unknown回收/T1 scheduler等，**本SHA没有开放任何写HTTP或安全执行闭环**。继续冻结范围内实现；总信箱目标未完成。
+
+### P-087｜成功dry-run持久化与确认/执行硬前置候选（be，2026-09-06）
+
+- `8ba9741`，7文件：prepare（已授权草稿+hash）→事务外预检→record在父行锁内复核hash/item全覆盖并记dry_run=true结果；confirm和beginExecution都必须有同hash成功完成run。confirm_hash入库，失败预检清空两头hash；同confirmed回放也不绕证据；非法终态409 INVALID_STATE，不再因TTL被改expired。
+- hash使用DB `to_char(... AT TIME ZONE 'UTC', ...SS.US...)`固定六位微秒，不从JS Date丢精度重建。预检和实际执行attempt独立计数；actual complete仅匹配dry_run=false且running，防误改预检记录。新增expectedHash是内部可选参数供调用方绑定已展示预览，不是擅自新增HTTP DTO；未提供时同样强制持久化证据匹配，不免预检。
+- 24核心unit过、独立硬门模块100%行/分支；Domain675过/10旧P073 fixture失败，DB纯逻辑268过，Worker非PG1077过+2外部skip，三包type/lint绿，offline DB audit0。真PG显式隔离库55432拒连，33例跳过；不能将mock SQL/静态锁认作真实并发证据。计划+完整报告`docs/plans/2026-09-06-R010a2-dry-run硬前置.md`。
+- 当前Repository只接受受信服务端预检结果，没有真实媒体预检Adapter/写HTTP；生产create绝不自动造成功（PG测试helper显式提交合成结果）。confirm尚未返回execution_run/原子排job，retry/unknown/T1仍后续，本批不冒充完整安全执行闭环。无Contract/前端/依赖/真实写/push/合流/部署；candidate待审、PG门禁待补。
+
+### P-088｜failed重试复核内核候选（be，2026-09-06）
+
+- `d4d8b18`，5文件；failed→retry→confirmed，未知/部分成功/成功等不准retry。confirm/retry共用父行锁内批准流程；retry额外要求workspace内已完成failed实际run与原confirm_hash，重验TTL/成功dry-run/hash/current from。成功后一次reset items pending+清失败原因/header executedAt，旧run保留；重复confirmed回放不再次reset，actual begin产生attempt2。
+- TTL过期failed返回内部expired并保留failed历史，不偷加failed→expired状态转移。无新增HTTP/队列/外部凭证/Contract/视觉/依赖；write_enabled与账户写授权仍由将来的写Service落实，当前没有媒体写入口。confirm/retry pending run+job原子排队及返回execution_run未完成。
+- Domain676过/10旧P073失败，DB纯逻辑282过，Worker非PG1077过+2opt-in skip，三包typecheck/lint过，DB offline audit0。定向retry14+dryrun24过；三份Repository unit51过，**整个Repository覆盖71.84%未达80%门，命令退出1**；本批approve/wrapper63/63语句覆盖。未修改门槛，旧complete/reconciliation覆盖欠账仍须补，不称全门禁通过。
+- PG显式合成库55432拒连，35例跳过（包括新增并发retry/attempt2/值变/过期两例），真实并发/rollback未验证。详见`docs/plans/2026-09-06-R010a2-失败重试内核.md`完整命令与报告。candidate未合流/部署/push；继续其余冻结任务，不标总目标完成。
+
+### P-089｜关闭P088非PG覆盖门（be，2026-09-06）
+
+- `817fee6`只新增一份16测试，生产0diff。执行/对账四结果、非法状态/覆盖/tuple、错误run、rollback保留原异常、读和授权wrapper均覆盖。首轮测试断言误把FOR UPDATE看作写已修，未修改生产逻辑。
+- 四份unit67过，Repository整体95.49%行/87.26%分支/100%函数，80%覆盖门已过（替代P08871.84%状态），DB纯逻辑298过、type/lint/diff绿。日志`/tmp/ka-completion-coverage.log`、`/tmp/ka-completion-db.log`；质量续记同失败重试计划。
+- PG拒连仍未关，mock不证明SQL/并发。Domain/Worker代码没动，沿用P088结果，未重报新运行；无push/合流/部署/真实媒体写。下一段原信箱12.7：T1 scheduler实体缺失、unknown回收不限一次且不转人工，需继续；本SHA只是测试，不冒充这些功能完成。
+
+### P-090｜T1按成功item持久化幂等调度候选（be，2026-09-06）
+
+- `1466dcd`，DB5文件。新增FollowUpScheduler结构兼容实现，同父行锁/事务验证personal、三键、成功item、executed_at与原owner；固定namespace+workspace/changeset/item UUID，复用JobRepository.enqueue并传同transactionClient。done/queued等重复调用都不改status/run_after/credential；已有键但payload不符即整批rollback。
+- 原owner即使停用也不换人，**消费前必须复核授权/凭证→blocked_auth，本模块没有执行消费者**。firstCheckDelayMs为显式部署构造策略，没有硬编码24小时承诺；初次唤醒不代表离线成熟。jobs保留时幂等，未来清理done行须保留去重证明。
+- 定向33过，模块100%行/96.36%分支；DB纯逻辑331过，Domain676过/10旧P073失败，Worker非PG1077过+2opt-in skip，三包type/lint全过、offlineaudit0。PG仍拒连，6个并发/完整回滚/固定owner/跨scope反例未执行；日志/性能风险见`docs/plans/2026-09-06-R010a2-T1持久化调度.md`。
+- 上限1万item逐项enqueue持锁时间未实测，不宣称在线高吞吐/短锁通过。尚未挂真实写Runtime/消费者、未写t1_result/数据成熟度，不能称T1闭环完成。无Contract/前端/依赖/真实凭证/push/合流/部署；继续unknown人工与其余已冻项。
+
+### P-091｜UNKNOWN持久化一次核查与人工待办候选（be，2026-09-06）
+
+- `8c5e341`，8文件。actual run按workspace父表范围证明；readonly claim绑定source_run_id，父行锁防重复领取，等待/到期manual；按P3建议readonly run=dry_run:true，不混actual attempt。完成必须有效claim ID+同actual source+running+未到期，UNKNOWN与固定ID个人agent_question同事务，保留原initiator/三键。核查结果同时更新actual status，failed可走retry，新attempt有独立核查机会。
+- Worker execute报错/unknown立即只读核查一次，仍unknown/核查异常/非法结果集→manual，不靠重开进程计数；并发waiting/manual直接返回unknown不调用Provider。异常原文不落run，关键record回复再守workspace/id。public Contract/前端/依赖0diff。
+- DB纯逻辑350过、Worker非PG1086过+2opt-in skip、Domain676过/10旧P073失败；三包type/lint绿、DBofflineaudit0。DB定向86过（helper100%行、Repository95.54%），Handler22过92.19%行。PG仍拒连38例未执行成功，其中3个新并发/迟到/跨scope/重试再核查反例。完整命令/风险在`docs/plans/2026-09-06-R010a2-未知结果一次核查.md`。
+- 进程claim后崩溃/永久挂起依赖后续job重投再次进入begin触发lease过期manual，目前未另挂扫描器；未接真实Provider/写HTTP/队列生产执行。历史unknown无actual证据则INVALID_STATE，不猜造。完整confirm pending run/job、rollback、T1消费仍待。candidate未push/合流/部署，不能称安全执行全链生产验证。
+
+### P-092｜确认原子入队与执行attempt绑定候选（be，2026-09-06）
+
+- `d873b6c`，10文件。confirm/retry父锁内同事务写confirmed header/pending actual run/jobs；runID=jobID，固定workspace/media/account/原两actor/hash。confirmed replay要求原run+job存在，不修补旧半成品；begin原地pending→running，context嵌套不能覆写metadata。内部ConfirmedExecutionRun不是P006公开完整DTO。
+- 旧队列消息绑定attempt：Worker读当前值前校验、DB begin/TTL/readonly claim父锁内再验latest actual；旧run不得开始/过期/核查重试的新attempt。future job adapter必须传executionRunId（兼容旧内部无参数调用，但不是生产消费者）。Runtime仍未注册changeset_execute；公共写HTTP/flag/provider未开，不能先接入口让无handler任务落生产队列。
+- DB370过、Worker非PG1091过+2opt-in skip、Domain676过/10旧P073失败；三包type/lint绿，DBofflineaudit0。DB核心90过：helper100%行/93.44%分支，Repository95.33%行；Handler27过92.41%行。PG55432拒连DB41+Worker4例未执行，新增并发同run/job、真实事务队列fault回滚、missingjob拒绝、stale attempt/跨scope反例待PG补证。
+- 完整命令/质量/性能风险见`docs/plans/2026-09-06-R010a2-确认原子入队.md`。无Contract/前端/依赖/真实秘密/push；candidate、claude_review_pending、未merged/deployed。**请裁一处：P006同hash confirm幂等是否覆盖executing/终态？与后发非法状态409边界优先级尚不明，本批只保留confirmed回放，未偷偷放宽。** 继续rollback/其余合法未完成项，原总目标不结束。
+
+### P-093｜rollback持久化关联与执行明细缺口，请arch冻结（be，2026-09-06）
+
+- 实读`api.md:583-585`要求成功项反向草稿、反向success才置原rolled_back；`schema.sql:203-242`目前changesets无original/reverse关联、execution_runs仅自由result_payload，changeset_items没有逐attempt applied_value/media_code/media_message/applied_at。Domain `changesets.ts:212` buildReverseItems只是交换计划from/to，不是完整rollback流程。
+- 建议显式关联而不复用simulation/reasonCode：nullable `changesets.rollback_of_id` + 同workspace父FK，或独立`changeset_reversals(workspace_id,original_id,reverse_id,source_execution_run_id,created_at)`关联表；推荐独立表便于约束source实际run与审计，字段/迁移编号请arch定。必须保存成功原item↔反向item对应，防错误更新原header。
+- 请同时裁：①原changeset是否只允许一份反向草稿（expired之后如何重建/失败重试）；②反向partial/unknown时原保持原success/partial，只有完整反向success才能rolled_back；③每次执行item结果是有版本JSON schema存result_payload还是新明细表，不能把可变changeset_items最新状态冒充历史attempt；④applied_value无实证时是否仅允许生成需新dry-run/from复核的计划反向草稿，不能声称媒体真实应用值已知道。
+- 尚未新增列/迁移/写HTTP，避免后端反向定义契约；该项proposal_pending_arch，其余已冻规则门继续。P092的跨运行阶段confirm replay裁决同样未决。
+
+### P-094｜规则缺数/首轮同步/来源时间硬门候选（be，2026-09-06）
+
+- `0fb209c`，Domain/Worker9文件。readiness内部strict输入含初次full完成、source/dataAsOf/可配6h或30h阈值、完整引用指标availability；missing/error不补0，未知/未来时间pending，policy两种都抑制缺数。Worker在evaluator前拦住，不调createOrMerge/alerts，coverage账户三键去重且保守取值；失败evaluator不计checked。Domain AND原先false盖过missing已由红测试修正。
+- 定向Domain29过/readiness100%行/alert-rules97.2%；Worker14过/handler98.57%行。全量Domain694过/10旧P073fixture失败、DB370过、Worker1099过+2opt-in skip；三包type/lint通过，Domainofflineaudit0。PG55432拒连，data-pipeline综合例未执行；其readiness是注明的合成provider，不能当DB health实证。
+- `docs/plans/2026-09-06-R010a2-规则缺数抑制.md`含命令/风险。尚无正式condition_tree→requiredMetrics/health provider、SLA暂停持久化、public explain/mute；另实读发现旧over_cost_ramp仍以realCpa与现金考核价比，现金阈值接线需继续纠偏，不能称规则生产可用。无Contract/前端/依赖/真实写/push/合流/部署，candidate待审，信箱总目标仍active。
+
+### P-095｜超成本规则现金口径修复候选（be，2026-09-06）
+
+- `f3ee185`，5文件。按metrics.md:48-51/85，OverCostRampInput移除realCpa/cost，收cashCost/realConversion→safeDivide现金CPA；仅账面旧输入insufficient，不自动当现金。缺/非法现金/转化、负转化、计算溢出均不触发；零转化真实infinite保留。3000起量门按“账面cost只展示”明确现金，普通1.2/冷启动1.5/10样本不改，trace不再混称真实CPA。
+- 新16现金反例，先10红后绿；core28过97.14%行/95.06%分支。全量Domain710过/10旧P073失败，DB370过，Worker1099过+2skip；三包type/lint绿、Domainofflineaudit0。PG仍55432拒连综合例未执行；原合成账面5000/现金2500保留，改断言不触发/不合并，新增cashCost实际读取断言（未声称已执行）。
+- 详细命令/风险`docs/plans/2026-09-06-R010a2-规则现金口径.md`。无Contract/前端/依赖/真实写/push，candidate未merged/deployed。正式provider/SLA/public explain仍待；本批不把多日混价窗口伪装为单日考核。P092/093与PG外部依赖未关，继续总信箱目标。
+
+### P-096｜废弃工作项静音写路径已封；户静音边界请裁（be，2026-09-06）
+
+- `5940032`，3个DB文件：按P005/schema.sql457，transition不再更新work_items.muted_until；非空legacy输入专用内部错误ACCOUNT_MUTE_REQUIRED、连接前拒绝（不静默吞请求），普通ignore记录原因/终态，旧历史日期保留。不是新增公开错误码/DTO，未开任何HTTP写。
+- 红10→定向32全绿，Repository99.05%行/90.74%分支；DB379，Worker1099+2外部skip，Domain710过/10旧P073fixture失败，三包type/lint通过、DBofflineaudit0。PG55432仍拒连9例未执行；未claim真PG通过。具体命令/质量在`docs/plans/2026-09-06-R010a2-废弃工作项静音写入封锁.md`。
+- **请裁户静音三项**：①days是否只允许1/3/7，muted_until自然日还是上海03业务日、含尾与否；②只压通知，还是同时压P1/P2/机会工作项创建/occurrence？P0突破已明，不能替arch猜；③账户mute响应与ignore+mute同事务要求。建议同事务失败整体回滚，暂不自写公开契约。
+- 没把已有account_mutes表等同完整功能；新存储/读取抑制/HTTP还未实现。无Contract/前端/真实秘密/push/合流/部署，candidate待审；总目标继续，旧P092/093/073及PG仍待外部闭环。
+
+### P-097｜个人账户静音三键存取内核候选（be，2026-09-06）
+
+- `297f736`四DB文件：AccountMuteRepository.set/find，个人批准tuple→同事务复核当前active workspace/member/user/identity/真实grant、role一致并共享锁→UPSERT/SELECT→严格输出验证→COMMIT。team/空grant/错媒体在连接前拒绝，旧auth遇撤权DB拒绝。日期和actor只来自服务端参数/ApprovedContext，不收workspace/mutedBy自报；await前固定输入。
+- 33单测100%行/95.58%分支，DB412、Worker1099+2skip，Domain710过/10旧P073fixture失败；三包type/lint、DBofflineaudit绿。PG8例（并发重放、同号跨media/workspace、五种撤销、错actor/未知户、created_at保留）仍ECONNREFUSED55432未执行。SQL锁/性能/真实事务未称通过。
+- `docs/plans/2026-09-06-R010a2-账户静音存储.md`留完整证据。只实现已冻account_mutes内核，输入explicit mutedUntil不猜days；内部reason长度4096资源限制不是公开DTO。个人read grant仅允许本告警偏好，不赋媒体execute。find不是规则扫描批量API。
+- **P096日期/抑制范围/响应与ignore原子三问仍需裁**。没有HTTP/公开错误码、审计event、规则通知集成或ignore同事务组合；candidate基础建设，不计完整用户功能。无Contract/前端/依赖/真实写/push/合流/部署，信箱总目标继续。
+
+### P-098｜复合规则判断语义与SLA持久化待裁（be，2026-09-06）
+
+- 实读当前树只冻version/all/any/not与叶子，代码无解释器/provider。新提案`docs/plans/2026-09-06-R010剩余闭环与规则待裁.md` §1列六项会改变业务判断的分歧，不是再造通用Agent。
+- 建议受限AST解释，不eval、不让LLM自由决定真值。请冻：①同节点组AND、not数组到底NOT(OR)还是NOT(AND)，嵌套/空组；②window_hours=48累计CPA不等于名称“连续2日超标”，无小时源不能假装滚动48h；③动态assessment_price同窗/跨版本如何取阈值；④rules/list规则7账面cost>500与metrics“账面只展示”冲突；⑤旧snake rule_id/tree与新fixture ruleId/leaves/pass公开格式，以及无限CPA如何表示；⑥SLA暂停当前无持久化区间，恢复不能猜停了多久，需字段/迁移裁决。
+- missing/error整条undeterminable已冻，无论ANY/NOT短路都不能绕开；阈值引用也必须纳入requiredMetrics，且以(metric,window)分辨。这里是proposal_pending_arch，未自增字段/DTO/树执行语义。brainstorming技能用于先澄清投放结果差异，未冒充用户批准。
+
+### P-099｜剩余闭环全信箱依赖对账，请优先解阻（be，2026-09-06）
+
+- 同提案§2–3对R010全部11项、R011–016及品牌图逐组保留范围；现场main b8d2b0b，be62aa431。真实HTTP composition只含Session/查询/列表/旧详情，/healthz不是产品健康页；migrations到012；执行/规则类存在但未进生产consumer，不能拿测试量冒充用户闭环。
+- 优先请关P073/P077读DTO样例与数据健康、P083动作状态/关联字段、P082团队快照（当前显式阻塞R011→R012→R014→R015→R016）。规则六問P098、静音P096、rollback P092/093可并行裁；PG/OS模板仍外部依赖。
+- 如要先推进014或R010b独立切片，请在信箱改依赖顺序；be不擅自绕过“排在R011/R012之后”。本次只读审计+提案，非代码交付，无新测试或PG通过声明；旧候选均待审/未部署，总目标未完成。
+
+### P-100｜R012 bid_tool映射提案：官方字段不是同一分类轴（be，2026-09-06）
+
+- 已完成信箱要求的只读映射提案：`docs/plans/2026-09-06-R012-快手出价维度映射提案.md`。实读原仓ka-src-0007归档文档2565/2568/2570/2571/2572，附版本/SHA256/JSON Pointer/行号；不是当前官网或真实账户回包验证。
+- 新关键证据：unit_type是创意制作；ocpx_action_type是优化目标；campaign.bid_type=1是最大转化而unit/list.bid_type=1是CPM。三个字段不能粗暴映射为手动/自动/OCPX一阶二阶。unit/list枚举1/2/6/10/20，当前create/update列2/10/12，输入输出字典不一致；MCB12读回值请OS验证，不用请求值冒充生效值。
+- 推荐A：bid_tool限出价机制族，优化目标/创意方式/智能开关分轴；备选B复合标签需新分类版本，不能偷偷加。请先裁A/B与候选enum/unknown/粒度；个人仍DIMENSION_UNSUPPORTED。team直接读ka源bid_tool，不用MAPI推导覆盖，更不可JOIN不同namespace的ad与账户日表。
+- 提案含最多6次已授权对象只读OS探针，无账户样本则标未验证、不制造媒体写。代码/Contract/迁移/前端0改，raw官方快照只读未复制/外发；本轮只有proposal，不声称8维实现/PG/上线。依赖仍按P099，后续编码等arch冻结。
+
+### P-101｜现场阻断复核与暂停自动续跑（be，2026-09-06）
+
+- 核验的不仅是be信箱：`git worktree list --porcelain`确认arch/main仍在原仓；main HEAD b8d2b0b，tracked Contract/两信箱无未提交diff，最新派活仍P057/059/060/062/063批。不存在已提交新arch分支或漏读的未提交裁决；未改原仓及其他工作树的untracked文件。
+- 55432只读TCP探针仍ECONNREFUSED；不启动共享Docker/队列、不切换业务库；不是一个已知运行中的测试等待句柄。旧integration-control退役，不从那里取新权限。
+- P099→P100→本次三轮核心阻断未改变：P073/P077公开读契约/样例，P083动作/活动态/关联列，P082先冻结再013，P092/093执行幂等与反向记录，P096/098静音/规则语义；后续R012/014/015/016显式排在前置之后，不能自己改顺序。P100已把可独立做的bid_tool只读提案交出，品牌正式交付等老板选型；OS FaaS模板也未出现。
+- 还实读了现有BFF：accounts/work-items列表路由仍缺，但账户最新版v151与014/015表列相关，不能拿旧窄schema补壳就算最新功能完成。全部剩余范围仍保留在P099文档，没有把目标改为仅已做部分。
+- 请arch按P099优先级裁决，或明确许可一个无依赖的下一切片。be暂停自动续跑以避免空转；**状态是blocked/未完成，不是complete，不代表所有代码已终审。** 已交实现均有各P条目SHA/门禁，最新代码297f736、资料b2e4480，无push/部署/真实媒体写。收到有效裁决、PG恢复或新的合法任务即可从本工作树续做。

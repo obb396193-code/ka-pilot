@@ -1,0 +1,18 @@
+[
+  {"input":{"query_type":"summary","date_from":"2026-08-23","date_to":"2026-08-24","compare":"wow","preset":"custom","filters":{"media":"KUAISHOU","account_id":"same","task_id":"task-1"}},"expected":{"queryId":"account.summary","params":{"date_from":"2026-08-23","date_to":"2026-08-24","compare":"wow","preset":"custom","media":"KUAISHOU","accountIds":["same"],"taskId":"task-1"}}},
+  {"input":{"query_type":"table","date":"2026-08-24","page":2,"page_size":30,"columns":["cost"],"dimension_type":"task","filters":{"owner":"synthetic"}},"expected":{"queryId":"account.table","params":{"date":"2026-08-24","page":2,"pageSize":30,"columns":["cost"],"dimensionType":"task","owner":"synthetic"}}},
+  {"input":{"query_type":"trend","date":"2026-08-24","filters":{"task_id":"task'quote"}},"expected":{"queryId":"account.trend","params":{"date":"2026-08-24","taskId":"task'quote"}}},
+  {"input":{"query_type":"table","page_size":null,"filters":{"account_id":null}},"expected":{"queryId":"account.table","params":{"pageSize":null,"accountIds":[null]}}},
+  {"input":{"queryId":"account.table","params":{"date":"2026-08-24","pageSize":2}},"expected":{"queryId":"account.table","params":{"date":"2026-08-24","pageSize":2}}},
+  {"input":null,"expected":null},
+  {"input":[],"expected":null},
+  {"input":{"query_type":"summary","filters":{"scope":[]}},"expected":null},
+  {"input":{"query_type":"summary","filters":null},"expected":null},
+  {"input":{"query_type":"summary","dataView":"ka_data"},"expected":null},
+  {"input":{"query_type":"summary","params":{}},"expected":null},
+  {"input":{"query_type":"summary","sql":"SELECT 1"},"expected":null},
+  {"input":{"query_type":"summary","queryId":"account.summary"},"expected":null},
+  {"input":{"query_type":"health"},"expected":null},
+  {"input":{"query_type":"tier"},"expected":null},
+  {"input":{"query_type":"dimension"},"expected":null}
+]

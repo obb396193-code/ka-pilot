@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { requestIdSchema } from "./data-query-contract.js";
+import { changeValueSchema } from "./changeset-values.js";
 
 const jsonObjectSchema = z.record(z.string(), z.unknown());
 const nullableDateTimeSchema = z.string().datetime({ offset: true }).nullable();
@@ -55,8 +56,8 @@ export const changeSetDetailItemSchema = z.object({
   targetType: z.enum(["account", "campaign", "unit", "creative"]),
   targetId: z.string().min(1),
   field: z.string().min(1),
-  fromValue: z.string().nullable(),
-  toValue: z.string().nullable(),
+  fromValue: changeValueSchema,
+  toValue: changeValueSchema,
   itemStatus: z.enum(["pending", "success", "failed"]),
   failReason: z.string().nullable(),
 }).strict();

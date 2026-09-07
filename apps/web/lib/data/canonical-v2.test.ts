@@ -15,13 +15,14 @@ for (const name of ["ready-lineage", "unknown-lineage", "reconcile-pending", "st
 
 for (const queryId of Object.keys(canonicalQueryRowSchemaById) as (keyof typeof canonicalQueryRowSchemaById)[]) {
   for (const side of ["ka_data", "platform"] as const) {
-    test(`${queryId}/${side} is strict v2 and distinguishes zero/missing/error`, () => {
+    test(`${queryId}/${side} is strict canonical and distinguishes zero/missing/error`, () => {
       const result = getMockResponse({ queryId, dataView: side, params: {} })
       assert.ok(result.ok && result.data.mode !== "reconcile")
       const source = result.data.source
-      assert.equal(source.rowSchemaVersion, `${queryId}/v2`)
+      const version = queryId === "account.summary" || queryId === "account.trend" ? "v3" : "v2"
+      assert.equal(source.rowSchemaVersion, `${queryId}/${version}`)
       const row = structuredClone(source.rows[0])
-      const metrics = (queryId === "account.trend" ? (row.metrics as Record<string, unknown>).metrics : row.metrics) as Record<string, unknown>
+      const metrics = row.metrics as Record<string, unknown>
       for (const value of [{ value: 0, availability: "available" }, { value: null, availability: "missing" }, { value: null, availability: "error" }]) {
         metrics.cost = value
         assert.equal(canonicalQueryRowSchemaById[queryId].safeParse(row).success, true)
@@ -33,7 +34,7 @@ for (const queryId of Object.keys(canonicalQueryRowSchemaById) as (keyof typeof 
       const legacy = structuredClone(result)
       if (legacy.ok && legacy.data.mode !== "reconcile") legacy.data.source.rowSchemaVersion = `${queryId}/v1`
       assert.equal(dataQueryResponseSchema.safeParse(legacy).success, false)
-      assert.equal(canonicalRowSchemaVersionByQueryId[queryId], `${queryId}/v2`)
+      assert.equal(canonicalRowSchemaVersionByQueryId[queryId], `${queryId}/${version}`)
     })
   }
 }

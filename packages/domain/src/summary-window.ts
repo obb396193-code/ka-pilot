@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { accountSummaryRowSchema, calendarDateSchema, canonicalMetricSetSchema, ratioValueSchema } from "./data-query-rows.js";
+import { accountSummaryRowSchema, calendarDateSchema, canonicalMetricSetSchema, ratioValueSchema } from "./data-query-base-rows.js";
 import { canonicalMetricValueSchema, divideMetricValues, sumMetricValues, type CanonicalMetricValue } from "./metric-value.js";
 import { compareAbsolute, compareRate } from "./metrics.js";
 
-/** Additive v3 building blocks. The public source boundary remains v2 until both adapters are wired. */
+/** Strict public v3 window and assessment values. */
 export const queryWindowSchema = z.object({
   from: calendarDateSchema,
   to: calendarDateSchema,
@@ -11,13 +11,20 @@ export const queryWindowSchema = z.object({
 }).strict().refine((window) => window.from <= window.to, "window must be ordered");
 
 export const windowAssessmentSchema = z.object({
-  price: z.object({ value: z.number().finite(), effectiveDate: calendarDateSchema }).strict().nullable(),
+  priceSource: z.enum(["history", "ka_daily"]),
+  price: z.object({ value: z.number().finite(), effectiveDate: calendarDateSchema.nullable() }).strict().nullable(),
   priceVersions: z.number().int().min(2).optional(),
   onTarget: z.boolean().nullable(),
   costStatus: z.enum(["green", "yellow", "red"]).nullable(),
-  costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "assessment_missing"]),
+  costStatusReason: z.enum(["window_ok", "day_over_window_ok", "window_over", "cash_missing", "conversion_missing", "assessment_missing"]),
   budgetUsageRate: ratioValueSchema,
 }).strict().superRefine((assessment, context) => {
+  if (assessment.price !== null && assessment.priceSource === "history" && assessment.price.effectiveDate === null) {
+    context.addIssue({ code: "custom", message: "history price requires a real effective date" });
+  }
+  if (assessment.price !== null && assessment.priceSource === "ka_daily" && assessment.price.effectiveDate !== null) {
+    context.addIssue({ code: "custom", message: "daily KA price has no historical effective date" });
+  }
   if (assessment.priceVersions !== undefined && assessment.price !== null) {
     context.addIssue({ code: "custom", message: "mixed versions cannot have a representative price" });
   }
@@ -29,7 +36,7 @@ export const windowAssessmentSchema = z.object({
   }
   const expected = {
     window_ok: [true, "green"], day_over_window_ok: [true, "yellow"], window_over: [false, "red"],
-    cash_missing: [null, null], assessment_missing: [null, null],
+    cash_missing: [null, null], conversion_missing: [null, null], assessment_missing: [null, null],
   } as const;
   const [target, status] = expected[assessment.costStatusReason];
   if (assessment.onTarget !== target || assessment.costStatus !== status) {
@@ -51,6 +58,16 @@ export const summaryWindowRowSchema = accountSummaryRowSchema.extend({
 }).strict().superRefine((row, context) => {
   if (row.metrics.cashCost.availability !== "available" && row.assessment.onTarget !== null) {
     context.addIssue({ code: "custom", path: ["assessment", "onTarget"], message: "unavailable cash cannot determine a cost status" });
+  }
+  if (row.metrics.realConversion.availability !== "available" && row.assessment.onTarget !== null) {
+    context.addIssue({ code: "custom", path: ["assessment", "onTarget"], message: "unavailable conversion cannot determine a cost status" });
+  }
+  if (row.assessment.costStatusReason === "cash_missing" && row.metrics.cashCost.availability === "available") {
+    context.addIssue({ code: "custom", path: ["assessment", "costStatusReason"], message: "cash_missing requires unavailable cash" });
+  }
+  if (row.assessment.costStatusReason === "conversion_missing" &&
+    (row.metrics.cashCost.availability !== "available" || row.metrics.realConversion.availability === "available")) {
+    context.addIssue({ code: "custom", path: ["assessment", "costStatusReason"], message: "conversion_missing requires known cash and unavailable conversion" });
   }
 });
 // v3 trend is ds + flat MetricSet, not ds + nested v2 SummaryRow.
@@ -95,6 +112,9 @@ export function compareWindowPoints(mode: "dod" | "wow", current: unknown, previ
     cashCost: toRatio(compareAbsolute(now.cashCost.value, before.cashCost.value)),
     realConversion: toRatio(compareAbsolute(now.realConversion.value, before.realConversion.value)),
     cashCpa: toRatio(compareRate(now.cashCpa.value, before.cashCpa.value)),
-    onTargetRate: toRatio(compareRate(now.onTargetRate.value, before.onTargetRate.value)),
+    // v1.7.4: percentage-point difference; zero is an observed rate, not a NEW denominator.
+    onTargetRate: now.onTargetRate.state === "finite" && before.onTargetRate.state === "finite"
+      ? ratioValueSchema.parse({ value: now.onTargetRate.value! - before.onTargetRate.value!, state: "finite" })
+      : { value: null, state: "undefined" },
   } });
 }

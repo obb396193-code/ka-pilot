@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { ChangeSetExecutionHandler } from "../src/changesets/changeset-execution-handler.js";
 import type {
@@ -16,8 +16,8 @@ const base: ChangeSetExecutionView = {
   status: "confirmed",
   credentialOwnerUserId: "user-1",
   items: [
-    { id: 1, targetType: "unit", targetId: "u1", field: "bid", fromValue: "30", toValue: "27", itemStatus: "pending", failReason: null },
-    { id: 2, targetType: "unit", targetId: "u2", field: "budget", fromValue: "1000", toValue: "800", itemStatus: "pending", failReason: null },
+    { id: 1, targetType: "unit", targetId: "u1", field: "bid", fromValue: { type: "number" as const, value: 30 }, toValue: { type: "number" as const, value: 27 }, itemStatus: "pending", failReason: null },
+    { id: 2, targetType: "unit", targetId: "u2", field: "budget", fromValue: { type: "number" as const, value: 1000 }, toValue: { type: "number" as const, value: 800 }, itemStatus: "pending", failReason: null },
   ],
 };
 
@@ -27,6 +27,13 @@ class MemoryStore implements ChangeSetStore {
   reconciled?: Parameters<ChangeSetStore["completeReconciliation"]>[0];
   completeCalls = 0;
   authError: Error | undefined;
+  claimed = false;
+  manualCount = 0;
+  async beginReconciliation() {
+    if (this.claimed) return { directive: "manual_required" as const, workItemId: "manual-1" };
+    this.claimed = true;
+    return { directive: "reconcile" as const, executionRunId: "claim-1" };
+  }
 
   async assertExecutionAuthorized() { if (this.authError) throw this.authError; }
 
@@ -55,7 +62,8 @@ class MemoryStore implements ChangeSetStore {
   }
   async completeReconciliation(input: Parameters<ChangeSetStore["completeReconciliation"]>[0]) {
     this.reconciled = input;
-    this.view.status = input.items.every((item) => item.status === "success") ? "success" : "partial";
+    this.view.status = input.items.some((item) => item.status === "unknown") ? "unknown" : input.items.every((item) => item.status === "success") ? "success" : "partial";
+    if (this.view.status === "unknown") this.manualCount = 1;
     return structuredClone(this.view);
   }
 }
@@ -67,7 +75,7 @@ class Values implements CurrentValueProvider {
       targetType: item.targetType,
       targetId: item.targetId,
       field: item.field,
-      value: this.changed && item.id === 1 ? "31" : item.fromValue,
+      value: this.changed && item.id === 1 ? { type: "number" as const, value: 31 } : item.fromValue,
     }));
   }
 }
@@ -87,6 +95,7 @@ class Executor implements ChangeExecutor {
   }
   async reconcileUnknown() {
     this.reconcileCalls += 1;
+    if (this.error) throw this.error;
     return this.result;
   }
 }
@@ -110,6 +119,46 @@ function setup() {
 }
 
 describe("ChangeSetExecutionHandler", () => {
+  it("rejects a store returning a different begun attempt before media execution", async () => {
+    const c = setup();
+    await expect(c.handler.run(base.workspaceId, base.id, "different-run")).rejects.toThrow("attempt mismatch");
+    expect(c.executor.executeCalls).toBe(0);
+  });
+  it("propagates the queue attempt id to authorization, begin and immediate readback", async () => {
+    const c = setup();
+    const auth = vi.spyOn(c.store, "assertExecutionAuthorized");
+    const begin = vi.spyOn(c.store, "beginExecution");
+    const claim = vi.spyOn(c.store, "beginReconciliation");
+    c.executor.error = new Error("synthetic unavailable");
+    await c.handler.run(base.workspaceId, base.id, "run-1");
+    expect(auth).toHaveBeenCalledWith(base.workspaceId, base.id, "run-1");
+    expect(begin).toHaveBeenCalledWith(expect.objectContaining({ executionRunId: "run-1" }));
+    expect(claim).toHaveBeenCalledWith(expect.objectContaining({ sourceExecutionRunId: "run-1" }));
+  });
+  it.each(["confirmed", "unknown", "success"] as const)("rejects an old job before any %s side effect", async (status) => {
+    const c = setup(); c.store.view.status = status;
+    const read = vi.spyOn(c.values, "readCurrentValues");
+    const follow = vi.spyOn(c.followUps, "scheduleT1");
+    c.store.authError = new Error("old attempt");
+    await expect(c.handler.run(base.workspaceId, base.id, "old-run")).rejects.toThrow("old attempt");
+    expect(read).not.toHaveBeenCalled(); expect(follow).not.toHaveBeenCalled();
+    expect(c.executor.executeCalls).toBe(0); expect(c.executor.reconcileCalls).toBe(0);
+  });
+  it("rejects duplicate provider observations before executing", async () => {
+    const { handler, values, executor } = setup();
+    const original = values.readCurrentValues.bind(values);
+    values.readCurrentValues = async (view) => { const rows = await original(view); return [...rows, rows[0]!]; };
+    await expect(handler.run("workspace-1", "changeset-1")).rejects.toThrow("Duplicate current-value");
+    expect(executor.executeCalls).toBe(0);
+  });
+  it("does not treat string 30 as number 30 when verifying current state", async () => {
+    const { store, executor, followUps } = setup();
+    const handler = new ChangeSetExecutionHandler({ store, executor, followUps, values: {
+      readCurrentValues: async (view) => view.items.map((item) => ({ targetType: item.targetType, targetId: item.targetId, field: item.field, value: { type: "string", value: "30" } })),
+    } });
+    await expect(handler.run("workspace-1", "changeset-1")).resolves.toMatchObject({ outcome: "conflict" });
+    expect(executor.executeCalls).toBe(0);
+  });
   it.each(["workspaceId", "id"] as const)("rejects a store returning the wrong %s before media access", async (field) => {
     const { handler, store, executor, values } = setup();
     store.view[field] = "wrong-scope";
@@ -159,7 +208,18 @@ describe("ChangeSetExecutionHandler", () => {
     executor.error = new Error("timeout after submit");
     expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "unknown" });
     expect(store.completed?.items.every((item) => item.status === "unknown")).toBe(true);
+    expect(executor.reconcileCalls).toBe(1);
+    expect(store.manualCount).toBe(1);
+    expect(JSON.stringify(store.completed)).not.toContain("timeout after submit");
     expect(followUps.calls).toEqual([]);
+  });
+  it("immediately reads back an unknown execution result without an infinite loop", async () => {
+    const { handler, store, executor } = setup();
+    executor.result.items = [{ itemId: 1, status: "unknown" }, { itemId: 2, status: "unknown" }];
+    expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "unknown" });
+    expect(executor.executeCalls).toBe(1);
+    expect(executor.reconcileCalls).toBe(1);
+    expect(store.manualCount).toBe(1);
   });
 
   it("reconciles UNKNOWN and never calls execute", async () => {
@@ -171,6 +231,37 @@ describe("ChangeSetExecutionHandler", () => {
     expect(executor.reconcileCalls).toBe(1);
     expect(store.reconciled).toBeDefined();
     expect(followUps.calls).toEqual([[1, 2]]);
+  });
+
+  it.each(["unknown", "error", "invalid"])("only reconciles once then leaves a manual question: %s", async (kind) => {
+    const { handler, store, executor } = setup();
+    store.view.status = "unknown";
+    executor.result = { payload: {}, items: [{ itemId: 1, status: "unknown" }, { itemId: 2, status: "unknown" }] };
+    if (kind === "error") executor.error = new Error("synthetic-token-DO-NOT-LOG");
+    if (kind === "invalid") executor.result.items = [];
+    expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "unknown" });
+    expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "unknown" });
+    expect(executor.reconcileCalls).toBe(1);
+    expect(executor.executeCalls).toBe(0);
+    expect(store.manualCount).toBe(1);
+    expect(JSON.stringify(store.reconciled)).not.toContain("DO-NOT-LOG");
+  });
+  it("waits behind an existing claim without making a read-back call", async () => {
+    const { handler, store, executor } = setup();
+    store.view.status = "unknown";
+    store.beginReconciliation = async () => ({ directive: "waiting" }) as never;
+    expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "unknown" });
+    expect(executor.reconcileCalls).toBe(0);
+  });
+  it("reloads the terminal result when a concurrent operation finished first", async () => {
+    const { handler, store, executor } = setup();
+    store.view.status = "unknown";
+    store.beginReconciliation = async () => { store.view.status = "success"; return { directive: "not_needed" } as never; };
+    expect(await handler.run("workspace-1", "changeset-1")).toEqual({ outcome: "skipped" });
+    expect(executor.reconcileCalls).toBe(0);
+  });
+  it.each([0, NaN, 3600001])("rejects invalid reconciliation lease %s", (lease) => {
+    expect(() => new ChangeSetExecutionHandler({ ...setup(), reconciliationLeaseMs: lease })).toThrow("Invalid reconciliation lease");
   });
 
   it("skips a terminal changeset idempotently", async () => {

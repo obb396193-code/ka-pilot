@@ -17,6 +17,16 @@ const readJson = (payload: unknown, requestId: string, status = 200) => Response
 const workItemResponse = (id = WORK_ITEM_ID, media = "KUAISHOU", accountId = "account-demo-07", workspaceId = authContext.workspaceId) => ({ ok: true, data: { kind: "work_item", workItem: { id, workspaceId, media, accountId, type: "diagnosis", taskId: null, ruleId: null, severity: "P1", title: "诊断", evidenceSnapshot: {}, diagnosis: {}, status: "open", ignoreReason: null, mutedUntil: null, assignee: null, creator: null, acceptanceCriteria: null, slaDue: null, rejectReason: null, t1Result: null, createdAt: "2026-08-24T01:00:00.000Z", resolvedAt: null } } })
 const changeSetResponse = (id = CHANGESET_ID, media = "KUAISHOU", accountId = "account-demo-07", workspaceId = authContext.workspaceId) => ({ ok: true, data: { kind: "changeset", changeset: { id, workspaceId, media, accountId, workItemId: WORK_ITEM_ID, title: "预览", status: "draft", initiatorUserId: "00000000-0000-4000-8000-000000000024", executorIdentity: null, multicaIssueId: null, ttlExpireAt: "2026-08-24T02:00:00.000Z", reasonCode: null, simulation: null, createdAt: "2026-08-24T01:00:00.000Z", executedAt: null, items: [] } } })
 
+test("changeset BFF carries typed values unchanged and fails closed on legacy text", async () => {
+  for (const fromValue of [{ type: "number", value: 0 }, "legacy-text"]) {
+    const base = changeSetResponse()
+    const payload = { ...base, data: { ...base.data, changeset: { ...base.data.changeset, items: [{ id: 1, targetType: "unit", targetId: "synthetic", field: "bid", fromValue, toValue: { type: "boolean", value: false }, itemStatus: "pending", failReason: null }] } } }
+    const result = await handleReadModelRequest("changesets", CHANGESET_ID, readRequest(), { environment: enabledEnvironment, approvedAuthContextResolver: async () => authContext, requestId: () => "typed-bff", fetchImpl: async () => readJson(payload, "typed-bff") })
+    assert.equal(result.status, typeof fromValue === "string" ? 502 : 200)
+    if (typeof fromValue !== "string") assert.deepEqual(result.body, payload)
+  }
+})
+
 test("read-model BFF is explicitly unavailable until the backend detail contract is enabled", async () => {
   let called = false
   const result = await handleReadModelRequest("work-items", WORK_ITEM_ID, readRequest(), { environment: { NODE_ENV: "production" }, approvedAuthContextResolver: async () => authContext, fetchImpl: async () => { called = true; return Response.json({}) } })

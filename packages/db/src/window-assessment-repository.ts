@@ -5,6 +5,28 @@ import { buildMetricFilter, nullableNumber, SemanticQueryContractError } from ".
 import type { SemanticQueryScope } from "./semantic-query-types.js";
 
 const MAX_GROUPS = 10_000;
+export interface WindowAccountAssessmentCounts { total: number; determinable: number; onTarget: number }
+const assessmentFromSql = `FROM expected_metric AS metric
+  JOIN accounts AS account ON account.workspace_id=metric.workspace_id
+    AND account.media=metric.media AND account.account_id=metric.account_id
+  LEFT JOIN task_accounts AS relation ON relation.workspace_id=metric.workspace_id
+    AND relation.media=metric.media AND relation.account_id=metric.account_id
+    AND relation.valid_from<=metric.ds AND (relation.valid_to IS NULL OR relation.valid_to>=metric.ds)
+  LEFT JOIN LATERAL (
+    SELECT price.id, price.price, price.effective_date
+    FROM assessment_price_history AS price
+    WHERE price.workspace_id=relation.workspace_id AND price.task_id=relation.task_id
+      AND price.effective_date<=metric.ds
+    ORDER BY price.effective_date DESC, price.id DESC LIMIT 1
+  ) AS assessment ON true`;
+function assessmentFilter(scope: SemanticQueryScope) {
+  const filter = buildMetricFilter(scope);
+  const span = (Date.parse(`${scope.dateTo}T00:00:00Z`) - Date.parse(`${scope.dateFrom}T00:00:00Z`)) / 86_400_000 + 1;
+  if (span > 366 || !Array.isArray(scope.filters?.accountScopes) || scope.filters.accountScopes.length > 1000) {
+    throw new SemanticQueryContractError("Assessment requires bounded approved account scope");
+  }
+  return { ...filter, span };
+}
 interface AssessmentGroupRow {
   ds: string;
   cash_cost: string | number | null;
@@ -29,31 +51,47 @@ function decodedNumber(value: unknown): number | null {
 export class WindowAssessmentRepository {
   constructor(private readonly connection: Pick<Pool, "query">) {}
 
-  async load(scope: SemanticQueryScope): Promise<DailyAssessmentInput[]> {
-    const filter = buildMetricFilter(scope);
-    const span = (Date.parse(`${scope.dateTo}T00:00:00Z`) - Date.parse(`${scope.dateFrom}T00:00:00Z`)) / 86_400_000 + 1;
-    if (span > 366 || !Array.isArray(scope.filters?.accountScopes) || scope.filters.accountScopes.length > 1000) {
-      throw new SemanticQueryContractError("Assessment requires bounded approved account scope");
+  async loadAccountCounts(scope: SemanticQueryScope): Promise<WindowAccountAssessmentCounts> {
+    const filter = assessmentFilter(scope);
+    const result = await this.connection.query(`${EXPECTED_METRIC_CTE}, account_totals AS (
+      SELECT metric.media, metric.account_id,
+        count(*) AS members,
+        count(DISTINCT metric.ds) AS eligible_days,
+        count(metric.cash_cost)=count(*) AND count(metric.real_conversion)=count(*)
+          AND count(assessment.price)=count(*) AS complete,
+        bool_or(coalesce(metric.cash_cost::text IN ('NaN','Infinity','-Infinity'),false)
+          OR coalesce(metric.real_conversion::text IN ('NaN','Infinity','-Infinity'),false)
+          OR coalesce(assessment.price::text IN ('NaN','Infinity','-Infinity'),false)) AS corrupt,
+        sum(metric.cash_cost) AS cash,
+        sum(assessment.price * metric.real_conversion) AS target
+      ${assessmentFromSql}
+      WHERE ${filter.whereSql}
+      GROUP BY metric.media, metric.account_id
+    ) SELECT count(*)::int AS total,
+      count(*) FILTER(WHERE complete)::int AS determinable,
+      count(*) FILTER(WHERE complete AND cash<=target)::int AS on_target,
+      coalesce(bool_or(corrupt OR members<>${scope.filters?.taskId === undefined ? `$${filter.values.length + 1}` : "eligible_days"}
+        OR cash::text IN ('NaN','Infinity','-Infinity') OR target::text IN ('NaN','Infinity','-Infinity')),false) AS invalid
+      FROM account_totals`, scope.filters?.taskId === undefined ? [...filter.values, filter.span] : filter.values);
+    const row = result.rows[0] as Record<string, unknown> | undefined;
+    if (result.rows.length !== 1 || !row || row.invalid !== false ||
+      ![row.total, row.determinable, row.on_target].every((v) => typeof v === "number" && Number.isInteger(v) && v >= 0 && v <= 1000) ||
+      (row.total as number) > scope.filters!.accountScopes!.length ||
+      (row.determinable as number) > (row.total as number) || (row.on_target as number) > (row.determinable as number)) {
+      throw new SemanticQueryContractError("Invalid assessment account counts");
     }
+    return { total: row.total as number, determinable: row.determinable as number, onTarget: row.on_target as number };
+  }
+
+  async load(scope: SemanticQueryScope): Promise<DailyAssessmentInput[]> {
+    const filter = assessmentFilter(scope);
     const result = await this.connection.query<AssessmentGroupRow>(`${EXPECTED_METRIC_CTE}
       SELECT metric.ds::text AS ds, assessment.id::text AS version_id,
         assessment.price, assessment.effective_date::text AS effective_date,
         ${["cash_cost", "real_conversion"].map((field) => `CASE
           WHEN count(metric.${field})=count(*) OR bool_or(metric.${field}::text IN ('NaN','Infinity','-Infinity'))
           THEN sum(metric.${field}) ELSE NULL END AS ${field}`).join(",\n")}
-      FROM expected_metric AS metric
-      JOIN accounts AS account ON account.workspace_id=metric.workspace_id
-        AND account.media=metric.media AND account.account_id=metric.account_id
-      LEFT JOIN task_accounts AS relation ON relation.workspace_id=metric.workspace_id
-        AND relation.media=metric.media AND relation.account_id=metric.account_id
-        AND relation.valid_from<=metric.ds AND (relation.valid_to IS NULL OR relation.valid_to>=metric.ds)
-      LEFT JOIN LATERAL (
-        SELECT price.id, price.price, price.effective_date
-        FROM assessment_price_history AS price
-        WHERE price.workspace_id=relation.workspace_id AND price.task_id=relation.task_id
-          AND price.effective_date<=metric.ds
-        ORDER BY price.effective_date DESC, price.id DESC LIMIT 1
-      ) AS assessment ON true
+      ${assessmentFromSql}
       WHERE ${filter.whereSql}
       GROUP BY metric.ds, assessment.id, assessment.price, assessment.effective_date
       ORDER BY metric.ds, assessment.id NULLS LAST

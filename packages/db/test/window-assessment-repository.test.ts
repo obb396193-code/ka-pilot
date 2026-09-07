@@ -55,5 +55,23 @@ describe("window effective assessment version / real PG", () => {
   it("present-invalid numeric fails rather than turning into a missing metric", async () => {
     await pool.query("UPDATE account_metrics_daily SET cash_cost='NaN' WHERE workspace_id=$1 AND media='TENCENT'", [workspaceId]);
     await expect(repository.load({ ...scope(), filters: { accountScopes: [{ media: "TENCENT", accountId: "synthetic-shared-id" }] } })).rejects.toThrow();
+    await expect(repository.loadAccountCounts({ ...scope(), filters: { accountScopes: [{ media: "TENCENT", accountId: "synthetic-shared-id" }] } })).rejects.toThrow();
+  });
+  it("counts accounts not days, ignores unknown targets, and preserves workspace/media tuple scope", async () => {
+    const twoMedia = { ...scope(), filters: { accountScopes: [
+      { media: "KUAISHOU", accountId: "synthetic-shared-id" }, { media: "TENCENT", accountId: "synthetic-shared-id" },
+    ] } };
+    try {
+      await pool.query("UPDATE account_metrics_daily SET cash_cost=0,real_conversion=0 WHERE workspace_id=$1 AND media='TENCENT'", [workspaceId]);
+      expect(await repository.loadAccountCounts(twoMedia)).toEqual({ total: 2, determinable: 2, onTarget: 1 });
+      expect(await repository.loadAccountCounts(scope())).toEqual({ total: 1, determinable: 1, onTarget: 0 });
+      expect(await repository.loadAccountCounts({ ...twoMedia, workspaceId: other })).toEqual({ total: 2, determinable: 2, onTarget: 0 });
+      expect(await repository.loadAccountCounts({ ...scope(), filters: { accountScopes: [] } })).toEqual({ total: 0, determinable: 0, onTarget: 0 });
+      await pool.query("UPDATE account_metrics_daily SET real_conversion=NULL WHERE workspace_id=$1 AND media='TENCENT' AND ds='2026-09-02'", [workspaceId]);
+      expect(await repository.loadAccountCounts(twoMedia)).toEqual({ total: 2, determinable: 1, onTarget: 0 });
+      expect(await repository.loadAccountCounts({ ...twoMedia, dateTo: "2026-09-03" })).toEqual({ total: 2, determinable: 0, onTarget: 0 });
+    } finally {
+      await pool.query("UPDATE account_metrics_daily SET cash_cost=CASE WHEN ds='2026-09-01' THEN 10 ELSE 150 END,real_conversion=CASE WHEN ds='2026-09-01' THEN 1 ELSE 9 END WHERE workspace_id=$1 AND media='TENCENT'", [workspaceId]);
+    }
   });
 });

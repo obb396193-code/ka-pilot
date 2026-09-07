@@ -12,6 +12,7 @@ function setup() {
   const repository = {
     querySummary: vi.fn(async (scope: unknown) => { void scope; return summary(); }),
     queryLineage: vi.fn(async () => ({ dataAsOf: "2026-09-02T10:00:00Z", canonicalRows: 2, returnedAccounts: 1, requestedAccountDays: 2, returnedAccountDays: 2 })),
+    loadAccountCounts: vi.fn(async () => ({ total: 1, determinable: 1, onTarget: 1 })),
     loadAssessment: vi.fn(async () => [
       { ds: "2026-09-01", cashCost: metricValue(22), realConversion: metricValue(1), price: { value: 20, effectiveDate: "2026-09-01", versionKey: "p1" } },
       { ds: "2026-09-02", cashCost: metricValue(3), realConversion: metricValue(1), price: { value: 10, effectiveDate: "2026-09-02", versionKey: "p2" } },
@@ -21,6 +22,43 @@ function setup() {
   return { repository, snapshot, query: new PlatformWindowQuery(snapshot as never) };
 }
 describe("personal window query composition", () => {
+  it("filters a task to its effective days, not the full calendar window", async () => {
+    const { query, repository } = setup();
+    repository.queryLineage.mockResolvedValue({ dataAsOf: null, canonicalRows: 1, returnedAccounts: 1,
+      requestedAccountDays: 1, returnedAccountDays: 1, requestedDates: ["2026-09-01"] } as never);
+    repository.querySummary.mockResolvedValue({ ...summary(22, 1), rowCount: 1 });
+    repository.loadAssessment.mockResolvedValue([
+      { ds: "2026-09-01", cashCost: metricValue(22), realConversion: metricValue(1), price: { value: 20, effectiveDate: "2026-09-01", versionKey: "p1" } },
+    ]);
+    const result = await query.summary({ ...input, taskId: "task-a" });
+    expect(result.row.metrics.costSpace).toEqual(metricValue(-2));
+    expect(result.row.assessment.price).toMatchObject({ value: 20, effectiveDate: "2026-09-01" });
+    for (const fn of Object.values(repository)) expect(fn).toHaveBeenCalledWith(expect.objectContaining({
+      filters: { accountScopes: input.accounts, taskId: "task-a" },
+    }));
+  });
+  it("requires effective dates for a task and refuses missing/duplicate/out-of-window evidence", async () => {
+    for (const dates of [undefined, [], ["2026-09-01"], ["2026-09-01", "2026-09-01"], ["2026-09-01", "2026-09-03"], ["2026-02-31"]]) {
+      const { query, repository } = setup();
+      repository.queryLineage.mockResolvedValue({ dataAsOf: null, canonicalRows: 2, returnedAccounts: 1,
+        requestedAccountDays: 2, returnedAccountDays: 2, ...(dates === undefined ? {} : { requestedDates: dates }) } as never);
+      await expect(query.summary({ ...input, taskId: "task-a" })).rejects.toThrow("Invalid window source result");
+    }
+  });
+  it("comparison task scope and effective-day proof are loaded for each window separately", async () => {
+    const { query, repository } = setup();
+    repository.queryLineage.mockResolvedValueOnce({ dataAsOf: null, canonicalRows: 2, returnedAccounts: 1,
+      requestedAccountDays: 2, returnedAccountDays: 2, requestedDates: ["2026-09-01", "2026-09-02"] } as never)
+      .mockResolvedValueOnce({ dataAsOf: null, canonicalRows: 1, returnedAccounts: 1,
+        requestedAccountDays: 1, returnedAccountDays: 1, requestedDates: ["2026-08-26"] } as never);
+    repository.querySummary.mockResolvedValueOnce(summary()).mockResolvedValueOnce({ ...summary(10, 1), rowCount: 1 });
+    const result = await query.summary({ ...input, taskId: "task-a", compare: "wow" });
+    expect(repository.queryLineage).toHaveBeenCalledTimes(2);
+    expect(repository.loadAccountCounts).toHaveBeenLastCalledWith(expect.objectContaining({
+      dateFrom: "2026-08-25", dateTo: "2026-08-26", filters: { taskId: "task-a", accountScopes: input.accounts },
+    }));
+    expect(result.row.compare?.deltas.cashCost).toEqual({ value: 1.5, state: "finite" });
+  });
   it("uses actual daily prices, replaces cached costSpace, and keeps one approved tuple snapshot", async () => {
     const { query, repository, snapshot } = setup();
     const result = await query.summary(input);
@@ -30,6 +68,7 @@ describe("personal window query composition", () => {
       assessment: { price: null, priceVersions: 2, onTarget: true, costStatus: "yellow", budgetUsageRate: { value: null, state: "undefined" } },
     });
     expect(result.window.preset).toBe("custom");
+    expect(result.warnings).toContain("BUDGET_SOURCE_NOT_READY");
     for (const fn of Object.values(repository)) expect(fn).toHaveBeenCalledWith({
       workspaceId, dateFrom: "2026-09-01", dateTo: "2026-09-02",
       filters: { accountScopes: input.accounts },
@@ -42,9 +81,45 @@ describe("personal window query composition", () => {
     expect(repository.querySummary.mock.calls[1]?.[0]).toMatchObject({ dateFrom: "2026-08-25", dateTo: "2026-08-26", filters: { accountScopes: input.accounts } });
     expect(result.row.compare).toMatchObject({ mode: "wow", deltas: {
       cashCost: { value: 0.25, state: "finite" }, cashCpa: { value: 7.5, state: "finite" },
-      realConversion: { value: -0.5, state: "finite" }, onTargetRate: { value: null, state: "undefined" },
+      realConversion: { value: -0.5, state: "finite" }, onTargetRate: { value: 0, state: "finite" },
     } });
   });
+  it("uses determinable accounts rather than all accounts or account-days as the target-rate denominator", async () => {
+    const { query, repository } = setup();
+    repository.loadAccountCounts.mockResolvedValueOnce({ total: 1, determinable: 1, onTarget: 1 })
+      .mockResolvedValueOnce({ total: 1, determinable: 1, onTarget: 0 });
+    const result = await query.summary({ ...input, compare: "dod" });
+    expect(result.row.compare?.deltas.onTargetRate).toEqual({ value: 1, state: "finite" });
+    expect(repository.loadAccountCounts).toHaveBeenNthCalledWith(2, {
+      workspaceId, dateFrom: "2026-08-31", dateTo: "2026-09-01", filters: { accountScopes: input.accounts },
+    });
+  });
+  it("zero determinable accounts produce undefined comparison, not zero target rate", async () => {
+    const { query, repository } = setup();
+    repository.loadAccountCounts.mockResolvedValueOnce({ total: 1, determinable: 0, onTarget: 0 });
+    expect((await query.summary({ ...input, compare: "dod" })).row.compare?.deltas.onTargetRate).toEqual({ value: null, state: "undefined" });
+  });
+  it("excludes the unknown account from a three-account rate denominator", async () => {
+    const { query, repository } = setup();
+    repository.querySummary.mockResolvedValue({ ...summary(), accountCount: 3, rowCount: 6, realConversion: null } as never);
+    repository.queryLineage.mockResolvedValue({ dataAsOf: "2026-09-02T10:00:00Z", canonicalRows: 6, returnedAccounts: 3, requestedAccountDays: 6, returnedAccountDays: 6 });
+    repository.loadAssessment.mockResolvedValue([
+      { ds: "2026-09-01", cashCost: metricValue(22), realConversion: metricValue(null), price: { value: 20, effectiveDate: "2026-09-01", versionKey: "p1" } },
+      { ds: "2026-09-02", cashCost: metricValue(3), realConversion: metricValue(null), price: { value: 20, effectiveDate: "2026-09-01", versionKey: "p1" } },
+    ]);
+    repository.loadAccountCounts.mockResolvedValueOnce({ total: 3, determinable: 2, onTarget: 1 })
+      .mockResolvedValueOnce({ total: 3, determinable: 1, onTarget: 0 });
+    const result = await query.summary({ ...input, accounts: [...input.accounts, { media: "TENCENT", accountId: "synthetic" }, { media: "KUAISHOU", accountId: "another" }], compare: "dod" });
+    expect(result.row.assessment.onTarget).toBeNull();
+    expect(result.row.compare?.deltas.onTargetRate).toEqual({ value: 0.5, state: "finite" });
+  });
+  it.each([{ total: 0, determinable: 0, onTarget: 0 }, { total: 2, determinable: 1, onTarget: 1 }, { total: 1, determinable: 2, onTarget: 1 },
+    { total: 1, determinable: 1, onTarget: 2 }, { total: "1", determinable: 1, onTarget: 1 }])(
+    "refuses inconsistent or over-scope account-count evidence", async (counts) => {
+      const { query, repository } = setup(); repository.loadAccountCounts.mockResolvedValueOnce(counts as never);
+      await expect(query.summary({ ...input, compare: "dod" })).rejects.toThrow("Invalid window source result");
+    },
+  );
   it("today comparison is undefined and does not query yesterday's whole day", async () => {
     const { query, repository } = setup();
     const result = await query.summary({ ...input, window: { ...input.window, preset: "today" }, compare: "dod" });

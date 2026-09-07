@@ -1,3 +1,4 @@
+import { readChangeValueSchema } from "./change-value.ts"
 import { z } from "zod"
 
 import {
@@ -30,7 +31,17 @@ const authoritySchema = z.object({
   role: z.enum(["default_authoritative", "comparison_reference", "source_versioned"]),
 }).strict()
 
+const calendarDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value) => {
+  const date = new Date(`${value}T00:00:00Z`)
+  return !Number.isNaN(date.valueOf()) && date.toISOString().slice(0, 10) === value
+})
+const queryWindowSchema = z.object({ from: calendarDate, to: calendarDate,
+  preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).default("custom"),
+}).strict().refine((value) => value.from <= value.to)
+
 export const sourceLineageSchema = z.object({
+  window: queryWindowSchema.optional(),
+  warnings: z.array(z.string()).optional(),
   workspaceKind: z.enum(["personal", "team"]),
   source: z.enum(["ka_data", "qihang_realtime", "qihang_offline", "canonical"]),
   datasetVersion: z.string().min(1).nullable(),
@@ -82,10 +93,15 @@ export const sourceQueryResultSchema = z.object({
   warnings: z.array(z.string()),
   error: stableDataQueryErrorSchema.optional(),
 }).strict().superRefine((source, context) => {
+  if ((source.queryId === "account.summary" || source.queryId === "account.trend") && !source.lineage.window) context.addIssue({ code: "custom", message: "Window queries require lineage.window" })
   const expectedVersion = canonicalRowSchemaVersionByQueryId[source.queryId]
   if (source.rowSchemaVersion !== expectedVersion) context.addIssue({ code: "custom", path: ["rowSchemaVersion"], message: `rowSchemaVersion must be ${expectedVersion}` })
   const rowSchema = canonicalQueryRowSchemaById[source.queryId]
   source.rows.forEach((row, index) => {
+    if (source.queryId === "account.summary" && (row.assessment as { priceSource?: unknown } | undefined)?.priceSource !==
+      (source.lineage.workspaceKind === "team" ? "ka_daily" : "history")) context.addIssue({ code: "custom", path: ["rows", index], message: "Price source/workspace mismatch" })
+    if (source.queryId === "account.trend" && source.lineage.window &&
+      (typeof row.ds !== "string" || row.ds < source.lineage.window.from || row.ds > source.lineage.window.to)) context.addIssue({ code: "custom", path: ["rows", index], message: "Trend outside window" })
     if (!rowSchema.safeParse(row).success) context.addIssue({ code: "custom", path: ["rows", index], message: `row does not match the canonical ${source.queryId} schema` })
   })
   if (source.rows.length !== source.returnedRowCount) context.addIssue({ code: "custom", path: ["returnedRowCount"], message: "row count mismatch" })
@@ -160,7 +176,7 @@ export const workItemReadModelSchema = z.object({
   if ((value.media === null) !== (value.accountId === null)) context.addIssue({ code: "custom", path: [value.media === null ? "media" : "accountId"], message: "media and accountId must both be present or both be null" })
 })
 export const changeSetReadModelSchema = z.object({
-  id: z.string().uuid(), workspaceId: z.string().uuid(), media: z.string().min(1), accountId: z.string().min(1), workItemId: z.string().uuid().nullable(), title: z.string().nullable(), status: z.enum(["draft", "confirmed", "sent", "executing", "success", "partial", "failed", "unknown", "expired", "rolled_back"]), initiatorUserId: z.string().uuid(), executorIdentity: z.string().nullable(), multicaIssueId: z.string().nullable(), ttlExpireAt: z.string().datetime({ offset: true }).nullable(), reasonCode: z.string().nullable(), simulation: jsonObjectSchema.nullable(), createdAt: z.string().datetime({ offset: true }), executedAt: z.string().datetime({ offset: true }).nullable(), items: z.array(z.object({ id: z.number().int().positive(), targetType: z.enum(["account", "campaign", "unit", "creative"]), targetId: z.string().min(1), field: z.string().min(1), fromValue: z.string().nullable(), toValue: z.string().nullable(), itemStatus: z.enum(["pending", "success", "failed"]), failReason: z.string().nullable() }).strict()),
+  id: z.string().uuid(), workspaceId: z.string().uuid(), media: z.string().min(1), accountId: z.string().min(1), workItemId: z.string().uuid().nullable(), title: z.string().nullable(), status: z.enum(["draft", "confirmed", "sent", "executing", "success", "partial", "failed", "unknown", "expired", "rolled_back"]), initiatorUserId: z.string().uuid(), executorIdentity: z.string().nullable(), multicaIssueId: z.string().nullable(), ttlExpireAt: z.string().datetime({ offset: true }).nullable(), reasonCode: z.string().nullable(), simulation: jsonObjectSchema.nullable(), createdAt: z.string().datetime({ offset: true }), executedAt: z.string().datetime({ offset: true }).nullable(), items: z.array(z.object({ id: z.number().int().positive(), targetType: z.enum(["account", "campaign", "unit", "creative"]), targetId: z.string().min(1), field: z.string().min(1), fromValue: readChangeValueSchema, toValue: readChangeValueSchema, itemStatus: z.enum(["pending", "success", "failed"]), failReason: z.string().nullable() }).strict()),
 }).strict()
 export const workItemDetailResponseSchema = z.discriminatedUnion("ok", [z.object({ ok: z.literal(true), data: z.object({ kind: z.literal("work_item"), workItem: workItemReadModelSchema }).strict() }).strict(), z.object({ ok: z.literal(false), error: readDetailErrorSchema }).strict()])
 export const changeSetDetailResponseSchema = z.discriminatedUnion("ok", [z.object({ ok: z.literal(true), data: z.object({ kind: z.literal("changeset"), changeset: changeSetReadModelSchema }).strict() }).strict(), z.object({ ok: z.literal(false), error: readDetailErrorSchema }).strict()])

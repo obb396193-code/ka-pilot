@@ -206,7 +206,8 @@ function mappedRows(
   trustedWorkspaceId: string,
 ): unknown[] {
   if (queryId === "account.summary") {
-    return rows.map((row) => canonicalSummaryBaseRow(row, source));
+    // v3 assessment must come from the window calculator, never a guessed current price.
+    return [...rows];
   }
   if (queryId === "account.trend") {
     return rows.map((row) => {
@@ -214,7 +215,10 @@ function mappedRows(
       const metrics = typeof nested === "object" && nested !== null && !Array.isArray(nested)
         ? nested as RawRow
         : row;
-      return { ds: calendarDate(row.ds), metrics: canonicalSummaryBaseRow(metrics, source) };
+      if (Object.hasOwn(metrics, "rowCount") || Object.hasOwn(metrics, "row_count")) {
+        return { ds: calendarDate(row.ds), metrics: canonicalSummaryBaseRow(metrics, source).metrics };
+      }
+      return { ds: calendarDate(row.ds), metrics };
     });
   }
   return rows.map((row) => dailyRow(row, source, trustedWorkspaceId));
@@ -255,9 +259,19 @@ export function maskCanonicalQueryRows(
     if (!parsed.success) throw new CanonicalQueryRowError();
     const clean = parsed.data as RawRow;
     const container = clean.metrics as RawRow;
-    const result = queryId === "account.trend"
-      ? { ...clean, metrics: { ...container, metrics: maskedMetrics(container.metrics as RawRow) } }
-      : { ...clean, metrics: maskedMetrics(container) };
+    const result: RawRow = { ...clean, metrics: maskedMetrics(container) };
+    if (queryId === "account.summary") {
+      const assessment = clean.assessment as RawRow;
+      result.assessment = { ...assessment, onTarget: null, costStatus: null,
+        costStatusReason: assessment.costStatusReason === "assessment_missing" ? "assessment_missing" : "cash_missing",
+        budgetUsageRate: { value: null, state: "undefined" },
+      };
+      if (clean.compare) {
+        const compare = clean.compare as RawRow;
+        result.compare = { ...compare, deltas: Object.fromEntries(Object.keys(compare.deltas as RawRow)
+          .map((key) => [key, { value: null, state: "undefined" }])) };
+      }
+    }
     const masked = schema.safeParse(result);
     if (!masked.success) throw new CanonicalQueryRowError();
     return masked.data as RawRow;

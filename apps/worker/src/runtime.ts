@@ -8,6 +8,8 @@ import {
   MetricsRepository,
   OutboundMessageRepository,
   RawMetricsRepository,
+  SessionCleanupRepository,
+  SESSION_CLEANUP_JOB_TYPE,
   type JobLeaseScope,
   type createPool,
 } from "@ka/db";
@@ -23,6 +25,7 @@ import { withQihangIdentity } from "./jobs/identity.js";
 import { createFailureNotifier } from "./notifications/failure-notifier.js";
 import { createDataQualityHandler } from "./quality/check-handler.js";
 import { QihangClient } from "./qihang/client.js";
+import { createSessionCleanupHandler } from "./auth/session-cleanup-handler.js";
 
 type DatabasePool = ReturnType<typeof createPool>;
 
@@ -63,6 +66,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
   return new JobConsumer(
     jobs,
     {
+      [SESSION_CLEANUP_JOB_TYPE]: createSessionCleanupHandler(new SessionCleanupRepository(options.pool)),
       etl_full: identity(createFullEtlHandler({ qihang: options.qihang, store: etlStore, jobs })),
       etl_incr: identity(
         createIncrementalEtlHandler({ qihang: options.qihang, store: etlStore, jobs, hourly }),

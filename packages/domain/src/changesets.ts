@@ -1,3 +1,6 @@
+import { changeValueSchema, sameChangeValue, type ChangeValue } from "./changeset-values.js";
+import { z } from "zod";
+
 export type ChangeSetStatus =
   | "draft"
   | "confirmed"
@@ -12,6 +15,7 @@ export type ChangeSetStatus =
 
 export type ChangeSetAction =
   | "confirm"
+  | "retry"
   | "send"
   | "start_execution"
   | "complete_success"
@@ -32,8 +36,8 @@ export interface ChangeSetItemSnapshot {
   targetType: ChangeTargetType;
   targetId: string;
   field: string;
-  fromValue: string | null;
-  toValue: string | null;
+  fromValue: ChangeValue;
+  toValue: ChangeValue;
   itemStatus: ChangeSetItemStatus;
   failReason: string | null;
 }
@@ -42,7 +46,7 @@ export interface CurrentValueSnapshot {
   targetType: ChangeTargetType;
   targetId: string;
   field: string;
-  value: string | null;
+  value: ChangeValue;
 }
 
 export interface ValueConflict {
@@ -50,8 +54,8 @@ export interface ValueConflict {
   targetType: ChangeTargetType;
   targetId: string;
   field: string;
-  expected: string | null;
-  actual: string | null;
+  expected: ChangeValue;
+  actual: ChangeValue | null;
   kind: "changed" | "missing";
 }
 
@@ -59,6 +63,16 @@ export interface ItemExecutionResult {
   itemId: number;
   status: "success" | "failed" | "unknown";
   failReason?: string | undefined;
+}
+
+const dryRunItemsSchema = z.array(z.object({
+  itemId: z.number().int().positive().safe(),
+  status: z.enum(["success", "failed", "unknown"]),
+  failReason: z.string().max(1024).optional(),
+}).strict()).min(1).max(10000);
+
+export function parseDryRunItems(input: unknown): ItemExecutionResult[] {
+  return dryRunItemsSchema.parse(input);
 }
 
 const transitions: Partial<
@@ -80,6 +94,7 @@ const transitions: Partial<
   },
   success: { mark_rolled_back: "rolled_back" },
   partial: { mark_rolled_back: "rolled_back" },
+  failed: { retry: "confirmed" },
 };
 
 export function transitionChangeSet(
@@ -121,10 +136,20 @@ export function verifyCurrentValues(
   items: readonly ChangeSetItemSnapshot[],
   currentValues: readonly CurrentValueSnapshot[],
 ): { ok: boolean; conflicts: ValueConflict[] } {
-  const current = new Map(currentValues.map((value) => [valueKey(value), value.value]));
+  const current = new Map<string, ChangeValue>();
+  for (const value of currentValues) {
+    const key = valueKey(value);
+    if (current.has(key)) throw new Error("Duplicate current-value target field");
+    current.set(key, changeValueSchema.parse(value.value));
+  }
+  const targets = new Set<string>();
   const conflicts: ValueConflict[] = [];
   for (const item of items) {
     const key = valueKey(item);
+    if (targets.has(key)) throw new Error("Duplicate changeset target field");
+    targets.add(key);
+    changeValueSchema.parse(item.fromValue);
+    changeValueSchema.parse(item.toValue);
     if (!current.has(key)) {
       conflicts.push({
         itemId: item.id,
@@ -137,8 +162,8 @@ export function verifyCurrentValues(
       });
       continue;
     }
-    const actual = current.get(key) ?? null;
-    if (actual !== item.fromValue) {
+    const actual = current.get(key)!;
+    if (!sameChangeValue(actual, item.fromValue)) {
       conflicts.push({
         itemId: item.id,
         targetType: item.targetType,
@@ -193,7 +218,7 @@ export function buildReverseItems(
       targetType: item.targetType,
       targetId: item.targetId,
       field: item.field,
-      fromValue: item.toValue,
-      toValue: item.fromValue,
+      fromValue: changeValueSchema.parse(item.toValue),
+      toValue: changeValueSchema.parse(item.fromValue),
     }));
 }

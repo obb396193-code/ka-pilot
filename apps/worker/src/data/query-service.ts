@@ -29,6 +29,7 @@ import { DataSourceRoutingError, selectDataSourceRoute, type ServerDataSourcePol
 import { maskCanonicalQueryRows } from "./canonical-query-rows.js";
 
 export const DATA_QUERY_HTTP_PATH = "/api/v1/data/query";
+export const SEMANTIC_QUERY_HTTP_PATH = "/api/v1/query";
 export const ADMIN_RECONCILE_HTTP_PATH = "/api/v1/admin/data/reconcile";
 
 export interface DataSourceQueryPort {
@@ -144,6 +145,9 @@ function unavailableLineage(
   workspaceKind: ApprovedWorkspaceAuthContext["workspaceKind"],
 ): SourceLineage {
   return {
+    ...((resolved.queryId === "account.summary" || resolved.queryId === "account.trend") ? { window: {
+      from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom",
+    } } : {}),
     workspaceKind,
     source: source === "ka_data" ? "ka_data" : "canonical",
     datasetVersion: null,
@@ -220,11 +224,22 @@ function guardSourceOutput(
   resolved: ResolvedDataQuery,
   scope: DataQueryExecutionScope,
 ): SourceQueryResult {
-  const parsed = sourceQueryResultSchema.safeParse(result);
+  const parsed = sourceQueryResultSchema.safeParse({ ...result, lineage: { ...result?.lineage,
+    workspaceKind: scope.scopeKind === "team_workspace_readonly" ? "team" : "personal",
+  } });
   if (!parsed.success || parsed.data.queryId !== resolved.queryId) {
     throw new OutputContractError();
   }
   result = parsed.data;
+  if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend") {
+    const window = result.lineage.window;
+    if (!window || window.from !== resolved.params.dateFrom || window.to !== resolved.params.dateTo ||
+      window.preset !== (resolved.params.preset ?? "custom")) throw new OutputContractError();
+    if (result.status === "ready" && resolved.queryId === "account.summary" && result.rows.some((row) => {
+      const compare = row.compare as { mode?: unknown } | undefined;
+      return resolved.params.compare === undefined ? compare !== undefined : compare?.mode !== resolved.params.compare;
+    })) throw new OutputContractError();
+  }
   if (result.status === "unavailable") {
     if (result.error?.code === "UPSTREAM_INVALID_RESPONSE") throw new OutputContractError();
     return result;
@@ -233,6 +248,10 @@ function guardSourceOutput(
     scope.accounts.map((account) => `${account.media}\u0000${account.accountId}`),
   );
   for (const row of result.rows) {
+    if (resolved.outputShape === "account_rows" && resolved.params.taskId !== undefined && (!Array.isArray(row.tasks) || !row.tasks.some((task: unknown) =>
+      typeof task === "object" && task !== null && "taskId" in task && task.taskId === resolved.params.taskId))) {
+      throw new OutputContractError();
+    }
     const identity = rowAccountIdentity(row);
     const carriesIdentity = identity.media !== null || identity.accountId !== null;
     if (resolved.outputShape === "account_rows" && (

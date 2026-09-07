@@ -7,6 +7,7 @@ import {
   executionDirective,
   transitionChangeSet,
   verifyCurrentValues,
+  parseDryRunItems,
   type ChangeSetItemSnapshot,
 } from "../src/changesets.js";
 
@@ -16,8 +17,8 @@ const items: ChangeSetItemSnapshot[] = [
     targetType: "unit",
     targetId: "unit-1",
     field: "bid",
-    fromValue: "30",
-    toValue: "27",
+    fromValue: { type: "number" as const, value: 30 },
+    toValue: { type: "number" as const, value: 27 },
     itemStatus: "pending",
     failReason: null,
   },
@@ -26,8 +27,8 @@ const items: ChangeSetItemSnapshot[] = [
     targetType: "unit",
     targetId: "unit-2",
     field: "budget",
-    fromValue: "1000",
-    toValue: "800",
+    fromValue: { type: "number" as const, value: 1000 },
+    toValue: { type: "number" as const, value: 800 },
     itemStatus: "pending",
     failReason: null,
   },
@@ -50,6 +51,10 @@ describe("changeset transitions", () => {
     expect(transitionChangeSet("executing", "mark_unknown")).toBe("unknown");
     expect(transitionChangeSet("unknown", "reconcile_success")).toBe("success");
     expect(() => transitionChangeSet("unknown", "send")).toThrow(/invalid changeset transition/);
+  });
+  it("permits failed retry only through the newly frozen retry transition", () => {
+    expect(transitionChangeSet("failed", "retry")).toBe("confirmed");
+    for (const status of ["unknown", "partial", "success", "draft", "executing"] as const) expect(() => transitionChangeSet(status, "retry")).toThrow();
   });
 });
 
@@ -80,17 +85,26 @@ describe("confirmation guards", () => {
 
   it("reports every changed or missing current value", () => {
     const verification = verifyCurrentValues(items, [
-      { targetType: "unit", targetId: "unit-1", field: "bid", value: "31" },
+      { targetType: "unit", targetId: "unit-1", field: "bid", value: { type: "number" as const, value: 31 } },
     ]);
     expect(verification.ok).toBe(false);
     expect(verification.conflicts).toEqual([
-      expect.objectContaining({ itemId: 1, expected: "30", actual: "31", kind: "changed" }),
-      expect.objectContaining({ itemId: 2, expected: "1000", actual: null, kind: "missing" }),
+      expect.objectContaining({ itemId: 1, expected: { type: "number" as const, value: 30 }, actual: { type: "number" as const, value: 31 }, kind: "changed" }),
+      expect.objectContaining({ itemId: 2, expected: { type: "number" as const, value: 1000 }, actual: null, kind: "missing" }),
     ]);
   });
 });
 
 describe("execution result", () => {
+  it("validates and snapshots preflight results without coercion", () => {
+    const input = [{ itemId: 1, status: "success", failReason: "synthetic" }];
+    const snapshot = parseDryRunItems(input);
+    input[0]!.status = "failed";
+    expect(snapshot[0]!.status).toBe("success");
+    for (const bad of [[], [{ itemId: "1", status: "success" }], [{ itemId: 1, status: "invented" }], [{ itemId: 1, status: "success", secret: "must reject extra" }]]) {
+      expect(() => parseDryRunItems(bad)).toThrow();
+    }
+  });
   it("aggregates success, failure, partial and unknown", () => {
     expect(aggregateExecutionResult([{ itemId: 1, status: "success" }])).toBe("success");
     expect(aggregateExecutionResult([{ itemId: 1, status: "failed" }])).toBe("failed");
@@ -126,8 +140,8 @@ describe("execution result", () => {
         targetType: "unit",
         targetId: "unit-1",
         field: "bid",
-        fromValue: "27",
-        toValue: "30",
+        fromValue: { type: "number" as const, value: 27 },
+        toValue: { type: "number" as const, value: 30 },
       },
     ]);
   });

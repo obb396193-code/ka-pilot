@@ -1,4 +1,4 @@
-// Synthetic canonical v2 unknown-lineage fixture; direct backend parity is tested separately.
+// Synthetic canonical v3 unknown-lineage fixture; direct backend parity is tested separately.
 // Values are synthetic and safe for local regression tests.
 export const backendUnknownLineageEnvelope = {
   ok: true,
@@ -6,7 +6,7 @@ export const backendUnknownLineageEnvelope = {
     mode: "ka_data",
     source: {
       queryId: "account.summary",
-      rowSchemaVersion: "account.summary/v2",
+      rowSchemaVersion: "account.summary/v3",
       status: "ready",
       rows: [],
       returnedRowCount: 0,
@@ -16,6 +16,7 @@ export const backendUnknownLineageEnvelope = {
       },
       lineage: {
         workspaceKind: "team",
+        window: { from: "2026-08-24", to: "2026-08-24", preset: "custom" },
         source: "ka_data",
         datasetVersion: null,
         queryTemplateVersion: "account-summary-v1",

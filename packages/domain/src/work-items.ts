@@ -25,7 +25,6 @@ const transitions: Readonly<
   open: {
     start_processing: "processing",
     ignore: "ignored",
-    reject: "rejected",
     escalate: "escalated",
     mark_external_handled: "external_handled",
     expire: "expired",
@@ -42,7 +41,6 @@ const transitions: Readonly<
     start_processing: "processing",
     complete: "done",
     ignore: "ignored",
-    reject: "rejected",
     mark_external_handled: "external_handled",
     expire: "expired",
   },

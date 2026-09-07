@@ -120,12 +120,29 @@ export async function readBoundedJson(upstream: Response): Promise<unknown | nul
 export async function readBoundedRequestJson(request: Request): Promise<unknown | null> {
   const declared = Number(request.headers.get("content-length") ?? "0")
   if (Number.isFinite(declared) && declared > MAX_BFF_REQUEST_BYTES) return null
-  const bytes = new Uint8Array(await request.arrayBuffer())
-  if (bytes.byteLength > MAX_BFF_REQUEST_BYTES) return null
+  if (request.body === null || request.bodyUsed) return undefined
+  const reader = request.body.getReader()
   try {
+    const chunks: Uint8Array[] = []
+    let total = 0
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      total += value.byteLength
+      if (total > MAX_BFF_REQUEST_BYTES) {
+        try { await reader.cancel() } catch { /* Cancellation must not expose a stream error. */ }
+        return null
+      }
+      chunks.push(value)
+    }
+    const bytes = new Uint8Array(total)
+    let offset = 0
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength }
     return JSON.parse(new TextDecoder().decode(bytes)) as unknown
   } catch {
     return undefined
+  } finally {
+    reader.releaseLock()
   }
 }
 

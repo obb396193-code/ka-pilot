@@ -113,6 +113,8 @@ export interface SemanticDimensionQuery extends SemanticQueryScope {
 export interface SemanticDimensionRow {
   dimensionKey: string | null;
   dimensionLabel: string | null;
+  /** Internal account grouping identity; never infer media from dimensionKey. */
+  accountIdentity?: SemanticAccountScope & { workspaceId: string };
   metrics: MetricSummary;
 }
 
@@ -158,6 +160,8 @@ export interface SemanticLineageResult {
   returnedAccounts: number;
   requestedAccountDays: number;
   returnedAccountDays: number;
+  /** Internal task-effective date proof, from the expected grid in the same read snapshot. */
+  requestedDates?: string[] | undefined;
 }
 
 export class AmbiguousTaskMappingError extends Error {

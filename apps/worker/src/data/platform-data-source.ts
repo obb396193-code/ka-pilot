@@ -14,6 +14,8 @@ import { canonicalRowSchemaVersionByQueryId } from "@ka/domain";
 
 import type { DataQueryExecutionScope } from "./ka-data-client.js";
 import type { ResolvedDataQuery } from "./query-registry.js";
+import type { PlatformWindowQuery } from "./platform-window-query.js";
+import { assertTaskWindowDates } from "./task-window-coverage.js";
 import {
   CanonicalQueryRowError,
   canonicalizeQueryRows,
@@ -74,6 +76,7 @@ function semanticScope(
           }
         : {}),
       ...(resolved.params.media === undefined ? {} : { media: resolved.params.media }),
+      ...(resolved.params.taskId === undefined ? {} : { taskId: resolved.params.taskId }),
       ...(resolved.params.accountId === undefined
         ? {}
         : { accountId: resolved.params.accountId }),
@@ -137,7 +140,7 @@ function sourceLineage(
           : {}),
       ...(scope.scopeKind === "explicit_accounts"
         ? {
-            requestedObjects: scope.accounts.length,
+            ...(resolved.params.taskId === undefined ? { requestedObjects: scope.accounts.length } : {}),
             returnedObjects: Math.min(scope.accounts.length, lineage.returnedAccounts),
           }
         : { returnedObjects: lineage.returnedAccounts }),
@@ -149,6 +152,9 @@ function sourceLineage(
 
 function unavailableLineage(resolved: ResolvedDataQuery, execution: DataQueryExecutionScope): SourceLineage {
   return {
+    ...((resolved.queryId === "account.summary" || resolved.queryId === "account.trend") ? { window: {
+      from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom",
+    } } : {}),
     source: "canonical",
     workspaceKind: execution.scopeKind === "team_workspace_readonly" ? "team" : "personal",
     datasetVersion: null,
@@ -193,6 +199,7 @@ export class PlatformDataSource {
   constructor(
     private readonly repository: PlatformQueryRepository,
     private readonly snapshot?: PlatformReadSnapshot,
+    private readonly windowQuery?: Pick<PlatformWindowQuery, "summary">,
   ) {}
 
   async query(
@@ -200,12 +207,28 @@ export class PlatformDataSource {
     execution: DataQueryExecutionScope,
   ): Promise<SourceQueryResult> {
     try {
+      if (resolved.queryId === "account.summary") {
+        if (!this.windowQuery || execution.scopeKind !== "explicit_accounts") throw new Error("Window reader unavailable");
+        const result = await this.windowQuery.summary({ workspaceId: execution.workspaceId,
+          accounts: execution.accounts.map(({ media, accountId }) => ({ media, accountId })),
+          window: { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" },
+          ...(resolved.params.compare === undefined ? {} : { compare: resolved.params.compare }),
+          ...(resolved.params.taskId === undefined ? {} : { taskId: resolved.params.taskId }),
+        });
+        const rows = canonicalizeQueryRows(resolved.queryId, "platform", [result.row], execution.workspaceId);
+        const lineage = { ...sourceLineage(resolved, execution, result.lineage, false), window: result.window, warnings: result.warnings };
+        return { queryId: resolved.queryId, rowSchemaVersion: canonicalRowSchemaVersionByQueryId[resolved.queryId],
+          status: "ready", rows, returnedRowCount: rows.length, lineage, warnings: result.warnings,
+          wholeResultTotal: lineage.partial ? { value: null, availability: "partial", reason: "Canonical window coverage is incomplete" }
+            : { value: rows.length, availability: "available" },
+        };
+      }
       return await (this.snapshot
         ? this.snapshot((repository) => this.read(repository, resolved, execution))
         : this.read(this.repository, resolved, execution));
     } catch (error) {
       const invalidCanonical = error instanceof CanonicalQueryRowError ||
-        (error instanceof Error && error.name === "SemanticQueryContractError");
+        (error instanceof Error && (error.name === "SemanticQueryContractError" || error.name === "ZodError"));
       if (invalidCanonical) throw new PlatformDataSourceError();
       return {
         queryId: resolved.queryId,
@@ -243,6 +266,18 @@ export class PlatformDataSource {
         total = summary.rowCount;
       } else if (resolved.queryId === "account.trend") {
         const trend = await repository.queryTrend(scope);
+        if (resolved.params.taskId !== undefined) {
+          if (!Array.isArray(trend) || trend.some((row) => typeof row !== "object" || row === null ||
+            typeof row.metrics !== "object" || row.metrics === null)) throw new CanonicalQueryRowError();
+          assertTaskWindowDates(scope, semanticLineage, trend.map((row) => row.ds));
+          if (new Set(trend.map((row) => row.ds)).size !== trend.length ||
+            trend.some((row) => !Number.isSafeInteger(row.metrics?.rowCount) || row.metrics.rowCount < 0 ||
+              !Number.isSafeInteger(row.metrics?.accountCount) || row.metrics.accountCount < 0 ||
+              row.metrics.accountCount !== row.metrics.rowCount || row.metrics.accountCount > execution.accounts.length) ||
+            trend.reduce((sum, row) => sum + row.metrics.rowCount, 0) !== semanticLineage.canonicalRows) {
+            throw new CanonicalQueryRowError();
+          }
+        }
         rows = trend.map((row) => ({ ...row }));
         total = rows.length;
       } else {
@@ -286,6 +321,9 @@ export class PlatformDataSource {
         semanticLineage,
         truncated,
       );
+      if (resolved.queryId === "account.trend") lineage.window = {
+        from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom",
+      };
       const wholeResultTotal = lineage.partial
         ? {
             value: null,

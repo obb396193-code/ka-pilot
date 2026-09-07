@@ -9,7 +9,7 @@ describe("v1.7.2 daily effective price aggregation", () => {
   it("does not apply the last price to the whole window or average daily CPA", () => {
     const out = computeWindowAssessment([day("2026-09-01", 10, 1, 20), day("2026-09-02", 150, 9, 10, "history-2")]);
     expect(out.costSpace).toEqual(mv(-50));
-    expect(out.assessment).toEqual({ price: null, priceVersions: 2, onTarget: false, costStatus: "red", costStatusReason: "window_over", budgetUsageRate: missingRatio });
+    expect(out.assessment).toEqual({ priceSource: "history", price: null, priceVersions: 2, onTarget: false, costStatus: "red", costStatusReason: "window_over", budgetUsageRate: missingRatio });
   });
   it("preserves unique version metadata but flags a daily aggregate breach inside a good window", () => {
     const out = computeWindowAssessment([day("2026-09-01", 30), day("2026-09-02", 0)]);
@@ -39,6 +39,19 @@ describe("v1.7.2 daily effective price aggregation", () => {
   it("real zero and positive cash with zero conversions obey the frozen weighted inequality", () => {
     expect(computeWindowAssessment([day("2026-09-01", 0, 0)]).assessment.onTarget).toBe(true);
     expect(computeWindowAssessment([day("2026-09-01", 1, 0)]).assessment.onTarget).toBe(false);
+  });
+  it("distinguishes missing conversions from missing cash under v1.7.4", () => {
+    const conversionMissing = computeWindowAssessment([{ ...day(), realConversion: mv(null) }]);
+    expect(conversionMissing.assessment).toMatchObject({ costStatusReason: "conversion_missing", onTarget: null, costStatus: null });
+    expect(conversionMissing.costSpace).toEqual(mv(null));
+    expect(computeWindowAssessment([{ ...day(), cashCost: mv(null) }]).assessment.costStatusReason).toBe("cash_missing");
+    expect(computeWindowAssessment([{ ...day(), cashCost: mv(null), realConversion: mv(null) }]).assessment.costStatusReason).toBe("cash_missing");
+    expect(computeWindowAssessment([{ ...day(), price: null, realConversion: mv(null) }]).assessment.costStatusReason).toBe("assessment_missing");
+  });
+  it("conversion_missing is valid only with unknown target/status", () => {
+    const valid = { ...computeWindowAssessment([day()]).assessment, costStatusReason: "conversion_missing", onTarget: null, costStatus: null };
+    expect(windowAssessmentSchema.safeParse(valid).success).toBe(true);
+    expect(windowAssessmentSchema.safeParse({ ...valid, onTarget: true, costStatus: "green" }).success).toBe(false);
   });
   it("bad fields, overflow, and impossible mixed-price metadata are rejected", () => {
     expect(() => computeWindowAssessment([{ ...day(), cashCost: { value: "10", availability: "available" } }])).toThrow();
