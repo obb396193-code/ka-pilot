@@ -1,4 +1,5 @@
 import {
+import { r014JobHandlers } from "./r014/handlers.js";
   BackfillRepository,
   AdHourlyMetricsRepository,
   CredentialRepository,
@@ -66,6 +67,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
   return new JobConsumer(
     jobs,
     {
+      ...r014JobHandlers, // arch 开的缝：be2 在 src/r014/handlers.ts 注册，永不改本文件
       [SESSION_CLEANUP_JOB_TYPE]: createSessionCleanupHandler(new SessionCleanupRepository(options.pool)),
       etl_full: identity(createFullEtlHandler({ qihang: options.qihang, store: etlStore, jobs })),
       etl_incr: identity(
