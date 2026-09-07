@@ -18,7 +18,7 @@ export function TaskStrategyTab({ taskId }: { taskId: string }) {
   if (!binding) {
     return (
       <Card>
-        <CardHeader><CardTitle>投放策略</CardTitle><CardDescription>本任务未绑定方案（fixture 只有 fixture-task-ready 的绑定）</CardDescription></CardHeader>
+        <CardHeader><CardTitle>投放策略</CardTitle><CardDescription>本任务未绑定方案（示例只给了「AAC 拉新」的绑定）</CardDescription></CardHeader>
         <CardContent><Button asChild size="sm" variant="outline"><Link href="/data?tab=strategy&view=library"><IconLink />去方案库绑定</Link></Button></CardContent>
       </Card>
     )

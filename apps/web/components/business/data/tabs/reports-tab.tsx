@@ -122,7 +122,7 @@ export function ReportsTab({ views, onSaveView }: { views: SavedView[]; onSaveVi
                 <span className="font-medium">{name || "未命名报表"}</span>
                 <Badge variant="outline">{windowLabel(preset)}</Badge>
                 <Badge variant="outline">{groupBy.map((key) => groupOptions.find((option) => option.key === key)?.label).join(" × ") || "无分组"}</Badge>
-                <span className="text-xs text-muted-foreground">预览 = fixture reports/render.json（按模板分组），配置改动接 render 接口后实时生效</span>
+                <span className="text-xs text-muted-foreground">预览为示例数据（按模板分组）；配置改动接入渲染接口后实时生效</span>
               </div>
               <div className="overflow-x-auto rounded-xl border">
                 <Table>

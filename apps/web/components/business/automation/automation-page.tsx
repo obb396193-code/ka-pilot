@@ -123,7 +123,7 @@ function RulesTab() {
               </Table>
               <p className="rounded-lg bg-muted px-3 py-2 text-sm">{explainData.fallbackCopy}</p>
             </div>
-          ) : <p className="text-sm text-muted-foreground">该规则没有 explain 样例（fixture 只给了规则 3 · account-5）；接口接入后按账户 × 日期查看。</p>}
+          ) : <p className="text-sm text-muted-foreground">该规则没有判定样例（示例只给了规则 3 · account-5）；接口接入后按账户 × 日期查看。</p>}
         </DialogContent>
       </Dialog>
     </>
@@ -186,7 +186,7 @@ function RunsTab() {
       <Dialog open={events !== null} onOpenChange={(open) => { if (!open) setEvents(null) }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader><DialogTitle>运行事件 · …{events?.runId.slice(-4)}</DialogTitle><DialogDescription>只显示事件骨架，不含 prompt / 原始日志</DialogDescription></DialogHeader>
-          {eventData ? <ol className="flex flex-col gap-2">{eventData.events.map((event) => <li key={event.seq} className="flex items-start gap-3 text-sm"><span className="w-5 text-right text-xs text-muted-foreground tabular-nums">{event.seq}</span><TypeChip>{event.kind}</TypeChip><span className="flex-1 text-xs">{event.tool ?? event.schema ?? event.status ?? ""}{event.argsExcerpt ? ` · ${JSON.stringify(event.argsExcerpt)}` : ""}{event.ok === true ? " · ok" : ""}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(event.at)}</span></li>)}</ol> : <p className="text-sm text-muted-foreground">该 Run 没有事件样例（fixture 只给了 …1801）。</p>}
+          {eventData ? <ol className="flex flex-col gap-2">{eventData.events.map((event) => <li key={event.seq} className="flex items-start gap-3 text-sm"><span className="w-5 text-right text-xs text-muted-foreground tabular-nums">{event.seq}</span><TypeChip>{event.kind}</TypeChip><span className="flex-1 text-xs">{event.tool ?? event.schema ?? event.status ?? ""}{event.argsExcerpt ? ` · ${JSON.stringify(event.argsExcerpt)}` : ""}{event.ok === true ? " · ok" : ""}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(event.at)}</span></li>)}</ol> : <p className="text-sm text-muted-foreground">该 Run 没有事件样例（示例只给了 …1801）。</p>}
         </DialogContent>
       </Dialog>
     </div>

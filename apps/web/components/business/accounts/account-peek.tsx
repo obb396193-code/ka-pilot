@@ -47,7 +47,7 @@ export function AccountInlinePeek({ item }: { item: AccountItem }) {
       <div className="grid gap-4 @5xl/main:grid-cols-12">
         <div className="rounded-xl border bg-card p-4 @5xl/main:col-span-7">
           <div className="flex items-center justify-between"><div className="text-sm font-medium">最近操作</div><span className="text-xs text-muted-foreground">{item.lastAction ? `${fmtTime(item.lastAction.at)} · ${item.lastAction.summary}` : "−"}</span></div>
-          {timeline.length ? <div className="mt-3"><TimelineList items={timeline} compact /></div> : <p className="mt-2 text-xs text-muted-foreground">{item.accountId === "account-1" ? "暂无操作史" : "操作史样例只有 account-1（TODO-fixture:accounts/timeline-<id>.json）；完整账户页可看"}</p>}
+          {timeline.length ? <div className="mt-3"><TimelineList items={timeline} compact /></div> : <p className="mt-2 text-xs text-muted-foreground">{item.accountId === "account-1" ? "暂无操作史" : "操作史样例只有 account-1（示例只给了部分账户）；完整账户页可看"}</p>}
         </div>
         <div className="rounded-xl border bg-card p-4 @5xl/main:col-span-5">
           <div className="text-sm font-medium">建议下一步</div>

@@ -112,7 +112,7 @@ export function StrategyLibrary() {
                 </Card>
               </>
             ) : active ? (
-              <Card><CardContent className="py-8 text-center text-sm text-muted-foreground">该方案没有详情样例（fixture 只有「双成本控量起量」）；列表字段照常。<div className="mt-3 flex flex-wrap justify-center gap-1">{Object.entries(playbookFieldLabel).slice(0, 4).map(([key, label]) => <Badge key={key} variant="outline">{label}</Badge>)}</div></CardContent></Card>
+              <Card><CardContent className="py-8 text-center text-sm text-muted-foreground">该方案没有详情样例（示例只有「双成本控量起量」）；列表字段照常。<div className="mt-3 flex flex-wrap justify-center gap-1">{Object.entries(playbookFieldLabel).slice(0, 4).map(([key, label]) => <Badge key={key} variant="outline">{label}</Badge>)}</div></CardContent></Card>
             ) : null}
           </div>
         </SheetContent>

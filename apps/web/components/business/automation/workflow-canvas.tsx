@@ -214,7 +214,7 @@ function Canvas({ definitionId }: { definitionId: string }) {
           )}
         </DialogContent>
       </Dialog>
-      {definition || isNew ? null : <p className="@5xl/main:col-span-3 text-xs text-muted-foreground">定义 {definitionId} 不在 fixture 里；画布显示 graph-v1 样例（新任务开户到基建）。</p>}
+      {definition || isNew ? null : <p className="@5xl/main:col-span-3 text-xs text-muted-foreground">定义 {definitionId} 没有样例；画布显示 graph-v1 样例（新任务开户到基建）。</p>}
     </div>
   )
 }

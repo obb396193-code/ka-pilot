@@ -92,7 +92,7 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
               <Card className="@5xl/main:col-span-8">
                 <CardHeader>
                   <CardTitle>消耗与现金 CPA · 操作打点</CardTitle>
-                  <CardDescription>竖线 = 变更集 / 后台手动 / 考核价 / 日预算卡（GET timeline/overlay）；趋势样例 = account.trend（TODO-fixture 账户级样例）</CardDescription>
+                  <CardDescription>竖线 = 变更集 / 后台手动 / 考核价 / 日预算卡；趋势为账户级样例</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {chartData.length ? <SpendRealCpaTrend data={chartData} labels={{ spend: "账面消耗", cpa: "现金 CPA" }} markers={markers} /> : <p className="text-sm text-muted-foreground">后端未返回趋势</p>}
@@ -138,13 +138,13 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
                       ))}
                     </TableBody>
                   </Table>
-                ) : <p className="px-4 py-6 text-sm text-muted-foreground">该账户没有结构样例（fixture 只有 account-1 / 2）；结构同步（4.4）联调后自动出现。</p>}
+                ) : <p className="px-4 py-6 text-sm text-muted-foreground">该账户没有结构样例（示例只有 account-1 / 2）；结构同步联调后自动出现。</p>}
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader><CardTitle>操作史</CardTitle><CardDescription>变更集 / 后台手动（带外变更）/ 考核价 / 日预算卡 / 派发 / 交接 … 倒序；T+1 回收挂在项下</CardDescription></CardHeader>
-              <CardContent>{timeline.length ? <TimelineList items={timeline} /> : <p className="text-sm text-muted-foreground">该账户没有操作史样例（fixture 只有 account-1 / 2）。</p>}</CardContent>
+              <CardContent>{timeline.length ? <TimelineList items={timeline} /> : <p className="text-sm text-muted-foreground">该账户没有操作史样例（示例只有 account-1 / 2）。</p>}</CardContent>
             </Card>
           </div>
         </StateFrame>

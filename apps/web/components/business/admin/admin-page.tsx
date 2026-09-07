@@ -80,7 +80,7 @@ function MembersTab() {
               <TableHeader className="bg-muted"><TableRow><TableHead>账户</TableHead><TableHead>级别</TableHead><TableHead>授权于</TableHead><TableHead /></TableRow></TableHeader>
               <TableBody>{grants.map((grant) => <TableRow key={`${grant.media}-${grant.accountId}`}><TableCell>{mediaLabel(grant.media)} · {grant.accountId}</TableCell><TableCell><StatusChip tone={grant.accessLevel === "execute" ? "warning" : "muted"}>{grant.accessLevel === "execute" ? "可执行" : "只读"}</StatusChip></TableCell><TableCell className="tabular-nums">{grant.grantedAt}</TableCell><TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => toast("已撤销", { description: "接口接入后生效（当前为示例）" })}>撤销</Button></TableCell></TableRow>)}</TableBody>
             </Table>
-          ) : <p className="text-sm text-muted-foreground">该成员没有授权样例（fixture 只给了第一位成员的 grants）；共 {grantsFor?.grantsCount ?? 0} 条。</p>}
+          ) : <p className="text-sm text-muted-foreground">该成员没有授权样例（示例只给了第一位成员）；共 {grantsFor?.grantsCount ?? 0} 条。</p>}
           <DialogFooter><Button size="sm" variant="outline" onClick={() => toast("新增授权", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新增授权</Button></DialogFooter>
         </DialogContent>
       </Dialog>

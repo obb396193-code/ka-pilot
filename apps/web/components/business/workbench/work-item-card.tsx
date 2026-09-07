@@ -88,7 +88,7 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
               </div>
               {detail.decision ? <div className="rounded-lg bg-muted/50 p-3 text-xs"><span className="font-medium">分级决策 {detail.decision.tier}</span> · 置信 {rv(detail.decision.gates.confidence)} · 历史成功率 {rv(detail.decision.gates.historicalSuccessRate)} · 近 24h 人工操作 {detail.decision.gates.recentManualOps} · {detail.decision.gates.reversible ? "可回滚" : "不可回滚"} · {detail.decision.gates.withinCap ? "在日上限内" : "超日上限"} · {detail.decision.reason}</div> : null}
             </div>
-          ) : <p className="text-sm text-muted-foreground">证据快照样例只有一条（TODO-fixture:work-items/detail-{item.workItemId.slice(-4)}.json）。</p>}
+          ) : <p className="text-sm text-muted-foreground">证据快照样例只有一条；其余工作项接口接入后返回。</p>}
         </DialogContent>
       </Dialog>
 
