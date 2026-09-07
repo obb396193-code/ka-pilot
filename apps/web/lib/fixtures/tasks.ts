@@ -13,9 +13,10 @@ import funnel from "@contract/fixtures/tasks/funnel.json"
 import taskAccounts from "@contract/fixtures/tasks/accounts.json"
 import taskTimeline from "@contract/fixtures/tasks/timeline.json"
 import changeLog from "@contract/fixtures/settings/change-log.json"
+import bindingsReady from "@contract/fixtures/rules/bindings-fixture-task-ready.json"
 
 // 投放任务（F-007 §4，契约 TASK-LIST-001 + v1.4 + v1.5.1 ②）的 fixture 读取层。不算数。
-export type TaskStage = "preparing" | "opening" | "recharging" | "building" | "cold_start" | "delivering" | "ended"
+export type TaskStage = "preparing" | "opening" | "recharging" | "building" | "cold_start" | "delivering" | "ended" | "reviewing" | "closed"
 export const taskStages: { value: TaskStage; label: string; dot: string }[] = [
   { value: "preparing", label: "准备", dot: "bg-border" },
   { value: "opening", label: "开户", dot: "bg-muted-foreground/60" },
@@ -24,6 +25,8 @@ export const taskStages: { value: TaskStage; label: string; dot: string }[] = [
   { value: "cold_start", label: "冷启动", dot: "bg-status-info" },
   { value: "delivering", label: "投放", dot: "bg-status-success" },
   { value: "ended", label: "结束", dot: "border border-muted-foreground bg-transparent" },
+  { value: "reviewing", label: "复盘中", dot: "bg-status-critical" },
+  { value: "closed", label: "已关闭", dot: "border border-muted-foreground bg-transparent" },
 ]
 export const taskStageMap = Object.fromEntries(taskStages.map((item) => [item.value, item])) as Record<TaskStage, (typeof taskStages)[number]>
 
@@ -73,7 +76,7 @@ export const taskMetricsFixture = metrics as unknown as Fixture<{ summary: { row
 export const taskFunnelFixture = funnel as unknown as Fixture<{ window: { from: string; to: string }; online: { exposure: MetricValue; click: MetricValue; conversion: MetricValue; realConversion: MetricValue }; offline: { wakeUv: MetricValue; potentialUv: MetricValue; realConversion: MetricValue }; rates: { ctr: RatioValue; cvr: RatioValue; gap: RatioValue; potentialRate: RatioValue; biConversionRate: RatioValue } }>
 export type TaskAccountRow = { media: string; accountId: string; accountName: string; poolStatus: PoolStatus; lifecycleStage: LifecycleStage; validFrom: string; validTo: string | null; onTarget: boolean | null; costStatus: CostStatus; capacity: { dailyBudgetCap: number | null; usage: RatioValue } }
 export const taskAccountsFixture = taskAccounts as unknown as Fixture<{ items: TaskAccountRow[] }>
-export type TaskTimelineItem = { at: string; kind: string; actor: { user_id?: string; userId?: string; name: string } | "system" | "external"; summary: string; ref: { type: string; id: string } | null }
+export type TaskTimelineItem = { at: string; kind: string; actor: { user_id?: string; userId?: string; name: string } | "system" | "external" | null; summary: string; ref: { type: string; id: string } | null }
 export const taskTimelineFixture = taskTimeline as unknown as Fixture<{ items: TaskTimelineItem[]; next_cursor: string | null }>
 export type ChangeLogValue = number | { op: string; coefficient: number } | null
 export type ChangeLogItem = { at: string; kind: "assessment_price" | "daily_budget_cap" | "channel_coefficient"; scope: { taskId?: string; media?: string }; oldValue: ChangeLogValue; newValue: ChangeLogValue; effectiveDate: string; changedBy: { userId: string; name: string }; evidenceUrl: string | null; recomputedDays?: number }
@@ -81,3 +84,7 @@ export type ChangeLogItem = { at: string; kind: "assessment_price" | "daily_budg
 export const fmtChangeValue = (value: ChangeLogValue): string => value === null ? "−" : typeof value === "number" ? value.toLocaleString("zh-CN") : `${value.op === "multiply" ? "×" : value.op} ${value.coefficient}`
 export const changeLogFixture = changeLog as unknown as Fixture<{ items: ChangeLogItem[]; nextCursor: string | null }>
 export const changeLogKindLabel: Record<ChangeLogItem["kind"], string> = { assessment_price: "考核价", daily_budget_cap: "日预算卡", channel_coefficient: "返点系数" }
+
+// v1.7.3 GET /tasks/:id/bindings：任务绑定的规则 / 工作流 / SOP；无绑定 → 空数组 / null，不用全局规则冒充
+export type TaskBindings = { taskId: string; rules: { ruleId: number; name: string; type: "monitor" | "auto"; enabled: boolean; autonomyLevel: number; scope: "task" | "account"; boundAt: string }[]; workflows: { workflowId: string; name: string; version: number; status: string; scope: string; lastRun: { runId: string; status: string; at: string } | null }[]; sop: { sopRunId: string; template: string; progress: RatioValue } | null }
+export const bindingsFixtures: Record<string, Fixture<TaskBindings>> = { "fixture-task-ready": bindingsReady as unknown as Fixture<TaskBindings> }

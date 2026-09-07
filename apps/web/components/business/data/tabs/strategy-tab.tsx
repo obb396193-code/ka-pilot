@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { isOk, mv, rv } from "@/lib/fixtures/contract"
-import { dimensionFixtures, dimensions, pivot2Fixture, strategyPresets, type Dimension, type Pivot2Row } from "@/lib/fixtures/data-analysis"
+import { dimensionFixtures, dimensions, pivot2Fixtures, pivot2UnsupportedFixture, strategyPresets, type Dimension, type Pivot2Row } from "@/lib/fixtures/data-analysis"
 import { cn } from "@/lib/utils"
 import { CostStatusDot, LineageFooter } from "./shared"
 
@@ -30,12 +30,12 @@ export function StrategyTab() {
   const active = preset === "custom" ? custom : { a: strategyPresets.find((item) => item.value === preset)!.dimA, b: strategyPresets.find((item) => item.value === preset)!.dimB }
   const [selected, setSelected] = useState<string[]>([])
   const unsupported = ["a", "b"].map((side) => active[side as "a" | "b"]).find((dim) => "unsupported" in dimensionFixtures[dim])
-  const available = isOk(pivot2Fixture) && pivot2Fixture.data.source.dimA === active.a && pivot2Fixture.data.source.dimB === active.b
-  const rows = useMemo(() => (available && isOk(pivot2Fixture) ? pivot2Fixture.data.source.rows : []), [available])
+  const pivot2Fixture = pivot2Fixtures[`${active.a}-${active.b}`] ?? null
+  const available = pivot2Fixture !== null && isOk(pivot2Fixture) && pivot2Fixture.data.source.dimA === active.a && pivot2Fixture.data.source.dimB === active.b
+  const rows = useMemo(() => (available && pivot2Fixture && isOk(pivot2Fixture) ? pivot2Fixture.data.source.rows : []), [available, pivot2Fixture])
   const { aKeys, bKeys, cells } = useMemo(() => crosstab(rows), [rows])
   const label = (dim: Dimension) => dimensions.find((item) => item.value === dim)?.label ?? dim
-  if (!isOk(pivot2Fixture)) return null
-  const coverage = pivot2Fixture.meta?.cellCoverage
+  const coverage = pivot2Fixture && isOk(pivot2Fixture) ? pivot2Fixture.meta?.cellCoverage : undefined
 
   return (
     <div className="flex flex-col gap-4">
@@ -58,10 +58,11 @@ export function StrategyTab() {
         </div>
       ) : null}
       {unsupported ? (
-        <div className="flex min-h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-6 py-10 text-center">
-          <Badge variant="outline">DIMENSION_UNSUPPORTED</Badge>
+        <div className="relative flex min-h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-6 py-10 text-center">
+          <ExampleBadge className="absolute top-3 right-3" />
+          <Badge variant="outline">{pivot2UnsupportedFixture.error.code}</Badge>
           <div className="text-sm font-medium">{label(unsupported)} 维度的数据源待确认</div>
-          <p className="max-w-md text-xs text-muted-foreground">该维度无源前不出交叉表，不用猜的数填。</p>
+          <p className="max-w-md text-xs text-muted-foreground">{unsupported === "bid_tool" ? pivot2UnsupportedFixture.error.message : "该维度无源前不出交叉表"}；{pivot2UnsupportedFixture.error.hint}</p>
         </div>
       ) : !available ? (
         <div className="relative flex min-h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-6 py-10 text-center">
@@ -104,7 +105,7 @@ export function StrategyTab() {
           </Table>
         </div>
       )}
-      <LineageFooter lineage={pivot2Fixture.data.source.lineage} extra={coverage ? <span>格子 {coverage.cells} · 有数 {coverage.withData} · 缺数 {coverage.undeterminable}</span> : null} />
+      {pivot2Fixture && isOk(pivot2Fixture) ? <LineageFooter lineage={pivot2Fixture.data.source.lineage} extra={coverage ? <span>格子 {coverage.cells} · 有数 {coverage.withData} · 缺数 {coverage.undeterminable}</span> : null} /> : null}
     </div>
   )
 }

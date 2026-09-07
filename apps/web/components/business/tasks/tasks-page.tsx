@@ -19,7 +19,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { costStatusDot, costStatusLabel, isOk, rv } from "@/lib/fixtures/contract"
-import { taskListStates, taskStageMap, taskStages, tasksFixture, type TaskItem } from "@/lib/fixtures/tasks"
+import { taskAccountsFixture, taskListStates, taskStageMap, taskStages, tasksFixture, type TaskItem } from "@/lib/fixtures/tasks"
+import { watchlistFixture } from "@/lib/fixtures/settings"
 import { cn } from "@/lib/utils"
 import { ReadinessBar } from "./readiness"
 
@@ -80,7 +81,15 @@ export function TasksPage() {
   const [legacyState, setLegacyState] = useState<keyof typeof taskListStates | "v151">("v151")
   const all = useMemo(() => (isOk(tasksFixture) ? tasksFixture.data.items : []), [])
   const legacy = legacyState === "v151" ? null : taskListStates[legacyState]
-  const items = useMemo(() => all.filter((task) => (status === "all" || task.status === status) && (scope !== "mine" || task.owner?.displayName === "示例优化师")), [all, status, scope])
+  // 关注 = me/watchlist（v1.7.4：项可为 account 或 task；无 type 视为 account）→ 账户型按任务挂载账户命中，任务型按 taskId 命中
+  const starred = useMemo(() => {
+    const watch = isOk(watchlistFixture) ? (watchlistFixture.data.items as { type?: "account" | "task"; media?: string; accountId?: string; taskId?: string }[]) : []
+    const watchedAccounts = new Set(watch.filter((item) => (item.type ?? "account") === "account").map((item) => item.accountId))
+    const watchedTasks = new Set(watch.filter((item) => item.type === "task").map((item) => item.taskId))
+    const mounted = isOk(taskAccountsFixture) ? taskAccountsFixture.data.items : []
+    return new Set(all.filter((task) => watchedTasks.has(task.taskId) || (task.taskId === "fixture-task-ready" && mounted.some((account) => watchedAccounts.has(account.accountId)))).map((task) => task.taskId))
+  }, [all])
+  const items = useMemo(() => all.filter((task) => (status === "all" || task.status === status) && (scope !== "mine" || task.owner?.displayName === "示例优化师") && (scope !== "starred" || starred.has(task.taskId))), [all, status, scope, starred])
   const counts = useMemo(() => ({ all: all.length, active: all.filter((task) => task.status === "active").length, preparing: all.filter((task) => task.status === "preparing").length, ended: all.filter((task) => task.status === "ended").length }), [all])
   const { ordered, reorder } = useLocalOrder(items, (task) => task.taskId)
   const table = useGridTable({ data: legacy ? [] : ordered, columns, pageSize: 20, getRowId: (task) => task.taskId, initialColumnVisibility: { taskId: false, period: false, rta: false, placementPref: false } })
