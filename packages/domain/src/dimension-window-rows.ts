@@ -15,7 +15,8 @@ const groupedRowSchema = z.object(dimensionFields).strict().superRefine(refineWi
 export const groupedDimensionWindowRowSchema = groupedRowSchema;
 const agentTypeRowSchema = z.object({
   ...dimensionFields,
-  agent_type: z.enum(["agency", "self"]),
+  // v1.7.9：代理/自投只有账户级 custom_tags，OS 实测大量账户无匹配 → 无标记归 unknown（显「未标注」），不猜不填默认值。
+  agent_type: z.enum(["agency", "self", "unknown"]),
   agency_name: z.string().min(1).optional(),
 }).strict().superRefine(refineWindowMetricAssessment);
 export const accountDimensionWindowRowSchema = z.object({
