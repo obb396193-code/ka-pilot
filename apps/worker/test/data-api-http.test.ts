@@ -182,9 +182,9 @@ describe("data API HTTP composition", () => {
     const script = `
       const {handleSemanticQueryRequest} = await import(process.argv[1]);
       const results=[];
-      for (const query_type of ['summary','trend','table']) {
+      for (const query_type of ['summary','trend','table','dimension']) {
         const request=new Request('http://localhost/api/internal/query', {method:'POST',headers:{cookie:'ka_session=synthetic-session-token-at-least-32-characters'},
-          body:JSON.stringify({query_type,date:'2026-08-24',filters:{media:'KUAISHOU',account_id:'account-1'}})});
+          body:JSON.stringify({query_type,...(query_type==='dimension'?{dimension_type:'account'}:{}),date:'2026-08-24',filters:{media:'KUAISHOU',account_id:'account-1'}})});
         results.push(await handleSemanticQueryRequest(request,{environment:{KA_DATA_BACKEND_ORIGIN:process.argv[2],KA_DATA_SERVICE_TOKEN:process.argv[3]},requestId:()=> 'bff-real-http'}));
       }
       process.stdout.write(JSON.stringify(results));
@@ -192,10 +192,33 @@ describe("data API HTTP composition", () => {
     const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e", script, moduleUrl, baseUrl, internalToken],
       { timeout: 15000, maxBuffer: 1024 * 1024 });
     const results = JSON.parse(stdout) as { status: number; requestId: string; body: { ok: boolean; data?: { source: { queryId: string } } } }[];
-    expect(results.map((item) => item.status)).toEqual([200, 200, 200]);
-    expect(results.map((item) => item.body.data?.source.queryId)).toEqual(["account.summary", "account.trend", "account.table"]);
+    expect(results.map((item) => item.status)).toEqual([200, 200, 200, 200]);
+    expect(results.map((item) => item.body.data?.source.queryId)).toEqual(["account.summary", "account.trend", "account.table", "account.dimension"]);
     expect(results.every((item) => item.requestId === "bff-real-http")).toBe(true);
-    expect(platform.query).toHaveBeenCalledTimes(3);
+    expect(platform.query).toHaveBeenCalledTimes(4);
+  });
+
+  it.each(["tuple", "dimension", "cash", "duplicate", "bytes"])("account dimension rejects malicious source %s", async (change) => {
+    const source = ready("account.dimension", "canonical", [canonicalRow("account.dimension", 10, auth.workspaceId, "account-1")]);
+    if (change === "tuple") { source.rows[0]!.media = "TENCENT"; source.rows[0]!.key = "TENCENT:account-1"; }
+    if (change === "dimension") source.dimension = "task";
+    if (change === "cash") (source.rows[0]!.metrics as Record<string, unknown>).cashCost = { value: "bad", availability: "available" };
+    if (change === "duplicate") { source.rows.push(structuredClone(source.rows[0]!)); source.returnedRowCount++; }
+    const platform = { query: vi.fn<DataSourceQueryPort["query"]>(async () => source) };
+    const baseUrl = await start({ platform, ...(change === "bytes" ? { maxResponseBytes: 100 } : {}) });
+    const response = await fetch(`${baseUrl}/api/v1/query`, { method: "POST", headers: { ...authHeaders(), "x-request-id": "dimension-invalid" },
+      body: JSON.stringify({ queryId: "account.dimension", params: { date: "2026-08-24", dimensionType: "account" } }) });
+    expect(response.status).toBe(change === "tuple" ? 403 : 502);
+    expect(await response.json()).toMatchObject({ ok: false, error: { requestId: "dimension-invalid" } });
+  });
+  it("account dimension fails closed at the exact response byte limit", async () => {
+    const platform = { query: vi.fn<DataSourceQueryPort["query"]>(async () => ready("account.dimension", "canonical", [canonicalRow("account.dimension", 10, auth.workspaceId, "account-1")])) };
+    const send = (base: string) => fetch(`${base}/api/v1/query`, { method: "POST", headers: { ...authHeaders(), "x-request-id": "dimension-exact" },
+      body: JSON.stringify({ queryId: "account.dimension", params: { date: "2026-08-24", dimensionType: "account" } }) });
+    const reference = await send(await start({ platform })); expect(reference.status).toBe(200);
+    const bytes = Buffer.byteLength(await reference.text());
+    const blocked = await send(await start({ platform, maxResponseBytes: bytes }));
+    expect(blocked.status).toBe(502); expect(await blocked.json()).toMatchObject({ ok: false, error: { code: "SOURCE_TRUNCATED", requestId: "dimension-exact" } });
   });
 
   it.each(["summary", "trend", "table"] as const)("public semantic alias reuses canonical %s and strict Session source selection", async (kind) => {

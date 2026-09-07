@@ -17,6 +17,7 @@ import { createKaDataClientFromEnv } from "./data/ka-data-client.js";
 import { DisabledKaDataSource } from "./data/disabled-ka-data-source.js";
 import { PlatformDataSource } from "./data/platform-data-source.js";
 import { createPlatformWindowQuery } from "./data/platform-window-query.js";
+import { createPlatformDimensionQuery } from "./data/platform-dimension-query.js";
 import { createDataQueryRegistry } from "./data/query-registry.js";
 import { DataQueryService } from "./data/query-service.js";
 import { ReadDetailService } from "./data/read-detail-service.js";
@@ -37,7 +38,7 @@ async function main(): Promise<void> {
       ? createKaDataClientFromEnv(process.env)
       : new DisabledKaDataSource(),
     platform: new PlatformDataSource(new SemanticQueryRepository(pool), (read) =>
-      withSemanticReadSnapshot(pool, (connection) => read(new SemanticQueryRepository(connection))), createPlatformWindowQuery(pool)),
+      withSemanticReadSnapshot(pool, (connection) => read(new SemanticQueryRepository(connection))), createPlatformWindowQuery(pool), createPlatformDimensionQuery(pool)),
     sourcePolicy: {
       diagnosticEnabled: config.dataDiagnosticEnabled,
       kaDataEnabled: config.kaDataEnabled,

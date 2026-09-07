@@ -205,7 +205,7 @@ function mappedRows(
   rows: readonly RawRow[],
   trustedWorkspaceId: string,
 ): unknown[] {
-  if (queryId === "account.summary") {
+  if (queryId === "account.summary" || queryId === "account.dimension") {
     // v3 assessment must come from the window calculator, never a guessed current price.
     return [...rows];
   }
@@ -260,7 +260,7 @@ export function maskCanonicalQueryRows(
     const clean = parsed.data as RawRow;
     const container = clean.metrics as RawRow;
     const result: RawRow = { ...clean, metrics: maskedMetrics(container) };
-    if (queryId === "account.summary") {
+    if (queryId === "account.summary" || queryId === "account.dimension") {
       const assessment = clean.assessment as RawRow;
       result.assessment = { ...assessment, onTarget: null, costStatus: null,
         costStatusReason: assessment.costStatusReason === "assessment_missing" ? "assessment_missing" : "cash_missing",

@@ -5,6 +5,7 @@ import {
   canonicalQueryRowSchemaById,
   canonicalRowSchemaVersionByQueryId,
   dataQueryIdSchema,
+  dimensionTypeSchema,
   type DataQueryId,
 } from "./canonical-query-rows.ts"
 import { displayMetricValueSchema, dataViewModeSchema } from "./data-view.ts"
@@ -71,7 +72,7 @@ export const sourceLineageSchema = z.object({
 })
 export type BackendSourceLineage = z.infer<typeof sourceLineageSchema>
 
-export const stableDataQueryErrorCodeSchema = z.enum(["INVALID_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "QUERY_NOT_ALLOWED", "VIEW_UNSUPPORTED", "SOURCE_UNAVAILABLE", "SOURCE_TRUNCATED", "UPSTREAM_INVALID_RESPONSE", "UPSTREAM_TIMEOUT", "INTERNAL_ERROR"])
+export const stableDataQueryErrorCodeSchema = z.enum(["INVALID_REQUEST", "UNAUTHORIZED", "FORBIDDEN", "QUERY_NOT_ALLOWED", "VIEW_UNSUPPORTED", "DIMENSION_UNSUPPORTED", "SOURCE_UNAVAILABLE", "SOURCE_TRUNCATED", "UPSTREAM_INVALID_RESPONSE", "UPSTREAM_TIMEOUT", "INTERNAL_ERROR"])
 export const requestIdSchema = z.string().min(1).max(128).regex(/^[A-Za-z0-9][A-Za-z0-9._:-]*$/)
 export const stableDataQueryErrorSchema = z.object({ code: stableDataQueryErrorCodeSchema, message: z.string().min(1), retryable: z.boolean(), requestId: requestIdSchema }).strict()
 export type StableDataQueryError = z.infer<typeof stableDataQueryErrorSchema>
@@ -84,6 +85,7 @@ export type CanonicalDataQueryRequest = z.infer<typeof dataQueryRequestSchema>
 
 export const sourceQueryResultSchema = z.object({
   queryId: dataQueryIdSchema,
+  dimension: dimensionTypeSchema.optional(),
   rowSchemaVersion: z.string().min(1),
   status: z.enum(["ready", "unavailable"]),
   rows: z.array(z.record(z.string(), z.unknown())),
@@ -93,6 +95,16 @@ export const sourceQueryResultSchema = z.object({
   warnings: z.array(z.string()),
   error: stableDataQueryErrorSchema.optional(),
 }).strict().superRefine((source, context) => {
+  if (source.queryId === "account.dimension") {
+    if (source.dimension === undefined || !source.lineage.window || new Set(source.rows.map((row) => row.key)).size !== source.rows.length) context.addIssue({ code: "custom", message: "Invalid dimension/window/groups" })
+    for (const row of source.rows) {
+      if ((source.dimension === "account") !== (typeof row.media === "string" && typeof row.accountId === "string") ||
+        (source.dimension === "agent_type") !== (row.agent_type !== undefined) ||
+        (row.assessment as { priceSource?: unknown } | undefined)?.priceSource !== (source.lineage.workspaceKind === "team" ? "ka_daily" : "history")) {
+        context.addIssue({ code: "custom", message: "Invalid dimension identity/source" })
+      }
+    }
+  } else if (source.dimension !== undefined) context.addIssue({ code: "custom", message: "Unexpected dimension" })
   if ((source.queryId === "account.summary" || source.queryId === "account.trend") && !source.lineage.window) context.addIssue({ code: "custom", message: "Window queries require lineage.window" })
   const expectedVersion = canonicalRowSchemaVersionByQueryId[source.queryId]
   if (source.rowSchemaVersion !== expectedVersion) context.addIssue({ code: "custom", path: ["rowSchemaVersion"], message: `rowSchemaVersion must be ${expectedVersion}` })

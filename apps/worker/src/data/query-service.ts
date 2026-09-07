@@ -145,7 +145,7 @@ function unavailableLineage(
   workspaceKind: ApprovedWorkspaceAuthContext["workspaceKind"],
 ): SourceLineage {
   return {
-    ...((resolved.queryId === "account.summary" || resolved.queryId === "account.trend") ? { window: {
+    ...((resolved.queryId === "account.summary" || resolved.queryId === "account.trend" || resolved.queryId === "account.dimension") ? { window: {
       from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom",
     } } : {}),
     workspaceKind,
@@ -176,6 +176,7 @@ function unavailableSource(
 ): SourceQueryResult {
   return {
     queryId: resolved.queryId,
+    ...(resolved.queryId === "account.dimension" ? { dimension: resolved.params.dimensionType } : {}),
     rowSchemaVersion: resolved.rowSchemaVersion,
     status: "unavailable",
     rows: [],
@@ -231,7 +232,7 @@ function guardSourceOutput(
     throw new OutputContractError();
   }
   result = parsed.data;
-  if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend") {
+  if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend" || resolved.queryId === "account.dimension") {
     const window = result.lineage.window;
     if (!window || window.from !== resolved.params.dateFrom || window.to !== resolved.params.dateTo ||
       window.preset !== (resolved.params.preset ?? "custom")) throw new OutputContractError();
@@ -244,6 +245,7 @@ function guardSourceOutput(
     if (result.error?.code === "UPSTREAM_INVALID_RESPONSE") throw new OutputContractError();
     return result;
   }
+  if (resolved.queryId === "account.dimension" && result.dimension !== resolved.params.dimensionType) throw new OutputContractError();
   const allowed = new Set(
     scope.accounts.map((account) => `${account.media}\u0000${account.accountId}`),
   );
@@ -253,6 +255,9 @@ function guardSourceOutput(
       throw new OutputContractError();
     }
     const identity = rowAccountIdentity(row);
+    // Frozen dimension rows omit workspaceId. The trusted adapter validates the
+    // internal three-key identity; this boundary still enforces every approved pair.
+    if (resolved.queryId === "account.dimension" && result.dimension === "account") identity.workspaceId = scope.workspaceId;
     const carriesIdentity = identity.media !== null || identity.accountId !== null;
     if (resolved.outputShape === "account_rows" && (
       identity.workspaceId === null ||
@@ -501,7 +506,7 @@ function errorStatus(code: StableDataQueryErrorCode): number {
   if (code === "UNAUTHORIZED") return 401;
   if (code === "FORBIDDEN") return 403;
   if (code === "QUERY_NOT_ALLOWED") return 404;
-  if (code === "VIEW_UNSUPPORTED") return 422;
+  if (code === "VIEW_UNSUPPORTED" || code === "DIMENSION_UNSUPPORTED") return 422;
   if (code === "SOURCE_UNAVAILABLE" || code === "UPSTREAM_TIMEOUT") return 503;
   if (code === "SOURCE_TRUNCATED" || code === "UPSTREAM_INVALID_RESPONSE") return 502;
   if (code === "INTERNAL_ERROR") return 500;

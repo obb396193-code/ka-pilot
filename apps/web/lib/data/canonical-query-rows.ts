@@ -8,6 +8,7 @@ const calendarDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value
 }, "date must be a real calendar date")
 
 export const dataQueryIdSchema = z.enum([
+  "account.dimension",
   "account.summary",
   "account.trend",
   "account.table",
@@ -59,6 +60,13 @@ export const canonicalMetricSetSchema = z.object({
   ratios: canonicalRatioSetSchema,
 }).strict()
 
+function refineAssessmentMetrics(row: { metrics: { cashCost: { availability: string }; realConversion: { availability: string } };
+  assessment: { onTarget: boolean | null; costStatusReason: string } }, ctx: z.RefinementCtx) {
+  if (row.assessment.onTarget !== null && (row.metrics.cashCost.availability !== "available" || row.metrics.realConversion.availability !== "available")) ctx.addIssue({ code: "custom", message: "Unavailable metrics cannot determine assessment" })
+  if (row.assessment.costStatusReason === "cash_missing" && row.metrics.cashCost.availability === "available") ctx.addIssue({ code: "custom", message: "cash_missing requires missing cash" })
+  if (row.assessment.costStatusReason === "conversion_missing" && (row.metrics.cashCost.availability !== "available" || row.metrics.realConversion.availability === "available")) ctx.addIssue({ code: "custom", message: "conversion_missing requires known cash and missing conversion" })
+}
+
 export const accountSummaryRowSchema = z.object({
   rowCount: z.number().int().nonnegative(),
   accountCount: z.number().int().nonnegative(),
@@ -84,16 +92,22 @@ export const accountSummaryRowSchema = z.object({
   compare: z.object({ mode: z.enum(["dod", "wow"]), deltas: z.object({
     cost: ratioValueSchema, cashCost: ratioValueSchema, realConversion: ratioValueSchema, cashCpa: ratioValueSchema, onTargetRate: ratioValueSchema,
   }).strict() }).strict().optional(),
-}).strict().superRefine((row, ctx) => {
-  if (row.assessment.onTarget !== null && (row.metrics.cashCost.availability !== "available" || row.metrics.realConversion.availability !== "available")) ctx.addIssue({ code: "custom", message: "Unavailable metrics cannot determine assessment" })
-  if (row.assessment.costStatusReason === "cash_missing" && row.metrics.cashCost.availability === "available") ctx.addIssue({ code: "custom", message: "cash_missing requires missing cash" })
-  if (row.assessment.costStatusReason === "conversion_missing" && (row.metrics.cashCost.availability !== "available" || row.metrics.realConversion.availability === "available")) ctx.addIssue({ code: "custom", message: "conversion_missing requires known cash and missing conversion" })
-})
+}).strict().superRefine(refineAssessmentMetrics)
 
 export const accountTrendRowSchema = z.object({
   ds: calendarDateSchema,
   metrics: canonicalMetricSetSchema,
 }).strict()
+
+export const dimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range"])
+const dimensionFields = { key: z.string().min(1).nullable(), label: z.string().nullable(),
+  metrics: canonicalMetricSetSchema, assessment: accountSummaryRowSchema.shape.assessment, anomaly: z.boolean() }
+export const dimensionWindowRowSchema = z.union([
+  z.object({ ...dimensionFields, key: z.string().min(1), media: z.string().regex(/^[A-Z0-9_]{1,32}$/), accountId: z.string().regex(/^[A-Za-z0-9_-]{1,128}$/) }).strict()
+    .refine((row) => row.key === `${row.media}:${row.accountId}`),
+  z.object({ ...dimensionFields, agent_type: z.enum(["agency", "self"]), agency_name: z.string().min(1).optional() }).strict(),
+  z.object(dimensionFields).strict(),
+]).superRefine(refineAssessmentMetrics)
 
 export const relatedTaskRowSchema = z.object({
   taskId: z.string().min(1),
@@ -127,6 +141,7 @@ export const accountAnomalyRowSchema = accountDailyRowSchema.extend({
 }).strict()
 
 export const canonicalQueryRowSchemaById = {
+  "account.dimension": dimensionWindowRowSchema,
   "account.summary": accountSummaryRowSchema,
   "account.trend": accountTrendRowSchema,
   "account.table": accountDailyRowSchema,
@@ -136,6 +151,7 @@ export const canonicalQueryRowSchemaById = {
 } as const
 
 export const canonicalRowSchemaVersionByQueryId = {
+  "account.dimension": "account.dimension/v3",
   "account.summary": "account.summary/v3",
   "account.trend": "account.trend/v3",
   "account.table": "account.table/v2",
