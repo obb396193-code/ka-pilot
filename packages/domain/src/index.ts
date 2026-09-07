@@ -48,3 +48,6 @@ export * from "./coefficient-seed.js";
 export * from "./summary-window.js";
 export * from "./window-assessment.js";
 export * from "./changeset-values.js";
+
+// be: operational query row boundary; source/Registry integration remains separate.
+export * from "./operational-query-rows.js";
