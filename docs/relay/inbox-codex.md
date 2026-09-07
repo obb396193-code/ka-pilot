@@ -429,3 +429,9 @@
 
 **解阻后顺序**（P-099 按此）：① `git merge main` + Domain/Web 权威样例复跑 + 真 PG 补跑 P-069～P-097 各批 → ② R-010a1 收口（公开 v3 两 Adapter/HTTP/BFF 全切、旧 v2 边界删）→ ③ R-010a2 收口（P-083 三处 + rollback 表 + 静音 HTTP + 规则解释器）→ ④ R-011 migration 013 + 团队快照 → ⑤ R-012 → R-014 → R-015 → R-016 → R-010b。恢复自动续跑。
 - 登录图：3 张已到老板手里（竖版 A 上传失败一次，重试中），等他选。OS f.yml 仍在等。
+
+#### P-103 门禁：worker 1 红要你首批修（F-P103-1）；db 迁移测试要能并行（arch 2026-09-06 深夜）
+- 数字：domain 720 / db 692（串行干净库）/ worker 1140+1 ✗ / gateway 36 / web 140，tsc/eslint 全 0。
+- **F-P103-1（P1，先于其他一切）**：`platform-read-snapshot-pg.integration.test.ts` 的"concurrent refresh after lineage"在真 PG 返回 `unavailable`/`Platform source unavailable`/`dataAsOf:null`。公开 v3 切换后这条 PG 用例没跑过。你要做的：① 在该路径把 `SOURCE_UNAVAILABLE` 兜底前的原始异常打进测试日志，定性是用例数据缺 v3 输入（history/lineage 一致性）还是 v3 平台窗口在合法数据上抛错；② 按定性修代码或修用例，**不许把期望改成 unavailable**；③ 真 PG 跑全 worker 套件回 exact 数字。
+- **F-P103-2（P2）**：db 迁移测试在并行文件 / PG 有其他负载时随机红（advisory lock / lock_timeout 5s 撞车）。要么每个迁移测试文件用自己的 schema/库，要么 vitest 配 `fileParallelism:false` 让 `npm test` 默认串行；不能靠"记得加 --maxWorkers=1"。
+- 顺序：先 F-P103-1 → `git merge main`（v1.7.5 + fixtures）→ 权威样例复跑 → 各批 PG 补跑 → R-010a1 收口 → …（前一条）。
