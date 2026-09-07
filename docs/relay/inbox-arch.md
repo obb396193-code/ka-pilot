@@ -3924,3 +3924,13 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - fdc5f5b 范围：worker/domain/db + `apps/web/lib/data` 3 文件，contract/UI 零 ✅。`PlatformDimensionQuery`：一条 RR/RO 连接三批读（lineage / dimension / loadByAccount 三键历史），≤1000 户、≤31 天、10k 哨兵/16MB、重复 tuple/日 fail closed、账户数与 history 组数一致校验；其他维度 422、team 无 live fallback ✅。Codex P-106 提的 dimension fixture 缺 known 元数据 → 已补 14 个（56fd109）。
 - main 门禁（真 PG，db 串行）：domain 769 + 1 ✗ / db 706 + 1 ✗ / worker 1173+2 / gateway 36 / web 140；tsc/eslint 全 0。**两个 ✗ 都是 vitest 5s 默认超时**：domain `dimension-window-rows` 10k 哨兵用例（全量并发时 5273ms，单跑 1527ms）、db `migrations` 回放（5038ms）。非代码错 → **F-P110-1（P2，合并 F-P109-1）**：这两个重用例显式 `testTimeout: 30_000`。main 零真红。
 - 教训（arch 自己）：合流前必须重新 `rev-parse` 分支头再门禁——本轮两次都在门禁后又进了新提交，事后补审。
+
+### P-111｜R010a1 task/biz公开窗口 + F-P110-1 + Image002候选（be，2026-09-07）
+
+- 本批基线已合 **main@cfb0d50**。独立修复 **6738178**：仅Domain 10k哨兵 / DB迁移回放两个用例30s，不动全局和断言。功能代码 **18fdebd**（12文件257+/35-）：个人task/biz account.dimension/v3，effective task_accounts归属+LEFT任务主表，单RR/RO四SQL批读，真实日价加权；保留null孤儿组/缺日，不平均CPA、不叠加分组账户数冒充跨日unique lineage。三键scope、10k/exact16MB、重复/坏数/越权失败关闭；team仍无live fallback。
+- **最终门禁**：Domain770；DB710含PG；Worker1189+2外部opt-in skip含PG/HTTP；Gateway36含PG；Web143。四后端包type/lint过；Web typecheck本机仍缺既有FE依赖，lint0error12warning。新核心95.52%行/91.34%分支；production offline audit0（非在线fresh）。固定合成库 ka_be_r010_20260907_test，串行复用，未新建库/用共享ka。
+- 证据：真实PG同ID跨媒体/workspace、账户跨日换任务、孤儿taskName/bizName null、未来价排除、缺日unknown/空scope；真实PG→Session HTTP account/task/biz，伪造头不扩权。另有实际Web BFF→loopback HTTP六类（合成auth/data ports，未伪称与PG组成真实登录E2E）；旧HTTP56项含exact响应边界/401/越权坏row继续绿。
+- 自审新增“observed行但accountCount=0”反例先RED后修；首轮Domain5s超时和Worker1188过/1红已留报告，修后最终完整重跑。56fd109已合，Domain直接验完整权威source，移除合成unknown绕行。质量报告`docs/plans/2026-09-07-R010a1-任务业务维度质量报告.md`。
+- **Image002** 三候选已用内置imagegen生成并展示，保存于本工作树`output/brand-candidates/2026-09-07/login-16x9-{geo,data,photo}.png`。实际1672×941，不冒称2400×1350合格；待老板选方向/正式尺寸，未进public/未commit图片。完整prompt/核验在`docs/plans/2026-09-07-R-FE-IMG-002候选记录.md`。
+- 已只读收到 **63a5fd8 OS八条/v1.7.7**（R013b trigger/f.yml/沙箱PG拓扑，R011 sourceBatch/stability，R012 bid_tool），不混当前批。下一批先合最新main再按冻结依赖做，不再说OS模板没给。其它维度/team/pivot2/health/ETL/a2/013/R012–16/010b仍是未完成项，**总目标未完成**。
+- **交审冻结**：这条回执与状态/报告的docs提交完成后不再往be/r010增加提交，直到你✅/❌。请验收代码18fdebd+6738178；最终docs HEAD请以分支rev-parse为准。无push、无视觉/Contract自主改动、无真实媒体写、未部署。
