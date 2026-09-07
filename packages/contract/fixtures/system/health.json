@@ -1,6 +1,7 @@
 {
   "ok": true,
   "data": {
+    "scope": "workspace",
     "overall": "yellow",
     "sources": [
       {
@@ -31,18 +32,21 @@
     ],
     "connectors": {
       "total": 8,
-      "ok": 8
+      "ok": 8,
+      "unknown": 0
     },
     "executors": {
       "total": 12,
-      "ok": 12
+      "ok": 12,
+      "unknown": 0
     },
     "queue": {
       "pending": 23
     },
     "agent": {
       "instances": 3,
-      "ok": 3
+      "ok": 3,
+      "unknown": 0
     },
     "healthScore": 98
   },
@@ -51,6 +55,7 @@
     "dataAsOf": "2026-09-05T09:15:00.000+08:00",
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
-    "selectedSource": "platform"
+    "selectedSource": "platform",
+    "_note": "v1.7.5：scope=workspace|global 可见范围；计数缺源 → null 且 unknown 计数（不默认健康）；healthScore 任一分项未知 → null；overall 只按已知分项算并在 note 说明"
   }
 }

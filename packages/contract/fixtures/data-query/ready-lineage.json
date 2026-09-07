@@ -4,7 +4,7 @@
     "mode": "platform",
     "source": {
       "queryId": "account.summary",
-      "rowSchemaVersion": "account.summary/v2",
+      "rowSchemaVersion": "account.summary/v3",
       "status": "ready",
       "rows": [
         {
@@ -78,6 +78,20 @@
                 "state": "undefined"
               }
             }
+          },
+          "assessment": {
+            "price": {
+              "value": 12.0,
+              "effectiveDate": "2026-08-01"
+            },
+            "priceSource": "history",
+            "onTarget": true,
+            "costStatus": "green",
+            "costStatusReason": "window_ok",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
           }
         }
       ],
@@ -115,7 +129,12 @@
         },
         "truncated": false,
         "partial": false,
-        "workspaceKind": "personal"
+        "workspaceKind": "personal",
+        "window": {
+          "from": "2026-08-24",
+          "to": "2026-08-24",
+          "preset": "custom"
+        }
       },
       "warnings": []
     }
