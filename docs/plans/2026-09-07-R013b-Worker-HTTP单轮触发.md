@@ -41,6 +41,14 @@ Files: 新 `apps/worker/src/scheduling/worker-once-http.ts`、`worker-once-http-
 4. 真实 PG：HTTP 实际 child 缺 grant blocked_auth（无上游请求）、异 workspace job 保持 queued；两连接锁反例；真实进程启动 health/token/退出。
 5. 补本人的 runbook 操作节，明确外部 scheduler HTTP 超时需覆盖最大轮次、重试先遇 busy，不能把触发成功当 ETL 全部成功。
 
+## Task 4：P116 审后守卫与部署说明（2026-09-07）
+
+- 依据：arch P116 已通过；F-P116-1 要求所有角色测试库共用 `ka_[a-z0-9_]*_test`，共享库 `ka` 必须拒绝。
+- 实读发现 benchmark 守卫仍放行 `/ka` 且 CLI 缺环境变量会默认它；不能直接复用这个例外。先新增角色库正例、共享库/未配置负例，确认 RED；再收紧 benchmark 并供 Worker HTTP PG 用例复用，移除共享库默认值。
+- 仅修改 Worker benchmark/两份测试，以及本计划、自己的 runbook §2.7/状态/交接。无公开契约、前端、媒体写变化。
+- 实测只连接既有 `ka_be_r010_20260907_test`；arch/be2 名称只验证解析，不访问对方数据库。跑定向真实 PG、Worker typecheck/lint；全量前确认磁盘至少 8 GiB。
+- runbook 记录沙箱后台 HTTP 循环（完成一轮再 sleep 600），不是 autopilot 直接 HTTP，也不是固定十分钟完成承诺；本轮不启动循环、不部署。
+
 ## Task 3：门禁 / 交审
 
 - 固定 `ka_be_r010_20260907_test`，Domain→DB→Worker→Gateway 串行全量，四包 typecheck/lint；Web 非视觉 tests，既有依赖缺口如实报告。
