@@ -70,7 +70,7 @@ export function LeadView() {
       </div>
       <div className="grid gap-4 @5xl/main:grid-cols-12">
         <Card className="@5xl/main:col-span-8">
-          <CardHeader><CardTitle>差距树</CardTitle><CardDescription>workbench/lead.gapTree · 任务聚合版；灰色 = 数据不足，不估「可优化空间」</CardDescription></CardHeader>
+          <CardHeader><CardTitle>差距树</CardTitle><CardDescription>按任务聚合；灰色 = 数据不足，不估「可优化空间」</CardDescription></CardHeader>
           <CardContent className="flex flex-col gap-3">
             {isOk(leadGapTreeFixture) ? <GapTree tree={leadGapTreeFixture.data} /> : null}
             {isOk(leadGapTreeFixture) && leadGapTreeFixture.data.byTask?.length ? <div className="flex flex-wrap gap-2 text-xs">{leadGapTreeFixture.data.byTask.map((task) => <Link key={task.taskId} href={`/tasks/${encodeURIComponent(task.taskId)}`} className="rounded-full border px-2.5 py-1 hover:bg-muted">{task.taskName} · 缺口 {mv(task.gap)}</Link>)}</div> : null}

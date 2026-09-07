@@ -55,7 +55,7 @@ export function MaterialAnalysisPanel({ material }: { material: MaterialItem }) 
             <CardContent className="grid grid-cols-3 gap-2 @3xl/main:grid-cols-6">{analysis.shots.map((shot, index) => <div key={shot.id} className={cn("flex aspect-video flex-col items-center justify-center rounded-lg border text-[10px] text-muted-foreground", shot.frame.status === "ready" ? "bg-muted" : "border-dashed")}>{shot.frame.status === "ready" ? <IconPhoto className="size-4" /> : <span>抽帧失败</span>}<span className="mt-1 tabular-nums">#{index} {fmtDuration(shot.startMs)}–{fmtDuration(shot.endMs)}</span></div>)}</CardContent>
           </Card>
           <Card>
-            <CardHeader><CardTitle>段落时间轴</CardTitle><CardDescription>result.segments · 角色分段</CardDescription></CardHeader>
+            <CardHeader><CardTitle>段落时间轴</CardTitle><CardDescription>按角色分段</CardDescription></CardHeader>
             <CardContent>
               <div className="flex h-6 w-full overflow-hidden rounded-md">{analysis.result.segments.map((segment) => <div key={`${segment.role}-${segment.startMs}`} className={cn("flex items-center justify-center text-[10px] text-background", roleTone[segment.role] ?? "bg-border")} style={{ width: `${((segment.endMs - segment.startMs) / Math.max(1, duration)) * 100}%` }} title={`${segmentRoleLabel[segment.role]} ${fmtDuration(segment.startMs)}–${fmtDuration(segment.endMs)}`}>{segmentRoleLabel[segment.role]}</div>)}</div>
               <div className="mt-1 flex justify-between text-[10px] text-muted-foreground tabular-nums"><span>0s</span><span>{fmtDuration(duration)}</span></div>

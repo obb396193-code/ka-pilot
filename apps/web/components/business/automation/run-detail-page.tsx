@@ -55,14 +55,14 @@ export function RunDetailPage({ runId }: { runId: string }) {
           <div className="flex flex-col gap-4">
             {blockReason && status === "WAITING_CONFIRMATION" ? <div className="rounded-lg border border-status-critical/30 bg-status-critical/10 px-4 py-2.5 text-sm text-status-critical">无法确认执行：{blockReason}</div> : null}
             <Card>
-              <CardHeader><CardTitle>阶段</CardTitle><CardDescription>stages · 按节点顺序</CardDescription></CardHeader>
+              <CardHeader><CardTitle>阶段</CardTitle><CardDescription>按节点顺序</CardDescription></CardHeader>
               <CardContent>
                 <ol className="flex flex-wrap items-center gap-2">{detail.stages.map((stage, index) => <li key={stage.node_id} className="flex items-center gap-2"><div className={cn("flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm", stage.status === "running" && "border-foreground bg-foreground text-background", stage.status === "pending" && "text-muted-foreground", stage.status === "failed" && "border-status-critical text-status-critical")}>{stage.status === "done" ? <IconCheck className="size-3.5" /> : stage.status === "running" ? <IconPlayerPlay className="size-3.5" /> : <span className="size-3.5 rounded-full border" />}{stage.label}<span className="font-mono text-[10px] opacity-60">{stage.node_id}</span></div>{index < detail.stages.length - 1 ? <span className="h-px w-4 bg-border" /> : null}</li>)}</ol>
               </CardContent>
             </Card>
             <div className="grid gap-4 @5xl/main:grid-cols-12">
               <Card className="@5xl/main:col-span-7">
-                <CardHeader><CardTitle>节点日志</CardTitle><CardDescription>input / output 摘录（受限，不含凭证）</CardDescription></CardHeader>
+                <CardHeader><CardTitle>节点日志</CardTitle><CardDescription>输入 / 输出摘录（受限，不含凭证）</CardDescription></CardHeader>
                 <CardContent className="p-0">
                   <Table>
                     <TableHeader className="bg-muted"><TableRow><TableHead>节点</TableHead><TableHead>状态</TableHead><TableHead>开始</TableHead><TableHead>结束</TableHead><TableHead>输入</TableHead><TableHead>输出</TableHead></TableRow></TableHeader>

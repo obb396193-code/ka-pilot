@@ -81,7 +81,7 @@ function ConnectionsTab() {
         </Card>
       </div>
       <Card>
-        <CardHeader><CardTitle>身份映射</CardTitle><CardDescription>identity-mappings · 外部账号 ↔ 产品成员；未验证成员在群里发的指令不执行写操作</CardDescription></CardHeader>
+        <CardHeader><CardTitle>身份映射</CardTitle><CardDescription>外部账号 ↔ 产品成员；未验证成员在群里发的指令不执行写操作</CardDescription></CardHeader>
         <CardContent><DataGrid table={table} empty="没有映射" showPagination={false} showColumnPicker={false} /></CardContent>
       </Card>
     </div>
@@ -169,7 +169,7 @@ function OncallTab() {
   return (
     <div className="grid gap-4 @5xl/main:grid-cols-2">
       <Card>
-        <CardHeader><CardTitle>分级策略</CardTitle><CardDescription>alerts/policies · 默认 P0 30 分钟未确认升级备班 → 负责人</CardDescription></CardHeader>
+        <CardHeader><CardTitle>分级策略</CardTitle><CardDescription>默认：P0 满 30 分钟没人确认，先升给备班，再升给负责人</CardDescription></CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>级别</TableHead><TableHead>破静默</TableHead><TableHead>确认时限</TableHead><TableHead>升级</TableHead></TableRow></TableHeader>
@@ -179,7 +179,7 @@ function OncallTab() {
         </CardContent>
       </Card>
       <Card>
-        <CardHeader><div className="flex items-center justify-between gap-2"><div><CardTitle>值班表</CardTitle><CardDescription>alerts/roster · 主班 / 备班</CardDescription></div><Button size="sm" variant="outline" onClick={() => toast("换班申请已发出", { description: "接口接入后生效（当前为示例）" })}>换班</Button></div></CardHeader>
+        <CardHeader><div className="flex items-center justify-between gap-2"><div><CardTitle>值班表</CardTitle><CardDescription>主班 / 备班</CardDescription></div><Button size="sm" variant="outline" onClick={() => toast("换班申请已发出", { description: "接口接入后生效（当前为示例）" })}>换班</Button></div></CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>日期</TableHead><TableHead>主班</TableHead><TableHead>备班</TableHead></TableRow></TableHeader>
@@ -188,7 +188,7 @@ function OncallTab() {
         </CardContent>
       </Card>
       <Card className="@5xl/main:col-span-2">
-        <CardHeader><CardTitle>升级链</CardTitle><CardDescription>alerts/escalations · 未确认按策略逐级升级；可暂停</CardDescription></CardHeader>
+        <CardHeader><CardTitle>升级链</CardTitle><CardDescription>未确认按策略逐级升级；可暂停</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-2">
           {escalations.length ? escalations.map((item) => { const isPaused = paused[item.escalationId] ?? item.paused; return <div key={item.escalationId} className="flex flex-wrap items-center gap-3 rounded-lg border px-3 py-2 text-sm"><span className="font-mono text-xs text-muted-foreground">…{item.escalationId.slice(-4)}</span><ol className="flex flex-wrap items-center gap-2">{item.chain.map((step) => <li key={step.level} className="flex items-center gap-1.5"><StatusChip tone={step.status === "acked" ? "success" : step.status === "unacked" ? "critical" : "pending"}>L{step.level} {step.status === "acked" ? "已确认" : step.status === "unacked" ? "未确认" : "待触发"}</StatusChip><span>{step.to.name}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(step.at)}</span></li>)}</ol><span className="ml-auto flex items-center gap-2 text-xs"><span className="text-muted-foreground">{isPaused ? "已暂停" : "运行中"}</span><Switch checked={!isPaused} onCheckedChange={(checked) => { setPaused((prev) => ({ ...prev, [item.escalationId]: !checked })); toast(checked ? "升级链已恢复" : "升级链已暂停", { description: `${checked ? "恢复后按规则继续升级" : "暂停期间不再向上升级"}` }) }} aria-label="升级链开关" /></span></div> }) : <p className="text-sm text-muted-foreground">没有进行中的升级</p>}
         </CardContent>
