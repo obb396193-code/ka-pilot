@@ -224,3 +224,14 @@
 ## ops（运维输入，非 API DTO）
 
 - `ops/bootstrap-seed.json` — `seed:bootstrap` 输入形状（identities/workspaces/memberships/grants；来自 Codex P-052 提案，arch 落）
+
+## 2026-09-07 第三批（fe TODO）
+
+- `me/workload.json` — v1.7.4 G9 我的负载（计数 + 负载分 not_configured）
+- `reports/daily-v1-not-sent.json` — 日报未推送（delivery.not_sent）
+- `data-query/summary-window-v3-conversion-missing.json` — conversion_missing 例
+- `rules/explain-7.json` / `rules/explain-9.json` — 未触发原因 CONDITION_FALSE / SOURCE_STALE
+- `agent/run-events-1802.json` — 失败 run 事件流
+- `admin/grants-member-2.json` — 第二位成员授权
+- `tasks/attribution-cost.json` — 归因树 cost 模式
+- `strategies/detail-3002.json` — 第二个方案（draft）

@@ -1,0 +1,148 @@
+{
+  "ok": true,
+  "data": {
+    "mode": "platform",
+    "source": {
+      "queryId": "account.summary",
+      "rowSchemaVersion": "account.summary/v3",
+      "status": "partial",
+      "rows": [
+        {
+          "rowCount": 3,
+          "accountCount": 3,
+          "anomalyRows": 1,
+          "metrics": {
+            "cost": {
+              "value": 12500.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 9765.0,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 100000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 4000,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 320,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": null,
+              "availability": "missing"
+            },
+            "costSpace": {
+              "value": null,
+              "availability": "missing"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.04,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.08,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": null,
+                "state": "undefined"
+              },
+              "cashCpa": {
+                "value": null,
+                "state": "undefined"
+              },
+              "gap": {
+                "value": null,
+                "state": "undefined"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "priceSource": "history",
+            "onTarget": null,
+            "costStatus": null,
+            "costStatusReason": "conversion_missing",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          }
+        }
+      ],
+      "returnedRowCount": 1,
+      "wholeResultTotal": {
+        "value": 1,
+        "availability": "available"
+      },
+      "lineage": {
+        "source": "canonical",
+        "workspaceKind": "personal",
+        "datasetVersion": "canonical-20260905-01",
+        "queryTemplateVersion": "account-summary-v3",
+        "metricVersion": "account-metrics-v2",
+        "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "business_day_0300",
+        "metadataAvailability": "known",
+        "authority": {
+          "policyVersion": "2026-08-24",
+          "useCase": "cross_media_operations",
+          "role": "default_authoritative"
+        },
+        "window": {
+          "from": "2026-09-05",
+          "to": "2026-09-05",
+          "preset": "today"
+        },
+        "objectIdentity": {
+          "objectType": "account",
+          "joinKeys": [
+            "workspace_id",
+            "media",
+            "account_id"
+          ]
+        },
+        "coverage": {
+          "complete": true
+        },
+        "truncated": false,
+        "partial": false
+      },
+      "warnings": [
+        "cash_yuan 为 null：现金口径缺数，达标与色标不判"
+      ]
+    }
+  },
+  "meta": {
+    "requestId": "fixture-summary-v3-conversion-missing",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "v1.7.4 P-058：现金与考核价可得、真实转化缺 → conversion_missing，onTarget/costStatus null，cashCpa/costSpace 不算"
+  }
+}

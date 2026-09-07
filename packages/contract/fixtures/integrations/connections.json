@@ -23,6 +23,30 @@
             }
           ]
         }
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000002402",
+        "provider": "qihang",
+        "status": "degraded",
+        "health": "warning",
+        "lastCheckedAt": "2026-09-05T09:10:00.000+08:00",
+        "config": {
+          "baseUrlMasked": "https://qh-****/get_data",
+          "userIdMasked": "u****"
+        },
+        "note": "最近 3 次拉数有 1 次超时"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000002403",
+        "provider": "ka_data",
+        "status": "disconnected",
+        "health": "critical",
+        "lastCheckedAt": "2026-09-05T09:10:00.000+08:00",
+        "config": {
+          "baseUrlMasked": "http://sandbox-****/api/query",
+          "readerMasked": "reader-****"
+        },
+        "note": "沙箱地址已变更，等待 OS 重发"
       }
     ]
   },
@@ -31,6 +55,7 @@
     "dataAsOf": "2026-09-05T09:15:00.000+08:00",
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
-    "selectedSource": "platform"
+    "selectedSource": "platform",
+    "_note": "三种态：connected / degraded / disconnected；配置一律脱敏"
   }
 }

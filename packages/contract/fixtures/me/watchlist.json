@@ -3,12 +3,18 @@
   "data": {
     "items": [
       {
+        "type": "account",
         "media": "KUAISHOU",
         "accountId": "account-1"
       },
       {
+        "type": "account",
         "media": "KUAISHOU",
         "accountId": "account-2"
+      },
+      {
+        "type": "task",
+        "taskId": "fixture-task-ready"
       }
     ],
     "updatedAt": "2026-09-05T08:30:00.000+08:00"
@@ -18,6 +24,7 @@
     "dataAsOf": "2026-09-05T09:15:00.000+08:00",
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
-    "selectedSource": "platform"
+    "selectedSource": "platform",
+    "_note": "v1.7.4 G2：items 带 type（缺省=account）；task 型 {type:task,taskId}"
   }
 }

@@ -109,9 +109,9 @@
       "exportPdf": true
     },
     "delivery": {
-      "status": "sent",
-      "at": "2026-09-05T08:05:00.000+08:00",
-      "target": "dingtalk:KA 快手投放群"
+      "status": "not_sent",
+      "at": null,
+      "target": null
     }
   },
   "meta": {
@@ -120,6 +120,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "v1.7.4 G8：delivery 来自 outbound_messages 最新一条；无 → {status:not_sent,at:null,target:null}"
+    "_note": "日报未推送样例（delivery.not_sent）"
   }
 }
