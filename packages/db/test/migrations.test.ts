@@ -3,6 +3,7 @@ import { Client, Pool } from "pg";
 
 import { ensureMetricPartitions } from "../src/partition-maintenance.js";
 import { runMigrations } from "../src/migrate.js";
+import { windowSize } from "./migration-window.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -288,7 +289,8 @@ describe("contract migrations", () => {
     expect(contractV12Migration).toHaveLength(1);
     const contractV13Migration = await runMigrations({ databaseUrl, count: 1 });
     expect(contractV13Migration).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl })).toHaveLength(0);
+    // 走到 012 之后，剩下的正好是 012 之后的迁移数（不写死"012 就是头部"，新批次落地不错位）
+    expect(await runMigrations({ databaseUrl })).toHaveLength(windowSize("012") - 1);
     const workspaceKind = await client.query<{
       column_default: string | null;
       is_nullable: string;
