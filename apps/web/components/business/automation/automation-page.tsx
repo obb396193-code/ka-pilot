@@ -215,7 +215,7 @@ function CapabilityForm({ item, onClose }: { item: CapabilityItem; onClose: () =
               <Input value={values[key] ?? ""} onChange={(event) => setValues((prev) => ({ ...prev, [key]: event.target.value }))} />
             )}
           </div>
-        )) : <p className="text-sm text-muted-foreground">该能力无参数（form_schema 为空对象）。</p>}
+        )) : <p className="text-sm text-muted-foreground">该能力不需要填参数。</p>}
       </div>
       <DialogFooter>
         <Button variant="outline" onClick={onClose}>取消</Button>
@@ -253,7 +253,7 @@ function CapabilitiesTab() {
       </div>
       <Dialog open={active !== null} onOpenChange={(open) => { if (!open) setActive(null) }}>
         <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>{active?.name}</DialogTitle><DialogDescription>表单按 form_schema 渲染；write 类 invoke 只出变更集草稿，不直接落媒体</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>{active?.name}</DialogTitle><DialogDescription>表单按能力自带的字段定义渲染；写类操作只出变更集草稿，不直接落媒体</DialogDescription></DialogHeader>
           {active ? <CapabilityForm item={active} onClose={() => setActive(null)} /> : null}
         </DialogContent>
       </Dialog>

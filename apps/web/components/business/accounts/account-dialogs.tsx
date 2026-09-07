@@ -162,7 +162,7 @@ function Replicate({ item, onClose }: { item: AccountItem; onClose: () => void }
   const [started, setStarted] = useState(false)
   return (
     <>
-      <DialogHeader><DialogTitle>优质户复制 · 母户 {item.accountName}</DialogTitle><DialogDescription>复制结构 / 出价 / 时段到目标户（目标须 available | assigned | pending_build），生成变更集组走 dry-run → confirm；素材不复制，人工选。</DialogDescription></DialogHeader>
+      <DialogHeader><DialogTitle>优质户复制 · 母户 {item.accountName}</DialogTitle><DialogDescription>复制结构 / 出价 / 时段到目标户（目标账户须是「可用 / 已分配 / 待建」），生成变更集组后先试运行再确认；素材不复制，人工选。</DialogDescription></DialogHeader>
       {!started ? (
         <div className="grid gap-3">
           <div className="grid gap-1.5"><Label>目标户</Label><Select value={target} onValueChange={setTarget}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="account-3">闲鱼潜客_快手_03 · 已分配</SelectItem><SelectItem value="account-4">account-4 · 可用</SelectItem></SelectContent></Select></div>

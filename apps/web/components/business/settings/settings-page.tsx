@@ -88,7 +88,7 @@ function NotificationsTab() {
   return (
     <div className="flex flex-col gap-4">
       <Card>
-        <CardHeader><CardTitle>免打扰</CardTitle><CardDescription>quiet_hours · 只压 P1 / P2，P0 破静默直达</CardDescription></CardHeader>
+        <CardHeader><CardTitle>免打扰</CardTitle><CardDescription>免打扰 · 只压 P1 / P2，P0 破静默直达</CardDescription></CardHeader>
         <CardContent className="flex flex-wrap items-end gap-3">
           <div className="grid gap-1.5"><Label>从</Label><Input type="time" value={quiet.from} onChange={(event) => setQuiet((prev) => ({ ...prev, from: event.target.value }))} className="w-32" /></div>
           <div className="grid gap-1.5"><Label>到</Label><Input type="time" value={quiet.to} onChange={(event) => setQuiet((prev) => ({ ...prev, to: event.target.value }))} className="w-32" /></div>
@@ -176,7 +176,7 @@ function ViewsTab() {
   const table = useGridTable({ data: items, columns: viewColumns, pageSize: 20, getRowId: (item) => item.id })
   return (
     <div className="flex flex-col gap-4">
-      <DataGrid table={table} empty="还没保存视图；在数据分析总表里「另存为视图」" toolbar={<p className="text-xs text-muted-foreground">saved_views · Agent Patch 建议可全部 / 局部接受</p>} showPagination={false} />
+      <DataGrid table={table} empty="还没保存视图；在数据分析总表里「另存为视图」" toolbar={<p className="text-xs text-muted-foreground">保存的视图 · Agent 的修改建议可全部或局部接受</p>} showPagination={false} />
       <Card>
         <CardHeader><CardTitle>关注账户</CardTitle><CardDescription>me/watchlist · 工作台「关注」筛选用 · 更新 {watchlist ? fmtTime(watchlist.updatedAt) : "−"}</CardDescription></CardHeader>
         <CardContent className="flex flex-wrap gap-2">{watchlist?.items.map((item) => <Link key={`${item.media}-${item.accountId}`} href={`/accounts/${encodeURIComponent(item.media)}/${encodeURIComponent(item.accountId)}`}><Badge variant="outline" className="gap-1">{mediaLabel(item.media)} · {item.accountId}</Badge></Link>)}</CardContent>

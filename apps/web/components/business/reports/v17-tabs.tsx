@@ -90,7 +90,7 @@ export function MonthlyTab() {
   const fmtDiff = (value: unknown) => (typeof value === "string" ? value : rv(value as Parameters<typeof rv>[0], "money"))
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-2 text-sm"><TypeChip>monthly_exec</TypeChip><span>{data.month} 月度推送</span><span className="text-xs text-muted-foreground">推送走 subscriptions.kind=monthly_exec → L2 卡（拍板三键）+ PNG</span><Button size="sm" className="ml-auto" onClick={() => toast.success("已推送月度卡片")}><IconBrandDingtalk />推送</Button></div>
+      <div className="flex flex-wrap items-center gap-2 text-sm"><TypeChip>月度经营</TypeChip><span>{data.month} 月度推送</span><span className="text-xs text-muted-foreground">推送为 L2 卡（拍板三键）+ 长图</span><Button size="sm" className="ml-auto" onClick={() => toast.success("已推送月度卡片")}><IconBrandDingtalk />推送</Button></div>
       <Card>
         <CardHeader><CardTitle>三元组</CardTitle><CardDescription>目标 · 状态 · 是否需要拍板</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-2">{data.triples.map((triple) => <div key={triple.goal} className="flex flex-wrap items-center gap-3 rounded-lg border px-3 py-2 text-sm"><span className="font-medium">{triple.goal}</span><span className="text-muted-foreground">{triple.status}</span>{triple.needDecision ? <StatusChip tone="warning" className="ml-auto">需拍板</StatusChip> : <StatusChip tone="success" className="ml-auto">不需</StatusChip>}</div>)}</CardContent>

@@ -72,7 +72,7 @@ function BusinessTab() {
   const exportJob = exportState === "idle" ? null : isOk(exportFixtures[exportState]) ? exportFixtures[exportState].data : null
   return (
     <div className="flex flex-col gap-6">
-      <DataGrid table={table} empty="报告库为空" toolbar={<p className="text-xs text-muted-foreground">report_runs ∪ exports · 名称 / 所有者 / 期间 / 模板版本 / 数据状态 / 投递状态</p>} actions={<Button size="sm" onClick={() => toast("新建报告", { description: "选模板或从空白开始；Agent 帮做表后续接入" })}><IconPlus />新建报告</Button>} showPagination={false} />
+      <DataGrid table={table} empty="报告库为空" toolbar={<p className="text-xs text-muted-foreground">报表运行与导出合并 · 名称 / 所有者 / 期间 / 模板版本 / 数据状态 / 投递状态</p>} actions={<Button size="sm" onClick={() => toast("新建报告", { description: "选模板或从空白开始；Agent 帮做表后续接入" })}><IconPlus />新建报告</Button>} showPagination={false} />
       {config && rendered ? (
         <Card>
           <CardHeader>

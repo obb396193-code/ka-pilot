@@ -152,7 +152,7 @@ export function ReportsTab({ views, onSaveView }: { views: SavedView[]; onSaveVi
                 <Dialog>
                   <DialogTrigger asChild><Button variant="outline"><IconBell />定时推送</Button></DialogTrigger>
                   <DialogContent className="sm:max-w-md">
-                    <DialogHeader><DialogTitle>定时推送</DialogTitle><DialogDescription>subscriptions.kind = report_schedule；到点渲染成图或表推到群 / 私聊。</DialogDescription></DialogHeader>
+                    <DialogHeader><DialogTitle>定时推送</DialogTitle><DialogDescription>到点渲染成图或表，推到群 / 私聊。</DialogDescription></DialogHeader>
                     <div className="grid gap-3">
                       <div className="grid gap-1.5"><Label>cron</Label><Input value={schedule.cron} onChange={(event) => setSchedule((prev) => ({ ...prev, cron: event.target.value }))} /></div>
                       <div className="grid gap-1.5"><Label>格式</Label><Select value={schedule.format} onValueChange={(value) => setSchedule((prev) => ({ ...prev, format: value as "png" | "xlsx" }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="png">PNG（带口径戳）</SelectItem><SelectItem value="xlsx">XLSX</SelectItem></SelectContent></Select></div>
@@ -175,7 +175,7 @@ export function ReportsTab({ views, onSaveView }: { views: SavedView[]; onSaveVi
       <Card className="@5xl/main:col-span-4">
         <CardHeader>
           <CardTitle>个人视图</CardTitle>
-          <CardDescription>saved_views（view/v1）· 总表「存列」和这里保存的都在</CardDescription>
+          <CardDescription>总表「存列」和这里保存的视图都在这儿</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-2">
           {views.length ? views.map((view) => (

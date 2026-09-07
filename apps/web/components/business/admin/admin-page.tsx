@@ -110,7 +110,7 @@ function EtlTab() {
       <div className="grid gap-4 @3xl/main:grid-cols-3">
         {connections.map((item) => <Card key={item.id}><CardHeader><CardTitle className="flex items-center justify-between text-base">{providerLabel[item.provider]}<StatusChip tone={item.health === "ok" ? "success" : "critical"}>{item.health === "ok" ? "健康" : "异常"}</StatusChip></CardTitle><CardDescription>探活 {fmtTime(item.lastCheckedAt)}</CardDescription></CardHeader></Card>)}
         <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">奇航（platform）<StatusChip tone="warning">补拉中</StatusChip></CardTitle><CardDescription>system/health · 2 户补拉</CardDescription></CardHeader></Card>
-        <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">ka_data（团队源）<StatusChip tone="success">D-1</StatusChip></CardTitle><CardDescription>system/health · 数据日 2026-09-04</CardDescription></CardHeader></Card>
+        <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">ka-data（团队源）<StatusChip tone="success">D-1</StatusChip></CardTitle><CardDescription>system/health · 数据日 2026-09-04</CardDescription></CardHeader></Card>
       </div>
       <DataGrid table={table} empty="没有 ETL 记录" toolbar={<p className="text-xs text-muted-foreground">system/etl-runs · BLOCKED_AUTH = 奇航凭证失效，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
     </div>
@@ -198,7 +198,7 @@ const assetColumns = assetHelper.columns([
 function AssetsTab() {
   const items = isOk(assetsFixture) ? assetsFixture.data.items : []
   const table = useGridTable({ data: items, columns: assetColumns, pageSize: 20, getRowId: (item) => item.id })
-  return <DataGrid table={table} empty="没有资产" toolbar={<p className="text-xs text-muted-foreground">v1.5.1 ⑤ assets · 状态机 draft → shared（本人）→ verified（lead/admin）→ official（admin）→ deprecated（须 superseded_by）；UI 起步只露 draft / shared</p>} showPagination={false} />
+  return <DataGrid table={table} empty="没有资产" toolbar={<p className="text-xs text-muted-foreground">资产流转：草稿 →（本人）共享 →（负责人 / 管理员）已验证 →（管理员）官方 → 弃用（须填替代版本）；界面起步只露草稿 / 共享</p>} showPagination={false} />
 }
 
 function DiagnosticsTab() {

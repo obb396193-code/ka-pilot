@@ -110,7 +110,6 @@ export function ThemeSwitch({ className }: { className?: string }) {
               </ColorPickerContent>
             </ColorPicker>
           </div>
-          <p className="mt-2 text-[11px] leading-4 text-muted-foreground">红绿黄是状态色，不在这里改。选择先记在本机，账号同步接入后跟人走。</p>
         </PopoverContent>
       </Popover>
       <span className="sr-only"><IconPalette /></span>

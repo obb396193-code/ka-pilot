@@ -69,7 +69,7 @@ function ProductsTab() {
   const nameOf = (id: string) => materials.find((item) => item.materialId === id)?.name ?? id
   return (
     <div className="flex flex-col gap-6">
-      <DataGrid table={table} empty="商品池为空" toolbar={<p className="text-xs text-muted-foreground">主数据 = ka-data dim_product（团队）/ 人工（个人）</p>} actions={<Button size="sm" onClick={() => toast("新建商品（人工主数据）", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新建商品</Button>} showPagination={false} />
+      <DataGrid table={table} empty="商品池为空" toolbar={<p className="text-xs text-muted-foreground">主数据来自 ka-data 产品维表（团队）或人工录入（个人）</p>} actions={<Button size="sm" onClick={() => toast("新建商品（人工主数据）", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新建商品</Button>} showPagination={false} />
       <Card>
         <CardHeader><CardTitle>商品 × 素材效果矩阵</CardTitle><CardDescription>每格 = 一个素材版本在该商品下的样本；样本不足不出结论</CardDescription></CardHeader>
         <CardContent className="p-0">
