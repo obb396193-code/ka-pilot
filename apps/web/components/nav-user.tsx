@@ -87,9 +87,9 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/settings?tab=credentials">
+                <Link href="/settings?tab=profile">
                   <IconUserCircle />
-                  个人与授权
+                  个人资料
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
