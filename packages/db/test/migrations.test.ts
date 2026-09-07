@@ -3,7 +3,7 @@ import { Client, Pool } from "pg";
 
 import { ensureMetricPartitions } from "../src/partition-maintenance.js";
 import { runMigrations } from "../src/migrate.js";
-import { windowSize } from "./migration-window.js";
+import { migrationCount, windowSize } from "./migration-window.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -395,6 +395,6 @@ describe("contract migrations", () => {
 
     await runMigrations({ databaseUrl, direction: "down", count: 5 });
     const replay = await runMigrations({ databaseUrl });
-    expect(replay).toHaveLength(12);
+    expect(replay).toHaveLength(migrationCount()); // 不写死总数，新批次落地自动跟上
   }, 30_000); // F-P110-1: full real-PG replay, not a global relaxation.
 });

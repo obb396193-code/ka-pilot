@@ -12,6 +12,11 @@ function migrationNames(): string[] {
     .sort();
 }
 
+/** 迁移总数（全量回放断言用，不写死数字）。 */
+export function migrationCount(): number {
+  return migrationNames().length;
+}
+
 /** 窗口宽度：从 `name` 这一号到当前头部（含两端）的迁移数。 */
 export function windowSize(name: string): number {
   const names = migrationNames();
