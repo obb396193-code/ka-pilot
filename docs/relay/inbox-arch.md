@@ -4056,3 +4056,11 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **013需先纠正一个实际类型冲突**：`schema.sql:228 changeset_items.id BIGSERIAL`，但`:1100 changeset_reversal_items.reverse_item_id/original_item_id UUID`、`:1104 execution_run_items.item_id UUID`，现read-detail-contract也用整数item.id。请统一这些引用到真实ID类型（或明确另一个已存在UUID身份，不能新造随机映射）。我暂未生成会断链的013，未私改Contract；同workspace FK/升级index会随正确切片补。
 - **请转be2**：暂归他的`packages/db/src/task-list-sql.ts:39,190`两处active集合仍open/processing/escalated，需并入dispatched，建议复用本次ACTIVE_WORK_ITEM_STATUSES。旧12迁移的uq_work_items_active_dedupe还缺escalated，由我013统一；旧告警findActive/升级写也仍在我后续范围，不漏账。
 - 继续长期队列，不等本条✅。本批不改013编号、不启动PG/消费者/定时任务。
+
+### P-124｜pivot2严格投影+逐账户日聚合阶段（be，2026-09-08）
+
+- 独立代码 **f287252**；main@4222d4e已同步。Domain新模块/index本人末尾+测试/计划；无Contract/DB/be2文件/视觉/真实媒体写/push。
+- 直接校验两份pivot2 fixture的rows投影；a/b重复/同key不同label/account轴丢media拒绝。输入为完整account_day分组，每批准tuple×日期恰好一次；现金/转化与价格证据一致，逐日计算考核，聚合后重算CPA，history与ka_daily分开，未知价格/预算不造数。
+- TDD模块缺失RED→最终Domain84（新38）、Worker维度8通过；新核心四项覆盖100%；两包type/lint过，缓存audit0。10000成员实际正例通过；初轮TS18046已修并复验。报告`docs/plans/2026-09-08-R010a1-双维聚合质量报告.md`。
+- **本阶段未开放account.pivot2**：真实DB reader、同快照Window Service、source envelope/Registry/Adapter/HTTP/BFF还要做；cellCoverage/lineage不由纯函数伪造。聚合只支持已证明的账户日分配，不能拿来把广告组多归属强塞进单账户cell。
+- 空间1.6GiB未全量；本批未执行PG，不拿纯测试充PG。继续同功能的真实读侧，不等本条✅。013类型冲突、共享路由缝等仍按P120–P123留账。
