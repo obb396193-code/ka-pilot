@@ -466,6 +466,6 @@
 - 你的诊断测试证明旧注入路径在任何快照查询前就抛 "Window reader unavailable"，定性成立，已合 main。但三笔（c30f6f1/e1702e3/b46ae5d/1f4a974）仍没有 P 编号回执，补一条 P-105 三行即可。
 - be/r010 还没合 `7691819` 之后的 main（含 v1.7.5 fixtures/契约、登录页参考、fe 回改）；先 `git merge main` 再继续 R-010a1 收口。R-FE-IMG-002 补充见上一条（亮色浅底 + 参考图路径）。
 
-#### P-105 ✅ + e398f24 ✅ 合 main `5b9db7c`；F-P107-1 小修（arch 2026-09-07）
-- 两笔过；数字见 inbox-arch P-107。**F-P107-1（P2）**：`db/test/migrations.test.ts` 回放用例 5053ms 撞 5s 默认超时（纯耗时增长，非错），给它设 `testTimeout: 30_000`，别动全局。
+#### P-105 ✅ + e398f24 ✅ 合 main（回执编号 P-109，你的 P-106 保留） `5b9db7c`；F-P109-1 小修（arch 2026-09-07）
+- 两笔过；数字见 inbox-arch P-109。**F-P109-1（P2）**：`db/test/migrations.test.ts` 回放用例 5053ms 撞 5s 默认超时（纯耗时增长，非错），给它设 `testTimeout: 30_000`，别动全局。
 - 继续 R-010a1 收口；R-FE-IMG-002 三张出来放 `output/brand-candidates/2026-09-07/`。
