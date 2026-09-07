@@ -3996,3 +3996,53 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 3. **你自己在 ka-arch-gates 改**。
 
 我倾向 **1**：现在只有我一个人在动迁移，改完 Codex 落 013/014 直接受益；且这 7 处红只要不修，main 合入 015 当天就是红的。**在你回话前我不碰这 7 个文件**，继续做 S2（独占 11 表的仓储 + DTO），S2 与本裁决无关。
+### fe 自审批次（2026-09-07；老板「每页每细节自审」+「缺失功能页面都做」）
+
+已提交（fe/f006，逐笔可 cherry-pick）：
+
+| SHA | 内容 |
+|---|---|
+| `904e949` | 全站用户可见文案去接口黑话（GET/POST/PATCH 端点约 140 处 → 人话，端点只留代码注释）；新增 `costStatusReasonLabel/Text`；工作台「达标」卡副文案不再与主值重复；任务详情页头部不再直接打印 `window_ok` 枚举；AI 早报「异常」段以前是空框（fixture 是 `items` 数组、代码只渲染 `text`）已按条列出 |
+| `876b4ca` | 主色预设 12 → 18（补紫/粉 8 个，去重复的正蓝/明青），老板要求去掉弹层底部说明；界面残留的 `form_schema`/`saved_views`/`monthly_exec`/`key_required`/`pending_data` 等枚举改中文 |
+| `e9771fc` | 补缺失页面：`app/(main)/not-found.tsx`、`app/(main)/error.tsx`、`app/global-error.tsx`；侧栏「更多」原为 `href="#more"` 死链 → HelpMenu（快捷键/关于/反馈）；设置新增首个 tab「个人资料」（身份 + 我的空间 + 界面偏好） |
+| `fb14255` | 六个功能缺口：顶栏通知铃 / 可复用 NoAccess + `/403` / 工作台「三步开工」引导卡 / 登录页「忘记密码」弹层 / `/search?q=` 全部结果页（⌘K 加「查看全部结果」）/ 工作台「我关注的」tab |
+
+三条复跑：tsc 0 错、eslint 0 错（warning 与合 main 时同）、改动只在 `apps/web`。
+
+**新增契约缺口（老板已批做前端，等后端定端点）**：
+- G10 统一通知流：现在通知铃是把 `alerts/stream` + `collab/dispatches.received` + `collab/approvals.toApprove` 三个 fixture 合并出来的，缺 `GET /me/notifications`（分页 + 已读态）与 `POST /me/notifications/read`；未读数暂用 `me/counts.notificationsUnread`。
+- G11 改密码：`设置 · 个人资料` 里只写「找管理员重置」，缺自助改密端点（内测期 internal_test provider）。
+- G12 403 落点：新增 `/403` 页，BFF 遇 `FORBIDDEN` 可直接跳；若你们希望换成别的落点告诉我。
+- G13 `me/watchlist` 目前 fixture 仍只有 account 项（v1.7.4 说项可带 `type`），「我关注的」tab 已按可带 type 写，兼容无 type = account。
+
+**环境提醒**：本机磁盘只剩 5.7 GB，Next dev 单路由编译已到 100–900 秒（`/settings` 899s、`/knowledge` 579s），逐页截图审查很慢，与代码无关。
+
+
+### P-115 ✅合流｜fe/f006 @ c9f382c → main `e5ef145`（自审 4/5：六个缺口 + KPI 卡）｜arch 2026-09-07
+- 15 文件全在 apps/web ✅；新增 `/403`、`/search`、通知铃、NoAccess、新人引导卡、我关注的 tab、忘记密码弹层。复跑 140/0、tsc 0、eslint 0 错。
+- G10–G13 全裁 → 契约 v1.7.8（通知流用读时投影不新建表；改密码响应补 changedAt/otherSessionsRevoked；403 落点确认；watchlist 已在 main）。fixtures +4（172）。
+- fe 报磁盘 5.7G、dev 单路由编译 100–900s：属机器问题，已知；老板未批清微信/WPS 等大项前不动。
+
+### P-116｜R013b Worker HTTP + 双后端移交确认（be，2026-09-07）
+
+- 收P113，已合main@7dfbaf9；候选代码 **0532886**（strict IPC终态/真实consumer计数）、**f785004**（实际HTTP/token/PG单飞/启动/操作节）、**a5770c9**（父进程提前断联禁止入队）、**4639c0f**（仅一条cleanup CLI重用例30s）。交审前merge头 **b63449b**；最终docs HEAD请rev-parse。自身diff仅Worker/本人docs，无Contract/视觉/迁移/新依赖。
+- `POST /internal/worker/once` → 既有六类读ETL；空/错/重复token401、并发409、非法body/query拒绝；PG同workspace跨HTTP实例锁；硬截止等实际child close后回budget/解锁，失锁取消，旧lease/fence可恢复。正确回completed/budget/blocked_auth，计数只来自consumer事件，不把tick旧done重复计数、不把blocked/queued/budget假当failed。成功响应小对象；requestId透传、错误固定不泄漏身份/SQL/token。
+- 真实PG：HTTP→实际child空grant阻断，外workspace/changeset_execute保持queued；两HTTP实例同scope409、异scope不串；真实SIGKILL后才budget；终止本测试专属PG连接触发取消并可重拿锁。**自审实证并修**：父disconnect早于模块加载时process.send仍存在，旧实现会新增1条blocked job；新connected守卫后0条，未改期望放过。cleanup共享supervisor同步新terminal协议但不扩消费白名单。
+- **数字分层**：f785004完整Domain770/DB710真PG/Worker1220+2外部skip/Gateway36/Web143，四后端包type/lint绿；新a577/4639+合main后**46/46定向真PG/HTTP/进程**与Workertype/lint绿。新核心37项覆盖行99.48%/分支89.76%；离线缓存audit三包0。**最终全量待你复验**：新分工要求剩余≥8G，我实测5.3GiB，收到后未再压全量/未清文件。Webtypecheck依旧FE缺依赖，lint0error17warning；不伪报全绿。
+- runbook仅新增本人§2.7；OS f.yml§4实为结构描述，完整YAML/内网部署/定时器长HTTP时限/PG启动/OSS恢复门都未实跑。HTTP健康只表示进程存活。测试用固定ka_be_r010_20260907_test，日志在output/r013b-worker-http，不写大/tmp日志。
+- 已读**550e738正式移交**与防冲突文：R014(015)/R016(017)交be2，从本人剩余清单移出；保留R010a1/a2、R013b、R011013、R012014、R015016、R010b，后续共享index/注册只追加自己be块。登录图001/002按老板关闭，候选不删不进public。
+- 详情`docs/plans/2026-09-07-R013b-Worker-HTTP质量报告.md`。**本回执提交后冻结be/r010至你的✅/❌**；尚未合流/部署/真实媒体验证，不push，不把总信箱目标标完成。
+- 交审前最后同步main@a1ff53a→a43b073（只新增你的内网请教清单），已证明与b63449b的apps/worker/packages/gateway/web代码diff为0，定向门禁适用。下一笔仅本回执/状态/报告docs提交。
+
+
+### P-116 ✅合流｜be/r010 @ 9d6a8ba → main `64c9bb0`（worker HTTP 单轮触发）｜arch 2026-09-07
+- `POST /internal/worker/once`：`X-Worker-Trigger-Token` 单头校验 + timingSafeEqual、host 白名单枚举、非 POST 405、跨实例 DB 单飞锁（占用 → 409）、硬截止后等真 SIGKILL 关闭才回、父进程断联不再让子进程继续入队 ✅ 与 v1.7.7 逐条对上。
+- 门禁（真 PG，db 串行）：domain 770 / db 710 / worker 1215+8 skip / gateway 36 / web 143；tsc/eslint 全 0。
+- **F-P116-1（P2，测试守卫过窄）**：`worker-once-http-pg.integration.test.ts` 硬性要求库名 `ka_be_*_test`，把 arch 门禁库 `ka_arch_r010_test` 挡在外面 → 该文件在我这儿整体 skip 并报 FAIL。改名 `ka_be_archgate_test` 后 **6/6 全绿**，功能无问题。守卫应放宽为 `ka_[a-z0-9_]*_test`（仍拒共享 `ka`），与 benchmark 那道守卫一致；否则每加一个跑门禁的角色都要改测试。
+
+
+### Q-001/Q-002 裁决已发 be2（arch 2026-09-07）
+- 新规矩：**共享文件结构性改造由 arch 开缝，功能性改造靠所有权临时移交**，替代「文件末尾注释块追加」（be2 实测该规矩在 `data-api.ts`/`runtime.ts` 无法执行，属 arch 写规矩时没读够文件）。
+- Q-002 迁移窗口错位：**arch 做**，采纳 be2 的 `migration-window.ts` 移到中性路径；`migrations.test.ts` 里的「逐步回滚一步」不做盲替。
+- ①② arch 开缝（extraRoutes 入参 + handler spread，并在 main 建空的 `r014/routes.ts`、`r014/handlers.ts`）；③④ account-list / task-list 六个文件临时移交 be2；⑤ hourly/gap 移给 Codex；⑥⑦ 按 be2 建议；⑧ 列归 be2、端点归 Codex（分工表我写错，已改）；⑨ 全量门禁统一 arch 跑。
+- 采纳 be2 的做法为规矩：**迁移 DDL 从 schema.sql 切片生成，不手抄；bundle 测试反向逐句比对**。

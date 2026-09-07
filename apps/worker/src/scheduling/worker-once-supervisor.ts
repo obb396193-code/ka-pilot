@@ -1,12 +1,6 @@
 import type { ChildProcess } from "node:child_process";
-import { z } from "zod";
 import type { JobStateEvent } from "../jobs/consumer.js";
-import { workerOnceJobTypes } from "./worker-once.js";
-
-const eventSchema = z.object({
-  jobId: z.string().uuid(), jobType: z.enum(workerOnceJobTypes),
-  status: z.enum(["leased", "running", "done", "queued", "failed", "blocked_auth"]),
-}).strict();
+import { workerOnceMessageSchema, type WorkerOnceOutcome } from "./worker-once-protocol.js";
 
 /** A deadline is complete only after the OS closes the child, not when a timer wins. */
 export async function superviseWorkerOnce(options: {
@@ -14,13 +8,16 @@ export async function superviseWorkerOnce(options: {
   startChild(): ChildProcess;
   onJobState?: (event: JobStateEvent) => void;
   signal?: AbortSignal;
-}): Promise<"completed" | "budget" | "aborted"> {
+}): Promise<WorkerOnceOutcome> {
   if (!Number.isInteger(options.maxMs) || options.maxMs <= 0 || options.maxMs > 2_147_483_647) throw new Error("Worker once failed");
-  if (options.signal?.aborted) return "aborted";
+  const jobs = { leased: 0, done: 0, failed: 0 };
+  if (options.signal?.aborted) return { status: "aborted", jobs };
   let child: ChildProcess;
   try { child = options.startChild(); } catch { throw new Error("Worker once failed"); }
   return new Promise((resolve, reject) => {
     let outcome: "budget" | "aborted" | "failed" | undefined;
+    let terminal: "completed" | "blocked_auth" | undefined;
+    let blocked = false;
     let closed = false;
     const stop = (reason: "budget" | "aborted" | "failed"): void => {
       if (closed || outcome) return;
@@ -33,9 +30,21 @@ export async function superviseWorkerOnce(options: {
     const onError = (): void => stop("failed");
     const onMessage = (message: unknown): void => {
       if (outcome) return;
-      const parsed = eventSchema.safeParse(message);
-      if (!parsed.success) { stop("failed"); return; }
-      try { options.onJobState?.(parsed.data); } catch { /* Telemetry cannot rewrite execution state. */ }
+      const parsed = workerOnceMessageSchema.safeParse(message);
+      if (!parsed.success || terminal) { stop("failed"); return; }
+      const value = parsed.data;
+      if (value.kind === "terminal") {
+        if ((value.status === "blocked_auth") !== blocked) { stop("failed"); return; }
+        terminal = value.status;
+        return;
+      }
+      if (value.status === "blocked_auth") blocked = true;
+      if (value.phase === "consumer" && (value.status === "leased" || value.status === "done" || value.status === "failed")) {
+        jobs[value.status]++;
+        if (!Number.isSafeInteger(jobs[value.status]) || jobs.done + jobs.failed > jobs.leased) { stop("failed"); return; }
+      }
+      try { options.onJobState?.({ jobId: value.jobId, jobType: value.jobType, status: value.status }); }
+      catch { /* Telemetry cannot rewrite execution state. */ }
     };
     const timer = setTimeout(() => stop("budget"), options.maxMs);
     const onClose = (code: number | null): void => {
@@ -45,8 +54,8 @@ export async function superviseWorkerOnce(options: {
       child.removeListener("error", onError);
       child.removeListener("close", onClose);
       options.signal?.removeEventListener("abort", onAbort);
-      if (outcome === "failed" || (!outcome && code !== 0)) reject(new Error("Worker once failed"));
-      else resolve(outcome ?? "completed");
+      if (outcome === "failed" || (!outcome && (code !== 0 || !terminal))) reject(new Error("Worker once failed"));
+      else resolve({ status: outcome ?? terminal!, jobs });
     };
     child.on("message", onMessage);
     child.on("error", onError);

@@ -13,6 +13,7 @@ import {
   IconSparkles,
   IconSwitchHorizontal,
   IconTargetArrow,
+  IconSearch,
   IconUsersGroup,
 } from "@tabler/icons-react"
 
@@ -95,6 +96,10 @@ export function CommandPalette() {
 
         {query.trim() ? (
           <CommandGroup heading="对象">
+            <CommandItem value={`全部结果 ${query}`} onSelect={() => go(`/search?q=${encodeURIComponent(query.trim())}`)}>
+              <IconSearch />
+              <span className="truncate">查看全部结果：{query}</span>
+            </CommandItem>
             {searchData.items.map((item) => { const Icon = typeIcon[item.type]; return (
               <CommandItem key={item.id} value={`${searchTypeLabel[item.type]} ${item.label} ${item.id}`} onSelect={() => go(item.href)}>
                 <Icon />

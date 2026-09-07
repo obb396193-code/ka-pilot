@@ -1060,3 +1060,17 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **R-012 bid_tool 码表**：Codex 从 ka-src-0007 官方文档冻 `unit.bid_type` 码表进 `metrics.md`（候选 1/2/6/10/12/20 → `cpm|cpc|ocpc|ocpm|max_conversion|…`，未知码 → `unknown` 并保留 raw 码）；`ocpx_action_type / deep_conversion_type / unit_type / campaign.bid_type / auto_manage` 六字段作证据列存 raw int（`ad_entities` 六列，migration 014）；**个人源 `DIMENSION_UNSUPPORTED` 解除条件** = 六列已入库且首次 sync 后非空率 > 0。OS 样本：120 unit 全 bid_type=10，无 12。
 - **R-013b worker 触发**：轻量 FaaS 无 timer → worker 暴露 `POST /internal/worker/once`（Header `X-Worker-Trigger-Token` = `WORKER_TRIGGER_TOKEN`，无/错 → 401；硬截止 `WORKER_ONCE_MAX_MS`；单飞：上一轮未结束 → `409 WORKER_BUSY`）；由 autopilot cron 每 10 分钟 POST。响应 `{status:"completed"|"budget"|"blocked_auth", jobs:{leased,done,failed}}`。
 - **部署拓扑（内测）= 方案 A**：整套跑沙箱（web / data-api / worker 三进程 + 沙箱 PG localhost:5432）；正式化前必须实测 FaaS→内网 RDS:5432。
+
+## v1.7.8 追加（2026-09-07 arch；回应 fe G10–G13；R-014 实现）
+
+- **G10 统一通知流**：`GET /api/v1/me/notifications?cursor&limit&unread_only` → `{items:[{id, kind:"alert"|"approval"|"dispatch"|"run"|"system", severity:"p0"|"p1"|"p2"|"info"|"warning", title, body, at, read, ref:{type,id}|null, href}], unread, nextCursor}`；`POST /api/v1/me/notifications/read {ids?:[id]}`（不传 ids = 全部已读）→ `{unread}`。**不新建表**：由 work_items（alert/dispatch）、approvals、workflow_runs、system 事件在读时投影；已读态存 `identity_preferences.preferences.notificationsReadAt` + 单条已读集合；`unread` 与 `me/counts.notificationsUnread` 同源同值。fixture `me/notifications.json`、`me/notifications-empty.json`。
+- **G11 改密码**：即 v1.7.6 `POST /api/v1/auth/password`，成功响应补 `{changedAt, otherSessionsRevoked}`。设置「个人资料」的「找管理员重置」文案在端点上线后替换为自助表单。fixture `auth/password-changed.json`、`auth/password-error.json`。
+- **G12 403 落点**：确认 `/403`；BFF 收到 `FORBIDDEN`/`NOT_A_MEMBER` 跳 `/403?from=<path>`，页面显当前空间与切换入口；`/admin` 非 admin 仍就地锁页不跳转。
+- **G13 watchlist**：v1.7.4 已定 `items[].type`；fixture 已在 main 更新（含 `{type:"task"}` 项），fe 合 main 即可。
+
+## v1.7.9 追加（2026-09-07 arch；OS 新证据推翻 v1.7.7 的 bid_tool 团队源假设）
+
+- **`bid_tool` 团队源作废**：OS 实测 `dwd_adgroup_daily.bid_tool` **整列为空**，v1.7.7 里「团队直接读 ka-data 源枚举」不成立。改为：**个人与团队都从 `unit.bid_type` 派生**；在 `ad_entities` 存下 `bid_type / ocpx_action_type / deep_conversion_type / unit_type / campaign_bid_type / auto_manage` 六个 raw int（migration 014，R-012）之前，`dimension=bid_tool` 对**两种空间**都返回 `DIMENSION_UNSUPPORTED`。码表仍按 ka-src-0007 官方文档冻，OS 样本（bid_type=10 / ocpx=190 / deep=0 / unit_type=10 / campaign.bid_type=0 / auto_manage=1）用作验证集。
+- **`agent_type`（代理/自投）数据源确认**：只有账户级 `custom_tags` 里的「代投/自投」标记，且大量账户无匹配 → 行按账户级聚合，无标记的归 `unknown` 并显「未标注」，不猜不填默认值。
+- **内测部署拓扑（方案 A）端口定案**：web `0.0.0.0:3000`、data-api `127.0.0.1:3101`、worker HTTP `127.0.0.1:3102`；不起常驻消费者进程；worker 触发与备份都由部署脚本后台循环驱动。`GET /healthz`（data-api）是烟测探针。
+- **团队空间口径**：直接用 ka-data 已对齐的 `cash_yuan` / `cash_assessment`，不再施加系数重算；个人空间才走我们自己的系数与 `assessment_price_history`。
