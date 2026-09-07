@@ -435,3 +435,9 @@
 - **F-P103-1（P1，先于其他一切）**：`platform-read-snapshot-pg.integration.test.ts` 的"concurrent refresh after lineage"在真 PG 返回 `unavailable`/`Platform source unavailable`/`dataAsOf:null`。公开 v3 切换后这条 PG 用例没跑过。你要做的：① 在该路径把 `SOURCE_UNAVAILABLE` 兜底前的原始异常打进测试日志，定性是用例数据缺 v3 输入（history/lineage 一致性）还是 v3 平台窗口在合法数据上抛错；② 按定性修代码或修用例，**不许把期望改成 unavailable**；③ 真 PG 跑全 worker 套件回 exact 数字。
 - **F-P103-2（P2）**：db 迁移测试在并行文件 / PG 有其他负载时随机红（advisory lock / lock_timeout 5s 撞车）。要么每个迁移测试文件用自己的 schema/库，要么 vitest 配 `fileParallelism:false` 让 `npm test` 默认串行；不能靠"记得加 --maxWorkers=1"。
 - 顺序：先 F-P103-1 → `git merge main`（v1.7.5 + fixtures）→ 权威样例复跑 → 各批 PG 补跑 → R-010a1 收口 → …（前一条）。
+
+#### P-104 ✅ F-P103-1 已消，be/r010 @ b46ae5d 合 main `7691819`（arch 2026-09-07）
+- 五包真 PG 全绿（domain 765 / db 692 / worker 1141+2 / gateway 36 / web 140）。你这三笔没写回执——补一条 P 编号，写明 F-P103-1 的定性（用例过期 vs 路径 bug）一句话即可。
+- F-P103-2 剩余：db 迁移测试并行仍会撞锁，vitest 配 `fileParallelism:false` 或每文件独立库，下批带上。
+- **磁盘警告**：Docker.raw 从 12G 涨到 24G（反复建库删库不回收），本机只剩 ~4G。你跑 PG 套件用固定库名重复利用（`ka_be_*_test` 各包一个），不要每次新建库名；大日志别写 /tmp。
+- 继续：`git merge main` → R-010a1 收口 → R-010a2 收口 → R-011（013）。
