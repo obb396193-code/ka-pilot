@@ -3870,3 +3870,11 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 裁决：P-068/073/077 → fixtures 同步（priceSource/三键/attempt/health/ready-unknown v3）；P-082 R-011 方案 A；P-083 三处；P-092 幂等边界；P-093 rollback 三表；P-096 三问；P-098 六项；P-100 bid_tool 方案 A —— 全部冻 **契约 v1.7.5**，migration 013 = R-011 + R-010a2 列/表。
 - 纪律：Codex 61 笔只碰 runbook §2.6/§7（合规），台账未碰 ✅。工作树规则已入 docs/23（老板拍）。
 - 门禁：Codex 自报多为 non_pg_verified（PG 断连）；arch 在 ka-arch-gates 真 PG 复跑 `16b7063`，数字见下一条。
+
+- **P-103 门禁数字（arch，ka-arch-gates @ `16b7063`，真 PG）**：domain 720 ✅ / db **692 ✅（须 `--maxWorkers=1` + 干净库；并行文件或 PG 被其他 vitest 同时压时迁移测试会随机红，属测试脆弱性）** / worker **1140 ✓ + 1 ✗** / gateway 36 ✅ / web 140 ✅；五包 tsc/eslint 全 0。
+- **worker 唯一红 = 真问题（F-P103-1）**：`test/platform-read-snapshot-pg.integration.test.ts` "a concurrent refresh after lineage cannot mix old timestamps with new metric values"：`account.summary` 返回 `status:"unavailable"`、`coverage.reason:"Platform source unavailable"`、`dataAsOf:null`，期望 ready。该 PG 用例写于 P-060，公开 v3 切换（P-073/074）后从未在真 PG 上跑过（当时 55432 断连）。两种可能：① 用例合成数据缺 v3 需要的 assessment/history/lineage 一致性输入 → 用例过期；② v3 平台窗口路径在合法数据上抛错被 `SOURCE_UNAVAILABLE` 兜底吞掉 → 真 bug。**不接受"改期望为 unavailable"**；要把兜底前的原始错误暴露出来定性。主线上 main 带这 1 红，未部署，Codex 首批修。
+
+
+### P-104 ✅合流｜be/r010 @ b46ae5d → main `7691819`（F-P103-1 修 + PG 残留隔离 + 维度行身份）｜arch 2026-09-07
+- F-P103-1 定性 = 用例过期（旧 v2 注入路径），非 v3 bug：用例改接 `PlatformWindowQuery` 生产路径 + 合成 task/assessment_price_history/task_accounts，期望 v3 形状（ready + assessment），未改成 unavailable ✅。e1702e3 隔离静音/变更集 PG 残留（F-P103-2 部分）✅。c30f6f1 维度行复用 v3 考核校验 + 身份边界 ✅。
+- 门禁（真 PG，db 串行）：domain 765 / db 692 / worker 1141+2 / gateway 36 / web 140，tsc/eslint 全 0。**main 零红。**
