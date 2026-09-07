@@ -3946,3 +3946,32 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 
 ### P-114 ✅合流｜fe/f006 @ e9771fc → main `ffa6c6c`（自审 3：404/错误边界/个人资料/侧栏死链）｜arch 2026-09-07
 - 7 文件全在 apps/web；个人资料 tab 只读 session + `me/preferences` fixture，未自造 DTO ✅；`app/(main)/error.tsx`、`not-found.tsx`、`global-error.tsx` = F8-2 完成。复跑 140/0、tsc 0、eslint 0 错。
+
+
+### Q-001｜be2 开工 + 边界裁决请求（R-014；计划已出，S1–S3 不阻塞照做）｜be2 2026-09-07
+- **开工状态**：工作树 `/Users/aik/ka-be2-r014`（持久路径），分支 `be/r014` 基于 `main@550e738`；测试库 `ka_be2_r014_test` 已建，baseline 迁移到 `012_contract_v1_3` 通过（exit 0）；`packages/domain` / `packages/db` / `apps/worker` 三包 `npm ci` 完成（apps/web 等 S5 再装）。计划页 `docs/plans/2026-09-07-R014-计划.md`（S1 迁移 015 → S2 独占表仓储 → S3 只读聚合 → S4 HTTP → S5 BFF → S6 交界字段）。
+- **DDL 已核**：`schema.sql` 752–882 + 1038–1043 已冻我全部 11 张新表与 5 表加列，015 照落不自行设计；`alert_rules` 两列标「进 012」且 012 已落，**不重复**。
+- **以下八条按「不自造」回抛，请裁。①② 阻塞 S4/S5，③–⑧ 阻塞 S6；S1–S3 与它们无关，我继续做，不等。**
+
+**① `apps/worker` 没有可追加的路由注册点（结构性，最要紧）**
+分工文档写「`apps/worker/src/data-api.ts` 路由注册区追加」，但实况是：`data-api.ts`（99 行）只是 `main()` 装配，**没有任何路由**；路由是 `apps/worker/src/data/http-server.ts`（662 行）里手写的 `if (url.pathname === ...)` 长链——那是既有文件，be2 不许改。R-014 要挂约 30 条路由，现在没有落点。
+建议（择一裁）：**(a)** 由 arch 或 be 在 `createDataApiServer` 加一个 `extraRoutes?: RouteTable` 入参并在 if 链末尾 `for` 一遍，be2 只提供 `apps/worker/src/r014/routes.ts` 导出的表；**(b)** be2 新建独立 `apps/worker/src/r014/http-server.ts` 与独立端口/进程，由 BFF 分流；**(c)** 破例允许 be2 只在 `http-server.ts` 末尾 if 链后追加一个 `// be2-r014` 块。我倾向 **(a)**（一次性、零重复鉴权、合流冲突最小），但这要动 be 的文件，须你点头。
+
+**② `runtime.ts` 的 handler 表在函数内，不在文件末尾**
+`createWorkerConsumer` 里 handler 是对象字面量（`{ etl_full: ..., canonical_merge: ... }`），没法「在文件末尾注释块追加」。R-014 需要三个 job：`daily_brief_generate`（1.8 早报）、导出渲染（7.4）、`report_schedule` 定时推（3.10）。
+建议：be2 在 `apps/worker/src/r014/handlers.ts` 导出 `r014JobHandlers`，`runtime.ts` 对象里加**一行** `...r014JobHandlers,`（单行 spread，两边冲突面最小）。请确认这算「允许的追加」。
+
+**③ `GET /accounts` 列表加 poolStatus/product/groupBy 与新 item 字段（v1.5.1 ①）** —— 表是我的列，但实现落在 be 既有的 `packages/db/src/account-list-{repository,sql}.ts` + `packages/domain/src/account-list-contract.ts`。归谁？（我做 = 改 be 文件；be 做 = 依赖我的 015 先落）
+
+**④ `GET /tasks` 列表 / `GET /tasks/:id` 加 stage/readiness/sopProgress/blockers/nextActions（v1.5.1 ②）** —— 同上，落在 `task-list-{repository,sql}.ts` + `task-list-contract.ts`。归谁？
+
+**⑤ `account.hourly`（3.5）/ `account.gap`（3.6）进 Registry** —— 缺口地图把 3.5/3.6 归 R-014，fixtures（`data-query/hourly.json`、`gap*.json`）也齐；但注册点是 `apps/worker/src/data/query-registry.ts`（be 文件，`createDataQueryRegistry()`），且 `PlatformDataSource` 是 R-010a1 的活。归谁？若归我，同 ① 需要追加口。
+
+**⑥ `POST /changesets/batch` + `POST /changesets/groups/:id/dry-run|confirm`（v1.5.1 ①）** —— `changeset_groups` 表是我的（015），但整条 dry-run/confirm/execute 链是 be 的 R-010a2。我的理解：**表我建、组端点我做、逐账户仍调 be 的现有链**，不复制不改写。请确认。
+
+**⑦ 工作项详情 `decision` 块（v1.5 10.11）** —— `decision_policies` 表与 `GET/PUT /settings/decision-policy` 明确是我的；但把 `decision:{tier,gates,...}` 塞进工作项详情响应要改 be 的 work-item detail。建议：我只交 domain 纯函数 `evaluateDecisionTier()` + 策略仓储，由 be 在详情里调用。请裁。
+
+**⑧ `GET /workflows/runs` 加 `taskId` —— 契约与派活相互矛盾**
+契约 v1.7.4 **G4 明写「→ R-010b」**（Codex）；但 be2 提示词范围表和 `2026-09-07-后端双会话分工与防冲突.md` §1 都把它列进 be2。`workflow_runs.task_id` 这一列确实是我的 015。请定一边：列我加（015），端点谁改？
+
+**⑨ 运维项（给你和老板）**：本机 `/Users/aik` 装完三包后只剩 **4.2G**，低于「跑全量门禁前 `df -h` ≥ 8G」。我这边只跑增量用例还够；**全量门禁前需要先清盘**（Docker 镜像会临时膨胀）。请老板决定清哪儿，或由 arch 在 ka-arch-gates 侧统一跑。
