@@ -27,7 +27,7 @@ function NodeCard({ node, depth, mode, onEvidence }: { node: GapNode; depth: num
         <span className={cn("text-sm font-medium", grey && "font-normal")}>{node.label}</span>
         {grey ? <StatusChip tone="muted">数据不足</StatusChip> : <span className="text-sm font-semibold tabular-nums">{mode === "cost" ? mv(node.gap, "money0") : mv(node.gap)}</span>}
         {!grey && node.share ? <TypeChip className="tabular-nums">占 {rv(node.share)}</TypeChip> : null}
-        {!grey && node.share?.state === "finite" && node.share.value !== null ? <span className="h-1.5 w-24 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-foreground" style={{ width: `${Math.min(100, node.share.value * 100)}%` }} /></span> : null}
+        {!grey && node.share?.state === "finite" && node.share.value !== null ? <span className="h-1.5 w-24 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full" style={{ width: `${Math.min(100, node.share.value * 100)}%`, background: "var(--kp-chart-spend)" }} /></span> : null}
         {node.evidence?.accounts?.length ? <Button size="sm" variant="ghost" className="ml-auto h-7 text-xs" onClick={() => onEvidence(node)}>证据 · {node.evidence.accounts.length} 户</Button> : null}
       </div>
       {open && children.length ? <div className="flex flex-col gap-2">{children.map((child) => <NodeCard key={child.key} node={child} depth={depth + 1} mode={mode} onEvidence={onEvidence} />)}</div> : null}
@@ -47,7 +47,7 @@ export function GapTree({ tree, title = "目标差距" }: { tree: AttributionTre
         <span className="ml-auto text-[11px] opacity-70">{tree.mode === "volume" ? "量：目标 − 预计完成" : "成本：Σ(现金 CPA − 考核价) × 超标转化"} · 广告级来源 {adLevelSourceLabel[tree.lineage.adLevelSource] ?? tree.lineage.adLevelSource}</span>
       </div>
       <div className="flex flex-col gap-2">{tree.children.map((child) => <NodeCard key={child.key} node={child} depth={0} mode={tree.mode} onEvidence={setEvidence} />)}</div>
-      <p className="text-[11px] text-muted-foreground">灰色节点 = 数据不足（undeterminable），不显示金额、不估「可优化空间」；窗口 {tree.lineage.window.from} ～ {tree.lineage.window.to}</p>
+      <p className="text-[11px] text-muted-foreground">灰色节点 = 数据不足，不显示金额、不估「可优化空间」；窗口 {tree.lineage.window.from} ～ {tree.lineage.window.to}</p>
       <Sheet open={evidence !== null} onOpenChange={(open) => { if (!open) setEvidence(null) }}>
         <SheetContent side="right" className="sm:max-w-lg">
           <SheetHeader><SheetTitle>证据 · {evidence?.label}</SheetTitle><SheetDescription>节点 evidence.accounts · 同口径来自数据分析</SheetDescription></SheetHeader>

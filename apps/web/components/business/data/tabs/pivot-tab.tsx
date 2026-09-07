@@ -40,7 +40,7 @@ function DimensionTable({ dimension }: { dimension: Dimension }) {
   if ("unsupported" in fixture) {
     return (
       <div className="flex min-h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-6 py-10 text-center">
-        <Badge variant="outline">DIMENSION_UNSUPPORTED</Badge>
+        <Badge variant="outline">该维度暂不支持</Badge>
         <div className="text-sm font-medium">{label} 维度的数据源待确认</div>
         <p className="max-w-md text-xs leading-5 text-muted-foreground">{fixture.message}；不会用猜测的数据填充。</p>
       </div>
