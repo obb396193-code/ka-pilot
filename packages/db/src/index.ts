@@ -40,3 +40,5 @@ export * from "./r014/workspace-authority.js";
 export * from "./r014/identity-preferences-repository.js";
 export * from "./r014/user-watchlist-repository.js";
 export * from "./r014/saved-view-repository.js";
+export * from "./r014/decision-policy-repository.js";
+export * from "./r014/export-repository.js";
