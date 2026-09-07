@@ -4095,3 +4095,33 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 **④ 本批的实现取向（供你审时对照）**：`evaluateDecisionTier` 没有 execute 分支，写类能力永远只到变更集草稿；置信度/成功率缺数一律当「不过」不按 0 代入；`report_runs` 用表上的 UNIQUE 做幂等且已终态拒绝改写；`dailyBriefSchema` 把「不生成假早报」变成 schema 硬约束（pending 的早报不许带 generatedAt/queueSummary/sections）；导出仓储**不编签名 URL**，过期回 `fileExpired` 让服务层 410；`external_changes` 观测不到旧值就说「被改动」不编数字。
 
 **⑤ 下一步**：`apps/worker/src/r014/routes.ts`、`handlers.ts` 两个空文件**还没在 main 上**（我刚 merge 完确认过），S4/S5 仍卡。按你 R-017 派活里「S4/S5 卡住可以先插这批」，我**另开 `be/r017` 分支开始 R-017 T1（migration 018，DDL 照 S1 的切片法从 v1.8 节生成）**，be/r014 就地冻结等你 ✅/❌。
+
+
+### Q-004 交审｜R-014 S3a–S3c + S4a（只读聚合三批 + HTTP 层开工八条）｜be2 2026-09-07
+**分支 `be/r014 @ 4dda65a`（已合 main 206f27d）。写完立刻开下一批，不等 ✅。**
+
+| 子批 | SHA | 内容 |
+|---|---|---|
+| S3a | `6f7585e` | 账户池九态管道 + 人工置态（v1.5.1 ①） |
+| S3b | `8bfd16a` | 通知流投影 + me/counts + me/workload（v1.7.8 G10 / v1.7.1 / v1.7.4 G9） |
+| S3c | `381e875` | 全局搜索（v1.7.4 G6） |
+| S4a | `4dda65a` | me/* 八条端点挂上你开的缝 |
+
+**门禁**：worker r014 9/9、db r014 82/82、domain r014 82/82；三包 `tsc` 0、`eslint` 0。
+
+**① 你的缝很好用，一次接通**。只填了 `src/r014/{http,me-routes}.ts`（新文件）+ 在 `routes.ts` 加了 `registerR014Routes()`（缝是模块顶层求值、路由要 Pool，所以注册必须显式调用；副作用式注册会让测试不连库都导不进来）+ `data-api.ts` 加一行注册和 import。**`http-server.ts` 一个字没动。** 如果你希望注册行换个落点，说一声我挪。
+
+**② 一条需要你追认的政策：「表不存在」判成 0 还是「未知」？**
+`approvals` / `dispatches`（migration 014，Codex）现在没有表。我的处理是**分两层**：
+- **仓储层只报事实**：表不存在 → `null`，有用例守着它不许变 0；
+- **HTTP 层落政策**：把「表不存在」判成 **0**。理由：表不存在意味着系统里**根本没有审批单/派发单这种对象**，计数确实是 0，不是「我们不知道」。真算不出来（源存在但查询失败）仍回 `503 SOURCE_UNAVAILABLE`，不编数字。
+这样你现在本地联调时侧栏 badge 能正常出数，014 落地后仓储自然返回真实计数，HTTP 层不用改。**请追认或改判。**
+
+**③ 本批新发现的契约缺口（都按保守实现并在代码注释标了出处）**
+1. **`accounts/pipeline` 的 `deltaVsYesterday` 没有数据源**：库里没有 pool_status 历史快照，`pool_status_changed_at` 只记最后一次变更，反推不出昨天的分布。我一律回 `missing`（它是 MetricValue，三态可表达）。补 0 会显示成「昨天到今天没变」——那是编的。要真做，得有个每日 pool_status 快照，请裁。
+2. **搜索 subtitle 谁出中文标签**：fixture 里 account 是「投放中 · AAC 拉新包」（中文标签）、work_item 是「P1 · open」（原始枚举），两种风格。后端没有标签表（fe 刚做完去黑话、标签在他们那边），我按 **后端只出机器值、fe 负责翻译** 实现。请定一边。
+3. **搜索 fixture 的 work_item href 是改名前的** `/?tab=today&item=<id>`；v1.7.6 已把工作项详情正名为 `/work-items/[id]`。我按 v1.7.6 出 `/work-items/<id>`，**fixture 需要更新**。
+4. **`GET /tasks/:id/bindings` 有两处推不出来**（S3d 还没做，先问）：`alert_rules` **没有任何时间列**，`rules[].boundAt` 无源；`alert_rules.scope` 是 JSONB 但契约没定义它的结构，「这条规则绑在哪个任务上」无法可靠判断。请给 `scope` 的结构（我猜是 `{"task_id":"..."}`）与 `boundAt` 的落点（加列？还是 DTO 允许 null？）。
+5. **Q-003 的 `account_access_grants` 缺 `revoked_at` 仍未裁**，`account_transfers`（4.10 交接）继续挂着，是 R-014 唯一因契约写不出来而没做的端点。
+
+**④ 下一批**：S3d（bindings，等 ④ 的答复前先做能做的部分）→ S4b（账户池/能力/决策策略/导出/就绪度端点）→ S5 BFF。R-017 排在 R-014 之后。
