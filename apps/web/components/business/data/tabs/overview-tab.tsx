@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import type { DisplayMetric } from "@/lib/data/contracts"
-import { costStatusLabel, isOk, mv, rv, costStatusReasonText } from "@/lib/fixtures/contract"
+import { isOk, mv, rv, costStatusReasonText, costStatusReasonShort } from "@/lib/fixtures/contract"
 import { summaryFixtures, trendFixture, windowLabel, type SummaryVariant } from "@/lib/fixtures/data-analysis"
 import { cn } from "@/lib/utils"
 import { CostStatusDot, LineageFooter, metricFormulas } from "./shared"
@@ -37,7 +37,7 @@ export function OverviewTab({ colorKey }: { colorKey?: string }) {
       { key: "cost", label: "账面消耗", value: mv(row.metrics.cost, "money0"), delta: null, tone: "neutral" },
       { key: "cashCost", label: "现金消耗", value: mv(row.metrics.cashCost, "money0"), delta: null, tone: "neutral" },
       { key: "cashCpa", label: "现金 CPA", value: rv(row.metrics.ratios.cashCpa, "money"), delta: price, tone: tone(a.costStatus) },
-      { key: "onTarget", label: "达标", value: a.onTarget === null ? "−" : a.onTarget ? "达标" : "超线", delta: a.costStatus ? costStatusLabel[a.costStatus] : null, tone: tone(a.costStatus) },
+      { key: "onTarget", label: "达标", value: a.onTarget === null ? "−" : a.onTarget ? "达标" : "超线", delta: a.costStatusReason ? costStatusReasonShort[a.costStatusReason] ?? null : null, tone: tone(a.costStatus) },
       { key: "costSpace", label: "成本空间", value: mv(row.metrics.costSpace, "money0"), delta: null, tone: "neutral" },
       { key: "realConversion", label: "BI 量级", value: mv(row.metrics.realConversion), delta: null, tone: "neutral" },
     ]

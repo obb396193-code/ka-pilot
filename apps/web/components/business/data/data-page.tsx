@@ -25,7 +25,7 @@ const tabs = [
   { value: "table", label: "数据总表" },
   { value: "pivot", label: "维度透视" },
   { value: "hourly", label: "盯盘" },
-  { value: "gap", label: "Gap 对账" },
+  { value: "gap", label: "差异对账" },
   { value: "strategy", label: "策略分析" },
   { value: "attribution", label: "归因树" },
   { value: "intel", label: "竞情" },
@@ -51,7 +51,7 @@ export function DataPage() {
         actions={
           <>
             <Select value={preset} onValueChange={(value) => setPreset(value as WindowPreset)}>
-              <SelectTrigger size="sm" className="w-32" aria-label="时间窗口"><span className="text-muted-foreground">窗口</span><SelectValue /></SelectTrigger>
+              <SelectTrigger size="sm" className="w-40" aria-label="时间窗口"><span className="text-muted-foreground">窗口</span><SelectValue /></SelectTrigger>
               <SelectContent align="end">{windowPresets.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
             </Select>
             <StateSwitch />

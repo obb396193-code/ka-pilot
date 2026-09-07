@@ -25,8 +25,8 @@ const columns = helper.columns([
   helper.accessor((row) => row.group.label, { id: "group", header: "分组", enableHiding: false, meta: { label: "分组" }, cell: ({ getValue }) => <span className="font-medium">{getValue()}</span> }),
   helper.accessor((row) => row.conversion.value, { id: "conversion", header: "回传转化", meta: { label: "回传转化", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{mv(row.original.conversion)}</span> }),
   helper.accessor((row) => row.realConversion.value, { id: "realConversion", header: "真实转化（BI）", meta: { label: "真实转化", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{mv(row.original.realConversion)}</span> }),
-  helper.accessor((row) => row.gap.value, { id: "gap", header: () => <MetricDefinitionHint label="GAP" formula={metricFormulas.gap} />, meta: { label: "GAP", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{rv(row.original.gap)}</span> }),
-  helper.accessor((row) => row.preDeductionGap.value, { id: "preDeductionGap", header: "扣量前 GAP", meta: { label: "扣量前 GAP", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{rv(row.original.preDeductionGap)}</span> }),
+  helper.accessor((row) => row.gap.value, { id: "gap", header: () => <MetricDefinitionHint label="差异" formula={metricFormulas.gap} />, meta: { label: "差异", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{rv(row.original.gap)}</span> }),
+  helper.accessor((row) => row.preDeductionGap.value, { id: "preDeductionGap", header: "扣量前差异", meta: { label: "扣量前差异", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{rv(row.original.preDeductionGap)}</span> }),
   helper.accessor((row) => row.deductionRate.value, { id: "deductionRate", header: "扣量率", meta: { label: "扣量率", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{rv(row.original.deductionRate)}</span> }),
   helper.accessor("gapStatus", { header: "状态", meta: { label: "状态" }, cell: ({ getValue }) => <StatusChip tone={gapTone[getValue()]}>{gapLabel[getValue()]}</StatusChip> }),
 ])
