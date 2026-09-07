@@ -28,6 +28,8 @@ import { workItemDetailFixture, workItemLists } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
 import { ReadinessRing } from "./readiness"
 import { ChangeLogGrid, TaskAccountsGrid } from "./task-grids"
+import { TaskStrategyTab } from "./task-strategy-tab"
+import { TaskReviewPanel } from "@/components/business/reports/review-panel"
 
 // 任务详情八页签（v1.5.1 ②）：总览｜数据｜账户｜商品与素材(501)｜SOP 与自动化｜异常与工作项｜时间线｜报告与结算(501)
 const tabs = [
@@ -39,6 +41,7 @@ const tabs = [
   { value: "issues", label: "异常与工作项" },
   { value: "timeline", label: "时间线" },
   { value: "reports", label: "报告与结算" },
+  { value: "strategy", label: "投放策略" },
 ] as const
 type Tab = (typeof tabs)[number]["value"]
 const number0 = new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 0 })
@@ -267,10 +270,12 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
           ) : null}
 
           {tab === "reports" ? (
-            <ExampleBlock unlock="报告与结算随报告页（日报 / 结算单四步向导）接入；此处只做入口">
-              <Card><CardHeader><CardTitle>报告与结算</CardTitle><CardDescription>501 占位</CardDescription></CardHeader><CardContent className="flex gap-2"><Button asChild variant="outline" size="sm"><Link href="/reports?tab=daily">打开日报</Link></Button><Button asChild variant="outline" size="sm"><Link href="/reports?tab=settlement">打开结算单</Link></Button></CardContent></Card>
-            </ExampleBlock>
+            <div className="flex flex-col gap-4">
+              <TaskReviewPanel taskId={data.task.taskId} taskName={data.task.taskName} />
+              <Card><CardHeader><CardTitle>相关报告 / 结算</CardTitle><CardDescription>该任务相关的日报 / 结算行在报告页</CardDescription></CardHeader><CardContent className="flex gap-2"><Button asChild variant="outline" size="sm"><Link href="/reports?tab=daily">打开日报</Link></Button><Button asChild variant="outline" size="sm"><Link href="/reports?tab=settlement">打开结算单</Link></Button><Button asChild variant="outline" size="sm"><Link href="/reports?tab=weekly">打开周报</Link></Button></CardContent></Card>
+            </div>
           ) : null}
+          {tab === "strategy" ? <TaskStrategyTab taskId={data.task.taskId} /> : null}
         </StateFrame>
       </div>
 

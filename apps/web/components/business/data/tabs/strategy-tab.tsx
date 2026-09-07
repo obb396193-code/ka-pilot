@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { IconSparkles } from "@tabler/icons-react"
 
 import { openAgentDrawer } from "@/components/business/command/events"
@@ -15,8 +16,9 @@ import { isOk, mv, rv } from "@/lib/fixtures/contract"
 import { dimensionFixtures, dimensions, pivot2Fixtures, pivot2UnsupportedFixture, strategyPresets, type Dimension, type Pivot2Row } from "@/lib/fixtures/data-analysis"
 import { cn } from "@/lib/utils"
 import { CostStatusDot, LineageFooter } from "./shared"
+import { StrategyLibrary } from "./strategy-library"
 
-// 策略分析（3.11 最小：分析视图）：预设三张 + 自定义两维交叉表 + 异常单元格着色 + 勾选 → 分析。不做"最优投法"推荐。
+// 策略分析 = 「分析视图 / 方案库」两视图（v1.7 §13）：分析视图 = 预设三张 + 自定义两维交叉表；方案库 = 可保存的策略方案（StrategyLibrary）。不做"最优投法"推荐。
 function crosstab(rows: Pivot2Row[]) {
   const aKeys = [...new Map(rows.map((row) => [row.a.key, row.a.label])).entries()]
   const bKeys = [...new Map(rows.map((row) => [row.b.key, row.b.label])).entries()]
@@ -25,6 +27,19 @@ function crosstab(rows: Pivot2Row[]) {
 }
 
 export function StrategyTab() {
+  const params = useSearchParams()
+  const router = useRouter()
+  const view = params.get("view") === "library" ? "library" : "analysis"
+  const setView = (next: "analysis" | "library") => { const q = new URLSearchParams(params.toString()); if (next === "library") q.set("view", "library"); else q.delete("view"); router.replace(`/data?${q.toString()}`, { scroll: false }) }
+  return (
+    <div className="flex flex-col gap-4">
+      <Tabs value={view} onValueChange={(value) => setView(value as "analysis" | "library")}><TabsList variant="line"><TabsTrigger value="analysis">分析视图</TabsTrigger><TabsTrigger value="library">方案库</TabsTrigger></TabsList></Tabs>
+      {view === "library" ? <StrategyLibrary /> : <AnalysisView />}
+    </div>
+  )
+}
+
+function AnalysisView() {
   const [preset, setPreset] = useState(strategyPresets[0].value)
   const [custom, setCustom] = useState<{ a: Dimension; b: Dimension }>({ a: "resource_position", b: "task" })
   const active = preset === "custom" ? custom : { a: strategyPresets.find((item) => item.value === preset)!.dimA, b: strategyPresets.find((item) => item.value === preset)!.dimB }

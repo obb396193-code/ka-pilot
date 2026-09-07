@@ -31,6 +31,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import type { DisplayMetric } from "@/lib/data/contracts"
 import { agentRunEventsFixture, agentRunsFixture, automationHealthFixture, autonomyLevels, capabilitiesFixture, capabilityCategoryLabel, capabilityStatusMeta, conditionText, definitionsFixture, metricLabel, notTriggeredLabel, riskLabel, ruleExplainFixture, rulesFixture, runsFixture, runStatusMeta, type AgentRunItem, type CapabilityItem, type RuleItem, type RunItem, type WorkflowDefinition } from "@/lib/fixtures/automation"
 import { fmtTime, isOk, rv } from "@/lib/fixtures/contract"
+import { ShadowTab } from "./shadow-tab"
 import { cn } from "@/lib/utils"
 
 // 自动化（F-007 §5）：tabs 官方模板｜我的工作流｜团队共享｜自动化规则｜运行中心｜原子能力；顶部健康五卡；画布/运行详情走二级路由
@@ -41,6 +42,7 @@ const tabs = [
   { value: "rules", label: "自动化规则" },
   { value: "runs", label: "运行中心" },
   { value: "capabilities", label: "原子能力" },
+  { value: "shadow", label: "Shadow" },
 ] as const
 type Tab = (typeof tabs)[number]["value"]
 const canvasHref = (id: string) => `/automation/workflows/${encodeURIComponent(id)}`
@@ -291,6 +293,7 @@ export function AutomationPage() {
           {tab === "rules" ? <RulesTab /> : null}
           {tab === "runs" ? <RunsTab /> : null}
           {tab === "capabilities" ? <CapabilitiesTab /> : null}
+          {tab === "shadow" ? <ShadowTab /> : null}
           {tab === "official" ? (
             <ExampleBlock className="mt-6" unlock="Agent 帮编（POST /agent/sessions/:id/workflow-draft，R-010b）接入后：输入目标 → 出图草稿 + 缺参列表，应用后仍须校验">
               <Card><CardHeader><CardTitle>Agent 帮编</CardTitle><CardDescription>用一句话描述目标，生成工作流草稿</CardDescription></CardHeader><CardContent className="flex gap-2"><Input placeholder="例：每天 9 点检查所有快手户，超考核的出降价草稿并通知我" readOnly /><Button variant="outline" disabled><IconSparkles />生成草稿</Button></CardContent></Card>

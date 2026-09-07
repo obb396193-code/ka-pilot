@@ -10,14 +10,13 @@ import { openAgentDrawer } from "@/components/business/command/events"
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { useSession } from "@/components/business/session/session-provider"
-import { ExampleBlock, StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
+import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import type { DisplayMetric } from "@/lib/data/contracts"
@@ -26,15 +25,18 @@ import { dataStatusMeta, deliveryLabel, exportFixtures, libraryFixture, renderFi
 import { cn } from "@/lib/utils"
 import { DailyReportView } from "./daily-report"
 import { SettlementWizard } from "./settlement-wizard"
+import { AiImpactTab, MonthlyTab, ReviewTab, WeeklyTab } from "./v17-tabs"
 
 // 报告（F-007 §6）：tabs 经营报告｜日报｜任务复盘｜结算单｜模板｜定时任务｜AI 提效；顶五卡 = 报告库计数
 const tabs = [
   { value: "business", label: "经营报告" },
   { value: "daily", label: "日报" },
+  { value: "weekly", label: "周报" },
   { value: "review", label: "任务复盘" },
   { value: "settlement", label: "结算单" },
   { value: "templates", label: "模板" },
   { value: "schedules", label: "定时任务" },
+  { value: "monthly", label: "月度推送" },
   { value: "ai", label: "AI 提效" },
 ] as const
 type Tab = (typeof tabs)[number]["value"]
@@ -172,27 +174,13 @@ export function ReportsPage() {
         <StateFrame state={state} unlock="报告域接口（daily / report-config / exports / settlements）接入后切换为真数据" empty={{ title: "还没有报告", description: "日报每天自动生成；结算单在周期结束后走向导。" }}>
           {tab === "business" ? <BusinessTab /> : null}
           {tab === "daily" ? <DailyReportView /> : null}
-          {tab === "review" ? (
-            <ExampleBlock unlock="任务复盘（7.2，P2）：周期结束自动生成复盘 + Deep Research 入口；接入后按任务列出">
-              <Card><CardHeader><CardTitle>任务复盘</CardTitle><CardDescription>周期结束自动生成：目标 vs 达成 · 成本曲线 · 关键操作 · 下期建议</CardDescription></CardHeader><CardContent className="flex flex-col gap-2 text-sm text-muted-foreground"><p>示例：任务「AAC 拉新」2026-09 周期结束后出现在这里。</p><div className="flex gap-2"><Input placeholder="Deep Research：问一个跨周期的问题" readOnly /><Button variant="outline" disabled><IconSparkles />研究</Button></div></CardContent></Card>
-            </ExampleBlock>
-          ) : null}
+          {tab === "weekly" ? <WeeklyTab /> : null}
+          {tab === "review" ? <ReviewTab /> : null}
           {tab === "settlement" ? <SettlementWizard /> : null}
           {tab === "templates" ? <TemplatesTab /> : null}
           {tab === "schedules" ? <SchedulesTab /> : null}
-          {tab === "ai" ? (
-            <ExampleBlock unlock="AI 提效（7.5，P2）：只统计「操作后观察结果」，不做预估收益；接入后按操作类型列出观察窗口内的结果">
-              <Card>
-                <CardHeader><CardTitle>AI 提效 · 操作后观察结果</CardTitle><CardDescription>每条 = 一次采纳的建议 → 观察窗口（T+3 / T+7）→ 观察到的结果；不算「省了多少钱」</CardDescription></CardHeader>
-                <CardContent className="p-0">
-                  <Table>
-                    <TableHeader className="bg-muted"><TableRow><TableHead>操作类型</TableHead><TableHead className="text-right">采纳数</TableHead><TableHead>观察窗口</TableHead><TableHead>观察结果</TableHead></TableRow></TableHeader>
-                    <TableBody>{["降价建议", "关停垃圾计划", "充值提醒"].map((kind) => <TableRow key={kind}><TableCell>{kind}</TableCell><TableCell className="text-right">−</TableCell><TableCell>T+7</TableCell><TableCell className="text-muted-foreground">接入后显示：观察窗口内现金 CPA / 消耗的实际变化（来自数据分析同口径）</TableCell></TableRow>)}</TableBody>
-                  </Table>
-                </CardContent>
-              </Card>
-            </ExampleBlock>
-          ) : null}
+          {tab === "monthly" ? <MonthlyTab /> : null}
+          {tab === "ai" ? <AiImpactTab /> : null}
         </StateFrame>
       </div>
       <div className="px-4 pb-4 lg:px-6"><Badge variant="outline" className="font-normal text-muted-foreground">日报字段按 docs/18 KA 日报规范 · 结算 DTO v1.6 7.3</Badge></div>

@@ -9,7 +9,9 @@ import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { isOk } from "@/lib/fixtures/contract"
 import { viewsFixture, windowPresets, type SavedView, type WindowPreset } from "@/lib/fixtures/data-analysis"
+import { AttributionTab } from "./tabs/attribution-tab"
 import { GapTab } from "./tabs/gap-tab"
+import { IntelTab } from "./tabs/intel-tab"
 import { HourlyTab } from "./tabs/hourly-tab"
 import { OverviewTab } from "./tabs/overview-tab"
 import { PivotTab } from "./tabs/pivot-tab"
@@ -25,6 +27,8 @@ const tabs = [
   { value: "hourly", label: "盯盘" },
   { value: "gap", label: "Gap 对账" },
   { value: "strategy", label: "策略分析" },
+  { value: "attribution", label: "归因树" },
+  { value: "intel", label: "竞情" },
   { value: "reports", label: "自助报表" },
 ] as const
 type Tab = (typeof tabs)[number]["value"]
@@ -63,6 +67,8 @@ export function DataPage() {
           {tab === "hourly" ? <HourlyTab /> : null}
           {tab === "gap" ? <GapTab /> : null}
           {tab === "strategy" ? <StrategyTab /> : null}
+          {tab === "attribution" ? <AttributionTab /> : null}
+          {tab === "intel" ? <IntelTab /> : null}
           {tab === "reports" ? <ReportsTab views={views} onSaveView={saveView} /> : null}
         </StateFrame>
       </div>
