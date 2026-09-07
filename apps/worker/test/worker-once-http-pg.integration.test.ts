@@ -9,6 +9,7 @@ import { createWorkerOnceHttpServer, parseWorkerOnceHttpConfig } from "../src/sc
 import { workerOnceLock } from "../src/scheduling/worker-once-lock.js";
 import { runWorkerOnceProcess } from "../src/scheduling/worker-once-process.js";
 import { superviseWorkerOnce } from "../src/scheduling/worker-once-supervisor.js";
+import { assertLocalTestDatabase } from "../src/benchmark/data-pipeline-pg.js";
 
 describe("Worker HTTP -> real process/PG, synthetic isolated scope only", () => {
   let pool: Pool, databaseUrl: string;
@@ -26,7 +27,7 @@ describe("Worker HTTP -> real process/PG, synthetic isolated scope only", () => 
   }
   beforeAll(async () => {
     databaseUrl = process.env.TEST_DATABASE_URL ?? "";
-    if (!/^ka_be_.*_test$/.test(new URL(databaseUrl).pathname.slice(1))) throw new Error("Explicit isolated ka_be_*_test database required");
+    assertLocalTestDatabase(databaseUrl);
     await runMigrations({ databaseUrl }); pool = new Pool({ connectionString: databaseUrl, max: 4, connectionTimeoutMillis: 3000, query_timeout: 3000 });
     await new BootstrapSeedRepository(pool).seed({
       identities: [{ id: identity, display_name: "Synthetic HTTP worker" }],
