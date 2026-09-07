@@ -53,3 +53,5 @@ export * from "./changeset-values.js";
 export * from "./operational-query-rows.js";
 // be: bounded condition interpreter; runtime readers and public explain are separate.
 export * from "./condition-tree.js";
+// be: pivot row projection/account-day aggregation; Registry admission is separate.
+export * from "./pivot-window.js";
