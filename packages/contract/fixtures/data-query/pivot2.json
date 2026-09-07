@@ -1,7 +1,7 @@
 {
   "ok": true,
   "data": {
-    "mode": "platform",
+    "mode": "ka_data",
     "source": {
       "queryId": "account.pivot2",
       "rowSchemaVersion": "account.pivot2/v1",
@@ -89,8 +89,9 @@
           "assessment": {
             "price": {
               "value": 38.0,
-              "effectiveDate": "2026-09-01"
+              "effectiveDate": null
             },
+            "priceSource": "ka_daily",
             "onTarget": true,
             "costStatus": "green",
             "costStatusReason": "window_ok",
@@ -180,8 +181,9 @@
           "assessment": {
             "price": {
               "value": 38.0,
-              "effectiveDate": "2026-09-01"
+              "effectiveDate": null
             },
+            "priceSource": "ka_daily",
             "onTarget": false,
             "costStatus": "red",
             "costStatusReason": "window_over",
@@ -270,6 +272,7 @@
           },
           "assessment": {
             "price": null,
+            "priceSource": "ka_daily",
             "onTarget": null,
             "costStatus": null,
             "costStatusReason": "cash_missing",
@@ -286,24 +289,28 @@
         "availability": "available"
       },
       "lineage": {
-        "source": "canonical",
+        "source": "ka_data",
         "workspaceKind": "team",
-        "window": {
-          "from": "2026-09-01",
-          "to": "2026-09-05",
-          "preset": "month_to_date"
-        },
+        "dataAsOf": "2026-09-04T00:00:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "business_day_0300",
         "metadataAvailability": "known",
         "authority": {
           "policyVersion": "2026-08-24",
           "useCase": "cross_media_operations",
           "role": "default_authoritative"
         },
+        "window": {
+          "from": "2026-09-01",
+          "to": "2026-09-05",
+          "preset": "month_to_date"
+        },
         "coverage": {
           "complete": true
         },
         "truncated": false,
-        "partial": false
+        "partial": false,
+        "datasetVersion": "ka-daily-2026-09-04"
       },
       "warnings": []
     }
@@ -311,9 +318,9 @@
   "meta": {
     "requestId": "fixture",
     "dataAsOf": "2026-09-05T09:15:00.000+08:00",
-    "businessDate": "2026-09-05",
-    "workspaceKind": "personal",
-    "selectedSource": "platform",
+    "businessDate": "2026-09-04",
+    "workspaceKind": "team",
+    "selectedSource": "ka_data",
     "cellCoverage": {
       "cells": 3,
       "withData": 2,

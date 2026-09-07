@@ -164,6 +164,7 @@
           "value": 38.0,
           "effectiveDate": "2026-09-01"
         },
+        "priceSource": "history",
         "onTarget": true,
         "costStatus": "green",
         "costStatusReason": "window_ok",

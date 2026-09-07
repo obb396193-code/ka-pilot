@@ -13,7 +13,8 @@
               "metric": "cash_cpa",
               "operator": ">",
               "threshold": "assessment_price",
-              "window_hours": 48
+              "window_hours": 24,
+              "consecutive_days": 2
             },
             {
               "metric": "real_conversion",
@@ -47,7 +48,7 @@
               "window_hours": 48
             },
             {
-              "metric": "cost",
+              "metric": "cash_cost",
               "operator": ">",
               "threshold": 500
             }
@@ -101,6 +102,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "未触发原因枚举：CONDITION_FALSE|METRIC_MISSING|SOURCE_STALE|COLD_START_RELAXED|INITIAL_FULL_PENDING|MUTED|DEDUPED|INSUFFICIENT_SAMPLE"
+    "_note": "未触发原因枚举：CONDITION_FALSE|METRIC_MISSING|SOURCE_STALE|COLD_START_RELAXED|INITIAL_FULL_PENDING|MUTED|DEDUPED|INSUFFICIENT_SAMPLE；v1.7.5：叶子 consecutive_days=N 表\"连续 N 个业务日均成立\"，window_hours 只是取数窗；账面 cost 不作规则指标，规则 7 改 cash_cost"
   }
 }

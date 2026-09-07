@@ -108,6 +108,7 @@
           "value": 38.0,
           "effectiveDate": "2026-09-01"
         },
+        "priceSource": "history",
         "onTarget": false,
         "costStatus": "red",
         "costStatusReason": "window_over",

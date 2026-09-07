@@ -84,6 +84,7 @@
               "value": 38.0,
               "effectiveDate": "2026-09-01"
             },
+            "priceSource": "history",
             "onTarget": true,
             "costStatus": "green",
             "costStatusReason": "window_ok",
@@ -137,6 +138,8 @@
     }
   },
   "meta": {
-    "requestId": "fixture-summary-v3-green"
+    "requestId": "fixture-summary-v3-green",
+    "workspaceKind": "personal",
+    "selectedSource": "platform"
   }
 }

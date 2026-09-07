@@ -676,16 +676,19 @@
       "lineage": {
         "source": "canonical",
         "workspaceKind": "personal",
-        "window": {
-          "from": "2026-09-05",
-          "to": "2026-09-05",
-          "preset": "today"
-        },
+        "dataAsOf": "2026-09-05T08:00:00.000+08:00",
+        "timezone": "Asia/Shanghai",
+        "dayCut": "business_day_0300",
         "metadataAvailability": "known",
         "authority": {
           "policyVersion": "2026-08-24",
           "useCase": "cross_media_operations",
           "role": "default_authoritative"
+        },
+        "window": {
+          "from": "2026-09-05",
+          "to": "2026-09-05",
+          "preset": "today"
         },
         "coverage": {
           "complete": false
