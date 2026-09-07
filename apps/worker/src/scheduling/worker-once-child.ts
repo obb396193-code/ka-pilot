@@ -56,7 +56,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const orphaned = (): never => process.exit(1);
   process.once("disconnect", orphaned);
   try {
-    if (!process.send || process.argv.length !== 3) throw new Error("Invalid child invocation");
+    if (!process.send || !process.connected || process.argv.length !== 3) throw new Error("Invalid child invocation");
     const result = await executeWorkerOnceChild(parseWorkerOnceConfig(process.env), process.argv[2]!, {
       onJobState: (event, phase) => {
         if (process.connected) process.send?.({ ...event, kind: "job_state", phase }, () => { /* No private error forwarding. */ });

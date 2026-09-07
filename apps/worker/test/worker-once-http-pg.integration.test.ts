@@ -115,4 +115,13 @@ describe("Worker HTTP -> real process/PG, synthetic isolated scope only", () => 
       const next = await workerOnceLock(pool, workspace)(new AbortController()); expect(next).not.toBeNull(); await next?.();
     } finally { await dedicated.end(); }
   });
+  it("parent disconnect before module initialization cannot enqueue even a blocked_auth job", async () => {
+    await pool.query("DELETE FROM jobs WHERE workspace_id=$1 AND job_type='etl_full'", [workspace]);
+    const child = fork(new URL("./fixtures/worker-once-orphan.ts", import.meta.url), [], {
+      cwd: new URL("..", import.meta.url), execArgv: ["--import", "tsx"], env: env(), stdio: ["ignore", "ignore", "ignore", "ipc"],
+    });
+    const exited = once(child, "exit"), message = await once(child, "message"); expect(message[0]).toEqual({ ready: true });
+    child.disconnect(); await exited; expect(child.exitCode).toBe(1);
+    expect((await pool.query("SELECT count(*)::int AS n FROM jobs WHERE workspace_id=$1 AND job_type='etl_full'", [workspace])).rows[0].n).toBe(0);
+  }, 20000);
 });

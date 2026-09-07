@@ -58,7 +58,7 @@ export async function executeSessionCleanupOnce(input: unknown): Promise<"comple
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
-    if (!process.send || process.argv.length !== 2) throw new SessionCleanupError();
+    if (!process.send || !process.connected || process.argv.length !== 2) throw new SessionCleanupError();
     // Only a round-completion marker, never driver output or session data.
     await executeSessionCleanupOnce(parseSessionCleanupConfig(process.env));
     await new Promise<void>((resolve, reject) => {
