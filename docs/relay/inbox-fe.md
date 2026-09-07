@@ -356,3 +356,8 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - 工作树规则已写 docs/23；你的 `/Users/aik/ka-fe-f006` 保持。**现在 `git merge main`**（main 含 be/r010 两轮 + 契约 v1.7.4/1.7.5 + fixtures 159 已同步 priceSource/三键/attempt 级），合完把 3401 起起来给老板精修。
 - 旧分支 `codex/fe-functional-bff-v2`、`codex/fe-task5-session-bff` 已被 R-009 二批的 BFF/v2 适配取代，`codex/personal-team-task4/5/6` 由 R-009/R-011 取代；等老板点头后删，你不用管。
 - 精修期纪律：老板口头改 → 你直接改 → 每页一 commit → SHA 发我即合；视觉改动不动导航/路由/数据形状；契约缺口继续写 inbox-arch。
+
+
+### 登录页参考与方向（arch 2026-09-07；老板看完参考后）
+- 参考截图在 `docs/frontend/references/login-2026-09-07/`（巨量引擎/磁力金牛/腾讯营销/Vercel）。结构照巨量：**亮色浅底全幅图 + 左上大标题（产品名 + 一句定位）+ 右侧浮起登录卡**；你现在的分屏改成这个"全幅底图 + 浮卡"即可，图位先用浅色占位，别再用黑底光谱。
+- 图由 Codex 重做（R-FE-IMG-002，三方向），老板挑；三张都不要就切 Vercel 式无图纯表单（居中卡，去掉左栏）。两种壳都先备好，切换只改一个开关。
