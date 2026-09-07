@@ -4,7 +4,7 @@
     "mode": "ka_data",
     "source": {
       "queryId": "account.summary",
-      "rowSchemaVersion": "account.summary/v2",
+      "rowSchemaVersion": "account.summary/v3",
       "status": "ready",
       "rows": [],
       "returnedRowCount": 0,
@@ -41,7 +41,12 @@
         },
         "truncated": false,
         "partial": false,
-        "workspaceKind": "team"
+        "workspaceKind": "team",
+        "window": {
+          "from": "2026-08-24",
+          "to": "2026-08-24",
+          "preset": "custom"
+        }
       },
       "warnings": []
     }

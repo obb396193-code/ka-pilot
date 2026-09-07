@@ -3,7 +3,9 @@
   "data": {
     "items": [
       {
-        "id": "00000000-0000-4000-8000-000000001601",
+        "runId": "1601",
+        "jobId": "00000000-0000-4000-8000-000000001601",
+        "attempt": 1,
         "jobType": "etl_incr",
         "status": "done",
         "businessDate": "2026-09-05",
@@ -16,7 +18,9 @@
         "warnings": []
       },
       {
-        "id": "00000000-0000-4000-8000-000000001602",
+        "runId": "1602",
+        "jobId": "00000000-0000-4000-8000-000000001602",
+        "attempt": 1,
         "jobType": "backfill_day",
         "status": "failed",
         "businessDate": "2026-09-03",
@@ -35,6 +39,7 @@
     "dataAsOf": "2026-09-05T09:15:00.000+08:00",
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
-    "selectedSource": "platform"
+    "selectedSource": "platform",
+    "_note": "v1.7.5：一行 = 一次 attempt（etl_runs 行，runId=BIGSERIAL 字符串；同 jobId 可多 attempt）；rows.raw/canonical = 本 attempt 各阶段计数，阶段未到 → null"
   }
 }

@@ -1004,3 +1004,44 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 团队空间 price(d) = `dwd_account_daily.cash_assessment(d)`（现金口径考核价，ka-src-0011 §考核价）；达标/costSpace 仍按逐日 Σ 式，不需要版本。
 - 展示价：`assessment.price.effectiveDate` 改为 `calendarDate | null`——**null 只允许团队源**（源无版本信息），并加 `assessment.priceSource: "history"|"ka_daily"`；窗口内 `cash_assessment` 唯一值 → `{value, effectiveDate:null}`；多个不同值 → `price=null` + `priceVersions = 不同值个数`（不是天数）+ `lineage.warnings: ASSESSMENT_VERSION_UNKNOWN`。个人空间仍走 `assessment_price_history` 真版本。
 - KA `conv` = fact_conv BI 转化 → 只映射 `realConversion`；媒体回传无源 → `conversion` missing、cvr/gap undefined（P-063 已实现，冻结）。
+
+## v1.7.5 追加（2026-09-06 arch；回应 Codex P-077/082/083/092/093/096/098/100；migration 013 = R-011 + 本节全部 DDL）
+
+**P-077 只读契约对齐**
+- `account.dimension/v3` 当 `dimension=account`：行带三键 `{key:"<media>:<accountId>", label, media, accountId, metrics, assessment, anomaly}`；其余维度 key 不变。跨媒体同号不合并。fixture `dimension-v3-account.json`。
+- 所有 v3 `assessment` 必带 `priceSource:"history"|"ka_daily"`；团队源 `price.effectiveDate=null`。三份 summary-window-v3、ready/unknown-lineage（升 v3，加 `lineage.window`）、dimension/pivot2/小传 fixtures 已同步；data-query fixture 的 `mode/meta.workspaceKind/selectedSource/lineage.source` 已一致（版位与 pivot2 = 团队源 ka_data，其余个人 platform），lineage 补齐 known 元数据。
+- `GET /system/etl-runs` 一行 = 一次 **attempt**：`{runId:string(BIGSERIAL), jobId, attempt, jobType, status, businessDate, startedAt, finishedAt, rows:{raw, canonical}|阶段未到 null, warnings[]}`；不做 job 聚合。
+- `GET /system/health` 加 `scope:"workspace"|"global"`；`connectors/executors/agent` 各 `{total, ok, unknown}`，缺源 → 数值 `null`，**不默认健康**；`healthScore` 任一分项未知 → `null`；`overall` 只按已知分项算并在 `note` 说明。
+- §4.2 账户小传 `summary` 改 `account.summary/v3` 单行（含 assessment/priceSource）；`poolStatus/product` 随 015。
+
+**P-082 R-011 团队 KA 快照接入 → 方案 A（采纳 Codex 提案）**
+- 存储：canonical 保持当前投影；`team_sync_runs / team_sync_pages / team_metric_staging / team_snapshot_heads / team_sync_state` 五表 + `account_metrics_daily` 加 `source_kind`（platform|ka_data）、`snapshot_run_id`、`published_at`（个人为 NULL）。DDL 见 schema.sql v1.7.5。发布事务：staging 全页校验通过 → 同事务替换声明日期的 canonical 行 + 写 heads + 推进 publication_revision；任一步失败整体回滚、旧 head 不动。
+- 读侧同批必接：普通 team query 走 `TeamSnapshotDataSource` 读已发布投影，**live KA 不做自动 fallback**（只留同步 adapter 与管理员诊断路径）；RR/RO 同快照；每行 source/run 与该日 head 一致，缺 head → partial 不读 staging；历史日期读各自 completed run；`dataAsOf` = 覆盖日中最旧的源刷新时间（保守），`published_at` 单独给；`lineage` 加 `snapshot:{runId, publishedAt, publicationRevision}`。
+- readiness：team 只看 completed heads/coverage/真实 freshness；首次无完整快照不 ready；下一 run 失败仍可读旧快照并标 stale。accounts/tasks `selectedSource` 枚举加 `ka_data`；工作项对象源保持 platform。KA 开关关闭 → 拒新团队查询与同步，不借缓存绕过。
+- 源不可变版本：OS 需补证（已列入老板给 OS 清单）；未证前 run 记 `source_snapshot_evidence:"unverified"`，允许发布但 lineage `warnings: SOURCE_VERSION_UNVERIFIED`；空源须有完整空 manifest 才发布 empty，无证明 → unknown 不替换 completed。
+
+**P-083 R-010a2 三处**
+1. `work_items.status` 加 `dispatched`；活动态集合 = `open|processing|dispatched|escalated`（列表默认/计数/partial unique 统一用此集合）。
+2. `work_items` 加 `superseded_by UUID NULL`（同 workspace FK）；跨级重弹 = 新建高级项 + 旧项 `status='expired'` 且 `superseded_by` 指向新项；不原地升级。
+3. `POST /work-items/:id/actions`：`reject` 的入参统一为 `{action:"reject", reason}`，`reason` 非空必填（`note` 只给其他动作，可选）。
+
+**P-092** 同 hash confirm 幂等只覆盖 `confirmed`（回放返回同一 run/job）；`executing` 与终态一律 `409 INVALID_STATE` 并带当前 status，不做幂等成功。
+
+**P-093 rollback**（采纳独立表）
+- `changeset_reversals(workspace_id, original_id, reverse_id, source_execution_run_id, created_at)` + `changeset_reversal_items(workspace_id, reverse_id, reverse_item_id, original_item_id)`；`execution_run_items(workspace_id, execution_run_id, item_id, attempt, status, media_code, media_message, applied_value JSONB, applied_at)` 作逐 attempt 历史，不拿可变 `changeset_items` 冒充历史。
+- ①同一 original 同时只允许一份未终态反向草稿；expired/failed 后可再建，旧 reversal 行保留；②仅反向**完整 success** 才置原 `rolled_back`，partial/unknown 原状态不变；③见上表；④`applied_value` 无实证 → 反向草稿 from 取最近观测 current，且必须重新 dry-run，不得声称已知媒体真实应用值。
+
+**P-096 账户静音**
+- `days ∈ {1,3,7}`；`muted_until` = 上海时间第 (today+days) 个业务日 03:00（dayCut）瞬时，含尾；②静音期内：**压通知 + 压 P1/P2/机会工作项的创建**（occurrence 仍计入 explain 的 `suppressedByMute` 计数），P0 突破；③`ignore+mute` 同一事务，失败整体回滚；响应 `{mutedUntil, scope:"notifications_and_p1p2"}`。
+
+**P-098 复合规则六项**
+1. 同节点多组 AND；`all`=AND、`any`=OR、`not`=NOT(OR(...))（每项都不成立）；允许嵌套，深度 ≤8、叶子 ≤128；空组/无叶子 → 拒绝。
+2. `window_hours` 只是叶子取数窗；"连续 N 日"用叶子新属性 `consecutive_days:N`（每个业务日各自成立）；canonical 只有日累计 → `window_hours` 必为 24 的倍数，小时级只允许来自 `account.hourly` 的指标。fixture 规则 3 已改。
+3. `threshold:"assessment_price"` = 同窗、逐日转化加权现金考核价（metrics.md）；字面字符串不解释为表达式。
+4. 规则指标不用账面 `cost`；fixture 规则 7 改 `cash_cost`；无"账面上限"例外。
+5. explain DTO 以 `rules/explain.json`（camelCase `ruleId/leaves/pass/notTriggeredReason`）为权威，api.md 旧 snake 描述作废；无限 CPA `{value:null,state:"infinite"}`、阈值缺 `{value:null,state:"undefined"}`、叶子 `pass:null` = undeterminable。
+6. SLA 暂停：`work_items` 加 `sla_paused_at TIMESTAMPTZ NULL, sla_paused_total_ms BIGINT NOT NULL DEFAULT 0`；`work_item_sla_events(id, workspace_id, work_item_id, kind pause|resume, at, reason)`；恢复用持久化区间，不猜。
+- 实现方式：受限 AST 解释，不 eval、不生成 SQL、不由 LLM 判真值；阈值引用纳入 requiredMetrics，按 (metric, window) 识别。
+
+**P-100 bid_tool → 方案 A**
+- `bid_tool` 只承载出价机制族：`cpm|cpc|ocpm|ocpc|max_conversion|unknown`；优化目标（`ocpx_action_type`）、创意制作（`unit_type`）、智能投放（`auto_manage`）各自保留原字段作证据列，不并入 bid_tool。个人源保持 `DIMENSION_UNSUPPORTED` 直到 ad_entities 存原值且 OS 探针（6 次只读）证实字段存在；团队直接读 `dwd_adgroup_daily.bid_tool` 源枚举，不用 MAPI 推导覆盖。未知/缺字段 → `unknown` 并保留 raw enum 与来源版本。

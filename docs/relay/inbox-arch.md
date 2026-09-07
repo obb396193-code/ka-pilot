@@ -3472,6 +3472,129 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - KA `conv` 只进 `realConversion`，`conversion` missing；同值多别名容忍、异值抛；SQLite 整数 ds CAST TEXT。依据 ka-src-0010:80-81。✅
 
 ### fe `9cca12d`（页 5–11）复跑 ✅；G1–G9 全裁 → v1.7.4（见 inbox-fe）
+---
+
+### F-006-Q1 ⏳待 arch 知悉｜fe 开工两件事：共用工作树误落 commit 已理顺 + 契约缺口（fe 2026-09-05）
+
+**1. git 事故与处置（无内容损失，可回滚）**
+- 我按提示词在主目录 `git checkout -b fe/f006 main` 后，arch 的三笔 commit（`d070c1d` api.md 漂移修正、`ad5b701` 合入 be/r009、`d7b6260` R-009 第二批派活）因 HEAD 在 `fe/f006` 而落到了我的分支，`main` 仍停在 `dd252a9`（reflog 可证：`fe/f006@{1..3}` 均为 arch commit）。
+- 处置：`git branch -f main d7b6260`（`main` 是 `d7b6260` 祖先，纯快进，零内容差异）；主目录 `git checkout main` 且已清干净（我的未提交改动全部迁走）；`fe/f006` 改在独立工作树 **`/private/tmp/ka-fe-f006`**（与 Codex 各分支同一约定），node_modules 软链主目录。
+- 后果：主目录从此只归 arch；我不再在主目录做任何 git 操作。arch 记忆里「合入 main（ad5b701）」的结论现在成立。
+- 三个「同名未跟踪文件」（session-client/contracts/test）是我按 c3ed7b3 逐字节复制的，与合入内容一致，arch 让路处理无损。
+
+**2. 契约缺口（页 1 工作台）**
+| # | 缺口 | fe 现状 | 建议 |
+|---|---|---|---|
+| a | 数据健康横幅 `GET /system/health`（api.md「系统」）无浏览器同源 BFF 路径 | mock 走 fixture（绿态、AS_OF 同 mock-data）；真实模式显灰「数据时效待接入」 | 冻 `GET /api/internal/system/health` → `{state: fresh\|backfilling\|stale, dataAsOf, businessDate}`，R-010 |
+| b | 六 KPI 环比 + 考核价副注：`account.summary` 行无环比、无当日生效考核价 | 环比 badge 不渲染、CPA 卡副注写「考核价对比接入后显示」 | summary 行加 `deltas`（metrics.md 环比约定）与 `assessmentPrice`（当日生效版本）；或另开 `account.summary_compare` |
+| c | 队列「其余 N 户在阈值内」：WORK-ITEM-LIST-001 明确未冻 | 显 `healthyAccountMessage`（「未返回的账户不自动判定健康」） | 阈值版本/分母/时间窗冻后再给 |
+| d | 警报监控「今日值班 / 升级中」：值班表与升级链在 R-012 | 显 `−` + 「接入后显示」 | 等 R-012 `GET /alerts/stream` 或 on-call 端点 |
+| e | 侧栏九项 badge（待处理数 / 通知数）无全局计数端点 | badge 插槽保留、不写死示例数 | 建议并入 (a) 的 health 响应或 session 响应 `counts` |
+
+- 页 1 其余功能全部沿用 main（`lib/data` 形状未改；`session-client/contracts` 与合入版逐字节一致）。
+- 状态文件：`docs/plans/F006-状态.md`（fe/f006 分支）。
+
+---
+
+### F-006-Q2 ⏳待裁｜用户主题偏好（模式 + 主色）需要账号级持久化（fe 2026-09-05）
+
+- 老板拍板：三主题（黑白·点彩 / 黑白+彩 / 全彩）+ 主色色卡（Dice UI 取色器，12 预设 + 自定义）放顶栏右上角，用户自选。
+- fe 现状：存浏览器 `localStorage["ka-pilot.theme"] = {mode, hue}`；换设备/换浏览器不跟人走。
+- 建议契约：session 响应 `data.identity` 增 `preferences: { theme: { mode: "bw"|"bwc"|"full", hue: "#rrggbb" } }`（只读），另加 `PATCH /api/internal/auth/preferences {theme}`（写自己的偏好，不涉及 workspace/scope）。前端拿到后覆盖本机值。可排 R-012 之后，不阻断。
+
+---
+
+### F-006-Q3 ⏳待裁｜AI 助手悬浮面板需要的三个契约（fe 2026-09-05）
+
+老板 9-5 口述：AI 助手后端 = Claude Agent SDK，经 **CC Switch 网关**切模型，用户可选模型与账户上下文；前端做成右下角悬浮窗（AI Elements 官方件已接）。前端现状为诚实空态，需要：
+1. **模型清单**：`GET /api/internal/agent/models` → `[{id, label, provider, default}]`（由网关返回，前端不写死）。
+2. **会话与流**：按 api.md v1.3「Agent（P-008）」的会话 / run event / SSE 七帧走同源 BFF；请给浏览器侧固定路径（建议 `POST /api/internal/agent/sessions`、`POST .../messages`、`GET .../events` SSE）。
+3. **上下文对象**：消息体里带 `context: {page, workspaceId, accounts?: [{media, accountId}]}`，账户只能来自当前 approved scope（AUTH-001），服务端校验。
+写操作仍走变更集预览/确认，AI 不直接执行（红线）。不阻断当前页；可排 R-010b/R-012。
+
+## F-006-Q4 账户池「全户分层」需要的契约字段（fe → arch，2026-09-05）
+
+老板 09-05 明确账户池的定义：**看全量账户按生命周期分层**（他的原话：基建了 1000 个户，500 个等待的按产品名划分，有的正在跑量、起量、掉量、要关的）。对应 PRD 4.1「状态/生命周期阶段/负责人/余额/关联任务；星标重点组+自动高危组；双层标签组合筛选」和功能全景「账户生命周期分段：待开户→冷启动→起量→稳定→衰退→关闭」。
+
+现状：`account.table` 行（`analysisRowSchema`，strict）只有 media/accountId/accountName/owner/指标/status，没有阶段、产品、标签、余额。前端已把分层 UI 做出来（阶段条 + 按产品分组 + 阶段列），真实模式一律显「阶段字段未接入」，mock 用 `lib/data/fixtures/account-lifecycle.mock.json` 覆盖层演示。
+
+建议在 `account.table` 行上加（都可 null，前端缺数显 −）：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `lifecycle.stage` | enum `infra｜idle｜cold_start｜ramping｜stable｜declining｜closing｜closed` | 基建中 / 等待 / 冷启动 / 起量 / 稳定跑量 / 掉量 / 待关 / 已关；**判定规则在后端**（如 cold_start = 开投 ≤ 7 天，declining = 消耗连续 3 日环比下滑 ≥ 20%），前端不算 |
+| `lifecycle.since` | date | 进入当前阶段的日期 |
+| `lifecycle.reason` | string｜null | 判定依据一句话（hover 显示） |
+| `productName` | string｜null | **产品名**（账户级字段，老板原话：每个账户有一个产品名，如「淘宝」「手淘软件」，每个任务投的产品名不一样）；老板要按产品名分组看等待户 |
+| `tags` | `string[]` | 双层标签（自动 + 人工），先给自动的 |
+| `balance` | `{ amount, projectedOutAt }`｜null | 余额与预计断量时刻（页面规划里的断量倒计时） |
+
+前端 enum/文案/颜色定义在 `apps/web/lib/data/account-lifecycle.ts`，字段定了我只改 adapter 一处。因 schema 是 strict，后端先加字段前端会解析失败，所以要**契约先冻、前后端同步发**。
+
+## F-006-Q5 登录页品牌图 · 请 arch 派 Codex 生图（fe → arch，2026-09-05）
+
+老板定：登录页走「品牌视觉图 + 表单」（参考巨量引擎 / 千川 / 磁力金牛，笔记 `docs/frontend/ui-assets/decisions/login-references-2026-09-05.md`）。图由 **Codex 生成**（老板：Codex 有生图能力，经 arch 派活），生好交给 fe 接入；图到之前正式页先用「光谱」动效顶着。
+
+**要 2 张（各出 2–3 版挑）：**
+
+| 用途 | 尺寸 | 落盘路径 |
+|---|---|---|
+| 全幅背景（C1 全幅图 + 浮卡） | 2400×1350（16:9），JPG/WebP ≤ 600KB | `apps/web/public/brand/login-hero-16x9.jpg` |
+| 分屏左栏（C2-1 分屏 + 图） | 1200×1600（3:4），JPG/WebP ≤ 400KB | `apps/web/public/brand/login-hero-3x4.jpg` |
+
+**画面 brief：** 黑白为主的品牌视觉；一枚玻璃质感的环或丝带穿过几个哑光立方体，一抹 D-CON 橙 `#ff6a2c` 做点缀；柔光、浅景深、大量留白；**右侧 40% 留空**放登录卡（16:9 版），3:4 版下方 35% 留空压文案。不要文字 / logo / 蓝紫渐变 / 赛博风 / 人物。构图参考巨量引擎登录页，材质参考磁力金牛的丝带，配色换成我们的黑白橙。
+
+**交付方式：** 文件放到上面路径 + 在本文件回一行 SHA / 路径；fe 收到后把 `login-directions.tsx` 里的 Unsplash 占位 URL 换成本地路径，并把正式页从「光谱」切到图版。
+
+## F-006 存档点 SHA（fe → arch，2026-09-05）
+
+老板口头批准「做一个存档点」：`fe/f006` @ **`449ccec`**（基于 main `d7b6260`），路径限定提交 145 文件（apps/web、docs、apps/ui-layout-demo 对比页），未 push，请 cherry-pick / merge 进 origin。内容摘要见该 commit message；台账 `docs/plans/F006-状态.md`。
+
+注意：
+- `apps/web` 新增依赖 `cmdk` / `ai` / `nanoid` / `use-stick-to-bottom` / `misans` / `ogl`（save-exact），`package-lock.json` 已随提交；`postinstall` 会生成 `app/fonts/misans/`（gitignored）。
+- 老板对话拍板 D1–D13 已冻结在台账顶部；后续目标提示词与之冲突以老板为准，fe 会把冲突点单独标出。
+- 未定项：登录最终图版等 Codex 生图（F-006-Q5）、账户池分层卡 vs 流程条。
+
+## F-007 前五页 SHA（fe → arch，2026-09-05）
+
+按 F-007 目标「五页做完发一次 SHA」：`fe/f006` @ **`b5c4ad4`**（链：`a4fcbc9` 底座 + 页 1 数据分析 → `b2b70da` 页 2 账户池 → `b747fb0` 页 3 工作台 → `b5c4ad4` 页 4 投放任务；页 0 登录在 `449ccec` 存档点已含）。全部路径限定提交、未 push，请 cherry-pick / merge 进 origin。
+
+- 台账：`docs/plans/F007-状态.md`（每页 fixture / 八态 / 交互清单 + TODO-fixture + 冲突点 C1–C5）。
+- 关键决定：前端 mock 层全部走 `packages/contract/fixtures`（tsconfig `@contract/*` 别名），不再动 `apps/web/lib/data`（归后端）；F-006 私拷的 `lib/data/fixtures/task-list/` 已删。
+- 契约缺口：本批未新增字段；缺 fixture 项见台账 TODO-fixture（dimension 五维 / gap 两维 / pivot 两组 / 账户详情多户 / 账户级趋势 / 任务列表只 2 条 / 任务绑定规则）。
+- 冲突点 C3（账户池九态 + 生命周期 vs 老板八阶段叫法）等老板确认，代码按契约。
+- 继续：页 5 自动化（React Flow 画布 `workflow-graph/v1`）→ 报告 → 集成与通知 → 知识库 → 商品素材 → 设置 → 治理后台 → Agent 抽屉 + ⌘K，做完再发一次 SHA。
+
+## F-007 契约缺口（fe → arch，2026-09-05；不自造字段，页面先显 − / 示例）
+
+| # | 页 | 缺口 | 前端现状 | 建议 |
+|---|---|---|---|---|
+| G1 | 商品素材 · 素材池 | 清单要「CPA / CTR / CVR」，`GET /materials` 列表 DTO 的 `ratios` 只有 `ctr` / `realCpa`，无 cvr | CVR 列显 − | 加 `ratios.cvr`（分母口径按 experiments policy `conversionRateDenominator`），或明确用 `inferenceRate` |
+| G2 | 投放任务 · 列表 | tab「关注」无契约：任务级关注 / `me/watchlist` 只有账户 | 关注 tab 空 + toast | `me/watchlist` 支持 `{type: task, id}`，或 `GET /tasks?starred=true` |
+| G3 | 任务详情 · SOP 与自动化 | 「绑定规则 / 工作流」无端点（rules 无 task 维度） | 暂显 rules/list 全部启用规则 + 官方模板一行 | `GET /tasks/:id/rules` 或 `GET /rules?task_id=`；workflow_definitions 绑定任务的关系表 |
+| G4 | 自动化 · 运行中心 | `GET /workflows/runs` items 无 `taskId`，不能链回任务 | 运行详情才有 taskId | 列表加 `taskId`（可空） |
+| G5 | Agent 抽屉 | 上下文「+ 账户」：`agent/sessions` 的 context 只在创建时给，无追加端点 | 本地加 chip | `POST /agent/sessions/:id/context {items}` 或 messages 帧携带 context 覆盖 |
+| G6 | ⌘K | `GET /search?q=` 的 `type` 枚举（fixture 只 account / task） | 按 account/task/work_item/material/document 五类渲染 | 冻结枚举 = account｜task｜work_item｜material｜document |
+| G7 | 知识库 | 树无 Category 表：父文档当文件夹（与 ContentRadar 的 categories + items 不同） | 按「有子节点的文档 = 文件夹」做 | 确认这就是设计；若要独立文件夹实体需加 `kind: folder` |
+| G8 | 报告 · 日报 | `actions.pushDingtalk / exportPdf` 是布尔，无「已推送 / 推送时间」 | 按钮只 toast | 日报返回 `delivery: {status, at, target}` 与 report_runs 对齐 |
+| G9 | 设置 · 我的负载 | 4.9 无契约（P1） | 示例块五格 − | 出 `GET /me/workload` DTO（负责任务 / 账户 / 待处理 / 值班 / 负载分来源） |
+
+TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造最小 mock 并标示例）。
+
+## F-007 全站铺开完成 SHA（fe → arch，2026-09-06）
+
+`fe/f006` @ **`13e624c`**，12 页全部铺开、逐页路径限定提交、未 push，请 cherry-pick / merge 进 origin（链在 9cca12d 之后：`13e624c` 页 12）。完整链：449ccec（页 0 登录）→ a4fcbc9（底座 + 页 1）→ b2b70da（页 2）→ b747fb0（页 3）→ b5c4ad4（页 4）→ 4ed0924（页 5 自动化 + React Flow）→ 50f6dff（页 6 报告）→ fcddbea（页 7 集成）→ e81c17e（页 8 知识库，复制 ContentRadar）→ 32653be（页 9 商品素材示例态）→ 5cf2227（页 10 设置 + 11 治理后台）→ 9cca12d（契约缺口 G1–G9）→ 13e624c（页 12 Agent 抽屉 + ⌘K）。
+
+- 每页验收：curl 200 + Chrome 截图 + 控制台 0 error；tsc 0；eslint 0 error；`npm test` 77/77。台账 `docs/plans/F007-状态.md`（每页 fixture / 八态 / 交互清单 + TODO-fixture + 冲突点 C1–C5）。
+- 新增依赖（save-exact，lock 已随提交）：`@xyflow/react`、`@blocknote/*` + `@mantine/*`、`react-arborist`、`fractional-indexing`、`streamdown` 系 + `motion` + `shiki` + `tokenlens`（AI Elements）。
+- ⚠️ 2026-09-06 机器重启清空了 `/private/tmp`：fe 工作树已按 `git worktree add /private/tmp/ka-fe-f006 fe/f006` 重建，所有 commit 无损；**Codex 的 `/private/tmp/ka-be-r009-20260905` 等工作树同样消失**（分支 `be/r010` 等 ref 仍在，未提交改动需 Codex 自查）。
+- 待老板：视觉逐块精修顺序按台账「老板精修状态」列；C3 账户池九态叫法；分层卡 vs 流程条；登录图版（Q5）。
+- 2026-09-06 老板拍板：fe 工作树已从 `/private/tmp/ka-fe-f006` 搬到 **`/Users/aik/ka-fe-f006`**（`git worktree move`，分支不变 `fe/f006`）。盘点：清空只影响目录，各分支 ref 完好；`be/r010` 最后提交 08a18bf（09-06 17:51），重启约 20:22，Codex 最多丢这之间未提交的改动；`codex/fe-functional-bff-v2`、`codex/fe-task5-session-bff`、`codex/personal-team-task4/5/6` 五支旧分支仍未并入 main（各领先 3–5 commit），请 arch 确认是否已被替代。
+
+## 老板拍板（2026-09-06，经 fe 转达）：工作树一律放持久路径
+
+- 所有角色（fe / Codex be / 其他）的 git worktree **不再放 `/private/tmp`**（重启即清空，09-06 已发生一次），统一放 `~/` 下，例如 `/Users/aik/ka-fe-f006`、`/Users/aik/ka-be-r010`。请 arch 写进 `docs/23-开发协作规范.md` 并转告 Codex；Codex 现有 `/private/tmp/ka-be-r009-20260905` 已消失，重建时直接 `git worktree add /Users/aik/ka-be-r010 be/r010`。
+- 配套纪律：每完成一个可交付单元立即路径限定 commit，不攒。
 
 ### P-065｜后端现场恢复与 R013b 清理候选（be，2026-09-06，未申请合流）
 
@@ -3735,3 +3858,15 @@ PG：本机 Docker 已由 arch 重启（db-postgres-1 up），be/r009 五包门�
 - P099→P100→本次三轮核心阻断未改变：P073/P077公开读契约/样例，P083动作/活动态/关联列，P082先冻结再013，P092/093执行幂等与反向记录，P096/098静音/规则语义；后续R012/014/015/016显式排在前置之后，不能自己改顺序。P100已把可独立做的bid_tool只读提案交出，品牌正式交付等老板选型；OS FaaS模板也未出现。
 - 还实读了现有BFF：accounts/work-items列表路由仍缺，但账户最新版v151与014/015表列相关，不能拿旧窄schema补壳就算最新功能完成。全部剩余范围仍保留在P099文档，没有把目标改为仅已做部分。
 - 请arch按P099优先级裁决，或明确许可一个无依赖的下一切片。be暂停自动续跑以避免空转；**状态是blocked/未完成，不是complete，不代表所有代码已终审。** 已交实现均有各P条目SHA/门禁，最新代码297f736、资料b2e4480，无push/部署/真实媒体写。收到有效裁决、PG恢复或新的合法任务即可从本工作树续做。
+
+
+---
+
+### P-102 ✅合流｜fe/f006 @ dea721b → main `32fe9ae`（F-007 全站 12 页）｜arch 2026-09-06
+- 范围：apps/web UI 177 / ui-layout-demo 15 / docs/frontend 11；lib/data、app/api 零差异；inbox-arch 冲突取双方。复跑（ka-arch-gates，web-only）：tsc 0、eslint 0 错 12 warn、test 109/2 fail（main 侧 v2 权威样例，随 be/r010 合流的 v3 适配消除，见 P-103）。
+
+### P-103｜be/r010 @ a8556e1 → main `16b7063`（61 commits：P-065～P-101）｜arch 2026-09-06
+- 逐条：P-065/066 会话清理（720h、SKIP LOCKED、1000/批、CLI 硬截止）✅；P-067 conversion_missing ✅；P-069 达标率分母/预算未就绪 warning ✅（顺手修 compareRate 0→NEW 误用）；P-070 priceSource/history 必有日期/ka_daily 不造日期 ✅；P-071 团队 bounded reader（2k/10k/16MB/截断拒）✅；P-072 团队 v3 组合 ✅；P-073/074 公开 v3 切换 + 六套测试迁移 ✅（WIP 已收口）；P-075 `POST /api/v1/query` 共用入口 ✅；P-076 团队月窗源内聚合（500 户×31 日单 statement）✅；P-078 账户维度三键内部 ✅；P-080 table task 筛选 ✅；P-081 个人任务窗口 ✅（team 422 属实）；P-084 统一查询 BFF ✅；P-085/086 typed 值 + JSONB 贯通 ✅；P-087 dry-run 硬前置 ✅；P-088/089 失败重试 + 覆盖门 ✅；P-090 T1 幂等调度 ✅；P-091 UNKNOWN 一次核查转人工 ✅；P-092 原子入队 ✅；P-094 规则缺数门 ✅；P-095 超成本规则现金口径 ✅；P-096 废弃静音路径封 ✅；P-097 账户静音三键内核 ✅。
+- 裁决：P-068/073/077 → fixtures 同步（priceSource/三键/attempt/health/ready-unknown v3）；P-082 R-011 方案 A；P-083 三处；P-092 幂等边界；P-093 rollback 三表；P-096 三问；P-098 六项；P-100 bid_tool 方案 A —— 全部冻 **契约 v1.7.5**，migration 013 = R-011 + R-010a2 列/表。
+- 纪律：Codex 61 笔只碰 runbook §2.6/§7（合规），台账未碰 ✅。工作树规则已入 docs/23（老板拍）。
+- 门禁：Codex 自报多为 non_pg_verified（PG 断连）；arch 在 ka-arch-gates 真 PG 复跑 `16b7063`，数字见下一条。

@@ -348,3 +348,11 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - G1–G9 裁决全文在 api.md「v1.7.4 追加」，摘要：G1 素材列表加 `ratios.cvr`；G2 watchlist 项加 `type:"account"|"task"` + `GET /tasks?starred=true`；G3 用 v1.7.3 `GET /tasks/:id/bindings`；G4 runs 列表加 `taskId`；G5 不加端点，chip 走下一条消息的 `context`（v1.7.1）；G6 search `type` 五类冻结 + item 形状；G7 确认无文件夹实体、有子节点即文件夹；G8 日报加 `delivery:{status,at,target}`；G9 `GET /me/workload` 计数 DTO，负载分老板未定 → `not_configured` 显 −。
 - 你 TODO-fixture 第三批我看到了（explain 多规则、run-events 失败例、graph 多模板、daily 多角色、library、connections 断连、kb 多篇、materials cvr、admin grants、workload）——按优先级补，先给 workload/search/watchlist-task/daily delivery 四个新 DTO 的 fixture，其余按页精修时补；你现有"诚实空态 + 注明"的做法对。
 - **合 main 别再拖**：main 现在多了 R-009 二批 + be/r010 两轮（`lib/data`/`app/api` 都动了）+ 契约 v1.7.2–1.7.4 + fixtures 159。页 12 做完立刻 `git merge main`（`lib/data/mock-data.ts` 取 main 版），跑 test/tsc/lint，SHA 发我。
+
+
+### F-007 全站 12 页已合 main `32fe9ae`；下一阶段 = 老板逐页精修（arch 2026-09-06 深夜）
+
+- fe/f006 @ dea721b 已 --no-ff 合进 main（177 个 UI 文件 + ui-layout-demo + docs/frontend）；`lib/data`/`app/api` 合流结果与 main 一致，你没越界。arch 复跑：tsc 0、eslint 0 错 12 warn、**web test 109/2 fail**——那 2 个是 main 侧 lib/data 的 v2 权威样例测试（fixtures 已升 v3，后端 be/r010 同轮合流已带 v3 适配），不是你的页面；以合流后 `16b7063` 的复跑为准（P-103）。
+- 工作树规则已写 docs/23；你的 `/Users/aik/ka-fe-f006` 保持。**现在 `git merge main`**（main 含 be/r010 两轮 + 契约 v1.7.4/1.7.5 + fixtures 159 已同步 priceSource/三键/attempt 级），合完把 3401 起起来给老板精修。
+- 旧分支 `codex/fe-functional-bff-v2`、`codex/fe-task5-session-bff` 已被 R-009 二批的 BFF/v2 适配取代，`codex/personal-team-task4/5/6` 由 R-009/R-011 取代；等老板点头后删，你不用管。
+- 精修期纪律：老板口头改 → 你直接改 → 每页一 commit → SHA 发我即合；视觉改动不动导航/路由/数据形状；契约缺口继续写 inbox-arch。

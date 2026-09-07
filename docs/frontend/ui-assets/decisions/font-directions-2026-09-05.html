@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KA Pilot 字体方案 · 五版对比</title>
+<link rel="stylesheet" href="/fonts-demo/misans/MiSans-Regular.min.css">
+<link rel="stylesheet" href="/fonts-demo/misans/MiSans-Medium.min.css">
+<link rel="stylesheet" href="/fonts-demo/misans/MiSans-Semibold.min.css">
+<link rel="stylesheet" href="/fonts-demo/misans/MiSans-Bold.min.css">
+<link rel="stylesheet" href="/fonts-demo/noto/index.css">
+<link rel="stylesheet" href="/docs/frontend/ui-assets/decisions/misans-fixed.css">
+<style>
+@font-face { font-family: "Geist"; src: url("/apps/web/app/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("/apps/web/app/fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "HarmonyOS Sans SC"; src: url("/fonts-demo/harmony/HarmonyOS_Sans_SC_Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "HarmonyOS Sans SC"; src: url("/fonts-demo/harmony/HarmonyOS_Sans_SC_Medium.ttf") format("truetype"); font-weight: 500; font-display: swap; }
+@font-face { font-family: "HarmonyOS Sans SC"; src: url("/fonts-demo/harmony/HarmonyOS_Sans_SC_Bold.ttf") format("truetype"); font-weight: 600 700; font-display: swap; }
+* { box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: #e9e9e9; color: #1a1a1a; font-family: "Geist", "PingFang SC", sans-serif; font-size: 14px; line-height: 1.5; }
+.board { max-width: 1320px; margin: 0 auto; padding: 32px 24px 80px; }
+h1 { margin: 0; font-size: 26px; letter-spacing: -0.01em; }
+.lead { color: #666; margin: 6px 0 18px; max-width: 900px; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #fff; border: 1px solid #ccc; font-size: 12px; color: #666; vertical-align: middle; margin-left: 8px; }
+table.cmp { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; font-size: 13px; margin: 0 0 32px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+table.cmp th, table.cmp td { text-align: left; padding: 10px 14px; border-bottom: 1px solid #eee; vertical-align: top; }
+table.cmp th { background: #f7f7f7; font-weight: 600; white-space: nowrap; }
+table.cmp td:first-child { color: #666; white-space: nowrap; width: 120px; }
+.ok { color: #2b8a3e; font-weight: 600; } .bad { color: #c92a2a; font-weight: 600; } .warn { color: #b8760a; font-weight: 600; }
+.variant { background: #fff; border-radius: 14px; padding: 22px 24px 24px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,.08); font-family: var(--font); }
+.vhead { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; font-family: "Geist", "PingFang SC", sans-serif; }
+.vhead .letter { font-size: 26px; font-weight: 700; }
+.vhead h2 { margin: 0; font-size: 17px; }
+.vhead p { margin: 0; color: #777; font-size: 13px; }
+.row { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 16px; align-items: start; }
+.big { font-size: 40px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+.big small { display: block; font-size: 14px; font-weight: 400; color: #777; letter-spacing: 0; margin-top: 6px; }
+.para { font-size: 14px; color: #333; }
+.para b { font-weight: 600; }
+.weights { display: flex; flex-direction: column; gap: 2px; font-size: 15px; margin-top: 10px; }
+.weights span:nth-child(1) { font-weight: 400; } .weights span:nth-child(2) { font-weight: 500; } .weights span:nth-child(3) { font-weight: 600; } .weights span:nth-child(4) { font-weight: 700; }
+.kpi { border: 1px solid #e5e5e5; border-radius: 10px; padding: 14px 16px; background: linear-gradient(to top, rgba(10,10,10,.035), #fff); }
+.kpi .l { font-size: 12px; color: #737373; }
+.kpi .n { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.kpi .s { font-size: 11.5px; color: #737373; margin-top: 6px; }
+.item { border: 1px solid #e5e5e5; border-left: 3px solid #c92a2a; border-radius: 10px; padding: 12px 14px; font-size: 13px; margin-top: 10px; }
+.item .t { font-size: 12px; color: #737373; }
+.item .n { font-weight: 500; margin-top: 4px; }
+.item dl { margin: 8px 0 0; display: grid; gap: 3px; }
+.item dl div { display: flex; gap: 8px; } .item dt { color: #737373; width: 28px; flex: none; } .item dd { margin: 0; }
+.nums { font-variant-numeric: tabular-nums; font-size: 13px; margin-top: 10px; display: grid; grid-template-columns: auto auto; gap: 2px 18px; width: max-content; }
+.nums span:nth-child(odd) { color: #737373; }
+.f1 { --font: "Geist", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
+.f2 { --font: "Geist", "Noto Sans SC Variable", "PingFang SC", sans-serif; }
+.f3 { --font: "Geist", "MiSans Fixed", "PingFang SC", sans-serif; }
+.f6 { --font: "Geist", "PingFang SC", "MiSans Fixed", "Microsoft YaHei", sans-serif; }
+.f4 { --font: "MiSans Fixed", "PingFang SC", sans-serif; }
+.f5 { --font: "Geist", "HarmonyOS Sans SC", "PingFang SC", sans-serif; }
+.foot { background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,.08); font-family: "Geist", "PingFang SC", sans-serif; }
+.foot h3 { margin: 0 0 8px; font-size: 16px; }
+.foot li { margin: 4px 0; }
+</style>
+</head>
+<body>
+<div class="board">
+  <h1>KA Pilot 字体方案 · 五版对比 <span class="tag">同一段内容 · 真实加载字体文件</span></h1>
+  <p class="lead">你在 Mac 上看不出差别，是因为「X + 系统中文」在 Mac 上都是苹方在显示。差别只在两处：一是英文和数字的字形（Geist 还是中文字体自带的英文），二是到了 Windows 上中文变成微软雅黑还是仍旧是我们自己带的字体。要「Windows 上也不回退」，中文必须自带字体文件（按字切片、用到哪片下哪片）。下面每一版都真实加载了对应字体，F1 之外的四版在 Windows 上和这里看到的一致。</p>
+
+  <section class="variant" style="--font: 'Geist', 'PingFang SC', sans-serif; padding-bottom: 18px;">
+    <div class="vhead"><span class="letter">先看这</span><div><h2>谁最像苹方（同一行字，字重 400 与 600）</h2><p>你要的方案是「Mac 用苹方、Windows 用一个最像苹方的自带字体兜底」。下面第一行是苹方，其余三家是候选；字重已按浏览器标准校正过（之前 MiSans 显得粗，是切片把常规体登记成 330、浏览器抓成 Medium 的问题，已修）。这台 Mac 没有微软雅黑，Windows 原生样子放不出来。</p></div></div>
+    <div style="display:grid; gap:10px;">
+      <div style="font-family:'Geist','PingFang SC',sans-serif; font-size:34px; line-height:1.3;"><span style="font-weight:400;">经营工作台 快手优化师 ¥842,600</span> <span style="font-weight:600; margin-left:16px;">达标率 82.4% 待处理 7</span><small style="font-size:12px; color:#777; margin-left:12px;">苹方（Mac 系统）</small></div>
+      <div style="font-family:'Geist','MiSans Fixed',sans-serif; font-size:34px; line-height:1.3;"><span style="font-weight:400;">经营工作台 快手优化师 ¥842,600</span> <span style="font-weight:600; margin-left:16px;">达标率 82.4% 待处理 7</span><small style="font-size:12px; color:#777; margin-left:12px;">MiSans（字重校正后）</small></div>
+      <div style="font-family:'Geist','Noto Sans SC Variable',sans-serif; font-size:34px; line-height:1.3;"><span style="font-weight:400;">经营工作台 快手优化师 ¥842,600</span> <span style="font-weight:600; margin-left:16px;">达标率 82.4% 待处理 7</span><small style="font-size:12px; color:#777; margin-left:12px;">Noto Sans SC</small></div>
+      <div style="font-family:'Geist','HarmonyOS Sans SC',sans-serif; font-size:34px; line-height:1.3;"><span style="font-weight:400;">经营工作台 快手优化师 ¥842,600</span> <span style="font-weight:600; margin-left:16px;">达标率 82.4% 待处理 7</span><small style="font-size:12px; color:#777; margin-left:12px;">HarmonyOS Sans</small></div>
+      <div style="font-family:'Geist','PingFang SC',sans-serif; font-size:16px; line-height:1.6; color:#333; margin-top:6px;">按严重度排序；每一项都带证据、归因与建议动作。缺数显「−」不显 0，分母为 0 显「−」。<small style="font-size:12px; color:#777; margin-left:8px;">苹方</small></div>
+      <div style="font-family:'Geist','MiSans Fixed',sans-serif; font-size:16px; line-height:1.6; color:#333;">按严重度排序；每一项都带证据、归因与建议动作。缺数显「−」不显 0，分母为 0 显「−」。<small style="font-size:12px; color:#777; margin-left:8px;">MiSans 校正后</small></div>
+      <div style="font-family:'Geist','Noto Sans SC Variable',sans-serif; font-size:16px; line-height:1.6; color:#333;">按严重度排序；每一项都带证据、归因与建议动作。缺数显「−」不显 0，分母为 0 显「−」。<small style="font-size:12px; color:#777; margin-left:8px;">Noto Sans SC</small></div>
+      <div style="font-family:'Geist','HarmonyOS Sans SC',sans-serif; font-size:16px; line-height:1.6; color:#333;">按严重度排序；每一项都带证据、归因与建议动作。缺数显「−」不显 0，分母为 0 显「−」。<small style="font-size:12px; color:#777; margin-left:8px;">HarmonyOS Sans</small></div>
+    </div>
+  </section>
+  <table class="cmp">
+    <tr><th></th><th>F1 Geist + 系统中文（现状）</th><th>F2 Geist + Noto Sans SC</th><th>F3 Geist + MiSans</th><th>F4 全套 MiSans</th><th>F5 Geist + HarmonyOS Sans</th><th>F6 Mac 苹方 / Windows 兜底（推荐）</th></tr>
+    <tr><td>Windows 表现</td><td class="bad">回退微软雅黑，和 Mac 不一样</td><td class="ok">与 Mac 一致</td><td class="ok">与 Mac 一致</td><td class="ok">与 Mac 一致</td><td class="ok">与 Mac 一致</td><td class="ok">Mac 原样苹方；Windows 换成最像苹方的自带字体</td></tr>
+    <tr><td>英文 / 数字</td><td>Geist，等宽数字对齐好</td><td>Geist</td><td>Geist</td><td>MiSans 自带英文，数字略圆</td><td>Geist</td><td>Geist</td></tr>
+    <tr><td>中文气质</td><td>苹方（Mac 才有）</td><td>标准、中性、略工整</td><td>现代、略圆润、笔画均匀，屏幕上最耐看</td><td>同 F3</td><td>与 MiSans 接近，字面略大</td><td>Mac 就是苹方；Windows 上是你在上面挑的那家</td></tr>
+    <tr><td>体积</td><td>0（用系统）</td><td>切片 101 片共 4.6MB，一页实际下载约 300–500KB</td><td>切片每字重约 2MB，4 字重共 11MB，一页实际约 400–600KB</td><td>同 F3</td><td class="warn">未切片 TTF 3 字重 24MB，正式用前必须自己切片</td><td>Mac 0 下载（苹方在，兜底字体根本不会请求）；Windows 按需下载几百 KB</td></tr>
+    <tr><td>许可</td><td>—</td><td class="ok">OFL，最省心</td><td class="ok">小米宣布全球免费商用，正式分发前再核一次条款</td><td>同 F3</td><td class="warn">华为允许商用但限制修改，切片属于修改，需核</td><td>同所选兜底字体</td></tr>
+    <tr><td>我的判断</td><td>不满足你的要求</td><td>稳妥、不出错、少一点个性</td><td class="ok">推荐：质感最好，Geist 管数字、MiSans 管中文</td><td>中英统一但数字弱于 Geist</td><td>效果接近 F3，工程和许可成本更高</td><td class="ok">推荐：你要的「Mac 用 F1、Windows 找最像的」，实现就是把兜底字体排在苹方后面</td></tr>
+  </table>
+
+  <template id="specimen">
+    <div class="row">
+      <div>
+        <div class="big">¥842,600<small>今日消耗 · 较昨日 +8.2%</small></div>
+        <div class="weights"><span>400 常规 · 快手优化师经营工作台 KA Pilot</span><span>500 中等 · 快手优化师经营工作台 KA Pilot</span><span>600 半粗 · 快手优化师经营工作台 KA Pilot</span><span>700 粗体 · 快手优化师经营工作台 KA Pilot</span></div>
+        <div class="nums"><span>真实 CPA</span><span>¥36.80 / 考核 ¥38.00</span><span>达标率</span><span>82.4% (+3.1pp)</span><span>BI 量级</span><span>18,620 (−2.1%)</span><span>账户</span><span>KUAISHOU · demo-account-07</span></div>
+      </div>
+      <div>
+        <div class="kpi"><div class="l">真实 CPA</div><div class="n">¥36.80</div><div class="s">考核 ¥38 · 达标 ✓ · 消耗 ÷ 真实转化</div></div>
+        <div class="kpi" style="margin-top:10px"><div class="l">待处理</div><div class="n" style="color:#c92a2a">7</div><div class="s">2 条 P0，先处理 · 异常账户行数</div></div>
+      </div>
+      <div>
+        <p class="para" style="margin:0"><b>今日待处理队列</b>按严重度排序；每一项都带证据、归因与建议动作。缺数显「−」不显 0，分母为 0 显「−」，数据不新鲜时执行入口置灰。</p>
+        <div class="item"><div class="t">P0 · 超成本起量</div><div class="n">演示账户 · 华东 07</div><dl><div><dt>证据</dt><dd>真实 CPA ¥41.2，超考核 37%，今日已耗 ¥8,200</dd></div><div><dt>归因</dt><dd>CTR 2.1% → 1.4%，主力素材第 9 天</dd></div><div><dt>建议</dt><dd>降价至 ¥26（−13%）｜同型操作 3 次 2 次见效</dd></div></dl></div>
+      </div>
+    </div>
+  </template>
+
+  <section class="variant f1"><div class="vhead"><span class="letter">F1</span><div><h2>Geist + 系统中文（现状）</h2><p>Mac 上是苹方；Windows 会变成微软雅黑。作为基准放这里。</p></div></div><div class="mount"></div></section>
+  <section class="variant f2"><div class="vhead"><span class="letter">F2</span><div><h2>Geist + Noto Sans SC</h2><p>思源黑体的 Google 版，OFL 许可最干净，切片方案成熟。</p></div></div><div class="mount"></div></section>
+  <section class="variant f3"><div class="vhead"><span class="letter">F3</span><div><h2>Geist + MiSans（推荐）</h2><p>英文数字 Geist，中文 MiSans。屏幕显示最匀、最现代，和 shadcn 的气质最接近。</p></div></div><div class="mount"></div></section>
+  <section class="variant f4"><div class="vhead"><span class="letter">F4</span><div><h2>全套 MiSans</h2><p>中英数字一个家族，统一但数字没有 Geist 挺拔。</p></div></div><div class="mount"></div></section>
+  <section class="variant f5"><div class="vhead"><span class="letter">F5</span><div><h2>Geist + HarmonyOS Sans SC</h2><p>效果接近 F3；文件未切片、许可要核，工程成本更高。</p></div></div><div class="mount"></div></section>
+
+  <section class="variant f6"><div class="vhead"><span class="letter">F6</span><div><h2>Mac 苹方 / Windows 兜底（推荐）</h2><p>字体栈：Geist → 苹方 → 兜底字体 → 微软雅黑。Mac 有苹方就停在苹方，兜底文件一个字节都不下；Windows 没苹方才用兜底。所以这一版在 Mac 上和 F1 一模一样，差别只发生在 Windows。</p></div></div><div class="mount"></div></section>
+
+  <section class="foot">
+    <h3>怎么拍板</h3>
+    <ul>
+      <li>回 <b>F1–F6</b> 编号即可；选 F6 再顺手说 Windows 兜底用「MiSans / Noto / HarmonyOS」哪家（看最上面那段谁最像苹方）。定了之后：字体文件切片自带进 <code>apps/web</code>，Windows 和 Mac 一致，不依赖外网、不回退系统字体。</li>
+      <li>另有一个没下载的候选：<b>阿里巴巴普惠体 3.0</b>（免费商用、集团内最顺理成章）。你要看的话我拉下来加一版 F6。</li>
+      <li>字体和风格（A/B/C/D）是两个独立决定，互不影响。</li>
+    </ul>
+  </section>
+</div>
+<script>
+  const tpl = document.getElementById("specimen");
+  document.querySelectorAll(".mount").forEach((m) => m.appendChild(tpl.content.cloneNode(true)));
+</script>
+</body>
+</html>

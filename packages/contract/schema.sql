@@ -1041,3 +1041,68 @@ CREATE TABLE identity_preferences (
   preferences JSONB NOT NULL DEFAULT '{}',   -- {theme:{mode,hue}, locale}
   updated_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- ===== v1.7.5（2026-09-06 arch；migration 013 = R-011 团队快照 + R-010a2 列 + 规则 SLA；Codex 实现） =====
+ALTER TABLE account_metrics_daily ADD COLUMN source_kind TEXT NOT NULL DEFAULT 'platform';   -- platform|ka_data
+ALTER TABLE account_metrics_daily ADD COLUMN snapshot_run_id UUID;                             -- 团队镜像行非空；个人 NULL
+ALTER TABLE account_metrics_daily ADD COLUMN published_at TIMESTAMPTZ;
+CREATE TABLE team_sync_runs (                 -- R-011 一次团队同步尝试
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL,
+  source TEXT NOT NULL DEFAULT 'ka_data', binding_revision TEXT NOT NULL, scheduled_key TEXT NOT NULL,
+  date_from DATE NOT NULL, date_to DATE NOT NULL, media TEXT[] NOT NULL,
+  base_publication_revision BIGINT, status TEXT NOT NULL,   -- staging|validated|published|failed|superseded
+  source_snapshot_evidence TEXT NOT NULL DEFAULT 'unverified',  -- unverified|verified
+  manifest JSONB, row_count INTEGER, coverage JSONB, error TEXT,
+  started_at TIMESTAMPTZ DEFAULT now(), validated_at TIMESTAMPTZ, published_at TIMESTAMPTZ,
+  UNIQUE (workspace_id, scheduled_key)
+);
+CREATE TABLE team_sync_pages (
+  workspace_id UUID NOT NULL, run_id UUID NOT NULL REFERENCES team_sync_runs(id), page_no INTEGER NOT NULL,
+  boundary JSONB NOT NULL, page_hash TEXT NOT NULL, row_count INTEGER NOT NULL, bytes INTEGER NOT NULL,
+  source_revision TEXT, status TEXT NOT NULL,     -- fetched|validated|rejected
+  PRIMARY KEY (workspace_id, run_id, page_no)
+);
+CREATE TABLE team_metric_staging (             -- 不可变 run 数据；发布后保留供审计/回退
+  workspace_id UUID NOT NULL, run_id UUID NOT NULL REFERENCES team_sync_runs(id),
+  media TEXT NOT NULL, account_id TEXT NOT NULL, ds DATE NOT NULL,
+  cost NUMERIC, cash_cost NUMERIC, exposure BIGINT, click BIGINT, real_conversion BIGINT,
+  cash_assessment NUMERIC, source_task_id TEXT, field_sources JSONB, page_no INTEGER NOT NULL,
+  PRIMARY KEY (workspace_id, run_id, media, account_id, ds)
+);
+CREATE TABLE team_snapshot_heads (             -- 每日当前生效 run
+  workspace_id UUID NOT NULL, source TEXT NOT NULL, ds DATE NOT NULL,
+  active_run_id UUID NOT NULL REFERENCES team_sync_runs(id), published_at TIMESTAMPTZ NOT NULL,
+  publication_revision BIGINT NOT NULL, coverage JSONB,
+  PRIMARY KEY (workspace_id, source, ds)
+);
+CREATE TABLE team_sync_state (
+  workspace_id UUID NOT NULL, source TEXT NOT NULL,
+  last_attempt_run_id UUID, last_completed_run_id UUID, publication_revision BIGINT NOT NULL DEFAULT 0,
+  last_attempt_state TEXT, updated_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, source)
+);
+-- R-010a2
+ALTER TABLE work_items ADD COLUMN superseded_by UUID;          -- 跨级重弹：旧项 expired + 指向新项（同 workspace）
+ALTER TABLE work_items ADD COLUMN sla_paused_at TIMESTAMPTZ;   -- 缺数 SLA 暂停区间起点
+ALTER TABLE work_items ADD COLUMN sla_paused_total_ms BIGINT NOT NULL DEFAULT 0;
+-- work_items.status 集合加 dispatched；活动态 = open|processing|dispatched|escalated（CHECK 与 partial unique 同步）
+CREATE TABLE work_item_sla_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), workspace_id UUID NOT NULL, work_item_id UUID NOT NULL,
+  kind TEXT NOT NULL,          -- pause|resume
+  at TIMESTAMPTZ NOT NULL DEFAULT now(), reason TEXT
+);
+CREATE TABLE changeset_reversals (
+  workspace_id UUID NOT NULL, original_id UUID NOT NULL, reverse_id UUID NOT NULL,
+  source_execution_run_id UUID NOT NULL, created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (workspace_id, reverse_id)
+);
+CREATE TABLE changeset_reversal_items (
+  workspace_id UUID NOT NULL, reverse_id UUID NOT NULL, reverse_item_id UUID NOT NULL, original_item_id UUID NOT NULL,
+  PRIMARY KEY (workspace_id, reverse_id, reverse_item_id)
+);
+CREATE TABLE execution_run_items (             -- 逐 attempt 执行明细（历史不可变）
+  workspace_id UUID NOT NULL, execution_run_id UUID NOT NULL, item_id UUID NOT NULL, attempt INTEGER NOT NULL,
+  status TEXT NOT NULL,        -- success|failed|unknown|skipped
+  media_code TEXT, media_message TEXT, applied_value JSONB, applied_at TIMESTAMPTZ,
+  PRIMARY KEY (workspace_id, execution_run_id, item_id, attempt)
+);

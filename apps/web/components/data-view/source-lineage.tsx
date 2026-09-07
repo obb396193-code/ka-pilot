@@ -55,3 +55,26 @@ export function SourceLineageBar({ lineage }: { lineage: LineageBundle }) {
     </section>
   )
 }
+
+// 一行紧凑版：页脚用，来源 · 截至 · 覆盖 · 口径版本；异常态用 badge 点出。
+export function SourceLineageInline({ lineage }: { lineage: LineageBundle }) {
+  const sources = lineage.mode === "single" ? [lineage.source] : [lineage.kaData, lineage.platform]
+  return (
+    <div aria-label="数据血缘" className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+      {sources.map((source) => (
+        <span key={source.source} className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
+          <IconDatabase className="size-3.5" />
+          <span className="font-medium text-foreground/80">{source.sourceLabel}</span>
+          <span>截至 {formatAsOf(source.dataAsOf)}</span>
+          <span>覆盖 {source.coverage}</span>
+          <span className="font-mono">口径 {source.metricVersion}</span>
+          {source.metadataAvailability !== "known" ? <Badge variant="secondary">元数据{source.metadataAvailability === "partial" ? "部分" : "未知"}</Badge> : null}
+          {source.truncated ? <Badge variant="outline">已截断</Badge> : null}
+          {source.partial ? <Badge variant="secondary">部分覆盖</Badge> : null}
+          {source.stale ? <Badge variant="destructive">超过时效门</Badge> : null}
+        </span>
+      ))}
+      {lineage.mode === "reconcile" ? <Badge variant={lineage.comparability.comparable ? "outline" : "secondary"}>{lineage.comparability.comparable ? "双源可比" : "双源不可比"}</Badge> : null}
+    </div>
+  )
+}

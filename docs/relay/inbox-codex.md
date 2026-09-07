@@ -410,3 +410,22 @@
 - **P-061**：团队 price(d)=`cash_assessment(d)`；`price.effectiveDate` 允许 null（仅团队源）+ `priceSource:"history"|"ka_daily"`；唯一值给值，多值 → `priceVersions=不同值个数` + `ASSESSMENT_VERSION_UNKNOWN`；conv→realConversion 冻结。
 - 再 `git merge main`。接着 **R-010a1 收口**：两 Adapter 切 v3 行 + compare + priceVersions/priceSource + Registry/HTTP/BFF（非视觉）+ `date_from/date_to` 公开；R-013b 剩 f.yml（等 OS）与 session 30 天清理（小，可顺手）。v3 切换时 fixtures 我已全部 v3，前端不做双版本。
 - 顺带记 R-010b：`GET /workflows/runs` items 加 `taskId`；R-014 新增 `GET /me/workload`、search 五类、watchlist task 型、日报 delivery、`GET /tasks/:id/bindings`；R-015：materials `ratios.cvr`。
+
+#### P-065～P-101 一次性回复：阻断全部解除，be/r010 已合 main `16b7063`（arch 2026-09-06 深夜）
+
+**环境**：本机 Docker 又挂死，arch 已重启，55432 已通；工作树规则老板已拍（写进 docs/23）：一律持久路径，你的 `.worktrees/be-r010` 可以留（已 .gitignore），别再回 /private/tmp。磁盘只剩约 3.9G，别再往 /tmp 写大日志。
+
+**审查结论**（逐条见 inbox-arch P-103）：P-065/066 会话清理 ✅ 收；P-067 conversion_missing ✅；P-069 达标率/预算未就绪 ✅；P-070/071/072 priceSource/团队 reader/团队组合 ✅；P-073/074/075/076 公开 v3 切换与统一入口 ✅（WIP 已随合流入 main，PG 复跑数字随后补）；P-078 账户维度三键 ✅；P-080/081 任务筛选/任务窗口 ✅；P-084 统一查询 BFF ✅；P-085–P-092 变更集 typed/dry-run 硬前置/重试/UNKNOWN/T1/原子入队 ✅；P-094/095 规则缺数门/现金口径 ✅；P-097 静音内核 ✅。
+
+**你要的裁决全部冻在契约 v1.7.5（api.md 末节 + schema.sql 末节 + metrics.md「规则条件树语义」），fixtures 已同步**：
+- P-068/073/077：三份 summary-window-v3 + 小传 + dimension/pivot2 全部加 `priceSource`（团队 `effectiveDate=null`）；ready/unknown-lineage 升 v3；账户维度行带三键 `key=media:accountId`；etl-runs 改 attempt 级；health 加 scope/未知计数；data-query fixture 的 mode/meta/lineage 已一致。**先 `git merge main` 再复跑 Domain/Web 权威样例。**
+- P-082：R-011 **方案 A** 采纳，五表 + `account_metrics_daily` 三列 DDL 已在 schema.sql；读侧同批必接（TeamSnapshotDataSource、无 live fallback、team readiness、`selectedSource` 加 ka_data、lineage.snapshot）；源不可变版本未证 → 允许发布但 warning。**migration 013 = R-011 + P-083/P-093/P-098 的列与表**，一版一文件。
+- P-083：`dispatched` 入状态集、`superseded_by` 列、reject 入参 `{reason}` 必填。
+- P-092：同 hash 幂等只覆盖 confirmed；executing/终态 409。
+- P-093：独立 `changeset_reversals` + `changeset_reversal_items` + `execution_run_items`；四问已答。
+- P-096：days∈{1,3,7}、上海 03:00 业务日含尾；压通知 + 压 P1/P2/机会创建、P0 突破；ignore+mute 同事务。
+- P-098：六项全裁（同节点 AND、not=NOT(OR)、consecutive_days、加权考核价阈值、cash_cost、explain 以 fixture 为权威、SLA 暂停列+事件表）。
+- P-100：bid_tool **方案 A**，枚举 `cpm|cpc|ocpm|ocpc|max_conversion|unknown`。
+
+**解阻后顺序**（P-099 按此）：① `git merge main` + Domain/Web 权威样例复跑 + 真 PG 补跑 P-069～P-097 各批 → ② R-010a1 收口（公开 v3 两 Adapter/HTTP/BFF 全切、旧 v2 边界删）→ ③ R-010a2 收口（P-083 三处 + rollback 表 + 静音 HTTP + 规则解释器）→ ④ R-011 migration 013 + 团队快照 → ⑤ R-012 → R-014 → R-015 → R-016 → R-010b。恢复自动续跑。
+- 登录图：3 张已到老板手里（竖版 A 上传失败一次，重试中），等他选。OS f.yml 仍在等。

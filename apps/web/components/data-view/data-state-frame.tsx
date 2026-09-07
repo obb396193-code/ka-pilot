@@ -4,12 +4,13 @@ import { IconAlertCircle, IconDatabaseOff, IconLock } from "@tabler/icons-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { DataResponse } from "@/lib/data/data-view"
-import { SourceLineageBar } from "./source-lineage"
+import { cn } from "@/lib/utils"
+import { SourceLineageBar, SourceLineageInline } from "./source-lineage"
 
-function LoadingPanel() {
+function LoadingPanel({ cards = 4 }: { cards?: number }) {
   return (
-    <div aria-busy="true" aria-label="正在加载数据" className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-      {Array.from({ length: 4 }).map((_, index) => (
+    <div aria-busy="true" aria-label="正在加载数据" className={cn("grid gap-4 md:grid-cols-2", cards === 6 ? "xl:grid-cols-3 @[1360px]/main:grid-cols-6" : "xl:grid-cols-4")}>
+      {Array.from({ length: cards }).map((_, index) => (
         <Card key={index}>
           <CardHeader><Skeleton className="h-4 w-24" /></CardHeader>
           <CardContent className="space-y-3">
@@ -43,19 +44,23 @@ function BlockingPanel({ kind, message, requestId, retryable }: { kind: "empty" 
   )
 }
 
-export function DataStateFrame<T>({ response, children }: { response: DataResponse<T>; children: ReactNode }) {
+// lineage="full"：血缘条置顶（数据页）；lineage="inline"：血缘收成一行页脚，面板随母版内容区留白（工作台）。
+export function DataStateFrame<T>({ response, children, lineage = "full" }: { response: DataResponse<T>; children: ReactNode; lineage?: "full" | "inline" }) {
   const noAccess = response.state === "unauthorized" || response.state === "forbidden"
   const error = ["error", "timeout", "too-large"].includes(response.state)
   const degraded = ["unavailable", "truncated", "partial", "stale"].includes(response.state)
+  const inline = lineage === "inline"
+  const pad = inline ? "px-4 lg:px-6" : undefined
   return (
-    <div className="min-w-0 space-y-4">
-      <SourceLineageBar lineage={response.lineage} />
-      {response.state === "loading" ? <LoadingPanel /> : null}
-      {response.state === "empty" ? <BlockingPanel kind="empty" message={response.message} /> : null}
-      {error ? <BlockingPanel kind="error" message={response.message} requestId={response.error?.requestId} retryable={response.error?.retryable} /> : null}
-      {noAccess ? <BlockingPanel kind="no-access" message={response.message} requestId={response.error?.requestId} retryable={response.error?.retryable} /> : null}
-      {degraded ? <div role="alert" className="rounded-lg border bg-muted/45 px-4 py-3 text-sm"><strong>{response.state === "unavailable" ? "来源或对账不可用" : response.state === "truncated" ? "结果已截断" : response.state === "stale" ? "数据已过期" : "仅返回部分数据"}</strong><p className="mt-1 text-muted-foreground">{response.message ?? "当前结果只用于查看，不参与全量判断或写操作。"}</p>{response.error?.requestId ? <p className="mt-2 font-mono text-xs text-muted-foreground">requestId: {response.error.requestId}</p> : null}</div> : null}
+    <div className={cn("min-w-0", inline ? "flex flex-col gap-4 md:gap-6" : "space-y-4")}>
+      {!inline ? <SourceLineageBar lineage={response.lineage} /> : null}
+      {response.state === "loading" ? <div className={pad}><LoadingPanel cards={inline ? 6 : 4} /></div> : null}
+      {response.state === "empty" ? <div className={pad}><BlockingPanel kind="empty" message={response.message} /></div> : null}
+      {error ? <div className={pad}><BlockingPanel kind="error" message={response.message} requestId={response.error?.requestId} retryable={response.error?.retryable} /></div> : null}
+      {noAccess ? <div className={pad}><BlockingPanel kind="no-access" message={response.message} requestId={response.error?.requestId} retryable={response.error?.retryable} /></div> : null}
+      {degraded ? <div className={pad}><div role="alert" className="rounded-lg border bg-muted/45 px-4 py-3 text-sm"><strong>{response.state === "unavailable" ? "来源或对账不可用" : response.state === "truncated" ? "结果已截断" : response.state === "stale" ? "数据已过期" : "仅返回部分数据"}</strong><p className="mt-1 text-muted-foreground">{response.message ?? "当前结果只用于查看，不参与全量判断或写操作。"}</p>{response.error?.requestId ? <p className="mt-2 font-mono text-xs text-muted-foreground">requestId: {response.error.requestId}</p> : null}</div></div> : null}
       {["ready", "unavailable", "truncated", "partial", "stale"].includes(response.state) ? children : null}
+      {inline ? <div className={pad}><SourceLineageInline lineage={response.lineage} /></div> : null}
     </div>
   )
 }
