@@ -157,9 +157,10 @@ export function CommandPalette() {
           </CommandItem>
         </CommandGroup>
       </CommandList>
-      <div className="flex items-center justify-between border-t bg-muted/40 px-3 py-2 text-[11px] text-muted-foreground">
-        <span className="flex items-center gap-3"><Key>↑↓</Key>选择<Key>↵</Key>打开<Key>esc</Key>关闭</span>
-        <span>示例只有 2 个对象；接入后覆盖全量账户 / 任务 / 工作项 / 素材 / 文档</span>
+      {/* 脚注：快捷键一组不许换行（原来「选择/打开/关闭」被右边长说明挤成竖排），说明文字可截断 */}
+      <div className="flex items-center justify-between gap-3 border-t bg-muted/40 px-3 py-2 text-[11px] text-muted-foreground">
+        <span className="flex shrink-0 items-center gap-3 whitespace-nowrap"><Key>↑↓</Key>选择<Key>↵</Key>打开<Key>esc</Key>关闭</span>
+        <span className="min-w-0 truncate" title="示例只有 2 个对象；接入后覆盖全量账户 / 任务 / 工作项 / 素材 / 文档">示例只有 2 个对象，接入后覆盖全量</span>
       </div>
     </CommandDialog>
   )

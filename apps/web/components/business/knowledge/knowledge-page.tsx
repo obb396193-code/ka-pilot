@@ -53,7 +53,7 @@ export function KnowledgePage({ initialId = null }: { initialId?: string | null 
         <StateFrame state={state} unlock="知识库接口（文档 / 搜索 / 修订 / 双链 / 业务关联）接入后切换为真数据" empty={{ title: "知识库还是空的", description: "新建文档，或从报告页把日报归档进来。" }}>
           <div className="grid min-h-[640px] gap-0 rounded-xl border bg-card @3xl/main:grid-cols-[280px_minmax(0,1fr)]">
             <div className={cn("flex min-h-0 flex-col border-b p-3 @3xl/main:border-r @3xl/main:border-b-0", doc ? "hidden @3xl/main:flex" : "flex")}>
-              <div className="relative mb-2 shrink-0"><IconSearch className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" /><Input value={search} onChange={(e) => setSearch(e.target.value)} aria-label="搜文档" placeholder="搜文档（FTS，非 LLM）" className="h-8 pl-8 text-xs" /></div>
+              <div className="relative mb-2 shrink-0"><IconSearch className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" /><Input value={search} onChange={(e) => setSearch(e.target.value)} aria-label="搜文档" placeholder="搜文档（按关键词，不走 AI）" className="h-8 pl-8 text-xs" /></div>
               {q ? (
                 <div className="flex flex-col gap-1 overflow-auto">{hits.length ? hits.map((hit) => <button key={hit.id} type="button" onClick={() => { setSelId(hit.id); setSearch("") }} className="rounded-md px-2 py-1.5 text-left hover:bg-muted"><span className="flex items-center gap-2 text-sm font-medium">{hit.title}<TypeChip className="text-[10px]">{kbKindLabel[hit.kind]}</TypeChip>{hit.score !== null ? <span className="ml-auto text-[10px] text-muted-foreground tabular-nums">{hit.score.toFixed(2)}</span> : null}</span><span className="block truncate text-xs text-muted-foreground">{hit.snippet}</span></button>) : <p className="px-2 py-6 text-center text-xs text-muted-foreground">没有匹配「{search}」的文档</p>}</div>
               ) : allNodes.length ? (
@@ -61,7 +61,7 @@ export function KnowledgePage({ initialId = null }: { initialId?: string | null 
               ) : (
                 <p className="px-2 py-10 text-center text-xs text-muted-foreground">还没有内容<br />右键新建，或上方「新建文档」</p>
               )}
-              <p className="shrink-0 pt-2 text-[10.5px] leading-relaxed text-muted-foreground">拖拽 = 移动 / 排序（position 只改一行）· 右键 = 新建 / 改名 / 删</p>
+              <p className="shrink-0 pt-2 text-[10.5px] leading-relaxed text-muted-foreground">拖拽 = 移动 / 排序（只改被拖的那一行）· 右键 = 新建 / 改名 / 删</p>
             </div>
             <div className={cn("overflow-auto px-4 py-4 @3xl/main:px-10", doc ? "" : "hidden @3xl/main:block")}>
               {!doc ? (

@@ -19,7 +19,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { fmtTime, isOk } from "@/lib/fixtures/contract"
-import { cardCallbacksFixture, cardLevelHint, cardsFixture, connectionsFixture, escalateLabel, identityMappingsFixture, messageKindLabel, messageStatusMeta, messagesFixture, policiesFixture, providerLabel, type CardCallback, type CardInstance, type IdentityMapping, type MessageItem } from "@/lib/fixtures/integrations"
+import { cardCallbacksFixture, cardLevelHint, cardLevelLabel, cardsFixture, connectionsFixture, escalateLabel, identityMappingsFixture, messageKindLabel, messageStatusMeta, messagesFixture, policiesFixture, providerLabel, type CardCallback, type CardInstance, type IdentityMapping, type MessageItem } from "@/lib/fixtures/integrations"
 import { subscriptionKindLabel, subscriptionsFixture, type Subscription } from "@/lib/fixtures/reports"
 import { escalationsFixture, rosterFixture } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
@@ -70,7 +70,7 @@ function ConnectionsTab() {
             </CardContent>
             <CardFooter className="gap-2">
               <Button size="sm" variant="outline" onClick={() => toast.success("探活通过", { description: "机器人 token 与群可达" })}><IconRefresh />探活</Button>
-              <Button size="sm" variant="ghost" onClick={() => toast("发送测试消息", { description: "向群发一条 L0 测试卡" })}><IconSend />测试消息</Button>
+              <Button size="sm" variant="ghost" onClick={() => toast("发送测试消息", { description: "向群发一条只读测试卡" })}><IconSend />测试消息</Button>
             </CardFooter>
           </Card>
         ))}
@@ -81,7 +81,7 @@ function ConnectionsTab() {
         </Card>
       </div>
       <Card>
-        <CardHeader><CardTitle>身份映射</CardTitle><CardDescription>identity-mappings · 外部账号 ↔ 产品成员；未验证成员在群里发的指令不执行写操作</CardDescription></CardHeader>
+        <CardHeader><CardTitle>身份映射</CardTitle><CardDescription>外部账号 ↔ 产品成员；未验证成员在群里发的指令不执行写操作</CardDescription></CardHeader>
         <CardContent><DataGrid table={table} empty="没有映射" showPagination={false} showColumnPicker={false} /></CardContent>
       </Card>
     </div>
@@ -144,13 +144,13 @@ function CardsTab() {
       <div className="grid gap-4 @3xl/main:grid-cols-2 @6xl/main:grid-cols-4">
         {data.templates.map((template) => (
           <Card key={template.id}>
-            <CardHeader><div className="flex items-start justify-between gap-2"><CardTitle className="text-base">{template.name}</CardTitle><TypeChip>{template.level}</TypeChip></div><CardDescription>{cardLevelHint[template.level]} · <span className="font-mono">{template.id}</span></CardDescription></CardHeader>
+            <CardHeader><div className="flex items-start justify-between gap-2"><CardTitle className="text-base">{template.name}</CardTitle><TypeChip>{cardLevelLabel[template.level]}</TypeChip></div><CardDescription>{cardLevelHint[template.level]} · <span className="font-mono">{template.id}</span></CardDescription></CardHeader>
             <CardContent className="flex flex-wrap gap-1">{template.actions.map((action) => <Badge key={action} variant="outline">{action}</Badge>)}{template.hashCheck ? <Badge variant="secondary" className="gap-1"><IconShieldCheck className="size-3" />hash 校验</Badge> : null}</CardContent>
           </Card>
         ))}
       </div>
       <Card>
-        <CardHeader><CardTitle>卡片实例</CardTitle><CardDescription>已发出的卡片；L2 卡带校验指纹和有效期，过期不可确认</CardDescription></CardHeader>
+        <CardHeader><CardTitle>卡片实例</CardTitle><CardDescription>已发出的卡片；确认执行卡带校验指纹和有效期，过期不可确认</CardDescription></CardHeader>
         <CardContent><DataGrid table={instTable} empty="没有卡片实例" showPagination={false} showColumnPicker={false} /></CardContent>
       </Card>
       <Card>
@@ -169,7 +169,7 @@ function OncallTab() {
   return (
     <div className="grid gap-4 @5xl/main:grid-cols-2">
       <Card>
-        <CardHeader><CardTitle>分级策略</CardTitle><CardDescription>alerts/policies · 默认 P0 30 分钟未确认升级备班 → 负责人</CardDescription></CardHeader>
+        <CardHeader><CardTitle>分级策略</CardTitle><CardDescription>默认：P0 满 30 分钟没人确认，先升给备班，再升给负责人</CardDescription></CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>级别</TableHead><TableHead>破静默</TableHead><TableHead>确认时限</TableHead><TableHead>升级</TableHead></TableRow></TableHeader>
@@ -179,7 +179,7 @@ function OncallTab() {
         </CardContent>
       </Card>
       <Card>
-        <CardHeader><div className="flex items-center justify-between gap-2"><div><CardTitle>值班表</CardTitle><CardDescription>alerts/roster · 主班 / 备班</CardDescription></div><Button size="sm" variant="outline" onClick={() => toast("换班申请已发出", { description: "接口接入后生效（当前为示例）" })}>换班</Button></div></CardHeader>
+        <CardHeader><div className="flex items-center justify-between gap-2"><div><CardTitle>值班表</CardTitle><CardDescription>主班 / 备班</CardDescription></div><Button size="sm" variant="outline" onClick={() => toast("换班申请已发出", { description: "接口接入后生效（当前为示例）" })}>换班</Button></div></CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>日期</TableHead><TableHead>主班</TableHead><TableHead>备班</TableHead></TableRow></TableHeader>
@@ -188,7 +188,7 @@ function OncallTab() {
         </CardContent>
       </Card>
       <Card className="@5xl/main:col-span-2">
-        <CardHeader><CardTitle>升级链</CardTitle><CardDescription>alerts/escalations · 未确认按策略逐级升级；可暂停</CardDescription></CardHeader>
+        <CardHeader><CardTitle>升级链</CardTitle><CardDescription>未确认按策略逐级升级；可暂停</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-2">
           {escalations.length ? escalations.map((item) => { const isPaused = paused[item.escalationId] ?? item.paused; return <div key={item.escalationId} className="flex flex-wrap items-center gap-3 rounded-lg border px-3 py-2 text-sm"><span className="font-mono text-xs text-muted-foreground">…{item.escalationId.slice(-4)}</span><ol className="flex flex-wrap items-center gap-2">{item.chain.map((step) => <li key={step.level} className="flex items-center gap-1.5"><StatusChip tone={step.status === "acked" ? "success" : step.status === "unacked" ? "critical" : "pending"}>L{step.level} {step.status === "acked" ? "已确认" : step.status === "unacked" ? "未确认" : "待触发"}</StatusChip><span>{step.to.name}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(step.at)}</span></li>)}</ol><span className="ml-auto flex items-center gap-2 text-xs"><span className="text-muted-foreground">{isPaused ? "已暂停" : "运行中"}</span><Switch checked={!isPaused} onCheckedChange={(checked) => { setPaused((prev) => ({ ...prev, [item.escalationId]: !checked })); toast(checked ? "升级链已恢复" : "升级链已暂停", { description: `${checked ? "恢复后按规则继续升级" : "暂停期间不再向上升级"}` }) }} aria-label="升级链开关" /></span></div> }) : <p className="text-sm text-muted-foreground">没有进行中的升级</p>}
         </CardContent>
@@ -231,7 +231,7 @@ export function IntegrationsPage() {
   const [tab, setTab] = usePageTab<Tab>(tabs, "connections")
   return (
     <PageBody>
-      <PageHeader title="集成与通知" description="钉钉网关：接入、身份映射、订阅、卡片 L0–L3、值守升级链、消息记录（出站 ∪ 入站）" isMock={isMock} actions={<StateSwitch />} />
+      <PageHeader title="集成与通知" description="钉钉网关：接入、身份映射、订阅、四类卡片（只读 / 可取消 / 确认执行 / 结果）、值守升级链、消息记录（出站 + 入站）" isMock={isMock} actions={<StateSwitch />} />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="消息网关（接入 / 订阅 / 卡片 / 消息记录）接入后切换为真数据" empty={{ title: "还没有接入", description: "先在接入管理连上钉钉机器人。" }}>
@@ -241,7 +241,7 @@ export function IntegrationsPage() {
               <Card>
                 <CardHeader><CardTitle>群助手</CardTitle><CardDescription>在钉钉群 @KA Pilot 经营助手，用自然语言查数、建任务、调工作流；写操作一律出变更集卡片确认</CardDescription></CardHeader>
                 <CardContent className="grid gap-3 @3xl/main:grid-cols-3 text-sm">
-                  {[["查数", "「AAC 拉新 昨天 现金 CPA」→ 回 L0 卡：账面 / 现金并排，缺数显 −"], ["建任务", "「新建任务 闲鱼潜客 9 月 目标 5 万」→ 回确认卡，确认后创建（未映射身份不执行）"], ["调工作流", "「跑一遍 新任务开户到基建」→ 起 run，到人工确认节点发 L2 卡"]].map(([title, body]) => <div key={title} className="rounded-lg border p-3"><p className="font-medium">{title}</p><p className="mt-1 text-xs text-muted-foreground">{body}</p></div>)}
+                  {[["查数", "「AAC 拉新 昨天 现金 CPA」→ 回只读卡：账面 / 现金并排，缺数显 −"], ["建任务", "「新建任务 闲鱼潜客 9 月 目标 5 万」→ 回确认卡，确认后创建（未映射身份不执行）"], ["调工作流", "「跑一遍 新任务开户到基建」→ 起 run，到人工确认节点发 L2 卡"]].map(([title, body]) => <div key={title} className="rounded-lg border p-3"><p className="font-medium">{title}</p><p className="mt-1 text-xs text-muted-foreground">{body}</p></div>)}
                 </CardContent>
               </Card>
             </ExampleBlock>

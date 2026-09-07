@@ -68,3 +68,13 @@ export function fmtTime(value: string | null | undefined): string {
 // 变更集状态 / 执行态的中文（界面不直出英文枚举）
 export const changesetStatusLabel: Record<string, string> = { draft: "草稿", dry_run_ok: "试运行通过", confirmed: "已确认", executing: "执行中", executed: "已执行", partially_failed: "部分失败", failed: "失败", expired: "已过期", cancelled: "已取消" }
 export const changesetStatusText = (status: string | null | undefined) => (status ? changesetStatusLabel[status] ?? status : "−")
+
+// 变更集原因码 / 明细状态 / 风险等级 / 对象类型的中文（界面不直出英文枚举）
+export const reasonCodeLabel: Record<string, string> = { cost_over_assessment: "成本超考核", volume_short_with_cost_space: "量不足但有成本空间", missing_feature: "缺功能配置", audience_token_overlap: "人群词重合", hook_kind_match: "钩子类型相同", rhythm_text_and_visual_similarity: "节奏与画面相似", role_sequence_similarity: "角色顺序相似", selling_point_token_overlap: "卖点词重合" }
+export const itemStatusLabel: Record<string, string> = { pending: "待执行", running: "执行中", success: "成功", failed: "失败", skipped: "已跳过" }
+export const riskLevelLabel: Record<string, string> = { low: "低", medium: "中", high: "高" }
+export const targetTypeLabel: Record<string, string> = { unit: "单元", campaign: "计划", account: "账户", creative: "创意" }
+
+// 报告 / 诊断的模板版本标识在界面显中文
+export const schemaLabel: Record<string, string> = { "daily-report/v1": "日报模板 v1", "weekly-report/v1": "周报模板 v1", "task-review/v1": "任务复盘模板 v1", "diagnosis/v1": "诊断模板 v1", "monthly-exec/v1": "月度经营模板 v1" }
+export const schemaText = (key: string) => schemaLabel[key] ?? key

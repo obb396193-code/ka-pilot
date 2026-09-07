@@ -12,14 +12,15 @@ import { StateFrame, StateSwitch, usePageState } from "@/components/business/sta
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { executorLabel, runDetailFixture, runStatusMeta, runsFixture } from "@/lib/fixtures/automation"
-import { fmtTime, isOk } from "@/lib/fixtures/contract"
+import { executorLabel, runDetailFixture, runStatusMeta, runsFixture, fieldText } from "@/lib/fixtures/automation"
+import { fmtTime, isOk, targetTypeLabel } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
 
 // 运行详情（契约 ③ GET /workflows/runs/:id）：阶段条 + 节点日志 + 变更集预览 + 权限 + 账户锁 + 链路 + 审计 + 重试 / 回读策略 + UNKNOWN 说明
 const stageTone = { done: "success", running: "progress", pending: "pending", failed: "critical", skipped: "muted" } as const
 const stageLabel = { done: "完成", running: "进行中", pending: "待执行", failed: "失败", skipped: "跳过" } as const
 const excerpt = (value: unknown) => (value == null ? "−" : typeof value === "string" ? value : JSON.stringify(value))
+
 
 export function RunDetailPage({ runId }: { runId: string }) {
   const { isMock } = useSession()
@@ -32,13 +33,13 @@ export function RunDetailPage({ runId }: { runId: string }) {
   const permissionsOk = detail.permission_checks.every((item) => item.pass)
   const lockConflict = detail.account_locks.some((item) => item.conflict)
   const canConfirm = status === "WAITING_CONFIRMATION" && permissionsOk && !lockConflict
-  const blockReason = status !== "WAITING_CONFIRMATION" ? "当前状态不需要确认" : !permissionsOk ? "权限校验未过" : lockConflict ? "账户锁冲突：等另一个 run 释放" : ""
+  const blockReason = status !== "WAITING_CONFIRMATION" ? "当前状态不需要确认" : !permissionsOk ? "权限校验未过" : lockConflict ? "账户锁冲突：等另一次运行释放" : ""
 
   return (
     <PageBody>
       <PageHeader
         title={<span className="flex flex-wrap items-center gap-2">{listItem?.name ?? "新任务开户到基建"}<TypeChip>{detail.run.version}</TypeChip><StatusChip tone={runStatusMeta[status].tone}>{runStatusMeta[status].label}</StatusChip></span>}
-        description={<span>发起人 {detail.run.initiator.name} · 执行身份 {executorLabel[detail.run.executor_identity]}{detail.run.taskId ? <> · 任务 <Link href={`/tasks/${encodeURIComponent(detail.run.taskId)}`} className="underline-offset-4 hover:underline">{detail.run.taskId}</Link></> : null} · run …{runId.slice(-6)}{!isFixtureRun ? "（示例只有 …1001 的详情，这里展示该样例）" : ""}</span>}
+        description={<span>发起人 {detail.run.initiator.name} · 执行身份 {executorLabel[detail.run.executor_identity]}{detail.run.taskId ? <> · 任务 <Link href={`/tasks/${encodeURIComponent(detail.run.taskId)}`} className="underline-offset-4 hover:underline">{detail.run.taskId}</Link></> : null} · 运行 …{runId.slice(-6)}{!isFixtureRun ? "（示例只有 …1001 的详情，这里展示该样例）" : ""}</span>}
         isMock={isMock}
         actions={
           <>
@@ -55,14 +56,14 @@ export function RunDetailPage({ runId }: { runId: string }) {
           <div className="flex flex-col gap-4">
             {blockReason && status === "WAITING_CONFIRMATION" ? <div className="rounded-lg border border-status-critical/30 bg-status-critical/10 px-4 py-2.5 text-sm text-status-critical">无法确认执行：{blockReason}</div> : null}
             <Card>
-              <CardHeader><CardTitle>阶段</CardTitle><CardDescription>stages · 按节点顺序</CardDescription></CardHeader>
+              <CardHeader><CardTitle>阶段</CardTitle><CardDescription>按节点顺序</CardDescription></CardHeader>
               <CardContent>
                 <ol className="flex flex-wrap items-center gap-2">{detail.stages.map((stage, index) => <li key={stage.node_id} className="flex items-center gap-2"><div className={cn("flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm", stage.status === "running" && "border-foreground bg-foreground text-background", stage.status === "pending" && "text-muted-foreground", stage.status === "failed" && "border-status-critical text-status-critical")}>{stage.status === "done" ? <IconCheck className="size-3.5" /> : stage.status === "running" ? <IconPlayerPlay className="size-3.5" /> : <span className="size-3.5 rounded-full border" />}{stage.label}<span className="font-mono text-[10px] opacity-60">{stage.node_id}</span></div>{index < detail.stages.length - 1 ? <span className="h-px w-4 bg-border" /> : null}</li>)}</ol>
               </CardContent>
             </Card>
             <div className="grid gap-4 @5xl/main:grid-cols-12">
               <Card className="@5xl/main:col-span-7">
-                <CardHeader><CardTitle>节点日志</CardTitle><CardDescription>input / output 摘录（受限，不含凭证）</CardDescription></CardHeader>
+                <CardHeader><CardTitle>节点日志</CardTitle><CardDescription>输入 / 输出摘录（受限，不含凭证）</CardDescription></CardHeader>
                 <CardContent className="p-0">
                   <Table>
                     <TableHeader className="bg-muted"><TableRow><TableHead>节点</TableHead><TableHead>状态</TableHead><TableHead>开始</TableHead><TableHead>结束</TableHead><TableHead>输入</TableHead><TableHead>输出</TableHead></TableRow></TableHeader>
@@ -72,12 +73,12 @@ export function RunDetailPage({ runId }: { runId: string }) {
               </Card>
               <div className="flex flex-col gap-4 @5xl/main:col-span-5">
                 <Card>
-                  <CardHeader><CardTitle>变更集预览</CardTitle><CardDescription>{detail.changeset_preview ? <span className="font-mono">hash {detail.changeset_preview.hash.slice(0, 12)}… · 到期 {fmtTime(detail.changeset_preview.expires_at)}</span> : "本次运行没有变更集"}</CardDescription></CardHeader>
+                  <CardHeader><CardTitle>变更集预览</CardTitle><CardDescription>{detail.changeset_preview ? <span className="font-mono">校验指纹 {detail.changeset_preview.hash.slice(0, 12)}… · 到期 {fmtTime(detail.changeset_preview.expires_at)}</span> : "本次运行没有变更集"}</CardDescription></CardHeader>
                   <CardContent className="p-0">
                     {detail.changeset_preview ? (
                       <Table>
                         <TableHeader className="bg-muted"><TableRow><TableHead>对象</TableHead><TableHead>字段</TableHead><TableHead className="text-right">从 → 到</TableHead><TableHead>风险</TableHead></TableRow></TableHeader>
-                        <TableBody>{detail.changeset_preview.items.map((item) => <TableRow key={`${item.targetType}-${item.targetId}-${item.field}`}><TableCell><TypeChip>{item.targetType}</TypeChip> {item.targetId}</TableCell><TableCell>{item.field}</TableCell><TableCell className="text-right tabular-nums">{excerpt(item.from.value)} → {excerpt(item.to.value)}</TableCell><TableCell><StatusChip tone={item.riskLevel === "low" ? "success" : item.riskLevel === "medium" ? "warning" : "critical"}>{item.riskLevel === "low" ? "低" : item.riskLevel === "medium" ? "中" : "高"}</StatusChip></TableCell></TableRow>)}</TableBody>
+                        <TableBody>{detail.changeset_preview.items.map((item) => <TableRow key={`${item.targetType}-${item.targetId}-${item.field}`}><TableCell><TypeChip>{targetTypeLabel[item.targetType] ?? item.targetType}</TypeChip> {item.targetId}</TableCell><TableCell>{fieldText(item.field)}</TableCell><TableCell className="text-right tabular-nums">{excerpt(item.from.value)} → {excerpt(item.to.value)}</TableCell><TableCell><StatusChip tone={item.riskLevel === "low" ? "success" : item.riskLevel === "medium" ? "warning" : "critical"}>{item.riskLevel === "low" ? "低" : item.riskLevel === "medium" ? "中" : "高"}</StatusChip></TableCell></TableRow>)}</TableBody>
                       </Table>
                     ) : null}
                   </CardContent>

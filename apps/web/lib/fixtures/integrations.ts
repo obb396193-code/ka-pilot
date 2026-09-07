@@ -16,7 +16,8 @@ export const identityMappingsFixture = identityMappings as unknown as Fixture<{ 
 export type CardTemplate = { id: string; level: "L0" | "L1" | "L2" | "L3"; name: string; actions: string[]; hashCheck?: boolean }
 export type CardInstance = { id: string; templateId: string; status: "awaiting" | "acted" | "expired"; changesetId?: string; hash?: string; expiresAt?: string; sentTo: string }
 export const cardsFixture = cards as unknown as Fixture<{ templates: CardTemplate[]; instances: CardInstance[] }>
-export const cardLevelHint: Record<CardTemplate["level"], string> = { L0: "只读简报", L1: "动态 / 可取消", L2: "需确认执行（hash 校验）", L3: "结果 / 重试" }
+export const cardLevelHint: Record<CardTemplate["level"], string> = { L0: "只读简报", L1: "动态 / 可取消", L2: "需确认执行（带校验指纹）", L3: "结果 / 重试" }
+export const cardLevelLabel: Record<CardTemplate["level"], string> = { L0: "只读卡", L1: "可取消卡", L2: "确认执行卡", L3: "结果卡" }
 export type CardCallback = { id: number; cardInstanceId: string; action: string; actorExternalId: string; actorUserId: string | null; idempotencyKey: string; hashVerified: boolean; result: string; at: string }
 export const cardCallbacksFixture = cardCallbacks as unknown as Fixture<{ items: CardCallback[] }>
 

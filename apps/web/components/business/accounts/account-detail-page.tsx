@@ -100,7 +100,7 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
                 </CardContent>
               </Card>
               <Card className="@5xl/main:col-span-4">
-                <CardHeader><CardTitle>小传</CardTitle><CardDescription>fund 七字段（缺 = −）· 断量倒计时 = 余额 / 速度</CardDescription></CardHeader>
+                <CardHeader><CardTitle>小传</CardTitle><CardDescription>资金七项（缺数显 −）· 断量倒计时 = 余额 / 消耗速度</CardDescription></CardHeader>
                 <CardContent className="flex flex-col gap-3 text-sm">
                   {detail ? (
                     <>

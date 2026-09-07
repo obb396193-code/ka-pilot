@@ -237,7 +237,7 @@ function ViewsTab() {
     <div className="flex flex-col gap-4">
       <DataGrid table={table} empty="还没保存视图；在数据分析总表里「另存为视图」" toolbar={<p className="text-xs text-muted-foreground">保存的视图 · Agent 的修改建议可全部或局部接受</p>} showPagination={false} />
       <Card>
-        <CardHeader><CardTitle>关注账户</CardTitle><CardDescription>me/watchlist · 工作台「关注」筛选用 · 更新 {watchlist ? fmtTime(watchlist.updatedAt) : "−"}</CardDescription></CardHeader>
+        <CardHeader><CardTitle>关注账户</CardTitle><CardDescription>工作台「我关注的」用这份名单 · 更新 {watchlist ? fmtTime(watchlist.updatedAt) : "−"}</CardDescription></CardHeader>
         <CardContent className="flex flex-wrap gap-2">{watchlist?.items.map((item) => <Link key={`${item.media}-${item.accountId}`} href={`/accounts/${encodeURIComponent(item.media)}/${encodeURIComponent(item.accountId)}`}><Badge variant="outline" className="gap-1">{mediaLabel(item.media)} · {item.accountId}</Badge></Link>)}</CardContent>
       </Card>
     </div>
