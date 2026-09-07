@@ -45,5 +45,5 @@ describe("backfill state in folded 011 migration", () => {
       await pool.query("DELETE FROM backfill_jobs WHERE id=$1", [id]);
       await pool.query("DELETE FROM workspaces WHERE id=$1", [ws]);
     }
-  });
+  }, 30_000); // F-be2-1：015 让回放窗口多一号，5s 默认线不够（实测 5011ms→4172ms）；不放宽全局
 });

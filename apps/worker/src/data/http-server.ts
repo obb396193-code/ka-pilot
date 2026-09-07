@@ -62,6 +62,9 @@ import {
 } from "../auth/session-http.js";
 import type { SessionAuthService } from "../auth/session-auth-service.js";
 
+
+// arch 开的缝：R-014 路由由 be2 在 src/r014/routes.ts 注册
+import { findR014Route } from "../r014/routes.js";
 export const DEFAULT_DATA_API_MAX_REQUEST_BYTES = 1024 * 1024;
 export const DEFAULT_DATA_API_MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
 
@@ -371,6 +374,8 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       const isTaskListRoute = url.pathname === TASK_LIST_HTTP_PATH;
       const isAccountListRoute = url.pathname === ACCOUNT_LIST_HTTP_PATH;
       const isWorkItemListRoute = url.pathname === WORK_ITEM_LIST_HTTP_PATH;
+      // arch 开的缝：R-014 由 be2 在 src/r014/routes.ts 注册，壳层不认识具体路径，只问一句归不归它。
+      const r014Route = findR014Route(url.pathname);
       if (
         url.pathname !== DATA_QUERY_HTTP_PATH &&
         url.pathname !== SEMANTIC_QUERY_HTTP_PATH &&
@@ -378,7 +383,8 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         resolvedDetailRoute === null &&
         !isTaskListRoute &&
         !isAccountListRoute &&
-        !isWorkItemListRoute
+        !isWorkItemListRoute &&
+        r014Route === null
       ) {
         sendJson(
           response,
@@ -418,7 +424,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           sendJson(response, taskListHttpStatus(result), result, requestId);
           return;
         }
-        if (resolvedDetailRoute !== null) {
+        if (resolvedDetailRoute !== null || r014Route !== null) {
           sendJson(
             response,
             401,
@@ -434,6 +440,12 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           requestId,
         });
         sendJson(response, result.status, result.body, requestId);
+        return;
+      }
+      if (r014Route !== null) {
+        await r014Route.handle({
+          request, response, url, auth: authentication.auth, requestId, maxResponseBytes,
+        });
         return;
       }
       if (isAccountListRoute) {
