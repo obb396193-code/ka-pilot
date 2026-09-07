@@ -4071,3 +4071,9 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - DB45/Domain84/Worker8通过；DB+Worker type/lint过，核心行100%分支99.03%，缓存audit0。exact10000完整成员成功、10001与exact16MiB拒绝。质量报告`docs/plans/2026-09-08-R010a1-透视读仓储质量报告.md`包含失败与纠正记录。
 - 新7项PG源码已编译；实际55432 SELECT1仍ECONNREFUSED，未称PG通过；磁盘1.6GiB未全量。请仍协调本项目测试库/磁盘门禁，不借ContentRadar服务。未push/部署/媒体写，未动Contract/be2文件。
 - 继续同功能Window Service→source envelope/Registry/HTTP/BFF；公开pivot2仍未完成，team/R017/014额外维度不假造。交审后按长期队列立即继续。
+
+### P-126｜pivot2窗口服务；收到I-002优先修（be，2026-09-08）
+
+- 独立代码 **8376333**，已合main@f4205ce。真实DB reader→account/task/biz逐账户日分区→既有加权考核，输出窗口投影+真实observation/cellCoverage。接口未开放，不宣称八维和taskIds/filters齐备。
+- Worker35新+8维度回归通过，核心四项coverage100%；类型/lint/缓存audit0，lint初次换行错误修复留痕。质量报告`docs/plans/2026-09-08-R010a1-透视查询服务质量报告.md`。输入clone防reader修改授权基准；异常不带原数据/SQL；team/缺维度不借个人源。
+- PG仍待环境恢复，未全量/部署/push/媒体写。**I-002已收到并马上做**：只补工作项列表BFF及测试，不碰前端视觉；之后回公开查询接线。
