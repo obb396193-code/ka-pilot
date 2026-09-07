@@ -15,7 +15,7 @@ const groupedRowSchema = z.object(dimensionFields).strict().superRefine(refineWi
 export const groupedDimensionWindowRowSchema = groupedRowSchema;
 const agentTypeRowSchema = z.object({
   ...dimensionFields,
-  agent_type: z.enum(["agency", "self"]),
+  agent_type: z.enum(["agency", "self", "unknown"]),
   agency_name: z.string().min(1).optional(),
 }).strict().superRefine(refineWindowMetricAssessment);
 export const accountDimensionWindowRowSchema = z.object({
