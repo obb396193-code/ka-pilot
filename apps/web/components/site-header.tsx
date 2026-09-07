@@ -20,12 +20,18 @@ import { Separator } from "@/components/ui/separator"
 import { primaryNavigation } from "@/lib/navigation"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
+const extraTitles: [string, string][] = [["/settings", "设置"], ["/admin", "治理后台"], ["/search", "搜索"], ["/403", "没有权限"]]
+
 // 面包屑 = 当前一级页名（+ 详情）；九项与侧栏、命令面板共用 lib/navigation
 function crumbsFor(pathname: string): { href: string; title: string }[] {
   if (pathname === "/") return [{ href: "/", title: "经营工作台" }]
   if (pathname.startsWith("/diagnostics")) return [{ href: "/", title: "经营工作台" }, { href: pathname, title: "工作项详情" }]
   const section = primaryNavigation.find((item) => item.url !== "/" && (pathname === item.url || pathname.startsWith(`${item.url}/`)))
-  if (!section) return [{ href: pathname, title: "KA Pilot" }]
+  // 侧栏九项之外的页（设置 / 治理后台 / 搜索 / 403）也要有名字，否则面包屑退化成「KA Pilot」
+  if (!section) {
+    const extra = extraTitles.find(([url]) => pathname === url || pathname.startsWith(`${url}/`))
+    return [{ href: pathname, title: extra ? extra[1] : "KA Pilot" }]
+  }
   const deeper = pathname.length > section.url.length
   return deeper ? [{ href: section.url, title: section.title }, { href: pathname, title: "详情" }] : [{ href: section.url, title: section.title }]
 }

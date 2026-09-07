@@ -39,6 +39,7 @@ const tabs = [
 ] as const
 type Tab = (typeof tabs)[number]["value"]
 
+const identitySourceLabel: Record<string, string> = { internal_test: "内测账号", buc: "公司统一登录", sso: "统一身份" }
 const memberHelper = createColumnHelper<GridFeatures, Member>()
 function makeMemberColumns(onGrants: (member: Member) => void, onToggle: (member: Member) => void) {
   return memberHelper.columns([
@@ -47,7 +48,7 @@ function makeMemberColumns(onGrants: (member: Member) => void, onToggle: (member
     memberHelper.accessor("displayName", { header: "成员", enableHiding: false, meta: { label: "成员" }, cell: ({ row }) => <span className={cn("font-medium", !row.original.isActive && "text-muted-foreground line-through")}>{row.original.displayName}</span> }),
     memberHelper.accessor("role", { header: "角色", meta: { label: "角色" }, cell: ({ getValue }) => <TypeChip>{roleLabel[getValue()]}</TypeChip> }),
     memberHelper.accessor("isActive", { header: "状态", meta: { label: "状态" }, cell: ({ getValue }) => getValue() ? <StatusChip tone="success">在职</StatusChip> : <StatusChip tone="muted">已停用</StatusChip> }),
-    memberHelper.accessor("provider", { header: "身份源", meta: { label: "身份源" }, cell: ({ getValue }) => <span className="font-mono text-xs">{getValue()}</span> }),
+    memberHelper.accessor("provider", { header: "身份源", meta: { label: "身份源" }, cell: ({ getValue }) => <span className="text-xs">{identitySourceLabel[getValue()] ?? getValue()}</span> }),
     memberHelper.accessor("grantsCount", { header: "授权账户", meta: { label: "授权账户", align: "right" }, cell: ({ row }) => <Button variant="link" className="h-auto px-0 tabular-nums" onClick={() => onGrants(row.original)}>{row.original.grantsCount}</Button> }),
     memberHelper.accessor("joinedAt", { header: "加入", meta: { label: "加入" }, cell: ({ getValue }) => <span className="tabular-nums">{getValue()}</span> }),
     memberHelper.accessor((row) => row.lastSeenAt ?? "", { id: "seen", header: "最近活跃", meta: { label: "最近活跃" }, cell: ({ row }) => row.original.lastSeenAt ? <span className="tabular-nums">{fmtTime(row.original.lastSeenAt)}</span> : <MissingValue title="从未登录" /> }),
