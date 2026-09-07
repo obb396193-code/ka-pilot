@@ -51,7 +51,7 @@ const columns = helper.columns([
   helper.accessor((row) => row.readiness.overall?.value ?? null, { id: "readiness", header: "就绪度", meta: { label: "就绪度" }, cell: ({ row }) => <ReadinessBar readiness={row.original.readiness} /> }),
   helper.accessor((row) => row.volume?.target ?? null, { id: "target", header: "目标", meta: { label: "目标", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{row.original.volume?.target == null ? "−" : number0.format(row.original.volume.target)}</span> }),
   helper.accessor((row) => row.volume?.completed ?? null, { id: "completed", header: "已完成", meta: { label: "已完成", align: "right" }, cell: ({ row }) => <span className="tabular-nums">{row.original.volume?.completed == null ? "−" : number0.format(row.original.volume.completed)}</span> }),
-  helper.display({ id: "pacing", header: "达成 / pacing", meta: { label: "达成 / pacing" }, cell: ({ row }) => <PacingCell pacing={row.original.pacing} /> }),
+  helper.display({ id: "pacing", header: "达成 / 进度", meta: { label: "达成 / 进度" }, cell: ({ row }) => <PacingCell pacing={row.original.pacing} /> }),
   helper.accessor((row) => row.assessmentPrice?.value ?? null, { id: "assessment", header: "考核价", meta: { label: "考核价", align: "right" }, cell: ({ row }) => <span className="tabular-nums" title={row.original.assessmentPrice ? `生效 ${row.original.assessmentPrice.effectiveDate}` : undefined}>{row.original.assessmentPrice ? `¥${row.original.assessmentPrice.value.toFixed(2)}` : "−"}</span> }),
   helper.accessor((row) => row.costStatus ?? "", { id: "costStatus", header: "成本状态", meta: { label: "成本状态" }, cell: ({ row }) => { const status = row.original.costStatus; return status ? <StatusChip tone={status === "green" ? "success" : status === "yellow" ? "warning" : "critical"}>{costStatusLabel[status]}</StatusChip> : <StatusChip tone="muted">不可判断</StatusChip> } }),
   helper.accessor("rta", { header: "RTA", meta: { label: "RTA" }, cell: ({ getValue }) => getValue() ? <TypeChip>RTA</TypeChip> : <span className="text-xs text-muted-foreground">—</span> }),
@@ -64,7 +64,7 @@ const columns = helper.columns([
   actionsColumn<TaskItem>((task) => (
     <>
       <DropdownMenuItem asChild><Link href={taskHref(task)}>查看详情</Link></DropdownMenuItem>
-      <DropdownMenuItem onSelect={() => openAgentDrawer(`分析任务「${task.taskName}」的达成、pacing 与就绪缺项`)}><IconSparkles />问 AI</DropdownMenuItem>
+      <DropdownMenuItem onSelect={() => openAgentDrawer(`分析任务「${task.taskName}」的达成率、投放进度与就绪缺项`)}><IconSparkles />问 AI</DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem onSelect={() => toast("已关注", { description: "关注列表接入后保存" })}><IconStar />关注</DropdownMenuItem>
       <DropdownMenuItem disabled title="任务编辑接口开放后启用">编辑</DropdownMenuItem>
@@ -101,7 +101,7 @@ export function TasksPage() {
 
   return (
     <PageBody>
-      <PageHeader title="投放任务" description="任务是业务信息中心：从准备到投放全过程可追踪（阶段 · 就绪度 · SOP · 阻塞）；达成与 pacing 由后端算" isMock={isMock} actions={
+      <PageHeader title="投放任务" description="任务是业务信息中心：从准备到投放全过程可追踪（阶段 · 就绪度 · SOP · 阻塞）；达成率与进度由后端算，前端不外推" isMock={isMock} actions={
         <>
           <Select value={legacyState} onValueChange={(value) => setLegacyState(value as typeof legacyState)}>
             <SelectTrigger size="sm" className="w-40" aria-label="样例"><span className="text-muted-foreground">样例</span><SelectValue /></SelectTrigger>
@@ -140,17 +140,17 @@ export function TasksPage() {
             <aside className="flex flex-col gap-4 @6xl/main:col-span-3">
               <Card>
                 <CardHeader><CardTitle className="text-sm">任务分布</CardTitle><CardDescription>按阶段（只数任务个数）</CardDescription></CardHeader>
-                <CardContent className="flex flex-col gap-1.5">{stageDistribution.map(({ stage, count }) => <div key={stage.value} className="flex items-center gap-2 text-xs"><span className={cn("size-1.5 rounded-full", stage.dot)} /><span className="w-12 text-muted-foreground">{stage.label}</span><span className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-foreground" style={{ width: `${(count / Math.max(1, all.length)) * 100}%` }} /></span><span className="w-5 text-right tabular-nums">{count}</span></div>)}</CardContent>
+                <CardContent className="flex flex-col gap-1.5">{stageDistribution.map(({ stage, count }) => <div key={stage.value} className="flex items-center gap-2 text-xs"><span className={cn("size-1.5 rounded-full", stage.dot)} /><span className="w-12 text-muted-foreground">{stage.label}</span><span className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted"><span className={cn("block h-full rounded-full", stage.dot)} style={{ width: `${(count / Math.max(1, all.length)) * 100}%` }} /></span><span className="w-5 text-right tabular-nums">{count}</span></div>)}</CardContent>
               </Card>
               <Card>
-                <CardHeader><CardTitle className="text-sm">健康分布</CardTitle><CardDescription>costStatus 三色 + 不可判断</CardDescription></CardHeader>
+                <CardHeader><CardTitle className="text-sm">健康分布</CardTitle><CardDescription>按成本状态（含不可判断）</CardDescription></CardHeader>
                 <CardContent className="flex flex-col gap-1.5">
                   {health.map(({ status, count }) => <div key={status} className="flex items-center gap-2 text-xs"><span className={cn("size-1.5 rounded-full", costStatusDot[status])} /><span className="w-24 text-muted-foreground">{costStatusLabel[status]}</span><span className="ml-auto tabular-nums">{count}</span></div>)}
                   <div className="flex items-center gap-2 text-xs"><span className="size-1.5 rounded-full border border-muted-foreground" /><span className="w-24 text-muted-foreground">不可判断</span><span className="ml-auto tabular-nums">{unknown}</span></div>
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader><CardTitle className="text-sm">即将到达的里程碑</CardTitle><CardDescription>nextMilestone</CardDescription></CardHeader>
+                <CardHeader><CardTitle className="text-sm">即将到达的里程碑</CardTitle><CardDescription>最近要发生的节点</CardDescription></CardHeader>
                 <CardContent className="flex flex-col gap-1.5">{milestones.length ? milestones.map((task) => <Link key={task.taskId} href={taskHref(task)} className="flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-xs hover:bg-muted/50"><span className="truncate">{task.taskName} · {task.nextMilestone!.label}</span><span className="tabular-nums text-muted-foreground">{task.nextMilestone!.at.slice(5)}</span></Link>) : <p className="text-xs text-muted-foreground">没有里程碑</p>}</CardContent>
               </Card>
             </aside>
