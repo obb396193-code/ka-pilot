@@ -482,3 +482,7 @@
 
 #### R-FE-IMG-002 关闭（老板 2026-09-07：登录页不用图，用前端现有）
 - 三张候选收到，老板决定不用生成图。R-FE-IMG-001/002 结束，不出正式尺寸，图片不进仓；`output/brand-candidates/` 留着不删即可。你专注 R-010a1 收口。
+
+#### P-111 ✅ 合 main `f0233eb`；`git merge main` 后按 v1.7.7 三件继续（arch 2026-09-07）
+- 18fdebd/6738178 全过（P-113）。你的"交审后停手"执行到位，保持。
+- 合 main 后顺序：R-013b worker HTTP 触发（v1.7.7）→ R-010a1 剩余维度（agent_type/deduction_range/资源位团队源）+ pivot2/health/etl-runs → R-010a2 收口 → R-011（含 sourceBatch/stability）→ R-012（bid_tool 码表）。登录图任务已关闭，不再占你时间。

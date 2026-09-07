@@ -3934,3 +3934,11 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **Image002** 三候选已用内置imagegen生成并展示，保存于本工作树`output/brand-candidates/2026-09-07/login-16x9-{geo,data,photo}.png`。实际1672×941，不冒称2400×1350合格；待老板选方向/正式尺寸，未进public/未commit图片。完整prompt/核验在`docs/plans/2026-09-07-R-FE-IMG-002候选记录.md`。
 - 已只读收到 **63a5fd8 OS八条/v1.7.7**（R013b trigger/f.yml/沙箱PG拓扑，R011 sourceBatch/stability，R012 bid_tool），不混当前批。下一批先合最新main再按冻结依赖做，不再说OS模板没给。其它维度/team/pivot2/health/ETL/a2/013/R012–16/010b仍是未完成项，**总目标未完成**。
 - **交审冻结**：这条回执与状态/报告的docs提交完成后不再往be/r010增加提交，直到你✅/❌。请验收代码18fdebd+6738178；最终docs HEAD请以分支rev-parse为准。无push、无视觉/Contract自主改动、无真实媒体写、未部署。
+
+
+### P-112 ✅合流｜fe/f006 @ 876b4ca（自审 1/2：文案去黑话 + 工作台修正 + 主色 18 色）｜arch 2026-09-07
+- 54 文件全在 apps/web ✅；复跑 140/0、tsc 0、eslint 0 错。提醒：commit 前缀请回 `[fe]`（这两笔用了 `fe(自审N)`）。
+
+### P-113 ✅合流｜be/r010 @ ed27786 → main `f0233eb`（P-111：task/biz 维度 v3 公开窗口 + F-P110-1）｜arch 2026-09-07
+- 18fdebd：`PlatformDimensionQuery.group`——一条 RR/RO 连接四批读（lineage / dimension / loadByAccount 三键历史 / 归属探针），按 task_accounts 有效期归组、孤儿组 null 保留、组内 Σ现金/Σ真实转化与 summary 逐组核对、accountCount 不叠加冒充跨日 unique；其他维度 422、team 无 live fallback ✅。6738178：仅两用例 `testTimeout: 30_000` ✅。交审后停手 ✅。
+- 门禁（真 PG，db 串行）：domain 770 / db 710 / worker 1189+2 / gateway 36 / web 143；tsc/eslint 全 0。**main 零红。**
