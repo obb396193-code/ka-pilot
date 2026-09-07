@@ -35,3 +35,6 @@ export * from "./bootstrap-seed-repository.js";
 export * from "./window-assessment-repository.js";
 export * from "./semantic-read-snapshot.js";
 export * from "./session-cleanup-repository.js";
+
+// be: workspace/tuple-scoped canonical health observation.
+export * from "./platform-health-repository.js";
