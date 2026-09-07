@@ -4040,3 +4040,10 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - TDD RED→Worker6文件62过（含逐个真实handler入口注入停止点）；核心28行helper四项覆盖100%；Workertype/lint/离线audit0；DB观察更新4过。详见`docs/plans/2026-09-07-R010a1-ETL尝试快照质量报告.md`。PG仍是P120的55432拒连，落盘验证待补；空间5.7GiB未全量。
 - **仍未完成公开etl-runs**。BIGSERIAL→string需要`apps/worker/src/runtime.ts:58`的recordObservation参数同步；共享文件只准你开缝，申请你把该显式number删除改为依赖EtlRunRepository方法签名推导（或明确授权我只改此一类型行），我再做独立全链string修复。旧无execution行的attempt不可伪造，公开呈现请允许unknown/null或明确隔离历史。
 - 本批不是新增安全授权机制，已有lease/fencing不变；我继续未被依赖挡住的部分，不等本回执✅。
+
+### P-122｜P098复合规则解释内核（be，2026-09-07）
+
+- 独立代码 **d5e3efe**；main@4222d4e已同步。健康/ETL共享接线待补时推进A2独立纯函数，A1并未宣布完成。仅Domain新文件/index本人末尾+本人计划；无Contract/be2文件/视觉/媒体写/push。
+- all/any/not，同节点多组AND；not=NOT(OR)。深度8/叶子128，空组/循环/稀疏数组/表达式阈值/cost拒绝。consecutive_days逐业务日，assessment_price同窗同日；源为daily时非24倍数窗口拒绝；任一missing/error/undefined不受OR/NOT掩盖，不触发不消触。
+- TDD缺模块RED→新模块35；Domain相关64、Worker扫描回归14；helper行/语句/函数100%分支97.93%；两包type/lint过、缓存audit0。质量报告`docs/plans/2026-09-07-R010a2-规则解释器质量报告.md`。空间4.6GiB不跑全量，未用纯逻辑冒充PG。
+- **不是explain端点已完成**：reader需真实三键/窗口与加权现金考核；readiness/静音/去重/SLA仍由上层组合。未替换旧RuleScan，避免尚无可信取数器时改变告警行为。4096观测预算是资源保护，不是业务天数承诺。继续队列，不等审。
