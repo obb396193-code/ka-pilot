@@ -1,0 +1,259 @@
+{
+  "documentId": 2670,
+  "documentName": "获取行动号召按钮",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094687574
+    }
+  ],
+  "apiId": 254,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/creative/action_bar_text/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request GET https://ad.e.kuaishou.com//rest/openapi/v1/creative/action_bar_text/list' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n   \"advertiser_id\":4171736,\n   \"campaign_type\":2\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n   \"code\": 0,\n   \"message\": \"OK\",\n   \"data\": {\n       \"campaign_type\": 2,\n       \"action_bar_text\": [\n           \"玩游戏\",\n           \"立即投保\",\n           \"去借钱\",\n           \"寻找有缘人\",\n           \"立即下载\",\n           \"一键下载\",\n           \"免费下载\",\n           \"立即安装\",\n           \"体验同款特效\",\n           \"了解详情\",\n           \"测额度\",\n           \"免费安装\",\n           \"立即制作\",\n           \"更多精彩\"\n       ]\n   },\n   \"request_id\": \"eb9ba36158334aca949b9fc73a6f5b7f\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 13151,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "1008611",
+      "description": "<p>广告主ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "`在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13152,
+      "paramName": "campaign_type",
+      "paramType": "Integer",
+      "example": "2",
+      "description": "<p>计划类型</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "`2：提升应用安装；3：获取电商下单；4：推广品牌活动；5：收集销售线索；13：小店商品推广；14：直播推广",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13153,
+      "paramName": "consult_type",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "<p>是否使用咨询组件</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "`0：未使用；1：使用。咨询组件仅在收集销售线索计划(campaign_type=5)下可用，且使用了咨询组件后，可用的行动号召按钮限于接口返回内容",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 58751,
+      "paramName": "unit_material_type",
+      "paramType": "Integer",
+      "example": "3",
+      "description": "<p>广告组标的物类型</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "3：微信小程序、4微信小游戏（campaign_type=32必填）",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 13154,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13155,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "\"OK\"",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13156,
+      "paramName": "data",
+      "paramType": "AdMarketActionBarTextView",
+      "example": "1",
+      "description": "返回数据",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 551,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 13149,
+          "paramName": "campaign_type",
+          "paramType": "Integer",
+          "example": "2",
+          "description": "计划类型",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 13150,
+          "paramName": "action_bar_text",
+          "paramType": "String[]",
+          "example": "[\"立即安装\"]",
+          "description": "行动号召按钮文案",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094687574,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -1,0 +1,28 @@
+# 域名与边缘程序绑定
+
+## 绑定域名
+
+当 ER 接入 O2 Space 后，ER 所绑定的域名初始状态均为未绑定状态，需要用户手动进行绑定。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dx21al/imgd6PHDzYt9I.png)
+
+
+点击 “去绑定” 按钮，会跳转至域名栏
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dx21al/imgGd5BTPaiMP.png)
+
+
+涉及到系统解绑的场景：
+
+- 用户可手动解绑
+- 首次发布ER，灰度放量过程中取消灰度，无可恢复版本，解绑 ER 和域名。
+- 首次发布线上环境后，执行线上回滚，无可回滚历史线上版本，解绑 ER 和域名。
+
+
+## 添加域名
+
+点击 域名->多域名管理->添加，可以选定域名服务进行域名添加，通过域名校验后，可添加域名。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dx21al/imgv3noFPyR2q.png)
+
+

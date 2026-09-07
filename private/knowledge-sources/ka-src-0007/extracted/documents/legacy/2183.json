@@ -1,0 +1,42 @@
+{
+  "documentId": 2183,
+  "documentName": "快手网红-网红分类",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 快手网红-网红分类\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/industry/celebrity](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/industry/celebrity)\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 12345 | 必填 | 账号ID |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 接口返回信息 |  |\n| data | FrontDmpTreeNodeData |  | 接口返回数据 |  |\n| &#8195;celebrity_tree | FrontDmpTreeNode[] |  | 快手网红标签 |  |\n| &#8195;&#8195;id | Long |  | 标签ID |  |\n| &#8195;&#8195;name | String |  | 标签名称 |  |\n| &#8195;&#8195;children | FrontDmpTreeNode1[] |  | 子节点 |  |\n| &#8195;&#8195;&#8195;id | Long |  | 标签ID |  |\n| &#8195;&#8195;&#8195;name | String |  | 标签名称 |  |\n\n### 请求样例\n\n```\ncurl --location --request GET 'https://star-gateway.test.gifshow.com/rest/openapi/gw/dsp/v1/industry/celebrity' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE] accessproxy_session=77346b49-7029-4cb1-b1ef-f43f239cf7e2' \\\n--data-raw '{\n    \"advertiser_id\": 20006810\n}'\n```\n\n### 返回样例\n\n```\nnull\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1656571586101
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 12,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1656571586101,
+  "creator": "wb_yuanbowen",
+  "fullContext": null
+}

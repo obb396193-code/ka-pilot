@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-view qz-editor-engine am-engine\" data-element=\"root\"><p data-id=\"p838747a-UFnLCvY7\">相关链接：</p><ul data-id=\"u738a58b-5Lb7k7qG\"><li data-id=\"ld70c578-M7Ea7g0x\"><a target=\"_blank\" href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710705116175\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">行为类目查询</a></li><li data-id=\"ld70c578-Df756ATY\"><a target=\"_blank\" href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710705721356\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">行为关键词查询</a></li><li data-id=\"ld70c578-1kwK4sy7\"><a target=\"_blank\" href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710706361344\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">兴趣类目查询</a></li><li data-id=\"ld70c578-pC4N4yWx\"><a target=\"_blank\" href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710706958348\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">兴趣关键词查询</a></li><li data-id=\"ld70c578-naXT0Kje\"><a target=\"_blank\" href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710707561472\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">兴趣行为类目关键词ID转词</a></li><li data-id=\"ld70c578-o6GXP5yu\"><a target=\"_blank\" href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710708197388\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">获取行为推荐关键词</a></li></ul></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "行为兴趣词管理"
+}

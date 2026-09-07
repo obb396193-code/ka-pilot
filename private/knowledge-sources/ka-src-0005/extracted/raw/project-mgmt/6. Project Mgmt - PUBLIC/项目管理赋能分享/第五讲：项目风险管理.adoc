@@ -1,0 +1,131 @@
+# <span style="color: rgb(27, 18, 108);">目录</span>
+
+•<span style="color: rgb(27, 18, 108);">什么是风险</span>
+
+•<span style="color: rgb(27, 18, 108);">什么是风险管理</span>
+
+•<span style="color: rgb(27, 18, 108);">怎么做风险管理</span>
+
+•<span style="color: rgb(27, 18, 108);">回顾</span>
+
+<span style="color: rgb(27, 18, 108);">Q&A</span>
+
+# <span style="color: rgb(27, 18, 108);">**什么是风险**</span>
+
+<span style="color: rgb(27, 18, 108);">风险：可能影响项目目标实现的不确定性事件或条件</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/587a27d2-7a9a-4f33-9101-7a9636044a40.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**什么是风险管理**</span>
+
+<span style="color: rgb(27, 18, 108);">风险管理：提前预判\+主动应对 → 降低负面影响/增强机会点</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/a74f5e3a-c072-44a3-ba0d-fd45acc9adcc.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/83bfd677-6423-4eb8-9b1c-0a0975125381.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**怎么做风险管理**</span>
+
+## <span style="color: rgb(27, 18, 108);">**规划风险管理**</span><span style="color: rgb(170, 178, 184);">**-识别风险-分析风险-应对风险-监控风险**</span>
+
+§<span style="color: rgb(254, 107, 0);">**规划风险管理 - 约定团队语言**</span>
+
+-<span style="color: rgb(254, 107, 0);">定义和跟进</span><span style="color: rgb(27, 18, 108);">（</span>[项目风险管理清单](https://alidocs.dingtalk.com/i/nodes/NZQYprEoWoxKPoqwCKMMEjp2V1waOeDk?corpId=)<span style="color: rgb(27, 18, 108);">）</span>
+
+o<span style="color: rgb(27, 18, 108);">风险等级（预防“狼来了”）</span>
+
+o<span style="color: rgb(27, 18, 108);">风险清单（共同制作/时间性:动态维护）</span>
+
+-<span style="color: rgb(254, 107, 0);">沟通机制</span>
+
+o<span style="color: rgb(27, 18, 108);">同步机制（频率\+渠道）</span>
+
+o<span style="color: rgb(27, 18, 108);">上升机制（触发点\+方式）</span>
+
+§<span style="color: rgb(27, 18, 108);">***执行阶段：项目初期***</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/bd79e328-2ac2-4a0e-bf78-e6f7c0934807.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/4ae634eb-3784-455d-be1d-b66a63157fca.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**规划风险管理-**</span><span style="color: rgb(27, 18, 108);">**识别风险**</span><span style="color: rgb(170, 178, 184);">**-分析风险-应对风险-监控风险**</span>
+
+§<span style="color: rgb(254, 107, 0);">**识别风险 - 发现潜在问题**</span>
+
+1.<span style="color: rgb(27, 18, 108);">全面评估：明确项目目标和范围</span>
+
+2.<span style="color: rgb(27, 18, 108);">按照风险类别 - 执行RBS</span>
+
+3.<span style="color: rgb(27, 18, 108);">风险清单</span>-<span style="color: rgb(27, 18, 108);">识别方法</span>
+
+<span style="color: rgb(27, 18, 108);">***整个项目周期：渐进明细***</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/fa195326-dc5a-4dc2-91fc-b5df42febe75.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/27a21fff-80bb-4998-82d7-a0edb08c81be.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**规划风险管理-识别风险-**</span><span style="color: rgb(27, 18, 108);">**分析风险**</span><span style="color: rgb(170, 178, 184);">**-应对风险-监控风险**</span>
+
+§<span style="color: rgb(254, 107, 0);">**分析风险 - 评估影响和概率，确定优先级**</span>
+
+-<span style="color: rgb(27, 18, 108);">风险概率
+\- 可能性：高、中、低</span>
+
+o<span style="color: rgb(27, 18, 108);">评估维度：历史经验/主观判断（如专家经验）</span>
+
+-<span style="color: rgb(27, 18, 108);">风险影响
+\- 影响度：高、中、低</span>
+
+o<span style="color: rgb(27, 18, 108);">评估维度：资损风险/时间延误（如项目延期天数）/合规风险（如法律处罚）</span>
+
+§<span style="color: rgb(27, 18, 108);">***整个项目周期：渐进明细***</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/4c4246a5-f1e8-4f27-b458-1853085cbc27.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/e1fb7fab-03f8-490d-b558-7d7678e3b97c.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**规划风险管理-识别风险-分析风险-**</span><span style="color: rgb(27, 18, 108);">**应对风险**</span><span style="color: rgb(170, 178, 184);">**-监控风险**</span>
+
+§<span style="color: rgb(254, 107, 0);">**应对风险 - 制定策略，主动化解威胁**</span>
+
+-<span style="color: rgb(27, 18, 108);">按照风险优先级</span>
+
+o<span style="color: rgb(27, 18, 108);">低风险：接受/减轻</span>
+
+o<span style="color: rgb(27, 18, 108);">中风险：减轻/转移</span>
+
+o<span style="color: rgb(27, 18, 108);">高风险：上报/规避</span>
+
+<span style="color: rgb(27, 18, 108);">***整个项目周期：渐进明细***</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/da73fdfe-21e7-4d67-96d2-44dd69dae1e3.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/7ba005fe-857e-4473-8888-2d1b57ae25a8.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/5727dc89-e87f-4540-8237-f70c7688c54b.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**规划风险管理-识别风险-分析风险-应对风险-**</span><span style="color: rgb(27, 18, 108);">**监控风险**</span>
+
+§<span style="color: rgb(254, 107, 0);">**监控风险 - 持续跟踪，灵活应对**</span>
+
+-<span style="color: rgb(27, 18, 108);">时间性</span>
+
+o<span style="color: rgb(27, 18, 108);">风险清单和等级</span>
+
+o<span style="color: rgb(27, 18, 108);">风险应对措施的有效性</span>
+
+§<span style="color: rgb(27, 18, 108);">***整个项目周期：渐进明细***</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/bacff8fc-3d69-4823-a6e4-164f389c54ca.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/6fcfbe47-0690-464e-969e-ae2d82004cee.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(27, 18, 108);">**不同类型项目的风险管理建议**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/2e7305ad-2230-4d13-a65a-bdd3b635b028.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/e00e6cb9-09d9-4fee-b622-9d9b5300c083.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/b655e62c-f0cb-45c4-9394-f5989586086a.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnV4j987kRJO4X/img/c4ec4dde-8b8a-4422-9b90-4e05d33f211e.png?Expires=1776252753&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+

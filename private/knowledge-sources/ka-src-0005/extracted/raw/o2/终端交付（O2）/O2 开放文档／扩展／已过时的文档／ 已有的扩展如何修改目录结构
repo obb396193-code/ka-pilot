@@ -1,0 +1,33 @@
+## 已有项目如何升级到 Pai App
+
+1、联系研发小蜜，将已有的 O2 扩展应用升级到 Pai App，需要提供应用 id 或 repo：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/87ec194b-9071-4128-9003-0c0c60a07623.png)
+
+
+2、升级构建依赖和构建命令
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/16306cdc-5f7f-47a9-9b77-dbe530225984.png)
+
+
+3、编辑 build.config.js，用 @ali/pai-build-plugin（图片中的@ali/o2-space-build-plugin-stark-module 改名了） 替换原来的 build-plugin-stark-module
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/114cdd5c-b662-43f9-b13a-5e070536ce61.png)
+
+
+4、调整文件目录，调整为 [《Pai App 目录结构》](https://docs.dingtalk.com/api/doc/transit?dentryUuid=vy20BglGWOxjGpq0C2GlE7GAVA7depqY&queryString=utm_medium%3Ddingdoc_doc_plugin_card%26utm_source%3Ddingdoc_doc)，并将原来配置在 [https://open-space.o2.alibaba-inc.com/](https://open-space.o2.alibaba-inc.com/) 的 config、service、rule 信息配置到对应的文件中
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/36b6941f-f5c0-4195-b82a-bcefb873c3bf.png)
+
+
+5、执行 tnpm install && npm start，直到看到构建成功字样
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/4maOgd5mwrK8lWNX/img/f1d38e81-f08b-42ab-9c68-da0239c64467.png)
+
+
+可以参考 tnpm 扩展的迁移，CR 如下：
+
+[https://code.alibaba-inc.com/def/mp-tnpm-front-v2/codereview/13755070](https://code.alibaba-inc.com/def/mp-tnpm-front-v2/codereview/13755070?spm=defwork.home.iteration_detail_cr.d_check.15795c4bTnUdQZ)
+
+（构建插件改名了，为 @ali/pai-build-plugin）
+

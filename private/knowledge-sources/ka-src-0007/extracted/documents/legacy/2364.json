@@ -1,0 +1,42 @@
+{
+  "documentId": 2364,
+  "documentName": "分包失败，重新构建",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】分包失败，重新构建\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/retryBuildSubPackage](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/retryBuildSubPackage)\n\n请求方式：POST\n\n数据格式：JSON\n\n本接口适用于给定的app_id下，存在部分分包构建失败，通过此接口能够一键全量发起分包重建。若没有需要重建的分包【全部都是成功的】，接口的返回值cnt=0.\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主ID |  |\n| app_id | Long |  | 必填 | 应用ID |  |\n\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | Object |  |  |  |\n| &#8195;retry_cnt | Integer |  | 本次发起重新构建，应用分包的数量。 | cnt=0表示没有需要重建的分包，cnt=x表示对x个分包发起了重建 |\n| code | Integer |  | 错误码 |  |\n| message | String |  | 错误详情 |  |\n\n### 请求样例\n\n```js\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/retryBuildSubPackage' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": \"900015073\",\n    \"app_id\": \"2199123303321\"\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"retry_cnt\": 10\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EIWCgICg7ZmOrAEY5gUg2v-H45AxKKPn6KAL\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1688130322345
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1688130322345,
+  "creator": "heran03",
+  "fullContext": null
+}

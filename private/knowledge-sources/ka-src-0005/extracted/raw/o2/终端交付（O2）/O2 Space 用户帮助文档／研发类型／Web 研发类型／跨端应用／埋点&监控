@@ -1,0 +1,32 @@
+## 埋点方案
+
+跨端应用默认不会注入任何埋点脚本。请参考相关框架的文档来使用埋点，比如 rax 框架的埋点方案可以直接使用：[https://rax.alibaba-inc.com/docs/guide/aplus](https://rax.alibaba-inc.com/docs/guide/aplus)
+
+如果你使用的不是 rax 框架，而且想要让页面注入 aplus 脚本，可以参考：[产物约定-注入 aplus](https://yuque.antfin-inc.com/gubal/pg4m5z/fneazs#BjMFl)
+
+## 监控能力
+
+### 前端监控
+
+跨端应用默认不会注入任何前端监控脚本。请参考相关框架的文档来使用监控能力，比如 rax 框架的 JSTracker 监控方案可以直接使用：[https://rax.alibaba-inc.com/docs/guide/tracker](https://rax.alibaba-inc.com/docs/guide/tracker)
+
+### CDN 监控
+
+跨端应用提供了页面的 CDN 监控能力，可以查询一段时间内的错误请求及请求的链路信息。可以通过“应用详情-监控”来进行使用。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dkqhgdpkhgfcxvif/imgOnhsMEiXcF.png)
+
+
+同时我们也提供了根据 Egleeye Trace Id 来进行链路分析的能力。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dkqhgdpkhgfcxvif/img53Q1ff6J3Q.png)
+
+
+另外，你也可以通过“应用-页面-详情”查看具体页面的 CDN 实时数据、CDN 用户统计数据。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dkqhgdpkhgfcxvif/imgE2TM0T1ctE.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dkqhgdpkhgfcxvif/imgEPsRQRN4ex.png)
+
+

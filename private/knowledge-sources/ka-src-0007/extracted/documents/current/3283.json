@@ -1,0 +1,714 @@
+{
+  "documentId": 3283,
+  "documentName": "创建商品（医疗库）",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "创建商品（医疗库）\n/rest/openapi/gw/dsp/v1/dpa/product/batch/create/pharmaceutical\ncurl --location 'https://star-gateway.staging.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/batch/create/pharmaceutical' \\\n--header 'Content-Type: application/json' \\\n--data '{\n  \"advertiser_id\": 900015435,\n  \"pharmaceutical_product_edit_params\": [\n    {\n      \"library_id\": 202112411098,\n      \"industry_id\": 9,\n      \"status\": 1,\n      \"outer_id\": 700,\n      \"first_category_id\": 350003,\n      \"first_category\": \"医疗服务\",\n      \"second_category_id\": 25090100001,\n      \"second_category\": \"口腔科\",\n      \"third_category_id\": \"2509010000100\",\n      \"third_category\": \"牙齿美容\",\n      \"sub_industry_id\": \"消费医疗\",\n      \"feature\": \"特色卖点\",\n      \"name\": \"mapi测试医疗商品07\",\n      \"main_image_url\": [\n        \"https://kcdn-w1.staging.kuaishou.com/bs2/ad-dpa/YWQtZHBhOmt1YWlzaG91X2FkX2RzcF9kcGE6OTAwMDE1NDM1Ok1FUkNIQU5UOltCQDFlOGMzZTZlOjI4NzEwNzU3NDM1.jpeg\"\n      ],\n      \"pharmaceutical_product_info\": {\n        \"product_indications\": \"洗牙洁牙,烤瓷牙\",\n        \"adverse_reaction\": \"\",\n        \"medical_institution_name\": \"医疗机构名称\"\n      }\n    }\n  ]\n}'\n{\n    \"code\": 0,\n    \"data\": {\n        \"product_edit_responses\": [\n            {\n                \"error_msg\": null,\n                \"library_id\": 202112411098,\n                \"success\": true,\n                \"product_id\": 9849013,\n                \"outer_id\": \"800\"\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ENOAgIDAxJ2OrAEYywcg073eoJEzKKC1sNUN\"\n}\nadvertiser_id  Long  <p>投放账号ID</p>\npharmaceutical_product_edit_params  AdGatewayDpaProductCreateParamForPharmaceutical[]  <p>医疗库商品批量创建请求参数</p>\nfeature  String  <p>商品特色信息</p>\nstatus  Integer  <p>商品投放状态: 0-不可投放, 1-可投放</p>\nindustry_id  Integer  <p>医疗商品库</p>\nsub_industry_id  String  <p>\"消费医疗\"或者\"药品/器械\"</p>\nlibrary_id  Long  <p>商品库ID,创建商品必须填写商品所在商品库</p>\nouter_id  String  <p>商品第三方ID，作为某个商品库下的商品唯一ID</p>\nname  String  <p>漫剧名称</p>\nmain_image_url  String[]  <p>商品主图</p>\nfirst_category_id  Long  <p>商品一级类目ID</p>\nfirst_category  String  <p>商品一级类目名称</p>\nsecond_category_id  Long  <p>商品二级类目ID</p>\nsecond_category  String  <p>商品二级类目名称</p>\nthird_category_id  Long  <p>商品三级类目ID</p>\nthird_category  String  <p>商品三级类目名称</p>\npharmaceutical_product_info  PharmaceuticalProductInfoSneakV2  <p>医药库商品批量创建请求参数</p>\nproduct_indications  String  <p>商品适应症</p>\nadverse_reaction  String  <p>禁忌、不良反应</p>\nmedical_institution_name  String  <p>医疗机构名称</p>\ncode  Integer  <p>结果状态码</p>\nmessage  String  <p>错误结果信息</p>\ndata  AdGatewayDpaProductBatchEditResponse  <p>商品批量编辑结果</p>\nproduct_edit_responses  ProductUpdateResponseSneak[]  <p>商品编辑返回结果集</p>\nlibrary_id  Long  <p>商品库ID</p>\nouter_id  String  <p>商品第三方ID</p>\nsuccess  Boolean  <p>编辑结果: true-成功, false-失败</p>\nerror_msg  String  <p>失败错误信息</p>\nproduct_id  Long  <p>商品ID</p>\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1756984023913
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1756979786862
+    }
+  ],
+  "apiId": 1724,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/batch/create/pharmaceutical",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求示例",
+      "type": "shell",
+      "body": "curl --location 'https://star-gateway.staging.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/batch/create/pharmaceutical' \\\n--header 'Content-Type: application/json' \\\n--data '{\n  \"advertiser_id\": 900015435,\n  \"pharmaceutical_product_edit_params\": [\n    {\n      \"library_id\": 202112411098,\n      \"industry_id\": 9,\n      \"status\": 1,\n      \"outer_id\": 700,\n      \"first_category_id\": 350003,\n      \"first_category\": \"医疗服务\",\n      \"second_category_id\": 25090100001,\n      \"second_category\": \"口腔科\",\n      \"third_category_id\": \"2509010000100\",\n      \"third_category\": \"牙齿美容\",\n      \"sub_industry_id\": \"消费医疗\",\n      \"feature\": \"特色卖点\",\n      \"name\": \"mapi测试医疗商品07\",\n      \"main_image_url\": [\n        \"https://kcdn-w1.staging.kuaishou.com/bs2/ad-dpa/YWQtZHBhOmt1YWlzaG91X2FkX2RzcF9kcGE6OTAwMDE1NDM1Ok1FUkNIQU5UOltCQDFlOGMzZTZlOjI4NzEwNzU3NDM1.jpeg\"\n      ],\n      \"pharmaceutical_product_info\": {\n        \"product_indications\": \"洗牙洁牙,烤瓷牙\",\n        \"adverse_reaction\": \"\",\n        \"medical_institution_name\": \"医疗机构名称\"\n      }\n    }\n  ]\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回示例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"product_edit_responses\": [\n            {\n                \"error_msg\": null,\n                \"library_id\": 202112411098,\n                \"success\": true,\n                \"product_id\": 9849013,\n                \"outer_id\": \"800\"\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ENOAgIDAxJ2OrAEYywcg073eoJEzKKC1sNUN\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 77635,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>投放账号ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 77636,
+      "paramName": "pharmaceutical_product_edit_params",
+      "paramType": "AdGatewayDpaProductCreateParamForPharmaceutical[]",
+      "example": "",
+      "description": "<p>医疗库商品批量创建请求参数</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4397,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 77574,
+          "paramName": "feature",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品特色信息</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77575,
+          "paramName": "status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>商品投放状态: 0-不可投放, 1-可投放</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77576,
+          "paramName": "industry_id",
+          "paramType": "Integer",
+          "example": "9",
+          "description": "<p>医疗商品库</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77577,
+          "paramName": "sub_industry_id",
+          "paramType": "String",
+          "example": "\"消费医疗\"",
+          "description": "<p>\"消费医疗\"或者\"药品/器械\"</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77578,
+          "paramName": "library_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品库ID,创建商品必须填写商品所在商品库</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77579,
+          "paramName": "outer_id",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品第三方ID，作为某个商品库下的商品唯一ID</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77580,
+          "paramName": "name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>漫剧名称</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77581,
+          "paramName": "main_image_url",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>商品主图</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77582,
+          "paramName": "first_category_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品一级类目ID</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77583,
+          "paramName": "first_category",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品一级类目名称</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77584,
+          "paramName": "second_category_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品二级类目ID</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77585,
+          "paramName": "second_category",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品二级类目名称</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77586,
+          "paramName": "third_category_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品三级类目ID</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 13,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77587,
+          "paramName": "third_category",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品三级类目名称</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 14,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 77588,
+          "paramName": "pharmaceutical_product_info",
+          "paramType": "PharmaceuticalProductInfoSneakV2",
+          "example": "",
+          "description": "<p>医药库商品批量创建请求参数</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4403,
+          "sort": 15,
+          "note": "",
+          "children": [
+            {
+              "paramId": 77640,
+              "paramName": "product_indications",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>商品适应症</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77641,
+              "paramName": "adverse_reaction",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>禁忌、不良反应</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77642,
+              "paramName": "medical_institution_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>医疗机构名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 77637,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>结果状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 77638,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>错误结果信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 77639,
+      "paramName": "data",
+      "paramType": "AdGatewayDpaProductBatchEditResponse",
+      "example": "",
+      "description": "<p>商品批量编辑结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 725,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 75556,
+          "paramName": "product_edit_responses",
+          "paramType": "ProductUpdateResponseSneak[]",
+          "example": "",
+          "description": "<p>商品编辑返回结果集</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 724,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 75551,
+              "paramName": "library_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>商品库ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75552,
+              "paramName": "outer_id",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>商品第三方ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75553,
+              "paramName": "success",
+              "paramType": "Boolean",
+              "example": "",
+              "description": "<p>编辑结果: true-成功, false-失败</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75554,
+              "paramName": "error_msg",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>失败错误信息</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75555,
+              "paramName": "product_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>商品ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1756984023913,
+  "creator": "chenzhouqing",
+  "fullContext": null
+}

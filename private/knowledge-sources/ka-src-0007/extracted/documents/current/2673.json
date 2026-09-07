@@ -1,0 +1,268 @@
+{
+  "documentId": 2673,
+  "documentName": "获取创意分类查询接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094797029
+    }
+  ],
+  "apiId": 4,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/creative/creative_category/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com//rest/openapi/v1/creative/creative_category/list' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n   \"advertiser_id\": 4171736\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n   \"code\": 0,\n   \"message\": \"OK\",\n   \"data\": {\n       \"details\": [\n           {\n               \"category_id\": 8,\n               \"parent_id\": 0,\n               \"category_name\": \"游戏\",\n               \"level\": \"1\"\n           },\n           {\n               \"category_id\": 802,\n               \"parent_id\": 8,\n               \"category_name\": \"游戏（按题材）\",\n               \"level\": \"2\"\n           },\n           {\n               \"category_id\": 803,\n               \"parent_id\": 8,\n               \"category_name\": \"游戏（按利益）\",\n               \"level\": \"2\"\n           },\n           {\n               \"category_id\": 80201,\n               \"parent_id\": 802,\n               \"category_name\": \"传奇游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80202,\n               \"parent_id\": 802,\n               \"category_name\": \"仙侠游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80203,\n               \"parent_id\": 802,\n               \"category_name\": \"魔幻游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80204,\n               \"parent_id\": 802,\n               \"category_name\": \"西游游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80205,\n               \"parent_id\": 802,\n               \"category_name\": \"三国游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80206,\n               \"parent_id\": 802,\n               \"category_name\": \"宫廷游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80207,\n               \"parent_id\": 802,\n               \"category_name\": \"都市游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80208,\n               \"parent_id\": 802,\n               \"category_name\": \"末日游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80209,\n               \"parent_id\": 802,\n               \"category_name\": \"盗墓游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80210,\n               \"parent_id\": 802,\n               \"category_name\": \"科幻游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80211,\n               \"parent_id\": 802,\n               \"category_name\": \"二次元游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80212,\n               \"parent_id\": 802,\n               \"category_name\": \"女性向游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80214,\n               \"parent_id\": 802,\n               \"category_name\": \"游戏题材其他\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80215,\n               \"parent_id\": 802,\n               \"category_name\": \"军事游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80301,\n               \"parent_id\": 803,\n               \"category_name\": \"网赚游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80302,\n               \"parent_id\": 803,\n               \"category_name\": \"游戏利益其他\",\n               \"level\": \"3\"\n           }\n       ]\n   }"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 83,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主 id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 84,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 85,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "message",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 86,
+      "paramName": "data",
+      "paramType": "AdMarketCreativeCategoryData",
+      "example": "",
+      "description": "创意分类",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 14,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 82,
+          "paramName": "details",
+          "paramType": "AdMarketCreativeCategoryView[]",
+          "example": "",
+          "description": "mapi 创意分类返回值",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 13,
+          "sort": 1,
+          "note": "\t是个倒着的树形结构，根节点 level 为 1",
+          "children": [
+            {
+              "paramId": 78,
+              "paramName": "category_id",
+              "paramType": "Integer",
+              "example": "",
+              "description": "分类id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "\t若没有其他节点，以此节点的分类 id 为 parent_id，则此节点为叶子结点",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 79,
+              "paramName": "parent_id",
+              "paramType": "Integer",
+              "example": "",
+              "description": "分类父 id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 80,
+              "paramName": "category_name",
+              "paramType": "String",
+              "example": "",
+              "description": "分类名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 81,
+              "paramName": "level",
+              "paramType": "String",
+              "example": "",
+              "description": "分类级别",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "从上到下，最多三层。顶层是第一层",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094797029,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

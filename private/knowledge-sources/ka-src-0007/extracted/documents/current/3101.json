@@ -1,0 +1,583 @@
+{
+  "documentId": 3101,
+  "documentName": "原生报表披露自然流量的数据整体概览接口",
+  "documentType": 2,
+  "description": "<p>获取原生报表披露自然流量后的数据整体概览接口，包括转化数据、成本数据、经营数据。</p><p>概览数据：</p><ol><li><p>转化数据：summaryConversion</p><ol><li><p>整体转化数：totalConversion；</p></li><li><p>原生广告：adConversion；</p></li><li><p>原生经营：natureConversion；</p></li></ol></li><li><p>成本数据：summaryCost</p><ol><li><p>花费 totalCharge &nbsp;</p></li><li><p>整体转化成本 totalConversionCost &nbsp;</p></li><li><p>原生广告转化成本 adConversionCost &nbsp;</p></li></ol></li><li><p>经营数据：summaryOperation</p><ol><li><p>粉丝总数 fansUserNum &nbsp;</p></li><li><p>新增关注量 followCnt &nbsp;</p></li><li><p>取消关注量 unFollowCnt</p></li><li><p>快手号 authorId</p></li><li><p>原生广告-素材曝光数 adItemShowCnt &nbsp;</p></li><li><p>原生广告-行为数 adItemClickCnt &nbsp;</p></li><li><p>原生广告-视频评论量 adPhotoCommentCnt &nbsp;</p></li><li><p>原生广告-视频点赞量 adPhotoLikeCnt &nbsp;</p></li><li><p>原生广告-视频分享量 adPhotoShareCnt</p></li><li><p>原生经营-素材曝光数 natureItemShowCnt</p></li><li><p>原生经营-行为数 natureItemClickCnt</p></li><li><p>原生经营-视频评论量 naturePhotoCommentCnt &nbsp;</p></li><li><p>原生经营-视频点赞量 naturePhotoLikeCnt</p></li><li><p>原生经营-视频分享量 naturePhotoShareCnt</p></li></ol></li></ol>",
+  "summary": "",
+  "remark": "",
+  "content": "原生报表披露自然流量的数据整体概览接口\n/rest/openapi/gw/dsp/v1/effect/native/natureChartReport\nsearch_param  NativeReportSearchParamSnake  <p>原生报表概览请求参数</p>\nauthor_id  Long[]  快手号ID\ncampaign_type  Integer[]  营销目标  2提升应用安装 5收集销售线索 7提升应用活跃 19 快手小程序推广 30 短剧推广\nocpc_action_type  Integer[]  转化目标 180激活 53表单优化 190付费 191 首日roi(24h)\nkol_user_type  Integer[]  原生广告类型 1普通快手号 2 蓝V 3聚星达人\nreport_end_day  Long  <p>结束时间 时间戳 毫秒</p>\nreport_start_day  Long  <p>开始时间 时间戳 毫秒</p>\nadvertiser_id  Long  <p>advertiser_id</p>\ndata  NativeNatureChartReportResponseSnake  <p>原生报表披露自然流量数据概览结果</p>\nsummary_operation  NativeReportSummarySnake[]  <p>经营数据</p>\nsum_value  Double  <p>总体数据</p>\ntype  String  <p>整体转化数 totalConversion<br>原生广告经营 adConversion<br>自然经营 key natureConversion</p>\nyoy  Double  同比\nsummary_cost  NativeReportSummarySnake[]  <p>成本数据</p>\nsum_value  Double  <p>总体数据</p>\ntype  String  <p>整体转化数 totalConversion<br>原生广告经营 adConversion<br>自然经营 key natureConversion</p>\nyoy  Double  同比\nsummary_conversion  NativeReportSummarySnake[]  <p>转化数据</p>\nsum_value  Double  <p>总体数据</p>\ntype  String  <p>整体转化数 totalConversion<br>原生广告经营 adConversion<br>自然经营 key natureConversion</p>\nyoy  Double  同比\nmessage  String  <p>错误详情</p>\ncode  Integer  <p>请求结果，非1为失败</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1725334653086
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1725267708651
+    }
+  ],
+  "apiId": 1403,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/effect/native/natureChartReport",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求参数",
+      "type": "jsonc",
+      "body": "{\n  \"advertiser_id\": 900015364,\n  \"search_param\": {\n    \"report_start_day\": 1723692624000,\n    \"report_end_day\": 1724729424000\n  }\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "响应结果",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": {\n    \"summary_cost\": [\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"adConversionCost\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"totalCharge\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"totalConversionCost\"\n      }\n    ],\n    \"summary_operation\": [\n      {\n        \"yoy\": 366.6666666666667,\n        \"sum_value\": 980,\n        \"type\": \"naturePhotoShareCnt\"\n      },\n      {\n        \"yoy\": 366.6666666666667,\n        \"sum_value\": 840,\n        \"type\": \"naturePhotoLikeCnt\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"adItemClickCnt\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"authorId\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"fansUserNum\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"adItemShowCnt\"\n      },\n      {\n        \"yoy\": 366.6666666666667,\n        \"sum_value\": 700,\n        \"type\": \"natureItemClickCnt\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"unFollowCnt\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"adPhotoLikeCnt\"\n      },\n      {\n        \"yoy\": 366.6666666666667,\n        \"sum_value\": 560,\n        \"type\": \"natureItemShowCnt\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"adPhotoShareCnt\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"adPhotoCommentCnt\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"followCnt\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"naturePhotoCommentCnt\"\n      }\n    ],\n    \"summary_conversion\": [\n      {\n        \"yoy\": 366.6666666666667,\n        \"sum_value\": 140,\n        \"type\": \"totalConversion\"\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"type\": \"natureConversion\"\n      },\n      {\n        \"yoy\": 366.6666666666667,\n        \"sum_value\": 140,\n        \"type\": \"natureConversion\"\n      }\n    ]\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"EIHnh4Cg7ZmOrAEYrQcg9cWrr5syKNmFhroC\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 64751,
+      "paramName": "search_param",
+      "paramType": "NativeReportSearchParamSnake",
+      "example": "",
+      "description": "<p>原生报表概览请求参数</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2699,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 64704,
+          "paramName": "author_id",
+          "paramType": "Long[]",
+          "example": "[123,456]",
+          "description": "快手号ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64705,
+          "paramName": "campaign_type",
+          "paramType": "Integer[]",
+          "example": "[2,5]",
+          "description": "营销目标  2提升应用安装 5收集销售线索 7提升应用活跃 19 快手小程序推广 30 短剧推广",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64706,
+          "paramName": "ocpc_action_type",
+          "paramType": "Integer[]",
+          "example": "",
+          "description": "转化目标 180激活 53表单优化 190付费 191 首日roi(24h)",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64707,
+          "paramName": "kol_user_type",
+          "paramType": "Integer[]",
+          "example": "",
+          "description": "原生广告类型 1普通快手号 2 蓝V 3聚星达人",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64709,
+          "paramName": "report_end_day",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>结束时间 时间戳 毫秒</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64710,
+          "paramName": "report_start_day",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>开始时间 时间戳 毫秒</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64752,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>advertiser_id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 64753,
+      "paramName": "data",
+      "paramType": "NativeNatureChartReportResponseSnake",
+      "example": "",
+      "description": "<p>原生报表披露自然流量数据概览结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3638,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 64736,
+          "paramName": "summary_operation",
+          "paramType": "NativeReportSummarySnake[]",
+          "example": "",
+          "description": "<p>经营数据</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2707,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 64728,
+              "paramName": "sum_value",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>总体数据</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64729,
+              "paramName": "type",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>整体转化数 totalConversion<br>原生广告经营 adConversion<br>自然经营 key natureConversion</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64730,
+              "paramName": "yoy",
+              "paramType": "Double",
+              "example": "",
+              "description": "同比",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64737,
+          "paramName": "summary_cost",
+          "paramType": "NativeReportSummarySnake[]",
+          "example": "",
+          "description": "<p>成本数据</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2707,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 64728,
+              "paramName": "sum_value",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>总体数据</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64729,
+              "paramName": "type",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>整体转化数 totalConversion<br>原生广告经营 adConversion<br>自然经营 key natureConversion</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64730,
+              "paramName": "yoy",
+              "paramType": "Double",
+              "example": "",
+              "description": "同比",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64738,
+          "paramName": "summary_conversion",
+          "paramType": "NativeReportSummarySnake[]",
+          "example": "",
+          "description": "<p>转化数据</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2707,
+          "sort": 3,
+          "note": "",
+          "children": [
+            {
+              "paramId": 64728,
+              "paramName": "sum_value",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>总体数据</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64729,
+              "paramName": "type",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>整体转化数 totalConversion<br>原生广告经营 adConversion<br>自然经营 key natureConversion</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64730,
+              "paramName": "yoy",
+              "paramType": "Double",
+              "example": "",
+              "description": "同比",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64754,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>错误详情</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64755,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>请求结果，非1为失败</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1725334653086,
+  "creator": "wanghao51",
+  "fullContext": null
+}

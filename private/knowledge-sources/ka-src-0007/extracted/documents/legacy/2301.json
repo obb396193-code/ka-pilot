@@ -1,0 +1,42 @@
+{
+  "documentId": 2301,
+  "documentName": "工具-投前预估-3-投前预估列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 投前预估列表\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pre_put/predication_task/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pre_put/predication_task/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段        | 类型   | 示例   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | long | 123 | 必填 | 广告主id |  |\n| task_create_time_duration | string[] | \\[\"2023-02-01\", \"2023-02-03\"] | 可选 | 按任务创建时间范围筛选 | 包含两个日期字符串，格式为yyyy-MM-dd，不能超出最近7天 |\n| task_ids | long[] | \\[1, 2, 3] | 可选 | 按任务id范围筛选 | 不能超过100个 |\n| overall_rating  |  int  |  60   | 必填  | 总体评分  |            |\n| page | PageSnake |  | 必填 | 分页参数 |  |\n\n| PageSnake |   |   |   |   |   |\n| ------- | ------- | ------- | ------- | ------- | ------ |\n| 字段 | 类型 | 示例 | 是否必填 | 说明 | 备注 |\n| current_page | int | 1 | 可选 | 当前页码 |  |\n| page_size | int | 20 | 可选 | 分页大小 |  |\n| total_count | long | 10 | 可选 | 总数 |  |\n\n### 返回参数\n\n| 字段 | 类型 | 示例 |      说明                        | 备注 |\n| ------- | -------- | ------------------------------------ | ---- | --- |\n| code    | int    |  0  | 状态码                            |     |\n| message | string    |  \"OK\"  | 错误信息                         |     |\n| request_id  | string  |      | 请求ID                    |      |\n| data    | struct   |    |返回结果                         |     |\n| &#8195; tasks  | PhotoPredicationTaskListItemSnake[]  |      | 列表信息                   |      |\n| &#8195; page    | PageSnake   |    | 分页信息                         |     |\n\n| PhotoPredicationTaskListItemSnake |   |   |   |   |\n| ------- | ------- | ------- | ------- | ------ |\n| 字段 | 类型 | 示例 |说明 | 备注 |\n| predication_id | long | 123 | 预估任务id |  |\n| predication_time | long | 1642063956483 | 预估时间 |  |\n| photo_url | string | \"https://abc.a.kwimgs.com/upic/\" | 视频url地址 |  |\n| title | string | \"VID_20190808_212147.mp4\" | 视频文件名 |  |\n| duration | long | 10533 | 视频时长 | 单位：毫秒 |\n| photo_predication_status | long | 2 | 任务预估状态 | 1：预测中，2：预测结果已出，3：特征已过期 |\n| ocpx_action_type | long | 180 | 优化目标 | 53：表单提交，180：激活 |\n| content_quality | long | 0 | 内容分 |  |\n| photo_pushed_status | long | 0 | 任务同步到视频库状态 | ，0：未推送，1：已经推送 |\n| content_duplicate | boolean | false | 是否重复 |  |\n| photo_id   | long | 123456789   | 视频ID |    |\n\n| PageSnake |   |   |   |   |\n| ------- | ------- | ------- | ------- | ------ |\n| 字段 | 类型 | 示例 |  说明 | 备注 |\n| current_page | int | 1 | 当前页码 |  |\n| page_size | int | 20 | 分页大小 |  |\n| total_count | long | 10 | 总数 |  |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 123,\n    \"page\": {\n        \"current_page\": 1,\n        \"page_size\": 20\n    }\n}\n\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"page\": {\n            \"total_count\": 3,\n            \"current_page\": 1,\n            \"page_size\": 20\n        },\n        \"tasks\": [\n            {\n                \"photo_pushed_status\": 0,\n                \"predication_id\": 55101688,\n                \"content_quality\": 1,\n                \"title\": \"5s-3.mp4\",\n                \"duration\": 5000,\n                \"photo_predication_status\": 2,\n                \"photo_url\": \"https://alimov2.a.kwimgs.com/upic/2021/12/07/17/BMjAyMTEyMDcxNzQ2MjdfMjE4NjY2NTM4M182MjI5MTQ1MDEwN18wXzM=_b_B5596f2337c208966b88f949cba05e6a8.mp4?tag=1-1644386914-unknown-0-rfclt1wkjx-336b12d5adcfa974&clientCacheKey=3x9gg2uwk9jge5c_b.mp4&tt=b&di=247090c5&bp=10000\",\n                \"predication_time\": 1642064018370,\n                \"ocpx_action_type\": 180,\n                \"content_duplicate\":false,\n                \"photo_id\": 795194857901\n            },\n            {\n                \"photo_pushed_status\": 1,\n                \"predication_id\": 55101741,\n                \"content_quality\": 1,\n                \"title\": \"5s-2.mp4\",\n                \"duration\": 5000,\n                \"photo_predication_status\": 2,\n                \"photo_url\": \"https://alimov2.a.kwimgs.com/upic/2021/12/06/14/BMjAyMTEyMDYxNDE1MTFfMjE4NjY2NTM4M182MjIxNzUwODQ1NF8wXzM=_b_B6980bb0be0fe4603352fe27864879197.mp4?tag=1-1644386914-unknown-0-leii20f7jq-ad0e334ba1706547&clientCacheKey=3xtsdngb5bnrs8w_b.mp4&tt=b&di=247090c5&bp=10000\",\n                \"predication_time\": 1642064008952,\n                \"ocpx_action_type\": 180,\n                \"content_duplicate\":false,\n                \"photo_id\": 89056723894\n            },\n            {\n                \"photo_pushed_status\": 0,\n                \"predication_id\": 60177601,\n                \"content_quality\": 4,\n                \"title\": \"测试2.mp4\",\n                \"duration\": 21146,\n                \"photo_predication_status\": 2,\n                \"photo_url\": \"https://alimov2.a.kwimgs.com/upic/2022/01/13/14/BMjAyMjAxMTMxNDA0MTdfMjE4NjY2NTM4M182NDc4MzE2OTA3N18wXzM=_b_B65255069a839ebc6b06bbec98e80b595.mp4?tag=1-1644386914-unknown-0-2np1gioypl-56089dc16f2a5360&clientCacheKey=3xsam4p48sc87zc_b.mp4&tt=b&di=247090c5&bp=10000\",\n                \"predication_time\": 1642063956483,\n                \"ocpx_action_type\": 53,\n                \"content_duplicate\":false,\n                \"photo_id\": 487129\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"07817025287b4f24a2f13366fb558d64\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677491267095
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677491267095,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

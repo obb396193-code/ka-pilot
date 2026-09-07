@@ -1,0 +1,19 @@
+## 收费项
+### 计费项说明
+> 实时计算：包括用于实时数据存储、实时指标计算、在线数据服务等功能依赖资源消耗项，涉及SLS、TT、Hologres、Flink、ZSearch、Clickhouse等。
+>
+> 离线计算：包括用于AB实验离线指标计算、实验分析等功能所使用的ODPS资源消耗项。
+>
+> 在线实验数：包括有效期范围内的有效在线实验，即排除未发布、已下线、已过期等情况的无效实验。
+>
+
+### 按天计费
+| **<font style="color:white;">计费项</font>** | **<font style="color:white;">计费方式</font>** | **<font style="color:white;">用量单位</font>** | **<font style="color:white;">新单价(元)</font>** |
+| --- | --- | --- | --- |
+| <font style="color:black;">实时计算</font> | 每日UV | 元/万次/每日UV | 0.06 |
+| <font style="color:black;">离线计算</font> | 离线计算(单位：CU) | 元/个/每日消耗CU | 2.19 |
+| <font style="color:black;">在线实验数</font> | 每日在线实验数 | 元/个/每日实验数 | 3 |
+
+
+注：具体收费标准以及明细以成本管家为准。
+

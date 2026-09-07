@@ -1,0 +1,30 @@
+## O2 Space 研发平台
+
+### 新增
+
+1. o2-space 新建应用支持选择主干研发
+(https://o2-img.alistatic.com/i/i09blZ/lf4kbfxvuOEaYJmfdZ8Wq-aede3021c3.png)
+
+
+1. 增加单测插件开启的配置界面
+(https://o2-img.alistatic.com/i/i09blZ/8zU3qWwaj4jyc41Moj54F-43531324cf.png)
+
+
+
+
+1. 支持发布后置流程定制
+
+
+### 优化
+
+1. ER 支持灰度时长管控
+1. 兼容引用基础类型的应用也能默认触发敏捷研发和发布源链路
+1. 主干研发变更支持关联工作项（原来只支持关联需求/缺陷）
+1. 支持通过  member-change 扩展点获取应用成员变化后的成员信息
+1. 发布源支持配置质量检查白名单
+1. O2 Space 开放扩展运行时替换为 O2 Pai 
+
+
+### 修复
+
+1. 修复锁依赖自动检测选项展示问题

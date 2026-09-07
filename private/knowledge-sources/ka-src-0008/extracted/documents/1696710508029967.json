@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><p data-id=\"p838747a-NIt0xedE\">相关链接：</p><ul data-id=\"u738a58b-3hrx9v7w\"><li data-id=\"ld70c578-GQaOyS4B\"><a href=\"https://open.oceanengine.com/labels/7/docs/1696710508507148\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">客户信息与资质管理</a></li><li data-id=\"ld70c578-XHDWi5Rb\"><a href=\"https://open.oceanengine.com/labels/7/docs/1696710515550223\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">代理商账号管理</a></li><li data-id=\"ld70c578-Kh7UnFQX\"><a href=\"https://open.oceanengine.com/labels/7/docs/1696710519122956\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">旧版巨量引擎工作台管理</a></li><li data-id=\"ld70c578-r4IEeVuX\"><a href=\"https://open.oceanengine.com/labels/7/docs/1696710525680655\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">资金和流水管理</a></li></ul><hr style=\"background-color: rgb(232, 232, 232); border: 1px solid transparent; margin: 18px 0px;\"/><p data-id=\"p838747a-J7Qr4bqk\">本篇是关于账号服务相关的接口，如获取客户的详细账号信息，或者如果您是代理商，可获取代理商下的客户列表，还可以利用API接口创建客户，或者做转账退款操作。</p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "账号服务"
+}

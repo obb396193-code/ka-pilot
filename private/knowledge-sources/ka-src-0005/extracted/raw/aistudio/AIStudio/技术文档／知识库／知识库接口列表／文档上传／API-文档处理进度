@@ -1,0 +1,70 @@
+
+# 根据提交的任务id查询文档处理进度
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **Request Headers** |  |  |
+| Request-Origin | 请求来源 | SwaggerBootstrapUi |
+| accept | 接受的媒体类型 | *表示接受所有类型 |
+| X-AK | 知识库绑定的ak | 用于身份验证 |
+| **Body (form-data)** |  |  |
+| documentLoadBaseInfo.repositoryId | 知识库ID | 83025888-9625-4be7-907e-2761ff8ecafd |
+| documentLoadBaseInfo.projectId | 项目空间ID | 129372 |
+| documentSource | 数据源类型 | 固定值：FILE，表示文件来源 |
+| documentLoadBaseInfo.fileType | 文件的类型 | 固定值：RE，表示参考文档 |
+| documentLoadBaseInfo.empId | 文档上传者的工号 | 319417 |
+| files | 用户上传的文件路径 | 包括pdf, md, txt, doc类型文件 |
+
+| 参数 | 意义 | 备注 |
+| --- | --- | --- |
+| URL | `https://idealab.alibaba-inc.com/api/v1/aiStudio/repository/queryDocumentProcessProgress` | 请求的目标地址 |
+| HTTP方法 | 使用的方法为POST | 通过 `--data`  字段体现 |
+| **请求头 (Headers)** | ​ | ​ |
+| `X-AK` | 知识库绑定的AK | 用于接口权限验证的自定义认证密钥 |
+| Request-Origion | `SwaggerBootstrapUi` | 请求来源标识或工具名称 |
+| `accept` | `*/*` | 指定可以接受的媒体类型 |
+| `Content-Type` | `application/json` | 指定请求体的格式为 JSON |
+| **请求体 (Data)** |  | ​ |
+| `repositoryId` | 知识库ID | 要查询的知识库的唯一标识符 |
+| `documentLoadTaskId` | 文档读取任务ID | 当前文档加载任务的唯一标识符 |
+| `pageNo` | 页码，默认为1 | 要查询的页码，通常用于分页请求 |
+| `pageSize` | 分页大小，默认为20 | 每页返回的记录数量 |
+
+### request
+
+### response
+
+response参数介绍：
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **success** | 请求是否成功 | 布尔值，true表示成功 |
+| **message** | 请求结果信息 | 请求后的消息反馈 |
+| **data** | 数据对象 | 请求返回的数据主体 |
+| ├── **completedCount** | 已完成处理的文件数量 | 整数值，表示已完整处理的文件总数 |
+| ├── **allCount** | 总文件数量 | 整数值，总文件数量 |
+| ├── **progressCount** | 正在处理的文件数量 | 整数值，正在处理中文件的数量 |
+| ├── **successfulCount** | 成功处理的文件数量 | 整数值，处理成功的文件数量 |
+| ├── **failedCount** | 处理失败的文件数量 | 整数值，处理失败的文件数量 |
+| ├── **processingProgressList** | 文件处理进度列表 | 数组，包含各文件的处理状态 |
+| │ ├── **id** | 文件唯一标识 | 文件的唯一ID标识符 |
+| │ ├── **fileName** | 文件名 | 文件的名称 |
+| │ ├── **fileSize** | 文件大小 | 文件的大小，例如"96K" |
+| │ ├── **success** | 处理成功与否 | 该文档是否处理成功，为null时表示处理中或未设置 |
+| │ ├── **smartProcess** | 是否智能处理 | 布尔值，表示是否进行智能处理 |
+| │ ├── **status** | 文件状态 | 当前文件的处理状态 |
+| │ ├── **statusLabel** | 状态标签 | 文件状态的描述性标签 |
+| │ ├── **errorMsg** | 错误信息 | 处理失败时的错误信息 |
+| │ └── **suggestedApproach** | 建议方法 | 对错误的建议处理方法，无错误时为空 |
+| └── **statusSummary** | 文档状态汇总 | 各种状态下文件数量的统计 |
+| ├── **NEW** | 新建状态 | 文档数为0 |
+| ├── **READING** | 数据读取中 | 文档数为0 |
+| ├── **WAITING** | 等待处理中 | 文档数为0 |
+| ├── **PROCESSING** | 处理中 | 文档数为0 |
+| ├── **SUCCESSFULLY_PROCESSED** | 处理成功，构建索引 | 文档数为0 |
+| ├── **PROCESSING_FAILED** | 处理失败 | 文档数为0 |
+| ├── **ONLINE** | 数据已上线 | 文档数为6 |
+| └── **OFFLINE** | 数据已下线 | 文档数为0 |
+| **code** | 状态代码 | 通常值为200表示请求成功 |
+| **detailMessage** | 详细信息 | 请求的详细信息，通常为null |
+

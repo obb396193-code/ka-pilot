@@ -1,0 +1,289 @@
+{
+  "documentId": 3025,
+  "documentName": "拉取token下授权广告账户接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "拉取token下授权广告账户接口\n/rest/openapi/oauth2/authorize/approval/list\ncurl -H \"Content-Type:application/json\" \\\n-d '\n{\n\"app_id\": 74751,\n\"secret\": \"abcd\",\n\"access_token\": \"[REDACTED_SECRET_EXAMPLE]\",\n\"page_no\":1,\n\"page_size\":100\n}' https://ad.e.kuaishou.com/rest/openapi/oauth2/authorize/approval/list\n{\n    \"code\": 1,\n    \"message\": \"成功\",\n    \"data\": {\n        \"details\": [\n            8173064\n        ],\n        \"isEnd\": false\n    }\n}\napp_id  Long  申请应用后快手返回的 app_id\nsecret  String  申请应用后快手返回的 secret\naccess_token  String  查询的 access_token\npage_no  Integer  分页页码，必填\npage_size  Integer  <p>分页每页展示条数，必填，最大值为200</p>\ncode  Integer  返回码\nmessage  String  返回信息\ndata  AuthorizeApprovalListData  返回数据\nisEnd  Boolean  <p>查询终止标识</p>\ndetails  Long[]  <p>广告主id列表</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1725888292670
+    }
+  ],
+  "apiId": 1350,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/oauth2/authorize/approval/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl -H \"Content-Type:application/json\" \\\n-d '\n{\n\"app_id\": 74751,\n\"secret\": \"abcd\",\n\"access_token\": \"[REDACTED_SECRET_EXAMPLE]\",\n\"page_no\":1,\n\"page_size\":100\n}' https://ad.e.kuaishou.com/rest/openapi/oauth2/authorize/approval/list"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 1,\n    \"message\": \"成功\",\n    \"data\": {\n        \"details\": [\n            8173064\n        ],\n        \"isEnd\": false\n    }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63230,
+      "paramName": "app_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "申请应用后快手返回的 app_id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63231,
+      "paramName": "secret",
+      "paramType": "String",
+      "example": "",
+      "description": "申请应用后快手返回的 secret",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63232,
+      "paramName": "access_token",
+      "paramType": "String",
+      "example": "",
+      "description": "查询的 access_token",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63233,
+      "paramName": "page_no",
+      "paramType": "Integer",
+      "example": "",
+      "description": "分页页码，必填",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63234,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>分页每页展示条数，必填，最大值为200</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 63235,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63236,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63237,
+      "paramName": "data",
+      "paramType": "AuthorizeApprovalListData",
+      "example": "",
+      "description": "返回数据",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3567,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 66118,
+          "paramName": "isEnd",
+          "paramType": "Boolean",
+          "example": "-",
+          "description": "<p>查询终止标识</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "本次查询对应分页是否大于总页数，true-当前分页大于总分页，无需继续向后查询；false-当前分页小于等于总页数，需要查询。",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 63221,
+          "paramName": "details",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "<p>广告主id列表</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1725888292670,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

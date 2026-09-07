@@ -1,0 +1,57 @@
+为了便于Lazada的项目管理、资源统筹及跨团队协作，以下是针对Lazada软件研发项目的名称的方案介绍，结合年季、业务域、优先级进行结构化设计：
+
+# **项目命名规则：**
+
+| <span style="color: #FFFFFF;">**项目类型**</span> | <span style="color: #FFFFFF;">**项目方案结构**</span> | <span style="color: #FFFFFF;">**Demo**</span> | <span style="color: #FFFFFF;">**备注**</span> |
+|-----------------------------------------------------|-----------------------------------------------------------|---------------------------------------------|-----------------------------------------------|
+| 项目集 | <span style="background-color: #FFF3CE;">财年\+优先级</span>\+项目集名称 | <span style="background-color: #FFF3CE;">【FY26战役】</span>华商战役 <br><span style="color: #C10002;">注：适用战役包含全域战役和域内战役</span><br><span style="background-color: #FFF3CE;">【FY26重点】</span>本地交易平台专项<br><span style="color: #C10002;">注：适用重点项目集, 如果是多个项目组成的，用项目集名称。</span> |  |
+| 子项目 | 方案1：<span style="background-color: #FFF3CE;">财年季度</span><span style="background-color: #FFF3CE;">立项时间\+优先级\+</span>项目名称 | <span style="color: ; background-color: #FFF3CE;">FY26Q1</span><span style="background-color: #FFF3CE;">战役</span><span style="color: ; background-color: #FFF3CE;">\_</span>华商战役一期 - 天猫店铺镜像LZD版<br><span style="color: #C10002;">注：全域战役和域内战役对应的子项目</span><br><span style="color: ; background-color: #FFF3CE;">FY26Q1战役\_</span>Onboarding Revamp Project Stage2<br><span style="color: #C10002;">注：全域战役和域内战役related sub-project，aslo use the same format.</span><br><span style="color: ; background-color: #FFF3CE;">FY26Q1</span><span style="background-color: #FFF3CE;">重点</span><span style="color: ; background-color: #FFF3CE;">\_</span>【V0】分人群运营策略 - V0-2<br><span style="color: #C10002;">注：适用重点项目对应的子项目</span><br><span style="color: #C10002;">注：中间的下划线要切换成英文格式才可以</span> |  |
+
+注：项目Aone空间名字，项目列表清单，项目双周报，三者必须保持一致
+
+
+
+**一、年份与季度标识**
+- **年份：**采用阿里财年后两位，如2025财年简写为“FY25”，2026年简写为“FY26”。
+- **季度：**以阿里财年季度定义：“Q1（4-6月）、Q2（7-9月）、Q3（10-12月）、Q4（1-3月）”表示，明确项目的立项时间。
+
+
+
+**二、优先级标识及定义**
+
+**1\. 全域战役，简称 “**【**战役**】**”**
+- 定义：跨多业务域的核心战略项目，影响整体业务目标达成，需全公司资源协同攻坚，优先级最高。支持Lazada公司战略目标实现，和JD OKR有直接关联，需要多个业务域协同参与的项目，全域战役项目里的子项目也属于全域战役项目；
+
+**2\. 域内战役，简称 “**【**战役**】**”**
+- 定义：支持单个业务域或部门团队战略目标实现，和JD- D OKR有直接关联，需要本业务域业产技资源重点投入的项目，域内战役项目里的子项目也属于域内战役项目；
+
+**3\. 域内重点项目，简称 “**【**重点**】**”**
+- 定义：支持单个业务域或部门团队战略目标实现，重要性和规模稍弱于域内战役、但也需要业产技重点关注的项目；
+
+**4\. 日常项目 - 跟随敏捷迭代BAU Aone空间命名规则**
+- 定义： 一般不需要单独立项，走迭代管理，利用已有的BAU项目空间。如有特殊事情需要单独立项管理（如阶段性的大促事项），请联系各域PMO。
+
+
+
+**三****、****根据命名规则对应的Project List/尚如团队的兵力报告/Aone空间项目示例**
+
+**Project list：**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/QvjnA3jaAVeovOXo/img/5c5f864b-05b5-400d-9c54-a9da7e12ea4a.png?Expires=1776252773&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+**尚如团队的兵力报告：**
+
+| <span style="color: rgb(38, 38, 38); background-color: rgb(217, 234, 252);">NO.</span> | <span style="background-color: rgb(217, 234, 252);">战略项目方向</span> | <span style="background-color: rgb(217, 234, 252);">总工时(人/日)</span> | <span style="background-color: rgb(217, 234, 252);">核心项目名称</span> | <span style="color: rgb(38, 38, 38); background-color: rgb(217, 234, 252);">参与人次</span> | <span style="color: rgb(38, 38, 38); background-color: rgb(217, 234, 252);">业务团队</span> | <span style="color: rgb(38, 38, 38); background-color: rgb(217, 234, 252);">产研团队</span> |
+|--------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|-----------------------------------------------------------------------------|-----------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| <span style="color: rgb(38, 38, 38);">1</span> | Lazada-【FY26战役】商品运营战役 | 2384.74 | FY26Q1战役\_价格力心智端到端建设（LazFlash/LazSubsidy【全域】的招商、定价、用户端）一期<br>FY26Q1战役\_运营体系升级\+价格力<br>FY26Q1战役\_ SPU同款簇及流量机制战役<br>FY26Q1战役\_商品运营战役<br>FY26Q1战役\_核心商品运营-画像中心（一期）<br>FY26Q1战役\_KAC工作台建设一期<br>FY26Q1战役\_爆品MVP x 穿衣能力升级<br>FY26Q1战役\_核心商品运营-画像中心（二期）<br>FY26Q1战役\_KAC工作台项目二期 - 供需协同工作台升级<br>FY26Q1战役\_爆品机制-全域打通和爆品诊断分析<br>FY26Q1战役\_全网比价（二期）-同店<br>FY26Q1战役\_价格360 FY25S2<br>FY26Q1战役\_图搜/同款项目组（AIDC）<br>FY26Q1战役\_AIDC-生意参谋<br>FY26Q1战役\_核心商品运营战役-数据建设<br>FY26Q1战役\_场域价格心智建设<br>FY26Q1战役\_Lazada智能定价 | 277 | Lazada-Search<br>Daraz<br>Miravia<br>LAZADA-平台业务<br>LAZADA-Buyer<br>Lazada-Seller&Retail<br>LAZADA-Supply(Category&Assortment&Seller)Lazada-Seller&Retail<br>LAZADA-Tech Foundation<br>LAZADA-Supply | Lazada-Technology-Supply Tech<br>平台技术团队<br>智能技术团队 |
+| 2 | Lazada-【FY26战役】Choice战役 | 2181.47 | FY26Q1战役\_商品竞争力<br>FY26Q1战役\_ 价格力和损益优化<br>FY26Q1战役\_ Choice导购升级<br>FY26Q1战役\_营销导购建设-外域<br>FY26Q1战役\_ 商家分层管理能力<br>FY26Q1战役\_ 用户运营与平台协同<br>FY26Q1战役\_Choice频道建设<br>FY26Q1战役\_选品能力建设 | 180 | Lazada-Choice | Lazada-Technology-Logistics Tech-Choice<br><span style="color: rgb(38, 38, 38);">Lazada-Technology-Logistics Tech-Logistics VN</span> |
+
+
+
+**Aone空间归属项目：**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/QvjnA3jaAVeovOXo/img/7325df22-e555-4095-bd72-2413d7b0b682.png?Expires=1776252773&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+通过以上体系，实现项目名称的规范化、信息透明化，便于团队快速识别项目属性、优先级及时间规划，提升协作效率。

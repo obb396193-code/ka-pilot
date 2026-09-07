@@ -1,0 +1,53 @@
+# 程序管理
+
+## 管理
+
+### 程序配置
+
+程序配置包括生产环境配置、预发环境配置和灰度环境配置。配置项包括：程序规格和域名白名单。
+
+- 程序规格有三种，分别为：5ms、50ms、100m。表示单个请求可用的 CPU 时间片大小，RT 最大值为 120 秒，可用内存 128 MB。
+- 域名白名单表示当前环境下，域名是否生效。域名白名单为空表示均生效，支持配置。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/yhwtle/imgTX5eUkadL5.png)
+
+
+在正式发布上线之前需要完成对所有灰度环境的发布。灰度环境的配置就在此处，可根据近一小时域名流量占比为依据对灰度区域进行配置。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/yhwtle/imgvPY3ng8g4f.png)
+
+
+### 程序版本
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/yhwtle/imgkueond14Xg.png)
+
+
+ER 最多可保留 10 个程序版本，超过将无法进行程序发布，需手动删除。如已在预发、灰度或者线上环境的程序版本，无法删除。
+
+### 发布记录
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/yhwtle/imgIG0kY9tBTR.png)
+
+
+所有发布相关记录，一定有 taskID。
+
+### 操作记录
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/yhwtle/imgXvKWdTXcso.png)
+
+
+含发布记录和其他相关敏感操作记录，可能没有 taskID。
+
+### 域名流量
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/yhwtle/imgcgILsxJikp.png)
+
+
+展示最近3小时域名下网络流量情况，辅助观察 ER 线上影响。
+
+### 代码详情
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/yhwtle/imgC0VcQ9Ycvh.png)
+
+
+可查看已有版本的代码详情，在进行线上回滚等操作时，进行辅助阅读。
+

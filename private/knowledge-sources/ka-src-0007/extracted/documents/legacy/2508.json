@@ -1,0 +1,54 @@
+{
+  "documentId": 2508,
+  "documentName": "接口2：文件分片上传",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 文件分片上传\n\n## 步骤1：分片上传\n**📢 注意：大于10MB文件 更推荐分片上传，使用流式上传也是可以的（不过大文件上传速度会变慢），介意接口速度的建议使用本方式。**\n\n**1、请求参数，需要将文件进行分片（参考附录的分片代码demo），上传的文件分片直接按二进制流切分，不用处理具体格式。**\n\n**2、请求参数，每个分片的大小建议4至10MB左右，文件超过100MB建议并发2~6个线程上传（网速快的情况可以适当提高并发数）。**\n\n**3、响应、上传速度主要受上传方带宽影响，大部分用户上传速度2MB/s左右。**\n\n**4、需要记录文件分片总数用于下一步合成分片。**\n\n**5、最下方附有文件分片上传和合并分片的demo供参考。**\n\n### 上传流程\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformf679cc7b6986def7f4bc486ceec98c28.png)\n\n\n请求接口：https://**{endpoint}**/api/upload/fragment?**fragment_id=分片序号&upload_token=xxx**\n\n请求方式：POST\n\n数据格式：FORM\n\n### 请求参数\n\n|          字段          |   类型   |        是否必填        |                 说明                 |                                                                                            备注                                                                                             |\n| :--------------------: | :------: | :--------------------: | :----------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |\n|      endpoint      |   string   |          必填         |  上传域名，替换上面域名{endpoint}             |          |\n|      upload_token  |   string   |          必填         |   上传token，替换上面uploadtoken=xxx               |        |\n|      fragment_id   |   int     |          必填         |    分片序号id，**从0开始，按序递增**         |\n|      二进制文件分片   |   **Body (data-binary)**     |          必填         |    文件分片，**二进制流切分**      |  \n\n### 请求参数举例：\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatform4f81caeed824e843bc6228159339b890.png)\nps:如果是**Python语言Headers需要添加User-Agent**\n### 返回参数\n\n| 字段      | 类型   | 说明            | 备注 |\n| --------- | ------ | --------------- | ---- |\n| result    | int    | 返回码/错误码，1表示成功，其他都为失败        |      |\n| checksum    | string    | 分片文件校验和        |      |\n| size    | long    | 文件大小，字节Byte        |      |\n\n\n### 请求样例\n\n```\ncurl --location 'https://{endpoint}/api/upload/fragment?fragment_id=分片序号&upload_token=xxxx' \\\n--header 'Content-Type: video/mp4' \\\n--data-binary '视频.mp4'\n```\n\n### 返回样例\n\n```\n{\n    \"result\": 1,\n    \"checksum\": \"a064c98debf26ba2f1e0d0ceca65018f\",\n    \"size\": 271066\n}\n```\n\n\n\n\n\n## 步骤2：合并分片\n**📢 注意：需要将所有分片都上传完成并且返回上传成功才能调用本接口合成分片，（如果分片不连续、有失败分片本接口会返回失败）。**\n\n### 上传流程\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformab754d3069b400ea5cd1de0c2df6e306.png)\n\n\n请求接口：https://**{endpoint}**/api/upload/complete?**fragment_count=分片总数&upload_token=xxxx**\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|          字段          |   类型   |        是否必填        |                 说明                 |                                                                                            备注                                                                                             |\n| :--------------------: | :------: | :--------------------: | :----------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |\n|      endpoint      |   string   |          必填         |  上传域名，替换上面域名{endpoint}             |          |\n|      upload_token  |   string   |          必填         |   上传token，替换上面uploadtoken=xxx               |        |\n|   fragment_count   |   int      |           必填        |    **分片总数，必须是分片上传接口的所有完整+成功的分片数量**         |\n\n### 请求参数：\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatform4404fec8659cb457b502bdf8a1fa2f60.png)\nps:如果是**Python语言Headers需要添加User-Agent**\n\n### 返回参数\n\n| 字段      | 类型   | 说明            | 备注 |\n| --------- | ------ | --------------- | ---- |\n| result    | int    | 返回码/错误码，1表示成功，其他都为失败        |      |\n\n\n### 请求样例\n\n```\ncurl --request POST 'https://{endpoint}/api/upload/complete?fragment_count=分片总数&upload_token=xxxx' \\\n```\n\n### 返回样例\n\n```\n{\n    \"result\": 1\n}\n```\n\n\n\n\n\n\n\n\n\n\n\n\n### 参考：文件二进制分片demo\n```\npackage org.example;\n\nimport java.io.File;\nimport java.io.RandomAccessFile;\nimport java.util.List;\nimport java.util.concurrent.CompletableFuture;\n\nimport org.apache.commons.compress.utils.Lists;\n\nimport com.kuaishou.framework.util.ObjectMapperUtils;\n\nimport lombok.Data;\nimport lombok.extern.slf4j.Slf4j;\nimport okhttp3.MediaType;\nimport okhttp3.OkHttpClient;\nimport okhttp3.Request;\nimport okhttp3.RequestBody;\nimport okhttp3.Response;\n\n\n@SuppressWarnings(\"all\")\n@Slf4j\npublic class ChunkUploadTest {\n    static final OkHttpClient CLIENT = new OkHttpClient().newBuilder()\n            .build();\n\n    public static void main(String[] args) throws Exception {\n      \t\n        File file = new File(\"你的文件地址.mp4\");\n      \t// 1.分片上传\n        int fragmentCount = chunkUpload(endpoint, uploadToken, file);\n        // 2.合成分片\n        finishChunkUpload(endpoint, uploadToken, fragmentCount);\n    }\n\n\n    /**\n     *  分片上传\n     */\n    public static void chunkUpload(String endpoint, String uploadToken, File file) throws Exception {\n        RandomAccessFile raf = new RandomAccessFile(file, \"r\");\n        long size = file.length();\n        long fragmentSize = 1024 * 1024 * 5;\n        int i = 0;\n        List<CompletableFuture<Void>> futures = Lists.newArrayList();\n        for (; i < size / (double) fragmentSize; i++) {\n            long start = fragmentSize * i;\n            long end = Math.min(start + fragmentSize - 1, size - 1);\n            log.info(\"i = {}, start = {}, end = {}\", i, start, end);\n            // 定位到开始位置\n            raf.seek(start);\n            // 读取字节数据\n            byte[] buffer = new byte[(int) (end - start + 1)];\n            int bytesRead = raf.read(buffer);\n            int current = i;\n            // 此处并发\n            CompletableFuture<Void> completableFuture = CompletableFuture.runAsync(() -> {\n                fragmentUpload(endpoint, uploadToken, buffer, current);\n            });\n            futures.add(completableFuture);\n        }\n        CompletableFuture.allOf(futures.toArray(new CompletableFuture[] {})).join();\n    \t\treturn i;\n        \n    }\n\n    /**\n     * 单个分片上传\n     */\n    private static void fragmentUpload(String endpoint, String uploadToken, byte[] buffer, int fragmentId) {\n        try {\n            String url = String.format(\"https://%s/api/upload/fragment?fragment_id=%s&upload_token=%s\",\n                                       endpoint, fragmentId, uploadToken);\n            MediaType mediaType = MediaType.parse(\"video/mp4\");\n            RequestBody body = RequestBody.create(mediaType, buffer);\n            Request request = new Request.Builder()\n                    .url(url)\n                    .method(\"POST\", body)\n                    .addHeader(\"Content-Type\", \"video/mp4\")\n                    // .addHeader(\"User-Agent\", \"Your User-Agent String\")   如果是Python语言Headers需要添加User-Agent\n                    .build();\n            Response response = CLIENT.newCall(request).execute();\n            log.info(\"fragment_id = {} response = {}\", fragment, response.body().string());\n        } catch (Exception e) {\n            log.error(\"fragmentUpload error, fragment = {}, uploadToken = {}\", fragment, uploadToken);\n        }\n    }\n\n    /**\n     * 完成分片上传\n     */\n    public static void finishChunkUpload(String endpoint, String uploadToken, int fragmentCount) throws Exception {\n        String url = String.format(\"https://%s/api/upload/complete?fragment_count=%s&upload_token=%s\",\n                                   endpoint, fragmentCount, uploadToken);\n        MediaType mediaType = MediaType.parse(\"text/plain\");\n        RequestBody body = RequestBody.create(mediaType, \"\");\n        Request request = new Request.Builder()\n                .url(url)\n                .method(\"POST\", body)\n                // .addHeader(\"User-Agent\", \"Your User-Agent String\") 如果是Python语言Headers需要添加User-Agent\n                .build();\n        Response response = CLIENT.newCall(request).execute();\n        log.info(\"finishChunkUpload code = {}, response = {}\", response.code(), response.body().string());\n    }\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1716896161166
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1716896161166,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

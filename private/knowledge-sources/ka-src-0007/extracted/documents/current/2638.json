@@ -1,0 +1,401 @@
+{
+  "documentId": 2638,
+  "documentName": "视频库-视频关联创意数查询",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "视频库-视频关联创意数查询\n/rest/openapi/v1/file/ad/video/relate/creatives\ncurl --location --request GET 'https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/relate/creatives' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 11311124,\n    \"photo_ids\": [\n        \"5228679230762349823\",\n        \"5251760176597172988\"\n    ]\n}'\n{\n    \"code\": 0,\n    \"data\": {\n        \"related_creatives\": [\n            {\n                \"advanced_creative_count\": 0,\n                \"advanced_creative_ids\": [],\n                \"photo_id\": \"5228679230762349823\",\n                \"creative_count\": 2,\n                \"creatives\": [\n                    {\n                        \"creative_name\": \"自定义创意_竖版视频_创意6\",\n                        \"creative_id\": 20473687787\n                    },\n                    {\n                        \"creative_name\": \"自定义创意_竖版视频_创意1\",\n                        \"creative_id\": 10375405875\n                    }\n                ]\n            },\n            {\n                \"advanced_creative_count\": 0,\n                \"advanced_creative_ids\": [],\n                \"smart_creative_count\": 1,\n                \"smart_creative_ids\": [],\n                \"photo_id\": \"5251760176597172988\",\n                \"creative_count\": 1,\n                \"creatives\": [\n                    {\n                        \"creative_name\": \"自定义创意_竖版视频_创意4\",\n                        \"creative_id\": 20473687789\n                    }\n                ]\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMSAgICwzKu1ChiRCSDXg-6OgzEo6fT_8wg=\"\n}\nadvertiser_id  Long  广告主ID\nphoto_ids  String[]  视频id\ncode  Integer  状态码\nmessage  String  返回信息\ndata  RelatedCreatives  关联创意信息\nrelated_creatives  AdGatePhotoRelateCreativesView[]  <p><br>与视频相关联的创意的信息</p>\nphoto_id  Long  视频id\ncreative_count  Long  自定义创意数量\nadvanced_creative_count  Long  程序化创意数量\nadvanced_creative_ids  Long[]  程序化创意关联的unitid\ncreatives  AdGateRelateCreativesView[]  <p><br>与视频关联的创意的信息</p>\ncreative_id  Long  自定义创意id\ncreative_name  String  创意名称\nsmart_creative_count  Long  <p>关联的智能创意数量</p>\nsmart_creative_ids  Long[]  <p>智能创意关联的unitid</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1758424196786
+    }
+  ],
+  "apiId": 47,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/relate/creatives",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request GET 'https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/relate/creatives' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 11311124,\n    \"photo_ids\": [\n        \"5228679230762349823\",\n        \"5251760176597172988\"\n    ]\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"related_creatives\": [\n            {\n                \"advanced_creative_count\": 0,\n                \"advanced_creative_ids\": [],\n                \"photo_id\": \"5228679230762349823\",\n                \"creative_count\": 2,\n                \"creatives\": [\n                    {\n                        \"creative_name\": \"自定义创意_竖版视频_创意6\",\n                        \"creative_id\": 20473687787\n                    },\n                    {\n                        \"creative_name\": \"自定义创意_竖版视频_创意1\",\n                        \"creative_id\": 10375405875\n                    }\n                ]\n            },\n            {\n                \"advanced_creative_count\": 0,\n                \"advanced_creative_ids\": [],\n                \"smart_creative_count\": 0,\n                \"smart_creative_ids\": [],\n                \"photo_id\": \"5251760176597172988\",\n                \"creative_count\": 1,\n                \"creatives\": [\n                    {\n                        \"creative_name\": \"自定义创意_竖版视频_创意4\",\n                        \"creative_id\": 20473687789\n                    }\n                ]\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMSAgICwzKu1ChiRCSDXg-6OgzEo6fT_8wg=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 1339,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "广告主ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "\t在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1340,
+      "paramName": "photo_ids",
+      "paramType": "String[]",
+      "example": "1",
+      "description": "视频id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "\t最大 20 个，可以动态配置",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 1341,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1342,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "1",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1343,
+      "paramName": "data",
+      "paramType": "RelatedCreatives",
+      "example": "1",
+      "description": "关联创意信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 107,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 1338,
+          "paramName": "related_creatives",
+          "paramType": "AdGatePhotoRelateCreativesView[]",
+          "example": "",
+          "description": "<p><br>与视频相关联的创意的信息</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 106,
+          "sort": 1,
+          "note": "关联创意数=审核中+投放中的创意，仅包含自定义创意，程序化创意数量暂未计入",
+          "children": [
+            {
+              "paramId": 1333,
+              "paramName": "photo_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "视频id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1334,
+              "paramName": "creative_count",
+              "paramType": "Long",
+              "example": "1",
+              "description": "自定义创意数量",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1335,
+              "paramName": "advanced_creative_count",
+              "paramType": "Long",
+              "example": "1",
+              "description": "程序化创意数量",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1336,
+              "paramName": "advanced_creative_ids",
+              "paramType": "Long[]",
+              "example": "",
+              "description": "程序化创意关联的unitid",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1337,
+              "paramName": "creatives",
+              "paramType": "AdGateRelateCreativesView[]",
+              "example": "",
+              "description": "<p><br>与视频关联的创意的信息</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 105,
+              "sort": 5,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 1331,
+                  "paramName": "creative_id",
+                  "paramType": "Long",
+                  "example": "1",
+                  "description": "自定义创意id",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 1332,
+                  "paramName": "creative_name",
+                  "paramType": "String",
+                  "example": "1",
+                  "description": "创意名称",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77766,
+              "paramName": "smart_creative_count",
+              "paramType": "Long",
+              "example": "1",
+              "description": "<p>关联的智能创意数量</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 77767,
+              "paramName": "smart_creative_ids",
+              "paramType": "Long[]",
+              "example": "-",
+              "description": "<p>智能创意关联的unitid</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1758424196786,
+  "creator": "lijianwei05",
+  "fullContext": null
+}

@@ -1,0 +1,63 @@
+# <font style="background-color:transparent;">排雷内容</font>
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/6762/1572855135659-eede66ce-950e-42fc-8b8a-7fd1e1e207c1.png)
+
+# 架构梳理
+## 直通车
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/6762/1572855243876-b5dec2ca-bc5e-4c12-80fd-6bc1c3d7b1c6.png)
+
+## 顶展
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/6762/1572855483159-dd30e30d-5b8f-49c2-b21c-47196af52128.png)
+
+## 橱窗
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/6762/1572855500976-ed2b74ee-a7b9-4b36-aa8e-c3c7caf80dd6.png)
+
+## 结算
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/6762/1572857280960-44fa84a0-157b-415f-a147-8caf74717775.png)
+
+### 实时结算
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/6762/1572857309098-2fd41820-62b6-4966-b9c3-d085f7a20307.png)
+
+### 日终结算
+
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/6762/1572857335826-687b7e0c-db0d-4760-9c4e-787a0e1ccca0.png)
+
+# 关键链路梳理
+## 直通车
+### 客户上下线
+![](https://intranetproxy.alipay.com/skylark/lark/__puml/166c5addb0ee7f834953a0fbdc0f4cef.svg)
+
+### 计划上下线
+![](https://intranetproxy.alipay.com/skylark/lark/__puml/ba9634e32643ad3667729de1cde4ec1e.svg)
+
+### 关键词推广双写-推广计划
+![](https://intranetproxy.alipay.com/skylark/lark/__puml/79ee58eb4f842d751223bafeb98b879d.svg)
+
+### <font style="background-color:transparent;">关键词推广双写-推广信息</font>
+![](https://intranetproxy.alipay.com/skylark/lark/__puml/530a893bcfcf39970c32d89cef0cf3ec.svg)
+
+### 计划关键词刷推广组关键词
+![](https://intranetproxy.alipay.com/skylark/lark/__puml/6f29fbfbaa03f42bc1388a699ab36f0a.svg)
+
+### 中美实时结算
+
+
+![](https://intranetproxy.alipay.com/skylark/lark/__puml/557dc167c66e0730ac281e11125d270c.svg)
+
+## <font style="background-color:transparent;">顶展</font>
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/6762/1572857422826-480b253d-8ee1-4645-b254-8f043d631c0e.png)
+
+## 橱窗&结算
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/6762/1572857393399-5f40394c-925a-4367-ad09-1f0ff05c9580.png)
+
+# 热点咨询/投诉【TODO】
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/6762/1572857842180-36120af4-2dfd-4de2-ba26-20d448458b13.png)
+
+# 保障方案
+## 监控检查&补充【TODO】
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/6762/1572857854162-cba299cc-bab1-444c-a09c-e8120748c814.png)
+
+## 测试方案保障【TODO】
+[广告自动化及关键链路测试方案](https://yuque.antfin-inc.com/intl_ad/stability/lk6s1c)
+
+## 技术/架构优化【TODO】

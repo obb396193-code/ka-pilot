@@ -1,0 +1,71 @@
+## 获取应用信息
+
+通过仓库名获取 O2 应用基本信息
+
+| method | GET |
+|-|-|
+| url | /v1.0/work/apps/infos/basic |
+| buc login | true |
+
+### Query parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| repo | String | true | - | 仓库名称，格式示例：def-work/front |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| app | 应用信息，对象定义详情查看 [App](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls4gore2dimt38o1v5g) |
+| user | 用户信息，对象定义详情查看 [User](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls369lxfelxab4mn50j) |
+
+### Example
+
+```
+client.get('/v1.0/work/apps/infos/basic', {
+  repo,
+}, {
+  SSO_TICKET,
+})
+
+{
+  "app": {
+    "id": 1,
+    "group": "def-work",
+    "project": "front",
+    "emp_id": "",
+    "owner_emp_id": "287523",
+    "description": "O2 Space 研发平台前端仓库",
+    "pub_type": 1,
+    "is_module": false,
+    "is_moduletrans": false,
+    "dev_type": 0,
+    "pubtype_group": 0,
+    "platform_code": "",
+    "mode": "iteration_flow",
+    "pubtype_extend_path": "1",
+    "gmt_create": "2018-07-05T09:55:50.000Z",
+    "gmt_modified": "2023-10-26T10:49:46.000Z"
+  },
+  "user": {
+    "account": "kangyong.ky",
+    "buc_id": "2188599",
+    "email": "kangyong.ky@alibaba-inc.com",
+    "emp_id": "318805",
+    "nick": "时路",
+    "lastName": "康勇",
+    "token": "523690339b77483b85b09065bcb8e10021653710",
+    "tokenDt": 1706866925014,
+    "id": 241674,
+    "gitlab_id": "262506",
+    "gmt_create": "2021-05-07T02:04:55.000Z",
+    "gmt_modified": "2021-05-07T03:19:17.000Z",
+    "dept_path": "00001/36821/L5536/L5809/72506/L6635/38205/B3301",
+    "dept_no": "B3301",
+    "dept_name": "阿里集团-阿里控股-爱橙科技-技术风险与效能部-研发运维基础设施-终端交付-工程研发平台",
+    "bu_dept_no": "L5809"
+  }
+}
+
+```

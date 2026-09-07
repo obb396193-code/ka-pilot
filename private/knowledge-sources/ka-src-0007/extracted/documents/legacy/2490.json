@@ -1,0 +1,54 @@
+{
+  "documentId": 2490,
+  "documentName": "获取优词提量列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取关键词列表\n\n请求接口： [https://ad.e.kuaishou.com/rest/openapi/gw/dsp/unit/bid_weight/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/unit/bid_weight/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段|类型|是否必填|说明|备注|\n|--|--|--|--|--|\n|advertiser_id|Long|必填|广告主账号ID||\n|filter_param|Object|非必填|筛选条件||\n|page_info|Object|必填|分页信息||\n\n\n|filter_param|类型|是否必填|说明|备注|\n|--|--|--|--|--|\n|word|String|非必填|关键词（模糊匹配）||\n|unit_id|Long|非必填|广告单元ID||\n\n|page_info|类型|是否必填|说明|备注|\n|--|--|--|--|--|\n|current_page|Long|必填|当前页||\n|page_size|Long|必填|页大小||\n\n\n### 返回参数\n\n|字段|类型|说明|备注|\n|--|--|--|--|\n|code|Integer|返回状态码||\n|message|String|返回状态信息||\n|data|Object|返回数据内容||\n\n|data|类型|说明|备注|\n|--|--|--|--|\n|total_count|Long|优词数量||\n|page_size|Long|页大小||\n|current_page|Long|当前页||\n|list|Object[]|优词信息||\n\n|list|类型|说明|备注|\n|--|--|--|--|\n|bid_weight|Double|提量系数|1.1-2区间，最多一位小数|\n|word|String|关键词内容||\n|scope|Integer|生效范围|1 - 账户为度，2 - 广告组维度|\n|unit_info|Object[]|广告组信息|优词的scope = 2的情况下会返回该字段|\n\n\n|unit_info|类型|说明|备注|\n|--|--|--|--|\n|unit_name|String|广告组名称||\n|unit_id|Long|广告组id||\n|campaign_id|Long|计划id||\n\n### 请求样例\n\n```json\n{\n  \"advertiser_id\": 139494,\n  \"page_info\": {\n    \"current_page\": 1,\n    \"page_size\": 10\n  },\n  \"filter_param\": {\n    \"unit_id\": 3891211196,\n    \"word\": \"快手科技\",\n  }\n}\n```\n\n### 返回样例\n\n```json\n{\n  \"code\": 0,\n  \"data\": {\n    \"total_count\": 2,\n    \"list\": [\n      {\n        \"scope\": 2,\n        \"word\": \"yiulld02\",\n        \"unit_info\": [\n          {\n            \"unit_name\": \"激励视频-__20240226_11:33_0226_14:30_0226_14:31-1\",\n            \"unit_id\": 3891211196,\n            \"campaign_id\": 2004407724\n          }\n        ],\n        \"bid_weight\": 1.1\n      },\n      {\n        \"scope\": 2,\n        \"word\": \"yiulld01\",\n        \"unit_info\": [\n          {\n            \"unit_name\": \"激励视频-__20240226_11:33_0226_14:30_0226_14:31-1\",\n            \"unit_id\": 3891211196,\n            \"campaign_id\": 2004407724\n          }\n        ],\n        \"bid_weight\": 1.1\n      }\n    ],\n    \"current_page\": 1,\n    \"page_size\": 10\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"EL2BgIDw9pmaChi5DSDM4Yiu4zEo3cHIjA8=\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1710300826570
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1710300826570,
+  "creator": "liupeng20",
+  "fullContext": null
+}

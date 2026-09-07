@@ -1,0 +1,123 @@
+应用是其它平台操作的基础，本文将介绍如何创建一个应用。
+
+
+
+## 具体操作
+
+访问 O2 Space 平台，点击新建应用。
+
+(https://o2-img.alistatic.com/i/i09blZ/KHRyX6Fj3EoFLryCKFqJN-3d521bf937.png)
+
+
+
+
+选择研发类型、应用类型、初始化脚手架，点击下一步。
+
+(https://o2-img.alistatic.com/i/i09blZ/VMl9qtAlXcZdtwilLJHa0-8a2b7b5c01.png)
+
+
+
+
+
+
+填写仓库信息、应用描述和脚手架初始化数据。
+
+(https://o2-img.alistatic.com/i/i09blZ/SubkFQMcQnc0r8jKk6NRa-11ecfc88e2.png)
+
+
+仓库信息提供两种接入方式
+
+- 新建仓库: 在当前用户有权限的 [group](https://code.alibaba-inc.com/dashboard/groups)下进行仓库创建并创建对应的应用
+- 关联仓库: 基于当前用户已有的 code 仓库进行应用创建
+(https://img.alicdn.com/imgextra/i1/O1CN01yAbbSf1FoA40w8Klw_!!6000000000533-2-tps-3508-420.png)
+
+
+无论是 新建仓库 和 关联仓库 的方式，都需要将 tbfed 这个账号加到对应 组(group) 或者 仓库(project) 以 管理员 角色加入到管理员成员列表中
+
+### 新建仓库
+
+以 新建仓库 方式接入，首先要求将 tbfed 用户加入到  组(group) 权限中。
+
+我们以 def-testground 为例，进行分步骤演示：
+
+(https://o2-img.alistatic.com/i/i09blZ/6ajd14sB3SWmlAhzMY5hq-332e9e96aa.png)
+
+
+在 code平台中，点击 权限 进入到管理员页面。点击管理员列表的右上角 添加组成员 按钮，在弹窗中输出 tbfed ，在提示框中选择 前端研发平台 点击确定完成成员添加。
+
+
+
+(https://o2-img.alistatic.com/i/i09blZ/uLWZYbGZiABjyQw9HclAf-51958acf86.png)
+
+
+添加 tbfed 后重新回到创建应用界面。
+
+(https://img.alicdn.com/imgextra/i1/O1CN01LOI21E23ekidF5qfX_!!6000000007281-2-tps-3582-2018.png)
+
+
+点击确认，创建应用成功后会跳转到应用概览页。
+
+(https://img.alicdn.com/imgextra/i3/O1CN01ftKrLG1G1twvAnzRp_!!6000000000563-2-tps-3582-2018.png)
+
+
+应用概览页面达到后，则完成了整个应用的接入流程。
+
+(https://o2-img.alistatic.com/i/i09blZ/f0qP3Mi4GYIth2U7Ub5ZN-1d77e9c527.png)
+
+
+进入code平台中 可以看到以 tbfed 用户完成了初始化代码的提交。
+
+(https://o2-img.alistatic.com/i/i09blZ/v6TPYEEznUD4RPOfDxQVX-9bd3c9aaaa.png)
+
+
+### 关联仓库
+
+以 关联仓库 的方式接入，首先要求将 tbfed用户加入到 仓库(project) 权限中，我们以 [def-playground/webapp-project](https://code.alibaba-inc.com/def-playground/webapp-project)为例，进行分步骤演示：
+
+如果未创建仓库，首先准备一个仓库；
+
+(https://o2-img.alistatic.com/i/i09blZ/NXVly5oDzMGeuFbBG14yt-877a2fb9d1.png)
+
+
+其次与 新建仓库 方式中为 组(group) 增加成员权限的方式一致，为 仓库(project) 完成如下操作。
+
+点击 权限 进入仓库成员管理界面。
+
+(https://o2-img.alistatic.com/i/i09blZ/3jTMJa4XkrdZVWWfvCVCK-641d7ba803.png)
+
+
+如果当下仓库没有一个成员时，点击中间位置的添加成员；如果有成员，则像添加 组(group) 权限操作一致，点击权限列表右上角 添加库成员 进行操作 在弹出框中填写 tbfed 选择权限类型为 管理员 完成成员操作。
+
+
+
+我们以 WebApp 为例，选择 关联仓库 的 checkbox 项，然后填写刚才我们准备的仓库，这里则是需要填写 组(group)/仓库(project) 的格式则 def-playground/webapp-project，同时选择 ICE 脚手架 进行代码生成，完成之后点击底部 下一步 按钮，后续流程与 新建仓库 的流程则完全一致。
+
+
+
+应用创建完成，会自动进入应用详情。
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1711358608275-fe3f2937-7cc5-46d2-a40c-0f13b2a0301b.png)
+
+
+
+
+## 云脚手架介绍
+
+云脚手架服务是 O2 Space 提供的模板初始化服务，通过提供配套开发者套件，快速生成应用开发的代码模板。云​脚手架平台地址：[https://generator.alibaba-inc.com ](https://generator.alibaba-inc.com )
+
+(https://o2-img.alistatic.com/i/i09blZ/DA8te8bMHywREWgigJopN-b289ba91ef.png)
+
+
+通过在云端环境，基于 [yeoman-generator](https://yeoman.io/) 实现机制，结合生成参数 schema 定制能力，提供云上仓库脚手架生成推送初始化服务。核心具备几类能力：
+
+- 脚手架配套开发及定制
+- 脚手架与工程应用类型关联，实现应用接入场景展示选择，实现应用接入仓库代码初始化
+- 脚手架与研发解决方案关联，实现 O2 / O2 Online 研发环境、套件自动化配置
+
+
+## 常见问题
+
+1、应用创建完成，仓库还未初始化怎么办？
+
+脚手架初始化可能需要 1 min 左右的时间，如超过 1 min 仍未初始化，可以联系平台管理员
+

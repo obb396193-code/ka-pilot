@@ -1,0 +1,12 @@
+用户真实链接：https://links.alipay.com/support/conversation/682ad7cd2d905b04c2e5aae6  
+作者：庞舒蕾  
+评审人：叶子旭
+
+
+
+接口 /v1.0/work/iterations/{iterationId}/detail可以通过迭代ID获取迭代详细信息，在接口的返回值中 "lastTask" 中 的 "id" 即为迭代最新发布任务的taskid
+
+
+
+参考文档：[通过ID获取迭代详细](https://help.o2.alibaba-inc.com/open-doc/103)
+

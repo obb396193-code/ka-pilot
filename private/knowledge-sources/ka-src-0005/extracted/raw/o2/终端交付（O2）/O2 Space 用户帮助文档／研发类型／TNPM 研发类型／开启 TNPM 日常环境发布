@@ -1,0 +1,35 @@
+TNPM 默认只允许线上环境发布，在下方的配置中可以开启日常环境发布：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/vuclru/imgBUW4bEW0Zn.png)
+
+
+该选项开启后开启以后，将强制开启云构建。
+
+需要注意的是，一旦此项开启，要求你在日常发布时的版本号遵守如下规则：
+
+> x.y.z-beta.BETA_VERSION
+
+如 1.0.0-beta.1 ，其中 BETA_VERISON  是一个每次发布都唯一的值，你可以去 tnpm 查询上次的值，累加 1，也可以使用当前的 new Date 值，或者其他唯一值。
+
+而线上发布时，则要求版本号与迭代版本一致，只能是 x.y.z 。
+
+也正是因为日常和线上发布构建结果中 package.json 的 version 字段存在差异，所以才要求强制开启云构建。
+
+
+
+### 构建器
+
+如果你的 tnpm 包本身是没有构建过程的，开启了云构建后需要配置构建，可以考虑使用这个构建器 @ali/builder-tnpm-publisher ，在日常环境下会修改 package.json 中的 version，线上环境会直接发布。配置方式：
+
+```
+// abc.json
+{
+  "assets": {
+    "type": "builder",
+    "builder": {
+      "name": "@ali/builder-tnpm-publisher"
+    }
+  }
+}
+
+```

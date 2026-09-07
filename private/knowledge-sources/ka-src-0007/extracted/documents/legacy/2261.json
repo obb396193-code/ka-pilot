@@ -1,0 +1,58 @@
+{
+  "documentId": 2261,
+  "documentName": "查询广告计划",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取广告计划信息\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/campaign/list\n\n请求方式：GET/POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段             | 类型   | 是否必填 | 说明                             | 备注                                                         |\n| :----------------: | :------: | :--------: | :--------------------------------: | :------------------------------------------------------------: |\n| advertiser_id    | long   | 必填     | 广告主 ID                        | 在获取 access_token 的时候返回                               |\n| campaign_id      | long   | 选填     | 广告计划 ID                      | 过滤筛选条件，若不传或传空则视为无限制条件                   |\n| campaign_name    | string | 选填     | 计划名称                         | 过滤筛选条件，若不传或传空则视为无限制条件                   |\n| campaign_ids     | long   | 选填     | 广告计划Id集                     | 不超200个                                                    |\n| put_status_list  | int    | 选填     | 计划投放状态筛选                 | 1：投放；2：暂停；3：删除。备注：备注：传了该参数会覆盖status参数筛选，因为二者是相同筛选项 |\n| status           | int    | 选填     | 计划状态                         | 过滤筛选条件；1：广告计划已暂停；4：有效；5：广告计划已删除； -2 不限 |\n| start_date       | string | 选填     | 开始时间                         | 与 end_date 同时传或同时不传；过滤筛选条件，格式为\"yyyy-MM-dd\"，参数值对应 update_time 信息 |\n| end_date         | string | 选填     | 结束时间                         | 与 start_date 同时传或同时不传；过滤筛选条件，格式为\"yyyy-MM-dd\"，参数值对应 update_time 信息 |\n| time_filter_type | int    | 选填     | 按创建时间，还是更新时间进行筛选 | 1.如传入此字段时不传\"start_date\"，与\"end_date\"字段，则不根据时间筛选。2.传入\"start_date\"，与\"end_date\"字段，且此字段为 1 时，按照创建时间进行筛选。3.传入\"start_date\"，与\"end_date\"字段，此字段不传，或传值为 0 时，则按照更新时间进行筛选 |\n| page             | int    | 选填     | 请求的页码数                     | 默认为 1                                                     |\n| page_size        | int    | 选填     | 请求的每页行数                   | 默认为 20                                                    |\n\n### 返回参数\n\n| 字段                          | 类型   | 说明                 | 备注                                                         |\n| :-----------------------------: | :------: | :--------------------: | :------------------------------------------------------------: |\n| campaign_id                   | long   | 计划id               |                                                              |\n| campaign_name                 | string | 计划名称             |                                                              |\n| put_status                    | int | 投放状态（操作结果） | 1：投放中；2：暂停 3：删除                                   |\n| status                        | int    | 计划状态             | 1：广告计划已暂停；3：广告计划超预算；4：有效；5：广告计划已删除；6：账户余额不足； -2：不限 |\n| day_budget                    | long   | 当日预算             |                                                              |\n| day_budget_schedule           | long[] | 分日预算             | 优先级高于day_budget                                         |\n| campaign_type                 | int | 营销目标类型             |                                                              |\n| campaign_sub_type             | int    | 计划子类型           | 商品库推广计划类型的老数据会返回【后续会进行下线】。4：DPA，5：SDPA |\n| ad_type                       | int    | 广告计划类型         | 0:信息流，1:搜索                                             |\n| bid_type                      | int    | 出价类型                 |                                                      |\n| auto_adjust                     | int    | 自动调控开关                 |  0:关闭，1:开启                                                |\n| auto_build                    | int    | 自动基建开关                 |      0:关闭，1:开启                                            |\n| auto_build_name_rule          | struct | 自动基建广告命名规则                 |                                          |\n| auto_manage                   | int    | 智能投放开关                 |          0:关闭，1:开启                                            |\n| campaign_ocpx_action_type     | int    | 智能模式下的优化目标                 |                                          |\n| campaign_ocpx_action_type_name     | string    | 智能模式下的优化目标名称                 |                                          |\n| campaign_deep_conversion_type | int    | 智能模式下的深度优化目标                 |                                      |\n| campaign_deep_conversion_type_name | string    | 智能模式下的深度优化目标名称                 |                                      |\n| create_time                   | string   | 创建时间             |                                                              |\n| update_time                   | string   | 更新时间             |                                                              |\n|cap_roi_ratio|  float  | cost cap的roi约束(广告成本约束-ROI约束)| 范围：0~100|\n| cap_bid |  long | cost cap的广告成本约束(广告成本约束-非ROI单/双约束)| 单位：厘，范围：0~8000元|\n| constraint_cpa |  long  |浅层成本约束(广告成本约束-非ROI双约束)| 单位：厘，范围：0~8000元|\n| auto_photo_scope |  int  |基建素材选取范围| 0：系统优选，系统根据历史数据挑选效果最优视频，1-素材包，系统将挑选您配置的素材包内的视频\n| photo_package_details |  struct  |素材包详情|\n\n\n#### auto_build_name_rule\n\n|        字段        |  类型  |         说明         | 备注 |\n| :----------------: | :----: | :------------------: | :--: |\n|   unit_name_rule   | string   |  广告组名称命名规则  |      |\n| creative_name_rule | string  | 广告创意名称命名规则 |      |\n\n\n#### photo_package_details\n\n|        字段        |  类型  |         说明         | 备注 |\n| :----------------: | :----: | :------------------: | :--: |\n|   photo_package_id   | long   |  素材包ID  |      |\n| name | string  | 素材包名称 |      |\n| status | int  | 素材包状态 0-删除 1-有效 |      |\n| photo_id_info | string[]  | 素材包下视频ID信息 |      |\n\n### 请求示例\n\n```json\n{\n    \"advertiser_id\":20007185,\n    \"campaign_id\":227785633\n}\n```\n\n### 返回示例\n\n```json\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"total_count\": 1,\n        \"details\": [\n            {\n                \"status\": 6,\n                \"campaign_id\": 227785633,\n                \"campaign_name\": \"提高应用活跃_20211105_19:12\",\n                \"put_status\": 1,\n                \"create_channel\": 0,\n                \"day_budget\": 0,\n                \"day_budget_schedule\": [],\n                \"campaign_type\": 7,\n                \"campaign_sub_type\": 0,\n                \"create_time\": \"2021-11-05 19:12:11\",\n                \"update_time\": \"2021-11-05 19:12:11\",\n                \"cap_roi_ratio\": 98.0,\n                \"constraint_cpa\": 0,\n                \"cap_bid\": 0,\n            }\n        ]\n    },\n    \"request_id\": \"f209ef62972e456faccdd80989d6e516\"\n}\n\n```",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1726047241959
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1676962472480
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1726047241959,
+  "creator": "liumengyun",
+  "fullContext": null
+}

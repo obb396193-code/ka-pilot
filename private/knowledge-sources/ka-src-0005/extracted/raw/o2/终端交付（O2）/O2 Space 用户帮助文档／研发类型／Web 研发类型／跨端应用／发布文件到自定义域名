@@ -1,0 +1,48 @@
+跨端应用支持发布文件（比如：.txt）到自定义域名。
+
+通用域名（如 market.m.taobao.com、web.m.taobao.com、pages.tmall.com）不支持业务配置验证文件，需要使用业务自己的域名配置
+
+## Step 1 文件准备
+
+### Step 1-1 新建应用
+
+参考 [创建应用](https://yuque.antfin-inc.com/gubal/pg4m5z/vffuen) 中的内容新建一个跨端应用。
+
+1）选择“静态资源”解决方案（如果看不到该解决方案，请联系你所在租户的管理员进行添加）
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ggvlv7bc71lsgari/imglY0t4CuwJ6.png)
+
+
+2）根据验证类文件需要生效的域名选择对应接入的站点。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ggvlv7bc71lsgari/imgIvgn9HpxB0.png)
+
+
+### Step 1-2 发布文件
+
+1）新建迭代和变更，将所需的验证文件放置在仓库内，提交发布；仓库中的 example.txt 可以删除，abc.json 请勿移动或修改
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ggvlv7bc71lsgari/img2hpbbf6Eay.png)
+
+
+2）将应用发布线上，记录文件地址
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ggvlv7bc71lsgari/imgDNaSYWh4Xz.png)
+
+
+## Step 2 路由配置
+
+1）访问对应站点的路由配置页面，选择“添加路由 - 添加页面路由”
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/P4maOgrdjBzjqWNX/img/b608bff3-7907-442a-a14a-e370964f3aa4.png)
+
+
+2）根据需求填写访问路径，并从站点资源中选择目标路径
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/P4maOgrdjBzjqWNX/img/0974ccde-8198-480f-9e66-355f476aa0f6.png)
+
+
+3）发布路由到线上即可进行验证
+
+## 常见问题
+
+### Content-Type 设置
+
+发布的文件会自动识别 MIME 并设置 Content-Type。如果有特殊需求，请参考 [@ali/builder-gubal-static](https://web.npm.alibaba-inc.com/package/@ali/builder-gubal-static) 文档设置 headers。
+

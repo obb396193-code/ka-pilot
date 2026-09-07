@@ -1,0 +1,54 @@
+{
+  "documentId": 2979,
+  "documentName": "人群包删除接口",
+  "documentType": 3,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "https://docs.qingque.cn/d/home/eZQB_EwTVVJRqyczhW4mRGX1H?identityId=281aXqFRgHM",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1718266000964
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1718266000964,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

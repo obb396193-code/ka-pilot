@@ -1,0 +1,54 @@
+在AI 大背景下，GPU计算已成为支撑大规模AI推理任务的核心基础设施。Aone FaaS平台推出了 GPU 函数服务，能够轻松部署和运行GPU密集型AI应用。本文将详细介绍如何在Aone FaaS平台上构建基于 GPU 类应用（推理类）
+
+### 创建 GPU 函数
+
+(https://o2-img.alistatic.com/i/i09blZ/xylDi3CvficTes7dKnrLI-ae2014effc.png)
+
+
+资源说明
+
+- 单个函数实例， 16 核 CPU， 48G 内存， 中端 nvidia 计算显卡（如 A10 等）
+- 资源交付是 SoptGPU 类型，函数运行过程中可能会被其他高优业务抢占，平台侧不保证函数实例稳定性
+- 单卡，单实例，没有 NVLink
+### Runtime 脚手架
+
+#### Fuse 集成
+
+平台侧自动集成 Fuse，方便进行大型文件加载，Fuse 详细文档参考： [fsfuse使用说明](https://yuque.alibaba-inc.com/owt27z/ohohhg/mo2tol5v2luecfr8)
+
+说明：fuse 挂载点必须为 /mnt/fuse 的子目录，否则无法读取到文件
+
+```
+FUSE_SERVICE_URL = "http://0:28006/FuseService/mount"
+MODEL_URI = "dfs://ea119dfssearch3--cn-shanghai/nebula_model/nebula_internal/deepseek-ai__DeepSeek-R1-Distill-Qwen-7B/main_4e5485ed9bc7191a570b78c3bf4b9b252ca63793_06df44aa06de/"
+MOUNT_DIR = "/mnt/fuse/deepseek"  # 必须以 /mnt/fuse 开头
+# Mount model storage via Fuse service
+logger.info("Mounting model storage via Fuse service...")
+response = requests.post(
+	FUSE_SERVICE_URL,
+	json={
+		"uri": MODEL_URI,
+		"mountDir": MOUNT_DIR
+	},
+	timeout=30
+)
+
+if response.status_code != 200:
+	logger.error(f"Fuse mount failed: {response.status_code} - {response.text}")
+	raise RuntimeError(f"Failed to mount model storage: {response.text}")
+
+	logger.info("Model storage mounted successfully")
+MODEL_PATH = f"{MOUNT_DIR}/ckpt_base"
+```
+#### Transformer
+
+集成 Hugging Face 的 transformer 库，开箱即用，如有其他需求，自行开发，整体代码参考： [python gpu demo](https://code.alibaba-inc.com/fengjianhui.fjh/python-gpu-demo3/blob/master/src/main.py)
+
+### GPU 推理 Case 
+
+(https://o2-img.alistatic.com/i/i09blZ/6ZBF5b5EeKEwCtlixymba-194bbc95a6.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/3NgRcnHzIJtfRVJ51MjeD-9c35f41a42.png)
+
+

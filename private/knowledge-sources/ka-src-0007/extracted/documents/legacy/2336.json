@@ -1,0 +1,42 @@
+{
+  "documentId": 2336,
+  "documentName": "获取应用中心的隐私详情",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】获取隐私详情\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/privacy/detail](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/privacy/detail)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主id |\n| privacy_id | Long |  | 必填 | 隐私id |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 返回详情 |  |\n| data | Object |  | JSON 返回值 |  |\n| &#8195;account_id | Long |  | 账号id |  |\n| &#8195;privacy_id | Long |  | 隐私id |  |\n| &#8195;url | String |  | 隐私链接 |  |\n\n\n### 请求样例\n\n```js\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/privacy/detail' \\\n--header 'Content-Type: application/json' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\":900015364,\n    \"privacy_id\":4801146\n}'\n\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"account_id\": 900015364,\n        \"privacy_id\": 4801146,\n        \"url\": \"https://master--kuaishou-frontend-app-platform.jinx.staging.kuaishou.com/create/android?__accountId__=900015364\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EPSAgIDwg5mOrAEY_wYgqOC5u_QwKIO19M8E\"\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681107778034
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681107778034,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

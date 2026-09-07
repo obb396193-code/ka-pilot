@@ -1,0 +1,16 @@
+用户真实问题链接: https://links.alibaba-inc.com/support/conversation/663f3b166b6fa805688e2d7c/
+
+作者：时路
+
+评审人：上坡
+
+
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/18156349/1716285119618-1e373930-8546-4361-ae4e-e143695efafd.png) 
+
+长期解决方案：请按照扫描结果对注释进行处理，如可以借助 uglify 之类的压缩工具，或者 webpack 里面有的一些压缩配置来避免在产物中出现注释
+
+短期解决方案：提交单次跳过审批单
+
+
+

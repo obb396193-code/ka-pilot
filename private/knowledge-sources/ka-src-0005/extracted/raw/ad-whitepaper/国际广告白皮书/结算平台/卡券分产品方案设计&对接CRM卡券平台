@@ -1,0 +1,139 @@
+附：原卡券文档
+
+[https://yuque.antfin-inc.com/intl_ad/icbu_ad/ua8xm4](https://yuque.antfin-inc.com/intl_ad/icbu_ad/ua8xm4)
+
+
+
+一、原日终结算抵用卡券流程： 
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/9506/1547112496505-453b6b08-7a37-4692-9393-93010cf6428a.png)
+
+二、原日终结算产出表
+
+p4p_day_click：日终点击表
+
+p4p_day_cust_cost：日终用户维度消耗表
+
+
+
+三、设计要点
+
+1、需要分product_type，campaign_type的汇总数据
+
+2、基于不同product_type，campaign_type 抵扣，消耗扣减
+
+3、生成的卡券抵用记录，明确用于哪个product_type，campaign_type 
+
+四、设计方案
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/9506/1547113119662-97142788-5bfb-487a-846e-3c4567aafd1b.png)
+
+五、接口设计
+
+调用卡券接口要素：
+
+查询可用卡券（卡券类型、金额等，新增账户/产品维度，用于什么产品类型）
+
+批量核销卡券（无调整）
+
+批量恢复卡券（无调整）
+
+
+
+
+
+六、开发工作量评估
+
+新增产品类型消耗汇总 2人日
+
+点爆分落到不同产品    1人日
+
+账户分产品抵用规则实现 2人日
+
+最优卡券抵用改造 1人日
+
+生成分产品卡券抵用明细 1人日
+
+同步卡券中心发放、作废消息 1人日
+
+发送卡券抵扣消息 1人日
+
+
+
+七、对接CRM卡券平台
+
+对接消息
+
+[https://yuque.antfin-inc.com/docs/share/631682de-f278-425c-9a2b-21b1fb0df136](https://yuque.antfin-inc.com/docs/share/631682de-f278-425c-9a2b-21b1fb0df136)
+
+维护状态与coupon对应关系
+
+
+
+广告账户卡券批次表：coupon_config
+
+| 列名 | 类型 | 长度 | 精度 | 标度 | 是否为空 | 描述 | 对应CRM卡券字段名 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| id | bigint(20)   unsigned | | 20 | 0 | N | 主键 | |
+| gmt_create | datetime | | | | N | 创建时间 | |
+| gmt_modified | datetime | | | | N | 修改时间 | |
+| amount | bigint(20)   unsigned | | 20 | 0 | N | 面额 | 　f |
+| begin_time | datetime | | | | N | 有效期开始时间 | 　f |
+| end_time | datetime | | | | N | 有效期结束时间 | 　f |
+| count | bigint(20)   unsigned | | 20 | 0 | Y | 总量 | 　f |
+| remainder | bigint(20)   unsigned | | 20 | 0 | Y | 剩余 | 　已发<br/><font style="color:#333333;">distributed_pieces</font> |
+| apply_type | tinyint(4) | | 3 | 0 | N | 领取方式   1.卖家领取 2.运营发放 | 　config |
+| apply_condition | varchar(1024) | 1024 | | | Y | 领取条件 | |
+| use_condition | varchar(1024) | 1024 | | | Y | 使用条件 | |
+| coupon_type | tinyint(4) | | 3 | 0 | N | 优惠券类型 | 　f |
+| biz_type | varchar(32) | 32 | | | N | 业务类型 | 　约定 |
+| config_status | tinyint(4) | | 3 | 0 | N | 优惠券配置状态   1.有效 -1.无效 | 　正常、暂停、终止 |
+| <font style="color:#191F25;">can_combine 可以叠加使用的券</font> |  |  |  |  |  |  | 可叠加满减 |
+| <font style="color:#191F25;">free_cost 免单券（一次只能用一张）</font> |  |  |  |  |  |  | 代金券，不用满<br/> |
+| common 一般的满减券（一次只能用一张） |  |  |  |  |  |  | 满减 |
+| 满多少 |  |  |  |  |  |  | 条件 |
+
+
+广告账户卡券批次表：coupon
+
+| 列名 | 类型 | 长度 | 精度 | 标度 | 是否为空 | 描述 | 对应CRM卡券字段名 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| id | bigint(20)   unsigned | | 20 | 0 | N | 主键 | |
+| gmt_create | datetime | | | | N | 创建时间 | |
+| gmt_modified | datetime | | | | N | 修改时间 | |
+| coupon_config_id | bigint(20)   unsigned | | 20 | 0 | N | 优惠券配置表对应id | |
+| company_id | bigint(20)   unsigned | | 20 | 0 | N | 卖家公司id | |
+| havana_id | bigint(20)   unsigned | | 20 | 0 | N | 集团统一id | |
+| status | tinyint(4) | | 3 | 0 | N | 状态   1.正常 2.使用中 3.已使用 -1.作废  | |
+| valid_date | datetime | | | | Y | 生效时间 | |
+| expire_date | datetime | | | | Y | 过期时间 | |
+
+
+八、原diamond上配置迁移到表
+
+
+
+**diamod迁移所增加的字段：**
+
+ADD COLUMN `condition_amount` bigint unsigned NULL COMMENT '满多少面额，以分为单位',
+
+	ADD COLUMN `coupon_sub_type` varchar(1024) NULL COMMENT '卡券子类型，迁移自diamond，目前有三种值：can_combine、free_cost、common。如有多个可并存属性，用逗号分隔。',
+
+
+
+**因对接外部卡券系统所增加字段：**
+
+	ADD COLUMN `apply_from` tinyint NULL COMMENT '数据来源，空或1代表默认接口发放，2代表CRM卡券系统',
+
+	ADD COLUMN `applay_order_no` varchar(128) NULL COMMENT '用于和外部系统关联的id';
+
+
+
+九、约定
+
+为兼容原卡券类型，_ 在消息接收时，默认会先将新卡券类型coupon_type设置为0_
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/9506/1550568012525-fb554cea-3978-4ab9-8aeb-199d3da0e652.png)
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2019/png/9506/1550568034292-7ea7c673-5302-4360-839f-4195321b6c1d.png)
+

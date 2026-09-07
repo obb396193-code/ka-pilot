@@ -1,0 +1,58 @@
+{
+  "documentId": 2266,
+  "documentName": "创建程序化创意",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 创建程序化创意\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/advanced_creative/create\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|         字段         |     类型     |            是否必填             |             说明              |                                                                                                         备注                                                                                                          |\n| :----: | :----------: | :-----------------------------: | :---------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |\n|    advertiser_id     |     long     |              必填               |           广告主 ID           |                                                                                            在获取 access_token 的时候返回                                                                                             |\n|       unit_id        |     long     |              必填               |           广告组 ID           |                                                                   一个组下只能有一个程序化创意，只有这个广告组的 unit_type 为 7 才能创建程序化创意                                                                    |\n|     package_name     |    string    |              必填               |        程序化创意名称         |                                                                                                 不能为空，1-100 字符                                                                                                  |\n|    sticker_styles    |    int[]     |             选填              |           封面贴纸            |                                                                     （仅搜索广告支持）如果使用封面贴纸 sticker_Styles 和 cover_slogans 必须同时传值，最多选择 6 个                                                                      |\n|    cover_slogans     |   string[]   |             选填              |          封面广告语           |                                                                             （仅搜索广告支持） 0-14 字符，最多选择 6 个（每个中文和英文字符都算一个字符）                                                                               |\n|      action_bar      |    string    |              必填               |         行动号召按钮          |                                                                                                                                                                                                                       |\n|       captions       |   string[]   |              必填               |          作品广告语           |                                                                              每个不超过 30 个字符，英文字符两个算一个字符，最多可传 3 个                                                                              |\n|      click_url       |    string    |               选填                  |      第三方点击检测链接       | 不能超过 1024 字符 ocpx_action_type 是 180 并且应用没有接入 sdk，监测链接必填； 计划 type 是 2（推广应用安装），ocpx_action_type 是注册（396）、付费（190）、完件（384）、授信（383），并且没有接入 sdk，监测链接必填 |\n|     impression_url   |    string    |            选填\t\t\t\t\t| \t\t第三方曝光检测链接\t\t| \t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n| actionbar_click_url  |    string    |              选填                   | 第三方 ActionBar 点击监控链接，命中有效触点白名单表示有效触点监测链接（限：快手主站/极速版场景） |                                                                     部分客户使用 actionbar_click_url 不为空时，click_url 必填，不能超过 1024 字符                                                                     |\n| ad_photo_played_t3s_url |    string    |             选填                        |           第三方有效播放监测链接           |                             白名单功能，且当广告组 scene_id 为 27（开屏） 时不支持该检测链接；与 impression_url 不可同时使用                                                                   |\n|    creative_category    |     int      | 金融，教育，游戏，小说，电商 如上行业必填 |                  创意分类                  |                                                                                   由创意分类查询接口 获得；必须是叶子结点；与创意标签同时传或同时不传 可通过工具-功能名单-获取创意分类标签白名单客户接口获取是否必填                                                                                    |\n|      creative_tag       | string[] |           选创意分类 必填           |                  创意标签                  |                                                                                    与创意分类参数，要么都传，要么都不传；且单个创意的创意标签最多 10 个；单个创意标签不能为空且不能超过 10 字符                                                                                    |\n|      photo_list      |   struct[]   | 选填 |           素材列表            |                                    新创建程序化创意请使用此参数，最多支持 10 组素材(传递后将忽略 horizontal_photo_ids,vertical_photo_ids,cover_image_tokens，7.15 日后老字段下线)                                     |\n|   pic_list   |   string[]   | 选填 |          联盟图片（横版/竖版）       |   需要传入image_token列表，image_token通过上传图片接口获取                                           |\n|   new_expose_tag   |   struct[]   | 选填 |          广告标签 2 期       |    按照相关格式传递两个推荐理由 举例[{“text”:\"工厂直发\"},{\"text\":\"限时专享\"}]                                           |\n| material_intelligent_optimize | int | 选填 | 素材智能优化开关 | 0-关闭，1-开启，不传默认关闭。仅白名单用户支持使用。 |\n| outer_loop_native | int | 选填 | 是否开启原生 | 1开启、0关闭｜不填则默认为0。在投放快手信息流广告（ad_type=0或默认不填，scene_id包含1优选广告位、6上下滑大屏广告、7双列信息流广告）时，【campaignType=2提升应用安装、5收集销售线索、7提升应用活跃、19推广快手小程序、30快手号-短剧推广】可开启原生投放。注：在投放快手信息流广告的场景下，针对「升级白名单账户」支持“不填则默认为1，此时kol_user_id为广告主关联的授权生效快手号id 且 kol_user_type为对应有效授权类型”、“outer_loop_native=1”；针对「“账户二级行业=付费短剧”且“营销目标=快手号推广-短剧推广”的白名单账户」支持“不填则默认为1”、“outer_loop_native=1”；“outer_loop_native=0”时报错。|\n| kol_user_type | int | 选填 | 原生达人用户类型 | 1普通快手号原生，2服务号原生，3聚星达人，当outer_loop_native=1时此项必填。 |\n| kol_user_id | long | 选填 | \t原生投放目标达人ID | 开启原生场景下必传，即当outer_loop_native=1时此项必填。计划 campaignType=30 短剧推广时，值为短剧作者ID |\n| recommendation | string | 选填 | 原生plc自定义文案 | 开启原生时可用 |\n\n### photo_list\n\n| 字段 | 类型   | 是否必填 | 说明           | 备注                                                                                                                           |\n| :----: | :----: | :----: |:----: | :----: |\n| photo_id                        | long | 必填 | 视频 ID        |                                                                                                                                |\n| cover_image_token               | string | 选填 | 封面图片 token | 通过上传图片接口获得，不传值则直接使用视频的首帧作为封面图片，自定义封面的图片宽高要与视频宽高一致，使用智能抽帧时不需要传递。 |\n| creative_material_type          | int | 必填 | 素材类型       | 1：竖版视频 2：横版视频                                                                                                        |\n### new_expose_tag\n| 字段    | 类型   | 是否必填 | 说明           | 备注                                                         |\n| :----------: | :----------: | :----------: | :----------: | :----------: |\n| text | string | 必填 |  广告标签text      |                                                              |\n| url | string | 选填 | 广告标签url       |                                     |\n### 返回参数\n\n| 字段    | 类型 | 说明      | 备注 |\n| :----: | :----: | :----: | :----: |\n| code    |   int   |    返回码       |      |\n| message |    string  |    返回信息       |      |\n| data    |   struct   |    JSON 返回值       |      |\n| unit_id | long | 广告组 id |      |\n\n### 请求参数\n\n```json\n{\n    \"advertiser_id\": 417173,\n    \"unit_id\": 21456613,\n    \"package_name\": \"2222\",\n    \"action_bar\": \"立即下载\",\n    \"captions\": [\n        \"【网红爆款】国妆特证，明星同款，改善头皮环境，控油防脱\",\n        \"【国家认证】这款生姜洗发水，明星同款，实力防脱育发，改善头皮\"\n    ],\n    \"click_url\": \"https://ad.e.kuaishou.com/create?__CALLBACK__\",\n    \"creative_category\": 701,\n    \"creative_tag\": [\n        \"快手\",\n        \"优惠\"\n    ],\n    \"photo_list\": [\n        {\n            \"photo_id\": 520390941748682323,\n            \"image_token\": \"[REDACTED_SECRET_EXAMPLE]\",\n            \"creative_material_type\": 1\n        }\n    ]\n}\n```\n\n### 返回参数\n\n```json\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"unit_id\": 214566138\n    },\n    \"request_id\": \"366df9d637ff46d8b2e9f9117d66a097\"\n}\n```\n\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1722325462613
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1712815256794
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1722325462613,
+  "creator": "haoshengwei",
+  "fullContext": null
+}

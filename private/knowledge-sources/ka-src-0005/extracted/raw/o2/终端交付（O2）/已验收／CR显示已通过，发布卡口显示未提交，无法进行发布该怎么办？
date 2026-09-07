@@ -1,0 +1,12 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/65e96ec10002fd0530e081c0/](https://links.alibaba-inc.com/support/conversation/65e96ec10002fd0530e081c0/)
+
+作者：[@悠兔](undefined/dongji.dong)
+
+评审人：[@上坡](undefined/shangpo.zw)
+
+
+
+**原因：**变更原因中存在图标/emoj表情时，提交CR的接口报错
+
+**现状：**目前已修正，即使变更原因中存在图标/emoj表情，也不会再出现上述问题
+

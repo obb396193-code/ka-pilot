@@ -1,0 +1,207 @@
+## 获取发布任务详情
+
+| method | GET |
+|-|-|
+| url | /v1.0/work/tasks/{taskId}/detail |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| taskId | Number | true | - | 发布任务 ID |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| task | 发布任务详情，结构为: { ...[Task](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8dfb66h0t67j0phai), user: [User](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls369lxfelxab4mn50j), devbranches: [Change](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8c5351a5qllc8tzaq)[] } |
+| flownodes | 发布流水线节点信息 |
+| flow | 发布流水线模板 |
+| info | 流水线及容器 ID |
+| status | 发布流水线状态 |
+| runtime | 发布流水线运行时信息 |
+
+### Example
+
+```
+client.get(`/v1.0/work/tasks/{taskId}/detail`, {}, {
+  SSO_TICKET
+})
+
+{
+    "task": {
+        "id": 135718400,
+        "group": "def-work",
+        "project": "front",
+        "branch": "def_releases_2024020510085050_def-work_front/2.25.51",
+        "commit_id": "601cebd35db53ccec249f515f772b38c803533b6",
+        "version": "2.25.51",
+        "emp_id": "318805",
+        "pub_env": 1,
+        "pub_type": 1,
+        "pub_status": 3,
+        "app_id": 1,
+        "client_id": 1,
+        "iteration_id": 15126515,
+        "flow_id": 19676649,
+        "flow_version": "2",
+        "caller": "api",
+        "tbuser_id": "",
+        "branch_pub_mode": 1,
+        "engine_mode": 1,
+        "endtime": "2024-02-05T07:24:52.000Z",
+        "gmt_create": "2024-02-05T07:23:29.000Z",
+        "gmt_modified": "2024-02-05T07:24:52.000Z",
+        "user": {
+            "id": 241674,
+            "emp_id": "318805",
+            "nick": "时路",
+            "account": "kangyong.ky",
+            "gitlab_id": "262506",
+            "buc_id": "2188599",
+            "email": "kangyong.ky@alibaba-inc.com",
+            "gmt_create": "2021-05-07T02:04:55.000Z",
+            "gmt_modified": "2021-05-07T03:19:17.000Z"
+        },
+        "pubenv": {
+            "description": "日常"
+        },
+        "pubtype": {
+            "name": "assets"
+        },
+        "devbranches": [
+            {
+                "id": 134517946,
+                "task_id": 135718400,
+                "branch_id": 21070144,
+                "branch": "aaa",
+                "commit_id": "601cebd35db53ccec249f515f772b38c803533b6",
+                "gmt_create": "2024-02-05T07:23:29.000Z",
+                "gmt_modified": "2024-02-05T07:23:29.000Z",
+                "appdevbranch": {
+                    "id": 21070144,
+                    "emp_id": "318805",
+                    "description": "aab",
+                    "branch": "aaa",
+                    "is_delete_branch": 1,
+                    "aone_binds": "req|54895183",
+                    "aone_binds_autofinish": 0,
+                    "is_finished": 0
+                }
+            }
+        ]
+    },
+    "flownodes": [
+        {
+            "id": "19676649_stages.gitmerge.jobs.gitmerge.steps.gitmerge",
+            "name": "gitmerge",
+            "status": 3,
+            "disp_id": 173081887,
+            "flow_id": 19676649,
+            "output": "{\"commitId\":\"601cebd35db53ccec249f515f772b38c803533b6\",\"branch\":\"def_releases_2024020510085050_def-work_front/2.25.51\",\"devbranches\":[{\"branch\":\"aaa\",\"commit_id\":\"601cebd35db53ccec249f515f772b38c803533b6\",\"short_id\":\"601cebd3\",\"created_at\":\"2023-09-14T14:32:23.000+08:00\",\"isKeepBranch\":false,\"branch_id\":21070144,\"description\":\"aab\",\"emp_id\":\"318805\",\"aonecr_id\":15670730,\"aone_binds\":\"req|54895183\",\"cr_status\":null}]}",
+            "spendTime": 3840,
+            "startTime": 1707117810387,
+            "endTime": 1707117814227,
+            "tpl": "ft_git_merge"
+        },
+        {
+            "id": "19676649_stages.precheck.jobs.gitlab_check.steps.gitlab_check",
+            "name": "gitlab_check",
+            "status": 3,
+            "disp_id": 173081887,
+            "flow_id": 19676649,
+            "output": "{\"masterCommitId\":\"601cebd35db53ccec249f515f772b38c803533b6\",\"trunkCommitId\":\"601cebd35db53ccec249f515f772b38c803533b6\",\"commit\":{\"author_email\":\"dongji.dong@alibaba-inc.com\",\"author_name\":\"“悠兔”\",\"authored_date\":\"2023-09-14T14:32:23.000+08:00\",\"committed_date\":\"2023-09-14T14:32:23.000+08:00\",\"committer_email\":\"dongji.dong@alibaba-inc.com\",\"committer_name\":\"“悠兔”\",\"created_at\":\"2023-09-14T14:32:23.000+08:00\",\"id\":\"601cebd35db53ccec249f515f772b38c803533b6\",\"message\":\"feat: 博客文章增加推荐封面字段，修改博客文章类型\n\",\"parent_ids\":[\"dbaba24887d0d374ed670e9b7f7945eafab74afe\"],\"short_id\":\"601cebd3\",\"status\":\"\",\"title\":\"feat: 博客文章增加推荐封面字段，修改博客文章类型\"},\"gitlabProjectId\":425441}",
+            "spendTime": 2401,
+            "startTime": 1707117814376,
+            "endTime": 1707117816777,
+            "displayName": "gitlab 检查",
+            "tpl": "ft_gitlabcheck"
+        },
+        {
+            "id": "19676649_stages.precheck.jobs.source_check.steps.source_check",
+            "name": "source_check",
+            "status": 3,
+            "disp_id": 173081887,
+            "flow_id": 19676649,
+            "output": "{\"success\":true,\"abc\":{\"assets\":{\"type\":\"command\",\"command\":{\"cmd\":[\"tnpm i\",\"tnpm run build\",\"mkdir -p $BUILD_DEST && mv dist $BUILD_DEST/\"]}}},\"url\":\"https://pre-space.o2.alibaba-inc.com/api/resources/oss/tsb/def-work%2Frunner%2Fsource%2F1707117818435_358904.tar.gz\",\"pkg\":{\"name\":\"def-work-front\",\"description\":\"an vue project for def-work\",\"version\":\"2.13.29\",\"author\":\"xingchi.mxc\",\"private\":true,\"scripts\":{\"start\":\"cross-env NODE_ENV=development webpack-dev-server --hot --port=8084\",\"build\":\"rm -rf ./dist && cross-env NODE_ENV=production webpack --progress --hide-modules\",\"lint\":\"eslint . --ext .js,.vue\"},\"dependencies\":{\"@ali/def-ide-message\":\"^1.0.5\",\"@ali/def-open-data\":\"^1.0.1\",\"@ali/def-widget-request\":\"0.2.80-beta.2\",\"@ali/pwa-def-vue\":\"^0.1.8\",\"@ali/vue-json-ui-editor\":\"^1.0.0\",\"@ice/stark-module\":\"1.4.0-0\",\"@vue/babel-preset-app\":\"^4.1.2\",\"ansi_up\":\"^3.0.0\",\"core-js\":\"^3.6.4\",\"filesize\":\"^6.0.1\",\"highlight.js\":\"^10.1.2\",\"js-cookie\":\"^2.2.0\",\"lodash\":\"^4.17.20\",\"ms\":\"^2.1.2\",\"normalize.css\":\"^8.0.1\",\"nprogress\":\"^0.2.0\",\"numeral\":\"^2.0.6\",\"progressbar.js\":\"^1.0.1\",\"qr-image\":\"^3.2.0\",\"querystring\":\"^0.2.0\",\"vue\":\"^2.6.12\",\"vue-clipboard2\":\"^0.3.1\",\"vue-form-generator\":\"^2.3.4\",\"vue-fragment\":\"^1.5.1\",\"vue-i18n\":\"^8.12.0\",\"vue-json-viewer\":\"^2.2.5\",\"webpack-cli\":\"^3.3.10\"},\"devDependencies\":{\"@ali/eslint-config-tbfed\":\"^0.6.11\",\"@ali/eslint-plugin-tbfed\":\"^1.1.7\",\"@babel/core\":\"^7.0.0\",\"@babel/plugin-proposal-class-properties\":\"^7.0.0\",\"@babel/plugin-proposal-decorators\":\"^7.0.0\",\"@babel/plugin-proposal-export-namespace-from\":\"^7.0.0\",\"@babel/plugin-proposal-function-sent\":\"^7.0.0\",\"@babel/plugin-proposal-json-strings\":\"^7.0.0\",\"@babel/plugin-proposal-numeric-separator\":\"^7.0.0\",\"@babel/plugin-proposal-throw-expressions\":\"^7.0.0\",\"@babel/plugin-syntax-dynamic-import\":\"^7.0.0\",\"@babel/plugin-syntax-import-meta\":\"^7.0.0\",\"@babel/plugin-transform-runtime\":\"^7.0.0\",\"@babel/preset-env\":\"^7.8.3\",\"@babel/runtime-corejs2\":\"^7.0.0\",\"@commitlint/cli\":\"^8.2.0\",\"@commitlint/config-conventional\":\"^8.2.0\",\"@vue/babel-preset-app\":\"^4.1.2\",\"autoprefixer\":\"^9.7.4\",\"babel-eslint\":\"^9.0.0\",\"babel-loader\":\"^8.0.6\",\"babel-plugin-component\":\"^0.9.1\",\"babel-plugin-istanbul\":\"^3.1.2\",\"cross-env\":\"^3.0.0\",\"css-loader\":\"^0.25.0\",\"eslint\":\"^6.1.0\",\"eslint-plugin-babel\":\"^4.1.2\",\"eslint-plugin-react\":\"^6.10.3\",\"eslint-plugin-vue\":\"^6.1.2\",\"file-loader\":\"^5.0.2\",\"husky\":\"^3.0.9\",\"less\":\"^3.10.3\",\"less-loader\":\"^5.0.0\",\"mini-css-extract-plugin\":\"^0.9.0\",\"postcss-loader\":\"^3.0.0\",\"style-loader\":\"^1.1.2\",\"url-loader\":\"^3.0.0\",\"vue-loader\":\"^15.8.3\",\"vue-template-compiler\":\"^2.6.11\",\"webpack\":\"^4.41.5\",\"webpack-dev-server\":\"^3.10.1\"},\"husky\":{\"hooks\":{\"commit-msg\":\"node ./node_modules/@commitlint/cli/lib/cli.js -E HUSKY_GIT_PARAMS\"}},\"repository\":\"git@gitlab.alibaba-inc.com:def-work/front.git\"},\"assetsmeta\":\"cache-control:max-age=30,s-maxage=30\"}",
+            "spendTime": 1631,
+            "startTime": 1707117816864,
+            "endTime": 1707117818495,
+            "displayName": "配置文件检查",
+            "tpl": "ft_sourcecheck"
+        },
+        {
+            "id": "19676649_stages.precheck.jobs.cdn_check.steps.cdn_check",
+            "name": "cdn_check",
+            "status": 3,
+            "disp_id": 173081887,
+            "flow_id": 19676649,
+            "output": "{\"success\":true}",
+            "spendTime": 1638,
+            "startTime": 1707117814376,
+            "endTime": 1707117816014,
+            "displayName": "cdn 检查",
+            "tpl": "ft_cdncheck"
+        },
+        {
+            "id": "19676649_stages.build.jobs.build.steps.build",
+            "name": "build",
+            "status": 3,
+            "disp_id": 173081887,
+            "flow_id": 19676649,
+            "output": "{\"isUsedSourceCode\":false,\"isUsedDailyResult\":false,\"create\":{\"id\":\"34079456\"},\"id\":\"34079456\",\"data\":{\"id\":\"34079456\"},\"result\":{\"id\":\"34079456\",\"gmtCreate\":\"2024-02-05T07:23:39.000Z\",\"gmtModified\":\"2024-02-05T07:24:45.849Z\",\"group\":\"def-work\",\"project\":\"front\",\"branch\":\"def_releases_2024020510085050_def-work_front/2.25.51\",\"commitId\":\"601cebd35db53ccec249f515f772b38c803533b6\",\"empId\":\"318805\",\"type\":2,\"builderNext\":false,\"builderVersion\":null,\"dist\":\"https://pre-builder.alibaba-inc.com/api/v1/resources/oss/tsb/cloudbuild%2Frunner%2Furl%2Fa6a94596a24fcb8d719569663e52de7e_1707117884860_87985.tar.gz\",\"distMD5\":\"a6a94596a24fcb8d719569663e52de7e\",\"srcMD5\":null,\"status\":0,\"start\":\"2024-02-05T07:23:41.000Z\",\"end\":\"2024-02-05T07:24:44.973Z\",\"time\":63973,\"log\":null,\"cmd\":\"[\\"tnpm i\\",\\"tnpm run build\\",\\"mkdir -p $BUILD_DEST && mv dist $BUILD_DEST/\\"]\",\"argv\":\"[\\"--def_publish_type=assets\\",\\"--def_work_env=prepub\\",\\"--def_publish_version=2.25.51\\",\\"--def_publish_devbranches=aaa\\",\\"--def_work_app_id=1\\",\\"--def_work_iteration_id=15126515\\",\\"--def_publish_changes=[{\\\\"branch\\\\":\\\\"aaa\\\\",\\\\"commit_id\\\\":\\\\"601cebd35db53ccec249f515f772b38c803533b6\\\\"}]\\",\\"--artifact_hash=0ad79c6b27175ecc58ac13605b9dd65d_17921294953d1443491da8200103c1a0\\",\\"--enable_aot=false\\",\\"--no-enable_dependence_cache\\"]\",\"debug\":false,\"clientVersion\":\"2.8.3\",\"exitcode\":0,\"callback\":\"\",\"strip\":false,\"note\":null,\"sourcemapTaskId\":\"12256956\",\"clientId\":\"24\",\"builderId\":null,\"imageId\":\"6\",\"isGreyImage\":true,\"serverEnv\":\"prepub\",\"replayTaskId\":null,\"artifactHash\":\"\",\"aotHitTime\":null,\"isLockfileInstallEnabled\":true,\"lockInstallMode\":\"strict\",\"isLockfileGenerateEnabled\":false,\"packageJSON\":\"https://pre-builder.alibaba-inc.com/api/v1/resources/oss/tsb/cloudbuild%2Frunner%2Finfo-packageJSON%2F3aeb72fe24b0339baf5e58e8eadca155_1707117884826_25152.json\",\"lockfileActual\":null,\"lockfileIdeal\":null,\"isDependenceCacheEnabled\":false,\"dependenceBotConfig\":null,\"deltaMode\":null,\"deltaTargetId\":null,\"deltaLockMode\":null,\"hasSourceFiles\":true,\"hasDistFiles\":true,\"depData\":\"https://pre-builder.alibaba-inc.com/api/v1/resources/oss/tsb/cloudbuild%2Frunner%2Finfo-depData%2Fbe70b7e745c83e33c42a702ab1ae944a_1707117884853_82130.json\",\"sourceFiles\":\"https://pre-builder.alibaba-inc.com/api/v1/resources/oss/tsb/cloudbuild%2Frunner%2Finfo-sourceFiles%2F4a8bf0506cba07b1c93648347027663e_1707117884844_27160.json\",\"distFiles\":\"https://pre-builder.alibaba-inc.com/api/v1/resources/oss/tsb/cloudbuild%2Frunner%2Finfo-distFiles%2F00eb68fc658cc806e4b6e61ec3b1a22b_1707117884837_20812.json\",\"registry\":\"https://registry.npm.alibaba-inc.com/\",\"md5\":\"a6a94596a24fcb8d719569663e52de7e\",\"url\":\"https://pre-builder.alibaba-inc.com/api/v1/resources/oss/tsb/cloudbuild%2Frunner%2Furl%2Fa6a94596a24fcb8d719569663e52de7e_1707117884860_87985.tar.gz\"},\"md5\":\"a6a94596a24fcb8d719569663e52de7e\",\"url\":\"https://pre-builder.alibaba-inc.com/api/v1/resources/oss/tsb/cloudbuild%2Frunner%2Furl%2Fa6a94596a24fcb8d719569663e52de7e_1707117884860_87985.tar.gz\"}",
+            "spendTime": 67592,
+            "startTime": 1707117818627,
+            "endTime": 1707117886219,
+            "displayName": "构建",
+            "tpl": "ft_build"
+        },
+        {
+            "id": "19676649_stages.gog.jobs.gog.steps.gog",
+            "name": "gog",
+            "status": 3,
+            "disp_id": 173081887,
+            "flow_id": 19676649,
+            "output": "{\"job_id\":25548417,\"async\":true,\"data\":{\"job_id\":25548417,\"async\":true}}",
+            "spendTime": 1284,
+            "startTime": 1707117886333,
+            "endTime": 1707117887617,
+            "displayName": "门神检查",
+            "tpl": "ft_gog"
+        },
+        {
+            "id": "19676649_stages.publish.jobs.assets_publish.steps.assets_publish",
+            "name": "assets_publish",
+            "status": 3,
+            "disp_id": 173081887,
+            "flow_id": 19676649,
+            "output": "{\"list\":[{\"error\":\"\",\"data\":\"dist/admin.css\"},{\"error\":\"\",\"data\":\"dist/app.css\"},{\"error\":\"\",\"data\":\"dist/doc.css\"},{\"error\":\"\",\"data\":\"dist/doc.js\"},{\"error\":\"\",\"data\":\"dist/admin.js\"},{\"error\":\"\",\"data\":\"dist/app.js\"}],\"task_id\":35328956,\"urls\":[\"https://dev.g.alicdn.com/def-work/front/2.25.51/dist/admin.css\",\"https://dev.g.alicdn.com/def-work/front/2.25.51/dist/admin.js\",\"https://dev.g.alicdn.com/def-work/front/2.25.51/dist/app.css\",\"https://dev.g.alicdn.com/def-work/front/2.25.51/dist/app.js\",\"https://dev.g.alicdn.com/def-work/front/2.25.51/dist/doc.css\",\"https://dev.g.alicdn.com/def-work/front/2.25.51/dist/doc.js\"]}",
+            "spendTime": 1807,
+            "startTime": 1707117887813,
+            "endTime": 1707117889620,
+            "displayName": "assets 发布",
+            "tpl": "ft_assets_publish"
+        }
+    ],
+    "flow": {
+        "tpls": [
+            "ft_git_merge",
+            "ft_gitlabcheck",
+            "ft_sourcecheck",
+            "ft_cdncheck",
+            "ft_build",
+            "ft_gog",
+            "ft_assets_publish"
+        ]
+    },
+    "info": {
+        "id": 19676649,
+        "dispId": 173081887
+    },
+    "status": "done",
+    "runtime": {
+    }
+}
+
+```

@@ -1,0 +1,136 @@
+## 发布
+
+设置发布相关的功能：
+
+(https://o2-img.alistatic.com/i/i09blZ/yfUgeepmB2KtFmAL4NHbz-3c752aa31b.jpg)
+
+
+### 复用迭代发布分支
+
+默认打开，关闭后，DEF 在每次发布时都会重建迭代发布分支，可能会造成「分支预处理」节点运行耗时增加或者合并冲突重复解决
+
+
+
+### 关闭主干检查
+
+默认关闭，关闭后会检查主干分支上是否有非法提交（非平台合入的提交），如果存在非法提交，发布前会弹框提示确认
+
+
+
+### 主干同步检测
+
+默认打开，打开后，变更分支未同步主干分支时，会拦截发布；关闭后不再拦截，平台会自动同步主干分支
+
+
+
+### 上线后删除分支
+
+默认打开，上线后平台自动删除迭代集成分支和变更分支
+
+
+
+### 开启迭代版本递增检测
+
+默认关闭，如果开启，线上发布前会检查发布版本是否保持递增（如 1.1.1 -> 1.1.2）
+
+
+
+### 开启依赖锁定能力
+
+开启平台级依赖锁定能力，兼容多种包管理软件，要求仓库必须在源码中提交锁文件，具体接入方式请参考  
+
+
+
+### 开启依赖缓存能力
+
+开启平台级依赖缓存能力，开启后可免依赖安装，需开启依赖锁定能力。
+
+
+
+### 开启依赖助手
+
+在依赖锁定前，自动更新锁文件以保证其正确性，并应用锁依赖白名单规则。Rapid 依赖安装能力依赖该开关。 
+
+
+
+## 发布通知
+
+已不建议使用，可以使用 应用 - 设置 - 通知设置 设置应用各种操作时的通知范围，或者到 团队空间 - 应用 - 应用订阅进行更灵活的订阅设置。
+
+## SourceMap
+
+(https://o2-img.alistatic.com/i/i09blZ/CUim5FIh4gk2VRypI85B0-b1c00cf187.jpg)
+
+
+开启 Source Map 功能后，构建结果的 .map 文件（如有）会被剔除，如需线上源码调试，请在工程平台中找到对应的发布任务，找到“构建”一栏，若开启了 Source Map 功能，将会在 构建节点 - Sourcemap 一栏中看到文件列表：
+
+(https://o2-img.alistatic.com/i/i09blZ/NeaHpG2ikqIevLpzZCRgV-cd8ac157bf.jpg)
+
+
+### 如何使用 Sourcemap 文件
+
+1、 手动使用内网链接进行调试
+
+到 Chrome 中，添加对应地址即可：
+
+
+
+(https://o2-img.alistatic.com/i/i09blZ/CquE1px05LSBWyVVc7fVn-94ea816763.png)
+
+
+2、 使用山海关进行自动映射
+
+山海关对从工程平台发布的项目、模块等做了自动匹配，安装插件后可以一键自动映射
+
+(https://o2-img.alistatic.com/i/i09blZ/U9n23kwsuTHrmxU7KuQGo-d231a117f7.png)
+
+
+山海关文档：[https://yuque.antfin-inc.com/docs/share/bd94089c-bc79-411e-bc52-252b5b2c42a4](https://yuque.antfin-inc.com/docs/share/bd94089c-bc79-411e-bc52-252b5b2c42a4)
+
+测试地址：[https://web.m.taobao.com/app/retail-apps/purchase-field/list](https://web.m.taobao.com/app/retail-apps/purchase-field/list)​
+
+
+
+发布卡口
+
+研发平台目前已经不允许 source map 文件上传到 CDN，如果应用遇到卡口，请按如下方式解决：
+
+
+
+1. 如果是生成的 .map 文件，直接打开开关，系统会自动删除文件并上传内网
+1. 如果是将 source map 内容集成在 js、css 文件，请查看仓库本身的构建脚本，将 source map 内容构建成单独的文件，并按 1 开启
+1. 如果没有 sourcemap 文件的需求，可以修改仓库的构建脚本，关闭 sourcemap 生成
+
+
+Q & A
+
+1. 开启该功能后，会自动生成 source map 文件么？
+	1. 不会，该功能是提供 sourcmap 文件的内网上传功能；
+1. sourcemap 文件是怎么生成的
+	1. 是仓库的构建工具自行生成，与发布系统无关。请详细查看仓库使用的框架或者构建脚本，联系框架负责人或者自行 google 熟悉。
+1. 直接使用 webpack 生成 sourcemap 的情况下，我应该用什么配置？
+	1. 建议使用 'source-map' 选项，具体文档见：[Webpack Devtool Documentation: Production](https://webpack.js.org/configuration/devtool/#production)
+	1. 文档中提示的“不要发布 source-map 到生产环境”正是本文描述功能解决的问题哦～既能直接生成生产环境可用的 Sourcemap，同时又保证了源码的安全性。
+
+
+## 发布规则
+
+查看应用命中的发布规则，如果想要修改可以到 团队空间 - 应用 - 应用规则 中进行修改。
+
+(https://o2-img.alistatic.com/i/i09blZ/RX86n2AVR7vBggZDGKr1C-575021734c.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

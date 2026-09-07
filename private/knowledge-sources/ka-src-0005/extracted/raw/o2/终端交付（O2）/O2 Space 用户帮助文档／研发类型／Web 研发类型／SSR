@@ -1,0 +1,84 @@
+结合 DCDN + ER 能力，通过 FaaS 函数进行页面渲染。
+
+## 前置准备
+
+在使用前确认是否有合适的站点，若没有的话需要创建站点并进行域名接入。
+
+### 创建站点
+
+访问：[https://space.o2.alibaba-inc.com/workbench/web/extend/site/new](https://space.o2.alibaba-inc.com/workbench/web/extend/site/new) 进行站点创建。
+
+注意：站点类型选择“Web 一体化站点”。其他字段按需填写。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYRNDk9ZO8j9/img/75b9a4a1-91e9-4fba-b47f-9ac5adc3f6c8.png)
+
+
+### 接入域名
+
+访问创建后的站点控制台页面。通过域名接入来接入域名。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYRNDk9ZO8j9/img/4098db7d-98ac-4bbe-a9d0-c7c480d658a4.png)
+
+
+如站点未关联资源，请选择合适的 OSS 资源。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYRNDk9ZO8j9/img/c4e2d97d-bbc1-4b66-a2fb-ec42403b517c.png)
+
+
+若没有可用资源，则先进行资源申请。
+
+#### 资源申请
+
+访问“团队空间-资源管理-申请资源”来申请 OSS 资源。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYRNDk9ZO8j9/img/dafd3a74-35ea-424a-a99a-476d4cd95d32.png)
+
+
+注意：用途选择“ER 一体化”。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYRNDk9ZO8j9/img/b84187be-0040-4787-b05a-a63e4001d907.png)
+
+
+#### 域名接入
+
+关联资源后，填写接入域名表单，并提交。跟进接入流程，过程中的问题可以参考：[https://aliyuque.antfin.com/gubal/site/domain-apply#SXpjX](https://aliyuque.antfin.com/gubal/site/domain-apply#SXpjX)
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYRNDk9ZO8j9/img/cf7063b5-2ba4-40c0-8806-7882b57e1729.png)
+
+
+接入 CDN 域名后，再接入预发域名以便使用预发环境。
+
+## 应用创建
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYRNDk9ZO8j9/img/0fe551f5-5e9a-4ce3-85d9-225894ae5a1b.png)
+
+
+配置应用函数相关信息。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYRNDk9ZO8j9/img/05a2f094-5719-4a20-a807-b200e9407aff.png)
+
+
+应用创建后可以参考函数研发相关文档进行开发。
+
+
+---
+## 若Web一体化站点无OSS，则需要进行资源申请（BU级共用）
+
+## 资源准备
+
+### step 1
+
+访问 space o2 工作台：[https://space.o2.alibaba-inc.com/workbench](https://space.o2.alibaba-inc.com/workbench)，进入“团队空间-资源管理”。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgTaLE15rGVJ.png)
+
+
+注意：资源是 BU 级别共用的，如果资源列表中已经有“独立 Assets”或ER 一体化的 OSS 资源，则对应OSS的应用类型都可以使用，可以跳过申请。 如Web 一体化SSR资源，选择ER一体化OSS即可。（Assets plus选独立Assets）
+
+### step 2
+
+进入“资源管理-资源申请”，填写申请表单进行资源申请。提交后及时跟进审批进度，审批通过后系统会自动分配 OSS 资源。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/img9kLicDY5bE.png)
+
+

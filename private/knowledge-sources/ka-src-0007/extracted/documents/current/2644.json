@@ -1,0 +1,468 @@
+{
+  "documentId": 2644,
+  "documentName": "魔力建站落地页批量创建接口",
+  "documentType": 2,
+  "description": "<p>备注：该接口当前仅支持基于小游戏组件信息编辑修改的落地页创建</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095727234
+    }
+  ],
+  "apiId": 388,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/page/batch/create",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 9,
+  "bizName": "魔力建站",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/page/batch/create' \\\n--header 'access-token:[REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n\t\"advertiser_id\": 1001,\n\t\"page_infos\": [{\n\t\t\"source_page_id\": \"1001\",\n\t\t\"name\": \"落地页名称\",\n\t\t\"biz_id\": 0,\n\t\t\"component_infos\": [{\n\t\t\t\"id\": \"100101\",\n\t\t\t\"type\": 34,\n\t\t\t\"wechat_game\": {\n\t\t\t\t\"wechat_game_id\": \"1000212\",\n\t\t\t\t\"button_text\": \"按钮文案\",\n\t\t\t\t\"game_name\": \"小游戏名称\",\n\t\t\t\t\"description\": \"小游戏说明\"\n\t\t\t}\n\t\t}]\n\t}]\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"page_ids\": [\"100001\"]\n    },\n    \"request_id\": \"8b1bc09057cd496d90730e2b0e9dbc90\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 24129,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "10001",
+      "description": "广告主id\t",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 24130,
+      "paramName": "page_infos",
+      "paramType": "PageCreateInfoGW[]",
+      "example": "[]",
+      "description": "<p>落地页信息列表，最大支持100个</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 838,
+      "sort": 2,
+      "note": "PageCreateInfo具体介绍见下方",
+      "children": [
+        {
+          "paramId": 24115,
+          "paramName": "source_page_id",
+          "paramType": "String",
+          "example": "1001",
+          "description": "<p>源落地页id, <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://developers.e.kuaishou.com/docs?docType=DSP&amp;documentId=2038\">查询落地页列表接口获取</a></p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "基于源落地页结构创建新落地页",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 24116,
+          "paramName": "name",
+          "paramType": "String",
+          "example": "落地页名称\t",
+          "description": "<p>落地页名称 最多40个字符</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "名称不能重复",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 24117,
+          "paramName": "biz_id",
+          "paramType": "Integer",
+          "example": "0",
+          "description": "落地页类型",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 24118,
+          "paramName": "component_infos",
+          "paramType": "ComponentCreateParam[]",
+          "example": "[]",
+          "description": "<p>组件列表 基于源落地页需要更新的组件信息列表</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 835,
+          "sort": 4,
+          "note": "\tComponentCreateParam具体介绍见下方",
+          "children": [
+            {
+              "paramId": 24107,
+              "paramName": "id",
+              "paramType": "String",
+              "example": "1001",
+              "description": "组件id\t",
+              "required": 1,
+              "checkRule": {
+                "required": 1,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "基于源落地页组件结构创建新的组件",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24108,
+              "paramName": "type",
+              "paramType": "Integer",
+              "example": "34",
+              "description": "<p>组件类型，仅支持type=34小游戏组件</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 1,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24109,
+              "paramName": "wechat_game",
+              "paramType": "WechatGame",
+              "example": "{}",
+              "description": "小游戏信息\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 834,
+              "sort": 3,
+              "note": "当type= 34必须有值",
+              "children": [
+                {
+                  "paramId": 24103,
+                  "paramName": "wechat_game_id",
+                  "paramType": "String",
+                  "example": "10001",
+                  "description": "<p>微信小游戏ID, 查询线索通获取微信小游戏列表接口获取</p>",
+                  "required": 1,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 24104,
+                  "paramName": "button_text",
+                  "paramType": "String",
+                  "example": "按钮文案\t",
+                  "description": "<p><br>按钮文案最多10个字符 当前仅当源落地页列表组件有该值时支持</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 24105,
+                  "paramName": "game_name",
+                  "paramType": "String",
+                  "example": "小游戏名称\t",
+                  "description": "<p>小游戏名称最多10个字符 当前仅当源落地页列表组件有该值时支持</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 24106,
+                  "paramName": "description",
+                  "paramType": "String",
+                  "example": "小游戏说明\t",
+                  "description": "<p>小游戏说明最多14个字符 当前仅当源落地页列表组件有该值时支持</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 4,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 26100,
+          "paramName": "title",
+          "paramType": "String",
+          "example": "落地页标题",
+          "description": "<p>落地页的标题 最多10个字</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "不设置默认为“磁力建站”",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 24131,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "code",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 24132,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "成功",
+      "description": "提示信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 24133,
+      "paramName": "data",
+      "paramType": "PageCreateResp",
+      "example": "{}",
+      "description": "落地页结果信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 837,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 24114,
+          "paramName": "page_ids",
+          "paramType": "String[]",
+          "example": "[]",
+          "description": "落地页ID列表\t",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095727234,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

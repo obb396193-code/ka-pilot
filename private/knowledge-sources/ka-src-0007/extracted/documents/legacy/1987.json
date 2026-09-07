@@ -1,0 +1,58 @@
+{
+  "documentId": 1987,
+  "documentName": "10.1.8获取可用的转化目标",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取可用的转化目标\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/tool/convert/list\n\n请求方式：POST/GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 是否必填 | 说明         | 备注                                        |\n| ------------- | ---- | -------- | ------------ | ------------------------------------------- |\n| advertiser_id | long | 必填     | 广告主 ID    | 在获取 access_token 的时候返回              |\n| type          | int  | 必填     | 转化目标类型 | 1：JS布码 2：Xpath 3：应用-SDK 7：应用-API 12:快归因 17：微信小程序 20：线索-API 22：快手小游戏 |\n| page          | int  |          | 页码         |                                             |\n| page_size     | int  |          | 每页行数     |                                             |\n\n### 返回参数\n\n| 字段                  | 类型   | 说明                   | 备注                                                                    |\n| --------------------- | ------ | ---------------------- | ----------------------------------------------------------------------- |\n| code                  | int    | 返回码                 |                                                                         |\n| message               | string | 返回信息               |                                                                         |\n| data                  | struct | JSON 返回值            |                                                                         |\n| total_count           | long   | 结果总数               |                                                                         |\n| convert_id            | long   | 转化目标 ID            |                                                                         |\n| convert_name          | string | 转化目标名称           |                                                                         |\n| type                  | int    |                        | 1：JS布码 2：Xpath 3：应用-SDK 7：应用-API 12:快归因 17：微信小程序 20：线索-API 22：快手小游戏                           |\n| convert_target        | int    | 转化目标               | 1:表单提交 2:激活                                                       |\n| convert_count         | long   | 转化目标次数           |                                                                         |\n| deep_conversion_type  | int    | 深度转化目标           | 0：无 3：付费 7：次日留存 10：完件 11：授信 13：添加购物车 14：提交订单 |\n| deep_conversion_count | long   | 深度转化目标次数       |                                                                         |\n| update_time           | string | 更新时间               |                                                                         |\n| create_time           | string | 创建时间               |                                                                         |\n| app_id                | long   | 应用 id                | type 为 3、7 时返回                                                     |\n| app_name              | string | 应用名称               | type 为 3、7 时返回                                                     |\n| click_url             | string | 第三方点击按钮监测链接 | type 为 3、7 时返回                                                     |\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1724900235859
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1724899689490
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1724900235859,
+  "creator": "jiazhaochang",
+  "fullContext": null
+}

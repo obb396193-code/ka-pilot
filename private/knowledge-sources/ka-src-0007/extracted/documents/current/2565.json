@@ -1,0 +1,712 @@
+{
+  "documentId": 2565,
+  "documentName": "创建广告计划",
+  "documentType": 2,
+  "description": "<p>【注】创建搜索广告计划。每个广告主账号下最多可允许创建500个计划</p>",
+  "summary": "",
+  "remark": "",
+  "content": "创建广告计划\n/rest/openapi/gw/dsp/campaign/create\n{\n \"advertiser_id\":20007185,\n \"campaign_name\":\"信息类_收集线索销售0\",\n \"ad_type\":1,\n \"type\":5,\n \"day_budget_schedule\":[888000,999000,777000,666000,555000,998000,887000]\n}\n\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"campaign_id\": 25134251\n    },\n    \"request_id\": \"cfede2bc06ab461fb415435fc426a3e1\"\n}\nsmart_material_supply  Integer  <p>智能素材补充开关</p>\nput_status  Integer  <p>投放状态，1=投放中；2=暂停投放</p>\nperiodic_delivery_type  Integer  <p>周期稳投开关</p>\nrange_budget  Long  <p>周期总预算</p>\ncontinue_period_type  Integer  <p>周期稳投续投开关</p>\nperiodic_days  Integer  <p>投放周期</p>\nad_type  Integer  <p>广告计划类型</p>\nauto_adjust  Integer  <p>自动调控开关</p>\nbid_type  Integer  <p>出价类型</p>\ncampaign_name  String  <p>广告计划名称</p>\nday_budget  Long  <p>单日预算金额</p>\nday_budget_schedule  Long[]  <p>分日预算</p>\ntype  Integer  <p>营销目标类型</p>\nadvertiser_id  Long  账号id\nauto_build  Integer  自动基建\nauto_build_name_rule  AutoBuildNameRuleParamForGateway  自动基建命名规则\nunit_name_rule  String  单元命名规则\ncreative_name_rule  String  创意命名规则\ncap_roi_ratio  Double  ROI约束\ncap_bid  Long  Cost Cap的成本约束\nconstraint_cpa  Long  浅层约束目标的成本\nauto_manage  Integer  智能投放开关\nauto_photo_scope  Integer  <p><strong>基建素材选取范围</strong></p>\nphoto_package_info  Long[]  <p>素材包ID</p>\nperiodic_delivery_put_type  Integer  <p><strong>夜间投放标识</strong></p>\ndata  UpdateCampaignData  创编计划、广告组、创意返回id参数\ncampaign_id  Long  广告计划id\ncode  Integer  <p>返回码</p>\nmessage  String  <p>返回信息</p>\n",
+  "url": "",
+  "version": "0.0.7",
+  "versionList": [
+    {
+      "version": "0.0.7",
+      "createTime": 1780896019309
+    },
+    {
+      "version": "0.0.6",
+      "createTime": 1775027516918
+    }
+  ],
+  "apiId": 593,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/campaign/create",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n \"advertiser_id\":20007185,\n \"campaign_name\":\"信息类_收集线索销售0\",\n \"ad_type\":1,\n \"type\":5,\n \"day_budget_schedule\":[888000,999000,777000,666000,555000,998000,887000]\n}\n"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"campaign_id\": 25134251\n    },\n    \"request_id\": \"cfede2bc06ab461fb415435fc426a3e1\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 79493,
+      "paramName": "smart_material_supply",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>智能素材补充开关</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78120,
+      "paramName": "put_status",
+      "paramType": "Integer",
+      "example": "2",
+      "description": "<p>投放状态，1=投放中；2=暂停投放</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "投放状态，1=投放中（默认值）；2=暂停投放。本接口不支持传入除1、2之外的枚举值。不是所有营销目标都支持创建暂停态的投放物料，具体可咨询运营同学或遇到报错后反馈。请注意，当使用了周期稳投功能（periodic_delivery_type=1）时，不支持创建暂停态的物料。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 70762,
+      "paramName": "periodic_delivery_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>周期稳投开关</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "0-关闭，1-开启。不设置默认为关闭。周期稳投功能需要联系产运加白才可使用。周期稳投计划下仅支持广告主创建一个广告组；；DPA动态商品广告不支持",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 70763,
+      "paramName": "range_budget",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>周期总预算</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "单位：厘；仅在计划的periodic_delivery_type=1时生效，同时支持进行修改，只能增高不支持降低。不低于3500元且不超过100000元。不支持不限/统一/分日预算填写。单位元，oCPM下至少≥2000元；MCB≥3500元。如不足则报报错，建议录入30个转化的预算或7000元以上。周期总预算填写后，不支持客户填写 day_budget 和 day_budget_schedule",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 70764,
+      "paramName": "continue_period_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>周期稳投续投开关</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "仅在periodic_delivery_type=1时生效，可修改。1-关闭，2-开启。开启周期稳投条件下，如果不设置默认为开启。；；DPA动态商品广告不支持",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 70765,
+      "paramName": "periodic_days",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>投放周期</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "默认值为7天；加白后支持选择为5天；DPA动态商品广告不支持",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37050,
+      "paramName": "ad_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>广告计划类型</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "0:信息流，1:搜索；不填默认信息流；DPA动态商品广告只支持信息流",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37051,
+      "paramName": "auto_adjust",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>自动调控开关</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "0：关闭，1：开启；DPA动态商品广告不支持",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37052,
+      "paramName": "bid_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>出价类型</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "0:默认1:最大转化（添加后不可修改）；DPA动态商品广告只支持默认，不支持最大转化",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37053,
+      "paramName": "campaign_name",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>广告计划名称</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "长度为 1-100 个字符，同一个账号下面计划名称不能重复",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37054,
+      "paramName": "day_budget",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>单日预算金额</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 11,
+      "note": "单位：厘，指定 0 表示预算不限，默认为 0；不小于 500 元，不超过 100000000 元，仅支持输入数字；修改预算不得低于该计划当日花费的 120% 和修改前预算的较小者，与 day_budget_schedule 不能同时传，不能低于该计划下任一广告组出价。当 bid_type = 1时，day_budget 或者 budget_schedule 二选一必填",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37055,
+      "paramName": "day_budget_schedule",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "<p>分日预算</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 12,
+      "note": "单位：厘，指定 0 表示预算不限，默认为 0；每天不小于 500 元，不超过 100000000 元，仅支持输入数字；修改预算不得低于该计划当日花费的 120% 和修改前预算的较小者，与 day_budget 不能同时传，均不能低于该计划下任一广告组出价。事例：时间周期为周一到周日，样例：\"day_budget_schedule\":[11110000,22220000,0,0,0,0,0]，优先级高于day_budget。当 bid_type = 1时，day_budget 或者 budget_schedule 二选一必填",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37056,
+      "paramName": "type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>营销目标类型</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 13,
+      "note": "2：提升应用安装；3：获取电商下单(2024年5月20日已下线，禁止新建)；4：推广品牌活动；5：收集销售线索；7：提高应用活跃；9：商品库推广（此营销目标下创建的默认为DPA广告）；16：粉丝/直播推广；19：快手小程序/小游戏推广；30：快手号-短剧推广；32：微信小程序/小游戏推广；34: 快手号-小说推广；35：电商下单推广。周期稳投计划仅支持[5、24、35、2、7]；40：DPA动态商品广告-应用拉活\u000b41：DPA动态商品广告-应用下载",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37057,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "账号id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 14,
+      "note": "账号ID，在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37058,
+      "paramName": "auto_build",
+      "paramType": "Integer",
+      "example": "",
+      "description": "自动基建",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 15,
+      "note": "0：关闭，1：开启；DPA动态商品广告不支持",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37059,
+      "paramName": "auto_build_name_rule",
+      "paramType": "AutoBuildNameRuleParamForGateway",
+      "example": "",
+      "description": "自动基建命名规则",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2170,
+      "sort": 16,
+      "note": "仅在auto_build为1时，此字段生效，开启自动基建时必填命名规则，组、创意命名规则均必须同时包含[日期]和[序号]宏变量【注：白名单功能】",
+      "children": [
+        {
+          "paramId": 37048,
+          "paramName": "unit_name_rule",
+          "paramType": "String",
+          "example": "",
+          "description": "单元命名规则",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "必须同时包含[日期]和[序号]宏变量，eg: 系统自动搭建_[日期][序号]",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 37049,
+          "paramName": "creative_name_rule",
+          "paramType": "String",
+          "example": "",
+          "description": "创意命名规则",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "必须同时包含[日期]和[序号]宏变量，eg: 系统自动搭建_[日期][序号]",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45536,
+      "paramName": "cap_roi_ratio",
+      "paramType": "Double",
+      "example": "",
+      "description": "ROI约束",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 17,
+      "note": "默认0表示“不限”，新建计划时仅支持“不限”，当计划下存在广告组选择ROI出价，编辑时支持修为该约束",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45537,
+      "paramName": "cap_bid",
+      "paramType": "Long",
+      "example": "",
+      "description": "Cost Cap的成本约束",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 18,
+      "note": "默认0表示“不限”，新建计划时仅支持“不限”，当计划下存在广告组选择非ROI出价，编辑时支持修为该约束",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45538,
+      "paramName": "constraint_cpa",
+      "paramType": "Long",
+      "example": "",
+      "description": "浅层约束目标的成本",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 19,
+      "note": "默认0表示“不限”，新建计划时仅支持“不限”，当计划下存在广告组选择自然日次日留存，编辑时支持修为该约束",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 49526,
+      "paramName": "auto_manage",
+      "paramType": "Integer",
+      "example": "-",
+      "description": "智能投放开关",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 20,
+      "note": "0：关闭，1：开启 【注：此字段设置为开启时， 需要开启auto_adjust和auto_build 字段】 。周期稳投开启的情况下，需要开启全自动auto_manage=1；DPA动态商品广告不支持",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 66851,
+      "paramName": "auto_photo_scope",
+      "paramType": "Integer",
+      "example": "-",
+      "description": "<p><strong>基建素材选取范围</strong></p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 21,
+      "note": "0：系统优选，系统根据历史数据挑选效果最优视频，1-素材包，系统将挑选您配置的素材包内的视频",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 66852,
+      "paramName": "photo_package_info",
+      "paramType": "Long[]",
+      "example": "-",
+      "description": "<p>素材包ID</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 22,
+      "note": "素材包ID，当auto_photo_scope=1时必填",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80818,
+      "paramName": "periodic_delivery_put_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p><strong>夜间投放标识</strong></p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 23,
+      "note": "在periodic_delivery_type=1开启周期稳投时，传 2-夜间稳投，不传表示常规稳投",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 37062,
+      "paramName": "data",
+      "paramType": "UpdateCampaignData",
+      "example": "",
+      "description": "创编计划、广告组、创意返回id参数",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2171,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 37060,
+          "paramName": "campaign_id",
+          "paramType": "Long",
+          "example": "1",
+          "description": "广告计划id",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37063,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 37064,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1780896019309,
+  "creator": "guojingwei05",
+  "fullContext": null
+}

@@ -1,0 +1,42 @@
+{
+  "documentId": 2327,
+  "documentName": "更新/删除/恢复应用分包",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】更新/恢复/删除应用分包\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subpkg/mod](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subpkg/mod)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主id |\n| package_id | Long[] | | 必填 | 应用分包id | 支持批量 |\n| put_status | Integer |  | 必填 | 操作分包的类型： 0-更新分包， 1-恢复分包， 2-删除分包  |当分包状态处于构建中或更新中时，不可对分包进行操作。更新分包指将分包升级到绑定最新发布版本的母包；删除分包将不能使用该分包创建广告；恢复分包可重新使用分包物料创建广告。 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 返回码 |  |\n|message | String |  | 返回详情 |  |\n| data | Object |  | JSON 返回值 |  |\n| &#8195;result | Boolean |  | 更新/删除/恢复分包是否成功 | true-成功，false-失败 |\n\n### 请求样例\n\n```js\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subpkg/mod' \\\n--header 'Content-Type: application/json' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\":900015364,\n    \"package_id\": [100009135],\n    \"put_status\":2    //0-更新 1-恢复 2-删除\n}'\n\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"result\": true\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMmAgICg4ZmOrAEYwwYglPLltvQwKMC6pvgI\"\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681107523500
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681107523500,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

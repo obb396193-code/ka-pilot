@@ -1,0 +1,16 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/660288f4a8e10e056d8026c9/](https://links.alibaba-inc.com/support/conversation/660288f4a8e10e056d8026c9/)
+
+作者：月侠
+
+评审人：上坡
+
+
+
+1、web 研发的应用，线上发布 页面部署失败后，应该点击 “查看结果” -> “重试”，从当前节点重试
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1712567595608-ec48b999-4223-4318-9a5f-cead9b0a8e50.png) 
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1712567911770-cef0184c-0b81-4e67-8df2-483c7dbe4c8e.png) 
+
+2、若此时误点击了“立即发布”，会出现 CDN 检查失败的情况，此时页面已发布，但代码还未合入主干，需要新建迭代，使用原来的变更重新发布线上，发布完成后代码即可合入主干
+

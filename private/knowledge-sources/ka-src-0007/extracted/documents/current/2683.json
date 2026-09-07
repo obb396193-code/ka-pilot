@@ -1,0 +1,1844 @@
+{
+  "documentId": 2683,
+  "documentName": "更新定向模板",
+  "documentType": 2,
+  "description": "<p>注：更新接口需传全部参数进行更新，字段不传或者为null，视为清空该字段。</p><p>1、定向升级后，部分模板需要升级后才可进行更新，可通过接口 <code>/rest/openapi/gw/dsp/target/template/upgrade_list</code> 查询所有需要升级的模板，查询完成之后，可通过接口 <code>/rest/openapi/gw/dsp/target/template/upgrade</code>进行升级之后，可调用本接口对模板进行更新。</p><p>2、定向升级后，模板更新不再自动同步到模板关联的广告组中。需要调用 <code>/rest/openapi/gw/dsp/target/template/unit_sync</code> 接口主动将模板内容进行广告组的同步。</p>",
+  "summary": "",
+  "remark": "",
+  "content": "更新定向模板\n/rest/openapi/gw/dsp/target/template/update\n{\n    \"advertiser_id\": 123123,\n    \"template_name\": \"这是一个模板\",\n  \t\"template_id\": 123123,\n    \"target\": {\n        \"celebrity\": {\n            \"fans_stars\": [\n                {\n                    \"name\": \"生活-亚洲生活\",\n                    \"id\": \"26-228\",\n                    \"category\": null,\n                    \"type\": 1\n                },\n                {\n                    \"name\": \"生活-欧洲生活\",\n                    \"id\": \"26-118\",\n                    \"category\": null,\n                    \"type\": 1\n                }\n            ],\n            \"behaviors\": [\n                1\n            ]\n        },\n        \"gender\": 2,\n        \"media\": [],\n        \"network\": 0,\n        \"device_price\": [\n            5,\n            6,\n            7\n        ],\n        \"media_source_type\": 0,\n        \"user_type\": 0,\n        \"exclude_population\": [\n            950011889\n        ],\n        \"device_brand_ids\": [],\n        \"district_ids\": null,\n        \"ages_range\": [\n            31,\n            41,\n            50\n        ],\n        \"android_osv\": 3,\n        \"disable_installed_app_switch\": 0,\n        \"behavior_type\": 1,\n        \"filter_converted_level\": 0,\n        \"filter_time_range\": 0,\n        \"platform_os\": 1,\n        \"population\": [\n            950012677\n        ],\n        \"behavior_interest\": {\n            \"interest\": {\n                \"strength_type\": 1,\n                \"label\": [\n                    \"1-101\",\n                    \"1-103\",\n                    \"1-104\"\n                ],\n                \"keyword\": []\n            },\n            \"behavior\": {\n                \"strength_type\": 1,\n                \"time_type\": 4,\n                \"label\": [\n                    \"1-101\"\n                ],\n                \"keyword\": [],\n                \"scene_type\": [\n                    1,\n                    2,\n                    3,\n                    4\n                ]\n            }\n        },\n        \"seed_population\": null,\n        \"ios_osv\": null,\n        \"app_interest_ids\": [],\n        \"paid_audience\": [],\n        \"intelli_extend_option\": 0,\n        \"region\": [\n            110101\n        ],\n        \"exclude_media\": []\n    }\n}\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"template_id\": 2959088\n    }\n}\nadvertiser_id  Long  <p>广告主id</p>\ntarget  MapiTargetInfo536Snake  <p>定向信息</p>\ndistance_show  DistanceShowSnake[]  <p>新商圈</p>\naddress  String  <p>address</p>\nlng  String  <p>lng</p>\nlat  String  <p>lat</p>\nradius  Long  <p>radius</p>\nlocation_name  String  <p>location_name</p>\npoi_id  String  <p>poi_id</p>\nandroid_osv  Integer  <p>Android 版本</p>\napp_ids  String[]  <p>APP 行为-按 APP 名称</p>\napp_interest_ids  String[]  <p><br>APP 行为-按分类</p>\napp_names  String[]  请补充描述详情\nbehavior_interest  BehaviorInterest382Snake  <p>行为兴趣定向</p>\nbehavior  Behavior822Snake  <p><br>行为定向</p>\nkeyword  Keyword[]  <p><br>行为定向关键词</p>\nid  Long  关键词 id\nname  String  关键词名称\nlabel  String[]  <p>行为定向 类目词</p>\nscene_type  String[]  <p>在多少天内发生行为的用户</p>\nstrength_type  Integer  <p><br>行为强度</p>\ntime_type  Integer  <p>在多少天内发生行为的用户</p>\ninterest  Interest994Snake  <p><br>兴趣定向</p>\nkeyword  Keyword[]  <p>行为定向关键词</p>\nid  Long  关键词 id\nname  String  关键词名称\nlabel  String[]  <p><br>兴趣定向类目词</p>\nstrength_type  Integer  <p>兴趣标签强度</p>\nbehavior_type  Integer  <p>行为兴趣类型</p>\nbusiness_interest  String[]  请补充描述详情\ncelebrity  MapiCelebrity147Snake  <p>快手网红</p>\nbehaviors  String[]  <p>行为类型</p>\nfans_stars  CelebrityFansStar294Snake[]  <p>网红内容</p>\ncategory  String[]  <p>-</p>\nid  String  <p>-</p>\nname  String  <p>-</p>\ntype  Integer  <p>-</p>\ndevice_brand_ids  String[]  请补充描述详情\ndevice_price  String[]  <p><br>设备价格，</p>\ndisable_installed_app_switch  Integer  <p><br>过滤已安装人群维度</p>\ndistrict_ids  String[]  <p>商圈定向</p>\nexclude_media  String[]  <p><br>媒体定向排除包</p>\nexclude_population  String[]  <p>排除人群包</p>\nfilter_converted_level  Integer  <p><br>过滤已转化人群纬度</p>\nfilter_time_range  Integer  <p>过滤已转化人群时间范围</p>\ngender  Integer  <p><br>性别</p>\nintelli_extend_option  Integer  <p><br>智能定向开关</p>\nios_osv  Integer  <p>iOS 版本</p>\nmedia  String[]  <p>媒体定向包</p>\nmedia_source_type  Integer  <p>媒体包来源</p>\nnetwork  Integer  <p>网络环境</p>\npaid_audience  String[]  <p>付费人群包</p>\nplatform_os  Integer  <p><br>定向的 os 版本</p>\npopulation  String[]  <p>定向人群包</p>\nregion  String[]  <p>地域</p>\nseed_population  String[]  <p><br>种子人群包</p>\ntarget_source  Integer  请补充描述详情\nuser_type  Integer  <p>用户类型</p>\nip_type  Integer  地域IP\nauto_population  Integer  智能人群包\nbehavior_interest_param_show  BehaviorInterestParamShowSnake  <p><br>行为兴趣（升级版）</p>\ncategory_ids  String[]  <p>类目ID</p>\nkeyword_ids  Integer[]  <p>关键词ID</p>\ncustom_behavior  Integer  <p>自定义行为意向</p>\nscene_types  Integer[]  <p>场景类型</p>\ntime_type  Integer  <p>时间范围</p>\nfilter_converted_wechat_id  String[]  <p>过滤已转化-企微号ID</p>\noperators  Integer[]  <p>运营商</p>\nharmony_osv  Integer  <p>1： 不限（默认1.x+) ， 4 ：1.x - 4.x ， 5: 5.x +</p>\nage_v2  IntegerRange572  <p>自定义年龄段</p>\nmax  Integer  <p>年龄最大值</p>\nmin  Integer  <p><br>年龄最小值</p>\nages_range_v2  String[]  <p>固定年龄段</p>\nshared_user  Integer  <p>过滤共用手机用户</p>\ntemplate_id  Long  <p><br>模板ID</p>\ntemplate_name  String  模板名称\ndata  TemplateIdRespSnake  <p><br>json返回信息</p>\ntemplate_id  Long  模板ID\ncode  Integer  <p><br>返回码</p>\nmessage  String  <p><br>错误详情</p>\n",
+  "url": "",
+  "version": "0.0.3",
+  "versionList": [
+    {
+      "version": "0.0.3",
+      "createTime": 1768361308537
+    },
+    {
+      "version": "0.0.2",
+      "createTime": 1724399509994
+    }
+  ],
+  "apiId": 615,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/update",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 123123,\n    \"template_name\": \"这是一个模板\",\n  \t\"template_id\": 123123,\n    \"target\": {\n        \"celebrity\": {\n            \"fans_stars\": [\n                {\n                    \"name\": \"生活-亚洲生活\",\n                    \"id\": \"26-228\",\n                    \"category\": null,\n                    \"type\": 1\n                },\n                {\n                    \"name\": \"生活-欧洲生活\",\n                    \"id\": \"26-118\",\n                    \"category\": null,\n                    \"type\": 1\n                }\n            ],\n            \"behaviors\": [\n                1\n            ]\n        },\n        \"gender\": 2,\n        \"media\": [],\n        \"network\": 0,\n        \"device_price\": [\n            5,\n            6,\n            7\n        ],\n        \"media_source_type\": 0,\n        \"user_type\": 0,\n        \"exclude_population\": [\n            950011889\n        ],\n        \"device_brand_ids\": [],\n        \"district_ids\": null,\n        \"ages_range\": [\n            31,\n            41,\n            50\n        ],\n        \"android_osv\": 3,\n        \"disable_installed_app_switch\": 0,\n        \"behavior_type\": 1,\n        \"filter_converted_level\": 0,\n        \"filter_time_range\": 0,\n        \"platform_os\": 1,\n        \"population\": [\n            950012677\n        ],\n        \"behavior_interest\": {\n            \"interest\": {\n                \"strength_type\": 1,\n                \"label\": [\n                    \"1-101\",\n                    \"1-103\",\n                    \"1-104\"\n                ],\n                \"keyword\": []\n            },\n            \"behavior\": {\n                \"strength_type\": 1,\n                \"time_type\": 4,\n                \"label\": [\n                    \"1-101\"\n                ],\n                \"keyword\": [],\n                \"scene_type\": [\n                    1,\n                    2,\n                    3,\n                    4\n                ]\n            }\n        },\n        \"seed_population\": null,\n        \"ios_osv\": null,\n        \"app_interest_ids\": [],\n        \"paid_audience\": [],\n        \"intelli_extend_option\": 0,\n        \"region\": [\n            110101\n        ],\n        \"exclude_media\": []\n    }\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"template_id\": 2959088\n    }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63116,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 accessToken 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38879,
+      "paramName": "target",
+      "paramType": "MapiTargetInfo536Snake",
+      "example": "",
+      "description": "<p>定向信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2285,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 63631,
+          "paramName": "distance_show",
+          "paramType": "DistanceShowSnake[]",
+          "example": "",
+          "description": "<p>新商圈</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3585,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 63622,
+              "paramName": "address",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>address</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 63623,
+              "paramName": "lng",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>lng</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 63624,
+              "paramName": "lat",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>lat</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 63625,
+              "paramName": "radius",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>radius</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 63626,
+              "paramName": "location_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>location_name</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 63627,
+              "paramName": "poi_id",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>poi_id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38850,
+          "paramName": "android_osv",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>Android 版本</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "3：不限，4：4.x+，5：5.x+，6：6.x+，7：7.x+，8：8.x+，9：9.x+，10：10.x+；",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38851,
+          "paramName": "app_ids",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>APP 行为-按 APP 名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "可通过 /rest/openapi/v1/tool/app/search 查询 1、APP 行为定向，id 不能重复且必须准确； 2、只有「提升应用安装」的计划且 Android 应用支持此定向；其他计划填写无效； 3、iOS 不支持行为定向，填写无效；app_ids 和 app_interest_ids 不能同时选择",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38852,
+          "paramName": "app_interest_ids",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p><br>APP 行为-按分类</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "\tid 不能重复且必须准确，具体 id 可通过下方标签接口获取；仅包含安卓数据，若操作系统定向 IOS 则无效；不能同时选择 app_ids（新标签体系字段，替换 app_interest，与 app_interest 同时传递，app_interest 字段失效）",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38853,
+          "paramName": "app_names",
+          "paramType": "String[]",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38854,
+          "paramName": "behavior_interest",
+          "paramType": "BehaviorInterest382Snake",
+          "example": "",
+          "description": "<p>行为兴趣定向</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2286,
+          "sort": 6,
+          "note": "",
+          "children": [
+            {
+              "paramId": 38840,
+              "paramName": "behavior",
+              "paramType": "Behavior822Snake",
+              "example": "",
+              "description": "<p><br>行为定向</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 2287,
+              "sort": 1,
+              "note": "\tbehavior 与 interest 同时不传，则清空行为兴趣定向",
+              "children": [
+                {
+                  "paramId": 38832,
+                  "paramName": "keyword",
+                  "paramType": "Keyword[]",
+                  "example": "",
+                  "description": "<p><br>行为定向关键词</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 2134,
+                  "sort": 1,
+                  "note": "根据/rest/openapi/v1/tool/keyword/query 接口获取",
+                  "children": [
+                    {
+                      "paramId": 36561,
+                      "paramName": "id",
+                      "paramType": "Long",
+                      "example": "",
+                      "description": "关键词 id",
+                      "required": 1,
+                      "checkRule": {
+                        "required": null,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 1,
+                      "note": "id 与 name 需互相匹配",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 36562,
+                      "paramName": "name",
+                      "paramType": "String",
+                      "example": "",
+                      "description": "关键词名称",
+                      "required": 1,
+                      "checkRule": {
+                        "required": null,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 2,
+                      "note": "id 与 name 需互相匹配",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    }
+                  ],
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 38833,
+                  "paramName": "label",
+                  "paramType": "String[]",
+                  "example": "",
+                  "description": "<p>行为定向 类目词</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "根据/rest/openapi/v1/tool/label/behavior_interest 接口获取。将行为类目 id 从最高层类目 id 开始，以“-”连接起来，假如有一个类目 id 为 80202，父类目 id 为 802，最高层类目 id 为 8，则此时应该写\"8-802-80202\"；如果想全选最高层类目\"8\"底下的所有子类目，填\"8\"",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 38834,
+                  "paramName": "scene_type",
+                  "paramType": "String[]",
+                  "example": "",
+                  "description": "<p>在多少天内发生行为的用户</p>",
+                  "required": 1,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "0:7 天 1：15 天 2：30 天 3：90 天 4：180 天",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 38835,
+                  "paramName": "strength_type",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "<p><br>行为强度</p>",
+                  "required": 1,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 4,
+                  "note": "0：不限 1：高强度",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 38836,
+                  "paramName": "time_type",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "<p>在多少天内发生行为的用户</p>",
+                  "required": 1,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 5,
+                  "note": "0:7 天 1：15 天 2：30 天 3：90 天 4：180 天",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38841,
+              "paramName": "interest",
+              "paramType": "Interest994Snake",
+              "example": "",
+              "description": "<p><br>兴趣定向</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 2288,
+              "sort": 2,
+              "note": "\tbehavior 与 interest 同时不传，则清空行为兴趣定向",
+              "children": [
+                {
+                  "paramId": 38837,
+                  "paramName": "keyword",
+                  "paramType": "Keyword[]",
+                  "example": "",
+                  "description": "<p>行为定向关键词</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 2134,
+                  "sort": 1,
+                  "note": "\t根据/rest/openapi/v1/tool/keyword/query 接口获取",
+                  "children": [
+                    {
+                      "paramId": 36561,
+                      "paramName": "id",
+                      "paramType": "Long",
+                      "example": "",
+                      "description": "关键词 id",
+                      "required": 1,
+                      "checkRule": {
+                        "required": null,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 1,
+                      "note": "id 与 name 需互相匹配",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 36562,
+                      "paramName": "name",
+                      "paramType": "String",
+                      "example": "",
+                      "description": "关键词名称",
+                      "required": 1,
+                      "checkRule": {
+                        "required": null,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 2,
+                      "note": "id 与 name 需互相匹配",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    }
+                  ],
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 38838,
+                  "paramName": "label",
+                  "paramType": "String[]",
+                  "example": "",
+                  "description": "<p><br>兴趣定向类目词</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "根据/rest/openapi/v1/tool/label/behavior_interest 接口获取。将兴趣类目 id 从最高层类目 id 开始，以“-”连接起来，假如有一个类目 id 为 80202，父类目 id 为 802，最高层类目 id 为 8，则此时应该写\"8-802-80202\"；如果想全选最高层类目\"8\"底下的所有子类目，填\"8\"",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 38839,
+                  "paramName": "strength_type",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "<p>兴趣标签强度</p>",
+                  "required": 1,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "0：不限 1：高强度",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38855,
+          "paramName": "behavior_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>行为兴趣类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "0：默认；1：自定义行为意向；2：行为意向系统优选",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38856,
+          "paramName": "business_interest",
+          "paramType": "String[]",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38857,
+          "paramName": "celebrity",
+          "paramType": "MapiCelebrity147Snake",
+          "example": "",
+          "description": "<p>快手网红</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2289,
+          "sort": 9,
+          "note": "behaviors、fans_star两个字段必填充",
+          "children": [
+            {
+              "paramId": 38846,
+              "paramName": "behaviors",
+              "paramType": "String[]",
+              "example": "",
+              "description": "<p>行为类型</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "该字段为平台对应快手网红功能中的行为类型，可多选，但不可不选，不选会导致快手网红定向失效，定义如下 0:关注、1:视频互动、2:直播互动",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38847,
+              "paramName": "fans_stars",
+              "paramType": "CelebrityFansStar294Snake[]",
+              "example": "",
+              "description": "<p>网红内容</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 2290,
+              "sort": 2,
+              "note": "该字段包括平台对应快手网红功能中的网红分类和快手网红两项，数据保证录入顺序，可从【快手网红-网红分类】和【快手网红-搜索快手网红】接口获取对应数据",
+              "children": [
+                {
+                  "paramId": 38842,
+                  "paramName": "category",
+                  "paramType": "String[]",
+                  "example": "",
+                  "description": "<p>-</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "\t当是快手网红，即type=2时，该字段传值有效，对应当前快手网红的分类，格式为first_label_id,second_label_id，如果second_label_id不存在，则只传入first_label_id，如传入32, 241表示当前快手网红属于影视-影视分类二级网红分类",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 38843,
+                  "paramName": "id",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "<p>-</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "如使用该功能则必填此项，该字段有两种含义 1、当是网红分类，即type=1时，该字段传入对应网红分类对应的父ID与当前ID的拼接字符串，如传入\"33-177\"表示一级网红分类\"游戏\"下的二级网红分类\"沙盒游戏\"，如选中的是一级网红分类，则直接传入当前ID如\"33\" 2、当是快手网红，即type=2时，该字段传入对应快手网红的author_id，如传入\"1151465119\"表示快手网红小脑斧来自N次元",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 38844,
+                  "paramName": "name",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "<p>-</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "如使用该功能则必填此项，该字段有两种含义 1、当是网红分类，即type=1时，该字段传入对应网红分类对应的父name与当前name的拼接字符串，如传入\"游戏-沙盒游戏\"表示一级网红分类\"游戏\"下的二级网红分类\"沙盒游戏\"，如选中的是一级网红分类，则直接传入当前ID如\"游戏\"，保证传入的值与传入id对应网红标签name（拼接）一致 2、当是快手网红，即type=2时，该字段传入对应快手网红的kwai_id，如传入\"小脑斧来自N次元\"表示快手网红小脑斧来自N次元，保证传入的值与传入id对应的快手网红的kwai_id保持一致",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 38845,
+                  "paramName": "type",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "<p>-</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 4,
+                  "note": "如使用该功能则必填此项，该字段为平台对应快手网红功能中的网红分类和快手网红两项，可从【快手网红-网红分类】和【快手网红-搜索快手网红】接口获取对应数据 1:网红分类、2:快手网红",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38858,
+          "paramName": "device_brand_ids",
+          "paramType": "String[]",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38859,
+          "paramName": "device_price",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p><br>设备价格，</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "1：1,500 元以下（近期下线）， 新增：11：1000以下，12：1001~1500，请直接使用新枚举值； 2：1,501~2,000； 3：2,001~2,500；4：2,501~3,000；5、3,001~3,500； 6：3,501~4,000；7：4,001~4,500； 8：4,501~5,000；9：5,001~5,500； 10：5,500 元以上；传值为 [] 表示不限；",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38860,
+          "paramName": "disable_installed_app_switch",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p><br>过滤已安装人群维度</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "白名单可用，0：过滤（默认），1：不限",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38861,
+          "paramName": "district_ids",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>商圈定向</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 13,
+          "note": "与 region 字段不能同时传、白名单控制，最多选 100 个。 可以通过/rest/openapi/v1/region/district/list 接口获取商圈信息",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38862,
+          "paramName": "exclude_media",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p><br>媒体定向排除包</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 14,
+          "note": "media 和 exclude_media 只可选其一，若选择使用排除行业优质流量包（media_source_type = 1），此处单选：1 - 超休闲游戏；2 - 重度游戏；4 - 直营电商；5 - 平台电商；若选择使用广告主自定义媒体包（media_source_type = 2），此处多选，填写媒体包 id；【仅联盟广告位生效】",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38863,
+          "paramName": "exclude_population",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>排除人群包</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 15,
+          "note": "1、排除人群包，人群包 id 不能重复且必须准确；人群包状态必须是已推送状态 2、如果同时传了 population 和 exclude_population，则表示同时定向排除； 3、population 和 exclude_population 这两个字段不能包含交集的 id",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38864,
+          "paramName": "filter_converted_level",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p><br>过滤已转化人群纬度</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 16,
+          "note": "0：不限 1：广告组 2：广告计划 3：本账户 4：公司主体 5：APP 6:运营自定义产品名 7:企微号 ",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38865,
+          "paramName": "filter_time_range",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>过滤已转化人群时间范围</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 17,
+          "note": "0：30天（默认）；1：60天；2：90天；",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38866,
+          "paramName": "gender",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p><br>性别</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 18,
+          "note": "1：女性, 2：男性，0 表示不限",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38867,
+          "paramName": "intelli_extend_option",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p><br>智能定向开关</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 19,
+          "note": "0：表示自定义定向（默认）；1：智能定向；2：智能定向Pro（白名单可用）；和auto_population字段互斥，只能有一个字段开启",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38868,
+          "paramName": "ios_osv",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>iOS 版本</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 20,
+          "note": "6：不限，7：7.x+，8：8.x+，9：9.x+，10：10.x+；11：11.x+；12：12.x+；13：13.x+；14：14.x+；15：15.x+；16：16.x+；",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38869,
+          "paramName": "media",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>媒体定向包</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 21,
+          "note": "若选择使用定向行业优质流量包（media_source_type = 1），此处单选：1 - 超休闲游戏；2 - 重度游戏；4 - 直营电商；5 - 平台电商；若选择使用广告主自定义媒体包（media_source_type = 2），此处多选，填写媒体包 id【仅联盟广告位生效】",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38870,
+          "paramName": "media_source_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>媒体包来源</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 22,
+          "note": "默认为 0，0-不限，1-行业优质流量包，2-广告主自定义",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38871,
+          "paramName": "network",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>网络环境</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 23,
+          "note": "1：WI-FI，2：移动网络，0：表示不限",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38872,
+          "paramName": "paid_audience",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>付费人群包</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 24,
+          "note": "可通过/rest/openapi/v1//dmp/population/list 查询 1、付费人群包，人群包 id 不能重复且必须准确 2、人群包状态必须是已推送状态，与定向、排除人群包互斥",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38873,
+          "paramName": "platform_os",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p><br>定向的 os 版本</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 25,
+          "note": "应用安装类计划以 app_id 中的 platform_os 为准 1：Android，2：iOS，0 表示不限，3：Android和IOS（营销目标类型为收集营销线索时加白可用，此时 android_osv 和 ios_osv必填） 4：鸿蒙；",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38874,
+          "paramName": "population",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>定向人群包</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 26,
+          "note": "可通过/rest/openapi/v1//dmp/population/list 查询 1、定向人群包，人群包 id 不能重复且必须准确 2、人群包状态必须是已推送状态",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38875,
+          "paramName": "region",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>地域</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 27,
+          "note": "\t传值为 [] 表示不限，传递上一级 id 时，children id 可以不传，不允许同时传 parent id 和 children id， 地域信息可通过 /region/list 接口获取",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38876,
+          "paramName": "seed_population",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p><br>种子人群包</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 28,
+          "note": "当账户开通种子人群包功能后方可使用此功能。该定向仅支持快手站内广告位，不支持联盟广告位。",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38877,
+          "paramName": "target_source",
+          "paramType": "Integer",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 29,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38878,
+          "paramName": "user_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>用户类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 30,
+          "note": "0：实时 1：常驻 2：不限",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 43523,
+          "paramName": "ip_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "地域IP",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 31,
+          "note": "白名单可用，0-默认IP、1-广协IP",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 45962,
+          "paramName": "auto_population",
+          "paramType": "Integer",
+          "example": "",
+          "description": "智能人群包",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 32,
+          "note": "白名单可用，0：关闭（默认），1：开启；和 intelli_extend_option 字段互斥，只能有一个字段开启",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61187,
+          "paramName": "behavior_interest_param_show",
+          "paramType": "BehaviorInterestParamShowSnake",
+          "example": "",
+          "description": "<p><br>行为兴趣（升级版）</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3422,
+          "sort": 33,
+          "note": "白名单可用，白名单后behavior_interest不可使用，仅在behavior_type=1时生效；清空时，需要将结构体内的各个字段设置为空列表或者0进行清空",
+          "children": [
+            {
+              "paramId": 61167,
+              "paramName": "category_ids",
+              "paramType": "String[]",
+              "example": "",
+              "description": "<p>类目ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "根据/rest/openapi/gw/dsp/target/option/behavior_interest 接口获取。将行为类目 id 从最高层类目 id 开始，以“-”连接起来，假如有一个类目 id 为 80202，父类目 id 为 802，最高层类目 id 为 8，则此时应该写\"8-802-80202\"；如果想全选最高层类目\"8\"底下的所有子类目，填\"8\"",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61168,
+              "paramName": "keyword_ids",
+              "paramType": "Integer[]",
+              "example": "",
+              "description": "<p>关键词ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "根据/rest/openapi/v1/tool/keyword/query 接口获取",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61169,
+              "paramName": "custom_behavior",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>自定义行为意向</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "0：关闭，1：开启",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61170,
+              "paramName": "scene_types",
+              "paramType": "Integer[]",
+              "example": "",
+              "description": "<p>场景类型</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "1：视频；2：APP；4：广告；custom_behaivor为1时必填，不能为空列表。",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61171,
+              "paramName": "time_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>时间范围</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "\t0:7 天；1：15 天；2：30 天；3：90 天；4：180 天；5：60天；custom_behaivor为1时必填，不能null",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64216,
+          "paramName": "filter_converted_wechat_id",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>过滤已转化-企微号ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 34,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 67468,
+          "paramName": "operators",
+          "paramType": "Integer[]",
+          "example": "",
+          "description": "<p>运营商</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 35,
+          "note": "白名单可用，1: 中国移动,2: 中国电信,3: 中国联通,格式为一个list数组\"[1,2,3]\"，\"[]\"空数组代表不限",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "ADD"
+        },
+        {
+          "paramId": 78230,
+          "paramName": "harmony_osv",
+          "paramType": "Integer",
+          "example": "-",
+          "description": "<p>1： 不限（默认1.x+) ， 4 ：1.x - 4.x ， 5: 5.x +</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 36,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 78885,
+          "paramName": "age_v2",
+          "paramType": "IntegerRange572",
+          "example": "-",
+          "description": "<p>自定义年龄段</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2278,
+          "sort": 37,
+          "note": "不传值表示不限 ; 年龄区间min最小为 18 岁，需要满足 max-min>=5且 18<=min<=75, 若71<=min<=75, 则max需传入100；年龄区间max最大为 100 岁；与 ages_range_v2 不能同时传。",
+          "children": [
+            {
+              "paramId": 38773,
+              "paramName": "max",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>年龄最大值</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38774,
+              "paramName": "min",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p><br>年龄最小值</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 78886,
+          "paramName": "ages_range_v2",
+          "paramType": "String[]",
+          "example": "-",
+          "description": "<p>固定年龄段</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 38,
+          "note": "与 age_v2 不能同时传；【18：表示 18-23 岁】；【24：表示 24-30 岁】；【31：表示 31-35 岁】；【36：表示 36-40 岁】；【41：表示 41-45 岁】  【46：表示 46-49 岁】  【50：表示 50-54 岁】  【55：表示 55-59 岁】  【60：表示 60-64 岁】  【65：表示 65-69 岁】  【70：表示 70-74 岁】  【75：表示 75-100 岁】",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 79026,
+          "paramName": "shared_user",
+          "paramType": "Integer",
+          "example": "-",
+          "description": "<p>过滤共用手机用户</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 39,
+          "note": "过滤共用手机用户 0-默认 1-过滤",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38880,
+      "paramName": "template_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p><br>模板ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38881,
+      "paramName": "template_name",
+      "paramType": "String",
+      "example": "",
+      "description": "模板名称",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 38883,
+      "paramName": "data",
+      "paramType": "TemplateIdRespSnake",
+      "example": "",
+      "description": "<p><br>json返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2291,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 38882,
+          "paramName": "template_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "模板ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38884,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p><br>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38885,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p><br>错误详情</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1768361308537,
+  "creator": "liumengyun",
+  "fullContext": null
+}

@@ -1,0 +1,42 @@
+{
+  "documentId": 2304,
+  "documentName": "工具-投前预估-1-创建投前预估任务",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 创建投前预估任务\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pre_put/predication_task/create](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pre_put/predication_task/create)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | long | 1111 | 必填 | 广告主id |  |\n| tasks | AdPredicationTask[] |  | 必填 | 投前预估创建任务的参数 |  |\n\n| AdPredicationTask |   |   |   |   |   |\n| ------- | ------- | ------- | ------- | ------- | ------ |\n| 字段 | 类型 | 示例 | 是否必填 | 说明 | 备注 |\n| photo_id | string | \"49194904380\" | 可选 | 视频id |  |\n| file_name | string | \"IMG_3437.mp4\" | 可选 | 视频文件名 |  |\n| ocpx_action_type | long | 180 | 可选 | 优化目标 | 53：表单提交，180：激活 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | int | 0 | 响应状态码 |  |\n| message | string | \"OK\" | 返回信息 |  |\n| request_id | string |    | 请求ID  |   |\n| data | struct |  | 投前预估创建结果 |  |\n| &#8195;task_succeeded_reason_list | TaskReason[] |  | 成功列表 |  |\n\n| TaskReason |   |   |   |   |\n| ------- | ------- | ------- | ------- | ------ |\n| 字段 | 类型 | 示例 | 说明 | 备注 |\n| refer_task_id | long | 47494281 | 创建失败：md5重复的时候对应的任务id；创建成功：成功创建的任务id |  |\n| element_json | string |  | 任务的创建入参 |  |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 11440033,\n    \"tasks\": [\n        {\n            \"photo_id\": 64312188979,\n            \"file_name\": \"测试4\",\n            \"ocpx_action_type\": 53\n        }\n    ]\n}\n\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"task_succeeded_reason_list\": [\n            {\n                \"refer_task_id\": 1123512,\n                \"element_json\": \"{\"photoId\":96412359598,\"photoFileName\":\"2月14日筹码 信息.mp4\",\"ocpxActionType\":53}\"\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"d1d5de0bc04c4f1da3f2a0acb946e0d4\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677502001285
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677502001285,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

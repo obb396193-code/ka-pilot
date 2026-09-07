@@ -1,0 +1,378 @@
+{
+  "documentId": 3080,
+  "documentName": "行为意向4.0类目词查询接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1721718825983
+    }
+  ],
+  "apiId": 1265,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/option/behavior_interest",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求示例",
+      "type": "jsonc",
+      "body": "{\n  \"advertiser_id\": 139494\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回示例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"children\": [\n                {\n                    \"id\": 1010101,\n                    \"name\": \"wifi联网\",\n                    \"level\": 2,\n                    \"count\": 33429320,\n                    \"children\": []\n                },\n                {\n                    \"id\": 1010105,\n                    \"name\": \"多媒体处理\",\n                    \"level\": 2,\n                    \"count\": 9404928,\n                    \"children\": [\n                        {\n                            \"id\": 1010105002,\n                            \"name\": \"视频处理\",\n                            \"level\": 3,\n                            \"count\": 2722134,\n                            \"children\": []\n                        }\n                    ]\n                }\n            ],\n            \"level\": 1,\n            \"count\": 62760773,\n            \"name\": \"传媒资讯\",\n            \"id\": 10101\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"ELqAgIDQ1JGaChibBiDEmcPN-jEoodH60Qg=\"\n}\n"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 61282,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>账户ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 61283,
+      "paramName": "data",
+      "paramType": "TargetBehaviorCategory[]",
+      "example": "",
+      "description": "<p>数据详情</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3427,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 61271,
+          "paramName": "children",
+          "paramType": "TargetBehaviorCategoryChild[]",
+          "example": "",
+          "description": "<p>子类目列表</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3452,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 61594,
+              "paramName": "children",
+              "paramType": "String[]",
+              "example": "",
+              "description": "请补充描述详情",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61595,
+              "paramName": "count",
+              "paramType": "Long",
+              "example": "",
+              "description": "请补充描述详情",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61596,
+              "paramName": "id",
+              "paramType": "Long",
+              "example": "",
+              "description": "请补充描述详情",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61597,
+              "paramName": "level",
+              "paramType": "Integer",
+              "example": "",
+              "description": "请补充描述详情",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61598,
+              "paramName": "name",
+              "paramType": "String",
+              "example": "",
+              "description": "请补充描述详情",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61272,
+          "paramName": "count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>类目覆盖人群数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61273,
+          "paramName": "id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>类目ID，可用于广告组创编</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61274,
+          "paramName": "level",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>类目层级</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61275,
+          "paramName": "name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>类目名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61284,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>错误详情，正常时返回 OK</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61285,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>错误码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1721718825983,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

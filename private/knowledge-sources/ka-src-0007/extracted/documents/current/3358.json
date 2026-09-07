@@ -1,0 +1,356 @@
+{
+  "documentId": 3358,
+  "documentName": "获取词包列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "获取词包列表\n/rest/openapi/gw/dsp/v2/word_info/word_bag/list\n\n\nadvertiser_id  Long  <p>广告主账号ID</p>\ncode  Integer  <p>返回状态码</p>\nmessage  String  <p>返回状态信息</p>\ndata  AdMarketWordBagQueryResponceSnake[]  <p>返回数据内容</p>\npackages  AdMarketWordBagResponceSnake[]  <p>词包信息</p>\npackage_name  String  <p>词包名</p>\nsearch_count_7_day  Double  <p>近7日搜索量</p>\nexample  String  <p>示例词</p>\nword_count  Long  <p>词量</p>\nword_bag_type  Integer  <p>词包类型：1-冷启词包； 2-高关联词包；3-同行都在买词包；4-行业精选词包</p>\nword_class_id  Long[]  <p>词包id集合</p>\ndescription  String  <p>词包描述</p>\ntotal_count  Integer  <p>关键词数量</p>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1780972072567
+    }
+  ],
+  "apiId": 2492,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v2/word_info/word_bag/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 86475,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主账号ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 86485,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 86486,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回状态信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 86487,
+      "paramName": "data",
+      "paramType": "AdMarketWordBagQueryResponceSnake[]",
+      "example": "",
+      "description": "<p>返回数据内容</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4873,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 86483,
+          "paramName": "packages",
+          "paramType": "AdMarketWordBagResponceSnake[]",
+          "example": "",
+          "description": "<p>词包信息</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4874,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 86476,
+              "paramName": "package_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>词包名</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86477,
+              "paramName": "search_count_7_day",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>近7日搜索量</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86478,
+              "paramName": "example",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>示例词</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86479,
+              "paramName": "word_count",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>词量</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86480,
+              "paramName": "word_bag_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>词包类型：1-冷启词包； 2-高关联词包；3-同行都在买词包；4-行业精选词包</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86481,
+              "paramName": "word_class_id",
+              "paramType": "Long[]",
+              "example": "",
+              "description": "<p>词包id集合</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 86482,
+              "paramName": "description",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>词包描述</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 86484,
+          "paramName": "total_count",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>关键词数量</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1780972072567,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

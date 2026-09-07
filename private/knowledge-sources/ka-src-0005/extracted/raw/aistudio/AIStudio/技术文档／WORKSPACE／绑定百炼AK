@@ -1,0 +1,35 @@
+
+
+在Workspace/API使用通义(qwen)系列模型时，如果遇到频繁限流的情况，可以绑定自己的阿里云百炼AK。绑定百炼AK后，模型调用时会使用各位的独立的资源，避免使用公共通义资源时的限流问题。
+
+​  
+
+
+1. 百炼AK申请：
+
+注意：需要使用集团统一的部门账号登录阿里云，才能走免费的通义资源，不要用个人手机号码注册百炼账号调用，会收费！！！
+
+集团账号申请：[https://cc.alibaba-inc.com](https://cc.alibaba-inc.com/)
+
+​  
+
+
+<https://help.aliyun.com/zh/model-studio/getting-started/first-api-call-to-qwen?spm=a2c4g.11186623.help-menu-2400256.d_0_1_0.4d97b0a8zPMu3L>
+
+​  
+
+
+2. Workspace/Ideas使用自定义百炼AK：
+
+  
+
+
+3. 调用ideas
+
+成功绑定百炼AK后，API、SDK调用ideas时，依旧需要传入空间绑定的平台AK。平台会根据空间下的AK绑定情况和当前使用的模型进行动态路由
+
+示例：当使用了Qwen模型时，并且空间下已绑定百炼AK，则当前调用会走百炼AK资源
+
+  
+
+

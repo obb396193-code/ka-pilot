@@ -1,0 +1,401 @@
+{
+  "documentId": 3192,
+  "documentName": "获取历史上有消耗的转化目标",
+  "documentType": 2,
+  "description": "<p>注意</p><p>1./rest/openapi/gw/dsp/account/incExplore/add仅能添加获取历史上有消耗的转化目标</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1739800274482
+    }
+  ],
+  "apiId": 1602,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/account/incExplore/ocpxTypes",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "javascript",
+      "body": "{\n  \"advertiser_id\": 123456\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "javascript",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"not_uax\": [\n            {\n                \"ocpx_action_type_name\": \"行为数\",\n                \"deep_conversion_type\": 0,\n                \"deep_conversion_type_name\": \"\",\n                \"ocpx_action_type\": 2\n            },\n            {\n                \"ocpx_action_type_name\": \"表单转化\",\n                \"deep_conversion_type\": 0,\n                \"deep_conversion_type_name\": \"\",\n                \"ocpx_action_type\": 53\n            }\n        ],\n        \"uax\": [\n            {\n                \"ocpx_action_type_name\": \"行为数\",\n                \"deep_conversion_type\": 0,\n                \"deep_conversion_type_name\": \"\",\n                \"ocpx_action_type\": 2\n            },\n            {\n                \"ocpx_action_type_name\": \"表单转化\",\n                \"deep_conversion_type\": 0,\n                \"deep_conversion_type_name\": \"\",\n                \"ocpx_action_type\": 53\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ENKAgICg1OWcChjuDCD79aKh0TIo39mfuAc=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 71237,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>账号id</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 71244,
+      "paramName": "error_msg",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>具体报错信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 71245,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>状态描述信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 71246,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 71247,
+      "paramName": "data",
+      "paramType": "GwOcpxTypeDescriptionData",
+      "example": "",
+      "description": "<p>历史上有消耗的转化目标</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4068,
+      "sort": 4,
+      "note": "",
+      "children": [
+        {
+          "paramId": 71242,
+          "paramName": "not_uax",
+          "paramType": "GwOcpxTypeDescription[]",
+          "example": "",
+          "description": "<p>历史上没有开启uax有消耗的转化目标</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4069,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 71238,
+              "paramName": "deep_conversion_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>深度转化目标</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 0,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 71239,
+              "paramName": "deep_conversion_type_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>深度转化目标名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 0,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 71240,
+              "paramName": "ocpx_action_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>转化目标</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 0,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 71241,
+              "paramName": "ocpx_action_type_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>转化目标名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 0,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71243,
+          "paramName": "uax",
+          "paramType": "GwOcpxTypeDescription[]",
+          "example": "",
+          "description": "<p>历史上开启uax有消耗的转化目标</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4069,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 71238,
+              "paramName": "deep_conversion_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>深度转化目标</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 0,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 71239,
+              "paramName": "deep_conversion_type_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>深度转化目标名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 0,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 71240,
+              "paramName": "ocpx_action_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>转化目标</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 0,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 71241,
+              "paramName": "ocpx_action_type_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>转化目标名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 0,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1739800274482,
+  "creator": "wangxiaobo07",
+  "fullContext": null
+}

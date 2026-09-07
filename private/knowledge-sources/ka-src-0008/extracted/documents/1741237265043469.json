@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><ul data-id=\"u738a58b-gDkKUQZc\"><li data-id=\"ld70c578-J3eXggjB\"><a href=\"https://open.oceanengine.com/labels/7/docs/1741387668314126\" target=\"blank\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">自定义报表</a></li><li data-id=\"ld70c578-aXaIIbFW\"><a href=\"https://open.oceanengine.com/labels/7/docs/1755261744248832\" target=\"blank\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">获取自定义报表可用指标和维度</a></li><li data-id=\"ld70c578-L0TMNp6f\"><a href=\"https://open.oceanengine.com/labels/7/docs/1784979080790218\" target=\"blank\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">代理商消耗报表数据</a></li><li data-id=\"ld70c578-j5e6KQD6\"><a href=\"https://open.oceanengine.com/labels/7/docs/1815032517161050?origin=left_nav\" target=\"blank\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">代理商竞价投放数据</a></li><li data-id=\"ld70c578-DAJpYEg5\"><a href=\"https://open.oceanengine.com/labels/7/docs/1815032592622740?origin=left_nav\" target=\"blank\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">代理商品牌投放数据</a></li></ul><p data-id=\"p838747a-xJVVXYeZ\"><br></p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "数据报表"
+}

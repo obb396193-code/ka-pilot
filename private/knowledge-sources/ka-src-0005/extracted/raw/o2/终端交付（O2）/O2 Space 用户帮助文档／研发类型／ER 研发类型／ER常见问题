@@ -1,0 +1,42 @@
+# ER 常见问题
+
+## 获取代码上传配置异常（you got upper limits of code revisions）
+
+报错信息：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/G1wvqrMBD7zenako/img/b63aeccd-7c67-469a-8954-6717edd8d8eb.png)
+
+
+解决方案：ER 最多可保留 10 个程序版本，超过之后需手动清理历史版本。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/G1wvqrMBD7zenako/img/b0fa54ce-d954-4b86-9dc9-18aa008fb6c2.png)
+
+
+## IPV4s 列表为空
+
+问题示例：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/G1wvqrMBD7zenako/img/89269186-e226-41c2-9706-b9b5d9300c89.png)
+原因及解决方案：
+
+- 子账号没有权限，子账号需要授权AliyunCDNFullAccess，详情查看：[《主账号给子账号授权 CDN、DCDN》](https://docs.dingtalk.com/i/nodes/ydxXB52LJqPvwoK0ImrdzklGVqjMp697)
+## 查询域名下 ER 配置失败
+
+问题示例：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/G1wvqrMBD7zenako/img/94982099-0036-471b-856a-1f69f43f07d7.png)
+
+
+原因及解决方案：
+
+- 检查一下当前账号是否拥有域名列表中所有域名资源权限
+## er 存在异常，O2 无法继续提供服务，请联系 O2 管理员处理
+
+问题示例：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/G1wvqrMBD7zenako/img/9194a8f8-4c0f-4fea-b051-2619fba74e73.png)
+
+
+原因及解决方案：
+
+- ER 接入 O2 Space 后，为了防止不可控因素，不允许用户回阿里云控制台发布。若回到阿里云控制台发布后，O2 Space 会拦截发布。如想恢复在 O2 Space 进行发布，请联系研发小秘 ，并说明具体原因。

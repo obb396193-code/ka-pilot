@@ -1,0 +1,20 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/6604f790b8a160055ff89249/](https://links.alibaba-inc.com/support/conversation/6604f790b8a160055ff89249/)
+
+作者：紫砂
+
+评审人：上坡
+
+
+
+当前平台质量卡口在集成验证插件列表页可以通过点击详情查看。
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/21257030/1712567315885-4a2dcda8-5ab1-4493-9568-d32cc27d007c.png) 
+
+当前包括两种程度的校验：
+
+1、应用配置。该校验策略由应用本身配置，只作用于当前应用，可直接设置为空进行移除；
+
+2、团队配置。该校验策略由管理员（即对应团队的团队空间管理员）下发，作用于当前团队空间下团队及其子团队内所有同学作为应用负责人的应用。可在团队空间中进行配置修改。具体配置方式如下图。
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/21257030/1712567492638-0be5fe84-18fa-4e07-9321-c0e5b52deffd.png) 
+

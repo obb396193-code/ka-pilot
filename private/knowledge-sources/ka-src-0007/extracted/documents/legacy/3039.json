@@ -1,0 +1,54 @@
+{
+  "documentId": 3039,
+  "documentName": "更改素材限时同步主页开关",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 更改素材限时同步主页开关\n\n【优选素材限时同步主页】开关功能简介：开启后，为您挑选优秀原生作品限投流时段同步至所属快手号主页，可获得更多流量和转化；同时，素材在视频库携带“限时同步主页”标签。关闭后，无法帮助您获得增益流量和转化。\n[了解详情](https://docs.qingque.cn/d/home/eZQC4yUg5WsWXhXEZEae1TImp?identityId=1yqIHIWlyc8&via=notHome)\n\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/photo/updatePhotoPublicSwitch](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/photo/updatePhotoPublicSwitch)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | advertiser_id |  |\n| photo_public_quota | Integer | 100 | 必填 | 开关设置的Quota；-1表示无限制，其他可选值：0、50、100、500 |  |\n| photo_public_switch | Integer | 1 | 必填 | 开关状态，0-关闭；1-开启 |  |\n\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 0 | 结果 | 0-成功 非0-失败 |\n| message | String | \"OK\" | 失败原因 |  |\n| data | Object |  | 结果 |  |\n| &#8195;photo_public_switch | Integer |  | 操作后的开关状态 |  |\n| &#8195;quota | Integer |  | 剩余的操作次数 |  |\n| &#8195;photo_public_quota | Integer |  | 操作后的设置Quota |  |\n\n### 请求样例\n\n```js\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/photo/updatePhotoPublicSwitch' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": 139494,\n    \"photo_public_quota\": 100, // 开关设置的Quota；-1表示无限制，其他可选值：0、50、100、500\n    \"photo_public_switch\": 1 // 开关状态，0-关闭；1-开启\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"photo_public_switch\": 1,\n        \"quota\": 0, // 剩余操作次数\n        \"photo_public_quota\": 100\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ENuBgIDAoZWaChj6ByDzvbyUhzIoxuijtQ8=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1720427370822
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1720427370822,
+  "creator": "heran03",
+  "fullContext": null
+}

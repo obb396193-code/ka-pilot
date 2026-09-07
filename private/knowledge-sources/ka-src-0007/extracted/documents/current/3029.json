@@ -1,0 +1,890 @@
+{
+  "documentId": 3029,
+  "documentName": "魔力建站落地页信息查询接口",
+  "documentType": 2,
+  "description": "<p>功能：精确/模糊条件查找落地页信息</p>",
+  "summary": "",
+  "remark": "",
+  "content": "魔力建站落地页信息查询接口\n/rest/openapi/v2/lp/page/list\n\n\npage_component_type  Integer[]  <p>落地页组件类型</p>\nadvertiser_id  Long  广告主 ID\t\npage_name  Long  落地页名称\t\nview_comps  Integer[]  组件列表\t\ncomponent_ref_ids  String[]  组件中线索通ID（如：小游戏ID），和view_comps类型对应 ，\t\nfiction_ids  String[]  小说 ID 列表\t\nis_page_group  Boolean  是否可创建程序化落地页组\t\npage  Integer  页码\npage_size  Integer  页大小\t\nselect  String  支持pageId精准和pageName的模糊查询\t\ndata  MagicSitePageRespGW  落地页列表\t\ntotal_count  Integer  总数\t\ndetails  MagicSitePageInfoGW[]  落地页列表\t\npage_component_type  Integer[]  <p>落地页组件类型</p>\naudit_status  Integer  <p>审核状态：1 草稿 ，2 审核中，3 审核通过，4 审核拒绝</p>\nid  Long  落地页ID\t\nurl  String  落地页链接\t\nfiction_id  Long  落地页绑定的小说 ID\t\nbiz_type  Integer  投放类型\t\ncreate_time  String  创建时间\t\nupdate_time  String  修改时间\t\nconversion_type  String[]  落地页包含的转化组件类型\t\ncomps  PageComponentInfoGW[]  组件列表\t\nprops  PageComponentPropInfoGW  组件属性信息\t\nbuttonText  String  type = 34 时，小游戏类型有值 按钮文案\t\nappId  Long  appID\nwechatGameId  Long  type = 34 时，小游戏类型有值 小游戏id\t\ngameName  Long  type = 34 时，小游戏类型有值 小游戏名称\t\ndescription  String  type = 34 时，小游戏类型有值 小游戏说明\t\nid  Long  组件id\t\ntype  Integer  组件类型\t\nname  String  组件名称\t\nsub_type  Integer  组件子类型\t\nname  String  落地页名称\ncover_img_url  String  落地页封面图\t\ncode  Integer  code码\t\nmessage  String  提示信息\t\n",
+  "url": "",
+  "version": "0.0.3",
+  "versionList": [
+    {
+      "version": "0.0.3",
+      "createTime": 1753097352095
+    },
+    {
+      "version": "0.0.2",
+      "createTime": 1753091169635
+    }
+  ],
+  "apiId": 437,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v2/lp/page/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 9,
+  "bizName": "魔力建站",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 58749,
+      "paramName": "page_component_type",
+      "paramType": "Integer[]",
+      "example": "-",
+      "description": "<p>落地页组件类型</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25959,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主 ID\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25960,
+      "paramName": "page_name",
+      "paramType": "Long",
+      "example": "",
+      "description": "落地页名称\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25961,
+      "paramName": "view_comps",
+      "paramType": "Integer[]",
+      "example": "",
+      "description": "组件列表\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25962,
+      "paramName": "component_ref_ids",
+      "paramType": "String[]",
+      "example": "",
+      "description": "组件中线索通ID（如：小游戏ID），和view_comps类型对应 ，\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25963,
+      "paramName": "fiction_ids",
+      "paramType": "String[]",
+      "example": "",
+      "description": "小说 ID 列表\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25964,
+      "paramName": "is_page_group",
+      "paramType": "Boolean",
+      "example": "",
+      "description": "是否可创建程序化落地页组\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25965,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "页码",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25966,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "页大小\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 34578,
+      "paramName": "select",
+      "paramType": "String",
+      "example": "",
+      "description": "支持pageId精准和pageName的模糊查询\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 25968,
+      "paramName": "data",
+      "paramType": "MagicSitePageRespGW",
+      "example": "",
+      "description": "落地页列表\t",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 921,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 25883,
+          "paramName": "total_count",
+          "paramType": "Integer",
+          "example": "",
+          "description": "总数\t",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 25884,
+          "paramName": "details",
+          "paramType": "MagicSitePageInfoGW[]",
+          "example": "",
+          "description": "落地页列表\t",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 920,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 58746,
+              "paramName": "page_component_type",
+              "paramType": "Integer[]",
+              "example": "1",
+              "description": "<p>落地页组件类型</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 53969,
+              "paramName": "audit_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>审核状态：1 草稿 ，2 审核中，3 审核通过，4 审核拒绝</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25875,
+              "paramName": "id",
+              "paramType": "Long",
+              "example": "",
+              "description": "落地页ID\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25876,
+              "paramName": "url",
+              "paramType": "String",
+              "example": "",
+              "description": "落地页链接\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25877,
+              "paramName": "fiction_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "落地页绑定的小说 ID\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25878,
+              "paramName": "biz_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "投放类型\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25879,
+              "paramName": "create_time",
+              "paramType": "String",
+              "example": "",
+              "description": "创建时间\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25880,
+              "paramName": "update_time",
+              "paramType": "String",
+              "example": "",
+              "description": "修改时间\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25881,
+              "paramName": "conversion_type",
+              "paramType": "String[]",
+              "example": "",
+              "description": "落地页包含的转化组件类型\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 10,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 25882,
+              "paramName": "comps",
+              "paramType": "PageComponentInfoGW[]",
+              "example": "",
+              "description": "组件列表\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 919,
+              "sort": 11,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 25870,
+                  "paramName": "props",
+                  "paramType": "PageComponentPropInfoGW",
+                  "example": "",
+                  "description": "组件属性信息\t",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 918,
+                  "sort": 1,
+                  "note": "",
+                  "children": [
+                    {
+                      "paramId": 25865,
+                      "paramName": "buttonText",
+                      "paramType": "String",
+                      "example": "",
+                      "description": "type = 34 时，小游戏类型有值 按钮文案\t",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 1,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 25866,
+                      "paramName": "appId",
+                      "paramType": "Long",
+                      "example": "",
+                      "description": "appID",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 2,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 25867,
+                      "paramName": "wechatGameId",
+                      "paramType": "Long",
+                      "example": "",
+                      "description": "type = 34 时，小游戏类型有值 小游戏id\t",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 3,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 25868,
+                      "paramName": "gameName",
+                      "paramType": "Long",
+                      "example": "",
+                      "description": "type = 34 时，小游戏类型有值 小游戏名称\t",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 4,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 25869,
+                      "paramName": "description",
+                      "paramType": "String",
+                      "example": "",
+                      "description": "type = 34 时，小游戏类型有值 小游戏说明\t",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 5,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    }
+                  ],
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 25871,
+                  "paramName": "id",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "组件id\t",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 25872,
+                  "paramName": "type",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "组件类型\t",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "[组件类型 type sub_type] [图片 0 0-普通图片 1-图片链接 2-图片安卓下载 3-图片快应用 4-图片-iOS下载 5-图片建站链接 6-多图样式 7-多图样式-链接] [文本 1 0-文本 1-文本链接 表单 2 0-表单] [按钮 3 0-按钮 1-微信小游戏跳转按钮 2-OPPO小游戏跳转按钮 3-QQ小游戏跳转按钮 4-cid-淘宝 5-cid-天猫 6-cid-京东 7-cid-拼多多 8-cid-微信商城 9-小程序应用]  [轮播图 4 0-单轮播图 1-多组轮播图] [视频 5 0-视频] [地图 6 0-地图]  [应用下载 7 0-应用下载-安卓 1-下载应用-快应用 2-应用下载-iOS 3-应用下载-鸿蒙]  [图层文本 9 0-图层文本 1-图层文本-链接] [图层图片 10 0-图层图片 1-图层图片-链接 2-图层图片-安卓下载 3-图层图片-快应用 4-图层图片-iOS下载]  [咨询客服 11 0-咨询客服-三方客服 1-咨询客服-快聊 2-咨询客服-私信]  [电话 12 0-手机 1-固定电话 2-智能电话]  [多线咨询 13 0-多线咨询-ALL 1-多线咨询-客服+电话 2-多线咨询-客服+表单 3-多线咨询-电话+表单 4-多线咨询-电话 5-多线咨询-客服 6-多线咨询-表单 7-多线咨询-ALL（电话为智能电话） 8-多线咨询-客服+智能电话 9-多线咨询-智能电话+表单 10-多线咨询-智能电话]  [新表单 14 0-新表单 1-分步表单 2-分步表单答题样式]  [微信号码组件 15 0-微信-单个号码 1-微信-号码包 2-微信-单个号码-二维码扫码 3-微信-号码包-二维码扫码 4-微信-单个号码-小程序 5-微信-号码包-小程序 6-微信-单个号码-公众号直达 7-企业微信加粉方案 8-企业微信获客助手方案 9-企业微信获客助手方案组]  [空白占位 16 0-空白占位] [互动记录 17 0-互动记录] ",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 25873,
+                  "paramName": "name",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "组件名称\t",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 4,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 25874,
+                  "paramName": "sub_type",
+                  "paramType": "Integer",
+                  "example": "",
+                  "description": "组件子类型\t",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 5,
+                  "note": "[小说 18 0-小说]  [门店 29 0-门店 1-门店-简约样式-全部门店 2-门店-简约样式-门店包 3-门店-简约样式-单门店 4-门店-丰富样式-全部门店 5-门店-丰富样式-门店包 6-门店-丰富样式-单门店]  [支付表单 30 0-支付表单]  [门店页 31 0-门店页-全部 1-门店页-门店包 2-门店页-单门店]  [倒计时 32 0-丰富样式倒计时组件 1-简约样式倒计时组件 2-基础样式倒计时组件] [卡券 33 0-活动卡券-基础样式 1-活动卡券-底部样式 2-活动卡券-红包样式] [微信小游戏 34 0-微信小游戏]  [权限详情组件 35 0-权限详情组件]  [元素组件 36 0-元素组件] [顶部返回组件 37 0-顶部返回组件]  [商户信息组件 38 0-商户信息组件 ] [金币PEC样式组件 39 0-金币PEC样式组件]  [活动码组件 40 0-活动码组件]  [应用描述组件 41 0-应用描述组件]  [隐私组件 42 0-隐私组件] [多行文本 43 0-多行文本 ] [咨询页 44 0-咨询页-三方客服 1-咨询页-快聊客服 2-咨询页-私信客服]  [跑马灯 45 0-跑马灯] [转化样式组件 46 0-转化样式组件]",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26035,
+              "paramName": "name",
+              "paramType": "String",
+              "example": "",
+              "description": "落地页名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 12,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 34575,
+              "paramName": "cover_img_url",
+              "paramType": "String",
+              "example": "",
+              "description": "落地页封面图\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 13,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25969,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "code码\t",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25970,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "提示信息\t",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1753097352095,
+  "creator": "zhangqiang15",
+  "fullContext": null
+}

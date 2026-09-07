@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-view qz-editor-engine am-engine\" data-element=\"root\"><h1 data-id=\"h346b9f0-ZsuAntnI\" id=\"link-0\">相关链接：</h1><p data-id=\"p838747a-wc7cJ73b\"><a href=\"https://open.oceanengine.com/labels/7/docs/1738854207455240\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">获取微信库微信号列表</a><a href=\"https://open.oceanengine.com/labels/7/docs/1738854514506759\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">获取微信号码包详情</a><br/><a href=\"https://open.oceanengine.com/labels/7/docs/1738854779841614\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">获取微信号码包列表</a><br/><a href=\"https://open.oceanengine.com/labels/7/docs/1738854823266311\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"_blank\">更新微信号码包</a></p><h1 data-id=\"h346b9f0-nNRRMA2Y\" id=\"link-1\">微信加粉组件：</h1><p data-id=\"p838747a-0tC3q8Ju\">客户通过在橙子建站落地页中放置微信号/二维码的方式，引导用户跳转微信并导流至微信个人号/公众号/企业微信号中后进行转化。当前支持的加粉方式有微信小程序加粉、微信复制加粉。</p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "微信加粉组件"
+}

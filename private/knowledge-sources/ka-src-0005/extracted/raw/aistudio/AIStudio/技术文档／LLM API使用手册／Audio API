@@ -1,0 +1,98 @@
+
+## 上架的模型
+
+| 模型供应商 | 模型名称 | 服务状态 | 模型名称  **（在请求api时使用的入参）** | 简介 | 支持的api类型 |
+| --- | --- | --- | --- | --- | --- |
+| [azure openai](https://platform.openai.com/docs/api-reference/audio) | whisper-1 | 上架 | whisper | Whisper is a general-purpose speech recognition model. | * [Create transcription](#B0H2B) * <Create translation> |
+| [azure openai](https://platform.openai.com/docs/api-reference/audio) | tts-1 | 上架 | tts | The latest text to speech model, optimized for speed. | [Create speech](#sd3so) |
+| [azure openai](https://platform.openai.com/docs/api-reference/audio) | tts-1-hd | 上架 | tts-hd | The latest text to speech model, optimized for quality.  ​ | [Create speech](#sd3so) |
+| [azure](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech?tabs=streaming#audio-outputs) | azure-tts | 上架 | azure-tts | The Speech service allows you to [convert text into synthesized speech](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech?tabs=streaming#convert-text-to-speech) and [get a list of supported voices](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech?tabs=streaming#get-a-list-of-voices) for a region by using a REST AP | [create speech](#T1HCd) |
+
+## Create speech
+
+### curl实例
+
+### 请求体
+
+### 响应体
+
+* 响应体类型是application/octet-stream，本质是byte[]
+
+## Create speech(azure-tts)
+
+### curl实例
+
+### 请求体
+
+1. model传azure-tts
+2. input为生成语音的文本(注意文本语言需要和所选的lang、name对应语言一致，不然会生成无法播放文件)
+3. instanceVersion必传，目前可选 S0
+4. extendParams中的X-Microsoft-OutputFormat(音频格式)和name(语音种类)必传
+
+[X-Microsoft-OutputFormat获取链接](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/rest-text-to-speech?tabs=streaming#audio-outputs)
+
+[name获取链接](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=tts)
+
+5. 语音参数 pitch,rate,volume解释
+
+| `pitch` | 指示文本的基线音节。 可在句子层面应用音节的变化。 音调变化应为原始音频的 0.5 到 1.5 倍。 可将音调表述为：   * 绝对值：以某个数字后接“Hz”（赫兹）表示。 例如 `pitch="600Hz"`。 * 相对值：  * 以相对数字表示：以前面带有“+”或“-”且后接“Hz”或“st”（用于指定音节的变化量）的数字表示。 例如 `pitch="+80Hz"` 或 `pitch="-2st"`。 “st”表示变化单位为半音，即，标准全音阶中的半调（半步）。 * 以百分比表示：以“+”（可选）或“-”开头且后跟“%”的数字表示，指示相对变化。 例如 `pitch="50%"` 或 `pitch="-50%"`。  * 常量值：  * `x-low`（相当于 0.55，-45%） * `low`（相当于 0.8，-20%） * `medium`（相当于 1，默认值） * `high`（相当于 1.2，+20%） * `x-high`（相当于 1.45，+45%） |
+| --- | --- |
+| `rate` | 指示文本的讲出速率。 可在字词或句子层面应用语速。 速率变化应为原始音频的 `0.5` 到 `2` 倍。 可将 `rate` 表述为：   * 相对值：  * 以相对数字表示：以充当默认值乘数的数字表示。 例如，如果值为 `1`，则原始速率不会变化。 如果值为 `0.5`，则速率为原始速率的一半。 如果值为 `2`，则速率为原始速率的 2 倍。 * 以百分比表示：以“+”（可选）或“-”开头且后跟“%”的数字表示，指示相对变化。 例如 `rate="50%"` 或 `rate="-50%"`。  * 常量值：  * `x-slow`（相当于 0.5，-50%） * `slow`（相当于 0.64，-46%） * `medium`（相当于 1，默认值） * `fast`（相当于 1.55，+55%） * `x-fast`（相当于 2，+100%） |
+| `volume` | 指示语音的音量级别。 可在句子层面应用音量的变化。 可将音量表示为：   * 绝对值：以从 `0.0` 到 `100.0`（从最安静到最大声，例如 `75`）的数字表示。 默认值为 `100.0`。 * 相对值：  * 以相对数字表示：以前面带有“+”或“-”的数字表示，指定音量的变化量。 例如 `+10` 或 `-5.5`。 * 以百分比表示：以“+”（可选）或“-”开头且后跟“%”的数字表示，指示相对变化。 例如 `volume="50%"` 或 `volume="+3%"`。  * 常量值：  * `silent`（相当于 0） * `x-soft`（相当于 0.2） * `soft`（相当于 0.4） * `medium`（相当于 0.6） * `loud`（相当于 0.8） * `x-loud`（相当于 1，默认值） |
+
+6.语音风格参数
+
+具体可选参数可见官网
+
+<https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup-voice>
+
+| 字段 | 描述 | 是否必须 |
+| --- | --- | --- |
+| `style` | The voice-specific speaking style. You can express emotions like cheerfulness, empathy, and calmness. You can also optimize the voice for different scenarios like customer service, newscast, and voice assistant. If the style value is missing or invalid, the entire `mstts:express-as`  element is ignored and the service uses the default neutral speech. For custom neural voice styles, see the [custom neural voice style example](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup-voice#custom-neural-voice-style-example)  . | Required |
+| `styledegree` | The intensity of the speaking style. You can specify a stronger or softer style to make the speech more expressive or subdued. The range of accepted values are: `0.01`  to `2`  inclusive. The default value is `1`  , which means the predefined style intensity. The minimum unit is `0.01`  , which results in a slight tendency for the target style. A value of `2`  results in a doubling of the default style intensity. If the style degree is missing or isn't supported for your voice, this attribute is ignored. | Optional |
+| `role` | The speaking role-play. The voice can imitate a different age and gender, but the voice name isn't changed. For example, a male voice can raise the pitch and change the intonation to imitate a female voice, but the voice name isn't changed. If the role is missing or isn't supported for your voice, this attribute is ignored. | Optional |
+
+### 响应体
+
+* 响应体类型是application/octet-stream，本质是byte[]
+
+  
+
+
+## Create transcription
+
+### curl实例
+
+### 请求体
+
+* 注意：
+
+* （1）暂时仅支持response_format为json。
+* （2）暂时不支持timestamp_granularities。
+
+### 响应体
+
+## Create translation
+
+> 官方说这个API的作用是：Translates audio into English.
+> 
+> 实际上并没有翻译为英文啊... 建议使用“Create transcription”。
+
+### curl示例
+
+### 请求体
+
+* 注意：
+
+* （1）暂时仅支持response_format为json。
+
+### 响应体
+
+  
+
+
+## 
+
+​  
+
+

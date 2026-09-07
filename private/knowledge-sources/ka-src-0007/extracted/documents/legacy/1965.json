@@ -1,0 +1,42 @@
+{
+  "documentId": 1965,
+  "documentName": "转化归因信息合辑",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 转化归因信息合辑\n\n## 技术对接文档\n| 场景 | 对接文档 |\n| --------- | ----------- |\n|应用类API | https://docs.qingque.cn/d/home/eZQCUW5cBE39_ZlarHp_BWWhP?identityId=CjC4ixjMTQ#section=h.9cnktvm7ek5t |\n| 应用类SDK上报 | https://docs.qingque.cn/d/home/eZQD8fAr7A9jtxEeK--EWlLMo?identityId=CjC4ixjMTQ#section=h.1wbto4mq2jki |\n| 微信小程序API上报-磁力建站 | https://docs.qingque.cn/d/home/eZQDEsB5yBhdU1IXnASbDEVXw?identityId=1sjyo9zFtH1#section=h.5d403cuc3ed1 |\n| 线索类API上报 | https://docs.qingque.cn/d/home/eZQDnexll3-ebbtlX3xEDvBN3?identityId=CjC4ixjMTQ#section=h.9cnktvm7ek5t |\n| 线索类JS上报 | https://docs.qingque.cn/d/home/eZQC4Ma8Xw26oj00geO4ISvax?identityId=CjC4ixjMTQ#section=h.beirermj4pjr |\n| 线索类Xpath上报 | https://docs.qingque.cn/d/home/eZQBVkZVTv5JgUzo8gtTZ8UGC?identityId=CjC4ixjMTQ#section=h.utwzmqaa9mpi |",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624421
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624421,
+  "creator": "wb_menpingping",
+  "fullContext": null
+}

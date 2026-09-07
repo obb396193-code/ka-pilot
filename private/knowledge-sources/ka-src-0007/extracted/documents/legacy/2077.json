@@ -1,0 +1,42 @@
+{
+  "documentId": 2077,
+  "documentName": "3.1.5获取程序化创意2.0审核信息",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取程序化创意 2.0 审核信息\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v2/creative/advanced/program/review_detail\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型   | 是否必填 | 说明         | 备注               |\n| ------------- | ------ | -------- | ------------ | ------------------ |\n| advertiser_id | long   | 必填     | 广告主 id    | 获取 token 时获得  |\n| unit_ids      | long[] | 必填     | 广告组 id 集 | 数量小于等于 20 个 |\n\n### 返回参数\n\n| 字段                 | 类型     | 说明                           | 备注     |\n| -------------------- | -------- | ------------------------------ | -------- |\n| code                 | int      | 返回码                         |          |\n| message              | string   | 返回信息                       |          |\n| data                 | struct   | JSON 返回值                    |          |\n| slogans              | string[] | 审核不通过的封面广告语         |          |\n| combine_detail_views | struct[] | 审核不通过和正在审核的创意组合 | 详情如下 |\n| unit_id              | long     | 当前的程序化创意的广告组 id    |          |\n| pic_list     | string[] | 联盟图片（横版/竖版） | 联盟图片imageToken |\n| pic_url_list | sring[]  | 联盟图片url（横版/竖版） | 联盟图片url    |\n\n\n### &nbsp\n\n| combine_detail_views |          |                    |                                               |\n| -------------------- | -------- | ------------------ | --------------------------------------------- |\n| 字段                 | 类型     | 说明               | 备注                                          |\n| id                   | long     | 创意 id            |                                               |\n| photo_id             | long     | 视频 id            | 已加密                                        |\n| cover_url            | String   | 封面 url           |                                               |\n| caption              | String   | 作品广告语         |                                               |\n| review_status        | int      | 审核状态           | 1：审核中 2：审核通过 3：不通过               |\n| review_detail        | struct[] | 审核信息           | 里面是一个 String 类型数据，是审核信息        |\n| put_status           | int      | 程序化创意审核状态 | 程序化创意操作状态，1：投放，2：暂停，3：删除 |\n| app_grade_type     | int  | 审核分级类型                    |  0：默认；1：审核降级(当创意发生降级时，会限制部分流量无法投放) |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625230
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625230,
+  "creator": "linmenger",
+  "fullContext": null
+}

@@ -1,0 +1,42 @@
+{
+  "documentId": 2346,
+  "documentName": "共享授权接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 共享授权接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/authorization/shard](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/authorization/shard)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主账号ID |  |\n| auth_id | Long |  | 必填 | 要共享的授权ID |  |\n| shard_authorize_scope | Integer |  | 必填 | 共享授权范围 0 共享快手号授权 1共享快手号授权+组件授权 |  |\n| shard_account_id | String | 12,34,56 | 必填 | 要共享给账户，accountId用英文逗号分隔 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 保存共享授权任务结果 0失败 1成功 |  |\n| message | String |  | 失败原因 |  |\n| data | KolShardAuthId |  | 共享授权任务ID，获取授权结果使用 |  |\n| &#8195;auth_id | Long |  | 共享授权记录ID |  |\n\n### 请求样例\n\n```js\nnull\n```\n\n### 返回样例\n\n```\nnull\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1683279572092
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1683279572092,
+  "creator": "haoshengwei",
+  "fullContext": null
+}

@@ -25,7 +25,7 @@ const tabs = [
   { value: "table", label: "数据总表" },
   { value: "pivot", label: "维度透视" },
   { value: "hourly", label: "盯盘" },
-  { value: "gap", label: "Gap 对账" },
+  { value: "gap", label: "差异对账" },
   { value: "strategy", label: "策略分析" },
   { value: "attribution", label: "归因树" },
   { value: "intel", label: "竞情" },
@@ -51,7 +51,7 @@ export function DataPage() {
         actions={
           <>
             <Select value={preset} onValueChange={(value) => setPreset(value as WindowPreset)}>
-              <SelectTrigger size="sm" className="w-32" aria-label="时间窗口"><span className="text-muted-foreground">窗口</span><SelectValue /></SelectTrigger>
+              <SelectTrigger size="sm" className="w-40" aria-label="时间窗口"><span className="text-muted-foreground">窗口</span><SelectValue /></SelectTrigger>
               <SelectContent align="end">{windowPresets.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
             </Select>
             <StateSwitch />
@@ -60,7 +60,7 @@ export function DataPage() {
       />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-010a1 语义查询窗口化接入后切换为真数据" empty={{ title: "当前窗口没有数据", description: "换一个窗口或账户范围；系统不会用 0 填充。" }}>
+        <StateFrame state={state} unlock="语义查询按窗口取数接入后切换为真数据" empty={{ title: "当前窗口没有数据", description: "换一个窗口或账户范围；系统不会用 0 填充。" }}>
           {tab === "overview" ? <OverviewTab colorKey={colorKey} /> : null}
           {tab === "table" ? <TableTab onSaveView={saveView} /> : null}
           {tab === "pivot" ? <PivotTab /> : null}

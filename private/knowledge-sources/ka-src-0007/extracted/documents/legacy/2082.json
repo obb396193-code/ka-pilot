@@ -1,0 +1,42 @@
+{
+  "documentId": 2082,
+  "documentName": "10.12.3获取试玩列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取试玩列表\n\n请求接口:https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/playable/list\n\n请求方式:POST\n\n请求格式 :JSON\n\n### 请求参数\n\n| 字段          | 类型          | 是否必填 | 说明                    |\n| ------------- | ------------- | -------- | ----------------------- |\n| advertiser_id | Long          | 必填     | 广告主 ID               |\n| query_value   | String        | 选填     | 试玩 ID 或 Name         |\n| play_sources  | List<Integer> | 选填     | 试玩来源：1 主站 2 联盟 |\n| start_time    | Long          | 选填     | 时间查询开始时间        |\n| end_time      | Int           | 选填     | 时间查询结束时间        |\n| page          | Int           | 选填     | 分页信息，当前页码。    |\n| page_size     | Int           | 选填     | 分页信息，页面大小。    |\n\n### 返回参数\n\n| 字段             | 类型         | 说明                                                                                | 备注 |\n| ---------------- | ------------ | ----------------------------------------------------------------------------------- | ---- |\n| code             | Int          | 结果状态码                                                                          |      |\n| message          | String       | 状态提示信息                                                                        |      |\n| data             | List<Object> | 返回结果                                                                            |      |\n| total_count      | Long         | 总数据量                                                                            |      |\n| details          | Object       | 试玩对象列表                                                                        |      |\n| play_id          | Long         | 试玩 ID                                                                             |      |\n| play_name        | String       | 试玩名称                                                                            |      |\n| play_url         | String       | 试玩 URL                                                                            |      |\n| play_orientation | Integer      | 试玩支持的横竖版类型： 0:横竖均可 1:竖屏 2:横屏                                     |      |\n| upload_source    | Integer      | 上传途径 1：本地 2：                                                                |      |\n| review_details   | String       | 审核信息                                                                            |      |\n| play_time        | Integer      | 试玩时长，0 表示不限时长                                                            |      |\n| play_cover_url   | String       | 试玩封面 URL                                                                        |      |\n| play_type        | Integer      | 试玩类型 1:轻度，2：重度                                                            |      |\n| create_time      | Long         | 创建时间                                                                            |      |\n| update_time      | Long         | 更新时间                                                                            |      |\n| haima_extra      | String       | pkgName：试玩包名称； channel_id：试玩 channelId；apkDownloadUrl：apk 下载 cdn 链接 |      |\n| review_status    | Integer      | 试玩审核状态：1.待审核，2.审核通过，3 审核不通过，4.部署中                          |      |\n| file_format      | String       | 试玩文件类型 apk,zip                                                                |      |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625264
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625264,
+  "creator": "linmenger",
+  "fullContext": null
+}

@@ -1,0 +1,471 @@
+{
+  "documentId": 3374,
+  "documentName": "批量上传素材",
+  "documentType": 2,
+  "description": "<p>批量上传素材，接口调用前需要先调用「视频文件上传」接口，保证可以拿到视频的基本信息如url等。</p>",
+  "summary": "",
+  "remark": "",
+  "content": "批量上传素材\n/rest/openapi/gw/agent/v1/addMaterial\n\n\nmapi_ip  String  <p>ip地址</p>\nrequests  AddMaterialReqSnake546[]  <p>文件输入</p>\nmaterial_name  String  <p>素材名称</p>\nmaterial_form  String  <p>素材类型</p>\nphoto_info  PhotoInfoDTOSnake63  <p>视频信息</p>\nwidth  Integer  <p>宽</p>\nheight  Integer  <p>高</p>\nurl  String  <p>url</p>\npreview_url  String  <p>视频预览url</p>\nmd5  String  <p>视频md5</p>\ntask_id  Long  <p>上传视频任务ID</p>\nis_public  Boolean  <p>是否是公共素材</p>\ncode  Integer  <p>状态</p>\nmessage  String  <p>响应msg</p>\ndata  AddMaterialRespSnake  <p>返回数据</p>\nsuccess_ids  Long[]  <p>素材成功ID列表</p>\nfail_names  String[]  <p>素材失败名称列表</p>\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1784036796123
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1783431581256
+    }
+  ],
+  "apiId": 2569,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/addMaterial",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 87808,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "--",
+      "description": "<p>代理商id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "agent_id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "ADD"
+    },
+    {
+      "paramId": 87661,
+      "paramName": "mapi_ip",
+      "paramType": "String",
+      "example": "----",
+      "description": "<p>ip地址</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "ip地址",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87744,
+      "paramName": "requests",
+      "paramType": "AddMaterialReqSnake546[]",
+      "example": "--",
+      "description": "<p>文件输入</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4981,
+      "sort": 3,
+      "note": "文件输入",
+      "children": [
+        {
+          "paramId": 87739,
+          "paramName": "material_name",
+          "paramType": "String",
+          "example": "test",
+          "description": "<p>素材名称</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "素材名称",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87740,
+          "paramName": "material_form",
+          "paramType": "String",
+          "example": "MULTI_PLAYER",
+          "description": "<p>素材类型</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "素材类型：    MULTI_PLAYER(100, \"多人情景剧\"),     COUPLE(101, \"双人情景剧\"),     SINGLE(102, \"单人实拍\"),     CUT(103, \"剪辑特效\"),     OTHER(104, \"其他类型\");",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87741,
+          "paramName": "photo_info",
+          "paramType": "PhotoInfoDTOSnake63",
+          "example": "--",
+          "description": "<p>视频信息</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4982,
+          "sort": 3,
+          "note": "视频信息",
+          "children": [
+            {
+              "paramId": 87733,
+              "paramName": "width",
+              "paramType": "Integer",
+              "example": "100",
+              "description": "<p>宽</p>",
+              "required": 1,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "宽",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 87734,
+              "paramName": "height",
+              "paramType": "Integer",
+              "example": "1000",
+              "description": "<p>高</p>",
+              "required": 1,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "高",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 87735,
+              "paramName": "url",
+              "paramType": "String",
+              "example": "url",
+              "description": "<p>url</p>",
+              "required": 1,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "url",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 87736,
+              "paramName": "preview_url",
+              "paramType": "String",
+              "example": "视频预览url",
+              "description": "<p>视频预览url</p>",
+              "required": 1,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "视频预览url",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 87737,
+              "paramName": "md5",
+              "paramType": "String",
+              "example": "视频md5",
+              "description": "<p>视频md5</p>",
+              "required": 1,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "视频md5",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 87738,
+              "paramName": "task_id",
+              "paramType": "Long",
+              "example": "1010",
+              "description": "<p>上传视频任务ID</p>",
+              "required": 1,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "上传视频任务ID",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87742,
+          "paramName": "is_public",
+          "paramType": "Boolean",
+          "example": "false",
+          "description": "<p>是否是公共素材</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "是否是公共素材",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 87665,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "200",
+      "description": "<p>状态</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "状态",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87666,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "success",
+      "description": "<p>响应msg</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "响应msg",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87667,
+      "paramName": "data",
+      "paramType": "AddMaterialRespSnake",
+      "example": "-",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4973,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 87663,
+          "paramName": "success_ids",
+          "paramType": "Long[]",
+          "example": "-",
+          "description": "<p>素材成功ID列表</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87664,
+          "paramName": "fail_names",
+          "paramType": "String[]",
+          "example": "-",
+          "description": "<p>素材失败名称列表</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1784036796123,
+  "creator": "hanxu18",
+  "fullContext": null
+}

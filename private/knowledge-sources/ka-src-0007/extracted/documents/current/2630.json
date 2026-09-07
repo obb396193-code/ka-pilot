@@ -1,0 +1,334 @@
+{
+  "documentId": 2630,
+  "documentName": "图片推送",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "图片推送\n/rest/openapi/gw/dsp/v1/pic/share\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pic/share' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 11311124,\n    \"image_tokens\": [\n        \"market484ccbeaf5a6467495cbc0248d8e83d7.jpg\"\n    ],\n    \"share_advertiser_ids\": [\n        11360719\n    ],\n    \"share_account_type\": 1\n}'\n{\n    \"code\": 0,\n    \"data\": {\n        \"details\": [\n            {\n                \"pic_id\": \"5244160298288158171\",\n                \"image_token\": \"[REDACTED_SECRET_EXAMPLE]\",\n                \"advertiser_id\": 11360719\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMqAgIDAi5a1ChiKAiCx-aKNgzEo5ayr-gw=\"\n}\nadvertiser_id  Long  广告主id\nimage_tokens  String[]  分享图片的tokens\nshare_advertiser_ids  Long[]  推送账户\npic_ids  String[]  <p>分享图片的ids</p>\nshare_account_type  Integer  <p>分享账户类型</p>\ncode  Integer  返回码\nmessage  String  返回信息\ndata  MapiDspPicListData  推送图片的详细信息\ndetails  MApiDspSharePic[]  详细信息\nadvertiser_id  Long  广告主id\nimage_token  String  图片 token\npic_id  String  加密的照片id\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1744014801468
+    }
+  ],
+  "apiId": 290,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pic/share",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pic/share' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 11311124,\n    \"image_tokens\": [\n        \"market484ccbeaf5a6467495cbc0248d8e83d7.jpg\"\n    ],\n    \"share_advertiser_ids\": [\n        11360719\n    ],\n    \"share_account_type\": 1\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"details\": [\n            {\n                \"pic_id\": \"5244160298288158171\",\n                \"image_token\": \"[REDACTED_SECRET_EXAMPLE]\",\n                \"advertiser_id\": 11360719\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMqAgIDAi5a1ChiKAiCx-aKNgzEo5ayr-gw=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 14086,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 14087,
+      "paramName": "image_tokens",
+      "paramType": "String[]",
+      "example": "",
+      "description": "分享图片的tokens",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 14088,
+      "paramName": "share_advertiser_ids",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "推送账户",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53465,
+      "paramName": "pic_ids",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>分享图片的ids</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "分享图片的ids和tokens只能二选一",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53466,
+      "paramName": "share_account_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>分享账户类型</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "1. 同主体同代理商账户；2. 同主体下账户（需加白使用）；3. 内部账户（需加白使用）",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 14089,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 14090,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 14091,
+      "paramName": "data",
+      "paramType": "MapiDspPicListData",
+      "example": "",
+      "description": "推送图片的详细信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 599,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 14078,
+          "paramName": "details",
+          "paramType": "MApiDspSharePic[]",
+          "example": "",
+          "description": "详细信息",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 597,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 14072,
+              "paramName": "advertiser_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "广告主id",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 14073,
+              "paramName": "image_token",
+              "paramType": "String",
+              "example": "",
+              "description": "图片 token",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 14074,
+              "paramName": "pic_id",
+              "paramType": "String",
+              "example": "",
+              "description": "加密的照片id",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1744014801468,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

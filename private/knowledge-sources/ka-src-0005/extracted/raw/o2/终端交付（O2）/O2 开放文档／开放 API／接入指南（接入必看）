@@ -1,0 +1,77 @@
+如果您在使用过程中遇到问题，可以通过以下三种方式反馈：
+
+| [钉钉群反馈](https://qr.dingtalk.com/action/joingroup?code=v1,k1,fATh8MNZ9beUjEk5v3oycn2AL0ECk95JJ62FUkTn8nc=&_dt_no_comment=1&origin=11? 时路邀请你加入钉钉群聊O2 Space 扩展开放金牌服务群，点击进入查看详情) | [答疑单反馈](https://links.alibaba-inc.com/app/room/5fbf53f6cd068c04d342e682/start-conversation-form/) | [Aone 需求单反馈](https://links.alipay.com/app/room/5fbf53f6cd068c04d342e682/feedback/new/?createdChannel=WEB&webType=BALL) |
+|-|-|-|
+
+## 流程概述
+
+O2 Space 平台提供的开放接口遵循 RESTful 风格，为了提升 API 调用安全性，O2 所有开放接口都经过网关，在调用接口时，需要进行身份认证，并且部分接口还需要登录态信息。
+
+接口调用流程如下：
+
+1. 在 [O2 开放平台](https://open.o2.alibaba-inc.com/)创建“服务调用”，获取接口调用的 AK/SK
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/2M9qPB6vQ9y4l015/img/0e617b31-9ce8-4b19-a572-35acf231bfe9.png)
+
+
+
+
+1. 进入服务调用，申请需要的开放接口权限，需审批（注意：请按需申请）
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/2M9qPB6vQ9y4l015/img/cf7da499-4ec9-4dbd-b60e-4ebe544c4cce.png)
+
+
+
+
+1. 若调用的开放接口依赖 BUC 认证，则需要与网关统一认证服务 “def-auth” 建立免登 [buc免登申请](https://login.alibaba-inc.com/appAuthorizeApply.htm)
+- 在接口文档中会通过 buc login 来标识是否依赖 BUC 认证
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/2M9qPB6vQ9y4l015/img/77b31617-99c5-45f1-b2f6-2fa5003e7cc6.png)
+
+
+1. 初始化 Nodejs SDK：调用 O2 开放接口需要使用 SDK，可参考 [@ali/o2-open-client文档](https://web.npm.alibaba-inc.com/package/@ali/o2-open-client)。
+```
+import { O2Client } from '@ali/o2-open-client';
+// 需传入AK、SK
+client = new O2Client({
+  accessKeyId: 'xxx',
+  accessKeySecret: 'xxx'
+});
+// client调用
+client.get('/v1.0/work/apps', {name: 'test'});
+client.get('/v1.1/work/apps', {name: 'test'});
+```
+1. 查看开放接口文档，进行接口调用
+
+
+## 注意事项
+
+1. 调用 BUC 认证的接口需要在 header 中传入 SSO_TICKET
+```
+client.get( 
+  `/v1.0/work/iterations/1514335/detail`, 
+  {},
+  {
+	SSO_TICKET: 'xxxx'
+  }
+);
+```
+```
+client.post(
+  '/v1.0/work/aone/issues/search',
+  {},
+  {},
+  {
+   SSO_TICKET: 'xxx'
+  }
+);
+```
+1. 若接口的路径参数为encodeURIComponent编码的特殊字符，如 /, 则在调用时需进行两次编码
+```
+client.get( 
+`/v1.0/work/apps/${encodeURIComponent(encodeURIComponent('def-open/open-sdk'))}/detail`,
+  {},
+  {
+  SSO_TICKET: '8dce84ecd5c94618b4ae17f8b4b3a70009fef500'
+  }
+)
+```
+
+

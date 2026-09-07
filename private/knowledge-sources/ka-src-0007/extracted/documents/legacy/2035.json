@@ -1,0 +1,42 @@
+{
+  "documentId": 2035,
+  "documentName": "12.2接口调用分级使用",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 接口调用分级使用\n\n为保证开发者平台整体接口的稳定性，同时更合理及高效的利用平台资源，\n\n故 MAPI 针对开发者的应用进行 QPM 频控分级管理；\n\n等级及频次： 等级：一级，QPM：1000 ； 等级：二级，QPM：2000 ；\n\n等级：三级，QPM：3000 ；\n\n等级：四级，QPM：4000 ； 等级：五级，QPM：5000 ；\n\n影响： 所有新增开发者应用默认都为第一等级的频控限制，\n\n当前已建的开发者应用会根据调用量级规则进行相应调整定级，\n\n如有疑问可通过 MAPI 公共邮箱（MAPI@kuaishou.com）咨询及调整；\n\n落地执行时间： 2022 年 1 月 5 日 00:00\n\n建议开发者优化方案： - 创编优化方案：分钟异步创编;\n\n报表优化方案：只更新在投的广告账户数据；\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624932
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624932,
+  "creator": "linmenger",
+  "fullContext": null
+}

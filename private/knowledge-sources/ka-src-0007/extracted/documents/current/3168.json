@@ -1,0 +1,1195 @@
+{
+  "documentId": 3168,
+  "documentName": "代理商-广告主流水列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "代理商-广告主流水列表\n/rest/openapi/gw/agent/v1/finance/deposit/account\n\n\nsearch_type_value_map  GateWaySearchTypeValueMap  <p>搜索条件</p>\nbatch_account_id_exact  String  <p>账户id搜索</p>\nbatch_user_id_exact  String  <p>快手userId搜索</p>\nbatch_corp_name  String  <p>公司名搜索</p>\nbatch_product_name  String  <p>产品名搜索</p>\nstart_time  Long  开始时间(时间戳)\nend_time  Long  结束时间(时间戳)\noperation_type  Integer  操作类型:0-全部1-充值2-退款11-信用账户充值14-保证金充值15-保证金减款\naccount_search_type  Integer  搜索类型:0-全部分类1-广告主ID2-快手ID3-产品名称4-企业名称\nkeyword  String  检索字段\nuc_type  String  业务线筛选 空字符串-全部，DSP-信息流，ADX-ADX，ESP-电商\nagent_id  Long  agent_id\npage_info  GatePageInfo  分页\ncurrent_page  Integer  当前页号\npage_size  Integer  页内记录数\ntotal_count  Long  总条数\ncode  Integer  code\nmessage  String  msg\ndata  AdDspAccountDepositResp  data\ndetails  AdDspAccountDepositRecordSnake[]  data\noperator_name  String  <p>操作人userName</p>\noperator_id  Long  <p>操作人userid</p>\noperation_type  String  操作类型\nadvertiser_id  Long  广告主ID\nuser_id  Long  快手用户ID\nproduct_name  String  产品名称\ncorporation_name  String  企业名称\nfirst_cost_day  String  首次消耗日期\nindustry  String  一级行业名称\nsecond_industry  String  二级行业名称\namount  Long  现金余额\ncredit_amount  Long  信用金额\nrebate_amount  Long  转账的后返金额\npre_rebate_amount  Long  转账的前返金额\ncontract_rebate_amount  Long  框返金额\ndirect_rebate_amount  Long  转账的激励账户金额\nbefore_balance  Long  转账之前的现金余额\nafter_balance  Long  转账之后的现金金额\nbank_sn  String  bank_sn\nremark  String  remark\ndate  String  date\ncreate_time  Long  create_time\nserial_id  Long  内部计费系统的流水号，可能为空\nstatus  Integer  status\ninstruction_id  String  全局唯一流水号\ntrade_no  String  交易号\npage_info  GatePageInfo  分页信息\ncurrent_page  Integer  当前页号\npage_size  Integer  页内记录数\ntotal_count  Long  总条数\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1784206517427
+    }
+  ],
+  "apiId": 18,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/finance/deposit/account",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 69191,
+      "paramName": "search_type_value_map",
+      "paramType": "GateWaySearchTypeValueMap",
+      "example": "",
+      "description": "<p>搜索条件</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3969,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 69183,
+          "paramName": "batch_account_id_exact",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>账户id搜索</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69184,
+          "paramName": "batch_user_id_exact",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>快手userId搜索</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69185,
+          "paramName": "batch_corp_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>公司名搜索</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69186,
+          "paramName": "batch_product_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>产品名搜索</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 469,
+      "paramName": "start_time",
+      "paramType": "Long",
+      "example": "",
+      "description": "开始时间(时间戳)",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 470,
+      "paramName": "end_time",
+      "paramType": "Long",
+      "example": "",
+      "description": "结束时间(时间戳)",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 471,
+      "paramName": "operation_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "操作类型:0-全部1-充值2-退款11-信用账户充值14-保证金充值15-保证金减款",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 472,
+      "paramName": "account_search_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "搜索类型:0-全部分类1-广告主ID2-快手ID3-产品名称4-企业名称",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 473,
+      "paramName": "keyword",
+      "paramType": "String",
+      "example": "",
+      "description": "检索字段",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 474,
+      "paramName": "uc_type",
+      "paramType": "String",
+      "example": "",
+      "description": "业务线筛选 空字符串-全部，DSP-信息流，ADX-ADX，ESP-电商",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 825,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "agent_id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26158,
+      "paramName": "page_info",
+      "paramType": "GatePageInfo",
+      "example": "",
+      "description": "分页",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 938,
+      "sort": 9,
+      "note": "",
+      "children": [
+        {
+          "paramId": 26155,
+          "paramName": "current_page",
+          "paramType": "Integer",
+          "example": "",
+          "description": "当前页号",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 26156,
+          "paramName": "page_size",
+          "paramType": "Integer",
+          "example": "",
+          "description": "页内记录数",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 26157,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "总条数",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 475,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "code",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 476,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "msg",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 477,
+      "paramName": "data",
+      "paramType": "AdDspAccountDepositResp",
+      "example": "",
+      "description": "data",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 47,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 468,
+          "paramName": "details",
+          "paramType": "AdDspAccountDepositRecordSnake[]",
+          "example": "",
+          "description": "data",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 46,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 82221,
+              "paramName": "port_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>端口id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 73564,
+              "paramName": "operator_name",
+              "paramType": "String",
+              "example": "张三",
+              "description": "<p>操作人userName</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 73565,
+              "paramName": "operator_id",
+              "paramType": "Long",
+              "example": "123",
+              "description": "<p>操作人userid</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 446,
+              "paramName": "operation_type",
+              "paramType": "String",
+              "example": "",
+              "description": "操作类型",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 447,
+              "paramName": "advertiser_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "广告主ID",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 448,
+              "paramName": "user_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "快手用户ID",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 449,
+              "paramName": "product_name",
+              "paramType": "String",
+              "example": "",
+              "description": "产品名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 450,
+              "paramName": "corporation_name",
+              "paramType": "String",
+              "example": "",
+              "description": "企业名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 451,
+              "paramName": "first_cost_day",
+              "paramType": "String",
+              "example": "",
+              "description": "首次消耗日期",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 452,
+              "paramName": "industry",
+              "paramType": "String",
+              "example": "",
+              "description": "一级行业名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 10,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 453,
+              "paramName": "second_industry",
+              "paramType": "String",
+              "example": "",
+              "description": "二级行业名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 11,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 454,
+              "paramName": "amount",
+              "paramType": "Long",
+              "example": "",
+              "description": "现金余额",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 12,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 455,
+              "paramName": "credit_amount",
+              "paramType": "Long",
+              "example": "",
+              "description": "信用金额",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 13,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 456,
+              "paramName": "rebate_amount",
+              "paramType": "Long",
+              "example": "",
+              "description": "转账的后返金额",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 14,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 457,
+              "paramName": "pre_rebate_amount",
+              "paramType": "Long",
+              "example": "",
+              "description": "转账的前返金额",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 15,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 458,
+              "paramName": "contract_rebate_amount",
+              "paramType": "Long",
+              "example": "",
+              "description": "框返金额",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 16,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 459,
+              "paramName": "direct_rebate_amount",
+              "paramType": "Long",
+              "example": "",
+              "description": "转账的激励账户金额",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 17,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 460,
+              "paramName": "before_balance",
+              "paramType": "Long",
+              "example": "",
+              "description": "转账之前的现金余额",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 18,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 461,
+              "paramName": "after_balance",
+              "paramType": "Long",
+              "example": "",
+              "description": "转账之后的现金金额",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 19,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 462,
+              "paramName": "bank_sn",
+              "paramType": "String",
+              "example": "",
+              "description": "bank_sn",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 20,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 463,
+              "paramName": "remark",
+              "paramType": "String",
+              "example": "",
+              "description": "remark",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 21,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 464,
+              "paramName": "date",
+              "paramType": "String",
+              "example": "",
+              "description": "date",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 22,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 465,
+              "paramName": "create_time",
+              "paramType": "Long",
+              "example": "",
+              "description": "create_time",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 23,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 466,
+              "paramName": "serial_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "内部计费系统的流水号，可能为空",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 24,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 467,
+              "paramName": "status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "status",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 25,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26102,
+              "paramName": "instruction_id",
+              "paramType": "String",
+              "example": "",
+              "description": "全局唯一流水号",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 26,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26305,
+              "paramName": "trade_no",
+              "paramType": "String",
+              "example": "",
+              "description": "交易号",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 27,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 26162,
+          "paramName": "page_info",
+          "paramType": "GatePageInfo",
+          "example": "",
+          "description": "分页信息",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 938,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 26155,
+              "paramName": "current_page",
+              "paramType": "Integer",
+              "example": "",
+              "description": "当前页号",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26156,
+              "paramName": "page_size",
+              "paramType": "Integer",
+              "example": "",
+              "description": "页内记录数",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26157,
+              "paramName": "total_count",
+              "paramType": "Long",
+              "example": "",
+              "description": "总条数",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1784206517427,
+  "creator": "zhangzhidong",
+  "fullContext": null
+}

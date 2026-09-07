@@ -57,7 +57,7 @@ export function TestsTab() {
       <DataGrid
         table={table}
         empty="还没有开户测试；新建一个跟踪窗口指标"
-        toolbar={<span className="text-xs text-muted-foreground">系统每日刷新窗口指标（只算不判），结论由人填；测试户加 tag testing，库存态不因测试改变</span>}
+        toolbar={<span className="text-xs text-muted-foreground">系统每日刷新窗口指标（只算不判），结论由人填；测试户会打上「测试中」标签，账户状态不因测试改变</span>}
         actions={<Button size="sm" onClick={() => setCreating(true)}><IconPlus />新建测试</Button>}
       />
       <Dialog open={creating} onOpenChange={setCreating}>

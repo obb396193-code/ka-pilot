@@ -1,0 +1,249 @@
+{
+  "documentId": 2712,
+  "documentName": "上传样本文件接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "上传样本文件接口\n/rest/openapi/gw/ad_model/v1/sample/upload\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/ad_model/v1/sample/upload' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE] apdid=22aa3170-fecc-4e3d-aaf3-b83825191ca119473a5d1ce8417a307644cdc2c666cd:1680154657:1; accessproxy_session=e5c8db0b-ca32-490f-a0a2-74d9178a8cd5' \\\n--form 'file=@\"/Users/test/Documents/test.csv.zip\"' \\\n--form 'advertiser_id=\"00000001\"'\n{\n    \"code\": 0,\n    \"data\": {\n        \"upload_file_name\": \"test.zip\",\n        \"token\": \"[REDACTED_SECRET_EXAMPLE]\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMeAgICgxLm2ChjaBiD9taz19zAo3_W43g8=\"\n}\ncode  Integer  状态码\nmessage  String  消息\ndata  UploadGatewayResponse  返回消息体\ntoken  String  token\nupload_file_name  String  上传文件名\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1729591401240
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1719474287853
+    }
+  ],
+  "apiId": 728,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/ad_model/v1/sample/upload",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 4,
+  "bizName": "建模平台",
+  "inputParamExample": "{\n    \"code\": 0,\n    \"data\": {\n        \"upload_file_name\": \"test.zip\",\n        \"token\": \"[REDACTED_SECRET_EXAMPLE]\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMeAgICgxLm2ChjaBiD9taz19zAo3_W43g8=\"\n}",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/ad_model/v1/sample/upload' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE] apdid=22aa3170-fecc-4e3d-aaf3-b83825191ca119473a5d1ce8417a307644cdc2c666cd:1680154657:1; accessproxy_session=e5c8db0b-ca32-490f-a0a2-74d9178a8cd5' \\\n--form 'file=@\"/Users/test/Documents/test.csv.zip\"' \\\n--form 'advertiser_id=\"00000001\"'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"upload_file_name\": \"test.zip\",\n        \"token\": \"[REDACTED_SECRET_EXAMPLE]\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMeAgICgxLm2ChjaBiD9taz19zAo3_W43g8=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 68873,
+      "paramName": "source_platform",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>DMP私有建模:2，其他不用传</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "ADD"
+    },
+    {
+      "paramId": 42811,
+      "paramName": "file",
+      "paramType": "File",
+      "example": "test.zip",
+      "description": "csv的压缩zip文件",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "支持直接上传.csv（UTF-8)；支持将单个/多个.csv文件经过zip格式压缩上传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "ADD"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 42814,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42815,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "消息",
+      "description": "消息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42816,
+      "paramName": "data",
+      "paramType": "UploadGatewayResponse",
+      "example": "",
+      "description": "返回消息体",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2629,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 42812,
+          "paramName": "token",
+          "paramType": "String",
+          "example": "token",
+          "description": "token",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42813,
+          "paramName": "upload_file_name",
+          "paramType": "String",
+          "example": "sss",
+          "description": "上传文件名",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 68874,
+          "paramName": "transform_date",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>基准日期</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "ADD"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1729591401240,
+  "creator": "wanglu31",
+  "fullContext": null
+}

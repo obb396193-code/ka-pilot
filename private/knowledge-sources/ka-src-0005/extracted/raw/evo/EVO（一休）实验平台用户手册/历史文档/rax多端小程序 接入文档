@@ -1,0 +1,164 @@
+**<font style="color:#E8323C;">SDK不再迭代，推荐使用</font>**[**<u><font style="color:#E8323C;">ER接入方案</font></u>**](https://yuque.antfin-inc.com/ikkuy/gw2n3b/tggnz0)
+
+####   
+一休多端小程序 SDK为前端开发者提供了一种接入实验的方式
++ **声明式接入 - **即引入AB实验函数(<font style="color:#000000;">getABResult</font>)，该函数将根据实验配置，返回给开发者当前访问者的所属分组
+
+
+
+## 接入前准备
+#### <font style="color:#1A1A1A;">添加服务器域名白名单</font><font style="color:#F5222D;">（微信，支付宝都需要配置，淘宝轻应用不需要配置）</font>
+小程序下，任何远程请求需要配置服务器域名白名单。一休sdk需要读取远程实验配置，因此需要我们为一休cdn配置白名单。在小程序后台，进入开发中心，设置，然后选择开发设置，找到**<font style="color:#1A1A1A;">服务器域名白名单，</font>**<font style="color:#1A1A1A;">并添加</font>
+
+```git
+https://yixiu-js-abtest.alicdn.com; // 微信
+yixiu-js-abtest.alicdn.com // 阿里系
+```
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/262313/1616483427354-a8cf06a1-b4f1-4fb6-8657-d6a82901a9ab.png)
+
+#### 申请挂载相应功能包<font style="color:#F5222D;">（支付宝配置）</font>
+一休SDK需要读取支付宝userid对用户进行分流，为了获取读取用户id的权限，**内部小程序**可以申请挂载_**<font style="color:#444444;">内部小程序使用的一些jsapi</font>**_功能包来获取权限，没错，包名就是_**<font style="color:#444444;">内部小程序使用的一些jsapi，</font>**_<font style="color:#444444;">简单直接。</font>
+
+<font style="color:#444444;"></font>
+
+<font style="color:#444444;">挂载功能包，请前往蚂蚁的</font>[产品运营平台](https://zprodmng.alipay.com/antprod#/product/productList)产品列表页，输入产品名称，进入详情，并点击挂载App，将该功能包跟你的小程序appid绑定，然后等待审批通过即可。
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/262313/1615386710522-b6d264bf-20cb-481c-8205-8e2442be043e.png)
+
+#### 在项目里面需要将userId存入缓存中（接入集团的登录体系找<font style="color:#2F54EB;">@金铎</font>）<font style="color:#F5222D;">（微信配置）</font>
+<font style="color:#C41D7F;">（不接入集团userId，可以用</font><font style="color:#C41D7F;">openId，unionId分流，需要自己封装改造</font><font style="color:#C41D7F;">）</font>
+
+```javascript
+wx.setStorage({
+  key:"userInfo",
+  data:JSON.stringify({
+          userId: `${userId}`,
+          mobile: `${mobile || ''}`,
+          openId: `${openId}`,
+          unionId: `${unionId}`,
+        })
+})
+```
+
+## 安装
+```git
+tnpm i --by=yarn @ali/rb-mini-abtest
+```
+
+## 
+## 声明式接入
+#### 适用场景
+当实验AB版本**仅需要对****组件UI（样式或布局）进行微调或无需调整，主要是文案或图片的差异，**这时候推荐使用声明式接入；
+
+ab平台：[https://pre-abtest.alibaba-inc.com/v2/l/biz/experimentList.html](https://pre-abtest.alibaba-inc.com/v2/l/biz/experimentList.html)
+
+#### <font style="color:#F5222D;">页面只有一个实验</font>
+```javascript
+import { getABTest } from '@ali/rb-mini-abtest';
+// ... 业务代码
+
+export default BasePage(() => {
+  useEffect(() => {
+    const params = {
+      appCode: 'wx4c531bcdb232c076', // 前端应用名
+      expId: 'AB_669', // 实验标识
+      ikkyu_env: 'pre', // 默认线上，pre是预发
+    };
+
+    getABTest(params).then((variations) => {
+      console.log(variations);
+    });
+  }, []);
+
+  return (
+    <View>
+      <Text>AB测试</Text>
+    </View >
+  );
+});
+```
+
+#### <font style="color:#F5222D;">页面有多个实验</font>
+```javascript
+import { getABTest } from '@ali/rb-mini-abtest';
+// ... 业务代码
+export default BasePage(() => {
+  useEffect(() => {
+    const paramsA = {
+      appCode: 'wx4c531bcdb232c076', // 前端应用名
+      expId: 'AB_669', // 实验标识
+      ikkyu_env: 'pre', // 默认线上，pre是预发
+    };
+    const paramsB = {
+      appCode: 'wx4c531bcdb232c076', // 前端应用名
+      expId: 'home_111', // 实验标识
+      ikkyu_env: 'pre', // 默认线上，pre是预发
+    };
+
+    Promise.all([getABTest(paramsA), getABTest(paramsB)]).then(([variationsA, variationB]) => {
+      console.log(variationsA, variationB);
+    });
+  }, []);
+
+  return (
+    <View>
+      <Text>AB测试</Text>
+    </View >
+  );
+});
+```
+
+#### 入参说明
+标<font style="color:#F5222D;">*</font>参数详细说明见**参数统一说明**章节
+
+
+
+| 参数名 | 描述 | 类型 | 必选 | 默认 |
+| --- | --- | --- | --- | --- |
+| appCode | 前端应用名 | String | 是 |  |
+| expId | 实验标识 | String | 是 |  |
+| <font style="color:#F5222D;">*</font>lazy | Lazy模式 | Bollean | 否 | true |
+| <font style="color:#F5222D;">*</font>mode | 读取线上配置还是Beta配置(实验beta发布) | String | 否 |  |
+| <font style="color:#F5222D;">*</font>env | 从一休的预发或线上环境读取配置 | String | 否 |  |
+|    allocateTo | 组id，强制分流到某个组 | String | 否 |  |
+
+
+
+
+#### 返回值
+| 参数名 | 描述 | 类型 |
+| --- | --- | --- |
+| variations | 实验A或B组的配置信息 | Object |
+
+
+
+
+### 埋点需要接入参数
+### <font style="color:#F5222D;">2001，2101，2201都需要加入染色abtest，染色合并用.链接</font>
+```javascript
+// 封装一个染色方法
+export const getABparams = () => {
+  const pathname = window.location && window.location.pathname;
+  if (getApp().feabtestMap && getApp().feabtestMap[pathname]) {
+    return {
+      abtest: getApp().feabtestMap[pathname],
+    };
+  } else {
+    return {};
+  }
+};
+
+// 业务封装的埋点要加进去
+goldlog.record(GOLDLOG_KEY, 'EXP', {
+      ...getABparams(),
+      // ...
+});
+```
+
+
+
+#### 特别说明：
++ 实验配置更新的情况下， 无论业务版本是否更新， 业务的方案都必须保证业务和新配置及老配置兼容及兜底，以应对配置为更新延迟、缓存时间、更新失败的情况;
++ 配置未更新的情况下， 业务更新， 业务的方案必须保证和配置的兼容及兜底;
+

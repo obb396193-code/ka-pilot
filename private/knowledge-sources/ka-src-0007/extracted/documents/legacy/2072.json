@@ -1,0 +1,42 @@
+{
+  "documentId": 2072,
+  "documentName": "3.2.2修改账户预算",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 修改账户预算\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/update/budget\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|        字段         |  类型  | 是否必填 |     说明     |                                                                               备注                                                                               |\n| :-----------------: | :----: | :------: | :----------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------: |\n|    advertiser_id    |  long  |   必填   |  广告主 ID   |                                                                  在获取 access_token 的时候返回                                                                  |\n| day_budget_schedule | long[] |   可选   |   分日预算   | 单位：厘，指定 0 表示预算不限，默认为 0；每天不小于 500 元，不超过 100000000 元，仅支持输入数字；修改预算不得低于该账户当日花费的 120% 和修改前预算的较小者，与 day_budget 不能同时传，优先级高于day_budget |\n|     day_budget      |  long  |   可选   | 单日预算金额 |     账户层级单日预算金额，单位：厘，指定 0 表示预算不限，默认为 0；不小于 500 元，不超过 100000000 元，仅支持输入数字；修改预算不得低于当日账户最高花费的1.2倍和修改前预算的较小者     |\n\n### 返回参数\n\n|  字段   |  类型  |   说明   | 备注 |\n| :-----: | :----: | :------: | :--: |\n|  code   |  int   |  返回码  |      |\n| message | string | 返回信息 |      |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1698724466699
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1698724466699,
+  "creator": "fanhuanqing",
+  "fullContext": null
+}

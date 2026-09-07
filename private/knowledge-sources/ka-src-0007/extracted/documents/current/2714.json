@@ -1,0 +1,219 @@
+{
+  "documentId": 2714,
+  "documentName": "联盟定向媒体包创建",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720093340618
+    }
+  ],
+  "apiId": 321,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/asset/media/create",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 13,
+  "bizName": "联盟",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl -X POST \\\n -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n -H 'Content-Type: application/json' \\\n -d '{\n            \"advertiser_id\": 20000152,\n            \"name\":\"market api创建计划\",\n            \"pos_ids\":[\"shidsadafasfsaffa\", \"sadsafsafsafsa\"]\n}' -L https://ad.e.kuaishou.com/rest/openapi/v1/asset/media/create"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n  \t\"code\": 0,\n  \t\"message\": \"OK\",\n  \t\"data\": {\n      \t      \"media_id\": 10005\n  \t}\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 16870,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "123",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16871,
+      "paramName": "name",
+      "paramType": "String",
+      "example": "教育行业媒体包",
+      "description": "媒体包名，媒体包名不能和已存在的包名重复",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16872,
+      "paramName": "pos_ids",
+      "paramType": "String[]",
+      "example": "[\"shidsadafasfsaffa\"]",
+      "description": "广告位列表",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 16873,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "响应状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16874,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "“OK”",
+      "description": "响应具体信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16875,
+      "paramName": "data",
+      "paramType": "AMMedia",
+      "example": "{\"media_id\": \"1232\"}",
+      "description": "媒体包 id",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 664,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 16862,
+          "paramName": "media_id",
+          "paramType": "Long",
+          "example": "10221",
+          "description": "媒体包 id",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720093340618,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

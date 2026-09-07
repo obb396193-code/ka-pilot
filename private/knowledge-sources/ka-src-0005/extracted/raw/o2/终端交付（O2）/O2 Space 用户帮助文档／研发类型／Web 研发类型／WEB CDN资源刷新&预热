@@ -1,0 +1,40 @@
+平台提供了自助刷新或预热 CDN 资源的工具，管理员审批后会直接执行相关操作。
+
+## 操作入口
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/ZWGl0o1y2Yx1O34Y/img/894da7e5-1386-4678-b0b2-85389ee9d3b7.png)
+
+
+## 资源刷新
+
+[https://space.o2.alibaba-inc.com/workbench/web/extend/purge?type=refresh](https://space.o2.alibaba-inc.com/workbench/web/extend/purge?type=refresh)
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/ZWGl0o1y2Yx1O34Y/img/a796d8ce-b7b8-40e3-9fc7-7b6170f76e68.png)
+
+
+表单项：
+
+- 需要刷新的 URL 列表。最多支持 10 个。
+- 申请原因
+提交后会生成申请单，审批通过后执行资源刷新任务。
+
+## 资源预热
+
+[https://space.o2.alibaba-inc.com/workbench/web/extend/purge?type=push](https://space.o2.alibaba-inc.com/workbench/web/extend/purge?type=push)
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/ZWGl0o1y2Yx1O34Y/img/0b31734e-5e49-4e07-a585-d7dccc197849.png)
+
+
+表单项：
+
+- 需要刷新的 URL 列表。最多支持 10 个，并且是同域名的 URL 地址。
+- 自定义预热头（可选）。必须是 JSON 格式，支持的头：x-u-tag、x-accept-terminal
+- 示例：
+```
+{
+ "x-accept-terminal": "pha"
+}
+```
+- 申请原因。
+提交后会生成申请单，审批通过后执行资源预热任务。
+

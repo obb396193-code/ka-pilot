@@ -1,0 +1,42 @@
+{
+  "documentId": 2340,
+  "documentName": "样本文件上传",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 样本文件上传\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/ad_model/v1/sample/upload](https://ad.e.kuaishou.com/rest/openapi/gw/ad_model/v1/sample/upload)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Integer | 1 | 必填 | 广告主id |  在获取 access_token 的时候返回|\n| file | File | test.zip | 必填 | csv的压缩zip文件 |支持将单个/多个.csv文件经过zip格式压缩上传  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 0 | 状态码 |  |\n| message | String | 消息 | 消息 |  |\n| data | UploadGatewayResponse |  | 返回消息体 |  |\n| &#8195;token | String | token | token |  |\n| &#8195;upload_file_name | String | sss | 上传文件名 |  |\n\n### 请求样例\n\n```js\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/ad_model/v1/sample/upload' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE] apdid=22aa3170-fecc-4e3d-aaf3-b83825191ca119473a5d1ce8417a307644cdc2c666cd:1680154657:1; accessproxy_session=e5c8db0b-ca32-490f-a0a2-74d9178a8cd5' \\\n--form 'file=@\"/Users/test/Documents/test.csv.zip\"' \\\n--form 'advertiser_id=\"00000001\"'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"upload_file_name\": \"test.zip\",\n        \"token\": \"[REDACTED_SECRET_EXAMPLE]\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMeAgICgxLm2ChjaBiD9taz19zAo3_W43g8=\"\n}\n```\n### 注意事项\n1、内容编排：每行一条记录，保证第一列为设备号，数据集header不可缺省\n\n2、文件格式：标准.csv文件格式，且使用utf-8编码压缩的.zip文件\n\n3、文件体积：单个文件大小在1G以内",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681958324824
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 4,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681958324824,
+  "creator": "wanglu15",
+  "fullContext": null
+}

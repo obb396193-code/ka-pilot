@@ -1,0 +1,312 @@
+{
+  "documentId": 2369,
+  "documentName": "原生快手号列表和短剧作者列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 原生快手号列表和短剧作者列表\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/report/user/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/report/user/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | - | 必填 | 广告主id |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | - | 返回码 | - |\n| message | String | - | 返回描述 |  |\n| data | UserProfileViewSnakeList | - | 1 |  |\n| &#8195;user_list | UserProfileViewSnake[] |  | 用户列表 |  |\n| &#8195;&#8195;user_id | Long |  | 用户id |  |\n| &#8195;&#8195;user_name | String |  | 用户名称 |  |\n| &#8195;&#8195;user_sex | String | M | 用户性别，男性M，女性F |  |\n| &#8195;&#8195;head_url | String |  | 用户头像 |  |\n| &#8195;&#8195;kol_user_type | Integer |  | 达人用户类型，2服务号达人，3聚星达人 |  |\n| &#8195;&#8195;suggestion | String |  | 账号建议 |  |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 123456\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\":0,\n    \"data\":[\n        {\n            \"user_sex\":\"M\",\n            \"head_url\":\"http://static.yximgs.com/s1/i/def/head_222u.png\",\n            \"kol_user_type\":1,\n            \"user_id\":123,\n            \"user_name\":\"test1\"\n        }\n    ],\n    \"message\":\"OK\",\n    \"request_id\":\"ELqAgIDQ9JiOrAEY3gUg_u7KoqQxKPjT_vgN\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1721047076231
+    }
+  ],
+  "apiId": 845,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/report/user/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 123456\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\":0,\n    \"data\":[\n        {\n            \"user_sex\":\"M\",\n            \"head_url\":\"http://static.yximgs.com/s1/i/def/head_222u.png\",\n            \"kol_user_type\":1,\n            \"user_id\":123,\n            \"user_name\":\"test1\"\n        }\n    ],\n    \"message\":\"OK\",\n    \"request_id\":\"ELqAgIDQ9JiOrAEY3gUg_u7KoqQxKPjT_vgN\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 47067,
+      "paramName": "kol_user_type",
+      "paramType": "Integer[]",
+      "example": "[1,2]",
+      "description": "<p>达人原生类型，1代表普通快手号，2服务号原生达人，3聚星原生达人 获取普通快手号达人时，仅可选择在快手号授权中，状态为授权生效的非入驻聚星快手号（已入驻聚星请选择达人视频授权投放）。短剧默认为普通快手号</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 47068,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "-",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 47069,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "-",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "-",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 47070,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "-",
+      "description": "<p>返回描述</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 47071,
+      "paramName": "data",
+      "paramType": "UserProfileViewSnakeList",
+      "example": "-",
+      "description": "1",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 971,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 26591,
+          "paramName": "user_list",
+          "paramType": "UserProfileViewSnake[]",
+          "example": "",
+          "description": "用户列表",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 970,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 26667,
+              "paramName": "user_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "用户id",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26668,
+              "paramName": "user_name",
+              "paramType": "String",
+              "example": "",
+              "description": "用户名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26669,
+              "paramName": "user_sex",
+              "paramType": "String",
+              "example": "M",
+              "description": "用户性别，男性M，女性F",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26670,
+              "paramName": "head_url",
+              "paramType": "String",
+              "example": "",
+              "description": "用户头像",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26671,
+              "paramName": "kol_user_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "达人用户类型，2服务号达人，3聚星达人",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1721047076231,
+  "creator": "haoshengwei",
+  "fullContext": null
+}

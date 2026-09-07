@@ -37,7 +37,7 @@ const tabs = [
   { value: "aigc", label: "AIGC 下单" },
 ] as const
 type Tab = (typeof tabs)[number]["value"]
-const UNLOCK = "素材域（R-015）+ 视频源探针通过后切换为真数据；商品主数据 = ka-data dim_product / 人工（快手无商品 API）"
+const UNLOCK = "素材接口接入 + 视频源探针通过后切换为真数据；商品主数据来自 ka-data 产品维表或人工录入（快手没有商品 API）"
 const productHelper = createColumnHelper<GridFeatures, ProductItem>()
 const productColumns = productHelper.columns([
   dragColumn<ProductItem>(),

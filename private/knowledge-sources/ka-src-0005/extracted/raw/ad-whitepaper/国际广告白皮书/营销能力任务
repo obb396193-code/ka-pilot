@@ -1,0 +1,6 @@
+SchedulerX2.0任务：p4p-customer-level，执行频率为半小时/次
+
+对应的p4p_global_config配置项： levelUpdate，此配置项标识本月是否已经进行过层级变更的操作
+
+p4p-apps里对应的处理类： com.alibaba.icbu.ads.business.timer.CustLevelTimer
+

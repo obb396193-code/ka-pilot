@@ -1,0 +1,42 @@
+{
+  "documentId": 1998,
+  "documentName": "10.1.7获取可选的封面贴纸样式",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取可选的封面贴纸样式\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/tool/creative_word/styles\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 是否必填 | 说明      | 备注                           |\n| ------------- | ---- | -------- | --------- | ------------------------------ |\n| advertiser_id | long | 必填     | 广告主 ID | 在获取 access_token 的时候返回 |\n\n### 返回参数\n\n| 字段             | 类型   | 说明         | 备注           |\n| ---------------- | ------ | ------------ | -------------- |\n| code             | int    | 返回码       |                |\n| message          | string | 返回信息     |                |\n| data             | struct | JSON 返回值  |                |\n| sticker_style_id | int    | 贴纸样式 ID  |                |\n| pic_id | string |  图片库图片ID |  |\n| sticker_styles   | struct | 贴纸样式列表 | 具体见下方表格 |\n\n##### &nbsp;\n\n| sticker_styles      |        |                  |                                                                                                             |\n| ------------------- | ------ | ---------------- | ----------------------------------------------------------------------------------------------------------- |\n| 字段                | 类型   | 说明             | 备注                                                                                                        |\n| overlay_type        | string | 贴纸样式类型     | 返回格式{sticker*style_id}*{pos}，sticker_style_id 表示贴纸样式 ID，pos 表示位置，1: top, 2: mid, 3: bottom |\n| overlay_preview_url | string | 贴纸样式预览链接 |                                                                                                             |\n\n### 请求样例\n\n```\n\ncurl -X GET \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\": 20000152\n  }' -L https://ad.e.kuaishou.com/rest/openapi/v1/tool/creative_word/styles\n```\n\n### 返回样例\n\n```\n\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": [\n        {\n            \"sticker_style_id\": 1,\n            \"sticker_styles\": [\n                {\n                    \"overlay_type\": \"1_1\",\n                    \"overlay_preview_url\": \"http://static.yximgs.com/udata/pkg/cover_compose_18108caa985046d297a574ea61ef7674.jpg\"\n                }\n            ]\n        }\n    ]\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624655
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624655,
+  "creator": "linmenger",
+  "fullContext": null
+}

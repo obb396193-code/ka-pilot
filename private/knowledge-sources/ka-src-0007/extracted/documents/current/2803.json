@@ -1,0 +1,267 @@
+{
+  "documentId": 2803,
+  "documentName": "小铃铛推送接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095565406
+    }
+  ],
+  "apiId": 1152,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/jingleBell/share",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": "{\n  \"advertiser_id\": 7869843,\n  \"live_user_id\": \"1743291153\",\n  \"jingle_bell_id\": \"629871139803856\",\n  \"target_account_ids\": [\n    139494,\n    7267594\n  ]\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": "{\"code\":0,\"data\":{\"result\":1,\"hostName\":\"ad-c11-bjx-platform91.idchb1az1.hb1.kwaidc.com\",\"traceId\":\"EL2BgIDw9pmaChidByDrhpXn4jEosIfm3As=\",\"data\":\"\"},\"message\":\"OK\",\"request_id\":\"EL2BgIDw9pmaChidByDrhpXn4jEosIfm3As=\"}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 58810,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主userId</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 58811,
+      "paramName": "live_user_id",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>主播ID</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 58812,
+      "paramName": "jingle_bell_id",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>小铃铛ID</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 58813,
+      "paramName": "target_account_ids",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "<p><em>推送目标 accountIds</em></p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 58816,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>结果code码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 58817,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>错误信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 58818,
+      "paramName": "data",
+      "paramType": "JingleBellCommonResSnake",
+      "example": "",
+      "description": "<p>操作结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3286,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 58814,
+          "paramName": "result",
+          "paramType": "Integer",
+          "example": "1",
+          "description": "<p>1成功 非1失败</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 58815,
+          "paramName": "data",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>如果失败，则是失败信息</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095565406,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -1,0 +1,204 @@
+本文介绍如何在 O2 Space 研发平台自定义三方异步任务以及线上卡口。
+
+## 背景信息
+
+异步任务指的是在 O2 Space 研发平台发布完日常/预发后需要触发的检测任务，如代码安全扫描、工作项验收检测等。
+
+在平台上，可以在迭代流程中查看异步任务运行情况，如下图所示：
+
+(https://img.alicdn.com/imgextra/i1/O1CN01nEcjGo1CNeICGPAQe_!!6000000000069-2-tps-2614-790.png)
+
+
+点击“查看详情”可以看到异步检测结果、通过依据、负责人等。
+
+(https://img.alicdn.com/imgextra/i1/O1CN01IqTjW41X4VfnVHE0h_!!6000000002870-2-tps-1592-1004.png)
+
+
+
+
+异步任务的检测结果可以作为线上发布的拦截卡口，可以在迭代流程中查看，如下图所示：
+
+(https://img.alicdn.com/imgextra/i4/O1CN01sW6M2O25NvOksAMZG_!!6000000007515-2-tps-2788-1072.png)
+
+
+在线上阶段，三方检查看口会收拢展示在发布卡口面板中，当线上卡口存在不通过的检测项时，用户无法执行线上发布。
+
+
+
+## 使用场景
+
+业务方有个性化的需求，期望在 O2 Space 发布完日常/预发后触发自定义的三方平台的检测任务，如代码安全扫描、工作项验收检测等。当检测任务不通过时，希望能作为线上发布的拦截卡口。
+
+
+
+## 具体操作
+
+### 1. 提供必要的检测项配置
+
+- 任务标识：检测项标识（小写英文和下划线），如 ats_check
+- 任务描述：说明检测项的作用，如触发 ats 任务检测任务
+- 检测平台：检测项所属的平台（O2 Space 会作为平台的唯一标识，大写英文），如 ATS
+- 检测平台描述：如 ats 检测平台
+- 检测状态文案映射：如 PASS 通过；RUNNING 检测中；FAILED 检测不通过；ABNORMAL 检测异常
+- 检测任务的创建接口（包括正式和预发）：O2 Space 会在发布成功后触发，接口为 POST，O2 Space 发送的内容请查阅 第 2 点，创建接口返回内容规范请查阅 第3点
+- 检测任务的查询接口（包括正式和预发）：O2 Space 会在异步任务/卡口校验发起查询，接口为 GET，接口返回内容规范请查阅 第 4 点
+准备好上述配置后，请通过[研发小蜜](https://links.alibaba-inc.com/app/room/5fbf53f6cd068c04d342e682/start-conversation-form/)提供上述配置信息，并说明业务场景，评估通过后，平台侧会提供专属的异步任务 ID
+
+### 2. O2 Space 传递的数据内容
+
+- 统一数据格式的发布结果（可以根据业务需求增加内容）
+比如
+
+```
+{
+  "is_successful": true,
+  "task_id": 1329,
+  "pub_env": "daily",
+  "version": "9.2.0",
+  "deploy": {
+    "pages": [
+      "https://market.wapa.taobao.com/app/deftest-daily/webapp/article/index.html"
+    ], 
+    "assets": []
+  },
+  "build": {
+    id: 9480974,
+    md5:"e768eb7332595e5ddbf3f048712d2c8a",
+    dist:"https://tsb.oss-cn-zhangjiakou.aliyuncs.com/cloudbuild/runner/result/e768eb7332595e5ddbf3f048712d2c8a_1573645288346_99199.tar.gz"
+  },
+  // 任务触发者
+  "user": {
+    "emp_id": "193478",
+    "nick": "冬鸫",
+    "account": "gaohua.jgh",
+    "email": "gaohua.jgh@alibaba-inc.com"
+  },
+  // 应用
+  "app": {
+    "id": 312,
+    "type": "webapp",
+    "description": "a repo"
+  },
+  // 应用配置
+  appconf: {
+  level: 1 // 应用等级，1 核心应用 2 非核心应用（值为空时也为非核心）
+}
+// 迭代
+"iteration": {
+  "id": 413132,
+  "description": "测试",
+  "version": "0.0.4"
+},
+// 迭代
+"iterationconf": {
+  "trunk": "master"
+},
+// 仓库信息
+"repo": {
+  "project": "assets",
+  "group": "deftest-daily",
+  "branch": "test/9.2.0",
+  "commit_id": "75a610e6556298c7c278924c1d903c3b8a244ebf"
+},
+branches: {
+  // 变更数据
+  devbranches: [
+    {
+      branch: 'feature-daily/0.0.4', // 开发分支
+    commit_id: '8cb2f9be10aeecb855b7b1257c15497700027492',
+    isKeepBranch: false,
+    description: '',
+    emp_id: '250797', // 创建者
+    aonecr_id: null,
+    aone_binds: 'req|31591583,req|31591511', // 工作项，逗号分隔
+    cr_status: null
+    }
+  ]
+},
+"custom_task_param": {}  // 自定义任务传参
+}
+```
+### 3. 检测任务创建接口返回的必要内容
+
+- taskId: 检测平台侧触发的任务id
+- isCreated: 是否创建成功
+- status：任务运行状态（RUNNING、FAILED、PASS、ABNORMAL）
+- detailUrl：任务运行详情结果链接
+例子：
+
+```
+{
+  "isCreated": true,
+  "detailUrl": "https://taoexp.alibaba-inc.com/yanshou#/ysTaskAone/acceptanceCheck?aoneStr=34490747,34508295,34508138&moduleStr=97942&platform=def",
+  "taskId": 226,
+  "status": "FAILED"
+}
+```
+### 4. 检测任务查询接口返回的必要内容（查询参数：taskId）
+
+- taskId: 检测平台侧触发的任务id
+- status：任务运行状态（RUNNING、FAILED、PASS、ABNORMAL）
+- detailUrl：任务运行详情结果链接
+- message：检查结果描述（可选）
+例子：
+
+```
+{
+  "detailUrl": "https://taoexp.alibaba-inc.com/yanshou#/ysTaskAone/acceptanceCheck?aoneStr=34490747,34508295,34508138&moduleStr=97942&platform=def",
+  "taskId": 226,
+  "status": "FAILED",
+  "message": "检测不通过，请联系 xxx 或参考 xxx 文档"
+}
+```
+### 5. 检测平台任务结束后需触发的回调
+
+预发环境：[https://pre-space.o2.alibaba-inc.com/open/async_task/callback](https://pre-space.o2.alibaba-inc.com/open/async_task/callback)
+
+线上环境：[https://space.o2.alibaba-inc.com/open/async_task/callback](https://pre-space.o2.alibaba-inc.com/open/async_task/callback)
+
+```
+Method：POST
+
+Body：
+{
+  "taskId": "123", // 平台的检测任务id
+  "status": "FAILED", // 任务状态 
+  "detailUrl": "http://localhost:6001", // 任务运行详情结果链接
+  "platformCode": "ATS", // 检测平台code
+  "taskCode": "tnpm_test" // 检测任务code
+}
+```
+### 6. 如何为应用或团队开启任务校验
+
+配置完规则后，平台提供规则管理页面，地址为：
+
+[https://space.o2.alibaba-inc.com/console/asynctask/${asynctaskId}](https://space.o2.alibaba-inc.com/console/asynctask/${asynctaskId})(asynctaskId 换成平台提供的异步任务 ID）
+
+(https://img.alicdn.com/imgextra/i1/O1CN010ctwiy1gZ2cJ78q7p_!!6000000004155-2-tps-1778-964.png)
+
+
+管理页面提供的功能包括：
+
+- 配置异步任务生效范围
+- 配置异步任务检测结果是否作为线上卡口
+- 查看异步任务触发记录
+- 异步任务设置
+### 7. 如何为异步任务定制 UI 
+
+如果你想为异步任务检测结果定制个性化界面，如下图扩展链路有效性的检测项详情，可参考文档：[如何为异步任务定制 UI](https://yuque.antfin.com/docs/share/8352b91c-6753-4e99-9171-7585a958da5a?#)
+
+(https://img.alicdn.com/imgextra/i1/O1CN01bKWFrS1u2tQfbtQl5_!!6000000005980-2-tps-2110-668.png)
+
+
+
+
+
+
+## 常见问题
+
+### 1. 如何修改/添加异步任务负责人
+
+请通过研发小蜜由平台管理员后台操作。
+
+
+

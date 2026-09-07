@@ -1,0 +1,59 @@
+## O2 Space 研发平台
+
+### 新增
+
+1. 支持批量废弃变更
+(https://img.alicdn.com/imgextra/i1/O1CN01EkSBPL1b9mi5fdLsp_!!6000000003423-2-tps-3618-814.png)
+
+
+1. 支持展示封面引导图
+(https://img.alicdn.com/imgextra/i3/O1CN01gBillg1bnAlseYhlo_!!6000000003509-2-tps-2182-1309.png)
+
+
+1.  增加自动部署的提醒及一键开启
+(https://img.alicdn.com/imgextra/i3/O1CN01nXoEGP1hkK04zahBE_!!6000000004315-2-tps-1406-950.png)
+
+
+(https://img.alicdn.com/imgextra/i4/O1CN01MT1O6J1JBvTimfdNe_!!6000000000991-2-tps-1227-202.png)
+
+
+1. CodeLess 源码上传支持居家 VPN 环境上传
+1. 展示变更分支与主干同步状态，支持一键同步主干
+(https://img.alicdn.com/imgextra/i3/O1CN01Nj8Vbf1IVKdwxIADi_!!6000000000898-2-tps-309-127.png)
+
+
+1.  新增变更分支与迭代主干的合并冲突预检，以及集成区内的冲突提示：
+(https://img.alicdn.com/imgextra/i4/O1CN01gYeoUi28aEuJNpinu_!!6000000007948-2-tps-418-197.png)
+
+
+1.  在开启单测插件时，自动添加 AI 单测 web hook，用于 push 代码后计算待测试代码，提升 AI 单测的打开速度
+
+
+### 优化
+
+1. 优化团队空间中质量插件的配置界面布局，通过色块提升插件区分度
+1. 优化 CR 评审人的验证逻辑。在编辑 CR 时，应该要判断 CR 提交人不能作为评审人，而不是当前登录的用户。主要解决用户对已经创建的 CR 增加评审人时无法追加的情况。
+1. 优化“团队空间-成员”的列表样式，兼容花名不存在的用户
+1. 如果应用关闭了 AOT 或者 开启了新版自动集成，则不再触发 AOT 
+1. 迭代列表和迭代基本信息中增加灰度取消相关信息
+1. 增加异步任务申请跳过的配置项,支持只需要测试负责人跳过
+1. 增加引导：用户开启单元测试插件
+(https://img.alicdn.com/imgextra/i3/O1CN0108CXye1ZTMPG9FUmS_!!6000000003195-2-tps-2858-1300.png)
+
+
+1. 优化质量插件的展示面板
+	1. 优化验证插件结果展示，透出插件版本信息。效果：
+(https://img.alicdn.com/imgextra/i4/O1CN0160YKzf26oJqqvugcz_!!6000000007708-2-tps-2334-408.png)
+
+
+	1. 对没有 ui 扩展的验证插件，提供默认的展示信息，避免白屏。效果：
+(https://img.alicdn.com/imgextra/i2/O1CN01dFuvFj1NigGYDyDnE_!!6000000001604-2-tps-2734-584.png)
+
+
+	1. 调整插件添加、移除接口，替换为 def-work 接口，在添加单测插件时，自动添加 AI 单测 web hook，用于 push 代码后计算待测试代码，提升 AI 单测的打开速度
+
+
+### 修复
+
+1. 修复 Codeless 通过 API 上传失败
+1. 修复研发类型 Icon 展示异常

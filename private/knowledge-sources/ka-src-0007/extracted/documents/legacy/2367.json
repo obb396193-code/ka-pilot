@@ -1,0 +1,42 @@
+{
+  "documentId": 2367,
+  "documentName": "获取短剧列表接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 通过快手号id查询授权短剧接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| user_id | Long |  | 必填 | 短剧作者快手ID |  |\n| advertiser_id | Long |  | 必填 | 广告主ID |  |\n| series_title | String |  | 可选 | 短剧标题 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | struct |  |  |  |\n| &#8195;series | struct[] |  | |  |\n| &#8195;&#8195;cover_img | String |  | 短剧封面 |  |\n| &#8195;&#8195;description | String |  | 短剧描述 |  |\n| &#8195;&#8195;episode_amount | Integer |  | 剧集数量 |  |\n| &#8195;&#8195;id | Long |  | 短剧id |  |\n| &#8195;&#8195;title | String |  | 短剧标题 |  |\n| code | Integer |  | 请补充描述详情 |  |\n| message | String |  | 请补充描述详情 |  |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 456,\n    \"user_id\": 123\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"series\": [\n            {\n                \"description\": \"测试测试测试测试的发送到发送到发送到发送到发疯\",\n                \"id\": 3821629,\n                \"episode_amount\": 6,\n                \"title\": \"测试短剧1\",\n                \"cover_img\": \"https://media-cloud-api.staging.kuaishou.com/bs2/courseHead/1b2bd8825246.jpg\"\n            },\n            {\n                \"description\": \"这是一个ysp的测试短剧\",\n                \"id\": 3821633,\n                \"episode_amount\": 8,\n                \"title\": \"测试短剧2\",\n                \"cover_img\": \"https://media-cloud-api.staging.kuaishou.com/bs2/courseHead/1b2bd8825248.jpg\"\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ELqAgIDQ9JiOrAEY7QggsufH3qQxKNOy_ckL\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1693917476961
+    }
+  ],
+  "apiId": 843,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1693917476961,
+  "creator": "liumengyun",
+  "fullContext": null
+}

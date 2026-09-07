@@ -1,0 +1,33 @@
+{
+  "document_id": "ka-src-0008",
+  "source": "巨量引擎商业开放平台官方公开文档",
+  "source_url": "https://open.oceanengine.com/labels",
+  "captured_at": "2026-08-20T15:46:31.976Z",
+  "label_tree_types": [
+    "BUSINESS",
+    "LASTEST_UPDATES"
+  ],
+  "label_groups_by_tree": {
+    "BUSINESS": 9,
+    "LASTEST_UPDATES": 1
+  },
+  "label_nodes_with_identify_key": 29,
+  "leaf_label_nodes": 20,
+  "hidden_direct_label_nodes": 4,
+  "hidden_effective_label_nodes": 9,
+  "successful_document_trees": 28,
+  "expected_navigation_only_trees": 1,
+  "menu_mounts": 2990,
+  "unique_documents": 1103,
+  "captured_documents": 1103,
+  "endpoint_documents": 815,
+  "structured_endpoint_documents": 815,
+  "unique_structured_endpoint_paths": 715,
+  "documents_with_referenced_endpoint_evidence": 18,
+  "unique_referenced_endpoint_paths": 1843,
+  "unique_documented_paths": 2056,
+  "failures": 0,
+  "recorded_anomalies": 1,
+  "credential_sanitization_counts": {},
+  "boundary": "截至抓取日，覆盖官网未登录状态下 BUSINESS 与 LASTEST_UPDATES 两类标签树公开返回且详情可匿名获取的页面，按 doc_id 去重；hidden 内容仅作历史/背景参考。未覆盖登录后、Scope/白名单/灰度、账户授权后能力，也不代表接口可调用、CLI 已封装或产品已接入。官网目录为动态快照，不宣称永久全量。"
+}

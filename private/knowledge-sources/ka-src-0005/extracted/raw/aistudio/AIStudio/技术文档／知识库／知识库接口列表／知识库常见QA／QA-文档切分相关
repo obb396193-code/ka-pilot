@@ -1,0 +1,9 @@
+
+# 单元格长度超过阈值300
+
+ops-text-embedding-001模型的默认长度为300。可以切换为ops-text-embedding-002，官方文档显示可以支持8000长度，可以满足大部分需求。
+
+## 方法一：新建知识库，默认模型为ops-text-embedding-002
+
+## 方法二：知识库切换模型，切换为ops-text-embedding-002
+

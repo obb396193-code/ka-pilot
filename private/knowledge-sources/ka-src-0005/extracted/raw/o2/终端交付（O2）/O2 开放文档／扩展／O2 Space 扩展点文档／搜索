@@ -1,0 +1,49 @@
+### search-more-list
+
+扩展顶部的搜索列表
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ay6ad00aima1u9ea/imgsI522lE3Kn.png)
+
+
+#### config
+
+```
+interface Config {
+  items: ConfigItem[];
+}
+interface ConfigItem {
+  label: string;
+  key: string;
+}
+
+```
+#### Service Api Params
+
+```
+interface QueryParams {
+     searchQuery: string;
+  key: string[];
+  pageSize: number;
+  pageNumber: number;
+}
+
+interface Entity {
+   name: stirng;
+   description: {
+           label: string;
+      value: string;
+   }[]; // 最多三个
+   linkUrl: string; // 点击跳转后的链接
+}
+interface ResultItem {
+  key: string;
+    data: Entity[];
+  hasMore: booelan;
+}
+interface Result {
+  data: ResultItem[];
+}
+
+```
+
+

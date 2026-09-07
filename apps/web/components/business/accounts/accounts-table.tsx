@@ -34,7 +34,7 @@ function buildColumns(actions: RowActions) {
     helper.accessor((row) => row.owner?.displayName ?? "", { id: "owner", header: "负责人", meta: { label: "负责人" }, cell: ({ getValue }) => getValue() || <span className="text-muted-foreground">待分配</span> }),
     helper.accessor((row) => row.linkedTasks[0]?.taskName ?? "", { id: "task", header: "绑定任务", meta: { label: "绑定任务" }, cell: ({ row }) => row.original.linkedTasks[0] ? <Link href={`/tasks/${encodeURIComponent(row.original.linkedTasks[0].taskId)}`} className="underline-offset-4 hover:underline">{row.original.linkedTasks[0].taskName}</Link> : <span className="text-muted-foreground">未挂</span> }),
     helper.accessor((row) => row.product?.name ?? "", { id: "product", header: "产品名", meta: { label: "产品名" }, cell: ({ getValue }) => getValue() ? <TypeChip>{getValue()}</TypeChip> : <MissingValue title="未填产品名" /> }),
-    helper.accessor("poolStatus", { header: "库存态", meta: { label: "库存态" }, cell: ({ row }) => { const meta = poolStatusMap[row.original.poolStatus]; return <TypeChip className="gap-1.5" ><span className={cn("size-1.5 rounded-full", meta.dot)} />{meta.label}{row.original.poolStatusSource === "manual" ? <span className="text-[10px]">手</span> : null}</TypeChip> } }),
+    helper.accessor("poolStatus", { header: "账户状态", meta: { label: "账户状态" }, cell: ({ row }) => { const meta = poolStatusMap[row.original.poolStatus]; return <TypeChip className="gap-1.5" ><span className={cn("size-1.5 rounded-full", meta.dot)} />{meta.label}{row.original.poolStatusSource === "manual" ? <span className="text-[10px]">手</span> : null}</TypeChip> } }),
     helper.accessor("lifecycleStage", { header: "投放阶段", meta: { label: "投放阶段" }, cell: ({ getValue }) => getValue() === "unknown" ? <MissingValue title="未开投或阶段未判定" /> : <TypeChip>{lifecycleLabel[getValue()]}</TypeChip> }),
     helper.accessor((row) => row.balance?.value ?? null, { id: "balance", header: "余额 · 断量", meta: { label: "余额 · 断量", align: "right" }, cell: ({ row }) => {
       const balance = row.original.balance
@@ -60,7 +60,7 @@ function buildColumns(actions: RowActions) {
         <DropdownMenuItem asChild><Link href={accountHref(item)}>打开完整账户页</Link></DropdownMenuItem>
         <DropdownMenuItem onSelect={() => openAgentDrawer(`分析账户「${item.accountName}」的成本与量级`)}><IconSparkles />问 AI</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={() => actions.onPoolStatus(item)}>改库存态</DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => actions.onPoolStatus(item)}>改账户状态</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => actions.onProduct(item)}>改产品名</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => actions.onTransfer([item])}>转移负责人</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => actions.onReplicate(item)}>发起优质户复制</DropdownMenuItem>

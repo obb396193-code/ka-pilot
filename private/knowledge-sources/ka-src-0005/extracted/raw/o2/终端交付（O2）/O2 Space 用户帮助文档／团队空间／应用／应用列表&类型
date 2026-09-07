@@ -1,0 +1,46 @@
+## 应用列表
+
+应用列表下，展示了当前团队下的所有应用及其负责人情况。
+
+(https://o2-img.alistatic.com/i/i09blZ/n8akn3PUpeweETdR8J0gx-7dee74b9c3.png)
+
+
+- 点击应用ID，可跳转到当前应用。
+- 点击右上角按钮，可批量修改应用的负责人、批量修改应用类型。
+
+
+## 应用类型
+
+应用类型下，团队管理员可在此管理团队成员在创建应用时可选的应用类型。
+
+(https://o2-img.alistatic.com/i/i09blZ/IfYmjCK0gqz6mXbRlnuve-2dbce942d8.png)
+
+
+注：上层团队添加的应用类型，无权限删除；当前团队添加的应用类型，可进行删除。
+
+### 脚手架
+
+点击应用类型，进入脚手架管理。团队管理员可根据实际情况，在这里对脚手架进行整理。
+
+(https://o2-img.alistatic.com/i/i09blZ/6dGEq5gx7YQLaGKhYODKI-35414dfdea.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/s5CujYHuLvNVwbFH7kPOL-d77d1497aa.png)
+
+
+注：上层团队添加的脚手架，无权限删除；当前团队添加的脚手架，可进行删除。
+
+### 结果查看
+
+团队空间-应用类型，这里添加了多少个应用类型，则会在新建应用时展示对应数量的应用类型。
+
+(https://o2-img.alistatic.com/i/i09blZ/U6bQGIMSuNJMoXesyPGzz-2880b04bc4.png)
+
+
+团队空间-应用类型-脚手架列表，某个应用类型下添加了多少个脚手架，则新建应用时，该应用类型下会展示对应数量的脚手架。
+
+(https://o2-img.alistatic.com/i/i09blZ/7jaFqWOs5R9UcWc932nmV-b01e367a99.png)
+
+
+
+

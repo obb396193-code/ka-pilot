@@ -1,0 +1,13 @@
+## 梳理思路
+* 按系统现状梳理系统交互架构图
+* 基于系统交互架构图梳理架构优化点和监控点
+* 推进系统优化点评估可行方案和落地实施
+* 根据梳理出的监控点对当前系统监控做查漏补缺和优化现有监控
+
+## Action
+
+*  [资损防控对账](https://lark.alipay.com/b2b-search_p4p-test/sbg2pa/pfgghg)
+*  [广告统一干预平台](http://gitlab.alibaba-inc.com/intl_ad/ad_intervene/wikis/home)
+*  点击预警场景梳理和实施
+*  监控点查漏补缺
+*  核心业务全链路压测跟进（顶展、AEP4P、SCP4P）

@@ -1,0 +1,232 @@
+> [边缘程序](https://help.aliyun.com/document_detail/263523.html?spm=5176.10695662.1996646101.searchclickresult.6dfa6ac0XGWyBH)：EdgeRoutine，简称 ER，是一个运行在阿里云全球边缘节点上的 JavaScript 代码运行环境，支持ES6 语法和标准的 Web Service Worker API。您可以将自行开发的 JavaScript 代码发布至全球边缘程序运行，在全球边缘节点上就近地处理客户端的请求。
+
+## 能力介绍
+
+#### 基础能力
+
+O2 Space 目前已支持边缘程序研发链路，核心能力：
+
+- 支持预发环境发布及验证
+- 支持线上灰度发布
+- 支持线上回滚
+- 支持灰度环境设置、程序管理、操作记录等能力
+- 支持代码构建（云构建）、代码检查（门神）、代码审查（CR）、ChangeFree 等能力及安全生产卡口
+
+
+#### 提供的发布环境
+
+- 日常环境
+- 线上环境
+
+
+> 线上发布后迭代会自动进入灰度阶段，用户完成灰度（取消灰度或正式发布）后迭代才能完成。
+
+## 接入说明
+
+### 主账号给子账号授权 CDN、DCDN
+
+- CDN 的域名，子账号需授权 CDN 和 DCDN 的所有权限
+- DCDN 的域名，子账号需授权 DCDN 的所有权限
+#### Step1
+
+用主账号登录[阿里云官网控制台](https://homenew.console.aliyun.com/home/dashboard/ProductAndService)，进入人员权限管理：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgygXhNUyAk6.png)
+
+
+#### Step2
+
+找到要赋予权限的子账号，选择添加权限：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgeMh6J3vENL.png)
+
+
+#### Step3
+
+选择 AliyunCDNFullAccess 和 AliyunDCDNFullAccess ，点击“确定”，子账号即可使用 CDN 和 DCDN 了。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgRaQ524YRl1.png)
+
+
+### 新建
+
+#### 账号及域名
+
+- 准备 AK、SK 子账号，开通 ER 服务。
+- 准备一个相应服务的域名
+- CDN 的域名，子账号需授权 CDN 和 DCDN 的所有权限
+- DCDN 的域名，子账号需授权 DCDN 的所有权限
+- 了解当前域名下的流量及 ER 状况
+- 域名下无ER，但存在访问流量，无法直接接入 O2 Space，需联系管理员处理
+- 域名下无ER，且无访问流量，可直接创建
+- 域名下已有 ER，O2 Space 将接管已有 ER 程序，并后续仅能在 O2 Space 发布。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgb1l6IA7b6T.png)
+
+
+#### 新建应用
+
+- 同一个域名仅支持接入一个 O2 Space 应用
+- 一个应用下仅支持存在一个 ER 程序，可以有多个代码版本
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgRTGpPtyNeR.png)
+
+
+可选择空模版或者官方脚手架 Edge Routine 进行仓库初始化。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgca3ESnGQXc.png)
+
+
+需通过 AKSK 校验和域名校验后方能进行应用创建。
+
+#### 接管已有 ER
+
+- 使用已有子域
+- 使用已有程序ID、程序配置、灰度环境配置
+- 接管 ER 目前不会将线上版本的已有代码自动同步到 O2 Space 仓库，发布前用户请自行检查并同步需要发布的代码。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgckIvOieldD.png)
+
+
+当检测到域名下已有 ER 程序时，界面将弹出 O2 Space 接管 ER 确认框，拒接将无法创建应用，同意后，O2 Space将接管此 ER，并复用相关信息，后续仅能在 O2 Space 上进行发布操作，如检测到异常，O2 Space 将不再提供服务。
+
+#### 创建成功
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgj1oOKGho92.png)
+
+
+## 程序与域名绑定
+
+当 O2 Space 接管已有 ER 时，程序与域名已默认绑定，当账号下无 ER，新建 ER 时，ER 生效必须由用户手动绑定域名。
+
+用户绑定程序与域名后，无法手动解绑。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgkAIEeUpnyg.png)
+
+
+涉及到系统解绑的场景：
+
+- 首次发布ER，灰度放量过程中取消灰度，无可恢复版本，解绑 ER 和域名。
+- 首次发布线上环境后，执行线上回滚，无可回滚历史线上版本，解绑 ER 和域名。
+## 发布流程
+
+新建迭代后，可以看到有预发、线上验证、线上三个发布阶段
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgpTe2MelmPS.png)
+
+
+### 预发
+
+
+
+预发：ER 程序发布到内网预发环境，发布完成后点击查看结果，可以看到内网预发的地址
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgEAGyIswON1.png)
+
+
+
+
+### 线上验证
+
+
+
+线上验证：原来的预发发布，把 ER 程序发布到公有云预发环境
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/img0lnuCKjkhe.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgWQTkwDWXZ1.png)
+
+
+此预发环境为公有云预发环境，可选取以下 IP 中的几个进行 Host 域名绑定测试。 绑定 Host 的方式是修改测试机本地 Host 文件，加入测试 IP 和域名，例如添加 121.196.0.60 你的域名 ，或者直接使用命令行指定测试环境 IP curl -v '你的域名' -x 42.123.199.100:80 测试。
+
+### 线上
+
+线上：按设置的灰度区域放量，放量完成发布线上
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgAAwy3jjxPP.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/img1XiaWI0bMm.png)
+
+
+
+
+### 灰度环境设置
+
+O2 Space 发布 ER，必须要经过灰度放量，不能直接发布线上全量。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/img0yVjdIhZKL.png)
+
+
+可根据最近一小时的流量占比选择，选择合适的地域作为灰度区域，可对设置的灰度区域做增删，设置的灰度区域在灰度放量阶段必须完整全部区域放量，方可进行线上发布。
+
+
+
+### 灰度发布
+
+灰度发布能力集成线上发布的流水线上。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgxKdbmVzrLG.png)
+
+
+### 灰度放量
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgdc8wN1CJOJ.png)
+
+
+- 可查看当前灰度区域最近1小时的用户流量占比、灰度状态、灰度时长、查看域名流量详情
+- 可取消灰度
+
+
+### 取消灰度
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgAnceiMNcMd.png)
+
+
+- 当存在线上版本时，灰度区域的程序将重新发布上一个历史线上版本
+- 当不存在线上版本时，则提示是否将域名与程序进行解绑，解绑后域名访问，将不再经过此 ER，解除绑定后仍可在应用概览页进行再次绑定
+### 程序回滚
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imggXvXBsmXS6.png)
+
+
+- 当存在历史线上版本时，可选择需要回滚到的历史线上版本
+- 当不存在历史线上版本时，则提示是否将域名与程序进行解绑，解绑后域名访问，将不再经过此 ER，解除绑定后仍可在应用概览页进行再次绑定
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgZO9WeWxdSp.png)
+
+
+## 其他说明
+
+### 程序管理
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgi28dqjQV4i.png)
+
+
+ER 最多可保留 10 个程序版本，超过将无法进行程序发布，需手动删除。如已在预发、灰度或者线上环境的程序版本，无法删除。
+
+### 发布记录
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imglP7eSNC5Ot.png)
+
+
+所有发布相关记录，一定有 taskID。
+
+### 操作记录
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgzSQU69Fcnx.png)
+
+
+含发布记录和其他相关敏感操作记录，可能没有 taskID。
+
+### 域名流量
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgNWhCtYVg2M.png)
+
+
+展示最近3小时域名下网络流量情况，辅助观察 ER 线上影响。
+
+### 代码详情
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dlqcnv/imgHxqZWds1lm.png)
+
+
+可查看已有版本的代码详情，在进行线上回滚等操作时，进行辅助阅读。
+

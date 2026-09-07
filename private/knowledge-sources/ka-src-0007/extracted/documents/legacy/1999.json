@@ -1,0 +1,42 @@
+{
+  "documentId": 1999,
+  "documentName": "10.12.4试玩推送",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 试玩推送\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/play/share\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段               | 类型   | 是否必填 | 说明                   | 备注                       |\n| ------------------ | ------ | -------- | ---------------------- | -------------------------- |\n| advertiser_id      | long   | 是       | 广告主 ID              | （注：非账户快手 ID）      |\n| play_ids           | long[] | 是       | 分享源试玩 id 列表     | 可通过查询试玩列表获得     |\n| target_account_ids | long[] | 是       | 分享的目标账户 id 列表 | 可通过查询共享账户列表获得 |\n\n### 返回参数\n\n| 字段       | 类型   | 说明              | 备注 |\n| ---------- | ------ | ----------------- | ---- |\n| code       | int    |                   |      |\n| message    | string |                   |      |\n| data       |        |                   |      |\n| details    |        |                   |      |\n| account_id | long   | 可分享的账户 id   |      |\n| play_id    | long   | 推送生成的试玩 id |      |\n\n### 请求样例\n\n```\n    curl -H \"Access-Token:[REDACTED_SECRET_EXAMPLE]\" \\\n       -H \"Content-Type:application/json\" \\\n       -d '\n       {\n       \"advertiser_id\": 10787973,\n       \"play_ids\": [4293857038],\n       \"target_account_ids\": [10787999, 10787998]\n       }\n       ' https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/play/share\n```\n\n### 返回样例\n\n```\n         {\n       \"code\": 0,\n       \"data\": {\n       \"details\": [\n       {\n       \"account_id\": 10787999,\n       \"play_id\": \"123\"\n       }\n       {\n       \"account_id\": 10787998,\n       \"play_id\": \"124\"\n       }\n       ]\n       },\n       \"message\": \"OK\",\n       \"request_id\": \"0ae4094286ab419bad50e559bdb405fe\"\n       }\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624664
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624664,
+  "creator": "linmenger",
+  "fullContext": null
+}

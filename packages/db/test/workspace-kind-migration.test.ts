@@ -4,6 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
+import { windowSize } from "./migration-window.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -22,7 +23,7 @@ describe("workspace kind migration", () => {
   it("backfills legacy workspaces, rejects invalid kinds and replays up/down/up", async () => {
     const suffix = randomUUID();
 
-    await runMigrations({ databaseUrl, direction: "down", count: 3 });
+    await runMigrations({ databaseUrl, direction: "down", count: windowSize("010") });
     const legacy = await pool.query<{ id: string }>(
       `INSERT INTO workspaces (name) VALUES ($1), ($2) RETURNING id`,
       [`legacy-personal-a-${suffix}`, `legacy-personal-b-${suffix}`],
@@ -36,7 +37,7 @@ describe("workspace kind migration", () => {
       [personalWorkspace, otherPersonalWorkspace],
     );
 
-    expect(await runMigrations({ databaseUrl, count: 3 })).toHaveLength(3);
+    expect(await runMigrations({ databaseUrl, count: windowSize("010") })).toHaveLength(windowSize("010"));
     const backfilled = await pool.query<{ id: string; kind: string }>(
       `SELECT id, kind FROM workspaces WHERE id = ANY($1::uuid[]) ORDER BY id`,
       [[personalWorkspace, otherPersonalWorkspace]],
@@ -70,7 +71,7 @@ describe("workspace kind migration", () => {
       [`invalid-${suffix}`],
     )).rejects.toMatchObject({ code: "23514" });
 
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 3 })).toHaveLength(3);
+    expect(await runMigrations({ databaseUrl, direction: "down", count: windowSize("010") })).toHaveLength(windowSize("010"));
     const removed = await pool.query<{ exists: boolean }>(
       `SELECT EXISTS (
          SELECT 1 FROM information_schema.columns
@@ -81,7 +82,7 @@ describe("workspace kind migration", () => {
     );
     expect(removed.rows[0]?.exists).toBe(false);
 
-    expect(await runMigrations({ databaseUrl, count: 3 })).toHaveLength(3);
+    expect(await runMigrations({ databaseUrl, count: windowSize("010") })).toHaveLength(windowSize("010"));
     const replayed = await pool.query<{ kind: string }>(
       `SELECT kind FROM workspaces WHERE id = $1`,
       [team.rows[0]!.id],

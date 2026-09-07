@@ -1,0 +1,12 @@
+
+## FunctionCall 参数示例
+
+FunctionCall每次返回一个工具，name只在第一次出现，需要拼接arguments
+
+  
+
+
+## ToolChoice 参数示例
+
+ToolChoice每次可以返回多个工具，流式输出每个工具的id和name只在第一次出现，arguments是每次流式的内容，需要拼接
+

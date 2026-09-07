@@ -1,0 +1,42 @@
+{
+  "documentId": 1975,
+  "documentName": "3.4.7修改广告组出价",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 修改广告组出价\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/ad_unit/update/bid\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|     字段      | 类型 | 是否必填 |   说明    |                                                                                             备注                                                                                             |\n| :-----------: | :--: | :------: | :-------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |\n| advertiser_id | long |   必填   | 广告主 ID |                                                                                在获取 access_token 的时候返回                                                                                |\n|    unit_id    | long |   必填   | 广告组 ID |                                                                                                                                                                                              |\n|    unit_ids    | long[] |   非必填   | 可进行批量修改成相同出价，unit_id和unit_ids必填一个字段，另一个可不填 |                                                                                                                                                                                              |\n|      bid      | long |   必填   |   出价    | 广告组 bid_type 为 CPC 和 eCPC 时：不得低于 0.2 元，不得高于 100 元，单位：厘；广告组 bid_type 为 OCPC 时：行为出价不得低于 1 元；激活出价不得低于 5 元（白名单用户不得低于 2 元），单位：厘 |\n\n### 返回参数\n\n|  字段   |  类型  |    说明     | 备注 |\n| :-----: | :----: | :---------: | :--: |\n|  code   |  int   |   返回码    |      |\n| message | string |  返回信息   |      |\n|  data   | struct | JSON 返回值 |      |\n\n### 请求样例\n\n```\ncurl -X POST \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\":20000800,\n    \"unit_id\":2960079,\n    \"bid\":8930\n}' -L https://ad.e.kuaishou.com/rest/openapi/v1/ad_unit/update/bid\n```\n\n### 返回样例\n\n```\n\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {}\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624495
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624495,
+  "creator": "linmenger",
+  "fullContext": null
+}

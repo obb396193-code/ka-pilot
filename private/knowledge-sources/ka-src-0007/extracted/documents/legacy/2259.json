@@ -1,0 +1,58 @@
+{
+  "documentId": 2259,
+  "documentName": "创建广告计划",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 创建广告计划\n\n【注】创建搜索广告计划。每个广告主账号下最多可允许创建500个计划\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/campaign/create\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|             字段              |  类型  | 是否必填 |           说明           |                             备注                             |\n| :---------------------------: | :----: | :--------: | :---------------------------: | :----------------------------------------------------------: |\n|         advertiser_id         |  long  |   必填   |        广告主 ID         |            账号ID，在获取 access_token 的时候返回            |\n|         campaign_name         | string |   必填   |       广告计划名称       |     长度为 1-100 个字符，同一个账号下面计划名称不能重复      |\n|             type              |  int   |   必填   |         营销目标类型         | 2：提升应用安装；3：获取电商下单(2024年5月20日已下线，禁止新建)；4：推广品牌活动；5：收集销售线索；7：提高应用活跃；9：商品库推广（此营销目标下创建的默认为DPA广告）；16：粉丝/直播推广；19：快手小程序/小游戏推广；30：快手号-短剧推广；32：微信小程序/小游戏推广；34: 快手号-小说推广；35：电商下单推广|\n|          day_budget           |  long  |   选填   |       单日预算金额       | 单位：厘，指定 0 表示预算不限，默认为 0；不小于 500 元，不超过 100000000 元，仅支持输入数字；修改预算不得低于该计划当日花费的 120% 和修改前预算的较小者，与 day_budget_schedule 不能同时传，不能低于该计划下任一广告组出价。当 bid_type = 1时，day_budget 或者 budget_schedule 二选一必填 |\n|      day_budget_schedule      | long[] |   选填   |         分日预算         | 单位：厘，指定 0 表示预算不限，默认为 0；每天不小于 500 元，不超过 100000000 元，仅支持输入数字；修改预算不得低于该计划当日花费的 120% 和修改前预算的较小者，与 day_budget 不能同时传，均不能低于该计划下任一广告组出价。事例：时间周期为周一到周日，样例：`\"day_budget_schedule\":[11110000,22220000,0,0,0,0,0]`，优先级高于day_budget。当 bid_type = 1时，day_budget 或者 budget_schedule 二选一必填 |\n|            ad_type            |  int   |   选填   |       广告计划类型       |               0:信息流，1:搜索；不填默认信息流               |\n|           bid_type            |  int   |   选填   |         出价类型         |              0:默认1:最大转化（添加后不可修改）              |\n|           auto_adjust            |  int   |   选填   |         自动调控开关         |             0：关闭，1：开启          |\n|           auto_build            |  int   |   选填   |         自动基建开关         | 0：关闭，1：开启|\n|           auto_build_name_rule            |  struct   |   选填   |         自动基建命名规则         |              仅在auto_build为1时，此字段生效，开启自动基建时必填命名规则，组、创意命名规则均必须同时包含`[日期]`和`[序号]`宏变量【注：白名单功能】              |\n|        cap_roi_ratio          |  float |   选填   | cost cap的roi约束(广告成本约束-ROI约束)| 默认0表示“不限”，新建计划时仅支持“不限”，当计划下存在广告组选择ROI出价，编辑时支持修为该约束|\n|        cap_bid          |  long |   选填    | cost cap的成本约束(广告成本约束-非ROI单/双约束)| 默认0表示“不限”，新建计划时仅支持“不限”，当计划下存在广告组选择非ROI出价，编辑时支持修为该约束|\n|        constraint_cpa          |  long |   选填    |浅层成本约束(广告成本约束-非ROI双约束)| 默认0表示“不限”，新建计划时仅支持“不限”，当计划下存在广告组选择自然日次日留存，编辑时支持修为该约束|\n|           auto_manage           |  int   |   选填   |         **全自动投放开关** **(UAX，支持UAA和UAL)**         |             0：关闭，1：开启  **【注：此字段设置为开启时， 需要开启auto_adjust和auto_build 字段】**    根据行业区分UAA&UAL具体详情可联系对应运营加白        |\n|           auto_photo_scope           |  int   |   选填   |         基建素材选取范围        |             0：系统优选，系统根据历史数据挑选效果最优视频，1-素材包，系统将挑选您配置的素材包内的视频        |\n|           photo_package_info           |  long[]   |   选填   |        素材包ID         |             当auto_photo_scope=1时必填，此功能需要申请加白名单，可联系对应运营加白        |\n\n### auto_build_name_rule\n\n|     字段     |     类型      | 是否必填 |  说明  |                                    备注                                     |\n|:----------:|:-----------:|:----:|:----:|:-------------------------------------------------------------------------:|\n| unit_name_rule  |    string    |  必填  | 广告组名称命名规则 |   必须同时包含`[日期]`和`[序号]`宏变量，eg: `系统自动搭建_[日期][序号]`   |\n| creative_name_rule | string |  必填  | 广告创意名称命名规则 | 必须同时包含`[日期]`和`[序号]`宏变量，eg: `系统自动搭建_[日期][序号]` |\n\n\n### 返回参数\n\n|    字段     |  类型  |    说明     | 备注 |\n| :---------: | :----: | :---------: | :--: |\n|    code     |  int   |   返回码    |      |\n|   message   | string |  返回信息   |      |\n|    data     | struct | JSON 返回值 |      |\n| campaign_id |  long  | 广告计划 ID |      |\n\n### 请求样例\n\n```json\n{\n \"advertiser_id\":20007185,\n \"campaign_name\":\"信息类_收集线索销售0\",\n \"ad_type\":1,\n \"type\":5,\n \"day_budget_schedule\":[888000,999000,777000,666000,555000,998000,887000]\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"campaign_id\": 25134251\n    },\n    \"request_id\": \"cfede2bc06ab461fb415435fc426a3e1\"\n}\n```",
+  "url": "",
+  "version": "0.0.5",
+  "versionList": [
+    {
+      "version": "0.0.5",
+      "createTime": 1726047246734
+    },
+    {
+      "version": "0.0.4",
+      "createTime": 1717062839029
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1726047246734,
+  "creator": "liumengyun",
+  "fullContext": null
+}

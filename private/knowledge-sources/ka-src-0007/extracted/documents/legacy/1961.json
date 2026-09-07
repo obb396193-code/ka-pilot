@@ -1,0 +1,42 @@
+{
+  "documentId": 1961,
+  "documentName": "3.2.1账户日预算查询",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 账户日预算查询\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/budget/get\n\n请求方式：GET/POST\n\n数据格式：JSON\n\n### 请求参数\n\n|     字段      | 类型 | 是否必填 |   说明    |              备注              |\n| :-----------: | :--: | :------: | :-------: | :----------------------------: |\n| advertiser_id | long |   必填   | 广告主 ID | 在获取 access_token 的时候返回 |\n\n### 返回参数\n\n|        字段         | 类型 |   说明   |                          备注                          |\n| :-----------------: | :--: | :------: | :----------------------------------------------------: |\n|     day_budget      | long | 单日预算 |                        单位：厘                        |\n| day_budget_schedule | long | 分日预算 | 单位：厘，单日预算和分日预算同时存在时，以分日预算为准，优先级高于day_budget |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624393
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624393,
+  "creator": "wb_yuanbowen",
+  "fullContext": null
+}

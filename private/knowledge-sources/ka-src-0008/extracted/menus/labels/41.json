@@ -1,0 +1,187 @@
+{
+  "primary_doc_list": [
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1746489101948942",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1746489088787469",
+          "parent_ids": [
+            "1746489088787469"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "如何注册成为开发者"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1812506224501113",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1746489088787469",
+          "parent_ids": [
+            "1746489088787469"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "如何创建应用程序\n"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1812506430648330",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1746489088787469",
+          "parent_ids": [
+            "1746489088787469"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "应用如何申请账户授权"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1812506522148059",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1746489088787469",
+          "parent_ids": [
+            "1746489088787469"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "如何获取Token并维持效期\n"
+        }
+      ],
+      "doc_id": "1746489088787469",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": "/open_api/v3.0/native_anchor/update/",
+      "status": 0,
+      "title": "开始使用"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808719842679123",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1746489611294733",
+              "parent_ids": [
+                "1746489611294733"
+              ],
+              "path": null,
+              "status": 4,
+              "title": "报错“No permission to operate advertiser/account ”？\n"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808719975329884",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1746489611294733",
+              "parent_ids": [
+                "1746489611294733"
+              ],
+              "path": null,
+              "status": 0,
+              "title": "报错“advertiser does no grant you permission”"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808720038958096",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1746489611294733",
+              "parent_ids": [
+                "1746489611294733"
+              ],
+              "path": null,
+              "status": 4,
+              "title": "报错“Advertiser doesn't exist or the role is wrong”"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808720284907651",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1746489611294733",
+              "parent_ids": [
+                "1746489611294733"
+              ],
+              "path": null,
+              "status": 4,
+              "title": "Access/RefreshToken已失效/已过期"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808720563583179",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1746489611294733",
+              "parent_ids": [
+                "1746489611294733"
+              ],
+              "path": null,
+              "status": 0,
+              "title": "接口返回提示主体与开发者主体不一致\n"
+            }
+          ],
+          "doc_id": "1746489611294733",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1746489106960456",
+          "parent_ids": [
+            "1746489106960456"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "授权鉴权相关"
+        }
+      ],
+      "doc_id": "1746489106960456",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "常见问题"
+    }
+  ]
+}

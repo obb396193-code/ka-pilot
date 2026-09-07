@@ -1,0 +1,54 @@
+{
+  "documentId": 2567,
+  "documentName": "查询小说列表接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取小说列表接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/books/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/books/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主id，鉴权用 |  |\n| user_id | Long |  | 必填 | 小说用户id |  |\n| book_name | String |  | 可选 | 小说名称，选填，传入后根据名称模糊搜索 |  |\n| kwai_book_id | Long |  | 可选 | 选填，传入后查询该小说id |  |\n| page_info | PageSnake |  | 必填 | 分页信息 |  |\n| &#8195;current_page | Integer |  | 必填 | 当前页 |  |\n| &#8195;page_size | Integer |  | 必填 | 每页数量 |  |\n\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | MapiBooksQueryResSnake |  |  |  |\n| &#8195;page_info | PageInfoSnake |  | 分页信息 |  |\n| &#8195;&#8195;current_page | Integer |  | <p>当前页id</p> |  |\n| &#8195;&#8195;page_size | Integer |  | <p>页大小</p> |  |\n| &#8195;&#8195;total_count | Long |  | <p>总条数</p> |  |\n| &#8195;books | MapiBookInfoSnake[] |  |  |  |\n| &#8195;&#8195;kwai_book_id | Long |  | 小说id，创编用 |  |\n| &#8195;&#8195;book_name | String |  | 小说名称 |  |\n| &#8195;&#8195;cover_url | String |  | 封面链接 |  |\n| &#8195;&#8195;deep_link | String |  | 小说跳转kwai链 |  |\n| &#8195;&#8195;description | String |  | 描述 |  |\n| &#8195;&#8195;chapter_count | Integer |  | 章节数 |  |\n| &#8195;&#8195;status | Integer |  | 状态，接口默认返回上架小说，status=2 |  |\n| &#8195;&#8195;author_name | String |  | 作者名 |  |\n| message | String |  | <p>请补充描述详情</p> |  |\n| code | Integer |  | <p>请补充描述详情</p> |  |",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1716543433654
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1716543433654,
+  "creator": "yangchen07",
+  "fullContext": null
+}

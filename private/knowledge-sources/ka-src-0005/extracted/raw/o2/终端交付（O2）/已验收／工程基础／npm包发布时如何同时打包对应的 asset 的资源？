@@ -1,0 +1,34 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/65e183a693e23e052699df19/](https://links.alibaba-inc.com/support/conversation/65e183a693e23e052699df19/)
+
+作者：[@裕新](undefined/yuxin.zxy)
+
+评审人：[@肖焉](undefined/haiyan.tan)
+
+
+
+###  npm 发布的时候，额外打包一份 放到 dist 目录下，然后开启发布到 cdn 
+####  操作步骤： 
+1. 应用下打开 「开启 CDN 同步」
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/51156277/1713518341675-c728f0b8-45b7-4073-90a1-7fa1e3c99163.png) 
+
+2. 代码中，自定义构建逻辑，或使用构建器，将资源放在 dist 目录下
+
+```plain
+{
+  "builder": "@ali/builder-package-monorepo" // 官方多包构建器
+}
+```
+
+子包中 package.json build 脚本
+
+```json
+{
+  // ...
+  "scripts": {
+    "build": "rimraf esm es2017 && tsc && cp -r esm dist"
+  }
+  // ...
+}
+```
+

@@ -1,0 +1,58 @@
+{
+  "documentId": 2031,
+  "documentName": "商品批量查询接口(部分信息)",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取商品列表(部分信息)\n\n（该接口为旧版接口，不建议再调用）\n\n请求接口：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段名称|字段类型|字段描述|\n|--|--|--|\n|advertiser_id|long|广告主ID|\n|library_id|long|商品库ID|\n|id_or_name|string|商品第三方ID或名称(数字为ID，否则为名称)|\n|categories|List<Long>|商品类目ID，最多支持三级类目，由大到小依次排序，需要按次序填写，填了一级后才能填二级，填了二级后才能填三级|\n|page|Integer|页码数|\n|page_size|Integer|页大小|\n|outer_id|string|广告主商品编号(填写后“id_or_name”字段失效)|\n|product_name|string|商品名称(填写后“id_or_name”字段失效)|\n\n### 返回参数\n\n|字段名称|字段类型|字段描述|\n|--|--|--|\n|code|int|返回码|\n|message|string|返回信息|\n|total_coun|long||\n|details|struct|返回详情|\n|product_id|string|快手商品 ID|\n|outer_id|string|广告主商品编号|\n|product_name|string|商品名称|\n|product_title|string|商品标题|\n|image|string|商品主图|\n|product_price|double|商品价格|\n|value|double|商品原价|\n|discount|double|商品折扣|\n|supply_image|List<String>|商品附图|\n",
+  "url": "",
+  "version": "1.0.1",
+  "versionList": [
+    {
+      "version": "1.0.1",
+      "createTime": 1724665515148
+    },
+    {
+      "version": "1.0.0",
+      "createTime": 1701420566681
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1724665515148,
+  "creator": "kangzijun03",
+  "fullContext": null
+}

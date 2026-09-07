@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\" data-listener-added_4e16a126=\"true\"><p data-id=\"p838747a-SAsJdELo\">巨量引擎工作台是可以挂靠商业账户、资产、资金的账户节点，并可设置相应的管理人员</p><p data-id=\"p838747a-HcgxEXVq\">如果您授权的是旧版巨量引擎工作台的管理员账号，那么您将可以获取旧版巨量引擎工作台下客户列表，利用本章接口您可以获取旧版巨量引擎工作台下的客户列表，详细请参考：</p><ul data-id=\"u738a58b-3epT2mvi\"><li data-id=\"ld70c578-0YWkZFD5\"><a href=\"https://open.oceanengine.com/doc/index.html?key=ad&amp;type=api&amp;id=1696710520884224\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\" target=\"blank\">获取巨量引擎工作台下资产账户列表（分页）</a></li></ul><p data-id=\"p838747a-OzMWDDaI\"><br/></p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "旧版巨量引擎工作台账户管理"
+}

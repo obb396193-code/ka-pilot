@@ -1,0 +1,534 @@
+{
+  "documentId": 2726,
+  "documentName": "查询 DPA 模板信息",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720093671585
+    }
+  ],
+  "apiId": 609,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dpa/template/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dpa/template/list' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 20000152,\n    \"template_types\": [4]\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"templates\": [\n            {\n                \"editable_area_cover_url\": \"https://tx2.a.yximgs.com/bs2/ad-creativeCenter/image_v_v.jpeg\",\n                \"video_duration\": 5000,\n                \"cover_url\": \"https://tx-ad.a.yximgs.com/bs2/ad-creativeCenter/1b787d3f06d34a00b01ba0cf32271a00.jpg\",\n                \"video_url\": \"https://tx-ad.a.yximgs.com/bs2/ad-creativeCenter/16346e049e8946c1b1f3cfa4d3619738.mp4\",\n                \"name\": \"电商-竖视频1\",\n                \"width\": 1080,\n                \"template_type\": 4,\n                \"id\": 2137982230,\n                \"height\": 1920\n            }\n        ],\n        \"page\": {\n            \"total_count\": 1,\n            \"current_page\": 1,\n            \"page_size\": 10\n        }\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMiAgICA0qeyChIKAiDjya656TAoi87jxgE=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 38639,
+      "paramName": "page",
+      "paramType": "PageInfoSnake",
+      "example": "",
+      "description": "分页信息",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 978,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 38634,
+          "paramName": "current_page",
+          "paramType": "Long",
+          "example": "1",
+          "description": "当前页面值",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38635,
+          "paramName": "page_size",
+          "paramType": "Long",
+          "example": "10",
+          "description": "页面大小",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38640,
+      "paramName": "template_types",
+      "paramType": "Integer[]",
+      "example": "",
+      "description": "DPA 类型列表",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "1:竖版图片、2:横版图片 3:横版视频、4:竖版视频",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 38641,
+      "paramName": "data",
+      "paramType": "PaginateTemplateResponse977",
+      "example": "",
+      "description": "DPA模板响应信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2267,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 38637,
+          "paramName": "templates",
+          "paramType": "AdDpaTemplateSnake[]",
+          "example": "",
+          "description": "DPA模板信息",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2266,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 38625,
+              "paramName": "id",
+              "paramType": "Long",
+              "example": "1",
+              "description": "DPA 创意模板 id",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38626,
+              "paramName": "name",
+              "paramType": "String",
+              "example": "dpa",
+              "description": "DPA 创意模板名",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38627,
+              "paramName": "cover_url",
+              "paramType": "String",
+              "example": "https://test.com/cover",
+              "description": "模板图片 url",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "当模板类型为「图片」类型时，该字段表示图片地址； 当模板类型为「视频」类型是，该字段为视频对应的封面地址。",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38628,
+              "paramName": "video_url",
+              "paramType": "String",
+              "example": "https://test.com/video",
+              "description": "模板预览视频 url",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "当模板类型为「视频」类型时，该字段表示视频地址； 当模板类型为「图片」类型是，该字段为空。",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38629,
+              "paramName": "video_duration",
+              "paramType": "Long",
+              "example": "5000",
+              "description": "视频播放时长",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38630,
+              "paramName": "editable_area_cover_url",
+              "paramType": "String",
+              "example": "https://test.com/cover_editable",
+              "description": "模板可编辑区域图片 url",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "模板可编辑区域图片 url。 当模板类型为「图片」类型时，该字段表示图片地址； 当模板类型为「视频」类型是，该字段为空。",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38631,
+              "paramName": "height",
+              "paramType": "Integer",
+              "example": "540",
+              "description": "模板生成衍生物料的高",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38632,
+              "paramName": "width",
+              "paramType": "Integer",
+              "example": "1080",
+              "description": "模板生成衍生物料的宽",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38633,
+              "paramName": "template_type",
+              "paramType": "Integer",
+              "example": "1",
+              "description": "模板类型",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38638,
+          "paramName": "page",
+          "paramType": "PageInfoSnake",
+          "example": "",
+          "description": "分页信息",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 978,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 38634,
+              "paramName": "current_page",
+              "paramType": "Long",
+              "example": "1",
+              "description": "当前页面值",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38635,
+              "paramName": "page_size",
+              "paramType": "Long",
+              "example": "10",
+              "description": "页面大小",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 38636,
+              "paramName": "total_count",
+              "paramType": "Long",
+              "example": "2",
+              "description": "总共数目",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38642,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38643,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "状态信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720093671585,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

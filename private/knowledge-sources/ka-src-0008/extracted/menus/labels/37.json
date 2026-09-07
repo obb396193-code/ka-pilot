@@ -1,0 +1,2532 @@
+{
+  "primary_doc_list": [
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710501763087",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710497745920",
+          "parent_ids": [
+            "1696710497745920"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "术语解释"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1699352157034496",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710497745920",
+          "parent_ids": [
+            "1696710497745920"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "接口清单（Scope权限点）"
+        }
+      ],
+      "doc_id": "1696710497745920",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 0,
+      "title": "入门指南"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1839621283557572",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1839622793370052",
+              "parent_ids": [
+                "1839622793370052"
+              ],
+              "path": null,
+              "status": 4,
+              "title": "巨量引擎开发工具"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1847394521222599",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1839622793370052",
+              "parent_ids": [
+                "1839622793370052"
+              ],
+              "path": null,
+              "status": 4,
+              "title": "AD业务工具"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1847297391943370",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1839622793370052",
+              "parent_ids": [
+                "1839622793370052"
+              ],
+              "path": null,
+              "status": 4,
+              "title": "AD MCP工具列表"
+            }
+          ],
+          "doc_id": "1839622793370052",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1832875799891140",
+          "parent_ids": [
+            "1832875799891140"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "MCP Server"
+        }
+      ],
+      "doc_id": "1832875799891140",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "MCP 简介"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710758840332",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710758159360",
+          "parent_ids": [
+            "1696710758159360"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "基础实践：频控限流器开发"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1834161681551499",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710758159360",
+          "parent_ids": [
+            "1696710758159360"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "进阶实践：高频请求时效优化"
+        }
+      ],
+      "doc_id": "1696710758159360",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "频控限制"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1803016515293203",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "如何申请授权&生成授权链接"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710504654860",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "回调地址怎么设置和使用"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710505596940",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/oauth2/access_token/",
+          "status": 4,
+          "title": "获取Access Token"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710506574848",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/oauth2/advertiser/get/",
+          "status": 4,
+          "title": "获取已授权账户"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710507039756",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/2/user/info/",
+          "status": 4,
+          "title": "获取授权User信息"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710506097679",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/oauth2/refresh_token/",
+          "status": 0,
+          "title": "刷新Refresh Token"
+        }
+      ],
+      "doc_id": "1696710502277120",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "Oauth2.0授权"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1696710508983311",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710508507148",
+              "parent_ids": [
+                "1696710508507148"
+              ],
+              "path": "/open_api/2/advertiser/info/",
+              "status": 4,
+              "title": "获取投放账户信息"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1696710511950860",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710508507148",
+              "parent_ids": [
+                "1696710508507148"
+              ],
+              "path": "/open_api/2/advertiser/public_info/",
+              "status": 4,
+              "title": "获取客户公开信息"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1849311987038410",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710508507148",
+              "parent_ids": [
+                "1696710508507148"
+              ],
+              "path": "/open_api/v3.0/local/qualification/get/",
+              "status": 4,
+              "title": "获取主体资质"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848479321495563",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710508507148",
+              "parent_ids": [
+                "1696710508507148"
+              ],
+              "path": "/open_api/v3.0/local/delivery_qualification/list/",
+              "status": 0,
+              "title": "获取投放资质"
+            }
+          ],
+          "doc_id": "1696710508507148",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710508029967",
+          "parent_ids": [
+            "1696710508029967"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "客户信息与资质管理"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1696710516003852",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710515550223",
+              "parent_ids": [
+                "1696710515550223"
+              ],
+              "path": "/open_api/2/agent/advertiser/select/",
+              "status": 4,
+              "title": "代理商管理账户列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1809915654787136",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710515550223",
+              "parent_ids": [
+                "1696710515550223"
+              ],
+              "path": "/open_api/2/agent/advertiser_info/query/",
+              "status": 4,
+              "title": "投放账户信息查询"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1696710518158351",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710515550223",
+              "parent_ids": [
+                "1696710515550223"
+              ],
+              "path": "/open_api/2/agent/info/",
+              "status": 4,
+              "title": "获取代理商信息"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1696710517693452",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710515550223",
+              "parent_ids": [
+                "1696710515550223"
+              ],
+              "path": "/open_api/2/agent/child_agent/select/",
+              "status": 4,
+              "title": "二级代理商列表"
+            }
+          ],
+          "doc_id": "1696710515550223",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710508029967",
+          "parent_ids": [
+            "1696710508029967"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "代理商账号管理"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1696710519607296",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710519122956",
+              "parent_ids": [
+                "1696710519122956"
+              ],
+              "path": "/open_api/2/majordomo/advertiser/select/",
+              "status": 4,
+              "title": "获取旧版巨量引擎工作台下账户列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1696710520884224",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710519122956",
+              "parent_ids": [
+                "1696710519122956"
+              ],
+              "path": "/open_api/2/customer_center/advertiser/list/",
+              "status": 4,
+              "title": "获取旧版巨量引擎工作台下账户列表"
+            }
+          ],
+          "doc_id": "1696710519122956",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710508029967",
+          "parent_ids": [
+            "1696710508029967"
+          ],
+          "path": null,
+          "status": 3,
+          "title": "旧版巨量引擎工作台账户管理"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1860068101111872",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [],
+              "path": "/open_api/v3.0/fix_remittance_code/list/get/",
+              "status": 4,
+              "title": "投放账户查询汇款码列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1859992775252292",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [],
+              "path": "/open_api/v3.0/wallet/remittance_code/list/get/",
+              "status": 3,
+              "title": "钱包查询汇款码列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1859993655883840",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [],
+              "path": "/open_api/v3.0/wallet/prepay_charge/generate_remittance_code/create/",
+              "status": 3,
+              "title": "钱包对公充值"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1855620253598148",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [],
+              "path": "/open_api/v3.0/wallet/charge/verify/get/",
+              "status": 3,
+              "title": "钱包充值校验"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1816052658391124",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/can_transfer_target/list/",
+              "status": 4,
+              "title": "工作台转账-获取可转列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1816052561374300",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/can_transfer_balance/get/",
+              "status": 4,
+              "title": "工作台转账-获取最大可转余额"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1816052431206464",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/transfer_balance/get/",
+              "status": 4,
+              "title": "工作台转账-查询账户转账余额"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1816052723776516",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/transfer/create/",
+              "status": 4,
+              "title": "工作台转账-发起转账"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1816052335753539",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/transfer_detail/get/",
+              "status": 0,
+              "title": "工作台转账-查询转账单信息"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1799006604968971",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/account/fund/get/",
+              "status": 4,
+              "title": "批量查询账户余额"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1696710526682112",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/2/advertiser/fund/daily_stat/",
+              "status": 4,
+              "title": "查询账户日流水"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1696710527205388",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/2/advertiser/fund/transaction/get/",
+              "status": 4,
+              "title": "查询账号流水明细"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1789754859486282",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/query_transfer_balance/",
+              "status": 4,
+              "title": "转账-查询账户转账余额（代理）"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1789754975045699",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/query_can_transfer_balance/",
+              "status": 4,
+              "title": "转账-获取最大可转余额（代理）"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1789755060558916",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/create_transfer/",
+              "status": 4,
+              "title": "转账-发起转账（代理）"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1789755120706634",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/query_transfer_detail/",
+              "status": 4,
+              "title": "转账-查询转账单信息（代理）"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1798465689405452",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/shared_wallet/wallet_balance/get/",
+              "status": 4,
+              "title": "资金共享-批量查询钱包余额"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1798465768014922",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/shared_wallet/transaction_detail/get/",
+              "status": 4,
+              "title": "资金共享-查询共享钱包流水明细"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1798465810440256",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/shared_wallet/daily_stat/get/",
+              "status": 1,
+              "title": "资金共享-查询共享钱包日流水"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1798465885126668",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/shared_wallet/main_wallet/get/",
+              "status": 4,
+              "title": "资金共享-共享钱包信息查询"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1798465839055872",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/shared_wallet/wallet_info/get/",
+              "status": 1,
+              "title": "资金共享-批量查询钱包信息"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1798465996741772",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/shared_wallet/wallet_relation/get/",
+              "status": 4,
+              "title": "资金共享-查询子钱包下绑定的adv列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1798907322782729",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/shared_wallet/account_relation/get/",
+              "status": 4,
+              "title": "共享钱包-查询账户对应公司下的钱包关系"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1799667820221452",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/wallet/transfer/can_transfer_balance/",
+              "status": 4,
+              "title": "资金共享-最大可转余额查询"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1799669807408128",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/wallet/transfer/create/",
+              "status": 4,
+              "title": "资金共享-发起转账"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1799669722480836",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/wallet/transfer/list/",
+              "status": 4,
+              "title": "资金共享-查询转账列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1799669496440960",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/cg_transfer/wallet/transfer/detail/",
+              "status": 4,
+              "title": "资金共享-查询转账单信息"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1841044638550027",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/shared_wallet/budget/submit/",
+              "status": 0,
+              "title": "资金共享-设置子钱包预算"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1840959608957207",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/shared_wallet/budget/get/",
+              "status": 4,
+              "title": "资金共享-查询子钱包预算"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1841044864825417",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/shared_wallet/watch_rule/submit/",
+              "status": 4,
+              "title": "资金共享-设置子钱包盯盘规则"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1840960035997696",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/shared_wallet/watch_rule/get/",
+              "status": 4,
+              "title": "资金共享-查询子钱包盯盘规则"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1832711147925257",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/2/agent/charge/verify/",
+              "status": 4,
+              "title": "代理商充值校验"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1832711098846217",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/2/agent/credit_charge/submit/",
+              "status": 4,
+              "title": "代理商提交授信充值"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1831879601111308",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/charge/result/",
+              "status": 4,
+              "title": "查询充值结果"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1834443721254920",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/remittance_code/list/",
+              "status": 4,
+              "title": "查询汇款码列表信息"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1834443692643336",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/2/agent/prepay_charge/generate_remittance_code/",
+              "status": 4,
+              "title": "代理商预付充值生成汇款码"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848476262968665",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/local/advertiser/budget/get/",
+              "status": 4,
+              "title": "获取账户日预算"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1866308787374080",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710525680655",
+              "parent_ids": [
+                "1696710525680655"
+              ],
+              "path": "/open_api/v3.0/local/budget/update/",
+              "status": 4,
+              "title": "更新账户日预算"
+            }
+          ],
+          "doc_id": "1696710525680655",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710508029967",
+          "parent_ids": [
+            "1696710508029967"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "资金和流水管理"
+        }
+      ],
+      "doc_id": "1696710508029967",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "账号服务"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808094783305739",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/project/create/",
+              "status": 4,
+              "title": "创建项目"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808440838642948",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/project/update/",
+              "status": 4,
+              "title": "更新项目"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1866308320649799",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/project/delete/",
+              "status": 4,
+              "title": "删除项目"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1807977310878736",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/project/list/",
+              "status": 4,
+              "title": "获取项目列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808441520771339",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/project/detail/",
+              "status": 4,
+              "title": "获取项目详情"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1809958369980564",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/project/status/update/",
+              "status": 4,
+              "title": "批量更新项目状态"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1807977760174122",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/poi/get/",
+              "status": 4,
+              "title": "获取可投门店列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1807978367423588",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/product/get/",
+              "status": 4,
+              "title": "获取可投商品列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1807990317937690",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/aweme/authorized/get/",
+              "status": 4,
+              "title": "获取本地推创编可用抖音号"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808003891639609",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/custom_audience/get/",
+              "status": 4,
+              "title": "查询本地推创编可用人群包"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1809719485612043",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/multi_poi_id/poi_ids/get/",
+              "status": 4,
+              "title": "根据多门店ID拉取门店ID"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848481263218688",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/tool_pack_list/get/",
+              "status": 4,
+              "title": "获取可用留资组件列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848481896981834",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/tool_pack/detail/",
+              "status": 4,
+              "title": "获取可用留资组件详情"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848482084888708",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/market_page_list/get/",
+              "status": 4,
+              "title": "获取可用营销页列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848482831406092",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/market_page/get/",
+              "status": 4,
+              "title": "查询营销页详情"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848483292162059",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/consult_awame_list/get/",
+              "status": 4,
+              "title": "获取私信接待抖音号"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848483664605003",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1807977111009572",
+              "parent_ids": [
+                "1807977111009572"
+              ],
+              "path": "/open_api/v3.0/local/project/week_schedule/update/",
+              "status": 4,
+              "title": "列表批量更新项目投放时段"
+            }
+          ],
+          "doc_id": "1807977111009572",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1803720592156800",
+          "parent_ids": [
+            "1803720592156800"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "项目管理模块"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1866307400506627",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1808003978921193",
+              "parent_ids": [
+                "1808003978921193"
+              ],
+              "path": "/open_api/v3.0/local/promotion/delete/",
+              "status": 4,
+              "title": "删除单元"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808165017797977",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1808003978921193",
+              "parent_ids": [
+                "1808003978921193"
+              ],
+              "path": "/open_api/v3.0/local/promotion/create/",
+              "status": 3,
+              "title": "创建单元"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808440848912411",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1808003978921193",
+              "parent_ids": [
+                "1808003978921193"
+              ],
+              "path": "/open_api/v3.0/local/promotion/update/",
+              "status": 4,
+              "title": "更新单元"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808147672950851",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1808003978921193",
+              "parent_ids": [
+                "1808003978921193"
+              ],
+              "path": "/open_api/v3.0/local/promotion/list/",
+              "status": 4,
+              "title": "获取单元列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1808442943397963",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1808003978921193",
+              "parent_ids": [
+                "1808003978921193"
+              ],
+              "path": "/open_api/v3.0/local/promotion/detail/",
+              "status": 0,
+              "title": "获取单元详情"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1866308600274000",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1808003978921193",
+              "parent_ids": [
+                "1808003978921193"
+              ],
+              "path": "/open_api/v3.0/local/promotion/cost_protect_status/get/",
+              "status": 4,
+              "title": "获取单元成本保障状态"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1809958381935689",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1808003978921193",
+              "parent_ids": [
+                "1808003978921193"
+              ],
+              "path": "/open_api/v3.0/local/promotion/status/update/",
+              "status": 4,
+              "title": "批量更新单元状态"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1810064083323002",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1808003978921193",
+              "parent_ids": [
+                "1808003978921193"
+              ],
+              "path": "/open_api/v3.0/local/product/get_by_poiids/",
+              "status": 4,
+              "title": "根据门店ID拉取商品"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848484376642649",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1808003978921193",
+              "parent_ids": [
+                "1808003978921193"
+              ],
+              "path": "/open_api/v3.0/local/promotion/reject_reason/get/",
+              "status": 4,
+              "title": "批量获取广告审核建议"
+            }
+          ],
+          "doc_id": "1808003978921193",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1803720592156800",
+          "parent_ids": [
+            "1803720592156800"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "单元管理模块"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1872561465118212",
+              "going_offline": false,
+              "is_new": true,
+              "labels": [],
+              "parent_id": "1872560597287936",
+              "parent_ids": [
+                "1872560597287936"
+              ],
+              "path": "/open_api/v3.0/local/oc_project/list/",
+              "status": 4,
+              "title": "获取标准投放项目列表（新版）"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1872563621154816",
+              "going_offline": false,
+              "is_new": true,
+              "labels": [],
+              "parent_id": "1872560597287936",
+              "parent_ids": [
+                "1872560597287936"
+              ],
+              "path": "/open_api/v3.0/local/oc_project/get/",
+              "status": 4,
+              "title": "获取标准投放项目详情"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1872559916484608",
+              "going_offline": false,
+              "is_new": true,
+              "labels": [],
+              "parent_id": "1872560597287936",
+              "parent_ids": [
+                "1872560597287936"
+              ],
+              "path": "/open_api/v3.0/local/oc_material/get/",
+              "status": 4,
+              "title": "获取项目下素材（新版）"
+            }
+          ],
+          "doc_id": "1872560597287936",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1803720592156800",
+          "parent_ids": [
+            "1803720592156800"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "项目管理模块-新版"
+        }
+      ],
+      "doc_id": "1803720592156800",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "本地推投放能力"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1819564415845708",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1804003596201040",
+          "parent_ids": [
+            "1804003596201040"
+          ],
+          "path": "/open_api/v3.0/local/report/account/get/",
+          "status": 4,
+          "title": "查询账户数据"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1804000847733786",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1804003596201040",
+          "parent_ids": [
+            "1804003596201040"
+          ],
+          "path": "/open_api/v3.0/local/report/project/get/",
+          "status": 4,
+          "title": "获取项目数据"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1804001121909835",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1804003596201040",
+          "parent_ids": [
+            "1804003596201040"
+          ],
+          "path": "/open_api/v3.0/local/report/promotion/get/",
+          "status": 4,
+          "title": "获取单元数据"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1804001258474595",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1804003596201040",
+          "parent_ids": [
+            "1804003596201040"
+          ],
+          "path": "/open_api/v3.0/local/report/material/get/",
+          "status": 4,
+          "title": "获取素材数据"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1830268904570887",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1804003596201040",
+          "parent_ids": [
+            "1804003596201040"
+          ],
+          "path": "/open_api/v3.0/local/report/audience/get/",
+          "status": 4,
+          "title": "获取本地推受众分析数据"
+        }
+      ],
+      "doc_id": "1804003596201040",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "本地推数据报表"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1810070109238283",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1810502232483907",
+          "parent_ids": [
+            "1810502232483907"
+          ],
+          "path": "/open_api/v3.0/local/file/upload_task/create/",
+          "status": 3,
+          "title": "异步上传本地推视频"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1810070318501988",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1810502232483907",
+          "parent_ids": [
+            "1810502232483907"
+          ],
+          "path": "/open_api/v3.0/local/file/video/upload_task/list/",
+          "status": 4,
+          "title": "查询异步上传本地推视频结果"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1808003989738499",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1810502232483907",
+          "parent_ids": [
+            "1810502232483907"
+          ],
+          "path": "/open_api/v3.0/local/file/video/upload/",
+          "status": 4,
+          "title": "上传视频"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1808613640441882",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1810502232483907",
+          "parent_ids": [
+            "1810502232483907"
+          ],
+          "path": "/open_api/v3.0/local/file/video/get/",
+          "status": 4,
+          "title": "获取素材库视频"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1808004088768608",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1810502232483907",
+          "parent_ids": [
+            "1810502232483907"
+          ],
+          "path": "/open_api/v3.0/local/file/video/aweme/get/",
+          "status": 4,
+          "title": "获取抖音主页视频"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1849312906748032",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1810502232483907",
+          "parent_ids": [
+            "1810502232483907"
+          ],
+          "path": "/open_api/v3.0/local/file/carousel/list/",
+          "status": 4,
+          "title": "获取图文素材"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1851654919296067",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1810502232483907",
+          "parent_ids": [
+            "1810502232483907"
+          ],
+          "path": "/open_api/v3.0/local/image/upload/",
+          "status": 0,
+          "title": "上传图片素材"
+        }
+      ],
+      "doc_id": "1810502232483907",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "本地推素材管理"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1722470671604747",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710547608591",
+              "parent_ids": [
+                "1696710547608591"
+              ],
+              "path": null,
+              "status": 0,
+              "title": "SPI回调地址设置"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [
+                {
+                  "can_delete": false,
+                  "child_docs": [],
+                  "doc_id": "1862334279237632",
+                  "going_offline": false,
+                  "is_new": false,
+                  "labels": [],
+                  "parent_id": "1722468664901647",
+                  "parent_ids": [
+                    "1722468664901647"
+                  ],
+                  "path": "/open_api/v3.0/security/non_score_disposal_info/get/",
+                  "status": 4,
+                  "title": "非积分处置事件"
+                },
+                {
+                  "can_delete": false,
+                  "child_docs": [],
+                  "doc_id": "1844296594181130",
+                  "going_offline": false,
+                  "is_new": false,
+                  "labels": [],
+                  "parent_id": "1722468664901647",
+                  "parent_ids": [
+                    "1722468664901647"
+                  ],
+                  "path": null,
+                  "status": 4,
+                  "title": "本地推素材库素材变更"
+                }
+              ],
+              "doc_id": "1722468664901647",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710547608591",
+              "parent_ids": [
+                "1696710547608591"
+              ],
+              "path": null,
+              "status": 4,
+              "title": "订阅服务类型"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1722481732805646",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710547608591",
+              "parent_ids": [
+                "1696710547608591"
+              ],
+              "path": null,
+              "status": 4,
+              "title": "X-Open-Signature签名校验"
+            }
+          ],
+          "doc_id": "1696710547608591",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "0",
+          "parent_ids": [
+            "0"
+          ],
+          "path": null,
+          "status": 3,
+          "title": "SPI订阅"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1818567687958707",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1818567272074240",
+              "parent_ids": [
+                "1818567272074240"
+              ],
+              "path": "/open_api/v3.0/subscribe/accounts/add/",
+              "status": 4,
+              "title": "新增 Adv 订阅"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1818567348129040",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1818567272074240",
+              "parent_ids": [
+                "1818567272074240"
+              ],
+              "path": "/open_api/v3.0/subscribe/accounts/list/",
+              "status": 4,
+              "title": "查询订阅 Adv"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1818566670161920",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1818567272074240",
+              "parent_ids": [
+                "1818567272074240"
+              ],
+              "path": "/open_api/v3.0/subscribe/accounts/remove/",
+              "status": 4,
+              "title": "取消 Adv 订阅"
+            }
+          ],
+          "doc_id": "1818567272074240",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1732513335286795",
+          "parent_ids": [
+            "1732513335286795"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "订阅任务账户管理"
+        }
+      ],
+      "doc_id": "1732513335286795",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "订阅服务"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1815032517161050",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1741237265043469",
+              "parent_ids": [
+                "1741237265043469"
+              ],
+              "path": "/open_api/2/agent/adv/bidding/list/query/",
+              "status": 4,
+              "title": "代理商竞价投放数据 "
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1815032592622740",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1741237265043469",
+              "parent_ids": [
+                "1741237265043469"
+              ],
+              "path": "/open_api/2/agent/adv/brand/list/query/",
+              "status": 4,
+              "title": "代理商品牌投放数据"
+            }
+          ],
+          "doc_id": "1741237265043469",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710549068815",
+          "parent_ids": [
+            "1696710549068815"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "数据报表"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1812970751420483",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1800368266341379",
+              "parent_ids": [
+                "1800368266341379"
+              ],
+              "path": "/open_api/2/file/rebate/rebate_download/create_task/",
+              "status": 4,
+              "title": " 【代理返点】创建下载任务-返点(非素材)&激励"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1819289415886986",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1800368266341379",
+              "parent_ids": [
+                "1800368266341379"
+              ],
+              "path": "/open_api/2/file/rebate/common_download/create_task/",
+              "status": 4,
+              "title": "【代理返点】创建下载任务-返点(素材)"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1818837922277385",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1800368266341379",
+              "parent_ids": [
+                "1800368266341379"
+              ],
+              "path": "/open_api/2/file/rebate/common_download/get_download_task_list/",
+              "status": 0,
+              "title": "【代理返点】查询下载任务-通用"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1818838139772251",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1800368266341379",
+              "parent_ids": [
+                "1800368266341379"
+              ],
+              "path": "/open_api/2/file/rebate/common_download/download_file/",
+              "status": 4,
+              "title": "【代理返点】下载任务结果-通用"
+            }
+          ],
+          "doc_id": "1800368266341379",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710549068815",
+          "parent_ids": [
+            "1696710549068815"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "【代理】返点核算相关数据"
+        }
+      ],
+      "doc_id": "1696710549068815",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 0,
+      "title": "数据报表"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1832825155593417",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710599092236",
+          "parent_ids": [
+            "1696710599092236"
+          ],
+          "path": "/open_api/v3.0/open_material_audit/pro/submit/",
+          "status": 4,
+          "title": "营销素材预审提交接口（连山云视频点播版）"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1832825121155465",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710599092236",
+          "parent_ids": [
+            "1696710599092236"
+          ],
+          "path": "/open_api/v3.0/open_material_audit/pro/get/",
+          "status": 4,
+          "title": "营销素材预审结果查询（连山云视频点播版）"
+        }
+      ],
+      "doc_id": "1696710599092236",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 0,
+      "title": "素材管理"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1794759460056076",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1794760432966668",
+          "parent_ids": [
+            "1794760432966668"
+          ],
+          "path": "/open_api/2/tools/clue/life/get/",
+          "status": 4,
+          "title": "获取本地推线索列表"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1805908920334473",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1794760432966668",
+          "parent_ids": [
+            "1794760432966668"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "本地推API上报流程简介"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1805613694863499",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1794760432966668",
+          "parent_ids": [
+            "1794760432966668"
+          ],
+          "path": "/open_api/2/tools/clue/life/callback/",
+          "status": 4,
+          "title": "本地推线索回传"
+        }
+      ],
+      "doc_id": "1794760432966668",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "本地推线索管理"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1861973228570762",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710674833420",
+              "parent_ids": [
+                "1696710674833420"
+              ],
+              "path": "/open_api/v3.0/security/non_score_disposal_info/get/",
+              "status": 4,
+              "title": "查询非积分处置数据"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1696710682956815",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710674833420",
+              "parent_ids": [
+                "1696710674833420"
+              ],
+              "path": "/open_api/2/tools/log_search/",
+              "status": 4,
+              "title": "操作日志查询"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1807434247414986",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710674833420",
+              "parent_ids": [
+                "1696710674833420"
+              ],
+              "path": "/open_api/v3.0/security/score_total/get/",
+              "status": 4,
+              "title": "查询账户累计积分"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1807434338681868",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710674833420",
+              "parent_ids": [
+                "1696710674833420"
+              ],
+              "path": "/open_api/v3.0/security/score_violation_event/get/",
+              "status": 0,
+              "title": "查询违规积分明细"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1807434405738569",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710674833420",
+              "parent_ids": [
+                "1696710674833420"
+              ],
+              "path": "/open_api/v3.0/security/score_disposal_info/get/",
+              "status": 0,
+              "title": "查看积分处置详情"
+            }
+          ],
+          "doc_id": "1696710674833420",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710674252815",
+          "parent_ids": [
+            "1696710674252815"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "查询工具"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848488007184460",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710704532492",
+              "parent_ids": [
+                "1696710704532492"
+              ],
+              "path": "/open_api/v3.0/local/interest/category/",
+              "status": 4,
+              "title": "兴趣类目查询"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848488533820416",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710704532492",
+              "parent_ids": [
+                "1696710704532492"
+              ],
+              "path": "/open_api/v3.0/local/interest/keyword/",
+              "status": 4,
+              "title": "兴趣关键词查询"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848487707954248",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710704532492",
+              "parent_ids": [
+                "1696710704532492"
+              ],
+              "path": "/open_api/v3.0/local/action/category/",
+              "status": 4,
+              "title": "行为类目查询"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1848487896231948",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710704532492",
+              "parent_ids": [
+                "1696710704532492"
+              ],
+              "path": "/open_api/v3.0/local/action/keyword/",
+              "status": 4,
+              "title": "行为关键词查询"
+            }
+          ],
+          "doc_id": "1696710704532492",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710674252815",
+          "parent_ids": [
+            "1696710674252815"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "行为兴趣词管理"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1709606374050823",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1709604988025871",
+              "parent_ids": [
+                "1709604988025871"
+              ],
+              "path": "/open_api/2/tools/country/info/",
+              "status": 0,
+              "title": "查询国家/区域信息"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1709606596424718",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1709604988025871",
+              "parent_ids": [
+                "1709604988025871"
+              ],
+              "path": "/open_api/2/tools/admin/info/",
+              "status": 4,
+              "title": "获取行政信息"
+            }
+          ],
+          "doc_id": "1709604988025871",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710674252815",
+          "parent_ids": [
+            "1696710674252815"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "地域信息管理"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1865802661094727",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1865803405532436",
+              "parent_ids": [
+                "1865803405532436"
+              ],
+              "path": "/open_api/v3.0/local/audience_package/get/",
+              "status": 4,
+              "title": "获取定向包"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1865803054737420",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1865803405532436",
+              "parent_ids": [
+                "1865803405532436"
+              ],
+              "path": "/open_api/v3.0/local/audience_package/update/",
+              "status": 0,
+              "title": "更新定向包"
+            }
+          ],
+          "doc_id": "1865803405532436",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710674252815",
+          "parent_ids": [
+            "1696710674252815"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "定向包管理"
+        }
+      ],
+      "doc_id": "1696710674252815",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "工具"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710760171535",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710759506944",
+          "parent_ids": [
+            "1696710759506944"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "枚举值"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710760866831",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710759506944",
+          "parent_ids": [
+            "1696710759506944"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "返回码"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710762109967",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710759506944",
+          "parent_ids": [
+            "1696710759506944"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "过滤条件"
+        }
+      ],
+      "doc_id": "1696710759506944",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "附录"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+## 获取我创建的应用
+
+获取我创建的应用列表，支持分页
+
+| method | GET |
+|-|-|
+| url | /v1.0/work/apps/my |
+| buc login | true |
+
+### Query parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| emp_id | String | false | 调用者工号 | 用户工号 |
+| is_module | String | false | 0 | 是否是模块类应用 |
+| pub_type | String | false | - | 应用类型，格式为：'1,2,3'，多个应用类型用 , 分割 |
+| mode | String | false | iteration_flow | 应用研发模式 iteration_flow：迭代研发 trunkbase_flow：主干研发 |
+| q_project | String | false | - | 仓库名称，模糊查询 |
+| pn | Number | false | 0 | 页码，用于分页查询 |
+| rn | Number | false | 20 | 返回的数据条数 |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| apps | ([App](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls4gore2dimt38o1v5g) & pubtype & ongoing_iterations & ongoging_iteration_list)[] 包括 [App](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls4gore2dimt38o1v5g) 对象的属性、部分 [pubtype](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls6x4mopbx2j8f6t1e) 对象属性、进行中的迭代数、进行中的迭代列表（即 [Iteration](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls6xiuwp43jozm69u9h)[]） |
+| total | 总应用数 |
+| rn | 实际返回的条数 |
+| pn | 当前页码 |
+
+### Example
+
+```
+client.get(`/v1.0/work/apps/my`, {
+  emp_id
+}, {
+  SSO_TICKET
+})
+
+{
+  "apps": [
+    {
+      "id": 387436,
+      "group": "o2-space",
+      "project": "try-api",
+      "emp_id": "318805",
+      "owner_emp_id": "318805",
+      "description": "O2 开放 API 测试仓库",
+      "pub_type": 14,
+      "is_module": false,
+      "is_moduletrans": true,
+      "dev_type": 0,
+      "pubtype_group": null,
+      "platform_code": "main",
+      "mode": "iteration_flow",
+      "pubtype_extend_path": "14",
+      "gmt_create": "2024-02-02T02:27:57.000Z",
+      "gmt_modified": "2024-02-02T02:27:58.000Z",
+      "pubtype": {
+        "id": 14,
+        "type": "hl_faas",
+        "name": "函数",
+        "name_en": "FaaS",
+        "icon": "burger",
+        "color": "#2f54eb"
+      },
+      "permission": {
+        "role": 1,
+        "gmt_create": "2024-02-02T02:27:58.000Z"
+      },
+      "ongoing_iterations": 1,
+      "ongoing_iteration_list": [
+        {
+          "id": 15122015,
+          "name": "d/0.0.1",
+          "description": "",
+          "app_id": 387436,
+          "group": "o2-space",
+          "project": "try-api",
+          "branch": "def_releases_202402021105055_o2-space_try-api/0.0.1",
+          "version": "0.0.1",
+          "emp_id": "318805",
+          "status": 2,
+          "endtime": "1970-01-01T00:00:00.000Z",
+          "envstep": null,
+          "gmt_create": "2024-02-02T02:28:30.000Z",
+          "gmt_modified": "2024-02-02T03:05:05.000Z"
+        }
+      ]
+    },],
+    "total": 161,
+    "rn": 20,
+    "pn": 0
+}
+
+```

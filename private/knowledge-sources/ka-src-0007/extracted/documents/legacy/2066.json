@@ -1,0 +1,42 @@
+{
+  "documentId": 2066,
+  "documentName": "10.1.11获取商圈地域定向",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取商圈地域定向\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/region/district/list\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 说明      | 备注                           |\n| ------------- | ---- | --------- | ------------------------------ |\n| advertiser_id | long | 广告主 ID | 在获取 access_token 的时候返回 |\n\n### 返回参数\n\n| 字段      | 类型   | 说明                | 备注                    |\n| --------- | ------ | ------------------- | ----------------------- |\n| code      | int    | 返回码              |                         |\n| message   | string | 返回信息            |                         |\n| data      | struct |                     |                         |\n| key       | struct | 地域 parent_id      | 该地域下的所有商圈 list |\n| id        | long   | 商圈 id             |                         |\n| level     | int    | 地域层级-商圈层级=4 |                         |\n| name      | string | 商圈名称            |                         |\n| full_name | string | 全名称              |                         |\n\n### 请求样例\n\n```\n\ncurl --location --request GET 'https://ad.e.kuaishou.com/rest/openapi/v1/region/district/list' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n  \"advertiser_id\": 7075662\n}'\n```\n\n### 返回样例\n\n```\n\n{\n   \"code\": 0,\n   \"message\": \"OK\",\n   \"data\": {\n       \"350213\": [\n           {\n               \"id\": 3502130002,\n               \"level\": 4,\n               \"name\": \"马巷\",\n               \"parent\": 350213,\n               \"full_name\": \"中国-福建-厦门-翔安-马巷\"\n           },\n                      ]\n          },\n\"request_id\":\"3e1dd1230fec46bb8501a9bb6e0c27f2\"\n\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625155
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625155,
+  "creator": "linmenger",
+  "fullContext": null
+}

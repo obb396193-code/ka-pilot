@@ -1,0 +1,601 @@
+
+
+* [v1](https://aliyuque.antfin.com/aiplus/aistudio/ydt2y73bvg9iy9xg#jeybq)
+
+# v1
+
+> 版本：v1
+> 
+> 接口列表：
+> 
+> 1. [知识库文档：知识库文档批量处理](#Ct8oE)
+> 2. [知识库文档：知识库文档切分（只切分，不存储）](#Kl9X2)
+> 3. [知识库文档：查询知识库文档处理进度](#yjfcG)
+> 4. [知识库文档：查询文档切分结果详情](#S7xf6)
+> 5. [分段管理：新增或更新分段](#JjE2t)
+> 6. [分段管理：查询某个文档的分段](#hAyC3)
+> 7. [分段管理：删除分段内容](#B5YlY)
+
+## 知识库文档：知识库文档批量处理（切分 & 存储）
+
+> 该接口用于批量处理知识库文档。切分结果将会存储。
+
+* **域名：**`https://idealab.alibaba-inc.com`
+* **接口地址** `/api/v1/aiStudio/repository/batchParseDocument`
+* **请求方式** `POST`
+* **consumes** `["application/json"]`
+* **produces** `["*/*"]`
+
+  
+
+
+**接口描述** 
+
+**请求参数**
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |  |
+| request | 知识库文档（Document）处理 Request | body | true | DocumentNodeParseRequest | DocumentNodeParseRequest |
+
+**schema属性说明**
+
+**DocumentNodeParseRequest**
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| changeModelForNodeParsePreview | 是否为切换模型的预览，如果为切换模型的预览，需要二次查询知识库 | body | false | boolean |  |
+| documentIds | 文档id列表 | body | false | array |  |
+| documentLoadTaskId | 处理方式2：处理该知识库下某批次所有文档 | body | false | string |  |
+| embeddingModel | 知识库切换的模型 | body | false | string |  |
+| nodeParseAlgorithm | 分段&清洗算法 | body | false | DocumentNodeParseConfig | DocumentNodeParseConfig |
+| processAllDocument | 处理方式1：处理该知识库下所有文档 | body | false | boolean |  |
+| repositoryId | 知识库id | body | false | string |  |
+| status | 需要处理的状态 | body | false | array |  |
+
+**DocumentNodeParseConfig**
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| customNodeParseConfig | 文档自定义切分配置 | body | false | DocumentCustomNodeParseConfig | DocumentCustomNodeParseConfig |
+| enableSmartProcess | 是否开启智能处理 | body | false | boolean |  |
+
+**DocumentCustomNodeParseConfig**
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| documentPreProcessConfig | 文档预处理 | body | false | DocumentPreProcessConfig | DocumentPreProcessConfig |
+| documentSplitConfig | 文档自定义切分处理 | body | false | DocumentCustomNodeParseSplitConfig | DocumentCustomNodeParseSplitConfig |
+
+**DocumentPreProcessConfig**
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| deleteUrlAndEmail | 删除所有URL和电子邮件地址 | body | false | boolean |  |
+| replaceContinuousMeaninglessCharacters | 是否替换掉连续的空格、换行符和制表符 | body | false | boolean |  |
+
+**DocumentCustomNodeParseSplitConfig**
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| customScriptSplitConfig | 自定义切分脚本 | body | false | CustomScriptSplitConfig | CustomScriptSplitConfig |
+| customSplitConfig | 自定义切分配置 | body | false | CustomSplitConfig | CustomSplitConfig |
+| nodeParseType | 节点解析方式,可用值:DYNAMIC_CHUNK,FIXED_CHUNK,CUSTOM_CONFIG,CUSTOM_SCRIPT,FAQ,LLM,OPEN_SEARCH,UNSTRUCTURED_IO,DEFAULT | body | false | string |  |
+
+**CustomScriptSplitConfig**
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| fileContent | 文件内容 | body | false | string |  |
+| fileOriginName | 文件名称 | body | false | string |  |
+| filePath | 切分脚本地址（OSS文件路径） | body | false | string |  |
+| nodeParseType | 可用值:DYNAMIC_CHUNK,FIXED_CHUNK,CUSTOM_CONFIG,CUSTOM_SCRIPT,FAQ,LLM,OPEN_SEARCH,UNSTRUCTURED_IO,DEFAULT | body | false | string |  |
+
+**CustomSplitConfig**
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| customSegmentDelimiter | 自定义分段标识符：segmentDelimiter为CUSTOMIZE的时候需要输入 | body | false | string |  |
+| nodeLength | 分段默认长度 | body | false | integer(int32) |  |
+| nodeMaxLength | 分段最大长度 | body | false | integer(int32) |  |
+| nodeOverlapLength | 分段重叠长度 | body | false | integer(int32) |  |
+| nodeParseType | 可用值:DYNAMIC_CHUNK,FIXED_CHUNK,CUSTOM_CONFIG,CUSTOM_SCRIPT,FAQ,LLM,OPEN_SEARCH,UNSTRUCTURED_IO,DEFAULT | body | false | string |  |
+| segmentDelimiter | 分段标识,可用值:TWO_NEWLINES,ONE_NEWLINE,CHINESE_PERIOD,CHINESE_EXCLAMATION_MARK,ENGLISH_PERIOD,ENGLISH_EXCLAMATION_MARK,CHINESE_QUESTION_MARK,ENGLISH_QUESTION_MARK,SPACE,ENGLISH_COMMA,CHINESE_COMMA,MARKDOWN_H1,MARKDOWN_H2,MARKDOWN_H3,CUSTOMIZE | body | false | string |  |
+
+**响应状态**
+
+| 状态码 | 说明 | schema |
+| --- | --- | --- |
+| 200 | OK | Result«string» |
+| 201 | Created |  |
+| 401 | Unauthorized |  |
+| 403 | Forbidden |  |
+| 404 | Not Found |  |
+
+### 入参示例
+
+### 响应示例
+
+## 知识库文档：知识库文档切分（只切分，不存储）
+
+> 该接口用于知识库文档的切分测试，只返回切分结果，不存储切块。
+
+* **域名：**`https://idealab.alibaba-inc.com`
+* **接口地址**`/api/v1/aiStudio/repository/document/splitDocument`
+* **请求方式** `POST`
+* **consumes** `["application/json"]`
+* **produces** `["*/*"]`
+
+**接口描述** 
+
+**请求参数**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |  |
+| request | 知识库文档（Document）切分 Request | body | true | ContentNodeParseRequest |  |
+
+**schema属性说明**
+
+**ContentNodeParseRequest**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| content | 文档内容 | body | false | string |  |
+| fileName | 文档名 | body | false | string |  |
+| splitConfig | 分段算法 | body | false | DocumentCustomNodeParseSplitConfig | DocumentCustomNodeParseSplitConfig |
+
+**DocumentCustomNodeParseSplitConfig**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| customScriptSplitConfig | 自定义切分脚本 | body | false | CustomScriptSplitConfig | CustomScriptSplitConfig |
+| customSplitConfig | 自定义切分配置 | body | false | CustomSplitConfig | CustomSplitConfig |
+| nodeParseType | 节点解析方式,可用 | body | false | string |  |
+
+**CustomScriptSplitConfig**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| fileContent | 文件内容 | body | false | string |  |
+| fileOriginName | 文件名称 | body | false | string |  |
+| filePath | 切分脚本地址（OSS文件路径） | body | false | string |  |
+| nodeParseType | 可用值:  [nodeParseType解释](#NZh0Y) | body | false | string |  |
+
+**CustomSplitConfig**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| customSegmentDelimiter | 自定义分段标识符：segmentDelimiter为CUSTOMIZE的时候需要输入 | body | false | string |  |
+| nodeLength | 分段默认长度 | body | false | integer(int32) |  |
+| nodeMaxLength | 分段最大长度 | body | false | integer(int32) |  |
+| nodeOverlapLength | 分段重叠长度 | body | false | integer(int32) |  |
+| ~~nodeParseType~~ | ~~可用值:~~  [~~nodeParseType解释~~](#NZh0Y) | ~~body~~ | ~~false~~ | string | ​ |
+| segmentDelimiter | 分段标识,可用值:TWO_NEWLINES,ONE_NEWLINE,CHINESE_PERIOD,CHINESE_EXCLAMATION_MARK,ENGLISH_PERIOD,ENGLISH_EXCLAMATION_MARK,CHINESE_QUESTION_MARK,ENGLISH_QUESTION_MARK,SPACE,ENGLISH_COMMA,CHINESE_COMMA,MARKDOWN_H1,MARKDOWN_H2,MARKDOWN_H3,CUSTOMIZE | body | false | string |  |
+
+**响应状态**
+
+| **状态码** | **说明** | **schema** |
+| --- | --- | --- |
+| 200 | OK | Result«List«string»» |
+| 201 | Created |  |
+| 401 | Unauthorized |  |
+| 403 | Forbidden |  |
+| 404 | Not Found |  |
+
+**响应参数**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| code |  | integer(int32) | integer(int32) |
+| data |  | array |  |
+| message |  | string |  |
+| resultCode |  | string |  |
+| success |  | boolean |  |
+
+**响应示例**
+
+### 关于nodeParseType的解释
+
+#### FIXED_CHUNK 固定块切分
+
+#### CUSTOM_CONFIG 使用自定义分隔符方式
+
+##### 使用系统自带分隔符
+
+##### 使用自定义的分隔符
+
+##### segmentDelimiter解释
+
+#### OpenSearch切分方式
+
+## 知识库文档：查询知识库文档处理进度
+
+* **域名：**`https://idealab.alibaba-inc.com`
+* **接口地址**`/api/v1/aiStudio/repository/queryDocumentProcessProgress`
+* **请求方式** `POST`
+* **consumes** `["application/json"]`
+* **produces** `["*/*"]`
+
+**接口描述** 
+
+**请求参数**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |  |
+| request | 查询知识库文档处理进度 Request | body | true | QueryDocumentProcessRequest |  |
+
+**schema属性说明**
+
+**QueryDocumentProcessRequest**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| documentIds | 知识库文档id列表 | body | false | array |  |
+| documentLoadTaskId | 知识库文档批次任务id | body | false | string |  |
+| repositoryId | 知识库id | body | false | string |  |
+
+**响应状态**
+
+| **状态码** | **说明** | **schema** |
+| --- | --- | --- |
+| 200 | OK | Result«AiLabDocumentNodeParseProgressVO» |
+| 201 | Created |  |
+| 401 | Unauthorized |  |
+| 403 | Forbidden |  |
+| 404 | Not Found |  |
+
+**响应参数**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| code |  | string |  |
+| data |  | AiLabDocumentNodeParseProgressVO |  |
+| detailMessage |  | string |  |
+| message |  | string |  |
+| success |  | boolean |  |
+
+**schema属性说明**
+
+**AiLabDocumentNodeParseProgressVO**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| allCount | 全部数量 | integer(int32) |  |
+| completedCount | 已完成数量 | integer(int32) |  |
+| failedCount | 失败数量 | integer(int32) |  |
+| processingProgressList | 数据处理任务 | array |  |
+| progressCount | 进行中数量 | integer(int32) |  |
+| statusSummary | 知识库文档状态统计数据 | AiLabDocumentStatusSummary |  |
+| successfulCount | 成功的数量 | integer(int32) |  |
+
+**DocumentProcessingProgressVO**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| errorMsg | 失败原因 | string |  |
+| fileName | 文件名称 | string |  |
+| fileSize | 文件大小（带单位） | string |  |
+| id | 文档id | string |  |
+| smartProcess | 是否为智能切分 | boolean |  |
+| status | 状态 | string |  |
+| statusLabel | 状态标签 | string |  |
+| success | 是否成功 | boolean |  |
+| suggestedApproach | 建议方式 | string |  |
+
+**AiLabDocumentStatusSummary**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| documentCnt | 该状态下文档个数 | integer(int32) |  |
+| status | 文档处理状态 | string |  |
+| statusLabel | 文档处理状态标签 | string |  |
+
+**响应示例**
+
+## 知识库文档：查询文档切分结果详情
+
+* **域名：**`https://idealab.alibaba-inc.com`
+* **接口地址**`/api/v1/aiStudio/repository/queryNodeParseResult`
+* **请求方式** `POST`
+* **consumes** `["application/json"]`
+* **produces** `["*/*"]`
+
+请求示例
+
+响应示例
+
+**接口描述** 
+
+**请求参数**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |  |
+| nodeQueryRequest | 查询文档块（Node） Request | body | true | DocumentNodeQueryRequest |  |
+
+**schema属性说明**
+
+**DocumentNodeQueryRequest**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| documentId | 文档id | body | false | string |  |
+| nodeId | nodeId不为空时，只返回一条记录的结果 | body | false | string |  |
+| repositoryId | 知识库id | body | false | string |  |
+
+**响应状态**
+
+| **状态码** | **说明** | **schema** |
+| --- | --- | --- |
+| 200 | OK | Result«List«AiLabDocumentNodeVO»» |
+| 201 | Created |  |
+| 401 | Unauthorized |  |
+| 403 | Forbidden |  |
+| 404 | Not Found |  |
+
+**响应参数**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| code |  | string |  |
+| data |  | array |  |
+| detailMessage |  | string |  |
+| message |  | string |  |
+| success |  | boolean |  |
+
+**schema属性说明**
+
+**AiLabDocumentNodeVO**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| content | Node内容 | string |  |
+| extendInfo |  | DocumentNodeExtendInfo |  |
+| id | Node id | string |  |
+| length | Node 字数 | integer(int32) |  |
+| nodeOrder | Node顺序 | integer(int32) |  |
+| status | Node 状态 | string |  |
+| tokens | Node token数 | integer(int32) |  |
+
+**DocumentNodeExtendInfo**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| recallCount | 召回次数/命中次数 | integer(int32) |  |
+
+请求示例
+
+**响应结构**
+
+响应示例
+
+### Curl示例
+
+## 分段管理：新增或更新分段
+
+* **域名：**`https://idealab.alibaba-inc.com`
+* **接口地址**`/api/v1/aiStudio/repository/node/insertOrUpdate`
+* **请求方式** `POST`
+* **consumes** `["application/json"]`
+* **produces** `["*/*"]`
+
+**接口描述** 
+
+**请求参数**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |  |
+| request | 新增或更新文档分段 | body | true | DocumentInsertOrUpdateNodeRequest |  |
+
+**schema属性说明**
+
+**DocumentInsertOrUpdateNodeRequest**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| chunk | 参考文档：切块内容 | body | false | string |  |
+| documentId | 文档id | body | false | string |  |
+| nodeId | 切块的id，更新时不能为空！ | body | false | string |  |
+| qaPair | 离线缓存对：FAQ内容 | body | false | FAQDocumentDTO | FAQDocumentDTO |
+| repositoryId | 知识库id | body | false | string |  |
+
+**FAQDocumentDTO**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| answer |  | body | false | string |  |
+| lineNo |  | body | false | integer(int64) |  |
+| question |  | body | false | string |  |
+
+**响应状态**
+
+| **状态码** | **说明** | **schema** |
+| --- | --- | --- |
+| 200 | OK | Result«string» |
+| 201 | Created |  |
+| 401 | Unauthorized |  |
+| 403 | Forbidden |  |
+| 404 | Not Found |  |
+
+**响应参数**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| code |  | string |  |
+| data |  | string |  |
+| detailMessage |  | string |  |
+| message |  | string |  |
+| success |  | boolean |  |
+
+**响应示例**
+
+## 分段管理：查询某个文档的分段
+
+* **域名：**`https://idealab.alibaba-inc.com`
+* **接口地址** `/api/v1/aiStudio/repository/node/queryNodes`
+* **请求方式** `POST`
+* **consumes** `["application/json"]`
+* **produces** `["*/*"]`
+
+**接口描述** ``
+
+**请求参数**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |  |
+| request | 查询文档的分段入参 | body | true | DocumentQueryNodesRequest |  |
+
+**schema属性说明**
+
+**DocumentQueryNodesRequest**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| documentId | 文档id | body | false | string |  |
+| repositoryId | 知识库id | body | false | string |  |
+
+**响应状态**
+
+| **状态码** | **说明** | **schema** |
+| --- | --- | --- |
+| 200 | OK | Result«DocumentNodeRetrievalResultVO» |
+| 201 | Created |  |
+| 401 | Unauthorized |  |
+| 403 | Forbidden |  |
+| 404 | Not Found |  |
+
+**响应参数**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| code |  | string |  |
+| data |  | DocumentNodeRetrievalResultVO |  |
+| detailMessage |  | string |  |
+| message |  | string |  |
+| success |  | boolean |  |
+
+**schema属性说明**
+
+**DocumentNodeRetrievalResultVO**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| knowledgeBaseResponse | 召回结果 | KnowledgeBaseResponse | KnowledgeBaseResponse |
+| summaryInfo | 召回结果摘要信息 | NodeRetrieverSummaryInfo |  |
+
+**KnowledgeBaseResponse**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| nodes |  | array | KnowledgeBaseNodeDetail |
+| retrievalRunLog |  | RetrievalRunLog |  |
+
+**KnowledgeBaseNodeDetail**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| chunk |  | string |  |
+| documentId |  | string |  |
+| hitCount |  | integer(int32) |  |
+| matchingMethod | 可用值:VECTOR*SIMILARITY,KEYWORD*MATCHING | string |  |
+| nodeId |  | string |  |
+| recentHitCount |  | integer(int32) |  |
+| repositoryId |  | string |  |
+| resultType | 可用值:RE,FAQ | string |  |
+| retrievalType | 可用值:ORIGIN*CHUNK,ORIGIN*FILE | string |  |
+| score |  | number(double) |  |
+| sourceDocumentLink |  | string |  |
+| sourceDocumentMimeInfo |  | DocumentMimeTypeInfo |  |
+| sourceDocumentName |  | string |  |
+| tokens |  | integer(int32) |  |
+| weightScore |  | number(double) |  |
+
+**DocumentMimeTypeInfo**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| mimeType | 文档类型 | string |  |
+| mimeTypeLogo | 文档的logo | string |  |
+| mimeTypeName | 文档类型名称 | string |  |
+
+**RetrievalRunLog**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| empIdOrBusinessCode |  | string |  |
+| errorMsg |  | string |  |
+| nodeLogs |  | array |  |
+| repositoryIds |  | array |  |
+| rt |  | integer(int64) |  |
+| source |  | string |  |
+| success |  | boolean |  |
+
+**BaseRetrievalRunLog**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| handlerType |  | string |  |
+| nodeList |  | array |  |
+| rt |  | integer(int64) |  |
+
+**NodeRetrieverSummaryInfo**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| documentCnt | 召回的知识库文档数量 | integer(int32) |  |
+| nodeCnt | 召回的文档分段数量 | integer(int32) |  |
+
+**响应示例**
+
+## 分段管理：删除分段内容
+
+* **域名：**`https://idealab.alibaba-inc.com`
+* **接口地址** `/api/v1/aiStudio/repository/node/deleteNode`
+* **请求方式** `POST`
+* **consumes** `["application/json"]`
+* **produces** `["*/*"]`
+
+**接口描述** 
+
+**请求参数**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |  |
+| request | 删除文档分段文档分段 | body | true | DocumentDeleteNodesRequest |  |
+
+**schema属性说明**
+
+**DocumentDeleteNodesRequest**
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| documentId | 文档id | body | false | string |  |
+| nodeIds | 分段id集合 | body | false | array |  |
+| repositoryId | 知识库id | body | false | string |  |
+
+**响应状态**
+
+| **状态码** | **说明** | **schema** |
+| --- | --- | --- |
+| 200 | OK | Result«Void» |
+| 201 | Created |  |
+| 401 | Unauthorized |  |
+| 403 | Forbidden |  |
+| 404 | Not Found |  |
+
+**响应参数**
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| code |  | string |  |
+| detailMessage |  | string |  |
+| message |  | string |  |
+| success |  | boolean |  |
+
+**响应示例**
+

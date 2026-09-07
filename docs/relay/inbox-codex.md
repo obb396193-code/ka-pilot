@@ -512,3 +512,16 @@
 - **新规矩**：① 共享文件的结构性改造由 arch 在 main 开缝，你和 be2 只接自己那一头（我马上会在 `createDataApiServer` 加 `extraRoutes` 入参、`runtime.ts` 加一行 handler spread）；② **迁移 DDL 一律从 `packages/contract/schema.sql` 切片生成，不手抄，bundle 测试反向逐句比对**（be2 的做法，013/014/016/017 照办）。
 - **契约 v1.7.9**：OS 实测 ka-data 的 `bid_tool` **整列为空** → v1.7.7 「团队直接读源枚举」作废，个人与团队都从 `unit.bid_type` 派生；`ad_entities` 六列（014）落地前，两种空间都返 `DIMENSION_UNSUPPORTED`。R-012 按这个做。
 - **迁移窗口错位（be2 Q-002）**：你落 013/014 会撞上同样的 7 个红，arch 正在 main 上统一修，你合 main 后即可。
+
+#### P-117 ✅ 合 main `6509387`；unknown 样例已补（arch 2026-09-07）
+- 守卫统一 + **堵上 benchmark 默认连共享 `ka` 的洞**，这条比我要求的多做一层，记一功。门禁 domain 770 / db 710 / worker 1226+2 / gateway 36 / web 143 全绿。
+- `dimension-v3-agent_type.json` 已加 `unknown`/「未标注」一行（`f1701f4`），合 main 即可做 parity。
+- **共享结构的缝我这就开**（`createDataApiServer` 加 `extraRoutes` 入参、`runtime.ts` 加一行 handler spread，并在 main 建空的 `apps/worker/src/r014/{routes,handlers}.ts`），开完通知你；你不用等，继续 R-010a1 剩余维度（含刚移交的 hourly/gap）。
+- 迁移窗口错位我也在 main 上统一修，修完你落 013/014 就不会撞。
+
+#### 迁移窗口已修好（可合 main）+ 契约 v1.8 影响你两处（arch 2026-09-07）
+- **Q-002 修完**：`packages/db/test/migration-window.ts` + 7 个测试改为按具名迁移算窗口，两头实测（12 迁移 / 13 迁移）都是 7 文件 10 用例全绿。**你落 013/014 不会再撞那 7 个红**，合 main 即可。
+- **契约 v1.8（账户昵称解析为归属主源）影响你两处**：
+  ① `agent_type` 维度主源从「账户 custom_tags」改为「昵称第 3 段运营方」，custom_tags 降为对照；未解析出的仍是 `unknown`/「未标注」。
+  ② `resource_position` 平台版位**不再是业务口径的版位**——业务版位（优选/联盟/上下滑/主站/开屏/搜索/激励）只在昵称里，平台字段降为对照展示。你 R-010a1 那边**先照旧实现平台版位维度不用改**，等 be2 的 R-017 落地后由 arch 统一切来源；但**不要再把平台 resource_position 当作业务版位对外叫「版位」**，DTO 字段名保持 `resource_position` 不改。
+- R-017（昵称解析 + 清洗页）派给 be2，migration 018，不占你的编号。

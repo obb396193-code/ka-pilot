@@ -1,0 +1,54 @@
+{
+  "documentId": 3038,
+  "documentName": "视频个人主页隐藏",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 视频个人主页隐藏\n【主页隐藏】功能介绍：支持将所选素材的主页公开状态更改为主页隐藏状态；隐藏后，此素材在个人主页作品列表不可见，一定程度上影响获取增益流量和转化。\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/photo/hiddenToProfile](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/photo/hiddenToProfile)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| photo_ids | String | 1,2,3,4 | 必填 | 视频ID 英文逗号隔开 |  |\n| advertiser_id | Long |  | 必填 | advertiser_id |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 0 | 结果 | 0-成功 非0-失败 |\n| message | String | \"OK\" | 失败原因 |  |\n| data | Object |  | 结果 |  |\n| &#8195;success_count | Integer |  | 成功个数 |  |\n| &#8195;fail_count | Integer |  | 失败个数 |  |\n| &#8195;fail_details | Object[] |  | 失败具体原因 |  |\n| &#8195;&#8195;photo_id | String |  | 失败视频ID 字符串类型 |  |\n| &#8195;&#8195;author_id | Long |  | 作者ID |  |\n| &#8195;&#8195;photo_name | String |  | 视频名称 |  |\n| &#8195;&#8195;reason | String |  | 失败具体原因描述 |  |\n\n### 请求样例\n\n```js\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/photo/hiddenToProfile' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n  \"advertiser_id\": \"139494\",\n  \"photo_ids\": [\n    \"5189272805797563695\",\n    \"5230931102520265387\",\n    \"5259078602243743317\"\n  ]\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"successCount\": 3,\n        \"failCount\": 0,\n        \"failDetails\": []\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ENuBgIDAoZWaChiaDCD-vIiUhzIo8bOc1g8=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1720424807543
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1720424807543,
+  "creator": "heran03",
+  "fullContext": null
+}

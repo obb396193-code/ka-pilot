@@ -38,7 +38,7 @@ export function RunDetailPage({ runId }: { runId: string }) {
     <PageBody>
       <PageHeader
         title={<span className="flex flex-wrap items-center gap-2">{listItem?.name ?? "新任务开户到基建"}<TypeChip>{detail.run.version}</TypeChip><StatusChip tone={runStatusMeta[status].tone}>{runStatusMeta[status].label}</StatusChip></span>}
-        description={<span>发起人 {detail.run.initiator.name} · 执行身份 {executorLabel[detail.run.executor_identity]}{detail.run.taskId ? <> · 任务 <Link href={`/tasks/${encodeURIComponent(detail.run.taskId)}`} className="underline-offset-4 hover:underline">{detail.run.taskId}</Link></> : null} · run …{runId.slice(-6)}{!isFixtureRun ? "（fixture 只有 …1001 的详情，此处展示该样例）" : ""}</span>}
+        description={<span>发起人 {detail.run.initiator.name} · 执行身份 {executorLabel[detail.run.executor_identity]}{detail.run.taskId ? <> · 任务 <Link href={`/tasks/${encodeURIComponent(detail.run.taskId)}`} className="underline-offset-4 hover:underline">{detail.run.taskId}</Link></> : null} · run …{runId.slice(-6)}{!isFixtureRun ? "（示例只有 …1001 的详情，这里展示该样例）" : ""}</span>}
         isMock={isMock}
         actions={
           <>

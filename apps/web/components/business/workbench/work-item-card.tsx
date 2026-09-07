@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
+import { fmtTime, isOk, mv, rv, changesetStatusText } from "@/lib/fixtures/contract"
 import { changesetFixture, severityMeta, workItemActionsFixture, workItemDetailFixture, type WorkItem, type WorkItemDetail } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
 
@@ -88,16 +88,16 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
               </div>
               {detail.decision ? <div className="rounded-lg bg-muted/50 p-3 text-xs"><span className="font-medium">分级决策 {detail.decision.tier}</span> · 置信 {rv(detail.decision.gates.confidence)} · 历史成功率 {rv(detail.decision.gates.historicalSuccessRate)} · 近 24h 人工操作 {detail.decision.gates.recentManualOps} · {detail.decision.gates.reversible ? "可回滚" : "不可回滚"} · {detail.decision.gates.withinCap ? "在日上限内" : "超日上限"} · {detail.decision.reason}</div> : null}
             </div>
-          ) : <p className="text-sm text-muted-foreground">证据快照样例只有一条（TODO-fixture:work-items/detail-{item.workItemId.slice(-4)}.json）。</p>}
+          ) : <p className="text-sm text-muted-foreground">证据快照样例只有一条；其余工作项接口接入后返回。</p>}
         </DialogContent>
       </Dialog>
 
       <Dialog open={changesetOpen} onOpenChange={setChangesetOpen}>
         <DialogContent className="sm:max-w-xl">
-          <DialogHeader><DialogTitle>变更集草稿 · {changeset?.title}</DialogTitle><DialogDescription>只到草稿：dry-run 是 confirm 的硬前置；TTL 到期作废；执行由单执行者逐项做。</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>变更集草稿 · {changeset?.title}</DialogTitle><DialogDescription>只到草稿：先试运行通过才能确认；过了有效期自动作废；确认后由一个执行者逐项做。</DialogDescription></DialogHeader>
           {changeset ? (
             <div className="flex flex-col gap-3 text-sm">
-              <div className="flex flex-wrap items-center gap-2"><TypeChip>{changeset.status}</TypeChip><span className="text-xs text-muted-foreground">账户 {changeset.accountId} · 原因码 {changeset.reasonCode} · TTL {fmtTime(changeset.ttlExpireAt)}</span></div>
+              <div className="flex flex-wrap items-center gap-2"><TypeChip>{changesetStatusText(changeset.status)}</TypeChip><span className="text-xs text-muted-foreground">账户 {changeset.accountId} · 原因码 {changeset.reasonCode} · {fmtTime(changeset.ttlExpireAt)} 前有效</span></div>
               <div className="overflow-hidden rounded-lg border">
                 <Table>
                   <TableHeader className="bg-muted"><TableRow><TableHead>目标</TableHead><TableHead>字段</TableHead><TableHead className="text-right">从</TableHead><TableHead className="text-right">到</TableHead><TableHead>状态</TableHead></TableRow></TableHeader>
@@ -106,7 +106,7 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
               </div>
               {changeset.simulation ? <div className="rounded-lg bg-muted/50 p-3 text-xs">What-if：现金 CPA {changeset.simulation.expected.cashCpa.from} → {changeset.simulation.expected.cashCpa.to} · 消耗 {changeset.simulation.expected.cost.from} → {changeset.simulation.expected.cost.to} · 风险 {changeset.simulation.riskLevel} · {changeset.simulation.note}</div> : null}
               <div className="flex justify-end gap-2">
-                <Button variant="outline" size="sm" onClick={() => toast("dry-run 通过", { description: `校验指纹 ${changeset.dryRunHash?.slice(0, 8)}` })}>dry-run</Button>
+                <Button variant="outline" size="sm" onClick={() => toast("试运行通过", { description: `校验指纹 ${changeset.dryRunHash?.slice(0, 8)}` })}>试运行</Button>
                 <Button size="sm" onClick={() => { toast.success("已确认，等待执行", { description: "未开写权限时会被拒绝" }); setChangesetOpen(false) }}>确认</Button>
               </div>
             </div>

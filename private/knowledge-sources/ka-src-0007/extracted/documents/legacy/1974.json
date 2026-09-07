@@ -1,0 +1,42 @@
+{
+  "documentId": 1974,
+  "documentName": "10.18.5获取智能托管物料接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取智能托管物料接口\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/hosting/project/material/list\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 属性          | 类型    | 含义            | 使用说明  |\n| ------------- | ------- | --------------- | --------- |\n| advertiser_id | Long    | 广告主accountId | 必填      |\n| page          | Integer | 当前页码        | 从1开始   |\n| page_size     | Integer | 每页大小        | 最大为100 |\n\n\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 179,\n        \"details\": [\n          {/*等同于detail接口的data部分，请参考detail接口*/}\n        ]\n    },\n    \"message\": \"OK\"\n}\n\n```\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624488
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624488,
+  "creator": "linmenger",
+  "fullContext": null
+}

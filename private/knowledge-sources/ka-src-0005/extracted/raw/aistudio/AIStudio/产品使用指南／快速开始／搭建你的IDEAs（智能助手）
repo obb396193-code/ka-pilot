@@ -1,0 +1,85 @@
+
+
+ƒ
+
+面向所有阿里小二，AI Studio一直在为同学们提供更加简化、更加高效的AI应用搭建平台而不断努力。为方便非编程基础的同学使用，本文以创建**AI Studio智能客服**的IDEAs为例演示如何在AI Studio搭建IDEAs。
+
+参考：<https://ata.atatech.org/articles/11020226006?spm=ata.23639746.0.0.50a6374aHCnhxb>
+
+## Step1：新建一个IDEAs
+
+新建**『AI Studio智能客服』**对话型IDEAs
+
+## Step2：调试IDEAs
+
+1. **编写提示词，**提示词是我们指导模型工作的指令，提示词的质量是影响模型输出好坏的重要因素。
+
+我为**『AI Studio智能客服』**的IDEAs编写提示词示例如下（）：
+
+  
+
+
+2. [**模型设置**](https://aliyuque.antfin.com/aiplus/aistudio/vas7dno5nrotdri0)，目前AI Studio提供了较多的模型，但模型的能力边界各有差异，请根据你的需求自定义选择，这里我选择**GPT4-turbo-128K（根据时间推移，请选择最优模型），**我的模型参数配置如下：
+
+  
+
+
+3. [**变量设置**](https://aliyuque.antfin.com/aiplus/aistudio/yopnl2egh87ncawc)**​**
+
+**『AI Studio智能客服』**提示词中我添加了模型需要额外学习的内容变量**${REFERENCE_DOC}，**该变量主要用来填入针对用户问题召回的相关私域文档分段内容
+
+​  
+
+
+4. [**上下文**](https://aliyuque.antfin.com/aiplus/aistudio/dervztqvg3843rsk)
+
+这里可以添加知识库作为模型知识的补充，我事先已经添加了AI Studio帮助文档知识库，添加知识库方式具体参见**。**
+
+[**变量绑定：**](https://aliyuque.antfin.com/aiplus/aistudio/yopnl2egh87ncawc)添加知识库后，需要将**${REFERENCE_DOC}**变量和上下文进行绑定，实现知识库召回内容填入该变量对应的位置。
+
+**上下文设置：**设置召回方式，可以使用默认配置，如私域知识领域专业名词较多，可同时开启关键词召回
+
+**​**  
+
+
+5. [**工具使用**](https://aliyuque.antfin.com/aiplus/aistudio/gh0ptmgk93cizrag)**，**这里可以根据你定义的应用功能，为该应用添加能力工具，让模型突破能力边界，实现应用诉求。
+
+我本次需要实现的是**『AI Studio智能客服』，**除了需要模型的问答能力以及上下文能力外，无需添加工具。如果你的客服需要额外查询其他接口，可添加自定义工具或选择平台提供的工具
+
+  
+
+
+6. [**页面调试**](https://aliyuque.antfin.com/aiplus/aistudio/yhz3nmwix8347x44)**，**输入问题，查看效果，每次运行记录都会被保存在调试记录里。
+
+对话型IDEAs在页面调试前，你可以进行问答设置
+
+* 设置记忆模式，默认开启记忆开关，这是多轮对话的关键
+* 预置QA开关，针对模型回复不够准确的内容，可以使用预置QA能力实现回答结果的快速调整
+* 提示问题配置，面向用户展示最多4个提示问题，让用户快速了解如何使用你的IDEAs
+* 输入设置，你的IDEAs是否支持图片或视频取决于模型或工具是否支持，可根据你的IDEAs功能选择性开启
+
+  
+
+
+## Step3：[IDEAs发布](https://aliyuque.antfin.com/aiplus/aistudio/vpryfsk9w8nm1gl2)
+
+1. 调试效果满意后，点击调试页面右上角**【发布】**
+2. 输入发布概要，点击确定
+
+3. 进入[**【发布管理】**](https://aliyuque.antfin.com/aiplus/aistudio/zzndys976agfga40)TAB，查看**【终端管理】**进行不同渠道终端体验及查看**【发布记录】，**目前支持API、Web、ideaTALK、阿里钉机器人终端交付
+
+  
+
+
+​  
+
+
+  
+
+
+  
+
+
+  
+
+

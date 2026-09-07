@@ -1,0 +1,1376 @@
+{
+  "documentId": 3103,
+  "documentName": "原生报表披露自然流量后查询原生经营明细接口",
+  "documentType": 2,
+  "description": "<p>【注】查询广告组、广告创意层级的数据时不包括省心投物料</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1741697442226
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1725334648616
+    }
+  ],
+  "apiId": 1404,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/effect/native/natureDetailedReport",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求参数",
+      "type": "jsonc",
+      "body": "{\n  \"advertiser_id\": 14342652,\n  \"search_param\": {\n    \"view_type\": 2,\n    \"report_start_day\": 1723981775000,\n    \"report_end_day\": 1724240975000\n  }\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "响应结果",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": {\n    \"page_info\": {\n      \"currentPage\": -1,\n      \"pageSize\": -1,\n      \"totalCount\": 24\n    },\n    \"result_list\": [\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 0,\n        \"create_time\": 1723087910240,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 394,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月08日11时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 2,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.005076142131979695,\n        \"share\": 1,\n        \"comment\": 3,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2456598639,\n        \"likes\": 2\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 0,\n        \"create_time\": 1723529606925,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 1094,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月13日14时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 5,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.004570383912248629,\n        \"share\": 4,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2469565708,\n        \"likes\": 11\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 0,\n        \"create_time\": 1721889592897,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 0,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年07月25日14时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 0,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0,\n        \"share\": 0,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2410052186,\n        \"likes\": 0\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 14,\n        \"create_time\": 1724039140552,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 4281,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月19日11时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 32,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.007474889044615744,\n        \"share\": 4,\n        \"comment\": 5,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2485041260,\n        \"likes\": 62\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 0,\n        \"create_time\": 1723272379492,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 358,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月10日14时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 1,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.002793296089385475,\n        \"share\": 0,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2462288103,\n        \"likes\": 7\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 0,\n        \"create_time\": 1722829057560,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 280,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月05日11时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 4,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.014285714285714285,\n        \"share\": 0,\n        \"comment\": 1,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2448640837,\n        \"likes\": 1\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 1,\n        \"create_time\": 1722931949487,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 686,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月06日16时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 6,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.008746355685131196,\n        \"share\": 1,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2452561548,\n        \"likes\": 8\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 1,\n        \"create_time\": 1723350805716,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 267,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月11日12时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 5,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.018726591760299626,\n        \"share\": 0,\n        \"comment\": 1,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2464580351,\n        \"likes\": 6\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 0,\n        \"create_time\": 1722308321207,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 20,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年07月30日10时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 0,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0,\n        \"share\": 0,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2422009021,\n        \"likes\": 0\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 0,\n        \"create_time\": 1722579133267,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 39,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月02日14时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 0,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0,\n        \"share\": 0,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2432107294,\n        \"likes\": 1\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 2,\n        \"create_time\": 1723704005505,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 1609,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月15日14时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 14,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.00870105655686762,\n        \"share\": 2,\n        \"comment\": 2,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2475449755,\n        \"likes\": 17\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 0,\n        \"create_time\": 1722664674670,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 1,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月03日13时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 0,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0,\n        \"share\": 0,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2437799519,\n        \"likes\": 0\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 0,\n        \"create_time\": 1723013930345,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 414,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月07日14时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 0,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0,\n        \"share\": 1,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2454652058,\n        \"likes\": 5\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 7,\n        \"create_time\": 1723777347376,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 2145,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月16日11时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 23,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.010722610722610723,\n        \"share\": 6,\n        \"comment\": 4,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2477686427,\n        \"likes\": 26\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 2,\n        \"create_time\": 1723456624123,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 550,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月12日17时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 6,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.01090909090909091,\n        \"share\": 1,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2467499778,\n        \"likes\": 15\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 2,\n        \"create_time\": 1721789736923,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 1716,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年07月24日10时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 9,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.005244755244755245,\n        \"share\": 4,\n        \"comment\": 2,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2407627087,\n        \"likes\": 24\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 10,\n        \"create_time\": 1724135462795,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 2017,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月20日14时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 28,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.013882002974714923,\n        \"share\": 1,\n        \"comment\": 5,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2487854783,\n        \"likes\": 21\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 12,\n        \"create_time\": 1711705715849,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 3326,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"ocpm-打包-0329\",\n        \"ad_item_click\": 51,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.015333734215273603,\n        \"share\": 7,\n        \"comment\": 3,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2112754503,\n        \"likes\": 40\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 2,\n        \"create_time\": 1723175268178,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 621,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月09日11时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 5,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.008051529790660225,\n        \"share\": 2,\n        \"comment\": 1,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2458973145,\n        \"likes\": 5\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 17,\n        \"create_time\": 1723953123588,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 5360,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月18日11时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 37,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.006902985074626866,\n        \"share\": 10,\n        \"comment\": 4,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2482791016,\n        \"likes\": 88\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 3,\n        \"create_time\": 1723606614332,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 1452,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月14日11时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 5,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.003443526170798898,\n        \"share\": 2,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2472081712,\n        \"likes\": 24\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 0,\n        \"create_time\": 1722741133385,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 258,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月04日11时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 1,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.003875968992248062,\n        \"share\": 0,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2442938210,\n        \"likes\": 1\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 0,\n        \"create_time\": 1721717972764,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 53,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年07月23日14时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 1,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.018867924528301886,\n        \"share\": 0,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2406002196,\n        \"likes\": 1\n      },\n      {\n        \"creative_name\": null,\n        \"conversion_cnt\": 1,\n        \"create_time\": 1722497723526,\n        \"campaign_type\": \"应用安装提升\",\n        \"click\": 264,\n        \"creative_id\": 0,\n        \"unit_name\": null,\n        \"campaign_name\": \"24年08月01日15时人工素材复建组任务_aj1_bt0_14342652\",\n        \"ad_item_click\": 3,\n        \"ocpc_action_type\": \"\",\n        \"kol_user_type_desc\": null,\n        \"action_ratio\": 0.011363636363636364,\n        \"share\": 0,\n        \"comment\": 0,\n        \"author_id\": \"\",\n        \"unit_id\": 0,\n        \"campaign_id\": 2429681094,\n        \"likes\": 6\n      }\n    ],\n    \"sum\": [\n      {\n        \"conversion_cnt\": 74,\n        \"ad_item_click\": 238,\n        \"action_ratio\": 0.008748391839735343,\n        \"share\": 46,\n        \"comment\": 31,\n        \"click\": 27205,\n        \"likes\": 371\n      }\n    ]\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"EMmEgICwooSaChjKCyDD2s6vmzIovJKA9Qc=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 64764,
+      "paramName": "page_info",
+      "paramType": "PageInfoSnake",
+      "example": "",
+      "description": "<p>分页信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 978,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 64653,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "总条数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64654,
+          "paramName": "page_size",
+          "paramType": "Integer",
+          "example": "",
+          "description": "当前分页大小",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64655,
+          "paramName": "current_page",
+          "paramType": "Integer",
+          "example": "ddd",
+          "description": "当前页面",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64765,
+      "paramName": "search_param",
+      "paramType": "NativeReportSearchParamSnake",
+      "example": "",
+      "description": "<p>原生经营明细筛选条件</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2699,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 64704,
+          "paramName": "author_id",
+          "paramType": "Long[]",
+          "example": "[123,456]",
+          "description": "快手号ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64705,
+          "paramName": "campaign_type",
+          "paramType": "Integer[]",
+          "example": "[2,5]",
+          "description": "营销目标  2提升应用安装 5收集销售线索 7提升应用活跃 19 快手小程序推广 30 短剧推广",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64706,
+          "paramName": "ocpc_action_type",
+          "paramType": "Integer[]",
+          "example": "",
+          "description": "转化目标 180激活 53表单优化 190付费 191 首日roi(24h)",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64707,
+          "paramName": "kol_user_type",
+          "paramType": "Integer[]",
+          "example": "",
+          "description": "原生广告类型 1普通快手号 2 蓝V 3聚星达人",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64708,
+          "paramName": "view_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "2计划 3 广告组 4 广告创意  原生报表明细接口必填，原生报表概览接口非必填",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64709,
+          "paramName": "report_end_day",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>结束时间 时间戳 毫秒</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64710,
+          "paramName": "report_start_day",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>开始时间 时间戳 毫秒</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64711,
+          "paramName": "skip_sum",
+          "paramType": "Boolean",
+          "example": "true",
+          "description": "获取效果明细是否获取汇总数据 true不获取，false获取",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64766,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 64767,
+      "paramName": "data",
+      "paramType": "NativeNatureDetailReportResponseSnake",
+      "example": "",
+      "description": "<p>原生经营明细结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3637,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 64656,
+          "paramName": "result_list",
+          "paramType": "AdDspNativeNatureReportViewSnake[]",
+          "example": "",
+          "description": "<p>原生经营明细</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3636,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 64635,
+              "paramName": "ad_item_click",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>行为数</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64636,
+              "paramName": "action_ratio",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>素材点击率</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64637,
+              "paramName": "conversion_cnt",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>原生经营转化数</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64638,
+              "paramName": "campaign_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "计划ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64639,
+              "paramName": "campaign_name",
+              "paramType": "String",
+              "example": "",
+              "description": "计划名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64640,
+              "paramName": "unit_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "广告组ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64641,
+              "paramName": "unit_name",
+              "paramType": "String",
+              "example": "",
+              "description": "广告组名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64642,
+              "paramName": "creative_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "创意ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64643,
+              "paramName": "creative_name",
+              "paramType": "String",
+              "example": "",
+              "description": "创意名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64644,
+              "paramName": "create_time",
+              "paramType": "String",
+              "example": "",
+              "description": "创建时间 时间戳 毫秒",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 10,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64645,
+              "paramName": "click",
+              "paramType": "Long",
+              "example": "",
+              "description": "素材曝光数",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 11,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64646,
+              "paramName": "share",
+              "paramType": "Long",
+              "example": "",
+              "description": "分享数",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 12,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64647,
+              "paramName": "comment",
+              "paramType": "Long",
+              "example": "",
+              "description": "评论数",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 13,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64648,
+              "paramName": "likes",
+              "paramType": "Long",
+              "example": "",
+              "description": "点赞数",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 14,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64649,
+              "paramName": "kol_user_type_desc",
+              "paramType": "String",
+              "example": "",
+              "description": "原生广告类型",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 15,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64650,
+              "paramName": "ocpc_action_type",
+              "paramType": "String",
+              "example": "",
+              "description": "优化目标",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 16,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64651,
+              "paramName": "campaign_type",
+              "paramType": "String",
+              "example": "",
+              "description": "营销目标",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 17,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64652,
+              "paramName": "author_id",
+              "paramType": "String",
+              "example": "",
+              "description": "快手号ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 18,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64657,
+          "paramName": "sum",
+          "paramType": "AdDspNativeNatureReportViewSnake[]",
+          "example": "",
+          "description": "全局汇总",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3636,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 64635,
+              "paramName": "ad_item_click",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>行为数</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64636,
+              "paramName": "action_ratio",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>素材点击率</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64637,
+              "paramName": "conversion_cnt",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>原生经营转化数</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64638,
+              "paramName": "campaign_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "计划ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64639,
+              "paramName": "campaign_name",
+              "paramType": "String",
+              "example": "",
+              "description": "计划名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64640,
+              "paramName": "unit_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "广告组ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64641,
+              "paramName": "unit_name",
+              "paramType": "String",
+              "example": "",
+              "description": "广告组名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64642,
+              "paramName": "creative_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "创意ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64643,
+              "paramName": "creative_name",
+              "paramType": "String",
+              "example": "",
+              "description": "创意名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64644,
+              "paramName": "create_time",
+              "paramType": "String",
+              "example": "",
+              "description": "创建时间 时间戳 毫秒",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 10,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64645,
+              "paramName": "click",
+              "paramType": "Long",
+              "example": "",
+              "description": "素材曝光数",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 11,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64646,
+              "paramName": "share",
+              "paramType": "Long",
+              "example": "",
+              "description": "分享数",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 12,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64647,
+              "paramName": "comment",
+              "paramType": "Long",
+              "example": "",
+              "description": "评论数",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 13,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64648,
+              "paramName": "likes",
+              "paramType": "Long",
+              "example": "",
+              "description": "点赞数",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 14,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64649,
+              "paramName": "kol_user_type_desc",
+              "paramType": "String",
+              "example": "",
+              "description": "原生广告类型",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 15,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64650,
+              "paramName": "ocpc_action_type",
+              "paramType": "String",
+              "example": "",
+              "description": "优化目标",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 16,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64651,
+              "paramName": "campaign_type",
+              "paramType": "String",
+              "example": "",
+              "description": "营销目标",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 17,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64652,
+              "paramName": "author_id",
+              "paramType": "String",
+              "example": "",
+              "description": "快手号ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 18,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 64658,
+          "paramName": "page_info",
+          "paramType": "PageInfoSnake",
+          "example": "",
+          "description": "分页信息",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 978,
+          "sort": 3,
+          "note": "",
+          "children": [
+            {
+              "paramId": 64653,
+              "paramName": "total_count",
+              "paramType": "Long",
+              "example": "",
+              "description": "总条数",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64654,
+              "paramName": "page_size",
+              "paramType": "Integer",
+              "example": "",
+              "description": "当前分页大小",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 64655,
+              "paramName": "current_page",
+              "paramType": "Integer",
+              "example": "ddd",
+              "description": "当前页面",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64768,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "\"OK\"",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64769,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1741697442226,
+  "creator": "wanghao51",
+  "fullContext": null
+}

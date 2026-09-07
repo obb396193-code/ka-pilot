@@ -1,0 +1,38 @@
+## 废弃迭代
+
+废弃 O2 迭代
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/iterations/{iterationId}/abandon |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| iterationId | Number | true | - | 迭代 ID |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| isDeleteBranch | Boolean | false | false | 是否删除迭代分支 |
+
+### Returns
+
+An Empty Object.
+
+### Example
+
+```
+client.post(`/v1.0/work/iterations/{iterationId}/abandon`,{}, {
+  isDeleteBranch
+}, {
+  SSO_TICKET
+})
+
+{
+}
+
+```

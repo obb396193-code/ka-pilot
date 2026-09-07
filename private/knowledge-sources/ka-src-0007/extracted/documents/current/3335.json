@@ -1,0 +1,245 @@
+{
+  "documentId": 3335,
+  "documentName": "推送高级创意接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "推送高级创意接口\n/rest/openapi/gw/dsp/v1/adv_card/share\n{\n    \"advertiser_id\": 900312980,\n    \"share_advertiser_ids\": [\n        900313084\n    ],\n    \"adv_card_ids\": [\n        18602650\n    ]\n}\n{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"adv_card_id\": 19459069,\n            \"advertiser_id\": 900313084\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"ELiAgIDAjp2OrAEYtQggqYPa8rQzKOnJo5kB\"\n}\nadvertiser_id  Long  <p>广告主id</p>\nshare_advertiser_ids  Long[]  <p>推送账户ids</p>\nadv_card_ids  Long[]  <p>推送卡片ids</p>\nshare_account_type  Integer  <p>分享账户类型</p>\ncode  Integer  <p>状态码</p>\nmessage  String  <p>返回信息</p>\ndata  MarketAdvCardShareResp[]  <p>信息</p>\nadvertiser_id  Long  <p>分享后的账户信息</p>\nadv_card_id  Long  <p>分享后的卡片id信息</p>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1766546425734
+    }
+  ],
+  "apiId": 1771,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/adv_card/share",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": "{\n    \"advertiser_id\": 900312980,\n    \"share_advertiser_ids\": [\n        900313084\n    ],\n    \"adv_card_ids\": [\n        18602650\n    ]\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": "{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"adv_card_id\": 19459069,\n            \"advertiser_id\": 900313084\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"ELiAgIDAjp2OrAEYtQggqYPa8rQzKOnJo5kB\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 79554,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79555,
+      "paramName": "share_advertiser_ids",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "<p>推送账户ids</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79556,
+      "paramName": "adv_card_ids",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "<p>推送卡片ids</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 79560,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79561,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79562,
+      "paramName": "data",
+      "paramType": "MarketAdvCardShareResp[]",
+      "example": "",
+      "description": "<p>信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4507,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 79558,
+          "paramName": "advertiser_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>分享后的账户信息</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 79559,
+          "paramName": "adv_card_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>分享后的卡片id信息</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1766546425734,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

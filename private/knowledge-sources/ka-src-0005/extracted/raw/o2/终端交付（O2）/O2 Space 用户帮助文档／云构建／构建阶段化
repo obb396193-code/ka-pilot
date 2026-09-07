@@ -1,0 +1,80 @@
+# 背景
+
+云构建构建器、构建脚本以往只约定了一个简单的入口文件，可自由配置，不提供面向前端构建场景额外的能力和约束，实现非常灵活，这带来了以下问题：
+
+- 平台无法感知到构建逻辑内部的执行情况，连 install 阶段和 build 阶段都无法区分出来，导致平台在依赖安装、构建环节做的一些优化无法被充分利用起来（比如平台锁依赖安装后，构建器额外再安装了一次的问题）
+- 构建器开发成本高、command 编写成本高，且有大量的冗余实现（比如 install 逻辑，大部分是一样的）
+- 构建过程数据采集困难，没有感知构建任务耗时分布的能力，去数据化帮助用户和构建器开发者优化构建逻辑
+为了解决这些问题，同时面向未来提供更多的可能性，O2 云构建提供了新的构建阶段化能力，基于新的构建配置规范、构建器规范向用户提供。
+
+# 升级收益
+
+### 更友好的构建日志展示
+
+启用构建阶段化能力后，可以阶段化展示构建逻辑的内部细节，帮助用户感知不同的流程耗时，针对性优化逻辑；构建发生错误时可以更轻松的定位到问题根源。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMMMzrpkKOY74/img/46ff3c31-0700-426f-b7b8-339a1693cb21.png#2514)
+
+
+### 无感启用锁依赖安装
+
+接入新构建规范后，平台会托管依赖安装过程，只要项目中包含锁文件，平台即可自动识别对应的包管理器，启用锁依赖安装，无需任何额外配置。
+
+### 0 成本的数据采集
+
+拆分后的构建阶段及每个构建阶段的耗时信息会由平台默认采集，采集数据会在构建面板处提供相应的报表，帮助用户分析构建耗时趋势。对于业务自定义数据，也可以通过新的构建器 SDK 快速上报，之后通过 ODPS 离线表消费。
+
+(https://img.alicdn.com/imgextra/i1/O1CN01Y1v51x26uGzquw7wz_!!6000000007721-2-tps-1691-1038.png)
+
+
+### 构建器可配置
+
+以往的构建器是非常确定的：环境是不可变的，构建逻辑是不可变的。在新的构建器规范中，一个构建器允许绑定多个 node 版本的运行环境供用户选择；允许用户指定 packageManager（构建器也可以限制死）来安装依赖；同时增加构建器的可自定义配置项（在 abc.json 的 builder.config 字段），让一个构建器可以满足不同用户的个性化诉求。
+
+### 更多收益 🚧
+
+针对 webpack 的构建过程数据收集能力正在施工中，可通过子容器方式，在不影响主构建流程的前提下收集 loader 耗时、plugin 耗时等细节数据；tnpm rapid 模式、结合 Rust 的高性能构建工具等等在新的财年也计划通过新的构建器规范向大家提供能力。
+
+# 启用方式
+
+## Command 模式升级
+
+将 abc.json 中配置的 Command 按照不同步骤生效的阶段，填入新的构建配置即可，可参考以下示例：
+
+```
+{
+  "assets": {
+    "type": "command",
+    "command": {
+      "cmd": [
+        "tnpm i",
+        "tnpm run build",
+        "tnpm run build:worker",
+        "mv build $BUILD_DEST",
+        "mv worker-dist/js/index.js $BUILD_DEST/tokenize-worker.js"
+      ]
+    }
+  },
+  "nodeVersion": 16
+}
+```
+```
+{
+  "builder": {
+    "name": "@ali/builder-base",
+    "config": {
+      "build": "tnpm run build", // 默认值，可不填
+      "postbuild": "tnpm run build:worker && mv worker-dist/js/index.js build/tokenize-worker.js", // 指定build后执行的hook
+      "outputDir": "build" // 指定构建产物目录
+    }
+  },
+  "packageManager": "tnpm", // 默认值，可不填，不再需要声明依赖安装步骤
+  "nodeVersion": 16
+}
+```
+完整配置说明可参考以下文档：[自定义构建配置](https://builder.alibaba-inc.com/document?slug=config-script)
+
+## 构建器模式升级
+
+请参考 [构建器升级规范](https://alidocs.dingtalk.com/i/nodes/XPwkYGxZV347LdvpHA047bQlJAgozOKL?utm_scene=team_space&utm_medium=dingdoc_doc_plugin_card&utm_source=dingdoc_doc)（如果你是构建器用户，可将该文档发送给构建器负责人，推动他接入）。
+

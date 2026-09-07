@@ -1,0 +1,68 @@
+<font style="background:#DBF1B7;color:#2A4200">实验状态</font>
+
+# 实验阶段/实验生命周期
+
+
+#### 1.图文版
+![](https://intranetproxy.alipay.com/skylark/lark/0/2021/png/353957/1631098610845-ebe91739-2cef-409c-af26-e3a5160b8717.png)
+
+
+
+
+
+#### 2.一休详情版
+
+
+| **实验阶段** | **描述及说明** | 需要角色 |
+| --- | --- | --- |
+| 实验设计 | 根据实验假设，确定实验方案，并计算[最小样本量](https://yuque.antfin-inc.com/ikkuy/gw2n3b/nh43w7)和时间周期等； |  |
+| 流量规划 | 根据业务需要，可选择以下三种流量[规划模型](https://yuque.antfin-inc.com/ikkuy/gw2n3b/utlwrt)<br/>+ 简单：实验正交<br/>+ 流量互斥<br/>    - 实验互斥<br/>    - [全局空桶](https://yuque.antfin-inc.com/ikkuy/gw2n3b/utlwrt)<br/>整体遵循，先创建流量模型（场景），再创建域（注：实验互斥非必须），再创建层的顺序。 |  |
+| 实验配置<br/>（创建，设置，指标） | 【实验创建】根据实验类型分为：<br/>+ [A/B实验](https://yuque.antfin-inc.com/ikkuy/gw2n3b/pe78mo)：<font style="color:#8C8C8C;">使用参数变量约定变量</font><br/>+ [多链接实验](https://yuque.antfin-inc.com/ikkuy/gw2n3b/mg7qhx)：<font style="color:#8C8C8C;">常用于承接页对比。</font><br/>+ [人群实验（3.0版本）](https://yuque.antfin-inc.com/ikkuy/gw2n3b/pftiwp)<font style="color:#8C8C8C;">：</font><font style="color:#8C8C8C;">对奥格人群进行分流和测试</font><br/>+ [定向投放](https://yuque.antfin-inc.com/ikkuy/gw2n3b/pftiwp)：<font style="color:#8C8C8C;">用于基于奥格人群的离线人群实验</font><br/>【实验配置】<br/>+ [实验受众](https://yuque.antfin-inc.com/ikkuy/gw2n3b/nn3xdt)<br/>+ [参数管理](https://yuque.antfin-inc.com/ikkuy/gw2n3b/gkhauh)<font style="color:rgb(191, 191, 191);"></font><br/>+ [兜底方案](https://yuque.antfin-inc.com/ikkuy/gw2n3b/rgqpb1)<font style="color:rgb(191, 191, 191);"></font><br/>+ [实验关联](https://yuque.antfin-inc.com/ikkuy/gw2n3b/srydrk)<br/>【配置观测指标】<br/>指标分为：<br/>+ 实时指标<br/>+ 离线指标 | + 运营/产品<br/>+ 开发<br/>_<font style="color:#8C8C8C;">确认应用名称/埋点方式等</font>_<br/>+ BI<br/>_<font style="color:#8C8C8C;">配置指标</font>_ |
+| 联调测试 | 【联调测试】<br/>发布之后（包含beta发布，和之前发布过）的实验才可进行调试<br/>可以进行分流测试（白名单），埋点验证等。<br/>[服务端调试](https://yuque.antfin-inc.com/ikkuy/gw2n3b/eowlmz)<br/>[客户端调试](https://yuque.antfin-inc.com/ikkuy/gw2n3b/ozkm1g) | + 开发 |
+| 正式发布 | [实验发布之](https://yuque.antfin-inc.com/ikkuy/gw2n3b/xqspki)后才会生效 |  |
+| 数据分析 | 1）可观察[指标数据](https://yuque.antfin-inc.com/ikkuy/gw2n3b/afx4o9)结果<br/>+ 实验数据面板<br/>+ AA差异/分流均匀性<br/>+ 异常值处理<br/>+ 显著性<br/>2）对数据进行[下钻分析](https://yuque.antfin-inc.com/ikkuy/gw2n3b/icsbqe)<br/>+ 单维分析<br/>+ 多维分析 |  |
+| 实验决策 | **智能通知**<br/>****<br/>**手动操作**<br/>+ [**推全**](https://yuque.antfin-inc.com/ikkuy/gw2n3b/ood3z1)&放量：当业务方结合一段时间的实验版本数据表现及其他信息，认定某实验版本优于对照版本时，即可将该版本逐步推全（放大流量）或直接推全（推为100%流量）；<br/>+ **下线**：当业务方认为所有的测试版本并没有优于对照版本时，可以选择下线实验（实验结束，实验流量释放，用户回归对照版本）； |  |
+| 实验结果沉淀 | 生成[实验结果报告](https://yuque.antfin-inc.com/ikkuy/gw2n3b/umhp94)。 | |
+
+
+
+
+## 实验状态转移图
+![](https://intranetproxy.alipay.com/skylark/lark/0/2022/png/18456715/1646049873062-ab2e2804-fb3c-4cce-aa10-2710a096ffa3.png)
+
+
+
+
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2022/png/18456715/1646209630118-2f443a36-f6fb-48cd-b1d7-ce47ad449362.png)
+
+ 
+
+**创建中：**实验已在一休平台创建，该状态下的实验可以进入调试或运行状态。
+
+**调试中**：实验创建完成后配置白名单并点击保存及测试按钮或实验发布时实验发布比例为非100%时，该状态下实验可以进入运行中状态。
+
+**运行中：**实验已100%全量发布，处于运行中状态的实验可以操作直接进入编辑中，已下线、已推全等状态。
+
+**编辑中**：实验发布之后又修改，但是没有发布。【注：实验名称等文本描述类的内容，修改之后，只需保存，无需发布】
+
+**已推全（决策阶段）**：处于推全状态的实验仍受实验周期的管控，且仅能进入已下线的状态，
+
+**已下线（决策阶段**）：无法进入其他状态。【注：该状态不支持删除实验】
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

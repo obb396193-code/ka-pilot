@@ -1,0 +1,42 @@
+{
+  "documentId": 2274,
+  "documentName": "搜索关键词导出文件查询接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取关键词导出文件\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/search/keyword/file/query](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/search/keyword/file/query)\n\n请求方式：POST\n\n数据格式：JSON\n\n注：导出文件有效期30天，过期自动删除\n\n### 请求参数\n\n|字段|类型|示例值|是否必填|说明|备注|\n|--|--|--|--|--|--|\n|advertiser_id|Long|0|必填|广告主账号ID||\n|file_id|Long|0|必填|导出文件ID||\n\n### 返回参数\n\n|字段|类型|示例|说明|备注|\n|--|--|--|--|--|\n|code|Integer|0|返回状态码||\n|message|String||返回状态信息||\n|data|Object||返回数据内容||\n|&#8195;file_id|Long|0|文件ID||\n|&#8195;file_status|Integer|0|文件状态|1-生成中，2-生成成功，3-导出为空，4-导出失败，5-上传失败，6-已删除|\n|&#8195;file_url|String||文件地址|file_status=2时非空|\n|&#8195;file_update_time|Long|0|文件更新时间|毫秒时间戳|\n\n### 请求样例\n\n```json\n{\n    \"advertiser_id\": 900015364,\n    \"file_id\": 5\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": {\n        \"file_url\": \"https://xxx.kuaishou.com/bs2/ad-dsp-search-keyword-export-file/900015364_0_0_1651374348000_1651979148000.csv\",\n        \"file_status\": 2,\n        \"file_id\": 5,\n        \"file_update_time\": 1676950815824\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMqAgICQ5JmOrAEY5wIg9uj7kOcwKOSDtckN\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677142603533
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677142603533,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

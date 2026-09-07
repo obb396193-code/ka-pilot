@@ -1,0 +1,499 @@
+### iteration-common-config
+
+#### Config
+
+```
+{
+  "hideVersion": true, //隐藏版本号
+  "hideTrunk": true //隐藏主干分支
+}
+
+```
+### iteration-setting-basic
+
+迭代 --- 迭代设置 --- 扩展设置
+
+
+
+#### 
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    iterationId: string;
+    emitter: (params: {validate: boolean; validateTips: string; extendObject: any}) => void;
+}
+
+```
+#### Event
+
+
+
+before-update-iteration
+
+> 用于在迭代设置前，返回是否通过并且可以追加 form 表单
+
+```
+eventCenter.asyncOn('before-update-iteration', async ({ postData, solution }) => { 
+  // postData 将要发送的创建应用 body 参数，postData.schema_data 自定义表单参数
+  return {
+    pass: false, // 格式检查是否通过
+    postData: { // 自定义 merge 到 body 的参数
+      custom_body_param: 111
+    }
+  }
+});
+
+```
+### iteration-overview-basic
+
+迭代基础信息扩展
+
+
+
+(https://img.alicdn.com/imgextra/i4/O1CN018HxEiT1wSCYjy9vYk_!!6000000006306-2-tps-2477-1165.png)
+
+
+#### Props
+
+```
+interface IProps {
+  iterationId: string;
+}
+
+```
+### iteration-stage-rename
+
+迭代阶段名称重命名
+
+#### Config
+
+```
+[{
+    stageName: '', // 要替换的阶段名称
+  newStageName: '', // 替换后的新名称
+}]
+
+```
+(https://img.alicdn.com/imgextra/i2/O1CN01O2Hkyb1jqOTbkEN7o_!!6000000004599-2-tps-1288-561.png)
+
+
+### iteration-stage-middle-insert
+
+迭代阶段中间插入自定义
+
+
+
+#### Config:
+
+```
+{
+  "stage": "日常发布与测试验证" // 要添加的阶段名
+}
+
+```
+
+
+#### Props:
+
+```
+interface IProps {
+    app: IApp;
+    iteration: IIteration;
+}
+
+```
+(https://img.alicdn.com/imgextra/i4/O1CN01spvEC01aedln1g9oH_!!6000000003355-2-tps-2474-1257.png)
+
+
+### iteration-stage-bottom-insert
+
+迭代阶段底部插入自定义
+
+(https://img.alicdn.com/imgextra/i3/O1CN01dzQLlo1PvAHnNYaU4_!!6000000001902-2-tps-2467-1248.png)
+
+
+#### Config
+
+```
+{
+  "stages": ["日常环境", "预发环境", "线上环境"] // 要添加的环境
+}
+
+```
+### iteration-stage-add
+
+迭代阶段插入自定义阶段
+
+
+
+(https://img.alicdn.com/imgextra/i1/O1CN01zM1RmB1T8qyFgvj0A_!!6000000002338-2-tps-2483-995.png)
+
+
+#### Config
+
+```
+{
+  "items": [
+    {
+      "name": "grey", // 阶段名
+      "stage": "灰度放量",  // 阶段展示名
+      "insertBefore": ["测试", "完成"] // 添加位置，如果数组里有多个元素，插入到命中的第一个
+    }
+  ], 
+  "disableAutoJump": false, // 前一个阶段完成后是否自动跳转到该阶段
+  "manualFinishIteration": false // 是否传入手动完成迭代 finishIteration 方法
+}
+
+```
+#### Props
+
+```
+interface IProps {
+    app: IApp;
+    iteration: IIteration;
+  registerCurrentStageChangeHandler: (cb: (currentStage) => void) => void;
+  finishIteration: () => void；// 手动完成迭代，config 里配置了 manualFinishIteration 才有该方法
+}
+
+```
+### iteration-stage-grey-replace
+
+替换原生的迭代灰度阶段
+
+(https://img.alicdn.com/imgextra/i3/O1CN0171F1il1zLjokM1FRp_!!6000000006698-2-tps-2472-1264.png)
+
+
+
+
+#### Props
+
+```
+interface Props {
+  refresh: Function // 调整灰度后刷新外层组件
+}
+
+```
+### iteration-stage-done-replace
+
+替换迭代完成阶段
+
+(https://img.alicdn.com/imgextra/i3/O1CN01Vv1NJv1NiDrWnm34Z_!!6000000001603-2-tps-2486-895.png)
+
+
+### iteration-publish-inner-extend
+
+迭代发布卡片内部扩展
+
+(https://img.alicdn.com/imgextra/i4/O1CN01JRQYqy1XwYPk60I8R_!!6000000002988-2-tps-2393-711.png)
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    app: App;
+  iteration: Iteration,
+  contextHelper: IContextHelper
+}
+
+```
+#### Event
+
+before-publish-task
+
+> 用于在发布前触发事件，通过事件的返回值添加业务的发布自定义参数
+
+```
+eventCenter.asyncOn('before-publish-task', async ({ pubenv }) => { 
+  // 返回值将 merge 到发布接口的参数里
+  // 可通过 pubenv 判断触发的发布环境，用于区分不同环境注入不同参数
+  return {
+    flow_custom_params: { // flow_custom_params 流水线参数
+      build_argv: { // flow_custom_params.build_argv 构建器参数
+        "biz_name": "xxx"
+      }
+    }
+  }
+});
+
+```
+### iteration-publish-replace-to-retry
+
+线上发布时，在 config 配置的条件下将发布按钮替换为重试，某些节点失败后，不想让用户再次重新发布，只允许从当前节点重试，可以用这个扩展点。 如一体化应用中（先发 Assets 再发 函数），函数线上发布失败，只能从当前节点重试，不能重新发布（重新发布一定会失败，因为 Assets 已经发布过线上了）
+
+(https://img.alicdn.com/imgextra/i3/O1CN01Xcca5V29kbTgIMYKC_!!6000000008106-2-tps-1416-547.png)
+
+
+#### Config
+
+```
+{
+  "flowNames": [ // 对哪些流水线生效
+    "intl-assets_faas-publish"
+  ],
+  "failedNodeNames": [ // 哪些节点失败后生效
+    "faas"
+  ]
+}
+
+```
+### iteration-setting-external-extend
+
+def 迭代 --- 迭代设置 ---  额外的设置
+
+(https://img.alicdn.com/imgextra/i2/O1CN01R91jEU23eIKPnElRx_!!6000000007280-2-tps-2197-910.png)
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    app: App;
+    iterationconf: Iterationconf;
+    iteration: Iteration;
+    isFinish: boolean;
+}
+
+```
+### iteration-list-column-extend
+
+迭代列表列扩展
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/oawz5brg9r0be0do/imgbpiN4NqRdR.png)
+
+
+#### Config
+
+```
+{
+  title: '', // 列名
+  index: '', 
+  width: '',
+  insertAfter: '迭代名称' //要增加在什么位置
+}
+
+```
+#### Props
+
+```
+### props
+interface IProps {
+  iteration: Ieration;
+  appId: string;
+}
+
+```
+### iteration-publish-button-right-extend
+
+迭代发布按钮右侧扩展点
+
+(https://img.alicdn.com/imgextra/i4/O1CN01NnP0PC1aV1S9wI70Y_!!6000000003334-2-tps-1728-501.png)
+
+
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    app: App;
+  iteration: Iteration,
+  contextHelper: IContextHelper
+}
+
+```
+### iteration-create-bottom-extend
+
+创建迭代底部扩展
+
+
+
+(https://img.alicdn.com/imgextra/i1/O1CN01rZgqMe1hh7DbXJsDM_!!6000000004308-2-tps-2532-1216.png)
+
+
+#### Event
+
+
+
+iteration-create-success
+
+> 用于在创建完成后进行的操作（如记录迭代信息等）
+
+```
+eventCenter.asyncOn('iteration-create-success', async (iteration) => {
+});
+
+```
+before-create-iteration
+
+> 创建迭代前进行自定义操作与拦截
+
+```
+eventCenter.asyncOn('before-create-iteration', async ({ appId }) => { 
+  return {
+    pass: false, // 检查是否通过
+  }
+});
+
+```
+### iteration-item-operator-extend
+
+迭代集成区操作扩展
+
+
+
+(https://img.alicdn.com/imgextra/i4/O1CN01KyNGgk1lUWnZhZM6Z_!!6000000004822-2-tps-1412-1294.png)
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+    appId: number;
+  changeId: number; // 变更 id
+  contextHelper: IContextHelper;
+}
+
+interface IContextHelper {
+  history // 可以进行路由跳转
+}
+
+```
+### iteration-publish-button-group
+
+迭代发布按钮组扩展
+
+(https://img.alicdn.com/imgextra/i1/O1CN01Kkk26G1YAIIQOuYxH_!!6000000003018-2-tps-1417-1275.png)
+
+
+#### Config
+
+```
+{
+  "hideDiamondPushButton": true, // 隐藏 diamond 推送的按钮
+}
+
+```
+### iteration-stage-should-enter-grey
+
+迭代线上发布完成后是否进入灰度阶段
+
+(https://img.alicdn.com/imgextra/i3/O1CN019RfCGX1iFSvTV3gik_!!6000000004383-2-tps-2363-958.png)
+
+
+迭代线上发布后通过业务方提供的 Service Spi 接口判断是否进入灰度阶段：
+
+- 进入灰度阶段的迭代不会完成，迭代 status 不变、envstep=4
+- 在业务自定义的灰度阶段完成后触发迭代完成（通过调用 stage-add 扩展点 props 中的 finishIteration 方法，详见 iteration-stage-add 的说明）
+注意：迭代没有灰度阶段时，该接口不会触发。
+
+#### Service Spi
+
+请将接口注册到网关（作为服务开放中的开放接口）：[https://open.o2.alibaba-inc.com/](https://open.o2.alibaba-inc.com/)
+
+扩展点目录下增加 service/index.json，JSON 内容为：["/v1.0/{网关接口路径}"]，如：
+
+```
+["/v1.0/alsc-transformer-workbench/iteration/enterGrayStage"]
+```
+该接口遵循如下规范：
+
+```
+method（请求方法）: 
+GET
+
+query（接收参数）:
+{ "appId": 123 }
+
+response（返回内容）:
+{
+  error: '',
+  data: {
+      grey: true // 返回 true 表示需要进入灰度，其它情况不进入（比如首次发布的场景）
+  }
+}
+```
+### iteration-stage-filter
+
+创建迭代时，过滤迭代包含的阶段
+
+(https://img.alicdn.com/imgextra/i2/O1CN01M8i6zg26BOB9RaMX6_!!6000000007623-2-tps-1691-1071.png)
+
+
+#### Service Spi
+
+#### 
+
+服务端代码 DEMO:
+
+```
+  @Post('/iteration_stage_filter')
+  async stageFilter() {
+    let { pubenvs } = this.ctx.request.body;
+    pubenvs = pubenvs.filter(item => item.name !== 'prepub');
+    return res_obj('', {
+      pubenvs
+    });
+  }
+
+```
+method: 
+
+POST
+
+
+
+request body demo: 
+
+```
+{
+  "app": {
+    id: 1,
+    ...
+  },
+  "appconf" {
+    app_id: 1,
+    ...
+  },
+  "pubenvs": [
+    {
+      id: 1,
+      name: "日常"
+    },
+    {
+      id: 2,
+      name: "线上"
+    },
+    {
+      id: 3,
+      name: "预发"
+    }
+  ]
+}
+
+```
+response body demo:
+
+```
+{
+  error: '',
+  data: {
+      pubenvs: [...] // 将 request body 中的 pubenvs 过滤后保持原格式返回
+  }
+}
+
+```
+
+

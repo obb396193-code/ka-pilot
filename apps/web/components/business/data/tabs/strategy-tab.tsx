@@ -83,7 +83,7 @@ function AnalysisView() {
         <div className="relative flex min-h-56 flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-6 py-10 text-center">
           <ExampleBadge className="absolute top-3 right-3" />
           <div className="text-sm font-medium">{label(active.a)} × {label(active.b)} 的样例待补</div>
-          <p className="max-w-md text-xs text-muted-foreground">TODO-fixture：data-query/pivot2-{active.a}-{active.b}.json；契约已冻（account.pivot2），arch 补样例后自动出表。</p>
+          <p className="max-w-md text-xs text-muted-foreground">这个组合还没有样例数据；契约已冻，补样例后自动出表。</p>
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border">

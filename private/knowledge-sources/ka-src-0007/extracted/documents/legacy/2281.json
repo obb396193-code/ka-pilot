@@ -1,0 +1,42 @@
+{
+  "documentId": 2281,
+  "documentName": "模板同步失败查询",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 模板同步失败查询\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/sync_history](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/sync_history)\n\n请求方式：POST\n\n数据格式：JSON\n\n**注：当前接口只能查询到同步失败的记录，暂不支持查询同步成功的记录**\n\n### 请求参数\n\n| 字段         | 类型    | 是否必填 | 说明     | 备注 |\n| ------------ | ------- | -------- | -------- | ---- |\n| current_page | Integer | 可选     | 当前页码 |      |\n| page_size    | Integer | 可选     | 每页大小 |      |\n| task_id      | Long    | 可选     | 任务ID   |      |\n| template_id  | Long    | 可选     | 模板ID   |      |\n\n### 返回参数\n\n| 字段                                  | 类型     | 说明                         | 备注                                                         |\n| ------------------------------------- | -------- | ---------------------------- | ------------------------------------------------------------ |\n| data                                  | Struct   | 返回的数据json               |                                                              |\n| &#8195;current_page                   | Integer  | 当前页码                     |                                                              |\n| &#8195;details                        | Struct[] | 数据详情                     |                                                              |\n| &#8195;&#8195;campaign_id             | Long     | 计划ID                       |                                                              |\n| &#8195;&#8195;campaign_name           | String   | 计划名称                     |                                                              |\n| &#8195;&#8195;auto_adjust             | Integer  | 计划是否开启自动调控         |                                                              |\n| &#8195;&#8195;auto_build              | Integer  | 计划是否开启自动基建         |                                                              |\n| &#8195;&#8195;auto_manage             | Integer  | 计划是否开启智能投放         |                                                              |\n| &#8195;&#8195;failed_msg              | String   | 同步失败详情信息             |                                                              |\n| &#8195;&#8195;template_id             | Long     | 模板ID                       |                                                              |\n| &#8195;&#8195;unit_id                 | Long     | 广告组ID                     |                                                              |\n| &#8195;&#8195;unit_name               | String   | 广告组名称                   |                                                              |\n| &#8195;&#8195;unit_view_status        | Integer  | 广告组状态                   | -1：不限，1：计划已暂停，3：计划超预算，6：余额不足，，11：审核中，12：审核未通过，14：已结束，15：已暂停，17：组超预算，19：未达投放时间，20：有效，22：不在投放时段 |\n| &#8195;&#8195;unit_view_status_reason | String   | 广告组状态描述               |                                                              |\n| &#8195;page_size                      | Integer  | 每页大小                     |                                                              |\n| &#8195;total_count                    | Long     | 此次任务ID对应同步的广告组数 |                                                              |\n| message                               | String   | 错误详情                     |                                                              |\n| code                                  | Integer  | 返回码                       |                                                              |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 9000153264,\n    \"task_id\": 2031290,\n    \"template_id\": 31022,\n    \"current_page\": 1,\n    \"page_size\": 2\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 14,\n        \"details\": [\n            {\n                \"auto_build\": 0,\n                \"unit_name\": \"加白+获取电商下单\",\n                \"campaign_name\": \"获取电商下单_1114_11:26\",\n                \"auto_manage\": 0,\n                \"auto_adjust\": 1,\n                \"unit_view_status\": 11,\n                \"failed_msg\": \"开启智能定向->不可设置快手网红\",\n                \"template_id\": 3102,\n                \"unit_id\": 1719056,\n                \"campaign_id\": 426631,\n                \"unit_view_status_reason\": \"广告组审核中\"\n            },\n            {\n                \"auto_build\": 0,\n                \"unit_name\": \"新建广告组_20220718_15:05\",\n                \"campaign_name\": \"推广快手小程序-上下滑+联盟优选-程序化-10s\",\n                \"auto_manage\": 0,\n                \"auto_adjust\": 0,\n                \"unit_view_status\": 14,\n                \"failed_msg\": \"开启智能定向->不可设置定向行为兴趣\",\n                \"template_id\": 3102,\n                \"unit_id\": 831861,\n                \"campaign_id\": 216055,\n                \"unit_view_status_reason\": \"广告组投放到期下线\"\n            }\n        ],\n        \"current_page\": 1,\n        \"page_size\": 2\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMyAgICw0JiOrAEY3wIgiYih8OYwKM2_hpcC\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677225903700
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677225903700,
+  "creator": "yanghua05",
+  "fullContext": null
+}

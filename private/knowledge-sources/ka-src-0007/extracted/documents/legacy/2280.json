@@ -1,0 +1,42 @@
+{
+  "documentId": 2280,
+  "documentName": "定向模板关联广告组列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 查询模板关联的广告列表接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/related_unit_list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/related_unit_list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型    | 是否必填 | 说明     | 备注 |\n| ------------ | ------- | -------- | -------- | ---- |\n| template_id  | Long    | 可选     | 模板ID   |      |\n| current_page | Integer | 可选     | 当前页码 |      |\n| page_size    | Integer | 可选     | 每页大小 |      |\n\n### 返回参数\n\n| 字段                                  | 类型     | 说明                 | 备注 |\n| ------------------------------------- | -------- | -------------------- | ---- |\n| data                                  | Struct   | 返回json数据         |      |\n| &#8195;current_page                   | Integer  | 当前页码             |      |\n| &#8195;details                        | Struct[] | 数据详情             |      |\n| &#8195;&#8195;auto_adjust             | Integer  | 计划是否开启自动调控 |      |\n| &#8195;&#8195;auto_build              | Integer  | 计划是否开启自动基建 |      |\n| &#8195;&#8195;auto_manage             | Integer  | 计划是否开启智能模式 |      |\n| &#8195;&#8195;campaign_id             | Long     | 计划ID               |      |\n| &#8195;&#8195;campaign_name           | String   | 计划名称             |      |\n| &#8195;&#8195;unit_id                 | Long     | 广告组ID             |      |\n| &#8195;&#8195;unit_name               | String   | 广告组名称           |      |\n| &#8195;&#8195;unit_view_status        | Integer  | 广告组状态           |      |\n| &#8195;&#8195;unit_view_status_reason | String   | 广告组状态描述       |      |\n| &#8195;page_size                      | Integer  | 每页大小             |      |\n| &#8195;total_count                    | Long     | 总数                 |      |\n| code                                  | Integer  | 返回码               |      |\n| message                               | String   | 错误详情             |      |\n\n### 请求样例\n\n```json\n{\n    \"advertiser_id\": 90001532624,\n    \"template_id\": 310222,\n    \"current_page\": 1,\n    \"page_size\": 2\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 45,\n        \"details\": [\n            {\n                \"auto_build\": 1,\n                \"unit_name\": \"系统自动搭建_202212262\",\n                \"campaign_name\": \"学习期+提升应用安装\",\n                \"auto_manage\": 0,\n                \"auto_adjust\": 1,\n                \"unit_view_status\": 14,\n                \"unit_id\": 1914608,\n                \"campaign_id\": 532504,\n                \"unit_view_status_reason\": \"广告组投放到期下线\"\n            },\n            {\n                \"auto_build\": 1,\n                \"unit_name\": \"系统自动搭建_202212261\",\n                \"campaign_name\": \"学习期+提升应用安装\",\n                \"auto_manage\": 0,\n                \"auto_adjust\": 1,\n                \"unit_view_status\": 14,\n                \"unit_id\": 1914607,\n                \"campaign_id\": 532504,\n                \"unit_view_status_reason\": \"广告组投放到期下线\"\n            }\n        ],\n        \"current_page\": 1,\n        \"page_size\": 2\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMyAgICw0JiOrAEY5AIgvuKL8eYwKKWMvqcD\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677225709108
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677225709108,
+  "creator": "yanghua05",
+  "fullContext": null
+}

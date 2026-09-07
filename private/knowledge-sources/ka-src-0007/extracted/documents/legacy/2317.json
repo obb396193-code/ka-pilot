@@ -1,0 +1,42 @@
+{
+  "documentId": 2317,
+  "documentName": "【应用中心-开放场景】创建 iOS 应用",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】创建 iOS 应用\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/create/ios](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/create/ios)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段             | 类型   | 是否必填 | 说明                                                   |\n| ---------------- | ------ | -------- | ------------------------------------------------------ |\n|         advertiser_id         |  Long  |           必填         |            广告主ID          |\n| app_icon_url     | String | 必填     | 应用图标，可不填，如果填写则覆盖应用解析出的应用图标，可通过通过上传图片 API 获取链接。 |\n| ios_download_url | String | 必填     | App Store 应用下载链接                                 |\n\n### 返回参数\n\n\n| 字段              | 类型    | 说明        |\n| ----------------- | ------- | ----------- |\n| data              | Object  | JSON 返回值 |\n| &#8195;app_id     | Long    | 应用ID      |\n| &#8195;package_id | Long    | 应用包ID    |\n| &#8195;privacy_id | Long    | 隐私声明ID  |\n| code              | Integer | 返回码      |\n| message           | String  | 返回信息    |\n\n\n\n\n\n### 请求样例\n\n```shell\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/create/ios' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": 900015366,\n    \"ios_download_url\": \"https://apps.apple.com/cn/app/%_e5%_a_f%_b_b%_e6%89%_b_e%_e5%_a4%_a9%_e5%_a0%82/id1454750038\"\n}'\n```\n\n### 返回样例\n\n```shell\n{\n    \"code\": 401000,\n    \"data\": {\n        \"global_app_id\": 4801050,\n        \"privacy_id\": 4801051,\n        \"package_id\": 1099611636564,\n        \"app_id\": 2199123264339\n    },\n    \"message\": \"OK\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681107120803
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681107120803,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

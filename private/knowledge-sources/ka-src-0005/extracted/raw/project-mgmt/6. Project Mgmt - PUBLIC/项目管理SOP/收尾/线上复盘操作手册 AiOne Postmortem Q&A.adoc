@@ -1,0 +1,164 @@
+**【项目复盘】模块入口/Entrance：**[https://aione.alibaba-inc.com/#/deliver-manage/deliver-dashboard/project-review?tab=project](https://aione.alibaba-inc.com/#/deliver-manage/deliver-dashboard/project-review?tab=project)
+
+# **先约定几个页面名称的常用叫法 Frequently used pages**
+
+:::
+| **名称Name** | **截图Screenshot** |
+|--------------|--------------------|
+| **复盘编辑页**<br>**Edit Page** | ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/e3feaef0-0c9e-4d8a-99e9-1bb55ec6468c.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "") |
+| **详情列表页**<br>**Postmortem project list** | ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/0c046815-579e-4098-8bca-191c6235405c.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "") |
+| **复盘趋势页**<br>**Trends/Dashboard Page** | ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/c9bd6226-c55e-4149-967f-eade69351ed0.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "") |
+:::
+
+# **如何在【项目复盘】快速查找待复盘的项目？How to quickly find the project list pending postmortem?**
+
+## **入口1：详情列表页 Entrance 1: the page of** **Postmortem project list**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/ff8adb27-9c66-4f2b-b68c-6d0bf163ccd8.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+    - **方式一：通过已有筛选条件来查询需关注的项目 Select project list by using the existing filters on top of the page**
+        - **筛选字段注解：**
+            - **时间：**项目交付时间口径，指的是项目状态首次变为“已发布”或“已结项”的时间（如果先更新为“已发布”再“已结项”，就取“已发布”的时间；如果是直接“已结项”，则取结项的时间）\[Time\] here refers to the first time when the project was updates as "Released" or "Closed"
+            - **选择团队：**按需申请需要哪些团队的数据权限。\[Team\] Data Permission is limited to your responsible domain(s), if need additional access, need to apply. 
+            - **是否应复盘：**所有项目初始默认应复盘，可以手动调整为无需复盘。If the project doesn't need to be held postmortem, can mark "No" here. 
+            - 其它：略
+    - **方式二：**
+        - 通过点击指标卡片，刷新项目列表为对应的项目List； Click the card and data to refresh corresponding project list.
+        - ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/25cd9df4-236f-4dde-9501-4edcb1dcff4a.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## **入口2：复盘趋势页 Entrance 2: Trends/Dashboard Page**
+
+**通过已有筛选条件来查询需关注的项目 Current: in the bottom of the page, there is a project list with several filters to help find the projects you want to check**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/7ae9a408-d0b4-482d-b801-65fb5bd9c752.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# **编辑复盘信息的操作入口 Entrance for edit postmortem details**
+
+## **入口1：详情列表页 Entrance 1:** **Postmortem project list**
+
+点击这里的“查看”：Click the Button"View"
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/dc0e8b41-214d-40ca-83bc-275b110b28e3.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## **入口2：Aone项目概览页 Entrance 2: Aone Project Summary Page**
+
+点击这里的“去复盘”：Click the button"Go to postmortem"
+- 显示条件：项目状态变为终态（“已发布”或“已结项”）Only after the project is updated as "Released" or "Closed", it will show the button.
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/a0cb93c8-060d-46ef-9f78-ccd9887de260.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+- 复盘信息提交过后，这个按钮会变成"已复盘"，但是仍然可以点击进入编辑页进行修改 After you submit the postmortem info, the button will change to show"Postmortem Completed"
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/70a28235-b23d-44e1-9b50-11d40319a411.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# **复盘编辑页的编辑权限 Edit Page Permission**
+
+**项目核心角色才有编辑权限：**包括项目PM/技术PM/PDM/测试PM/PMO、管理员
+
+Only Project Key Roles have the permission to edit the postmortem page: Project PM/Tech PM/PDM/PTM/PMO/Administor
+
+# **如何在详情列表页自定义设置显示字段和顺序？How to adjust the showing fields and their sequence in below project list page?**
+
+## **操作入口 Entrance**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/ffc9d28b-abf6-4cc6-80d9-48ae5420c529.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## **注意事项 Remark**
+- 可支持的设置能力：The capability of the feature
+    - 是否显示某字段； to show or hide specific fields/columns
+    - 字段显示顺序；to adjust the column sequence
+    - 部分字段固定（冻结）在表格最左侧；to freeze some columns on the left side
+    - 部分字段固定（冻结）在表格最右侧；to freeze some columns on the right side
+- 注意：“导出”暂时只能导出全部字段、且各字段是默认的固定顺序，与页面自定义设置的字段及顺序无关；"Download" here can only support to download all fields and the fields might not completely match with setted fields sequence on the page due to tech limitation.
+
+# **如何在项目列表导出项目List？How to do download from the project list page?**
+
+## **方式一：直接导出 Directly Download**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/7e49a8d1-4f15-433c-aba9-cdf3f5d5b356.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+Remark: 导出的列表包含所有字段，且字段顺序按默认顺序显示，与页面自定义配置的显示字段和顺序无关。The downloaded project list include all default fields with default sequence, not following the user customized settings on the page.
+
+## **方式二：通过复制 Via Copy/Paste**
+- 点击复制后，页面列表的内容即copy到粘贴板，然后自行贴到本地或线上的表格文档中. Click the"copy" button on this page, which can help to just copy the shown project list and content into clipboard, then you can past it into your excel sheet.
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/1ef3649b-cfeb-4504-b571-42f9c3fdbaf2.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# **对于一些特殊的无需复盘的项目，如何操作？How to mark the projects no need to do postmortem?**
+
+## **操作入口 Entrance**
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/6814bf66-2938-4660-9df1-d3fc33a425a3.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/6fdd9081-30d9-4529-9cd2-bcb9a608217f.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+注：无需复盘的原因，可根据实际情况继续补充选项。Currently only 3 options(not start, cancelled due to some reasons, others ) available for the reasons in above screenshot, if you have other specific reasons in your domains, can provide to Lonnie, we can add into the option later.
+
+## **注意事项 Remark**
+- 初始状态是默认需要复盘的，无需复盘的需要手工去改一下；The default value is Yes, means need to to postmortem. If dont need to do postmortem, you have to manually modify here.
+- 改成无需复盘的项目，不会纳入复盘将逾期/已逾期的提醒/统计；The projects no need to do postmortem, will be excluded from the metrics for "Approach Delay" or "Already Delay".
+
+# **项目复盘信息的收集和流转 Postmortem Information Collection and Maintainance Process**
+
+| **方式**<br>**Option** | **复盘模式**<br>**Mode** | **实施步骤和路径**<br>**Detailed Process** | **AiONE复盘信息录入人**<br>**The Owner to maintain postmortem info into AiOne platform** | **系统支持情况**<br>**AiONE System Capability** | **现阶段建议方式**<br>**Recommended Way** |
+|------------------------|----------------------------|-------------------------------------------------|-----------------------------------------------------------------------------------------------|-----------------------------------------------------|------------------------------------------------|
+| A | 轻量化复盘<br>Simplified Postmortem | <ul><li>1. PMO通知产品、技术PM来填写或基于其它项目资料自行填写**复盘海报**文档；</li><br><li>2. PMO基于确认后的**复盘海报**信息，将复盘信息录入到AiONE复盘编辑页面，并按需发送消息推送给相关方；（相当于代替掉了原来需维护到钉钉Excel版项目复盘List中的动作）</li><br><li>3. PMO按需将**复盘海报图片**发到相应的Leader群内。</li><br><li>1. PMO informs PDM&Tech PM to fill in the postmortem document(template: [我的附件]) or PMO to do it by himself/herself based on collected info.</li><br><li>2. Then PMO to add the postmortem info into AiONE instead of our postmortem list here [我的附件]</li><br><li>3. PMO to share the postmortem pic with Leaders in the Ding group</li></ul> | PMO | 操作顺畅<br>Smoothly | ✅ |
+| B | 深度复盘<br>Deep Postmortem | <ul><li>1. PMO组织深度复盘（会）：</li><br><li style="margin-left:1em">1. 基于复盘模板[我的附件]，业产技PIC共同提供复盘内容和信息；</li><br><li style="margin-left:1em">2. PMO组织复盘会review复盘内容；</li><br><li>2. PMO基于复盘会Review过的复盘内容，</li><br><li style="margin-left:1em">3. 【建议】PMO自行整理**复盘海报**文档，并与产品、技术PM确认无误；</li><br><li style="margin-left:1em">4. 或PMO协调产品、技术PM来整理**复盘海报**文档；</li><br><li>3. PMO基于确认后的**复盘海报**信息，将复盘信息录入到AiONE复盘编辑页面，并按需发送消息推送给相关方；（相当于代替掉了原来需维护到钉钉Excel版项目复盘List中的动作）</li><br><li>4. PMO按需将**复盘海报图片**发到相应的Leader群内。</li><br><li>1. PMO to organize Deep Postmortem(meeting):</li><br><li style="margin-left:1em">1. Use the template [我的附件]to collect and prepare the postmortem info;</li><br><li style="margin-left:1em">2. PMO to host the postmortem meeting with stakeholders;</li><br><li>2. Based on the reviewed postmortem document,</li><br><li style="margin-left:1em">3. \[Recommended\] PMO to prepare the short one-page postmortem doc [我的附件], and double check with PDM and Tech PM;</li><br><li style="margin-left:1em">4. or coordinate PDM and Tech PM to write the one-page postmortem doc [我的附件]by themselves;</li><br><li>3. Then PMO to add the postmortem info into AiONE instead of our postmortem list here [我的附件]</li><br><li>4. PMO to share the postmortem pic with Leaders in the Ding group.</li></ul> | PMO | 操作顺畅<br>Smoothly | ✅ |
+| C | 轻量化复盘 | <ul><li>1. PMO通知产品、技术PM来填写或基于其它项目资料自行填写**钉钉Excel版项目复盘list**；</li><br><li>2. PMO基于上述信息，自行整理**复盘海报**；</li><br><li>3. PMO基于确认后的**复盘海报**信息，将复盘信息录入到AiONE复盘编辑页面，并按需发送消息推送给相关方；</li><br><li>4. PMO按需将**复盘海报图片**发到相应的Leader群内。</li></ul> | PMO | 操作顺畅 | ❌<br>因为钉钉Excel版项目复盘list会逐渐弃用。 |
+| D | 轻量化复盘 | <ul><li>1. PMO通知产品、技术PM直接到AiONE复盘模块来编辑复盘信息；</li><br><li>2. PMO基于编辑好的复盘信息，导出复盘文档；</li><br><li>3. PMO基于导出的复盘文档，重新做一下加工，转换为复盘海报；</li><br><li>4. PMO按需将复盘海报图片发到相应的Leader群内。</li></ul> | 产品、技术PM | **现存几个问题：**<br><ul><li>1. 当前复盘编辑页不支持多人在线协作；多人依次编辑保存比较麻烦（且在消息推送环节，容易触发多次消息发送）</li><br><li>2. 当前的导出只支持语雀文档，且样式与期望的仍有Gap，无法快速直接复用，还需要自行整理加工；</li></ul> | ❌ |
+
+# **在复盘编辑页如何操作？How to operate in postmortem edit page?**
+
+## **初始录入 Initial Edit**
+
+| **模块 Module** | **填写内容和注意事项 Attention Points** |
+|-----------------|------------------------------------------------|
+| ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/edb86740-b744-4b1f-9c64-b80587c52811.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "") | <ul><li>1. 复盘人：指的是参与了项目复盘（Review和确认了复盘信息）的项目核心PIC，每个文本框内都可以加入多人；Postmortem Members: refer to the core PICs joined the project postmortem, in each textbox, can delete/add/modify one or more members based on the default members;</li><br><li>2. 复盘时间：为项目团队实际复盘时间（可以为历史日期），注意可能不是在AiONE上录入复盘信息的时间；Postmortem Date: the actual postmortem date rather than the date you add the postmorrem info into AiONE(can be historical date)</li></ul> |
+| ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/5f514a77-23e4-427b-a73e-c61d13e3c68c.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "") | 不需编辑修改，但需要检查下交付时间和项目规模（所有团队在该项目上的总投入）是否准确.<br>No need to edit, just to check the delivery date and total mandays spent in this project. |
+| ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/6e2b2d63-6f99-416d-992c-d6b17230f2d2.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "") | <ul><li>1. 两组目标达成情况、目标达成率，都是默认必填，但是可以修改为非必填；These 2 groups of fields for objectvie achievement situation are mandatory as default, but can modify them into non-mandatory.</li><br><li>2. 业务/产品项目按照业务目标，技改项目按照技术目标，判断目标达成率是否低于90%，低于90%的“后续改进计划为必填”；if the achievement rate is below 90%, the textbox for improvement actions will be set as mandatory to fill。</li><br>总体原则：Overall Principles:<br><li>1. 业务/产品项目，业务目标、技术目标尽量都要有，且复盘；For Biz/Product Projects, it's recommended to set and review both Biz objectives and Tech objectives </li><br><li>2. 技改项目，设定和复盘了技术目标即可；For Tech Projects, normally have Tech objectives are enough.</li></ul> |
+| ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/0610118f-29d4-49f1-83e9-2bb6f3ed9762.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "") | 这里可以点击链接跳转到Aone项目信息编辑页，方便更新项目目标。<br>In Edit Page, click the link here can open the Aone project basic info edit page in case the PMO wants to refresh the project objectives when he/she edit the postmortem info. |
+| ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/65d27cf4-c343-483d-abac-47d95026e100.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "") | **业务/产品项目：**根据业务目标达成率来判断<br>**技改项目：**根据技术目标达成率来判断<br>For Biz/Product Project, to judge based on Business goal achievement siuation;<br>For Tech Project, to judge based on Tech goal achievement siuation;<br>\>=100%: 达成 Objectve Realized<br>60%-99%: 部分达成 Objectve Partially Realized<br>\<60%：未达成 Objectve Not Realized<br>系统根据填写的目标达成率，自动选择是否达成; The system will automatically select the right option based on the filled actual target achievement rate value. |
+| ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/6df47934-9f7c-4807-948f-bd04b7747a24.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "") | 对于“部分达成”和“未达成”的，需要选择未达成原因；<br>for partially-achieved or not-achieved, need to select the reason |
+| ![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/da1ba410-d158-41a1-8aee-1fa13b2c7196.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "") | <ul><li>1. 建议只录入或贴入 上述目标达成情况、目标达成率、后续改进计划 以外的增量有价值信息，可以是**更完整的复盘文档的链接或（及）全文**；</li><br><li>2. 对于没有做深度复盘，除 上述目标达成情况、目标达成率、后续改进计划 外，无其它信息的，**可以简单写“同上”或着贴上复盘海报的链接**。</li></ul><br>For Postmortem Summary here, recommend to add new info rather than duplicated info already filled in other textboxes on this edit page. if no more new info, can just type in "same as above" or just attach the link of the postmortem doc in this template[我的附件] |
+
+## **提交 Submit**
+- 提交前，需要先勾选 Before submit, need to confirm you have aligned the postmortem conclusion with the key PMs of this project![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/fbe590b1-d686-4d21-8e9f-b10a117eb58c.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+- 点“提交”后，可以增删改此弹窗中的人员（默认值是编辑页修改后的人员名单）：after submit, will have a popup like this to allow you to edit(add/delete/modify) members you want to push the notification via Ding![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/36db37c5-9c94-4066-8802-4f0963c671ef.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+- “其他”项，用于增加其他角色人员，包括PMO自己。You can add any other roles, including PMO, into "other" text box, if you want to share the postmortem info.
+
+## **修改 Modify**
+- 重新进入编辑页直接修改编辑，修改好的需要重新提交一次。if you want to modify, just re-open the edit page, modify and re-submit once again.
+- 多次修改提交时，注意自行把控下是否需要推动给相关人员，避免过多重复/无效信息打扰；Avoid too many notifications sent to project stakeholders when you modify the postmortem detail page.
+
+## **导出 Download**
+- 编辑页的导出按钮：Download Button as below: 
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/3ad2ea27-5513-41d8-a0d7-bcf63c119058.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+- 会触发生成这样一份语雀文档，还有几个点有待改进（推进中）：Currenly AiOne will generate a Yuque doc like below, still need to do some optimization.
+    - 短期内不会支持生成钉钉文档，暂时只有语雀；
+    - 需要自动赋予编辑权限；
+    - 样式上还需要一些优化；
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/ybEnB5jjjky03lP1/img/573a70f6-bc8d-4246-ae34-7dfa68ce0229.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# **如何解读复盘趋势页的数据？How to review the data in Trends/Dashboard page?**
+
+待系统升级一版后再更新操作细则
+
+will introduce after the page upgrade
+
+
+
+# **附录**
+
+# **后续优化点**
+- [线上复盘待处理问题_2026](https://alidocs.dingtalk.com/i/nodes/EpGBa2Lm8aZxe5myCDeDL9amWgN7R35y)
+
+- [Lazada项目复盘线上化需求V1.0](https://alidocs.dingtalk.com/i/nodes/R1zknDm0WR6XzZ4LtnxmjgjQWBQEx5rG)
+中尚未开发的需求点，主要是：**未及时复盘提醒**；
+
+# **后续切换节奏 Migration Plan**
+- <span style="color: #FE0300;">**2月1号及之后上线的项目，都需要维护复盘信息到AiONE平台; For all projects launched since Feb 1st 2026, need to maintain the postmortem info on AiOne.**</span>
+- 历史项目统一标记为“无需复盘”（复盘信息的必填字段都空着吗？）
+
+# **Project List的后续管理方式**
+- 【预计】新财年开始后，
+    - <span style="color: #FE0300;">复盘列表继续保留</span>，但不强制要求维护“业务目标达成情况、业务目标达成率、技术目标达成情况、技术目标达成率”这些复盘信息字段（当然，在新财年前2-3个月的过渡期内，如果觉得需要的话，PMO还是可以把复盘信息添加进来）

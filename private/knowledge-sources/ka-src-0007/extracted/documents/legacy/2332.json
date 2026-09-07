@@ -1,0 +1,42 @@
+{
+  "documentId": 2332,
+  "documentName": "获取应用中心的应用详情",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】获取应用详情\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/detail](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/detail)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主id ||\n| package_id | Long |  | 必填 | 应用包id | 仅支持应用母包 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 返回详情 |  |\n| data | Object |  | JSON 返回值 |  |\n| &#8195;account_id | Long |  | 账号ID |  |\n| &#8195;app_detail_img | String |  | 应用详情图片 |  |\n| &#8195;app_icon_url | String |  | 应用图标链接 |  |\n| &#8195;app_id | Long |  | 应用ID |  |\n| &#8195;app_privacy_url | String |  | 应用隐私政策链接 |  |\n| &#8195;app_status | Integer |  | 应用状态 | 1-审核中 2-审核失败 3-待发布 4-已发布 5-已下架 |\n| &#8195;apply_age | Integer |  | 使用年龄 |  |\n| &#8195;audit_serial_number | Long |  | 审核序列号 |  |\n| &#8195;category | Integer |  | 应用类型 | 1-软件  2-游戏 |\n| &#8195;compatibility | String |  | 兼容性 |  |\n| &#8195;contact_email | String |  | 联系人邮箱 |  |\n| &#8195;contact_name | String |  | 联系人姓名 |  |\n| &#8195;contact_tel | String |  | 联系人电话 |  |\n| &#8195;description | String |  | 备注 |  |\n| &#8195;developer | String |  | 开发者 |  |\n| &#8195;ios_app_id | String |  | 解析出的iosAppID |  |\n| &#8195;location | String |  | 开发者地区 |  |\n| &#8195;offline_app_stores | String |  | 下架的应用商店 | \"huawei\",\"oppo\",\"vivo\",\"xiaomi\",\"meizu\",\"smartisan\",\"honor\" |\n| &#8195;online_earn_type | Integer |  | 网赚类型  | 1-是 2-否 |\n| &#8195;package_id | Long |  | 应用包ID |  |\n| &#8195;package_name | String |  | 应用包名 |  |\n| &#8195;package_size | Long |  | 应用包大小 |  |\n| &#8195;platform | String |  | android或ios |  |\n| &#8195;privacy_id | Long |  | 隐私ID |  |\n| &#8195;privacy_type | Integer |  | 隐私链接类型 |  |\n| &#8195;put_status | Integer |  | 投放状态 |  |\n| &#8195;real_app_name | String |  | 应用名称 |  |\n| &#8195;real_app_version | String |  | 应用版本信息 |  |\n| &#8195;release_type | Integer |  | 发布类型 |  1-手动  2-自动 |\n| &#8195;review_detail | String |  | 审核详情 |  |\n| &#8195;review_status | Integer |  | 审核状态 |  |\n| &#8195;sensitive_permission_desc | String |  | 敏感权限用途 |  |\n| &#8195;share_account_count | Integer |  | 应用共享账号个数 |  |\n| &#8195;source_type | Integer |  | 应用来源 | 1-我创建的 2-共享给我的 |\n| &#8195;trace_activation | Integer |  | 转化追踪状态 | 0-未联调 1-已联调 |\n| &#8195;update_time | Long |  | 更新时间 | 单位：毫秒 |\n| &#8195;url | String |  | 应用下载地址 |  |\n| &#8195;use_sdk | Integer |  | 是否接入快手广告监测SDK | 0：未接入，1：已接入 |\n| &#8195;version_code | Long |  | 应用版本号 |  |\n| &#8195;share_type | Integer |  | 共享类型，0-不共享，1-账号，2-主体\t |  |\n| &#8195;function_introduction| String| | 安卓应用功能介绍|      |\n| &#8195;record_number        | String  |        | 备案号     | \n| &#8195;document_number      | String  |        | 证件号码     | \n| &#8195;service_category      | String  |       | 服务类目     | \n| &#8195;network_type      | Integer  |       | 网络类型     |1-联网，2-单机 |\n| &#8195;offline_app_letter_url      | String  |       | 单机承诺函     | \n\n### 请求样例\n\n```js\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/detail' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n    \"advertiser_id\": 12078245,\n    \"package_id\" : 1099611632427\n}'\n\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"app_detail_img\": \"https://static.yximgs.com/udata/pkg/bead6263999b413cae765edaff6a7d07.png\",\n        \"sensitive_permission_desc\": \"避免因为电池优化而造成部分功能无法运行\\\\n避免用户数据无法及时记录\\\\n避免用户重复写入提醒\\\\n存储数据于SD卡，避免占用用户内存\\\\n调用用户摄像头，为用户拍摄图片\\\\n读取存储于SD卡中的应用数据\\\\n访问用户手机自带地图或第三方地图，帮助用户查看地图信息\\\\n给予用户动态反馈\\\\n根据用户网络状态采取不同的缓存策略\\\\n根据用户位置信息推送给用户不同的内容\\\\n更新后重启应用，保证更新生效\\\\n更新应用\\\\n了解一段时间内的应用运行状态，优化应用\\\\n了解应用运行状态，优化应用\\\\n判断是否打开通知等设置，避免用户错过信息提示\\\\n判断用户当前内存使用情况，避免手机卡顿\\\\n实现账号多设备登录的监听，一个账号在别的设备登录时在该设备上需要弹出对话框提示\\\\n通话状态时及时切断音频流，避免影响用户通话\\\\n为用户接入无线网节省流量，避免不必要的资费产生\\\\n应用在手机屏幕关闭后后台进程运行，避免因锁屏导致应用无法运行影响用户使用\\\\n用户创建提醒，完成活动\\\\n用户打开通知等设置，避免用户错过信息提示\\\\n在SDCard中创建与删除文件权限\\\\n主要和用户的智能电子设备通信，同步数据\",\n        \"package_size\": 72002597,\n        \"description\": null,\n        \"contact_tel\": \"18612823390\",\n        \"package_id\": 1099611632427,\n        \"put_status\": 1,\n        \"platform\": \"android\",\n        \"offline_app_stores\": \"[]\",\n        \"contact_email\": \"916327720@qq.com\",\n        \"privacy_type\": 1,\n        \"app_privacy_url\": \"https://privacyh5.shinet.cn/wdcdxfsh_privacy.html\",\n        \"update_time\": 1686017363676,\n        \"audit_serial_number\": 45264,\n        \"app_status\": 4,\n        \"real_app_version\": \"1.0.2\",\n        \"review_status\": 2,\n        \"app_id\": 2199123262731,\n        \"apply_age\": 1,\n        \"contact_name\": \"杨璐\",\n        \"share_account_count\": 2698,\n        \"review_detail\": \"\",\n        \"version_code\": 102,\n        \"release_type\": 2,\n        \"app_icon_url\": \"https://static.yximgs.com/udata/pkg/9e06091e8e1c47d4a81b6aa609e19123.jpg\",\n        \"ios_app_id\": \"\",\n        \"url\": \"https://p2-yx.adkwai.com/bs2/ad-app/910a82e3-ab66-463c-bcfd-14cd47dcc404.apk\",\n        \"use_sdk\": 1,\n        \"trace_activation\": 0,\n        \"online_earn_type\": 2,\n        \"account_id\": 12078245,\n        \"share_type\": 2,\n        \"privacy_id\": 4301941253,\n        \"package_name\": \"com.ys.wdcdxfsh\",\n        \"real_app_name\": \"王大锤的幸福生活\",\n        \"location\": \"[\\\"北京\\\",\\\"北京\\\",\\\"海淀\\\"]\",\n        \"developer\": \"海南云生网络技术有限公司\",\n        \"category\": 1,\n        \"compatibility\": \"Android5及以上\",\n        \"function_introduction\":\"功能介绍\",\n        \"record_number\": \"911823145670\",\n\t\"document_number\": \"563178963123\",\n        \"service_category\": \"[500,21]\",\n        \"network_type\": 2,\n        \"offline_app_letter_url\": \"https://static.yximgs.com/udata/pkg/3ba2fb.png\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMWAgIDg64C7ChigCCDr4_PziDEo5OenhQ8=\"\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1712671937069
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1712671937069,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

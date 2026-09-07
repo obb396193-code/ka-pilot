@@ -1,0 +1,54 @@
+{
+  "documentId": 2507,
+  "documentName": "接口1：文件流式上传",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 文件流式上传\n**📢 注意：小于10MB文件更推荐流式上传，使用分片上传也是可以的。将完整文件通过以下接口一次请求进行上传。**\n\n# 上传流程\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatform5cd445540a18b603ed9e30800659d318.png)\n\n请求接口：https://**{endpoint}**/api/upload/multipart?**upload_token=xxx**\n\n请求方式：POST\n\n数据格式：FORM\n\n### 请求参数\n\n|          字段          |   类型   |        是否必填        |                 说明                 |                                                                                            备注                                                                                             |\n| :--------------------: | :------: | :--------------------: | :----------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |\n|      endpoint      |   string   |          必填         |  上传域名，替换上面域名{endpoint}             |          |\n|      upload_token  |   string   |          必填         |   上传token，替换上面uploadtoken=xxx               |        |\n|      file          |   File     |          必填         |    通过Body (form-data)上传         |  \n\n### 请求参数举例：\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatform4d41daf4df67af59aeb73ee043f07c1a.png)\n\n### 返回参数\n\n| 字段      | 类型   | 说明            | 备注 |\n| --------- | ------ | --------------- | ---- |\n| result    | int    | 返回码/错误码，1表示成功，其他都为失败        |      |\n\n\n### 请求样例\n\n```\ncurl -X POST 'https://{endpoint}/api/upload/multipart?upload_token=xxxxx' \\\n--form 'file=@file'\n```\n\n### 返回样例\n\n```\n{\n    \"result\": 1\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1711971888185
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1711971888185,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

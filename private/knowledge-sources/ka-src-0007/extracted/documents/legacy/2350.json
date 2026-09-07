@@ -1,0 +1,42 @@
+{
+  "documentId": 2350,
+  "documentName": "可复制账户列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 可复制账户列表\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/bind/copy/accounts](https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/bind/copy/accounts)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| keyword | String |  | 可选 | 模糊查询关键字 |  |\n| uc_type | String |  | 必填 | 广告主复制类型：DSP_MAPI |  |\n| page_no | Integer |  | 必填 | 页码 |  |\n| page_size | Integer |  | 必填 | 页面大小 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 状态码 |  |\n| message | String |  | msg |  |\n| data | AgentCanCopyAccountRespSnake949 |  | 可复制账户列表 |  |\n| &#8195;agent_can_copy_accounts | AgentCanCopyAccountSnake[] |  | 可复制广告主列表 |  |\n| &#8195;&#8195;account_id | Long |  | 广告主id |  |\n| &#8195;&#8195;user_id | Long |  | 广告主快手id |  |\n| &#8195;&#8195;account_name | String |  | 广告主名称 |  |\n| &#8195;&#8195;corporation_name | String |  | 公司名称 |  |\n| &#8195;&#8195;uc_type | String |  | 账户类型 |  |\n| &#8195;&#8195;product_name | String |  | 产品名 |  |\n| &#8195;total | Long |  | 总条数 |  |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1684899696462
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1684899696462,
+  "creator": "chengsiliang",
+  "fullContext": null
+}

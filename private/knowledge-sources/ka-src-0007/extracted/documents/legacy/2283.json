@@ -1,0 +1,42 @@
+{
+  "documentId": 2283,
+  "documentName": "模板升级",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 模板升级\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/upgrade](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/upgrade)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段        | 类型 | 是否必填 | 说明   | 备注                                                         |\n| ----------- | ---- | -------- | ------ | ------------------------------------------------------------ |\n| template_id | Long | 可选     | 模板ID | 模板ID不为空时会指定升级该模板，当模板ID为空时，会更新账户下所有需要升级的模板 |\n\n### 返回参数\n\n| 字段                  | 类型    | 说明             | 备注 |\n| --------------------- | ------- | ---------------- | ---- |\n| data                  | struct  | 返回json体       |      |\n| &#8195;template_count | Long    | 升级了的模板总数 |      |\n| message               | String  | 错误详情         |      |\n| code                  | Integer | 返回码           |      |\n\n### 请求样例\n\n```js\n{\n  \"template_id\": 12321312\n}\n```\n\n### 返回样例\n\n```json\n{\n\t\"data\": {\n\t\t\"template_count\": 1\n\t}，\n\tmessage: \"\",\n\tcode: 0\n}\n```\n\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677226048199
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677226048199,
+  "creator": "yanghua05",
+  "fullContext": null
+}

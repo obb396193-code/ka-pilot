@@ -1,0 +1,42 @@
+{
+  "documentId": 2302,
+  "documentName": "工具-投前预估-2-投前预估详情",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 投前预估详情\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pre_put/predication_task/details](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pre_put/predication_task/details)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | long | 23 | 必填 | 广告主id |  |\n| predication_id | long | 1 | 必填 | 投前预估任务id |  |\n| ocpx_action_type | long | 180 | 必填 | 优化目标 | 53：表单提交，180：激活 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | int | 0 | 响应状态码 |  |\n| message | string | \"OK\" | 返回信息 |  |\n| request_id  | string  |    | 请求ID  |   |\n| data | AdPredicationTaskDetailSnake |  | 投前预估任务详情 |  |\n\n\n| AdPredicationTaskDetailSnake |   |   |   |   |\n| ------- | ------- | ------- | ------- | ------ |\n| 字段 | 类型 | 示例 | 说明 | 备注 |\n| predication_id | long | 10814878 | 预估任务id |  |\n| predication_time | long | 1676962741491 | 预估时间 | 毫秒时间戳 |\n| photo_url | string | \"https://abc.a.kwimgs.com/up\" | 视频url链接 |  |\n| title | string | \"VID_20190808_212147.mp4\" | 视频标题 |  |\n| duration | long | 10533 | 视频时长 |  |\n| ocpx_action_type | long | 180 | 优化目标 |  |\n| content_quality | long | 0 | 内容分 |  |\n| photo_id | long | 123456789 | 视频id |  |\n| content_quality_prompt | string | \"test\" | 内容质量文案 |  |\n| content_duplicate_prompt | string | \"test\" | 内容重复度文案 |  |\n| content_duplicate | boolean | false | 是否重复 |  |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 11440033,\n    \"ocpx_action_type\": 180,\n    \"predication_id\": 55101688\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"predication_id\": 55101688,\n        \"content_quality\": 1,\n        \"title\": \"5s-3.mp4\",\n        \"duration\": 5000,\n        \"photo_url\": \"https://alimov2.a.kwimgs.com/upic/2021/12/07/17/BMjAyMTEyMDcxNzQ2MjdfMjE4NjY2NTM4M182MjI5MTQ1MDEwN18wXzM=_b_B5596f2337c208966b88f949cba05e6a8.mp4?tag=1-1644387033-unknown-0-7git4lqns0-e6527f07d1b8c175&clientCacheKey=3x9gg2uwk9jge5c_b.mp4&tt=b&di=247090c5&bp=10000\",\n        \"predication_time\": 1642064018370,\n        \"ocpx_action_type\": 180,\n        \"content_quality_prompt\":\"xxxxx\",\n        \"content_duplicate_prompt\":\"xxxxx\",\n        \"content_duplicate\":false,\n        \"photo_id\": 123456789\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"7a5b7d12d5714695a7b9bc5566746d03\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677501265827
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677501265827,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

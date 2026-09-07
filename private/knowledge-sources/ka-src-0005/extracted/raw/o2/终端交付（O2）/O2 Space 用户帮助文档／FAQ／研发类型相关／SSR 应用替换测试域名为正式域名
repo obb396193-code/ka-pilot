@@ -1,0 +1,30 @@
+本文档主要告知用户如何在 O2 SSR 解决方案中，把域名从测试域名切换成用户自定义的正式域名。（仅对 Web 研发类型中的 SSR 方案有效）
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYavJBvXbqwZL/img/71f5341e-681b-4a84-afd7-d2ea0a65b8bf.png)
+
+
+1. O2 中域名都是挂载在站点上的（[什么是站点](https://alidocs.dingtalk.com/i/nodes/YndMj49yWjlAYoxjtKbLaYbkJ3pmz5aA)） ，默认 SSR 挂载在测试站点上，所以你需要做的是以下几个步骤
+1. 首先确认自己部门是否有正式 SSR 站点可用
+（查看自己可用站点）
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYavJBvXbqwZL/img/fb121f6b-77ea-4a38-b0a4-a68b7dc31025.png)
+（确认站点类型， SSR 应用只能使用 WEB 一体化站站点类型）
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYavJBvXbqwZL/img/8e7ea2f8-55c7-4310-aef9-9fa131a5ec7f.png)
+
+1. 如果没可用的正式 WEB 一体化类型站点，需要进行站点申请
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYavJBvXbqwZL/img/d0b5498c-cd78-4a26-bfdc-18a01d7fe70e.png)
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYavJBvXbqwZL/img/606c2d2b-784d-4547-aff2-65bc9dbd268f.png)
+
+
+1. 如何有可用的正式 WEB 一体化类型站点，下一步需要进行接入域名（线上 CDN 域名或预发域名），参照[文档](https://alidocs.dingtalk.com/i/nodes/YndMj49yWjlAYoxjtKbLlnNeJ3pmz5aA#4ever-bi-1178)
+1. 注意：站点第一次接入域名时，请参照[文档](https://alidocs.dingtalk.com/i/nodes/dQPGYqjpJYZnRbNYCGdAZxzA8akx1Z5N?utm_source=im&utm_scene=team_space&iframeQuery=utm_medium%3Dim_card%26utm_source%3Dim&utm_medium=im_card&dontjump=true&corpId=dingd8e1123006514592)绑定 OSS 资源
+资源用途选择 ER 一体化
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/AJdl64Z8d79aqke1/img/12ea626f-0e66-41cb-aa80-951e58ce47d1.png)
+
+1. 域名完成接入后，你就有了一个正式的站点以及一个可以用的线上 CDN 以及预发环境域名。
+1. 最后到 SSR 应用中进行更换站点
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYavJBvXbqwZL/img/659cf983-1766-4910-a1d4-41e93edca15c.png)
+
+1. 注意：不要在应用灰度过程中进行更换站点操作，更换站点后需要连续进行 2 次线上发布，才能正常进行灰度。

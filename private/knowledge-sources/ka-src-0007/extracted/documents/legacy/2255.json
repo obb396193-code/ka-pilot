@@ -1,0 +1,42 @@
+{
+  "documentId": 2255,
+  "documentName": "创建或更新投放资质",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 创建或更新投放资质\n\n请求方式：POST\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/agent/advertiser/delivery_cert/submit\n\n### 请求参数\n\n| 字段        | 类型      | 说明       | 是否必填 | 备注                                                        |\n| ------------- | ----------- | ------------ | -------- | ------------------------------------------------------------- |\n| advertiser_id | long        | 广告主id  | 是      |                                                               |\n| agent_id      | long        | 代理商id  | 是      | 和access_token保持一致                                   |\n| cert_list     | CertParam[] | 投放资质列表 | 否      | 只传投放资质（cert_category为5)如果不填，代表删除所有投放资质 |\n\n### 返回参数\n\n| 字段 | 类型  | 说明   | 备注 |\n| ------ | ------- | -------- | ---- |\n| result | boolean | 是否成功 |      |",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1675407896693
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1675407896693,
+  "creator": "wb_suxing",
+  "fullContext": null
+}

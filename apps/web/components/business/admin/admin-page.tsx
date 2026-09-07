@@ -28,10 +28,10 @@ import { connectionsFixture, providerLabel } from "@/lib/fixtures/integrations"
 import { coefficientText, coefficientsFixture, decisionPolicyFixture } from "@/lib/fixtures/settings"
 import { cn } from "@/lib/utils"
 
-// 治理后台（F-007 §11，admin 才显）：tabs 成员与授权｜连接与 ETL｜口径与日历｜灰度开关｜资产｜诊断
+// 治理后台（F-007 §11，admin 才显）：tabs 成员与授权｜连接与拉数｜口径与日历｜灰度开关｜资产｜诊断
 const tabs = [
   { value: "members", label: "成员与授权" },
-  { value: "etl", label: "连接与 ETL" },
+  { value: "etl", label: "连接与拉数" },
   { value: "calendar", label: "口径与日历" },
   { value: "flags", label: "灰度开关" },
   { value: "assets", label: "资产" },
@@ -56,7 +56,7 @@ function makeMemberColumns(onGrants: (member: Member) => void, onToggle: (member
         <DropdownMenuItem onSelect={() => onGrants(member)}>账户授权</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => toast("改角色", { description: `接口接入后生效（当前为示例）` })}>改角色</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant={member.isActive ? "destructive" : "default"} onSelect={() => onToggle(member)}>{member.isActive ? "停用（撤 session，行不删）" : "恢复"}</DropdownMenuItem>
+        <DropdownMenuItem variant={member.isActive ? "destructive" : "default"} onSelect={() => onToggle(member)}>{member.isActive ? "停用（立刻踢下线，记录保留）" : "恢复"}</DropdownMenuItem>
       </>
     )),
   ])
@@ -66,12 +66,12 @@ function MembersTab() {
   const [active, setActive] = useState<Record<string, boolean>>({})
   const [grantsFor, setGrantsFor] = useState<Member | null>(null)
   const items = useMemo(() => (isOk(membersFixture) ? membersFixture.data.items : []).map((item) => ({ ...item, isActive: active[item.identityId] ?? item.isActive })), [active])
-  const columns = useMemo(() => makeMemberColumns(setGrantsFor, (member) => { setActive((prev) => ({ ...prev, [member.identityId]: !member.isActive })); toast(member.isActive ? "已停用：membership 失活 + 撤 session" : "已恢复", { description: `接口接入后生效（当前为示例）` }) }), [])
+  const columns = useMemo(() => makeMemberColumns(setGrantsFor, (member) => { setActive((prev) => ({ ...prev, [member.identityId]: !member.isActive })); toast(member.isActive ? "已已停用：成员失效并踢下线" : "已恢复", { description: `接口接入后生效（当前为示例）` }) }), [])
   const table = useGridTable({ data: items, columns, pageSize: 20, getRowId: (item) => item.identityId })
   const grants = isOk(grantsFixture) && grantsFor && grantsFixture.data.identityId === grantsFor.identityId ? grantsFixture.data.items : null
   return (
     <>
-      <DataGrid table={table} empty="没有成员" toolbar={<p className="text-xs text-muted-foreground">v1.6 admin/members · 停用 = membership 失活 + 撤 session，行不删；PAT 随成员生命周期吊销</p>} actions={<Button size="sm" onClick={() => toast("邀请成员", { description: "接口接入后生效（当前为示例）" })}><IconPlus />邀请</Button>} showPagination={false} />
+      <DataGrid table={table} empty="没有成员" toolbar={<p className="text-xs text-muted-foreground">停用 = 成员失效并立刻踢下线，记录不删；该成员的长期令牌一并吊销</p>} actions={<Button size="sm" onClick={() => toast("邀请成员", { description: "接口接入后生效（当前为示例）" })}><IconPlus />邀请</Button>} showPagination={false} />
       <Dialog open={grantsFor !== null} onOpenChange={(open) => { if (!open) setGrantsFor(null) }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader><DialogTitle>账户授权 · {grantsFor?.displayName}</DialogTitle><DialogDescription>admin/grants · read 只看，execute 可执行写操作（仍走变更集确认）</DialogDescription></DialogHeader>
@@ -80,7 +80,7 @@ function MembersTab() {
               <TableHeader className="bg-muted"><TableRow><TableHead>账户</TableHead><TableHead>级别</TableHead><TableHead>授权于</TableHead><TableHead /></TableRow></TableHeader>
               <TableBody>{grants.map((grant) => <TableRow key={`${grant.media}-${grant.accountId}`}><TableCell>{mediaLabel(grant.media)} · {grant.accountId}</TableCell><TableCell><StatusChip tone={grant.accessLevel === "execute" ? "warning" : "muted"}>{grant.accessLevel === "execute" ? "可执行" : "只读"}</StatusChip></TableCell><TableCell className="tabular-nums">{grant.grantedAt}</TableCell><TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => toast("已撤销", { description: "接口接入后生效（当前为示例）" })}>撤销</Button></TableCell></TableRow>)}</TableBody>
             </Table>
-          ) : <p className="text-sm text-muted-foreground">该成员没有授权样例（fixture 只给了第一位成员的 grants）；共 {grantsFor?.grantsCount ?? 0} 条。</p>}
+          ) : <p className="text-sm text-muted-foreground">该成员没有授权样例（示例只给了第一位成员）；共 {grantsFor?.grantsCount ?? 0} 条。</p>}
           <DialogFooter><Button size="sm" variant="outline" onClick={() => toast("新增授权", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新增授权</Button></DialogFooter>
         </DialogContent>
       </Dialog>
@@ -113,7 +113,7 @@ function EtlTab() {
         <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">奇航（platform）<StatusChip tone="warning">补拉中</StatusChip></CardTitle><CardDescription>system/health · 2 户补拉</CardDescription></CardHeader></Card>
         <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">ka-data（团队源）<StatusChip tone="success">D-1</StatusChip></CardTitle><CardDescription>system/health · 数据日 2026-09-04</CardDescription></CardHeader></Card>
       </div>
-      <DataGrid table={table} empty="没有 ETL 记录" toolbar={<p className="text-xs text-muted-foreground">system/etl-runs · BLOCKED_AUTH = 奇航凭证失效，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
+      <DataGrid table={table} empty="没有拉数记录" toolbar={<p className="text-xs text-muted-foreground">每天从奇航 / KA Data 拉数的记录；显示「凭证失效」= 奇航凭证过期，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
     </div>
   )
 }
@@ -140,7 +140,7 @@ function CalendarTab() {
         <CardContent className="flex flex-col gap-1 text-sm">{coefficients.map((item) => <p key={item.media} className="flex items-center justify-between"><span>{mediaLabel(item.media)}</span><span className="tabular-nums text-muted-foreground">{coefficientText(item)} · {item.effectiveDate}</span></p>)}</CardContent>
       </Card>
       <Card>
-        <CardHeader><CardTitle>分级决策策略</CardTitle><CardDescription>settings/decision-policy · 自动执行的门槛（v1.5 decision DTO）</CardDescription></CardHeader>
+        <CardHeader><CardTitle>分级决策策略</CardTitle><CardDescription>自动执行的门槛：达不到就不自动做，转人工</CardDescription></CardHeader>
         <CardContent>{policy ? <dl className="grid grid-cols-2 gap-y-1 text-sm"><dt className="text-muted-foreground">最低置信度</dt><dd className="text-right tabular-nums">{(policy.policy.confidenceMin * 100).toFixed(0)}%</dd><dt className="text-muted-foreground">历史成功率下限</dt><dd className="text-right tabular-nums">{(policy.policy.historicalSuccessRateMin * 100).toFixed(0)}%</dd><dt className="text-muted-foreground">近期人工操作窗口</dt><dd className="text-right tabular-nums">{policy.policy.recentManualOpsWindowHours} 小时</dd><dt className="text-muted-foreground">单日自动执行上限</dt><dd className="text-right tabular-nums">¥{policy.policy.dailyCapCny.toLocaleString("zh-CN")}</dd></dl> : null}<p className="mt-2 text-xs text-muted-foreground">{policy ? `${policy.updatedBy.name} · ${fmtTime(policy.updatedAt)}` : ""}</p><Button size="sm" variant="outline" className="mt-3" onClick={() => toast("改策略", { description: "接口接入后生效（当前为示例）" })}>调整</Button></CardContent>
       </Card>
       <Dialog open={adding} onOpenChange={setAdding}>
@@ -229,13 +229,13 @@ export function AdminPage() {
   const isAdmin = session?.activeWorkspace.role === "admin"
   return (
     <PageBody>
-      <PageHeader title="治理后台" description="成员与授权 · 连接与 ETL · 口径与日历 · 灰度开关 · 资产状态机 · 对账诊断（admin）" isMock={isMock} actions={<StateSwitch />} />
+      <PageHeader title="治理后台" description="成员与授权 · 连接与拉数 · 口径与日历 · 灰度开关 · 资产流转 · 对账诊断（仅管理员）" isMock={isMock} actions={<StateSwitch />} />
       {isAdmin ? <PageTabs tabs={tabs} value={tab} onChange={setTab} /> : null}
       <div className="px-4 lg:px-6">
         {!isAdmin ? (
           <NoAccess title="治理后台只对管理员开放" reason="成员、连接、口径日历、灰度开关这些会影响整个工作区，只有管理员能看。切到你是管理员的空间，或找管理员代办。" />
         ) : (
-          <StateFrame state={state} unlock="admin/members · grants · calendar · flags · system/etl-runs · assets · reconcile 接入后切换为真数据" empty={{ title: "空空如也", description: "先邀请成员。" }}>
+          <StateFrame state={state} unlock="成员授权 / 口径日历 / 灰度开关 / 拉数记录 / 资产 / 对账诊断接口接入后切换为真数据" empty={{ title: "空空如也", description: "先邀请成员。" }}>
             {tab === "members" ? <MembersTab /> : null}
             {tab === "etl" ? <EtlTab /> : null}
             {tab === "calendar" ? <CalendarTab /> : null}

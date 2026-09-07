@@ -1,0 +1,157 @@
+
+## Chat Completions API
+
+### 关于百炼AK
+
+* 首先，你需要传入ideaLAB的AK（正式AK / 个人AK）
+
+* 正式AK申请见：<https://aliyuque.antfin.com/aiplus/aistudio/gzhhgn1ai1ulhohs#OSqgV>
+* 个人AK见：<https://aistudio.alibaba-inc.com/#/aistudio/manage/personalResource>
+
+* 其次，model必须是百炼AK支持的模型。例如：百炼AK支持qwen-max。
+* 那么传入百炼AK时，将使用传入的百炼AK去访问百炼模型：qwen-max。
+
+* 这里有一个注意的点：model名称是ideaLAB的模型名称（qwen_max）。
+
+* 使用百炼AK去调用模型，QPS默认为50。不使用百炼AK去调用模型，QPS默认为20。
+
+* 本质上，用户不传百炼AK，则用ideaLAB自己的百炼AK去访问百炼模型。（额度有限，容易被限流
+* 用户传百炼AK，则用用户自己的额度去访问百炼模型。（额度有用户自己控制）
+
+### 多模态数据的限制
+
+* 图片一次性最多30张
+* 单张图片最大5MB
+* 视频一次最多2个
+* 单个视频最多200MB
+* 所有多模态数据（图片/视频）一次性不超过512MB
+
+### gpt的一些模型，会带有global的尾缀，它们的区别是？
+
+例如：o1-preview-0912、o1-preview-0912-global
+
+模型背后的执行者是实例，**没带global的，选哪个区域的实例，由ideaLAB配置决定**。例如，ideaLAB给业务方A调用o1-preview-0912配置了实例A（区域a），实例B（区域b），ideaLAB的实例选择算法会选一个实例去运行，例如实例A。**带global意味着**，ideaLAB不用关心区域a，区域b，**背后到底由哪个实例去执行，由azure openai决定**。
+
+### azure openai的gpt系列模型，怎么计算图片的token？【详见：[gpt-4o-2024-05-13、gpt-4o-mini，图片转成token的规则不同](https://aliyuque.antfin.com/aiplus/aistudio/py18yrnf5ux09ubi)】
+
+* openai的规则
+
+* ideaLAB对上述的理解：  
+  影响计费的两个元素：size + detail
+
+备注：4o-mini图片的资源消耗的是4o的资源，所以返回的tokens比同类型4o的多，换算后价格相同。
+
+逻辑
+
+* detail: low
+
+* 图片就算85token
+
+* detail: high
+
+* （1）以2048 * 2048作为参考，维持长宽比。
+* （2）对图片进行伸缩，将图片的短边限制为768。计算这个图片由多少个512 * 512组成。
+* （3）每个512x的正方形算170token，最后的token数再加上85token。
+
+* 举例说明：
+
+* 1024 * 1024 的图片（detail : high）
+
+* （1）1024 < 2048，不进行resize
+* （2）最短的边为1024，伸缩到768，且维持长宽比，那就是748 * 748。
+* （3）748 * 748 相当于2 * 2个512x正方形。（748 / 512，并向上取整，即为2）
+* （4）最后的价格：4 * 170 + 85 = 765
+
+* 2048 * 4096的图片（detail : high）
+
+* （1）4096 > 2048，进行resize，并保持长宽比。1024 * 2048
+* （2）最短边是1024，伸缩到768，保持长宽比。768 * 1536
+* （3）768 * 1536相当于2 * 3个512x正方形
+* （4）最后的价格：6 * 170 + 85 = 1105
+
+* 4096 * 8192的图片（detail : low）
+
+* （1）最后的价格：85token
+
+  
+
+
+### o1系列模型的说明
+
+ideaLAB上架了o1系列模型，如果有同学对o1的各种限制有疑惑，请看[OpenAI官方文档](https://platform.openai.com/docs/guides/reasoning/quickstart)的说明：
+
+> Beta 限制
+> 
+> 在测试阶段，许多 API 参数尚不可用。最显著的有：
+> 
+> * 模态：仅支持文本，不支持图像。
+> * 消息类型：仅支持用户和助手消息，不支持系统消息。
+> * 流式：不支持。
+> * 工具：不支持工具、函数调用和响应格式参数。
+> * Logprobs：不支持。
+> * 其他：temperature、top_p 和 n 固定为 1，而 presence_penalty 和 frequency_penalty 固定为 0。
+> * 助手和批处理：这些模型在 Assistants API 或 Batch API 中不受支持。
+> 
+> 我们将在未来几周内增加对这些参数的支持，以摆脱测试阶段。多模态和工具使用等功能将包含在 o1 系列的未来模型中。
+
+### Connection Rest/ Connection aborted/Connection Reset By Peers
+
+如果发现每次这个报错都在90s左右，那说明请求被统一接入层给关闭了，统一接入层限制90s内没有任何数据发送就会断开链接，并且这个90s限制无法修改
+
+解决办法：
+
+1. 请求改成流式调用
+2. 可以尝试通过http2 多路复用来解决，原理就是在90s超时之前通过同一个链接往服务端发一个任意请求
+
+​  
+
+
+### 传了图片/视频的url，有的模型能访问，有的模型不能访问，这是为什么？
+
+* 有用户使用qwen-vl-max模型，传了url，结果模型报错：
+
+* 换成支持vision的gpt系列模型，就可以了。这是为什么？
+* 原因：
+
+* 如果模型侧支持base64，ideaLAB会将url转成base64传给模型。
+* 如果模型侧不支持base64，ideaLAB只能将url传给模型侧。而模型侧可能无法访问该url，因此报错。
+
+> qwen-vl-max便是这种情况，模型侧不支持base64，又无法访问用户传的url。
+
+## 模型在ideaTALK的模型参数
+
+### 以Qwen2-72b-instruct为例
+
+### 结论
+
+* 对于ideaTALK，我们不给模型的参数设置默认值。诸如top_p、temperature参数在运行时默认值是多少完全由模型提供方定义。
+
+* **那去哪看模型提供方定义的参数默认值呢？详见：**[**AI Studio Chat模型清单**](https://aliyuque.antfin.com/aiplus/aistudio/vigq1wzhi7zy3gnb)**。**
+
+* 参考[Qwen2-72b-instruct的官方文档](https://help.aliyun.com/zh/model-studio/developer-reference/use-qwen-by-calling-api?spm=a2c4g.11186623.0.i2)可知：Qwen2-72b-instruct的top_p默认值为0.8，temperature的默认值为0.7
+
+## ideaTALK开启了KFC校验，如果输入命中了敏感词，会被拦截
+
+用户的输入/模型的输出被KFC拦截了，敏感词详见keyword。
+
+## 模型限流
+
+* ideaLAB的模型是三层限流机制：
+
+* 第一层：Sentinel限流；不了解Sentinel的同学可以看下[官方文档](https://mw.alibaba-inc.com/sentinel/product-overview/intro)。一般限流规则是，业务方调用模型的qps为20。
+
+* 举例：业务方为Dev12345678_idealab，模型为gpt-4o-0806，qps为20。理论上，Dev12345678_idealab每秒调用gpt-4o-0806最多20次。
+* 触发这个限流的错误码：PL-002
+
+* 第二层：ideaLAB限流；调用azure的模型，需要ideaLAB将请求打到azure的实例上。但azure的实例有很多，选择哪个实例呢？随机选一个吗？当然不行。这会导致azure的实例被打满，出现模型侧的限流。因此，ideaLAB提供了实例选择算法。
+
+* 实例选择算法会考量一个实例的RPM（每分钟请求数）和TPM（每分钟token数，包含输入和输出token）。假设实例A的RPM为20，TPM为1000。如果在1分钟窗口内，实例A已经处理了20个请求和1000个token，那么新请求到的时候，实例A便无法处理。如果一个业务方的所有实例都无法处理，则会出现ideaLAB限流。
+* 触发这个限流的错误码：PRE-429
+
+* 第三层：azure限流；请求已经打到模型侧了，如果模型超负载了则无法处理，那么一般会返回429。
+
+* 触发这个限流的错误码：MPE-429
+
+  
+
+

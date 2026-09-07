@@ -1,0 +1,58 @@
+{
+  "documentId": 1930,
+  "documentName": "3.3.4修改广告计划状态",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 修改广告计划状态\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/campaign/update/status\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|     字段      |  类型  | 是否必填 |                        说明                         |                             备注                             |\n| :-----------: | :----: | :------: | :-------------------------------------------------: | :----------------------------------------------------------: |\n| advertiser_id |  long  |   必填   |                      广告主 ID                      |                在获取 access_token 的时候返回                |\n|  campaign_id  |  long  |   必填   |                     广告计划 ID                     |                                                              |\n| campaign_ids  | long[] |   选填   | 与原有的 campaign_id 字段可以同时填，也可以只填一个 | 1.传入的计划 id 不得重复，且至少有一个;传入的 campaign_id 总数最多 20 个。2.put_status 为 3 时，会删除广告计划，和计划下的所有广告组，程序化创意，创意 |\n|  put_status   |  int   |   必填   |                       操作码                        |            1-投放、2-暂停、3-删除，传其他数字非法            |\n\n### 返回参数\n\n|     字段     |   类型   |           说明            |                             备注                             |\n| :----------: | :------: | :-----------------------: | :----------------------------------------------------------: |\n|     code     |  number  |          返回码           |                                                              |\n|     data     |  struct  |        JSON 返回值        |                                                              |\n| campaign_ids |  long[]  | 所有修改状态成功的计划 id | 假如接口的入参 campaign_id 传了值且修改状态成功，则此广告计划 id 也会包含在返回值 campaign_ids 里面。 |\n|    errors    | struct[] |         错误详情          |                     部分错误时返回此列表                     |\n\n\n\n#### errors\n\n|    字段    |  类型  |    说明    | 备注 |\n| :--------: | :----: | :--------: | :--: |\n| error_code |  int   | 错误码详情 |      |\n| error_msg  | string |  错误详情  |      |\n|     id     |  long  |   错误id   |      |\n\n\n\n### 请求样例\n\n```\ncurl -X POST \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\": 20000800,\n    \"campaign_id \":2960188,\n    \"put_status\":1\n}' https://ad.e.kuaishou.com/rest/openapi/v1/campaign/update/status\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {}\n}\n```",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1719211950918
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624164
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1719211950918,
+  "creator": "yanghua05",
+  "fullContext": null
+}

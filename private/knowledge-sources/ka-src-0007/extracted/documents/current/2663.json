@@ -1,0 +1,377 @@
+{
+  "documentId": 2663,
+  "documentName": "文件上传接口(新)",
+  "documentType": 2,
+  "description": "<h1><strong>注意事项</strong></h1><p>1、接口调用次数限制：单次调用只能上传一个文件，<strong>同一个广告主ID的文件不支持并行上传</strong>，当前文件上传成功或失败后才可以进行下一个文件上传</p><p>2、文件大小限制：单个文件最大1G（为了您的传输速度，建议文件大小&lt;250M），单日上传总容量50G（特殊需求可申请扩容）</p><p>3、文件过期时间：1个月（文件过期不影响人群包投放）</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720096091527
+    }
+  ],
+  "apiId": 186,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v2/dmp/population/file/upload",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 6,
+  "bizName": "DMP",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl -X POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v2/dmp/population/file/upload' \\\n-H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n-H 'Content-Type: multipart/form-data' \\\n-F 'advertiser_id=\"12345678\"' \\\n-F 'file=@\"/Users/xxxxxxx03/Desktop/测试人群包/imei-md5.txt\"' \\\n-F 'type=\"3\"'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"file_path\": \"12345678_3_0d0bdfaaab8df08cf052d0ea41b6e05f.txt\",\n        \"upload_file_type\": \"TXT\",\n        \"record_size\": 1367738,\n        \"match_type\": \"IMEI_MD5\",\n        \"type\": 3,\n        \"file_size\": 45135769,\n        \"md5\": \"0d0bdfaaab8df08cf052d0ea41b6e05f\",\n        \"advertiser_id\": 12345678\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"89399f2f9e91472c833d0a78937f6a0e\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 10248,
+      "paramName": "type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "匹配类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "1：IMEI；2：IDFA；3：IMEI_MD5；4：IDFA_MD5；5：手机号-MD5；7：OAID；8：OAID_MD5 9: 手机号_SHA256;16：CAID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10249,
+      "paramName": "file",
+      "paramType": "File",
+      "example": "",
+      "description": "上传的文件",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": "",
+        "max": ""
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "\t支持直接上传.txt（UTF-8)文本；支持将单个/多个.txt文件经过zip格式压缩上传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10250,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 10251,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10252,
+      "paramName": "data",
+      "paramType": "FileUploadResponseMapiData",
+      "example": "",
+      "description": "数据",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 489,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 10240,
+          "paramName": "advertiser_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "广告主ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10241,
+          "paramName": "match_type",
+          "paramType": "String",
+          "example": "",
+          "description": "匹配类型",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10242,
+          "paramName": "md5",
+          "paramType": "String",
+          "example": "",
+          "description": "md5",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10243,
+          "paramName": "file_path",
+          "paramType": "String",
+          "example": "",
+          "description": "文件路径",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "\t包含作为文件唯一标识的字符串",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10244,
+          "paramName": "file_size",
+          "paramType": "Long",
+          "example": "",
+          "description": "文件大小",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10245,
+          "paramName": "upload_file_type",
+          "paramType": "String",
+          "example": "",
+          "description": "文件类型",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "\tTXT或ZIP",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10246,
+          "paramName": "record_size",
+          "paramType": "Long",
+          "example": "",
+          "description": "文件行数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 16905,
+          "paramName": "type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "匹配类型",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "1：IMEI；2：IDFA；3：IMEI_MD5；4：IDFA_MD5；5：手机号-MD5；7：OAID；8：OAID_MD5 9: 手机号_SHA256;16：CAID",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10253,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "消息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720096091527,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

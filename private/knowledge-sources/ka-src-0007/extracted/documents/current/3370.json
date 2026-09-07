@@ -1,0 +1,400 @@
+{
+  "documentId": 3370,
+  "documentName": "视频文件上传",
+  "documentType": 2,
+  "description": "<p>视频文件上传</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1784086941684
+    }
+  ],
+  "apiId": 2565,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/rest/suzao/internal/uploadPhoto",
+  "httpMethod": "POST",
+  "httpContentType": "FORM",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": "curl --location 'https://star-gateway.staging.kuaishou.com/rest/openapi/gw/agent/rest/suzao/internal/uploadPhoto' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'file=@\"/Users/abc.mp4\"' \\\n--form 'file_name=\"abc.mp4\"' \\\n--form 'operator_user_id=\"1234567\"' \\\n--form 'agent_id=\"111111\"' \\\n--form 'operation_source=\"111\"'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"photo_md_5\": \"8c30e655965374f5cbc1812a8f5bf265\",\n        \"photo_height\": 1280,\n        \"photo_key_frame_url\": \"https://ali2.a.yximgs.com/bs2/attachment/1485433543766113.jpg\",\n        \"photo_url\": \"https://ali2.a.yximgs.com/bs2/attachment/origin_314696554610524.mp4\",\n        \"upload_photo_task_id\": 1782725073914,\n        \"photo_width\": 720\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ELmAgICwrZiOrAEYmwogrbHHlfEzKIjQ_5gE\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [
+    {
+      "paramId": 87587,
+      "paramName": "Content-Type",
+      "paramType": "String",
+      "example": "multipart/form-data",
+      "description": "<p>请求类型为form-data形式</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "请求类型为form-data形式",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "inputParams": [
+    {
+      "paramId": 87573,
+      "paramName": "file",
+      "paramType": "File",
+      "example": "",
+      "description": "<p>对应文件</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87574,
+      "paramName": "file_name",
+      "paramType": "String",
+      "example": "xxx.mp4",
+      "description": "<p>文件名称必须是以.mp4结尾</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87575,
+      "paramName": "operator_user_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>操作人userid</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87576,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>归属人账号id，比如代理商平台传 agentId</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87577,
+      "paramName": "operation_source",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>操作来源</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 87584,
+      "paramName": "data",
+      "paramType": "AdTmarketUploadRespV2DataSnake949",
+      "example": "",
+      "description": "<p>数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4959,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 87578,
+          "paramName": "photo_width",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>视频宽</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87579,
+          "paramName": "photo_height",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>视频高</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87580,
+          "paramName": "upload_photo_task_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>任务id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87581,
+          "paramName": "photo_url",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>视频url</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87582,
+          "paramName": "photo_key_frame_url",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>视频首帧url</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87583,
+          "paramName": "photo_md_5",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>视频md5</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87585,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>失败原因</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87586,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1784086941684,
+  "creator": "zhengqiu",
+  "fullContext": null
+}

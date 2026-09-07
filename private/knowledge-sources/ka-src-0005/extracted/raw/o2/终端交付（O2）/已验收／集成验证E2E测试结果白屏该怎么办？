@@ -1,0 +1,22 @@
+用户真实问题链接: https://links.alibaba-inc.com/support/conversation/662090a251a53d07ccac3855/
+
+作者：紫砂
+
+评审人：上坡
+
+
+
+由于 playwright 版本更新等原因，可能会存在因内部部署的 playwright Viewer 版本较低导致的 Trace 详情无法查看问题。此时可以通过如下方式解决：
+
+1. 在测试报告页，点击任意一个test内容进行展开查看详情（如下图）
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/21257030/1713949782024-3c5c049f-6c5a-4616-af4f-7524397e1cce.png) 
+
+2. 在详情页，通过展示的操作流进行排查。若还是希望查看 Trace 详细内容，可在页面底部点击下载 Trace 包（zip 文件）到本地；
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/21257030/1713949902505-2034ea71-c5bf-4320-84df-64ed24cb215b.png) 
+
+3. 访问 playwright 官方 Viewer 网站[https://trace.playwright.dev/](https://trace.playwright.dev/)，将 Trace zip 文件拖入即可。该网站为playwright Viewer 静态部署站点，会对拖入的zip文件进行本地解析，不会上传至后台服务器。
+
+
+

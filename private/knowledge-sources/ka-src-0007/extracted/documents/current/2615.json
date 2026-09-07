@@ -1,0 +1,558 @@
+{
+  "documentId": 2615,
+  "documentName": "获取罗盘绑定广告主列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1758876138313
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1720081680287
+    }
+  ],
+  "apiId": 53,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/uc/v1/advertisers",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 7,
+  "bizName": "UC",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 1455,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "罗盘账户的「快手 id」，只能传递授权时使用的快手 id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 1456,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "code",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1457,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "message",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 1458,
+      "paramName": "data",
+      "paramType": "MAPIAccountInfoData",
+      "example": "",
+      "description": "广告主信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 118,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 1454,
+          "paramName": "details",
+          "paramType": "MAPIAccountInfo[]",
+          "example": "",
+          "description": "广告主 list ",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 117,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 1451,
+              "paramName": "advertiser_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "广告主ID ",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1452,
+              "paramName": "advertiser_name",
+              "paramType": "String",
+              "example": "",
+              "description": "广告主名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 1453,
+              "paramName": "corporation_name",
+              "paramType": "String",
+              "example": "",
+              "description": "公司名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 73863,
+              "paramName": "app_id",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>账户所属业务线</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 73864,
+              "paramName": "create_source",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>账户创建来源</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 73865,
+              "paramName": "review_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>账户审核状态</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 73866,
+              "paramName": "create_time",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>账户创建时间</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 77810,
+              "paramName": "user_id",
+              "paramType": "Long",
+              "example": "-",
+              "description": "<p>快手ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "-",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 77811,
+              "paramName": "product_name",
+              "paramType": "String",
+              "example": "-",
+              "description": "<p>产品名</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "-",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 77812,
+              "paramName": "agent_id",
+              "paramType": "Long",
+              "example": "-",
+              "description": "<p>代理商ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 10,
+              "note": "-",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 77813,
+              "paramName": "account_type",
+              "paramType": "Integer",
+              "example": "-",
+              "description": "<p>投放类型</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 11,
+              "note": "-",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 77814,
+              "paramName": "frozen_status",
+              "paramType": "Integer",
+              "example": "-",
+              "description": "<p>冻结状态1正常 2冻结</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 12,
+              "note": "-",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 77815,
+              "paramName": "frozen_reason",
+              "paramType": "String",
+              "example": "-",
+              "description": "<p>冻结原因</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 13,
+              "note": "-",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 77816,
+              "paramName": "auth_status",
+              "paramType": "Integer",
+              "example": "-",
+              "description": "<p>认证状态</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 14,
+              "note": "-",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 77817,
+              "paramName": "auth_detail",
+              "paramType": "String",
+              "example": "-",
+              "description": "<p>认证详情</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 15,
+              "note": "-",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 77818,
+              "paramName": "uid_banned",
+              "paramType": "Boolean",
+              "example": "-",
+              "description": "<p>快手ID是否被封禁</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 16,
+              "note": "-",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 77819,
+              "paramName": "review_detail",
+              "paramType": "String",
+              "example": "-",
+              "description": "<p>审核详情</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 17,
+              "note": "-",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1758876138313,
+  "creator": "wanglunjie",
+  "fullContext": null
+}

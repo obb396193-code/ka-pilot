@@ -1,0 +1,77 @@
+#### 排查使用到的日志：
+1、原始请求串及refer相关信息
+
+accesslog：/home/admin/cai/logs/cronolog/2018/01/*access_log
+
+2、外部请求url，clickSession，bizType(可以通过点击串作为关键词查找clickSession)
+
+/home/admin/out/logs/request_logger.log
+
+3、查看风控调用返回结果(可以通过clickSession查询风控成功还是失败)
+
+/home/admin/out/logs/risk_logger.log
+
+isValidClick=true代表风控通过，false代表过滤，riskReason里输出命中的规则
+
+4、点击服务器发送给结算服务器的消息
+
+/home/admin/out/logs/metaq_logger.log
+
+5、点击日志
+
+SC：/home/admin/out/logs/click_logger.log
+
+AE:/home/admin/out/logs/ae_click_logger.log
+
+6、点击服务器异常输出日志
+
+/home/admin/out/logs/adclickserver.log
+
+
+
+#### [](#排查工具)排查工具
+[http://10.101.69.80:48080/ci_kk](http://10.101.69.80:48080/ci_kk)
+
+通过点击请求url查看Pid等实际参数
+
+
+
+#### [](#常用排查类)常用排查类
+com.alibaba.intl.adclickserver.biz.service.impl.ClickServiceImpl#getSettleClickString
+
+发送给结算的点击字符串拼接
+
+com.alibaba.intl.adclickserver.biz.service.impl.ClickServiceImpl#clickLog
+
+记录点击日志
+
+com.alibaba.intl.adclickserver.biz.service.impl.ClickServiceImpl#getAttributes
+
+请求风控参数
+
+
+
+#### [](#点击服务器整体流程)点击服务器整体流程
+解加密串 调风控 拿结果 结合引擎数据 写日志 发metaq消息
+
+
+
+#### [](#如何判定点击服务处理完成)如何判定点击服务处理完成
+风控返回日志中isValidClick=true，点击日志已经输出，并且发送点击给结算
+
+
+
+#### [](#线下联调方法：)线下联调方法：
+从线上找到请求串，绑定线下点击服务器进行验证
+
+
+
+#### [](#预发验证：)预发验证：
+根据proxy.alibaba-inc.com上绑定的预发环境绑定来进行验证
+
+
+
+
+
+
+

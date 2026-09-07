@@ -1,0 +1,256 @@
+{
+  "documentId": 2724,
+  "documentName": "试玩推送",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720093638105
+    }
+  ],
+  "apiId": 110,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/play/share",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "    curl -H \"Access-Token:[REDACTED_SECRET_EXAMPLE]\" \\\n       -H \"Content-Type:application/json\" \\\n       -d '\n       {\n       \"advertiser_id\": 10787973,\n       \"play_ids\": [4293857038],\n       \"target_account_ids\": [10787999, 10787998]\n       }\n       ' https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/play/share"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n       \"code\": 0,\n       \"data\": {\n       \"details\": [\n       {\n       \"account_id\": 10787999,\n       \"play_id\": \"123\"\n       }\n       {\n       \"account_id\": 10787998,\n       \"play_id\": \"124\"\n       }\n       ]\n       },\n       \"message\": \"OK\",\n       \"request_id\": \"0ae4094286ab419bad50e559bdb405fe\"\n       }"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 4605,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4606,
+      "paramName": "play_ids",
+      "paramType": "Long[]",
+      "example": "[1,2]",
+      "description": "分享的源试玩id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4607,
+      "paramName": "target_account_ids",
+      "paramType": "Long[]",
+      "example": "[1,2]",
+      "description": "分享目标账户",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 4608,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "状态",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4609,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "\"\"",
+      "description": "信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4610,
+      "paramName": "data",
+      "paramType": "DspPlayListData",
+      "example": "\"\"",
+      "description": "data",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 126,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 1513,
+          "paramName": "details",
+          "paramType": "AdDspPlayView[]",
+          "example": "[]",
+          "description": "试玩具体数据",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 124,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 1494,
+              "paramName": "play_id",
+              "paramType": "Long",
+              "example": "1",
+              "description": "试玩ID",
+              "required": 0,
+              "checkRule": null,
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 4611,
+              "paramName": "account_id",
+              "paramType": "Long",
+              "example": "1",
+              "description": "广告主id",
+              "required": 0,
+              "checkRule": null,
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 17,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720093638105,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

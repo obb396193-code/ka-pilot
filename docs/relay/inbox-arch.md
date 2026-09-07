@@ -4046,3 +4046,20 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - Q-002 迁移窗口错位：**arch 做**，采纳 be2 的 `migration-window.ts` 移到中性路径；`migrations.test.ts` 里的「逐步回滚一步」不做盲替。
 - ①② arch 开缝（extraRoutes 入参 + handler spread，并在 main 建空的 `r014/routes.ts`、`r014/handlers.ts`）；③④ account-list / task-list 六个文件临时移交 be2；⑤ hourly/gap 移给 Codex；⑥⑦ 按 be2 建议；⑧ 列归 be2、端点归 Codex（分工表我写错，已改）；⑨ 全量门禁统一 arch 跑。
 - 采纳 be2 的做法为规矩：**迁移 DDL 从 schema.sql 切片生成，不手抄；bundle 测试反向逐句比对**。
+
+### P-117｜F-P116-1 测试库守卫修复 + 调度说明（be，2026-09-07）
+
+- 收P116✅，不再等待旧批。**独立代码 `cffc230`**；交审前merge `main@e5fee10` → **`a6bbe08`**。自身代码仅Worker benchmark及两份测试，另本人计划/runbook§2.7；Contract/前端视觉/依赖/迁移均0 diff。本回执及状态/报告为最后docs提交，提交后冻结等待你的✅/❌，不push。
+- HTTP真实PG测试与benchmark共用`assertLocalTestDatabase`，库名按`ka_[a-z0-9_]*_test`角色中立；arch/be2/be名称均可解析，仍限本机55432，拒其他端口/协议/query/hash/非法路径。**额外实读：原benchmark并非拒绝共享ka，而是显式允许且缺env时默认它**；本笔同步删默认值/例外，防止为统一守卫反而降低原HTTP测试保护。新增2项RED已实证再修，运行前拒绝共享ka；没连接共享库和arch/be2库。
+- 合main后的**47/47定向通过**：benchmark9、HTTP真PG6、supervisor13、HTTP14、lock5；Worker typecheck/lint全绿；production offline audit0（仅缓存证明）。benchmark核心覆盖行/语句98.36%、分支80%、函数94.44%。固定合成`ka_be_r010_20260907_test`，日志`output/r013b-worker-http/P117-final-focused.log` / `P117-coverage.log`。
+- 本轮空间4.2→6.3GiB，低于8G，不跑新全量/不清缓存。**补交P116冻结期最终自测证据**：当时恢复8.5GiB，对exact9d6a8ba无新增提交跑Domain770/DB710/Worker1221+2外部skip/Gateway36/Web143；四后端包type/lint过，Web类型仍缺既有前端依赖，lint0error17warning。该旧SHA全量不能替代cffc230门禁；之前仅output留痕，现批准后回填质量报告。
+- runbook只改本人§2.7：沙箱后台循环调用HTTP，结束再sleep600，autopilot不当直接HTTP；token避免URL/进程参数/日志。没有实际部署/启动循环，不开放媒体写。
+- 已收最新移交：hourly/gap Registry→R010a1；详情decision调用be2纯函数→R010a2；runs.taskId端点→R010b。账户/任务列表六文件本批未碰，后续遵守be2临时所有权；共享结构等你开缝；013/014/016按Contract切片+反向逐句测试。
+- 下一批恢复按v1.7.9：agent_type无标记unknown/未标注；bid_tool两空间都等014六raw列，**不沿用团队ka-data空列**。现`dimension-v3-agent_type.json`仍只有agency/self正例，请顺手补一行unknown权威样例供前后端parity（不是要求重复裁决）；本批未擅改Contract。全部信箱尚未完成，R010a1/a2、R011、R012、R015、R010b继续保留。
+
+
+### P-118 ✅合流｜fe/f006 @ 26afe2f + be/r010 @ e17f4be → main `6509387`｜arch 2026-09-07
+- **fe 自审 6–13**（60 文件全在 apps/web）：面包屑 1440 挤行、fixture/run 等技术词改人话、内部工单号/版本号/后端表名下架、变更集与任务枚举中文化、Gap 改「差异」、账户池「全部 5 / 投放中 18」自相矛盾修正 + 列名对齐 C3、dry-run 改「试运行」、Shadow 与 campaign/unit 中文化。复跑 140/0、tsc 0、eslint 0 错。
+- **be P-117**：`assertLocalTestDatabase` 统一 `ka_[a-z0-9_]*_test` 角色中立（arch/be/be2 三方库名都可），F-P116-1 关闭。**额外价值**：实读发现原 benchmark 守卫不是"拒绝共享 ka"，而是**显式允许且缺 env 时默认连它** —— 本笔删掉默认值与例外，比我要求的多堵一个真洞。✅
+- 门禁（真 PG）：domain 770 / db 710 / worker 1226+2 skip / gateway 36 / web 143；tsc/eslint 全 0。**main 零红。**
+- 已补 Codex 要的 `dimension-v3-agent_type.json` unknown「未标注」权威样例（`f1701f4`）。

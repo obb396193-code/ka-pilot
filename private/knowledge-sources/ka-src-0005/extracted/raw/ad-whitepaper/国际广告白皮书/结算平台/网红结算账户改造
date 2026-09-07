@@ -1,0 +1,105 @@
+- [ ] 初始化sql
+- [ ] 新增账户定义
+- [ ] 调整收入、扣款校验规则
+- [ ] 增加客户端
+- [ ] 增加收入方法
+- [ ] 增加收入、扣款处理器
+- [ ] 增加站点、处理器枚举
+
+
+
+
+
+新增3个账户定义：
+
+kol tmallcps fixfee kolaecps
+
+
+
+#### [](#sql:)sql:
+insert into `account_def`( id,  gmt_create,  gmt_modified,  biz_type,  account_type,  owner_type,  allow_arrears,  remark,  currency_type,  is_virtual,  parent,  payment_type) values(22, now(), now(), 'kol', 'cash', 1, 1, null, null, 0, null, 'income');
+
+insert into `account_def`( id,  gmt_create,  gmt_modified,  biz_type,  account_type,  owner_type,  allow_arrears,  remark,  currency_type,  is_virtual,  parent,  payment_type) values(23, now(), now(), 'tmallcps', 'cash', 1, 1, null, null, 1, 'kol', 'income');
+
+insert into `account_def`( id,  gmt_create,  gmt_modified,  biz_type,  account_type,  owner_type,  allow_arrears,  remark,  currency_type,  is_virtual,  parent,  payment_type) values(24, now(), now(), 'fixfee', 'cash', 1, 1, null, null, 1, 'kol', 'income');
+
+insert into `account_def`( id, gmt_create, gmt_modified, biz_type, account_type, owner_type, allow_arrears, remark, currency_type, is_virtual, parent, payment_type) values(25, now(), now(), 'kolaecps', 'cash', 1, 1, null, null, 1, 'kol', 'income');
+
+
+
+
+
+
+
+#### [](#校验：)校验：
+去除只允许支出账户才可以支出的限制，允许收入账户支出。
+
+
+
+#### [](#客户端：)客户端：
+scKolAccountReadClient
+
+scKolAccountWriteClient
+
+scTmallcpsAccountReadClient
+
+scTmallcpsAccountWriteClient
+
+scFixfeeAccountReadClient
+
+scFixfeeAccountWriteClient
+
+scKolAecpsAccountReadClient
+
+scKolAecpsAccountWriteClient
+
+
+
+#### [](#收入方法：)收入方法：
+    public ResultDTO<Boolean> sendIncomeMessage(List<IncomeDTO> incomeDTOList, AccountContext context);
+
+支出方法：
+
+    public ResultDTO<Boolean> sendComsumeMessages(List<ConsumeDTO> consumeList, AccountContext context);
+
+
+
+#### [](#增加收入、支出处理器)增加收入、支出处理器
+FixfeeConsumeProcessor
+
+TmallcpsConsumeProcessor
+
+FixfeeCashNormalIncomeProcessor
+
+TmallcpsCashNormalIncomeProcessor
+
+FixfeeCashUnfrozenIncomeProcessor
+
+TmallcpsCashUnfrozenIncomeProcessor
+
+KOLWithdrawFailIncomeProcessor
+
+KOLWithdrawReturnIncomeProcessor
+
+KOLWithdrawFeeConsumeProcessor
+
+KolAeCpsCashUnfrozenIncomeProcessor
+
+KolAeCpsCashUnfrozenIncomeProcessor
+
+KolAeCpsConsumeProcessor
+
+
+
+#### [](#去掉对收入账户不允许支持的校验)去掉对收入账户不允许支持的校验
+
+
+#### [](#增加枚举)增加枚举
+BizType
+
+SiteEnum
+
+
+
+spring bean配置，processor 、client配置
+

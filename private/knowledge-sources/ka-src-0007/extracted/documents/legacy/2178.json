@@ -1,0 +1,42 @@
+{
+  "documentId": 2178,
+  "documentName": "枚举说明",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 枚举说明\n\n| 枚举名          | 取值含义 |\n| -------------  | ----   | \n| hosting_scene  | 0=常规推广（已推全）1=小说测书（白名单）2=账户预热（白名单），gateway不支持本场景，以下接口说明都不会再提及本值 5=最大转化（白名单）   | \n| campaign_type           | 2=提升应用安装 5=收集销售线索   | \n| app_store           | 有效取值为\"vivo\", \"oppo\", \"xiaomi\", \"huawei\", \"meizu\", \"smartisan\"   | \n| sticker_styles           | 贴纸id，有效集合为[1,9]   | \n| web_uri_type           | 0=默认值，无效 1=自有落地页 2=建站落地页 3=程序化落地页   | \n| user_type           | 0=实时在此的用户 1=常住在此的用户 2=不限  | \n| filter_converted_level           | 0=不限 1=广告组 2=广告计划 3=本账户下 4=公司主体 5=app 6=运营自定义产品名（白名单）   | \n| filter_time_range(白名单)          |0:近一个月 1:近两个月 2:近三个月   | \n| put_status           | 1=投放中 2=暂停投放 3=已删除   | \n| scene_id           | 1=优选场景 6=上下滑大屏广告 10=快手联盟优选 24=激励视频广告(白名单)    7=信息流广告双列（白名单）  | \n| bid_type           | 10=常规推广（成本优先）、小说测书（选填）12=常规推广（跑量优先）、最大转化（必填）   | \n| constraint_action_type           | 0=无 180=激活 190=付费(白名单)   | \n| region_type           | 0=不限 1=指定地区 3=城市等级   |\n\n声明：以下所有接口的参数，如果未明确指出场景（hosting_scene）限制，则代表是通用的。",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1654846345903
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 12,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1654846345903,
+  "creator": "wb_mazhikai",
+  "fullContext": null
+}

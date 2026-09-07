@@ -1,0 +1,95 @@
+## 背景
+
+DEF CLI 由于 DEF 1.0 网关下线及 NodeJS 10/12 即将停止维护的问题，已停止对于 DEF Build 功能支持，其他功能仍可正常使用。
+
+O2 命令行工具支持所有原 DEF 命令行功能，请使用 O2 命令行用于后续开发。
+
+### 相关背景：
+
+1. [默认构建 Node 版本升级到 14 及 Node 10、12 镜像下线公告](https://alidocs.dingtalk.com/i/nodes/ROGpvEna5YQWmDzw0lZD84ykmK3zoB27?corpId=dingd8e1123006514592&dontjump=true&iframeQuery=positionInfo%3D%257B%2522mentionID%2522%253A%25222j95hxqsmil%2522%252C%2522sender_id%2522%253A%252211174616%2522%252C%2522mention_source%2522%253A%25221%2522%257D%26utm_medium%3Dim_card_mention%26utm_source%3Dim&cid=11174616%3A46087065&nav=share&navQuery=spaceId%3Dnb9XJN564ErkQXyA)
+1. [DEF 旧开放接口迁移公告](https://yuque.antfin-inc.com/docs/share/5dde4d12-63b7-49cc-94ce-c2270829afb9)
+​
+
+## 如何安装
+
+### 方式一（未安装过 O2 客户端用户）：
+
+
+
+执行下面的命令安装（当前暂不支持 Windows 用户）：
+
+​
+
+```
+curl -fsSL https://o2.alibaba-inc.com/install | bash
+```
+​
+
+### 方式二（适用于已安装 O2 客户端用户）：
+
+>  Windows 用户通过安装包安装后将默认安装 O2 命令行至本地，无需进行下面操作
+
+​
+
+O2 提供了一个命令行工具，可以通过命令行的方式快速打开指定的工作目录。首先要将 O2 命令安装到全局的 PATH ，使其能够被终端识别。
+
+#### 安装 O2 命令
+
+使用 O2 打开任意代码仓库，按下 command+shift+p 快捷键呼出命令面板，搜索 O2 即可看到两个指令
+
+(https://img.alicdn.com/imgextra/i1/O1CN01AC01Qr2A1Y8VNe0Pn_!!6000000008143-2-tps-624-107.png)
+
+
+选择 Shell 命令：安装 'o2' 命令到 PATH 即可。
+
+### 方式三（适用于已安装 O2 客户端用户）：
+
+>  Windows 用户通过安装包安装后将默认安装 O2 命令行至本地，无需进行下面操作
+
+​
+
+O2 默认打开应用管理器，切换到设置界面，选中「激活 O2 命令行」即可。
+
+(https://img.alicdn.com/imgextra/i4/O1CN018PD4Tp1jQHu7BBqVE_!!6000000004542-2-tps-2400-1600.png)
+
+
+
+
+### 方式四 （不希望安装 O2 客户端用户）
+
+
+
+可以通过如下命令全局安装 O2 客户端衍生的命令行工具
+
+```
+$ tnpm i @ali/o2 -g
+```
+## 如何使用 
+
+成功安装 o2 命令后，可在任意终端内执行 o2 命令，除了支持原 DEF 命令行工具命令之外，还支持通过输入 o2 {文件路径} 命令打开任意目录。
+
+​
+
+```
+欢迎使用 O2 CLI 客户端
+
+用法: o2 [command | workspace] [--options]
+
+运行原 DEF CLI 命令
+
+o2 dev     [--options]
+o2 build   [--options]
+o2 publish [--options]
+
+更多命令可直接运行 o2 命令查看
+
+使用 O2 客户端打开项目
+
+o2 [绝对路径 | 相对路径]
+
+执行 'o2 --version' 可获取更多版本信息
+```
+
+
+使用过程中如果遇到任何问题，可以联系 @魁武 进程答疑处理 ~
+

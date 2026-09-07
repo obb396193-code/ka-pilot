@@ -1,0 +1,319 @@
+## 获取迭代基本信息
+
+通过迭代 ID 获取迭代基本信息
+
+| method | GET |
+|-|-|
+| url | /v1.0/work/iterations/{iterationId}/detail |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| iterationId | Number | true | - | 迭代 ID |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| app | 应用基础信息，对象信息查看 [App](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls4gore2dimt38o1v5g) |
+| appconf | 应用配置信息，对象结构为：{...[AppConf](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls76zlqwgy4ezf22wtp), app_pub_conf: [AppPubConf](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls79nsulkskk7dmxf7)} |
+| usermember | 发起人成员角色 |
+| iteration | 迭代详情信息，对象结构为：{...[Iteration](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls6xiuwp43jozm69u9h), user: [User](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls369lxfelxab4mn50j),  lastTask: [Task](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8dfb66h0t67j0phai), devbranches: [Change](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8c5351a5qllc8tzaq)[] } |
+| iterationconf | 迭代配置信息，对象信息查看 [IterationConf](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8c3kve3swm6gi6twn) |
+
+### Example
+
+```
+client.get(`/v1.0/work/iterations/{iterationId}/detail`, {
+}, {
+  SSO_TICKET
+})
+
+{
+    "app": {
+        "id": 206718,
+        "group": "def-ui",
+        "project": "widget",
+        "emp_id": "287523",
+        "owner_emp_id": "244744",
+        "description": "已暂停使用!!!!   请移步 o2-space/front !!!!!",
+        "pub_type": 28,
+        "is_module": false,
+        "is_moduletrans": true,
+        "dev_type": 0,
+        "pubtype_group": null,
+        "platform_code": "tnpm",
+        "mode": "iteration_flow",
+        "pubtype_extend_path": "28",
+        "gmt_create": "2021-10-25T03:17:15.000Z",
+        "gmt_modified": "2023-09-26T06:46:25.000Z"
+    },
+    "appconf": {
+        "id": 507377,
+        "app_id": 206718,
+        "is_online_build": true,
+        "air_id": 0,
+        "air_path": "",
+        "air_platform": 1,
+        "is_steins": false,
+        "steins_platform_id": 0,
+        "steins_app_id": 0,
+        "is_pwa": false,
+        "is_page_assetsoverride": false,
+        "is_page_faas": false,
+        "pwa_conf": "",
+        "is_iteration_page_all": true,
+        "performance_check": 0,
+        "is_gog_sync": false,
+        "is_cr": false,
+        "tbapp_appid": "",
+        "tbapp_appkey": "",
+        "tbapp_apptype": "",
+        "tbapp_userid": "",
+        "tbapp_usernick": null,
+        "ide_appname": "",
+        "air_greypub": 0,
+        "is_tnpm_cdn": true,
+        "is_tnpm_build": true,
+        "tnpm_cdn_dir": "dist",
+        "tnpm_cdn_desttype": 0,
+        "tnpm_user_name": "",
+        "tnpm_user_token": "",
+        "tnpm_name": null,
+        "faas_id": null,
+        "faas_gateway_id": null,
+        "faas_prefix": null,
+        "aone_productid": 845337,
+        "bu_id": "72506",
+        "level": 0,
+        "sync_gitlab_user_level": 1,
+        "page_spma": "",
+        "generator_task_id": null,
+        "generator_id": 0,
+        "generator_task_error": null,
+        "sourcemap_is_enable": false,
+        "sourcemap_path_namespace": null,
+        "sourcemap_is_clear_result": true,
+        "tbapp_is_new": false,
+        "is_zcache_push_open": false,
+        "is_zcache_ios_bundle_open": false,
+        "zcache_pkg_id": null,
+        "page_bizcode": "",
+        "is_tnpm_beta": true,
+        "is_webhook_disallow": false,
+        "branch_pub_mode": 1,
+        "is_reuse_release_br": true,
+        "is_detect_trunk_not_def_push_disallow": 0,
+        "is_check_br_trunk_sync": false,
+        "is_pub_online_delete_branch": 1,
+        "deleted": false,
+        "is_enable_aem": 0,
+        "gmt_create": "2021-10-25T03:17:15.000Z",
+        "gmt_modified": "2023-09-26T06:46:25.000Z",
+        "app_pub_conf": {
+            "id": 1701,
+            "app_id": 206718,
+            "enable_lockfile_install": false,
+            "enable_dep_bot": false,
+            "is_pause_gitclean": null,
+            "enable_aot": true,
+            "enable_dependence_cache": false,
+            "gmt_create": "2022-11-10T04:02:12.000Z",
+            "gmt_modified": "2024-01-12T01:33:27.000Z"
+        }
+    },
+    "iteration": {
+        "id": 14798022,
+        "name": "0.27.2",
+        "description": "",
+        "app_id": 206718,
+        "group": "def-ui",
+        "project": "widget",
+        "branch": "def_releases_2023081815563030_def-ui_widget/0.27.2",
+        "version": "0.27.2",
+        "emp_id": "244744",
+        "status": 2,
+        "endtime": "1970-01-01T00:00:00.000Z",
+        "envstep": null,
+        "gmt_create": "2023-08-18T07:56:30.000Z",
+        "gmt_modified": "2023-08-18T07:56:30.000Z",
+        "user": {
+            "id": 22980,
+            "emp_id": "244744",
+            "nick": "乾杯",
+            "account": "qiyang.hqy",
+            "gitlab_id": "223485",
+            "buc_id": "1662494",
+            "email": "qiyang.hqy@alibaba-inc.com",
+            "gmt_create": "2020-01-09T06:28:53.000Z",
+            "gmt_modified": "2020-01-09T06:56:02.000Z"
+        },
+        "lastTask": {
+            "id": 135625955,
+            "group": "def-ui",
+            "project": "widget",
+            "branch": "def_releases_2023081815563030_def-ui_widget/0.27.2",
+            "commit_id": "6179c01ade91af46ee0a854c9599e0da706d2291",
+            "version": "0.27.2",
+            "emp_id": "244744",
+            "pub_env": 1,
+            "pub_type": 28,
+            "pub_status": 4,
+            "app_id": 206718,
+            "client_id": 1,
+            "iteration_id": 14798022,
+            "flow_id": 19381478,
+            "flow_version": "2",
+            "caller": "website",
+            "tbuser_id": "",
+            "branch_pub_mode": 1,
+            "engine_mode": 1,
+            "endtime": "2024-01-31T01:54:35.000Z",
+            "gmt_create": "2024-01-30T14:29:41.000Z",
+            "gmt_modified": "2024-01-31T01:54:35.000Z",
+            "user": {
+                "emp_id": "244744",
+                "nick": "乾杯",
+                "account": "qiyang.hqy"
+            },
+            "iteration": {
+                "id": 14798022,
+                "name": "0.27.2",
+                "description": "",
+                "app_id": 206718,
+                "group": "def-ui",
+                "project": "widget",
+                "branch": "def_releases_2023081815563030_def-ui_widget/0.27.2",
+                "version": "0.27.2",
+                "emp_id": "244744",
+                "status": 2,
+                "endtime": "1970-01-01T00:00:00.000Z",
+                "envstep": null,
+                "gmt_create": "2023-08-18T07:56:30.000Z",
+                "gmt_modified": "2023-08-18T07:56:30.000Z"
+            },
+            "app": {
+                "id": 206718,
+                "group": "def-ui",
+                "project": "widget",
+                "emp_id": "287523",
+                "owner_emp_id": "244744",
+                "description": "已暂停使用",
+                "pub_type": 28,
+                "is_module": false,
+                "is_moduletrans": true,
+                "dev_type": 0,
+                "pubtype_group": null,
+                "platform_code": "tnpm",
+                "mode": "iteration_flow",
+                "pubtype_extend_path": "28",
+                "gmt_create": "2021-10-25T03:17:15.000Z",
+                "gmt_modified": "2023-09-26T06:46:25.000Z"
+            },
+            "devbranches": [
+                {
+                    "id": 134384058,
+                    "task_id": 135625955,
+                    "branch_id": 20794063,
+                    "branch": "feat/app-trunk",
+                    "commit_id": "6179c01ade91af46ee0a854c9599e0da706d2291",
+                    "gmt_create": "2024-01-30T14:29:41.000Z",
+                    "gmt_modified": "2024-01-30T14:29:41.000Z",
+                    "appdevbranch": {
+                        "id": 20794063,
+                        "emp_id": "318805",
+                        "description": "新建应用可选择主干",
+                        "branch": "feat/app-trunk",
+                        "is_delete_branch": 1,
+                        "aone_binds": "req|52368598",
+                        "aone_binds_autofinish": 0,
+                        "is_finished": 0
+                    }
+                }
+            ],
+            "pubenv": {
+                "name": "daily",
+                "description": "日常",
+                "description_en": "Daily"
+            },
+            "pubtype": {
+                "id": 28,
+                "type": "tnpm_multi_pkg",
+                "name": "TNPM 多包发布",
+                "name_en": "TNPM Multi Package Deploy"
+            },
+            "pub_env_desc": "daily",
+            "pub_type_desc": "tnpm_multi_pkg"
+        },
+        "devbranches": [
+            {
+                "id": 2959336,
+                "branch": "feat/app-trunk",
+                "description": "新建应用可选择主干",
+                "app_id": 206718,
+                "emp_id": "318805",
+                "is_delete_branch": true,
+                "aonecr_id": null,
+                "aonecr_author": null,
+                "aonecr_time": null,
+                "aone_binds": "req|52368598",
+                "aone_binds_autofinish": false,
+                "is_finished": 0,
+                "is_exist": 1,
+                "endtime": null,
+                "cr_status": null,
+                "skip_cr": null,
+                "un_release": 0,
+                "commit_mode": null,
+                "gmt_create": "2023-09-25T04:36:39.000Z",
+                "gmt_modified": "2023-09-25T04:36:39.000Z",
+                "user": {
+                    "id": 241674,
+                    "emp_id": "318805",
+                    "nick": "时路",
+                    "account": "kangyong.ky",
+                    "gitlab_id": "262506",
+                    "buc_id": "2188599",
+                    "email": "kangyong.ky@alibaba-inc.com",
+                    "gmt_create": "2021-05-07T02:04:55.000Z",
+                    "gmt_modified": "2021-05-07T03:19:17.000Z"
+                },
+                "iteration_id": 14798022,
+                "branch_id": 20794063
+            }
+        ]
+    },
+    "usermember": {
+        "id": 1068985,
+        "app_id": 206718,
+        "emp_id": "318805",
+        "role": 2,
+        "last_operate_time": "2023-11-17T02:57:19.000Z",
+        "deleted": false,
+        "gmt_create": "2021-10-29T09:08:27.000Z",
+        "gmt_modified": "2023-11-17T02:57:19.000Z"
+    },
+    "iterationconf": {
+        "pubenv": "[1,2]",
+        "id": 10416521,
+        "tnpm_tag": "beta",
+        "iteration_id": 14798022,
+        "trunk": "master",
+        "is_delete_branch": true,
+        "air_pages": "",
+        "pkg_apps": "",
+        "changefree_id": "14798022-6179c01ade91af46ee0a854c9599e0da706d2291-1695617208569",
+        "changefree_executor": "318805",
+        "aone_binds": "",
+        "aone_binds_autofinish": true,
+        "is_phase_grey": 0,
+        "is_pause_gitclean": null,
+        "is_un_release": 0,
+        "gmt_create": "2023-08-18T07:56:30.000Z",
+        "gmt_modified": "2023-09-25T04:46:48.000Z"
+    }
+}
+
+```

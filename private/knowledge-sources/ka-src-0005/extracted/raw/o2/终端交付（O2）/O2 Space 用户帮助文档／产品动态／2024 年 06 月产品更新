@@ -1,0 +1,80 @@
+## O2 Space 研发平台
+
+### 新增
+
+1. 重要更新O2 用户帮助中心上线，[平台地址](https://help.o2.alibaba-inc.com/)，主要功能点如下：
+	- 将用户帮助文档、开放文档和博客进行了统一，将 O2 帮助文档集中展示，避免分散，同时支持展示近期热门文档、最近更新文档
+(https://img.alicdn.com/imgextra/i2/O1CN01WbyGAs1FifJp1SPel_!!6000000000521-2-tps-3694-1866.png)
+
+
+	- 增强文档搜索能力，支持全文检索，快捷查询
+(https://img.alicdn.com/imgextra/i2/O1CN01BBulTg1hXxIbmrCc6_!!6000000004288-2-tps-3696-1866.png)
+
+
+	- 重写 O2 用户帮助文档，文档结构与平台功能模块对应，文档查找更加方便。同时支持了文档评分、文档收藏等能力
+(https://img.alicdn.com/imgextra/i3/O1CN018S8aoW1XXp1gD4r2L_!!6000000002934-2-tps-3694-1866.png)
+
+
+	- 增加帮助文档、开放文档首页引导，便于快捷导航
+(https://img.alicdn.com/imgextra/i1/O1CN01jsA3mR2AGCo5MxRms_!!6000000008175-2-tps-3696-1848.png)
+
+
+(https://img.alicdn.com/imgextra/i2/O1CN01a2vJ5429FSXroBKek_!!6000000008038-2-tps-3696-1868.png)
+
+
+	- 支持收藏文档，可在个人中心查看
+(https://img.alicdn.com/imgextra/i2/O1CN01sd9eVL1MhTbMuv4bj_!!6000000001466-2-tps-3696-1864.png)
+
+
+	- 支持术语渲染能力：自动识别文档中术语，并增加下划线样式、点击术语，出现术语卡片弹窗
+(https://img.alicdn.com/imgextra/i3/O1CN01Jpjygb1xggho8Und5_!!6000000006473-2-tps-1786-508.png)
+
+
+
+
+1. 新增持续集成的触发时机，包括跨仓库的代码提交、跨应用的部署事件
+(https://img.alicdn.com/imgextra/i4/O1CN0117fXAZ1XjjK8XflLl_!!6000000002960-2-tps-2170-1380.png)
+
+
+(https://img.alicdn.com/imgextra/i1/O1CN018Z1FNw1hR5MInA1lU_!!6000000004273-2-tps-1844-626.png)
+
+
+
+
+1. 增加接口检测最新的集成产物是否已经部署过
+(https://img.alicdn.com/imgextra/i2/O1CN010Whyuz24zePg4rqHQ_!!6000000007462-2-tps-2762-1558.png)
+
+
+1. 【主干研发平台】主干研发平台支持构建缓存/依赖缓存
+1. 【主干研发平台】主干研发变更关联工作项后，与 Aone 工作项状态同步
+1. 【主干研发平台】新增事件源开放接口，支持主干研发触发事件
+
+
+### 优化
+
+1. 优化非 O2 创建 CR 的状态提示
+(https://img.alicdn.com/imgextra/i3/O1CN01r6RGJi1E8CANl0i0q_!!6000000000306-2-tps-2766-898.png)
+
+
+1. 新建应用改版
+| (https://img.alicdn.com/imgextra/i4/O1CN01FIPjLd1eG93JT59t2_!!6000000003843-2-tps-678-326.png) | (https://img.alicdn.com/imgextra/i2/O1CN01vwY0D01g246lGOmoK_!!6000000004083-2-tps-906-448.png) |
+|-|-|
+
+1.  强制重新集成和部署时，不复用 AOT 产物
+1. 线上部署置灰时，补齐原先的禁用提示
+(https://img.alicdn.com/imgextra/i4/O1CN01JQaJ0s1ktQiUszHVB_!!6000000004741-2-tps-710-294.png)
+
+
+1. 新增的应用默认添加 space 的 webhook
+
+
+
+
+### 修复
+
+1. 修复手动触发集成时，如果集成分支不能复用却没有更新迭代集成分支的问题
+1. 修复从 master 新建分支并且没有新的 commit 时，CR 的状态被错误的判断为非平台提交
+1. 修复部署记录列表的状态筛选项失效问题
+1. 【主干研发平台】主干研发发布中的任务，禁止重试
+1. 修复高层级的团队配置的应用类型覆盖低层级的时使用 id 错误的问题
+1. 修复手动触发部署时，任务失败却没有推送发布通知的问题

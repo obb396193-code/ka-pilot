@@ -1,0 +1,299 @@
+**<font style="color:#E8323C;">SDK不再迭代，推荐使用</font>**[**<u><font style="color:#E8323C;">ER接入方案</font></u>**](https://yuque.antfin-inc.com/ikkuy/gw2n3b/tggnz0)
+
+
+
+### 平台地址
+线上环境：[https://abtest.alibaba-inc.com/v2/l/biz/experimentList.html](https://abtest.alibaba-inc.com/v2/l/biz/experimentList.html)
+
+预发环境：[https://pre-abtest.alibaba-inc.com/v2/newindex.html](https://pre-abtest.alibaba-inc.com/v2/newindex.html)
+
+
+
+## 介绍
+一休Rax SDK提供了一套简单，高效的前端AB实验方案。**适用场景包括端内、端外所有需要接入一休AB实验的前端项目。**下图是一休JSSDK的技术架构，及其与前端工程、一休平台的关系。其核心包(Ikkyu Core)主要完成了配置读取，及实时分流的工作。Rax包则引用了核心包的分流能力，并集成了基于黄金令箭的数据方案。前端Rax工程只需引入 **@ali/ikkyu-rax **包即可接入AB实验。想要了解详细的设计方案，传送门[《一休前端 A/B 实验设计 - 运行时JSSDK》](https://www.atatech.org/articles/166128)
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2020/png/107204/1583305286632-68907adb-90d3-4307-8f3a-2e9851075401.png)
+
+****
+
+## 一休Rax SDK 接入方式
+一休Rax SDK为前端开发者提供了**两种接入实验的方式**
+
++ **声明式接入 - **即引入AB实验函数(<font style="color:#000000;">getABResult</font>)，该函数将根据实验配置，返回给开发者当前访问者的所属分组
++ **组件式接入 - **即引入AB实验组件(<font style="color:#000000;">AliExpComponent</font>)，组件将根据实验配置来完成动态渲染
+
+
+
+本文主要介绍这两种接入方式在项目中的使用方法，及适用场景
+
+
+
+### 特别说明
+<font style="color:#F5222D;">在接入前，业务和技术同学需评估该本方案是否能够满足业务需求，技术同学在评估时需要特别注意：</font>前端分流的分流因子是，浏览器Cookie的cna字段，该值一般情况下是唯一且稳定的，可以保证用户多次访问分流结果的稳定性；但是在以下几种情况下，<font style="color:#F5222D;">该值会发生变化并可能出现用户在多次访问页面时被分到不同分桶的情况发生：</font>
+
+1. 当用户手动删除cookie，或应用的缓存时；
+2. 当用户重装浏览器或应用时；
+3. 当用户使用不同的设备访问同一应用时；
+4. **weex下，可能读取不到cna字段，weex页面不推荐使用；**
+
+
+
+<font style="color:#F5222D;">实验发布后，一休平台侧允许用户修改并重新发布实验，同时平台无法控制业务本身的迭代，所以业务需自行保证不同版本的实验配置与业务代码之间的兼容性问题</font>：
+
+1. 实验配置更新的情况下， 无论业务版本是否更新， 业务的方案都必须保证业务和新配置及老配置兼容及兜底，以应对配置为更新延迟、缓存时间、更新失败的情况;
+2. 配置未更新的情况下， 业务更新， 业务的方案必须保证和配置的兼容及兜底;
+
+
+
+**注意：我们不推荐在实验及业务上线后，反复去修改实验相关配置，或修改业务代码中与实验相关的组件，这样一方面会影响实验的准确性，同时也有可能给业务带来风险**
+
+****
+
+### 安装
+#### Rax 1.0
+```powershell
+tnpm install @ali/ikkyu-rax --save
+```
+
+
+
+#### Rax 0.6
+```powershell
+tnpm install @ali/ikkyu-rax-0.6 --save
+```
+
+
+
+[https://npm.alibaba-inc.com/package/@ali/ikkyu-rax-0.6](https://npm.alibaba-inc.com/package/@ali/ikkyu-rax-0.6)
+
+
+
+### 声明式接入
+#### 适用场景
+当实验AB版本**仅需要对****组件UI（样式或布局）进行微调或无需调整，主要是文案或图片的差异，**这时候推荐使用声明式接入；
+
+
+
+#### 接入方式
+```javascript
+import { getABResult } from '@ali/ikkyu-rax';
+
+const params = {
+	appCode: 'tiantianhongbao', // 前端应用名
+  expId: 'exp1', // 实验标识
+  lazy: false // optional: 关闭懒加载
+}
+
+getABResult(params).then(
+      (result) => {
+        if(!result) {
+        	// 兜底逻辑
+        }
+        // mappings 里包含了在创建实验时，实验A或B组的配置信息，此处可以根据业务逻辑作相应的操作
+        const { mappings = null, releaseId = '', variationId = '' } = result || {};
+      }
+);
+```
+
+
+
+#### 入参说明
+| 参数名 | 描述 | 类型 | 必选 | 默认 |
+| --- | --- | --- | --- | --- |
+| appCode | 前端应用名 | String | 是 |  |
+| expId | 实验标识 | String | 是 |  |
+| <font style="color:#F5222D;">*</font>lazy | Lazy模式 | Bollean | 否 | true |
+| factor | 读取哪种分流因子 | String || Function | 否 |  |
+
+
+
+
+factor: 'uid'，sdk会读取userid进行分流
+
+
+
+#### 返回值
+| 参数名 | 描述 | 类型 |
+| --- | --- | --- |
+| mappings | 实验A或B组的配置信息 | Object |
+| releaseId | 实验的发布Id | String |
+| variationId | 实验命中的组Id | String |
+
+
+
+
+### 组件式接入
+#### 适用场景
+**当AB实验分组分别对应了一个组件的时候**，推荐使用组件式接入。
+
+
+
+#### 接入方式
+组件式接入需要在工程src目录下增加一层experiments目录，AB实验分组对应的业务组件都放到该目录下；AliExpComponent 组件会根据分流结果，自动的渲染成分组A或B对应的组件。映射关系需要在一休平台创建实验分组时定义。
+
+
+
+```javascript
+import { createElement } from 'rax';
+import { AliExpComponent } from '@ali/ikkyu-rax';
+import BlueButton from '../../experiments/BlueButton'; // 实验分桶对应的业务组件A
+import GreenButton from '../../experiments/GreenButton'; // 实验分桶对应的业务组件B
+
+export default (props) => {
+  return <AliExpComponent appCode="ali_fe_ui_test_pre" expId="cof1uagc" 
+    lazy={false} // *懒加载模式，默认是true
+    components={{ // 将业务组件传入SDK提供的实验组件
+      "38578": BlueButton, 
+      "38579": GreenButton
+    }}                    
+    parentProps={props} // *非必选参数，需要向实验分桶对应的业务组件传入参数时可用
+    fallback={BlueButton}
+    fallbackProps={{a: 1}} // *非必选参数，需要向实验分桶对应的业务组件传入兜底分流配置时可用
+    />
+};
+```
+
+
+
+#### 入参说明
+| 参数名 | 描述 | 类型 | 必选 | 默认 |
+| --- | --- | --- | --- | --- |
+| appCode | 前端应用名 | String | 是 |  |
+| expId | 实验标识 | String | 是 |  |
+| <font style="color:#F5222D;">*</font>lazy | Lazy模式 | Bollean | 否 | true |
+| components | 实验分组及其对应的业务组件的映射，格式说明 **[分桶Id]: 分桶组件** | Object | 是 |  |
+| <font style="color:#F5222D;">*</font>fallback | 命中无实验组，实验未触发，或异常情况下用来兜底的组件 | Object | 是 |  |
+| <font style="color:#F5222D;">*</font>fallbackProps | 兜底组件所需要的传参 | Object | 否 | {} |
+| parentProps | 父组件属性，当父组件需要给实验组件传入props时使用 | Object | 否 | {} |
+| fragment | **方舟模块动态渲染模式下**，为保证数据上报准确，需要使用该参数，在模块的最后渲染节点，需要传入 **{isLast: true}, 非最后渲染节点，需要传入 ****{isLast: false}** | Object | 否 | null |
+
+
+
+
+_**Lazy模式**_，即用户第一次触发实验时，SDK会读取实验配置并存入本地缓存，但不会触发分流。此时，**实验配置读取不会block业务组件渲染，fallback参数所对应的业务组件会被展示**；Lazy模式默认是打开的，因为这是一种更性能更优的方式，**它的Limitation是，用户第一次触发实验时，仅缓存实验配置，下一次进入时，才会触发分流。**
+
+****
+
+如果前端和业务方同学评估，认为“第一次进入页面立即触发实验”对于业务有更高的优先级，我们把lazy参数设为false即可，关闭Lazy模式后，当用户第一次进入页面，触发实验时，SDK会先从CDN读取实验配置，缓存配置到本地的同时触发分流，并将分流的结果返回给实验组件，并渲染成分组所对应的业务组件。这样在渲染组件前多了一步实验配置读取操作的操作，性能上会Lazy模式稍差，**但注意这个性能上的差异仅在，实验发布后，当用户第一次方式页面时存在。**
+
+****
+
+_**<font style="color:#F5222D;">兜底参数，</font>**_<font style="color:#F5222D;">这是一个与实验无关但</font>**<font style="color:#F5222D;">必须填写的参数</font>**<font style="color:#F5222D;">，当用户未命中任何分组，或Lazy模式下第一次访问未触发分流，或出现配置读取异常时，我们需要兜底展示的组件。</font>首先我们非常建议前端同学**使用某个实验分组对应的业务组件**作为兜底，这样更能确保AB实验最终数据的准确性。另外，**当fallback逻辑触发时，SDK不会发任何实验相关埋点**，因为兜底逻辑不属于实验的一部分。
+
+
+
+### 实验数据上报
+#### 分流埋点
+当用户进入页面触发实验分流后，SDK会自动将分流结果上报，并在平台侧产生**实时报表**，无需额外操作。
+
+
+
+#### 自定义埋点
+我们在平台创建前端UI实验时，需要创建自定义指标，如，xxx业务xx按钮点击，此时平台会自动生成该指标对应的埋点代码。如，_<font style="color:#000000;">props</font>__<font style="color:#000000;">.</font>__<font style="color:#000000;">clkTracker</font>__<font style="color:#000000;">([uid]</font>__<font style="color:#000000;">); </font>_<font style="color:#000000;">此处uid是平台随机生成的唯一id，用于标识该指标。我们只需要将生成的代码copy&paste到业务组件的相应方法中即可。下面是示例代码：</font>
+
+<font style="color:#000000;"></font>
+
+```javascript
+function BlueButton (props) {
+  const buttonClick = (e) => {
+    //业务逻辑相关代码
+    props.clkTracker([uid]); // xxx业务xx按钮点击埋点上报
+  };
+
+  return (
+    <View onClick={testFunc} onAppear={() => props.expTracker([uid]);}> // xxx业务xx模块曝光
+      <Text>Button Blue</Text>
+    </View>
+  );
+};
+
+export default BlueButton;
+```
+
+<font style="color:#000000;"></font>
+
+<font style="color:#000000;">我们推荐在实验分桶对应的业务组件中，使用我们的方式来上报埋点，并在一休平台读取对应报表。注意自定义埋点产生的数据报表是T+1的。</font>
+
+<font style="color:#000000;"></font>
+
+<font style="color:#000000;">当使用</font>**<font style="color:#000000;">声明式接入</font>**<font style="color:#000000;">时，自定义埋点上报方式如下：</font>
+
+<font style="color:#000000;"></font>
+
+```javascript
+import { getABResult, ABTracker } from '@ali/ikkyu-rax';
+
+const params = {
+	appCode: 'tiantianhongbao', // 前端应用名
+  expId: 'exp1' // 实验标识
+}
+
+getABResult(params).then(
+      (result) => {
+        // mappings 里包含了在创建实验时，实验A或B组的配置信息，此处可以根据业务逻辑作相应的操作
+        const { mappings = null, releaseId = '', variationId = '' } = result || {};
+        const tracker = new ABTracker(releaseId, variationId); // 初始化tracker，参数是实验发布Id，及分桶Id
+        tracker.expTracker([uid]); // 曝光埋点
+        tracker.clkTracker([uid]); // 点击埋点
+      }
+);
+```
+
+
+
+### 实验调试及发布
+#### ~~Debug 模式: 业务逻辑开发~~
+~~开发初期，前端开发者更关心实验分组所对应的业务组件样式和业务逻辑的开发，这时我们只需在本地调试的url后拼接~~~~<font style="color:#FFFFFF;background-color:#40A9FF;">ab_debug=true</font>~~~~以及~~~~<font style="color:#FFFFFF;background-color:#40A9FF;">ab_comp=实验分桶id</font>~~~~即可，这两个参数会触发SDK的Debug模式，此时SDK会直接渲染成ab_comp参数值所对应的组件，读取远程配置和分流功能不会被触发。这个模式帮助开发者专注于业务逻辑及样式的开发工作，而不需要关心实验逻辑。同时该模式也可用于视觉走查。~~
+
+
+
+~~i.e. http://localhost:8080/?ab_debug=true&ab_comp=~~~~<font style="color:#000000;">38578</font>~~
+
+
+
+~~如果页面同时运行多个实验，~~~~**支持多试验debug，**~~~~把要debug的分桶id用+号连接即可~~
+
+
+
+~~i.e. http://localhost:8080/?ab_debug=true&ab_comp=~~~~**<font style="color:#000000;">38578+12345+37642</font>**~~
+
+
+
+#### Beta 模式：实验逻辑验证
+当业务逻辑及样式开发完成后，我们可以在一休平台将对应的AB实验进行Beta发布，此时平台会将实验配置推送到CDN，这是一份测试用配置，用于调试实验逻辑。所以相应的，前端开发者可在本地或预发环境下，在项目url后拼接<font style="color:#FFFFFF;background-color:#40A9FF;">ab_beta=true</font>参数，该参数会触发SDK去读取从平台侧推送的Beta实验配置，并触发分流逻辑，开发者可在Beta模式下验证实验的各个分组，及兜底逻辑有没有被正常命中或触发。
+
+
+
+i.e. http://localhost:8080/?ab_beta=true
+
+
+
+#### Debug 模式：实验逻辑验证
+实验发布后，所以相应的，前端开发者可在本地或预发环境下，在项目url后拼接<font style="background-color:#91D5FF;">allocate_to=实验分桶id</font>，该参数会触发SDK去读取从平台侧推送的实验配置，并触发分流逻辑，开发者或测试同学可指定分流结果
+
+
+
+http://localhost:8080/?allocate_to=实验分桶id
+
+
+
+#### 线上模式 - 实验发布线上，本地项目逐步灰度
+当逻辑验证无误，我们即可在一休平台将实验发布到线上，此时平台会推送一份正式的配置到CDN，这份配置也是线上用户触发实验时读取的配置。接下来开发者可以按自己项目的具体情况或排期，开始项目的灰度及发布流程。
+
+
+
+#### 一休平台环境变量：实验新手必备技能
+这里介绍一个独立于我们实验调试及发布三部曲之外的一个附加能力。一休平台分为[预发](https://pre-yixiu.alibaba-inc.com/v2/newindex.html)和[线上](https://yixiu.alibaba-inc.com/v2/newindex.html)两个环境，**这两个环境是相互独立的，即你在平台预发环境下创建的实验，跟在平台线上环境下创建的实验时完全隔离的。**这里我们也建议对实验创建流程不太了解，想要试用一下，熟悉下操作流程的同学先去一休预发环境下练练手。然后再去线上环境创建正式的实验。一休平台预发和线上环境功能是完全一致的，**所以在预发环境下创建的实验也支持Beta和正式发布。**
+
+
+
+SDK这里也有一个<font style="color:#FFFFFF;background-color:#40A9FF;">ikkyu_env=pre</font>参数，SDK默认读取的是线上平台推送的配置，而如果你是在**一休平台预发环境**下创建的实验，拼接该参数，SDK会读取预发平台所推送的配置。
+
+
+
+i.e. http://localhost:8080/?ikkyu_env=pre
+
+
+
+
+

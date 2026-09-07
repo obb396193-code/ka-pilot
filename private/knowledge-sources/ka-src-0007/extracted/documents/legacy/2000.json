@@ -1,0 +1,42 @@
+{
+  "documentId": 2000,
+  "documentName": "3.6.3删除高级创意接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 删除高级创意接口\n\nhttps://ad.e.kuaishou.com/rest/openapi/v1/asset/adv_card/remove\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 是否必填 | 说明      | 备注 |\n| ------------- | ---- | -------- | --------- | ---- |\n| advertiser_id | long | 必填     | 广告主 id |      |\n| adv_card_id   | long | 必填     | 卡片 id   |      |\n\n### 返回参数\n\n| 字段        | 类型   | 说明         | 备注 |\n| ----------- | ------ | ------------ | ---- |\n| code        | int    | 返回码       |      |\n| message     | string | 返回信息     |      |\n| data        | struct |              |      |\n| adv_card_id | long[] | 卡片 id 数组 |      |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624673
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624673,
+  "creator": "linmenger",
+  "fullContext": null
+}

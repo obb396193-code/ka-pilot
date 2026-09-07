@@ -1,0 +1,1044 @@
+{
+  "documentId": 3273,
+  "documentName": "创建商品（书库-网络小说）",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "创建商品（书库-网络小说）\n/rest/openapi/gw/dsp/v1/dpa/product/batch/create/stackroom/fiction\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/batch/create/stackroom/fiction' \\\n--header 'Content-Type: application/json' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\": 7869843,\n    \"fiction_product_edit_params\": [\n        {\n            \"library_id\": 2988286,\n            \"industry_id\": 5,\n            \"outer_id\": 8062,\n            \"first_category_id\": 250501000,\n            \"second_category_id\": 25050100003,\n            \"third_category_id\": 2505010000302,\n            \"first_category_name\": \"小说\",\n            \"second_category_name\": \"历史军事\",\n            \"third_category_name\": \"历史传记\",\n            \"sub_industry_id\": \"1\",\n            \"name\": \"线上加白小说新mapi测试002\",\n            \"main_image_url\": [\n                \"https://kcdn.staging.kuaishou.com/bs2/ad-dpa/YWQtZHBhOmt1YWlzaG91X2FkX2RzcF9kcGE6OTAwMDE1MzY0Ok1FUkNIQU5UOltCQDEwODE5MmRjOjI4MTcyMDk4MzY0.png\"\n            ],\n            \"description\": \"测试小说描述\",\n            \"label\": [\n                \"标签A\",\n                \"标签B\"\n            ],\n            \"status\": \"1\",\n            \"fiction_product_info\": {\n                \"channel\": \"171103\",\n                \"unit_price\": 1.333,\n                \"min_charge\": 10,\n                \"max_charge\": 1000,\n                \"author\": \"作者名称，作者名称2\",\n                \"book_city\": \"网易\",\n                \"chapter_count\": 10000,\n                \"content\": \"章节内容\",\n                \"long_and_short_stories\": \"长篇书\",\n                \"pay_status\": \"1\",\n                \"start_paid_chapter\": 5,\n                \"theme\": \"8\",\n                \"plot\": \"9\"\n            }\n        }\n    ]\n}'\n{\n    \"code\": 0,\n    \"data\": {\n        \"product_edit_responses\": [\n            {\n                \"error_msg\": null,\n                \"library_id\": 2988286,\n                \"success\": true,\n                \"product_id\": 620427765,\n                \"outer_id\": \"8062\"\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ELqAgIDA7eGZChjFBCCJxZPniTMo-bnE5go=\"\n}\nadvertiser_id  Long  <p>投放账户ID</p>\nfiction_product_edit_params  AdGatewayDpaProductBatchCreateParamForFiction[]  <p>小说商品批量创建请求参数</p>\nstatus  Integer  <p>商品投放状态: 0-不可投放, 1-可投放，不填默认取0</p>\nindustry_id  Integer  <p>书库-网络小说，industry_id（商品行业ID）=5</p>\nsub_industry_id  String  <p>书库-网络小说，sub_industry_id=\"1\"</p>\nlibrary_id  Long  <p>商品库ID,创建商品必须填写商品所在商品库</p>\nouter_id  String  <p>商品第三方ID，作为某个商品库下的商品唯一ID</p>\nname  String  <p>小说名称</p>\ndescription  String  <p>小说简介</p>\nlabel  String[]  <p>自定义标签</p>\nmain_image_url  String[]  <p>商品主图</p>\nimage_urls  String[]  <p>商品副图</p>\nfirst_category_id  Long  <p>商品一级类目ID，详见https://docs.qingque.cn/d/home/eZQBBL_yXk5R8lfA5f_ymPX3X?identityId=1oE3PGl2psq#section=h.7z4cu1t8wzp6</p>\nfirst_category  String  <p>商品一级类目名称</p>\nsecond_category_id  Long  <p>商品二级类目ID</p>\nsecond_category  String  <p>商品二级类目名称</p>\nthird_category_id  Long  <p>商品三级类目ID</p>\nthird_category  String  <p>商品三级类目名称</p>\nfiction_product_info  FictionProductInfoSneak  <p>小说商品批量创建请求参数</p>\ncontent  String  <p>章节内容</p>\nunit_price  Double  <p>单章价格，变现模式为付费时必填</p>\nmax_charge  Double  <p>最高充值档位，变现模式为付费时必填</p>\nmin_charge  Double  <p>最低充值档位，变现模式为付费时必填</p>\nchapter_count  Integer  <p>章节数量</p>\nauthor  String  作者\nextra_tags  String  标签\ntheme  Integer  主题(详见: https://docs.qingque.cn/s/home/eZQDJOM3GV-qQ4vNsEpaQ0qy2?identityId=F0DVUl94Gc)\nchannel  Integer  男女频: 171101-男频, 171102-女频,  171103-不限\nplot  Integer  情节(详见: https://docs.qingque.cn/s/home/eZQDJOM3GV-qQ4vNsEpaQ0qy2?identityId=F0DVUl94Gc)\nfiction_style  Integer  风格: 171001-热血, 171002-恐怖, 171003-温馨, 171004-搞笑, 171005-其他\npay_status  Integer  付费类型: 1-付费, 2-免费\nlong_and_short_stories  String  <p>书籍长短篇</p>\nbook_city  String  <p>所属书城</p>\nstart_paid_chapter  Integer  <p>起始解锁章节</p>\ncode  Integer  <p>结果状态码</p>\nmessage  String  <p>错误结果信息</p>\ndata  AdGatewayDpaProductBatchEditResponse  <p>商品批量编辑结果</p>\nproduct_edit_responses  ProductUpdateResponseSneak[]  <p>商品编辑返回结果集</p>\nlibrary_id  Long  <p>商品库ID</p>\nouter_id  String  <p>商品第三方ID</p>\nsuccess  Boolean  <p>编辑结果: true-成功, false-失败</p>\nerror_msg  String  <p>失败错误信息</p>\nproduct_id  Long  <p>商品ID</p>\n",
+  "url": "",
+  "version": "0.0.4",
+  "versionList": [
+    {
+      "version": "0.0.4",
+      "createTime": 1760967070828
+    },
+    {
+      "version": "0.0.3",
+      "createTime": 1754979991640
+    }
+  ],
+  "apiId": 1700,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/batch/create/stackroom/fiction",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求示例",
+      "type": "shell",
+      "body": "curl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/batch/create/stackroom/fiction' \\\n--header 'Content-Type: application/json' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\": 7869843,\n    \"fiction_product_edit_params\": [\n        {\n            \"library_id\": 2988286,\n            \"industry_id\": 5,\n            \"outer_id\": 8062,\n            \"first_category_id\": 250501000,\n            \"second_category_id\": 25050100003,\n            \"third_category_id\": 2505010000302,\n            \"first_category_name\": \"小说\",\n            \"second_category_name\": \"历史军事\",\n            \"third_category_name\": \"历史传记\",\n            \"sub_industry_id\": \"1\",\n            \"name\": \"线上加白小说新mapi测试002\",\n            \"main_image_url\": [\n                \"https://kcdn.staging.kuaishou.com/bs2/ad-dpa/YWQtZHBhOmt1YWlzaG91X2FkX2RzcF9kcGE6OTAwMDE1MzY0Ok1FUkNIQU5UOltCQDEwODE5MmRjOjI4MTcyMDk4MzY0.png\"\n            ],\n            \"description\": \"测试小说描述\",\n            \"label\": [\n                \"标签A\",\n                \"标签B\"\n            ],\n            \"status\": \"1\",\n            \"fiction_product_info\": {\n                \"channel\": \"171103\",\n                \"unit_price\": 1.333,\n                \"min_charge\": 10,\n                \"max_charge\": 1000,\n                \"author\": \"作者名称，作者名称2\",\n                \"book_city\": \"网易\",\n                \"chapter_count\": 10000,\n                \"content\": \"章节内容\",\n                \"long_and_short_stories\": \"长篇书\",\n                \"pay_status\": \"1\",\n                \"start_paid_chapter\": 5,\n                \"theme\": \"8\",\n                \"plot\": \"9\"\n            }\n        }\n    ]\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "响应示例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"product_edit_responses\": [\n            {\n                \"error_msg\": null,\n                \"library_id\": 2988286,\n                \"success\": true,\n                \"product_id\": 620427765,\n                \"outer_id\": \"8062\"\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ELqAgIDA7eGZChjFBCCJxZPniTMo-bnE5go=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 76404,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>投放账户ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 76405,
+      "paramName": "fiction_product_edit_params",
+      "paramType": "AdGatewayDpaProductBatchCreateParamForFiction[]",
+      "example": "",
+      "description": "<p>小说商品批量创建请求参数</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4299,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 76429,
+          "paramName": "status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>商品投放状态: 0-不可投放, 1-可投放，不填默认取0</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76378,
+          "paramName": "industry_id",
+          "paramType": "Integer",
+          "example": "5",
+          "description": "<p>书库-网络小说，industry_id（商品行业ID）=5</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76379,
+          "paramName": "sub_industry_id",
+          "paramType": "String",
+          "example": "\"1\"",
+          "description": "<p>书库-网络小说，sub_industry_id=\"1\"</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76380,
+          "paramName": "library_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品库ID,创建商品必须填写商品所在商品库</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76381,
+          "paramName": "outer_id",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品第三方ID，作为某个商品库下的商品唯一ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76382,
+          "paramName": "name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>小说名称</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76383,
+          "paramName": "description",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>小说简介</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76384,
+          "paramName": "label",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>自定义标签</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76385,
+          "paramName": "main_image_url",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>商品主图</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76386,
+          "paramName": "image_urls",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>商品副图</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76387,
+          "paramName": "first_category_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品一级类目ID，详见https://docs.qingque.cn/d/home/eZQBBL_yXk5R8lfA5f_ymPX3X?identityId=1oE3PGl2psq#section=h.7z4cu1t8wzp6</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76388,
+          "paramName": "first_category",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品一级类目名称</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76389,
+          "paramName": "second_category_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品二级类目ID</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 13,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76390,
+          "paramName": "second_category",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品二级类目名称</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 14,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76391,
+          "paramName": "third_category_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品三级类目ID</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 15,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76392,
+          "paramName": "third_category",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品三级类目名称</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 16,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 76393,
+          "paramName": "fiction_product_info",
+          "paramType": "FictionProductInfoSneak",
+          "example": "",
+          "description": "<p>小说商品批量创建请求参数</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4300,
+          "sort": 17,
+          "note": "",
+          "children": [
+            {
+              "paramId": 78196,
+              "paramName": "book_id",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>书籍id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "ADD"
+            },
+            {
+              "paramId": 76363,
+              "paramName": "content",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>章节内容</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76364,
+              "paramName": "unit_price",
+              "paramType": "Double",
+              "example": "0",
+              "description": "<p>单章价格，变现模式为付费时必填</p>",
+              "required": 2,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76365,
+              "paramName": "max_charge",
+              "paramType": "Double",
+              "example": "0",
+              "description": "<p>最高充值档位，变现模式为付费时必填</p>",
+              "required": 2,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76366,
+              "paramName": "min_charge",
+              "paramType": "Double",
+              "example": "0",
+              "description": "<p>最低充值档位，变现模式为付费时必填</p>",
+              "required": 2,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76367,
+              "paramName": "chapter_count",
+              "paramType": "Integer",
+              "example": "0",
+              "description": "<p>章节数量</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76368,
+              "paramName": "author",
+              "paramType": "String",
+              "example": "",
+              "description": "作者",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76369,
+              "paramName": "extra_tags",
+              "paramType": "String",
+              "example": "",
+              "description": "标签",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76370,
+              "paramName": "theme",
+              "paramType": "Integer",
+              "example": "0",
+              "description": "主题(详见: https://docs.qingque.cn/s/home/eZQDJOM3GV-qQ4vNsEpaQ0qy2?identityId=F0DVUl94Gc)",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76371,
+              "paramName": "channel",
+              "paramType": "Integer",
+              "example": "0",
+              "description": "男女频: 171101-男频, 171102-女频,  171103-不限",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 10,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76372,
+              "paramName": "plot",
+              "paramType": "Integer",
+              "example": "0",
+              "description": "情节(详见: https://docs.qingque.cn/s/home/eZQDJOM3GV-qQ4vNsEpaQ0qy2?identityId=F0DVUl94Gc)",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 11,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76373,
+              "paramName": "fiction_style",
+              "paramType": "Integer",
+              "example": "0",
+              "description": "风格: 171001-热血, 171002-恐怖, 171003-温馨, 171004-搞笑, 171005-其他",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 12,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76374,
+              "paramName": "pay_status",
+              "paramType": "Integer",
+              "example": "0",
+              "description": "付费类型: 1-付费, 2-免费",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 13,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76375,
+              "paramName": "long_and_short_stories",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>书籍长短篇</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 14,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76376,
+              "paramName": "book_city",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>所属书城</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 15,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 76377,
+              "paramName": "start_paid_chapter",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>起始解锁章节</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 16,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 76406,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>结果状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 76407,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>错误结果信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 76408,
+      "paramName": "data",
+      "paramType": "AdGatewayDpaProductBatchEditResponse",
+      "example": "",
+      "description": "<p>商品批量编辑结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 725,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 75556,
+          "paramName": "product_edit_responses",
+          "paramType": "ProductUpdateResponseSneak[]",
+          "example": "",
+          "description": "<p>商品编辑返回结果集</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 724,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 75551,
+              "paramName": "library_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>商品库ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75552,
+              "paramName": "outer_id",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>商品第三方ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75553,
+              "paramName": "success",
+              "paramType": "Boolean",
+              "example": "",
+              "description": "<p>编辑结果: true-成功, false-失败</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75554,
+              "paramName": "error_msg",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>失败错误信息</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75555,
+              "paramName": "product_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>商品ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1760967070828,
+  "creator": "chenzhouqing",
+  "fullContext": null
+}

@@ -1,0 +1,137 @@
+#### 1、表字段新增
+p4p_real_click.bidword_price_cny
+
+p4p_real_click.click_price_cny
+
+
+
+p4p_real_click_his.bidword_price_cny
+
+p4p_real_click_his.click_price_cny
+
+
+
+p4p_real_cust_cost.cost_cny
+
+p4p_real_cust_cost_his.cost_cny
+
+
+
+p4p_day_click.bidword_price_cny
+
+p4p_day_click.click_price_cny
+
+p4p_day_click.finance_cost_cny(暂不加)
+
+
+
+p4p_day_click_his.bidword_price_cny
+
+p4p_day_click_his.click_price_cny
+
+p4p_day_click_his.finance_cost_cny(暂不加)
+
+
+
+p4p_day_cust_cost.cost_cny(暂不加)
+
+p4p_day_cust_cost_detail.cost_cny(暂不加)
+
+p4p_day_cust_cost_his.cost_cny(暂不加)
+
+
+
+p4p_cust_real_stat.currency
+
+p4p_cust_real_stat.tax_rate
+
+p4p_cust_real_stat.exchange_rate
+
+p4p_cust_real_stat.last_exchange_date
+
+
+
+
+
+#### [](#2、增加转换成中间币种（人民币）价格)2、增加转换成中间币种（人民币）价格
+adclickserver:
+
+ClickServiceImpl 增加读取引擎人民币价格字段，点击日志中增加字段
+
+
+
+p4psettle：
+
+
+
+adaccount:
+
+
+
+#### [](#3、财务充值相关)3、财务充值相关
+1）日结完成后消息通知CRM
+
+2）确认GGS用户充值开户消息接收后，增加的税额字段
+
+3）CGS消耗发送结算完整金额，GGS为不含税额（实际都存在account表中）
+
+4）增加税额字段，CGS税额始终未6%
+
+
+
+4、日志字段增加
+
+
+
+| 字段含义 | 曝光日志 | 点击串（加密串） | 点击日志(SC、AE都占位) |
+| --- | --- | --- | --- |
+| 广告主出价，人民币 | unity_max_price | uh | 第3段11位(s3f11) |
+| 扣费价格，人民币 | unity_click_price | up | 第3段12位(s3f12) |
+| 币种 |  |  | 第3段13位(s3f13) |
+
+
+5、汇率获取与服务
+
+表增加p4p_cust_real_stat 增加币种、税率、汇率、最后汇率更新时间字段
+
+增删改查服务com.alibaba.intl.adaccount.common.interfaces.CustRealStatService
+
+增加定时器从一达通接口每天获取汇率exchange_rate值，更新最后获取时间：
+
+com.alibaba.intl.adaccount.biz.timer.DealExchangeRateTimer
+
+
+
+6、文件同步修改
+
+[@德策(dece.lwb)](/dece.lwb) 矫正文件、日终文件需要更新，文件字段需要增加2个空字段到和AE一致，后再加币种字段，与点击服务消息保持一致
+
+矫正和日终文件，增加字段如下
+
+| 字段顺序 | 内容 |
+| --- | --- |
+| 11 | 空 |
+| 12 | 空 |
+| 13 | 广告主出价，人民币(s3f11) |
+| 14 | 扣费价格，人民币(s3f12) |
+| 15 | 币种(s3f13) |
+
+
+7、账户与财务交互接口调整
+
+财务相关接口文档[https://lark.alipay.com/hm0n8k/pg73ns/fhu05i](https://lark.alipay.com/hm0n8k/pg73ns/fhu05i)
+
+充值收到金额字段从amount修改为taxAfterAmount
+
+扣款时增加2个字段isTaxAfterAmount、isOverseas
+
+
+
+
+
+后续确认
+
+时报统一使用转换后人民币币种字段
+
+渠道表更新custCostChannel
+

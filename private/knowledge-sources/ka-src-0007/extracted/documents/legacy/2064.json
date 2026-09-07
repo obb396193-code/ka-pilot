@@ -1,0 +1,42 @@
+{
+  "documentId": 2064,
+  "documentName": "13.2报错code枚举值",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 报错 code 枚举值\n\n| 类型           | code   | message                                               | 触发原因                                            |\n| -------------- | ------ | ----------------------------------------------------- | --------------------------------------------------- |\n| 限流错误       | 400001 | 请求过于频繁                                          | 触发系统限流，全部开发者限流                        |\n| 权限相关的报错 | 400004 | 广告主资质不在开发者授权资质主体内,不能操作该账户     |                                                     |\n|                | 400002 | 请开通素材报表接口权限                                | advertiserId 不在白名单中;view_type 不在[5,8,7]之中 |\n|                |        | 没有权限操作该代理商                                  | 授权的代理商 id，和传参传入的代理商 id 一致         |\n|                |        | 没有权限操作该广告主                                  | 授权的广告主 id，和传入的广告主 id 不一致           |\n|                |        | 没有权限进行相关操作(检查授权的 scope 是否在权限范围) |                                                     |\n|                |        | 该账户不在您的代理商下，您没有权限操作该账户          |                                                     |\n| 参数错误       | 401000 | 参数错误/报表类型选择错误                             |                                                     |\n|                | 401001 | 参数格式错误                                          |                                                     |\n|                | 401002 | 选取时间跨度过大                                      |                                                     |\n|                | 401003 | 选取起始时间超过允许范围                              |                                                     |\n|                | 401004 | 选取起始时间大于结束时间                              |                                                     |\n|                | 401005 | 使用了重复名称                                        |                                                     |\n|                | 410002 | 优化目标 optimize_target 错误                         |                                                     |\n|                | 410003 | 报表 page_size 过大                                   |                                                     |\n|                | 410004 | 报表场景选择错误                                      |                                                     |\n|                | 410005 | 获取代理商信息错误                                    |                                                     |\n| 授权相关错误   | 402000 | access token 过期                                     |                                                     |\n|                | 402001 | refresh token 过期                                    |                                                     |\n|                | 402002 | auth code 过期                                        |                                                     |\n|                | 402003 | access token 为空                                     |                                                     |\n|                | 402004 | access token 错误                                     |                                                     |\n|                | 402005 | refresh token 错误                                    |                                                     |\n|                | 402006 | auth code 错误                                        |                                                     |\n|                | 402007 | 账户状态异常                                          |                                                     |\n|                | 402008 |                                                       |                                                     |\n|                | 402009 | 密钥错误                                              |                                                     |\n|                | 402010 | 申请权限过大                                          |                                                     |\n|                | 402011 | 回调地址错误                                          |                                                     |\n|                | 402012 | 应用已下线或者不存在                                  |                                                     |\n|                | 402013 | 代理商信息不正确，请重新登录再尝试                    |                                                     |\n|                | 402014 | 开发者状态须是审核通过才可调用                        |                                                     |\n|                | 400003 | 并发 refresh Token 异常                               |                                                     |\n| 报表资源错误   | 410000 | 获取报表数据异常                                      |                                                     |\n|                | 410001 | 没有数据权限                                          |                                                     |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625141
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625141,
+  "creator": "linmenger",
+  "fullContext": null
+}

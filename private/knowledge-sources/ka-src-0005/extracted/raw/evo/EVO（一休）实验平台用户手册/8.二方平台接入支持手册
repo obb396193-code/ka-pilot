@@ -1,0 +1,37 @@
+:::info
+💡一个完整的实验生命周期包括：实验设计、实验配置、联调测试、发布运行、数据分析及实验决策。[详见文档](https://yuque.antfin-inc.com/ikkuy/gw2n3b/ccv4hk)
+
+
+
+<font style="color:#DF2A3F;">💡</font><font style="color:#DF2A3F;">蓝色字体均为可点击超链接</font>
+
+:::
+
+# [<font style="color:#000000;">1.</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/gulfgx)[<font style="color:#117CEE;">EVO(一休)平台简介</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/cs3tlg)
+# <font style="color:#000000;">2.</font>[<font style="color:#117CEE;">如何接入</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/gulfgx)[<font style="color:#117CEE;">【必读】</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/gulfgx)
+# <font style="color:#000000;">3</font>[<font style="color:#000000;">.</font><font style="color:#117CEE;">OpenAPI指南</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/qghpti)
++ [流量模型（场景）服务](https://yuque.antfin-inc.com/ikkuy/gw2n3b/bgnx2g)
++ [层服务](https://yuque.antfin-inc.com/ikkuy/gw2n3b/fe3cs8)
++ [实验服务](https://yuque.antfin-inc.com/ikkuy/gw2n3b/zzdfk3)
++ [指标服务](https://yuque.antfin-inc.com/ikkuy/gw2n3b/onscdb)
++ [实验数据服务](https://yuque.antfin-inc.com/ikkuy/gw2n3b/dnipb5)
++ [业务服务](https://yuque.antfin-inc.com/ikkuy/gw2n3b/iagwuw)
++ [表服务](https://yuque.antfin-inc.com/ikkuy/gw2n3b/bs3lmd)
++ [工具服务](https://yuque.antfin-inc.com/ikkuy/gw2n3b/xilusf)
+
+# 4[.快捷使用举例](https://yuque.antfin-inc.com/ikkuy/gw2n3b/lhi32w)
+# 5[.版本变更 changelog](https://yuque.antfin-inc.com/ikkuy/gw2n3b/bu8t5k)
+# 6.联系方式
+如果对平台接入有任何问题，欢迎联系：
+
+
+
+| 研发小蜜 | [https://links.alipay.com/app/room/6037782118311205c5d577fd/](https://links.alipay.com/app/room/6037782118311205c5d577fd/) |
+| --- | --- |
+| 钉钉群 | 33730522 |
+| 实验接入及EVO平台培训 | 韭幺（422220） |
+| 二方平台接入 | 依橙（431829） |
+
+
+
+

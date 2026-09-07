@@ -1,0 +1,168 @@
+跨端应用（含跨端应用、Web Plus 等应用类型）的页面支持强大的多端投放能力，同一个页面 url 可以根据 accept 头返回不同内容。默认会返回 html，支持的端包括：PHA、Weex2.0。
+
+注意：框架的构建插件会构建出符合约定的产物，如果你需要自定义解决方案，请务必仔细阅读并遵循下述的产物约定
+
+## 产物结构
+
+跨端应用的构建产物中必须包含描述文件 `entry.json`，其余文件均在描述文件中引用，对位置没有强制要求。
+
+为保持产物结构整齐、便于问题排查，建议建议按照页面路径或端类型来聚合构建产物。构建产物根目录在云构建环境中可以通过环境变量 BUILD_DEST 获取（见：[https://builder.alibaba-inc.com/document?slug=env-intro](https://builder.alibaba-inc.com/document?slug=env-intro)），下面示例中的 build 目录仅用于说明。
+
+我们假设应用 deftest/web-m 在版本号为 0.0.1 的迭代中进行发布，构建后的产物如下所示：
+
+(https://o2-img.alistatic.com/i/i09blZ/4tLwZwHh1OviLDW5hU2mn-7d08ab8e28.png)
+
+
+## Assets 产物
+
+产物目录下的所有文件，会遵循非覆盖式 Assets 应用的发布和访问规则，保留其目录结构发布到 Assets 域名。以在普通站点下发布的跨端应用类型为例，可以通过以下地址访问发布的 Assets 资源：
+
+| 环境 | web/home.js | web/home.css |
+|-|-|-|
+| 预发 | dev.g.alicdn.com/deftest/web-m/0.0.1/web/home.js | dev.g.alicdn.com/deftest/web-m/0.0.1/web/home.css |
+| 线上 | g.alicdn.com/deftest/web-m/0.0.1/web/home.js | g.alicdn.com/deftest/web-m/0.0.1/web/home.css |
+
+Web Plus 应用或在 Web 一体化站点下发布时，会将 Assets 资源发布到自定义域名。部分发布模式下支持 Hash 命名。此时访问路径可能有差异。
+
+## 页面产物
+
+应用发布的页面路径、端内容及元信息，需要通过产物中的描述文件 `entry.json` 描述。该文件规则如下：
+
+```
+// 注意：实际输出文件中不能包含注释
+{
+  // 描述待发布的页面列表（一到多个页面）
+  "pages": {
+    // 描述页面的访问 path（前面不需要加 /）
+    "home": {
+      // 描述页面支持的多端内容（一到多个端）
+      // key 是端名称，value 是页面在构建产物中对应的文件地址
+      // 必须含有 default 端（以 text/html 返回）
+      "default": "./web/home.html",
+      "pha": "./web/home-manifest.json"
+    },
+    // 可以有子 path，如果只有一个 default 端，可以简写
+    "home/v2": "./web/home-v2.html"
+  }
+}
+
+```
+上述构建产物中的 entry.json 内容如下：
+
+(https://o2-img.alistatic.com/i/i09blZ/UGCHh2YKQroOaTQ2ZIK5L-be38ba149d.png)
+
+
+若应用在接入站点时选择了投放域名为：web.wapa.taobao.com（预发）和 web.m.taobao.com（线上），则可以通过如下规则访问页面：
+
+| 环境 | web/home.js |
+|-|-|
+| 预发 | web.wapa.taobao.com/app/deftest/web-m/home |
+| 线上 | web.m.taobao.com/app/deftest/web-m/home |
+
+页面的访问前缀取决于应用所在站点的路由配置，默认为：`/app/group/project/`。如果站点下配置了额外的路由规则，则在发布结果中会使用配置的路由规则来展示可访问链接。
+
+可以在流水线的“页面域名检查“节点查看应用的域名和访问前缀。
+
+(https://o2-img.alistatic.com/i/i09blZ/X4GDIEniLG5VWLjGiFVYF-1e87a29e9e.png)
+
+
+注意：如果在构建中需要生成页面的访问地址（例如：pha manifest json 需要配置页面地址），请不要写死访问前缀规则（/app/仓库 group/仓库 project/），而是通过构建节点中的环境变量来获取。参考代码如下：
+
+```
+const parseArgs = require('yargs-parser');
+
+const buildArgs = parseArgs(process.env.BUILD_ARGV_STR);
+const pagePrefix = `https://${buildArgs.def_publish_page_domain}${buildArgs.def_publish_page_prefix}`;
+
+console.log('pagePrefix', pagePrefix);
+```
+### 端协商
+
+默认情况下，访问页面会返回 default 端内容（html）。可以通过 [accept](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Accept) 头来进行内容协商，服务端会根据优先级和页面发布的端类型返回。例如：
+
+| Accept | 行为 |
+|-|-|
+| application/x-kraken | 按照 kraken, default 的顺序返回 |
+| application/x-kraken,application/x-pha-manifest+json;q=0.8 | 按照 kraken, pha, default 的顺序返回 |
+
+由于浏览器默认不会按照以上规则设置 accept 头，在浏览器中请求会始终返回默认内容（default 端）。特殊端类型仅在手淘等 App 中生效。
+
+注意事项：
+
+- 上述的 accept 头仅作为示例使用，具体在端上请求页面时使用的 accept 头及投放规则请与相关框架人员确认；
+- 支持的端列表需要在平台提前配置。如需新增端类型，请通过[研发小蜜](https://links.alipay.com/app/room/5fbf53f6cd068c04d342e682/start-conversation-form/)咨询；
+- default 端是页面的“最后一道防线”，用来描述协商“失败”后返回的默认内容，构建产物中请务必提供。平台目前仅支持 text/html（html 文件）的 default 端，如果有特殊的默认端需求，请通过[研发小蜜](https://links.alipay.com/app/room/5fbf53f6cd068c04d342e682/start-conversation-form/)咨询；
+- accept 端协商通过 CDN 域名的边缘脚本实现，同时不同域名支持的端类型可能不同；具体请与您使用的站点的负责人确认相关能力，或通过[研发小蜜](https://links.alipay.com/app/room/5fbf53f6cd068c04d342e682/start-conversation-form/)咨询。
+### 自定义 Header 
+
+您可以通过 `entry.json` 控制页面的响应 Header，注入的 Header 值必须为 `string` 类型。例如，通过 Header 注入缓存控制时间
+
+```
+{
+  // 所有页面均注入
+  "global": {
+    // 页面缓存时间举例，比如用户侧缓存10分钟，CDN侧缓存1小时：max-age=600,s-maxage=3600
+    "headers": { "Cache-Control": "max-age=600,s-maxage=3600" }
+  }
+}
+```
+#### Aplus 注入
+
+您也可以通过此能力控制 Aplus 注入。默认情况下，跨端应用返回的页面内容和构建产物中的内容是保持一致的，不会像 WebApp / Weex 应用一样注入 aplus 脚本。如果确实需要注入，可以在构建产物的 `entry.json` 中添加配置，并重新进行发布。
+
+```
+{
+  "global": {
+    "headers": { "x-beacon": "on" }
+  }
+}
+```
+注意：我们不推荐使用该方式，埋点逻辑最好交由应用代码来进行引入处理，这样可以获得更好的开发体验。比如直接使用 rax 框架的[埋点方案](https://rax.alibaba-inc.com/docs/guide/aplus)
+
+#### 移除自定义的 Header
+
+默认情况下，`entry.json` 中定义的 Header 会被追加到已定义的配置中。即使从`entry.json` 中移除后重新发布，也不会改变已经添加的 Header。
+
+如需要删除特定的 Header，需要将其显示指定为 `null`，如下所示：
+
+```
+{
+  "global": {
+    "headers": { "Cache-Control": null }
+  }
+}
+```
+etag 等 Header 由系统注入，不支持移除
+
+### 使用 serverless 函数渲染
+
+[可缓存 SSR](https://yuque.antfin-inc.com/gubal/pg4m5z/rd2mkq) 链路还支持使用 serverless 函数来做页面渲染，并提供兜底机制。entry.json 多出一些相关配置：
+
+```
+{
+  "pages": {
+    "index": {
+      // 兜底内容，函数 500 时使用此内容返回
+      "default": "./web/index.html",
+      "node": {
+        // serverless 函数 host
+        "host": "aggregationall.rax-fc-multiend-app",
+        // serverless 函数 path（默认和 pages 的 key 一致）
+        "path": "/index",
+        // vary 头配置（默认值：x-u-tag）
+        "vary": "x-custom-tag"
+      }
+    }
+  }
+}
+
+```
+可缓存 SSR 链路使用了 serverless 函数能力，发布过程会拆分为三个阶段：函数发布、assets 发布、页面发布。相应的产物也需要构建出两个包：client（assets + 页面）、cloud（函数），entry.json 需要放在 client 目录下。参考示例：
+
+(https://o2-img.alistatic.com/i/i09blZ/hWrDUNxXxJifYvgoZYEn8-ebdf9ebcd9.png)
+
+
+## 按需发布
+
+跨端应用不支持在迭代中设置按需发布的页面，需要应用通过构建逻辑进行处理，仅构建出本次迭代需要发布的页面。可以通过自己实现脚本来修改 entry.json 的内容，仅保留需要发布的页面即可。
+

@@ -150,7 +150,7 @@ function CardsTab() {
         ))}
       </div>
       <Card>
-        <CardHeader><CardTitle>卡片实例</CardTitle><CardDescription>已发出的卡片；L2 带 hash + TTL，过期不可确认</CardDescription></CardHeader>
+        <CardHeader><CardTitle>卡片实例</CardTitle><CardDescription>已发出的卡片；L2 卡带校验指纹和有效期，过期不可确认</CardDescription></CardHeader>
         <CardContent><DataGrid table={instTable} empty="没有卡片实例" showPagination={false} showColumnPicker={false} /></CardContent>
       </Card>
       <Card>
@@ -234,7 +234,7 @@ export function IntegrationsPage() {
       <PageHeader title="集成与通知" description="钉钉网关：接入、身份映射、订阅、卡片 L0–L3、值守升级链、消息记录（出站 ∪ 入站）" isMock={isMock} actions={<StateSwitch />} />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="网关 HTTP（connections / subscriptions / cards / messages，R-012 / R-014）接入后切换为真数据" empty={{ title: "还没有接入", description: "先在接入管理连上钉钉机器人。" }}>
+        <StateFrame state={state} unlock="消息网关（接入 / 订阅 / 卡片 / 消息记录）接入后切换为真数据" empty={{ title: "还没有接入", description: "先在接入管理连上钉钉机器人。" }}>
           {tab === "connections" ? <ConnectionsTab /> : null}
           {tab === "assistant" ? (
             <ExampleBlock unlock="群助手为联调项（网关已具备）：接入后这里显示机器人在群里支持的指令与最近会话">

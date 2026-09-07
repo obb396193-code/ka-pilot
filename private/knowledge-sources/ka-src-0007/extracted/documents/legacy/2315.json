@@ -1,0 +1,42 @@
+{
+  "documentId": 2315,
+  "documentName": "【应用中心-开放场景】上传 APK 文件",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】上传 APK 文件\n```shell\n此接口为新增&编辑安卓应用的前置步骤，需要将原始的APK文件上传至快手侧，生成blob_store_key，再调用「创建Android应用」的接口；\n\n更新Android应用接口同理。\n```\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/upload/apk](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/upload/apk)\n\n请求方式：POST\n\n数据格式：FORM\n\n### 请求参数\n\n| 字段 | 类型 | 示例值 | 是否必填 | 说明     | 备注 |\n| ---- | ---- | ------ | -------- | -------- | ---- |\n|         advertiser_id         |  Long  |      |        必填         |            广告主ID          |          |\n| file | File |       | 必填     | APK 文件 |      |\n\n### 返回参数\n\n| 字段                  | 类型    | 示例 | 说明                     | 备注 |\n| --------------------- | ------- | ---- | ------------------------ | ---- |\n| data                  | Object  |      | JSON 返回值              |      |\n| &#8195;blob_store_key | String  |      | APK 文件在快手的存储 Key |      |\n| code                  | Integer |      | 返回码                   |      |\n| message               | String  |      | 返回信息                 |      |\n\n### 请求样例\n\n```shell\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/upload/apk' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'file=@\"Apkpure.apk\"' \\\n--form 'advertiser_id=\"900015366\"'\n```\n\n### 返回样例\n\n```shell\n{\n    \"code\": 0,\n    \"data\": {\n        \"blob_store_key\": \"c5411044-b4fb-4508-9b57-792d8fae7f44.apk\"\n    },\n    \"message\": \"OK\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681107054738
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681107054738,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

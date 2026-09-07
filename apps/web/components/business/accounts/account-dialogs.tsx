@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import { groupPreviewFixture, openFlowFixture, poolStatuses, replicateFixture, replicationCompareFixture, transferFixture, type AccountItem, type PoolStatus } from "@/lib/fixtures/accounts"
-import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
+import { fmtTime, isOk, mv, rv, changesetStatusText } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
 
 // 账户池的写动作对话框（全部只到「预览 / 草稿」，执行走 dry-run→confirm 链；mock 期用 fixture 回显）
@@ -46,7 +46,7 @@ function BatchPreview({ items, op, onClose }: { items: AccountItem[]; op: string
     <>
       <DialogHeader>
         <DialogTitle>变更预览 · {batchOps[op] ?? op}</DialogTitle>
-        <DialogDescription>对 {items.length} 户生成变更集组；dry-run 通过才能确认，执行逐账户，三键不变。样例 = changesets/group-preview.json。</DialogDescription>
+        <DialogDescription>对 {items.length} 户生成变更集组；试运行通过才能确认，执行逐账户，三键不变（当前为示例数据）。</DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-4 text-sm">
         <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{preview.status}</Badge><span className="text-muted-foreground">原因码 {preview.reasonCode} · 过期 {fmtTime(preview.expiresAt)}</span></div>
@@ -54,7 +54,7 @@ function BatchPreview({ items, op, onClose }: { items: AccountItem[]; op: string
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>账户</TableHead><TableHead>变更项</TableHead><TableHead>风险</TableHead><TableHead>状态</TableHead><TableHead>数据截至</TableHead></TableRow></TableHeader>
             <TableBody>
-              {preview.changesets.map((row) => <TableRow key={row.changesetId}><TableCell className="font-mono text-xs">{row.accountId}</TableCell><TableCell>{row.items} 项</TableCell><TableCell><StatusChip tone={row.riskLevel === "low" ? "success" : "warning"}>{row.riskLevel}</StatusChip></TableCell><TableCell><TypeChip>{stage === "preview" ? row.status : stage === "dry-run" ? "dry_run_ok" : "confirmed"}</TypeChip></TableCell><TableCell className="text-xs text-muted-foreground tabular-nums">{fmtTime(row.dataAsOf)}</TableCell></TableRow>)}
+              {preview.changesets.map((row) => <TableRow key={row.changesetId}><TableCell className="font-mono text-xs">{row.accountId}</TableCell><TableCell>{row.items} 项</TableCell><TableCell><StatusChip tone={row.riskLevel === "low" ? "success" : "warning"}>{row.riskLevel}</StatusChip></TableCell><TableCell><TypeChip>{changesetStatusText(stage === "preview" ? row.status : stage === "dry-run" ? "dry_run_ok" : "confirmed")}</TypeChip></TableCell><TableCell className="text-xs text-muted-foreground tabular-nums">{fmtTime(row.dataAsOf)}</TableCell></TableRow>)}
               {preview.skipped.map((row) => <TableRow key={row.accountId} className="text-muted-foreground"><TableCell className="font-mono text-xs">{row.accountId}</TableCell><TableCell colSpan={4}>跳过 · {row.reason}</TableCell></TableRow>)}
             </TableBody>
           </Table>
@@ -66,7 +66,7 @@ function BatchPreview({ items, op, onClose }: { items: AccountItem[]; op: string
       </div>
       <DialogFooter>
         <Button variant="outline" onClick={onClose}>取消</Button>
-        {stage === "preview" ? <Button onClick={() => { setStage("dry-run"); toast("dry-run 完成", { description: "全部通过" }) }}>dry-run</Button> : null}
+        {stage === "preview" ? <Button onClick={() => { setStage("dry-run"); toast("试运行完成", { description: "全部通过" }) }}>试运行</Button> : null}
         {stage === "dry-run" ? <Button onClick={() => { setStage("confirm"); toast.success("已确认，逐账户执行", { description: "未开写权限时会被拒绝" }) }}>确认执行</Button> : null}
         {stage === "confirm" ? <Button onClick={onClose}><IconCheck />完成</Button> : null}
       </DialogFooter>
@@ -129,7 +129,7 @@ function PoolStatusForm({ item, onClose }: { item: AccountItem; onClose: () => v
   const [note, setNote] = useState("")
   return (
     <>
-      <DialogHeader><DialogTitle>改库存态 · {item.accountName}</DialogTitle><DialogDescription>当前 {poolStatuses.find((meta) => meta.value === item.poolStatus)?.label}（{item.poolStatusSource === "manual" ? "人工覆盖" : "系统推导"}）；改后写 timeline kind=pool_status。</DialogDescription></DialogHeader>
+      <DialogHeader><DialogTitle>改账户状态 · {item.accountName}</DialogTitle><DialogDescription>当前 {poolStatuses.find((meta) => meta.value === item.poolStatus)?.label}（{item.poolStatusSource === "manual" ? "人工覆盖" : "系统推导"}）；改后写 timeline kind=pool_status。</DialogDescription></DialogHeader>
       <div className="grid gap-3">
         <Select value={value} onValueChange={(next) => setValue(next as PoolStatus)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{poolStatuses.map((meta) => <SelectItem key={meta.value} value={meta.value}>{meta.label} · {meta.hint}</SelectItem>)}</SelectContent></Select>
         <Textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="备注（必填）" />
@@ -137,7 +137,7 @@ function PoolStatusForm({ item, onClose }: { item: AccountItem; onClose: () => v
       <DialogFooter>
         {item.poolStatusSource === "manual" ? <Button variant="ghost" onClick={() => { toast("已清除人工覆盖，回系统推导", { description: "接口接入后生效（当前为示例）" }); onClose() }}>清除覆盖</Button> : null}
         <Button variant="outline" onClick={onClose}>取消</Button>
-        <Button disabled={!note.trim()} onClick={() => { toast.success("库存态已改", { description: `PATCH pool-status → ${value}（manual）` }); onClose() }}>保存</Button>
+        <Button disabled={!note.trim()} onClick={() => { toast.success("账户状态已改", { description: `PATCH pool-status → ${value}（manual）` }); onClose() }}>保存</Button>
       </DialogFooter>
     </>
   )
@@ -184,7 +184,7 @@ function Replicate({ item, onClose }: { item: AccountItem; onClose: () => void }
       ) : null}
       <DialogFooter>
         <Button variant="outline" onClick={onClose}>{started ? "关闭" : "取消"}</Button>
-        {!started ? <Button onClick={() => { setStarted(true); toast.success("复制方案已生成", { description: `changesetGroupId ${plan?.changesetGroupId.slice(-6) ?? ""} · 走组 dry-run → confirm` }) }}>生成方案并预览</Button> : null}
+        {!started ? <Button onClick={() => { setStarted(true); toast.success("复制方案已生成", { description: `变更集组 ${plan?.changesetGroupId.slice(-6) ?? ""} · 先整组试运行，通过后再确认` }) }}>生成方案并预览</Button> : null}
       </DialogFooter>
     </>
   )

@@ -1,0 +1,42 @@
+{
+  "documentId": 2307,
+  "documentName": "工具-素材唤醒-3-素材唤醒记录查询",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 素材唤醒记录查询（素材唤醒功能已下线，请勿调用！）\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photoWake/recordList](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photoWake/recordList)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | long | 139494 | 必填 | 账户ID |  |\n| current_page | int | 1 | 必填 | 页码 |  |\n| page_size | int | 10 | 必填 | 每页条目数 |  |\n\n### 返回参数\n\n| 字段 | 类型 | 示例 |      说明                        | 备注 |\n| ------- | -------- | ------------------------------------ | ---- | --- |\n| code    | int        |  0  | 状态码                            |     |\n| message | string    |  \"OK\"  | 错误信息                         |     |\n| request_id  | string  |      | 请求ID                    |      |\n| data    | struct   |    |返回结果                         |     |\n| &#8195; record_list | GatePhotoWakeRecordView[] |  | 记录列表 |  |\n| &#8195; page_info | GatePage |  | 分页信息 |  |\n\n| GatePhotoWakeRecordView     |         |          |                    |                                                                                                                                                                                                               |\n| --------------------- | ------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| advertiser_id | long | 139494 | 账户Id |  |\n| version | int | 1 | 版本号 |  |\n| wake_start_time | long | 1655273477000 | 素材唤醒配置开始时间 | 毫秒时间戳 |\n| wake_end_time | long | 1655481599000 | 素材唤醒配置结束时间 | 毫秒时间戳 |\n| wake_exec_start_time | long | 1655273477000 | 素材唤醒执行开始时间 | 毫秒时间戳 |\n| wake_exec_end_time | long | 1655481599000 | 素材唤醒执行结束时间 | 毫秒时间戳 |\n\n| GatePage  |         |          |                    |                                                                                                                                                                                                               |\n| --------------------- | ------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| current_page | int | 1 | 当前页码 |  |\n| page_size | int | 10 | 分页大小 |  |\n| total_count | long | 100 | 总数 |  |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\":900015364,\n    \"current_page\":1,\n    \"page_size\":10\n}\n```\n\n### 返回样例\n\n```\n{\n  \"code\": 0,\n  \"data\": {\n    \"record_list\": [\n      {\n        \"advertiser_id\": 123456,\n        \"version\": 1,\n        \"wake_start_time\": 1676515423000,\n        \"wake_end_time\": 1676603395558,\n        \"wake_exec_start_time\": 1676515423000,\n        \"wake_exec_end_time\": 1676603395558\n      }\n    ],\n    \"page_info\": {\n      \"current_page\": 1,\n      \"page_size\": 10,\n      \"total_count\": 20\n    }\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677503638599
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677503638599,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

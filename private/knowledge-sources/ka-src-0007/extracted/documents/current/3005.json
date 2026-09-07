@@ -1,0 +1,361 @@
+{
+  "documentId": 3005,
+  "documentName": "更新账户智投(标准)配置信息",
+  "documentType": 2,
+  "description": "<p>注：该接口仅支持处于<strong>标准智投(auto_manage_type=0)</strong>模式下的账户调用</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.3",
+  "versionList": [
+    {
+      "version": "0.0.3",
+      "createTime": 1765249914536
+    },
+    {
+      "version": "0.0.2",
+      "createTime": 1765249736642
+    }
+  ],
+  "apiId": 1221,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/account/mod/auto/info",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl -X POST \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"ocpx_action_type_constraint\": [\n        {\n            \"value\": 5,\n            \"ocpx_action_type\": 191\n        },\n        {\n            \"value\": 4.2,\n            \"ocpx_action_type\": 180\n        },\n        {\n            \"value\": 4.231,\n            \"ocpx_action_type\": 394\n        },\n        {\n            \"value\": 3.421,\n            \"ocpx_action_type\": 53\n        },\n        {\n            \"value\": 5.423,\n            \"ocpx_action_type\": 773\n        },\n        {\n            \"value\": 1.43,\n            \"ocpx_action_type\": 324\n        }\n     ],\n  \"auto_campaign_name_rule\": \"系统创建_[序号]_[日期]\",\n  \"account_auto_manage\": 1,\n  \"advertiser_id\": 123456\n\n}' -L https://ad.e.kuaishou.com/rest/openapi/gw/dsp/account/mod/auto/info"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"ocpx_action_type_constraint\": [\n        {\n            \"value\": 5,\n            \"ocpx_action_type\": 191\n        },\n        {\n            \"value\": 4.2,\n            \"ocpx_action_type\": 180\n        },\n        {\n            \"value\": 4.231,\n            \"ocpx_action_type\": 394\n        },\n        {\n            \"value\": 3.421,\n            \"ocpx_action_type\": 53\n        },\n        {\n            \"value\": 5.423,\n            \"ocpx_action_type\": 773\n        },\n        {\n            \"value\": 1.43,\n            \"ocpx_action_type\": 324\n        }\n        ],\n        \"account_auto_manage\": 1,\n        \"auto_campaign_name_rule\": \"系统创建_[序号]_[日期]\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ELqAgIDQ1JGaChjkDSDqyb_v-zEosOr31gY=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 60052,
+      "paramName": "account_auto_manage",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>智投开关：0-关闭，1-开启</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61302,
+      "paramName": "ocpx_action_type_constraint",
+      "paramType": "OcpxActionTypeConstraintOut[]",
+      "example": "-",
+      "description": "<p>智投目标成本配置</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3429,
+      "sort": 2,
+      "note": "-",
+      "children": [
+        {
+          "paramId": 61300,
+          "paramName": "ocpx_action_type",
+          "paramType": "Integer",
+          "example": "-",
+          "description": "<p>转化目标</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "191 首日ROI（默认24h，游戏是自然日）（0-5] 精确小数点后三位小数精确至0.001；190 付费 (0-8000] 精确小数点后三位小数精确至0.001；180 激活 (0-8000] 精确小数点后三位小数精确至0.001；394 订单提交 (0-8000] 精确小数点后三位小数精确至0.001；53 表单优化 (0-8000] 精确小数点后三位小数精确至0.001；773 关键行为 (0-8000] 精确小数点后三位小数精确至0.001；324 唤端 (0-8000] 精确小数点后三位小数精确至0.001",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61301,
+          "paramName": "value",
+          "paramType": "Double",
+          "example": "-",
+          "description": "<p>目标成本约束（非ROI类单位：元）</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "精确小数点后三位小数精确至0.001",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 70176,
+      "paramName": "auto_campaign_name_rule",
+      "paramType": "String",
+      "example": "-",
+      "description": "<p>广告计划命名规则：</p><ul><li><p>目前支持的宏变量为：[序号][日期][时间]</p></li><li><p>自定义填写时必须同时包含[日期]和[序号]宏变量，eg: 系统自动搭建_[日期][序号]</p></li><li><p>若不填写基建默认命名规则为：系统创建_[序号]_[母计划名称]</p></li></ul>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 60055,
+      "paramName": "data",
+      "paramType": "AccountAutoInfoUpdateRespSnake",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3377,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 60054,
+          "paramName": "account_auto_manage",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>账户智投开关</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61303,
+          "paramName": "ocpx_action_type_constraint",
+          "paramType": "OcpxActionTypeConstraintOut[]",
+          "example": "-",
+          "description": "<p>智投目标成本配置</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3429,
+          "sort": 2,
+          "note": "-",
+          "children": [
+            {
+              "paramId": 61300,
+              "paramName": "ocpx_action_type",
+              "paramType": "Integer",
+              "example": "-",
+              "description": "<p>转化目标</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "191 首日ROI（默认24h，游戏是自然日）（0-5] 精确小数点后三位小数精确至0.001；190 付费 (0-8000] 精确小数点后三位小数精确至0.001；180 激活 (0-8000] 精确小数点后三位小数精确至0.001；394 订单提交 (0-8000] 精确小数点后三位小数精确至0.001；53 表单优化 (0-8000] 精确小数点后三位小数精确至0.001；773 关键行为 (0-8000] 精确小数点后三位小数精确至0.001；324 唤端 (0-8000] 精确小数点后三位小数精确至0.001",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61301,
+              "paramName": "value",
+              "paramType": "Double",
+              "example": "-",
+              "description": "<p>目标成本约束（非ROI类单位：元）</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "精确小数点后三位小数精确至0.001",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 70177,
+          "paramName": "auto_campaign_name_rule",
+          "paramType": "String",
+          "example": "-",
+          "description": "<p>广告计划命名规则：</p><ul><li><p>目前支持的宏变量为：[序号][日期][时间]</p></li><li><p>自定义填写时必须同时包含[日期]和[序号]宏变量，eg: 系统自动搭建_[日期][序号]</p></li><li><p>若不填写基建默认命名规则为：系统创建_[序号]_[母计划名称]</p></li></ul>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 60056,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 60057,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1765249914536,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

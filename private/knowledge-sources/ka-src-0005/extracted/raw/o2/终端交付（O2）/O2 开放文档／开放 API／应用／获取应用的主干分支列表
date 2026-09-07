@@ -1,0 +1,45 @@
+## 获取应用的主干分支列表
+
+通过应用 ID 或应用名称获取应用的主干分支列表
+
+| method | GET |
+|-|-|
+| url | /v1.0/work/apps/{appIdorName}/trunk |
+| buc login | false |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appIdorName | String | true | - | 应用 ID 或应用名称 |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| Apptrunk[] | 应用主干[Apptrunk](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls6y8v24ozkf7q8vog) 列表 |
+
+### Example
+
+```
+client.get(`/v1.0/work/apps/1/trunk`)
+
+[
+  {
+    "id": 3116,
+    "app_id": 1,
+    "trunk": "master",
+    "description": "默认主干",
+    "emp_id": "33001",
+    "latest_commit_id": "601cebd35db53ccec249f515f772b38c803533b6",
+    "is_default": 1,
+    "gmt_create": "2021-07-13T11:16:03.000Z",
+    "gmt_modified": "2023-09-14T12:18:38.000Z",
+    "user": {
+      "emp_id": "33001",
+      "nick": "承泽"
+    }
+  }
+]
+
+```

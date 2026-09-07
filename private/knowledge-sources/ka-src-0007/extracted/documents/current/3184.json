@@ -1,0 +1,641 @@
+{
+  "documentId": 3184,
+  "documentName": "增量探索配置列表",
+  "documentType": 2,
+  "description": "<p>获取advertiser_id下的增量探索配置列表。</p><p>注意：<br>报表字段除ad_dsp_cost、conversion_cost、ad_show、ad_item_click、conversion_cnt为全行业可见外，其他字段目前仅二级行业为付费短剧可见。</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1739800301757
+    }
+  ],
+  "apiId": 1596,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/account/incExplore/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "javascript",
+      "body": "{\n  \"advertiser_id\": 123456\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "响应样例",
+      "type": "javascript",
+      "body": "{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"ad_dsp_cost\": 392.297,\n            \"conversion_cnt\": 35,\n            \"explore_budget\": 500,\n            \"create_time\": 1739262052887,\n            \"mini_game_iaa_roi\": 0,\n            \"inc_explore_time_type\": 2,\n            \"ad_show\": 22454,\n            \"key_action\": 0,\n            \"mini_game_iaa_purchase_amount\": 0,\n            \"first_start_time\": 1739721806134,\n            \"roi\": 1.455,\n            \"ltv\": 570.9400024414062,\n            \"auto_mode\": 1,\n            \"ad_item_click\": 255,\n            \"ocpx_action_type_name\": \"首日ROI（24h）\",\n            \"deep_conversion_type\": 0,\n            \"key_action_cost\": 0,\n            \"deep_conversion_type_name\": \"\",\n            \"conversion_cost\": 11.208,\n            \"ocpx_action_type\": 191,\n            \"status\": 2\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"ENKAgICg1OWcChjfBSC_sO6e0TIorrqsjws=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 71116,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>账号id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 71138,
+      "paramName": "error_msg",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>具体报错信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 71139,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>状态码描述</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 71140,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 71141,
+      "paramName": "data",
+      "paramType": "GwIncExploreDetailView[]",
+      "example": "",
+      "description": "<p>增量探索配置列表<br>注意：<br>报表字段除ad_dsp_cost、conversion_cost、ad_show、ad_item_click、conversion_cnt为全行业可见外，其他字段目前仅二级行业为付费短剧可见。</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4061,
+      "sort": 4,
+      "note": "",
+      "children": [
+        {
+          "paramId": 71117,
+          "paramName": "ocpx_action_type",
+          "paramType": "Integer",
+          "example": "944",
+          "description": "<p>转化目标类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71118,
+          "paramName": "ocpx_action_type_name",
+          "paramType": "String",
+          "example": "磁力金牛全店ROI",
+          "description": "<p>转化目标类型名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71119,
+          "paramName": "deep_conversion_type",
+          "paramType": "Integer",
+          "example": "0",
+          "description": "<p>深度转化目标类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71120,
+          "paramName": "deep_conversion_type_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>深度转化目标类型名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71121,
+          "paramName": "auto_mode",
+          "paramType": "Integer",
+          "example": "2",
+          "description": "<p>是否开启uax:<br>1-开启 <br>2-未开启</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71122,
+          "paramName": "explore_budget",
+          "paramType": "Double",
+          "example": "1000.0",
+          "description": "<p>探索预算，单位（元）</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71123,
+          "paramName": "status",
+          "paramType": "Integer",
+          "example": "3",
+          "description": "<p>探索状态<br>1-探索未开始<br>2-探索中<br>3-探索结束<br>4-探索暂停</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71124,
+          "paramName": "inc_explore_time_type",
+          "paramType": "Integer",
+          "example": "3",
+          "description": "<p>增量时间类型<br>1-长期生效<br>2-当日生效<br>3-立即生效6小时</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71125,
+          "paramName": "first_start_time",
+          "paramType": "Long",
+          "example": "1735290653320",
+          "description": "<p>第一次开始时间</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71126,
+          "paramName": "create_time",
+          "paramType": "Long",
+          "example": "1735290653421",
+          "description": "<p>创建时间</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71127,
+          "paramName": "ad_dsp_cost",
+          "paramType": "Double",
+          "example": "0.0",
+          "description": "<p>消耗</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71128,
+          "paramName": "conversion_cost",
+          "paramType": "Double",
+          "example": "0.0",
+          "description": "<p>转化成本</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71129,
+          "paramName": "ad_show",
+          "paramType": "Long",
+          "example": "0",
+          "description": "<p>曝光量</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 13,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71130,
+          "paramName": "ad_item_click",
+          "paramType": "Long",
+          "example": "0",
+          "description": "<p>点击量</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 14,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71131,
+          "paramName": "conversion_cnt",
+          "paramType": "Long",
+          "example": "0",
+          "description": "<p>转化数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 15,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71132,
+          "paramName": "ltv",
+          "paramType": "Double",
+          "example": "0.0",
+          "description": "<p>付费金额,单位元</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 16,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71133,
+          "paramName": "roi",
+          "paramType": "Double",
+          "example": "0.0",
+          "description": "<p>ROI</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 17,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71134,
+          "paramName": "mini_game_iaa_purchase_amount",
+          "paramType": "Double",
+          "example": "0.0",
+          "description": "<p>IAA广告变现LTV,单位元</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 18,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71135,
+          "paramName": "mini_game_iaa_roi",
+          "paramType": "Double",
+          "example": "0.0",
+          "description": "<p>IAA广告变现ROI</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 19,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71136,
+          "paramName": "key_action",
+          "paramType": "Long",
+          "example": "0",
+          "description": "<p>关键行为数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 20,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 71137,
+          "paramName": "key_action_cost",
+          "paramType": "Double",
+          "example": "0.0",
+          "description": "<p>关键行为成本</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 21,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1739800301757,
+  "creator": "wangxiaobo07",
+  "fullContext": null
+}

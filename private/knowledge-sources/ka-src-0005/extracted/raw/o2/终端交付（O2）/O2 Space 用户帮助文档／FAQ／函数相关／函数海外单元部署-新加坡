@@ -1,0 +1,30 @@
+目前函数线上环境重新正式支持了（容量更大稳定性更高）海外新加坡部署（仅线上，预发统一走集团预发环境）,并且支持了最新的 runtime alinode7，可以配合midway-faas V3 使用。
+
+# 如何将函数部署到新加坡
+
+O2 应用设置中配置应用部署模版，选择对应的新加坡部署模版即可
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl9y97gymdlapY/img/194398eb-a92c-4776-ace7-7e374463a7b5.png)
+
+
+# 没有新加坡部署模版
+
+联系租户管理员后台添加即可
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl9y97gymdlapY/img/bce31612-5b58-49ad-8f07-444e12a505e5.png)
+
+
+### 如何添加租户部署模版（FOR 租户管理员）
+
+访问租户后台：[https://fc-admin.fc.alibaba-inc.com/tenant/list](https://fc-admin.fc.alibaba-inc.com/tenant/list)
+
+找到对应租户，选择对应解决方案（部署模版是解决方案级别添加的请注意），新增模版即可
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl9y97gymdlapY/img/91c9b867-5983-4cb6-94cf-2051bc43aef6.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl9y97gymdlapY/img/d5b6fd1b-bfa8-4fdd-a067-f7407fc23f97.png)
+
+
+最后更新租户配置即可。
+

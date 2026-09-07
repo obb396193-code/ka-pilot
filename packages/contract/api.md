@@ -1074,3 +1074,40 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **`agent_type`（代理/自投）数据源确认**：只有账户级 `custom_tags` 里的「代投/自投」标记，且大量账户无匹配 → 行按账户级聚合，无标记的归 `unknown` 并显「未标注」，不猜不填默认值。
 - **内测部署拓扑（方案 A）端口定案**：web `0.0.0.0:3000`、data-api `127.0.0.1:3101`、worker HTTP `127.0.0.1:3102`；不起常驻消费者进程；worker 触发与备份都由部署脚本后台循环驱动。`GET /healthz`（data-api）是烟测探针。
 - **团队空间口径**：直接用 ka-data 已对齐的 `cash_yuan` / `cash_assessment`，不再施加系数重算；个人空间才走我们自己的系数与 `assessment_price_history`。
+
+## v1.8 追加（2026-09-07 arch；老板拍板：账户昵称解析为主源，归属一律可人工改；R-017 实现，migration 018）
+
+### 为什么改主源
+平台的 `resource_position` 是**广告组级的平台版位**，而业务口径的「优选」是把两三个平台版位合成一个，两者对不上；规范里还明确「主站内选择多个版位则填主站」——**业务版位只有账户昵称里有**。同理出价模式/设备/出价目标/运营方/优化师/专项/承接/增量扣量都只在昵称里。所以：**这些维度主源改昵称解析，平台字段降为对照**；**任务 ID 仍以奇航为主**（它有历史有效期），昵称括号里的任务 ID 作校验。
+
+### 命名规范（可配置，按渠道分）
+快手现行 12 段：`渠道-业务-运营方-优化师/代理商-出价模式-设备-流量版位-出价目标-RTA-专项-承接-自定义`（原文 `private/knowledge-sources/ka-src-0003/source.txt` §4.3；业务段枚举**自带任务 ID**，如「CVR有端(1803240580)」）。
+**腾讯/字节各有各的规范**，所以规范是**按 media 存的版本化模板**，不是写死的常量。
+
+`naming_rules`：`workspace_id, media, version, segments JSONB, separators TEXT[], effective_from, created_by, note`
+- `segments[]` = `{key, label, order, source:"enum"|"regex"|"free", values[]?, pattern?, required, multi, mapsTo}`；`mapsTo` 指向系统维度（`biz/agent_type/optimizer/bid_mode/device/placement/goal/rta/rebate/special/landing`）。
+- `separators` 默认 `["-"]`，可加全角减号、下划线、空格——**这是老板说的「杠不一样」的落点**。
+
+### 解析算法（两端锚定，解规范自身的歧义）
+规范有两处天然歧义，硬解必炸，冻结如下：
+1. **专项段允许用 `-` 分隔多值，和字段分隔符同字符** → 解析器**不按分隔符切段**，而是**两端锚定**：前 9 段按位置 + 枚举匹配（渠道…RTA），末尾按正则识别（承接=纯数字串、客单价=`0/10|10/30|30/50|50\+`、增量扣量=`^(ZZ|KK)\d+$`），**中间剩下的整体归专项**（可含 `-`）。
+2. **括号有半角 `()` 也有全角 `（）`**，业务段一个值可对多个任务 ID（如促活 UV 四个）→ 括号两种都认，多 ID 存数组，任务归属仍以奇航为准，不一致进冲突。
+
+### 表与状态
+`account_name_parses`：`workspace_id, media, account_id, account_name, rule_version, status, segments JSONB, task_ids TEXT[], conflicts JSONB, parsed_at, confirmed_by, confirmed_at, override JSONB`
+`status ∈ parsed | partial | failed | conflict | confirmed | overridden`
+- `partial` = 部分段解析成功（例如专项没匹配上），成功的段照用，失败的段显 −，**不整条丢弃**。
+- `conflict` = 昵称与平台字段/奇航不一致（例：昵称说自投、标签说代投；昵称任务 ID 与奇航 task_id 不同）→ **必须人工看，绝不静默选一边**。
+- `override` = 人工改过的段，**永远优先于解析结果**，重解析不覆盖。
+
+### 端点
+- `GET/PUT /api/v1/admin/naming-rules?media=` —— 规范模板（版本化；改了不追溯已确认的）
+- `POST /api/v1/admin/naming-rules/test {media, sample_names[]}` —— **改规范时先干跑**，返回每条的解析结果与命中率，不写库
+- `GET /api/v1/admin/account-names?status=&media=&q=&page=` —— 清洗页列表
+- `PATCH /api/v1/admin/account-names/:media/:accountId {segments?, confirm?}` —— 人工改/确认单条
+- `POST /api/v1/admin/account-names/confirm {items[]}` —— 批量确认（parsed 状态一键过）
+- `POST /api/v1/admin/account-names/reparse {media?, accountIds?}` —— 重解析（跳过 overridden）
+
+### 维度来源与「归属都能手动改」
+`account.dimension/v3` 与账户列表的这些维度改读解析结果：`placement(流量版位) / bid_mode / device / goal / rta / agent_type(运营方) / optimizer / special / landing / rebate`；每个维度值带 `source:"nickname"|"platform"|"manual"|"qihang"`，前端可显来源角标。
+**老板铁律（v1.8 起全局）：凡是「归属」性质的字段，都必须有人工改的入口且改后不被自动流程覆盖。** 已覆盖：任务归属（`POST /tasks/:id/accounts` + `task_accounts` 有效期）、账户 owner（账户池指派）、昵称解析各段（本节 `override`）、账户状态 `pool_status`（v1.5.1 manual 覆盖留痕）。新增归属类字段一律照此办理。

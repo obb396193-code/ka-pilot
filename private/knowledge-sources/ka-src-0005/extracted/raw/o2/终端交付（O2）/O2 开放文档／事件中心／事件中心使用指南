@@ -1,0 +1,235 @@
+# 事件中心使用指南
+
+### 致谢
+
+非常感谢阿里云 Event Bridge、PVL 团队，集团统一接入团队，作为底层依赖，支撑 O2Bridge 的技术运行。
+
+非常感谢 O2Bridge 初期技术论证阶段，和我们一起共创的业务团队，例如：阿里云云原生应用平台前端团队、阿里拍卖体验技术部、淘宝大营销体系前台技术前端团队等。
+
+### 先介绍下 JSBridge
+
+> As its name implies, JSBridge serves as a bridge between JS and Native. In fact, JSBridge, also known as the Hybrid app technology, is a communication method between JS and Native. In JSBridge, Native calls JS only through a fixed bridge object, and vice versa. 
+
+JSBridge 是一种集成技术，建立了标准化的 H5 和 Native 通信机制，使得移动 APP 一方面可以享受 Native 级别的性能、设备能力、体验等，另一方面又可以受益于 H5 的强大生态(技术和开发人员)、迭代(发布)效率、跨端等。从而让混合开发成为移动端主流技术。
+
+### O2Bridge 的来源
+
+站在巨人的肩膀上，我们提出了 O2Bridge。
+
+O2Bridge 是从 O2 Space (前端统一研发平台) 孵化出的一种标准化的系统间集成机制，集成多方能力，形成丰富的自动化连接场景。当下，专注于如何将 O2 Space 的工程能力和用户的自定义诉求进行集成。
+
+#### 最初的场景
+
+O2 Space 是集团统一研发平台，承载集团所有岗位对于前端研发的统一诉求。我们的用户分为两类，终端用户和开放用户。
+
+- 终端用户，通过 [http://space.o2.alibaba-inc.com](http://space.o2.alibaba-inc.com/) 完成前端研发工作的同学（推荐），或者通过 O2 CLI 完成前端研发工作（不推荐）。
+- 开放用户，O2 Space 现有的 WEB平台(固化流程) 无法满足用户诉求，用户需要借助于 O2 Space 的开放能力，完成差异化诉求。
+开放用户对于 O2 Space 有这么几类非常典型的集成诉求:
+
+- CN Console 是阿里云云原生产品在专有云环境输出所依赖的前端基建。CN Console 可以看作 UniConsole（[https://ata.alibaba-inc.com/articles/230939?spm=ata.23639746.0.0.2fdd3042SBilGc](https://ata.alibaba-inc.com/articles/230939?spm=ata.23639746.0.0.2fdd3042SBilGc)） 的超轻量级版本，可支持轻量级输出，甚至单产品独立输出。为阿里云产品尝试更多的专有云售卖形式提供了可能。CN Console 的一个重要能力是获取各个云产品在 O2 Space 发布的结果，并将其同步到客户环境中，如何做？
+- Onepiece（[https://ata.alibaba-inc.com/articles/187040?spm=ata.23639746.0.0.1d1515151W5n7L](https://ata.alibaba-inc.com/articles/187040?spm=ata.23639746.0.0.1d1515151W5n7L)） 是集团统一搜索推荐引擎的体系化解决方案，其中 webb 的底层模块开发在 O2 Space 中进行，如何将 O2 Space 的部署产物自动化实时同 
+- ORCA 预览引擎，是一个无代码研发平台的预览引擎，希望每次物料发布都可以自动去触发预览引擎的更新，其中单个物料都是在 O2 Space 中进行发布，如何做到呢？
+- 大营销体系前台技术对于团队的 CodeReview 有严格的要求，希望能够将 CodeReview 的状态和钉钉相结合，做到实时感知。例如：组内某位同学发起了 CodeReview，实时同步给具体的人或者群内。CodeReview 是在 O2 Space 发起，同时 O2 Space 也有通过钉钉触达用户或者群的方式（O2 Space 小秘书），如何做到呢？
+我们把上面的用户直观诉求，进行一次抽象处理：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1wvqr7DRVXG8Oako/img/be7afcf9-77a6-4087-9d29-3fb3df0a15a2.jpg)
+
+
+底层逻辑：
+
+- 解构 
+	- [https://space.o2.alibaba-inc.com](https://space.o2.alibaba-inc.com/) 给大家提供的是固化流程的平台服务，是 效率、安全、通用性、投入产出比等各种因素下权衡下的产物。当你来到平台进行操作，你就要按照平台设计的流程进行作业，别无选择。它一定不能满足 100% 的诉求，甚至对于小数团队也不是效率最高的解决方案。因此，针对差异化用户诉求，我们需要将服务的粒度从 ‘平台’ 解构到 ‘能力’，让开放用户能够选择特定的能力。例如：对于上述案例中，绝大多数开放用户只关心 ‘部署’ 这个能力，而不用打包整个平台。
+- 重组
+	- 当把服务从 ‘平台’ 解构为 ‘能力’ 后，开放用户就可以进行能力重组，从而完成自定义工作流，解决个性化诉求。例如：上述案例中的，CodeReview 的感知能力，就可以把 O2 Space 的 CodeReview 能力 和钉钉通知能力进行重组，从而解决自己团队对于 CodeReview 的强感知诉求。
+	- 重组有两个维度的含义：
+		- O2 Space 和三方能力之间的重组，例如：O2 Space 的部署能力和 ORCA 的预览能力的重组。新流程就可以做到，当用户在 O2 Space 发布完成后，ORCA 预览引擎会实时刷新，不需要用户手动同步。
+		- O2 Space 内部能力之间的重组，例如：发起 CodeReview 能力和钉钉通知能力之间的重组，这两个能力都是 O2 Space 提供的，开放用户通过重组这两个能力，形成新的作业流，从而解决自己团队的 CodeReview 强感知诉求。
+因此，O2Bridge 最初就是为了解决 O2 Space 的解构和重组诉求，设计的以事件驱动为底层核心，异构系统能力集成的方案。
+
+#### 泛化的场景
+
+新的诉求：
+
+- Aone 项目环境部署完成后，需要通知三方平台，三方平台会跑自定义的质量巡检，例如：依赖的 hsf 服务、E2E 测试等等，然后再将结果返回到 Aone 项目环境中，实时展示给用户。
+- MTL 流程自定义，流程启动时要实时通知三方系统，三方系统运行自定义编排的流程，然后将结果返回，实时展示给用户。
+我们把上面的用户直观诉求，进行一次抽象处理：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1wvqr7DRVXG8Oako/img/f4a87d9e-862c-4fe4-b4af-3e1a944aaefa.jpg)
+
+
+底层逻辑:
+
+- 标准协议
+- O2Bridge 通过定义以 “事件” 为核心的标准协议，通过事件源、事件过滤器、事件目标，从而标准化了系统能力间的集成方式。
+备注:
+
+当前这个阶段，主要是为 O2 Space 服务，这种模式目前人力支持有限，如果有好的想法，可以一起合作。
+
+### O2Bridge 的定义
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/1wvqr7DRVXG8Oako/img/c0d10df9-9b46-4ca6-a36c-8f4bfc46224a.jpg)
+
+
+#### 1: 统一事件对象
+
+遵循 CloudEvents （[https://cloudevents.io/](https://cloudevents.io/)）规范，描述了事件数据规范，帮助不同的数据生产者和消费者使用相同的协议进行互通。
+
+#### 2: 事件源
+
+事件的来源，例如：创建一个变更、变更加入某个迭代、发起一个 codeReview等等。
+
+#### 3: 事件目标
+
+事件的处理终端，负责消费事件。例如：发送钉钉消息、同步部署产物。
+
+#### 4: 事件过滤器
+
+事件源会源源不断的触发事件，通常我们需要根据事件对象的内容进行过滤订阅，从而处理自己有权限处理，或者自己关心的事件，例如，创建 CodeReview 事件源会源源不断的触发事件对象，而大营销体系前台技术只关心（只有权限）自己团队触发的事件对象，因此，需要配置事件过滤器从而进行事件对象筛选。
+
+
+
+O2Bridge 包含事件源、事件过滤器、事件目标。基本语意是：事件源触发事件对象，根据不同的事件过滤器路由到不同的事件目标中，从而形成一个特定的 O2Bridge。其中，事件源和事件目标都是开放的，任何有诉求的平台都可以进行注册，从而完成系统间的能力集成。
+
+### O2Bridge 在 O2 Space 的典型应用场景
+
+#### O2 Space 和 三方能力组合
+
+- 部署产物同步
+- 特定应用、特定团队的应用部署成功后，将产物自动同步到三方系统，三方系统进行二次加工，例如：专有化部署、资源自动上线等等。
+- 双十一资损检查
+- 代码提交后，通过时间规则路由到资损检查事件目标中，从而确保双十一前端代码中的资损问题可以自动化全面解决。
+#### O2 Space 能力重组
+
+- 工程能力 + 钉钉通知
+- 例如：你想订阅自己团队，或者某些人，或者某些用户登 创建应用、创建迭代、创建 CodeReview、CodeReview 通过、持续集成失败 等动作，并且以钉钉机器人的方式通知到个人或者群。
+- 工程能力 + 功能能力
+- 例如：持续集成通过后自动触发自动部署。通常情况下，我们持续集成通过，或者 CodeReview 通过后，往往都是要手动点击部署的，通过配置这个能力重组，可以自动化进行，不需要手动操作。
+- 更加极端的，某些大库应用场景，可以重组持续集成和合并主干能力，当持续集成通过后，自动合并主干。
+### O2Bridge 如何实操
+
+请现在开发环境进行操作，平台地址：[https://o2-pai.alibaba-inc.com/connector](https://o2-pai.alibaba-inc.com/connector)
+
+#### 1）创建事件目标
+
+##### 1-1）创建一个 http post 的服务
+
+可以是传统应用，也可以是 faas。只需要是个 http post 服务即可。http request body 为[《O2 Space 统一事件对象》](https://yuque.antfin.com/docs/share/1524f247-c9ef-44bf-9452-c86d9557519a?#)第二节“真实例子”。本地测试完成业务逻辑。
+
+注意：对返回结果有要求，后续的审计的环节，强依赖返回值，返回值需要遵守下面定义的规范。判断成功执行的条件是：`result.error.length === 0`
+
+```
+interface IResult<T> {
+  error: string
+  data: T
+}
+
+async echo(@Body(ALL) body) {
+  this.ctx.logger.info('echo fn, body is: ', JSON.stringify(body));
+  return {
+    error: '',
+    data: `echo ${JSON.stringify(body)}`
+  };
+}
+
+```
+如果本地测试通过，则可以进行下个环节。
+
+##### 1-2）将服务注册进入 O2 网关
+
+如果是传统应用，参考  [帮助文档](https://defgw-console.fc.alibaba-inc.com/docs/service)。
+
+如果是 faas，参考 [帮助文档](https://defgw-console.fc.alibaba-inc.com/docs/service#faasServiceJoin)。
+
+如果通过网关 sdk 调用可以正常工作，意味着网关注册成功。
+
+注意：服务注册进网关后，事件中心默认是没有权限调用你的开放服务接口的，如果遇到 "O2_Connector 没有权限调用开放服务"的错误，请联系小蜜答疑，提供错误服务信息，管理员会进行调用权限的申请。
+
+##### 1-3）在开发环境创建事件目标
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgLDwavqNhOK.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imghc6uCAvJtL.png)
+
+
+这里重点关注网关地址，网关地址有两部分组成，版本号和路径地址，分别可以在你代码配置和网关控制台找到，把两者拼接到一起即可，注意版本号前面加 ‘v’。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgkKhta12T8u.png)
+
+
+(https://img.alicdn.com/imgextra/i3/O1CN01KTSbCp1sc2azMWDFy_!!6000000005786-2-tps-2432-1624.png)
+
+
+
+
+#### 2）在开发环境创建事件过滤器
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgKfNfbnXfOI.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgTFiTLklQtA.png)
+
+
+这里示范的过滤规则是根据，触发事件的用户的 bu_id（bu_id 为淘宝的 57940）。你可以自己写规则来过滤关心的事件。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgNpsjeOV2iy.png)
+
+
+
+
+#### 3）在开发环境创建连接器
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgbtzztN5kWT.png)
+
+
+##### 3-1）选择事件源，即：监听的事件
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgMWTvlWgla9.png)
+
+
+##### 3-2）选择需要的过滤器，即：用来过滤自己关心的事件
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgQflHZwDeM1.png)
+
+
+##### 3-3）选择事件目标，即：用来处理事件的服务
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgGB54nn5xbc.png)
+
+
+##### 3-4）补充基本信息
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/img1RGTKChuX8.png)
+
+
+##### 3-5）等待审批通过。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgeLpPBLiYc2.png)
+
+
+##### 3-6）审批通过。意味着连接器已经开始工作，请在开发环境人工验证。
+
+注意：开发环境的验证，需要在 o2 预发环境进行，也就是：[https://pre-space.o2.alibaba-inc.com/](https://pre-space.o2.alibaba-inc.com/)
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgOv84l8rORb.png)
+
+
+
+
+#### 4）同步到线上环境
+
+重复刚才的步骤，将连接器部署到线上环境。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ge5gfr3wbt3y6vpu/imgGTYf7z873T.png)
+
+
+
+
+### 参考资料
+
+- [https://ata.alibaba-inc.com/articles/187040?spm=ata.23639746.0.0.368366474yNNUT](https://ata.alibaba-inc.com/articles/187040?spm=ata.23639746.0.0.368366474yNNUT)
+- [https://yuque.antfin-inc.com/amap-webx/bff/index?singleDoc#wLptp](https://yuque.antfin-inc.com/amap-webx/bff/index?singleDoc#wLptp)
+- [https://fx-monitor.alibaba-inc.com/docs/introduction](https://fx-monitor.alibaba-inc.com/docs/introduction)
+- [https://www.alibabacloud.com/blog/in-depth-profiling-of-jsbridge_112504](https://www.alibabacloud.com/blog/in-depth-profiling-of-jsbridge_112504)
+- [https://ata.alibaba-inc.com/articles/252472?spm=ata.23639746.0.0.65a9e7f1Xn5eq1](https://ata.alibaba-inc.com/articles/252472?spm=ata.23639746.0.0.65a9e7f1Xn5eq1)
+- [https://ata.alibaba-inc.com/articles/187040?spm=ata.23639746.0.0.368366474yNNUT](https://ata.alibaba-inc.com/articles/187040?spm=ata.23639746.0.0.368366474yNNUT)

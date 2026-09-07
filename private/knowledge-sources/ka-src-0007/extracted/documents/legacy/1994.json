@@ -1,0 +1,42 @@
+{
+  "documentId": 1994,
+  "documentName": "2.1.2获取广告账户余额信息",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取广告账户余额信息\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/fund/get\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 是否必填 | 说明      | 备注                           |\n| ------------- | ---- | -------- | --------- | ------------------------------ |\n| advertiser_id | long | 必填     | 广告主 ID | 在获取 access_token 的时候返回 |\n\n| 返回参数 |        |             |          |\n| -------- | ------ | ----------- | -------- |\n| 字段     | 类型   | 说明        | 备注     |\n| code     | int    | 返回码      |          |\n| message  | string | 返回信息    |          |\n| data     | struct | JSON 返回值 |          |\n| balance  | double | 账户总余额  | 单位：元 |\n| recharge_balance  | double | 充值余额  | 单位：元 |\n| contract_rebate  | double | \t框返余额  | 单位：元 |\n| direct_rebate  | double | 激励余额  | 单位：元 |\n\n\n### 请求参数\n\n```\ncurl -X GET \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\": 20000800\n}' -L https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/fund/get\n```\n\n### 返回参数\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"balance\": 1234.56,\n      \t\"recharge_balance\": 1234.56,\n      \t\"contract_rebate\": 1234.56,\n      \t\"direct_rebate\": 1234.56\n    }\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1719975489826
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1719975489826,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -64,3 +64,7 @@ export function fmtTime(value: string | null | undefined): string {
   const [date, rest] = value.split("T")
   return rest ? `${date.slice(5)} ${rest.slice(0, 5)}` : date
 }
+
+// 变更集状态 / 执行态的中文（界面不直出英文枚举）
+export const changesetStatusLabel: Record<string, string> = { draft: "草稿", dry_run_ok: "试运行通过", confirmed: "已确认", executing: "执行中", executed: "已执行", partially_failed: "部分失败", failed: "失败", expired: "已过期", cancelled: "已取消" }
+export const changesetStatusText = (status: string | null | undefined) => (status ? changesetStatusLabel[status] ?? status : "−")

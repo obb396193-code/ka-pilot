@@ -1,0 +1,17 @@
+遇到问题，第一步先获取 RequestId 或 traceId 去 [API 链路诊断](https://m.api.aliyun-inc.com/#/troubleshoot) 自行查看出错日志
+
+
+- 如何获取 RequestId 或 traceId：从接口的 Response Header 中找到如下两个参数 
+(https://img.alicdn.com/imgextra/i1/O1CN01mCMO8R1kWWtx4rAyt_!!6000000004691-2-tps-1280-456.png)
+
+
+## Cannot read properties of undefined (reading 'emp_id')
+
+出错原因在于登录态缺失，请检查：
+
+1. 接口是否需要登录态（buc login），若需要：
+	1. 请检查是否与 def-auth 建立免登
+	1. 请检查是否传递 SSO_TICKET
+	1. 请检查 SSO_TICKET 参数传递方式是否正确
+	1. 请检查 SSO_TICKET 是否有效
+	1. 请检查调用环境，预发环境才能调用预发接口，本地不支持调用

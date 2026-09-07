@@ -1,0 +1,2306 @@
+文档信息
+属性
+内容
+文档版本
+v2.0
+创建日期
+2026-04-13
+适用渠道
+全渠道
+数据源
+统一 MCP 数据工具（封装 FBI/BI 查询与指标计算）
+输出形式
+HTML 文档（含交互式图表）
+
+一、项目背景与目标
+1.1 背景
+KA 媒体投放（巨量引擎、快手、腾讯广告）是核心业务渠道，日常需要对多平台投放效果进行全方位监控。当前日报依赖人工整理数据、计算衍生指标、判断异常并撰写分析，流程繁琐且容易遗漏关键问题。
+1.2 目标
+构建一个通用的 KA 媒体日报生成 Agent，实现以下能力：
+● 数据自动获取：调用统一 MCP 数据工具，自动拉取前一日全量投放数据（含已计算的衍生指标和环比）。
+● 多维度拆解：按代理/自投、业务、任务、账户、资源位、出价工具、UBP 等维度独立展示数据。
+● 异常自动标记：基于可配置的规则引擎，自动识别并高亮标记各维度下的异常数据。
+● 报告自动输出：生成包含数据表格和可视化图表的 HTML 日报文档，支持推送至钉钉。
+1.3 渠道支持
+本方案支持以下三大 KA 媒体渠道，通过统一的 MCP 工具接口获取数据：
+渠道
+平台名称
+备注
+toutiao
+巨量引擎（头条系）
+字节跳动旗下广告投放平台
+kuaishou
+快手
+快手磁力引擎
+tencent
+腾讯广告
+腾讯广告平台（原广点通）
+不同渠道的字段映射和计算逻辑由 MCP 工具内部处理，Agent 层使用统一的字段名消费数据。
+
+二、权限模型设计
+2.1 权限架构
+采用两层权限体系，权限校验统一在 MCP 层完成，Agent 层无需关心权限细节。
+
+┌─────────────────────────────────────────────────────────────────┐
+│                        用户身份                                   │
+│  ┌─────────────────┐    ┌─────────────────┐                     │
+│  │   渠道经理       │    │    优化师        │                     │
+│  │  Channel Manager │    │   Optimizer     │                     │
+│  └────────┬────────┘    └────────┬────────┘                     │
+│           │                      │                              │
+│           ▼                      ▼                              │
+│  ┌─────────────────┐    ┌─────────────────┐                     │
+│  │ 渠道级权限       │    │ 账户级权限       │                     │
+│  │ 可配置管理渠道   │    │ 仅可见授权账户   │                     │
+│  │ 例:头条/快手/腾讯│    │ 例:账户A/B/C    │                     │
+│  └────────┬────────┘    └────────┬────────┘                     │
+│           │                      │                              │
+│           └──────────┬───────────┘                              │
+│                      ▼                                          │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │              MCP 数据工具 (dailyReportData)               │   │
+│  │                                                           │   │
+│  │  • 自动识别用户身份和权限                                 │   │
+│  │  • 根据权限过滤数据范围                                   │   │
+│  │  • 所有指标基于有权限数据计算                             │   │
+│  │  • 返回已脱敏/已过滤的数据                                │   │
+│  └─────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+2.2 角色定义
+角色
+权限范围
+数据可见性
+渠道经理
+渠道级
+可配置管理的渠道下全部数据
+优化师
+账户级
+仅自己有权限的账户数据
+2.3 权限配置
+基于mozi当前的权限管理系统来做即可。
+渠道经理配置
+
+# 用户权限配置 (由MCP工具维护)
+user_permissions:
+  user_id: "user_001"
+  role: "channel_manager"
+  managed_channels:          # 可配置管理的渠道列表
+    - "oceanengine"          # 可管理巨量引擎
+    - "kuaishou"             # 可管理快手
+  # managed_channels: ["*"]  # 全部渠道用通配符
+优化师配置
+user_permissions:
+  user_id: "user_002"
+  role: "optimizer"
+  authorized_accounts:       # 授权账户列表
+    oceanengine:             # 按渠道分组
+      - "acc_1001"
+      - "acc_1002"
+    kuaishou:
+      - "acc_2001"
+  # 优化师不可指定channel参数，MCP自动根据授权账户推断
+2.4 权限校验规则
+场景
+渠道经理
+优化师
+请求渠道
+必须在自己管理的渠道范围内
+自动从授权账户推断，不可指定
+数据范围
+渠道下全部账户
+仅授权账户
+跨渠道查询
+支持（如管理多个渠道）
+不支持
+维度聚合
+基于渠道全部数据
+基于授权账户数据
+
+三、MCP 数据工具接口规范
+数据采集与指标计算由统一的 MCP 工具完成。本章定义该工具的入参和返回字段规范，作为工具开发方与 Agent 开发方之间的接口契约。重要: 权限校验在 MCP 层完成，Agent 调用时不需要传递用户身份信息，MCP 自动从调用上下文获取。
+3.1 架构总览
+
+┌──────────────────────────────────────────────────────────────────┐
+│                         Agent 报告生成层                           │
+│                                                                  │
+│  调用 MCP 工具（无需传递用户身份）                                 │
+│       ↓                                                          │
+└──────────────────────────────────────────────────────────────────┘
+                              ↓
+┌──────────────────────────────────────────────────────────────────┐
+│                    统一 MCP 数据工具                               │
+│  （封装 FBI/BI SQL 查询 + 指标计算 + 环比计算 + 分层统计）         │
+│                                                                  │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  权限校验层                                               │    │
+│  │  • 从调用上下文获取用户身份                               │    │
+│  │  • 查询用户权限配置（渠道经理/优化师）                    │    │
+│  │  • 校验请求参数是否在权限范围内                           │    │
+│  │  • 构建数据过滤条件（账户白名单）                         │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                              ↓                                   │
+│  ┌─────────────────────────────────────────────────────────┐    │
+│  │  数据查询层                                               │    │
+│  │  • 基于权限过滤条件查询 FBI/BI                            │    │
+│  │  • 仅查询有权限的账户数据                                 │    │
+│  │  • 指标计算基于过滤后的数据                               │    │
+│  └─────────────────────────────────────────────────────────┘    │
+│                              ↓                                   │
+│  输出：结构化 JSON（基于权限的维度字段 + 全量指标 + 环比值）       │
+└──────────────────────────────────────────────────────────────────┘
+3.2 工具总体设计
+工具名称：dailyReportData
+Agent 通过不同的 query_type 参数多次调用该工具，获取日报各模块所需的数据。工具内部负责权限校验、SQL 查询、指标计算和环比计算，Agent 只需消费计算好的结果。
+权限处理说明：
+● Agent 调用时不需要传递用户身份信息
+● MCP 工具从调用上下文自动获取当前用户身份
+● MCP 内部完成权限校验和数据过滤
+● 返回的数据已经是用户有权限查看的范围
+3.3 入参定义
+
+{
+  // [必填] 报告日期，格式 YYYYMMDD，数据为该日全天
+  "date": "20260409",
+
+  // [条件必填] 媒体渠道，指定数据来源
+  // 渠道经理：必填，必须在 managed_channels 范围内
+  // 优化师：可选，MCP 自动从 authorized_accounts 推断
+  "channel": "oceanengine | kuaishou | tencent",
+
+  // [必填] 查询类型，决定返回数据的结构
+  "query_type": "summary | dimension | health | tier | trend",
+
+  // [条件必填] 当 query_type = "dimension" 时必填
+  // 指定按哪个维度聚合
+  "dimension_type": "agent_type | business | task | account | resource_position | bid_tool | is_ubp | deduction_rate_range",
+
+  // [可选] 过滤条件，缩小数据范围
+  // 注意：优化师指定的 account_id 必须在自己的授权列表内
+  "filters": {
+    "agent_type": "代理",           // 过滤投放类型
+    "operator_name": "张三",        // 过滤负责人
+    "business_name": "业务A",       // 过滤业务
+    "task_id": "T001",             // 过滤任务ID
+    "account_id": "123456",         // 过滤账户（权限校验）
+    "resource_position": "信息流",   // 过滤资源位
+    "bid_tool": "oCPM",            // 过滤出价工具
+    "is_ubp": true                  // 过滤UBP
+  }
+}
+参数说明：
+参数
+必填
+说明
+权限相关
+date
+是
+报告日期，格式 YYYYMMDD
+-
+channel
+条件
+媒体渠道
+渠道经理必填；优化师可选（自动推断）
+query_type
+是
+查询类型
+-
+dimension_type
+条件
+query_type=dimension 时必填
+-
+filters
+否
+过滤条件
+account_id 需通过权限校验
+角色差异化参数要求：
+参数
+渠道经理
+优化师
+channel
+必填，需在 managed_channels 内
+可选，自动从授权账户推断
+filters.account_id
+无限制
+必须在 authorized_accounts 内
+数据范围
+渠道下全部账户
+仅授权账户
+query_type 枚举说明： | dimension_type | 条件 | query_type=dimension 时必填，指定聚合维度 | | filters | 否 | 过滤条件，支持按各维度值过滤 |
+query_type 枚举说明：
+query_type
+用途
+返回内容
+summary
+整体大盘
+全局汇总的全量指标 + 环比
+dimension
+维度分析
+按指定维度聚合后，每个维度值一行，含全量指标 + 环比
+health
+投放健康度
+空耗、冷启动、新品/新素材跑出率等健康指标
+tier
+消耗分层
+计划消耗分层 + 素材消耗分层统计
+trend
+趋势数据
+最近 7 日的核心指标时序数据
+channel 字段说明：
+MCP 工具根据 channel 参数自动适配不同媒体平台的数据源和字段映射：
+● oceanengine：巨量引擎（头条系）
+● kuaishou：快手磁力引擎
+● tencent：腾讯广告平台
+Agent 无需关心各平台差异，使用统一的字段名消费返回数据。
+2.4 返回字段定义 — summary（整体大盘）
+调用示例：{ "date": "20260409", "query_type": "summary" }
+返回一条记录，包含全局汇总的所有指标及其环比：
+{
+  "date": "20260409",
+  "data": {
+    // ── 基础流量指标 ──
+    "impressions": 12500000,           // 曝光
+    "impressions_dod": 0.05,           // 曝光日环比（+5%）
+    "clicks": 375000,                  // 点击
+    "clicks_dod": 0.03,                // 点击日环比
+    "ctr": 0.03,                       // 点击率 = clicks / impressions
+    "ctr_dod": -0.001,                 // 点击率环比（百分点差值，-0.1pp）
+    "media_conversions": 18000,        // 媒体转化数
+    "media_conversions_dod": -0.02,    // 媒体转化环比
+    "media_cvr": 0.048,               // 媒体转化率 = media_conversions / clicks
+    "media_cvr_dod": -0.002,           // 媒体转化率环比（百分点差值）
+
+    // ── 消耗与成本指标 ──
+    "cost": 500000.00,                 // 账面消耗（元）
+    "cost_dod": 0.08,                  // 账面消耗环比
+    "compensation": 20000.00,          // 赔付金额（元，原始值）
+    "compensation_dod": 0.10,            // 赔付金额环比
+    "cash_cost_after_comp": 440366.97, // 赔付后现金消耗 = (cost - compensation) / 1.09
+    "cash_cost_after_comp_dod": 0.07,  // 赔付后现金消耗环比
+    "media_cpa": 27.78,               // 媒体转化成本 = cost / media_conversions
+    "media_cpa_dod": 0.10,             // 媒体转化成本环比
+    "book_cpa": 27.78,                // 账面成本 = cost / media_conversions
+    "book_cpa_dod": 0.10,              // 账面成本环比
+    "cash_cpa": 29.36,                // 现金成本 = (cost - compensation) / 1.09 / bi_volume
+    "cash_cpa_dod": 0.12,              // 现金成本环比
+
+    // ── 归因与扣量指标 ──
+    "bi_volume": 15000,                // BI量级
+    "bi_volume_dod": -0.03,            // BI量级环比
+    "attribution_volume": 16500,       // 归因量级
+    "attribution_volume_dod": -0.02,   // 归因量级环比
+    "deduction_count": 500,            // 扣量数
+    "deduction_count_dod": 0.08,         // 扣量数环比
+    "deduction_rate": 0.0303,          // 扣量比例 = deduction_count / attribution_volume
+    "deduction_rate_dod": 0.005,       // 扣量比例环比（百分点差值）
+    "gap": 0.20,                       // GAP = media_conversions / bi_volume - 1
+    "gap_dod": 0.02,                   // GAP环比（百分点差值）
+    "pre_deduction_gap": 0.10,         // 扣量前GAP = attribution_volume / bi_volume - 1
+    "pre_deduction_gap_dod": 0.01,     // 扣量前GAP环比（百分点差值）
+
+    // ── 赔付与缺值指标 ──
+    "cash_compensation": 18348.62,     // 现金赔付 = compensation / 1.09
+    "cash_compensation_dod": 0.05,     // 现金赔付环比
+    "target_cost": 25.00,             // 考核成本（加权平均或整体）
+    "business_comp_deficit": 65400.00,  // 业务赔付缺值 = (cash_cpa - target_cost) * bi_volume
+    "business_comp_deficit_dod": 0.15,  // 业务赔付缺值环比
+
+    // ── 用户转化链路指标 ──
+    "wakeup_volume": 50000,            // 唤端
+    "wakeup_volume_dod": 0.02,         // 唤端环比
+    "potential_volume": 30000,         // 潜客量级
+    "potential_volume_dod": -0.01,       // 潜客量级环比
+    "potential_rate": 0.60,            // 潜客率 = potential_volume / wakeup_volume
+    "potential_rate_dod": -0.01,       // 潜客率环比（百分点差值）
+    "bi_cvr": 0.50,                    // BI转化率 = bi_volume / potential_volume
+    "bi_cvr_dod": -0.02,              // BI转化率环比（百分点差值）
+
+    // ── 投放健康度指标（整体）──
+    "empty_plan_count_ratio": 0.15,    // 空耗计划量占比
+    "empty_plan_count_ratio_dod": 0.02,
+    "empty_plan_cost_ratio": 0.08,     // 空耗消耗占比
+    "empty_plan_cost_ratio_dod": 0.01,
+    "zero_cost_imp_ratio": 0.05,       // 0消耗曝光占比
+    "zero_cost_imp_ratio_dod": 0.00,
+    "cold_start_pass_rate": 0.18,      // 冷启动通过率
+    "cold_start_pass_rate_dod": -0.02,
+    "new_product_run_rate": 0.12,      // 新品跑出率
+    "new_product_run_rate_dod": 0.01,
+    "new_material_run_rate": 0.15,     // 新素材跑出率
+    "new_material_run_rate_dod": 0.03,
+    "plan_arppu": 1250.00,            // 单计划ARPPU = 总消耗 / 有消耗计划数
+    "plan_arppu_dod": 0.05
+  }
+}
+2.5 返回字段定义 — dimension（维度分析）
+调用示例：{ "date": "20260409", "query_type": "dimension", "dimension_type": "account" }
+返回数组，每个元素代表该维度下一个分组值的完整数据：
+
+{
+  "date": "20260409",
+  "dimension_type": "account",
+  "data": [
+    {
+      // ── 维度标识字段（根据 dimension_type 不同而不同）──
+      "account_id": "123456",
+      "account_name": "账户A",
+
+      // ── 全量指标（与 summary 结构完全一致）──
+      "impressions": 2500000,
+      "impressions_dod": 0.08,
+      "clicks": 75000,
+      "clicks_dod": 0.06,
+      "ctr": 0.03,
+      "ctr_dod": -0.001,
+      "media_conversions": 3600,
+      "media_conversions_dod": -0.05,
+      "media_cvr": 0.048,
+      "media_cvr_dod": -0.003,
+      "cost": 100000.00,
+      "cost_dod": 0.10,
+      "compensation": 4000.00,
+      "cash_cost_after_comp": 88073.39,
+      "cash_cost_after_comp_dod": 0.09,
+      "media_cpa": 27.78,
+      "media_cpa_dod": 0.16,
+      "book_cpa": 27.78,
+      "book_cpa_dod": 0.16,
+      "cash_cpa": 29.36,
+      "cash_cpa_dod": 0.18,
+      "bi_volume": 3000,
+      "bi_volume_dod": -0.06,
+      "attribution_volume": 3300,
+      "attribution_volume_dod": -0.04,
+      "deduction_count": 100,
+      "deduction_rate": 0.0303,
+      "deduction_rate_dod": 0.003,
+      "gap": 0.20,
+      "gap_dod": 0.03,
+      "pre_deduction_gap": 0.10,
+      "pre_deduction_gap_dod": 0.01,
+      "cash_compensation": 3669.72,
+      "cash_compensation_dod": 0.06,
+      "target_cost": 25.00,
+      "business_comp_deficit": 13080.00,
+      "business_comp_deficit_dod": 0.20,
+      "wakeup_volume": 10000,
+      "wakeup_volume_dod": 0.03,
+      "potential_volume": 6000,
+      "potential_rate": 0.60,
+      "potential_rate_dod": -0.01,
+      "bi_cvr": 0.50,
+      "bi_cvr_dod": -0.02,
+      // 健康度指标（该账户维度下的）
+      "empty_plan_count_ratio": 0.12,
+      "empty_plan_count_ratio_dod": 0.01,
+      "empty_plan_cost_ratio": 0.06,
+      "empty_plan_cost_ratio_dod": 0.005,
+      "zero_cost_imp_ratio": 0.04,
+      "zero_cost_imp_ratio_dod": -0.01,
+      "cold_start_pass_rate": 0.20,
+      "cold_start_pass_rate_dod": 0.02,
+      "new_product_run_rate": 0.10,
+      "new_product_run_rate_dod": -0.01,
+      "new_material_run_rate": 0.14,
+      "new_material_run_rate_dod": 0.02,
+      "plan_arppu": 1100.00,
+      "plan_arppu_dod": 0.03
+    }
+    // ... 更多维度值
+  ]
+}
+各 dimension_type 对应的维度标识字段：
+dimension_type
+返回的维度标识字段
+说明
+agent_type
+agent_type, operator_name
+投放类型 + 负责人（两级：先按大类，再按个人）
+business
+business_name
+业务名称
+task
+task_id, task_name, business_name
+任务ID + 任务名称 + 所属业务（任务为业务的子集）
+account
+account_id, account_name
+账户ID + 账户名称
+resource_position
+resource_position
+资源位置
+bid_tool
+bid_tool
+出价工具
+is_ubp/ uaa / 智投
+is_ubp
+是否UBP/uaa/智投
+deduction_rate_range
+deduction_rate_range
+扣量比例区间（枚举值："0%-5%", "5%-10%", "10%-20%", ">20%"，由工具按 4.4 节定义划分）
+维度层级关系：业务（business） ├── 任务1（task） │ ├── 账户A │ └── 账户B ├── 任务2（task） │ ├── 账户C │ └── 账户D └── ...
+● 业务是任务的上级维度，一个业务下包含多个任务
+● 任务维度返回数据时需同时携带 business_name，便于展示归属关系
+agent_type 维度的特殊返回结构：
+该维度需要支持两级展示，返回数据中同时包含大类汇总和个人明细两种粒度的记录，通过 level 字段区分：
+
+{
+  "data": [
+    // 第一级：大类汇总
+    { "level": "summary", "agent_type": "代理", "operator_name": null, "cost": 300000, ... },
+    { "level": "summary", "agent_type": "自投", "operator_name": null, "cost": 200000, ... },
+    // 第二级：个人明细
+    { "level": "detail", "agent_type": "代理", "operator_name": "张三", "cost": 150000, ... },
+    { "level": "detail", "agent_type": "代理", "operator_name": "李四", "cost": 150000, ... },
+    { "level": "detail", "agent_type": "自投", "operator_name": "王五", "cost": 120000, ... },
+    { "level": "detail", "agent_type": "自投", "operator_name": "赵六", "cost": 80000, ... }
+  ]
+}
+2.6 返回字段定义 — health（投放健康度）
+调用示例：{ "date": "20260409", "query_type": "health" }
+返回投放健康度的详细分项数据：
+
+{
+  "date": "20260409",
+  "data": {
+    // ── 空耗分析 ──
+    "total_plan_count": 400,                // 总在投计划数
+    "empty_plan_count": 60,                 // 空耗计划数（有消耗无转化）
+    "empty_plan_count_ratio": 0.15,         // 空耗计划量占比
+    "empty_plan_count_ratio_dod": 0.02,
+    "empty_plan_cost": 40000.00,            // 空耗计划总消耗
+    "empty_plan_cost_ratio": 0.08,          // 空耗消耗占比
+    "empty_plan_cost_ratio_dod": 0.01,
+    "zero_cost_imp_plan_count": 20,         // 0消耗有曝光的计划数
+    "zero_cost_imp_ratio": 0.05,            // 0消耗曝光占比
+    "zero_cost_imp_ratio_dod": 0.00,
+
+    // ── 冷启动 ──
+    "new_plan_count": 50,                   // 新建计划数
+    "cold_start_passed_count": 9,           // 通过冷启动的计划数
+    "cold_start_pass_rate": 0.18,           // 冷启动通过率
+    "cold_start_pass_rate_dod": -0.02,
+
+    // ── 新品/新素材 ──
+    "new_product_count": 25,                // 新品总数
+    "new_product_qualified_count": 3,       // 达标新品数
+    "new_product_run_rate": 0.12,           // 新品跑出率
+    "new_product_run_rate_dod": 0.01,
+    "new_material_count": 40,               // 新素材总数
+    "new_material_qualified_count": 6,      // 达标新素材数
+    "new_material_run_rate": 0.15,          // 新素材跑出率
+    "new_material_run_rate_dod": 0.03,
+
+    // ── 计划效率 ──
+    "active_plan_count": 340,               // 有消耗的计划数
+    "total_cost": 500000.00,                // 总消耗
+    "plan_arppu": 1470.59,                  // 单计划ARPPU = total_cost / active_plan_count
+    "plan_arppu_dod": 0.05
+  }
+}
+2.7 返回字段定义 — tier（消耗分层）
+调用示例：{ "date": "20260409", "query_type": "tier" }
+返回计划和素材两个维度的消耗分层统计：
+
+{
+  "date": "20260409",
+  "data": {
+    // ── 计划消耗分层 ──
+    "plan_tiers": [
+      {
+        "tier_name": "Tier 1 - 头部计划",   // 层级名称
+        "tier_range": "≥10,000元",           // 消耗区间
+        "count": 15,                         // 计划数量
+        "count_ratio": 0.0375,               // 数量占比
+        "count_dod": 0.02,                   // 数量环比
+        "total_cost": 320000.00,             // 该层总消耗
+        "cost_ratio": 0.64,                  // 消耗占比
+        "cost_dod": 0.05,                    // 消耗环比
+        "avg_cpa": 22.50,                    // 该层平均成本
+        "avg_cpa_dod": -0.03,               // 平均成本环比
+        "total_conversions": 14222           // 该层总转化数
+      },
+      {
+        "tier_name": "Tier 2 - 腰部计划",
+        "tier_range": "1,000~10,000元",
+        "count": 80,
+        "count_ratio": 0.20,
+        "count_dod": -0.01,
+        "total_cost": 120000.00,
+        "cost_ratio": 0.24,
+        "cost_dod": 0.03,
+        "avg_cpa": 30.00,
+        "avg_cpa_dod": 0.08,
+        "total_conversions": 4000
+      },
+      {
+        "tier_name": "Tier 3 - 尾部计划",
+        "tier_range": "100~1,000元",
+        "count": 120,
+        "count_ratio": 0.30,
+        "count_dod": 0.00,
+        "total_cost": 45000.00,
+        "cost_ratio": 0.09,
+        "cost_dod": -0.02,
+        "avg_cpa": 35.00,
+        "avg_cpa_dod": 0.05,
+        "total_conversions": 1286
+      },
+      {
+        "tier_name": "Tier 4 - 微量计划",
+        "tier_range": "0~100元",
+        "count": 125,
+        "count_ratio": 0.3125,
+        "count_dod": 0.01,
+        "total_cost": 5000.00,
+        "cost_ratio": 0.01,
+        "cost_dod": -0.05,
+        "avg_cpa": 50.00,
+        "avg_cpa_dod": 0.10,
+        "total_conversions": 100
+      },
+      {
+        "tier_name": "Tier 5 - 空耗计划",
+        "tier_range": "有消耗无转化",
+        "count": 60,
+        "count_ratio": 0.15,
+        "count_dod": 0.02,
+        "total_cost": 10000.00,
+        "cost_ratio": 0.02,
+        "cost_dod": 0.10,
+        "avg_cpa": null,
+        "avg_cpa_dod": null,
+        "total_conversions": 0
+      }
+    ],
+    // ── 素材消耗分层 ──
+    "material_tiers": [
+      {
+        "tier_name": "S级素材",
+        "tier_range": "≥50,000元",
+        "count": 5,
+        "count_ratio": 0.02,
+        "count_dod": 0.00,
+        "total_cost": 350000.00,
+        "cost_ratio": 0.70,
+        "cost_dod": 0.06,
+        "avg_cpa": 20.00,
+        "avg_cpa_dod": -0.02,
+        "total_conversions": 17500
+      },
+      {
+        "tier_name": "A级素材",
+        "tier_range": "10,000~50,000元",
+        "count": 20,
+        "count_ratio": 0.08,
+        "count_dod": 0.01,
+        "total_cost": 100000.00,
+        "cost_ratio": 0.20,
+        "cost_dod": 0.03,
+        "avg_cpa": 28.00,
+        "avg_cpa_dod": 0.05,
+        "total_conversions": 3571
+      },
+      {
+        "tier_name": "B级素材",
+        "tier_range": "1,000~10,000元",
+        "count": 60,
+        "count_ratio": 0.24,
+        "count_dod": -0.02,
+        "total_cost": 40000.00,
+        "cost_ratio": 0.08,
+        "cost_dod": -0.04,
+        "avg_cpa": 35.00,
+        "avg_cpa_dod": 0.08,
+        "total_conversions": 1143
+      },
+      {
+        "tier_name": "C级素材",
+        "tier_range": "<1,000元",
+        "count": 165,
+        "count_ratio": 0.66,
+        "count_dod": 0.01,
+        "total_cost": 10000.00,
+        "cost_ratio": 0.02,
+        "cost_dod": -0.08,
+        "avg_cpa": 50.00,
+        "avg_cpa_dod": 0.12,
+        "total_conversions": 200
+      }
+    ]
+  }
+}
+
+2.8 返回字段定义 — trend（趋势数据）
+调用示例：{ "date": "20260409", "query_type": "trend" }
+返回最近 7 天的核心指标时序数据，用于趋势图表绘制：
+
+{
+  "date": "20260409",
+  "data": [
+    {
+      "date": "20260403",              // 日期
+      "cost": 450000.00,               // 账面消耗
+      "cash_cost_after_comp": 400000,  // 赔付后现金消耗
+      "media_conversions": 17000,      // 媒体转化数
+      "bi_volume": 14200,              // BI量级
+      "cash_cpa": 28.17,              // 现金成本
+      "gap": 0.197,                    // GAP
+      "ctr": 0.031,                    // 点击率
+      "media_cvr": 0.049,             // 媒体转化率
+      "empty_plan_cost_ratio": 0.07,   // 空耗消耗占比
+      "cold_start_pass_rate": 0.20,    // 冷启动通过率
+      "new_product_run_rate": 0.12,    // 新品跑出率
+      "new_material_run_rate": 0.15,   // 新素材跑出率
+      "deduction_rate": 0.03,          // 扣量比例
+      "plan_arppu": 1200.00            // 单计划ARPPU
+    },
+    { "date": "20260404", "cost": 460000, ... },
+    { "date": "20260405", "cost": 470000, ... },
+    { "date": "20260406", "cost": 480000, ... },
+    { "date": "20260407", "cost": 490000, ... },
+    { "date": "20260408", "cost": 463000, ... },
+    { "date": "20260409", "cost": 500000, ... }
+  ]
+}
+2.9 完整字段清单
+以下是 MCP 工具返回的全量指标字段及其含义，summary 和 dimension 类型的每条记录都必须包含这些字段：
+字段名
+类型
+含义
+计算公式
+基础流量
+
+
+
+impressions
+int
+曝光
+原始值
+impressions_dod
+float
+曝光日环比
+(今-昨)/昨
+clicks
+int
+点击
+原始值
+clicks_dod
+float
+点击日环比
+(今-昨)/昨
+ctr
+float
+点击率
+clicks / impressions
+ctr_dod
+float
+点击率环比
+百分点差值
+media_conversions
+int
+媒体转化数
+原始值
+media_conversions_dod
+float
+媒体转化环比
+(今-昨)/昨
+media_cvr
+float
+媒体转化率
+media_conversions / clicks
+media_cvr_dod
+float
+媒体转化率环比
+百分点差值
+消耗与成本
+
+
+
+cost
+float
+账面消耗（元）
+原始值
+cost_dod
+float
+账面消耗环比
+(今-昨)/昨
+compensation
+float
+赔付金额（元）
+原始值
+compensation_dod
+float
+赔付金额环比
+(今-昨)/昨
+cash_cost_after_comp
+float
+赔付后现金消耗
+(cost - compensation) / 1.09
+cash_cost_after_comp_dod
+float
+赔付后现金消耗环比
+(今-昨)/昨
+media_cpa
+float
+媒体转化成本
+cost / media_conversions
+media_cpa_dod
+float
+媒体转化成本环比
+(今-昨)/昨
+book_cpa
+float
+账面成本
+cost / media_conversions
+book_cpa_dod
+float
+账面成本环比
+(今-昨)/昨
+cash_cpa
+float
+现金成本
+(cost - compensation) / 1.09 / bi_volume
+cash_cpa_dod
+float
+现金成本环比
+(今-昨)/昨
+归因与扣量
+
+
+
+bi_volume
+int
+BI量级
+原始值
+bi_volume_dod
+float
+BI量级环比
+(今-昨)/昨
+attribution_volume
+int
+归因量级
+原始值
+attribution_volume_dod
+float
+归因量级环比
+(今-昨)/昨
+deduction_count
+int
+扣量数
+原始值
+deduction_count_dod
+float
+扣量数环比
+(今-昨)/昨
+deduction_rate
+float
+扣量比例
+deduction_count / attribution_volume
+deduction_rate_dod
+float
+扣量比例环比
+百分点差值
+gap
+float
+GAP
+media_conversions / bi_volume - 1
+gap_dod
+float
+GAP环比
+百分点差值
+pre_deduction_gap
+float
+扣量前GAP
+attribution_volume / bi_volume - 1
+pre_deduction_gap_dod
+float
+扣量前GAP环比
+百分点差值
+赔付与缺值
+
+
+
+cash_compensation
+float
+现金赔付
+compensation / 1.09
+cash_compensation_dod
+float
+现金赔付环比
+(今-昨)/昨
+target_cost
+float
+考核成本
+配置值
+business_comp_deficit
+float
+业务赔付缺值
+(cash_cpa - target_cost) * bi_volume
+business_comp_deficit_dod
+float
+赔付缺值环比
+(今-昨)/昨
+用户转化链路
+
+
+
+wakeup_volume
+int
+唤端
+原始值
+wakeup_volume_dod
+float
+唤端环比
+(今-昨)/昨
+potential_volume
+int
+潜客量级
+原始值
+potential_volume_dod
+float
+潜客量级环比
+(今-昨)/昨
+potential_rate
+float
+潜客率
+potential_volume / wakeup_volume
+potential_rate_dod
+float
+潜客率环比
+百分点差值
+bi_cvr
+float
+BI转化率
+bi_volume / potential_volume
+bi_cvr_dod
+float
+BI转化率环比
+百分点差值
+投放健康度
+
+
+
+empty_plan_count_ratio
+float
+空耗计划量占比
+空耗计划数 / 总在投计划数
+empty_plan_count_ratio_dod
+float
+空耗计划量占比环比
+百分点差值
+empty_plan_cost_ratio
+float
+空耗消耗占比
+空耗计划消耗 / 总消耗
+empty_plan_cost_ratio_dod
+float
+空耗消耗占比环比
+百分点差值
+zero_cost_imp_ratio
+float
+0消耗曝光占比
+0消耗有曝光计划数 / 总计划数
+zero_cost_imp_ratio_dod
+float
+0消耗曝光占比环比
+百分点差值
+cold_start_pass_rate
+float
+冷启动通过率
+通过计划数 / 新建计划数
+cold_start_pass_rate_dod
+float
+冷启动通过率环比
+百分点差值
+new_product_run_rate
+float
+新品跑出率
+达标新品数 / 新品总数
+new_product_run_rate_dod
+float
+新品跑出率环比
+百分点差值
+new_material_run_rate
+float
+新素材跑出率
+达标新素材数 / 新素材总数
+new_material_run_rate_dod
+float
+新素材跑出率环比
+百分点差值
+plan_arppu
+float
+单计划ARPPU
+总消耗 / 有消耗计划数
+plan_arppu_dod
+float
+单计划ARPPU环比
+(今-昨)/昨
+2.10 环比字段约定
+所有 _dod（day-over-day）后缀字段遵循统一规则：
+情况
+值
+说明
+正常计算
+float
+绝对值指标：(今-昨)/昨；比率指标：今-昨（百分点差值）
+昨日=0，今日>0
+"NEW"
+字符串，表示新增
+昨日=0，今日=0
+0
+持平
+指标无法计算（分母为0）
+null
+该指标本身无效
+2.11 Agent 调用序列
+Agent 生成一份完整日报需要按以下顺序调用 MCP 工具：
+
+调用1: { channel: "oceanengine", query_type: "summary" }                                    → 整体大盘数据
+调用2: { channel: "oceanengine", query_type: "trend" }                                      → 7日趋势数据
+调用3: { channel: "oceanengine", query_type: "dimension", dimension_type: "agent_type" }    → 代理/自投分析
+调用4: { channel: "oceanengine", query_type: "dimension", dimension_type: "business" }      → 业务维度分析
+调用5: { channel: "oceanengine", query_type: "dimension", dimension_type: "task" }          → 任务维度分析
+调用6: { channel: "oceanengine", query_type: "dimension", dimension_type: "account" }       → 账户维度分析
+调用7: { channel: "oceanengine", query_type: "dimension", dimension_type: "resource_position" } → 资源位分析
+调用8: { channel: "oceanengine", query_type: "dimension", dimension_type: "bid_tool" }      → 出价工具分析
+调用9: { channel: "oceanengine", query_type: "dimension", dimension_type: "is_ubp" }        → UBP分析
+调用10: { channel: "oceanengine", query_type: "dimension", dimension_type: "deduction_rate_range" } → 扣量分析
+调用11: { channel: "oceanengine", query_type: "health" }                                    → 投放健康度详情
+调用12: { channel: "oceanengine", query_type: "tier" }                                      → 消耗分层统计
+多渠道支持：
+如需生成多个渠道的日报，对每个渠道分别执行上述 12 次调用序列：
+
+# 巨量引擎日报
+for call in sequence: call(channel="oceanengine", ...)
+
+# 快手日报
+for call in sequence: call(channel="kuaishou", ...)
+
+# 腾讯广告日报
+for call in sequence: call(channel="tencent", ...)
+Agent 可根据配置选择生成单一渠道日报或合并多渠道的综合日报。
+
+三、指标体系
+3.1 指标总览
+本日报涉及 30+ 项指标，分为 6 大类。所有指标均需计算日环比（对比前一天）。
+3.2 基础流量指标
+指标名称
+字段标识
+计算公式
+数据源
+曝光
+impressions
+原始字段
+媒体投放明细
+点击
+clicks
+原始字段
+媒体投放明细
+点击率（CTR）
+ctr
+clicks / impressions
+计算
+媒体转化数
+media_conversions
+原始字段
+媒体投放明细
+媒体转化率（CVR）
+media_cvr
+media_conversions / clicks
+计算
+3.3 消耗与成本指标
+指标名称
+字段标识
+计算公式
+说明
+账面消耗
+cost
+原始字段
+媒体后台展示的消耗金额
+赔付后现金消耗
+cash_cost_after_comp
+(cost - compensation) / 1.09
+扣除赔付并去税
+媒体转化成本
+media_cpa
+cost / media_conversions
+媒体口径的单转化成本
+账面成本
+book_cpa
+cost / media_conversions
+同媒体转化成本，媒体后台消耗/媒体后台转化
+现金成本
+cash_cpa
+(cost - compensation) / 1.09 / bi_volume
+基于 BI 量级的真实单转化成本
+3.4 归因与扣量指标
+指标名称
+字段标识
+计算公式
+说明
+BI量级
+bi_volume
+原始字段
+FBI/BI 系统归因的转化量
+GAP
+gap
+media_conversions / bi_volume - 1
+媒体转化与BI量级的偏差率
+扣量比例
+deduction_rate
+deduction_count / attribution_volume
+扣量占归因量级比例
+扣量前GAP
+pre_deduction_gap
+attribution_volume / bi_volume - 1
+扣量前的归因偏差率
+归因量级
+attribution_volume
+原始字段
+归因系统计算的转化量
+3.5 赔付与缺值指标
+指标名称
+字段标识
+计算公式
+说明
+现金赔付
+cash_compensation
+compensation / 1.09
+赔付金额去税
+业务赔付缺值
+business_comp_deficit
+(cash_cpa - target_cost) * bi_volume
+现金成本超出考核成本部分 × BI量级，正值表示超成本
+3.6 用户转化链路指标
+指标名称
+字段标识
+计算公式
+说明
+唤端
+wakeup_volume
+原始字段
+唤起APP的量级
+潜客率
+potential_rate
+potential_volume / wakeup_volume
+唤端转潜客的比率
+BI转化率
+bi_cvr
+bi_volume / potential_volume
+潜客转BI转化的比率
+3.7 投放健康度指标
+指标名称
+字段标识
+计算公式
+说明
+空耗计划量占比
+empty_plan_count_ratio
+空耗计划数 / 总在投计划数
+有消耗无转化的计划占比
+空耗消耗占比
+empty_plan_cost_ratio
+空耗计划消耗 / 总消耗
+空耗计划贡献的消耗占比
+0消耗曝光占比
+zero_cost_imp_ratio
+0消耗但有曝光的计划数 / 总计划数
+有曝光但无消耗的比例
+冷启动通过率
+cold_start_pass_rate
+通过冷启动的计划数 / 新建计划数
+新计划存活率
+新品跑出率
+new_product_run_rate
+达标新品数 / 新品总数
+新商品投放达标率
+新素材跑出率
+new_material_run_rate
+达标新素材数 / 新素材总数
+新素材投放达标率
+3.8 效率与分层指标
+指标名称
+字段标识
+计算公式
+说明
+单计划ARPPU
+plan_arppu
+总消耗 / 有消耗计划数
+每个有消耗计划的平均消耗
+素材消耗分层
+material_cost_tier
+按消耗区间分层统计
+详见3.9
+计划消耗分层
+plan_cost_tier
+按消耗区间分层统计
+详见3.9
+3.9 消耗分层定义
+计划消耗分层：
+层级
+消耗区间
+统计内容
+Tier 1 - 头部计划
+>= 10,000 元
+计划数量、占比、总消耗、平均成本
+Tier 2 - 腰部计划
+1,000 ~ 10,000 元
+同上
+Tier 3 - 尾部计划
+100 ~ 1,000 元
+同上
+Tier 4 - 微量计划
+0 ~ 100 元
+同上
+Tier 5 - 空耗计划
+有消耗无转化
+同上
+素材消耗分层：
+层级
+消耗区间
+统计内容
+S级素材
+>= 50,000 元
+素材数量、占比、总消耗、平均成本
+A级素材
+10,000 ~ 50,000 元
+同上
+B级素材
+1,000 ~ 10,000 元
+同上
+C级素材
+< 1,000 元
+同上
+注：分层阈值为初始建议值，可在配置文件中调整。
+3.10 环比计算规则
+所有指标均需计算日环比，公式统一为：环比变化率 = (今日值 - 昨日值) / 昨日值
+特殊处理规则：
+● 昨日值为 0 时：若今日值 > 0，MCP 返回 "NEW"，报告展示为"新增"；若今日值也为 0，返回 0，展示为"持平"。
+● 分母为 0 导致指标无法计算时，MCP 返回 null，报告展示为 "-"。
+● 比率类指标（CTR、CVR 等）：环比以百分点（pp）表示，即 今日值 - 昨日值。
+● 环比展示格式：正值显示为 +X.X%（红色），负值显示为 -X.X%（绿色），零显示为 0.0%（灰色）。
+
+四、维度分析体系
+4.1 维度列表与层级
+日报需在以下 8 个维度 下分别展示完整的指标数据，每个维度生成一个独立的分析模块：
+维度编号
+维度名称
+维度字段
+下钻层级
+说明
+D1
+代理/自投
+agent_type
+大类 → 个人
+先展示代理、自投两大类汇总，再细分到每个负责人
+D2
+业务名称
+business_name
+业务
+按投放业务维度汇总
+D3
+任务ID
+task_id
+任务
+按投放任务维度汇总（任务为业务的子集）
+D4
+任务名称
+task_name
+任务
+按任务名称维度汇总（与D3互补展示）
+D5
+账户ID/名称
+account_id + account_name
+账户
+按广告账户维度汇总
+D6
+资源位置
+resource_position
+资源位
+按投放资源位维度汇总
+D7
+出价工具
+bid_tool
+工具
+按出价工具类型维度汇总
+D8
+是否UBP/UAA/智投
+is_ubp
+标记
+按UBP标记分组汇总
+维度层级关系：代理/自投（agent_type） └── 负责人（operator_name） 业务（business） └── 任务（task） └── 账户（account）
+● 任务维度（D3/D4）是业务维度（D2）的子集，一个业务下包含多个任务
+● 任务维度分析表中需展示所属业务名称，便于理解数据归属
+4.2 各维度展示规范
+每个维度模块的展示结构统一如下：
+
+[维度名称] 分析
+├── 1. 汇总概览卡片（总消耗、总转化、整体成本、整体GAP）
+├── 2. 数据表格
+│   ├── 各维度值的全量指标 + 环比变化
+│   ├── 异常行高亮标记
+│   └── 默认按消耗降序排列
+├── 3. 可视化图表
+│   ├── 消耗 TOP10 柱状图
+│   ├── 成本 vs 考核成本 对比图
+│   └── 环比变化趋势图（如适用）
+└── 4. 异常摘要
+    └── 该维度下所有被标记为异常的记录汇总
+4.3 "代理/自投"维度特殊处理
+该维度需要两级展示：
+第一级 — 大类汇总：
+投放类型
+消耗
+环比
+转化
+环比
+成本
+环比
+...
+代理
+xxx
++x%
+xxx
++x%
+xxx
++x%
+...
+自投
+xxx
+-x%
+xxx
+-x%
+xxx
+-x%
+...
+第二级 — 个人明细：
+在每个大类下，细分展示到个人（负责人）粒度的完整指标数据，同样包含环比和异常标记。
+4.4 扣量比例维度说明
+扣量比例作为一个分析切面，按扣量比例区间对账户/任务进行分组分析：
+扣量比例区间
+账户/任务数
+总消耗
+平均成本
+平均GAP
+0% ~ 20%
+xx
+xxx
+xxx
+xxx
+20% ~ 30%
+xx
+xxx
+xxx
+xxx
+30% ~ 50%
+xx
+xxx
+xxx
+xxx
+> 50%
+xx
+xxx
+xxx
+xxx
+
+五、异常标记规则框架
+5.1 规则引擎设计
+异常标记采用可配置的规则引擎，支持用户自定义规则。规则以 JSON/YAML 配置文件形式存储，Agent 在运行时加载并应用。
+5.2 规则配置结构
+具体规则可以再进行分配
+anomaly_rules:
+  # 规则1：消耗环比波动
+  - rule_id: "cost_change"
+    metric: "cost"
+    type: "ratio_change"         # 环比变化率
+    thresholds:
+      warning: 0.20              # >=20% 变化标记为关注
+      critical: 0.50             # >=50% 变化标记为异常
+    direction: "both"            # both/up/down
+
+  # 规则2：成本超出考核
+  - rule_id: "cost_over_target"
+    metric: "cash_cpa"
+    type: "compare_to_target"    # 与目标值比较
+    target_field: "target_cost"
+    thresholds:
+      warning: 0.10              # 超出考核成本10%
+      critical: 0.30             # 超出考核成本30%
+
+  # 规则3：GAP异常
+  - rule_id: "gap_abnormal"
+    metric: "gap"
+    type: "absolute_value"       # 绝对值判断
+    thresholds:
+      warning: 0.15              # GAP绝对值 > 15%
+      critical: 0.30             # GAP绝对值 > 30%
+
+  # 规则4：空耗占比过高
+  - rule_id: "empty_cost_ratio"
+    metric: "empty_plan_cost_ratio"
+    type: "absolute_value"
+    thresholds:
+      warning: 0.10              # 空耗消耗占比 > 10%
+      critical: 0.20             # 空耗消耗占比 > 20%
+
+  # 规则5：冷启动通过率过低
+  - rule_id: "cold_start_low"
+    metric: "cold_start_pass_rate"
+    type: "below_threshold"      # 低于阈值
+    thresholds:
+      warning: 0.20              # 低于20%
+      critical: 0.10             # 低于10%
+
+  # ... 用户可继续追加规则
+5.3 异常标记等级
+等级
+标记
+颜色
+含义
+严重异常
+CRITICAL
+红色
+需要立即关注处理
+需关注
+WARNING
+黄色
+需要跟进观察
+正常
+NORMAL
+无色
+指标在正常范围内
+5.4 异常规则类型
+规则类型
+标识
+说明
+环比变化率
+ratio_change
+环比变化的绝对值超过阈值
+与目标值比较
+compare_to_target
+实际值相对目标值的偏差率超过阈值
+绝对值判断
+absolute_value
+指标绝对值超过阈值
+低于阈值
+below_threshold
+指标低于最低阈值
+自定义表达式
+expression
+支持复合逻辑表达式（预留）
+说明：上述阈值均为建议初始值。用户需要根据业务实际情况自定义规则和阈值，配置文件路径：config/anomaly_rules.yaml。
+
+六、日报结构设计
+6.1 整体结构
+
+KA 媒体投放日报 - {channel_name} - {YYYY-MM-DD}
+│
+├── 0. 日报摘要（Executive Summary）
+│   ├── 核心数据卡片（4~6项关键指标 + 环比箭头）
+│   └── 异常事项汇总（当日发现的全部异常，按严重度排序）
+│
+├── 1. 整体大盘概览
+│   ├── 全量指标汇总表（当日值 + 昨日值 + 环比）
+│   ├── 消耗趋势折线图（最近7日）
+│   └── 转化漏斗图（曝光→点击→转化→BI量级）
+│
+├── 2. 代理/自投分析 [D1]
+│   ├── 大类汇总表
+│   ├── 代理-个人明细表
+│   ├── 自投-个人明细表
+│   └── 消耗占比饼图
+│
+├── 3. 业务维度分析 [D2]
+│   ├── 业务数据表（全量指标 + 环比 + 异常标记）
+│   ├── 业务消耗TOP10柱状图
+│   └── 业务赔付缺值排行
+│
+├── 4. 任务维度分析 [D3+D4]
+│   ├── 任务数据表（任务ID + 任务名称 + 所属业务 + 全量指标）
+│   ├── 任务消耗分布（按业务分组）
+│   └── 任务异常列表
+│
+├── 5. 账户维度分析 [D5]
+│   ├── 账户数据表（账户ID + 账户名称 + 全量指标）
+│   ├── 账户消耗TOP20柱状图
+│   └── 账户成本分布散点图
+│
+├── 6. 资源位分析 [D6]
+│   ├── 资源位数据表
+│   ├── 资源位消耗占比饼图
+│   └── 资源位效果对比雷达图
+│
+├── 7. 出价工具分析 [D7]
+│   ├── 出价工具数据表
+│   └── 各工具效果对比柱状图
+│
+├── 8. UBP分析 [D8]
+│   ├── UBP vs 非UBP对比表
+│   └── 对比柱状图
+│
+├── 9. 扣量分析
+│   ├── 扣量比例区间分布表
+│   ├── 高扣量账户/任务TOP列表
+│   └── 扣量比例分布直方图
+│
+├── 10. 投放健康度
+│   ├── 空耗分析（计划量占比 + 消耗占比）
+│   ├── 冷启动通过率趋势
+│   ├── 新品/新素材跑出率
+│   └── 单计划ARPPU趋势
+│
+├── 11. 消耗分层分析
+│   ├── 计划消耗分层表 + 堆叠柱状图
+│   └── 素材消耗分层表 + 堆叠柱状图
+│
+└── 附录
+    ├── 指标计算公式说明
+    ├── 异常规则配置说明
+    └── 数据更新时间戳
+6.2 日报摘要模块设计
+日报最顶部展示 Executive Summary，一屏之内传递核心信息：
+核心数据卡片（6个）：
+1. 总消耗 + 环比
+2. 现金成本 + 环比 + 考核达标状态
+3. BI量级 + 环比
+4. 整体GAP
+5. 空耗消耗占比
+6. 异常项数量
+异常事项汇总：按严重度降序列出当日所有 CRITICAL 和 WARNING 级别的异常，格式为：
+
+[CRITICAL] 账户xxx(ID:123) 消耗环比下降 65%，从 50,000 降至 17,500
+[CRITICAL] 业务A 现金成本 ¥85，超出考核成本(¥60) 41.7%
+[WARNING] 资源位"信息流" GAP达到 22%，需关注
+...
+6.3 图表设计方案
+图表类型
+应用场景
+实现方式
+核心指标卡片
+日报摘要
+HTML + CSS 卡片组件
+折线图
+消耗/成本趋势（7日）
+ECharts / Chart.js
+柱状图
+TOP消耗排名、维度对比
+ECharts / Chart.js
+堆叠柱状图
+消耗分层分布
+ECharts / Chart.js
+饼图/环形图
+消耗占比
+ECharts / Chart.js
+漏斗图
+转化漏斗
+ECharts
+散点图
+成本-消耗分布
+ECharts
+雷达图
+资源位效果对比
+ECharts
+直方图
+扣量比例分布
+ECharts / Chart.js
+图表库优先使用 ECharts（CDN引入），因其对中文和复杂图表类型支持最好。
+6.4 数据表格设计规范
+表格通用规范：
+● 数值格式：金额保留2位小数，百分比保留1位小数，量级取整。
+● 环比列紧跟在对应指标列之后，字体缩小一号，正值红色↑、负值绿色↓。
+● 异常行整行加背景色：CRITICAL 浅红色，WARNING 浅黄色。
+● 表头固定，表体支持滚动（长表格场景）。
+● 默认按消耗降序排列，支持点击列头排序（HTML交互功能）。
+示例表头结构：
+
+| 账户ID | 账户名称 | 消耗 | 消耗环比 | 点击 | 点击环比 | CTR | CTR环比 | 
+| 媒体转化 | 转化环比 | 账面成本 | 成本环比 | 现金成本 | 现金成本环比 | 
+| BI量级 | BI环比 | GAP | GAP环比 | 扣量比例 | 唤端 | 潜客率 | BI转化率 | 状态 |
+
+七、Agent 工作流设计
+7.1 整体流程
+
+┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│ Step 1   │ →  │ Step 2   │ →  │ Step 3   │ →  │ Step 4   │
+│ 数据获取  │    │ 异常检测  │    │ 报告生成  │    │ 推送分发  │
+│(MCP调用)  │    │(规则引擎) │    │(HTML组装) │    │(钉钉推送) │
+└──────────┘    └──────────┘    └──────────┘    └──────────┘
+7.2 Step 1：数据获取（调用 MCP 工具）
+1.1 确定日期
+    - T = 报告日期（默认昨天）
+
+1.2 按第 2.11 节的调用序列，依次调用 dailyReportData 工具共 12 次
+    - 调用1~2：整体大盘 + 7日趋势
+    - 调用3~10：8个维度的分维度数据
+    - 调用11~12：健康度详情 + 消耗分层
+
+1.3 数据校验
+    - 检查各调用返回是否正常
+    - 若某次调用失败，在报告中标注"该模块数据缺失"
+7.3 Step 2：异常检测
+
+2.1 加载异常规则配置（anomaly_rules.yaml）
+
+2.2 遍历每个维度返回的每条记录
+    - 对每条规则逐一检查
+    - 为每条记录生成异常标记列表
+
+2.3 生成异常摘要
+    - 按维度分类汇总异常
+    - 按严重度排序
+    - 生成自然语言描述
+
+工具：julang-agent python
+7.4 Step 3：报告生成
+
+3.1 准备报告数据结构
+    - 将 MCP 返回数据 + 异常标记结果组织为各模块所需的数据格式
+
+3.2 生成 HTML 报告
+    - 使用 Python 拼装 HTML
+    - 嵌入 ECharts CDN，渲染图表
+    - 应用异常高亮样式
+    - 生成交互式表格（排序、筛选）
+
+3.3 保存文件
+    - 通过 textFileOperate 创建 HTML 文件
+    - 通过 ossFileOutputFinalize 生成最终报告地址
+
+工具：julang-agent textFileOperate + ossFileOutputFinalize
+7.5 Step 4：推送分发
+
+5.1 生成日报摘要文本
+    - 核心指标一句话概括
+    - 异常项数量提示
+    - 报告链接
+
+5.2 推送钉钉消息
+    - 发送摘要 + HTML报告链接到指定群/个人
+
+工具：julang-agent dingMessageSend
+
+5.3 （可选）同步钉钉文档
+    - 创建钉钉文档版本的日报
+    
+工具：钉钉文档 MCP
+
+
+
+实时盯盘监控系统
+1.3 与日报系统的关系
+
+┌─────────────────────────────────────────────────────────────┐
+│                    KA 媒体投放监控体系                        │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌─────────────────────┐    ┌─────────────────────┐        │
+│  │   实时盯盘系统       │     │   日报生成系统        │        │
+│  │   (Real-time)       │    │   (Daily)          │        │
+│  │                     │    │                    │        │
+│  │  • 实时监控          │    │  • 日维度汇总        │        │
+│  │  • 异常告警          │    │  • 多维度分析        │        │
+│  │  • 即时建议          │    │  • 趋势分析          │        │
+│  │  • 快速响应          │    │  • 复盘总结          │        │
+│  └─────────────────────┘    └────────────────────┘        │
+│           │                          │                     │
+│           └──────────┬───────────────┘                     │
+│                      ▼                                      │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │              统一 MCP 数据层                         │   │
+│  │  • 权限校验（渠道经理/优化师）                       │   │
+│  │  • 实时数据查询（FBI/BI）                            │   │
+│  │  • 指标计算                                          │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+继承日报系统的两层权限体系：
+角色
+监控范围
+操作权限
+渠道经理
+可配置渠道下的全部账户和广告组
+查看全部，可配置监控规则
+优化师
+仅自己有权限的账户和广告组
+查看授权账户，可操作自己的账户
+权限校验：统一在 MCP 层完成，Agent 无需处理。
+3.1 监控层级
+
+监控层级
+├── 账户级 (Account)
+│   ├── 实时消耗
+│   ├── 实时成本
+│   ├── 预算使用率
+│   └── 转化波动
+│
+└── 广告组级 (Ad Group)
+    ├── 实时消耗
+    ├── 实时成本
+    ├── 点击率 (CTR)
+    ├── 转化率 (CVR)
+    ├── 空耗判断
+    └── 超成本判断
+3.2 监控指标定义
+账户级指标
+指标
+字段
+计算方式
+监控频率
+实时消耗
+realtime_cost
+当日累计消耗
+5分钟
+消耗速度
+cost_velocity
+近1小时消耗 / 时间窗口
+5分钟
+实时成本
+realtime_cpa
+消耗 / 转化数
+5分钟
+预算使用率
+budget_usage_rate
+消耗 / 日预算
+5分钟
+预估日消耗
+estimated_daily_cost
+当前消耗 / 时间占比
+5分钟
+广告组级指标
+指标
+字段
+计算方式
+监控频率
+实时消耗
+realtime_cost
+当日累计消耗
+5分钟
+实时成本
+realtime_cpa
+消耗 / 转化数
+5分钟
+点击率
+ctr
+点击 / 曝光
+5分钟
+转化率
+cvr
+转化 / 点击
+5分钟
+空耗标记
+is_empty_spend
+有消耗无转化且消耗>阈值
+实时
+超成本标记
+is_over_cost
+成本 > 目标成本 * 阈值
+实时
+
+四、异常检测规则
+4.1 账户级异常规则
+规则ID
+规则名称
+触发条件
+级别
+建议操作
+ACC_001
+消耗突增
+1小时消耗环比 > 50%
+WARNING
+关注，检查是否有异常放量
+ACC_002
+消耗突降
+1小时消耗环比下降 > 50%
+WARNING
+检查账户状态、预算、素材
+ACC_003
+预算即将耗尽
+预算使用率 > 80%
+WARNING
+评估是否需要增加预算
+ACC_004
+预算已耗尽
+预算使用率 >= 100%
+CRITICAL
+增加预算或调整投放策略
+ACC_005
+成本超支
+实时成本 > 目标成本 * 1.2
+WARNING
+降低出价或暂停高成本广告组
+ACC_006
+严重超成本
+实时成本 > 目标成本 * 1.5
+CRITICAL
+立即降低出价或暂停
+ACC_007
+无消耗
+连续2小时消耗为0
+WARNING
+检查账户状态、素材、定向
+4.2 广告组级异常规则
+规则ID
+规则名称
+触发条件
+级别
+建议操作
+AD_001
+空耗预警
+消耗 > ¥100 且 转化 = 0
+WARNING
+观察或小幅降价
+AD_002
+空耗严重
+消耗 > ¥500 且 转化 = 0
+CRITICAL
+暂停或大幅降价
+AD_003
+超成本
+成本 > 目标成本 * 1.2
+WARNING
+降低出价 10-20%
+AD_004
+严重超成本
+成本 > 目标成本 * 1.5
+CRITICAL
+降低出价 30%+ 或暂停
+AD_005
+CTR骤降
+CTR环比下降 > 50%
+WARNING
+检查素材是否疲劳
+AD_006
+CVR骤降
+CVR环比下降 > 50%
+WARNING
+检查落地页或定向
+AD_007
+消耗突增
+1小时消耗环比 > 100%
+WARNING
+关注成本是否同步增长
+AD_008
+高消耗低转化
+消耗 TOP10 但转化 < 平均
+WARNING
+优化或暂停
+具体监控规则可查看知识库：
+https://alidocs.dingtalk.com/i/nodes/ZgpG2NdyVXRmQ0jgCArdKoGy8MwvDqPk
+https://alidocs.dingtalk.com/i/nodes/r1R7q3QmWew5lo02fXMDEN1QJxkXOEP2
+https://alidocs.dingtalk.com/i/nodes/KGZLxjv9VGkoG9YwHYPqLOr4V6EDybno
+
+附录 A：指标公式速查表
+指标
+公式
+点击率 CTR
+clicks / impressions
+媒体转化率 CVR
+media_conversions / clicks
+媒体转化成本
+cost / media_conversions
+赔付后现金消耗
+(cost - compensation) / 1.09
+账面成本
+cost / media_conversions
+现金成本
+(cost - compensation) / 1.09 / bi_volume
+GAP
+media_conversions / bi_volume - 1
+扣量比例
+deduction_count / attribution_volume
+扣量前GAP
+attribution_volume / bi_volume - 1
+潜客率
+potential_volume / wakeup_volume
+BI转化率
+bi_volume / potential_volume
+业务赔付缺值
+(cash_cpa - target_cost) * bi_volume
+现金赔付
+compensation / 1.09
+空耗计划量占比
+空耗计划数 / 总在投计划数
+空耗消耗占比
+空耗计划消耗 / 总消耗
+0消耗曝光占比
+0消耗有曝光计划数 / 总计划数
+冷启动通过率
+通过冷启动计划数 / 新建计划数
+新品跑出率
+达标新品数 / 新品总数
+新素材跑出率
+达标新素材数 / 新素材总数
+单计划ARPPU
+总消耗 / 有消耗计划数
+日环比
+(今日值 - 昨日值) / 昨日值
+附录 B：异常规则配置模板
+
+# config/anomaly_rules.yaml
+# KA 媒体日报异常标记规则配置
+# 支持渠道：巨量引擎(oceanengine)、快手(kuaishou)、腾讯广告(tencent)
+# 用户可根据业务需求自定义修改
+
+version: "2.0"
+description: "KA 媒体日报异常标记规则"
+
+# 全局默认规则（适用于所有渠道）
+rules:
+  # --- 在此添加你的自定义规则 ---
+  
+  - rule_id: "cost_change"
+    name: "消耗环比波动"
+    metric: "cost"
+    type: "ratio_change"
+    thresholds:
+      warning: 0.20
+      critical: 0.50
+    direction: "both"
+    enabled: true
+    
+  - rule_id: "cash_cpa_over_target"
+    name: "现金成本超考核"
+    metric: "cash_cpa"
+    type: "compare_to_target"
+    target_field: "target_cost"
+    thresholds:
+      warning: 0.10
+      critical: 0.30
+    enabled: true
+    
+  # 更多规则请参考第五章的规则类型说明...
+
+# 渠道特定规则（可选，覆盖全局规则）
+channel_rules:
+  oceanengine:
+    # 巨量引擎特定规则
+    - rule_id: "gap_abnormal_oceanengine"
+      name: "巨量GAP异常"
+      metric: "gap"
+      type: "absolute_value"
+      thresholds:
+        warning: 0.15
+        critical: 0.30
+      enabled: true
+      
+  kuaishou:
+    # 快手特定规则
+    - rule_id: "gap_abnormal_kuaishou"
+      name: "快手GAP异常"
+      metric: "gap"
+      type: "absolute_value"
+      thresholds:
+        warning: 0.20
+        critical: 0.40
+      enabled: true
+      
+  tencent:
+    # 腾讯广告特定规则
+    - rule_id: "gap_abnormal_tencent"
+      name: "腾讯GAP异常"
+      metric: "gap"
+      type: "absolute_value"
+      thresholds:
+        warning: 0.12
+        critical: 0.25
+      enabled: true
+附录 C：MCP 工具接口 JSON Schema
+
+{
+  "name": "dailyReportData",
+  "description": "KA 媒体日报数据查询工具。支持巨量引擎、快手、腾讯广告三大渠道，封装 FBI/BI SQL 查询、指标计算、环比计算和分层统计，返回结构化 JSON 数据。",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "date": {
+        "type": "string",
+        "description": "报告日期，格式 YYYYMMDD"
+      },
+      "channel": {
+        "type": "string",
+        "enum": ["oceanengine", "kuaishou", "tencent"],
+        "description": "媒体渠道：oceanengine=巨量引擎, kuaishou=快手, tencent=腾讯广告"
+      },
+      "query_type": {
+        "type": "string",
+        "enum": ["summary", "dimension", "health", "tier", "trend"],
+        "description": "查询类型：summary=整体大盘, dimension=维度分析, health=健康度, tier=消耗分层, trend=7日趋势"
+      },
+      "dimension_type": {
+        "type": "string",
+        "enum": ["agent_type", "business", "task", "account", "resource_position", "bid_tool", "is_ubp", "deduction_rate_range"],
+        "description": "维度类型，query_type=dimension 时必填"
+      },
+      "filters": {
+        "type": "object",
+        "description": "可选过滤条件",
+        "properties": {
+          "agent_type": { "type": "string" },
+          "operator_name": { "type": "string" },
+          "business_name": { "type": "string" },
+          "task_id": { "type": "string" },
+          "account_id": { "type": "string" },
+          "resource_position": { "type": "string" },
+          "bid_tool": { "type": "string" },
+          "is_ubp": { "type": "boolean" }
+        }
+      }
+    },
+    "required": ["date", "channel", "query_type"]
+  }
+}
+附录D：skill模板
+USER STORY与验收
+1.1 产品背景
+KA 媒体广告投放平台面向大型广告主，提供跨媒体渠道（头条、快手、腾讯广告等）的广告投放管理、数据分析、异常监控和素材优化能力。平台通过 MCP（Model Context Protocol）数据工具与底层数据系统（ODPS/MaxCompute）连接，为渠道经理和优化师提供权限隔离的数据分析与决策支持。
+1.2 产品目标
+●        提升数据分析效率：将日报生成时间从小时级缩短至分钟级
+●        实现权限精细化管理：渠道经理与优化师两级权限隔离，确保数据安全
+●        建立实时监控能力：15 项异常检测规则，覆盖账户和广告组级别
+●        支持素材深度分析：素材维度与业务维度交叉分析，优化素材策略
+●        统一数据底座：三表架构（主表、赔付表、素材表），支撑全量分析场景
+1.3 用户角色定义
+角色
+权限范围
+典型场景
+渠道经理
+可查看所管理渠道的全部数据（如头条渠道经理只能看到头条渠道的数据）
+渠道级别日报、跨账户分析、渠道整体投放效果评估
+优化师
+仅可查看自己有权限的广告账户的数据
+账户级别日报、广告组级别分析、实时盯盘与异常处理
+系统管理员
+管理用户角色分配、渠道配置、账户权限绑定
+权限配置、渠道管理、用户管理
+
+ 
+2. 日报生成模块
+2.1 用户故事：生成多渠道日报
+字段
+内容
+Story ID
+US-001
+标题
+作为渠道经理，我希望生成指定渠道和日期的日报，以便快速了解渠道整体投放情况
+优先级
+P0 - 核心功能
+前置条件
+用户已登录，且具备渠道经理角色，已配置管理的渠道
+操作步骤
+1. 输入渠道名称（如"头条"）和日期范围 2. 选择分析维度（账户、二级、广告位、任务） 3. 点击生成日报
+预期结果
+1. 系统基于用户权限过滤数据 2. 生成包含 34 项核心指标的日报 3. 输出 HTML 格式报告，含   ECharts 可视化图表
+验收标准
+1. 日报数据与底层数据一致性 100% 2. 生成时间 < 30 秒 3. 权限过滤准确率 100%
+2.2 用户故事：日报指标展示
+字段
+内容
+Story ID
+US-002
+标题
+作为优化师，我希望在日报总览中看到分组后的指标卡片，以便快速定位关键信息
+优先级
+P1
+前置条件
+日报已生成
+操作步骤
+查看日报总览页面
+预期结果
+总览区域分为 4 个核心指标卡片（消耗、转化数、转化率、平均成本）+ 6 个分类指标卡片（流量类、归因类、赔付类、转化漏斗类、账户健康类、投放效率类），采用网格布局，无卡片堆叠
+验收标准
+1. 指标分组清晰，无视觉堆叠 2. 每个分类卡片可展开查看详细指标 3. 日环比数据以红色（下降）/绿色（上升）标注
+2.3 用户故事：多维度分析
+字段
+内容
+Story ID
+US-003
+标题
+作为渠道经理，我希望按不同维度（账户、二级、广告位、任务、业务线）分析数据，以便发现各维度的投放差异
+优先级
+P1
+前置条件
+日报已生成
+操作步骤
+1. 在日报中选择分析维度 2. 选择维度值（如具体账户或广告位） 3. 查看该维度下的指标对比
+预期结果
+1. 支持 8 种维度分析：账户、二级、广告位、任务、业务线、渠道、代理/自营、计划层级 2. 各维度下展示 34 项核心指标 3. 支持日环比计算和趋势可视化
+验收标准
+1. 维度切换响应时间 < 3 秒 2. 各维度指标数据准确 3. 日环比计算准确
+
+ 
+3. 权限管理模块
+3.1 用户故事：渠道经理权限
+字段
+内容
+Story ID
+US-010
+标题
+作为头条渠道经理，我希望只能看到头条渠道的数据，以便进行渠道级别的投放分析
+优先级
+P0 - 安全必需
+前置条件
+用户角色为渠道经理，已配置管理渠道为"头条"
+操作步骤
+1. 渠道经理登录 2. 请求生成日报或查询数据 3. MCP 层自动进行权限校验
+预期结果
+1. 仅返回头条渠道的数据   2. 跨渠道查询返回 CHANNEL_UNAUTHORIZED 错误 3. 权限校验在 MCP 层执行，无需 skill 层处理
+验收标准
+1. 渠道数据隔离 100% 准确 2. 无权限数据不可见 3. 权限校验响应时间 < 100ms
+3.2 用户故事：优化师权限
+字段
+内容
+Story ID
+US-011
+标题
+作为优化师，我希望只能看到我有权限的广告账户数据，以便进行账户级别的精细分析
+优先级
+P0 - 安全必需
+前置条件
+用户角色为优化师，已绑定授权账户列表
+操作步骤
+1. 优化师登录 2. 请求生成日报或查询账户数据 3. MCP 层自动过滤未授权账户
+预期结果
+1. 仅返回授权账户的数据 2. 查询未授权账户返回 ACCOUNT_UNAUTHORIZED 错误 3. 无任何授权账户时返回 NO_AUTHORIZED_ACCOUNTS 错误
+验收标准
+1. 账户级数据隔离 100% 准确 2. 无越权访问可能 3. 错误提示友好且明确
+ 
+4. 实时盯盘监控模块
+4.1 用户故事：账户级异常检测
+字段
+内容
+Story ID
+US-020
+标题
+作为优化师，我希望实时监控账户消耗和预算使用情况，以便及时发现异常并调整策略
+优先级
+P0
+前置条件
+优化师已登录，有授权账户
+操作步骤
+1. 进入实时盯盘页面 2. 选择要监控的账户 3. 系统自动执行 7 项账户级异常检测
+预期结果
+检测以下 7 项异常： 1. 消耗速度异常（与历史同时段对比） 2. 预算使用率异常（预算即将耗尽） 3. 预估日消耗异常（偏离预期范围） 4. 成本率异常（CPA/CVR 大幅波动） 5. 展示量骤降 6. 点击率骤降 7. 转化率骤降
+验收标准
+1. 监控频率：每 15 分钟 2. 异常检测准确率   > 90% 3. 告警响应时间 < 1 分钟
+4.2 用户故事：广告组级异常检测
+字段
+内容
+Story ID
+US-021
+标题
+作为优化师，我希望实时监控广告组的空耗和超成本情况，以便及时关停低效广告
+优先级
+P0
+前置条件
+优化师已登录
+操作步骤
+1. 进入实时盯盘页面 2. 选择账户 3. 系统自动执行   8 项广告组级异常检测
+预期结果
+检测以下 8 项异常： 1. 空耗检测（有消耗无转化） 2. 超成本检测（实际成本 > 目标成本 * 阈值）   3. CTR 骤降 4. CVR 骤降 5. 消耗突增 6. 消耗突降 7. 展示量异常   8. 转化成本波动
+验收标准
+1. 空耗判定：消耗 > 目标成本 * 2 且转化数 = 0 2. 超成本判定：实际 CPA > 目标 CPA * 1.2 3. 检测准确率 > 85%
+4.3 用户故事：操作建议
+字段
+内容
+Story ID
+US-022
+标题
+作为优化师，我希望系统在检测到异常后给出具体的操作建议，以便我快速做出决策
+优先级
+P1
+前置条件
+系统已检测到异常
+操作步骤
+1. 查看异常告警 2. 查看系统推荐操作 3. 选择执行或忽略
+预期结果
+系统根据异常类型推荐以下操作之一： 1. 预算调整（预算使用率 > 80% 时建议上调） 2. 出价调整（超成本时建议下调出价） 3. 暂停广告（空耗广告建议暂停） 4. 继续观察（轻微波动建议观察） 5. 检查素材（CTR 骤降时建议检查素材
+验收标准
+1. 建议与异常类型匹配准确率 > 90% 2. 建议可一键执行 3. 执行结果可追溯
+
+ 
+5. 数据底表模块
+5.1 用户故事：日报主表查询
+字段
+内容
+Story ID
+US-030
+标题
+作为数据分析师，我希望基于统一的日报主表（ka_media_daily_report_base）进行查询，以便高效获取投放数据
+优先级
+P0
+前置条件
+数据底表已按日分区写入数据
+操作步骤
+1. 指定日期分区 2. 指定查询维度 3. 执行   SQL 查询
+预期结果
+返回 74 个字段的数据，包含： - 8 种业务维度（渠道、账户、二级、广告位、任务、业务线、代理/自营、计划层级） - 34 项核心指标（不含赔付） - 日环比计算字段
+验收标准
+1. 查询响应时间 < 5 秒（单日数据） 2. 数据与原始数据源一致性 100% 3. 分区数据完整性 100%
+5.2 用户故事：赔付数据查询
+字段
+内容
+Story ID
+US-031
+标题
+作为渠道经理，我希望查询账户级别及更高层级的赔付数据，以便评估赔付对投放效果的影响
+优先级
+P1
+前置条件
+赔付表（ka_media_compensation）已按日分区写入数据
+操作步骤
+1. 指定日期分区 2. 指定查询维度（仅限账户级别及以上） 3. 执行 SQL 查询 4. 与主表   JOIN 获取完整分析
+预期结果
+返回 22 个字段的数据，包含： - 账户级别及以上维度 - 赔付金额、赔付率、赔付转化数等赔付相关指标 - 与主表数据可 JOIN 分析
+验收标准
+1. 赔付指标仅与账户级及以上维度关联 2. JOIN 查询响应时间 < 10 秒 3. 赔付数据与财务数据一致性 100%
+5.3 用户故事：素材数据分析
+字段
+内容
+Story ID
+US-032
+标题
+作为数据分析师，我希望基于素材底表（ka_media_material）进行素材维度的分析，以便评估素材表现
+优先级
+P1
+前置条件
+素材表（ka_media_material）已按日分区写入数据
+操作步骤
+1. 指定日期分区   2. 按素材维度（名称、ID、制作商、AIGC、规格、类型）分组 3. 执行 SQL 查询
+预期结果
+返回 85 个字段的数据，包含： - 6 种素材维度（名称、ID、制作商、AIGC 标识、规格、类型） - 8 种业务维度（可跨账户、二级、广告位等分析） - 34 项核心指标 + 25 项素材健康度指标
+验收标准
+1. 素材维度与业务维度可自由组合查询 2. 查询响应时间 < 10 秒 3. 素材数据与投放平台一致性 100%
+
+ 
+6. 素材分析模块
+6.1 用户故事：按制作商分析素材
+字段
+内容
+Story ID
+US-040
+标题
+作为渠道经理，我希望按素材制作商分析投放效果，以便评估各制作商的素材质量
+优先级
+P2
+前置条件
+素材表中有制作商维度数据
+操作步骤
+1. 进入素材分析页面 2. 选择分析维度：制作商 3. 查看各制作商的消耗、转化、成本等指标对比
+预期结果
+展示各制作商的： - 消耗占比 - 转化数及转化率 - 平均   CPA - 素材健康度评分 - S/A/B/C 等级分布
+验收标准
+1. 分析结果可视化 2. 支持多制作商对比 3. 数据可导出
+6.2 用户故事：AIGC 素材效果分析
+字段
+内容
+Story ID
+US-041
+标题
+作为数据分析师，我希望对比   AIGC 素材与非 AIGC 素材的投放效果，以便评估   AIGC 素材的投入产出比
+优先级
+P2
+前置条件
+素材表中有 AIGC 标识数据
+操作步骤
+1. 进入素材分析页面 2. 按 AIGC 标识分组 3.   对比 AIGC 与非 AIGC 素材的各项指标
+预期结果
+展示对比分析： - AIGC   vs 非 AIGC 素材数量 - 消耗占比对比 - 转化率对比 - CPA 对比   - 素材生命周期对比
+验收标准
+1. 对比维度完整 2. 统计显著性标注 3. 结论可执行
+6.3 用户故事：素材规格和类型分析
+字段
+内容
+Story ID
+US-042
+标题
+作为优化师，我希望分析不同素材规格和类型的投放效果，以便优化素材制作方向
+优先级
+P2
+前置条件
+素材表中有规格和类型维度数据
+操作步骤
+1. 进入素材分析页面 2. 按素材规格或类型分组 3. 查看各规格/类型的表现
+预期结果
+展示各规格/类型的： - 消耗分布 - 转化效果排名 -   CTR/CVR 分布 - 素材疲劳度 - 更新频率建议
+验收标准
+1. 规格/类型分布清晰展示 2. 支持交叉分析（规格 x 类型） 3. 提供优化建议
+
+ 
+7. 跨维度分析模块
+7.1 用户故事：计划层级分析
+字段
+内容
+Story ID
+US-051
+标题
+作为渠道经理，我希望按计划层级（Tier1-5）分析消耗分布，以便优化预算分配
+优先级
+P2
+前置条件
+主表中有计划层级维度数据
+操作步骤
+1. 按计划层级分组查询 2. 查看各 Tier 的消耗、转化、成本
+预期结果
+展示各计划层级： -   Tier1-5 消耗分布 - 转化数分布 - 成本效率对比 - 预算使用率
+验收标准
+1. 层级分布可视化 2. 支持趋势分析 3. 可导出分析结果
+
+ 
+8. 非功能性需求
+8.1 性能要求
+指标
+要求
+日报生成时间
+不要求
+单表查询响应时间
+< 5 秒（单日数据）
+跨表 JOIN 查询响应时间
+< 15 秒
+实时盯盘监控频率
+每 15 分钟
+异常检测告警响应时间
+< 1 分钟
+权限校验响应时间
+< 100ms
+8.2 数据安全要求
+●        权限隔离：渠道经理与优化师数据完全隔离，不可越权访问
+●        权限校验层：所有数据查询在 MCP 层执行权限校验，skill 层不处理权限
+●        错误处理：无权限时返回明确错误码（CHANNEL_UNAUTHORIZED、ACCOUNT_UNAUTHORIZED、NO_AUTHORIZED_ACCOUNTS）
+●        日志审计：所有数据查询记录用户、时间、查询条件，支持审计追溯
+8.3 数据准确性要求
+●        日报数据与底层数据源一致性：100%
+●        赔付数据与财务数据一致性：100%
+●        素材数据与投放平台一致性：100%
+●        实时盯盘异常检测准确率：> 90%
+●        日环比计算准确率：100%
+
+ 
+9. 验收标准汇总
+9.1 功能验收
+以下为各模块的核心验收标准，需在 UAT 阶段逐一验证：
+日报模块
+●        支持头条、快手、腾讯广告三渠道日报生成
+●        34 项核心指标完整展示
+●        8 种维度分析支持
+●        日环比计算准确
+权限模块
+●        渠道经理仅能查看管理渠道数据
+●        优化师仅能查看授权账户数据
+●        MCP 层权限校验 100% 覆盖所有数据查询
+●        错误码规范统一
+实时盯盘模块
+●        15 项异常检测规则覆盖账户和广告组级别
+●        异常检测准确率 > 90%
+●        操作建议与异常类型匹配准确率 > 90%
+●        告警响应时间 < 1 分钟
+数据底表模块
+●        三表架构（主表 74 字段、赔付表 22 字段、素材表 85 字段）
+●        分区数据完整性 100%
+●        跨表 JOIN 查询支持
+●        查询性能满足 SLA
+素材分析模块
+●        6 种素材维度分析支持
+●        25 项素材健康度指标
+●       等级分类
+●        素材与业务维度交叉分析
+
+— 文档结束 —

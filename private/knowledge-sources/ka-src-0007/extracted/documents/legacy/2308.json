@@ -1,0 +1,42 @@
+{
+  "documentId": 2308,
+  "documentName": "工具-素材唤醒-4-素材唤醒数据折线图",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 素材唤醒数据折线图（素材唤醒功能已下线，请勿调用！）\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photoWake/chartReport](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photoWake/chartReport)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | long | 123456 | 必填 | 账户ID |  |\n| start_time | long | 1660060800000 | 必填 | 开始时间 | 毫秒时间戳，只取天级别精度，不可早于当前时间三个月前 |\n| end_time | long | 1661097600000 | 必填 | 结束时间 | 毫秒时间戳，只取天级别精度，不可早于开始时间 |\n| selected_columns | String[] | \\[\"photoWakeCount\", \"accountPhotoTotalCount\", \"photoWakeRatio\", \"photoWakeCharge\", \"photoWakeChargeRatio\", \"accountTotalCharge\", \"accountTotalChargeRatio\"] | 可选 | 所选列 | 可不填，默认返回所有列 |\n\n### 返回参数\n\n| 字段 | 类型 | 示例 |      说明                        | 备注 |\n| ------- | -------- | ------------------------------------ | ---- | --- |\n| code    | int        |  0  | 状态码                            |     |\n| message | string    |  \"OK\"  | 错误信息                         |     |\n| request_id  | string  |      | 请求ID                    |      |\n| data    | GatePhotoWakeChartReportView   |    |返回结果                         |     |\n\n| GatePhotoWakeChartReportView     |         |          |                    |                                                                                                                                                                                                               |\n| --------------------- | ------- | -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| photo_wake_count | int[] |  | 素材唤醒数 | 选定时间内被唤醒到的素材数 |\n| account_photo_total_count | int[] |  | 账户素材数量 | 当前账户总在投素材数 |\n| photo_wake_ratio | double[] |  | 素材唤醒比例 | 所选周期内，账户在投素材中被唤醒到的比例，账户素材数量为0时返回NaN |\n| photo_wake_charge | long[] |  | 素材唤醒期花费 | 单位：厘。被唤醒到的素材唤醒期间的花费 |\n| photo_wake_charge_ratio | double[] |  | 素材唤醒期成本比例 | 被唤醒到的素材，唤醒期间花费/预期花费-1，预期花费为0时返回NaN |\n| account_total_charge | long[] |  | 账户花费 | 单位：厘。选定周期内，账户整体花费（包含非唤醒素材、非唤醒期数据） |\n| account_total_charge_ratio | double[] |  | 账户成本比例 | 选定周期内，账户整体（包含唤醒+非唤醒数据）花费/预期花费-1，预期花费为0时返回NaN |\n| categories | string[] |  | 日期 | 年月日 |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 123456,\n    \"start_time\": 1675958400000,\n    \"end_time\": 1676131200000,\n    \"selected_columns\": [\"photoWakeCount\", \"accountPhotoTotalCount\", \"photoWakeRatio\", \"photoWakeCharge\", \"photoWakeChargeRatio\", \"accountTotalCharge\", \"accountTotalChargeRatio\"]\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"photo_wake_count\": [\n            1,\n            2,\n            3\n        ],\n        \"account_photo_total_count\": [\n            2,\n            3,\n            6\n        ],\n        \"photo_wake_ratio\": [\n            0.5,\n            0.66667,\n            0.5\n        ],\n        \"photo_wake_charge\": [\n            7390986,\n            8357624,\n            6296179\n        ],\n        \"photo_wake_charge_ratio\": [\n            0.00412,\n            0.01321,\n            0.04421\n        ],\n        \"account_total_charge\": [\n            434161262,\n            237070781,\n            201048264\n        ],\n        \"account_total_charge_ratio\": [\n            -0.04124,\n            -0.13285,\n            0.31225\n        ],\n        \"categories\": [\n            \"2023-02-10\",\n            \"2023-02-11\",\n            \"2023-02-12\"\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\"\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677503967498
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677503967498,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><p data-id=\"p838747a-RCEsf0BH\">如您在使用过程遇到问题，可扫码加入轻代码工具使用帮助群，会有相关同学为您提供服务～</p><p data-id=\"p838747a-EDYrjwpV\"><img src=\"https://p26-business-sign.byteadimg.com/tos-cn-i-yvqzo4lhg5/badc87c200d84110ab510259c0e645c3~noop.image?rk3s=d3394059&amp;x-expires=2023856443&amp;x-signature=IPaDcGO1VTva6VfY89HM6wMNeV0%3D\" data-auto=\"false\" style=\"width: 358px; visibility: visible; height: 356px;\" data-type=\"inline\"></p><h3 data-id=\"h6f20189-hKd2ne91\" id=\"h6f20189-hKd2ne91\">一、为什么代码允许后没有任何账户？</h3><p data-id=\"p838747a-E3gqDZ5C\">工具目前仅支持代理商账户下的广告账户关系，即巨量方舟上的账户关系，若你无该平台账户</p><p data-id=\"p838747a-lZgEMn8Y\">脚本暂时无法访问其账户</p><h3 data-id=\"h6f20189-LlYJfQ2Y\" id=\"h6f20189-LlYJfQ2Y\">二、我有代理商账户，但是为什么无法正常运行？</h3><ol data-id=\"o9d5df12-1nZdEmC6\"><li data-id=\"ld70c578-6IR04LMB\">目前暂时仅支持巨量广告业务线的广告账户，若你为千川账户，暂不支持</li><li data-id=\"ld70c578-34Bk7jfE\">使用API需要前置需要你有对应的账户权限，请确认账户权限没有问题</li></ol><h3 data-id=\"h6f20189-4DQ3YnNd\" id=\"h6f20189-4DQ3YnNd\">三、脚本会修改我的广告数据吗？</h3><p data-id=\"p838747a-T39XYrdc\">当前脚本的能力仅放开了数据读取能力，不会导致任何的广告数据被修改，可以放心使用</p><p data-id=\"p838747a-41iDr9RV\">我们在后续开放修改能力后，也会将未涉及到数据修改的脚本标记处「仅数据读取」，表示运行后不会修改任何数据</p><p data-id=\"p838747a-XKdCBjoq\"><br></p><p data-id=\"p838747a-JHvnF57S\"><br></p><p data-id=\"p838747a-KfST82zT\"><br></p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "常见问题与帮助"
+}

@@ -1,0 +1,179 @@
+{
+  "documentId": 2957,
+  "documentName": "应用权限信息列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720093858641
+    }
+  ],
+  "apiId": 1324,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v2/file/ad/app/permissionList",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v2/file/ad/app/permissionList' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n    \"advertiser_id\": 4171736\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"result\": 1,\n    \"permissionList\": {\n        \"22\": {\n            \"permissionDetail\": \"允许程序访问电话状态\",\n            \"permissionName\": \"android.permission.READ_PHONE_STATE\"\n        },\n        \"23\": {\n            \"permissionDetail\": \"允许程序读取短信内容\",\n            \"permissionName\": \"android.permission.READ_SMS\"\n        },\n        \"24\": {\n            \"permissionDetail\": \"读取语音邮件\",\n            \"permissionName\": \"com.android.voicemail.permission.READ_VOICEMAIL\"\n        },\n        \"25\": {\n            \"permissionDetail\": \"允许程序接收彩信\",\n            \"permissionName\": \"android.permission.RECEIVE_MMS\"\n        },\n        \"26\": {\n            \"permissionDetail\": \"允许程序接收短信\",\n            \"permissionName\": \"android.permission.RECEIVE_SMS\"\n        },\n        \"27\": {\n            \"permissionDetail\": \"允许程序接收WAP PUSH信息\",\n            \"permissionName\": \"android.permission.RECEIVE_WAP_PUSH\"\n        },\n        \"28\": {\n            \"permissionDetail\": \"允许程序录制声音通过手机或耳机的麦克\",\n            \"permissionName\": \"android.permission.RECORD_AUDIO\"\n        },\n        \"29\": {\n            \"permissionDetail\": \"允许程序发送短信\",\n            \"permissionName\": \"android.permission.SEND_SMS\"\n        },\n        \"30\": {\n            \"permissionDetail\": \"允许程序使用SIP视频服务\",\n            \"permissionName\": \"android.permission.USE_SIP\"\n        },\n        \"31\": {\n            \"permissionDetail\": \"允许程序写入日程，但不可读取\",\n            \"permissionName\": \"android.permission.WRITE_CALENDAR\"\n        },\n        \"10\": {\n            \"permissionDetail\": \"确保只有系统应用能调用Incall组件\",\n            \"permissionName\": \"android.permission.BIND_INCALL_SERVICE\"\n        },\n        \"32\": {\n            \"permissionDetail\": \"允许程序写入（但是不能读）用户的联系人数据\",\n            \"permissionName\": \"android.permission.WRITE_CALL_LOG\"\n        },\n        \"11\": {\n            \"permissionDetail\": \"允许应用程序访问用户用来测量身体内部情况的传感器数据，例如心率\",\n            \"permissionName\": \"android.permission.BODY_SENSORS\"\n        },\n        \"33\": {\n            \"permissionDetail\": \"允许程序写入联系人，但不可读取\",\n            \"permissionName\": \"android.permission.WRITE_CONTACTS\"\n        },\n        \"12\": {\n            \"permissionDetail\": \"允许程序从非系统拨号器里拨打电话\",\n            \"permissionName\": \"android.permission.CALL_PHONE\"\n        },\n        \"34\": {\n            \"permissionDetail\": \"允许程序写入外部存储，如SD卡上写文件\",\n            \"permissionName\": \"android.permission.WRITE_EXTERNAL_STORAGE\"\n        },\n        \"13\": {\n            \"permissionDetail\": \"允许程序访问摄像头进行拍照\",\n            \"permissionName\": \"android.permission.CAMERA\"\n        },\n        \"35\": {\n            \"permissionDetail\": \"允许程序更改系统设置\",\n            \"permissionName\": \"android.permission.WRITE_SETTINGS\"\n        },\n        \"14\": {\n            \"permissionDetail\": \"清除软件缓存\",\n            \"permissionName\": \"android.permission.CLEAR_APP_CACHE\"\n        },\n        \"36\": {\n            \"permissionDetail\": \"编辑语音邮件\",\n            \"permissionName\": \"com.android.voicemail.permission.WRITE_VOICEMAIL\"\n        },\n        \"15\": {\n            \"permissionDetail\": \"允许程序访问帐户列表\",\n            \"permissionName\": \"android.permission.GET_ACCOUNTS\"\n        },\n        \"37\": {\n            \"permissionDetail\": \"允许访问设备上账户列表\",\n            \"permissionName\": \"android.permission.GET_ACCOUNTS_PRIVILEGED\"\n        },\n        \"16\": {\n            \"permissionDetail\": \"允许程序监视，修改或放弃播出电话\",\n            \"permissionName\": \"android.permission.PROCESS_OUTGOING_CALLS\"\n        },\n        \"17\": {\n            \"permissionDetail\": \"允许程序读取用户的日程信息\",\n            \"permissionName\": \"android.permission.READ_CALENDAR\"\n        },\n        \"18\": {\n            \"permissionDetail\": \"允许程序读取通话记录\",\n            \"permissionName\": \"android.permission.READ_CALL_LOG\"\n        },\n        \"19\": {\n            \"permissionDetail\": \"允许程序访问联系人通讯录信息\",\n            \"permissionName\": \"android.permission.READ_CONTACTS\"\n        },\n        \"1\": {\n            \"permissionDetail\": \"允许呼叫应用继续在另一个应用中启动的呼叫\",\n            \"permissionName\": \"android.permission.ACCEPT_HANDOVER\"\n        },\n        \"2\": {\n            \"permissionDetail\": \"允许应用程序在后台访问位置\",\n            \"permissionName\": \"android.permission.ACCESS_BACKGROUND_LOCATION\"\n        },\n        \"3\": {\n            \"permissionDetail\": \"允许程序通过WiFi或移动基站的方式获取用户粗略位置信息\",\n            \"permissionName\": \"android.permission.ACCESS_COARSE_LOCATION\"\n        },\n        \"4\": {\n            \"permissionDetail\": \"允许程序通过GPS芯片接收卫星的定位信息\",\n            \"permissionName\": \"android.permission.ACCESS_FINE_LOCATION\"\n        },\n        \"5\": {\n            \"permissionDetail\": \"允许用户查看拍摄照片的位置\",\n            \"permissionName\": \"android.permission.ACCESS_MEDIA_LOCATION\"\n        },\n        \"6\": {\n            \"permissionDetail\": \"检测用户移动的应用程序（例如步行，骑自行车或车辆）\",\n            \"permissionName\": \"android.permission.ACTIVITY_RECOGNITION\"\n        },\n        \"7\": {\n            \"permissionDetail\": \"允许应用程序添加系统中的语音邮件\",\n            \"permissionName\": \"com.android.voicemail.permission.ADD_VOICEMAIL\"\n        },\n        \"8\": {\n            \"permissionDetail\": \"允许应用按设定的方式接听拨入的电话\",\n            \"permissionName\": \"android.permission.ANSWER_PHONE_CALLS\"\n        },\n        \"9\": {\n            \"permissionDetail\": \"确保只有系统应用能调用CallRedirectionService组件\",\n            \"permissionName\": \"android.permission.BIND_CALL_REDIRECTION_SERVICE\"\n        },\n        \"20\": {\n            \"permissionDetail\": \"允许程序可以读取设备外部存储空间\",\n            \"permissionName\": \"android.permission.READ_EXTERNAL_STORAGE\"\n        },\n        \"21\": {\n            \"permissionDetail\": \"允许程序读取设备的电话号码\",\n            \"permissionName\": \"android.permission.READ_PHONE_NUMBERS\"\n        }\n    }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 62446,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主账户 id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 62447,
+      "paramName": "result",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62448,
+      "paramName": "permissionList",
+      "paramType": "PermissionList[]",
+      "example": "",
+      "description": "权限列表",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3515,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 62441,
+          "paramName": "permissionDetail",
+          "paramType": "String",
+          "example": "",
+          "description": "权限描述",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62442,
+          "paramName": "permissionName",
+          "paramType": "String",
+          "example": "",
+          "description": "权限名称",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720093858641,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -1,0 +1,42 @@
+{
+  "documentId": 2187,
+  "documentName": "获取可选的浅度优化目标",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取可选的浅度优化目标\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/ocpx/ocpxTypes\n\n请求方式：POST\n\n数据格式：JSON\n\n门槛标准： 1.应用下载类—— 1)账户维度，相应的 event_type 回传 >=1; 或 2)应用包维度，用转化追踪联调通过相应的 event_type 2.落地页类\n账户维度，相应的 event_type 回传 >=1;\n\n提示：返回列表的ocpx_action_type，即用户此种传参下可用优化目标。\n\n### 请求参数\n\n| 字段          | 类型 | 是否必填             | 说明      | 备注                           |\n| ------------- | ---- | -------------------- | --------- | ------------------------------ |\n| advertiser_id | long | 必填                 | 广告主 ID | 在获取 access_token 的时候返回 |\n| scene_category | int  | 必填                 | 场景分类  | 0=普通创编、1=追踪工具、2=常规托管（智能模式）、3=搜索广告                               |\n| campaign_type        | int | 在scene_category=1即追踪工具时可不填，其他场景必填 | 计划类型   | 即新建计划接口的type参数，请参见 https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2259&menuId=2804  |\n| scene_ids | int[] | 在scene_category=1即追踪工具时可不填，其他场景必填                 | 投放资源位置 | 即新建单元接口的scene_id参数，请参见 https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2262&menuId=2807|\n| traceutil_type | int | 在scene_category=1即追踪工具时必填，其他场景不填                 | 追踪工具的类型 | 1=js、2=xpath、3=sdk、7=api、12=kwai attribution |\n| app_id | long | 可选                 | 应用id | 追踪工具类型时不需要本参数；其他类型时，本参数会决定可拉到的优化目标列表（即会融合追踪工具联调的结果） |\n| bid_type      | int | 出价类型     | 10=ocpm12=mcb（计划层级选择最大转化类型时） | 当scene_category=0时本字段可用 |\n| hosting_scene | int | 智能托管细分场景 | 0=常规推广、1=测书工具、2=账户预热、5=最大转化 | 当scene_category=2时本字段可用 |\n| site_id | long | 否 | 魔力建站的页面id | 按需传入，如果是收集销售线索（campaign_type=5）这类的落地页并且使用的是魔力建站的页面，可以传入本id。此时如果页面包括了微信小程序，则可用优化目标会包括经由追踪工具的追踪小程序联调通过的小程序的目标。具体功能可见追踪工具-追踪小游戏 |\n| unit_material_type | int | 否 | 小程序单元组件类型 | 按需传入，1=快手小程序、2=快手小游戏、3=微信小程序；4=微信小游戏 |\n| series_pay_mode | int | 否 | 短剧付费模式 | 按需传入，0，\"默认\"：1，\"打包\"：2，\"虚拟币\"：3，\"观看广告解锁\" |\n| plc_biz_type | int | 否 | 快手号营销目标-线索留资-推广目标-组件类型 | 按需传入，\"24\"：\"小钥匙\"，\"44\"：\"快聘组件\"，\"8\"：\"付费课堂\"|\n| schema_uri | string | 否 | 应用直达链接 | 按需传入 |\n| uri | string | 否 | 落地页链接 | 按需传入 |\n| live_component_type | int | 否 | 直播组件类型 | 按需传入 ''0''：\"小铃铛\"，\"1\"：\"房产\"，\"2\"：\"团购\"，\"5\"：\"小程序组件\"，\"6\"：\"小手柄组件\"，\"3\"：\"小钥匙\"，\"14\"\"：\"快聘\"，\"4\"：\"涨粉，不关注组件\"|\n| book_pay_mode | int | 否 | 小说付费模式 | 按需传入 \"1\"：\"全文付费\"，\"2\"：\"全文付费+章节付费\"，\"3\"：\"免费\"|\n### 返回参数\n\n| 字段                    | 类型   | 说明                         | 备注               |\n| ----------------------- | ------ | ---------------------------- | ------------------ |\n| code                    | int    | 返回码                       |                    |\n| message                 | string | 返回描述                     |                    |\n| data                    | json，见下 | 可用目标                  |                    |\n\n| 字段        | 类型 | 说明         | 备注                                                                               |\n| --------------------------- | ---- | ------------ | ---------------------------------------------------------------------------------- |\n| ocpx_types   | ocpxType数组，见下  | 可用目标数组     |            |\n\n| 字段        | 类型 | 说明         | 备注                                                                               |\n| --------------------------- | ---- | ------------ | ---------------------------------------------------------------------------------- |\n| ocpx_action_type   | int  | 优化目标     |            |\n| name   | string  | ocpx_action_type的中文描述     | 在不同的campaignType下，本描述对部分优化目标会有不同的输出           |\n\n### 请求样例\n\n```\n\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/ocpx/ocpxTypes' \\\n--header 'Content-Type: application/json;charset=UTF-8' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n    \"advertiser_id\": 20000654,\n    \"scene_category\": 0,\n    \"campaign_type\": 2,\n    \"scene_ids\": [\n        6\n    ],\n    \"app_id\": 0,\n    \"traceutil_type\": 0\n}'\n```\n\n### 返回样例\n\n```\n\n{\n    \"code\": 0,\n    \"data\": {\n        \"ocpx_types\": [\n            {\n                \"name\": \"行为数\",\n                \"ocpx_action_type\": 2\n            },\n            {\n                \"name\": \"激活\",\n                \"ocpx_action_type\": 180\n            },\n            {\n                \"name\": \"付费\",\n                \"ocpx_action_type\": 190\n            },\n            {\n                \"name\": \"首日ROI（24h）\",\n                \"ocpx_action_type\": 191\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"1efffed1b47c428cb6bfd322613c8b23\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1725447995501
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1725447995501,
+  "creator": "guojingwei05",
+  "fullContext": null
+}

@@ -1,0 +1,72 @@
+### 主流程
+![](https://private-alipayobjects.alipay.com/alipay-rmsdeploy-image/skylark/png/0e7e219f-412e-4190-a1e3-bf76efedf7c0.png)
+
+
+
+#### [](#spout配置)spout配置
+| spout_type | 数据源类型 | jingwei/metaq |
+| --- | --- | --- |
+| config | 扩展配置 | jingwei.task.name |
+|  |  | metaq.topic<br/>metaq.consumer.group |
+
+
+#### [](#bolt配置)Bolt配置
+**dependencyAndCheckBolt:**
+
+1.方法messageParse
+
+1. Jingwei：Json配置，jingweiMessage字段对应DO字段
+2. Metaq:分两类，一类是字段区分型，同jingwei类型处理，定义Json，确定消息字段与DO的对应关系，新增业务要求以这类方式接入；二类消息不区分，如clickserver的点击串，需自定义实现方法类对字符串进行解析，set为DO。
+
+2.方法dependencyCheck
+
+1.注入HSF，外部校验，基于不同业务产品DO配置；
+
+2.每个字段设置校验规则，如是否允许为空，长度等等，基于不同业务产品DO配置；
+
+
+
+**clickOrActionBolt:**
+
+根据CPA、CPS、CPM、CPT、CPC存储源数据，如点击数。
+
+[涉及表模型 ](https://lark.alipay.com/intl_ad/ip9bkb/creiow)
+
+
+
+点击日志：
+
+pv sessionID,click sessionID,pv time,click Time,clickip,PVip,ClickAcookie,CookieTime,PVcookie,pid,referer,serviceId,custid,mlr,prodType,beacon cookie,LoginId,abTag,tb_eagleeyex_t
+
+
+
+PV日志：
+
+click_session , targeting_tag_id , cust_id, pid, prod_type, cust_type, matchtype , 扣费时间("Y/m/d H:i:s") , 用户出价 , 扣费价格 , cost , campaign_id , adgroup_id , creative_id , , 
+
+
+
+
+
+**costStatisticsBolt：**
+
+记录消耗并汇总至账户，不区分广告类型，统一为CustCostDO。不同付费类型折算方法，在DO中提供方法实现，同一类型产品，不同的扣费模型通过表配置。
+
+
+
+**onOffBolt**:
+
+上下线通知，用于调用通知
+
+`NotifyProxy{`
+
+`privateMap<Integer, INotifyService> notifyHandlerMap;`
+
+`publicResultDTO<Boolean> notify(Integer code, OnOfflineMsgDTO onOfflineMsg){...}`
+
+
+
+`}`
+
+
+

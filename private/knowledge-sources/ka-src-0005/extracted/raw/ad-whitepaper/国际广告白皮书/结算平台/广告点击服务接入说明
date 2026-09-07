@@ -1,0 +1,21 @@
+1. 从广告产品的返回数据中获取广告点击URL key:clickUrl;
++ 返回数据举例：
+
+
+
+![](https://gw.alipayobjects.com/zos/skylark/e6cb431f-5674-404e-9665-aff949eae409/2018/png/eaeab29f-19d5-4c80-a773-0ffbbeabf69e.png)
+
+
+
++ 点击举例：  
+
+```plain
+ //cn-click.aliexpress.com/ci_bb?ot=local&a=271723507&e=y4vkHtWG-pmWGlaFX0VWAgqs7hPxmhojG9E8LqSStHvPFXhmwZzbKneGKGhOZ1jOjsyj3.62YbYeNVeZzApnDY.uezpGeErRcecLHzNUn6jgxxboLbuI6XiqLiafGz0JxFJL802cEjaRZrbyxHyuVMkPMeyKDWlfd4PAol1GbjtPEoir8SR4nPa4voe.DIK8YT5KHj38F5ZvhGzH1TYsjuJp0FssOJdpU284efWD-G9hw8KuwG0kUDXIdy8d4NZaXLpHqMugkuGJPluqGjgHsGUlxkGtgCYb3lcirsmSigX7MHOu.zlCUbxuxvhXuhPeO6sF536NQSFvmazcp0vOX1WsVc2HePTNMpm5sAgHO3Zj-oiIpOLl-tDj9e2j5Hz54BsPVdvdeh-2nA-flCluK7tFqtQBbbY19aNCzGo3cOmqiw6oxTE5PMsj1ZAwICF5dZXfZrxrjAOUObUpTZwvI3IsdKtYn-fu&ap=1&rp=1
+```
+
++ 点击域名，国内：cn-click.aliexpress.com，海外：us-click.aliexpress.com
+
+2、用户点击广告产品时发起请求；
+
+
+

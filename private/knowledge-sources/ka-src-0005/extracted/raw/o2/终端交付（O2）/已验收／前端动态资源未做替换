@@ -1,0 +1,18 @@
+用户真实链接：https://links.alipay.com/support/conversation/682303eeb992a204b8634a62  
+作者：叶子旭  
+评审人：庞舒蕾
+
+问题描述：
+
+ 前端动态资源中的参数没有按照后端接口返回的做替换，如下图： 
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2025/png/123256521/1747896479537-1f194a72-fda4-4c33-ba4e-8d92ce75b2f5.png) 
+
+问题原因：
+
+ 平台没有这个替换能力 
+
+ 解决方案： 
+
+ 需要用户自己在 构建过程中完成参数替换这一步骤
+

@@ -1,0 +1,28 @@
+- ER 服务开通：[https://common-buy.aliyun.com/?commodityCode=dcdn_er_public_cn#/buy](https://common-buy.aliyun.com/?commodityCode=dcdn_er_public_cn#/buy)
+- cdn 服务开通：[https://cdn.console.aliyun.com/overview](https://cdn.console.aliyun.com/overview)
+- dcdn 服务开通：[https://dcdn.console.aliyun.com/?accounttraceid=ed0107ff334b40e0977a3db1661f09c8atxt#/overview](https://dcdn.console.aliyun.com/?accounttraceid=ed0107ff334b40e0977a3db1661f09c8atxt#/overview)
+- CDN 的域名，子账号需授权 CDN 和 DCDN 的所有权限
+- DCDN 的域名，子账号需授权 DCDN 的所有权限
+## Step1
+
+用主账号登录[阿里云官网控制台](https://homenew.console.aliyun.com/home/dashboard/ProductAndService)，进入人员权限管理：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/tscgc8/imgstDFQRklFG.png)
+
+
+## Step2
+
+找到要赋予权限的子账号，选择添加权限：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/tscgc8/imgcweq6MWAYM.png)
+
+
+## Step3
+
+选择 AliyunCDNFullAccess 和 AliyunDCDNFullAccess ，点击“确定”，子账号即可使用 CDN 和 DCDN 了。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/tscgc8/imglzy0bv5XlD.png)
+
+
+
+

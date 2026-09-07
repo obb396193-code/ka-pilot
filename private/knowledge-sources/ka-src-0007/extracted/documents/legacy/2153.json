@@ -1,0 +1,42 @@
+{
+  "documentId": 2153,
+  "documentName": "快任务订单列表接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 星任务（视频）-查询订单的投后数据\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/ad_social/v1/quick_task/order/list](https://ad.e.kuaishou.com/rest/openapi/gw/ad_social/v1/quick_task/order/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 100 | 必填 | 广告主账户Id |  |\n| page_num | Integer | 1 | 必填 | 页码 |  |\n| page_size | Integer | 100 | 必填 | 每页大小 | 请按照整数请求，如10/20/40/50/100/200，最大200；如不按照整数请求（如199、123），返回数据可能会存在丢数据情况； |\n| task_id | Long | 100 | 必填 | 任务ID |  |\n| order_create_start_time_ms | Long | 1685116800000 | 非必填 | 订单创建开始时间, 单位:毫秒 | 订单创建开始至结束时间最长跨度14天 |\n| order_create_end_time_ms | Long | 1685116800000 | 非必填 | 订单创建结束时间, 单位:毫秒 |  |\n| order_status | Integer[] | \\[1,2,3\\] | 非必填 | 15:订单待审核 3:订单审核失败 2:订单审核通过 5:订单结束 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 0 | 状态码 | 成功-0；系统异常-500000；业务异常-401000 |\n| message | String | 参数错误 | 异常信息 | 成功返回”OK“；异常情况返回异常信息 |\n| data | OrderListResp | {} | 结果集 |  |\n\n### OrderListResp\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| total | long | 1000 | 数据总条数 |  |\n| order_detail_resp | OrderDetailResp[] | [] | 订单详情列表 |  |\n\n### OrderDetailResp\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| order_id | long | 111 | 订单Id |  |\n| order_type | int | 1 | 订单类型 | 1-视频，2-直播 |\n| amount | long | 100 | 总价格：厘 |  |\n| star_name | String | 网红昵称 | 网红昵称 |  |\n| kwai_id | String | 网红自定义ID | 网红自定义ID |  |\n| user_id | long | 111 | 网红快手user ID |  |\n| view | long | 100 | 曝光量 |  |\n| play | long | 100 | 播放数 |  |\n| action | long | 100 | 行为数 |  |\n| admire | long | 100 | 点赞数 |  |\n| comment | long | 100 | 评论数 |  |\n| play_3s | long | 100 | 3s播放数 |  |\n| play_5s | long | 100 | 5s播放数 |  |\n| click_rate | double | 0.111 | 视频点击率 |  |\n| play_3s_rate | double | 0.111 | 3s播放率 |  |\n| play_5s_rate | double | 0.111 | 5s播放率 |  |\n| play_end_rate | double | 0.111 | 完播率 |  |\n| item_impression_cnt | long | 100 | 组件展示量 |  |\n| item_click_cnt | long | 1000 | 组件点击量 |  |\n| item_click_rate | double | 0.111 | 组件点击率 |  |\n| star_release_time | String | 2022-04-10 11:00:00 | 发布时间 |  |\n| support_supplement | boolean | false | 是否支持流量助推 |  |\n| has_supplement | boolean | true | 是否有流量助推 |  |\n| caption | String | 视频标题 | 视频标题 |  |\n| video_url | String | http://www.baidu.com | 视频url |  |\n| video_duration | int | 100 | 视频时长：秒 |  |\n| app_download | long | 100 | 安装数 |  |\n| conversion_num | long | 100 | 转化数 |  |\n| audit_status | String | 审核通过 | 审核状态 | 审核状态有：审核通过，审核为通过，审核中 |\n| audit_reject_reason | String | 不符合规范 | 审核拒绝原因 | 示例：你提交的视频未体现具体产品或与备案产品不相关，请修改后重新提交；测试账号达人未备案 |\n| signature | String | 2342423525 | 加密后视频ID |  |",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1723557728886
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 5,
+  "bizName": "聚星",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1723557728886,
+  "creator": "zhangxianli",
+  "fullContext": null
+}

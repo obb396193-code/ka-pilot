@@ -1,0 +1,18 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/65fbdd2c971d470672bb68b5/](https://links.alibaba-inc.com/support/conversation/65fbdd2c971d470672bb68b5/)
+
+作者：时路
+
+评审人：上坡
+
+
+
+**可能原因一：**未配置灰度环境，ER 线上发布必须经过灰度发布，灰度放量前需要对灰度环境进行设置，请前往“程序->程序配置->灰度环境配置”添加灰度环境
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/18156349/1711356656754-55194dd0-19cd-48ce-88e5-6cfbd65a3e7b.png) 
+
+
+
+**可能原因二：**配置的灰度区域未完成全部灰度，灰度区域在灰度放量阶段必须完整全部区域放量，方可进行线上发布。
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/18156349/1711356777839-36102bee-a91b-4198-ae5f-78bcd94c277b.png) 
+

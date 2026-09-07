@@ -1,0 +1,42 @@
+{
+  "documentId": 2273,
+  "documentName": "搜索关键词请求批量导出接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 批量导出关键词\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/search/keyword/file/export](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/search/keyword/file/export)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段|类型|示例值|是否必填|说明|备注|\n|--|--|--|--|--|--|\n|advertiser_id|Long|0|必填|广告主账号ID||\n|campaign_id|Long|0|可选|广告计划ID||\n|start_time|Long|0|必填|起始时间|关键词创建时间(毫秒时间戳)|\n|end_time|Long|0|必填|截止时间|关键词创建时间(毫秒时间戳)|\n\n注：起始～截止时间跨度不超过180天\n\n### 返回参数\n\n|字段|类型|示例|说明|备注|\n|--|--|--|--|--|\n|code|Integer|0|返回状态码||\n|message|String||返回状态信息||\n|data|Object|0|返回数据内容||\n|&#8195;file_id|Long|0|导出文件ID||\n\n### 请求样例\n\n```json\n{\n    \"advertiser_id\": 900015071,\n    \"start_time\": 1675094400000,\n    \"end_time\": 1675180800000\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": {\n        \"file_id\": 2\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMOAgIDAwpiOrAEY5QIgzbCizeYwKPH_9M0E\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677142348685
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677142348685,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

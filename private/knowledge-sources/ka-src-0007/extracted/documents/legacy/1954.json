@@ -1,0 +1,42 @@
+{
+  "documentId": 1954,
+  "documentName": "10.2.2获取联盟投放白名单",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取联盟投放白名单\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/white_list\n\n请求方式：GET\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 说明      | 备注                           |\n| ------------- | ---- | --------- | ------------------------------ |\n| advertiser_id | long | 广告主 ID | 在获取 access_token 的时候返回 |\n\n### 返回参数\n\n| 字段             | 类型   | 说明     | 备注                                                           |\n| ---------------- | ------ | -------- | -------------------------------------------------------------- |\n| code             | int    | 返回码   |                                                                |\n| message          | string | 返回信息 |                                                                |\n| data             | struct |          |                                                                |\n| alliance_account | int    | 返回码   | 如果广告主 id 在白名单里面，值为 1，如果不在白名单里面，值为 0 |\n\n### 请求样例\n\n```\n\ncurl --location --request GET 'https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/white_list' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n   \"advertiser_id\": xxxxxxxx\n}\n```\n\n### 返回样例\n\n```\n\n{\n   \"code\": 0,\n   \"message\": \"OK\",\n   \"data\": {\n       \"alliance_account\": 1\n   }\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624344
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624344,
+  "creator": "linmenger",
+  "fullContext": null
+}

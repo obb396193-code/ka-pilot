@@ -19,7 +19,7 @@ const kindMeta: Record<TimelineItem["kind"], { label: string; icon: typeof IconB
   infra: { label: "基建", icon: IconHammer },
   transfer: { label: "交接", icon: IconArrowsExchange },
   mute: { label: "静音", icon: IconBellOff },
-  pool_status: { label: "库存态", icon: IconUserCheck },
+  pool_status: { label: "账户状态", icon: IconUserCheck },
 }
 
 export function TimelineList({ items, compact = false }: { items: TimelineItem[]; compact?: boolean }) {

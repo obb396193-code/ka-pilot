@@ -1,0 +1,67 @@
+## 获取迭代变更列表
+
+获取某迭代下所有变更
+
+| method | GET |
+|-|-|
+| url | /v1.0/work/iterations/{iterationId}/devbranches |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| iterationId | Number | true | - | 迭代 ID |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| Change[] | 变更列表，变更对象详情 [Change](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8c5351a5qllc8tzaq) |
+
+### Example
+
+```
+client.get(`/v1.0/work/iterations/{iterationId}/devbranches`, {}, {
+  SSO_TICKET
+})
+
+[
+  {
+      "id": 3301400,
+      "branch": "aaa",
+      "description": "abc",
+      "app_id": 1,
+      "emp_id": "318805",
+      "is_delete_branch": true,
+      "aonecr_id": null,
+      "aonecr_author": null,
+      "aonecr_time": null,
+      "aone_binds": "req|54895183",
+      "aone_binds_autofinish": false,
+      "is_finished": 0,
+      "is_exist": 1,
+      "endtime": null,
+      "cr_status": null,
+      "skip_cr": null,
+      "un_release": 0,
+      "commit_mode": false,
+      "gmt_create": "2024-02-05T02:08:51.000Z",
+      "gmt_modified": "2024-02-05T02:08:51.000Z",
+      "user": {
+          "id": 241674,
+          "emp_id": "318805",
+          "nick": "时路",
+          "account": "kangyong.ky",
+          "gitlab_id": "262506",
+          "buc_id": "2188599",
+          "email": "kangyong.ky@alibaba-inc.com",
+          "gmt_create": "2021-05-07T02:04:55.000Z",
+          "gmt_modified": "2021-05-07T03:19:17.000Z"
+      },
+      "iteration_id": 15126515,
+      "branch_id": 21070144
+  }
+]
+
+```

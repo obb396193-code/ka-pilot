@@ -1,0 +1,42 @@
+{
+  "documentId": 2323,
+  "documentName": "新建应用分包",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】新建应用分包\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subpkg/add](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subpkg/add)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主id | |\n| parent_package_id | Long |  | 必填 | 应用（母）包id |仅支持android应用的包id新建分包。该字段等同于[获取新版应用发布列表【单元创编】](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2337) 接口返回值的package_id |\n| type | Integer |  | 必填 | 分包方式 | 1-系统自动分包，2-上传渠道号列表|\n| count | Integer |  | 可选 | 分包数量 | 当type=1时填写，单次最多100 |\n| channel_id | String[] |  | 可选 | 上传的渠道号列表 | 当type=2时填写，单次最多填写100个。同一应用包下填写的渠道号不可重复 |\n| channel_columns | Object[] |  | 可选 | 带有分包备注的渠道号列表 | 与 channel_id 功能类似，但不可同时传递。 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 返回详情 |  |\n| data | Object[] |  | JSON 返回值 |  |\n| &#8195;channel_id | String |  | 渠道号(分包号) |  |\n| &#8195;package_id | Long |  | 分包id |  |\n| &#8195;build_status | Integer |  | 构建状态 0-创建中，1-构建中，2-构建成功，3-构建失败 |  |\n| &#8195;parent_package_id | Long |  | 绑定的母包id |  |\n| &#8195;description | String |  | 分包备注 |  |\n\n### 请求样例\n\n```shell\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subpkg/add' \\\n--header 'Content-Type: application/json' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\": 900015391,\n    \"parent_package_id\": 1099611757910,\n    \"type\": 2,\n    \"count\": 1,\n    \"channel_id\": [],\n    \"channel_columns\": [\n        {\n            \"channel_name\": \"测试备注1\",\n            \"description\": \"备注-1\"\n        },\n        {\n            \"channel_name\": \"测试备注2\",\n            \"description\": \"备注-2\"\n        }\n    ]\n}'\n\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"description\": \"备注-2\",\n            \"package_id\": 100130534,\n            \"build_status\": 0,\n            \"parent_package_id\": 1099611757910,\n            \"channel_id\": \"测试备注2\"\n        },\n        {\n            \"description\": \"备注-1\",\n            \"package_id\": 100130535,\n            \"build_status\": 0,\n            \"parent_package_id\": 1099611757910,\n            \"channel_id\": \"测试备注1\"\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"ELmAgIDQwJmOrAEYnAkgo8_CyJQxKLWe0dQB\"\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681107385422
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681107385422,
+  "creator": "heran03",
+  "fullContext": null
+}

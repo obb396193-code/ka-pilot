@@ -1,0 +1,15 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/661f73e4a4fe8a0574fe909b/](https://links.alibaba-inc.com/support/conversation/661f73e4a4fe8a0574fe909b/)
+
+作者：心羽
+
+评审人：[@乾杯](undefined/qiyang.hqy)
+
+
+
+请访问应用的【发布记录】页面，查看当前迭代是否成功执行过线上发布：
+
++ 如果没有执行过线上发布，则此次代码合并不是平台执行的。可能是由于开发者误操作，将开发分支合并到了 master 并提交，当前迭代并未发布到线上。您可以在本地将 master 回退到上一次发布的版本，并执行 force push。建议您到代码平台将 master 分支设置为保护分支。
++ 如果应用执行过多次线上发布，且其中至少一次发布成功，您可以废弃当前迭代，正常建立新迭代研发。
+
+
+

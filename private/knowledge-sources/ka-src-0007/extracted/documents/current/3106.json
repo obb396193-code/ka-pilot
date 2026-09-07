@@ -1,0 +1,272 @@
+{
+  "documentId": 3106,
+  "documentName": "修改线索优选开关状态",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "修改线索优选开关状态\n/rest/openapi/gw/dsp/clueOptimize/ocpxSwitch/mod\n\n\nclue_optimize_switch_types  ClueOptimizeSwitchModStructSnake[]  <p>线索优选开关</p>\nclue_optimize_type  Integer  <p>目标类型</p>\nstatus  Boolean  <p>开关状态</p>\nadvertiser_id  Long  <p>广告主id</p>\ndata  ClueOptimizeSwitchModStructSnake[]  <p>线索优选开关 json返回值</p>\nclue_optimize_type  Integer  <p>目标类型</p>\nstatus  Boolean  <p>开关状态</p>\nmessage  String  <p>返回信息</p>\ncode  Integer  <p>返回码</p>\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1726213325652
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1726211440033
+    }
+  ],
+  "apiId": 1451,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/clueOptimize/ocpxSwitch/mod",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 66260,
+      "paramName": "clue_optimize_switch_types",
+      "paramType": "ClueOptimizeSwitchModStructSnake[]",
+      "example": "",
+      "description": "<p>线索优选开关</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3726,
+      "sort": 1,
+      "note": "白名单可用，线索优选开关状态（表单-53，私信留资-786，添加企业微信-763）",
+      "children": [
+        {
+          "paramId": 66258,
+          "paramName": "clue_optimize_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>目标类型</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "表单转化-53，线索提交数-786，添加企业微信-763",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 66259,
+          "paramName": "status",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "<p>开关状态</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "true-开启，false-关闭",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 66261,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 66262,
+      "paramName": "data",
+      "paramType": "ClueOptimizeSwitchModStructSnake[]",
+      "example": "",
+      "description": "<p>线索优选开关 json返回值</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3726,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 66258,
+          "paramName": "clue_optimize_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>目标类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "表单转化-53，线索提交数-786，添加企业微信-763",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 66259,
+          "paramName": "status",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "<p>开关状态</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "true-开启，false-关闭",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 66263,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 66264,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1726213325652,
+  "creator": "liuyixuan11",
+  "fullContext": null
+}

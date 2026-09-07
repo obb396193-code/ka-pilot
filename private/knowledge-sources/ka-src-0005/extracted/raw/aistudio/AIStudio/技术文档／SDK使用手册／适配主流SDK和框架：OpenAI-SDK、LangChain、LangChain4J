@@ -1,0 +1,78 @@
+
+> [号外！ideaLAB适配OpenAI-SDK、LangChain、LangChain4J啦！](https://ata.atatech.org/articles/11020268440)
+
+> Update：
+> 
+> 2024-06-25：[Chat Completions API](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9)适配主流SDK和框架
+> 
+> 2024-07-25：[Embeddings API](https://aliyuque.antfin.com/aiplus/aistudio/tnq49n3b1p5n2z3p)适配主流SDK和框架
+
+## 1 适配[OpenAI-SDK](https://platform.openai.com/docs/quickstart)
+
+* api_key的申请：[AK申请须知（AI Studio&API）](https://aliyuque.antfin.com/aiplus/aistudio/gzhhgn1ai1ulhohs)
+
+### Chat 模型
+
+#### 块式调用
+
+#### 流式调用
+
+### Embedding 模型
+
+### Audio 模型
+
+#### Transcriptions
+
+#### Translations
+
+#### Text to speech
+
+## 2 适配LangChain【推荐阅读：[从API到Agent：万字长文洞悉LangChain工程化设计](https://ata.atatech.org/articles/12020218809?spm=ata.23639746.0.0.1fae6f11facBa8)】
+
+### Chat 模型
+
+#### 块式调用
+
+#### 流式调用
+
+* ideaLAB对接的是azure openai，结果它不支持stream_options...这里还得特殊处理下。
+* 处理后：
+
+没有openai的api_key？大家也可以用ideaLAB的api_key，去玩一玩《从API到Agent：万字长文洞悉LangChain工程化设计》这篇文章中的示例哟~
+
+  
+
+
+#### LangChain-DAG （《从API到Agent：万字长文洞悉LangChain工程化设计》示例之一）
+
+* 很有意思哈~
+
+### Embedding 模型
+
+## 3 适配LangChain4J 【推荐阅读：[LangChain4J：使用Java开发大模型应用](https://ata.atatech.org/articles/12020240012?spm=ata.23639746.0.0.4d8020fdnupTZO#pQ4-M5o5)】
+
+### Chat 模型
+
+#### 块式调用
+
+#### 流式调用
+
+### Embedding 模型
+
+## 4 仅能用openai系列模型？
+
+* 不可能，绝对不可能！对于Chat 模型，chat completions api文档里上架的模型都可以！
+* 以OpenAI-SDK示例：
+
+* 同理，对于Embedding 模型，embeddings api文档里上架的模型都可以！
+
+## 5 注意事项
+
+* 上面提到的模型，model名称必须是ideaLAB模型名称，详见ideaLAB api文档：
+
+* [Chat Completions API 文档](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9)​
+* [Embeddings API 文档](https://aliyuque.antfin.com/aiplus/aistudio/tnq49n3b1p5n2z3p)​
+
+## 6 叠甲
+
+* 使用过程中，遇到啥问题，向@翰序反馈哟，让模型不再成为AI落地的障碍。

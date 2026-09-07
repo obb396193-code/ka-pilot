@@ -1,0 +1,10 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/66014067e9a87a055906a277/](https://links.alibaba-inc.com/support/conversation/66014067e9a87a055906a277/)
+
+作者：紫砂
+
+评审人：上坡
+
+
+
+当前终端 Web 代码规范有提供对应的本地扫描 NPM 包，链接：[https://web.npm.alibaba-inc.com/package/@ali/eslint-config-att](https://web.npm.alibaba-inc.com/package/@ali/eslint-config-att)，可通过引入该包的方式，在本地开发阶段对代码规范问题进行扫描和修复。
+

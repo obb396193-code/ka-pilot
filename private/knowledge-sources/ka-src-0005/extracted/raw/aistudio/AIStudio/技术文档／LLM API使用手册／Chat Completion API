@@ -1,0 +1,556 @@
+
+
+**ideaLAB文档中心已全部迁移至钉钉文档，请移步至钉钉文档：**[**https://alidocs.dingtalk.com/i/spaces/nb9XJDJrn0KBLGyA/overview**](https://alidocs.dingtalk.com/i/spaces/nb9XJDJrn0KBLGyA/overview)
+
+Update：
+
+> 2024-08-13：支持美国region的vipserver访问方式
+> 
+> 2024-07-19：支持通过vip方式请求API。[如何通过vipserver访问API](#zTTwQ)。
+> 
+> 2024-07-16：API完全兼容OpenAI格式
+
+[模型API的FAQ](https://aliyuque.antfin.com/aiplus/aistudio/wkdbtx9rg2k8ksn1) 
+
+​[AI Studio Chat模型清单](https://alidocs.dingtalk.com/i/nodes/r1R7q3QmWew5lo02fxmP5pm0JxkXOEP2?utm_scene=team_space)
+
+​[idealab JavaSDK使用文档](https://aliyuque.antfin.com/aiplus/aistudio/betskstlycy2vgsy)
+
+​[ideaLAB适配OpenAI-SDK、LangChain、LangChain4J](https://aliyuque.antfin.com/aiplus/aistudio/hyw10wkpkb80sqmo)
+
+[模型价格](https://aliyuque.antfin.com/aiplus/aistudio/gzhhgn1ai1ulhohs#OSqgV)
+
+> 调用该API，需要申请AK。
+
+# 快速开始
+
+## HTTP调用接口
+
+* url: [https://idealab.alibaba-inc.com/api/openai/v1/chat/completions](https://idealab.alibaba-inc.com/api/v1/chat/completions)
+
+### 入参
+
+#### 对入参结构的说明
+
+对入参结构的说明
+
+* 图示
+#### openai格式的入参 【[官方文档](https://platform.openai.com/docs/api-reference/chat/object)】
+
+> openai官方文档写得非常清楚了，具体参考openai官方文档即可，不做搬运工了~
+> 
+> 阿里郎-网络加速-打开加速，才能访问openai官方文档。
+
+| 参数名 | 取值示例 | 说明 |
+| --- | --- | --- |
+| messages | 详见：[示例](#tSL5h) | 详见官方文档的说明 |
+| model | gpt-4-0409 | 能用的model详见：[AI Studio Chat模型清单](https://aliyuque.antfin.com/aiplus/aistudio/vigq1wzhi7zy3gnb) |
+| frequency_penalty | **可选**，用户不传，IdeaLab也不设置默认值。 | 默认为 0 -2.0 到 2.0 之间的数字。  正值根据文本目前的存在频率惩罚新标记,降低模型重复相同行的可能性。  有关频率和存在惩罚的更多信息。 |
+| logit_bias | **可选**，用户不传，IdeaLab也不设置默认值。 | 修改指定标记出现在补全中的可能性。  接受一个 JSON 对象,该对象将标记(由标记器指定的标记 ID)映射到相关的偏差值(-100 到 100)。  从数学上讲,偏差在对模型进行采样之前添加到模型生成的 logit 中。  确切效果因模型而异,但-1 和 1 之间的值应减少或增加相关标记的选择可能性;  如-100 或 100 这样的值应导致相关标记的禁用或独占选择。 |
+| logprobs | 详见：[Openai Logprobs 示例](#tmbER) | Whether to return log probabilities of the output tokens or not. If true, returns the log probabilities of each output token returned in the content of message. |
+| top_logprobs | 详见：[Openai Logprobs 示例](#tmbER) | An integer between 0 and 20 specifying the number of most likely tokens to return at each token position, each with an associated log probability.  ​  logprobs must be set to true if this parameter is used. |
+| max_tokens | 详见：[Openai Image input 示例](#okdu0) | 最大输出token数 |
+| n | 1 | llm生成的回答的个数，IdeaLab暂时将n默认为1。 |
+| presence_penalty | **可选**，用户不传，IdeaLab也不设置默认值。 | -2.0 和 2.0 之间的数字。  正值会根据到目前为止是否出现在文本中来惩罚新标记，从而增加模型谈论新主题的可能性 |
+| response_format |  | 对模型返回的格式做限制  ​ |
+| seed | - | openai支持，但azure openai也支持了，因此，IdeaLab也支持。  ​  This feature is in Beta. If specified, our system will make a best effort to sample deterministically,  such that repeated requests with the same seed and parameters should return the same result.  Determinism is not guaranteed, and you should refer to the system_fingerprint response parameter to monitor changes in the backend. |
+| stop | **可选**，用户不传，IdeaLab也不设置默认值。 | 默认为 null 最多 4 个序列,API 将停止进一步生成标记。 |
+| stream | **可选**，用户不传，默认为fasle | 是否流式输出 |
+| stream_options | - | openai支持，但azure openai不支持，因此，IdeaLab不支持。 |
+| temperature | **可选**，用户不传，IdeaLab也不设置默认值。 | 使用什么采样温度，介于 0 和 2 之间。  较高的值（如 0.8）将使输出更加随机，而较低的值（如 0.2）将使输出更加集中和确定。  我们通常建议改变这个或top_p但不是两者。 |
+| top_p | **可选**，用户不传，IdeaLab也不设置默认值。 | 一种替代温度采样的方法，称为核采样，其中模型考虑具有 top_p 概率质量的标记的结果。  所以 0.1 意味着只考虑构成前 10% 概率质量的标记。  我们通常建议改变这个或temperature但不是两者。 |
+| tools | 详见：[Openai Functions 示例 （Too Call）](#vPzRS) | 告知llm有哪些可调用的工具（function call的升级版，建议用这种） |
+| tool_choice | 详见：[Openai Functions 示例 （Too Call）](#vPzRS) | 工具调用的模式  "tool_choice": "auto"  "tool_choice": "none"  "tool_choice": {"type": "function", "function": {"name": "my_function"}} |
+| user | - | 用户标识，属于敏感信息，IdeaLab不允许用户传，更不能将此信息传给azure openai。 |
+| function_call | 详见：   * [IdeaLab Function Call 第一次调用（openai格式）](#hDzVB) * [IdeaLab Function Call 第二次调用（openai格式）](#iEaCc) | 告知llm有哪些可调用的函数 |
+| functions | 详见：   * [IdeaLab Function Call 第一次调用（openai格式）](#hDzVB) * [IdeaLab Function Call 第二次调用（openai格式）](#iEaCc) | 函数调用的模式  "functionCall" : "auto"  "functionCall" : "none"  "functionCall" : {"name": "xxx"} xxx为函数名 |
+
+#### extendParams（不单独说明，后续结合具体模型进行介绍）
+
+* **可选**
+
+### 出参
+
+#### 块式调用的出参
+
+##### 对出参结构的说明
+
+对出参结构的说明
+
+* 图示
+##### azure openai / openai的出参区域
+
+* 有些出参对IdeaLab的意义不大，因此没有透出，具体区别如下：
+
+* id、object、created、model、system_fingerprint：idea-lab不提供
+* choices：和openai一致，只是logprobs为null时，idea-lab不显示。
+* usage：和openai一致。
+
+#### 流式调用的出参
+
+> 注意：
+> 
+> * openai的流式输出，每一个data吐出一部分内容，详见：[Openai Streaming 示例](#ixUnF)
+> 
+> * 即，默认needAppend为false。
+> * 后续，IdeaLab会提供needAppend为true的服务，例如：我爱你
+> 
+> * 我
+> * 我爱
+> * 我爱你
+
+* 概览
+
+> 为方便描述，将data: xxx称为帧，假设有n帧，一共3种类型：
+> 
+> * 前n - 2帧
+> * 第n - 1帧
+> * 最后一帧：data: [DONE]
+
+* 前n - 2帧的结构
+
+* 第n - 1帧的结构
+
+> openai支持流式输出usage，但azure openai还不支持。因此这个usage是ideaLAB估算后的结果。后续azure openai也会支持流式输出usage。
+
+​  
+
+
+## Python简单示例（详见：[ideaLAB适配OpenAI-SDK、LangChain、LangChain4J](https://aliyuque.antfin.com/aiplus/aistudio/hyw10wkpkb80sqmo)）
+
+ideaLAB API 已经兼容了 OpenAI 的格式，可以使用 OpenAI SDK 请求 ideaLAB 上[所有的模型](https://aliyuque.antfin.com/aiplus/aistudio/vigq1wzhi7zy3gnb#Xyb40)了。参考代码：
+
+​  
+
+
+当然，也可以通过RESTful API 访问：
+
+API的详细使用方法请参考 [OpenAI API文档](https://platform.openai.com/docs/api-reference/chat/create)。
+
+# 示例
+
+> 对于Chat Completion API，openai官方提供了5种示例：
+> 
+> * Default
+> * Image Input
+> * Streaming
+> * Functions（Tool Call）
+> * Logprobs
+> 
+> IdeaLab增加3种示例：
+> 
+> * IdeaLab Function Call 第一次调用（openai格式）
+> * IdeaLab Function Call 第二次调用（openai格式）
+
+## Openai Default 示例
+
+* 请求：
+
+* 响应：
+
+## Openai Image input 示例
+
+* 请求：
+
+* 响应：
+
+### 支持流式调用
+
+* 请求：
+
+* 响应：
+
+### 支持base64
+
+* base64太长了，不贴了。
+* 将上述的url，换成base64即可：
+
+## Video input 示例
+
+* 请求：
+
+* 响应：
+
+### 支持流式调用
+
+* 和块式调用的唯一区别，便是增加：
+
+### 支持base64
+
+* 将上述的url，换成base64即可：
+
+## Openai Streaming 示例
+
+* 请求：
+
+* 响应：
+
+## Openai Tool Call 示例 （Tool Call 第一次调用）
+
+* 请求：
+
+* 响应：
+
+### 支持流式调用
+
+* 和块式调用的唯一区别，便是增加：
+
+## Openai Tool Call 示例 （Tool Call 第二次调用）
+
+* 请求
+
+* 响应：
+
+### 支持流式调用
+
+* 和块式调用的唯一区别，便是增加：
+
+## Openai Logprobs 示例
+
+* 请求：
+
+* 响应：
+
+## IdeaLab Function Call 第一次调用（openai格式）
+
+* 请求：
+
+* 响应：
+
+### 支持流式调用
+
+* 和块式调用的唯一区别，便是增加：
+
+## IdeaLab Function Call 第二次调用（openai格式）
+
+* 请求：
+
+* 响应：
+
+### 支持流式调用
+
+* 和块式调用的唯一区别，便是增加：
+
+# 具体模型对示例的支持情况
+
+* 只需要更换model即可。
+
+## o1系列模型
+
+### o1-preview-0912、o1-preview-0912-global、o1-mini-0912、o1-mini-0912-global
+
+#### 支持的功能
+
+* Openai Default示例
+
+> 为啥仅支持这么点功能？详见：[o1系列模型的说明](https://aliyuque.antfin.com/aiplus/aistudio/wkdbtx9rg2k8ksn1)
+
+## gpt系列模型
+
+### gpt-4-0409、gpt-4o-0513、gpt-4o-0513-global、gpt-4o-0806、gpt-4o-0806-global
+
+#### 支持的功能
+
+* Openai Default示例
+* Openai Image input示例
+* Openai Streaming示例
+* Openai Functions 示例 （Tool Call 第一次调用）
+* Openai Functions 示例 （Tool Call 第二次调用）
+* Openai Logprobs示例
+* IdeaLab Function Call 第一次调用（openai格式）
+* IdeaLab Function Call第二次调用
+* IdeaLab Openai Default 示例（isAcquireOriginalOutput为true）
+
+注意：目前，不支持Image input和工具（function call / tool call）同时使用。
+
+> azure openai负责人的回复：
+> 
+> gpt-4-0409目前只有文本输入支持json mode和function calling。gpt-4o最终支持文本、语音、图片输入和输出，目前api只支持文本和图片，输出文本。音频预计几个月内会支持。
+
+### gpt-3.5-turbo、gpt-3.5-16K、gpt-3.5-16K-1106、gpt-4-turbo-128k、gpt-4 8K、gpt-4 32K、gpt-35-turbo-0125
+
+#### 支持的功能
+
+* Openai Default示例
+* Openai Streaming示例
+* Openai Functions 示例 （Tool Call 第一次调用）
+* Openai Functions 示例 （Tool Call 第二次调用）
+* Openai Logprobs示例
+* IdeaLab Function Call 第一次调用（openai格式）
+* IdeaLab Function Call第二次调用
+* IdeaLab Openai Default 示例（isAcquireOriginalOutput为true）
+
+### gpt-4-vision-preview
+
+#### 支持的功能
+
+* Openai Default示例
+* Openai Image input示例
+* Openai Streaming示例
+* IdeaLab Openai Default 示例（isAcquireOriginalOutput为true）
+
+#### 支持的入参
+
+* 详见：[openai格式的入参](https://aliyuque.antfin.com/aiplus/aistudio/zf1s0etkz9ilh7h6#bzqWz)
+
+## google系列模型
+
+### gemini-pro-vision、gemini-1.5-pro、gemini-1.5-pro-flash
+
+#### 支持的功能
+
+* Openai Default示例
+* Openai Image input示例
+* Openai Streaming示例
+* Video input 示例
+* fileInput(pdf)，文档理解能力，新增extendParams.fileData参数
+
+### gemini-pro
+
+#### **支持的功能**
+
+* Openai Default示例
+* Openai Streaming示例
+
+#### 支持的入参【详见[官方文档](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/gemini)】
+
+| 参数名 |
+| --- |
+| messages |
+| temperature |
+| top_p |
+| max_tokens |
+| stop |
+| stream |
+
+### 支持传入safetySettings参数（安全类别与阈值）
+
+**一个忽略所有安全类别的例子：**
+
+### gemini系列模型支持音频
+
+* 示例：
+
+> 和image_url、audio_url类似，url可以是http/https链接，也可以是base64。
+> 
+> **注意：链接最好是oss链接，否则ideaLAB在200ms内获取不到Content-Length，会认为这个url不安全，拒绝调用模型。**
+
+* 结果：
+
+### chat_bison_8k、chat_bison_32k、codechat_bison_6k、codechat_bison_32k
+
+#### **支持的功能**
+
+* Openai Default示例（支持多轮对话）
+
+### text_bison_8k、text_bison_32k、code_bison_6k、code_bison_32k、code_gecko_2k
+
+#### **支持的功能**
+
+* Openai Default示例（不支持多轮对话）
+
+## Anthropic 系列
+
+### claude3_sonnet、claude3_haiku、claude3_opus​
+
+#### 支持的功能
+
+* Openai Default示例
+* Openai Image input示例
+* Openai Streaming示例
+
+### claude35_sonnet、claude35_sonnet2
+
+#### 支持的功能
+
+* Openai Default示例
+* Openai 多个参数示例
+
+* Openai Default 多轮对话
+
+* Openai Image input示例
+* Openai Tool Call 示例 （Tool Call 第一次调用）
+* Openai Tool Call 示例 （Tool Call 第二次调用）
+
+### claude35_haiku
+
+#### 支持的功能
+
+* Openai Default示例
+* Openai 多个参数示例
+* Openai Default 多轮对话
+* Openai Tool Call 示例 （Tool Call 第一次调用）
+* Openai Tool Call 示例 （Tool Call 第二次调用）
+
+### claude系列模型支持cache_control
+
+* 详见：<https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching>
+
+#### Tools
+
+* 示例：
+
+#### System messages
+
+* 示例：
+
+* 注意事项：“<the entire contents of Pride and Prejudice>”必须足够长，否则不会走cache的（模型侧的特性）。
+
+* 一旦走了cache，cache_creation_input_tokens不为0。
+
+#### Messages
+
+#### Images & Documents
+
+#### Tool use and tool results
+
+## MiniMax 系列
+
+### abab6.5-chat、abab6.5s-chat
+
+#### 支持的功能
+
+* Openai Default示例
+* Openai Functions 示例 （Tool Call 第一次调用）
+* Openai Functions 示例 （Tool Call 第二次调用）
+* Openai Streaming示例
+
+## ChatGLM系列
+
+### chatglm2 32K、chatglm3 32K
+
+#### 支持的功能
+
+* Openai Default示例
+* Openai Streaming示例
+
+## Kimi
+
+### moonshot-v1-128k
+
+#### 支持的功能
+
+* Openai Default示例
+* Openai Functions 示例 （Tool Call 第一次调用）
+* Openai Functions 示例 （Tool Call 第二次调用）
+* Openai Streaming示例
+
+## Qwen系列
+
+### qwen系列支持传入百炼平台个人AK：
+
+[通义百炼ak获取方式](https://help.aliyun.com/zh/model-studio/getting-started/first-api-call-to-qwen?spm=a2c4g.11186623.help-menu-2400256.d_0_1_0.4d97b0a8zPMu3L)
+
+注意：需要使用集团统一的部门账号登录阿里云，才能走免费的通义资源，不要用个人手机号码注册百炼账号调用，会收费！！！
+
+集团账号申请：[https://cc.alibaba-inc.com](https://cc.alibaba-inc.com/)
+
+header中增加“DASHSCOPE-API-KEY”
+
+### extendParam示例
+
+### qwen_max
+
+支持的功能
+
+* Openai Default示例
+* Openai Streaming示例
+* Openai Functions 示例 （Tool Call 第一次调用）
+* Openai Functions 示例 （Tool Call 第二次调用）
+
+### qwen-vl-max
+
+支持的功能
+
+* Openai Default示例
+* Openai Streaming示例
+* Openai Image input示例
+* IdeaLab Function Call 第一次调用（openai格式）
+
+**注意：如果多模态结果返回以下不符合预期的空结果，可以尝试调整下image_url参数的顺序**
+
+image_url放到text前面
+
+### qwen-turbo-poly、Qwen_32K_72B
+
+支持的功能
+
+* Openai Default示例
+* Openai Streaming示例
+* IdeaLab Function Call 第一次调用（openai格式）
+
+### qwen2-7b-instruct、qwen2-72b-instruct
+
+支持的功能
+
+* Openai Default示例
+* Openai Streaming示例
+* Openai Functions 示例 （Tool Call 第一次调用）
+* Openai Functions 示例 （Tool Call 第二次调用）
+
+### Qwen3-235B-A22B、Qwen3-30B-A3B、Qwen3-32B
+
+支持的功能
+
+* Openai Default示例
+* Openai Streaming示例
+* Openai Functions 示例 （Tool Call 第一次调用）
+* Openai Functions 示例 （Tool Call 第二次调用）
+* qwen3深度思考 开关示例
+
+* enableThinking深度思考开启开关,不传默认为开启
+* thinkingBudget为深度思考部分的预算token数
+
+## Meta系列
+
+### llama3
+
+* Openai Default示例
+* Openai Streaming示例
+
+  
+
+
+## ERNIE系列
+
+ERNIE-4.0、ERNIE-4.0-Turbo
+
+> 文心其他参数直接按照官方文档通过extend_params传入即可
+
+* Openai Default示例
+* Openai Streaming示例
+
+说明：如果您需要获取模型的原生输出结果，那么您无法使用openai格式的api，需要使用如下curl命令。
+
+  
+
+
+# **HTTP endpoint 和 Vipserver**
+
+|  | **​** | **HTTP endpoint** | **Vipserver** |
+| --- | --- | --- | --- |
+| **中国** | **生产环境** | https://idealab.alibaba-inc.com | idea-lab.vipserver |
+| **预发布环境** | https://pre-idealab.alibaba-inc.com | pre-test4-idealab.alibaba-inc.com.vipserver |
+| **美国** | **生产环境** | https://idealab-us.alibaba-inc.com | idealab-us.alibaba-inc.com.vipserver |
+| **预发布环境** | - | pre-test-us-idealab.alibaba-inc.com.vipserver |
+| **新加坡** | **生产环境** | https://idealab-sg.alibaba-inc.com | idealab-sg.alibaba-inc.com.vipserver |
+| **预发环境** | - | pre-test-sg-idealab.alibaba-inc.com.vipserver |
+
+备注：
+
+1. 同一个ak只允许在一个地区访问
+2. 如果要在海外访问，需要联系 黄晖 配置新的ak信息
+
+## 通过vipserver访问 ideaLAB API
+
+和[快速指南](#pcCay)的部分的使用方式是一样的，只是需要提前获取服务器ip后，然后通过ip地址，而不是域名请求API。使用方式如下：
+
+注意上方代码中，`base_url`中使用的是http协议和IP地址，{vipserver_ip}需要换成通过vipserver获取的ip地址。vipserver的使用参考[使用指南](https://mw.alibaba-inc.com/vipserver/manual/use-client)。
+
+# 相关文档
+
+* [Search API](https://aliyuque.antfin.com/aiplus/aistudio/nw5ccm2x8sv0entf?singleDoc#)
+* [Workspace批量任务API说明](https://aliyuque.antfin.com/aiplus/aistudio/qdb8dxpg2hg8hrrz?singleDoc#)
+* [错误码](https://aliyuque.antfin.com/aiplus/aistudio/fcvz8361hgy7v37q)
+* [API限流方式](https://aliyuque.antfin.com/aiplus/aistudio/gmg8pra6qxa3dk01#p9dUq)
+* [Embedding API](https://aliyuque.antfin.com/aiplus/aistudio/wg2mvhk2v57p2cy1)

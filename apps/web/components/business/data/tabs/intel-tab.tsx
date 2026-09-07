@@ -27,7 +27,7 @@ export function IntelTab() {
   const [linkTask, setLinkTask] = useState("")
   if (!data) return null
   return (
-    <ExampleBlock unlock="AppGrowing 接入方式待 OS 实证（csv_import / link / api）；接入后按行业 / 竞品 / 版位 / 窗口筛，示例角标自动消失">
+    <ExampleBlock unlock="AppGrowing 的接入方式待实证（导表 / 贴链接 / 接口）；接入后按行业 / 竞品 / 版位 / 时间窗筛，示例角标自动消失">
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           <TypeChip>来源 {data.sourceStatus.mode}</TypeChip>

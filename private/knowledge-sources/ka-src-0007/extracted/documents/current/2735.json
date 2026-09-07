@@ -1,0 +1,489 @@
+{
+  "documentId": 2735,
+  "documentName": "批量模板合成SDPA创意视频",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720093824941
+    }
+  ],
+  "apiId": 451,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/creative/video/generate",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 900015391,\n    \"library_id\": 202112203923,\n    \"product_id\": 411002,\n    \"outer_id\": \"test01\",\n    \"templates\": [\n        {\n            \"template_id\": 824433492,\n            \"package_id\": 455159\n        },\n        {\n            \"template_id\": 8010697,\n            \"package_id\": 526\n        },\n        {\n            \"template_id\": 8007665,\n            \"package_id\": 509\n        }\n    ]\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"video_infos\": [\n            {\n                \"video_url\": \"https://kcdn.staging.kuaishou.com/bs2/ad-procedural-creative/e8adb0efed094d2c92a87c45a45d0bd1.mp4\",\n                \"code\": null,\n                \"photo_id\": 282409,\n                \"product_id\": 411002,\n                \"template_id\": 824433492,\n                \"message\": null,\n                \"product_name\": \"模板合成视频\",\n                \"outer_id\": \"test01\"\n            },\n            {\n                \"video_url\": \"https://kcdn.staging.kuaishou.com/bs2/ad-procedural-creative/4b2b87d5b65f43e9a1b2c5080dca1bdc.mp4\",\n                \"code\": null,\n                \"photo_id\": 282410,\n                \"product_id\": 411002,\n                \"template_id\": 8010697,\n                \"message\": null,\n                \"product_name\": \"模板合成视频\",\n                \"outer_id\": \"test01\"\n            },\n            {\n                \"video_url\": \"https://kcdn.staging.kuaishou.com/bs2/ad-procedural-creative/63b08d2982cc47509a9e704921fc489f.mp4\",\n                \"code\": null,\n                \"photo_id\": 282411,\n                \"product_id\": 411002,\n                \"template_id\": 8007665,\n                \"message\": null,\n                \"product_name\": \"模板合成视频\",\n                \"outer_id\": \"test01\"\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMyAgICwtsOOrAEYgwIggauYu7swKLOAoB0=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 26238,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "900015391",
+      "description": "账号ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26239,
+      "paramName": "library_id",
+      "paramType": "Long",
+      "example": "202112201878",
+      "description": "商品库ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26240,
+      "paramName": "product_id",
+      "paramType": "Long",
+      "example": "156243",
+      "description": "商品ID",
+      "required": 2,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "\t(优先于\"outer_id\"生效)与\"outer_id\"至少必填其一",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26241,
+      "paramName": "outer_id",
+      "paramType": "String",
+      "example": "6919350870610940890",
+      "description": "商品第三方ID",
+      "required": 2,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "与\"product_id\"至少必填其一",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26242,
+      "paramName": "templates",
+      "paramType": "TemplateSneak[]",
+      "example": "{\n    \"templateId\": 590566,\n    \"packageId\": 163\n}",
+      "description": "视频模板信息(模板ID+配置包ID)",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 944,
+      "sort": 5,
+      "note": "",
+      "children": [
+        {
+          "paramId": 26227,
+          "paramName": "template_id",
+          "paramType": "Long",
+          "example": "590566",
+          "description": "模板ID",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 26228,
+          "paramName": "package_id",
+          "paramType": "Long",
+          "example": "163",
+          "description": "配置包ID",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 26243,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26244,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回提示信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26245,
+      "paramName": "data",
+      "paramType": "GeneratedVideoInfoList",
+      "example": "",
+      "description": "合成视频信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 946,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 26237,
+          "paramName": "video_infos",
+          "paramType": "GenerateVideoResultSneak[]",
+          "example": "",
+          "description": "视频信息列表",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 945,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 26229,
+              "paramName": "photo_id",
+              "paramType": "Long",
+              "example": "253937",
+              "description": "Photo ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26230,
+              "paramName": "template_id",
+              "paramType": "Long",
+              "example": "590566",
+              "description": "模板ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26231,
+              "paramName": "product_id",
+              "paramType": "Long",
+              "example": "156243",
+              "description": "商品ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26232,
+              "paramName": "outer_id",
+              "paramType": "String",
+              "example": "6919350870610940890",
+              "description": "商品第三方ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26233,
+              "paramName": "product_name",
+              "paramType": "String",
+              "example": "Gap男童直筒运动短裤方法682045 2022春12季新款童装帅气速干裤工装裤",
+              "description": "商品名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26234,
+              "paramName": "video_url",
+              "paramType": "String",
+              "example": "https://kcdn.staging.kuaishou.com/bs2/ad-procedural-creative/af6439a911284185ba0430e309d78f77.mp4",
+              "description": "视频URL",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26235,
+              "paramName": "code",
+              "paramType": "String",
+              "example": "null",
+              "description": "失败状态码",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26236,
+              "paramName": "message",
+              "paramType": "String",
+              "example": "null",
+              "description": "失败信息",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720093824941,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

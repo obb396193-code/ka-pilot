@@ -1,0 +1,72 @@
+## 操作路径
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8XbVYOY74/img/c16f8507-52d1-468a-b0f2-00308c23cceb.png)
+
+
+## 操作流程
+
+- 根据使用场景选择需要添加的路由类型
+- 提交表单后，若路由没有冲突，则可以看到添加的路由信息。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8XbVYOY74/img/b5da9242-f297-463e-ae65-a8f2b0134b20.png)
+
+
+- 若新添加的路由和已有路由冲突，则需要返回修改。
+- 路由添加后不代表可用，需要通过“路由发布”进行发布。可以先发布预发域名，验证通过后发布 CDN 域名。注意：天马路由需要审批，请审批通过后再发布。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8XbVYOY74/img/f1d726f4-a767-4ea9-b081-ff7148b0cc40.png)
+
+
+## 路由类型
+
+### 添加应用路由
+
+应用路由用来为已创建的应用添加路由规则，从而可以访问到应用发布的页面。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8XbVYOY74/img/b82070c1-a930-4a83-b1bc-119ee5d60258.png)
+
+
+提供应用仓库后，系统会自动填充默认信息。
+
+默认的访问路径前缀为：`/app/[group]/[project]/*`。你也可以自定义应用的访问路径前缀。
+
+### 添加页面路由
+
+页面路由主要用于给域名添加单个页面的路由规则，如：首页、验证类文件等。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8XbVYOY74/img/8fd70f62-e24c-44e0-918a-34608ec347e5.png)
+
+
+添加页面路由时，需要提供访问路径和目标路径信息。
+
+访问路径：即用户访问时使用的路径，如：/abc、/x/y 等。如果选择的是首页，则相当于是 /。
+
+目标路径：即用来渲染返回内容的服务路径信息。可以提供一个线上的 URL 地址（必须是通过 WebApp、Weex、跨端、WebPlus 应用发布的页面或是天马页面），系统会自动解析渲染服务和路径信息，也可以直接从站点中的资源（通过跨端应用 / WebPlus 应用发布到站点的页面）进行选择。
+
+### 添加通用路由
+
+通用路由主要用于给满足应用类型的所有应用（包括已有的和新创建的）添加路由规则，从而可以访问应用发布的页面。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8XbVYOY74/img/0b752c52-3991-4017-a70b-ee7e26d42646.png)
+
+
+应用类型目前可以选择：跨端应用 / WebPlus 应用、可缓存 SSR 应用。
+
+访问路径将通过前缀进行匹配，即：`/[类型前缀]/[应用 group]/[应用 project]/`。
+
+实际访问时的规则为：`[域名]/[类型前缀]/[应用 group]/[应用 project]/_*_`，其中 `_*_` 代表通过应用发布的页面路径信息，如：home、sub/page
+
+注意：因为渲染链路是分开的，需要为不同的应用类型设置不同的类型前缀。
+
+### 添加天马路由
+
+天马路由主要用来添加天马服务的路由信息，从而可以使用自定义域名访问天马页面。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8XbVYOY74/img/f1b02fed-a2fd-43c9-9cc1-4619415117e2.png)
+
+
+也支持“天马（FC）”的服务类型，这时需要需要提供 FaaS 服务信息。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8XbVYOY74/img/40dc4150-4d68-4497-9b43-b83408775f05.png)
+
+
+注意：天马路由需要审批，请及时跟进审批。
+

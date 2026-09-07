@@ -1,0 +1,6 @@
+以下步骤需要在 [跨端研发平台](https://web.def.alibaba-inc.com)完成
+
+1. 创建站点：[https://yuque.antfin-inc.com/gubal/site/create](https://yuque.antfin-inc.com/gubal/site/create)
+1. 接入 CDN 域名：[https://yuque.antfin-inc.com/gubal/site/domain-apply](https://yuque.antfin-inc.com/gubal/site/domain-apply)
+1. 关联天马：[https://yuque.antfin-inc.com/gubal/site/route-add](https://yuque.antfin-inc.com/gubal/site/route-add#dMyr4)
+1. 发布配置：[https://yuque.antfin-inc.com/gubal/site/route-publish](https://yuque.antfin-inc.com/gubal/site/route-publish)

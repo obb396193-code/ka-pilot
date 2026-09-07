@@ -1,0 +1,380 @@
+> O2 Space 主干研发，是 O2 Space  提供的基于主干研发流程的新一代前端研发平台，地址为 [https://space-next.o2.alibaba-inc.com/](https://space-next.o2.alibaba-inc.com/)，目前已在部分项目试用，有主干研发诉求的前端项目可以接入，或将 O2 Space 上存量的项目迁移到主干研发
+
+## 主干研发介绍
+
+在介绍功能之前，我们先简单介绍下什么是主干研发（已经了解的同学可以跳过）
+
+
+
+1、变更开发完成（包括开发、测试、CR）后即合入主干，避免特性分支长期存在（合入主干前不用线上发布，通过 CI 测试来保证主干的稳定）
+
+2、发布时从主干切出固定的 release 分支，在 release 分支上进行验收、发布
+
+（左图为原迭代研发的流程简图，右图为主干研发的）
+
+(https://img.alicdn.com/imgextra/i3/O1CN01Y3R42w28s6LVYeplI_!!6000000007987-2-tps-1112-696.png)
+(https://img.alicdn.com/imgextra/i2/O1CN01FnqjxQ1JGVQmSNxvN_!!6000000001001-2-tps-1762-884.png)
+
+
+主干研发模式的优势是：开发、发布流程分离，更适合大型、复杂项目的研发
+
+- 对于开发
+	- CR、CI 流程左移，提早暴露变更的问题（天然避免了发布前才去关注 CR、CI 的问题）
+	- 主干分支更新更及时，能容纳更大规模的项目协作（合入主干后，项目的其它成员可以感知到你的变更，从而更早的解决冲突）
+- 对于发布，发布验收时环境更稳定（发布分支固定，不会频繁进入/退出变更），提高发布的效率和稳定性
+
+
+## 功能介绍
+
+下图介绍了主干研发的全流程，图片比较大，可以点击放大查看：
+
+(https://img.alicdn.com/imgextra/i4/O1CN01reRt5a1RYNoihIci1_!!6000000002123-2-tps-4139-707.png)
+
+
+主要包括 功能开发、主干发布、热修复 三个子流程，下面逐一介绍怎样使用。
+
+
+
+### 新建应用
+
+进入 O2 Space 主干研发平台 [https://space-next.o2.alibaba-inc.com/](https://space-next.o2.alibaba-inc.com/)，点击右上角的新建应用
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnVZAJZ5gmn4XB/img/65ada991-160a-46a3-82d2-47c6b2dbe203.png)
+
+
+选择应用类型和脚手架后，点击下一步
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnVZAJZ5gmn4XB/img/f4a5726c-5455-4d83-b0cc-2743fcfb6e54.png)
+
+
+填写应用信息后点击确定
+
+(https://img.alicdn.com/imgextra/i4/O1CN01zDpvOu1Y0fyjYLMji_!!6000000002997-2-tps-3584-2240.png)
+创建后会跳转到应用详情页
+
+(https://img.alicdn.com/imgextra/i2/O1CN01792XZm1sGVzXMJslX_!!6000000005739-2-tps-3584-2240.png)
+
+
+
+
+### CI 测试准备
+
+> 主干研发依赖 CI 自动化测试来保证主干的稳定，可以通过以下方式完善项目的 CI 自动化测试
+
+#### 单测
+
+在项目的package.json中，以jest为例，配置CI命令：
+
+(https://img.alicdn.com/imgextra/i4/O1CN013c4vo81gp4U6Pinp6_!!6000000004190-2-tps-604-122.png)
+
+
+配置输出报告的目录和reporter，覆盖率报告遵循istanbul协议：
+
+```
+module.exports = {
+
+  ... 
+
+  coverageDirectory: '.ci', // 上报至项目下的 .ci 文件夹
+  coverageReporters: [
+    'json', // 只生成json格式报告即可
+  ],
+
+  ...
+
+};
+```
+如果你使用了vitest，安装 @vitest/coverage-istanbul包，并可以这样配置：
+
+```
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+
+  test: {
+    include: ['src/**/*.test.ts'],
+    coverage: {
+      reportsDirectory: './ci',
+      provider: 'istanbul' // provider使用instanbul
+    },
+    ...
+  },
+
+  ...
+
+});
+
+```
+#### E2E 测试
+
+当前E2E支持playwright框架，后续也会陆续支持cypress、puppeteer等自动化测试框架。
+
+在项目的package.json中，配置CI命令：
+
+(https://img.alicdn.com/imgextra/i2/O1CN01I3FdWr1SxrSsOtwJn_!!6000000002314-2-tps-1328-96.png)
+
+
+同时，配置playwright：
+
+```
+module.exports = {
+  ...
+
+  testDir: './e2e', // 最好scope一下e2e测试的脚本目录，特别是你同时配置了单测的情况下
+  reporter: [
+    ['html', { open: 'never', outputFolder: '.ci/e2e' }], // 将reporter的输出配置同样在项目.ci目录下的e2e路径下
+  ],
+  use: {
+    trace: 'on', // 打开trace，平台会将trace上传至oss，供用户查看
+  },
+
+  ...
+
+};
+```
+当你提交代码时，会自动触发CI任务：
+
+(https://img.alicdn.com/imgextra/i3/O1CN01mM9n5N26tMCVzqXnP_!!6000000007719-2-tps-3224-1058.png)
+
+
+点击查看结果，可以看到本次任务结果：
+
+(https://img.alicdn.com/imgextra/i4/O1CN01MIx4jp29OcT5AVVhe_!!6000000008058-2-tps-3574-1876.png)
+
+
+(https://img.alicdn.com/imgextra/i4/O1CN01CKAUxJ27FLDCt0pjU_!!6000000007767-2-tps-3556-1890.png)
+
+
+当前的 CI 任务状态只是流水线的运行状态，后续会陆续开放任务状态的自定义规则，用户可以自定义任务状态的判定条件，例如：当单测行覆盖率低于50%时，判断CI任务失败等。敬请期待。
+
+
+
+> CI 本质为跑一条流水线，如果希望使用已定制的 CI 流水线可以联系 @胡钺 (月侠)
+
+
+
+#### DEMO 上传
+
+> 可以在变更触发 CI 的时候自动生成变更分支的 DEMO，并上传展示，这个功能对于组件/组件库 的项目来说是比较实用的
+
+在项目 package.json 中配置 script 命令 npm run ci:build-demo
+
+(https://img.alicdn.com/imgextra/i2/O1CN01PioaNn1V4OLPldkJt_!!6000000002599-2-tps-724-157.png)
+
+
+需要自己实现这个构建 DEMO 的过程，并将产物放入到 .ci/demo 文件夹，该文件夹应具有以下格式
+
+```
+.ci/demo/index.html // DEMO 的入口页面，可以通过相对路径引用同目录下的资源
+```
+完成后，触发 CI，在 DEMO 上传节点可以看到如下展示：
+
+(https://img.alicdn.com/imgextra/i2/O1CN01Suu9oy1qrUjpxA2Bl_!!6000000005549-2-tps-1097-457.png)
+
+
+访问链接即可查看 DEMO
+
+(https://img.alicdn.com/imgextra/i3/O1CN01Yxkedg1F6eRfplpkN_!!6000000000438-2-tps-1096-440.png)
+
+
+（图中的示例变更 [https://pre-space-next.o2.alibaba-inc.com/app/342350/change/227](https://pre-space-next.o2.alibaba-inc.com/app/342350/change/227)）
+
+
+
+### 功能开发
+
+> 日常功能开发的流程，从主干切出功能分支开始，功能完成后（包括 CI 测试、CR 等）代码合入主干结束（不发布线上）
+
+
+
+在应用详情页，点击新建变更，进入新建变更页
+
+(https://img.alicdn.com/imgextra/i2/O1CN01cqd9FY1nhTDolXHUy_!!6000000005121-2-tps-3584-2240.png)
+
+
+填写变更信息（描述、分支、工作项），点击提交，创建成功后会跳转到变更详情页
+
+(https://img.alicdn.com/imgextra/i3/O1CN018BOcnj1rJtIInmM75_!!6000000005611-2-tps-3584-1174.png)
+
+
+在变更详情页，复制变更分支，到本地进行开发，提交代码后会自动触发持续集成运行
+
+这里主要需要关注的信息有：持续集成测试记录、变更分支同步状态、CR 状态，只有这三个状态通过后才允许将变更合并到主干
+
+(https://img.alicdn.com/imgextra/i2/O1CN01MhMYn51GbAS2OLIt6_!!6000000000640-2-tps-3584-1730.png)
+
+
+点击进入云研发（或本地仓库，切到变更分支），开始功能开发，提交代码后会触发持续集成运行
+
+(https://img.alicdn.com/imgextra/i4/O1CN01UxWXMu1wfwRUn90mx_!!6000000006336-2-tps-854-221.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnVZAJZ5gmn4XB/img/94f85815-df15-44fb-9cc4-bebed6481d5f.png)
+
+
+
+
+开发完成后，可以点击日常部署测试(https://img.alicdn.com/imgextra/i1/O1CN01SjddDZ1TIvgMe1umh_!!6000000002360-2-tps-2475-1106.png)
+
+
+变更日常部署，版本号为 dev-feature-158，assets 应用将使用这个版本号作为资源路径中的版本号（Tnpm 还是用的 package.json 的 version）
+
+(https://img.alicdn.com/imgextra/i3/O1CN01TaARnD1GgCoCZ39cA_!!6000000000651-2-tps-1138-286.png)
+
+
+
+
+部署正常、持续集成通过后，即可将变更合入主干，若 CR 尚未提交通过，可以点击提交 CR 并通知评审人进行评审
+
+(https://img.alicdn.com/imgextra/i3/O1CN01wG15Yi25wjVNt6ICZ_!!6000000007591-2-tps-3582-1828.png)
+
+
+
+
+CR 通过后即可点击合并
+
+(https://img.alicdn.com/imgextra/i2/O1CN01Ac32lN1Y0DaB4oZn9_!!6000000002996-2-tps-3580-1820.png)
+
+
+合并完成，可以点击查看合并信息
+
+(https://img.alicdn.com/imgextra/i4/O1CN01J7scyo1YEsFzAyAZM_!!6000000003028-2-tps-3578-1964.png)
+
+
+为了保证主干的 commit 记录清晰，变更合并到主干会 [squash](https://git-scm.com/docs/merge-options#Documentation/merge-options.txt---squash) 为一个 commit，本地切到 master 拉取最新代码可以看到合并后的 commit（commit message 是变更的描述）
+
+(https://img.alicdn.com/imgextra/i2/O1CN01I97Ls61VsluWQz8jR_!!6000000002709-2-tps-827-185.png)
+
+
+至此，一个新功能开发的流程完成。
+
+
+
+### 主干发布
+
+> 当我们需要将主干的代码发布到线上时的流程，从主干分支切出 release 分支开始，线上发布完成后将 release 合回 主干结束
+
+> 一般由轮值的发布负责人操作
+
+
+
+进入应用详情页，点击新建主干发布
+
+(https://img.alicdn.com/imgextra/i1/O1CN01cT3LIE1Ye42WwybzE_!!6000000003083-2-tps-1554-859.png)
+
+
+进入新建主干发布页，选择 base commit （从该 commit 切出 release 分支），选择发布版本号更新策略（为了保证发布版本号的语义，发布的版本号由系统生成，用户只能选择更新策略），填写主干发布描述，点击提交
+
+(https://img.alicdn.com/imgextra/i2/O1CN01TP8RWF1fBqxAQeRTy_!!6000000003969-2-tps-1553-594.png)
+
+
+新建成功后，将跳转进入主干发布详情页，点击日常发布，开始发布前的测试验收
+
+(https://img.alicdn.com/imgextra/i2/O1CN01kIi5rB20xa9znxIjC_!!6000000006916-2-tps-1554-890.png)
+
+
+此时，可能出现两种情况：
+
+1. 验收通过，可以点击发布线上
+1. 若验收过程发现问题，可以点击问题修复 -> 新建修复变更 （将基于 release 分支新建一个变更用于修复发布过程发现的问题，修复完成合入 release 分支）
+(https://img.alicdn.com/imgextra/i3/O1CN01LNeFp221APFZfhe77_!!6000000006944-2-tps-1552-960.png)
+
+
+填写变更描述和分支、工作项（只能选择缺陷的工作项）后，提交创建修复变更
+
+(https://img.alicdn.com/imgextra/i1/O1CN01xws09M1EqcaHeb8xg_!!6000000000403-2-tps-1551-582.png)
+
+
+问题修复变更的流程和功能开发的变更类似，区别只有一点: 变更分支从 release 分支切出，合并到 release 分支
+
+(https://img.alicdn.com/imgextra/i4/O1CN01f1T8kl24UxsNZP2ix_!!6000000007395-2-tps-1551-1008.png)
+
+
+问题修复完成、主干发布日常验收通过后，即可发布线上
+
+(https://img.alicdn.com/imgextra/i1/O1CN01o4iXap210KXMsO461_!!6000000006922-2-tps-1548-886.png)
+
+
+线上发布完成后会将 release 分支合回主干，点击查看合并的信息
+
+(https://img.alicdn.com/imgextra/i2/O1CN01gRboOg1FRifHvYqYv_!!6000000000484-2-tps-1553-926.png)
+
+
+至此，主干发布的流程完成
+
+
+
+### 热修复
+
+> 当发现线上出现问题时，快速修复线上问题的流程，从已发布的 release 分支（0.1.0）切出用于修复的 release 分支（0.1.1），
+
+> 并基于 0.1.1 切出用户热修复的修复变更分支，变更完成后合入 0.1.1，日常验收通过后，0.1.1 发布线上，发布线上后 0.1.0 合回主干
+
+> 一般由出现线上问题的版本的 发布负责人操作
+
+
+
+进入应用 - 主干发布列表，找到需要修复的版本，点击新建热修复
+
+(https://img.alicdn.com/imgextra/i3/O1CN0131Nqbo1VsluR43GDH_!!6000000002709-2-tps-1555-498.png)
+
+
+在已发布的主干发布详情页也可以新建热修复
+
+(https://img.alicdn.com/imgextra/i3/O1CN011mBr4h1Nq0b0vvx2g_!!6000000001620-2-tps-1547-270.png)
+
+
+进入新建热修复页面，填写热修复描述，并填写用于修复的变更分支，和工作项（只能选择缺陷），点击提交
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnVZAJZ5gmn4XB/img/f03dee6c-dba9-4c07-b431-0b0df9bece5d.png)
+
+
+进入热修复 - 变更详情页，操作同主干发布 - 问题修复
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/a2QnVZAJZ5gmn4XB/img/085c5b33-0bea-453f-815a-0349568991f8.png)
+
+
+修复完成、验收通过后，发布线上，发布完成热修复分支合回主干，可以点击查看合并信息
+
+(https://img.alicdn.com/imgextra/i2/O1CN01D02WhG1EKYrHRaTlh_!!6000000000333-2-tps-1549-898.png)
+
+
+至此，热修复的流程完成。
+
+
+
+## FAQ
+
+### 1、遇到冲突怎么办
+
+首先，功能开发的过程中会要求用户在点击合并前同步最新主干，这个过程遇到的冲突，用户本地解决后提交即可，
+
+因为变更点击合并前用户已主动同步主干，点击合并时不会遇到冲突的情况。
+
+
+
+但主干发布和热修复的过程中，线上发布完成合回主干的过程可能会遇到冲突的情况，因为主干发布的过程中，主干可能已有其他变更合入，若这个流程出现冲突：
+
+1、合并节点将展示异常信息，并提示用户解决方案
+
+(https://img.alicdn.com/imgextra/i2/O1CN01qj1h2q1nh0pER1tUi_!!6000000005120-2-tps-1264-871.png)
+
+
+2、用户需要按解决方案的示例，在本地解决冲突并提交到临时分支（如图中的 release-3.4.3_to_master），然后点击重试按钮，系统会将解决冲突后的代码合并回主干
+
+
+
+
+
+### 2、已有的应用（老的迭代研发的应用）如何迁移到主干研发
+
+
+
+暂不开放，请咨询研小喵，支持批量迁移
+
+> 迁移后变更需要重新创建（原来的分支还在，用原来的分支名即可）
+
+
+
+
+

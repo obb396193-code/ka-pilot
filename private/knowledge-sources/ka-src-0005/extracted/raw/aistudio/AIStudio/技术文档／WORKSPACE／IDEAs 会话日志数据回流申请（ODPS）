@@ -1,0 +1,53 @@
+
+## 申请地址（流通中心）
+
+<https://x.data.alibaba-inc.com/workbench/task-config?tenantId=2&type=fetchData&from=dataok>
+
+注意：申请人必须是AI Studio对应申请空间的管理员/成员，否则审批会被拒绝
+
+## 表名
+
+* **对话的message日志: idealab.aiapp_conversation_message**
+* **flow类型的节点日志: idealab.aiapp_flow_node_run_log**
+
+## 场景目的
+
+根据实际需求填写
+
+## 选择表字段
+
+供给方所属产品及服务：选择**淘宝开放平台**即可
+
+### 分离字段配置
+
+自定义选择
+
+### 分离逻辑
+
+**空间维度： project_id = xxx**
+
+**获取方式：空间链接可获取空间ID**
+
+**应用维度： app_code = xxx**
+
+**获取方式：IDEAs基本信息获取IDEAs编码**
+
+### 分离范围
+
+需要资产分离
+
+### 分离方式
+
+快速分离
+
+### 条件类型（按照其他条件）
+
+* 申请空间下所有IDEAs日志数据只需要填写project_id
+* 申请空间下部分IDEAs日志数据需要填写project_id+app_code
+
+  
+
+
+​  
+
+

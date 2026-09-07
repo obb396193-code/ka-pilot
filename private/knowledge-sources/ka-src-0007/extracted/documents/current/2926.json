@@ -1,0 +1,223 @@
+{
+  "documentId": 2926,
+  "documentName": "修改关键词投放状态",
+  "documentType": 2,
+  "description": "<p>已支持删除</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1725347094473
+    }
+  ],
+  "apiId": 1296,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v2/word_info/update/status",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 90000344,\n    \"word_info_ids\": [\n        1809522,\n        1809522,\n        1809520,\n        1809521,\n        1809519,\n        1705019,\n        1807749\n    ],\n    \"put_status\": 2\n}\n"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"word_info_ids\": [\n            1809522,\n            1809522,\n            1809520,\n            1809521,\n            1809519,\n            1705019,\n            1807749\n        ]\n    },\n    \"request_id\": \"ce4addec384e467a974ca0c0a65507bb\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 61789,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主账号ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61790,
+      "paramName": "word_info_ids",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "关键词ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "ID不重复，最大数量20，关键词未删除",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61791,
+      "paramName": "put_status",
+      "paramType": "Integer",
+      "example": "",
+      "description": "投放状态",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "1 - 投放，2 - 暂停，3 - 删除",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 61792,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61793,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回状态信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61794,
+      "paramName": "data",
+      "paramType": "WordInfoUpdateData",
+      "example": "",
+      "description": "返回数据内容",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3469,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 61770,
+          "paramName": "word_info_ids",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "修改成功关键词ID列表",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1725347094473,
+  "creator": "liupeng20",
+  "fullContext": null
+}

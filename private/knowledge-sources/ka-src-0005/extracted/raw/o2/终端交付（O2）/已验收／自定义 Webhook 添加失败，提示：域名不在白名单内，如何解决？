@@ -1,0 +1,10 @@
+用户真实问题链接: [https://docs.dingtalk.com/i/nodes/r1R7q3QmWew5lo02fmvDmq6DJxkXOEP2](https://docs.dingtalk.com/i/nodes/r1R7q3QmWew5lo02fmvDmq6DJxkXOEP2)
+
+作者：时路
+
+评审人：上坡
+
+
+
+目前已经不再支持新增 Webhook 的域名白名单，请使用事件中心代替。事件中心文档可参考：[https://docs.dingtalk.com/i/nodes/Gl6Pm2Db8DMGQKRat6oD6P2qWxLq0Ee4](https://docs.dingtalk.com/i/nodes/Gl6Pm2Db8DMGQKRat6oD6P2qWxLq0Ee4)
+

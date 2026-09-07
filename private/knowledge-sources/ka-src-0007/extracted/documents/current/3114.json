@@ -1,0 +1,245 @@
+{
+  "documentId": 3114,
+  "documentName": "编辑素材包",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "编辑素材包\n/rest/openapi/gw/dsp/photoPackage/update\n{\n  \"advertiser_id\": 16859321,\n  \"name\": \"素材包MAPI编辑\",\n  \"photo_package_id\": 11135761638\n}\n{\n  \"code\": 0,\n  \"data\": {\n    \"photo_package_id\": 11135761638\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"EJiEgICwqpWaChjDDCCyts6onjIotaL57gQ=\"\n}\nadvertiser_id  Long  <p>广告主id</p>\nphoto_package_id  Long  <p>素材包id</p>\nname  String  <p>素材包名称</p>\nphoto_ids  String[]  <p>视频ids</p>\ncode  Integer  <p>状态码</p>\nmessage  String  <p>返回信息</p>\ndata  MarketPhotoPackageUpdateResp  <p>信息</p>\nphoto_package_id  Long  <p>素材包id</p>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1745755756746
+    }
+  ],
+  "apiId": 1500,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/photoPackage/update",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "javascript",
+      "body": "{\n    \"advertiser_id\": 16859321,\n    \"name\": \"素材包MAPI编辑\",\n    \"photo_package_id\": 11135761638,\n    \"photo_ids\": [\n        \"5196028205791837691\"\n    ]\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "javascript",
+      "body": "{\n  \"code\": 0,\n  \"data\": {\n    \"photo_package_id\": 11135761638\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"EJiEgICwqpWaChjDDCCyts6onjIotaL57gQ=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 67386,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 67387,
+      "paramName": "photo_package_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>素材包id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 67388,
+      "paramName": "name",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>素材包名称</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 71779,
+      "paramName": "photo_ids",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>视频ids</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 67390,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 67391,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 67392,
+      "paramName": "data",
+      "paramType": "MarketPhotoPackageUpdateResp",
+      "example": "",
+      "description": "<p>信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3831,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 67389,
+          "paramName": "photo_package_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>素材包id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1745755756746,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

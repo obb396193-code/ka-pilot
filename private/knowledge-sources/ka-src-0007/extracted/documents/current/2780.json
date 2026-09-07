@@ -1,0 +1,424 @@
+{
+  "documentId": 2780,
+  "documentName": "获取单个主体下共享账号列表",
+  "documentType": 2,
+  "description": "<p>应用的共享类型为：share_type=2【主体共享】才会有数据</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094141304
+    }
+  ],
+  "apiId": 775,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/share/listCorpAccount",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/share/listCorpAccount' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n    \"advertiser_id\": 12078245,\n    \"app_id\": 2199123262731,\n    \"corp_id\": 15280,\n    \"page_info\": {\n        \"current_page\": 1,\n        \"page_size\": 10\n    }\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"list\": [\n            {\n                \"share_account_vos\": [\n                    {\n                        \"account_id\": 17182999,\n                        \"account_name\": \"快手用户1682057104157\"\n                    },\n                    {\n                        \"account_id\": 16855298,\n                        \"account_name\": \"舞动星闪耀-小舞\"\n                    },\n                    {\n                        \"account_id\": 9592982,\n                        \"account_name\": \"鱼鱼鱼g🧸\"\n                    },\n                    {\n                        \"account_id\": 13918416,\n                        \"account_name\": \"世界online-9\"\n                    },\n                    {\n                        \"account_id\": 13918417,\n                        \"account_name\": \"世界online-10\"\n                    },\n                    {\n                        \"account_id\": 16855316,\n                        \"account_name\": \"武道将魂-test\"\n                    },\n                    {\n                        \"account_id\": 14434516,\n                        \"account_name\": \"德里克克德\"\n                    },\n                    {\n                        \"account_id\": 16593143,\n                        \"account_name\": \"途游斗地主(比赛版)-1\"\n                    },\n                    {\n                        \"account_id\": 13918414,\n                        \"account_name\": \"世界online-7-ZY\"\n                    },\n                    {\n                        \"account_id\": 16855309,\n                        \"account_name\": \"跑酷勇者-test\"\n                    }\n                ],\n                \"total_account_cnt\": 2699,\n                \"corp_name\": \"北京慕远科技有限公司\",\n                \"corp_id\": 15280\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMOAgIDg4o6zChi9ByDtrpL0iDEoyrXs2gE=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63190,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 44767,
+      "paramName": "app_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "应用id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 44769,
+      "paramName": "corp_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "主体ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 44770,
+      "paramName": "page_info",
+      "paramType": "PageSnake",
+      "example": "",
+      "description": "<p>分页信息</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2359,
+      "sort": 4,
+      "note": "",
+      "children": [
+        {
+          "paramId": 39417,
+          "paramName": "current_page",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p><br>当前页</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39418,
+          "paramName": "page_size",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p><br>分页大小</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 44781,
+      "paramName": "data",
+      "paramType": "PageDataListShareCorpResp103Snake",
+      "example": "",
+      "description": "<p>JSON返回值</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2756,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 44778,
+          "paramName": "list",
+          "paramType": "ShareCorpResp279Snake[]",
+          "example": "",
+          "description": "主体列表的返回参数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2757,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 44773,
+              "paramName": "corp_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "主体ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44774,
+              "paramName": "corp_name",
+              "paramType": "String",
+              "example": "",
+              "description": "主体名称",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44775,
+              "paramName": "share_account_vos",
+              "paramType": "ShareAccountResp68Snake[]",
+              "example": "",
+              "description": "账号列表的返回参数",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 2758,
+              "sort": 3,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 44771,
+                  "paramName": "account_id",
+                  "paramType": "Long",
+                  "example": "",
+                  "description": "账号ID",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 44772,
+                  "paramName": "account_name",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "账号名称",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44776,
+              "paramName": "total_account_cnt",
+              "paramType": "Integer",
+              "example": "",
+              "description": "主体共享，挂载的Account数量",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 44782,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p><br>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 44783,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p><br>错误信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094141304,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

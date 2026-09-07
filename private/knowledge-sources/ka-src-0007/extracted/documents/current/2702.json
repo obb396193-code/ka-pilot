@@ -1,0 +1,910 @@
+{
+  "documentId": 2702,
+  "documentName": "原生效果数据整体概览接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720091906947
+    }
+  ],
+  "apiId": 766,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/effect/native/chartReport",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "jsonc",
+      "body": "{\n  \"advertiser_id\": 10049502,\n  \"search_param\": {\n    \"report_start_day\": 1700668800000,\n    \"report_end_day\": 1700755199999\n  }\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": {\n    \"summary\": [\n      {\n        \"yoy\": 12647.39336492891,\n        \"sum_value\": 457249,\n        \"attribute_window\": 7,\n        \"type\": \"totalCharge\",\n        \"native_soft_charge_ratio\": 34.71347121590206,\n        \"native_conversion_ratio\": null\n      },\n      {\n        \"yoy\": 0,\n        \"sum_value\": 0,\n        \"attribute_window\": 7,\n        \"type\": \"paiedAmt\",\n        \"native_soft_charge_ratio\": null,\n        \"native_conversion_ratio\": null\n      },\n      {\n        \"yoy\": 43850,\n        \"sum_value\": 879,\n        \"attribute_window\": 7,\n        \"type\": \"conversion\",\n        \"native_soft_charge_ratio\": null,\n        \"native_conversion_ratio\": 15.813424345847555\n      }\n    ],\n    \"funnel\": [\n      {\n        \"conversion_cnt\": 879,\n        \"ad_show\": 79901,\n        \"attribute_window\": 7,\n        \"actionbar_click\": 878\n      }\n    ],\n    \"conversion_chart\": [\n      {\n        \"date\": 1700668800000,\n        \"sum_value\": 879,\n        \"attribute_window\": 7\n      }\n    ]\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"ELqAgIDg9pmaChi0DiC74LDm0TEoxYHwwA4=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 44204,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "advertiser_id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 44205,
+      "paramName": "search_param",
+      "paramType": "NativeReportSearchParamSnake",
+      "example": "",
+      "description": "原生报表概览请求参数",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2699,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 44071,
+          "paramName": "author_id",
+          "paramType": "Long[]",
+          "example": "[123,456]",
+          "description": "快手号ID",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 44072,
+          "paramName": "campaign_type",
+          "paramType": "Integer[]",
+          "example": "[2,5]",
+          "description": "营销目标  2提升应用安装 5收集销售线索 7提升应用活跃 19 快手小程序推广 30 短剧推广",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 44073,
+          "paramName": "ocpc_action_type",
+          "paramType": "Integer[]",
+          "example": "",
+          "description": "转化目标 180激活 53表单优化 190付费 191 首日roi(24h)",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 44074,
+          "paramName": "kol_user_type",
+          "paramType": "Integer[]",
+          "example": "",
+          "description": "原生广告类型 1普通快手号 2 蓝V 3聚星达人",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 44076,
+          "paramName": "report_end_day",
+          "paramType": "Long",
+          "example": "",
+          "description": "开始时间 时间戳 毫秒",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 44077,
+          "paramName": "report_start_day",
+          "paramType": "Long",
+          "example": "",
+          "description": "结束时间 时间戳 毫秒",
+          "required": 1,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 44223,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "请求结果，非1为失败",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 44224,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "错误详情",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 44225,
+      "paramName": "data",
+      "paramType": "NativeChartReportResponseSnake",
+      "example": "",
+      "description": "原生报表数据概览结果",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2706,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 59194,
+          "paramName": "summary_nature",
+          "paramType": "NativeReportSummarySnake[]",
+          "example": "",
+          "description": "<p>自然流量数据</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2707,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 44206,
+              "paramName": "type",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>\"totalCharge\" 花费(元)\"paiedAmt\" 整体付费金额(币) conversion 整体转化数 </p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44207,
+              "paramName": "yoy",
+              "paramType": "Double",
+              "example": "",
+              "description": "环比",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44208,
+              "paramName": "direct",
+              "paramType": "Double",
+              "example": "",
+              "description": "直接数据，只有整体转化数、整体付费金额才会区分直接、间接数据",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44209,
+              "paramName": "indirect",
+              "paramType": "Double",
+              "example": "",
+              "description": "间接数据，只有整体转化数、整体付费金额才会区分直接、间接数据",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44210,
+              "paramName": "native_soft_charge_ratio",
+              "paramType": "Double",
+              "example": "",
+              "description": "原生消耗增量收益，只有花费才有这个指标",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44211,
+              "paramName": "attribute_window",
+              "paramType": "Integer",
+              "example": "",
+              "description": "归因窗口 1代表1天 7代表7天",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 46945,
+              "paramName": "sum_value",
+              "paramType": "Double",
+              "example": "",
+              "description": "总体值",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 57675,
+              "paramName": "native_conversion_ratio",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>原生转化增量收益</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 44220,
+          "paramName": "summary",
+          "paramType": "NativeReportSummarySnake[]",
+          "example": "",
+          "description": "数据概览",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2707,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 44206,
+              "paramName": "type",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>\"totalCharge\" 花费(元)\"paiedAmt\" 整体付费金额(币) conversion 整体转化数 </p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44207,
+              "paramName": "yoy",
+              "paramType": "Double",
+              "example": "",
+              "description": "环比",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44208,
+              "paramName": "direct",
+              "paramType": "Double",
+              "example": "",
+              "description": "直接数据，只有整体转化数、整体付费金额才会区分直接、间接数据",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44209,
+              "paramName": "indirect",
+              "paramType": "Double",
+              "example": "",
+              "description": "间接数据，只有整体转化数、整体付费金额才会区分直接、间接数据",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44210,
+              "paramName": "native_soft_charge_ratio",
+              "paramType": "Double",
+              "example": "",
+              "description": "原生消耗增量收益，只有花费才有这个指标",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44211,
+              "paramName": "attribute_window",
+              "paramType": "Integer",
+              "example": "",
+              "description": "归因窗口 1代表1天 7代表7天",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 46945,
+              "paramName": "sum_value",
+              "paramType": "Double",
+              "example": "",
+              "description": "总体值",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 57675,
+              "paramName": "native_conversion_ratio",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>原生转化增量收益</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 44221,
+          "paramName": "conversion_chart",
+          "paramType": "NativeReportConversionChartSnake[]",
+          "example": "",
+          "description": "转化数分日柱状图",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2708,
+          "sort": 3,
+          "note": "",
+          "children": [
+            {
+              "paramId": 44212,
+              "paramName": "date",
+              "paramType": "Long",
+              "example": "",
+              "description": "日期 时间戳 毫秒",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44215,
+              "paramName": "attribute_window",
+              "paramType": "Integer",
+              "example": "",
+              "description": "归因窗口 1代表1天 7代表7天",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 46946,
+              "paramName": "sum_value",
+              "paramType": "Double",
+              "example": "",
+              "description": "总体值",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 44222,
+          "paramName": "funnel",
+          "paramType": "NativeReportFunnelInfoSnake[]",
+          "example": "",
+          "description": "漏斗数据",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2709,
+          "sort": 4,
+          "note": "",
+          "children": [
+            {
+              "paramId": 44216,
+              "paramName": "ad_show",
+              "paramType": "Long",
+              "example": "",
+              "description": "曝光数",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44217,
+              "paramName": "actionbar_click",
+              "paramType": "Long",
+              "example": "",
+              "description": "行为数",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44218,
+              "paramName": "conversion_cnt",
+              "paramType": "Long",
+              "example": "",
+              "description": "直接转化数",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44219,
+              "paramName": "attribute_window",
+              "paramType": "Integer",
+              "example": "",
+              "description": "归因窗口 1代表1天 7代表7天",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720091906947,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

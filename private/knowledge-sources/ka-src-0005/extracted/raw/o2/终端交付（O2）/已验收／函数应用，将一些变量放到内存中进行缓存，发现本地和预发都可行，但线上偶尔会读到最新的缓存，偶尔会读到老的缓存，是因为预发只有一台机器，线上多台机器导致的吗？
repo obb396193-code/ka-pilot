@@ -1,0 +1,12 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/660ba02b1e5a50056a0cf999/](https://links.alibaba-inc.com/support/conversation/660ba02b1e5a50056a0cf999/)
+
+作者：心羽
+
+评审人：[@夙言](undefined/mxr103105)
+
+
+
+线上环境至少有 2 个预留容器，访问时随机分配。此外，由于函数存在轮转和弹性机制机制，实际线上提供服务的容器数量不固定，建议您使用外部存储服务（如 Redis 或 OSS）存储缓存数据。
+
+
+

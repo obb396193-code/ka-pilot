@@ -1,0 +1,42 @@
+{
+  "documentId": 2065,
+  "documentName": "10.12.2获取试玩按钮列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取试玩按钮列表\n\n请求接口:https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/playable/play_buttons\n\n请求方式:GET\n\n请求格式 :JSON\n\n### 请求参数\n\n| 字段          | 类型 | 是否必填 | 说明      | 备注                      |\n| ------------- | ---- | -------- | --------- | ------------------------- |\n| advertiser_id | Long | 选填     | 广告主 ID | 广告主 ID，用于身份校验。 |\n\n### 返回参数\n\n| 字段         | 类型       | 是否必填 | 说明             | 备注                                                                        |\n| ------------ | ---------- | -------- | ---------------- | --------------------------------------------------------------------------- |\n| play_buttons | string_set | 选填     | 试玩按钮文字内容 | 试玩按钮所能选择的内容，包括但不限于“立即试玩”、”试玩一下“、”立即体验“ 等。 |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625148
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625148,
+  "creator": "linmenger",
+  "fullContext": null
+}

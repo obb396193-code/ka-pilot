@@ -1,0 +1,443 @@
+{
+  "documentId": 3171,
+  "documentName": "数据源新建接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "数据源新建接口\n/rest/openapi/gw/dmp/v1/datasource/add\n\n\nadvertiser_id  Long  <p>广告主ID</p>\ndata_source_name  String  <p>数据源名称</p>\nmatch_type  String  <p>匹配类型</p>\nschema_type  String  <p>模版类型</p>\nfile_keys  String[]  <p>文件路径数组</p>\ncode  Integer  <p>状态码</p>\nmessage  String  <p>消息</p>\ndata  DataSourceMapiVOSnake  <p>数据</p>\naccount_id  Long  <p>广告主ID</p>\nmatch_type  Integer  <p>匹配类型</p>\ndata_source_name  String  <p>数据源名称</p>\nschema_type  String  <p>模版类型</p>\nall_file_size  Long  <p>文件大小</p>\ncreate_time  Long  <p>创建时间戳</p>\ndata_source_id  Long  <p>数据源ID</p>\ncalcu_status  Integer  <p>数据源状态</p>\nerror_message  String  <p>错误信息，计算失败时会有值</p>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1735020763189
+    }
+  ],
+  "apiId": 1551,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v1/datasource/add",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 6,
+  "bizName": "DMP",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 69734,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主ID</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 69735,
+      "paramName": "data_source_name",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>数据源名称</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "不能大于 20 个字符，数据源名称不得重复",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 69736,
+      "paramName": "match_type",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>匹配类型</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "枚举值：IMEI、IDFA、IMEI_MD5、IDFA_MD5、OAID、OAID_MD5、MOBILE_MD5、MOBILE_SHA256",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 69737,
+      "paramName": "schema_type",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>模版类型</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "枚举值：YX、JY、DS、JR、BD、JK、QC、XS、SJ、QT。枚举值含义：YX:游戏行业模板、JY:教育行业模板、DS:电商行业模板、JR:金融行业模板、BD:本地行业模板、JK:大健康行业模板、QC:汽车行业模板、XS:小说行业模板、SJ:社交行业模板、QT:其他通用模板",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 69738,
+      "paramName": "file_keys",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>文件路径数组</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "通过调用【数据源文件上传接口】得到的文件路径，每次最多填写10个、总大小<3G的文件",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 69748,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 69749,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>消息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 69750,
+      "paramName": "data",
+      "paramType": "DataSourceMapiVOSnake",
+      "example": "",
+      "description": "<p>数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3982,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 69739,
+          "paramName": "account_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>广告主ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69740,
+          "paramName": "match_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>匹配类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "枚举值：IMEI、IDFA、IMEI_MD5、IDFA_MD5、OAID、OAID_MD5、MOBILE_MD5、MOBILE_SHA256",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69741,
+          "paramName": "data_source_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>数据源名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69742,
+          "paramName": "schema_type",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>模版类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "枚举值：YX、JY、DS、JR、BD、JK、QC、XS、SJ、QT。枚举值含义：YX:游戏行业模板、JY:教育行业模板、DS:电商行业模板、JR:金融行业模板、BD:本地行业模板、JK:大健康行业模板、QC:汽车行业模板、XS:小说行业模板、SJ:社交行业模板、QT:其他通用模板",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69743,
+          "paramName": "all_file_size",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>文件大小</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69744,
+          "paramName": "create_time",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>创建时间戳</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69745,
+          "paramName": "data_source_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>数据源ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69746,
+          "paramName": "calcu_status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>数据源状态</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "0：未计算，1：计算中，2：计算成功，3：计算失败",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69747,
+          "paramName": "error_message",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>错误信息，计算失败时会有值</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1735020763189,
+  "creator": "guojiaqi03",
+  "fullContext": null
+}

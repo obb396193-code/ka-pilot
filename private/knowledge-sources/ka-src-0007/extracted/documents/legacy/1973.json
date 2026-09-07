@@ -1,0 +1,42 @@
+{
+  "documentId": 1973,
+  "documentName": "9.6人群包上线接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 人群包上线接口\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/dmp/population/push\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段           | 类型 | 是否必填 | 说明      | 备注                                                                          |\n| -------------- | ---- | -------- | --------- | ----------------------------------------------------------------------------- |\n| advertiser_id  | long | 必填     | 广告主 ID | 在获取 access_token 的时候返回                                                |\n| orientation_id | long | 必填     | 人群包 ID | 只有 status 为 1 或 6 的人群包可上线，最多支持 6 个人群包状态同时为“上线中” |\n\n### 返回参数\n\n| 字段    | 类型   | 说明        | 备注 |\n| ------- | ------ | ----------- | ---- |\n| code    | int    | 返回码      |      |\n| message | string | 返回信息    |      |\n| data    | struct | JSON 返回值 |      |\n\n### 请求样例\n\n```\ncurl -X POST \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n  \"advertiser_id\": 20000016,\n  \"orientation_id\": 10000038\n}' -L https://ad.e.kuaishou.com/rest/openapi/v1/dmp/population/push\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": \"上线人群包成功\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624482
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624482,
+  "creator": "linmenger",
+  "fullContext": null
+}

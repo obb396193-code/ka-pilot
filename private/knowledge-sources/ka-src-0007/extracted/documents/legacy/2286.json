@@ -1,0 +1,42 @@
+{
+  "documentId": 2286,
+  "documentName": "工具-评论管理-3-评论树查询",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 评论树查询\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/comment/tree\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 示例 | 是否必填 | 说明      | 备注                           |\n| ------------- | ---- | -------| -------- | --------- | ------------------------------ |\n| advertiser_id | long |  123   |  必填     | 广告主 ID | 在获取 access_token 的时候返回 |\n| comment_id    | long |  123456   |  必填     | 评论 ID   |                                |\n\n### 返回参数\n\n| 字段 | 类型 | 示例 |      说明                        | 备注 |\n| ------- | -------- | ------------------------------------ | ---- | --- |\n| code    | int       |  0  | 状态码                            |     |\n| message | string    |  \"OK\"  | 错误信息                         |     |\n| request_id  | string  |      | 请求ID                    |      |\n| data    | struct   |    |返回结果                         |     |\n\n### &nbsp;\n\n| data                      |             |      |          |                  |\n| ------------------------- | ----------- | ----- | -------- | ---------------- |\n| 字段                      | 类型          | 示例   | 说明     | 备注             |\n| root_comment_detail       | AdCommentDetailView  |    | 一级评论 |                  |\n| child_comment_detail_list | AdCommentDetailView[]|     | 二级评论 | 最多返回 1000 条 |\n\n### &nbsp;\n\n| AdCommentDetailView |   |   |   |   |\n| ------- | ------- | ------- | ------- | ------- |\n| 字段 | 类型 | 示例 | 说明 | 备注 |  \n| comment_id             | long        | 123456 | 评论 ID           |                                                                        |\n| root_comment_id        | long        | 12345 | 一级评论 ID        |                                                                        |\n| comment_author_id      | long        | 12314234 | 评论发布者 UserID  |                                                                        |\n| photo_id               | string      | \"test_photo_id\" | 视频 ID           |                                                                        |\n| photo_author_id        | long        | 58917498 | 视频作者 UserID    |                                                                        |\n| comment_level          | int         | 1 | 评论层级           |                                                                        |\n| comment_content        | string      | \"test_comment_content\" | 评论内容           |                                                                        |\n| fav_num                | long        | 5 | 点赞数            |                                                                        |\n| post_time              | long        | 1677469580796 | 评论发布时间       | 毫秒时间戳                                                           |\n| nickname               | string      | \"test_nick_name\" | 评论发布者昵称      |                                                                        |\n| reply_status           | int         | 2 | 回复状态           |          1：未回复，2：已回复                                                              |\n| shield_status          | int         | 1 | 隐藏状态           |           1：未隐藏，2：已隐藏                                                             |\n| photo_name             | string      | \"test_photo_name\" | 视频名称           |                                                                        |\n| photo_tags             | string[]    | \\[\"tag\"] | 视频标签           |                                                                        |\n| is_root_comment_forbid | boolean     | 1 | 一级评论是否被隐藏   |                                                                        |\n| shield_type            | int         | 1 | 屏蔽类型           | 1：评论内容关键词，3：手动屏蔽，4：社区自动屏蔽，5：用户昵称关键词，6：快手 ID |\n|emotion_url             | string      | \"test_emotion_url\" | 表情url           |\n|is_top_comment          | boolean     | false | 是否被置顶         |\n\n\n### 请求样例\n\n```js\n{\n    \"comment_id\": 90,\n    \"advertiser_id\": 42\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\",\n    \"data\": {\n        \"root_comment_detail\": {\n            \"comment_id\": 31,\n            \"root_comment_id\": 1,\n            \"comment_author_id\": 35,\n            \"photo_id\": \"test_90ecbc8734c9\",\n            \"photo_author_id\": 89,\n            \"comment_level\": 43,\n            \"comment_content\": \"test_e034a2e9a550\",\n            \"fav_num\": 30,\n            \"post_time\": 51,\n            \"nickname\": \"test_8052e3a1dd2d\",\n            \"reply_status\": 62,\n            \"shield_status\": 99,\n            \"shield_type\": 82,\n            \"photo_name\": \"test_44e63e60a4b6\",\n            \"photo_tags\": [\n                \"test_e6b79d52af25\"\n            ],\n            \"is_root_comment_forbid\": true,\n            \"emotion_url\": \"test_db593c33320b\",\n            \"is_top_comment\": true\n        },\n        \"child_comment_detail_list\": [\n            {\n                \"comment_id\": 14,\n                \"root_comment_id\": 4,\n                \"comment_author_id\": 4,\n                \"photo_id\": \"test_d4675c08ceda\",\n                \"photo_author_id\": 51,\n                \"comment_level\": 63,\n                \"comment_content\": \"test_e3f7584667b3\",\n                \"fav_num\": 66,\n                \"post_time\": 4,\n                \"nickname\": \"test_ece8e60d49c7\",\n                \"reply_status\": 10,\n                \"shield_status\": 66,\n                \"shield_type\": 79,\n                \"photo_name\": \"test_f0110e192b7d\",\n                \"photo_tags\": [\n                    \"test_4d7b77b90332\"\n                ],\n                \"is_root_comment_forbid\": true,\n                \"emotion_url\": \"test_72e0ab12c30f\",\n                \"is_top_comment\": false\n            }\n        ]\n    }\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677468786698
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677468786698,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

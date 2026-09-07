@@ -1,0 +1,190 @@
+> 本文前置条件：对 O2 扩展机制有一定了解，若不了解可以先看 《新建扩展》、《扩展的开发》
+
+
+
+许多用户都个疑问：“我想在发布后运行一些自定义逻辑，并且希望运行的成功/失败能影响发布的结果、运行的返回在发布页面上可见，想要快速实现这一定制逻辑，我该怎么做呢？”
+
+【发布后置流程】就是为了解决这个问题而生的：
+
+1. 定制者可以在 O2 扩展项目里编写一个 TNPM 包、一个前端扩展模块
+1. 这个 TNPM 包在目标应用发布的最后阶段会自动运行，前端扩展模块用于展示该 TNPM 包的返回结果
+(https://o2-img.alistatic.com/i/i09blZ/qm3EA0afh8mX3LXYkkzFF-747d15d720.png)
+
+
+
+
+没错，就是这么简单！那具体应该怎么做呢？
+
+
+
+### 编码
+
+> 在扩展项目中完成前端模块 和 TNPM 包的开发
+
+1、 新建 extend/src/point/publish-post-progress 目录，用于存放前端模块扩展
+
+内部实现如下：
+
+(https://o2-img.alistatic.com/i/i09blZ/RoELXMTGrZs7llmF2v1zF-bbde691667.png)
+
+
+./component/index.tsx 用于编写前端展示的组件，入参 props.data 为 TNPM 包的返回值
+
+./config/index.ts 用于配置后置阶段的名称，如下：
+
+```
+const config = {
+  name: 'xxx' // 自定义的流程名称，展示在左侧 tab，请尽量简短一点
+}
+
+module.exports = config;
+```
+
+
+2、 新建 progress/publish-post-progress 目录，用于存放 tnpm 包
+
+progress/publish-post-progress/package.json
+
+```
+{
+  "name": "@ali/o2-progress-xxx1", // name 使用 @ali/o2-progress- 开头，后面使用业务标识 如 @ali/o2-progress-icbu-assets-sync
+  "version": "0.1.5", // 后续每次迭代要更新这个版本
+  ...
+}
+```
+
+
+对外提供 module.exports.run 方法，可以从入参中拿到如下信息：
+
+```
+module.exports.run = async function(params) {
+  const {
+    repo: dataRepo,
+    user,
+    app,
+    iteration,
+    o2SpaceEnv,
+    buildUrl,
+    pubType,
+    pubEnv,
+    publishResult,
+    flowCustomParams,
+  } = params;
+};
+```
+
+
+```
+PublishRestult {
+  assets: string[] // CDN 资源列表
+  tnpm: Object | Object[] // TNPM 包信息，多包时为列表
+}
+```
+
+
+run 方法的返回值，在前端组件 props.data 可以获取到，用于前端展示。
+
+注意：请控制返回数据大小，过大的数据可能导致扩展执行和加载缓慢。
+
+
+
+### 调试/发布
+
+> 通过 O2 扩展的迭代流程完成调试和发布
+
+> 
+
+> TNPM 包需要发布到预发生效，可以先本地单测调试
+
+> 前端模块可以在 TNPM 包发布到预发后，通过扩展本地研发工具进行调试
+
+
+
+开发完成后， TNPM 包需要发布到预发才能生效。
+
+(https://o2-img.alistatic.com/i/i09blZ/8ufrCoSECtqBrxfAQrrcr-2d4529cd55.png)
+
+
+发布完成，可以在发布结果中看到刚才定制的【后置流程】。
+
+(https://o2-img.alistatic.com/i/i09blZ/VQmXDdqcxHU753gjP8vYC-b4e85e134e.png)
+
+
+预发发布后，请将扩展安装到测试应用，然后使用 o2 的预发环境（pre-space.o2.alibaba-inc.com）在测试应中进行发布，发布后置流程的 npm 包将会生效。
+
+
+
+测试应用发布后，前端模块可以通过扩展的【本地研发工具】进行调试：
+
+(https://o2-img.alistatic.com/i/i09blZ/ZvfdZkFAwDh3Zt6PvN8vc-adfeac81fe.png)
+
+
+
+
+调试完成后，可以再次发布预发，确认没问题后发布正式即可，后续其它的流程和扩展开发一致。
+
+
+
+参考 DEMO 项目：[https://code.alibaba-inc.com/o2-space/o2-extend-bootstrap](https://code.alibaba-inc.com/o2-space/o2-extend-bootstrap)
+
+
+
+### 老的扩展项目改造
+
+> 将老的扩展项目改造为支持发布流程扩展的 monorepo 项目，新创建的扩展项目默认就是这个结构，不需要改造，可跳过这一步
+
+要改造的地方如图（图中的代码示例，后文提供了文字版用于复制）
+
+#### 
+
+
+
+图中的代码片段示例：
+
+```
+{
+  "name": "main",
+  "version": "0.1.0",
+  "description": "",
+  "stylePath": "style.js",
+  "workspaces":[
+    "progress/*",
+    "extend"
+  ],
+  "devDependencies": {
+    "lerna": "^7.1.4"
+  },
+  "license": "MIT",
+  "private": true,
+  "originTemplate": "@ali/def-extend-template"
+}
+
+```
+```
+"artifactType": "cdn",
+```
+```
+{
+  "version": "independent",
+  "packages": [
+    "progress/*",
+    "extend"
+  ]
+}
+```
+```
+{
+  "builder": "@ali/builder-multi-type",
+  "builderConfig": {
+    "version": {
+      "loose": true
+    },
+    "multiTypeArtifact" : true,
+    "buildO2Extend": true
+  }
+}
+```
+
+
+
+

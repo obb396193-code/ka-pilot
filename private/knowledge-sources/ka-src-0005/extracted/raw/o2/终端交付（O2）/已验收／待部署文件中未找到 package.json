@@ -1,0 +1,22 @@
+用户真实链接：https://links.alipay.com/support/conversation/68088a0b0c9eb304b581b97c  
+作者：庞舒蕾  
+评审人：
+
+
+
+问题描述：
+
+发布过程中在 提取构建产物 节点失败，提示 待部署文件中未找到 package.json，请确保已按照流程文档配置 。
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2025/png/42456308/1745914742576-71ebb675-2056-4e96-86f5-69b419ae8595.png) 
+
+
+
+问题原因：
+
+在TNPM研发以及其他类似应用的发布流水线中，提取构建产物 节点会检查构建产物中 npm 包根目录下是否存在 package.json 文件
+
+解决方法：
+
+请检查产物中npm包的根目录是否存在package.json文件，如果确实缺失，请排查构建逻辑以及构建过程中是否存在报错信息。
+

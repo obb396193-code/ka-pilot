@@ -1,0 +1,148 @@
+#### 当前该功能已对用户开放，如有问题请联系 @栖邀、@冠夫。
+
+## 背景
+
+Space O2 研发平台目前仅支持固定源的 Assets 研发链路，也就是将资源发布到统一的 OSS 资源桶，获得固定的可访问域名。近期我们上线了“Assets Plus”研发链路，支持将资源发布到业务独享的 OSS 资源桶，并可以通过自定义的 CDN 域名访问资源。核心能力包括：
+
+- 业务独占的 OSS 资源桶
+- 自定义的 Assets CDN 域名
+- 支持两种资源路径模式
+- 含迭代版本号的资源路径
+- 去掉路径中的迭代版本号，携带 Hash（基于资源内容计算）的资源路径（已经发布的资源不做覆盖）
+## 痛点
+
+现有的 Assets 研发链路支持将资源发布到统一的 OSS 资源，并通过固定的域名（g.alicdn.com）进行访问。这个链路在前期是非常好用的，业务方零成本的就可以进来使用。但是随着业务方越来越多，这个简单的实现带来了一些问题：
+
+- 由于“鸡蛋”都放在一个篮子里，我们想要做一些配置变更或者优化时会非常难，容易出问题
+- 没法支持业务的独立域名需求
+我们近期上线的”Assets Plus“研发链路即是将大的”篮子“拆小，让各个业务去自定义自己的 OSS 资源、访问域名，这样就能很好的解决上述问题。
+
+## 产品链路
+
+整个产品链路主要包含准备阶段和研发阶段。在准备阶段主要是业务需要区申请自己独占的 OSS 桶、自定义的 CDN 域名。而研发阶段则和现有的 Assets 应用研发体验是一致的。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgmhjBmNRGHs.png)
+
+
+## 新建应用
+
+可以通过 [新建应用](https://space.o2.alibaba-inc.com/app/new) 来进行应用的创建，依次选择 Assets 研发 - Assets Plus 应用类型。注意：如果看不到 Assets Plus 这个应用类型，需要让团队管理员在控制台进行添加。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgXlC8pQlkFn.png)
+
+
+在新建应用时，需要完善应用扩展信息，包括：
+
+- 发布模式。指定资源的发布模式
+- 迭代版本号：含迭代版本号的资源路径。访问规则为：[domain]/s/v/[group]/[project]/[version]/*
+- 内容 Hash：去掉路径中的迭代版本号，携带 Hash（基于资源内容计算）的资源路径（已经发布的资源不做覆盖）。访问规则为：[domain]/s/h/[group]/[project]/*
+- 接入站点。从接入站点中获得资源的可访问 CDN 域名。（如果没有可用站点，需要先参考资源准备&域名准备部分准备可用的站点）
+- 接入审批人。非站点成员在站点下进行应用接入，需要站点负责人进行审批，审批不通过不能进行发布。站点成员则可以免审批进行接入。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgcI5UrBoOJ7.png)
+
+
+## 发布应用
+
+在应用详情中新建迭代进行发布，发布流水中会进行两个主要的检查：站点检查、文件检查。
+
+### 站点检查
+
+在构建前检查应用接入的站点。从而将将资源发布到站点下独占的 OSS 资源桶，同时站点下的 CDN 域名能够访问到发布的 Assets 资源。
+
+### 文件检查
+
+为了保证待发布资源的合法性，文件检查会对构建结果进行如下的检查：
+
+- 单应用一次发布最多发布文件数：5000
+- 单资源文件最大可发布大小：5Mb
+- 允许发布的文件类型：js, html, htm, css, xml, json, xtpl, plist, ttf, eot, woff, woff2, otf, fnt, ico, cur, jpg, jpeg, png, svg, gif, webp, manifest, atlas。支持在站点配置中配置满足业务需要的自定义文件类型。
+- 如果发布模式为“内容 Hash”，文件名符合 Hash 命名规范：{hash}.{file_name}.{ext}，并且文件名携带的 Hash 和文件的实际 Hash 是一致的（系统会做二次校验，保证是一致的）。Hash 生成需使用官方提供的 SDK 进行生成：[https://npm.alibaba-inc.com/package/@ali/akos-file-hash](https://npm.alibaba-inc.com/package/@ali/akos-file-hash)
+- 如果发布模式为“迭代版本号”，版本号目录下不能存在资源文件。也就是版本号只能做一次线上发布，避免资源意外覆盖。
+### 结果展示
+
+最终的可访问路径，根据发布模式会不同，可以在发布结果中进行查看。
+
+#### 迭代版本号
+
+访问规则：[域名]/s/v/[group]/[project]/[version]/*
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgkANaLEzsmp.png)
+
+
+#### 内容 Hash
+
+访问规则：[域名]/s/h/[group]/[project]/*
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgDjK2YuxsPc.png)
+
+
+#### 访问限制
+
+Assets Plus 发布的资源包括如下限制：
+
+- 暂不支持资源 combo 的用法，形如：[https://g.alicdn.com/??mtb/lib-windvane/2.1.8/windvane.cmd.js,mtb/lib-promise/3.1.3/polyfillB.js,mtb/lib-mtop/2.4.2/mtop.js,mtb/lib-login/1.5.3/login.js,code/npm/web-rax-framework/0.6.5/dist/framework.web.min.js](https://g.alicdn.com/??mtb/lib-windvane/2.1.8/windvane.cmd.js,mtb/lib-promise/3.1.3/polyfillB.js,mtb/lib-mtop/2.4.2/mtop.js,mtb/lib-login/1.5.3/login.js,code/npm/web-rax-framework/0.6.5/dist/framework.web.min.js)
+- 资源的访问会有 referer 白名单限制，站点管理员可以在站点控制台进行配置
+## 资源准备
+
+### step 1
+
+访问 space o2 工作台：[https://space.o2.alibaba-inc.com/workbench](https://space.o2.alibaba-inc.com/workbench)，进入“团队空间-资源管理”。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgTaLE15rGVJ.png)
+
+
+注意：资源是 BU 级别共用的，如果资源列表中已经有“独立 Assets”的 OSS 资源，则可以跳过申请。
+
+### step 2
+
+进入“资源管理-资源申请”，填写申请表单进行资源申请。提交后及时跟进审批进度，审批通过后系统会自动分配 OSS 资源。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/img9kLicDY5bE.png)
+
+
+## 域名准备
+
+### Step 1
+
+访问 Assets 站点控制台-新建站点，[https://space.o2.alibaba-inc.com/extend/8/site/new](https://space.o2.alibaba-inc.com/extend/8/site/new)
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgUaTZxCUPoI.png)
+
+
+### Step 2
+
+进入新创建的站点详情页进行 CDN 域名接入。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgDGfQyZyNHu.png)
+
+
+#### Step 2.1
+
+从 BU 可用资源中选择一个资源和站点进行绑定，绑定后开始域名申请。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgBcrtJrHfOy.png)
+
+
+#### Step 2.2
+
+提交域名申请表单。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/img0SxDeX6Amk.png)
+
+
+提交后请按照流程提示进行操作，及时跟进流程进度。
+
+#### Step 2.3
+
+CDN 域名申请后方可以申请日常域名。日常域名基于 CDN 域名自动分配（dev-{cdn 域名}），暂不支持修改。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/dygrezg75rw5pzq4/imgxcYZSBTWRb.png)
+
+
+#### Step 2.4
+
+站点管理员，自行管理站点域名支持发布类型
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/Kr4mlQjGgjdBnxow/img/08aaa2fd-85ea-4696-9e4c-b6f253fd1f57.png)
+
+

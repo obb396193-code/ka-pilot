@@ -1,0 +1,42 @@
+{
+  "documentId": 1922,
+  "documentName": "3.5.7创意体验",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 创意体验\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/creative/preview\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|     字段      |   类型   | 是否必填 |            说明            |                                        备注                                         |\n| :-----------: | :------: | :------: | :------------------------: | :---------------------------------------------------------------------------------: |\n| advertiser_id |   long   |   必填   |         广告主 id          |                                                                                     |\n|   user_ids    | String[] |   否   |          快手 id，和phone字段二选一必填         |                                   一次不超过十个                                    |\n|  creative_id  |   long   |   选填   |          创意 id           |                               unit_type 为 4 时，必填                               |\n|    unit_id    |   long   |   选填   |           组 id            |                               unit_type 为 7 时，必填                               |\n|   unit_type   |   int    |   必填   |           组类型           |                           4：自定义创意 7：程序化创意 2.0                           |\n|    phones     | string[] |    否    | 用户要推送创意到哪个手机号，和user_ids字段二选一必填 | 原本是传 userId，由于允许邮箱开户后，不一定每个 userId 都有手机号，所以改成传手机号 |\n\n### 返回参数\n\n| 字段 |  类型  |   说明   |       备注        |\n| :--: | :----: | :------: | :---------------: |\n| code |  int   |  返回码  | 0和1：成功 2：有错误 |\n| Msg  | string | 返回信息 |                   |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1706691724844
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1706691724844,
+  "creator": "wb_zhangyanmin",
+  "fullContext": null
+}

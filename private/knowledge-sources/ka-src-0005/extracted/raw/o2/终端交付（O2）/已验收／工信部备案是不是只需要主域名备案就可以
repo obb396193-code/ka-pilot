@@ -1,0 +1,14 @@
+用户真实链接：https://links.alipay.com/support/conversation/68467f2e49b9ba04ce518eec  
+作者：庞舒蕾  
+评审人：叶子旭
+
+
+
+是的，申请域名接入cdn时只需要主域名（例如*.alibaba.com）在工信部进行备案即可。
+
+未备案的域名只能接入海外cdn。
+
+
+
+参考文档：[域名接入](https://aliyuque.antfin.com/gubal/site/domain-apply)
+

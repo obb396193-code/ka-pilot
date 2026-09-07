@@ -1,0 +1,49 @@
+## 有哪些开放能力
+
+平台提供的开放可以分为两类：
+
+### SPI 定制
+
+通过平台提供的 SPI 扩展点，定制平台功能，
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/mxPOGyLL3adNnKa9/img/a510a59b-f487-4d70-98df-d615d775d97f.png)
+
+
+如下图，平台前后端的展示、逻辑上提供了很多扩展点，业务可以通过这些扩展点，定制平台功能
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/mxPOGyLL3adNnKa9/img/32e3f8dc-305b-49d6-9355-3547bc2ba3d0.png)
+
+
+详见  
+
+
+
+### API 集成
+
+通过 API 调用集成 O2 能力，通过事件中心接收平台事件
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/mxPOGyLL3adNnKa9/img/cdc0944d-ba5c-4fe5-bd68-1ad48e80990e.png)
+
+
+API 调用： 
+
+事件中心： 
+
+
+
+## 我应该使用哪些开放能力
+
+### SPI 定制
+
+成本：低，仅需开发业务定制的部分
+
+用户场景：用户在 O2 Space 平台上使用（可定制独立域名、站点 Logo、样式等）
+
+### API 集成
+
+成本：较高，需要通过 API 复刻平台现有的界面/逻辑
+
+用户场景：不限制使用场景，如业务已有自己的发布平台，可以集成到自己的平台内使用
+

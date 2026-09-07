@@ -1,0 +1,103 @@
+O2 Space 平台在 2022 年开始对 CDN、页面等资源使用进行收费
+
+如有疑问，请联系研发小蜜
+
+
+
+产品介绍
+
+O2（原DEF）是集团工程化前端开发生态体系。通过配套的规范、工具、流程定义、权限管理以及数据日志提高前端开发效率，保证团队开发过程的一致性和可复制性，提升代码质量和安全，面向前端开发者的一站式、全流程软件交付平台及服务，助力研发效率提升的产品。
+
+
+
+## 1. 计价规则（国内/国外）
+
+新版 2025.03.26（ 新财年 4 月账期） 生效
+
+| 计费项 | 计费项名称 | 计费项描述 | 计费单位 | 计费单价/元 | 备注 |
+|-|-|-|-|-|-|
+| DEF-资源访问流量 | billing_item_def_cdn | 前端资源访问带宽流量，region:cn | 元/GB | ￥0.09￥0.081 | 降价 10% |
+|  |  | 前端资源访问带宽流量，region:overseas。 （海外不区分国家。当前O2域名支持阿里云/Akamai CDN 业务自主选择或多云混用切换，待支持AWS） | 元/GB | ￥0.28->￥0.14 | 降价 50% |
+| DEF-资源访问量 | billing_item_def_access | 前端资源访问量 PV | 元/万次 | ￥0.01￥0.009 | 降价 10% |
+| DEF-前端资源带宽(机房维护成本，仅assets类型) | billing_item_def_server | 前端资源带宽(机房) | 元/GB | ￥0.007 | 减免 |
+
+历史版本
+
+| 计费项 | 计费项名称 | 计费项描述 | 计费单位 | 计费单价/元 |
+|-|-|-|-|-|
+| DEF-资源访问流量 | billing_item_def_cdn | 前端资源访问带宽流量，region:cn | 元/GB | ￥0.09 |
+|  |  | 前端资源访问带宽流量，region:overseas。 （海外不区分国家。当前O2域名支持阿里云/Akamai CDN 业务自主选择或多云混用切换，待支持AWS） | 元/GB | ￥0.28 |
+| DEF-资源访问量 | billing_item_def_access | 前端资源访问量 PV | 元/万次 | ￥0.01 |
+| DEF-前端资源带宽(机房维护成本，仅assets类型) | billing_item_def_server | 前端资源带宽(机房) | 元/GB | ￥0.007 |
+
+备注：
+
+- 阿里云官网计价（如下图），10T 以内流量 0.24 元 /GB，HTTPS + 实时日志条数计费 0.06 元/万次。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/mz0ldm/imgeDFHyBz1W1.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/mz0ldm/imgn0jywvOLfa.png)
+
+
+## 2. 如何查看自己名下应用的费用情况
+
+可前往团队空间查看费用明细，入口位于头像下拉栏中：
+
+[++点击查看团队空间能力++](https://yuque.antfin.com/def-work/doc_v3/team_manage#BSwtr)
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/mz0ldm/img7tjCbOU49T.png)
+
+
+账单位于『应用 -> 应用数据 -> 账单分析』内：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/mz0ldm/img9cKa2Qbczr.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/mz0ldm/imgOO7tcxrKBk.png)
+
+
+## 3. 如何通过 HCRM 中的资源 ID 找到 Space 应用？
+
+
+
+HCRM 中的应用资源名格式为 def_<应用的ID>_assets_<应用group>_<应用project>
+
+可通过 [https://space.o2.alibaba-inc.com/app/](https://space.o2.alibaba-inc.com/app/)<应用ID>/basic 找到对应的应用。
+
+> 注：如果资源格式为 `**wh_####_air_wh_#****###**`，则相关资源为天马页面，需要到天马查询。查询路径规则为：
+
+```
+# 例如：资源格式 wh_1234_air_wh_1234
+https://zebra.alibaba-inc.com/web/#/sites/1234/portal?tab=pages&page=1&pageSize=20
+
+```
+### 最新版本HCRM资源ID说明
+
+O2（def）应用资源格式为def（标记）_<app_id>_(国内：cn，国外：overseas)，
+
+格式举例：def_1234_cn，1234 代表 appId，对应应用地址 [https://space.o2.alibaba-inc.com/app/1234/basic，region=cn，cn代表国内流量。](https://space.o2.alibaba-inc.com/app/1234/basic%EF%BC%8Cregion=cn%EF%BC%8Ccn%E4%BB%A3%E8%A1%A8%E5%9B%BD%E5%86%85%E6%B5%81%E9%87%8F%E3%80%82)
+
+def_site_901_cn，带site标记为O2站点标记，归属的流量一般是未找到应用归属，只能归属到使用域名负责人的部分，对应站点地址：[https://space.o2.alibaba-inc.com/workbench/web/extend/site/901/dashboard](https://space.o2.alibaba-inc.com/workbench/web/extend/site/901/dashboard)
+
+## 4.如何查看自己应用的CDN访问统计量（账期：T+2）
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MeYVOLWxwDW4qpz2/img/fcb6024d-0c58-46d2-a9f7-cd1e46e8eea2.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MeYVOLWxwDW4qpz2/img/b0891379-dd40-4748-9596-8ca263b400a0.png)
+
+
+## 5.如何查看资源详细实时访问量
+
+举例：投放资源[https://error.taobao.com/app/tbhome/common/error.html](https://error.taobao.com/app/tbhome/common/error.html)
+
+打开O2 Space平台官网[https://space.o2.alibaba-inc.com/](https://space.o2.alibaba-inc.com/)，搜索框内进行搜索
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MeYVOLWxwDW4qpz2/img/eaa8b05c-7bcd-4aaf-9419-dc02b7e5ccd3.png)
+
+
+点击URL链接查看
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MeYVOLWxwDW4qpz2/img/f3e74b7b-b041-4179-8061-84a6543cd524.png)
+
+

@@ -1,0 +1,42 @@
+{
+  "documentId": 2348,
+  "documentName": "应用中心接入前言",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 应用中心接入前言\n\n建议先阅读一遍PC端页面操作指南：https://docs.qingque.cn/d/home/eZQDRE96r4gthQ5Bre9yiVzJg?identityId=1oEDvgOve3Y\n\n对整体的产品流程有一个整体的了解，再接入MAPI效率会更好一些；\n\n### 应用\n包含应用的主要信息，主体、名称、联系人等，业务ID为**app_id**，通常一个package_name会分配一个app_id。\napp_id是account_id维度的概念，简单说就是相同的APK包，在不同的account_id下会分配不同的app_id。\n\napp_id和老版本应用的app_id在广告投放过程是对齐的，通常app_id > 100000000都是新版本的应用ID，app_id < 100000000为老版本的应用ID。\n\n### 母包\n包含APK包的原始解析信息+审核信息，例如：版本号、包大小、隐私权限等，业务ID为**package_id**。\n通常一个版本号会分配一个package_id，所以app_id和package_id是一对多的关系。\n\npackage_id在广告投放过程中，会写在单元的package_id字段上。\n\n### 分包\n一个母包+渠道号，可以在应用中心生成一个分包。分包=母包+快手SDK+渠道号，也就是除了嵌入了快手的SDK以及渠道号，分包内容和母包一模一样。\n\n分包的业务ID也是**package_id**，使用parent_package_id和母包做关联。\n所以一个母包ID【package_id】和分包ID【package_id】是一对多的关系。\n\n分包投放广告时，也是会写在单元的package_id字段上。\n\n\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatform62cd3139f68474ea566e21647d267910.png)",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1684482198269
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1684482198269,
+  "creator": "heran03",
+  "fullContext": null
+}

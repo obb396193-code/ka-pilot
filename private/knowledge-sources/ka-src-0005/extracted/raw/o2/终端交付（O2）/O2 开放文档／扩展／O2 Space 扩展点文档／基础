@@ -1,0 +1,132 @@
+扩展点通过 Config、Props、Event、Params 四种方式与平台交互，下面分别介绍他们的基础用法：
+
+#### Config
+
+扩展实现配置，可以在 [https://develop.def.alibaba-inc.com/](https://develop.def.alibaba-inc.com/) 上编辑
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ne874m5ndmehax9l/imgDmLI1sxzMR.png)
+
+
+其中一些公共 config, 包括
+
+```
+export interface CommonConfig{
+  initHeight: Number // 扩展模块初始化高度，用于加载过程中的骨架展示
+}
+
+```
+如何通过 Config 区分应用类型，两种方式：
+
+1、扩展点只对部分应用类型生效
+
+如下，在 config 中增加 pubtypeList 字段（包括一组应用类型 id），只有这个数组里的应用类型生效该扩展点
+
+```
+{
+  "name": "函数配置",
+  "suffix": "function-settings",
+  "pubtypeList": [
+    30,
+    63
+  ],
+}
+
+```
+2、对不同应用类型都生效，但提供不同的 Config 内容
+
+如下，key 为应用类型 id，value 为对应的 Config 内容（格式和原内容一致）
+
+```
+{
+  "mode": "stand",
+  "apptypeMap": [
+    {
+      "key": 3,
+      "value": [
+        {
+          "name": "页面",
+          "suffix": "page"
+        },
+        {
+          "name": "日志查询",
+          "suffix": "log"
+        },
+        {
+          "name": "回滚",
+          "suffix": "rollback"
+        }
+      ]
+    },
+    {
+      "key": 6,
+      "value": [
+        {
+          "name": "页面",
+          "suffix": "page"
+        },
+      ]
+    }
+  ]
+}
+
+```
+#### Props
+
+扩展 UI 模块的 props 参数
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ne874m5ndmehax9l/imgAaXTmze73k.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ne874m5ndmehax9l/imgVtvZPIHeac.png)
+
+
+其中一些 Props 是公共参数，每个扩展点都有，包括：
+
+| 参数名 | 类型 | 说明 |
+|-|-|-|
+| bizId | string | 业务 id |
+| context | Context | 上下文 |
+| contextHelper | ContextHelper | 上下文方法 |
+
+```
+export interface ExtendContext {
+  user: UserInfo,
+  meta: Object,
+  app: App,
+  appconf: AppConf,
+  iteration: Iteration,
+}
+
+export interface ExtendContextHelper {
+  eventCenter: E2EEventCenter,
+  history: History
+}
+
+```
+#### Event
+
+注意：⚠️所有事件的监听记得释放，否则可能导致重复监听的问题
+
+扩展 UI 模块内和平台通信的事件
+
+(扩展内监听平台触发的事件)
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ne874m5ndmehax9l/imgmIBk1UV9Nz.png)
+
+
+(扩展内触发平台已监听的事件)
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ne874m5ndmehax9l/imgHqkEskNeEQ.png)
+
+
+#### Params
+
+Service spi 接口请求
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ne874m5ndmehax9l/imgxgSiEWddXv.png)
+
+
+包括请求参数和返回参数格式
+
+
+

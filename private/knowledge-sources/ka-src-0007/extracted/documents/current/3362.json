@@ -1,0 +1,665 @@
+{
+  "documentId": 3362,
+  "documentName": "三方支付-提单",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "三方支付-提单\n/rest/openapi/gw/clue_laotie/v1/pay/createPayOrder\n\n\ncallback  String  <pre><code>广告 callback（用于解析 C 端用户 visitorId）</code></pre>\naccount_group_key  String  <pre><code>卖家进件钱包 key（担保交易场景必传，对应支付中台 out_settle_param.settle_params[].account_group_key；非担保交易留空）</code></pre>\nadvertiser_id  Long  <pre><code>广告主 ID（鉴权用）</code></pre>\nseller_user_id  String  <pre><code>B 端商家 userId（sellerUserId）</code></pre>\nout_order_no  String  <pre><code>业务订单号</code></pre>\nsubject  String  <pre><code>商品标题</code></pre>\norder_amount  Long  <pre><code>买家支付总金额，单位：分</code></pre>\nclient_info  ClientInfo  <pre><code>客户端信息</code></pre>\nkpn  String  <pre><code>KUAISHOU / NEBULA</code></pre>\nuser_remote_ipv6  String  <pre><code>用户 IPv6</code></pre>\nuser_remote_ip  Long  <pre><code>用户 IPv4（long 形式），与 user_remote_ipv6 至少传一个</code></pre>\nselected_cashier_item  SelectedCashierItem  <pre><code>用户选择的支付方式</code></pre>\npayment_method  String  <pre><code>支付渠道，如 IN_APP / H5</code></pre>\nprovider  String  <pre><code>支付方式，如 ALIPAY / WECHAT</code></pre>\ncode  Integer  <p>code</p>\nmessage  String  <p>msg</p>\ndata  AdLaotiePayCreateOrderData  <p>data</p>\npay_center_code  String  <pre><code>支付中台业务 code</code></pre>\npay_center_msg  String  <pre><code>支付中台业务 msg</code></pre>\nout_order_no  String  <pre><code>业务订单号（回显请求中的 out_order_no）</code></pre>\nout_trade_no  String  <pre><code>支付中台预订单号，前端按支付中台协议拉起收银台时需透传</code></pre>\npay_code  String  <pre><code>支付结果码</code></pre>\npay_msg  String  <pre><code>支付结果信息</code></pre>\nneed_to_h5  Boolean  <pre><code>native 是否需要跳转 H5</code></pre>\nprovider  String  <pre><code>支付渠道，如 ALIPAY/WECHAT</code></pre>\npayment_method  String  <pre><code>支付渠道信息，IN_APP/H5/PAP</code></pre>\nprovider_config  String  <pre><code>用于直接拉起微信/支付宝的报文</code></pre>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1780989833202
+    }
+  ],
+  "apiId": 1879,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/clue_laotie/v1/pay/createPayOrder",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 11,
+  "bizName": "老铁线索通",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 87031,
+      "paramName": "callback",
+      "paramType": "String",
+      "example": "",
+      "description": "<pre><code>广告 callback（用于解析 C 端用户 visitorId）</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87032,
+      "paramName": "account_group_key",
+      "paramType": "String",
+      "example": "",
+      "description": "<pre><code>卖家进件钱包 key（担保交易场景必传，对应支付中台 out_settle_param.settle_params[].account_group_key；非担保交易留空）</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82267,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<pre><code>广告主 ID（鉴权用）</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82268,
+      "paramName": "seller_user_id",
+      "paramType": "String",
+      "example": "",
+      "description": "<pre><code>B 端商家 userId（sellerUserId）</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82269,
+      "paramName": "out_order_no",
+      "paramType": "String",
+      "example": "",
+      "description": "<pre><code>业务订单号</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82270,
+      "paramName": "subject",
+      "paramType": "String",
+      "example": "",
+      "description": "<pre><code>商品标题</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82271,
+      "paramName": "order_amount",
+      "paramType": "Long",
+      "example": "",
+      "description": "<pre><code>买家支付总金额，单位：分</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82272,
+      "paramName": "client_info",
+      "paramType": "ClientInfo",
+      "example": "",
+      "description": "<pre><code>客户端信息</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4728,
+      "sort": 8,
+      "note": "",
+      "children": [
+        {
+          "paramId": 82242,
+          "paramName": "kpn",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>KUAISHOU / NEBULA</code></pre>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82243,
+          "paramName": "user_remote_ipv6",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>用户 IPv6</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82244,
+          "paramName": "user_remote_ip",
+          "paramType": "Long",
+          "example": "",
+          "description": "<pre><code>用户 IPv4（long 形式），与 user_remote_ipv6 至少传一个</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82273,
+      "paramName": "selected_cashier_item",
+      "paramType": "SelectedCashierItem",
+      "example": "",
+      "description": "<pre><code>用户选择的支付方式</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4729,
+      "sort": 9,
+      "note": "",
+      "children": [
+        {
+          "paramId": 82245,
+          "paramName": "payment_method",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>支付渠道，如 IN_APP / H5</code></pre>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82246,
+          "paramName": "provider",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>支付方式，如 ALIPAY / WECHAT</code></pre>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 82274,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>code</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82275,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>msg</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 82276,
+      "paramName": "data",
+      "paramType": "AdLaotiePayCreateOrderData",
+      "example": "",
+      "description": "<p>data</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4730,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 82254,
+          "paramName": "pay_center_code",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>支付中台业务 code</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82255,
+          "paramName": "pay_center_msg",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>支付中台业务 msg</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82256,
+          "paramName": "out_order_no",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>业务订单号（回显请求中的 out_order_no）</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82257,
+          "paramName": "out_trade_no",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>支付中台预订单号，前端按支付中台协议拉起收银台时需透传</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82258,
+          "paramName": "pay_code",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>支付结果码</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82259,
+          "paramName": "pay_msg",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>支付结果信息</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82260,
+          "paramName": "need_to_h5",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "<pre><code>native 是否需要跳转 H5</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82261,
+          "paramName": "provider",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>支付渠道，如 ALIPAY/WECHAT</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82262,
+          "paramName": "payment_method",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>支付渠道信息，IN_APP/H5/PAP</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 82263,
+          "paramName": "provider_config",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>用于直接拉起微信/支付宝的报文</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1780989833202,
+  "creator": "sunxin08",
+  "fullContext": null
+}

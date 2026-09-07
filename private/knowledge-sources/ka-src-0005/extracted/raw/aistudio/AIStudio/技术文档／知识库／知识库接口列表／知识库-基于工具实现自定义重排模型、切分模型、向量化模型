@@ -1,0 +1,96 @@
+
+
+待上线，10 月中旬上线，目前还在预发测试中。
+
+# 概述
+
+> 知识库支持用户使用自定义的重排模型、切分模型、以及向量化模型。
+> 
+> 用户可以将**模型API在工具中注册**，之后在**知识库产品中通过传入工具 Code 调用这些模型**。
+
+# 知识库协议
+
+## 请求头要求
+
+所有请求都需要一个键为 `Access-token` 的请求头。Access-token 的值将用于模型方法的鉴权，Access-token 不要泄露给无关人员。
+
+例如：
+
+* 重排模型： Access-token可以为 `"idealab"`。
+* 向量模型：Access-token 可以为 `"idealab"`。
+* 切分文档模型：Access-token 可以为 `"idealab"`。
+
+## API出入参协议
+
+### 1. 重排工具示例
+
+API示例:`/api/v1/aiStudio/repository/toolExample/reRankToolExample`  
+方法:`POST`  
+请求头:`Access-token: rerank`
+
+#### 请求参数
+
+#### 响应
+
+### 2. 向量模型示例
+
+API示例:`/api/v1/aiStudio/repository/toolExample/embeddingToolExample`  
+方法:`POST`  
+请求头:`Access-token: [secret_ref:removed]`
+
+#### 请求参数
+
+#### 响应
+
+### 3. 切分文档工具示例
+
+API示例:`/api/v1/aiStudio/repository/toolExample/splitDocumentToolExample`  
+方法:`POST`  
+请求头:`Access-token: split`
+
+#### 请求参数
+
+#### 响应
+
+## 示例用法
+
+### 重排工具示例
+
+#### 入参
+
+#### 出参
+
+### 向量化工具示例
+
+#### 入参
+
+#### 出参
+
+### 切分文档工具示例
+
+#### 入参
+
+#### 出参
+
+## 错误处理
+
+如果 Access-token 无效或缺少必要的参数，API 将返回一条错误消息，指明问题所在。例如：
+
+## Java 代码示例（重排、切分、向量化）
+
+# 工具注册
+
+## 自定义切分工具
+
+## 自定义向量工具
+
+## 自定义重排工具
+
+# 测试
+
+## 自定义重排工具
+
+https://pre-test5-idealab.alibaba-inc.com/api/v1/aiStudio/rag/retrieve
+
+通过日志查看，调用了自定义的工具。
+

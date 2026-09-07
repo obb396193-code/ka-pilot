@@ -1,0 +1,42 @@
+{
+  "documentId": 2250,
+  "documentName": "M-API 注册认证问题Q&A",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# M-API 注册认证问题Q&A\n\n\n## 1 注册成为快手Marketing API的开发者全流程介绍\n开发者共分为三种角色\n\n**广告主开发者**: 该角色开发者只能操作&绑定注册时主体or新增主体下的账户，若绑定非主体账户会报错无权限操作。\n\t\n    \n    新增主体流程：广告主发起（抄送对应的销售&运营）发送至客户对应销售&运营——由销售or运营同学转发至（①mapi@kuaishou.com ）\n\t\t■ 邮件标题：【授权公司名称】+需要授权的appid+被授权公司名称\n\t\t■ 邮件正文：写明原因+ 授权公司名称\n\t\t■ 邮件资质：授权函+双方营业执照片（授权函模板地址：https://docs.corp.kuaishou.com/file/fcAAWFd6qyl_9gQEqEoD9lfCa）\n\t\t■ 授权函模板：授权人（需要增加的营业执照名称）被授权人：（被增加的已有的营业执照名称）身份证、手机号：操作人的信息\n\t\t■ 授权函模板盖章：授权人的章，被授权人：操作人的签名（最好盖两个公司的章哈）\n\n**代理商开发者**：该角色开发者只能操作代理商下账户，其他代理商账户无法操作。\n\n**第三方服务商开发者**：该角色开发者能绑定任意主体，但目前与快手合作的广告主&代理商有任何控股关系均无法成为服务商。\n\n\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatform3f5101be310bc6f69c4d8e5494874b22.png)\n### 1.1 广告主/代理商注册成为开发者\n\n#### 1.1.1 进入开发者平台登录\n\n快手账号登陆，登陆地址：https://developers.e.kuaishou.com/welcome\n\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformf0d6b282ed98ffdb38785451ede0eaac.png)\n\n#### 1.1.2 登陆后点击右上角注册成为开发者\n\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformf9f12ff23aca2bada59f282f72691e93.png)\n\n#### 1.1.3 完善开发者联系人资料\n\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatform12382052e6964ad138b48645e03dc488.png)\n\n#### 1.1.4 完善开发者资质信息\n###### 注意事项：\n    ● 管理员身份\n        ○ 法人：\n            ■ 适用场景：法人自己开通开放平台，成为快手开发者\n            ■ 姓名填写规范：\n                ● 法人信息一定要与营业执照名称一致，承诺函等一定要填写法人姓名\n            ■ 清晰度：公章清晰，签字需要清晰可辨认\n        ○ 代理人\n            ■ 适用场景：当法人不方便提供相关信息/公司授权部门员工协助开通。\n            ■ 姓名填写规范：\n                ● 《账号运营授权委托书》授权人为公司主体，被授权人为代理人及相关信息\n                ● 《快手广告管理平台 Market API 开发者企业认证授权书》，员工姓名选项一定为代理商人\n    ● 开发者角色\n        ○ 广告主：填写开通开发者的主体资质下任一一个广告投放账户id。\n        ○ 代理商：填写代理商开户使用的快手id。\n        \n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformf3a7e3e4786d83fa37bbab50e0f69888.png)\n\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformd7de8bb2e66244cc445264699875bfeb.png)\n\n#### 1.1.5 提交资质等待审核，若审核不通过进入消息中心跳转修改。\n\n如果账号提交成功，审核同学每日会进行审核，无需特批加急催促。\n\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatform8693d3b1a5813eb4c67dad34b74cecf7.png)\n\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformed7ff923e2e16dd921af8c2c055471a2.png)\n\n### 1.2 第三方服务商成为开发者\n\n选择开发这角色需要线下签订合同，一般在七个工作日内回复。其余步骤均与广告主/代理商注册开发者一致。\n\n#### 1.2.1 签订服务商合同\n\n需要线下审批并签订服务商入驻合同后，将服务商审批通过合同传与此处。\n\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformb424bc8eb4be26f8b50ace0808d93948.png)\n\n邮件主题：XX公司申请成为第三方开发者角色\n\n邮件内容：\n\n\t申请公司：/\n    与快手现有合作业务：/\n    公司介绍：/\n    联系方式：电话或者微信号\n\n&nbsp;\n\n## 2 如何获取获取开发者ID\n\n### 2.1 当开发者资质审核通过，需要注册应用才可获取appid及secret\n\n当资质审通过，需要自主进行注册获取。\n\n![image](https://js-ad.a.yximgs.com/kos/nlav11947/openapi/assets/images/doc/KIM20230310-035392.png)\n\n\t  ● 需要添加内容：\n      \t○ 应用名称：主要目的方便区分不同应用\n      \t○ 应用图标：主要目的方便区分不同应用\n      \t○ 授权地址：主要目的为了跳转授权页面，拼接auth_code\n      ● 需要注意事项：\n      \t○ 定义：该appid并非应用id，可以简单理解为开发者下面管理的开发者子账号；并非一个应用仅能使用一个appid，只要是主体资质相同均可进行授权。\n      \t○ 数量限制：一个开发者最多可以创建3个app，主要方便管理定义不同。\n  \t\t\t\n\n### 2.2 获取app_id & secret & 授权链接\n\n授权链接会自动拼接[权限](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=1990)，部分特殊权限需平台管理员手动添加。\n\napp_id & secret为系统生成，请保存好app对应的secret方便调用获取token。\n\n&nbsp;\n\n## 3 正式调用接口，获取token\n### 3.1 流程介绍\n\n通过2.2获取回调地址授权获取auth_code（授权流程如3.3）——调用获取token接口（/rest/openapi/oauth2/authorize/access_token）输入传参：appid&secret&authcode\n\n### 3.2 参数解释\n\n\t● auth_code\n\t\t○ 有效期：10min，或者当每次重新授权时均会重置\n\t\t○ 具体功能：拼接校验主体内容，拼接参数为下一步获取准备。\n\t\t○ 注意事项：auth_code只能使用一次，可重复进行上述授权操作获得新的auth_code\n\t\n\t● access_token\n\t\t○ 有效期：1天，或者当每次重新授权时均会重置\n\t\t○ 具体功能：相当于账户密码，调用每个接口均需要输入。\n\t\t○ 注意事项：账户or批量授权账户or代理商获取token均为一一对应，无法跨角色使用、\n\n\t● refresh_token\n\t\t○ 有效期：30天，或者当每次重新授权时均会重置\n\t\t○ 具体功能：刷新token\n\n### 3.3 不同开发者角色授权流程\n#### 3.3.1 广告主授权流程\n\n\t1)广告主登录需要被授权的广告投放账户（需要进入到投放平台账户的首页）\n\t2)然后将授权URL手动粘贴至浏览器中访问，点击界面上的授权按钮完成授权操作。\n\t3)授权回调 授权完成后，浏览器页面会自动跳转至授权URL中的回调地址，同时返回auth_code和state（拼接在回调地址后面），开发者使用auth_code进行后续授权操作\n\n#### 3.3.2 代理商授权流程\n\n\t1）代理商使用授权URL拼接&oauth_type=agent\n\t\t○ 例子：developers.e.kuaishou.com/tools/authorize?app_id=1&scope=%5B%22report_service%22%5D&redirect_uri=https://e.kuaishou.com&oauth_type=agent&state=abc\n\t2）通过url登录代理商注册的快手id\n\t3）授权回调 授权完成后，浏览器页面会自动跳转至授权URL中的回调地址，同时返回auth_code和state（拼接在回调地址后面），开发者使用auth_code进行后续授权操作。\n\n#### 3.3.3 客户罗盘授权流程（解决广告主单账户授权能力，实现批量授权）\n\n\t授权流程：\n\t1)输入授权 URL-登陆账户罗盘-选择授权方式-确认授权-跳转获取 auth_code-通过接口获取 token\n\t2)浏览器中输入账户罗盘授权 URL,以下为举例 url。需要替换 URL 中对应开发者的 app_id&redirect_uri&对应 scope 权限。 \n\t\t○ 举例https://developers.e.kuaishou.com/tools/authorize?app_id=1&scope=%5B%22ad_query%22%2C%22ad_manage%22%2C%22report_service%22%5D&redirect_uri=https://www.kuaishou.com&state=abcd\n\t3)登陆注册罗盘的快手 ID，获取账户罗盘绑定的账户 ID\n\t4)选择授权方式：基于广告账户授权/基于用户授权\n    \n\t授权方式：\n\t1）基于广告账户授权：可选择多账户授权，基于广告账户授权。\n\t2）基于用户授权：可选择授权账户罗盘下全部账户，基于快手 ID 授权。\n\n### 3.4 调用接口获取token\n\n#### 3.4.1 获取token，对外文档介绍：https://developers.e.kuaishou.com/docs/1.4.1\n\n#### 3.4.2 刷新token，对外文档介绍：https://developers.e.kuaishou.com/docs/1.4.2\n\n&nbsp;\n\n\n## 4 如何看懂开发者文档\n\n### 4.1 如何看最近更新内容\n\n关注[开放平台更新日志](https://developers.e.kuaishou.com/tools/logs)，最新更新功能均会同步。\n\n### 4.2 如何找到想要接口文档及对应文档\n\n\t1)定位层级及平台：首先定位想看账户的层级or那个平台，通过开发文档list确定需要找寻接口\n\t2)看请求接口链接，看请求方式：看接口介绍及接口的调用方式\n\t3)看接口请求参数及备注：看接口里面具体的参数对应的值是什么，并且具体读读备注内容很多隐藏规则均在备注中体现、\n\t4)请接口返回参数：查看接口返回参数，确定返回内容，实在不理解能看懂可查看下方事例。\n\n\n\n\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1673608438460
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1673608438460,
+  "creator": "wb_zhangyanmin",
+  "fullContext": null
+}

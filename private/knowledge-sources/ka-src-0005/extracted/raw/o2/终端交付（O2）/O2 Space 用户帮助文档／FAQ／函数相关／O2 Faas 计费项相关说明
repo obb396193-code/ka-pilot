@@ -1,0 +1,29 @@
+O2 FaaS 是集团工程化函数开发生态体系。通过配套的规范、工具、流程定义、权限管理以及数据日志提高前端开发效率，保证团队开发过程的一致性和可复制性，提升代码质量和安全，面向前端开发者的一站式、全流程软件交付平台及服务，助力研发效率提升的产品。
+
+## 1. 计价规则（国内）
+
+HCRM对应商品billing_item_deffaas
+
+| 计费项目 | 注释 | 售价价格 | 单位 | 计费方式 |
+|-|-|-|-|-|
+| deffaas_invocations | 调用次数 | 0.01 | 元/万次 | 按量付费 |
+| deffaas_invoke_internet_out | 返回响应公网流量 | 0.5 | 元/GB | 按量付费 |
+| deffaas_provision_usage | 预留容器资源 | 0.0165 | 元/GB*小时 | 按量付费 |
+| deffaas_over_usage | 按量容器资源 | 0.0165 | 元/GB*小时 | 按量付费 |
+| deffaas_enhanced_provision_usage | 大规格预留容器资源（内存3GB以上） | 0.0165 | 元/GB*小时 | 按量付费 |
+| deffaas_enhanced_over_usage | 大规格按量容器资源（内存3GB以上） | 0.0165 | 元/GB*小时 | 按量付费 |
+
+## 2. 如何通过账单查询到具体的 O2 应用
+
+举个例子：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/vBPlNYpz9WVkOdG8/img/d3bb3954-5c20-41f5-9c0a-f38cc9dd8c99.png)
+
+
+1.访问 O2 faas:[https://space.o2.alibaba-inc.com/workbench/serverless/basic](https://space.o2.alibaba-inc.com/workbench/serverless/basic)
+
+2.查找 deffaas 后面的文案将 _ 替换成 - 比如这里的 my_group_robot 就在 O2 上查询 my-group-robot
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/vBPlNYpz9WVkOdG8/img/36ea9668-8f4a-4d16-99c9-55bfb49734f9.png)
+
+

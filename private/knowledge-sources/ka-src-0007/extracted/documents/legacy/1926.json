@@ -1,0 +1,42 @@
+{
+  "documentId": 1926,
+  "documentName": "3.4.6修改广告组状态",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 修改广告组状态\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/ad_unit/update/status\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|     字段      |  类型  | 是否必填 |                      说明                       |                                                                    备注                                                                     |\n| :-----------: | :----: | :------: | :---------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------: |\n| advertiser_id |  long  |   必填   |                    广告主 ID                    |                                                       在获取 access_token 的时候返回                                                        |\n|    unit_id    |  long  |   必填   |                    广告组 ID                    |                                                                                                                                             |\n|   unit_ids    | long[] |   选填   | 与原有的 unit_id 字段可以同时填，也可以只填一个 | 1.传入的广告组 id 不得重复，且至少有一个;传入的广告组 id 总数最多 10 个。2.put_status 为 3 时，会删除广告组，广告组下的所有程序化创意，创意 |\n|  put_status   |  int   |   必填   |                     操作码                      |                                                   1-投放、2-暂停、3-删除，传其他数字非法                                                    |\n\n### 返回参数\n\n|   字段   |  类型  |            说明             |                                            备注                                             |\n| :------: | :----: | :-------------------------: | :-----------------------------------------------------------------------------------------: |\n|   code   |  int   |           返回码            |                                                                                             |\n| message  | string |          返回信息           |                                                                                             |\n|   data   | struct |         JSON 返回值         |                                                                                             |\n| unit_ids | struct | 所有修改状态成功的广告组 id | 假如接口的入参 unit_id 传了值且修改状态成功，则此广告组 id 也会包含在返回值 unit_ids 里面。 |\n\n### 请求样例\n\n```\ncurl -X POST \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\": 20000800,\n    \"unit_id \":2960188,\n    \"put_status\":1\n}' https://ad.e.kuaishou.com/rest/openapi/v1/ad_unit/update/status\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {}\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624131
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624131,
+  "creator": "wb_lingfeng",
+  "fullContext": null
+}

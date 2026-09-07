@@ -1,0 +1,73 @@
+一个完整的实验生命周期包括：实验设计、实验配置、联调测试、发布运行、数据分析及实验决策。[详见文档](https://yuque.antfin-inc.com/ikkuy/gw2n3b/ccv4hk)
+
+# [<font style="color:#000000;">1.申请接入一休sdk</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/ft83pq)
+# <font style="color:#000000;">2. Java服务端</font>
+    - [<font style="color:#000000;">接入必读</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/wgy2hk)
+    - [<font style="color:#000000;">工程接入 & 成功校验</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/wxrdcp)<font style="color:#000000;"> </font><font style="color:#000000;">⭐</font><font style="color:#000000;">️</font>
+    - [<font style="color:#000000;">日志配置</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/hhefqm)
+    - [<font style="color:#000000;">自定义分流</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/xw84ya)
+    - [<font style="color:#000000;">常见问题</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/xiy6h6)
+    - [<font style="color:#000000;">SDK发布版本说明</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/lz0lnt)
+    - [<font style="color:#000000;">SDK版本及分流接口升级必读</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/qqqm9k)<font style="color:#595959;"></font>
+
+
+
+# [<font style="color:#000000;">3.客户端</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/owmaix)
+### [<font style="color:#000000;">1.iOS</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/kho0l7)
+    - [<font style="color:#000000;"> 接入</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/tvxmso)
+    - <font style="color:#000000;"> </font>[<font style="color:#000000;">使用</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/yrygku)
+    - <font style="color:#000000;"> </font>[<font style="color:#000000;">SDK发布版本说明</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/ro6zfa)
+    - [<font style="color:#000000;">AB 客户端问题 FAQ</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/sbca7c)<font style="color:#666666;"></font>
+
+### <font style="color:#000000;">2.</font><font style="color:#000000;">Android</font>
+    - [<font style="color:#000000;">接入</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/qulx1u)
+    - [<font style="color:#000000;">使用</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/cuge0b)
+    - [<font style="color:#000000;">SDK发布版本说明</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/rogwmo)
+
+
+
+# [<font style="color:#000000;">4.前端</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/zac9at)
+    - [<font style="color:#666666;">Rax 1.0 / 0.6 接入文档</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/zac9at)
+    - [<font style="color:#666666;">Rax A/B 调试</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/nsl8yb)
+    - [<font style="color:#666666;">React 接入文档</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/rc5gno)
+    - [<font style="color:#666666;">淘宝/支付宝小程序 接入文档</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/iioia3)
+    - [<font style="color:#666666;">EVO A+日志采集方案</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/vxtrbn)
+    - [<font style="color:#000000;">其他</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/xqqfnv)
+
+<font style="color:#000000;"></font>
+
+# <font style="color:#000000;">5.其他</font>
+### <font style="color:#595959;">1.TPP业务方接入文档</font>
+    - [<font style="color:#666666;">接入文档</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/nke0u0)
+    - [<font style="color:#666666;">接入示例</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/tpxrvn)
+    - [<font style="color:#666666;">插件changelog</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/kt0igc)
+    - <font style="color:#595959;">详细</font>
+        * [<font style="color:#666666;">counter：自定义指标计数器</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/wb5lu7)
+        * [<font style="color:#666666;">通过EvoConfigUtil获取实验参数</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/azfizg)
+
+<font style="color:#666666;"></font>
+
+# <font style="color:#000000;">6.数据埋点</font>
+    - [<font style="color:#666666;">客户端实验埋点</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/exu5pu)
+    - [<font style="color:#666666;">服务端埋点</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/fb0aud)
+    - [<font style="color:#666666;">前端埋点</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/whdi8u)
+    - [<font style="color:#666666;">兼容琅琊阁埋点</font>](https://yuque.antfin-inc.com/ikkuy/gw2n3b/cl7od2)
+
+<font style="color:#000000;"></font>
+
+在使用EVO实验平台过程中，遇到任何问题都可以联系我们。
+
+
+
+| 实验接入及EVO平台培训 | 韭幺 |
+| --- | --- |
+| 二方平台接入 | 依橙 |
+| SDK平台接入 | 學思 |
+| 实验产品SOP | 明征 |
+| 数据、指标、埋点 | 彼端 |
+| 产品功能等需求 | 明征 |
+| **总接口人** | **明樵、鳄神** |
+
+
+<font style="color:#000000;"></font>
+

@@ -1,0 +1,42 @@
+{
+  "documentId": 2142,
+  "documentName": "人群包更新接口(新)",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 人群包更新接口(新)\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v2/dmp/population/update](https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v2/dmp/population/update)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   |  是否必填   | 说明   | 备注                        |\n| ------------ | ------ |  --------- | ------ | --------------------------- |\n|advertiser_id | long |   必填 | 广告主ID |  在获取 access_token 的时候返回|\n|orientation_id\t|long\t|必填\t|人群包ID\t||\n|operation_type|\tint|\t必填\t|操作类型\t|1：增量更新、3：缩量更新、4：全量更新|\n|file_paths|\tstring[]|\t必填\t|文件路径列表\t|通过调用【文件上传接口】得到的文件路径，每次最多填写10个、总大小<3G的文件|\n| type | int |   必填 | 文件的数据类型 | 1：IMEI；2：IDFA；3：IMEI_MD5；4：IDFA_MD5；5：手机号-MD5；7：OAID；8：OAID_MD5 9: 手机号_SHA256;16：CAID |\n\n\n### 返回参数\n\n| 字段         | 类型    | 说明                        | 备注         |\n| ------------ | ---- | --------------------------- | ---------- |\n| code | int |   返回码 |  |\n| message | string  | 消息 |  |\n| data | struct | json返回值 |  |\n|create_time|\tlong\t|创建时间\t|13位毫秒级时间戳|\n|orientation_id|\tlong\t|人群包ID\t||\n|orientation_name|\tstring\t|人群包名称||\t\n|failed_file_paths\t|string[]|\t创建失败的文件路径列表\t|提交的文件路径错误\n|record_size|\tlong\t|上传数量\t||\n|type\t|int\t|文件数据类型|\t1：IMEI；2：IDFA；3：IMEI_MD5；4：IDFA_MD5；5：手机号-MD5；7：OAID；8：OAID_MD5 9: 手机号_SHA256;16：CAID|\n|population_type|\tint\t|人群包类型\t|1,\"上传人群\"；2,\"广告人群\"；3,\"主题专区\"；4,\"逻辑规则\"；5,\"人群扩展\"；7,\"三方精选\"；8,\"网红粉丝类别\"；10,\"移动应用安装\"；11,\"快手使用活跃度\"；12,\"行业分类\"；13,\"商业兴趣\"；17,\"产品关键词\"；19,\"应用渗透率\"；20,\"快手小店\"；21,\"流量中台\"；22,\"指定网红\"；23,\"行业分类\"；24,\"广告人群\"；25,\"全量网红粉丝\"；26,\"移动应用安装\"；27,\"平台设备网络\"；28,\"年龄\"；29,\"设备价格区间\"；33,\"品牌广告精确转化\"；34,\"标签广场计算包\"；32,\"地域\"；35,\"大宗消费意向\"；36,\"性别\"；37,\"网红粉丝优化\"；38,\"小店专区\"；41,\"购物意图\"；42,\"已有人群交并补计算\"；43,\"行为意向\"；44,\"财产状态\"；45,\"居住分层\"；46,\"品类行为\"；47,\"用户消费分层\"；50,\"店铺粉丝分层\"；49,\"店铺新老客分层\"；48,\"店铺用户行为\"；51,\"标签推荐\"；54,\"店铺关注时间\"；57,\"K-Star(明星；58,门店管理\"；59,\"品牌行为\"；60,\"学历\"；61,\"人生阶段\"；62,\"直播打赏\"；63,\"节日专区\"；64,\"相似店铺\"；65,\"系统推荐\"；66,\"汽车购买意图\"；67,\"汽车价格\"；68,\"汽车类型\"；69,\"汽车动力\"；70,\"汽车品牌\"；71,\"汽车座位\"；72,\"汽车人群类型\"；73,\"二手车偏好\"；74,\"奥运专区\"；75,\"CDP人群\"；76,\"数据源\"；77,\"视频类型偏好\"；78,\"IP偏好\"；79,\"九大消费人群\"；80,\"个人贷款需求\"；81,\"个人保险兴趣\"；82,\"保险类型偏好\"；83,\"证券兴趣人群\"；84,\"金融负反馈人群\"；85,\"金融风险人群\"；86,\"金融属性人群\"；87,\"CDP上传人群\"；88,\"学历教育\"；89,\"职业教育认证\"；90,\"职业教育技能\"；91,\"财商教育兴趣\"；92,\"少儿教育兴趣\"；93,\"游戏内容兴趣\"；94,\"潜在付费人群\"；95,\"店铺粉丝团等级\"；96,\"定制年龄性别\"；97,\"品牌客户分层\"；98,\"自定义店铺关注时间\"；99,\"类目消费频次\"；100,\"类目客单价\"；101,\"职业\"；102,\"星轨SQL打包\"；103,\"画像平台导入\"\n|status\t|int|\t人群包状态\t|0, \"计算中\"；1, \"已生效\"；2, \"已删除\"；3, \"上线中\"；4, \"已上线\"；5, \"计算失败\"；6, \"上线失败\"；7, \"已失效\"|\n|advertiser_id|\tstring\t|广告主ID||\t\n\n\n\n\n\n\n### 请求样例\n\n```js\ncurl -X POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v2/dmp/population/update' \\\n-H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n-H 'Content-Type: application/json' \\\n--data-raw '{\n          \"advertiser_id\": 12345678,\n          \"orientation_id\": 110750443,\n          \"operation_type\" : 1,\n          \"type\": 3,\n          \"file_paths\": [\n            \"12345678_3_0d0bdfaaab8df08cf052d0ea41b6e05f.txt\"\n          ]\n        }'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"create_time\": 1642389204902,\n        \"orientation_id\": 110750443,\n        \"orientation_name\": \"test-597\",\n        \"failed_file_paths\": [],\n        \"record_size\": 20825138,\n        \"type\": 3,\n        \"population_type\": 1,\n        \"status\": 0,\n        \"advertiser_id\": 12345678\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"e87a128da8704ed284f3a9bc79695540\"\n}\n```\n### 注意事项\n1、每次更新人群包最多使用10个、总量<3G的file_paths；\n\n2、每天每个人群包增量和缩量更新一共不能超过 10 次，请合理控制更新时间和频率（已申请过更新次数扩量的，仍生效）；\n\n3、增量或缩量更新后，可通过调用人群包上线接口、或手动在 DMP 后台点击上线按钮进行上线，更新过程中的人群包仍可以使用；\n\n4、点击上线后，历史已有该人群包的账号无需再次推送，上线后实时生效；\n\n5、仅人群包状态status=1,4,5,6时，允许更新操作。\n\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1646829488294
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 6,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1646829488294,
+  "creator": "wb_mazhikai",
+  "fullContext": null
+}

@@ -1,0 +1,34 @@
+#### <font style="color:rgb(38, 38, 38);background-color:rgb(255, 255, 255);">新增账户定义</font>starshow<font style="color:rgb(38, 38, 38);background-color:rgb(255, 255, 255);">：</font>
+com.alibaba.intl.adaccount.biz.constants.SiteEnum
+
+com.alibaba.intl.adaccount.common.constants.BizType
+
+
+
+#### [](#sql:)sql:
+insert into `account_def`( id,  gmt_create,  gmt_modified,  biz_type,  account_type,  owner_type,  allow_arrears,  remark,  currency_type,  is_virtual,  parent,  payment_type) values(26, now(), now(), 'starshow', 'cash', 1, 0, null, null, -1, 'all', 'spend');
+
+insert into `account_def`( id,  gmt_create,  gmt_modified,  biz_type,  account_type,  owner_type,  allow_arrears,  remark,  currency_type,  is_virtual,  parent,  payment_type) values(27,now(), now(), 'starshow', 'gift', 1, 0, null, null, -1, 'all', 'spend');
+
+
+
+#### [](#客户端：)客户端：
+starshowAccountWriteClient
+
+starshowAccountReadClient
+
+
+
+#### [](#增加收入、支出处理器)增加处理器
+StarshowCashRefundProcessor
+
+StarshowConsumeProcessor
+
+StarshowGiftChargeProcessor
+
+StarshowCashChargeProcessor
+
+
+
+
+

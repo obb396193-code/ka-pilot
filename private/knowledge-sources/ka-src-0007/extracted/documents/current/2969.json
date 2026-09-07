@@ -1,0 +1,356 @@
+{
+  "documentId": 2969,
+  "documentName": "获取屏蔽评论信息列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "获取屏蔽评论信息列表\n/rest/openapi/v1/comment/shield_info/list\n{\n    \"shield_type_list\": [1],\n    \"advertiser_id\": 76,\n    \"page\": 1,\n    \"page_size\": 20\n}\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\",\n    \"data\": {\n        \"total_count\": 1,\n        \"details\": [\n            {\n                \"shield_info_id\": 79,\n                \"shield_type\": 1,\n                \"shield_content\": \"test_2f5c1e66aa92\"\n            }\n        ]\n    }\n}\nadvertiser_id  Long  广告主 ID\npage  Integer  请求的页码数\npage_size  Integer  请求的每页行数\nshield_type_list  Integer[]  屏蔽信息类型\ncode  Integer  状态码\nmessage  String  错误信息\nrequest_id  String  请求ID\ndata  ShieldInfoListData  返回结果\ntotal_count  Long  总数\ndetails  ShieldInfoView[]  详细数据\nshield_info_id  Long  屏蔽信息 id\nshield_type  Integer  屏蔽类型\nshield_content  String  屏蔽信息内容\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094993938
+    }
+  ],
+  "apiId": 1331,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/comment/shield_info/list",
+  "httpMethod": "POST",
+  "httpContentType": "FORM",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"shield_type_list\": [1],\n    \"advertiser_id\": 76,\n    \"page\": 1,\n    \"page_size\": 20\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\",\n    \"data\": {\n        \"total_count\": 1,\n        \"details\": [\n            {\n                \"shield_info_id\": 79,\n                \"shield_type\": 1,\n                \"shield_content\": \"test_2f5c1e66aa92\"\n            }\n        ]\n    }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 62588,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "123456",
+      "description": "广告主 ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62589,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "请求的页码数",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "默认为 1",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62590,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "20",
+      "description": "请求的每页行数",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "默认为 20",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62591,
+      "paramName": "shield_type_list",
+      "paramType": "Integer[]",
+      "example": "[1]",
+      "description": "屏蔽信息类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "1：评论内容关键词，5：用户昵称关键词，6：快手 ID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 62592,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62593,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "\"OK\"",
+      "description": "错误信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62594,
+      "paramName": "request_id",
+      "paramType": "String",
+      "example": "",
+      "description": "请求ID",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62595,
+      "paramName": "data",
+      "paramType": "ShieldInfoListData",
+      "example": "",
+      "description": "返回结果",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3526,
+      "sort": 4,
+      "note": "",
+      "children": [
+        {
+          "paramId": 62578,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "12",
+          "description": "总数",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62579,
+          "paramName": "details",
+          "paramType": "ShieldInfoView[]",
+          "example": "",
+          "description": "详细数据",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3525,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 62575,
+              "paramName": "shield_info_id",
+              "paramType": "Long",
+              "example": "657476",
+              "description": "屏蔽信息 id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 62576,
+              "paramName": "shield_type",
+              "paramType": "Integer",
+              "example": "1",
+              "description": "屏蔽类型",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 62577,
+              "paramName": "shield_content",
+              "paramType": "String",
+              "example": "\"test\"",
+              "description": "屏蔽信息内容",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094993938,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -1,0 +1,53 @@
+## 什么是Aone FaaS
+
+### 基础特性
+
+		1. 事件驱动: 函数由特定事件触发，如HTTP请求、HSF请求、Mtop请求等
+		1. 高可用性：由集团资源与集群管理团队研发保障，在现有积累pouch技术基础上进一步拓展FaaS相关能力，支持全球多地域集团机房部署，提供高可用性和容错机制，确保函数稳定运行。
+		1. 自动扩展：根据负载自动调整函数实例数量，确保性能稳定。
+		1. 按量计费：按实际执行时间和资源使用量收费，空闲时不产生费用。
+		1. 快速部署：提供FaaS研发平台，基于Aone和O2研发平台进行拓展，开发者只需上传代码，平台负责部署和运行，简化发布流程。
+		1. 多语言支持：支持多种编程语言，如JavaScript、Go、Python、Java等。
+		1. 其他特性，不再赘述
+### 集团典型支持场景
+
+(https://o2-img.alistatic.com/i/i09blZ/DZEnLq2T9K0lIh097wpza-6cb6601744.png)
+
+
+### 研发平台简述
+
+#### 基础框图
+
+(https://o2-img.alistatic.com/i/i09blZ/XjPVvs90h7eqHGO9Q55eO-78fd1b27e9.png)
+
+
+#### 应用发布
+
+(https://o2-img.alistatic.com/i/i09blZ/FOlFfAgCDj9iVmw28cXiE-5f17bb9600.png)
+
+
+### 流量访问
+
+(https://o2-img.alistatic.com/i/i09blZ/jsSPrW8Ue6NekISwYFEJJ-294c16872f.png)
+
+
+### 解决方案
+
+定位：适配特定场景问题（可区分通用场景和业务场景），提升研发效率，加速产品迭代，简化资源联动耗时，保障安全合规。
+
+举例：SSR
+
+(https://o2-img.alistatic.com/i/i09blZ/s4fcpqJEktEQHwt071yXz-f210a6bafe.png)
+
+
+### 历史函数迁移
+
+		- 尽量无感迁移，当前如O2平台上发布的函数应用，可做到FC基座到新Aone FaaS基座无感迁移。
+		- 新增变更，无需变动业务代码，会提供相应配套工具，低成本完成发布标准化配置适配
+### 技术支撑
+
+(https://o2-img.alistatic.com/i/i09blZ/f6Rq4SO1Sp9spJGsezp0z-1bc9ed4dfb.png)
+
+
+
+

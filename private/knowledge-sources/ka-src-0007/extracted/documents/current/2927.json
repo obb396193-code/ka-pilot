@@ -1,0 +1,580 @@
+{
+  "documentId": 2927,
+  "documentName": "创建历史数据查询任务",
+  "documentType": 2,
+  "description": "<p>【注】创建查询广告组、广告创意(自定义创意)、程序化创意维度的任务时不包括省心投物料</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.5",
+  "versionList": [
+    {
+      "version": "0.0.5",
+      "createTime": 1781503510021
+    },
+    {
+      "version": "0.0.3",
+      "createTime": 1757504960699
+    }
+  ],
+  "apiId": 1297,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/async_task/create",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 20000681,\n    \"task_name\": \"Z异步数据指标拉齐-027\",\n    \"task_params\": {\n            \"start_date\": \"2022-02-07\",\n            \"end_date\": \"2022-02-15\",\n            \"view_type\": 25,\n            \"query\": [\"无糖拿铁\"],\n            \"temporal_granularity\": \"DAILY\"\n    }\n}\n\n{\n    \"advertiser_id\": 20000681,\n    \"task_name\": \"Z异步数据指标拉齐-028\",\n    \"task_params\": {\n            \"start_date\": \"2022-02-07\",\n            \"end_date\": \"2022-02-15\",\n            \"view_type\": 21,\n            \"word_info_ids\": [\"2800010\"],\n            \"temporal_granularity\": \"DAILY\"\n    }\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"advertiser_id\": 20000681,\n        \"task_id\": 1230104\n    },\n    \"request_id\": \"a1ad2f9a5dbd4450946ad85e9f7441e1\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 61818,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主 ID（注：非账户快手 ID），在获取 accessToken 时返回",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61819,
+      "paramName": "task_name",
+      "paramType": "String",
+      "example": "",
+      "description": "任务名称，最大不超过 50字符，不能为空；每个账户提交的任务名称不能重复",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61820,
+      "paramName": "task_params",
+      "paramType": "TaskParams",
+      "example": "",
+      "description": "报表任务参数，详见下方",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3470,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 61795,
+          "paramName": "start_date",
+          "paramType": "String",
+          "example": "",
+          "description": "查询开始日期",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "格式如：yyyy-MM-dd，时间跨度不能超过 6 个月",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61796,
+          "paramName": "end_date",
+          "paramType": "String",
+          "example": "",
+          "description": "查询结束日期",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "格式如：yyyy-MM-dd，不大于查询开始日期",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61797,
+          "paramName": "view_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "查询维度",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "1：账户维度查询，2: 广告计划维度查询，3：广告组维度查询，4：广告创意维度查询(自定义创意) 5：视频报表 报表 7：封面报表 8：便利贴报表 10：程序化创意 2.0&智能创意 报表 21：关键词报表 25：搜索词报表",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61798,
+          "paramName": "campaign_ids",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "广告计划 ID 集",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61799,
+          "paramName": "unit_ids",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "广告组 ID 集",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61800,
+          "paramName": "word_info_ids",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "推广关键词ID集，过滤筛选条件，单次查询数量不超过 5000,推广关键词ID集可通过获取关键词列表接口获取",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "仅veiw_type=21,25可使用",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61801,
+          "paramName": "query",
+          "paramType": "String[]",
+          "example": "",
+          "description": "用户搜索词，过滤筛选条件，单次查询数量不超过5000",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "仅view_type=25可使用",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61802,
+          "paramName": "creative_ids",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "广告创意 ID 集",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61803,
+          "paramName": "photo_ids",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "视频 ID 集",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "仅 view_type=5、7、8 可使用",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61804,
+          "paramName": "cover_ids",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "封面 ID 集",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "仅 view_type=5、7、8 可使用",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61805,
+          "paramName": "virtual_creative_ids",
+          "paramType": "Long[]",
+          "example": "",
+          "description": "程序化创意 ID 集",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "进行 virtual_creative_id 的筛选",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61806,
+          "paramName": "report_dims",
+          "paramType": "String",
+          "example": "",
+          "description": "投放场景",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "\"adScene\"：按广告场景；不传/传空/传空数组：不限",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61807,
+          "paramName": "temporal_granularity",
+          "paramType": "String",
+          "example": "",
+          "description": "时间粒度",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 13,
+          "note": "“DAILY”：天粒度；“HOURLY”：小时粒度；默认按天粒度进行聚合",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61808,
+          "paramName": "status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "状态",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 14,
+          "note": "1：投放中；2：已暂停；3：已删除",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61809,
+          "paramName": "selected_columns",
+          "paramType": "String[]",
+          "example": "",
+          "description": "自定义列",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 15,
+          "note": "仅view_type=4、10、21、25支持使用； view_type为21、25时支持列名及其关联字段详见：https://docs.qingque.cn/d/home/eZQB-fLBIZLvGG50L7vFkHL3J?identityId=1oE314hFZmG；view_type为4、10时支持列名及其关联字段详见：https://docs.qingque.cn/d/home/eZQDv1-3EIIYGiJ3Yl4pRrtLl?identityId=25xmj6jklGu",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 61821,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61822,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61823,
+      "paramName": "data",
+      "paramType": "AsyncTaskCreateData",
+      "example": "",
+      "description": "JSON 返回值",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3471,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 61810,
+          "paramName": "advertiser_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "广告主 ID",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61811,
+          "paramName": "task_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "任务 ID",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1781503510021,
+  "creator": "wanghao51",
+  "fullContext": null
+}

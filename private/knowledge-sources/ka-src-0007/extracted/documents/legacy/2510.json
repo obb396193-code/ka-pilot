@@ -1,0 +1,54 @@
+{
+  "documentId": 2510,
+  "documentName": "第四步：上传视频库",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 上传视频库\n（以下接口**二选一**，都已支持blob_store_key方式。）\n\n1、可以使用 [素材管理-上传视频v2接口](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=1906&menuId=2428)\n进行上传，此时不需要传file文件，**填写blob_store_key即可**。\n\n2、原生视频上传请使用 [工具-原生广告投放工具-本地上传接口](https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2272&menuId=2819) 进行上传，不需要传photo文件，**填写blob_store_key即可**。",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1713235358079
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1713235358079,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

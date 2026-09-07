@@ -1,0 +1,42 @@
+{
+  "documentId": 2319,
+  "documentName": "【应用中心-开放场景】更新 iOS 应用",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】更新 iOS 应用\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/update/ios](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/update/ios)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段             | 类型   | 示例值 | 是否必填 | 说明         | 备注 |\n| ---------------- | ------ | ------ | -------- | ------------ | ---- |\n|         advertiser_id         |  Long  |      |        必填         |            广告主ID          |   |\n| app_icon_url     | String |        | 可选     | 应用图标     | 通过上传图片 API 获取     |\n| app_id           | Long   |        | 必填     | 应用ID       |      |\n| package_id       | Long   |        | 必填     | 应用包ID     |      |\n| ios_download_url       | String   |        | 可选     | 下载链接     |      |\n\n### 返回参数\n\n| 字段              | 类型    | 示例 | 说明        | 备注 |\n| ----------------- | ------- | ---- | ----------- | ---- |\n| data              | Object  |      | JSON 返回值 |      |\n| &#8195;app_id     | Long    |      | 应用ID      |      |\n| &#8195;package_id | Long    |      | 应用包ID    |      |\n| &#8195;privacy_id | Long    |      | 隐私声明ID  |      |\n| code              | Integer |      | 返回码      |      |\n| message           | String  |      | 返回信息    |      |\n\n\n\n### 请求样例\n\n```shell\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/update/ios' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": 900015366,\n    \"package_id\": 1099611636631,\n    \"app_id\": 2199123264406,\n    \"ios_download_url\":\"https://apps.apple.com/app/id9921801\",\n    \"app_icon_url\": \"https://kcdn.staging.kuaishou.com/bs2/ad-app/icon/efebd9277ae5b39800c46d88166dcc33.png\"\n}'\n```\n\n### 返回样例\n\n```shell\n{\n    \"code\": 0,\n    \"data\": {\n        \"privacy_id\": 4801050,\n        \"package_id\": 1099611636631,\n        \"app_id\": 2199123264406\n    },\n    \"message\": \"OK\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681107183767
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681107183767,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

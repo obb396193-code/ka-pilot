@@ -1,0 +1,22 @@
+### p4pclickserver域名
+![undefined](https://cdn.nlark.com/lark/0/2018/png/5633/1541496942803-f31ac99c-d64e-48ed-8881-2242ed3586e6.png) 
+
+### adclickserver域名
+![undefined](https://cdn.nlark.com/lark/0/2018/png/5633/1541496914417-d6d27da5-93bf-4942-b5b5-350bfa0b1a83.png) 
+
+### p4pclickserver职责
+scp4p m站的点击转发。
+ 
+p4pclickserver上一条accessLog如下：
+ 11.227.118.23 1937 - [05/Nov/2018:22:04:41 -0800] "GET http://p4pclickproxy.alibaba.com/clickRedirect.do?spm=a2706.7843667.1998817009.1.1af47a49lQdDsy&eurl=%2F%2Fus-click.alibaba.com%2Fci_bb%3Fot%3Dlocal%26a%3D296338368%26e%3DXPPslsrGrIMIWoaz7SxfJaJxxzXxSibqE8mHblOZesjxRRvq33fRoyvIubsFKnpIoTwL8qBhW5ET2yfBSMMMphj.9REZSSv2wImSgy3yViGfjMnJB0DCi5PdjY7PzA95yVsSVY9f.A67xwF4ScPTpDD4GfJqrgiLUVdHXUbY0-d3KefBIjWiUCrujDknep0BCFgv2JVSHNdWojk0LBWqc400zwor90anD8QcMyHG9Pw5DhHRtk6tLkuwWmeEp8EpKZwkNRg-nVnuBEk9XemfZCbehQUwts0Mez.rqndiCwYMDnNvu149KAaMxKgWczMHN2HJA2o3FlxGVLMlZaJZ243ZVuE2lPO4i6I-XUqowa9CVB1pGct6NUsYdsv6WeM0LLEdYfYLUHBgpPafzm3PXR5gPOA9XFrAdmxpCJY2jHtLHyUsHzwRNXvuB6YeFVKU3m.MLfpSvM8v5sHUMzscHPqFP9llVFGBpRfqG1VmJLC5Tj4xVGfX2OAn0jxpaqH.hpwhP-ymNKd0Jn8uHvWKkQ__%26ap%3D1%26rp%3D1&toUrl=https%3A%2F%2Fm.alibaba.com%2Fproduct%2F60744816027%2F50-Powder-vitamin-e-beads.html%3Fs%3Dp" 302 0 "https://m.alibaba.com/showroom/vitamin-e-beads.html" "Mozilla/5.0 (Linux; Android 6.0.1; SAMSUNG SM-N920I Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/7.4 Chrome/59.0.3071.125 Mobile Safari/537.36" 44768 "-" "a=p4pid=92c5853e6b894230be144bb0906a84d3; b=; c=-" "p4pclickserver010176171025.ot7" -
+
+### 处理逻辑
+发起一个http请求到点击服务器eurl【us-click.alibaba.com/ cn-click.aibaba.com/ 】
+然后302到toURL【detail页面】
+
+### 迁移方案
+- 保证外部【m站】不改动
+- 将ClickRedirect移到adclickserver中。不再依赖二方库：p4p.click以及p4p.remote
+更改nginx配置，重写url
+![undefined](https://cdn.nlark.com/lark/0/2018/png/5633/1541497154650-4c072154-98ac-4cdf-b122-1571d4c60da3.png) 
+- 切流方案

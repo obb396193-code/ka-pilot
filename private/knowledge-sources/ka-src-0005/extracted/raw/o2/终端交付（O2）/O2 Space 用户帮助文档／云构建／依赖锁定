@@ -1,0 +1,322 @@
+> 使用过程中遇到问题？请直接跳转至 [常见问题](https://alidocs.dingtalk.com/i/nodes/QG53mjyd800agdlKHDnYDdnn86zbX04v?utm_scene=team_space&iframeQuery=anchorId%3Duu_lln6h4nke4yezint19u) 查阅解决方案。
+
+> 首次入门？请跳转至 [快速入门](https://alidocs.dingtalk.com/i/nodes/QG53mjyd800agdlKHDnYDdnn86zbX04v?utm_scene=team_space&iframeQuery=anchorId%3Duu_lln6i9hg01cyem6i08g7) 完成准备操作。
+
+## 简介
+
+### 背景
+
+不同于用户的本地环境，云端构建每次的构建任务都是干净、全新的容器环境，这在保证了环境纯净稳定的情况下，带来了一个副作用：项目的依赖每次构建都需要重新安装。
+
+在通常情况下，这并不会造成问题。然而，由于 npm 的 semver 机制，在不使用 package-lock.json 或 yarn.lock（下文通称锁文件）的情况下，不同时间安装的依赖版本可能会发生差异，而这个差异，则带来了构建失败、源码被恶意攻击的风险，如社区近期发生的几个 npm 包被攻击或发布了错误的版本案例：
+
+- [coa 库发布错误版本导致下游 webpack，babel 等安装失败](https://github.com/veged/coa/issues/99)
+- [ua-parser-js 被恶意值入代码](https://blog.sonatype.com/npm-project-used-by-millions-hijacked-in-supply-chain-attack)
+​
+
+关于依赖版本锁定的解释，必要性，建议阅读 [为什么你应该锁定前端应用的依赖版本](https://ata.alibaba-inc.com/articles/225664)。
+
+### 适用场景
+
+在面对如下问题时，建议为应用开启本功能：
+
+- 需要保证前端项目依赖的稳定性，且依赖没有频繁更新的需求的。
+- 为了避免因依赖更新而造成线上故障或构建失败的。
+
+
+O2 Space 工程平台推荐所有前端应用（非 npm 包、多包发布、天马等）打开这个功能。
+
+### 开启效果
+
+在开启了依赖版本锁定能力，且发起构建任务的仓库中含锁文件时，O2 Space 云构建将在调用构建命令/构建器之前，调用匹配到的锁文件对应的包管理软件，执行依赖安装操作，开启后，在发布详情 - 构建面板中可以看到如下提醒：
+
+(https://img.alicdn.com/imgextra/i4/O1CN01htGk6n1HbSJtDP3b8_!!6000000000776-2-tps-2478-786.png)
+
+
+同时，在日志中可以看到依赖恢复的日志，我们以 package-lock.json v1 版本举例：
+
+(https://img.alicdn.com/imgextra/i2/O1CN01cqKqGO26BqZwC2rEw_!!6000000007624-2-tps-698-275.png)
+
+
+## 快速入门
+
+### Step 1: 为仓库开启锁文件
+
+#### NPM 用户
+
+如果你的仓库是命令式构建（command 模式），在开启仓库的开关后，建议移除 abc.json 中依赖安装相关的命令（如 tnpm i，tnpm ii，npm i，yarn 等）。
+
+(https://img.alicdn.com/imgextra/i3/O1CN01AHOtgj1CqVFl4DkME_!!6000000000132-2-tps-634-196.png)
+
+
+
+
+#### TNPM 用户
+
+在`package.json`中进行如下配置，将 tnpm 切换到 npm 模式：
+
+```
+{
+  "tnpm": {
+    "mode": "npm",
+    "lockfile": "enable"
+  }
+}
+```
+- 如果上一次是非 npm 模式安装的依赖，请先删除 node_moduels
+- 使用 `tnpm i`本地安装依赖之后，将生成的`package-lock.json`提交到仓库。
+注意，如果使用了 tnpm 的 resolutions 功能，将不会生成锁文件，请用 npm 的 overrides 代替。
+
+### Step 2: 工程平台上打开开关或发布规则
+
+应用开发者需要手动开启该依赖锁定开关后，云端构建才会恢复依赖。
+
+除了开发者手动开启开关，应用也有可能命中团队管理者下发的发布规则，进而在运行时强制打开该开关。在这种情况下，应用修改配置是无效的。
+
+#### 手动开启
+
+(https://img.alicdn.com/imgextra/i4/O1CN01Q0Xr0t1xNuT1OMiAE_!!6000000006432-2-tps-1122-776.png)
+
+
+#### 被动命中发布规则
+
+(https://img.alicdn.com/imgextra/i4/O1CN01RSH07m1Fsk2K6uZkk_!!6000000000543-2-tps-3078-694.png)
+
+
+## 使用条件
+
+### 前置条件
+
+使用依赖锁定能力，需要保证如下几点：
+
+1. 仓库根目录中存在 package-lock.json， yarn.lock 或 pnpm-lock.yaml（统称锁文件）。并建议本地开发使用对应的包管理软件（yarn，npm，pnpm）或 tnpm 的 npm/yarn mode，并开启锁文件生成逻辑，他们均会自动生成对应的锁文件。
+1. 对于 yarn 3 和 pnpm，如果使用内部包，本地环境需要配置 registry 到 tnpm 内网源，可参考 [如何配置 npm/pnpm/node-gyp 使用阿里内部镜像源](https://ata.alibaba-inc.com/articles/191477)。
+1. 锁文件与 package.json 保持同步。
+1. 云端构建逻辑不修改已存在的 node_modules 和 package.json。
+1. 不使用 lerna 来管理依赖的安装（支持 yarn、npm workspaces）。
+### 锁文件对应包管理软件
+
+针对仓库中不同版本的锁文件，O2 Space 云构建会自动识别生成该类锁文件的包管理软件，目前支持的类型如下：
+
+|  | npm | tnpm npm mode |  | yarn | tnpm yarn mode |  | pnpm |
+|-|-|-|-|-|-|
+| 锁文件 | package-lock v1 | package lock v2 | yarn.lock v1 | yarn.lock v2 | pnpm-lock.yaml |
+| 生成方式 | 由 npm 5，6 生成； | 由 npm 7，8 生成； | 由 yarn v1 (legacy) 生成； | 由 yarn v2+ (berry) 生成； | 由 pnpm v1.5+ 生成 |
+| 恢复方式 | 使用构建环境中的 npm 6+ 进行安装。 | 使用构建环境中的 npm 进行安装，当 npm 版本小于 7 时，切换到 npm 7 进行安装。 | 使用构建环境中的 yarn 1 进行安装。 | 使用 yarn v2 进行安装，由于 yarn berry 会将其可执行文件打包成 yarn.cjs 并提交到仓库中，实际调用的版本为用户仓库中的版本。 | 使用构建环境中的 pnpm 6 安装，不做主要支持 |
+
+​
+
+锁文件会按 package-lock.json - yarn.lock - pnpm-lock.yaml 的顺序匹配，同时存在时，将会首先使用 package-lock.json。
+
+### 保证锁文件同步
+
+请尽量在修改依赖时保证锁文件同步更新：
+
+- 使用 npm install，yarn add 等时他们会默认同步 package-lock.json，yarn.lock，请提交变更到仓库中。
+- tnpm 目前尚不支持，建议修改 package.json 的操作用 npm 来完成，或在使用 tnpm 后手动 npm i 以同步锁文件。
+​
+
+当用户的 package.json 与锁文件不同步时，会出现两种情况：
+
+1. 依赖恢复失败，构建会直接失败，因 npm 6，yarn 会直接报错。
+1. 依赖恢复成功，但变更部分的依赖没有被锁定成功，“依赖是否锁定成功”会提示有差异。npm 7+ 下会有这个表现（这是 npm 的一个 bug，行为与文档中描述不符）。
+​
+
+### 保证不修改 node_modules
+
+无论是构建器构建还是构建命令构建，只要开启了本功能，都会在构建逻辑前执行依赖恢复的逻辑。用户仓库中的构建命令或构建器的安装逻辑要保证不修改O2 Space 云构建已经恢复好的 node_modules，否则依赖版本锁定可能失效，如以下的操作都是不建议的：
+
+- 在构建逻辑中手动进行 tnpm i <package> 而不使用 package.json 声明依赖。
+- 在构建逻辑中删除、清空了 node_modules，如调用了 tnpm update 命令。
+- 在构建逻辑中手动升级包版本，如 tnpm upgrade <package>。
+需要特别声明的是，普通的安装命令不会影响已经恢复好的依赖版本，如 tnpm i，npm i，yarn 都不会影响或修改已经恢复好的依赖。目前仍建议保留这些命令，以避免在关闭依赖锁定能力后构建依赖出现依赖未被安装的问题。
+
+## 常见问题
+
+### 重复安装问题
+
+当你使用构建器时，可能会存在系统调用过依赖安装服务后，在构建器中又进行了一次依赖安装行为。一般情况下，包管理软件会跳过已安装的依赖，但当构建器删除依赖重装时，依赖锁定能力可能失效。我们建议构建器开发者利用构建时的环境变量 BUILD_ENABLE_LOCKFILE_INSTALL === 'true'  来判断系统是否已经调用过依赖安装过程了，如在 Bash 中：
+
+```
+[ "$BUILD_ENABLE_LOCKFILE_INSTALL" != "true" ] && tnpm i # 表示当该环境变量不为 true 时，才执行 tnpm i
+```
+在 Node 中，逻辑类似，同样使用环境变量来进行判断：
+
+```
+if (process.env.BUILD_ENABLE_LOCKFILE_INSTALL !== 'true') { // 当环境变量不为 true 时…
+  await execa('tnpm', ['i']); // 再调用 tnpm i 来安装依赖
+}
+```
+### ERR_NO_MATCHED_LOCKFILE：未找到支持的锁文件
+
+开启了依赖版本锁定能力，但仓库中不含 package-lock.json 或 yarn.lock。请检查构建任务 - 文件树中是否包含锁文件，并提交最新的锁文件到仓库中（也可选择使用O2 Space 云构建生成的备份锁文件提交到仓库中，具体操作见依赖备份能力文档）。
+
+(https://img.alicdn.com/imgextra/i2/O1CN016V3BnH1rVnaxjQHUW_!!6000000005637-2-tps-1040-702.png)
+
+
+### ERR_INSTALL_DEPS_BY_LOCKFILE_FAILED：按锁文件安装依赖失败，请确保锁文件与 package.json 同步
+
+开启了依赖版本锁定能力，但仓库的锁文件与 package.json 不同步，导致安装失败。
+
+请本地在仓库中调用 npm i 或者 yarn 以同步锁文件，并将锁文件提交到仓库中，重试构建。
+
+### Npm 提示 Dependency Conflict/Peer ERESOLVE/死循环
+
+自 npm 7 开始，npm 变更了 peerDependecis 的安装行为，被声明的 peer 依赖不会像之前的版本不安装仅提示了，而会直接被安装，且依赖树必需要满足 peerDependencies 声明的版本范围。建议当出现这个问题时，首先尝试解决出现冲突的版本，如果需要紧急绕过，可选择临时方案修复，但会给之后的开发带来依赖版本不对的隐患。
+
+有些不规范的包，在声明 peer 时不正确，会造成 npm 7+ 在安装时反复提示 ERESOLVE overriding peer dependency 然后卡死，也需要通过下述方案解决。
+
+建议依次尝试如下方式临时修复：
+
+- 方法一：本地首次使用 npm v7+ 时提示，可以先尝试使用 npm i --force刷新本地依赖缓存，看看是否还会报错，如果不会报错，那这个问题就算解决了。
+- 方法二：在项目的 .npmrc 中也添加配置，使用老 peer 逻辑，以保证全环境安装依赖的行为统一，如：
+```
+# .npmrc
+legacy-peer-deps=true
+```
+- 方法三：降级 npm 至 v6 npm install -g npm@6后，重新在项目目录下执行 npm i。
+### 为什么开关关闭仍提示 ERR_NO_MATCHED_LOCKFILE
+
+这种情况是因为应用所在的产品/发布人所在的团队强制下发了打开依赖锁定安装的开关，需要到应用配置 - 发布规则中找到对应的下发人了解详情。在不兼容的场景下，可以由规则下发人决定是否要为该应用配置白名单。
+
+(https://img.alicdn.com/imgextra/i4/O1CN01pqYcvW1qkAPAtZMa4_!!6000000005533-2-tps-1026-231.png)
+
+
+### 安装包时提示 Not Found/不存在/E404
+
+可能一：未声明内网源：本地使用时，需要把 npm 及 yarn 的 registry 默认设置为 tnpm 源，配置可以参考 [如何配置 npm/pnpm/node-gyp 使用阿里内部镜像源](https://ata.alibaba-inc.com/articles/191477)。云端镜像里自带该配置，用户的构建命令无需二次声明。
+
+可能二：依赖声明的 peerDependence 有误，在 npm 7+ 上安装时该包不存在。见 [peer 安装失败（ERESOLVE）](#F9wDl)的修复方法。
+
+可能三：你的项目中配置了 .npmrc，其中指定了错误的源（registry），删掉这行配置，或者改为 [https://registry.npm.alibaba-inc.com/](https://registry.npm.alibaba-inc.com/) 。
+
+### 多包构建/Lerna/Worspaces
+
+目前仅支持 npm、yarn 自身的 workspaces 机制，lerna 因其版本众多暂不支持。
+
+### 如何为产品、团队配置发布规则
+
+希望全局开启依赖锁定的团队或产品，可以通过 O2 Space 小秘书联系 O2 Space 团队按团队维度批量开启依赖锁定能力。
+
+### 使用 npm 但未自动生成 package-lock.json
+
+可能是因为你的项目或本地环境中配置了 package-lock 为 false，参考  [npm config#package-lock](https://docs.npmjs.com/cli/v8/using-npm/config#package-lock)。可以使用 npm config -g set package-lock true恢复全局默认行为。
+
+### 原来使用 tnpm 本地不习惯/有点慢怎么办？
+
+使用 tnpm 的 npm 或 yarn 模式、保留锁开关即可。具体操作详见快速入门。
+
+如果你还是希望本地继续使用 tnpm，O2 Space 提供了一个小工具，来让你在本地继续使用 tnpm 的情况下，能自动生成兼容 npm 的锁文件，具体使用方法请见：[https://npm.alibaba-inc.com/package/@ali/tnpm-lock-adapter](https://npm.alibaba-inc.com/package/@ali/tnpm-lock-adapter)。
+
+另外注意升级构建镜像到  node16 以上，会在云构建时自动使用 tnpm rapid。
+
+### 锁文件出现 git 冲突怎么办
+
+npm、yarn 均支持自动修复冲突。只需要解决 package.json 的冲突后，重新执行 npm i 或者 yarn 后，将锁文件重新提交即可。
+
+### 本地从 tnpm 切换到 npm 后，依赖安装失败
+
+> Max call stackCannot read property 'package' of null 等
+
+这个问题有两个可能：
+
+1. 未配置 registry：参考  [如何配置 npm/pnpm/node-gyp 使用阿里内部镜像源](https://ata.alibaba-inc.com/articles/191477)。
+1. npm 的版本与 tnpm 安装结构发生冲突：在使用 npm 安装前，使用 rm -rf node_modules 删除已安装的依赖后，再尝试使用 npm 安装即可。
+### 本地从 npm 6 切换到 npm 8 后，依赖安装失败
+
+一般是由于 npm 8 的 peerDependence 安装行为变化而导致的失败，可以尝试按 [peer 安装失败（ERESOLVE）](#F9wDl) 的方案解决
+
+### Invalid: lock file's <pacakge-name> does not satisfy
+
+首先在本地执行 npm ci 看看是否复现问题。然后执行 npm i 重新生成锁后，看看 npm ci 是否报错。
+
+如果还报错，搜索 package.json中该提示的包名，看看是否在 dependence 与 devDependence 中还在冗余依赖，且他们版本还不一样。
+
+本地可以用 npm ci测试，不报错即代表问题解决。
+
+### No matching version found for @jest/test-utils
+
+可能因为某些包的 peer 错误声明了该依赖，或是 node_modules 中存在 tnpm 安装的结构，先删除 node_modules 后重新安装，若再失败，可以尝试按  [peer 安装失败（ERESOLVE）](#F9wDl) 的方案解决
+
+### 原来使用 tnpm resolutions，无法切换到 npm
+
+1. 可以使用 npm 8 的新特性 [overrides](https://docs.npmjs.com/cli/v8/configuring-npm/package-json/#overrides)。
+1. 可以使用 yarn，yarn 兼容 resolutions。
+1. 可以使用 [https://www.npmjs.com/package/npm-force-resolutions](https://www.npmjs.com/package/npm-force-resolutions) 更改 npm 生成的 package-lock.json，执行一次后，之后 npm 的安装都会保留 resolutions 指定的版本了（社区方案，没有 overrides 稳定，可能生成错误的锁）
+### 使用 yarn 时，提示 engine incompatible
+
+在项目目录中的 .yarnrc上加一个配置即可
+
+```
+ignore-engines true
+```
+### 使用 Webpack 时提示 Class extends value undefined is not a constructor or null
+
+> Invalid configuration object.Can't require core-js 同理。
+
+检查是不是 mini-css-extract-plugin 报出的这个错，如果是，则原因是该插件强依赖 webpack 4.12+，并在代码中直接引用了 webpack，但其未声明对 webpack 的依赖，导致在实际引用时引用的版本不确定。一旦你的项目中存在多个 webpack 版本，该插件就有机率引用到错误的 webpack 版本，可以用 npm ls webpack 检测你项目中安装的 webpack 版本。
+
+一般情况下，mini-css-extract-plugin 会引用到 node_modules/webpack 下安装的 webpack 版本，可以手动查看下该目录下 package.json 中的 version 是不是低于 4，在这种情况下通常是你依赖的子依赖提升了这个版本到根目录下。只需在你项目的依赖中声明 webpack 的版本即可解决，如：npm i -D webpack@4。此处的 4 可以用你在 npm ls 中看到的版本替代。
+
+> 这里也可能是其它包 require 了 webpack 但没有声明任何依赖，目前收集到的 case 还有：build-scripts@1.2
+
+(https://img.alicdn.com/imgextra/i4/O1CN014YqbcM1wXhJgPLmtM_!!6000000006318-2-tps-2352-504.png)
+
+
+### Cannot find target @builder/swc native module
+
+尝试删除 lockfile 后，重新生成。
+
+### EUSAGE Missing/大量 Missing
+
+如果你在生成锁时通过命令行，或者全局配置的方式，开启了 legacy-peer-deps 开关，出现这个问题时，首先尝试关闭 legacy 的情况下，重新使用 npm 最新版安装依赖，并提交更新后的锁文件到仓库中。
+
+如果失败（如必须要使用 legacy-peer-deps）请在项目的 .npmrc 中也添加这个配置，以保证全环境安装依赖的行为统一，如：
+
+```
+# .npmrc
+legacy-peer-deps=true
+```
+如果你使用了 tnpm-lock-adapter，升级至 1.5.2+ 以上的版本，在调用时会自动添加上述配置。
+
+如果使用了依赖助手，请参考 [依赖助手文档](https://space.o2.alibaba-inc.com/doc/dep-bot?version=v3) - 支持范围 - npm7+ 部分解释。
+
+## 手动配置
+
+> 建议优先使用上文快速接入中的一键 CLI 工具，下方内容主要为想要了解工具具体做了什么，以及高级用户准备。
+
+#### 方法一：直接使用 npm
+
+直接切换你项目的包管理器到 npm 9 以上即可。
+
+#### 方法二：使用 tnpm 的 npm mode
+
+在你项目的 package.json 文件中，增加如下配置，即可让 tnpm 使用 npm 进行安装。
+
+```
+{
+  "tnpm": {
+    "mode": "npm",
+    "lockfile": "enable"
+  }
+}
+```
+也可以通过 tnpm config 进行设置，避免每次手动配置 package.json 
+
+```
+tnpm config set mode=npm
+tnpm config set lockfile=enable
+```
+需要注意，使用本方法，一定要把 tnpm 更新到最新版本。
+
+另外，其内置的 npm 版本为 8，如果出现了 Peer ERESOLVE 或 404 问题，见常见问题中对应方案解决。​
+
+> 我们不推荐使用 yarn、pnpm 及 tnpm 的默认模式接入锁依赖。
+
+## 了解更多
+
+- [为什么你应该锁定前端应用的依赖版本](https://ata.alibaba-inc.com/articles/225664?msgid=5275868)
+- [底层云构建系统文档](https://builder.alibaba-inc.com/document?slug=lock-install)
+- npm：[https://docs.npmjs.com/cli/v8/commands/npm-ci](https://docs.npmjs.com/cli/v8/commands/npm-ci)
+- yarn legacy：[https://classic.yarnpkg.com/en/docs/cli/install#toc-yarn-install-frozen-lockfile](https://classic.yarnpkg.com/en/docs/cli/install#toc-yarn-install-frozen-lockfile)
+- yarn berry：[https://yarnpkg.com/cli/install#options-immutable](https://yarnpkg.com/cli/install#options-immutable)

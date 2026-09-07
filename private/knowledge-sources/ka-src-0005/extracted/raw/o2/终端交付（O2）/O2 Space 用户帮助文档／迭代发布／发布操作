@@ -1,0 +1,157 @@
+本文将介绍如何在 O2 Space 平台中进行迭代发布操作。
+
+
+
+## 发布的定义
+
+发布是指将代码构建后的产物部署到特定环境的操作。O2 Space 平台通过自动化发布流，将代码合并、资源检查、构建、资源部署等步骤串联到一起，为用户提供一键式发布体验。
+
+
+
+## 发布操作流程
+
+1. 进入迭代详情页。迭代详情页入口可通过迭代列表进入，如下图所示
+(https://img.alicdn.com/imgextra/i4/O1CN01OWJFxg1rvRlBGbVxn_!!6000000005693-2-tps-2070-1508.png)
+
+
+(https://img.alicdn.com/imgextra/i1/O1CN01Z3hEQ829AQBgPcNCt_!!6000000008027-2-tps-2000-936.png)
+
+
+
+
+1. 若您的迭代是新建的，集成区里可能没有变更，此时请点击 “迭代集成区” 右侧按钮 “添加变更”（上图位置 7 所在区域），将变更添加到集成区内。
+
+
+(https://img.alicdn.com/imgextra/i1/O1CN01BpR4pE24rPGpEYceG_!!6000000007444-2-tps-1208-796.png)
+
+
+(https://img.alicdn.com/imgextra/i2/O1CN01zj7mat1K1gDIZwmUJ_!!6000000001104-2-tps-1504-1054.png)
+
+
+### 非线上环境发布
+
+1. 点击 “部署” 按钮（上面迭代详情页图 9 所示位置），即可触发日常发布。
+1. 查看发布详情（迭代发布完成后，平台会自动打开发布详情的抽屉页），或这通过点击 “发布流水线” 节点（上面迭代详情页图 5 所示位置）等操作打开。
+(https://img.alicdn.com/imgextra/i4/O1CN01xNmpK01fYkkGUQHga_!!6000000004019-2-tps-2230-1732.png)
+
+
+
+
+在经过一定时间完成发布后，发布卡片中会展示 成功 的状态，同时可以再次点击 立即发布 按钮进行再次发布。
+
+
+
+### 线上环境发布
+
+
+
+在完成日常发布之后，进入线上环境发布环节，以当前迭代为例，可以在线上卡口中看到未通过的检查项
+
+
+
+(https://img.alicdn.com/imgextra/i3/O1CN01KXFykR1zIzRIc68kU_!!6000000006692-2-tps-3366-596.png)
+
+
+
+
+如 代码评审，这里可以同样找到 迭代集成区 进行操作代码评审（下图位置 1 所示区域）创建
+
+(https://img.alicdn.com/imgextra/i4/O1CN01sPv2nK25It2rsMJoh_!!6000000007504-2-tps-2000-402.png)
+
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/quick_start/imgwmeg56pS97.png)
+
+
+
+
+点击 迭代集成区 对应变更的代码评审创建按钮后，填写对应的评审信息完成代码评审创建。对应评审人会接收到钉钉通知，可以进行点击评审。
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/quick_start/imgGWJFVblpji.png)
+
+
+
+
+在完成评审任务后，迭代流程中日常阶段下的代码评审卡片展示状态为通过，则可以点击下一步，进入到线上发布环节。与日常发布类似，点击在线上阶段中，线上发布卡片中的 立即发布 进行线上环境发布，发布完成后，则完成迭代的发布。
+
+
+
+## 发布流水线
+
+流水线在 O2 Space 平台中是实现持续集成和持续部署的核心组件，它代表了一种自动化的工作流程，通过流程节点定制，实现了了从代码提交、构建、测试到部署的整个过程。其基于 O2 Space 体系底层任务调度系统，通过上层封装实现了流水线 pipeline 定制能力，支撑持续部署、持续集成等流程场景。
+
+﻿
+
+平台地址： [https://flow.o2.alibaba-inc.com](https://flow.o2.alibaba-inc.com/)﻿
+
+﻿
+
+### 服务场景
+
+目前流程引擎平台以服务 O2 Space 研发平台为主，提供几类核心使用场景。
+
+
+
+#### O2 Space 发布流程
+
+通过流程引擎定制能力，实现 O2 Space 研发平台不同仓库类型、复合应用类型等不同发布场景下的发布流程。
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/gx4cob/imgxDFff2Wog4.png)
+
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/gx4cob/imgXpUNeLHsmS.png)
+
+
+
+
+#### 集成验证
+
+当变更加入迭代集成区、集成区内变更对应分支发生代码 push 时，均会触发单个变更分支的验证过程。 
+
+
+
+(https://img.alicdn.com/imgextra/i4/O1CN01xx4EQt1PJ9OzzNwRB_!!6000000001819-2-tps-2126-710.png)
+
+
+
+
+(https://img.alicdn.com/imgextra/i1/O1CN01Eks0Wb24O5vEM0WiU_!!6000000007380-2-tps-2118-722.png)
+﻿
+
+﻿
+
+
+
+## 云构建服务
+
+云构建服务核心将原有的代码本地编译构建过程，通过云上统一构建、构建器封装，实现构建效率、构建质量等方面的提升。通过输入源代码和构建配置，输出编译构建后结果。
+
+
+
+平台地址：[https://builder.alibaba-inc.com](https://builder.alibaba-inc.com/)
+
+
+
+(https://img.alicdn.com/imgextra/i3/O1CN01eoCtZO1mriScJVf57_!!6000000005008-2-tps-3638-1782.png)
+
+
+
+
+### 服务场景
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/of739i/imgQHmuYQ3Nyi.png)
+
+
+
+
+在发布流程中，通过云构建流程，基于统一的仓库 commit 对应的代码，进行统一构建，通过产出对应发布内容稳定、统一的构建结果，进行资源在不同环境中的发布。
+
+​
+

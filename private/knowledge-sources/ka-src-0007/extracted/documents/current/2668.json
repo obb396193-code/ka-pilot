@@ -1,0 +1,608 @@
+{
+  "documentId": 2668,
+  "documentName": "获取可选的浅度转化目标",
+  "documentType": 2,
+  "description": "<p>门槛标准： 1.应用下载类—— 1)账户维度，相应的 event_type 回传 &gt;=1; 或 2)应用包维度，用转化追踪联调通过相应的 event_type 2.落地页类 账户维度，相应的 event_type 回传 &gt;=1;</p><p>提示：返回列表的ocpx_action_type，即用户此种传参下可用优化目标。</p>",
+  "summary": "",
+  "remark": "",
+  "content": "获取可选的浅度转化目标\n/rest/openapi/gw/dsp/v1/ocpx/ocpxTypes\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/ocpx/ocpxTypes' \\\n--header 'Content-Type: application/json;charset=UTF-8' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n    \"advertiser_id\": 20000654,\n    \"scene_category\": 0,\n    \"campaign_type\": 2,\n    \"scene_ids\": [\n        6\n    ],\n    \"app_id\": 0,\n    \"traceutil_type\": 0\n}'\n\n{\n    \"code\": 0,\n    \"data\": {\n        \"ocpx_types\": [\n            {\n                \"name\": \"行为数\",\n                \"ocpx_action_type\": 2\n            },\n            {\n                \"name\": \"激活\",\n                \"ocpx_action_type\": 180\n            },\n            {\n                \"name\": \"付费\",\n                \"ocpx_action_type\": 190\n            },\n            {\n                \"name\": \"首日ROI（24h）\",\n                \"ocpx_action_type\": 191\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"1efffed1b47c428cb6bfd322613c8b23\"\n}\nim_message_mount  Boolean  <p>是否挂载私信收集组件</p>\nscene_category  Integer  场景分类\ncampaign_type  Integer  计划类型\nscene_ids  Integer[]  资源位\ntraceutil_type  Integer  追踪工具类型\napp_id  Long  应用id\nhosting_scene  Integer  追踪工具类型\nadvertiser_id  Long  广告主id\nbid_type  Integer  出价类型\nsite_id  Long  建站id\nunit_material_type  Integer  <p>单元组件类型</p>\ncode  Integer  code\nmessage  String  message\ndata  OcpxActionTypeStructForGatewayView  优化目标列表视图\nocpx_types  OcpxActionTypeStructForGateway[]  优化目标列表\nocpx_action_type  Integer  优化目标的id数字\nname  String  ocpxActionType的中文描述\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1725448104331
+    }
+  ],
+  "apiId": 323,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/ocpx/ocpxTypes",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/ocpx/ocpxTypes' \\\n--header 'Content-Type: application/json;charset=UTF-8' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n    \"advertiser_id\": 20000654,\n    \"scene_category\": 0,\n    \"campaign_type\": 2,\n    \"scene_ids\": [\n        6\n    ],\n    \"app_id\": 0,\n    \"traceutil_type\": 0\n}'\n"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"ocpx_types\": [\n            {\n                \"name\": \"行为数\",\n                \"ocpx_action_type\": 2\n            },\n            {\n                \"name\": \"激活\",\n                \"ocpx_action_type\": 180\n            },\n            {\n                \"name\": \"付费\",\n                \"ocpx_action_type\": 190\n            },\n            {\n                \"name\": \"首日ROI（24h）\",\n                \"ocpx_action_type\": 191\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"1efffed1b47c428cb6bfd322613c8b23\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 64543,
+      "paramName": "book_pay_mode",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>小说付费模式</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "按需传入 \"1\"：\"全文付费\"，\"2\"：\"全文付费+章节付费\"，\"3\"：\"免费\"",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63757,
+      "paramName": "series_pay_mode",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<pre><code>短剧付费模式</code></pre>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63758,
+      "paramName": "periodic_delivery_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<pre><code>是否稳投为稳投计划</code></pre>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63759,
+      "paramName": "plc_biz_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>快手号营销目标-线索留资-推广目标-组件类型</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63761,
+      "paramName": "schema_uri",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63762,
+      "paramName": "uri",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>api转化追踪增加参数</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63763,
+      "paramName": "live_component_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<pre><code>直播组件类型</code></pre>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63765,
+      "paramName": "ocpx_action_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61357,
+      "paramName": "im_message_mount",
+      "paramType": "Boolean",
+      "example": "",
+      "description": "<p>是否挂载私信收集组件</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16946,
+      "paramName": "scene_category",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "场景分类",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "0=普通创编、1=追踪工具、2=常规托管（智能模式）、3=搜索广告",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16947,
+      "paramName": "campaign_type",
+      "paramType": "Integer",
+      "example": "2",
+      "description": "计划类型",
+      "required": 2,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 11,
+      "note": "\t在scene_category=1即追踪工具时可不填，其他场景必填",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16948,
+      "paramName": "scene_ids",
+      "paramType": "Integer[]",
+      "example": "[1]",
+      "description": "资源位",
+      "required": 2,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 12,
+      "note": "在scene_category=1即追踪工具时可不填，其他场景必填。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16949,
+      "paramName": "traceutil_type",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "追踪工具类型",
+      "required": 2,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 13,
+      "note": "\t在scene_category=1即追踪工具时必填，其他场景不填   1=js、2=xpath、3=sdk、7=api、12=kwai attribution",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16950,
+      "paramName": "app_id",
+      "paramType": "Long",
+      "example": "12",
+      "description": "应用id",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 14,
+      "note": "追踪工具类型时不需要本参数；其他类型时，本参数会决定可拉到的优化目标列表（即会融合追踪工具联调的结果）",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16951,
+      "paramName": "hosting_scene",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "追踪工具类型",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 15,
+      "note": "当scene_category=2时本字段可用 0=常规推广、1=测书工具、2=账户预热、5=最大转化",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16952,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "20000654",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 16,
+      "note": "\t在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 18268,
+      "paramName": "bid_type",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "出价类型",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 17,
+      "note": "当scene_category=0时本字段可用 \t10=ocpm12=mcb（计划层级选择最大转化类型时）",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 24718,
+      "paramName": "site_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "建站id",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 18,
+      "note": "\t按需传入，如果是收集销售线索（campaign_type=5）这类的落地页并且使用的是魔力建站的页面，可以传入本id。此时如果页面包括了微信小程序，则可用优化目标会包括经由追踪工具的追踪小程序联调通过的小程序的目标。具体功能可见追踪工具-追踪小游戏",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59323,
+      "paramName": "unit_material_type",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>单元组件类型</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 19,
+      "note": "按需传入，1=快手小程序、2=快手小游戏、3=微信小程序；4=微信小游戏",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 16953,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "code",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16954,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "\"\"",
+      "description": "message",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16955,
+      "paramName": "data",
+      "paramType": "OcpxActionTypeStructForGatewayView",
+      "example": "",
+      "description": "优化目标列表视图",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 674,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 16945,
+          "paramName": "ocpx_types",
+          "paramType": "OcpxActionTypeStructForGateway[]",
+          "example": "",
+          "description": "优化目标列表",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 673,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 16943,
+              "paramName": "ocpx_action_type",
+              "paramType": "Integer",
+              "example": "2",
+              "description": "优化目标的id数字",
+              "required": 0,
+              "checkRule": null,
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 16944,
+              "paramName": "name",
+              "paramType": "String",
+              "example": "行为数",
+              "description": "ocpxActionType的中文描述",
+              "required": 0,
+              "checkRule": null,
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1725448104331,
+  "creator": "guojingwei05",
+  "fullContext": null
+}

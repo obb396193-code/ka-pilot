@@ -1,0 +1,12 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/65f9013a454e7505544b8b46/](https://links.alibaba-inc.com/support/conversation/65f9013a454e7505544b8b46/)
+
+作者：[@悠兔](undefined/dongji.dong)
+
+评审人：[@上坡](undefined/shangpo.zw)
+
+
+
+**原因：**其他平台上提交 CR，CR 单的状态不会同步到 O2 平台，所以显示未提交 CR
+
+**解决方案：**在 O2 平台重新提交 CR，可自动同步状态，该 CR 单会显示为“已通过”
+

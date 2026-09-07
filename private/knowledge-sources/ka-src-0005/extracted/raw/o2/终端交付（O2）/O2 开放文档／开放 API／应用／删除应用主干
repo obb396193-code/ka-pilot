@@ -1,0 +1,45 @@
+## 删除应用主干
+
+删除应用主干，支持是否删除 git 分支
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/apps/{appIdorName}/trunk/{trunkId}/remove |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appIdorName | String | true | - | 应用 ID 或应用名称 |
+| trunkId | Number | true | - | 主干的 ID |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| isDeleteBranch | Boolean | false | false | 是否删除对应 git 分支 |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| destroy | 删除的主干数量 |
+
+### Example
+
+```
+client.post(
+  `/v1.0/work/apps/{appIdorName}/trunk/{trunkId}/remove`,
+  {},
+  {},
+  {
+    SSO_TICKET,
+  }
+)
+
+{
+  "destroy": 1
+}
+
+```

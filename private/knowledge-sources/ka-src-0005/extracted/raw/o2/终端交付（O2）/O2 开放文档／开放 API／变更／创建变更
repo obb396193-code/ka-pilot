@@ -1,0 +1,58 @@
+## 创建变更
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/apps/{appIdorName}/devbranches/add |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appIdorName | String | true | - | 应用 ID 或应用名 |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| branch | String | false | - | 变更分支名 |
+| branch_type | String | false | - | 变更分支创建方式 new： 新建分支 exist：选择已有分支 |
+| trunk | String | false | master | 【branch_type 为 new 需要】变更主干 |
+| description | String | false | - | 变更原因 |
+| aone_binds | String | false | - | 关联工作项，格式为：req|1211 |
+| is_delete_branch | Number | false | 1 | 上线后删除分支 |
+| un_release | Number | false | 0 | 是否为测试变更 |
+
+### Returns
+
+A [Change](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8c5351a5qllc8tzaq) Object.
+
+### Example
+
+```
+client.post(`/api/app/{appIdorName}/devbranch/add`, {}, {
+  branch,
+  branch_type,
+  description
+}, {
+  SSO_TICKET
+})
+
+{
+  "is_delete_branch": true,
+  "aone_binds": "",
+  "aone_binds_autofinish": false,
+  "is_finished": 0,
+  "is_exist": 1,
+  "un_release": 0,
+  "commit_mode": false,
+  "emp_id": "318805",
+  "branch": "cba",
+  "description": "cba",
+  "app_id": 1,
+  "id": 21071128,
+  "gmt_modified": "2024-02-05T07:18:36.481Z",
+  "gmt_create": "2024-02-05T07:18:36.481Z"
+}
+
+```

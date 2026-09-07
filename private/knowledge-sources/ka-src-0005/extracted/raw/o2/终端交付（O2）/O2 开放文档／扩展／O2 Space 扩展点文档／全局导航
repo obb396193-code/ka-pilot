@@ -1,0 +1,27 @@
+### navigation-first-level-add
+
+整个站点维度的一级导航新增
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/gqzyho6n579xlohd/imgNALzhSwp72.png)
+
+
+#### Props
+
+| 参数名 | 类型 | 说明 |
+|-|-|-|
+| extendPrefix | string | 页面路径前缀 |
+
+#### Config Demo
+
+```
+[
+  {
+    "name": "站点", // 导航名
+    "path": "site", // 导航路径
+    "replace_child_side_nav": true // 进入子路由后不再展示左侧导航
+  }
+]
+
+```
+
+

@@ -1,0 +1,399 @@
+{
+  "documentId": 2272,
+  "documentName": "本地视频上传接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 本地视频上传接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photo/upload](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photo/upload)\n\n请求方式：POST\n\n数据格式：FORM\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | <p>广告主id</p> |  |\n| photo_tag | String[] |  | 可选 | <p>photo_tag</p> |  |\n| photo_name | String |  | 可选 | <p>photo_name</p> |  |\n| blob_store_key | String |  | 可选 | <p>blob_store_key</p> |  |\n| signature | String |  | 可选 | <p>md5</p> |  |\n| photo | File |  | 可选 | 视频file |  |\n| shieldBackwardSwitch | Boolean | true | 可选 | 上传视频后是否自动同步至快手个人主页 | false 表示屏蔽，视频不可 profile 页可见， true 表示不屏蔽。 |\n| authorId | Long | 12345 | 必填 | 原生上传至达人的快手号 |  |\n| photoCaption | String |  | 可选 | <p>视频描述</p> |  |\n| nativePlcSwitch | Boolean |  | 可选 | 挂载plc组件（建议设置为true，有机会获得更多流量曝光） | 设置为true，平台将把根据推广目标生成的PLC组件挂载至该次本地上传的视频上。 |\n| sync | Integer | 1 | 可选 | 用同步/异步方式上传视频 | 1代表同步 0代表异步，默认同步上传。 使用异步上传存在两个风险： 1、异步上传可能出现视频转码失败case。 2、如果创建物料时，视频解码失败或者解码中，生成物料会失败。 建议同步上传。 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 请求状态 | 0 代表成功 非0代表失败 |\n| message | String |  | 请求结果提示 | “OK”代表成功 |\n| data | AdDspPhotoUploadResSnack |  | 请求结果 |  |\n| &#8195;photo_id | Long |  | photoId | 视频ID（加密） |\n\n### 请求样例\n\n```js\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photo/upload' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'advertiser_id=\"16897530\"' \\\n--form 'authorId=\"2673675025\"' \\\n--form 'shieldBackwardSwitch=\"false\"' \\\n--form 'nativePlcSwitch=\"true\"' \\\n--form 'photo=@\"/Users/heran03/Downloads/a852abc6-322e-11ef-a815-0a580a26a92b.mp4\"'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"photo_id\": 123\n    }\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1719487998187
+    }
+  ],
+  "apiId": 606,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photo/upload",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "{ \"code\":0, \"message\":\"OK\", \"data\":{ \"photo_id\":123 } }",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{ \"authorId\":\"2191482285\", \"advertiser_id\":\"900015430\", \"photo\":\"/Users/mengting/Downloads/竖版视频/竖版1.mp4\", \"shieldBackwardSwitch\":true, \"photoCaption\":\"测试一下\" }"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{ \"code\":0, \"message\":\"OK\", \"data\":{ \"photo_id\":123 } }"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63156,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 60278,
+      "paramName": "photo_tag",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>photo_tag</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 60279,
+      "paramName": "photo_name",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>photo_name</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59423,
+      "paramName": "blob_store_key",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>blob_store_key</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59424,
+      "paramName": "signature",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>md5</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38522,
+      "paramName": "photo",
+      "paramType": "File",
+      "example": "",
+      "description": "视频file",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38523,
+      "paramName": "shieldBackwardSwitch",
+      "paramType": "Boolean",
+      "example": "true",
+      "description": "上传视频后是否自动同步至快手个人主页",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "false 表示屏蔽，视频不可 profile 页可见， true 表示不屏蔽。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38524,
+      "paramName": "authorId",
+      "paramType": "Long",
+      "example": "12345",
+      "description": "原生上传至达人的快手号",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41705,
+      "paramName": "photoCaption",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>视频描述</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45711,
+      "paramName": "nativePlcSwitch",
+      "paramType": "Boolean",
+      "example": "",
+      "description": "挂载plc组件（建议设置为true，有机会获得更多流量曝光）",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "设置为true，平台将把根据推广目标生成的PLC组件挂载至该次本地上传的视频上。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45098,
+      "paramName": "sync",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "用同步/异步方式上传视频",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 11,
+      "note": "1代表同步 0代表异步，默认同步上传。 使用异步上传存在两个风险： 1、异步上传可能出现视频转码失败case。 2、如果创建物料时，视频解码失败或者解码中，生成物料会失败。 建议同步上传。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 38526,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "请求状态",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "0 代表成功 非0代表失败",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38527,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "请求结果提示",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "“OK”代表成功",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38528,
+      "paramName": "data",
+      "paramType": "AdDspPhotoUploadResSnack",
+      "example": "",
+      "description": "请求结果",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2260,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 38525,
+          "paramName": "photo_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "photoId",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "视频ID（加密）",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1719487998187,
+  "creator": "heran03",
+  "fullContext": null
+}

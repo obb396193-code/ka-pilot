@@ -1,0 +1,42 @@
+{
+  "documentId": 1969,
+  "documentName": "4.6程序化创意2.0报表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 程序化创意 2.0 数据\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/report/program_creative_report\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段                         | 类型     | 描述                                                                                   |\n| ---------------------------- | -------- | -------------------------------------------------------------------------------------- |\n| advertiser_id                | long     | 广告主 ID（注：非账户快手 ID），在获取 accessToken 时返回                              |\n| start_date_min（必选）       | string   | 增量拉取过滤筛选条件，格式【yyyy-MM-dd HH:mm】目前MAPI最长支持读取近7日的数据，例如今天为0525，则最长可以读取到0518的数据      |\n| end_date_min（必选）         | string   | 增量拉取过滤筛选条件，格式【yyyy-MM-dd HH:mm】可选时间范围参见文档上方说明             |\n| campaign_ids（可选）         | long[]   | 广告计划 ID 集，过滤筛选条件，单次查询数量不超过 5000                                  |\n| unit_ids（可选）             | long[]   | 广告组 ID 集，过滤筛选条件，单次查询数量不超过 5000                                    |\n| temporal_granularity（可选） | string   | 天粒度（DAILY）／小时粒度（HOURLY），默认支持天粒度数据                                |\n| report_dims（可选）          | string[] | \"adScene\"：按广告场景；\"placementType\"：按广告范围，快手/联盟;不传/传空/传空数组：不限 |\n| page                         | int      | 请求的页码，默认为 1                                                                   |\n| page_size                    | int      | 每页行数，默认为 20，最大支持 2000                                                     |\n\n### 返回参数\n\n| 字段                                       | 类型   | 描述              |\n| ------------------------------------------ | ------ | ----------------- |\n| code                                       | int    | 返回码/错误码     |\n| message                                    | string | 返回信息/错误信息 |\n| data                                       | JSON   |                   |\n| total_count                                | int    | 数据的总行数      |\n| details                                    | JSON   | 数据明细信息      |\n| 其他信息与实时报表保持一致，如下为新增参数 |        |                   |\n| campaign_id                                | long   | 计划 id           |\n| campaign_name                              | string | 计划名称          |\n| unit_id                                    | long   | 组 id             |\n| unit_name                                  | string | 组名称            |\n| creative_id                                | long   | 创意 id           |\n| photo_url                                  | string | 视频链接          |\n| photo_id                                   | string | 视频 id           |\n| photo_md5                                   | string | 视频 md5           |\n| image_token                                | string | 封面 id           |\n| cover_url                                  | string | 封面链接          |\n| description                                | string | 作品广告语        |\n| pic_id                              | string | 图片库图片ID       |\n| pic_list     | string[] | 联盟图片（横版/竖版） | 联盟图片imageToken |\n| pic_url_list | sring[]  | 联盟图片url（横版/竖版） | 联盟图片url    |\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624451
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624451,
+  "creator": "songchenglu",
+  "fullContext": null
+}

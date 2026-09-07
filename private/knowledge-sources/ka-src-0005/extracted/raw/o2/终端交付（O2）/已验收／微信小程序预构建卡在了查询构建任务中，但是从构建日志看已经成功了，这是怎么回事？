@@ -1,0 +1,13 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/65f3afc9d19aed07f5b7df3d/](https://links.alibaba-inc.com/support/conversation/65f3afc9d19aed07f5b7df3d/)
+
+作者：[@上坡](undefined/shangpo.zw)
+
+评审人：[@时路](undefined/kangyong.ky)
+
+
+
+解决方案
+
+1. 可能是日志内容过多，导致底层日志传输超过限制后程序异常，尽可能删除掉日志重试
+2. 找到具体的答疑人员进行排查
+

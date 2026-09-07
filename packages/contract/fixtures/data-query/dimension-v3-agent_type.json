@@ -184,11 +184,99 @@
           },
           "anomaly": false,
           "agent_type": "self"
+        },
+        {
+          "key": "unknown",
+          "label": "未标注",
+          "metrics": {
+            "cost": {
+              "value": 2400.0,
+              "availability": "available"
+            },
+            "cashCost": {
+              "value": 1874.88,
+              "availability": "available"
+            },
+            "exposure": {
+              "value": 19000,
+              "availability": "available"
+            },
+            "click": {
+              "value": 800,
+              "availability": "available"
+            },
+            "conversion": {
+              "value": 52,
+              "availability": "available"
+            },
+            "realConversion": {
+              "value": 48,
+              "availability": "available"
+            },
+            "costSpace": {
+              "value": -50.88,
+              "availability": "available"
+            },
+            "wakeUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "potentialUv": {
+              "value": null,
+              "availability": "missing"
+            },
+            "ratios": {
+              "ctr": {
+                "value": 0.0421,
+                "state": "finite"
+              },
+              "cvr": {
+                "value": 0.065,
+                "state": "finite"
+              },
+              "realCpa": {
+                "value": 50.0,
+                "state": "finite"
+              },
+              "cashCpa": {
+                "value": 39.06,
+                "state": "finite"
+              },
+              "gap": {
+                "value": 0.0833,
+                "state": "finite"
+              },
+              "potentialRate": {
+                "value": null,
+                "state": "undefined"
+              },
+              "biConversionRate": {
+                "value": null,
+                "state": "undefined"
+              }
+            }
+          },
+          "assessment": {
+            "price": {
+              "value": 38.0,
+              "effectiveDate": "2026-09-01"
+            },
+            "priceSource": "history",
+            "onTarget": false,
+            "costStatus": "red",
+            "costStatusReason": "window_over",
+            "budgetUsageRate": {
+              "value": null,
+              "state": "undefined"
+            }
+          },
+          "anomaly": false,
+          "agent_type": "unknown"
         }
       ],
-      "returnedRowCount": 2,
+      "returnedRowCount": 3,
       "wholeResultTotal": {
-        "value": 2,
+        "value": 3,
         "availability": "available"
       },
       "lineage": {
@@ -234,6 +322,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "8 维之一：代理/自投（账户级聚合；agency_name 取 accounts.tags 内 agency:*；ad 级请求 → DIMENSION_UNSUPPORTED）"
+    "_note": "8 维之一：代理/自投（账户级 custom_tags；无标记 → agent_type=\"unknown\"、label「未标注」，不猜不填默认值——v1.7.9 / OS 实测大量账户无匹配）"
   }
 }

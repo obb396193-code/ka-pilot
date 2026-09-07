@@ -1,0 +1,123 @@
+## 废弃代码评审
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/iterations/{iterationId}/devbranch/{devbranchId}/cr/remove |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| iterationId | Number | true | - | 迭代 ID |
+| devbranchId | Number | true | - | 变更 ID |
+
+### Returns
+
+CodeReview 对象，详情见下方 Example
+
+### Example
+
+```
+client.post(`/v1.0/work/iterations/{iterationId}/devbranch/{devbranchId}/cr/remove`, {}, {
+}, {
+  SSO_TICKET
+})
+
+{
+  "accepted_revision": null,
+  "approve_check_result": {
+      "satisfied_check_results": [],
+      "total_check_result": "satisfied",
+      "unsatisfied_check_results": []
+  },
+  "assignee": {
+      "avatar_url": "https://work.alibaba-inc.com/photo/31880.jpg",
+      "email": null,
+      "extern_uid": "318805",
+      "id": 262506,
+      "name": "时路",
+      "state": "active",
+      "username": "kangyong.ky",
+      "web_url": "https://code.alibaba-inc.com/u/kangyong.ky"
+  },
+  "assignees": [
+      {
+          "avatar_url": "https://cn-hangzhou.oss-cdn.aliyun-inc.com/git/uploads/user/avatar/262506/https://work.alibaba-inc.com/photo/318805.jpg",
+          "email": "kangyong.ky@alibaba-inc.com",
+          "extern_uid": "318805",
+          "id": 262506,
+          "latest_approved_push_id": null,
+          "merge_request_id": 15670377,
+          "name": "时路",
+          "state": "active",
+          "status": "pending",
+          "username": "kangyong.ky",
+          "web_url": ""
+      }
+  ],
+  "attributes": [],
+  "author": {
+      "avatar_url": "https://work.alibaba-inc.com/photo/318805.jpg",
+      "email": null,
+      "extern_uid": "318805",
+      "id": 262506,
+      "name": "时路",
+      "state": "active",
+      "username": "kangyong.ky",
+      "web_url": "https://code.alibaba-inc.com/u/kangyong.ky"
+  },
+  "closedComments": 0,
+  "code_owner_mode": "NONE",
+  "comments": 0,
+  "created_at": "2024-02-05T14:45:43.000+08:00",
+  "creation_method": "O2",
+  "description": "bbb",
+  "detail_url": "https://code.alibaba-inc.com/def-work/front/codereview/15670377",
+  "diff_too_large": false,
+  "downvotes": 0,
+  "email_groups": [],
+  "id": 15670377,
+  "iid": 656128,
+  "is_support_change_state": false,
+  "is_support_close": true,
+  "is_support_merge": false,
+  "is_support_modify": true,
+  "is_support_reassign": false,
+  "is_support_reopen": true,
+  "is_support_workitem": false,
+  "is_use_push_block": true,
+  "labels": [],
+  "local_branch": null,
+  "mergeStatus": "can_be_merged",
+  "merge_base": "601cebd35db53ccec249f515f772b38c803533b6",
+  "merge_error": "",
+  "merge_params": null,
+  "merge_when_build_succeeds": false,
+  "merged_revision": null,
+  "milestone": null,
+  "patch_commands": null,
+  "project_id": 425441,
+  "project_path": "def-work/front",
+  "ref_old_oid": null,
+  "source_branch": "aaa",
+  "source_branch_exist": true,
+  "source_project_id": 425441,
+  "source_type": "BRANCH",
+  "ssh_url_to_repo": "git@gitlab.alibaba-inc.com:def-work/front.git",
+  "state": "closed",
+  "subscribers": [],
+  "support_merge_ff_only": true,
+  "target_branch": "master",
+  "target_branch_exist": true,
+  "target_project_id": 425441,
+  "target_type": "BRANCH",
+  "title": "aaa",
+  "updated_at": "2024-02-05T14:55:46.000+08:00",
+  "upvotes": 0,
+  "warning_message": null,
+  "web_url": "https://code.alibaba-inc.com/def-work/front",
+  "work_in_progress": false
+}
+
+```

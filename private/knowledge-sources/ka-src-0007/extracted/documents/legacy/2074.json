@@ -1,0 +1,42 @@
+{
+  "documentId": 2074,
+  "documentName": "商品库类目树查询接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取商品库类目树\n\n请求接口：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/category/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/category/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段名称|字段类型|字段描述|\n|--|--|--|\n|advertiser_id|Long|广告主账号ID|\n|library_id|Long|商品库ID|\n\n### 返回参数\n\n|字段名称|字段类型|字段描述|\n|--|--|--|\n|code|Integer|返回结果状态码|\n|message|String|返回结果状态信息|\n|data|CategoryListViewData|商品库类目数据|\n|&#8195;details|CategoryListView[]|类目信息列表|\n|&#8195;&#8195;value|long|类目ID|\n|&#8195;&#8195;label|string|类目名称|\n|&#8195;&#8195;children|CategoryListView[]|子类目信息|\n\n### 请求样例\n\n```\n{\n    \"advertiser_id\": xxxxx,\n    \"library_id\": xxxxxx\n}\n```\n\n### 返回样例\n\n```\n{\n  \"code\": 0,\n  \"data\": {\n    \"details\": [\n      {\n        \"value\": 21,\n        \"label\": \"居家日用\",\n        \"children\": [\n          {\n            \"value\": 50012514,\n            \"label\": \"防护用品\",\n            \"children\": [\n              {\n                \"value\": 50003458,\n                \"label\": \"口罩\",\n                \"children\": null\n              }\n            ]\n          }\n        ]\n      }\n    ]\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"EPGAgIDQhpmOrAEYrQIg3tbSm8owKOyamOsP\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625211
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625211,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

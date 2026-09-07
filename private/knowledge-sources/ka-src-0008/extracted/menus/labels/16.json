@@ -1,0 +1,290 @@
+{
+  "primary_doc_list": [
+    {
+      "can_delete": false,
+      "child_docs": [],
+      "doc_id": "1726724859668494",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 0,
+      "title": "产品库管理"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710576532492",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "DPA投放相关接口"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710577566735",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/meta/get/",
+          "status": 4,
+          "title": "获取商品库元信息"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710578078732",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/detail/get/",
+          "status": 4,
+          "title": "获取商品列表"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710578614272",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/product/detail/get/",
+          "status": 4,
+          "title": "获取商品详情"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1779430442685440",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/clue_product/list/",
+          "status": 0,
+          "title": "获取升级版商品列表"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1779436000953415",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/clue_product/detail/",
+          "status": 0,
+          "title": "获取升级版商品详情"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710579122176",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/assets/list/",
+          "status": 4,
+          "title": "获取投放条件列表（通用版）"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710579664911",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/assets/detail/read/",
+          "status": 4,
+          "title": "获取投放条件详情（通用版）"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1788119750912003",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/asset_v2/list/",
+          "status": 4,
+          "title": "获取商品投放条件列表（线索版）"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710580168716",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/category/get/",
+          "status": 4,
+          "title": "获取DPA分类"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710580712463",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/dict/get/",
+          "status": 0,
+          "title": "获取DPA词包"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710581781519",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/template/get/",
+          "status": 4,
+          "title": "获取DPA私有模板"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710582303744",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/video/get/",
+          "status": 4,
+          "title": "获取 DPA 商品库视频模板"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1726081566816271",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/product/update/",
+          "status": 0,
+          "title": "创建DPA商品（已有商品id）/修改DPA商品"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1726081113859075",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/product/create/",
+          "status": 4,
+          "title": "创建DPA商品（无商品id）"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1726637930114048",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/product_status/batch_update/",
+          "status": 4,
+          "title": "批量修改DPA商品状态"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1726629070419968",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710575989772",
+          "parent_ids": [
+            "1696710575989772"
+          ],
+          "path": "/open_api/2/dpa/product/delete/",
+          "status": 4,
+          "title": "删除通用版商品"
+        }
+      ],
+      "doc_id": "1696710575989772",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "商品管理"
+    }
+  ]
+}

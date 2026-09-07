@@ -52,7 +52,7 @@ export function DailyReportView() {
           <SelectTrigger size="sm" className="w-32" aria-label="角色"><SelectValue /></SelectTrigger>
           <SelectContent>{(Object.keys(dailyRoleLabel) as DailyReport["role"][]).map((key) => <SelectItem key={key} value={key}>{dailyRoleLabel[key]}</SelectItem>)}</SelectContent>
         </Select>
-        {role !== report.role ? <StatusChip tone="muted">fixture 为 {dailyRoleLabel[report.role]} 视角</StatusChip> : null}
+        {role !== report.role ? <StatusChip tone="muted">示例为 {dailyRoleLabel[report.role]} 视角</StatusChip> : null}
         <div className="ml-auto flex gap-2">
           <Button size="sm" variant="outline" disabled={!report.actions.exportPdf} onClick={() => toast("已排队导出 PDF", { description: "排队后完成（签名链接有效期内下载）" })}><IconFileTypePdf />导出 PDF</Button>
           <Button size="sm" disabled={!report.actions.pushDingtalk} onClick={() => toast.success("已推送到钉钉群", { description: "发到日报订阅的目标群" })}><IconBrandDingtalk />一键发钉钉</Button>

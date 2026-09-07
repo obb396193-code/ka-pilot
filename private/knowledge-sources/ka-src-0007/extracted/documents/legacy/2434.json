@@ -1,0 +1,58 @@
+{
+  "documentId": 2434,
+  "documentName": "获取创意审核详情接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取创意审核详情接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/creative/element/reviewDetails](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/creative/element/reviewDetails1)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | accountId |  |\n| ids | Long[] | [1,2,3] | 必填 | 自定义创意时为创意ID 程序化创意时为组ID,一次最多支持20个 |  |\n| creative_mold | Integer | 1 | 必填 | 创意类型 | 1 自定义创意 2程序化创意 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 状态码 |  |\n| message | String | \"OK\" | 描述信息 |  |\n| data | CreativeAuditDetailViewSnake868[] |  | 审核详情 |  |\n| &#8195;community_review_status | Integer |  | 内容审核状态 0未送审 1审核中 2审核通过 3审核拒绝 5部分审核通过 |  |\n| &#8195;community_review_detail | String |  | 内容审核拒绝理由 |  |\n| &#8195;review_status | Integer |  | 广告审核状态 0未送审 1审核中 2审核通过 3审核拒绝 5部分审核通过 |  |\n| &#8195;review_detail | String |  | 广告审核拒绝理由|  |\n| &#8195;review_reason | ElementReasonViewSnake[] |  | 广告审核拒绝详情 |  |\n| &#8195;&#8195;id | Integer |  | 视频ID或者创意ID | 视频ID或者创意ID |\n| &#8195;&#8195;type | Integer |  | 审核元素 1视频 2封面 3广告语 4图片 6创意 7图集 | 审核元素 1视频 2封面 3广告语 4图片 6创意 7图集 |\n| &#8195;&#8195;negative_type | Integer |  | 限流类型 1低质 2降级 3负向 4封面没过 | 限流类型 1低质 2降级 3负向 4封面没过 |\n| &#8195;&#8195;reason_and_modify | ReasonAndModifySnake[] |  | 审核拒绝/限流原因和建议 | 审核拒绝/限流原因和建议 |\n| &#8195;&#8195;&#8195;reason | String |  | 审核拒绝原因 |  |\n| &#8195;&#8195;&#8195;modify | String[] |  | 修改建议 |  |\n| &#8195;limiting_reason | ElementReasonViewSnake[] |  | 限流详情 |  |\n| &#8195;&#8195;id | Integer |  | 视频ID或者创意ID | 视频ID或者创意ID |\n| &#8195;&#8195;type | Integer |  | 审核元素 1视频 2封面 3广告语 4图片 6创意 7图集 | 审核元素 1视频 2封面 3广告语 4图片 6创意 7图集 |\n| &#8195;&#8195;negative_type | Integer |  | 限流类型 1低质 2降级 3负向 4封面没过 | 限流类型 1低质 2降级 3负向 4封面没过 |\n| &#8195;&#8195;reason_and_modify | ReasonAndModifySnake[] |  | 审核拒绝/限流原因和建议 | 审核拒绝/限流原因和建议 |\n| &#8195;&#8195;&#8195;reason | String |  | 审核拒绝原因 |  |\n| &#8195;&#8195;&#8195;modify | String[] |  | 修改建议 |  |\n| &#8195;adv_creative_community_review_detail | CreativeCommunityReasonViewSnake775[] |  | 程序化创意内容审核拒绝详情 |  |\n| &#8195;&#8195;id | Long |  | 创意ID |  |\n| &#8195;&#8195;photo_id | Long |  | 视频ID |  |\n| &#8195;&#8195;cover_id | Long |  | 封面ID |  |\n| &#8195;&#8195;cover_url | String |  | 封面url |  |\n| &#8195;&#8195;caption | String |  | 视频标题 |  |\n| &#8195;&#8195;community_review_detail | String |  | 审核拒绝理由 |  |\n| &#8195;custom_creative_community_review_detail | CreativeCommunityReasonViewSnake775 |  | 自定义创意内容审核拒绝详情 |  |\n| &#8195;&#8195;id | Long |  | 创意ID |  |\n| &#8195;&#8195;photo_id | Long |  | 视频ID |  |\n| &#8195;&#8195;cover_id | Long |  | 封面ID |  |\n| &#8195;&#8195;cover_url | String |  | 封面url |  |\n| &#8195;&#8195;caption | String |  | 视频标题 |  |\n| &#8195;&#8195;community_review_detail | String |  | 审核拒绝理由 |  |\n| &#8195;id | Long |  | 程序化创意组id，自定义创意创意id |  |\n\n### 请求样例\n\n```\n{\n  \"advertiser_id\": 7869843,\n  \"creative_mold\": 2,\n  \"ids\": [\n    3342111545,\n    3342064994\n  ]\n}\n```\n\n### 返回样例\n\n```\n{\n  \"code\": 0,\n  \"data\": [\n    {\n      \"review_reason\": [\n        {\n          \"negative_type\": 0,\n          \"reason_and_modify\": [\n            {\n              \"modify\": null,\n              \"reason\": \"您提交的广告语，涉及错别字、语意不明、无意义符号或表义不明，请您修改后重新提交。\"\n            }\n          ],\n          \"id\": \"e369853df766fa44e1ed0ff613f563bd\",\n          \"type\": 3\n        }\n      ],\n      \"adv_creative_community_review_detail\": null,\n      \"limiting_reason\": [],\n      \"community_review_status\": 0,\n      \"id\": 3342064994,\n      \"review_status\": 3\n    },\n    {\n      \"review_reason\": null,\n      \"adv_creative_community_review_detail\": null,\n      \"limiting_reason\": [],\n      \"community_review_status\": 2,\n      \"id\": 3342111545,\n      \"review_status\": 2\n    }\n  ],\n  \"message\": \"OK\",\n  \"request_id\": \"ELiAgIDgnISaChikEiCSiv_3wTEo8aGIuA4=\"\n}\n",
+  "url": "",
+  "version": "0.0.3",
+  "versionList": [
+    {
+      "version": "0.0.3",
+      "createTime": 1701327301575
+    },
+    {
+      "version": "0.0.2",
+      "createTime": 1701264042750
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1701327301575,
+  "creator": "qihaichao",
+  "fullContext": null
+}

@@ -1,0 +1,330 @@
+{
+  "documentId": 2650,
+  "documentName": "魔力建站落地页组更新接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095823821
+    }
+  ],
+  "apiId": 119,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/group/update",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 9,
+  "bizName": "魔力建站",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'http://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/group/create' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  --header 'Content-Type: application/json' \\\n--data-raw {\n  \"advertiser_id\": 123456,\n  \"group_id\":\"123\"\n  \"group_name\": \"测试11-1-100013\",\n  \"close_anchor\": 1,\n  \"page_info_list\": [\n    {\n      \"page_id\": \"123\"\n    },\n    {\n      \"page_id\": \"234\"\n    }\n  ]\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"message\": \"OK\",\n  \"request_id\": \"d16c5c13738b427788c6df9e1a01db18\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 4837,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "123123",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4838,
+      "paramName": "group_id",
+      "paramType": "String",
+      "example": "123123132",
+      "description": "落地页组id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4839,
+      "paramName": "group_name",
+      "paramType": "String",
+      "example": "我的落地页组",
+      "description": "落地页组名称",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4840,
+      "paramName": "page_info_list",
+      "paramType": "ThirdPageInfo[]",
+      "example": "",
+      "description": "第三方落地页组信息",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 276,
+      "sort": 4,
+      "note": "",
+      "children": [
+        {
+          "paramId": 4820,
+          "paramName": "page_id",
+          "paramType": "String",
+          "example": "283033147526692864",
+          "description": "<p>魔力建站落地页ID：当group_source= 1 必填</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "\t查询落地页列表接口获取，组内限制落地页必须含有相同转化组件类型",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 4821,
+          "paramName": "page_name",
+          "paramType": "String",
+          "example": "我的落地页",
+          "description": "<p><br>落地页名称：当group_source= 2或空必填</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 4822,
+          "paramName": "url",
+          "paramType": "String",
+          "example": "https://www.kuaishou.com/",
+          "description": "<p><br>落地页链接：当group_source= 2或空必填</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25415,
+      "paramName": "close_anchor",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "是否关闭表单锚点 1 保持不变 2 关闭\t",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 4841,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "code",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4842,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "成功",
+      "description": "成功/失败",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4843,
+      "paramName": "data",
+      "paramType": "GroupIdData",
+      "example": "",
+      "description": "落地页组id",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 277,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 4823,
+          "paramName": "group_id",
+          "paramType": "String",
+          "example": "2214030995198595",
+          "description": "魔力建站落地页组id",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095823821,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -1,0 +1,71 @@
+
+> 不清楚的地方，先@巧锋。
+
+## 查询账单
+
+查询大模型每天的使用情况，**数据时效: T+1**
+
+### 接口信息
+
+接口地址：/aigc/{version}/queryBills
+
+> version为接口版本，目前只有：`v1`
+
+请求方式：POST
+
+### 请求header
+
+| **key** | **是否必填** | **描述** |
+| --- | --- | --- |
+| X-AK | 是 | 访问密钥（在API授权中由ideaLAB平台统一分配，请勿外泄） |
+
+### 请求body
+
+| **参数名** | **类型** | **是否必填** | **默认值** | **描述** |
+| --- | --- | --- | --- | --- |
+| model | String | 否 | 无 | 模型名称，不填表示查询所有模型，[枚举值参考](https://aliyuque.antfin.com/egs1r6/re190t/ma5i4hvvairpzf69#Frl0y) |
+| dateStart | String | 否 | 无 | 查询开始日期，闭区间，格式：2023-06-06 |
+| dateEnd | String | 否 | 无 | 查询结束日期，闭区间，格式：2023-06-06 |
+| includeSubBusinessCode | boolean | 否 | false | 是否包含子ak，如果开启并且是主ak，会合并此主ak+子ak的结果 |
+
+### 响应body
+
+注意，**消耗金额单位为人民币**
+
+​  
+
+
+请求示例
+
+数据示例：
+
+## 查询余额/剩余调用次数
+
+**数据时效: 实时**
+
+### 接口信息
+
+接口地址：/aigc/{version}/queryBalance
+
+> version为接口版本，目前只有：`v1`
+
+请求方式：POST
+
+### 请求header
+
+| **key** | **是否必填** | **描述** |
+| --- | --- | --- |
+| X-AK | 是 | 访问密钥（在API授权中由ideaLAB平台统一分配，请勿外泄） |
+
+### 请求body
+
+* businessCode 和 sceneCode去哪找？
+
+* <https://pre-idealab.alibaba-inc.com/businessInfo>
+* 示范
+
+### 响应body
+
+* balance： 余额，单位：元，RMB
+* remainingCount：剩余调用次数
+

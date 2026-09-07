@@ -1,0 +1,65 @@
+## 新建
+
+### 账号及域名
+
+- 准备 AK、SK 子账号，开通 ER 服务。
+- 准备相应服务的域名
+- CDN 的域名，子账号需授权 CDN 和 DCDN 的所有权限
+- DCDN 的域名，子账号需授权 DCDN 的所有权限
+- 了解当前域名下的流量及 ER 状况
+- 域名下无ER，但存在访问流量，无法直接接入 O2 Space，需联系管理员处理
+- 域名下无ER，且无访问流量，可直接创建
+- 域名下已有 ER，O2 Space 将接管已有 ER 程序，并后续仅能在 O2 Space 发布。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/wacpev/imgbpd80jdk4s.png)
+
+
+- ER 服务开通：[https://common-buy.aliyun.com/?commodityCode=dcdn_er_public_cn#/buy](https://common-buy.aliyun.com/?commodityCode=dcdn_er_public_cn#/buy)
+- cdn 服务开通：[https://cdn.console.aliyun.com/overview](https://cdn.console.aliyun.com/overview)
+- dcdn 服务开通：[https://dcdn.console.aliyun.com/?accounttraceid=ed0107ff334b40e0977a3db1661f09c8atxt#/overview](https://dcdn.console.aliyun.com/?accounttraceid=ed0107ff334b40e0977a3db1661f09c8atxt#/overview)
+### 新建应用
+
+- 一个 O2 Space 应用可接入多个通过域名校验的域名
+- 一个应用下仅支持存在一个 ER 程序，可以有多个代码版本
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/wacpev/imgo9DeRZDYSU.png)
+
+
+可选择空模版或者官方脚手架 Edge Routine 进行仓库初始化。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/wacpev/imgCHQSWAjhaF.png)
+
+
+填写 AK、SK 后，可下拉选择域名填写，CDN 域名和 DCND 域名至少填写一项并通过校验才能进行后续操作。
+
+### 接管已有 ER
+
+- 使用已有子域
+- 使用已有程序ID、程序配置、灰度环境配置
+- 接管 ER 目前不会将线上版本的已有代码自动同步到 O2 Space 仓库，发布前用户请自行检查并同步需要发布的代码。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/wacpev/imgVPBiG71ZwV.png)
+
+
+当检测到域名下已有 ER 程序时，界面将弹出 O2 Space 接管 ER 确认框，拒接将无法创建应用，同意后，O2 Space 将接管此 ER，并复用相关信息，后续仅能在 O2 Space 上进行发布操作，如检测到异常，O2 Space 将不再提供服务。
+
+### 创建成功
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/wacpev/imgUUSUoQZsZL.png)
+
+
+### 预发域名接入
+
+如下图所示，首先，进入1 ER研发类型，然后 2 点击进入域名管理，随后点击 3 添加预发域名，最后 4 会弹出窗口，预发域名会按规则pre-${线上已接入域名}进行生成，不支持用户自定义。（由于涉及域名申请法务合规判定、ICP备案，域名证书申请等人工介入流程，平台侧无法自动化，所以预发域名申请需要有前置对应的线上合规域名后才能按规则生成预发域名。）
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/wacpev/imgPzZvCZy2th.png)
+
+
+申请成功后，会进入申请流程界面，按流程引导进行处理。申请结束后，如有问题，联系O2研发小蜜进行咨询。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/wacpev/imgA3XFfE1xdi.png)
+
+
+### beta域名接入
+
+白名单模式，若需申请，联系研发小蜜处理。beta域名非必要发布，无需求可忽略，后续平台交互会进行beta环境隐藏，当前主要服务大促和部分业务重要活动进行ER相关SPE流量环境验证使用。
+

@@ -1,0 +1,42 @@
+{
+  "documentId": 1946,
+  "documentName": "5.1.5查询图片关联创意接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 查询图片关联创意接口\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/pic/relate/creatives\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型   | 是否必填 | 说明       | 备注                              |\n| ------------- | ------ | -------- | ---------- | --------------------------------- |\n| advertiser_id | long   | 必填     | 广告主 ID  | 在获取 access_token 的时候返回    |\n| image_token   | String | 必填     | 图片 token | 图片 token,上传或查询图片列表获得 |\n\n### 返回参数\n\n| 字段           | 类型     | 说明         | 备注 |\n| -------------- | -------- | ------------ | ---- |\n| code           | int      | 返回码       |      |\n| message        | string   | 返回信息     |      |\n| data           | struct   | JSON 返回值  |      |\n| creative_count | int      | 绑定创意个数 |      |\n| image_token    | string  | 图片 token   |      |\n| creatives      | struct[] | 创意         |      |\n| creative_id    | long      | 创意 id      |      |\n| creative_name  | string      | 创意名称     |      |\n\n### 请求样例\n\n```\ncurl --location --request GET 'https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/pic/relate/creatives' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 20000800,\n    \"image_token\": \"[REDACTED_SECRET_EXAMPLE]\"\n}'\n```\n\n### 返回样例\n\n```\n{\n   \"code\": 0,\n   \"message\": \"OK\",\n   \"data\": {\n       \"related_creatives\": [\n           {\n               \"creatives\": [\n                   {\n                       \"creative_id\": 81782272,\n                       \"creative_name\": \"测试创意v11\"\n                   },\n                   {\n                       \"creative_id\": 81781809,\n                       \"creative_name\": \"market api 创建创意v2\"\n                   }\n               ],\n               \"creative_count\": 2,\n               \"image_token\": \"[REDACTED_SECRET_EXAMPLE]\"\n           }\n       ]\n   },\n   \"request_id\": \"beeed88b64364ee7bdf75904a00adfb0\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1718107592492
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1718107592492,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

@@ -1,0 +1,58 @@
+{
+  "documentId": 2232,
+  "documentName": "快手号授权接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 快手号授权接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/auth/save](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/auth/save1)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| valid_type | String |  | 可选 | 授权类型，1固定时间，2不限时间。蓝V和普通快手号授权必填 |  |\n| valid_start_time | Long |  | 可选 | 授权开始时间，毫秒级时间戳 蓝V和普通快手号授权授权类型为固定时间时必填,授权结束时间和开始时间需要超过3天|  |\n| valid_end_time | Long |  | 可选 | 授权结束时间，毫秒级时间戳 蓝V和普通快手号授权授权类型为固定时间时必填,授权结束时间和开始时间需要超过3天|  |\n| kol_user_type | Integer |  | 可选 | 1普通快手号，2蓝V 5聚星直播达人，备注：不填默认蓝v |  |\n| advertiser_id | Long |  | 必填 | 广告主ID |  |\n| batch_user_ids | Long[] |  | 可选 | 批量快手号id（纯数字），与batch_kwai_ids个数相加一次最多添加10个。普通快手号和蓝V授权时batch_user_ids、batch_kwai_ids不能全为空|  |\n| ad_social_order_ids | String[] |  | 可选 | 批量聚星订单，一次最多添加10个。 聚星直播达人授权时填写 |  |\n| batch_kwai_ids | String[] |  | 可选 | 批量自定义快手号（首字母开头非纯数字），与batch_user_ids个数相加一次最多添加10个。普通快手号和蓝V授权时batch_user_ids、batch_kwai_ids不能全为空 |  |\n| sync_bind_type | Integer |  | 可选 | 1-蓝v授权时同步授权矩阵子号 |  |\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 状态码 |  |\n| message | String |  | 错误信息 |  |\n| data | KwaiUserAuthorizeResultSnake[] |  | 批量授权结果 |  |\n| &#8195;auth_id | Long |  | 授权成功后的唯一id，授权失败时为空 |  |\n| &#8195;user_id | Long |  | 授权对应的的快手号id |  |\n| &#8195;message | String |  | 错误信息 |  |\n| &#8195;ad_social_order_id | String |  | 聚星订单ID|  |\n| &#8195;kwai_id | String |  | 当请求参数传递batch_kwai_ids时，该字段返回授权成功自定义快手号，此时注意保存user_id数值，其他接口当前仅支持传递user_id|  |\n\n### 请求样例\n\n```js\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/auth/save' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": xxx,\n    \"kol_user_type\": 1,\n    \"valid_type\": 2,\n    \"batch_user_ids\": [\n        111,222\n    ]\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"auth_id\": null,\n            \"user_id\": 111,\n            \"message\": \"用户111已存在蓝V服务号授权\"\n        },\n        {\n            \"auth_id\": 3946137070903615,\n            \"user_id\": 222,\n            \"message\": null\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"ELiAgICQhaayChjEDiCg2o7-kTEo3Ovq3Aw=\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1718109674198
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1701689918337
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1718109674198,
+  "creator": "haoshengwei",
+  "fullContext": null
+}

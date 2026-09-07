@@ -1,0 +1,90 @@
+
+
+**ideaLAB文档中心已全部迁移至钉钉文档，请移步至钉钉文档：**[**https://alidocs.dingtalk.com/i/spaces/nb9XJDJrn0KBLGyA/overview**](https://alidocs.dingtalk.com/i/spaces/nb9XJDJrn0KBLGyA/overview)
+
+  
+
+
+## 一、概述
+
+使用AI Studio开发运维机器人用于链路排障。以下是具体的开发步骤和指南。
+
+## 二、事前准备
+
+### 1. 构建思路
+
+* 智能体定义，基于OpenAI的Swarm智能体框架
+
+* Routines = 指令 + 工具
+* Handoffs = 多智能体协作
+
+* Routines组成
+
+* 指令:工作守则(提示词)
+* 工具:工具清单(知识库、工具、工作流)
+
+### 2. 前期规划
+
+1. 确定目标
+
+* 明确运维场景
+* 确定所需数据
+* 定义预期结果
+
+2. 工具准备，[注册为AI Studio的工具](https://aliyuque.antfin.com/aiplus/aistudio/cskrriyhg6867zqk#u1QCx)（支持HTTP/HSF），此步骤最好研发支持。
+
+* 梳理所需原始数据
+* 准备查询接口
+* 注册为AI Studio工具/工作流
+
+3. 知识库准备(可选)，[上传AI Studio 知识库](https://aliyuque.antfin.com/aiplus/aistudio/cyev4ggl9vd0z0yg)
+
+* 收集相关文档
+* 整理确定性语料
+
+## 三、具体搭建步骤
+
+### **1、**创建智能助手
+
+在AI Studio中新建智能助手
+
+### **2、**配置提示词
+
+### **3、工具配置**
+
+* 添加准备好的自定义工具
+* 完成工具关联
+
+### **4、测试调试**
+
+* 进行功能测试
+* 优化配置
+
+### **5. 发布部署**
+
+* 选择发布渠道(推荐钉钉)[阿里钉个人助理](https://aliyuque.antfin.com/aiplus/aistudio/th9yddh07g1igthi)
+* 完成发布配置
+
+## 四、最佳实践建议
+
+1. 提示词结构清晰+指令完备性:
+
+* 智能体基本职责清晰说明
+* 意图识别的准确性，意图枚举越明确，越全，模型差错概率越小
+* 工具的关联关系，工具的名称、描述及指令关联关系越完善越清晰，效果越好
+
+2. 数据友好性:
+
+* 给到模型的参考数据越友好，效果越喜人
+
+* 接口返回数据相对复杂的情况下，最好结构化预处理一遍
+* 知识库的文档数据结构化程度越高，效果越好
+
+3. 持续优化:
+
+* 收集线上badcase、用户反馈反复调优
+* 迭代完善功能
+
+  
+
+

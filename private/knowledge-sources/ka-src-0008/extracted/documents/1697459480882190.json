@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-view qz-editor-engine am-engine\" data-element=\"root\"><p data-id=\"p838747a-Rx7qf2uQ\">本章节包含两个部分：</p><ol data-id=\"o9d5df12-OaLQdC3l\"><li data-id=\"ld70c578-gyCOWtdU\">在获得Token后，获取Token背后的实际授权账户关系</li><li data-id=\"ld70c578-lMRp0XFt\">获取相应的账户id后，获取账户相应的信息（账户名称，账户类型）</li></ol><p data-id=\"p838747a-tiW0wvTo\">前置阅读推荐：【授权流程介绍】，【账户关系】</p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "账户管理"
+}

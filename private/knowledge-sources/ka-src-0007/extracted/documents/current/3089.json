@@ -1,0 +1,1011 @@
+{
+  "documentId": 3089,
+  "documentName": "AI视频推荐",
+  "documentType": 2,
+  "description": "<p>【AI视频】功能简介：AI视频是根据您视频库优质视频自动生成更多优质视频，为您提供素材供给，您可自主选择投放。</p><p>若您使用该视频，表示您理解并同意，素材推荐作为中立的技术服务平台仅提供自动化功能，您使用本功能仍需遵守国家法律法规，包括但不限于在投放前获得相关内容合法授权或行政许可，否则因使用素材推荐产生的问题，由您自行承担法律责任。</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1723100207438
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1722950941709
+    }
+  ],
+  "apiId": 1380,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/video/aiRecommend",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 64097,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主id",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64098,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>分页</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64099,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>分页大小，最大100</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64100,
+      "paramName": "dpa_product_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p><em>sDpaId</em></p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64101,
+      "paramName": "series_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p><em>短剧ID</em></p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 64102,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64103,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 64104,
+      "paramName": "data",
+      "paramType": "AdMarketVideoInfoView",
+      "example": "",
+      "description": "信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 470,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 9958,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "104",
+          "description": "视频总数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 9959,
+          "paramName": "details",
+          "paramType": "AMDetails603[]",
+          "example": "[{}]",
+          "description": "详情",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 849,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 24304,
+              "paramName": "cover_url",
+              "paramType": "String",
+              "example": "http://ali2.a.yximgs.com/upic/2021/07/08/11/unknown-0-5967be10b83044ab-3d4b358efb604372&clientCacheKey=3xtg7uijuw72f8u_v1.jpg&di=a3491bb&bp=10000",
+              "description": "视频首帧图片链接",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24305,
+              "paramName": "photo_id",
+              "paramType": "String",
+              "example": "5233464296313677649",
+              "description": "视频 ID",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24306,
+              "paramName": "photo_name",
+              "paramType": "String",
+              "example": "49396634578.mp4",
+              "description": "<p>视频名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "`默认为视频ID",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24307,
+              "paramName": "create_time",
+              "paramType": "String",
+              "example": "2021-07-08 11:54:38",
+              "description": "创建时间",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24308,
+              "paramName": "signature",
+              "paramType": "String",
+              "example": "b6529d6fdd09ce085bcb384664caae89",
+              "description": "视频MD5",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24309,
+              "paramName": "new_status",
+              "paramType": "Integer",
+              "example": "1",
+              "description": "<p>视频状态</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "0：视频库删除，1：可用状态，2：转码中，3：审核中，11：转码失败，12：审核失败，13：已屏蔽，14：视频在客户端删除",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24310,
+              "paramName": "source",
+              "paramType": "Integer",
+              "example": "0",
+              "description": "<p>视频来源</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "` 0：本地；1：开眼；2：素造；4：mapi；7：聚星视频；8：LA 素材上传；10：个人主页；11:代理商自制",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24311,
+              "paramName": "url",
+              "paramType": "String",
+              "example": "http://txmov6.a.yximgs.com/upic/2021/07/08/11/unknown-0-5967be10b83044ab-3d4b358efb604372&clientCacheKey=3xtg7uijuw72f8u_v1_b.mp4&tt=b&di=a3491bb&bp=10000",
+              "description": "视频预览链接",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24312,
+              "paramName": "authorization",
+              "paramType": "Integer",
+              "example": "[REDACTED_SECRET_EXAMPLE]",
+              "description": "授权状态`1：授权视频；2：取消授权",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24313,
+              "paramName": "duration",
+              "paramType": "Long",
+              "example": "24566",
+              "description": "<p>视频时长</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 10,
+              "note": "单位毫秒",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24314,
+              "paramName": "upload_time",
+              "paramType": "String",
+              "example": "2021-07-08 11:54:37",
+              "description": "上传时间",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 11,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24315,
+              "paramName": "photo_tag",
+              "paramType": "String[]",
+              "example": "123",
+              "description": "视频标签",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 12,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24316,
+              "paramName": "width",
+              "paramType": "Integer",
+              "example": "720",
+              "description": "视频宽度",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 13,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24317,
+              "paramName": "height",
+              "paramType": "Integer",
+              "example": "1280",
+              "description": "视频高度",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 14,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24318,
+              "paramName": "status",
+              "paramType": "Integer",
+              "example": "0",
+              "description": "视频状态`0：正常；1：删除",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 15,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 24714,
+              "paramName": "photo_wake_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "视频唤醒状态",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 17,
+              "note": "已经废弃，",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 26994,
+              "paramName": "photo_tag_identify_items",
+              "paramType": "PhotoTagIdentifyItems[]",
+              "example": "",
+              "description": "素材内容标签\t",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 1000,
+              "sort": 18,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 26991,
+                  "paramName": "dimension",
+                  "paramType": "String",
+                  "example": "产品卖点",
+                  "description": "字段描述，需要修改",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 26992,
+                  "paramName": "adAssetTagActionItems",
+                  "paramType": "AdAssetTagActionItems[]",
+                  "example": "[{}]",
+                  "description": "字段描述，需要修改",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 1001,
+                  "sort": 2,
+                  "note": "",
+                  "children": [
+                    {
+                      "paramId": 26989,
+                      "paramName": "action",
+                      "paramType": "String",
+                      "example": "删除",
+                      "description": "字段描述，需要修改",
+                      "required": 0,
+                      "checkRule": {
+                        "required": null,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 1,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 26990,
+                      "paramName": "adAssetTagInfoItemList",
+                      "paramType": "AdAssetTagInfoItemList[]",
+                      "example": "[{}]",
+                      "description": "字段描述，需要修改",
+                      "required": 0,
+                      "checkRule": {
+                        "required": null,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 1002,
+                      "sort": 2,
+                      "note": "",
+                      "children": [
+                        {
+                          "paramId": 26986,
+                          "paramName": "tagId",
+                          "paramType": "Long",
+                          "example": "4030114",
+                          "description": "字段描述，需要修改",
+                          "required": 0,
+                          "checkRule": {
+                            "required": null,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 1,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 26987,
+                          "paramName": "tagName",
+                          "paramType": "String",
+                          "example": "真人认证交友",
+                          "description": "字段描述，需要修改",
+                          "required": 0,
+                          "checkRule": {
+                            "required": null,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 2,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 26988,
+                          "paramName": "tagDetail",
+                          "paramType": "String",
+                          "example": "产品卖点，指用户是真人用户，非机器人",
+                          "description": "字段描述，需要修改",
+                          "required": 0,
+                          "checkRule": {
+                            "required": null,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 3,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        }
+                      ],
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    }
+                  ],
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44374,
+              "paramName": "photo_user_id",
+              "paramType": "Long",
+              "example": "0",
+              "description": "视频所属的UserId",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 19,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 44375,
+              "paramName": "outer_loop_native",
+              "paramType": "Integer",
+              "example": "0",
+              "description": "是否是原生视频",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 20,
+              "note": "0或2=非原生视频；1或3=原生视频。",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 50091,
+              "paramName": "atlas_pic_ids",
+              "paramType": "String[]",
+              "example": "1",
+              "description": "1",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 21,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 50092,
+              "paramName": "atlas_audio_bs_key",
+              "paramType": "String",
+              "example": "1",
+              "description": "1",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 22,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 50093,
+              "paramName": "atlas_audio_url",
+              "paramType": "String",
+              "example": "1",
+              "description": "1",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 23,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 50687,
+              "paramName": "shield_status",
+              "paramType": "Integer",
+              "example": "1",
+              "description": "<p>视频是否已同步个人主页 1否 0是</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 24,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 54257,
+              "paramName": "cursor",
+              "paramType": "Long",
+              "example": "1",
+              "description": "<p>游标值</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 25,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 57765,
+              "paramName": "photo_dup_status",
+              "paramType": "Integer",
+              "example": "1",
+              "description": "<p>素材创新度</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 26,
+              "note": "0-原创，1-重复",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 57766,
+              "paramName": "native_good_type",
+              "paramType": "Integer",
+              "example": "1",
+              "description": "<p>素材质量</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 27,
+              "note": "\t1-良好，2-优质，0,3-其他",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1723100207438,
+  "creator": "heran03",
+  "fullContext": null
+}

@@ -1,0 +1,27 @@
+1. 迁移入口位于 O2  平台应用概览页，目前以租户为维度开启。点击可跳转至迁移产品页。(https://o2-img.alistatic.com/i/i09blZ/g5GmJS6T11mZrdLJOMujK-00a3d1a2d7.png)
+
+1. 应用迁移前置条件校验，如果没通过校验可联系@孟祥瑞(夙言)@周方旭(阳介)@林冠夫(冠夫)(https://o2-img.alistatic.com/i/i09blZ/DzInVgWcwaGgSeP24xuXz-b008b9f4e7.png)
+
+	1. FC 租户
+	1. 触发器为 HTTP
+	1. 应用部署单元为 张北/南通/上海/新加坡
+	1. Runtime 为  alinode7 alinode5 custom.debian10 ginkgo-java8 custom
+	1. 容器规格为 512MB 2GB 3GB 8GB
+		1. 如果规格有问题，可以更改原应用配置(https://o2-img.alistatic.com/i/i09blZ/0UcnDRjROQkRtcjtOJF18-906e50169e.png)
+
+1. 点击下一步
+1. 平台会自动将原有 FC 函数部署到新的基座(https://o2-img.alistatic.com/i/i09blZ/dY4C2YY4k3uE1lY3Rxo1x-b455da8fc4.png)
+
+1. 部署完成后点击访问方式获取新基座的测试链接(https://o2-img.alistatic.com/i/i09blZ/agggyj9jVHFIkURJCZYp6-aa002c9b19.png)
+(https://o2-img.alistatic.com/i/i09blZ/nupFVnxRgVQ1vvyoAUxW3-36cb5de2ed.png)
+
+1. 通过链接回归函数功能，期间通过监控和日志观测函数可用性(https://o2-img.alistatic.com/i/i09blZ/jgUw0U2LPnrQM87FDj26b-5292cc214b.png)
+
+1. 补充（如果使用了 bucLogin，验证期间需要将验证域名添加到 [https://login.alibaba-inc.com/updateAppInfoList.htm](https://login.alibaba-inc.com/updateAppInfoList.htm) 对应的应用配置中。
+1. 各个环境验证完成后点下一步进入到流量切换步骤(https://o2-img.alistatic.com/i/i09blZ/U2FejxccdcfdGtzAUgWHH-971657b92c.png)
+
+1. HTTP 提供了切流文档，根据[文档](https://aone-faas.doc.alibaba-inc.com/docs/524)通过 fs 高级路由功能将原域名接入的 fc vipserverkey 指向 aonefaas vipserverkey 完成流量灰度切换，期间要关注监控和日志中有否有报错。如果有明显报错请取消高级路由配置即可完成回流回切
+1. 根据完成完成整体流量切换后，点击下一步，完成租户订正（由【FC】租户订正成【AoneFaaS】租户）
+1. 迁移结束
+
+

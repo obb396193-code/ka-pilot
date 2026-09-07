@@ -1,0 +1,576 @@
+{
+  "documentId": 2629,
+  "documentName": "查询图片list接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720092938367
+    }
+  ],
+  "apiId": 174,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/image/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request GET 'https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/image/list' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 11311124,\n    \"start_date\": \"2023-11-01\",\n    \"end_date\": \"2023-11-18\",\n    \"pic_types\": [\n        5,\n        6\n    ],\n    \"page\": 1,\n    \"page_size\": 20\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 1,\n        \"details\": [\n            {\n                \"url\": \"https://static.yximgs.com/udata/pkg/aW1hZ2UtcGtnOmFkX2RzcF9pbWFnZV91cGxvYWQ6MTM0NTU3MjczNjpNRVJDSEFOVDpbQkA1ZjkzOTA5ZToxMDQ4OTIwMjM5NzM2.png\",\n                \"width\": 1686,\n                \"height\": 948,\n                \"size\": 43804,\n                \"format\": \"mjpeg\",\n                \"signature\": \"c5d1a2cb79017b4f75d8af6e3357f9ee\",\n                \"name\": \"image (3).png\",\n                \"pic_type\": 6,\n                \"image_token\": \"[REDACTED_SECRET_EXAMPLE]\",\n                \"pic_id\": \"5255700773077995990\",\n                \"pic_tag\": [\n                    \"磁力引擎\",\n                    \"这是一个长标签\"\n                ],\n                \"create_time\": 1699858653896\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ELWAgIDQxNGIChjuBSDlia2ShTIo5ZXN4Qk=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 9779,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "12345667778",
+      "description": "广告主ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 9780,
+      "paramName": "start_date",
+      "paramType": "String",
+      "example": "2021-09-11",
+      "description": "<p>开始时间</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "过滤筛选条件，格式为yyyy-MM-dd`与end_date同时传或同时不传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 9781,
+      "paramName": "end_date",
+      "paramType": "String",
+      "example": "2021-11-30",
+      "description": "<p>结束时间</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "过滤筛选条件，格式为yyyy-MM-dd`与end_date同时传或同时不传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 9782,
+      "paramName": "pic_types",
+      "paramType": "Integer[]",
+      "example": "[1,2]",
+      "description": "<p>图片类型</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "0-默认，5-竖版，6-横版，12-开屏。不填，则获取所有类型图片。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 9783,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>请求的页码数</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "`默认为1",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 9784,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "20",
+      "description": "<p>每页行数</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "`默认为20，最高500。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10196,
+      "paramName": "image_token",
+      "paramType": "String",
+      "example": "\"jkh12nfjlh2j\"",
+      "description": "图片token",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10197,
+      "paramName": "signature",
+      "paramType": "String",
+      "example": "\"12jklhr2\"",
+      "description": "图片MD5",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 25607,
+      "paramName": "image_tokens",
+      "paramType": "String[]",
+      "example": "",
+      "description": "图片token数组，最多100个",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 9785,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 9786,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "\"OK\"",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 9787,
+      "paramName": "data",
+      "paramType": "AdMarketImageUploadView",
+      "example": "1",
+      "description": "详细信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 460,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 9768,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "58",
+          "description": "图片总数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 9769,
+          "paramName": "details",
+          "paramType": "Details423[]",
+          "example": "[{}]",
+          "description": "详情",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 459,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 9760,
+              "paramName": "size",
+              "paramType": "Long",
+              "example": "267023",
+              "description": "图片大小",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 9761,
+              "paramName": "signature",
+              "paramType": "String",
+              "example": "c353625c4792915fcac1f009bf11fea72",
+              "description": "图片MD5",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 9762,
+              "paramName": "image_token",
+              "paramType": "String",
+              "example": "marketd0f142fd769748b19d1967423cab2493.jpg",
+              "description": "<p>图片token</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "`创建创意时使用",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 9763,
+              "paramName": "format",
+              "paramType": "String",
+              "example": "jpg",
+              "description": "图片格式",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 9764,
+              "paramName": "width",
+              "paramType": "Long",
+              "example": "720",
+              "description": "图片宽度",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 9765,
+              "paramName": "pic_type",
+              "paramType": "Integer",
+              "example": "0",
+              "description": "<p>图片类型</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "0-默认，5-竖版，6-横版，12-开屏，16-图集",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 9766,
+              "paramName": "url",
+              "paramType": "String",
+              "example": "http://static.yximgs.com/udata/pkg/marketd0f142fd769748b19d1967423cab2493.jpg",
+              "description": "图片预览地址",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 9767,
+              "paramName": "height",
+              "paramType": "Long",
+              "example": "1280",
+              "description": "图片高度",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 16585,
+              "paramName": "pic_id",
+              "paramType": "String",
+              "example": "hfdsa1h23hl6d7",
+              "description": "图片库图片id（已加密）",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720092938367,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

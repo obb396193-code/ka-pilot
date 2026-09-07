@@ -1,0 +1,289 @@
+{
+  "documentId": 2690,
+  "documentName": "查询待升级模板",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "查询待升级模板\n/rest/openapi/gw/dsp/target/template/upgrade_list\n\n{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"template_name\": \"123123123\",\n            \"template_id\": 4178,\n            \"unit_count\": 1\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"EMOAgIDAwpiOrAEY4gIghp-a5eYwKPrEmdIC\"\n}\ndata  SmartAffectTemplateResp831Snake457[]  <p><br>返回json</p>\ntarget_changed_vo  TargetChangedVO996Snake492  <p><br>模板升级详情</p>\nbehavior_interest  Boolean  <p>行为意向是否发生变更</p>\ncelebrity  Boolean  <p><br>快手网红是否发生变更</p>\nintelli_extend_option  Boolean  <p>智能定向是否发生变更</p>\ntemplate_id  Long  <p>模板ID</p>\ntemplate_name  String  <p><br>模板名称</p>\nunit_count  Long  <p>关联的广告组数量</p>\nmessage  String  <p><br>返回详情</p>\ncode  Integer  <p>错误码</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1719481250171
+    }
+  ],
+  "apiId": 624,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/upgrade_list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"template_name\": \"123123123\",\n            \"template_id\": 4178,\n            \"unit_count\": 1\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"EMOAgIDAwpiOrAEY4gIghp-a5eYwKPrEmdIC\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [
+    {
+      "paramId": 39550,
+      "paramName": "data",
+      "paramType": "SmartAffectTemplateResp831Snake457[]",
+      "example": "",
+      "description": "<p><br>返回json</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2376,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 39546,
+          "paramName": "target_changed_vo",
+          "paramType": "TargetChangedVO996Snake492",
+          "example": "",
+          "description": "<p><br>模板升级详情</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2377,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 39541,
+              "paramName": "behavior_interest",
+              "paramType": "Boolean",
+              "example": "",
+              "description": "<p>行为意向是否发生变更</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "true 表示行为意向之前有值被清空",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39542,
+              "paramName": "celebrity",
+              "paramType": "Boolean",
+              "example": "",
+              "description": "<p><br>快手网红是否发生变更</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "true 表示快手网红之前有值被清空",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39543,
+              "paramName": "intelli_extend_option",
+              "paramType": "Boolean",
+              "example": "",
+              "description": "<p>智能定向是否发生变更</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "true 表示智能定向被打开",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39547,
+          "paramName": "template_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>模板ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39548,
+          "paramName": "template_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p><br>模板名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39549,
+          "paramName": "unit_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>关联的广告组数量</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 39551,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p><br>返回详情</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 39552,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>错误码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1719481250171,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

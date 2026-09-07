@@ -1,0 +1,62 @@
+1、日结关注以下输出，证明已经结算完成，正常情况下晚上18点30前是能收到所有的信息：
+
+SC杭州结算成功
+
+AE杭州结算成功
+
+顶展结算成功
+
+询盘商业化结算成功
+
+服务商结算成功
+
+
+
+2、日结没有完成并且报杭州结算延迟p4p_day_sync_verify不正常，一般是反作弊延迟，咨询德策，如果延迟，确认什么时候跑完。如果判断结算要超过晚上9点才跑完，需要通知王矫(sc)和朱昱强（ae）。
+
+
+
+3、日结报客户消耗超过预警阈值，一般就是客户消耗与实时比例比较大，关注/home/admin/out/logs/day/day_info.log，如果差异不大，可以直接修改p4p_day_sync_verify，通过warnSet.htm来订正。sc和ae分别都有这个页面，绑定
+
+140.205.173.180  hz-p4p-settle.alibaba-inc.com      /warnSet.htm
+
+140.205.173.180 ae-settle.alibaba-inc.com
+
+
+
+4、点击服务器大量风控异常，需要找mtee@肖强(铅笔2B) 
+
+
+
+5、日报超过20%的报警，查看日报是否显示正常，结合xflush同比判断
+
+
+
+6、以上是相对比较关键的报警，更多关于报警和监控关注的点[https://lark.alipay.com/intl_ad/ip9bkb/styuan/](https://lark.alipay.com/intl_ad/ip9bkb/styuan/)
+
+
+
+7、收到消耗监控异常时，核心要看的报表
+
+日报
+
+点击服务器 时间同比 [http://x.alibaba-inc.com/custom/6/product/preview/cms/206](http://x.alibaba-inc.com/custom/6/product/preview/cms/206)
+
+消耗 时间同比 [http://x.alibaba-inc.com/custom/6/product/preview/cms/7](http://x.alibaba-inc.com/custom/6/product/preview/cms/7)
+
+
+
+8、对账不平，如果是现金，可能是充值遗漏（这种情况之前和财务排查改造已经不太有了），如果是红包，有可能是红包账户未开户，当时订正掉了，需要订正回来account_asyn_message。
+
+
+
+9、服务商结算报错
+
+com.alibaba.intl.adsettle.biz.step.impl.scp4pagency.ScP4pAgencyDayCheckStep.excute|amount not euqal,
+
+和BP确认服务商结算数据，正确的情况下，修改diamond 为n
+
+[http://diamond.alibaba-inc.com/diamond-ops/static/pages/config-edit/index.html?serverId=center&dataId=com.alibaba.intl.adsettle.scp4pAgency.needCheck&group=DEFAULT_GROUP](http://diamond.alibaba-inc.com/diamond-ops/static/pages/config-edit/index.html?serverId=center&dataId=com.alibaba.intl.adsettle.scp4pAgency.needCheck&group=DEFAULT_GROUP)
+
+然后重新走结算。
+

@@ -1,0 +1,66 @@
+## 能力介绍
+
+#### 基础能力
+
+Assets 非覆盖发布 支持将 [Code](http://code.alibaba-inc.com) 仓库中的 assets 代码按照一定规则发布到集团日常环境（又称日开发测试环境）和 线上生产环境。
+
+
+
+#### 提供的发布环境
+
+- 日常环境
+- 线上环境
+
+
+#### 发布产物说明
+
+Assets 非覆盖发布 发布产物为 CDN 资源，即构建产物中的 js、css 等资源会被发布到日常或线上 CDN 上。日常环境和线上生产环境的 CDN 地址如下：
+
+- 日常环境:  dev.g.alicdn.com
+- 线上环境:  
+	- g.alicdn.com(阿里云CDN)
+## 接入说明
+
+前往 [应用接入](https://space.o2.alibaba-inc.com/app/new)，选择 Assets 应用类型
+
+
+
+> 接入前需要设置 tbfed 公共账户为仓库或者 group 的 master , 平台需要权限获取你的仓库代码。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/awksns/imgvE7yK5pejQ.png)
+
+
+## 发布流程
+
+Assets 非覆盖 发布的流程如下图所示：
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/awksns/imgii41Wz8sPT.png)
+
+
+主要过程有：
+
+
+
+- 分支预处理：处理多分支集成时的分支合并过程
+- 前置检查：进行构建脚本是否合法等检查
+- 构建：构建项目代码里的 abc.json （即云构建配置）对代码进行云端构建（云构建配置请参考 [文档](http://builder.alibaba-inc.com/document?slug=config)）
+- 门神检查：对源码和构建产物进行安全扫描、域名检测、文件元信息检查、前端代码质量检测等（如想了解门神可访问 [门神官网](https://gog.alibaba-inc.com/)）
+- 发布：将构建产物中的 js、css 等资源发布到日常或线上的 CDN，如下所示。
+- 日常环境发布会清除该迭代历史已发布资源，只保留最新构建后的发布产物资源
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/awksns/imgOQVm5M4k5E.png)
+
+
+## 其他发布说明
+
+#### 命令行发布
+
+- 日常：o2 p -d
+- 线上：o2 p -o
+
+
+#### 示例仓库
+
+[https://code.alibaba-inc.com/def-demo/pub-assets/tree/master](https://code.alibaba-inc.com/def-demo/pub-assets/tree/master)
+

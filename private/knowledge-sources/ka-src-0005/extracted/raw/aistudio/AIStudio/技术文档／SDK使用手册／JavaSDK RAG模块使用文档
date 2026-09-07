@@ -1,0 +1,106 @@
+
+
+在上一个版本的idealab sdk中，我们的SDK支持了模型，工具，agent等功能。在新的版本中，我们进一步支持了RAG模块，我们将初步支持文档上传，文档切片，切片上传和召回等功能。和往常一样，为了简化使用流程，我们基于SpringAI框架的思想， 围绕着idealab的核心API开放了Java SDK，并制作成了spring-boot-starter，实现了模型能力的开箱即用。
+
+本次实现的功能：
+
+1. 文档管理器
+2. 文档切分器
+3. Node（切片）数据库
+4. 召回器
+5. 重排器
+
+基于以上能力，已经基本可以达到线上AiStudio的效果
+
+## 快速上手
+
+### **1. 引入Maven依赖**
+
+RAG模块版本是1.0.3，最新版本请查看 [maven仓库](https://artlab.alibaba-inc.com/GAResult?GroupId=com.alibaba.idealab&Artifact=idealab-ai-spring-boot-starter)
+
+### 2. application.properties
+
+在 application.properties 中定义 idealab 相关的配置，必要的配置有：
+
+**申请ak流程请参考文档****：**[AK申请流程](https://aliyuque.antfin.com/aiplus/aistudio/gzhhgn1ai1ulhohs)
+
+此外，还支持在 application.properties 中定义其他模型配置，具体可[参考文档](https://aliyuque.antfin.com/aiplus/aistudio/betskstlycy2vgsy#MD5jK)
+
+## **示例代码**
+
+<https://code.alibaba-inc.com/idea-platform/idealab-ai-sdk-samples>
+
+## **概念简介**
+
+SDK的RAG模块并没有完全沿用Idealab中workspace的名词概念，这是因为我们也想要兼容SpringAI或者Langchain的设计理念，以下是一张对照表，列出了idealab SDK中的一些关键词和它在workspace中的对应概念
+
+| Query | 用来召回文档的问句 |
+| --- | --- |
+| Document | 对应Workspace上的的文档概念。 |
+| Node | 切片。一个Document可以切分成很多Node，Node对应Workspace上的Chunk概念。 |
+| Node Store | 召回器，基于数据库，以Node为基本管理单位的存储系统，召回Node |
+| Reranker | 重排器，为召回的Node重新排序 |
+| Retriever | 召回器，基于query召回Node，对NodeStore和Reranker的封装 |
+| Transformer | 切分器，用来将Document切分成Nodes |
+| Reader | 读取器，从数据源中读取Document。~~reader目前只有标准的读取文件和字符串的简易reader，仅为补充链路用，后续会开发Excel reader或ODPS reader等。也欢迎大家贡献日常业务场景中需要用到的reader~~ |
+| Document Manager | 管理文档的上传，后续会支持文档的删除，更新，下载等。 |
+
+## **使用介绍**
+
+为了给用户提供不同粒度的编码方式，我们提供两种方式供用户上传知识。一种是直接上传Document，由我们的后端为用户将Document切分成Node。另一种是允许用户在本地使用切分器对Document完成切分后，以Node的形式上传到知识库。当然，用户也可以使用我们的workspace页面上传文档，仅用我们的
+
+### ***0. 准备知识库***
+
+再进行RAG的操作之前，需要有一个知识库。知识库的创建需要在页面上完成，去Idealab的[Workspace页面](https://aistudio.alibaba-inc.com/#/aistudio)创建知识库。并且获取知识库ID
+
+### 1. 以Document的形式管理文档
+
+使用我们的文档管理器IdealabDocumentManager进行文档的上传，我们会在后端完成文档的切分
+
+如果不想通过上传本地文件的方式，也可以通过IdealabStringReader直接将字符串制作成Document，再上传到知识库，参考：
+
+~~同样可以通过管理器直接删除文档~~，当前版本没有删除文档的方法，如需该功能可以联系@晟同或者使用1.0.3-SNAPSHOT版本
+
+### **2. 以Node的形式管理知识**
+
+这种方式适用于更加定制化的场景，在这条链路上，用户可以用自己的方式切分Document为Node，个性化管理Node的元信息。
+
+首先是使用Reader读取文本为Document。我们默认提供两种Reader的实现，分别是读取文件的Reader和读取字符串的Reader。然后切分Document为Node，欢迎大家提供自己实现的Reader加入我们的SDK
+
+我们默认提供的IdealabTransformer提供个性化的切分方式，如果有特定需求，也可以自己实现适合自己的Transformer。
+
+得到Node后可以通过NodeStore上传，这个NodeStore对应的是别的框架中的vectorstore概念。
+
+也可以通过NodeStore删除Nodes
+
+需要注意的是，目前直接上传Node到知识库是无法在知识库页面中看到上传的Node的，如果想要在页面上看到自己上传的Node。可以先创建一个空的Document，然后在Node的meta中指定documentId为这个空的Document的ID，把Node都挂在这个空的Document上，具体代码如下
+
+### **3. 召回知识**
+
+上传完知识后，我们可以将Node召回，在默认实现中，我们提供关键词召回和向量召回两种召回方式，分别通过keyword store和vector store实现。在实际召回过程中，用户不太需要直接使用这两个Store，因为我们将它封装在了Retriever中了。Retriever也就是召回器提供了两种召回方式，或者混合召回，也就是关键词召回和向量召回同时生效，另外，Retreiver还集成封装了Reranker重排器，对召回的知识根据query的语义进行相关度排序。同样的，用户如果有个性化需求，也可以直接实现自己的Retriever或者Reranker，其中任何一环都可以被插拔。
+
+通过Retriever同时做相似度召回和关键词召回，并将两者召回的知识重排，可以参考以下代码：
+
+如果确实有必要直接通过NodeStore召回Node，也可以参考以下代码：
+
+### **4. 完整的RAG流程**
+
+这块儿就是标题中提到的10行代码完成一个RAG。完整的RAG流程涉及 1.根据用户的query从知识库召回知识，2. 将知识提供给大模型作为参考文档。我们同样支持将RAG模块和上一个版本发布的大模型Agent打通，得到一个可以查找知识库，使用工具的Agent。为Agent挂载知识库的方式和[为Agent挂载工具的方式](https://ata.atatech.org/articles/11020268923?spm=ata.25287382.0.0.69b07536jMS6xc#bYfFVeSv)相似，都是通过Advisor的方式挂载。参考以下代码：
+
+## 参考文档
+
+* [idealab-SDK ATA文章](https://ata.atatech.org/articles/11020268923)
+* [idealab SDK文档](https://aliyuque.antfin.com/aiplus/aistudio/betskstlycy2vgsy)
+* [idealab API文档](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9?singleDoc#%20%E3%80%8AChat%20Completion%20API%E3%80%8B)
+* [Spring AI 官方文档](https://spring.io/projects/spring-ai)
+* [pandora-ai-idealab-spring-boot-starter](https://mw.alibaba-inc.com/pandora-boot/develop/spring/spring-boot-idealab/)
+* [idealab PythonSDK](https://code.alibaba-inc.com/idea-platform/idea-sdk)
+
+## 后续计划
+
+1. 支持丰富的其他模型，比如 search、 image、多模态等等
+2. 丰富Advisor扩展
+3. Flow执行引擎
+
+群号：25765049689
+

@@ -1,0 +1,511 @@
+{
+  "documentId": 3036,
+  "documentName": "更新活码包成员",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "更新活码包成员\n/rest/openapi/gw/clue_laotie/v1/qywx/updateSalePackage\n//  请输入示例代码\n{\n  \"corp_id\": \"ww02658791c08a4f\",\n  \"advertiser_id\": \"9005265\",\n  \"user_ids\": [\n    {\n      \"user_id\": \"woIcKmHrYAdy312nUr5O-kcjfHsA\",\n      \"customer_weight\": 3\n    },\n    {\n      \"user_id\": \"woIcKmHCLPQnW8vNo7_amRER_wh5A\",\n      \"customer_weight\": 7\n    }\n  ],\n  \"saler_package_id\": \"7349002018743\",\n  \"allocation_type\": 2\n}\n//  请输入示例代码\n{\n  \"code\": 401000,\n  \"data\": {\n    \"unauthorized_count\": 0,\n    \"check_result\": 0,\n    \"inactivated_count\": 0,\n    \"user\": []\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"ELiAgIDAqpAEY2gYgwsWAoIEyKKz2tqoE\"\n}\nallocation_type  Integer  <p>客服分配类型 0 默认 1 轮询 2 权重</p>\ncorp_id  String  <p>明文</p>\nadvertiser_id  Long  <p>-</p>\nuser_ids  EmployeeInfo[]  <p>成员list</p>\nuser_id  String  <p>open_user_id</p>\nname  String  <p>-</p>\nactive_status  Integer  <p>激活状态0-已激活1-未激活2-初始免费期3-已过期</p>\ndep_ids  Integer[]  <p>部门信息</p>\nexpire_time  Long  <p>过期时间</p>\ncustomer_weight  Integer  <p>权重1-9正整数，当allocation_type=2必填</p>\nsaler_package_id  Long  <p>活码包id</p>\ncode  Integer  <p>0-成功</p>\nmessage  String  <p>-</p>\ndata  UpdateSalePackageData  <p>-</p>\ncheck_result  Integer  <p>检查结果: 0 成员均已授权，且均有激活码; 1 当前有成员不在授权可见范围内; 2 当前有成员无可用激活码; 3 当前有成员不在授权可见范围且有成员无可用激活码</p>\nunauthorized_count  Integer  <p>不在授权可见范围的人员个数</p>\ninactivated_count  Integer  <p>无可用激活码的人员个数</p>\nuser  FailUserInfo[]  <p>校验失败的用户列表</p>\nopen_user_id  String  <p>-</p>\nerror_reason  Integer  <p>错误原因: 1 不在可见范围内; 2 无可用激活码; 3 不在可见范围内且无可用激活码</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1721036507051
+    }
+  ],
+  "apiId": 1340,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/clue_laotie/v1/qywx/updateSalePackage",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 11,
+  "bizName": "老铁线索通",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "java",
+      "body": "//  请输入示例代码\n{\n  \"corp_id\": \"ww02658791c08a4f\",\n  \"advertiser_id\": \"9005265\",\n  \"user_ids\": [\n    {\n      \"user_id\": \"woIcKmHrYAdy312nUr5O-kcjfHsA\",\n      \"customer_weight\": 3\n    },\n    {\n      \"user_id\": \"woIcKmHCLPQnW8vNo7_amRER_wh5A\",\n      \"customer_weight\": 7\n    }\n  ],\n  \"saler_package_id\": \"7349002018743\",\n  \"allocation_type\": 2\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "java",
+      "body": "//  请输入示例代码\n{\n  \"code\": 401000,\n  \"data\": {\n    \"unauthorized_count\": 0,\n    \"check_result\": 0,\n    \"inactivated_count\": 0,\n    \"user\": []\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"ELiAgIDAqpAEY2gYgwsWAoIEyKKz2tqoE\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 62694,
+      "paramName": "allocation_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>客服分配类型 0 默认 1 轮询 2 权重</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62695,
+      "paramName": "corp_id",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>明文</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62783,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62784,
+      "paramName": "user_ids",
+      "paramType": "EmployeeInfo[]",
+      "example": "",
+      "description": "<p>成员list</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3532,
+      "sort": 4,
+      "note": "",
+      "children": [
+        {
+          "paramId": 62719,
+          "paramName": "user_id",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>open_user_id</p>",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62720,
+          "paramName": "name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>-</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62721,
+          "paramName": "active_status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>激活状态0-已激活1-未激活2-初始免费期3-已过期</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62722,
+          "paramName": "dep_ids",
+          "paramType": "Integer[]",
+          "example": "",
+          "description": "<p>部门信息</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62723,
+          "paramName": "expire_time",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>过期时间</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62724,
+          "paramName": "customer_weight",
+          "paramType": "Integer",
+          "example": "1",
+          "description": "<p>权重1-9正整数，当allocation_type=2必填</p>",
+          "required": 2,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62698,
+      "paramName": "saler_package_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>活码包id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 62699,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>0-成功</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62700,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62701,
+      "paramName": "data",
+      "paramType": "UpdateSalePackageData",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3529,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 62687,
+          "paramName": "check_result",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>检查结果: 0 成员均已授权，且均有激活码; 1 当前有成员不在授权可见范围内; 2 当前有成员无可用激活码; 3 当前有成员不在授权可见范围且有成员无可用激活码</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62688,
+          "paramName": "unauthorized_count",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>不在授权可见范围的人员个数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62689,
+          "paramName": "inactivated_count",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>无可用激活码的人员个数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62690,
+          "paramName": "user",
+          "paramType": "FailUserInfo[]",
+          "example": "",
+          "description": "<p>校验失败的用户列表</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3530,
+          "sort": 4,
+          "note": "",
+          "children": [
+            {
+              "paramId": 62685,
+              "paramName": "open_user_id",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>-</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 62686,
+              "paramName": "error_reason",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>错误原因: 1 不在可见范围内; 2 无可用激活码; 3 不在可见范围内且无可用激活码</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1721036507051,
+  "creator": "zhangqiang15",
+  "fullContext": null
+}

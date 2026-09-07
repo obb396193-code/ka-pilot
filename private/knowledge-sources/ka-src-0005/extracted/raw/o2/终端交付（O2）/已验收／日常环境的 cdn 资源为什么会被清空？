@@ -1,0 +1,12 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/6603c160636b820569a243d4/](https://links.alibaba-inc.com/support/conversation/6603c160636b820569a243d4/)
+
+作者：紫砂
+
+评审人：上坡
+
+
+
+在 O2 Space 上发布的资源通过版本号管理，与迭代版本号保持一致。在同一个迭代下进行多次日常发布时，平台只会保留最新一次发布的资源与该版本之间的关联，从而保持预发的资源最新，防止出现历史发布过，但最终没有发布，预发测不出来，带到线上产生故障。
+
+
+

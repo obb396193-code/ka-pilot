@@ -1,0 +1,103 @@
+首次接入的同学可以看下以下两篇文章：
+
+> [https://ata.alibaba-inc.com/articles/239042](https://ata.alibaba-inc.com/articles/239042?spm=ata.25287382.0.0.4184695bMtOSDv) 《O2 Space 扩展开放建设之路》
+
+> [https://ata.alibaba-inc.com/articles/250022](https://ata.alibaba-inc.com/articles/250022)《基于开放的前端工程平台 O2 Space》
+
+## 基础概念
+
+### 扩展
+
+扩展的发布分成两个部分：
+
+- 前端资源的发布：前端资源的发布和正常的 O2 assets 应用一样发布即可
+- 扩展点配置的发布：扩展点配置以扩展包的维度发布（为了实现环境的隔离和回滚、灰度等功能）：
+	- 扩展包是扩展的集合，每个业务可以定制一个线上扩展包和一个预发扩展包，线上环境使用线上扩展包，预发环境使用预发扩展包
+	- 首先新建一个预发扩展包（基于线上的扩展包），开发测试阶段修改预发扩展包，上线时将预发扩展包替换之前的线上扩展包
+扩展点文档可查看： 
+
+
+
+### 扩展怎么关联到应用类型
+
+一个扩展包 -> 一个研发类型 -> 多个应用类型
+
+【研发类型】
+
+研发类型名称：如 纵横研发
+
+描述：如 纵横一站式研发平台
+
+icon：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qnqm9sgsme2cqpts/imgsBbqAjiIOn.png)
+
+
+
+
+【应用类型】（可多个）
+
+应用类型名称：如 纵横研发-组件
+
+描述：纵横研发的组件研发流程
+
+基于哪个基础研发类型：assets/tnpm/完全自定义 （将基于这个配置已有的流水线）
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qnqm9sgsme2cqpts/imgLNN6DIyWcH.png)
+
+
+## 业务接入
+
+> 新建业务、研发类型、应用类型
+
+### 新建业务
+
+业务（biz）是一个接入方在 O2 上所有扩展功能的载体，每个接入方可以新建一个业务。
+
+打开 O2 开放控制台 [https://o2-pai.alibaba-inc.com](https://o2-pai.alibaba-inc.com/biz/new)，点击业务，再点“+”新建
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qnqm9sgsme2cqpts/imgq6l3FHw4Wo.png)
+
+
+填写研发类型信息，选择关联的应用类型，选择维护团队、使用范围，选择网关服务 id，点击提交审批
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qnqm9sgsme2cqpts/imgz4qUJ4vQpZ.png)
+
+
+审批通过后可以看到新建的业务，
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qnqm9sgsme2cqpts/imgWZaIUwpXWX.png)
+
+
+并且在平台上可以看到刚创建的应用类型
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/qnqm9sgsme2cqpts/imgEGgZNRh59L.png)
+
+
+## Pai App 开发
+
+> 业务接入后，通过 Pai App 一站式研发完成扩展点的定制
+
+ 
+
+
+
+## 常见问题
+
+### 扩展点内如何发起请求
+
+扩展点内请求的接口需要注册到 O2 网关，详见 [https://open.o2.alibaba-inc.com/docs/service](https://open.o2.alibaba-inc.com/docs/service)，
+
+注意，如果不需要登录态校验，可以跳过以下第 2 步：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/J9LnWND0aV9ZlvDe/img/d55ddea9-b28e-427a-b622-8929d083ed59.png)
+
+
+接口注册后，在扩展点内可以通过 props.contextHelper.defRequestManager.request 方法发起请求
+
+> 相关问题和建议可以进群咨询
+
+> [O2 Space 扩展开放金牌服务群](dingtalk://dingtalkclient/action/joingroup?code=v1%2Ck1%2CTA+kNPhIB%2FCUjEk5v3oycmspGOuD5Vlvkq9lohKCE+o%3D&_dt_no_comment=1&origin=11)
+

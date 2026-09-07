@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><p data-id=\"p838747a-j4fokvMQ\">相关链接：</p><ul data-id=\"u738a58b-yboPKhZA\"><li data-id=\"ld70c578-3M3j0Vix\"><a target=\"blank\" href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710516003852\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">客户列表</a></li><li data-id=\"ld70c578-i8FDv6MN\"><a target=\"blank\" href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710517205007\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">修改客户</a></li><li data-id=\"ld70c578-uaOtHDaM\"><a target=\"blank\" href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710517693452\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">二级代理商列表</a></li><li data-id=\"ld70c578-d5dWfZDX\"><a target=\"blank\" href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710518158351\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\">获取代理商信息</a></li></ul><hr style=\"background-color: rgb(232, 232, 232); border: 1px solid transparent; margin: 18px 0px;\"><p data-id=\"p838747a-au1hnzvr\">如果您是代理商账号，可以获取代理商下的客户列表，还可以利用API接口修改客户信息，或者可以进行转账退款操作</p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "代理商账号管理"
+}

@@ -1,0 +1,20 @@
+在站点详情页内点击二级导航的【成员管理】即可进入成员管理界面
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YvenvJmdoGK1noyZ/img/b3668efc-2ebf-4101-9b21-1a714ea020e0.png)
+
+
+## 添加站点成员
+
+点击右上方【添加成员】会弹出对话框
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/YvenvJmdoGK1noyZ/img/64008c9b-a498-4ece-9c71-6d8021022afe.png)
+
+
+新成员可被添加为普通成员或站点负责人。站点负责人拥有对站点的完整管理权限；普通成员可以在无需审批的情况下将应用关联到站点，但没有对站点的管理权限。
+
+## 删除站点成员
+
+点击列表中对应成员右侧的【删除】按钮即可删除站点成员。
+
+每个站点必须包含至少一个站点负责人。当您为唯一的站点负责人时，您将不能删除自己。
+

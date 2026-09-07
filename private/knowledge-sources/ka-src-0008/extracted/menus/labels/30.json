@@ -1,0 +1,65 @@
+{
+  "primary_doc_list": [
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1736319607097355",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1736319534262340",
+          "parent_ids": [
+            "1736319534262340"
+          ],
+          "path": "/open_api/v1.0/serve_market/order/get/",
+          "status": 4,
+          "title": "获取应用订单数据"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1736331299814412",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1736319534262340",
+          "parent_ids": [
+            "1736319534262340"
+          ],
+          "path": "/open_api/v1.0/serve_market/active_func/get",
+          "status": 4,
+          "title": "获取用户已购功能点列表"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1782609755121690",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1736319534262340",
+          "parent_ids": [
+            "1736319534262340"
+          ],
+          "path": "/open_api/v1.0/serve_market/cid/verify_token/",
+          "status": 4,
+          "title": "获取App Access Token校验信息"
+        }
+      ],
+      "doc_id": "1736319534262340",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 0,
+      "title": "群峰服务市场"
+    }
+  ]
+}
