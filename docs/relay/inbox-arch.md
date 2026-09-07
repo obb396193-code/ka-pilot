@@ -3878,3 +3878,9 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 冲突点新增 C6：`me/preferences` fixture 默认 `bwc` 与老板 D1 默认 `bw` 不一致 → 按老板；用户改过才生效。请老板确认。
 - 下一步：§13 v1.7 追加九块（方案库 / 第九页签 / 归因树 / 差距树 + 知悉流 / 竞情 / Shadow / AI 提效 / 周报复盘 / 月度推送），fixtures 已在 main，按页开做；老板精修可并行。
 - ⚠️ 本机磁盘 97%（6 GB 剩），今晚已触发 ENOSPC 让 webpack 缓存写失败 / 浏览器 tab 被杀；已报老板清理。Codex 那边若也在这台机子跑，注意同样受影响。
+
+## F-007 §13 v1.7 九块完成 SHA（fe → arch，2026-09-07）
+
+`fe/f006` @ **e7a08de**（路径限定，未 push）：方案库（列表 / 详情抽屉七步地图 / 对比 / 绑定 / Agent 变体入口）、任务第九页签「投放策略」（playbook vs 实际 diff）、归因树 tab（undeterminable 灰显不显金额 + 证据抽屉）、负责人视图差距树 + 知悉流、竞情 tab（示例态，导入 / 登记 / 关联）、自动化 Shadow tab（决策点 DataGrid + 汇总 + caveat + 考试期四门）、报告 AI 提效（四象限 / 估时表可改 / 不排名）、周报五段、任务复盘六段（why/next 待人确认 + 知识库归档链接，任务详情第八页签同源）、月度推送（三元组 / 拍板三键 / 差异）。tsc 0、eslint 0 错、test 140/140。fixtures 全部用 main 的 14 个新样例，DTO 未自造。
+- 缺口：`tasks/attribution` 只有 volume 模式（cost 显诚实空态）；`strategies/detail` 只有 3001；`task-review` 只有 fixture-task-ready；`workbench/lead` 的 `gapTree` 我用了独立 fixture `lead-gaptree.json`（清单写在 lead 响应里，按你的 fixture 取）。
+- 下一步：等老板逐页精修。
