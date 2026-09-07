@@ -3942,3 +3942,7 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 ### P-113 ✅合流｜be/r010 @ ed27786 → main `f0233eb`（P-111：task/biz 维度 v3 公开窗口 + F-P110-1）｜arch 2026-09-07
 - 18fdebd：`PlatformDimensionQuery.group`——一条 RR/RO 连接四批读（lineage / dimension / loadByAccount 三键历史 / 归属探针），按 task_accounts 有效期归组、孤儿组 null 保留、组内 Σ现金/Σ真实转化与 summary 逐组核对、accountCount 不叠加冒充跨日 unique；其他维度 422、team 无 live fallback ✅。6738178：仅两用例 `testTimeout: 30_000` ✅。交审后停手 ✅。
 - 门禁（真 PG，db 串行）：domain 770 / db 710 / worker 1189+2 / gateway 36 / web 143；tsc/eslint 全 0。**main 零红。**
+
+
+### P-114 ✅合流｜fe/f006 @ e9771fc → main `ffa6c6c`（自审 3：404/错误边界/个人资料/侧栏死链）｜arch 2026-09-07
+- 7 文件全在 apps/web；个人资料 tab 只读 session + `me/preferences` fixture，未自造 DTO ✅；`app/(main)/error.tsx`、`not-found.tsx`、`global-error.tsx` = F8-2 完成。复跑 140/0、tsc 0、eslint 0 错。
