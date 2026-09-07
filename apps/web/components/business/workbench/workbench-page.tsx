@@ -19,7 +19,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import type { DisplayMetric } from "@/lib/data/contracts"
 import { timelineFixture } from "@/lib/fixtures/accounts"
-import { fmtTime, isOk, mv, rv, costStatusReasonText } from "@/lib/fixtures/contract"
+import { fmtTime, isOk, mv, rv, costStatusReasonShort, costStatusReasonText } from "@/lib/fixtures/contract"
 import { summaryFixtures, trendFixture, windowLabel } from "@/lib/fixtures/data-analysis"
 import { alertsStreamFixture, approvalsFixture, briefFixtures, changesetFixture, dispatchesFixture, rosterFixture, runsRunningFixture, severityMeta, workItemDetailFixture, workItemListVariants, workItemLists, type Severity, type WorkItem, type WorkItemListVariant } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
@@ -68,7 +68,7 @@ export function WorkbenchPage() {
     return [
       { key: "cost", label: "账面消耗", value: mv(row.metrics.cost, "money0"), delta: null, tone: "neutral" },
       { key: "cashCpa", label: "现金 CPA", value: rv(row.metrics.ratios.cashCpa, "money"), delta: a.price ? `考核 ¥${a.price.value.toFixed(2)}` : null, tone: tone(a.costStatus) },
-      { key: "onTarget", label: "达标", value: a.onTarget === null ? "−" : a.onTarget ? "达标" : "超线", delta: costStatusReasonText(a.costStatusReason), tone: tone(a.costStatus) },
+      { key: "onTarget", label: "达标", value: a.onTarget === null ? "−" : a.onTarget ? "达标" : "超线", delta: a.costStatusReason ? costStatusReasonShort[a.costStatusReason] ?? costStatusReasonText(a.costStatusReason) : null, tone: tone(a.costStatus) },
       { key: "costSpace", label: "成本空间", value: mv(row.metrics.costSpace, "money0"), delta: null, tone: "neutral" },
       { key: "realConversion", label: "BI 量级", value: mv(row.metrics.realConversion), delta: null, tone: "neutral" },
       { key: "pending", label: "待处理", value: String(counts.all), delta: counts.P0 ? `${counts.P0} 条 P0` : null, tone: counts.P0 ? "critical" : "neutral" },
