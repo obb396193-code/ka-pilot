@@ -1,12 +1,10 @@
-export type WorkItemStatus =
-  | "open"
-  | "processing"
-  | "done"
-  | "ignored"
-  | "expired"
-  | "external_handled"
-  | "rejected"
-  | "escalated";
+/** P083: shared read contract. This does not authorize new transitions. */
+export const WORK_ITEM_STATUSES = [
+  "open", "processing", "dispatched", "done", "ignored", "expired",
+  "external_handled", "rejected", "escalated",
+] as const;
+export const ACTIVE_WORK_ITEM_STATUSES = ["open", "processing", "dispatched", "escalated"] as const;
+export type WorkItemStatus = typeof WORK_ITEM_STATUSES[number];
 
 export type WorkItemAction =
   | "start_processing"

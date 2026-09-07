@@ -152,6 +152,18 @@ describe("WORK-ITEM-LIST-001 HTTP composition", () => {
     });
   });
 
+  it.each(["", "?status=dispatched"])("serves dispatched through existing session HTTP %s", async (query) => {
+    const response = await fetch(`${await start(workItemResult("dispatched"))}/api/v1/work-items${query}`, {
+      headers: { ...authHeaders(), "x-request-id": "dispatched-http" },
+    });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-request-id")).toBe("dispatched-http");
+    expect(await response.json()).toMatchObject({ ok: true,
+      data: { total: 1, items: [{ status: "dispatched" }] },
+      meta: { requestId: "dispatched-http" },
+    });
+  });
+
   it.each([
     "workspaceId=forged", "accountIds=forged", "dataSource=qihang", "unknown=x",
     "page=0", "page=1&page=2", "status=active", "severity=P3", "type=unknown",

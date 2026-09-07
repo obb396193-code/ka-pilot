@@ -5,9 +5,19 @@ import {
   decideDuplicate,
   severityRank,
   workItemDedupeKey,
+  ACTIVE_WORK_ITEM_STATUSES,
+  WORK_ITEM_STATUSES,
 } from "../src/work-items.js";
 
 describe("work item state transitions", () => {
+  it("defines exactly the frozen active set without enabling new write transitions", () => {
+    expect(ACTIVE_WORK_ITEM_STATUSES).toEqual(["open", "processing", "dispatched", "escalated"]);
+    expect(new Set(WORK_ITEM_STATUSES).size).toBe(WORK_ITEM_STATUSES.length);
+    for (const action of ["start_processing", "complete", "ignore", "reject", "escalate", "mark_external_handled", "expire"] as const) {
+      expect(() => assertWorkItemTransition("dispatched", action)).toThrow(/invalid work item transition/);
+    }
+  });
+
   it("supports the normal open to processing to done path", () => {
     const processing = assertWorkItemTransition("open", "start_processing");
     expect(processing).toBe("processing");

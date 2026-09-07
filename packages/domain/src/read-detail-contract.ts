@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { requestIdSchema } from "./data-query-contract.js";
 import { changeValueSchema } from "./changeset-values.js";
+import { WORK_ITEM_STATUSES } from "./work-items.js";
 
 const jsonObjectSchema = z.record(z.string(), z.unknown());
 const nullableDateTimeSchema = z.string().datetime({ offset: true }).nullable();
@@ -27,10 +28,7 @@ export const workItemDetailSchema = z.object({
   title: z.string().min(1),
   evidenceSnapshot: jsonObjectSchema.nullable(),
   diagnosis: jsonObjectSchema.nullable(),
-  status: z.enum([
-    "open", "processing", "done", "ignored", "expired", "external_handled",
-    "rejected", "escalated",
-  ]),
+  status: z.enum(WORK_ITEM_STATUSES),
   ignoreReason: z.string().nullable(),
   mutedUntil: z.string().nullable(),
   assignee: z.string().uuid().nullable(),
