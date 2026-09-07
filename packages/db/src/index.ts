@@ -38,3 +38,5 @@ export * from "./session-cleanup-repository.js";
 
 // be: workspace/tuple-scoped canonical health observation.
 export * from "./platform-health-repository.js";
+// be: bounded canonical account-day facts for the pivot window reader.
+export * from "./platform-pivot-repository.js";
