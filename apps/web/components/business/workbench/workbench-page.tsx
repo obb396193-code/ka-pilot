@@ -148,13 +148,13 @@ export function WorkbenchPage() {
                 </div>
                 <div className="flex flex-col gap-4 @5xl/main:col-span-4">
                   <Card>
-                    <CardHeader><CardTitle className="text-sm">待确认变更集</CardTitle><CardDescription>我的草稿；dry-run 通过、确认后才执行</CardDescription></CardHeader>
+                    <CardHeader><CardTitle className="text-sm">待确认变更集</CardTitle><CardDescription>我的草稿；试运行通过、确认后才执行</CardDescription></CardHeader>
                     <CardContent className="flex flex-col gap-2">
                       {changeset ? (
                         <div className="flex flex-col gap-2 rounded-lg border px-3 py-2 text-sm">
                           <div className="flex items-center justify-between gap-2"><span className="font-medium">{changeset.title}</span><TypeChip>{changesetStatusText(changeset.status)}</TypeChip></div>
                           <div className="text-xs text-muted-foreground">{changeset.accountId} · {changeset.items.map((item) => `${item.targetId} ${item.field} ${String(item.fromValue.value)}→${String(item.toValue.value)}`).join("；")} · {fmtTime(changeset.ttlExpireAt).slice(6)} 前有效</div>
-                          <div className="flex gap-2"><Button size="sm" variant="outline" className="h-7" onClick={() => toast("dry-run 通过")}>dry-run</Button><Button size="sm" className="h-7" onClick={() => toast.success("已确认")}>确认</Button></div>
+                          <div className="flex gap-2"><Button size="sm" variant="outline" className="h-7" onClick={() => toast("试运行通过")}>试运行</Button><Button size="sm" className="h-7" onClick={() => toast.success("已确认")}>确认</Button></div>
                         </div>
                       ) : <p className="text-sm text-muted-foreground">没有待确认</p>}
                     </CardContent>

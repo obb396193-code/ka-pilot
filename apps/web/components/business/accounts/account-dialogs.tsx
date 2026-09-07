@@ -46,7 +46,7 @@ function BatchPreview({ items, op, onClose }: { items: AccountItem[]; op: string
     <>
       <DialogHeader>
         <DialogTitle>变更预览 · {batchOps[op] ?? op}</DialogTitle>
-        <DialogDescription>对 {items.length} 户生成变更集组；dry-run 通过才能确认，执行逐账户，三键不变（当前为示例数据）。</DialogDescription>
+        <DialogDescription>对 {items.length} 户生成变更集组；试运行通过才能确认，执行逐账户，三键不变（当前为示例数据）。</DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-4 text-sm">
         <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{preview.status}</Badge><span className="text-muted-foreground">原因码 {preview.reasonCode} · 过期 {fmtTime(preview.expiresAt)}</span></div>
@@ -66,7 +66,7 @@ function BatchPreview({ items, op, onClose }: { items: AccountItem[]; op: string
       </div>
       <DialogFooter>
         <Button variant="outline" onClick={onClose}>取消</Button>
-        {stage === "preview" ? <Button onClick={() => { setStage("dry-run"); toast("dry-run 完成", { description: "全部通过" }) }}>dry-run</Button> : null}
+        {stage === "preview" ? <Button onClick={() => { setStage("dry-run"); toast("试运行完成", { description: "全部通过" }) }}>试运行</Button> : null}
         {stage === "dry-run" ? <Button onClick={() => { setStage("confirm"); toast.success("已确认，逐账户执行", { description: "未开写权限时会被拒绝" }) }}>确认执行</Button> : null}
         {stage === "confirm" ? <Button onClick={onClose}><IconCheck />完成</Button> : null}
       </DialogFooter>
