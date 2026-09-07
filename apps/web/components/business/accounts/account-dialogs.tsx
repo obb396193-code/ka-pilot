@@ -129,7 +129,7 @@ function PoolStatusForm({ item, onClose }: { item: AccountItem; onClose: () => v
   const [note, setNote] = useState("")
   return (
     <>
-      <DialogHeader><DialogTitle>改库存态 · {item.accountName}</DialogTitle><DialogDescription>当前 {poolStatuses.find((meta) => meta.value === item.poolStatus)?.label}（{item.poolStatusSource === "manual" ? "人工覆盖" : "系统推导"}）；改后写 timeline kind=pool_status。</DialogDescription></DialogHeader>
+      <DialogHeader><DialogTitle>改账户状态 · {item.accountName}</DialogTitle><DialogDescription>当前 {poolStatuses.find((meta) => meta.value === item.poolStatus)?.label}（{item.poolStatusSource === "manual" ? "人工覆盖" : "系统推导"}）；改后写 timeline kind=pool_status。</DialogDescription></DialogHeader>
       <div className="grid gap-3">
         <Select value={value} onValueChange={(next) => setValue(next as PoolStatus)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{poolStatuses.map((meta) => <SelectItem key={meta.value} value={meta.value}>{meta.label} · {meta.hint}</SelectItem>)}</SelectContent></Select>
         <Textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="备注（必填）" />
@@ -137,7 +137,7 @@ function PoolStatusForm({ item, onClose }: { item: AccountItem; onClose: () => v
       <DialogFooter>
         {item.poolStatusSource === "manual" ? <Button variant="ghost" onClick={() => { toast("已清除人工覆盖，回系统推导", { description: "接口接入后生效（当前为示例）" }); onClose() }}>清除覆盖</Button> : null}
         <Button variant="outline" onClick={onClose}>取消</Button>
-        <Button disabled={!note.trim()} onClick={() => { toast.success("库存态已改", { description: `PATCH pool-status → ${value}（manual）` }); onClose() }}>保存</Button>
+        <Button disabled={!note.trim()} onClick={() => { toast.success("账户状态已改", { description: `PATCH pool-status → ${value}（manual）` }); onClose() }}>保存</Button>
       </DialogFooter>
     </>
   )

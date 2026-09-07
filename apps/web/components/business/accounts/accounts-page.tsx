@@ -67,7 +67,8 @@ export function AccountsPage() {
   const items = useMemo(() => (isOk(accountsFixture) ? accountsFixture.data.items : []), [])
   const stages = isOk(pipelineFixture) ? pipelineFixture.data.stages : []
   const asOf = isOk(pipelineFixture) ? pipelineFixture.data.asOf : ""
-  const total = isOk(accountsFixture) ? accountsFixture.data.total : items.length
+  // 分层卡 / 流程条的「全部账户」= 九态之和（与九态同源 pipeline），不能拿列表页的 total —— 那是当前筛选后的行数，会出现「全部 5、投放中 18」的自相矛盾
+  const pipelineTotal = stages.some((stage) => stage.count !== null) ? stages.reduce((sum, stage) => sum + (stage.count ?? 0), 0) : null
   const products = useMemo(() => [...new Set(items.map((item) => item.product?.name).filter((name): name is string => Boolean(name)))], [items])
   const owners = useMemo(() => [...new Set(items.map((item) => item.owner?.displayName).filter((name): name is string => Boolean(name)))], [items])
   const filtered = useMemo(() => items.filter((item) =>
@@ -98,10 +99,10 @@ export function AccountsPage() {
   const filters = (
     <>
       <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="搜索账户名 / ID" className="h-8 w-40" aria-label="搜索" />
-      <Select value={media} onValueChange={setMedia}><SelectTrigger size="sm" className="w-24" aria-label="渠道"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部渠道</SelectItem><SelectItem value="KUAISHOU">快手</SelectItem></SelectContent></Select>
+      <Select value={media} onValueChange={setMedia}><SelectTrigger size="sm" className="w-28" aria-label="渠道"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部渠道</SelectItem><SelectItem value="KUAISHOU">快手</SelectItem></SelectContent></Select>
       <Select value={product} onValueChange={setProduct}><SelectTrigger size="sm" className="w-32" aria-label="产品名"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部产品名</SelectItem>{products.map((name) => <SelectItem key={name} value={name}>{name}</SelectItem>)}<SelectItem value={UNASSIGNED}>未填产品名</SelectItem></SelectContent></Select>
       <Select value={owner} onValueChange={setOwner}><SelectTrigger size="sm" className="w-32" aria-label="负责人"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部负责人</SelectItem>{owners.map((name) => <SelectItem key={name} value={name}>{name}</SelectItem>)}</SelectContent></Select>
-      <Select value={lifecycle} onValueChange={(value) => setLifecycle(value as typeof lifecycle)}><SelectTrigger size="sm" className="w-32" aria-label="投放阶段"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部投放阶段</SelectItem>{(Object.keys(lifecycleLabel) as LifecycleStage[]).filter((key) => key !== "unknown").map((key) => <SelectItem key={key} value={key}>{lifecycleLabel[key]}</SelectItem>)}</SelectContent></Select>
+      <Select value={lifecycle} onValueChange={(value) => setLifecycle(value as typeof lifecycle)}><SelectTrigger size="sm" className="w-36" aria-label="投放阶段"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部投放阶段</SelectItem>{(Object.keys(lifecycleLabel) as LifecycleStage[]).filter((key) => key !== "unknown").map((key) => <SelectItem key={key} value={key}>{lifecycleLabel[key]}</SelectItem>)}</SelectContent></Select>
       <Button variant={starredOnly ? "default" : "outline"} size="sm" onClick={() => setStarredOnly((prev) => !prev)}><IconStar />星标</Button>
       <Tooltip><TooltipTrigger asChild><span className="inline-flex"><Button variant="outline" size="sm" disabled><IconTag />标签</Button></span></TooltipTrigger><TooltipContent side="bottom">双层标签筛选随 tags 组合查询接口开放</TooltipContent></Tooltip>
       <Select value={groupBy} onValueChange={(value) => setGroupBy(value as GroupBy)}><SelectTrigger size="sm" className="w-36" aria-label="分组"><span className="text-muted-foreground">分组</span><SelectValue /></SelectTrigger><SelectContent>{(Object.keys(groupLabels) as GroupBy[]).map((key) => <SelectItem key={key} value={key}>{groupLabels[key]}</SelectItem>)}</SelectContent></Select>
@@ -134,7 +135,7 @@ export function AccountsPage() {
 
   return (
     <PageBody>
-      <PageHeader title="账户池" description="全量账户各在哪个库存态、哪些没用、按产品名分、哪些备用；缺数显 −" isMock={isMock} actions={<StateSwitch />} />
+      <PageHeader title="账户池" description="全量账户各在哪个状态、哪些没用、按产品名分、哪些备用；缺数显 −" isMock={isMock} actions={<StateSwitch />} />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="账户池扩展字段接口接入后切换为真数据" empty={{ title: "当前空间没有可见账户", description: "个人空间只看本人授权账户；导入认领或新建账户后出现。" }}>
@@ -146,8 +147,8 @@ export function AccountsPage() {
                   {poolViews.map((item) => <ToggleGroupItem key={item.value} value={item.value} title={item.hint} className="px-3 text-xs">{item.label}</ToggleGroupItem>)}
                 </ToggleGroup>
               </div>
-              {view === "tiles" ? <PoolTiles stages={stages} total={total} value={status} onChange={setStatus} asOf={asOf} /> : null}
-              {view === "pipeline" ? <PoolPipeline stages={stages} total={total} value={status} onChange={setStatus} asOf={asOf} /> : null}
+              {view === "tiles" ? <PoolTiles stages={stages} total={pipelineTotal} value={status} onChange={setStatus} asOf={asOf} /> : null}
+              {view === "pipeline" ? <PoolPipeline stages={stages} total={pipelineTotal} value={status} onChange={setStatus} asOf={asOf} /> : null}
               <div className="grid gap-4 @6xl/main:grid-cols-12">
                 <div className="min-w-0 @6xl/main:col-span-9">
                   {view === "kanban" ? (
