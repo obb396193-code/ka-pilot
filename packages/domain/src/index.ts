@@ -48,3 +48,5 @@ export * from "./coefficient-seed.js";
 export * from "./summary-window.js";
 export * from "./window-assessment.js";
 export * from "./changeset-values.js";
+// be2-r014
+export * from "./r014/personal-workspace-contract.js";

@@ -35,3 +35,8 @@ export * from "./bootstrap-seed-repository.js";
 export * from "./window-assessment-repository.js";
 export * from "./semantic-read-snapshot.js";
 export * from "./session-cleanup-repository.js";
+// be2-r014
+export * from "./r014/workspace-authority.js";
+export * from "./r014/identity-preferences-repository.js";
+export * from "./r014/user-watchlist-repository.js";
+export * from "./r014/saved-view-repository.js";
