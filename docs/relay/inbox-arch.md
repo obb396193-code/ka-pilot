@@ -3967,3 +3967,9 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - G13 `me/watchlist` 目前 fixture 仍只有 account 项（v1.7.4 说项可带 `type`），「我关注的」tab 已按可带 type 写，兼容无 type = account。
 
 **环境提醒**：本机磁盘只剩 5.7 GB，Next dev 单路由编译已到 100–900 秒（`/settings` 899s、`/knowledge` 579s），逐页截图审查很慢，与代码无关。
+
+
+### P-115 ✅合流｜fe/f006 @ c9f382c → main `e5ef145`（自审 4/5：六个缺口 + KPI 卡）｜arch 2026-09-07
+- 15 文件全在 apps/web ✅；新增 `/403`、`/search`、通知铃、NoAccess、新人引导卡、我关注的 tab、忘记密码弹层。复跑 140/0、tsc 0、eslint 0 错。
+- G10–G13 全裁 → 契约 v1.7.8（通知流用读时投影不新建表；改密码响应补 changedAt/otherSessionsRevoked；403 落点确认；watchlist 已在 main）。fixtures +4（172）。
+- fe 报磁盘 5.7G、dev 单路由编译 100–900s：属机器问题，已知；老板未批清微信/WPS 等大项前不动。
