@@ -5,13 +5,14 @@ import {
   type AccountDailyAssessment, type SemanticQueryScope,
 } from "@ka/db";
 import {
-  accountDimensionWindowRowSchema, dailyAssessmentInputSchema, queryWindowSchema,
+  accountDimensionWindowRowSchema, groupedDimensionWindowRowSchema, dailyAssessmentInputSchema, queryWindowSchema,
   computeWindowAssessment, sumMetricValues, type MetricValue,
 } from "@ka/domain";
 import { canonicalSummaryBaseRow } from "./canonical-query-rows.js";
 
 const tupleSchema = z.object({ media: z.string().regex(/^[A-Z0-9_]{1,32}$/), accountId: z.string().regex(/^[A-Za-z0-9_-]{1,128}$/) }).strict();
-const inputSchema = z.object({ workspaceId: z.string().uuid(), accounts: tupleSchema.array().max(1000), window: queryWindowSchema }).strict()
+const inputFields = { workspaceId: z.string().uuid(), accounts: tupleSchema.array().max(1000), window: queryWindowSchema };
+const inputSchema = z.object(inputFields).strict()
   .refine((value) => new Set(value.accounts.map(key)).size === value.accounts.length, "Duplicate account tuple")
   .refine((value) => span(value.window.from, value.window.to) <= 31, "Dimension window exceeds 31 days");
 const lineageSchema = z.object({ dataAsOf: z.string().datetime({ offset: true }).nullable(),
@@ -25,7 +26,15 @@ interface DimensionRepository {
 }
 type Result = { rows: z.infer<typeof accountDimensionWindowRowSchema>[]; window: z.infer<typeof queryWindowSchema>;
   lineage: z.infer<typeof lineageSchema>; warnings: string[] };
-type Snapshot = (read: (repository: DimensionRepository) => Promise<Result>) => Promise<Result>;
+type GroupResult = Omit<Result, "rows"> & { rows: z.infer<typeof groupedDimensionWindowRowSchema>[] };
+type Snapshot = <T>(read: (repository: DimensionRepository) => Promise<T>) => Promise<T>;
+const groupInputSchema = z.object({ ...inputFields,
+  dimensionType: z.enum(["task", "biz"]),
+}).strict().superRefine((value, ctx) => {
+  const result = inputSchema.safeParse({ workspaceId: value.workspaceId, accounts: value.accounts, window: value.window });
+  if (!result.success) for (const issue of result.error.issues) ctx.addIssue({ code: "custom", path: issue.path, message: issue.message });
+});
+const membershipLabelsSchema = z.object({ taskId: z.string().trim().min(1).nullable(), bizName: z.string().trim().min(1).nullable() });
 function key(account: { media: string; accountId: string }): string { return `${account.media}:${account.accountId}`; }
 function span(from: string, to: string): number { return (Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000 + 1; }
 function invalid(): never { throw new SemanticQueryContractError("Invalid dimension window result"); }
@@ -51,9 +60,56 @@ function groupHistory(raw: AccountDailyAssessment[], input: z.infer<typeof input
   return grouped;
 }
 
-/** Three bounded reads on one RR/RO connection. No row-level N+1 and no live-source fallback. */
+/** Three repository reads on one RR/RO connection; task/biz adds one overlap probe.
+ * No row-level N+1 and no live-source fallback.
+ */
 export class PlatformDimensionQuery {
   constructor(private readonly snapshot: Snapshot) {}
+  async group(value: unknown): Promise<GroupResult> {
+    const input = groupInputSchema.parse(value), expectedDays = span(input.window.from, input.window.to);
+    const scope: SemanticQueryScope = { workspaceId: input.workspaceId, dateFrom: input.window.from, dateTo: input.window.to,
+      filters: { accountScopes: input.accounts } };
+    return this.snapshot(async (repository) => {
+      const lineage = lineageSchema.parse(await repository.queryLineage(scope));
+      const raw = await repository.queryDimension({ ...scope, dimension: input.dimensionType });
+      const historyRows = await repository.loadByAccount(scope), accounts = groupHistory(historyRows, input);
+      if (!Array.isArray(raw) || raw.length > 10000 || Buffer.byteLength(JSON.stringify(raw)) >= 16 * 1024 * 1024 ||
+        [...accounts.values()].some((days) => days.length !== expectedDays) ||
+        lineage.requestedAccountDays !== input.accounts.length * expectedDays || lineage.returnedAccounts > accounts.size ||
+        lineage.returnedAccountDays > lineage.requestedAccountDays || lineage.canonicalRows !== lineage.returnedAccountDays ||
+        lineage.returnedAccounts > lineage.canonicalRows) return invalid();
+      const groups = new Map<string | null, AccountDailyAssessment[]>();
+      for (const row of historyRows) {
+        const labels = membershipLabelsSchema.safeParse({ taskId: row.taskId, bizName: row.bizName });
+        if (!labels.success) return invalid();
+        const groupKey = input.dimensionType === "task" ? row.taskId : row.bizName;
+        const members = groups.get(groupKey) ?? []; members.push(row); groups.set(groupKey, members);
+      }
+      if (raw.length !== groups.size) return invalid();
+      const seen = new Set<string | null>(); let observedRows = 0, groupAccounts = 0;
+      const rows = raw.map((row) => {
+        if (!row || typeof row !== "object" || Array.isArray(row) || !row.metrics || typeof row.metrics !== "object") return invalid();
+        const members = groups.get(row.dimensionKey);
+        if (!members || seen.has(row.dimensionKey)) return invalid();
+        seen.add(row.dimensionKey);
+        const summary = canonicalSummaryBaseRow(row.metrics as unknown as Record<string, unknown>, "platform");
+        const accountCount = new Set(members.map(key)).size;
+        if (summary.accountCount > accountCount || summary.accountCount > lineage.returnedAccounts ||
+          (summary.rowCount > 0 && summary.accountCount === 0) ||
+          summary.accountCount > summary.rowCount || summary.rowCount > members.length || summary.anomalyRows! > summary.rowCount ||
+          !equal(summary.metrics.cashCost, sumMetricValues(members.map((row) => row.input.cashCost))) ||
+          !equal(summary.metrics.realConversion, sumMetricValues(members.map((row) => row.input.realConversion)))) return invalid();
+        observedRows += summary.rowCount; groupAccounts += summary.accountCount;
+        const assessment = computeWindowAssessment(members.map((row) => row.input));
+        return groupedDimensionWindowRowSchema.parse({ key: row.dimensionKey, label: row.dimensionLabel,
+          metrics: { ...summary.metrics, costSpace: assessment.costSpace }, assessment: assessment.assessment, anomaly: summary.anomalyRows! > 0 });
+      });
+      // One account may occur in several groups across days: group counts are not a distinct account total.
+      if (observedRows !== lineage.canonicalRows || groupAccounts < lineage.returnedAccounts ||
+        (lineage.canonicalRows > 0 && lineage.returnedAccounts === 0)) return invalid();
+      return { rows, window: input.window, lineage, warnings: ["BUDGET_SOURCE_NOT_READY"] };
+    });
+  }
   async account(value: unknown): Promise<Result> {
     const input = inputSchema.parse(value), expectedDays = span(input.window.from, input.window.to);
     const scope: SemanticQueryScope = { workspaceId: input.workspaceId, dateFrom: input.window.from, dateTo: input.window.to,

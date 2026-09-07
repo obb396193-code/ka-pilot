@@ -3,12 +3,8 @@ import { describe, expect, it } from "vitest";
 import { dataQueryRequestSchema, sourceQueryResultSchema } from "../src/data-query-contract.js";
 const authoritative = JSON.parse(readFileSync(new URL("../../contract/fixtures/data-query/dimension-v3-account.json", import.meta.url), "utf8")).data.source;
 function source() {
-  // The arch row fixture omits the required metadata fields. This test explicitly
-  // supplies unknown synthetic lineage, not invented source freshness/version.
-  return { ...structuredClone(authoritative), lineage: { ...structuredClone(authoritative.lineage),
-    datasetVersion: null, queryTemplateVersion: "test-v1", metricVersion: "test-v1", dataAsOf: null,
-    timezone: null, dayCut: null, metadataAvailability: "unknown",
-    objectIdentity: { objectType: "account", joinKeys: ["workspace_id", "media", "account_id"] } } };
+  // arch 56fd109 now supplies the complete canonical source envelope.
+  return structuredClone(authoritative);
 }
 describe("dimension public envelope", () => {
   it("accepts registered syntax and the canonical source dimension property", () => {

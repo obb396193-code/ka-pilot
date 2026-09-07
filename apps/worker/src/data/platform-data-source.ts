@@ -201,7 +201,7 @@ export class PlatformDataSource {
     private readonly repository: PlatformQueryRepository,
     private readonly snapshot?: PlatformReadSnapshot,
     private readonly windowQuery?: Pick<PlatformWindowQuery, "summary">,
-    private readonly dimensionQuery?: Pick<PlatformDimensionQuery, "account">,
+    private readonly dimensionQuery?: Pick<PlatformDimensionQuery, "account" | "group">,
   ) {}
 
   async query(
@@ -210,13 +210,16 @@ export class PlatformDataSource {
   ): Promise<SourceQueryResult> {
     try {
       if (resolved.queryId === "account.dimension") {
-        if (!this.dimensionQuery || execution.scopeKind !== "explicit_accounts" || resolved.params.dimensionType !== "account") throw new Error("Dimension reader unavailable");
-        const result = await this.dimensionQuery.account({ workspaceId: execution.workspaceId,
+        const dimension = resolved.params.dimensionType;
+        if (!this.dimensionQuery || execution.scopeKind !== "explicit_accounts" || !dimension || !["account", "task", "biz"].includes(dimension)) throw new Error("Dimension reader unavailable");
+        const input = { workspaceId: execution.workspaceId,
           accounts: execution.accounts.map(({ media, accountId }) => ({ media, accountId })),
-          window: { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" } });
+          window: { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" } };
+        const result = dimension === "account" ? await this.dimensionQuery.account(input)
+          : await this.dimensionQuery.group({ ...input, dimensionType: dimension });
         const rows = canonicalizeQueryRows(resolved.queryId, "platform", result.rows, execution.workspaceId);
         const lineage = { ...sourceLineage(resolved, execution, result.lineage, false), window: result.window, warnings: result.warnings };
-        return { queryId: resolved.queryId, rowSchemaVersion: resolved.rowSchemaVersion, dimension: "account", status: "ready",
+        return { queryId: resolved.queryId, rowSchemaVersion: resolved.rowSchemaVersion, dimension, status: "ready",
           rows, returnedRowCount: rows.length, lineage, warnings: result.warnings,
           wholeResultTotal: lineage.partial ? { value: null, availability: "partial", reason: "Canonical account-day coverage is incomplete" }
             : { value: rows.length, availability: "available" } };

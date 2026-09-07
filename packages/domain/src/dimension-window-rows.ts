@@ -12,6 +12,7 @@ const dimensionFields = {
 export const dimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range"]);
 
 const groupedRowSchema = z.object(dimensionFields).strict().superRefine(refineWindowMetricAssessment);
+export const groupedDimensionWindowRowSchema = groupedRowSchema;
 const agentTypeRowSchema = z.object({
   ...dimensionFields,
   agent_type: z.enum(["agency", "self"]),

@@ -313,7 +313,7 @@ function reconciliationSql(params: NormalizedQueryParams, accounts: SqlAccountSc
 
 const DEFINITION_INPUT: QueryDefinition[] = [
   {
-    queryId: "account.dimension", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 1000,
+    queryId: "account.dimension", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
     accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-dimension-window-v1",
     metricVersion: "account-dimension-v3", authorityPolicy: authority("cross_media_operations", "platform"),
     paramsSchema: normalizedSchema({ ...commonDateFields, preset: queryWindowSchema.shape.preset.optional(), dimensionType: dimensionTypeSchema }),
@@ -468,7 +468,7 @@ export class DataQueryRegistry {
       throw new QueryRegistryError("INVALID_REQUEST", "Invalid query parameter set");
     }
     assertDateBudget(parsedParams.data, entry.maxDateSpanDays);
-    if (queryId.data === "account.dimension" && parsedParams.data.dimensionType !== "account") {
+    if (queryId.data === "account.dimension" && !["account", "task", "biz"].includes(parsedParams.data.dimensionType ?? "")) {
       throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This dimension is not available for this source");
     }
     if (parsedParams.data.taskId !== undefined && dataView.data !== "platform" &&

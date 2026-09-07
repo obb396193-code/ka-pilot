@@ -8,14 +8,14 @@ const workspaceId = randomUUID(), foreignWorkspaceId = randomUUID();
 const accounts = [{ media: "KUAISHOU", accountId: "synthetic-shared" }, { media: "TENCENT", accountId: "synthetic-shared" }];
 const scope = { workspaceId, dateFrom: "2026-09-01", dateTo: "2026-09-02", filters: { accountScopes: accounts } };
 const raw = () => ({ workspace_id: workspaceId, media: "KUAISHOU", account_id: "synthetic-shared",
-  ds: "2026-09-01", cash_cost: "10", real_conversion: "1", version_id: "1", price: "20", effective_date: "2026-09-01" });
+  task_id: "synthetic-task", biz_name: "synthetic-biz", ds: "2026-09-01", cash_cost: "10", real_conversion: "1", version_id: "1", price: "20", effective_date: "2026-09-01" });
 
 describe("account assessment bulk boundary", () => {
   const read = (rows: unknown[]) => new WindowAssessmentRepository({ query: vi.fn().mockResolvedValue({ rows }) }).loadByAccount(scope);
   it("uses one parameterized SQL for all approved pairs", async () => {
     const query = vi.fn().mockResolvedValue({ rows: [raw()] });
     expect(await new WindowAssessmentRepository({ query }).loadByAccount(scope)).toMatchObject([
-      { workspaceId, media: "KUAISHOU", accountId: "synthetic-shared", input: { cashCost: { value: 10 } } },
+      { workspaceId, media: "KUAISHOU", accountId: "synthetic-shared", taskId: "synthetic-task", bizName: "synthetic-biz", input: { cashCost: { value: 10 } } },
     ]);
     expect(query).toHaveBeenCalledTimes(1);
     expect(query.mock.calls[0]?.[0]).toContain("LIMIT 10001");
@@ -25,6 +25,7 @@ describe("account assessment bulk boundary", () => {
     { workspace_id: foreignWorkspaceId }, { media: "BAIDU" }, { account_id: "outside" },
     { ds: "2026-02-31" }, { ds: "2026-09-03" }, { cash_cost: "NaN" }, { price: "Infinity" },
     { effective_date: "2026-09-02" }, { workspace_id: null }, { real_conversion: false },
+    { task_id: 4 }, { biz_name: false },
   ])("rejects untrusted or invalid row %j", async (change) => {
     await expect(read([{ ...raw(), ...change }])).rejects.toThrow();
   });
@@ -78,5 +79,17 @@ describe("account assessment bulk / synthetic real PG", () => {
     expect(await new WindowAssessmentRepository(pool).loadByAccount({ ...scope, filters: { accountScopes: [] } })).toEqual([]);
     const rows = await new WindowAssessmentRepository(pool).loadByAccount({ ...scope, filters: { accountScopes: [accounts[0]!] } });
     expect(rows).toHaveLength(2); expect(rows.every((row) => row.media === "KUAISHOU")).toBe(true);
+  });
+  it("uses effective-day task changes; a missing task master preserves the relation with unknown business", async () => {
+    await pool.query("UPDATE task_accounts SET valid_to='2026-09-01' WHERE workspace_id=$1 AND media='KUAISHOU'", [workspaceId]);
+    try {
+      await pool.query("INSERT INTO task_accounts(workspace_id,media,account_id,task_id,valid_from) VALUES($1,'KUAISHOU','synthetic-shared','synthetic-orphan','2026-09-02')", [workspaceId]);
+      const rows = await new WindowAssessmentRepository(pool).loadByAccount({ ...scope, filters: { accountScopes: [accounts[0]!] } });
+      expect(rows.map((row) => row.taskId)).toEqual(["synthetic-task", "synthetic-orphan"]);
+      expect(rows[1]?.bizName).toBeNull(); expect(rows[1]?.input.price).toBeNull();
+    } finally {
+      await pool.query("DELETE FROM task_accounts WHERE workspace_id=$1 AND task_id='synthetic-orphan'", [workspaceId]);
+      await pool.query("UPDATE task_accounts SET valid_to=NULL WHERE workspace_id=$1 AND media='KUAISHOU'", [workspaceId]);
+    }
   });
 });
