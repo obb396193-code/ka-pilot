@@ -41,6 +41,13 @@ function setup(options: { status?: string; hash?: string | null; evidence?: bool
 
 describe("changeset dry-run hard gate (mock SQL)", () => {
   const result = { workspaceId: ws, changeSetId: id, now, expectedHash: hash, items: [{ itemId: 1, status: "success" as const }] };
+  it.each(["media", "accountId", "initiatorUserId", "credentialOwnerUserId"] as const)("checks authorized %s under the same record lock", async key => {
+    const c = setup();
+    const expectedScope = { media: "KUAISHOU", accountId: "synthetic", initiatorUserId: user, credentialOwnerUserId: user, [key]: "different" };
+    await expect(c.repository.recordDryRun({ ...result, expectedScope })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(c.query.mock.calls.some(([sql]) => sql.includes("INSERT INTO execution_runs"))).toBe(false);
+    expect(c.query.mock.calls.at(-1)![0]).toBe("ROLLBACK"); expect(c.release).toHaveBeenCalledOnce();
+  });
   it("rolls back and releases the same transaction when queue creation fails", async () => {
     const c = setup({ hash, evidence: true, queueFails: true });
     await expect(c.repository.confirm({ workspaceId: ws, changeSetId: id, now, currentValues })).rejects.toThrow("synthetic queue failure");
