@@ -28,6 +28,7 @@ import { createDataQualityHandler } from "./quality/check-handler.js";
 import { QihangClient } from "./qihang/client.js";
 import { createSessionCleanupHandler } from "./auth/session-cleanup-handler.js";
 
+import { r014JobHandlers } from "./r014/handlers.js";
 type DatabasePool = ReturnType<typeof createPool>;
 
 export interface WorkerRuntimeOptions {

@@ -63,6 +63,9 @@ import {
 } from "../auth/session-http.js";
 import type { SessionAuthService } from "../auth/session-auth-service.js";
 
+
+// arch 开的缝：R-014 路由由 be2 在 src/r014/routes.ts 注册
+import { findR014Route } from "../r014/routes.js";
 export const DEFAULT_DATA_API_MAX_REQUEST_BYTES = 1024 * 1024;
 export const DEFAULT_DATA_API_MAX_RESPONSE_BYTES = 16 * 1024 * 1024;
 
