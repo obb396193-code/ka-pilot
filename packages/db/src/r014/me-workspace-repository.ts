@@ -204,6 +204,21 @@ export class MeWorkspaceRepository {
     return parsed.success ? parsed.data : { notificationsReadAt: null, notificationsReadIds: [] };
   }
 
+  /**
+   * 已读态与主题偏好共用 identity_preferences.preferences 这一份 JSONB（G10 指定），
+   * 所以只能 **合并** 写两个已读键，不能整块替换——替换会把用户的主题设置抹掉。
+   */
+  async writeReadState(identityId: string, state: NotificationReadState): Promise<void> {
+    const parsed = notificationReadStateSchema.parse(state);
+    await this.pool.query(
+      `INSERT INTO identity_preferences (identity_id, preferences, updated_at)
+       VALUES ($1, $2::jsonb, now())
+       ON CONFLICT (identity_id) DO UPDATE
+         SET preferences = identity_preferences.preferences || EXCLUDED.preferences, updated_at = now()`,
+      [identityId, JSON.stringify(parsed)],
+    );
+  }
+
   private async workItemCounts(auth: ApprovedWorkspaceAuthContext): Promise<NonNullable<MeCountsParts["workItems"]>> {
     const result = await this.pool.query(
       `SELECT count(*)::int AS open,

@@ -83,3 +83,23 @@ export function requireTimestamp(value: unknown): Date {
   if (!(value instanceof Date) || !Number.isFinite(value.getTime())) throw new R014RepositoryError("INVALID_RESULT");
   return value;
 }
+
+/**
+ * 会话上下文里没有 identityId（approvedWorkspaceAuthContextSchema 是 strict 的，只有五个键），
+ * 但 identity 级资源（identity_preferences / 通知已读态）需要它 —— 从 live 成员关系反查，
+ * 顺带保证这个人现在还是这个空间的在册成员。
+ */
+export async function resolveIdentityId(
+  executor: Pool | PoolClient,
+  auth: ApprovedWorkspaceAuthContext,
+): Promise<string> {
+  const approved = approveAuth(auth);
+  const result = await executor.query(
+    `SELECT member.identity_id FROM workspace_memberships AS member
+     JOIN auth_identities AS identity ON identity.id=member.identity_id AND identity.is_active=true
+     WHERE member.workspace_id=$1 AND member.user_id=$2 AND member.is_active=true LIMIT 2`,
+    [approved.workspaceId, approved.userId],
+  );
+  if (result.rows.length !== 1) throw new R014RepositoryError("FORBIDDEN");
+  return requireUuid((result.rows[0] as { identity_id: unknown }).identity_id);
+}

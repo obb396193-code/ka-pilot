@@ -26,10 +26,14 @@ import { InternalTestLoginProvider } from "./auth/internal-test-login-provider.j
 import { SessionAuthService } from "./auth/session-auth-service.js";
 import { SessionHttpService } from "./auth/session-http.js";
 import { WorkItemListService } from "./work-items/work-item-list-service.js";
+// be2-r014：把 R-014 的路由注册进 arch 开的缝（routes.ts）。壳层只认这个数组，不认识具体路径。
+import { createMeRoutes } from "./r014/me-routes.js";
+import { registerR014Routes } from "./r014/routes.js";
 
 async function main(): Promise<void> {
   const config = loadDataApiConfig(process.env);
   const pool = createPool(config.databaseUrl);
+  registerR014Routes([...createMeRoutes(pool)]); // be2-r014
   const authRepository = new AuthSessionRepository(pool);
   const sessionAuthService = new SessionAuthService(authRepository);
   const service = new DataQueryService({
