@@ -16,9 +16,9 @@ async function main(): Promise<void> {
         stdio: ["ignore", "ignore", "ignore", "ipc"],
       }),
     });
-    if (result === "aborted") throw new Error("Interrupted");
+    if (result.status === "aborted" || result.status === "blocked_auth") throw new Error("Interrupted");
     // Round completion is NOT a claim that all eligible sessions or queued jobs are drained.
-    process.stdout.write(result === "budget" ? "Session cleanup round budget reached\n" : "Session cleanup round finished\n");
+    process.stdout.write(result.status === "budget" ? "Session cleanup round budget reached\n" : "Session cleanup round finished\n");
   } finally { process.removeListener("SIGINT", stop); process.removeListener("SIGTERM", stop); }
 }
 await main().catch(() => { process.stderr.write("Session cleanup failed\n"); process.exitCode = 1; });
