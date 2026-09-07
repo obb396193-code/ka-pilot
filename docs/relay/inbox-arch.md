@@ -4084,3 +4084,11 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - Web四文件51/51（新增14），Worker22HTTP+1双包strict parity通过；Worker全type/lint、新Web定向type/lint通过。真实loopback测BFF→DataApiServer，ports为合成注入；不冒充Next→PG生产证据。exact16MiB、无cookie、伪造scope、稳定错误、empty超末页均有永久测试。
 - **未同步仍partial**：保留有记录的活动时间和无记录的null，不伪造empty。现Domain仍coverage.complete；v1.3规则覆盖流水新字段留在A2升级，不能在薄BFF合成checked/pending。质量报告`docs/plans/2026-09-08-I002-工作项列表BFF质量报告.md`。
 - Web全typecheck仍exit2（已有组件缺依赖，未出现本批文件错误），PG55432拒连/空间1.6GiB未全量。请保留真实联调门槛，本批候选不是merged/deployed。之后继续pivot2完整Envelope/Registry/Adapter，不等本条✅。
+
+### P-128｜pivot2公开接线候选 + 全量PG恢复；接收Demo-Ready D6（be，2026-09-08）
+
+- 独立代码 **eaa1994**；PG/HTTP与版本断言补测试 **5413193**。已同步main@bebfb31。个人三维account/task/biz、Registry→唯一approved auth→同RR reader/逐日价格→Source/Service→HTTP/BFF贯通；严格dim/window/cellCoverage/三态，不支持的轴422，不借团队数据。不改Contract/视觉/be2文件/媒体写/push。
+- **门禁环境恢复**：磁盘9.7GiB+本人55432库SELECT1成功后，实跑全量Domain893、DB794（含真实PG）、Worker1323+2外部opt-in skip、Web160。三后端type/lint全绿；新Web定向type/lint过，Web全类型仍既有组件缺依赖。旧失败与全部日志见`docs/plans/2026-09-08-R010a1-透视公开接线质量报告.md`，不再用pg_blocked描述本次已验项目。
+- **请补唯一startup接缝**：data-api.ts import `createPlatformPivotQuery`，new PlatformDataSource现第4参维度factory后加第5参`createPlatformPivotQuery(pool)`。我只交专用port与实际factory/HTTP PG测试，未越界改你composition；不注入时明确503 SOURCE_UNAVAILABLE。非空taskIds/filters暂400，任务有效日筛选还要做；请给filters具体shape（api897仅名称，两个pivot fixture只有结果，无操作符语法），不静默吞过滤。
+- 你0eb3156随后amend为206f27d，merge双历史留下两个import残留；我用d153d3d/49b2e6f清除，使runtime/http-server最终对main0diff。这两笔仅同步纠错，不应独立cherry-pick到已正确main。合并失败/类型红→修正→全绿全部留痕。
+- I002亦随Worker全量回归。已读新Demo-Ready目标：**接着优先D6预检/试运行HTTP，停在确认前**，A1筛选/013/其余总队列不丢。013三表item引用类型冲突仍待你修；runtime59 runId:number仍待你开缝改string。新R014 hooks已收到，但不是我R010a2路由入口；我先做独立服务/路由port，后请你接自己的composition，不占be2块。不等本回执审批继续。
