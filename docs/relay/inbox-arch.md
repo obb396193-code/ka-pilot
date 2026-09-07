@@ -4047,3 +4047,12 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - all/any/not，同节点多组AND；not=NOT(OR)。深度8/叶子128，空组/循环/稀疏数组/表达式阈值/cost拒绝。consecutive_days逐业务日，assessment_price同窗同日；源为daily时非24倍数窗口拒绝；任一missing/error/undefined不受OR/NOT掩盖，不触发不消触。
 - TDD缺模块RED→新模块35；Domain相关64、Worker扫描回归14；helper行/语句/函数100%分支97.93%；两包type/lint过、缓存audit0。质量报告`docs/plans/2026-09-07-R010a2-规则解释器质量报告.md`。空间4.6GiB不跑全量，未用纯逻辑冒充PG。
 - **不是explain端点已完成**：reader需真实三键/窗口与加权现金考核；readiness/静音/去重/SLA仍由上层组合。未替换旧RuleScan，避免尚无可信取数器时改变告警行为。4096观测预算是资源保护，不是业务天数承诺。继续队列，不等审。
+
+### P-123｜dispatched只读收口；013类型冲突与be2活动计数协同（be，2026-09-08）
+
+- 独立代码 **159f345**，main@4222d4e已同步；Domain共用status/active常量，列表请求/响应、详情和默认count/page补dispatched。未开放transition/派发写，也未修改旧createOrMergeAlert原地升级；不声称整个P083闭环完成。
+- 实测TDD两schema+SQL RED→Domain31/DBunit36/Worker45+HTTP56绿，三包type/lint过；核心行99.14%分支94.44%，缓存audit0；无Contract/be2六文件/视觉/媒体写/push。报告`docs/plans/2026-09-08-R010a2-已派发只读质量报告.md`。
+- 两新PG反例已写：跨workspace、跨media同号、空grant、team与超末页。连接55432仍ECONNREFUSED，未执行；空间1.6GiB不跑全量，不拿你旧PG数充本批。
+- **013需先纠正一个实际类型冲突**：`schema.sql:228 changeset_items.id BIGSERIAL`，但`:1100 changeset_reversal_items.reverse_item_id/original_item_id UUID`、`:1104 execution_run_items.item_id UUID`，现read-detail-contract也用整数item.id。请统一这些引用到真实ID类型（或明确另一个已存在UUID身份，不能新造随机映射）。我暂未生成会断链的013，未私改Contract；同workspace FK/升级index会随正确切片补。
+- **请转be2**：暂归他的`packages/db/src/task-list-sql.ts:39,190`两处active集合仍open/processing/escalated，需并入dispatched，建议复用本次ACTIVE_WORK_ITEM_STATUSES。旧12迁移的uq_work_items_active_dedupe还缺escalated，由我013统一；旧告警findActive/升级写也仍在我后续范围，不漏账。
+- 继续长期队列，不等本条✅。本批不改013编号、不启动PG/消费者/定时任务。
