@@ -5,21 +5,49 @@
       {
         "type": "account",
         "id": "KUAISHOU:account-1",
-        "label": "AAC拉新_快手_01",
-        "href": "/accounts/KUAISHOU/account-1"
+        "title": "AAC拉新_快手_01",
+        "subtitle": "投放中 · AAC 拉新包",
+        "href": "/accounts/KUAISHOU/account-1",
+        "workspaceKind": "personal"
       },
       {
         "type": "task",
         "id": "fixture-task-ready",
-        "label": "AAC 拉新",
-        "href": "/tasks/fixture-task-ready"
+        "title": "AAC 拉新",
+        "subtitle": "投放中 · 3 户",
+        "href": "/tasks/fixture-task-ready",
+        "workspaceKind": "personal"
+      },
+      {
+        "type": "work_item",
+        "id": "00000000-0000-4000-8000-000000000402",
+        "title": "成本超考核持续 2 日 · AAC拉新_快手_02",
+        "subtitle": "P1 · open",
+        "href": "/?tab=today&item=00000000-0000-4000-8000-000000000402",
+        "workspaceKind": "personal"
+      },
+      {
+        "type": "material",
+        "id": "KUAISHOU:m-5001",
+        "title": "云感防晒一件搞定",
+        "subtitle": "视频 · 15s · 拆解 v2",
+        "href": "/materials?tab=materials&id=m-5001",
+        "workspaceKind": "personal"
+      },
+      {
+        "type": "document",
+        "id": "00000000-0000-4000-8000-000000002702",
+        "title": "新任务开户到基建 SOP",
+        "subtitle": "知识库 · sop",
+        "href": "/knowledge/00000000-0000-4000-8000-000000002702",
+        "workspaceKind": "personal"
       }
     ],
     "recent": [
       {
         "type": "task",
         "id": "fixture-task-ready",
-        "label": "AAC 拉新",
+        "title": "AAC 拉新",
         "href": "/tasks/fixture-task-ready"
       }
     ]
@@ -30,6 +58,6 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "非 LLM 对象直达"
+    "_note": "v1.7.4 G6：type 五类冻结 account|task|work_item|material|document；每类 ≤5；item {type,id,title,subtitle,href,workspaceKind}；旧 label 字段改 title"
   }
 }

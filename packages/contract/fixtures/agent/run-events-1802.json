@@ -1,0 +1,47 @@
+{
+  "ok": true,
+  "data": {
+    "runId": "00000000-0000-4000-8000-000000001802",
+    "events": [
+      {
+        "seq": 1,
+        "kind": "run_started",
+        "at": "2026-09-05T09:20:00.000+08:00"
+      },
+      {
+        "seq": 2,
+        "kind": "tool_called",
+        "at": "2026-09-05T09:20:03.000+08:00",
+        "tool": "account.summary",
+        "status": "ok"
+      },
+      {
+        "seq": 3,
+        "kind": "tool_called",
+        "at": "2026-09-05T09:20:05.000+08:00",
+        "tool": "changeset.preview",
+        "status": "error",
+        "error": {
+          "code": "MATERIAL_SOURCE_UNAVAILABLE",
+          "message": "预检失败：素材源不可达"
+        }
+      },
+      {
+        "seq": 4,
+        "kind": "run_failed",
+        "at": "2026-09-05T09:20:06.000+08:00",
+        "reason": "tool_error",
+        "retryable": true
+      }
+    ],
+    "rawLogAccess": "restricted"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "失败 run 事件流：tool_called error → run_failed(retryable)"
+  }
+}

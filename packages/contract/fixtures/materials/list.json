@@ -49,6 +49,10 @@
             "realCpa": {
               "value": 18.6,
               "state": "finite"
+            },
+            "cvr": {
+              "value": 0.0215,
+              "state": "finite"
             }
           }
         },
@@ -96,6 +100,10 @@
             "realCpa": {
               "value": 26.8,
               "state": "finite"
+            },
+            "cvr": {
+              "value": 0.0149,
+              "state": "finite"
             }
           }
         },
@@ -141,6 +149,10 @@
             "realCpa": {
               "value": null,
               "state": "undefined"
+            },
+            "cvr": {
+              "value": null,
+              "state": "undefined"
             }
           }
         },
@@ -161,6 +173,6 @@
     "workspaceKind": "personal",
     "selectedSource": "platform",
     "_example": true,
-    "_note": "P2 示例态：右上「示例」角标，解锁条件=视频源探针通过 + R-015"
+    "_note": "v1.7.4 G1：ratios.cvr 分母按 experiment policy conversionRateDenominator（默认 click）"
   }
 }

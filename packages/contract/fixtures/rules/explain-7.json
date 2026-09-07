@@ -1,0 +1,36 @@
+{
+  "ok": true,
+  "data": {
+    "ruleId": 7,
+    "accountId": "account-1",
+    "ds": "2026-09-05",
+    "leaves": [
+      {
+        "metric": "cash_cost",
+        "operator": ">",
+        "threshold": 500.0,
+        "value": 312.4,
+        "availability": "available",
+        "pass": false
+      },
+      {
+        "metric": "real_conversion",
+        "operator": "==",
+        "threshold": 0,
+        "value": 3,
+        "availability": "available",
+        "pass": false
+      }
+    ],
+    "notTriggeredReason": "CONDITION_FALSE",
+    "fallbackCopy": "条件不成立：现金消耗 312.4 未超 500 且有转化"
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "规则 7 未触发：CONDITION_FALSE，叶子全 available"
+  }
+}
