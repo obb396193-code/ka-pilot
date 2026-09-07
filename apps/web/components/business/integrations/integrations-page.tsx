@@ -19,7 +19,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { fmtTime, isOk } from "@/lib/fixtures/contract"
-import { cardCallbacksFixture, cardLevelHint, cardsFixture, connectionsFixture, escalateLabel, identityMappingsFixture, messageKindLabel, messageStatusMeta, messagesFixture, policiesFixture, providerLabel, type CardCallback, type CardInstance, type IdentityMapping, type MessageItem } from "@/lib/fixtures/integrations"
+import { cardCallbacksFixture, cardLevelHint, cardLevelLabel, cardsFixture, connectionsFixture, escalateLabel, identityMappingsFixture, messageKindLabel, messageStatusMeta, messagesFixture, policiesFixture, providerLabel, type CardCallback, type CardInstance, type IdentityMapping, type MessageItem } from "@/lib/fixtures/integrations"
 import { subscriptionKindLabel, subscriptionsFixture, type Subscription } from "@/lib/fixtures/reports"
 import { escalationsFixture, rosterFixture } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
@@ -70,7 +70,7 @@ function ConnectionsTab() {
             </CardContent>
             <CardFooter className="gap-2">
               <Button size="sm" variant="outline" onClick={() => toast.success("探活通过", { description: "机器人 token 与群可达" })}><IconRefresh />探活</Button>
-              <Button size="sm" variant="ghost" onClick={() => toast("发送测试消息", { description: "向群发一条 L0 测试卡" })}><IconSend />测试消息</Button>
+              <Button size="sm" variant="ghost" onClick={() => toast("发送测试消息", { description: "向群发一条只读测试卡" })}><IconSend />测试消息</Button>
             </CardFooter>
           </Card>
         ))}
@@ -144,13 +144,13 @@ function CardsTab() {
       <div className="grid gap-4 @3xl/main:grid-cols-2 @6xl/main:grid-cols-4">
         {data.templates.map((template) => (
           <Card key={template.id}>
-            <CardHeader><div className="flex items-start justify-between gap-2"><CardTitle className="text-base">{template.name}</CardTitle><TypeChip>{template.level}</TypeChip></div><CardDescription>{cardLevelHint[template.level]} · <span className="font-mono">{template.id}</span></CardDescription></CardHeader>
+            <CardHeader><div className="flex items-start justify-between gap-2"><CardTitle className="text-base">{template.name}</CardTitle><TypeChip>{cardLevelLabel[template.level]}</TypeChip></div><CardDescription>{cardLevelHint[template.level]} · <span className="font-mono">{template.id}</span></CardDescription></CardHeader>
             <CardContent className="flex flex-wrap gap-1">{template.actions.map((action) => <Badge key={action} variant="outline">{action}</Badge>)}{template.hashCheck ? <Badge variant="secondary" className="gap-1"><IconShieldCheck className="size-3" />hash 校验</Badge> : null}</CardContent>
           </Card>
         ))}
       </div>
       <Card>
-        <CardHeader><CardTitle>卡片实例</CardTitle><CardDescription>已发出的卡片；L2 卡带校验指纹和有效期，过期不可确认</CardDescription></CardHeader>
+        <CardHeader><CardTitle>卡片实例</CardTitle><CardDescription>已发出的卡片；确认执行卡带校验指纹和有效期，过期不可确认</CardDescription></CardHeader>
         <CardContent><DataGrid table={instTable} empty="没有卡片实例" showPagination={false} showColumnPicker={false} /></CardContent>
       </Card>
       <Card>
@@ -231,7 +231,7 @@ export function IntegrationsPage() {
   const [tab, setTab] = usePageTab<Tab>(tabs, "connections")
   return (
     <PageBody>
-      <PageHeader title="集成与通知" description="钉钉网关：接入、身份映射、订阅、卡片 L0–L3、值守升级链、消息记录（出站 ∪ 入站）" isMock={isMock} actions={<StateSwitch />} />
+      <PageHeader title="集成与通知" description="钉钉网关：接入、身份映射、订阅、四类卡片（只读 / 可取消 / 确认执行 / 结果）、值守升级链、消息记录（出站 + 入站）" isMock={isMock} actions={<StateSwitch />} />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="消息网关（接入 / 订阅 / 卡片 / 消息记录）接入后切换为真数据" empty={{ title: "还没有接入", description: "先在接入管理连上钉钉机器人。" }}>
@@ -241,7 +241,7 @@ export function IntegrationsPage() {
               <Card>
                 <CardHeader><CardTitle>群助手</CardTitle><CardDescription>在钉钉群 @KA Pilot 经营助手，用自然语言查数、建任务、调工作流；写操作一律出变更集卡片确认</CardDescription></CardHeader>
                 <CardContent className="grid gap-3 @3xl/main:grid-cols-3 text-sm">
-                  {[["查数", "「AAC 拉新 昨天 现金 CPA」→ 回 L0 卡：账面 / 现金并排，缺数显 −"], ["建任务", "「新建任务 闲鱼潜客 9 月 目标 5 万」→ 回确认卡，确认后创建（未映射身份不执行）"], ["调工作流", "「跑一遍 新任务开户到基建」→ 起 run，到人工确认节点发 L2 卡"]].map(([title, body]) => <div key={title} className="rounded-lg border p-3"><p className="font-medium">{title}</p><p className="mt-1 text-xs text-muted-foreground">{body}</p></div>)}
+                  {[["查数", "「AAC 拉新 昨天 现金 CPA」→ 回只读卡：账面 / 现金并排，缺数显 −"], ["建任务", "「新建任务 闲鱼潜客 9 月 目标 5 万」→ 回确认卡，确认后创建（未映射身份不执行）"], ["调工作流", "「跑一遍 新任务开户到基建」→ 起 run，到人工确认节点发 L2 卡"]].map(([title, body]) => <div key={title} className="rounded-lg border p-3"><p className="font-medium">{title}</p><p className="mt-1 text-xs text-muted-foreground">{body}</p></div>)}
                 </CardContent>
               </Card>
             </ExampleBlock>

@@ -123,7 +123,7 @@ export function SettlementWizard() {
             </CardContent>
           </Card>
           <Card>
-            <CardHeader><CardTitle>分发</CardTitle><CardDescription>导出 xlsx / 推群卡片（L2）</CardDescription></CardHeader>
+            <CardHeader><CardTitle>分发</CardTitle><CardDescription>导出 Excel / 推一张需确认的群卡片</CardDescription></CardHeader>
             <CardContent className="flex flex-col gap-2">
               <Button variant="outline" disabled={!frozenDone} onClick={() => toast("已排队导出", { description: "排队后完成" })}><IconFileSpreadsheet />导出 xlsx</Button>
               <Button variant="outline" disabled={!frozenDone} onClick={() => toast.success("已推到群", { description: "发到结算单订阅的目标群（当前示例该订阅停用，需先启用）" })}><IconBrandDingtalk />推钉钉群</Button>
