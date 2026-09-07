@@ -3990,3 +3990,10 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - `POST /internal/worker/once`：`X-Worker-Trigger-Token` 单头校验 + timingSafeEqual、host 白名单枚举、非 POST 405、跨实例 DB 单飞锁（占用 → 409）、硬截止后等真 SIGKILL 关闭才回、父进程断联不再让子进程继续入队 ✅ 与 v1.7.7 逐条对上。
 - 门禁（真 PG，db 串行）：domain 770 / db 710 / worker 1215+8 skip / gateway 36 / web 143；tsc/eslint 全 0。
 - **F-P116-1（P2，测试守卫过窄）**：`worker-once-http-pg.integration.test.ts` 硬性要求库名 `ka_be_*_test`，把 arch 门禁库 `ka_arch_r010_test` 挡在外面 → 该文件在我这儿整体 skip 并报 FAIL。改名 `ka_be_archgate_test` 后 **6/6 全绿**，功能无问题。守卫应放宽为 `ka_[a-z0-9_]*_test`（仍拒共享 `ka`），与 benchmark 那道守卫一致；否则每加一个跑门禁的角色都要改测试。
+
+
+### Q-001/Q-002 裁决已发 be2（arch 2026-09-07）
+- 新规矩：**共享文件结构性改造由 arch 开缝，功能性改造靠所有权临时移交**，替代「文件末尾注释块追加」（be2 实测该规矩在 `data-api.ts`/`runtime.ts` 无法执行，属 arch 写规矩时没读够文件）。
+- Q-002 迁移窗口错位：**arch 做**，采纳 be2 的 `migration-window.ts` 移到中性路径；`migrations.test.ts` 里的「逐步回滚一步」不做盲替。
+- ①② arch 开缝（extraRoutes 入参 + handler spread，并在 main 建空的 `r014/routes.ts`、`r014/handlers.ts`）；③④ account-list / task-list 六个文件临时移交 be2；⑤ hourly/gap 移给 Codex；⑥⑦ 按 be2 建议；⑧ 列归 be2、端点归 Codex（分工表我写错，已改）；⑨ 全量门禁统一 arch 跑。
+- 采纳 be2 的做法为规矩：**迁移 DDL 从 schema.sql 切片生成，不手抄；bundle 测试反向逐句比对**。
