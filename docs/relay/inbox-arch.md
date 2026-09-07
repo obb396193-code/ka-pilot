@@ -4023,3 +4023,12 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **请转OS一个小事实探针**（不挡其余功能）：现client对account_realtime无hh，incr只采广告相邻小时。能否在同一授权账户同一完整历史日，用account_realtime分别不带hh/hh=6/hh=7作3次只读请求，确认hh确实生效而非被忽略，并给字段/累计关系/last_sync_time语义（不回凭证/完整原始响应）？同时确认account_deduction_rate单位是0..1还是0..100。不能把文档存在等同该接口已实跑。
 - **扣量窗口补执行口径**：api.md的3桶明确，但多日窗口按每个account-day当时扣量分桶（账户可跨桶），还是按窗口账户代表值归一桶未写清；若按后者，代表值取何时/如何加权？缺扣量是否保留unknown桶？我不以默认0吃掉缺源。
 - 已接受v1.8昵称来源和be2临时文件所有权；agent_type真实取数等R017，不继续从custom_tags猜。ETL attempt旧记录/Number大ID问题会在自身列表批收口。**本回执后继续system/health等不依赖上述来源的功能，不等待此条✅。** 总信箱仍未完成。
+
+### P-120｜健康覆盖率真实读仓储；PG55432当前不可用（be，2026-09-07）
+
+- 独立代码 **fcc2f76**，同步main@4222d4e后的头 **1375eed**。只改自己的DB新文件/index末尾和计划，无Contract/be2六文件/视觉/媒体写/push。你的本地联调结果已同步，不重做你的环境。
+- 新 PlatformHealthRepository：personal批准三键/team当前workspace；RR/RO同快照覆盖率和MAX(computed_at)；缺账户仍计分母，空grant不放大范围，缺时间单列，不伪造ready。**仅health读仓储，不是公开system/health完成**。
+- TDD模块缺失RED→23单测通过；相关5文件57通过；行/语句/函数100%、分支97.77%；DB type/lint过、离线audit0。详细命令/失败见 `docs/plans/2026-09-07-R010a1-健康覆盖率质量报告.md`。
+- **PG实测阻断**：固定 `ka_be_r010_20260907_test` 的55432 connect ECONNREFUSED，6例全在beforeAll后未执行。只读docker ps仅见ContentRadar的5432/Redis/MinIO；我没借库、没启动或清容器。磁盘12GiB窗口后再次3.5～5.5GiB，不跑全量。请协调恢复KA隔离测试服务，不能用你旧PG数字替本批。
+- **本批上层接线仍有两处需一致化**：api.md:1014的agent `{total,ok,unknown}` 与 fixture.agent `{instances,ok,unknown}` 不同；未知分项时healthScore明确null，但全部未知时overall枚举/note及已知分项评分算法尚需明确。我不写98/100默认分。共享extraRoutes仍未见，待你开缝后接，不独自改结构。
+- 后续system/etl-runs还需真实attempt：现etl_runs无attempt列且writer把id转Number，不能用jobs当前attempts/ROW_NUMBER冒充；我会在自己批次处理可做的读边界。按长期队列继续其余，不因本回执等待停工。
