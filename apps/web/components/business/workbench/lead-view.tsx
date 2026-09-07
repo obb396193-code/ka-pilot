@@ -77,7 +77,7 @@ export function LeadView() {
           </CardContent>
         </Card>
         <Card className="@5xl/main:col-span-4">
-          <CardHeader><CardTitle>知悉流</CardTitle><CardDescription>GET /workbench/lead/fyi · 不需处理，只让你知道</CardDescription></CardHeader>
+          <CardHeader><CardTitle>知悉流</CardTitle><CardDescription>不需处理，只让你知道</CardDescription></CardHeader>
           <CardContent><ol className="flex flex-col gap-2">{isOk(fyiFixture) ? fyiFixture.data.items.map((item, index) => <li key={`${item.at}-${index}`} className="flex flex-col gap-0.5 text-sm"><span className="flex items-center gap-2"><TypeChip>{fyiKindLabel[item.kind]}</TypeChip><span>{item.summary}</span></span><span className="text-[11px] text-muted-foreground tabular-nums">{fmtTime(item.at)}</span></li>) : null}</ol></CardContent>
         </Card>
       </div>

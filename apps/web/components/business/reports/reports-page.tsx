@@ -55,7 +55,7 @@ const libColumns = libHelper.columns([
   actionsColumn<ReportLibraryItem>((item) => (
     <>
       <DropdownMenuItem asChild><Link href={item.kind === "settlement" ? "/reports?tab=settlement" : item.kind === "daily" ? "/reports?tab=daily" : "/reports?tab=business"}>打开</Link></DropdownMenuItem>
-      <DropdownMenuItem onSelect={() => toast("已排队导出", { description: "POST /exports → queued → done（签名链接）" })}><IconDownload />导出</DropdownMenuItem>
+      <DropdownMenuItem onSelect={() => toast("已排队导出", { description: "排队后完成（签名链接）" })}><IconDownload />导出</DropdownMenuItem>
       <DropdownMenuItem onSelect={() => toast.success("已推群")}><IconBrandDingtalk />推钉钉群</DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem onSelect={() => openAgentDrawer(`解读报告「${item.name}」${item.period} 的关键变化`)}><IconSparkles />问 AI</DropdownMenuItem>
@@ -72,7 +72,7 @@ function BusinessTab() {
   const exportJob = exportState === "idle" ? null : isOk(exportFixtures[exportState]) ? exportFixtures[exportState].data : null
   return (
     <div className="flex flex-col gap-6">
-      <DataGrid table={table} empty="报告库为空" toolbar={<p className="text-xs text-muted-foreground">report_runs ∪ exports · 名称 / 所有者 / 期间 / 模板版本 / 数据状态 / 投递状态</p>} actions={<Button size="sm" onClick={() => toast("新建报告", { description: "选模板或从空白 report-config/v1 开始；Agent 帮做表 P1" })}><IconPlus />新建报告</Button>} showPagination={false} />
+      <DataGrid table={table} empty="报告库为空" toolbar={<p className="text-xs text-muted-foreground">report_runs ∪ exports · 名称 / 所有者 / 期间 / 模板版本 / 数据状态 / 投递状态</p>} actions={<Button size="sm" onClick={() => toast("新建报告", { description: "选模板或从空白开始；Agent 帮做表后续接入" })}><IconPlus />新建报告</Button>} showPagination={false} />
       {config && rendered ? (
         <Card>
           <CardHeader>
@@ -80,7 +80,7 @@ function BusinessTab() {
               <div><CardTitle>{config.name}</CardTitle><CardDescription>report-config/v1 · 数据集 {config.config.dataset.queryId} · 分组 {config.config.groupBy.join(" × ")} · 排序 {config.config.sort.map((item) => `${item.by} ${item.dir}`).join(", ")} · {config.isShared ? "已分享" : "私有"} · 更新 {fmtTime(config.updatedAt)}</CardDescription></div>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" onClick={() => openAgentDrawer(`把报告「${config.name}」改成按业务分组并加真实转化列`)}><IconSparkles />Agent 帮做表</Button>
-                <Button size="sm" variant="outline" disabled={exportState === "queued"} onClick={() => { setExportState("queued"); toast("已排队导出 xlsx", { description: "POST /exports → exportId；轮询 GET /exports/:id" }); setTimeout(() => setExportState("done"), 1500) }}><IconDownload />{exportState === "queued" ? "导出中…" : "导出 xlsx"}</Button>
+                <Button size="sm" variant="outline" disabled={exportState === "queued"} onClick={() => { setExportState("queued"); toast("已排队导出 xlsx", { description: "已提交，导出完成后给下载链接" }); setTimeout(() => setExportState("done"), 1500) }}><IconDownload />{exportState === "queued" ? "导出中…" : "导出 xlsx"}</Button>
               </div>
             </div>
           </CardHeader>
@@ -111,7 +111,7 @@ const tplColumns = tplHelper.columns([
   actionsColumn<SettlementTemplate>((item) => (
     <>
       <DropdownMenuItem asChild><Link href="/reports?tab=settlement">用此版本开结算单</Link></DropdownMenuItem>
-      <DropdownMenuItem onSelect={() => toast(`复制 ${item.templateVersion} 为新版本`, { description: "POST /settlement-templates → 新行；旧结算单仍绑旧版本" })}>复制为新版本</DropdownMenuItem>
+      <DropdownMenuItem onSelect={() => toast(`复制 ${item.templateVersion} 为新版本`, { description: "新行；旧结算单仍绑旧版本" })}>复制为新版本</DropdownMenuItem>
     </>
   )),
 ])
@@ -141,16 +141,16 @@ function makeSubColumns(onToggle: (sub: Subscription, enabled: boolean) => void)
     subHelper.accessor((row) => JSON.stringify(row.config), { id: "config", header: "计划", meta: { label: "计划" }, cell: ({ row }) => { const c = row.original.config as Record<string, string | undefined>; const parts = [c.cron ? `cron ${c.cron}` : null, c.time ? `每天 ${c.time}` : null, c.role ? `角色 ${c.role}` : null, c.format ? `格式 ${c.format}` : null, c.view_id ? `视图 …${c.view_id.slice(-4)}` : null].filter(Boolean); return parts.length ? <span className="text-xs">{parts.join(" · ")}</span> : <MissingValue title="无计划配置" /> } }),
     subHelper.accessor((row) => row.quietHours ? `${row.quietHours.from}-${row.quietHours.to}` : "", { id: "quiet", header: "免打扰", meta: { label: "免打扰" }, cell: ({ row }) => row.original.quietHours ? <span className="text-xs tabular-nums">{row.original.quietHours.from} – {row.original.quietHours.to}<span className="ml-1 text-muted-foreground">（只压 P1/P2）</span></span> : <span className="text-xs text-muted-foreground">无</span> }),
     subHelper.accessor("enabled", { header: "启用", meta: { label: "启用" }, cell: ({ row }) => <Switch checked={row.original.enabled} onCheckedChange={(checked) => onToggle(row.original, checked)} aria-label="启用" /> }),
-    actionsColumn<Subscription>((sub) => <DropdownMenuItem onSelect={() => toast("立即发送一次", { description: `POST /subscriptions/${sub.id}/run-now` })}>立即发送一次</DropdownMenuItem>),
+    actionsColumn<Subscription>((sub) => <DropdownMenuItem onSelect={() => toast("立即发送一次", { description: `接口接入后生效（当前为示例）` })}>立即发送一次</DropdownMenuItem>),
   ])
 }
 
 function SchedulesTab() {
   const [enabled, setEnabled] = useState<Record<number, boolean>>({})
   const items = useMemo(() => (isOk(subscriptionsFixture) ? subscriptionsFixture.data.items : []).filter((item) => item.kind !== "alert").map((item) => ({ ...item, enabled: enabled[item.id] ?? item.enabled })), [enabled])
-  const columns = useMemo(() => makeSubColumns((sub, next) => { setEnabled((prev) => ({ ...prev, [sub.id]: next })); toast(`${subscriptionKindLabel[sub.kind]}已${next ? "启用" : "停用"}`, { description: `PATCH /subscriptions/${sub.id}` }) }), [])
+  const columns = useMemo(() => makeSubColumns((sub, next) => { setEnabled((prev) => ({ ...prev, [sub.id]: next })); toast(`${subscriptionKindLabel[sub.kind]}已${next ? "启用" : "停用"}`, { description: `接口接入后生效（当前为示例）` }) }), [])
   const table = useGridTable({ data: items, columns, pageSize: 20, getRowId: (item) => String(item.id) })
-  return <DataGrid table={table} empty="没有定时任务" toolbar={<p className="text-xs text-muted-foreground">GET /subscriptions/mine · kind ∈ daily_report / report_schedule / settlement（警报订阅在「集成与通知」）</p>} actions={<Button size="sm" onClick={() => toast("新建定时任务", { description: "POST /subscriptions {kind: report_schedule, view_id, cron, format}" })}><IconPlus />新建定时</Button>} showPagination={false} />
+  return <DataGrid table={table} empty="没有定时任务" toolbar={<p className="text-xs text-muted-foreground">日报推送 / 定时报表 / 结算单（警报订阅在「集成与通知」）</p>} actions={<Button size="sm" onClick={() => toast("新建定时任务", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新建定时</Button>} showPagination={false} />
 }
 
 export function ReportsPage() {

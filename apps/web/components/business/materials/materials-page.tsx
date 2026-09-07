@@ -55,8 +55,8 @@ const productColumns = productHelper.columns([
   productHelper.accessor("productId", { header: "ID", meta: { label: "ID" }, cell: ({ getValue }) => <span className="font-mono text-xs text-muted-foreground">{getValue()}</span> }),
   actionsColumn<ProductItem>((item) => (
     <>
-      <DropdownMenuItem onSelect={() => toast(`商品「${item.name}」`, { description: "GET /products/:id 接入后打开详情" })}>详情</DropdownMenuItem>
-      <DropdownMenuItem onSelect={() => toast("已转可放量", { description: "PATCH /products/:id {status}" })}>标为可放量</DropdownMenuItem>
+      <DropdownMenuItem onSelect={() => toast(`商品「${item.name}」`, { description: "接入后打开详情" })}>详情</DropdownMenuItem>
+      <DropdownMenuItem onSelect={() => toast("已转可放量", { description: "接口接入后生效（当前为示例）" })}>标为可放量</DropdownMenuItem>
     </>
   )),
 ])
@@ -69,9 +69,9 @@ function ProductsTab() {
   const nameOf = (id: string) => materials.find((item) => item.materialId === id)?.name ?? id
   return (
     <div className="flex flex-col gap-6">
-      <DataGrid table={table} empty="商品池为空" toolbar={<p className="text-xs text-muted-foreground">主数据 = ka-data dim_product（团队）/ 人工（个人）</p>} actions={<Button size="sm" onClick={() => toast("新建商品（人工主数据）", { description: "POST /products" })}><IconPlus />新建商品</Button>} showPagination={false} />
+      <DataGrid table={table} empty="商品池为空" toolbar={<p className="text-xs text-muted-foreground">主数据 = ka-data dim_product（团队）/ 人工（个人）</p>} actions={<Button size="sm" onClick={() => toast("新建商品（人工主数据）", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新建商品</Button>} showPagination={false} />
       <Card>
-        <CardHeader><CardTitle>商品 × 素材效果矩阵</CardTitle><CardDescription>GET /experiments · 每格 = 一个素材版本在该商品下的样本；样本不足不出结论</CardDescription></CardHeader>
+        <CardHeader><CardTitle>商品 × 素材效果矩阵</CardTitle><CardDescription>每格 = 一个素材版本在该商品下的样本；样本不足不出结论</CardDescription></CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>商品</TableHead><TableHead>素材</TableHead><TableHead className="text-right">账户 / 天</TableHead><TableHead className="text-right">曝光</TableHead><TableHead className="text-right">CTR</TableHead><TableHead className="text-right">推断转化率</TableHead><TableHead className="text-right">真实 CPA</TableHead><TableHead>样本</TableHead></TableRow></TableHeader>
@@ -95,8 +95,8 @@ function MaterialCard({ item, onOpen }: { item: MaterialItem; onOpen: (item: Mat
       </CardContent>
       <CardFooter className="gap-2">
         <Button size="sm" variant="outline" onClick={() => onOpen(item)}>{item.analysis.status === "done" ? "看拆片" : "详情"}</Button>
-        <Button size="sm" variant="outline" disabled={unreachable || item.analysis.status === "running"} title={unreachable ? "视频源不可达：analyze 会 409" : ""} onClick={() => toast("已排队拆片", { description: `POST /materials/${item.materialId}/analyze → job` })}><IconSparkles />拆片</Button>
-        <Button size="sm" variant="ghost" disabled={item.analysis.status !== "done"} onClick={() => toast("去复刻任务出 brief", { description: "POST /materials/:id/brief" })}>复刻</Button>
+        <Button size="sm" variant="outline" disabled={unreachable || item.analysis.status === "running"} title={unreachable ? "视频源不可达：analyze 会 409" : ""} onClick={() => toast("已排队拆片", { description: `已排队，完成后在素材详情看拆片结果` })}><IconSparkles />拆片</Button>
+        <Button size="sm" variant="ghost" disabled={item.analysis.status !== "done"} onClick={() => toast("去复刻任务出 brief", { description: "接口接入后生效（当前为示例）" })}>复刻</Button>
       </CardFooter>
     </Card>
   )
@@ -112,8 +112,8 @@ function MaterialsTab({ onOpen }: { onOpen: (item: MaterialItem) => void }) {
       <div className="flex flex-wrap items-center gap-2">
         <Select value={productId} onValueChange={setProductId}><SelectTrigger size="sm" className="w-44" aria-label="商品"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部商品</SelectItem>{products.map((product) => <SelectItem key={product.productId} value={product.productId}>{product.name}</SelectItem>)}</SelectContent></Select>
         <Select value={type} onValueChange={setType}><SelectTrigger size="sm" className="w-28" aria-label="类型"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部类型</SelectItem><SelectItem value="video">视频</SelectItem><SelectItem value="image">图片</SelectItem></SelectContent></Select>
-        <span className="text-xs text-muted-foreground">GET /materials · 共 {items.length} 条 · 视频源不可达标灰</span>
-        <Button size="sm" className="ml-auto" onClick={() => toast("上传素材", { description: "POST /materials {source: upload}" })}><IconPlus />上传</Button>
+        <span className="text-xs text-muted-foreground">共 {items.length} 条 · 视频源不可达标灰</span>
+        <Button size="sm" className="ml-auto" onClick={() => toast("上传素材", { description: "接口接入后生效（当前为示例）" })}><IconPlus />上传</Button>
       </div>
       <div className="grid gap-4 @3xl/main:grid-cols-2 @6xl/main:grid-cols-3">{items.map((item) => <MaterialCard key={item.materialId} item={item} onOpen={onOpen} />)}</div>
     </div>
@@ -130,7 +130,7 @@ function ReplicationTab() {
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 @5xl/main:grid-cols-2">
         <Card>
-          <CardHeader><CardTitle>复刻谱系</CardTitle><CardDescription>GET /materials/:id/lineage · 源 → 变体（method 四类）· 变体指标缺 = −</CardDescription></CardHeader>
+          <CardHeader><CardTitle>复刻谱系</CardTitle><CardDescription>源 → 变体（method 四类）· 变体指标缺 = −</CardDescription></CardHeader>
           <CardContent className="flex flex-col gap-2 text-sm">
             {lineage ? (
               <>
@@ -141,7 +141,7 @@ function ReplicationTab() {
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle>回测就绪</CardTitle><CardDescription>GET /briefs/:id/backtest · 三态 等交付 / 等样本 / 可回测</CardDescription></CardHeader>
+          <CardHeader><CardTitle>回测就绪</CardTitle><CardDescription>三态 等交付 / 等样本 / 可回测</CardDescription></CardHeader>
           <CardContent className="flex flex-col gap-2 text-sm">
             {backtest ? (
               <>
@@ -159,7 +159,7 @@ function ReplicationTab() {
           <CardHeader>
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div><CardTitle className="flex items-center gap-2">设计 brief · {brief.briefId} v{brief.briefVersion}<StatusChip tone={briefStatusMeta[brief.status].tone}>{briefStatusMeta[brief.status].label}</StatusChip></CardTitle><CardDescription>源素材 {brief.sourceMaterialVersionId} · 商品 {brief.productVersionId} · 设计 {brief.designerRef ?? "未指派"} · {brief.createdBy.name} {fmtTime(brief.createdAt)} · 拆片指纹 {brief.sourceTeardownFingerprint.slice(0, 8)}… · 策略指纹 {brief.experimentPolicyFingerprint.slice(0, 8)}…</CardDescription></div>
-              <div className="flex gap-2"><Button size="sm" variant="outline" disabled={brief.status !== "draft"} onClick={() => toast("已发给设计", { description: "POST /briefs/:id/send {designer_ref}" })}><IconSend />发送</Button><Button size="sm" onClick={() => setDelivery(true)}><IconPlus />登记交付</Button></div>
+              <div className="flex gap-2"><Button size="sm" variant="outline" disabled={brief.status !== "draft"} onClick={() => toast("已发给设计", { description: "接口接入后生效（当前为示例）" })}><IconSend />发送</Button><Button size="sm" onClick={() => setDelivery(true)}><IconPlus />登记交付</Button></div>
             </div>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
@@ -174,7 +174,7 @@ function ReplicationTab() {
       ) : null}
       <Dialog open={delivery} onOpenChange={setDelivery}>
         <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>登记交付</DialogTitle><DialogDescription>POST /briefs/:id/deliveries {"{variantKey, derived_material_id, method}"} · 交付后进谱系，等样本回测</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>登记交付</DialogTitle><DialogDescription>交付后进谱系，等样本回测</DialogDescription></DialogHeader>
           <div className="grid gap-3">
             <div className="grid gap-1.5"><Label>变体</Label><Select value={form.variantKey} onValueChange={(value) => setForm((prev) => ({ ...prev, variantKey: value }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{brief?.variants.map((variant) => <SelectItem key={variant.variantKey} value={variant.variantKey}>{variant.variantKey} · {dimensionLabel[variant.changeDimension]}</SelectItem>)}</SelectContent></Select></div>
             <div className="grid gap-1.5"><Label>交付素材 ID</Label><Input value={form.materialId} onChange={(event) => setForm((prev) => ({ ...prev, materialId: event.target.value }))} placeholder="m-51xx" /></div>
@@ -196,7 +196,7 @@ function ExperimentsTab() {
   return (
     <div className="flex flex-col gap-4">
       <Card>
-        <CardHeader><CardTitle>实验策略 {data.policy.policyVersion}</CardTitle><CardDescription>GET /experiments/policy · 样本阈值；不到阈值的格子不参与结论</CardDescription></CardHeader>
+        <CardHeader><CardTitle>实验策略 {data.policy.policyVersion}</CardTitle><CardDescription>样本阈值；不到阈值的格子不参与结论</CardDescription></CardHeader>
         <CardContent><dl className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs @3xl/main:grid-cols-4"><dt className="text-muted-foreground">最少在投天数</dt><dd className="tabular-nums">{data.policy.minActiveDays}</dd><dt className="text-muted-foreground">最少账户</dt><dd className="tabular-nums">{data.policy.minAccounts}</dd><dt className="text-muted-foreground">最少曝光</dt><dd className="tabular-nums">{data.policy.minExposure.toLocaleString("zh-CN")}</dd><dt className="text-muted-foreground">最少点击</dt><dd className="tabular-nums">{data.policy.minClicks}</dd><dt className="text-muted-foreground">最少真实转化</dt><dd className="tabular-nums">{data.policy.minRealConversions}</dd><dt className="text-muted-foreground">最少消耗</dt><dd className="tabular-nums">¥{data.policy.minCost}</dd><dt className="text-muted-foreground">CPA 最小改善</dt><dd className="tabular-nums">{(data.policy.minCpaImprovementRate * 100).toFixed(0)}%</dd><dt className="text-muted-foreground">置信水平</dt><dd className="tabular-nums">{(data.policy.confidenceLevel * 100).toFixed(0)}% · 分母 {data.policy.conversionRateDenominator}</dd></dl></CardContent>
       </Card>
       {data.products.map((product) => (
@@ -243,7 +243,7 @@ export function MaterialsPage() {
             {tab === "materials" ? <MaterialsTab onOpen={setOpen} /> : null}
             {tab === "analysis" ? (
               <div className="flex flex-col gap-4">
-                <div className="flex flex-wrap items-center gap-2"><Select value={analysisMaterial?.materialId ?? ""} onValueChange={setAnalysisId}><SelectTrigger size="sm" className="w-64" aria-label="素材"><SelectValue /></SelectTrigger><SelectContent>{materials.map((item) => <SelectItem key={item.materialId} value={item.materialId}>{item.name} · {analysisStatusMeta[item.analysis.status].label}</SelectItem>)}</SelectContent></Select><span className="text-xs text-muted-foreground">GET /materials/:id/analysis?version= · analysis/v1</span></div>
+                <div className="flex flex-wrap items-center gap-2"><Select value={analysisMaterial?.materialId ?? ""} onValueChange={setAnalysisId}><SelectTrigger size="sm" className="w-64" aria-label="素材"><SelectValue /></SelectTrigger><SelectContent>{materials.map((item) => <SelectItem key={item.materialId} value={item.materialId}>{item.name} · {analysisStatusMeta[item.analysis.status].label}</SelectItem>)}</SelectContent></Select><span className="text-xs text-muted-foreground">拆片结果按版本保存</span></div>
                 {analysisMaterial ? <MaterialAnalysisPanel material={analysisMaterial} /> : null}
               </div>
             ) : null}

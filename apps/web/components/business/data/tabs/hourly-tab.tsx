@@ -35,7 +35,7 @@ export function HourlyTab() {
       <Card className="@4xl/main:col-span-3">
         <CardHeader>
           <CardTitle>盯盘名单</CardTitle>
-          <CardDescription>个人视图的一种；改动经 PUT /me/watchlist 保存</CardDescription>
+          <CardDescription>个人视图的一种；改动会保存到你的账号</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-2">
           {items.map((item) => (
@@ -53,7 +53,7 @@ export function HourlyTab() {
               <DialogHeader><DialogTitle>加入盯盘名单</DialogTitle><DialogDescription>输入账户 ID（媒体先固定快手）；账户池「加入盯盘」也会进这里。</DialogDescription></DialogHeader>
               <Input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="account-3" />
               <DialogFooter>
-                <Button onClick={() => { if (!draft.trim()) return; setItems((prev) => [...prev, { media: "KUAISHOU", accountId: draft.trim() }]); setDraft(""); toast.success("已加入名单", { description: "PUT /me/watchlist 接入后保存到账号" }) }}>加入</Button>
+                <Button onClick={() => { if (!draft.trim()) return; setItems((prev) => [...prev, { media: "KUAISHOU", accountId: draft.trim() }]); setDraft(""); toast.success("已加入名单", { description: "接入后保存到账号" }) }}>加入</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

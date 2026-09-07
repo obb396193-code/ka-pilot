@@ -27,10 +27,10 @@ export function TaskReviewPanel({ taskId, taskName }: { taskId: string; taskName
   if (!review) {
     return (
       <Card>
-        <CardHeader><CardTitle>任务复盘</CardTitle><CardDescription>POST /tasks/:id/review → Agent Deep Research，异步 5–10 分钟；结果六段带溯源并归档知识库</CardDescription></CardHeader>
+        <CardHeader><CardTitle>任务复盘</CardTitle><CardDescription>发起后由 Agent 做 Deep Research，约 5–10 分钟；结果六段带溯源并归档知识库</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-3 text-sm">
           {launched ? <p className="flex items-center gap-2"><StatusChip tone="pending">排队</StatusChip>已发起（示例：fixture 只有 fixture-task-ready 的结果，此任务不会有回执）</p> : <p className="text-muted-foreground">{taskName ?? taskId} 还没有复盘。周期结束或手动发起后生成。</p>}
-          <Button size="sm" className="w-fit" disabled={launched} onClick={() => { setLaunched(true); toast("已发起复盘", { description: "runId 返回后轮询 GET /tasks/:id/review/latest" }) }}><IconPlayerPlay />发起复盘</Button>
+          <Button size="sm" className="w-fit" disabled={launched} onClick={() => { setLaunched(true); toast("已发起复盘", { description: "已提交，稍后在运行记录里看结果" }) }}><IconPlayerPlay />发起复盘</Button>
         </CardContent>
       </Card>
     )
@@ -53,8 +53,8 @@ export function TaskReviewPanel({ taskId, taskName }: { taskId: string; taskName
         <span className="text-xs text-muted-foreground">窗口 {review.window.from} ～ {review.window.to} · run …{review.runId.slice(-4)}</span>
         {review.kbDocumentId ? <Button asChild size="sm" variant="ghost" className="h-7"><Link href={`/knowledge/${encodeURIComponent(review.kbDocumentId)}`}><IconBook2 />已归档知识库</Link></Button> : null}
         <div className="ml-auto flex gap-2">
-          <Button size="sm" variant="outline" onClick={() => toast("已重新发起", { description: "POST /tasks/:id/review {window}" })}><IconRefresh />重新复盘</Button>
-          <Button size="sm" disabled={confirmed || review.humanConfirmed} onClick={() => { setConfirmed(true); toast.success("已确认复盘结论", { description: "humanConfirmed=true；why / next 去掉「待人确认」" }) }}><IconCheck />{confirmed || review.humanConfirmed ? "已人工确认" : "人工确认"}</Button>
+          <Button size="sm" variant="outline" onClick={() => toast("已重新发起", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />重新复盘</Button>
+          <Button size="sm" disabled={confirmed || review.humanConfirmed} onClick={() => { setConfirmed(true); toast.success("已确认复盘结论", { description: "确认后，原因 / 下一步不再标「待人确认」" }) }}><IconCheck />{confirmed || review.humanConfirmed ? "已人工确认" : "人工确认"}</Button>
         </div>
       </div>
       {goalCards.length ? <KpiCards metrics={goalCards} className="px-0 lg:px-0" /> : null}

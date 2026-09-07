@@ -34,7 +34,7 @@ export function useSystemHealth(): SystemHealth {
   const workspaceKind = session?.activeWorkspace.kind ?? null
   const source: SourceKey | null = workspaceKind === "team" ? "ka_data" : workspaceKind === "personal" ? "platform" : null
   if (!isMock) {
-    return { state: "unknown", workspaceKind, source, dataAsOf: null, businessDate: null, updatedAt: null, metricVersion: "−", detail: "数据时效服务（GET /system/health）BFF 路径接入后，这里显示来源、数据日期与更新时间。", sources: [] }
+    return { state: "unknown", workspaceKind, source, dataAsOf: null, businessDate: null, updatedAt: null, metricVersion: "−", detail: "数据时效服务接入后，这里显示来源、数据日期与更新时间。", sources: [] }
   }
   const sources = healthFixture.data.sources as HealthSource[]
   const current = sources.find((item) => item.source === source) ?? sources[0]

@@ -50,13 +50,13 @@ function CredentialsTab() {
           <CardContent className="text-sm">{item.bound ? <p className="font-mono text-xs">{item.maskedRef} <span className="ml-2 font-sans text-muted-foreground">绑定于 {item.boundAt ? fmtTime(item.boundAt) : "−"}</span></p> : <p className="text-muted-foreground">未绑定：相关能力灰（{item.provider === "qihang" ? "个人空间无数据" : item.provider === "multica" ? "不能执行写操作" : "不能拆片 / AIGC"}）</p>}<p className="mt-2 text-[11px] text-muted-foreground">只显绑定状态，不显值；值只在 PUT 时经过前端，不回显。</p></CardContent>
           <CardFooter className="gap-2">
             <Button size="sm" variant={item.bound ? "outline" : "default"} onClick={() => { setBinding(item); setValue("") }}><IconLink />{item.bound ? "重新绑定" : "绑定"}</Button>
-            {item.bound ? <Button size="sm" variant="ghost" onClick={() => toast("已解绑", { description: `DELETE /me/credentials/${item.provider}` })}><IconUnlink />解绑</Button> : null}
+            {item.bound ? <Button size="sm" variant="ghost" onClick={() => toast("已解绑", { description: `接口接入后生效（当前为示例）` })}><IconUnlink />解绑</Button> : null}
           </CardFooter>
         </Card>
       ))}
       <Dialog open={binding !== null} onOpenChange={(open) => { if (!open) setBinding(null) }}>
         <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>绑定 {binding?.label}</DialogTitle><DialogDescription>PUT /me/credentials/{binding?.provider} · 服务端加密存储；保存后只显脱敏引用</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>绑定 {binding?.label}</DialogTitle><DialogDescription>凭证在服务端加密存储；保存后只显示脱敏引用，不回显</DialogDescription></DialogHeader>
           <div className="grid gap-1.5"><Label>{binding?.label}</Label><Input type="password" value={value} onChange={(event) => setValue(event.target.value)} autoComplete="off" placeholder="粘贴凭证" /></div>
           <DialogFooter><Button variant="outline" onClick={() => setBinding(null)}>取消</Button><Button disabled={!value} onClick={() => { toast.success("已绑定", { description: "已探活；后续只显示脱敏引用" }); setBinding(null) }}>保存</Button></DialogFooter>
         </DialogContent>
@@ -75,7 +75,7 @@ function makeSubColumns(onToggle: (sub: Subscription, enabled: boolean) => void)
     subHelper.accessor((row) => JSON.stringify(row.config), { id: "config", header: "内容", meta: { label: "内容" }, cell: ({ row }) => { const c = row.original.config as Record<string, unknown>; const parts = [Array.isArray(c.severities) ? `只收 ${(c.severities as string[]).join("/")}` : null, c.time ? `每天 ${String(c.time)}` : null, c.role ? `${String(c.role)} 视角` : null, c.cron ? `cron ${String(c.cron)}` : null].filter(Boolean); return parts.length ? <span className="text-xs">{parts.join(" · ")}</span> : <MissingValue /> } }),
     subHelper.accessor((row) => row.quietHours ? `${row.quietHours.from}-${row.quietHours.to}` : "", { id: "quiet", header: "免打扰", meta: { label: "免打扰" }, cell: ({ row }) => row.original.quietHours ? <span className="text-xs tabular-nums">{row.original.quietHours.from} – {row.original.quietHours.to}<span className="ml-1 text-muted-foreground">只压 P1/P2</span></span> : <span className="text-xs text-muted-foreground">无</span> }),
     subHelper.accessor("enabled", { header: "开", meta: { label: "开" }, cell: ({ row }) => <Switch checked={row.original.enabled} onCheckedChange={(checked) => onToggle(row.original, checked)} aria-label="启用" /> }),
-    actionsColumn<Subscription>((sub) => <DropdownMenuItem onSelect={() => toast("编辑订阅", { description: `PATCH /subscriptions/${sub.id}` })}>编辑</DropdownMenuItem>),
+    actionsColumn<Subscription>((sub) => <DropdownMenuItem onSelect={() => toast("编辑订阅", { description: `接口接入后生效（当前为示例）` })}>编辑</DropdownMenuItem>),
   ])
 }
 
@@ -92,10 +92,10 @@ function NotificationsTab() {
         <CardContent className="flex flex-wrap items-end gap-3">
           <div className="grid gap-1.5"><Label>从</Label><Input type="time" value={quiet.from} onChange={(event) => setQuiet((prev) => ({ ...prev, from: event.target.value }))} className="w-32" /></div>
           <div className="grid gap-1.5"><Label>到</Label><Input type="time" value={quiet.to} onChange={(event) => setQuiet((prev) => ({ ...prev, to: event.target.value }))} className="w-32" /></div>
-          <Button size="sm" onClick={() => toast.success("免打扰已保存", { description: `PATCH /subscriptions/mine {quiet_hours: ${quiet.from}–${quiet.to}}` })}>保存</Button>
+          <Button size="sm" onClick={() => toast.success("免打扰已保存", { description: `静默 ${quiet.from}–${quiet.to}；P0 仍会破静默` })}>保存</Button>
         </CardContent>
       </Card>
-      <DataGrid table={table} empty="没有订阅" toolbar={<p className="text-xs text-muted-foreground">GET /subscriptions/mine · 我收什么、送到哪</p>} actions={<Button size="sm" variant="outline" asChild><Link href="/integrations?tab=subscriptions"><IconPlus />去集成页新建</Link></Button>} showPagination={false} showColumnPicker={false} />
+      <DataGrid table={table} empty="没有订阅" toolbar={<p className="text-xs text-muted-foreground">我收什么、送到哪</p>} actions={<Button size="sm" variant="outline" asChild><Link href="/integrations?tab=subscriptions"><IconPlus />去集成页新建</Link></Button>} showPagination={false} showColumnPicker={false} />
     </div>
   )
 }
@@ -128,7 +128,7 @@ function MetricsTab() {
     <div className="flex flex-col gap-4">
       <DataGrid table={table} empty="没有系数" toolbar={<p className="text-xs text-muted-foreground">现金消耗口径 = 账面消耗 × / ÷ 返点系数；考核用现金口径 · {editable ? "改一次留一行，回溯改触发重算" : "团队空间只读（POST 403 FORBIDDEN）"}{editable ? "" : ""}</p>} actions={!editable ? <StatusChip tone="muted">团队空间只读</StatusChip> : null} showPagination={false} />
       <Card>
-        <CardHeader><CardTitle>统一变更记录</CardTitle><CardDescription>GET /settings/change-log · 考核价 / 日预算卡 / 返点系数三表 UNION 倒序</CardDescription></CardHeader>
+        <CardHeader><CardTitle>统一变更记录</CardTitle><CardDescription>考核价 / 日预算卡 / 返点系数的改动合在一起，按时间倒序</CardDescription></CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>时间</TableHead><TableHead>类型</TableHead><TableHead>范围</TableHead><TableHead className="text-right">从</TableHead><TableHead className="text-right">到</TableHead><TableHead>生效</TableHead><TableHead>改动人</TableHead></TableRow></TableHeader>
@@ -138,7 +138,7 @@ function MetricsTab() {
       </Card>
       <Dialog open={editing !== null} onOpenChange={(open) => { if (!open) setEditing(null) }}>
         <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>改 {editing ? mediaLabel(editing.media) : ""} 返点系数</DialogTitle><DialogDescription>POST /settings/channel-coefficients · 新版本新行；生效日早于最新生效日 = 回溯改，重算窗口内现金口径</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>改 {editing ? mediaLabel(editing.media) : ""} 返点系数</DialogTitle><DialogDescription>新版本新一行；生效日早于最新生效日 = 回溯改，重算窗口内现金口径</DialogDescription></DialogHeader>
           <div className="grid gap-3">
             <div className="grid gap-1.5"><Label>系数（{editing?.op === "multiply" ? "×" : "÷"}）</Label><Input type="number" step="0.0001" value={form.coefficient} onChange={(event) => setForm((prev) => ({ ...prev, coefficient: event.target.value }))} /></div>
             <div className="grid gap-1.5"><Label>生效日期</Label><Input type="date" value={form.effectiveDate} onChange={(event) => setForm((prev) => ({ ...prev, effectiveDate: event.target.value }))} /></div>
@@ -164,7 +164,7 @@ const viewColumns = viewHelper.columns([
   actionsColumn<SavedView>((view) => (
     <>
       <DropdownMenuItem asChild><Link href="/data?tab=table"><IconEye />打开</Link></DropdownMenuItem>
-      <DropdownMenuItem onSelect={() => toast(view.isShared ? "已取消分享" : "已分享到团队", { description: `PATCH /me/views/${view.id} {is_shared}` })}>{view.isShared ? "取消分享" : "分享"}</DropdownMenuItem>
+      <DropdownMenuItem onSelect={() => toast(view.isShared ? "已取消分享" : "已分享到团队", { description: `接口接入后生效（当前为示例）` })}>{view.isShared ? "取消分享" : "分享"}</DropdownMenuItem>
       <DropdownMenuItem variant="destructive" onSelect={() => toast("已删除视图")}>删除</DropdownMenuItem>
     </>
   )),

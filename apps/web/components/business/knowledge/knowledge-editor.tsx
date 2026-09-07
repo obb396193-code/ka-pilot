@@ -81,7 +81,7 @@ export function KnowledgeEditor({ doc, readOnly }: { doc: KbDocument; readOnly: 
           />
         </BlockNoteView>
       </div>
-      <div className="mt-1 h-4 px-1 text-[11px] text-muted-foreground">{readOnly ? "团队空间只读" : status === "saving" ? "保存中…" : status === "saved" ? "✓ 已保存（本地 mock；接口接入后 PATCH /kb/documents/:id）" : "输入 @ 插入文档双链或 @任务 / @账户"}</div>
+      <div className="mt-1 h-4 px-1 text-[11px] text-muted-foreground">{readOnly ? "团队空间只读" : status === "saving" ? "保存中…" : status === "saved" ? "✓ 已保存（本地示例，接口接入后同步）" : "输入 @ 插入文档双链或 @任务 / @账户"}</div>
     </div>
   )
 }

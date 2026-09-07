@@ -108,10 +108,10 @@ export function AgentLauncher() {
     setDraft(""); setBusy(true); replay(assistantId)
   }
   const onAction = (kind: string, label: string) => {
-    if (kind === "create_work_item") { toast.success("已创建待办", { description: "POST /work-items · 进工作台队列" }); return }
+    if (kind === "create_work_item") { toast.success("已创建待办", { description: "进工作台队列" }); return }
     if (kind === "generate_changeset") { toast("已出变更集草稿", { description: "到工作台「待确认变更集」确认后才执行" }); setOpen(false); router.push("/?tab=today"); return }
-    if (kind === "generate_report") { toast("已生成分析表", { description: "report-config/v1 · 在报告页「经营报告」" }); setOpen(false); router.push("/reports?tab=business"); return }
-    if (kind === "save_view") { toast.success("已保存个人视图", { description: "POST /me/views" }); return }
+    if (kind === "generate_report") { toast("已生成分析表", { description: "在报告页「经营报告」里可见" }); setOpen(false); router.push("/reports?tab=business"); return }
+    if (kind === "save_view") { toast.success("已保存个人视图", { description: "接口接入后生效（当前为示例）" }); return }
     toast(label)
   }
 
@@ -179,7 +179,7 @@ export function AgentLauncher() {
                 <PromptInputSubmit status={busy ? "streaming" : "ready"} aria-label="发送" />
               </PromptInputFooter>
             </PromptInput>
-            <p className="mt-2 px-1 text-[11px] text-muted-foreground">模型清单来自 GET /agent/models（网关能力表，未验证的灰显）；写操作永远先出预览再确认，AI 不会直接改。</p>
+            <p className="mt-2 px-1 text-[11px] text-muted-foreground">模型清单来自网关能力表（未验证的灰显）；写操作永远先出预览再确认，AI 不会直接改。</p>
           </div>
         </section>
       ) : null}

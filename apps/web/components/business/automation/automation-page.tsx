@@ -68,7 +68,7 @@ function TemplateCard({ item, kind }: { item: WorkflowDefinition; kind: "officia
       </CardContent>
       <CardFooter className="gap-2">
         <Button asChild size="sm" variant="outline"><Link href={canvasHref(item.id)}><IconTopologyStar3 />打开画布</Link></Button>
-        {kind === "official" ? <Button size="sm" onClick={() => toast("已从模板复制到「我的工作流」", { description: "POST /workflows {copied_from} 接入后落库；现在只在本页示意" })}><IconPlus />从模板创建</Button> : <Button size="sm" variant="ghost" onClick={() => toast("分享到团队", { description: "assets transition draft→shared 接入后生效" })}>分享到团队</Button>}
+        {kind === "official" ? <Button size="sm" onClick={() => toast("已从模板复制到「我的工作流」", { description: "接入后落库；现在只在本页示意" })}><IconPlus />从模板创建</Button> : <Button size="sm" variant="ghost" onClick={() => toast("分享到团队", { description: "资产从草稿转共享，接入后生效" })}>分享到团队</Button>}
       </CardFooter>
     </Card>
   )
@@ -93,7 +93,7 @@ function makeRuleColumns(onExplain: (rule: RuleItem) => void, onAutonomy: (rule:
         <DropdownMenuItem onSelect={() => onExplain(rule)}>解释最近一轮</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => openAgentDrawer(`解释规则「${rule.name}」最近 7 天触发 ${rule.last7d.triggered} 次、成功 ${rule.last7d.succeeded} 次的原因`)}><IconSparkles />问 AI</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem disabled title="PATCH /rules 接入后启用">编辑条件</DropdownMenuItem>
+        <DropdownMenuItem disabled title="规则编辑接入后启用">编辑条件</DropdownMenuItem>
       </>
     )),
   ])
@@ -104,16 +104,16 @@ function RulesTab() {
   const [levels, setLevels] = useState<Record<number, number>>({})
   const [enabled, setEnabled] = useState<Record<number, boolean>>({})
   const rules = useMemo(() => (isOk(rulesFixture) ? rulesFixture.data.items : []).map((rule) => ({ ...rule, autonomyLevel: levels[rule.ruleId] ?? rule.autonomyLevel, enabled: enabled[rule.ruleId] ?? rule.enabled })), [levels, enabled])
-  const columns = useMemo(() => makeRuleColumns(setExplain, (rule, level) => { setLevels((prev) => ({ ...prev, [rule.ruleId]: level })); toast(`「${rule.name}」自治度 → ${autonomyLevels[level].label}`, { description: `${autonomyLevels[level].hint}；PATCH /rules/${rule.ruleId} {autonomy_level}` }) }, (rule, next) => { setEnabled((prev) => ({ ...prev, [rule.ruleId]: next })); toast(`「${rule.name}」已${next ? "启用" : "停用"}`) }), [])
+  const columns = useMemo(() => makeRuleColumns(setExplain, (rule, level) => { setLevels((prev) => ({ ...prev, [rule.ruleId]: level })); toast(`「${rule.name}」自治度 → ${autonomyLevels[level].label}`, { description: `${autonomyLevels[level].hint}` }) }, (rule, next) => { setEnabled((prev) => ({ ...prev, [rule.ruleId]: next })); toast(`「${rule.name}」已${next ? "启用" : "停用"}`) }), [])
   const { ordered, reorder } = useLocalOrder(rules, (rule) => String(rule.ruleId))
   const table = useGridTable({ data: ordered, columns, pageSize: 20, getRowId: (rule) => String(rule.ruleId), initialColumnVisibility: { owner: false } })
   const explainData = isOk(ruleExplainFixture) && explain && ruleExplainFixture.data.ruleId === explain.ruleId ? ruleExplainFixture.data : null
   return (
     <>
-      <DataGrid table={table} onReorder={reorder} empty="还没有规则" toolbar={<p className="text-xs text-muted-foreground">12.8：任一叶子指标缺数 → 不触发也不消触，账户计入「不可判断」；自治度三档只改执行方式，不改条件</p>} actions={<Tooltip><TooltipTrigger asChild><span className="inline-flex"><Button size="sm" disabled><IconPlus />新建规则</Button></span></TooltipTrigger><TooltipContent side="bottom">POST /rules（NL→规则 未开发）接入后启用</TooltipContent></Tooltip>} />
+      <DataGrid table={table} onReorder={reorder} empty="还没有规则" toolbar={<p className="text-xs text-muted-foreground">12.8：任一叶子指标缺数 → 不触发也不消触，账户计入「不可判断」；自治度三档只改执行方式，不改条件</p>} actions={<Tooltip><TooltipTrigger asChild><span className="inline-flex"><Button size="sm" disabled><IconPlus />新建规则</Button></span></TooltipTrigger><TooltipContent side="bottom">新建规则接入后启用（自然语言建规则未开发）</TooltipContent></Tooltip>} />
       <Dialog open={explain !== null} onOpenChange={(open) => { if (!open) setExplain(null) }}>
         <DialogContent className="sm:max-w-lg">
-          <DialogHeader><DialogTitle>为什么未触发 · {explain?.name}</DialogTitle><DialogDescription>GET /rules/:id/explain?account_id&ds · 叶子真值表</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>为什么未触发 · {explain?.name}</DialogTitle><DialogDescription>按账户 × 日期看叶子真值表</DialogDescription></DialogHeader>
           {explainData ? (
             <div className="flex flex-col gap-3">
               <p className="text-sm">账户 {explainData.accountId} · {explainData.ds} · <StatusChip tone="muted">{notTriggeredLabel[explainData.notTriggeredReason ?? ""] ?? explainData.notTriggeredReason ?? "−"}</StatusChip></p>
@@ -146,7 +146,7 @@ const runColumns = runHelper.columns([
     <>
       <DropdownMenuItem asChild><Link href={runHref(run.runId)}>运行详情</Link></DropdownMenuItem>
       <DropdownMenuItem disabled={run.status !== "WAITING_CONFIRMATION"} onSelect={() => toast("去运行详情确认", { description: "确认执行在详情页，带权限校验与账户锁" })}>确认执行</DropdownMenuItem>
-      <DropdownMenuItem disabled={run.status !== "UNKNOWN"} onSelect={() => toast("已触发回读", { description: "reconcile_policy: read_back_then_decide，不重发" })}>回读媒体态</DropdownMenuItem>
+      <DropdownMenuItem disabled={run.status !== "UNKNOWN"} onSelect={() => toast("已触发回读", { description: "先回读媒体现状再决定，不重发" })}>回读媒体态</DropdownMenuItem>
     </>
   )),
 ])
@@ -180,12 +180,12 @@ function RunsTab() {
     <div className="flex flex-col gap-6">
       <DataGrid table={table} empty="没有运行记录" toolbar={<Tabs value={status} onValueChange={(value) => setStatus(value as typeof status)}><TabsList><TabsTrigger value="all">全部</TabsTrigger><TabsTrigger value="active">运行中 / UNKNOWN</TabsTrigger><TabsTrigger value="waiting">待确认</TabsTrigger><TabsTrigger value="done">已结束</TabsTrigger></TabsList></Tabs>} />
       <Card>
-        <CardHeader><CardTitle>Agent / OS 运行监控</CardTitle><CardDescription>GET /agent/runs · 我发起的 Run；原始日志受限（rawLogAccess=restricted）</CardDescription></CardHeader>
+        <CardHeader><CardTitle>Agent / OS 运行监控</CardTitle><CardDescription>我发起的 Run；原始日志受限</CardDescription></CardHeader>
         <CardContent><DataGrid table={agentTable} empty="没有 Agent 运行" showPagination={false} showColumnPicker={false} /></CardContent>
       </Card>
       <Dialog open={events !== null} onOpenChange={(open) => { if (!open) setEvents(null) }}>
         <DialogContent className="sm:max-w-lg">
-          <DialogHeader><DialogTitle>运行事件 · …{events?.runId.slice(-4)}</DialogTitle><DialogDescription>GET /agent/runs/:id/events · 只显示事件骨架，不含 prompt / 原始日志</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>运行事件 · …{events?.runId.slice(-4)}</DialogTitle><DialogDescription>只显示事件骨架，不含 prompt / 原始日志</DialogDescription></DialogHeader>
           {eventData ? <ol className="flex flex-col gap-2">{eventData.events.map((event) => <li key={event.seq} className="flex items-start gap-3 text-sm"><span className="w-5 text-right text-xs text-muted-foreground tabular-nums">{event.seq}</span><TypeChip>{event.kind}</TypeChip><span className="flex-1 text-xs">{event.tool ?? event.schema ?? event.status ?? ""}{event.argsExcerpt ? ` · ${JSON.stringify(event.argsExcerpt)}` : ""}{event.ok === true ? " · ok" : ""}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(event.at)}</span></li>)}</ol> : <p className="text-sm text-muted-foreground">该 Run 没有事件样例（fixture 只给了 …1801）。</p>}
         </DialogContent>
       </Dialog>
@@ -219,7 +219,7 @@ function CapabilityForm({ item, onClose }: { item: CapabilityItem; onClose: () =
       </div>
       <DialogFooter>
         <Button variant="outline" onClick={onClose}>取消</Button>
-        <Button disabled={missing.length > 0} onClick={() => { toast.success(writeLike ? "已生成变更集草稿（未落媒体）" : "查询已提交", { description: writeLike ? `POST /capabilities/${item.key}/invoke → changeset draft；到「工作台 · 待确认变更集」确认` : `POST /capabilities/${item.key}/invoke` }); onClose() }}>{writeLike ? "生成变更集草稿" : "执行查询"}</Button>
+        <Button disabled={missing.length > 0} onClick={() => { toast.success(writeLike ? "已生成变更集草稿（未落媒体）" : "查询已提交", { description: writeLike ? "到「工作台 · 待确认变更集」确认后才会落媒体" : "结果会出现在运行记录里" }); onClose() }}>{writeLike ? "生成变更集草稿" : "执行查询"}</Button>
       </DialogFooter>
     </>
   )
@@ -295,7 +295,7 @@ export function AutomationPage() {
           {tab === "capabilities" ? <CapabilitiesTab /> : null}
           {tab === "shadow" ? <ShadowTab /> : null}
           {tab === "official" ? (
-            <ExampleBlock className="mt-6" unlock="Agent 帮编（POST /agent/sessions/:id/workflow-draft，R-010b）接入后：输入目标 → 出图草稿 + 缺参列表，应用后仍须校验">
+            <ExampleBlock className="mt-6" unlock="Agent 帮编接入后：输入目标 → 出图草稿 + 缺参列表，应用后仍须校验">
               <Card><CardHeader><CardTitle>Agent 帮编</CardTitle><CardDescription>用一句话描述目标，生成工作流草稿</CardDescription></CardHeader><CardContent className="flex gap-2"><Input placeholder="例：每天 9 点检查所有快手户，超考核的出降价草稿并通知我" readOnly /><Button variant="outline" disabled><IconSparkles />生成草稿</Button></CardContent></Card>
             </ExampleBlock>
           ) : null}

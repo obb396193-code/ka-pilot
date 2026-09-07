@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import type { DisplayMetric } from "@/lib/data/contracts"
-import { costStatusLabel, isOk, mv, rv } from "@/lib/fixtures/contract"
+import { costStatusLabel, isOk, mv, rv, costStatusReasonText } from "@/lib/fixtures/contract"
 import { summaryFixtures, trendFixture, windowLabel, type SummaryVariant } from "@/lib/fixtures/data-analysis"
 import { cn } from "@/lib/utils"
 import { CostStatusDot, LineageFooter, metricFormulas } from "./shared"
@@ -20,7 +20,6 @@ const variants: { value: SummaryVariant; label: string }[] = [
   { value: "yellow", label: "样例 · 黄（单日超线）" },
   { value: "cash-missing", label: "样例 · 现金缺（团队源）" },
 ]
-const reasonLabel: Record<string, string> = { window_ok: "窗口累计达标", day_over_window_ok: "单日超线，累计仍达标", window_over: "窗口累计超线", cash_missing: "现金消耗缺失，无法判定", assessment_missing: "考核价缺失，无法判定" }
 const tone = (status: "green" | "yellow" | "red" | null): DisplayMetric["tone"] => status === "green" ? "positive" : status === "yellow" ? "warning" : status === "red" ? "critical" : "neutral"
 
 export function OverviewTab({ colorKey }: { colorKey?: string }) {
@@ -61,7 +60,7 @@ export function OverviewTab({ colorKey }: { colorKey?: string }) {
           <CostStatusDot status={status} />
           <span className="font-medium">{windowLabel(lineage.window?.preset)}</span>
           <span className="text-muted-foreground">{lineage.window?.from} ～ {lineage.window?.to}</span>
-          <Badge variant="outline" className={cn(status === "red" && "text-status-critical", status === "yellow" && "text-status-warning", status === "green" && "text-status-success")}>{reasonLabel[row.assessment.costStatusReason] ?? row.assessment.costStatusReason}</Badge>
+          <Badge variant="outline" className={cn(status === "red" && "text-status-critical", status === "yellow" && "text-status-warning", status === "green" && "text-status-success")}>{costStatusReasonText(row.assessment.costStatusReason)}</Badge>
           <Tooltip>
             <TooltipTrigger asChild><span className="cursor-help text-xs text-muted-foreground underline decoration-dotted underline-offset-4">口径</span></TooltipTrigger>
             <TooltipContent side="bottom" className="max-w-80">{metricFormulas.cashCpa}；颜色按窗口累计判，不按单日（容忍带在个人视图设，默认 0）。</TooltipContent>

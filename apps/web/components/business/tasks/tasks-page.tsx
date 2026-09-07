@@ -66,7 +66,7 @@ const columns = helper.columns([
       <DropdownMenuItem asChild><Link href={taskHref(task)}>查看详情</Link></DropdownMenuItem>
       <DropdownMenuItem onSelect={() => openAgentDrawer(`分析任务「${task.taskName}」的达成、pacing 与就绪缺项`)}><IconSparkles />问 AI</DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem onSelect={() => toast("已关注", { description: "saved_views 关注列表接入后保存" })}><IconStar />关注</DropdownMenuItem>
+      <DropdownMenuItem onSelect={() => toast("已关注", { description: "关注列表接入后保存" })}><IconStar />关注</DropdownMenuItem>
       <DropdownMenuItem disabled title="任务编辑接口（R-010）开放后启用">编辑</DropdownMenuItem>
       <DropdownMenuItem disabled title="归档接口开放后启用">归档</DropdownMenuItem>
     </>

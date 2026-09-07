@@ -52,7 +52,7 @@ export function ShadowTab() {
       <DataGrid table={table} empty="没有决策点" toolbar={<Select value={adopted} onValueChange={(value) => setAdopted(value as typeof adopted)}><SelectTrigger size="sm" className="w-36" aria-label="采纳"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">全部</SelectItem><SelectItem value="yes">已采纳</SelectItem><SelectItem value="no">未采纳</SelectItem></SelectContent></Select>} showPagination={false} />
       {exam ? (
         <Card>
-          <CardHeader><CardTitle>规则考试期 · 规则 {exam.ruleId}</CardTitle><CardDescription>GET /rules/:id/shadow-exam · {exam.days} 天 · 样本 {exam.sample} · 四门全过才提示可升自治度 3，人点确认才升</CardDescription></CardHeader>
+          <CardHeader><CardTitle>规则考试期 · 规则 {exam.ruleId}</CardTitle><CardDescription>{exam.days} 天 · 样本 {exam.sample} · 四门全过才提示可升自治度 3，人点确认才升</CardDescription></CardHeader>
           <CardContent className="flex flex-col gap-3">
             <div className="grid gap-2 @3xl/main:grid-cols-4">
               {[
@@ -62,7 +62,7 @@ export function ShadowTab() {
                 { label: "损失上限", pass: exam.gates.lossBound.pass, text: `30 日净损 ${mv(exam.gates.lossBound.netLoss30d, "money0")} · 上限 ¥${exam.gates.lossBound.threshold}` },
               ].map((gate) => <div key={gate.label} className="rounded-lg border px-3 py-2 text-sm"><div className="flex items-center justify-between"><span className="font-medium">{gate.label}</span>{gate.pass ? <StatusChip tone="success">过</StatusChip> : <StatusChip tone="critical">未过</StatusChip>}</div><p className="mt-1 text-xs text-muted-foreground">{gate.text}</p></div>)}
             </div>
-            <div className="flex items-center gap-2 text-sm">{exam.eligibleForAutonomy3 ? <StatusChip tone="success">可升自治度 3</StatusChip> : <StatusChip tone="muted">暂不可升</StatusChip>}<Button size="sm" variant="outline" disabled={!exam.eligibleForAutonomy3} onClick={() => toast("已升自治度 3", { description: "PATCH /rules/:id {autonomy_level: 3}" })}>确认升档</Button></div>
+            <div className="flex items-center gap-2 text-sm">{exam.eligibleForAutonomy3 ? <StatusChip tone="success">可升自治度 3</StatusChip> : <StatusChip tone="muted">暂不可升</StatusChip>}<Button size="sm" variant="outline" disabled={!exam.eligibleForAutonomy3} onClick={() => toast("已升自治度 3", { description: "接口接入后生效（当前为示例）" })}>确认升档</Button></div>
           </CardContent>
         </Card>
       ) : null}

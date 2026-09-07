@@ -53,7 +53,7 @@ function makeMemberColumns(onGrants: (member: Member) => void, onToggle: (member
     actionsColumn<Member>((member) => (
       <>
         <DropdownMenuItem onSelect={() => onGrants(member)}>账户授权</DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => toast("改角色", { description: `PATCH /admin/members/${member.identityId} {role}` })}>改角色</DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => toast("改角色", { description: `接口接入后生效（当前为示例）` })}>改角色</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant={member.isActive ? "destructive" : "default"} onSelect={() => onToggle(member)}>{member.isActive ? "停用（撤 session，行不删）" : "恢复"}</DropdownMenuItem>
       </>
@@ -65,22 +65,22 @@ function MembersTab() {
   const [active, setActive] = useState<Record<string, boolean>>({})
   const [grantsFor, setGrantsFor] = useState<Member | null>(null)
   const items = useMemo(() => (isOk(membersFixture) ? membersFixture.data.items : []).map((item) => ({ ...item, isActive: active[item.identityId] ?? item.isActive })), [active])
-  const columns = useMemo(() => makeMemberColumns(setGrantsFor, (member) => { setActive((prev) => ({ ...prev, [member.identityId]: !member.isActive })); toast(member.isActive ? "已停用：membership 失活 + 撤 session" : "已恢复", { description: `PATCH /admin/members/${member.identityId} {is_active}` }) }), [])
+  const columns = useMemo(() => makeMemberColumns(setGrantsFor, (member) => { setActive((prev) => ({ ...prev, [member.identityId]: !member.isActive })); toast(member.isActive ? "已停用：membership 失活 + 撤 session" : "已恢复", { description: `接口接入后生效（当前为示例）` }) }), [])
   const table = useGridTable({ data: items, columns, pageSize: 20, getRowId: (item) => item.identityId })
   const grants = isOk(grantsFixture) && grantsFor && grantsFixture.data.identityId === grantsFor.identityId ? grantsFixture.data.items : null
   return (
     <>
-      <DataGrid table={table} empty="没有成员" toolbar={<p className="text-xs text-muted-foreground">v1.6 admin/members · 停用 = membership 失活 + 撤 session，行不删；PAT 随成员生命周期吊销</p>} actions={<Button size="sm" onClick={() => toast("邀请成员", { description: "POST /admin/members {identity, role}" })}><IconPlus />邀请</Button>} showPagination={false} />
+      <DataGrid table={table} empty="没有成员" toolbar={<p className="text-xs text-muted-foreground">v1.6 admin/members · 停用 = membership 失活 + 撤 session，行不删；PAT 随成员生命周期吊销</p>} actions={<Button size="sm" onClick={() => toast("邀请成员", { description: "接口接入后生效（当前为示例）" })}><IconPlus />邀请</Button>} showPagination={false} />
       <Dialog open={grantsFor !== null} onOpenChange={(open) => { if (!open) setGrantsFor(null) }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader><DialogTitle>账户授权 · {grantsFor?.displayName}</DialogTitle><DialogDescription>admin/grants · read 只看，execute 可执行写操作（仍走变更集确认）</DialogDescription></DialogHeader>
           {grants ? (
             <Table>
               <TableHeader className="bg-muted"><TableRow><TableHead>账户</TableHead><TableHead>级别</TableHead><TableHead>授权于</TableHead><TableHead /></TableRow></TableHeader>
-              <TableBody>{grants.map((grant) => <TableRow key={`${grant.media}-${grant.accountId}`}><TableCell>{mediaLabel(grant.media)} · {grant.accountId}</TableCell><TableCell><StatusChip tone={grant.accessLevel === "execute" ? "warning" : "muted"}>{grant.accessLevel === "execute" ? "可执行" : "只读"}</StatusChip></TableCell><TableCell className="tabular-nums">{grant.grantedAt}</TableCell><TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => toast("已撤销", { description: "DELETE /admin/grants" })}>撤销</Button></TableCell></TableRow>)}</TableBody>
+              <TableBody>{grants.map((grant) => <TableRow key={`${grant.media}-${grant.accountId}`}><TableCell>{mediaLabel(grant.media)} · {grant.accountId}</TableCell><TableCell><StatusChip tone={grant.accessLevel === "execute" ? "warning" : "muted"}>{grant.accessLevel === "execute" ? "可执行" : "只读"}</StatusChip></TableCell><TableCell className="tabular-nums">{grant.grantedAt}</TableCell><TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => toast("已撤销", { description: "接口接入后生效（当前为示例）" })}>撤销</Button></TableCell></TableRow>)}</TableBody>
             </Table>
           ) : <p className="text-sm text-muted-foreground">该成员没有授权样例（fixture 只给了第一位成员的 grants）；共 {grantsFor?.grantsCount ?? 0} 条。</p>}
-          <DialogFooter><Button size="sm" variant="outline" onClick={() => toast("新增授权", { description: "POST /admin/grants {identity_id, media, account_id, access_level}" })}><IconPlus />新增授权</Button></DialogFooter>
+          <DialogFooter><Button size="sm" variant="outline" onClick={() => toast("新增授权", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新增授权</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </>
@@ -98,7 +98,7 @@ const etlColumns = etlHelper.columns([
   etlHelper.accessor((row) => row.finishedAt ?? "", { id: "finished", header: "结束", meta: { label: "结束" }, cell: ({ row }) => row.original.finishedAt ? <span className="tabular-nums">{fmtTime(row.original.finishedAt)}</span> : <MissingValue /> }),
   etlHelper.accessor((row) => row.rows?.raw ?? null, { id: "rows", header: "行数 raw / canonical", meta: { label: "行数", align: "right" }, cell: ({ row }) => row.original.rows ? <span className="tabular-nums">{row.original.rows.raw} / {row.original.rows.canonical}</span> : <MissingValue /> }),
   etlHelper.accessor((row) => row.warnings.join(","), { id: "warnings", header: "警告", meta: { label: "警告" }, cell: ({ row }) => row.original.warnings.length ? <span className="flex flex-wrap gap-1">{row.original.warnings.map((warning) => <Badge key={warning} variant="outline" className="text-[10px] text-status-warning">{warning}</Badge>)}</span> : <span className="text-xs text-muted-foreground">−</span> }),
-  actionsColumn<EtlRun>((run) => <DropdownMenuItem onSelect={() => toast("已重跑", { description: `POST /system/etl-runs/${run.id}/rerun` })}><IconRefresh />重跑</DropdownMenuItem>),
+  actionsColumn<EtlRun>((run) => <DropdownMenuItem onSelect={() => toast("已重跑", { description: `接口接入后生效（当前为示例）` })}><IconRefresh />重跑</DropdownMenuItem>),
 ])
 
 function EtlTab() {
@@ -112,7 +112,7 @@ function EtlTab() {
         <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">奇航（platform）<StatusChip tone="warning">补拉中</StatusChip></CardTitle><CardDescription>system/health · 2 户补拉</CardDescription></CardHeader></Card>
         <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">ka_data（团队源）<StatusChip tone="success">D-1</StatusChip></CardTitle><CardDescription>system/health · 数据日 2026-09-04</CardDescription></CardHeader></Card>
       </div>
-      <DataGrid table={table} empty="没有 ETL 记录" toolbar={<p className="text-xs text-muted-foreground">system/etl-runs · BLOCKED_AUTH = 奇航凭证失效，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "POST /system/etl-runs {job_type: backfill_day, business_date}" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
+      <DataGrid table={table} empty="没有 ETL 记录" toolbar={<p className="text-xs text-muted-foreground">system/etl-runs · BLOCKED_AUTH = 奇航凭证失效，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
     </div>
   )
 }
@@ -140,11 +140,11 @@ function CalendarTab() {
       </Card>
       <Card>
         <CardHeader><CardTitle>分级决策策略</CardTitle><CardDescription>settings/decision-policy · 自动执行的门槛（v1.5 decision DTO）</CardDescription></CardHeader>
-        <CardContent>{policy ? <dl className="grid grid-cols-2 gap-y-1 text-sm"><dt className="text-muted-foreground">最低置信度</dt><dd className="text-right tabular-nums">{(policy.policy.confidenceMin * 100).toFixed(0)}%</dd><dt className="text-muted-foreground">历史成功率下限</dt><dd className="text-right tabular-nums">{(policy.policy.historicalSuccessRateMin * 100).toFixed(0)}%</dd><dt className="text-muted-foreground">近期人工操作窗口</dt><dd className="text-right tabular-nums">{policy.policy.recentManualOpsWindowHours} 小时</dd><dt className="text-muted-foreground">单日自动执行上限</dt><dd className="text-right tabular-nums">¥{policy.policy.dailyCapCny.toLocaleString("zh-CN")}</dd></dl> : null}<p className="mt-2 text-xs text-muted-foreground">{policy ? `${policy.updatedBy.name} · ${fmtTime(policy.updatedAt)}` : ""}</p><Button size="sm" variant="outline" className="mt-3" onClick={() => toast("改策略", { description: "PUT /settings/decision-policy" })}>调整</Button></CardContent>
+        <CardContent>{policy ? <dl className="grid grid-cols-2 gap-y-1 text-sm"><dt className="text-muted-foreground">最低置信度</dt><dd className="text-right tabular-nums">{(policy.policy.confidenceMin * 100).toFixed(0)}%</dd><dt className="text-muted-foreground">历史成功率下限</dt><dd className="text-right tabular-nums">{(policy.policy.historicalSuccessRateMin * 100).toFixed(0)}%</dd><dt className="text-muted-foreground">近期人工操作窗口</dt><dd className="text-right tabular-nums">{policy.policy.recentManualOpsWindowHours} 小时</dd><dt className="text-muted-foreground">单日自动执行上限</dt><dd className="text-right tabular-nums">¥{policy.policy.dailyCapCny.toLocaleString("zh-CN")}</dd></dl> : null}<p className="mt-2 text-xs text-muted-foreground">{policy ? `${policy.updatedBy.name} · ${fmtTime(policy.updatedAt)}` : ""}</p><Button size="sm" variant="outline" className="mt-3" onClick={() => toast("改策略", { description: "接口接入后生效（当前为示例）" })}>调整</Button></CardContent>
       </Card>
       <Dialog open={adding} onOpenChange={setAdding}>
         <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>加日历事件</DialogTitle><DialogDescription>POST /admin/calendar · 影响基线的事件会让规则在该日切阈值档</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>加日历事件</DialogTitle><DialogDescription>影响基线的事件会让规则在该日切阈值档</DialogDescription></DialogHeader>
           <div className="grid gap-3">
             <div className="grid gap-1.5"><Label>日期</Label><Input type="date" value={form.date} onChange={(event) => setForm((prev) => ({ ...prev, date: event.target.value }))} /></div>
             <div className="grid gap-1.5"><Label>类型</Label><Select value={form.type} onValueChange={(value) => setForm((prev) => ({ ...prev, type: value as CalendarEvent["eventType"] }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{(Object.keys(eventTypeLabel) as CalendarEvent["eventType"][]).map((key) => <SelectItem key={key} value={key}>{eventTypeLabel[key]}</SelectItem>)}</SelectContent></Select></div>
@@ -166,7 +166,7 @@ function FlagsTab() {
     <Card>
       <CardHeader><CardTitle>灰度开关</CardTitle><CardDescription>admin/flags · {data.updatedBy.name} {fmtTime(data.updatedAt)} · 写媒体灰度 = 老板一人 true</CardDescription></CardHeader>
       <CardContent className="flex flex-col gap-2">
-        {(Object.keys(flagMeta) as FlagKey[]).map((key) => { const on = flags[key] ?? data.flags[key]; return <div key={key} className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5"><div><p className="text-sm font-medium">{flagMeta[key].label} <span className="ml-1 font-mono text-[11px] text-muted-foreground">{key}</span></p><p className="text-xs text-muted-foreground">{flagMeta[key].hint}</p></div><div className="flex items-center gap-2"><StatusChip tone={on ? "success" : "muted"}>{on ? "开" : "关"}</StatusChip><Switch checked={on} onCheckedChange={(checked) => { setFlags((prev) => ({ ...prev, [key]: checked })); toast(`${flagMeta[key].label}已${checked ? "开" : "关"}`, { description: `PATCH /admin/flags {${key}: ${checked}}` }) }} aria-label={flagMeta[key].label} /></div></div> })}
+        {(Object.keys(flagMeta) as FlagKey[]).map((key) => { const on = flags[key] ?? data.flags[key]; return <div key={key} className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5"><div><p className="text-sm font-medium">{flagMeta[key].label} <span className="ml-1 font-mono text-[11px] text-muted-foreground">{key}</span></p><p className="text-xs text-muted-foreground">{flagMeta[key].hint}</p></div><div className="flex items-center gap-2"><StatusChip tone={on ? "success" : "muted"}>{on ? "开" : "关"}</StatusChip><Switch checked={on} onCheckedChange={(checked) => { setFlags((prev) => ({ ...prev, [key]: checked })); toast(`${flagMeta[key].label}已${checked ? "开" : "关"}`, { description: `${checked ? "开启后对全工作区生效" : "关闭后对全工作区生效"}` }) }} aria-label={flagMeta[key].label} /></div></div> })}
       </CardContent>
     </Card>
   )
@@ -187,10 +187,10 @@ const assetColumns = assetHelper.columns([
   assetHelper.accessor((row) => row.dependencies.join(","), { id: "deps", header: "依赖", meta: { label: "依赖" }, cell: ({ row }) => row.original.dependencies.length ? <span className="flex flex-wrap gap-1">{row.original.dependencies.map((dep) => <Badge key={dep} variant="outline" className="font-mono text-[10px]">{dep}</Badge>)}</span> : <span className="text-xs text-muted-foreground">−</span> }),
   actionsColumn<AssetItem>((asset) => (
     <>
-      <DropdownMenuItem disabled={asset.status !== "shared"} onSelect={() => toast("已验证", { description: "POST /assets/:id/transition {to: verified}（lead/admin，写 verified_at）" })}>shared → verified</DropdownMenuItem>
-      <DropdownMenuItem disabled={asset.status !== "verified"} onSelect={() => toast("已设官方", { description: "transition {to: official}（admin）" })}>verified → official</DropdownMenuItem>
+      <DropdownMenuItem disabled={asset.status !== "shared"} onSelect={() => toast("已验证", { description: "负责人或管理员确认后记录验证时间" })}>shared → verified</DropdownMenuItem>
+      <DropdownMenuItem disabled={asset.status !== "verified"} onSelect={() => toast("已设官方", { description: "转为官方模板（需管理员）" })}>verified → official</DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem variant="destructive" disabled={asset.status === "deprecated"} onSelect={() => toast("弃用需填 superseded_by", { description: "transition {to: deprecated, superseded_by}" })}>弃用</DropdownMenuItem>
+      <DropdownMenuItem variant="destructive" disabled={asset.status === "deprecated"} onSelect={() => toast("弃用需填 superseded_by", { description: "标记为已弃用，并记录替代版本" })}>弃用</DropdownMenuItem>
     </>
   )),
 ])

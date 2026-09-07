@@ -59,9 +59,9 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
           <DropdownMenuTrigger asChild><Button size="sm" variant="ghost">忽略<IconChevronDown /></Button></DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>原因（3 秒点选）</DropdownMenuLabel>
-            {actions?.ignore.reasons.map((reason) => <DropdownMenuItem key={reason} onSelect={() => toast(`已忽略：${reason}`, { description: "POST /work-items/:id/ignore" })}>{reason}</DropdownMenuItem>)}
+            {actions?.ignore.reasons.map((reason) => <DropdownMenuItem key={reason} onSelect={() => toast(`已忽略：${reason}`, { description: "接口接入后生效（当前为示例）" })}>{reason}</DropdownMenuItem>)}
             <DropdownMenuSeparator />
-            {actions?.ignore.muteDays.map((days) => <DropdownMenuItem key={days} onSelect={() => toast(`已静音 ${days} 天`, { description: "POST /work-items/:id/mute" })}><IconBellOff />静音 {days} 天</DropdownMenuItem>)}
+            {actions?.ignore.muteDays.map((days) => <DropdownMenuItem key={days} onSelect={() => toast(`已静音 ${days} 天`, { description: "接口接入后生效（当前为示例）" })}><IconBellOff />静音 {days} 天</DropdownMenuItem>)}
           </DropdownMenuContent>
         </DropdownMenu>
         <Tooltip>
@@ -106,8 +106,8 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
               </div>
               {changeset.simulation ? <div className="rounded-lg bg-muted/50 p-3 text-xs">What-if：现金 CPA {changeset.simulation.expected.cashCpa.from} → {changeset.simulation.expected.cashCpa.to} · 消耗 {changeset.simulation.expected.cost.from} → {changeset.simulation.expected.cost.to} · 风险 {changeset.simulation.riskLevel} · {changeset.simulation.note}</div> : null}
               <div className="flex justify-end gap-2">
-                <Button variant="outline" size="sm" onClick={() => toast("dry-run 通过", { description: `hash ${changeset.dryRunHash?.slice(0, 8)}` })}>dry-run</Button>
-                <Button size="sm" onClick={() => { toast.success("已确认，等待执行", { description: "write_enabled=false 时返回 403 WRITE_DISABLED" }); setChangesetOpen(false) }}>确认</Button>
+                <Button variant="outline" size="sm" onClick={() => toast("dry-run 通过", { description: `校验指纹 ${changeset.dryRunHash?.slice(0, 8)}` })}>dry-run</Button>
+                <Button size="sm" onClick={() => { toast.success("已确认，等待执行", { description: "未开写权限时会被拒绝" }); setChangesetOpen(false) }}>确认</Button>
               </div>
             </div>
           ) : null}

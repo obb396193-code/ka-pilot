@@ -189,14 +189,14 @@ function Canvas({ definitionId }: { definitionId: string }) {
           {!editing ? <Button variant="outline" size="sm" onClick={() => { setEditing(true); toast("已建草稿 v" + ((version?.version ?? 0) + 1), { description: "已发布版本不可变；编辑落到新版本" }) }}>基于 v{version?.version ?? 1} 新建草稿</Button> : null}
           <Button variant="outline" size="sm" onClick={() => setDialog("validate")}>校验</Button>
           <Button variant="outline" size="sm" onClick={() => setDialog("simulate")}>模拟运行</Button>
-          <Button size="sm" disabled={!canPublish} title={canPublish ? "" : "四组校验全过且缺参为空才可发布"} onClick={() => toast.success("已发布（不可变）", { description: "POST .../publish → status=published；运行固定版本" })}>发布</Button>
+          <Button size="sm" disabled={!canPublish} title={canPublish ? "" : "四组校验全过且缺参为空才可发布"} onClick={() => toast.success("已发布（不可变）", { description: "发布后运行固定在该版本" })}>发布</Button>
         </div>
       </aside>
       <Dialog open={dialog !== null} onOpenChange={(open) => { if (!open) setDialog(null) }}>
         <DialogContent className="sm:max-w-lg">
           {dialog === "validate" ? (
             <>
-              <DialogHeader><DialogTitle>校验结果</DialogTitle><DialogDescription>POST /workflows/:id/versions/:v/validate · 四组全过且缺参为空才可发布</DialogDescription></DialogHeader>
+              <DialogHeader><DialogTitle>校验结果</DialogTitle><DialogDescription>四组全过且缺参为空才可发布</DialogDescription></DialogHeader>
               {validation ? (
                 <div className="flex flex-col gap-3 text-sm">
                   {(["schema", "permissions", "links"] as const).map((group) => <div key={group}><p className="mb-1 text-xs font-medium text-muted-foreground">{group === "schema" ? "结构" : group === "permissions" ? "权限" : "连线"}</p><ul className="flex flex-col gap-1">{validation[group].map((item) => <li key={item.check} className="flex items-center gap-2">{item.pass ? <IconCircleCheck className="size-4 text-status-success" /> : <IconAlertTriangle className="size-4 text-status-critical" />}{item.check}{item.detail ? <span className="text-xs text-muted-foreground">{item.detail}</span> : null}</li>)}</ul></div>)}

@@ -36,7 +36,7 @@ function buildColumns(onVerdict: (test: AccountTest) => void) {
     actionsColumn<AccountTest>((test) => (
       <>
         <DropdownMenuItem onSelect={() => onVerdict(test)}>填结论</DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => toast("已停止测试", { description: "PATCH /account-tests/:id {status: stopped}" })}>停止</DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => toast("已停止测试", { description: "接口接入后生效（当前为示例）" })}>停止</DropdownMenuItem>
       </>
     )),
   ])
@@ -62,7 +62,7 @@ export function TestsTab() {
       />
       <Dialog open={creating} onOpenChange={setCreating}>
         <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>新建开户测试</DialogTitle><DialogDescription>POST /account-tests；目的必填，假设可选。</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>新建开户测试</DialogTitle><DialogDescription>目的必填，假设可选。</DialogDescription></DialogHeader>
           <div className="grid gap-3">
             <div className="grid gap-1.5"><Label>账户 ID</Label><Input value={form.accountId} onChange={(event) => setForm((prev) => ({ ...prev, accountId: event.target.value }))} placeholder="account-4" /></div>
             <div className="grid gap-1.5"><Label>任务（可选）</Label><Input value={form.taskId} onChange={(event) => setForm((prev) => ({ ...prev, taskId: event.target.value }))} /></div>
@@ -78,7 +78,7 @@ export function TestsTab() {
       </Dialog>
       <Dialog open={verdict !== null} onOpenChange={(open) => { if (!open) setVerdict(null) }}>
         <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>填写结论 · {verdict?.purpose}</DialogTitle><DialogDescription>PATCH /account-tests/:id；系统只算窗口指标，不替你判。</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>填写结论 · {verdict?.purpose}</DialogTitle><DialogDescription>系统只算窗口指标，不替你判。</DialogDescription></DialogHeader>
           <div className="grid gap-3">
             <Select value={status} onValueChange={(value) => setStatus(value as AccountTest["status"])}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="passed">通过</SelectItem><SelectItem value="failed">未通过</SelectItem><SelectItem value="stopped">停止</SelectItem></SelectContent></Select>
             <Textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="结论与依据" />

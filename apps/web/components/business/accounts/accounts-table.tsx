@@ -64,7 +64,7 @@ function buildColumns(actions: RowActions) {
         <DropdownMenuItem onSelect={() => actions.onProduct(item)}>改产品名</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => actions.onTransfer([item])}>转移负责人</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => actions.onReplicate(item)}>发起优质户复制</DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => toast("已加入盯盘名单", { description: "PUT /me/watchlist 接入后保存" })}>加入盯盘</DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => toast("已加入盯盘名单", { description: "接入后保存" })}>加入盯盘</DropdownMenuItem>
         <DropdownMenuItem disabled title="星标随用户偏好接口开放">星标</DropdownMenuItem>
       </>
     )),

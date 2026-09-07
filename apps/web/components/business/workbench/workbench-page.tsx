@@ -19,7 +19,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import type { DisplayMetric } from "@/lib/data/contracts"
 import { timelineFixture } from "@/lib/fixtures/accounts"
-import { costStatusLabel, fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
+import { fmtTime, isOk, mv, rv, costStatusReasonText } from "@/lib/fixtures/contract"
 import { summaryFixtures, trendFixture, windowLabel } from "@/lib/fixtures/data-analysis"
 import { alertsStreamFixture, approvalsFixture, briefFixtures, changesetFixture, dispatchesFixture, rosterFixture, runsRunningFixture, severityMeta, workItemDetailFixture, workItemListVariants, workItemLists, type Severity, type WorkItem, type WorkItemListVariant } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
@@ -66,7 +66,7 @@ export function WorkbenchPage() {
     return [
       { key: "cost", label: "账面消耗", value: mv(row.metrics.cost, "money0"), delta: null, tone: "neutral" },
       { key: "cashCpa", label: "现金 CPA", value: rv(row.metrics.ratios.cashCpa, "money"), delta: a.price ? `考核 ¥${a.price.value.toFixed(2)}` : null, tone: tone(a.costStatus) },
-      { key: "onTarget", label: "达标", value: a.onTarget === null ? "−" : a.onTarget ? "达标" : "超线", delta: a.costStatus ? costStatusLabel[a.costStatus] : null, tone: tone(a.costStatus) },
+      { key: "onTarget", label: "达标", value: a.onTarget === null ? "−" : a.onTarget ? "达标" : "超线", delta: costStatusReasonText(a.costStatusReason), tone: tone(a.costStatus) },
       { key: "costSpace", label: "成本空间", value: mv(row.metrics.costSpace, "money0"), delta: null, tone: "neutral" },
       { key: "realConversion", label: "BI 量级", value: mv(row.metrics.realConversion), delta: null, tone: "neutral" },
       { key: "pending", label: "待处理", value: String(counts.all), delta: counts.P0 ? `${counts.P0} 条 P0` : null, tone: counts.P0 ? "critical" : "neutral" },
@@ -116,7 +116,7 @@ export function WorkbenchPage() {
                   <Card>
                     <CardHeader>
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div><CardTitle>今日待处理队列</CardTitle><CardDescription>GET /work-items · 四件套：户 / 为什么 / 建议 / 动作</CardDescription></div>
+                        <div><CardTitle>今日待处理队列</CardTitle><CardDescription>四件套：户 / 为什么 / 建议 / 动作</CardDescription></div>
                         <div className="flex items-center gap-2">
                           <Tabs value={queueFilter} onValueChange={(value) => setQueueFilter(value as QueueFilter)}>
                             <TabsList>{(["all", "P0", "P1", "opportunity"] as QueueFilter[]).map((key) => <TabsTrigger key={key} value={key}>{key === "all" ? "全部" : severityMeta[key as Severity].label}<Badge variant="secondary" className="ml-1">{counts[key]}</Badge></TabsTrigger>)}</TabsList>
@@ -145,7 +145,7 @@ export function WorkbenchPage() {
                 </div>
                 <div className="flex flex-col gap-4 @5xl/main:col-span-4">
                   <Card>
-                    <CardHeader><CardTitle className="text-sm">待确认变更集</CardTitle><CardDescription>GET /changesets?status=draft&mine</CardDescription></CardHeader>
+                    <CardHeader><CardTitle className="text-sm">待确认变更集</CardTitle><CardDescription>我的草稿；dry-run 通过、确认后才执行</CardDescription></CardHeader>
                     <CardContent className="flex flex-col gap-2">
                       {changeset ? (
                         <div className="flex flex-col gap-2 rounded-lg border px-3 py-2 text-sm">
@@ -157,7 +157,7 @@ export function WorkbenchPage() {
                     </CardContent>
                   </Card>
                   <Card>
-                    <CardHeader><CardTitle className="text-sm">运行中的工作流</CardTitle><CardDescription>GET /workflows/runs?status=running&mine=true</CardDescription></CardHeader>
+                    <CardHeader><CardTitle className="text-sm">运行中的工作流</CardTitle><CardDescription>我发起的、还在跑的</CardDescription></CardHeader>
                     <CardContent className="flex flex-col gap-2">
                       {runs.map((run) => (
                         <Link key={run.run_id} href={`/automation/runs/${run.run_id}`} className="flex flex-col gap-1.5 rounded-lg border px-3 py-2 text-sm hover:bg-muted/50">
@@ -192,18 +192,18 @@ export function WorkbenchPage() {
                   <Card>
                     <CardHeader>
                       <div className="flex items-center justify-between gap-2">
-                        <div><CardTitle className="text-sm">AI 早报</CardTitle><CardDescription>GET /reports/daily-brief · 数据未就绪不生成假早报</CardDescription></div>
-                        <Select value={briefVariant} onValueChange={(value) => setBriefVariant(value as typeof briefVariant)}><SelectTrigger size="sm" className="w-28" aria-label="早报样例"><SelectValue /></SelectTrigger><SelectContent align="end"><SelectItem value="ready">ready</SelectItem><SelectItem value="pending">pending_data</SelectItem></SelectContent></Select>
+                        <div><CardTitle className="text-sm">AI 早报</CardTitle><CardDescription>数据未就绪不生成假早报</CardDescription></div>
+                        <Select value={briefVariant} onValueChange={(value) => setBriefVariant(value as typeof briefVariant)}><SelectTrigger size="sm" className="w-28" aria-label="早报样例"><SelectValue /></SelectTrigger><SelectContent align="end"><SelectItem value="ready">有数据</SelectItem><SelectItem value="pending">数据未就绪</SelectItem></SelectContent></Select>
                       </div>
                     </CardHeader>
                     <CardContent className="flex flex-col gap-2">
                       {isOk(brief) && brief.data.status === "ready" ? (
                         <>
-                          {brief.data.sections.map((section) => <div key={section.key} className="rounded-lg border px-3 py-2 text-sm"><div className="text-xs font-medium text-muted-foreground">{section.title}</div><div>{section.text}</div>{section.metrics ? <div className="mt-1 text-xs text-muted-foreground tabular-nums">现金 {mv(section.metrics.cashCost, "money0")} · 真实转化 {mv(section.metrics.realConversion)} · 现金 CPA {rv(section.metrics.cashCpa, "money")}</div> : null}</div>)}
+                          {brief.data.sections.map((section) => <div key={section.key} className="rounded-lg border px-3 py-2 text-sm"><div className="text-xs font-medium text-muted-foreground">{section.title}</div>{section.text ? <div>{section.text}</div> : null}{section.items?.length ? <ul className="ml-4 list-disc space-y-0.5">{section.items.map((entry) => <li key={entry}>{entry}</li>)}</ul> : null}{section.metrics ? <div className="mt-1 text-xs text-muted-foreground tabular-nums">现金 {mv(section.metrics.cashCost, "money0")} · 真实转化 {mv(section.metrics.realConversion)} · 现金 CPA {rv(section.metrics.cashCpa, "money")}</div> : null}</div>)}
                           {brief.data.queueSummary ? <div className="text-xs text-muted-foreground tabular-nums">队列 P0 {brief.data.queueSummary.p0} · P1 {brief.data.queueSummary.p1} · 机会 {brief.data.queueSummary.opportunity}</div> : null}
-                          <div className="flex items-center justify-between gap-2"><span className="text-xs text-muted-foreground">生成 {fmtTime(brief.data.generatedAt)} · {brief.data.pushStatus === "sent" ? "已发群" : "未发群"}</span><Button size="sm" variant="outline" className="h-7" onClick={() => toast("已发到钉钉群", { description: "subscriptions.kind=daily_report" })}><IconSend />发群</Button></div>
+                          <div className="flex items-center justify-between gap-2"><span className="text-xs text-muted-foreground">生成 {fmtTime(brief.data.generatedAt)} · {brief.data.pushStatus === "sent" ? "已发群" : "未发群"}</span><Button size="sm" variant="outline" className="h-7" onClick={() => toast("已发到钉钉群", { description: "按日报订阅的目标群推送" })}><IconSend />发群</Button></div>
                         </>
-                      ) : isOk(brief) ? <div className="flex items-center gap-2 rounded-lg border border-dashed px-3 py-3 text-sm text-muted-foreground"><IconBell className="size-4" />早报待数据就绪（{brief.data.reason ?? "pending_data"}），不生成假早报。</div> : null}
+                      ) : isOk(brief) ? <div className="flex items-center gap-2 rounded-lg border border-dashed px-3 py-3 text-sm text-muted-foreground"><IconBell className="size-4" />早报待数据就绪（{brief.data.reason ?? "数据未就绪"}），不生成假早报。</div> : null}
                     </CardContent>
                   </Card>
                 </div>
