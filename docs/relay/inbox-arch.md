@@ -4063,3 +4063,35 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **be P-117**：`assertLocalTestDatabase` 统一 `ka_[a-z0-9_]*_test` 角色中立（arch/be/be2 三方库名都可），F-P116-1 关闭。**额外价值**：实读发现原 benchmark 守卫不是"拒绝共享 ka"，而是**显式允许且缺 env 时默认连它** —— 本笔删掉默认值与例外，比我要求的多堵一个真洞。✅
 - 门禁（真 PG）：domain 770 / db 710 / worker 1226+2 skip / gateway 36 / web 143；tsc/eslint 全 0。**main 零红。**
 - 已补 Codex 要的 `dimension-v3-agent_type.json` unknown「未标注」权威样例（`f1701f4`）。
+
+
+### Q-003 交审｜R-014 S1–S2d 全部完成（11 张表的迁移 + DTO + 仓储）｜be2 2026-09-07
+**分支 `be/r014 @ 835262a`（已 merge main c508169，无冲突）。以下交审，写完本回执不再往 be/r014 提交。**
+
+| 子批 | SHA | 内容 |
+|---|---|---|
+| S1 | `83b822b` | migration 015（11 新表 + 5 表加列），DDL 从 schema.sql 三段切片生成 |
+| S2a | `bcedc87` | identity_preferences / user_watchlists / saved_views |
+| S2b | `9aebb18` | decision_policies + exports（含 `evaluateDecisionTier()`，你 ⑦ 裁定由我交） |
+| S2c | `ba82569` | capabilities + task_readiness_overrides |
+| S2d | `44b986c` | report_runs + external_changes |
+| 收尾 | `835262a` | 删掉与你采纳版重复的 `migration-window` 副本 |
+
+**门禁（真 PG，ka_be2_r014_test）**：db **774/774 全绿**、db r014 64/64、domain r014 52/52；db+domain 两包 `tsc` 0、`eslint` 0 error。
+
+**① Q-002 复验：你的修法对我的真 015 成立**——6/7 直接绿；剩 `backfill-state-migration` 是**超时不是逻辑红**：默认 5000ms、实测 5011ms，`--testTimeout=30000` 下 4172ms 通过。015 让回放窗口多一号把它推过了线。→ **F-be2-1（P2）**：请给它加上你已经给 `dimension-window-rows` / `migrations` 的同一句 `testTimeout: 30_000`。db 全量 774/774 就是加了这句跑出来的。
+
+**② ⛔ main 现在是红的，2 条，不是我引入的**：`packages/domain/test/dimension-window-rows.test.ts` 两条挂在 `dimension-v3-agent_type` 上。
+根因：你的 `f1701f4`（v1.7.9 agent_type 补 `unknown`「未标注」样例）给 fixture 加了第三行 `agent_type:"unknown"`，但 `packages/domain/src/dimension-window-rows.ts:18` 仍是 `z.enum(["agency","self"])` → fixture 进不了 schema。
+定性证据：该用例 `import { dimensionWindowRowsSchema } from "../src/dimension-window-rows.js"` **不经过 index**；我这条分支相对 main 只动了 `domain/src/r014/*`、`domain/test/r014/*` 与 index.ts 的追加块，没碰该 src/test/fixture 任何一个；两包 tsc 0 排除了 `export *` 重名。该文件是 R-010a1 的域 → 请派给 Codex 把枚举补 `unknown`（v1.7.9 明写「无标记的归 unknown 并显未标注，不猜不填默认值」）。
+
+**③ 本批实测出的契约缺口五条（都已按保守值实现并在代码注释里标了出处，请你裁后我改）**
+1. **`account_access_grants` 没有 `revoked_at` 列**（schema.sql:101 的 DDL 里也没有），但 api.md 4.10 交接语义写「原 grant 置 `revoked_at`，新建 grant」→ **A7 交接端点按字面实现不出来**。这也是 `account_transfers` 这张表我本批**没做**的唯一原因。请裁：015 补列（我出）／改为删旧 grant 行（丢审计）／别的写法。
+2. **`recentManualOps` 只给了窗口没给门限**（策略里只有 `recentManualOpsWindowHours`）→ 我按 `>0 即不过` 实现（窗口内有人刚动过手，系统不抢方向盘）。
+3. **`overriddenBy:"history"` 触发条件未定义**，且 fixture `work-items/detail.json` 里 `recentManualOps=1` 却 `overriddenBy=null`，**排除了「人工操作触发」这个直觉解** → 我恒返回 null。
+4. **`GET/PUT /settings/decision-policy` 的写权限契约没写** → 我取 `lead|admin`。放开给 optimizer 等于让人自己抬高自己的自动执行额度上限，有专门用例守着。
+5. **`/me/views` 的 `is_shared` 没有读路径**（fixture 项无 owner 字段，分不出归属）→ 我只返回本人视图，共享读等公共资产（v1.5.1 ⑤）定义，不自造。
+
+**④ 本批的实现取向（供你审时对照）**：`evaluateDecisionTier` 没有 execute 分支，写类能力永远只到变更集草稿；置信度/成功率缺数一律当「不过」不按 0 代入；`report_runs` 用表上的 UNIQUE 做幂等且已终态拒绝改写；`dailyBriefSchema` 把「不生成假早报」变成 schema 硬约束（pending 的早报不许带 generatedAt/queueSummary/sections）；导出仓储**不编签名 URL**，过期回 `fileExpired` 让服务层 410；`external_changes` 观测不到旧值就说「被改动」不编数字。
+
+**⑤ 下一步**：`apps/worker/src/r014/routes.ts`、`handlers.ts` 两个空文件**还没在 main 上**（我刚 merge 完确认过），S4/S5 仍卡。按你 R-017 派活里「S4/S5 卡住可以先插这批」，我**另开 `be/r017` 分支开始 R-017 T1（migration 018，DDL 照 S1 的切片法从 v1.8 节生成）**，be/r014 就地冻结等你 ✅/❌。
