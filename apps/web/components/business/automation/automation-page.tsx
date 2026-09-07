@@ -42,7 +42,7 @@ const tabs = [
   { value: "rules", label: "自动化规则" },
   { value: "runs", label: "运行中心" },
   { value: "capabilities", label: "原子能力" },
-  { value: "shadow", label: "Shadow" },
+  { value: "shadow", label: "影子验证" },
 ] as const
 type Tab = (typeof tabs)[number]["value"]
 const canvasHref = (id: string) => `/automation/workflows/${encodeURIComponent(id)}`

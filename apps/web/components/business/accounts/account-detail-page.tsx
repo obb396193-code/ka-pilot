@@ -124,8 +124,8 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
             <Card>
               <CardHeader>
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div><CardTitle>计划层</CardTitle><CardDescription>campaign → unit（消耗 / 转化 / 出价 / 时段）· 垃圾计划标记 · 勾选批量关停 → 变更集{structure ? ` · 同步 ${fmtTime(structure.syncedAt)}` : ""}</CardDescription></div>
-                  <Button size="sm" variant="outline" disabled={junkSelected.length === 0} onClick={() => { if (asItem) setDialog({ kind: "batch", items: [asItem], op: "pause" }); else toast("生成关停变更集", { description: `${junkSelected.length} 个 unit` }) }}><IconEye />关停 {junkSelected.length || ""} 个 → 变更集</Button>
+                  <div><CardTitle>计划层</CardTitle><CardDescription>计划 → 单元（消耗 / 转化 / 出价 / 时段）· 垃圾计划标记 · 勾选批量关停 → 变更集{structure ? ` · 同步 ${fmtTime(structure.syncedAt)}` : ""}</CardDescription></div>
+                  <Button size="sm" variant="outline" disabled={junkSelected.length === 0} onClick={() => { if (asItem) setDialog({ kind: "batch", items: [asItem], op: "pause" }); else toast("生成关停变更集", { description: `${junkSelected.length} 个单元` }) }}><IconEye />关停 {junkSelected.length || ""} 个单元 → 变更集</Button>
                 </div>
               </CardHeader>
               <CardContent className="p-0">
@@ -154,13 +154,15 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
   )
 }
 
+const unitStatusLabel: Record<string, string> = { active: "投放中", paused: "暂停", deleted: "已删除", pending: "待审核" }
+
 function CampaignRows({ campaign, selected, onToggle }: { campaign: { campaignId: string; name: string; status: string; dayBudget: { value: number | null; availability: string }; units: StructureUnit[] }; selected: string[]; onToggle: (unit: StructureUnit) => void }) {
   return (
     <>
       <TableRow className="bg-muted/30 hover:bg-muted/30">
         <TableCell />
         <TableCell className="font-medium">{campaign.name}<span className="ml-2 font-mono text-[11px] text-muted-foreground">{campaign.campaignId}</span></TableCell>
-        <TableCell><TypeChip>{campaign.status}</TypeChip></TableCell>
+        <TableCell><TypeChip>{unitStatusLabel[campaign.status] ?? campaign.status}</TypeChip></TableCell>
         <TableCell /><TableCell />
         <TableCell className="text-right tabular-nums">{mv(campaign.dayBudget as never, "money0")}</TableCell>
         <TableCell colSpan={4} />
@@ -169,7 +171,7 @@ function CampaignRows({ campaign, selected, onToggle }: { campaign: { campaignId
         <TableRow key={unit.unitId} className={cn(unit.junk && "bg-status-critical/5")}>
           <TableCell><Checkbox checked={selected.includes(unit.unitId)} onCheckedChange={() => onToggle(unit)} aria-label="选择单元" /></TableCell>
           <TableCell className="pl-8">{unit.name}<span className="ml-2 font-mono text-[11px] text-muted-foreground">{unit.unitId}</span></TableCell>
-          <TableCell><TypeChip>{unit.status}</TypeChip></TableCell>
+          <TableCell><TypeChip>{unitStatusLabel[unit.status] ?? unit.status}</TypeChip></TableCell>
           <TableCell className="text-right tabular-nums">{mv(unit.bid, "money")}</TableCell>
           <TableCell className="text-right tabular-nums">{mv(unit.cpaBid, "money")}</TableCell>
           <TableCell className="text-right tabular-nums">{mv(unit.dayBudget, "money0")}</TableCell>
