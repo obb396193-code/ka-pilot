@@ -84,7 +84,7 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
         }
       />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-014（v1.5 账户小传 / 操作史 / 结构）接入后切换为真数据" empty={{ title: "没有这个账户", description: "检查媒体与账户 ID，或回账户池重新选。" }}>
+        <StateFrame state={state} unlock="账户小传 / 操作史 / 结构接口接入后切换为真数据" empty={{ title: "没有这个账户", description: "检查媒体与账户 ID，或回账户池重新选。" }}>
           <div className="flex flex-col gap-4">
             <KpiCards metrics={kpis} className="px-0 lg:px-0" />
 

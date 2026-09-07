@@ -105,7 +105,7 @@ export function WorkbenchPage() {
       />
       {view === "mine" ? <PageTabs tabs={tabs} value={tab} onChange={setTab} /> : null}
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-010 工作项动作 + R-012 警报 / 早报接入后切换为真数据" empty={{ title: "今天没有待处理", description: "队列空 ≠ 全部健康；看底部覆盖三数。" }}>
+        <StateFrame state={state} unlock="工作项动作 + 警报 / 早报接口接入后切换为真数据" empty={{ title: "今天没有待处理", description: "队列空 ≠ 全部健康；看底部覆盖三数。" }}>
           {view === "lead" ? <LeadView /> : tab === "collab" ? <CollabTab /> : tab === "starred" ? <StarredTab /> : (
             <div className="flex flex-col gap-4">
               <OnboardingCard />

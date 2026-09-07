@@ -137,7 +137,7 @@ export function AccountsPage() {
       <PageHeader title="账户池" description="全量账户各在哪个库存态、哪些没用、按产品名分、哪些备用；缺数显 −" isMock={isMock} actions={<StateSwitch />} />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-014（v1.5.1 账户池扩展）接入后切换为真数据" empty={{ title: "当前空间没有可见账户", description: "个人空间只看本人授权账户；导入认领或新建账户后出现。" }}>
+        <StateFrame state={state} unlock="账户池扩展字段接口接入后切换为真数据" empty={{ title: "当前空间没有可见账户", description: "个人空间只看本人授权账户；导入认领或新建账户后出现。" }}>
           {tab === "pool" ? (
             <div className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -169,7 +169,7 @@ export function AccountsPage() {
                   )}
                 </div>
                 <aside className="flex flex-col gap-4 @6xl/main:col-span-3">
-                  <ExampleBlock unlock="基建管理（P1）OS 联调后" inline>
+                  <ExampleBlock unlock="与 OS 联调通过后生效" inline>
                     <Card>
                       <CardHeader><CardTitle className="text-sm">待搭建队列</CardTitle><CardDescription>开户完成 / 手动加入</CardDescription></CardHeader>
                       <CardContent className="flex flex-col gap-2">{queue.map((row) => <div key={row.accountId} className="flex items-center justify-between rounded-lg border px-3 py-2 text-xs"><span className="font-mono">{row.accountId}</span><span className="text-muted-foreground">{poolStatusMap[row.poolStatus].label} · 自 {row.since.slice(5)}</span></div>)}</CardContent>
@@ -179,7 +179,7 @@ export function AccountsPage() {
                     <CardHeader><CardTitle className="text-sm">容量分布</CardTitle><CardDescription>按容量负载分桶（只数户数）</CardDescription></CardHeader>
                     <CardContent><CapacityDistribution items={filtered} /></CardContent>
                   </Card>
-                  <ExampleBlock unlock="账户-任务匹配建议（P1）随需求预测开放" inline>
+                  <ExampleBlock unlock="账户与任务的匹配建议随需求预测功能一起开放" inline>
                     <Card>
                       <CardHeader><CardTitle className="text-sm">匹配建议</CardTitle><CardDescription>空闲 / 可用户 → 待挂任务</CardDescription></CardHeader>
                       <CardContent className={cn("text-xs text-muted-foreground")}>{items.filter((item) => item.poolStatus === "available").length} 户可用；预测模型后置，先按「可用」筛选人工挂。</CardContent>

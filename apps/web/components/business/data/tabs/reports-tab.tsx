@@ -79,7 +79,7 @@ export function ReportsTab({ views, onSaveView }: { views: SavedView[]; onSaveVi
                 <span className="text-sm font-medium">从空白</span>
                 <span className="text-xs text-muted-foreground">自己选分组与列</span>
               </button>
-              <ExampleBlock unlock="Agent 帮做表（3.9）随 R-010b 开放" inline>
+              <ExampleBlock unlock="Agent 帮做表随助手写作能力一起开放" inline>
                 <div className="flex flex-col gap-1 rounded-xl border p-4"><span className="flex items-center gap-1.5 text-sm font-medium"><IconSparkles className="size-4" />让 Agent 帮搭</span><span className="text-xs text-muted-foreground">一句话描述想看的表</span></div>
               </ExampleBlock>
             </div>

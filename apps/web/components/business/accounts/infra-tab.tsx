@@ -29,7 +29,7 @@ export function InfraTab() {
   const currentState = (request?.status ?? "generated_unsent") as (typeof states)[number]
 
   return (
-    <ExampleBlock unlock="基建管理（P1）：OS 对话托管联调通过后，这里的指令真正发到 OS 并回读结构">
+    <ExampleBlock unlock="与 OS 对话托管联调通过后，这里的指令会真正发到 OS 并回读结构">
       <div className="grid gap-4 @5xl/main:grid-cols-12">
         <Card className="@5xl/main:col-span-3">
           <CardHeader><CardTitle className="text-sm">待搭建队列</CardTitle><CardDescription>来源：开户完成 / 手动加入</CardDescription></CardHeader>

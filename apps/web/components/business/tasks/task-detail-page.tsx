@@ -96,7 +96,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
       />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-014（任务阶段 / 就绪度 / SOP）+ R-010（任务详情接口）接入后切换为真数据" empty={{ title: "没有这个任务", description: "检查任务 ID，或回列表重新选。" }}>
+        <StateFrame state={state} unlock="任务阶段 / 就绪度 / SOP + 任务详情接口接入后切换为真数据" empty={{ title: "没有这个任务", description: "检查任务 ID，或回列表重新选。" }}>
           {tab === "overview" ? (
             <div className="flex flex-col gap-4">
               <KpiCards metrics={headline} className="px-0 lg:px-0" />
@@ -117,7 +117,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
                       ))}
                       {!ov.sopProgress.runId ? <Button size="sm" variant="outline" onClick={() => toast("已用官方模板起 run", { description: "接口接入后生效（当前为示例）" })}><IconPlayerPlay />起「开户到基建」SOP</Button> : null}
                     </ol>
-                  ) : <p className="text-sm text-muted-foreground">SOP 进度未返回（v1.5.1 后有）。</p>}
+                  ) : <p className="text-sm text-muted-foreground">SOP 进度未返回。</p>}
                 </CardContent>
               </Card>
               <div className="grid gap-4 @5xl/main:grid-cols-12">
@@ -148,7 +148,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
                         <ReadinessRing readiness={ov.readiness} />
                         <ul className="flex flex-col gap-1 text-xs">{readinessKeys.filter(({ key }) => !ov.readiness![key].ready).map(({ key, label }) => <li key={key} className="flex items-center justify-between gap-2"><span><span className="font-medium">{label}</span> 缺：{ov.readiness![key].missing.join("；") || "−"}</span><Button size="sm" variant="ghost" className="h-6 text-xs" onClick={() => toast(`已人工勾就绪：${label}`, { description: "接口接入后生效（当前为示例）" })}>勾就绪</Button></li>)}</ul>
                       </>
-                    ) : <p className="text-sm text-muted-foreground">就绪度未返回（v1.5.1 后有）。</p>}
+                    ) : <p className="text-sm text-muted-foreground">就绪度未返回。</p>}
                   </CardContent>
                 </Card>
                 <div className="flex flex-col gap-4 @5xl/main:col-span-4">
@@ -222,7 +222,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
           ) : null}
 
           {tab === "materials" ? (
-            <ExampleBlock unlock="素材域（R-012 / R-015）接入后：这里显示任务关联素材的表现与复刻链路">
+            <ExampleBlock unlock="素材接口接入后：这里显示任务关联素材的表现与复刻链路">
               <Card><CardHeader><CardTitle>商品与素材</CardTitle><CardDescription>501 占位 · 素材池 / 复刻 / brief 在「商品素材」页</CardDescription></CardHeader><CardContent className="text-sm text-muted-foreground">关联素材 · 商品 × 素材效果矩阵 · 设计 brief</CardContent></Card>
             </ExampleBlock>
           ) : null}

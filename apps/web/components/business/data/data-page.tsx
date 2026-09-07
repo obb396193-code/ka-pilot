@@ -60,7 +60,7 @@ export function DataPage() {
       />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-010a1 语义查询窗口化接入后切换为真数据" empty={{ title: "当前窗口没有数据", description: "换一个窗口或账户范围；系统不会用 0 填充。" }}>
+        <StateFrame state={state} unlock="语义查询按窗口取数接入后切换为真数据" empty={{ title: "当前窗口没有数据", description: "换一个窗口或账户范围；系统不会用 0 填充。" }}>
           {tab === "overview" ? <OverviewTab colorKey={colorKey} /> : null}
           {tab === "table" ? <TableTab onSaveView={saveView} /> : null}
           {tab === "pivot" ? <PivotTab /> : null}

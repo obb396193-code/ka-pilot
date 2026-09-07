@@ -282,7 +282,7 @@ export function AutomationPage() {
       {cards.length ? <KpiCards metrics={cards} /> : null}
       <PageTabs tabs={tabBadges} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-014（工作流画布 / capabilities）+ v1.3 rules 接入后切换为真数据" empty={{ title: "还没有自动化资产", description: "从官方模板复制一份开始，或用 Agent 帮编生成草稿。" }}>
+        <StateFrame state={state} unlock="工作流画布 / 原子能力 / 规则接口接入后切换为真数据" empty={{ title: "还没有自动化资产", description: "从官方模板复制一份开始，或用 Agent 帮编生成草稿。" }}>
           {tab === "official" || tab === "mine" || tab === "team" ? (
             defs[tab].length ? (
               <div className="grid gap-4 @3xl/main:grid-cols-2 @6xl/main:grid-cols-3">{defs[tab].map((item) => <TemplateCard key={item.id} item={item} kind={tab} />)}</div>

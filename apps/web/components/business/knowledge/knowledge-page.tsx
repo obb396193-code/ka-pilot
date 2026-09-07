@@ -50,7 +50,7 @@ export function KnowledgePage({ initialId = null }: { initialId?: string | null 
     <PageBody>
       <PageHeader title="知识库" description={<span>SOP · AI 报告归档 · 案例库 · 错题本；富文本编辑，输入 <code className="rounded bg-muted px-1">@</code> 插入文档双链或业务对象；双链解析在后端保存时重建</span>} isMock={isMock} actions={<><StateSwitch />{readOnly ? <StatusChip tone="muted">团队空间只读</StatusChip> : null}<Button variant="outline" size="sm" onClick={() => openAgentDrawer(doc ? `把文档「${doc.title}」归纳成三句话，并列出关联任务` : "把今天的日报归档到知识库")}><IconSparkles />问 AI</Button><Button size="sm" disabled={readOnly} onClick={() => { const id = kbActions.createDoc(null, "manual", "新文档"); setSelId(id); toast("已建文档", { description: "接口接入后生效（当前为示例）" }) }}><IconPlus />新建文档</Button></>} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="kb/documents · kb/search · revisions · links · business_refs（R-012）接入后切换为真数据" empty={{ title: "知识库还是空的", description: "新建文档，或从报告页把日报归档进来。" }}>
+        <StateFrame state={state} unlock="知识库接口（文档 / 搜索 / 修订 / 双链 / 业务关联）接入后切换为真数据" empty={{ title: "知识库还是空的", description: "新建文档，或从报告页把日报归档进来。" }}>
           <div className="grid min-h-[640px] gap-0 rounded-xl border bg-card @3xl/main:grid-cols-[280px_minmax(0,1fr)]">
             <div className={cn("flex min-h-0 flex-col border-b p-3 @3xl/main:border-r @3xl/main:border-b-0", doc ? "hidden @3xl/main:flex" : "flex")}>
               <div className="relative mb-2 shrink-0"><IconSearch className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-foreground" /><Input value={search} onChange={(e) => setSearch(e.target.value)} aria-label="搜文档" placeholder="搜文档（FTS，非 LLM）" className="h-8 pl-8 text-xs" /></div>

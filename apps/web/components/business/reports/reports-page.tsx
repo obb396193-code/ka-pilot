@@ -171,7 +171,7 @@ export function ReportsPage() {
       {kpis.length ? <KpiCards metrics={kpis} /> : null}
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="报告域接口（daily / report-config / exports / settlements）接入后切换为真数据" empty={{ title: "还没有报告", description: "日报每天自动生成；结算单在周期结束后走向导。" }}>
+        <StateFrame state={state} unlock="报告接口（日报 / 报表配置 / 导出 / 结算）接入后切换为真数据" empty={{ title: "还没有报告", description: "日报每天自动生成；结算单在周期结束后走向导。" }}>
           {tab === "business" ? <BusinessTab /> : null}
           {tab === "daily" ? <DailyReportView /> : null}
           {tab === "weekly" ? <WeeklyTab /> : null}

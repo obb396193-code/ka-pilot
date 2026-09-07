@@ -67,7 +67,7 @@ const columns = helper.columns([
       <DropdownMenuItem onSelect={() => openAgentDrawer(`分析任务「${task.taskName}」的达成、pacing 与就绪缺项`)}><IconSparkles />问 AI</DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem onSelect={() => toast("已关注", { description: "关注列表接入后保存" })}><IconStar />关注</DropdownMenuItem>
-      <DropdownMenuItem disabled title="任务编辑接口（R-010）开放后启用">编辑</DropdownMenuItem>
+      <DropdownMenuItem disabled title="任务编辑接口开放后启用">编辑</DropdownMenuItem>
       <DropdownMenuItem disabled title="归档接口开放后启用">归档</DropdownMenuItem>
     </>
   )),
@@ -105,23 +105,23 @@ export function TasksPage() {
         <>
           <Select value={legacyState} onValueChange={(value) => setLegacyState(value as typeof legacyState)}>
             <SelectTrigger size="sm" className="w-40" aria-label="样例"><span className="text-muted-foreground">样例</span><SelectValue /></SelectTrigger>
-            <SelectContent align="end"><SelectItem value="v151">v1.5.1 列表</SelectItem><SelectItem value="ready">TASK-LIST-001 ready</SelectItem><SelectItem value="partial">partial</SelectItem><SelectItem value="stale">stale</SelectItem><SelectItem value="empty">empty</SelectItem></SelectContent>
+            <SelectContent align="end"><SelectItem value="v151">标准列表</SelectItem><SelectItem value="ready">四态 · 正常</SelectItem><SelectItem value="partial">四态 · 覆盖不全</SelectItem><SelectItem value="stale">四态 · 数据过期</SelectItem><SelectItem value="empty">四态 · 空</SelectItem></SelectContent>
           </Select>
           <StateSwitch />
         </>
       } />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="R-014（v1.5.1 任务阶段 / 就绪度 / SOP）接入后切换为真数据" empty={{ title: "没有任务", description: "任务由运营在创建接口开放后新建；个人空间只看本人授权账户挂载的任务。" }}>
+        <StateFrame state={state} unlock="任务阶段 / 就绪度 / SOP 接口接入后切换为真数据" empty={{ title: "没有任务", description: "任务由运营在创建接口开放后新建；个人空间只看本人授权账户挂载的任务。" }}>
           <div className="grid gap-4 @6xl/main:grid-cols-12">
             <div className="min-w-0 @6xl/main:col-span-9">
               {legacy ? (
                 <div className={cn("mb-3 rounded-lg border px-4 py-2.5 text-sm", degraded ? (legacy.meta?.dataState === "stale" ? "border-status-critical/30 bg-status-critical/10 text-status-critical" : "border-status-warning/30 bg-status-warning/10 text-status-warning") : "text-muted-foreground")}>
-                  TASK-LIST-001 {legacy.meta?.dataState} 样例：{legacy.meta?.dataState === "stale" ? "业务日数据未到，展示上一次同步结果，pacing 可能滞后" : legacy.meta?.dataState === "partial" ? "覆盖不完整：只展示已返回的任务，执行入口置灰" : legacy.meta?.dataState === "empty" ? "当前范围内没有任务" : "覆盖完整"} · requestId {legacy.meta?.requestId}（旧版列表字段少，展示走 v1.5.1）
+                  四态样例：{legacy.meta?.dataState === "stale" ? "当天数据未到，展示上一次同步结果，进度可能滞后" : legacy.meta?.dataState === "partial" ? "覆盖不完整：只展示已返回的任务，执行入口置灰" : legacy.meta?.dataState === "empty" ? "当前范围内没有任务" : "覆盖完整"}（这组样例字段少，表格仍按标准列表展示）
                 </div>
               ) : null}
               <DataGrid
                 table={table}
-                empty={legacy ? "该样例没有可展示的 v1.5.1 任务行" : "没有符合条件的任务"}
+                empty={legacy ? "该样例没有可展示的任务行" : "没有符合条件的任务"}
                 onReorder={reorder}
                 toolbar={
                   <>
