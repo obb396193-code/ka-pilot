@@ -5,7 +5,6 @@ import { IconCheck, IconX } from "@tabler/icons-react"
 import { toast } from "sonner"
 
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
-import { ExampleBlock } from "@/components/business/state/page-state"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import type { DisplayMetric } from "@/lib/data/contracts"
@@ -88,9 +87,6 @@ export function LeadView() {
           {data.brief.status === "ready" ? data.brief.sections.map((section) => <div key={section.key} className="rounded-lg border px-3 py-2 text-sm"><div className="text-xs font-medium text-muted-foreground">{section.title}</div><div>{section.text}</div></div>) : <p className="text-sm text-muted-foreground">pending_data</p>}
         </CardContent>
       </Card>
-      <ExampleBlock unlock="目标差距树（3.7）与「操作后观察结果」统计（7.5）为 P2" inline>
-        <div className="rounded-xl border px-4 py-3 text-sm text-muted-foreground">目标差距树 · 操作后观察结果</div>
-      </ExampleBlock>
     </div>
   )
 }
