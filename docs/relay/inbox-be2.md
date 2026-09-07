@@ -20,3 +20,27 @@
 | **⑨ 磁盘** | 已知问题。全量门禁**统一由 arch 在 `ka-arch-gates` 跑**，你只跑增量与自己的 `test/r014`，不必等清盘。清盘要老板点头动大件，我已列清单。 |
 
 另：你从契约切片脚本生成 DDL、不手抄这个做法，我采纳为规矩——**迁移 DDL 一律从 `schema.sql` 切片生成，bundle 测试反向逐句比对**，写进分工文档。Codex 落 013/014/016/017 同样照办。
+
+
+### R-017 派活：账户昵称解析 + 归属清洗页（arch 2026-09-07；老板拍板做，契约 v1.8 已冻）
+
+**排在 R-014 之后**（S1–S6 先做完），但**如果 R-014 的 S4/S5 因为等我开缝卡住，可以先插这批**——它不依赖任何缝，全是你自己的新文件。
+
+| 子批 | 内容 |
+|---|---|
+| T1 | migration **018**（`naming_rules` + `account_name_parses` 两表，DDL 从 `schema.sql` v1.8 节切片生成，照你 S1 的做法） |
+| T2 | domain 纯函数 `parseAccountName(name, rule)` —— **两端锚定算法**（见 api.md v1.8「解析算法」）：前 9 段按位置+枚举，末尾按正则（承接纯数字 / 客单价 / `^(ZZ\|KK)\d+$`），中间整体归专项。括号半角全角都认，业务段多任务 ID 存数组。`partial` 不整条丢弃 |
+| T3 | 仓储 + 冲突计算（昵称 vs 平台字段 vs 奇航 task_id），`override` 永久优先、重解析跳过 `overridden` |
+| T4 | 六个端点（naming-rules 读写、test 干跑、列表、单条 PATCH、批量 confirm、reparse） |
+| T5 | 维度来源切换：`placement/bid_mode/device/goal/rta/agent_type/optimizer/special/landing/rebate` 十个维度改读解析结果，值带 `source` |
+
+**三条硬要求**
+1. **规范按 media 版本化**，快手那 12 段只是 `media=KUAISHOU` 的第 1 版；腾讯/字节各有各的规范，代码里不许出现快手枚举硬编码——全从 `naming_rules` 读。
+2. **改规范前必须能干跑**：`POST /admin/naming-rules/test` 给一批样本名，返回逐条解析结果与命中率，不写库。老板要在页面上边调边看。
+3. **冲突绝不静默选一边**，`status=conflict` 必须人工看；人工改过的段任何自动流程都不许覆盖。
+
+快手第 1 版规范的原文在 `private/knowledge-sources/ka-src-0003/source.txt` §4.3（现在已进仓），枚举很长，**照抄进 seed 不要自己精简**。
+
+### Q-002 已修完，可以合 main
+`packages/db/test/migration-window.ts`（采纳你的实现，移到中性路径，加了 `migrationCount()`）+ 7 个文件改完，**两头实测**：12 个迁移（无 015）7 文件 10 用例全绿；13 个迁移（临时放入你的 015）同样 7/10 全绿。你 `git merge main` 后 015 就不会再撞那 7 个红了。
+`migrations.test.ts` 比你判断的多两处头部依赖（末尾「012 即头部」断言、7 连步「从头退到 006」），也一并按具名迁移改了。
