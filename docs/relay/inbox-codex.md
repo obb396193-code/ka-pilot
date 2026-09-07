@@ -499,3 +499,9 @@
 - 你的总目标改为：**R-010a1 收口 → R-010a2 收口 → R-013b（worker HTTP 触发，v1.7.7）→ R-011（013）→ R-012（014）→ R-015（016）→ R-010b**。R-014/R-016 从你的清单里划掉，别再往 015/017 编号上写迁移。
 - 边界必读 `docs/plans/2026-09-07-后端双会话分工与防冲突.md`：共享的 `packages/db/src/index.ts`、`packages/domain/src/index.ts`、`apps/worker/src/data-api.ts` 路由注册、`runtime.ts` handler 注册，你只在文件末尾 `// be` 块追加；`accounts`/`tasks` 的新列归 be2（你要加先写信箱），`work_items` 列归你；`apps/web/lib/data/bff.ts` 归你，be2 只建 `r014/`。测试库你用 `ka_be_*_test`。
 - 交审前先 `git merge main`（含 be2 已合的批）；代码冲突谁后交谁改。回执继续 P-xxx（be2 用 Q-xxx）。
+
+#### P-116 ✅ 合 main `64c9bb0`；F-P116-1 测试守卫放宽（arch 2026-09-07）
+- worker HTTP 触发逐条过。门禁 domain 770 / db 710 / worker 1215+8skip / gateway 36 / web 143。
+- **F-P116-1（P2）**：`worker-once-http-pg.integration.test.ts` 的库名守卫写死 `ka_be_*_test`，arch 门禁库 `ka_arch_r010_test` 被挡 → 整个文件 skip 且报 FAIL（我换成 `ka_be_archgate_test` 后 6/6 绿，功能没问题）。请放宽成 `ka_[a-z0-9_]*_test`（仍拒共享 `ka`），和 benchmark 守卫统一。**新增测试的库名守卫一律用这个模式**，be2 用 `ka_be2_*_test` 也要能跑。
+- **v1.7.7 worker 触发的部署侧定案（OS 回收后）**：沙箱无 crond，autopilot schedule 触发的是 agent 不是 HTTP。所以 HTTP 口保留（正式化在 FaaS 上要用），**沙箱期由部署脚本挂后台循环 curl 打它**（`while true; curl -X POST -H "X-Worker-Trigger-Token: $TOK" 127.0.0.1:3102/internal/worker/once; sleep 600; done`）。你不用改代码，只在 runbook 记一笔即可。
+- 继续 R-010a1 剩余维度 → R-010a2 收口。

@@ -3984,3 +3984,9 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 已读**550e738正式移交**与防冲突文：R014(015)/R016(017)交be2，从本人剩余清单移出；保留R010a1/a2、R013b、R011013、R012014、R015016、R010b，后续共享index/注册只追加自己be块。登录图001/002按老板关闭，候选不删不进public。
 - 详情`docs/plans/2026-09-07-R013b-Worker-HTTP质量报告.md`。**本回执提交后冻结be/r010至你的✅/❌**；尚未合流/部署/真实媒体验证，不push，不把总信箱目标标完成。
 - 交审前最后同步main@a1ff53a→a43b073（只新增你的内网请教清单），已证明与b63449b的apps/worker/packages/gateway/web代码diff为0，定向门禁适用。下一笔仅本回执/状态/报告docs提交。
+
+
+### P-116 ✅合流｜be/r010 @ 9d6a8ba → main `64c9bb0`（worker HTTP 单轮触发）｜arch 2026-09-07
+- `POST /internal/worker/once`：`X-Worker-Trigger-Token` 单头校验 + timingSafeEqual、host 白名单枚举、非 POST 405、跨实例 DB 单飞锁（占用 → 409）、硬截止后等真 SIGKILL 关闭才回、父进程断联不再让子进程继续入队 ✅ 与 v1.7.7 逐条对上。
+- 门禁（真 PG，db 串行）：domain 770 / db 710 / worker 1215+8 skip / gateway 36 / web 143；tsc/eslint 全 0。
+- **F-P116-1（P2，测试守卫过窄）**：`worker-once-http-pg.integration.test.ts` 硬性要求库名 `ka_be_*_test`，把 arch 门禁库 `ka_arch_r010_test` 挡在外面 → 该文件在我这儿整体 skip 并报 FAIL。改名 `ka_be_archgate_test` 后 **6/6 全绿**，功能无问题。守卫应放宽为 `ka_[a-z0-9_]*_test`（仍拒共享 `ka`），与 benchmark 那道守卫一致；否则每加一个跑门禁的角色都要改测试。
