@@ -59,6 +59,12 @@ function changeSet() {
 }
 
 describe("read detail contract", () => {
+  it("accepts dispatched only as a work-item state, not a changeset state", () => {
+    expect(workItemDetailSchema.safeParse({ ...workItem(), status: "dispatched" }).success).toBe(true);
+    expect(changeSetDetailSchema.safeParse({ ...changeSet(), status: "dispatched" }).success).toBe(false);
+    expect(workItemDetailSchema.safeParse({ ...workItem(), status: "dispatch" }).success).toBe(false);
+  });
+
   it("accepts a work item with a full account tuple or with both account fields null", () => {
     expect(workItemDetailSchema.safeParse(workItem()).success).toBe(true);
     expect(workItemDetailSchema.safeParse({

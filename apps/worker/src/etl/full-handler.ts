@@ -10,6 +10,7 @@ import { rowsToRawRecords } from "./raw-ingest.js";
 import { replayRequestParams } from "./replay-params.js";
 import { toEtlQueryObservation } from "./query-observation.js";
 import { errorSummary } from "./run-utils.js";
+import { withEtlAttempt } from "./attempt-scope.js";
 import type { AccountMetadataEtlStore, EtlRunStore, QihangQueryPort } from "./types.js";
 
 export interface FullEtlDependencies {
@@ -36,13 +37,13 @@ const OFFLINE_PARTITION_LOOKBACK_DAYS = 3;
 export function createFullEtlHandler(dependencies: FullEtlDependencies): JobHandler {
   return async (job) => {
     const payload = fullEtlPayloadSchema.parse(job.payload);
-    const runId = await dependencies.store.startRun(job.id, "full", {
+    const runId = await dependencies.store.startRun(job.id, "full", withEtlAttempt(job, {
       workspaceId: payload.workspaceId,
       asOfDate: payload.asOfDate,
       realtimeDays: payload.realtimeDays,
       requestedAccountIds: payload.accountIds,
       resources: ["account", "account_offline", "account_realtime"],
-    });
+    }));
     const progress: FullEtlProgress = { currentStep: "start", rowsIngested: 0 };
 
     try {

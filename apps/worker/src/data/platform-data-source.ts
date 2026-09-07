@@ -9,8 +9,11 @@ import type {
   SourceAuthority,
   SourceLineage,
   SourceQueryResult,
+  ApprovedWorkspaceAuthContext,
 } from "@ka/domain";
-import { canonicalRowSchemaVersionByQueryId } from "@ka/domain";
+import { canonicalRowSchemaVersionByQueryId, sourceQueryResultSchema, approvedWorkspaceAuthContextSchema } from "@ka/domain";
+import { PlatformPivotQueryError, type PlatformPivotQuery } from "./platform-pivot-query.js";
+import { DataSourceRoutingError } from "./data-source-routing.js";
 
 import type { DataQueryExecutionScope } from "./ka-data-client.js";
 import type { ResolvedDataQuery } from "./query-registry.js";
@@ -202,7 +205,42 @@ export class PlatformDataSource {
     private readonly snapshot?: PlatformReadSnapshot,
     private readonly windowQuery?: Pick<PlatformWindowQuery, "summary">,
     private readonly dimensionQuery?: Pick<PlatformDimensionQuery, "account" | "group">,
+    private readonly pivotQuery?: Pick<PlatformPivotQuery, "query">,
   ) {}
+
+  async pivot(resolved: ResolvedDataQuery, authInput: ApprovedWorkspaceAuthContext) {
+    const auth = approvedWorkspaceAuthContextSchema.parse(authInput);
+    if (resolved.queryId !== "account.pivot2" || auth.workspaceKind !== "personal") throw new PlatformDataSourceError();
+    if (!this.pivotQuery) throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Pivot reader is not configured");
+    try {
+      const result = await this.pivotQuery.query({ auth, dimA: resolved.params.dimA, dimB: resolved.params.dimB,
+        window: { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" } });
+      const observation = result.observation;
+      const complete = observation.expectedAccountDays === observation.observedAccountDays && observation.missingComputedAt === 0;
+      const dataAsOf = observation.missingComputedAt === 0 ? observation.earliestComputedAt : null;
+      const source = sourceQueryResultSchema.parse({ queryId: resolved.queryId, rowSchemaVersion: resolved.rowSchemaVersion,
+        dimA: result.dimA, dimB: result.dimB, rows: result.rows, status: "ready", returnedRowCount: result.rows.length,
+        wholeResultTotal: complete ? { value: result.rows.length, availability: "available" }
+          : { value: null, availability: "partial", reason: "Canonical account-day coverage or time is incomplete" },
+        lineage: { source: "canonical", workspaceKind: "personal", window: result.window,
+          datasetVersion: null, dataAsOf, timezone: null, dayCut: null, metadataAvailability: dataAsOf === null ? "unknown" : "partial",
+          queryTemplateVersion: resolved.queryTemplateVersion, metricVersion: resolved.metricVersion, authority: authorityFor(resolved),
+          objectIdentity: { objectType: "account", joinKeys: ["workspace_id", "media", "account_id"] },
+          coverage: { complete, requestedObjects: auth.scope.accounts.length, returnedObjects: observation.observedAccounts,
+            ...(!complete ? { reason: "Canonical account-day coverage or time is incomplete" } : {}) },
+          partial: !complete, truncated: false,
+        }, warnings: result.warnings,
+      });
+      return { source, cellCoverage: result.cellCoverage };
+    } catch (error) {
+      if (error instanceof PlatformPivotQueryError && error.code !== "UPSTREAM_INVALID_RESPONSE") {
+        throw new DataSourceRoutingError(error.code, error.message);
+      }
+      if (error instanceof PlatformPivotQueryError || error instanceof CanonicalQueryRowError ||
+        (error instanceof Error && error.name === "ZodError")) throw new PlatformDataSourceError();
+      throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Pivot source is unavailable");
+    }
+  }
 
   async query(
     resolved: ResolvedDataQuery,

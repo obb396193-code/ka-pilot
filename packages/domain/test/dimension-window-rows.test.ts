@@ -11,6 +11,13 @@ async function fixture(name: typeof names[number] = "dimension-v3-account") {
 }
 
 describe("dimension v3 row boundary (not source envelope or source availability)", () => {
+  it("preserves the authoritative unknown agent bucket without guessing self or agency", async () => {
+    const value = await fixture("dimension-v3-agent_type");
+    const unknown = value.rows.find((row: { agent_type: string }) => row.agent_type === "unknown");
+    expect(unknown).toMatchObject({ key: "unknown", label: "未标注", agent_type: "unknown" });
+    expect(dimensionWindowRowsSchema.parse(value)).toEqual(value);
+    expect(unknown).not.toHaveProperty("agency_name");
+  });
   it.each(names)("parses authoritative %s rows without local copies", async (name) => {
     const value = await fixture(name);
     expect(dimensionWindowRowsSchema.parse(value)).toEqual(value);

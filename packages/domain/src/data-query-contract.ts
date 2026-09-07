@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { queryWindowSchema } from "./summary-window.js";
 import { dimensionTypeSchema, dimensionWindowRowsSchema } from "./dimension-window-rows.js";
+import { pivotWindowRowsSchema } from "./pivot-window.js";
 
 import {
   canonicalQueryRowSchemaById,
@@ -11,6 +12,7 @@ export const dataViewModeSchema = z.enum(["ka_data", "platform", "reconcile"]);
 export type DataViewMode = z.infer<typeof dataViewModeSchema>;
 
 export const dataQueryIdSchema = z.enum([
+  "account.pivot2",
   "account.dimension",
   "account.summary",
   "account.trend",
@@ -218,6 +220,8 @@ export const sourceQueryResultSchema = z
   .object({
     queryId: dataQueryIdSchema,
     dimension: dimensionTypeSchema.optional(),
+    dimA: dimensionTypeSchema.optional(),
+    dimB: dimensionTypeSchema.optional(),
     rowSchemaVersion: z.string().min(1),
     status: z.enum(["ready", "unavailable"]),
     rows: z.array(z.record(z.string(), z.unknown())),
@@ -229,7 +233,7 @@ export const sourceQueryResultSchema = z
   })
   .strict()
   .superRefine((result, context) => {
-    if ((result.queryId === "account.summary" || result.queryId === "account.trend" || result.queryId === "account.dimension") && !result.lineage.window) {
+    if ((result.queryId === "account.summary" || result.queryId === "account.trend" || result.queryId === "account.dimension" || result.queryId === "account.pivot2") && !result.lineage.window) {
       context.addIssue({ code: "custom", path: ["lineage", "window"], message: "Window queries require their resolved window" });
     }
     if (result.queryId === "account.dimension") {
@@ -237,6 +241,14 @@ export const sourceQueryResultSchema = z
         context.addIssue({ code: "custom", path: ["dimension"], message: "Dimension and rows must match" });
       }
     } else if (result.dimension !== undefined) context.addIssue({ code: "custom", path: ["dimension"], message: "Unexpected dimension" });
+    if (result.queryId === "account.pivot2") {
+      if (!pivotWindowRowsSchema.safeParse({ queryId: result.queryId, rowSchemaVersion: result.rowSchemaVersion,
+        dimA: result.dimA, dimB: result.dimB, rows: result.rows }).success) {
+        context.addIssue({ code: "custom", path: ["rows"], message: "Invalid pivot dimensions or cells" });
+      }
+    } else if (result.dimA !== undefined || result.dimB !== undefined) {
+      context.addIssue({ code: "custom", message: "Unexpected pivot dimensions" });
+    }
     const expectedVersion = canonicalRowSchemaVersionByQueryId[result.queryId];
     if (result.rowSchemaVersion !== expectedVersion) {
       context.addIssue({
@@ -247,7 +259,7 @@ export const sourceQueryResultSchema = z
     }
     const rowSchema = canonicalQueryRowSchemaById[result.queryId];
     result.rows.forEach((row, index) => {
-      if (result.queryId === "account.summary" || result.queryId === "account.dimension") {
+      if (result.queryId === "account.summary" || result.queryId === "account.dimension" || result.queryId === "account.pivot2") {
         const assessment = row.assessment as { priceSource?: unknown } | undefined;
         const expectedSource = result.lineage.workspaceKind === "team" ? "ka_daily" : "history";
         if (assessment?.priceSource !== expectedSource) context.addIssue({ code: "custom", path: ["rows", index], message: "Assessment price source does not match workspace kind" });
@@ -384,8 +396,25 @@ export const dataQuerySuccessDataSchema = z.discriminatedUnion("mode", [
 ]);
 export type DataQuerySuccessData = z.infer<typeof dataQuerySuccessDataSchema>;
 
+export const pivotCellCoverageSchema = z.object({ cells: z.number().int().min(0).max(10000),
+  withData: z.number().int().min(0).max(10000), undeterminable: z.number().int().min(0).max(10000),
+}).strict().refine(value => value.withData <= value.cells && value.undeterminable <= value.cells);
+
 export const dataQueryResponseSchema = z.discriminatedUnion("ok", [
-  z.object({ ok: z.literal(true), data: dataQuerySuccessDataSchema }).strict(),
+  z.object({ ok: z.literal(true), data: dataQuerySuccessDataSchema,
+    meta: z.object({ cellCoverage: pivotCellCoverageSchema }).strict().optional(),
+  }).strict().superRefine((value, context) => {
+    const pivot = value.data.mode !== "reconcile" && value.data.source.queryId === "account.pivot2" ? value.data.source : null;
+    if (!pivot) {
+      if (value.meta !== undefined) context.addIssue({ code: "custom", message: "Unexpected pivot metadata" });
+      return;
+    }
+    const coverage = value.meta?.cellCoverage;
+    if (!coverage || coverage.cells !== pivot.rows.length || coverage.undeterminable !== pivot.rows.filter(row =>
+      (row.assessment as { onTarget?: unknown } | undefined)?.onTarget === null).length) {
+      context.addIssue({ code: "custom", message: "Pivot metadata must match cells" });
+    }
+  }),
   z.object({ ok: z.literal(false), error: stableDataQueryErrorSchema }).strict(),
 ]);
 export type DataQueryResponse = z.infer<typeof dataQueryResponseSchema>;

@@ -3,10 +3,12 @@ import { z } from "zod";
 import { accountDailyRowSchema, accountAnomalyRowSchema } from "./data-query-base-rows.js";
 import { summaryWindowRowSchema, trendWindowRowSchema } from "./summary-window.js";
 import { dimensionWindowRowSchema } from "./dimension-window-rows.js";
+import { pivotWindowRowSchema } from "./pivot-window.js";
 export { trendWindowRowSchema as accountTrendRowSchema } from "./summary-window.js";
 export type AccountTrendRow = z.infer<typeof trendWindowRowSchema>;
 
 export const canonicalQueryRowSchemaById = {
+  "account.pivot2": pivotWindowRowSchema,
   "account.dimension": dimensionWindowRowSchema,
   "account.summary": summaryWindowRowSchema,
   "account.trend": trendWindowRowSchema,
@@ -16,6 +18,7 @@ export const canonicalQueryRowSchemaById = {
   "reconcile.account_daily": accountDailyRowSchema,
 } as const;
 export const canonicalRowSchemaVersionByQueryId = {
+  "account.pivot2": "account.pivot2/v1",
   "account.dimension": "account.dimension/v3",
   "account.summary": "account.summary/v3",
   "account.trend": "account.trend/v3",

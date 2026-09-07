@@ -38,6 +38,14 @@ const ready = {
 } as const;
 
 describe("WORK-ITEM-LIST-001 domain contract", () => {
+  it("accepts frozen dispatched in both filter and item, without accepting arbitrary statuses", () => {
+    expect(workItemListRequestSchema.safeParse({ status: "dispatched" }).success).toBe(true);
+    expect(workItemListResponseSchema.safeParse({ ...ready, data: { ...ready.data,
+      items: [{ ...ready.data.items[0], status: "dispatched" }],
+    } }).success).toBe(true);
+    expect(workItemListRequestSchema.safeParse({ status: "dispatch" }).success).toBe(false);
+  });
+
   it("applies frozen defaults and accepts only frozen filters", () => {
     expect(workItemListRequestSchema.parse({})).toEqual({ page: 1, pageSize: 20 });
     expect(workItemListRequestSchema.parse({

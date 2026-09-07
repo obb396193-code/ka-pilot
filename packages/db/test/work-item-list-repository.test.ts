@@ -9,7 +9,11 @@ import {
   type WorkItemListRepositoryPool,
 } from "../src/work-item-list-repository.js";
 
-const databaseUrl = process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
+const databaseUrl = process.env.TEST_DATABASE_URL;
+if (!databaseUrl) throw new Error("A dedicated local TEST_DATABASE_URL is required");
+const target = new URL(databaseUrl);
+if (!["localhost", "127.0.0.1", "[::1]"].includes(target.hostname) || target.port !== "55432" ||
+  !/^\/ka_[a-z0-9_]*_test$/.test(target.pathname)) throw new Error("A dedicated local test database is required");
 
 describe("WorkItemListRepository", () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 8 });
@@ -72,6 +76,33 @@ describe("WorkItemListRepository", () => {
     scopeKind: "explicit_accounts" as const,
     allowedAccounts: [{ media: "KUAISHOU", accountId: "approved" }],
     page: 1, pageSize: 20,
+  });
+
+  it("keeps dispatched visible without exposing same-ID accounts across media or workspace", async () => {
+    await pool.query("UPDATE work_items SET status='dispatched' WHERE workspace_id=ANY($1::uuid[]) AND status='open'", [[workspaceId, otherWorkspaceId]]);
+    const output = await repository.list(baseQuery());
+    expect(output.total).toBe(3);
+    expect(output.rows.map(row => row.title)).toEqual(["授权异常", "本人待办", "本人提问"]);
+    expect(output.rows[0]).toMatchObject({ status: "dispatched", workspaceId, media: "KUAISHOU", accountId: "approved" });
+    const filtered = await repository.list({ ...baseQuery(), status: "dispatched" });
+    expect(filtered.total).toBe(1);
+    expect(filtered.rows.map(row => [row.workspaceId, row.media, row.accountId])).toEqual([[workspaceId, "KUAISHOU", "approved"]]);
+    expect((await repository.list({ ...baseQuery(), status: "dispatched", allowedAccounts: [] })).total).toBe(0);
+    expect(await repository.list({ ...baseQuery(), status: "dispatched", page: 2 })).toMatchObject({ total: 1, rows: [] });
+    const team = await repository.list({ ...baseQuery(), status: "dispatched", scopeKind: "team_workspace_readonly", allowedAccounts: [] });
+    expect(team.total).toBe(3);
+    expect(team.rows.every(row => row.workspaceId === workspaceId && row.media !== null)).toBe(true);
+    expect(team.rows.map(row => [row.media, row.accountId]).sort()).toEqual([
+      ["KUAISHOU", "approved"], ["KUAISHOU", "unapproved"], ["TENCENT", "approved"],
+    ]);
+  });
+
+  it("retains only the current user's null-account dispatched items for empty personal grants", async () => {
+    await pool.query("UPDATE work_items SET status='dispatched' WHERE workspace_id=$1 AND media IS NULL", [workspaceId]);
+    const personal = await repository.list({ ...baseQuery(), allowedAccounts: [], status: "dispatched" });
+    expect(personal.total).toBe(2);
+    expect(personal.rows.map(row => row.title)).toEqual(["本人待办", "本人提问"]);
+    expect((await repository.list({ ...baseQuery(), allowedAccounts: [], status: "dispatched", scopeKind: "team_workspace_readonly" })).total).toBe(0);
   });
 
   it("returns authorized account items plus only the current user's unscoped items in stable order", async () => {

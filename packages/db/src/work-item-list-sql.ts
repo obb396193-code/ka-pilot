@@ -1,3 +1,7 @@
+import { ACTIVE_WORK_ITEM_STATUSES } from "@ka/domain";
+
+// Only frozen code constants become SQL literals; all request values remain parameters.
+const activeStates = ACTIVE_WORK_ITEM_STATUSES.map(status => `'${status}'`).join(", ");
 const FILTERED_WORK_ITEMS_CTE = `
   allowed_scope AS (
     SELECT allowed.media, allowed.account_id
@@ -23,7 +27,7 @@ const FILTERED_WORK_ITEMS_CTE = `
       )
       AND ($5::text IS NULL OR strpos(lower(item.title), lower($5::text)) > 0)
       AND (
-        ($6::text IS NULL AND item.status IN ('open', 'processing', 'escalated'))
+        ($6::text IS NULL AND item.status IN (${activeStates}))
         OR item.status = $6::text
       )
       AND ($7::text IS NULL OR item.severity = $7::text)

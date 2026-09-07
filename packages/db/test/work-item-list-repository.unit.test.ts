@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { QueryResult, QueryResultRow } from "pg";
+import { WORK_ITEM_LIST_COUNT_SQL, WORK_ITEM_LIST_PAGE_SQL } from "../src/work-item-list-sql.js";
 
 import {
   WorkItemListRepository,
@@ -15,6 +16,17 @@ function result<Row extends QueryResultRow>(rows: Row[]): QueryResult<Row> {
 }
 
 describe("WorkItemListRepository unit boundary", () => {
+  it("uses the same four active states for count/page, preserving tuple and personal-item guards", () => {
+    for (const sql of [WORK_ITEM_LIST_COUNT_SQL, WORK_ITEM_LIST_PAGE_SQL]) {
+      expect(sql).toContain("item.status IN ('open', 'processing', 'dispatched', 'escalated')");
+      expect(sql).toContain("item.workspace_id = $1::uuid");
+      expect(sql).toContain("allowed.media = item.media AND allowed.account_id = item.account_id");
+      expect(sql).toContain("$3::text = 'explicit_accounts'");
+      expect(sql).toContain("item.assignee = $2::uuid OR item.creator = $2::uuid");
+      expect(sql).toContain("OR item.status = $6::text");
+    }
+  });
+
   it("keeps count/readiness/page in one RR/RO transaction and maps real lineage", async () => {
     const calls: string[] = [];
     const client: WorkItemListRepositoryClient = {

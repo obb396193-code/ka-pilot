@@ -2,10 +2,9 @@ import { z } from "zod";
 
 import { requestIdSchema, stableDataQueryErrorSchema } from "./data-query-contract.js";
 import { taskListCalendarDateSchema } from "./task-list-contract.js";
+import { WORK_ITEM_STATUSES } from "./work-items.js";
 
-export const workItemListStatusSchema = z.enum([
-  "open", "processing", "done", "ignored", "expired", "external_handled", "rejected", "escalated",
-]);
+export const workItemListStatusSchema = z.enum(WORK_ITEM_STATUSES);
 export const workItemListSeveritySchema = z.enum(["P0", "P1", "P2", "opportunity"]);
 export const workItemListTypeSchema = z.enum([
   "diagnosis", "dispatch", "self", "agent_question", "external_handled",

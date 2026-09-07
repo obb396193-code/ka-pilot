@@ -14,6 +14,7 @@ import { z } from "zod";
 import type { JobHandler } from "../jobs/types.js";
 import { deterministicJobId } from "../jobs/deterministic-id.js";
 import { errorSummary } from "./run-utils.js";
+import { withEtlAttempt } from "./attempt-scope.js";
 import type { EtlRunStore } from "./types.js";
 
 const payloadSchema = z.object({
@@ -230,7 +231,7 @@ export function createCanonicalHandler(dependencies: {
       credentialOwnerUserId: job.credentialOwnerUserId,
       ...(scope.backfillId === undefined ? {} : { backfillId: scope.backfillId }),
     };
-    const runId = await dependencies.runs.startRun(job.id, "canonical", runScope);
+    const runId = await dependencies.runs.startRun(job.id, "canonical", withEtlAttempt(job, runScope));
     let currentStep = "aggregate:load_inputs";
     let rowsIngested = 0;
     try {
