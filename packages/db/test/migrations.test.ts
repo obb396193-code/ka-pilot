@@ -398,5 +398,5 @@ describe("contract migrations", () => {
     await runMigrations({ databaseUrl, direction: "down", count: 5 });
     const replay = await runMigrations({ databaseUrl });
     expect(replay).toHaveLength(12);
-  });
+  }, 30_000); // F-P110-1: full real-PG replay, not a global relaxation.
 });

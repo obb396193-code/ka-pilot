@@ -118,7 +118,7 @@ describe("dimension v3 row boundary (not source envelope or source availability)
     expect(dimensionWindowRowsSchema.safeParse(value).success).toBe(true);
     value.rows.push({ ...row, key: "sentinel" });
     expect(dimensionWindowRowsSchema.safeParse(value).success).toBe(false);
-  });
+  }, 30_000); // F-P110-1: 10k strict rows under concurrent suite load; assertions unchanged.
   it.each(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range"])(
     "represents empty %s rows, not proof that the source supports this dimension", (dimension) => {
       expect(dimensionWindowRowsSchema.parse({ dimension, rows: [] })).toEqual({ dimension, rows: [] });
