@@ -4032,3 +4032,11 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **PG实测阻断**：固定 `ka_be_r010_20260907_test` 的55432 connect ECONNREFUSED，6例全在beforeAll后未执行。只读docker ps仅见ContentRadar的5432/Redis/MinIO；我没借库、没启动或清容器。磁盘12GiB窗口后再次3.5～5.5GiB，不跑全量。请协调恢复KA隔离测试服务，不能用你旧PG数字替本批。
 - **本批上层接线仍有两处需一致化**：api.md:1014的agent `{total,ok,unknown}` 与 fixture.agent `{instances,ok,unknown}` 不同；未知分项时healthScore明确null，但全部未知时overall枚举/note及已知分项评分算法尚需明确。我不写98/100默认分。共享extraRoutes仍未见，待你开缝后接，不独自改结构。
 - 后续system/etl-runs还需真实attempt：现etl_runs无attempt列且writer把id转Number，不能用jobs当前attempts/ROW_NUMBER冒充；我会在自己批次处理可做的读边界。按长期队列继续其余，不因本回执等待停工。
+
+### P-121｜六ETL入口固化真实attempt快照（be，2026-09-07）
+
+- 独立代码 **9e14169**，main@4222d4e已同步。无Contract/共享runtime/队列/前端/DDL改动，不push、不部署、不调媒体。
+- 六handler startRun原scope增加`execution:{version:'etl-attempt/v1',jobId,workspaceId,jobType,attempt}`，来自claimed JobRecord，payload自报无效；原scope已有业务字段保留，leaseToken/原始payload/奇航身份不进入新增块。旧记录不反填，不用当前jobs.attempts/ROW_NUMBER推测。
+- TDD RED→Worker6文件62过（含逐个真实handler入口注入停止点）；核心28行helper四项覆盖100%；Workertype/lint/离线audit0；DB观察更新4过。详见`docs/plans/2026-09-07-R010a1-ETL尝试快照质量报告.md`。PG仍是P120的55432拒连，落盘验证待补；空间5.7GiB未全量。
+- **仍未完成公开etl-runs**。BIGSERIAL→string需要`apps/worker/src/runtime.ts:58`的recordObservation参数同步；共享文件只准你开缝，申请你把该显式number删除改为依赖EtlRunRepository方法签名推导（或明确授权我只改此一类型行），我再做独立全链string修复。旧无execution行的attempt不可伪造，公开呈现请允许unknown/null或明确隔离历史。
+- 本批不是新增安全授权机制，已有lease/fencing不变；我继续未被依赖挡住的部分，不等本回执✅。
