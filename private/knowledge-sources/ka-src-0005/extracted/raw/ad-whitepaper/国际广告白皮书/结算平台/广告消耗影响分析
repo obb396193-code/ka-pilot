@@ -1,0 +1,66 @@
+
+
+#### [](#gxerrg)相关因子：
+广告消耗=网站PV，广告PV，CPC，CTR，COV，ASN，costLimt，过滤比，
+
+
+
+#### [](#ufe5ae)参考算法：
+逻辑回归、特征工程
+
+
+
+#### [](#799zuy)数据源：
+广告消耗
+
+mysql 库p4p_cust@11.136.191.93:3306
+
+实时（当天）p4p_real_click
+
+离线（历史）p4p_day_click
+
+sum(cost)
+
+
+
+网站PV：
+
+hbase数据：
+
+<font style="color:rgb(25, 31, 37);background-color:rgb(255, 255, 255);">icbu-realtime-display_ad_pv</font>
+
+<font style="color:rgb(25, 31, 37);background-color:rgb(255, 255, 255);">icbu-realtime-display_ad_click</font>
+
+<font style="color:rgb(25, 31, 37);background-color:rgb(255, 255, 255);">每个表有4列，dataid，biz_date，bucket_type，value</font>  
+<font style="color:rgb(25, 31, 37);background-color:rgb(255, 255, 255);">rowkey是dataid:biz_data:bucket_type</font>
+
+
+
+广告PV：s_tt_sp_scp4p_pv_log_tt4
+
+
+
+CPC：p4p_day_click表：sum(cost)/count
+
+
+
+
+
+<font style="color:rgb(38, 38, 38);background-color:rgb(255, 255, 255);">costLimt：p4p_cust_real_stat的real_balance，limit_balance</font>
+
+
+
+
+
+过滤比：xflush上[http://x.alibaba-inc.com/optimus/#/6/business/product/unionComp/preview/93](http://x.alibaba-inc.com/optimus/#/6/business/product/unionComp/preview/93)
+
+
+
+引擎blink指标计算PV
+
+[long_text_2018-06-13-15-29-34.txt](https://lark.alipay.com/attachments/lark/0/2018/txt/9506/1528875190535-b747d93a-5a9f-4599-a811-ec9d326f0628.txt)
+
+[long_text_2018-06-13-15-28-59.txt](https://lark.alipay.com/attachments/lark/0/2018/txt/9506/1528875190543-c415e0ca-cc76-4cec-9654-fe7189be0dbd.txt)
+
+
+

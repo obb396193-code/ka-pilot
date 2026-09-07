@@ -1,0 +1,507 @@
+{
+  "primary_doc_list": [
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710501763087",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710497745920",
+          "parent_ids": [
+            "1696710497745920"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "术语解释"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1699352157034496",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710497745920",
+          "parent_ids": [
+            "1696710497745920"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "接口清单（Scope权限点）"
+        }
+      ],
+      "doc_id": "1696710497745920",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 0,
+      "title": "入门指南"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710758840332",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710758159360",
+          "parent_ids": [
+            "1696710758159360"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "基础实践：频控限流器开发"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1834161681551499",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710758159360",
+          "parent_ids": [
+            "1696710758159360"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "进阶实践：高频请求时效优化"
+        }
+      ],
+      "doc_id": "1696710758159360",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "频控限制"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1773083420135496",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1773083358100557",
+          "parent_ids": [
+            "1773083358100557"
+          ],
+          "path": null,
+          "status": 0,
+          "title": "Java SDK使用指南"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1773083436761088",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1773083358100557",
+          "parent_ids": [
+            "1773083358100557"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "Go SDK使用指南"
+        }
+      ],
+      "doc_id": "1773083358100557",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 0,
+      "title": "SDK使用介绍"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1803016515293203",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "如何申请授权&生成授权链接"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710504654860",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "回调地址怎么设置和使用"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710505596940",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/oauth2/access_token/",
+          "status": 4,
+          "title": "获取Access Token"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1713655428885516",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/oauth2/app_access_token/",
+          "status": 0,
+          "title": "获取APP Access Token"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710506574848",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/oauth2/advertiser/get/",
+          "status": 4,
+          "title": "获取已授权账户"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710507039756",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/2/user/info/",
+          "status": 4,
+          "title": "获取授权User信息"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710506097679",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710502277120",
+          "parent_ids": [
+            "1696710502277120"
+          ],
+          "path": "/open_api/oauth2/refresh_token/",
+          "status": 0,
+          "title": "刷新Refresh Token"
+        }
+      ],
+      "doc_id": "1696710502277120",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "Oauth2.0授权"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1771736421276680",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1771736369265677",
+          "parent_ids": [
+            "1771736369265677"
+          ],
+          "path": "/open_api/v3.0/douplus/order/list/",
+          "status": 0,
+          "title": "查询订单列表"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1771739377034318",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1771736369265677",
+          "parent_ids": [
+            "1771736369265677"
+          ],
+          "path": "/open_api/v3.0/douplus/order/report/",
+          "status": 4,
+          "title": "获取订单数据报表"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1794677902211227",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1771736369265677",
+          "parent_ids": [
+            "1771736369265677"
+          ],
+          "path": "/open_api/v3.0/douplus/order/create/",
+          "status": 4,
+          "title": "创建订单接口"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1794677923694601",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1771736369265677",
+          "parent_ids": [
+            "1771736369265677"
+          ],
+          "path": "/open_api/v3.0/douplus/order/close/",
+          "status": 0,
+          "title": "终止订单接口"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1809885394723065",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1771736369265677",
+          "parent_ids": [
+            "1771736369265677"
+          ],
+          "path": "/open_api/v3.0/douplus/order/renew/",
+          "status": 0,
+          "title": "续费DOU+订单接口"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1809885773454336",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1771736369265677",
+          "parent_ids": [
+            "1771736369265677"
+          ],
+          "path": "/open_api/v3.0/douplus/optional_items/list/",
+          "status": 4,
+          "title": "获取可投放视频列表"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1809880238014554",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1771736369265677",
+          "parent_ids": [
+            "1771736369265677"
+          ],
+          "path": "/open_api/v3.0/douplus/optional_targets/list/",
+          "status": 4,
+          "title": "获取视频可投放转化目标"
+        }
+      ],
+      "doc_id": "1771736369265677",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "Dou+ 投放能力"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1868949066560512",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1872029502098632",
+              "parent_ids": [
+                "1872029502098632"
+              ],
+              "path": "/open_api/v3.0/tools/ebp/star_task/list/",
+              "status": 4,
+              "title": "获取升级版巨量引擎工作台账户星广联投任务列表"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1868950518957124",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1872029502098632",
+              "parent_ids": [
+                "1872029502098632"
+              ],
+              "path": "/open_api/v3.0/tools/ebp/star_task/task_video_data/get/",
+              "status": 4,
+              "title": "获取升级版巨量引擎工作台账户星广联投视频数据"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1868950079138956",
+              "going_offline": false,
+              "is_new": true,
+              "labels": [],
+              "parent_id": "1872029502098632",
+              "parent_ids": [
+                "1872029502098632"
+              ],
+              "path": "/open_api/v3.0/tools/ebp/star_task/task_author/get/",
+              "status": 4,
+              "title": "获取升级版巨量引擎工作台账户星广联投任务已投稿达人信息"
+            }
+          ],
+          "doc_id": "1872029502098632",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710599092236",
+          "parent_ids": [
+            "1696710599092236"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "升级版工作台星广联投任务管理"
+        }
+      ],
+      "doc_id": "1696710599092236",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 0,
+      "title": "素材管理"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710760171535",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710759506944",
+          "parent_ids": [
+            "1696710759506944"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "枚举值"
+        },
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710760866831",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710759506944",
+          "parent_ids": [
+            "1696710759506944"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "返回码"
+        }
+      ],
+      "doc_id": "1696710759506944",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "附录"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+# 页面回滚
+
+页面回滚支持 webapp/weex 发布流程，以及淘应用发布流程中的 weex 发布部分。
+
+页面回滚以单页面为维度，发布线上后若出现故障，可将页面回滚到之前的版本。
+
+> 页面回滚只能从最新的 3 个版本中选择、且是在 2019-09-25 之后发布的记录。
+
+## 注意事项
+
+1. 由于按需发布，回滚是针对单页面操作的
+1. 页面回滚只能从最新的 3 个版本中选择、且是在 2019-09-25 之后发布的记录。
+1. 具体操作是将对应的模板重新部署
+1. 不会回滚页面的设置(title、spm)。如需修改页面配置直接在【页面管理】操作即可。
+1. 由于页面是按需发布，回滚页面不会回滚 Code 代码, 请在回滚完成页面后修复代码逻辑，避免其他发布分支重新将问题代码上线
+## 如何操作
+
+打开应用回滚页，点击回滚，选择需要回滚的版本即可。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/veqovz/imgHCJ7atMWCz.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/veqovz/imgcmwJjIE89o.png)
+
+

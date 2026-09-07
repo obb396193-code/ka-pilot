@@ -1,0 +1,54 @@
+{
+  "documentId": 2503,
+  "documentName": "查询账户共享视频库按钮是否开启",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 查询账户共享视频库按钮是否开启\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/video/queryAutoShareSwitch](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/video/queryAutoShareSwitch)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主id |  ||\n\n\n### 返回参数\n\n| 字段         | 类型  | 示例值   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 返回信息 |  |\n| data | Struct |  | JSON 返回值 |  |\n| &#8195;switch_status | Boolean |  | 开关状态：true代表开启，false代表关闭|  |\n| &#8195;user_id | Long |  | 所属的user_id|  |\n\n### 请求样例\n```js\n{\n  \"advertiser_id\": 7869843\n}\n```\n\n### 响应样例\n```js\n{\n  \"code\": 0,\n  \"data\": {\n    \"user_id\": 1743291153,\n    \"switch_status\": true\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"EMyBgIDAlZWaChiGECClpZ3w6zEo0Jqx8A8=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1712585310209
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1712585310209,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

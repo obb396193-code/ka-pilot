@@ -1,0 +1,54 @@
+{
+  "documentId": 2437,
+  "documentName": "小铃铛挂载接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 小铃铛挂载接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/jingleBell/launch](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/jingleBell/launch1)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | advertiser_id | advertiser_id |\n| jingle_bell_id | Long |  | 必填 | 小铃铛ID |  |\n| live_user_id | Long |  | 必填 | 主播ID |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 状态码 |  |\n| message | String |  | 返回信息 |  |\n\n### 请求样例\n\n```js\n{\n  \"advertiser_id\": 900015364,\n  \"live_user_id\": 2190171067,\n  \"jingle_bell_id\": \"876230739624482\"\n}\n```\n\n### 返回样例\n\n```\n{\n  \"code\": 401000,\n  \"data\": {},\n  \"message\": \"主播未开播，铃铛挂载失败\",\n  \"request_id\": \"ELqAgIDg8piOrAEYtAkgne-tpMMxKNzJwb8I\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1701834633123
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1701834633123,
+  "creator": "qihaichao",
+  "fullContext": null
+}

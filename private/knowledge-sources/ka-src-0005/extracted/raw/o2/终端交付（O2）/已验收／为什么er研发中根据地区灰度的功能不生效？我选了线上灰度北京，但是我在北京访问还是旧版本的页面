@@ -1,0 +1,18 @@
+作者：冠夫
+
+评审人：时路
+
+
+
+首先，灰度的是北京的CDN节点，你需要确认你访问的是不是北京的节点。（办公网大部分园区的出口IP连接的节点是杭州，上海，青岛，河北等，这是由abtn决定，所以测试时，请选择普通5G网络）
+
+举例：如果你的域名是www.taobao.com，灰度了北京CDN节点。
+
+你可以执行命令查看域名解析地址：dig www.taobao.com，如下图，你解析的节点IP 116.211.154.223，可以查询116.211.154.223的归属地址属于什么地区，来确认连接了什么区域的节点。
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/282583/1710847249950-2fd6ef1d-85b8-4e7b-8b6a-71a1fe76b997.png) 
+
+
+
+相关答疑可参考此回复：[https://links.alibaba-inc.com/support/conversation/65f29e8c8bea470784a42b3d/](https://links.alibaba-inc.com/support/conversation/65f29e8c8bea470784a42b3d/)
+

@@ -1,0 +1,10 @@
+Python 3.12 解决方案中，HTTP 接口的常用入参如下：
+
+```
+request_body = event['wsgi.input'].read(int(event.get('CONTENT_LENGTH', 0)))
+method = event['REQUEST_METHOD']
+path = event['PATH_INFO']
+query = event['QUERY_STRING']
+```
+
+

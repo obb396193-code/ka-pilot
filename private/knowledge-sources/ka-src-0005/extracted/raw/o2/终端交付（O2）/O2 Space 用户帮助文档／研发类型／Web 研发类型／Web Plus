@@ -1,0 +1,171 @@
+#### 当前该功能已对用户开放，如有问题请联系 @栖邀、@冠夫。
+
+## 产品能力
+
+Web Plus 应用类型通过整合跨端应用和 Assets Plus 应用的能力，支持应用将 assets 和 页面发布到业务自定义的域名。
+
+## 产品链路
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/imgyOJwse3C5z.png)
+
+
+## 接入方式
+
+### 1）绑定 Assets 站点
+
+找到自己需要接入的 Web 站点下的站点配置菜单，选择该 Web 站点绑定的 Assets 站点并提交绑定。绑定后 Web Plus 应用在发布时，会将页面资源发布到 Web 站点，assets 资源发布到绑定的 Assets 站点。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/img9Vdq9mgNEf.png)
+
+
+### 2）添加应用类型
+
+前往自己的团队，并添加 Web Plus 应用类型，从而在新建应用时可以看到该应用类型。
+
+### 3）新建应用
+
+3-1）选择 Web 研发下的 Web Plus 应用类型。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/imgQ9cxDg1QYP.png)
+
+
+3-2）选择接入的 Web 站点后，会显示 assets 配置信息，可以选择 assets 的发布模式。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/imgAnp6qc4x7m.png)
+
+
+Assets 配置的发布模式可以参考 Assets Plus 的说明：[https://space.o2.alibaba-inc.com/doc/dygrezg75rw5pzq4?version=v3](https://space.o2.alibaba-inc.com/doc/dygrezg75rw5pzq4?version=v3)
+
+### 4）发布应用
+
+应用的发布和普通应用基本一致，新建迭代后进行发布。Web Plus 应用的流水线如下：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/img0K43e3qFht.png)
+
+
+4-1）发布配置检查
+
+该节点会检查应用接入的 Web 站点及该站点绑定的 Assets 站点。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/imgqUCkU7vbBH.png)
+
+
+4-2）构建产物检查
+
+该节点会检查构建产物的合法性，包括：1）按照 Assets Plus 应用的规则检查 assets 资源；2）按照跨端应用的规则检查页面资源。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/imgWzhxXvimRp.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/imgSFrE6fu8xS.png)
+
+
+4-3）assets 发布
+
+将 assets 资源发布到 Assets 站点。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/imgz6MNGylT1f.png)
+
+
+4-4）页面发布
+
+将页面资源发布到 Web 站点。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/imgiy6iYtUtj4.png)
+
+
+### 5）应用灰度
+
+Web Plus 的灰度过程和跨端应用一致，assets 资源不灰度直接发布上线，页面资源可以逐步的按照比例放量。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/imgrS7Hh8l7bE.png)
+
+
+## 产物规范
+
+Web Plus 应用的构建产物需要符合约定才能进行发布。
+
+### 示例应用
+
+应用地址：[https://space.o2.alibaba-inc.com/app/295817/basic](https://space.o2.alibaba-inc.com/app/295817/basic)
+
+1）应用的 group、project 信息为：deftest/webplus-test
+
+2）产物目录结构：
+
+```
+/
+ - assets
+   - 1kT7yn3ZfVxx.index.js
+   - 49yVpQ1FAHhL.index.css
+ - pages
+   - index.html
+   - pha
+     - default.html
+     - manifest.json
+ - entry.json
+
+```
+构建产物的根目录需要提供 entry.json 文件，该文件用来描述待发布的产物信息：
+
+```
+{
+  "assets": {
+    // 发布 output 指定目录的 assets 资源
+    "output": "./assets"
+  },
+  // 需要发布的页面
+  "pages": {
+    // key = 页面访问 path，value = 页面的内容文件路径
+    "index.html": "./pages/index.html",
+
+    // 也支持多端产物
+    "pha": {
+      // 默认内容
+      "default": "./pages/pha/default.html",
+      // 多端内容
+      "terminals": {
+        "pha": "./pages/pha/manifest.json"
+      }
+    }
+  }
+}
+
+```
+3）访问链接
+
+产物发布后的访问链接规则为：
+
+- assets：[assets 域名]/s/[h | v]/[group]/[project]/[entry.json 的 assets.output 指定的目录]
+- 页面：[web 域名]/app/[group]/[project]/[entry.json 的 pages 指定的页面]
+const parseArgs = require('yargs-parser');   const buildArgv = parseArgs(process.env.BUILD_ARGV_STR || ''); const assetsUrl = buildArgv.def_publish_assets_url; // 示例应用中 assetsUrl = [https://pre-next.air.alibaba-inc.com/s/h/deftest/webplus-test/](https://pre-next.air.alibaba-inc.com/s/h/deftest/webplus-test/) // 可以将该变量理解为 webpack 的 publicUrl
+
+assets 访问地址：
+
+- [https://dev-assets-test.air.alibaba-inc.com/s/h/deftest/webplus-test/1kT7yn3ZfVxx.index.js](https://dev-assets-test.air.alibaba-inc.com/s/h/deftest/webplus-test/1kT7yn3ZfVxx.index.js)
+- [https://dev-assets-test.air.alibaba-inc.com/s/h/deftest/webplus-test/49yVpQ1FAHhL.index.css](https://dev-assets-test.air.alibaba-inc.com/s/h/deftest/webplus-test/49yVpQ1FAHhL.index.css)
+页面的访问地址：
+
+- [https://pre-next.air.alibaba-inc.com/app/deftest/webplus-test/index.html](https://pre-next.air.alibaba-inc.com/app/deftest/webplus-test/index.html?spm=defwork.home.0.0.17795c4bKWUawZ)
+### 页面引用 assets 资源
+
+构建节点中会提供 assets 资源的访问地址环境变量，页面可以通过环境变量 def_publish_assets_url
+
+来引用 assets 资源。参考代码：
+
+```
+const parseArgs = require('yargs-parser');  
+const buildArgv = parseArgs(process.env.BUILD_ARGV_STR || '');
+
+const assetsUrl = buildArgv.def_publish_assets_url;
+// 示例应用中 assetsUrl = https://pre-next.air.alibaba-inc.com/s/h/deftest/webplus-test/
+// 可以将该变量理解为 webpack 的 publicUrl
+
+```
+### 其他
+
+独立assets知识文档，可在Assets类型下学习中心中进行学习[https://space.o2.alibaba-inc.com/workbench/assets/extend/badge](https://space.o2.alibaba-inc.com/workbench/assets/extend/badge)
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/zw6qm6m5kst389et/imgE7zhbQnrNl.png)
+
+

@@ -1,0 +1,14 @@
+作者：[@栖邀](undefined/qiyao.kxp)
+
+评审人：[@冠夫](undefined/guanfu.lgf)
+
+
+
++ 1）检查访问的 URL 地址是否有拼写错误？
++ 2）检查用于访问 URL 的宿主环境（如：电脑、手机等）中是否有开启代理、做了 host 绑定？
++ 3）检查应用所属的站点下是否配置了对应的路由并进行了发布？
+    - 通过访问应用信息界面查看所属站点。 (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/192/1710468741063-4cb7b9d6-a034-4f56-a58f-1d12cde7cf62.png) 
+    - 访问站点的路由配置界面，检查是否配置了正确的路由。若未配置，需要进行配置。 (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/192/1710468780426-e072eeea-830d-4034-8c6a-d16d8eb42b30.png) 
+    - 查看路由发布界面，检查路由是否进行了发布。若没有发布，请进行发布。 (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/192/1710469007866-97cfa359-7359-4c54-b1ce-2a17d410a02e.png) 
++ 4）若访问时携带了内容协商头（Accept），但是对应的端产物 404，请联系源站值班人员进行处理。
+

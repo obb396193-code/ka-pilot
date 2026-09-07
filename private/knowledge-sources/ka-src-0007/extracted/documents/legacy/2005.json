@@ -1,0 +1,42 @@
+{
+  "documentId": 2005,
+  "documentName": "4.9人群分析报表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 人群分析报表\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/report/audience_report\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 请求参数      |          |          |                |                                                                                                                                       |\n| ------------- | -------- | -------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------- |\n| 字段          | 类型     | 是否必填 | 说明           | 备注                                                                                                                                  |\n| advertiser_id | long     | 是       |                |                                                                                                                                       |\n| start_date    | string   | 是       | 开始日期       | 格式 YYYY-MM-DD,只支持查询 从今日起一年以内日期                                                                                    |\n| end_date      | string   | 是       | 结束日期       | 格式 YYYY-MM-DD,只支持查询昨天之前的数据                                                                                              |\n| campaign_ids  | long[]   | 否       | 广告计划 ID 集 | 过滤筛选条件，单次查询数量不超过 5000                                                                                                 |\n| unit_ids      | long[]   | 否       | 广告组 ID 集   | 过滤筛选条件，单次查询数量不超过 5000                                                                                                 |\n| report_dims   | string[] | 是       | 人群报表类型   | province: 省级地域分布 city: 地级地域分布 gender: 性别分布 ageSegment: 年龄分布 clientId: 系统分布  |\n| page          | int      | 否       | 请求页码数     | 默认为 1                                                                                                                              |\n| page_size     | int      | 否       | 请求页码大小   | 默认为 100，最大支持 2000                                                                                                             |\n\n### 返回参数\n\n| 返回参数                                   | 类型   | 描述              |\n| ------------------------------------------ | ------ | ----------------- |\n| code                                       | int    | 返回码/错误码     |\n| message                                    | string | 返回信息/错误信息 |\n| data                                       | JSON   |                   |\n| total_count                                | int    | 数据的总行数      |\n| details                                    | JSON   | 数据明细信息      |\n| 其他信息与实时报表保持一致，如下为新增参数 |        |                   |\n| province                                   | string | 省份              |\n| city                                       | string | 城市              |\n| gender                                     | string | 性别              |\n| age_segment                                | string | 年龄              |\n| client                                     | string | 系统              |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624706
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624706,
+  "creator": "wb_mazhikai",
+  "fullContext": null
+}

@@ -1,0 +1,47 @@
+## 资源管理
+
+目前团队空间提供对 OSS 资源的管理：
+
+1. 通过资源管理自助申请 BU 独立的 OSS bucket
+1. 在 Assets Plus 应用类型和 SSR 应用类型中，会将应用的产物发布到业务独立的 OSS bucket，并通过自定义 CDN 域名进行访问
+
+
+### 资源申请
+
+注意：请根据业务需求申请资源，尽量复用 BU 下已有的 OSS 资源，避免浪费。
+
+(https://o2-img.alistatic.com/i/i09blZ/ZC3BiDAMJSaj3evmwVn6y-56cb44d2ef.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/clEKt1XijbZw1XQlW8Wz4-20d675faee.png)
+
+
+
+
+在申请资源时，请注意填写“资源用途”。目前主要用在 Assets Plus 应用类型和 SSR 应用类型中。
+
+- 如果是在 Assets Plus 应用类型中使用，请选择“独立 Assets”。
+- 如果是在 SRR 应用类型中使用，请选择“ER 一体化“。
+
+
+### 申请后使用方法
+
+资源在申请后，在 “Assets 站点”和“Web 一体化站点”中进行域名接入时，可以选择需要绑定的 OSS 资源。（注：一个资源可以被多个站点绑定，通过站点标志进行资源隔离）
+
+(https://o2-img.alistatic.com/i/i09blZ/ktW5Aeoh8xx3oSlFdCYOO-f6cd517ca6.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

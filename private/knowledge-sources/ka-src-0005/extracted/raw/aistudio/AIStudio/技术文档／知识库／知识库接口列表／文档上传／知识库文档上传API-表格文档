@@ -1,0 +1,80 @@
+
+#### 请求Header需要设置下面参数
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |  |
+
+# 实践1：上传QA数据，QA均建立索引
+
+## 上传一份表头包含Question、Answer的
+
+### 方式1：直接在前端上传
+
+表格内文档至少包含1行数据。
+
+例如：
+
+| Question | Answer |
+| --- | --- |
+| 问题1 | 答案1 |
+
+### 方式2：直接调用接口上传一个表格文档
+
+/api/v1/aiStudio/repository/createTableDocument
+
+​  
+
+
+必传参数：
+
+tablesStructureSchema
+
+tableDocumentPO
+
+文档上传后，进入切分。
+
+切分完毕后，测试召回，可以使用召回。
+
+## 表格类行数据增删改
+
+### 新增一个表格行数据
+
+/api/v1/aiStudio/repository/document/row/insertTableRow
+
+返回表格行id。
+
+### 查询多个表格行数据
+
+/api/v1/aiStudio/repository/document/row/queryTableRows
+
+Get
+
+### 更新一个表格行数据
+
+/api/v1/aiStudio/repository/document/row/updateTableRow
+
+### 删除一个表格行数据
+
+/api/v1/aiStudio/repository/document/row/deleteTableRow
+
+# 实践2：上传本地表格、语雀表格数据
+
+上传本地表格、语雀表格。
+
+限制条件：每次只能上传1个。
+
+## 上传一个本地表格文档 & 更新文档
+
+更新操作：根据outId确定文档，进行内容更新。
+
+### 本地表格文档的更新，文档内容更新
+
+## 上传一篇语雀表格 & 更新
+
+更新操作：根据语雀链接确定一篇语雀表格，进行内容更新
+
+### 语雀文档的更新
+
+请求接口一致，文档内容进行更新。
+

@@ -1,0 +1,74 @@
+# O2 FaaS 应用 HTTP 域名迁移方案
+
+## 概述
+
+本文档旨在为 O2 FaaS 用户提供详细的 HTTP 域名迁移指南。帮助用户将原有 O2 应用中同一个域名的服务指向从 FC 基座变为 AoneFaaS 基座。
+
+## 准备阶段
+
+### 1. 确认迁移的域名类型
+
+- 自定义域名：用户自己在 fs 或诺曼底申请的域名
+- 多个应用共用的自定义域名：用户自己在 fs 或诺曼底申请的域名，并且被多个应用共用，自己的应用只只占据了某个 一级或者二级 path
+- 泛域名（平台默认分配的域名），长这样：应用名.fc.alibaba-inc.com
+### 2. 评估域名的可迁移性
+
+- 泛域名默认可以迁移
+- 在此[fs平台](https://fs.alibaba-inc.com/#/ingressManage)上搜索自己的域名，如果搜索得到，则可以迁移
+- 如果在 fs 平台上搜索不到则需要联系@孟祥瑞(夙言)@周方旭(阳介)确认域名是否可迁移
+
+
+## 执行阶段
+
+### 4. 泛域名和多个应用共用的自定义域名 需要新增域名来覆盖之前的域名接入规则，非此 2 类型直接看步骤 5 
+
+- 登陆 [fs平台](https://fs.alibaba-inc.com/#/ingressManage)
+- 泛域名-新增域名
+	- (https://o2-img.alistatic.com/i/i09blZ/8v1TaADJbZZ4PLKR3I2ki-be9eaeba49.png)
+
+	- 应用名填 fn-应用名，比如我O2faas应用名叫 migrate-test-001，则此处应用名填 fn-migrate-test-001
+(https://o2-img.alistatic.com/i/i09blZ/aS57CDsr4Mk6050e7D4xd-177dc9cafd.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/XdmdmfthJJlfgFwi7QHyv-a54a6904e8.png)
+
+
+	- (https://o2-img.alistatic.com/i/i09blZ/kKmTdshwhymSDQI6FfQGF-00734dbe18.png)
+
+	- vipserverkey填：http.fc.vipserver(https://o2-img.alistatic.com/i/i09blZ/9mDzr49QKY65dw4I7eyda-5b3f24d44f.png)
+
+- 多个应用共用的自定义域名，本质上是 fs 平台统一接入支持按照 path 级别切换 vipserverkey 的指向
+	- (https://o2-img.alistatic.com/i/i09blZ/6jbB7ZboNedMlEy6vW13P-3cc601e8ee.png)
+
+### 5. 泛域名覆盖完成后 或 自定义域名迁移
+
+- 使用 fs 平台高级路由能力(https://o2-img.alistatic.com/i/i09blZ/AC4DNSIT2RoeCxAY8rF83-d31e54ed6d.png)
+
+- 新增高级路由，路由类型选择服务权重，vipserverkey 根据自己的需求配置，具体看下方表单，服务权重根据根实际情况配置（比如配置了 5 ，则线上就会有 5% 的流量走到新的 AoneFaaS 服务）(https://o2-img.alistatic.com/i/i09blZ/n3kCulL4lcsvqR0qX83Ck-2fc83914fa.png)
+(https://o2-img.alistatic.com/i/i09blZ/4fuuUZr57xvdDuFSpYyfJ-907027e9c2.png)
+
+- 点击状态中变更单子完成变更(https://o2-img.alistatic.com/i/i09blZ/lbLkmlQb7iWXcSK3TgI67-d653df615a.png)
+
+- 线上流量生效，注意观察监控
+- 观察一段时间没有问题则继续多次调整服务器权重，直至 100，生效后，观察老流量是否归 0 ，如果归零则代表所有流量均已迁移到 AoneFaaS 基座。此阶段需要观察一段时间，确认线上没有问题之后，执行步骤6
+### 6. 域名 vipseverkey 订正
+
+- 在 fs 平台中修改域名的统计接入配置，将 vipserverkey 配置成之前高级路由中的 AoneFaaS vipserverkey (https://o2-img.alistatic.com/i/i09blZ/PIf4uCY7EKSROGy6SmWcD-1d46ec285c.png)
+
+## 其他
+
+### vipserverkey 映射
+
+| 原 FC vipserverkey | AoneFaaS 对应 vipserverkey |
+|-|-|
+| http.fc.vipserver国内全单元 | http.afc.vipserver |
+| sh.http.fc.vipserver仅张北中心 | sh.http.afc.vipserver |
+| unsh.http.fc.vipserver南通单元 | unsh.http.afc.vipserver    |
+| all.http.fc.vipserver包含3个单元：线上中心、上海云单元、深圳云单元 | all.http.afc.vipserver |
+| southeast-asia.fc.vipserver（新加坡+中心） | sg.http.afc.vipserver |
+
+
+
+## 注意事项
+
+- 在步骤 5 的逐步调整服务权重过程中需要注意观察新老函数的监控和日志，如果新基座函数有问题请直接把服务权重调成 0 ，将流量都走向原来的老 FC 函数。

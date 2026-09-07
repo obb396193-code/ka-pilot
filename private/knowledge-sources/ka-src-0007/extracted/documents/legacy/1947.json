@@ -1,0 +1,42 @@
+{
+  "documentId": 1947,
+  "documentName": "10.18.2智能托管状态更新",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 智能托管状态更新\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/hosting/project/update/put_status\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 属性          | 类型     | 含义            | 使用说明                                                                    |\n| ------------- | -------- | --------------- | --------------------------------------------------------------------------- |\n| advertiser_id | Long     | 广告主accountId | 必填                                                                        |\n| project_ids   | Long数组 | 项目id          | 无                                                                          |\n| put_status    | int枚举  | 状态值          | 见枚举说明put_status。<br>本接口不可操作已删除数据，本接口不可将数据置为删除。 |\n\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\"\n}\n\n```\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624294
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624294,
+  "creator": "linmenger",
+  "fullContext": null
+}

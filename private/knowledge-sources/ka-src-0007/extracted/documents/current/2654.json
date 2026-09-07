@@ -1,0 +1,365 @@
+{
+  "documentId": 2654,
+  "documentName": "crm赔付线索回传接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095969700
+    }
+  ],
+  "apiId": 785,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/crm/clue/payForCallback",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 10,
+  "bizName": "CRM",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 45067,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "123456",
+      "description": "广告主",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "广告主账户id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45068,
+      "paramName": "clue_id",
+      "paramType": "Long",
+      "example": "8855247785963210001140",
+      "description": "线索ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "线索ID，快手魔力建站收集线索回传快手生成的线索ID，客户自建站线索回传客户生成的线索ID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45069,
+      "paramName": "call_back",
+      "paramType": "String",
+      "example": "xxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "description": "回传广告投放快手提供的callbak信息",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "回传广告投放快手提供的callbak信息，部分赔付场景该字段必传，使用快手魔力建站不用传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45070,
+      "paramName": "form_user_name",
+      "paramType": "String",
+      "example": "李先生",
+      "description": "用户实际输入姓名名称",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "用户实际输入姓名名称，客户自建站时如果有需要传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45071,
+      "paramName": "form_user_phone",
+      "paramType": "String",
+      "example": "13800138000",
+      "description": "外呼必要的用户手机号码",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "中国大陆+86手机号，无需传+86",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45072,
+      "paramName": "call_status",
+      "paramType": "Integer",
+      "example": "104",
+      "description": "参与线索赔付必要字段，确保客户已外呼",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "103：未接通-拒接 104：未接通-无人接听 105：未接通-忙线 106：未接通-空号 107：未接通-停机 108：未接通 109：未接通-关机",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45073,
+      "paramName": "call_status_generate_time",
+      "paramType": "Long",
+      "example": "1684667359000",
+      "description": "客户回传外呼状态产生的具体外呼时间",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "产生外呼时毫秒级时间戳",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45074,
+      "paramName": "lp_url",
+      "paramType": "String",
+      "example": "https://xxxxxxxxxxx",
+      "description": "完整落地页url，http开头",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "客户自建站投放落地页url，非快手魔力建站投放时必传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45075,
+      "paramName": "clue_submit_time",
+      "paramType": "Long",
+      "example": "1684570214000",
+      "description": "线索提交时间",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "线索提交时产生的毫秒级时间戳",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45474,
+      "paramName": "source_site",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "来源标识",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "快手建站0 自建站1",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 45076,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45077,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45078,
+      "paramName": "data",
+      "paramType": "AdMarketIdResult",
+      "example": "",
+      "description": "线索id",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2793,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 45079,
+          "paramName": "id",
+          "paramType": "Long",
+          "example": "1234566",
+          "description": "线索id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095969700,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

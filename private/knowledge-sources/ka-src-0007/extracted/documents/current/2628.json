@@ -1,0 +1,400 @@
+{
+  "documentId": 2628,
+  "documentName": "快小游ECPM报表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720092843704
+    }
+  ],
+  "apiId": 1008,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/report/ecpm_report",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl -H \"Access-Token:[REDACTED_SECRET_EXAMPLE]\" \\\n-H \"Content-Type:application/json\" \\\n-d '\n{\n  \"advertiser_id\": \"131114\",\n  \"app_id\": \"ks67159985317480\",\n  \"open_id\": [\n    \"f11187870a1ca232814bf47248fe9ab9a\",\n    \"f11187870a1ca232814bf47248fe9ab9b\",\n    \"f11187870a1ca232814bf47248fe9ab9c\",\n    \"f11187870a1ca232814bf47248fe9ab9d\",\n    \"f11187870a1ca232814bf47248fe9ab9e\",\n    \"f11187870a1ca232814bf47248fe9ab9f\",\n  ],\n  \"data_hour\": \"2023-11-02 14:00:00\"\n}\n' https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/report/ecpm_report"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": {\n    \"empty\": false,\n    \"total_count\": 3,\n    \"details\": [\n      {\n        \"open_id\": \"f11187870a1ca232814bf47248fe9ab9a\",\n        \"cost\": 10,\n        \"id\":\"17052480001016060086879176560\",\n        \"event_time\":\"2024-01-18 15:10:00\"\n      },\n      {\n        \"open_id\": \"f11187870a1ca232814bf47248fe9ab9b\",\n        \"cost\": 133,\n        \"id\":\"17052480001016060086879176564\",\n        \"event_time\":\"2024-01-18 15:11:00\"\n      },\n      {\n        \"open_id\": \"f11187870a1ca232814bf47248fe9ab9c\",\n        \"cost\": 90,\n        \"id\":\"17052480001016060086879176569\",\n        \"event_time\":\"2024-01-18 15:12:00\"\n      }\n    ]\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"EO60gICQgpGOChjDCSDfnJXpuTEo0sOVigg=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 52587,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id,主要用于鉴权无实际含义</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52588,
+      "paramName": "app_id",
+      "paramType": "String",
+      "example": "",
+      "description": "<p><br>游戏id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52589,
+      "paramName": "open_id",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>用户的 open_id或union_id，单次允许最多传入200个，传入为空字符串时，查询所有用户</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52590,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p><br>查询的页码，页码从1开始</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52591,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p><br>单页的大小，最大支持500</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52592,
+      "paramName": "data_hour",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>根据传参，有两种时间范围可查： - 若传 YYYY-MM-DD，则查天级范围，即 YYYY-MM-DD 00:00:00 ～ YYYY-MM-DD 23:59:59 - 若传 YYYY-MM-DD hh<a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://developers.e.kuaishou.com/docs?docType=DSP&amp;documentId=2429&amp;menuId=3027\">:mm:ss</a>，则查小时级范围，即 YYYY-MM-DD hh:00:00 ～ YYYY-MM-DD hh:59:59 举例：查 13 号：“2023-07-13” 查 13 号 14 点：“2023-07-13 14” 或 “2023-07-13 14:00:00” 或 “2023-07-13 14:13:24” PS：数据源仅保存近 168小时的数据，建议明确时间范围的情况下，指定小时级别只支持1天的查询</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 52593,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52594,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 52595,
+      "paramName": "data",
+      "paramType": "AdEcpmReport",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3079,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 52710,
+          "paramName": "details",
+          "paramType": "AdEcpmReportDetail[]",
+          "example": "",
+          "description": "<p>数据详情</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3078,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 57676,
+              "paramName": "id",
+              "paramType": "String",
+              "example": "11",
+              "description": "<p><br>记录唯一标识（返回记录按 ID 递增排序）</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "1",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 0,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 57677,
+              "paramName": "event_time",
+              "paramType": "String",
+              "example": "11",
+              "description": "<p><br>广告计费事件发生时间</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "1",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 0,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 52709,
+              "paramName": "open_id",
+              "paramType": "String",
+              "example": "",
+              "description": "<p><br>用户的 open_id或union_id</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 53142,
+              "paramName": "cost",
+              "paramType": "Long",
+              "example": "1",
+              "description": "<p><br>消耗：单位厘</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 52711,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p><br>总条数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720092843704,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

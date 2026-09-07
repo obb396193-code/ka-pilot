@@ -1,0 +1,8 @@
+用户真实链接：https://links.alipay.com/support/conversation/6808880b1a442b04b1ddc9ae  
+作者：庞舒蕾  
+评审人：叶子旭
+
+
+
+faas函数是随机运行多台机器上的，所以ip地址也是随机的，不支持配置固定ip。
+

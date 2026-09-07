@@ -1,0 +1,325 @@
+{
+  "children": [
+    {
+      "children": [
+        {
+          "children": [],
+          "description": "巨量营销下全量接口能力",
+          "full_name": "巨量营销-全部接口",
+          "hidden": false,
+          "id": 7,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "",
+          "logo_url": "https://p6-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/16c8d4caef8f4c3188c0f508912b064b.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352440&x-signature=V19%2FQ6zJ9NZ73lR%2F2nEDBaptLjk%3D",
+          "name": "全部接口",
+          "type": 1
+        },
+        {
+          "children": [],
+          "description": "巨量营销升级版",
+          "full_name": "巨量营销-巨量营销升级版",
+          "hidden": false,
+          "id": 34,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "",
+          "logo_url": "",
+          "name": "巨量营销升级版",
+          "type": 1
+        },
+        {
+          "children": [],
+          "description": "Dou+ 投放/报表相关能力",
+          "full_name": "Dou+",
+          "hidden": false,
+          "id": 35,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "Dou+ 投放/报表相关能力",
+          "logo_url": "",
+          "name": "Dou+",
+          "type": 1
+        },
+        {
+          "children": [],
+          "description": "游戏、应用投放/应用管理",
+          "full_name": "巨量营销-应用投放场景",
+          "hidden": false,
+          "id": 8,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "",
+          "logo_url": "https://p6-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/16c8d4caef8f4c3188c0f508912b064b.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352440&x-signature=V19%2FQ6zJ9NZ73lR%2F2nEDBaptLjk%3D",
+          "name": "应用投放场景",
+          "type": 1
+        },
+        {
+          "children": [],
+          "description": "落地页投放/线索回收管理",
+          "full_name": "巨量营销-线索获取场景",
+          "hidden": false,
+          "id": 9,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "",
+          "logo_url": "https://p6-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/16c8d4caef8f4c3188c0f508912b064b.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352440&x-signature=V19%2FQ6zJ9NZ73lR%2F2nEDBaptLjk%3D",
+          "name": "线索获取场景",
+          "type": 1
+        },
+        {
+          "children": [],
+          "description": "商品目录投放/产品库管理",
+          "full_name": "巨量营销-DPA投放场景",
+          "hidden": false,
+          "id": 10,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "",
+          "logo_url": "https://p6-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/16c8d4caef8f4c3188c0f508912b064b.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352440&x-signature=V19%2FQ6zJ9NZ73lR%2F2nEDBaptLjk%3D",
+          "name": "DPA投放场景",
+          "type": 1
+        },
+        {
+          "children": [],
+          "description": "智能诊断/投放管家/AB实验",
+          "full_name": "巨量营销-智能投放工具",
+          "hidden": false,
+          "id": 11,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "",
+          "logo_url": "https://p6-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/16c8d4caef8f4c3188c0f508912b064b.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352440&x-signature=V19%2FQ6zJ9NZ73lR%2F2nEDBaptLjk%3D",
+          "name": "智能投放工具",
+          "type": 1
+        },
+        {
+          "children": [],
+          "description": "",
+          "full_name": "巨量营销智擎版",
+          "hidden": false,
+          "id": 43,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "",
+          "logo_url": "",
+          "name": "巨量营销智擎版",
+          "type": 1
+        }
+      ],
+      "description": "巨量营销",
+      "full_name": "巨量营销",
+      "hidden": false,
+      "id": 1,
+      "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+      "introduction": "",
+      "logo_url": "https://p6-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/16c8d4caef8f4c3188c0f508912b064b.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352440&x-signature=V19%2FQ6zJ9NZ73lR%2F2nEDBaptLjk%3D",
+      "name": "巨量营销",
+      "type": 1
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "description": "巨量千川下全量接口能力",
+          "full_name": "巨量千川-全部接口",
+          "hidden": false,
+          "id": 12,
+          "identify_key": "1af4244b2d2b3fa114d4917a957656608ee79223de7717ec29a3e0d0ebea279a",
+          "introduction": "",
+          "logo_url": "https://p6-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/ee6d3e3b8d5546a3818f6b32f6d5029f.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352436&x-signature=j%2FRS9qh%2B5zw0KVHX7t7yABKQgQM%3D",
+          "name": "全部接口",
+          "type": 1
+        }
+      ],
+      "description": "巨量千川",
+      "full_name": "巨量千川",
+      "hidden": false,
+      "id": 2,
+      "identify_key": "1af4244b2d2b3fa114d4917a957656608ee79223de7717ec29a3e0d0ebea279a",
+      "introduction": "",
+      "logo_url": "https://p6-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/ee6d3e3b8d5546a3818f6b32f6d5029f.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352436&x-signature=j%2FRS9qh%2B5zw0KVHX7t7yABKQgQM%3D",
+      "name": "巨量千川",
+      "type": 1
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "description": "巨量本地推下全量接口能力",
+          "full_name": "巨量本地推-全部接口",
+          "hidden": false,
+          "id": 37,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "",
+          "logo_url": "https://p3-oe-bp.byteimg.com/tos-cn-i-0aqtudv0qh/with-border-4x.png~tplv-0aqtudv0qh-image.image",
+          "name": "全部接口",
+          "type": 1
+        }
+      ],
+      "description": "巨量本地推",
+      "full_name": "巨量本地推",
+      "hidden": false,
+      "id": 36,
+      "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+      "introduction": "",
+      "logo_url": "https://p3-oe-bp.byteimg.com/tos-cn-i-0aqtudv0qh/with-border-4x.png~tplv-0aqtudv0qh-image.image",
+      "name": "巨量本地推",
+      "type": 1
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "description": "巨量星图下全量接口能力",
+          "full_name": "巨量星图-全部接口",
+          "hidden": false,
+          "id": 13,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "",
+          "logo_url": "https://p3-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/a2971109901a4ff385af59a8bdbf237e.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352366&x-signature=1f2k1svOW3L1myryDQ5wAx0NdUo%3D",
+          "name": "全部接口",
+          "type": 1
+        }
+      ],
+      "description": "巨量星图",
+      "full_name": "巨量星图",
+      "hidden": false,
+      "id": 3,
+      "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+      "introduction": "",
+      "logo_url": "https://p3-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/a2971109901a4ff385af59a8bdbf237e.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352366&x-signature=1f2k1svOW3L1myryDQ5wAx0NdUo%3D",
+      "name": "巨量星图",
+      "type": 1
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "description": "千川",
+          "full_name": "mui-千川",
+          "hidden": false,
+          "id": 32,
+          "identify_key": "d86c2ce25722b433887f8fd94c9152e6dd1d2f6c04b5884db010c219d8ccf943",
+          "introduction": "",
+          "logo_url": "",
+          "name": "千川",
+          "type": 1
+        },
+        {
+          "children": [],
+          "description": "巨量",
+          "full_name": "mui-巨量",
+          "hidden": false,
+          "id": 33,
+          "identify_key": "d86c2ce25722b433887f8fd94c9152e6dd1d2f6c04b5884db010c219d8ccf943",
+          "introduction": "",
+          "logo_url": "",
+          "name": "巨量",
+          "type": 1
+        }
+      ],
+      "description": "mui",
+      "full_name": "mui",
+      "hidden": true,
+      "id": 31,
+      "identify_key": "d86c2ce25722b433887f8fd94c9152e6dd1d2f6c04b5884db010c219d8ccf943",
+      "introduction": "",
+      "logo_url": "",
+      "name": "mui",
+      "type": 1
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "description": "企业号下全量接口能力",
+          "full_name": "企业号-全部接口",
+          "hidden": false,
+          "id": 14,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "",
+          "logo_url": "https://p3-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/c1d9c344f44b443cab8aa73c0d05dc98.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352443&x-signature=Yl6WCl7hYeIqorDl2fP0UdGcaD0%3D",
+          "name": "全部接口",
+          "type": 1
+        }
+      ],
+      "description": "企业号",
+      "full_name": "企业号",
+      "hidden": true,
+      "id": 4,
+      "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+      "introduction": "",
+      "logo_url": "https://p3-addone-sign.byteimg.com/tos-cn-i-hhc0kcolqq/c1d9c344f44b443cab8aa73c0d05dc98.png~tplv-hhc0kcolqq-image-v6:q75.image?x-expires=1960352443&x-signature=Yl6WCl7hYeIqorDl2fP0UdGcaD0%3D",
+      "name": "企业号",
+      "type": 1
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "description": "技术应用接入说明与全量接口能力",
+          "full_name": "群峰服务市场-全部接口",
+          "hidden": false,
+          "id": 30,
+          "identify_key": "71a02add7b8c666870df3ee09cb67431ee992d5549c1bd2a9f1a28b9ac19bd57",
+          "introduction": "",
+          "logo_url": "",
+          "name": "全部接口",
+          "type": 1
+        }
+      ],
+      "description": "群峰服务市场",
+      "full_name": "群峰服务市场",
+      "hidden": false,
+      "id": 29,
+      "identify_key": "all",
+      "introduction": "",
+      "logo_url": "https://lf3-static.bytednsdoc.com/obj/eden-cn/lm_ulwv/ljhwZthlaukjlkulzlp/label.svg",
+      "name": "群峰服务市场",
+      "type": 1
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "description": "轻代码全部文档",
+          "full_name": "轻代码-全部文档",
+          "hidden": false,
+          "id": 39,
+          "identify_key": "4c52d27f2feb70dd5cb26002b7f490c9d6e562c6054739a0a30849fefd5460d4",
+          "introduction": "轻代码工具的所有文档",
+          "logo_url": "",
+          "name": "全部文档",
+          "type": 1
+        }
+      ],
+      "description": "轻代码",
+      "full_name": "轻代码",
+      "hidden": true,
+      "id": 38,
+      "identify_key": "4c52d27f2feb70dd5cb26002b7f490c9d6e562c6054739a0a30849fefd5460d4",
+      "introduction": "轻代码工具",
+      "logo_url": "",
+      "name": "轻代码",
+      "type": 1
+    },
+    {
+      "children": [
+        {
+          "children": [],
+          "description": "",
+          "full_name": "常见问题-全部文档",
+          "hidden": false,
+          "id": 41,
+          "identify_key": "b7509ed973ffa50eb1d2a6e7dd3539a446c33593e506f74ea51af703b649b813",
+          "introduction": "",
+          "logo_url": "",
+          "name": "全部文档",
+          "type": 1
+        }
+      ],
+      "description": "常见问题",
+      "full_name": "常见问题",
+      "hidden": true,
+      "id": 40,
+      "identify_key": "b7509ed973ffa50eb1d2a6e7dd3539a446c33593e506f74ea51af703b649b813",
+      "introduction": "",
+      "logo_url": "",
+      "name": "常见问题",
+      "type": 1
+    }
+  ]
+}

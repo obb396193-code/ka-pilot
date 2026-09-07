@@ -1,0 +1,201 @@
+{
+  "documentId": 2604,
+  "documentName": "开启原生扩量开关接口",
+  "documentType": 2,
+  "description": "<p>【开启后，您的非原生创意有机会转为原生广告投放，可获得更多流量。关闭后，您的非原生创意将无法转为原生广告投放，无法获得增益流量。 点击以下链接了解详情：<a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://docs.qingque.cn/d/home/eZQBaPqk6qRVfWnqDmFaGmYsE?identityId=1yqIHIWlyc8\">https://docs.qingque.cn/d/home/eZQBaPqk6qRVfWnqDmFaGmYsE?identityId=1yqIHIWlyc8</a> 】</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720092423289
+    }
+  ],
+  "apiId": 1169,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/native/openAccountNative",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\"advertiser_id\":\"24608775\",\"open_account_native\":1}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\"code\":401000,\"message\":\"今日操作次数已达上限\",\"request_id\":\"EMWBgICw4oWaChjjBiD8pv_n6zEoxLfUyQw=\"}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63158,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59316,
+      "paramName": "open_account_native",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>开启/关闭原生扩量开关</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "1开启 0关闭",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 59318,
+      "paramName": "data",
+      "paramType": "OpenAccountNativeResSnake",
+      "example": "",
+      "description": "<p>结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3320,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 59317,
+          "paramName": "open_account_native",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "<p>操作结果 true:成功 false：失败</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59319,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>1成功 非1失败</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 59320,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>失败原因</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720092423289,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -1,0 +1,24 @@
+
+## Python
+
+[Python_函数计算(FC)-阿里云帮助中心 (aliyun.com)](https://help.aliyun.com/zh/functioncompute/python/)
+
+1. 定义入参，绑定变量
+2. 主main函数固定写法
+
+3. 代码中获取入参的方法： `eventObj = json.loads(event)`  `arg1 = eventObj['arg1']`
+
+​  
+
+
+### 其他示例
+
+#### 使用 Pandas 进行数据处理
+
+#### 复杂的业务逻辑处理
+
+#### 调用外部api
+
+  
+
+

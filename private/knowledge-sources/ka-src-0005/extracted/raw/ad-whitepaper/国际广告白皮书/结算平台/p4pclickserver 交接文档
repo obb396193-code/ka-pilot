@@ -1,0 +1,60 @@
+# 拆分思路
+p4pclickserver 这个应用承接了两个业务逻辑。第一个：m站p4p广告点击跳转逻辑；第二个 付费流量的跳转逻辑。为了更好更快的支持业务发展。将这两个逻辑拆分。
+
+
+
+1. p4pclickserver 保留 m站p4p广告点击跳转逻辑。 由广告团队维护。
+2. 新建引用ugclickserver ，将付费流量的跳转逻辑 代码迁移至  新应用。由吕西宝维护。
+
+
+
+## [](#3qv3hk)M站P4P点击跳转逻辑
+
+
+PC 页面 P4P广告点击方案是：
+
+1. 用户点击广告之后前端JS 会创建一个<img>标签，标签的src 属性是p4p广告的扣费请求。
+2. 用户在新的TAB中 打开目标页面；
+3. 老的TAB中浏览器渲染 这个img 标签，会发送p4p广告扣费请求；已实现广告扣费。
+
+
+
+WAP 页面 打开新的TAB 对用户体验非常不好，所以针对WAP 页面的方案如下：
+
+1. 用户点击P4P产品之后，会把产品Detail url 和 p4p 扣费url 作为参数传递给p4pclickserver；
+2. p4pclickserver 将用户302 到目标产品detail页面，同时在服务端使用httpclient 发起扣费请求；
+
+
+
+因此，p4pclickserver 针对p4p广告逻辑核心功能就两个：302用户到detail页面、发起扣费请求。请求url如下：
+
+
+
+```plain
+https://p4pclickproxy.alibaba.com/clickRedirect.do?spm=a2706.7843299.1998817009.4.5ebe2007i8qV9v&eurl=%2F%2Fcn-click.alibaba.com%2Fci_bb%3Fot%3Dlocal%26a%3D2121254370%26e%3DiqdU3oZhMLygAk87.0i9N4CmcV0k7YhFZlDJfXVsXwdsbx4islPPD9OTBTrT.HSNOX7buGXK6-NJUrbB4RUoVDqsKB6W.z3OidooJe2-0b7eInF48ldDFBQ2YrLEliDj27BE5x7Rsu51HKSWILv3xoHuajDGdjwOfwsA1HqUyEShOa.VaqSvyx4T7MxHtkNBDVOmotAlTgWEsSp0qYbL8HD68bvhGUYiDBmJ-Hl02EoXWTVF3HdopOfvxupbke18Sgdx0Yj5.2j.vJaKCdzSszWWCu1xk461MMkROjujYKhv5sRP7w8kS91Ienxjt5-au9805uUyGYcJFb3ILPN1N5y.hqA9dlWZRbkrESQ.-.Ft5LSkD2mRoX08yq3z8P-u3P6ZkhOUIPIZ3X4Ct6f8b4-B.ithLFISZypN-uP44RgtMkvUzo-O-BJhXhEEQHVO%26ap%3D2%26rp%3D2&toUrl=https%3A%2F%2Fm.alibaba.com%2Fproduct%2F60604201149%2F20W-1200mAh-Portable-Wooden-Bluetooth-Speaker.html%3Fs%3Dp
+```
+
+
+
+其中，toUrl 是 产品detail url，eurl是p4p扣费请求url。处理流程如下：
+
+
+
+1. 判断toUrl 和 eurl 是否为空，如果为空，则返回
+2. 构建 requestHeaderDto 对象(对http header 的一个分装)
+3. 获取toUrl 和eurl 参数，将eurl强制转成http协议请求，因为内部无法使用https
+4. 检查eurl 是否是在白名单中(是不是阿里系域名)，如果不是则返回
+5. 给tourl 补上spm参数便于数据统计；
+6. 在线程池中起一个任务，根据eurl 和 requestHeaderDto 发起扣费请求。发起
+7. 把用户定向到toUrl.
+
+
+
+入口类：  
+com.alibaba.intl.clickserver.web.home.module.screen.ClickRedirect
+
+
+
+入口域名：  
+[p4pclickproxy.alibaba.com](http://p4pclickproxy.alibaba.com)
+

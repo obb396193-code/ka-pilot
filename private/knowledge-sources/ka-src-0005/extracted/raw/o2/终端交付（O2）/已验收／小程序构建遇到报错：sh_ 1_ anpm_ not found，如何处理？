@@ -1,0 +1,11 @@
+作者：时路
+
+ 评审人：上坡 
+
+  
+
+**解决方案**：
+
++ 将 anpm 命令行换成 tnpm，anpm 命令行不在维护状态
++ tnpm 命令行文档请参考：[https://anpm.alibaba-inc.com/docs/cli/](https://anpm.alibaba-inc.com/docs/cli/)
+

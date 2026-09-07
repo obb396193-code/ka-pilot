@@ -1,0 +1,682 @@
+
+
+  
+
+
+  
+
+
+  
+
+
+## 提问/答疑时需要提供的信息
+
+我们会记录请求日志，其中包括[TraceId](http://mw.alibaba-inc.com/products/eagleeye/_book/introduction.html?spm=a1zco.8292288.0.0.2207258849k7rX)、请求时间、业务businessCode等维度信息，当请求不符合预期进行问题咨询时，请提供以下信息：
+
+* 最佳✅：提供`TraceId`，因为每一次请求生成的TraceId都是唯一的，能高效的定位日志，排查问题
+* 次之：提供`businessCode`+`请求时间`！！！**使用**[**https://pre-idealab.alibaba-inc.com/businessInfo**](https://pre-idealab.alibaba-inc.com/businessInfo) **查询自己的businessCode**
+* 不要❌：我们报错了帮看下；我们xxxxx
+
+​  
+
+
+如何拿到TraceId：在http的响应头中，`EagleEye-TraceId`，感兴趣的可以看看 EagleEye中间件
+
+# 申请、接入、计费
+
+## ak的申请流程、各版本模型的收费标准
+
+<https://aliyuque.antfin.com/aiplus/aistudio/gzhhgn1ai1ulhohs>
+
+个人免费AK申请地址：<https://aistudio.alibaba-inc.com/aiWorktable#/aistudio/manage/personalResource>
+
+## ak余额查询
+
+<https://aliyuque.antfin.com/aiplus/aistudio/spw4kg4f8wwz0qht#blqWF>
+
+## 非弹内机房调用302
+
+**示例**：本地调用可以，但是在新加坡服务器调用出现302  
+**解答**：新加坡要去网络那边申请白名单的需要在这里申请下白名单，ip段填你们的出口ip段<https://o.alibaba-inc.com/#/aliwork_white>  
+
+
+## 星环小蜜的对接人是谁？
+
+PD是墨苒，负责人是惊波
+
+## gpt4turbo接入绿网
+
+绿网要找AIGC安全的同学的，淘系这边是 芷瑄​
+
+  
+
+
+# 模型API
+
+## idealab的文生文接口调用gpt，推荐用哪套参数呢？
+
+推荐传 messages
+
+## IdeaAPI调用gpt-3.5时，支持使用Chat completion里的logprobs参数吗？
+
+不支持
+
+## 我看调试里的模型和emb好像不是全部，不在调试里的不让用了？
+
+要走流程申请，申请其他模型权限。
+
+## askTextToTextMsg 接口支持调用淘宝星辰吗？
+
+api接口还不支持。
+
+## gpt4-turbo的接口最高支持多少并发？
+
+不建议并发调用接口哈，非常容易限流，有跑批需求可以走离线调度，看下这个文档<https://aliyuque.antfin.com/aiplus/aistudio/qdb8dxpg2hg8hrrz>
+
+## sse后，输出到前端太快了
+
+问题：使用sse后，导致没有一个字一个字出来，而是出现一次输出10个字
+
+解答：event-stream格式要求
+
+## hsf接口相关
+
+hsf接口看下这个文档，建议使用http接口，hsf不能跨环境调用<https://aliyuque.antfin.com/aiplus/aistudio/icahsaeyvrcwgqpr#dBzaW>
+
+## 模型答案支持展示出图片（图片url）吗？
+
+对于模型生成的结果，暂不支持图片的展示。但是可以展示图片链接。  
+DALLE模型是文生图模型，支持图片展示。
+
+## 调用API，不满足预期，排查思路
+
+* 不要直接甩答疑同学一段代码！
+* 自己先用curl的方式，确认是接口问题，还是自身代码问题。
+
+## azure openai的gpt系列模型，怎么计算图片的token？
+
+* openai的规则
+
+* ideaLAB对上述的理解：  
+  影响计费的两个元素：size + detail
+
+逻辑
+
+* detail: low
+
+* 图片就算85token
+
+* detail: high
+
+* （1）以2048 * 2048作为参考，维持长宽比。
+* （2）对图片进行伸缩，将图片的短边限制为768。计算这个图片由多少个512 * 512组成。
+* （3）每个512x的正方形算170token，最后的token数再加上85token。
+
+* 举例说明：
+
+* 1024 * 1024 的图片（detail : high）
+
+* （1）1024 < 2048，不进行resize
+* （2）最短的边为1024，伸缩到768，且维持长宽比，那就是748 * 748。
+* （3）748 * 748 相当于2 * 2个512x正方形。（748 / 512，并向上取整，即为2）
+* （4）最后的价格：4 * 170 + 85 = 765
+
+* 2048 * 4096的图片（detail : high）
+
+* （1）4096 > 2048，进行resize，并保持长宽比。1024 * 2048
+* （2）最短边是1024，伸缩到768，保持长宽比。768 * 1536
+* （3）768 * 1536相当于2 * 3个512x正方形
+* （4）最后的价格：6 * 170 + 85 = 1105
+
+* 4096 * 8192的图片（detail : low）
+
+* （1）最后的价格：85token
+## ​模型提供方限流
+
+* 与传统qps不同，gpt系列模型通过rpm和tpm进行限流，以免将大模型服务打崩。
+
+* rpm：每分钟的请求数
+* tpm：每分钟的token数（prompt token + completion token）
+
+* 如果一个模型在1分钟内，请求数超过了rpm 或者 token数超过了tpm，则报错：模型提供方限流。具体如下所示：
+
+* 用户需要降低请求频率以及降低请求的token数。
+
+## ​模型提供方错误
+
+### case1 实例配置错误
+
+* 具体如下所示：
+
+* 这种报错，用户无能为力，联系值班同学（先在AI Studio技术对接运维群问值班同学哈）。
+
+## 该场景总xxx额度已消耗完，请联系ideaLAB平台（钱花完了，找黄晖充钱！）
+
+## 多模态数据的限制
+
+* 图片一次性最多30张
+* 单张图片最大3MB
+* 视频一次最多2个
+* 单个视频最多30MB
+* 所有多模态数据（图片/视频）一次性不超过150MB
+
+​  
+
+
+## gpt-4o和gpt-4o-mini图片输入的token数有差别
+
+完全相同的带图片输入, gpt-4o和gpt-4o-mini的prompt_tokens会相差近5倍。
+
+原因：4o和mini图片转换成token的规则不同。因为mini价格低了数量级，为了图片处理算力成本拉齐，mini会换算成更多token。
+
+具体金额/token计算可以参考：<https://platform.openai.com/docs/guides/vision/calculating-costs>
+
+​  
+
+
+## 公网访问模型API
+
+如需外网/公网访问模型API，可以使用idealab.alibaba-inc.com的域名
+
+# 多轮对话
+
+## 问题：调用交付API时，支持传多轮会话吗
+
+解答：支持
+
+## idea-gpt调用function
+
+### 问题：调用function时，role不能设置为system。
+
+解答：functioncall的使用可以看下这个文档 <https://aliyuque.antfin.com/aiplus/ydq6lf/ma5i4hvvairpzf69#lUcdI>
+
+### 问题：当设置一个搜索知识库的function后，（function_call=auto）每次问答，调用率极高。
+
+解答：function的调用和你设置的描述有很大的关系，可以调整描述内容
+
+# token
+
+## 问题：各模型输入输出token限制
+
+解答：<https://aliyuque.antfin.com/aiplus/uhqex2/db90ux8597ssdeuw#riKFM>
+
+## 问题：增大输入tokens会影响输出tokens吗？
+
+解答：部分模型影响，部分模型不影响。GPT系列模型会影响。<https://aliyuque.antfin.com/aiplus/uhqex2/db90ux8597ssdeuw#riKFM>
+
+## 问题：不同模型计算token方式是否相同
+
+解答：不同模型计算token的方式是不一样的。gpt官方的token计算只适用于gpt系列，非gpt的token计算需要看各自大模型怎么拆分文本。
+
+# 限流
+
+限流配置：文生文api目前有三层限流，顺序依次如下所示（数字小的在前面），任何一层触发都会快速返回。
+
+| **限流顺序** | **限流产品** | **目的** | **限流值** | **备注** | **限流时返回关键字** |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Sentinel集群限流 | 保证ideaLAB系统的稳定性 | ak+模型，任意组合形式都是**20 QPS**限流：●abc + gpt-4 8K，20QPS●abc + gpt-4 32K，20QPS | 1主ak与子ak认为是不同的ak，不会互相挤占2同一个主ak下面的子ak，不会互相挤占3**任何一秒**内请求大于20QPS都会触发限流，而不是分钟级平均下来大于20QPS才触发限流4如果特殊需求调大限流，答疑群联系值班 | request concurrency exceeded expected application count. |
+| 2 | 实例限流 | 实例有TPM和RPM限制 | ●TPM：每分钟的token数量（单位k）●RPM：每分钟请求次数 | 找**主ak管理员**问自己每个实例的TPM、RPM是多少。如果你使用的AK，背后的实例池，该模型对应的所有实例都达到了TPM或RPM限制，则该模型会出现PRE-429。 | Blocked by TPM/RPM |
+| 3 | LLM资源层限流 | 这个限制来自资源层 | 每个实例都是不同的 | 不需要关注这个，管理员会根据LLM实例的限流值分配给ak对应的TPM、RPM | have exceeded token rate limit of your current OpenAI S0 pricing |
+
+# 页面访问限制
+
+## 问题：访问被拒绝
+
+解答：由于提示词中包含了代码，被霸下WAF拦截了，需要申请以下工作流解除：<https://bpms.alibaba-inc.com/workdesk/instStartLegao?__id=inist_start&processCode=waf_x5_fp>
+
+# Workspace
+
+## 问题：上传文档，处理文档，问答请求是否提供api调用方式？
+
+解答：是滴，有相应功能的API提供
+
+## aistudio有没有提供让模型学习代码分析的能力？
+
+目前还没有接入fine-tune的功能。  
+  
+
+
+## 数据上传中的数据标签作用
+
+标签是过滤用的，如果查询的时候传了某个标签，那只能召回有这个标签的数据
+
+## 评测工具场景，prompt 会自动加上这段话，删掉了也还是会自动加上
+
+评测工具是用于aistudio用于打分的，所以要识别json数据，并且要包含rate和reason关键字。如果要自定义评测工具，可以用基础模板，用法和评测工具一样的
+
+## 当前ak无此应用权限
+
+调用IDEAs api时需要使用和空间下绑定一致的AK进行调用，请确保空间设置中AK已经绑定
+
+# 批量任务
+
+## 问题：批量调用目前采用的方式是异步+重试，有没有更快的方式？
+
+解答：api接口不建议走批量哈，批量可以用走任务调度，看下这个文档<https://aliyuque.antfin.com/aiplus/aistudio/qdb8dxpg2hg8hrrz>
+
+## 问题：批量任务提交的执行时间？
+
+解答：全天都会执行，按照提交的先后顺序执行
+
+​  
+
+
+## 问题：odps上传数据显示项目不存在
+
+解答：
+
+可能的原因1： 项目没有填写对，检查一下输入的项目中有没有空格
+
+可能的原因2：项目不在国内的odps集群，例如新加坡的表，需要更换endpoint
+
+# 数据处理
+
+## 问题：数据处理时，自定义脚本上传python就行了把，这个python里面的方法有命名要求吗？
+
+解答：有的。函数名应该为“split_sentences”
+
+# 日志和调试
+
+## 问题：交付后的接口可以拿到每次提问的运行日志吗，看看都是召回了哪些片段对调试还是很有帮助的？
+
+解答：如果是块式接口，可以拿到运行日志；如果是流式接口，则拿不到。
+
+## 问题：调试记录交付后，选择api形式是不是就进入正式的商用对接了，选择的模型，参数以调试里设置的为准了？
+
+解答：是滴。API以调试的参数为准。不可以修改参数。
+
+# 提示词
+
+## 问题：默认提示词模板里面有个BEGIN，这个有啥作用吗？
+
+解答：分段作用，将指令和问题分开。
+
+## 问题：如果把prompt里的参考文档: ${REFERENCE_DOC}这句干掉，是不是就回答不了任何问题了？
+
+解答：如果没有做参考文档约束，则会使用模型的通用知识库进行问答。
+
+# 知识库
+
+## 问题：能支持直接告诉向量模型所有的分段吗？不需要这个文档内容的输入
+
+解答：目前还没有支持。今年331之前会支持。
+
+## 问题：将非文字的数据用文字介绍阐述下再作为数据提交上去比较合适？
+
+解答：是滴。目前对用户数据中的图片链接内容没有做识别。
+
+## 问题：报错“知识库下无有效的文档”
+
+第一步，排查语雀知识库是否在语雀API范围范围：
+
+第二步，调用接口，排查是否可以通过API访问语雀文档。
+
+## 上传钉钉文档时提示获取到的文件内容为空是什么原因？
+
+解答：我们还没有全部集团的钉钉文档的获取权限，例如本地生活钉钉文档无读取权限
+
+# 切分
+
+## 问题：对于固定切片方式的数据集处理，是不是用markdown，还是word格式没有太大差别了？
+
+解答：是滴。固定切片的块大小和重叠部分大小都是相同的。
+
+## 问题：采用以二级标题进行动态切分的方式，但二级标题切出来的tokens如果超过向量模型的输入tokens，是会直接截断到满足输入tokens还是怎么处理？
+
+解答：模型会报切分失败错误。
+
+## 问题：选bge，固定chunk拆分，看了下结果，还是有不少这种大于512的tokens的情况，这个是bug么？
+
+解答：不是bug。AI-Studio是按照用户设置的切分配置进行数据切分的。
+
+## 问题：针对bge这个最大tokens 512的特性，对数据的结构化整理有什么建议吗
+
+解答：bge模型推荐固定chunk切分。通过设置切块重合大小，就可以一定程序上降低上下文不完整带来的影响。
+
+## 问题：对一个数据（比如一篇markdown）做分段，这个分段结果数据使用向量拆分和关键字拆分结果是一样的吗？
+
+解答：切分配置一样，切分结果就会一样。
+
+# embedding和索引
+
+## 问题：FLAT索引建议数据量一万以下应该是指分片的数量把？
+
+解答：是滴。
+
+## 问题：使用gpt裸api，需要自己去处理emb相关信息吗？
+
+解答：是的，因为裸api就是直接请求大模型的接口，需要自己处理如向量存储，知识查询等。
+
+# 召回
+
+## 问题：关键字召回的距离得分和向量召回的得分计算方法一样么？
+
+解答：不一样的，关键词召回是TF-IDF分数
+
+## 问题：召回文档里关键字和向量召回各有5个文档，但是在参考文档那边就各自只有一个了？
+
+解答：召回的文档上下文超过了模型支持的token数。因此会对召回的上下文进行截断。
+
+## 问题：距离得分是越小越接近么？
+
+解答：是滴。
+
+## 问题：召回的数量越多是不是大模型回答好的概率更大，毕竟输入的内容多？
+
+解答：是滴。上下文内容越多，获取的领域知识越多，回答的效果一般也会更好。但是会增加幻影产生的概率。
+
+## 问题：全文召回
+
+解答：召回数量是片段的召回数量，先召回片段，然后根据片段恢复原文。
+
+## 问题：运行日志里有一个召回文档，还有一个参考文档（prompt里的），这两个文档是一致的吗
+
+解答：一致的。参考文档是按照你配置的参数召回的。如果向量召回是5个，在相似度不超过阈值的条件下，会有5篇召回。关键词也是同样，如果召回数量为5，则理论上会召回5篇。
+
+​  
+
+
+## 问题：context_length_exceeded
+
+解答：减小输入token
+
+## 问题：PROHIBITED_CONTENT
+
+解答：输入或输出包含敏感内容
+
+​  
+
+
+  
+
+
+# 评测
+
+## 问题：能扔一篇文章给llm，让他重新按照自己的理解输出新的文章出来，这个新输出的文章当做数据会不会比原始文章更合适
+
+解答：结果不是绝对的。可以通过做实验来验证。
+
+## 问题：评测工具输入的是什么？
+
+解答：评测工具是评测问答效果，使用LLM工具评测。通过在提示词中写入评测标准，让LLM帮你评测结果
+
+​  
+
+
+# SDK
+
+## 如何在langchain中接入Idealab的API
+
+将langchain的base url替换成<https://idealab.alibaba-inc.com/api/openai/v1>，将api_key替换成Idealab的AK。base url的替换可以将idealab的url设置到OPENAI_API_BASE环境变量中
+
+​  
+
+
+## 在langchain中调用Idealab的API报错Invalid API-key provided
+
+将langchain的base url替换成<https://idealab.alibaba-inc.com/api/openai/v1>，将api_key替换成Idealab的AK
+
+​  
+
+
+# 阈值QA
+
+## 设置预置QA后，无论问什么都会回答预置的答案，无关的问题也会回答预置的答案/
+
+# 错误码
+
+## 401 - Invalid Authentication
+
+原因：无效授权码
+
+解决方法：检查你的api key和关联组织是否正确
+
+## 401 - Incorrect API key provided
+
+原因：您提供的api key是错误的
+
+解决方法：检查你的api key是否正确，或清除浏览器缓存重试，或生成新的key。
+
+## 401 - You must be a member of an organization to use the API
+
+原因：你的账号不属于哪个组织
+
+解决方法：联系管理员邀请你加入到组织中，或让openai将你加入到一个新的组织中。
+
+## PRE-429 - Rate limit reached for requests
+
+原因：访问过于频繁
+
+解决方法：降低访问频率，可以参考限流文档建议<https://aliyuque.antfin.com/aiplus/aistudio/gmg8pra6qxa3dk01#hMKlF>
+
+## 429 - You exceeded your current quota, please check your plan and billing details
+
+原因：账号余额不足或超过月最大使用限制
+
+解决方法：购买额度，或提高月使用限额
+
+## 500 - The server had an error while processing your request
+
+原因：openai服务端错误
+
+解决方法：过段时间重试
+
+## 503 - The engine is currently overloaded, please try again later
+
+原因：openai服务端负载过重
+
+解决方法：过段时间重试
+
+# 报错信息
+
+## {'success': False, 'message': "Error Code: null, \tType：invalid_request_error\tMessage：[] is too short - 'messages'", 'data': {'tipMsg': None}, 'code': None}
+
+原因：128k用messages字段，看下这个文档<https://aliyuque.antfin.com/aiplus/aistudio/ma5i4hvvairpzf69#G2b7h>
+
+## context_length_exceeded, Type：invalid_request_error Message：This model's maximum context length is 4096 tokens. However, you requested 5851 tokens (1851 in the messages, 4000 in the completion). Please reduce the length of the messages or completion.
+
+原因：提示词+回答超出长度限制
+
+## API block error
+
+原因：重试下吧,底层模型限流了
+
+​  
+
+
+## No backend server available!
+
+原因：底层模型报错，请重试
+
+## sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+
+根据接口返回的错误信息，问题发生在ideaLab服务器尝试与目标网站建立 SSL 连接中的 SSL 握手阶段失败了。具体原因是，在尝试进行安全连接时，ideaLab服务器所运行的 Java 应用所依赖的 JVM的信任证书库（TrustStore）中不存在相应的证书或其证书链。
+
+解决方案有两种：
+
+1. 方案一：请求方先将图片转为base64格式，使用base64访问多模态模型。图片转base64的代码见下方。使用base64方式访问多模态模型方式见下方。
+
+2. 方案二：ideaLab服务器将5626669.net的证书导入到JVM的信任证书库中。建议使用方案一。
+
+方案一实现简单，可以快速解决你们的问题。并且该方案可以解决其他网站没有证书的问题。是一种对这类问题通用的方案。
+
+对于方案二，需要ideaLab方排查没有该证书的原因（推测是被安全拦截了？我直接浏览器访问链接会提示不安全）。并且即使ideaLab方手动安装了证书，也无法保证模型调用方有该证书。因此耗时较久。并且该方案不通用。
+
+使用图片的base64格式访问多模态模型的curl示例：
+
+curl -X POST "<https://idealab.alibaba-inc.com/aigc/v1/multimodalAskByUrl"> -H "X-AK:这里输入你的ak" -H "Request-Origion:SwaggerBootstrapUi" -H "accept:*/*" -H "Content-Type:application/json" -d "{\"model\":\"gpt-4-vision-preview\",\"prompt\":\"这张图片有哪些内容\",\"mediaEntities\":[{\"content\":\"data:image/png;base64,base64开始iVBORw0K...base64其他内容...\",\"level\":\"low\"}]}"
+
+图片链接转base64的代码：
+
+## Connection Rest/ Connection aborted/Connection Reset By Peers
+
+如果发现每次这个报错都在90s左右，那说明请求被统一接入层给关闭了，统一接入层限制90s内没有任何数据发送就会断开链接，并且这个90s限制无法修改
+
+解决办法：
+
+1. 请求改成流式调用
+
+2. 可以尝试通过http2 多路复用来解决，原理就是在90s超时之前通过同一个链接往服务端发一个任意请求
+
+## ​您没有该模型使用权限
+
+1. 检查ak有没有对应模型权限，在ak管理里可以看到，如果发现没有权限了联系 殳驱
+
+2. 检查传参是否正确，检查ak，businessCode，scenesCode传参是否正确，scenesCode一般可以不传，传的话一般是default
+
+  
+
+
+​  
+
+
+# traceId调用模型错误,调用模型失败: idea-lab提示: 调用大模型服务失败！traceId,traceId,traceId
+
+### No backend server available.
+
+原因：底层模型返回报错
+
+解决办法：重试；
+
+### Range of total length should be less than or equal to 8000
+
+原因：token超长
+
+解决办法：更改提示词或修改记忆配置
+
+### unsafe url
+
+原因：由于集团安全管控，多模态api，图片、视频、音频等作为入参传给服务端时如果采用url方式，不允许传内网地址/资源，需要传公网资源
+
+解决办法：如果有内网资源需要通过参数传过来，使用base64方式上传
+
+### no matching instance found!
+
+原因：底层模型限流
+
+解决办法：重试
+
+### request concurrency exceeded expected application count
+
+原因：ak并发请求过高触发限流
+
+解决办法：稍后重试，如特殊需求需要调大限流，请联系值班人员
+
+### Blocked by TPM/RPM
+
+原因：主ak并发请求过高
+
+解决办法：稍后重试
+
+### have exceeded token rate limit of your current OpenAI S0 pricing
+
+原因：模型实例限流
+
+解决办法：重试
+
+​  
+
+
+### Engine connect error!: Failed to connect engine worker
+
+原因：底层模型不稳定
+
+解决办法：重试
+
+### 401 - Invalid Authentication
+
+原因：无效授权码
+
+解决方法：检查你的api key和关联组织是否正确
+
+### 401 - Incorrect API key provided
+
+原因：您提供的api key是错误的
+
+解决方法：检查你的api key是否正确，或清除浏览器缓存重试，或生成新的key
+
+### 401 - You must be a member of an organization to use the API
+
+原因：你的账号不属于哪个组织
+
+解决方法：联系管理员邀请你加入到组织中，或让openai将你加入到一个新的组织中
+
+### 429 - Rate limit reached for requests
+
+原因：访问过于频繁
+
+解决方法：降低访问频率，可以参考限流文档建议[https://aliyuque.antfin.com/aiplus/aistudio/gmg8pra6qxa3dk01#hMKlF](#hMKlF)
+
+### 429 - You exceeded your current quota, please check your plan and billing details
+
+原因：模型限流，超过模型每分钟能处理的token数
+
+解决方法：过段时间重试
+
+### 500 - The server had an error while processing your request
+
+原因：openai服务端错误
+
+解决方法：过段时间重试；
+
+### 503 - The engine is currently overloaded, please try again later
+
+原因：openai服务端负载过重
+
+解决方法：过段时间重试
+
+### sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
+
+原因：根据接口返回的错误信息，问题发生在ideaLab服务器尝试与目标网站建立 SSL 连接中的 SSL 握手阶段失败了。具体原因是，在尝试进行安全连接时，ideaLab服务器所运行的 Java 应用所依赖的 JVM的信任证书库（TrustStore）中不存在相应的证书或其证书链
+
+解决办法：请求方先将图片转为base64格式，使用base64访问多模态模型
+
+### {'success': False, 'message': "Error Code: null, \tType：invalid_request_error\tMessage：[] is too short - 'messages'", 'data': {'tipMsg': None}, 'code': None}
+
+原因：128k用messages字段
+
+解决办法：看下这个文档<https://aliyuque.antfin.com/aiplus/aistudio/ma5i4hvvairpzf69#G2b7h>；Connection Rest/ Connection aborted,如果发现每次这个报错都在90s左右，那说明请求被统一接入层给关闭了，统一接入层限制90s内没有任何数据发送就会断开链接，并且这个90s限制无法修改,解决办法：请求改成流式调用；您没有该模型使用权限,检查ak有没有对应模型权限，在ak管理里可以看到，如果发现没有权限，联系 殳驱,检查传参是否正确，检查ak，businessCode，scenesCode传参是否正确，scenesCode一般可以不传，传的话一般是default
+
+### aistudio域名遇到被霸下拦截的请求
+
+解决方法：换成https://idealab.alibaba-inc.com这个域名试一下
+
+### idea aiLab batch insert error,e:java.lang.UnsupportedOperationException: java.lang.UnsupportedOperationException: java.lang.UnsupportedOperationException: Encoding special tokens is not supported yet.
+
+调用模型时，参数中存在模型不支持的特殊字符，这些特殊字符不限于下面这些：
+
+private static final String ENDOFTEXT = "<|endoftext|>";
+
+private static final String FIM_PREFIX = "<|fim_prefix|>";
+
+private static final String FIM_MIDDLE = "<|fim_middle|>";
+
+private static final String FIM_SUFFIX = "<|fim_suffix|>";
+
+private static final String ENDOFPROMPT = "<|endofprompt|>";
+
+private static final String PG_SPECIAL_TOKEN_1 = "\0";
+
+private static final String PG_SPECIAL_TOKEN_2 = "\u0000";  
+
+
+### 模型报错：must contain the word 'json' in some form
+
+[LLM_PROVIDER_ERROR] {"error":{"message":"'messages' must contain the word 'json' in some form, to use 'response_format' of type 'json_object'.","type":"invalid_request_error","param":"messages","code":null}}
+
+由于模型侧限制，避免生成无限的空格流，如果回复格式里要求response_format=json_object，按照json格式输出，那需要在system中明确表明需要输出json格式，如：
+
+或者关闭回复格式
+
+  
+
+
+### 模型报错：You exceeded your current quota, please check your plan and billing details. For more information on this error
+
+[LLM_PROVIDER_LIMIT] LLM执行失败: [LLM_PROVIDER_LIMIT] {"error":{"message":"You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: <https://help.aliyun.com/zh/dashscope/developer-reference/tongyi-thousand-questions-metering-and-billing>.","type":"insuffi, traceId=2150451a17403834810913458e2399
+
+​  
+
+
+使用qwen系列模型报此错误，并非是账单的问题，代表的含义是触发模型tpm限流，请降低使用频率重试；如果是使用自定义百炼ak，可以联系百炼客服申请扩容
+

@@ -1,0 +1,42 @@
+{
+  "documentId": 1981,
+  "documentName": "10.1.2获取可选的定向标签",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取可选的定向标签\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/tool/targeting_tags/list\n\n请求方式：GET\n\n数据格式：JSON\n\n| 请求参数      |        |          |           |                                                                                                                                |\n| ------------- | ------ | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------------ |\n| 字段          | 类型   | 是否必填 | 说明      | 备注                                                                                                                           |\n| advertiser_id | long   | 必填     | 广告主 ID | 在获取 access_token 的时候返回                                                                                                 |\n| type          | string | 必填     | 类型      | BUSINESS_INTEREST：商业兴趣（已下线） 、APP_INTEREST：APP 行为 、FANS_STAR：网红类别 、INTEREST_VIDEO：兴趣视频 、APP_INTEREST_ID:APP 行为 (新） |\n\n| 返回参数 |        |             |      |\n| -------- | ------ | ----------- | ---- |\n| 字段     | 类型   | 说明        | 备注 |\n| code     | int    | 返回码      |      |\n| message  | string | 返回信息    |      |\n| data     | struct | JSON 返回值 |      |\n| id       | long   | 标签 ID     |      |\n| name     | string | 标签名称    |      |\n\n```\n请求样例\ncurl -X GET \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"advertiser_id\": 20000152,\n    \"type\": \"BUSINESS_INTEREST\"\n  }' -L https://ad.e.kuaishou.com/rest/openapi/v1/tool/targeting_tags/list\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624536
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624536,
+  "creator": "meilei",
+  "fullContext": null
+}

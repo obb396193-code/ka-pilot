@@ -1,0 +1,38 @@
+
+
+### 准备一个模板代码仓库
+
+新增一个开放权限的 code 仓库，仓库内提交你的模板代码。
+
+可以参考 [aonefaas-generator 代码组](https://code.alibaba-inc.com/aonefaas-generator) 内的示例项目。
+
+填充规则：
+
+`<%= name %>`会作为创建应用时的项目名填充到代码中
+
+`<%= description %>` 为创建应用时的详细介绍
+
+`<%= author %>` 为创建人花名
+
+在管理后台填入你的 code 仓库名称：
+
+(https://o2-img.alistatic.com/i/i09blZ/QTnOQkKqoUNwIkF152OM8-fdca320bb9.png)
+
+
+
+
+### 新增数据源
+
+联系 @周方旭(阳介) 获得后台新增权限，并按表单提示填写。
+
+
+
+### 平台查看
+
+(https://o2-img.alistatic.com/i/i09blZ/k6a6dOPvdLBOmElehQKp5-801822b6e5.png)
+
+
+
+
+
+

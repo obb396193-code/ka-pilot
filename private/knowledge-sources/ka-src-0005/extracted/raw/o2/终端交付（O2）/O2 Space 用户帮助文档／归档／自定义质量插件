@@ -1,0 +1,169 @@
+本文介绍如何在 O2 Space 研发平台自定义质量插件。
+
+
+
+## 背景信息
+
+质量插件指研发流程中起到代码质量验证功能的插件，如单元测试、E2E扫描、源码检测、构建产物检测等。
+
+在平台上，可以在部署流水线中查看质量插件的运行情况，如下图所示：
+
+(https://img.alicdn.com/imgextra/i2/O1CN010Swyzq1w78KrQpzPH_!!6000000006260-2-tps-2100-594.png)
+
+
+点击质量检测的节点，可以查看运行详情，如源码检测和单元测试：
+
+(https://img.alicdn.com/imgextra/i1/O1CN01YchF8X1VSfKOCksAL_!!6000000002652-2-tps-2276-1268.png)
+(https://img.alicdn.com/imgextra/i1/O1CN01OBNsax1adGZlwJ0QM_!!6000000003352-2-tps-2290-1192.png)
+
+
+用户可以在应用侧配置校验策略，如单元测试的覆盖率要求：
+
+(https://img.alicdn.com/imgextra/i2/O1CN010EX4VX28hZERNPYg2_!!6000000007964-2-tps-2310-1448.png)
+
+
+同时，质量插件的检测结果可以作为线上发布的拦截卡口，可以在迭代流程中查看，如下图所示：
+
+(https://img.alicdn.com/imgextra/i2/O1CN01FFPTmj1dthdWTvkfs_!!6000000003794-2-tps-2666-520.png)
+
+
+(https://img.alicdn.com/imgextra/i4/O1CN01vW8BKe27pWUmziOiN_!!6000000007846-2-tps-2334-1762.png)
+
+
+
+
+## 使用场景
+
+业务方有个性化的代码/性能类测试需求，期望在 O2 Space 的部署流水线中运行自定义的质量插件，如单元测试、E2E扫描、源码检测、构建产物检测等。当检测任务不通过时，希望能作为线上发布的拦截卡口。
+
+
+
+## 具体操作
+
+质量中心暂未开放给全部用户，如有业务诉求，请通过 [研发小蜜](https://links.alibaba-inc.com/app/room/5fbf53f6cd068c04d342e682/start-conversation-form/)咨询，平台会提供插件创建入口。
+
+### 1. 新建插件
+
+(https://img.alicdn.com/imgextra/i2/O1CN01gziOec1JuoHNeSBAx_!!6000000001089-2-tps-1320-620.png)
+
+
+(https://img.alicdn.com/imgextra/i2/O1CN017txLPn1FaQBVOr7TR_!!6000000000503-2-tps-2264-1682.png)
+
+
+### 2. 新增插件版本
+
+- 版本号：系统默认自增
+- NPM 包关联的应用：填写 O2 Space 上的应用名（填写并保存后，左侧 WebIDE 才可操作）
+- NPM 包：扫描插件的 NPM 包，带版本号，如 @ali/xxx@0.0.1（DEMO 请看第 5 部分）
+- 参数配置（运行输入参数）：指运行扫描器时需要传入的参数，默认会包含仓库、分支等信息（会在第二部分提到示例）
+	- 参数名称：即字段名
+	- 描述：即字段的说明
+	- 参数类型：包括 string、object，选择 object 后运行时接收到的数据会是 object 格式
+	- 默认值：即实际运行时不需要额外传入的字段，填写后，在调试时会也会默认展示
+	- 数据源：未实现该功能，后面会用于展示参数的选项值，如下拉框数据等
+- 校验策略：请参考第 4 部分
+(https://img.alicdn.com/imgextra/i1/O1CN01aJVtqv1f7GzFwUoLy_!!6000000003959-2-tps-2023-1338.png)
+
+
+### 3. 调试
+
+选择版本后输出必要的入参进行调试
+
+(https://img.alicdn.com/imgextra/i4/O1CN01JvHfCw1M2iLZHIYez_!!6000000001377-2-tps-2582-1582.png)
+
+
+### 4. 扫描插件的 NPM 包约定
+
+NPM 包示例代码（ [DEMO](https://anpm.alibaba-inc.com/package/@ali/ganbei-test-quality-plugin-gog?tab=code)）
+
+```
+module.exports = class Demo {
+    /**
+   * 扫描器参数
+   * @param {object} options
+   * @param {string} options.triggerEmpId 触发人工号
+   * @param {string} options.sourceCodeUrl 源码包 OSS 地址
+   * @param {string} options.buildArtifactUrl 构建产物地址
+   * @param {object} options.repo 仓库信息
+  * @param {string} options.repo.group 仓库 group
+   * @param {string} options.repo.project 仓库 project
+   * @param {string} options.repo.trunk 仓库主干
+   * @param {string} options.repo.url 仓库 url，例如 git.alibaba-inc.com/group/project.git
+   * @param {object} options.targetBranch
+   * @param {string} options.targetBranch.name 目标分支的名称
+   * @param {string} options.targetBranch.commitId 目标分支的 commitId
+   * @param {object} options.scanPlugin
+   * @param {object} options.scanPlugin.runtimeParams 扫描插件的运行时入参（即添加插件版本时的自定义参数）
+   * @param {object} options.diffWithTrunk 目标分支和主干之间的 diff 内容
+   */
+  constructor(options = {}) {
+    this.options = options;
+  }
+
+  /**
+   * 执行
+   */
+  async run() {
+  
+    const runtimeParams = this.options.scanPlugin.runtimeParams;
+    const params = {
+      create_api: runtimeParams.create_api,
+      query_api: runtimeParams.query_api,
+      client_token: runtimeParams.client_token,
+      emp_id: this.options.triggerEmpId,
+    };
+
+    const repo = this.options.repo;
+  
+    const res = await gog.run(params).catch((err) => err);
+  
+    const _data = (res && res.data) || res || {};
+
+    console.log('门神运行结果', JSON.stringify(_data, undefined, 4));
+
+    // 扫描插件可以自定义输出格式
+    return {
+      success: true,
+      result: _data
+    }
+  }
+};
+```
+说明：
+
+1. 需要实现一个 run 方法，同步/异步皆可
+1. 扫描入参需要在 constructor 接收
+1. 扫描插件是在源码目录下运行
+	1. 直接执行 ls 就能获取到当前源码目录结构；
+	1. 若想获取源码内容在当前目录下读取就行
+### 5. 扫描插件的结果如何校验
+
+(https://img.alicdn.com/imgextra/i1/O1CN01FGo7WA27roTYY1QLV_!!6000000007851-2-tps-2039-1264.png)
+
+
+- 版本号：新增版本后系统会自增
+- 运行结果数据来源：
+	- 插件脚本原始输出：平台会将插件的运行输出结果作为参数传递给校验脚本
+	- API 请求：平台会先通过指定的接口获取插件的实际运行结果，然后再将其作为参数传递给校验脚本
+- 校验策略：
+```
+/**
+ * 校验脚本引擎采用 QLExpress
+ * 详情见：https://github.com/alibaba/QLExpress#qlexpress%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95
+ * 
+ * 1. 脚本入参
+ *    - 默认入参为 rawOutput，值为插件运行结果
+ * 2. 脚本输出
+ *    - 输出格式为 {
+ *                  status: 'PASS' | 'FAILED' | 'RUNNING' | 'ABNORMAL', (必须有该 status 字段，平台根据它判断检测通过与否)
+ *                  ...其他数据
+ *                }
+ *  - 当然，上述数据格式也可以是插件原始输出，此时，只需要保持下面 return rawOutput 即可。
+ */
+```
+- 校验参数定义：透出给 O2 Space 应用或团队空间中的配置，按上图配置后，前台的效果如下图所示
+(https://img.alicdn.com/imgextra/i2/O1CN01tj49eq1JnwL0x1bhY_!!6000000001074-2-tps-2174-1019.png)
+
+
+
+

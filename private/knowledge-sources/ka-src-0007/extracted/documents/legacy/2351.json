@@ -1,0 +1,42 @@
+{
+  "documentId": 2351,
+  "documentName": "复制账户",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 复制账户\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/bind/copy/checkAndCopy](https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/bind/copy/checkAndCopy)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| account_list | Long[] |  | 必填 | 被复制账户的广告主Ids |  |\n| user_id | Long |  | 可选 | 复制后账户绑定的快手Id，不更换userId的情况下不传 |  |\n| code | String |  | 可选 | 验证码，不更换userId的情况下不传 |  |\n| email | String |  | 可选 | 邮箱，不更换userId的情况下不传 |  |\n| uc_type | String |  | 必填 | 广告主开户类型，DSP_MAPI |  |\n| copy_number | Integer |  | 必填 | 需要复制出的广告主数量 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 状态码 |  |\n| message | String |  | 状态描述 |  |\n| data | AgentCopyAccountSnake[] |  | 代理商复制账户结果 |  |\n| &#8195;old_account_id | Long |  | 被复制账户Id |  |\n| &#8195;old_account_name | String |  | 被复制账户名称 |  |\n| &#8195;new_account_id | Long |  | 复制出的账户Id |  |\n| &#8195;success | Boolean |  | 是否复制成功 |  |\n| &#8195;err_msg | String |  | 复制失败原因 |  |\n| &#8195;new_account_name | String |  | 复制出的账户名称 |  |\n| &#8195;new_user_id | Long |  | 复制出的账户快手Id |  |\n| &#8195;new_user_name | String |  | 复制出的账户快手昵称 |  |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1684899709005
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1684899709005,
+  "creator": "chengsiliang",
+  "fullContext": null
+}

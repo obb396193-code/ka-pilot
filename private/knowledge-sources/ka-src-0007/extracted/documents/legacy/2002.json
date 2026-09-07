@@ -1,0 +1,42 @@
+{
+  "documentId": 2002,
+  "documentName": "5.3.2视频库-批量更新视频功能",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 视频库-批量更新视频功能\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/update\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|     字段      |   类型   | 是否必填 |    说明    |                                 备注                                  |\n| :-----------: | :------: | :------: | :--------: | :-------------------------------------------------------------------: |\n| advertiser_id |   long   |   必填   | 广告主 id  |                                                                       |\n|   photo_ids   | string[] |   必填   | 视频 ids， |                             不超过 100 个                             |\n|  photo_name   |  string  |  非必填  |  视频名称  | photo_name 和 photo_tags 填其一即可。photo_name 长度不得超过 100 字符 |\n|   photo_tag   | string[] |  非必填  |  视频标签  |                单个标签长度不能超过 10，只支持一个标签                |\n\n### 返回值\n|     字段      |   类型   |    说明    | \n| :-----------: | :------: | :------: |\n|   code   | int |  返回码|\n|   message   | string |  返回信息|\n|   data   | object |  JSON 返回值\t|\n|   photo_ids   | string[]   | 视频 ids， | \n\n### 请求样例\n```\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/update' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\" : 11311124,\n    \"photo_ids\" : [\"5238249419979025844\"],\n    \"photo_name\" : \"视频名称\",\n    \"photo_tag\": [\"标签1\"]\n}'\n```\n\n### 返回样例\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"photo_ids\": [\n            \"5238249419979025844\"\n        ]\n    },\n    \"request_id\": \"62c361a29c974b50ab04c704e0eb9c24\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624687
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624687,
+  "creator": "heran03",
+  "fullContext": null
+}

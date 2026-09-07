@@ -1,0 +1,119 @@
+O2 Space 工程平台为每次发布的构建提供了多种数据，可以帮助你更好的了解构建的状态，在定位构建相关的问题时这些辅助信息也能帮助你更快速的定位问题。
+
+
+
+## 打开构建详情面板
+
+在构建流程结束后，你可以通过如下方式打开构建详情面板
+
+- 方法一：在 迭代页 点击 发布面板 中的“构建”节点
+(https://img.alicdn.com/imgextra/i4/O1CN01KSiR241UGvZaKQfFA_!!6000000002491-2-tps-3268-836.png)
+
+
+- 方法二：在 迭代页 点击 发布面板 - 查看结果 后（或在 发布详情页中），找到阶段中的“构建”节点，点击“结果”
+(https://img.alicdn.com/imgextra/i3/O1CN01Un608a1PMMBmIkj0R_!!6000000001826-2-tps-3256-826.png)
+
+
+(https://img.alicdn.com/imgextra/i2/O1CN01QhEQj41L8Ndhea5pg_!!6000000001254-2-tps-2620-362.png)
+
+
+(https://img.alicdn.com/imgextra/i4/O1CN01QZTuoH1eZNgk8BvVY_!!6000000003885-2-tps-1862-430.png)
+
+
+## 构建详情面板
+
+(https://img.alicdn.com/imgextra/i1/O1CN01rclRB31GL8amEo6gc_!!6000000000605-2-tps-2658-1086.png)
+
+
+构建面板主要包含三个部份：
+
+1. 构建基础信息：包含构建的状态，构建类型（构建器或构建命令），开始时间及结束时间。
+1. 信息标签：用于在不同内容间切换
+1. 信息面板：用于展示不同的信息
+目前，构建面板提供了如下的几种信息：
+
+- 日志：构建完整日志
+- Sourcemap：构建时上传的 Sourcemap （如果开启了 [Sourcemap 内网上传功能](https://docs.dingtalk.com/i/nodes/dQPGYqjpJYZnRbNYC3XO3oBo8akx1Z5N)）
+- 依赖：构建时安装的依赖
+- 源文件：构建时输入的源码的目录结构
+- 产物：生成的产物的目录结构
+### 构建日志
+
+(https://img.alicdn.com/imgextra/i1/O1CN012FP35G1ZfGhXqCqxT_!!6000000003221-2-tps-2650-750.png)
+
+
+在构建日志面板内，可以看到完整的构建日志。当构建结束后，可以在面板右上角看到“新窗口查看”及“下载”按钮，点击他们，可以查看或下载未被截断的原始日志。
+
+​
+
+> Tips: 面板中的日志使用了虚拟滚动（[了解更多](https://ice.alibaba-inc.com/component/virtuallist)），渲染的日志仅有你能看到的那部份，所以无法进行全文搜索。需要对日志进行选取、搜索请使用下载或新窗口打开功能哦～
+
+### Sourcemap 面板
+
+(https://img.alicdn.com/imgextra/i3/O1CN01DgYRWt1RlCuU6UuiF_!!6000000002151-2-tps-2652-468.png)
+
+
+当开启了 [Sourcemap 内网上传功能](https://docs.dingtalk.com/i/nodes/dQPGYqjpJYZnRbNYC3XO3oBo8akx1Z5N) 后，O2 Space 工程平台将自动在构建时提取并删除 Sourcemap 文件，并将他们上传至仅内网可访问的地址。面板中各字段的概念如下：
+
+1. Sourcemap 文件名：扫描到的 .map 文件名。
+1. 源文件名：根据文件名匹配到的 .map 文件对应的原始文件名（如 main.js.map 的源文件名是 main.js），当仅发现 .map 文件但未发现对应的原始文件时，该字段为空。
+1. 上传状态：扫描到 Sourcemap 文件后，系统会逐个进行上传，当上传成功后才会产生内网可访问的地址。此处除了成功状态，还有等待上传，上传中的状态。
+1. 文件链接：生成的仅内网可访问的 Sourcemap 文件链接，点击将在新标签页打开链接。
+1. 复制文件链接：点击后将复制文件链接到剪切板。
+​
+
+> Tips：在浏览器中使用的方法请参考 [Sourcemap 内网上传功能](https://docs.dingtalk.com/i/nodes/dQPGYqjpJYZnRbNYC3XO3oBo8akx1Z5N) 文档。
+
+### 构建时依赖面板
+
+(https://img.alicdn.com/imgextra/i2/O1CN01i6zZa71dGJaIdXqaL_!!6000000003708-2-tps-2660-922.png)
+
+
+构建时如果进行了依赖的安装步骤，且安装的位置是默认的 node_modules 目录时，构建系统将会收集实际安装的依赖信息和项目的 package.json 中的 dependencies，合并计算出本面板展示的数据。
+
+1. 逻辑树/原始树切换：切换树结构的两种不同形态，其中，逻辑树模式以 dependencies 的层级为主要结构，会尝试处理如依赖提升等特殊情况；原始树模式则是扫描到的真实目录结构。
+1. 依赖搜索：可以快速定位到一个依赖的依赖链路及版本。
+1. 依赖树面板：展示树结构的依赖。
+
+
+在依赖树面板上，点击每个依赖后的版本号，可以看到该依赖的详细数据：
+
+(https://img.alicdn.com/imgextra/i3/O1CN018wvGTh1aDA0bCV8k1_!!6000000003295-2-tps-954-624.png)
+
+
+- 声明依赖版本：在 package.json 的 dependencies 中声明的版本号。
+- 实际安装版本：安装依赖时实际安装的版本。
+- 是否正确安装：如果被 package.json 声明了依赖，且在实际搜索时发现了该依赖被正确安装，此处状态即为“正确”；如果声明了依赖但是没有安装，此处即为“不正确”。
+- 是否存在实际目录：在一些情况下，依赖会被提升到上层
+	- 根据包管理软件的不同逻辑，在依赖“应该”存在的逻辑位置上，可能会生成文件夹软链接，链接到提升的位置上，此时，会提示“存在”实际目录。
+	- 如果依赖被提升至上层，逻辑位置上没有该依赖的目录，此处为“不存在”，但依赖依然是“正确安装”的。
+- _resolved/_from：包管理软件在安装依赖后，在该依赖的 package.json 里增加的元信息。
+​
+
+> Tips：想了解依赖数据是如何被扫描的？还想理解依赖上方的小提示是什么意思？可以 [点我了解更多](https://topic.atatech.org/articles/187371)。
+
+
+
+### 源文件目录结构面板
+
+(https://img.alicdn.com/imgextra/i2/O1CN01INyKLw1b8PW1Rbnvd_!!6000000003420-2-tps-2976-908.png)
+
+
+面板左侧是本次构建时使用的完整文件目录，右侧是对文件类型、文件大小的分析图
+
+1. 文件树目录：完整的文件目录树，如果类型是文件，则在文件名后会展示文件的大小。
+1. 文件类型/文件大小柱状图：按文件格式排序后的文件类型/大小的分布图，当鼠标悬浮时，会出现详情浮窗（3）。
+1. 文件类型/文件大小详情：展示按文件类型划分的具体数据。
+1. 文件类型图例：展示所有的文件类型，单击一个图例时，可以同步筛选文件树目录内的文件和图表。
+(https://img.alicdn.com/imgextra/i3/O1CN01xulfpd1MAxU7hdGoZ_!!6000000001395-2-tps-2666-922.png)
+
+
+### 产物目录结构面板
+
+(https://img.alicdn.com/imgextra/i3/O1CN01aJiopu2ALFANSlVOv_!!6000000008186-2-tps-2982-904.png)
+
+
+没错！他长的和源文件一模一样！只是内容是构建产生的产物文件目录～如果构建失败或者没有产出产物，这里会提示找不到构建产物的哦～
+
+
+

@@ -1,0 +1,83 @@
+
+
+任务中心可以批量执行IDEAs，用户可以通过文件，批量输入IDEAs的入参。
+
+## 0、任务发起入口
+
+入口二：空间——生成型IDEAs——调试记录——批量任务（通过指定某个调试记录直接发起批量任务）
+
+## 1、任务发起
+
+### 1.1基本信息填写
+
+填写任务名称、选择调试记录、选择运行模式
+
+**目前支持两种批量运行：即时运行和****OpenAI Batch****。**
+
+* 即时：全时段按队列顺序立即执行，费用按标准计算。
+* ~~闲时（暂时关闭）：在资源空闲时段（工作日20:00-8:00，节假日全天）执行，以标准费用的80%计算~~
+* OpenAI Batch：全时段按OpenAI全球队列执行，24小时内返回结果，任务批次失败后，需要用户手动重试，以标准费用的50%计算​
+
+* OpenAI Batch支持的模型："gpt-35-turbo-0125","gpt-4 8K", "gpt-4-0409","gpt-4o-0513", "gpt-4o-0513-global", "gpt-4o-0806","gpt-4o-0806-global","gpt-4o-mini-0718","gpt-4o-mini-0718-global"
+
+### 1.2选择数据导入方式
+
+#### 1.2.1文件格导入
+
+##### 1.2.1.1以excel为例，excel列名需要包含所有提示词中的自定义变量
+
+生成型使用多模态输入时，请添加列名：“**_aistudio_media_urls_”**所有图片、视频链接放置在该列内
+
+##### 1.2.1.2jsonl格式示例
+
+生成型使用多模态输入时，请添加key：“**_aistudio_media_urls_”** 所有图片、视频链接放置在该列内
+
+#### 1.2.2 ODPS导入
+
+* **填写表信息**
+
+| **数据上传方式** | **odps** |
+| --- | --- |
+| 项目名 | odps所属的项目名称  eg： |
+| 表名 | odps表名 |
+| 分区 | * 非分区表 * 最新分区 * 指定分区 |
+| 指定分区 | 分区选择：指定分区时填写  eg：ds=20241030 |
+| endpoint | 默认预置弹内endpoint，其他常用地址如下：  弹内ODPS endpoint： <http://service.odps.aliyun-inc.com/api>  弹外ODPS endpoint： <http://service-all.ext.odps.aliyun-inc.com/api>  美国蚂蚁ODPS endpoint：<http://service-us.odps.aliyun-inc.com/api>  新加坡蚂蚁ODPS endpoint：<http://service.ali-sg-lazada.odps.aliyun-inc.com/api>  新加坡公共云 ODPS endpoint：<http://sg-service-maxcompute.aliyun-inc.com/api> |
+| AccessKey |  |
+| AccessKeySecret |
+
+注意：ODPS需要有download权限
+
+* 表字段和应用变量绑定
+
+* 选择数据导出方式
+
+​  
+
+
+## 2、数据导出
+
+### 2.1文件导出
+
+任务执行完成后，生成文件下载地址。
+
+### 2.2odps导出
+
+* 使用上传的odps账号，新建一张导出表（**可复制导出表新建sql）**，并填入表名。
+
+* 任务完成后，数据将自动写入导出表内。
+
+## 3、任务管理
+
+通过我的任务可以查看任务进度
+
+任务相关通知：
+
+任务创建成功通知
+
+任务执行完成通知
+
+任务执行报错通知
+
+## 4、API
+

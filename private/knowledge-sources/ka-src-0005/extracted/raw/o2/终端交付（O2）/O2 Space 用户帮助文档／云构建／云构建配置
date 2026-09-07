@@ -1,0 +1,75 @@
+云构建系统负责发布过程中的代码构建过程，仓库需要添加云构建配置才能正确运行，云构建文档请查看[【地址】](https://builder.alibaba-inc.com/document?slug=config)
+
+
+
+快速导航：
+
+
+
+- [仓库如何添加云构建配置](https://builder.alibaba-inc.com/document?slug=config)
+- [提示构建结果为空如何排查](https://builder.alibaba-inc.com/document?slug=config-dest)
+- [云构建报错如何排查](https://builder.alibaba-inc.com/document?slug=problem)
+- [如何配置使用本地构建](https://builder.alibaba-inc.com/document?slug=nobuild)
+
+
+### O2 Space 在调用云构建时会往 BUILD_ARGV_STR 中注入如下变量
+
+
+
+> 关于 BUILD_ARGV_STR 请查看 [云构建环境变量](https://builder.alibaba-inc.com/document?slug=env-intro)
+
+| 参数 | 说明 |
+|-|-|
+| def_publish_type | 发布类型，如 assets、tnpm 等 |
+| def_publish_version | 迭代版本号，如 0.0.1 |
+| def_publish_devbranches | 迭代发布的变更分支，多个以逗号分隔，如 daily/0.0.1,feat/layout |
+| def_publish_env | 发布的环境（默认不传，当应用开启线上构建时会注入，日常、预发、线上分别为 daily、prepub、pord） |
+| def_publish_pages | 迭代发布的页面（weex、webapp 发布时会注入） |
+| def_work_app_id | 应用 id |
+| def_work_iteration_id | 迭代 id |
+| def_publish_changes | 迭代变更列表（字符串类型，实际使用需手动 JSON.parse），如 "[{\"branch\":\"daily/2.0.35\",\"commit_id\":\"8b5191085317c8d769da07fa4fc2a6ab9c90c5d0\"}]" |
+
+### 如何使用 O2 Space 注入的变量
+
+
+
+#### 使用 node 脚本
+
+
+
+```
+const buildArgv = require('yargs-parser')(process.env.BUILD_ARGV_STR);
+
+conosle.log(buildArgv['def_publish_type']) // assets
+conosle.log(buildArgv['def_publish_version']) // 0.0.1
+```
+
+
+#### 使用 shell 脚本（可通过 sed 匹配获取）
+
+
+
+```
+# 从 def_publish_devbranches 获取变更分支
+echo $BUILD_ARGV_STR | sed  's/.*--def_publish_devbranches=\(\S\+\).*/\1/g'
+
+# 从 def_publish_version 获取迭代版本号
+echo $BUILD_ARGV_STR | sed  's/.*--def_publish_version=\(\S\+\).*/\1/g'
+```
+如果是在 abc.json 中通过 command 方式，需注意字符串格式，可参考如下字符串写法
+
+​
+
+```
+{
+  "assets":{
+    "type":"command",
+    "command":{
+        "cmd": [
+          "echo '获取迭代版本号'",
+          "echo $BUILD_ARGV_STR | sed  \"s/.*--def_publish_version=\\(\\S\\+\\).*/\\1/g\"",
+        ]
+    }
+  }
+}
+```

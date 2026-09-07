@@ -1,0 +1,239 @@
+# 项目文档
+[20260625-首页插卡下沉与策略触达平台技术方案](https://yuque.alibaba-inc.com/aone701627/mlxwfm/gru04c0bgb2ib90a)
+
+# 需求范围
+本期项目包含3张插卡
+
+| **卡类型** | **能力** |
+| --- | --- |
+| 首页未登录单权益 | |
+| 首页已登录单权益 | 1. 支持直塞/点领<br/>2. 直塞弹POP，点领不弹POP |
+| 频道页已登录单权益 | 1. 支持直塞/点领<br/>2. 直塞和点领都不弹POP |
+
+
+# 小二后台
+## 素材配置字段
+### 首页未登录单权益-素材字段
+![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783925360318-905a68f1-462e-4c8b-b2d3-5a18638b7c72.png)
+
+| **字段** | **配置侧字段** | **消费侧字段** | **备注** |
+| --- | --- | --- | --- |
+| 卡片类型 | cardType | **** | 新人未登录单权益卡片 |
+| 排期名称 | scheduleName | **** | 测试新人会场排期 |
+| 排期开始时间 | startTime | **** | 2026-05-19 11:03:13 |
+| 排期结束时间 | endTime | **** | 2026-05-21 11:03:13 |
+| 头部文案 | headTitleText | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783925382549-6e096807-f507-42b5-b45c-12833e354cbf.png) |  |
+| 头部文案颜色 | headTitleTextColor | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783925382549-6e096807-f507-42b5-b45c-12833e354cbf.png) |  |
+| 引导登录文案 | loginText | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783925506893-49922e95-c989-4880-817a-c7a378507e09.png) |  |
+| 引导登录文案颜色 | loginTextColor | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783925506893-49922e95-c989-4880-817a-c7a378507e09.png) |  |
+| 权益图片 | benefitImage | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783925528285-3c674c97-fe32-4df7-af2c-b65d70250db0.png) | 包含面额、利益点 |
+| 商品资源位ID | productResId |  | 商品池资源位ID |
+| 商品新人价格文案 | productNewUserPrice | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783926133881-bdbbe295-4987-468f-a717-0ed8dff40e28.png) | 新人专享 |
+
+
+### 首页已登录单权益-素材字段
+![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783926332895-946dd953-0953-4bdb-b36a-6d6881b97dde.png)
+
+**（7.20更新）**
+
+| **字段** | **配置侧字段** | **消费侧字段** | **备注** |
+| --- | --- | --- | --- |
+| 卡片类型 | cardType | **** | 新人登录单权益直塞卡片 |
+| 排期名称 | scheduleName | **** | 测试新人会场排期 |
+| 排期开始时间 | startTime | **** | 2026-05-19 11:03:13 |
+| 排期结束时间 | endTime | **** | 2026-05-21 11:03:13 |
+| 头部标题文案 | headerTitle | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783926499798-1c05d04f-88d4-4cb4-b735-f0f9b0a7d2ff.png) |  |
+| 头部标题文案颜色 | headerTitleTextColor | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783926499798-1c05d04f-88d4-4cb4-b735-f0f9b0a7d2ff.png) |  |
+| 头部背景图链接 | headerBgImgUrl | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783926567734-d7b07e70-03e2-4cff-956b-570b6c4f1ea5.png) |  |
+| 头部背景动态图链接 | dynamicHeaderBgImgUrl | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783926567734-d7b07e70-03e2-4cff-956b-570b6c4f1ea5.png) |  |
+| 权益背景图片 | benefitBgImgUrl | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783926732602-ba37a603-6576-4c59-8035-400e1716fcae.png) |  |
+| 权益使用门槛 | benefitUsageThreshold | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783927118881-ab784b3a-3374-4a43-9b48-467186a28d3d.png) | 满{amount}可用 |
+| 权益待领取文案 | benefitPendingClaimText | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783927197729-4c5acc6c-1e69-4a26-b4be-0261dc637f4f.png) | 立即领取 |
+| 权益已使用文案 | benefitUsedText | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783927197729-4c5acc6c-1e69-4a26-b4be-0261dc637f4f.png) | 已使用 |
+| 权益待使用文案 | benefitPendingUseText |  | 待使用 |
+| 权益已过期文案 | benefitExpiredText |  | 已过期 |
+| 权益待生效24小时内文案 | benefitPendingEffectWithin24hText |  | 占位符<br/>{time}后可用<br/>23:59:59后可用，需要服务端返回时间戳，并返回一个需要倒计时的标识 |
+| 权益待生效24小时外文案 | benefitPendingEffectOver24hText |  | 占位符<br/>{time}天后可用 |
+| 权益已领取24小时内文案 | benefitClaimedWithin24hText |  | 占位符<br/>{time}后失效<br/>23:59:59后失效，需要服务端返回时间戳，并返回一个需要倒计时的标识 |
+| 权益已领取24小时外文案 | benefitClaimedOver24hText |  | 占位符<br/>{time}天后失效 |
+| 跳转链接 | jumpUrl |  | 落地页链接 |
+| 商品资源位ID | productSetId |  | 商品池资源位ID |
+| 商品下面文案 | productDesc | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783926778889-45a6b103-3fd0-473f-9b89-fb509d52cff5.png) | 新人专享 {amount} |
+| 商品优惠文案 | productSavePriceText | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783926790892-42405449-d8cc-4e87-9431-5b12901bc900.png) | 立省 {amount} |
+| 商品价格立省兜底文案 | productPriceEmptyText | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783926845608-9ab1d28b-12a7-441b-b9a1-b9ab14ebd467.png) |  |
+| 权益弹窗链接 | benefitPopUrl | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783928962921-9303e3bf-3959-4ddd-a8aa-5eea48783668.png) |  |
+| 弹窗右上角氛围图片 | popAtmosphereImg | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783929012971-40961497-e415-426f-8c20-fb3f434a8388.png) |  |
+| 弹窗心智文案 | popMindText | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783929034774-3580ca25-c31a-497b-835f-9854963ef6cd.png) |  |
+| 弹窗权益名称 | popBenefitName | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783929117244-471ef26a-8121-4838-aa8d-83de08b916f4.png) |  |
+| 弹窗权益金额币种 | popBenefitCurrency | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783929156752-ff58a7c3-ca5d-409b-8338-b0c15341efa6.png) |  |
+| 弹窗权益使用描述 | popBenefitDesc | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783929213699-b517cc10-9957-436c-b85b-7e03c4af2e5f.png) | 满{amount}香港收货地址可用 |
+| 弹窗按钮文字 | popBtnText | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1783929245530-8897c9b8-a421-439c-85ce-2e3127f03cb6.png) |  |
+| 弹窗按钮跳转链接 | popBtnJumpUrl | |  |
+
+
+### 频道页已登录单权益-素材字段
+![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784256694017-0f933791-499d-4683-9c0d-878a4ee2d1e6.png)
+
+| **字段** | **配置侧字段** | **消费侧字段** | **备注** |
+| --- | --- | --- | --- |
+| 卡片类型 | cardType | **** | 新人登录单权益点领卡片 |
+| 排期名称 | scheduleName | **** | 测试新人会场排期 |
+| 排期开始时间 | startTime | **** | 2026-05-19 11:03:13 |
+| 排期结束时间 | endTime | **** | 2026-05-21 11:03:13 |
+| 权益标题 | benefitTitle | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784257966948-38101222-b6db-499a-a067-88b516f753f6.png) | 标题 |
+| 权益使用门槛 | benefitUsageThreshold | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784256726907-a021559e-eb2d-46b1-84c3-ef05c7fc548a.png) | 满{amount}可用 |
+| 权益待领取文案 | benefitPendingClaimText | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784259365182-de3689a4-bbb7-4050-8a10-9e565eaa367c.png) | 限新加坡收获地址可用 |
+| 权益待领取按钮文案 | benefitPendingClaimBtnText | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784279701870-1dff6d04-09ef-4f65-be9b-7677dc9520d2.png) | 立即领取 |
+| 权益已使用文案<br/> | benefitUsedText<br/> | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784256953581-9881327a-0ec4-4650-a655-d5a96ccae0c1.png) | 已使用 |
+| 权益待使用文案<br/> | benefitPendingUseText<br/> | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784256972240-1c721ecd-cc47-4a50-8a99-d5a6f308131f.png) | 待使用 |
+| 权益已过期文案<br/> | benefitExpiredText<br/> | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784256953581-9881327a-0ec4-4650-a655-d5a96ccae0c1.png) | 已过期 |
+| 权益待生效24小时内文案<br/> | benefitPendingEffectWithin24hText<br/> | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784256972240-1c721ecd-cc47-4a50-8a99-d5a6f308131f.png) | 占位符<br/>{time}后可用<br/>23:59:59后可用，需要服务端返回时间戳，并返回一个需要倒计时的标识 |
+| 权益待生效24小时外文案<br/> | benefitPendingEffectOver24hText<br/> | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784256972240-1c721ecd-cc47-4a50-8a99-d5a6f308131f.png) | 占位符<br/>{time}天后可用 |
+| 权益已领取24小时内文案<br/> | benefitClaimedWithin24hText<br/> | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784256972240-1c721ecd-cc47-4a50-8a99-d5a6f308131f.png) | 占位符<br/>{time}后失效<br/>23:59:59后失效，需要服务端返回时间戳，并返回一个需要倒计时的标识 |
+| 权益已领取24小时外文案<br/> | benefitClaimedOver24hText<br/> | ![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784256972240-1c721ecd-cc47-4a50-8a99-d5a6f308131f.png) | 占位符<br/>{time}天后失效 |
+
+
+## 策略配置
+### 素材类型
+新增3类素材类型
+
++ 首页未登录单权益卡片
++ 首页新人单权益卡片
++ 新人承接页单权益卡片
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784260458135-84aea750-d386-4e56-a596-f6e3da1ee126.png)
+
+
+
+
+
+### 供给类型
+新增2类供给类型
+
++ 权益点领
++ 权益直塞
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784260364540-7eca4fc5-20af-4eca-8169-4d08f3e44c84.png)
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784260636609-78377676-dd88-4e12-b3e9-569e475b615e.png)
+
+# C端链路
+## 原3单的改动（仅影响频道页）
+改动点1：新增materialType，用于频道页判定卡片类型
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784270437266-fe6cebac-8425-4230-9fe2-de2ddec488e8.png)
+
+改动点2：新增首单直塞成功标记，key：directApplied
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2026/png/83816/1784271423471-aa78e5d6-a4df-483f-b152-59a76266b50f.png)
+
+## 新增单权益的改动
+| # | 改动点 | 文件 |
+| --- | --- | --- |
+| 1 | `resolveSupplyJson()` 启用 `BENEFIT_DIRECT_RECEIVE` / `BENEFIT_CLICK_RECEIVE` 分支 | `SupplyResolveService.java` |
+| 2 | 新增 `resolveBenefitDirectReceiveJson()` 方法 | `SupplyResolveService.java` |
+| 3 | 新增 `resolveBenefitClickReceiveJson()` 方法 | `SupplyResolveService.java` |
+| 4 | 新增 `benefitDirectApplied` 字段 | `StrategyContext.java` |
+| 5 | 新增错误码（`BENEFIT_QUERY_FAILED` / `BENEFIT_UNAVAILABLE` / `BENEFIT_APPLY_FAILED` 等） | `TraceCode.java` |
+| 6 | 新增 `benefitDirectTimeoutMs` 超时配置 | `SwitchConfig.java` |
+| 7 | 注册单权益卡片外部 code 映射 | `MaterialTypeEnum.java` |
+
+
+## 权益接入
+[权益投放接口文档](https://aliyuque.antfin.com/aone701627/kkl4td/npflko28emrtr8mb?singleDoc#w8Lq0)
+
+权益批量查询：com.alibaba.ovs.benefit.edgeservice.BenefitEdgeService#batchQueryBenefit
+
+权益直塞：com.alibaba.ovs.benefit.edgeservice.BenefitEdgeService#autoApplyBenefit
+
+
+
+权益投放状态范围
+
+| 值 (stat) | 含义 | 用户侧行为 | 触发条件 | 是否展示卡片-直塞 | 是否展示卡片-点领 |
+| --- | --- | --- | --- | --- | --- |
+| invalid | 不可用 / 不展示 | 不展示权益 | 人群不匹配、互斥规则、语言不匹配、已全部使用/过期、投放计划降级/找不到等 | 否（不可直塞） | 否（不可点领） |
+| notice | 预告 | 展示领取倒计时 | 预告状态，默认被转换为 apply；设置 notConvertBenefitStat=true 才返回原始值 | 否（理论不存在，系统异常直塞失败） | ~~是（本期暂不包含）~~ |
+| apply | 可领取 | 用户可点击领取 | 权益可领取 | 否（理论不存在，系统异常直塞失败）<br/>可领多次的权益<br/>过期可重复领的 | 是 |
+| wait_using | 待生效 | 已领取但使用时间未到 | 待生效状态，默认被转换为 using；设置 notConvertBenefitStat=true 才返回原始值 | 是 | 是 |
+| using | 催用 | 提醒用户去使用 | 催用（已领取且在有效期内） | 是 | 是 |
+| used | 已使用 | 展示已使用 | 已使用 | 是 | 是 |
+| over | 已抢光 | 库存用完 | 已抢光，默认被转换为 invalid；设置 notConvertBenefitStat=true 才返回原始值 | 否 | 是 |
+| setAddr | 需设置海外地址 | 引导用户设置地址 | 需设置海外收货地址 | 否 | 否 |
+
+
+
+
+## 单权益卡片召回流程
+🟢 **绿色** = 现有逻辑（无改动）  
+🟠 **橙色** = 本次新增/改动
+
+![](https://intranetproxy.alipay.com/skylark/lark/__mermaid_v3/151f447a0e4e1159734503425fa4d0a9.svg)
+
+## 单权益直塞时序图
+🟢 **绿色** = 现有逻辑（无改动）  
+🟠 **橙色** = 本次新增/改动
+
+![](https://intranetproxy.alipay.com/skylark/lark/__mermaid_v3/e4c0d23897d2bf88f290c61e31cd11c2.svg)
+
+## 单权益点领时序图
+🟢 **绿色** = 现有逻辑（无改动）  
+🟠 **橙色** = 本次新增/改动
+
+![](https://intranetproxy.alipay.com/skylark/lark/__mermaid_v3/56f204306664ab8c086ec15259eb7c80.svg)
+
+## 端侧DX模板配置
+[https://mse.alibaba-inc.com/pre/diamond/configlist/configedit?DataId=oversea.home.page.card&Group=com.alibaba.ovs.home.page.card.dx&AppName=ovs-traffic-user-center-s&tab=edit](https://mse.alibaba-inc.com/pre/diamond/configlist/configedit?DataId=oversea.home.page.card&Group=com.alibaba.ovs.home.page.card.dx&AppName=ovs-traffic-user-center-s&tab=edit)
+
+```plain
+{
+    "TAO_HOME_NEW_USER_THREE_ORDER_CARD": {
+        "name": "htao_home_2026_cn_new_three_giftbag",
+        "version": "20",
+        "url": "https://dinamicx.alibabausercontent.com/l_pub/htao_home_2026_cn_new_three_giftbag/1784274598974/htao_home_2026_cn_new_three_giftbag.zip",
+        "columnType": "one",
+        "popDay": 2,
+        "popCount": 1
+    },
+    "TAO_HOME_GUEST_THREE_ORDER_CARD": {
+        "name": "htao_home_2026_cn_newcomer_login_promo_multi",
+        "version": "11",
+        "url": "https://dinamicx.alibabausercontent.com/pub/htao_home_2026_cn_newcomer_login_promo_multi/1783999523917/htao_home_2026_cn_newcomer_login_promo_multi.zip",
+        "columnType": "one"
+    },
+    "TAO_HOME_GUEST_SINGLE_BENEFIT_CARD": {
+        "name": "htao_home_2026_cn_newcomer_login_promo",
+        "version": "5",
+        "url": "https://dinamicx.alibabausercontent.com/pub/htao_home_2026_cn_newcomer_login_promo/1784087138120/htao_home_2026_cn_newcomer_login_promo.zip",
+        "columnType": "one"
+    },
+    "TAO_HOME_NEW_USER_SINGLE_BENEFIT_CARD": {
+        "name": "htao_home_2026_cn_newcomer_promo",
+        "version": "5",
+        "url": "https://dinamicx.alibabausercontent.com/pub/htao_home_2026_cn_newcomer_promo/1784101228621/htao_home_2026_cn_newcomer_promo.zip",
+        "columnType": "one"
+    }
+}
+```
+
+## 首页卡片协议
+### 未已登录单权益卡片
+[https://template.alibaba-inc.com/v2/#/ide/66759](https://template.alibaba-inc.com/v2/#/ide/66759)
+
+### 已登录单权益卡片
+[https://template.alibaba-inc.com/v2/#/ide/66557](https://template.alibaba-inc.com/v2/#/ide/66557)
+
+### 新人频道页卡片协议
+[2026.07.16 新人承接单权益模块](https://yuque.alibaba-inc.com/aone701627/mlxwfm/irashwbn5rw484eu?singleDoc#)
+
+
+
+# 节奏
+7.17 技术方案评审
+
+7.21 提测
+
+7.24 UAT
+
+7.27发布
+

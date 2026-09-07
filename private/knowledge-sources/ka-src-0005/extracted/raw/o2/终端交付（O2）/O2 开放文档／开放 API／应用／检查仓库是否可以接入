@@ -1,0 +1,47 @@
+## 检查仓库是否可以接入
+
+判断仓库是否符合 O2 要求，以便接入研发平台
+
+| method | GET |
+|-|-|
+| url | /v1.0/work/repos/check_join |
+| buc login | false |
+
+### Query parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| repo | String | true | - | 要检测的仓库，示例：def-work/front |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| needInitRepo | 是否需要初始化仓库 |
+| needCreateRepo | 是否需要创建仓库 |
+| needAddPermissionToCommonAccount | 是否需要将公共账号 tbfed 加入仓库 |
+| defaultBranch | 默认主干 |
+| app | 应用信息，对象信息详情查看 [App](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls4gore2dimt38o1v5g) |
+| repo | 仓库信息 |
+| code | 检查出错时的错误码 |
+
+### Example
+
+```
+client.get(`/v1.0/work/repos/check_join`, {
+  repo
+})
+
+{
+  "needInitRepo": false,
+  "needCreateRepo": false,
+  "needAddPermissionToCommonAccount": true,
+  "defaultBranch": "master",
+  "app": null,
+  "repo": {
+      "group": "def-work",
+      "project": "o2-developer"
+  }
+}
+
+```

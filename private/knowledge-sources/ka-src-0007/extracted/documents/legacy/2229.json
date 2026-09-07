@@ -1,0 +1,42 @@
+{
+  "documentId": 2229,
+  "documentName": "获取原生快手号列表接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取原生快手号列表接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/user/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/user/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n当您的普通快手号头像或昵称为默认设置时，系统将自动为您优化以获取更多流量。[了解更多](https://docs.qingque.cn/d/home/eZQDbJe7RWeGUWR-UbP2JusLV?identityId=1oE1woZsoNQ)\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | long |  | 必填 | 广告主ID |  |\n| kol_user_type | Integer[] | [2] | 必填 | 达人原生类型，1代表普通快手号，2服务号原生达人，3聚星原生达人。 获取普通快手号达人时，非加白用户仅可选择在快手号授权中状态为授权生效的非入驻聚星快手号，若要选择授权生效的入驻过聚星的普通快手号可申请加白|  |\n| count | Integer | 50 | 非必填 | 游标查询时有效，每次最多查询1000条，cursor和count均不传递会返回全量结果|  |\n| cursor | String | \"4387959306527518\" | 非必填 | 游标查询时有效，第一次查询时可只传递count不传递cursor，第二次查询时填写接口返回cursor值可查询后续数据，cursour返回\"no_more\"表明无后续数据|  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 1 | 请求结果，非0为失败 |  |\n| message | String |  | 错误详情 |  |\n| data | UserProfileViewSnakeList |  | 请求结果详情 |  |\n| &#8195;cursor | String |  | 下次查询游标，如果后面无结果则返回 no_more; 如果后续有结果需用此返回填到请求参数cursor上 |  |\n| &#8195;user_list | UserProfileViewSnake[] |  | 用户列表 |  |\n| &#8195;&#8195;user_id | Long |  | 用户id |  |\n| &#8195;&#8195;user_name | String |  | 用户名称 |  |\n| &#8195;&#8195;user_sex | String | M | 用户性别，男性M，女性F |  |\n| &#8195;&#8195;head_url | String |  | 用户头像 |  |\n| &#8195;&#8195;suggestion | String |  | 用户封禁信息及修改建议 |  |\n| &#8195;&#8195;kol_user_type | Integer |  | 达人用户类型，2服务号达人，3聚星达人 |  |\n\n### 请求样例\n\n```js\nnull\n```\n\n### 返回样例\n\n```\nnull\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1712545886050
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1712545886050,
+  "creator": "haoshengwei",
+  "fullContext": null
+}

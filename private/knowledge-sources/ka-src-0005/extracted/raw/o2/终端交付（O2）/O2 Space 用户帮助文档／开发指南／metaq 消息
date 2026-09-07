@@ -1,0 +1,165 @@
+### 变更创建
+
+```
+TOPIC: 'TP_DEF_WORK'
+
+TAG: 'ChangeCreate'
+
+data: {
+  // 应用 id
+  app_id,
+  // 变更 id
+  change_id,
+  // 变更描述
+  change_description,
+  // 变更地址
+  change_url,
+  // 操作人工号
+  change_empid,
+  // 绑定工作项
+  workitems: [
+    {
+      // 工作项类型
+      workitem_type,
+      // 工作项 id
+      workitem_id,
+    }
+  ],
+  // 额外信息
+  extra_infos: {
+    publish_plan_ids // 发布计划 id
+  }
+}
+```
+### 变更完成
+
+```
+TOPIC: 'TP_DEF_WORK'
+
+TAG: 'ChangeFinish'
+
+data: {
+  // 应用 id
+  app_id,
+  // 迭代 id
+  iteration_id,
+  // 变更 id
+  change_id,
+  // 变更描述
+  change_description,
+  // 变更地址
+  change_url,
+  // 操作人工号
+  change_empid,
+  // 绑定工作项
+  workitems: [
+    {
+      // 工作项类型
+      workitem_type,
+      // 工作项 id
+      workitem_id,
+    }
+  ],
+}}
+```
+### 变更废弃
+
+```
+TOPIC: 'TP_DEF_WORK'
+
+TAG: 'ChangeDelete'
+
+data: {
+  // 应用 id
+  app_id,
+  // 变更 id
+  change_id,
+  // 变更描述
+  change_description,
+  // 变更地址
+  change_url,
+  // 操作人工号
+  change_empid,
+  // 绑定工作项
+  workitems: [
+    {
+      // 工作项类型
+      workitem_type,
+      // 工作项 id
+      workitem_id,
+    }
+  ],
+}}
+```
+### 迭代绑定变更
+
+```
+TOPIC: 'TP_DEF_WORK'
+
+TAG: 'BindChange'
+
+data: {
+  // 应用 id
+  app_id,
+  // 迭代 id
+  iteration_id,
+  // 变更 id
+  change_ids: [],
+  // 操作人工号
+  operator,
+}}
+```
+### 任务发布
+
+```
+TOPIC: 'TP_DEF_WORK'
+
+TAG: 'TaskPublish'
+
+data: {
+  // 任务 id
+  task_id,
+  // 是否成功
+  is_successful,
+  // 发布环境
+  pub_env,
+}}
+```
+### 页面灰度
+
+```
+TOPIC: 'TP_DEF_WORK'
+
+TAG: 'SetPageGrey'
+
+data: {
+  // 灰度比例
+  rate,
+  // 操作人工号
+  operator,
+  // 页面路径
+  realpaths: [],
+}}
+```
+### 页面回滚
+
+```
+TOPIC: 'TP_DEF_WORK'
+
+TAG: 'PageVersionSwitch'
+
+data: {
+  // 操作人工号
+  operator,
+  // 回滚版本
+  version,
+  // 回滚前版本
+  pre_version,
+  // 页面路径
+  real_path,
+}}
+```
+
+
+
+

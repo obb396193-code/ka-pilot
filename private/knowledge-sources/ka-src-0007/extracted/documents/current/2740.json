@@ -1,0 +1,663 @@
+{
+  "documentId": 2740,
+  "documentName": "小铃铛创建接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095502375
+    }
+  ],
+  "apiId": 1041,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/jingleBell/create",
+  "httpMethod": "POST",
+  "httpContentType": "FORM",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://star-gateway.staging.kuaishou.com/rest/openapi/gw/dsp/jingleBell/create' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'trace-context: {\"laneId\":\"STAGING.live_mapi\"}' \\\n--header 'gate-staging-url: https://feat-haichao-test--kuaishou-frontend-dsp.jinx.staging.kuaishou.com' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'advertiser_id=\"900015364\"' \\\n--form 'conversionType=\"2\"' \\\n--form 'conversionTitle=\"弹层标题\"' \\\n--form 'LiveUserId=\"2190171067\"' \\\n--form 'appDesc=\"应用描述\"' \\\n--form 'appType=\"游戏类-角色扮演\"' \\\n--form 'appIntroduction=\"应用介绍\"' \\\n--form 'photoType=\"2\"' \\\n--form 'appPhotoFiles=@\"/path/to/file\"' \\\n--form 'appPhotoFiles=@\"/path/to/file\"' \\\n--form 'appPhotoFiles=@\"/path/to/file\"' \\\n--form 'androidAppId=\"2199123318800\"' \\\n--form 'conversionButton=\"立即游玩\"' \\\n--form 'imageFile=@\"/path/to/file\"' \\\n--form 'title=\"主标题\"' \\\n--form 'subTitle=\"副标题\"' \\\n--form 'button=\"按钮文案\"'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"jingle_bell_id\": \"905248030812575\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ELiAgICwxJiOrAEYrwog85WOr8ExKNLojkM=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 53244,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>advertiser_id</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53245,
+      "paramName": "app_desc",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>应用描述 创建应用下载小铃铛android应用必填</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53246,
+      "paramName": "app_type",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>应用类型,如 游戏类-角色扮演 创建应用下载小铃铛android应用必填</p><p>可以填以下类型：</p><p>\"游戏类\":[ \"角色扮演\", \"动作射击\", \"卡牌棋牌\", \"体育竞技\", \"经营类\", \"综合游戏\", \"休闲益智\", \"策略冒险\", \"音乐\", \"竞速格斗\" ], \"电商零售类\":[ \"综合\", \"母婴\", \"IT消电\", \"医疗\", \"服饰\", \"房产家居\", \"跨境\", \"快消\", \"日化\", \"零售类\", \"电商商家\", \"直营电商\" ], \"资讯类\":[ \"综合\", \"团购折扣\", \"生活健康\", \"婚恋交友\", \"招聘\" ], \"交通类\":[ \"汽车销售\", \"汽车服务\", \"汽车配件\", \"汽车周边\", \"汽车资讯\", \"出行服务\" ], \"金融服务类\":[ \"银行保险\", \"小额贷款\", \"投资理财\" ], \"快消类\":[ \"茶饮酒水\", \"食品\", \"餐饮服务\" ], \"美妆日化类\":[ \"护肤化妆\", \"卫浴口腔\", \"洗涤卫生\", \"奢侈品类\" ], \"IT消电类\":[ \"软件服务\", \"3C\", \"家用电器\", \"办公设备\", \"运营商\" ], \"房产类\":[ \"交易平台\", \"房产物业\" ], \"服饰类\":[ \"运动服饰\", \"休闲装\", \"正装\", \"内衣\", \"鞋箱包\", \"饰品配饰\" ], \"教育类\":[ \"海外留学\", \"语言培训\", \"高等教育\", \"低龄培训\", \"职业技能\", \"教育平台\" ], \"旅游类\":[ \"在线旅游\", \"传统旅行\", \"旅游局\", \"航空公司\", \"景点酒店\" ], \"医疗类\":[ \"药品保健\", \"医疗机构\", \"美容器械\" ], \"招商加盟类\":[ \"招商加盟\", \"餐饮美食\", \"汽车\", \"教育培训\", \"美容美发\" ], \"政府组织类\":[ \"公益组织\", \"政府机关\", \"民间团体\", \"家装建材\" ], \"家居建材类\":[ \"装修服务\", \"家具灯饰\", \"家装综合\", \"家纺家饰\", \"节能环保\" ], \"面向企业类\":[ \"工农业\", \"安全安保\", \"法律服务\", \"本地生活\", \"其他\" ]</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53247,
+      "paramName": "app_introduction",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>应用介绍 创建应用下载小铃铛android应用必填</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53248,
+      "paramName": "photo_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>应用截图版式 1横版 2竖版 创建应用下载小铃铛android应用必填</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53249,
+      "paramName": "android_monitor_url",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>第三方点击监测链接 创建应用下载小铃铛android应用选填,如果填写必须以http或者https开头，并且带__CALLBACK__参数</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53250,
+      "paramName": "android_click_monitor_url",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>半屏浮层点击监测链接 创建应用下载小铃铛android应用选填,如果填写必须以http或者https开头，并且带__CALLBACK__参数</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53251,
+      "paramName": "conversion_button",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>行动号召按钮 创建应用下载小铃铛android应用必填，可用：</p><p>'立即下载','立即安装','立即预约','立即游玩','免费下载','免费安装','免费预约','一键下载','一键预约'</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53252,
+      "paramName": "live_user_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>主播ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53253,
+      "paramName": "conversion_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>小铃铛类型 5落地页 2应用下载</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53254,
+      "paramName": "conversion_image_file",
+      "paramType": "File",
+      "example": "",
+      "description": "<p>应用图标 小铃铛类型为h5落地页填写</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 11,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53255,
+      "paramName": "conversion_title",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>落地页标题 或者 弹层标题</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 12,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53256,
+      "paramName": "landing_page_url",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>h5落地页链接</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 13,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53257,
+      "paramName": "ios_app_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>ios应用ID </p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 14,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53258,
+      "paramName": "android_app_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>android应用ID</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 15,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53259,
+      "paramName": "main_app_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>主appId,用这个字段代表ios应用和android应用都选的品牌活动宣传图、应用名称具体用哪一个的</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 16,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53260,
+      "paramName": "ios_monitor_url",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>ios第三方点击监测链接 创建应用下载小铃铛ios应用选填,如果填写必须以http或者https开头，并且带__CALLBACK__参数</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 17,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53261,
+      "paramName": "image_file",
+      "paramType": "File",
+      "example": "",
+      "description": "<p>提示卡片信息-卡片配图</p><p>满足条件：</p><p>图片尺寸：120 * 120</p><p>图片格式：JPG/JPEG/PNG</p><p>图片大小：不大于200KB</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 18,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53262,
+      "paramName": "title",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>提示卡片信息-主标题</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 19,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53263,
+      "paramName": "sub_title",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>提示卡片信息-副标题</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 20,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53264,
+      "paramName": "button",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>提示卡片信息-按钮文案,必须在以下范围内选取：</p><p>\"立即查看\",<br>\"立即体验\",<br>\"点击参与\",<br>\"了解详情\",<br>\"点击咨询\",<br>\"点击预约\",<br>\"点击进入\",<br>\"抢大红包\",<br>\"领取红包\",<br>\"立即下载\",<br>\"立即安装\",<br>\"免费下载\",<br>\"免费安装\",<br>\"一键下载\",<br>\"立即提交\"</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 21,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53265,
+      "paramName": "app_photo_files",
+      "paramType": "File",
+      "example": "",
+      "description": "<p>应用截图 创建应用下载小铃铛android应用必填</p><p><em>/**<br>竖版校验<br>图片数量：至少上传3图, 最多上传5张图<br>图片尺寸：360 640<br>图片格式：JPG/PNG<br>图片大小：不大于300KB<br><br>横版校验<br>图片数量：至少上传3图, 最多上传5张图<br>图片尺寸：640 360<br>图片格式：JPG/PNG<br>图片大小：不大于300KB<br>/</em></p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 22,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 60072,
+      "paramName": "series_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>短剧id</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 23,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 53267,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53268,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>错误信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53269,
+      "paramName": "data",
+      "paramType": "JingleBellCopyViewSnake",
+      "example": "",
+      "description": "<p>创建的小铃铛id</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3119,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 53266,
+          "paramName": "jingle_bell_id",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>小铃铛id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095502375,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

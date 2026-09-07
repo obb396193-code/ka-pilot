@@ -1,0 +1,218 @@
+# 一、AONE
+链接：[https://aone.alibaba-inc.com/v2/project/885993/req/54885520](https://aone.alibaba-inc.com/v2/project/885993/req/54885520)
+
+# 二、实现效果
+1. 减少数据处理流程，减少不正常的数据处理错误
+2. 正向账单数据迁移到FBI开放能力，缩短数据处理流程
+3. 下掉OSS excel账单数据以及open search的数据存储。
+
+# 三、预期目标
++ 分销平台
+
+reportId=1381417
+
++ 开放接口
+
+> 透出数据与之前一致，保持不变。
+>
+
+1. diamind data的数据查询
+
+[https://mse.alibaba-inc.com/pre/diamond/configlist/configdetail?dataId=fbi-data-config-query-data-id&group=fbi-data-config-query-group-id&namespaceId=ovs-pnm-data&tab=content](https://mse.alibaba-inc.com/pre/diamond/configlist/configdetail?dataId=fbi-data-config-query-data-id&group=fbi-data-config-query-group-id&namespaceId=ovs-pnm-data&tab=content)
+
+2. 接口参数
+
+测试：
+
+[https://hsf.alibaba-inc.com/hsfops/testpage/testMethod.htm?envType=pre&service=com.alibaba.ovs.panama.data.facade.DataSearchFacade:1.0.0&method=getData~com.alibaba.ovs.panama.data.facade.dto.data.DataSearchRequest](https://hsf.alibaba-inc.com/hsfops/testpage/testMethod.htm?envType=pre&service=com.alibaba.ovs.panama.data.facade.DataSearchFacade:1.0.0&method=getData~com.alibaba.ovs.panama.data.facade.dto.data.DataSearchRequest)
+
+```json
+[
+  {
+    "sceneCode": "order_bills",
+    "param": "{\"sellerId\":\"2100000927014\",\"gspOrderItemId\":\"200039081203\",\"timeType\":\"createtime\",\"startTime\":\"1708099200000\",\"endTime\":\"1708963200000\",\"pageNo\":\"1\",\"pageSize\":\"46\"}",
+    "class": "com.alibaba.ovs.panama.data.facade.dto.data.DataSearchRequest"
+  }
+]
+```
+
+response
+
+```json
+{
+  "code": "200",
+  "data": [
+    {
+      "purchase_discount_amount": "5.33",
+      "purchase_item_id": "2048157934842253",
+      "purchase_coupon_amount": "0",
+      "purchase_order_id": "200039081203",
+      "mainland_post_amount": "0",
+      "payment_service_charge": "0",
+      "purchase_refund_amount": "44.47",
+      "pay_currency": "CNY",
+      "purchase_item_title_real": "行走 Walking Man 印花复古Retro的人美式男女潮牌宽松短袖T恤",
+      "purchase_amount_estimated": "49.8",
+      "purchase_item_quantity": "1",
+      "outer_purchase_id": "500364-BO24020035053",
+      "refund_end_time": "2024-02-25 17:09:32",
+      "purchase_amount_original": "49.8",
+      "pay_channel_trade_no": "2024021822001140681409154520",
+      "purchase_pay_amount": "44.47",
+      "exchange_rate": null,
+      "po_mord_id": "2060373435001282076",
+      "purchase_mord_id": "200039081184",
+      "purchase_currency": "CYN",
+      "purchase_adjust_amount": "0",
+      "purchase_item_title_out": "PI24207719602",
+      "pay_amount_total": "44.47",
+      "outer_purchase_time": "2024-02-18 16:14:48",
+      "pay_time": "2024-02-18 16:28:47",
+      "po_order_id": "2060694842989282076",
+      "purchase_total_price": "44.47",
+      "refund_start_time": "2024-02-25 17:09:31",
+      "pay_channel": "THIRD_PARTY_ALIPAY_AGREEMENT"
+    }
+  ],
+  "totalPage": 1,
+  "pageNo": 1,
+  "success": true,
+  "pageSize": 46,
+  "totalCount": 1,
+  "message": null,
+  "class": "com.alibaba.ovs.panama.common.model.result.PageResult"
+}
+```
+
+
+
+[https://hsf.alibaba-inc.com/hsfops/testpage/testMethod.htm?envType=rg-sg-pre&service=com.alibaba.pnm.open.facade.DistributorBillsFacade:1.0.0&method=queryPurchaseBill~com.alibaba.pnm.open.data.request.bills.PurchaseBillRequest](https://hsf.alibaba-inc.com/hsfops/testpage/testMethod.htm?envType=rg-sg-pre&service=com.alibaba.pnm.open.facade.DistributorBillsFacade:1.0.0&method=queryPurchaseBill~com.alibaba.pnm.open.data.request.bills.PurchaseBillRequest)
+
+```json
+[
+  {
+    "start_time": 1708099200000,
+    "time_type": "createtime",
+    "sellerId": 2100000927014,
+    "purchase_order_id": "200039639916",
+    "end_time": 1708963200000,
+    "page_no": 1,
+    "isvAppKey": 0,
+    "class": "com.alibaba.pnm.open.data.request.bills.PurchaseBillRequest",
+    "userId": 2100000927014,
+    "page_size": 40
+  }
+]
+```
+
+
+
+```json
+{
+  "innerErrorMsg": null,
+  "data": {
+    "code": "200",
+    "data": [
+      {
+        "purchase_discount_amount": "478.23",
+        "purchase_item_id": "2048130772767456",
+        "purchase_coupon_amount": "0",
+        "purchase_order_id": "200039639916",
+        "mainland_post_amount": "0",
+        "payment_service_charge": "0",
+        "purchase_refund_amount": "0",
+        "pay_currency": "CNY",
+        "purchase_item_title_real": "潮酷永恒对戒十字架戒指复古男女尾戒嘻哈原创小众设计感高街指环",
+        "purchase_amount_estimated": "25",
+        "purchase_item_quantity": "1",
+        "outer_purchase_id": "500364-BO24020053567",
+        "refund_end_time": null,
+        "purchase_amount_original": "500",
+        "pay_channel_trade_no": "2024022422001140681436463759",
+        "purchase_pay_amount": "21.77",
+        "exchange_rate": null,
+        "po_mord_id": "2065496018909282076",
+        "purchase_mord_id": "200039639913",
+        "purchase_currency": "CYN",
+        "purchase_adjust_amount": "0",
+        "purchase_item_title_out": "PI24206963737",
+        "pay_amount_total": "21.77",
+        "outer_purchase_time": "1708740362000",
+        "pay_time": "1708740495000",
+        "po_order_id": "2065496018909282076",
+        "purchase_total_price": "21.77",
+        "refund_start_time": null,
+        "pay_channel": "THIRD_PARTY_ALIPAY_AGREEMENT"
+      }
+    ],
+    "pageNo": 1,
+    "totalPage": 1,
+    "success": true,
+    "pageSize": 40,
+    "totalCount": 1,
+    "message": null,
+    "class": "com.alibaba.ovs.panama.common.model.result.PageResult"
+  },
+  "success": true,
+  "failItems": null,
+  "errorCode": null,
+  "class": "com.alibaba.pnm.open.data.OpenResponse",
+  "errorMsg": null
+}
+```
+
+
+
+open：
+
+```json
+{
+  "result": {
+    "data": {
+      "biz_code": "200",
+      "data": [
+        {
+          "purchase_discount_amount": "478.23",
+          "purchase_item_id": "2048130772767456",
+          "purchase_coupon_amount": "0",
+          "purchase_order_id": "200039639916",
+          "mainland_post_amount": "0",
+          "payment_service_charge": "0",
+          "purchase_refund_amount": "0",
+          "pay_currency": "CNY",
+          "purchase_item_title_real": "潮酷永恒对戒十字架戒指复古男女尾戒嘻哈原创小众设计感高街指环",
+          "purchase_amount_estimated": "25",
+          "purchase_item_quantity": "1",
+          "outer_purchase_id": "500364-BO24020053567",
+          "purchase_amount_original": "500",
+          "pay_channel_trade_no": "2024022422001140681436463759",
+          "purchase_pay_amount": "21.77",
+          "po_mord_id": "2065496018909282076",
+          "purchase_mord_id": "200039639913",
+          "purchase_currency": "CYN",
+          "purchase_adjust_amount": "0",
+          "pay_amount_total": "21.77",
+          "purchase_item_title_out": "PI24206963737",
+          "outer_purchase_time": "1708740362000",
+          "pay_time": 1708740495000,
+          "po_order_id": "2065496018909282076",
+          "pay_channel": "THIRD_PARTY_ALIPAY_AGREEMENT"
+        }
+      ],
+      "success": true,
+      "total_count": 1,
+      "total_page": 1,
+      "page_no": 1,
+      "page_size": 40
+    },
+    "success": true
+  },
+  "code": "0",
+  "request_id": "210174f217090914518332418",
+  "_trace_id_": "212cd85e17090914512332496ee7a2"
+}
+```
+
+# 四、开发预期
+
+

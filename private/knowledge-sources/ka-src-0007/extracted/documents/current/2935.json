@@ -1,0 +1,509 @@
+{
+  "documentId": 2935,
+  "documentName": "人群列表查询接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720096136799
+    }
+  ],
+  "apiId": 1305,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v2/dmp/population/list",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl -X POST \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n  \"advertiser_id\": 20000016,\n  \"limit\": 1\n  }' -L https://ad.e.kuaishou.com/rest/openapi/v2/dmp/population/list"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\":{\n    total_count:1,\n    \"details\": [{\n        \"orientation_id\": 10000008,\n        \"orientation_name\": \"101\",\n        \"type\": 0,\n        \"population_type\": 13,\n        \"record_size\": 0,\n        \"match_size\": 0,\n        \"cover_num\": 100,\n        \"status\": 4,\n        \"create_time\": 1552366925727\n    }]\n    }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 62041,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主 ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62042,
+      "paramName": "status",
+      "paramType": "Integer",
+      "example": "",
+      "description": "人群包状态",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "0:计算中; 1: 已生效; 2: 已删除; 3: 上线中; 4: 已上线; 5: 计算失败; 6: 上线失败; 7: 已失效",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62043,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "页码，默认 1",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62044,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "页数，默认 20",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "默认为 20 行，最多不超过 500",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62045,
+      "paramName": "orientation_ids",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "人群包ID列表",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "支持最多填写500个orientation_id，同时数量必须小于page_size",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 62046,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62047,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62048,
+      "paramName": "data",
+      "paramType": "PopulationListData",
+      "example": "",
+      "description": "JSON 返回值",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3485,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 62021,
+          "paramName": "orientation_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "人群包 ID",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62022,
+          "paramName": "orientation_name",
+          "paramType": "String",
+          "example": "",
+          "description": "人群包名称",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62023,
+          "paramName": "type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "人群数据类型",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "0：非上传人群包；1：IMEI；2：IDFA；3：IMEI_MD5；4：IDFA_MD5；5：手机号-MD5；9: 手机号_SHA256;16：CAID",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62024,
+          "paramName": "population_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "人群包类型",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "1,\"上传人群\"；2,\"广告人群\"；3,\"主题专区\"；4,\"逻辑规则\"；5,\"人群扩展\"；6,平台定制包（仅用于DSP排除包进行使用）；7,\"三方精选\"；8,\"网红粉丝类别\"；10,\"移动应用安装\"；11,\"快手使用活跃度\"；12,\"行业分类\"；13,\"商业兴趣\"；17,\"产品关键词\"；19,\"应用渗透率\"；20,\"快手小店\"；21,\"流量中台\"；22,\"指定网红\"；23,\"行业分类\"；24,\"广告人群\"；25,\"全量网红粉丝\"；26,\"移动应用安装\"；27,\"平台设备网络\"；28,\"年龄\"；29,\"设备价格区间\"；33,\"品牌广告精确转化\"；34,\"标签广场计算包\"；32,\"地域\"；35,\"大宗消费意向\"；36,\"性别\"；37,\"网红粉丝优化\"；38,\"小店专区\"；41,\"购物意图\"；42,\"已有人群交并补计算\"；43,\"行为意向\"；44,\"财产状态\"；45,\"居住分层\"；46,\"品类行为\"；47,\"用户消费分层\"；50,\"店铺粉丝分层\"；49,\"店铺新老客分层\"；48,\"店铺用户行为\"；51,\"标签推荐\"；54,\"店铺关注时间\"；57,\"K-Star(明星；58,门店管理\"；59,\"品牌行为\"；60,\"学历\"；61,\"人生阶段\"；62,\"直播打赏\"；63,\"节日专区\"；64,\"相似店铺\"；65,\"系统推荐\"；66,\"汽车购买意图\"；67,\"汽车价格\"；68,\"汽车类型\"；69,\"汽车动力\"；70,\"汽车品牌\"；71,\"汽车座位\"；72,\"汽车人群类型\"；73,\"二手车偏好\"；74,\"奥运专区\"；75,\"CDP人群\"；76,\"数据源\"；77,\"视频类型偏好\"；78,\"IP偏好\"；79,\"九大消费人群\"；80,\"个人贷款需求\"；81,\"个人保险兴趣\"；82,\"保险类型偏好\"；83,\"证券兴趣人群\"；84,\"金融负反馈人群\"；85,\"金融风险人群\"；86,\"金融属性人群\"；87,\"CDP上传人群\"；88,\"学历教育\"；89,\"职业教育认证\"；90,\"职业教育技能\"；91,\"财商教育兴趣\"；92,\"少儿教育兴趣\"；93,\"游戏内容兴趣\"；94,\"潜在付费人群\"；95,\"店铺粉丝团等级\"；96,\"定制年龄性别\"；97,\"品牌客户分层\"；98,\"自定义店铺关注时间\"；99,\"类目消费频次\"；100,\"类目客单价\"；101,\"职业\"；102,\"星轨SQL打包\"；103,\"画像平台导入\"",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62025,
+          "paramName": "src_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "人群包来源",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "0：DMP平台（磁力万象）；1：MAPI平台；2：CDP平台（磁力方舟）；3：CDP投放共建类型",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62026,
+          "paramName": "record_size",
+          "paramType": "Long",
+          "example": "",
+          "description": "上传数量",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62027,
+          "paramName": "match_size",
+          "paramType": "Long",
+          "example": "",
+          "description": "匹配数量",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62028,
+          "paramName": "status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "人群包状态",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "0:计算中; 1: 已生效; 2: 已删除; 3: 上线中; 4: 已上线; 5: 计算失败; 6: 上线失败; 7: 已失效",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62029,
+          "paramName": "create_time",
+          "paramType": "Long",
+          "example": "",
+          "description": "创建时间",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "格式：13 位毫秒级时间戳",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62030,
+          "paramName": "third_platform_code",
+          "paramType": "Integer",
+          "example": "",
+          "description": "付费人群包-第 3 方平台 code",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "选择付费人群包创建广告时付费人群包 third_platform_code 必须一致",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62031,
+          "paramName": "third_platform_name",
+          "paramType": "String",
+          "example": "",
+          "description": "付费人群包第三方供应商名称",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 62032,
+          "paramName": "verify_time",
+          "paramType": "Long",
+          "example": "",
+          "description": "更新时间",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "格式：13位毫秒级时间戳",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720096136799,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

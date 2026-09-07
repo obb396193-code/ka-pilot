@@ -1,0 +1,400 @@
+{
+  "documentId": 2627,
+  "documentName": "探索工具关键报表数据",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095386565
+    }
+  ],
+  "apiId": 491,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/unit/explore/report/detail",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 20000681,\n    \"unit_id\": 3776211,\n    \"param\": {\n        \"id\": 89456749,\n        \"explore_type\": 2,\n        \"explore_start_time\": 1677490338371,\n        \"explore_end_time\": 1677490351193\n    }\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"explore_budget\": 10000,\n        \"total_charge\": 10000,\n        \"click\": 1200,\n        \"actionbar_click\": 235,\n        \"action_ratio\": 0.32\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"a71c6d22c6354b19ae5f6bd7377bfa69\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 27226,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 27227,
+      "paramName": "unit_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "广告组id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 27228,
+      "paramName": "param",
+      "paramType": "GatewayExploreReportParam414",
+      "example": "",
+      "description": "请求参数",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 1039,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 27222,
+          "paramName": "id",
+          "paramType": "Long",
+          "example": "1",
+          "description": "报表记录主键id",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 27223,
+          "paramName": "explore_type",
+          "paramType": "Integer",
+          "example": "1",
+          "description": "探索类型，1-加速探索，2-一键复苏，3-辅助探索",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 27224,
+          "paramName": "explore_start_time",
+          "paramType": "Long",
+          "example": "1636450616000",
+          "description": "开始时间",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 27225,
+          "paramName": "explore_end_time",
+          "paramType": "Long",
+          "example": "1636450616000",
+          "description": "结束时间",
+          "required": 1,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 27234,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 27235,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "succ",
+      "description": "返回信息\t",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 27236,
+      "paramName": "data",
+      "paramType": "GatewayExploreReportDetail550693",
+      "example": "",
+      "description": "返回结果",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 1040,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 27229,
+          "paramName": "explore_budget",
+          "paramType": "Long",
+          "example": "100",
+          "description": "探索预算",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "单位：厘",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 27230,
+          "paramName": "total_charge",
+          "paramType": "Long",
+          "example": "100",
+          "description": "消耗",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "单位：厘",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 27231,
+          "paramName": "click",
+          "paramType": "Long",
+          "example": "100",
+          "description": "素材曝光数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 27232,
+          "paramName": "actionbar_click",
+          "paramType": "Long",
+          "example": "1",
+          "description": "行为数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 27233,
+          "paramName": "action_ratio",
+          "paramType": "Double",
+          "example": "0.32",
+          "description": "素材点击率",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095386565,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

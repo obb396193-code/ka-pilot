@@ -1,0 +1,285 @@
+# 应用创建
+
+进入函数平台（[https://cd.faas.alibaba-inc.com/](https://cd.faas.alibaba-inc.com/)），点击右上角「+」号或「应用注册」进行创建。
+
+(https://o2-img.alistatic.com/i/i09blZ/m8dXlNSE0EI5A664n8gi6-13f085af72.png)
+
+
+
+
+进入新建应用页，选择「边缘服务」，并根据业务诉求对应选择可用脚手架，点击下一步。
+
+(https://o2-img.alistatic.com/i/i09blZ/iq4vSqxBD6zYFnii8alf2-44159590b7.png)
+
+
+根据选择的脚手架（以 Express-TS 为例），对应选择使用的容器基础镜像（对于 Express-TS，应选择 node20-nginx-express-ts 镜像），并对应填写其他信息，点击创建等待应用创建 & 初始化。
+
+(https://o2-img.alistatic.com/i/i09blZ/fvpKJTTQwmqlsz6oIiCiN-ae10ef77d0.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/seLR6NkjRfZqNJt77eIKZ-06bd133393.png)
+
+
+至此完成应用创建。进入应用首页即可查看边缘容器应用信息。
+
+(https://o2-img.alistatic.com/i/i09blZ/KSk6fDgNrgmeLbJip2kk9-2658a6d580.png)
+
+
+# 变更创建
+
+点击侧边栏「变更」页，并「新建变更」，即可进入变更创建页，对应填写各项信息，点击确定创建。
+
+(https://o2-img.alistatic.com/i/i09blZ/A6BWfWnZKBBrLb6aWXafm-cdf25b4e41.png)
+
+
+
+
+# 日常 / 预发发布
+
+平台提供日常 / 预发环境用于在内网场景进行服务调试。点击左侧「发布」，选择对应的环境 tab。
+
+(https://o2-img.alistatic.com/i/i09blZ/4jeSXGxcbc7HTvtXssGvS-6b9bcc101b.png)
+
+
+勾选待发布变更，提交部署即可触发：
+
+(https://o2-img.alistatic.com/i/i09blZ/s6gN9T4tXJW0tUnnwABz9-03429e3413.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/LHMekrORs4aQOKXZYxvMD-fc4eff34b9.png)
+
+
+发布完成后，提供日常 / 预发可访问链接，用户可在内网环境完成服务测试。
+
+# 线上域名
+
+由于边缘容器实际部署场景为公网，线上发布前需要为容器应用绑定线上域名，在平台链路上表现为 SRE 平台 ESA 站点接入。进入「函数配置」—「域名配置」，点击新增域名：
+
+(https://o2-img.alistatic.com/i/i09blZ/NVEtfBDJvRZrF80jwNSs1-de481de013.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/gYGqop9BnpriEbL4Va0c3-2539ed381a.png)
+
+
+环境类型选择「线上」，支持新增站点 / 关联站点两个操作模式。
+
+## 新增站点
+
+前提：用户已有有权限 IDNS 域名（[http://idns.alibaba-inc.com/](http://idns.alibaba-inc.com/)）
+
+在「新增站点」Tab 下，对应填写：
+
+- 站点域名：用户要接入的域名，因证书费用原因，标准流程限制为三级域名；
+- 是否已备案：根据域名主体是否备案进行选择。
+点击「确认提交」，即可触发 SRE 平台站点创建流程。
+
+(https://o2-img.alistatic.com/i/i09blZ/rwALwF7OHpGL2DyMbhvrr-1c6580ae9f.png)
+
+
+点击跳转至 SRE 平台，跟随流程引导完成域名变更。
+
+(https://o2-img.alistatic.com/i/i09blZ/CIUb9xiTF8KPjFSm6ndyg-50cecdeaab.png)
+
+
+待接入流程完成后，即可在 SRE 平台站点页查看接入站点信息，可以在「站点管理员」处配置可见人员名单，仅配置了管理员的用户能够管理该站点。
+
+(https://o2-img.alistatic.com/i/i09blZ/yriou9CqlK9uXMFXjFl6d-f285efe3b5.png)
+
+
+回到 FaaS 平台域名配置页，刷新后即可看到刚刚接入的 ESA 站点：
+
+(https://o2-img.alistatic.com/i/i09blZ/xI34rTvhd8pypdUDbhkLK-215e76c441.png)
+
+
+后续即可通过该域名进行服务投放。
+
+## 删除站点
+
+对于通过平台标准流程完成接入的 ESA 站点，在域名配置页具有「删除」选项。
+
+(https://o2-img.alistatic.com/i/i09blZ/bZrV9lrzA2t1ahiyG7ZHE-b3d1d0c0f3.png)
+
+
+点击删除，进行二次确认后，将自动创建一条 BPMS 审批流程进行 ESA 站点解绑。
+
+Tips：该流程仅做解绑操作，ESA 站点如需删除请前往 [SRE 平台](https://sre.air.alibaba-inc.com/site)完成。
+
+(https://o2-img.alistatic.com/i/i09blZ/lqEiGVjGkLr4DM4F9fDnx-2ab1599f6e.png)
+
+
+审批人为提交人主管 + 平台管理员。
+
+完成删除后，回到域名配置页即可看到原线上站点不再展示，此时将无法再通过该域名访问当前边缘容器服务。因此，解绑站点需确认当前边缘容器应用已无线上流量。
+
+## 关联站点
+
+对于未绑定边缘容器应用 & 当前用户是站点管理员以上权限的 ESA 站点，支持将其关联至平台任意边缘容器应用。
+
+进入需要关联 ESA 站点的边缘容器应用「函数配置」—「域名配置」页，点击新增域名，在弹出框中选择「关联站点」，即可在选择站点下拉框中选择要绑定的 ESA 站点，并点击「确认提交」。
+
+(https://o2-img.alistatic.com/i/i09blZ/TmtdgqmsZWWj1QJT2w9He-dc63917895.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/Cj6p8IMExrh2QPG1yu7SO-c5038bd21b.png)
+
+
+确认后，该 ESA 站点即新增至当前应用域名配置中，此时通过该站点域名即可访问至当前边缘容器应用。
+
+# 线上发布
+
+前提：当前边缘容器应用已绑定 ESA 站点（具有线上域名）
+
+在完成内网环境验证后，可通过「线上发布」将边缘容器应用服务发布至公网。
+
+(https://o2-img.alistatic.com/i/i09blZ/pR1ZYCmllGQpi64ucZT0t-b32f38640e.png)
+
+
+如上图所示，发布流在 Staging 验证节点停留，此时需要用户绑定 VIP 的方式进行公网 Staging 环境服务验证。
+
+## Staging 验证
+
+什么是 Staging 环境：Staging 环境是在线上（公网）中通过接入层隔离的方式，从线上服务器中隔离一块用于绑定 VIP 进行定向请求，从而在与线上环境等同场景完成边缘容器服务上线前的最后一层验证。
+
+在平台侧，点击「查看详情」按钮，即可在右侧弹层中查看对应信息：
+
+### 访问方式
+
+(https://o2-img.alistatic.com/i/i09blZ/2L0lriOKC0bnBTI2GQFU4-806bc97e74.png)
+
+
+通过在本地绑定 IPv4 地址访问线上域名，即可将流量定向访问到 Staging 环境服务，进行验证。
+
+验证完成后，点击「通过」即可使发布流程继续运行。
+
+### 容器日志
+
+(https://o2-img.alistatic.com/i/i09blZ/sV8c1axju2JICOwShTq3z-c6d6f91a43.png)
+
+
+容器日志提供当前 Staging 环境容器 stdout（控制台输出）的日志信息，用于辅助查看容器是否正常启动、访问时日志查看。也可以前往「日志」页查看。
+
+# 线上回滚
+
+对于线上发布次数大于 2 次的边缘容器应用（即具有除当前基线版本以外的历史线上版本），平台提供线上回滚能力，支持应急场景快速回滚至历史线上版本（无需审批）。
+
+在侧边栏「回滚」页，对需要回滚的版本，点击「回滚」
+
+(https://o2-img.alistatic.com/i/i09blZ/XHfDUkZ51bt6rA0CXPd84-f5afc6814d.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/4emCYlbTJNJIrvHkJQpJK-3d5c4376f4.png)
+
+
+弹窗点击二次确认后，即可触发回滚动作。
+
+
+
+平台首先会查询历史产物，用于完成回滚，如果查询到云侧版本信息，则使用云侧发布记录；否则将兜底使用平台记录的产物信息进行版本生成 & 灰度部署，确保在云侧记录异常场景也能回滚。
+
+(https://o2-img.alistatic.com/i/i09blZ/KgkqVAHeC6hB5cdkWJOpc-550aec2afb.png)
+
+
+
+
+与线上发布类似的，线上回滚也会提供灰度部署组件用于百分比灰度放量，操作同线上发布中的灰度部署章节。
+
+(https://o2-img.alistatic.com/i/i09blZ/0KUDzJZuF67N0gin3kt2F-88f557db9b.png)
+
+
+## 发布准入
+
+(https://o2-img.alistatic.com/i/i09blZ/wVNWRkVyLR0UC15iJrdZI-9f1e79fbba.png)
+
+
+平台对接 CF 变更发布准入能力，提供线上发布流水线中发布准入节点，发布需经由命中的审批人完成 CF 审批后才能正常发布。
+
+## 灰度部署
+
+平台为边缘容器应用提供全网百分比灰度能力，并以此实现线上灰度部署。
+
+### 灰度放量
+
+进入灰度部署组件，可以通过「选择灰度比例」操作区域，选定要灰度的比例（当前默认提供 10%、20%、50%、全量几个档），并点击「执行部署」按钮进行灰度。
+
+(https://o2-img.alistatic.com/i/i09blZ/GTSjqBbnwwC4b0bc21iny-340728cf7d.png)
+
+
+当灰度部署动作触发时，状态变更为发布中，同时禁用灰度比例选择区和执行部署按钮。
+
+(https://o2-img.alistatic.com/i/i09blZ/Yc1hcOtRESE8CsVmdXA3i-c427f903b6.png)
+
+
+
+
+当一次灰度部署动作运行完成后，流程状态会重新回到「等待中」，此时可以通过对可访问地址（线上域名）的多次访问，来确认灰度版本在线上的情况。
+
+> Tips：存在如下图可能，上一次灰度比例选择较小而真实灰度比例（界面中的当前灰度比例）数值较大的情况，原因是百分比灰度底层为按容器灰度，当应用部署容器数较小时（初始场景默认大陆和海外各配置 1 个容器），最小灰度单位为单个容器，其总体比例较大时会出现当前场景。
+
+(https://o2-img.alistatic.com/i/i09blZ/oHts8Q0riROGqGTArKLy5-786edd2c58.png)
+
+
+如需继续灰度，可在「选择灰度比例」操作区中选择下一阶段（需大于当前灰度比例）的灰度比例（最高选择全量），并点击「执行部署」。
+
+### 取消灰度
+
+在灰度部署组件的任意阶段（除点击完成部署时），「取消灰度」按钮始终可用，用户点击并二次确认后，会取消灰度动作，并回退至线上版本（该回退动作有一定触发后延时，非即时生效）。
+
+(https://o2-img.alistatic.com/i/i09blZ/PvW94gkayWkSjubsfhKLl-c2f6f32a64.png)
+
+
+触发后，灰度部署节点将置为失败，线上发布终止，进入版本回退动作，等待一段时间后即可观察全网生效情况。
+
+(https://o2-img.alistatic.com/i/i09blZ/8TjHGfsqUZ7ufxoBYv0sP-488ae31a4a.png)
+
+
+### 完成部署
+
+当完成「全量」级别的灰度部署动作后，组件状态会变为如下图所示，此时基线版本已变更至灰度版本，同时「当前灰度比例」为 100%，即已完成全量部署。
+
+(https://o2-img.alistatic.com/i/i09blZ/azaLwT3burZJ5gj4r8pB3-0c423c0a36.png)
+
+
+如需完成本次线上发布，可点击「完成部署」按钮，会将流水线推进至下一阶段写基线，写基线完成后变更自动关闭，发布界面回到初始形态如下图，本次线上发布结束。
+
+(https://o2-img.alistatic.com/i/i09blZ/yrLkc7ZHGg7mTmK3OqfBd-752159a523.png)
+
+
+# 配置变更
+
+Tips：函数配置变更需要应用 Owner 或 AppOps 权限
+
+平台在发布之余还提供配置变更能力，支持边缘容器相关的配置变更。
+
+(https://o2-img.alistatic.com/i/i09blZ/HTOVhJ1jaRlLhuIpmUSXe-4f7017d114.png)
+
+
+包含「应用配置」、「域名配置」、「环境变量配置」、「日志投递配置」、「容器预留配置」等多项。具体项内容可查看独立文档（待补充）。
+
+# 监控查看
+
+在界面侧边栏「监控」页中，提供各环境独立的应用监控能力。
+
+(https://o2-img.alistatic.com/i/i09blZ/vPaJF9bZYtF03ZtaT5M5s-1d8b3b506f.png)
+
+
+# 日志查看
+
+在侧边栏「日志」页中，可查看日志情况，并支持环境隔离，筛选不同环境日志数据。
+
+(https://o2-img.alistatic.com/i/i09blZ/2mFJ5g86nUatLNKPuWGGV-43bb152097.png)
+
+
+Tips: 如遇到线上环境无日志，请检查函数配置页中「日志投递配置」是否开启（默认关闭）。
+
+(https://o2-img.alistatic.com/i/i09blZ/eiUDs50OhvRKGsKMN1eKG-ee2e1053ea.png)
+
+
+请点击容器日志投递开关进行开启（如下图）
+
+(https://o2-img.alistatic.com/i/i09blZ/4wagfGkKJPosKM1RurBen-a6f9fb1748.png)
+
+
+
+
+
+

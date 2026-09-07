@@ -1,0 +1,54 @@
+{
+  "documentId": 2457,
+  "documentName": "创意高相关词推荐",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 创意高相关词推荐\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/report/photo_recommend_word\n\n接口说明：查询存量创意（photo id维度，每次查询最多20个）7日内搜索pv>=100且相关性较高的top2000关键词；\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段                         | 类型       | 描述                                                                                                                                          |\n| ---------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |\n| advertiser_id                | long       | 广告主 ID（注：非账户快手 ID），在获取 accessToken 时返回                                                                                     |\n| photo_ids（必传）         | string[]     | 素材 ID 集，过滤筛选条件，单次查询数量不超过 20                                                                                         |\n\n### 请求示例：\n\n```\ncurl \"https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/report/photo_recommend_word\" -X POST \\\n-H \"Access-Token:[REDACTED_SECRET_EXAMPLE]\" \\\n-H \"Content-Type:application/json\" \\\n-d '{\"advertiser_id\":\"139494\", \"photo_ids\":[\"5189272782789606404\"]}'\n```\n\n### 返回参数\n\n| 字段                                  | 类型   | 描述                                                               |\n| ------------------------------------- | ------ | ------------------------------------------------------------------ |\n| code                                  | int    | 返回码/错误码                                                      |\n| message                               | string | 返回信息/错误信息                                                  |\n| data                                  | JSON   |                                                                    |\n| total_count                           | int    | 数据的总行数                                                       |\n| details                               | JSON   | 数据明细信息                                                       |\n| photo_id                    | string | 素材id |\n| rela_value                    | long | 相关性分数值为 1，2，3，4 |\n| pv                    | long | 曝光量 |\n| word                    | string | 关键词 |\n\n### 返回样例：\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"total_count\": 2,\n        \"details\": [\n            {\n              \"word\": \"茶具推荐\",\n              \"pv\": 116,\n              \"rela_value\": 4,\n              \"photo_id\": \"5189272782789606404\"\n            },\n            {\n              \"word\": \"茶具\",\n              \"pv\": 101606,\n              \"rela_value\": 4,\n              \"photo_id\": \"5189272782789606404\"\n            }\n        ]\n    }\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1706845499414
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1706845499414,
+  "creator": "liupeng20",
+  "fullContext": null
+}

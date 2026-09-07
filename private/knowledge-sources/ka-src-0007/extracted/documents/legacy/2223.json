@@ -1,0 +1,42 @@
+{
+  "documentId": 2223,
+  "documentName": "SDPA创意视频模板查询接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取SDPA创意视频模板\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/creative/template/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/creative/template/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段|类型|示例值|是否必填|说明|备注|\n|--|--|--|--|--|--|\n|advertiser_id|Long|0|必填|广告主账号ID||\n|library_id|Long|0|必填|商品库ID||\n|product_id|Long|0|可选|商品ID|填写则返回\"canSelect\"，优先于\"outer_id\"生效|\n|outer_id|String||可选|商品第三方ID|填写则返回\"canSelect\"|\n|page_info|PageInfoSneak||可选|分页信息||\n|&#8195;page_size|Integer|0|可选|页大小||\n|&#8195;current_page|Integer|0|可选|当前页码||\n\n### 返回参数\n\n|字段|类型|示例|说明|备注|\n|--|--|--|--|--|\n|code|Integer|0|返回结果状态码||\n|message|String||返回结果状态信息||\n|data|TemplateList||视频模板信息||\n|&#8195;&#8195;template_id|Long|0|模板ID||\n|&#8195;&#8195;package_id|Long|0|配置包ID||\n|&#8195;&#8195;image|String||封面图URL||\n|&#8195;&#8195;demo_url|String||样例视频URL||\n|&#8195;&#8195;template_type|Long|0|模板类型|1-图片模板, 2-视频模板, 3-图片视频模板|\n|&#8195;&#8195;can_select|Boolean|true|可用状态|true-可用, false-不可用 (不传商品ID时该字段为null，仅供参考，具体以实际合成结果为准)|\n|&#8195;page_info|PageInfoSneak||分页信息||\n|&#8195;&#8195;total_count|Long|0|总数||\n|&#8195;&#8195;page_size|Integer|0|页大小||\n|&#8195;&#8195;current_page|Integer|0|当前页码||\n\n### 请求样例\n\n```\n{\n    \"advertiser_id\": 900015391,\n    \"library_id\": 202112203923,\n    \"product_id\": 411002,\n    \"outer_id\": \"test01\",\n    \"page_info\": {\n        \"page_size\": 10,\n        \"current_page\": 1\n    }\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"template_list\": [\n            {\n                \"image\": \"http://blobstore-nginx.staging.kuaishou.com/bs2/creativeCenter/8beea4d1116b4279a7990a64fc7a518e.jpeg\",\n                \"demo_url\": \"http://blobstore-nginx.staging.kuaishou.com/bs2/creativeCenter/83a461bae009435383fe5f78c47c136b.zip\",\n                \"template_id\": 824433492,\n                \"template_type\": 1,\n                \"package_id\": 455159,\n                \"can_select\": true\n            },\n            {\n                \"image\": \"http://blobstore-nginx.staging.kuaishou.com/bs2/creativeCenter/97081de199ed461e8a5763826e8e9b1c.jpeg\",\n                \"demo_url\": \"http://blobstore-nginx.staging.kuaishou.com/bs2/creativeCenter/7346e081cce54738b9cf8acef78bf106.zip\",\n                \"template_id\": 8010697,\n                \"template_type\": 3,\n                \"package_id\": 526,\n                \"can_select\": true\n            },\n            {\n                \"image\": \"http://blobstore-nginx.staging.kuaishou.com/bs2/creativeCenter/04eab1dd9dac41d2b0db09322c43d4b9.jpeg\",\n                \"demo_url\": \"http://blobstore-nginx.staging.kuaishou.com/bs2/creativeCenter/5049e5b515d74fd3a3b127bf4ee63b79.zip\",\n                \"template_id\": 8007665,\n                \"template_type\": 2,\n                \"package_id\": 509,\n                \"can_select\": true\n            }\n        ],\n        \"page_info\": {\n            \"total_count\": 3,\n            \"current_page\": 1,\n            \"page_size\": 10\n        }\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMyAgICwtsOOrAEYhAIg-JuLu7swKPDQtpwI\"\n}\n\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1665631823644
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1665631823644,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

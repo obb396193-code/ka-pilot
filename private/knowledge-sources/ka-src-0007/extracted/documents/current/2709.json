@@ -1,0 +1,245 @@
+{
+  "documentId": 2709,
+  "documentName": "获取授权的短剧作者列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094546782
+    }
+  ],
+  "apiId": 844,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/auth/user/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 123456\n}\n"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"user_sex\": \"U\",\n            \"head_url\": \"http://kcdn.staging.kuaishou.com/uhead/A/BMjAyMTTMyOTI1MF8xX2hkMV8w.jpg\",\n            \"user_id\": 1234,\n            \"user_name\": \"test1\"\n        },\n        {\n            \"user_sex\": \"F\",\n            \"head_url\": \"http://kcdn.staging.kuaishou.com/uhead/BMjAyMTA1NzQ5N18xX2hkOTIzXzA=.jpg\",\n            \"user_id\": 23456,\n            \"user_name\": \"test2\"\n        },\n        {\n            \"user_sex\": \"M\",\n            \"head_url\": \"http://kcdn.staging.kuaishou.com/uhead/A/BMjAyMTExMTkxODMyMF8xX2hkMzY1XzA=.jpg\",\n            \"user_id\": 12345,\n            \"user_name\": \"test3\"\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"ELqAgIDQ9JiOrAEY3gUg_u7KoqQxKPjT_vgN\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 47055,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 47060,
+      "paramName": "data",
+      "paramType": "MapiSeriesUserSnake[]",
+      "example": "",
+      "description": "mapi短剧授权User",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2886,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 47056,
+          "paramName": "head_url",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>短剧作者快手号头像</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 47057,
+          "paramName": "user_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>短剧作者快手号id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 47058,
+          "paramName": "user_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>短剧作者快手号名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 47059,
+          "paramName": "user_sex",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>短剧作者快手号性别，男性M，女性F，U未知</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 47061,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 47062,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回描述</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094546782,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

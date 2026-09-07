@@ -1,0 +1,81 @@
+# nodejs（midway 框架）
+
+上下文日志是函数最基础的日志，它位于 context 之上。
+
+```
+ctx.logger.info();
+ctx.logger.debug();
+ctx.logger.warn();
+ctx.logger.error();
+```
+ctx 上的 logger 会关联鹰眼链路以及 FC 的请求链路。我们在 Midway 中这样使用。
+
+```
+import { Provide, Logger } from '@midwayjs/decorator';
+import { Context } from '@midwayjs/faas';
+import { ILogger } from '@midwayjs/logger';
+
+@Provide()
+export class UserService {
+  
+  @Inject()
+  ctx: Context;
+  
+  @Logger()
+  logger: ILogger;
+
+  async getUser() {
+    // this.ctx.logger.error(new Error('xxxxx')) 请求上下文日志
+    
+    // this.logger.info(xxx) 普通日志，和请求不关联
+  }
+
+}
+```
+
+
+# nodejs
+
+普通 console 方法使用即可
+
+# java
+
+在Java中，最常见的打印日志的方式是使用`java.util.logging`包或者第三方的日志库，如`Log4j`, `SLF4J` with `Logback`, 或 `Log4j2`，以下是使用`java.util.logging`的简单示例：
+
+```
+import java.util.logging.Logger; 
+
+private static final Logger LOGGER = Logger.getLogger(MyClass.class.getName());  
+
+public class MyClass {  
+    public static void main(String[] args) {  
+        LOGGER.info("This is an info message");  
+        LOGGER.warning("This is a warning message");  
+        LOGGER.severe("This is a severe error message");  
+    }  
+}  
+
+```
+
+
+# Python
+
+```
+import logging  
+
+logger.info('This is an info message')  
+logger.warning('This is a warning message')  
+logger.error('This is an error message')  
+```
+
+
+# 平台查询日志
+
+(https://o2-img.alistatic.com/i/i09blZ/3HifEGW8nAP5piPlTwitW-3fc4dfad08.png)
+
+
+- 支持时间范围选择/函数选择/环境选择
+- 关键字搜索，比如我想搜索错误日志可以搜索关键字 error(https://o2-img.alistatic.com/i/i09blZ/9ztqq3r4VEIUuqvmhf0tu-3fdac258b7.png)
+
+
+

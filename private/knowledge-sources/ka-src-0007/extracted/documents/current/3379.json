@@ -1,0 +1,466 @@
+{
+  "documentId": 3379,
+  "documentName": "游戏合伙人批量打标接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1786331259680
+    }
+  ],
+  "apiId": 2609,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/gamePartner/label/video",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": "{\n  \"advertiser_id\": 900015364,\n  \"label_items\": [\n    {\n      \"photo_id\": \"5196309750037828523\",\n      \"label_status\": 1,\n      \"photo_name\": \"自定义视频名称\"\n    },\n    {\n      \"photo_id\": \"5196309750037828524\",\n      \"label_status\": 2\n    }\n  ]\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": "{\n  \"code\": 0,\n  \"message\": \"OK\",\n  \"request_id\": \"EJiEgICwqpWaChiICCCiqZConjIot_CX-w4=\",\n  \"data\": [\n    {\n      \"success\": true,\n      \"photo_id\": \"5196309750037828523\",\n      \"advertiser_id\": 900015364,\n      \"label_status\": 1,\n      \"photo_name\": \"自定义视频名称\",\n      \"user_id\": 123456,\n      \"user_name\": \"某某达人\",\n      \"game_name\": \"某某游戏\",\n      \"message\": \"success\",\n      \"update_time\": 1721000000000\n    },\n    {\n      \"success\": false,\n      \"photo_id\": \"5196309750037828524\",\n      \"advertiser_id\": 900015364,\n      \"label_status\": 0,\n      \"photo_name\": \"达人视频002\",\n      \"user_id\": 123456,\n      \"user_name\": \"某某达人\",\n      \"game_name\": \"某某游戏\",\n      \"message\": \"视频不存在或状态异常\",\n      \"update_time\": 1721000000000\n    }\n  ]\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 88021,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>账户ID</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 88022,
+      "paramName": "label_items",
+      "paramType": "MarketGamePartnerLabelItem[]",
+      "example": "",
+      "description": "<p>打标列表</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 5005,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 88018,
+          "paramName": "photo_id",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>视频ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 88019,
+          "paramName": "label_status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>打标状态</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 88020,
+          "paramName": "photo_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>视频名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 88033,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 88034,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 88035,
+      "paramName": "data",
+      "paramType": "MarketGamePartnerLabelVideoResultView[]",
+      "example": "",
+      "description": "<p>逐条打标结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 5006,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 88023,
+          "paramName": "success",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>本条是否处理成功</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 88024,
+          "paramName": "photo_id",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>视频ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 88025,
+          "paramName": "advertiser_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>账户ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 88026,
+          "paramName": "label_status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>打标后的状态</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 88027,
+          "paramName": "photo_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>视频名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 88028,
+          "paramName": "message",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>成功或失败原因</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 88029,
+          "paramName": "update_time",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>状态更新时间</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 88030,
+          "paramName": "user_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<pre><code>视频作者id</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 88031,
+          "paramName": "user_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>视频作者名称</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 88032,
+          "paramName": "game_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>游戏名称</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1786331259680,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

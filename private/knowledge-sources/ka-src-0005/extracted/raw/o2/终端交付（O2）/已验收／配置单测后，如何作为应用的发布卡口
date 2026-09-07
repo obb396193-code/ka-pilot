@@ -1,0 +1,18 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/661f334b72172307dd68f0b9/](https://links.alibaba-inc.com/support/conversation/661f334b72172307dd68f0b9/)
+
+作者：乾杯
+
+评审人：上坡
+
+
+
+在 “应用-集成验证” 中配置单测卡口检测项。
+
+操作路径：应用左侧栏 · 集成验证 -> 单元测试 -> 校验策略，如下图所示。
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1713950145078-6d418a48-5e31-4bfb-a037-88cec3879d6c.png) 
+
+备注：TNPM 应用类型比较特殊，支持在无日常发布时直接发布线上，所以TNPM这儿的卡口逻辑是在发布线上时通过前置的质量检测节点完成，而不是在卡口检查中体现。所以，针对 TNPM 应用，可以直接进行线上发布，在配置了相关卡口且不满足的情况下会卡住发布。
+
+
+

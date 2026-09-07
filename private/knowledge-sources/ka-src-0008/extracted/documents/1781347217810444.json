@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><p data-id=\"p838747a-JLyD9Qmu\">即脚本代码的运行规则</p><p style=\"text-align:center;\"><img src=\"https://p6-business-sign.byteadimg.com/tos-cn-i-yvqzo4lhg5/00e0e69baa774f8ea5ce1a722d371675~noop.image?rk3s=d3394059&amp;x-expires=2016459904&amp;x-signature=8jEsW%2F%2FOaUHET68GYz4hgXnFZ1Q%3D\" data-auto=\"true\" style=\"width: 535px; visibility: visible; height: 166px;\" data-type=\"block\"></p><p data-id=\"p838747a-wc4D1ctp\">目前支持五种模式：</p><ol data-id=\"o9d5df12-sZGmTsXq\"><li data-id=\"ld70c578-S0eabDp7\">未设置：即脚本需要通过手动触发执行，不触发不执行</li><li data-id=\"ld70c578-KwzMyWnW\">单次：即可以设置脚本在具体的一个年月日及小时区间进行执行</li><li data-id=\"ld70c578-gy5UokN6\">每小时：即可以设置脚本在每个小时区间进行执行</li><li data-id=\"ld70c578-IvIDlYse\">每天：即可以设置脚本在每天固定的某个小时区间进行执行</li><li data-id=\"ld70c578-IJGHQdPV\">每周：即可以设置脚本在每周固定的某一天的某个小时区间进行执行</li></ol><p data-id=\"p838747a-iXVGYHho\"><br></p><p data-id=\"p838747a-4sX6vF6J\">所有小时区间的设置，都不支持精确设置具体分钟时间，故脚本仅保证在约定的小时区间内尽可能优先执行，并不一定能保证准点执行</p><p data-id=\"p838747a-EsBq9EXH\"><br></p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "运行规则"
+}

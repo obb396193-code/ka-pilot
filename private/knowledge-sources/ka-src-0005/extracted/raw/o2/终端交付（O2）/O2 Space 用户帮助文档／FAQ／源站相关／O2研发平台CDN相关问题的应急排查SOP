@@ -1,0 +1,146 @@
+## 1. 目的
+
+确保在 CDN 或源站 出现问题时，能够快速定位并解决问题，减少对业务的影响。
+
+## 2. 适用范围
+
+适用于所有使用O2平台上 CDN 服务的业务系统。
+
+## 3. 职责
+
+- 源站开发团队：负责 CDN 及源站的日常监控和应急响应，协助排查与 CDN 配置相关的问题。
+	- 接口人：心羽、冠夫、紫砂、阿大
+- CDN 服务商：提供技术支持和服务状态更新。
+	- 阿里云接口人：支川、桓景、刘琳
+## 4.应急排查流程
+
+主要针对面向用户已开放应急排查流程进行说明，不包含非面向用户的内部运维监控告警部分
+
+### 4.1 问题发现
+
+- 4.1.1 监控报警
+	- 域名级及资源级监控
+		- 登录[O2 space平台](https://space.o2.alibaba-inc.com/)，如下图进行操作，注意仅域名级负责人或负责人公开域名可查看域名数据。
+		- (https://o2-img.alistatic.com/i/i09blZ/HFFZCofbCbUdJsyP6pD8v-af15e540e4.png)
+
+		- 下图为域名监控展示
+		- (https://o2-img.alistatic.com/i/i09blZ/NI0Wabee0FqWjNp5I0aCe-9d9af0c8fe.png)
+
+		- 下图为资源级监控
+		- (https://o2-img.alistatic.com/i/i09blZ/v0WduPlgbkVOHCXfvptN9-819cf56d2f.png)
+
+	- 告警定制
+		- 在站点中进行操作，支持域名负责人对域名进行监控告警
+			- (https://o2-img.alistatic.com/i/i09blZ/9ZJYL9bzHOK0AnRHlG1iu-ebff8f53ad.png)
+(https://o2-img.alistatic.com/i/i09blZ/BITgKLIT8kz2wZINYRzf7-50baabae57.png)
+
+		- 若基础监控不满足业务需求，可走研发小蜜进行反馈评估可行性进行人工设置
+- 4.1.2 日志查询
+	- 适用范围：业务自定义web类域名，应用级权限，支持CDN及源站日志串联，支持根据EagleId进行查询
+	- (https://o2-img.alistatic.com/i/i09blZ/HdJbhiRvsV8mP0xNKKlSf-3791dc6a27.png)
+
+	- (https://o2-img.alistatic.com/i/i09blZ/HNEmA7G3kteS0wFN0Ccwn-20a74ad8cb.png)
+
+- 4.1.3 用户反馈
+	- O2研发小蜜联系值班，[https://space.o2.alibaba-inc.com/](https://space.o2.alibaba-inc.com/)
+	- 紧急问题联系：冠夫、心羽、觅九、紫砂、阿大
+### 4.2 初步确认
+
+		- 4.2.1.检查相关是否有监控和报警
+			- 告警信息展示
+				- (https://o2-img.alistatic.com/i/i09blZ/S3aqviM75uqCrNcjdW6VE-f1485b169b.png)
+(https://o2-img.alistatic.com/i/i09blZ/nM4Pk4mNQhXsNGNwSVuJq-4c975e49e0.png)
+
+		- 4.2.2 若无告警，则使用自查工具进行定向用户定位
+			- [用户诊断工具地址](https://cdn.dns-detect.alicdn.com/https/doc.html?spm=a2c4g.11186623.2.5.2dee11efgsKjID)，相关操作如下
+(https://o2-img.alistatic.com/i/i09blZ/mJfRYOrwvTVlbSUVkSrLs-4eda1145f5.png)
+
+
+- 诊断工具无法获取内容且已排查本地环境无问题
+	- 浏览器方式
+		- 如问题资源：[https://g.alicdn.com/def-work/front/2.13.66/dist/admin.css](https://g.alicdn.com/def-work/front/2.13.66/dist/admin.css)
+		- 访问后截图并将response header信息复制，提供给我方定位
+(https://o2-img.alistatic.com/i/i09blZ/fBC8r9d7XIb1vSqOYoZDs-e673106b7b.png)
+
+
+- 404资源访问截图： [https://g.alicdn.com/404](https://g.alicdn.com/404)
+	- 访问后截图并将response header信息复制，提供给我方定位
+(https://o2-img.alistatic.com/i/i09blZ/BPc4NdCDQcGdKosVKb3fH-2fe7b4770c.png)
+
+
+			- DNS信息， ping-连通性
+				- 使用阿里郎VPN用户，若出现无法ping通或响应情况，需要分别在关闭和开启VPN访问资源对比，目前已知海外办公网VPN链路问题，访问*.alicdn.com资源存在超时，部分域名DNS无法解析问题，目前，阿里郎方正在跟进处理，更多信息可联系冠夫咨询。
+					- 操作如下，请截图提供给我方定位
+(https://o2-img.alistatic.com/i/i09blZ/MiubmGptOAfiC3ShuNc8q-ced0f87006.png)
+(https://o2-img.alistatic.com/i/i09blZ/4lwDHuaAbyYKd5iFCpaUY-fcb8937324.png)
+
+
+- 4.2.3 使用全球区域探测工具查看是否有异常
+	- 使用[阿里云网络拨测工具](https://boce.aliyun.com/detect/http)，查看是否有异常
+	- (https://o2-img.alistatic.com/i/i09blZ/6sYEydhyzU5OsfaD3jNoE-29e69b9dc7.png)
+
+- 4.2.4 若上述方法CDN均正常，则检查业务系统
+确认业务系统本身是否正常运行，排除非 CDN 问题。
+
+### 4.3 问题定位
+
+如上述中4.2.1或4.2.2方法已确认异常，则及时联系O2源站团队进行定位，不要耗费时间确认其他影响，减少异常时长。(通常基础服务出现异常，如CDN或源站，开发运维团队会第一时间感知)
+
+问题分类如下：
+
+-  DNS 解析异常：使用 `nslookup` 或 `dig` 命令检查域名解析是否正常，确认解析到正确的 CDN 节点。
+	- 历史问题举例：运营商劫持，如发现劫持，及时联系冠夫推进处理
+- 缓存状态异常：通过 CDN监控，检查缓存命中率，确认是否有缓存失效或缓存穿透问题。
+	- 历史问题举例：外部攻击，业务缓存设置或投放异常导致频繁回原，导致RT过长或攻击源站。
+		- [2023.08.30 www.taobao.com海外攻击1200w](https://alidocs.dingtalk.com/i/nodes/Gl6Pm2Db8DMGQKRatrpjokNXWxLq0Ee4?utm_scene=team_space&utm_medium=dingdoc_doc_plugin_card&utm_source=dingdoc_doc)
+		- [2023.06.07 业务资源误用导致海外上亿次流量攻击](https://alidocs.dingtalk.com/i/nodes/R1zknDm0WR6XzZ4Lt10Y6qnaWBQEx5rG?utm_scene=team_space&utm_medium=dingdoc_doc_plugin_card&utm_source=dingdoc_doc)
+- 带宽使用异常：查看带宽使用情况，确认是否有异常流量或 DDoS 攻击。
+	- 历史问题举例：投放异常导致大量请求冲击源站。
+		- [2022 双11 10.24非预期CDN及源站流量问题记录](https://alidocs.dingtalk.com/i/nodes/lo1YvX0prG98k9LZe7nYVPw7xzbmLdEZ?utm_scene=team_space&utm_medium=dingdoc_doc_plugin_card&utm_source=dingdoc_doc)
+- CDN异常：确认 CDN 配置是否正确，包括缓存策略、回源策略、HTTPS 配置等。
+- 源站异常：确认源站是否正常运行，源站响应时间是否正常。
+### 4.4 问题处理
+
+注：若判定CDN或源站基础服务问题，第一时间联系O2研发团队进行反馈跟进，减少不必要耗时。
+
+- 4.4.1 刷新缓存：如果发现缓存失效或缓存内容过期，立即刷新缓存。平台工具地址：(https://o2-img.alistatic.com/i/i09blZ/4i2IdmZMJrNrM98CfXN2V-b8c6177375.png)
+
+(https://o2-img.alistatic.com/i/i09blZ/Lsxt0r6ARbLRlXUF6tS1p-7385d53fe7.png)
+
+
+- 4.4.2 调整配置
+	- 缓存类设置
+		- Assets类型:[https://help.o2.alibaba-inc.com/docs/241](https://help.o2.alibaba-inc.com/docs/241)
+			- (https://o2-img.alistatic.com/i/i09blZ/kNmZtuO6E1P25nDRa7FGn-10473387c9.png)
+
+		- 跨端类型：[https://help.o2.alibaba-inc.com/docs/283](https://help.o2.alibaba-inc.com/docs/283)
+			- (https://o2-img.alistatic.com/i/i09blZ/1FSnw5DoGsynqSi1DG9Bt-82e3e8231f.png)
+
+		- 其他不再赘述，可查看官方文档
+			- [https://help.o2.alibaba-inc.com/docs/159](https://help.o2.alibaba-inc.com/docs/159)
+### 4.4 验证与恢复
+
+	- 验证问题解决：通过监控系统和用户反馈，确认问题是否解决。
+	- 人工确认：联系O2团队进行确认
+## 5. 常见问题及解决方案
+
+1. [案例：CDN*.taobao.com下x-beacon:off失效](https://alidocs.dingtalk.com/i/nodes/R1zknDm0WR6XzZ4LtELKpkbdWBQEx5rG)
+1. [案例：CDN侧请求414](https://alidocs.dingtalk.com/i/nodes/oP0MALyR8kzGnoOwFjRBAjrRJ3bzYmDO)
+1. [案例： CDN访问异常自排查工具指南](https://alidocs.dingtalk.com/i/nodes/Obva6QBXJwxNZoMOCapvGXMq8n4qY5Pr)
+1. [案列：域名无法解析，无法ping通](https://alidocs.dingtalk.com/i/nodes/jb9Y4gmKWrx9eo4dCZLdGr5aJGXn6lpz)
+1. [案例：域名迁出 Air迁出流程(修订版)](https://alidocs.dingtalk.com/i/nodes/YMyQA2dXW7gYo6Mzce3KPQZdWzlwrZgb)
+1. [案例：域名申请支持灰度/内灰](https://alidocs.dingtalk.com/i/nodes/gvNG4YZ7Jnxop15OC7Qb4YYyW2LD0oRE)
+1. [案例：无效应用CDN资源回收](https://alidocs.dingtalk.com/i/nodes/gvNG4YZ7Jnxop15OC7QL6mRnW2LD0oRE)
+1. [案例：g.alicdn.com已外投前端资源回收流程说明](https://alidocs.dingtalk.com/i/nodes/a9E05BDRVQRkezKGC3eNZo4XJ63zgkYA)
+1. [案例：未接入集团合规域名接入Air申请流程](https://alidocs.dingtalk.com/i/nodes/R1zknDm0WR6XzZ4LtELKd6wbWBQEx5rG)
+1. [案例：预发域名用户无法访问问题定位](https://alidocs.dingtalk.com/i/nodes/YMyQA2dXW7gYo6Mzce3A3pnbWzlwrZgb)
+1. [案例：Air-Assets-相关云服务限制说明](https://alidocs.dingtalk.com/i/nodes/o14dA3GK8gQlkoYwcx2jLK1bV9ekBD76)
+1. [案例：顶级域名报备流程说明](https://alidocs.dingtalk.com/i/nodes/gvNG4YZ7Jnxop15OC7QLMovZW2LD0oRE)
+1. [案例：Air域名证书更换流程](https://alidocs.dingtalk.com/i/nodes/m9bN7RYPWdyrPBREc76xrb62VZd1wyK0)
+1. [案例：微信小程序封禁g.alicdn.com问题](https://alidocs.dingtalk.com/i/nodes/QG53mjyd800agdlKHLKB41xP86zbX04v)
+1. [案例：SPA 应用接入](https://alidocs.dingtalk.com/i/nodes/14lgGw3P8vxjwogPCPz7AywpV5daZ90D)
+1. 其他案例场景，可走研发小蜜进行智能查询或在[O2 用户帮助中心](https://help.o2.alibaba-inc.com/)中查找
+
+
+
+

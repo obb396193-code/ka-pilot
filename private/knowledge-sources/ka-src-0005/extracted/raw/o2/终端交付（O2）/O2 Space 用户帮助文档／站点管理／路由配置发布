@@ -1,0 +1,65 @@
+在资源管理页面点击【路由发布】标签，即可进入配置发布页面。此页面中会显示当前站点中所有已关联的域名及其路由配置状态。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8kN5KOY74/img/31f10143-ca91-4d6b-b288-b970f13829f6.png)
+
+
+当域名右侧状态显示为“灰度中”或“待更新”时，说明当前站点下的最新路由未在域名下生效或未完全生效。请点击右侧的【发布/灰度控制】进行操作
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8kN5KOY74/img/15778084-70f9-478c-8e69-453edb6579c5.png)
+
+
+发布窗口共有发布、灰度、校验三个功能。当配置不处于灰度状态中时，灰度功能不会显示。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8kN5KOY74/img/37e2589e-1042-4195-a9a1-d621604e349f.png)
+
+
+## 发布
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8kN5KOY74/img/64852d12-ece1-4c17-8e96-c29b79e4307a.png)
+
+
+发布功能分为左右两部分，左侧为当前路由变更内容展示，右侧为变更操作及测试功能。右上角会根据线上 URL 列表及路由变化情况推断发布是否可能引发异常，可以用做参考。实际发布风险请您自行评估判断。
+
+如果检测到资源在新配置下解析变更或失败，会显示黄色或红色的提示。您可以点击【详情】按钮或切换到【校验】功能下查看详情：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8kN5KOY74/img/239d47f8-a324-4287-bbb8-5ecceb0d9dd4.png)
+
+
+预发域名及内网劫持域名点击发布后会直接发布生效，线上域名会提交发布单并提交 ChangeFree 检测：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8kN5KOY74/img/3d583758-29d6-49e8-8449-223ac7c47262.png)
+
+
+如果变更被 ChangeFree 拦截，请点击【提交审批】跳转到 ChangeFree 完成审批流程。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8kN5KOY74/img/665ff22d-aaff-42c5-b807-35d39699c59e.png)
+
+
+如果变更被取消或审批被拒绝，请在合适的时间点击【重新提交】重新执行 ChangeFree 检测。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8kN5KOY74/img/ca815b17-b619-4b56-93b9-e2b79360d7d6.png)
+
+
+审批通过后，点击【确认发布】即可发布到灰度。
+
+## 灰度控制
+
+线上发布需要经过灰度放量后才能正式生效。发布后默认灰度状态为关闭，需要手动切换灰度比例。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8kN5KOY74/img/e5c75a0a-2c9a-4c7d-b7f0-6be2c14a2ae1.png)
+
+
+路由灰度采用与页面灰度相同的分桶逻辑，但需要注意路由灰度不对不同分桶的响应作缓存区分（即不返回 Vary）。假设单次 CDN 回源请求命中灰度，则针对此 URL 的所有用户（包括未在灰度分桶中的用户）都会返回灰度响应。
+
+## 校验
+
+校验功能根据当前域名 200 个热门 URL 检测路由发布可能产生的影响。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8kN5KOY74/img/7c3682bf-b243-4c3d-8f3d-c8b06ca55610.png)
+
+
+点击变更条目或输入 URL 并提交，可以对更新后的访问结果进行测试：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/XNkOMmv8kN5KOY74/img/eb7524ac-064d-488c-a677-b5a808d03425.png)
+
+

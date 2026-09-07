@@ -1,0 +1,42 @@
+{
+  "documentId": 2154,
+  "documentName": "商品库报表查询接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取商品库报表\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/report](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/report)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段|类型|示例值|是否必填|说明|备注|\n|--|--|--|--|--|--|\n|advertiser_id|Long|0|必填|投放账号ID||\n|library_id|Long|0|必填|商品库ID||\n|start_date|String|YYYY-MM-DD|必填|起始时间|startDate和endDate相差不能超过半年|\n|end_date|String|YYYY-MM-DD|必填|截止时间|startDate和endDate相差不能超过半年|\n|page|Integer|1|可选|页码||\n|page_size|Integer|20|可选|页大小||\n\n### 返回参数\n\n|字段|类型|示例|说明|备注|\n|--|--|--|--|--|\n|code|Integer|1|结果状态码||\n|message|String||结果状态信息||\n|data|AdGatewayDpaReportView||数据内容||\n\n#### AdGatewayDpaReportView\n\n|字段|类型|示例值|说明|备注|\n|--|--|--|--|--|\n|result_list|AdDpaReportViewSnake[]||单商品报表数据集||\n|sum|AdDpaReportViewSnake[]||全局汇总||\n|page_info|PageInfoSneak||分页信息||\n\n#### AdDpaReportViewSnake\n\n|字段|类型|示例值|说明|备注|\n|--|--|--|--|--|\n|advertiser_id|Long|0|投放账号ID||\n|library_id|Long|0|商品库ID||\n|outer_id|String||商品ID||\n|product_name|String||商品名称||\n|put_status|Integer|0|商品投放状态: 0-关 1-开||\n|ad_item_action_cost|Double|0.0|行为成本||\n|ad_item_action_ratio|Double|0.0|行为率||\n|ad_item_click|Long|0|行为数||\n|dpa_cost_total|Long|0|花费\t|单位: 厘|\n|dpa_impression1k_cost|Double|0.0|商品千次曝光成本||\n|dpa_impression_num|Long|0|商品曝光数||\n|total_conversion_cost|Double|0.0|转化成本||\n|total_conversion_num|Double|0.0|总的转化数||\n|total_conversion_ratio|Double|0.0|转化率||\n|create_time|Long|0|商品创建时间||\n|update_time|Long|0|商品最后更新时间||\n| subIndustry_name                                    |  |  | 商品类型                      |  |\n| product_name                                        |  |  | 商品名称                      |  |\n| title                                               |  |  | 商品标题                      |  |\n| category (一级二级三级类目字段后端拼凑返回给前端) |  |  | 商品类目                      |  |\n| theme                                               |  |  | 题材                            |  |\n| ad_show                                             |  |  | 广告曝光                      |  |\n| impression                                          |  |  | 封面曝光数                   |  |\n| photo_click                                         |  |  | 封面点击数                   |  |\n| photo_click_ratio                                   |  |  | 封面点击率                   |  |\n| click                                               |  |  | 素材曝光数                   |  |\n| action_ratio                                        |  |  | 素材点击率                   |  |\n| ad_item_click                                       |  |  | 行为数                         |  |\n| dpa_impression_num                                  |  |  | 商品曝光数                   |  |\n| dpa_cost_total                                      |  |  | 花费                            |  |\n| download_started                                    |  |  | 安卓下载开始数             |  |\n| download_completed_cost                             |  |  | 安卓下载完成单价          |  |\n| download_started_ratio                              |  |  | 安卓开始下载率             |  |\n| download_completed                                  |  |  | 安卓下载完成数             |  |\n| download_completed_ratio                            |  |  | 安卓下载完成率             |  |\n| conversion                                          |  |  | 激活数                         |  |\n| conversion_cost                                     |  |  | 激活单价                      |  |\n| event_new_user_pay                                  |  |  | 新增付费人数                |  |\n| event_new_user_pay_cost                             |  |  | 新增付费人数成本          |  |\n| event_new_user_pay_ratio                            |  |  | 新增付费人数率             |  |\n| event_pay_first_day                                 |  |  | 首日付费次数                |  |\n| event_pay_first_day_cost                            |  |  | 首日付费次数成本          |  |\n| event_pay_purchase_amount_first_day                 |  |  | 激活当日付费金额          |  |\n| event_pay_first_day_roi                             |  |  | 激活当日ROI                   |  |\n| total_conversion_num                                |  |  | 转化数                         |  |\n| total_conversion_ratio                              |  |  | 转化率                         |  |\n| total_conversion_cost                               |  |  | 转化成本                      |  |\n| dpa_impression_1k_cost                              |  |  | 商品千次曝光成本          |  |\n|  impression_1k_cost                                 |  |  |  平均千次封面曝光花费(元)  |  |\n| click_1k_cost                                       |  |  | 平均千次素材曝光花费    |  |\n| photo_click_cost                                    |  |  | 平均封面点击单价          |  |\n| download_conversion_ratio                           |  |  | 下载完成激活率             |  |\n| event_24h_stay_by_conversion_cost                   |  |  | 激活后24h次日留存成本（激活时间） |  |\n| event_24h_stay                                      |  |  | 激活后24h次日留存数（激活时间） |  |\n| event_24h_stay_ratio                                |  |  | 激活后24h次日留存率（激活时间） |  |\n| event_pay_purchase_amount_one_day_by_conversion     |  |  | 激活后24h付费金额(激活时间) |  |\n| event_pay_purchase_amount_one_day_by_conversion_roi |  |  | 激活后24h-ROI(激活时间)    |  |\n| event_next_day_stay                                 |  |  | 自然日次日留存数（回传时间） |  |\n| event_next_day_stay_cost                            |  |  | 自然日次日留存成本（回传时间） |  |\n| event_next_day_stay_ratio                           |  |  | 自然日次日留存率（回传时间） |  |\n\n#### PageInfoSneak\n\n|字段|类型|示例值|说明|备注|\n|--|--|--|--|--|\n|total_count|Long|1|总数||\n|page_size|Integer|20|页大小||\n|current_page|Integer|1|当前页码||\n\n### 请求样例\n\n```javascript\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/report' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 900015068,\n    \"library_id\": 1,\n    \"start_date\": \"2022-01-01\",\n    \"end_date\": \"2022-04-01\"\n}'\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": {\n        \"page_info\": {\n            \"total_count\": 0,\n            \"current_page\": 1,\n            \"page_size\": 20\n        },\n        \"result_list\": [],\n        \"sum\": []\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"334dafd35cd3453ab4371b794811abdb\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1651063974528
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1651063974528,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

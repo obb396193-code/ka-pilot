@@ -1,0 +1,547 @@
+{
+  "documentId": 2648,
+  "documentName": "魔力建站落地页组信息查询接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095796658
+    }
+  ],
+  "apiId": 113,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/group/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 9,
+  "bizName": "魔力建站",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "curl --location --request POST 'http://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/group/list' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  --header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\":123456,\n    \"page\":1,\n    \"page_size\":10\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": {\n  \"details\": [\n      {\n       \"group_id\": \"2210882135928206\",\n       \"group_name\": \"测试自有落地页tao12\",\n       \"status\": 1,\n       \"update_time\": 1635501390020,\n       \"group_source\": 1,\n       \"page_list\": [\n            {\n              \"out_page_id\": \"283001733753511936\",\n              \"page_name\": \"测试2\",\n              \"audit_status\": 0,\n              \"enable\": 0,\n              \"page_source\": 1,\n              \"url\": \"http://www.baidu.com/2\",\n              \"update_time\": 1635511111907\n            }\n         ]\n      }\n     ]\n   },\n  \"message\": \"OK\",\n  \"request_id\": \"d16c5c13738b427788c6df9e1a01db18\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 4681,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "1231123123",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4682,
+      "paramName": "group_id",
+      "paramType": "String",
+      "example": "121313",
+      "description": "落地页组id",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4683,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "页码",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "\t默认 page=1",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4684,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "10",
+      "description": "每页大小",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "\t默认 page_zise=20",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 4685,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "code",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4686,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "成功/失败信息",
+      "description": "成功/失败信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 4687,
+      "paramName": "data",
+      "paramType": "PageGroupListGatawayRespData",
+      "example": "",
+      "description": "data",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 259,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 4677,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "12",
+          "description": "总数",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 4678,
+          "paramName": "details",
+          "paramType": "PageGroupInfo[]",
+          "example": "",
+          "description": "落地页list信息",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 256,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 4666,
+              "paramName": "group_id",
+              "paramType": "String",
+              "example": "123123",
+              "description": "落地页组id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 4667,
+              "paramName": "group_name",
+              "paramType": "String",
+              "example": "我的落地页组",
+              "description": "我的落地页组",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 4668,
+              "paramName": "status",
+              "paramType": "Integer",
+              "example": "1",
+              "description": "删除状态",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 4669,
+              "paramName": "update_time",
+              "paramType": "Long",
+              "example": "1635919760124",
+              "description": "<p>落地页组最后更新时间，毫秒级别时间戳</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 4670,
+              "paramName": "group_source",
+              "paramType": "Integer",
+              "example": "1",
+              "description": "<p>落地页组建站来源，1-自有建站落地页组</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 4671,
+              "paramName": "page_list",
+              "paramType": "PageDetailInfo[]",
+              "example": "",
+              "description": "落地页信息",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 255,
+              "sort": 6,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 4659,
+                  "paramName": "out_page_id",
+                  "paramType": "String",
+                  "example": "123123",
+                  "description": "落地页id",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 4660,
+                  "paramName": "page_name",
+                  "paramType": "String",
+                  "example": "我的落地页",
+                  "description": "落地页名称",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 4661,
+                  "paramName": "audit_status",
+                  "paramType": "Integer",
+                  "example": "1",
+                  "description": "审核状态",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 4662,
+                  "paramName": "enable",
+                  "paramType": "Integer",
+                  "example": "1",
+                  "description": "<p>是否可以投放 1-可以投放</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 4,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 4663,
+                  "paramName": "page_source",
+                  "paramType": "Integer",
+                  "example": "1",
+                  "description": "<p>落地页建站来源，1-自有建站落地页</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 5,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 4664,
+                  "paramName": "url",
+                  "paramType": "String",
+                  "example": "https://www.kuaishou.com/",
+                  "description": "链接",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 6,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 4665,
+                  "paramName": "update_time",
+                  "paramType": "Long",
+                  "example": "1635919760124",
+                  "description": "更新时间",
+                  "required": 0,
+                  "checkRule": {
+                    "required": 0,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 7,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095796658,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

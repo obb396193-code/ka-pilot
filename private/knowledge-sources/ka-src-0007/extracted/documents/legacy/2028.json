@@ -1,0 +1,42 @@
+{
+  "documentId": 2028,
+  "documentName": "10.4.3获取应用列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取应用列表\n\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v2/file/ad/app/list\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 是否必填 | 说明          | 备注                           |\n| ------------- | ---- | -------- | ------------- | ------------------------------ |\n| advertiser_id | long | 必填     | 广告主 ID     | 在获取 access_token 的时候返回 |\n| app_ids | string | 非必填    |  应用ID     | 最多支持查询100个应用 |\n| page          | int  | 非必填   | 页码，默认 1  |                                |\n| page_size     | int  | 非必填   | 页数，默认 20 |                                |\n\n### 返回参数\n\n| 字段                   | 类型     | 说明                                              | 备注                                               |\n| ---------------------- | -------- | ------------------------------------------------- | -------------------------------------------------- |\n| code                   | int      | 返回码                                            |                                                    |\n| message                | string   | 返回信息                                          |                                                    |\n| data                   | struct   | JSON 返回值                                       |                                                    |\n| total_count            | long     |                                                   |                                                    |\n| details                | struct[] |                                                   |                                                    |\n| app_id                 | long     | 应用 ID                                           |                                                    |\n| url                    | string   | 应用地址                                          |                                                    |\n| app_version            | string   | 应用标记                                          |                                                    |\n| app_name               | string   | 应用名称                                          |                                                    |\n| app_icon_url           | string   | 应用图标链接                                      |                                                    |\n| image_token            | string   | 应用图标的 image_token                            |                                                    |\n| package_name           | string   | 应用包名                                          |                                                    |\n| platform               | int      | 应用类型                                          |                                                    |\n| update_time            | long     | 更新时间                                          | 单位：毫秒                                         |\n| use_sdk                | int      | 是否接入快手广告监测 SDK                          | 0：未接入，1：已接入                               |\n| app_privacy_url        | String   | app 隐私政策链接，需与 app 相关，该字段会经过审核 | 安卓类应用必填                                     |\n| scan_status            | Integer  | 应用安全扫描状态                                  | 1-扫描中，2-成功，3-失败，4-失败重试中，5—手动输入 |\n| permission_information | string   | 权限信息，请通过应用权限信息列表接口获取信息      | 权限信息                                           |\n| real_app_version       | string   | 真实版本号                                        |                                                    |\n| package_size       | long   | 应用包大小                                   |   应用包大小、真实版本号、权限信息要不全填，要不全不填，不支持部分存在        |\n| app_detail_image_token | string |  app应用详情图片 | 格式：png/jpg/jpeg；宽高比：9:16；大小：小于2M |\n|offline_app_stores|string|应用商店下架|\"huawei\",\"oppo\",\"vivo\",\"xiaomi\",\"meizu\",\"smartisan\"|\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624879
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624879,
+  "creator": "heran03",
+  "fullContext": null
+}

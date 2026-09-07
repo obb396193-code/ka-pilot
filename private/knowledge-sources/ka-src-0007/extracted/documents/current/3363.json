@@ -1,0 +1,333 @@
+{
+  "documentId": 3363,
+  "documentName": "三方支付-订单查询",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1780989956559
+    }
+  ],
+  "apiId": 2544,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/clue_laotie/v1/pay/queryPayOrder",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 11,
+  "bizName": "老铁线索通",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 87053,
+      "paramName": "seller_user_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<pre><code>B 端商家 userId（sellerUserId），与创建订单时传入的一致</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87054,
+      "paramName": "out_order_no",
+      "paramType": "String",
+      "example": "",
+      "description": "<pre><code>业务支付订单号（与一步提单时传入的 out_order_no 一致）</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87055,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<pre><code>广告主 ID（鉴权用，同 CreateMapiPayOrder）</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 87056,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87057,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87058,
+      "paramName": "data",
+      "paramType": "AdLaotiePayQueryOrderData",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4940,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 87127,
+          "paramName": "split_status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<pre><code>分账状态：0=待分账 1=分账中 2=分账成功 3=分账失败</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87033,
+          "paramName": "advertiser_order_no",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>广告主侧业务订单号</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87034,
+          "paramName": "user_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<pre><code>快手用户 UID</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87035,
+          "paramName": "pay_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<pre><code>支付类型：1=微信 2=支付宝</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87036,
+          "paramName": "pay_amount",
+          "paramType": "Long",
+          "example": "",
+          "description": "<pre><code>支付金额（单位：分）</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87037,
+          "paramName": "pay_status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<pre><code>支付状态：0=待支付 1=支付成功 2=支付失败 3=已退款</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1780989956559,
+  "creator": "sunxin08",
+  "fullContext": null
+}

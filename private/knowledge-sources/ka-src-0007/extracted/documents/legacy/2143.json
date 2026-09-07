@@ -1,0 +1,42 @@
+{
+  "documentId": 2143,
+  "documentName": "工具-出价建议-1-批量获取广告组出价建议",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "\n# 批量获取广告组出价建议\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/unit/suggestBid/detail\n\n请求方式：POST\n\n数据格式：JSON\n## 请求参数\n| 字段            | 类型          |  示例      | 是否必填 | 说明       | 备注                         |\n| ----------------- | --------------------- | -------- | ------ | ------------ | ------------------------------ |\n| advertiser_id     | long                  |     123456     | 必填   | 广告主ID  | 在获取 access_token 的时候返回 |\n| suggest_bid_param | GateSuggestBidUnitParam[] |        | 必填   | 出价建议入参 | 详情见下方                |\n\n| GateSuggestBidUnitParam     |         |          |           |         |                                                                                                                                                                                                               |\n| --------------------- | ------- | -------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| 字段                | 类型   |   示例    | 是否必填 | 说明             | 备注                                                                                                                                                                                                        |\n| bid_type              | long  |   1   | 必填   | 出价类型       | 1：CPM，2：CPC，6：OCPC(使用 OCPC 代表 OCPX)，10：OCPM，20：eCPC                                                                                                                                 |\n| unit_id               | long  |   9845630     | 必填   | 广告组 ID       | 新建时该值为0，编辑时该值为广告组id                                                                                                                                                           |\n| campaign_id           | long  |   89456704     | 非必填 | 广告计划 ID    |                                                                                                                                                                                                               |\n| predict_cpa_bid       | long  |   20000     | 必填   | 要预估的新浅度出价 | 保持和current_cpa_bid一致即可。                                                                                                                                                                       |\n| current_cpa_bid       | long  |   10000     | 必填   | 原有的浅度出价 | 新建广告组时，该值为0；编辑广告组时，该值为用户原来填写的浅度出价。单位厘                                                                                                 |\n| ocpx_action_type      | int   |   2     | 必填   | 转化目标       | 0：未知，2：点击转化链接，10：曝光，11：点击，31：下载完成，53：提交线索，109：电话卡激活，137：量房，180：激活，190：付费，191：首日ROI，348：有效线索，383：授信，384：完件，715：微信复制，739：7日付费次数 |\n| deep_conversion_type  | int   |   3     | 非必填 | 深度转化目标 | 3：付费，7：次日留存，10：完件，11：授信 ，0：无                                                                                                                                               |\n| predict_deep_conv_bid | long  |   50000     | 非必填 | 要预估的新深度出价 | 保持和curr_deep_bid一致即可                                                                                                                                                                            |\n| curr_deep_bid         | long  |   20000     | 非必填 | 原有的深度出价 | 单位厘。新建广告组时，该值为0；编辑广告组时，该值为用户原来填写的深度出价                                                                                               |\n| device_os_type        | int   |   1         |非必填  |       操作系统       |        0：不限，1：ios，2：Android        |\n\n## 返回参数\n| 字段 | 类型 | 示例 |      说明                        | 备注 |\n| ------- | -------- | ------------------------------------ | ---- | --- |\n| code    | int        |  0  | 状态码                            |     |\n| message | string    |  \"OK\"  | 错误信息                         |     |\n| request_id  | string  |      | 请求ID                    |      |\n| data    | GateSuggestBidUnit[] |       | 广告组出价建议列表 | 详情见下方 |\n\n| GateSuggestBidUnit        |             |           |                  |      |\n| ------------------- | ------------- | --------- | ---------------- | ---- |\n| 字段              | 类型            |     示例     | 说明           | 备注 |\n| can_suggest         | boolean            |  true    | 是否展示出价建议 |      |\n| suggest_bid         | int                |  20000    | 浅度出价建议值 |      |\n| suggest_bid_min     | int                |  10000    | 建议区间最小值 |      |\n| suggest_bid_max     | int                |  30000    | 建议区间最大值 |      |\n| unit_id             | long               |   8697549   | 广告组ID     |      |\n| suggest_deep_bid    | int                | 30000    | 深度出价建议值 |      |\n| can_predict         | boolean               |  true   | 是否展示分位值 |      |\n| bid_percentile      | GateBidPercentileModel  |       | 浅度出价分位值 |      |\n| deep_bid_percentile | GateBidPercentileModel  |       | 深度出价分位值 |      |\n\n| GateBidPercentileModel |             |              |                        |      |\n| ---------------------- | -----------| ------- | ---------------------- | ---- |\n| 字段                 | 类型          |    示例      | 说明                 | 备注 |\n| suggest_bid_percentile | int            |    60       | 建议出价所处分位值 |      |\n| percentile             | GatePercentileModel[] |       | 不同出价与分位值的对应 |      |\n\n| GatePercentileModel |         |         |       |      |\n| ------------------- | ------- | ------- | ------- | ---- |\n| 字段              | 类型  |   示例   | 说明         | 备注 |\n| percentile_num      | int  |  60   | 出价对应分位值 |      |\n| bid                 | int |  100000   | 出价         |      |\n## 请求案例：\n\n```\n{\n    \"advertiser_id\":12970515,\n    \"suggest_bid_param\":[{\n        \"bid_type\":10,\n        \"campaign_id\":596467876,\n        \"current_cpa_bid\":298560,\n        \"current_deep_bid\":0,\n        \"deep_conversion_type\":null,\n        \"ocpx_action_type\":53,\n        \"predict_cpa_bid\":0,\n        \"predict_deep_bid\":0,\n        \"unit_id\":1177725596\n    }]\n}\n```\n## 返回案例：\n\n\n```\n{\n  \"code\": 0,\n  \"data\": {\n    \"suggest_bid\": [\n      {\n        \"suggest_bid_max\": 0,\n        \"can_percent\": true,\n        \"suggest_bid\": 126823,\n        \"suggest_bid_min\": 0,\n        \"deep_bid_percentile\": {\n          \"percentile\": [],\n          \"suggest_bid_percentile\": 0\n        },\n        \"suggest_deep_bid\": 0,\n        \"bid_percentile\": {\n          \"percentile\": [\n            {\n              \"percentile_num\": 10,\n              \"bid\": 120550\n            },\n            {\n              \"percentile_num\": 60,\n              \"bid\": 126630\n            },\n            {\n              \"percentile_num\": 90,\n              \"bid\": 128580\n            }\n          ],\n          \"suggest_bid_percentile\": 82\n        },\n        \"unit_id\": 1177725596,\n        \"can_suggest\": true\n      }\n    ]\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"63261cc2b8d947478c304b61249701b7\"\n}\n```\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1648640758537
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1648640758537,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

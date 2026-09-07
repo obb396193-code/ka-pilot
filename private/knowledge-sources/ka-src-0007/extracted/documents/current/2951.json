@@ -1,0 +1,182 @@
+{
+  "documentId": 2951,
+  "documentName": "修改账户预算",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "修改账户预算\n/rest/openapi/v1/advertiser/update/budget\n\n\nadvertiser_id  Long  广告主 ID\nday_budget_schedule  Long[]  分日预算\nday_budget  Long  单日预算金额\ncode  Integer  返回码\nmessage  String  返回信息\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1735050460495
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1720084709383
+    }
+  ],
+  "apiId": 1320,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/update/budget",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 62334,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主 ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62335,
+      "paramName": "day_budget_schedule",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "分日预算",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "单位：厘，指定 0 表示预算不限，默认为 0；每天不小于 500 元，不超过 100,000,000 元，仅支持输入数字；修改预算不得低于该账户当日花费的 120% 和修改前预算的较小者。注意，本字段优先级高于day_budget，当数组内存在非0数据时，day_budget传入的非0值将会不生效。如果想从分日预算修改为单日预算day_budget，那么本字段需要传入[]以代表清空分日预算值。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 62336,
+      "paramName": "day_budget",
+      "paramType": "Long",
+      "example": "",
+      "description": "单日预算金额",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "账户层级单日预算金额，单位：厘，指定 0 表示预算不限，默认为 0；不小于 500 元，不超过 100,000,000 元，仅支持输入数字；修改预算不得低于当日账户最高花费的1.2倍和修改前预算的较小者。本字段优先级低于day_budget_schedule。如果想从单日预算修改为分日预算，建议本字段传入0值，且day_budget_schedule传入至少一个非0值。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 62337,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 62338,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1735050460495,
+  "creator": "jiazhaochang",
+  "fullContext": null
+}

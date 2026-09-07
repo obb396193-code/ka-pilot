@@ -1,0 +1,42 @@
+{
+  "documentId": 2210,
+  "documentName": "直播间报表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 直播间报表\n\n请求地址：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/report/live_user_report\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 说明  |\n| ------------ | ------ | ------ |\n| advertiser_id | Long | 广告主 ID（注：非账户快手 ID），在获取 accessToken 时返回 | \n| live_stream_id | Long | 直播间ID |\n| start_date_min（必选其 1） | String | 增量拉取过滤筛选条件，格式【yyyy-MM-dd HH:mm】可选时间范围参见文档上方说明 |\n| end_date_min（必选其 1） | String | 增量拉取过滤筛选条件，格式【yyyy-MM-dd HH:mm】可选时间范围参见文档上方说明 |\n| start_date（必选其 2） | String | 过滤筛选条件，格式 yyyy-MM-dd 可选时间范围参见文档上方说明 |\n| end_date（必选其 2） | String | 过滤筛选条件，格式 yyyy-MM-dd 可选时间范围参见文档上方说明 |\n| temporal_granularity（可选） | String | 天粒度（DAILY）／小时粒度（HOURLY），默认支持天粒度数据 |\n| page | int | 请求的页码，默认为 1 |\n| page_size | int | 每页行数，默认为 20，最大支持 2000 |\n\n### 请求样例\n\n```js\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/yyq/report/live_user_report' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'trace-context: {\"laneId\":\"STAGING.material_report_support_live_dev\"}' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE] accessproxy_session=bd51ca4a-1409-414b-abab-3917472c7421' \\\n--data-raw '{\"advertiser_id\":900015068,\n    \"start_date\":\"2022-05-24\",\n    \"end_date\":\"2022-05-27\",\n    \"page\":1,\n    \"page_size\":5\n    }'\n```\n## 返回参数\n\n| 字段                                 | 类型   | 描述                                                               |\n| ------------------------------------ | ------ | ------------------------------------------------------------------ |\n| code                                 | int    | 返回码/错误码                                                      |\n| message                              | string | 返回信息/错误信息                                                  |\n| data                                 | JSON   |                                                                    |\n| total_count                          | int    | 数据的总行数                                                       |\n| details                              | JSON   | 数据明细信息                                                       |\n| stat_date                            | string | 数据日期，格式：YYYY-MM-DD                                         |\n| stat_hour                            | int    | 数据小时                                                           |\n\n# 报表新增直播数据\n\n| 字段                                 | 类型   | 描述                                                               |\n| ------------------------------------ | ------ | ------------------------------------------------------------------ |\n| user_id                              |long    |      主播ID | \n| live_stream_id                       |long    |    直播ID |\n| live_start_time                      |long    | 直播开始时间 |\n| live_end_time                        |long    | 直播结束时间 |\n| live_room_avg_played_seconds         |double  | 直播间平均观看时长 |\n| ad_live_share                        |long    | 直播间分享数 |\n| ad_live_comment                      |long    | 直播间评论数 |\n| live_played_started                  |double  | 直播间进人数 |\n| live_played_started_cost             |double  |  直播间进入成本 |\n| ad_live_follow                       |long    | 粉丝关注数 |\n| ad_live_follow_cost                  |double  | 粉丝关注成本 |\n| conversion_component_impression      |long    | 组件展示量 |\n| conversion_component_click           |long    | 组件点击量 |\n| conversion_component_rate            |double  | 组件点击率 |\n| ad_landing_page_impression           |long    | 广告主第三方半屏落地页曝光 |\n| ad_app_download_half_impression      |long    | 安卓APP下载类半屏落地页曝光 |\n| simple_live_played_started           |long    | 简易直播间开始播放数 |\n| standard_live_played_started         |long    | 标准直播间开始播放数 |\n| jingle_bell_id                       |long    | 小铃铛id |\n| jingle_bell_name                     |string  | 小铃铛名称 |\n| simple_live_room_played_seconds      |long    | 简易直播间播放时长(毫秒) |\n| standard_live_room_played_seconds    |long    | 标准直播间播放时长(毫秒) |\n| likes                                |long  | 点赞数 |\n| campaign_id                          |long  | 计划ID |\n| unit_id                              |long  | 广告组ID |\n| creative_id                          |long  | 创意ID |\n| charge                               |double  | 花费(元) |\n| impression                           |long  | 封面曝光数 |                                                     \n| photo_click                          |long  | 封面点击数 |\n| aclick                               |long  | 素材曝光数 |\n| bcilck                               |long  | 行为数 |\n| photo_click_ratio                    |double  | 封面点击率 |\n| action_ratio                         |double  | 素材点击率 |\n| impression_1k_cost                   |double  | 平均千次封面曝光花费(元) |\n| click_1k_cost                        |double  | 平均千次素材曝光花费(元) |\n| photo_click_cost                     |double  | 平均封面点击单价(元) |\n| action_cost                          |double  | 平均行为单价(元) |\n| play_3s_ratio                        |double  | 3秒播放率 |\n| play_5s_ratio                        |double  | 5秒播放率 |\n| play_end_ratio                       |double  | 完播率 |\n| share                                |long  | 分享数 |\n| comment                              |long  | 评论数 |\n| report                               |long  | 举报数 |\n| block                                |long  | 拉黑数 |\n| negative                             |long  | 不感兴趣数 |\n| live_played_3s                       |double  | 直播观看3秒数 |\n| conversion                           |long  | 激活数 |",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1723023131236
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1723023131236,
+  "creator": "liuxinli",
+  "fullContext": null
+}

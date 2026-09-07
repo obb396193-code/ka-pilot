@@ -1,0 +1,773 @@
+{
+  "documentId": 2653,
+  "documentName": "魔力建站获取数据报表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095865063
+    }
+  ],
+  "apiId": 1049,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/report/summary",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 9,
+  "bizName": "魔力建站",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": \"123456\",\n    \"start_time\": \"2023-12-20 00:00:00\",\n    \"end_time\": \"2023-12-20 23:59:59\",\n    \"page_id\": \"0\"\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"date\": 0,\n        \"avg_view_rate\": 0.0,\n        \"pv\": 0,\n        \"button_deeplink_invoked_rate\": 0.0,\n        \"copy_wechat_count\": 0,\n        \"page_id\": 0,\n        \"phone_get_through_count\": 0,\n        \"avg_stay_duration\": 0,\n        \"conversion_rate\": 0.0,\n        \"conversion\": 0,\n        \"uv\": 0,\n        \"event_form_submit_fill_count\": 0,\n        \"component_id\": 0,\n        \"making_calls_count\": 0,\n        \"consultation_valid_retained_count\": 0,\n        \"download_click_count\": 0,\n        \"customer_service_click_count\": 0,\n        \"deeplink_invoked_success_rate\": 0.0,\n        \"customer_service_conversion_click_count\": 0,\n        \"out_bound_call_count\": 0,\n        \"click_wechat_count\": 0,\n        \"add_wechat_count\": 0,\n        \"form_submit_count\": 0,\n        \"above_bounce_rate\": 0.0,\n        \"button_click_count\": 0\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"d16c5c13738b427788c6df9e1a01db18\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 53344,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>账号ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53345,
+      "paramName": "end_time",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>结束时间</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "\t查询落地页列表接口获取。如果您想要获取全部落地页的信息，应当将page_id设置为0",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53346,
+      "paramName": "start_time",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>开始时间</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "数据报表的统计开始时间（东八区），格式为yyyy-MM-dd hh:mm:ss",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53347,
+      "paramName": "page_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>落地页ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "\t数据报表的统计结束时间（东八区），格式为yyyy-MM-dd hh:mm:ss",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 53348,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>code码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53349,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>提示信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53350,
+      "paramName": "data",
+      "paramType": "GetDataSummaryReportResp",
+      "example": "",
+      "description": "<p>数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3123,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 53317,
+          "paramName": "date",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>日期</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53318,
+          "paramName": "page_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>页面ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53319,
+          "paramName": "component_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>组件ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53320,
+          "paramName": "pv",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>PV</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53321,
+          "paramName": "uv",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>UV</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53322,
+          "paramName": "conversion",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>转化数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53323,
+          "paramName": "conversion_rate",
+          "paramType": "Double",
+          "example": "",
+          "description": "<p>转化率(百分率)</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53324,
+          "paramName": "above_bounce_rate",
+          "paramType": "Double",
+          "example": "",
+          "description": "<p>首屏跳失率(百分率)</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53325,
+          "paramName": "avg_stay_duration",
+          "paramType": "Double",
+          "example": "",
+          "description": "<p>平均停留时长(秒)</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53326,
+          "paramName": "avg_view_rate",
+          "paramType": "Double",
+          "example": "",
+          "description": "<p>平均流量比例(百分数)</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53327,
+          "paramName": "form_submit_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>表单提交数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53328,
+          "paramName": "customer_service_click_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>咨询组件点击数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53329,
+          "paramName": "customer_service_conversion_click_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>有效咨询数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 13,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53330,
+          "paramName": "making_calls_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>电话组件点击数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 14,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53331,
+          "paramName": "button_click_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>电话组件点击数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 15,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53332,
+          "paramName": "add_wechat_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>微信调起数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 16,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53333,
+          "paramName": "click_wechat_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>微信点击数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 17,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53334,
+          "paramName": "copy_wechat_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>添加微信数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 18,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53335,
+          "paramName": "consultation_valid_retained_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>咨询留咨数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 19,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53336,
+          "paramName": "out_bound_call_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>电话拨打数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 20,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53337,
+          "paramName": "phone_get_through_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>电话接通数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 21,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53338,
+          "paramName": "download_click_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>下载组件点击数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 22,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53339,
+          "paramName": "button_deeplink_invoked_rate",
+          "paramType": "Double",
+          "example": "",
+          "description": "<p>按钮唤端率</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 23,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53340,
+          "paramName": "deeplink_invoked_success_rate",
+          "paramType": "Double",
+          "example": "",
+          "description": "<p>唤醒成功率</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 24,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 53341,
+          "paramName": "event_form_submit_fill_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>表单填写量</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 25,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095865063,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

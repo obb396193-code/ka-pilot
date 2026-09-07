@@ -1,0 +1,42 @@
+{
+  "documentId": 1991,
+  "documentName": "5.1.4查询图片list接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 查询图片接口 list 接口\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/image/list\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型   | 是否必填 | 说明         | 备注                             |\n| ------------- | ------ | -------- | ------------ | -------------------------------- |\n| advertiser_id | long   | 必填     | 广告主 ID    | 在获取 access_token 的时候返回   |\n| start_date    | string | 可选     | 开始时间     | 与 end_date 同时传或同时不传；过滤筛选条件，格式为\"yyyy-MM-dd\"    |\n| end_date      | string | 可选     | 结束时间     | 与 start_date 同时传或同时不传；过滤筛选条件，格式为\"yyyy-MM-dd\" |\n| pic_types      | int[] | 可选     | 图片类型    | 0-默认，5-竖版，6-横版，12-开屏。不填，则获取所有类型图片。 |\n| image_token      | string | 可选     | 图片 token\t    |  |\n| image_tokens      | string[] | 可选     | 图片 tokens\t    |  |\n| page          | int    |          | 请求的页码数 | 默认 1                           |\n| page_size     | int    |          | 每页行数     | 默认 20，不超过 500              |\n\n### 返回参数\n\n| 字段        | 类型   | 说明         | 备注           |\n| ----------- | ------ | ------------ | -------------- |\n| code        | int    | 返回码       |                |\n| message     | string | 返回信息     |                |\n| data        | object | JSON 返回值  |                |\n| total_count | int    | 图片总数     |                |\n| details     | struct | 详情         |                |\n| url         | string | 图片预览地址 |                |\n| width       | long   | 图片宽度     |                |\n| height      | long   | 图片高度     |                |\n| size        | long   | 图片大小     |                |\n| format      | string | 图片格式     |                |\n| signature   | string | 图片 MD5     |                |\n| image_token | string | 图片 token   | 创建创意时使用 |\n| pic_type | int    | 图片类型     |  0-默认，5-竖版，6-横版，12-开屏，16-图集  |\n| pic_id | string |  图片库图片ID |  |\n| create_time | long |  创建时间 |  |\n| name | string |  图片名称 |  |\n| pic_tag | array |  图片标签 |  |\n### 请求样例\n\n```\ncurl --location --request GET 'https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/image/list' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 11311124,\n    \"start_date\": \"2023-11-01\",\n    \"end_date\": \"2023-11-18\",\n    \"pic_types\": [\n        5,\n        6\n    ],\n    \"page\": 1,\n    \"page_size\": 20\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 1,\n        \"details\": [\n            {\n                \"url\": \"https://static.yximgs.com/udata/pkg/aW1hZ2UtcGtnOmFkX2RzcF9pbWFnZV91cGxvYWQ6MTM0NTU3MjczNjpNRVJDSEFOVDpbQkA1ZjkzOTA5ZToxMDQ4OTIwMjM5NzM2.png\",\n                \"width\": 1686,\n                \"height\": 948,\n                \"size\": 43804,\n                \"format\": \"mjpeg\",\n                \"signature\": \"c5d1a2cb79017b4f75d8af6e3357f9ee\",\n                \"name\": \"image (3).png\",\n                \"pic_type\": 6,\n                \"image_token\": \"[REDACTED_SECRET_EXAMPLE]\",\n                \"pic_id\": \"5255700773077995990\",\n                \"pic_tag\": [\n                    \"磁力引擎\",\n                    \"这是一个长标签\"\n                ],\n                \"create_time\": 1699858653896\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ELWAgIDQxNGIChjuBSDlia2ShTIo5ZXN4Qk=\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1719367649133
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1719367649133,
+  "creator": "heran03",
+  "fullContext": null
+}

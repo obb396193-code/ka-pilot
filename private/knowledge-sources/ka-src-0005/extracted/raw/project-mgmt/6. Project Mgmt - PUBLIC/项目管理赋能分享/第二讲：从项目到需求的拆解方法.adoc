@@ -1,0 +1,131 @@
+# <span style="color: rgb(27, 18, 108);">**产研项目的WBS框架**</span>
+
+<span style="color: rgb(27, 18, 108);">**什么是WBS：**</span><span style="color: rgb(27, 18, 108);">Work Breakdown Structure/工作分解结构，是将项目可交付成果和项目工作分解成较小的、更易于管理的组成部分的层次结构。</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/9c66220d-3313-4e82-88d2-ce8f63234dc2.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+# <span style="color: rgb(27, 18, 108);">**项目到产研任务的四层拆解模型**</span>
+
+<span style="color: rgb(27, 18, 108);">通过该模型，将宏观、高层级的商业目标通过“项目-子项目-父需求-子需求-任务”的多层结构化方法，分解为微观、具体可执行的工作单元，提升研发协同效率与交付确定性。</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/3d2308b5-49ad-4a0c-9e16-d4ee293a88c1.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+拆解注意事项：
+
+1.以目标为统领，围绕目标不偏离；
+
+2.自上而下，逐层细化和聚焦；
+
+3.业、产、技团队协作共创；
+
+4.根据项目规模和复杂度做裁剪应用；
+
+# <span style="color: rgb(27, 18, 108);">**项目怎么拆解到子项目(策略层)**</span>
+- <span style="color: rgb(27, 18, 108);">**层级目标：**</span><span style="color: rgb(27, 18, 108);">降低复杂度和规模，分配宏观责任，并行推进工作。将一个庞大到无法管理的大项目，分解成几个可以独立领导和运作的小型子项目。</span>
+- <span style="color: rgb(27, 18, 108);">**负责人：**</span><span style="color: rgb(27, 18, 108);">业务PM/产品PM</span>
+- <span style="color: rgb(27, 18, 108);">**产出物：**</span><span style="color: rgb(27, 18, 108);">项目集结构(Program Structure)， 包含一系列定义清晰的子项目</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/69de1886-df5f-45e4-9898-13620422c7e1.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**子项目怎么拆解到父需求(产品层)**</span>
+- <span style="color: rgb(27, 18, 108);">层级目标：将子项目的业务目标，转化为产品需要实现的大型功能模块或解决方案。明确为了实现子项目目标，我们需要“做什么样的大功能”。</span>
+- <span style="color: rgb(27, 18, 108);">负责人：产品PM/相关域PD</span>
+- <span style="color: rgb(27, 18, 108);">产出物：粗粒度产品待办列表(High-level Product Backlog)</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/7bf3f7d3-4e5c-4b02-9be6-399edf82232d.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**父需求怎么拆解到子需求(战术层)**</span>
+- <span style="color: rgb(27, 18, 108);">层级目标：将大型、模糊的父需求，分解为一系列小的、清晰的、尽可能在一个迭代内完成的、能独立交付价值的需求点。</span>
+- <span style="color: rgb(27, 18, 108);">负责人：PD/开发/测试等紧密协作</span>
+- <span style="color: rgb(27, 18, 108);">产出物：精细化的产品待办列表(Detailed Product Backlog)，纳入双周迭代交付的细粒度子需求</span>
+
+<span style="color: rgb(27, 18, 108);">**检验子需求拆解质量的标准**</span><span style="color: rgb(27, 18, 108);">：参考敏捷实践中用户故事（User Story）的</span><span style="color: rgb(27, 18, 108);">**INVEST**</span><span style="color: rgb(27, 18, 108);">原则</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/b9c7ba0b-f99b-4178-b419-259216958a65.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/74bf3ec8-ebb7-467f-a0ab-90e321cbaaa5.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/2c65d770-8561-4f03-9e22-f26c174c0d95.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/967187eb-803f-4bd7-af10-f1578be42cbe.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/164d8378-68ef-4bfd-8821-cb1eb8db82ea.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+<span style="color: rgb(27, 18, 108);">**需求拆解的6个常见误区及纠偏策略**</span>
+
+需求拆解是连接产品构想与工程实现的桥梁。
+
+避开这些典型的思维陷阱，建立科学的拆解规范，是确保每次迭代交付独立、可验证用户价值的关键。
+
+<span style="color: rgb(31, 41, 55);">**拆需求是**</span><span style="color: rgb(31, 41, 55);">**PD**</span><span style="color: rgb(31, 41, 55);">**单兵作战**</span>
+
+<span style="color: red;">风险：</span><span style="color: rgb(106, 114, 128);">技术约束导致返工或遗漏测试场景。</span>
+
+<span style="color: rgb(75, 175, 79);">纠偏：</span><span style="color: rgb(106, 114, 128);">技术/测试前置参与评审。</span>
+
+<span style="color: rgb(31, 41, 55);">**按开发分工来拆解**</span>
+
+<span style="color: red;">风险：</span><span style="color: rgb(106, 114, 128);">交付物不独立，用户无感。</span>
+
+<span style="color: rgb(0, 176, 80);">纠偏：</span><span style="color: rgb(106, 114, 128);">确保每个需求交付最小价值闭环。</span>
+
+<span style="color: rgb(31, 41, 55);">**验收标准不清楚**</span>
+
+<span style="color: red;">风险：</span><span style="color: rgb(106, 114, 128);">定义不致，反复拉扯，逻辑漏洞。</span>
+
+<span style="color: rgb(0, 176, 80);">纠偏：</span><span style="color: rgb(106, 114, 128);">编写可量化验收标准(AC)。</span>
+
+<span style="color: rgb(31, 41, 55);">**完全不拆**</span><span style="color: rgb(31, 41, 55);">**or**</span><span style="color: rgb(31, 41, 55);">**过度拆分**</span>
+
+<span style="color: red;">风险：</span><span style="color: rgb(106, 114, 128);">周期过长风险集中，或管理成本剧增。</span>
+
+<span style="color: rgb(0, 176, 80);">纠偏：</span><span style="color: rgb(106, 114, 128);">粒度适中，匹配迭代节奏。</span>
+
+<span style="color: rgb(31, 41, 55);">**忽视非功能性需求**</span>
+
+<span style="color: red;">风险：</span><span style="color: rgb(106, 114, 128);">性能差、甚至引发系统崩溃。</span>
+
+<span style="color: rgb(0, 176, 80);">纠偏：</span><span style="color: rgb(106, 114, 128);">明确性能、安全、兼容性等要求和指标</span><span style="color: rgb(55, 64, 80);">。</span>
+
+<span style="color: rgb(31, 41, 55);">**忽视数据需求**</span>
+
+<span style="color: red;">风险：</span><span style="color: rgb(106, 114, 128);">上线后无法衡量效果，迭代盲目。</span>
+
+<span style="color: rgb(0, 176, 80);">纠偏：</span><span style="color: rgb(106, 114, 128);">埋点、数据报表与功能同步规划。</span>
+
+<span style="color: rgb(106, 114, 128);">纠偏的核心在于坚持“用户价值导向”，而非单纯的技术</span><span style="color: rgb(106, 114, 128);">分工。</span>
+
+# <span style="color: rgb(27, 18, 108);">**子需求怎么拆解到任务(执行层)**</span>
+- <span style="color: rgb(27, 18, 108);">层级目标：将一个面向“用户价值”的子需求，分解为技术团队可以分工执行的具体技术任务。明确为了实现这个需求，工程师“具体要写什么代码、改什么配置”，QA“具体要测试什么功能、怎么测试”等。</span>
+- <span style="color: rgb(27, 18, 108);">负责人：开发、测试。</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/f2f80ae7-1743-4071-9df8-fdd50ae91439.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**通过项目Tracker和Aone来管理项目到需求的四层拆解产出物**</span>
+
+<span style="color: rgb(27, 18, 108);">1\. 项目Tracker模板库：</span>[Link](https://alidocs.dingtalk.com/i/nodes/NZQYprEoWoxKPoqwCKMMNN62V1waOeDk%0d)
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/bba1254c-5098-42a0-ae59-9280f8b4ac7e.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+1. <span style="color: rgb(27, 18, 108);">Aone项目空间</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/385ee1c4-d0f0-4c12-a2a9-3cc0a498bfb9.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**案例：付免联动项目**</span>
+
+**项目背景：**
+
+<span style="color: rgb(106, 114, 128);">该项目旨在通过平台补贴激励商家增加广告投入，联动大促招商渠道引流进一步扩大商家招商范围，同时在C端链路强化补贴券表达效果，从而实现广告收入与整体GMV共同增长。</span>
+
+<span style="color: rgb(106, 114, 128);">**从项目到子项目的拆解思路：**</span>
+
+<span style="color: rgb(106, 114, 128);">从业务整体目标和策略出发，将一个复杂的大项目，拆分为多个相对独立、规模和周期适中、可并行推进的子项目，包含核心必需功能的子项目率先上线，包含复杂增强功能的子项目后续再上线。</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOL5jmGWGxRlpz/img/89334cbb-4bc5-4084-bb4b-124c203cbc35.png?Expires=1776252758&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+
+
+
+
+

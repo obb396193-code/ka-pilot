@@ -1,0 +1,43 @@
+O2发布流水线中存在多个发布节点，发布失败时各个节点的失败原因各不相同，请根据报错判断具体原因。
+
+
+
+#### 源码检查
+#### 
+#### CDN检查
+#### 
+#### 分支集成
+#### 
+#### 上传源代码
+#### 
+#### 构建
+构建失败请参考：[https://aliyuque.antfin.com/ezlb0g/omqgq7/gqnrpu1c4lg4c8g9](https://aliyuque.antfin.com/ezlb0g/omqgq7/gqnrpu1c4lg4c8g9)
+
+
+
+#### 质量检测
+质量检测节点会运行构建产物检查等门神检查器，日常发布时失败不会卡发布，线上发布时会卡发布。请根据检查结果提示解决报错。
+
+#### 发布
+发布节点在不同的流水线中需要发布的内容不同，失败原因也不同，需要结合具体报错日志进行排查。
+
+
+
+##### 跨端应用：
+|  获取 entry.json 出错：ENOENT: no such file or directory, open '/tmp/fedflow_multiend_app_*****/entry.json'  |
+| --- |
+
+
+请检查构建产物中是否包含entry.json文件，该文件为跨端应用产物约定文件。
+
+参考文档：[https://help.o2.alibaba-inc.com/docs/283#YF1K1oBk](https://help.o2.alibaba-inc.com/docs/283#YF1K1oBk)
+
+
+
+##### 函数应用：
+ [提取 built-functions 目录出错]未找到 built-functions 目录 
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2025/png/42456308/1756199142157-979ab02c-535d-4ce5-8a64-7062d5916388.png) 
+
+产物目录不符合要求，请检查构建产物结构。
+

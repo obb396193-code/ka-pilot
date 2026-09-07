@@ -1,0 +1,422 @@
+{
+  "documentId": 2788,
+  "documentName": "新建应用分包",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720094289854
+    }
+  ],
+  "apiId": 703,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subpkg/add",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subpkg/add' \\\n--header 'Content-Type: application/json' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\": 900015391,\n    \"parent_package_id\": 1099611757910,\n    \"type\": 2,\n    \"count\": 1,\n    \"channel_id\": [],\n    \"channel_columns\": [\n        {\n            \"channel_name\": \"测试备注1\",\n            \"description\": \"备注-1\"\n        },\n        {\n            \"channel_name\": \"测试备注2\",\n            \"description\": \"备注-2\"\n        }\n    ]\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": [\n        {\n            \"description\": \"备注-2\",\n            \"package_id\": 100130534,\n            \"build_status\": 0,\n            \"parent_package_id\": 1099611757910,\n            \"channel_id\": \"测试备注2\"\n        },\n        {\n            \"description\": \"备注-1\",\n            \"package_id\": 100130535,\n            \"build_status\": 0,\n            \"parent_package_id\": 1099611757910,\n            \"channel_id\": \"测试备注1\"\n        }\n    ],\n    \"message\": \"OK\",\n    \"request_id\": \"ELmAgIDQwJmOrAEYnAkgo8_CyJQxKLWe0dQB\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63204,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42105,
+      "paramName": "channel_id",
+      "paramType": "String[]",
+      "example": "",
+      "description": "上传的渠道号列表,系统自动分包方式不填",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "\t当type=2时填写，单次最多填写100个。同一应用包下填写的渠道号不可重复",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42106,
+      "paramName": "parent_package_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "母包id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "仅支持android应用的包id新建分包。该字段等同于获取新版应用发布列表【单元创编】 接口返回值的package_id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42107,
+      "paramName": "count",
+      "paramType": "Integer",
+      "example": "",
+      "description": "分包数量",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "当type=1时填写，单次最多100",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42108,
+      "paramName": "type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "分包方式",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "1-系统自动分包，2-上传渠道号列表",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 45553,
+      "paramName": "channel_columns",
+      "paramType": "ChannelColumnSnake[]",
+      "example": "-",
+      "description": "渠道分包",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2829,
+      "sort": 6,
+      "note": "与 channel_id 功能类似，但不可同时传递。",
+      "children": [
+        {
+          "paramId": 45551,
+          "paramName": "channel_name",
+          "paramType": "String",
+          "example": "-",
+          "description": "-",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 45552,
+          "paramName": "description",
+          "paramType": "String",
+          "example": "-",
+          "description": "-",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 42113,
+      "paramName": "data",
+      "paramType": "AddSubPackageRespSnake[]",
+      "example": "",
+      "description": "新建分包的返回参数",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2581,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 42109,
+          "paramName": "build_status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "构建状态 0-构建中",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "构建状态 0-创建中，1-构建中，2-构建成功，3-构建失败",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42110,
+          "paramName": "channel_id",
+          "paramType": "String",
+          "example": "",
+          "description": "渠道号(分包号)",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42111,
+          "paramName": "package_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "分包id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 42112,
+          "paramName": "parent_package_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "绑定的母包id",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 45554,
+          "paramName": "description",
+          "paramType": "String",
+          "example": "-",
+          "description": "<p><br>分包备注</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42114,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 42115,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回详情",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720094289854,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

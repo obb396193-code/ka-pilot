@@ -1,0 +1,42 @@
+{
+  "documentId": 2360,
+  "documentName": "可共享的主体列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】获取可共享的主体列表\n此接口只有在跨主体共享白名单内才会有数据返回，如没有相关场景，则可忽略此接口。\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/canShare/corpList](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/canShare/corpList)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主id |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | Object |  | JSON返回值 |  |\n| &#8195;list | Object[] |  | 主体列表的返回参数 |  |\n| &#8195;&#8195;corp_id | Long |  | 主体ID |  |\n| &#8195;&#8195;corp_name | String |  | 主体名称 |  |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 错误详情 |  |\n\n### 请求样例\n\n```js\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/canShare/corpList' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n    \"advertiser_id\": 12078245\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"list\": [\n            {\n                \"corp_name\": \"郭老师测试账户\",\n                \"corp_id\": 93732\n            },\n            {\n                \"corp_name\": \"快手广告深圳分公司\",\n                \"corp_id\": 7159\n            },\n            {\n                \"corp_name\": \"程丽倩的测试企业\",\n                \"corp_id\": 41620\n            },\n            {\n                \"corp_name\": \"北京慕远科技有限公司\",\n                \"corp_id\": 15280\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMSAgIDQpbqQChi3AiC1kaX0iDEo09eglQ0=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1685979046345
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1685979046345,
+  "creator": "heran03",
+  "fullContext": null
+}

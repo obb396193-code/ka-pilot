@@ -1,0 +1,42 @@
+{
+  "documentId": 1985,
+  "documentName": "3.1.1获取广告计划信息",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取广告计划信息\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/campaign/list\n\n请求方式：GET/POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段             | 类型   | 是否必填 | 说明                             | 备注                                                                                                                                                                                                                                       |\n| ---------------- | ------ | -------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |\n| advertiser_id    | long   | 必填     | 广告主 ID                        | 在获取 access_token 的时候返回                                                                                                                                                                                                             |\n| campaign_id      | long   | 可选     | 广告计划 ID                      | 过滤筛选条件，若不传或传空则视为无限制条件                                                                                                                                                                                                 |\n| campaign_name       | string   | 可选     | 计划名称                      |过滤筛选条件，若不传或传空则视为无限制条件                                                                                                                      |\n| campaign_ids      | long  | 可选     | 广告计划Id集                   |不超200过                                                                                                                      |\n| put_status_list     | int  | 可选     | 计划投放状态筛选              |1：投放；2：暂停；3：删除。备注：备注：传了该参数会覆盖上面的status参数筛选，因为二者是相同筛选项                                                                                                          |\n| status           | int    | 可选     | 计划状态                       | 过滤筛选条件；1：广告计划已暂停；4：有效；5：广告计划已删除； -2 不限         |\n| start_date       | string | 可选     | 开始时间                         | 与 end_date 同时传或同时不传；过滤筛选条件，格式为\"yyyy-MM-dd\"，参数值对应 update_time 信息                                                                                                                                                |\n| end_date         | string | 可选     | 结束时间                         | 与 start_date 同时传或同时不传；过滤筛选条件，格式为\"yyyy-MM-dd\"，参数值对应 update_time 信息                                                                                                                                              |\n| time_filter_type | int    | 可选     | 按创建时间，还是更新时间进行筛选 | 1.如传入此字段时不传\"start_date\"，与\"end_date\"字段，则不根据时间筛选。2.传入\"start_date\"，与\"end_date\"字段，且此字段为 1 时，按照创建时间进行筛选。3.传入\"start_date\"，与\"end_date\"字段，此字段不传，或传值为 0 时，则按照更新时间进行筛选 |\n| page             | int    | 可选     | 请求的页码数                     | 默认为 1                                                                                                                                                                                                                                   |\n| page_size        | int    | 可选     | 请求的每页行数                   | 默认为 20                                                                                                                                                                                                                                  |\n\n### 返回参数\n\n|                   |        |            |                 |\n| ----------------- | ------ | ---------- | --------------- |\n| 字段              | 类型   | 说明       | 备注            |\n| code              | int    | 返回码     |                 |\n| message           | string | 返回信息   |                 |\n| campaign_id          | string | 计划id  |                 |\n| campaign_name        | string | 计划名称   |                 |\n| put_status       | string | 投放状态（操作结果）   |     1：投放中；2：暂停 3：删除           |\n| status        | int | 计划状态   | 1：广告计划已暂停；3：广告计划超预算；4：有效；5：广告计划已删除；6：账户余额不足； -2：不限                |\n| create_channel       | string | 创建渠道   |                 |\n| day_budget      | long | 当日预算  |                 |\n| day_budget_schedule    | long[] | 分日预算   |   优先级高于day_budget            |\n| campaign_type   | string | 计划类型   |                 |\n| create_time   | string | 创建时间  |                 |\n| update_time | string | 更新时间   |                 |\n| campaign_sub_type | int    | 计划子类型 | 4：DPA，5：SDPA |\n|      ad_type    |  int   |   广告计划类型 |  0:信息流，1:搜索         |\n\n### 请求示例\n\n```\ncurl --location --request GET 'https://ad.e.kuaishou.com/rest/openapi/v1/campaign/list' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n    \"advertiser_id\": 4171736,\n    \"campaign_id\": 227785633\n}'\n\n```\n\n### 返回示例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"total_count\": 1,\n        \"details\": [\n            {\n                \"status\": 6,\n                \"campaign_id\": 227785633,\n                \"campaign_name\": \"提高应用活跃_20211105_19:12\",\n                \"put_status\": 1,\n                \"create_channel\": 0,\n                \"day_budget\": 0,\n                \"day_budget_schedule\": [],\n                \"campaign_type\": 7,\n                \"campaign_sub_type\": 0,\n                \"create_time\": \"2021-11-05 19:12:11\",\n                \"update_time\": \"2021-11-05 19:12:11\"\n            }\n        ]\n    },\n    \"request_id\": \"f209ef62972e456faccdd80989d6e516\"\n}\n\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624563
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624563,
+  "creator": "yanghua05",
+  "fullContext": null
+}

@@ -1,0 +1,58 @@
+{
+  "documentId": 2429,
+  "documentName": "快小游ECPM报表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 快小游ECPM报表\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/report/ecpm_report](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/report/ecpm_report)\n\n请求方式：POST\n\n数据格式：JSON   \n````\n使用该报表接口前需要接入快手磁力引擎MAPI，注册为开发者\n````\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 11128736 | 必填 | 广告主id,主要用于鉴权无实际含义 |  |\n| app_id | string | ks6421134450112891 | 必填 | 游戏id |  |\n| open_id | List<String> |  | 非必填 | 用户的 open_id或union_id，单次允许最多传入200个，传入为空字符串时，查询所有用户|  |\n| page | Integer | 1 | 非必填 | 查询的页码，页码从1开始 |  |\n| page_size | Integer | 10 | 非必填 | 单页的大小，最大支持500 |  |\n| data_hour | String | 2023-11-02 14:00:00 | 必填 | 根据传参，有两种时间范围可查： - 若传 YYYY-MM-DD，则查天级范围，即 YYYY-MM-DD 00:00:00 ～ YYYY-MM-DD 23:59:59 - 若传 YYYY-MM-DD hh[:mm:ss]，则查小时级范围，即 YYYY-MM-DD hh:00:00 ～ YYYY-MM-DD hh:59:59  举例：查 13 号：“2023-07-13” 查 13 号 14 点：“2023-07-13 14” 或 “2023-07-13 14:00:00” 或 “2023-07-13 14:13:24” PS：数据源仅保存近 168小时的数据，建议明确时间范围的情况下，指定小时级别只支持1天的查询 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 1 | 状态码 |  |\n| message | String | OK | 返回信息\t |  |\n| open_id | String | 19841211fc50569014bf5724aeceb9f0 | 用户的 open_id或union_id |  |\n| cost | Long | 100 | 消耗：单位厘 |  |\n| total_count | Long | 100 | 总条数 |  |\n| id | String | 17052480001016060086879176566 | 记录唯一标识（返回记录按 ID 递增排序） |  |\n| event_time | String | 2024-01-18 15:22:36 | 广告计费事件发生时间  |  |\n\n\n### 请求样例\n\n```\ncurl -H \"Access-Token:[REDACTED_SECRET_EXAMPLE]\" \\\n-H \"Content-Type:application/json\" \\\n-d '\n{\n  \"advertiser_id\": \"131114\",\n  \"app_id\": \"ks67159985317480\",\n  \"open_id\": [\n    \"f11187870a1ca232814bf47248fe9ab9a\",\n    \"f11187870a1ca232814bf47248fe9ab9b\",\n    \"f11187870a1ca232814bf47248fe9ab9c\",\n    \"f11187870a1ca232814bf47248fe9ab9d\",\n    \"f11187870a1ca232814bf47248fe9ab9e\",\n    \"f11187870a1ca232814bf47248fe9ab9f\",\n  ],\n  \"data_hour\": \"2023-11-02 14:00:00\"\n}\n' https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/report/ecpm_report\n  ```\n### 返回参数举例\n  \n```\n  {\n  \"code\": 0,\n  \"data\": {\n    \"empty\": false,\n    \"total_count\": 3,\n    \"details\": [\n      {\n        \"open_id\": \"f11187870a1ca232814bf47248fe9ab9a\",\n        \"cost\": 10,\n        \"id\":\"17052480001016060086879176560\",\n        \"event_time\":\"2024-01-18 15:10:00\"\n      },\n      {\n        \"open_id\": \"f11187870a1ca232814bf47248fe9ab9b\",\n        \"cost\": 133,\n        \"id\":\"17052480001016060086879176564\",\n        \"event_time\":\"2024-01-18 15:11:00\"\n      },\n      {\n        \"open_id\": \"f11187870a1ca232814bf47248fe9ab9c\",\n        \"cost\": 90,\n        \"id\":\"17052480001016060086879176569\",\n        \"event_time\":\"2024-01-18 15:12:00\"\n      }\n    ]\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"EO60gICQgpGOChjDCSDfnJXpuTEo0sOVigg=\"\n}\n```",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1705993228395
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1705927307737
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1705993228395,
+  "creator": "songchenglu",
+  "fullContext": null
+}

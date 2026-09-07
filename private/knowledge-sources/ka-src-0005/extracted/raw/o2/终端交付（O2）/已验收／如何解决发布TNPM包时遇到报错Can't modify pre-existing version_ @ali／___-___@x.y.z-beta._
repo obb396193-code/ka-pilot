@@ -1,0 +1,20 @@
+用户真实链接：https://links.alipay.com/support/conversation/684b8e77b992a204b57937c9  
+作者：庞舒蕾  
+评审人：
+
+
+
+问题原因：
+
+该报错原因是用户发布npm包时版本号已存在于 [https://anpm.alibaba-inc.com/](https://anpm.alibaba-inc.com/) 中，anpm不允许重复发布版本，所以会发布失败
+
+
+
+解决方法：
+
+请修改npm包根目录中package.json中的version字段后的版本号，注意必须为线上不存在的版本。
+
+
+
+如何判断npm包版本号是否存在，可以使用tnpm ls {包名}命令；也可以自行到 [https://anpm.alibaba-inc.com/](https://anpm.alibaba-inc.com/) 搜索对应的包；如果需要使用api可以用[https://registry.anpm.alibaba-inc.com/](https://registry.anpm.alibaba-inc.com/@ali/tb-soa-sdk){包名} 。
+

@@ -1,0 +1,35 @@
+{
+  "document_id": "ka-src-0009",
+  "source": "腾讯广告 Marketing API 公开 Apifox 镜像（官方归属待补证）",
+  "source_url": "https://s.apifox.cn/apidoc/docs-site/3515798",
+  "official_entry": "https://developers.e.qq.com/docs",
+  "mirror_ownership_status": "unverified",
+  "captured_at": "2026-08-20T15:47:31.853Z",
+  "source_updated_at": null,
+  "llms_index_entries": 315,
+  "guide_documents": 8,
+  "api_documents": 307,
+  "captured_documents": 315,
+  "endpoint_documents": 307,
+  "observed_unique_endpoint_paths": 297,
+  "normalized_unique_endpoint_paths": 298,
+  "duplicated_observed_endpoint_groups": 10,
+  "known_endpoint_conflicts": 1,
+  "openapi_query_header_mismatch_documents": 306,
+  "official_reference_links_discovered": 320,
+  "official_reference_link_kinds": {
+    "api": 279,
+    "guide": 12,
+    "news": 2,
+    "other": 6,
+    "other_doc": 7,
+    "reference": 14
+  },
+  "official_reference_links_archived": 0,
+  "failures": 0,
+  "credential_sanitization_counts": {
+    "named_assignment": 6,
+    "signed_query": 2
+  },
+  "boundary": "截至抓取日，覆盖公开 Apifox 项目 llms.txt 列出的全部 Markdown 页面；内容与腾讯广告官方原站高度一致，但项目归属尚未获腾讯声明证实，且 OpenAPI 转换存在系统性错误，不得作为可执行 Contract/SDK 生成源。官方原站枚举、专题、公告和附件未全量归档；documented 不等于 authorized、wrapped 或 verified。"
+}

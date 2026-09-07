@@ -1,0 +1,155 @@
+#### 基础能力
+
+O2 Space TNPM 多包发布流程是在 tnpm publish 之上提供的一层 tnpm 多包 发布流程，适用于组件和模块平台的基础发布服务。主要特性如下：
+
+- 支持 TNPM 多包发布
+- 支持 CDN 发布
+- 与多包管理工具无关，如 Lerna、Yarn、Workspace 等
+- 记录每次任务发布相关包信息
+- 迭代版本与包版本解耦，可在同一个迭代下自由发布，不再校验 package.json 中 version 是否与迭代版本号是否一致
+
+
+#### 提供的发布环境
+
+- 日常环境（可基于日常环境进行 beta 包的发布和测试，需在应用设置中开启日常发布）
+- 线上环境
+
+
+#### 发布产物说明
+
+- TNPM 包
+- CDN 资源：需要在应用设置中开启 CDN 同步功能
+## 接入说明
+
+前往 [应用接入](https://space.o2.alibaba-inc.com/app/new)，选择 TNPM 多包 应用类型
+
+
+
+> 接入前需要设置 tbfed 公共账户为仓库或者 group 的 master , 平台需要权限获取你的仓库代码。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ir7hra/imgJCfmF6mCYZ.png)
+
+
+
+
+**关于构建器：**对于多包仓库，如无特殊构建逻辑，建议使用官方构建器 [@ali/builder-package-monorepo](https://anpm.alibaba-inc.com/package/@ali/builder-package-monorepo)或由其他框架团队提供的构建器。
+
+
+
+构建器使用说明：[《O2 单仓库多 NPM 包发布》](https://yuque.antfin-inc.com/ice/rdy99p/yhpwvz)
+
+如有特殊的构建逻辑，则需参照构建产物约定，生成相应的构建产物，也可进行正常发布。
+
+## 发布流程
+
+#### 发布流程
+
+TNPM 多包 发布的流程如下图所示：
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ir7hra/imgjOAtt1CzXV.png)
+
+
+主要过程有：
+
+
+
+- 分支预处理：处理多分支集成时的分支合并过程
+- 前置检查：进行构建脚本是否合法等检查
+- 构建：构建项目代码里的 abc.json （即云构建配置）对代码进行云端构建（需在应用设置中开启云构建功能，另云构建配置请参考 [文档](http://builder.alibaba-inc.com/document?slug=config)）
+- 检查
+- TNPM 多包检查：从 registry 检查包版本和发布账户权限
+- 门神检查：对源码和构建产物进行安全扫描、域名检测、文件元信息检查、前端代码质量检测等（如想了解门神可访问 [门神官网](https://gog.alibaba-inc.com/)）
+- 发布：
+- tnpm 发布: 将 npm 包发布到 [TNPM](https://npm.alibaba-inc.com/) 包管理中心
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ir7hra/imgEWo9zazNec.png)
+
+
+- tnpm_cdn 发布: 将构建产物（dist 目录下的产物）中的 js、css 等资源发布到日常或线上的 CDN，如下所示。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ir7hra/imggtLJic3WQl.png)
+
+
+## 其他发布说明
+
+#### 开启日常环境发布
+
+开启 TNPM 包的 Beta 版本发布后，将强制开启线上构建，且要求日常构建的结果中 package.json 的 version 字段符合 Beta 版本（x.y.z-beta.BETA_VERSION）要求。 [帮助文档](https://work.def.alibaba-inc.com/doc/tnpmbeta)
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ir7hra/imgAiOIviAX3P.png)
+
+
+#### 开启云构建
+
+如果你的 npm 包在 publish 前需要构建(比如构建 typescript)，可开启云构建。
+
+流程默认不开启构建，如需使用请前往 【设置】-【发布设置】开启。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ir7hra/imgfPJqhr3KoY.png)
+
+
+#### 开启 CDN 同步
+
+流程支持将构建结果中的 dist 目录中的文件同步到 CDN。比如业务组件想同时提供 CDN 引用的方式，可前往 【设置】-【发布设置】开启该功能。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ir7hra/imgygUCDXbQpP.png)
+
+
+- CDN 发布路径前缀为 /code/npm/{package_name}/{package_version}
+- 代码会同时部署到日常和线上环境 (未开启日常环境发布)
+#### 构建产物约定
+
+读取构建目录下一级目录为包发布目录，平铺发布包目录，不递归。
+
+```
+build /
+├── a
+│   ├── dist
+│   ├── index.js
+│   ├── package.json
+├── b
+│   ├── dist
+│   ├── index.js
+│   ├── package.json
+├── c
+│   ├── dist
+│   ├── index.js
+│   ├── package.json
+
+```
+dist 为 CDN 发布目录，若未开启 CDN 发布，则无需此目录。
+
+#### CDN 发布路径
+
+原先的迭代版本与包版本一致，在多包发布场景下，CDN 路径中的版本号，统一取包版本号，而非迭代版本号。
+
+```
+// 之前的路径
+group/project/迭代版本号（包版本号）/asset.js
+
+// 现在的路径
+group/project/包版本号/asset.js
+
+```
+示例：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ir7hra/imgQgpSG7Ea6w.png)
+
+
+#### CDN 文件一致性
+
+- 包发布前通过对 TNPM 版本校验，仅支持 TNPM 上未发布过的版本进行发布，已存在的版本不能进行发布。
+- CDN 发布前对线上 CDN 资源进行校验，已存在的文件不能进行发布。
+
+
+#### TNPM 包发布记录
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ir7hra/imgHvHFB3PeDK.png)
+
+
+除了原有的对发布任务的相关信息进行记录，新增了对每次发布任务所发布的包信息进行记录，如包名、包版本号，包开发者、包许可证等信息。
+
+#### 示例仓库
+
+[http://code.alibaba-inc.com/def-demo/pub-tnpm](http://code.alibaba-inc.com/def-demo/pub-tnpm)
+

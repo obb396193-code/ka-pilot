@@ -1,0 +1,58 @@
+{
+  "documentId": 2152,
+  "documentName": "快任务任务列表接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 星任务（视频）-查询任务的投后数据\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/ad_social/v1/quick_task/task/list](https://ad.e.kuaishou.com/rest/openapi/gw/ad_social/v1/quick_task/task/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 100 | 必填 | 账户id |  |\n| page_num | Integer | 1 | 必填 | 页码 |  |\n| page_size | Integer | 100 | 必填 | 每页大小 | 最大200 |\n| start_time | String | 2022-04-10 | 必填 | 任务创建开始时间 | 开始时间和结束时间差不能大于14天 |\n| end_time | String | 2022-04-10 | 必填 | 任务创建结束时间 | 开始时间和结束时间差不能大于14天 |\n| task_id | Long[] | [1, 2] | 可选 | 任务ID集合 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 0 | 状态码 | 成功-0；系统异常-500000；业务异常-401000 |\n| message | String | 参数错误 | 异常信息 | 成功返回”OK“；异常情况返回异常信息 |\n| data | TaskListResp | {} | 返回结果 |  |\n\n### TaskListResp\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| total | long | 1000 | 数据总条数 |  |\n| task_detail_resp | TaskDetailResp[] | [] | 任务详情集合 |  |\n\n### TaskDetailResp\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| task_id | long | 100 | 任务ID |  |\n| task_name | String | 任务名称 | 任务名称 |  |\n| task_status | int | 1 | 任务状态 | 0-未知，1-待审核，2-审核失败，3-进行中，4-已结束，5-已结算，6-支付失败，8-待上线，11-待支付，13-待开奖，15-已开奖 |\n| create_time | String | 2022-04-10 12:00:00 | 任务创建时间 |  |\n| third_cover_click_monitor | ThirdMonitorInfoResp | {} | 第三方封面点击监测链接 |  |\n| third_behavior_click_monitor | ThirdMonitorInfoResp | {} | 第三方行为点击监测链接 |  |\n| ios_url | String | http://www.baidu.com | ios地址 |  |\n| ios_app_name | String | ios应用名称 | ios应用名称 |  |\n| android_url | String | http://www.baidu.com | android地址 |  |\n| android_app_name | String | android应用名称 | android应用名称 |  |\n| package_name | String | android应用包名 | android应用包名 |  |\n| app_icon_url | String | http://www.baidu.com | 应用图标 |  |\n| ad_description | String | 广告描述 | 广告描述 |  |\n| guide_word | String | 广告引导词 | 广告引导词 |  |\n| url | String | http://www.baidu.com | 广告链接 |  |\n| task_type | int | 2 | 转化链接类型 | 2:应用下载，3:品牌推广，26:小程序，27:影视宣发，29:小游戏 |\n| app_link | String | http://www.baidu.com | APPLink |  |\n\n### ThirdMonitorInfoResp\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| event_type | int | 1 | 监测类型 | 1-第三方封面点击信息，2-第三方行为点击信息 |\n| url_type | int | 1 | 分端类型 | 1-不分端，2-分端 |\n| share_monitor_url | String | http://www.baidu.com | 监测链接（不分端） |  |\n| ios_monitor_url | String | http://www.baidu.com | 监测链接（ios） |  |\n| android_monitor_url | String | http://www.baidu.com | 监测链接（android） |  |\n\n\n\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1701075019913
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1698807641888
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 5,
+  "bizName": "聚星",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1701075019913,
+  "creator": "lihang07",
+  "fullContext": null
+}

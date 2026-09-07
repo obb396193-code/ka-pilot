@@ -1,0 +1,301 @@
+{
+  "documentId": 2761,
+  "documentName": "创建投前预估任务",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095407370
+    }
+  ],
+  "apiId": 310,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/pre_put/predication_task/create",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 11440033,\n    \"tasks\": [\n        {\n            \"photo_id\": 64312188979,\n            \"file_name\": \"测试4\",\n            \"ocpx_action_type\": 53\n        }\n    ]\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"task_succeeded_reason_list\": [\n            {\n                \"refer_task_id\": 1123512,\n                \"element_json\": \"{\"photoId\":96412359598,\"photoFileName\":\"2月14日筹码 信息.mp4\",\"ocpxActionType\":53}\"\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"d1d5de0bc04c4f1da3f2a0acb946e0d4\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 16447,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "1111",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16448,
+      "paramName": "tasks",
+      "paramType": "AdPredicationTask[]",
+      "example": "[]",
+      "description": "投前预估创建任务的参数",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 643,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 16437,
+          "paramName": "photo_id",
+          "paramType": "String",
+          "example": "49194904380",
+          "description": "视频id",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 16438,
+          "paramName": "file_name",
+          "paramType": "String",
+          "example": "IMG_3437.mp4",
+          "description": "视频文件名",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 16439,
+          "paramName": "ocpx_action_type",
+          "paramType": "Long",
+          "example": "180",
+          "description": "优化目标，53表示表单提交，180表示激活",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 16449,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "响应状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16450,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "\"OK\"",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 16451,
+      "paramName": "data",
+      "paramType": "RealTaskResult",
+      "example": "",
+      "description": "投前预估创建结果",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 645,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 19949,
+          "paramName": "task_succeeded_reason_list",
+          "paramType": "TaskReason[]",
+          "example": "[{}]",
+          "description": "成功列表",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 733,
+          "sort": 4,
+          "note": "",
+          "children": [
+            {
+              "paramId": 19944,
+              "paramName": "refer_task_id",
+              "paramType": "Long",
+              "example": "47494281",
+              "description": "创建失败：md5重复的时候对应的任务id；创建成功：成功创建的任务id",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 19947,
+              "paramName": "element_json",
+              "paramType": "String",
+              "example": "",
+              "description": "任务的创建入参",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095407370,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

@@ -1,0 +1,54 @@
+{
+  "documentId": 3107,
+  "documentName": "获取线索优选开关",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取线索优选开关\n\n请求接口：/rest/openapi/gw/dsp/clueOptimize/ocpxSwitch\n\n请求方式：POST\n\n数据格式：JSON\n\n## 请求参数\n\n| 字段               | 类型   | 是否必填 | 说明                           | 备注                                                         |\n| ------------------ | ------ | -------- | ------------------------------ | ------------------------------------------------------------ |\n| advertiser_id      | long   | 必填     | 广告主 ID                      |                                |\n\n\n## 返回参数\n\n|          字段           |   类型   |                   说明                    | 备注                                                         |\n| :---------------------: | :------: | :---------------------------------------: | ------------------------------------------------------------ |\n|        data             |   struct   |                广告计划 ID                |                                                              |\n|         message         |   string   |                 广告组 ID                 |                                                              |\n|        code              |  string  |                广告组名称                 |                                                              |\n\n\n\n\n### data\n\n|             字段             |  类型  |         说明         |                             备注                             |\n| :--------------------------: | :----: | :------------------: | :----------------------------------------------------------: |\n|     clue_optimize_switch     |  int   |    线索优选开关类型   | 表单-53，私信留资-786，添加企业微信-763\t |\n|         name                 | string |    线索优选开关名字   | 表单-53，私信留资-786，添加企业微信-763 |\n|          status              | boolean|       开关状态       |       true-开启，false-关闭  |\n\n### 请求样例\n\n```json\n{\n   \"advertiser_id\": 20000146\n}\n```\n\n\n\n### 返回样例\n\n```json\n{\n  \"code\": 0,\n  \"data\": [\n    {\n      \"name\": \"表单转化\",\n      \"status\": true,\n      \"clue_optimize_switch\": 53\n    },\n    {\n      \"name\": \"线索提交数\",\n      \"status\": true,\n      \"clue_optimize_switch\": 786\n    },\n    {\n      \"name\": \"添加企业微信\",\n      \"status\": true,\n      \"clue_optimize_switch\": 763\n    }\n  ],\n  \"message\": \"OK\",\n  \"request_id\": \"EL6CgIDgscGcChjIDSCs3pTVnjIows2KpA0=\"\n}\n```",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1726218620070
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1726218620070,
+  "creator": "liuyixuan11",
+  "fullContext": null
+}

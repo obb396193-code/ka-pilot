@@ -1,0 +1,709 @@
+{
+  "documentId": 2580,
+  "documentName": "修改程序化创意",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "修改程序化创意\n/rest/openapi/gw/dsp/advanced_creative/update\n\n\nadvertiser_id  Long  <p>广告主id</p>\naction_bar  String  <p><br>行动号召按钮</p>\nactionbar_click_url  String  <p>第三方 ActionBar 点击监控链接，命中有效触点白名单表示有效触点监测链接（限：快手主站/极速版场景）</p>\nad_photo_played_t3s_url  String  <p>第三方有效播放监测链接</p>\ncaptions  String[]  <p>作品广告语</p>\nclick_url  String  <p>第三方点击检测链接</p>\ncover_slogans  String[]  <p>封面广告语</p>\ncreative_category  Integer  <p>创意分类</p>\ncreative_tag  String[]  <p>创意标签</p>\nnew_expose_tag  NewExposeTagSnake[]  <p><br>广告标签 2 期</p>\ntext  String  <p><br>广告标签text</p>\nurl  String  <p><br>广告标签url</p>\npackage_name  String  <p>程序化创意名称</p>\nphoto_list  MapiAdvCreativePhotoBOSnake[]  <p>素材列表</p>\ncover_image_token  String  <p>封面图片 token</p>\ncover_image_url  String  请补充描述详情\ncreative_material_type  Integer  <p>素材类型</p>\nphoto_id  Long  <p><br>视频 ID</p>\npic_list  String[]  <p>联盟图片（横版/竖版）</p>\nsticker_styles  String[]  <p>封面贴纸</p>\nunit_id  Long  <p>广告组 ID</p>\nmaterial_intelligent_optimize  Integer  素材智能优化开关\nrecommendation  String  <p>原生plc广告语</p>\nimpression_url  String  <p>曝光</p>\ndata  AdvancedCreativeEditView  创编计划、广告组、创意返回id参数\nunit_id  Long  广告组 ID\ncode  Integer  <p>返回码</p>\nmessage  String  <p>返回信息</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1755004428956
+    }
+  ],
+  "apiId": 604,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/advanced_creative/update",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 73495,
+      "paramName": "micro_change_switch",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>微改白盒化开关</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "0 - 关闭；1 - 打开",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 63087,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38459,
+      "paramName": "action_bar",
+      "paramType": "String",
+      "example": "",
+      "description": "<p><br>行动号召按钮</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38460,
+      "paramName": "actionbar_click_url",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>第三方 ActionBar 点击监控链接，命中有效触点白名单表示有效触点监测链接（限：快手主站/极速版场景）</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "部分客户使用 actionbar_click_url 不为空时，click_url 必填，不能超过 1024 字符",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38461,
+      "paramName": "ad_photo_played_t3s_url",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>第三方有效播放监测链接</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "白名单功能，且当广告组 scene_id 为 27（开屏） 时不支持该检测链接；与 impression_url 不可同时使用",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38462,
+      "paramName": "captions",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>作品广告语</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "每个不超过 30 个字符，英文字符两个算一个字符，最多可传 3 个",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38463,
+      "paramName": "click_url",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>第三方点击检测链接</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "不能超过 1024 字符 ocpx_action_type 是 180 并且应用没有接入 sdk，监测链接必填； 计划 type 是 2（推广应用安装），ocpx_action_type 是注册（396）、付费（190）、完件（384）、授信（383），并且没有接入 sdk，监测链接必填",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38464,
+      "paramName": "cover_slogans",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>封面广告语</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "0-14 字符，最多选择 6 个（每个中文和英文字符都算一个字符）；当广告组的unit_type = 10 时，不支持该字段",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38465,
+      "paramName": "creative_category",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>创意分类</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "\t由创意分类查询接口获得； 必须是叶子结点；与创意标签同时传或同时不传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38466,
+      "paramName": "creative_tag",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>创意标签</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "与创意分类参数，要么都传，要么都不传；且单个创意的创意标签最多 20 个；单个创意标签不能为空且不能超过 10 字符",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38467,
+      "paramName": "new_expose_tag",
+      "paramType": "NewExposeTagSnake[]",
+      "example": "",
+      "description": "<p><br>广告标签 2 期</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2238,
+      "sort": 11,
+      "note": "\t按照相关格式传递两个推荐理由 举例{“text”:\"工厂直发\"},{\"text\":\"限时专享\"}",
+      "children": [
+        {
+          "paramId": 38076,
+          "paramName": "text",
+          "paramType": "String",
+          "example": "",
+          "description": "<p><br>广告标签text</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38077,
+          "paramName": "url",
+          "paramType": "String",
+          "example": "",
+          "description": "<p><br>广告标签url</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38468,
+      "paramName": "package_name",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>程序化创意名称</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 12,
+      "note": "1-100 字符",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38469,
+      "paramName": "photo_list",
+      "paramType": "MapiAdvCreativePhotoBOSnake[]",
+      "example": "",
+      "description": "<p>素材列表</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2257,
+      "sort": 13,
+      "note": "新创建程序化创意请使用此参数，最多支持 10 组素材(传递后将忽略 horizontal_photo_ids,vertical_photo_ids,cover_image_tokens，7.15 日后老字段下线)；当广告组的unit_type = 10 时，最多支持传入15个素材",
+      "children": [
+        {
+          "paramId": 38455,
+          "paramName": "cover_image_token",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>封面图片 token</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "\t通过上传图片接口获得，不传值则直接使用视频的首帧作为封面图片，自定义封面的图片宽高要与视频宽高一致，使用智能抽帧时不需要传递。",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38456,
+          "paramName": "cover_image_url",
+          "paramType": "String",
+          "example": "",
+          "description": "请补充描述详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38457,
+          "paramName": "creative_material_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>素材类型</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "1：竖版视频 2：横版视频",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38458,
+          "paramName": "photo_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p><br>视频 ID</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38470,
+      "paramName": "pic_list",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>联盟图片（横版/竖版）</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 14,
+      "note": "需要传入image_token列表，image_token通过上传图片接口获取",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38471,
+      "paramName": "sticker_styles",
+      "paramType": "String[]",
+      "example": "",
+      "description": "<p>封面贴纸</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 15,
+      "note": "如果使用封面贴纸 sticker_Styles 和 cover_slogans 必须同时传值，最多选择 6 个；当广告组的unit_type = 10 时，不支持该字段",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38472,
+      "paramName": "unit_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告组 ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 16,
+      "note": "一个组下只能有一个程序化创意",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 44335,
+      "paramName": "material_intelligent_optimize",
+      "paramType": "Integer",
+      "example": "",
+      "description": "素材智能优化开关",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 17,
+      "note": "0-关闭，1-开启，不传默认关闭。仅白名单用户可以使用。当广告组的unit_type = 10 时，不支持该字段",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 60256,
+      "paramName": "recommendation",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>原生plc广告语</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 18,
+      "note": "开启原生场景下可用",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61575,
+      "paramName": "impression_url",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>曝光</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 19,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 38474,
+      "paramName": "data",
+      "paramType": "AdvancedCreativeEditView",
+      "example": "",
+      "description": "创编计划、广告组、创意返回id参数",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2258,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 38473,
+          "paramName": "unit_id",
+          "paramType": "Long",
+          "example": "123455676",
+          "description": "广告组 ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38475,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38476,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>返回信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1755004428956,
+  "creator": "zhaobo06",
+  "fullContext": null
+}

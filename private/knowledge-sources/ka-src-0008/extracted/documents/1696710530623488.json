@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><h3 id=\"h6f20189-I6eTd8Wj\" data-id=\"h6f20189-I6eTd8Wj\">投放账户预算</h3><blockquote data-id=\"b603af74-FADdHG2i\" style=\"margin-top: 5px; margin-bottom: 5px; padding-left: 1em; margin-left: 0px; border-left: 3px solid rgb(238, 238, 238); opacity: 0.6;\"><ul data-id=\"u738a58b-50DdDd8I\"><li data-id=\"ld70c578-cGP3aMFb\">相关链接\n<a target=\"blank\" href=\"https://ad.oceanengine.com/openapi/doc/index.html?id=1696710531631116\" style=\"font-size: inherit; padding: 0px 2px; line-height: inherit; overflow-wrap: break-word; text-indent: 0px;\"><span style=\"color: #3551ea;\">更新投放账户预算</span></a></li></ul></blockquote><ul data-id=\"u738a58b-KVaQ1E7i\"><li data-id=\"ld70c578-1aIPVIa9\">账户预算类别：不限预算、日预算</li><li data-id=\"ld70c578-UKgX54K2\">账户日预算：<span style=\"color: #f30000;\"><strong>范围1000&lt;=X &lt;= 9999999.99、仅支持最多2位小数据</strong></span></li></ul></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "投放账户预算"
+}

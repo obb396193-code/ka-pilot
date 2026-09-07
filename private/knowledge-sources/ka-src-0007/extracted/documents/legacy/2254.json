@@ -1,0 +1,42 @@
+{
+  "documentId": 2254,
+  "documentName": "创建或更新账户信息和开户资质",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 创建或更新账户信息和开户资质\n\n请求方式：POST \n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/agent/advertiser/cert/submit\n\n### 请求参数\n\n| 字段                 | 类型      | 说明         | 是否必填 | 备注                                                                           |\n| ---------------------- | ----------- | -------------- | -------- | -------------------------------------------------------------------------------- |\n| advertiser_id          | long        | 广告主id    | 是      |                                                                                  |\n| agent_id               | long        | 代理商id    | 是      |                                                                                  |\n| industry_id            | long        | 二级行业id | 是      |                           |\n| corporation_name       | string      | 公司名称   | 是      | 不能超过50个字符                                                          |\n| web_site               | string      | 公司网站   | 是      | http://或https://开头，可以访问的网站                                 |\n| contact_name           | string      | 联系人姓名 | 是      | 中文或英文，不能超过50个字符                                        |\n| email                  | string      | 邮箱         | 是      | xxx@                                                                             |\n| phone                  | string      | 手机号码   | 是      | 不加区号，11位                                                             |\n| product_name           | string      | 产品名/品牌名 | 是      |      |\n| marketing_content_type | int         | 推广内容类型 | 是      | 1-推广内容链接，2-推广应用                                            |\n| licence_id             | string      | 营业执照编号 | 是      | 只能有数字和字母                                                         |\n| licence_location       | string      | 营业执照注册地 | 是      | 注册地列表的地区，格式是\"xx省-xx市\"          |\n| cert_list              | CertParam[] | 开户资质列表 | 是      | 只传开户资质（cert_category包括1-营业执照，2-ICP备案，3-投放承诺函，4-行业资质） |\n\n#### CertParam\n| 字段        | 类型 | 说明       | 备注                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |\n| ------------- | ------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| cert_id       | long   | 资质id     | 新增时传0，非0的只能是已有资质的id                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |\n| cert_category | int    | 资质类型 | 1-营业执照，必填，传1个文件，需要有效期；2-ICP备案，选填，传1个文件，永久有效，不需要有效期，expire_time可以不传或传任意值；3-投放承诺函，必填，最多10个文件，需要有效期；4行业资质，选填，最多50个文件，需要有效期；5-投放资质，选填，最多50个文件，永久有效，不需要有效期, expire_time可以不传或传任意值；开户资质接口：/rest/openapi/v1/agent/advertiser/cert/submit只能涉及开户资质1、2、3、4；投放资质接口：/rest/openapi/v1/agent/advertiser/delivery_cert/submit可以涉及全部资质1、2、3、4、5，但5只能在开户后提交 |\n| file_token    | string | 资质文件标识 | 传入上传资质接口返回的file_token字段                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |\n| expire_time   | string | 资质有效期 | 时间格式如 yyyy-MM-dd，空字符串表示长期有效                                                                                                                                                                                                                                                                                                                                                                                                                                                         |\n\n### 返回参数\n\n| 字段 | 类型  | 说明   | 备注 |\n| ------ | ------- | -------- | ---- |\n| result | boolean | 是否成功 |      |\n\n\n\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1675407568545
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1675407568545,
+  "creator": "wb_suxing",
+  "fullContext": null
+}

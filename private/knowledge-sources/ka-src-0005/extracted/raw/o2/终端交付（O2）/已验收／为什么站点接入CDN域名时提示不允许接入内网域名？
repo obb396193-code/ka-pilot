@@ -1,0 +1,10 @@
+用户真实问题链接: [https://docs.dingtalk.com/i/nodes/YndMj49yWjlAYoxjtKbLlnNeJ3pmz5aA](https://docs.dingtalk.com/i/nodes/YndMj49yWjlAYoxjtKbLlnNeJ3pmz5aA)
+
+作者：心羽
+
+评审人：冠夫
+
+
+
+接入 CDN 的域名可以被公网上的所有用户访问。而`-inc`相关域名规划上属于内网域名，不应对外开放访问。与 O2 CDN 的服务对象不同。为避免公司内部页面及数据对外泄露，不允许接入相关域名。
+

@@ -1,0 +1,42 @@
+{
+  "documentId": 2329,
+  "documentName": "添加应用共享",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】添加应用共享\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/share/add](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/share/add)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主id |\n| app_id | Long |  | 必填 | 应用id |  |\n| share_advertiser_ids | Long[] |  | share_type=1必填 | 要共享的账号id | 单次支持添加200个账号 |\n| share_corp_ids | Long[] |  | share_type=2必填 | 要共享的主体id | 正常只需要传当前账号主体ID即可，跨主体共享根据申请的可共享主体ID填入 |\n| share_type | Integer |  | 必填 | 共享类型，0-不共享，1-账号，2-主体 |  |\n\n备注：主体共享为异步操作，服务内部基于主体下账号ID数量做共享操作。\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 返回信息 |  |\n| data | Object |  | JSON 返回值 |  |\n| &#8195;result | Boolean |  | 添加共享是否成功 | true-成功，false-失败 |\n\n### 请求样例\n\n```js\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/share/add' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--data-raw '{\n    \"advertiser_id\": 12078245,\n    \"app_id\": 2199123262731,\n    \"share_corp_ids\": [\n        15280\n    ],\n    \"share_type\" : 2\n}'\n\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"result\": true\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMmAgICAhaS7ChjgCCDu2eDziDEonrHssgM=\"\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681107588176
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681107588176,
+  "creator": "heran03",
+  "fullContext": null
+}

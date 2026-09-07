@@ -1,0 +1,88 @@
+
+# 了解 AI-Studio 知识库模块的一些基本概念，以便在接入 API 的过程中更加高效，事半功倍
+
+## 了解项目空间、知识库、知识库文档、知识库文档块
+
+* **项目空间绑定了业务方 AK**。
+* 项目空间、知识库、知识库文档、知识库文档块都有一个 id，分别叫做 projectId，repositoryId，documentId，nodeId。
+* 一个项目空间，包含了 1 个或多个知识库；一个知识库，包含了 1 个或多个知识库文档；一个知识库文档，包含了 1 个或多个知识库文档块。
+
+### 项目空间、知识库、知识库文档、知识库文档块在产品上指的是哪些内容？
+
+打开 AI-Studio页面：<https://idealab.alibaba-inc.com/aiLab>
+
+* 项目空间
+
+（左边栏）
+
+* 知识库
+
+（中间栏上面有知识库 tab）
+
+* 知识库文档
+
+（点击某个知识库，展示文档列表）
+
+* 知识库文档块
+
+（点击某个知识库文档最右侧的`...`，查看分段管理）
+
+### 什么是 AK？必须要有 AK 吗？AK 的用处是什么？如何申请 AK？
+
+* AK 指的是 Access Key（访问密钥），是用于认证和授权的密钥，允许用户获得对 AI Studio（包含 IDEAs 应用、知识库） 和 大模型API 的访问权限。
+* 如果要使用知识库 API，必须要有 AK。
+* AK 的用处主要用于鉴权和账单计算。AK详细内容及申请查看：
+
+### 知识库绑定的 AK 怎么查看？项目空间绑定的 AK 怎么查看？
+
+* 知识库绑定的 AK，本质上是看项目空间绑定的 AK。
+* 业务方 AK 获取方式：在项目空间上 hover，会出现设置图标，设置图标有“AK 绑定”选项
+
+### projectId，repositoryId，documentId，nodeId分别从哪里获取？
+
+再次温习一下：
+
+1 个项目空间对应多个知识库；一个知识库对应多个知识库文档；一个知识库文档对应多个知识库文档块。
+
+1 个 projectId 对应多个 repositoryId；一个 repositoryId 对应多个 documentId；一个 documentId 对应多个 nodeId。
+
+​  
+
+
+**首先，用户需要了解，对于使用知识库 API，有 projectId 和 repositoryId 则足够了。其他 documentId 和 nodeId 可以通过知识库API获取。****知识库 API 在** [**知识库接口列表**](https://aliyuque.antfin.com/aiplus/aistudio/sfo1xmar7kv5hbb8#ZMxlu)**中查看。**
+
+#### 获取方式一（从网址上获取projectId、repositoryId、documentId，暂时获取不到 nodeId）
+
+在产品设计上，并没有一个统一的入口去查询这些 id。
+
+但是我们的前端同学，很聪明的在网址链接上埋上了这些信息。因此这些信息我们主要从网址上获取（😊）。
+
+​  
+
+
+> 比如，知识库的链接地址，包含了项目空间 id、知识库 id。
+> 
+> e.g. https://idealab.alibaba-inc.com/aiLab#/aistudio/space/knowledgeBase/documentlist?projectId=48&projectSquare=DocumentTable&knowledgeBaseId=f3e2fde1-1397-4af9-8f89-862db51f6daf
+> 
+> 其中，projectId=48，表示项目空间 id 为 48；knowledgeBaseId=f3e2fde1-1397-4af9-8f89-862db51f6daf，表示知识库 id 为f3e2fde1-1397-4af9-8f89-862db51f6daf。由于前后端分离原因，前端的对于知识库的表示为knowledgeBaseId。
+
+​  
+
+
+> 其中最全的是知识库文档块的链接地址，包含了项目空间 id、知识库 id 以及文档 id。
+> 
+> e.g. https://idealab.alibaba-inc.com/aiLab#/aistudio/space/knowledgeBase/documentsegmentation?projectId=48&projectSquare=documentsegmentation&knowledgeBaseId=f3e2fde1-1397-4af9-8f89-862db51f6daf&documentId=56d0124c-7b05-41d4-b009-65912aebd171
+> 
+> 其中，projectId=48，表示项目空间 id 为 48；knowledgeBaseId=f3e2fde1-1397-4af9-8f89-862db51f6daf，表示知识库 id 为f3e2fde1-1397-4af9-8f89-862db51f6daf；documentId=56d0124c-7b05-41d4-b009-65912aebd171，表示知识库文档的 id 为56d0124c-7b05-41d4-b009-65912aebd171。
+
+#### 获取方式二（从前端请求的接口中获取）
+
+开发的同学可以秒懂。
+
+前端查看知识库文档列表，查看接口`/document/query`的入参repositoryId的值。
+
+查看知识库文档的分段管理，查看接口`/document/node/queryParseResult`，入参有repositoryId和documentId，返回的结果列表中，id 即为 nodeId。
+
+  
+
+

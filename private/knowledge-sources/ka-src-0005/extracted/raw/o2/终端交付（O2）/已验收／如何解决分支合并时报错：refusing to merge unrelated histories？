@@ -1,0 +1,26 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/65f28b4aa8e10e053dfd6eea/](https://links.alibaba-inc.com/support/conversation/65f28b4aa8e10e053dfd6eea/)
+
+作者：[@紫砂](undefined/gongjianmin.gjm)
+
+评审人：[@上坡](undefined/shangpo.zw)
+
+
+
+报错原因：这个报错表示你在尝试合并两个没有共同历史的分支。这是因为在 Git 中，分支是基于某个共同的历史创建的，如果你试图合并两个没有共同历史的分支，Git 将无法正确地完成此次合并。
+
+解决方案：使用 O2 Space 多主干能力，将当前发布分支的源分支设置为多主干之一，并在建立迭代时选择这个主干而不是 master 分支。
+
+操作步骤：
+
+1. 在应用配置中新增一个主干，内容是当前发布分支的源分支；
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/21257030/1710749878396-57ec0d81-2522-498f-930b-6fa06f19e9eb.png) 
+
+2. 在建立迭代时对应选择该主干进行后续研发活动。
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/21257030/1710749949765-639c64f4-3f5b-4cfd-8e22-8de9bb5af621.png) 
+
+
+
+** 样例库 ** ： [https://aliyuque.antfin.com/ezlb0g/kn12xg](https://aliyuque.antfin.com/ezlb0g/kn12xg)
+

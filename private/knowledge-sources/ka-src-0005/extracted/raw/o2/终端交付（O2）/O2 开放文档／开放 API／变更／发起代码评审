@@ -1,0 +1,52 @@
+## 发起代码评审
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/iterations/{iterationId}/devbranch/{devbranchId}/cr |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| iterationId | Number | true | - | 迭代 ID |
+| devbranchId | Number | true | - | 变更 ID |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| title | String | true | - | 代码评审标题 |
+| description | String | false | - | 代码评审描述 |
+| assignee_ids | String | true | - | 评审人，多个评审人用","分割 |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| code_review_id | 代码评审 ID |
+| code_review_url | 代码评审链接 |
+| project_id | 评审项目 ID |
+| state | 评审状态 |
+| def_cr | O2 发起的 CR 标识 |
+
+### Example
+
+```
+client.post(`/v1.0/work/iterations/{iterationId}/devbranch/{devbranchId}/cr`, {}, {
+  title,
+  description,
+  assignee_ids
+}, {
+  SSO_TICKET
+})
+
+{
+  "code_review_id": 15670377,
+  "code_review_url": "https://code.alibaba-inc.com/def-work/front/codereview/15670377",
+  "project_id": 425441,
+  "state": null,
+  "def_cr": true
+}
+
+```

@@ -1,0 +1,74 @@
+{
+  "parent_document_id": "ka-src-0005",
+  "manifest_sha256": "f26a3d88c03f185a0bccc29307a7ebdd706657e1f9655c861cd23e0c92d060da",
+  "entry_count": 671,
+  "inventory_count": 671,
+  "missing_paths": [],
+  "extra_paths": [],
+  "unique_child_asset_ids": 671,
+  "quality_counts": {
+    "empty": 27,
+    "short": 207,
+    "stub": 35,
+    "substantive": 402
+  },
+  "group_counts": {
+    "AIStudio 与模型接入": 139,
+    "EVO 实验平台": 19,
+    "O2/Aone 研发与部署": 380,
+    "Panama/FBI 数据与业务": 15,
+    "国际广告白皮书": 57,
+    "用户增长与投放摘要": 3,
+    "资料包导读": 1,
+    "项目管理": 57
+  },
+  "anomaly_counts": {
+    "contains_nul": 11,
+    "credential_sanitized": 17,
+    "duplicate_content_group_member": 44,
+    "exact_duplicate": 33,
+    "historical_or_deprecated_path": 14,
+    "invalid_json": 3,
+    "pdf_extension_but_plain_text": 5
+  },
+  "topic_counts": {
+    "研发与部署": 440,
+    "项目管理": 240,
+    "数据分析": 233,
+    "安全与权限": 219,
+    "前端体验": 186,
+    "大模型与 Agent": 121,
+    "广告投放": 75,
+    "资金与结算": 60,
+    "O2/Aone 研发与部署": 34,
+    "实验设计": 33,
+    "国际广告白皮书": 11,
+    "AIStudio 与模型接入": 11,
+    "EVO 实验平台": 2
+  },
+  "product_relevance_counts": {
+    "background_only": 405,
+    "cannot_assess": 62,
+    "conditional_candidate": 173,
+    "direct_candidate": 8,
+    "not_relevant": 23
+  },
+  "recommended_action_counts": {
+    "exclude_from_product": 58,
+    "reference_only": 405,
+    "restore_source_then_assess": 27,
+    "selective_extract": 6,
+    "verify_before_use": 175
+  },
+  "use_scope_counts": {
+    "engineering_reference": 173,
+    "none": 72,
+    "product_design": 8,
+    "research_reference": 418
+  },
+  "credential_shape_matches_in_introductions": 0,
+  "credential_shape_matches_in_relevance_fields": 0,
+  "inventory_sha256": "ce379e58886c241fdcb4376e55886e2d004c71448f16fb9f0b3ffeebdc4c3435",
+  "guide_sha256": "f79bb54758ea04ec8ebcc3d1b3b9663da26ef9acfea3d346ad0c5ab12acbcb13",
+  "product_relevance_guide_sha256": "e6d39d0cf6b78e3e443bd49897d12f2773a9a4fd129ebfbd45b04b025c0bfaa1"
+}

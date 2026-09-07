@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><h1 data-id=\"h346b9f0-iAbR5JeC\" id=\"h346b9f0-FVnRatNH\">什么是巨量引擎MCP？</h1><p data-id=\"p838747a-NlH656Ci\">MCP 是一个开放协议，它为应用程序向 LLM 提供上下文的方式进行了标准化。你可以将 MCP 想象成 AI 应用程序的 USB-C 接口。就像 USB-C 为设备连接各种外设和配件提供了标准化的方式一样，MCP 为 AI 模型连接各种数据源和工具提供了标准化的接口。</p><p data-id=\"p838747a-KXIjHdbo\"><span style=\"color: #252525;\">巨量引擎MCP工具是一款支持Streamable Http类型MCP协议客户端的服务器，用户可以轻松利用巨量引擎MCP服务实现相关工具能力的调用。</span></p><h1 data-id=\"h346b9f0-3HfD3kgO\" id=\"h346b9f0-WlO2F9fV\">为什么选择 MCP？<span style=\"color: #9e9e9e;\"></span></h1><p data-id=\"p838747a-o7o3VRPY\">MCP 帮助你在 LLM 的基础上构建代理（agents）和复杂的工作流。LLM 经常需要与数据和工具集成，而 MCP 提供了：</p><ul data-id=\"u738a58b-BbPGXZj2\"><li data-id=\"ld70c578-O3UFTWcF\">持续增长的预构建集成列表，LLM 可直接使用</li><li data-id=\"ld70c578-k0YcSSiM\">灵活切换不同的 LLM 提供商和厂商</li><li data-id=\"ld70c578-0fQ9FFUI\">在你的基础设施内安全地处理数据的最佳实践</li></ul><h1 data-id=\"h346b9f0-WgYj77eM\" id=\"h346b9f0-LfQThWB3\">通用架构</h1><p data-id=\"p838747a-UfCX01Lc\">MCP 核心采用客户端-服务器架构，主机应用可以连接多个服务器：</p><p data-id=\"p838747a-Yj3ULheo\"><img src=\"https://p26-business-sign.byteadimg.com/tos-cn-i-yvqzo4lhg5/8d90dadada884067bdf23f96ee2bd60c~noop.image?rk3s=d3394059&amp;x-expires=2069720524&amp;x-signature=%2Fo%2BtFE6DaluIcSAcxHXBZ%2B14BxU%3D\" data-auto=\"true\" style=\"width: 2000px; visibility: visible; height: auto;\" data-type=\"inline\"></p><ul data-id=\"u738a58b-NQYDkjgh\"><li data-id=\"ld70c578-VjOTdWMa\"><strong>MCP Hosts（用户）</strong>: 如 Claude Desktop、IDE 或 AI 工具，希望通过 MCP 访问数据的程序</li><li data-id=\"ld70c578-JVH6peWR\"><strong>MCP Clients</strong>: 维护与服务器一对一连接的协议客户端</li><li data-id=\"ld70c578-OfDd8O8P\"><strong>MCP Servers</strong>: 轻量级程序，通过标准的 Model Context Protocol 提供特定能力</li></ul><p data-id=\"p838747a-T38V9ajb\"><br></p></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "MCP 简介"
+}

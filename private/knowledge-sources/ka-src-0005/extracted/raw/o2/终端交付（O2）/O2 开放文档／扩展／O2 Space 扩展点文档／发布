@@ -1,0 +1,63 @@
+### publish-list-item-extend
+
+发布记录每个item的expand扩展
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/toqpu7cksefvn5d0/imgFjrUh8D9QF.png)
+
+
+#### Props
+
+```
+interface IProps {
+    task: Task
+}
+
+```
+### task-list-column-extend
+
+发布列表-列扩展
+
+(https://img.alicdn.com/imgextra/i1/O1CN01QoKCYT1SxrSIthbDy_!!6000000002314-2-tps-1650-543.png)
+
+
+
+
+#### Config
+
+```
+{
+  title: "状态",
+  index: 4
+}
+
+```
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+  task: Task;
+}
+
+```
+### task-list-replace
+
+替换发布列表的扩展
+
+
+
+#### Props
+
+```
+### props 声明
+
+interface IProps {
+  task: Task;
+  iterationId: number;
+  appId: number;
+}
+
+```
+
+

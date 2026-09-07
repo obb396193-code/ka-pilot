@@ -1,0 +1,58 @@
+{
+  "documentId": 3053,
+  "documentName": "CID服务商投放SDPA接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# CID服务商投放SDPA接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dpa/secret/cid/link](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/dpa/secret/cid/link)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主账号ID |  |\n| unit_id | Long |  | 必填 | 广告单元ID |  |\n| product_name | String |  | 必填 | 商品名称 | 长度不超过255个字符 |\n| outer_id | String |  | 必填 | 商品ID | 长度不超过48个字符 |\n| title | String |  | 可选 | 商品标题 | 长度不超过350个字符 |\n| description | String |  | 可选 | 商品描述 | 长度不超过1024个字符 |\n| main_image | String[] |  | 必填 | 商品主图URL | 数组最大有效长度：1，长度不超过255个字符 |\n| image_urls | String[] |  | 可选 | 商品副图URLs |  |\n| video_url | Object |  | 可选 | 商品视频 |  |\n| &#8195;url | String |  | 可选 | 视频URL | 长度不超过255个字符 |\n| en_brand | String |  | 可选 | 商品英文品牌名称 | 长度不超过150个字符 |\n| value | String |  | 可选 | 商品原价（元） | 至多精确至“厘”（小数点后三位） |\n| saving | String |  | 可选 | 商品减价（元） | 至多精确至“厘”（小数点后三位） |\n| discount | String |  | 可选 | 商品折扣 | 0.001～0.999（至多精确至小数点后三位） |\n| price | String |  | 必填 | 商品现价（元） | 至多精确至“厘”（小数点后三位） |\n| sales_promotion | String |  | 可选 | 商品促销活动 | 长度不超过150个字符 |\n| down_payment | String |  | 可选 | 商品首付 | 长度不超过50个字符 |\n| mortgage | String |  | 可选 | 商品月付 | 长度不超过50个字符 |\n| daily_mortgage | String |  | 可选 | 商品日付 | 长度不超过50个字符 |\n| address | String |  | 可选 | 商品销售地址 | 长度不超过255个字符 |\n| feature | String |  | 可选 | 商品特色卖点 | 长度不超过100个字符 |\n| age_v2 | String[] |  | 可选 | 商品定向年龄段 | 1表示18-23｜2表示24-30｜3表示31-40｜4表示41-49｜5表示50+ |\n| gender | Integer |  | 可选 | 商品定向性别 | 0表示不限｜1表示男｜2表示女 |\n| province_v2 | String[] |  | 可选 | 商品定向省份 | 数组序列化总长度不超过255个字符 |\n| city_v2 | String[] |  | 可选 | 商品定向城市 | 数组序列化总长度不超过255个字符 |\n| target_url | Object |  | 必填 | 商品详情页链接 |  |\n| &#8195;pc | String |  | 可选 | PC端商品落地页URL | 需使用https协议 |\n| &#8195;mobile | String |  | 可选 | H5页面商品落地页URL | 需使用https协议 |\n| &#8195;android_app | String |  | 可选 | Android应用商品直达吊起链接 |  |\n| &#8195;ios_app | String |  | 可选 | IOS应用商品直达吊起链接 |  |\n| &#8195;universal_link | String |  | 可选 | IOS应用商品吊起ulink链接 |  |\n| brand_url | Object |  | 可选 | 商品品牌页链接 |  |\n| &#8195;pc | String |  | 可选 | PC端商品落地页URL | 需使用https协议 |\n| &#8195;mobile | String |  | 可选 | H5页面商品落地页URL | 需使用https协议 |\n| &#8195;android_app | String |  | 可选 | Android应用商品直达吊起链接 |  |\n| &#8195;ios_app | String |  | 可选 | IOS应用商品直达吊起链接 |  |\n| &#8195;universal_link | String |  | 可选 | IOS应用商品吊起ulink链接 |  |\n| schedule_url | Object |  | 可选 | 商品活动页链接 |  |\n| &#8195;pc | String |  | 可选 | PC端商品落地页URL | 需使用https协议 |\n| &#8195;mobile | String |  | 可选 | H5页面商品落地页URL | 需使用https协议 |\n| &#8195;android_app | String |  | 可选 | Android应用商品直达吊起链接 |  |\n| &#8195;ios_app | String |  | 可选 | IOS应用商品直达吊起链接 |  |\n| &#8195;universal_link | String |  | 可选 | IOS应用商品吊起ulink链接 |  |\n| shop_keeper_url | Object |  | 可选 | 商品店铺页链接 |  |\n| &#8195;pc | String |  | 可选 | PC端商品落地页URL | 需使用https协议 |\n| &#8195;mobile | String |  | 可选 | H5页面商品落地页URL | 需使用https协议 |\n| &#8195;android_app | String |  | 可选 | Android应用商品直达吊起链接 |  |\n| &#8195;ios_app | String |  | 可选 | IOS应用商品直达吊起链接 |  |\n| &#8195;universal_link | String |  | 可选 | IOS应用商品吊起ulink链接 |  |\n| category_url | Object |  | 可选 | 商品类目页链接 |  |\n| &#8195;pc | String |  | 可选 | PC端商品落地页URL | 需使用https协议 |\n| &#8195;mobile | String |  | 可选 | H5页面商品落地页URL | 需使用https协议 |\n| &#8195;android_app | String |  | 可选 | Android应用商品直达吊起链接 |  |\n| &#8195;ios_app | String |  | 可选 | IOS应用商品直达吊起链接 |  |\n| &#8195;universal_link | String |  | 可选 | IOS应用商品吊起ulink链接 |  |\n| slogan | String |  | 可选 | 商品广告语 | 长度不超过30个字符 |\n| ecom_product_info | Object |  | 必填 | 其它商品信息 |  |\n| &#8195;service_provider_name | String |  | 必填 | 服务商名称 |  |\n| &#8195;corporation_name | String |  | 必填 | 商品所属营业执照 |  |\n| &#8195;ecom_platfrom_from_service | String |  | 必填 | 商品来源平台 |  |\n| &#8195;shop_name_from_service | String |  | 必填 | 三方平台店铺名称 |  |\n| &#8195;shop_id_from_service | Long |  | 可选 | 三方平台店铺id |  |\n| &#8195;brand_id_from_service | Long |  | 可选 | 三方平台商品品牌id |  |\n| &#8195;brand_name_from_service | String |  | 可选 | 商品品牌 |  |\n| &#8195;first_product_category_id_from_service | Long |  | 可选 | 三方平台商品一级类目id |  |\n| &#8195;second_product_category_id_from_service | Long |  | 可选 | 三方平台商品二级类目id |  |\n| &#8195;third_product_category_id_from_service | Long |  | 可选 | 三方平台商品三级类目id |  |\n| &#8195;fourth_product_category_id_from_service | Long |  | 可选 | 三方平台商品四级类目id |  |\n| &#8195;first_product_category_from_service | String |  | 可选 | 三方平台商品一级类目 |  |\n| &#8195;second_product_category_from_service | String |  | 可选 | 三方平台商品二级类目 |  |\n| &#8195;third_product_category_from_service | String |  | 可选 | 三方平台商品三级类目 |  |\n| &#8195;fourth_product_category_from_service | String |  | 可选 | 三方平台商品四级类目 |  |\n| &#8195;product_label | String |  | 可选 | 商品标签 |  |\n| &#8195;comment_tags | String |  | 可选 | 商品评价标签 |  |\n| &#8195;service_tags | String |  | 可选 | 商品服务标签 |  |\n| &#8195;attribute_tags | String |  | 可选 | 商品属性标签 |  |\n| &#8195;bought | Integer |  | 可选 | 商品销售量 |  |\n| &#8195;spu_id | String |  | 可选 | 标准商品单位ID |  |\n| condition | String |  | 可选 | 商品新旧情况 | 长度不超过40个字符 |\n| comments | Integer |  | 可选 | 商品评论数 |  |\n| mark | String |  | 可选 | 商品评分 | 至多精确至小数点后三位 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 请求响应结果码 |  |\n| message | String |  | 请求响应结果信息 |  |",
+  "url": "",
+  "version": "1.2.1",
+  "versionList": [
+    {
+      "version": "1.2.1",
+      "createTime": 1724235628976
+    },
+    {
+      "version": "1.2.0",
+      "createTime": 1720529962472
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1724235628976,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

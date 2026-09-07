@@ -1,0 +1,42 @@
+{
+  "documentId": 2062,
+  "documentName": "5.3.1视频库-推送视频",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 视频库-推送视频\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/share\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|         字段         |   类型   | 是否必填 |    说明    |                                                                                备注                                                                                |\n| :------------------: | :------: | :------: | :--------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------: |\n|    advertiser_id     |   long   |   必填   | 广告主 id  |                                                                                                                                                                    |\n|      photo_ids       | string[] |   必填   | 视频 ids， |                                                                            不超过 10 个                                                                            |\n| share_advertiser_ids |  long[]  |   必填   |  推送账户  | 同一资质下其他 user_id 下的广告主 ids，不超过 10 个，同一个快手 user_id 下视频是共享的（无需推送）， 视频共享只能是同一个资质主体下不同的 user_id 的广告主可以共享 |\n\n### 返回参数\n\n| 返回参数          |        |                      |      |\n| ----------------- | ------ | -------------------- | ---- |\n| 字段              | 类型   | 说明                 | 备注 |\n| code              | int    | 返回码               |      |\n| message           | string | 返回信息             |      |\n| data              | struct | JSON 返回值          |      |\n| advertiser_id     | long   | 账号 ID              |      |\n| photo_id          | long   | 分享生成新的 photoId |      |\n| original_photo_id | long   | 原始 photoId         |      |\n\n### 请求样例\n\n```\ncurl --location --request GET 'https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/share' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 1111,\n    \"photo_ids\": [\n        123123,\n        456456\n    ],\n    \"share_advertiser_ids\": [\n        2222,\n        33333\n    ]\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"details\": [\n            {\n                \"advertiser_id\": 200001,\n                \"photo_id\": 100000002,\n                \"original_photo_id\": 100000001,\n            }\n        ]\n    }\n}\n\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625127
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625127,
+  "creator": "heran03",
+  "fullContext": null
+}

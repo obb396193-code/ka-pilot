@@ -1,0 +1,6 @@
+Aone FaaS 支持流式分块传输和 SSE
+
+1. SSE 的实现可参考该 demo 预览地址： [https://nextjs-test-001.fn.taobao.net/](https://nextjs-test-001.fn.taobao.net/)代码地址：[https://code.alibaba-inc.com/fc.aone-faas-test001/nextjs-test-001/tree/master](https://code.alibaba-inc.com/fc.aone-faas-test001/nextjs-test-001/tree/master)
+1. 流式的实现可参考：预览地址：[https://koa-test-001.pre-fn.alibaba-inc.com/](https://koa-test-001.pre-fn.alibaba-inc.com/)代码地址：[https://code.alibaba-inc.com/fc.aone-faas-test001/koa-test-001/blob/feature/20250514_25016703_xxx_1/src/controllers/home.ts](https://code.alibaba-inc.com/fc.aone-faas-test001/koa-test-001/blob/feature/20250514_25016703_xxx_1/src/controllers/home.ts)
+
+

@@ -1,0 +1,118 @@
+## O2 Space 研发平台
+
+### 修复
+
+1. 团队空间中，兼容团队主管无工号情况，防止团队实例化失败
+1. 修复 CR 标题过长导致创建失败的问题
+(https://img.alicdn.com/imgextra/i1/O1CN01ZESfq21msArMNVdbN_!!6000000005009-2-tps-1786-864.png)
+
+
+### 新增
+
+1. 支持变更分支验证运行失败时，使用原扫描配置进行单扫描器重跑能力，并向用户透出
+(https://img.alicdn.com/imgextra/i2/O1CN01Ssvhs81KKurKjhCTU_!!6000000001146-2-tps-2482-826.png)
+
+
+1. 【O2 开放】独立站点支持配置基础研发类型
+(https://img.alicdn.com/imgextra/i4/O1CN01QPANed1X6LGCus0H4_!!6000000002874-2-tps-1814-286.png)
+
+
+1. 质量插件提供异步运行模式，用户在 “应用-集成验证-配置”中即可设置
+(https://img.alicdn.com/imgextra/i2/O1CN01sx8tjc1kwB5mSZOis_!!6000000004747-2-tps-804-495.png)
+
+
+若检查任务耗时超过10秒，会显示一个提示，包含一个链接到异步设置的气泡提示。
+
+(https://img.alicdn.com/imgextra/i1/O1CN01T0EVAM1q8bvFZAO3G_!!6000000005451-2-tps-1261-677.png)
+
+
+运行效果，只触发质量任务而不等待运行结束，不阻塞资源部署：
+
+(https://img.alicdn.com/imgextra/i3/O1CN01Q9jQCP1jewZVzJZY1_!!6000000004574-2-tps-1149-761.png)
+
+
+1. 支持 Git Large File Storage (LFS)
+### 优化
+
+1. 新版集成验证交互升级，提升透出清晰性 
+(https://img.alicdn.com/imgextra/i2/O1CN01TVYZOo26aZxaWobLL_!!6000000007678-2-tps-3162-2034.png)
+
+
+(https://img.alicdn.com/imgextra/i2/O1CN01pq6s9l25tWjKwBqaA_!!6000000007584-2-tps-3156-1866.png)
+
+
+1. 增加主干研发的入口和引导
+(https://img.alicdn.com/imgextra/i1/O1CN01gAKotR1VeZdBsvl2N_!!6000000002678-2-tps-598-144.png)
+
+
+
+
+## 主干研发
+
+### 新增
+
+1. 【主干研发】主干研发支持应用搜索
+(https://img.alicdn.com/imgextra/i2/O1CN01vwVcOp1yGrzRb5vjU_!!6000000006552-2-tps-933-504.png)
+
+
+1. 【主干研发】主干研发应用列表按操作时间排序 
+(https://img.alicdn.com/imgextra/i4/O1CN01qIvTDC1DlkknrYs5W_!!6000000000257-2-tps-1220-736.png)
+
+
+1. 主干研发平台支持切换主干分支
+### 优化
+
+1. 【主干研发】应用快速创建热修复入口
+(https://img.alicdn.com/imgextra/i4/O1CN01Y5PYz125uRWPrlT1l_!!6000000007586-2-tps-1611-942.png)
+
+
+
+
+## 重点功能说明
+
+### 敏捷研发上线
+
+	1. 支持通过灰度是否启用新的UI，如果命中则展示持续集成的功能
+	1. 增加集成详情页组件
+(https://img.alicdn.com/imgextra/i1/O1CN01CPPoeU1qXLJAtddEg_!!6000000005505-2-tps-1766-1260.png)
+
+
+	1. 发布设置中增加 持续集成和部署的触发时机
+(https://img.alicdn.com/imgextra/i2/O1CN017OVj6B1Xm1IkscFQt_!!6000000002965-2-tps-962-745.png)
+
+
+	1. 收拢按钮透出的位置，统一为按钮组形式，日常和预发阶段增加 Integrate 集成组件（包含集成历史的抽屉）
+(https://img.alicdn.com/imgextra/i4/O1CN01CftKKt22679UXfGkN_!!6000000007070-2-tps-1272-519.png)
+
+
+(https://img.alicdn.com/imgextra/i3/O1CN01AFAWUt219USImFsXU_!!6000000006942-2-tps-1333-663.png)
+
+
+(https://img.alicdn.com/imgextra/i3/O1CN013eWgtr1rjzrsmq9yq_!!6000000005668-2-tps-1406-823.png)
+
+
+	1. 重构发布面板，改成左边流水线右边详情的交互
+	1. step 组件改为 antd 的，支持 hover 效果，增大步骤点击区域
+(https://img.alicdn.com/imgextra/i2/O1CN01EwzFJB20jNscKEyP2_!!6000000006885-2-tps-887-455.png)
+
+
+### 支持主动开启敏捷研发
+
+支持用户在未命中灰度时,主动开启持续集成进行抢先体验：
+
+未切换到新交互时，迭代流程的提示，点击 “即刻体验” 后，将重新加载页面切换到新版本
+
+(https://img.alicdn.com/imgextra/i1/O1CN01ccc9tt1PUbJQXBUP5_!!6000000001844-2-tps-983-809.png)
+
+
+切换到新交互时，用户可进行反馈或者重新退回旧版本
+
+(https://img.alicdn.com/imgextra/i2/O1CN01CkkW6h1cVbBFWgKtZ_!!6000000003606-2-tps-1225-384.png)
+
+
+(https://img.alicdn.com/imgextra/i3/O1CN01rrROwH1cel6MHF8h4_!!6000000003626-2-tps-1182-657.png)
+
+
+(https://img.alicdn.com/imgextra/i4/O1CN01QKmUTn24CBdQkcqn7_!!6000000007354-2-tps-1261-722.png)
+
+

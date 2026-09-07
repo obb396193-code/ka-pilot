@@ -1,0 +1,14 @@
+作者：夙言
+
+评审人：冠夫
+
+
+
+一般是 fyml 中的 service 和 domainName 需要和应用实际的应用名保持一致，一般出现这种问题的在 copy 其他项目代码的场景下比较多。
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/73578/1710467600755-cc193c90-57d3-484c-a417-ad5ad40e5c00.png) 
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/73578/1710467635929-ed8b27c1-bf94-44bf-932e-0f7a07c43b9a.png) 
+
+上图函数应用名是 ai-service 而他代码里是 midway_default_service 两边不一致就会出现报错，只需要把 fyml 中的 midway_default_service 都改成 ai-service 即可。
+

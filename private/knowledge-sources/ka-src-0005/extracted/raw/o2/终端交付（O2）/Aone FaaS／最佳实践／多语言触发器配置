@@ -1,0 +1,197 @@
+# 多语言触发器配置
+
+本文档主要介绍平台提供的 Java Python FaaS 解决方案如何通过改动代码中的配置文件发布 HTTP 服务或 HSF 服务
+
+# Java FaaS
+
+使用下图解决方案所创建应用。
+
+(https://o2-img.alistatic.com/i/i09blZ/w0nHEUCvAMy0fYvIrbLSF-e71c849bf8.png)
+
+
+## hsf 触发器
+
+脚手架默认生成的代码为 HSF 触发器，对应的类见下图
+
+(https://o2-img.alistatic.com/i/i09blZ/ZzAWc5EGBvGrolv6J8mCJ-e330bd8f24.png)
+
+
+对应的触发器配置为
+
+(https://o2-img.alistatic.com/i/i09blZ/ruL0itKDGCzUw45NQ3aoI-016a94a846.png)
+
+
+```
+{
+  "spec-version": "1.1.0",
+  "functions": [
+    {
+      "name": "app",
+      "archive": "./archives/app.zip",
+      "handler": "com.alibaba.aonefaas.PojoHandler",
+      "trigger": [
+        {
+          "hsf": true
+        }
+      ]
+    }
+  ],
+  "platform": ["fiber"]
+}
+
+```
+## http 触发器
+
+如果你想发布函数为 http 服务，则需如下改动
+
+修改触发器配置文件为下述配置
+
+```
+{
+  "spec-version": "1.1.0",
+  "functions": [
+    {
+      "name": "app",
+      "archive": "./archives/app.zip",
+      "handler": "com.alibaba.aonefaas.HttpHandler",
+      "trigger": [
+        {
+          "http": {
+            "method": ["get", "post", "put", "delete", "head"],
+            "path": "/*"
+          }
+        }
+      ]
+    }
+  ],
+  "gateway": {
+    "kind": "simple-mapping",
+    "paths": {
+      "/*": {
+        "GET": {
+          "x-gateway-intergration": {
+            "type": "function",
+            "url": {
+              "group": "${自己应用的应用名}", // 特别注意！！
+              "name": "app",
+              "version": "latest"
+            }
+          }
+        },
+        "POST": {
+          "x-gateway-intergration": {
+            "type": "function",
+            "url": {
+              "group": "${自己应用的应用名}", // 特别注意！！
+              "name": "app",
+              "version": "latest"
+            }
+          }
+        }
+      }
+    },
+    "x-gateway-domain": "${自己应用的应用名}.fn.alibaba-inc.com" // 特别注意！！
+  },
+  "platform": ["fiber"]
+}
+
+```
+
+
+# Python FaaS
+
+使用下图解决方案所创建应用。
+
+(https://o2-img.alistatic.com/i/i09blZ/XZFKrjTNAjFnCc70gBSPq-d8cbfc2291.png)
+
+
+## http 触发器
+
+脚手架默认生成的为 http 触发器，对应的配置文件
+
+(https://o2-img.alistatic.com/i/i09blZ/eHdPM77v4XOdGtRHEmcM0-efd497314a.png)
+
+
+```
+{
+  "spec-version": "1.1.0",
+  "functions": [
+    {
+      "name": "main",
+      "archive": "./archives/code.zip",
+      "handler": "main.handler",
+      "trigger": [
+        {
+          "http": {
+            "method": [
+              "get",
+              "post",
+              "put",
+              "delete",
+              "head"
+            ],
+            "path": "/*"
+          }
+        }
+      ]
+    }
+  ],
+  "gateway": {
+    "kind": "simple-mapping",
+    "paths": {
+      "/*": {
+        "GET": {
+          "x-gateway-intergration": {
+            "type": "function",
+            "url": {
+              "group": "${自己应用的应用名}", // 特别注意！！
+              "name": "main",
+              "version": "latest"
+            }
+          }
+        },
+        "POST": {
+          "x-gateway-intergration": {
+            "type": "function",
+            "url": {
+              "group": "${自己应用的应用名}", // 特别注意！！
+              "name": "main",
+              "version": "latest"
+            }
+          }
+        }
+      }
+    },
+    "x-gateway-domain": ""${自己应用的应用名}".fn.alibaba-inc.com" // 特别注意！！
+  },
+  "platform": [
+    "fiber"
+  ]
+}
+```
+## HSF 触发器
+
+如果想发布 python faas hsf 服务需要改动触发器配置文件
+
+```
+{
+  "spec-version": "1.1.0",
+  "functions": [
+    {
+      "name": "main",
+      "archive": "./archives/code.zip",
+      "handler": "main.handler",
+      "trigger": [
+        {
+          "hsf": true
+        }
+      ]
+    }
+  ],
+  "platform": [
+    "fiber"
+  ]
+}
+```
+
+

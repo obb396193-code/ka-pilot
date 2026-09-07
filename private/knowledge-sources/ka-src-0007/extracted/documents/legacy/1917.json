@@ -1,0 +1,42 @@
+{
+  "documentId": 1917,
+  "documentName": "10.15.1获取主播列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取主播列表\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/live_manage/get_live_users\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段              | 类型 | 是否必填 | 字段    | 说明                       |\n| ------------------- | ------ | -------- | --------- | ---------------------------- |\n| advertiser_id       | long   | 必填   | 广告主 ID |                              |\n| current_page        | int    | 必填   | 当前页数 |                              |\n| page_size           | int    | 必填   | 每页行数 |                              |\n| audit_status_list   | int[]  | 必填   | 审核状态 | 过滤条件，无需过滤时传空数组 |\n| live_user_type_list | int[]  | 必填   | 主播类型 | 过滤条件，无需过滤时传空数组 |\n| live_user_ids       | long[] | 必填   | 主播id  | 过滤条件，无需过滤时传空数组 |\n\n### 返回参数\n\n| 字段  | 子字段      | 子字段      | 类型 | 说明       |\n| ------- | -------------- | -------------- | ------ | ------------ |\n| code    |                |                | int    | 返回码    |\n| message |                |                | string | 返回信息 |\n| data    |                |                | object |              |\n|         | total_count    |                | int    | 总行数    |\n|         | live_user_list |                | array  |              |\n|         |                | live_user_id   | long   | 主播id     |\n|         |                | live_user_type | int    | 主播类型 |\n|         |                | audit_status   | int    | 审核状态 |\n|         |                | living         | bool   | 是否正在直播 |\n\n### 请求样例\n\n```\ncurl --location --request POST 'http://star-gateway.test.gifshow.com/rest/openapi/gw/dsp/v1/live_manage/get_live_users' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\": 90001041,\n    \"current_page\": 1,\n    \"page_size\": 10\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"totla_count\": 4,\n        \"live_user_list\": [\n            {\n                \"live_user_type\": 1,\n                \"living\": false,\n                \"account_id\": 90001041,\n                \"audit_status\": 1,\n                \"live_user_id\": 7677667\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"3e9147707e7f4dedb573a737545faef3\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624059
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624059,
+  "creator": "linmenger",
+  "fullContext": null
+}

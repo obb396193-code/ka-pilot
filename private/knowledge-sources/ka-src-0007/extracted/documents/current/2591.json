@@ -1,0 +1,1245 @@
+{
+  "documentId": 2591,
+  "documentName": "获取程序化创意/智能创意审核信息",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1745894691432
+    }
+  ],
+  "apiId": 260,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v2/creative/advanced/program/review_detail",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 13270,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "20000800",
+      "description": "广告主ID`在获取 access_token 的时候返回",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13271,
+      "paramName": "unit_ids",
+      "paramType": "Long[]",
+      "example": "[123124,325344]",
+      "description": "广告组ID集`数量小于等于20个",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 13272,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13273,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "\"OK\"",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 13274,
+      "paramName": "data",
+      "paramType": "AdMarketAdvancedProgramCreativeReviewDetailsSnake",
+      "example": "1",
+      "description": "返回数据",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3049,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 52371,
+          "paramName": "details",
+          "paramType": "AdMarketAdvancedProgramCreativeReviewDetailViewSnake[]",
+          "example": "1",
+          "description": "详情",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3044,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 52365,
+              "paramName": "slogans",
+              "paramType": "String[]",
+              "example": "222",
+              "description": "审核不通过的封面广告语",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 52366,
+              "paramName": "combine_detail_views",
+              "paramType": "CombineDetailViewsSnake[]",
+              "example": "[{}]",
+              "description": "审核不通过和正在审核的创意组合",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 3045,
+              "sort": 2,
+              "note": "",
+              "children": [
+                {
+                  "paramId": 52354,
+                  "paramName": "id",
+                  "paramType": "Long",
+                  "example": "2484509491",
+                  "description": "创意ID",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 1,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 52355,
+                  "paramName": "photo_id",
+                  "paramType": "String",
+                  "example": "5235434606906684459",
+                  "description": "视频ID`已加密",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 2,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 52356,
+                  "paramName": "cover_url",
+                  "paramType": "String",
+                  "example": "http://static.yximgs.com/udata/pkg/c71377c52fd0499d8a3420635aaf44b9.jpg",
+                  "description": "封面URL",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 3,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 52357,
+                  "paramName": "caption",
+                  "paramType": "String",
+                  "example": "ere",
+                  "description": "作品广告语",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 4,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 52358,
+                  "paramName": "review_status",
+                  "paramType": "Integer",
+                  "example": "3",
+                  "description": "审核状态`1：审核中；2：审核通过；3：审核不通过",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 5,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 52359,
+                  "paramName": "review_detail",
+                  "paramType": "ReviewDetail",
+                  "example": "{}",
+                  "description": "审核信息",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 557,
+                  "sort": 6,
+                  "note": "",
+                  "children": [
+                    {
+                      "paramId": 13256,
+                      "paramName": "reason",
+                      "paramType": "String",
+                      "example": "账户未通过",
+                      "description": "字段描述，需要修改",
+                      "required": 0,
+                      "checkRule": {
+                        "required": null,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 1,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    }
+                  ],
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 52360,
+                  "paramName": "put_status",
+                  "paramType": "Integer",
+                  "example": "1",
+                  "description": "程序化创意操作状态`1：投放中；2：暂停；3：删除",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 7,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 52361,
+                  "paramName": "pic_image_token",
+                  "paramType": "String",
+                  "example": "",
+                  "description": "联盟图片（横版/竖版）`联盟图片imageToken",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 8,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 52362,
+                  "paramName": "pic_url",
+                  "paramType": "String",
+                  "example": "http://www.baidu.com/",
+                  "description": "联盟图片url（横版/竖版）",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 9,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 52363,
+                  "paramName": "app_grade_type",
+                  "paramType": "Integer",
+                  "example": "1",
+                  "description": "审核分级结果`0：默认；1：当创意发生降级时，会限制部分流量无法投放",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 0,
+                  "sort": 10,
+                  "note": "",
+                  "children": null,
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                },
+                {
+                  "paramId": 52364,
+                  "paramName": "audit_detail",
+                  "paramType": "CreativeAuditDetailViewSnake100",
+                  "example": "",
+                  "description": "<p>审核限流详情</p>",
+                  "required": 0,
+                  "checkRule": {
+                    "required": null,
+                    "min": null,
+                    "max": null
+                  },
+                  "handleRules": null,
+                  "structureId": 3046,
+                  "sort": 11,
+                  "note": "",
+                  "children": [
+                    {
+                      "paramId": 52346,
+                      "paramName": "community_review_status",
+                      "paramType": "Integer",
+                      "example": "",
+                      "description": "<p>社区审核状态 0未送审 1待审核 2审核通过 3审核拒绝 5部分审核通过</p>",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 1,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 52347,
+                      "paramName": "community_review_detail",
+                      "paramType": "String",
+                      "example": "",
+                      "description": "<p>社区审核拒绝原因</p>",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 2,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 52348,
+                      "paramName": "review_status",
+                      "paramType": "Integer",
+                      "example": "",
+                      "description": "<p>商业审核状态 0未送审 1待审核 2审核通过 3审核拒绝 5部分审核通过</p>",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 3,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 52349,
+                      "paramName": "review_detail",
+                      "paramType": "String",
+                      "example": "",
+                      "description": "<p>商业审核拒绝理由</p>",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 0,
+                      "sort": 4,
+                      "note": "",
+                      "children": null,
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 52350,
+                      "paramName": "review_reason",
+                      "paramType": "ElementReasonViewSnake[]",
+                      "example": "",
+                      "description": "<p>商业审核拒绝详情</p>",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 3040,
+                      "sort": 5,
+                      "note": "",
+                      "children": [
+                        {
+                          "paramId": 52331,
+                          "paramName": "id",
+                          "paramType": "Integer",
+                          "example": "",
+                          "description": "<p>视频ID或者创意ID</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 1,
+                          "note": "视频ID或者创意ID",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52332,
+                          "paramName": "type",
+                          "paramType": "Integer",
+                          "example": "",
+                          "description": "<p>审核元素 1视频 2封面 3广告语 4图片 6创意 7图集</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 2,
+                          "note": "审核元素 1视频 2封面 3广告语 4图片 6创意 7图集",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52333,
+                          "paramName": "negative_type",
+                          "paramType": "Integer",
+                          "example": "",
+                          "description": "<p>限流类型 1低质 2降级 3负向 4封面没过</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 3,
+                          "note": "限流类型 1低质 2降级 3负向 4封面没过",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52334,
+                          "paramName": "reason_and_modify",
+                          "paramType": "ReasonAndModifySnake[]",
+                          "example": "",
+                          "description": "<p>审核拒绝/限流原因和建议</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 3041,
+                          "sort": 4,
+                          "note": "审核拒绝/限流原因和建议",
+                          "children": [
+                            {
+                              "paramId": 52329,
+                              "paramName": "reason",
+                              "paramType": "String",
+                              "example": "",
+                              "description": "<p>审核拒绝原因</p>",
+                              "required": 0,
+                              "checkRule": {
+                                "required": 0,
+                                "min": null,
+                                "max": null
+                              },
+                              "handleRules": null,
+                              "structureId": 0,
+                              "sort": 1,
+                              "note": "",
+                              "children": null,
+                              "operationType": null,
+                              "diff": false,
+                              "isEditable": 1,
+                              "operation": "UNCHANGED"
+                            },
+                            {
+                              "paramId": 52330,
+                              "paramName": "modify",
+                              "paramType": "String[]",
+                              "example": "",
+                              "description": "<p>修改建议</p>",
+                              "required": 0,
+                              "checkRule": {
+                                "required": 0,
+                                "min": null,
+                                "max": null
+                              },
+                              "handleRules": null,
+                              "structureId": 0,
+                              "sort": 2,
+                              "note": "",
+                              "children": null,
+                              "operationType": null,
+                              "diff": false,
+                              "isEditable": 1,
+                              "operation": "UNCHANGED"
+                            }
+                          ],
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        }
+                      ],
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 52351,
+                      "paramName": "limiting_reason",
+                      "paramType": "ElementReasonViewSnake[]",
+                      "example": "",
+                      "description": "<p>限流详情</p>",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 3040,
+                      "sort": 6,
+                      "note": "",
+                      "children": [
+                        {
+                          "paramId": 52331,
+                          "paramName": "id",
+                          "paramType": "Integer",
+                          "example": "",
+                          "description": "<p>视频ID或者创意ID</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 1,
+                          "note": "视频ID或者创意ID",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52332,
+                          "paramName": "type",
+                          "paramType": "Integer",
+                          "example": "",
+                          "description": "<p>审核元素 1视频 2封面 3广告语 4图片 6创意 7图集</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 2,
+                          "note": "审核元素 1视频 2封面 3广告语 4图片 6创意 7图集",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52333,
+                          "paramName": "negative_type",
+                          "paramType": "Integer",
+                          "example": "",
+                          "description": "<p>限流类型 1低质 2降级 3负向 4封面没过</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 3,
+                          "note": "限流类型 1低质 2降级 3负向 4封面没过",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52334,
+                          "paramName": "reason_and_modify",
+                          "paramType": "ReasonAndModifySnake[]",
+                          "example": "",
+                          "description": "<p>审核拒绝/限流原因和建议</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 3041,
+                          "sort": 4,
+                          "note": "审核拒绝/限流原因和建议",
+                          "children": [
+                            {
+                              "paramId": 52329,
+                              "paramName": "reason",
+                              "paramType": "String",
+                              "example": "",
+                              "description": "<p>审核拒绝原因</p>",
+                              "required": 0,
+                              "checkRule": {
+                                "required": 0,
+                                "min": null,
+                                "max": null
+                              },
+                              "handleRules": null,
+                              "structureId": 0,
+                              "sort": 1,
+                              "note": "",
+                              "children": null,
+                              "operationType": null,
+                              "diff": false,
+                              "isEditable": 1,
+                              "operation": "UNCHANGED"
+                            },
+                            {
+                              "paramId": 52330,
+                              "paramName": "modify",
+                              "paramType": "String[]",
+                              "example": "",
+                              "description": "<p>修改建议</p>",
+                              "required": 0,
+                              "checkRule": {
+                                "required": 0,
+                                "min": null,
+                                "max": null
+                              },
+                              "handleRules": null,
+                              "structureId": 0,
+                              "sort": 2,
+                              "note": "",
+                              "children": null,
+                              "operationType": null,
+                              "diff": false,
+                              "isEditable": 1,
+                              "operation": "UNCHANGED"
+                            }
+                          ],
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        }
+                      ],
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 52352,
+                      "paramName": "adv_creative_community_review_detail",
+                      "paramType": "CreativeCommunityReasonViewSnake[]",
+                      "example": "",
+                      "description": "<p>程序化创意社区审核详情</p>",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 3042,
+                      "sort": 7,
+                      "note": "",
+                      "children": [
+                        {
+                          "paramId": 52335,
+                          "paramName": "id",
+                          "paramType": "Long",
+                          "example": "",
+                          "description": "<p>创意ID</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 1,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52336,
+                          "paramName": "photo_id",
+                          "paramType": "String",
+                          "example": "",
+                          "description": "<p><br>视频ID</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 2,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52337,
+                          "paramName": "cover_id",
+                          "paramType": "Long",
+                          "example": "",
+                          "description": "<p>封面ID</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 3,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52338,
+                          "paramName": "cover_url",
+                          "paramType": "String",
+                          "example": "",
+                          "description": "<p>封面url</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 4,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52339,
+                          "paramName": "caption",
+                          "paramType": "String",
+                          "example": "",
+                          "description": "<p>视频标题</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 5,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52340,
+                          "paramName": "community_review_detail",
+                          "paramType": "String",
+                          "example": "",
+                          "description": "<p>审核拒绝理由</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 6,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        }
+                      ],
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    },
+                    {
+                      "paramId": 52353,
+                      "paramName": "custom_creative_community_review_detail",
+                      "paramType": "CreativeCommunityReasonViewSnake",
+                      "example": "",
+                      "description": "<p>自定义创意社区审核详情</p>",
+                      "required": 0,
+                      "checkRule": {
+                        "required": 0,
+                        "min": null,
+                        "max": null
+                      },
+                      "handleRules": null,
+                      "structureId": 3042,
+                      "sort": 8,
+                      "note": "",
+                      "children": [
+                        {
+                          "paramId": 52335,
+                          "paramName": "id",
+                          "paramType": "Long",
+                          "example": "",
+                          "description": "<p>创意ID</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 1,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52336,
+                          "paramName": "photo_id",
+                          "paramType": "String",
+                          "example": "",
+                          "description": "<p><br>视频ID</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 2,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52337,
+                          "paramName": "cover_id",
+                          "paramType": "Long",
+                          "example": "",
+                          "description": "<p>封面ID</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 3,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52338,
+                          "paramName": "cover_url",
+                          "paramType": "String",
+                          "example": "",
+                          "description": "<p>封面url</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 4,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52339,
+                          "paramName": "caption",
+                          "paramType": "String",
+                          "example": "",
+                          "description": "<p>视频标题</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 5,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        },
+                        {
+                          "paramId": 52340,
+                          "paramName": "community_review_detail",
+                          "paramType": "String",
+                          "example": "",
+                          "description": "<p>审核拒绝理由</p>",
+                          "required": 0,
+                          "checkRule": {
+                            "required": 0,
+                            "min": null,
+                            "max": null
+                          },
+                          "handleRules": null,
+                          "structureId": 0,
+                          "sort": 6,
+                          "note": "",
+                          "children": null,
+                          "operationType": null,
+                          "diff": false,
+                          "isEditable": 1,
+                          "operation": "UNCHANGED"
+                        }
+                      ],
+                      "operationType": null,
+                      "diff": false,
+                      "isEditable": 1,
+                      "operation": "UNCHANGED"
+                    }
+                  ],
+                  "operationType": null,
+                  "diff": false,
+                  "isEditable": 1,
+                  "operation": "UNCHANGED"
+                }
+              ],
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 52367,
+              "paramName": "unit_id",
+              "paramType": "Long",
+              "example": "166925091",
+              "description": "当前的程序化创意的广告组ID",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1745894691432,
+  "creator": "yushiping03",
+  "fullContext": null
+}

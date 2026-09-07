@@ -1,0 +1,18 @@
+O2 Space 发布支持 assets 的响应头设置，你只要在仓库根目录添加一个 `.assetsmetafile` 文件即可。
+
+## 格式
+
+.assetsmetafile 文件格式如下，如果有多 header 自定义，换行隔开
+
+```
+cache-control:max-age=600,s-maxage=600
+
+```
+该配置可以设置浏览器缓存 和 CDN 缓存时间为 600 s，默认值为：max-age=2592000,s-maxage=3600
+
+为了保证 CDN 的命中率，s-maxage 的时间不要低于 300s
+
+## 注意事项
+
+- OSS 只支持部分 Header 设置，列表请查看文档：[https://github.com/ali-sdk/ali-oss#putname-file-options](https://github.com/ali-sdk/ali-oss#putname-file-options)
+- 自定义 header 支持 主要提供给`覆盖发布Assets`使用，其他场景均不建议使用，具体场景可以联系O2小蜜进行答疑。

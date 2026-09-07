@@ -1,0 +1,55 @@
+## 创建应用的主干分支
+
+若应用需要用到多主干开发，可以通过该接口创建应用的主干分支
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/apps/{appIdorName}/trunk |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appIdorName | String | true | - | 应用 ID 或应用名称 |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| trunk | String | true | - | 主干名称 |
+| description | String | false | '' | 主干描述 |
+| fromBranch | String | false | master | 来源主干 |
+| isDefault | Number | false | 0 | 是否是默认主干 |
+
+### Returns
+
+A [Apptrunk](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls6y8v24ozkf7q8vog) Object.
+
+### Example
+
+```
+client.post(
+  `/v1.0/work/apps/{appIdorName}/trunk`,
+  {},
+  {
+    trunk,
+    description,
+    fromBranch
+  },
+  {
+    SSO_TICKET,
+  }
+)
+
+{
+  id: 309,
+  app_id: 1,
+  trunk: 'trunk-1.x',
+  description: '1.x',
+  emp_id: '72927',
+  latest_commit_id: '601cebd35db53ccec249f515f772b38c803533b6'
+  is_default: 0
+}
+
+```

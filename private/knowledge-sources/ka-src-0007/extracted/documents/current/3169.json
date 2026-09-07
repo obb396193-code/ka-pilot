@@ -1,0 +1,289 @@
+{
+  "documentId": 3169,
+  "documentName": "企微加粉后链路数据回传",
+  "documentType": 2,
+  "description": "<p>企微加粉后链路数据回传</p>",
+  "summary": "",
+  "remark": "",
+  "content": "企微加粉后链路数据回传\n/rest/openapi/gw/clue_laotie/v1/wechat/transformedData/passBack\n\n\nadvertiser_id  Long  <p>广告主ID</p>\ncorp_name  String  <p>企微公司简称</p>\nevent_type  Integer  <p>事件类型</p>\ncorp_id  String  <p>企微ID</p>\nstate  String  <p>归因参数</p>\nservice_provider_code  Integer  <p>服务商名称</p>\ncode  Integer  <p>0 - success</p><p>160001 - 系统错误</p><p>162716 - 服务商code不匹配：服务商code错误，请先联系运营报备</p><p>162717 - 事件不匹配：事件code错误</p><p>162718 - state不匹配：state参数错误，请核实是否快手流量</p>\ndata  AdLaotieWechatPassBackDataRes  <p>res</p>\nres_msg  String  <p>OK</p>\nmessage  String  <p>OK</p>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1731912839400
+    }
+  ],
+  "apiId": 1086,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/clue_laotie/v1/wechat/transformedData/passBack",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 11,
+  "bizName": "老铁线索通",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 53998,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "900015265",
+      "description": "<p>广告主ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 53999,
+      "paramName": "corp_name",
+      "paramType": "String",
+      "example": "九元堂文化",
+      "description": "<p>企微公司简称</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "从磁力追踪-微信-企微加粉页面查看\t",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 54000,
+      "paramName": "event_type",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>事件类型</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "1001 : 有效-用户确认意向; 1002 : 意向确认; 1003 : 进群; 1004 : 注册; 1005 : 用户无意向; 1006 : 付费; 1007 : 到课; 1008 : 完课; 1009 : 购买小课包;  1010 : 正价课购买; 1011 : 电话建联成功;  1012 : 电话建联失败;  1013 : 成交; 1014 : 案件金额; 1015 : 下定金; 1016 : 到店; 1017 : 预约;",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 54001,
+      "paramName": "corp_id",
+      "paramType": "String",
+      "example": "wpIcKmHwAASWbSXVD-c0asgmAxSK-BgA",
+      "description": "<p>企微ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "从磁力追踪-微信-企微加粉页面查看",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 54002,
+      "paramName": "state",
+      "paramType": "String",
+      "example": "KSAD_6e639f09cf1b39c2fdd061ca01abd11d",
+      "description": "<p>归因参数</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "企业微信添加好友中state参数",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 54003,
+      "paramName": "service_provider_code",
+      "paramType": "Integer",
+      "example": "\t1",
+      "description": "<p>服务商名称</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "联系运营分配",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 0,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 54004,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "<p>0 - success</p><p>160001 - 系统错误</p><p>162716 - 服务商code不匹配：服务商code错误，请先联系运营报备</p><p>162717 - 事件不匹配：事件code错误</p><p>162718 - state不匹配：state参数错误，请核实是否快手流量</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 54005,
+      "paramName": "data",
+      "paramType": "AdLaotieWechatPassBackDataRes",
+      "example": "",
+      "description": "<p>res</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3173,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 53994,
+          "paramName": "res_msg",
+          "paramType": "String",
+          "example": "OK",
+          "description": "<p>OK</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 0,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 54006,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "OK",
+      "description": "<p>OK</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1731912839400,
+  "creator": "taowuqiang",
+  "fullContext": null
+}

@@ -1,0 +1,579 @@
+{
+  "documentId": 3341,
+  "documentName": "客户共享钱包间转账",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "客户共享钱包间转账\n/rest/openapi/gw/dsp/trade/shared/wallet/transfer\n\n\nto_wallet_name  String  <p>转入钱包姓名</p>\nwallet_id_in  String  <p>转入钱包id</p>\nfor_wallet  Boolean  <p>证明是否是客户共享钱包间转账</p>\nwallet_id  String  <p>转出钱包id</p>\nwallet_name  String  <p>转出钱包姓名</p>\nagent_id  String  <p>代理商id</p>\nagent_name  String  <p>代理商姓名</p>\ntrade_no  String  <p>交易流水号-每笔交易唯一</p><p>流水号生成方式：mapi_{共享钱包ID}_{代理商ID}_{自定义编号}</p><p><u><strong>（重要：快手侧根据该流水号</strong></u></p>\ntrade_type  Long  <p>交易类型</p><p>16-转入共享钱包</p><p>17-从共享钱包转出</p>\nrelated_flow_no  String  <p>关联业务方流水号</p>\nbiz_trade_time  String  <p>交易时间戳</p>\ntotal_amount  Long  <p>转账金额</p>\nuser_data  String  user_data\nuser_id  String  <p>操作人快手ID（需要有权限操作的人员快手ID）</p>\noperator  String  <p>操作人快手昵称</p>\napp_id  Long  <p>业务线【必填】磁力智投默认传7</p>\nsign_company  String  <p>签约主体信息【必填】</p>\nfunds_op_type  Long  <p>资金操作类型 1 现金操作 2 信用操作</p>\ndata  AccountSharedWalletTransferRespNew  <p>返回结果数据</p>\ntrade_status  Long  字段描述，需要修改\ntrade_no  String  <p>接入方流水号</p>\nmessage  String  <p>错误原因</p>\ncode  Integer  <p>返回码1-成功</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1774424446858
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1772718967948
+    }
+  ],
+  "apiId": 1808,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/trade/shared/wallet/transfer",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 80185,
+      "paramName": "to_wallet_name",
+      "paramType": "String",
+      "example": "测试2000+个绑定账户",
+      "description": "<p>转入钱包名称</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 80186,
+      "paramName": "wallet_id_in",
+      "paramType": "String",
+      "example": "662785604249194538",
+      "description": "<p>转入钱包id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80187,
+      "paramName": "for_wallet",
+      "paramType": "Boolean",
+      "example": "true",
+      "description": "<p>证明是否是客户共享钱包间转账</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80188,
+      "paramName": "wallet_id",
+      "paramType": "String",
+      "example": "662785604249194538",
+      "description": "<p>转出钱包id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80189,
+      "paramName": "wallet_name",
+      "paramType": "String",
+      "example": "测试2000+个绑定账户",
+      "description": "<p>转出钱包名称</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 80190,
+      "paramName": "agent_id",
+      "paramType": "String",
+      "example": "897",
+      "description": "<p>代理商id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80191,
+      "paramName": "agent_name",
+      "paramType": "String",
+      "example": "大植哥代理商",
+      "description": "<p>代理商名称</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 80192,
+      "paramName": "trade_no",
+      "paramType": "String",
+      "example": "map_test_001",
+      "description": "<p>交易流水号-每笔交易唯一</p><p>流水号生成方式：mapi_{共享钱包ID}_{代理商ID}_{自定义编号}</p><p><u><strong>（重要：快手侧根据该流水号</strong></u></p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80193,
+      "paramName": "trade_type",
+      "paramType": "Long",
+      "example": "17",
+      "description": "<p>17 <strong>（重要：此处必填</strong><u><strong>17</strong></u><strong>表示钱包间转账）</strong></p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 80194,
+      "paramName": "related_flow_no",
+      "paramType": "String",
+      "example": "map_test_001",
+      "description": "<p>关联业务方流水号</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80195,
+      "paramName": "biz_trade_time",
+      "paramType": "String",
+      "example": "1743410090000",
+      "description": "<p>交易时间戳</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 11,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80196,
+      "paramName": "total_amount",
+      "paramType": "Long",
+      "example": "1",
+      "description": "<p>转账金额</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 12,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80197,
+      "paramName": "user_data",
+      "paramType": "String",
+      "example": "",
+      "description": "user_data",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 13,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80198,
+      "paramName": "user_id",
+      "paramType": "String",
+      "example": "2189467598",
+      "description": "<p>操作人快手ID（需要有权限操作的人员快手ID）</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 14,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80199,
+      "paramName": "operator",
+      "paramType": "String",
+      "example": "System",
+      "description": "<p>操作人快手昵称</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 15,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80200,
+      "paramName": "app_id",
+      "paramType": "Long",
+      "example": "7",
+      "description": "<p>业务线【必填】磁力智投默认传7</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 16,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80201,
+      "paramName": "sign_company",
+      "paramType": "String",
+      "example": "大植哥代理商",
+      "description": "<p>签约主体信息【必填】</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 17,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80202,
+      "paramName": "funds_op_type",
+      "paramType": "Long",
+      "example": "1",
+      "description": "<p>资金操作类型 1 现金操作 2 信用操作</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 18,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 80203,
+      "paramName": "data",
+      "paramType": "AccountSharedWalletTransferRespNew",
+      "example": "",
+      "description": "<p>返回结果数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4133,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 80159,
+          "paramName": "trade_status",
+          "paramType": "Long",
+          "example": "1",
+          "description": "字段描述，需要修改",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 72744,
+          "paramName": "trade_no",
+          "paramType": "String",
+          "example": "map_test_001",
+          "description": "<p>接入方流水号</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80204,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "钱包余额不足",
+      "description": "<p>错误原因</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80205,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1-成功",
+      "description": "<p>返回码1-成功</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1774424446858,
+  "creator": "liuzhonghang",
+  "fullContext": null
+}

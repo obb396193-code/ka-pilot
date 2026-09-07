@@ -1,0 +1,54 @@
+{
+  "documentId": 2514,
+  "documentName": "开启原生扩量开关接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 开启原生扩量开关接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/native/openAccountNative](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/native/openAccountNative)\n\n请求方式：POST\n\n数据格式：JSON\n\n【开启后，您的非原生创意有机会转为原生广告投放，可获得更多流量。关闭后，您的非原生创意将无法转为原生广告投放，无法获得增益流量。 点击以下链接了解详情：https://docs.qingque.cn/d/home/eZQBaPqk6qRVfWnqDmFaGmYsE?identityId=1yqIHIWlyc8 】 \n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | advertiser_id |  |\n| open_account_native | Integer | 1 | 可选 | 开启/关闭原生扩量开关 | 1开启 0关闭 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | OpenAccountNativeResSnake |  | 结果 |  |\n| &#8195;open_account_native | Boolean |  | 操作结果 true:成功 false：失败 |  |\n| code | Integer | 1 | 0 代表成功 非0代表失败 |\n| message | String |  | 失败原因 |  |\n\n### 请求样例\n\n```js\n{\"advertiser_id\":\"24608775\",\"open_account_native\":1}\n```\n\n### 返回样例\n\n```\n{\"code\":401000,\"message\":\"今日操作次数已达上限\",\"request_id\":\"EMWBgICw4oWaChjjBiD8pv_n6zEoxLfUyQw=\"}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1712631915226
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1712631915226,
+  "creator": "qihaichao",
+  "fullContext": null
+}

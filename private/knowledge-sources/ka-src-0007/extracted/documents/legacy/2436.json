@@ -1,0 +1,54 @@
+{
+  "documentId": 2436,
+  "documentName": "小铃铛创建接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 小铃铛创建\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/jingleBell/create](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/jingleBell/create1)\n\n请求方式：POST\n\n数据格式：FORM\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 可选 | advertiser_id |  |\n| conversionType | Integer |  | 必填 | 小铃铛类型 5落地页 2应用下载 9短剧 |  |\n| liveUserId | Long |  | 必填 | 主播ID |  |\n| conversionButton | String |  | 可选 | 行动号召按钮 创建应用下载小铃铛android应用必填，必须填写以下类型：\"立即下载\", \"立即安装\", \"免费下载\", \"免费安装\", \"一键下载\" |  |\n| conversionImageFile | File |  | 必填 | 应用图标 小铃铛类型为h5落地页填写。小铃铛类型为短剧时改字段需要填写，作为小铃铛封面图 |  |\n| conversionTitle | String |  | 必填 | 落地页标题 或者 弹层标题 h5落地页时落地页标题必填且不能超过12个字符,应用下载时弹层标题必填且不能超过10个字符 |  |\n| landingPageUrl | String |  | 可选 | h5落地页链接 |  |\n| iosAppId | Long |  | 可选 | ios应用ID |  |\n| androidAppId | Long |  | 可选 | android应用ID |  |\n| mainAppId | Long |  | 可选 | 主appId,用这个字段代表ios应用和android应用都选的品牌活动宣传图、应用名称具体用哪一个的 |  |\n| appPhotoFiles | File |  | 可选 | 应用截图 创建应用下载小铃铛android应用必填  竖版校验:图片数量：至少上传3图, 最多上传5张图 图片尺寸：360 640 图片格式：JPG/PNG 图片大小：不大于300KB 横版校验:图片数量：至少上传3图, 最多上传5张图 图片尺寸：640 360 图片格式：JPG/PNG 图片大小：不大于300KB  |  |\n| appDesc | String |  | 可选 | 应用描述 创建应用下载小铃铛android应用必填 |  |\n| appType | String |  | 可选 | 应用类型  创建应用下载小铃铛android应用必填，必须填写以下类型,且按照\"一级类目-二级类目\"填写，如\"游戏类-角色扮演\"：应用类型 创建应用下载小铃铛android应用必填，必须填写以下类型,且按照\"一级类目-二级类目\"填写，如\"游戏类-角色扮演\"：\"游戏类\": \"角色扮演\", \"动作射击\", \"卡牌棋牌\", \"体育竞技\", \"经营类\", \"综合游戏\", \"休闲益智\", \"策略冒险\", \"音乐\", \"竞速格斗\" // \"电商零售类\": \"综合\", \"母婴\", \"IT消电\", \"医疗\", \"服饰\", \"房产家居\", \"跨境\", \"快消\", \"日化\",//  \"零售类\", \"电商商家\", \"直营电商\" ,// \"资讯类\": \"综合\", \"团购折扣\", \"生活健康\", \"婚恋交友\", \"招聘\" , // \"交通类\": \"汽车销售\", \"汽车服务\", \"汽车配件\", \"汽车周边\", \"汽车资讯\", \"出行服务\" ,// \"金融服务类\": \"银行保险\", \"小额贷款\", \"投资理财\" ,// \"快消类\": \"茶饮酒水\", \"食品\", \"餐饮服务\" , \"美妆日化类\": \"护肤化妆\", \"卫浴口腔\", \"洗涤卫生\", \"奢侈品类\" , // \"IT消电类\": \"软件服务\", \"3C\", \"家用电器\", \"办公设备\", \"运营商\" , //\"房产类\": \"交易平台\", \"房产物业\" , //\"服饰类\": \"运动服饰\", \"休闲装\", \"正装\", \"内衣\", \"鞋箱包\", \"饰品配饰\" , //\"教育类\": \"海外留学\", \"语言培训\", \"高等教育\", \"低龄培训\", \"职业技能\", \"教育平台\" , //\"旅游类\": \"在线旅游\", \"传统旅行\", \"旅游局\", \"航空公司\", \"景点酒店\" ,// \"医疗类\": \"药品保健\", \"医疗机构\", \"美容器械\" , //\"招商加盟类\": \"招商加盟\", \"餐饮美食\", \"汽车\", \"教育培训\", \"美容美发\" , // \"政府组织类\": \"公益组织\", \"政府机关\", \"民间团体\", \"家装建材\" ,// \"家居建材类\": \"装修服务\", \"家具灯饰\", \"家装综合\", \"家纺家饰\", \"节能环保\" |  |\n| appIntroduction | String |  | 可选 | 应用介绍 创建应用下载小铃铛android应用必填,android应用时介绍必填且不能超过200个字符 |  |\n| photoType | Integer |  | 可选 | 应用截图版式 1横版 2竖版 创建应用下载小铃铛android应用必填 |  |\n| androidMonitorUrl | String |  | 可选 | 第三方点击监测链接 创建应用下载小铃铛android应用选填,如果填写必须以http或者https开头，并且带__CALLBACK__参数 |  |\n| androidClickMonitorUrl | String |  | 可选 | 半屏浮层点击监测链接 创建应用下载小铃铛android应用选填,如果填写必须以http或者https开头，并且带__CALLBACK__参数 |  |\n| iosMonitorUrl | String |  | 可选 | ios第三方点击监测链接 创建应用下载小铃铛ios应用选填,如果填写必须以http或者https开头，并且带__CALLBACK__参数 |  |\n| imageFile | File |  | 可选 | 提示卡片信息-卡片配图 满足条件：图片尺寸：120 * 120 图片格式：JPG/JPEG/PNG 图片大小：不大于200KB,提示卡片信息要填必须全填 |  |\n| title | String |  | 可选 | 提示卡片信息-主标题,提示卡片信息-主标题不能超过9个字符,提示卡片信息要填必须全填 |  |\n| subTitle | String |  | 可选 | 提示卡片信息-副标题,提示卡片信息-副标题不能超过11个字符,提示卡片信息要填必须全填。短剧小铃铛场景下必须填写以下类型：\"精彩剧情正在热播\",\"后续精彩剧情观看\",\"点击解锁全集\",\"观看完整版\" |  |\n| button | String |  | 可选 | 提示卡片信息-按钮文案,必须填写以下类型：\"立即查看\", \"立即体验\",\"点击参与\",\"了解详情\",\"点击咨询\",\"点击预约\",\"点击进入\",\"抢大红包\",\"领取红包\",\"立即下载\",\"立即安装\",\"免费下载\",\"免费安装\",\"一键下载\",\"立即提交\"。 提示卡片信息要填必须全填。【短剧小铃铛】场景必填以下内容：\"立即查看\",\"观看全集\",\"进入观看\",\"继续观看\",\"正在热播\",\"立即前往\",\"点击进入\" |  |\n| seriesId | Long |  | 可选 | 短剧ID，通过短剧列表查询接口获取。创建短剧小铃铛必填。短剧小铃铛需要填写(liveUserId,conversionType,conversionImageFile,imageFile,title,subTitle,button) |  |\n| paymentMode | Long |  | 可选 | 付费模式，短剧小铃铛可用 0-无特定付费模式、1-打包 |  |\n| paymentTemplateId | String |  | 可选 | 付费模版id，短剧小铃铛可用 当paymentMode不为0时必填  |  |\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 状态码 |  |\n| message | String |  | 错误信息 |  |\n| data | JingleBellCopyViewSnake |  |创建的小铃铛id |  |\n| &#8195;jingle_bell_id | String |  | 小铃铛id |  |\n\n### 请求样例\n\n```js\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/jingleBell/create' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'advertiser_id=\"900015364\"' \\\n--form 'conversionType=\"2\"' \\\n--form 'conversionTitle=\"弹层标题\"' \\\n--form 'LiveUserId=\"2190171067\"' \\\n--form 'appDesc=\"应用描述\"' \\\n--form 'appType=\"游戏类-角色扮演\"' \\\n--form 'appIntroduction=\"应用介绍\"' \\\n--form 'photoType=\"2\"' \\\n--form 'appPhotoFiles=@\"/path/to/file\"' \\\n--form 'appPhotoFiles=@\"/path/to/file\"' \\\n--form 'appPhotoFiles=@\"/path/to/file\"' \\\n--form 'androidAppId=\"2199123318800\"' \\\n--form 'conversionButton=\"立即游玩\"' \\\n--form 'imageFile=@\"/path/to/file\"' \\\n--form 'title=\"主标题\"' \\\n--form 'subTitle=\"副标题\"' \\\n--form 'button=\"按钮文案\"'\n```\n### 返回样例\n```js\n{\n    \"code\": 0,\n    \"data\": {\n        \"jingle_bell_id\": \"905248030812575\"\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ELiAgICwxJiOrAEYrwog85WOr8ExKNLojkM=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1721310631256
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1721310631256,
+  "creator": "haoshengwei",
+  "fullContext": null
+}

@@ -1,0 +1,41 @@
+# 1.背景
+
+在Lazada推动项目效能管理和提升的背景下，需要建立从立项到结项的项目管理闭环，结项作为项目管理的闭环节点，需要有始有终的对项目进行总结。
+
+# 2.结项定义
+
+<u>项目发布上线</u><u>、</u><u>并且完成项目复盘和记录</u>，则视为项目已完结、可以进行结项操作。
+
+# **3.结项流程**
+
+## 3.1.Project list 结项
+
+[FY27 Tech Project Lists](https://alidocs.dingtalk.com/i/nodes/Y1OQX0akWmzdBowLFE99vpzGVGlDd3mE)
+项目上线后，PMO即可将项目行记录从“项目列表(最新)”移到“项目复盘（结项）”，并尽快完成复盘和复盘信息的维护，待复盘信息更新完成，即可视为完成结项。
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2025/png/16357049/1741591577114-79bfe959-4849-43ba-be58-b42a2de1e3d7.png "")
+
+## 3.2.Aone 结项
+
+在Aone空间里，PMO进行项目结项，进入Aone项目空间-〉点击右上角-〉选择结项。
+
+![](https://intranetproxy.alipay.com/skylark/lark/0/2025/png/16357049/1741591064575-3f5e6788-8892-47b3-842e-fcb54ebd3fc8.png "")
+
+**注意：**
+1. <u>项目上线后，Aone项目状态首先更新为“已发布”；</u>
+2. <u>项目复盘完成后，Aone项目状态再更新为“已结项”；</u>
+3. 结项后，项目空间变为不可用状态；
+4. “已发布”至“已结项”期间，Aone项目空间一般还可继续用于管理如下事项：
+    1. <span style="color: ;">部分项目需在线上环境做的UAT验收；</span>
+    2. <span style="color: ;">项目上线后的线上问题修复；</span>
+    3. <span style="color: ;">项目上线后发现的必要紧急变更（本期项目所必需的小型需求变更或新增需求）；</span>
+5. <u>“已发布”至“已结项”期间，一般不应超过2个月</u>；
+
+## 3.3.Howard 钉群结项汇报
+
+上述动作完成后，战役项目或者项目人力投入大于100人日的项目，PMO需要在【<span style="color: #121416;">**Lazada立项复盘群**</span>】群里，进行项目结项汇报。
+
+**参考模板：**
+
+[项目复盘海报模板](https://alidocs.dingtalk.com/i/nodes/m9bN7RYPWdyrPBREcbae3bQoVZd1wyK0)
+

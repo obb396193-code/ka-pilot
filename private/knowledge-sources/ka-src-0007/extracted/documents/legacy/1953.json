@@ -1,0 +1,42 @@
+{
+  "documentId": 1953,
+  "documentName": "5.3.3视频库-删除视频标签",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 视频库-删除视频标签\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/tag/delete\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|     字段      |   类型   | 是否必填 |   说明    |                  备注                   |\n| :-----------: | :------: | :------: | :-------: | :-------------------------------------: |\n| advertiser_id |   long   |   必填   | 广告主 id |                                         |\n|   photo_tag   | string[] |   必填   | 视频标签  |               最多 10 个                |\n\n\n### 请求样例\n```\ncurl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/video/tag/delete' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n    \"advertiser_id\" : 11311124,\n    \"photo_tag\": [\"标签1\", \"标签2\"]\n}'\n```\n\n### 返回样例\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"photo_tag\": [\n            \"标签1\",\n            \"标签2\"\n        ]\n    },\n    \"request_id\": \"00aa2f969e1544349000aa09a2248434\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624337
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624337,
+  "creator": "heran03",
+  "fullContext": null
+}

@@ -1,0 +1,88 @@
+以下步骤需要在[跨端研发平台](https://web.def.alibaba-inc.com)完成
+
+您可以在站点总览中对域名的证书进行维护。要进入站点总览页面，您可以在支持站点功能的研发类型下点击左侧的站点功能，选择对应的站点；或在搜索框中搜索已有的站点/域名后点击进入对应的站点。如果没有合适的站点，请先[创建站点](https://yuque.antfin-inc.com/gubal/site/create)。
+
+如果您无法查询到您的域名，或没有站点权限，请通过页面上的悬浮按钮咨询答疑。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/yBRq172J63Qmldv1/img/489e628d-a025-4132-9881-76ee146d78dd.png)
+
+
+所有 CDN 域名均需要由业务方上传并维护证书。您可以在域名列表中 CDN 域名的【操作】列中找到【证书更新】功能（预发、SPE 域名由统一接入维护，无需业务方自行更新）：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/yBRq172J63Qmldv1/img/8a766545-9a6b-478b-9dd3-4dcf9de0b9da.png)
+
+
+如果域名使用了 Keyless，会显示提醒（如下图）。此提示说明您目前无需手工维护此证书。Keyless 服务目前处于待下线阶段，后续方案暂时未知。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/yBRq172J63Qmldv1/img/cf9edcbf-3ced-4853-93ea-c8d81454dfe3.png)
+
+
+## 证书更新
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/yBRq172J63Qmldv1/img/fc513bbb-6ae4-4d1a-8569-142aec7d0407.png)
+
+
+证书更新窗口如上图所示。其中 ① 为域名当前证书状态，② 处可以刷新当前证书状态，③ 处可以选择要更新到的证书。如果下拉框中存在有效的证书（需确认有效期在 30 天以上，最好大于 90 天），可以直接选择后更新；如果没有有效证书，需要申请、下载并在平台上传证书。
+
+## 证书申请
+
+参考：[https://yuque.antfin-inc.com/air-console/help/yzxa17](https://yuque.antfin-inc.com/air-console/help/yzxa17)
+
+## 证书上传
+
+请先准备证书、私钥两个纯文本文件。如果是通过证书平台申请的证书，请将下载的压缩包解压（两个文件后缀名应分别为 `.key` 和 `.crt`）
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/yBRq172J63Qmldv1/img/b5c950d6-d0be-48e9-bfe7-c761a03c375f.png)
+
+
+在站点详情页中点击证书更新，选择 ① 处的【上传】标签页，如下图：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/yBRq172J63Qmldv1/img/0b0f3a2f-6063-4163-b655-f26ae29b9e4b.png)
+
+
+建议点击 ② 处的【从文件读取】，选择准备好的证书和私钥两个文件，确认后会自动填充到对应位置。确认【证书】和【私钥】两个输入框中均有内容后，点击 ③ 处的【上传】按钮。上传后，返回【更新】标签页：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/yBRq172J63Qmldv1/img/b03f561d-eb7f-4f71-b20a-28504075f961.png)
+
+
+在 ② 处的下拉框选择刚上传的证书（可以通过有效期进行判断，选择有效期最长的证书）。如果证书没有显示，请点击 ③ 处的刷新按钮刷新。如证书仍未显示，请联系答疑处理。
+
+## 审批及更新操作
+
+提交更新后，会进入更新流程界面。证书更新需要进行 ChangeFree 审批，请点击【审批单】处的链接进入 ChangeFree 系统提交审批。此外，请核对红框位置的证书有效期，确保其与提交时所选的证书一致：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/yBRq172J63Qmldv1/img/e63d43c4-3215-413f-a5f0-6441b8ff11a1.png)
+
+
+ChangeFree 审批通过后，请返回审批流程页面进行确认，点击确认后触发证书更新操作。证书在 CDN 节点生效有一定的延时，请耐心等待生效。
+
+## FAQ
+
+### 什么是泛域名
+
+泛域名即证书中包含 * 的域名，它代表该证书对其可匹配的多个域名生效
+
+例如包含 *.example.com 的证书，对以下域名有效：
+
+a.example.com
+
+b.example.com
+
+但对以下域名无效：
+
+example.com
+
+a.a.example.com
+
+### 如何查看证书包含的域名
+
+请尝试打开证书文件，查看 Common Name 和 Subject Alternative Name 两个部分。以 Mac 下显示为例：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/yBRq172J63Qmldv1/img/86785687-5d84-48cb-8089-8a1952612e4e.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/yBRq172J63Qmldv1/img/4df429a5-cdac-47aa-af5c-fedb364ec5dc.png)
+
+
+将两者合并去重后，得到该证书包含的域名为 *.i52hz.com 和 i52hz.com
+

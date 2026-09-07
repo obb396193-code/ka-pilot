@@ -1,0 +1,487 @@
+{
+  "documentId": 2930,
+  "documentName": "上传图片 v2 接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1741662676628
+    }
+  ],
+  "apiId": 1301,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v2/file/ad/image/upload",
+  "httpMethod": "POST",
+  "httpContentType": "FORM",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v2/file/ad/image/upload' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'advertiser_id=\"11311124\"' \\\n--form 'file=@\"/Users/xxx.jpg\"' \\\n--form 'type=\"6\"' \\\n--form 'name=\"图片名称\"' \\\n--form 'upload_type=\"1\"' \\\n--form 'signature=\"8dd39015efc6e85b070974ef0abc8f64\"'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"url\": \"https://static.yximgs.com/udata/pkg/market484ccbeaf5a6467495cbc0248d8e83d7.jpg\",\n        \"width\": 1920,\n        \"height\": 1080,\n        \"size\": 12988,\n        \"format\": \"jpg\",\n        \"signature\": \"8dd39015efc6e85b070974ef0abc8f64\",\n        \"name\": \"图片名称\",\n        \"pic_type\": 6,\n        \"image_token\": \"[REDACTED_SECRET_EXAMPLE]\",\n        \"pic_id\": \"5228116223311661787\"\n    },\n    \"request_id\": \"8f2fe78c9cc44147a233a1748add887f\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 61963,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主 ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 accessToken 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61964,
+      "paramName": "type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "上传图片类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "0-1.0创意封面图片；1-app icon；2-信息流场景视频封面图片；5-竖版图片；6-横版图片；7-小图，（组图与小图对于格式要求一致，只不过组图传三个）；8-开屏图片_720*1280；9-开屏图片_750*1334；10-开屏图片_1080*1920；11-开屏图片_1080*2160；12-开屏图片_1080*2280；13-开屏图片_1080*2340；15-APP详情图片；16-图集图片；17-剧集卡片封面；100-高级创意-图片卡片；101-高级创意-多利益卡-图文；102-高级创意-多利益卡-多标签；103-高级创意-电商促销样式；104-高级创意-快捷评论；107-高级创意-轻互动样式；109-高级创意-轻互动样式；125-高级创意-价格差样式；200-高级创意-推广位",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61965,
+      "paramName": "upload_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "上传方式",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "1: 通过文件上传；2: 通过图片 url 上传",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61966,
+      "paramName": "file",
+      "paramType": "File",
+      "example": "",
+      "description": "图片文件",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "upload_type 为 1 时必填",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61967,
+      "paramName": "url",
+      "paramType": "String",
+      "example": "",
+      "description": "图片 url",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "upload_type 为 2 时必填",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61968,
+      "paramName": "signature",
+      "paramType": "String",
+      "example": "",
+      "description": "图片 md5 值",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61969,
+      "paramName": "name",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>图片名称</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "不填会默认填充UUID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 61970,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61971,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61972,
+      "paramName": "data",
+      "paramType": "ImageUploadV2Data",
+      "example": "",
+      "description": "JSON 返回值",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3480,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 61944,
+          "paramName": "url",
+          "paramType": "String",
+          "example": "",
+          "description": "图片预览地址",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61945,
+          "paramName": "width",
+          "paramType": "Long",
+          "example": "",
+          "description": "图片宽度",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61946,
+          "paramName": "height",
+          "paramType": "Long",
+          "example": "",
+          "description": "图片高度",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61947,
+          "paramName": "size",
+          "paramType": "Long",
+          "example": "",
+          "description": "图片大小",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61948,
+          "paramName": "format",
+          "paramType": "String",
+          "example": "",
+          "description": "图片格式",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61949,
+          "paramName": "signature",
+          "paramType": "String",
+          "example": "",
+          "description": "图片 md5 值",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61950,
+          "paramName": "image_token",
+          "paramType": "String",
+          "example": "",
+          "description": "图片 token",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "创建创意时使用",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61951,
+          "paramName": "pic_id",
+          "paramType": "String",
+          "example": "",
+          "description": "图片库图片ID",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61952,
+          "paramName": "pic_type",
+          "paramType": "String",
+          "example": "",
+          "description": "图片类型",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "0-默认，5-竖版，6-横版，12-开屏，16-图集",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1741662676628,
+  "creator": "wb_zhangyanmin",
+  "fullContext": null
+}

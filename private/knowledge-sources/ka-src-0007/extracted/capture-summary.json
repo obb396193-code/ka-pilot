@@ -1,0 +1,33 @@
+{
+  "document_id": "ka-src-0007",
+  "source": "快手磁力引擎开放平台公开 DSP/MAPI 文档",
+  "source_url": "https://developers.e.kuaishou.com/docs?docType=DSP",
+  "captured_at": "2026-08-20T11:17:25.210Z",
+  "capture_scope": [
+    "current",
+    "legacy"
+  ],
+  "current": {
+    "documents": 381,
+    "captured": 381,
+    "failed": 0,
+    "endpoint_records": 352,
+    "external_pages": 29
+  },
+  "legacy": {
+    "documents": 291,
+    "captured": 291,
+    "failed": 0,
+    "endpoint_records": 276,
+    "external_pages": 0
+  },
+  "total_unique_document_snapshots": 672,
+  "endpoint_records": 628,
+  "failures": 0,
+  "credential_sanitization_counts": {
+    "named_header": 374,
+    "named_assignment": 322,
+    "sensitive_param_example": 4
+  },
+  "boundary": "公开文档已归档不等于当前账户已授权、CLI 已封装或运行时已验证；本抓取未登录且未调用广告账户业务接口。"
+}

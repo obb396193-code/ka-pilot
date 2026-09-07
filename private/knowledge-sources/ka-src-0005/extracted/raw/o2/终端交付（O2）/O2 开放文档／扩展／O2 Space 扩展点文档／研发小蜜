@@ -1,0 +1,18 @@
+### links-replace
+
+替换研发小蜜
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/ypegwg6mue8zhnv8/imgkUXWK6Dnwu.png)
+
+
+#### Config
+
+```
+{
+  // 在指定研发类型下，将研发小蜜源替换为这个地址
+    "src":	"https://links.alibaba-inc.com/widgetInit/5fbf53f6cd068c04d342e682"
+}
+
+```
+
+

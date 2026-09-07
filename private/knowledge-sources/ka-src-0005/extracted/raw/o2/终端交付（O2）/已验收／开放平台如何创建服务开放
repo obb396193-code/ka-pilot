@@ -1,0 +1,20 @@
+作者：时路
+
+ 评审人：上坡 
+
+
+
+用户可以将接口服务注册到 O2 网关中，从而使用工程平台对外提供的统一开放接口服务，默认为 HTTPS 协议，服务开放支持两种方式接入：
+
+方式一：Midway 服务接入
+
++ 详情内容可以参考文档：[https://open.o2.alibaba-inc.com/docs/service#serviceJoin](https://open.o2.alibaba-inc.com/docs/service#serviceJoin)
+
+方式二：Faas 服务接入
+
++ 详情内容可以参考文档：[https://open.o2.alibaba-inc.com/docs/service#faasServiceJoin](https://open.o2.alibaba-inc.com/docs/service#faasServiceJoin)
+
+
+
+【相似问题】：O2 开放平台如何创建开放服务
+

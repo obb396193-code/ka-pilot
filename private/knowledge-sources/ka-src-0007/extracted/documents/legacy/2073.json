@@ -1,0 +1,42 @@
+{
+  "documentId": 2073,
+  "documentName": "10.10.1联盟定向媒体包创建",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 联盟定向媒体包创建\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/asset/media/create\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型     | 是否必填 | 说明       | 备注                           |\n| ------------- | -------- | -------- | ---------- | ------------------------------ |\n| advertiser_id | long     | 必填     | 广告主 ID  | 在获取 access_token 的时候返回 |\n| name          | string   | 必填     | 媒体包名字 | 媒体包名不能和已存在的包名重复 |\n| pos_ids       | string[] | 必填     | 广告位列表 |                                |\n\n### 返回参数\n\n| 字段     | 类型   | 说明        | 备注 | 备注                           |\n| -------- | ------ | ----------- | ---- | ------------------------------ |\n| code     | int    | 返回码      |      | 在获取 access_token 的时候返回 |\n| message  | string | 返回信息    |      | 媒体包名不能和已存在的包名重复 |\n| data     | struct | JSON 返回值 |      |                                |\n| media_id | long   | 媒体包 ID   |      |                                |\n\n### 请求样例\n\n```\ncurl -X POST \\\n -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n -H 'Content-Type: application/json' \\\n -d '{\n            \"advertiser_id\": 20000152,\n            \"name\":\"market api创建计划\",\n            \"pos_ids\":[\"shidsadafasfsaffa\", \"sadsafsafsafsa\"]\n}' -L https://ad.e.kuaishou.com/rest/openapi/v1/asset/media/create\n\n```\n\n### 返回样例\n\n```\n{\n  \t\"code\": 0,\n  \t\"message\": \"OK\",\n  \t\"data\": {\n      \t      \"media_id\": 10005\n  \t}\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625204
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625204,
+  "creator": "linmenger",
+  "fullContext": null
+}

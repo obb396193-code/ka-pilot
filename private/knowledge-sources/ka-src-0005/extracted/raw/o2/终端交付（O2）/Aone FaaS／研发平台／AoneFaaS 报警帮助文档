@@ -1,0 +1,67 @@
+- 点击配置报警进入函数应用对应 [sunfire](https://sunfire.alibaba-inc.com/home/alarm/custom) 应用，并且根据配置报警文档进行配置(https://o2-img.alistatic.com/i/i09blZ/XPBc5525gLwbGsDYTJOGX-51d0b8971c.png)
+
+- 进行报警配置(https://o2-img.alistatic.com/i/i09blZ/nh2XeiqqOMk2AEDdyYPAd-b88e206353.png)
+
+- 配置报警规格
+	- 目前平台支持的报警项为以下六项
+		- qps
+		- rt
+		- 错误率
+		- 内存使用率
+		- CPU 使用率
+		- 容器数量
+不同项目报警配置略有不同，整体归为2类
+
+
+
+# QPS/RT/错误率
+
+- 选择 PromQL 规则(https://o2-img.alistatic.com/i/i09blZ/VxlHgMxKtPeHxeBhANaSW-8e28392b4f.png)
+
+- 查找对应环境函数uid名称
+	- 注意，函数在不同环境下报警时函数名称不同，在下图位置获取(https://o2-img.alistatic.com/i/i09blZ/XqSvQP9tZhhTcx4wtTpne-c6b36664c6.png)
+
+	- 图中就是获取 app 函数预发函数uid
+- 拿到 uid 拼写 proql，将下方  aonefaastest01.a0ff2442 替换成你自己的 uid 即可
+	- qps
+```
+tenant("sunfire_metric", sum(rate(http_request_duration_seconds_count{scenePlanName="aonefaastest01.a0ff2442"}[5m])))
+```
+	- rt
+```
+tenant("sunfire_metric", histogram_quantile(0.99, sum(rate(http_request_duration_seconds{scenePlanName="aonefaastest01.a0ff2442"}[5m])) by (le)))
+```
+	- 错误率
+```
+tenant("sunfire_metric", sum(rate(http_request_duration_seconds_count{status=~"[45][0~9]{2}",scenePlanName="aonefaasts10.a3b06ae6"}[5m])) / sum(rate(http_request_duration_seconds_count{scenePlanName="aonefaasts10.a3b06ae6"}[5m])) *100)
+```
+- 根据自己业务实际需求完成配置即可(https://o2-img.alistatic.com/i/i09blZ/qjvhY93fxgaGZzvuU9d5b-eb652a4634.png)
+
+# 内存使用率/CPU使用率/容器数
+
+- 选择普通规则(https://o2-img.alistatic.com/i/i09blZ/cE009l63VNBrjWdgN0W3F-da83433051.png)
+
+- 查找对应环境函数uid名称
+	- 注意，函数在不同环境下报警时函数名称不同，在下图位置获取(https://o2-img.alistatic.com/i/i09blZ/UDCZPfKMqpErfPth6KGNb-7db1090a09.png)
+
+	- 图中就是获取 app 函数预发函数uid
+- 选择指标来源(https://o2-img.alistatic.com/i/i09blZ/se94ZtZ3QhKZnn8hXFONS-af3ac5d2a3.png)
+
+- 输入指标
+	- 内存使用率：container_cpu_limit_usage
+		- (https://o2-img.alistatic.com/i/i09blZ/Lv35BzcUwMXbRazwW4wAN-88980c486f.png)
+
+	- CPU 使用率：container_memory_util(https://o2-img.alistatic.com/i/i09blZ/QSKyiMg9QUKXSy608JoSx-3bd542478c.png)
+
+	- 容器数量：fiber.scene.node.current.count（注意租户选 default ）(https://o2-img.alistatic.com/i/i09blZ/FHeAcYoNFqNDcevgA0sac-96cfe803a7.png)
+
+- 设置过滤设置
+	- 内存和CPU利用率过滤设置(https://o2-img.alistatic.com/i/i09blZ/8JO28Cxr8Falm1XI2tawj-0a5f1e92bd.png)
+
+	- 容器数过滤设置(https://o2-img.alistatic.com/i/i09blZ/JGC8l2BPBIovHAyFdpUIN-fb14ae6d53.png)
+
+- 完成报警后续配置即可
+
+
+PS：[Demo 测试 sunfire 应用](https://sunfire.alibaba-inc.com/application/appmonitor/aonefaastest01/alarmConfig?current=1&size=10)，可申请查看
+

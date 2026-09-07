@@ -1,0 +1,42 @@
+{
+  "documentId": 1989,
+  "documentName": "10.2.1获取创意分类标签白名单客户",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取创意分类标签白名单客户\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/advertiser/white_list\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 说明      | 备注 |\n| ------------- | ---- | --------- | ---- |\n| advertiser_id | long | 广告主 id |      |\n\n### 返回参数\n\n| 字段                     | 类型   | 说明                     | 备注                  |\n| ------------------------ | ------ | ------------------------ | --------------------- |\n| code                     | int    | 返回码                   |                       |\n| message                  | string | 返回信息                 |                       |\n| data                     | struct | JSON 返回值              |                       |\n| creative_category_switch | int    | 账户能否使用创意标签分类 | 1：能使用 0：不能使用 |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624591
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624591,
+  "creator": "linmenger",
+  "fullContext": null
+}

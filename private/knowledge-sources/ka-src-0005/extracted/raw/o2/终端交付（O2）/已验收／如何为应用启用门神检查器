@@ -1,0 +1,27 @@
+作者：紫砂
+
+ 评审人：上坡 
+
+**诊断原因 1**
+
++ 如果需要为应用开启门神检查器，请按如下步骤操作：
+    - 查看「应用设置」—「基础设置」—「代码检查设置」
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1709633033287-ef2db758-bb40-4512-a5b3-e9518027a512.png) 
+
+    - 若该应用类型已升级[质量检测 2.0 ](https://docs.dingtalk.com/i/nodes/KGZLxjv9VGkoG9YwHeAn6v3NV6EDybno)，根据提示进入应用左侧的质量检测中配置。
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1709633196064-8df98c41-d07e-44d1-8bbd-22e003d603cc.png) 
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1709633321916-a6bf21c9-55be-4821-9ef1-ca67d8decec4.png) 
+
+
+
+**诊断原因 2**
+
++ 如果是在配置页找不到自己期望开启的检查器（如 [云安全专有云构建资源检查器](https://checker.alibaba-inc.com/checker/238?spm=defwork.home.0.0.5dfe5c4bIZ0R6H)），请按如下步骤操作：
+    - 请检查器负责人在使用者一栏添加你的花名；
+    - 添加后，你可以返回应用配置页刷新后，即可看到该检查器。
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1709632777306-d7863c44-c8bc-444f-a425-d9b100797f51.png) 
+

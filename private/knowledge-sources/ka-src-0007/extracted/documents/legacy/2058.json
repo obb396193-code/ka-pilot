@@ -1,0 +1,42 @@
+{
+  "documentId": 2058,
+  "documentName": "10.4.1创建应用",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 创建应用\n**【该接口预计23年6月份下线，请使用应用中心接口】** \n\n**【该接口预计23年6月份下线，请使用应用中心接口】** \n\n**【该接口预计23年6月份下线，请使用应用中心接口】** \n\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/app/create\n\n请求方式：POST\n\n数据格式：FORM\n\n### 请求参数\n\n| 字段                   | 类型   | 是否必填 | 说明                                              | 备注                                                                                                            |\n| ---------------------- | ------ | -------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |\n| advertiser_id          | long   | 必填     | 广告主 ID                                         | 在获取 access_token 的时候返回                                                                                  |\n| file                   | file   |          | 应用安装包（apk）                                 | 包体限制：1G 以内；当 platform 为 1 时，可自行选择上传 apk，如果同时传了 url，以 file 字段值为主                |\n| app_version            | string | 必填     | 应用标记                                          | 不能超过 100 字符，同一账户下应用标记不能重复；样例：快影-3.0.0.0103                                            |\n| app_name               | string | 必填     | 应用名称                                          | 不能超过 100 字符                                                                                               |\n| image_token            | string |          | app_icon                                          | 图片 token，可通过上传图片接口获取；platform 为 1/3 时必填，请上传 png/jpg/jpeg 图片，尺寸 450\\*450，小于 100KB |\n| package_name           | string |          | 应用包名                                          | platform 为 1（Android 应用下载）必填，其它类型不用填写，不能超过 100 字符                                      |\n| platform               | int    | 必填     | 应用类型                                          | 1：Android 应用下载，2：Android 网页游戏，3：iOS 应用下载，4：iOS 网页游戏                                      |\n| url                    | string |          | 应用下载地址/网页游戏链接地址                     | 上传 apk 时可不传，其他情况必传，开头为 http://或 https://，不能超过 2000 字符.url 中不能传汉字                 |\n| use_sdk                | int    |          | 是否接入快手广告监测 SDK                          | 0：未接入，1：已接入                                                                                            |\n| app_privacy_url        | String | 必填     | app 隐私政策链接，需与 app 相关，该字段会经过审核 | 安卓类应用必填                                                                                                  |\n| permission_information | string | 选填     | 权限信息，请通过应用权限信息列表接口获取信息      | 权限信息                                                                                                        |\n| real_app_version       | string | 选填     | 真实版本号                                        |                                                                                                                 |\n| package_size | long | 选填     | 应用包大小      | 应用包大小、真实版本号、权限信息要不全填，要不全不填，不支持部分存在                         |\n| app_detail_image_token | string | 选填   | app应用详情图片 | 格式：png/jpg/jpeg；宽高比：9:16；大小：小于2M |\n|offline_app_stores|string|选填|应用商店下架|\"huawei\",\"oppo\",\"vivo\",\"xiaomi\",\"meizu\",\"smartisan\"|\n\n\n### 返回参数\n\n| 字段    | 类型   | 说明        | 备注 |\n| ------- | ------ | ----------- | ---- |\n| code    | int    | 返回码      |      |\n| message | string | 返回信息    |      |\n| data    | struct | JSON 返回值 |      |\n| app_id  | long   | 应用 ID     |      |\n| url     | string | 应用地址    |      |\n\n### 请求样例\n\n```\n\ncurl -X POST \\\n  -H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n  -H 'Content-Type: multipart/form-data' \\\n  -F \"advertiser_id=20000152\" \\\n  -F \"app_version=kuaiying-34523\" \\\n  -F \"app_name=快影\" \\\n  -F \"package_name=com.jiaobuchong\" \\\n  -F \"image_token=[REDACTED_SECRET_EXAMPLE]\" \\\n  -F \"file=@/Users/jackchou/Downloads/kuaiying.apk\" \\\n  -L https://ad.e.kuaishou.com/rest/openapi/v1/file/ad/app/create\n```\n\n### 返回样例\n\n```\n\n{\n    \"code\":0,\n    \"message\":\"OK\",\n    \"data\":{\n        \"url\":\"https://js.a.kspkg.com/ks/ad/third/83bdbf0e03c5c.apk\",\n        \"app_id\":1453452\n    }\n}\n```\n\n| 附加说明     |                                                                                                                                                                                                                                          |\n| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| 推广类型     | 说明                                                                                                                                                                                                                                     |\n| 安卓应用下载 | 本地上传：上传 apk，应用包名，应用名称，上传图标（请上传 png/jpg/jpeg 图片，尺寸 450*450，小于 100KB），应用标记；下载链接：填写下载地址、应用包名，应用名称，上传图标（请上传 png/jpg/jpeg 图片，尺寸 450*450，小于 100KB），应用标记。 |\n| 安卓网页游戏 | 填写下载地址、应用名称，上传图标（请上传 png/jpg/jpeg 图片，尺寸 450\\*450，小于 100KB），应用标记                                                                                                                                        |\n| IOS 应用下载 | 填写下载地址、应用名称，应用标记。                                                                                                                                                                                                       |\n| IOS 网页游戏 | 填写下载地址、应用名称，应用标记。                                                                                                                                                                                                       |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820625097
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820625097,
+  "creator": "heran03",
+  "fullContext": null
+}

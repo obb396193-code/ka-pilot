@@ -1,0 +1,289 @@
+{
+  "documentId": 3267,
+  "documentName": "获取交易状态信息",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "获取交易状态信息\n/rest/openapi/gw/agent/v1/finance/trade/detail\n\n\nagent_id  Long  <p>代理商id</p>\ntrade_no  String  要查询的交易号\ndata  TradeDetailGatewayResp  交易详情\ntrade_no  String  交易号\ntrade_status  String  交易状态\ntrade_type  String  交易类型，枚举：AGENT_TO_ACCOUNT（广告主充值）ACCOUNT_TO_AGENT（广告主退款）ACCOUNT_TO_ACCOUNT（广告主互转）\npayer_side_record_id  String  支付侧（转出方一侧）产生流水号\nreceiver_side_record_id  String  收款侧（转入方一侧）产生流水号\ncode  Integer  状态码\nmessage  String  返回消息\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1780985584223
+    }
+  ],
+  "apiId": 452,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/finance/trade/detail",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 79655,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>代理商id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26276,
+      "paramName": "trade_no",
+      "paramType": "String",
+      "example": "",
+      "description": "要查询的交易号",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 26279,
+      "paramName": "data",
+      "paramType": "TradeDetailGatewayResp",
+      "example": "",
+      "description": "交易详情",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 952,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 26267,
+          "paramName": "trade_no",
+          "paramType": "String",
+          "example": "",
+          "description": "交易号",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 26268,
+          "paramName": "trade_status",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>交易状态；SUCCESS:成功，DOING:处理中无需重试，FAILED：失败</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 26269,
+          "paramName": "trade_type",
+          "paramType": "String",
+          "example": "",
+          "description": "交易类型，枚举：AGENT_TO_ACCOUNT（广告主充值）ACCOUNT_TO_AGENT（广告主退款）ACCOUNT_TO_ACCOUNT（广告主互转）",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 26270,
+          "paramName": "payer_side_record_id",
+          "paramType": "String",
+          "example": "",
+          "description": "支付侧（转出方一侧）产生流水号",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 26271,
+          "paramName": "receiver_side_record_id",
+          "paramType": "String",
+          "example": "",
+          "description": "收款侧（转入方一侧）产生流水号",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26277,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 26278,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回消息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1780985584223,
+  "creator": "zhangzhidong",
+  "fullContext": null
+}

@@ -1,0 +1,42 @@
+{
+  "documentId": 1920,
+  "documentName": "9.5人群包跨账户推送",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 人群包跨账户推送\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/dmp/population/accounts/push\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段             | 类型   | 是否必填 | 说明             | 备注                                  |\n| ---------------- | ------ | -------- | ---------------- | ------------------------------------- |\n| advertiser_id    | long   | 必填     | 广告主 ID        | 在获取 access_token 的时候返回        |\n| orientation_id   | long   | 必填     | 需要推送的人群包 | 人群包状态需有效，status=4 才能推送。 |\n| dest_account_ids | long[] | 必填     | 要推送的账户 ids | 建议单次推送的账户数量<20个                                      |\n\n### 返回参数\n\n| 字段    | 类型   | 说明                   | 备注 |\n| ------- | ------ | ---------------------- | ---- |\n| code    | int    | 返回码                 |      |\n| message | string | 返回信息               |      |\n| data    | struct | JSON 返回值            |      |\n| success | long[] | 推送成功的 account_ids |      |\n| fail    | long[] | 推送失败的 account_ids |      |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624081
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624081,
+  "creator": "luojingyu03",
+  "fullContext": null
+}

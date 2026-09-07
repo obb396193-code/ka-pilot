@@ -1,0 +1,554 @@
+{
+  "documentId": 2688,
+  "documentName": "查询同步失败列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095109862
+    }
+  ],
+  "apiId": 618,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/sync_history",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 9000153264,\n    \"task_id\": 2031290,\n    \"template_id\": 31022,\n    \"current_page\": 1,\n    \"page_size\": 2\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 14,\n        \"details\": [\n            {\n                \"auto_build\": 0,\n                \"unit_name\": \"加白+获取电商下单\",\n                \"campaign_name\": \"获取电商下单_1114_11:26\",\n                \"auto_manage\": 0,\n                \"auto_adjust\": 1,\n                \"unit_view_status\": 11,\n                \"failed_msg\": \"开启智能定向->不可设置快手网红\",\n                \"template_id\": 3102,\n                \"unit_id\": 1719056,\n                \"campaign_id\": 426631,\n                \"unit_view_status_reason\": \"广告组审核中\"\n            },\n            {\n                \"auto_build\": 0,\n                \"unit_name\": \"新建广告组_20220718_15:05\",\n                \"campaign_name\": \"推广快手小程序-上下滑+联盟优选-程序化-10s\",\n                \"auto_manage\": 0,\n                \"auto_adjust\": 0,\n                \"unit_view_status\": 14,\n                \"failed_msg\": \"开启智能定向->不可设置定向行为兴趣\",\n                \"template_id\": 3102,\n                \"unit_id\": 831861,\n                \"campaign_id\": 216055,\n                \"unit_view_status_reason\": \"广告组投放到期下线\"\n            }\n        ],\n        \"current_page\": 1,\n        \"page_size\": 2\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMyAgICw0JiOrAEY3wIgiYih8OYwKM2_hpcC\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 39064,
+      "paramName": "task_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p><br>任务ID</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 39065,
+      "paramName": "template_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>模板ID</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 39066,
+      "paramName": "current_page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "当前页码",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 39067,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "每页大小",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 39083,
+      "paramName": "data",
+      "paramType": "PageDataListTemplateSyncFailedUnitResp896Snake",
+      "example": "",
+      "description": "<p><br>返回的数据json</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2312,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 39079,
+          "paramName": "current_page",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p><br>当前页码</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39080,
+          "paramName": "details",
+          "paramType": "TemplateSyncFailedUnitResp656Snake[]",
+          "example": "",
+          "description": "<p><br>数据详情</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2313,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 39068,
+              "paramName": "auto_adjust",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>计划是否开启自动调控</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39069,
+              "paramName": "auto_build",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p><br>计划是否开启自动基建</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39070,
+              "paramName": "auto_manage",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>计划是否开启智能投放</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39071,
+              "paramName": "campaign_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p><br>计划ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39072,
+              "paramName": "campaign_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p><br>计划名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39073,
+              "paramName": "failed_msg",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>同步失败详情信息</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39074,
+              "paramName": "template_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p><br>模板ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39075,
+              "paramName": "unit_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>广告组ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39076,
+              "paramName": "unit_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>广告组名称</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39077,
+              "paramName": "unit_view_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>广告组状态</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 10,
+              "note": "-1：不限，1：计划已暂停，3：计划超预算，6：余额不足，，11：审核中，12：审核未通过，14：已结束，15：已暂停，17：组超预算，19：未达投放时间，20：有效，22：不在投放时段",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 39078,
+              "paramName": "unit_view_status_reason",
+              "paramType": "String",
+              "example": "",
+              "description": "<p><br>广告组状态描述</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 11,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39081,
+          "paramName": "page_size",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>每页大小</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 39082,
+          "paramName": "total_count",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p><br>此次任务ID对应同步的广告组数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 39084,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>错误详情</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 39085,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>返回码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095109862,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

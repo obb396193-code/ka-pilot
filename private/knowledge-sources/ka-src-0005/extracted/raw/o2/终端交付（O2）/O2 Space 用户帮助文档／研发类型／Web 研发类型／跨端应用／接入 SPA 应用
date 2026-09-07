@@ -1,0 +1,61 @@
+跨端应用默认是多页应用（Multiple Page Application），我们也支持单页应用（Single Page Application）能力。
+
+## 基于 HashRouter 的单页
+
+这种方案会使用 URL 中的 hash（#）部分去创建路由，不需要域名做特殊支持。比如：
+
+- https://{域名}/app/{group}/{project}/index#/a -> 渲染 a 页面
+- https://{域名}/app/{group}/{project}/index#/b -> 渲染 b 页面
+如果对访问 URL 没有特殊需求，该方案足够简单好用。
+
+## 基于 BrowserRouter 的单页
+
+这种方案使用浏览器的 History API 来处理 URL，需要域名做特殊支持。比如：
+
+- https://{域名}/a -> 渲染 a 页面
+- https://{域名}/b -> 渲染 b 页面
+### 实现原理
+
+采用该方案时，我们需要一个特殊配置的 CDN 域名，对该域名的所有访问 path 都 rewrite 到一个特定的入口页，这个入口页使用 BrowserRouter 做好渲染逻辑即可。
+
+### 域名接入
+
+首先你需要准备一个 SPA 的域名。注意：由于 SPA 站点下的域名会做特殊配置，接入的域名不能再实现多页应用功能。
+
+#### Step 1 创建公网 SPA 站点
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hbtxbeovoy7hu6gk/imgg0iziTCka1.png)
+
+
+#### Step 2 站点中接入 CDN 域名
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/hbtxbeovoy7hu6gk/imgr7h5XZtEfn.png)
+
+
+若接入过程中遇到问题，可以参考：[域名接入](https://yuque.antfin-inc.com/gubal/site/domain-apply)
+
+### 入口页准备
+
+入口页可以是 WebApp / Weex / 跨端应用的一个页面，该应用建议命名为 index。你需要创建应用并在本地做好测试后进行一次线上发布。
+
+### 路由配置
+
+在站点中进行路由配置，将首页路由到上面准备的入口页。域名的所有请求路径都会使用首页来进行响应。也就是：{域名}/* rewrite 到 /（首页），/（首页）路由到 入口页
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/LAJdl6yMyRYQOke1/img/9b75064c-e617-48e2-af74-2dcd1119b0b8.png)
+
+
+资源路径可以直接填写上面准备的入口页路径，或者从站点资源中选择。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/LAJdl6yMyRYQOke1/img/a0924d3b-234c-40e6-ac15-5c9ad430da2d.png)
+
+
+注：
+
+- 跨端应用选择从站点资源中选择已发布跨端应用资源。
+- WebApp类，选择从URL中解析，比如填入[https://market.m.taobao.com/app/tbhome/common/error.html](https://market.m.taobao.com/app/tbhome/common/error.html)
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/LAJdl6yMyRYQOke1/img/d121a869-296b-41fc-8ca6-b5ace71e5103.png)
+
+
+注意：路由配置后请进行发布，否则线上不会生效。
+

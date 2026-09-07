@@ -1,0 +1,36 @@
+ka-data 取数对接（给开发）
+（老板 2026-09-05 转交；来源：内网 ka-data 服务 owner"车程"侧文档；内网 OS agent 已用其跑通取数）
+
+1. 连接凭证（找车程要，勿硬编码）
+服务地址  KA_DATA_BASE   = https://c9fa2f-sandbox-session4112318d76d046149d-7105.agent.alibaba-inc.com
+读取令牌  KA_DATA_READER_TOKEN = [REDACTED CREDENTIAL]（签发：cd ~/workspace/ka-data && python3 issue_token.py <名字> reader）
+⚠️ 服务地址里的 session4112318d... 随车程沙箱重启会变。连不上先让车程重跑 curl -s "http://localhost:58596/api/port-mapping?port=7105" | jq -r .url 取新地址。别在自己沙箱跑这条——拿到的是自己沙箱的空映射，会 502。
+
+2. 调用方式（只读，后端持有 token，别进前端）
+curl -s -X POST "$KA_DATA_BASE/api/query" -H "Authorization: Bearer $KA_DATA_READER_TOKEN" -H "Content-Type: application/json" \
+  -d '{"backend":"sqlite","sql":"SELECT biz,SUM(conv) conv FROM fact_conv_daily WHERE ds=20260817 AND media=\"KUAISHOU\" GROUP BY biz"}'
+backend：sqlite(最稳,毫秒) / holo(秒) / odps(慢,120s超时)
+只收单条 SELECT/WITH；≤10000 行 ≤16MB；写操作/DDL/PRAGMA 全拒
+成功回 {"rows":[...],"truncated":false}；401=token错 400=SQL被拒 500=后端错
+查表结构用 SELECT * FROM 表名 LIMIT 1（PRAGMA 会被拦）
+
+3. 核心表（sqlite）
+dwd_account_daily 账户日主表：cost_yuan/cash_yuan/conv/show/click/sub_biz/card_id/deduction_ratio
+dwd_adgroup_daily 广告组日（7.3M行）｜ dwd_material_daily 素材日（21.8M行）｜ dwd_product_daily 商品日
+fact_conv_daily 转化权威表（5 biz）｜ dim_material/dim_product 素材商品标签
+
+4. 必踩的坑（不踩数值就错）
+转化必加 WHERE media='KUAISHOU' —— fact_conv 存全媒体，不加差 ~12 倍（召回 0817 全媒体 61 万 vs 快手 5 万）
+现金直接 SUM(cash_yuan) —— 已按媒体系数算好（快手×0.7812/腾讯÷1.045/头条÷1.09/百度÷1.51），别重算
+cash_yuan 可能是 null 不是 0 —— 聚合/渲染都要空值保护
+两套 account_id namespace —— dwd_adgroup 的 ≠ dwd_account/fact_conv 的，不可直接 JOIN；赔付 JOIN 必须带 media
+考核 SSOT 不在本接口 —— 在 ka-knowledge 仓 catalog/assessment_catalog.json
+
+5. 最小可用后端（FastAPI/FaaS）
+def ka_query(sql, backend="sqlite"): POST base+"/api/query" body {"backend","sql","limit":10000} Bearer token timeout 30 → json["rows"]
+例：latest = SELECT MAX(ds) m FROM dwd_account_daily；media = SELECT media,ROUND(SUM(cost_yuan),2) cost,SUM(conv) conv,ROUND(SUM(cash_yuan),2) cash FROM dwd_account_daily WHERE ds={latest} GROUP BY media ORDER BY cost DESC
+token 用 a1 faas config vars set --app-name <app> --env daily KA_DATA_BASE=… KA_DATA_READER_TOKEN=… 配进环境变量。
+
+6. 已验证实例：看板 https://a1-client-faas-au1tzzdz.fn.taobao.net/dashboard（应用 a1-client-faas-au1tzzdz，daily，数据 20260824：消耗355.6万/转化160.5万/CPA 2.22）
+
+附：随文档同发的完整版《ka-data 取数指南》与 ka-src-0010 同一份，补充要点：响应含 rowCount/limit_clamped/note；token 管理 issue_token.py --list / --revoke <token>，tokens.json 热加载；dwd_adgroup_daily 含 resource_position/bid_tool/plan_tier/operator_name/channel_type/bi_conversions/deduction_rate；dwd_account_daily 含 assessment/cash_assessment/budget/cash_budget/is_deduction/deduction_ratio；sqlite 快照 ds 20260701~20260820 滚动；同沙箱内可用 http://localhost:7105。

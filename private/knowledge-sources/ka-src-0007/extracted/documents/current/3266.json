@@ -1,0 +1,399 @@
+{
+  "documentId": 3266,
+  "documentName": "客户共享钱包列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "客户共享钱包列表\n/rest/openapi/gw/dsp/trade/shared/walletList\n\n\nagent_id  String  agent_id\npage_num  Long  page_num\npage_size  Long  page_size\ndata  AccountSharedListResp[]  <p>共享钱包返回结果</p>\nwallet_id  String  字段描述，需要修改\nwallet_name  String  字段描述，需要修改\napp_id  Long  字段描述，需要修改\nagent_name  String  字段描述，需要修改\nagent_id  String  字段描述，需要修改\ntotal_balance  String  字段描述，需要修改\ncash  String  字段描述，需要修改\ncredit  String  字段描述，需要修改\nbefore_rebate  String  字段描述，需要修改\nafter_rebate  String  字段描述，需要修改\ncreate_time  String  字段描述，需要修改\noperator  String  字段描述，需要修改\nuser_id  String  字段描述，需要修改\naccount_shared_wallet_status  Long  字段描述，需要修改\nmessage  String  <p>错误原因</p>\ncode  Integer  <p>返回码1-成功</p>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1753098882743
+    }
+  ],
+  "apiId": 1692,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/trade/shared/walletList",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 75830,
+      "paramName": "agent_id",
+      "paramType": "String",
+      "example": "897",
+      "description": "agent_id",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75831,
+      "paramName": "page_num",
+      "paramType": "Long",
+      "example": "1",
+      "description": "page_num",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75832,
+      "paramName": "page_size",
+      "paramType": "Long",
+      "example": "1",
+      "description": "page_size",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 75833,
+      "paramName": "data",
+      "paramType": "AccountSharedListResp[]",
+      "example": "共享钱包返回结果",
+      "description": "<p>共享钱包返回结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4273,
+      "sort": 1,
+      "note": "共享钱包返回结果",
+      "children": [
+        {
+          "paramId": 75813,
+          "paramName": "wallet_id",
+          "paramType": "String",
+          "example": "774751159713685694",
+          "description": "<p>钱包ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75814,
+          "paramName": "wallet_name",
+          "paramType": "String",
+          "example": "共享钱包-游戏下载类",
+          "description": "<p>钱包名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75815,
+          "paramName": "app_id",
+          "paramType": "Long",
+          "example": "7",
+          "description": "<p>业务线ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75816,
+          "paramName": "agent_name",
+          "paramType": "String",
+          "example": "博文-免领",
+          "description": "<p>代理商名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75817,
+          "paramName": "agent_id",
+          "paramType": "String",
+          "example": "1012836",
+          "description": "<p>代理商ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75818,
+          "paramName": "total_balance",
+          "paramType": "String",
+          "example": "0",
+          "description": "<p>总余额</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75819,
+          "paramName": "cash",
+          "paramType": "String",
+          "example": "0",
+          "description": "<p>现金余额</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75823,
+          "paramName": "create_time",
+          "paramType": "String",
+          "example": "1753063650102",
+          "description": "<p>创建时间时间戳</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75826,
+          "paramName": "account_shared_wallet_status",
+          "paramType": "Long",
+          "example": "1",
+          "description": "<p>钱包状态<br>1-已生效2-失效中 3-已失效</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75834,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "参数错误",
+      "description": "<p>错误原因</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75835,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1-成功",
+      "description": "<p>返回码1-成功</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1753098882743,
+  "creator": "guochaochao",
+  "fullContext": null
+}

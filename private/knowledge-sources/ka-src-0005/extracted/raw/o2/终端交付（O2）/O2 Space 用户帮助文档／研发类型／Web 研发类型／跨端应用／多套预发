@@ -1,0 +1,93 @@
+# 多套预发
+
+针对用户反馈的多迭代并行开发导致预发环境不稳定的问题，我们决定对原有的跨端应用进行升级。现在，我们将为用户提供多套预发环境的能力，每个迭代都可以选择绑定到不同的预发环境。这样，在发布资源时，它们将会被发布到独立的多套预发环境中，避免了不同迭代页面资源互相覆盖的问题。这一改变旨在提高预发环境的稳定性和可靠性，让用户在开发过程中更加放心和高效。
+
+## 产品链路
+
+[请至钉钉文档查看「白板」](https://docs.dingtalk.com/i/nodes/93NwLYZXWyxXroNzCeZamNrb8kyEqBQm?iframeQuery=anchorId%3DX02lpj4idab5f8jrx5igg9)
+
+## 多套环境准备
+
+多套预发环境是站点级公用的，接入到站点下的应用均可以使用。在应用的迭代绑定多套预发环境前，站点管理员需要先进行环境的初始化工作。注意：多套环境能力仅支持普通站点，不支持 SPA 类型站点。
+
+下面是操作步骤：
+
+1. 访问“站点控制台 - 多套环境 - 多套预发”，点击“创建多套预发环境”。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYMJLbPxO8j9/img/616cb706-6f18-48e4-979d-b1adcedb2176.png)
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYMJLbPxO8j9/img/e3447e92-7433-4c52-9816-a0048e9c7675.png)
+
+
+需要填写的表单内容包括：可读的环境名称（该名称会在创建迭代时用于展示）；环境域名（即该多套预发环境的访问域名）；。
+
+注意：
+
+- 多套预发环境的域名会基于预发域名命名规则生成，不支持修改。
+- 多套预发环境的数量上限是 5 个，超过则无法继续创建。
+1. 表单提交后会创建域名的接入流程，请及时跟进接入流程（主要跟进“统一接入”流程）。接入过程中的常见问题可以参考：[https://aliyuque.antfin.com/gubal/site/domain-apply#SXpjX](https://aliyuque.antfin.com/gubal/site/domain-apply#SXpjX)
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYMJLbPxO8j9/img/129ea7f4-f0cc-42ef-9e38-6768cbdf959e.png)
+
+
+1. 域名接入完成后，需要将该域名的路由配置进行发布才能正常使用。访问“站点控制台 - 路由配置 - 路由发布”，找到对应的域名进行路由发布即可。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYMJLbPxO8j9/img/e9b6689b-1194-410a-b62e-97d2891ac279.png)
+
+
+## 多套环境绑定
+
+接入到站点下的应用在创建迭代时，可以选择该迭代使用的预发环境（可选择的多套预发环境来源于站点下维护的多套预发环境），不选择则表示该迭代会使用默认预发环境。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYMJLbPxO8j9/img/bc63ef3d-96dc-4bba-8d55-8748b1baf5fb.png)
+
+
+若多套预发环境已经被应用下的其他进行中的迭代绑定，则不能再进行选择（即应用下的迭代和环境是一对一的关系）。迭代发布完成或废弃后，多套预发环境会被释放（此时该环境可以被选择）。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYMJLbPxO8j9/img/3f49e385-128d-4d92-ae0b-0fc26c7bb4c2.png)
+
+
+## 迭代发布
+
+迭代创建后的发布流程不会发生使用上的变化。
+
+在执行预发发布时，“assets 部署”会携带迭代版本号进行非覆盖的发布（不会发生资源覆盖）；“页面部署”会将页面资源部署到迭代绑定的多套预发环境，页面将通过多套预发环境的域名进行访问。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYMJLbPxO8j9/img/753c0bcc-dd21-41a1-86bb-2b55ec16f452.png)
+
+
+注意：
+
+- 绑定了多套预发环境的迭代进行预发发布后，只会将资源发布到多套预发环境，不会发布到默认的预发环境（也就是默认的预发域名将访问不到绑定多套迭代的资源）。
+- 发布到多套预发环境的资源具有“独占性”，即当有迭代在多套预发环境下进行预发发布后，可以访问到的资源将完全取决于该迭代的发布结果。
+## 常见问题
+
+### 创建迭代时没有多套预发环境可选列表？
+
+请通过应用概览，查看应用所属的站点下是否有多套环境数据。
+
+如果没有，请参考上面的“多套环境准备”进行环境的创建。如果你不是站点管理员，可以联系站点管理员进行创建。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYMJLbPxO8j9/img/72b97626-aed1-4cd3-8d61-aa94f928247b.png)
+
+
+### 访问多套预发域名的页面 404？
+
+检查该域名的路由是否发布，通过“站点控制台 - 路由配置 - 路由发布”进行发布。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYMJLbPxO8j9/img/e9b6689b-1194-410a-b62e-97d2891ac279.png)
+
+
+### 如何确认迭代绑定的多套预发环境？
+
+迭代详情中可以查看到迭代绑定的环境：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/MAeqxYMJLbPxO8j9/img/ac14f5d9-f39b-40bf-9b45-710517d6cec3.png)
+
+
+### 如何解绑迭代的多套预发环境？
+
+不支持手动解绑。频繁的绑定和解绑，容易导致资源错乱。迭代废弃或完成上线后，环境自动会解绑。
+
+### 如何接入多套预发域名
+
+多套预发域名接入流程与预发域名接入流程一致，更多信息查看[《域名接入》](https://docs.dingtalk.com/i/nodes/YndMj49yWjlAYoxjtKbLlnNeJ3pmz5aA)中预发/多套预发域名接入流程。
+

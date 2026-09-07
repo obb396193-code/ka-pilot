@@ -1,0 +1,333 @@
+{
+  "documentId": 3365,
+  "documentName": "三方支付-查询退款",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1780990018556
+    }
+  ],
+  "apiId": 2547,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/clue_laotie/v1/pay/queryRefundOrder",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 11,
+  "bizName": "老铁线索通",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 87079,
+      "paramName": "seller_user_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<pre><code>B 端商家 userId（sellerUserId），与创建订单时传入的一致</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87080,
+      "paramName": "out_order_no",
+      "paramType": "String",
+      "example": "",
+      "description": "<pre><code>业务支付订单号（必填）</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87081,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<pre><code>广告主 ID（鉴权用，同 CreateMapiPayOrder）</code></pre>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 87082,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87083,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 87084,
+      "paramName": "data",
+      "paramType": "AdLaotiePayRefundQueryData",
+      "example": "",
+      "description": "<p>-</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4942,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 87041,
+          "paramName": "pay_center_code",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>支付中台业务 code</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87042,
+          "paramName": "pay_center_msg",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>支付中台业务 msg</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87043,
+          "paramName": "refund_amount",
+          "paramType": "Long",
+          "example": "",
+          "description": "<pre><code>退款金额（单位：分）</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87044,
+          "paramName": "refund_state",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>退款状态：UNKNOWN / PROCESSING / SUCCESS / FAILED（终态一般仅 SUCCESS）</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87045,
+          "paramName": "refund_complete_time",
+          "paramType": "Long",
+          "example": "",
+          "description": "<pre><code>退款到账时间（毫秒时间戳，refund_state 为终结态且 SUCCESS 时不为空）</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 87046,
+          "paramName": "fail_reason",
+          "paramType": "String",
+          "example": "",
+          "description": "<pre><code>失败原因（refund_state=FAILED 时填充）</code></pre>",
+          "required": 0,
+          "checkRule": {
+            "required": 1,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1780990018556,
+  "creator": "sunxin08",
+  "fullContext": null
+}

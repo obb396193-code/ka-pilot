@@ -1,0 +1,9 @@
+[
+  {
+    "source_id": "api-121814565",
+    "observed_endpoint": "/v1.3/barrage/get",
+    "corrected_endpoint": "/v1.3/barrage_recommend/get",
+    "official_evidence_url": "https://developers.e.qq.com/docs/api/business_assets/barrage/barrage_recommend_get",
+    "reason": "公开镜像将运营推荐弹幕路径写成普通弹幕路径；腾讯广告官方原站明确为 barrage_recommend/get"
+  }
+]

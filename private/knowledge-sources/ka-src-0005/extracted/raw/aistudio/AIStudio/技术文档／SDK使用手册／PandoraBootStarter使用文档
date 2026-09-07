@@ -1,0 +1,80 @@
+
+
+[idealab](https://aistudio.alibaba-inc.com/#/ideaTALK)：构建一站式AI场景应用研发平台，集成了丰富的AI大模型、高效调试、一键Demo、精准评测，致力于简化交付流程，加速业务成长，引领AI技术新潮流！
+
+​  
+
+
+本文描述了使用 Spring Boot 的编程模型在 Pandora Boot 应用中如何使用idealab模型能力。
+
+## 参考文档
+
+* [idealab starter使用手册](https://aliyuque.antfin.com/aiplus/aistudio/wn6gmpmnwaurmbap?singleDoc#)
+* [idealab API文档](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9?singleDoc# 《Chat Completion API》)
+* [Spring AI 官方文档](https://spring.io/projects/spring-ai)
+* 答疑群：25765049689
+
+## 注意事项
+
+使用了基于 Srping Boot 3 的 Spring AI 框架，因此 **JDK 版本不能低于 17**
+
+## 例子
+
+https://code.alibaba-inc.com/middleware-container/pandora-boot-samples/tree/develop/spring-boot-3-samples/idealab-ai-demo
+
+## 如何使用
+
+### Maven依赖
+
+导入 pandora-boot-starter-bom 以及 spring-boot-dependencies 的 BOM 配置，最新版本请查看[maven仓库](https://artlab.alibaba-inc.com/KeywordResult?Keyword=pandora-boot-starter-bom)
+
+在`<dependencies>`（注意不是`<dependencyManagement>/<dependencies>`）下添加依赖(无须写版本)
+
+### application.properties
+
+在 `application.properties` 中定义 idealab 相关的配置，必要的配置有：
+
+**​**  
+
+
+**申请ak流程请参考文档：**[**AK申请流程**](https://aliyuque.antfin.com/aiplus/aistudio/gzhhgn1ai1ulhohs)
+
+**​**  
+
+
+此外，还支持在 `application.properties` 中定义以下配置：
+
+| **配置项** | **说明** | **默认值** |
+| --- | --- | --- |
+| spring.ai.idealab.enabled | 是否自动装配`IdealabApi`，基础api依赖，默认开启 | true |
+| spring.ai.idealab.debug | 开启后，会打印调用模型入参出参的日志 | false |
+| spring.ai.idealab.base-url | idealab平台的域名，已有默认值，一般情况无需设置 | https://idealab.alibaba-inc.com |
+| spring.ai.idealab.chat.enabled | 是否自动装配 `IdealabChatModel`, 默认开启 | true |
+| spring.ai.idealab.chat.model | 默认使用的模型名称，idealab支持的模型见[文档](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9#zphhm)，默认为gpt-4o-0513 | gpt-4o-0513 |
+| spring.ai.idealab.chat.functions | 模型可以使用的工具名称列表 | - |
+| spring.ai.idealab.chat.enable-tool-choice | 是否开启 toolChoice，开启后会使用toolChoice方式执行工具，toolChoice支持一次调用多个工具，目前只有gpt系列支持 | false |
+| * spring.ai.idealab.chat.temperature * spring.ai.idealab.chat.max-tokens * spring.ai.idealab.chat.frequency-penalty * spring.ai.idealab.chat.logit-bias * spring.ai.idealab.chat.logprobs * spring.ai.idealab.chat.top-logprobs * spring.ai.idealab.chat.presence-penalty * spring.ai.idealab.chat.stop * spring.ai.idealab.chat.top-p * spring.ai.idealab.chat.response-format | 模型侧参数，详细解释可以见：[参数说明文档](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9#bzqWz)  ​  这些在运行态均可被入参覆盖  ​  ​ | - |
+
+### 在应用中使用idealab
+
+#### 注册Function
+
+[Function使用方法](https://docs.spring.io/spring-ai/reference/api/chat/functions/openai-chat-functions.html)
+
+#### 使用IdealabChatModel
+
+##### 块式调用
+
+输出结果：
+
+##### 流式调用
+
+使用 HttpServletResponse flush输出
+
+或者使用 spring-webflux:
+
+  
+
+
+输出结果：
+

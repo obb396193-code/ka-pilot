@@ -1,0 +1,381 @@
+{
+  "documentId": 3326,
+  "documentName": "智投项目创建接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "智投项目创建接口\n/rest/openapi/gw/dsp/v2/auax/project/create\n\n\nadvertiser_id  Long  <p>广告主账号ID</p>\nname  String  <p>项目名称</p>\nkol_user_id  Long  <p>快手号ID</p>\nkol_user_type  Integer  <p>快手号类型：1-普通快手号，2-蓝V服务号，3-聚星达人</p>\nauto_manage_type  Integer  <p>智投类型：2-短剧智投</p>\nsubject_id  Long  <p>短剧ID/小说ID</p>\nocpx_action_type  Integer  <p>转化目标：191-首日ROI，990-首日变现ROI（短剧），978-首日变现ROI（小说）</p>\nroi_ratio  Double  <p>ROI系数</p>\ndescription  String  <p>广告语</p>\nphoto_package_info  Long[]  <p>素材包ID</p>\ndata  AuaxProejctIdS  <p>智投项目ID</p>\nauax_project_id  Long  <p>智投项目ID</p>\ncode  Integer  <p>返回码</p>\nmessage  String  <pre><code>errorMessage</code></pre>\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1763643647583
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1763643323937
+    }
+  ],
+  "apiId": 1769,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v2/auax/project/create",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 79333,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主账号ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79334,
+      "paramName": "name",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>项目名称</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79335,
+      "paramName": "kol_user_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>快手号ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79336,
+      "paramName": "kol_user_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>快手号类型：1-普通快手号，2-蓝V服务号，3-聚星达人</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79337,
+      "paramName": "auto_manage_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>智投类型：2-短剧智投</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79338,
+      "paramName": "subject_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>短剧ID/小说ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 6,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79339,
+      "paramName": "ocpx_action_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>转化目标：191-首日ROI，990-首日变现ROI（短剧）</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 7,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 79340,
+      "paramName": "roi_ratio",
+      "paramType": "Double",
+      "example": "",
+      "description": "<p>ROI系数</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 8,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79341,
+      "paramName": "description",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>广告语</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 9,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79342,
+      "paramName": "photo_package_info",
+      "paramType": "Long[]",
+      "example": "",
+      "description": "<p>素材包ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 10,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 79344,
+      "paramName": "data",
+      "paramType": "AuaxProejctIdS",
+      "example": "",
+      "description": "<p>智投项目ID</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4499,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 79343,
+          "paramName": "auax_project_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>智投项目ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 79345,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    },
+    {
+      "paramId": 79346,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<pre><code>错误信息</code></pre>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "CHANGE"
+    }
+  ],
+  "createTime": 1763643647583,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

@@ -1,0 +1,1110 @@
+{
+  "documentId": 3248,
+  "documentName": "更新商品（音视频-漫剧）",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.4",
+  "versionList": [
+    {
+      "version": "0.0.4",
+      "createTime": 1763690895023
+    },
+    {
+      "version": "0.0.3",
+      "createTime": 1763637513844
+    }
+  ],
+  "apiId": 1685,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/batch/update/video/cartoon/play",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求示例",
+      "type": "jsonc",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/dpa/product/batch/update/video/cartoon/play' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n  \"advertiser_id\": 7869843,\n  \"short_play_product_edit_params\": [\n    {\n      \"library_id\": 3589042,\n      \"outer_id\": \"77\",\n      \"name\": \"MAPI测试77\",\n      \"status\": \"1\",\n      \"description\": \"漫剧简介\",\n      \"industry_id\": 8,\n      \"sub_industry_id\": \"漫剧\",\n      \"first_category_id\": 250802001,\n      \"first_category_name\": \"漫剧\",\n      \"second_category_id\": 25080200101,\n      \"second_category_name\": \"都市\",\n      \"third_category_id\": 2508020010101,\n      \"third_category_name\": \"都市\",\n      \"label\": [\n        \"自定义标签1\",\n        \"自定义标签2\"\n      ],\n      \"main_image_url\": [\n        \"shangpinzhutu\"\n      ],\n      \"image_urls\": [\n        \"shangpinfutu\"\n      ],\n      \"short_play_product_info\": {\n        \"channel\": \"男频\",\n        \"new_themes\": [\n          \"脑洞\",\n          \"甜宠\",\n          \"逆袭\"\n        ],\n        \"new_plots\": [\n          \"豪门赘婿\",\n          \"职场社畜\"\n        ],\n        \"episodes\": 22,\n        \"episode_duration\": 44,\n        \"paid_episodes\": 66,\n        \"unit_price\": 55,\n        \"max_charge\": 66,\n        \"min_charge\": 77,\n        \"recommend_charge\": 88,\n        \"is_online_earning\": 1,\n        \"starring\": [\n          \"starring1\",\n          \"starring2\"\n        ],\n        \"discovery_mode\": \"付费\",\n        \"member_type\": \"无\"\n      }\n    }\n  ]\n}'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "响应示例",
+      "type": "jsonc",
+      "body": "{\n  \"code\": 0,\n  \"data\": {\n    \"product_edit_responses\": [\n      {\n        \"error_msg\": null,\n        \"library_id\": 3589042,\n        \"success\": true,\n        \"product_id\": 459877022,\n        \"outer_id\": \"77\"\n      }\n    ]\n  },\n  \"message\": \"OK\",\n  \"request_id\": \"ENGAgIDwjuScChiIESCb3Nzl-DIorP7jmws=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 75557,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>投放账号ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75558,
+      "paramName": "cartoon_play_product_edit_params",
+      "paramType": "AdGatewayDpaProductBatchUpdateParamForCartoonPlay[]",
+      "example": "",
+      "description": "<p>漫剧商品批量更新请求参数</p>",
+      "required": 1,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4249,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 75534,
+          "paramName": "industry_id",
+          "paramType": "Integer",
+          "example": "8",
+          "description": "<p>音视频-漫剧，industry_id（商品行业ID）=8</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75535,
+          "paramName": "sub_industry_id",
+          "paramType": "String",
+          "example": "\"漫剧\"",
+          "description": "<p>音视频-漫剧，sub_industry_id=\"漫剧\"</p>",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75536,
+          "paramName": "library_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品库ID,创建商品必须填写商品所在商品库</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75537,
+          "paramName": "outer_id",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品第三方ID，作为某个商品库下的商品唯一ID</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75538,
+          "paramName": "name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>漫剧名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75539,
+          "paramName": "description",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>漫剧简介</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75540,
+          "paramName": "label",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>自定义标签-该字段已废弃</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75541,
+          "paramName": "main_image_url",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>商品主图</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75542,
+          "paramName": "image_urls",
+          "paramType": "String[]",
+          "example": "",
+          "description": "<p>商品副图</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75543,
+          "paramName": "first_category_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品一级类目ID-该字段已废弃</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 10,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75544,
+          "paramName": "first_category",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品一级类目名称-该字段已废弃</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75545,
+          "paramName": "second_category_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品二级类目ID-该字段已废弃</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 12,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75546,
+          "paramName": "second_category",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品二级类目名称-该字段已废弃</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 13,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75547,
+          "paramName": "third_category_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>商品三级类目ID-该字段已废弃</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 14,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75548,
+          "paramName": "third_category",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>商品三级类目名称-该字段已废弃</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 15,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75549,
+          "paramName": "cartoon_play_product_info",
+          "paramType": "CartoonPlayProductInfoSneak",
+          "example": "",
+          "description": "<p>漫剧商品批量更新请求参数</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 4246,
+          "sort": 16,
+          "note": "",
+          "children": [
+            {
+              "paramId": 75515,
+              "paramName": "copyright",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>版权方主体名称</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75516,
+              "paramName": "episodes",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>漫剧剧集数</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75517,
+              "paramName": "channel",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>男女频道: 男频, 女频, 不限</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75518,
+              "paramName": "new_themes",
+              "paramType": "String[]",
+              "example": "",
+              "description": "<p>题材，可多选(详见: https://docs.qingque.cn/s/home/eZQDk3ey4uwts_6HeBYVoxzTG?identityId=F0DVUl94Gc)</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75519,
+              "paramName": "new_plots",
+              "paramType": "String[]",
+              "example": "",
+              "description": "<p>情节，可多选(详见: https://docs.qingque.cn/s/home/eZQDk3ey4uwts_6HeBYVoxzTG?identityId=F0DVUl94Gc)</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75520,
+              "paramName": "screen",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>横竖屏：横屏,竖屏,横转竖屏-该字段已废弃</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75521,
+              "paramName": "make_method",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>制作呈现方式：简笔动画、小说剧、AIGC剧、沙雕动画、3D动画、2D动画</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 7,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75522,
+              "paramName": "source_category",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>来源类别：小说改,漫画改,游戏改,短剧改,原生创作-该字段已废弃</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 8,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75523,
+              "paramName": "original_name",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>漫改原著名称-该字段已废弃</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 9,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75524,
+              "paramName": "discovery_mode",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>变现模式：付费,免费-该字段已废弃</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 10,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75525,
+              "paramName": "paid_episodes",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>起始解锁集数-该字段已废弃</p>",
+              "required": 1,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 11,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75526,
+              "paramName": "unit_price",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>单集价格-该字段已废弃</p>",
+              "required": 2,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 12,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75527,
+              "paramName": "min_charge",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>最低充值档位(元)-该字段已废弃</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 13,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75528,
+              "paramName": "max_charge",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>最高充值档位(元)-该字段已废弃</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 14,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75529,
+              "paramName": "recommend_charge",
+              "paramType": "Double",
+              "example": "",
+              "description": "<p>推荐充值档位(元)-该字段已废弃</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 15,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75530,
+              "paramName": "member_type",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>会员类型：终身,年度,月度,周,天,无-该字段已废弃</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 16,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "CHANGE"
+            },
+            {
+              "paramId": 75531,
+              "paramName": "episode_duration",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>单集剧集时长（分钟）</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 17,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75532,
+              "paramName": "is_online_earning",
+              "paramType": "Integer",
+              "example": "",
+              "description": "<p>是否网赚: 1-是, 2-否-该字段已废弃</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 18,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75533,
+              "paramName": "starring",
+              "paramType": "String[]",
+              "example": "",
+              "description": "<p>主演</p>",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 19,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 75550,
+          "paramName": "status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>商品投放状态: 0-不可投放, 1-可投放</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 17,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 75559,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>结果状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75560,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>错误结果信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 75561,
+      "paramName": "data",
+      "paramType": "AdGatewayDpaProductBatchEditResponse",
+      "example": "",
+      "description": "<p>商品批量编辑结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 725,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 75556,
+          "paramName": "product_edit_responses",
+          "paramType": "ProductUpdateResponseSneak[]",
+          "example": "",
+          "description": "<p>商品编辑返回结果集</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 724,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 75551,
+              "paramName": "library_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>商品库ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75552,
+              "paramName": "outer_id",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>商品第三方ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75553,
+              "paramName": "success",
+              "paramType": "Boolean",
+              "example": "",
+              "description": "<p>编辑结果: true-成功, false-失败</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75554,
+              "paramName": "error_msg",
+              "paramType": "String",
+              "example": "",
+              "description": "<p>失败错误信息</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 75555,
+              "paramName": "product_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "<p>商品ID</p>",
+              "required": 0,
+              "checkRule": {
+                "required": null,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1763690895023,
+  "creator": "chenzhouqing",
+  "fullContext": null
+}

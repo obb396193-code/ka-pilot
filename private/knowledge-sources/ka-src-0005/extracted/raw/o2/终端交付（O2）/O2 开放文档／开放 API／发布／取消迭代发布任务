@@ -1,0 +1,30 @@
+## 接口名称
+
+取消正在进行中的发布任务
+
+| method | post |
+|-|-|
+| url | /v1.0/work/api/iteration/{iterationId}/task/{taskId}/cancel |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| iterationId | Number | true | - | 迭代 ID |
+| taskId | Number | true | - | 发布任务 ID |
+
+### Returns
+
+An Empty Object.
+
+### Example
+
+```
+client.post(`/v1.0/work/api/iteration/14798022/task/135935580/cancel`, {}, {}, {
+  SSO_TICKET
+})
+
+{}
+
+```

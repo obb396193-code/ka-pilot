@@ -1,0 +1,22 @@
+# 背景
+
+平台默认分配的仅为内网域名，当用户需要外网访问或者有个性域名需求的时候，就需要用户申请域名、走统一接入、绑定函数应用。
+
+# 步骤
+
+1. 访问平台：[https://fs.alibaba-inc.com/?spm=a1zek.8769333.0.0.1c1f7ec4t8yveE#/ingressManage](https://fs.alibaba-inc.com/?spm=a1zek.8769333.0.0.1c1f7ec4t8yveE#/ingressManage)
+1. 新增域名（注意：应用名填自己的函数应用）
+1. vipserverKey 需要填已有的函数 vipserverKey(https://o2-img.alistatic.com/i/i09blZ/LdHNzCZE0fknNSw3U3x4f-cc72ce3f8c.png)
+
+| 环境 | vipserverkey |
+|-|-|
+| 日常 | http.afc.vipserver |
+| 预发 | http.afc.vipserver |
+| 张北 | http.afc.vipserver |
+| 仅上海 | sh-s.http.afc.vipserver |
+| 更多单元后续会补充 |  |
+
+1. 注意接入层后端超时时间默认为 60s，意思就是你函数侧即使配置了 1 小时超时，但是你通过 HTTP 访问函数的时候 1 分钟后接入层也会 504 超时掉，导致你函数配置的超时无效，所以配置后端超时时间是要根据自己实际情况配置。
+1. 完成接入流程
+1. 访问应用，新增域名，重新部署函数即可生效(https://o2-img.alistatic.com/i/i09blZ/MknIZuBa2jNY8pG7onSZr-a8d06422d5.png)
+

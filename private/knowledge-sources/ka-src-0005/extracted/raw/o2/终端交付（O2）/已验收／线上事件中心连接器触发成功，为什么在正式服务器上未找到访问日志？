@@ -1,0 +1,16 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/65fbf40509a899056b2e5a11/](https://links.alibaba-inc.com/support/conversation/65fbf40509a899056b2e5a11/)
+
+作者：月侠
+
+评审人：上坡
+
+
+
+1、通过连接器的日志查看服务器返回是否报错
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1712568600641-7d3d9652-e7bf-47ba-9952-0acb30e98ebd.png) 
+
+2、若返回报错，根据错误原因定位服务端问题，若不是服务端的问题可以咨询平台管理员
+
+3、若返回没问题，自行打印服务端日志定位问题
+

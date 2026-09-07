@@ -1,0 +1,42 @@
+{
+  "documentId": 2042,
+  "documentName": "搜索关键词批量创建接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 创建关键词\n\n此接口用于在指定Unit上创建关键词，可以在已有关键词基础上新增，单个Unit最多创建1000个关键词。\n\n请求接口：[https://ad.e.kuaishou.com/rest/openapi/v2/word_info/create](https://ad.e.kuaishou.com/rest/openapi/v2/word_info/create)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段|类型|是否必填|说明|备注|\n|--|--|--|--|--|\n|advertiser_id|Long|必填|广告主账号ID||\n|campaign_id|Long|必填|广告计划ID||\n|unit_id|Long|必填|广告单元ID|需保证是搜索广告Unit|\n|word_infos|Object[]|必填|关键词信息||\n\n|word_infos|类型|是否必填|说明|备注|\n|--|--|--|--|--|\n|word|String|必填|关键词内容|新增关键词：最大长度20，不支持制表符、换行符、Emoji表情等特殊字符；已存在关键词：需为投放中状态|\n|match_type|Integer|必填|关键词匹配类型|1 - 精确匹配，2 - 短语匹配，3 - 广泛匹配|\n\n### 返回参数\n\n|字段|类型|说明|备注|\n|--|--|--|--|\n|code|Integer|返回状态码||\n|message|String|返回状态信息||\n|data|Object|返回数据内容||\n\n|data|类型|说明|备注|\n|--|--|--|--|\n|error_list|Object[]|添加失败关键词列表||\n|success_list|Object[]|添加成功关键词列表||\n\n|error_list|类型|说明|备注|\n|--|--|--|--|\n|word|String|关键词内容||\n|match_type|Integer|匹配类型|1 - 精确匹配，2 - 短语匹配，3 - 广泛匹配|\n|error_reason|String|失败原因||\n\n|success_list|类型|说明|备注|\n|--|--|--|--|\n|word_info_id|Long|关键词ID||\n|word|String|关键词内容||\n|match_type|Integer|匹配类型|1 - 精确匹配，2 - 短语匹配，3 - 广泛匹配|\n|put_status|Integer|投放状态|1 - 投放中，2 - 已暂停，3 - 已删除|\n\n### 请求样例\n\n```json\n{\n    \"advertiser_id\": 90000344,\n    \"campaign_id\": 25133631,\n    \"unit_id\": 3833404,\n    \"word_infos\": [\n        {\n            \"word\": \"d7\",\n            \"match_type\": 3\n        },\n        {\n            \"word\": \"汉堡包\",\n            \"match_type\": 3\n        },\n        {\n            \"word\": \"薯条\",\n            \"match_type\": 2\n        },\n        {\n            \"word\": \"可乐\",\n            \"match_type\": 1\n        }\n    ]\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"error_list\": [],\n        \"success_list\": [\n            {\n                \"word\": \"d7\",\n                \"match_type\": 3,\n                \"put_status\": 1,\n                \"word_info_id\": 1809519\n            },\n            {\n                \"word\": \"汉堡包\",\n                \"match_type\": 3,\n                \"put_status\": 1,\n                \"word_info_id\": 1809522\n            },\n            {\n                \"word\": \"薯条\",\n                \"match_type\": 2,\n                \"put_status\": 1,\n                \"word_info_id\": 1809521\n            },\n            {\n                \"word\": \"可乐\",\n                \"match_type\": 1,\n                \"put_status\": 1,\n                \"word_info_id\": 1809520\n            }\n        ]\n    },\n    \"request_id\": \"ad3fb7dc96ba4eb4bdc9aecdd03c859a\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624986
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624986,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

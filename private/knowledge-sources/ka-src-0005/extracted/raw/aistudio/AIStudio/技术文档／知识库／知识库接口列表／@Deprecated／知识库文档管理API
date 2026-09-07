@@ -1,0 +1,367 @@
+
+
+* [v1](#jeybq)
+
+# v1
+
+> 版本：v1
+> 
+> 接口列表：
+> 
+> 1. [知识库文档：查看某个知识库的文档列表](#yhNUX)
+> 2. [知识库文档：查看某个知识库文档的内容](#toc_0)
+> 3. [知识库文档：删除源数据](#cc0sQ)
+> 4. [知识库文档：更新文档的标签](#cc0sQ)
+
+## 知识库文档：查看某个知识库的文档列表
+
+> 该接口用于查看某个知识库的文档列表。
+
+* **域名：**`https://idealab.alibaba-inc.com`
+* **URL：**`/api/v1/aiStudio/repository/queryDocument`
+* **Method**：`POST`
+* **consumes** `["application/json"]`
+* **需要登录**：
+* **需要鉴权（AK）**：
+
+### 接口描述
+
+#### 请求参数
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |  |
+| request | 知识库文档（Document）列表查询 Request | body | true | DocumentPageQuery |  |
+
+##### schema属性说明
+
+###### DocumentPageQuery
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| dataTag | 数据标签 | body | false | string |  |
+| dataUploadMethod | 文档上传类型 | body | false | string |  |
+| documentId | 知识库文档id | body | false | string |  |
+| documentIds | 知识库文档id列表 | body | false | array |  |
+| documentReadTaskId | 知识库文档id | body | false | string |  |
+| mimeType | 文件类型 | body | false | string |  |
+| multiStatus | 文档状态列表 | body | false | array |  |
+| name | 文件名 | body | false | string |  |
+| pageNo |  | body | false | integer(int32) |  |
+| pageSize |  | body | false | integer(int32) |  |
+| priority | 优先级 | body | false | integer(int64) |  |
+| repositoryId | 知识库id | body | false | string |  |
+| repositoryIds | 知识库id列表 | body | false | array |  |
+| sortField | 排序字段，目前支持：gmt*create、gmt*modify, hit*count。默认gmt*create | body | false | string |  |
+| sortType | 可选ASC、DESC。默认 DESC | body | false | string |  |
+| startIndex |  | body | false | integer(int32) |  |
+| status | 文档状态 | body | false | string |  |
+| syncVersion | 同步版本号 | body | false | integer(int32) |  |
+
+#### 响应状态
+
+| **状态码** | **说明** | **schema** |
+| --- | --- | --- |
+| 200 | OK | Result«PageInfo«AiLabDocumentVO»» |
+| 201 | Created |  |
+| 401 | Unauthorized |  |
+| 403 | Forbidden |  |
+| 404 | Not Found |  |
+
+#### 响应参数
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| code |  | string |  |
+| data |  | PageInfo«AiLabDocumentVO» |  |
+| detailMessage |  | string |  |
+| message |  | string |  |
+| success |  | boolean |  |
+
+##### schema属性说明
+
+###### PageInfo«AiLabDocumentVO»
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| endRow |  | integer(int64) |  |
+| hasNextPage |  | boolean |  |
+| hasPreviousPage |  | boolean |  |
+| isFirstPage |  | boolean |  |
+| isLastPage |  | boolean |  |
+| list |  | array |  |
+| navigateFirstPage |  | integer(int32) |  |
+| navigateLastPage |  | integer(int32) |  |
+| navigatePages |  | integer(int32) |  |
+| navigatepageNums |  | array |  |
+| nextPage |  | integer(int32) |  |
+| pageNum |  | integer(int32) |  |
+| pageSize |  | integer(int32) |  |
+| pages |  | integer(int32) |  |
+| prePage |  | integer(int32) |  |
+| size |  | integer(int32) |  |
+| startRow |  | integer(int64) |  |
+| total |  | integer(int64) |  |
+
+###### AiLabDocumentVO
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| documentReadTaskId | 知识库文档读取任务ID | string |  |
+| extendInfo | 文档扩展信息 | DocumentExtendInfo |  |
+| fileLoadType | 文档场景类型,可用值:RE,FAQ | string |  |
+| id | 文档id | string |  |
+| mimeTypeInfo | 文档类型 | DocumentMimeTypeInfo |  |
+| name | 文档名 | string |  |
+| originalLinkUrl | 文档原始链接：存储原始文档 | string |  |
+| ossLinkUrl | 文档OSS链接：存储文档内容（String） | string |  |
+| outId | 知识库文档OutId（外键 id） | string |  |
+| repositoryId | 知识库id | string |  |
+| size | 文档大小 | integer(int64) |  |
+| sizeWithUnit | 文件大小（有单位，单位为M或者K） | string |  |
+| status | 文档状态 | EnumVO |  |
+| tags | 文档标签 | array |  |
+| uploadMethod | 文档上传类型 | string |  |
+| uploadTime | 上传时间 | integer(int64) |  |
+| valid | 文档是否有效（可以被检索） | boolean |  |
+
+###### DocumentExtendInfo
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| knowledgeBaseDocCount | 如果是是语雀文档知识库方式上传，那么此次从知识库中获取到的文档数量 | integer(int32) |  |
+| knowledgeBaseUpload |  | boolean |  |
+| linkUrl | 如果是知识库上传的话，那么此次上传从知识库路径 | string |  |
+| recallCount | 召回次数 | integer(int32) |  |
+
+###### DocumentMimeTypeInfo
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| mimeType | 文档类型 | string |  |
+| mimeTypeLogo | 文档的logo | string |  |
+| mimeTypeName | 文档类型名称 | string |  |
+
+###### EnumVO
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| label | 枚举值说明，文案等 | string |  |
+| value | 枚举值 | string |  |
+
+#### 响应格式
+
+#### 响应示例
+
+#### Curl 示例
+
+##### 根据知识库id查询文档
+
+##### 根据outid查询文档
+
+  
+
+
+## 知识库文档：查看某个知识库文档的内容
+
+* 域名`<https://idealab.alibaba-inc.com/>`
+* **接口地址**`/api/v1/aiStudio/repository/queryDocumentContent`
+* **请求方式** `GET`
+* **consumes** `["application/json"]`
+* **produces** `["*/*"]`
+
+### 接口描述
+
+#### 请求参数
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |  |
+| repositoryId | 知识库ID | query | false | string |  |
+| documentId | 知识库文档ID | query | false | string |  |
+
+#### 响应状态
+
+| **状态码** | **说明** | **schema** |
+| --- | --- | --- |
+| 200 | OK | Result«string» |
+| 401 | Unauthorized |  |
+| 403 | Forbidden |  |
+| 404 | Not Found |  |
+
+#### 响应参数
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| code |  | string |  |
+| data |  | string |  |
+| detailMessage |  | string |  |
+| message |  | string |  |
+| success |  | boolean |  |
+
+#### 响应示例
+
+## 知识库文档：删除源数据
+
+* 域名`<https://idealab.alibaba-inc.com/>`
+* **接口地址** `/api/v1/aiStudio/repository/deleteDocument`
+* **请求方式** `POST`
+* **consumes** `["application/json"]`
+* **produces** `["*/*"]`
+
+### 接口描述
+
+#### 请求参数
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |  |
+| request | 知识库文档（Document）更新 Request | body | true | DocumentUpdateRequest |  |
+
+##### schema属性说明
+
+###### DocumentUpdateRequest
+
+| **参数名称** | **参数说明** | **请求类型** | **是否必须** | **数据类型** | **schema** |
+| --- | --- | --- | --- | --- | --- |
+| documentIds | 文档id列表 | body | false | array |  |
+| repositoryId | 知识库id | body | false | string |  |
+| status | 文档id列表 | body | false | array |  |
+
+#### 响应状态
+
+| **状态码** | **说明** | **schema** |
+| --- | --- | --- |
+| 200 | OK | Result«boolean» |
+| 201 | Created |  |
+| 401 | Unauthorized |  |
+| 403 | Forbidden |  |
+| 404 | Not Found |  |
+
+#### 响应参数
+
+| **参数名称** | **参数说明** | **类型** | **schema** |
+| --- | --- | --- | --- |
+| code |  | integer(int32) | integer(int32) |
+| data |  | boolean |  |
+| message |  | string |  |
+| resultCode |  | string |  |
+| success |  | boolean |  |
+
+#### 响应示例
+
+## 知识库文档：更新文档的标签
+
+> 该接口用于更新知识库中文档的标签。
+
+* **域名：**`https://idealab.alibaba-inc.com`
+* **URL**：`/api/v1/aiStudio/repository/updateDocumentDataTags`
+* **Method**：`POST`
+* **需要登录**：
+* **需要鉴权（AK）**：
+
+### 请求参数
+
+#### Header
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 |
+| --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |
+
+#### Body
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| request | 知识库文档更新标签请求 | body | true | DocumentUpdateDataTagRequest | DocumentUpdateDataTagRequest |
+
+##### DocumentUpdateDataTagRequest
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| dataTags | 标签列表 | body | true | array |  |
+| documentId | 知识库文档ID | body | true | string |  |
+| repositoryId | 知识库ID | body | true | string |  |
+
+​  
+
+
+### 请求示例
+
+### 响应参数
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| --- | --- | --- | --- |
+| code | 状态码 | integer(int32) | integer(int32) |
+| data | 数据 | array |  |
+| message | 消息 | string |  |
+| resultCode | 代码 | string |  |
+| success | 成功状态 | boolean |  |
+
+### 成功响应
+
+**条件**：请求成功。
+
+**状态码：**`200 OK`
+
+### Curl示例
+
+### 前端展示
+
+## 知识库文档：批量更新文档的标签​
+
+> 该接口用于批量更新知识库中文档的标签。
+
+* **域名**: `https://idealab.alibaba-inc.com`
+* **URL**: `/api/v1/aiStudio/repository/batchUpdateDocumentDataTags`
+* **方法**: `POST`
+* **需要登录**：
+* **需要鉴权（AK）**：
+
+#### 请求参数
+
+##### Header
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 |
+| --- | --- | --- | --- | --- |
+| X-AK | X-AK | header | true | string |
+
+##### Body
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| request | 批量更新文档标签请求体 | body | true | BatchDocumentUpdateDataTagRequest | BatchDocumentUpdateDataTagRequest |
+
+###### BatchDocumentUpdateDataTagRequest
+
+| 参数名称 | 参数说明 | 请求类型 | 是否必须 | 数据类型 | schema |
+| --- | --- | --- | --- | --- | --- |
+| repositoryId | 知识库ID | body | true | string |  |
+| dataTags | 标签列表 | body | true | array | string |
+| documentIds | 知识库文档ID列表 | body | false | array | string |
+| documentOutIds | 知识库文档OutId列表 | body | false | array | string |
+
+#### 请求示例
+
+#### 响应参数
+
+| 参数名称 | 参数说明 | 类型 | schema |
+| --- | --- | --- | --- |
+| code | 状态码 | integer | int32 |
+| data | 数据 | array | string |
+| message | 消息 | string |  |
+| resultCode | 代码 | string |  |
+| success | 成功状态 | boolean |  |
+
+#### 成功响应
+
+* 条件：请求成功。
+* 状态码：200 OK
+
+#### Curl 示例
+
+  
+
+
+  
+
+

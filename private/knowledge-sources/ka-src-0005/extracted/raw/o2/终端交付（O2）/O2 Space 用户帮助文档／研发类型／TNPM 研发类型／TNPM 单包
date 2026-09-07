@@ -1,0 +1,153 @@
+## 能力介绍
+
+#### 基础能力
+
+O2 Space tnpm 发布流程是在 tnpm publish 之上提供的一层 tnpm 包发布流程，适用于组件和模块平台的基础发布服务。主要特性如下：
+
+- 流程赋能 
+- 支持云端构建，你可以用 ES6 或者 Typescript 编写代码，配置构建命令后云端发布自动构建，不需要将构建后代码存于仓库
+- 流程支持基于 Aone 代码审阅系统的发布卡口
+- 支持基于门神的静态代码扫描，定制业务自己的检查规则
+- [多主干能力](https://alidocs.dingtalk.com/i/nodes/gwva2dxOW4vRkd9DUNZ2Qa9LJbkz3BRL?utm_scene=team_space)，解决一个 npm 包需要同时维护多个版本的问题
+- 规范发布 
+- 云端发布，从 Code 对应的发布分支源码，保证发布代码可追溯。
+- 发布线上后自动合并代码到主干，创建 tag，删除源发布分支
+- 统一以公共账户发布，发布权限基于O2 Space权限体系。解决tnpm包权限分散难以管理的问题。
+- package.json规范检查。
+- 代码产物同步 CDN 
+- 支持将 dist 目录同步到 CDN
+
+
+#### 提供的发布环境
+
+- 日常环境（可基于日常环境进行 beta 包的发布和测试，需在应用设置中开启日常发布）
+- 线上环境
+
+
+#### 发布产物说明
+
+- TNPM 包
+- CDN 资源：需要在应用设置中开启 CDN 同步功能
+## 接入说明
+
+前往 [应用接入](https://space.o2.alibaba-inc.com/app/new)，选择 TNPM 应用类型
+
+
+
+> 接入前需要设置 tbfed 公共账户为仓库或者 group 的 master , 平台需要权限获取你的仓库代码。如果对应的 tnpm 包在接入 O2 Space 前已经发布过，你需要将 alibabafe 公共账户设为 tnpm 包的 owner 之一( tnpm owner add alibabafe )。如果组件平台已有自己的发布公共账户，也可联系管理员单独配置。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/up2mnp/img671ym44VnM.png)
+
+
+## 发布流程
+
+#### 如何发布
+
+1. 如果是第一次接入，并且对应的包在 tnpm 上已存在，在包根目录下执行 tnpm owner add alibabafe(自定义公共账户的除外)
+1. check out [发布分支](https://work.def.alibaba-inc.com/doc/branch_name)；修改 package.json 中版本号，注意要与发布分支中的版本号一致
+1. 本地开发，测试，提交代码
+1. 执行 o2 p -o（tnpm 发布流程默认只有线上版本，如需开启日常流程请参考[文档](https://alidocs.dingtalk.com/i/nodes/YQBnd5ExVEjea40qCBYlBmOkJyeZqMmz?utm_scene=team_space)）
+#### 发布流程
+
+TNPM 单包 发布的流程如下图所示：
+
+
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/up2mnp/imgASTTBkjBTb.png)
+
+
+主要过程有：
+
+
+
+- 分支预处理：处理多分支集成时的分支合并过程
+- 前置检查：进行构建脚本是否合法等检查
+- 构建：构建项目代码里的 abc.json （即云构建配置）对代码进行云端构建（需在应用设置中开启云构建功能，另云构建配置请参考 [文档](http://builder.alibaba-inc.com/document?slug=config)）
+- 门神检查：对源码和构建产物进行安全扫描、域名检测、文件元信息检查、前端代码质量检测等（如想了解门神可访问 [门神官网](https://gog.alibaba-inc.com/)）
+- 发布：
+- tnpm 发布: 将 npm 包发布到 [TNPM](https://npm.alibaba-inc.com/) 包管理中心
+- tnpm_cdn 发布: 将构建产物（dist 目录下的产物）中的 js、css 等资源发布到日常或线上的 CDN，如下所示。
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/up2mnp/imgyMfkfl5fPK.png)
+
+
+## 其他发布说明
+
+#### 开启云构建
+
+如果你的 npm 包在 publish 前需要构建(比如构建 typescript)，可开启云构建，将构建过程放置于云端，这样仓库里只需要放置源码。
+
+流程默认不开启构建，如需使用请前往 【设置】-【发布设置】开启。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/up2mnp/img9HObwWNU1y.png)
+
+
+云构建配置同其他发布类型，可以选择 [脚本构建](https://builder.alibaba-inc.com/document?slug=config-script) 或者 [构建器构建](https://builder.alibaba-inc.com/document?slug=config-builder)。日常环境开启时，存在日常版本校验，可以使用或参考 [@ali/builder-package](https://anpm.alibaba-inc.com/package/@ali/builder-package)  实现来简化版本生成逻辑。
+
+注意构建结果是包含需要发 tnpm 和 cdn(如有) 的所有文件，这个规范是与社区 npm 构建的规范是不同的，社区的模式是基于构建结果生成的部分文件和原先源码中部分文件组合，才是完整的部署结果。
+
+> 即，生成到 $BUILD_DEST 中的文件，除了你构建的产物之外，还需要包含如 package.json，.npmignore 等文件。O2 Space 会在这个基础上再调用 tnpm 进行发布。
+
+
+
+构建命令（已不维护）
+
+```
+tnpm install # 安装依赖
+tnpm run build # 执行构建，如构建 typescript 代码
+gulp # 创建 $BUILD_DEST 目录，并将需要的文件移动进去
+
+```
+gulp 脚本如下
+
+```
+'use strict';
+
+const { src, dest } = require('gulp');
+const buildresultdir = process.env.BUILD_DEST || 'build';
+
+// 注意请勿将不需要的文件添加到构建结果中，如 node_modules 目录。可以用 exclude 方式简化拷贝操作。
+// 本命令同时也复制了 pacage.json 等其它文件
+function defaultTask() {
+  return src(['**', '!node_modules/**', '!src/**'])
+    .pipe(dest(buildresultdir));
+};
+exports.default = defaultTask;
+
+```
+> 发布流程默认不开启构建，直接将源码标记为构建结果。
+
+#### 开启 CDN 同步
+
+流程支持将构建结果中的 dist 目录中的文件同步到 CDN。比如业务组件想同时提供 CDN 引用的方式，可前往 【设置】-【发布设置】开启该功能。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/up2mnp/imgz2LXB65Kby.png)
+
+
+- CDN 发布路径前缀为 /code/npm/{package_name}/{package_version}
+- 代码会同时部署到日常和线上环境(未开启日常环境发布)
+#### 关于构建结果的进一步说明
+
+再次强调下，tnpm publish 和 CDN 同步的文件都是从构建结果中获取；当未开启云构建时，源码会标记为构建结果。
+
+| 说明 | tnpm publish 目录 | cdn 同步目录 |
+|-|-|-|
+| 未开启云构建 | 仓库源码根目录 | 仓库源码根目录下的 dist 目录 |
+| 开启云构建 | 构建结果目录 | 构建结果目录下的 dist 目录 |
+
+开启云构建的仓库示例：[Demo](http://code.alibaba-inc.com/def-demo/pub-tnpm)
+
+#### 适用业务场景以及限制
+
+适用场景
+
+- 模块或组件平台，对 tnpm 的发布，以及发布权限管理有规范化要求
+- 发布 tnpm 包时需要同时发布 CDN 的组件
+- 需要在发布 tnpm 过程使用云端构建、代码检查、code review 强制卡口等场景
+#### Publish Life Cycle Scripts
+
+因为是否开启云构建已有单独的开关，发布流程会跳过 npm publish 自动触发的 [scripts](https://docs.npmjs.com/cli/v9/using-npm/scripts#npm-publish)（例如 prepublishOnly），避免重复构建。
+
+#### 示例仓库
+
+[http://code.alibaba-inc.com/def-demo/pub-tnpm](http://code.alibaba-inc.com/def-demo/pub-tnpm)
+

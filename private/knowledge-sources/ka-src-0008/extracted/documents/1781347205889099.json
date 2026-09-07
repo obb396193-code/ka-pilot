@@ -1,0 +1,9 @@
+{
+  "abstract": null,
+  "content": "<div class=\"qz-editor-engine am-engine\" data-element=\"root\"><h1 data-id=\"h346b9f0-ndtg4h6W\" id=\"h346b9f0-ndtg4h6W\">常用写法</h1><div class=\"qz-codeblock_view qz-codeblock qz-card-type-block\" data-type=\"codeblock\" data-value=\"data:%7B%22wrap%22%3Afalse%2C%22language%22%3A%22javascript%22%2C%22theme%22%3A%22QZtheme%22%2C%22height%22%3A%22auto%22%2C%22text%22%3A%22%2F**%20%E6%82%A8%E7%9A%84%E5%87%BD%E6%95%B0%E9%80%BB%E8%BE%91%E9%9C%80%E8%A6%81%E6%94%BE%E5%9C%A8%20main%20%E5%87%BD%E6%95%B0%E4%B8%AD%E6%89%8D%E4%BC%9A%E8%BF%90%E8%A1%8C%20*%2F%5Cnexport%20async%20function%20main()%20%7B%5Cn%20%20const%20agents%20%3D%20await%20Mapi.getAgents()%3B%5Cn%20%20%2F%2F%20%E5%BB%BA%E8%AE%AE%E9%80%9A%E8%BF%87%20console.log%20%E6%96%B9%E5%BC%8F%E6%89%93%E5%8D%B0%E6%97%A5%E5%BF%97%E8%8E%B7%E5%8F%96%E4%BF%A1%E6%81%AF%5Cn%20%20console.log(agents)%3B%5Cn%20%20return%20'ok'%3B%5Cn%7D%22%2C%22id%22%3A%22oWSPm%22%2C%22type%22%3A%22block%22%7D\"><div class=\"qz-codeblock_view_contain qz-codeblock_inner\"><div class=\"qz-codeblock_view_scroll qz-codeblock-scroll\" style=\"height: auto; max-height: 600px; overflow-y: scroll;\"><div class=\"qz-codeblock_content javascript\"></div></div></div></div><h1 data-id=\"h346b9f0-DGr0NqN1\" id=\"h346b9f0-DGr0NqN1\">了解更多</h1><ul data-id=\"u738a58b-ieq9pUf5\"><li data-id=\"ld70c578-V9bM5Ymg\">建议通过简单的 console.log 方式打印日志获取信息</li><li data-id=\"ld70c578-mdn0AWiu\">默认提供的 Mapi 请求方式内部做了重试处理，一般情况下您可以放心使用</li></ul><ul data-id=\"udcdd064-FbIP1eWf\" data-indent=\"1\"><li data-id=\"ld70c578-vzketKUn\">当缺少必要的调用接口参数时程序会抛出错误。您可以在页面上点击运行并查看错误信息，调整您的入参</li><li data-id=\"ld70c578-kWiOyqhh\">程序抛出错误（可能是内部请求重试后出错，也可能程序本身遇到了运行时错误）后会中断后续执行。如果您想要在程序遇到错误后依旧执行后续代码（比如一些并行处理的情况），请使用 try...catch</li></ul></div>",
+  "doc_type": 1,
+  "going_offline": false,
+  "is_new": false,
+  "path": null,
+  "title": "调试"
+}

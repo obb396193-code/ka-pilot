@@ -1,0 +1,54 @@
+{
+  "documentId": 3062,
+  "documentName": "根据店铺名称查询商圈信息",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 根据店铺名称查询商圈信息\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/option/distance_list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/option/distance_list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| city_name | String |  | 必填 | 省份，城市二选一必填 |  |\n| district_name | String |  | 选填 | 街区，选填 |  |\n| location_name | String |  | 必填 | 店铺名，必填 |  |\n| page | Integer |  | 必填 | 页数 |  |\n| page_size | Integer |  | 必填 | 页面大小 |  |\n| province_name | String |  | 必填 | 省份，城市二选一必填 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | CursorPageDataListDistanceSnake |  | 返回商圈信息 |  |\n| &#8195;current_page | Integer |  | 当前页数 |  |\n| &#8195;list | DistanceSnake[] |  | 商圈信息列表 |  |\n| &#8195;&#8195;address | String |  | 地址 |  |\n| &#8195;&#8195;lat | String |  | 经度 |  |\n| &#8195;&#8195;lng | String |  | 纬度 |  |\n| &#8195;&#8195;location_name | String |  | 店铺名称 |  |\n| &#8195;&#8195;poi_id | String |  | 唯一标识 |  |\n| &#8195;&#8195;radius | Long |  | 半径（单位m） |  |\n| &#8195;next_page | Long |  | 下一页页数 |  |\n| &#8195;page_size | Integer |  | 页面大小 |  |\n| code | Integer |  | code |  |\n| message | String |  | 返现信息 |  |",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1721638253396
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1721638253396,
+  "creator": "guojingwei05",
+  "fullContext": null
+}

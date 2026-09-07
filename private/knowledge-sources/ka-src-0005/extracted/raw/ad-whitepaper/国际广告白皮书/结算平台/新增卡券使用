@@ -1,0 +1,139 @@
+#### 工作量评估：
+发放、查询卡券消息接口 2
+
+卡券类型 卡券规则定义 3
+
+卡券使用、卡券冻结 3
+
+卡券生命周期管理、卡券使用明细 2
+
+账户消耗交易处理器改造、财务消息收发接口调整 3
+
+卡券抵扣试算、账户分成、抵用券1规则  4
+
+
+
+#### [](#服务接口)服务接口
+com.alibaba.intl.adaccount.coupon.sdk.CouponConfigService
+
+com.alibaba.intl.adaccount.coupon.sdk.CouponService
+
+1.创建优惠券
+
+ResultDTO<Long> addCouponConfig(CouponConfigDTO couponConfigDTO);
+
+ResultDTO<Integer> listCouponConfigCountByQuery(CouponConfigQuery query);
+
+2.发放优惠券
+
+ResultDTO<Long> applyCoupon(Long couponId,Long companyId);
+
+批量：ResultDTO<Integer> batchProvideCoupons(List<Long> custIdList, Long couponId);
+
+3.查询客户所有优惠券
+
+ResultDTO<List<CouponDTO>> listCouponsByCustId(Long custId);
+
+ResultDTO<List<CouponDTO>> listAvailableCouponsByCustId(Long custId, BizType bizType);
+
+ResultDTO<List<CouponDTO>> listCouponsByValidityTimezone(CouponQuery query)
+
+ResultDTO<List<CouponDTO>> listNearExpiryCouponsByEndTime(CouponQuery query);
+
+4.冻结优惠券
+
+ResultDTO<Void> freezeCoupon(Long id, Long custId, Long objectId);
+
+5.核销优惠券
+
+ResultDTO<Void> finishCoupon(Long id, Long custId, Long objectId);
+
+
+
+#### [](#表结构)表结构
+1、新增卡券核销表(账户使用卡券记录)coupon_account_his
+
+| 字段名称 | 字段类型 | 是否可空 | 备注 |
+| --- | --- | --- | --- |
+| id | bigint | 否 | 主键 |
+| gmt_create | datetime | 否 | 创建时间 |
+| gmt_modified | datetime | 否 | 修改时间 |
+| gmt_happen | datetime | 否 | 发生时间 |
+| coupon_id | bigint | 否 | 优惠券id |
+| company_id | bigint | 否 | 卖家公司id |
+| type | varchar(32) | 否 | 卡券变更类型 |
+| coupon_type | tinyint(4) | 否 | 优惠券类型：1.默认 2.满100减10 |
+| income | bigint | 是 | 收入 |
+| outlay | bigint | 是 | 支出 |
+| biz_type | varchar(10) | 否 | 业务类型 |
+| coupon_amount | bigint | 是 | 卡券面额 |
+| coupon_rate | decimal | 是 | 卡券折扣 |
+| remark | varchar(1024) | 是 | 备注 |
+
+
+2、使用到的表及字段变更
+
+卡券配置表coupon_config
+
+| 列名 | 类型 | 是否为空 | 描述 |
+| --- | --- | --- | --- |
+| id | bigint(20) unsigned | N | 主键 |
+| gmt_create | datetime | N | 创建时间 |
+| gmt_modified | datetime | N | 修改时间 |
+| amount | bigint(20) unsigned | N | 面额 |
+| begin_time | datetime | N | 有效期开始时间 |
+| end_time | datetime | N | 有效期结束时间 |
+| count | bigint(20) unsigned | Y | 总量 |
+| remainder | bigint(20) unsigned | Y | 剩余 |
+| apply_type | tinyint(4) | N | 领取方式 1.卖家领取 2.运营发放 |
+| apply_condition | varchar(1024) | Y | 领取条件 |
+| use_condition | varchar(1024) | Y | 使用条件 |
+| coupon_type | tinyint(4) | N | 优惠券类型：1.默认 <font style="color:#F5222D;">2.满100减10</font> |
+| biz_type | varchar(32) | N | 业务类型 |
+| config_status | tinyint(4) | N | 优惠券配置状态 1.有效 -1.无效 |
+| <font style="color:#F5222D;">remark</font> | <font style="color:#F5222D;">varchar(1024)</font> | <font style="color:#F5222D;">Y</font> | <font style="color:#F5222D;">备注</font> |
+
+
+卡券归属表coupon
+
+| 列名 | 类型 | 是否为空 | 描述 |
+| --- | --- | --- | --- |
+| id | bigint(20) unsigned | N | 主键 |
+| gmt_create | datetime | N | 创建时间 |
+| gmt_modified | datetime | N | 修改时间 |
+| coupon_config_id | bigint(20) unsigned | N | 优惠券配置表对应id |
+| company_id | bigint(20) unsigned | N | 卖家公司id |
+| havana_id | bigint(20) unsigned | N | 集团统一id |
+| status | tinyint(4) | N | 状态 1.正常 2.使用中 3.已使用 -1.作废 |
+
+
+卡券变更记录表coupon_oper_log
+
+| 列名 | 类型 | 是否为空 | 描述 |
+| --- | --- | --- | --- |
+| id | bigint(20) unsigned | N | 主键 |
+| gmt_create | datetime | N | 创建时间 |
+| gmt_modified | datetime | N | 修改时间 |
+| coupon_config_id | bigint(20) unsigned | N | 优惠券配置表对应id |
+| company_id | bigint(20) unsigned | N | 卖家公司id |
+| havana_id | bigint(20) unsigned | N | 集团统一id |
+| status | tinyint(4) | N | 状态 1.正常 2.使用中 3.已使用 -1.作废 |
+| last_status | tinyint(4) | N | 状态 1.正常 2.使用中 3.已使用 -1.作废 |
+| object_id | bigint(20) unsigned | Y | 引发修改的条目ID |
+| coupon_id | bigint(20) unsigned | N | 优惠券ID |
+
+
+
+
+2、卡券使用（核销）
+
+增加插入卡券核销表记录
+
+
+
+3、增加满100-10的优惠券
+
+
+
+4、
+

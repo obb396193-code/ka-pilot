@@ -1,0 +1,31 @@
+
+# idealab 的 API 是否有计划提供 DeepSeek R1 的服务
+
+目前deepSeek已开放API调用，如果遇到提示无模型权限，请联系殳驱
+
+# ideaTalk平台的DeepSeek模型，部署来源是哪里？
+
+详见：<https://yuque.antfin.com/aiplus/aistudio/vigq1wzhi7zy3gnb>
+
+# IdeaTalk 中调用的 DeepSeek(内部版) 目前是私有化部署的版本吗？
+
+是的
+
+# 在 Whale 模型广场里订阅调用 DeepSeek 的效果和 IdeaTalk 是相同的吗？
+
+idealab提供的deepSeek模型有671B满血版本，14B和32B qwen蒸馏版本， 可以检查是否是同版本模型。
+
+# DeepSeek 内部部署是否不上传云端，可以处理一些内部分析，比如用户原声归类，不包含用户 ID 那些敏感信息？
+
+DeepSeek为内部自部署。不会上传外网。
+
+# 为什么在 IdeaTalk 上部署的 DeepSeek -R1 是 DeepSeek-R1-Lite-Preview，而不是满血 671b 版本？根据回答的问题，认为和官网不一致。
+
+是671b 版本。
+
+  
+
+
+  
+
+

@@ -1,0 +1,63 @@
+## 迭代绑定变更
+
+迭代绑定变更
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/iterations/{iterationId}/devbranch/bind |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| iterationId | Number | true | - | 迭代 ID |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| type | String | true | - | 绑定变更方式 new：新建变更 exist：已有变更 |
+| branchIds | Number[] | false | - | 【type 为 exist 必传】绑定的变更 ID |
+| branch | String | false | - | 【type 为 new 必传】变更分支名 |
+| branch_type | String | false | - | 【type 为 new 必传】变更分支创建方式 new： 新建分支 exist：选择已有分支 |
+| trunk | String | false | master | 【branch_type 为 new 需要】变更主干 |
+| description | String | false | - | 【type 为 new 需要】变更原因 |
+| aone_binds | String | false | - | 【type 为 new 需要】关联工作项，格式为：req|1211 |
+| is_delete_branch | Number | false | 1 | 【type 为 new 需要】上线后删除分支 |
+| un_release | Number | false | 0 | 【type 为 new 需要】是否为测试变更 |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| bind[] | 变更和迭代的关联关系，branchBind 包含属性如下 |
+
+bind
+
+| 参数名称 | 参数描述 |
+|-|-|
+| branch_id | 变更 ID |
+| iteration_id | 迭代 ID |
+
+### Example
+
+```
+client.post(`/v1.0/work/iterations/{iterationId}/devbranch/bind`,{}, {
+  type,
+  branchIds
+}, {
+  SSO_TICKET
+})
+
+[
+  {
+      "branch_id": 20860357,
+      "iteration_id": 14798022,
+      "id": 3302019,
+      "gmt_modified": "2024-02-05T04:00:04.736Z",
+      "gmt_create": "2024-02-05T04:00:04.736Z"
+  }
+]
+
+```

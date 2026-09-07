@@ -1,0 +1,443 @@
+{
+  "documentId": 2664,
+  "documentName": "人群包创建接口(新)",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720096103998
+    }
+  ],
+  "apiId": 187,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v2/dmp/population/upload",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 6,
+  "bizName": "DMP",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl -X POST 'https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v2/dmp/population/upload' \\\n-H 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n-H 'Content-Type: application/json' \\\n--data-raw '{\n          \"advertiser_id\": 12345678,\n          \"orientation_name\": \"test-597\",\n          \"type\": 3,\n          \"file_paths\": [\n            \"12345678_3_99cf1fd0aa868613039ff19be7698e71.txt\"\n          ]\n        }'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"create_time\": 1642509499995,\n        \"orientation_id\": 110839912,\n        \"orientation_name\": \"test-598\",\n        \"failed_file_paths\": [],\n        \"record_size\": 18089662,\n        \"type\": 3,\n        \"population_type\": 1,\n        \"status\": 0,\n        \"advertiser_id\": 12345678\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"e2f70bbf304f4433b965674efff1118e\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 54128,
+      "paramName": "gid_match",
+      "paramType": "Boolean",
+      "example": "false",
+      "description": "<p>gid匹配，默认为false，需要开白申请</p>",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10275,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10276,
+      "paramName": "orientation_name",
+      "paramType": "String",
+      "example": "",
+      "description": "人群包名称",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "不能大于 50 个字符，人群包名称不得重复",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10277,
+      "paramName": "type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "匹配类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "1：IMEI；2：IDFA；3：IMEI_MD5；4：IDFA_MD5；5：手机号-MD5；7：OAID；8：OAID_MD5 9: 手机号_SHA256;16：CAID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10278,
+      "paramName": "file_paths",
+      "paramType": "String[]",
+      "example": "",
+      "description": "文件路径",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "通过调用【文件上传接口】得到的文件路径，每次最多填写10个、总大小<3G的文件",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 10279,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10280,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "消息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 10281,
+      "paramName": "data",
+      "paramType": "DmpOrientationMapiVO",
+      "example": "",
+      "description": "数据",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 491,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 10268,
+          "paramName": "orientation_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "orientationId",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10269,
+          "paramName": "orientation_name",
+          "paramType": "String",
+          "example": "",
+          "description": "orientationName",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10270,
+          "paramName": "type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "匹配类型",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "1：IMEI；2：IDFA；3：IMEI_MD5；4：IDFA_MD5；5：手机号-MD5；7：OAID；8：OAID_MD5 9: 手机号_SHA256;16：CAID",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10271,
+          "paramName": "population_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "人群包类型",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "1,\"上传人群\"；2,\"广告人群\"；3,\"主题专区\"；4,\"逻辑规则\"；5,\"人群扩展\"；7,\"三方精选\"；8,\"网红粉丝类别\"；10,\"移动应用安装\"；11,\"快手使用活跃度\"；12,\"行业分类\"；13,\"商业兴趣\"；17,\"产品关键词\"；19,\"应用渗透率\"；20,\"快手小店\"；21,\"流量中台\"；22,\"指定网红\"；23,\"行业分类\"；24,\"广告人群\"；25,\"全量网红粉丝\"；26,\"移动应用安装\"；27,\"平台设备网络\"；28,\"年龄\"；29,\"设备价格区间\"；33,\"品牌广告精确转化\"；34,\"标签广场计算包\"；32,\"地域\"；35,\"大宗消费意向\"；36,\"性别\"；37,\"网红粉丝优化\"；38,\"小店专区\"；41,\"购物意图\"；42,\"已有人群交并补计算\"；43,\"行为意向\"；44,\"财产状态\"；45,\"居住分层\"；46,\"品类行为\"；47,\"用户消费分层\"；50,\"店铺粉丝分层\"；49,\"店铺新老客分层\"；48,\"店铺用户行为\"；51,\"标签推荐\"；54,\"店铺关注时间\"；57,\"K-Star(明星；58,门店管理\"；59,\"品牌行为\"；60,\"学历\"；61,\"人生阶段\"；62,\"直播打赏\"；63,\"节日专区\"；64,\"相似店铺\"；65,\"系统推荐\"；66,\"汽车购买意图\"；67,\"汽车价格\"；68,\"汽车类型\"；69,\"汽车动力\"；70,\"汽车品牌\"；71,\"汽车座位\"；72,\"汽车人群类型\"；73,\"二手车偏好\"；74,\"奥运专区\"；75,\"CDP人群\"；76,\"数据源\"；77,\"视频类型偏好\"；78,\"IP偏好\"；79,\"九大消费人群\"；80,\"个人贷款需求\"；81,\"个人保险兴趣\"；82,\"保险类型偏好\"；83,\"证券兴趣人群\"；84,\"金融负反馈人群\"；85,\"金融风险人群\"；86,\"金融属性人群\"；87,\"CDP上传人群\"；88,\"学历教育\"；89,\"职业教育认证\"；90,\"职业教育技能\"；91,\"财商教育兴趣\"；92,\"少儿教育兴趣\"；93,\"游戏内容兴趣\"；94,\"潜在付费人群\"；95,\"店铺粉丝团等级\"；96,\"定制年龄性别\"；97,\"品牌客户分层\"；98,\"自定义店铺关注时间\"；99,\"类目消费频次\"；100,\"类目客单价\"；101,\"职业\"；102,\"星轨SQL打包\"；103,\"画像平台导入\"",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10272,
+          "paramName": "status",
+          "paramType": "Integer",
+          "example": "",
+          "description": "状态",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "0, \"计算中\"；1, \"已生效\"；2, \"已删除\"；3, \"上线中\"；4, \"已上线\"；5, \"计算失败\"；6, \"上线失败\"；7, \"已失效\"",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10273,
+          "paramName": "create_time",
+          "paramType": "Long",
+          "example": "",
+          "description": "创建时间戳",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 10274,
+          "paramName": "record_size",
+          "paramType": "Long",
+          "example": "",
+          "description": "总行数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 13096,
+          "paramName": "failed_file_paths",
+          "paramType": "String[]",
+          "example": "",
+          "description": "错误文件路径列表",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 16684,
+          "paramName": "advertiser_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "广告主ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720096103998,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

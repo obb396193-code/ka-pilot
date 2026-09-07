@@ -1,0 +1,71 @@
+本文介绍如何在 O2 Space 团队空间中使用质量检测功能。
+
+
+
+## 什么是质量检测
+
+质量检测：指研发流程中起到代码质量检测的功能，O2 Space 上所有和质量检测相关的配置项已经全都收拢在这里。
+
+质量插件：指用于质量检测的插件，如单元测试、E2E扫描、源码检测、构建产物检测等。
+
+
+
+## 如何配置质量检测
+
+根据操作路径 “应用 -> 质量检测” 进入团队空间的质量检测模版，如下图所示：
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1713164814509-b48f0905-eb40-4aab-97cb-d7ac78441345.png)
+
+
+点击 “添加规则”，可以添加一条质量插件规则：
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1713164953011-f04d016a-4aa5-4fb2-8fbe-26f072f57b9e.png)
+
+
+点击添加面板中的 “插件配置-配置”，在弹窗中可以配置质量插件的运行时参数及校验规则（卡口参数）。
+
+“源码静态检测” 示例：
+
+(https://img.alicdn.com/imgextra/i1/O1CN0114y2ez1MFzpcl1n00_!!6000000001406-2-tps-1894-1652.png)
+
+
+“单元测试” 示例（配置单元测试的覆盖率要求）：
+
+(https://img.alicdn.com/imgextra/i3/O1CN0116sg4d1F4or6vrK92_!!6000000000434-2-tps-1926-1708.png)
+
+
+
+
+## 质量插件如何运行
+
+质量插件开启后，可以在部署流水线中查看质量插件的运行情况，如下图所示：
+
+(https://img.alicdn.com/imgextra/i1/O1CN01XCDWPt1KSFC2KrkbO_!!6000000001162-2-tps-2100-594.png)
+
+
+点击质量验证的节点，可以查看运行详情，如源码检测和单元测试：
+
+(https://img.alicdn.com/imgextra/i4/O1CN01xiTnRG1bOtlfcumN2_!!6000000003456-2-tps-2276-1268.png)
+
+
+(https://img.alicdn.com/imgextra/i3/O1CN019jTtvr1zYYtjk9lEp_!!6000000006726-2-tps-2188-1538.png)
+
+
+
+
+同时，质量插件的验证结果被作为线上发布的拦截卡口，可以在迭代流程中查看，如下图所示：
+
+(https://img.alicdn.com/imgextra/i2/O1CN01n8JKN31ZB2YEHq7oW_!!6000000003155-2-tps-2666-520.png)
+
+
+(https://img.alicdn.com/imgextra/i2/O1CN01aTqZzB1tzEGSCh4Ms_!!6000000005972-2-tps-2318-1830.png)
+
+
+
+
+
+
+## 如何自定义质量插件
+
+请查阅《[自定义质量插件](https://aliyuque.antfin.com/ovepx8/zmm74f/vermhmovpkvzhbed)》
+

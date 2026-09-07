@@ -1,0 +1,16 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/6613681d76a56d07d48bc858/](https://links.alibaba-inc.com/support/conversation/6613681d76a56d07d48bc858/)
+
+作者：[@飞超](undefined/feichao.sfc)
+
+评审人：[@肖焉](undefined/haiyan.tan)
+
+
+
+目前云构建平台 node14 镜像默认使用 tnpm8，你可以在项目的 abc.json 中加入 `"nodeVeresion": 16`来切换到 node16 镜像，切换后将默认使用 tnpm9。
+
+
+
+如果你的构建类型是**构建器**，切换 node 版本还需要构建器支持，具体规则详见云构建文档： [https://alidocs.dingtalk.com/i/nodes/gvNG4YZ7Jnxop15OCe4OeR6aW2LD0oRE](https://alidocs.dingtalk.com/i/nodes/gvNG4YZ7Jnxop15OCe4OeR6aW2LD0oRE)
+
+
+

@@ -1,0 +1,42 @@
+{
+  "documentId": 2368,
+  "documentName": "获取短剧剧集列表接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 通过短剧id查询剧集列表\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/episode/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/series/episode/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| user_id | Long |  | 必填 | 短剧作者快手id |  |\n| advertiser_id | Long |  | 必填 | 广告主id |  |\n| series_id | Long |  | 必填 | 短剧id |  |\n| cursor | String |  | 可选 | 游标，第一次传\"\",后续查询请求根据上一次返回结果的cursor传入, 当返回 \"no_more\"时，则可结束查询。|  |\n| episode_name | String |  | 可选 | 剧集名称 |  |\n| page_size | Integer |  | 可选 | 每次请求的数量，当cursor和page_size未传入时，则最多返回5000条 |  |\n\n\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| data | struct |  | |  |\n| &#8195;cursor | String |  | 游标 |  |\n| &#8195;episodes | struct[] |  |  |  |\n| &#8195;&#8195;description | String |  | 剧集描述 |  |\n| &#8195;&#8195;id | Long |  | 剧集id |  |\n| &#8195;&#8195;name | String |  | 剧集名称 |  |\n| &#8195;&#8195;order_no | Integer |  | 剧集顺序 |  |\n| &#8195;&#8195;serial_id | Long |  | 合集ID，与短剧ID不同，若短剧已生成合集信息，可获取该信息 |  |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 返回描述 |  |\n\n### 请求样例\n\n```js\n{\n    \"advertiser_id\": 90003331538,\n    \"user_id\": 218095337497,\n    \"series_id\":3821619\n    \n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"cursor\": \"no_more\",\n        \"episodes\": [\n            {\n                \"order_no\": 0,\n                \"serial_id\": 901,\n                \"name\": \"剧集名称1\",\n                \"description\": \"\",\n                \"id\": 1392304\n            },\n            {\n                \"order_no\": 1,\n                \"serial_id\": 901,\n                \"name\": \"剧集名称2\",\n                \"description\": \"\",\n                \"id\": 1392305\n            },\n            {\n                \"order_no\": 2,\n                \"serial_id\": 901,\n                \"name\": \"剧集名称3\",\n                \"description\": \"\",\n                \"id\": 1392306\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"ELqAgIDQ9JiOrAEY6gQgt6a63qQxKKKp2qoD\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1693918391160
+    }
+  ],
+  "apiId": 842,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1693918391160,
+  "creator": "liumengyun",
+  "fullContext": null
+}

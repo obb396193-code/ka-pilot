@@ -1,0 +1,144 @@
+## 简介
+
+O2 Space 研发平台是面向终端研发同学的应用研发交付平台。通过底层建设的流水线、构建等基础服务驱动以及开放体系能力的支撑，结合不同的代码源服务，迭代/主干研发模式。实现了 HTML、JS、CSS 传统的前端资源的部署。并在此基础之上，通过内容协商协议，实现了例如 Weex、PHA 等跨端产物的发布，以及基于 ali node package registry 支持 npm 包的发布。在服务领域，也较为完善的 FaaS 函数的研发、运维完整体系。
+
+整体发布源能力，通过底层源站的建设，支持 Akamai 等多云的架构体系，支撑业务多样化的诉求。同时在更定制的场景下，业务可以通过开放能力，实现符合业务自身研发链路，实现平台研发流程与实际业务研发环节的完全匹配。
+
+
+
+## 链路类型
+
+具体的研发链路通过研发类型与应用类型进行组织，应用类型是用户具体实际操作的产品功能。具备相近发布源而不同发布流程的链路，会以同一个研发类型进行聚合。
+
+| 序号 | 研发类型 | 应用类型 | 应用类型简介 | 部署产物及资源示例 |
+|-|-|-|-|-|
+| 1 | Assets | Assets 非覆盖 | 基于 CDN 回源架构，实现  JS / CSS 资源发布链路，通过迭代版本号的方式，配合服务端的设置，实现资源版本切换更新 | 部署产物: JS / CSS 等日常资源: [https://dev.g.alicdn.com/def-work/front/2.25.49/dist/app.js](https://dev.g.alicdn.com/def-work/front/2.25.49/dist/app.js)线上: [https://g.alicdn.com/def-work/front/2.25.49/dist/app.js](https://dev.g.alicdn.com/def-work/front/2.25.49/dist/app.js) |
+|  |  | Assets 灰度覆盖式 | 对比非覆盖模式，针对版本号固定的例如 SDK 、hash 资源的场景，支持固定版本号的模式 | 部署产物: JS / CSS 等日常资源: [https://dev.g.alicdn.com/tao-ide/ide-portal-front/static/js/app.js](https://dev.g.alicdn.com/tao-ide/ide-portal-front/static/js/app.js)线上资源: [https://g.alicdn.com/tao-ide/ide-portal-front/static/js/app.js](https://dev.g.alicdn.com/tao-ide/ide-portal-front/static/js/app.js) |
+|  |  | Assets Plus | 针对业务上有资源域名定制诉求的场景，可以通过平台站点功能，实现资源通过定制域名访问 | 部署产物: JS / CSS 等日常资源: [https://dev-assets.tbcdn.cn/s/v/csm-platform/cdn-assets/0.0.2/f691c787-85f3-495b-baaa-711a93b94e3.woff2](https://assets.tbcdn.cn/s/v/csm-platform/cdn-assets/0.0.2/f691c787-85f3-495b-baaa-711a93b94e3.woff2)线上资源: [https://assets.tbcdn.cn/s/v/csm-platform/cdn-assets/0.0.2/f691c787-85f3-495b-baaa-711a93b94e3.woff2](https://assets.tbcdn.cn/s/v/csm-platform/cdn-assets/0.0.2/f691c787-85f3-495b-baaa-711a93b94e3.woff2) |
+| 2 | Web | 跨端应用 | 通过内容协商协议，实现可扩展的、多种跨端内容的发布支持。适用于前后端分离场景下，前端页面基于 CDN 回源到源站，数据走异步请求、跨端调用等方式获取的业务场景 | 部署产物: HTML / JS / CSS / Weex2.0 / PHA 等预发资源: 页面: http://pre-next.air.alibaba-inc.com/app/deftest/qiyao-test-multiend/home?pha=trueJS/CSS: [https://dev.g.alicdn.com/deftest/qiyao-test-multiend/0.0.3/web/home.js](https://g.alicdn.com/deftest/qiyao-test-multiend/0.0.3/web/home.js)线上资源:页面: http://next.air.alibaba-inc.com/app/deftest/qiyao-test-multiend/home?pha=trueJS/CSS: [https://g.alicdn.com/deftest/qiyao-test-multiend/0.0.3/web/home.js](https://g.alicdn.com/deftest/qiyao-test-multiend/0.0.3/web/home.js) |
+|  |  | WebPlus | 在跨端应用基础上，支持业务资源定制诉求（支持 Hash 发布的模式） | 部署产物：HTML / JS / CSS / Weex2.0 / PHA 等预发资源：页面：[https://pre-next.air.alibaba-inc.com/app/deftest/webplus-test/index.html](https://pre-next.air.alibaba-inc.com/app/deftest/webplus-test/index.html)JS/CSS：[https://dev-assets-test.air.alibaba-inc.com/s/h/deftest/webplus-test/2ESz51lk2ks.index.js](https://dev-assets-test.air.alibaba-inc.com/s/h/deftest/webplus-test/2ESz51lk2ks.index.js)线上资源：页面：[http://next.air.alibaba-inc.com/app/deftest/webplus-test/index.html](http://next.air.alibaba-inc.com/app/deftest/webplus-test/index.html)JS/CSS：[http://assets-test.air.alibaba-inc.com/s/h/deftest/webplus-test/2ESz51lk2ks.index.js](http://assets-test.air.alibaba-inc.com/s/h/deftest/webplus-test/2ESz51lk2ks.index.js) |
+|  |  | WebApp | 在 Assets 研发类型支持的 JS / CSS 的资源之上，支持 HTML 类型的页面类型资源发布，支持前后端分离方式的业务场景研发 | 部署产物: HTML / JS / CSS 等预发资源: 页面: https://market.wapa.taobao.com/app/kaola-src/activity-cutepet/assistant.htmlJS/CSS:[https://dev.g.alicdn.com/kaola-src/activity-cutepet/0.1.38/479.dcd81e92dc44805c30fd.js](https://g.alicdn.com/kaola-src/activity-cutepet/0.1.38/479.dcd81e92dc44805c30fd.js)线上资源: 页面: https://market.m.taobao.com/app/kaola-src/activity-cutepet/assistant.htmlJS/CSS:[https://g.alicdn.com/kaola-src/activity-cutepet/0.1.38/479.dcd81e92dc44805c30fd.js](https://g.alicdn.com/kaola-src/activity-cutepet/0.1.38/479.dcd81e92dc44805c30fd.js) |
+|  |  | Weex | 在基础 HTML / JS / CSS 发布之外，支持跨端 Weex(1.0 版本)产物发布 | 部署产物: HTML / JS / CSS / Weex 等预发资源:页面: [https://market.wapa.taobao.com/app/mtb-guang/creator-center/activitydetail?wh_weex=true](https://market.wapa.taobao.com/app/mtb-guang/creator-center/activitydetail?wh_weex=true)JS / CSS[https://dev.g.alicdn.com/mtb-guang/creator-center/0.0.65/web/businessweeklyreport.js](https://dev.g.alicdn.com/mtb-guang/creator-center/0.0.65/web/businessweeklyreport.js)线上资源:页面: [https://market.m.taobao.com/app/mtb-guang/creator-center/activitydetail?wh_weex=true](https://market.wapa.taobao.com/app/mtb-guang/creator-center/activitydetail?wh_weex=true)JS / CSS[https://g.alicdn.com/mtb-guang/creator-center/0.0.65/web/businessweeklyreport.js](https://dev.g.alicdn.com/mtb-guang/creator-center/0.0.65/web/businessweeklyreport.js) |
+|  |  | SSR | 结合 DCDN + ER 能力，通过在边缘使用 FaaS 函数进行页面渲染（支持流式 SSR）。可以显著提高低端机的性能。 | 部署产物：函数、兜底页面、JS/CSS预发资源：页面：[https://pre-apply-test-4.air.alibaba-inc.com/app/deftest/ssr-test/index3?x-ssr=true&pha_manifest=default&pha=true](https://pre-apply-test-4.air.alibaba-inc.com/app/deftest/ssr-test/index3?x-ssr=true&pha_manifest=default&pha=true)JS/CSS：[https://pre-apply-test-4.air.alibaba-inc.com/s/v/deftest/ssr-test/0.0.9/js/main.js](https://pre-apply-test-4.air.alibaba-inc.com/s/v/deftest/ssr-test/0.0.9/js/main.js)线上资源：页面：[http://apply-test-4.air.alibaba-inc.com/app/deftest/ssr-test/index3?x-ssr=true&pha_manifest=default&pha=true](http://apply-test-4.air.alibaba-inc.com/app/deftest/ssr-test/index3?x-ssr=true&pha_manifest=default&pha=true)JS/CSS：[http://apply-test-4.air.alibaba-inc.com/s/v/deftest/ssr-test/0.0.9/js/main.js](http://apply-test-4.air.alibaba-inc.com/s/v/deftest/ssr-test/0.0.9/js/main.js) |
+|  |  | 可缓存 SSR | 结合 CDN + 人群标签，支持通过 FaaS 函数进行页面渲染，并在 CDN 边缘进行页面的多副本缓存。可以针对人群提高页面性能。 | 部署产物：函数、兜底页面（HTML）、JS/CSS预发资源：页面：[http://pre-next.air.alibaba-inc.com/ssr/def-work/c-ssr-demo/index](http://pre-next.air.alibaba-inc.com/ssr/def-work/c-ssr-demo/index)JS/CSS：[https://dev.g.alicdn.com/def-work/c-ssr-demo/0.0.19/web/index.js](https://dev.g.alicdn.com/def-work/c-ssr-demo/0.0.19/web/index.js)线上资源：页面：[http://next.air.alibaba-inc.com/ssr/def-work/c-ssr-demo/index](http://next.air.alibaba-inc.com/ssr/def-work/c-ssr-demo/index)JS/CSS：[https://g.alicdn.com/def-work/c-ssr-demo/0.0.19/web/index.js](https://g.alicdn.com/def-work/c-ssr-demo/0.0.19/web/index.js) |
+| 3 | anpm | tnpm | 基于底层维护的 anpm registry ，实现标准的研发流程，解决 npm 包研发过程的代码风险、上线同步自动化等问题 | 部署产物: 1 个 npm 包日常: @ali/builder-miniapp-ng@0.1.14-beta.1线上: @ali/builder-miniapp-ng@0.1.14 |
+|  |  | tnpm 多包发布 | 类似 tnpm 单包发布流程，针对 monorepo 类型的 npm 包仓库，提供多个 npm 包的发布流程 | 部署产物: 多个 npm 包日常: @ali/def-widget-task-list@0.2.203-beta.9 / @ali/def-widget-iteration-detail@0.2.203-beta.9 等线上: @ali/def-widget-task-list@0.2.203 / @ali/def-widget-iteration-detail@0.2.203 等 |
+| 4 | 函数 | 函数应用开发 | 基于函数计算的轻量级服务开发方案，可快速开发 HSF/HTTP/Mtop API 服务或前后端一体化的中后台应用，用户只需关注业务逻辑无需关注服务运维。 | 部署产物：函数服务 / JS / CSS 等 |
+| 5 | ER | 边缘程序 | 基于底层阿里云边缘函数（ER）的能力，实现了标准的研发流程，包括内网验证、灰度、回滚、域名管理等能力，确保了 ER 研发过程有保障 | 部署产物：在边缘节点运行的 JS 代码函数 |
+| 6 | 小程序 | 小程序 | 目前支持淘宝、支付宝、微信等渠道的小程序完整上线研发流程，保障小程序研发过程经过基础的流程管理 | 部署产物: 各个渠道的小程序包 |
+
+以上是平台团队同学维护的链路，除此之外，通过开放能力建设的业务研发类型、应用类型由各自各个业务团队中的链路负责同学支撑。例如淘宝天马、淘宝直播、AE 跨端、阿里健康、CBU  等部门进行定制建设。
+
+
+
+| (https://img.alicdn.com/imgextra/i3/O1CN01MZH8kL1vIIMsh7jME_!!6000000006149-2-tps-1466-1286.png)淘宝直播定制实现与内部业务平台联动 | (https://img.alicdn.com/imgextra/i2/O1CN01rkJAbU1rkueimV5H8_!!6000000005670-2-tps-1469-1291.png)lazada 定制实现模块研发与页面的联动流程 | (https://img.alicdn.com/imgextra/i2/O1CN01twPJS01wLKc1qpdpW_!!6000000006291-2-tps-1411-1280.png)ICBU 定制实现自定义灰度流程 |
+|-|-|-|
+
+
+
+
+
+## 平台特性
+
+O2 Space 平台当下具备并持续建设着更多重点能力，从多个维度，提升整体的研发交付效率与质量，满足多样化的业务需求。
+
+
+
+### 持续集成/持续部署
+
+通过底层的流水线能力，结合迭代、主干两种代码变更模式，实现从代码合并、代码构建、单元/集成/E2E 测试、资源检查、发布卡口、资源发布的全流程能力。通过代码自动触发能力，实现更便捷、快速的集成、部署能力，并通过结果复用等能力，实现效率的提升。
+
+(https://img.alicdn.com/imgextra/i4/O1CN011B4bWU1VpZA7GZGxN_!!6000000002702-0-tps-2566-758.jpg)
+
+
+持续集成与持续部署
+
+在 CI 能力方面，平台集成 playwright 、istanbul 等框架工具面板，旨在帮助终端开发者提升测试编写的便利性和效率。同时支持卡口定制能力，使得仓库测试的水位有基础的控制。
+
+| (https://o2-img.alistatic.com/i/i09blZ/Z8PwVg98Ooj8VzIspik0Y-6e65e18e84.png)单元测试/集成测试面板 | (https://o2-img.alistatic.com/i/i09blZ/3QN3MUjTqu63CDPMHK0Dy-53b175e344.png)E2E 测试 playwright 面板 |
+|-|-|
+
+
+
+### 开放
+
+在当下不断变化和更新的业务形态和流程，反馈到技术侧则会涌现更多、更细粒度的研发交付流程。通过 API / SPI 两大类定制基础能力以及流水线、发布源、代码源、团队空间等定制配套能力，面向不同团队可以在基础的代码源、发布源以及现有流程之上，支持，实现高度符合自身业务要求的研发流程。
+
+
+
+目前平台走业务自身定制发布的链路，发布体量已经占比到整体的 30%，后续平台仍然在完善基础能力的同时，提升开放的能力、优化开放建设流程，使得每个研发流程都是自然串联，提升效率上线。
+
+
+
+### 构建提速
+
+在 npm 锁依赖的功能结合之上，通过依赖缓存、编译缓存以及建设构建工具等方式，通过平台底层整体调度能力，实现构建的大幅提速。
+
+
+
+| (https://img.alicdn.com/imgextra/i2/O1CN01sTfWVu1UswQmeIjIf_!!6000000002574-2-tps-694-400.png)(https://img.alicdn.com/imgextra/i3/O1CN01gtPe6O1q2elV3fvVx_!!6000000005438-2-tps-692-418.png)接入依赖缓存提速前后对比(从时常字段查看从 45s 到 36s) | (https://img.alicdn.com/imgextra/i2/O1CN01NEmmBn1KMI2QFPG5z_!!6000000001149-2-tps-1850-754.png)(https://img.alicdn.com/imgextra/i2/O1CN01GXj0fx1LxDaZ3NOah_!!6000000001365-2-tps-1848-824.png)接入编译缓存提速前后对比(右上角查看从 14s 到 4s) |
+|-|-|
+
+### 多云国际化
+
+通过接入 Akamai 、AWS 等云服务商能力，实现对不同国际化区域的支持和自动化切换的能力，实现业务在各个区域都能快速稳定地渲染、响应，服务用户，保障最佳业务效果。
+
+
+
+(https://img.alicdn.com/imgextra/i4/O1CN01sCZvbZ1JqEJUruwtp_!!6000000001079-2-tps-2814-1118.png)
+
+
+接入 Akamai 云服务的站点
+
+
+
+## 用户体验与反馈
+
+平台最重要就是帮助用户更快速的实现用户价值，平台除了特性功能之外，也一直坚持在开发者体验上不断进行提升。
+
+
+
+### 答疑小蜜
+
+答疑小蜜是目前平台主要的对外支持渠道，通过平台右下角的答疑小蜜入口，点击进入，会有 AI 智能答疑、一线、二线多个维度的业务支持同学进行响应。同时在答疑工单的复盘过程中，通过平台功能的优化补齐，以及知识点的完善和补充，实现平台功能和答疑的循环优化，保障用户体验的逐渐提升。
+
+(https://img.alicdn.com/imgextra/i4/O1CN01STrTby1mUoeZCe4oe_!!6000000004958-2-tps-820-1626.png)
+
+
+研发小蜜答疑入口及点击界面
+
+### 平台反馈
+
+除了答疑小蜜渠道之外，针对确定性的问题，可以通过平台右上角的反馈入口，进行直接反馈，收到对应的提交后，由支持同学进行需求指派跟进。
+
+(https://img.alicdn.com/imgextra/i4/O1CN01BG5uZK1SO8YkuzJrB_!!6000000002236-2-tps-1110-1694.png)
+
+
+反馈入口界面
+
+### 调研问卷
+
+平台在从不同渠道接收用户答疑、反馈的同时，也会每 3 个月发起主动调研问卷，除了接收用户的打分之外，每一次问卷我们也会针对用户中的部分反馈进行跟进，进行整体复盘，提升平台的整体用户体验，同时针对有效的反馈，平台也会尽可能地进行小礼品感谢。
+
+| (https://img.alicdn.com/imgextra/i3/O1CN01WO7Gay24xMQ9qZ4u9_!!6000000007457-2-tps-1644-796.png) | (https://img.alicdn.com/imgextra/i1/O1CN01WZeUCH1wRk9agPL1r_!!6000000006305-2-tps-1644-814.png) |
+|-|-|
+
+问卷后问题登记跟进
+
+[O2 Space 2023-08 问卷调研报告](https://ata.atatech.org/articles/11020140005)
+
+[O2 Space 2023-12 问卷调研报告](https://ata.atatech.org/articles/11020190819)
+
+
+
+### 体验故事
+
+除了特性功能，针对每一个流程中的功能细节，我们都期望尽力能从用户视角下，做到最好。平台会把这些一点一滴的优化收集起来，做成一个对外栏目，每个功能细节也许看起来不是高大上的"未来"、"使命"，但每一点都是我们期望用户能在使用过程中体会到的用心。
+
+| (https://img.alicdn.com/imgextra/i1/O1CN01tXOJGV1VZ4rzd1j7o_!!6000000002666-2-tps-1814-596.png) | (https://img.alicdn.com/imgextra/i2/O1CN01GyHvs51Pq7v1nXMxI_!!6000000001891-2-tps-1816-596.png) | (https://img.alicdn.com/imgextra/i1/O1CN01Nsbmsq1DM6ZI0QFHD_!!6000000000201-2-tps-1814-596.png) |
+|-|-|-|
+
+[体验故事文件夹](https://alidocs.dingtalk.com/i/nodes/EpGBa2Lm8aZxe5myC3d0LLZkWgN7R35y?utm_scene=team_space)
+
+
+

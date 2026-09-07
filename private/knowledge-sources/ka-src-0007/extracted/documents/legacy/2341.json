@@ -1,0 +1,42 @@
+{
+  "documentId": 2341,
+  "documentName": "通过上传方式新建样本",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 通过上传方式新建样本\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/ad_model/v1/sample/upload/create](https://ad.e.kuaishou.com/rest/openapi/gw/ad_model/v1/sample/upload/create)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 1 | 必填 | 广告主id |  |\n| name | String | 样本名称 | 必填 | 样本名称 |  |\n| token | String | xx | 必填 | 上传文件接口返回的token |  |\n| upload_file_name | String | test.zip | 必填 | 上传文件接口返回的文件名 |  |\n| upload_type | String | IMEI | 必填 | 上传类型IMEI,IDFA,OAID,IMEI_MD5,IDFA_MD5,OAID_MD5,PHONE_MD5,PHONE_SHA256 |  |\n| feature_date | String | 2023-01-01 | 必填 | 特征计算基准日期 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 0 | 状态码 |  |\n| message | String | ok | 消息 |  |\n| data |  |  | 消息体 |  |\n| &#8195;id | Long | 1 | 样本id |  |\n\n### 请求样例\n\n```js\ncurl --location --request POST 'https://ad.e.kuaishou.com//rest/openapi/gw/ad_model/v1/sample/upload/create' \\\n--header 'Access-Token: xxxxx' \\\n--header 'Content-Type: application/json' \\\n--header 'Cookie: [REDACTED_SECRET_EXAMPLE] apdid=22aa3170-fecc-4e3d-aaf3-b83825191ca119473a5d1ce8417a307644cdc2c666ad:16801541231:1; accessproxy_session=e5c8db0b-ca32-490f-a0a2-74d9178a8sfa' \\\n--data-raw '{\n    \"advertiser_id\":1,\n    \"name\":\"sample-open-01\",\n    \"source_type\":\"UPLOAD\",\n    \"upload_type\":\"IMEI_MD5\",\n    \"token\":\"[REDACTED_SECRET_EXAMPLE]\",\n    \"upload_file_name\":\"test.zip\",\n    \"feature_date\":\"2023-01-01\"\n}'\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"id\": 1\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMeAgICgxLm2Chj0CiD7p8X19zAou_mB9w4=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681961476485
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 4,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681961476485,
+  "creator": "wanglu15",
+  "fullContext": null
+}

@@ -1,0 +1,49 @@
+
+
+我们即将**（9/10）**对部分模型进行下架处理。下架的主要原因包括模型供应商不再提供维护支持，或因旧模型占用了新模型的配额。有疑问咨询下。
+
+此外，我们检测到还有用户在使用[旧场景交付API](https://aliyuque.antfin.com/aiplus/aistudio/miqnulit7w0xmvll#QsKjq)（https://aistudio.alibaba-inc.com/api/experiment/run/{场景code}/{交付版本}），请尽快使用[新API](https://aliyuque.antfin.com/aiplus/aistudio/miqnulit7w0xmvll#myZ5Z)。
+
+  
+
+
+**下架模型清单及替换建议：**
+
+| 模型名称 | 建议替代模型 |
+| --- | --- |
+| gpt-3.5-turbo | gpt-35-turbo-0125 |
+| code-davinci-002 | gpt-35-turbo-instruct |
+| text-davinci-003 | gpt-35-turbo-instruct |
+| gpt-3.5-16K-1106 | gpt-35-turbo-0125 |
+| gpt-4-turbo-128k | gpt-4-0409 |
+| gpt-4-vision-preview | gpt-4-0409 或 gpt-4o-0513 |
+| gpt-4-0125 | gpt-4-0409 |
+| chatglm | chatglm3 32K |
+| chatglm2 | chatglm3 32K |
+| llama | llama3 |
+| llama2 | llama3 |
+| m6 | qwen-max |
+| baichuan_13b |  |
+| vertex | Gemini1.5系列 |
+| text_bison_8k | Gemini1.5系列 |
+| text_bison_32k | Gemini1.5系列 |
+| chat_bison_8k | Gemini1.5系列 |
+| chat_bison_32k | Gemini1.5系列 |
+| code_bison_6k | Gemini1.5系列 |
+| code_bison_32k | Gemini1.5系列 |
+| codechat_bison_6k | Gemini1.5系列 |
+| codechat_bison_32k | Gemini1.5系列 |
+| code_gecko_2k | Gemini1.5系列 |
+| textembedding_gecko_3k | [其他embedding模型](https://aliyuque.antfin.com/aiplus/aistudio/tnq49n3b1p5n2z3p) |
+| gemini-pro-vision | Gemini1.5系列 |
+| gemini-pro | Gemini1.5系列 |
+| qwen-v1 | qwen-max |
+| qwen2 | qwen2-72b-instruct、qwen2-7b-instruct |
+| claude2 | claude3系列 |
+
+​  
+
+
+  
+
+

@@ -1,0 +1,230 @@
+
+
+[O2 Space 研发平台](https://space.o2.alibaba-inc.com) 是基于集团 Code 、 OSS 等多种代码源，以应用为研发基础单位，实现了从接入到部署上线的研发流程。其中通过 应用 、迭代、变更、发布实现了流程的串联和规范。
+
+接下来，我们从 仓库接入 到 发布上线 整个流程完成对 O2 Space 研发平台的简化操作及概念介绍。
+
+## 仓库接入
+
+ 应用：O2 Space 研发平台的基础研发单位，以每个仓库作为基础进行上层的封装和研发的管理，默认情况下一个仓库对应一个应用
+
+在平台 [首页](https://space.o2.alibaba-inc.com)，点击右上角 + 号并选择“创建应用”进入创建应用界面。
+
+(https://o2-img.alistatic.com/i/i09blZ/KHRyX6Fj3EoFLryCKFqJN-3d521bf937.png)
+
+
+下拉新建应用
+
+首选选择应用类型，如 Assets 研发 - Assets (即 Assets 非覆盖发布)，再选择脚手架。
+
+
+
+(https://o2-img.alistatic.com/i/i09blZ/VMl9qtAlXcZdtwilLJHa0-8a2b7b5c01.png)
+
+
+选择应用类型和脚手架
+
+进入下一步，填写创建应用的必要参数。
+
+
+
+(https://o2-img.alistatic.com/i/i09blZ/SubkFQMcQnc0r8jKk6NRa-11ecfc88e2.png)
+
+
+填写基础信息
+
+
+
+针对仓库接入提供两种接入方式：
+
+- 新建仓库: 在当前用户有权限的 [group](https://code.alibaba-inc.com/dashboard/groups)下进行仓库创建并创建对应的应用
+- 关联仓库: 基于当前用户已有的 code 仓库进行应用创建
+
+
+无论是 新建仓库 和 关联仓库 的方式，都需要将 tbfed 这个账号加到对应 组(group) 或者 仓库(project) 以 管理员 角色加入到管理员成员列表中。
+
+(https://img.alicdn.com/imgextra/i1/O1CN01yAbbSf1FoA40w8Klw_!!6000000000533-2-tps-3508-420.png)
+
+
+添加 tbfed 到仓库
+
+### 新建仓库
+
+以 新建仓库 方式接入，首先要求将 tbfed用户加入到 组(group) 权限中，同时需要保障操作的时候操作用户有 组(group) 的开发者及以上权限，我们以 def-testground 组(group) 为例，进行分步骤演示：
+
+在 code 平台中，点击 权限 进入到管理员页面。
+
+(https://o2-img.alistatic.com/i/i09blZ/6ajd14sB3SWmlAhzMY5hq-332e9e96aa.png)
+
+
+点击管理员列表的右上角 添加组成员 按钮，在弹窗中输出 tbfed ，在提示框中选择 前端研发平台 点击确定完成成员添加。
+
+(https://o2-img.alistatic.com/i/i09blZ/uLWZYbGZiABjyQw9HclAf-51958acf86.png)
+
+
+添加 tbfed 后重新回到创建应用界面。
+
+(https://o2-img.alistatic.com/i/i09blZ/VMl9qtAlXcZdtwilLJHa0-8a2b7b5c01.png)
+
+
+回到新建应用页
+
+(https://o2-img.alistatic.com/i/i09blZ/SubkFQMcQnc0r8jKk6NRa-11ecfc88e2.png)
+
+
+填写基本信息
+
+点击确认，创建应用成功后会跳转到应用概览页，应用概览页面达到后，则完成了整个应用的接入流程。
+
+(https://o2-img.alistatic.com/i/i09blZ/f0qP3Mi4GYIth2U7Ub5ZN-1d77e9c527.png)
+
+
+应用概览页
+
+进入 code 平台中 可以看到以 tbfed 用户完成了初始化代码的提交。
+
+(https://o2-img.alistatic.com/i/i09blZ/v6TPYEEznUD4RPOfDxQVX-9bd3c9aaaa.png)
+
+
+### 关联仓库
+
+以 关联仓库 的方式接入，首先要求将 tbfed用户加入到 仓库 (project) 权限中，我们以下面仓库为例，进行分步骤演示：
+
+(https://o2-img.alistatic.com/i/i09blZ/NXVly5oDzMGeuFbBG14yt-877a2fb9d1.png)
+
+
+与 新建仓库 方式中为 组(group) 增加成员权限的方式一致，如果当下仓库没有一个成员时，点击中间位置的添加成员；如果有成员，则像添加 组(group) 权限操作一致，点击权限列表右上角 添加库成员 进行操作 在弹出框中填写 tbfed 选择权限类型为 管理员 完成成员操作。
+
+(https://o2-img.alistatic.com/i/i09blZ/uLWZYbGZiABjyQw9HclAf-51958acf86.png)
+
+
+我们以 WebApp 为例，选择 关联仓库 的 checkbox 项，然后填写刚才我们准备的仓库，这里则是需要填写 组(group)/仓库(project) 的格式，如 def-playground/webapp-project，同时选择 ICE 脚手架 进行代码生成，完成之后点击底部 下一步 按钮，后续流程与 新建仓库 的流程则完全一致。
+
+(https://img.alicdn.com/imgextra/i4/O1CN01jYBG5b1NXgkDsf8JI_!!6000000001580-2-tps-3582-2022.png)
+
+
+进入应用概览页。
+
+(https://img.alicdn.com/imgextra/i2/O1CN01lw2SAI1sYppG0tCID_!!6000000005779-2-tps-3582-2016.png)
+
+
+应用概览页
+
+代码初始化提交。
+
+(https://img.alicdn.com/imgextra/i3/O1CN01wroQ6O1fphP6cTxzP_!!6000000004056-2-tps-3582-1306.png)
+
+
+初始化完成
+
+## 迭代创建
+
+迭代：O2 Space 研发平台针对一定周期内的需求及所对应的在不同发布环境下的发布、集成区的设置与流程，以迭代概念进行组织，每次迭代代表一个应用发布版本
+
+在应用 [概览页](https://space.o2.alibaba-inc.com/app/142922/basic)中点击“进行中的迭代”卡片右侧的“新建迭代”按钮。
+
+(https://img.alicdn.com/imgextra/i2/O1CN01ijBxlW1CsnDgSTnZ4_!!6000000000137-2-tps-3580-2014.png)
+
+
+
+
+进入新建迭代页面后，填写相应的迭代信息后，点击 确定 按钮，完成迭代创建，同时如果选中添加变更并根据代码分支进行信息填写，同时也完成了迭代中第一个变更的创建。
+
+(https://o2-img.alistatic.com/i/i09blZ/RkPiarOQYWNk9PS0jzQqj-0619505fc6.png)
+
+
+变更：在应用迭代中，变更代表以仓库代码分支为基础的，包含相关分支所需完成的 开发需求描述、代码审核、Aone 需求绑定操作 的一个集合概念
+
+
+
+与之前版本不同的是，完成迭代创建之后，进入迭代详情页面，包含几块区域，我们以当前创建的迭代为例：
+
+
+
+(https://img.alicdn.com/imgextra/i1/O1CN01Z3hEQ829AQBgPcNCt_!!6000000008027-2-tps-2000-936.png)
+
+
+
+
+- 迭代基础信息，展示当前迭代的名称、描述等相关迭代内容（上图中位置 1 所示）；
+- 迭代集成区中放置的是变更相关信息，进行对应每个变更的 需求绑定、代码审核 等操作（上图中位置 2 所示）；
+- 迭代过程中的核心流程节点，以发布环境进行分阶段进行组织，每个阶段中展示关联处理的任务信息卡片（上图中位置 3 所示）。
+
+
+## 应用发布
+
+应用的发布操作环境根据应用类型而不同，以当前 [assets-project](https://space.o2.alibaba-inc.com/app/142922/basic)为例，包含日常环境与线上环境。
+
+### 日常发布
+
+点击在 迭代流程 中的日常环境阶段下日常发布卡片的 部署 按钮（下图位置 9 所在区域），开始进行日常发布。
+
+
+
+(https://img.alicdn.com/imgextra/i1/O1CN01Z3hEQ829AQBgPcNCt_!!6000000008027-2-tps-2000-936.png)
+
+
+
+
+发布过程中会进行相关校验，例如出现未绑定 Aone 工作项，需进行相关绑定后进行操作。
+
+点击迭代集成区中的 Aone 工作项按钮（下图位置 3 所在区域），在弹窗中进行 Aone 需求绑定，完成变更需求绑定后再次点击上文提到的发布按钮。
+
+(https://img.alicdn.com/imgextra/i3/O1CN01MNclle1yb1PuSZvMT_!!6000000006596-2-tps-2000-409.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/fHoNzwPle19A9QZlaMobm-16009f03b3.png)
+
+
+点击后，校验通过，则进行发布任务，同时可以点击发布卡片中的 流水线节点（下图位置 5 所在区域）进行更细节的流水线查看。
+
+(https://img.alicdn.com/imgextra/i1/O1CN01Z3hEQ829AQBgPcNCt_!!6000000008027-2-tps-2000-936.png)
+
+
+(https://img.alicdn.com/imgextra/i1/O1CN01yzKQXx2511ak45frl_!!6000000007465-2-tps-3582-2016.png)
+
+
+
+
+一定时间发布完成后，会在发布卡片中展示 成功 的状态，同时可以再次点击 部署 按钮进行再次发布。
+
+
+
+### 线上发布
+
+在完成日常发布之后，进入线上环境发布环节，以当前迭代为例，可以在线上卡口中看到未通过的检查项。
+
+
+
+(https://img.alicdn.com/imgextra/i3/O1CN01KXFykR1zIzRIc68kU_!!6000000006692-2-tps-3366-596.png)
+
+
+
+
+如 代码评审，这里可以同样找到 迭代集成区 进行操作代码评审创建（下图位置 1 所在区域）。
+
+(https://img.alicdn.com/imgextra/i3/O1CN01MNclle1yb1PuSZvMT_!!6000000006596-2-tps-2000-409.png)
+
+
+
+
+点击 迭代集成区 对应变更的代码评审创建按钮后，填写对应的评审信息完成代码评审创建。对应评审人会接收到钉钉通知，可以进行点击评审。
+
+(https://o2-img.alistatic.com/i/i09blZ/aa4QVupAZVvB4bpHcsGAL-0031a69706.png)
+
+
+(https://img.alicdn.com/imgextra/i4/O1CN017Jz9A21NGk7bW3QYL_!!6000000001543-0-tps-832-494.jpg)
+
+
+
+
+在完成评审任务后，迭代流程中日常阶段下的代码评审卡片展示状态为通过，则可以点击下一步，进入到线上发布环节。与日常发布类似，点击在线上阶段中，线上发布卡片中的 立即发布 进行线上环境发布，发布完成后，则完成迭代的发布。
+
+
+
+## 总结
+
+本篇快速入门主要以较为简单的应用类型链路来进行大致说明，方便快速了解整体的使用流程，如果遇到复杂细节的问题，或者是不同应用类型中，使用链路的问题，可以找到答疑同学进行支持。
+
+
+

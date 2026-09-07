@@ -1,0 +1,57 @@
+## 创建迭代发布任务
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/iterations/{iterationId}/task |
+| buc login | true |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| iterationId | Number | true | - | 迭代 ID |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| pub_env | Number | true | - | 迭代发布环境 |
+
+### Returns
+
+A [Task](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8dfb66h0t67j0phai) Object.
+
+### Example
+
+```
+client.post(`/v1.0/work/iterations/{iterationId}/task`, {}, {
+  pub_env
+}, {
+  SSO_TICKET
+})
+
+{
+  "pub_status": 2,
+  "tbuser_id": "",
+  "app_id": 1,
+  "iteration_id": 15126515,
+  "client_id": 1,
+  "group": "def-work",
+  "project": "front",
+  "branch": "def_releases_2024020510085050_def-work_front/2.25.51",
+  "commit_id": "-1",
+  "emp_id": "318805",
+  "version": "2.25.51",
+  "pub_env": 1,
+  "pub_type": 1,
+  "flow_id": 19676649,
+  "caller": "api",
+  "engine_mode": true,
+  "branch_pub_mode": 1,
+  "flow_version": "2",
+  "id": 135718400,
+  "gmt_modified": "2024-02-05T07:23:29.200Z",
+  "gmt_create": "2024-02-05T07:23:29.200Z"
+}
+
+```

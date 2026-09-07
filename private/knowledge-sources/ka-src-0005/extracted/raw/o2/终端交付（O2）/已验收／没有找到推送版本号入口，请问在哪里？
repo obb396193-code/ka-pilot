@@ -1,0 +1,34 @@
+作者：时路
+
+评审人：上坡
+
+
+
+**请按照如下步骤进行操作：**
+
+1. 前提：请确保你的研发类型是 Assets 研发，目前仅支持 Assets 研发类型开启版本推送
+
+
+
+2. 开启 Diamond 推送：
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/18156349/1713949876995-9427159b-65fe-4dfe-abcb-6f96b327869d.png) 
+
+⚠️：如果你没有找到该入口，请通过研发小蜜联系管理员帮你添加到灰度
+
+3. 完成 Diamond 不同环境的配置
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/18156349/1713949979747-09770d37-c599-4ce6-bc4d-f4720cd382dc.png) 
+
+4. 上述步骤全部完成后，就可以在迭代详情页看到版本推送按钮了
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/18156349/1713950068075-43c0f69e-6939-4586-b056-54d490e019cd.png) 
+
+
+
+
+
+【相似问题】：
+
+ 发布完成后找不到版本号推送按钮怎么办 
+

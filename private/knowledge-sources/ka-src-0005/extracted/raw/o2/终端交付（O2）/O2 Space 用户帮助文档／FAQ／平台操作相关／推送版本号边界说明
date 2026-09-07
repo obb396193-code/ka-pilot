@@ -1,0 +1,13 @@
+(https://o2-img.alistatic.com/i/i09blZ/SQ654nn1Rh66zP0nO1nZs-f993054a91.png)
+
+
+
+
+平台只负责将版本号推送到相应环境的 diamond-server 中，并且以 diamond-server 返回 http response 为判断是否推送成功的依据。
+
+如上图所描述的，diamond-server 到数据库的同步，以及配置同步到用户配置消费侧的链路，都需要用自己验证，O2 Space 无法感知。
+
+开发者在推送完成后，需要进行人工验收确认，确保符合业务逻辑。
+
+
+

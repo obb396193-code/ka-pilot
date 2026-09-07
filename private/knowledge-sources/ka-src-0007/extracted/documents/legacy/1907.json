@@ -1,0 +1,42 @@
+{
+  "documentId": 1907,
+  "documentName": "3.1.6账户操作记录信息查询",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 账户操作记录信息查询\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/tool/operation_record/list\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段             | 类型   | 是否必填 | 说明         | 备注                                                                       |\n| ---------------- | ------ | -------- | ------------ | -------------------------------------------------------------------------- |\n| advertiser_id    | long   | 必填     | 广告主 ID    | 在获取 access_token 的时候返回                                             |\n| operation_type   | int    |          | 操作类型     | 1：新增 2：修改删除（可通过 content_log： \"update_data\": \"删除\"查看）      |\n| operation_target | int    |          | 操作目标类型 | 目前只支持：1:账户 2：计划 3：广告组 4：创意 5：视频 6：app 应用 7：人群包 9：程序化创意2.0 10:评论内容 11:托管项目12:自动规则 13:评论屏蔽信息15:速推项目\n| role_type        | int    |          | 操作人       | 1：广告主 2：代理商 3：系统 4：管理员 5：Market Api                        |\n| page             | int    |          | 页码数       | 默认为 1                                                                   |\n| page_size        | int    |          | 单页行数     | 默认为 20，不超过 500                                                      |\n| start_date       | string |          | 开始时间     | 最多查询最近 6 个月的操作记录                                              |\n| end_date         | string |          | 结束时间     |                                                                            |\n\n### 返回参数\n\n| 字段                                                   | 类型     | 说明         | 备注                                                        |\n| ------------------------------------------------------ | -------- | ------------ | ----------------------------------------------------------- |\n| code                                                   | int      | 返回码       |                                                             |\n| message                                                | string   | 返回信息     |                                                             |\n| data                                                   | struct   | JSON 返回值  |                                                             |\n| total_count                                            | number   | 总数         |                                                             |\n| details                                                | struct   | 详情见下：   |                                                             |\n| object_id                                              | string   | 操作对象 ID  |                                                             |\n| operation_type                                         | int      | 操作类型     | 1：新增 2：修改                                             |\n| （删除可通过 content_log： \"update_data\": \"删除\"查看） |\n| operation_target                                       | int      | 操作目标类型 | 1：账户 2：计划 3：广告组 4：创意 5：视频 6：应用 7：人群包 |\n| role_type                                              | int      | 操作人       | 1：广告主 2：代理商 3：系统 4：管理员 5：Market Api         |\n| object_name                                            | string   | 操作对象名称 |                                                             |\n| operation_time                                         | string   | 操作时间     |                                                             |\n| content_log                                            | struct[] | 日志内容     | 详见下方                                                    |\n\n### &nbsp\n\n| content_log   |        |          |      |\n| ------------- | ------ | -------- | ---- |\n| 字段          | 类型   | 说明     | 备注 |\n| field_name    | string | 字段名称 |      |\n| original_data | string | 原始数据 |      |\n| update_data   | string | 修改数据 |      |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820623954
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820623954,
+  "creator": "wb_suxing",
+  "fullContext": null
+}

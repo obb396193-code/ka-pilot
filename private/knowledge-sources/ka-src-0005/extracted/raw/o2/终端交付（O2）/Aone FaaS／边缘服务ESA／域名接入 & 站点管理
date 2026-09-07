@@ -1,0 +1,95 @@
+# 内网域名
+
+在边缘容器应用创建时，平台会为应用自动添加日常 / 预发环境各一个内网域名（在侧边栏「函数配置」—「域名配置」中可查看）：
+
+(https://o2-img.alistatic.com/i/i09blZ/gHRE1Ho4awSiIAhTxPPEO-206893f1f4.png)
+
+
+用户可在完成日常 / 预发环境发布后，通过对应环境的域名，进行内网服务验证。
+
+# 线上域名 & 站点
+
+由于边缘容器实际部署场景为公网，线上发布前需要为容器应用绑定线上域名，在平台链路上表现为 SRE 平台 ESA 站点接入。进入「函数配置」—「域名配置」，点击新增域名：
+
+(https://o2-img.alistatic.com/i/i09blZ/NVEtfBDJvRZrF80jwNSs1-de481de013.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/gYGqop9BnpriEbL4Va0c3-2539ed381a.png)
+
+
+环境类型选择「线上」，支持新增站点 / 关联站点两个操作模式。
+
+## 新增站点
+
+前提：用户已有有权限 IDNS 域名（[http://idns.alibaba-inc.com/](http://idns.alibaba-inc.com/)）
+
+在「新增站点」Tab 下，对应填写：
+
+- 站点域名：用户要接入的域名，因证书费用原因，标准流程限制为三级域名；
+- 是否已备案：根据域名主体是否备案进行选择。
+点击「确认提交」，即可触发 SRE 平台站点创建流程。
+
+(https://o2-img.alistatic.com/i/i09blZ/rwALwF7OHpGL2DyMbhvrr-1c6580ae9f.png)
+
+
+点击跳转至 SRE 平台，跟随流程引导完成域名变更。
+
+(https://o2-img.alistatic.com/i/i09blZ/CIUb9xiTF8KPjFSm6ndyg-50cecdeaab.png)
+
+
+待接入流程完成后，即可在 SRE 平台站点页查看接入站点信息，可以在「站点管理员」处配置可见人员名单，仅配置了管理员的用户能够管理该站点。
+
+(https://o2-img.alistatic.com/i/i09blZ/yriou9CqlK9uXMFXjFl6d-f285efe3b5.png)
+
+
+回到 FaaS 平台域名配置页，刷新后即可看到刚刚接入的 ESA 站点：
+
+(https://o2-img.alistatic.com/i/i09blZ/xI34rTvhd8pypdUDbhkLK-215e76c441.png)
+
+
+后续即可通过该域名进行服务投放。
+
+## 删除站点
+
+对于通过平台标准流程完成接入的 ESA 站点，在域名配置页具有「删除」选项。
+
+(https://o2-img.alistatic.com/i/i09blZ/bZrV9lrzA2t1ahiyG7ZHE-b3d1d0c0f3.png)
+
+
+点击删除，进行二次确认后，将自动创建一条 BPMS 审批流程进行 ESA 站点解绑。
+
+Tips：该流程仅做解绑操作，ESA 站点如需删除请前往 [SRE 平台](https://sre.air.alibaba-inc.com/site)完成。
+
+(https://o2-img.alistatic.com/i/i09blZ/lqEiGVjGkLr4DM4F9fDnx-2ab1599f6e.png)
+
+
+审批人为提交人主管 + 平台管理员。
+
+完成删除后，回到域名配置页即可看到原线上站点不再展示，此时将无法再通过该域名访问当前边缘容器服务。因此，解绑站点需确认当前边缘容器应用已无线上流量。
+
+## 关联站点
+
+对于未绑定边缘容器应用 & 当前用户是站点管理员以上权限的 ESA 站点，支持将其关联至平台任意边缘容器应用。
+
+进入需要关联 ESA 站点的边缘容器应用「函数配置」—「域名配置」页，点击新增域名，在弹出框中选择「关联站点」，即可在选择站点下拉框中选择要绑定的 ESA 站点，并点击「确认提交」。
+
+(https://o2-img.alistatic.com/i/i09blZ/TmtdgqmsZWWj1QJT2w9He-dc63917895.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/Cj6p8IMExrh2QPG1yu7SO-c5038bd21b.png)
+
+
+确认后，该 ESA 站点即新增至当前应用域名配置中，此时通过该站点域名即可访问至当前边缘容器应用。
+
+# 站点监控
+
+对 ESA 站点，SRE 平台提供了站点级的监控数据查看。进入 SRE 平台站点详情页（[https://sre.air.alibaba-inc.com/site/xxx/dashboard](https://sre.air.alibaba-inc.com/site/1488/dashboard)，其中 xxx 为用户的站点 ID），点击左侧导航栏的数据 tab。
+
+(https://o2-img.alistatic.com/i/i09blZ/P0SO4UJbA9AAw1gtt35Il-8c15f1f43c.png)
+
+
+在数据页中，切换顶部 Tab 至「分析」，将数据源选择为「云监控」，即可查看站点的监控数据。
+
+(https://o2-img.alistatic.com/i/i09blZ/rvCuUcrXZvz9BGrk6HJ2r-3cfbbe1ea7.png)
+
+

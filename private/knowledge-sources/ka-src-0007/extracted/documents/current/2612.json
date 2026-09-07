@@ -1,0 +1,426 @@
+{
+  "documentId": 2612,
+  "documentName": "代理商-可复制账户列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "代理商-可复制账户列表\n/rest/openapi/gw/agent/v1/bind/copy/accounts\n\n\nkeyword  String  模糊查询关键字\nuc_type  String  广告主复制类型：DSP_MAPI\npage_no  Integer  页码\npage_size  Integer  页面大小\ncode  Integer  状态码\nmessage  String  msg\ndata  AgentCanCopyAccountRespSnake949  可复制账户列表\nagent_can_copy_accounts  AgentCanCopyAccountSnake[]  可复制广告主列表\naccount_id  Long  广告主id\nuser_id  Long  广告主快手id\naccount_name  String  广告主名称\ncorporation_name  String  公司名称\nuc_type  String  账户类型\nproduct_name  String  产品名\ntotal  Long  总条数\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1756382477857
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1720084628190
+    }
+  ],
+  "apiId": 756,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/bind/copy/accounts",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 77488,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "<p>代理商id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "代理商id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "ADD"
+    },
+    {
+      "paramId": 43778,
+      "paramName": "keyword",
+      "paramType": "String",
+      "example": "",
+      "description": "模糊查询关键字",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 43779,
+      "paramName": "uc_type",
+      "paramType": "String",
+      "example": "",
+      "description": "广告主复制类型：DSP_MAPI",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 43780,
+      "paramName": "page_no",
+      "paramType": "Integer",
+      "example": "",
+      "description": "页码",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 43781,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "页面大小",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 43790,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 43791,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "msg",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 43792,
+      "paramName": "data",
+      "paramType": "AgentCanCopyAccountRespSnake949",
+      "example": "",
+      "description": "可复制账户列表",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2687,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 43788,
+          "paramName": "agent_can_copy_accounts",
+          "paramType": "AgentCanCopyAccountSnake[]",
+          "example": "",
+          "description": "可复制广告主列表",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2688,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 43782,
+              "paramName": "account_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "广告主id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 43783,
+              "paramName": "user_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "广告主快手id",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 43784,
+              "paramName": "account_name",
+              "paramType": "String",
+              "example": "",
+              "description": "广告主名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 43785,
+              "paramName": "corporation_name",
+              "paramType": "String",
+              "example": "",
+              "description": "公司名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 43786,
+              "paramName": "uc_type",
+              "paramType": "String",
+              "example": "",
+              "description": "账户类型",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 5,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 43787,
+              "paramName": "product_name",
+              "paramType": "String",
+              "example": "",
+              "description": "产品名",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 6,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 43789,
+          "paramName": "total",
+          "paramType": "Long",
+          "example": "",
+          "description": "总条数",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1756382477857,
+  "creator": "chenyang11",
+  "fullContext": null
+}

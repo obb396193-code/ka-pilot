@@ -1,0 +1,42 @@
+{
+  "documentId": 2284,
+  "documentName": "工具-评论管理-1-评论列表数据查询",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 评论列表数据查询\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/comment/list\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段              | 类型       | 示例  | 是否必填 | 说明                   | 备注                                                            |\n| ----------------- | --------- | ----- | -------- | ---------------------- | --------------------------------------------------------------- |\n| advertiser_id     | long      |   123456   | 必填     | 广告主 ID              | 在获取 access_token 的时候返回                                  |\n| comment_content   | string    |  \"商品\"    | 可选     | 评论内容               | 模糊匹配                                                        |\n| reply_status      | int       |   1   | 可选     | 回复状态               | 1：未回复，2：已回复                                              |\n| comment_level     | int       |   1   | 可选     | 评论层级               | 1：一级评论，2：二级评论                                          |\n| post_time_start   | long      |   1676882918528   | 可选     | 评论发布起始时间 | 与 post_time_end 同时传或同时不传；过滤筛选条件，毫秒级时间戳   |\n| post_time_end     | long      |   1676882931137   | 可选     | 评论发布截止时间 | 与 post_time_start 同时传或同时不传；过滤筛选条件，毫秒级时间戳 |\n| shield_status     | int       |   1   | 可选     | 隐藏状态               | 1：未隐藏，2：已隐藏                                              |\n| photo_query_value | string    |   \"xxx\"   | 可选     | 视频搜索参数           | 可输入视频 ID 或视频名称进行查询                                |\n| photo_tags        | string[]  |  \\[\"tag\"]  | 可选     | 视频标签               |                                                                 |\n| page              | int       |   1   | 可选     | 请求的页码数           | 默认为 1                                                        |\n| page_size         | int       |   20   | 可选     | 请求的每页行数         | 默认为 20，每次最多100                                                      |\n\n### 返回参数\n\n| 字段                   | 类型      |示例      | 说明               | 备注                                                                   |\n| ---------------------- | ---------| ------ | ------------------ | ---------------------------------------------------------------------- |\n| code                   | int      |  0    | 返回码             |                                                                        |\n| message                | string   | \"OK\"    | 返回信息           |                                                                        |\n| data                   | struct   |    | JSON 返回值        |                                                                        |\n| &#8195; total_count    | long     |    1     | 符合条件的记录总数 |                                                                        |\n| &#8195; details        | AdCommentDetailView[] |    | 返回值详情         |                                                                        |\n| request_id             | string   |        | 请求ID        |                                                                        |\n\n| AdCommentDetailView |   |   |   |   |\n| ------- | ------- | ------- | ------- | ------- |\n| 字段 | 类型 | 示例 | 说明 | 备注 |  \n| comment_id             | long        |    51235133    | 评论 ID           |                                                                        |\n| root_comment_id        | long        |   52351235      | 一级评论 ID        |                                                                        |\n| comment_author_id      | long        |    341234     | 评论发布者 UserID  |                                                                        |\n| photo_id               | string      |    \"test_photo_id\"     | 视频 ID           |                                                                        |\n| photo_author_id        | long        |    51345     | 视频作者 UserID    |                                                                        |\n| comment_level          | int         |    1     | 评论层级           |         1：一级评论，2：二级评论                                                               |\n| comment_content        | string      |    \"test_comment\"     | 评论内容           |                                                                        |\n| fav_num                | long        |    23     | 点赞数            |                                                                        |\n| post_time              | long        |    1676961890024     | 评论发布时间       | 毫秒级时间戳                                                           |\n| nickname               | string      |    \"test_nick\"     | 评论发布者昵称      |                                                                        |\n| reply_status           | int         |    1     | 回复状态           |    1：未回复，2：已回复                                                                    |\n| shield_status          | int         |    1     | 隐藏状态           |     1：未隐藏，2：已隐藏                                                                   |                                                                     |\n| photo_tags             | string[]    |  \\[\"tag\"]   | 视频标签           |                                                                        |\n| is_root_comment_forbid | boolean     | false      | 一级评论是否被隐藏   |                                                                        |\n| shield_type            | int         |     1      | 屏蔽类型           | 1：评论内容关键词，3：手动屏蔽，4：社区自动屏蔽，5：用户昵称关键词，6：快手 ID |\n|emotion_url             | string      | \"test_url\" | 表情url           |                |\n|is_top_comment          | boolean     |  false     | 是否被置顶         |                |\n\n  ### 请求样例\n\n```js\n{\n    \"comment_content\": \"\",\n    \"reply_status\": 1,\n    \"comment_level\": 1,\n    \"post_time_start\": 1676876810395,\n    \"post_time_end\": 1676876820194,\n    \"shield_status\": 1,\n    \"photo_query_value\": \"\",\n    \"photo_tags\": [\n        \"\"\n    ],\n    \"advertiser_id\": 123456,\n    \"page\": 1,\n    \"page_size\": 20\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\",\n    \"data\": {\n        \"total_count\": 1,\n        \"details\": [\n            {\n                \"comment_id\": 1234567899,\n                \"root_comment_id\": 123456789,\n                \"comment_author_id\": 123,\n                \"photo_id\": \"xxx\",\n                \"photo_author_id\": 51256,\n                \"comment_level\": 1,\n                \"comment_content\": \"xxxxxx\",\n                \"fav_num\": 59,\n                \"post_time\": 1676876810395,\n                \"nickname\": \"xxxxx\",\n                \"reply_status\": 1,\n                \"shield_status\": 1,\n                \"shield_type\": 2,\n                \"photo_name\": \"xxxxx\",\n                \"photo_tags\": [\n                    \"xx\"\n                ],\n                \"is_root_comment_forbid\": true,\n                \"emotion_url\": \"xxxxx\",\n                \"is_top_comment\": false\n            }\n        ]\n    }\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1700041990565
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1700041990565,
+  "creator": "gaozheng",
+  "fullContext": null
+}

@@ -1,0 +1,268 @@
+{
+  "documentId": 3353,
+  "documentName": "callback合法性校验",
+  "documentType": 2,
+  "description": "<p>校验callback与所传账户id、请求id是否匹配。</p><p><code>平台接入流程：</code><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://developers.e.kuaishou.com/docs?docType=DSP&amp;documentId=2539&amp;menuId=3765\"><u>https://developers.e.kuaishou.com/docs?docType=DSP&amp;documentId=2539&amp;menuId=3765</u></a></p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1775545341815
+    }
+  ],
+  "apiId": 1834,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/magicsite/v1/lp/validateCallbackWithAccount",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 9,
+  "bizName": "魔力建站",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [
+    {
+      "paramId": 80895,
+      "paramName": "access-token",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>access-token,从开放平台获取到的token</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "inputParams": [
+    {
+      "paramId": 80888,
+      "paramName": "llsid",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>客户提供</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "请求ID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80889,
+      "paramName": "account_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>客户提供</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "快手广告平台账号ID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80890,
+      "paramName": "callback",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>客户提供</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "广告参数",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80891,
+      "paramName": "app_id",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>快手分配</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "应用ID ，gateway平台申请的应用id",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 80892,
+      "paramName": "data",
+      "paramType": "CallbackValidResult",
+      "example": "true",
+      "description": "<p>校验结果</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4590,
+      "sort": 1,
+      "note": "true为校验通过",
+      "children": [
+        {
+          "paramId": 80887,
+          "paramName": "if_valid",
+          "paramType": "Boolean",
+          "example": "",
+          "description": "<p>校验结果</p>",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80893,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p>状态描述</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 80894,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "code=1即为请求成功",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1775545341815,
+  "creator": "zhangpengfei03",
+  "fullContext": null
+}

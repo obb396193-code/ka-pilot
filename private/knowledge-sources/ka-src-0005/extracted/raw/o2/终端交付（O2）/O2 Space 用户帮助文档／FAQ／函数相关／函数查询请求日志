@@ -1,0 +1,26 @@
+临时查询函数请求日志方式：
+
+1. 访问（需要申请权限）：[https://taishan.alibaba-inc.com/#/fc/dashboard/log](https://taishan.alibaba-inc.com/#/fc/dashboard/log)
+1. 根据函数服务的部署单元选择查询region，比如部署了张北 就选择 log-fc-self-monitor-zjk-corp
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYaz2oNddqwZL/img/95b1ff70-4aa5-41b1-993e-72fbe3235ed0.png)
+
+1. 选择时间段
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYaz2oNddqwZL/img/26d57132-95b2-459b-9e9e-e30c8d5489dd.png)
+
+1. 选择 code 查询模式
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYaz2oNddqwZL/img/eb967ebd-f234-48a2-8bef-8a45c4edf257.png)
+
+1. 确定函数查询信息
+	1. 函数组名
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYaz2oNddqwZL/img/dc7187bb-ee60-4290-80c8-a22ab16d7651.png)
+
+	1. accountID
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/3BMqYaz2oNddqwZL/img/35e5b181-e981-463a-ad8f-6f74c4a94d4a.png)
+
+1. 输入查询条件，
+	1. 比如我想查询返回 500 的所有请求
+{log_type="service_metrics",module="api_server",operation="InvokeFunction",accountID="xxxx",clusterName="fc-zjk-internal"} |= "函数组名" |=`fcStatus":500`
+
+1. 比如像查询某个鹰眼ID的请求
+{log_type="service_metrics",module="api_server",operation="InvokeFunction",accountID="xxxx",clusterName="fc-zjk-internal"} |= "函数组名" |=`eagleeyeTraceID":"74a2b00517006359080475043e`
+

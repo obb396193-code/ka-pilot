@@ -1,0 +1,81 @@
+{
+  "primary_doc_list": [
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1855448450527623",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1855539195030791",
+              "parent_ids": [
+                "1855539195030791"
+              ],
+              "path": "/open_api/v3.0/tools/ebp/video/upload/",
+              "status": 4,
+              "title": "升级版工作台上传视频"
+            },
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1855449500037184",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1855539195030791",
+              "parent_ids": [
+                "1855539195030791"
+              ],
+              "path": "/open_api/v3.0/tools/ebp/video/update/",
+              "status": 4,
+              "title": "升级版工作台更新视频"
+            }
+          ],
+          "doc_id": "1855539195030791",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710599092236",
+          "parent_ids": [
+            "1696710599092236"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "升级版巨量引擎工作台素材管理"
+        }
+      ],
+      "doc_id": "1696710599092236",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 0,
+      "title": "素材管理"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [],
+      "doc_id": "1871382718381068",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 0,
+      "title": "视频素材管理"
+    }
+  ]
+}

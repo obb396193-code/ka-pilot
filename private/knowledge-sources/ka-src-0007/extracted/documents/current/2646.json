@@ -1,0 +1,370 @@
+{
+  "documentId": 2646,
+  "documentName": "魔力建站营销组件-表单查询接口",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720095756504
+    }
+  ],
+  "apiId": 131,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v2/gemini/form/list",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 11,
+  "bizName": "老铁线索通",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location --request POST 'https://ad.e.kuaishou.com/rest/openapi/v2/gemini/form/list ' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n  \"advertiser_id\": 28751,\n  \"form_name\":\"表单04-14 15:11\",\n  \"page\":1,\n  \"page_size\":500\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\":0,\n    \"message\":\"OK\",\n    \"data\":{\n        \"total_count\":0,\n        \"details\":[\n            {\n                \"id\":84737677618317771,\n                \"name\":\"表单04-30 15:25\",\n                \"create_time\":\"2020-04-30 15:25:55\",\n                \"update_time\":\"2020-04-30 15:25:55\"\n            },\n            {\n                \"id\":87586168942102987,\n                \"name\":\"表单05-08 12:04\",\n                \"create_time\":\"2020-05-08 12:04:48\",\n                \"update_time\":\"2020-05-08 12:04:48\"\n            },\n            {\n                \"id\":102895074874493387,\n                \"name\":\"表单06-19 17:56\",\n                \"create_time\":\"2020-06-19 17:56:28\",\n                \"update_time\":\"2020-06-19 17:56:28\"\n            }\n        ]\n    }\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 5604,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5605,
+      "paramName": "form_name",
+      "paramType": "String",
+      "example": "",
+      "description": "表单名称",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "过滤筛选条件，支持模糊搜索",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5606,
+      "paramName": "distribution_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "表单类型",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5607,
+      "paramName": "page",
+      "paramType": "Integer",
+      "example": "",
+      "description": "页码数",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "\t默认为 1",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5608,
+      "paramName": "page_size",
+      "paramType": "Integer",
+      "example": "",
+      "description": "每页条数",
+      "required": 0,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 5,
+      "note": "\t默认为 20，上限 500",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 5609,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "错误码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5610,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "错误信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 5611,
+      "paramName": "data",
+      "paramType": "FormGatewayData",
+      "example": "",
+      "description": "返回表单信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 357,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 5588,
+          "paramName": "total_count",
+          "paramType": "Integer",
+          "example": "",
+          "description": "总数",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 5589,
+          "paramName": "details",
+          "paramType": "FormGatewayDataDetail[]",
+          "example": "",
+          "description": "线索表单列表",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 348,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 5558,
+              "paramName": "id",
+              "paramType": "Long",
+              "example": "",
+              "description": "表单明细",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 5559,
+              "paramName": "name",
+              "paramType": "String",
+              "example": "",
+              "description": "表单名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 5560,
+              "paramName": "create_time",
+              "paramType": "String",
+              "example": "2021-11-19 18:05:08",
+              "description": "创建时间",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "\t格式：yyyy-MM-dd hh:MM:ss",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 5561,
+              "paramName": "update_time",
+              "paramType": "String",
+              "example": "2021-11-19 18:05:08",
+              "description": "更新时间",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "\t格式：yyyy-MM-dd hh:MM:ss",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720095756504,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

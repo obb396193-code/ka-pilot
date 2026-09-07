@@ -1,0 +1,12 @@
+背景：
+
+老项目 alinode5 想要升级到 alinode7 也需要框架升级比较困难， alinode5 是 nodejs12 目前很多包的新版本都不兼容，需要频繁锁包。下面方法可以在不升级框架和 alinode5 的情况下把运行环境从 nodejs12 -> nodejs16
+
+1. 在设置 -> 函数配置 -> 对应的函数扩展层能力配置中添加 nodejs16（先仅添加预发测试，测试没问题再添加线上）
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/ZWGl0wgJ042ZO34Y/img/bb95c1a8-bcec-4a2b-a121-2f451670b139.png)
+
+1. 安装额外依赖
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/ZWGl0wgJ042ZO34Y/img/12e7787e-3bac-41b3-b0b6-31fc77cad077.png)
+
+1. 进行预发部署
+1. 访问预发链接看有无报错，如果有报错一般也是缺少某些依赖包，按提示安装即可

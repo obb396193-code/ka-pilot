@@ -1,0 +1,54 @@
+{
+  "documentId": 2452,
+  "documentName": "游标查询视频信息接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 游标查询视频信息接口\n\n**本接口适用于全量查询账号内的视频，通过游标的方式不断获取数据，性能和稳定性都比list分页接口高。\n不支持条件筛选。**\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/gw/dsp/video/listByCursor\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|       字段       |   类型   |  是否必填  |     说明     |                             备注                             |\n| :--------------: | :------: | :--------: | :----------: | :----------------------------------------------------------: |\n|  advertiser_id   |   Long   |    必填    |  广告主 ID   |                在获取 accessToken 的时候返回                 |\n| cursor     | Long    | 必填 | 游标值，初次可以设置为0，之后基于前一轮的返回结果，依次增加 |   比如上一轮返回值的最大cursor=100,那么本次查询cursor传100即可，返回的数据cursor都是大于100的   |\n|       limit       |   int    |    可选    | 每轮返回的数据量，默认200，最大1000 |                                              |\n\n### 返回参数\n\n| 字段                     | 类型     | 说明             | 备注                                                         |\n| ------------------------ | -------- | ---------------- | ------------------------------------------------------------ |\n| code                     | int      | 返回码           |                                                              |\n| message                  | string   | 返回信息         |                                                              |\n| data.details                     | array   | JSON 返回值      |                                                              |\n| &nbsp;&nbsp;photo_id                 | string   | 视频 ID          |                                                              |\n| &nbsp;&nbsp;width                    | int      | 视频宽度         |                                                              |\n| &nbsp;&nbsp;height                   | int      | 视频高度         |                                                              |\n| &nbsp;&nbsp;url                      | string   | 视频预览链接     |                                                              |\n| &nbsp;&nbsp;cover_url                | string   | 视频首帧图片链接 |                                                              |\n| &nbsp;&nbsp;signature                | string   | 视频 md5 值      |                                                              |\n| &nbsp;&nbsp;upload_time              | string   | 上传时间         |                                                              |\n| &nbsp;&nbsp;photo_name               | string   | 视频名称         | 默认是视频 id                                                |\n| &nbsp;&nbsp;photo_tag                | string[] | 视频标签         |                                                              |\n| &nbsp;&nbsp;new_status               | int      | 视频状态         | 0：视频库删除，1：可用状态，2：转码中，3：审核中，11：转码失败，12：审核失败，13：已屏蔽，14：视频在客户端删除 |\n| &nbsp;&nbsp;duration                 | long     | 视频时长         | 单位毫秒                                                     |\n| &nbsp;&nbsp;source                   | int      | 视频来源         | 0：本地；1：开眼；2：素造；4：mapi；7：聚星视频；8：LA 素材上传；10：个人主页；11:代理商自制 |\n| &nbsp;&nbsp;photo_valuate_info       | Object   | 视频素材评价信息 | \"quality_label\": \"优质 普通 非常低\", // 素材质量  \"is_dup_photo\": false or true, // 素材创新度（这两个字段为旧的素材评价维度，以下面的为准）  |\n| &nbsp;&nbsp;photo_tag_identify_items | Object[] | 视频标签内容     |                                                              |\n| &nbsp;&nbsp;photo_wake_status        | Integer  | 视频唤醒状态     | 已经废弃，\n| &nbsp;&nbsp;outer_loop_native | Integer |   是否是原生视频         |    0或2=非原生视频；1或3=原生视频。  |\n| &nbsp;&nbsp;photo_user_id     | Long    | 视频所属的userId|      ||\n| &nbsp;&nbsp;atlas_pic_ids | String[] | 图集关联的图片ID ||\n| &nbsp;&nbsp;atlas_audio_bs_key | String | 图集关联音频的bs_key ||\n| &nbsp;&nbsp;atlas_audio_url | String | 图集音频播放链接 ||\n| &nbsp;&nbsp;shield_status | Integer | 视频是否已同步个人主页 1否 0是||\n| &nbsp;&nbsp;cursor     | Long    | 游标值|  用于下一次查询游标值的更新    ||\n| &nbsp;&nbsp;photo_dup_status | int | 素材创新度 | 0-原创，1-重复|\n| &nbsp;&nbsp;native_good_type | int | 素材质量 |1-良好，2-优质，0,3-其他|\n\n\n### 请求样例\n\n```shell\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/video/listByCursor' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": 11311124,\n    \"cursor\": 5317797001,\n    \"limit\" : 2\n}'\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 2,\n        \"details\": [\n            {\n                \"cursor\": 5317797004,\n                \"photo_id\": \"5216012867726404981\",\n                \"photo_name\": \"002 - 大帅哥姚景元 #姚景元-快手.mp4\",\n                \"signature\": \"0c50115069536742e31ac35fc3929ad0\",\n                \"atlas_pic_ids\": null,\n                \"new_status\": 1,\n                \"source\": 0,\n                \"authorization\": 1,\n                \"duration\": 10566,\n                \"photoDupStatus\": 0,\n            \t\"nativeGoodType\": 0,\n                \"photo_valuate_info\": {\n                    \"sim_label\": \"否\",\n                    \"running_score\": 2,\n                    \"quality_label\": \"普通\",\n                    \"is_delay_review\": null,\n                    \"is_dup_photo\": false,\n                    \"hit_tag_combination\": 0\n                },\n                \"height\": 1280,\n                \"atlas_audio_url\": null,\n                \"cover_url\": \"http://ali2.a.kwimgs.com/upic/2022/05/06/21/BMjAyMjA1MDYyMTEyMTVfNTgzMDUxMzU0XzczODA1NDcyNTk0XzBfMw==_B545b9ddb4a8aaf3fdfa303f6e93134c6.jpg?tag=1-1705291689-unknown-0-qylbphqnu8-a3a82950d0459b8d&clientCacheKey=3xyi5s5zaf8kr84.jpg&di=a16b332&bp=10000\",\n                \"photo_wake_status\": 0,\n                \"create_time\": \"2022-05-06 21:12:19\",\n                \"photo_tag_identify_items\": null,\n                \"photo_user_id\": 583051354,\n                \"shield_status\": 1,\n                \"url\": \"http://alimov2.a.kwimgs.com/upic/2022/05/06/21/BMjAyMjA1MDYyMTEyMTVfNTgzMDUxMzU0XzczODA1NDcyNTk0XzBfMw==_b_B769b88400ff6f8ddcb689c43d45d0940.mp4?tag=1-1705291689-unknown-0-hycvsk4wib-dc835e14232d667e&clientCacheKey=3xyi5s5zaf8kr84_b.mp4&tt=b&di=a16b332&bp=10000\",\n                \"upload_time\": \"2022-05-06 21:12:29\",\n                \"photo_tag\": null,\n                \"outer_loop_native\": 0,\n                \"width\": 720,\n                \"atlas_audio_bs_key\": null,\n                \"status\": 0\n            },\n            {\n                \"cursor\": 5317797007,\n                \"photo_id\": \"5190961594358960817\",\n                \"photo_name\": \"016 - #机车健身舞 #双子座 答应我 看见什么都不用说出来！-快手.mp4\",\n                \"signature\": \"1a2859bd67021c9c0fe96afee2b00c1f\",\n                \"atlas_pic_ids\": null,\n                \"new_status\": 1,\n                \"source\": 0,\n                \"authorization\": 1,\n                \"duration\": 7616,\n                \"photoDupStatus\": 0,\n                \"nativeGoodType\": 0,\n                \"photo_valuate_info\": {\n                    \"sim_label\": \"否\",\n                    \"running_score\": 2,\n                    \"quality_label\": \"普通\",\n                    \"is_delay_review\": null,\n                    \"is_dup_photo\": false,\n                    \"hit_tag_combination\": 0\n                },\n                \"height\": 1280,\n                \"atlas_audio_url\": null,\n                \"cover_url\": \"http://ali2.a.kwimgs.com/upic/2022/05/24/14/BMjAyMjA1MjQxNDIwMzdfNTgzMDUxMzU0Xzc1MTU0MzA2NDk0XzBfMw==_B493ab6343fcd5bb425acb1cba57d653d.jpg?tag=1-1705291689-unknown-0-72ir2m6glq-8269c7e918c6bceb&clientCacheKey=3xnfv5rg2iei6z4.jpg&di=a16b332&bp=10000\",\n                \"photo_wake_status\": 0,\n                \"create_time\": \"2022-06-30 21:16:33\",\n                \"photo_tag_identify_items\": null,\n                \"photo_user_id\": 583051354,\n                \"shield_status\": 1,\n                \"url\": \"http://alimov2.a.kwimgs.com/upic/2022/05/24/14/BMjAyMjA1MjQxNDIwMzdfNTgzMDUxMzU0Xzc1MTU0MzA2NDk0XzBfMw==_b_B9e02bc26cca40b65d8adb8df7cfe13cd.mp4?tag=1-1705291689-unknown-0-kaufwkayob-109c8acaa97cab0b&clientCacheKey=3xnfv5rg2iei6z4_b.mp4&tt=b&di=a16b332&bp=10000\",\n                \"upload_time\": \"2022-05-24 14:20:53\",\n                \"photo_tag\": null,\n                \"outer_loop_native\": 0,\n                \"width\": 720,\n                \"atlas_audio_bs_key\": null,\n                \"status\": 0\n            }\n        ]\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EL2AgICwooSaChiNECCG27ja0DEojYXJ7gk=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1708346422223
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1708346422223,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

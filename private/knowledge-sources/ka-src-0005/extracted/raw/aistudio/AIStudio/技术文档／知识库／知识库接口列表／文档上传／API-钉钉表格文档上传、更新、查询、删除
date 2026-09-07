@@ -1,0 +1,260 @@
+
+# 钉钉表格上传
+
+## 接口描述
+
+* 支持单篇钉钉表格的上传
+
+  
+
+
+## 钉钉限制
+
+简单来说，钉钉知识库需要满足：
+
+* 企业内公开。
+* 公开范围包括阿里巴巴及蚂蚁集团外包。
+* 需要有可查看及下载权限。
+
+  
+
+
+组织范围要求、文件大小，查看ideaLab钉钉上传权限说明文档（产品文档）：
+
+
+
+  
+
+
+进一步，可以查看阿里钉官方的钉钉表格权限：[~~https://alidocs.dingtalk.com/i/nodes/P7QG4Yx2Jpx4OolYCABw1QwAJ9dEq3XD?utm_scene=person_space&utm_medium=dingdoc_doc_plugin_card&utm_source=dingdoc_doc~~](https://alidocs.dingtalk.com/i/nodes/P7QG4Yx2Jpx4OolYCABw1QwAJ9dEq3XD?utm_scene=person_space&utm_medium=dingdoc_doc_plugin_card&utm_source=dingdoc_doc)
+
+* 阿里巴巴及蚂蚁集团公开并且可下载
+* 外包可见
+
+  
+
+
+## 接口说明
+
+1. 钉钉文档的读取，依赖阿里钉的能力。阿里钉表格的读取，底层是通过「任务提交+MetaQ异步推送」的方式实现的。这个延迟时间一般在3秒左右。实测也有超时的情况发生。
+2. 对于钉钉表格，需要在链接后，增加“?utm_scene=team_space”，这个是标准的读取钉钉表格的链接。
+
+示例：<https://alidocs.dingtalk.com/i/nodes/amweZ92PV6DbOdgzUZl4dogr8xEKBD6p?utm_scene=team_space>
+
+  
+
+
+## 测试的钉钉表格
+
+  
+
+
+## 接口限制
+
+1. 表格行数、索引列的限制目前与产品的限制一致，以产品文档为主
+
+1. 产品文档查看：。文档限制的位置见：，具体行数和文件大小限制以产品文档为主。
+
+  
+
+
+## 钉钉表格上传
+
+### https://idealab.alibaba-inc.com/api/v1/aiStudio/repository/batchUploadDocument
+
+  
+
+
+### request headers and body
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **Request Headers** |  |  |
+| Request-Origin | 请求来源 | SwaggerBootstrapUi |
+| accept | 接受的媒体类型 | *表示接受所有类型 |
+| X-AK | 知识库绑定的ak | 用于身份验证 |
+| **Body (form-data)** |  |  |
+| documentLoadBaseInfo.repositoryId | 知识库ID | 83025888-9625-4be7-907e-2761ff8ecafd |
+| documentLoadBaseInfo.projectId | 项目空间ID | 129372 |
+| documentSource | 数据源类型 | 固定值：DINGDING，表示文件来源 |
+| documentLoadBaseInfo.fileType | 文件的类型 | 固定值：RE，表示参考文档 |
+| documentLoadBaseInfo.fileStructureType | 文件的结构类型 | 固定值：TABLE_DOC，表示表格文档 |
+| documentLoadBaseInfo.empId | 文档上传者的工号 | 319417 |
+| dingDingTableReaderRequest.linkUrl | 钉钉表格的链接 | 只能单篇表格上传 |
+| nodeParseConfig | 表格文档的配置，包含sheet名字、索引列的序号、删除列（隐藏列）的序号 | 该配置的方式查看文档：  [表格类文档切分说明](https://aliyuque.antfin.com/aiplus/aistudio/ra99folrvzf7xew9) |
+
+  
+
+
+#### request example 钉钉表格上传
+
+  
+
+
+### response
+
+  
+
+
+#### 返回的内容是什么？
+
+**返回的内容，是文档读取任务的id。**
+
+文档是通过异步方式读取的。该接口本质上是提交了一个文档读取任务。
+
+​  
+
+
+#### 文档上传接口返回的任务id可以用来干什么？
+
+根据任务id，可以查看文档的处理进度。
+
+  
+
+
+#### 通过API上传文档后，文档会自动构建索引吗？
+
+文档会自动构建索引，会使用知识库使用的向量模型来构建索引。
+
+​  
+
+
+### 文档上传结果
+
+可以在知识库文档列表页，查看文档的上传结果。
+
+  
+
+
+# 钉钉表格更新
+
+## 怎么实现钉钉表格更新？
+
+对于钉钉表格来说，钉钉的链接是唯一的。
+
+在同一个知识库中，上传钉钉表格时，会通过链接进行唯一性校验。如果钉钉表格存在，则更新内容；如果钉钉表格不存在，则新增。
+
+因此，钉钉表格的更新，和钉钉表格的上传接口一样，上传相同的链接会自动更新。
+
+​  
+
+
+## 钉钉表格的更新
+
+修改钉钉表格的内容：
+
+  
+
+
+## 重新上传钉钉表格
+
+接口参考：[https://aliyuque.antfin.com/aiplus/aistudio/yanku1z5biaulpn7#F31nV](#F31nV)
+
+​  
+
+
+### 文档更新结果
+
+可以在知识库文档列表页，查看文档的上传结果 & 更新结果。
+
+  
+
+
+# 查询钉钉表格
+
+## 根据知识库id和文档类型查看文档
+
+### https://idealab.alibaba-inc.com/api/v1/aiStudio/repository/queryDocument
+
+  
+
+
+### request headers and body
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **Request Headers** |  |  |
+| Request-Origin | 请求来源 | SwaggerBootstrapUi |
+| accept | 接受的媒体类型 | *表示接受所有类型 |
+| X-AK | 知识库绑定的ak | 用于身份验证 |
+| **Body (form-data)** |  |  |
+| repositoryId | 知识库ID | 83025888-9625-4be7-907e-2761ff8ecafd |
+| dataUploadMethod | 知识库文档的类型 | 固定值：DINGDING |
+| documentStructureType | 文档的结构类型 | 固定值：TABLE_DOC |
+| pageNo | 页号 | 默认为1 |
+| pageSize | 页大小 | 默认为20 |
+
+​  
+
+
+#### request example
+
+  
+
+
+### response
+
+response的参数解释：
+
+  
+
+
+# 钉钉表格删除
+
+## 接口限制
+
+* 同一批删除的文档数量不超过100个
+
+  
+
+
+## 文档删除
+
+### https://idealab.alibaba-inc.com/api/v1/aiStudio/repository/deleteDocument
+
+  
+
+
+### request headers and body
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **Request Headers** |  |  |
+| Request-Origin | 请求来源 | SwaggerBootstrapUi |
+| accept | 接受的媒体类型 | *表示接受所有类型 |
+| X-AK | 知识库绑定的ak | 用于身份验证 |
+| **Body (form-data)** |  |  |
+| repositoryId | 知识库ID | 83025888-9625-4be7-907e-2761ff8ecafd |
+| documentIds | 知识库文档的id列表 | 查询钉钉表格列表：[https://aliyuque.antfin.com/aiplus/aistudio/yanku1z5biaulpn7#ixhgU](#ixhgU)  查询接口的response中获取id列表 |
+
+​  
+
+
+#### request example
+
+  
+
+
+### response
+
+​  
+
+
+### 前端查看文档删除结果
+
+可以在知识库文档列表页，查看文档的删除结果。
+
+  
+
+
+# 关于钉钉表格上传的用户常见问题
+
+  
+
+
+  
+
+
+  
+
+

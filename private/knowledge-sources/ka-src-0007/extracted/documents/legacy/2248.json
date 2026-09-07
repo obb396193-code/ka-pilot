@@ -1,0 +1,42 @@
+{
+  "documentId": 2248,
+  "documentName": "探索工具关键报表数据",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 探索工具关键报表数据\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/unit/explore/report/detail](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/unit/explore/report/detail)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long | 1 | 必填 | 广告主id |  |\n| unit_id | Long | 1 | 必填 | 广告组id |  |\n| param | GatewayExploreReportParam414 |  | 必填 | 请求参数 |  |\n| &#8195;id | Long | 1 | 必填 | 报表记录主键id |  |\n| &#8195;explore_type | Integer | 1 | 必填 | 探索类型，2-一键复苏，3-辅助探索 |  |\n| &#8195;explore_start_time | Long | 1636450616000 | 必填 | 开始时间 |  |\n| &#8195;explore_end_time | Long | 1636450616000 | 必填 | 结束时间 |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 1 | 状态码 |  |\n| message | String | succ | 返回信息\t |  |\n| data | GatewayExploreReportDetail550693 |  | 返回结果 |  |\n| &#8195;explore_budget | Long | 100 | 探索预算 |  |\n| &#8195;total_charge | Long | 100 | 消耗 |  |\n| &#8195;click | Long | 100 | 素材曝光数 |  |\n| &#8195;actionbar_click | Long | 1 | 行为数 |  |\n| &#8195;action_ratio | Double | 0.32 | 素材点击率 |  |\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1669733943201
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1669733943201,
+  "creator": "wb_suxing",
+  "fullContext": null
+}

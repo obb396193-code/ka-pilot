@@ -1,0 +1,60 @@
+## 创建应用
+
+1. 访问 [https://cd.faas.alibaba-inc.com/unite/micro/create](https://cd.faas.alibaba-inc.com/unite/micro/create)创建函数应用，选择“Node.js 20 空应用”(https://o2-img.alistatic.com/i/i09blZ/8xPmfQosmuLHxyQiwNw9L-cd034e10ee.png)
+
+1. 填写仓库等信息，点击下方“创建函数应用”(https://o2-img.alistatic.com/i/i09blZ/Pvc8nix4Atki95dshhi6P-cfa8cd431a.png)
+
+1. 等待应用创建和注册流程。完成后，点击左侧“变更”创建新变更(https://o2-img.alistatic.com/i/i09blZ/LxpmJnEulFiVtrw5Q6Pic-df1dc178c2.png)
+(https://o2-img.alistatic.com/i/i09blZ/83AP1tWvGNIXblULysRWm-06d485b3fd.png)
+
+## 初始化代码
+
+1. 将代码 clone 到本地并切换至创建的新分支，删除除`.git`目录外的所有文件，使用社区脚手架初始化项目。例如：(https://o2-img.alistatic.com/i/i09blZ/YdnvoRdOgMFovsZfnMIdV-73ed28a09c.png)
+
+1. 将生成的代码覆盖到仓库根目录，将 `package.json` 中的 `name` 字段修改为应用名（此处为 `xinyu-custom-test`）(https://o2-img.alistatic.com/i/i09blZ/Q0FqSDzy5jeJPq3G14Z1r-4b47e4d088.png)
+
+1. 运行 `tnpm i` 生成锁（或使用其他包管理器，下同）
+1. 运行 `tnpm i -D @ali/fiber-scripts-common` ，提交被修改的文件，包括：
+	1. `f.yml`
+	1. `[appname].release`
+	1. `build.sh`
+1. 检查 `package.json` 中是否存在 build 命令；如果模版未提供且项目需要构建，请自行编写 build 命令构建产物
+1. 运行 `npm run build` 检查构建后仓库内容
+	1. 确认构建产物内容不会被提交到 git 上（如前置步骤生成的内容已提交，此时 `git status` 不应有内容）；如有问题，修改 `.gitignore` 内容；
+	1. 确认构建后仓库中是否存在 `server.[js/cjs/mjs]` 或 `dist/server.[js/cjs/mjs]` 文件。打包工具会使用以上文件作为函数入口文件；如不存在，请参考下文自定义入口；
+	1. 使用 `NODE_ENV=production PORT=9000 node server.js` 启动服务（如入口为其他文件，请调整该命令）并访问 http://127.0.0.1:9000 ，验证服务是否正常
+1. 提交代码，在 Aone FaaS 平台完成后续部署流程
+## 自定义入口
+
+### 自定义 js 入口文件
+
+如果构建后未生成入口文件，需要自行建立 `server.js` 文件并启动服务；
+
+如果生成了入口文件但不满足上述文件名要求，可以在 `f.yml` 中定义 `package.entry` 字段，例如：
+
+```
+service: [appname]
+
+provider:
+  name: fiber
+
+package:
+  entry: custom-server.js
+```
+| (https://o2-img.alistatic.com/i/i09blZ/ZfDgKkOTCEUyXZH1MiLD9-79014741cc.png) | (https://o2-img.alistatic.com/i/i09blZ/wtHPBj2kkA6S5f79lgDEA-54b509f7a9.png) |
+|-|-|
+
+### 自定义启动脚本
+
+如果你需要执行一些特殊的初始化操作，可以自定义 `bootstrap` 文件并放置在项目根路径下。此时，不会注入 `PORT` 变量，请自行在 `9000` 端口启动 HTTP 服务
+
+## 问题排查
+
+### 本地运行正常，但线上无法启动
+
+为缩减产物体积，在 Aone 构建过程中会将 devDeps 依赖删除。如果运行时依赖了 devDeps 则会报错无法启动。可以在本地执行以下命令测试：
+
+```
+# 删除安装的 devDeps 依赖
+tnpm prune --omit=dev
+```

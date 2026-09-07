@@ -1,0 +1,26 @@
+目前全语言支持以下几种 metrics 指标监控
+
+- qps
+- 错误率
+- RT
+- CPU 使用率
+- 内存使用率
+- 容器数量
+(https://o2-img.alistatic.com/i/i09blZ/dWNAHQtUwJk0I2VvOd3fC-3bdf099bc1.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/B6ha8zt5oQrePEVUm5vLA-569359cbbf.png)
+
+
+Java FaaS 额外支持 JVM 相关监控项
+
+- JVM-线程数
+- JVM-堆内存已使用
+- JVM-堆内存已申请
+- JVM-非堆内存已使用
+- JVM-非堆内存已申请
+(https://o2-img.alistatic.com/i/i09blZ/6arBtmyom7Kh4BijMnyE4-427804df21.png)
+
+
+
+

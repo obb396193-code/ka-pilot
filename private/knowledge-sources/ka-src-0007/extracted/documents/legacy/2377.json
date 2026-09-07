@@ -1,0 +1,334 @@
+{
+  "documentId": 2377,
+  "documentName": "视频个人主页公开",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 视频个人主页公开\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photo/pushToProfile](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photo/pushToProfile)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| photo_ids | String | 1,2,3,4 | 必填 | 视频ID 英文逗号隔开 |  |\n| advertiser_id | Long |  | 必填 | advertiser_id |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer | 0 | 结果 | 0-成功 非0-失败 |\n| message | String | \"OK\" | 失败原因 |  |\n| data | PhotoUploadProfileResultSnake |  | 同步结果 |  |\n| &#8195;success_count | Integer |  | 成功个数 |  |\n| &#8195;fail_count | Integer |  | 失败个数 |  |\n| &#8195;fail_details | FailPhotoDetailSnake[] |  | 失败具体原因 |  |\n| &#8195;&#8195;photo_id | String |  | 失败视频ID 字符串类型 |  |\n| &#8195;&#8195;author_id | Long |  | 作者ID |  |\n| &#8195;&#8195;photo_name | String |  | 视频名称 |  |\n| &#8195;&#8195;reason | String |  | 同步失败具体原因描述 |  |\n\n### 请求样例\n\n```js\n{\n  \"advertiser_id\": \"7869843\",\n  \"photo_ids\": [\n    \"5234590257606454449\",\n    \"5244160403187106228\",\n    \"5197717034195986380\"\n  ]\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\":0,\n    \"data\":{\n        \"fail_details\":[\n            {\n                \"reason\":\"视频已经在个人主页\",\n                \"photo_name\":\"这是我的视频.mp4\",\n                \"photo_id\":\"5197717034195986380\",\n                \"author_id\":1743291153\n            }\n        ],\n        \"success_count\":2,\n        \"fail_count\":1\n    },\n    \"message\":\"OK\",\n    \"request_id\":\"EO60gICQgpGOChiwByDan-DAqzEooues3wI=\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1719907360012
+    }
+  ],
+  "apiId": 951,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/photo/pushToProfile",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "{\n    \"code\":0,\n    \"data\":{\n        \"fail_details\":[\n            {\n                \"reason\":\"视频已经在个人主页\",\n                \"photo_name\":\"这是我的视频.mp4\",\n                \"photo_id\":\"5197717034195986380\",\n                \"author_id\":1743291153\n            }\n        ],\n        \"success_count\":2,\n        \"fail_count\":1\n    },\n    \"message\":\"OK\",\n    \"request_id\":\"EO60gICQgpGOChiwByDan-DAqzEooues3wI=\"\n}",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "\n{\n  \"advertiser_id\": \"7869843\",\n  \"photo_ids\":\"5234590257606454449,5244160403187106228,5197717034195986380\"\n  ]\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\":0,\n    \"data\":{\n        \"fail_details\":[\n            {\n                \"reason\":\"视频已经在个人主页\",\n                \"photo_name\":\"这是我的视频.mp4\",\n                \"photo_id\":\"5197717034195986380\",\n                \"author_id\":1743291153\n            }\n        ],\n        \"success_count\":2,\n        \"fail_count\":1\n    },\n    \"message\":\"OK\",\n    \"request_id\":\"EO60gICQgpGOChiwByDan-DAqzEooues3wI=\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 49987,
+      "paramName": "photo_ids",
+      "paramType": "String",
+      "example": "1,2,3,4",
+      "description": "视频ID 英文逗号隔开",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 49988,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "advertiser_id",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 49996,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "结果",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "0-成功 非0-失败",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 49997,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "\"OK\"",
+      "description": "失败原因",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 49998,
+      "paramName": "data",
+      "paramType": "PhotoUploadProfileResultSnake",
+      "example": "",
+      "description": "同步结果",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2998,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 49993,
+          "paramName": "success_count",
+          "paramType": "Integer",
+          "example": "",
+          "description": "成功个数",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 49994,
+          "paramName": "fail_count",
+          "paramType": "Integer",
+          "example": "",
+          "description": "失败个数",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 49995,
+          "paramName": "fail_details",
+          "paramType": "FailPhotoDetailSnake[]",
+          "example": "",
+          "description": "失败具体原因",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 2999,
+          "sort": 3,
+          "note": "",
+          "children": [
+            {
+              "paramId": 49989,
+              "paramName": "photo_id",
+              "paramType": "String",
+              "example": "",
+              "description": "失败视频ID 字符串类型",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 49990,
+              "paramName": "author_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "作者ID",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 49991,
+              "paramName": "photo_name",
+              "paramType": "String",
+              "example": "",
+              "description": "视频名称",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 49992,
+              "paramName": "reason",
+              "paramType": "String",
+              "example": "",
+              "description": "同步失败具体原因描述",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1719907360012,
+  "creator": "heran03",
+  "fullContext": null
+}

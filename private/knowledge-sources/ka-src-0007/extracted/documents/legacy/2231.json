@@ -1,0 +1,42 @@
+{
+  "documentId": 2231,
+  "documentName": "获取快手号授权列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取快手号授权列表\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/auth/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/native/auth/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主账号id |  |\n| page_info | PageInfoSnake |  | 必填 | 分页信息 |  |\n| &#8195;current_page | Long | 1 | 必填 | 当前页面值 |  |\n| &#8195;page_size | Long | 10 | 必填 | 页面大小 |  |\n| kol_user_id | Long |  | 可选 | 快手号用户id查询 |  |\n| user_name | String |  | 可选 | 快手号名称查询 |  |\n| auth_status | Integer[] |  | 可选 | 授权状态查询 枚举含义如下：1-新建待达人确认 2-达人已确认协议，未到授权开始时间 3-授权生效中 4-达人拒绝授权 5-授权超时未确认 6-授权过期失效 7-授权终止 8-授权已删除 |  |\n| kol_user_type | Integer[] |  | 必填 | 1普通快手号，2蓝V服务号 3聚星作品达人 5聚星直播达人 不传递该字段时默认查蓝V服务号|  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 状态码 |  |\n| message | String |  | 返回信息 |  |\n| data | KwaiUserAuthorizeInfoViewSnake |  | 返回数据 |  |\n| &#8195;data | KwaiUserAuthorizeInfoSnake[] | [] | 授权列表 |  |\n|&#8195;&#8195;auth_id|  Long |   |授权记录ID，用来进行共享授权|\n|&#8195;&#8195;kol_user_type|  Integer |   |达人用户类型，1普通快手号，2服务号达人，3聚星达人 |\n|&#8195;&#8195;component_status| Integer  |   |组件授权状态 0待审核 1审核通过  2审核拒绝 3未授权 4已终止|\n| &#8195;&#8195;user_id | Long |  | 用户id |  |\n| &#8195;&#8195;kol_status | Integer |  | 快手号授权状态1 待达人确认2 达人已确认3 授权生效中4 达人拒绝授权5 达人超时未确认6 授权过期7 授权终止 |  |\n| &#8195;&#8195;valid_start_time | Long | 0 | 授权开始时间，不限时间时为0 |  |\n| &#8195;&#8195;valid_end_time | Long | 0 | 授权结束时间，不限时间时为0 |  |\n| &#8195;&#8195;user_info | UserProfileViewSnake |  | 用户信息 |  |\n| &#8195;&#8195;&#8195;user_id | Long |  | 用户id |  |\n| &#8195;&#8195;&#8195;user_name | String |  | 用户名称 |  |\n| &#8195;&#8195;&#8195;user_sex | String | M | 用户性别，男性M，女性F |  |\n| &#8195;&#8195;&#8195;head_url | String |  | 用户头像 |  |\n| &#8195;&#8195;valid_type | Integer | 1 | 授权类型，1固定时间，2不限时间 |  |\n| &#8195;page_info | PageInfoSnake |  | 分页信息 |  |\n| &#8195;&#8195;current_page | Long | 1 | 当前页面值 |  |\n| &#8195;&#8195;page_size | Long | 10 | 页面大小 |  |\n| &#8195;&#8195;total_count | Long | 2 | 总共数目 |  |\n| &#8195;&#8195;total_count | Long | 2 | 总共数目 |  |\n\n\n\n### 请求样例\n\n```js\nnull\n```\n\n### 返回样例\n\n```\nnull\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1698398581582
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1698398581582,
+  "creator": "haoshengwei",
+  "fullContext": null
+}

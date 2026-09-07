@@ -1,0 +1,241 @@
+{
+  "documentId": 3281,
+  "documentName": "代理商-修改账户名称",
+  "documentType": 2,
+  "description": "<p>用于修改广告主名称，注意user_id字段为广告主对应的快手ID。</p><p>流控规则：20QPM。</p><p>权限scope：account_cert，参考：<a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://developers.e.kuaishou.com/docs?docType=DSP&amp;documentId=2540&amp;menuId=3766\">scope权限说明</a></p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1761203957716
+    }
+  ],
+  "apiId": 1722,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/advertiser/modify/name",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 77536,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "<p>代理商ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "代理商ID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 77537,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "123",
+      "description": "<p>广告主ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "广告主ID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 77538,
+      "paramName": "user_id",
+      "paramType": "Long",
+      "example": "1234",
+      "description": "<p>广告主快手ID</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "广告主快手ID",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 77539,
+      "paramName": "new_account_name",
+      "paramType": "String",
+      "example": "新的名字",
+      "description": "<p>新的广告主名称</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 1,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "新的广告主名称",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 77540,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>响应code</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "响应code",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 77541,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "成功",
+      "description": "<p>响应msg</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "响应msg",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 77542,
+      "paramName": "data",
+      "paramType": "TransferOutResp",
+      "example": "-",
+      "description": "<p>响应data</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 42,
+      "sort": 3,
+      "note": "该接口无需关注",
+      "children": [
+        {
+          "paramId": 391,
+          "paramName": "success",
+          "paramType": "Boolean",
+          "example": "true",
+          "description": "是否成功",
+          "required": 0,
+          "checkRule": null,
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1761203957716,
+  "creator": "chenyang11",
+  "fullContext": null
+}

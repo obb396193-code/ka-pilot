@@ -1,0 +1,70 @@
+> 扩展自身也是一个 O2 应用，扩展的新建和开发流程都和 O2 应用一致（熟悉 O2 平台的同学应该一看就能懂了，别看下面的截图比较多，其实就是正常迭代发布的过程）
+
+我们进入 o2 space 平台[新建应用页](https://space.o2.alibaba-inc.com/app/new)，选择【O2 开放】->【O2 扩展】，点击下一步
+
+#### 
+
+选择存放扩展代码的仓库，填写扩展名称和描述后，点击确定，即可完成扩展的新建
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864525825-7436f4d7-bd43-4406-bdbd-38a28aa465b8.png)
+
+
+新建完成后会进入到扩展的详情页，并且已经初始化好了扩展的代码，可以点击新建迭代开始发布第一个版本
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864525591-c3dfefd6-ecc2-48ec-97fd-52c3019e5e02.png)
+
+
+新建迭代后，进入迭代详情，可以看到迭代流程包括开发、预发部署、线上部署、灰度放量
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864525944-eb69eea0-f581-4fac-9dfb-c0cffe786177.png)
+
+
+新建应用时已经初始化好了一些模版代码，这里我们就先跳过开发编码，直接切到预发部署看下效果
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864525566-07e763d1-09e9-4323-ab24-a349dc6cdab4.png)
+
+
+部署完成后可以看到发布了两个扩展点（代码是应用初始化生成的），可以根据右侧的提示来尝试使用刚发布的扩展
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864533010-3079b6c6-97d2-4696-b147-cb2a0ec568be.png)
+
+
+扩展使用的流程也非常简单：
+
+进入 [o2-space 预发环境](https://pre-space.o2.alibaba-inc.com/)，找到一个自己的应用 （用预发环境是因为现在只完成了预发部署，线上部署后就可以到线上环境使用了）
+
+点击应用右侧的“扩展”菜单，可以看到应用安装的扩展，点击右侧的“安装扩展”
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864534325-9d2a3e1c-d75c-4cc0-aa91-d42b1f225496.png)
+
+
+可以看到刚才发布的扩展，点击安装
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864534329-013481e0-0b43-46be-a7d4-c2871507e4a6.png)
+
+
+安装成功后可以在列表中看到安装的扩展，按提示刷新页面即可看到扩展的效果
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864535423-accef99b-0676-47b2-bc3c-962783b1445e.png)
+
+
+效果如下，安装后的效果如下：
+
+| 应用详情扩展 | 发布流程扩展 | ... |
+|-|-|-|
+| (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864536751-b54c71ea-adf2-424c-8769-524ba336e4db.png) | (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864542471-6eb5b13b-f8d9-4b19-92ee-9e07a2a67023.png) | 这两个只是初始化默认生成的，你还可以使用更多扩展点（目前平台已经提供了 70+ 扩展点） |
+
+预发测试没问题后，可以发起 CR 和 O2 扩展发布审批，审批通过后，点击线上发布
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864544764-eda22215-5c11-485b-a1ff-d29b92f56eff.png)
+
+
+线上发布后，可以按用户进行灰度放量，这里因为我们是首次发布，可以直接全量
+
+(https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1725864544714-60931256-f7bf-4df9-ade1-b650f677a2b8.png)
+
+
+全量后，这次迭代就完成了。
+
+在线上使用扩展的方式和预发一致，这里就不赘述了。
+

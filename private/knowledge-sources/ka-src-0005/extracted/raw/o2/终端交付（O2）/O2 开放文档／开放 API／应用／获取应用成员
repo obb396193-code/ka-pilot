@@ -1,0 +1,83 @@
+## 获取应用成员列表
+
+通过应用 ID 获取应用成员列表
+
+| method | GET |
+|-|-|
+| url | /v1.0/work/apps/{appId}/members |
+| buc login | false |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appId | Number | true | - | O2  应用 ID |
+
+### Returns
+
+| 返回值 | 参数描述 |
+|-|-|
+| Member[] | 成员列表 |
+
+Member
+
+| 参数 | 参数描述 |
+|-|-|
+| app_id | 应用 ID |
+| emp_id | 用户工号 |
+| role | 用户角色（Deprecated） |
+| last_operate_time | 用户最后操作应用时间 |
+| deleted | 软删除标识 |
+| user | 用户信息，包含 [User](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls369lxfelxab4mn50j) 对象部分属性 |
+
+### Example
+
+```
+client.get('/v1.0/work/apps/{appId}/members');
+
+[
+  {
+    id: 1024765,
+    app_id: 1,
+    emp_id: '100456',
+    role: 1,
+    last_operate_time: '2021-10-21T06:35:57.000Z',
+    deleted: false,
+    gmt_create: '2021-09-28T03:14:58.000Z',
+    gmt_modified: '2021-10-21T06:35:57.000Z',
+    user: {
+      id: 201360,
+      emp_id: '100456',
+      nick: '欲休',
+      account: 'yuxiu.yl',
+      gitlab_id: '27775',
+      buc_id: '655093',
+      email: 'yuxiu.yl@alibaba-inc.com',
+      gmt_create: '2020-07-03T01:55:52.000Z',
+      gmt_modified: '2020-07-03T01:55:52.000Z'
+    }
+  },
+  {
+    id: 875854,
+    app_id: 1,
+    emp_id: '264746',
+    role: 1,
+    last_operate_time: '2021-09-29T09:37:45.000Z',
+    deleted: false,
+    gmt_create: '2021-07-02T09:49:43.000Z',
+    gmt_modified: '2021-09-29T09:37:45.000Z',
+    user: {
+      id: 193959,
+      emp_id: '264746',
+      nick: '与天',
+      account: 'yutian.yz',
+      gitlab_id: '234187',
+      buc_id: '1799820',
+      email: 'yutian.yz@alibaba-inc.com',
+      gmt_create: '2020-06-05T09:05:29.000Z',
+      gmt_modified: '2020-06-05T09:05:29.000Z'
+    }
+  }
+]
+
+```

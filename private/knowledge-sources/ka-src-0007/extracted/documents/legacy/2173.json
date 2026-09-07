@@ -1,0 +1,42 @@
+{
+  "documentId": 2173,
+  "documentName": "3.0创编改动",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "## 3.0创编接口改动\n\n\n### 1.级联创建：\n| 分类   | 2.0              | 3.0                                                          |\n| -------- | ---------------- | ------------------------------------------------------------ |\n| 创建计划 | 可单独创建  | 不可单独创建、一次上传计划、组、创意三个层级 |\n| 创建组 | 可单独创建  | 不可单独创建、一次上传组、创意两个层级    |\n| 创建创意 | 可单独、批量创建 | 可单独创建（使用创意更新接口）可一次上传组、创意两个层级创建 |\n\n### 2.字段层级调整\n\n| 字段名称                     | 2.0      | 3.0      |\n| -------------------------------- | -------- | -------- |\n|  show_mode创意展现方式     | 组层级 | 创意层级 |\n| adv_card_id：卡片 id          | 组层级 | 创意层级 |\n| card_type：卡片类型         | 组层级 | 创意层级 |\n|  smart_cover是否是智能封面 | 组层级 | 创意层级 |\n| asset_mining是否开启素材挖掘 | 组层级 | 创意层级 |\n|  adv_card_option是否开启高级卡片 | 组层级 | 创意层级 |\n| site_id安卓下载中间页 ID  | 创意层级 | 组层级 |\n\n### 3.新增接口\n| 接口名称         | 链接                                                             | 说明                                                   |\n| -------------------- | ------------------------------------------------------------------ | -------------------------------------------------------- |\n| 批量更新监测链接接口 | https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2172 | 传入广告ID、组ID、更新后的检测链接达到更新监测链接的目的 |\n| 批量获取监测链接接口 | https://developers.e.kuaishou.com/docs?docType=DSP&documentId=2171 | 传入广告ID、组ID批量获取组ID下的监测链接 |\n\n\n### 4.新增字段\n\n| 字段名称           | 涉及接口                                                         | 说明                                               |\n| ---------------------- | -------------------------------------------------------------------- | ---------------------------------------------------- |\n|    download_page_url   | https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v3/ad/createCascadeAll |  应用中间页链接                               |\n|  download_page_type    | 同上                                                               |  应用中间页的类型                            |\n|   package_name         | 同上                                                               | APP行为，按照APP包名定向，2.0有app_interest、app_ids |\n|   media                | 同上                                                               |  媒体定向包                                     |\n|  media_source_type     | 同上                                                               | 媒体包来源                                      |\n|  exclude_media         | 同上                                                               | 媒体定向排除包                                |\n| fans_star_list         | 同上                                                               |  新增网红类目定向                            |\n### 5.新老字段对比\n| 字段名称               | 2.0                                      | 3.0                                        |\n| -------------------------- | ---------------------------------------- | ------------------------------------------ |\n| 投放排期               | scheduletime                             | schedule                                   |\n|  投放链接              | url                                      | web_uri                                    |\n|   智能定向             | auto_target                              | target_type                                |\n| 商品库 ID               | library_id                               |  dpa_library_id                            |\n| 快手商品 ID            | product_Id                               |  dpa_product_id                            |\n| 点击跳转监控链接   | click_url                                | unit_click_url                             |\n| actionbar 点击跳转监控链接 | actionbar_click_url                      | unit_actionbar_click_url                   |\n| 曝光监控链接         | impression_url                           | unit_impression_url                        |\n|  gender                    | 枚举：1：女性, 2：男性，0 表示不限 | 枚举：M：男；F：女；空字符串或不填表示不限 |\n| network                    | 枚举：1：Wi-Fi，2：移动网络，0：表示不限 | 枚举：wifi、not_wifi 当为空列表时表示不限 |\n| 封面图片Token          | image_token                              | cover_token                                |\n| 推荐理由               | new_expose_tag                           | expose_tag_str                             |\n| 素材列表               |  photo_list                              |  photo_infos                               |",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1654677053523
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 12,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1654677053523,
+  "creator": "wb_suxing",
+  "fullContext": null
+}

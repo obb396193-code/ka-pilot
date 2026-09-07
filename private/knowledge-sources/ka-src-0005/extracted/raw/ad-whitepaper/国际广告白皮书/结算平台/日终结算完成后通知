@@ -1,0 +1,24 @@
+Topic:ADSETTLE_DEAL_LOG_TOPIC
+
+消息格式：json
+
+bizType:业务类型 all 为全部（其它：scp4p、aep4p、feedback、topranking）
+
+taskName:任务名（以日期命名，如20180319）
+
+task_type：任务类型（day代表是日终）
+
+step:所处步骤(end代表日结完成）
+
+params:附加参数，备注
+
+
+
+消息示例：
+
+{"task_type":"day","bizType":"all","params":"{\"beginDate\":1479110400000,\"beginTime\":\"2016-11-14\",\"bizType\":\"all\",\"endDate\":1479196800000,\"endTime\":\"2016-11-15\",\"failCount\":0,\"id\":126001,\"preStatus\":\"success\",\"preStep\":\"clean\",\"status\":\"processing\",\"step\":\"end\",\"taskName\":\"20161114\",\"taskType\":\"day\"}","taskName":"20161114","step":"end"}
+
+
+
+
+

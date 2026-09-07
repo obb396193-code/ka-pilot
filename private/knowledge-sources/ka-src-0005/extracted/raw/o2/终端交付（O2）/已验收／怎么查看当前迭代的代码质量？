@@ -1,0 +1,18 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/661e4df82cd17b0569d89628/](https://links.alibaba-inc.com/support/conversation/661e4df82cd17b0569d89628/)
+
+作者：乾杯
+
+评审人：上坡
+
+
+
+代码质量有多方面因素影响，如单元测试、代码规范等。目前，平台已默认开启了代码的规范扫描，您可以在 “应用集成验证”中找到（单元测试需手动开启）：
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1713950579296-fc8b76a8-29b2-48c9-851d-4d3312cd6ebf.png) 
+
+迭代的代码规范扫描任务可以在部署流水线中找到，后续平台会提供专门的代码质量报告页面供您查看：
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1713950663946-96873b8a-42ce-4b6b-bb80-486a51a32d5d.png)  (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1713950718508-8d29422b-143d-41f1-be6d-18f8a48fd41f.png) 
+
+
+

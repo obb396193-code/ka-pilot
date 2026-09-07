@@ -1,0 +1,42 @@
+{
+  "documentId": 1937,
+  "documentName": "10.1.13获取创意分类查询接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取创意分类查询接口\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/creative/creative_category/list\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 说明      | 备注 |\n| ------------- | ---- | --------- | ---- |\n| advertiser_id | long | 广告主 id |      |\n\n### 返回参数\n\n| 字段    | 类型     | 说明         | 备注                                  |\n| ------- | -------- | ------------ | ------------------------------------- |\n| code    | int      | 返回码       |                                       |\n| message | string   | 返回信息     |                                       |\n| data    | struct   | JSON 返回值  |                                       |\n| details | struct[] | 创意分类信息 | 是个倒着的树形结构，根节点 level 为 1 |\n\n| details 字段  | 类型   | 说明          | 备注                                                               |\n| ------------- | ------ | ------------- | ------------------------------------------------------------------ |\n| category_id   | int    | 分类 id       | 若没有其他节点，以此节点的分类 id 为 parent_id，则此节点为叶子结点 |\n| parent_id     | int    | 父节点分类 id |                                                                    |\n| category_name | String | 分类名称      |                                                                    |\n| level         | String | 层级          | 从上到下，最多三层。顶层是第一层                                   |\n\n### 请求样例\n\n```\ncurl --location --request POST 'https://ad.e.kuaishou.com//rest/openapi/v1/creative/creative_category/list' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n   \"advertiser_id\": 4171736\n}\n```\n\n### 返回样例\n\n```\n  {\n   \"code\": 0,\n   \"message\": \"OK\",\n   \"data\": {\n       \"details\": [\n           {\n               \"category_id\": 8,\n               \"parent_id\": 0,\n               \"category_name\": \"游戏\",\n               \"level\": \"1\"\n           },\n           {\n               \"category_id\": 802,\n               \"parent_id\": 8,\n               \"category_name\": \"游戏（按题材）\",\n               \"level\": \"2\"\n           },\n           {\n               \"category_id\": 803,\n               \"parent_id\": 8,\n               \"category_name\": \"游戏（按利益）\",\n               \"level\": \"2\"\n           },\n           {\n               \"category_id\": 80201,\n               \"parent_id\": 802,\n               \"category_name\": \"传奇游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80202,\n               \"parent_id\": 802,\n               \"category_name\": \"仙侠游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80203,\n               \"parent_id\": 802,\n               \"category_name\": \"魔幻游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80204,\n               \"parent_id\": 802,\n               \"category_name\": \"西游游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80205,\n               \"parent_id\": 802,\n               \"category_name\": \"三国游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80206,\n               \"parent_id\": 802,\n               \"category_name\": \"宫廷游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80207,\n               \"parent_id\": 802,\n               \"category_name\": \"都市游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80208,\n               \"parent_id\": 802,\n               \"category_name\": \"末日游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80209,\n               \"parent_id\": 802,\n               \"category_name\": \"盗墓游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80210,\n               \"parent_id\": 802,\n               \"category_name\": \"科幻游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80211,\n               \"parent_id\": 802,\n               \"category_name\": \"二次元游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80212,\n               \"parent_id\": 802,\n               \"category_name\": \"女性向游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80214,\n               \"parent_id\": 802,\n               \"category_name\": \"游戏题材其他\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80215,\n               \"parent_id\": 802,\n               \"category_name\": \"军事游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80301,\n               \"parent_id\": 803,\n               \"category_name\": \"网赚游戏\",\n               \"level\": \"3\"\n           },\n           {\n               \"category_id\": 80302,\n               \"parent_id\": 803,\n               \"category_name\": \"游戏利益其他\",\n               \"level\": \"3\"\n           }\n       ]\n   }\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624215
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624215,
+  "creator": "linmenger",
+  "fullContext": null
+}

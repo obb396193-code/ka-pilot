@@ -1,0 +1,32 @@
+| method | POST |
+|-|-|
+| url | /v1.0/work/apps/{appId}/devbranches/{devbranchId}/delete |
+| buc login | true |
+
+
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appId | Number | true | - | 应用 ID |
+| devbranchId | Number | true | - | 变更 ID |
+
+
+
+### Returns
+
+An Empty Object.
+
+
+
+### Example
+
+```
+client.post(`/v1.0/work/apps/{appId}/devbranches/{devbranchId}/delete`, {}, {}, {
+  SSO_TICKET
+})
+
+{}
+
+```

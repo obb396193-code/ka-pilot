@@ -1,0 +1,56 @@
+## O2 Space 研发平台
+
+### 新增
+
+1. 扩展开放产品升级，详情见文档： 
+1. 收拢部署的前置检查到统一的卡片中，支持工作项检测、合并冲突、分支主干同步、持续集成问题提示等
+(https://o2-img.alistatic.com/i/i09blZ/DUpkKRqqoEsEErdzMi8CF-5d33acdf7a.png)
+
+
+1. [用户帮助中心](https://help.o2.alibaba-inc.com/)支持文档划词反馈
+| 划词反馈 | 反馈结果查看 | 个人中心 |
+|-|-|-|
+| (https://o2-img.alistatic.com/i/i09blZ/qgtEy4xlJwEba9zQ0UK0r-d1ddda78d7.png) | (https://o2-img.alistatic.com/i/i09blZ/X0ME8UqmilTjV9rO4jeXH-50ba7bb6d1.png) | (https://o2-img.alistatic.com/i/i09blZ/fgSObSMJoEORdWxcY0GA8-498e5a37f7.png)对应 Aone 需求池：[地址](https://aone.alibaba-inc.com/v2/project/2096640/req#viewIdentifier=d7f112f9d023e2108fa1b0d8) |
+
+1. 支持迭代版本号托管，迭代配置中增加“主干合并策略”，在原暂停选项的基础上，增加 “跳过” （支持仅用资源做业务灰度而不期望影响主干的的场景）
+(https://o2-img.alistatic.com/i/i09blZ/y40HeeFzWR2uT4nGtVGKP-c8402f193a.png)
+
+
+选择暂停或跳过时，将注意事项平铺在选项下，强化用户感知；
+
+(https://o2-img.alistatic.com/i/i09blZ/Pst1pNHB38KhBi8DZolhz-606a7b8779.png)
+
+
+选择暂停合并节点时，提供 “跳过合并节点” 的选项，解决 “资源存在问题时，业务不期望将有问题的代码合并到主干” 的情况
+
+(https://o2-img.alistatic.com/i/i09blZ/6euYDU754hesa8SZNHwQq-384534a961.png)
+
+
+1. 支持 aone 应用部署事件监听
+(https://o2-img.alistatic.com/i/i09blZ/Fj8jiQOXX99r6bJLgS2QU-b88163672a.png)
+
+
+1. diamond 推送 增加深圳云和上海云
+1. 用户帮助中心支持支持 AI 搜索、AI 问题联想
+|  AI 问题联想 | AI 搜索 |
+|-|-|
+| (https://o2-img.alistatic.com/i/i09blZ/FuHKCfD9RzLYsM8LdUlU9-bb717c0c1d.png) | (https://o2-img.alistatic.com/i/i09blZ/Ban4zQNRr5hqdC9O1QO1x-8ce2617c85.gif) |
+
+1. 迭代集成区增加 AI 单测的生成结果引导
+(https://o2-img.alistatic.com/i/i09blZ/fMhkPkJc9jun9LTj7HF51-06514ffd6b.png)
+
+
+1. 支持文档同屏阅读，点击平台帮助文档链接，即可打开侧边帮助文档阅读栏
+(https://o2-img.alistatic.com/i/i09blZ/1HA4nogKd1ScHCDClaTeP-956e7fe436.gif)
+
+
+### 优化
+
+- 优化验证结果展示，支持通过 query 参数打开抽屉，用于钉钉通知的落地页
+- 检测项都通过时自动触发部署，不再自动关闭弹窗，提供 5s 后自动关闭 和 查询部署详情的操作按钮
+
+
+### 修复
+
+- 修复 o2 pai 发起审批后链接不对
+- 修复获取预发和线上 diamond 版本号失败的问题

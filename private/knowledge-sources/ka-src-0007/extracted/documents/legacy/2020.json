@@ -1,0 +1,42 @@
+{
+  "documentId": 2020,
+  "documentName": "10.5.2获取行为兴趣\"关键词\"",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取行为兴趣\"关键词\"\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/tool/keyword/query\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型   | 是否必填 | 说明 | 备注                                           |\n| ------------- | ------ | -------- | ---- | ---------------------------------------------- |\n| advertiser_id | long   | 必填     |      | 广告主 id                                      |\n| query_str     | string | 选填     |      | 行为兴趣关键词名称                             |\n| type          | int    | 必填     |      | 0：按照 query_str 模糊查询 1：按照 id 进行查询 |\n| ids           | long[] | 选填     |      |                                                |\n\n### 返回参数\n\n|         |          |                            |      |\n| ------- | -------- | -------------------------- | ---- |\n| 字段    | 类型     | 说明                       | 备注 |\n| keyword | struct[] | 行为兴趣关键词，详情见下方 |      |\n\n### &nbsp;\n\n| keyword |        |                          |      |\n| ------- | ------ | ------------------------ | ---- |\n| 字段    | 类型   | 说明                     | 备注 |\n| id      | long   | 关键词 id                |      |\n| name    | string | 关键词名称               |      |\n| count   | long   | 当前关键词的人群预估数量 |      |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624816
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624816,
+  "creator": "linmenger",
+  "fullContext": null
+}

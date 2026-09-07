@@ -1,0 +1,144 @@
+## 获取应用发布列表
+
+| method | GET |
+|-|-|
+| url | /v1.0/work/apps/{appIdorName}/tasks |
+| buc login | false |
+
+### Path parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| appIdorName | String | true | - | 应用 ID 或应用名 |
+
+### Query parameters
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| pn | Number | false | 0 | 页码，用于分页 |
+| rn | Number | false | 20 | 每页记录数 |
+| pub_env | Number | false | - | 发布环境 |
+| pub_status | Number | false | - | 发布状态 |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| tasks | 发布列表，对象结构为：(...[Task](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8dfb66h0t67j0phai), user: [User](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls369lxfelxab4mn50j), app: [App](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls4gore2dimt38o1v5g), iteration: [Iteration](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls6xiuwp43jozm69u9h), devbranches: [Change](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls8c5351a5qllc8tzaq)[])[] |
+| pn | 页码 |
+| rn | 每页数量 |
+| total | 总发布数 |
+
+### Example
+
+```
+client.get(`/v1.0/work/apps/{appIdorName}/tasks`, {}, {
+  SSO_TICKET
+})
+
+{
+    "tasks": [
+        {
+            "id": 135718400,
+            "group": "def-work",
+            "project": "front",
+            "branch": "def_releases_2024020510085050_def-work_front/2.25.51",
+            "commit_id": "601cebd35db53ccec249f515f772b38c803533b6",
+            "version": "2.25.51",
+            "emp_id": "318805",
+            "pub_env": 1,
+            "pub_type": 1,
+            "pub_status": 3,
+            "app_id": 1,
+            "client_id": 1,
+            "iteration_id": 15126515,
+            "flow_id": 19676649,
+            "flow_version": "2",
+            "caller": "api",
+            "tbuser_id": "",
+            "branch_pub_mode": 1,
+            "engine_mode": 1,
+            "endtime": "2024-02-05T07:24:52.000Z",
+            "gmt_create": "2024-02-05T07:23:29.000Z",
+            "gmt_modified": "2024-02-05T07:24:52.000Z",
+            "user": {
+                "emp_id": "318805",
+                "nick": "时路",
+                "account": "kangyong.ky"
+            },
+            "iteration": {
+                "id": 15126515,
+                "name": "test2",
+                "description": "",
+                "app_id": 1,
+                "group": "def-work",
+                "project": "front",
+                "branch": "def_releases_2024020510085050_def-work_front/2.25.51",
+                "version": "2.25.51",
+                "emp_id": "318805",
+                "status": 2,
+                "endtime": "1970-01-01T00:00:00.000Z",
+                "envstep": null,
+                "gmt_create": "2024-02-05T02:08:50.000Z",
+                "gmt_modified": "2024-02-05T02:08:50.000Z"
+            },
+            "app": {
+                "id": 1,
+                "group": "def-work",
+                "project": "front",
+                "emp_id": "",
+                "owner_emp_id": "287523",
+                "description": "O2 Space 研发平台前端仓库 ddd",
+                "pub_type": 1,
+                "is_module": false,
+                "is_moduletrans": false,
+                "dev_type": 0,
+                "pubtype_group": 0,
+                "platform_code": "",
+                "mode": "iteration_flow",
+                "pubtype_extend_path": "1",
+                "gmt_create": "2018-07-05T09:55:50.000Z",
+                "gmt_modified": "2023-10-26T10:49:46.000Z"
+            },
+            "devbranches": [
+                {
+                    "id": 134517946,
+                    "task_id": 135718400,
+                    "branch_id": 21070144,
+                    "branch": "aaa",
+                    "commit_id": "601cebd35db53ccec249f515f772b38c803533b6",
+                    "gmt_create": "2024-02-05T07:23:29.000Z",
+                    "gmt_modified": "2024-02-05T07:23:29.000Z",
+                    "appdevbranch": {
+                        "id": 21070144,
+                        "emp_id": "318805",
+                        "description": "aab",
+                        "branch": "aaa",
+                        "is_delete_branch": 1,
+                        "aone_binds": "req|54895183",
+                        "aone_binds_autofinish": 0,
+                        "is_finished": 0
+                    }
+                }
+            ],
+            "pubenv": {
+                "name": "daily",
+                "description": "日常",
+                "description_en": "Daily"
+            },
+            "pubtype": {
+                "id": 1,
+                "type": "assets",
+                "name": "Assets",
+                "name_en": "Assets"
+            },
+            "pub_env_desc": "daily",
+            "pub_type_desc": "assets"
+        }
+    ],
+    "pn": 0,
+    "rn": 1,
+    "total": 3792
+}
+
+```

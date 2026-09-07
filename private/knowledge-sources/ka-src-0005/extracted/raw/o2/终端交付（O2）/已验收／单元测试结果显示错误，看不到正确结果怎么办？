@@ -1,0 +1,29 @@
+作者：乾杯
+
+ 评审人：上坡 
+
+  
+
+ 诊断步骤 
+
++  点开单测日志 ； 
++  若日志中展示了多条 “ 轮询判断 coverage-final.json 是否已产出... ” ，说明系统无法获取到单测报告。 
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1709631531220-5c4f8942-b4c4-4a9e-9e5d-5d5e6278d5a5.png) 
+
++  错误发生原因及解决措施： 
+    1.  请检查单测配置，单测覆盖率产出目录不是  ` ./.ci ` ，请参考 [文档](https://docs.dingtalk.com/i/nodes/vy20BglGWOxjGpq0C9r97jn0VA7depqY)，在 jest.config.js 或 vitest.test.js 中需指定报告输出目录为 ./.ci，如下：
+
+```json
+export default {
+  // ... 其他 jest 配置 ...
+  coverageDirectory: './.ci/',
+  // 或 coverageDirectory: ' /.ci/',
+  coverageReporters: ['json', 'text'],
+};
+```
+
+    2.  将单测日志往上翻，检查单测是否执行失败（如下图），这种情况 
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/268020/1709631808167-206eecde-30a8-4620-8e84-1453caab050f.png) 
+

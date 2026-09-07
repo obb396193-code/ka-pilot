@@ -1,0 +1,42 @@
+{
+  "documentId": 1897,
+  "documentName": "搜索关键词批量查询接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取关键词列表\n\n请求接口： [https://ad.e.kuaishou.com/rest/openapi/v2/word_info/list](https://ad.e.kuaishou.com/rest/openapi/v2/word_info/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段|类型|是否必填|说明|备注|\n|--|--|--|--|--|\n|advertiser_id|Long|必填|广告主账号ID||\n|unit_id|Long|必填|广告单元ID||\n\n### 返回参数\n\n|字段|类型|说明|备注|\n|--|--|--|--|\n|code|Integer|返回状态码||\n|message|String|返回状态信息||\n|data|Object|返回数据内容||\n\n|data|类型|说明|备注|\n|--|--|--|--|\n|total_count|Long|关键词数量||\n|details|Object[]|关键词信息||\n\n|details|类型|说明|备注|\n|--|--|--|--|\n|word_info_id|Long|关键词ID||\n|word|String|关键词内容||\n|match_type|Integer|匹配类型|1 - 精确匹配，2 - 短语匹配，3 - 广泛匹配|\n|review_status|Integer|审核状态|1 - 审核中，2 - 审核通过，3 - 审核未通过，7 - 待送审|\n|put_status|Integer|投放状态|1 - 投放中，2 - 已暂停，3 - 已删除|\n|status|Integer|综合状态|101 - 已删除，102 - 审核失败，103 - 审核中，104 - 已暂停，105 - 投放中，106 - 待送审|\n\n### 请求样例\n\n```json\n{\n    \"advertiser_id\": 90000344,\n    \"unit_id\": 3833404\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"total_count\": 3,\n        \"details\": [\n            {\n                \"status\": 106,\n                \"word\": \"中明\",\n                \"word_info_id\": 126002,\n                \"put_status\": 1,\n                \"match_type\": 1,\n                \"review_status\": 7\n            },\n            {\n                \"status\": 106,\n                \"word\": \"小明\",\n                \"word_info_id\": 126001,\n                \"put_status\": 2,\n                \"match_type\": 2,\n                \"review_status\": 7\n            },\n            {\n                \"status\": 106,\n                \"word\": \"大明\",\n                \"word_info_id\": 126000,\n                \"put_status\": 1,\n                \"match_type\": 2,\n                \"review_status\": 7\n            }\n        ]\n    },\n    \"request_id\": \"8ca2604c4433473985276536090e41fd\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820623673
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820623673,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

@@ -1,0 +1,107 @@
+## 新建应用
+
+| method | POST |
+|-|-|
+| url | /v1.0/work/apps/create |
+| buc login | true |
+
+### Request body
+
+| 参数名称 | 参数类型 | 必传 | 默认值 | 参数描述 |
+|-|-|-|-|-|
+| group | String | true | - | 仓库代码组 |
+| project | String | true | - | 仓库名称 |
+| pubtype | Number | false | - | 应用类型 |
+| description | String | false | - | 应用描述 |
+| trunk | String | false | master | 默认主干，master | main |
+| generator_id | Number | false | - | 脚手架 ID |
+| schema_data | Object | false | - | 脚手架参数 |
+
+### Returns
+
+| 参数名称 | 参数描述 |
+|-|-|
+| app_id | 应用 ID |
+| project_id | 同 app_id |
+| appconf | 应用配置，对象描述见 [Appconf](https://alidocs.dingtalk.com/i/nodes/20eMKjyp810mMdK4Ho0P33q2JxAZB1Gv?utm_scene=team_space&iframeQuery=anchorId%3Duu_ls76zlqwgy4ezf22wtp) |
+| generator_task_id | 脚手架任务 ID（若未通过脚手架初始化，则无该参数） |
+
+### Example
+
+```
+client.post(
+  `/v1.0/work/apps/create`,
+  {},
+  {
+      "group": "shilu",
+      "project": "test-api",
+      "pubtype": 1,
+      "description": "desc",
+      "trunk": "master",
+      "generator_id": 5,
+      "schema_data": {
+          "appType": "miniapp",
+          "useTypeScript": true
+      }
+  }
+  {
+    SSO_TICKET,
+  }
+)
+
+{
+    "app_id": 387707,
+    "project_id": 387707,
+    "generator_task_id": 186601,
+    "appconf": {
+        "is_online_build": false,
+        "air_id": 0,
+        "air_path": "",
+        "air_platform": 1,
+        "is_steins": false,
+        "steins_platform_id": 0,
+        "steins_app_id": 0,
+        "is_pwa": false,
+        "is_page_assetsoverride": false,
+        "is_page_faas": false,
+        "pwa_conf": "",
+        "performance_check": 0,
+        "is_cr": false,
+        "tbapp_appid": "",
+        "tbapp_appkey": "",
+        "tbapp_apptype": "",
+        "tbapp_userid": "",
+        "ide_appname": "",
+        "air_greypub": 0,
+        "is_tnpm_cdn": false,
+        "is_tnpm_build": false,
+        "tnpm_cdn_dir": "dist",
+        "tnpm_cdn_desttype": 0,
+        "tnpm_user_name": "",
+        "tnpm_user_token": "",
+        "tbapp_is_new": false,
+        "is_zcache_push_open": false,
+        "is_zcache_ios_bundle_open": false,
+        "page_bizcode": "",
+        "is_tnpm_beta": false,
+        "is_reuse_release_br": true,
+        "is_detect_trunk_not_def_push_disallow": 0,
+        "is_check_br_trunk_sync": true,
+        "is_pub_online_delete_branch": 1,
+        "deleted": false,
+        "is_enable_aem": 0,
+        "app_id": 387707,
+        "sourcemap_is_enable": true,
+        "sourcemap_is_clear_result": true,
+        "is_iteration_page_all": true,
+        "is_gog_sync": false,
+        "branch_pub_mode": 1,
+        "generator_id": 5,
+        "bu_id": "L5809",
+        "id": 930620,
+        "gmt_modified": "2024-02-04T07:30:33.680Z",
+        "gmt_create": "2024-02-04T07:30:33.680Z"
+    }
+}
+
+```

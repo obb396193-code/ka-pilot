@@ -1,0 +1,42 @@
+{
+  "documentId": 2334,
+  "documentName": "获取应用中心的已共享账号列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】获取应用已共享账号列表\n应用的共享类型为：share_type=1【账号共享】才会有数据\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/share/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/share/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主id |\n| app_id | Long |  | 必填 | 应用id |  |\n| key_word | String |  | 可选 | 关键词 | 支持账号id关键词搜索 |\n| page | Integer |  | 可选 | 当前页 | 页码，默认1 |\n| page_size | Integer |  | 可选 | 分页大小 | 个数，默认10 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 返回详情 |  |\n| data | Object |  | JSON 返回值 |  |\n| &#8195;current_page | Integer |  | 当前页 |  |\n| &#8195;page_size | Integer |  | 页码大小 |  |\n| &#8195;total_count | Long |  | 总数 |  |\n| &#8195;list | Object[] |  | 已共享的账号列表 |  |\n| &#8195;&#8195;account_id | Long |  | 账号ID |  |\n| &#8195;&#8195;account_name | String |  | 账号名称 |  |\n\n\n\n### 请求样例\n\n```js\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/share/list' \\\n--header 'Content-Type: application/json' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\":900015364,\n    \"app_id\":2199123264636\n}'\n\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 1,\n        \"list\": [\n            {\n                \"account_id\": 900164519,\n                \"account_name\": \"快手用户1654058295674\"\n            }\n        ],\n        \"current_page\": 1,\n        \"page_size\": 10\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EPSAgIDwg5mOrAEYtAYgsMmfu_QwKIG21NIE\"\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681107725596
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681107725596,
+  "creator": "heran03",
+  "fullContext": null
+}

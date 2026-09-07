@@ -1,0 +1,42 @@
+{
+  "documentId": 2217,
+  "documentName": "搜索否定词批量更新接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 更新否定词\n\n请求接口：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/ad_unit/update/negative_word](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/ad_unit/update/negative_word)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段|类型|是否必填|说明|备注|\n|:--|:--|:--|:--|:--|\n|advertiser_id|Long|必填|广告主账号ID||\n|unit_ids|Long[]|必填|广告单元ID|搜索广告单元ID，最大数量20|\n|negative_word|Object|必填|否定词内容||\n\n|negative_word|类型|是否必填|说明|备注|\n|:--|:--|:--|:--|:--|\n|exact_words|String[]|非必填|精确否定词列表|最大数量200，单个词最大长度20，不支持制表符、换行符、Emoji表情等特殊字符|\n|phrase_words|String[]|非必填|短语否定词列表|最大数量200，单个词最大长度20，不支持制表符、换行符、Emoji表情等特殊字符|\n\n注：exact_words 和 phrase_words 同时为空是，代表清空否词。\n\n### 返回参数\n\n|字段|类型|说明|备注|\n|:--|:--|:--|:--|\n|code|Integer|返回状态码||\n|message|String|返回状态信息||\n|data|Object|返回数据内容||\n\n|data|类型|说明|备注|\n|:--|:--|:--|:--|\n|success_unit_ids|Long[]|更新成功单元ID列表||\n|error_unit_ids|Long[]|更新失败单元ID列表||\n\n### 请求样例\n\n```json\n{\n    \"advertiser_id\": 900015364,\n    \"unit_ids\": [\n        761270\n    ],\n    \"negative_word\": {\n        \"exact_words\": [\n            \"增加精确否词\"\n        ],\n        \"phrase_words\": [\n            \"增加短语否词\"\n        ]\n    }\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": {\n        \"success_unit_ids\": [\n            761270\n        ],\n        \"error_unit_ids\": []\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"a264a584a9624d1b923e054223cee38c\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1710298048870
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 12,
+  "bizName": "Marketing-Api",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1710298048870,
+  "creator": "liupeng20",
+  "fullContext": null
+}

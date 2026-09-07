@@ -1,0 +1,293 @@
+# <span style="color: rgb(27, 18, 108);">**目录**</span>
+
+•<span style="color: rgb(27, 18, 108);">为什么要做进度管理</span>
+
+•<span style="color: rgb(27, 18, 108);">什么是进度管理</span>
+
+•<span style="color: rgb(27, 18, 108);">在Lazada怎么做进度管理</span>
+
+•<span style="color: rgb(27, 18, 108);">问题探讨和建议方案</span>
+
+•<span style="color: rgb(27, 18, 108);">回顾</span>
+
+•<span style="color: rgb(27, 18, 108);">Q&A</span>
+
+# <span style="color: rgb(27, 18, 108);">**为什么要做进度管理**</span>
+
+## <span style="color: rgb(27, 18, 108);">**常见问题**</span>
+
+<span style="color: rgb(27, 18, 108);">为什么项目总是延期？</span>
+
+<span style="color: rgb(27, 18, 108);">作为项目PIC或成员怎么才能知道项目目前整体的情况？</span>
+
+<span style="color: rgb(27, 18, 108);">项目成员为什么总是会被压缩进度？</span>
+
+<span style="color: rgb(27, 18, 108);">为什么我们3个月之前约定好的任务到了验收节点对方和我说没做？</span>
+
+<span style="color: rgb(27, 18, 108);">为什么到处都在报问题和风险给我？</span>
+
+<span style="color: rgb(27, 18, 108);">这么多的风险和问题，我该怎么处理？</span>
+
+<span style="color: rgb(27, 18, 108);">为什么…?</span>
+
+# <span style="color: rgb(27, 18, 108);">**什么是进度管理**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/8b623c39-4ab5-48c8-9a1b-5615c875824c.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**Lazada怎么做进度管理**</span>
+
+## <span style="color: rgb(27, 18, 108);">**FY26Q1重点\_平台包邮优化项目（虚构**</span><span style="color: rgb(0, 32, 96);">**案例**</span><span style="color: rgb(27, 18, 108);">**）**</span>
+
+§<span style="color: rgb(27, 18, 108);">**项目描述**</span><span style="color: rgb(27, 18, 108);">：通过在海外电商平台实施满包邮不同组合实验，优化用户的购买体验，提升平台的转化率，同时降低平台物流成本并提高卖家的运营效率</span>
+
+§<span style="color: rgb(27, 18, 108);">**项目目标**</span><span style="color: rgb(27, 18, 108);">：</span>
+
+-<span style="color: rgb(27, 18, 108);">业务目标：</span>
+
+o<span style="color: rgb(27, 18, 108);">提高平台</span><span style="color: rgb(254, 107, 0);">转化率 PR XX%</span>
+
+o<span style="color: rgb(27, 18, 108);">优化物流成本：物流</span><span style="color: rgb(254, 107, 0);">成本降低YY%</span>
+
+-<span style="color: rgb(27, 18, 108);">技术目标：</span><span style="color: rgb(254, 107, 0);">ZZ%</span>
+
+§<span style="color: rgb(27, 18, 108);">**项目范围**</span><span style="color: rgb(27, 18, 108);">：</span>
+
+-<span style="color: rgb(27, 18, 108);">结合财务预算的实验设计</span>
+
+-<span style="color: rgb(27, 18, 108);">UMP分桶人群邮费规则XXX</span>
+
+-<span style="color: rgb(27, 18, 108);">买家/UG引导/USP/PDP/交易的包邮表达XXX</span>
+
+-<span style="color: rgb(27, 18, 108);">…</span>
+
+§<span style="color: rgb(27, 18, 108);">**项目周期**</span><span style="color: rgb(27, 18, 108);">：2025.4-2025.6</span>
+
+§<span style="color: rgb(27, 18, 108);">**项目PIC：项目PM – Ada;**</span> <span style="color: rgb(27, 18, 108);">Biz PIC–Blaire;PDPIC –Claire; TechPIC–David;TestPIC-Emily</span>
+
+§<span style="color: rgb(27, 18, 108);">**项目投入：30-100人日**</span>
+
+§<span style="color: rgb(27, 18, 108);">**项目Tracker：**</span>[https://alidocs.dingtalk.com/i/nodes/R1zknDm0WR6XzZ4LtBBLbdGjWBQEx5rG](https://alidocs.dingtalk.com/i/nodes/R1zknDm0WR6XzZ4LtBBLbdGjWBQEx5rG)
+
+## <span style="color: rgb(27, 18, 108);">**定义事项**</span><span style="color: rgb(170, 178, 184);">**-排列顺序-估算时间和资源-制定计划-控制进度**</span>
+
+§<span style="color: rgb(254, 107, 0);">**工作分解**</span>[参考](https://alidocs.dingtalk.com/i/nodes/NZQYprEoWoxKPoqwCKMMNN62V1waOeDk)[Tracker](https://alidocs.dingtalk.com/i/nodes/NZQYprEoWoxKPoqwCKMMNN62V1waOeDk)[模版](https://alidocs.dingtalk.com/i/nodes/NZQYprEoWoxKPoqwCKMMNN62V1waOeDk)
+
+-<span style="color: rgb(27, 18, 108);">产研类事项：基于项目信息和主BRD/PRD输入，按照域-\>主需求-\>子需求方式，工作分解到进度事项
+（流转状态丰富，可包含需求开发各阶段）</span>
+
+-<span style="color: rgb(27, 18, 108);">运营类事项：财税法信息对接，商家或渠道对接，业务玩法等事项
+（待处理-进行中-已完成）</span>
+
+-<span style="color: rgb(27, 18, 108);">其他事项：非上述范围内，关键事项比如BI提供报表，会影响项目的关键路径（待处理-进行中-已完成）</span>
+
+§<span style="color: rgb(254, 107, 0);">**明确各事项的PIC**</span><span style="color: rgb(27, 18, 108);">**：**</span><span style="color: rgb(27, 18, 108);">为估算/规划/监控做基础</span>
+
+-<span style="color: rgb(27, 18, 108);">项目PIC：
+Biz/PD/Tech/Test PIC/项目PM</span>
+
+-<span style="color: rgb(27, 18, 108);">各域PIC：Biz/PD/Tech/TestPIC</span>
+
+§<span style="color: rgb(27, 18, 108);">**渐进明细:**</span> <span style="color: rgb(27, 18, 108);">整个项目期间维护</span>
+
+-<span style="color: rgb(27, 18, 108);">比如当前阶段TestPIC部分域未定最终人选</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/56d30bdc-9da8-4fb3-b491-3513e3c6ff38.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**定义事项-**</span><span style="color: rgb(27, 18, 108);">**排列顺序**</span><span style="color: rgb(170, 178, 184);">**-估算时间和资源-制定计划-控制进度**</span>
+
+§<span style="color: rgb(254, 107, 0);">**识别依赖项**</span><span style="color: rgb(27, 18, 108);">**：**</span><span style="color: rgb(27, 18, 108);">在活动清单基础上，识别活动之间逻辑顺序和依赖关系</span>
+
+-<span style="color: rgb(27, 18, 108);">待办事项</span>
+
+-<span style="color: rgb(27, 18, 108);">依赖项分层级跟进：域-\>需求/待办事项</span>
+
+§<span style="color: rgb(27, 18, 108);">**依赖项关系：FF/FS/SF/SS，其中FS最常见**</span>
+
+-<span style="color: rgb(27, 18, 108);">FF(Finish-Finish)，不规定开始时间，但规定完成时间需同步：【</span><span style="color: rgb(254, 107, 0);">**需求**</span><span style="color: rgb(27, 18, 108);">： UMP分桶人群邮费规则实现代码开发】- 【</span><span style="color: rgb(254, 107, 0);">**需求**</span><span style="color: rgb(27, 18, 108);">：点位表达代码开发】共同完成之后联调</span>
+
+-<span style="color: rgb(27, 18, 108);">FS(Finish-Start) ，依赖A完成，B才能开始：【</span><span style="color: rgb(254, 107, 0);">**业务类**</span><span style="color: rgb(27, 18, 108);">：财务对焦补贴金额最终数据】-【</span> <span style="color: rgb(254, 107, 0);">**业务类**</span><span style="color: rgb(27, 18, 108);">：横向实验】</span>
+
+-<span style="color: rgb(27, 18, 108);">SF(Start-Finish), 只有A开始，B才能结束。</span>
+
+-<span style="color: rgb(27, 18, 108);">SS(Start-Start),  表示A开始，B才能开始。这种关系通常用于需要并行执行的任务。</span>
+
+§<span style="color: rgb(27, 18, 108);">**渐进明细：**</span><span style="color: rgb(27, 18, 108);">整个项目期间维护</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/7f9a29f4-2e4c-4924-a6f2-02c7af62b373.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**定义事项-排列顺序-**</span><span style="color: rgb(27, 18, 108);">**估算时间和资源**</span><span style="color: rgb(170, 178, 184);">**-制定计划-控制进度**</span>
+
+§<span style="color: rgb(254, 107, 0);">**评估活动工作量**</span><span style="color: rgb(27, 18, 108);">**：**</span><span style="color: rgb(27, 18, 108);">各活动技术PIC负责，拉齐前端，后端，App开发和测试共同确认</span>
+
+-<span style="color: rgb(27, 18, 108);">Lazada评估工作量单位:人日</span>
+
+-<span style="color: rgb(27, 18, 108);">结合团队资源</span>
+
+§<span style="color: rgb(27, 18, 108);">**渐进明细：**</span><span style="color: rgb(27, 18, 108);">整个项目期间维护</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/80aab730-1b25-4c3d-bef9-05aec08fb713.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**定义事项-排列顺序-估算时间和资源-**</span><span style="color: rgb(27, 18, 108);">**制定计划**</span><span style="color: rgb(170, 178, 184);">**-控制进度**</span>
+
+§<span style="color: rgb(254, 107, 0);">**基于资源投入和综合限制因素制定进度基准**</span>
+
+§<span style="color: rgb(27, 18, 108);">**工具和技术**</span>
+
+-<span style="color: rgb(27, 18, 108);">**关键路径法（CPM）**</span>o<span style="color: rgb(0, 32, 96);">**关键路径动态变化**</span>
+
+-<span style="color: rgb(27, 18, 108);">里程碑</span>
+
+-<span style="color: rgb(27, 18, 108);">**进度压缩**</span>
+
+§<span style="color: rgb(27, 18, 108);">**渐进明细：**</span><span style="color: rgb(27, 18, 108);">整个项目期间维护</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/e928e56a-bed2-4b51-befd-c3d12ffb9d50.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**定义事项-排列顺序-估算时间和资源-**</span><span style="color: rgb(27, 18, 108);">**制定计划**</span><span style="color: rgb(170, 178, 184);">**-控制进度**</span>
+
+§<span style="color: rgb(27, 18, 108);">**工具介绍
+–关键路径法**</span>
+
+-<span style="color: rgb(27, 18, 108);">**什么是关键路径**</span><span style="color: rgb(27, 18, 108);">：项目中时间</span><span style="color: rgb(254, 107, 0);">**最长的活动顺序**</span><span style="color: rgb(27, 18, 108);">，决定着可能的</span><span style="color: rgb(254, 107, 0);">**项目最短工期**</span> 
+
+-<span style="color: rgb(27, 18, 108);">**怎么识别**</span><span style="color: rgb(27, 18, 108);">？</span> 
+
+o<span style="color: rgb(27, 18, 108);">把项目需要的所有事项列举和负责人-\>排列逻辑顺序（关注依赖项）-\>
+评估事项的时间（常用计划起止时间）</span>
+
+•<span style="color: rgb(254, 107, 0);">工作量最大不等于最长工期</span>
+
+Ø<span style="color: rgb(27, 18, 108);">资源限制</span>
+
+Ø<span style="color: rgb(27, 18, 108);">三方限制</span>
+
+<span style="color: red;">**关键路径动态变化**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/59142336-7e16-42db-9159-352089006e90.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/b63f682e-7233-4bb4-8c79-932ba0dfa886.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**定义事项-排列顺序-估算时间和资源-**</span><span style="color: rgb(27, 18, 108);">**制定计划**</span><span style="color: rgb(170, 178, 184);">**-控制进度**</span>
+
+§<span style="color: rgb(27, 18, 108);">**工具介绍
+–里程碑**</span>
+
+-<span style="color: rgb(27, 18, 108);">什么是里程碑：项目重要的节点或事件，表示某个具体任务或阶段的完成时间点</span>
+
+-<span style="color: rgb(27, 18, 108);">怎么做，</span>[参考里程碑模版](https://alidocs.dingtalk.com/i/nodes/G1DKw2zgV2KnvL4kFNQQgeMqJB5r9YAn)
+
+o<span style="color: rgb(27, 18, 108);">明确项目目标：根据项目目标，确定需要完成的关键成果。</span>
+
+o<span style="color: rgb(27, 18, 108);">分解项目阶段：将项目分解为几个主要阶段，每个阶段设置一个或多个里程碑。</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/e90a80d6-a9be-4606-9252-0f1bc62f56e6.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**定义事项-排列顺序-估算时间和资源-**</span><span style="color: rgb(27, 18, 108);">**制定计划**</span><span style="color: rgb(170, 178, 184);">**-控制进度**</span>
+
+§<span style="color: rgb(27, 18, 108);">**工具介绍
+–进度压缩**</span>
+
+-<span style="color: rgb(27, 18, 108);">什么是进度压缩：不缩减范围但要缩短工期</span>
+
+-<span style="color: rgb(27, 18, 108);">怎么做</span>
+
+o<span style="color: rgb(27, 18, 108);">赶工：针对</span><span style="color: rgb(254, 107, 0);">**关键路径**</span><span style="color: rgb(27, 18, 108);">上的事项</span>
+
+•<span style="color: rgb(27, 18, 108);">增加资源</span>
+
+Ø<span style="color: red;">成本增加</span>
+
+o<span style="color: rgb(27, 18, 108);">快速跟进(提前开始)</span>
+
+•<span style="color: rgb(27, 18, 108);">更改事件设计，在原先无法并行的事项关系上，部分提前下一事项工作</span>
+
+Ø<span style="color: red;">风险增加</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/24d38a65-cbcc-49c3-b2b7-8216fb387849.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**定义事项-排列顺序-估算时间和资源-制定计划-**</span><span style="color: rgb(27, 18, 108);">**控制进度**</span>
+
+§<span style="color: rgb(254, 107, 0);">依据项目计划作为基准，做偏差管理</span>
+
+-<span style="color: rgb(27, 18, 108);">**关键路径重点管理**</span>
+
+o<span style="color: rgb(27, 18, 108);">结合风险管理做优先级处理事项</span>
+
+§<span style="color: rgb(27, 18, 108);">**渐进明细：**</span><span style="color: rgb(27, 18, 108);">整个项目期间维护</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/a475d6b8-e8f4-4d8b-a398-aa03e2c579d1.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**定义事项-排列顺序-估算时间和资源-制定计划-**</span><span style="color: rgb(27, 18, 108);">**控制进度**</span>
+
+§<span style="color: rgb(27, 18, 108);">**日/周会更新状态和风险**</span>
+
+-<span style="color: rgb(27, 18, 108);">各事项状态确认（包含需求和待办）</span>
+
+o<span style="color: rgb(27, 18, 108);">特别关注关键路径上的滞后</span>
+
+o<span style="color: rgb(27, 18, 108);">关键路径外的滞后，关注是否已经耗尽buffer</span>
+
+-<span style="color: rgb(27, 18, 108);">结合风险管理（</span>[参考风险管理模版](https://alidocs.dingtalk.com/i/nodes/NZQYprEoWoxKPoqwCKMMEjp2V1waOeDk)<span style="color: rgb(27, 18, 108);">），区分优先级处理事项</span>
+
+§<span style="color: rgb(27, 18, 108);">**确认滞后原因和action**</span>
+
+-<span style="color: rgb(27, 18, 108);">更新待办（</span>[参考待办模版](https://alidocs.dingtalk.com/i/nodes/QOG9lyrgJPPNL2rXIn99QKyXJzN67Mw4)<span style="color: rgb(27, 18, 108);">）</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/0359da77-70b8-42bd-a591-7f0a4ae7ea2a.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/5e622435-2c7e-4275-8530-4228f1467a82.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**定义事项-排列顺序-估算时间和资源-制定计划-**</span><span style="color: rgb(27, 18, 108);">**控制进度**</span>
+
+§<span style="color: rgb(27, 18, 108);">**关键路径导致项目Delay**</span>
+
+o<span style="color: red;">**关键路径动态变化**</span><span style="color: rgb(27, 18, 108);">**：4/26**</span><span style="color: rgb(27, 18, 108);">项目日会上交易域开发同学提出因全域项目XXX有需求变更评估7人日，导致本项目原计划的开发开始时间需要后调7工作日</span>
+
+•<span style="color: rgb(27, 18, 108);">开发开始
+4/29-</span><span style="color: rgb(254, 107, 0);">\>5/13</span>
+
+•<span style="color: rgb(27, 18, 108);">提测5/9-</span><span style="color: rgb(254, 107, 0);">\>5/16</span>
+
+•<span style="color: rgb(27, 18, 108);">测试完成5/14-</span><span style="color: rgb(254, 107, 0);">\>5/21</span><span style="color: rgb(27, 18, 108);">，</span><span style="color: rgb(27, 18, 108);">**超出USP5/19最长日期，成为关键路径**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/63285617-0d48-4eea-95bf-ec1108797c90.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(170, 178, 184);">**定义事项-排列顺序-估算时间和资源-制定计划-**</span><span style="color: rgb(27, 18, 108);">**控制进度**</span>
+
+§<span style="color: rgb(27, 18, 108);">**滞后原因分析和解决方案思路**</span>
+
+-<span style="color: rgb(27, 18, 108);">首先识别影响在关键路径or非关键路径</span>
+
+o<span style="color: red;">关键路径最高优解决</span>
+
+o<span style="color: rgb(27, 18, 108);">非关键路径若耗尽buffer</span>
+
+•<span style="color: red;">转变为关键路径</span>
+
+§<span style="color: rgb(27, 18, 108);">**日/周报同步和Escalation**</span>
+
+-[参考日](https://alidocs.dingtalk.com/i/nodes/Gl6Pm2Db8DMGQKRatgnnlR7NWxLq0Ee4)[/](https://alidocs.dingtalk.com/i/nodes/Gl6Pm2Db8DMGQKRatgnnlR7NWxLq0Ee4)[周报告模版](https://alidocs.dingtalk.com/i/nodes/Gl6Pm2Db8DMGQKRatgnnlR7NWxLq0Ee4)
+
+§<span style="color: rgb(254, 107, 0);">**必要时更新项目计划**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/cf19aa87-30b7-4cb8-813f-8cda2a91397a.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+## <span style="color: rgb(27, 18, 108);">**常见误区**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/cd48be06-f511-4e9c-8882-5a16e425eb11.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+# <span style="color: rgb(27, 18, 108);">**问题场景探讨&工具分享**</span>
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/a5a7e935-c89d-482e-8645-1ec8e48d92ab.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/62b1c265-7415-461c-9903-c6a4467815c3.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/0e277496-5635-444a-8b18-a47f26ca7f40.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/e9f85fd3-8f35-475a-8c92-8006668b0228.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/52d69703-1bb0-442d-9ca7-c357a4edecb5.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+![image.png](https://alidocs2.oss-cn-zhangjiakou.aliyuncs.com/res/meonarbgZYzkpqXx/img/0921abfa-5885-4125-8c56-93b0a41a9622.png?Expires=1776252786&OSSAccessKeyId=[secret_ref:removed]&Signature=[secret_ref:removed] "")
+
+

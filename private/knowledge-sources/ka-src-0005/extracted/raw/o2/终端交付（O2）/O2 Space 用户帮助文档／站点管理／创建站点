@@ -1,0 +1,26 @@
+以下步骤需要在 [O2 Space](https://space.o2.alibaba-inc.com)完成
+
+要创建新站点，先进入对应的研发类型。目前“Web 研发”和“Assets 研发”支持创建站点。每个研发类型支持创建的站点类型不同，不同的研发类型间的站点不通用。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl97DPaPpNqapY/img/245d1fbb-f30f-47b1-aedc-794085a0bd8a.png)
+
+
+请点击左侧【站点】访问 [站点列表](https://space.o2.alibaba-inc.com/workbench/web/extend/site)，再点击右上方的【[新建站点](https://space.o2.alibaba-inc.com/workbench/web/extend/site/new)】：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl97DPaPpNqapY/img/cf16fc68-ccc9-4ae3-8f4c-98ec1305b2ba.png)
+
+
+创建站点时需要填写以下内容：
+
+- 【站点类型】根据研发类型和需求选择所需的站点类型
+	- 公网普通站点-多页发布，跨端应用，weex2，webapp，weex1，可缓存SSR；
+	- 公网SPA站点-SPA发布
+	- Web 一体化站点-SSR应用类型发布
+- 【站点标识】全局唯一的标识，只能使用小写字母、数字、横线、下划线，不能超过 20 字节，不能与其他站点重复。建议使用 BU-业务 的命名方式，尽量保证简明易懂；例如：优酷活动 youku-act；
+- 【站点名称】用于展示的站点中文名称，会展示在站点列表及站点选择位置；
+- 【站点描述】对站点的说明，会展示在站点选择位置；
+创建站点时会显示您所属的 BU，并将创建的站点自动归属至创建人所在的 BU。此设置不支持用户主动更改，且会影响后续资源及费用归属等问题。请确保此处显示正确。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/8oLl97DPaPpNqapY/img/cc4e15bb-016d-4d71-9c6f-84d27dc27a82.png)
+
+

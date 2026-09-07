@@ -1,0 +1,18 @@
+作者： 月侠 
+
+ 评审人：上坡 
+
+  
+
+** 可能原因一：路径缺少 /v1.0 **
+
+ 如接口为   /cdn-path-notify/api/getCdnPath，实际请求时需要加上 /v1.0 前缀，如下： 
+
+ (https://intranetproxy.alipay.com/skylark/lark/0/2024/png/348644/1710235169053-24cdee08-a638-4ea0-ab27-7211d76adf07.png) 
+
+  
+
+** 可能原因二：开放服务没有提供对应路径的接口 **
+
+ 如接口为   /cdn-path-notify/api/getCdnPath，开放服务需要提供 /cdn-path-notify/api/getCdnPath 的接口，请确保接口路径和 method 正确 
+

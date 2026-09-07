@@ -1,0 +1,42 @@
+{
+  "documentId": 2335,
+  "documentName": "获取应用中心的子包列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】获取分包管理/回收站列表\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subPackage/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subPackage/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 必填 | 广告主id |\n| app_id | Long |  | 必填 | 应用id |  |\n| list_type | Integer |  | 可选 | 列表类型 | 不填为分包管理列表，填2-分包回收列表 |\n| key_word | String |  | 可选 | 关键词 | 支持渠道号或分包备注关键词搜索，支持分包id精确搜索 |\n| page | Integer |  | 可选 | 当前页 | 页码，默认1 |\n| page_size | Integer |  | 可选 | 分页大小 | 个数，默认10 |\n| status | Integer |  | 可选 | 分包状态筛选 |分包管理列表生效，筛选分包状态，单选。不传默认全部，0-全部，1-审核中，2-审核未通过，4-已发布，6-分包构建中，7-分包更新中，8-分包构建失败|\n| version | String[] |  | 可选 | 分包版本筛选 | 分包管理列表生效，筛选版本信息，多选。不传默认全部。 |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 返回码 |  |\n| message | String |  | 返回详情 |  |\n| data | Object |  | JSON 返回值 |  |\n| &#8195;current_page | Integer |  | 当前页 |  |\n| &#8195;page_size | Integer |  | 分页大小 |  |\n| &#8195;total_count | Long |  | 总数 |  |\n| &#8195;list | Object[] |  | 应用分包列表 |  |\n| &#8195;&#8195;package_id | Long |  | 应用包ID |  |\n| &#8195;&#8195;channel_id | String |  | 渠道号(分包号) |  |\n| &#8195;&#8195;description | String |  | 分包描述 |  |\n| &#8195;&#8195;real_app_version | String |  | 应用版本信息 |  |\n| &#8195;&#8195;sub_package_status | Integer |  | 应用分包状态 | 1-审核中，2-审核失败，3-待发布，4-已发布，5-已下架 6-创建中，7-更新中，8-构建失败 |\n| &#8195;&#8195;can_update | Boolean |  | 是否可更新 | 仅分包管理列表时有效，表示应用分包是否可以更新 |\n| &#8195;&#8195;update_time | Long |  | 更新时间 | 仅分包管理列表时有效，表示应用分包的更新时间 |\n| &#8195;&#8195;can_recycle | Boolean |  | 是否可恢复 |仅分包回收站列表时有效，表示应用分包是否可以恢复  |\n| &#8195;&#8195;delete_time | Long |  | 删除时间 | 仅分包回收站列表时有效，表示应用分包的删除时间 |\n| &#8195;&#8195;parent_package_id | Long |  | 分包的母包ID |  |\n| &#8195;&#8195;url | String |  | 应用下载地址 |  |\n\n\n\n### 请求样例\n\n```js\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/subPackage/list' \\\n--header 'Content-Type: application/json' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--data '{\n    \"advertiser_id\":900015364,\n    \"app_id\":2199123264588\n}'\n\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"total_count\": 1,\n        \"list\": [\n            {\n                \"can_recycle\": null,\n                \"description\": \"\",\n                \"package_id\": 100009068,\n                \"put_status\": 1,\n                \"url\": \"https://kcdn.staging.kuaishou.com/bs2/ad-app/bb3e554f-30dd-4958-9e3f-001f07ddea12_2199123264588_2023-03-29%2002%3A21%3A30_1_1680027700492.apk\",\n                \"update_time\": 1680027701625,\n                \"real_app_version\": \"7.9.232\",\n                \"review_status\": 2,\n                \"build_status\": 2,\n                \"sub_package_status\": 4,\n                \"parent_package_id\": 1099611636813,\n                \"channel_id\": \"2199123264588_2023-03-29 02:21:30_1\",\n                \"can_update\": false\n            }\n        ],\n        \"current_page\": 1,\n        \"page_size\": 10\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EPSAgIDwg5mOrAEY4Qcgl_PZu_QwKPK0tp8I\"\n}\n\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1698845315566
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1698845315566,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

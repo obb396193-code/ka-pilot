@@ -1,0 +1,42 @@
+{
+  "documentId": 2279,
+  "documentName": "定向模板同步",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 定向模板同步\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/unit_sync](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/target/template/unit_sync)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段           | 类型    | 是否必填 | 说明               | 备注                                                         |\n| -------------- | ------- | -------- | ------------------ | ------------------------------------------------------------ |\n| sync_unit_ids  | Long[]  | 可选     | 同步的广告组ID列表 |                                                              |\n| sync_unit_type | Integer | 必填     | 同步模式           | 1：同步定向模板关联的所有广告组，此时sync_unit_ids应该为空或者不传；2：同步到定向模板下指定的部分广告组，此时sync_unit_ids应该有值；3：同步到定向模板下的排除掉 sync_unit_ids 列表中的所有广告组。当 sync_unit_type = 2/3 时，对应的 sync_unit_ids 字段可从接口「/rest/openapi/gw/dsp/target/template/related_unit_list」获取相关联的广告组ID |\n| template_id    | Long    | 必填     | 模板ID             |                                                              |\n\n### 返回参数\n\n| 字段                      | 类型    | 说明                 | 备注                                                         |\n| ------------------------- | ------- | -------------------- | ------------------------------------------------------------ |\n| data                      | Struct  | 返回的json数据       |                                                              |\n| &#8195;async_task         | Boolean | 是否是异步任务       |                                                              |\n| &#8195;has_task           | Boolean | 是否存在同步任务     | 仅当模板同步时同步到的广告组为空时，该字段为 true            |\n| &#8195;task_id            | Long    | 同步的任务ID         | 返回的 task_id 可根据接口 「/rest/openapi/gw/dsp/target/template/sync_history」查询相关的同步详情 |\n| &#8195;template_id        | Long    | 同步的模板ID         |                                                              |\n| &#8195;unit_error_count   | Integer | 同步失败的广告组数量 | 仅同步任务时会返回此字段                                     |\n| &#8195;unit_success_count | Integer | 同步成功的广告组数据 | 仅同步任务时会返回此字段                                     |\n| message                   | String  | 错误详情             |                                                              |\n| code                      | Integer | 返回码               |                                                              |\n\n### 请求样例\n\n```json\n{\n  \"sync_unit_type\": 1,\n  \"template_id\": 213123\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"data\": {\n        \"unit_error_count\": null,\n        \"async_task\": true,\n        \"template_id\": 3102,\n        \"task_id\": 204572,\n        \"unit_success_count\": null,\n        \"has_task\": true\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMyAgICw0JiOrAEY3wIg2aeu7-YwKMmZ_ZEM\"\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677225639022
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677225639022,
+  "creator": "yanghua05",
+  "fullContext": null
+}

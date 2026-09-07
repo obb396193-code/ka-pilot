@@ -1,0 +1,223 @@
+{
+  "documentId": 2767,
+  "documentName": "上传图片",
+  "documentType": 2,
+  "description": "<p>应用中心的应用图标、应用图片由于投放侧要求，必须使用快手的CDN链接，此接口适用于将广告主的原始图片上传至快手侧，生成快手的CDN下载链接，用于应用中心的创编。</p>",
+  "summary": "",
+  "remark": "",
+  "content": "上传图片\n/rest/openapi/gw/dsp/appcenter/upload/pic\ncurl --location 'https://ad.kuaishou.com/rest/openapi/gw/dsp/appcenter/upload/pic' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'file=@\"450*450.png\"' \\\n--form 'advertiser_id=\"900015366\"' \\\n--form 'type=\"1\"'\n{\n    \"code\": 0,\n    \"data\": {\n        \"url\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/3252058c79ec40069cdeafb08cfd3b92.png\"\n    },\n    \"message\": \"OK\"\n}\nadvertiser_id  Long  <p>广告主id</p>\nfile  File  图片文件\ntype  Integer  <p>图片类型：1=应用图标；2=应用图片, 5=单机承诺函,6=APP备案截图,7=备案主体营业执照图片</p>\ndata  UploadPictureResponse  <p>返回数据</p>\nurl  String  <p><br>所上传图片的快手CDN链接</p>\ncode  Integer  <p>状态码</p>\nmessage  String  <p><br>状态描述信息</p>\n",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1730865753096
+    }
+  ],
+  "apiId": 693,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/upload/pic",
+  "httpMethod": "POST",
+  "httpContentType": "FORM",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "shell",
+      "body": "curl --location 'https://ad.kuaishou.com/rest/openapi/gw/dsp/appcenter/upload/pic' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--form 'file=@\"450*450.png\"' \\\n--form 'advertiser_id=\"900015366\"' \\\n--form 'type=\"1\"'"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"url\": \"http://blobstore-nginx.staging.kuaishou.com/udata/pkg/3252058c79ec40069cdeafb08cfd3b92.png\"\n    },\n    \"message\": \"OK\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 63162,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "<p>广告主id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41853,
+      "paramName": "file",
+      "paramType": "File",
+      "example": "file",
+      "description": "图片文件",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41854,
+      "paramName": "type",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>图片类型：1=应用图标；2=应用图片；5=单机承诺函；6=APP备案截图；7=备案主体营业执照图片</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "应用图标：尺寸：450 x 450，小于1MB；格式为 PNG/JPG/JPEG。应用图片：宽高比9:20，宽：大于等于720，高：大于等于1280，小于2 MB；格式为 PNG/JPG/JPEG。单机承诺函：小于10MB；格式为 PNG/JPG/JPEG。",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 41855,
+      "paramName": "data",
+      "paramType": "UploadPictureResponse",
+      "example": "",
+      "description": "<p>返回数据</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2529,
+      "sort": 1,
+      "note": "",
+      "children": [
+        {
+          "paramId": 40986,
+          "paramName": "url",
+          "paramType": "String",
+          "example": "",
+          "description": "<p><br>所上传图片的快手CDN链接</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41856,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>状态码</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 41857,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "<p><br>状态描述信息</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1730865753096,
+  "creator": "zhaoxiaolong03",
+  "fullContext": null
+}

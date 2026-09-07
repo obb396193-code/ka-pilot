@@ -1,0 +1,29 @@
+注意： O2 FC 迁移可分为基座迁移和研发平台迁移，我们提供基座一键迁移工具，基座迁移后的应用仍在 O2 平台进行部署。
+
+如果你希望在新的 AoneFaaS 平台部署存量 O2 平台应用，那么可以继续向下看：
+
+> AoneFaaS alinode7 midway 模板代码地址：[https://code.alibaba-inc.com/aonefaas-generator/midway-v8/blob/master/build.sh](https://code.alibaba-inc.com/aonefaas-generator/midway-v8/blob/master/build.sh)
+
+本文适用于已有 O2 平台正常部署的 alinode7 midway 框架应用，并打算迁至 AoneFaaS 平台进行部署的用户。你需要对原有 O2 项目进行以下改造：
+
+#### 增加 ${app}.release 文件
+
+(https://o2-img.alistatic.com/i/i09blZ/6MkfLWxzk1X3Np1161MUL-0c26c88015.png)
+
+
+#### 修改 package.json：
+
+(https://o2-img.alistatic.com/i/i09blZ/XYk8PZGV2QQVLs4eYY1oM-d60381a497.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/pbgaTiWjteT4OEpxWR3Lb-ec942c04f3.png)
+
+
+#### 修改 f.yml：
+
+#### 直接将 build.sh 替换为新版文件：
+
+#### 删除abc.json
+
+
+

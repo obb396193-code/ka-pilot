@@ -1,0 +1,7 @@
+
+# 评测指标及计算方式
+
+AI-Studio 的评测使用了 Ragas，Ragas评测指标及计算方式见：
+
+<https://docs.ragas.io/en/latest/concepts/metrics/index.html>
+

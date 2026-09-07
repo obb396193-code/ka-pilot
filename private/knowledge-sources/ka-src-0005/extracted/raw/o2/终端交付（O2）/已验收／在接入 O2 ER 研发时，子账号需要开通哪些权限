@@ -1,0 +1,50 @@
+作者：时路
+
+ 评审人：上坡 
+
+  
+
+方法一：
+
++ 赋予子账号 ** AliyunCDNFullAccess **  和  ** AliyunDCDNFullAccess **  权限，具体可以参考文档： [ https://alidocs.dingtalk.com/i/nodes/MNDoBb60VLYDGNPyt1gGjLwQJlemrZQ3?utm_scene=team_space&iframeQuery=anchorId%3Duu_lte6hse60u4vpkwr4xbr ](https://alidocs.dingtalk.com/i/nodes/MNDoBb60VLYDGNPyt1gGjLwQJlemrZQ3?utm_scene=team_space&iframeQuery=anchorId%3Duu_lte6hse60u4vpkwr4xbr)  中接入说明部分 
+
+  
+
+ 方法二： 
+
++ 部分团队无法可能无法开 通个人子账号控制台 full 授权，可以开通如下权限： 
+
+```json
+{
+			"Effect": "Allow",
+			"Action": [
+				"cdn:DescribeUserDomains",
+				"cdn:DescribeUserTags",
+				"cdn:DescribeCdnService",
+				"cdn:DescribeStagingIp",
+				"dcdn:DescribeDcdnUserDomains",
+				"dcdn:DescribeDcdnUserTags",
+				"dcdn:DescribeDcdnService",
+				"dcdn:CreateRoutine",
+				"dcdn:DeleteRoutine",
+				"dcdn:DeleteRoutineCodeRevision",
+				"dcdn:DeleteRoutineConfEnvs",
+				"dcdn:DescribeRoutine",
+				"dcdn:DescribeRoutineCanaryEnvs",
+				"dcdn:DescribeRoutineCodeRevision",
+				"dcdn:DescribeRoutineSpec",
+				"dcdn:DescribeRoutineUserInfo",
+				"dcdn:DescribeUserErStatus",
+				"dcdn:EditRoutineConf",
+				"dcdn:SetRoutineSubdomain",
+				"dcdn:UploadRoutineCode",
+				"dcdn:UploadStagingRoutineCode",
+				"dcdn:PublishRoutineCodeRevision",
+				"dcdn:CommitStagingRoutineCode"
+			],
+			"Resource": "*"
+		},
+```
+
+
+

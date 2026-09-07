@@ -1,0 +1,52 @@
+## 旧域名复用（泛域名和自定义域名）
+
+如果希望复用旧的 fc 泛域名或自定义域名，请按下面步骤操作：
+
+- 登陆 [fs平台](https://fs.alibaba-inc.com/#/ingressManage)
+	- 若 fs 平台新增报错，可前往[ 诺曼底](https://n.alibaba-inc.com/micro/ops/action/uniaccess)
+- 新增域名
+(https://o2-img.alistatic.com/i/i09blZ/8v1TaADJbZZ4PLKR3I2ki-be9eaeba49.png)
+
+
+- 应用名填 fn-应用名，比如我O2faas应用名叫 migrate-test-001，则此处应用名填 fn-migrate-test-001
+(https://o2-img.alistatic.com/i/i09blZ/aS57CDsr4Mk6050e7D4xd-177dc9cafd.png)
+
+
+(https://o2-img.alistatic.com/i/i09blZ/XdmdmfthJJlfgFwi7QHyv-a54a6904e8.png)
+
+
+- 填写你需要复用的旧域名，平台的旧泛域名为：${应用名}.fc.alibaba-inc.com。
+- 自定义域名同理，若要复用填写即可。
+(https://o2-img.alistatic.com/i/i09blZ/kKmTdshwhymSDQI6FfQGF-00734dbe18.png)
+
+
+仅线上 vipserverkey 填：http.afc.vipserver
+
+日常、预发、线上通用 vipserverkey 填：http.afc.vipserver
+
+
+
+## buc 白名单（未接入 buc 可跳过）
+
+（如果使用了 bucLogin，验证期间需要将验证域  ${appname}.fn.alibaba-inc.com,${appname}.pre-fn.alibaba-inc.com 名添加到 [https://login.alibaba-inc.com/updateAppInfoList.htm](https://login.alibaba-inc.com/updateAppInfoList.htm) 对应的应用配置中
+
+
+
+### 备注： vipserverkey 映射
+
+| 原 FC vipserverkey | AoneFaaS 对应 vipserverkey |
+|-|-|
+| http.fc.vipserver仅张北中心 | http.afc.vipserver |
+| sh.http.fc.vipserver仅张北中心 | sh.http.afc.vipserver |
+| unsh.http.fc.vipserver南通单元 | unsh.http.afc.vipserver    |
+| all.http.fc.vipserver包含3个单元：线上中心、上海云单元、深圳云单元 | all.http.afc.vipserver |
+| southeast-asia.fc.vipserver（新加坡+中心） | sg.http.afc.vipserver |
+
+
+
+
+
+
+
+
+

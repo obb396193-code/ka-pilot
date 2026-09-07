@@ -1,0 +1,42 @@
+{
+  "documentId": 1913,
+  "documentName": "10.5.1获取行为与兴趣\"类目\"",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取行为与兴趣\"类目\"\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/tool/label/behavior_interest\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 是否必填 | 说明 | 备注      |\n| ------------- | ---- | -------- | ---- | --------- |\n| advertiser_id | long | 必填     |      | 广告主 id |\n\n| 返回参数          |        |                         |      |\n| ----------------- | ------ | ----------------------- | ---- |\n| 字段              | 类型   | 说明                    | 备注 |\n| behavior_interest | struct | 行为兴趣类目,详情见下方 |      |\n\n### &nbsp;\n\n| behavior_interest |          |                      |      |\n| ----------------- | -------- | -------------------- | ---- |\n| 字段              | 类型     | 说明                 | 备注 |\n| behavior          | struct[] | 行为类目，详情见下方 |      |\n| interest          | struct[] | 兴趣类目，详情见下方 |      |\n\n### &nbsp;\n\n| behavior |          |                                          |      |\n| -------- | -------- | ---------------------------------------- | ---- |\n| 字段     | 类型     | 说明                                     | 备注 |\n| id       | long     | 行为类目的 id                            |      |\n| name     | string   | 行为类目的名称                           |      |\n| level    | int      | 类目所在的层数                           |      |\n| des      | string   | 类目的介绍                               |      |\n| children | struct[] | 当前类目的子类目，父类目与子类目结构相同 |      |\n| count    | long     | 当前类目的人群预估数量                   |      |\n\n### &nbsp;\n\n| interest |          |                                          |      |\n| -------- | -------- | ---------------------------------------- | ---- |\n| 字段     | 类型     | 说明                                     | 备注 |\n| id       | long     | 兴趣类目的 id                            |      |\n| name     | string   | 兴趣类目的名称                           |      |\n| level    | int      | 类目所在的层数                           |      |\n| des      | string   | 类目的介绍                               |      |\n| children | struct[] | 当前类目的子类目，父类目与子类目结构相同 |      |\n| count    | long     | 当前类目的人群预估数量                   |      |\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624030
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624030,
+  "creator": "linmenger",
+  "fullContext": null
+}

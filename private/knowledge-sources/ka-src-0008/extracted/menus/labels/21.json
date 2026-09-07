@@ -1,0 +1,97 @@
+{
+  "primary_doc_list": [
+    {
+      "can_delete": false,
+      "child_docs": [],
+      "doc_id": "1731161149075469",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "在投计划配额"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [
+            {
+              "can_delete": false,
+              "child_docs": [],
+              "doc_id": "1731070251873293",
+              "going_offline": false,
+              "is_new": false,
+              "labels": [],
+              "parent_id": "1696710674833420",
+              "parent_ids": [
+                "1696710674833420"
+              ],
+              "path": "/open_api/2/tools/quota/get/",
+              "status": 0,
+              "title": "查询在投计划配额"
+            }
+          ],
+          "doc_id": "1696710674833420",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710674252815",
+          "parent_ids": [
+            "1696710674252815"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "查询工具"
+        }
+      ],
+      "doc_id": "1696710674252815",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "工具"
+    },
+    {
+      "can_delete": false,
+      "child_docs": [
+        {
+          "can_delete": false,
+          "child_docs": [],
+          "doc_id": "1696710760171535",
+          "going_offline": false,
+          "is_new": false,
+          "labels": [],
+          "parent_id": "1696710759506944",
+          "parent_ids": [
+            "1696710759506944"
+          ],
+          "path": null,
+          "status": 4,
+          "title": "枚举值"
+        }
+      ],
+      "doc_id": "1696710759506944",
+      "going_offline": false,
+      "is_new": false,
+      "labels": [],
+      "parent_id": "0",
+      "parent_ids": [
+        "0"
+      ],
+      "path": null,
+      "status": 4,
+      "title": "附录"
+    }
+  ]
+}

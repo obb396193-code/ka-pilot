@@ -1,0 +1,425 @@
+{
+  "documentId": 3170,
+  "documentName": "数据源文件上传接口",
+  "documentType": 2,
+  "description": "<h1><strong>注意事项</strong></h1><p>1、接口调用次数限制：单次调用只能上传一个文件，<strong>同一个广告主ID的文件不支持并行上传</strong>，当前文件上传成功或失败后才可以进行下一个文件上传</p><p>2、文件大小限制：单个文件最大1G（为了您的传输速度，建议文件大小&lt;250M），单日上传总容量50G（特殊需求可申请扩容）</p><p>3、文件过期时间：1个月（文件过期不影响数据源使用）</p><p>4、数据接入模版地址：https://docs.qingque.cn/d/home/eZQD-P3F8mtjrcunjVClKMAgq?identityId=1oEBSuyY8Dz#section=h.8gf7xii41zde</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1735026262107
+    },
+    {
+      "version": "0.0.0",
+      "createTime": 1735020770180
+    }
+  ],
+  "apiId": 1550,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dmp/v1/datasource/file/upload",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 6,
+  "bizName": "DMP",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 69701,
+      "paramName": "match_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "匹配类型",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "枚举值：IMEI、IDFA、IMEI_MD5、IDFA_MD5、OAID、OAID_MD5、MOBILE_MD5、MOBILE_SHA256",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 69702,
+      "paramName": "file",
+      "paramType": "File",
+      "example": "",
+      "description": "上传的文件",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": "",
+        "max": ""
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "数据接入模版地址：https://docs.qingque.cn/d/home/eZQD-P3F8mtjrcunjVClKMAgq?identityId=1oEBSuyY8Dz#section=h.8gf7xii41zde。支持上传.csv文件",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 69703,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "在获取 access_token 的时候返回",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 69704,
+      "paramName": "schema_type",
+      "paramType": "Integer",
+      "example": "",
+      "description": "<p>模版类型</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 4,
+      "note": "枚举值：YX、JY、DS、JR、BD、JK、QC、XS、SJ、QT。枚举值含义：YX:游戏行业模板、JY:教育行业模板、DS:电商行业模板、JR:金融行业模板、BD:本地行业模板、JK:大健康行业模板、QC:汽车行业模板、XS:小说行业模板、SJ:社交行业模板、QT:其他通用模板",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 69714,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 69715,
+      "paramName": "data",
+      "paramType": "FileUploadResponseMapiData886",
+      "example": "",
+      "description": "数据",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3980,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 69705,
+          "paramName": "account_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "广告主ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69706,
+          "paramName": "match_type",
+          "paramType": "String",
+          "example": "",
+          "description": "匹配类型",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69707,
+          "paramName": "md5",
+          "paramType": "String",
+          "example": "",
+          "description": "md5",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69708,
+          "paramName": "file_key",
+          "paramType": "String",
+          "example": "",
+          "description": "文件路径",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69709,
+          "paramName": "file_size",
+          "paramType": "Long",
+          "example": "",
+          "description": "文件大小",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69710,
+          "paramName": "upload_file_type",
+          "paramType": "String",
+          "example": "",
+          "description": "文件类型",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69711,
+          "paramName": "record_size",
+          "paramType": "Long",
+          "example": "",
+          "description": "文件行数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69712,
+          "paramName": "match_size",
+          "paramType": "Long",
+          "example": "",
+          "description": "匹配行数",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 8,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 69713,
+          "paramName": "schema_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>模版类型</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 69716,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "消息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1735026262107,
+  "creator": "guojiaqi03",
+  "fullContext": null
+}

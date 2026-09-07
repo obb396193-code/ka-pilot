@@ -1,0 +1,359 @@
+{
+  "documentId": 3309,
+  "documentName": "拉取账户可复制信息列表",
+  "documentType": 2,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1761884688915
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1761805324071
+    }
+  ],
+  "apiId": 1751,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/agent/v1/account/can/copy/query",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "代理商",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "示例标题",
+      "type": "javascript",
+      "body": ""
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 78383,
+      "paramName": "agent_id",
+      "paramType": "Long",
+      "example": "1",
+      "description": "<p>代理商id</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78384,
+      "paramName": "account_id_list",
+      "paramType": "Long[]",
+      "example": "[1,2]",
+      "description": "<p>广告主id列表</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78385,
+      "paramName": "uc_type",
+      "paramType": "String",
+      "example": "只可填写DSP_MAPI、ESP_CID",
+      "description": "<p>业务线</p>",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 78395,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "1",
+      "description": "<p>响应code</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78396,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "success",
+      "description": "<p>响应msg</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 78397,
+      "paramName": "data",
+      "paramType": "AccountCanCopyInfoSnake[]",
+      "example": "data",
+      "description": "<p>响应data</p>",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 4439,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 78386,
+          "paramName": "account_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>账户id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 78387,
+          "paramName": "user_id",
+          "paramType": "Long",
+          "example": "",
+          "description": "<p>快手id</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 78388,
+          "paramName": "account_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>账户名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 3,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 78389,
+          "paramName": "corporation_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>公司名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 4,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 78391,
+          "paramName": "product_name",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>产品名称</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 5,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 78392,
+          "paramName": "can_copy",
+          "paramType": "Integer",
+          "example": "",
+          "description": "<p>是否可复制</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 6,
+          "note": "0-不可复制，1-可复制",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        },
+        {
+          "paramId": 78393,
+          "paramName": "cannot_copy_reason",
+          "paramType": "String",
+          "example": "",
+          "description": "<p>不可复制原因</p>",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "CHANGE"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1761884688915,
+  "creator": "chenyang11",
+  "fullContext": null
+}

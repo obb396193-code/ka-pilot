@@ -1,0 +1,42 @@
+{
+  "documentId": 2285,
+  "documentName": "工具-评论管理-2-回复评论",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 回复评论\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/comment/reply\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n| 字段        | 类型   | 示例   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | long | 123 | 必填 | 广告主id |  |\n| reply_list    | ReplyCommentDto[] |     | 必填     | 批量回复评论参数 | 具体参数如下表                 |\n\n| ReplyCommentDto         |       |      |      |                     |      |\n| ------------------- | -------- | ------ | -------- | ------------------- | ---- |\n| 字段                | 类型   |  示例   | 是否必填 | 说明                | 备注 |\n| reply_to_comment_id | long   |  51825371   | 必填     | 回复的评论 ID       |      |\n| photo_id            | string | \"test_photo_id\" | 必填     | 视频 ID             |      |\n| photo_author_id     | long   | 31756 | 必填     | 视频作者 UserID     |      |\n| reply_to_user_id    | long   | 51235 | 必填     | 被回复的用户 UserID |      |\n| reply_content       | string | \"test_reply\" | 必填     | 回复内容            |      |\n\n### 返回参数\n| 字段 | 类型 | 示例 |      说明                        | 备注 |\n| ------- | -------- | ------------------------------------ | ---- | --- |\n| code    | int       |  0  | 状态码                            |     |\n| message | string    |  \"OK\"  | 错误信息                         |     |\n| request_id  | string  |      | 请求ID                    |      |\n| data    | struct   |    |返回结果                         |     |\n|  &#8195; reply_result_list | AdCommentReplyResultView[]  |     | 一级评论 |      |\n\n| AdCommentReplyResultView  |     |       |        |                |\n| ------------------- | -------- | ------ | ------------- | -------------- |\n| 字段                | 类型   |   示例   | 说明          | 备注           |\n| reply_to_comment_id | long  | 51897   | 回复的评论 ID |                |\n| reply_result   | int   |  1   | 回复结果      | 1 成功；2 失败 |\n\n\n### 请求样例\n\n```js\n{\n    \"reply_list\": [\n        {\n            \"reply_to_comment_id\": 6,\n            \"photo_id\": \"test_0765f9e7a2b1\",\n            \"photo_author_id\": 16,\n            \"reply_to_user_id\": 4,\n            \"reply_content\": \"test_cab83a1809dc\"\n        }\n    ],\n    \"advertiser_id\": 20\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"request_id\": \"997a93fead6b4ddbb5a0940abd3ea17f\",\n    \"data\": {\n        \"reply_result_list\": [\n            {\n                \"reply_to_comment_id\": 6,\n                \"reply_result\": 1\n            }\n        ]\n    }\n}\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1677468420599
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1677468420599,
+  "creator": "yangtianqi03",
+  "fullContext": null
+}

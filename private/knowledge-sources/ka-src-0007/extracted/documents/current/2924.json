@@ -1,0 +1,468 @@
+{
+  "documentId": 2924,
+  "documentName": "创建关键词",
+  "documentType": 2,
+  "description": "<p>此接口用于在指定Unit上创建关键词，可以在已有关键词基础上新增，单个Unit最多创建500个关键词（若账号满足以下2个条件 （1）距离账户首次消耗&gt;0，超过7天  （2）近7日，账户日均消耗&lt;100 ，则单个unit最多创建100个关键词）。</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1750061338902
+    }
+  ],
+  "apiId": 1294,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/v2/word_info/create",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 90000344,\n    \"campaign_id\": 25133631,\n    \"unit_id\": 3833404,\n    \"word_infos\": [\n        {\n            \"word\": \"d7\",\n            \"match_type\": 3\n        },\n        {\n            \"word\": \"汉堡包\",\n            \"match_type\": 3\n        },\n        {\n            \"word\": \"薯条\",\n            \"match_type\": 2\n        },\n        {\n            \"word\": \"可乐\",\n            \"match_type\": 1\n        }\n    ]\n}\n"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"error_list\": [],\n        \"success_list\": [\n            {\n                \"word\": \"d7\",\n                \"match_type\": 3,\n                \"put_status\": 1,\n                \"word_info_id\": 1809519\n            },\n            {\n                \"word\": \"汉堡包\",\n                \"match_type\": 3,\n                \"put_status\": 1,\n                \"word_info_id\": 1809522\n            },\n            {\n                \"word\": \"薯条\",\n                \"match_type\": 2,\n                \"put_status\": 1,\n                \"word_info_id\": 1809521\n            },\n            {\n                \"word\": \"可乐\",\n                \"match_type\": 1,\n                \"put_status\": 1,\n                \"word_info_id\": 1809520\n            }\n        ]\n    },\n    \"request_id\": \"ad3fb7dc96ba4eb4bdc9aecdd03c859a\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 61763,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告主账号ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61764,
+      "paramName": "campaign_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告计划ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61765,
+      "paramName": "unit_id",
+      "paramType": "Long",
+      "example": "",
+      "description": "广告单元ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "需保证是搜索广告Unit",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61766,
+      "paramName": "word_infos",
+      "paramType": "WordInfo[]",
+      "example": "",
+      "description": "关键词信息",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3465,
+      "sort": 4,
+      "note": "",
+      "children": [
+        {
+          "paramId": 61745,
+          "paramName": "word",
+          "paramType": "String",
+          "example": "",
+          "description": "关键词内容",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "新增关键词：最大长度20，不支持制表符、换行符、Emoji表情等特殊字符；已存在关键词：需为投放中状态",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61746,
+          "paramName": "match_type",
+          "paramType": "Integer",
+          "example": "",
+          "description": "关键词匹配类型",
+          "required": 1,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 2,
+          "note": "1 - 精确匹配，2 - 短语匹配，3 - 广泛匹配",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 61767,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "",
+      "description": "返回状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61768,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "返回状态信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 61769,
+      "paramName": "data",
+      "paramType": "WordInfoCreateData",
+      "example": "",
+      "description": "返回数据内容",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 3468,
+      "sort": 3,
+      "note": "",
+      "children": [
+        {
+          "paramId": 61754,
+          "paramName": "error_list",
+          "paramType": "WordInfoCreateError[]",
+          "example": "",
+          "description": "添加失败关键词列表",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3467,
+          "sort": 1,
+          "note": "",
+          "children": [
+            {
+              "paramId": 61751,
+              "paramName": "word",
+              "paramType": "String",
+              "example": "",
+              "description": "关键词内容",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61752,
+              "paramName": "match_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "匹配类型",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "1 - 精确匹配，2 - 短语匹配，3 - 广泛匹配",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61753,
+              "paramName": "error_reason",
+              "paramType": "String",
+              "example": "",
+              "description": "失败原因",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 61755,
+          "paramName": "success_list",
+          "paramType": "WordInfoCreateSuccess[]",
+          "example": "",
+          "description": "添加成功关键词列表",
+          "required": 0,
+          "checkRule": {
+            "required": 0,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 3466,
+          "sort": 2,
+          "note": "",
+          "children": [
+            {
+              "paramId": 61747,
+              "paramName": "word_info_id",
+              "paramType": "Long",
+              "example": "",
+              "description": "关键词ID",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 1,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61748,
+              "paramName": "word",
+              "paramType": "String",
+              "example": "",
+              "description": "关键词内容",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 2,
+              "note": "",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61749,
+              "paramName": "match_type",
+              "paramType": "Integer",
+              "example": "",
+              "description": "匹配类型",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 3,
+              "note": "1 - 精确匹配，2 - 短语匹配，3 - 广泛匹配",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            },
+            {
+              "paramId": 61750,
+              "paramName": "put_status",
+              "paramType": "Integer",
+              "example": "",
+              "description": "投放状态",
+              "required": 0,
+              "checkRule": {
+                "required": 0,
+                "min": null,
+                "max": null
+              },
+              "handleRules": null,
+              "structureId": 0,
+              "sort": 4,
+              "note": "1 - 投放中，2 - 已暂停，3 - 已删除",
+              "children": null,
+              "operationType": null,
+              "diff": false,
+              "isEditable": 1,
+              "operation": "UNCHANGED"
+            }
+          ],
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1750061338902,
+  "creator": "liumengyun",
+  "fullContext": null
+}

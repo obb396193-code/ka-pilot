@@ -1,0 +1,267 @@
+{
+  "documentId": 2594,
+  "documentName": "获取关键词导出文件",
+  "documentType": 2,
+  "description": "<p>注：导出文件有效期30天，过期自动删除</p>",
+  "summary": "",
+  "remark": "",
+  "content": "",
+  "url": "",
+  "version": "0.0.1",
+  "versionList": [
+    {
+      "version": "0.0.1",
+      "createTime": 1720091798773
+    }
+  ],
+  "apiId": 608,
+  "targetPath": "https://ad.e.kuaishou.com/rest/openapi/gw/dsp/search/keyword/file/query",
+  "httpMethod": "POST",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [
+    {
+      "title": "请求样例",
+      "type": "jsonc",
+      "body": "{\n    \"advertiser_id\": 900015364,\n    \"file_id\": 5\n}"
+    }
+  ],
+  "outputParamExampleList": [
+    {
+      "title": "返回样例",
+      "type": "jsonc",
+      "body": "{\n    \"code\": 0,\n    \"data\": {\n        \"file_url\": \"https://xxx.kuaishou.com/bs2/ad-dsp-search-keyword-export-file/900015364_0_0_1651374348000_1651979148000.csv\",\n        \"file_status\": 2,\n        \"file_id\": 5,\n        \"file_update_time\": 1676950815824\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMqAgICQ5JmOrAEY5wIg9uj7kOcwKOSDtckN\"\n}"
+    }
+  ],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [
+    {
+      "paramId": 38580,
+      "paramName": "advertiser_id",
+      "paramType": "Long",
+      "example": "0",
+      "description": "广告主账号ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38581,
+      "paramName": "file_id",
+      "paramType": "Long",
+      "example": "0",
+      "description": "文件ID",
+      "required": 1,
+      "checkRule": {
+        "required": 0,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 2,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "outputParams": [
+    {
+      "paramId": 38597,
+      "paramName": "code",
+      "paramType": "Integer",
+      "example": "0",
+      "description": "响应状态码",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 1,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38598,
+      "paramName": "data",
+      "paramType": "SearchKeywordExportFileInfoSnake",
+      "example": "",
+      "description": "文件信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 2263,
+      "sort": 2,
+      "note": "",
+      "children": [
+        {
+          "paramId": 38586,
+          "paramName": "file_id",
+          "paramType": "Long",
+          "example": "0",
+          "description": "文件ID",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 1,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38592,
+          "paramName": "file_status",
+          "paramType": "Integer",
+          "example": "0",
+          "description": "文件状态",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 7,
+          "note": "0-未知，1-生成中，2-生成成功，3-导出失败，4-上传失败",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38594,
+          "paramName": "file_url",
+          "paramType": "String",
+          "example": "",
+          "description": "文件地址",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 9,
+          "note": "",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        },
+        {
+          "paramId": 38596,
+          "paramName": "file_update_time",
+          "paramType": "Long",
+          "example": "0",
+          "description": "文件更新时间",
+          "required": 0,
+          "checkRule": {
+            "required": null,
+            "min": null,
+            "max": null
+          },
+          "handleRules": null,
+          "structureId": 0,
+          "sort": 11,
+          "note": "毫秒时间戳",
+          "children": null,
+          "operationType": null,
+          "diff": false,
+          "isEditable": 1,
+          "operation": "UNCHANGED"
+        }
+      ],
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    },
+    {
+      "paramId": 38599,
+      "paramName": "message",
+      "paramType": "String",
+      "example": "",
+      "description": "错误信息",
+      "required": 0,
+      "checkRule": {
+        "required": null,
+        "min": null,
+        "max": null
+      },
+      "handleRules": null,
+      "structureId": 0,
+      "sort": 3,
+      "note": "",
+      "children": null,
+      "operationType": null,
+      "diff": false,
+      "isEditable": 1,
+      "operation": "UNCHANGED"
+    }
+  ],
+  "createTime": 1720091798773,
+  "creator": "lichenxu03",
+  "fullContext": null
+}

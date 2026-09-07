@@ -1,0 +1,19 @@
+## 平台发布产物与预期不符
+
+了解更多请查看文档：[《一文搞懂 TNPM 发布指定文件》](https://ata.alibaba-inc.com/articles/212447)
+
+
+
+## 期望在新的应用使用原先的包名
+
+老应用中找到「包管理」，解绑当前应用的包
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/7jP2lRAzYzKmO8g5/img/38585fa4-2e07-433e-9ef5-ee72f09a3f7c.png)
+
+
+或删除老应用，自动解绑应用下所有包名
+
+
+
+
+

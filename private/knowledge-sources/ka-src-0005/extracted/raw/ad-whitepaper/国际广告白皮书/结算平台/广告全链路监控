@@ -1,0 +1,60 @@
+目标：<font style="color:#595959;">与广告上下游协同，实现广告全链路的指标可视化、异常可监控。</font>
+
+价值：<font style="color:#595959;">让监控更直观、可联动，更可以让上下游依赖、贡献、影响等等更易于沉淀和展现，从而赋能业务、开发、发布、运维。</font>
+
+整体质量方案：[https://lark.alipay.com/intl_ad/kgv2t0/psniel](https://lark.alipay.com/intl_ad/kgv2t0/psniel)
+
+广告相关故障：[https://lark.alipay.com/intl_ad/krbv4i/udtv6z](https://lark.alipay.com/intl_ad/krbv4i/udtv6z)
+
+![](https://cdn.yuque.com/lark/2018/png/9506/1522045965045-bb680233-d2cf-458c-b1c5-ae8db5ea5c3a.png)
+
+一、广告链路
+
+![](https://cdn.yuque.com/lark/2018/png/9506/1522044480276-c6272663-6a2a-4839-a6b9-63e84f73a38e.png)
+
+二、可能影响广告的指标（业务、数据）
+
+本节点在广告链路里的输入、输出及其它指标。
+
+| 所属模块 | 指标名 | 是否已有可视化数据 | 是否已被监控（报警） | 可否xflush或发送消息被广告业务订阅 | xflush地址，或消息topic |
+| --- | --- | --- | --- | --- | --- |
+| 结算 | 广告总消耗 | 是 | 是 | 是 | [http://x.alibaba-inc.com/custom/6/product/preview/singleMinute/30](http://x.alibaba-inc.com/custom/6/product/preview/singleMinute/30) |
+| 结算 | 广告分渠道消耗 | 是 | 是 | 是 | [http://x.alibaba-inc.com/custom/6/product/preview/multiMinute/2068](http://x.alibaba-inc.com/custom/6/product/preview/multiMinute/2068) |
+| 结算 | 广告分Pid消耗 | 是 | 是 | 是 | [http://x.alibaba-inc.com/custom/6/product/preview/multiMinute/49](http://x.alibaba-inc.com/custom/6/product/preview/multiMinute/49) |
+| 点击服务 | 广告总点击 | 是 | 是 | 是 | [http://x.alibaba-inc.com/custom/6/product/preview/singleMinute/30](http://x.alibaba-inc.com/custom/6/product/preview/singleMinute/30) |
+| 点击服务 | 广告点击过滤情况 | 是 | 是 | 是 | [http://x.alibaba-inc.com/custom/6/product/preview/multiMinute/937](http://x.alibaba-inc.com/custom/6/product/preview/multiMinute/937) |
+| 点击服务 | 广告点击服务原始消耗 | 是 | 是 | 是 | [http://x.alibaba-inc.com/custom/6/product/preview/multiMinute/939](http://x.alibaba-inc.com/custom/6/product/preview/multiMinute/939) |
+| 引擎 | 分pid维度的广告pv、消耗 | 是 | 是 | 否 | [https://goldeneye.alibaba-inc.com/#/myquery/detail/557](https://goldeneye.alibaba-inc.com/#/myquery/detail/557) |
+| pc搜索广告展示 | 主搜场景广告是否展示 | 否 | 是 | 否 | [https://m.alibaba-inc.com/monitor/monitoritem/monitorItemAdd.htm?deviceType=SERVER&itemConfId=586288&nodeId=m_7231&isView=true](https://m.alibaba-inc.com/monitor/monitoritem/monitorItemAdd.htm?deviceType=SERVER&itemConfId=586288&nodeId=m_7231&isView=true) |
+| pc搜索广告展示 | 主搜场景广告曝光量 | 否 | 否 | 否 |  |
+| pc搜索广告展示 | 主搜场景右侧底部广告展示 | 否 | 否 | 否 |  |
+| M站首页 | 底部猜你喜欢 | 否 | 否 | 否 |  |
+| M站详情页 | 底部推荐 | 否 | 否 | 否 |  |
+| M站搜索页 | 广告品 | 是 | 是 | 是 | [http://x.alibaba-inc.com/custom/6/?fsPath=sc%E6%97%A0%E7%BA%BF-m%E7%AB%99%2FM%E7%AB%99%E4%B8%9A%E5%8A%A1%E7%9B%91%E6%8E%A7%2Fm%E7%AB%99%E5%B9%BF%E5%91%8A](http://x.alibaba-inc.com/custom/6/?fsPath=sc%E6%97%A0%E7%BA%BF-m%E7%AB%99%2FM%E7%AB%99%E4%B8%9A%E5%8A%A1%E7%9B%91%E6%8E%A7%2Fm%E7%AB%99%E5%B9%BF%E5%91%8A) |
+| PPC-PC端landing页 | PPC-PC端流量监控 | 是 | 是 | 否 | [http://xflush.alibaba-inc.com/custom/6/product/preview/multiMinute/2255](http://xflush.alibaba-inc.com/custom/6/product/preview/multiMinute/2255) |
+| App 汇总 | 广告消耗<br/>客户端扣费请求 | 是 | 是 | 否 | [http://xflush.alibaba-inc.com/custom/6?fsPath=ICBU%E6%97%A0%E7%BA%BF%E7%BB%9F%E4%B8%80%E7%9B%91%E6%8E%A7%2F%E4%B9%B0%E5%AE%B6%E5%B8%82%E5%9C%BA%2F07-P4P%E6%B6%88%E8%80%97](http://xflush.alibaba-inc.com/custom/6?fsPath=ICBU%E6%97%A0%E7%BA%BF%E7%BB%9F%E4%B8%80%E7%9B%91%E6%8E%A7%2F%E4%B9%B0%E5%AE%B6%E5%B8%82%E5%9C%BA%2F07-P4P%E6%B6%88%E8%80%97) |
+
+
+注：可被订阅的消息满足以下条件  
+1、有业务、指标类型字段，可被筛选
+
+2、消息满足单条发送或聚合发送（聚合消息为多长时间、多少量）
+
+3、实时延时不超过10分钟
+
+4、发送消息的类型可以为jingwei、tt、metaq
+
+
+
+三、如暂未具备可视化或被监控条件，评估多久可以实现
+
+四、后续步骤
+
+1、统一定义数据指标格式，各模块以统一的规范格式提供指标数据源；
+
+2、对接统一数据源，形成完整链路监控视图。
+
+3、链路指标的“破坏性测试”，确保监控及应急反应的有效性。
+
+4、全链路由粗到细的可视化。（形成“业务晴雨表”）
+

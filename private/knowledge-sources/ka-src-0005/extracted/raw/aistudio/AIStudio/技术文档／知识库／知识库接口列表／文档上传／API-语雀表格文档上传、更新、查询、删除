@@ -1,0 +1,239 @@
+
+# 语雀表格上传
+
+## 接口描述
+
+* 支持单篇语雀表格的上传
+
+  
+
+
+## 语雀限制
+
+简单来说，需要有2点：
+
+* 语雀表格属于团队知识库。
+* 语雀表格有Token。Token的获取可以查看详细文档。
+
+详细文档：
+
+
+
+  
+
+
+## 测试的语雀表格
+
+  
+
+
+## 接口限制
+
+1. 表格行数、索引列的限制目前与产品的限制一致，以产品文档为主
+
+1. 产品文档查看：
+
+  
+
+
+## 语雀表格上传
+
+### https://idealab.alibaba-inc.com/api/v1/aiStudio/repository/batchUploadDocument
+
+  
+
+
+### request headers and body
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **Request Headers** |  |  |
+| Request-Origin | 请求来源 | SwaggerBootstrapUi |
+| accept | 接受的媒体类型 | *表示接受所有类型 |
+| X-AK | 知识库绑定的ak | 用于身份验证 |
+| **Body (form-data)** |  |  |
+| documentLoadBaseInfo.repositoryId | 知识库ID | 83025888-9625-4be7-907e-2761ff8ecafd |
+| documentLoadBaseInfo.projectId | 项目空间ID | 129372 |
+| documentSource | 数据源类型 | 固定值：YUQUE，表示文件来源 |
+| documentLoadBaseInfo.fileType | 文件的类型 | 固定值：RE，表示参考文档 |
+| documentLoadBaseInfo.fileStructureType | 文件的结构类型 | 固定值：TABLE_DOC，表示表格文档 |
+| documentLoadBaseInfo.empId | 文档上传者的工号 | 319417 |
+| yuqueTableReaderRequest.linkUrl | 语雀表格的链接 | 只能单篇表格上传 |
+| yuqueTableReaderRequest.accessToken | 语雀知识库的Token |  |
+| nodeParseConfig | 表格文档的配置，包含sheet名字、索引列的序号、删除列（隐藏列）的序号 | 该配置的方式查看文档：  [表格类文档切分说明](https://aliyuque.antfin.com/aiplus/aistudio/ra99folrvzf7xew9) |
+
+  
+
+
+#### request example 语雀表格上传
+
+  
+
+
+### response
+
+  
+
+
+#### 返回的内容是什么？
+
+**返回的内容，是文档读取任务的id。**
+
+文档是通过异步方式读取的。该接口本质上是提交了一个文档读取任务。
+
+​  
+
+
+#### 文档上传接口返回的任务id可以用来干什么？
+
+根据任务id，可以查看文档的处理进度。
+
+  
+
+
+#### 通过API上传文档后，文档会自动构建索引吗？
+
+文档会自动构建索引，会使用知识库使用的向量模型来构建索引。
+
+​  
+
+
+### 文档上传结果
+
+可以在知识库文档列表页，查看文档的上传结果。
+
+  
+
+
+# 语雀表格更新
+
+## 怎么实现语雀表格更新？
+
+对于语雀表格来说，语雀的链接是唯一的。
+
+在同一个知识库中，上传语雀表格时，会通过链接进行唯一性校验。如果语雀表格存在，则更新内容；如果语雀表格不存在，则新增。
+
+因此，语雀表格的更新，和语雀表格的上传接口一样，上传相同的链接会自动更新。
+
+​  
+
+
+## 语雀表格的更新
+
+修改语雀表格的内容：
+
+  
+
+
+## 重新上传语雀表格
+
+接口参考：[https://aliyuque.antfin.com/aiplus/aistudio/are7b6ekx06r1ob9#F31nV](#F31nV)
+
+​  
+
+
+### 文档更新结果
+
+可以在知识库文档列表页，查看文档的上传结果 & 更新结果。
+
+  
+
+
+# 查询语雀表格
+
+## 根据知识库id和文档类型查看文档
+
+### https://idealab.alibaba-inc.com/api/v1/aiStudio/repository/queryDocument
+
+  
+
+
+### request headers and body
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **Request Headers** |  |  |
+| Request-Origin | 请求来源 | SwaggerBootstrapUi |
+| accept | 接受的媒体类型 | *表示接受所有类型 |
+| X-AK | 知识库绑定的ak | 用于身份验证 |
+| **Body (form-data)** |  |  |
+| repositoryId | 知识库ID | 83025888-9625-4be7-907e-2761ff8ecafd |
+| dataUploadMethod | 知识库文档的类型 | 固定值：YUQUE |
+| documentStructureType | 文档的结构类型 | 固定值：TABLE_DOC |
+| pageNo | 页号 | 默认为1 |
+| pageSize | 页大小 | 默认为20 |
+
+​  
+
+
+#### request example
+
+  
+
+
+### response
+
+response的参数解释：
+
+  
+
+
+# 语雀表格删除
+
+## 接口限制
+
+* 同一批删除的文档数量不超过100个
+
+  
+
+
+## 文档删除
+
+### https://idealab.alibaba-inc.com/api/v1/aiStudio/repository/deleteDocument
+
+  
+
+
+### request headers and body
+
+| **参数** | **意义** | **备注** |
+| --- | --- | --- |
+| **Request Headers** |  |  |
+| Request-Origin | 请求来源 | SwaggerBootstrapUi |
+| accept | 接受的媒体类型 | *表示接受所有类型 |
+| X-AK | 知识库绑定的ak | 用于身份验证 |
+| **Body (form-data)** |  |  |
+| repositoryId | 知识库ID | 83025888-9625-4be7-907e-2761ff8ecafd |
+| documentIds | 知识库文档的id列表 | 查询语雀表格列表：[https://aliyuque.antfin.com/aiplus/aistudio/are7b6ekx06r1ob9#ixhgU](#ixhgU)  查询接口的response中获取id列表 |
+
+​  
+
+
+#### request example
+
+  
+
+
+### response
+
+​  
+
+
+### 前端查看文档删除结果
+
+可以在知识库文档列表页，查看文档的删除结果。
+
+  
+
+
+# 关于语雀表格上传的用户常见问题
+
+  
+
+
+  
+
+
+  
+
+

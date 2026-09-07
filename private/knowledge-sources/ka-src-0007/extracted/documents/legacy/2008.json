@@ -1,0 +1,42 @@
+{
+  "documentId": 2008,
+  "documentName": "搜索关键词匹配方式批量更新接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 修改关键词匹配方式\n\n请求接口：[https://ad.e.kuaishou.com/rest/openapi/v2/word_info/update/match_type](https://ad.e.kuaishou.com/rest/openapi/v2/word_info/update/match_type)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n|字段|类型|是否必填|说明|备注|\n|--|--|--|--|--|\n|advertiser_id|Long|必填|广告主账号ID||\n|word_info_ids|Long[]|必填|关键词ID|ID不重复，最大数量20，关键词未删除|\n|match_type|Integer|必填|匹配类型|1 - 精确匹配，2 - 短语匹配，3 - 广泛匹配|\n\n### 返回参数\n\n|字段|类型|说明|备注|\n|--|--|--|--|\n|code|Integer|返回状态码||\n|message|String|返回状态信息||\n|data|Object|返回数据内容||\n\n|data|类型|说明|备注|\n|--|--|--|--|\n|word_info_ids|Long[]|修改成功关键词ID列表||\n\n### 请求样例\n\n```json\n{\n    \"advertiser_id\": 90000344,\n    \"word_info_ids\": [\n        1807749,\n        1807750,\n        1807751\n    ],\n    \"match_type\": 2\n}\n```\n\n### 返回样例\n\n```json\n{\n    \"code\": 0,\n    \"message\": \"OK\",\n    \"data\": {\n        \"word_info_ids\": [\n            1807749,\n            1807750,\n            1807751\n        ]\n    },\n    \"request_id\": \"cd1ef56c85b6431480c1d8cbbf876562\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1644820624726
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1644820624726,
+  "creator": "chenweizheng03",
+  "fullContext": null
+}

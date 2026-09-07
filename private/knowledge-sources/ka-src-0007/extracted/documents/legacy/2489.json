@@ -1,0 +1,58 @@
+{
+  "documentId": 2489,
+  "documentName": "小铃铛推送接口",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 小铃铛推送接口\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/jingleBell/share](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/jingleBell/share)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| advertiser_id | Long |  | 可选 | 广告主userId |  |\n| live_user_id | String |  | 可选 | 主播ID |  |\n| jingle_bell_id | String |  | 可选 | 小铃铛ID |  |\n| target_account_ids | Long[] |  | 可选 | 推送目标 accountIds |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 结果code码 |  |\n| message | String |  | 错误信息 |  |\n| data | JingleBellCommonResSnake |  | 操作结果 |  |\n| &#8195;result | Integer | 1 | 1成功 非1失败 |  |\n| &#8195;data | String |  | 如果失败，则是失败信息 |  |",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1710161644429
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1710160463104
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1710161644429,
+  "creator": "qihaichao",
+  "fullContext": null
+}

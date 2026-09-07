@@ -1,0 +1,42 @@
+{
+  "documentId": 2324,
+  "documentName": "【应用中心-开放场景】获取最新未发布应用包",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 【应用中心】获取应用尚未发布的最新的应用包信息\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/release/latest](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/release/latest)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段   | 类型 | 示例值 | 是否必填 | 说明   | 备注 |\n| ------ | ---- | ------ | -------- | ------ | ---- |\n|         advertiser_id         |  Long  |      |        必填         |            广告主ID          |\n| app_id | Long |        | 必填     | 应用ID |      |\n\n### 返回参数\n\n| 字段                    | 类型     | 示例 | 说明             | 备注 |\n| ----------------------- | -------- | ---- | ---------------- | ---- |\n| data                    | Object[] |      | JSON 返回值      |      |\n| &#8195;app_id           | Long     |      | 应用ID           |      |\n| &#8195;package_id       | Long     |      | 应用包ID         |      |\n| &#8195;version_code     | Long     |      | 应用版本号       |      |\n| &#8195;real_app_version | String   |      | 应用完整版本信息 |      |\n| code                    | Integer  |      | 返回码           |      |\n| message                 | String   |      | 返回信息         |      |\n\n\n\n### 请求样例\n\n```shell\ncurl --location 'https://ad.e.kuaishou.com/rest/openapi/gw/dsp/appcenter/app/release/latest' \\\n--header 'Access-Token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"advertiser_id\": 900015366,\n    \"app_id\": 2199123262249\n}'\n```\n\n### 返回样例\n\n```shell\n{\n    \"code\": 0,\n    \"data\": {\n        \"version_code\": 946,\n        \"real_app_version\": \"10.15.3\",\n        \"package_id\": 1099611634749,\n        \"app_id\": 2199123262249\n    },\n    \"message\": \"OK\",\n    \"request_id\": \"EMOAgIDQjpmOrAEYhQMg09Kn4fIwKLL1qKkC\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1681107415997
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1681107415997,
+  "creator": "wangxuetong",
+  "fullContext": null
+}

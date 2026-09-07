@@ -1,0 +1,219 @@
+
+## 背景
+
+idealab提供了完善的[模型API](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9?singleDoc# 《Chat Completion API》)，但同时我们注意到大家使用API还是有一定的门槛，为了简化使用流程，我们基于SpringAI框架的思想， 围绕这idealab的核心API开放了Java SDK，并制作成了spring-boot-starter，实现了模型能力的开箱即用。
+
+​  
+
+
+目前已实现的功能有：
+
+1. Chat对话模型的基础调用：块式、流式、FunctionCall、ToolChoice
+2. Agent的实现，支持实现上下文记忆、多轮工具调用等功能，并支持扩展
+3. RAG 知识库管理、知识库召回
+4. IDEAs的调用
+
+## 快速上手
+
+### 引入Maven依赖
+
+最新版本请查看 [maven仓库](https://artlab.alibaba-inc.com/GAResult?GroupId=com.alibaba.idealab&Artifact=idealab-ai-spring-boot-starter)
+
+### application.properties
+
+在 `application.properties` 中定义 idealab 相关的配置，必要的配置有：
+
+**​**  
+
+
+**申请ak流程请参考文档：**[**AK申请流程**](https://aliyuque.antfin.com/aiplus/aistudio/gzhhgn1ai1ulhohs)
+
+**​**  
+
+
+此外，还支持在 `application.properties` 中定义以下配置：
+
+| **配置项** | **说明** | **默认值** |
+| --- | --- | --- |
+| spring.ai.idealab.enabled | 是否自动装配`IdealabApi`，基础api依赖，默认开启 | true |
+| spring.ai.idealab.debug | 开启后，会打印调用模型入参出参的日志 | false |
+| spring.ai.idealab.base-url | idealab平台的域名，已有默认值，一般情况无需设置 | https://idealab.alibaba-inc.com |
+| spring.ai.idealab.chat.enabled | 是否自动装配 `IdealabChatModel`, 默认开启 | true |
+| spring.ai.idealab.chat.model | 默认使用的模型名称，idealab支持的模型见[文档](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9#zphhm)，默认为gpt-4o-0513 | gpt-4o-0513 |
+| spring.ai.idealab.chat.functions | 模型可以使用的工具名称列表 | - |
+| spring.ai.idealab.chat.enable-tool-choice | 是否开启 toolChoice，开启后会使用toolChoice方式执行工具，toolChoice支持一次调用多个工具，目前只有gpt系列支持 | false |
+| * spring.ai.idealab.chat.temperature * spring.ai.idealab.chat.max-tokens * spring.ai.idealab.chat.frequency-penalty * spring.ai.idealab.chat.logit-bias * spring.ai.idealab.chat.logprobs * spring.ai.idealab.chat.top-logprobs * spring.ai.idealab.chat.presence-penalty * spring.ai.idealab.chat.stop * spring.ai.idealab.chat.top-p * spring.ai.idealab.chat.response-format | 模型侧参数，详细解释可以见：[参数说明文档](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9#bzqWz)  ​  这些在运行态均可被入参覆盖  ​  ​ | - |
+
+### 注入ChatModel使用
+
+以上2个步骤，会初始化 IdealabChatModel 的bean，使用时直接@Autowired注入：
+
+## 注意事项
+
+1. 当前 Java SDK 基于 **JDK8** 和**Spring Boot 2.x**版本开发，如果你的项目基于 **JDK17 或之上** 和 **Spring Boot 3.x** 可以使用原生Spring AI框架， starter已贡献给Pandora Boot，请参考Pandora版本的使用文档：[**pandora-ai-idealab-spring-boot-starter**](https://mw.alibaba-inc.com/pandora-boot/develop/spring/spring-boot-idealab/)
+2. 如果需要使用 Python SDK，可以查看文档：[**ideaLAB适配 PythonSDK**](https://aliyuque.antfin.com/aiplus/aistudio/hyw10wkpkb80sqmo) langchain、llamaindex等主流AI框架可无缝接入
+
+## 示例代码
+
+[**https://code.alibaba-inc.com/idea-platform/idealab-ai-sdk-samples**](https://code.alibaba-inc.com/idea-platform/idealab-ai-sdk-samples)
+
+## 具体使用场景说明
+
+### 最简单的一个对话
+
+`IdealabChatModel`提供了多个模型调用方法的重载，支持简单的模型调用，也可以通过`IdealabChatOptions`设置复杂的模型参数。
+
+### 如何实现流式输出？
+
+通过[Reactor响应式编程框架](https://projectreactor.io/docs/core/release/reference/#core-features)实现流式输出，可以看到流式输出方法的返回是 [Flux](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html)，HttpServletResponse输出Flux推送的每一条内容
+
+  
+
+
+​  
+
+
+Reactor支持与Spring WebFlux无缝集成，依赖 spring-boot-starter-webflux 之后，可以简化成：
+
+  
+
+
+**输出效果：**
+
+### FunctionCall的注册和使用
+
+FunctionCall 赋予了模型调用外部API的能力，极大的提高了模型的扩展能力。
+
+#### 定义一个Function的两种方式
+
+1. 【**推荐**】通过Spring Bean定义
+
+> **要求：**
+> 
+> 1. 必须是SpringBean
+> 2. 必须实现 Function 接口
+> 3. 必须有@Desctiption注解
+> 4. 入参必须是对象类型，建议使用jackson的 @JsonProperty和 @JsonPropertyDescription标识
+
+  
+
+
+2. 通过FunctionCallbackWrapper定义
+
+> **要求：**
+> 
+> 1. 为了正确解析schema，需要指定下入参类型 inputType。（非Function的匿名类不需要）
+> 2. Function名称，注意不要有特殊字符，否则模型侧会报错，一般`英文大小写、数字`的组合即可
+
+​  
+
+
+#### Function注册和使用
+
+`IdealabChatOptions`提供了两个参数用于注册Function：
+
+* `Set<String> functions` : 传入beanName
+* `List<FunctionCallback> functionCallbacks`：可传入自定义得 `FunctionCallbackWrapper`
+
+  
+
+
+#### 输出效果
+
+#### 实现原理
+
+1. 把Function和描述给到模型
+2. 模型根据用户问题推理出需要调用的Function名称和参数
+3. 工程链路拿到参数去执行Function调用
+4. 再把Function结果给到模型继续推理
+5. 如此循环，直到返回最终结果。
+
+​  
+
+
+> **注意**：目前只有gpt系列支持FunctionCall 和 ToolChoice，其他模型后续会使用 [ReAct框架](https://www.promptingguide.ai/zh/techniques/react) 实现工具的调用
+
+### FunctionCall和ToolChoice的区别
+
+gpt系列目前推荐使用ToolChoice，在SDK中，使用ToolChoice只需要设置options参数，默认不开启
+
+​  
+
+
+**主要区别**：
+
+FunctionCall一次只支持一个工具，ToolChoice支持**一次调用多个工具**，适用于工具之间无依赖，可以并行调用的场景。
+
+### 如何实现一个有记忆+工具调用能力的Agent智能体？
+
+[**Agent**](https://lilianweng.github.io/posts/2023-06-23-agent/) 利用大模型能力来实现自主感知、决策和行动，一般由：LLM + 记忆 + 规划 + 工具 等部分组成，可以用于需要自主推理的场景
+
+​  
+
+
+在SDK中，可以使用Agent构造器，初始化时，需要设置ChatModel，通过自定义Advisor，实现记忆能力
+
+#### 输出效果
+
+记忆已被设置到上下文中
+
+#### Advisor如何为Agent提供扩展能力
+
+Advisor 在调用模型之前和之后设置了扩展点，可以对提示词内容和模型返回进行处理
+
+  
+
+
+SDK目前提供了2个Advisor，实现了记忆能力
+
+* `PromptChatMemoryAdvisor`
+* `MessageChatMemoryAdvisor`
+
+​  
+
+
+在后续迭代中会陆续提供 RAG 相关Advisor，业务也可以根据需要定义自己的Advisor。
+
+### 如何快速调用IDEAs
+
+IDEAs发布后，可以通过API进行调用，为了方便大家使用，我们也封装了这个API
+
+调用示例
+
+注意：appVersion可以传递以下3类值
+
+* 固定的版本号，比如1.0.0
+* latest, 表示每次都使用最新发布的版本
+* dev，表示使用调试页面的配置版本
+
+## 参考文档
+
+* [idealab API文档](https://aliyuque.antfin.com/aiplus/aistudio/gurqfferzgx2w9k9?singleDoc# 《Chat Completion API》)
+* [Spring AI 官方文档](https://spring.io/projects/spring-ai)
+
+## 后续计划
+
+1. 支持丰富的其他模型，比如search、 image、多模态
+2. 丰富advisor组件
+3. flow执行引擎
+
+## 附：
+
+大模型有对调用速率的限制，如果批量发起调用，可能会导致大量限流，可以使用一些限流工具控制调用速率，提高可用性。以下是一些示例方法：
+
+1. 使用Guava的 [RateLimiter](https://www.baeldung.com/guava-rate-limiter) 实现限流
+
+2. 通过`ScheduledExecutorService`实现定时任务，控制API调用的速率。
+
+## ChangeLog
+
+| **时间** | **版本号** | **features** |
+| --- | --- | --- |
+| 2024-07-03 | 1.0.0 | idealab-ai-client支持pandora-boot，提供基础api能力 |
+| 2024-07-09 | 1.0.1 | * 提供基础api能力 * 提供agent能力 |
+| 2024-08-08 | 1.0.2 | * 提供embedding API * 提供 IDEAs API * 支持RAG相关组件，知识库管理和知识库召回 |
+| 2025-02-20 | 1.0.8 | * 支持推理模型，返回reasoning_content字段 * 支持传入百炼平台自定义ak，可以做到业务资源隔离，在对模型有较高稳定性诉求的时候使用  * spring.ai.idealab.dashScopeKey=xxx |
+
+  
+
+

@@ -1,0 +1,56 @@
+| 应用类型 ID | 应用类型 Code | 应用类型中文名 | 是否强制开启Changefree |
+|-|-|-|-|
+| 1 | assets | Assets | - [ ]  |
+| 2 | assets_o | Assets 覆盖 | - [x]  |
+| 3 | weex | Weex | - [x]  |
+| 6 | webapp | WebApp | - [x]  |
+| 9 | tnpm | TNPM | - [ ]  |
+| 12 | tm_com | 天马组件 | - [ ]  |
+| 14 | hl_faas | 函数 | - [x]  |
+| 15 | page_faas | 移动端一体化 | - [x]  |
+| 16 | tbapp_v2 | 小程序 | - [ ]  |
+| 17 | assets_faas | Web 端一体化 | - [x]  |
+| 18 | def_generator | O2 脚手架 | - [ ]  |
+| 19 | sub_tm_faas | 天马模块一体化 | - [x]  |
+| 21 | tm_com_multi | 天马模块多物料发布 | - [ ]  |
+| 22 | o2_extension | O2 插件 | - [ ]  |
+| 23 | er | 边缘程序 | - [x]  |
+| 24 | multi-end | 跨端应用 | - [x]  |
+| 25 | assets_merchant | 商家资产发布 | - [ ]  |
+| 26 | assets_grey | Assets 灰度 | - [x]  |
+| 28 | tnpm_multi_pkg | TNPM 多包发布 | - [ ]  |
+| 29 | pha_lapp | PHA 轻应用 | - [ ]  |
+| 30 | multiend_cached_faas | 可缓存 SSR | - [x]  |
+| 31 | web_intra | 内网资源 | - [x]  |
+| 36 | def_extend | O2 扩展 | - [ ]  |
+| 37 | tm_mod | 天马模块 | - [x] ​ |
+| 38 | tm_source_page | 天马源码页面 | - [x] ​ |
+| 39 | tm_solution | 天马 Solution | - [x] ​ |
+| 40 | tm_source_multi | 天马源码多物料发布 | - [x] ​ |
+| 41 | mechant_hybrid_app | 商家轻应用 | - [x] ​ |
+| 42 | cbu-td-component | 天搭研发 | - [x] ​ |
+| 43 | tl_microapp | 点淘微前端 | - [x] ​ |
+| 44 | assets_plus | Assets Plus | - [x] ​ |
+| 45 | jinji_navigator | 领航员应用 | - [x] ​ |
+| 46 | tbshop-component | LiveCard | - [x] ​ |
+| 47 | cbu-fc-mbox | Mbox FC | - [x] ​ |
+| 48 | cbu-dx | DX研发 | - [x] ​ |
+| 49 | zh-tnpm | 纵横研发-组件 | - [x] ​ |
+| 50 | zh-micro-app | 纵横研发-微应用 | - [x] ​ |
+| 51 | zh-tnpm-ext | 纵横研发-扩展包 | - [x] ​ |
+| 52 | transformer-publish | Mist应用 | - [x] ​ |
+| 53 | mistpage-publish | 独立容器 | - [x] ​ |
+| 54 | fbi-component | 自定义组件 | - [x] ​ |
+| 55 | fbi-render-plugin | 自定义渲染插件 | - [x] ​ |
+| 56 | fbi-theme | 自定义站点主题 | - [x] ​ |
+| 57 | fbi-data-plugin | 自定义数据插件 | - [x] ​ |
+| 58 | web_plus | Web Plus | - [x] ​ |
+| 59 | Liquid 主题模板 | 基于 Liquid 预发的独立站主题模板应用 | - [x] ​ |
+| 60 | wharf_webapp | 码头 WebApp | - [x] ​ |
+| 61 | icbu_assets_push | Assets版本号推送研发 | - [x] ​ |
+| 62 | BeeDev | BeeDev 中后台 Assets 应用 | - [x] ​ |
+| 63 | unifyweb_faas | SSR | - [x] ​ |
+| 64 | retail_mechant_ms | 新零售商家版-ms同步 | - [x] ​ |
+| 65 | FC-Serverless | FC-Serverless | - [x] ​ |
+| 66 | qihang_card | 企航卡片研发 | - [x] ​ |
+

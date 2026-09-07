@@ -1,0 +1,42 @@
+{
+  "documentId": 2185,
+  "documentName": "种子人群包列表",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 种子人群包列表\n\n请求地址：[https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/population/seed/list](https://ad.e.kuaishou.com/rest/openapi/gw/dsp/v1/population/seed/list)\n\n请求方式：POST\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段         | 类型   | 示例值   | 是否必填   | 说明   | 备注                        |\n| ------------ | ------ | ------ | ------ | ------ | --------------------------- |\n| name | String |  | 可选 | 人群包名称 |  |\n| advertiser_id | Long |  | 可选 | 账户ID |  |\n\n### 返回参数\n\n| 字段         | 类型  | 示例   | 说明                        | 备注         |\n| ------------ | ------ | ------ | --------------------------- | ---------- |\n| code | Integer |  | 响应码 |  |\n| message | String |  | 响应信息 |  |\n| data | SeedPopulationResult |  | 结果集 |  |\n| &#8195;list | SeedPopulationView[] |  | 种子人群包列表 |  |\n| &#8195;&#8195;id | Long |  | 种子人群包ID |  |\n| &#8195;&#8195;name | String |  | 种子人群包名称 |  |\n| &#8195;&#8195;account_id | Long |  | 账户ID |  |\n| &#8195;&#8195;population_type | String |  | 人群包类型名 |  |\n| &#8195;&#8195;record_size | Long |  | 上传数量 |  |\n| &#8195;&#8195;match_size | Long |  | 匹配数量 |  |\n| &#8195;&#8195;cover_num | Long |  | 覆盖人群 |  |\n| &#8195;&#8195;status | Integer |  | 状态 |  |\n\n### 请求样例\n\n```\n{\n\n\"advertiser_id\":138234\n\n}\n```\n\n### 返回样例\n\n```\n{\n    \"code\": 0,\n    \"data\": {\n        \"list\": [\n            {\n                \"account_id\": 138234,\n                \"match_size\": 553453,\n                \"name\": \"dmp-2022-ios-31\",\n                \"record_size\": 267332,\n                \"id\": 114523017,\n                \"cover_num\": 624458,\n                \"population_type\": \"上传人群\",\n                \"status\": 4\n            }\n```",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1656659064143
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1656659064143,
+  "creator": "wb_suxing",
+  "fullContext": null
+}

@@ -1,0 +1,60 @@
+平台已为 O2 Space 应用默认开启包管理器级别的依赖缓存能力，不再需要手动开启。
+
+## 上线灰度计划
+
+| 计划时间 | 灰度覆盖 | 是否已开启 |
+|-|-|-|
+| 2024.01.04 - 01.10 | AOT 构建任务（NPM，TNPM NPM Mode） | - [x]  |
+| 2024.01.10 - 01.17 | 全量构建任务（NPM， TNPM NPM Mode） | - [x]  |
+| 2024.01.17 - 01.24 | AOT 构建任务（NPM，TNPM NPM Mode，TNPM） | - [x]  |
+| 2024.01.24 - 01.31 | 全量构建任务（NPM，TNPM NPM Mode，TNPM） | - [x]  |
+| 2024.01.31 ～ | 视效果演进缓存方案（Yarn，PNPM 缓存；应用粒度依赖缓存） | - [ ]  |
+
+## 依赖安装速度提升
+
+- 依赖缓存可提升依赖安装性能 32%，在构建机高网络、磁盘 IO 场景下，依赖安装性能提升在 44.5% 左右，详细信息可查看 benchmark。
+(https://img.alicdn.com/imgextra/i1/O1CN01Duypn91LpQrwuajFo_!!6000000001348-2-tps-2010-1038.png)
+
+
+## 如何开启 NPM 锁依赖
+
+### 第一步：在仓库提交 package-lock.json 文件
+
+#### TNPM 用户
+
+在`package.json`中进行如下配置，将 tnpm 切换到 npm 模式：
+
+```
+{
+  "tnpm": {
+    "mode": "npm",
+    "lockfile": "enable"
+  }
+}
+```
+- 删除本地应用目录内的 node_moduels 文件夹（如若没有请忽略此步骤）
+- 执行 `tnpm i`完成依赖安装，将新生成的`package-lock.json`文件提交到仓库。
+注意，如果使用了 tnpm 的 resolutions 功能，将不会生成锁文件，请用 npm 的 overrides 代替。
+
+#### NPM 用户
+
+默认支持锁依赖，`npm i`后将生成的 `package-lock.json`提交到仓库。
+
+### 第二步：在平台发布设置打开“开启依赖锁定能力”
+
+(https://img.alicdn.com/imgextra/i1/O1CN01HAPBJp1V0GmdWx6wT_!!6000000002590-2-tps-1192-828.png)
+
+
+“开启锁依赖缓存”按钮将提供在特殊情况下的依赖缓存关闭能力。
+
+### NPM Cache 等包管理器缓存相关命令将被跳过
+
+云构建服务已全局管控包管理器的缓存相关指令，如果需要在构建过程中额外执行 `npm cache`等命令，请通过答疑小蜜反馈。
+
+(https://img.alicdn.com/imgextra/i1/O1CN017Y07SU1OHwl99b0D2_!!6000000001681-2-tps-2422-356.png)
+
+
+## 是否为 Yarn、PNPM 提供依赖缓存服务
+
+后续将根据依赖缓存使用效果以及用户诉求支持。
+

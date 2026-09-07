@@ -1,0 +1,87 @@
+> 虽然 Pai App 开发时，这些目录结构和模版代码、类型都会通过云研发自动生成，但还是建议大家了解一下：
+
+> 1、遇到问题时可以自己主动定位
+
+> 2、了解 Pai App 的运行原理
+
+完整的 Pai App 目录结构如下：
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOLPJeD17ROpz2/img/69ef1aba-a748-40d4-9216-206e341f50a5.png)
+
+
+src/pai 为项目入口，底下的每个目录都是一个扩展点，每个扩展点包括如下子目录：
+
+### src/pai/[spiName]
+
+config/index.ts （必须）
+
+扩展点配置，用于配置扩展点的功能、行为
+
+举个例子：下面是添加迭代阶段的扩展点的 config/index.ts，配置了添加的阶段，
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOLPJeD17ROpz2/img/41d3390d-b935-4db2-998a-fa9332e99fac.png)
+
+
+注意：该 config 需实现 TS 类型 PaiConfig<扩展点名枚举> ，用于提供类型提示和错误检查(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOLPJeD17ROpz2/img/55bb127f-40cc-45a5-803a-1adcf8d2bd4a.png)
+
+
+(该 config 展示效果，下方添加的阶段内容，由 component 定制，请往下看)
+
+component/index.tsx（可选）
+
+扩展点展示的 UI 组件，只有需要 UI 展示的扩展点需要，纯逻辑的扩展点不需要
+
+举个例子：下面是添加迭代阶段的扩展点的 component/index.tsx，返回了一个组件
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOLPJeD17ROpz2/img/d9922bdb-6383-433f-bbb0-ddf384931133.png)
+
+
+注意：该组件需实现 TS 类型 PaiComponent<扩展点名枚举>，用于提供类型提示和错误检查
+
+另外在组件最外层需要使用 props.withPropsChange 包裹，用于接收扩展点外侧的参数和事件
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOLPJeD17ROpz2/img/50816678-a053-4c4a-acb2-95bb8970ac87.png)
+
+
+(该 component 展示效果)
+
+rule/index.rule （可选）
+
+扩展点的规则，部分扩展点需要，使用方式较灵活，编写一份脚本，该脚本会交给规则引擎执行，执行时输入当前信息（应用、迭代、变更等），根据返回值来确定扩展点的行为。
+
+举个例子：创建变更选择工作项的扩展点，通过规则来确定可以选择哪些工作项
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOLPJeD17ROpz2/img/b0b0c0b9-2346-4f59-ab6a-1b708e076df6.png)
+
+
+service/index.json （可选）
+
+扩展点的 service 接口，部分扩展点需要，使用方式较灵活，编写一个接口（需注册到网关），平台扩展点执行时会调用该接口，根据业务接口的返回来确定扩展点的行为。
+
+举个例子： 决定发布线上后是否进入灰度阶段的扩展点，通过配置一个接口
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOLPJeD17ROpz2/img/adf993be-fa2b-4c52-b2f9-1be9407b4b7b.png)
+
+
+迭代发布线上后平台会调用该接口，若该接口返回值为 
+
+```
+{
+    grey: true
+}
+
+```
+则迭代进入灰度阶段，否则迭代完成
+
+### src/pai/meta.json
+
+配置各扩展点公共的数据
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOLPJeD17ROpz2/img/5bb252f2-d4c4-492e-a720-9a123f573a5e.png)
+
+
+配置后，各扩展点组件内可以通过 context 拿到该数据
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/eYVOLPJeD17ROpz2/img/eec307f0-6b85-4afb-92f2-f5731fee03cb.png)
+
+

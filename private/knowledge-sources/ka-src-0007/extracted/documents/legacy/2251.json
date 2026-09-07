@@ -1,0 +1,42 @@
+{
+  "documentId": 2251,
+  "documentName": "M-API 咨询类问题Q&A",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# M-API咨询类问题Q&A\n\n以下为一些问题排查的方法和思路&答案，希望在日常使用中帮助大家解决问题\n\nQ1：注册开发者页面无反应\n\n\t注册开发者点击提交无反应，需要排查\n\t1）营业执照的编号是否写错，应该是写三证合一的企业信用代码\n    2）账户ID是否写错，应该为账户ID非快手ID\n\t3）看你广告主的主体资质和这个账户主体资质是否一致\n\nQ2：实名认证失败\n\n\t实名认证失败是因为之前再其他业务实名认证过，不影响后续任何操作\nQ3：授权问题\n\n按照步骤进行操作\n\n\t1）授权链接示例： https://developers.e.kuaishou.com/tools/authorize?app_id=应用ID&scope=权限范围&redirect_uri=回调地址xxx&state=abcd&oauth_type=授权类型&state=xxx\n\t2）授权链接在使用时，权限范围与回调地址需要UrlEncode一次\n    3）如授权失败请先排查问题：是否有APP服务场景，授权服务场景，基于账户授权/基于用户授权\n\t4）基于广告账户授权：勾选登陆快手ID下的广告账户进行授权（如需授权账号不在名单中，需要确认广告账户主体与授权账户主体是否一致，账户是否绑定在授权登陆的快手ID下）\n\t5）基于用户授权：对登陆快手ID下的所有广告账户进行授权\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformadc3fed423783243038f2671c1297821.png)\n\n需要排查的点\n\n\t1）缺少任意一样则为授权链接格式错误，需要排查\n\t\ta、app_id是否写错，应用管理处可见\n\t\tb、scope是否写错，是否进行了 urlEncode；urlEncode时是否带了[]\n\t\tc、uri是否写错，应用管理处可见；是否进行了 urlEncode\n\t\td、oauth_type是否写错；是否漏写 \n\t2）如果全都无误可以F12查看下接口报错再提问\n    3）授权时登陆的快手ID需要确认是否与授权链接的oauth_type一致\n    4）授权成功后会跳转到你填写的回调地址获取auth_code再获取token\n    5）如果授权页面没有你想要的账户，请排查此广告账户是否挂靠在你右上角登录的快手ID下\n    \ta、广告主开发者想一次授权多个主体请先根据运营百宝箱内邮件申请绑定主体后申请客户罗盘\n\t\tb、新开账户/新绑定罗盘账户一个小时后才能会显示并授权\n    6）授权成功跳转回调地址报错\n    \ta、授权后我们只负责把auth_code拼接在回调链接后，客户接收失败请客户自查，auth_code直接在浏览器地址栏查看\n\t7）广告主资质不在授权的应用资质里，不能按用户授权。只支持应用绑定的代理商授权等问题\n\t\ta、有User下有用户和你授权应用的资质不同；\n\t\tb、需要用注册代理商开发者时代理商绑定的User做登陆授权；\n\nQ4：频次与时长问题\n\n\t1）查看文档：频控和创建限制\n    2）账户维度 计划/广告组层级创编 qpm600,创意层级/程序化创意创编 qpm400,批量接口 qpm200\n\t3）自适应限流：当超时率达到20%，会触发限流，1分钟后会恢复\n\t4）实时报表延迟为分钟内\n\t5）t-1型数据为次日九点更新\nQ5：罗盘相关问题\n\n\t可以授权罗盘账户下所有账户，一个主体可以有多个管理员账户\n\t方式：登陆投放管理平台，右上角有罗盘账户，进入后——账户绑定——去认证，成为罗盘管理员后添加账户，给罗盘管理员账户授权即可授权罗盘账户下所有账户。\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformd043c618148cb877743c41e8ba8c988d.png)\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatform7a4644e88fc2021ac6cd0e7cfbd9fb91.png)\n\n[点击此处查看其他罗盘相关问题](https://docs.qingque.cn/d/home/eZQDT3alFlalrT1F3nxCE9Oi7?identityId=1u06rJYHbJD)\n\n&nbsp;\n\nQ6：获取token接口返回advertiser_id：0，advertiser_ids有数据\n\n\t由于授权方式改动，以advertiser_ids为准,advertiser_ids为此次授权所涉及用户\nQ7：如何获取程序化创意具体对应素材和消耗\n\n\t程序化创意不对外披露所有的组合，调取程序化创意2.0数据接口通过组ID查询，只返回产生消耗的创意ID及对应素材。\n\nQ8：服务商绑定资质限制\n\n\t具体见文档：https://docs.qingque.cn/d/home/eZQBeQGV4UZba8eckBMRVXJZn?identityId=GcjY1XJo3a\n\t满足条件后邮件发送MAPI@kuaishou.com，邮件内容提供appid与相应消耗\nQ9：忘记开发者账户密码\n\n\t我们只能根据开发者主体去查对应的快手id，密码需要去快手app找回密码，我们无法操作\n\nQ10：开发者解绑问题\n\n\t1、如何解绑广告账户\n\t● 需要登陆对应广告账户在右上角点击开发者解绑\n    2、解绑后账户还显示被开发者授权中\n\t● 回显问题，实际已解绑\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatform6ed9dd95c5af65e50685058472e289f8.png)\n\nQ11：注册服务商开发者收到不到打款信息\n\n\t检查一下是否为对公打款对公账户，银行卡信息以及银行卡持卡人都必须为对公账户和名称\nQ12：\n\n\t注册过程中如遇到以下情况，请下载合同后使用如下链接进行注册\n\thttps://developers.e.kuaishou.com/register/qualification?role=serviceProvider\n\t下载合同地址：\n\thttp://e-signature.kuaishou.com/esignature/web/login\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformde232341503e6ace6b22387b18497246.png)\n\nQ13：实时报表可拉取时间\n\n\t近七天，想获取更多时间信息请使用异步任务报表\n\nQ14：请使用新版本接口进行提交、版本号不符相关问题\n\n\t都是使用了2.0接口在平台3.0新创编下进行了创编操作，这种情况可以加白使用2.1接口调用，也可以使用2.0接口重新创建计划、组、创意\n\nQ15：如何判断是否可以使用3.0接口\n\n\t22年11月3号前对接过3.0接口的支持3.0使用，22年11月3号未接入的之后的不支持\n\nQ16：获取账户流水提示权限不足\n\n\t检查自己的开发者角色是否为服务商开发者， 服务商开发者目前无法获取账户流水接口\n\nQ17：注册广告主开发者提示此广告主账户ID对应的资质名称和公司全称不一致\n\n\t公司全称需与下方填写的广告主账户ID主体保持一致\n![image](https://s2-10644.kwimgs.com/kos/nlav10644/mapiplatformf37a82ad65d01c2aea948965ed755528.png)\n\n\n\n",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1673859038674
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1673859038674,
+  "creator": "chengsiliang",
+  "fullContext": null
+}

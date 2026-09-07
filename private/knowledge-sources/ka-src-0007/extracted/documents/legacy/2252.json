@@ -1,0 +1,42 @@
+{
+  "documentId": 2252,
+  "documentName": "获取账号信息和开户资质",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取账号信息和开户资质\n\n请求格式：GET/POST\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/agent/advertiser/cert/get\n\n\n### 请求参数\n\n| 字段        | 类型 | 说明   | 是否必填 | 备注             |\n| ------------- | ---- | -------- | -------- | ------------------ |\n| agent_id      | long | 代理商id | 是      | 和access_token一致 |\n| advertiser_id | long | 广告主id | 是      |                    |\n\n### 返回参数\n\n| 字段                 | 类型             | 说明           | 备注                                               |\n| ---------------------- | ------------------ | ---------------- | ---------------------------------------------------- |\n| advertiser_id          | long               | 广告主id      |                                                      |\n| agent_id               | long               | 代理商id      |                                                      |\n| name                   | string             | 广告主快手昵称 |                                                      |\n| advertiser_user_id     | long               | 广告主userId  | 创建广告主时使用的userId                    |\n| review_status          | int                | 账号审核状态 | 0-待审核，1-审核中，2-审核通过，3-审核拒绝，4-被封禁 |\n| review_details         | ReviewDetailView[] | 账号审核结果 |                                                      |\n| industry_id            | long               | 二级行业id   |                                                      |\n| industry               | string             | 行业名称     |                                                      |\n| corporation_name       | string             | 公司名称     |                                                      |\n| web_site               | string             | 企业网站     |                                                      |\n| contact_name           | string             | 联系人姓名  |                                                      |\n| email                  | string             | 联系人邮箱  |                                                      |\n| phone                  | string             | 联系人手机号码 |                                                      |\n| create_source          | int                | 创建来源     | 11表示MAPI, 6表示BP                              |\n| product_name           | string             | 产品名/品牌名 |                                                      |\n| marketing_content_type | int                | 推广内容类型 | 1-推广内容链接，2-推广应用                |\n| quality_control_status | int                | 品控审核状态 | 0-待审核，1-审核中，2-审核通过，3-审核拒绝 |\n| quality_control_detail | string             | 品控审核详情 | 如果品控审核状态是审核拒绝，显示审核拒绝的原因 |\n| licence_id             | string             | 营业执照编号 |                                                      |\n| licence_location       | string             | 营业执照注册地 | 格式如\"四川省-成都市\"                       |\n| ad_bp_cert             | AdBpCert           | 当前开户资质列表 | 只返回开户资质，对应的cert_category包括1，2，3，4 |\n#### AdBpCert\n| 字段           | 类型           | 说明           | 备注 |\n| ---------------- | ---------------- | ---------------- | ---- |\n| common_cert_list | AdBpCommonCert[] | 当前开户资质列表 |      |\n\n\n#### AdBpCommonCert 通用资质\n| 字段                       | 类型                       | 说明                       | 备注                                                      |\n| ---------------------------- | ---------------------------- | ---------------------------- | ----------------------------------------------------------- |\n| cert_id                      | long                         | 资质编号                 |                                                             |\n| url                          | string                       | 资质文件url              |                                                             |\n| cert_category                | int                          | 资质类型                 | 1-营业执照，2-ICP备案，3-投放承诺函，4-行业资质，5-投放资质 |\n| file_token                   | string                       | 资质文件标识           | 用于创建、更新开户和投放资质、提交资质的file_token                 |\n| expire_time                  | string                       | 资质有效期              | 资质过期时间，格式如： yyyy-MM-dd  如果是空字符串，表示永久有效               |\n| review_status                | int                          | 资质审核状态           | 0-待审核，1-审核中，2-审核通过，3-审核拒绝 |\n| review_detail                | string                       | 资质审核结果           | 如果资质审核状态是审核拒绝，显示审核拒绝的原因 |\n| replace_cert                 | AdBpCommonCert               | 要替换的资质           |                                                             |\n| expire_status                | int                          | 过期状态                 | 1-有效，2-即将到期(30天内），3-已过期         |",
+  "url": "",
+  "version": "0.0.0",
+  "versionList": [
+    {
+      "version": "0.0.0",
+      "createTime": 1675404669199
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 3,
+  "bizName": "",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    ""
+  ],
+  "inputParamShow": [
+    ""
+  ],
+  "outputParamShow": [
+    ""
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1675404669199,
+  "creator": "wb_suxing",
+  "fullContext": null
+}

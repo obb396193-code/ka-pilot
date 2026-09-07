@@ -1,0 +1,12 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/661cf8720c8b7604baaf7387/](https://links.alibaba-inc.com/support/conversation/661cf8720c8b7604baaf7387/)
+
+作者：紫砂
+
+评审人：上坡
+
+
+
+当前 Code 平台对 git commit message 中包含特殊字符时，对该分支的最新 commit 查询会接口返回异常（例如，包含^），此时建议先排查一下变更分支的 commit message 是否包含特殊字符，有则进行修改。
+
+若不包含，则建议联系 O2 Space 平台答疑。
+

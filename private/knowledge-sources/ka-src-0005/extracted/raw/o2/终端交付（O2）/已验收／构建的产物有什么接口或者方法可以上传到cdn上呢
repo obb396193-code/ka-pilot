@@ -1,0 +1,19 @@
+用户真实问题链接: [https://links.alibaba-inc.com/support/conversation/661393af971d4707ee3cb541/](https://links.alibaba-inc.com/support/conversation/661393af971d4707ee3cb541/)
+
+作者：时路
+
+评审人：上坡
+
+
+
+ 上传 CDN 不直接开放，请正常走创建应用->创建迭代->迭代发布流程。 
+
+ 如果有自定义链路诉求，可以走 O2 开放扩展（SPI）链路，具体文档可参考： [ https://docs.dingtalk.com/i/nodes/mExel2BLV59rgdDPik2Oka9KVgk9rpMq ](https://docs.dingtalk.com/i/nodes/mExel2BLV59rgdDPik2Oka9KVgk9rpMq)
+
+  
+
+  
+
+
+
+

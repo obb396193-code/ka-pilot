@@ -1,0 +1,191 @@
+## 能力介绍
+
+#### 基础能力
+
+WebApp 发布流程是为 WebApp 类型项目设计的发布解决方案，主要有以下特点。
+
+- 一键发布
+- Assets 发布到 CDN
+- HTML 页面发布到 Air 平台。
+- 代码云端构建
+- 分支开发规则同 Assets，发布线上自动打 publish tag
+- 支持门神检查和 code review
+- 线上发布支持选择指定的页面发布
+
+
+#### 提供的发布环境
+
+- 日常环境
+- 线上环境
+
+
+> 说明： 若应用开启了灰度且页面非首次上线，则线上环境发布完成后会迭代会自动进入灰度阶段
+
+
+
+#### 发布产物说明
+
+- Assets：发布 Assets 到 CDN （日常环境：dev.g.alicdn.com，线上环境：g.alicdn.com）。
+- 页面：将 .html 页面发布到 Air。
+
+
+> 详情查看发布流程
+
+## 接入说明
+
+前往 [应用接入](https://space.o2.alibaba-inc.com/app/new)，选择 WebApp 应用类型
+
+
+
+> 接入前需要设置 tbfed 公共账户为仓库或者 group 的 master , 平台需要权限获取你的仓库代码。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/vnk9ye/imgw4Qc2C8YNA.png)
+
+
+## 发布流程
+
+### 流程介绍
+
+Weex 发布的流程如下图所示：
+
+
+
+日常发布流程
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/vnk9ye/imgid67brD9LT.png)
+
+
+主要过程有：
+
+
+
+- 分支预处理：处理多分支集成时的分支合并过程
+- 前置检查：进行构建脚本是否合法等检查
+- 构建：构建项目代码里的 abc.json （即云构建配置）对代码进行云端构建（云构建配置请参考 [文档](http://builder.alibaba-inc.com/document?slug=config)）
+- 门神检查：对源码和构建产物进行安全扫描、域名检测、文件元信息检查、前端代码质量检测等（如想了解门神可访问 [门神官网](https://gog.alibaba-inc.com/)）
+- 发布：
+- assets 发布：发布 assets 资源 到 g.alicdn
+- 页面发布：提取 html 文件后发布到 Air 预发
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/vnk9ye/imgU6gRby8MLb.png)
+
+
+线上发布流程
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/vnk9ye/imgAM3nGasw0p.png)
+
+
+与日常发布基本一致，不同的点为：
+
+- 移除了分支预处理节点：线上发布前变更分支代码已部署至发布分支，无需再将变更分支合并到发布分支
+- 增加了分支合并阶段：页面发布完成后会将发布分支合并到主干，并打 tag
+
+
+
+
+假如代码经过云构建后，构建后文件列表如下，仓库名称为 def/test, 分支为 daily/1.0.0
+
+```
+home/index.js
+home/index.css
+home/index.html
+
+search/result/index.js
+search/result/index.css
+search/result/index.html
+
+```
+则发布完成后，文件地址为：
+
+日常
+
+```
+assets:
+    dev.g.alicdn.com/def/test/1.0.0/home/index.js
+    dev.g.alicdn.com/def/test/1.0.0/home/index.css
+    dev.g.alicdn.com/def/test/1.0.0/search/result/index.js
+    dev.g.alicdn.com/def/test/1.0.0/search/result/index.css
+
+html:
+    market.wapa.taobao.com/app/def/test/home/index.html 
+    market.wapa.taobao.com/app/def/test/search/result/index.html
+
+```
+> 注：[market.waptest.taobao.com](http://market.waptest.taobao.com) 同 [market.wapa.taobao.com](http://market.wapa.taobao.com)
+
+线上
+
+```
+assets:
+    g.alicdn.com/def/test/1.0.0/home/index.js
+    g.alicdn.com/def/test/1.0.0/home/index.css
+    g.alicdn.com/def/test/1.0.0/search/result/index.js
+    g.alicdn.com/def/test/1.0.0/search/result/index.css
+
+html:
+    market.m.taobao.com/app/def/test/home/index.html
+    market.m.taobao.com/app/def/test/search/result/index.html
+
+```
+## 页面回滚
+
+[页面回滚](https://alidocs.dingtalk.com/i/nodes/G1DKw2zgV2KnvL4kFM65GM5AJB5r9YAn?utm_scene=team_space)
+
+## 构建环境变量
+
+当发布流程为 webApp 时，你可以从环境变量 BUILD_ARGV_STR 读取 webApp 构建相关信息
+
+```
+const buildArgv = require('yargs-parser')(process.env.BUILD_ARGV_STR);
+
+```
+| 参数 | 值 | 说明 |
+|-|-|-|
+| buildArgv['def_publish_type'] | webapp | 标明当前发布类型，为 webapp |
+| buildArgv['def_publish_env'] | daily 或 prod | 标明当前发布环境，daily 为日常(预发)，prod 为线上 |
+
+对于构建脚本，可以执行如下命令模拟传入环境变量测试
+
+```
+# -- 后面表示传入云构建的环境变量
+def build -- --def_publish_type=webapp --def_publish_env=daily
+
+```
+对于构建器，构建器本地 link 后执行如下命令测试
+
+```
+# -- 后面表示传入云构建的环境变量, -l 表示调用本地构建器，调试过程需要先在构建器目录下执行 def dev 链接
+def build -l -- --def_publish_type=webapp --def_publish_env=daily
+
+```
+> Air 支持预发和日常(market.wapa(waptest).taobao.com)，但访问的模板是一样的，对应的 O2 Space 构建环境都是 daily
+
+## Assets 路径拼接
+
+webapp 流程会先将 assets 资源部署 g.alicdn，路径拼接可以通过读取 仓库、分支 环境变量拼接，具体查看文档
+
+- [https://builder.alibaba-inc.com/document?slug=env-intro](https://builder.alibaba-inc.com/document?slug=env-intro)
+
+
+## 按需发布
+
+发布线上前你需要配置本次迭代(分支)需要发布的页面，如果没有配置，def p -o 前会提示里先配置。
+
+(https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/lark/https://yuque.antfin.com/def-work/doc_v3/vnk9ye/img0o88hHyA6a.png)
+
+
+你可以选择：
+
+1. 发布部分页面
+1. 发布全部页面
+按需迭代详情查看: [https://space.o2.alibaba-inc.com/doc/kbmcin?version=v3](https://space.o2.alibaba-inc.com/doc/kbmcin?version=v3)
+
+## 其他发布说明
+
+#### 命令行发布
+
+- 日常：o2 p -d
+- 线上：o2 p -o
+ 
+
+为了减少回归成本，线上发布时不会全量发布所有页面，在发布前你需要选择本次需要正式发布的页面。如果未选择页面，会提示选择，选择完成后再次执行 o2 p -o 即可发布。
+

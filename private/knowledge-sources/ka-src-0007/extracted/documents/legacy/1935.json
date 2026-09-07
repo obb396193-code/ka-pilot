@@ -1,0 +1,58 @@
+{
+  "documentId": 1935,
+  "documentName": "10.1.6获取行动号召按钮",
+  "documentType": 1,
+  "description": "",
+  "summary": "",
+  "remark": "",
+  "content": "# 获取行动号召按钮\n\n请求接口：https://ad.e.kuaishou.com/rest/openapi/v1/creative/action_bar_text/list\n\n请求方式：GET\n\n数据格式：JSON\n\n### 请求参数\n\n| 字段          | 类型 | 说明      | 备注                                                                                                                                                  |\n| ------------- | ---- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |\n| advertiser_id | long | 广告主 id | 在获取 access_token 的时候返回                                                                                                                        |\n| campaign_type | int  | 计划类型  | 必填 2 - 提升应用安装;3 - 获取电商下单;4 - 推广品牌活动;5 - 收集销售线索;13 - 小店商品推广；14：直播推广（非dsp直播推广） ；30：快手号-短剧推广                                            |\n| consult_type  |      | int       | 是否使用了咨询组件；0=未使用，1=使用；注，咨询组件仅在收集销售线索计划(campaign_type=5)下可用，且使用了咨询组件后，可用的行动号召按钮限于接口返回内容 |\n| unit_material_type | int | 广告标的物类型 | campaign_type=32（微信小程序/小游戏）时必填，3：微信小程序；4：微信小游戏 |\n\n### 返回参数\n\n| 字段            | 类型     | 说明             | 备注 |\n| --------------- | -------- | ---------------- | ---- |\n| code            | int      | 返回码           |      |\n| message         | string   | 返回信息         |      |\n| data            | struct   | JSON 返回值      |      |\n| action_bar_text | string[] | 行动号召按钮文案 |      |\n\n### 请求样例\n\n```\n\ncurl --location --request GET https://ad.e.kuaishou.com//rest/openapi/v1/creative/action_bar_text/list' \\\n--header 'access-token: [REDACTED_SECRET_EXAMPLE]' \\\n--header 'Content-Type: application/json' \\\n--data-raw '{\n   \"advertiser_id\":4171736,\n   \"campaign_type\":2\n}\n```\n\n### 返回样例\n\n```\n\n{\n   \"code\": 0,\n   \"message\": \"OK\",\n   \"data\": {\n       \"campaign_type\": 2,\n       \"action_bar_text\": [\n           \"玩游戏\",\n           \"立即投保\",\n           \"去借钱\",\n           \"寻找有缘人\",\n           \"立即下载\",\n           \"一键下载\",\n           \"免费下载\",\n           \"立即安装\",\n           \"体验同款特效\",\n           \"了解详情\",\n           \"测额度\",\n           \"免费安装\",\n           \"立即制作\",\n           \"更多精彩\"\n       ]\n   },\n   \"request_id\": \"eb9ba36158334aca949b9fc73a6f5b7f\"\n}\n```\n",
+  "url": "",
+  "version": "0.0.2",
+  "versionList": [
+    {
+      "version": "0.0.2",
+      "createTime": 1713186564792
+    },
+    {
+      "version": "0.0.1",
+      "createTime": 1709641130745
+    }
+  ],
+  "apiId": 0,
+  "targetPath": "https://ad.e.kuaishou.com",
+  "httpMethod": "GET",
+  "httpContentType": "JSON",
+  "bizId": 2,
+  "bizName": "效果广告",
+  "inputParamExample": "",
+  "outputParamExample": "",
+  "inputParamExampleList": [],
+  "outputParamExampleList": [],
+  "headerParamShow": [
+    "paramName",
+    "example",
+    "description",
+    "note"
+  ],
+  "inputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "required",
+    "note"
+  ],
+  "outputParamShow": [
+    "paramName",
+    "paramType",
+    "example",
+    "description",
+    "note"
+  ],
+  "headerParams": [],
+  "inputParams": [],
+  "outputParams": [],
+  "createTime": 1713186564792,
+  "creator": "jiazhaochang",
+  "fullContext": null
+}
