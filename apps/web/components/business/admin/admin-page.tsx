@@ -1,13 +1,14 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { IconPlus, IconRefresh, IconShieldLock } from "@tabler/icons-react"
+import { IconPlus, IconRefresh } from "@tabler/icons-react"
 import { createColumnHelper } from "@tanstack/react-table"
 import { toast } from "sonner"
 
 import { mediaLabel } from "@/components/business/accounts/account-status"
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
+import { NoAccess } from "@/components/business/state/no-access"
 import { useSession } from "@/components/business/session/session-provider"
 import { StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
@@ -232,7 +233,7 @@ export function AdminPage() {
       {isAdmin ? <PageTabs tabs={tabs} value={tab} onChange={setTab} /> : null}
       <div className="px-4 lg:px-6">
         {!isAdmin ? (
-          <Card><CardContent className="flex flex-col items-center gap-2 py-16 text-center"><IconShieldLock className="size-8 text-muted-foreground" /><p className="font-medium">治理后台只对管理员开放</p><p className="max-w-md text-sm text-muted-foreground">当前空间角色 {session?.activeWorkspace.role ?? "−"}；切到你是 admin 的空间，或找管理员。</p></CardContent></Card>
+          <NoAccess title="治理后台只对管理员开放" reason="成员、连接、口径日历、灰度开关这些会影响整个工作区，只有管理员能看。切到你是管理员的空间，或找管理员代办。" />
         ) : (
           <StateFrame state={state} unlock="admin/members · grants · calendar · flags · system/etl-runs · assets · reconcile 接入后切换为真数据" empty={{ title: "空空如也", description: "先邀请成员。" }}>
             {tab === "members" ? <MembersTab /> : null}
