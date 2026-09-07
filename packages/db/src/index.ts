@@ -42,3 +42,5 @@ export * from "./r014/user-watchlist-repository.js";
 export * from "./r014/saved-view-repository.js";
 export * from "./r014/decision-policy-repository.js";
 export * from "./r014/export-repository.js";
+export * from "./r014/capability-repository.js";
+export * from "./r014/task-readiness-repository.js";

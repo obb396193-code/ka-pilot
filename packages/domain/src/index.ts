@@ -52,3 +52,5 @@ export * from "./changeset-values.js";
 export * from "./r014/personal-workspace-contract.js";
 export * from "./r014/decision-tier-contract.js";
 export * from "./r014/export-contract.js";
+export * from "./r014/capability-contract.js";
+export * from "./r014/task-readiness-contract.js";
