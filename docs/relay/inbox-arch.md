@@ -3975,3 +3975,24 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 契约 v1.7.4 **G4 明写「→ R-010b」**（Codex）；但 be2 提示词范围表和 `2026-09-07-后端双会话分工与防冲突.md` §1 都把它列进 be2。`workflow_runs.task_id` 这一列确实是我的 015。请定一边：列我加（015），端点谁改？
 
 **⑨ 运维项（给你和老板）**：本机 `/Users/aik` 装完三包后只剩 **4.2G**，低于「跑全量门禁前 `df -h` ≥ 8G」。我这边只跑增量用例还够；**全量门禁前需要先清盘**（Docker 镜像会临时膨胀）。请老板决定清哪儿，或由 arch 在 ka-arch-gates 侧统一跑。
+
+
+### Q-002 ⛔阻塞裁决｜015 落地后，7 个既有迁移回放测试全红（实测定性；Codex 落 013/014 会一模一样撞上）｜be2 2026-09-07
+- **S1 已完成**：`be/r014 @ 83b822bd` migration 015 + 测试。`packages/contract/schema.sql` 三段切片（v1.5 / v1.5.1 / v1.7.1 identity_preferences）逐句嵌入，DDL 零自造；`alert_rules` 两列属 012 未重复；`work_items`、`account_metrics_daily` 零改动。
+- **本批门禁**：`test/r014` **22/22 ✅**（bundle 8 + 真 PG 12 + 窗口助手 2）；db 包 `tsc --noEmit` **0**、`eslint .` **0 error**。
+- **⛔ 但 db 包全量 730 条里 7 条红**，全在既有迁移回放测试：`migrations`、`auth-migration`、`backfill-state-migration`、`contract-v1-2-migration`、`contract-v1-3-migration`、`workspace-kind-migration`、`workspace-sync-migration`。
+
+**实测定性（不是推理）**：把 `015_contract_v1_5.cjs` 移走 → 同样 7 个文件 **7/7 全绿**；移回 → **7/7 全红**。
+
+**根因**：这 7 个文件把回放窗口写死成 `runMigrations({direction:"down", count: N})`，N 是相对**当时的迁移头部**数出来的（共 47 处调用）。015 一落，头部从 012 变成 015，所有窗口整体错位——`contract-v1-3` 的 `count:1` 现在回滚的是 015 而不是 012。**不是 015 的 DDL 错，是这些测试对"我是头部"的隐含依赖。**
+
+**关键**：这跟 be2 无关——**Codex 落 013（R-011）或 014（R-012）时会撞上完全相同的 7 个红**，谁先落谁背。所以这不是我一批的事，请你统一裁。
+
+**我已备好修法（零成本批准）**：`packages/db/test/r014/migration-window.ts` —— `downThrough(url, "012")` / `upThrough` / `windowSize("012")`，按**具名迁移**算窗口而不是写死 count，头部再位移也不错位（自带 2 条单测，已绿）。改造是纯机械替换：47 处 `count: N` → `windowSize("0xx")`，不动任何断言语义。
+
+**请裁（三选一）**：
+1. **我来改这 7 个文件**（破例许 be2 动 `packages/db/test/` 的既有文件；我改完连门禁数字一起交），助手从 `test/r014/` 移到 `test/` 供两边共用；
+2. **交给 Codex 改**（它 013/014 反正要撞），我这批就带着 7 红交审，你合流时以它为准；
+3. **你自己在 ka-arch-gates 改**。
+
+我倾向 **1**：现在只有我一个人在动迁移，改完 Codex 落 013/014 直接受益；且这 7 处红只要不修，main 合入 015 当天就是红的。**在你回话前我不碰这 7 个文件**，继续做 S2（独占 11 表的仓储 + DTO），S2 与本裁决无关。
