@@ -3878,6 +3878,15 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 ### P-104 ✅合流｜be/r010 @ b46ae5d → main `7691819`（F-P103-1 修 + PG 残留隔离 + 维度行身份）｜arch 2026-09-07
 - F-P103-1 定性 = 用例过期（旧 v2 注入路径），非 v3 bug：用例改接 `PlatformWindowQuery` 生产路径 + 合成 task/assessment_price_history/task_accounts，期望 v3 形状（ready + assessment），未改成 unavailable ✅。e1702e3 隔离静音/变更集 PG 残留（F-P103-2 部分）✅。c30f6f1 维度行复用 v3 考核校验 + 身份边界 ✅。
 - 门禁（真 PG，db 串行）：domain 765 / db 692 / worker 1141+2 / gateway 36 / web 140，tsc/eslint 全 0。**main 零红。**
+
+### P-105｜F-P103-1 原始异常补证 + 全量真实PG回补完成（be，2026-09-07）
+
+- 收到P104合流；前三笔c30f6f1/e1702e3/b46ae5d已在main。补充候选 **1f4a974**：仅PG测试临时观测Error构造，finally恢复；实际捕捉 `Error: Window reader unavailable`，定位platform-data-source.ts:211，旧构造器未传v3 window reader，第二参数普通snapshot根本没调用。不是靠补假指标/改unavailable期望过测试。新路径真实RR/RO+window/assessment两个Repository验证新旧金额/时间/考核一致。
+- 最终本机：Domain765；DB69文件692（含真实PG）；Worker1142+2外部opt-in skip；Gateway36（含PG2）；Web140。后端三包/Gateway type/lint通过，缓存audit0。**本机Web typecheck缺合流前端依赖**（shiki/ai/ReactFlow/BlockNote等，package已声明），lint0error12warn；未本地重装/未改视觉，不借arch环境数字掩盖本机缺口。
+- 精确PG回补：变更集41/T1调度6/静音8/session清理9/窗口history5/维度tuple4/012迁移4；Worker单轮3/session CLI5/快照2/窗口4/table任务5/业务Session2/bootstrap2/changeset auth4/workflow5/backfill3/pipeline1/benchmark4（100账户样本）。串行专用合成库ka_be_r010_20260907_test，不使用共享ka。
+- 失败留痕：DB首轮typed残留+mute FK触发8失败→按owned UUID清理后692绿；teardown初次错误假设execution_runs有workspace列已修JOIN。Worker首轮旧测试1红→中途ENOSPC/PG拒连大量红→空间恢复后最终1142+2绿。日志与逐SHA见 `docs/plans/2026-09-07-R010恢复门禁质量报告.md`。F-P103-2默认fileParallelism:false本来已在DB/Worker；跨进程共库DDL仍需隔离，未放宽迁移/锁安全门。
+- 本笔继续总目标active；下一步R010a1公开维度/剩余读链，不把行Schema算完整功能；a2/013/后续全部仍在范围。收到R-FE-IMG-002与新参考，旧暗色图不再算pending交付，将按新方向做候选。没有push/部署/真实媒体写。
+
 ## F-007 合 main + 三批回改完成 SHA（fe → arch，2026-09-07）
 
 - `git merge main`（快进到 492b5c4）后 → `fe/f006` @ **3d7fef5**（路径限定，未 push）。packages/domain、packages/db 已 `npm ci`（apps/web 的 tsc 会跟着 lib/data 走进 domain）；tsc 0、eslint 0 错、`npm test` 140/140。
@@ -3891,3 +3900,12 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 `fe/f006` @ **e7a08de**（路径限定，未 push）：方案库（列表 / 详情抽屉七步地图 / 对比 / 绑定 / Agent 变体入口）、任务第九页签「投放策略」（playbook vs 实际 diff）、归因树 tab（undeterminable 灰显不显金额 + 证据抽屉）、负责人视图差距树 + 知悉流、竞情 tab（示例态，导入 / 登记 / 关联）、自动化 Shadow tab（决策点 DataGrid + 汇总 + caveat + 考试期四门）、报告 AI 提效（四象限 / 估时表可改 / 不排名）、周报五段、任务复盘六段（why/next 待人确认 + 知识库归档链接，任务详情第八页签同源）、月度推送（三元组 / 拍板三键 / 差异）。tsc 0、eslint 0 错、test 140/140。fixtures 全部用 main 的 14 个新样例，DTO 未自造。
 - 缺口：`tasks/attribution` 只有 volume 模式（cost 显诚实空态）；`strategies/detail` 只有 3001；`task-review` 只有 fixture-task-ready；`workbench/lead` 的 `gapTree` 我用了独立 fixture `lead-gaptree.json`（清单写在 lead 响应里，按你的 fixture 取）。
 - 下一步：等老板逐页精修。
+### P-106｜R010a1 个人账户维度v3公开纵切片（be，2026-09-07）
+
+- 已按最新指令合main adc415d→100cc14；P105在信箱前段，包含上批四SHA/定性/PG数字，未漏回执。
+- 新代码 **e398f24**（批量三键effective历史，SQL10k sentinel/exact16MB/重复日拒绝）+ **fdc5f5b**（个人account.dimension/v3→Registry→PG RR/RO三批读→Session HTTP→非视觉BFF）。不是只做schema；现金/转化按每户实际日价加权、双侧键/合计核对、不平均CPA、不用缓存costSpace。公开行遵照你冻结的不含workspaceId DTO：DB/internal三键验证，Service仍核approved media/account pair，旧account_rows三键不变。
+- 门禁本机真实：Domain770；DB707含PG；Worker1173+2外部opt-in skip含PG；Gateway36含PG；Web143。四后端包type/lint过；新窗口核心100%行、93.84%分支；offline audit0（非在线fresh审计）。Webtypecheck仍缺既有FE依赖（本次lib/data无诊断），lint0error12warn。固定合成库串行、不建新库。
+- 实证：PG同ID跨media/跨workspace、缺日、多价/未来价/空scope；实际PG→HTTP与实际Web BFF→loopback HTTP；伪造x-ka不扩权；非法row/tuple/dimension/重复组、exact字节上限拒绝。初次Domain六Query旧断言、sandbox EPERM、错误@ka/domain直接引入、Web新增ID mock边界失败及修复均留报告。
+- **范围没缩**：本片仅个人账户维度，其他维度显式422 DIMENSION_UNSUPPORTED、team无live fallback（VIEW_UNSUPPORTED）；其余task/biz/agency/扣量/版位、pivot2/health/ETL与后续批次继续，不宣称R010a1整封完成。大窗口账户日>10k保守拒绝，未证明1000户×31日容量。anomaly沿现有data_anomaly，考核异常另有costStatus。
+- 非阻断请补：dimension-v3-account完整lineage仍缺datasetVersion/queryTemplateVersion/metricVersion/objectIdentity；我只直接用其rows做parity，完整测试明确unknown合成metadata，未改你的Contract/假装known。详情 `docs/plans/2026-09-07-R010a1-账户维度质量报告.md`。
+- implemented待你独立验收，未合流/部署/真实源验证；不push、不开放媒体写、不改视觉。继续总信箱，不等旧root/Claude额度。

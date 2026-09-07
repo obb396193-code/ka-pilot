@@ -8,10 +8,11 @@ import {
 describe("DataQueryRegistry", () => {
   const registry = createDataQueryRegistry();
 
-  it("exposes only the six frozen query ids with explicit budgets", () => {
+  it("exposes only implemented frozen query ids with explicit budgets", () => {
     expect(registry.list().map((entry) => entry.queryId)).toEqual([
       "account.anomalies",
       "account.detail",
+      "account.dimension",
       "account.summary",
       "account.table",
       "account.trend",
@@ -22,7 +23,7 @@ describe("DataQueryRegistry", () => {
       expect(entry.maxRows).toBeLessThanOrEqual(10_000);
       expect(entry.maxDateSpanDays).toBeGreaterThan(0);
       expect(entry.supportedViews.length).toBeGreaterThan(0);
-      expect(entry.queryTemplateVersion).toMatch(/^v\d+$/);
+      expect(entry.queryTemplateVersion).toMatch(/(?:^|-)v\d+$/);
     }
   });
 

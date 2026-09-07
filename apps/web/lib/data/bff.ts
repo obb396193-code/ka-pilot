@@ -53,7 +53,7 @@ function expectedStatus(response: DataQueryResponse): number {
   if (code === "UNAUTHORIZED") return 401
   if (code === "FORBIDDEN") return 403
   if (code === "QUERY_NOT_ALLOWED") return 404
-  if (code === "VIEW_UNSUPPORTED") return 422
+  if (code === "VIEW_UNSUPPORTED" || code === "DIMENSION_UNSUPPORTED") return 422
   if (code === "SOURCE_UNAVAILABLE" || code === "UPSTREAM_TIMEOUT") return 503
   if (code === "SOURCE_TRUNCATED" || code === "UPSTREAM_INVALID_RESPONSE") return 502
   if (code === "INTERNAL_ERROR") return 500

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { queryWindowSchema } from "./summary-window.js";
+import { dimensionTypeSchema, dimensionWindowRowsSchema } from "./dimension-window-rows.js";
 
 import {
   canonicalQueryRowSchemaById,
@@ -10,6 +11,7 @@ export const dataViewModeSchema = z.enum(["ka_data", "platform", "reconcile"]);
 export type DataViewMode = z.infer<typeof dataViewModeSchema>;
 
 export const dataQueryIdSchema = z.enum([
+  "account.dimension",
   "account.summary",
   "account.trend",
   "account.table",
@@ -170,6 +172,7 @@ export const stableDataQueryErrorCodeSchema = z.enum([
   "FORBIDDEN",
   "QUERY_NOT_ALLOWED",
   "VIEW_UNSUPPORTED",
+  "DIMENSION_UNSUPPORTED",
   "SOURCE_UNAVAILABLE",
   "SOURCE_TRUNCATED",
   "UPSTREAM_INVALID_RESPONSE",
@@ -214,6 +217,7 @@ export type DataQueryRequest = z.infer<typeof dataQueryRequestSchema>;
 export const sourceQueryResultSchema = z
   .object({
     queryId: dataQueryIdSchema,
+    dimension: dimensionTypeSchema.optional(),
     rowSchemaVersion: z.string().min(1),
     status: z.enum(["ready", "unavailable"]),
     rows: z.array(z.record(z.string(), z.unknown())),
@@ -225,9 +229,14 @@ export const sourceQueryResultSchema = z
   })
   .strict()
   .superRefine((result, context) => {
-    if ((result.queryId === "account.summary" || result.queryId === "account.trend") && !result.lineage.window) {
+    if ((result.queryId === "account.summary" || result.queryId === "account.trend" || result.queryId === "account.dimension") && !result.lineage.window) {
       context.addIssue({ code: "custom", path: ["lineage", "window"], message: "Window queries require their resolved window" });
     }
+    if (result.queryId === "account.dimension") {
+      if (!dimensionWindowRowsSchema.safeParse({ dimension: result.dimension, rows: result.rows }).success) {
+        context.addIssue({ code: "custom", path: ["dimension"], message: "Dimension and rows must match" });
+      }
+    } else if (result.dimension !== undefined) context.addIssue({ code: "custom", path: ["dimension"], message: "Unexpected dimension" });
     const expectedVersion = canonicalRowSchemaVersionByQueryId[result.queryId];
     if (result.rowSchemaVersion !== expectedVersion) {
       context.addIssue({
@@ -238,7 +247,7 @@ export const sourceQueryResultSchema = z
     }
     const rowSchema = canonicalQueryRowSchemaById[result.queryId];
     result.rows.forEach((row, index) => {
-      if (result.queryId === "account.summary") {
+      if (result.queryId === "account.summary" || result.queryId === "account.dimension") {
         const assessment = row.assessment as { priceSource?: unknown } | undefined;
         const expectedSource = result.lineage.workspaceKind === "team" ? "ka_daily" : "history";
         if (assessment?.priceSource !== expectedSource) context.addIssue({ code: "custom", path: ["rows", index], message: "Assessment price source does not match workspace kind" });

@@ -35,8 +35,12 @@ describe("semantic query syntax adapter", () => {
   ])("rejects invalid syntax without leaking input in an issue %j", (input) => {
     expect(semanticQueryRequestSchema.safeParse(input).success).toBe(false);
   });
-  it.each(["dimension", "health", "tier"])("does not fake unregistered %s capability", (query_type) => {
+  it.each(["health", "tier"])("does not fake unregistered %s capability", (query_type) => {
     expect(semanticQueryRequestSchema.safeParse({ query_type, date: "2026-08-24" }).success).toBe(false);
+  });
+  it("registered dimension still needs its strict Registry selector", () => {
+    const body = semanticQueryRequestSchema.parse({ query_type: "dimension", date: "2026-08-24" });
+    expect(() => createDataQueryRegistry().resolve(body.queryId, body.params, "platform")).toThrow();
   });
   it.each([{ filters: { owner: "synthetic" } }, { columns: ["cost"] }, { dimension_type: "task" }])(
     "never drops a valid-but-not-yet-implemented selector %j", (selectors) => {

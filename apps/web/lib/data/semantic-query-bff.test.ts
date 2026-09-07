@@ -63,7 +63,7 @@ for (const kind of ["personal", "team"] as const) {
 test("semantic BFF rejects source/identity/SQL/mixed syntax before fetch", async () => {
   for (const body of [{ query_type: "summary", dataView: "ka_data" }, { query_type: "summary", workspaceKind: "team" },
     { query_type: "summary", filters: { sql: "SELECT 1" } }, { query_type: "summary", queryId: "account.summary" },
-    { queryId: "reconcile.account_daily", params: {} }, { query_type: "dimension" }]) {
+    { queryId: "reconcile.account_daily", params: {} }, { query_type: "unregistered" }]) {
     let calls = 0
     const result = await handleSemanticQueryRequest(incoming(body), { environment, requestId: () => id, fetchImpl: async () => { calls++; return json({}) } })
     assert.equal(result.status, 400); assert.equal(calls, 0)
@@ -90,7 +90,7 @@ test("canonical requests remain unchanged and use the new fixed backend path", a
 })
 
 for (const [code, status] of [["INVALID_REQUEST", 400], ["UNAUTHORIZED", 401], ["FORBIDDEN", 403], ["QUERY_NOT_ALLOWED", 404],
-  ["VIEW_UNSUPPORTED", 422], ["SOURCE_TRUNCATED", 502], ["UPSTREAM_INVALID_RESPONSE", 502],
+  ["VIEW_UNSUPPORTED", 422], ["DIMENSION_UNSUPPORTED", 422], ["SOURCE_TRUNCATED", 502], ["UPSTREAM_INVALID_RESPONSE", 502],
   ["SOURCE_UNAVAILABLE", 503], ["UPSTREAM_TIMEOUT", 503], ["INTERNAL_ERROR", 500]] as const) {
   test(`semantic BFF preserves canonical ${code} errors`, async () => {
     const error = { ok: false, error: { code, message: "Synthetic failure", requestId: id, retryable: false } }

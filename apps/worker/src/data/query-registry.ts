@@ -5,6 +5,7 @@ import {
   dataViewModeSchema,
   queryWindowSchema,
   comparisonWindow,
+  dimensionTypeSchema,
   type AuthorityUseCase,
   type DataQueryId,
   type DataViewMode,
@@ -30,6 +31,7 @@ export interface QueryAuthorityPolicy {
 }
 
 export interface NormalizedQueryParams {
+  dimensionType?: z.infer<typeof dimensionTypeSchema>;
   dateFrom: string;
   dateTo: string;
   media?: string;
@@ -92,7 +94,7 @@ interface QueryDefinition {
 
 export class QueryRegistryError extends Error {
   constructor(
-    readonly code: "QUERY_NOT_ALLOWED" | "VIEW_UNSUPPORTED" | "INVALID_REQUEST",
+    readonly code: "QUERY_NOT_ALLOWED" | "VIEW_UNSUPPORTED" | "DIMENSION_UNSUPPORTED" | "INVALID_REQUEST",
     message: string,
   ) {
     super(message);
@@ -132,6 +134,7 @@ const commonDateFields = {
 };
 
 function normalizeDateParams(input: {
+  dimensionType?: z.infer<typeof dimensionTypeSchema>;
   date?: string;
   dateFrom?: string;
   dateTo?: string;
@@ -160,6 +163,7 @@ function normalizeDateParams(input: {
   return {
     dateFrom,
     dateTo,
+    ...(input.dimensionType === undefined ? {} : { dimensionType: input.dimensionType }),
     ...(input.preset === undefined ? {} : { preset: input.preset }),
     ...(input.compare === undefined ? {} : { compare: input.compare }),
     ...(input.media === undefined ? {} : { media: input.media }),
@@ -308,6 +312,12 @@ function reconciliationSql(params: NormalizedQueryParams, accounts: SqlAccountSc
 }
 
 const DEFINITION_INPUT: QueryDefinition[] = [
+  {
+    queryId: "account.dimension", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 1000,
+    accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-dimension-window-v1",
+    metricVersion: "account-dimension-v3", authorityPolicy: authority("cross_media_operations", "platform"),
+    paramsSchema: normalizedSchema({ ...commonDateFields, preset: queryWindowSchema.shape.preset.optional(), dimensionType: dimensionTypeSchema }),
+  },
   {
     queryId: "account.anomalies",
     supportedViews: ["platform"],
@@ -458,6 +468,9 @@ export class DataQueryRegistry {
       throw new QueryRegistryError("INVALID_REQUEST", "Invalid query parameter set");
     }
     assertDateBudget(parsedParams.data, entry.maxDateSpanDays);
+    if (queryId.data === "account.dimension" && parsedParams.data.dimensionType !== "account") {
+      throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This dimension is not available for this source");
+    }
     if (parsedParams.data.taskId !== undefined && dataView.data !== "platform" &&
       (queryId.data === "account.summary" || queryId.data === "account.trend")) {
       throw new QueryRegistryError("VIEW_UNSUPPORTED", "Task windows are not available for this source");

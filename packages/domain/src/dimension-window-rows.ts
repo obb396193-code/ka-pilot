@@ -9,6 +9,7 @@ const dimensionFields = {
   assessment: windowAssessmentSchema,
   anomaly: z.boolean(),
 };
+export const dimensionTypeSchema = z.enum(["account", "task", "biz", "agent_type", "resource_position", "bid_tool", "ubp", "deduction_range"]);
 
 const groupedRowSchema = z.object(dimensionFields).strict().superRefine(refineWindowMetricAssessment);
 const agentTypeRowSchema = z.object({
@@ -26,6 +27,7 @@ export const accountDimensionWindowRowSchema = z.object({
     context.addIssue({ code: "custom", path: ["key"], message: "Account dimension key must preserve media and accountId" });
   }
 });
+export const dimensionWindowRowSchema = z.union([accountDimensionWindowRowSchema, agentTypeRowSchema, groupedRowSchema]);
 
 /** Row-only boundary. Not an authorization check, source capability registry or full response envelope.
  * workspaceId comes from the trusted source/session boundary, never from a displayed dimension key.
