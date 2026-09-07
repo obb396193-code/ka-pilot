@@ -168,8 +168,15 @@ describe("data API HTTP composition", () => {
   }
 
   it("runs the actual Web BFF through loopback Session and query HTTP composition", async () => {
-    const platform = { query: vi.fn<DataSourceQueryPort["query"]>(async (resolved) => ready(resolved.queryId, "canonical",
-      [canonicalRow(resolved.queryId, 11, auth.workspaceId, "account-1")])) };
+    const platform = { query: vi.fn<DataSourceQueryPort["query"]>(async (resolved) => {
+      const row = canonicalRow(resolved.queryId, 11, auth.workspaceId, "account-1");
+      if (resolved.queryId === "account.dimension" && resolved.params.dimensionType !== "account") {
+        const source = ready(resolved.queryId, "canonical", [{ key: "synthetic-group", label: "Synthetic",
+          metrics: row.metrics, assessment: row.assessment, anomaly: row.anomaly }]);
+        source.dimension = resolved.params.dimensionType; return source;
+      }
+      return ready(resolved.queryId, "canonical", [row]);
+    }) };
     // Synthetic auth/data ports; the BFF, fetch transport, HTTP handler, Registry,
     // query service and each package's response decoder are real, not a PG test.
     const sessionHttpService = { current: async (_token: string, requestId: string) => {
@@ -182,9 +189,9 @@ describe("data API HTTP composition", () => {
     const script = `
       const {handleSemanticQueryRequest} = await import(process.argv[1]);
       const results=[];
-      for (const query_type of ['summary','trend','table','dimension']) {
+      for (const [query_type, dimension_type] of [['summary'],['trend'],['table'],['dimension','account'],['dimension','task'],['dimension','biz']]) {
         const request=new Request('http://localhost/api/internal/query', {method:'POST',headers:{cookie:'ka_session=synthetic-session-token-at-least-32-characters'},
-          body:JSON.stringify({query_type,...(query_type==='dimension'?{dimension_type:'account'}:{}),date:'2026-08-24',filters:{media:'KUAISHOU',account_id:'account-1'}})});
+          body:JSON.stringify({query_type,...(dimension_type?{dimension_type}:{}),date:'2026-08-24',filters:{media:'KUAISHOU',account_id:'account-1'}})});
         results.push(await handleSemanticQueryRequest(request,{environment:{KA_DATA_BACKEND_ORIGIN:process.argv[2],KA_DATA_SERVICE_TOKEN:process.argv[3]},requestId:()=> 'bff-real-http'}));
       }
       process.stdout.write(JSON.stringify(results));
@@ -192,10 +199,10 @@ describe("data API HTTP composition", () => {
     const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e", script, moduleUrl, baseUrl, internalToken],
       { timeout: 15000, maxBuffer: 1024 * 1024 });
     const results = JSON.parse(stdout) as { status: number; requestId: string; body: { ok: boolean; data?: { source: { queryId: string } } } }[];
-    expect(results.map((item) => item.status)).toEqual([200, 200, 200, 200]);
-    expect(results.map((item) => item.body.data?.source.queryId)).toEqual(["account.summary", "account.trend", "account.table", "account.dimension"]);
+    expect(results.map((item) => item.status)).toEqual([200, 200, 200, 200, 200, 200]);
+    expect(results.map((item) => item.body.data?.source.queryId)).toEqual(["account.summary", "account.trend", "account.table", "account.dimension", "account.dimension", "account.dimension"]);
     expect(results.every((item) => item.requestId === "bff-real-http")).toBe(true);
-    expect(platform.query).toHaveBeenCalledTimes(4);
+    expect(platform.query).toHaveBeenCalledTimes(6);
   });
 
   it.each(["tuple", "dimension", "cash", "duplicate", "bytes"])("account dimension rejects malicious source %s", async (change) => {

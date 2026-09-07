@@ -7,7 +7,7 @@ import type { SemanticQueryScope } from "./semantic-query-types.js";
 const MAX_GROUPS = 10_000;
 export interface WindowAccountAssessmentCounts { total: number; determinable: number; onTarget: number }
 export interface AccountDailyAssessment {
-  workspaceId: string; media: string; accountId: string; input: DailyAssessmentInput;
+  workspaceId: string; media: string; accountId: string; taskId: string | null; bizName: string | null; input: DailyAssessmentInput;
 }
 const assessmentFromSql = `FROM expected_metric AS metric
   JOIN accounts AS account ON account.workspace_id=metric.workspace_id
@@ -67,6 +67,14 @@ function assertBounded(rows: unknown[]): void {
   }
 }
 
+function nullableLabel(value: unknown): string | null {
+  if (value === null) return null;
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new SemanticQueryContractError("Invalid assessment membership metadata");
+  }
+  return value;
+}
+
 /** One SQL snapshot joins expected account-days to their actual effective history.
  * Groups collapse equal day/version members without averaging prices or CPA.
  * Public request authorization and the surrounding multi-query RR transaction belong to the service.
@@ -80,12 +88,14 @@ export class WindowAssessmentRepository {
   async loadByAccount(scope: SemanticQueryScope): Promise<AccountDailyAssessment[]> {
     const filter = assessmentFilter(scope);
     const result = await this.connection.query<AssessmentGroupRow & {
-      workspace_id: string; media: string; account_id: string;
+      workspace_id: string; media: string; account_id: string; task_id: string | null; biz_name: string | null;
     }>(`${EXPECTED_METRIC_CTE}
       SELECT metric.workspace_id, metric.media, metric.account_id, metric.ds::text AS ds,
         metric.cash_cost, metric.real_conversion, assessment.id::text AS version_id,
-        assessment.price, assessment.effective_date::text AS effective_date
+        assessment.price, assessment.effective_date::text AS effective_date,
+        relation.task_id, task.biz_name
       ${assessmentFromSql}
+      LEFT JOIN tasks AS task ON task.workspace_id=relation.workspace_id AND task.task_id=relation.task_id
       WHERE ${filter.whereSql}
       ORDER BY metric.media COLLATE "C", metric.account_id COLLATE "C", metric.ds
       LIMIT 10001`, filter.values);
@@ -102,7 +112,8 @@ export class WindowAssessmentRepository {
         throw new SemanticQueryContractError("Invalid account assessment scope");
       }
       seen.add(key);
-      return { workspaceId: scope.workspaceId, media: row.media, accountId: row.account_id, input: decodeAssessment(row) };
+      return { workspaceId: scope.workspaceId, media: row.media, accountId: row.account_id,
+        taskId: nullableLabel(row.task_id), bizName: nullableLabel(row.biz_name), input: decodeAssessment(row) };
     });
   }
 
