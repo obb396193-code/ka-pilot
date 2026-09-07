@@ -51,3 +51,5 @@ export * from "./changeset-values.js";
 
 // be: operational query row boundary; source/Registry integration remains separate.
 export * from "./operational-query-rows.js";
+// be: bounded condition interpreter; runtime readers and public explain are separate.
+export * from "./condition-tree.js";
