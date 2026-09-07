@@ -98,7 +98,7 @@ const etlColumns = etlHelper.columns([
   etlHelper.accessor("status", { header: "状态", meta: { label: "状态" }, cell: ({ row }) => <StatusChip tone={row.original.status === "done" ? "success" : row.original.status === "failed" ? "critical" : "progress"}>{row.original.status === "done" ? "完成" : row.original.status === "failed" ? `失败${row.original.failedStage ? ` · ${row.original.failedStage}` : ""}` : row.original.status === "running" ? "运行中" : "排队"}</StatusChip> }),
   etlHelper.accessor("startedAt", { header: "开始", meta: { label: "开始" }, cell: ({ getValue }) => <span className="tabular-nums">{fmtTime(getValue())}</span> }),
   etlHelper.accessor((row) => row.finishedAt ?? "", { id: "finished", header: "结束", meta: { label: "结束" }, cell: ({ row }) => row.original.finishedAt ? <span className="tabular-nums">{fmtTime(row.original.finishedAt)}</span> : <MissingValue /> }),
-  etlHelper.accessor((row) => row.rows?.raw ?? null, { id: "rows", header: "行数 raw / canonical", meta: { label: "行数", align: "right" }, cell: ({ row }) => row.original.rows ? <span className="tabular-nums">{row.original.rows.raw} / {row.original.rows.canonical}</span> : <MissingValue /> }),
+  etlHelper.accessor((row) => row.rows?.raw ?? null, { id: "rows", header: "行数 原始 / 清洗后", meta: { label: "行数", align: "right" }, cell: ({ row }) => row.original.rows ? <span className="tabular-nums">{row.original.rows.raw} / {row.original.rows.canonical}</span> : <MissingValue /> }),
   etlHelper.accessor((row) => row.warnings.join(","), { id: "warnings", header: "警告", meta: { label: "警告" }, cell: ({ row }) => row.original.warnings.length ? <span className="flex flex-wrap gap-1">{row.original.warnings.map((warning) => <Badge key={warning} variant="outline" className="text-[10px] text-status-warning">{warning}</Badge>)}</span> : <span className="text-xs text-muted-foreground">−</span> }),
   actionsColumn<EtlRun>((run) => <DropdownMenuItem onSelect={() => toast("已重跑", { description: `接口接入后生效（当前为示例）` })}><IconRefresh />重跑</DropdownMenuItem>),
 ])
@@ -206,7 +206,7 @@ function AssetsTab() {
 function DiagnosticsTab() {
   const data = isOk(reconcileFixture) ? reconcileFixture.data : null
   if (!data) return null
-  const sides = [{ key: "kaData", label: "ka_data（权威）", side: data.kaData }, { key: "platform", label: "奇航 canonical（对照）", side: data.platform }]
+  const sides = [{ key: "kaData", label: "KA Data（权威源）", side: data.kaData }, { key: "platform", label: "奇航（对照源）", side: data.platform }]
   return (
     <div className="flex flex-col gap-4">
       <Card>
