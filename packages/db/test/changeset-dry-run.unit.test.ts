@@ -48,6 +48,12 @@ describe("changeset dry-run hard gate (mock SQL)", () => {
     expect(c.query.mock.calls.some(([sql]) => sql.includes("INSERT INTO execution_runs"))).toBe(false);
     expect(c.query.mock.calls.at(-1)![0]).toBe("ROLLBACK"); expect(c.release).toHaveBeenCalledOnce();
   });
+  it("maps expired drafts to the same controlled state conflict at prepare and record", async () => {
+    const c = setup({ ttl: now.toISOString() });
+    await expect(c.repository.prepareDryRun({ workspaceId: ws, changeSetId: id, now })).rejects.toMatchObject({ code: "INVALID_STATE" });
+    await expect(c.repository.recordDryRun(result)).rejects.toMatchObject({ code: "INVALID_STATE" });
+    expect(c.query.mock.calls.some(([sql]) => sql.includes("INSERT INTO execution_runs"))).toBe(false);
+  });
   it("rolls back and releases the same transaction when queue creation fails", async () => {
     const c = setup({ hash, evidence: true, queueFails: true });
     await expect(c.repository.confirm({ workspaceId: ws, changeSetId: id, now, currentValues })).rejects.toThrow("synthetic queue failure");

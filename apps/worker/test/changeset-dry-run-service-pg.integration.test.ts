@@ -93,4 +93,12 @@ describe("dry-run service to actual PG (synthetic preflight port, no media)", ()
     await expect(service.run(draft.id, auth)).rejects.toMatchObject({ code: "INVALID_STATE" });
     expect(await runs(draft.id)).toEqual([]);
   });
+  it("TTL shortened concurrently is a controlled state conflict, not a storage 500", async () => {
+    const draft = await create();
+    const service = new ChangeSetDryRunService({ store, now: () => now, preflight: { check: async input => {
+      await pool.query("UPDATE changesets SET ttl_expire_at=$2 WHERE id=$1", [draft.id, now]); return evidence(input);
+    } } });
+    await expect(service.run(draft.id, auth)).rejects.toMatchObject({ code: "INVALID_STATE" });
+    expect(await runs(draft.id)).toEqual([]);
+  });
 });

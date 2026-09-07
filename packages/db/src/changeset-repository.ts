@@ -259,8 +259,9 @@ export class ChangeSetRepository {
       const row = await client.query<HeaderRow>(`SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2 FOR UPDATE`, [input.workspaceId, input.changeSetId]);
       const header = requireHeader(row.rows[0], input.changeSetId);
       await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
-      if (header.status !== "draft") throw new ChangeSetPreconditionError("INVALID_STATE");
-      if (header.ttl_expire_at === null) throw new Error("changeset has no TTL");
+      if (header.status !== "draft" || header.ttl_expire_at === null || header.ttl_expire_at <= input.now) {
+        throw new ChangeSetPreconditionError("INVALID_STATE");
+      }
       assertChangeSetConfirmable({ status: header.status, ttlExpireAt: header.ttl_expire_at, now: input.now });
       const changeset = await assemble(client, header);
       const hash = draftHash(header, changeset.items);
@@ -288,8 +289,9 @@ export class ChangeSetRepository {
         header.account_id !== input.expectedScope.accountId || header.initiator !== input.expectedScope.initiatorUserId ||
         header.credential_owner_user_id !== input.expectedScope.credentialOwnerUserId)) throw new ChangeSetAuthorizationError();
       await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
-      if (header.status !== "draft") throw new ChangeSetPreconditionError("INVALID_STATE");
-      if (header.ttl_expire_at === null) throw new Error("changeset has no TTL");
+      if (header.status !== "draft" || header.ttl_expire_at === null || header.ttl_expire_at <= input.now) {
+        throw new ChangeSetPreconditionError("INVALID_STATE");
+      }
       assertChangeSetConfirmable({ status: header.status, ttlExpireAt: header.ttl_expire_at, now: input.now });
       const storedItems = await loadItems(client, header);
       const hash = draftHash(header, storedItems);
