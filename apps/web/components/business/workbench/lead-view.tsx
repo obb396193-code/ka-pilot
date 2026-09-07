@@ -5,13 +5,14 @@ import { IconCheck, IconX } from "@tabler/icons-react"
 import { toast } from "sonner"
 
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
-import { ExampleBlock } from "@/components/business/state/page-state"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import type { DisplayMetric } from "@/lib/data/contracts"
 import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
 import { windowLabel } from "@/lib/fixtures/data-analysis"
 import { blockerKindLabel, leadFixture, leadKindLabel, type LeadItem } from "@/lib/fixtures/workbench"
+import { GapTree } from "@/components/business/data/gap-tree"
+import { fyiFixture, fyiKindLabel, leadGapTreeFixture } from "@/lib/fixtures/v17"
 import { KpiCards } from "./kpi-cards"
 
 // 负责人视图（v1.5.1 ④ = 原型 P02 简化，不加导航）：六卡 + 风险与机会 + 团队阻塞 + 需要拍板 + 经营简报；impact 只用已冻公式，不做预估收益
@@ -67,15 +68,25 @@ export function LeadView() {
           </Card>
         </div>
       </div>
+      <div className="grid gap-4 @5xl/main:grid-cols-12">
+        <Card className="@5xl/main:col-span-8">
+          <CardHeader><CardTitle>差距树</CardTitle><CardDescription>workbench/lead.gapTree · 任务聚合版；灰色 = 数据不足，不估「可优化空间」</CardDescription></CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            {isOk(leadGapTreeFixture) ? <GapTree tree={leadGapTreeFixture.data} /> : null}
+            {isOk(leadGapTreeFixture) && leadGapTreeFixture.data.byTask?.length ? <div className="flex flex-wrap gap-2 text-xs">{leadGapTreeFixture.data.byTask.map((task) => <Link key={task.taskId} href={`/tasks/${encodeURIComponent(task.taskId)}`} className="rounded-full border px-2.5 py-1 hover:bg-muted">{task.taskName} · 缺口 {mv(task.gap)}</Link>)}</div> : null}
+          </CardContent>
+        </Card>
+        <Card className="@5xl/main:col-span-4">
+          <CardHeader><CardTitle>知悉流</CardTitle><CardDescription>GET /workbench/lead/fyi · 不需处理，只让你知道</CardDescription></CardHeader>
+          <CardContent><ol className="flex flex-col gap-2">{isOk(fyiFixture) ? fyiFixture.data.items.map((item, index) => <li key={`${item.at}-${index}`} className="flex flex-col gap-0.5 text-sm"><span className="flex items-center gap-2"><TypeChip>{fyiKindLabel[item.kind]}</TypeChip><span>{item.summary}</span></span><span className="text-[11px] text-muted-foreground tabular-nums">{fmtTime(item.at)}</span></li>) : null}</ol></CardContent>
+        </Card>
+      </div>
       <Card>
         <CardHeader><CardTitle>经营简报</CardTitle><CardDescription>{data.brief.status === "ready" ? "由日报负责人版生成" : "数据未就绪，不生成假简报"}</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-2">
           {data.brief.status === "ready" ? data.brief.sections.map((section) => <div key={section.key} className="rounded-lg border px-3 py-2 text-sm"><div className="text-xs font-medium text-muted-foreground">{section.title}</div><div>{section.text}</div></div>) : <p className="text-sm text-muted-foreground">pending_data</p>}
         </CardContent>
       </Card>
-      <ExampleBlock unlock="目标差距树（3.7）与「操作后观察结果」统计（7.5）为 P2" inline>
-        <div className="rounded-xl border px-4 py-3 text-sm text-muted-foreground">目标差距树 · 操作后观察结果</div>
-      </ExampleBlock>
     </div>
   )
 }
