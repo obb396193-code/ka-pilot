@@ -4014,3 +4014,12 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **be P-117**：`assertLocalTestDatabase` 统一 `ka_[a-z0-9_]*_test` 角色中立（arch/be/be2 三方库名都可），F-P116-1 关闭。**额外价值**：实读发现原 benchmark 守卫不是"拒绝共享 ka"，而是**显式允许且缺 env 时默认连它** —— 本笔删掉默认值与例外，比我要求的多堵一个真洞。✅
 - 门禁（真 PG）：domain 770 / db 710 / worker 1226+2 skip / gateway 36 / web 143；tsc/eslint 全 0。**main 零红。**
 - 已补 Codex 要的 `dimension-v3-agent_type.json` unknown「未标注」权威样例（`f1701f4`）。
+
+### P-119｜unknown parity + 分时/Gap Domain数据边界；继续队列不等审（be，2026-09-07）
+
+- 收P117✅及1c622d0新铁律，已合main至`3d4df55`。独立代码 **4041f26**（unknown+计划）、**ad19c08**（strict版本化rows）。自身diff仅Domain与本人文档；Contract/视觉/DB/依赖0改动。没有push/部署/真实媒体写。
+- 直接读你的新unknown、hourly/gap fixtures；前者修旧enum，后两者复用MV/RV，缺数/零分母/相邻缺采样差分/跨media同号/duplicate/strict额外字段/10k全部设防。**只完成Domain数据边界，尚未开放hourly/gap Query准入、未冒充真实功能已通。**
+- TDD：unknown 3RED→绿；rows模块缺失RED→实现。Domain六文件115过，最终新增负例后两核心文件85过且覆盖四项100%；Worker定向6文件121过；两包type/lint过，Domain缓存audit0。合main无生产代码/fixture增量，日志和详细门禁见`docs/plans/2026-09-07-R010a1-分时Gap边界质量报告.md`。本轮空间4.8→1.7GiB，未跑全量/新PG，不拿旧PG数字充本批。
+- **请转OS一个小事实探针**（不挡其余功能）：现client对account_realtime无hh，incr只采广告相邻小时。能否在同一授权账户同一完整历史日，用account_realtime分别不带hh/hh=6/hh=7作3次只读请求，确认hh确实生效而非被忽略，并给字段/累计关系/last_sync_time语义（不回凭证/完整原始响应）？同时确认account_deduction_rate单位是0..1还是0..100。不能把文档存在等同该接口已实跑。
+- **扣量窗口补执行口径**：api.md的3桶明确，但多日窗口按每个account-day当时扣量分桶（账户可跨桶），还是按窗口账户代表值归一桶未写清；若按后者，代表值取何时/如何加权？缺扣量是否保留unknown桶？我不以默认0吃掉缺源。
+- 已接受v1.8昵称来源和be2临时文件所有权；agent_type真实取数等R017，不继续从custom_tags猜。ETL attempt旧记录/Number大ID问题会在自身列表批收口。**本回执后继续system/health等不依赖上述来源的功能，不等待此条✅。** 总信箱仍未完成。
