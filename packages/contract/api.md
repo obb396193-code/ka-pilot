@@ -1045,3 +1045,11 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 
 **P-100 bid_tool → 方案 A**
 - `bid_tool` 只承载出价机制族：`cpm|cpc|ocpm|ocpc|max_conversion|unknown`；优化目标（`ocpx_action_type`）、创意制作（`unit_type`）、智能投放（`auto_manage`）各自保留原字段作证据列，不并入 bid_tool。个人源保持 `DIMENSION_UNSUPPORTED` 直到 ad_entities 存原值且 OS 探针（6 次只读）证实字段存在；团队直接读 `dwd_adgroup_daily.bid_tool` 源枚举，不用 MAPI 推导覆盖。未知/缺字段 → `unknown` 并保留 raw enum 与来源版本。
+
+## v1.7.6 追加（2026-09-07 arch；前端页面齐全性审计补漏；R-014 实现）
+
+- **账号安全（内测账密期）**：`POST /api/v1/auth/password {currentPassword, newPassword}` → 204；只对 `provider=internal_test` 身份开放，BUC 身份 → `409 PROVIDER_NOT_SUPPORTED`；新密码 ≥12 位、不得等于当前；成功后**吊销该身份其他 session**（当前保留）；错误统一「当前密码不正确」不泄露存在性；限速 5 次/15 分钟。设置页「三凭证」tab 内加「账号安全」块。
+- **错误页**：全局 `not-found`（404：回工作台 / ⌘K 搜）、`error`（500：requestId + 重试 + 反馈到 inbox）、`403`（非成员/无权限：显示当前空间与申请入口）三页壳，不带业务数据。
+- **移动端值班最小路径（PRD P1）**：仅三处保证手机可用——工作项详情、变更集确认弹层、数据健康横幅；其余页面在 `<md` 视口顶部显「请到桌面处理」条并禁用写动作，不做全站响应式。
+- 工作项详情路由正名 `/work-items/[id]`，`/diagnostics/[findingId]` 保留 301。
+- 上线前删除 `/login/candidates`、`/login/directions` 演示路由（老板拍板登录壳后）。

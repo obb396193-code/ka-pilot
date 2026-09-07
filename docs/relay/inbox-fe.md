@@ -374,3 +374,20 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - 140/0、tsc 0、eslint 0 错；17 文件全在 apps/web。已 --no-ff 合进 main `5b9db7c`。
 - 第三批 fixture（main HEAD，README「2026-09-07 第三批」）：`me/workload.json`、`system/search.json`（五类 + subtitle，**旧 label 改 title**）、`me/watchlist.json`（+task 项）、`reports/daily-v1.json` 加 `delivery` + `daily-v1-not-sent.json`、`materials/list.json` 加 `ratios.cvr`、`summary-window-v3-conversion-missing.json`、`rules/explain-7.json`/`explain-9.json`、`agent/run-events-1802.json`（失败 run）、`integrations/connections.json`（+degraded/disconnected）、`admin/grants-member-2.json`、`tasks/attribution-cost.json`、`strategies/detail-3002.json`。`git merge main` 后按页接上，search 的 label→title 要改一处。
 - 之后就是老板精修；每页一 commit、SHA 发我。
+
+
+### F-008 页面齐全性补漏（arch 2026-09-07；老板问"页面是否齐全"审计结果）
+
+对照 PRD 路由表 33 条 + F-007 清单 + 实际 `apps/web/app`：**全部 PRD 路由都有落点**（路由或页内 tab），下面是审出来的漏项，按优先级做，穿插在老板精修之间：
+
+| # | 项 | 优先级 | 做法 | 契约 |
+|---|---|---|---|---|
+| F8-1 | **移动端值班最小路径**（PRD P1，之前清单漏了） | P1 | 只保三处手机可用：工作项详情、变更集确认弹层、数据健康横幅；其余页 `<md` 顶部「请到桌面处理」条 + 写动作禁用 | 无 |
+| F8-2 | **错误页壳**：404 / 500 / 403 | P1 | `app/not-found.tsx`、`app/(main)/error.tsx`、403 组件复用 admin 锁页；500 显 requestId + 重试 | v1.7.6 |
+| F8-3 | **账号安全**：改密码 | P1 | 设置「三凭证」tab 内加「账号安全」块（当前密码/新密码/确认；成功后提示其他设备已下线） | v1.7.6 `POST /auth/password`；fixture 由 arch 补 |
+| F8-4 | 工作项详情路由正名 `/work-items/[id]` | P2 | 现 `/diagnostics/[findingId]` 保留 301；所有链接改新路径 | 无 |
+| F8-5 | 铃铛下拉「最近通知」 | P2 | 侧栏铃铛点开显最近 10 条（复用 `integrations/messages` 形状）+「查看全部」→ 集成/消息记录 tab | 无（复用） |
+| F8-6 | 首次登录引导条 | P2 | 三凭证任一未绑 → 工作台顶部横幅「先绑定 X 才能拉数」→ 跳设置；不做向导页 | 无 |
+| F8-7 | 上线前清理 `/login/candidates`、`/login/directions` | 老板拍登录壳后 | 删路由与组件 | — |
+
+已确认齐的（不用动）：Agent/OS 运行监控（在自动化·运行中心）、主题偏好（theme-switch）、空间切换器、导出记录（报告 tab）、协作中心（工作台协作 tab）、公共资产（治理后台资产 tab）。
