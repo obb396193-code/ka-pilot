@@ -369,13 +369,9 @@ describe("contract migrations", () => {
     `);
     expect(tenantRows.rows[0]?.count).toBe("3");
 
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
+    // 从头部一路退到 006（含）——不写死步数，新批次落地也不错位；下一步退 005 必须被守卫拒绝
+    expect(await runMigrations({ databaseUrl, direction: "down", count: windowSize("006") }))
+      .toHaveLength(windowSize("006"));
     await expect(
       runMigrations({ databaseUrl, direction: "down", count: 1 }),
     ).rejects.toThrow(/same account_id exists in multiple media/i);
