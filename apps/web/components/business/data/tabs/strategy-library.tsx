@@ -72,18 +72,18 @@ export function StrategyLibrary() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
         <Tabs value={tab} onValueChange={(value) => setTab(value as LibraryTab)}><TabsList>{libraryTabs.map((item) => <TabsTrigger key={item.value} value={item.value}>{item.label}</TabsTrigger>)}</TabsList></Tabs>
-        <span className="text-xs text-muted-foreground">GET /strategies?status= · 无置信度，只显样本与验证计数</span>
-        <div className="ml-auto flex gap-2"><Button size="sm" variant="outline" onClick={() => openAgentDrawer("基于「双成本控量起量」生成一个对比方案：把预算节奏改成 30/70，其他不变")}><IconSparkles />生成对比方案</Button><Button size="sm" onClick={() => toast("新建方案草稿", { description: "POST /strategies {name, applicable, playbook} → draft" })}><IconPlus />新建方案</Button></div>
+        <span className="text-xs text-muted-foreground">无置信度，只显样本与验证计数</span>
+        <div className="ml-auto flex gap-2"><Button size="sm" variant="outline" onClick={() => openAgentDrawer("基于「双成本控量起量」生成一个对比方案：把预算节奏改成 30/70，其他不变")}><IconSparkles />生成对比方案</Button><Button size="sm" onClick={() => toast("新建方案草稿", { description: "已保存为草稿" })}><IconPlus />新建方案</Button></div>
       </div>
       {filtered.length ? <div className="grid gap-4 @3xl/main:grid-cols-2 @6xl/main:grid-cols-3">{filtered.map((item) => <StrategyCard key={item.id} item={item} onOpen={setActive} onCompare={setCompareWith} />)}</div> : <div className="rounded-xl border border-dashed px-6 py-10 text-center text-sm text-muted-foreground">这一类还没有方案</div>}
 
       <Sheet open={active !== null} onOpenChange={(open) => { if (!open) setActive(null) }}>
         <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-3xl">
-          <SheetHeader><SheetTitle className="flex items-center gap-2">{active?.name} <span className="text-sm font-normal text-muted-foreground">v{active?.version}</span>{active ? <StatusChip tone={strategyStatusMeta[active.status].tone}>{strategyStatusMeta[active.status].label}</StatusChip> : null}</SheetTitle><SheetDescription>GET /strategies/:id · 更新 {active ? fmtTime(active.updatedAt) : ""}</SheetDescription></SheetHeader>
+          <SheetHeader><SheetTitle className="flex items-center gap-2">{active?.name} <span className="text-sm font-normal text-muted-foreground">v{active?.version}</span>{active ? <StatusChip tone={strategyStatusMeta[active.status].tone}>{strategyStatusMeta[active.status].label}</StatusChip> : null}</SheetTitle><SheetDescription>更新 {active ? fmtTime(active.updatedAt) : ""}</SheetDescription></SheetHeader>
           <div className="flex flex-col gap-4 px-4 pb-6">
             <div className="flex flex-wrap gap-2">
               <Button size="sm" onClick={() => { setBinding(active); setBindTask("") }}><IconLink />绑定任务</Button>
-              <Button size="sm" variant="outline" onClick={() => toast("已复制为草稿", { description: `POST /strategies/${active?.id}/copy → copied_from` })}><IconCopy />复制修改</Button>
+              <Button size="sm" variant="outline" onClick={() => toast("已复制为草稿", { description: `新方案会记录复制来源` })}><IconCopy />复制修改</Button>
               <Button size="sm" variant="outline" onClick={() => { if (active) setCompareWith(active) }}><IconGitCompare />对比</Button>
               <Button size="sm" variant="ghost" onClick={() => openAgentDrawer(`基于方案「${active?.name}」生成一个变体，只改预算节奏，给出证据引用`)}><IconSparkles />Agent 生成变体</Button>
             </div>
@@ -120,7 +120,7 @@ export function StrategyLibrary() {
 
       <Dialog open={compareWith !== null} onOpenChange={(open) => { if (!open) setCompareWith(null) }}>
         <DialogContent className="sm:max-w-2xl">
-          <DialogHeader><DialogTitle>方案对比</DialogTitle><DialogDescription>GET /strategies/:id/compare?with= · 逐字段并排（fixture 固定为 3001 vs 3002）</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>方案对比</DialogTitle><DialogDescription>逐字段并排（示例固定为这两个方案）</DialogDescription></DialogHeader>
           {compare ? (
             <Table>
               <TableHeader className="bg-muted"><TableRow><TableHead>字段</TableHead><TableHead>{compare.left.name}</TableHead><TableHead>{compare.right.name}</TableHead></TableRow></TableHeader>
@@ -136,7 +136,7 @@ export function StrategyLibrary() {
 
       <Dialog open={binding !== null} onOpenChange={(open) => { if (!open) setBinding(null) }}>
         <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>绑定任务 · {binding?.name}</DialogTitle><DialogDescription>POST /strategies/:id/bind {"{task_id}"} · 绑定后任务详情「投放策略」页签显示 playbook 与实际配置差异</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>绑定任务 · {binding?.name}</DialogTitle><DialogDescription>绑定后任务详情「投放策略」页签显示 playbook 与实际配置差异</DialogDescription></DialogHeader>
           <div className="grid gap-1.5"><Label>任务</Label><Select value={bindTask} onValueChange={setBindTask}><SelectTrigger><SelectValue placeholder="选任务" /></SelectTrigger><SelectContent>{tasks.map((task) => <SelectItem key={task.taskId} value={task.taskId}>{task.taskName} · {stageLabel(task.stage)}</SelectItem>)}</SelectContent></Select></div>
           <DialogFooter><Button variant="outline" onClick={() => setBinding(null)}>取消</Button><Button disabled={!bindTask} onClick={() => { toast.success("已绑定", { description: "验证窗口从绑定时刻起算" }); setBinding(null) }}>绑定</Button></DialogFooter>
         </DialogContent>

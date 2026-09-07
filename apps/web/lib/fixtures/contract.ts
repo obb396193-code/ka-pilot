@@ -51,6 +51,8 @@ export function isMissing(value: MetricValue | RatioValue | null | undefined): b
 export const costStatusTone: Record<Exclude<CostStatus, null>, string> = { green: "text-status-success", yellow: "text-status-warning", red: "text-status-critical" }
 export const costStatusDot: Record<Exclude<CostStatus, null>, string> = { green: "bg-status-success", yellow: "bg-status-warning", red: "bg-status-critical" }
 export const costStatusLabel: Record<Exclude<CostStatus, null>, string> = { green: "达标", yellow: "单日超线 · 累计达标", red: "累计超线" }
+export const costStatusReasonLabel: Record<string, string> = { window_ok: "窗口累计达标", day_over_window_ok: "单日超线，累计仍达标", window_over: "窗口累计超线", cash_missing: "现金消耗缺数，无法判定", conversion_missing: "转化数缺数，无法判定", assessment_missing: "没有考核价，无法判定" }
+export const costStatusReasonText = (reason: string | null | undefined) => (reason ? costStatusReasonLabel[reason] ?? reason : null)
 
 export function fmtDate(value: string | null | undefined): string {
   if (!value) return "−"

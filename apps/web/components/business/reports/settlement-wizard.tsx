@@ -112,12 +112,12 @@ export function SettlementWizard() {
                 <>
                   <p className="text-sm"><StatusChip tone="success">已冻结</StatusChip> {frozen.period} · 模板 {frozen.templateVersion} · {frozen.confirmedBy.name} · {fmtTime(frozen.confirmedAt)}</p>
                   <p className="font-mono text-xs text-muted-foreground">指纹 {frozen.fingerprint.slice(0, 16)}…</p>
-                  <div><p className="mb-1 text-xs font-medium text-muted-foreground">结算行</p>{frozen.lines.map((line) => <div key={line.lineId} className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"><span>行 {line.rowKey}{line.taskId ? ` · 任务 ${line.taskId}` : ""} · {line.checks.map((check) => `${template.checks.find((item) => item.checkKey === check.checkKey)?.label ?? check.checkKey} ${checkLabel[check.status]}`).join("，")}</span>{line.workItemId ? <TypeChip>已转工作项</TypeChip> : <Button size="sm" variant="outline" onClick={() => toast("已转工作项", { description: `POST /settlements/${frozen.id}/lines/${line.lineId}/work-item` })}>差异转工作项</Button>}</div>)}</div>
+                  <div><p className="mb-1 text-xs font-medium text-muted-foreground">结算行</p>{frozen.lines.map((line) => <div key={line.lineId} className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"><span>行 {line.rowKey}{line.taskId ? ` · 任务 ${line.taskId}` : ""} · {line.checks.map((check) => `${template.checks.find((item) => item.checkKey === check.checkKey)?.label ?? check.checkKey} ${checkLabel[check.status]}`).join("，")}</span>{line.workItemId ? <TypeChip>已转工作项</TypeChip> : <Button size="sm" variant="outline" onClick={() => toast("已转工作项", { description: `接口接入后生效（当前为示例）` })}>差异转工作项</Button>}</div>)}</div>
                 </>
               ) : (
                 <>
                   <p className="text-sm text-muted-foreground">{blocked ? "当前预览为 blocked，先回第 3 步处理阻断问题。" : "预览无阻断，可以冻结生成正式结算单。"}</p>
-                  <Button disabled={blocked} onClick={() => { setFrozenDone(true); toast.success("已冻结", { description: "POST /settlements/:runId/freeze → 快照 + 指纹" }) }}><IconLock />冻结生成</Button>
+                  <Button disabled={blocked} onClick={() => { setFrozenDone(true); toast.success("已冻结", { description: "已生成快照与指纹" }) }}><IconLock />冻结生成</Button>
                 </>
               )}
             </CardContent>
@@ -125,8 +125,8 @@ export function SettlementWizard() {
           <Card>
             <CardHeader><CardTitle>分发</CardTitle><CardDescription>导出 xlsx / 推群卡片（L2）</CardDescription></CardHeader>
             <CardContent className="flex flex-col gap-2">
-              <Button variant="outline" disabled={!frozenDone} onClick={() => toast("已排队导出", { description: "POST /exports {kind: settlement, format: xlsx} → queued → done" })}><IconFileSpreadsheet />导出 xlsx</Button>
-              <Button variant="outline" disabled={!frozenDone} onClick={() => toast.success("已推到群", { description: "subscriptions kind=settlement 目标群（当前 fixture 该订阅停用，需先启用）" })}><IconBrandDingtalk />推钉钉群</Button>
+              <Button variant="outline" disabled={!frozenDone} onClick={() => toast("已排队导出", { description: "排队后完成" })}><IconFileSpreadsheet />导出 xlsx</Button>
+              <Button variant="outline" disabled={!frozenDone} onClick={() => toast.success("已推到群", { description: "发到结算单订阅的目标群（当前示例该订阅停用，需先启用）" })}><IconBrandDingtalk />推钉钉群</Button>
               {!frozenDone ? <p className="text-xs text-muted-foreground">冻结后才能分发，避免分发未定稿数据。</p> : null}
             </CardContent>
           </Card>
@@ -140,13 +140,13 @@ export function SettlementWizard() {
 
       <Dialog open={correction !== null} onOpenChange={(open) => { if (!open) setCorrection(null) }}>
         <DialogContent className="sm:max-w-md">
-          <DialogHeader><DialogTitle>校正 · {correction?.field.label}</DialogTitle><DialogDescription>POST /settlements/:runId/corrections · 只对 allowCorrection 字段；留痕（改动人 / 原因 / 原值）</DialogDescription></DialogHeader>
+          <DialogHeader><DialogTitle>校正 · {correction?.field.label}</DialogTitle><DialogDescription>只对允许校正的字段；留痕（改动人 / 原因 / 原值）</DialogDescription></DialogHeader>
           <div className="grid gap-3">
             <div className="grid gap-1.5"><Label>行</Label><Input value={correction?.rowKey ?? ""} readOnly /></div>
             <div className="grid gap-1.5"><Label>校正值</Label><Input type={correction?.field.valueType === "text" ? "text" : "number"} value={correctionForm.value} onChange={(event) => setCorrectionForm((prev) => ({ ...prev, value: event.target.value }))} /></div>
             <div className="grid gap-1.5"><Label>原因（必填）</Label><Textarea value={correctionForm.reason} onChange={(event) => setCorrectionForm((prev) => ({ ...prev, reason: event.target.value }))} /></div>
           </div>
-          <DialogFooter><Button variant="outline" onClick={() => setCorrection(null)}>取消</Button><Button disabled={!correctionForm.value || !correctionForm.reason} onClick={() => { toast.success("已记录校正，重新预览后生效", { description: "校正进 appliedCorrections；行来源标 correction" }); setCorrection(null) }}>保存校正</Button></DialogFooter>
+          <DialogFooter><Button variant="outline" onClick={() => setCorrection(null)}>取消</Button><Button disabled={!correctionForm.value || !correctionForm.reason} onClick={() => { toast.success("已记录校正，重新预览后生效", { description: "校正会留痕；该行来源标为人工校正" }); setCorrection(null) }}>保存校正</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

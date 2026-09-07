@@ -53,7 +53,7 @@ export function InfraTab() {
             <div className="flex items-center gap-2 text-sm"><TypeChip>{form.materials} 素材</TypeChip>×<TypeChip>{form.targeting} 定向</TypeChip>×<TypeChip>{bids.length} 出价</TypeChip>=<span className="font-medium tabular-nums">{units} unit</span>{request ? <span className="text-xs text-muted-foreground">· 日上限 {request.dailyCap}</span> : null}</div>
             <div className="flex gap-2">
               <Button size="sm" onClick={() => { setPreview(`（结构化指令摘要：${form.materials} 素材 × ${form.targeting} 定向 × ${bids.length} 出价 = ${units} unit；出价 ${bids.join(" / ")}）`); toast("已生成结构化指令预览") }}>生成指令预览</Button>
-              <Button size="sm" variant="outline" disabled={!preview} onClick={() => toast("已发送到 OS 会话", { description: "POST /infra/requests/:id/send；回执前不显「配置成功」" })}>发送到 OS</Button>
+              <Button size="sm" variant="outline" disabled={!preview} onClick={() => toast("已发送到 OS 会话", { description: "回执前不显「配置成功」" })}>发送到 OS</Button>
             </div>
             {preview ? <pre className="rounded-lg bg-muted/50 p-3 text-xs whitespace-pre-wrap">{preview}</pre> : null}
           </CardContent>

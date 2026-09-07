@@ -25,7 +25,7 @@ export function AttributionTab() {
       <div className="flex flex-wrap items-center gap-2">
         <Select value={taskId} onValueChange={setTaskId}><SelectTrigger size="sm" className="w-56" aria-label="任务"><SelectValue placeholder="选任务" /></SelectTrigger><SelectContent>{tasks.map((item) => <SelectItem key={item.taskId} value={item.taskId}>{item.taskName}</SelectItem>)}</SelectContent></Select>
         <Tabs value={mode} onValueChange={(value) => setMode(value as typeof mode)}><TabsList><TabsTrigger value="volume">量级差距</TabsTrigger><TabsTrigger value="cost">成本差距</TabsTrigger></TabsList></Tabs>
-        <span className="text-xs text-muted-foreground">GET /tasks/:id/attribution?mode= · 只算有公式的节点</span>
+        <span className="text-xs text-muted-foreground">只算有公式的节点</span>
         <Button size="sm" variant="outline" className="ml-auto" disabled={!tree} onClick={() => openAgentDrawer(`解释任务「${task?.taskName ?? taskId}」目标差距树里占比最大的一支，并给可逆的下一步`)}><IconSparkles />问 AI</Button>
       </div>
       {tree ? <GapTree tree={tree} /> : (

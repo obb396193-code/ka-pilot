@@ -119,7 +119,7 @@ export function AccountsPage() {
         </DropdownMenuContent>
       </DropdownMenu>
       <Button variant="outline" size="sm" disabled={selectedItems.length === 0} onClick={() => setDialog({ kind: "batch", items: selectedItems, op: "budget_up" })}><IconEye />变更预览{selectedItems.length ? ` (${selectedItems.length})` : ""}</Button>
-      <Tooltip><TooltipTrigger asChild><span className="inline-flex"><Button variant="outline" size="sm" onClick={() => toast("导入认领", { description: "POST /accounts/import（R-012）接入后可上传认领清单" })}><IconUpload />导入认领</Button></span></TooltipTrigger><TooltipContent side="bottom">认领已有账户</TooltipContent></Tooltip>
+      <Tooltip><TooltipTrigger asChild><span className="inline-flex"><Button variant="outline" size="sm" onClick={() => toast("导入认领", { description: "接入后可上传认领清单" })}><IconUpload />导入认领</Button></span></TooltipTrigger><TooltipContent side="bottom">认领已有账户</TooltipContent></Tooltip>
       <Button size="sm" onClick={() => setDialog({ kind: "open" })}><IconPlus />新建账户</Button>
     </>
   )
@@ -141,7 +141,7 @@ export function AccountsPage() {
           {tab === "pool" ? (
             <div className="flex flex-col gap-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="text-sm font-medium">账户状态 <span className="text-xs font-normal text-muted-foreground">九态 · GET /accounts/pipeline · 点一态即筛</span></div>
+                <div className="text-sm font-medium">账户状态 <span className="text-xs font-normal text-muted-foreground">九态 · 点一态即筛</span></div>
                 <ToggleGroup type="single" variant="outline" size="sm" value={view} onValueChange={(value) => { if (value) setView(value as PoolView) }} aria-label="表达">
                   {poolViews.map((item) => <ToggleGroupItem key={item.value} value={item.value} title={item.hint} className="px-3 text-xs">{item.label}</ToggleGroupItem>)}
                 </ToggleGroup>

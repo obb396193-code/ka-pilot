@@ -154,7 +154,7 @@ export function CommandPalette() {
       </CommandList>
       <div className="flex items-center justify-between border-t bg-muted/40 px-3 py-2 text-[11px] text-muted-foreground">
         <span className="flex items-center gap-3"><Key>↑↓</Key>选择<Key>↵</Key>打开<Key>esc</Key>关闭</span>
-        <span>GET /search?q= · fixture 只有 2 个对象；接入后覆盖全量账户 / 任务 / 工作项 / 素材 / 文档</span>
+        <span>示例只有 2 个对象；接入后覆盖全量账户 / 任务 / 工作项 / 素材 / 文档</span>
       </div>
     </CommandDialog>
   )

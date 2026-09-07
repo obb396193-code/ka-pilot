@@ -54,7 +54,7 @@ export function ReportsTab({ views, onSaveView }: { views: SavedView[]; onSaveVi
       <Card className="@5xl/main:col-span-8">
         <CardHeader>
           <CardTitle>报表设计器</CardTitle>
-          <CardDescription>配置按 report-config/v1 存；渲染走 POST /reports/render；前端不算数</CardDescription>
+          <CardDescription>配置可保存；数据由后端渲染，前端不算数</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-5">
           <ol className="flex flex-wrap items-center gap-1 text-sm">
@@ -148,17 +148,17 @@ export function ReportsTab({ views, onSaveView }: { views: SavedView[]; onSaveVi
                 </Table>
               </div>
               <div className="flex flex-wrap items-center gap-2">
-                <Button onClick={() => { onSaveView(name || "未命名报表", columns); toast.success(`已保存「${name || "未命名报表"}」为个人视图`, { description: "POST /me/views 接入后同步到账号" }) }}><IconDeviceFloppy />保存为个人视图</Button>
+                <Button onClick={() => { onSaveView(name || "未命名报表", columns); toast.success(`已保存「${name || "未命名报表"}」为个人视图`, { description: "接入后同步到账号" }) }}><IconDeviceFloppy />保存为个人视图</Button>
                 <Dialog>
                   <DialogTrigger asChild><Button variant="outline"><IconBell />定时推送</Button></DialogTrigger>
                   <DialogContent className="sm:max-w-md">
-                    <DialogHeader><DialogTitle>定时推送</DialogTitle><DialogDescription>subscriptions.kind = report_schedule；到点渲染成图或表推到群 / 私聊。</DialogDescription></DialogHeader>
+                    <DialogHeader><DialogTitle>定时推送</DialogTitle><DialogDescription>到点渲染成图或表，推到群 / 私聊。</DialogDescription></DialogHeader>
                     <div className="grid gap-3">
                       <div className="grid gap-1.5"><Label>cron</Label><Input value={schedule.cron} onChange={(event) => setSchedule((prev) => ({ ...prev, cron: event.target.value }))} /></div>
                       <div className="grid gap-1.5"><Label>格式</Label><Select value={schedule.format} onValueChange={(value) => setSchedule((prev) => ({ ...prev, format: value as "png" | "xlsx" }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="png">PNG（带口径戳）</SelectItem><SelectItem value="xlsx">XLSX</SelectItem></SelectContent></Select></div>
                       <div className="grid gap-1.5"><Label>推到</Label><Select value={schedule.target} onValueChange={(value) => setSchedule((prev) => ({ ...prev, target: value as "group" | "dm" }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="group">钉钉群</SelectItem><SelectItem value="dm">私聊</SelectItem></SelectContent></Select></div>
                     </div>
-                    <DialogFooter><Button onClick={() => toast.success("定时推送已登记", { description: `${schedule.cron} · ${schedule.format} · ${schedule.target === "group" ? "钉钉群" : "私聊"}；POST /subscriptions 接入后生效` })}>登记</Button></DialogFooter>
+                    <DialogFooter><Button onClick={() => toast.success("定时推送已登记", { description: `${schedule.cron} · ${schedule.format} · ${schedule.target === "group" ? "钉钉群" : "私聊"} 接入后生效` })}>登记</Button></DialogFooter>
                   </DialogContent>
                 </Dialog>
               </div>
@@ -175,7 +175,7 @@ export function ReportsTab({ views, onSaveView }: { views: SavedView[]; onSaveVi
       <Card className="@5xl/main:col-span-4">
         <CardHeader>
           <CardTitle>个人视图</CardTitle>
-          <CardDescription>saved_views（view/v1）· 总表「存列」和这里保存的都在</CardDescription>
+          <CardDescription>总表「存列」和这里保存的视图都在这儿</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-2">
           {views.length ? views.map((view) => (

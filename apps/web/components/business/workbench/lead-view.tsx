@@ -46,7 +46,7 @@ export function LeadView() {
       <KpiCards metrics={cards} className="px-0 lg:px-0" />
       <div className="grid gap-4 @5xl/main:grid-cols-12">
         <Card className="@5xl/main:col-span-7">
-          <CardHeader><CardTitle>风险与机会</CardTitle><CardDescription>按任务聚合工作项；影响 = cost_space / pacing 缺口，无则 −</CardDescription></CardHeader>
+          <CardHeader><CardTitle>风险与机会</CardTitle><CardDescription>按任务聚合工作项；影响 = 成本空间 / 进度缺口，无则 −</CardDescription></CardHeader>
           <CardContent className="flex flex-col gap-4">
             <div><div className="mb-2 text-xs font-medium text-status-critical">风险</div><ItemList items={data.risks} empty="没有风险项" /></div>
             <div><div className="mb-2 text-xs font-medium text-status-success">机会</div><ItemList items={data.opportunities} empty="没有机会项" /></div>
@@ -77,14 +77,14 @@ export function LeadView() {
           </CardContent>
         </Card>
         <Card className="@5xl/main:col-span-4">
-          <CardHeader><CardTitle>知悉流</CardTitle><CardDescription>GET /workbench/lead/fyi · 不需处理，只让你知道</CardDescription></CardHeader>
+          <CardHeader><CardTitle>知悉流</CardTitle><CardDescription>不需处理，只让你知道</CardDescription></CardHeader>
           <CardContent><ol className="flex flex-col gap-2">{isOk(fyiFixture) ? fyiFixture.data.items.map((item, index) => <li key={`${item.at}-${index}`} className="flex flex-col gap-0.5 text-sm"><span className="flex items-center gap-2"><TypeChip>{fyiKindLabel[item.kind]}</TypeChip><span>{item.summary}</span></span><span className="text-[11px] text-muted-foreground tabular-nums">{fmtTime(item.at)}</span></li>) : null}</ol></CardContent>
         </Card>
       </div>
       <Card>
         <CardHeader><CardTitle>经营简报</CardTitle><CardDescription>{data.brief.status === "ready" ? "由日报负责人版生成" : "数据未就绪，不生成假简报"}</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-2">
-          {data.brief.status === "ready" ? data.brief.sections.map((section) => <div key={section.key} className="rounded-lg border px-3 py-2 text-sm"><div className="text-xs font-medium text-muted-foreground">{section.title}</div><div>{section.text}</div></div>) : <p className="text-sm text-muted-foreground">pending_data</p>}
+          {data.brief.status === "ready" ? data.brief.sections.map((section) => <div key={section.key} className="rounded-lg border px-3 py-2 text-sm"><div className="text-xs font-medium text-muted-foreground">{section.title}</div>{section.text ? <div>{section.text}</div> : null}{section.items?.length ? <ul className="ml-4 list-disc space-y-0.5">{section.items.map((entry) => <li key={entry}>{entry}</li>)}</ul> : null}</div>) : <p className="text-sm text-muted-foreground">早报待数据就绪，不生成假早报。</p>}
         </CardContent>
       </Card>
     </div>

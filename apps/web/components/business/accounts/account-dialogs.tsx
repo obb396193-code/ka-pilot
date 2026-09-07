@@ -46,7 +46,7 @@ function BatchPreview({ items, op, onClose }: { items: AccountItem[]; op: string
     <>
       <DialogHeader>
         <DialogTitle>变更预览 · {batchOps[op] ?? op}</DialogTitle>
-        <DialogDescription>对 {items.length} 户生成变更集组（POST /changesets/batch）；dry-run 通过才能确认，执行逐账户，三键不变。样例 = changesets/group-preview.json。</DialogDescription>
+        <DialogDescription>对 {items.length} 户生成变更集组；dry-run 通过才能确认，执行逐账户，三键不变。样例 = changesets/group-preview.json。</DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-4 text-sm">
         <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{preview.status}</Badge><span className="text-muted-foreground">原因码 {preview.reasonCode} · 过期 {fmtTime(preview.expiresAt)}</span></div>
@@ -66,8 +66,8 @@ function BatchPreview({ items, op, onClose }: { items: AccountItem[]; op: string
       </div>
       <DialogFooter>
         <Button variant="outline" onClick={onClose}>取消</Button>
-        {stage === "preview" ? <Button onClick={() => { setStage("dry-run"); toast("dry-run 完成", { description: "POST /changesets/groups/:id/dry-run · 全部通过" }) }}>dry-run</Button> : null}
-        {stage === "dry-run" ? <Button onClick={() => { setStage("confirm"); toast.success("已确认，逐账户执行", { description: "POST /changesets/groups/:id/confirm；write_enabled=false 时返回 403 WRITE_DISABLED" }) }}>确认执行</Button> : null}
+        {stage === "preview" ? <Button onClick={() => { setStage("dry-run"); toast("dry-run 完成", { description: "全部通过" }) }}>dry-run</Button> : null}
+        {stage === "dry-run" ? <Button onClick={() => { setStage("confirm"); toast.success("已确认，逐账户执行", { description: "未开写权限时会被拒绝" }) }}>确认执行</Button> : null}
         {stage === "confirm" ? <Button onClick={onClose}><IconCheck />完成</Button> : null}
       </DialogFooter>
     </>
@@ -135,7 +135,7 @@ function PoolStatusForm({ item, onClose }: { item: AccountItem; onClose: () => v
         <Textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="备注（必填）" />
       </div>
       <DialogFooter>
-        {item.poolStatusSource === "manual" ? <Button variant="ghost" onClick={() => { toast("已清除人工覆盖，回系统推导", { description: "DELETE /accounts/:media/:id/pool-status" }); onClose() }}>清除覆盖</Button> : null}
+        {item.poolStatusSource === "manual" ? <Button variant="ghost" onClick={() => { toast("已清除人工覆盖，回系统推导", { description: "接口接入后生效（当前为示例）" }); onClose() }}>清除覆盖</Button> : null}
         <Button variant="outline" onClick={onClose}>取消</Button>
         <Button disabled={!note.trim()} onClick={() => { toast.success("库存态已改", { description: `PATCH pool-status → ${value}（manual）` }); onClose() }}>保存</Button>
       </DialogFooter>
@@ -147,7 +147,7 @@ function ProductForm({ item, onClose }: { item: AccountItem; onClose: () => void
   const [name, setName] = useState(item.product?.name ?? "")
   return (
     <>
-      <DialogHeader><DialogTitle>改产品名 · {item.accountName}</DialogTitle><DialogDescription>账户级字段（如 淘宝 / 手淘软件）；PATCH /accounts/:media/:id/product。</DialogDescription></DialogHeader>
+      <DialogHeader><DialogTitle>改产品名 · {item.accountName}</DialogTitle><DialogDescription>账户级字段（如 淘宝 / 手淘软件）。</DialogDescription></DialogHeader>
       <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="产品名" />
       <DialogFooter><Button variant="outline" onClick={onClose}>取消</Button><Button disabled={!name.trim()} onClick={() => { toast.success(`产品名已改为「${name.trim()}」`); onClose() }}>保存</Button></DialogFooter>
     </>
@@ -162,7 +162,7 @@ function Replicate({ item, onClose }: { item: AccountItem; onClose: () => void }
   const [started, setStarted] = useState(false)
   return (
     <>
-      <DialogHeader><DialogTitle>优质户复制 · 母户 {item.accountName}</DialogTitle><DialogDescription>复制结构 / 出价 / 时段到目标户（目标须 available | assigned | pending_build），生成变更集组走 dry-run → confirm；素材不复制，人工选。</DialogDescription></DialogHeader>
+      <DialogHeader><DialogTitle>优质户复制 · 母户 {item.accountName}</DialogTitle><DialogDescription>复制结构 / 出价 / 时段到目标户（目标账户须是「可用 / 已分配 / 待建」），生成变更集组后先试运行再确认；素材不复制，人工选。</DialogDescription></DialogHeader>
       {!started ? (
         <div className="grid gap-3">
           <div className="grid gap-1.5"><Label>目标户</Label><Select value={target} onValueChange={setTarget}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="account-3">闲鱼潜客_快手_03 · 已分配</SelectItem><SelectItem value="account-4">account-4 · 可用</SelectItem></SelectContent></Select></div>

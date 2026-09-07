@@ -30,7 +30,7 @@ export function MaterialAnalysisPanel({ material }: { material: MaterialItem }) 
       <Card>
         <CardHeader><CardTitle>{material.name}</CardTitle><CardDescription>{material.materialId} · {fmtDuration(material.durationMs)} · {material.sourceStatus === "unreachable" ? "视频源不可达" : "未拆片"}</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-3 text-sm text-muted-foreground">
-          <p>{material.sourceStatus === "unreachable" ? "POST /materials/:id/analyze 会返回 409 MATERIAL_SOURCE_UNAVAILABLE；先让视频源探针通过。" : "还没有拆片版本；点「拆片」排队一次（job），完成后这里显示 analysis/v1。"}</p>
+          <p>{material.sourceStatus === "unreachable" ? "视频源探针没过，拆片会被拒绝；先让视频源可达。" : "还没有拆片版本；点「拆片」排队一次（job），完成后这里显示 analysis/v1。"}</p>
           <Button size="sm" className="w-fit" disabled={material.sourceStatus !== "reachable"}><IconSparkles />拆片</Button>
         </CardContent>
       </Card>
@@ -77,7 +77,7 @@ export function MaterialAnalysisPanel({ material }: { material: MaterialItem }) 
         </Card>
         <div className="flex flex-col gap-4">
           <Card>
-            <CardHeader><CardTitle>相似素材</CardTitle><CardDescription>GET /materials/:id/similar · 六维分量；证据不足不打分</CardDescription></CardHeader>
+            <CardHeader><CardTitle>相似素材</CardTitle><CardDescription>六维分量；证据不足不打分</CardDescription></CardHeader>
             <CardContent className="flex flex-col gap-2">
               {similar.map((item) => <div key={item.materialId} className={cn("rounded-lg border px-3 py-2", item.status !== "scored" && "opacity-70")}><div className="flex items-center justify-between gap-2 text-sm"><span className="font-medium">{nameOf(item.materialId)}</span>{item.status === "scored" && item.score !== null ? <span className="tabular-nums">{(item.score * 100).toFixed(0)}%</span> : <StatusChip tone="muted">证据不足</StatusChip>}</div>{item.components.length ? <div className="mt-1.5 grid grid-cols-3 gap-x-3 gap-y-0.5 text-[11px]">{item.components.map((component) => <span key={component.kind} className="flex items-center justify-between"><span className="text-muted-foreground">{componentLabel[component.kind]}</span><span className="tabular-nums">{component.status === "compared" && component.score !== null ? `${(component.score * 100).toFixed(0)}%` : "−"}</span></span>)}</div> : null}{item.missingComponents.length ? <p className="mt-1 text-[11px] text-muted-foreground">缺：{item.missingComponents.map((kind) => componentLabel[kind as keyof typeof componentLabel] ?? kind).join(" / ")}</p> : null}</div>)}
             </CardContent>

@@ -48,14 +48,14 @@ export function DailyReportView() {
       <div className="flex flex-wrap items-center gap-2">
         <TypeChip>{report.schema}</TypeChip>
         <span className="text-sm">{report.date} · 数据截至 {fmtTime(report.dataAsOf)}</span>
-        <Select value={role} onValueChange={(value) => { setRole(value as DailyReport["role"]); toast(`切到${dailyRoleLabel[value as DailyReport["role"]]}视角`, { description: "GET /reports/daily?role= 接入后按角色裁模块；fixture 只有 optimizer" }) }}>
+        <Select value={role} onValueChange={(value) => { setRole(value as DailyReport["role"]); toast(`切到${dailyRoleLabel[value as DailyReport["role"]]}视角`, { description: "接入后按角色裁模块；示例只有优化师视角" }) }}>
           <SelectTrigger size="sm" className="w-32" aria-label="角色"><SelectValue /></SelectTrigger>
           <SelectContent>{(Object.keys(dailyRoleLabel) as DailyReport["role"][]).map((key) => <SelectItem key={key} value={key}>{dailyRoleLabel[key]}</SelectItem>)}</SelectContent>
         </Select>
         {role !== report.role ? <StatusChip tone="muted">fixture 为 {dailyRoleLabel[report.role]} 视角</StatusChip> : null}
         <div className="ml-auto flex gap-2">
-          <Button size="sm" variant="outline" disabled={!report.actions.exportPdf} onClick={() => toast("已排队导出 PDF", { description: "POST /exports {kind: daily_report, format: pdf} → queued → done（签名链接有效期内下载）" })}><IconFileTypePdf />导出 PDF</Button>
-          <Button size="sm" disabled={!report.actions.pushDingtalk} onClick={() => toast.success("已推送到钉钉群", { description: "卡片 L1 · 走 subscriptions daily_report 目标群" })}><IconBrandDingtalk />一键发钉钉</Button>
+          <Button size="sm" variant="outline" disabled={!report.actions.exportPdf} onClick={() => toast("已排队导出 PDF", { description: "排队后完成（签名链接有效期内下载）" })}><IconFileTypePdf />导出 PDF</Button>
+          <Button size="sm" disabled={!report.actions.pushDingtalk} onClick={() => toast.success("已推送到钉钉群", { description: "发到日报订阅的目标群" })}><IconBrandDingtalk />一键发钉钉</Button>
         </div>
       </div>
       <div className="grid gap-4 @5xl/main:grid-cols-[200px_minmax(0,1fr)]">

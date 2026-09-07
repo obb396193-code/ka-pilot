@@ -116,7 +116,7 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
                       </div>
                       <div className="flex flex-wrap gap-1.5">{detail.account.tags.map((tag) => <TypeChip key={tag}>{tag}</TypeChip>)}{detail.account.starred ? <TypeChip>★ 星标</TypeChip> : null}</div>
                     </>
-                  ) : <p className="text-xs text-muted-foreground">该账户没有小传样例（fixture 只有 account-1 / 2 / 5，契约同一 DTO `GET /accounts/:media/:id/bio`）；余额 / 断量取自列表项。</p>}
+                  ) : <p className="text-xs text-muted-foreground">该账户没有小传样例（样例只有 account-1 / 2 / 5）；余额 / 断量取自列表项。</p>}
                 </CardContent>
               </Card>
             </div>
@@ -125,7 +125,7 @@ export function AccountDetailPage({ media, accountId }: { media: string; account
               <CardHeader>
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div><CardTitle>计划层</CardTitle><CardDescription>campaign → unit（消耗 / 转化 / 出价 / 时段）· 垃圾计划标记 · 勾选批量关停 → 变更集{structure ? ` · 同步 ${fmtTime(structure.syncedAt)}` : ""}</CardDescription></div>
-                  <Button size="sm" variant="outline" disabled={junkSelected.length === 0} onClick={() => { if (asItem) setDialog({ kind: "batch", items: [asItem], op: "pause" }); else toast("生成关停变更集", { description: `POST /changesets · ${junkSelected.length} 个 unit` }) }}><IconEye />关停 {junkSelected.length || ""} 个 → 变更集</Button>
+                  <Button size="sm" variant="outline" disabled={junkSelected.length === 0} onClick={() => { if (asItem) setDialog({ kind: "batch", items: [asItem], op: "pause" }); else toast("生成关停变更集", { description: `${junkSelected.length} 个 unit` }) }}><IconEye />关停 {junkSelected.length || ""} 个 → 变更集</Button>
                 </div>
               </CardHeader>
               <CardContent className="p-0">

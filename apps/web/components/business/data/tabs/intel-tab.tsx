@@ -50,14 +50,14 @@ export function IntelTab() {
         </div>
         <Dialog open={dialog !== null} onOpenChange={(open) => { if (!open) setDialog(null) }}>
           <DialogContent className="sm:max-w-md">
-            <DialogHeader><DialogTitle>{dialog === "import" ? "导入 CSV" : "登记竞品素材链接"}</DialogTitle><DialogDescription>{dialog === "import" ? "POST /intel/import（multipart）→ {imported, skipped}" : "POST /intel/materials {link} · link 模式手工登记"}</DialogDescription></DialogHeader>
+            <DialogHeader><DialogTitle>{dialog === "import" ? "导入 CSV" : "登记竞品素材链接"}</DialogTitle><DialogDescription>{dialog === "import" ? "上传后返回导入 / 跳过条数" : "手工登记一条竞品素材链接"}</DialogDescription></DialogHeader>
             <div className="grid gap-3">{dialog === "import" ? <div className="grid gap-1.5"><Label>CSV 文件</Label><Input type="file" accept=".csv" /></div> : <><div className="grid gap-1.5"><Label>素材链接</Label><Input placeholder="https://" /></div><div className="grid gap-1.5"><Label>竞品</Label><Input placeholder="竞品名" /></div></>}</div>
-            <DialogFooter><Button variant="outline" onClick={() => setDialog(null)}>取消</Button><Button onClick={() => { toast.success(dialog === "import" ? "已导入（示例）" : "已登记（示例）", { description: "接入后返回 imported / skipped 计数" }); setDialog(null) }}>提交</Button></DialogFooter>
+            <DialogFooter><Button variant="outline" onClick={() => setDialog(null)}>取消</Button><Button onClick={() => { toast.success(dialog === "import" ? "已导入（示例）" : "已登记（示例）", { description: "接入后返回导入 / 跳过条数" }); setDialog(null) }}>提交</Button></DialogFooter>
           </DialogContent>
         </Dialog>
         <Dialog open={linking !== null} onOpenChange={(open) => { if (!open) setLinking(null) }}>
           <DialogContent className="sm:max-w-md">
-            <DialogHeader><DialogTitle>关联 · {linking?.competitor}</DialogTitle><DialogDescription>POST /intel/materials/:id/link {"{task_id? | material_id?}"}</DialogDescription></DialogHeader>
+            <DialogHeader><DialogTitle>关联 · {linking?.competitor}</DialogTitle><DialogDescription>把这条竞品素材挂到任务或我们的素材上</DialogDescription></DialogHeader>
             <div className="grid gap-1.5"><Label>关联任务</Label><Select value={linkTask} onValueChange={setLinkTask}><SelectTrigger><SelectValue placeholder="选任务" /></SelectTrigger><SelectContent>{tasks.map((task) => <SelectItem key={task.taskId} value={task.taskId}>{task.taskName}</SelectItem>)}</SelectContent></Select></div>
             <DialogFooter><Button variant="outline" onClick={() => setLinking(null)}>取消</Button><Button disabled={!linkTask} onClick={() => { toast.success("已关联"); setLinking(null) }}>保存</Button></DialogFooter>
           </DialogContent>

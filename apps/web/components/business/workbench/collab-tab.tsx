@@ -27,7 +27,7 @@ function DispatchRow({ item, mine, onReceipt }: { item: Dispatch; mine: boolean;
       </div>
       {item.acceptanceRule ? <div className="text-xs text-muted-foreground">验收规则：{item.acceptanceRule.metric} {item.acceptanceRule.operator} {item.acceptanceRule.threshold} · {item.acceptanceRule.windowDays} 日内</div> : null}
       {item.receipt ? <div className="rounded-md bg-muted/50 px-2.5 py-1.5 text-xs"><span className="font-medium">{item.receipt.outcome === "disagreed" ? "不同意" : item.receipt.outcome === "agreed" ? "同意" : "已完成"}</span>{item.receipt.reason ? ` · ${item.receipt.reason}` : ""} · {fmtTime(item.receipt.at)}</div> : null}
-      {!mine && !item.receipt && onReceipt ? <div className="flex gap-2"><Button size="sm" onClick={() => toast.success("已回执：同意", { description: "POST /dispatches/:id/receipt {outcome: agreed}" })}><IconCheck />同意</Button><Button size="sm" variant="outline" onClick={() => onReceipt(item)}><IconX />不同意</Button></div> : null}
+      {!mine && !item.receipt && onReceipt ? <div className="flex gap-2"><Button size="sm" onClick={() => toast.success("已回执：同意", { description: "接口接入后生效（当前为示例）" })}><IconCheck />同意</Button><Button size="sm" variant="outline" onClick={() => onReceipt(item)}><IconX />不同意</Button></div> : null}
     </div>
   )
 }
@@ -67,7 +67,7 @@ export function CollabTab() {
             <div key={item.approvalId} className="flex flex-col gap-2 rounded-lg border px-3 py-2.5 text-sm">
               <div className="flex items-center justify-between gap-2"><div className="flex items-center gap-2"><TypeChip>{item.kind}</TypeChip><span className="font-medium">{item.title}</span></div><StatusChip tone={item.status === "pending" ? "pending" : item.status === "approved" ? "success" : "muted"}>{item.status}</StatusChip></div>
               <div className="text-xs text-muted-foreground">{approvalTab === "toApprove" ? `申请人 ${item.requester?.name ?? "−"}` : `审批人 ${item.approver?.name ?? "−"}`} · {fmtTime(item.createdAt)}{item.autoPass ? " · 自动通过" : ""}</div>
-              {approvalTab === "toApprove" && item.status === "pending" ? <div className="flex gap-2"><Button size="sm" onClick={() => toast.success("已批准", { description: item.changesetId ? `关联变更集 ${item.changesetId.slice(-4)} 进入可执行` : "POST /approvals/:id/approve" })}><IconCheck />批准</Button><Button size="sm" variant="outline" onClick={() => toast("已驳回", { description: "POST /approvals/:id/reject" })}><IconX />驳回</Button></div> : null}
+              {approvalTab === "toApprove" && item.status === "pending" ? <div className="flex gap-2"><Button size="sm" onClick={() => toast.success("已批准", { description: item.changesetId ? `关联变更集 ${item.changesetId.slice(-4)} 进入可执行` : "接口接入后生效（当前为示例）" })}><IconCheck />批准</Button><Button size="sm" variant="outline" onClick={() => toast("已驳回", { description: "接口接入后生效（当前为示例）" })}><IconX />驳回</Button></div> : null}
             </div>
           ))}
           {approvals?.autoPassRules.length ? <div className="rounded-lg bg-muted/50 px-3 py-2 text-xs text-muted-foreground">自动通过：{approvals.autoPassRules.map((rule) => `${rule.kind} · ${rule.condition}（近 7 天 ${rule.count7d} 次）`).join("；")}</div> : null}

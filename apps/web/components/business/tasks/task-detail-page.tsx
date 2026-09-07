@@ -22,7 +22,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import type { DisplayMetric } from "@/lib/data/contracts"
-import { costStatusLabel, fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
+import { costStatusLabel, fmtTime, isOk, mv, rv, costStatusReasonText } from "@/lib/fixtures/contract"
 import { bindingsFixtures, changeLogFixture, overviewFixtures, readinessKeys, sopStepLabel, taskAccountsFixture, taskFunnelFixture, taskMetricsFixture, taskStageMap, taskStages, taskTimelineFixture, tasksFixture, type TaskStage } from "@/lib/fixtures/tasks"
 import { workItemDetailFixture, workItemLists } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
@@ -83,7 +83,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
     <PageBody>
       <PageHeader
         title={<span className="flex flex-wrap items-center gap-2">{data.task.taskName}{stage ? <TypeChip className="gap-1.5"><span className={cn("size-1.5 rounded-full", taskStageMap[stage].dot)} />{taskStageMap[stage].label}{ov.stage?.source === "manual" ? " · 手" : ov.stage?.source === "workflow" ? " · 工作流" : ""}</TypeChip> : null}{ov.costStatus ? <StatusChip tone={ov.costStatus === "green" ? "success" : ov.costStatus === "yellow" ? "warning" : "critical"}>{costStatusLabel[ov.costStatus]}</StatusChip> : <StatusChip tone="muted">不可判断</StatusChip>}</span>}
-        description={<span>{data.task.bizName ?? "−"} · {data.task.period.start} – {data.task.period.end} · 预算 {mv(data.task.budget, "money0")} · 负责人 {data.task.owner?.displayName ?? "待分配"}{listItem?.rta ? " · RTA" : ""}{listItem?.placementPref ? ` · ${listItem.placementPref}` : ""} · {ov.costStatusReason}</span>}
+        description={<span>{data.task.bizName ?? "−"} · {data.task.period.start} – {data.task.period.end} · 预算 {mv(data.task.budget, "money0")} · 负责人 {data.task.owner?.displayName ?? "待分配"}{listItem?.rta ? " · RTA" : ""}{listItem?.placementPref ? ` · ${listItem.placementPref}` : ""} · {costStatusReasonText(ov.costStatusReason)}</span>}
         isMock={isMock}
         actions={
           <>
@@ -115,7 +115,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
                           {index < ov.sopProgress!.steps.length - 1 ? <span className="h-px w-4 bg-border" /> : null}
                         </li>
                       ))}
-                      {!ov.sopProgress.runId ? <Button size="sm" variant="outline" onClick={() => toast("已用官方模板起 run", { description: "POST /tasks/:id/sop-run {template: official.open_to_build}" })}><IconPlayerPlay />起「开户到基建」SOP</Button> : null}
+                      {!ov.sopProgress.runId ? <Button size="sm" variant="outline" onClick={() => toast("已用官方模板起 run", { description: "接口接入后生效（当前为示例）" })}><IconPlayerPlay />起「开户到基建」SOP</Button> : null}
                     </ol>
                   ) : <p className="text-sm text-muted-foreground">SOP 进度未返回（v1.5.1 后有）。</p>}
                 </CardContent>
@@ -146,7 +146,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
                     {ov.readiness ? (
                       <>
                         <ReadinessRing readiness={ov.readiness} />
-                        <ul className="flex flex-col gap-1 text-xs">{readinessKeys.filter(({ key }) => !ov.readiness![key].ready).map(({ key, label }) => <li key={key} className="flex items-center justify-between gap-2"><span><span className="font-medium">{label}</span> 缺：{ov.readiness![key].missing.join("；") || "−"}</span><Button size="sm" variant="ghost" className="h-6 text-xs" onClick={() => toast(`已人工勾就绪：${label}`, { description: "PUT /tasks/:id/readiness/:dimension" })}>勾就绪</Button></li>)}</ul>
+                        <ul className="flex flex-col gap-1 text-xs">{readinessKeys.filter(({ key }) => !ov.readiness![key].ready).map(({ key, label }) => <li key={key} className="flex items-center justify-between gap-2"><span><span className="font-medium">{label}</span> 缺：{ov.readiness![key].missing.join("；") || "−"}</span><Button size="sm" variant="ghost" className="h-6 text-xs" onClick={() => toast(`已人工勾就绪：${label}`, { description: "接口接入后生效（当前为示例）" })}>勾就绪</Button></li>)}</ul>
                       </>
                     ) : <p className="text-sm text-muted-foreground">就绪度未返回（v1.5.1 后有）。</p>}
                   </CardContent>
@@ -177,7 +177,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
                 </Card>
               </div>
               <Card>
-                <CardHeader><CardTitle>变更记录</CardTitle><CardDescription>GET /settings/change-log · 考核价 / 日预算卡 / 返点系数三表 UNION 倒序</CardDescription></CardHeader>
+                <CardHeader><CardTitle>变更记录</CardTitle><CardDescription>考核价 / 日预算卡 / 返点系数的改动，按时间倒序</CardDescription></CardHeader>
                 <CardContent><ChangeLogGrid items={changeLog} /></CardContent>
               </Card>
             </div>
@@ -195,7 +195,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
               ]} className="px-0 lg:px-0" /> : null}
               <div className="grid gap-4 @5xl/main:grid-cols-12">
                 <Card className="@5xl/main:col-span-8">
-                  <CardHeader><CardTitle>趋势</CardTitle><CardDescription>GET /tasks/:id/metrics · 左轴账面消耗、右轴现金 CPA</CardDescription></CardHeader>
+                  <CardHeader><CardTitle>趋势</CardTitle><CardDescription>左轴账面消耗、右轴现金 CPA</CardDescription></CardHeader>
                   <CardContent>{chartData.length ? <SpendRealCpaTrend data={chartData} labels={{ spend: "账面消耗", cpa: "现金 CPA" }} /> : <p className="text-sm text-muted-foreground">无趋势</p>}</CardContent>
                 </Card>
                 <Card className="@5xl/main:col-span-4">
@@ -216,7 +216,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
 
           {tab === "accounts" ? (
             <Card>
-              <CardHeader><CardTitle>挂载账户</CardTitle><CardDescription>GET /tasks/:id/accounts · 达标 + 容量；一账户一任务</CardDescription></CardHeader>
+              <CardHeader><CardTitle>挂载账户</CardTitle><CardDescription>达标 + 容量；一账户一任务</CardDescription></CardHeader>
               <CardContent><TaskAccountsGrid items={accounts} /></CardContent>
             </Card>
           ) : null}
@@ -237,7 +237,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader><CardTitle>绑定的规则 / 工作流</CardTitle><CardDescription>GET /tasks/:id/bindings（v1.7.3）· 只显示绑到本任务的，不用全局规则冒充</CardDescription></CardHeader>
+                <CardHeader><CardTitle>绑定的规则 / 工作流</CardTitle><CardDescription>只显示绑到本任务的规则与工作流</CardDescription></CardHeader>
                 <CardContent className="flex flex-col gap-2 text-sm">
                   {bindings ? (
                     <>
@@ -262,7 +262,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
 
           {tab === "timeline" ? (
             <Card>
-              <CardHeader><CardTitle>时间线</CardTitle><CardDescription>GET /tasks/:id/timeline · 五源倒序（工作项 / 变更集 / 考核价 / 日预算卡 / 派发）</CardDescription></CardHeader>
+              <CardHeader><CardTitle>时间线</CardTitle><CardDescription>五源倒序（工作项 / 变更集 / 考核价 / 日预算卡 / 派发）</CardDescription></CardHeader>
               <CardContent>
                 <ol className="flex flex-col gap-3">{timeline.map((item, index) => <li key={`${item.at}-${index}`} className="flex gap-3 text-sm"><span className="mt-1 size-2 shrink-0 rounded-full bg-foreground" /><div className="flex flex-col"><div className="flex items-center gap-2"><TypeChip>{item.kind}</TypeChip><span className="font-medium">{item.summary}</span></div><div className="text-xs text-muted-foreground tabular-nums">{fmtTime(item.at)} · {item.actor == null ? "−" : typeof item.actor === "string" ? (item.actor === "system" ? "系统" : "外部") : item.actor.name}</div></div></li>)}</ol>
               </CardContent>
@@ -283,7 +283,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>{priceDialog === "assessment" ? "改考核价" : priceDialog === "cap" ? "改日预算卡" : "置阶段"}</DialogTitle>
-            <DialogDescription>{priceDialog === "assessment" ? "POST /tasks/:id/assessment-price · 生效日早于最新生效日 = 回溯改，触发重算并提示 recomputed_days" : priceDialog === "cap" ? "POST /tasks/:id/daily-budget-cap · 不触发重算，写 timeline" : "PATCH /tasks/:id/stage · stage_source=manual"}</DialogDescription>
+            <DialogDescription>{priceDialog === "assessment" ? "生效日早于最新生效日 = 回溯改，触发重算并提示 recomputed_days" : priceDialog === "cap" ? "不触发重算，记入时间线" : "手动置阶段，来源记为人工"}</DialogDescription>
           </DialogHeader>
           <div className="grid gap-3">
             {priceDialog === "stage" ? (

@@ -46,7 +46,7 @@ const idColumns = idHelper.columns([
   actionsColumn<IdentityMapping>((item) => (
     <>
       <DropdownMenuItem disabled={!!item.verifiedAt} onSelect={() => toast("已发送验证消息", { description: `钉钉私聊 ${item.externalUserId}，点卡片完成实名绑定` })}>发起验证</DropdownMenuItem>
-      <DropdownMenuItem onSelect={() => toast("已解绑", { description: "DELETE /identity-mappings/:id" })}>解绑</DropdownMenuItem>
+      <DropdownMenuItem onSelect={() => toast("已解绑", { description: "接口接入后生效（当前为示例）" })}>解绑</DropdownMenuItem>
     </>
   )),
 ])
@@ -69,7 +69,7 @@ function ConnectionsTab() {
               <div><p className="text-xs text-muted-foreground">群</p>{item.config.groups.map((group) => <p key={group.conversation_id}>{group.name} <span className="font-mono text-xs text-muted-foreground">{group.conversation_id}</span></p>)}</div>
             </CardContent>
             <CardFooter className="gap-2">
-              <Button size="sm" variant="outline" onClick={() => toast.success("探活通过", { description: "POST /integrations/connections/:id/check · 机器人 token 与群可达" })}><IconRefresh />探活</Button>
+              <Button size="sm" variant="outline" onClick={() => toast.success("探活通过", { description: "机器人 token 与群可达" })}><IconRefresh />探活</Button>
               <Button size="sm" variant="ghost" onClick={() => toast("发送测试消息", { description: "向群发一条 L0 测试卡" })}><IconSend />测试消息</Button>
             </CardFooter>
           </Card>
@@ -98,7 +98,7 @@ function makeSubColumns(onToggle: (sub: Subscription, enabled: boolean) => void)
     subHelper.accessor((row) => JSON.stringify(row.config), { id: "config", header: "配置", meta: { label: "配置" }, cell: ({ row }) => { const c = row.original.config as Record<string, unknown>; const parts = [Array.isArray(c.severities) ? `级别 ${(c.severities as string[]).join("/")}` : null, c.cron ? `cron ${String(c.cron)}` : null, c.time ? `每天 ${String(c.time)}` : null, c.role ? `角色 ${String(c.role)}` : null, c.format ? `格式 ${String(c.format)}` : null].filter(Boolean); return parts.length ? <span className="text-xs">{parts.join(" · ")}</span> : <MissingValue title="无配置" /> } }),
     subHelper.accessor((row) => row.quietHours ? `${row.quietHours.from}-${row.quietHours.to}` : "", { id: "quiet", header: "免打扰", meta: { label: "免打扰" }, cell: ({ row }) => row.original.quietHours ? <span className="text-xs tabular-nums">{row.original.quietHours.from} – {row.original.quietHours.to}</span> : <span className="text-xs text-muted-foreground">无</span> }),
     subHelper.accessor("enabled", { header: "启用", meta: { label: "启用" }, cell: ({ row }) => <Switch checked={row.original.enabled} onCheckedChange={(checked) => onToggle(row.original, checked)} aria-label="启用" /> }),
-    actionsColumn<Subscription>((sub) => <DropdownMenuItem onSelect={() => toast("立即发送一次", { description: `POST /subscriptions/${sub.id}/run-now` })}>立即发送一次</DropdownMenuItem>),
+    actionsColumn<Subscription>((sub) => <DropdownMenuItem onSelect={() => toast("立即发送一次", { description: `接口接入后生效（当前为示例）` })}>立即发送一次</DropdownMenuItem>),
   ])
 }
 
@@ -107,7 +107,7 @@ function SubscriptionsTab() {
   const items = useMemo(() => (isOk(subscriptionsFixture) ? subscriptionsFixture.data.items : []).map((item) => ({ ...item, enabled: enabled[item.id] ?? item.enabled })), [enabled])
   const columns = useMemo(() => makeSubColumns((sub, next) => { setEnabled((prev) => ({ ...prev, [sub.id]: next })); toast(`${subscriptionKindLabel[sub.kind]}已${next ? "启用" : "停用"}`) }), [])
   const table = useGridTable({ data: items, columns, pageSize: 20, getRowId: (item) => String(item.id) })
-  return <DataGrid table={table} empty="没有订阅" toolbar={<p className="text-xs text-muted-foreground">GET /subscriptions/mine · quiet_hours 只压 P1/P2，P0 破静默</p>} actions={<Button size="sm" onClick={() => toast("新建订阅", { description: "POST /subscriptions {kind, target, config, quiet_hours}" })}><IconPlus />新建订阅</Button>} showPagination={false} />
+  return <DataGrid table={table} empty="没有订阅" toolbar={<p className="text-xs text-muted-foreground">免打扰只压 P1/P2，P0 破静默直达</p>} actions={<Button size="sm" onClick={() => toast("新建订阅", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新建订阅</Button>} showPagination={false} />
 }
 
 const instHelper = createColumnHelper<GridFeatures, CardInstance>()
@@ -179,7 +179,7 @@ function OncallTab() {
         </CardContent>
       </Card>
       <Card>
-        <CardHeader><div className="flex items-center justify-between gap-2"><div><CardTitle>值班表</CardTitle><CardDescription>alerts/roster · 主班 / 备班</CardDescription></div><Button size="sm" variant="outline" onClick={() => toast("换班申请已发出", { description: "PUT /alerts/roster/:date" })}>换班</Button></div></CardHeader>
+        <CardHeader><div className="flex items-center justify-between gap-2"><div><CardTitle>值班表</CardTitle><CardDescription>alerts/roster · 主班 / 备班</CardDescription></div><Button size="sm" variant="outline" onClick={() => toast("换班申请已发出", { description: "接口接入后生效（当前为示例）" })}>换班</Button></div></CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>日期</TableHead><TableHead>主班</TableHead><TableHead>备班</TableHead></TableRow></TableHeader>
@@ -190,7 +190,7 @@ function OncallTab() {
       <Card className="@5xl/main:col-span-2">
         <CardHeader><CardTitle>升级链</CardTitle><CardDescription>alerts/escalations · 未确认按策略逐级升级；可暂停</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-2">
-          {escalations.length ? escalations.map((item) => { const isPaused = paused[item.escalationId] ?? item.paused; return <div key={item.escalationId} className="flex flex-wrap items-center gap-3 rounded-lg border px-3 py-2 text-sm"><span className="font-mono text-xs text-muted-foreground">…{item.escalationId.slice(-4)}</span><ol className="flex flex-wrap items-center gap-2">{item.chain.map((step) => <li key={step.level} className="flex items-center gap-1.5"><StatusChip tone={step.status === "acked" ? "success" : step.status === "unacked" ? "critical" : "pending"}>L{step.level} {step.status === "acked" ? "已确认" : step.status === "unacked" ? "未确认" : "待触发"}</StatusChip><span>{step.to.name}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(step.at)}</span></li>)}</ol><span className="ml-auto flex items-center gap-2 text-xs"><span className="text-muted-foreground">{isPaused ? "已暂停" : "运行中"}</span><Switch checked={!isPaused} onCheckedChange={(checked) => { setPaused((prev) => ({ ...prev, [item.escalationId]: !checked })); toast(checked ? "升级链已恢复" : "升级链已暂停", { description: `POST /alerts/escalations/${item.escalationId}/${checked ? "resume" : "pause"}` }) }} aria-label="升级链开关" /></span></div> }) : <p className="text-sm text-muted-foreground">没有进行中的升级</p>}
+          {escalations.length ? escalations.map((item) => { const isPaused = paused[item.escalationId] ?? item.paused; return <div key={item.escalationId} className="flex flex-wrap items-center gap-3 rounded-lg border px-3 py-2 text-sm"><span className="font-mono text-xs text-muted-foreground">…{item.escalationId.slice(-4)}</span><ol className="flex flex-wrap items-center gap-2">{item.chain.map((step) => <li key={step.level} className="flex items-center gap-1.5"><StatusChip tone={step.status === "acked" ? "success" : step.status === "unacked" ? "critical" : "pending"}>L{step.level} {step.status === "acked" ? "已确认" : step.status === "unacked" ? "未确认" : "待触发"}</StatusChip><span>{step.to.name}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(step.at)}</span></li>)}</ol><span className="ml-auto flex items-center gap-2 text-xs"><span className="text-muted-foreground">{isPaused ? "已暂停" : "运行中"}</span><Switch checked={!isPaused} onCheckedChange={(checked) => { setPaused((prev) => ({ ...prev, [item.escalationId]: !checked })); toast(checked ? "升级链已恢复" : "升级链已暂停", { description: `${checked ? "恢复后按规则继续升级" : "暂停期间不再向上升级"}` }) }} aria-label="升级链开关" /></span></div> }) : <p className="text-sm text-muted-foreground">没有进行中的升级</p>}
         </CardContent>
       </Card>
     </div>
@@ -212,8 +212,8 @@ const msgColumns = msgHelper.columns([
   msgHelper.accessor((row) => row.ref ? `${row.ref.type}:${row.ref.id}` : "", { id: "ref", header: "关联", meta: { label: "关联" }, cell: ({ row }) => row.original.ref ? <span className="text-xs">{row.original.ref.type} …{row.original.ref.id.slice(-4)}</span> : <span className="text-xs text-muted-foreground">−</span> }),
   actionsColumn<MessageItem>((item) => (
     <>
-      <DropdownMenuItem disabled={!(item.direction === "out" && item.status === "failed")} onSelect={() => toast("已重新排队", { description: `POST /messages/${item.id}/retry · 出站 failed → queued` })}>重试（出站）</DropdownMenuItem>
-      <DropdownMenuItem disabled={!(item.direction === "in" && item.status === "dead")} onSelect={() => toast("已重置 dead 行", { description: `POST /messages/${item.id}/retry · 入站 dead 需 admin 重置` })}>重置（入站 dead · admin）</DropdownMenuItem>
+      <DropdownMenuItem disabled={!(item.direction === "out" && item.status === "failed")} onSelect={() => toast("已重新排队", { description: `出站 failed → queued` })}>重试（出站）</DropdownMenuItem>
+      <DropdownMenuItem disabled={!(item.direction === "in" && item.status === "dead")} onSelect={() => toast("已重置 dead 行", { description: `入站 dead 需 admin 重置` })}>重置（入站 dead · admin）</DropdownMenuItem>
     </>
   )),
 ])

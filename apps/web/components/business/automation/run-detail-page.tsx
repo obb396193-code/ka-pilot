@@ -43,15 +43,15 @@ export function RunDetailPage({ runId }: { runId: string }) {
         actions={
           <>
             <StateSwitch />
-            <Button size="sm" disabled={!canConfirm} title={blockReason} onClick={() => toast.success("已确认执行", { description: "POST /workflows/runs/:id/confirm · 变更集按 hash 幂等执行" })}><IconCheck />确认执行</Button>
-            <Button size="sm" variant="outline" disabled={status !== "WAITING_CONFIRMATION"} onClick={() => toast("已拒绝", { description: "记录原因；run → FAILED(rejected)" })}><IconX />拒绝</Button>
-            <Button size="sm" variant="outline" disabled={status !== "WAITING_CONFIRMATION"} onClick={() => toast("重新生成预览", { description: "变更集草稿过期（TTL）或数据更新后重新出 hash" })}><IconRefresh />重新预览</Button>
+            <Button size="sm" disabled={!canConfirm} title={blockReason} onClick={() => toast.success("已确认执行", { description: "同一份变更集不会重复执行" })}><IconCheck />确认执行</Button>
+            <Button size="sm" variant="outline" disabled={status !== "WAITING_CONFIRMATION"} onClick={() => toast("已拒绝", { description: "记录原因；该次运行标记为已驳回" })}><IconX />拒绝</Button>
+            <Button size="sm" variant="outline" disabled={status !== "WAITING_CONFIRMATION"} onClick={() => toast("重新生成预览", { description: "草稿过期或数据更新后需重新生成" })}><IconRefresh />重新预览</Button>
             <Button asChild variant="outline" size="sm"><Link href="/automation?tab=runs"><IconArrowLeft />运行中心</Link></Button>
           </>
         }
       />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock="GET /workflows/runs/:id 接入后切换为真数据" empty={{ title: "没有这个运行", description: "回运行中心重新选。" }}>
+        <StateFrame state={state} unlock="运行详情接口接入后切换为真数据" empty={{ title: "没有这个运行", description: "回运行中心重新选。" }}>
           <div className="flex flex-col gap-4">
             {blockReason && status === "WAITING_CONFIRMATION" ? <div className="rounded-lg border border-status-critical/30 bg-status-critical/10 px-4 py-2.5 text-sm text-status-critical">无法确认执行：{blockReason}</div> : null}
             <Card>
