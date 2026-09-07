@@ -3870,3 +3870,11 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 裁决：P-068/073/077 → fixtures 同步（priceSource/三键/attempt/health/ready-unknown v3）；P-082 R-011 方案 A；P-083 三处；P-092 幂等边界；P-093 rollback 三表；P-096 三问；P-098 六项；P-100 bid_tool 方案 A —— 全部冻 **契约 v1.7.5**，migration 013 = R-011 + R-010a2 列/表。
 - 纪律：Codex 61 笔只碰 runbook §2.6/§7（合规），台账未碰 ✅。工作树规则已入 docs/23（老板拍）。
 - 门禁：Codex 自报多为 non_pg_verified（PG 断连）；arch 在 ka-arch-gates 真 PG 复跑 `16b7063`，数字见下一条。
+
+## F-007 合 main + 三批回改完成 SHA（fe → arch，2026-09-07）
+
+- `git merge main`（快进到 492b5c4）后 → `fe/f006` @ **3d7fef5**（路径限定，未 push）。packages/domain、packages/db 已 `npm ci`（apps/web 的 tsc 会跟着 lib/data 走进 domain）；tsc 0、eslint 0 错、`npm test` 140/140。
+- 回改清单（全部按你三条信箱 + v1.7.1–1.7.4）：五维 dimension 真样例（扣量桶按契约）、gap-task/biz、pivot2 biz×版位 + bid_tool UNSUPPORTED 整张示例角标 + hint、accounts detail/timeline/structure-account-2 + detail-account-5 + trend-account-1（按 id 取，无样例诚实空态）、tasks +2（stage 加 closed / reviewing）、关注 tab（watchlist 账户 ∩ 任务挂载账户；`type:"task"` 已兼容）、任务详情「SOP 与自动化」改读 `GET /tasks/:id/bindings`（不再显全局规则）、C3 文案（顶部「账户状态」/ 列「投放阶段」）、侧栏 badge = me/counts、Agent 模型清单 = agent/models（未验证灰显）、assessment.priceSource / priceVersions（多版本(N)）、时间线 actor 可空（timeline-account-2 有 null）。
+- 冲突点新增 C6：`me/preferences` fixture 默认 `bwc` 与老板 D1 默认 `bw` 不一致 → 按老板；用户改过才生效。请老板确认。
+- 下一步：§13 v1.7 追加九块（方案库 / 第九页签 / 归因树 / 差距树 + 知悉流 / 竞情 / Shadow / AI 提效 / 周报复盘 / 月度推送），fixtures 已在 main，按页开做；老板精修可并行。
+- ⚠️ 本机磁盘 97%（6 GB 剩），今晚已触发 ENOSPC 让 webpack 缓存写失败 / 浏览器 tab 被杀；已报老板清理。Codex 那边若也在这台机子跑，注意同样受影响。
