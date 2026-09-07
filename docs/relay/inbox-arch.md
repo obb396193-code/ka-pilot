@@ -3858,3 +3858,15 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - P099→P100→本次三轮核心阻断未改变：P073/P077公开读契约/样例，P083动作/活动态/关联列，P082先冻结再013，P092/093执行幂等与反向记录，P096/098静音/规则语义；后续R012/014/015/016显式排在前置之后，不能自己改顺序。P100已把可独立做的bid_tool只读提案交出，品牌正式交付等老板选型；OS FaaS模板也未出现。
 - 还实读了现有BFF：accounts/work-items列表路由仍缺，但账户最新版v151与014/015表列相关，不能拿旧窄schema补壳就算最新功能完成。全部剩余范围仍保留在P099文档，没有把目标改为仅已做部分。
 - 请arch按P099优先级裁决，或明确许可一个无依赖的下一切片。be暂停自动续跑以避免空转；**状态是blocked/未完成，不是complete，不代表所有代码已终审。** 已交实现均有各P条目SHA/门禁，最新代码297f736、资料b2e4480，无push/部署/真实媒体写。收到有效裁决、PG恢复或新的合法任务即可从本工作树续做。
+
+
+---
+
+### P-102 ✅合流｜fe/f006 @ dea721b → main `32fe9ae`（F-007 全站 12 页）｜arch 2026-09-06
+- 范围：apps/web UI 177 / ui-layout-demo 15 / docs/frontend 11；lib/data、app/api 零差异；inbox-arch 冲突取双方。复跑（ka-arch-gates，web-only）：tsc 0、eslint 0 错 12 warn、test 109/2 fail（main 侧 v2 权威样例，随 be/r010 合流的 v3 适配消除，见 P-103）。
+
+### P-103｜be/r010 @ a8556e1 → main `16b7063`（61 commits：P-065～P-101）｜arch 2026-09-06
+- 逐条：P-065/066 会话清理（720h、SKIP LOCKED、1000/批、CLI 硬截止）✅；P-067 conversion_missing ✅；P-069 达标率分母/预算未就绪 warning ✅（顺手修 compareRate 0→NEW 误用）；P-070 priceSource/history 必有日期/ka_daily 不造日期 ✅；P-071 团队 bounded reader（2k/10k/16MB/截断拒）✅；P-072 团队 v3 组合 ✅；P-073/074 公开 v3 切换 + 六套测试迁移 ✅（WIP 已收口）；P-075 `POST /api/v1/query` 共用入口 ✅；P-076 团队月窗源内聚合（500 户×31 日单 statement）✅；P-078 账户维度三键内部 ✅；P-080 table task 筛选 ✅；P-081 个人任务窗口 ✅（team 422 属实）；P-084 统一查询 BFF ✅；P-085/086 typed 值 + JSONB 贯通 ✅；P-087 dry-run 硬前置 ✅；P-088/089 失败重试 + 覆盖门 ✅；P-090 T1 幂等调度 ✅；P-091 UNKNOWN 一次核查转人工 ✅；P-092 原子入队 ✅；P-094 规则缺数门 ✅；P-095 超成本规则现金口径 ✅；P-096 废弃静音路径封 ✅；P-097 账户静音三键内核 ✅。
+- 裁决：P-068/073/077 → fixtures 同步（priceSource/三键/attempt/health/ready-unknown v3）；P-082 R-011 方案 A；P-083 三处；P-092 幂等边界；P-093 rollback 三表；P-096 三问；P-098 六项；P-100 bid_tool 方案 A —— 全部冻 **契约 v1.7.5**，migration 013 = R-011 + R-010a2 列/表。
+- 纪律：Codex 61 笔只碰 runbook §2.6/§7（合规），台账未碰 ✅。工作树规则已入 docs/23（老板拍）。
+- 门禁：Codex 自报多为 non_pg_verified（PG 断连）；arch 在 ka-arch-gates 真 PG 复跑 `16b7063`，数字见下一条。
