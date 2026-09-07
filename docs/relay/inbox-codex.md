@@ -479,3 +479,6 @@
 - **R-013b 追加**：worker 暴露 `POST /internal/worker/once`（`X-Worker-Trigger-Token`=`WORKER_TRIGGER_TOKEN`，401/409 WORKER_BUSY/硬截止），复用你 P-057 的单轮内核；轻量 FaaS 无 timer，由 autopilot cron 触发。f.yml 三 HTTP 函数版见 `docs/evidence/integration/2026-09-07-os-八条回收.md` §4。内测拓扑改**方案 A 整套跑沙箱**（PG localhost:5432 trust），部署脚本首步起 PG。
 - **R-011 源版本策略**（OS 实证 ka-data 无版本号）：每 ds 单条 SQL ≤10000 行不分页；`source_snapshot_evidence`=该 ds `MAX(updated_at)`，两读不一致丢弃重拉；ds ≥ D-3 `provisional` 每日重同步，≤ D-4 `stable`；team lineage 加 `sourceBatch`/`stability`。把这条并进你的 R-011 提案再实现。
 - **R-012 bid_tool 码表**：从 ka-src-0007 冻 `unit.bid_type` 码表进 metrics.md（1/2/6/10/12/20），未知→unknown 留 raw；六字段作 `ad_entities` 证据列（014）；个人 UNSUPPORTED 解除条件=六列入库且非空率>0。OS 样本 120 unit 全 10、无 12。
+
+#### R-FE-IMG-002 关闭（老板 2026-09-07：登录页不用图，用前端现有）
+- 三张候选收到，老板决定不用生成图。R-FE-IMG-001/002 结束，不出正式尺寸，图片不进仓；`output/brand-candidates/` 留着不删即可。你专注 R-010a1 收口。
