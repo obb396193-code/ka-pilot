@@ -52,12 +52,13 @@ describe("canonical data query rows", () => {
       "account.anomalies",
       "account.detail",
       "account.dimension",
+      "account.pivot2",
       "account.summary",
       "account.table",
       "account.trend",
       "reconcile.account_daily",
     ]);
-    expect(new Set(Object.values(canonicalRowSchemaVersionByQueryId)).size).toBe(7);
+    expect(new Set(Object.values(canonicalRowSchemaVersionByQueryId)).size).toBe(8);
   });
 
   it("keeps summary and trend metrics source-neutral and strict", () => {

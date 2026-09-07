@@ -31,6 +31,8 @@ export interface QueryAuthorityPolicy {
 }
 
 export interface NormalizedQueryParams {
+  dimA?: z.infer<typeof dimensionTypeSchema>;
+  dimB?: z.infer<typeof dimensionTypeSchema>;
   dimensionType?: z.infer<typeof dimensionTypeSchema>;
   dateFrom: string;
   dateTo: string;
@@ -189,6 +191,9 @@ function normalizedSchema<Shape extends z.ZodRawShape>(shape: Shape): z.ZodType<
   });
 }
 
+const pivotSchema = z.object({ dimA: dimensionTypeSchema, dimB: dimensionTypeSchema,
+  window_from: dateInputSchema, window_to: dateInputSchema, media: mediaSchema,
+}).strict().transform(({ window_from, window_to, ...input }) => ({ ...input, dateFrom: window_from, dateTo: window_to }));
 const intervalSchema = normalizedSchema(commonDateFields);
 const windowFields = { ...commonDateFields, taskId: taskQueryIdSchema.optional(), preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
 const summarySchema = normalizedSchema({ ...windowFields, compare: z.enum(["dod", "wow"]).optional() });
@@ -313,6 +318,10 @@ function reconciliationSql(params: NormalizedQueryParams, accounts: SqlAccountSc
 
 const DEFINITION_INPUT: QueryDefinition[] = [
   {
+    queryId: "account.pivot2", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
+    accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-pivot-window-v1",
+    metricVersion: "account-pivot-v3", authorityPolicy: authority("cross_media_operations", "platform"), paramsSchema: pivotSchema,
+  }, {
     queryId: "account.dimension", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
     accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-dimension-window-v1",
     metricVersion: "account-dimension-v3", authorityPolicy: authority("cross_media_operations", "platform"),
@@ -468,6 +477,9 @@ export class DataQueryRegistry {
       throw new QueryRegistryError("INVALID_REQUEST", "Invalid query parameter set");
     }
     assertDateBudget(parsedParams.data, entry.maxDateSpanDays);
+    if (queryId.data === "account.pivot2" && [parsedParams.data.dimA, parsedParams.data.dimB].some(dim => !["account", "task", "biz"].includes(dim ?? ""))) {
+      throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This pivot dimension is not available for this source");
+    }
     if (queryId.data === "account.dimension" && !["account", "task", "biz"].includes(parsedParams.data.dimensionType ?? "")) {
       throw new QueryRegistryError("DIMENSION_UNSUPPORTED", "This dimension is not available for this source");
     }

@@ -34,6 +34,9 @@ export const ADMIN_RECONCILE_HTTP_PATH = "/api/v1/admin/data/reconcile";
 
 export interface DataSourceQueryPort {
   query(resolved: ResolvedDataQuery, scope: DataQueryExecutionScope): Promise<SourceQueryResult>;
+  pivot?(resolved: ResolvedDataQuery, auth: ApprovedWorkspaceAuthContext): Promise<{
+    source: SourceQueryResult; cellCoverage: { cells: number; withData: number; undeterminable: number };
+  }>;
 }
 
 export interface DataQueryServiceDependencies {
@@ -232,7 +235,7 @@ function guardSourceOutput(
     throw new OutputContractError();
   }
   result = parsed.data;
-  if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend" || resolved.queryId === "account.dimension") {
+  if (resolved.queryId === "account.summary" || resolved.queryId === "account.trend" || resolved.queryId === "account.dimension" || resolved.queryId === "account.pivot2") {
     const window = result.lineage.window;
     if (!window || window.from !== resolved.params.dateFrom || window.to !== resolved.params.dateTo ||
       window.preset !== (resolved.params.preset ?? "custom")) throw new OutputContractError();
@@ -249,6 +252,18 @@ function guardSourceOutput(
   const allowed = new Set(
     scope.accounts.map((account) => `${account.media}\u0000${account.accountId}`),
   );
+  if (resolved.queryId === "account.pivot2") {
+    if (result.dimA !== resolved.params.dimA || result.dimB !== resolved.params.dimB) throw new OutputContractError();
+    if (result.lineage.truncated || result.rows.length > resolved.maxRows) throw new OutputContractError();
+    if (scope.scopeKind === "explicit_accounts" && (result.lineage.coverage.requestedObjects !== scope.accounts.length ||
+      (result.lineage.coverage.returnedObjects !== undefined && result.lineage.coverage.returnedObjects > scope.accounts.length) ||
+      (result.lineage.coverage.complete && result.lineage.coverage.returnedObjects !== scope.accounts.length))) throw new OutputContractError();
+    for (const row of result.rows) for (const [side, dim] of [["a", result.dimA], ["b", result.dimB]] as const) {
+      if (dim !== "account") continue;
+      const key = (row[side] as { key: string }).key, separator = key.indexOf(":");
+      if (scope.scopeKind === "explicit_accounts" && !allowed.has(`${key.slice(0, separator)}\u0000${key.slice(separator + 1)}`)) throw new OutputScopeError();
+    }
+  }
   for (const row of result.rows) {
     if (resolved.outputShape === "account_rows" && resolved.params.taskId !== undefined && (!Array.isArray(row.tasks) || !row.tasks.some((task: unknown) =>
       typeof task === "object" && task !== null && "taskId" in task && task.taskId === resolved.params.taskId))) {
@@ -410,6 +425,21 @@ export class DataQueryService {
         throw error;
       }
 
+      if (resolved.queryId === "account.pivot2") {
+        if (route.selectedSource !== "platform" || auth.workspaceKind !== "personal" || !this.dependencies.platform.pivot) {
+          throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Pivot source is not configured");
+        }
+        // Preserve the unique approved context and its actual role/access levels;
+        // only narrow its tuple list, never fabricate an auth context in an adapter.
+        const allowed = new Set(scope.accounts.map(a => JSON.stringify([a.media, a.accountId])));
+        const filteredAuth: ApprovedWorkspaceAuthContext = { ...auth, scope: { ...auth.scope,
+          accounts: auth.scope.accounts.filter(a => allowed.has(JSON.stringify([a.media, a.accountId]))) } };
+        const result = await this.dependencies.platform.pivot(resolved, structuredClone(filteredAuth));
+        const source = withFrozenAuthority(guardSourceOutput(result.source, resolved, scope), resolved, "platform", requestId, auth.workspaceKind);
+        const response = dataQueryResponseSchema.safeParse({ ok: true, data: { mode: "platform", source }, meta: { cellCoverage: result.cellCoverage } });
+        if (!response.success) throw new OutputContractError();
+        return response.data;
+      }
       if (route.selectedSource === "ka_data") {
         const source = withFrozenAuthority(
           guardSourceOutput(await this.dependencies.kaData.query(resolved, scope), resolved, scope),
