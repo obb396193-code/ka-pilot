@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { inclusiveDates } from "../etl/date-range.js";
 import { errorSummary } from "../etl/run-utils.js";
+import { withEtlAttempt } from "../etl/attempt-scope.js";
 import type { EtlRunStore } from "../etl/types.js";
 import type { JobHandler } from "../jobs/types.js";
 import type { OutboundStore } from "../notifications/types.js";
@@ -36,13 +37,13 @@ export function createDataQualityHandler(dependencies: {
     if (job.workspaceId !== payload.workspaceId) {
       throw new Error("Data quality job workspace does not match its payload");
     }
-    const runId = await dependencies.runs.startRun(job.id, "quality", {
+    const runId = await dependencies.runs.startRun(job.id, "quality", withEtlAttempt(job, {
       workspaceId: payload.workspaceId,
       dateFrom: payload.dateFrom,
       dateTo: payload.dateTo,
       credentialOwnerUserId: job.credentialOwnerUserId,
       ...(payload.backfillId === undefined ? {} : { backfillId: payload.backfillId }),
-    });
+    }));
     let currentStep = "quality:start";
     let checksRecorded = 0;
     let backfillQualityFailed = false;
