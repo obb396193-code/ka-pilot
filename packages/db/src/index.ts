@@ -48,3 +48,4 @@ export * from "./r014/report-run-repository.js";
 export * from "./r014/external-change-repository.js";
 export * from "./r014/account-pipeline-repository.js";
 export * from "./r014/me-workspace-repository.js";
+export * from "./r014/search-repository.js";

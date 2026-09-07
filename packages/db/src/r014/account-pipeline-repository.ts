@@ -1,5 +1,5 @@
 import {
-  POOL_STATUS_ORDER, buildAccountPipeline, metricValue, poolStatusSchema, poolStatusSourceSchema,
+  buildAccountPipeline, metricValue, poolStatusSchema, poolStatusSourceSchema,
   type AccountPipeline, type ApprovedWorkspaceAuthContext, type PoolStatus,
 } from "@ka/domain";
 import type { Pool } from "pg";

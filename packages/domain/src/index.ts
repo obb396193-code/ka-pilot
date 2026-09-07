@@ -59,3 +59,4 @@ export * from "./r014/external-change-contract.js";
 export * from "./r014/account-pipeline-contract.js";
 export * from "./r014/notification-contract.js";
 export * from "./r014/me-workspace-contract.js";
+export * from "./r014/search-contract.js";
