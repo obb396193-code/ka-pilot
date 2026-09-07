@@ -1,5 +1,15 @@
 # R013b Worker HTTP 单轮触发质量报告
 
+## P116 已验收 / F-P116-1 补修（2026-09-07，以下为最新状态）
+
+- arch 已通过 P116 并合 main `64c9bb0`，不再是下文交审时的 pending。旧章节保留当时证据，不覆盖失败记录；仍未部署/production-verified。
+- 冻结期间在空间恢复至8.5GiB时，对 exact `9d6a8ba` 完成最终补验：Domain770、DB真实PG710、Worker1221过+2外部opt-in跳过、Gateway36、Web非视觉143；四后端包typecheck/lint全通过。Web类型仍缺前端依赖（退出2），lint退出0/17warning。原始日志 `output/r013b-worker-http/final-*.log`；当时只写output未追加分支提交，现按批准后回填证据。不能把这组旧SHA全量数当成下一修复的门禁。
+- 本轮独立代码 `cffc230`：HTTP PG测试复用角色中立守卫；实读发现benchmark原来允许共享`/ka`并在无配置时默认它，故一起移除该例外和默认值。允许显式本机55432 `ka_[a-z0-9_]*_test`，拒共享ka/远端/其他端口/非法路径/query/hash；arch/be2库名只做解析测试，不连接它们。
+- TDD先复现2个失败（缺配置/共享ka未拒绝），再修代码。合main@`e5fee10`后的候选头`a6bbe08`：**47/47定向通过**（benchmark9，HTTP真实PG6，supervisor13，HTTP14，lock5）；Workertypecheck/lint通过，production offline audit0（缓存检查）。本次无新依赖/锁文件改动，未修改Contract/视觉/其他Agent代码。
+- benchmark覆盖：语句/行98.36%、分支80%、函数94.44%，真实100账户合成样本；不是整个Worker覆盖率。日志`P117-focused.log`、`P117-final-focused.log`、`P117-coverage.log`均在上述output目录。
+- **本轮未跑全量**：开始磁盘4.2GiB，末次6.3GiB，都未达到arch≥8G门限；只复用固定合成库`ka_be_r010_20260907_test`跑定向，没有清缓存/新建库/操作共享库。
+- 本人runbook§2.7按最新OS/arch定案改为沙箱后台HTTP循环，完成一轮再sleep600，不再宣称autopilot直接HTTP；Secret避免URL/进程参数/日志。只登记，不部署、不启循环、不开放媒体写、不push。
+
 ## 交付状态与精确范围
 
 - 候选代码：`0532886`（终态 IPC/计数）、`f785004`（HTTP/PG 单飞/启动/操作节）、`a5770c9`（父进程提前断联防护）、`4639c0f`（仅一条真实 cleanup CLI 测试 30s）。
