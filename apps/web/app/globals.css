@@ -7,9 +7,13 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist-sans), "PingFang SC", "MiSans", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-heading: var(--font-sans);
+  --color-status-critical: var(--kp-status-critical);
+  --color-status-warning: var(--kp-status-warning);
+  --color-status-success: var(--kp-status-success);
+  --color-status-info: var(--kp-status-info);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -81,6 +85,14 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  /* 语义状态与图表 token（全站共用；红绿只表语义，不做装饰） */
+  --kp-status-critical: oklch(0.58 0.22 27);
+  --kp-status-warning: oklch(0.66 0.16 70);
+  --kp-status-success: oklch(0.55 0.15 151);
+  --kp-status-info: oklch(0.57 0.16 253);
+  --kp-chart-spend: var(--primary);
+  --kp-chart-cpa: oklch(0.68 0.15 70);
+  --kp-chart-grid: var(--border);
 }
 
 .dark {
@@ -115,6 +127,13 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --kp-status-critical: oklch(0.7 0.19 22);
+  --kp-status-warning: oklch(0.78 0.15 75);
+  --kp-status-success: oklch(0.72 0.15 155);
+  --kp-status-info: oklch(0.7 0.14 250);
+  --kp-chart-spend: var(--primary);
+  --kp-chart-cpa: oklch(0.78 0.15 75);
+  --kp-chart-grid: oklch(1 0 0 / 12%);
 }
 
 @layer base {
@@ -122,9 +141,103 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
   }
   html {
     @apply font-sans;
   }
+}
+/* ===== 主题：模式（颜色用到哪一步）× 主色 --hue（右上角色卡）=====
+   bw   黑白·点彩（默认）：底子黑白，主色只做点染（图表第二条线、chip 色点）
+   bwc  黑白+彩：壳不变，图表/迷你趋势用主色及派生色
+   full 全彩：按钮、选中态、侧栏激活、页面底色微染也用主色
+   红绿黄（--kp-status-*）是状态含义，任何模式不变 */
+:root {
+  --hue: #ff6a2c;
+  /* 驯化：用户随便选的颜色先过两道闸，界面永远拿驯化后的值
+     --kp-ink  黑白·点彩用：亮度压到中深、饱和度封顶 → 荧光绿进去，深墨绿出来
+     --kp-tone 黑白+彩 / 全彩用：只封顶饱和度，防荧光，保留品牌感 */
+  --kp-ink: oklch(from var(--hue) clamp(0.42, l, 0.6) min(c, 0.13) h);
+  --kp-tone: oklch(from var(--hue) clamp(0.45, l, 0.72) min(c, 0.2) h);
+  --kp-hue-2: oklch(from var(--kp-tone) calc(l - 0.1) calc(c * 0.85) calc(h + 45));
+  --kp-hue-3: oklch(from var(--kp-tone) calc(l + 0.04) calc(c * 0.9) calc(h - 70));
+  --kp-hue-light: oklch(from var(--kp-tone) calc(l + 0.2) calc(c * 0.55) h);
+  --kp-hue-deep: oklch(from var(--kp-tone) calc(l - 0.1) c h);
+  --kp-hue-soft: color-mix(in srgb, var(--kp-tone) 10%, white);
+}
+:root[data-theme-mode="bw"] {
+  --kp-chart-spend: var(--foreground);
+  --kp-chart-cpa: var(--kp-ink);
+  --chart-1: var(--foreground);
+  --chart-2: var(--kp-ink);
+  --chart-3: var(--muted-foreground);
+}
+:root[data-theme-mode="bwc"] {
+  --kp-chart-spend: var(--kp-tone);
+  --kp-chart-cpa: var(--kp-hue-2);
+  --chart-1: var(--kp-tone);
+  --chart-2: var(--kp-hue-2);
+  --chart-3: var(--kp-hue-3);
+}
+:root[data-theme-mode="full"] {
+  --kp-chart-spend: var(--kp-tone);
+  --kp-chart-cpa: var(--kp-hue-light);
+  --chart-1: var(--kp-tone);
+  --chart-2: var(--kp-hue-light);
+  --chart-3: var(--kp-hue-3);
+  --primary: var(--kp-tone);
+  --primary-foreground: #ffffff;
+  --ring: var(--kp-tone);
+  --accent: var(--kp-hue-soft);
+  --accent-foreground: var(--kp-hue-deep);
+  --sidebar: color-mix(in srgb, var(--kp-tone) 3%, #f7f7f9);
+  --sidebar-primary: var(--kp-tone);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--kp-hue-soft);
+  --sidebar-accent-foreground: var(--kp-hue-deep);
+  --border: color-mix(in srgb, var(--kp-tone) 6%, #e6e6e9);
+  --sidebar-border: color-mix(in srgb, var(--kp-tone) 6%, #e6e6e9);
+  --radius: 0.75rem;
+}
+:root[data-theme-mode="full"] .kp-tint {
+  background: color-mix(in srgb, currentColor 9%, white);
+  border-color: transparent;
+}
+.dark:root[data-theme-mode="full"], .dark[data-theme-mode="full"] {
+  --sidebar: oklch(0.205 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --accent-foreground: var(--kp-hue-light);
+  --sidebar-accent-foreground: var(--kp-hue-light);
+}
+
+/* ===== AI 助手入口「光晕球」（老板 2026-09-05 选 B）：渐变慢转 + 外圈柔光；面板渐变发丝线；尊重减少动态效果 ===== */
+@property --kp-ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+:root {
+  --kp-orb-2: oklch(from var(--kp-tone) calc(l + 0.06) c calc(h + 55));
+  --kp-orb-3: oklch(from var(--kp-tone) calc(l - 0.02) c calc(h - 40));
+}
+@keyframes kp-orb-spin { to { --kp-ang: 360deg; } }
+.kp-orb {
+  background: conic-gradient(from var(--kp-ang), var(--kp-tone), var(--kp-orb-2), var(--kp-orb-3), var(--kp-tone));
+  animation: kp-orb-spin 7s linear infinite;
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--kp-tone) 35%, transparent);
+}
+.kp-orb::before {
+  content: ""; position: absolute; inset: -10px; border-radius: 9999px; z-index: -1; opacity: .45; filter: blur(14px);
+  background: conic-gradient(from var(--kp-ang), var(--kp-tone), var(--kp-orb-2), var(--kp-orb-3), var(--kp-tone));
+  animation: kp-orb-spin 7s linear infinite;
+}
+.kp-orb::after {
+  content: ""; position: absolute; inset: 2px; border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), rgba(255,255,255,0) 55%), #0a0a0a;
+}
+.kp-glass::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none;
+  background: conic-gradient(from var(--kp-ang), var(--kp-tone), var(--kp-orb-2), var(--kp-orb-3), var(--kp-tone));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: kp-orb-spin 9s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .kp-orb, .kp-orb::before, .kp-glass::before { animation: none; }
 }

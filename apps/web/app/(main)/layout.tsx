@@ -1,6 +1,11 @@
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import { Toaster } from "@/components/ui/sonner"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
+import { SessionProvider, WorkspaceScope } from "@/components/business/session/session-provider"
+import { ThemeProvider } from "@/components/business/theme/theme-provider"
+import { AgentLauncher } from "@/components/business/agent/agent-launcher"
+import { CommandPalette } from "@/components/business/command/command-palette"
 
 export default function MainLayout({
   children,
@@ -8,23 +13,30 @@ export default function MainLayout({
   children: React.ReactNode
 }) {
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            {children}
+    <SessionProvider>
+      <ThemeProvider>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <AppSidebar variant="inset" />
+        <SidebarInset>
+          <SiteHeader />
+          <div className="flex flex-1 flex-col">
+            <div className="@container/main flex flex-1 flex-col gap-2">
+              <WorkspaceScope>{children}</WorkspaceScope>
+            </div>
           </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+        </SidebarInset>
+      </SidebarProvider>
+      <CommandPalette />
+      <AgentLauncher />
+      <Toaster position="top-center" />
+      </ThemeProvider>
+    </SessionProvider>
   )
 }

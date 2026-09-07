@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KA Pilot 主题 · 黑白 / 黑白+彩 / 全彩</title>
+<style>
+@font-face { font-family: "Geist"; src: url("/apps/web/app/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Geist Mono"; src: url("/apps/web/app/fonts/GeistMono-Variable.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+* { box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+a { color: inherit; text-decoration: none; }
+body { margin: 0; background: #ebebeb; color: #111; font-family: "Geist", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-size: 14px; line-height: 1.5; }
+.board { max-width: 1320px; margin: 0 auto; padding: 28px 24px 80px; }
+.board-head h1 { margin: 0; font-size: 26px; letter-spacing: -0.01em; }
+.board-head p { margin: 6px 0 0; color: #555; max-width: 960px; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #fff; border: 1px solid #ccc; font-size: 12px; color: #555; vertical-align: middle; margin-left: 8px; }
+.jump { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 8px; padding: 12px 0; background: linear-gradient(#ebebeb 75%, rgba(235,235,235,0)); }
+.jump a { padding: 6px 12px; border-radius: 999px; background: #fff; border: 1px solid #cfcfcf; font-size: 13px; font-weight: 500; }
+.jump a:hover { background: #111; color: #fff; border-color: #111; }
+.palnote { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; background: #fff; border-radius: 12px; padding: 12px 16px; margin: 0 0 14px; font-size: 13px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.palnote b { font-weight: 600; }
+.swatch { display: inline-block; width: 14px; height: 14px; border-radius: 50%; vertical-align: -2px; margin-right: 3px; }
+.palnote .where { color: #555; }
+.flash { outline: 3px solid #ffb400 !important; outline-offset: 3px; border-radius: 6px; animation: flashfade 1.6s ease-out forwards; }
+@keyframes flashfade { 0% { outline-color: #ffb400; } 100% { outline-color: transparent; } }
+.chart svg .flash { outline: none; filter: drop-shadow(0 0 4px #ffb400); animation: none; }
+
+.pal { margin-left: auto; display: inline-flex; border: 1px solid #111; border-radius: 999px; padding: 2px; background: #fff; }
+.pal button { border: 0; background: transparent; font: inherit; font-size: 12.5px; font-weight: 500; padding: 4px 12px; border-radius: 999px; cursor: pointer; color: #111; }
+.pal button.on { background: #111; color: #fff; }
+table.cmp { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; font-size: 13px; margin: 6px 0 30px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+table.cmp th, table.cmp td { text-align: left; padding: 10px 14px; border-bottom: 1px solid #eee; vertical-align: top; }
+table.cmp th { background: #f7f7f7; font-weight: 600; white-space: nowrap; }
+table.cmp td:first-child { color: #555; white-space: nowrap; width: 110px; }
+.variant { margin-bottom: 48px; }
+.vhead { display: flex; align-items: baseline; gap: 14px; margin: 0 0 12px 4px; }
+.vhead .letter { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+.vhead h2 { margin: 0; font-size: 19px; }
+.vhead p { margin: 0; color: #555; }
+
+.cands { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin: 0 0 14px; }
+.cand { background: #fff; border: 1px solid #d9d9d9; border-radius: 12px; padding: 12px 12px 10px; cursor: pointer; text-align: left; font: inherit; transition: box-shadow .15s; }
+.cand:hover { box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+.cand.on { border-color: #111; box-shadow: 0 0 0 1px #111; }
+.cand .top { display: flex; align-items: center; gap: 8px; }
+.cand .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+.cand b { font-size: 13px; }
+.cand .hex { font-family: "Geist Mono", ui-monospace, monospace; font-size: 11px; color: #777; margin-left: auto; }
+.cand svg { width: 100%; height: 34px; margin-top: 8px; display: block; }
+.cand .why { font-size: 11px; color: #555; margin-top: 6px; line-height: 1.45; }
+.cand .mini { display: flex; gap: 6px; margin-top: 8px; align-items: center; }
+.cand .mini i { display: inline-flex; align-items: center; gap: 5px; font-size: 10.5px; font-style: normal; border: 1px solid #e6e6e6; border-radius: 999px; padding: 1px 7px; color: #333; }
+.cand .mini i::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+.cand .mini .btn { padding: 2px 8px; border-radius: 6px; background: var(--c); color: #fff; font-size: 10.5px; }
+.foot { background: #fff; border-radius: 12px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.foot h3 { margin: 0 0 8px; font-size: 16px; }
+.foot li { margin: 4px 0; }
+
+/* ===== 壳：shadcn 结构，只留白和黑；灰只做发丝线 ===== */
+.app { --font: "Geist", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; --font-num: "Geist", "PingFang SC", sans-serif;
+  --bg: #ffffff; --surface: #ffffff; --sidebar-bg: #fcfcfc; --border: #e6e6e6; --grid: #ececec; --text: #0a0a0a; --text-2: #2e2e2e; --text-3: #666666;
+  --accent: #0a0a0a; --accent-fg: #ffffff; --nav-active-bg: #f3f3f3; --nav-active-fg: #0a0a0a; --soft: #f4f4f4;
+  --pos: #2b8a3e; --neg: #c92a2a; --warn: #b8760a;
+  --line-1: #0a0a0a; --line-2: #0a0a0a; --line-3: #0a0a0a; --dash-2: 5 4; --dash-3: 1.5 3.5; --grad-op: .16;
+  --r-card: 10px; --r-btn: 8px; --r-chip: 999px; --shadow: 0 1px 2px rgba(0,0,0,.05);
+  display: flex; background: var(--bg); color: var(--text); font-family: var(--font); font-size: 14px; border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.14), 0 0 0 1px rgba(0,0,0,.07); }
+/* 主色 --hue 由右上角色卡选择；三种模式各自决定颜色用到哪 */
+.app { --hue: #3e63dd; }
+/* 黑白·点彩：底子全黑白，主色只出现在第二条数据线 */
+.app.t-bw { --line-1: #0a0a0a; --line-2: var(--hue); --line-3: #0a0a0a; --dash-2: 0; }
+.t-bw .delta { background: #fff; border-color: var(--border); }
+.t-bw .chip { background: #fff; border-color: var(--border); color: var(--text-2); padding-left: 7px; }
+.t-bw .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; background: currentColor; }
+.t-bw .chip.p0::before { background: var(--neg); } .t-bw .chip.p1::before { background: var(--warn); } .t-bw .chip.opp::before { background: var(--pos); }
+.t-bw .spark polyline { stroke: #0a0a0a; } .t-bw .spark path { fill: #0a0a0a; }
+.t-bw .bar i { background: #0a0a0a; }
+.t-bw .legend .l2::before { background: var(--line-2); }
+/* 黑白+彩：壳不变，数据线用主色及其派生色（同一色相系，靠明度和相邻色相区分） */
+.app.t-bwc { --line-1: var(--hue); --line-2: oklch(from var(--hue) calc(l - 0.1) calc(c * 0.85) calc(h + 45)); --line-3: oklch(from var(--hue) calc(l + 0.04) calc(c * 0.9) calc(h - 70)); --dash-2: 0; --dash-3: 0; }
+/* 全彩：单色系——一个主色 + 中性色；按钮实色、页底几乎中性、卡片白、阴影软；不做多色卡片、不做标题色条 */
+.app.t-full { --accent: var(--hue); --accent-2: oklch(from var(--hue) calc(l + 0.1) calc(c * 0.9) calc(h + 20)); --nav-active-bg: color-mix(in srgb, var(--hue) 10%, white); --nav-active-fg: oklch(from var(--hue) calc(l - 0.08) c h); --soft: color-mix(in srgb, var(--hue) 8%, white); --bg: color-mix(in srgb, var(--hue) 3%, #f7f7f9); --sidebar-bg: #ffffff; --border: color-mix(in srgb, var(--hue) 7%, #e8e8ec); --grid: color-mix(in srgb, var(--hue) 6%, #ececf0); --shadow: 0 1px 2px rgba(16,24,40,.04), 0 8px 24px rgba(16,24,40,.05); --line-1: var(--hue); --line-2: oklch(from var(--hue) calc(l + 0.2) calc(c * 0.55) h); --line-3: oklch(from var(--hue) calc(l + 0.04) calc(c * 0.9) calc(h - 70)); --grad-op: .26; --r-card: 12px; --dash-2: 0; --dash-3: 0; }
+.t-full .new, .t-full .btn.primary, .t-full .tsw button.on, .t-full .seg b { background: var(--accent); color: #fff; border-color: transparent; }
+.t-full .new, .t-full .btn.primary { box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 6px 16px color-mix(in srgb, var(--accent) 22%, transparent); }
+.t-full .logo, .t-full .avatar { background: var(--accent); color: #fff; }
+.t-full .kpi { background: linear-gradient(180deg, color-mix(in srgb, var(--hue) 4%, white), #fff 70%); border-color: var(--border); }
+.t-full .kpi-num { font-weight: 650; font-size: 25px; }
+.t-full .delta { border-color: transparent; background: color-mix(in srgb, currentColor 9%, white); }
+.t-full .delta.flat { background: var(--soft); }
+.t-full .card, .t-full .item { border-color: var(--border); }
+.t-full .chip { border-color: transparent; background: color-mix(in srgb, currentColor 10%, white); }
+.t-full .chart-grid line { stroke-dasharray: 3 3; }
+.t-full .line1, .t-full .line2 { stroke-width: 2; }
+.t-full .dots circle { r: 3; stroke-width: 2; }
+.t-full .tabs { background: var(--soft); } .t-full .tabs b { color: var(--nav-active-fg); }
+.t-full .stats div { background: var(--soft); border-color: transparent; }
+.t-full .ok { background: color-mix(in srgb, var(--pos) 8%, white); color: var(--pos); }
+.t-full nav a.active::before { border-color: var(--nav-active-fg); background: color-mix(in srgb, var(--nav-active-fg) 18%, white); opacity: 1; }
+.t-full .bar i { background: var(--accent); }
+.t-full .health i { box-shadow: 0 0 0 3px color-mix(in srgb, var(--pos) 18%, white); }
+.side { width: 224px; flex: none; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 14px 12px; display: flex; flex-direction: column; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; padding: 2px 6px; }
+.logo { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); }
+.new { display: flex; align-items: center; gap: 8px; background: var(--accent); color: var(--accent-fg); border: 0; border-radius: var(--r-btn); padding: 8px 12px; font: inherit; font-weight: 500; }
+.new i { font-style: normal; font-size: 16px; line-height: 1; }
+nav { display: flex; flex-direction: column; gap: 2px; }
+nav a { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: var(--r-btn); color: var(--text-2); }
+nav a::before { content: ""; width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid currentColor; opacity: .6; }
+nav a.active { background: var(--nav-active-bg); color: var(--nav-active-fg); font-weight: 500; }
+.side-foot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; }
+.ws { border: 1px solid var(--border); border-radius: var(--r-btn); padding: 8px 10px; background: #fff; font-weight: 500; }
+.ws small { display: block; font-weight: 400; color: var(--text-3); font-size: 11px; margin-top: 2px; }
+.user { display: flex; align-items: center; gap: 10px; padding: 4px 6px; }
+.avatar { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); color: var(--accent-fg); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.user small { display: block; color: var(--text-3); font-size: 11px; }
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.top { height: 50px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; padding: 0 20px; background: #fff; }
+.crumb { font-weight: 500; }
+.health { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; color: var(--text-3); font-size: 12px; }
+.health i { width: 7px; height: 7px; border-radius: 50%; background: var(--pos); }
+/* 主题开关：右上角，一点就换 */
+.tsw { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; padding: 2px; background: #fff; }
+.tsw button { border: 0; background: transparent; font: inherit; font-size: 12px; padding: 3px 10px; border-radius: 999px; cursor: pointer; color: var(--text-3); display: inline-flex; align-items: center; gap: 5px; }
+.tsw button i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid currentColor; font-style: normal; }
+.tsw button[data-t="bw"] i { background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
+.tsw button[data-t="bwc"] i { background: linear-gradient(90deg, currentColor 50%, var(--hue) 50%); border-color: currentColor; }
+.tsw button[data-t="full"] i { background: var(--hue); border-color: var(--hue); }
+/* 色卡：右上角色点按钮 + 弹层 */
+.colorpick { position: relative; }
+.colorpick > button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); background: #fff; display: grid; place-items: center; cursor: pointer; }
+.colorpick > button i { width: 14px; height: 14px; border-radius: 50%; background: var(--hue); box-shadow: 0 0 0 2px #fff, 0 0 0 3px color-mix(in srgb, var(--hue) 40%, white); }
+.colorpick .pop { position: absolute; right: 0; top: 36px; z-index: 5; width: 248px; background: #fff; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 32px rgba(16,24,40,.12); padding: 12px; display: none; }
+.colorpick.open .pop { display: block; }
+.pop-h { font-size: 11px; color: var(--text-3); margin: 0 0 8px; }
+.swatches { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px 6px; }
+.swatches button { width: 22px; height: 22px; border-radius: 50%; border: 0; cursor: pointer; background: var(--c); box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+.swatches button.on { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--c); }
+
+/* 真正的取色器：明度饱和面 + 色相条 + hex + 吸管（正式版用 Kibo UI Color Picker 官方源码） */
+.picker { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
+.sl { position: relative; height: 96px; border-radius: 8px; cursor: crosshair; background: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, hsl(var(--ph, 228) 100% 50%)); }
+.sl i { position: absolute; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.35); transform: translate(-50%, -50%); pointer-events: none; }
+.hue { width: 100%; margin: 10px 0 8px; height: 10px; border-radius: 5px; -webkit-appearance: none; appearance: none; background: linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); outline: none; }
+.hue::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 1px solid rgba(0,0,0,.25); box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+.prow { display: flex; gap: 6px; align-items: center; }
+.prow input { flex: 1; min-width: 0; font: 12px var(--font-num); border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; }
+.prow button { border: 1px solid var(--border); background: #fff; border-radius: 6px; padding: 5px 9px; font: inherit; font-size: 12px; cursor: pointer; white-space: nowrap; }
+.prow button:hover { background: var(--soft); }
+.pop-note { font-size: 11px; color: var(--text-3); margin: 10px 0 0; line-height: 1.5; }
+.tsw button.on { background: var(--accent); color: var(--accent-fg); }
+.search { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: var(--r-btn); padding: 5px 10px; font-size: 12.5px; color: var(--text-2); background: #fff; }
+.search kbd { font: 10px var(--font-num); border: 1px solid var(--border); border-radius: 4px; padding: 1px 4px; color: var(--text-3); }
+.content { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 16px; }
+.hgroup { display: flex; align-items: flex-end; justify-content: space-between; }
+.hgroup h1 { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: -0.015em; }
+.hgroup p { margin: 4px 0 0; color: var(--text-3); font-size: 13px; }
+.btn { border: 1px solid var(--border); background: #fff; border-radius: var(--r-btn); padding: 6px 12px; font: inherit; font-size: 13px; color: var(--text); }
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+
+/* KPI 卡 = Tremor 功能组合：数字 + 环比 + 迷你趋势 / 进度条 / 分段状态条 */
+.kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.kpi { position: relative; background: linear-gradient(to top, rgba(10,10,10,.03), #fff); border: 1px solid var(--border); border-radius: var(--r-card); box-shadow: var(--shadow); padding: 14px 16px 12px; min-width: 0; }
+.kpi-label { font-size: 12px; color: var(--text-3); }
+.kpi-num { font-family: var(--font-num); font-weight: 600; font-size: 24px; letter-spacing: -0.02em; margin-top: 4px; font-variant-numeric: tabular-nums; line-height: 1.15; white-space: nowrap; }
+.kpi-num.neg { color: var(--neg); }
+.delta { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 500; font-variant-numeric: tabular-nums; border-radius: 999px; padding: 2px 8px; border: 1px solid color-mix(in srgb, currentColor 26%, white); background: color-mix(in srgb, currentColor 7%, white); }
+.delta.up { color: var(--pos); } .delta.down { color: var(--neg); } .delta.flat { color: var(--text-3); border-color: var(--border); background: #fafafa; }
+.delta.up::before { content: "↑ "; } .delta.down::before { content: "↓ "; }
+.kpi-sub { font-size: 11.5px; color: var(--text-3); margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.spark { display: block; width: 100%; height: 26px; margin-top: 8px; }
+.spark polyline { fill: none; stroke: var(--sp, var(--line-1)); stroke-width: 1.5; stroke-linejoin: round; }
+.spark path { fill: var(--sp, var(--line-1)); opacity: .09; }
+.spark line { stroke: var(--neg); stroke-width: 1; stroke-dasharray: 2 2; }
+.kpi:nth-child(1) { --sp: var(--line-1); } .kpi:nth-child(2) { --sp: var(--line-2); } .kpi:nth-child(5) { --sp: var(--line-3); } .kpi:nth-child(6) { --sp: var(--neg); }
+.track { display: flex; gap: 2px; margin-top: 10px; height: 8px; }
+.track i { flex: 1; border-radius: 2px; background: #e6e6e6; }
+.track i.ok { background: var(--pos); } .track i.warn { background: var(--warn); } .track i.bad { background: var(--neg); }
+.bar { height: 6px; border-radius: 3px; background: #ececec; margin-top: 12px; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 58%; background: var(--line-1); }
+
+/* KPI 卡两种：B 简洁（首页默认）/ C 功能组合（数据分析页备选） */
+.kmode { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-3); }
+.kmode .sw { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; padding: 2px; background: #fff; }
+.kmode button { border: 0; background: transparent; font: inherit; font-size: 12px; padding: 2px 10px; border-radius: 999px; cursor: pointer; color: var(--text-3); }
+.kmode button.on { background: var(--soft); color: var(--text); font-weight: 500; }
+.app.k-b .spark, .app.k-b .track, .app.k-b .bar { display: none; }
+.app.k-b .kpi { padding-bottom: 14px; }
+.grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 14px; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: var(--r-card); box-shadow: var(--shadow); padding: 16px 18px; min-width: 0; }
+.card > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.card h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.card h2 small { display: block; font-weight: 400; color: var(--text-3); font-size: 12px; margin-top: 2px; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: var(--r-btn); overflow: hidden; font-size: 12px; }
+.seg span, .seg b { padding: 4px 10px; font-weight: 400; color: var(--text-3); }
+.seg b { background: var(--soft); color: var(--nav-active-fg); font-weight: 500; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart-grid line { stroke: var(--grid); stroke-width: 1; }
+.axis text { font-family: var(--font-num); font-size: 10px; fill: var(--text-3); }
+.line1 { fill: none; stroke: var(--line-1); stroke-width: 1.75; stroke-linejoin: round; stroke-linecap: round; }
+.line2 { fill: none; stroke: var(--line-2); stroke-width: 1.75; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: var(--dash-2); }
+.dots circle { fill: #fff; stroke-width: 1.75; }
+.dots .d1 { stroke: var(--line-1); } .dots .d2 { stroke: var(--line-2); }
+.legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-2); margin-top: 8px; }
+.legend span::before { content: ""; display: inline-block; width: 12px; height: 2px; margin-right: 6px; vertical-align: middle; }
+.legend .l1::before { background: var(--line-1); }
+.legend .l2::before { background: var(--line-2); }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+.stats div { border: 1px solid var(--border); border-radius: var(--r-btn); padding: 8px 10px; background: #fff; }
+.stats small { display: block; color: var(--text-3); font-size: 11px; }
+.stats b { display: block; white-space: nowrap; font-family: var(--font-num); font-size: 16px; font-weight: 600; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.stats div:nth-child(2) b { color: var(--neg); }
+.alist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.alist li { display: flex; align-items: center; gap: 10px; border: 1px solid var(--border); border-radius: var(--r-btn); padding: 8px 10px; }
+.alist li b { margin-left: auto; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.chip { display: inline-flex; align-items: center; padding: 1px 9px; border-radius: var(--r-chip); font-size: 11px; font-weight: 500; line-height: 1.6; border: 1px solid color-mix(in srgb, currentColor 26%, white); background: color-mix(in srgb, currentColor 8%, white); }
+.chip.p0 { color: var(--neg); } .chip.p1 { color: var(--warn); } .chip.opp { color: var(--pos); }
+.tabs { display: inline-flex; gap: 2px; background: var(--soft); border-radius: var(--r-btn); padding: 3px; font-size: 12px; }
+.tabs span, .tabs b { padding: 3px 10px; border-radius: calc(var(--r-btn) - 2px); color: var(--text-3); font-weight: 400; }
+.tabs b { background: #fff; color: var(--text); font-weight: 500; box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.item { display: grid; grid-template-columns: minmax(150px, .55fr) minmax(0, 1.2fr) auto; gap: 14px; border: 1px solid var(--border); border-left-width: 3px; border-radius: var(--r-card); padding: 12px 14px; margin-bottom: 8px; background: #fff; }
+.item.p0 { border-left-color: var(--neg); } .item.p1 { border-left-color: var(--warn); }
+.item .who { min-width: 0; }
+.item .who .t { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-3); }
+.item .who .n { font-weight: 500; margin-top: 6px; }
+.item .who .id { font-family: var(--font-num); font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.item dl { margin: 0; display: grid; gap: 4px; font-size: 12.5px; }
+.item dl div { display: flex; gap: 8px; }
+.item dt { color: var(--text-3); flex: none; width: 28px; }
+.item dd { margin: 0; min-width: 0; }
+.item dd.ev { font-family: var(--font-num); font-variant-numeric: tabular-nums; font-weight: 500; }
+.item .acts { display: flex; flex-direction: column; gap: 6px; width: 132px; }
+.item .acts .btn { font-size: 12px; padding: 5px 10px; text-align: center; }
+.ok { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: var(--r-btn); background: var(--soft); color: var(--text-2); font-size: 12.5px; }
+.ok i { color: var(--pos); font-style: normal; }
+.t1 { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; }
+.t1 li { border: 1px solid var(--border); border-radius: var(--r-btn); padding: 8px 10px; display: flex; gap: 8px; }
+.t1 li i { font-style: normal; font-weight: 700; }
+.t1 li i.y { color: var(--pos); } .t1 li i.n { color: var(--neg); }
+.t1 small { display: block; color: var(--text-3); }
+</style>
+</head>
+<body>
+<div class="board">
+  <div class="board-head">
+    <h1>KA Pilot 主题 · 黑白 / 黑白+彩 / 全彩 <span class="tag">示例数据 · 脱敏</span></h1>
+    <p>三个页面是同一套组件、同一份内容，只换一组变量。<b>每个页面右上角都有主题开关，点一下当场换</b>，这就是正式版里的切换方式（不进设置）。黑白版是真黑真白，灰只做发丝线；黑白+彩只给数据上色；全彩连按钮、选中态、页面底色一起上色。旁边的色点是色卡，换主色。</p>
+  </div>
+  <div class="jump"><a href="#v1">1 · 黑白·点彩（推荐默认）</a><a href="#v2">2 · 黑白 + 彩</a><a href="#v3">3 · 全彩</a><a href="#how">怎么拍板</a></div>
+
+  <div class="palnote">
+    <span><b>每个页面右上角两个开关：</b>「黑白 / 黑白+彩 / 全彩」三段 = 颜色用到哪一步；旁边的<b>色点 = 色卡</b>，选主色（蓝 靛 紫 青 绿 橙 玫红 石墨），图表、点缀、按钮跟着变。</span>
+    <span class="where">主色用在哪：黑白·点彩 → 只有图表第二条线｜黑白+彩 → 图表三条线 + KPI 迷你趋势｜全彩 → 再加按钮、选中态、logo。红绿黄是状态含义，永远不变。<b>换色时会变的地方闪一下黄框。</b></span>
+  </div>
+
+  <table class="cmp">
+    <tr><th></th><th>1 · 黑白·点彩（推荐默认）</th><th>2 · 黑白 + 彩</th><th>3 · 全彩</th></tr>
+    <tr><td>壳（侧栏 / 顶栏 / 卡）</td><td>白底黑字，黑按钮，灰只做发丝线；chip 描边 + 一粒色点</td><td>同左，一点不变</td><td>单色系：一个主色 + 中性色；按钮实色、页底近中性、白卡软阴影，不做多色卡片和标题色条</td></tr>
+    <tr><td>数据（图表 / 迷你趋势）</td><td>主线黑；第二条线给一个点缀色，其余不上色</td><td>主色 + 第二色 + 第三色，饱和度压一档</td><td>同左</td></tr>
+    <tr><td>状态（P0 / 达标 / 环比）</td><td colspan="3">三版一样：红 = 坏、绿 = 好、黄 = 预警。这是含义，不是装饰，黑白版也保留</td></tr>
+    <tr><td>KPI 卡</td><td colspan="3">首页默认 <b>简洁 B</b>：标签 / 数字 / 环比 / 一句说明；每个页面上有「简洁 B / 功能组合 C」开关可对比，C（迷你趋势 / 考核线 / 分段条 / 进度条）留给数据分析页自定义</td></tr>
+    <tr><td>适合谁</td><td>盯几百个数的人，要冷静</td><td>数据要一眼分清序列，壳还是安静的</td><td>喜欢看板感、要活泼的人</td></tr>
+  </table>
+
+  <template id="app">
+    <div class="app">
+      <aside class="side">
+        <div class="brand"><span class="logo"></span>KA Pilot</div>
+        <button class="new"><i>＋</i>快速新建</button>
+        <nav><a class="active">工作台</a><a>投放任务</a><a>数据分析</a><a>账户池</a><a>自动化</a><a>商品素材</a><a>报告</a><a>知识库</a><a>集成与通知</a></nav>
+        <div class="side-foot">
+          <div class="ws">我的工作台<small>个人 · 本人授权账户</small></div>
+          <div class="user"><span class="avatar">内</span><div>内测用户<small>我的工作台 · 管理员</small></div></div>
+        </div>
+      </aside>
+      <main class="main">
+        <header class="top"><span class="crumb">经营工作台</span><span class="health"><i></i>数据截至 09:30 ✓</span><span class="tsw"><button type="button" data-t="bw"><i></i>黑白</button><button type="button" data-t="bwc"><i></i>黑白+彩</button><button type="button" data-t="full"><i></i>全彩</button></span><span class="colorpick"><button type="button" aria-label="选择主色"><i></i></button><div class="pop"><p class="pop-h">主色（图表、点缀；全彩模式下也管按钮和选中态）— 预设，或下面自己调 / 吸管取色</p><div class="swatches"><button style="--c:#3e63dd" data-c="#3e63dd" title="靛蓝 · Radix Indigo #3e63dd"></button><button style="--c:#2563eb" data-c="#2563eb" title="正蓝 · shadcn Blue #2563eb"></button><button style="--c:#5e6ad2" data-c="#5e6ad2" title="Linear 蓝紫 #5e6ad2"></button><button style="--c:#635bff" data-c="#635bff" title="Stripe 紫 #635bff"></button><button style="--c:#6e56cf" data-c="#6e56cf" title="紫 · Radix Violet #6e56cf"></button><button style="--c:#12a594" data-c="#12a594" title="青 · Radix Teal #12a594"></button><button style="--c:#059669" data-c="#059669" title="翠绿 · Tailwind Emerald #059669"></button><button style="--c:#13c2c2" data-c="#13c2c2" title="明青 · Ant Design #13c2c2"></button><button style="--c:#ff6a2c" data-c="#ff6a2c" title="D-CON 橙 · PRD #ff6a2c"></button><button style="--c:#ea580c" data-c="#ea580c" title="深橙 · Tailwind Orange #ea580c"></button><button style="--c:#e93d82" data-c="#e93d82" title="绯红 · Radix Crimson #e93d82"></button><button style="--c:#3a3a3a" data-c="#3a3a3a" title="石墨 #3a3a3a"></button></div><div class="picker"><div class="sl"><i></i></div><input class="hue" type="range" min="0" max="360" value="228" aria-label="色相"><div class="prow"><input class="hex" value="#3e63dd" aria-label="十六进制颜色"><button type="button" class="eye" title="吸取屏幕上任意颜色">吸管</button></div></div><p class="pop-note">正式版同一个入口，选完记住在你的账号里。红绿黄是状态色，不在这里改。</p></div></span><span class="search">搜索与 Agent <kbd>⌘K</kbd></span></header>
+        <div class="content">
+          <div class="hgroup">
+            <div><h1>早上好，内测用户</h1><p>脱敏示例 · 20 个账户 · 报告日 08/24 09:30 · 我的工作台</p></div>
+            <div style="display:flex; align-items:center; gap:12px;"><span class="kmode">KPI 卡<span class="sw"><button type="button" data-k="b" class="on">简洁 B</button><button type="button" data-k="c">功能组合 C</button></span></span><button class="btn">刷新</button></div>
+          </div>
+          <section class="kpis">
+            <article class="kpi"><div class="kpi-label">今日消耗</div><div class="kpi-num">¥842,600</div><span class="delta up">+8.2%</span><div class="kpi-sub">账面消耗 · 当日实时</div><svg class="spark" viewBox="0 0 80 26" preserveAspectRatio="none"><path d="M0,18 L13,14 L27,15 L40,10 L53,9 L67,6 L80,4 L80,26 L0,26 Z"/><polyline points="0,18 13,14 27,15 40,10 53,9 67,6 80,4"/></svg></article>
+            <article class="kpi"><div class="kpi-label">真实 CPA</div><div class="kpi-num">¥36.80</div><span class="delta down">−1.4%</span><div class="kpi-sub">考核 ¥38 · 达标 ✓</div><svg class="spark" viewBox="0 0 80 26" preserveAspectRatio="none"><path d="M0,6 L13,9 L27,10 L40,12 L53,15 L67,17 L80,18 L80,26 L0,26 Z"/><polyline points="0,6 13,9 27,10 40,12 53,15 67,17 80,18"/><line x1="0" y1="14" x2="80" y2="14"/></svg></article>
+            <article class="kpi"><div class="kpi-label">达标率</div><div class="kpi-num">82.4%</div><span class="delta up">+3.1pp</span><div class="kpi-sub">14 达标 · 3 观察 · 2 超 · 1 缺</div><div class="track"><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="ok"></i><i class="warn"></i><i class="warn"></i><i class="warn"></i><i class="bad"></i><i class="bad"></i><i></i></div></article>
+            <article class="kpi"><div class="kpi-label">成本空间</div><div class="kpi-num">¥27,400</div><span class="delta flat">—</span><div class="kpi-sub">正值 = 仍有降价空间</div><div class="bar"><i></i></div></article>
+            <article class="kpi"><div class="kpi-label">BI 量级</div><div class="kpi-num">18,620</div><span class="delta down">−2.1%</span><div class="kpi-sub">真实转化 · 与 FBI 同源</div><svg class="spark" viewBox="0 0 80 26" preserveAspectRatio="none"><path d="M0,10 L13,8 L27,11 L40,9 L53,12 L67,13 L80,14 L80,26 L0,26 Z"/><polyline points="0,10 13,8 27,11 40,9 53,12 67,13 80,14"/></svg></article>
+            <article class="kpi"><div class="kpi-label">待处理</div><div class="kpi-num neg">7</div><span class="delta up">+2</span><div class="kpi-sub">2 条 P0，先处理</div><svg class="spark" viewBox="0 0 80 26" preserveAspectRatio="none"><path d="M0,20 L13,18 L27,19 L40,14 L53,15 L67,9 L80,6 L80,26 L0,26 Z"/><polyline points="0,20 13,18 27,19 40,14 53,15 67,9 80,6"/></svg></article>
+          </section>
+          <div class="grid">
+            <section class="card chart">
+              <header><h2>消耗与真实 CPA<small>近 7 天 · 左轴消耗、右轴 CPA · 08/20 缺失留空</small></h2><div class="seg"><span>近 3 个月</span><span>近 30 天</span><b>近 7 天</b></div></header>
+              <svg viewBox="0 0 640 220" aria-label="消耗与真实 CPA 趋势示意">
+                <defs><linearGradient class="ag" id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color: var(--line-1); stop-opacity: var(--grad-op)"/><stop offset="1" style="stop-color: var(--line-1); stop-opacity: 0"/></linearGradient></defs>
+                <g class="chart-grid"><line x1="40" y1="16" x2="600" y2="16"/><line x1="40" y1="59.5" x2="600" y2="59.5"/><line x1="40" y1="103" x2="600" y2="103"/><line x1="40" y1="146.5" x2="600" y2="146.5"/><line x1="40" y1="190" x2="600" y2="190"/></g>
+                <g class="axis"><text x="34" y="20" text-anchor="end">90万</text><text x="34" y="107" text-anchor="end">75万</text><text x="34" y="194" text-anchor="end">60万</text><text x="606" y="20">¥40</text><text x="606" y="107">¥37.5</text><text x="606" y="194">¥35</text><text x="40" y="212" text-anchor="middle">08/18</text><text x="133" y="212" text-anchor="middle">08/19</text><text x="227" y="212" text-anchor="middle">08/20</text><text x="320" y="212" text-anchor="middle">08/21</text><text x="413" y="212" text-anchor="middle">08/22</text><text x="507" y="212" text-anchor="middle">08/23</text><text x="600" y="212" text-anchor="middle">08/24</text></g>
+                <path class="area1" fill="url(#ag)" d="M40,120 L133,91 L227,103 L320,74 L413,68 L507,57 L600,51 L600,190 L40,190 Z"/>
+                <path class="line1" d="M40,120 L133,91 L227,103 L320,74 L413,68 L507,57 L600,51"/>
+                <path class="line2" d="M40,47 L133,72"/><path class="line2" d="M320,89 L413,113 L507,124 L600,127"/>
+                <g class="dots"><circle class="d1" cx="40" cy="120" r="2.6"/><circle class="d1" cx="133" cy="91" r="2.6"/><circle class="d1" cx="227" cy="103" r="2.6"/><circle class="d1" cx="320" cy="74" r="2.6"/><circle class="d1" cx="413" cy="68" r="2.6"/><circle class="d1" cx="507" cy="57" r="2.6"/><circle class="d1" cx="600" cy="51" r="2.6"/><circle class="d2" cx="40" cy="47" r="2.6"/><circle class="d2" cx="133" cy="72" r="2.6"/><circle class="d2" cx="320" cy="89" r="2.6"/><circle class="d2" cx="413" cy="113" r="2.6"/><circle class="d2" cx="507" cy="124" r="2.6"/><circle class="d2" cx="600" cy="127" r="2.6"/></g>
+              </svg>
+              <div class="legend"><span class="l1">消耗</span><span class="l2">真实 CPA</span></div>
+            </section>
+            <section class="card alerts">
+              <header><h2>P0 / P1 警报监控<small>今天谁值班、几条未确认、几条在升级</small></h2></header>
+              <div class="stats"><div><small>今日值班</small><b>优化师 A</b></div><div><small>P0 未确认</small><b>2</b></div><div><small>升级中</small><b>1</b></div></div>
+              <ul class="alist"><li><span class="chip p0">P0</span>成本超考核 30% 以上<b>2</b></li><li><span class="chip p1">P1</span>消耗断崖 / 转化波动<b>4</b></li><li><span class="chip opp">机会</span>优质可扩量<b>1</b></li></ul>
+            </section>
+            <section class="card queue">
+              <header><h2>今日待处理队列<small>按严重度排序；每一项都带证据、归因与建议</small></h2><div class="tabs"><b>全部 7</b><span>P0 2</span><span>P1 4</span><span>机会 1</span></div></header>
+              <article class="item p0">
+                <div class="who"><div class="t"><span class="chip p0">P0</span>超成本起量</div><div class="n">演示账户 · 华东 07</div><div class="id">KUAISHOU · demo-account-07</div></div>
+                <dl><div><dt>证据</dt><dd class="ev">真实 CPA ¥41.2，超考核 37%，今日已耗 ¥8,200</dd></div><div><dt>归因</dt><dd>CTR 2.1% → 1.4%，主力素材第 9 天</dd></div><div><dt>建议</dt><dd>降价至 ¥26（−13%）｜同型操作 3 次 2 次见效</dd></div></dl>
+                <div class="acts"><button class="btn primary">生成变更集</button><button class="btn">查看证据</button><button class="btn">忽略 ▾</button></div>
+              </article>
+              <article class="item p1">
+                <div class="who"><div class="t"><span class="chip p1">P1</span>消耗断崖</div><div class="n">演示账户 · 华南 12</div><div class="id">KUAISHOU · demo-account-12</div></div>
+                <dl><div><dt>证据</dt><dd class="ev">近 3 小时消耗 −62%，余额 ¥4,300</dd></div><div><dt>归因</dt><dd>预计 14:00 断量</dd></div><div><dt>建议</dt><dd>申请充值协作</dd></div></dl>
+                <div class="acts"><button class="btn primary">申请充值</button><button class="btn">查看证据</button><button class="btn">静音 3 天</button></div>
+              </article>
+              <div class="ok"><i>✓</i>其余 43 个账户在阈值内，无需关注（数据 09:15 校验）</div>
+            </section>
+            <section class="card side2">
+              <header><h2>昨日动作回收 · T+1<small>昨天做过的调整，今天看结果</small></h2></header>
+              <ul class="t1"><li><i class="y">✓</i><div>账户 B 降价 −10%<small>成本 ¥34 → ¥28，量级 −8%（可接受）</small></div></li><li><i class="n">✕</i><div>账户 C 换素材<small>CTR 未回升，建议进一步排查定向</small></div></li></ul>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </template>
+
+<h3 style="margin:0 0 8px 4px; font-size:15px;">默认主色候选（点一个，下面第 1 版页面立刻换成它）</h3><div class="cands"><button type="button" class="cand on" style="--c:#3e63dd" data-c="#3e63dd"><div class="top"><span class="dot"></span><b>靛蓝</b><span class="hex">#3e63dd</span></div><svg viewBox="0 0 200 34" preserveAspectRatio="none"><path d="M0,26 L33,18 L66,21 L100,13 L133,12 L166,7 L200,5" fill="none" stroke="#0a0a0a" stroke-width="1.6"/><path d="M0,8 L33,13" fill="none" stroke="var(--c)" stroke-width="1.6"/><path d="M100,15 L133,21 L166,24 L200,25" fill="none" stroke="var(--c)" stroke-width="1.6"/></svg><div class="mini"><i>P0</i><i>主色点</i><span class="btn">变更集</span></div><div class="why">Radix Indigo 9 · 中性偏冷，和灰壳最搭；Linear、Radix 系产品的主流选择</div></button><button type="button" class="cand" style="--c:#1d4ed8" data-c="#1d4ed8"><div class="top"><span class="dot"></span><b>克莱因蓝</b><span class="hex">#1d4ed8</span></div><svg viewBox="0 0 200 34" preserveAspectRatio="none"><path d="M0,26 L33,18 L66,21 L100,13 L133,12 L166,7 L200,5" fill="none" stroke="#0a0a0a" stroke-width="1.6"/><path d="M0,8 L33,13" fill="none" stroke="var(--c)" stroke-width="1.6"/><path d="M100,15 L133,21 L166,24 L200,25" fill="none" stroke="var(--c)" stroke-width="1.6"/></svg><div class="mini"><i>P0</i><i>主色点</i><span class="btn">变更集</span></div><div class="why">Tailwind Blue 700 · 更深更沉，对比强，有一点艺术感；小面积点染最出挑</div></button><button type="button" class="cand" style="--c:#5e6ad2" data-c="#5e6ad2"><div class="top"><span class="dot"></span><b>Linear 蓝紫</b><span class="hex">#5e6ad2</span></div><svg viewBox="0 0 200 34" preserveAspectRatio="none"><path d="M0,26 L33,18 L66,21 L100,13 L133,12 L166,7 L200,5" fill="none" stroke="#0a0a0a" stroke-width="1.6"/><path d="M0,8 L33,13" fill="none" stroke="var(--c)" stroke-width="1.6"/><path d="M100,15 L133,21 L166,24 L200,25" fill="none" stroke="var(--c)" stroke-width="1.6"/></svg><div class="mini"><i>P0</i><i>主色点</i><span class="btn">变更集</span></div><div class="why">Linear 品牌色 · 柔一档，软件感强，久看不累</div></button><button type="button" class="cand" style="--c:#0f766e" data-c="#0f766e"><div class="top"><span class="dot"></span><b>深青</b><span class="hex">#0f766e</span></div><svg viewBox="0 0 200 34" preserveAspectRatio="none"><path d="M0,26 L33,18 L66,21 L100,13 L133,12 L166,7 L200,5" fill="none" stroke="#0a0a0a" stroke-width="1.6"/><path d="M0,8 L33,13" fill="none" stroke="var(--c)" stroke-width="1.6"/><path d="M100,15 L133,21 L166,24 L200,25" fill="none" stroke="var(--c)" stroke-width="1.6"/></svg><div class="mini"><i>P0</i><i>主色点</i><span class="btn">变更集</span></div><div class="why">Tailwind Teal 700 · 冷静、少见、不像别家；和红黄预警离得远，不打架</div></button><button type="button" class="cand" style="--c:#6d28d9" data-c="#6d28d9"><div class="top"><span class="dot"></span><b>深紫</b><span class="hex">#6d28d9</span></div><svg viewBox="0 0 200 34" preserveAspectRatio="none"><path d="M0,26 L33,18 L66,21 L100,13 L133,12 L166,7 L200,5" fill="none" stroke="#0a0a0a" stroke-width="1.6"/><path d="M0,8 L33,13" fill="none" stroke="var(--c)" stroke-width="1.6"/><path d="M100,15 L133,21 L166,24 L200,25" fill="none" stroke="var(--c)" stroke-width="1.6"/></svg><div class="mini"><i>P0</i><i>主色点</i><span class="btn">变更集</span></div><div class="why">Tailwind Violet 700 · 华丽一点，Stripe 那路的沉稳版</div></button><button type="button" class="cand" style="--c:#c2410c" data-c="#c2410c"><div class="top"><span class="dot"></span><b>铜橙</b><span class="hex">#c2410c</span></div><svg viewBox="0 0 200 34" preserveAspectRatio="none"><path d="M0,26 L33,18 L66,21 L100,13 L133,12 L166,7 L200,5" fill="none" stroke="#0a0a0a" stroke-width="1.6"/><path d="M0,8 L33,13" fill="none" stroke="var(--c)" stroke-width="1.6"/><path d="M100,15 L133,21 L166,24 L200,25" fill="none" stroke="var(--c)" stroke-width="1.6"/></svg><div class="mini"><i>P0</i><i>主色点</i><span class="btn">变更集</span></div><div class="why">Tailwind Orange 700 · 暖、沉，和 PRD 的 D-CON 橙同宗但更高级；注意和黄色预警的距离</div></button></div>
+  <section class="variant" id="v1" data-init="bw">
+    <div class="vhead"><span class="letter">1</span><div><h2>黑白 · 点彩 <span class="tag">推荐默认</span></h2><p>你发的那张表的感觉：底子真黑真白，灰只剩发丝线；颜色只做点染——chip 里一粒色点、图表第二条线一个点缀色、红绿黄只表状态。</p></div></div>
+    <div class="mount"></div>
+  </section>
+  <section class="variant" id="v2" data-init="bwc">
+    <div class="vhead"><span class="letter">2</span><div><h2>黑白 + 彩</h2><p>壳和 1 完全一样；只有图表线、迷你趋势、进度条上了色。你说的「壳是 shadcn、看板偏彩」就是它。</p></div></div>
+    <div class="mount"></div>
+  </section>
+  <section class="variant" id="v3" data-init="full">
+    <div class="vhead"><span class="letter">3</span><div><h2>全彩</h2><p>改成单色系：只用一个主色加中性色，按钮实色、页底几乎不染、卡片白、阴影软、图表同色相深浅两条线。质感来自克制，不来自颜色多。换主色看色卡。</p></div></div>
+    <div class="mount"></div>
+  </section>
+
+  <section class="foot" id="how">
+    <h3>怎么拍板</h3>
+    <ul>
+      <li>三版都是正式版会有的主题，<b>你定哪个是打开默认的</b>（另两个用户点右上角自己切）。回 1 / 2 / 3 即可。</li>
+      <li>主色：弹层里 12 个预设（6×2 放得下），或在取色面板自己调、用吸管吸屏幕颜色。正式版取色器用 Dice UI 官方源码（老板已定），主色记在用户账号里，默认给全员一个。</li>
+      <li>KPI 卡：首页用简洁 B；数据分析等页按指标自定义用 C 的迷你趋势 / 考核线 / 分段条 / 进度条，正式版只在后端有数据的卡上显示。</li>
+      <li>开关位置：现在放顶栏右上角、搜索框左边；也能放侧栏左下角用户区旁，你说一声我挪。</li>
+    </ul>
+  </section>
+</div>
+<script>
+  const tpl = document.getElementById("app");
+  document.querySelectorAll(".variant").forEach((sec, i) => {
+    const node = tpl.content.cloneNode(true);
+    const grad = node.querySelector("#ag"); grad.id = "ag-" + i;
+    node.querySelector(".area1").setAttribute("fill", "url(#ag-" + i + ")");
+    const app = node.querySelector(".app");
+    const setTheme = (t) => { app.classList.remove("t-bw", "t-bwc", "t-full"); app.classList.add("t-" + t); app.querySelectorAll(".tsw button").forEach((b) => b.classList.toggle("on", b.dataset.t === t)); };
+    app.querySelectorAll(".tsw button").forEach((b) => b.addEventListener("click", () => setTheme(b.dataset.t)));
+    app.classList.add("k-b");
+    app.querySelectorAll(".kmode button").forEach((b) => b.addEventListener("click", () => { app.classList.toggle("k-b", b.dataset.k === "b"); app.querySelectorAll(".kmode button").forEach((x) => x.classList.toggle("on", x === b)); }));
+    setTheme(sec.dataset.init);
+    sec.querySelector(".mount").appendChild(node);
+  });
+  document.querySelectorAll(".colorpick").forEach((cp) => {
+    const app = cp.closest(".app");
+    const btn = cp.querySelector(":scope > button");
+    btn.addEventListener("click", (e) => { e.stopPropagation(); document.querySelectorAll(".colorpick.open").forEach((o) => { if (o !== cp) o.classList.remove("open"); }); cp.classList.toggle("open"); });
+  });
+  // ---- 取色器（HSV → hex）----
+  const hsvToHex = (h, sv, v) => { const c = v * sv, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = v - c; let r = 0, g = 0, b = 0;
+    if (h < 60) [r, g, b] = [c, x, 0]; else if (h < 120) [r, g, b] = [x, c, 0]; else if (h < 180) [r, g, b] = [0, c, x]; else if (h < 240) [r, g, b] = [0, x, c]; else if (h < 300) [r, g, b] = [x, 0, c]; else [r, g, b] = [c, 0, x];
+    return "#" + [r, g, b].map((n) => Math.round((n + m) * 255).toString(16).padStart(2, "0")).join(""); };
+  const hexToHsv = (hex) => { const n = parseInt(hex.slice(1), 16), r = (n >> 16) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255, max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min; let h = 0;
+    if (d) { if (max === r) h = ((g - b) / d) % 6; else if (max === g) h = (b - r) / d + 2; else h = (r - g) / d + 4; h = Math.round(h * 60); if (h < 0) h += 360; }
+    return { h, s: max ? d / max : 0, v: max }; };
+  document.querySelectorAll(".colorpick").forEach((cp) => {
+    const app = cp.closest(".app"), sl = cp.querySelector(".sl"), cur = sl.querySelector("i"), hue = cp.querySelector(".hue"), hex = cp.querySelector(".hex"), eye = cp.querySelector(".eye");
+    const state = { h: 228, s: 0.72, v: 0.87 };
+    const flash = () => { const full = app.classList.contains("t-full"), bwc = app.classList.contains("t-bwc"), kc = !app.classList.contains("k-b"); const t = [".line2"]; if (bwc || full) { t.push(".line1"); if (kc) t.push(".spark", ".bar"); } if (full) t.push(".new", "nav a.active", ".seg b", ".logo", ".tsw button.on", ".btn.primary"); app.querySelectorAll(t.join(",")).forEach((el) => { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1700); }); };
+    const paint = (fromPreset) => { const c = hsvToHex(state.h, state.s, state.v); app.style.setProperty("--hue", c); sl.style.setProperty("--ph", state.h); hue.value = state.h; hex.value = c; cur.style.left = (state.s * 100) + "%"; cur.style.top = ((1 - state.v) * 100) + "%"; if (!fromPreset) cp.querySelectorAll(".swatches button").forEach((x) => x.classList.toggle("on", x.dataset.c === c)); };
+    const setHex = (c, fromPreset) => { if (!/^#[0-9a-f]{6}$/i.test(c)) return; Object.assign(state, hexToHsv(c.toLowerCase())); paint(fromPreset); flash(); };
+    cp.querySelectorAll(".swatches button").forEach((sw) => sw.addEventListener("click", () => { setHex(sw.dataset.c, true); cp.querySelectorAll(".swatches button").forEach((x) => x.classList.toggle("on", x === sw)); }));
+    const pick = (e) => { const r = sl.getBoundingClientRect(); state.s = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)); state.v = Math.min(1, Math.max(0, 1 - (e.clientY - r.top) / r.height)); paint(false); };
+    sl.addEventListener("pointerdown", (e) => { sl.setPointerCapture(e.pointerId); pick(e); const mv = (ev) => pick(ev); sl.addEventListener("pointermove", mv); sl.addEventListener("pointerup", () => { sl.removeEventListener("pointermove", mv); flash(); }, { once: true }); });
+    hue.addEventListener("input", () => { state.h = Number(hue.value); paint(false); });
+    hue.addEventListener("change", flash);
+    hex.addEventListener("change", () => setHex(hex.value.trim(), false));
+    eye.addEventListener("click", async () => { if (!("EyeDropper" in window)) { eye.textContent = "此浏览器不支持吸管"; return; } try { const r = await new window.EyeDropper().open(); setHex(r.sRGBHex, false); } catch (_) { /* 取消 */ } });
+    paint(true);
+  });
+
+  document.querySelectorAll(".cand").forEach((c) => c.addEventListener("click", () => {
+    document.querySelectorAll(".cand").forEach((x) => x.classList.toggle("on", x === c));
+    const app = document.querySelector("#v1 .app"); app.style.setProperty("--hue", c.dataset.c);
+    const hexIn = app.querySelector(".hex"); if (hexIn) { hexIn.value = c.dataset.c; hexIn.dispatchEvent(new Event("change")); }
+    app.querySelectorAll(".line2").forEach((el) => { el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1700); });
+  }));
+  document.addEventListener("click", () => document.querySelectorAll(".colorpick.open").forEach((o) => o.classList.remove("open")));
+  document.querySelectorAll(".colorpick .pop").forEach((p) => p.addEventListener("click", (e) => e.stopPropagation()));
+</script>
+</body>
+</html>

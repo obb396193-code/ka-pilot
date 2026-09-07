@@ -9,6 +9,10 @@ export default defineConfig({
   resolve: {
     alias: { "@": resolve(__dirname, "src") },
   },
+  server: {
+    // fe 工作树的 node_modules 是指向主目录的软链，放行其真实路径（字体 woff2 在里面）
+    fs: { allow: [__dirname, "/Users/aik/Desktop/投放agent/apps/ui-layout-demo/node_modules"] },
+  },
   build: {
     rollupOptions: {
       input: {

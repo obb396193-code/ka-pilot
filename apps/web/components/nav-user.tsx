@@ -1,12 +1,17 @@
 "use client"
 
+import Link from "next/link"
+
 import {
   IconDotsVertical,
   IconLogout,
   IconNotification,
+  IconSettings,
+  IconShieldCog,
   IconUserCircle,
 } from "@tabler/icons-react"
 
+import { useSession } from "@/components/business/session/session-provider"
 import {
   Avatar,
   AvatarFallback,
@@ -28,16 +33,18 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string
-    email: string
-    avatar: string
-  }
-}) {
+const roleLabel = { optimizer: "优化师", operator: "运营", lead: "负责人", admin: "管理员" } as const
+
+// 头像沿用母版 shadcn 官方示例图；身份来自服务端 session，不在浏览器自报。
+const avatar = "/avatars/shadcn-morty-official.jpg"
+
+export function NavUser() {
   const { isMobile } = useSidebar()
+  const { status, session, logout } = useSession()
+  const name = session?.identity.displayName ?? (status === "loading" ? "正在读取…" : "未登录")
+  const subtitle = session ? `${session.activeWorkspace.name} · ${roleLabel[session.activeWorkspace.role]}` : status === "error" ? "会话服务未就绪" : "请先登录"
+  const initials = name.slice(0, 2)
+  const isAdmin = session?.activeWorkspace.role === "admin"
 
   return (
     <SidebarMenu>
@@ -49,14 +56,12 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={avatar} alt={name} />
+                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs text-muted-foreground">
-                  {user.email}
-                </span>
+                <span className="truncate font-medium">{name}</span>
+                <span className="truncate text-xs text-muted-foreground">{subtitle}</span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -70,30 +75,49 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={avatar} alt={name} />
+                  <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    {user.email}
-                  </span>
+                  <span className="truncate font-medium">{name}</span>
+                  <span className="truncate text-xs text-muted-foreground">{subtitle}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <IconUserCircle />
-                个人与授权
+              <DropdownMenuItem asChild>
+                <Link href="/settings?tab=credentials">
+                  <IconUserCircle />
+                  个人与授权
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconNotification />
-                通知
+              <DropdownMenuItem asChild>
+                <Link href="/settings?tab=notifications">
+                  <IconNotification />
+                  通知偏好
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuGroup>
+              <DropdownMenuItem asChild>
+                <Link href="/settings">
+                  <IconSettings />
+                  设置
+                </Link>
+              </DropdownMenuItem>
+              {isAdmin ? (
+                <DropdownMenuItem asChild>
+                  <Link href="/admin">
+                    <IconShieldCog />
+                    治理后台
+                  </Link>
+                </DropdownMenuItem>
+              ) : null}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => void logout()}>
               <IconLogout />
               退出登录
             </DropdownMenuItem>
