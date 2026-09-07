@@ -49,15 +49,15 @@ export const graphFixture = graphV1 as unknown as Fixture<WorkflowVersion>
 /** 节点库十类（契约 ③ 注释顺序）；默认属性只是新建节点的起手值，仍要过 validate */
 export const nodeTypeMeta: Record<NodeType, { label: string; hint: string; sideEffect: SideEffect; executor: ExecutorIdentity }> = {
   trigger: { label: "触发", hint: "读取任务配置 / 定时 / 事件", sideEffect: "read", executor: "system_automation" },
-  query: { label: "查数", hint: "按 queryId 读指标或账户", sideEffect: "read", executor: "system_automation" },
-  compute: { label: "计算", hint: "只用 metrics.md 已冻公式", sideEffect: "read", executor: "system_automation" },
+  query: { label: "查数", hint: "按指定查询读指标或账户", sideEffect: "read", executor: "system_automation" },
+  compute: { label: "计算", hint: "只用已冻结的口径公式", sideEffect: "read", executor: "system_automation" },
   condition: { label: "条件", hint: "按边表达式分流", sideEffect: "read", executor: "system_automation" },
-  agent_analysis: { label: "Agent 分析", hint: "diagnosis/v1 诊断双产物", sideEffect: "read", executor: "system_automation" },
+  agent_analysis: { label: "Agent 分析", hint: "出诊断结论 + 证据两份产物", sideEffect: "read", executor: "system_automation" },
   changeset: { label: "变更集", hint: "生成草稿，不落媒体", sideEffect: "write", executor: "system_automation" },
-  human_confirm: { label: "人工确认", hint: "write 前必经", sideEffect: "read", executor: "initiator" },
+  human_confirm: { label: "人工确认", hint: "写媒体前必经", sideEffect: "read", executor: "initiator" },
   execute: { label: "执行", hint: "凭证所有者身份执行", sideEffect: "write", executor: "credential_owner" },
-  wait_reconcile: { label: "等待回读", hint: "冷启动 / UNKNOWN 回读", sideEffect: "read", executor: "system_automation" },
-  notify: { label: "通知", hint: "钉钉卡片 L0–L3", sideEffect: "external", executor: "system_automation" },
+  wait_reconcile: { label: "等待回读", hint: "冷启动或结果未知时回读媒体", sideEffect: "read", executor: "system_automation" },
+  notify: { label: "通知", hint: "发钉钉卡片", sideEffect: "external", executor: "system_automation" },
 }
 export const nodeTypeOrder: NodeType[] = ["trigger", "query", "compute", "condition", "agent_analysis", "changeset", "human_confirm", "execute", "wait_reconcile", "notify"]
 export const executorLabel: Record<ExecutorIdentity, string> = { system_automation: "系统自动", initiator: "发起人", credential_owner: "凭证所有者" }
@@ -74,7 +74,7 @@ export const runStatusMeta: Record<RunStatus, { label: string; tone: "progress" 
   RUNNING: { label: "运行中", tone: "progress" },
   WAITING_CONFIRMATION: { label: "待确认", tone: "warning" },
   PARTIAL_SUCCESS: { label: "部分成功", tone: "warning" },
-  UNKNOWN: { label: "UNKNOWN · 待回读", tone: "muted" },
+  UNKNOWN: { label: "结果未知 · 待回读", tone: "muted" },
   SUCCESS: { label: "成功", tone: "success" },
   FAILED: { label: "失败", tone: "critical" },
 }
@@ -108,3 +108,9 @@ export const agentRunEventsFixture = agentRunEvents as unknown as Fixture<{ runI
 
 // ---- 顶部健康五卡 ----
 export const automationHealthFixture = health as unknown as Fixture<{ overall: "green" | "yellow" | "red"; connectors: { total: number; ok: number }; executors: { total: number; ok: number }; queue: { pending: number }; agent: { instances: number; ok: number }; healthScore: number }>
+
+// 画布上参数名 / 权限项在界面显中文（后端仍用英文 key）
+export const paramLabel: Record<string, string> = { account_scope: "账户范围", min_recharge: "最低充值额", confirmer: "确认人", task_id: "任务", window: "时间窗口", threshold: "阈值", template_id: "模板", target_group: "目标群", material_id: "素材", budget_cap: "预算上限" }
+export const permissionLabel: Record<string, string> = { "accounts:read": "读账户", "changesets:write": "写变更集", "changesets:execute": "执行变更集", "notify:send": "发通知", "materials:read": "读素材", "reports:write": "写报告" }
+export const paramText = (key: string) => paramLabel[key] ?? key
+export const permissionText = (key: string) => permissionLabel[key] ?? key

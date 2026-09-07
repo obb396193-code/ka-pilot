@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-import { definitionsFixture, executorLabel, graphFixture, nodeTypeMeta, nodeTypeOrder, sideEffectLabel, simulateFixture, validateFixture, type ExecutorIdentity, type GraphNode, type NodeType, type SideEffect, type WorkflowGraph } from "@/lib/fixtures/automation"
+import { definitionsFixture, executorLabel, graphFixture, nodeTypeMeta, nodeTypeOrder, sideEffectLabel, simulateFixture, validateFixture, type ExecutorIdentity, type GraphNode, type NodeType, type SideEffect, type WorkflowGraph, paramText, permissionText } from "@/lib/fixtures/automation"
 import { isOk } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
 
@@ -77,7 +77,7 @@ function KpNodeView({ data, selected }: NodeProps<KpNode>) {
       <div className="mt-2 flex flex-wrap items-center gap-1">
         <TypeChip className="text-[10px]">{sideEffectLabel[node.side_effect]}</TypeChip>
         {node.idempotency === "key_required" ? <TypeChip className="text-[10px]">幂等键</TypeChip> : null}
-        {missing?.length ? <StatusChip tone="warning" className="text-[10px]">缺 {missing.join("/")}</StatusChip> : null}
+        {missing?.length ? <StatusChip tone="warning" className="text-[10px]">缺 {missing.map(paramText).join(" / ")}</StatusChip> : null}
       </div>
       {issue ? <p className="mt-1.5 flex items-center gap-1 text-[11px] text-status-critical"><IconAlertTriangle className="size-3" />{issue}</p> : null}
       <Handle type="source" position={Position.Right} className="!size-2.5 !border-2 !border-background !bg-foreground" />
@@ -178,11 +178,11 @@ function Canvas({ definitionId }: { definitionId: string }) {
             <dl className="grid grid-cols-2 gap-y-1 text-xs">
               <dt className="text-muted-foreground">节点</dt><dd className="text-right tabular-nums">{nodes.length}</dd>
               <dt className="text-muted-foreground">边</dt><dd className="text-right tabular-nums">{edges.length}</dd>
-              <dt className="text-muted-foreground">本地红点</dt><dd className={cn("text-right tabular-nums", localIssues && "text-status-critical")}>{localIssues}</dd>
+              <dt className="text-muted-foreground">本地校验未过</dt><dd className={cn("text-right tabular-nums", localIssues && "text-status-critical")}>{localIssues}</dd>
               <dt className="text-muted-foreground">缺参</dt><dd className="text-right tabular-nums">{validation?.missing_params.length ?? "−"}</dd>
             </dl>
             <Separator />
-            <div className="relative rounded-lg border p-2"><ExampleBadge className="absolute top-1 right-1" /><p className="text-xs font-medium">Agent 帮编</p><p className="mt-1 text-[11px] text-muted-foreground">输入目标 → 出图草稿 + 缺参列表；应用后仍须校验（R-010b 后接入）</p><Input className="mt-2" placeholder="例：只处理快手账户" readOnly /></div>
+            <div className="relative rounded-lg border p-2"><ExampleBadge className="absolute top-1 right-1" /><p className="text-xs font-medium">Agent 帮编</p><p className="mt-1 text-[11px] text-muted-foreground">输入目标 → 出图草稿 + 缺参列表；应用后仍须校验（接口接入后可用）</p><Input className="mt-2" placeholder="例：只处理快手账户" readOnly /></div>
           </div>
         )}
         <div className="mt-auto flex flex-col gap-2">
@@ -196,12 +196,12 @@ function Canvas({ definitionId }: { definitionId: string }) {
         <DialogContent className="sm:max-w-lg">
           {dialog === "validate" ? (
             <>
-              <DialogHeader><DialogTitle>校验结果</DialogTitle><DialogDescription>四组全过且缺参为空才可发布</DialogDescription></DialogHeader>
+              <DialogHeader><DialogTitle>校验结果</DialogTitle><DialogDescription>四组校验全过、且没有缺参数才可发布</DialogDescription></DialogHeader>
               {validation ? (
                 <div className="flex flex-col gap-3 text-sm">
-                  {(["schema", "permissions", "links"] as const).map((group) => <div key={group}><p className="mb-1 text-xs font-medium text-muted-foreground">{group === "schema" ? "结构" : group === "permissions" ? "权限" : "连线"}</p><ul className="flex flex-col gap-1">{validation[group].map((item) => <li key={item.check} className="flex items-center gap-2">{item.pass ? <IconCircleCheck className="size-4 text-status-success" /> : <IconAlertTriangle className="size-4 text-status-critical" />}{item.check}{item.detail ? <span className="text-xs text-muted-foreground">{item.detail}</span> : null}</li>)}</ul></div>)}
-                  <div><p className="mb-1 text-xs font-medium text-muted-foreground">缺参</p>{validation.missing_params.length ? <ul className="flex flex-col gap-1">{validation.missing_params.map((item) => <li key={`${item.node_id}-${item.param}`} className="flex items-center gap-2"><IconAlertTriangle className="size-4 text-status-warning" /><span className="font-mono text-xs">{item.node_id}</span>{item.param}{item.required ? <Badge variant="outline">必填</Badge> : null}</li>)}</ul> : <p className="text-xs text-muted-foreground">无</p>}</div>
-                  {localIssues ? <p className="text-xs text-status-critical">画布本地还有 {localIssues} 个红点（write 前无人工确认 / 幂等键缺失）</p> : null}
+                  {(["schema", "permissions", "links"] as const).map((group) => <div key={group}><p className="mb-1 text-xs font-medium text-muted-foreground">{group === "schema" ? "结构" : group === "permissions" ? "权限" : "连线"}</p><ul className="flex flex-col gap-1">{validation[group].map((item) => <li key={item.check} className="flex items-center gap-2">{item.pass ? <IconCircleCheck className="size-4 text-status-success" /> : <IconAlertTriangle className="size-4 text-status-critical" />}{group === "permissions" ? permissionText(item.check) : item.check}{item.detail ? <span className="text-xs text-muted-foreground">{item.detail}</span> : null}</li>)}</ul></div>)}
+                  <div><p className="mb-1 text-xs font-medium text-muted-foreground">缺参</p>{validation.missing_params.length ? <ul className="flex flex-col gap-1">{validation.missing_params.map((item) => <li key={`${item.node_id}-${item.param}`} className="flex items-center gap-2"><IconAlertTriangle className="size-4 text-status-warning" /><span className="font-mono text-xs">{item.node_id}</span>{paramText(item.param)}{item.required ? <Badge variant="outline">必填</Badge> : null}</li>)}</ul> : <p className="text-xs text-muted-foreground">无</p>}</div>
+                  {localIssues ? <p className="text-xs text-status-critical">画布上还有 {localIssues} 处没过（写媒体前没有人工确认 / 缺幂等键）</p> : null}
                   <p className="text-xs">{validation.canPublish && !localIssues ? "可发布" : "不可发布"}</p>
                 </div>
               ) : null}
