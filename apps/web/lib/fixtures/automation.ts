@@ -114,3 +114,7 @@ export const paramLabel: Record<string, string> = { account_scope: "账户范围
 export const permissionLabel: Record<string, string> = { "accounts:read": "读账户", "changesets:write": "写变更集", "changesets:execute": "执行变更集", "notify:send": "发通知", "materials:read": "读素材", "reports:write": "写报告" }
 export const paramText = (key: string) => paramLabel[key] ?? key
 export const permissionText = (key: string) => permissionLabel[key] ?? key
+
+// 媒体侧字段名在界面显中文（后端仍用英文 key）
+export const fieldLabel: Record<string, string> = { bid: "出价", "bid.tool": "出价工具", cpa_bid: "转化出价", budget: "预算", day_budget: "日预算", budget_rhythm: "预算节奏", placement: "版位", schedule: "投放时段", status: "状态", audience: "人群" }
+export const fieldText = (key: string) => fieldLabel[key] ?? key

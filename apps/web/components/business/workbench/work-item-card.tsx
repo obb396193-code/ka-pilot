@@ -6,7 +6,7 @@ import { IconBellOff, IconChevronDown, IconExternalLink, IconEye, IconFileDiff }
 import { toast } from "sonner"
 
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
-import { metricLabel } from "@/lib/fixtures/automation"
+import { metricLabel, fieldText } from "@/lib/fixtures/automation"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -23,6 +23,7 @@ const actionLabel: Record<string, string> = { lower_bid: "降价", raise_budget:
 
 // 证据叶子里的字段名 / 运算符 / 可用性 / 决策档位在界面上一律显中文
 const opText = (op: string) => ({ ">": ">", ">=": "≥", "<": "<", "<=": "≤", "==": "=", "!=": "≠" }[op] ?? op)
+const targetTypeLabel: Record<string, string> = { unit: "单元", campaign: "计划", account: "账户", creative: "创意" }
 const availabilityLabel: Record<string, string> = { available: "有数", missing: "缺数", stale: "过期", partial: "不完整" }
 const decisionTierLabel: Record<string, string> = { auto: "自动执行", card_confirm: "群里确认", proposal: "只给建议", investigate: "先查清楚", escalate: "升级处理" }
 
@@ -107,7 +108,7 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
               <div className="overflow-hidden rounded-lg border">
                 <Table>
                   <TableHeader className="bg-muted"><TableRow><TableHead>目标</TableHead><TableHead>字段</TableHead><TableHead className="text-right">从</TableHead><TableHead className="text-right">到</TableHead><TableHead>状态</TableHead></TableRow></TableHeader>
-                  <TableBody>{changeset.items.map((row) => <TableRow key={row.id}><TableCell className="font-mono text-xs">{row.targetType} {row.targetId}</TableCell><TableCell>{row.field}</TableCell><TableCell className="text-right tabular-nums">{String(row.fromValue.value)}</TableCell><TableCell className="text-right tabular-nums">{String(row.toValue.value)}</TableCell><TableCell><TypeChip>{row.itemStatus}</TypeChip></TableCell></TableRow>)}</TableBody>
+                  <TableBody>{changeset.items.map((row) => <TableRow key={row.id}><TableCell className="text-xs">{targetTypeLabel[row.targetType] ?? row.targetType} {row.targetId}</TableCell><TableCell>{fieldText(row.field)}</TableCell><TableCell className="text-right tabular-nums">{String(row.fromValue.value)}</TableCell><TableCell className="text-right tabular-nums">{String(row.toValue.value)}</TableCell><TableCell><TypeChip>{row.itemStatus}</TypeChip></TableCell></TableRow>)}</TableBody>
                 </Table>
               </div>
               {changeset.simulation ? <div className="rounded-lg bg-muted/50 p-3 text-xs">What-if：现金 CPA {changeset.simulation.expected.cashCpa.from} → {changeset.simulation.expected.cashCpa.to} · 消耗 {changeset.simulation.expected.cost.from} → {changeset.simulation.expected.cost.to} · 风险 {changeset.simulation.riskLevel} · {changeset.simulation.note}</div> : null}
