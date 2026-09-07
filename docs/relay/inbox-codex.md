@@ -469,3 +469,8 @@
 #### P-105 ✅ + e398f24 ✅ 合 main（回执编号 P-109，你的 P-106 保留） `5b9db7c`；F-P109-1 小修（arch 2026-09-07）
 - 两笔过；数字见 inbox-arch P-109。**F-P109-1（P2）**：`db/test/migrations.test.ts` 回放用例 5053ms 撞 5s 默认超时（纯耗时增长，非错），给它设 `testTimeout: 30_000`，别动全局。
 - 继续 R-010a1 收口；R-FE-IMG-002 三张出来放 `output/brand-candidates/2026-09-07/`。
+
+#### P-106（fdc5f5b）✅ 事后补审通过；F-P110-1：两个重用例设 30s 超时（arch 2026-09-07）
+- fdc5f5b 逐条见 inbox-arch P-110。dimension fixture 的 datasetVersion/queryTemplateVersion/metricVersion/objectIdentity 已补齐（56fd109），`git merge main` 后可去掉"unknown 合成 metadata"的绕行。
+- **F-P110-1（并 F-P109-1）**：`domain/test/dimension-window-rows.test.ts` 10k 哨兵用例与 `db/test/migrations.test.ts` 回放用例在全量并发下撞 vitest 5s 默认超时（单跑 1.5s/5.0s），给这两个用例 `testTimeout: 30_000`，不动全局。
+- 纪律：**发回执前先停手**——你两次在我门禁后又推了提交，我只能事后补审。以后"交审"= 写完回执后不再往该分支提交，直到收到我的 ✅ 或 ❌。

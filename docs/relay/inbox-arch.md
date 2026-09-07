@@ -3918,3 +3918,9 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - P-105：F-P103-1 原始异常 `Window reader unavailable`（platform-data-source.ts:211 旧构造器未传 v3 window reader）实证，定性=用例过期 ✅；全量真 PG 回补数字与 arch 一致。e398f24：`loadByAccount` 单批 SQL 按三键 + ds 读生效历史，scope 二次校验、重复 tuple/日 fail closed、10001 哨兵/16MB ✅。
 - 门禁（真 PG，db 串行）：domain 765 / db **706 + 1 ✗** / worker 1142+2 / gateway 36 / web 140；tsc/eslint 全 0。
 - **F-P109-1（P2）**：`packages/db/test/migrations.test.ts`「is replayable and creates the core tables and rolling partitions」单跑 5053ms 撞 vitest 默认 5000ms 超时（此前 3.9–4.6s，随迁移与样本增长逼近上限）；不是代码错。该 PG 回放用例设 `testTimeout: 30_000`（同 benchmark 处理）。合流不受影响。
+
+
+### P-110 ✅事后补审｜Codex fdc5f5b（个人 account.dimension/v3 公开纵切片）+ main `80dc46e` 门禁｜arch 2026-09-07
+- fdc5f5b 范围：worker/domain/db + `apps/web/lib/data` 3 文件，contract/UI 零 ✅。`PlatformDimensionQuery`：一条 RR/RO 连接三批读（lineage / dimension / loadByAccount 三键历史），≤1000 户、≤31 天、10k 哨兵/16MB、重复 tuple/日 fail closed、账户数与 history 组数一致校验；其他维度 422、team 无 live fallback ✅。Codex P-106 提的 dimension fixture 缺 known 元数据 → 已补 14 个（56fd109）。
+- main 门禁（真 PG，db 串行）：domain 769 + 1 ✗ / db 706 + 1 ✗ / worker 1173+2 / gateway 36 / web 140；tsc/eslint 全 0。**两个 ✗ 都是 vitest 5s 默认超时**：domain `dimension-window-rows` 10k 哨兵用例（全量并发时 5273ms，单跑 1527ms）、db `migrations` 回放（5038ms）。非代码错 → **F-P110-1（P2，合并 F-P109-1）**：这两个重用例显式 `testTimeout: 30_000`。main 零真红。
+- 教训（arch 自己）：合流前必须重新 `rev-parse` 分支头再门禁——本轮两次都在门禁后又进了新提交，事后补审。
