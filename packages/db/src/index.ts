@@ -44,3 +44,5 @@ export * from "./r014/decision-policy-repository.js";
 export * from "./r014/export-repository.js";
 export * from "./r014/capability-repository.js";
 export * from "./r014/task-readiness-repository.js";
+export * from "./r014/report-run-repository.js";
+export * from "./r014/external-change-repository.js";
