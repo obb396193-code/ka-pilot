@@ -28,7 +28,7 @@ const columns = helper.columns([
   helper.accessor((row) => row.metrics.costSpace.value, { id: "costSpace", header: "成本空间", meta: { label: "成本空间", align: "right" }, cell: ({ row }) => cell.money(row.original.metrics.costSpace) }),
   helper.accessor((row) => row.metrics.ratios.ctr.value, { id: "ctr", header: "CTR", meta: { label: "CTR", align: "right" }, cell: ({ row }) => cell.percent(row.original.metrics.ratios.ctr) }),
   helper.accessor((row) => row.metrics.ratios.cvr.value, { id: "cvr", header: "CVR", meta: { label: "CVR", align: "right" }, cell: ({ row }) => cell.percent(row.original.metrics.ratios.cvr) }),
-  helper.accessor((row) => row.metrics.ratios.gap.value, { id: "gap", header: "GAP", meta: { label: "GAP", align: "right" }, cell: ({ row }) => cell.percent(row.original.metrics.ratios.gap) }),
+  helper.accessor((row) => row.metrics.ratios.gap.value, { id: "gap", header: "差异", meta: { label: "差异", align: "right" }, cell: ({ row }) => cell.percent(row.original.metrics.ratios.gap) }),
 ])
 
 function DimensionTable({ dimension }: { dimension: Dimension }) {

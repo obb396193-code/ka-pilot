@@ -6,6 +6,7 @@ import { IconBellOff, IconChevronDown, IconExternalLink, IconEye, IconFileDiff }
 import { toast } from "sonner"
 
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
+import { metricLabel } from "@/lib/fixtures/automation"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -19,6 +20,11 @@ import { cn } from "@/lib/utils"
 // 今日队列的四件套卡（原型 P01）：户 / 为什么 / 建议 / 按钮组（查看证据 · 跳后台 · 生成变更集 · 忽略▾ · 静音 3 天）
 const causeLabel: Record<string, string> = { bid_too_high: "出价偏高", creative_fatigue: "素材疲劳", budget_cap: "预算受限", low_volume: "量不足" }
 const actionLabel: Record<string, string> = { lower_bid: "降价", raise_budget: "提预算", pause: "暂停", replace_creative: "换素材" }
+
+// 证据叶子里的字段名 / 运算符 / 可用性 / 决策档位在界面上一律显中文
+const opText = (op: string) => ({ ">": ">", ">=": "≥", "<": "<", "<=": "≤", "==": "=", "!=": "≠" }[op] ?? op)
+const availabilityLabel: Record<string, string> = { available: "有数", missing: "缺数", stale: "过期", partial: "不完整" }
+const decisionTierLabel: Record<string, string> = { auto: "自动执行", card_confirm: "群里确认", proposal: "只给建议", investigate: "先查清楚", escalate: "升级处理" }
 
 export function WorkItemCard({ item, detail, disabled = false }: { item: WorkItem; detail: WorkItemDetail | null; disabled?: boolean }) {
   const [evidenceOpen, setEvidenceOpen] = useState(false)
@@ -40,7 +46,7 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
         <div className="text-xs text-muted-foreground">为什么</div>
         <div className="text-sm font-medium">{item.title}</div>
         {detail?.rule ? <div className="text-xs text-muted-foreground">规则 {detail.rule.name} · {detail.rule.version} · 第 {detail.occurrenceCount} 次</div> : null}
-        {detail?.evidenceSnapshot ? <div className="flex flex-wrap gap-1.5">{detail.evidenceSnapshot.leaves.map((leaf) => <TypeChip key={leaf.metric} className={cn(leaf.pass && "text-status-critical")}>{leaf.metric} {leaf.operator} {leaf.threshold} · 实际 {leaf.value ?? "−"}</TypeChip>)}</div> : null}
+        {detail?.evidenceSnapshot ? <div className="flex flex-wrap gap-1.5">{detail.evidenceSnapshot.leaves.map((leaf) => <TypeChip key={leaf.metric} className={cn(leaf.pass && "text-status-critical")}>{metricLabel[leaf.metric] ?? leaf.metric} {opText(leaf.operator)} {leaf.threshold} · 实际 {leaf.value ?? "−"}</TypeChip>)}</div> : null}
       </div>
       <div className="flex flex-col gap-1 @3xl/main:col-span-3">
         <div className="text-xs text-muted-foreground">建议</div>
@@ -48,7 +54,7 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
           <>
             <div className="text-sm font-medium">{actionLabel[suggestion.action] ?? suggestion.action} {suggestion.target} {suggestion.delta > 0 ? "+" : ""}{Math.round(suggestion.delta * 100)}%</div>
             <div className="text-xs text-muted-foreground">预期现金 CPA → {rv(suggestion.expected.cashCpa, "money")} · 置信 {Math.round((detail?.diagnosis?.confidence ?? 0) * 100)}%{suggestion.reversible ? " · 可回滚" : ""}</div>
-            {detail?.decision ? <Badge variant="outline" className="w-fit text-[10px]">{detail.decision.tier} · {detail.decision.reason}</Badge> : null}
+            {detail?.decision ? <Badge variant="outline" className="w-fit text-[10px]">{decisionTierLabel[detail.decision.tier] ?? detail.decision.tier} · {detail.decision.reason}</Badge> : null}
           </>
         ) : <div className="text-xs text-muted-foreground">诊断未返回建议；系统不生成假建议。</div>}
       </div>
@@ -79,14 +85,14 @@ export function WorkItemCard({ item, detail, disabled = false }: { item: WorkIte
               <div className="overflow-hidden rounded-lg border">
                 <Table>
                   <TableHeader className="bg-muted"><TableRow><TableHead>指标</TableHead><TableHead>条件</TableHead><TableHead className="text-right">实际</TableHead><TableHead>可用性</TableHead><TableHead>命中</TableHead></TableRow></TableHeader>
-                  <TableBody>{detail.evidenceSnapshot.leaves.map((leaf) => <TableRow key={leaf.metric}><TableCell className="font-mono text-xs">{leaf.metric}</TableCell><TableCell className="tabular-nums">{leaf.operator} {leaf.threshold}</TableCell><TableCell className="text-right tabular-nums">{leaf.value ?? "−"}</TableCell><TableCell><TypeChip>{leaf.availability}</TypeChip></TableCell><TableCell>{leaf.pass ? <StatusChip tone="critical">命中</StatusChip> : <StatusChip tone="muted">未命中</StatusChip>}</TableCell></TableRow>)}</TableBody>
+                  <TableBody>{detail.evidenceSnapshot.leaves.map((leaf) => <TableRow key={leaf.metric}><TableCell className="text-xs">{metricLabel[leaf.metric] ?? leaf.metric}</TableCell><TableCell className="tabular-nums">{opText(leaf.operator)} {leaf.threshold}</TableCell><TableCell className="text-right tabular-nums">{leaf.value ?? "−"}</TableCell><TableCell><TypeChip>{availabilityLabel[leaf.availability] ?? leaf.availability}</TypeChip></TableCell><TableCell>{leaf.pass ? <StatusChip tone="critical">命中</StatusChip> : <StatusChip tone="muted">未命中</StatusChip>}</TableCell></TableRow>)}</TableBody>
                 </Table>
               </div>
               <div className="grid gap-3 md:grid-cols-2">
                 <div className="rounded-lg border p-3"><div className="text-xs font-medium">窗口指标</div><dl className="mt-1 grid grid-cols-2 gap-y-1 text-xs"><dt className="text-muted-foreground">现金消耗</dt><dd className="text-right tabular-nums">{mv(detail.evidenceSnapshot.metrics.cashCost, "money0")}</dd><dt className="text-muted-foreground">真实转化</dt><dd className="text-right tabular-nums">{mv(detail.evidenceSnapshot.metrics.realConversion)}</dd><dt className="text-muted-foreground">现金 CPA</dt><dd className="text-right tabular-nums">{rv(detail.evidenceSnapshot.metrics.ratios.cashCpa, "money")}</dd><dt className="text-muted-foreground">考核价</dt><dd className="text-right tabular-nums">{detail.evidenceSnapshot.assessment.price ? `¥${detail.evidenceSnapshot.assessment.price.value.toFixed(2)}` : "−"}</dd></dl></div>
                 <div className="rounded-lg border p-3"><div className="text-xs font-medium">诊断（{detail.diagnosis?.schema}）</div>{detail.diagnosis ? <div className="mt-1 text-xs"><div>{causeLabel[detail.diagnosis.causeCategory] ?? detail.diagnosis.causeCategory} · {detail.diagnosis.subCause}</div><div className="mt-1 text-muted-foreground">{detail.diagnosis.caveats.join("；")}</div></div> : <div className="text-xs text-muted-foreground">无</div>}</div>
               </div>
-              {detail.decision ? <div className="rounded-lg bg-muted/50 p-3 text-xs"><span className="font-medium">分级决策 {detail.decision.tier}</span> · 置信 {rv(detail.decision.gates.confidence)} · 历史成功率 {rv(detail.decision.gates.historicalSuccessRate)} · 近 24h 人工操作 {detail.decision.gates.recentManualOps} · {detail.decision.gates.reversible ? "可回滚" : "不可回滚"} · {detail.decision.gates.withinCap ? "在日上限内" : "超日上限"} · {detail.decision.reason}</div> : null}
+              {detail.decision ? <div className="rounded-lg bg-muted/50 p-3 text-xs"><span className="font-medium">分级决策 {decisionTierLabel[detail.decision.tier] ?? detail.decision.tier}</span> · 置信 {rv(detail.decision.gates.confidence)} · 历史成功率 {rv(detail.decision.gates.historicalSuccessRate)} · 近 24h 人工操作 {detail.decision.gates.recentManualOps} · {detail.decision.gates.reversible ? "可回滚" : "不可回滚"} · {detail.decision.gates.withinCap ? "在日上限内" : "超日上限"} · {detail.decision.reason}</div> : null}
             </div>
           ) : <p className="text-sm text-muted-foreground">证据快照样例只有一条；其余工作项接口接入后返回。</p>}
         </DialogContent>
