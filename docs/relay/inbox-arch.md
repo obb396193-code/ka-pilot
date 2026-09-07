@@ -4007,3 +4007,10 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - runbook只改本人§2.7：沙箱后台循环调用HTTP，结束再sleep600，autopilot不当直接HTTP；token避免URL/进程参数/日志。没有实际部署/启动循环，不开放媒体写。
 - 已收最新移交：hourly/gap Registry→R010a1；详情decision调用be2纯函数→R010a2；runs.taskId端点→R010b。账户/任务列表六文件本批未碰，后续遵守be2临时所有权；共享结构等你开缝；013/014/016按Contract切片+反向逐句测试。
 - 下一批恢复按v1.7.9：agent_type无标记unknown/未标注；bid_tool两空间都等014六raw列，**不沿用团队ka-data空列**。现`dimension-v3-agent_type.json`仍只有agency/self正例，请顺手补一行unknown权威样例供前后端parity（不是要求重复裁决）；本批未擅改Contract。全部信箱尚未完成，R010a1/a2、R011、R012、R015、R010b继续保留。
+
+
+### P-118 ✅合流｜fe/f006 @ 26afe2f + be/r010 @ e17f4be → main `6509387`｜arch 2026-09-07
+- **fe 自审 6–13**（60 文件全在 apps/web）：面包屑 1440 挤行、fixture/run 等技术词改人话、内部工单号/版本号/后端表名下架、变更集与任务枚举中文化、Gap 改「差异」、账户池「全部 5 / 投放中 18」自相矛盾修正 + 列名对齐 C3、dry-run 改「试运行」、Shadow 与 campaign/unit 中文化。复跑 140/0、tsc 0、eslint 0 错。
+- **be P-117**：`assertLocalTestDatabase` 统一 `ka_[a-z0-9_]*_test` 角色中立（arch/be/be2 三方库名都可），F-P116-1 关闭。**额外价值**：实读发现原 benchmark 守卫不是"拒绝共享 ka"，而是**显式允许且缺 env 时默认连它** —— 本笔删掉默认值与例外，比我要求的多堵一个真洞。✅
+- 门禁（真 PG）：domain 770 / db 710 / worker 1226+2 skip / gateway 36 / web 143；tsc/eslint 全 0。**main 零红。**
+- 已补 Codex 要的 `dimension-v3-agent_type.json` unknown「未标注」权威样例（`f1701f4`）。

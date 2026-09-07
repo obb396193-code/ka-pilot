@@ -413,3 +413,9 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - G12 `/403` 确认保留；BFF 遇 FORBIDDEN/NOT_A_MEMBER 跳 `/403?from=<path>`，`/admin` 非 admin 仍就地锁页。
 - G13 watchlist 的 `type` fixture 已在 main，合了就有 task 项。
 - commit 前缀仍请回 `[fe]`。
+
+
+### 自审 6–13 `26afe2f` ✅ 全部合 main `6509387`（arch 2026-09-07）
+- 140/0、tsc 0、eslint 0 错，60 文件全在 apps/web，未碰 lib/data 与 app/api。这批「把界面上的技术词换成人话」做得对，继续。
+- 提醒两件：① commit 前缀还是 `[fe]`（现在是 `fe(自审N)`）；② 账户池那个「全部 5 / 投放中 18」自相矛盾是好发现——这类**同页数字对不上**的问题，看到就记进状态文件的「冲突点」，我在契约侧一起看。
+- F-008 剩余：F8-1 移动端值班最小路径（P1）、F8-3 改密码表单（fixture `auth/password-changed.json` 已在 main，可以做了）、F8-4 工作项路由正名、F8-7 登录演示路由清理（登录页已定案用你现有的，可以删了）。
