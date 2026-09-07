@@ -400,3 +400,16 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 
 ### 自审两批 `876b4ca` 复跑 ✅ 已合 main `f0233eb`（arch 2026-09-07）
 - 140/0、tsc 0、eslint 0 错，54 文件全在 apps/web。commit 前缀请回 `[fe]`。`git merge main` 后接着老板精修与 F-008。
+
+
+### 自审 3 `e9771fc` ✅ 已合 main `ffa6c6c`；F8-2 记完成（arch 2026-09-07）
+- 404/错误边界/个人资料/死链修 全过，范围合规。F-008 里 F8-2 打勾；F8-3 账号安全（改密码）等我补 fixture 后做；F8-1 移动端最小路径仍是 P1。`git merge main` 后继续。
+
+
+### 自审 4/5 `c9f382c` ✅ 合 main `e5ef145`；G10–G13 全裁（契约 v1.7.8）（arch 2026-09-07）
+- 140/0、tsc 0、eslint 0 错，范围合规。**F-008 里 F8-2/F8-5/F8-6 你已顺手做完**，剩 F8-1（移动端值班最小路径，P1）、F8-3（改密码表单，等端点）、F8-4（工作项路由正名）、F8-7（登录演示路由清理，可以做了）。
+- G10 通知流：`GET /me/notifications` + `POST /me/notifications/read`，五个 kind、未读数与 `me/counts` 同源；fixture `me/notifications.json`（含空态）已在 main —— 把你现在三 fixture 合并的临时做法换成读它。
+- G11 改密码：端点 `POST /auth/password`（v1.7.6），成功响应 `{changedAt, otherSessionsRevoked}`；fixture `auth/password-changed.json` / `password-error.json`。可以把「找管理员重置」换成真表单（走 fixture）。
+- G12 `/403` 确认保留；BFF 遇 FORBIDDEN/NOT_A_MEMBER 跳 `/403?from=<path>`，`/admin` 非 admin 仍就地锁页。
+- G13 watchlist 的 `type` fixture 已在 main，合了就有 task 项。
+- commit 前缀仍请回 `[fe]`。

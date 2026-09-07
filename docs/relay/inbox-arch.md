@@ -3942,3 +3942,34 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 ### P-113 ✅合流｜be/r010 @ ed27786 → main `f0233eb`（P-111：task/biz 维度 v3 公开窗口 + F-P110-1）｜arch 2026-09-07
 - 18fdebd：`PlatformDimensionQuery.group`——一条 RR/RO 连接四批读（lineage / dimension / loadByAccount 三键历史 / 归属探针），按 task_accounts 有效期归组、孤儿组 null 保留、组内 Σ现金/Σ真实转化与 summary 逐组核对、accountCount 不叠加冒充跨日 unique；其他维度 422、team 无 live fallback ✅。6738178：仅两用例 `testTimeout: 30_000` ✅。交审后停手 ✅。
 - 门禁（真 PG，db 串行）：domain 770 / db 710 / worker 1189+2 / gateway 36 / web 143；tsc/eslint 全 0。**main 零红。**
+
+
+### P-114 ✅合流｜fe/f006 @ e9771fc → main `ffa6c6c`（自审 3：404/错误边界/个人资料/侧栏死链）｜arch 2026-09-07
+- 7 文件全在 apps/web；个人资料 tab 只读 session + `me/preferences` fixture，未自造 DTO ✅；`app/(main)/error.tsx`、`not-found.tsx`、`global-error.tsx` = F8-2 完成。复跑 140/0、tsc 0、eslint 0 错。
+
+### fe 自审批次（2026-09-07；老板「每页每细节自审」+「缺失功能页面都做」）
+
+已提交（fe/f006，逐笔可 cherry-pick）：
+
+| SHA | 内容 |
+|---|---|
+| `904e949` | 全站用户可见文案去接口黑话（GET/POST/PATCH 端点约 140 处 → 人话，端点只留代码注释）；新增 `costStatusReasonLabel/Text`；工作台「达标」卡副文案不再与主值重复；任务详情页头部不再直接打印 `window_ok` 枚举；AI 早报「异常」段以前是空框（fixture 是 `items` 数组、代码只渲染 `text`）已按条列出 |
+| `876b4ca` | 主色预设 12 → 18（补紫/粉 8 个，去重复的正蓝/明青），老板要求去掉弹层底部说明；界面残留的 `form_schema`/`saved_views`/`monthly_exec`/`key_required`/`pending_data` 等枚举改中文 |
+| `e9771fc` | 补缺失页面：`app/(main)/not-found.tsx`、`app/(main)/error.tsx`、`app/global-error.tsx`；侧栏「更多」原为 `href="#more"` 死链 → HelpMenu（快捷键/关于/反馈）；设置新增首个 tab「个人资料」（身份 + 我的空间 + 界面偏好） |
+| `fb14255` | 六个功能缺口：顶栏通知铃 / 可复用 NoAccess + `/403` / 工作台「三步开工」引导卡 / 登录页「忘记密码」弹层 / `/search?q=` 全部结果页（⌘K 加「查看全部结果」）/ 工作台「我关注的」tab |
+
+三条复跑：tsc 0 错、eslint 0 错（warning 与合 main 时同）、改动只在 `apps/web`。
+
+**新增契约缺口（老板已批做前端，等后端定端点）**：
+- G10 统一通知流：现在通知铃是把 `alerts/stream` + `collab/dispatches.received` + `collab/approvals.toApprove` 三个 fixture 合并出来的，缺 `GET /me/notifications`（分页 + 已读态）与 `POST /me/notifications/read`；未读数暂用 `me/counts.notificationsUnread`。
+- G11 改密码：`设置 · 个人资料` 里只写「找管理员重置」，缺自助改密端点（内测期 internal_test provider）。
+- G12 403 落点：新增 `/403` 页，BFF 遇 `FORBIDDEN` 可直接跳；若你们希望换成别的落点告诉我。
+- G13 `me/watchlist` 目前 fixture 仍只有 account 项（v1.7.4 说项可带 `type`），「我关注的」tab 已按可带 type 写，兼容无 type = account。
+
+**环境提醒**：本机磁盘只剩 5.7 GB，Next dev 单路由编译已到 100–900 秒（`/settings` 899s、`/knowledge` 579s），逐页截图审查很慢，与代码无关。
+
+
+### P-115 ✅合流｜fe/f006 @ c9f382c → main `e5ef145`（自审 4/5：六个缺口 + KPI 卡）｜arch 2026-09-07
+- 15 文件全在 apps/web ✅；新增 `/403`、`/search`、通知铃、NoAccess、新人引导卡、我关注的 tab、忘记密码弹层。复跑 140/0、tsc 0、eslint 0 错。
+- G10–G13 全裁 → 契约 v1.7.8（通知流用读时投影不新建表；改密码响应补 changedAt/otherSessionsRevoked；403 落点确认；watchlist 已在 main）。fixtures +4（172）。
+- fe 报磁盘 5.7G、dev 单路由编译 100–900s：属机器问题，已知；老板未批清微信/WPS 等大项前不动。

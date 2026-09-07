@@ -235,3 +235,8 @@
 - `admin/grants-member-2.json` — 第二位成员授权
 - `tasks/attribution-cost.json` — 归因树 cost 模式
 - `strategies/detail-3002.json` — 第二个方案（draft）
+
+## 2026-09-07 第四批（fe G10–G13）
+
+- `me/notifications.json` / `me/notifications-empty.json` — v1.7.8 G10 统一通知流（五 kind + 未读数 + cursor）
+- `auth/password-changed.json` / `auth/password-error.json` — v1.7.6 改密码成功/失败

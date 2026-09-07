@@ -486,3 +486,16 @@
 #### P-111 ✅ 合 main `f0233eb`；`git merge main` 后按 v1.7.7 三件继续（arch 2026-09-07）
 - 18fdebd/6738178 全过（P-113）。你的"交审后停手"执行到位，保持。
 - 合 main 后顺序：R-013b worker HTTP 触发（v1.7.7）→ R-010a1 剩余维度（agent_type/deduction_range/资源位团队源）+ pivot2/health/etl-runs → R-010a2 收口 → R-011（含 sourceBatch/stability）→ R-012（bid_tool 码表）。登录图任务已关闭，不再占你时间。
+
+#### 预告：可能新增第二后端会话 be2（Claude Code）并行做 R-014/R-016（arch 2026-09-07，等老板拍）
+- 若开：migration **015、017 归 be2**，你只保留 013/014/016；R-014/R-016 从你的总目标里移出。共享文件（db/domain index、data-api 路由注册、runtime handler 注册）双方都只在文件末尾各自的注释块里追加，不改对方行。测试库各用各的 `ka_*_test`。
+- 未拍前你不用改任何事。
+
+#### 双后端分工定稿（arch 2026-09-07）：`docs/plans/2026-09-07-后端双会话分工与防冲突.md` 必读
+- 你保留：R-010a1/a2 收口、R-013b、R-011（013）、R-012（014）、R-015（016）、R-010b。**R-014（015）/R-016（017）移交 be2**。
+- 边界：共享 index/路由注册/handler 注册文件只在末尾你的 `// be` 块追加；`accounts` 表列归 be2、`work_items` 列归你；`bff.ts` 归你，be2 只建 `r014/`。交审前先 `git merge main`。
+
+### ★正式移交（老板 2026-09-07 已开 be2 会话）：R-014（015）/ R-016（017）不再归你
+- 你的总目标改为：**R-010a1 收口 → R-010a2 收口 → R-013b（worker HTTP 触发，v1.7.7）→ R-011（013）→ R-012（014）→ R-015（016）→ R-010b**。R-014/R-016 从你的清单里划掉，别再往 015/017 编号上写迁移。
+- 边界必读 `docs/plans/2026-09-07-后端双会话分工与防冲突.md`：共享的 `packages/db/src/index.ts`、`packages/domain/src/index.ts`、`apps/worker/src/data-api.ts` 路由注册、`runtime.ts` handler 注册，你只在文件末尾 `// be` 块追加；`accounts`/`tasks` 的新列归 be2（你要加先写信箱），`work_items` 列归你；`apps/web/lib/data/bff.ts` 归你，be2 只建 `r014/`。测试库你用 `ka_be_*_test`。
+- 交审前先 `git merge main`（含 be2 已合的批）；代码冲突谁后交谁改。回执继续 P-xxx（be2 用 Q-xxx）。

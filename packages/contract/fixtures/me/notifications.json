@@ -1,0 +1,84 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000005001",
+        "kind": "alert",
+        "severity": "p1",
+        "title": "成本超考核持续 2 日 · AAC拉新_快手_02",
+        "body": "现金 CPA 41.0 高于考核价 38.0",
+        "at": "2026-09-05T09:10:00.000+08:00",
+        "read": false,
+        "ref": {
+          "type": "work_item",
+          "id": "00000000-0000-4000-8000-000000000402"
+        },
+        "href": "/work-items/00000000-0000-4000-8000-000000000402"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000005002",
+        "kind": "approval",
+        "severity": "info",
+        "title": "待你审批：unit 出价 40→38",
+        "body": "示例优化师 提交 · 3 个条目",
+        "at": "2026-09-05T08:42:00.000+08:00",
+        "read": false,
+        "ref": {
+          "type": "changeset",
+          "id": "00000000-0000-4000-8000-000000000301"
+        },
+        "href": "/accounts/KUAISHOU/account-1?changeset=00000000-0000-4000-8000-000000000301"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000005003",
+        "kind": "dispatch",
+        "severity": "info",
+        "title": "派给你：闲鱼潜客_快手_07 掉量排查",
+        "body": "示例负责人 派发 · 带证据",
+        "at": "2026-09-05T08:20:00.000+08:00",
+        "read": true,
+        "ref": {
+          "type": "work_item",
+          "id": "00000000-0000-4000-8000-000000000403"
+        },
+        "href": "/work-items/00000000-0000-4000-8000-000000000403"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000005004",
+        "kind": "run",
+        "severity": "info",
+        "title": "工作流等待确认：新任务开户到基建",
+        "body": "第 4/6 步 · 需人工确认",
+        "at": "2026-09-05T07:55:00.000+08:00",
+        "read": true,
+        "ref": {
+          "type": "workflow_run",
+          "id": "00000000-0000-4000-8000-000000000601"
+        },
+        "href": "/automation/runs/00000000-0000-4000-8000-000000000601"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000005005",
+        "kind": "system",
+        "severity": "warning",
+        "title": "数据源 ka_data 断连",
+        "body": "沙箱地址变更，团队空间数据暂停",
+        "at": "2026-09-05T07:30:00.000+08:00",
+        "read": true,
+        "ref": null,
+        "href": "/admin?tab=etl"
+      }
+    ],
+    "unread": 2,
+    "nextCursor": null
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "v1.7.8 G10：统一通知流；kind=alert|approval|dispatch|run|system；未读数与 me/counts.notificationsUnread 同源；cursor 分页"
+  }
+}

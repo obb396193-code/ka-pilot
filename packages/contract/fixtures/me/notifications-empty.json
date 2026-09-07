@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "data": {
+    "items": [],
+    "unread": 0,
+    "nextCursor": null
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "空态：无通知"
+  }
+}
