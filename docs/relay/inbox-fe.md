@@ -368,3 +368,9 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 - **C6**：以老板 D1 为准，默认 `bw`；fixture `me/preferences.json` 已改成 `bw`，不用再问老板。
 - 下一步照你说的：§13 v1.7 九块按页开做（fixtures 都在 main），老板精修并行；每页一 commit、SHA 发我即合。合 main 前先 `git merge main`（含本条与 C6 fixture）。
 - 磁盘：已清 4G，Docker 跑测试时会临时吃十几 G 再回收，你起 dev server 前看一眼 `df -h`，低于 5G 先喊我。
+
+
+### §13 九块 `e7a08de`～`73d594c` 复跑 ✅ 已合 main；第三批 fixture 已补（arch 2026-09-07）
+- 140/0、tsc 0、eslint 0 错；17 文件全在 apps/web。已 --no-ff 合进 main `5b9db7c`。
+- 第三批 fixture（main HEAD，README「2026-09-07 第三批」）：`me/workload.json`、`system/search.json`（五类 + subtitle，**旧 label 改 title**）、`me/watchlist.json`（+task 项）、`reports/daily-v1.json` 加 `delivery` + `daily-v1-not-sent.json`、`materials/list.json` 加 `ratios.cvr`、`summary-window-v3-conversion-missing.json`、`rules/explain-7.json`/`explain-9.json`、`agent/run-events-1802.json`（失败 run）、`integrations/connections.json`（+degraded/disconnected）、`admin/grants-member-2.json`、`tasks/attribution-cost.json`、`strategies/detail-3002.json`。`git merge main` 后按页接上，search 的 label→title 要改一处。
+- 之后就是老板精修；每页一 commit、SHA 发我。

@@ -3909,3 +3909,12 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **范围没缩**：本片仅个人账户维度，其他维度显式422 DIMENSION_UNSUPPORTED、team无live fallback（VIEW_UNSUPPORTED）；其余task/biz/agency/扣量/版位、pivot2/health/ETL与后续批次继续，不宣称R010a1整封完成。大窗口账户日>10k保守拒绝，未证明1000户×31日容量。anomaly沿现有data_anomaly，考核异常另有costStatus。
 - 非阻断请补：dimension-v3-account完整lineage仍缺datasetVersion/queryTemplateVersion/metricVersion/objectIdentity；我只直接用其rows做parity，完整测试明确unknown合成metadata，未改你的Contract/假装known。详情 `docs/plans/2026-09-07-R010a1-账户维度质量报告.md`。
 - implemented待你独立验收，未合流/部署/真实源验证；不push、不开放媒体写、不改视觉。继续总信箱，不等旧root/Claude额度。
+
+
+### P-106 ✅合流｜fe/f006 @ 73d594c（§13 v1.7 九块 e7a08de + 差距树真样例 9061bab + 路由骨架 73d594c）｜arch 2026-09-07
+- 范围：17 文件全在 apps/web ✅。复跑：test 140/0、tsc 0、eslint 0 错。九块全部用 main 的 v1.7 fixtures，DTO 未自造 ✅。fe 提的缺口（attribution 只有 volume、strategies/detail 只 3001）arch 已补 `tasks/attribution-cost.json`、`strategies/detail-3002.json`（第三批）。
+
+### P-107 ✅合流｜be/r010 @ e398f24 → main `5b9db7c`（P-105 + 账户维度三键批读考核历史）｜arch 2026-09-07
+- P-105：F-P103-1 原始异常 `Window reader unavailable`（platform-data-source.ts:211 旧构造器未传 v3 window reader）实证，定性=用例过期 ✅；全量真 PG 回补数字与 arch 一致。e398f24：`loadByAccount` 单批 SQL 按三键 + ds 读生效历史，scope 二次校验、重复 tuple/日 fail closed、10001 哨兵/16MB ✅。
+- 门禁（真 PG，db 串行）：domain 765 / db **706 + 1 ✗** / worker 1142+2 / gateway 36 / web 140；tsc/eslint 全 0。
+- **F-P107-1（P2）**：`packages/db/test/migrations.test.ts`「is replayable and creates the core tables and rolling partitions」单跑 5053ms 撞 vitest 默认 5000ms 超时（此前 3.9–4.6s，随迁移与样本增长逼近上限）；不是代码错。该 PG 回放用例设 `testTimeout: 30_000`（同 benchmark 处理）。合流不受影响。
