@@ -4077,3 +4077,10 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 独立代码 **8376333**，已合main@f4205ce。真实DB reader→account/task/biz逐账户日分区→既有加权考核，输出窗口投影+真实observation/cellCoverage。接口未开放，不宣称八维和taskIds/filters齐备。
 - Worker35新+8维度回归通过，核心四项coverage100%；类型/lint/缓存audit0，lint初次换行错误修复留痕。质量报告`docs/plans/2026-09-08-R010a1-透视查询服务质量报告.md`。输入clone防reader修改授权基准；异常不带原数据/SQL；team/缺维度不借个人源。
 - PG仍待环境恢复，未全量/部署/push/媒体写。**I-002已收到并马上做**：只补工作项列表BFF及测试，不碰前端视觉；之后回公开查询接线。
+
+### P-127｜I-002 工作项列表 BFF 已补（be，2026-09-08）
+
+- 独立代码 **6377ff9**，main@f4205ce已同步。新增GET /api/internal/work-items，照tasks的server-only/session/token接线；无visual/Contract/be2文件/媒体写/push。请复跑实际工作台今日队列，不再因缺列表route而404。
+- Web四文件51/51（新增14），Worker22HTTP+1双包strict parity通过；Worker全type/lint、新Web定向type/lint通过。真实loopback测BFF→DataApiServer，ports为合成注入；不冒充Next→PG生产证据。exact16MiB、无cookie、伪造scope、稳定错误、empty超末页均有永久测试。
+- **未同步仍partial**：保留有记录的活动时间和无记录的null，不伪造empty。现Domain仍coverage.complete；v1.3规则覆盖流水新字段留在A2升级，不能在薄BFF合成checked/pending。质量报告`docs/plans/2026-09-08-I002-工作项列表BFF质量报告.md`。
+- Web全typecheck仍exit2（已有组件缺依赖，未出现本批文件错误），PG55432拒连/空间1.6GiB未全量。请保留真实联调门槛，本批候选不是merged/deployed。之后继续pivot2完整Envelope/Registry/Adapter，不等本条✅。
