@@ -8,12 +8,21 @@ const databaseUrl = process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1
 describe("T1 durable scheduling (synthetic PG)", () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 4 });
   const scheduler = new PersistentChangeSetFollowUps(pool, { firstCheckDelayMs: 86_400_000 });
+  const ownedWorkspaces: string[] = [];
   let workspaceId: string, other: string, changeSetId: string, owner: string, initiator: string, ids: number[];
   beforeAll(async () => { await runMigrations({ databaseUrl }); });
-  afterAll(async () => { await pool.end(); });
+  afterAll(async () => {
+    try {
+      for (const table of ["jobs", "changeset_items", "changesets", "accounts", "users"] as const) {
+        await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [ownedWorkspaces]);
+      }
+      await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [ownedWorkspaces]);
+    } finally { await pool.end(); }
+  });
   beforeEach(async () => {
     const workspaces = await pool.query("INSERT INTO workspaces(name) VALUES($1),($2) RETURNING id", [randomUUID(), randomUUID()]);
     workspaceId = workspaces.rows[0].id; other = workspaces.rows[1].id;
+    ownedWorkspaces.push(workspaceId, other);
     const users = await pool.query("INSERT INTO users(workspace_id,name) VALUES($1,'synthetic-owner'),($1,'synthetic-initiator') RETURNING id", [workspaceId]);
     owner = users.rows[0].id; initiator = users.rows[1].id;
     await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'KUAISHOU','synthetic')", [workspaceId]);

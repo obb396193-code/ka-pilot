@@ -52,10 +52,11 @@ export const windowComparisonSchema = z.object({
   }).strict(),
 }).strict();
 
-export const summaryWindowRowSchema = accountSummaryRowSchema.extend({
-  assessment: windowAssessmentSchema,
-  compare: windowComparisonSchema.optional(),
-}).strict().superRefine((row, context) => {
+/** Shared cross-field guard for summary and dimension rows; does not recompute ratios. */
+export function refineWindowMetricAssessment(row: {
+  metrics: z.infer<typeof canonicalMetricSetSchema>;
+  assessment: z.infer<typeof windowAssessmentSchema>;
+}, context: z.RefinementCtx): void {
   if (row.metrics.cashCost.availability !== "available" && row.assessment.onTarget !== null) {
     context.addIssue({ code: "custom", path: ["assessment", "onTarget"], message: "unavailable cash cannot determine a cost status" });
   }
@@ -69,7 +70,12 @@ export const summaryWindowRowSchema = accountSummaryRowSchema.extend({
     (row.metrics.cashCost.availability !== "available" || row.metrics.realConversion.availability === "available")) {
     context.addIssue({ code: "custom", path: ["assessment", "costStatusReason"], message: "conversion_missing requires known cash and unavailable conversion" });
   }
-});
+}
+
+export const summaryWindowRowSchema = accountSummaryRowSchema.extend({
+  assessment: windowAssessmentSchema,
+  compare: windowComparisonSchema.optional(),
+}).strict().superRefine(refineWindowMetricAssessment);
 // v3 trend is ds + flat MetricSet, not ds + nested v2 SummaryRow.
 export const trendWindowRowSchema = z.object({ ds: calendarDateSchema, metrics: canonicalMetricSetSchema }).strict();
 export type SummaryWindowRow = z.infer<typeof summaryWindowRowSchema>;

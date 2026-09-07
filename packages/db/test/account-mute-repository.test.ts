@@ -12,6 +12,7 @@ if (databaseUrl === undefined) throw new Error("Explicit TEST_DATABASE_URL requi
 describe("account mute PostgreSQL scope and authority", () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 5, connectionTimeoutMillis: 3000 });
   const repo = new AccountMuteRepository(pool);
+  const ownedWorkspaces: string[] = [], ownedIdentities: string[] = [];
   let first: ApprovedWorkspaceAuthContext;
   let second: ApprovedWorkspaceAuthContext;
   let identityId: string;
@@ -20,8 +21,10 @@ describe("account mute PostgreSQL scope and authority", () => {
   async function seed(): Promise<{ auth: ApprovedWorkspaceAuthContext; identityId: string }> {
     const workspaceId = randomUUID(), userId = randomUUID(), identityId = randomUUID();
     await pool.query("INSERT INTO workspaces(id,name,kind) VALUES($1,$2,'personal')", [workspaceId, `synthetic-mute-${workspaceId}`]);
+    ownedWorkspaces.push(workspaceId);
     await pool.query("INSERT INTO users(id,workspace_id,name,role) VALUES($1,$2,'合成用户','optimizer')", [userId, workspaceId]);
     await pool.query("INSERT INTO auth_identities(id,provider,provider_subject,display_name) VALUES($1::uuid,'internal_test',$1::text,'合成身份')", [identityId]);
+    ownedIdentities.push(identityId);
     await pool.query("INSERT INTO workspace_memberships(workspace_id,identity_id,user_id,role) VALUES($1,$2,$3,'optimizer')", [workspaceId, identityId, userId]);
     await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'KUAISHOU',$2),($1,'TENCENT',$2)", [workspaceId, input.accountId]);
     await pool.query("INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id) VALUES($1,$2,'KUAISHOU',$3),($1,$2,'TENCENT',$3)", [workspaceId, identityId, input.accountId]);
@@ -29,7 +32,16 @@ describe("account mute PostgreSQL scope and authority", () => {
       scope: { kind: "explicit_accounts", accounts: ["KUAISHOU", "TENCENT"].map((media) => ({ media, accountId: input.accountId, accessLevel: "read" })) } } };
   }
   beforeAll(async () => { await runMigrations({ databaseUrl }); });
-  afterAll(async () => { await pool.end(); });
+  afterAll(async () => {
+    try {
+      // Restrict teardown to IDs created by this suite, including partially seeded cases.
+      for (const table of ["account_mutes", "account_access_grants", "workspace_memberships", "accounts", "users"] as const) {
+        await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [ownedWorkspaces]);
+      }
+      await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [ownedWorkspaces]);
+      await pool.query("DELETE FROM auth_identities WHERE id=ANY($1::uuid[])", [ownedIdentities]);
+    } finally { await pool.end(); }
+  });
   beforeEach(async () => {
     const a = await seed(); const b = await seed(); first = a.auth; second = b.auth; identityId = a.identityId;
   });
