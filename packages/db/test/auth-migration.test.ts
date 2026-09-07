@@ -4,6 +4,7 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { Client } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
+import { windowSize } from "./migration-window.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -98,7 +99,7 @@ describe("multi-tenant auth migration", () => {
     )).rejects.toMatchObject({ code: "23514" });
 
     await client.end();
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 5 })).toHaveLength(5);
+    expect(await runMigrations({ databaseUrl, direction: "down", count: windowSize("008") })).toHaveLength(windowSize("008"));
     const downClient = new Client({ connectionString: databaseUrl });
     await downClient.connect();
     const dropped = await downClient.query<{ table_name: string | null }>(
@@ -106,6 +107,6 @@ describe("multi-tenant auth migration", () => {
     );
     expect(dropped.rows[0]?.table_name).toBeNull();
     await downClient.end();
-    expect(await runMigrations({ databaseUrl, count: 5 })).toHaveLength(5);
+    expect(await runMigrations({ databaseUrl, count: windowSize("008") })).toHaveLength(windowSize("008"));
   });
 });

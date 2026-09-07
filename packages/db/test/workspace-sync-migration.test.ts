@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
+import { windowSize } from "./migration-window.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -23,7 +24,7 @@ describe("workspace sync migration", () => {
     );
     expect(workspace.rows[0]?.is_active).toBe(true);
 
-    await runMigrations({ databaseUrl, direction: "down", count: 4 });
+    await runMigrations({ databaseUrl, direction: "down", count: windowSize("009") });
     const removed = await pool.query<{ exists: boolean }>(
       `SELECT EXISTS (
          SELECT 1 FROM information_schema.columns
@@ -32,7 +33,7 @@ describe("workspace sync migration", () => {
     );
     expect(removed.rows[0]?.exists).toBe(false);
 
-    await runMigrations({ databaseUrl, direction: "up", count: 4 });
+    await runMigrations({ databaseUrl, direction: "up", count: windowSize("009") });
     const restored = await pool.query<{ is_active: boolean }>(
       "SELECT is_active FROM workspaces WHERE id = $1",
       [workspace.rows[0]!.id],
