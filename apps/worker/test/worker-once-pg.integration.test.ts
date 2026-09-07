@@ -71,7 +71,7 @@ describe("single-shot real PG/runtime/CLI integration (synthetic only)", () => {
     const result = await superviseWorkerOnce({ maxMs: 3000, onJobState: (event) => events.push(event), startChild: () => fork(new URL("./fixtures/worker-once-lease.ts", import.meta.url), [workspaceId], {
       cwd: new URL("..", import.meta.url), execArgv: ["--import", "tsx"], env: { PATH: process.env.PATH, TEST_DATABASE_URL: databaseUrl }, stdio: ["ignore", "ignore", "ignore", "ipc"],
     }) });
-    expect(result).toBe("budget"); expect(events).toEqual([{ jobId: id, jobType: "data_quality_check", status: "leased" }]);
+    expect(result).toEqual({ status: "budget", jobs: { leased: 1, done: 0, failed: 0 } }); expect(events).toEqual([{ jobId: id, jobType: "data_quality_check", status: "leased" }]);
     const before = (await pool.query("SELECT status,attempts,lease_token FROM jobs WHERE id=$1", [id])).rows[0];
     expect(before).toMatchObject({ status: "leased", attempts: 1 });
     // Controlled expiry avoids sleeping for the production lease duration.

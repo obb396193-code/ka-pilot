@@ -20,7 +20,7 @@ async function main(): Promise<void> {
       }),
       onJobState: (event) => { process.stdout.write(`${JSON.stringify(event)}\n`); },
     });
-    if (result === "aborted") throw new Error("Interrupted");
+    if (result.status === "aborted" || result.status === "blocked_auth") throw new Error("Worker once did not complete");
   } finally {
     process.removeListener("SIGINT", stop); process.removeListener("SIGTERM", stop);
   }
