@@ -128,3 +128,11 @@ budget_usage(d) = 当日任务消耗 / 当日生效 daily_budget_cap    （无�
 
 - 日切：03:00 全量前，"报告日"=前日并在 UI 明示
 - 日内环比统一口径="昨日同时段"
+
+## 规则条件树语义（v1.7.5，2026-09-06 定稿；回应 Codex P-098）
+
+- 结构：同节点多组 AND；`all`=AND、`any`=OR、`not`=NOT(OR(...))；嵌套深度 ≤8、叶子 ≤128；空组/无叶子拒绝。
+- 缺数：任一引用指标（含阈值引用）missing/error → 整条 undeterminable，any/not 不得短路掩盖；不触发、不消触、不计数；SLA 按持久化区间暂停。
+- 窗口：`window_hours` 只是叶子取数窗（日级指标须为 24 的倍数）；`consecutive_days:N` = 连续 N 个业务日各自成立；无小时源不冒充滚动窗。
+- 动态阈值：`assessment_price` = 同窗逐日转化加权现金考核价；账面 `cost` 不作规则指标。
+- 执行：受限 AST 解释；不 eval、不生成 SQL、不由 LLM 判真值。
