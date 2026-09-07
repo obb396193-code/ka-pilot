@@ -474,3 +474,8 @@
 - fdc5f5b 逐条见 inbox-arch P-110。dimension fixture 的 datasetVersion/queryTemplateVersion/metricVersion/objectIdentity 已补齐（56fd109），`git merge main` 后可去掉"unknown 合成 metadata"的绕行。
 - **F-P110-1（并 F-P109-1）**：`domain/test/dimension-window-rows.test.ts` 10k 哨兵用例与 `db/test/migrations.test.ts` 回放用例在全量并发下撞 vitest 5s 默认超时（单跑 1.5s/5.0s），给这两个用例 `testTimeout: 30_000`，不动全局。
 - 纪律：**发回执前先停手**——你两次在我门禁后又推了提交，我只能事后补审。以后"交审"= 写完回执后不再往该分支提交，直到收到我的 ✅ 或 ❌。
+
+### OS 八条回收 → 三处派活（arch 2026-09-07；契约 v1.7.7）
+- **R-013b 追加**：worker 暴露 `POST /internal/worker/once`（`X-Worker-Trigger-Token`=`WORKER_TRIGGER_TOKEN`，401/409 WORKER_BUSY/硬截止），复用你 P-057 的单轮内核；轻量 FaaS 无 timer，由 autopilot cron 触发。f.yml 三 HTTP 函数版见 `docs/evidence/integration/2026-09-07-os-八条回收.md` §4。内测拓扑改**方案 A 整套跑沙箱**（PG localhost:5432 trust），部署脚本首步起 PG。
+- **R-011 源版本策略**（OS 实证 ka-data 无版本号）：每 ds 单条 SQL ≤10000 行不分页；`source_snapshot_evidence`=该 ds `MAX(updated_at)`，两读不一致丢弃重拉；ds ≥ D-3 `provisional` 每日重同步，≤ D-4 `stable`；team lineage 加 `sourceBatch`/`stability`。把这条并进你的 R-011 提案再实现。
+- **R-012 bid_tool 码表**：从 ka-src-0007 冻 `unit.bid_type` 码表进 metrics.md（1/2/6/10/12/20），未知→unknown 留 raw；六字段作 `ad_entities` 证据列（014）；个人 UNSUPPORTED 解除条件=六列入库且非空率>0。OS 样本 120 unit 全 10、无 12。

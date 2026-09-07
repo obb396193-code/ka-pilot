@@ -1053,3 +1053,10 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - **移动端值班最小路径（PRD P1）**：仅三处保证手机可用——工作项详情、变更集确认弹层、数据健康横幅；其余页面在 `<md` 视口顶部显「请到桌面处理」条并禁用写动作，不做全站响应式。
 - 工作项详情路由正名 `/work-items/[id]`，`/diagnostics/[findingId]` 保留 301。
 - 上线前删除 `/login/candidates`、`/login/directions` 演示路由（老板拍板登录壳后）。
+
+## v1.7.7 追加（2026-09-07 arch；OS 八条回收后；R-011 / R-012 / R-013b 实现）
+
+- **R-011 源版本策略（ka-data 无版本号，OS 实证）**：每 ds 单条 SQL 一次拉完（≤10000 行；超过 → 该 ds fail closed，不分页拼接）；`team_sync_runs.source_snapshot_evidence` 记该 ds `MAX(updated_at)` 批次戳，同 run 两次读不一致 → 丢弃重拉；**ds ≥ D-3 标 `provisional`（每日重同步覆盖），≤ D-4 标 `stable`（不再重拉）**；team 行 `lineage` 加 `sourceBatch`（updated_at 批次）与 `stability:"stable"|"provisional"`；`SOURCE_VERSION_UNVERIFIED` warning 改为只在批次戳缺失时出。
+- **R-012 bid_tool 码表**：Codex 从 ka-src-0007 官方文档冻 `unit.bid_type` 码表进 `metrics.md`（候选 1/2/6/10/12/20 → `cpm|cpc|ocpc|ocpm|max_conversion|…`，未知码 → `unknown` 并保留 raw 码）；`ocpx_action_type / deep_conversion_type / unit_type / campaign.bid_type / auto_manage` 六字段作证据列存 raw int（`ad_entities` 六列，migration 014）；**个人源 `DIMENSION_UNSUPPORTED` 解除条件** = 六列已入库且首次 sync 后非空率 > 0。OS 样本：120 unit 全 bid_type=10，无 12。
+- **R-013b worker 触发**：轻量 FaaS 无 timer → worker 暴露 `POST /internal/worker/once`（Header `X-Worker-Trigger-Token` = `WORKER_TRIGGER_TOKEN`，无/错 → 401；硬截止 `WORKER_ONCE_MAX_MS`；单飞：上一轮未结束 → `409 WORKER_BUSY`）；由 autopilot cron 每 10 分钟 POST。响应 `{status:"completed"|"budget"|"blocked_auth", jobs:{leased,done,failed}}`。
+- **部署拓扑（内测）= 方案 A**：整套跑沙箱（web / data-api / worker 三进程 + 沙箱 PG localhost:5432）；正式化前必须实测 FaaS→内网 RDS:5432。
