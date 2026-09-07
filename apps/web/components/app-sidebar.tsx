@@ -9,18 +9,17 @@ import {
   IconChartBar,
   IconDashboard,
   IconDatabase,
-  IconDots,
   IconInnerShadowTop,
   IconListDetails,
   IconReport,
 } from "@tabler/icons-react"
 
+import { HelpMenu } from "@/components/business/help/help-menu"
 import { WorkspaceSwitcher } from "@/components/business/session/workspace-switcher"
 import { NavMain } from "@/components/nav-main"
 import { useSession } from "@/components/business/session/session-provider"
 import { isOk } from "@/lib/fixtures/contract"
 import { countsFixture } from "@/lib/fixtures/me"
-import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
@@ -53,9 +52,8 @@ function navigationWithBadges(isMock: boolean) {
   return navigation.map((item) => ({ ...item, badge: badgeFor[item.url] ? String(badgeFor[item.url]) : undefined }))
 }
 
-// 「设置」「治理后台(admin)」按 PRD 2.1 放头像菜单（见 nav-user）；侧栏底部只留「更多」，
+// 「设置」「治理后台(admin)」按 PRD 2.1 放头像菜单（见 nav-user）；侧栏底部只留「更多」（HelpMenu：快捷键 / 关于 / 反馈），
 // 保证 1366×768（视口约 660px）九项 + 更多 + 空间切换 + 用户区不出现滚动。
-const secondary = [{ title: "更多", url: "#more", icon: IconDots }]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { isMock } = useSession()
@@ -76,7 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navigationWithBadges(isMock)} />
-        <NavSecondary items={secondary} className="mt-auto" />
+        <HelpMenu />
       </SidebarContent>
       <SidebarFooter className="gap-2">
         <WorkspaceSwitcher />

@@ -22,14 +22,18 @@ import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import { fmtTime, isOk } from "@/lib/fixtures/contract"
+import { preferencesFixture } from "@/lib/fixtures/me"
+import { themeModes } from "@/lib/theme/theme"
+import { useTheme } from "@/components/business/theme/theme-provider"
 import { mediaLabel } from "@/components/business/accounts/account-status"
 import { subscriptionKindLabel, subscriptionsFixture, type Subscription } from "@/lib/fixtures/reports"
 import { coefficientText, coefficientsFixture, credentialHint, credentialsFixture, viewPageLabel, viewsFixture, watchlistFixture, type ChannelCoefficient, type Credential, type SavedView } from "@/lib/fixtures/settings"
 import { changeLogFixture, changeLogKindLabel, fmtChangeValue } from "@/lib/fixtures/tasks"
 import { cn } from "@/lib/utils"
 
-// 设置（F-007 §10）：tabs 三凭证｜通知偏好｜我的负载｜口径｜个人视图
+// 设置（F-007 §10）：tabs 个人资料｜三凭证｜通知偏好｜我的负载｜口径｜个人视图
 const tabs = [
+  { value: "profile", label: "个人资料" },
   { value: "credentials", label: "三凭证" },
   { value: "notifications", label: "通知偏好" },
   { value: "workload", label: "我的负载" },
@@ -37,6 +41,61 @@ const tabs = [
   { value: "views", label: "个人视图" },
 ] as const
 type Tab = (typeof tabs)[number]["value"]
+
+const roleLabel: Record<string, string> = { optimizer: "优化师", operator: "运营", lead: "负责人", admin: "管理员" }
+
+/** 个人资料：身份来自登录源（只读），界面偏好本地生效、me/preferences 接入后跟人走 */
+function ProfileTab() {
+  const { session } = useSession()
+  const { theme, setMode } = useTheme()
+  const prefs = isOk(preferencesFixture) ? preferencesFixture.data : null
+  const identityName = session?.identity.displayName ?? "−"
+  const active = session?.activeWorkspace ?? null
+  return (
+    <div className="grid gap-4 @3xl/main:grid-cols-2">
+      <Card>
+        <CardHeader><CardTitle className="text-base">身份</CardTitle><CardDescription>来自登录源，不在这里改；要改名或换手机号找管理员。</CardDescription></CardHeader>
+        <CardContent className="flex flex-col gap-3 text-sm">
+          <div className="flex items-center gap-3">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium">{identityName.slice(0, 1)}</span>
+            <div className="min-w-0"><p className="font-medium">{identityName}</p><p className="text-xs text-muted-foreground">当前空间 {active ? active.name : "−"} · {active ? roleLabel[active.role] ?? active.role : "−"}{active?.readOnly ? " · 只读" : ""}</p></div>
+          </div>
+          <dl className="grid grid-cols-[5rem_1fr] gap-y-1.5">
+            <dt className="text-muted-foreground">登录方式</dt><dd>账号密码（内测）</dd>
+            <dt className="text-muted-foreground">改密码</dt><dd className="text-muted-foreground">改密接口未开放，先找管理员重置</dd>
+          </dl>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle className="text-base">我的空间</CardTitle><CardDescription>个人空间可写，团队空间只读；切空间在左下角。</CardDescription></CardHeader>
+        <CardContent className="flex flex-col gap-2 text-sm">
+          {(session?.workspaces ?? []).map((workspace) => (
+            <div key={workspace.id} className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2">
+              <div className="min-w-0"><p className="truncate font-medium">{workspace.name}</p><p className="text-xs text-muted-foreground">{workspace.kind === "team" ? "团队空间" : "个人空间"} · {roleLabel[workspace.role] ?? workspace.role}</p></div>
+              <div className="flex shrink-0 items-center gap-2">{workspace.readOnly ? <StatusChip tone="muted">只读</StatusChip> : <StatusChip tone="success">可写</StatusChip>}{workspace.id === active?.id ? <TypeChip>当前</TypeChip> : null}</div>
+            </div>
+          ))}
+          {(session?.workspaces ?? []).length === 0 ? <p className="text-muted-foreground">还没有空间授权，找管理员开通。</p> : null}
+        </CardContent>
+      </Card>
+
+      <Card className="@3xl/main:col-span-2">
+        <CardHeader><CardTitle className="text-base">界面偏好</CardTitle><CardDescription>先记在本机；账号同步接入后跟人走，换电脑也一样。红绿黄是状态色，不受这里影响。</CardDescription></CardHeader>
+        <CardContent className="flex flex-col gap-3 text-sm">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="w-20 shrink-0 text-muted-foreground">配色</span>
+            {themeModes.map((mode) => <Button key={mode.value} size="sm" variant={theme.mode === mode.value ? "default" : "outline"} onClick={() => setMode(mode.value)}>{mode.label}</Button>)}
+            <span className="text-xs text-muted-foreground">{themeModes.find((mode) => mode.value === theme.mode)?.hint}</span>
+          </div>
+          <div className="flex items-center gap-2"><span className="w-20 shrink-0 text-muted-foreground">主色</span><span className="size-5 rounded-full border" style={{ background: theme.hue }} /><span className="font-mono text-xs text-muted-foreground">{theme.hue}</span><span className="text-xs text-muted-foreground">在右上角色盘里换</span></div>
+          <div className="flex items-center gap-2"><span className="w-20 shrink-0 text-muted-foreground">语言</span><span>{prefs?.locale === "zh-CN" ? "简体中文" : prefs?.locale ?? "简体中文"}</span><span className="text-xs text-muted-foreground">暂只有中文</span></div>
+          <div className="flex items-center gap-2"><span className="w-20 shrink-0 text-muted-foreground">同步状态</span><span className="text-muted-foreground">{prefs ? `示例：上次同步 ${fmtTime(prefs.updatedAt)}` : "接口接入后显示"}</span></div>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
 
 function CredentialsTab() {
   const items = isOk(credentialsFixture) ? credentialsFixture.data.items : []
@@ -188,13 +247,14 @@ function ViewsTab() {
 export function SettingsPage() {
   const { isMock } = useSession()
   const state = usePageState()
-  const [tab, setTab] = usePageTab<Tab>(tabs, "credentials")
+  const [tab, setTab] = usePageTab<Tab>(tabs, "profile")
   return (
     <PageBody>
-      <PageHeader title="设置" description="三凭证只显绑定状态 · 通知偏好 · 我的负载 · 口径（返点系数 + 统一变更记录）· 个人视图" isMock={isMock} actions={<StateSwitch />} />
+      <PageHeader title="设置" description="个人资料与界面偏好 · 三凭证只显绑定状态 · 通知偏好 · 我的负载 · 口径（返点系数 + 统一变更记录）· 个人视图" isMock={isMock} actions={<StateSwitch />} />
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="me/credentials · subscriptions · channel-coefficients · me/views 接入后切换为真数据" empty={{ title: "没有设置项", description: "先绑定凭证。" }}>
+          {tab === "profile" ? <ProfileTab /> : null}
           {tab === "credentials" ? <CredentialsTab /> : null}
           {tab === "notifications" ? <NotificationsTab /> : null}
           {tab === "workload" ? (
