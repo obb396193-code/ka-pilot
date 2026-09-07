@@ -20,6 +20,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { isOk } from "@/lib/fixtures/contract"
 import { actionKindHint, agentSessionFixture, sseFramesFixture, suggestionKindLabel, toolLabel, type ContextItem, type Diagnosis, type SseFrame, type SuggestionFrame } from "@/lib/fixtures/agent"
+import { agentModelsFixture } from "@/lib/fixtures/me"
 import { pageTitleFor } from "@/lib/navigation"
 import { cn } from "@/lib/utils"
 
@@ -67,7 +68,8 @@ export function AgentLauncher() {
   const { session } = useSession()
   const [open, setOpen] = useState(false)
   const [draft, setDraft] = useState("")
-  const [model, setModel] = useState("gateway-default")
+  const models = isOk(agentModelsFixture) ? agentModelsFixture.data.items : []
+  const [model, setModel] = useState(models.find((item) => item.default)?.id ?? "gateway-default")
   const [turns, setTurns] = useState<Turn[]>([])
   const [busy, setBusy] = useState(false)
   const baseContext = isOk(agentSessionFixture) ? agentSessionFixture.data.context : []
@@ -171,13 +173,13 @@ export function AgentLauncher() {
                 <PromptInputTools>
                   <PromptInputSelect value={model} onValueChange={setModel}>
                     <PromptInputSelectTrigger aria-label="模型" className="h-7 text-xs"><PromptInputSelectValue placeholder="模型" /></PromptInputSelectTrigger>
-                    <PromptInputSelectContent><PromptInputSelectItem value="gateway-default">默认模型 · 网关分配</PromptInputSelectItem></PromptInputSelectContent>
+                    <PromptInputSelectContent>{models.length ? models.map((item) => <PromptInputSelectItem key={item.id} value={item.id} disabled={item.status !== "verified"} title={item.status === "documented_unverified" ? "有文档未验证，灰显" : item.status === "disabled" ? "已禁用" : undefined}>{item.label}{item.status !== "verified" ? "（未验证）" : ""}</PromptInputSelectItem>) : <PromptInputSelectItem value="gateway-default">默认模型 · 网关分配</PromptInputSelectItem>}</PromptInputSelectContent>
                   </PromptInputSelect>
                 </PromptInputTools>
                 <PromptInputSubmit status={busy ? "streaming" : "ready"} aria-label="发送" />
               </PromptInputFooter>
             </PromptInput>
-            <p className="mt-2 px-1 text-[11px] text-muted-foreground">模型列表由 CC Switch 网关返回；写操作永远先出预览再确认，AI 不会直接改。</p>
+            <p className="mt-2 px-1 text-[11px] text-muted-foreground">模型清单来自 GET /agent/models（网关能力表，未验证的灰显）；写操作永远先出预览再确认，AI 不会直接改。</p>
           </div>
         </section>
       ) : null}

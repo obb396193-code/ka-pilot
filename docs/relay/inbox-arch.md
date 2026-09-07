@@ -3878,3 +3878,10 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 ### P-104 ✅合流｜be/r010 @ b46ae5d → main `7691819`（F-P103-1 修 + PG 残留隔离 + 维度行身份）｜arch 2026-09-07
 - F-P103-1 定性 = 用例过期（旧 v2 注入路径），非 v3 bug：用例改接 `PlatformWindowQuery` 生产路径 + 合成 task/assessment_price_history/task_accounts，期望 v3 形状（ready + assessment），未改成 unavailable ✅。e1702e3 隔离静音/变更集 PG 残留（F-P103-2 部分）✅。c30f6f1 维度行复用 v3 考核校验 + 身份边界 ✅。
 - 门禁（真 PG，db 串行）：domain 765 / db 692 / worker 1141+2 / gateway 36 / web 140，tsc/eslint 全 0。**main 零红。**
+## F-007 合 main + 三批回改完成 SHA（fe → arch，2026-09-07）
+
+- `git merge main`（快进到 492b5c4）后 → `fe/f006` @ **3d7fef5**（路径限定，未 push）。packages/domain、packages/db 已 `npm ci`（apps/web 的 tsc 会跟着 lib/data 走进 domain）；tsc 0、eslint 0 错、`npm test` 140/140。
+- 回改清单（全部按你三条信箱 + v1.7.1–1.7.4）：五维 dimension 真样例（扣量桶按契约）、gap-task/biz、pivot2 biz×版位 + bid_tool UNSUPPORTED 整张示例角标 + hint、accounts detail/timeline/structure-account-2 + detail-account-5 + trend-account-1（按 id 取，无样例诚实空态）、tasks +2（stage 加 closed / reviewing）、关注 tab（watchlist 账户 ∩ 任务挂载账户；`type:"task"` 已兼容）、任务详情「SOP 与自动化」改读 `GET /tasks/:id/bindings`（不再显全局规则）、C3 文案（顶部「账户状态」/ 列「投放阶段」）、侧栏 badge = me/counts、Agent 模型清单 = agent/models（未验证灰显）、assessment.priceSource / priceVersions（多版本(N)）、时间线 actor 可空（timeline-account-2 有 null）。
+- 冲突点新增 C6：`me/preferences` fixture 默认 `bwc` 与老板 D1 默认 `bw` 不一致 → 按老板；用户改过才生效。请老板确认。
+- 下一步：§13 v1.7 追加九块（方案库 / 第九页签 / 归因树 / 差距树 + 知悉流 / 竞情 / Shadow / AI 提效 / 周报复盘 / 月度推送），fixtures 已在 main，按页开做；老板精修可并行。
+- ⚠️ 本机磁盘 97%（6 GB 剩），今晚已触发 ENOSPC 让 webpack 缓存写失败 / 浏览器 tab 被杀；已报老板清理。Codex 那边若也在这台机子跑，注意同样受影响。

@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils"
 import { AccountInlinePeek } from "./account-peek"
 import { accountStatusTone, mediaLabel } from "./account-status"
 
-// 账户池表（F-007 §2 12 列，母版格式 D6）：☐ | 账户 | 负责人 | 绑定任务 | 产品名 | 库存态 + 生命周期 | 余额·断量 | 日预算卡 | 消耗 | 现金 CPA(达标) | 容量负载 | 最近操作 | 建议下一步 | ⋯
+// 账户池表（F-007 §2 12 列，母版格式 D6）：☐ | 账户 | 负责人 | 绑定任务 | 产品名 | 账户状态 + 投放阶段 | 余额·断量 | 日预算卡 | 消耗 | 现金 CPA(达标) | 容量负载 | 最近操作 | 建议下一步 | ⋯
 export const rowId = (item: AccountItem) => `${item.media}:${item.accountId}`
 
 export type RowActions = { onTransfer: (items: AccountItem[]) => void; onPoolStatus: (item: AccountItem) => void; onProduct: (item: AccountItem) => void; onReplicate: (item: AccountItem) => void }
@@ -35,7 +35,7 @@ function buildColumns(actions: RowActions) {
     helper.accessor((row) => row.linkedTasks[0]?.taskName ?? "", { id: "task", header: "绑定任务", meta: { label: "绑定任务" }, cell: ({ row }) => row.original.linkedTasks[0] ? <Link href={`/tasks/${encodeURIComponent(row.original.linkedTasks[0].taskId)}`} className="underline-offset-4 hover:underline">{row.original.linkedTasks[0].taskName}</Link> : <span className="text-muted-foreground">未挂</span> }),
     helper.accessor((row) => row.product?.name ?? "", { id: "product", header: "产品名", meta: { label: "产品名" }, cell: ({ getValue }) => getValue() ? <TypeChip>{getValue()}</TypeChip> : <MissingValue title="未填产品名" /> }),
     helper.accessor("poolStatus", { header: "库存态", meta: { label: "库存态" }, cell: ({ row }) => { const meta = poolStatusMap[row.original.poolStatus]; return <TypeChip className="gap-1.5" ><span className={cn("size-1.5 rounded-full", meta.dot)} />{meta.label}{row.original.poolStatusSource === "manual" ? <span className="text-[10px]">手</span> : null}</TypeChip> } }),
-    helper.accessor("lifecycleStage", { header: "生命周期", meta: { label: "生命周期" }, cell: ({ getValue }) => getValue() === "unknown" ? <MissingValue title="未开投或阶段未判定" /> : <TypeChip>{lifecycleLabel[getValue()]}</TypeChip> }),
+    helper.accessor("lifecycleStage", { header: "投放阶段", meta: { label: "投放阶段" }, cell: ({ getValue }) => getValue() === "unknown" ? <MissingValue title="未开投或阶段未判定" /> : <TypeChip>{lifecycleLabel[getValue()]}</TypeChip> }),
     helper.accessor((row) => row.balance?.value ?? null, { id: "balance", header: "余额 · 断量", meta: { label: "余额 · 断量", align: "right" }, cell: ({ row }) => {
       const balance = row.original.balance
       if (!balance) return <MissingValue title="资金接口未返回" />

@@ -14,7 +14,6 @@ import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
 import { KpiCards } from "@/components/business/workbench/kpi-cards"
 import { WorkItemCard } from "@/components/business/workbench/work-item-card"
 import { SpendRealCpaTrend } from "@/components/charts/spend-real-cpa-trend"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -24,8 +23,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import type { DisplayMetric } from "@/lib/data/contracts"
 import { costStatusLabel, fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
-import { changeLogFixture, overviewFixtures, readinessKeys, sopStepLabel, taskAccountsFixture, taskFunnelFixture, taskMetricsFixture, taskStageMap, taskStages, taskTimelineFixture, tasksFixture, type TaskStage } from "@/lib/fixtures/tasks"
-import { notTriggeredLabel, rulesFixture } from "@/lib/fixtures/automation"
+import { bindingsFixtures, changeLogFixture, overviewFixtures, readinessKeys, sopStepLabel, taskAccountsFixture, taskFunnelFixture, taskMetricsFixture, taskStageMap, taskStages, taskTimelineFixture, tasksFixture, type TaskStage } from "@/lib/fixtures/tasks"
 import { workItemDetailFixture, workItemLists } from "@/lib/fixtures/workbench"
 import { cn } from "@/lib/utils"
 import { ReadinessRing } from "./readiness"
@@ -62,7 +60,8 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
   const changeLog = isOk(changeLogFixture) && data ? changeLogFixture.data.items.filter((item) => item.scope.taskId === data.task.taskId) : []
   const issues = isOk(workItemLists["coverage-complete"]) ? workItemLists["coverage-complete"].data.items : []
   const issueDetail = isOk(workItemDetailFixture) ? workItemDetailFixture.data : null
-  const rules = isOk(rulesFixture) ? rulesFixture.data.items.filter((rule) => rule.enabled) : []
+  const bindingsFixture = data ? bindingsFixtures[data.task.taskId] : undefined
+  const bindings = bindingsFixture && isOk(bindingsFixture) ? bindingsFixture.data : null
   const chartData = useMemo(() => (metrics?.trend ?? []).map((row) => ({ label: row.ds, spend: row.metrics.cost.availability === "available" ? row.metrics.cost.value : null, realCpa: row.metrics.ratios.cashCpa.state === "finite" ? row.metrics.ratios.cashCpa.value : null })), [metrics])
 
   if (!data) return null
@@ -235,10 +234,16 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
                 </CardContent>
               </Card>
               <Card>
-                <CardHeader><CardTitle>绑定的规则 / 工作流</CardTitle><CardDescription>GET /rules · 官方模板「新任务开户到基建」+ 监控 / 自动规则</CardDescription></CardHeader>
+                <CardHeader><CardTitle>绑定的规则 / 工作流</CardTitle><CardDescription>GET /tasks/:id/bindings（v1.7.3）· 只显示绑到本任务的，不用全局规则冒充</CardDescription></CardHeader>
                 <CardContent className="flex flex-col gap-2 text-sm">
-                  <div className="flex items-center justify-between rounded-lg border px-3 py-2"><span>新任务开户到基建（官方模板）</span><Badge variant="outline">{ov.sopProgress?.runId ? "运行中" : "未起"}</Badge></div>
-                  {rules.map((rule) => <div key={rule.ruleId} className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2"><span className="flex items-center gap-2"><TypeChip>{rule.type === "auto" ? "自动" : "监控"}</TypeChip>{rule.name}</span><span className="text-xs text-muted-foreground tabular-nums">{rule.notTriggeredReason ? `未触发：${notTriggeredLabel[rule.notTriggeredReason] ?? rule.notTriggeredReason}` : `7 日触发 ${rule.last7d.triggered} · 成功 ${rule.last7d.succeeded}`}</span></div>)}
+                  {bindings ? (
+                    <>
+                      {bindings.workflows.map((workflow) => <div key={workflow.workflowId} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2"><span className="flex items-center gap-2"><TypeChip>工作流 v{workflow.version}</TypeChip>{workflow.name}</span><span className="text-xs text-muted-foreground">{workflow.lastRun ? `最近 run ${workflow.lastRun.status} · ${fmtTime(workflow.lastRun.at)}` : "未运行"}</span></div>)}
+                      {bindings.rules.map((rule) => <div key={rule.ruleId} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2"><span className="flex items-center gap-2"><TypeChip>{rule.type === "auto" ? "自动" : "监控"}</TypeChip>{rule.name}<span className="text-xs text-muted-foreground">{rule.scope === "task" ? "任务级" : "账户级"} · 自治度 {rule.autonomyLevel}</span></span><StatusChip tone={rule.enabled ? "success" : "muted"}>{rule.enabled ? "启用" : "停用"}</StatusChip></div>)}
+                      {bindings.sop ? <p className="text-xs text-muted-foreground">SOP run …{bindings.sop.sopRunId.slice(-4)} · {bindings.sop.template} · 进度 {rv(bindings.sop.progress)}</p> : null}
+                      {!bindings.workflows.length && !bindings.rules.length ? <p className="text-muted-foreground">本任务没有绑定规则或工作流</p> : null}
+                    </>
+                  ) : <p className="text-muted-foreground">本任务没有绑定样例（fixture 只有 fixture-task-ready）；接口接入后按任务返回，无绑定 = 空。</p>}
                   <p className="text-xs text-muted-foreground">规则详情与「为什么未触发」在自动化页。</p>
                 </CardContent>
               </Card>
@@ -256,7 +261,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
             <Card>
               <CardHeader><CardTitle>时间线</CardTitle><CardDescription>GET /tasks/:id/timeline · 五源倒序（工作项 / 变更集 / 考核价 / 日预算卡 / 派发）</CardDescription></CardHeader>
               <CardContent>
-                <ol className="flex flex-col gap-3">{timeline.map((item, index) => <li key={`${item.at}-${index}`} className="flex gap-3 text-sm"><span className="mt-1 size-2 shrink-0 rounded-full bg-foreground" /><div className="flex flex-col"><div className="flex items-center gap-2"><TypeChip>{item.kind}</TypeChip><span className="font-medium">{item.summary}</span></div><div className="text-xs text-muted-foreground tabular-nums">{fmtTime(item.at)} · {typeof item.actor === "string" ? (item.actor === "system" ? "系统" : "外部") : item.actor.name}</div></div></li>)}</ol>
+                <ol className="flex flex-col gap-3">{timeline.map((item, index) => <li key={`${item.at}-${index}`} className="flex gap-3 text-sm"><span className="mt-1 size-2 shrink-0 rounded-full bg-foreground" /><div className="flex flex-col"><div className="flex items-center gap-2"><TypeChip>{item.kind}</TypeChip><span className="font-medium">{item.summary}</span></div><div className="text-xs text-muted-foreground tabular-nums">{fmtTime(item.at)} · {item.actor == null ? "−" : typeof item.actor === "string" ? (item.actor === "system" ? "系统" : "外部") : item.actor.name}</div></div></li>)}</ol>
               </CardContent>
             </Card>
           ) : null}

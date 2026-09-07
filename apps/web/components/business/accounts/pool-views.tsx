@@ -36,7 +36,7 @@ function Delta({ stage }: { stage: PipelineStage | null }) {
 export function PoolTiles({ stages, total, value, onChange }: SummaryProps) {
   const allActive = value === "all"
   return (
-    <div className="grid gap-2 @3xl/main:grid-cols-[minmax(150px,180px)_1fr]" role="tablist" aria-label="库存态">
+    <div className="grid gap-2 @3xl/main:grid-cols-[minmax(150px,180px)_1fr]" role="tablist" aria-label="账户状态">
       <button type="button" role="tab" aria-selected={allActive} onClick={() => onChange("all")} className={cn("flex flex-col justify-between gap-3 rounded-xl border px-4 py-3 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring", allActive ? "border-foreground bg-foreground text-background" : "bg-card hover:bg-muted/50")}>
         <span className={cn("text-xs", allActive ? "text-background/70" : "text-muted-foreground")}>全部账户</span>
         <span className="text-3xl font-semibold tabular-nums tracking-tight">{total}</span>

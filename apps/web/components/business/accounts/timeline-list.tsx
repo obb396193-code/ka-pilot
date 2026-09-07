@@ -28,7 +28,7 @@ export function TimelineList({ items, compact = false }: { items: TimelineItem[]
       {items.map((item, index) => {
         const meta = kindMeta[item.kind] ?? { label: item.kind, icon: IconBolt }
         const Icon = meta.icon
-        const actor = typeof item.actor === "string" ? (item.actor === "system" ? "系统" : "外部") : item.actor.name
+        const actor = item.actor == null ? "−" : typeof item.actor === "string" ? (item.actor === "system" ? "系统" : "外部") : item.actor.name
         return (
           <li key={`${item.at}-${index}`} className="flex gap-3">
             <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full border bg-card"><Icon className="size-3.5 text-muted-foreground" /></span>

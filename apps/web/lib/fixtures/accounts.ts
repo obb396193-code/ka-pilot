@@ -13,7 +13,11 @@ import replicate from "@contract/fixtures/accounts/replicate.json"
 import replicationCompare from "@contract/fixtures/accounts/replication-compare.json"
 import groupPreview from "@contract/fixtures/changesets/group-preview.json"
 import infraRequests from "@contract/fixtures/infra/requests.json"
-import trendV3 from "@contract/fixtures/data-query/trend-v3.json"
+import trendAccount1 from "@contract/fixtures/accounts/trend-account-1.json"
+import detailAccount2 from "@contract/fixtures/accounts/detail-account-2.json"
+import detailAccount5 from "@contract/fixtures/accounts/detail-account-5.json"
+import timelineAccount2 from "@contract/fixtures/accounts/timeline-account-2.json"
+import structureAccount2 from "@contract/fixtures/accounts/structure-account-2.json"
 
 // 账户池 / 账户详情 / 基建 / 开户测试的 fixture 读取层（契约 v1.5 4.x + v1.5.1 ① + v1.6 4.7/4.8）。类型手写、JSON as 断言，不算数。
 export type PoolStatus = "available" | "assigned" | "pending_open" | "pending_recharge" | "pending_build" | "in_delivery" | "paused" | "closed" | "abnormal"
@@ -61,14 +65,19 @@ export type AccountDetail = {
   summary: { rowCount: number; accountCount: number; anomalyRows: number; metrics: MetricsV3; assessment: AssessmentV3 }
 }
 export const detailFixture = detail as unknown as Fixture<AccountDetail>
+/** 小传 / 时间线 / 结构按账户各一份样例（v1.7.3：同一 DTO，无样例的账户显诚实空态） */
+export const detailFixtures: Record<string, Fixture<AccountDetail>> = { "account-1": detailFixture, "account-2": detailAccount2 as unknown as Fixture<AccountDetail>, "account-5": detailAccount5 as unknown as Fixture<AccountDetail> }
 
-export type TimelineItem = { at: string; kind: "changeset" | "external_change" | "assessment_price" | "daily_budget_cap" | "dispatch" | "work_item" | "escalation" | "infra" | "transfer" | "mute" | "pool_status"; actor: { userId: string; name: string } | "system" | "external"; summary: string; ref: { type: string; id: string } | null; detail?: unknown; t1Result?: { observedAt: string; metricDeltas: { cashCpa: RatioValue; cost: MetricValue; realConversion: MetricValue }; note: string } | null }
+export type TimelineItem = { at: string; kind: "changeset" | "external_change" | "assessment_price" | "daily_budget_cap" | "dispatch" | "work_item" | "escalation" | "infra" | "transfer" | "mute" | "pool_status"; actor: { userId: string; name: string } | "system" | "external" | null; summary: string; ref: { type: string; id: string } | null; detail?: unknown; t1Result?: { observedAt: string; metricDeltas: { cashCpa: RatioValue; cost: MetricValue; realConversion: MetricValue }; note: string } | null }
 export const timelineFixture = timeline as unknown as Fixture<{ items: TimelineItem[]; nextCursor: string | null }>
+export const timelineFixtures: Record<string, Fixture<{ items: TimelineItem[]; nextCursor: string | null }>> = { "account-1": timelineFixture, "account-2": timelineAccount2 as unknown as Fixture<{ items: TimelineItem[]; nextCursor: string | null }> }
 export const overlayFixture = overlay as unknown as Fixture<{ points: { at: string; kind: string; label: string; ref: { type: string; id: string } }[] }>
 
 export type StructureUnit = { unitId: string; name: string; status: string; bid: MetricValue; cpaBid: MetricValue; dayBudget: MetricValue; schedule168: unknown; metrics: { cost: MetricValue; realConversion: MetricValue; ratios: { cashCpa: RatioValue } }; junk: boolean }
 export type StructureCampaign = { campaignId: string; name: string; status: string; dayBudget: MetricValue; units: StructureUnit[] }
-export const structureFixture = structure as unknown as Fixture<{ media: string; accountId: string; syncedAt: string; campaigns: StructureCampaign[] }>
+export type AccountStructure = { media: string; accountId: string; syncedAt: string; campaigns: StructureCampaign[] }
+export const structureFixture = structure as unknown as Fixture<AccountStructure>
+export const structureFixtures: Record<string, Fixture<AccountStructure>> = { "account-1": structureFixture, "account-2": structureAccount2 as unknown as Fixture<AccountStructure> }
 
 export const openFlowFixture = openFlow as unknown as Fixture<{ flowId: string; steps: { key: string; label: string; status: "done" | "running" | "pending"; at: string | null }[]; account: { media: string; accountId: string | null; poolStatus: PoolStatus }; note: string }>
 
@@ -85,8 +94,9 @@ export const groupPreviewFixture = groupPreview as unknown as Fixture<GroupPrevi
 export type InfraRequest = { id: string; accountId: string; threadId: string | null; params: { materials: number; targeting: number; bids: number[] }; templateVersion: string; compiledPrompt: string; status: string; initiator: string; credentialOwnerUserId: string; result: unknown; itemResults: unknown; scheduled: boolean; dailyCap: number }
 export const infraFixture = infraRequests as unknown as Fixture<{ queue: { media: string; accountId: string; poolStatus: PoolStatus; source: string; since: string }[]; items: InfraRequest[] }>
 
-// 账户级趋势：契约是 account.trend 加 accountIds 参数；样例暂用 trend-v3（TODO-fixture:accounts/trend-account-1.json）
-export const accountTrendFixture = trendV3 as unknown as Fixture<{ mode: string; source: { rows: TrendRow[]; lineage: { window?: { from: string; to: string; preset?: string } } } }>
+// 账户级趋势 account.trend/v3（v1.7.3：params.accountIds=[id]，lineage.accountScope）；只有 account-1 有样例，其他账户显诚实空态
+export type AccountTrendFixture = Fixture<{ mode: string; source: { rows: TrendRow[]; lineage: { window?: { from: string; to: string; preset?: string }; accountScope?: { media: string; accountIds: string[] } } } }>
+export const accountTrendFixtures: Record<string, AccountTrendFixture> = { "account-1": trendAccount1 as unknown as AccountTrendFixture }
 
 export const cutoffLabel: Record<"ok" | "warning" | "critical" | "unknown", { label: string; tone: string }> = {
   ok: { label: "余额充足", tone: "text-status-success" },
