@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import type { DisplayMetric } from "@/lib/data/contracts"
-import { isOk, mv, rv } from "@/lib/fixtures/contract"
+import { isOk, mv, rv, schemaText } from "@/lib/fixtures/contract"
 import { taskReviewFixtures, type TaskReview } from "@/lib/fixtures/v17"
 
 // 任务复盘（v1.7 7.2）：发起 Deep Research → 状态 → 六段带溯源（goal / cost_trend / key_operations / attribution / why / next）；why / next 标「待人确认」；生成即归档知识库
@@ -48,7 +48,7 @@ export function TaskReviewPanel({ taskId, taskName }: { taskId: string; taskName
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <TypeChip>{review.schema}</TypeChip>
+        <TypeChip>{schemaText(review.schema)}</TypeChip>
         <StatusChip tone={reviewStatusMeta[review.status].tone}>{reviewStatusMeta[review.status].label}</StatusChip>
         <span className="text-xs text-muted-foreground">窗口 {review.window.from} ～ {review.window.to} · run …{review.runId.slice(-4)}</span>
         {review.kbDocumentId ? <Button asChild size="sm" variant="ghost" className="h-7"><Link href={`/knowledge/${encodeURIComponent(review.kbDocumentId)}`}><IconBook2 />已归档知识库</Link></Button> : null}
@@ -76,16 +76,16 @@ export function TaskReviewPanel({ taskId, taskName }: { taskId: string; taskName
       ) : null}
       <div className="grid gap-4 @4xl/main:grid-cols-2">
         <Card>
-          <CardHeader><CardTitle className="flex items-center gap-2">为什么 {!(confirmed || review.humanConfirmed) ? <Badge variant="outline" className="text-status-warning">待人确认</Badge> : null}</CardTitle><CardDescription>findings 带证据引用</CardDescription></CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2">为什么 {!(confirmed || review.humanConfirmed) ? <Badge variant="outline" className="text-status-warning">待人确认</Badge> : null}</CardTitle><CardDescription>每条发现都带证据引用</CardDescription></CardHeader>
           <CardContent><ul className="flex flex-col gap-2 text-sm">{why && why.key === "why" ? why.findings.map((finding) => <li key={finding.text} className="rounded-lg border px-3 py-2"><p>{finding.text}</p><p className="mt-1 flex flex-wrap gap-1">{finding.evidenceRefs.map((ref) => { const href = citationHref(ref); return href ? <Link key={ref} href={href}><Badge variant="outline" className="font-mono text-[10px]">{ref}</Badge></Link> : <Badge key={ref} variant="outline" className="font-mono text-[10px]">{ref}</Badge> })}</p></li>) : null}</ul></CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle className="flex items-center gap-2">下一步 {!(confirmed || review.humanConfirmed) ? <Badge variant="outline" className="text-status-warning">待人确认</Badge> : null}</CardTitle><CardDescription>suggestions · 可逆标记</CardDescription></CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2">下一步 {!(confirmed || review.humanConfirmed) ? <Badge variant="outline" className="text-status-warning">待人确认</Badge> : null}</CardTitle><CardDescription>带可逆标记的建议</CardDescription></CardHeader>
           <CardContent><ul className="flex flex-col gap-2 text-sm">{next && next.key === "next" ? next.suggestions.map((item) => <li key={item.text} className="rounded-lg border px-3 py-2"><p className="flex items-start justify-between gap-2">{item.text}{item.reversible ? <TypeChip className="shrink-0">可逆</TypeChip> : <StatusChip tone="warning" className="shrink-0">不可逆</StatusChip>}</p><p className="mt-1 flex flex-wrap gap-1">{item.evidenceRefs.map((ref) => <Badge key={ref} variant="outline" className="font-mono text-[10px]">{ref}</Badge>)}</p></li>) : null}</ul></CardContent>
         </Card>
       </div>
       <Card>
-        <CardHeader><CardTitle>引用</CardTitle><CardDescription>citations · 每条可跳回来源</CardDescription></CardHeader>
+        <CardHeader><CardTitle>引用</CardTitle><CardDescription>每条结论可跳回来源</CardDescription></CardHeader>
         <CardContent className="flex flex-wrap gap-2">{review.citations.map((citation) => { const href = citationHref(citation.ref); const chip = <Badge variant="secondary">{citation.type} · {citation.label}</Badge>; return href ? <Link key={citation.ref} href={href}>{chip}</Link> : <span key={citation.ref}>{chip}</span> })}</CardContent>
       </Card>
     </div>

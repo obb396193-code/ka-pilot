@@ -3947,6 +3947,55 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 ### P-114 ✅合流｜fe/f006 @ e9771fc → main `ffa6c6c`（自审 3：404/错误边界/个人资料/侧栏死链）｜arch 2026-09-07
 - 7 文件全在 apps/web；个人资料 tab 只读 session + `me/preferences` fixture，未自造 DTO ✅；`app/(main)/error.tsx`、`not-found.tsx`、`global-error.tsx` = F8-2 完成。复跑 140/0、tsc 0、eslint 0 错。
 
+
+### Q-001｜be2 开工 + 边界裁决请求（R-014；计划已出，S1–S3 不阻塞照做）｜be2 2026-09-07
+- **开工状态**：工作树 `/Users/aik/ka-be2-r014`（持久路径），分支 `be/r014` 基于 `main@550e738`；测试库 `ka_be2_r014_test` 已建，baseline 迁移到 `012_contract_v1_3` 通过（exit 0）；`packages/domain` / `packages/db` / `apps/worker` 三包 `npm ci` 完成（apps/web 等 S5 再装）。计划页 `docs/plans/2026-09-07-R014-计划.md`（S1 迁移 015 → S2 独占表仓储 → S3 只读聚合 → S4 HTTP → S5 BFF → S6 交界字段）。
+- **DDL 已核**：`schema.sql` 752–882 + 1038–1043 已冻我全部 11 张新表与 5 表加列，015 照落不自行设计；`alert_rules` 两列标「进 012」且 012 已落，**不重复**。
+- **以下八条按「不自造」回抛，请裁。①② 阻塞 S4/S5，③–⑧ 阻塞 S6；S1–S3 与它们无关，我继续做，不等。**
+
+**① `apps/worker` 没有可追加的路由注册点（结构性，最要紧）**
+分工文档写「`apps/worker/src/data-api.ts` 路由注册区追加」，但实况是：`data-api.ts`（99 行）只是 `main()` 装配，**没有任何路由**；路由是 `apps/worker/src/data/http-server.ts`（662 行）里手写的 `if (url.pathname === ...)` 长链——那是既有文件，be2 不许改。R-014 要挂约 30 条路由，现在没有落点。
+建议（择一裁）：**(a)** 由 arch 或 be 在 `createDataApiServer` 加一个 `extraRoutes?: RouteTable` 入参并在 if 链末尾 `for` 一遍，be2 只提供 `apps/worker/src/r014/routes.ts` 导出的表；**(b)** be2 新建独立 `apps/worker/src/r014/http-server.ts` 与独立端口/进程，由 BFF 分流；**(c)** 破例允许 be2 只在 `http-server.ts` 末尾 if 链后追加一个 `// be2-r014` 块。我倾向 **(a)**（一次性、零重复鉴权、合流冲突最小），但这要动 be 的文件，须你点头。
+
+**② `runtime.ts` 的 handler 表在函数内，不在文件末尾**
+`createWorkerConsumer` 里 handler 是对象字面量（`{ etl_full: ..., canonical_merge: ... }`），没法「在文件末尾注释块追加」。R-014 需要三个 job：`daily_brief_generate`（1.8 早报）、导出渲染（7.4）、`report_schedule` 定时推（3.10）。
+建议：be2 在 `apps/worker/src/r014/handlers.ts` 导出 `r014JobHandlers`，`runtime.ts` 对象里加**一行** `...r014JobHandlers,`（单行 spread，两边冲突面最小）。请确认这算「允许的追加」。
+
+**③ `GET /accounts` 列表加 poolStatus/product/groupBy 与新 item 字段（v1.5.1 ①）** —— 表是我的列，但实现落在 be 既有的 `packages/db/src/account-list-{repository,sql}.ts` + `packages/domain/src/account-list-contract.ts`。归谁？（我做 = 改 be 文件；be 做 = 依赖我的 015 先落）
+
+**④ `GET /tasks` 列表 / `GET /tasks/:id` 加 stage/readiness/sopProgress/blockers/nextActions（v1.5.1 ②）** —— 同上，落在 `task-list-{repository,sql}.ts` + `task-list-contract.ts`。归谁？
+
+**⑤ `account.hourly`（3.5）/ `account.gap`（3.6）进 Registry** —— 缺口地图把 3.5/3.6 归 R-014，fixtures（`data-query/hourly.json`、`gap*.json`）也齐；但注册点是 `apps/worker/src/data/query-registry.ts`（be 文件，`createDataQueryRegistry()`），且 `PlatformDataSource` 是 R-010a1 的活。归谁？若归我，同 ① 需要追加口。
+
+**⑥ `POST /changesets/batch` + `POST /changesets/groups/:id/dry-run|confirm`（v1.5.1 ①）** —— `changeset_groups` 表是我的（015），但整条 dry-run/confirm/execute 链是 be 的 R-010a2。我的理解：**表我建、组端点我做、逐账户仍调 be 的现有链**，不复制不改写。请确认。
+
+**⑦ 工作项详情 `decision` 块（v1.5 10.11）** —— `decision_policies` 表与 `GET/PUT /settings/decision-policy` 明确是我的；但把 `decision:{tier,gates,...}` 塞进工作项详情响应要改 be 的 work-item detail。建议：我只交 domain 纯函数 `evaluateDecisionTier()` + 策略仓储，由 be 在详情里调用。请裁。
+
+**⑧ `GET /workflows/runs` 加 `taskId` —— 契约与派活相互矛盾**
+契约 v1.7.4 **G4 明写「→ R-010b」**（Codex）；但 be2 提示词范围表和 `2026-09-07-后端双会话分工与防冲突.md` §1 都把它列进 be2。`workflow_runs.task_id` 这一列确实是我的 015。请定一边：列我加（015），端点谁改？
+
+**⑨ 运维项（给你和老板）**：本机 `/Users/aik` 装完三包后只剩 **4.2G**，低于「跑全量门禁前 `df -h` ≥ 8G」。我这边只跑增量用例还够；**全量门禁前需要先清盘**（Docker 镜像会临时膨胀）。请老板决定清哪儿，或由 arch 在 ka-arch-gates 侧统一跑。
+
+
+### Q-002 ⛔阻塞裁决｜015 落地后，7 个既有迁移回放测试全红（实测定性；Codex 落 013/014 会一模一样撞上）｜be2 2026-09-07
+- **S1 已完成**：`be/r014 @ 83b822bd` migration 015 + 测试。`packages/contract/schema.sql` 三段切片（v1.5 / v1.5.1 / v1.7.1 identity_preferences）逐句嵌入，DDL 零自造；`alert_rules` 两列属 012 未重复；`work_items`、`account_metrics_daily` 零改动。
+- **本批门禁**：`test/r014` **22/22 ✅**（bundle 8 + 真 PG 12 + 窗口助手 2）；db 包 `tsc --noEmit` **0**、`eslint .` **0 error**。
+- **⛔ 但 db 包全量 730 条里 7 条红**，全在既有迁移回放测试：`migrations`、`auth-migration`、`backfill-state-migration`、`contract-v1-2-migration`、`contract-v1-3-migration`、`workspace-kind-migration`、`workspace-sync-migration`。
+
+**实测定性（不是推理）**：把 `015_contract_v1_5.cjs` 移走 → 同样 7 个文件 **7/7 全绿**；移回 → **7/7 全红**。
+
+**根因**：这 7 个文件把回放窗口写死成 `runMigrations({direction:"down", count: N})`，N 是相对**当时的迁移头部**数出来的（共 47 处调用）。015 一落，头部从 012 变成 015，所有窗口整体错位——`contract-v1-3` 的 `count:1` 现在回滚的是 015 而不是 012。**不是 015 的 DDL 错，是这些测试对"我是头部"的隐含依赖。**
+
+**关键**：这跟 be2 无关——**Codex 落 013（R-011）或 014（R-012）时会撞上完全相同的 7 个红**，谁先落谁背。所以这不是我一批的事，请你统一裁。
+
+**我已备好修法（零成本批准）**：`packages/db/test/r014/migration-window.ts` —— `downThrough(url, "012")` / `upThrough` / `windowSize("012")`，按**具名迁移**算窗口而不是写死 count，头部再位移也不错位（自带 2 条单测，已绿）。改造是纯机械替换：47 处 `count: N` → `windowSize("0xx")`，不动任何断言语义。
+
+**请裁（三选一）**：
+1. **我来改这 7 个文件**（破例许 be2 动 `packages/db/test/` 的既有文件；我改完连门禁数字一起交），助手从 `test/r014/` 移到 `test/` 供两边共用；
+2. **交给 Codex 改**（它 013/014 反正要撞），我这批就带着 7 红交审，你合流时以它为准；
+3. **你自己在 ka-arch-gates 改**。
+
+我倾向 **1**：现在只有我一个人在动迁移，改完 Codex 落 013/014 直接受益；且这 7 处红只要不修，main 合入 015 当天就是红的。**在你回话前我不碰这 7 个文件**，继续做 S2（独占 11 表的仓储 + DTO），S2 与本裁决无关。
 ### fe 自审批次（2026-09-07；老板「每页每细节自审」+「缺失功能页面都做」）
 
 已提交（fe/f006，逐笔可 cherry-pick）：
@@ -4015,6 +4064,37 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 门禁（真 PG）：domain 770 / db 710 / worker 1226+2 skip / gateway 36 / web 143；tsc/eslint 全 0。**main 零红。**
 - 已补 Codex 要的 `dimension-v3-agent_type.json` unknown「未标注」权威样例（`f1701f4`）。
 
+
+### Q-003 交审｜R-014 S1–S2d 全部完成（11 张表的迁移 + DTO + 仓储）｜be2 2026-09-07
+**分支 `be/r014 @ 835262a`（已 merge main c508169，无冲突）。以下交审，写完本回执不再往 be/r014 提交。**
+
+| 子批 | SHA | 内容 |
+|---|---|---|
+| S1 | `83b822b` | migration 015（11 新表 + 5 表加列），DDL 从 schema.sql 三段切片生成 |
+| S2a | `bcedc87` | identity_preferences / user_watchlists / saved_views |
+| S2b | `9aebb18` | decision_policies + exports（含 `evaluateDecisionTier()`，你 ⑦ 裁定由我交） |
+| S2c | `ba82569` | capabilities + task_readiness_overrides |
+| S2d | `44b986c` | report_runs + external_changes |
+| 收尾 | `835262a` | 删掉与你采纳版重复的 `migration-window` 副本 |
+
+**门禁（真 PG，ka_be2_r014_test）**：db **774/774 全绿**、db r014 64/64、domain r014 52/52；db+domain 两包 `tsc` 0、`eslint` 0 error。
+
+**① Q-002 复验：你的修法对我的真 015 成立**——6/7 直接绿；剩 `backfill-state-migration` 是**超时不是逻辑红**：默认 5000ms、实测 5011ms，`--testTimeout=30000` 下 4172ms 通过。015 让回放窗口多一号把它推过了线。→ **F-be2-1（P2）**：请给它加上你已经给 `dimension-window-rows` / `migrations` 的同一句 `testTimeout: 30_000`。db 全量 774/774 就是加了这句跑出来的。
+
+**② ⛔ main 现在是红的，2 条，不是我引入的**：`packages/domain/test/dimension-window-rows.test.ts` 两条挂在 `dimension-v3-agent_type` 上。
+根因：你的 `f1701f4`（v1.7.9 agent_type 补 `unknown`「未标注」样例）给 fixture 加了第三行 `agent_type:"unknown"`，但 `packages/domain/src/dimension-window-rows.ts:18` 仍是 `z.enum(["agency","self"])` → fixture 进不了 schema。
+定性证据：该用例 `import { dimensionWindowRowsSchema } from "../src/dimension-window-rows.js"` **不经过 index**；我这条分支相对 main 只动了 `domain/src/r014/*`、`domain/test/r014/*` 与 index.ts 的追加块，没碰该 src/test/fixture 任何一个；两包 tsc 0 排除了 `export *` 重名。该文件是 R-010a1 的域 → 请派给 Codex 把枚举补 `unknown`（v1.7.9 明写「无标记的归 unknown 并显未标注，不猜不填默认值」）。
+
+**③ 本批实测出的契约缺口五条（都已按保守值实现并在代码注释里标了出处，请你裁后我改）**
+1. **`account_access_grants` 没有 `revoked_at` 列**（schema.sql:101 的 DDL 里也没有），但 api.md 4.10 交接语义写「原 grant 置 `revoked_at`，新建 grant」→ **A7 交接端点按字面实现不出来**。这也是 `account_transfers` 这张表我本批**没做**的唯一原因。请裁：015 补列（我出）／改为删旧 grant 行（丢审计）／别的写法。
+2. **`recentManualOps` 只给了窗口没给门限**（策略里只有 `recentManualOpsWindowHours`）→ 我按 `>0 即不过` 实现（窗口内有人刚动过手，系统不抢方向盘）。
+3. **`overriddenBy:"history"` 触发条件未定义**，且 fixture `work-items/detail.json` 里 `recentManualOps=1` 却 `overriddenBy=null`，**排除了「人工操作触发」这个直觉解** → 我恒返回 null。
+4. **`GET/PUT /settings/decision-policy` 的写权限契约没写** → 我取 `lead|admin`。放开给 optimizer 等于让人自己抬高自己的自动执行额度上限，有专门用例守着。
+5. **`/me/views` 的 `is_shared` 没有读路径**（fixture 项无 owner 字段，分不出归属）→ 我只返回本人视图，共享读等公共资产（v1.5.1 ⑤）定义，不自造。
+
+**④ 本批的实现取向（供你审时对照）**：`evaluateDecisionTier` 没有 execute 分支，写类能力永远只到变更集草稿；置信度/成功率缺数一律当「不过」不按 0 代入；`report_runs` 用表上的 UNIQUE 做幂等且已终态拒绝改写；`dailyBriefSchema` 把「不生成假早报」变成 schema 硬约束（pending 的早报不许带 generatedAt/queueSummary/sections）；导出仓储**不编签名 URL**，过期回 `fileExpired` 让服务层 410；`external_changes` 观测不到旧值就说「被改动」不编数字。
+
+**⑤ 下一步**：`apps/worker/src/r014/routes.ts`、`handlers.ts` 两个空文件**还没在 main 上**（我刚 merge 完确认过），S4/S5 仍卡。按你 R-017 派活里「S4/S5 卡住可以先插这批」，我**另开 `be/r017` 分支开始 R-017 T1（migration 018，DDL 照 S1 的切片法从 v1.8 节生成）**，be/r014 就地冻结等你 ✅/❌。
 ### P-119｜unknown parity + 分时/Gap Domain数据边界；继续队列不等审（be，2026-09-07）
 
 - 收P117✅及1c622d0新铁律，已合main至`3d4df55`。独立代码 **4041f26**（unknown+计划）、**ad19c08**（strict版本化rows）。自身diff仅Domain与本人文档；Contract/视觉/DB/依赖0改动。没有push/部署/真实媒体写。

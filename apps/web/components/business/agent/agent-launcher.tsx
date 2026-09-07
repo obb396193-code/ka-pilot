@@ -9,7 +9,7 @@ import { toast } from "sonner"
 import { Conversation, ConversationContent, ConversationEmptyState } from "@/components/ai-elements/conversation"
 import { Message, MessageContent, MessageResponse } from "@/components/ai-elements/message"
 import { PromptInput, PromptInputBody, PromptInputFooter, PromptInputSelect, PromptInputSelectContent, PromptInputSelectItem, PromptInputSelectTrigger, PromptInputSelectValue, PromptInputSubmit, PromptInputTextarea, PromptInputTools, type PromptInputMessage } from "@/components/ai-elements/prompt-input"
-import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion"
+import { Suggestion } from "@/components/ai-elements/suggestion"
 import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from "@/components/ai-elements/tool"
 import { OPEN_AGENT_EVENT } from "@/components/business/command/events"
 import { StatusChip, TypeChip } from "@/components/business/data-grid/data-grid"
@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { isOk } from "@/lib/fixtures/contract"
+import { isOk, schemaText } from "@/lib/fixtures/contract"
 import { actionKindHint, agentSessionFixture, sseFramesFixture, suggestionKindLabel, toolLabel, type ContextItem, type Diagnosis, type SseFrame, type SuggestionFrame } from "@/lib/fixtures/agent"
 import { agentModelsFixture } from "@/lib/fixtures/me"
 import { pageTitleFor } from "@/lib/navigation"
@@ -34,7 +34,7 @@ const contextChipLabel = (item: ContextItem) => item.type === "task" ? `任务 �
 function DiagnosisCard({ diagnosis, onAction }: { diagnosis: Diagnosis; onAction: (kind: string, label: string) => void }) {
   return (
     <div className="rounded-xl border bg-card p-3 text-sm">
-      <div className="mb-1 flex items-center gap-2 text-[11px] text-muted-foreground"><TypeChip>{diagnosis.schema}</TypeChip>诊断（分析推断）</div>
+      <div className="mb-1 flex items-center gap-2 text-[11px] text-muted-foreground"><TypeChip>{schemaText(diagnosis.schema)}</TypeChip>诊断（分析推断）</div>
       <p className="font-medium">{diagnosis.conclusion}</p>
       <ul className="mt-2 flex flex-col gap-1">{diagnosis.evidence.map((item) => <li key={item.ref} className="flex items-start gap-2 text-xs"><StatusChip tone="muted" className="shrink-0 font-mono text-[10px]">{item.ref}</StatusChip><span>{item.text}</span></li>)}</ul>
       <div className="mt-3 flex flex-wrap gap-1.5">{diagnosis.actions.map((action) => <Button key={action.kind} size="sm" variant="outline" className="h-7 text-xs" title={actionKindHint[action.kind]} onClick={() => onAction(action.kind, action.label)}>{action.label}</Button>)}</div>
@@ -144,8 +144,8 @@ export function AgentLauncher() {
             <ConversationContent className="gap-4 p-4">
               {turns.length === 0 ? (
                 <>
-                  <ConversationEmptyState icon={<IconSparkles className="size-6 text-muted-foreground" />} title="还没有对话" description="对象直达用 ⌘K；发送后按契约七帧回放：session → context → token → tool → diagnosis → suggestion → done。" className="rounded-xl border border-dashed py-6" />
-                  <div><div className="mb-2 text-[11px] text-muted-foreground">高频问题</div><Suggestions>{quickQuestions.map((question) => <Suggestion key={question} suggestion={question} onClick={(text) => setDraft(text)} />)}</Suggestions></div>
+                  <ConversationEmptyState icon={<IconSparkles className="size-6 text-muted-foreground" />} title="还没有对话" description="想直接跳到某个账户或任务，按 ⌘K。提问后会依次显示：接上下文 → 思考 → 取数 → 结论 → 建议动作，中途可以停。" className="rounded-xl border border-dashed py-6" />
+                  <div><div className="mb-2 text-[11px] text-muted-foreground">高频问题</div><div className="flex flex-wrap items-center gap-2">{quickQuestions.map((question) => <Suggestion key={question} suggestion={question} onClick={(text) => setDraft(text)} />)}</div></div>
                 </>
               ) : turns.map((turn) => turn.role === "user" ? (
                 <Message key={turn.id} from="user"><MessageContent>{turn.text}</MessageContent></Message>

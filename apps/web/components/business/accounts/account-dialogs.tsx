@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import { groupPreviewFixture, openFlowFixture, poolStatuses, replicateFixture, replicationCompareFixture, transferFixture, type AccountItem, type PoolStatus } from "@/lib/fixtures/accounts"
-import { fmtTime, isOk, mv, rv, changesetStatusText } from "@/lib/fixtures/contract"
+import { fmtTime, isOk, mv, rv, changesetStatusText, reasonCodeLabel, riskLevelLabel } from "@/lib/fixtures/contract"
 import { cn } from "@/lib/utils"
 
 // 账户池的写动作对话框（全部只到「预览 / 草稿」，执行走 dry-run→confirm 链；mock 期用 fixture 回显）
@@ -49,12 +49,12 @@ function BatchPreview({ items, op, onClose }: { items: AccountItem[]; op: string
         <DialogDescription>对 {items.length} 户生成变更集组；试运行通过才能确认，执行逐账户，三键不变（当前为示例数据）。</DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-4 text-sm">
-        <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{preview.status}</Badge><span className="text-muted-foreground">原因码 {preview.reasonCode} · 过期 {fmtTime(preview.expiresAt)}</span></div>
+        <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{preview.status}</Badge><span className="text-muted-foreground">原因码 {reasonCodeLabel[preview.reasonCode] ?? preview.reasonCode} · 过期 {fmtTime(preview.expiresAt)}</span></div>
         <div className="overflow-hidden rounded-lg border">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>账户</TableHead><TableHead>变更项</TableHead><TableHead>风险</TableHead><TableHead>状态</TableHead><TableHead>数据截至</TableHead></TableRow></TableHeader>
             <TableBody>
-              {preview.changesets.map((row) => <TableRow key={row.changesetId}><TableCell className="font-mono text-xs">{row.accountId}</TableCell><TableCell>{row.items} 项</TableCell><TableCell><StatusChip tone={row.riskLevel === "low" ? "success" : "warning"}>{row.riskLevel}</StatusChip></TableCell><TableCell><TypeChip>{changesetStatusText(stage === "preview" ? row.status : stage === "dry-run" ? "dry_run_ok" : "confirmed")}</TypeChip></TableCell><TableCell className="text-xs text-muted-foreground tabular-nums">{fmtTime(row.dataAsOf)}</TableCell></TableRow>)}
+              {preview.changesets.map((row) => <TableRow key={row.changesetId}><TableCell className="font-mono text-xs">{row.accountId}</TableCell><TableCell>{row.items} 项</TableCell><TableCell><StatusChip tone={row.riskLevel === "low" ? "success" : "warning"}>{riskLevelLabel[row.riskLevel] ?? row.riskLevel}</StatusChip></TableCell><TableCell><TypeChip>{changesetStatusText(stage === "preview" ? row.status : stage === "dry-run" ? "dry_run_ok" : "confirmed")}</TypeChip></TableCell><TableCell className="text-xs text-muted-foreground tabular-nums">{fmtTime(row.dataAsOf)}</TableCell></TableRow>)}
               {preview.skipped.map((row) => <TableRow key={row.accountId} className="text-muted-foreground"><TableCell className="font-mono text-xs">{row.accountId}</TableCell><TableCell colSpan={4}>跳过 · {row.reason}</TableCell></TableRow>)}
             </TableBody>
           </Table>

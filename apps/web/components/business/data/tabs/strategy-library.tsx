@@ -90,7 +90,7 @@ export function StrategyLibrary() {
             {detail ? (
               <>
                 <Card>
-                  <CardHeader><CardTitle>策略地图 · 七步</CardTitle><CardDescription>playbookMap（原型 P08）</CardDescription></CardHeader>
+                  <CardHeader><CardTitle>策略地图 · 七步</CardTitle><CardDescription>打法要点</CardDescription></CardHeader>
                   <CardContent><ol className="grid gap-2 @3xl/main:grid-cols-2">{detail.playbookMap.map((step) => <li key={step.key} className="flex gap-3 rounded-lg border px-3 py-2"><span className="grid size-6 shrink-0 place-items-center rounded-full bg-foreground text-xs font-semibold text-background">{step.step}</span><span><span className="block text-xs text-muted-foreground">{step.label}</span><span className="text-sm">{step.value}</span></span></li>)}</ol></CardContent>
                 </Card>
                 <div className="grid gap-4 @3xl/main:grid-cols-2">

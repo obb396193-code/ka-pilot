@@ -35,6 +35,20 @@ export * from "./bootstrap-seed-repository.js";
 export * from "./window-assessment-repository.js";
 export * from "./semantic-read-snapshot.js";
 export * from "./session-cleanup-repository.js";
+// be2-r014
+export * from "./r014/workspace-authority.js";
+export * from "./r014/identity-preferences-repository.js";
+export * from "./r014/user-watchlist-repository.js";
+export * from "./r014/saved-view-repository.js";
+export * from "./r014/decision-policy-repository.js";
+export * from "./r014/export-repository.js";
+export * from "./r014/capability-repository.js";
+export * from "./r014/task-readiness-repository.js";
+export * from "./r014/report-run-repository.js";
+export * from "./r014/external-change-repository.js";
+export * from "./r014/account-pipeline-repository.js";
+export * from "./r014/me-workspace-repository.js";
+export * from "./r014/search-repository.js";
 
 // be: workspace/tuple-scoped canonical health observation.
 export * from "./platform-health-repository.js";

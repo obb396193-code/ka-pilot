@@ -59,7 +59,7 @@ export function InfraTab() {
           </CardContent>
         </Card>
         <Card className="@5xl/main:col-span-3">
-          <CardHeader><CardTitle className="text-sm">状态机</CardTitle><CardDescription>B 主 A 兜底 · 未取得回执不显「配置成功」</CardDescription></CardHeader>
+          <CardHeader><CardTitle className="text-sm">状态机</CardTitle><CardDescription>优先走 B 通道，A 通道兜底 · 未取得回执不显「配置成功」</CardDescription></CardHeader>
           <CardContent>
             <ol className="flex flex-col gap-2">
               {states.map((state, index) => { const reached = states.indexOf(currentState) >= index; const active = currentState === state; return <li key={state} className="flex items-center gap-2 text-sm"><StatusChip tone={active ? "progress" : reached ? "success" : "pending"}>{active ? "当前" : reached ? "完成" : "待"}</StatusChip>{stateLabel[state]}{index < states.length - 1 ? <IconChevronRight className="ml-auto size-3.5 text-muted-foreground/50" /> : null}</li> })}

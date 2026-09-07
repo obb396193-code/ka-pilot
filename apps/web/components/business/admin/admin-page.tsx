@@ -39,6 +39,7 @@ const tabs = [
 ] as const
 type Tab = (typeof tabs)[number]["value"]
 
+const identitySourceLabel: Record<string, string> = { internal_test: "内测账号", buc: "公司统一登录", sso: "统一身份" }
 const memberHelper = createColumnHelper<GridFeatures, Member>()
 function makeMemberColumns(onGrants: (member: Member) => void, onToggle: (member: Member) => void) {
   return memberHelper.columns([
@@ -47,7 +48,7 @@ function makeMemberColumns(onGrants: (member: Member) => void, onToggle: (member
     memberHelper.accessor("displayName", { header: "成员", enableHiding: false, meta: { label: "成员" }, cell: ({ row }) => <span className={cn("font-medium", !row.original.isActive && "text-muted-foreground line-through")}>{row.original.displayName}</span> }),
     memberHelper.accessor("role", { header: "角色", meta: { label: "角色" }, cell: ({ getValue }) => <TypeChip>{roleLabel[getValue()]}</TypeChip> }),
     memberHelper.accessor("isActive", { header: "状态", meta: { label: "状态" }, cell: ({ getValue }) => getValue() ? <StatusChip tone="success">在职</StatusChip> : <StatusChip tone="muted">已停用</StatusChip> }),
-    memberHelper.accessor("provider", { header: "身份源", meta: { label: "身份源" }, cell: ({ getValue }) => <span className="font-mono text-xs">{getValue()}</span> }),
+    memberHelper.accessor("provider", { header: "身份源", meta: { label: "身份源" }, cell: ({ getValue }) => <span className="text-xs">{identitySourceLabel[getValue()] ?? getValue()}</span> }),
     memberHelper.accessor("grantsCount", { header: "授权账户", meta: { label: "授权账户", align: "right" }, cell: ({ row }) => <Button variant="link" className="h-auto px-0 tabular-nums" onClick={() => onGrants(row.original)}>{row.original.grantsCount}</Button> }),
     memberHelper.accessor("joinedAt", { header: "加入", meta: { label: "加入" }, cell: ({ getValue }) => <span className="tabular-nums">{getValue()}</span> }),
     memberHelper.accessor((row) => row.lastSeenAt ?? "", { id: "seen", header: "最近活跃", meta: { label: "最近活跃" }, cell: ({ row }) => row.original.lastSeenAt ? <span className="tabular-nums">{fmtTime(row.original.lastSeenAt)}</span> : <MissingValue title="从未登录" /> }),
@@ -97,7 +98,7 @@ const etlColumns = etlHelper.columns([
   etlHelper.accessor("status", { header: "状态", meta: { label: "状态" }, cell: ({ row }) => <StatusChip tone={row.original.status === "done" ? "success" : row.original.status === "failed" ? "critical" : "progress"}>{row.original.status === "done" ? "完成" : row.original.status === "failed" ? `失败${row.original.failedStage ? ` · ${row.original.failedStage}` : ""}` : row.original.status === "running" ? "运行中" : "排队"}</StatusChip> }),
   etlHelper.accessor("startedAt", { header: "开始", meta: { label: "开始" }, cell: ({ getValue }) => <span className="tabular-nums">{fmtTime(getValue())}</span> }),
   etlHelper.accessor((row) => row.finishedAt ?? "", { id: "finished", header: "结束", meta: { label: "结束" }, cell: ({ row }) => row.original.finishedAt ? <span className="tabular-nums">{fmtTime(row.original.finishedAt)}</span> : <MissingValue /> }),
-  etlHelper.accessor((row) => row.rows?.raw ?? null, { id: "rows", header: "行数 raw / canonical", meta: { label: "行数", align: "right" }, cell: ({ row }) => row.original.rows ? <span className="tabular-nums">{row.original.rows.raw} / {row.original.rows.canonical}</span> : <MissingValue /> }),
+  etlHelper.accessor((row) => row.rows?.raw ?? null, { id: "rows", header: "行数 原始 / 清洗后", meta: { label: "行数", align: "right" }, cell: ({ row }) => row.original.rows ? <span className="tabular-nums">{row.original.rows.raw} / {row.original.rows.canonical}</span> : <MissingValue /> }),
   etlHelper.accessor((row) => row.warnings.join(","), { id: "warnings", header: "警告", meta: { label: "警告" }, cell: ({ row }) => row.original.warnings.length ? <span className="flex flex-wrap gap-1">{row.original.warnings.map((warning) => <Badge key={warning} variant="outline" className="text-[10px] text-status-warning">{warning}</Badge>)}</span> : <span className="text-xs text-muted-foreground">−</span> }),
   actionsColumn<EtlRun>((run) => <DropdownMenuItem onSelect={() => toast("已重跑", { description: `接口接入后生效（当前为示例）` })}><IconRefresh />重跑</DropdownMenuItem>),
 ])
@@ -110,8 +111,8 @@ function EtlTab() {
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 @3xl/main:grid-cols-3">
         {connections.map((item) => <Card key={item.id}><CardHeader><CardTitle className="flex items-center justify-between text-base">{providerLabel[item.provider]}<StatusChip tone={item.health === "ok" ? "success" : "critical"}>{item.health === "ok" ? "健康" : "异常"}</StatusChip></CardTitle><CardDescription>探活 {fmtTime(item.lastCheckedAt)}</CardDescription></CardHeader></Card>)}
-        <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">奇航（platform）<StatusChip tone="warning">补拉中</StatusChip></CardTitle><CardDescription>system/health · 2 户补拉</CardDescription></CardHeader></Card>
-        <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">ka-data（团队源）<StatusChip tone="success">D-1</StatusChip></CardTitle><CardDescription>system/health · 数据日 2026-09-04</CardDescription></CardHeader></Card>
+        <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">奇航（platform）<StatusChip tone="warning">补拉中</StatusChip></CardTitle><CardDescription>2 户补拉中</CardDescription></CardHeader></Card>
+        <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">ka-data（团队源）<StatusChip tone="success">D-1</StatusChip></CardTitle><CardDescription>数据日 2026-09-04</CardDescription></CardHeader></Card>
       </div>
       <DataGrid table={table} empty="没有拉数记录" toolbar={<p className="text-xs text-muted-foreground">每天从奇航 / KA Data 拉数的记录；显示「凭证失效」= 奇航凭证过期，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
     </div>
@@ -127,7 +128,7 @@ function CalendarTab() {
   return (
     <div className="grid gap-4 @5xl/main:grid-cols-2">
       <Card className="@5xl/main:col-span-2">
-        <CardHeader><div className="flex items-center justify-between gap-2"><div><CardTitle>运营日历</CardTitle><CardDescription>admin/calendar · 影响基线的事件（节假日 / 口径变更 / 大促）→ 阈值档位</CardDescription></div><Button size="sm" onClick={() => setAdding(true)}><IconPlus />加事件</Button></div></CardHeader>
+        <CardHeader><div className="flex items-center justify-between gap-2"><div><CardTitle>运营日历</CardTitle><CardDescription>影响基线的事件（节假日 / 口径变更 / 大促）→ 阈值档位</CardDescription></div><Button size="sm" onClick={() => setAdding(true)}><IconPlus />加事件</Button></div></CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>日期</TableHead><TableHead>类型</TableHead><TableHead>说明</TableHead><TableHead>影响基线</TableHead><TableHead>阈值档</TableHead></TableRow></TableHeader>
@@ -136,7 +137,7 @@ function CalendarTab() {
         </CardContent>
       </Card>
       <Card>
-        <CardHeader><CardTitle>返点系数（全局）</CardTitle><CardDescription>settings/channel-coefficients · 改动在「设置 · 口径」</CardDescription></CardHeader>
+        <CardHeader><CardTitle>返点系数（全局）</CardTitle><CardDescription>改动在「设置 · 口径」</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-1 text-sm">{coefficients.map((item) => <p key={item.media} className="flex items-center justify-between"><span>{mediaLabel(item.media)}</span><span className="tabular-nums text-muted-foreground">{coefficientText(item)} · {item.effectiveDate}</span></p>)}</CardContent>
       </Card>
       <Card>
@@ -165,7 +166,7 @@ function FlagsTab() {
   if (!data) return null
   return (
     <Card>
-      <CardHeader><CardTitle>灰度开关</CardTitle><CardDescription>admin/flags · {data.updatedBy.name} {fmtTime(data.updatedAt)} · 写媒体灰度 = 老板一人 true</CardDescription></CardHeader>
+      <CardHeader><CardTitle>灰度开关</CardTitle><CardDescription>{data.updatedBy.name} {fmtTime(data.updatedAt)} · 写媒体灰度 = 老板一人 true</CardDescription></CardHeader>
       <CardContent className="flex flex-col gap-2">
         {(Object.keys(flagMeta) as FlagKey[]).map((key) => { const on = flags[key] ?? data.flags[key]; return <div key={key} className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5"><div><p className="text-sm font-medium">{flagMeta[key].label} <span className="ml-1 font-mono text-[11px] text-muted-foreground">{key}</span></p><p className="text-xs text-muted-foreground">{flagMeta[key].hint}</p></div><div className="flex items-center gap-2"><StatusChip tone={on ? "success" : "muted"}>{on ? "开" : "关"}</StatusChip><Switch checked={on} onCheckedChange={(checked) => { setFlags((prev) => ({ ...prev, [key]: checked })); toast(`${flagMeta[key].label}已${checked ? "开" : "关"}`, { description: `${checked ? "开启后对全工作区生效" : "关闭后对全工作区生效"}` }) }} aria-label={flagMeta[key].label} /></div></div> })}
       </CardContent>
@@ -205,11 +206,11 @@ function AssetsTab() {
 function DiagnosticsTab() {
   const data = isOk(reconcileFixture) ? reconcileFixture.data : null
   if (!data) return null
-  const sides = [{ key: "kaData", label: "ka_data（权威）", side: data.kaData }, { key: "platform", label: "奇航 canonical（对照）", side: data.platform }]
+  const sides = [{ key: "kaData", label: "KA Data（权威源）", side: data.kaData }, { key: "platform", label: "奇航（对照源）", side: data.platform }]
   return (
     <div className="flex flex-col gap-4">
       <Card>
-        <CardHeader><CardTitle>对账 reconcile</CardTitle><CardDescription>admin/data/reconcile · 同账户同日两源并排；差异引擎 {data.comparison.status === "unavailable" ? `未就绪（${data.comparison.reason}）` : "就绪"} · 前端不算差值</CardDescription></CardHeader>
+        <CardHeader><CardTitle>对账 reconcile</CardTitle><CardDescription>同账户同日两源并排；差异引擎 {data.comparison.status === "unavailable" ? `未就绪（${data.comparison.reason}）` : "就绪"} · 前端不算差值</CardDescription></CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>来源</TableHead><TableHead>账户 · 日</TableHead><TableHead className="text-right">账面消耗</TableHead><TableHead className="text-right">现金消耗</TableHead><TableHead className="text-right">曝光</TableHead><TableHead className="text-right">点击</TableHead><TableHead className="text-right">回传转化</TableHead><TableHead className="text-right">真实转化</TableHead><TableHead>数据截至</TableHead></TableRow></TableHeader>
