@@ -1,6 +1,8 @@
-# 预设头像（12 张，待 Codex 出图）
+# 预设头像（待 Codex 出图）
 
-- 文件名必须是 `<id>.png`，id 见 `apps/web/lib/avatar.ts` 的 `avatarPresets`
+> 数量 / 风格 / 文件名以 Codex 交付为准；下表只是前端先占的槽位，出图后 fe 按实际文件名对接。
+
+- 前端当前按 `<id>.png` 找图（id 见 `apps/web/lib/avatar.ts` 的 `avatarPresets`）；实际文件名不同就改那份清单，不用改组件
 - 尺寸 512×512，正方形，PNG（无透明背景亦可）
 - 抽象图形，不要人脸 / 不要文字 / 不要品牌标识
 - 单张 ≤ 80KB
