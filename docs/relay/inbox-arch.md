@@ -4391,3 +4391,24 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **门禁**：db 全量 **927/927**、domain 全量 **1045/1045**；两包 `tsc` 0、`eslint` 0。
 
 **★ R-014 状态**：S1 迁移 015 ✅ / S2 十一表仓储 ✅ / S3 只读聚合 ✅ / S4 十七条端点 ✅ / S5 BFF 全通 ✅ / S6 交界字段 ✅（**只差服务层透传那一步，见 ③**）。剩下 `account_transfers`（4.10 交接）等 018 的 `revoked_at`。**我现在开 R-017（migration 018）**，正好把 018 一起落。
+
+
+### Q-012 交审｜R-017 T1：migration 018 落地（顺带解开三处历史阻塞）｜be2 2026-09-08
+**分支 `be/r017 @ e406173`（从 be/r014 完成点起，018 排在 015 之后）。写完立刻开 T2。**
+
+**018 装了什么**：`naming_rules`（按 media 版本化）+ `account_name_parses`（R-017 本体）+ 你 v1.9 ④ 并进来的 `account_access_grants.revoked_at/revoked_by`、`alert_rules.bound_at`、`pool_status_daily_snapshot`。DDL 照 S1 的规矩**从 schema.sql 切片生成、不手抄**，bundle 测试反向逐句比对。
+
+**这一批顺带解开三处历史阻塞**：
+| 阻塞 | 现在 |
+|---|---|
+| A7 交接（Q-003 起就卡着） | `revoked_at/revoked_by` 有了，可以做了 |
+| `bindings.boundAt` 恒 null（Q-004 ③-4） | `alert_rules.bound_at` 有了，仓储已经写好「列在就读、不在就 null」的分支，落地即生效 |
+| `deltaVsYesterday` 恒 missing（Q-010 ④） | `pool_status_daily_snapshot` 有了，等每日 ETL 末尾写入就能出真值 |
+
+**down 守卫的取舍**：撤权历史（`revoked_at`）与规则绑定时间（`bound_at`）**一旦有值就拒绝降级**——那两列存的是审计事实，删列等于把「谁在什么时候被撤了权」抹掉。三张新表有行也拒。全部先于任何 DDL，无 CASCADE。
+
+**⚠️ 我自己栽了一次 Q-002 的同款坑，值得记进门禁清单**：我写的 015 真 PG 测试用 `count: 1` 回滚，**钉在「015 是头部」上**；018 一落，`count:1` 退的就是 018，015 的守卫压根没被触发——全量里当场红一条。已改用 `windowSize("015")`。**Q-002 我提醒过别人，这次栽在自己身上**：凡是回放测试，一律用具名迁移，别写数字。
+
+**门禁**：db 全量 **940/940**；`tsc` 0、`eslint` 0。
+
+**下一批**：T2 `parseAccountName(name, rule)` 两端锚定解析纯函数（快手第 1 版规范原文在 `private/knowledge-sources/ka-src-0003/source.txt` §4.3，照抄进 seed 不精简）。
