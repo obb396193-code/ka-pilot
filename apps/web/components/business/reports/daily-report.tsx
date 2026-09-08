@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { DisplayMetric } from "@/lib/data/contracts"
-import { fmtTime, isOk, mv, rv } from "@/lib/fixtures/contract"
+import { fmtTime, isOk, mv, rv, schemaText } from "@/lib/fixtures/contract"
 import { dailyFixture, dailyRoleLabel, type DailyModule, type DailyReport } from "@/lib/fixtures/reports"
 import { cn } from "@/lib/utils"
 
@@ -46,7 +46,7 @@ export function DailyReportView() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
-        <TypeChip>{report.schema}</TypeChip>
+        <TypeChip>{schemaText(report.schema)}</TypeChip>
         <span className="text-sm">{report.date} · 数据截至 {fmtTime(report.dataAsOf)}</span>
         <Select value={role} onValueChange={(value) => { setRole(value as DailyReport["role"]); toast(`切到${dailyRoleLabel[value as DailyReport["role"]]}视角`, { description: "接入后按角色裁模块；示例只有优化师视角" }) }}>
           <SelectTrigger size="sm" className="w-32" aria-label="角色"><SelectValue /></SelectTrigger>

@@ -77,7 +77,7 @@ function BusinessTab() {
         <Card>
           <CardHeader>
             <div className="flex flex-wrap items-start justify-between gap-2">
-              <div><CardTitle>{config.name}</CardTitle><CardDescription>report-config/v1 · 数据集 {config.config.dataset.queryId} · 分组 {config.config.groupBy.join(" × ")} · 排序 {config.config.sort.map((item) => `${item.by} ${item.dir}`).join(", ")} · {config.isShared ? "已分享" : "私有"} · 更新 {fmtTime(config.updatedAt)}</CardDescription></div>
+              <div><CardTitle>{config.name}</CardTitle><CardDescription>数据来自{datasetLabel(config.config.dataset.queryId)} · 分组 {config.config.groupBy.map(groupLabel).join(" × ")} · 排序 {config.config.sort.map((item) => `${metricLabel(item.by)}${item.dir === "desc" ? "从高到低" : "从低到高"}`).join("，")} · {config.isShared ? "已分享" : "私有"} · 更新 {fmtTime(config.updatedAt)}</CardDescription></div>
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" onClick={() => openAgentDrawer(`把报告「${config.name}」改成按业务分组并加真实转化列`)}><IconSparkles />Agent 帮做表</Button>
                 <Button size="sm" variant="outline" disabled={exportState === "queued"} onClick={() => { setExportState("queued"); toast("已排队导出 xlsx", { description: "已提交，导出完成后给下载链接" }); setTimeout(() => setExportState("done"), 1500) }}><IconDownload />{exportState === "queued" ? "导出中…" : "导出 xlsx"}</Button>
@@ -124,7 +124,7 @@ function TemplatesTab() {
     <div className="flex flex-col gap-6">
       <DataGrid table={table} empty="没有结算模板" toolbar={<p className="text-xs text-muted-foreground">结算模板版本列表（新版本 = 新行）</p>} showPagination={false} />
       <Card>
-        <CardHeader><CardTitle>报告配置（report-config/v1）</CardTitle><CardDescription>saved report configs · Agent Patch 建议可全部 / 局部接受</CardDescription></CardHeader>
+        <CardHeader><CardTitle>报告配置</CardTitle><CardDescription>保存下来的报表配置 · Agent 的修改建议可全部或局部接受</CardDescription></CardHeader>
         <CardContent>{config ? <div className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"><span className="flex items-center gap-2"><span className="font-medium">{config.name}</span><TypeChip>{config.version}</TypeChip><span className="text-xs text-muted-foreground">{config.config.groupBy.join(" × ")} · {config.config.columns.length} 列 · {config.isShared ? "已分享" : "私有"}</span></span><Button asChild size="sm" variant="outline"><Link href="/reports?tab=business">查看渲染</Link></Button></div> : <p className="text-sm text-muted-foreground">无配置</p>}</CardContent>
       </Card>
     </div>
@@ -152,6 +152,14 @@ function SchedulesTab() {
   const table = useGridTable({ data: items, columns, pageSize: 20, getRowId: (item) => String(item.id) })
   return <DataGrid table={table} empty="没有定时任务" toolbar={<p className="text-xs text-muted-foreground">日报推送 / 定时报表 / 结算单（警报订阅在「集成与通知」）</p>} actions={<Button size="sm" onClick={() => toast("新建定时任务", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新建定时</Button>} showPagination={false} />
 }
+
+// 报表配置卡里的技术标识改人话：数据集 / 分组维度 / 排序指标
+const datasetLabels: Record<string, string> = { "account.table": "账户明细表", "account.dimension": "维度汇总", "account.pivot2": "双维透视", "task.table": "任务明细表" }
+const groupLabels: Record<string, string> = { task: "任务", owner: "负责人", account: "账户", biz: "业务", product: "产品", resource_position: "版位", agent_type: "代理类型" }
+const metricLabels: Record<string, string> = { cost: "消耗", cashCost: "现金消耗", cashCpa: "现金 CPA", realCpa: "账面 CPA", realConversion: "真实转化", onTarget: "达标", costSpace: "成本空间" }
+const datasetLabel = (key: string) => datasetLabels[key] ?? key
+const groupLabel = (key: string) => groupLabels[key] ?? key
+const metricLabel = (key: string) => metricLabels[key] ?? key
 
 export function ReportsPage() {
   const { isMock } = useSession()

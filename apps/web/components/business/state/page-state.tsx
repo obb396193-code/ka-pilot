@@ -53,9 +53,12 @@ export function ExampleBadge({ className }: { className?: string }) {
 export function ExampleBlock({ unlock, children, className, inline = false }: { unlock: string; children: ReactNode; className?: string; inline?: boolean }) {
   return (
     <div className={cn("relative", className)} data-example>
-      <ExampleBadge className="absolute top-3 right-3 z-10" />
       <div className="opacity-80 saturate-50">{children}</div>
-      <p className={cn("text-xs text-muted-foreground", inline ? "mt-1" : "mt-2 px-1")}>示例数据，解锁条件：{unlock}</p>
+      {/* 角标以前是 absolute top-3 right-3，会压住内容右上角的按钮（商品池「新建商品」被盖住）；改成跟解锁说明同一行，不遮挡任何可点区域 */}
+      <p className={cn("flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground", inline ? "mt-1" : "mt-2 px-1")}>
+        <ExampleBadge />
+        示例数据，解锁条件：{unlock}
+      </p>
     </div>
   )
 }

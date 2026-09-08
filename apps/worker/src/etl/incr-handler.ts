@@ -12,6 +12,7 @@ import { toEtlQueryObservation } from "./query-observation.js";
 import { rowsToRawRecords } from "./raw-ingest.js";
 import { replayRequestParams } from "./replay-params.js";
 import { errorSummary } from "./run-utils.js";
+import { withEtlAttempt } from "./attempt-scope.js";
 import type { AdHourlyStore, EtlRunStore, QihangQueryPort } from "./types.js";
 
 export interface IncrementalEtlDependencies {
@@ -26,7 +27,7 @@ export function createIncrementalEtlHandler(
 ): JobHandler {
   return async (job) => {
     const payload = incrementalEtlPayloadSchema.parse(job.payload);
-    const runId = await dependencies.store.startRun(job.id, "incr", {
+    const runId = await dependencies.store.startRun(job.id, "incr", withEtlAttempt(job, {
       workspaceId: payload.workspaceId,
       ds: payload.ds,
       accountIds: payload.accountIds,
@@ -36,7 +37,7 @@ export function createIncrementalEtlHandler(
         "account_realtime",
         "ad_realtime",
       ],
-    });
+    }));
     let currentStep = "start";
     let rowsIngested = 0;
 

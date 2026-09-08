@@ -5,6 +5,7 @@ import { inclusiveDates } from "../etl/date-range.js";
 import { rowsToRawRecords } from "../etl/raw-ingest.js";
 import { replayRequestParams } from "../etl/replay-params.js";
 import { errorSummary } from "../etl/run-utils.js";
+import { withEtlAttempt } from "../etl/attempt-scope.js";
 import { deterministicJobId } from "../jobs/deterministic-id.js";
 import { JOB_PRIORITY } from "../jobs/priorities.js";
 import { backfillCoordinatorPayloadSchema } from "./payload.js";
@@ -22,13 +23,13 @@ export function createBackfillCoordinatorHandler(dependencies: {
     if (batch.userId !== payload.fetchedByUserId) {
       throw new Error("Backfill batch owner does not match the frozen credential owner");
     }
-    const runId = await dependencies.store.startRun(job.id, "backfill_coordinator", {
+    const runId = await dependencies.store.startRun(job.id, "backfill_coordinator", withEtlAttempt(job, {
       workspaceId: payload.workspaceId,
       userId: payload.fetchedByUserId,
       dateFrom: batch.dateFrom,
       dateTo: batch.dateTo,
       resource: "account",
-    });
+    }));
     let currentStep = "fetch:account";
     let rowsIngested = 0;
     try {

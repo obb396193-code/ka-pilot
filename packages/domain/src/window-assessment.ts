@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { calendarDateSchema, ratioValueSchema } from "./data-query-rows.js";
+import { calendarDateSchema, ratioValueSchema } from "./data-query-base-rows.js";
 import { canonicalMetricValueSchema, metricValue, sumMetricValues } from "./metric-value.js";
 import { queryWindowSchema, windowAssessmentSchema, windowComparisonSchema } from "./summary-window.js";
 

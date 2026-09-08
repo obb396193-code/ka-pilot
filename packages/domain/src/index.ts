@@ -60,3 +60,10 @@ export * from "./r014/account-pipeline-contract.js";
 export * from "./r014/notification-contract.js";
 export * from "./r014/me-workspace-contract.js";
 export * from "./r014/search-contract.js";
+
+// be: operational query row boundary; source/Registry integration remains separate.
+export * from "./operational-query-rows.js";
+// be: bounded condition interpreter; runtime readers and public explain are separate.
+export * from "./condition-tree.js";
+// be: pivot row projection/account-day aggregation; Registry admission is separate.
+export * from "./pivot-window.js";

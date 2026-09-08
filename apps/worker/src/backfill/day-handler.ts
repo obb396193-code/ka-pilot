@@ -3,6 +3,7 @@ import type { QihangQueryPort, EtlRunStore } from "../etl/types.js";
 import { rowsToRawRecords } from "../etl/raw-ingest.js";
 import { replayRequestParams } from "../etl/replay-params.js";
 import { errorSummary } from "../etl/run-utils.js";
+import { withEtlAttempt } from "../etl/attempt-scope.js";
 import { shanghaiBusinessDate } from "../etl/date-range.js";
 import { deterministicJobId } from "../jobs/deterministic-id.js";
 import { JOB_PRIORITY } from "../jobs/priorities.js";
@@ -17,13 +18,13 @@ export function createBackfillDayHandler(dependencies: {
 }): JobHandler {
   return async (job) => {
     const payload = backfillDayPayloadSchema.parse(job.payload);
-    const runId = await dependencies.store.startRun(job.id, "backfill_day", {
+    const runId = await dependencies.store.startRun(job.id, "backfill_day", withEtlAttempt(job, {
       workspaceId: payload.workspaceId,
       userId: payload.fetchedByUserId,
       dateFrom: payload.ds,
       dateTo: payload.ds,
       resource: "account_offline",
-    });
+    }));
     let currentStep = "fetch:account_offline";
     try {
       const query = {

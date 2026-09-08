@@ -8,6 +8,7 @@ const calendarDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value
 }, "date must be a real calendar date")
 
 export const dataQueryIdSchema = z.enum([
+  "account.pivot2",
   "account.dimension",
   "account.summary",
   "account.trend",
@@ -109,6 +110,30 @@ export const dimensionWindowRowSchema = z.union([
   z.object(dimensionFields).strict(),
 ]).superRefine(refineAssessmentMetrics)
 
+const pivotAxis = z.object({ key: z.string().min(1).nullable(), label: z.string().nullable() }).strict()
+export const pivotWindowRowSchema = z.object({ a: pivotAxis, b: pivotAxis,
+  metrics: canonicalMetricSetSchema, assessment: accountSummaryRowSchema.shape.assessment,
+}).strict().superRefine(refineAssessmentMetrics)
+export const pivotWindowRowsSchema = z.object({ queryId: z.literal("account.pivot2"), rowSchemaVersion: z.literal("account.pivot2/v1"),
+  dimA: dimensionTypeSchema, dimB: dimensionTypeSchema, rows: z.array(pivotWindowRowSchema).max(10000),
+}).strict().superRefine((value, context) => {
+  const pairs = new Set<string>(), labels = new Map<string, string | null>()
+  for (const row of value.rows) {
+    const pair = JSON.stringify([row.a.key, row.b.key])
+    if (pairs.has(pair)) context.addIssue({ code: "custom", message: "Duplicate pivot cell" })
+    pairs.add(pair)
+    for (const [side, dim] of [["a", value.dimA], ["b", value.dimB]] as const) {
+      const axis = row[side], key = JSON.stringify([dim, axis.key])
+      if (labels.has(key) && labels.get(key) !== axis.label) context.addIssue({ code: "custom", message: "Conflicting axis label" })
+      labels.set(key, axis.label)
+      if (dim === "account" && (axis.key === null || !/^[A-Z0-9_]{1,32}:[A-Za-z0-9_-]{1,128}$/.test(axis.key))) {
+        context.addIssue({ code: "custom", message: "Account axis requires media/account identity" })
+      }
+    }
+    if (value.dimA === value.dimB && row.a.key !== row.b.key) context.addIssue({ code: "custom", message: "Same dimensions must agree" })
+  }
+})
+
 export const relatedTaskRowSchema = z.object({
   taskId: z.string().min(1),
   taskName: z.string().nullable(),
@@ -141,6 +166,7 @@ export const accountAnomalyRowSchema = accountDailyRowSchema.extend({
 }).strict()
 
 export const canonicalQueryRowSchemaById = {
+  "account.pivot2": pivotWindowRowSchema,
   "account.dimension": dimensionWindowRowSchema,
   "account.summary": accountSummaryRowSchema,
   "account.trend": accountTrendRowSchema,
@@ -151,6 +177,7 @@ export const canonicalQueryRowSchemaById = {
 } as const
 
 export const canonicalRowSchemaVersionByQueryId = {
+  "account.pivot2": "account.pivot2/v1",
   "account.dimension": "account.dimension/v3",
   "account.summary": "account.summary/v3",
   "account.trend": "account.trend/v3",

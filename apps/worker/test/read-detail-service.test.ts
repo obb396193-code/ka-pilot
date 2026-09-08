@@ -90,6 +90,12 @@ function service(input: {
 }
 
 describe("ReadDetailService", () => {
+  it("preserves dispatched for an authorized account detail", async () => {
+    const result = await service({ workItem: workItem({ status: "dispatched" }) })
+      .getWorkItem(WORK_ITEM_ID, auth, "dispatched-detail");
+    expect(result).toMatchObject({ ok: true, data: { kind: "work_item", workItem: { status: "dispatched" } } });
+  });
+
   const teamAuth: ApprovedWorkspaceAuthContext = {
     workspaceId: auth.workspaceId,
     userId: USER_ID,

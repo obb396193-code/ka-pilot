@@ -251,7 +251,7 @@ export function MaterialsPage() {
             {tab === "experiments" ? <ExperimentsTab /> : null}
             {tab === "aigc" ? (
               <Card>
-                <CardHeader><CardTitle>AIGC 下单</CardTitle><CardDescription>iframe 内嵌内部 material-order-platform（内网地址）；本产品只做入口与回链，不冻 DTO</CardDescription></CardHeader>
+                <CardHeader><CardTitle>AIGC 下单</CardTitle><CardDescription>内嵌公司内部的素材下单平台（内网地址）；本产品只做入口与回链</CardDescription></CardHeader>
                 <CardContent><div className="flex h-80 flex-col items-center justify-center gap-2 rounded-lg border border-dashed text-sm text-muted-foreground"><IconExternalLink className="size-6" /><p>内网 AIGC 下单平台会嵌在这里（需内网可达）</p><p className="text-xs">下单完成后回链到素材池（source = internal）</p><Button size="sm" variant="outline" disabled>打开内网地址</Button></div></CardContent>
               </Card>
             ) : null}

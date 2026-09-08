@@ -37,7 +37,7 @@ export function TaskStrategyTab({ taskId }: { taskId: string }) {
         {strategy ? <CardContent><div className="flex flex-wrap gap-1"><TypeChip>{strategy.playbook.bid.tool} · {strategy.playbook.bid.style}</TypeChip><TypeChip>版位 {strategy.playbook.placement.join(" / ")}</TypeChip>{strategy.playbook.rta.enabled ? <TypeChip>RTA {strategy.playbook.rta.audience_packs.length} 包</TypeChip> : null}<TypeChip>冷启 {strategy.playbook.budget_rhythm.cold_start_days} 天</TypeChip><TypeChip>{strategy.playbook.account_matrix.accounts} 户 × {strategy.playbook.account_matrix.campaigns_per_account} 计划 × {strategy.playbook.account_matrix.units_per_campaign} 单元</TypeChip></div></CardContent> : null}
       </Card>
       <Card>
-        <CardHeader><CardTitle>方案 vs 实际配置</CardTitle><CardDescription>diff · {mismatch} 处不一致 · {unknown} 处未同步（structure 同步后自动出现）</CardDescription></CardHeader>
+        <CardHeader><CardTitle>方案 vs 实际配置</CardTitle><CardDescription>{mismatch} 处不一致 · {unknown} 处未同步（结构同步后自动出现）</CardDescription></CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>字段</TableHead><TableHead>方案</TableHead><TableHead>实际</TableHead><TableHead>一致</TableHead></TableRow></TableHeader>

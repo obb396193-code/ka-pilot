@@ -13,6 +13,7 @@ describe("DataQueryRegistry", () => {
       "account.anomalies",
       "account.detail",
       "account.dimension",
+      "account.pivot2",
       "account.summary",
       "account.table",
       "account.trend",

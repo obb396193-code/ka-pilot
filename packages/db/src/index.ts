@@ -49,3 +49,8 @@ export * from "./r014/external-change-repository.js";
 export * from "./r014/account-pipeline-repository.js";
 export * from "./r014/me-workspace-repository.js";
 export * from "./r014/search-repository.js";
+
+// be: workspace/tuple-scoped canonical health observation.
+export * from "./platform-health-repository.js";
+// be: bounded canonical account-day facts for the pivot window reader.
+export * from "./platform-pivot-repository.js";

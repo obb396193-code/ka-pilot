@@ -64,16 +64,16 @@ export function SettlementWizard() {
         <Card>
           <CardHeader><CardTitle>模板与期间</CardTitle><CardDescription>新版本 = 新行；旧结算单绑旧版本不覆盖</CardDescription></CardHeader>
           <CardContent className="grid gap-4 @3xl/main:grid-cols-3">
-            <div className="grid gap-1.5"><Label>模板版本</Label><Select value={template.templateVersion} onValueChange={setVersion}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{templates.map((item) => <SelectItem key={item.templateVersion} value={item.templateVersion}>{item.name} {item.templateVersion}</SelectItem>)}</SelectContent></Select><p className="text-xs text-muted-foreground">{template.currencyCode} · 单位 {template.unitNote} · {template.fields.length} 字段 · {template.checks.length} 校验 · 指纹 {template.fingerprint.slice(0, 8)}…</p></div>
+            <div className="grid gap-1.5"><Label>模板版本</Label><Select value={template.templateVersion} onValueChange={setVersion}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{templates.map((item) => <SelectItem key={item.templateVersion} value={item.templateVersion}>{item.name} {item.templateVersion}</SelectItem>)}</SelectContent></Select><p className="text-xs text-muted-foreground">币种 {template.currencyCode === "CNY" ? "人民币" : template.currencyCode} · 单位 {template.unitNote} · {template.fields.length} 个字段 · {template.checks.length} 项校验 · 模板指纹 {template.fingerprint.slice(0, 8)}…</p></div>
             <div className="grid gap-1.5"><Label>结算期间</Label><Input type="month" value={period} onChange={(event) => setPeriod(event.target.value)} /></div>
-            <div className="grid gap-1.5"><Label>样例（mock）</Label><Select value={sample} onValueChange={(value) => { setSample(value as typeof sample); setFrozenDone(false) }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="blocked">preview-blocked（有必填缺失）</SelectItem><SelectItem value="ready">preview-ready（可冻结）</SelectItem></SelectContent></Select></div>
+            <div className="grid gap-1.5"><Label>样例</Label><Select value={sample} onValueChange={(value) => { setSample(value as typeof sample); setFrozenDone(false) }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="blocked">有必填缺失（不能冻结）</SelectItem><SelectItem value="ready">校验通过（可冻结）</SelectItem></SelectContent></Select></div>
           </CardContent>
         </Card>
       ) : null}
 
       {step === 1 ? (
         <Card>
-          <CardHeader><CardTitle>字段映射</CardTitle><CardDescription>fact = 事实白名单取数；formula = 模板公式（后端算）；允许校正的字段在预览里可改</CardDescription></CardHeader>
+          <CardHeader><CardTitle>字段映射</CardTitle><CardDescription>带「事实」的取自白名单数据，带「公式」的由后端按模板算；允许校正的字段在预览里可改</CardDescription></CardHeader>
           <CardContent className="p-0">
             <Table>
               <TableHeader className="bg-muted"><TableRow><TableHead>#</TableHead><TableHead>字段</TableHead><TableHead>类型</TableHead><TableHead>汇总</TableHead><TableHead>来源</TableHead><TableHead>必填</TableHead><TableHead>可校正</TableHead></TableRow></TableHeader>
@@ -91,11 +91,11 @@ export function SettlementWizard() {
         <div className="flex flex-col gap-4">
           <div className={cn("rounded-lg border px-4 py-2.5 text-sm", blocked ? "border-status-critical/30 bg-status-critical/10 text-status-critical" : "border-status-success/30 bg-status-success/10 text-status-success")}>{blocked ? `阻断：${blockIssues.length} 个必填/阻断问题未解决，不许冻结` : "可冻结：无阻断问题（警告不拦冻结，但会留在结算行上）"}</div>
           <Card>
-            <CardHeader><CardTitle>校验预览 · {preview.period}</CardTitle><CardDescription>run {preview.runId} · 数据基础 {preview.dataBasis} · 截止 {fmtTime(preview.dataCutoffAt)} · 模板指纹 {preview.templateFingerprint.slice(0, 8)}…</CardDescription></CardHeader>
+            <CardHeader><CardTitle>校验预览 · {preview.period}</CardTitle><CardDescription>运行 {preview.runId} · 数据基础 {preview.dataBasis} · 截止 {fmtTime(preview.dataCutoffAt)} · 模板指纹 {preview.templateFingerprint.slice(0, 8)}…</CardDescription></CardHeader>
             <CardContent className="p-0"><PreviewTable template={template} rows={preview.rows} totals={preview.totals} /></CardContent>
           </Card>
           <Card>
-            <CardHeader><CardTitle>问题清单</CardTitle><CardDescription>block 必须处理；warn 可带入冻结</CardDescription></CardHeader>
+            <CardHeader><CardTitle>问题清单</CardTitle><CardDescription>「必须处理」的不修不能过；「提醒」可以带着进冻结</CardDescription></CardHeader>
             <CardContent className="flex flex-col gap-2">
               {preview.issues.length ? preview.issues.map((issue, index) => { const field = issue.fieldKey ? template.fields.find((item) => item.fieldKey === issue.fieldKey) : undefined; return <div key={`${issue.code}-${index}`} className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"><span className="flex items-center gap-2"><StatusChip tone={issue.severity === "block" ? "critical" : "warning"}>{issue.severity === "block" ? "阻断" : "警告"}</StatusChip>{issueCodeLabel[issue.code] ?? issue.code}{issue.rowKey ? <span className="text-xs text-muted-foreground">行 {issue.rowKey}</span> : null}{issue.fieldKey ? <span className="text-xs text-muted-foreground">· {labelOf(issue.fieldKey)}</span> : null}{issue.checkKey ? <span className="text-xs text-muted-foreground">· {template.checks.find((check) => check.checkKey === issue.checkKey)?.label ?? issue.checkKey}</span> : null}</span>{issue.rowKey && field ? (field.allowCorrection ? <Button size="sm" variant="outline" onClick={() => { setCorrection({ rowKey: issue.rowKey!, field }); setCorrectionForm({ value: "", reason: "" }) }}><IconPencil />校正</Button> : <span className="text-xs text-muted-foreground">该字段不允许校正，需回源补数</span>) : null}</div> }) : <p className="text-sm text-muted-foreground">无问题</p>}
             </CardContent>
@@ -111,7 +111,7 @@ export function SettlementWizard() {
               {frozenDone && frozen ? (
                 <>
                   <p className="text-sm"><StatusChip tone="success">已冻结</StatusChip> {frozen.period} · 模板 {frozen.templateVersion} · {frozen.confirmedBy.name} · {fmtTime(frozen.confirmedAt)}</p>
-                  <p className="font-mono text-xs text-muted-foreground">指纹 {frozen.fingerprint.slice(0, 16)}…</p>
+                  <p className="font-mono text-xs text-muted-foreground">快照指纹 {frozen.fingerprint.slice(0, 16)}…</p>
                   <div><p className="mb-1 text-xs font-medium text-muted-foreground">结算行</p>{frozen.lines.map((line) => <div key={line.lineId} className="flex items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"><span>行 {line.rowKey}{line.taskId ? ` · 任务 ${line.taskId}` : ""} · {line.checks.map((check) => `${template.checks.find((item) => item.checkKey === check.checkKey)?.label ?? check.checkKey} ${checkLabel[check.status]}`).join("，")}</span>{line.workItemId ? <TypeChip>已转工作项</TypeChip> : <Button size="sm" variant="outline" onClick={() => toast("已转工作项", { description: `接口接入后生效（当前为示例）` })}>差异转工作项</Button>}</div>)}</div>
                 </>
               ) : (
@@ -123,7 +123,7 @@ export function SettlementWizard() {
             </CardContent>
           </Card>
           <Card>
-            <CardHeader><CardTitle>分发</CardTitle><CardDescription>导出 xlsx / 推群卡片（L2）</CardDescription></CardHeader>
+            <CardHeader><CardTitle>分发</CardTitle><CardDescription>导出 Excel / 推一张需确认的群卡片</CardDescription></CardHeader>
             <CardContent className="flex flex-col gap-2">
               <Button variant="outline" disabled={!frozenDone} onClick={() => toast("已排队导出", { description: "排队后完成" })}><IconFileSpreadsheet />导出 xlsx</Button>
               <Button variant="outline" disabled={!frozenDone} onClick={() => toast.success("已推到群", { description: "发到结算单订阅的目标群（当前示例该订阅停用，需先启用）" })}><IconBrandDingtalk />推钉钉群</Button>
