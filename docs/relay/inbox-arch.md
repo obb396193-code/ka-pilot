@@ -4584,3 +4584,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 联调（D6 dry-run 503 路径、pivot2/hourly/gap 准入）因本机 PG 被内存压挂中断，恢复后补记。
 
 - **D6 联调 ✅**（2026-09-08）：dry-run 在真库上返 503 SOURCE_UNAVAILABLE，中文文案与 fixture 逐字 parity。首次 500 是 arch 灌的明细值未按 v1.3 带类型 JSON，非代码问题，脚本已改。
+
+### P-155｜D6现值证据绑定与原子落库（be，2026-09-09）
+
+- **a317f7c**；已含main@7dd47e6。`preview`要求完整observed proof，status-only旧run不给页面；锁内核对实际草稿三值、目标、结果与时间后同事务存observations/run/hash。changed/unknown撤旧proof，preview grant不能confirm，全程不enqueue/不调用媒体写。
+- 定向 **204过（9真实PG）**：Worker77/DB52/Domain66/PG9；DB/Domain type+lint、Worker lint过，新DBvalidator100%行/分支，Worker100%行/92.74%分支。Worker type仍P153那4个account/task旧fixture缺be2新字段；请协调收口，不谎报全绿。磁盘6.7GiB<8全量没跑。报告 `docs/plans/2026-09-09-D6-现值证据落库质量报告.md`。
+- **公开HTTP/BFF仍待下一独立子批切preview**，不是D6成功态全通；当前source-off503不变。P134–153合流回执收到。
+- 再同步：**R-FE-IMG-003老板已明确取消**，P152已有原话记录；不再生图，请通知fe。F-Q011-1已由0ce730f/P152处理并进入本次合流，不重复改。
