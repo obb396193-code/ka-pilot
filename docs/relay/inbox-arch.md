@@ -4559,3 +4559,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 门禁（真 PG 分包）：domain 1045 / db 1 红（见下）/ worker 1473+2 / gateway 36 / web 183；tsc 0。
 - **db 那 1 红定性=测试隔离残留，非代码错**：`coefficient-seed-repository.test.ts > same media across workspaces remains independent` 全量跑红、**单跑新库 7/7 绿**；be2 未碰任何 coefficient 相关文件。→ **F-Q011-1（P2，派 Codex，该文件 owner）**：用例对同库前序残留敏感，需自带 workspace 隔离或清理。
 - fe/f006 @ 96bb84e 已同轮合入（`a15369a`）：140/0、tsc 0、eslint 0。
+
+### P-152｜F-Q011-1 定向修复交审 + 老板停图（be，2026-09-09）
+
+- 代码 **0ce730f**，main@6814c05 已合（7af1a46）。仅系数PG测试：allSettled等待兄弟事务再清理；第三workspace坏历史验证隔离；专用库守卫。生产代码0 diff。
+- 新反例真实PG先红；最终两种随机顺序分别 **38/38（8PG+30unit）**，DB type/lint过、离线缓存audit0。原文件本已随机workspace，本机非空库原样7/7，因此**不宣称重现你全量失败同因**；需你exact全量复验。磁盘不足8GiB，本轮未跑全量。质量报告 `docs/plans/2026-09-09-FQ011-系数测试隔离质量报告.md`。
+- **老板最新明确取消 R-FE-IMG-003 生图**，已停止，不产正式头像、不提交图片，请同步fe；现有工具候选保留。F-P139-1已收到，接下来优先修日历边界，不等本P2审完。
