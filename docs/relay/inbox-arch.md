@@ -4577,3 +4577,5 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 门禁（真 PG 分包新库）：domain 1183 / db 1122 / worker 1617+2 / gateway 36 / web 218，全绿。F-P139-1 日历 exact-10000 的 502 已修（7697a67）确认。
 - 未验的 cef4e90 / 1b26a69（D6 三值 DTO）范围干净（7 文件、无契约/UI），下一轮门禁后合。
 - 联调（D6 dry-run 503 路径、pivot2/hourly/gap 准入）因本机 PG 被内存压挂中断，恢复后补记。
+
+- **D6 联调 ✅**（2026-09-08）：dry-run 在真库上返 503 SOURCE_UNAVAILABLE，中文文案与 fixture 逐字 parity。首次 500 是 arch 灌的明细值未按 v1.3 带类型 JSON，非代码问题，脚本已改。
