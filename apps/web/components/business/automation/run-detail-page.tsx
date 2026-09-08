@@ -22,6 +22,9 @@ const stageLabel = { done: "完成", running: "进行中", pending: "待执行",
 const excerpt = (value: unknown) => (value == null ? "−" : typeof value === "string" ? value : JSON.stringify(value))
 
 
+const backoffLabel: Record<string, string> = { exponential: "指数退避", fixed: "固定间隔", linear: "线性退避" }
+const onUnknownLabel: Record<string, string> = { read_back_then_decide: "先回读媒体再决定，不重发", retry: "直接重试", abort: "中止" }
+
 export function RunDetailPage({ runId }: { runId: string }) {
   const { isMock } = useSession()
   const state = usePageState()
@@ -99,7 +102,7 @@ export function RunDetailPage({ runId }: { runId: string }) {
               </Card>
               <Card>
                 <CardHeader><CardTitle>重试 · 回读策略</CardTitle></CardHeader>
-                <CardContent><dl className="grid grid-cols-2 gap-y-1 text-xs"><dt className="text-muted-foreground">最多重试</dt><dd className="text-right tabular-nums">{detail.retry_policy.max}</dd><dt className="text-muted-foreground">退避</dt><dd className="text-right">{detail.retry_policy.backoff} · {detail.retry_policy.base_ms} ms</dd><dt className="text-muted-foreground">UNKNOWN 时</dt><dd className="text-right">{detail.reconcile_policy.on_unknown}</dd><dt className="text-muted-foreground">回读窗口</dt><dd className="text-right tabular-nums">{detail.reconcile_policy.window_min} 分</dd></dl><p className="mt-3 rounded-lg bg-muted px-3 py-2 text-xs">{detail.unknown_explain}</p></CardContent>
+                <CardContent><dl className="grid grid-cols-2 gap-y-1 text-xs"><dt className="text-muted-foreground">最多重试</dt><dd className="text-right tabular-nums">{detail.retry_policy.max}</dd><dt className="text-muted-foreground">退避</dt><dd className="text-right">{backoffLabel[detail.retry_policy.backoff] ?? detail.retry_policy.backoff} · 起步 {detail.retry_policy.base_ms} 毫秒</dd><dt className="text-muted-foreground">结果未知时</dt><dd className="text-right">{onUnknownLabel[detail.reconcile_policy.on_unknown] ?? detail.reconcile_policy.on_unknown}</dd><dt className="text-muted-foreground">回读窗口</dt><dd className="text-right tabular-nums">{detail.reconcile_policy.window_min} 分</dd></dl><p className="mt-3 rounded-lg bg-muted px-3 py-2 text-xs">{detail.unknown_explain}</p></CardContent>
               </Card>
               <Card>
                 <CardHeader><CardTitle>链路</CardTitle></CardHeader>

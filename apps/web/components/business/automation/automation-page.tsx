@@ -180,7 +180,7 @@ function RunsTab() {
   const eventData = isOk(agentRunEventsFixture) && events && agentRunEventsFixture.data.runId === events.runId ? agentRunEventsFixture.data : null
   return (
     <div className="flex flex-col gap-6">
-      <DataGrid table={table} empty="没有运行记录" toolbar={<Tabs value={status} onValueChange={(value) => setStatus(value as typeof status)}><TabsList><TabsTrigger value="all">全部</TabsTrigger><TabsTrigger value="active">运行中 / UNKNOWN</TabsTrigger><TabsTrigger value="waiting">待确认</TabsTrigger><TabsTrigger value="done">已结束</TabsTrigger></TabsList></Tabs>} />
+      <DataGrid table={table} empty="没有运行记录" toolbar={<Tabs value={status} onValueChange={(value) => setStatus(value as typeof status)}><TabsList><TabsTrigger value="all">全部</TabsTrigger><TabsTrigger value="active">运行中 / 结果未知</TabsTrigger><TabsTrigger value="waiting">待确认</TabsTrigger><TabsTrigger value="done">已结束</TabsTrigger></TabsList></Tabs>} />
       <Card>
         <CardHeader><CardTitle>Agent / OS 运行监控</CardTitle><CardDescription>我发起的 Run；原始日志受限</CardDescription></CardHeader>
         <CardContent><DataGrid table={agentTable} empty="没有 Agent 运行" showPagination={false} showColumnPicker={false} /></CardContent>
