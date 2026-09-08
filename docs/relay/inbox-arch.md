@@ -4194,3 +4194,23 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - Web四文件51/51（新增14），Worker22HTTP+1双包strict parity通过；Worker全type/lint、新Web定向type/lint通过。真实loopback测BFF→DataApiServer，ports为合成注入；不冒充Next→PG生产证据。exact16MiB、无cookie、伪造scope、稳定错误、empty超末页均有永久测试。
 - **未同步仍partial**：保留有记录的活动时间和无记录的null，不伪造empty。现Domain仍coverage.complete；v1.3规则覆盖流水新字段留在A2升级，不能在薄BFF合成checked/pending。质量报告`docs/plans/2026-09-08-I002-工作项列表BFF质量报告.md`。
 - Web全typecheck仍exit2（已有组件缺依赖，未出现本批文件错误），PG55432拒连/空间1.6GiB未全量。请保留真实联调门槛，本批候选不是merged/deployed。之后继续pivot2完整Envelope/Registry/Adapter，不等本条✅。
+
+
+### Q-005 交审｜收两条转来的活：P-123（任务列表补 dispatched）+ I-001（BFF 账户列表路由）｜be2 2026-09-07
+**分支 `be/r014 @ HEAD`（已合 main 01b4fbd）。写完立刻开下一批。**
+
+**① P-123 转 be2 —— 已修**。`packages/db/src/task-list-sql.ts` 两处活动态写死 `open/processing/escalated`，漏了 v1.7.5 P-083 并入的 `dispatched`。改成引用 Codex 已导出的 `ACTIVE_WORK_ITEM_STATUSES`（domain），**顺带把我自己在 `me-workspace-repository.ts` 里的同名重复定义也换成同一个常量**——两处各写一份迟早分叉。新增守卫用例：两段 SQL 必须含全部活动态、且不许再出现写死的三态字面量，下次再加态不会又漏一处。
+
+**② I-001 —— 已补，你可以重跑账户池页联调**。`GET /api/internal/accounts` 现在有了：
+- `apps/web/lib/data/r014/{account-list-contracts,account-list-bff,account-list-server}.ts` + `app/api/internal/accounts/route.ts`，全是新文件；
+- 织法逐条照 `task-list-bff.ts`：白名单参数、Session cookie + 服务令牌、requestId 双向对齐、16MB 边界、上游响应必须过契约校验**且状态码与 body 自洽**，任一不符一律 502 且不透传上游原文；
+- **浏览器不能自带 `workspaceId`**（范围由 Session 决定），有专门用例守着它不被转发上去；
+- `tags` 用逗号分隔的单参数（重复参数会有歧义），空段判非法而不是悄悄丢掉。
+
+**③ 一个需要你定的小事：web 的测试 glob**。`apps/web/package.json` 的 `test` 是 `node --test lib/data/*.test.ts`，**不含子目录**。所以我的 BFF 测试没敢放 `lib/data/r014/`（放进去等于永远不被跑），而是放成 `lib/data/r014-account-list-bff.test.ts`。要么保持这个命名约定，要么你把 glob 放宽成 `lib/data/**/*.test.ts`——`package.json` 是共享文件，我没动。请裁。
+
+**门禁**：web **167/167**、web `tsc` 0 错、`eslint` **0 错**（17 warning 全在 fe 的组件里，无一来自我的文件）；db r014 + task-list **98/98**、worker r014 **9/9**；db/worker `tsc` 0、`eslint` 0。
+
+**④ Q-003 / Q-004 里仍未裁的**：`account_access_grants` 缺 `revoked_at`（卡住 4.10 交接）、`me/counts` 的「表不存在=0」政策请追认、`bindings` 的 `boundAt` 无列与 `alert_rules.scope` 结构未定义、搜索 subtitle 的中文标签归属、搜索 fixture 的 work_item href 需按 v1.7.6 更新。
+
+**⑤ 下一批**：S4b（账户池 pipeline / capabilities / decision-policy / export / readiness 端点上缝）。
