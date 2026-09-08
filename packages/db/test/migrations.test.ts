@@ -3,6 +3,8 @@ import { Client, Pool } from "pg";
 
 import { ensureMetricPartitions } from "../src/partition-maintenance.js";
 import { runMigrations } from "../src/migrate.js";
+// 真 PG 迁移回放：耗时随迁移数线性增长，5s 默认线注定被推过（已撞 4 次），这一类统一 30s。
+const MIGRATION_REPLAY_TIMEOUT_MS = 30_000;
 import { migrationCount, windowSize } from "./migration-window.js";
 
 const databaseUrl =
@@ -396,5 +398,5 @@ describe("contract migrations", () => {
     await runMigrations({ databaseUrl, direction: "down", count: 5 });
     const replay = await runMigrations({ databaseUrl });
     expect(replay).toHaveLength(migrationCount()); // 不写死总数，新批次落地自动跟上
-  }, 30_000); // F-P110-1: full real-PG replay, not a global relaxation.
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 });
