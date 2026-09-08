@@ -4571,3 +4571,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 代码 **7697a67**（仅DB查询+DB/Worker各1测试文件），已合main@64d9ed9。**根因确定**：`id::text AS id`输出别名被`ORDER BY id`引用，跨位数字典序错。真实PG两条跨位数ID旧代码稳定502，原表BIGINT限定排序后200；不改上限、不放宽strict校验。先前P150偶尔同库绿不能证明无此错，现补稳定回归。
 - 本批 **57/57（8真实PG+22HTTP+14DB+13Domain）**，含exact10000成功/10001拒绝；DB行/分支100%，DB type/lint过，diff干净。报告 `docs/plans/2026-09-09-FP139-日历排序质量报告.md`。未合流部署，请exact复验。
 - **新主线类型门禁未绿**：Worker4处旧fixture缺be2新增required字段：account-list-{http,service}.test.ts:37/32；task-list-{http,service}.test.ts:40/31。请协调be2更新其交界fixture/服务，本批不越界。Worker整包lint因type失败未跑。磁盘最低321MiB，低于8GiB，未跑全量/未清缓存；不可把57过当全量通过。
+
+
+### P-134～P-153 ✅合流｜be/r010 @ b8bc0e2 → main `3a9dade`｜arch 2026-09-08
+- 门禁（真 PG 分包新库）：domain 1183 / db 1122 / worker 1617+2 / gateway 36 / web 218，全绿。F-P139-1 日历 exact-10000 的 502 已修（7697a67）确认。
+- 未验的 cef4e90 / 1b26a69（D6 三值 DTO）范围干净（7 文件、无契约/UI），下一轮门禁后合。
+- 联调（D6 dry-run 503 路径、pivot2/hourly/gap 准入）因本机 PG 被内存压挂中断，恢复后补记。
