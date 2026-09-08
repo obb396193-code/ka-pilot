@@ -303,7 +303,7 @@ def relevance_assessment(
             modules.extend(["data_analysis", "reporting", "security"])
             return result(
                 "conditional_candidate", "verify_before_use", "engineering_reference", "later",
-                "涉及 FBI 报表接入、账号权限、下载控制或数据处理，与数据分析/报告候选相关，但当前一期主通路已锁定奇航 get_data。",
+                "涉及 FBI 报表接入、账号权限、下载控制或数据处理，与数据分析/报告候选相关，但当前一期主通路已锁定启航 get_data。",
                 "可提取报表嵌入的权限、下载、安全参数和 adapter 检查项。",
                 "不得把 FBI 改成一期主数据链；必须验证当前接口、权限、前端技术栈和数据口径。",
             )

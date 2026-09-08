@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "algorithm-cli"
+description = "Algorithm data service CLI for dynamic bid / material / data queries."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Proprietary" }
+authors = [{ name = "Julang Agent" }]
+keywords = ["algorithm", "dataservice", "bid", "material", "cli"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+dynamic = ["version"]
+dependencies = []
+
+[project.scripts]
+algorithm-cli = "algorithm_cli.__main__:main"
+algorithm = "algorithm_cli.__main__:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "algorithm_cli.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["algorithm_cli*"]

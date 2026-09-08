@@ -31,7 +31,7 @@ export function GroupHeader({ group, children }: { group: "账面" | "现金" | 
 export function LineageFooter({ lineage, extra }: { lineage: Lineage; extra?: ReactNode }) {
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-      <span>来源 {lineage.source === "ka_data" ? "KA Data（团队源）" : "奇航（本人授权账户）"}</span>
+      <span>来源 {lineage.source === "ka_data" ? "KA Data（团队源）" : "启航（本人授权账户）"}</span>
       {lineage.window ? <span>窗口 {windowLabel(lineage.window.preset)} {lineage.window.from} ～ {lineage.window.to}</span> : null}
       {lineage.metricVersion ? <span>口径 {lineage.metricVersion}</span> : null}
       {lineage.coverage && !lineage.coverage.complete ? <Badge variant="outline" className="text-status-warning">覆盖不完整</Badge> : null}

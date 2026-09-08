@@ -1,0 +1,364 @@
+- generic [active] [ref=e1]:
+  - link "跳到内容" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - complementary "展厅导航" [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: UI
+        - generic [ref=e7]:
+          - strong [ref=e8]: 投放 Agent
+          - text: Asset field guide
+      - navigation [ref=e9]:
+        - button "01 总览与风格 17" [ref=e10] [cursor=pointer]:
+          - generic [ref=e11]: "01"
+          - generic [ref=e12]: 总览与风格
+          - generic [ref=e13]: "17"
+        - button "02 全量清单 7,056" [ref=e14] [cursor=pointer]:
+          - generic [ref=e15]: "02"
+          - generic [ref=e16]: 全量清单
+          - generic [ref=e17]: 7,056
+        - button "03 付费处置 2,153" [ref=e18] [cursor=pointer]:
+          - generic [ref=e19]: "03"
+          - generic [ref=e20]: 付费处置
+          - generic [ref=e21]: 2,153
+        - button "04 本地源码 137" [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]: "04"
+          - generic [ref=e24]: 本地源码
+          - generic [ref=e25]: "137"
+        - button "05 主题展厅 42" [ref=e26] [cursor=pointer]:
+          - generic [ref=e27]: "05"
+          - generic [ref=e28]: 主题展厅
+          - generic [ref=e29]: "42"
+        - button "06 新库实机 5" [ref=e30] [cursor=pointer]:
+          - generic [ref=e31]: "06"
+          - generic [ref=e32]: 新库实机
+          - generic [ref=e33]: "5"
+      - generic [ref=e34]: 离线可用本页内嵌全部目录和替代数据，不依赖网络加载；外部链接仅在你主动打开时访问官网。
+    - main [ref=e35]:
+      - generic [ref=e36]:
+        - generic [ref=e37]: 官方目录快照 · 2026-08-19
+        - generic [ref=e39]: 目录 ≠ 运行时安装 · 缓存 ≠ 已接入
+      - text: s c T A V K D A M
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - generic [ref=e44]: Live / offline
+            - heading "5 家官方源码实机预览" [level=1] [ref=e45]
+          - paragraph [ref=e46]: 下面不是截图：它把已缓存的官方源码预编译成五个可交互 frame。每家只展示 2 个代表特性，离线运行、无 CDN、无 fetch，也没有安装进产品运行时。
+        - generic [ref=e47]:
+          - article [ref=e48]:
+            - generic [ref=e49]:
+              - generic [ref=e50]:
+                - generic [ref=e51]: Compiled official source
+                - heading "AI Elements" [level=3] [ref=e52]
+                - paragraph [ref=e53]: Agent conversation and traceable source disclosure
+              - generic [ref=e54]:
+                - generic [ref=e55]: 真实交互
+                - generic [ref=e56]: 离线
+                - generic [ref=e57]: 2 个官方特性
+            - iframe [ref=e58]:
+              - main [ref=f1e3]:
+                - generic [ref=f1e4]:
+                  - generic [ref=f1e5]:
+                    - text: 01 / AGENT UI
+                    - heading "AI Elements" [level=1] [ref=f1e6]
+                  - paragraph [ref=f1e7]: 实际运行 Conversation 与 Sources：消息滚动、追加结果、来源折叠均可交互。
+                - generic [ref=f1e8]:
+                  - article [ref=f1e9]:
+                    - generic [ref=f1e10]: CONVERSATION
+                    - log [ref=f1e11]:
+                      - generic [ref=f1e13]:
+                        - generic [ref=f1e14]: 把今天消耗异常的计划找出来。
+                        - generic [ref=f1e15]: 已定位 3 个计划，先按影响排序，并保留数据来源。
+                    - button "追加工具结果" [ref=f1e16]
+                  - article [ref=f1e17]:
+                    - generic [ref=f1e18]: SOURCES
+                    - generic [ref=f1e19]:
+                      - paragraph [ref=f1e20]: 回答先给结论，证据保持可展开，适合投放数据与规则引用。
+                      - generic [ref=f1e21]:
+                        - button [expanded] [ref=f1e22]:
+                          - paragraph [ref=f1e23]: Used 3 sources
+                        - generic [ref=f1e26]:
+                          - link "账户小时级消耗表" [ref=f1e27] [cursor=pointer]:
+                            - /url: "#"
+                          - link "任务考核价契约" [ref=f1e31] [cursor=pointer]:
+                            - /url: "#"
+                          - link "变更审计记录" [ref=f1e35] [cursor=pointer]:
+                            - /url: "#"
+            - generic [ref=e59]: 代表项：conversation · sources ｜ 只用于选型预览，产品运行时尚未安装。
+          - article [ref=e60]:
+            - generic [ref=e61]:
+              - generic [ref=e62]:
+                - generic [ref=e63]: Compiled official source
+                - heading "Kibo UI" [level=3] [ref=e64]
+                - paragraph [ref=e65]: Business-grade upload and semantic color controls
+              - generic [ref=e66]:
+                - generic [ref=e67]: 真实交互
+                - generic [ref=e68]: 离线
+                - generic [ref=e69]: 2 个官方特性
+            - iframe [ref=e70]:
+              - main [ref=f2e3]:
+                - generic [ref=f2e4]:
+                  - generic [ref=f2e5]:
+                    - text: 02 / BUSINESS UI
+                    - heading "Kibo UI" [level=1] [ref=f2e6]
+                  - paragraph [ref=f2e7]: 实际运行 Dropzone 与 Color Picker，体现业务级组件的完成度；颜色已接项目语义强调色。
+                - generic [ref=f2e8]:
+                  - article [ref=f2e9]:
+                    - generic [ref=f2e10]: DROPZONE
+                    - button [ref=f2e11]:
+                      - button "file upload"
+                      - generic [ref=f2e12]:
+                        - paragraph [ref=f2e14]: Upload files
+                        - paragraph [ref=f2e15]: Drag and drop or click to upload
+                        - paragraph [ref=f2e16]: Accepts image/* less than 8.00MB.
+                    - paragraph [ref=f2e17]: 点击或拖入图片；选择后由官方组件切换到文件摘要状态。
+                  - article [ref=f2e18]:
+                    - generic [ref=f2e19]: COLOR PICKER
+                    - generic [ref=f2e20]:
+                      - generic [ref=f2e22]:
+                        - generic [ref=f2e23]:
+                          - slider [ref=f2e28]
+                          - slider [ref=f2e34]
+                        - combobox [ref=f2e35]:
+                          - generic: HEX
+                      - generic [ref=f2e36]:
+                        - textbox [ref=f2e37]: "#F45D2C"
+                        - generic [ref=f2e38]:
+                          - textbox [ref=f2e39]: "100"
+                          - generic [ref=f2e40]: "%"
+                    - generic [ref=f2e41]: 用于图表、标注与主题配置，不绑定官网配色。
+            - generic [ref=e71]: 代表项：dropzone · color-picker ｜ 只用于选型预览，产品运行时尚未安装。
+          - article [ref=e72]:
+            - generic [ref=e73]:
+              - generic [ref=e74]:
+                - generic [ref=e75]: Compiled official source
+                - heading "Dice UI" [level=3] [ref=e76]
+                - paragraph [ref=e77]: Accessible complex interactions and drag workflows
+              - generic [ref=e78]:
+                - generic [ref=e79]: 真实交互
+                - generic [ref=e80]: 离线
+                - generic [ref=e81]: 2 个官方特性
+            - iframe [ref=e82]:
+              - main [ref=f3e3]:
+                - generic [ref=f3e4]:
+                  - generic [ref=f3e5]:
+                    - text: 03 / ACCESSIBLE INTERACTION
+                    - heading "Dice UI" [level=1] [ref=f3e6]
+                  - paragraph [ref=f3e7]: 实际运行 File Upload 与 Kanban：前者可键盘触发，后者支持鼠标、触摸与键盘拖拽。
+                - generic [ref=f3e8]:
+                  - article [ref=f3e9]:
+                    - generic [ref=f3e10]: FILE UPLOAD
+                    - generic [ref=f3e11]:
+                      - region [ref=f3e12]:
+                        - paragraph [ref=f3e16]: 拖入素材，或用键盘选择文件
+                        - paragraph [ref=f3e17]: PNG / JPG，最多 4 个
+                        - button "选择素材" [ref=f3e18]
+                      - button "File upload" [ref=f3e19]
+                      - generic [ref=f3e20]: File upload
+                    - paragraph [ref=f3e21]: 当前选择：尚未选择
+                  - article [ref=f3e22]:
+                    - generic [ref=f3e23]: KANBAN
+                    - generic [ref=f3e24]:
+                      - generic [ref=f3e25]:
+                        - generic [ref=f3e26]:
+                          - text: 待处理
+                          - button "拖动待处理" [ref=f3e27]
+                        - generic [ref=f3e36]:
+                          - generic [ref=f3e37]:
+                            - paragraph [ref=f3e38]: 素材审核
+                            - paragraph [ref=f3e39]: 3 个创意
+                          - button "拖动素材审核" [ref=f3e40]
+                        - generic [ref=f3e49]:
+                          - generic [ref=f3e50]:
+                            - paragraph [ref=f3e51]: 异常计划复核
+                            - paragraph [ref=f3e52]: CPA +28%
+                          - button "拖动异常计划复核" [ref=f3e53]
+                      - generic [ref=f3e61]:
+                        - generic [ref=f3e62]:
+                          - text: 进行中
+                          - button "拖动进行中" [ref=f3e63]
+                        - generic [ref=f3e72]:
+                          - generic [ref=f3e73]:
+                            - paragraph [ref=f3e74]: 预算调整预览
+                            - paragraph [ref=f3e75]: 等待确认
+                          - button "拖动预算调整预览" [ref=f3e76]
+            - generic [ref=e83]: 代表项：file-upload · kanban ｜ 只用于选型预览，产品运行时尚未安装。
+          - article [ref=e84]:
+            - generic [ref=e85]:
+              - generic [ref=e86]:
+                - generic [ref=e87]: Compiled official source
+                - heading "Animate UI" [level=3] [ref=e88]
+                - paragraph [ref=e89]: Controlled shadcn-native micro-interactions
+              - generic [ref=e90]:
+                - generic [ref=e91]: 真实交互
+                - generic [ref=e92]: 离线
+                - generic [ref=e93]: 2 个官方特性
+            - iframe [ref=e94]:
+              - main [ref=f4e3]:
+                - generic [ref=f4e4]:
+                  - generic [ref=f4e5]:
+                    - text: 04 / CONTROLLED MOTION
+                    - heading "Animate UI" [level=1] [ref=f4e6]
+                  - paragraph [ref=f4e7]: 实际运行 Ripple Button 与 Counting Number；只保留能解释状态变化的微交互。
+                - generic [ref=f4e8]:
+                  - article [ref=f4e9]:
+                    - generic [ref=f4e10]: RIPPLE BUTTON
+                    - button "更新报表数据" [ref=f4e11]
+                    - paragraph [ref=f4e12]: 点击观察官方 ripple primitive；反馈不阻塞业务动作。
+                  - article [ref=f4e13]:
+                    - generic [ref=f4e14]: COUNTING NUMBER
+                    - generic [ref=f4e15]: ¥0
+                    - generic [ref=f4e16]:
+                      - generic [ref=f4e17]: +12.4%
+                      - generic [ref=f4e18]: 今日消耗
+            - generic [ref=e95]: 代表项：components-buttons-ripple · primitives-texts-counting-number ｜ 只用于选型预览，产品运行时尚未安装。
+          - article [ref=e96]:
+            - generic [ref=e97]:
+              - generic [ref=e98]:
+                - generic [ref=e99]: Compiled official source
+                - heading "Motion Primitives" [level=3] [ref=e100]
+                - paragraph [ref=e101]: Small, refined motion primitives
+              - generic [ref=e102]:
+                - generic [ref=e103]: 真实交互
+                - generic [ref=e104]: 离线
+                - generic [ref=e105]: 2 个官方特性
+            - iframe [ref=e106]
+            - generic [ref=e107]: 代表项：animated-number · disclosure ｜ 只用于选型预览，产品运行时尚未安装。
+        - generic [ref=e108]:
+          - generic [ref=e109]:
+            - generic [ref=e110]: Approved intake
+            - heading "五库准入与使用边界" [level=2] [ref=e111]
+          - paragraph [ref=e112]: 五库完整目录已入库，并选择性缓存 21 个高频根资产；AI Elements、Kibo、Dice 正式进入具体能力选型，Animate UI、Motion Primitives 只做少量微动效对比。
+        - generic [ref=e113]:
+          - article [ref=e114]:
+            - generic [ref=e115]:
+              - generic [ref=e116]: 正式准入
+              - generic [ref=e117]: Apache-2.0
+              - generic [ref=e118]: 已缓存代表源码
+              - generic [ref=e119]: 未安装
+            - heading "Vercel AI Elements" [level=3] [ref=e120]
+            - paragraph [ref=e121]: AI-native conversation and agent interaction components
+            - paragraph [ref=e122]: 克制、产品化、接近 Vercel/shadcn 的 AI 工作台风格；重点在对话、消息、推理、工具调用和输入区，而不是炫技动效。
+            - generic [ref=e123]:
+              - generic [ref=e124]: Agent 对话
+              - generic [ref=e125]: 流式消息
+              - generic [ref=e126]: 推理折叠
+              - generic [ref=e127]: 工具调用
+              - generic [ref=e128]: 来源引用
+              - generic [ref=e129]: Prompt 输入
+            - generic [ref=e130]: 项目用法：Agent 对话、悬浮窗、消息、推理、工具调用和来源引用的首选候选；普通数据页不默认引入。
+            - paragraph [ref=e131]: catalogued-136 · starter-roots-cached-6 · not-installed
+            - generic [ref=e132]:
+              - link "官网 ↗" [ref=e133] [cursor=pointer]:
+                - /url: https://elements.ai-sdk.dev/
+              - link "文档 ↗" [ref=e134] [cursor=pointer]:
+                - /url: https://elements.ai-sdk.dev/docs
+              - link "GitHub ↗" [ref=e135] [cursor=pointer]:
+                - /url: https://github.com/vercel/ai-elements
+          - article [ref=e136]:
+            - generic [ref=e137]:
+              - generic [ref=e138]: 正式准入
+              - generic [ref=e139]: MIT
+              - generic [ref=e140]: 已缓存代表源码
+              - generic [ref=e141]: 未安装
+            - heading "Kibo UI" [level=3] [ref=e142]
+            - paragraph [ref=e143]: shadcn 的高阶功能组件补充
+            - paragraph [ref=e144]: 现代、克制、功能密度高，视觉接近成熟 SaaS；比单纯 shadcn primitive 更像可直接落业务的复杂控件。
+            - generic [ref=e145]:
+              - generic [ref=e146]: Gantt
+              - generic [ref=e147]: Kanban
+              - generic [ref=e148]: Editor
+              - generic [ref=e149]: Dropzone
+              - generic [ref=e150]: Color Picker
+              - generic [ref=e151]: Calendar
+              - generic [ref=e152]: 复杂业务组件
+            - generic [ref=e153]: 项目用法：Gantt、Kanban、Editor、Dropzone、Color Picker、复杂 Calendar 的首选候选；视觉颜色统一改为项目语义 token，不直接照搬官网配色。
+            - paragraph [ref=e154]: catalogued-69 · starter-roots-cached-6 · not-installed
+            - generic [ref=e155]:
+              - link "官网 ↗" [ref=e156] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/
+              - link "文档 ↗" [ref=e157] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/docs
+              - link "GitHub ↗" [ref=e158] [cursor=pointer]:
+                - /url: https://github.com/shadcnblocks/kibo
+          - article [ref=e159]:
+            - generic [ref=e160]:
+              - generic [ref=e161]: 正式准入
+              - generic [ref=e162]: MIT
+              - generic [ref=e163]: 已缓存代表源码
+              - generic [ref=e164]: 未安装
+            - heading "Dice UI" [level=3] [ref=e165]
+            - paragraph [ref=e166]: 可访问性优先的复杂交互组件
+            - paragraph [ref=e167]: 中性、细致、偏产品工具；交互状态比装饰更突出，适合高频操作型后台。
+            - generic [ref=e168]:
+              - generic [ref=e169]: Data Grid
+              - generic [ref=e170]: Data Table
+              - generic [ref=e171]: File Upload
+              - generic [ref=e172]: Kanban
+              - generic [ref=e173]: Media Player
+              - generic [ref=e174]: Mention
+              - generic [ref=e175]: Time Picker
+              - generic [ref=e176]: Tour
+            - generic [ref=e177]: 项目用法：Data Grid、File Upload、Kanban、Time Picker 等复杂交互的正式候选；首次使用前与 ReUI/coss/TanStack 同业务容器对比。
+            - paragraph [ref=e178]: catalogued-242 · starter-roots-cached-3 · not-installed
+            - generic [ref=e179]:
+              - link "官网 ↗" [ref=e180] [cursor=pointer]:
+                - /url: https://diceui.com/
+              - link "文档 ↗" [ref=e181] [cursor=pointer]:
+                - /url: https://diceui.com/docs/introduction
+              - link "GitHub ↗" [ref=e182] [cursor=pointer]:
+                - /url: https://github.com/sadmann7/diceui
+          - article [ref=e183]:
+            - generic [ref=e184]:
+              - generic [ref=e185]: 选择性准入
+              - generic [ref=e186]: MIT + Commons Clause
+              - generic [ref=e187]: 限制组件再分发
+              - generic [ref=e188]: 已缓存代表源码
+              - generic [ref=e189]: 未安装
+            - heading "Animate UI" [level=3] [ref=e190]
+            - paragraph [ref=e191]: shadcn 体系内的克制动效与动画 primitives
+            - paragraph [ref=e192]: 现代、流畅、比 React Bits 更克制；保留 shadcn 的产品感，同时给 Accordion、Dialog、Tabs、Button、背景和图标补统一 Motion。
+            - generic [ref=e193]:
+              - generic [ref=e194]: 交互过渡
+              - generic [ref=e195]: 动效 primitive
+              - generic [ref=e196]: 按钮反馈
+              - generic [ref=e197]: 轻背景
+              - generic [ref=e198]: 动画图标
+              - generic [ref=e199]: 局部高光
+            - generic [ref=e200]: 项目用法：只按具体微交互少量选择；每次与 Aceternity、Magic UI、React Bits、Motion Primitives 对比，遵守 Commons Clause，禁止整库默认安装。
+            - paragraph [ref=e201]: catalogued-580 · starter-roots-cached-3 · not-installed
+            - generic [ref=e202]:
+              - link "官网 ↗" [ref=e203] [cursor=pointer]:
+                - /url: https://animate-ui.com/
+              - link "文档 ↗" [ref=e204] [cursor=pointer]:
+                - /url: https://animate-ui.com/docs
+              - link "GitHub ↗" [ref=e205] [cursor=pointer]:
+                - /url: https://github.com/imskyleen/animate-ui
+          - article [ref=e206]:
+            - generic [ref=e207]:
+              - generic [ref=e208]: 选择性准入
+              - generic [ref=e209]: MIT
+              - generic [ref=e210]: 已缓存代表源码
+              - generic [ref=e211]: 未安装
+            - heading "Motion Primitives" [level=3] [ref=e212]
+            - paragraph [ref=e213]: 精致微交互和文字/布局过渡
+            - paragraph [ref=e214]: 极简、偏设计工具与编辑器气质，动效细腻而不喧闹；适合给成熟页面补微交互。
+            - generic [ref=e215]:
+              - generic [ref=e216]: 文字过渡
+              - generic [ref=e217]: Disclosure
+              - generic [ref=e218]: Dock
+              - generic [ref=e219]: Tabs
+              - generic [ref=e220]: 光标跟随
+              - generic [ref=e221]: 数字变化
+              - generic [ref=e222]: 局部布局动画
+            - generic [ref=e223]: 项目用法：只用于文字、数字、布局和局部交互的克制微动效；每次与现有动效来源对比，禁止成为业务组件底座。
+            - paragraph [ref=e224]: catalogued-33 · starter-roots-cached-3 · not-installed
+            - generic [ref=e225]:
+              - link "官网 ↗" [ref=e226] [cursor=pointer]:
+                - /url: https://motion-primitives.com/
+              - link "文档 ↗" [ref=e227] [cursor=pointer]:
+                - /url: https://motion-primitives.com/docs
+              - link "GitHub ↗" [ref=e228] [cursor=pointer]:
+                - /url: https://github.com/ibelick/motion-primitives
+        - paragraph [ref=e229]: 候选里的第三方 patterns、模板或 Sponsor 内容如果另有商业授权，必须再次拆分；不能因为主仓 MIT/Apache 就把所有外链内容都当免费。

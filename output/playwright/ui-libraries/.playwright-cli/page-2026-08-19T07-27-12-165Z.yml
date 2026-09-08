@@ -1,0 +1,831 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "Vercel wordmark Tremor is joining Vercel. Read more about our journey" [ref=e3] [cursor=pointer]:
+      - /url: https://vercel.com/blog/vercel-acquires-tremor?utm_source=tremor-site&utm_medium=banner&utm_campaign=tremor-acquisition
+      - generic [ref=e4]:
+        - img "Vercel wordmark" [ref=e5]
+        - generic [ref=e7]:
+          - text: Tremor is joining Vercel.
+          - generic [ref=e8]: Read more about our journey
+    - generic [ref=e20]:
+      - link "Tremor Raw Logo and Home Link" [ref=e22] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e25]:
+        - generic [ref=e26]:
+          - link "Components" [ref=e27] [cursor=pointer]:
+            - /url: /docs/visualizations/area-chart
+          - link "Charts" [ref=e29] [cursor=pointer]:
+            - /url: /charts
+          - link "Blocks & Templates" [ref=e31] [cursor=pointer]:
+            - /url: https://blocks.tremor.so
+          - link "Docs" [ref=e34] [cursor=pointer]:
+            - /url: /docs/getting-started/installation
+          - link "Go to GitHub Repository" [ref=e36] [cursor=pointer]:
+            - /url: https://github.com/tremorlabs/tremor
+  - main [ref=e39]:
+    - generic [ref=e40]:
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e45]: Built for
+          - generic [ref=e46]: React
+          - generic [ref=e50]: Tailwind CSS
+        - heading "React components to build charts and dashboards" [level=1] [ref=e54]
+        - paragraph [ref=e57]:
+          - generic [ref=e58]: 35+ fully open-source, accessible components for dashboards and charts. Built with React, Tailwind CSS and Radix UI.
+        - generic [ref=e60]:
+          - link "Get started" [ref=e61] [cursor=pointer]:
+            - /url: /docs/getting-started/installation
+          - link "Blocks & Templates" [ref=e62] [cursor=pointer]:
+            - /url: https://blocks.tremor.so
+      - generic [ref=e66]:
+        - generic [ref=e70]:
+          - generic [ref=e71]:
+            - heading "Portfolio Value" [level=3] [ref=e72]
+            - paragraph [ref=e73]: $25.00
+            - generic [ref=e76]:
+              - img [ref=e77]:
+                - generic [ref=e81]:
+                  - generic [ref=e82]: Aug 25
+                  - generic [ref=e84]: Aug 29
+                  - generic [ref=e86]: Sep 02
+                  - generic [ref=e88]: Sep 06
+                  - generic [ref=e90]: Sep 10
+                  - generic [ref=e92]: Sep 14
+                  - generic [ref=e94]: Sep 18
+                  - generic [ref=e96]: Sep 22
+                  - generic [ref=e98]: Sep 26
+                - generic [ref=e106] [cursor=pointer]
+                - generic [ref=e108] [cursor=pointer]
+                - generic [ref=e110] [cursor=pointer]
+              - list [ref=e114]:
+                - generic [ref=e115]:
+                  - listitem [ref=e116] [cursor=pointer]:
+                    - paragraph [ref=e118]: ETF Shares Vital
+                  - listitem [ref=e119] [cursor=pointer]:
+                    - paragraph [ref=e121]: Vitainvest Core
+                  - listitem [ref=e122] [cursor=pointer]:
+                    - paragraph [ref=e124]: iShares Tech Growth
+          - paragraph [ref=e125]: Beautiful defaults, and simple props for every component
+          - paragraph [ref=e126]: We already pushed the pixels so that you can focus on data. Customize quickly, spend less time on design.
+        - generic [ref=e130]:
+          - generic [ref=e131]:
+            - heading "Online payments" [level=3] [ref=e132]
+            - generic [ref=e133]:
+              - tablist [ref=e134]:
+                - tab "Europe" [selected] [ref=e135]
+                - tab "North America" [ref=e136]
+              - tabpanel "Europe" [ref=e138]:
+                - img [ref=e142]:
+                  - generic [ref=e146]:
+                    - generic [ref=e147]: Jan 23
+                    - generic [ref=e149]: Dec 23
+                - list [ref=e203]:
+                  - listitem [ref=e204]:
+                    - generic [ref=e205]: Successful
+                    - generic [ref=e208]: "263"
+                  - listitem [ref=e209]:
+                    - generic [ref=e210]: Refunded
+                    - generic [ref=e213]: "18"
+                  - listitem [ref=e214]:
+                    - generic [ref=e215]: Fraudulent
+                    - generic [ref=e218]: "9"
+          - paragraph [ref=e219]: Accessible by design
+          - paragraph [ref=e220]: Built on Recharts and Radix UI, Tremor provides the essentials for production-ready UI.
+        - generic [ref=e225]:
+          - generic [ref=e226]:
+            - generic [ref=e227]:
+              - text: Date (Range) Picker
+              - button "09 Aug, 2026 - 19 Aug, 2026" [ref=e228] [cursor=pointer]
+            - generic [ref=e232]:
+              - text: Range slider
+              - generic [ref=e233]:
+                - generic [ref=e234] [cursor=pointer]:
+                  - slider [ref=e238]
+                  - slider [ref=e240]
+                - generic [ref=e241]: 55 – 75
+            - generic [ref=e243]:
+              - text: Range slider with bins
+              - button "Range slider with bins" [ref=e244]: $186 - $11,768
+            - generic [ref=e245]:
+              - text: Select with groups
+              - combobox "Select with groups" [ref=e246]:
+                - generic [ref=e247]: Striped Dress Shirt
+            - generic [ref=e251]:
+              - text: Multi-Checkbox Filter
+              - button "Multi-Checkbox Filter" [ref=e252]:
+                - text: Selected Locations
+                - generic [ref=e253]: "0"
+            - generic [ref=e254]:
+              - text: Multi-Logic Filter
+              - button "Costs Is between $100.00 and $5,000.00" [ref=e255]:
+                - generic [ref=e259]: Costs
+                - generic [ref=e261]: Is between $100.00 and $5,000.00
+          - paragraph [ref=e264]: Build the most complex filters
+          - paragraph [ref=e265]: Modular input components for better interaction with your data, with full support for keyboard navigation.
+        - generic [ref=e266]:
+          - generic [ref=e270]:
+            - generic [ref=e272]:
+              - paragraph [ref=e276]: example.com
+              - paragraph [ref=e277]: 99.9% uptime
+            - paragraph [ref=e374]: Advanced visualizations
+            - paragraph [ref=e375]: Tracker, Bar Lists, and many more components to visualize complex use cases gracefully.
+          - generic [ref=e379]:
+            - generic [ref=e380]:
+              - generic [ref=e381]:
+                - generic [ref=e382]: 9.3%
+                - generic [ref=e385]: 1.9%
+                - generic [ref=e388]: 0.6%
+              - generic [ref=e391]:
+                - button "Hover me" [ref=e392]
+                - button "Click me" [ref=e397]
+                - button "Open me" [ref=e401]
+              - group [ref=e405]:
+                - radiogroup [ref=e406]:
+                  - radio [checked] [ref=e407]:
+                    - generic [ref=e411]:
+                      - text: Starter
+                      - paragraph [ref=e412]: 10k requests
+                  - radio [checked]
+                  - radio [ref=e413]:
+                    - generic [ref=e415]:
+                      - text: Premium
+                      - paragraph [ref=e416]: 50k requests
+                  - radio
+                  - radio [ref=e417]:
+                    - generic [ref=e419]:
+                      - text: Enterprise
+                      - paragraph [ref=e420]: Individual
+                  - radio
+              - tablist [ref=e423]:
+                - tab "Overview" [selected] [ref=e424]
+                - tab "Reports" [ref=e425]
+                - tab "Forecast" [ref=e426]
+            - paragraph [ref=e427]: All the helpers you need
+            - paragraph [ref=e428]: Components to enhance analytical interfaces, providing the perfect finishing touch.
+        - generic [ref=e432]:
+          - generic [ref=e433]:
+            - generic [ref=e434]:
+              - generic [ref=e435]:
+                - paragraph [ref=e436]: Storage used
+                - paragraph [ref=e437]: 1.85GB
+              - generic [ref=e438]:
+                - paragraph [ref=e439]:
+                  - generic [ref=e440]: 18.5%
+                  - generic [ref=e441]: 1.85 of 10GB
+                - progressbar "Progress bar" [ref=e442]
+            - generic [ref=e445]:
+              - paragraph [ref=e446]: Acme Holding
+              - generic [ref=e447]:
+                - paragraph [ref=e448]: $45.1K
+                - paragraph [ref=e449]:
+                  - generic [ref=e450]: +$1.1K
+                  - generic [ref=e451]: +9.1%
+            - generic [ref=e461]:
+              - progressbar "Progress circle" [ref=e462]:
+                - generic [ref=e466]: 20%
+              - generic [ref=e468]:
+                - paragraph [ref=e469]: Data Workspaces
+                - paragraph [ref=e470]: 1 of 5 used
+          - paragraph [ref=e471]: Data Bars, Spark Charts, and Progress Circles
+          - paragraph [ref=e472]: Micro visualizations to highlight even the smallest details better.
+        - generic [ref=e476]:
+          - generic [ref=e477]:
+            - paragraph [ref=e478]: Over 250 blocks and templates to give you a head start
+            - paragraph [ref=e479]: From advanced tables to pre-defined dashboards, get access to over 250 blocks and templates to kickstart your next application.
+          - table [ref=e484]:
+            - rowgroup [ref=e485]:
+              - row [ref=e486]:
+                - columnheader [ref=e487]:
+                  - checkbox "Select all" [checked=mixed] [ref=e488] [cursor=pointer]
+                - columnheader "Workspace" [ref=e489]
+                - columnheader "Owner" [ref=e490]
+                - columnheader "Status" [ref=e491]
+                - columnheader "Region" [ref=e492]
+                - columnheader "Capacity" [ref=e493]
+                - columnheader "Costs" [ref=e494]
+                - columnheader "Last edited" [ref=e495]
+            - rowgroup [ref=e496]:
+              - row [ref=e497]:
+                - cell [ref=e498]:
+                  - checkbox "Select row" [ref=e499] [cursor=pointer]
+                - cell "sales_by_day_api" [ref=e500]
+                - cell "John Doe" [ref=e501]
+                - cell "live" [ref=e502]
+                - cell "US-West 1" [ref=e503]
+                - cell "99%" [ref=e504]
+                - cell "$3,509.00" [ref=e505]
+                - cell "23/09/2023 13:00" [ref=e506]
+              - row [ref=e507]:
+                - cell [ref=e508]:
+                  - checkbox "Select row" [checked] [ref=e510] [cursor=pointer]
+                - cell "marketing_campaign" [ref=e511]
+                - cell "Jane Smith" [ref=e512]
+                - cell "live" [ref=e513]
+                - cell "US-East 2" [ref=e514]
+                - cell "80%" [ref=e515]
+                - cell "$5,720.00" [ref=e516]
+                - cell "22/09/2023 10:45" [ref=e517]
+              - row [ref=e518]:
+                - cell [ref=e519]:
+                  - checkbox "Select row" [ref=e520] [cursor=pointer]
+                - cell "sales_campaign" [ref=e521]
+                - cell "Jane Smith" [ref=e522]
+                - cell "live" [ref=e523]
+                - cell "US-East 2" [ref=e524]
+                - cell "80%" [ref=e525]
+                - cell "$5,720.00" [ref=e526]
+                - cell "22/09/2023 10:45" [ref=e527]
+              - row [ref=e528]:
+                - cell [ref=e529]:
+                  - checkbox "Select row" [checked] [ref=e531] [cursor=pointer]
+                - cell "development_env" [ref=e532]
+                - cell "Mike Johnson" [ref=e533]
+                - cell "live" [ref=e534]
+                - cell "EU-West 1" [ref=e535]
+                - cell "60%" [ref=e536]
+                - cell "$4,200.00" [ref=e537]
+                - cell "21/09/2023 14:30" [ref=e538]
+              - row [ref=e539]:
+                - cell [ref=e540]:
+                  - checkbox "Select row" [ref=e541] [cursor=pointer]
+                - cell "new_workspace_1" [ref=e542]
+                - cell "Alice Brown" [ref=e543]
+                - cell "live" [ref=e544]
+                - cell "US-West 2" [ref=e545]
+                - cell "75%" [ref=e546]
+                - cell "$2,100.00" [ref=e547]
+                - cell "24/09/2023 09:15" [ref=e548]
+              - row [ref=e549]:
+                - cell [ref=e550]:
+                  - checkbox "Select row" [ref=e551] [cursor=pointer]
+                - cell "test_environment" [ref=e552]
+                - cell "David Clark" [ref=e553]
+                - cell "inactive" [ref=e554]
+                - cell "EU-Central 1" [ref=e555]
+                - cell "40%" [ref=e556]
+                - cell "$800.00" [ref=e557]
+                - cell "25/09/2023 16:20" [ref=e558]
+    - generic [ref=e566]:
+      - region [ref=e567]:
+        - generic [ref=e568]:
+          - heading "Tremor Blocks & Templates" [level=2] [ref=e569]
+          - paragraph [ref=e570]:
+            - generic [ref=e571]: Production-ready templates to launch tomorrow
+          - paragraph [ref=e572]:
+            - generic [ref=e573]: Carefully crafted templates built by experts with the latest technology stack based on React and Next.js. Get templates for anything to build and launch your idea.
+          - generic [ref=e575]:
+            - link [ref=e576] [cursor=pointer]:
+              - /url: https://blocks.tremor.so/templates#template-dashboard
+              - img "Screenshot of dashboard template" [ref=e578]
+              - generic [ref=e579]:
+                - generic:
+                  - heading "Dashboard Template" [level=3]
+                  - paragraph: Analytical interfaces that allow your audience to better understand their data. Drive revenue and provide an advanced data visualization experience.
+                - button "View Template" [ref=e581]
+            - link [ref=e582] [cursor=pointer]:
+              - /url: https://blocks.tremor.so/templates#template-database
+              - img "Screenshots of database template" [ref=e584]
+              - generic [ref=e585]:
+                - generic:
+                  - heading "SaaS Marketing Website" [level=3]
+                  - paragraph: Launch your next idea with a beautiful website template.
+                - button "View Template" [ref=e587]
+            - link [ref=e588] [cursor=pointer]:
+              - /url: https://blocks.tremor.so/templates#template-overview
+              - img "Screenshots of overview template" [ref=e590]
+              - generic [ref=e591]:
+                - generic:
+                  - heading "Report Pages" [level=3]
+                  - paragraph: Overview dashboard pages to summarize data.
+                - button "View Template" [ref=e593]
+            - link [ref=e594] [cursor=pointer]:
+              - /url: https://blocks.tremor.so/templates#template-insights
+              - img "Screenshots of insights template" [ref=e596]
+              - generic [ref=e597]:
+                - generic:
+                  - heading "SaaS Template" [level=3]
+                  - paragraph: Feed and track your data in the best way possible. Everything you need to build your first data application.
+                - button "View Template" [ref=e599]
+            - link [ref=e600] [cursor=pointer]:
+              - /url: https://blocks.tremor.so/templates#template-solar
+              - img "Screenshots of solar template" [ref=e602]
+              - generic [ref=e603]:
+                - generic:
+                  - heading "One-Pager Website" [level=3]
+                  - paragraph: Launch your next idea with a beautiful website template. Delight in beautifully crafted illustrations, already built with Tailwind CSS v4.
+                - button "View Template" [ref=e605]
+            - link [ref=e606] [cursor=pointer]:
+              - /url: https://blocks.tremor.so/templates#template-planner
+              - img "Screenshots of planner template" [ref=e608]
+              - generic [ref=e609]:
+                - generic:
+                  - heading "Dashboard Template" [level=3]
+                  - paragraph: Simple interfaces designed to present data easily.
+                - button "View Template" [ref=e611]
+      - region [ref=e612]:
+        - heading "Customer voices on X (formely twitter)" [level=2] [ref=e614]:
+          - text: Customer voices on
+          - generic [ref=e615]: X (formely twitter)
+        - paragraph [ref=e618]: Leading developers build with Tremor
+        - list [ref=e619]:
+          - listitem [ref=e620]:
+            - figure [ref=e621]:
+              - blockquote [ref=e622]:
+                - paragraph [ref=e623]: Tremor makes it so easy to build beautiful dashboards. The ReactJS / Next.js ecosystem just keeps getting better and better.
+              - generic [ref=e624]:
+                - img "X (formerly Twitter) profile picture of user Guillermo Rauch" [ref=e625]
+                - generic [ref=e626]:
+                  - link "Guillermo Rauch" [ref=e628] [cursor=pointer]:
+                    - /url: https://twitter.com/rauchg/status/1579505020911095808
+                  - text: CEO @ Vercel
+          - listitem [ref=e630]:
+            - figure [ref=e631]:
+              - blockquote [ref=e632]:
+                - paragraph [ref=e633]: tremor.so is dope
+              - generic [ref=e634]:
+                - img "X (formerly Twitter) profile picture of user Peer Richelsen" [ref=e635]
+                - generic [ref=e636]:
+                  - link "Peer Richelsen" [ref=e638] [cursor=pointer]:
+                    - /url: https://twitter.com/peer_rich/status/1641034691577774080?s=20
+                  - text: Co-Founder @ Cal.com
+          - listitem [ref=e640]:
+            - figure [ref=e641]:
+              - blockquote [ref=e642]:
+                - paragraph [ref=e643]: Made quite some progress in the last week. Huge thanks @tremorlabs for saving me weeks of creating custom components.
+              - generic [ref=e644]:
+                - img "X (formerly Twitter) profile picture of user Eyk Rehbein" [ref=e645]
+                - generic [ref=e646]:
+                  - link "Eyk Rehbein" [ref=e648] [cursor=pointer]:
+                    - /url: https://twitter.com/thoughtsofeyk/status/1598033326396346402
+                  - text: Senior Software Engineer @ Sonic
+          - listitem [ref=e650]:
+            - figure [ref=e651]:
+              - blockquote [ref=e652]:
+                - paragraph [ref=e653]: Love how clean the dashboard library from @tremorlabs is.
+              - generic [ref=e654]:
+                - img "X (formerly Twitter) profile picture of user Anthony Morris" [ref=e655]
+                - generic [ref=e656]:
+                  - link "Anthony Morris" [ref=e658] [cursor=pointer]:
+                    - /url: https://twitter.com/amorriscode/status/1579485765129883649?s=20&t=P1zuNo5Cm-wqjX8g6yEc0A
+                  - text: Senior Software Engineer @ Stripe
+          - listitem [ref=e660]:
+            - figure [ref=e661]:
+              - blockquote [ref=e662]:
+                - paragraph [ref=e663]: We've loved working with the @tremorlabs team and contributing to the project. It's moving fast and they're releasing really meaningful changes. We expect to continue working with Tremor on additional starter kits like this one.
+              - generic [ref=e664]:
+                - img "X (formerly Twitter) profile picture of user Tinybird" [ref=e665]
+                - generic [ref=e666]:
+                  - link "Tinybird" [ref=e668] [cursor=pointer]:
+                    - /url: https://twitter.com/tinybirdco/status/1602716862818697216
+                  - text: Data platform provider
+          - listitem [ref=e670]:
+            - figure [ref=e671]:
+              - blockquote [ref=e672]:
+                - paragraph [ref=e673]: Creating dashboards quickly with @tremorlabs
+              - generic [ref=e674]:
+                - img "X (formerly Twitter) profile picture of user Drew Bredvick" [ref=e675]
+                - generic [ref=e676]:
+                  - link "Drew Bredvick" [ref=e678] [cursor=pointer]:
+                    - /url: https://twitter.com/DBredvick/status/1608603533011750912
+                  - text: Sales Engineering Manager @ Vercel
+          - listitem [ref=e680]:
+            - figure [ref=e681]:
+              - blockquote [ref=e682]:
+                - paragraph [ref=e683]: I am in love with the @tremorlabs viz library & we've been working to adopt it in our Starter Kits.
+              - generic [ref=e684]:
+                - img "X (formerly Twitter) profile picture of user Alasdair Brown" [ref=e685]
+                - generic [ref=e686]:
+                  - link "Alasdair Brown" [ref=e688] [cursor=pointer]:
+                    - /url: https://twitter.com/sdairs/status/1602656992996229121
+                  - text: DevRel Lead @ Tinybird
+          - listitem [ref=e690]:
+            - figure [ref=e691]:
+              - blockquote [ref=e692]:
+                - paragraph [ref=e693]: Tremor looks interesting. Cool React components to build dashboards tremor.so
+              - generic [ref=e694]:
+                - img "X (formerly Twitter) profile picture of user Flavio Copes" [ref=e695]
+                - generic [ref=e696]:
+                  - link "Flavio Copes" [ref=e698] [cursor=pointer]:
+                    - /url: https://twitter.com/flaviocopes/status/1622500698280566784
+                  - text: Creator of Bootcamp.dev
+          - listitem [ref=e700]:
+            - figure [ref=e701]:
+              - blockquote [ref=e702]:
+                - paragraph [ref=e703]: Fantastic set of UI modular components @tremorlabs to build dashboards with React. It comes with pre-built modular KPI cards.
+              - generic [ref=e704]:
+                - img "X (formerly Twitter) profile picture of user Andrej Baranovskij" [ref=e705]
+                - generic [ref=e706]:
+                  - link "Andrej Baranovskij" [ref=e708] [cursor=pointer]:
+                    - /url: https://twitter.com/andrejusb/status/1633846149806444551
+                  - text: Founder @ Katanaml.io
+          - listitem [ref=e710]:
+            - figure [ref=e711]:
+              - blockquote [ref=e712]:
+                - paragraph [ref=e713]: Super excited to see the Tremor release, Looking forward to using it in my side projects and maybe internally at Mentimeter :) it looks fantastic
+              - generic [ref=e714]:
+                - img "X (formerly Twitter) profile picture of user Geordi Dearns" [ref=e715]
+                - generic [ref=e716]:
+                  - link "Geordi Dearns" [ref=e718] [cursor=pointer]:
+                    - /url: https://twitter.com/geordidearns
+                  - text: Engineering Manager @ Mentimeter
+      - region [ref=e720]:
+        - heading "Get started in seconds" [level=2] [ref=e721]
+        - paragraph [ref=e722]: Copy-and-paste or NPM package? We have it.
+        - generic [ref=e723]:
+          - generic [ref=e724]:
+            - tabpanel [ref=e728]:
+              - code [ref=e731]:
+                - generic [ref=e732]: // Tremor DonutChart [v0.0.0]
+                - generic [ref=e735]: import React from "react"
+                - generic [ref=e737]: "import {"
+                - generic [ref=e739]: Pie,
+                - generic [ref=e741]: PieChart as ReChartsDonutChart,
+                - generic [ref=e743]: ResponsiveContainer,
+                - generic [ref=e745]: Sector,
+                - generic [ref=e747]: Tooltip,
+                - generic [ref=e749]: "} from \"recharts\""
+                - generic [ref=e752]: "import {"
+                - generic [ref=e754]: AvailableChartColors,
+                - generic [ref=e756]: AvailableChartColorsKeys,
+                - generic [ref=e758]: constructCategoryColors,
+                - generic [ref=e760]: getColorClassName,
+                - generic [ref=e762]: "} from \"@/lib/chartUtils\""
+                - generic [ref=e764]: "import { cx } from \"@/lib/utils\""
+                - generic [ref=e767]: "const sumNumericArray = (arr: number[]): number =>"
+                - generic [ref=e769]: arr.reduce((sum, num) => sum + num, 0)
+                - generic [ref=e772]: const parseData = (
+                - generic [ref=e774]: "data: Record<string, any>[],"
+                - generic [ref=e776]: "categoryColors: Map<string, AvailableChartColorsKeys>,"
+                - generic [ref=e778]: "category: string,"
+                - generic [ref=e780]: ) =>
+                - generic [ref=e782]: "data.map((dataPoint) => ({"
+                - generic [ref=e784]: ...dataPoint,
+                - generic [ref=e786]: "color: categoryColors.get(dataPoint[category]) || AvailableChartColors[0],"
+                - generic [ref=e788]: "className: getColorClassName("
+                - generic [ref=e790]: categoryColors.get(dataPoint[category]) || AvailableChartColors[0],
+                - generic [ref=e792]: "\"fill\","
+                - generic [ref=e794]: ),
+                - generic [ref=e796]: "}))"
+                - generic [ref=e799]: "const calculateDefaultLabel = (data: any[], valueKey: string): number =>"
+                - generic [ref=e801]: sumNumericArray(data.map((dataPoint) => dataPoint[valueKey]))
+                - generic [ref=e804]: const parseLabelInput = (
+                - generic [ref=e806]: "labelInput: string | undefined,"
+                - generic [ref=e808]: "valueFormatter: (value: number) => string,"
+                - generic [ref=e810]: "data: any[],"
+                - generic [ref=e812]: "valueKey: string,"
+                - generic [ref=e814]: "): string => labelInput || valueFormatter(calculateDefaultLabel(data, valueKey))"
+                - generic [ref=e817]: //#region Tooltip
+                - generic [ref=e820]: type TooltipProps = Pick<ChartTooltipProps, "active" | "payload">
+                - generic [ref=e823]: "type PayloadItem = {"
+                - generic [ref=e825]: "category: string"
+                - generic [ref=e827]: "value: number"
+                - generic [ref=e829]: "color: AvailableChartColorsKeys"
+                - generic [ref=e831]: "}"
+                - generic [ref=e834]: "interface ChartTooltipProps {"
+                - generic [ref=e836]: "active: boolean | undefined"
+                - generic [ref=e838]: "payload: PayloadItem[]"
+                - generic [ref=e840]: "valueFormatter: (value: number) => string"
+                - generic [ref=e842]: "}"
+                - generic [ref=e845]: "const ChartTooltip = ({"
+                - generic [ref=e847]: active,
+                - generic [ref=e849]: payload,
+                - generic [ref=e851]: valueFormatter,
+                - generic [ref=e853]: "}: ChartTooltipProps) => {"
+                - generic [ref=e855]: "if (active && payload && payload.length) {"
+                - generic [ref=e857]: return (
+                - generic [ref=e859]: <div
+                - generic [ref=e861]: "className={cx("
+                - generic [ref=e863]: // base
+                - generic [ref=e865]: "\"rounded-md border text-sm shadow-md\","
+                - generic [ref=e867]: // border color
+                - generic [ref=e869]: "\"border-gray-200 dark:border-gray-800\","
+                - generic [ref=e871]: // background color
+                - generic [ref=e873]: "\"bg-white dark:bg-gray-950\","
+                - generic [ref=e875]: ")}"
+                - generic [ref=e877]: ">"
+                - generic [ref=e879]: "<div className={cx(\"space-y-1 px-4 py-2\")}>"
+                - generic [ref=e881]: "{payload.map(({ value, category, color }, index) => ("
+                - generic [ref=e883]: <div
+                - generic [ref=e885]: "key={`id-${index}`}"
+                - generic [ref=e887]: className="flex items-center justify-between space-x-8"
+                - generic [ref=e889]: ">"
+                - generic [ref=e891]: <div className="flex items-center space-x-2">
+                - generic [ref=e893]: <span
+                - generic [ref=e895]: aria-hidden="true"
+                - generic [ref=e897]: "className={cx("
+                - generic [ref=e899]: "\"size-2 shrink-0 rounded-full\","
+                - generic [ref=e901]: getColorClassName(color, "bg"),
+                - generic [ref=e903]: ")}"
+                - generic [ref=e905]: />
+                - generic [ref=e907]: <p
+                - generic [ref=e909]: "className={cx("
+                - generic [ref=e911]: // base
+                - generic [ref=e913]: "\"whitespace-nowrap text-right\","
+                - generic [ref=e915]: // text col dark:text-gray-500or
+                - generic [ref=e917]: "\"text-gray-700 dark:text-gray-300\","
+                - generic [ref=e919]: ")}"
+                - generic [ref=e921]: ">"
+                - generic [ref=e923]: "{category}"
+                - generic [ref=e925]: </p>
+                - generic [ref=e927]: </div>
+                - generic [ref=e929]: <p
+                - generic [ref=e931]: "className={cx("
+                - generic [ref=e933]: // base
+                - generic [ref=e935]: "\"whitespace-nowrap text-right font-medium tabular-nums\","
+                - generic [ref=e937]: // text color
+                - generic [ref=e939]: "\"text-gray-900 dark:text-gray-50\","
+                - generic [ref=e941]: ")}"
+                - generic [ref=e943]: ">"
+                - generic [ref=e945]: "{valueFormatter(value)}"
+                - generic [ref=e947]: </p>
+                - generic [ref=e949]: </div>
+                - generic [ref=e951]: "))}"
+                - generic [ref=e953]: </div>
+                - generic [ref=e955]: </div>
+                - generic [ref=e957]: )
+                - generic [ref=e959]: "}"
+                - generic [ref=e961]: return null
+                - generic [ref=e963]: "}"
+                - generic [ref=e966]: "const renderInactiveShape = (props: any) => {"
+                - generic [ref=e968]: "const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, className } ="
+                - generic [ref=e970]: props
+                - generic [ref=e973]: return (
+                - generic [ref=e975]: <Sector
+                - generic [ref=e977]: "cx={cx}"
+                - generic [ref=e979]: "cy={cy}"
+                - generic [ref=e981]: "innerRadius={innerRadius}"
+                - generic [ref=e983]: "outerRadius={outerRadius}"
+                - generic [ref=e985]: "startAngle={startAngle}"
+                - generic [ref=e987]: "endAngle={endAngle}"
+                - generic [ref=e989]: "className={className}"
+                - generic [ref=e991]: fill=""
+                - generic [ref=e993]: "opacity={0.3}"
+                - generic [ref=e995]: "style={{ outline: \"none\" }}"
+                - generic [ref=e997]: />
+                - generic [ref=e999]: )
+                - generic [ref=e1001]: "}"
+                - generic [ref=e1004]: type DonutChartVariant = "donut" | "pie"
+                - generic [ref=e1007]: "type BaseEventProps = {"
+                - generic [ref=e1009]: "eventType: \"sector\""
+                - generic [ref=e1011]: "categoryClicked: string"
+                - generic [ref=e1013]: "[key: string]: number | string"
+                - generic [ref=e1015]: "}"
+                - generic [ref=e1018]: type DonutChartEventProps = BaseEventProps | null | undefined
+                - generic [ref=e1021]: "interface DonutChartProps extends React.HTMLAttributes<HTMLDivElement> {"
+                - generic [ref=e1023]: "data: Record<string, any>[]"
+                - generic [ref=e1025]: "category: string"
+                - generic [ref=e1027]: "value: string"
+                - generic [ref=e1029]: "colors?: AvailableChartColorsKeys[]"
+                - generic [ref=e1031]: "variant?: DonutChartVariant"
+                - generic [ref=e1033]: "valueFormatter?: (value: number) => string"
+                - generic [ref=e1035]: "label?: string"
+                - generic [ref=e1037]: "showLabel?: boolean"
+                - generic [ref=e1039]: "showTooltip?: boolean"
+                - generic [ref=e1041]: "onValueChange?: (value: DonutChartEventProps) => void"
+                - generic [ref=e1043]: "tooltipCallback?: (tooltipCallbackContent: TooltipProps) => void"
+                - generic [ref=e1045]: "customTooltip?: React.ComponentType<TooltipProps>"
+                - generic [ref=e1047]: "}"
+                - generic [ref=e1050]: const DonutChart = React.forwardRef<HTMLDivElement, DonutChartProps>(
+                - generic [ref=e1052]: (
+                - generic [ref=e1054]: "{"
+                - generic [ref=e1056]: data = [],
+                - generic [ref=e1058]: value,
+                - generic [ref=e1060]: category,
+                - generic [ref=e1062]: colors = AvailableChartColors,
+                - generic [ref=e1064]: variant = "donut",
+                - generic [ref=e1066]: "valueFormatter = (value: number) => value.toString(),"
+                - generic [ref=e1068]: label,
+                - generic [ref=e1070]: showLabel = false,
+                - generic [ref=e1072]: showTooltip = true,
+                - generic [ref=e1074]: onValueChange,
+                - generic [ref=e1076]: tooltipCallback,
+                - generic [ref=e1078]: customTooltip,
+                - generic [ref=e1080]: className,
+                - generic [ref=e1082]: ...other
+                - generic [ref=e1084]: "},"
+                - generic [ref=e1086]: forwardedRef,
+                - generic [ref=e1088]: ") => {"
+                - generic [ref=e1090]: const CustomTooltip = customTooltip
+                - generic [ref=e1092]: const [activeIndex, setActiveIndex] = React.useState<number | undefined>(
+                - generic [ref=e1094]: undefined,
+                - generic [ref=e1096]: )
+                - generic [ref=e1098]: const isDonut = variant === "donut"
+                - generic [ref=e1100]: const parsedLabelInput = parseLabelInput(label, valueFormatter, data, value)
+                - generic [ref=e1103]: const categories = Array.from(new Set(data.map((item) => item[category])))
+                - generic [ref=e1105]: const categoryColors = constructCategoryColors(categories, colors)
+                - generic [ref=e1108]: const prevActiveRef = React.useRef<boolean | undefined>(undefined)
+                - generic [ref=e1110]: const prevCategoryRef = React.useRef<string | undefined>(undefined)
+                - generic [ref=e1113]: const handleShapeClick = (
+                - generic [ref=e1115]: "data: any,"
+                - generic [ref=e1117]: "index: number,"
+                - generic [ref=e1119]: "event: React.MouseEvent,"
+                - generic [ref=e1121]: ") => {"
+                - generic [ref=e1123]: event.stopPropagation()
+                - generic [ref=e1125]: if (!onValueChange) return
+                - generic [ref=e1128]: "if (activeIndex === index) {"
+                - generic [ref=e1130]: setActiveIndex(undefined)
+                - generic [ref=e1132]: onValueChange(null)
+                - generic [ref=e1134]: "} else {"
+                - generic [ref=e1136]: setActiveIndex(index)
+                - generic [ref=e1138]: "onValueChange({"
+                - generic [ref=e1140]: "eventType: \"sector\","
+                - generic [ref=e1142]: "categoryClicked: data.payload[category],"
+                - generic [ref=e1144]: ...data.payload,
+                - generic [ref=e1146]: "})"
+                - generic [ref=e1148]: "}"
+                - generic [ref=e1150]: "}"
+                - generic [ref=e1153]: return (
+                - generic [ref=e1155]: "<div ref={forwardedRef} className={cx(\"h-40 w-40\", className)} {...other}>"
+                - generic [ref=e1157]: <ResponsiveContainer className="size-full">
+                - generic [ref=e1159]: <ReChartsDonutChart
+                - generic [ref=e1161]: "onClick={"
+                - generic [ref=e1163]: onValueChange && activeIndex !== undefined
+                - generic [ref=e1165]: "? () => {"
+                - generic [ref=e1167]: setActiveIndex(undefined)
+                - generic [ref=e1169]: onValueChange(null)
+                - generic [ref=e1171]: "}"
+                - generic [ref=e1173]: ": undefined"
+                - generic [ref=e1175]: "}"
+                - generic [ref=e1177]: "margin={{ top: 0, left: 0, right: 0, bottom: 0 }}"
+                - generic [ref=e1179]: ">"
+                - generic [ref=e1181]: "{showLabel && isDonut && ("
+                - generic [ref=e1183]: <text
+                - generic [ref=e1185]: className="fill-gray-700 dark:fill-gray-300"
+                - generic [ref=e1187]: x="50%"
+                - generic [ref=e1189]: y="50%"
+                - generic [ref=e1191]: textAnchor="middle"
+                - generic [ref=e1193]: dominantBaseline="middle"
+                - generic [ref=e1195]: ">"
+                - generic [ref=e1197]: "{parsedLabelInput}"
+                - generic [ref=e1199]: </text>
+                - generic [ref=e1201]: ")}"
+                - generic [ref=e1203]: <Pie
+                - generic [ref=e1205]: "className={cx("
+                - generic [ref=e1207]: "\"stroke-white dark:stroke-gray-950 [&_.recharts-pie-sector]:outline-hidden\","
+                - generic [ref=e1209]: "onValueChange ? \"cursor-pointer\" : \"cursor-default\","
+                - generic [ref=e1211]: ")}"
+                - generic [ref=e1213]: "data={parseData(data, categoryColors, category)}"
+                - generic [ref=e1215]: cx="50%"
+                - generic [ref=e1217]: cy="50%"
+                - generic [ref=e1219]: "startAngle={90}"
+                - generic [ref=e1221]: "endAngle={-270}"
+                - generic [ref=e1223]: "innerRadius={isDonut ? \"75%\" : \"0%\"}"
+                - generic [ref=e1225]: outerRadius="100%"
+                - generic [ref=e1227]: stroke=""
+                - generic [ref=e1229]: strokeLinejoin="round"
+                - generic [ref=e1231]: "dataKey={value}"
+                - generic [ref=e1233]: "nameKey={category}"
+                - generic [ref=e1235]: "isAnimationActive={false}"
+                - generic [ref=e1237]: "onClick={handleShapeClick}"
+                - generic [ref=e1239]: "activeIndex={activeIndex}"
+                - generic [ref=e1241]: "inactiveShape={renderInactiveShape}"
+                - generic [ref=e1243]: "style={{ outline: \"none\" }}"
+                - generic [ref=e1245]: />
+                - generic [ref=e1247]: "{showTooltip && ("
+                - generic [ref=e1249]: <Tooltip
+                - generic [ref=e1251]: "wrapperStyle={{ outline: \"none\" }}"
+                - generic [ref=e1253]: "isAnimationActive={false}"
+                - generic [ref=e1255]: "content={({ active, payload }) => {"
+                - generic [ref=e1257]: const cleanPayload = payload
+                - generic [ref=e1259]: "? payload.map((item: any) => ({"
+                - generic [ref=e1261]: "category: item.payload[category],"
+                - generic [ref=e1263]: "value: item.value,"
+                - generic [ref=e1265]: "color: categoryColors.get("
+                - generic [ref=e1267]: item.payload[category],
+                - generic [ref=e1269]: ) as AvailableChartColorsKeys,
+                - generic [ref=e1271]: "}))"
+                - generic [ref=e1273]: ": []"
+                - generic [ref=e1276]: "const payloadCategory: string = cleanPayload[0]?.category"
+                - generic [ref=e1279]: if (
+                - generic [ref=e1281]: tooltipCallback &&
+                - generic [ref=e1283]: (active !== prevActiveRef.current ||
+                - generic [ref=e1285]: payloadCategory !== prevCategoryRef.current)
+                - generic [ref=e1287]: ") {"
+                - generic [ref=e1289]: "tooltipCallback({"
+                - generic [ref=e1291]: active,
+                - generic [ref=e1293]: "payload: cleanPayload,"
+                - generic [ref=e1295]: "})"
+                - generic [ref=e1297]: prevActiveRef.current = active
+                - generic [ref=e1299]: prevCategoryRef.current = payloadCategory
+                - generic [ref=e1301]: "}"
+                - generic [ref=e1304]: return showTooltip && active ? (
+                - generic [ref=e1306]: CustomTooltip ? (
+                - generic [ref=e1308]: "<CustomTooltip active={active} payload={cleanPayload} />"
+                - generic [ref=e1310]: ") : ("
+                - generic [ref=e1312]: <ChartTooltip
+                - generic [ref=e1314]: "active={active}"
+                - generic [ref=e1316]: "payload={cleanPayload}"
+                - generic [ref=e1318]: "valueFormatter={valueFormatter}"
+                - generic [ref=e1320]: />
+                - generic [ref=e1322]: )
+                - generic [ref=e1324]: ") : null"
+                - generic [ref=e1326]: "}}"
+                - generic [ref=e1328]: />
+                - generic [ref=e1330]: ")}"
+                - generic [ref=e1332]: </ReChartsDonutChart>
+                - generic [ref=e1334]: </ResponsiveContainer>
+                - generic [ref=e1336]: </div>
+                - generic [ref=e1338]: )
+                - generic [ref=e1340]: "},"
+                - generic [ref=e1342]: )
+                - generic [ref=e1345]: DonutChart.displayName = "DonutChart"
+                - generic [ref=e1348]: "export { DonutChart, type DonutChartEventProps, type TooltipProps }"
+            - heading "Tremor copy-and-paste" [level=3] [ref=e1352]
+            - paragraph [ref=e1353]: Full customization with our copy-and-paste React components.
+            - list [ref=e1354]:
+              - listitem [ref=e1355]:
+                - heading "35+" [level=3] [ref=e1356]
+                - paragraph [ref=e1357]: Unique Components
+              - listitem [ref=e1358]:
+                - heading "300+" [level=3] [ref=e1359]
+                - paragraph [ref=e1360]: Block examples
+          - generic [ref=e1361]:
+            - tabpanel [ref=e1365]:
+              - code [ref=e1368]:
+                - generic [ref=e1369]: "import { DonutChart } from '@tremor/react';"
+                - generic [ref=e1372]: "export function DonutChartUsageExample() {"
+                - generic [ref=e1374]: return (
+                - generic [ref=e1376]: <DonutChart
+                - generic [ref=e1378]: "data={sales}"
+                - generic [ref=e1380]: category="sales"
+                - generic [ref=e1382]: index="name"
+                - generic [ref=e1384]: "valueFormatter={valueFormatter}"
+                - generic [ref=e1386]: "colors={['blue', 'cyan', 'indigo', 'violet', 'fuchsia']}"
+                - generic [ref=e1388]: className="w-40"
+                - generic [ref=e1390]: />
+                - generic [ref=e1392]: );
+                - generic [ref=e1394]: "}"
+            - heading "NPM Package" [level=3] [ref=e1398]
+            - paragraph [ref=e1399]: Get started quickly with a basic set of importable components.
+            - list [ref=e1400]:
+              - listitem [ref=e1401]:
+                - heading "15K+" [level=3] [ref=e1402]
+                - paragraph [ref=e1403]: Stargazers on GitHub
+              - listitem [ref=e1404]:
+                - heading "300K+" [level=3] [ref=e1405]
+                - paragraph [ref=e1406]: Monthly downloads
+  - contentinfo [ref=e1407]:
+    - generic [ref=e1408]:
+      - heading "Footer" [level=2] [ref=e1409]
+      - generic [ref=e1410]:
+        - generic [ref=e1411]:
+          - generic [ref=e1412]:
+            - generic [ref=e1413]:
+              - heading "Products" [level=3] [ref=e1414]
+              - list [ref=e1415]:
+                - listitem [ref=e1416]:
+                  - link "Tremor Templates" [ref=e1417] [cursor=pointer]:
+                    - /url: https://blocks.tremor.so
+                - listitem [ref=e1421]:
+                  - link "Tremor NPM Package" [ref=e1422] [cursor=pointer]:
+                    - /url: https://npm.tremor.so
+                - listitem [ref=e1426]:
+                  - link "Tremor Figma UI Kit" [ref=e1427] [cursor=pointer]:
+                    - /url: https://tremor.so/figma
+            - generic [ref=e1431]:
+              - heading "Support" [level=3] [ref=e1432]
+              - list [ref=e1433]:
+                - listitem [ref=e1434]:
+                  - link "Documentation" [ref=e1435] [cursor=pointer]:
+                    - /url: /docs/getting-started/installation
+                - listitem [ref=e1437]:
+                  - link "Changelog" [ref=e1438] [cursor=pointer]:
+                    - /url: /changelog
+          - generic [ref=e1440]:
+            - generic [ref=e1441]:
+              - heading "Company" [level=3] [ref=e1442]
+              - list [ref=e1443]:
+                - listitem [ref=e1444]:
+                  - link "Contact us" [ref=e1445] [cursor=pointer]:
+                    - /url: mailto:hello@tremor.so
+            - generic [ref=e1449]:
+              - heading "Legal" [level=3] [ref=e1450]
+              - list [ref=e1451]:
+                - listitem [ref=e1452]:
+                  - link "Imprint" [ref=e1453] [cursor=pointer]:
+                    - /url: /imprint
+                - listitem [ref=e1455]:
+                  - link "Privacy" [ref=e1456] [cursor=pointer]:
+                    - /url: /privacy
+                - listitem [ref=e1458]:
+                  - link "Terms and Conditions" [ref=e1459] [cursor=pointer]:
+                    - /url: /terms
+                - listitem [ref=e1461]:
+                  - link "Contributors" [ref=e1462] [cursor=pointer]:
+                    - /url: /contributors
+        - generic [ref=e1464]:
+          - heading "Subscribe to our newsletter" [level=3] [ref=e1465]
+          - paragraph [ref=e1466]: We send 3-5 newsletters a year. Promised.
+          - generic [ref=e1468]:
+            - generic [ref=e1469]:
+              - textbox "Subscribe via email" [disabled]
+            - button "Subscribe" [disabled]
+      - generic [ref=e1472]:
+        - paragraph [ref=e1473]: © 2025 Tremor Labs, Inc. All rights reserved.
+        - generic [ref=e1474]:
+          - link "GitHub" [ref=e1475] [cursor=pointer]:
+            - /url: https://github.com/tremorlabs/tremor
+          - link "X" [ref=e1479] [cursor=pointer]:
+            - /url: https://twitter.com/tremorlabs
+  - alert [ref=e1483]
+  - generic [ref=e1484]: Jan 23

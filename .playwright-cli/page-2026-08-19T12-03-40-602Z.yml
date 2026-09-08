@@ -1,0 +1,1743 @@
+- generic [active] [ref=f1e1]:
+  - link "跳到内容" [ref=f1e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f1e3]:
+    - complementary "展厅导航" [ref=f1e4]:
+      - generic [ref=f1e5]:
+        - generic [ref=f1e6]: UI
+        - generic [ref=f1e7]:
+          - strong [ref=f1e8]: 投放 Agent
+          - text: Asset field guide
+      - navigation [ref=f1e9]:
+        - button "01 总览与风格 12" [ref=f1e10] [cursor=pointer]:
+          - generic [ref=f1e11]: "01"
+          - generic [ref=f1e12]: 总览与风格
+          - generic [ref=f1e13]: "12"
+        - button "02 全量清单 5,936" [ref=f1e14] [cursor=pointer]:
+          - generic [ref=f1e15]: "02"
+          - generic [ref=f1e16]: 全量清单
+          - generic [ref=f1e17]: 5,936
+        - button "03 付费替代 2,160" [ref=f1e18] [cursor=pointer]:
+          - generic [ref=f1e19]: "03"
+          - generic [ref=f1e20]: 付费替代
+          - generic [ref=f1e21]: 2,160
+        - button "04 本地源码 93" [ref=f1e22] [cursor=pointer]:
+          - generic [ref=f1e23]: "04"
+          - generic [ref=f1e24]: 本地源码
+          - generic [ref=f1e25]: "93"
+        - button "05 主题展厅 42" [ref=f1e26] [cursor=pointer]:
+          - generic [ref=f1e27]: "05"
+          - generic [ref=f1e28]: 主题展厅
+          - generic [ref=f1e29]: "42"
+        - button "06 新库候选 5" [ref=f1e30] [cursor=pointer]:
+          - generic [ref=f1e31]: "06"
+          - generic [ref=f1e32]: 新库候选
+          - generic [ref=f1e33]: "5"
+      - generic [ref=f1e34]: 离线可用本页内嵌全部目录和替代数据，不依赖网络加载；外部链接仅在你主动打开时访问官网。
+    - main [ref=f1e35]:
+      - generic [ref=f1e36]:
+        - generic [ref=f1e37]: 官方目录快照 · 2026-08-19
+        - generic [ref=f1e39]: 目录 ≠ 运行时安装 · 缓存 ≠ 已接入
+      - text: s c T A
+      - generic [ref=f1e41]:
+        - generic [ref=f1e42]:
+          - generic [ref=f1e43]:
+            - generic [ref=f1e44]: Legal replacements
+            - heading "2,160 个付费项的免费替代" [level=2] [ref=f1e45]
+          - paragraph [ref=f1e46]: 顺序是同品牌 Free → 专项开源库 → 当前目录同能力 → 项目自有组合层。这里不会提供绕会员或未授权源码。
+        - generic [ref=f1e47]:
+          - generic [ref=f1e48]:
+            - generic [ref=f1e49]: 搜索付费项
+            - searchbox "搜索付费项" [ref=f1e50]
+          - generic [ref=f1e51]:
+            - generic [ref=f1e52]: 付费来源
+            - combobox "付费来源" [ref=f1e53]:
+              - option "全部付费来源" [selected]
+              - option "aceternity"
+              - option "magic-ui-pro"
+              - option "react-bits-pro"
+              - option "reui"
+          - generic [ref=f1e54]:
+            - generic [ref=f1e55]: 分类
+            - combobox "分类" [ref=f1e56]:
+              - option "全部分类" [selected]
+              - option "abstract"
+              - option "agent-kit/prompts"
+              - option "agent-kit/recipes"
+              - option "agent-kit/skills"
+              - option "app-ui/agent-activity"
+              - option "app-ui/agent-approval"
+              - option "app-ui/agent-plan"
+              - option "app-ui/ai-chat"
+              - option "app-ui/ai-usage"
+              - option "app-ui/analytics"
+              - option "app-ui/app-dialog"
+              - option "app-ui/app-shell"
+              - option "app-ui/app-sidebar"
+              - option "app-ui/authentication"
+              - option "app-ui/billing"
+              - option "app-ui/card"
+              - option "app-ui/chat"
+              - option "app-ui/command-menu"
+              - option "app-ui/comments"
+              - option "app-ui/dashboard"
+              - option "app-ui/data-table"
+              - option "app-ui/editor"
+              - option "app-ui/empty-state"
+              - option "app-ui/feedback"
+              - option "app-ui/file-manager"
+              - option "app-ui/filtering"
+              - option "app-ui/forms"
+              - option "app-ui/integrations"
+              - option "app-ui/kanban"
+              - option "app-ui/list"
+              - option "app-ui/mobile"
+              - option "app-ui/monitoring"
+              - option "app-ui/navbar"
+              - option "app-ui/notifications"
+              - option "app-ui/onboarding"
+              - option "app-ui/paywall"
+              - option "app-ui/prompt-input"
+              - option "app-ui/scheduling"
+              - option "app-ui/settings-form"
+              - option "app-ui/support"
+              - option "app-ui/tool-calls"
+              - option "app-ui/wizard"
+              - option "application"
+              - option "archive"
+              - option "arrow"
+              - option "backgrounds"
+              - option "bento-grids"
+              - option "blog-content-sections"
+              - option "blog-sections"
+              - option "burger-menu"
+              - option "business"
+              - option "call-to-action"
+              - option "cards"
+              - option "carousel"
+              - option "communication"
+              - option "component"
+              - option "contact-sections"
+              - option "cta-sections"
+              - option "data-grid"
+              - option "delivery-logistics"
+              - option "design"
+              - option "devices"
+              - option "ecommerce"
+              - option "education"
+              - option "emoji"
+              - option "empty-states"
+              - option "faq"
+              - option "faqs"
+              - option "feature"
+              - option "feature-cards"
+              - option "feature-scroll"
+              - option "feature-sections"
+              - option "feature-slideshow"
+              - option "files-folders"
+              - option "finance"
+              - option "footer"
+              - option "footers"
+              - option "general"
+              - option "grid"
+              - option "header"
+              - option "hero"
+              - option "hero-sections"
+              - option "illustrations"
+              - option "it-network"
+              - option "location"
+              - option "login-and-signup-sections"
+              - option "logo-clouds"
+              - option "marketing"
+              - option "medicine"
+              - option "navbars"
+              - option "notifications"
+              - option "page-block/404"
+              - option "page-block/about"
+              - option "page-block/auth"
+              - option "page-block/blog"
+              - option "page-block/comparison"
+              - option "page-block/contact"
+              - option "page-block/cta"
+              - option "page-block/download"
+              - option "page-block/ecommerce"
+              - option "page-block/faq"
+              - option "page-block/features"
+              - option "page-block/footer"
+              - option "page-block/hero-section"
+              - option "page-block/how-it-works"
+              - option "page-block/navigation"
+              - option "page-block/pricing"
+              - option "page-block/profile"
+              - option "page-block/showcase"
+              - option "page-block/social-proof"
+              - option "page-block/stats"
+              - option "page-block/waitlist"
+              - option "pricing"
+              - option "pricing-sections"
+              - option "pro-category"
+              - option "security"
+              - option "settings"
+              - option "shaders"
+              - option "sidebars"
+              - option "social-media"
+              - option "social-proof"
+              - option "software"
+              - option "solutions"
+              - option "stats-sections"
+              - option "support"
+              - option "team-sections"
+              - option "technologies"
+              - option "template"
+              - option "testimonials"
+              - option "text-animations"
+              - option "time"
+              - option "typography"
+              - option "users"
+              - option "weather"
+        - generic [ref=f1e57]:
+          - generic [ref=f1e58]:
+            - strong [ref=f1e59]: 2,160
+            - text: 个付费项
+          - generic [ref=f1e60]: 每项最多显示 3 个最近替代
+        - generic [ref=f1e61]:
+          - article [ref=f1e62]:
+            - generic [ref=f1e63]:
+              - generic [ref=f1e64]:
+                - generic [ref=f1e65]: aceternity / block
+                - heading "Backgrounds" [level=3] [ref=f1e66]
+              - generic [ref=f1e67]: 付费源码
+            - paragraph [ref=f1e68]: A set of beautiful, creative backgrounds for landing pages
+            - generic [ref=f1e69]:
+              - generic [ref=f1e70]:
+                - generic [ref=f1e71]: 分类
+                - generic "pro-category" [ref=f1e72]
+              - generic [ref=f1e73]:
+                - generic [ref=f1e74]: 适配
+                - generic [ref=f1e75]: medium-high
+              - generic [ref=f1e76]:
+                - generic [ref=f1e77]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e78]
+              - generic [ref=f1e79]:
+                - generic [ref=f1e80]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e81]
+            - generic [ref=f1e82]:
+              - link "预览 ↗" [ref=f1e83] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds
+              - link "官方入口 ↗" [ref=f1e84] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds
+            - group [ref=f1e85]:
+              - generic "免费替代 · 3 个" [ref=f1e86] [cursor=pointer]
+              - generic [ref=f1e87]:
+                - generic [ref=f1e88]:
+                  - generic [ref=f1e89]:
+                    - generic [ref=f1e90]: catalog-asset
+                    - generic [ref=f1e91]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e92]: Aurora Background
+                  - paragraph [ref=f1e93]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：motion-animation。
+                  - paragraph [ref=f1e94]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e95]:
+                    - link "预览 ↗" [ref=f1e96] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/aurora-background
+                    - link "源码 ↗" [ref=f1e97] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/aurora-background.json
+                - generic [ref=f1e98]:
+                  - generic [ref=f1e99]:
+                    - generic [ref=f1e100]: external-oss
+                    - generic [ref=f1e101]: MIT
+                  - strong [ref=f1e102]: Animate UI
+                  - paragraph [ref=f1e103]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e104]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e105]:
+                    - link "预览 ↗" [ref=f1e106] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e107] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e108]:
+                  - generic [ref=f1e109]:
+                    - generic [ref=f1e110]: external-oss
+                    - generic [ref=f1e111]: MIT
+                  - strong [ref=f1e112]: Motion Primitives
+                  - paragraph [ref=f1e113]: 精致微交互和文字/布局过渡；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e114]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；React + Tailwind CSS + Motion；不是本项目 primitive 底座，按需复制并接 token。
+                  - generic [ref=f1e115]:
+                    - link "预览 ↗" [ref=f1e116] [cursor=pointer]:
+                      - /url: https://motion-primitives.com/
+                    - link "源码 ↗" [ref=f1e117] [cursor=pointer]:
+                      - /url: https://github.com/ibelick/motion-primitives
+          - article [ref=f1e118]:
+            - generic [ref=f1e119]:
+              - generic [ref=f1e120]:
+                - generic [ref=f1e121]: aceternity / block
+                - heading "Background Grid with Dots" [level=3] [ref=f1e122]
+              - generic [ref=f1e123]: 付费源码
+            - paragraph [ref=f1e124]: An SVG-based grid pattern with dots at intersections. Features customizable grid size, dot radius, and colors with automatic dark mode support and radial fade effect.
+            - generic [ref=f1e125]:
+              - generic [ref=f1e126]:
+                - generic [ref=f1e127]: 分类
+                - generic "backgrounds" [ref=f1e128]
+              - generic [ref=f1e129]:
+                - generic [ref=f1e130]: 适配
+                - generic [ref=f1e131]: medium-high
+              - generic [ref=f1e132]:
+                - generic [ref=f1e133]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e134]
+              - generic [ref=f1e135]:
+                - generic [ref=f1e136]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e137]
+            - generic [ref=f1e138]:
+              - link "预览 ↗" [ref=f1e139] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-grid-with-dots
+              - link "官方入口 ↗" [ref=f1e140] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-grid-with-dots
+            - group [ref=f1e141]:
+              - generic "免费替代 · 3 个" [ref=f1e142] [cursor=pointer]
+              - generic [ref=f1e143]:
+                - generic [ref=f1e144]:
+                  - generic [ref=f1e145]:
+                    - generic [ref=f1e146]: catalog-asset
+                    - generic [ref=f1e147]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e148]: Background Lines
+                  - paragraph [ref=f1e149]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：background-effects、marketing-section、motion-animation。
+                  - paragraph [ref=f1e150]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e151]:
+                    - link "预览 ↗" [ref=f1e152] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/background-lines
+                    - link "源码 ↗" [ref=f1e153] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/background-lines.json
+                - generic [ref=f1e154]:
+                  - generic [ref=f1e155]:
+                    - generic [ref=f1e156]: external-oss
+                    - generic [ref=f1e157]: MIT
+                  - strong [ref=f1e158]: Animate UI
+                  - paragraph [ref=f1e159]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e160]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e161]:
+                    - link "预览 ↗" [ref=f1e162] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e163] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e164]:
+                  - generic [ref=f1e165]:
+                    - generic [ref=f1e166]: catalog-asset
+                    - generic [ref=f1e167]: MIT
+                  - strong [ref=f1e168]: Animated Grid Pattern
+                  - paragraph [ref=f1e169]: 当前维护的公开源码候选，共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e170]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e171]:
+                    - link "预览 ↗" [ref=f1e172] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/animated-grid-pattern
+                    - link "源码 ↗" [ref=f1e173] [cursor=pointer]:
+                      - /url: https://magicui.design/r/animated-grid-pattern.json
+          - article [ref=f1e174]:
+            - generic [ref=f1e175]:
+              - generic [ref=f1e176]:
+                - generic [ref=f1e177]: aceternity / block
+                - heading "Background Grid with Dots and Animations" [level=3] [ref=f1e178]
+              - generic [ref=f1e179]: 付费源码
+            - paragraph [ref=f1e180]: An interactive SVG grid background with line distortion and dot movement effects on mouse hover. Features performance-optimized animations using requestAnimationFrame, customizable highlight colors, and automatic dark mode support.
+            - generic [ref=f1e181]:
+              - generic [ref=f1e182]:
+                - generic [ref=f1e183]: 分类
+                - generic "backgrounds" [ref=f1e184]
+              - generic [ref=f1e185]:
+                - generic [ref=f1e186]: 适配
+                - generic [ref=f1e187]: medium-high
+              - generic [ref=f1e188]:
+                - generic [ref=f1e189]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e190]
+              - generic [ref=f1e191]:
+                - generic [ref=f1e192]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e193]
+            - generic [ref=f1e194]:
+              - link "预览 ↗" [ref=f1e195] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-grid-with-dots-and-animations
+              - link "官方入口 ↗" [ref=f1e196] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-grid-with-dots-and-animations
+            - group [ref=f1e197]:
+              - generic "免费替代 · 3 个" [ref=f1e198] [cursor=pointer]
+              - generic [ref=f1e199]:
+                - generic [ref=f1e200]:
+                  - generic [ref=f1e201]:
+                    - generic [ref=f1e202]: catalog-asset
+                    - generic [ref=f1e203]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e204]: Background Lines
+                  - paragraph [ref=f1e205]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：background-effects、marketing-section、motion-animation。
+                  - paragraph [ref=f1e206]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e207]:
+                    - link "预览 ↗" [ref=f1e208] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/background-lines
+                    - link "源码 ↗" [ref=f1e209] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/background-lines.json
+                - generic [ref=f1e210]:
+                  - generic [ref=f1e211]:
+                    - generic [ref=f1e212]: external-oss
+                    - generic [ref=f1e213]: MIT
+                  - strong [ref=f1e214]: Animate UI
+                  - paragraph [ref=f1e215]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e216]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e217]:
+                    - link "预览 ↗" [ref=f1e218] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e219] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e220]:
+                  - generic [ref=f1e221]:
+                    - generic [ref=f1e222]: catalog-asset
+                    - generic [ref=f1e223]: MIT
+                  - strong [ref=f1e224]: Animated Grid Pattern
+                  - paragraph [ref=f1e225]: 当前维护的公开源码候选，共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e226]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e227]:
+                    - link "预览 ↗" [ref=f1e228] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/animated-grid-pattern
+                    - link "源码 ↗" [ref=f1e229] [cursor=pointer]:
+                      - /url: https://magicui.design/r/animated-grid-pattern.json
+          - article [ref=f1e230]:
+            - generic [ref=f1e231]:
+              - generic [ref=f1e232]:
+                - generic [ref=f1e233]: aceternity / block
+                - heading "Background Dots" [level=3] [ref=f1e234]
+              - generic [ref=f1e235]: 付费源码
+            - paragraph [ref=f1e236]: A CSS-only dotted pattern background using radial gradients. Lightweight alternative to SVG or canvas-based patterns with automatic dark mode support.
+            - generic [ref=f1e237]:
+              - generic [ref=f1e238]:
+                - generic [ref=f1e239]: 分类
+                - generic "backgrounds" [ref=f1e240]
+              - generic [ref=f1e241]:
+                - generic [ref=f1e242]: 适配
+                - generic [ref=f1e243]: medium-high
+              - generic [ref=f1e244]:
+                - generic [ref=f1e245]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e246]
+              - generic [ref=f1e247]:
+                - generic [ref=f1e248]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e249]
+            - generic [ref=f1e250]:
+              - link "预览 ↗" [ref=f1e251] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-dots
+              - link "官方入口 ↗" [ref=f1e252] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-dots
+            - group [ref=f1e253]:
+              - generic "免费替代 · 3 个" [ref=f1e254] [cursor=pointer]
+              - generic [ref=f1e255]:
+                - generic [ref=f1e256]:
+                  - generic [ref=f1e257]:
+                    - generic [ref=f1e258]: catalog-asset
+                    - generic [ref=f1e259]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e260]: Background Lines
+                  - paragraph [ref=f1e261]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e262]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e263]:
+                    - link "预览 ↗" [ref=f1e264] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/background-lines
+                    - link "源码 ↗" [ref=f1e265] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/background-lines.json
+                - generic [ref=f1e266]:
+                  - generic [ref=f1e267]:
+                    - generic [ref=f1e268]: external-oss
+                    - generic [ref=f1e269]: MIT
+                  - strong [ref=f1e270]: Animate UI
+                  - paragraph [ref=f1e271]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e272]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e273]:
+                    - link "预览 ↗" [ref=f1e274] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e275] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e276]:
+                  - generic [ref=f1e277]:
+                    - generic [ref=f1e278]: catalog-asset
+                    - generic [ref=f1e279]: MIT
+                  - strong [ref=f1e280]: Animated Grid Pattern
+                  - paragraph [ref=f1e281]: 当前维护的公开源码候选，共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e282]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e283]:
+                    - link "预览 ↗" [ref=f1e284] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/animated-grid-pattern
+                    - link "源码 ↗" [ref=f1e285] [cursor=pointer]:
+                      - /url: https://magicui.design/r/animated-grid-pattern.json
+          - article [ref=f1e286]:
+            - generic [ref=f1e287]:
+              - generic [ref=f1e288]:
+                - generic [ref=f1e289]: aceternity / block
+                - heading "Background Dots Masked" [level=3] [ref=f1e290]
+              - generic [ref=f1e291]: 付费源码
+            - paragraph [ref=f1e292]: A dotted pattern with a radial CSS mask that fades the pattern from center to edges. Creates a spotlight effect that draws attention to centered content.
+            - generic [ref=f1e293]:
+              - generic [ref=f1e294]:
+                - generic [ref=f1e295]: 分类
+                - generic "backgrounds" [ref=f1e296]
+              - generic [ref=f1e297]:
+                - generic [ref=f1e298]: 适配
+                - generic [ref=f1e299]: medium-high
+              - generic [ref=f1e300]:
+                - generic [ref=f1e301]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e302]
+              - generic [ref=f1e303]:
+                - generic [ref=f1e304]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e305]
+            - generic [ref=f1e306]:
+              - link "预览 ↗" [ref=f1e307] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-dots-masked
+              - link "官方入口 ↗" [ref=f1e308] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-dots-masked
+            - group [ref=f1e309]:
+              - generic "免费替代 · 3 个" [ref=f1e310] [cursor=pointer]
+              - generic [ref=f1e311]:
+                - generic [ref=f1e312]:
+                  - generic [ref=f1e313]:
+                    - generic [ref=f1e314]: catalog-asset
+                    - generic [ref=f1e315]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e316]: Card Spotlight
+                  - paragraph [ref=f1e317]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e318]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e319]:
+                    - link "预览 ↗" [ref=f1e320] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/card-spotlight
+                    - link "源码 ↗" [ref=f1e321] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/card-spotlight.json
+                - generic [ref=f1e322]:
+                  - generic [ref=f1e323]:
+                    - generic [ref=f1e324]: external-oss
+                    - generic [ref=f1e325]: MIT
+                  - strong [ref=f1e326]: Animate UI
+                  - paragraph [ref=f1e327]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e328]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e329]:
+                    - link "预览 ↗" [ref=f1e330] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e331] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e332]:
+                  - generic [ref=f1e333]:
+                    - generic [ref=f1e334]: catalog-asset
+                    - generic [ref=f1e335]: MIT
+                  - strong [ref=f1e336]: Animated Grid Pattern
+                  - paragraph [ref=f1e337]: 当前维护的公开源码候选，共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e338]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e339]:
+                    - link "预览 ↗" [ref=f1e340] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/animated-grid-pattern
+                    - link "源码 ↗" [ref=f1e341] [cursor=pointer]:
+                      - /url: https://magicui.design/r/animated-grid-pattern.json
+          - article [ref=f1e342]:
+            - generic [ref=f1e343]:
+              - generic [ref=f1e344]:
+                - generic [ref=f1e345]: aceternity / block
+                - heading "Background Dots Masked Vertical" [level=3] [ref=f1e346]
+              - generic [ref=f1e347]: 付费源码
+            - paragraph [ref=f1e348]: A dotted pattern with a linear vertical mask that fades from top to bottom. Ideal for hero sections where content continues below the fold.
+            - generic [ref=f1e349]:
+              - generic [ref=f1e350]:
+                - generic [ref=f1e351]: 分类
+                - generic "backgrounds" [ref=f1e352]
+              - generic [ref=f1e353]:
+                - generic [ref=f1e354]: 适配
+                - generic [ref=f1e355]: medium-high
+              - generic [ref=f1e356]:
+                - generic [ref=f1e357]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e358]
+              - generic [ref=f1e359]:
+                - generic [ref=f1e360]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e361]
+            - generic [ref=f1e362]:
+              - link "预览 ↗" [ref=f1e363] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-dots-masked-vertical
+              - link "官方入口 ↗" [ref=f1e364] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-dots-masked-vertical
+            - group [ref=f1e365]:
+              - generic "免费替代 · 3 个" [ref=f1e366] [cursor=pointer]
+              - generic [ref=f1e367]:
+                - generic [ref=f1e368]:
+                  - generic [ref=f1e369]:
+                    - generic [ref=f1e370]: catalog-asset
+                    - generic [ref=f1e371]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e372]: Background Lines
+                  - paragraph [ref=f1e373]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：background-effects、marketing-section、motion-animation。
+                  - paragraph [ref=f1e374]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e375]:
+                    - link "预览 ↗" [ref=f1e376] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/background-lines
+                    - link "源码 ↗" [ref=f1e377] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/background-lines.json
+                - generic [ref=f1e378]:
+                  - generic [ref=f1e379]:
+                    - generic [ref=f1e380]: external-oss
+                    - generic [ref=f1e381]: MIT
+                  - strong [ref=f1e382]: Animate UI
+                  - paragraph [ref=f1e383]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e384]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e385]:
+                    - link "预览 ↗" [ref=f1e386] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e387] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e388]:
+                  - generic [ref=f1e389]:
+                    - generic [ref=f1e390]: catalog-asset
+                    - generic [ref=f1e391]: MIT
+                  - strong [ref=f1e392]: Animated Grid Pattern
+                  - paragraph [ref=f1e393]: 当前维护的公开源码候选，共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e394]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e395]:
+                    - link "预览 ↗" [ref=f1e396] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/animated-grid-pattern
+                    - link "源码 ↗" [ref=f1e397] [cursor=pointer]:
+                      - /url: https://magicui.design/r/animated-grid-pattern.json
+          - article [ref=f1e398]:
+            - generic [ref=f1e399]:
+              - generic [ref=f1e400]:
+                - generic [ref=f1e401]: aceternity / block
+                - heading "Background With Full Video" [level=3] [ref=f1e402]
+              - generic [ref=f1e403]: 付费源码
+            - paragraph [ref=f1e404]: A full-screen video background that fades in on load with a radial mask in dark mode. Pairs with animated colorful text that cycles through colors on an interval.
+            - generic [ref=f1e405]:
+              - generic [ref=f1e406]:
+                - generic [ref=f1e407]: 分类
+                - generic "backgrounds" [ref=f1e408]
+              - generic [ref=f1e409]:
+                - generic [ref=f1e410]: 适配
+                - generic [ref=f1e411]: medium-high
+              - generic [ref=f1e412]:
+                - generic [ref=f1e413]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e414]
+              - generic [ref=f1e415]:
+                - generic [ref=f1e416]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e417]
+            - generic [ref=f1e418]:
+              - link "预览 ↗" [ref=f1e419] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-full-video
+              - link "官方入口 ↗" [ref=f1e420] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-full-video
+            - group [ref=f1e421]:
+              - generic "免费替代 · 3 个" [ref=f1e422] [cursor=pointer]
+              - generic [ref=f1e423]:
+                - generic [ref=f1e424]:
+                  - generic [ref=f1e425]:
+                    - generic [ref=f1e426]: catalog-asset
+                    - generic [ref=f1e427]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e428]: Background Gradient
+                  - paragraph [ref=f1e429]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e430]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e431]:
+                    - link "预览 ↗" [ref=f1e432] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/background-gradient
+                    - link "源码 ↗" [ref=f1e433] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/background-gradient.json
+                - generic [ref=f1e434]:
+                  - generic [ref=f1e435]:
+                    - generic [ref=f1e436]: external-oss
+                    - generic [ref=f1e437]: MIT
+                  - strong [ref=f1e438]: Animate UI
+                  - paragraph [ref=f1e439]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e440]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e441]:
+                    - link "预览 ↗" [ref=f1e442] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e443] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e444]:
+                  - generic [ref=f1e445]:
+                    - generic [ref=f1e446]: catalog-asset
+                    - generic [ref=f1e447]: MIT
+                  - strong [ref=f1e448]: Animated Grid Pattern
+                  - paragraph [ref=f1e449]: 当前维护的公开源码候选，共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e450]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e451]:
+                    - link "预览 ↗" [ref=f1e452] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/animated-grid-pattern
+                    - link "源码 ↗" [ref=f1e453] [cursor=pointer]:
+                      - /url: https://magicui.design/r/animated-grid-pattern.json
+          - article [ref=f1e454]:
+            - generic [ref=f1e455]:
+              - generic [ref=f1e456]:
+                - generic [ref=f1e457]: aceternity / block
+                - heading "Background Lines" [level=3] [ref=f1e458]
+              - generic [ref=f1e459]: 付费源码
+            - paragraph [ref=f1e460]: An animated background with shooting star trails and pulsing concentric circles. Uses SVG animations for the stars and Framer Motion for the breathing circle effect.
+            - generic [ref=f1e461]:
+              - generic [ref=f1e462]:
+                - generic [ref=f1e463]: 分类
+                - generic "backgrounds" [ref=f1e464]
+              - generic [ref=f1e465]:
+                - generic [ref=f1e466]: 适配
+                - generic [ref=f1e467]: medium-high
+              - generic [ref=f1e468]:
+                - generic [ref=f1e469]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e470]
+              - generic [ref=f1e471]:
+                - generic [ref=f1e472]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e473]
+            - generic [ref=f1e474]:
+              - link "预览 ↗" [ref=f1e475] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-lines
+              - link "官方入口 ↗" [ref=f1e476] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-lines
+            - group [ref=f1e477]:
+              - generic "免费替代 · 3 个" [ref=f1e478] [cursor=pointer]
+              - generic [ref=f1e479]:
+                - generic [ref=f1e480]:
+                  - generic [ref=f1e481]:
+                    - generic [ref=f1e482]: catalog-asset
+                    - generic [ref=f1e483]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e484]: Noise Background
+                  - paragraph [ref=f1e485]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e486]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e487]:
+                    - link "预览 ↗" [ref=f1e488] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/noise-background
+                    - link "源码 ↗" [ref=f1e489] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/noise-background.json
+                - generic [ref=f1e490]:
+                  - generic [ref=f1e491]:
+                    - generic [ref=f1e492]: external-oss
+                    - generic [ref=f1e493]: MIT
+                  - strong [ref=f1e494]: Animate UI
+                  - paragraph [ref=f1e495]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e496]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e497]:
+                    - link "预览 ↗" [ref=f1e498] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e499] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e500]:
+                  - generic [ref=f1e501]:
+                    - generic [ref=f1e502]: catalog-asset
+                    - generic [ref=f1e503]: MIT
+                  - strong [ref=f1e504]: Animated Grid Pattern
+                  - paragraph [ref=f1e505]: 当前维护的公开源码候选，共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e506]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e507]:
+                    - link "预览 ↗" [ref=f1e508] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/animated-grid-pattern
+                    - link "源码 ↗" [ref=f1e509] [cursor=pointer]:
+                      - /url: https://magicui.design/r/animated-grid-pattern.json
+          - article [ref=f1e510]:
+            - generic [ref=f1e511]:
+              - generic [ref=f1e512]:
+                - generic [ref=f1e513]: aceternity / block
+                - heading "Background Noise Grid" [level=3] [ref=f1e514]
+              - generic [ref=f1e515]: 付费源码
+            - paragraph [ref=f1e516]: Vertical strips with gradient fills and a noise texture overlay create a subtle layered background. Dynamically calculates strip count based on viewport width.
+            - generic [ref=f1e517]:
+              - generic [ref=f1e518]:
+                - generic [ref=f1e519]: 分类
+                - generic "backgrounds" [ref=f1e520]
+              - generic [ref=f1e521]:
+                - generic [ref=f1e522]: 适配
+                - generic [ref=f1e523]: medium-high
+              - generic [ref=f1e524]:
+                - generic [ref=f1e525]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e526]
+              - generic [ref=f1e527]:
+                - generic [ref=f1e528]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e529]
+            - generic [ref=f1e530]:
+              - link "预览 ↗" [ref=f1e531] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-noise-grid
+              - link "官方入口 ↗" [ref=f1e532] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-noise-grid
+            - group [ref=f1e533]:
+              - generic "免费替代 · 3 个" [ref=f1e534] [cursor=pointer]
+              - generic [ref=f1e535]:
+                - generic [ref=f1e536]:
+                  - generic [ref=f1e537]:
+                    - generic [ref=f1e538]: catalog-asset
+                    - generic [ref=f1e539]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e540]: Noise Background
+                  - paragraph [ref=f1e541]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e542]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e543]:
+                    - link "预览 ↗" [ref=f1e544] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/noise-background
+                    - link "源码 ↗" [ref=f1e545] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/noise-background.json
+                - generic [ref=f1e546]:
+                  - generic [ref=f1e547]:
+                    - generic [ref=f1e548]: external-oss
+                    - generic [ref=f1e549]: MIT
+                  - strong [ref=f1e550]: Animate UI
+                  - paragraph [ref=f1e551]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e552]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e553]:
+                    - link "预览 ↗" [ref=f1e554] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e555] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e556]:
+                  - generic [ref=f1e557]:
+                    - generic [ref=f1e558]: catalog-asset
+                    - generic [ref=f1e559]: MIT
+                  - strong [ref=f1e560]: Animated Grid Pattern
+                  - paragraph [ref=f1e561]: 当前维护的公开源码候选，共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e562]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e563]:
+                    - link "预览 ↗" [ref=f1e564] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/animated-grid-pattern
+                    - link "源码 ↗" [ref=f1e565] [cursor=pointer]:
+                      - /url: https://magicui.design/r/animated-grid-pattern.json
+          - article [ref=f1e566]:
+            - generic [ref=f1e567]:
+              - generic [ref=f1e568]:
+                - generic [ref=f1e569]: aceternity / block
+                - heading "Background With Shooting Stars" [level=3] [ref=f1e570]
+              - generic [ref=f1e571]: 付费源码
+            - paragraph [ref=f1e572]: An animated background with shooting star trails and pulsing concentric circles. Uses SVG animations for the stars and Framer Motion for the breathing circle effect.
+            - generic [ref=f1e573]:
+              - generic [ref=f1e574]:
+                - generic [ref=f1e575]: 分类
+                - generic "backgrounds" [ref=f1e576]
+              - generic [ref=f1e577]:
+                - generic [ref=f1e578]: 适配
+                - generic [ref=f1e579]: medium-high
+              - generic [ref=f1e580]:
+                - generic [ref=f1e581]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e582]
+              - generic [ref=f1e583]:
+                - generic [ref=f1e584]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e585]
+            - generic [ref=f1e586]:
+              - link "预览 ↗" [ref=f1e587] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-shooting-stars
+              - link "官方入口 ↗" [ref=f1e588] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-shooting-stars
+            - group [ref=f1e589]:
+              - generic "免费替代 · 3 个" [ref=f1e590] [cursor=pointer]
+              - generic [ref=f1e591]:
+                - generic [ref=f1e592]:
+                  - generic [ref=f1e593]:
+                    - generic [ref=f1e594]: catalog-asset
+                    - generic [ref=f1e595]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e596]: Noise Background
+                  - paragraph [ref=f1e597]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e598]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e599]:
+                    - link "预览 ↗" [ref=f1e600] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/noise-background
+                    - link "源码 ↗" [ref=f1e601] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/noise-background.json
+                - generic [ref=f1e602]:
+                  - generic [ref=f1e603]:
+                    - generic [ref=f1e604]: external-oss
+                    - generic [ref=f1e605]: MIT
+                  - strong [ref=f1e606]: Animate UI
+                  - paragraph [ref=f1e607]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e608]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e609]:
+                    - link "预览 ↗" [ref=f1e610] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e611] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e612]:
+                  - generic [ref=f1e613]:
+                    - generic [ref=f1e614]: catalog-asset
+                    - generic [ref=f1e615]: MIT
+                  - strong [ref=f1e616]: Animated Grid Pattern
+                  - paragraph [ref=f1e617]: 当前维护的公开源码候选，共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e618]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e619]:
+                    - link "预览 ↗" [ref=f1e620] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/animated-grid-pattern
+                    - link "源码 ↗" [ref=f1e621] [cursor=pointer]:
+                      - /url: https://magicui.design/r/animated-grid-pattern.json
+          - article [ref=f1e622]:
+            - generic [ref=f1e623]:
+              - generic [ref=f1e624]:
+                - generic [ref=f1e625]: aceternity / block
+                - heading "Background With Skewed Lines" [level=3] [ref=f1e626]
+              - generic [ref=f1e627]: 付费源码
+            - paragraph [ref=f1e628]: Diagonal line pattern using an SVG pattern element with a linear mask that fades the center. Lightweight and resolution-independent.
+            - generic [ref=f1e629]:
+              - generic [ref=f1e630]:
+                - generic [ref=f1e631]: 分类
+                - generic "backgrounds" [ref=f1e632]
+              - generic [ref=f1e633]:
+                - generic [ref=f1e634]: 适配
+                - generic [ref=f1e635]: medium-high
+              - generic [ref=f1e636]:
+                - generic [ref=f1e637]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e638]
+              - generic [ref=f1e639]:
+                - generic [ref=f1e640]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e641]
+            - generic [ref=f1e642]:
+              - link "预览 ↗" [ref=f1e643] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-skewed-lines
+              - link "官方入口 ↗" [ref=f1e644] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-skewed-lines
+            - group [ref=f1e645]:
+              - generic "免费替代 · 3 个" [ref=f1e646] [cursor=pointer]
+              - generic [ref=f1e647]:
+                - generic [ref=f1e648]:
+                  - generic [ref=f1e649]:
+                    - generic [ref=f1e650]: catalog-asset
+                    - generic [ref=f1e651]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e652]: Background Lines
+                  - paragraph [ref=f1e653]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e654]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e655]:
+                    - link "预览 ↗" [ref=f1e656] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/background-lines
+                    - link "源码 ↗" [ref=f1e657] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/background-lines.json
+                - generic [ref=f1e658]:
+                  - generic [ref=f1e659]:
+                    - generic [ref=f1e660]: external-oss
+                    - generic [ref=f1e661]: MIT
+                  - strong [ref=f1e662]: Animate UI
+                  - paragraph [ref=f1e663]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e664]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e665]:
+                    - link "预览 ↗" [ref=f1e666] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e667] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e668]:
+                  - generic [ref=f1e669]:
+                    - generic [ref=f1e670]: catalog-asset
+                    - generic [ref=f1e671]: MIT
+                  - strong [ref=f1e672]: Animated Grid Pattern
+                  - paragraph [ref=f1e673]: 当前维护的公开源码候选，共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e674]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e675]:
+                    - link "预览 ↗" [ref=f1e676] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/animated-grid-pattern
+                    - link "源码 ↗" [ref=f1e677] [cursor=pointer]:
+                      - /url: https://magicui.design/r/animated-grid-pattern.json
+          - article [ref=f1e678]:
+            - generic [ref=f1e679]:
+              - generic [ref=f1e680]:
+                - generic [ref=f1e681]: aceternity / block
+                - heading "Background With Skewed Rectangles" [level=3] [ref=f1e682]
+              - generic [ref=f1e683]: 付费源码
+            - paragraph [ref=f1e684]: A 3D perspective grid pattern with rectangles rotated on the X-axis. Two layers create a symmetrical effect with masks fading in opposite directions.
+            - generic [ref=f1e685]:
+              - generic [ref=f1e686]:
+                - generic [ref=f1e687]: 分类
+                - generic "backgrounds" [ref=f1e688]
+              - generic [ref=f1e689]:
+                - generic [ref=f1e690]: 适配
+                - generic [ref=f1e691]: medium-high
+              - generic [ref=f1e692]:
+                - generic [ref=f1e693]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e694]
+              - generic [ref=f1e695]:
+                - generic [ref=f1e696]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e697]
+            - generic [ref=f1e698]:
+              - link "预览 ↗" [ref=f1e699] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-skewed-rectangles
+              - link "官方入口 ↗" [ref=f1e700] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/backgrounds/background-with-skewed-rectangles
+            - group [ref=f1e701]:
+              - generic "免费替代 · 3 个" [ref=f1e702] [cursor=pointer]
+              - generic [ref=f1e703]:
+                - generic [ref=f1e704]:
+                  - generic [ref=f1e705]:
+                    - generic [ref=f1e706]: catalog-asset
+                    - generic [ref=f1e707]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e708]: Background Lines
+                  - paragraph [ref=f1e709]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：background-effects、marketing-section、motion-animation。
+                  - paragraph [ref=f1e710]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e711]:
+                    - link "预览 ↗" [ref=f1e712] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/background-lines
+                    - link "源码 ↗" [ref=f1e713] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/background-lines.json
+                - generic [ref=f1e714]:
+                  - generic [ref=f1e715]:
+                    - generic [ref=f1e716]: external-oss
+                    - generic [ref=f1e717]: MIT
+                  - strong [ref=f1e718]: Animate UI
+                  - paragraph [ref=f1e719]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e720]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e721]:
+                    - link "预览 ↗" [ref=f1e722] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e723] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e724]:
+                  - generic [ref=f1e725]:
+                    - generic [ref=f1e726]: catalog-asset
+                    - generic [ref=f1e727]: MIT
+                  - strong [ref=f1e728]: Animated Grid Pattern
+                  - paragraph [ref=f1e729]: 当前维护的公开源码候选，共同能力：background-effects、motion-animation。
+                  - paragraph [ref=f1e730]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e731]:
+                    - link "预览 ↗" [ref=f1e732] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/animated-grid-pattern
+                    - link "源码 ↗" [ref=f1e733] [cursor=pointer]:
+                      - /url: https://magicui.design/r/animated-grid-pattern.json
+          - article [ref=f1e734]:
+            - generic [ref=f1e735]:
+              - generic [ref=f1e736]:
+                - generic [ref=f1e737]: aceternity / block
+                - heading "Bento Grids" [level=3] [ref=f1e738]
+              - generic [ref=f1e739]: 付费源码
+            - paragraph [ref=f1e740]: A set of bento grids for various use cases
+            - generic [ref=f1e741]:
+              - generic [ref=f1e742]:
+                - generic [ref=f1e743]: 分类
+                - generic "pro-category" [ref=f1e744]
+              - generic [ref=f1e745]:
+                - generic [ref=f1e746]: 适配
+                - generic [ref=f1e747]: medium-high
+              - generic [ref=f1e748]:
+                - generic [ref=f1e749]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e750]
+              - generic [ref=f1e751]:
+                - generic [ref=f1e752]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e753]
+            - generic [ref=f1e754]:
+              - link "预览 ↗" [ref=f1e755] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids
+              - link "官方入口 ↗" [ref=f1e756] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids
+            - group [ref=f1e757]:
+              - generic "免费替代 · 3 个" [ref=f1e758] [cursor=pointer]
+              - generic [ref=f1e759]:
+                - generic [ref=f1e760]:
+                  - generic [ref=f1e761]:
+                    - generic [ref=f1e762]: catalog-asset
+                    - generic [ref=f1e763]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e764]: Bento Grid
+                  - paragraph [ref=f1e765]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：bento-layout。
+                  - paragraph [ref=f1e766]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e767]:
+                    - link "预览 ↗" [ref=f1e768] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/bento-grid
+                    - link "源码 ↗" [ref=f1e769] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/bento-grid.json
+                - generic [ref=f1e770]:
+                  - generic [ref=f1e771]:
+                    - generic [ref=f1e772]: catalog-asset
+                    - generic [ref=f1e773]: MIT
+                  - strong [ref=f1e774]: Bento Grid
+                  - paragraph [ref=f1e775]: 当前维护的公开源码候选，共同能力：bento-layout。
+                  - paragraph [ref=f1e776]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e777]:
+                    - link "预览 ↗" [ref=f1e778] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/bento-grid
+                    - link "源码 ↗" [ref=f1e779] [cursor=pointer]:
+                      - /url: https://magicui.design/r/bento-grid.json
+                - generic [ref=f1e780]:
+                  - generic [ref=f1e781]:
+                    - generic [ref=f1e782]: catalog-asset
+                    - generic [ref=f1e783]: MIT
+                  - strong [ref=f1e784]: Bento Demo
+                  - paragraph [ref=f1e785]: 当前维护的公开源码候选，共同能力：bento-layout。
+                  - paragraph [ref=f1e786]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e787]:
+                    - link "预览 ↗" [ref=f1e788] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/marquee
+                    - link "源码 ↗" [ref=f1e789] [cursor=pointer]:
+                      - /url: https://magicui.design/r/bento-demo.json
+          - article [ref=f1e790]:
+            - generic [ref=f1e791]:
+              - generic [ref=f1e792]:
+                - generic [ref=f1e793]: aceternity / block
+                - heading "Bento Grid Illustrations" [level=3] [ref=f1e794]
+              - generic [ref=f1e795]: 付费源码
+            - paragraph [ref=f1e796]: A minimal bento grid showcasing device illustrations with MacBook, iPhone, iPad, and Dynamic Island. Features hover animations, blur fade-in content, and compound components.
+            - generic [ref=f1e797]:
+              - generic [ref=f1e798]:
+                - generic [ref=f1e799]: 分类
+                - generic "bento-grids" [ref=f1e800]
+              - generic [ref=f1e801]:
+                - generic [ref=f1e802]: 适配
+                - generic [ref=f1e803]: medium-high
+              - generic [ref=f1e804]:
+                - generic [ref=f1e805]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e806]
+              - generic [ref=f1e807]:
+                - generic [ref=f1e808]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e809]
+            - generic [ref=f1e810]:
+              - link "预览 ↗" [ref=f1e811] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/bento-grid-illustrations
+              - link "官方入口 ↗" [ref=f1e812] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/bento-grid-illustrations
+            - group [ref=f1e813]:
+              - generic "免费替代 · 3 个" [ref=f1e814] [cursor=pointer]
+              - generic [ref=f1e815]:
+                - generic [ref=f1e816]:
+                  - generic [ref=f1e817]:
+                    - generic [ref=f1e818]: catalog-asset
+                    - generic [ref=f1e819]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e820]: Bento Grid
+                  - paragraph [ref=f1e821]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：bento-layout。
+                  - paragraph [ref=f1e822]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e823]:
+                    - link "预览 ↗" [ref=f1e824] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/bento-grid
+                    - link "源码 ↗" [ref=f1e825] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/bento-grid.json
+                - generic [ref=f1e826]:
+                  - generic [ref=f1e827]:
+                    - generic [ref=f1e828]: external-oss
+                    - generic [ref=f1e829]: MIT
+                  - strong [ref=f1e830]: Animate UI
+                  - paragraph [ref=f1e831]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e832]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e833]:
+                    - link "预览 ↗" [ref=f1e834] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e835] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e836]:
+                  - generic [ref=f1e837]:
+                    - generic [ref=f1e838]: catalog-asset
+                    - generic [ref=f1e839]: MIT
+                  - strong [ref=f1e840]: Bento Grid
+                  - paragraph [ref=f1e841]: 当前维护的公开源码候选，共同能力：bento-layout、marketing-section。
+                  - paragraph [ref=f1e842]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e843]:
+                    - link "预览 ↗" [ref=f1e844] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/bento-grid
+                    - link "源码 ↗" [ref=f1e845] [cursor=pointer]:
+                      - /url: https://magicui.design/r/bento-grid.json
+          - article [ref=f1e846]:
+            - generic [ref=f1e847]:
+              - generic [ref=f1e848]:
+                - generic [ref=f1e849]: aceternity / block
+                - heading "Bento Grid With Skeletons" [level=3] [ref=f1e850]
+              - generic [ref=f1e851]: 付费源码
+            - paragraph [ref=f1e852]: A six-card bento grid where each card contains an animated skeleton illustration. Features chat messages, video call grids, mentorship marquees, and floating avatars.
+            - generic [ref=f1e853]:
+              - generic [ref=f1e854]:
+                - generic [ref=f1e855]: 分类
+                - generic "bento-grids" [ref=f1e856]
+              - generic [ref=f1e857]:
+                - generic [ref=f1e858]: 适配
+                - generic [ref=f1e859]: medium-high
+              - generic [ref=f1e860]:
+                - generic [ref=f1e861]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e862]
+              - generic [ref=f1e863]:
+                - generic [ref=f1e864]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e865]
+            - generic [ref=f1e866]:
+              - link "预览 ↗" [ref=f1e867] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/bento-grid-with-skeletons
+              - link "官方入口 ↗" [ref=f1e868] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/bento-grid-with-skeletons
+            - group [ref=f1e869]:
+              - generic "免费替代 · 3 个" [ref=f1e870] [cursor=pointer]
+              - generic [ref=f1e871]:
+                - generic [ref=f1e872]:
+                  - generic [ref=f1e873]:
+                    - generic [ref=f1e874]: catalog-asset
+                    - generic [ref=f1e875]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e876]: Bento Grid
+                  - paragraph [ref=f1e877]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：bento-layout、cards。
+                  - paragraph [ref=f1e878]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e879]:
+                    - link "预览 ↗" [ref=f1e880] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/bento-grid
+                    - link "源码 ↗" [ref=f1e881] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/bento-grid.json
+                - generic [ref=f1e882]:
+                  - generic [ref=f1e883]:
+                    - generic [ref=f1e884]: external-oss
+                    - generic [ref=f1e885]: Apache-2.0
+                  - strong [ref=f1e886]: Vercel AI Elements
+                  - paragraph [ref=f1e887]: AI-native conversation and agent interaction components；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e888]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry；目标为 React 19、Next.js 14+、Tailwind CSS 4，接入前核对本仓版本。
+                  - generic [ref=f1e889]:
+                    - link "预览 ↗" [ref=f1e890] [cursor=pointer]:
+                      - /url: https://elements.ai-sdk.dev/
+                    - link "源码 ↗" [ref=f1e891] [cursor=pointer]:
+                      - /url: https://github.com/vercel/ai-elements
+                - generic [ref=f1e892]:
+                  - generic [ref=f1e893]:
+                    - generic [ref=f1e894]: catalog-asset
+                    - generic [ref=f1e895]: MIT
+                  - strong [ref=f1e896]: Bento Grid
+                  - paragraph [ref=f1e897]: 当前维护的公开源码候选，共同能力：bento-layout、marketing-section。
+                  - paragraph [ref=f1e898]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e899]:
+                    - link "预览 ↗" [ref=f1e900] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/bento-grid
+                    - link "源码 ↗" [ref=f1e901] [cursor=pointer]:
+                      - /url: https://magicui.design/r/bento-grid.json
+          - article [ref=f1e902]:
+            - generic [ref=f1e903]:
+              - generic [ref=f1e904]:
+                - generic [ref=f1e905]: aceternity / block
+                - heading "Masonry Bento Grid With Images" [level=3] [ref=f1e906]
+              - generic [ref=f1e907]: 付费源码
+            - paragraph [ref=f1e908]: A four-column masonry layout of linked image cards with hover overlays. Each card reveals the link URL on hover with a dark overlay transition.
+            - generic [ref=f1e909]:
+              - generic [ref=f1e910]:
+                - generic [ref=f1e911]: 分类
+                - generic "bento-grids" [ref=f1e912]
+              - generic [ref=f1e913]:
+                - generic [ref=f1e914]: 适配
+                - generic [ref=f1e915]: medium-high
+              - generic [ref=f1e916]:
+                - generic [ref=f1e917]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e918]
+              - generic [ref=f1e919]:
+                - generic [ref=f1e920]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e921]
+            - generic [ref=f1e922]:
+              - link "预览 ↗" [ref=f1e923] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/masonry-bento-grid-with-images
+              - link "官方入口 ↗" [ref=f1e924] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/masonry-bento-grid-with-images
+            - group [ref=f1e925]:
+              - generic "免费替代 · 3 个" [ref=f1e926] [cursor=pointer]
+              - generic [ref=f1e927]:
+                - generic [ref=f1e928]:
+                  - generic [ref=f1e929]:
+                    - generic [ref=f1e930]: catalog-asset
+                    - generic [ref=f1e931]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e932]: Bento Grid
+                  - paragraph [ref=f1e933]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：bento-layout、cards。
+                  - paragraph [ref=f1e934]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e935]:
+                    - link "预览 ↗" [ref=f1e936] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/bento-grid
+                    - link "源码 ↗" [ref=f1e937] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/bento-grid.json
+                - generic [ref=f1e938]:
+                  - generic [ref=f1e939]:
+                    - generic [ref=f1e940]: catalog-asset
+                    - generic [ref=f1e941]: MIT
+                  - strong [ref=f1e942]: Bento Grid
+                  - paragraph [ref=f1e943]: 当前维护的公开源码候选，共同能力：bento-layout。
+                  - paragraph [ref=f1e944]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e945]:
+                    - link "预览 ↗" [ref=f1e946] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/bento-grid
+                    - link "源码 ↗" [ref=f1e947] [cursor=pointer]:
+                      - /url: https://magicui.design/r/bento-grid.json
+                - generic [ref=f1e948]:
+                  - generic [ref=f1e949]:
+                    - generic [ref=f1e950]: catalog-asset
+                    - generic [ref=f1e951]: MIT
+                  - strong [ref=f1e952]: Card with image scale hover effect
+                  - paragraph [ref=f1e953]: 当前维护的公开源码候选，共同能力：cards。
+                  - paragraph [ref=f1e954]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e955]:
+                    - link "预览 ↗" [ref=f1e956] [cursor=pointer]:
+                      - /url: https://reui.io/components/card
+                    - link "源码 ↗" [ref=f1e957] [cursor=pointer]:
+                      - /url: https://reui.io/r/base-nova/c-card-8.json
+          - article [ref=f1e958]:
+            - generic [ref=f1e959]:
+              - generic [ref=f1e960]:
+                - generic [ref=f1e961]: aceternity / block
+                - heading "Symmetric Bento Grid" [level=3] [ref=f1e962]
+              - generic [ref=f1e963]: 付费源码
+            - paragraph [ref=f1e964]: A five-card asymmetric bento layout with animated SVG connection paths, a rotating 3D globe using Cobe, and deployment workflow visualization.
+            - generic [ref=f1e965]:
+              - generic [ref=f1e966]:
+                - generic [ref=f1e967]: 分类
+                - generic "bento-grids" [ref=f1e968]
+              - generic [ref=f1e969]:
+                - generic [ref=f1e970]: 适配
+                - generic [ref=f1e971]: medium-high
+              - generic [ref=f1e972]:
+                - generic [ref=f1e973]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e974]
+              - generic [ref=f1e975]:
+                - generic [ref=f1e976]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e977]
+            - generic [ref=f1e978]:
+              - link "预览 ↗" [ref=f1e979] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/symmetric-bento-grid
+              - link "官方入口 ↗" [ref=f1e980] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/symmetric-bento-grid
+            - group [ref=f1e981]:
+              - generic "免费替代 · 3 个" [ref=f1e982] [cursor=pointer]
+              - generic [ref=f1e983]:
+                - generic [ref=f1e984]:
+                  - generic [ref=f1e985]:
+                    - generic [ref=f1e986]: catalog-asset
+                    - generic [ref=f1e987]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e988]: Bento Grid
+                  - paragraph [ref=f1e989]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：bento-layout、cards。
+                  - paragraph [ref=f1e990]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e991]:
+                    - link "预览 ↗" [ref=f1e992] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/bento-grid
+                    - link "源码 ↗" [ref=f1e993] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/bento-grid.json
+                - generic [ref=f1e994]:
+                  - generic [ref=f1e995]:
+                    - generic [ref=f1e996]: external-oss
+                    - generic [ref=f1e997]: MIT
+                  - strong [ref=f1e998]: Animate UI
+                  - paragraph [ref=f1e999]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e1000]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e1001]:
+                    - link "预览 ↗" [ref=f1e1002] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e1003] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e1004]:
+                  - generic [ref=f1e1005]:
+                    - generic [ref=f1e1006]: catalog-asset
+                    - generic [ref=f1e1007]: MIT
+                  - strong [ref=f1e1008]: Bento Grid
+                  - paragraph [ref=f1e1009]: 当前维护的公开源码候选，共同能力：bento-layout。
+                  - paragraph [ref=f1e1010]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1011]:
+                    - link "预览 ↗" [ref=f1e1012] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/bento-grid
+                    - link "源码 ↗" [ref=f1e1013] [cursor=pointer]:
+                      - /url: https://magicui.design/r/bento-grid.json
+          - article [ref=f1e1014]:
+            - generic [ref=f1e1015]:
+              - generic [ref=f1e1016]:
+                - generic [ref=f1e1017]: aceternity / block
+                - heading "Three Column Bento Grid" [level=3] [ref=f1e1018]
+              - generic [ref=f1e1019]: 付费源码
+            - paragraph [ref=f1e1020]: A responsive bento grid with animated skeletons including avatar scoring, progress tracking timelines, video interview previews, and drag-and-drop file upload.
+            - generic [ref=f1e1021]:
+              - generic [ref=f1e1022]:
+                - generic [ref=f1e1023]: 分类
+                - generic "bento-grids" [ref=f1e1024]
+              - generic [ref=f1e1025]:
+                - generic [ref=f1e1026]: 适配
+                - generic [ref=f1e1027]: medium-high
+              - generic [ref=f1e1028]:
+                - generic [ref=f1e1029]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e1030]
+              - generic [ref=f1e1031]:
+                - generic [ref=f1e1032]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e1033]
+            - generic [ref=f1e1034]:
+              - link "预览 ↗" [ref=f1e1035] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/three-column-bento-grid
+              - link "官方入口 ↗" [ref=f1e1036] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/three-column-bento-grid
+            - group [ref=f1e1037]:
+              - generic "免费替代 · 3 个" [ref=f1e1038] [cursor=pointer]
+              - generic [ref=f1e1039]:
+                - generic [ref=f1e1040]:
+                  - generic [ref=f1e1041]:
+                    - generic [ref=f1e1042]: catalog-asset
+                    - generic [ref=f1e1043]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1044]: File Upload
+                  - paragraph [ref=f1e1045]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：file-upload、motion-animation。
+                  - paragraph [ref=f1e1046]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e1047]:
+                    - link "预览 ↗" [ref=f1e1048] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/file-upload
+                    - link "源码 ↗" [ref=f1e1049] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/file-upload.json
+                - generic [ref=f1e1050]:
+                  - generic [ref=f1e1051]:
+                    - generic [ref=f1e1052]: external-oss
+                    - generic [ref=f1e1053]: MIT
+                  - strong [ref=f1e1054]: Animate UI
+                  - paragraph [ref=f1e1055]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e1056]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e1057]:
+                    - link "预览 ↗" [ref=f1e1058] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e1059] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e1060]:
+                  - generic [ref=f1e1061]:
+                    - generic [ref=f1e1062]: catalog-asset
+                    - generic [ref=f1e1063]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1064]: Bento Grid
+                  - paragraph [ref=f1e1065]: 当前维护的公开源码候选，共同能力：bento-layout。
+                  - paragraph [ref=f1e1066]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1067]:
+                    - link "预览 ↗" [ref=f1e1068] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/bento-grid
+                    - link "源码 ↗" [ref=f1e1069] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/bento-grid.json
+          - article [ref=f1e1070]:
+            - generic [ref=f1e1071]:
+              - generic [ref=f1e1072]:
+                - generic [ref=f1e1073]: aceternity / block
+                - heading "Three Columns With Images" [level=3] [ref=f1e1074]
+              - generic [ref=f1e1075]: 付费源码
+            - paragraph [ref=f1e1076]: A five-card bento grid using product screenshots instead of animated skeletons. Cards animate on hover with title and description text shifting horizontally.
+            - generic [ref=f1e1077]:
+              - generic [ref=f1e1078]:
+                - generic [ref=f1e1079]: 分类
+                - generic "bento-grids" [ref=f1e1080]
+              - generic [ref=f1e1081]:
+                - generic [ref=f1e1082]: 适配
+                - generic [ref=f1e1083]: medium-high
+              - generic [ref=f1e1084]:
+                - generic [ref=f1e1085]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e1086]
+              - generic [ref=f1e1087]:
+                - generic [ref=f1e1088]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e1089]
+            - generic [ref=f1e1090]:
+              - link "预览 ↗" [ref=f1e1091] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/three-column-with-images
+              - link "官方入口 ↗" [ref=f1e1092] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/bento-grids/three-column-with-images
+            - group [ref=f1e1093]:
+              - generic "免费替代 · 3 个" [ref=f1e1094] [cursor=pointer]
+              - generic [ref=f1e1095]:
+                - generic [ref=f1e1096]:
+                  - generic [ref=f1e1097]:
+                    - generic [ref=f1e1098]: catalog-asset
+                    - generic [ref=f1e1099]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1100]: 3D Animated Pin
+                  - paragraph [ref=f1e1101]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：cards、motion-animation。
+                  - paragraph [ref=f1e1102]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e1103]:
+                    - link "预览 ↗" [ref=f1e1104] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/3d-pin
+                    - link "源码 ↗" [ref=f1e1105] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/3d-pin.json
+                - generic [ref=f1e1106]:
+                  - generic [ref=f1e1107]:
+                    - generic [ref=f1e1108]: external-oss
+                    - generic [ref=f1e1109]: MIT
+                  - strong [ref=f1e1110]: Animate UI
+                  - paragraph [ref=f1e1111]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e1112]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e1113]:
+                    - link "预览 ↗" [ref=f1e1114] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e1115] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e1116]:
+                  - generic [ref=f1e1117]:
+                    - generic [ref=f1e1118]: catalog-asset
+                    - generic [ref=f1e1119]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1120]: Bento Grid
+                  - paragraph [ref=f1e1121]: 当前维护的公开源码候选，共同能力：bento-layout、cards。
+                  - paragraph [ref=f1e1122]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1123]:
+                    - link "预览 ↗" [ref=f1e1124] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/bento-grid
+                    - link "源码 ↗" [ref=f1e1125] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/bento-grid.json
+          - article [ref=f1e1126]:
+            - generic [ref=f1e1127]:
+              - generic [ref=f1e1128]:
+                - generic [ref=f1e1129]: aceternity / block
+                - heading "Blog Content Sections" [level=3] [ref=f1e1130]
+              - generic [ref=f1e1131]: 付费源码
+            - paragraph [ref=f1e1132]: Content sections for your single blog posts
+            - generic [ref=f1e1133]:
+              - generic [ref=f1e1134]:
+                - generic [ref=f1e1135]: 分类
+                - generic "pro-category" [ref=f1e1136]
+              - generic [ref=f1e1137]:
+                - generic [ref=f1e1138]: 适配
+                - generic [ref=f1e1139]: medium-high
+              - generic [ref=f1e1140]:
+                - generic [ref=f1e1141]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e1142]
+              - generic [ref=f1e1143]:
+                - generic [ref=f1e1144]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e1145]
+            - generic [ref=f1e1146]:
+              - link "预览 ↗" [ref=f1e1147] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/blog-content-sections
+              - link "官方入口 ↗" [ref=f1e1148] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/blog-content-sections
+            - group [ref=f1e1149]:
+              - generic "免费替代 · 3 个" [ref=f1e1150] [cursor=pointer]
+              - generic [ref=f1e1151]:
+                - generic [ref=f1e1152]:
+                  - generic [ref=f1e1153]:
+                    - generic [ref=f1e1154]: catalog-asset
+                    - generic [ref=f1e1155]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1156]: Following Pointer
+                  - paragraph [ref=f1e1157]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：marketing-section。
+                  - paragraph [ref=f1e1158]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e1159]:
+                    - link "预览 ↗" [ref=f1e1160] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/following-pointer
+                    - link "源码 ↗" [ref=f1e1161] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/following-pointer.json
+                - generic [ref=f1e1162]:
+                  - generic [ref=f1e1163]:
+                    - generic [ref=f1e1164]: catalog-asset
+                    - generic [ref=f1e1165]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1166]: Bento Grid
+                  - paragraph [ref=f1e1167]: 当前维护的公开源码候选，共同能力：curated-fallback。
+                  - paragraph [ref=f1e1168]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1169]:
+                    - link "预览 ↗" [ref=f1e1170] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/bento-grid
+                    - link "源码 ↗" [ref=f1e1171] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/bento-grid.json
+                - generic [ref=f1e1172]:
+                  - generic [ref=f1e1173]:
+                    - generic [ref=f1e1174]: catalog-asset
+                    - generic [ref=f1e1175]: MIT
+                  - strong [ref=f1e1176]: Bento Grid
+                  - paragraph [ref=f1e1177]: 当前维护的公开源码候选，共同能力：curated-fallback。
+                  - paragraph [ref=f1e1178]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1179]:
+                    - link "预览 ↗" [ref=f1e1180] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/bento-grid
+                    - link "源码 ↗" [ref=f1e1181] [cursor=pointer]:
+                      - /url: https://magicui.design/r/bento-grid.json
+          - article [ref=f1e1182]:
+            - generic [ref=f1e1183]:
+              - generic [ref=f1e1184]:
+                - generic [ref=f1e1185]: aceternity / block
+                - heading "Blog Content Centered" [level=3] [ref=f1e1186]
+              - generic [ref=f1e1187]: 付费源码
+            - paragraph [ref=f1e1188]: A centered single-column blog post layout with a large hero image, author byline, and Markdown content rendered through react-markdown.
+            - generic [ref=f1e1189]:
+              - generic [ref=f1e1190]:
+                - generic [ref=f1e1191]: 分类
+                - generic "blog-content-sections" [ref=f1e1192]
+              - generic [ref=f1e1193]:
+                - generic [ref=f1e1194]: 适配
+                - generic [ref=f1e1195]: medium-high
+              - generic [ref=f1e1196]:
+                - generic [ref=f1e1197]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e1198]
+              - generic [ref=f1e1199]:
+                - generic [ref=f1e1200]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e1201]
+            - generic [ref=f1e1202]:
+              - link "预览 ↗" [ref=f1e1203] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/blog-content-sections/blog-content-centered
+              - link "官方入口 ↗" [ref=f1e1204] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/blog-content-sections/blog-content-centered
+            - group [ref=f1e1205]:
+              - generic "免费替代 · 3 个" [ref=f1e1206] [cursor=pointer]
+              - generic [ref=f1e1207]:
+                - generic [ref=f1e1208]:
+                  - generic [ref=f1e1209]:
+                    - generic [ref=f1e1210]: catalog-asset
+                    - generic [ref=f1e1211]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1212]: Fey.com Macbook Scroll
+                  - paragraph [ref=f1e1213]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：marketing-section。
+                  - paragraph [ref=f1e1214]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e1215]:
+                    - link "预览 ↗" [ref=f1e1216] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/macbook-scroll
+                    - link "源码 ↗" [ref=f1e1217] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/macbook-scroll.json
+                - generic [ref=f1e1218]:
+                  - generic [ref=f1e1219]:
+                    - generic [ref=f1e1220]: catalog-asset
+                    - generic [ref=f1e1221]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1222]: Bento Grid
+                  - paragraph [ref=f1e1223]: 当前维护的公开源码候选，共同能力：layout。
+                  - paragraph [ref=f1e1224]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1225]:
+                    - link "预览 ↗" [ref=f1e1226] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/bento-grid
+                    - link "源码 ↗" [ref=f1e1227] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/bento-grid.json
+                - generic [ref=f1e1228]:
+                  - generic [ref=f1e1229]:
+                    - generic [ref=f1e1230]: catalog-asset
+                    - generic [ref=f1e1231]: MIT
+                  - strong [ref=f1e1232]: Bento Grid
+                  - paragraph [ref=f1e1233]: 当前维护的公开源码候选，共同能力：marketing-section。
+                  - paragraph [ref=f1e1234]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1235]:
+                    - link "预览 ↗" [ref=f1e1236] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/bento-grid
+                    - link "源码 ↗" [ref=f1e1237] [cursor=pointer]:
+                      - /url: https://magicui.design/r/bento-grid.json
+          - article [ref=f1e1238]:
+            - generic [ref=f1e1239]:
+              - generic [ref=f1e1240]:
+                - generic [ref=f1e1241]: aceternity / block
+                - heading "Blog Content With TOC" [level=3] [ref=f1e1242]
+              - generic [ref=f1e1243]: 付费源码
+            - paragraph [ref=f1e1244]: A two-column blog layout with a sticky table of contents sidebar. The TOC includes hover animations and collapses into a floating button on mobile.
+            - generic [ref=f1e1245]:
+              - generic [ref=f1e1246]:
+                - generic [ref=f1e1247]: 分类
+                - generic "blog-content-sections" [ref=f1e1248]
+              - generic [ref=f1e1249]:
+                - generic [ref=f1e1250]: 适配
+                - generic [ref=f1e1251]: medium-high
+              - generic [ref=f1e1252]:
+                - generic [ref=f1e1253]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e1254]
+              - generic [ref=f1e1255]:
+                - generic [ref=f1e1256]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e1257]
+            - generic [ref=f1e1258]:
+              - link "预览 ↗" [ref=f1e1259] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/blog-content-sections/blog-content-with-toc
+              - link "官方入口 ↗" [ref=f1e1260] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/blog-content-sections/blog-content-with-toc
+            - group [ref=f1e1261]:
+              - generic "免费替代 · 3 个" [ref=f1e1262] [cursor=pointer]
+              - generic [ref=f1e1263]:
+                - generic [ref=f1e1264]:
+                  - generic [ref=f1e1265]:
+                    - generic [ref=f1e1266]: catalog-asset
+                    - generic [ref=f1e1267]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1268]: Gooey Input
+                  - paragraph [ref=f1e1269]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：navigation-sidebar、motion-animation。
+                  - paragraph [ref=f1e1270]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e1271]:
+                    - link "预览 ↗" [ref=f1e1272] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/gooey-input
+                    - link "源码 ↗" [ref=f1e1273] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/gooey-input.json
+                - generic [ref=f1e1274]:
+                  - generic [ref=f1e1275]:
+                    - generic [ref=f1e1276]: external-oss
+                    - generic [ref=f1e1277]: MIT
+                  - strong [ref=f1e1278]: Animate UI
+                  - paragraph [ref=f1e1279]: shadcn 体系内的克制动效与动画 primitives；官方源码与许可证已核验，可作为付费能力的功能替代。
+                  - paragraph [ref=f1e1280]: 取舍：当前仅为 discovery，尚未全量入库或缓存源码；shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+                  - generic [ref=f1e1281]:
+                    - link "预览 ↗" [ref=f1e1282] [cursor=pointer]:
+                      - /url: https://animate-ui.com/
+                    - link "源码 ↗" [ref=f1e1283] [cursor=pointer]:
+                      - /url: https://github.com/imskyleen/animate-ui
+                - generic [ref=f1e1284]:
+                  - generic [ref=f1e1285]:
+                    - generic [ref=f1e1286]: catalog-asset
+                    - generic [ref=f1e1287]: MIT
+                  - strong [ref=f1e1288]: sidebar-07
+                  - paragraph [ref=f1e1289]: 当前维护的公开源码候选，共同能力：navigation-sidebar。
+                  - paragraph [ref=f1e1290]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1291]:
+                    - link "预览 ↗" [ref=f1e1292] [cursor=pointer]:
+                      - /url: https://ui.shadcn.com/view/new-york-v4/sidebar-07
+                    - link "源码 ↗" [ref=f1e1293] [cursor=pointer]:
+                      - /url: https://ui.shadcn.com/r/styles/new-york-v4/sidebar-07.json
+          - article [ref=f1e1294]:
+            - generic [ref=f1e1295]:
+              - generic [ref=f1e1296]:
+                - generic [ref=f1e1297]: aceternity / block
+                - heading "Blog Sections" [level=3] [ref=f1e1298]
+              - generic [ref=f1e1299]: 付费源码
+            - paragraph [ref=f1e1300]: Blog sections with search and filters
+            - generic [ref=f1e1301]:
+              - generic [ref=f1e1302]:
+                - generic [ref=f1e1303]: 分类
+                - generic "pro-category" [ref=f1e1304]
+              - generic [ref=f1e1305]:
+                - generic [ref=f1e1306]: 适配
+                - generic [ref=f1e1307]: medium-high
+              - generic [ref=f1e1308]:
+                - generic [ref=f1e1309]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e1310]
+              - generic [ref=f1e1311]:
+                - generic [ref=f1e1312]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e1313]
+            - generic [ref=f1e1314]:
+              - link "预览 ↗" [ref=f1e1315] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/blog-sections
+              - link "官方入口 ↗" [ref=f1e1316] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/blog-sections
+            - group [ref=f1e1317]:
+              - generic "免费替代 · 3 个" [ref=f1e1318] [cursor=pointer]
+              - generic [ref=f1e1319]:
+                - generic [ref=f1e1320]:
+                  - generic [ref=f1e1321]:
+                    - generic [ref=f1e1322]: catalog-asset
+                    - generic [ref=f1e1323]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1324]: Gooey Input
+                  - paragraph [ref=f1e1325]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：filters、search。
+                  - paragraph [ref=f1e1326]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e1327]:
+                    - link "预览 ↗" [ref=f1e1328] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/gooey-input
+                    - link "源码 ↗" [ref=f1e1329] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/gooey-input.json
+                - generic [ref=f1e1330]:
+                  - generic [ref=f1e1331]:
+                    - generic [ref=f1e1332]: catalog-asset
+                    - generic [ref=f1e1333]: MIT
+                  - strong [ref=f1e1334]: filterbar-01
+                  - paragraph [ref=f1e1335]: 当前维护的公开源码候选，共同能力：curated-fallback。
+                  - paragraph [ref=f1e1336]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1337]:
+                    - link "预览 ↗" [ref=f1e1338] [cursor=pointer]:
+                      - /url: https://blocks.tremor.so/blocks/filterbar
+                    - link "源码 ↗" [ref=f1e1339] [cursor=pointer]:
+                      - /url: https://github.com/tremorlabs/tremor-blocks/blob/main/src/content/components/filterbar/filterbar-01.tsx
+                - generic [ref=f1e1340]:
+                  - generic [ref=f1e1341]:
+                    - generic [ref=f1e1342]: catalog-asset
+                    - generic [ref=f1e1343]: MIT when sourced from coss apps/ui; verify file path
+                  - strong [ref=f1e1344]: p-input-group-23
+                  - paragraph [ref=f1e1345]: 当前维护的公开源码候选，共同能力：search。
+                  - paragraph [ref=f1e1346]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1347]:
+                    - link "预览 ↗" [ref=f1e1348] [cursor=pointer]:
+                      - /url: https://coss.com/ui/particles?search=p-input-group-23
+                    - link "源码 ↗" [ref=f1e1349] [cursor=pointer]:
+                      - /url: https://coss.com/ui/r/p-input-group-23.json
+          - article [ref=f1e1350]:
+            - generic [ref=f1e1351]:
+              - generic [ref=f1e1352]:
+                - generic [ref=f1e1353]: aceternity / block
+                - heading "Blog With Categories" [level=3] [ref=f1e1354]
+              - generic [ref=f1e1355]: 付费源码
+            - paragraph [ref=f1e1356]: "A changelog-friendly blog layout: three large featured posts with category, excerpt, and author row, plus a tighter four-column grid for the rest."
+            - generic [ref=f1e1357]:
+              - generic [ref=f1e1358]:
+                - generic [ref=f1e1359]: 分类
+                - generic "blog-sections" [ref=f1e1360]
+              - generic [ref=f1e1361]:
+                - generic [ref=f1e1362]: 适配
+                - generic [ref=f1e1363]: medium-high
+              - generic [ref=f1e1364]:
+                - generic [ref=f1e1365]: 底层
+                - generic "React + Tailwind CSS + Motion" [ref=f1e1366]
+              - generic [ref=f1e1367]:
+                - generic [ref=f1e1368]: 许可证
+                - generic "Aceternity Pro license; no source redistribution" [ref=f1e1369]
+            - generic [ref=f1e1370]:
+              - link "预览 ↗" [ref=f1e1371] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/blog-sections/blog-with-categories
+              - link "官方入口 ↗" [ref=f1e1372] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/blocks/blog-sections/blog-with-categories
+            - group [ref=f1e1373]:
+              - generic "免费替代 · 3 个" [ref=f1e1374] [cursor=pointer]
+              - generic [ref=f1e1375]:
+                - generic [ref=f1e1376]:
+                  - generic [ref=f1e1377]:
+                    - generic [ref=f1e1378]: catalog-asset
+                    - generic [ref=f1e1379]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1380]: 3D Marquee
+                  - paragraph [ref=f1e1381]: 同品牌公开 Free 源码，视觉语言更接近；共同能力：marketing-section。
+                  - paragraph [ref=f1e1382]: 取舍：Free 项通常不是付费成品区块的一比一复刻，仍需用业务数据与现有 primitives 重新组合。
+                  - generic [ref=f1e1383]:
+                    - link "预览 ↗" [ref=f1e1384] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/3d-marquee
+                    - link "源码 ↗" [ref=f1e1385] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/3d-marquee.json
+                - generic [ref=f1e1386]:
+                  - generic [ref=f1e1387]:
+                    - generic [ref=f1e1388]: catalog-asset
+                    - generic [ref=f1e1389]: Aceternity free item; verify per-item and third-party terms
+                  - strong [ref=f1e1390]: Bento Grid
+                  - paragraph [ref=f1e1391]: 当前维护的公开源码候选，共同能力：layout、grid。
+                  - paragraph [ref=f1e1392]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1393]:
+                    - link "预览 ↗" [ref=f1e1394] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/components/bento-grid
+                    - link "源码 ↗" [ref=f1e1395] [cursor=pointer]:
+                      - /url: https://ui.aceternity.com/registry/bento-grid.json
+                - generic [ref=f1e1396]:
+                  - generic [ref=f1e1397]:
+                    - generic [ref=f1e1398]: catalog-asset
+                    - generic [ref=f1e1399]: MIT
+                  - strong [ref=f1e1400]: Bento Grid
+                  - paragraph [ref=f1e1401]: 当前维护的公开源码候选，共同能力：marketing-section。
+                  - paragraph [ref=f1e1402]: 取舍：跨库替代会改变视觉、DOM 或底层 primitive；接入前要在真实业务容器并排比较。
+                  - generic [ref=f1e1403]:
+                    - link "预览 ↗" [ref=f1e1404] [cursor=pointer]:
+                      - /url: https://magicui.design/docs/components/bento-grid
+                    - link "源码 ↗" [ref=f1e1405] [cursor=pointer]:
+                      - /url: https://magicui.design/r/bento-grid.json
+        - generic [ref=f1e1406]:
+          - button "上一页" [disabled] [ref=f1e1407]: ←
+          - generic [ref=f1e1408]: 1 / 90
+          - button "下一页" [ref=f1e1409] [cursor=pointer]: →

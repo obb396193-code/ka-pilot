@@ -66,7 +66,7 @@ CREATE TABLE auth_sessions (
 -- P-001#3 裁决（全表通用）：外部 ID（task_id/account_id/entity_id/ad_id）在租户间不保证唯一，
 -- 凡以外部 ID 为主键的表，主键一律为 (workspace_id, 外部ID...)；FK 一律带 workspace_id 同行引用。
 CREATE TABLE tasks (
-  task_id TEXT NOT NULL,               -- 奇航 task_id（B7 核验后若不准改自维护主键，字段结构不变）
+  task_id TEXT NOT NULL,               -- 启航 task_id（B7 核验后若不准改自维护主键，字段结构不变）
   workspace_id UUID NOT NULL,
   PRIMARY KEY (workspace_id, task_id),
   task_name TEXT, biz_name TEXT,

@@ -1,8 +1,8 @@
-# B10 真实奇航只读适配修复 Implementation Plan
+# B10 真实启航只读适配修复 Implementation Plan
 
 > **For Codex:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** 用 2026-08-20 内网 OS 的真实只读探针证据，修正奇航日期序列化、离线分区延迟和离线真实转化字段优先级，使现有 ETL 能安全接入真实 `get_data` 返回。
+**Goal:** 用 2026-08-20 内网 OS 的真实只读探针证据，修正启航日期序列化、离线分区延迟和离线真实转化字段优先级，使现有 ETL 能安全接入真实 `get_data` 返回。
 
 **Architecture:** 保持现有 Qihang Client、Raw append-only、Canonical Merge 和公开契约不变，只在内部适配层增加严格日期转换、有限离线分区回退及字段级来源优先级。未知的 `hh`、跨日区间、现金字段业务口径和服务身份不在本批推断实现。
 
@@ -10,7 +10,7 @@
 
 ---
 
-### Task 1: 修正奇航日期参数序列化
+### Task 1: 修正启航日期参数序列化
 
 **Files:**
 - Modify: `apps/worker/src/qihang/client.ts`
@@ -100,7 +100,7 @@ Expected: PASS。
 ### Task 4: 全量质量、证据与审查交接
 
 **Files:**
-- Create: `docs/evidence/B10-真实奇航只读适配报告.md`
+- Create: `docs/evidence/B10-真实启航只读适配报告.md`
 - Create: `docs/plans/B10-状态.md`
 - Modify: `docs/plans/Codex后端交付总账.md`
 - Modify: `docs/plans/工作台账.md`

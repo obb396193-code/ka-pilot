@@ -1,0 +1,1697 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://ui.aceternity.com/components/background-boxes",
+        "title": "Background Boxes | Aceternity UI",
+        "description": "A full width background box container that highlights on hover"
+      },
+      {
+        "url": "https://ui.aceternity.com/guides/best-react-ui-components-2026",
+        "title": "Best React UI Component Libraries 2026 | Complete Guide",
+        "description": "Comprehensive comparison of the best React UI component libraries in 2026. Compare Aceternity UI, shadcn/ui, Chakra UI, MUI, and more. Find the perfect libra..."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/aurora-background",
+        "title": "Aurora Background Animation for Tailwind CSS | Aceternity UI",
+        "description": "A soft animated aurora gradient background for React and Next.js. Pure CSS, respects prefers-reduced-motion, and works in light and dark mode."
+      },
+      {
+        "url": "https://ui.aceternity.com",
+        "title": "Aceternity UI — React & Tailwind CSS Component Library",
+        "description": "Aceternity UI is a React component library with 200+ copy-paste components, blocks, and landing page templates built with Tailwind CSS and Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/link-preview",
+        "title": "Link Preview | Aceternity UI",
+        "description": "Dynamic link previews for your anchor tags"
+      },
+      {
+        "url": "https://ui.aceternity.com/best-components-and-templates-with-framer-motion",
+        "title": "Best Framer Motion Components and Templates | Aceternity UI",
+        "description": "A practical guide to Framer Motion in React: variants, layout animations, gestures, spring versus tween, and which properties are expensive to animate."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/sparkles",
+        "title": "Sparkles: Animated Particle Effect for React | Aceternity UI",
+        "description": "A configurable sparkle and particle background for React. Control density, speed and colour, and layer it behind headings or hero sections."
+      },
+      {
+        "url": "https://ui.aceternity.com/ai-recommendations",
+        "title": "AI Component Recommendations - Aceternity UI",
+        "description": "Complete machine-readable catalog of all Aceternity UI components. Optimized for AI/LLM scraping with structured data, installation commands, and detailed de..."
+      },
+      {
+        "url": "https://ui.aceternity.com/shadcn-blocks",
+        "title": "Shadcn Blocks: Copy-Paste Tailwind Sections | Aceternity UI",
+        "description": "How to add page-level blocks to a shadcn/ui project. Aceternity UI sections are copy-paste Tailwind CSS and React, and they sit next to your existing setup."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/card-hover-effect",
+        "title": "Hover Effect | Aceternity UI",
+        "description": "Hover over the cards and the effect slides to the currently hovered card."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/moving-border",
+        "title": "Moving Border Animation for React & Tailwind | Aceternity UI",
+        "description": "A button and card border that animates a light around the perimeter. SVG path based, works at any border radius, styled with Tailwind CSS."
+      },
+      {
+        "url": "https://ui.aceternity.com/pricing",
+        "title": "Pricing | Aceternity UI All-Access",
+        "description": "Get access to 100+ ready made Templates and Shadcn Blocks (Component blocks) built with Next.js, Tailwind CSS, Motion and TypeScript"
+      },
+      {
+        "url": "https://ui.aceternity.com/hero-section",
+        "title": "React Hero Section Components | Tailwind CSS | Aceternity UI",
+        "description": "22 animated hero section components for React and Next.js. Spotlight, aurora, parallax and text-reveal layouts built with Tailwind CSS and Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/changelog",
+        "title": "Changelog - Aceternity UI Pro",
+        "description": "Updates, additions and improvements to Aceternity UI Pro. From latest components and templates to improvements and bug fixes."
+      },
+      {
+        "url": "https://ui.aceternity.com/blog/shadcn-ui-alternatives",
+        "title": "shadcn/ui alternatives, and how to tell which one you act...",
+        "description": "A practical guide to shadcn/ui alternatives in 2026, covering copy-paste libraries, headless primitives like Base UI and Radix, and installed component kits."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/cards-free",
+        "title": "Cards | Aceternity UI",
+        "description": "A set of cards that can be used for different use cases"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/lamp-effect",
+        "title": "Lamp Section Header | Aceternity UI",
+        "description": "A lamp effect as seen on linear, great for section headers."
+      },
+      {
+        "url": "https://ui.aceternity.com/testimonial-section",
+        "title": "React Testimonial Section Components | Aceternity UI",
+        "description": "7 testimonial section components for React and Next.js. Masonry grids, marquee rows, carousels and draggable cards built with Tailwind CSS and Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/hero-sections",
+        "title": "Best Free Hero Sections Components - Aceternity UI",
+        "description": "Explore our collection of beautiful Hero Sections components built with Tailwind CSS and Framer Motion"
+      },
+      {
+        "url": "https://ui.aceternity.com/components",
+        "title": "Free React & Next.js UI Components | Aceternity UI",
+        "description": "200+ free, copy-paste components and blocks for React and Next.js. Animated cards, hero sections, backgrounds and more, built with Tailwind CSS and Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/navbar",
+        "title": "React Navbar Components | Sticky & Mega Menus | Aceternit...",
+        "description": "7 responsive navbar components for React and Next.js. Sticky headers, floating navigation, mega menus and mobile drawers built with Tailwind CSS."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/background-gradient-animation",
+        "title": "Animated Gradient Background for Tailwind CSS | Aceternit...",
+        "description": "Add a smooth animated gradient background to any React or Next.js page. Pure CSS keyframes, no canvas, and a dark mode variant. Copy and paste the component."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/dotted-glow-background",
+        "title": "Dotted Glow Background | Aceternity UI",
+        "description": "A background effect with opacity animation, glow effect and more."
+      },
+      {
+        "url": "https://ui.aceternity.com/template-preview/nodus-agent-template",
+        "title": "Nodus Agent Template - Preview | Aceternity UI",
+        "description": "A template focused for startups building for AI agents and AI Chatbots. Clean, Minimal and Modern., Empower your technical teams to create, simulate and mana..."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/3d-card-effect",
+        "title": "3D Card Hover Tilt Effect for React | Aceternity UI",
+        "description": "A card that tilts in 3D as the cursor moves, with layered depth on each child element. Built with React, Tailwind CSS and CSS perspective."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/tooltip-card",
+        "title": "Tooltip Card | Aceternity UI",
+        "description": "A tooltip card container that follows mouse pointer when hovered over"
+      },
+      {
+        "url": "https://ui.aceternity.com/licence",
+        "title": "Licence | Aceternity UI Pro",
+        "description": "Licensing agreement for Aceternity UI Pro - 100+ ready made Templates and Component Blocks"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates",
+        "title": "Next.js & React Landing Page Templates | Aceternity UI",
+        "description": "Production-ready landing page templates for React and Next.js. Portfolio, SaaS, agency and marketing sites built with Tailwind CSS, Motion and TypeScript."
+      },
+      {
+        "url": "https://ui.aceternity.com/bento-grid",
+        "title": "Bento Grid Components for React & Tailwind | Aceternity UI",
+        "description": "6 bento grid components for React and Next.js, including symmetric and masonry layouts plus grids with animated skeleton illustrations, built with Tailwind CSS."
+      },
+      {
+        "url": "https://ui.aceternity.com/background",
+        "title": "React Animated Background Components | Aceternity UI",
+        "description": "11 animated background components for React and Next.js. Dot grids, masked patterns, shooting stars, noise strips and a video backdrop, all in Tailwind CSS."
+      },
+      {
+        "url": "https://ui.aceternity.com/pro",
+        "title": "Aceternity UI Pro — Premium Templates & Component Blocks",
+        "description": "100+ ready made Templates and Shadcn Blocks (Component blocks) built with Next.js, Tailwind CSS, Motion (formerly Framer Motion) and TypeScript"
+      },
+      {
+        "url": "https://ui.aceternity.com/docs/add-utilities",
+        "title": "Add Utilities | Aceternity UI",
+        "description": "Commonly used utilities for using Aceternity UI"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/navbar",
+        "title": "Best Free Navbar Components - Aceternity UI",
+        "description": "Explore our collection of beautiful Navbar components built with Tailwind CSS and Framer Motion"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/spotlight",
+        "title": "Spotlight Effect for React & Tailwind CSS | Aceternity UI",
+        "description": "Add a spotlight beam that follows the cursor or sits behind your hero copy. SVG based, GPU friendly, and drop-in for React and Next.js."
+      },
+      {
+        "url": "https://ui.aceternity.com/compare/aceternity-vs-shadcn",
+        "title": "Aceternity UI vs shadcn/ui — Complete Comparison 2026",
+        "description": "Detailed comparison of Aceternity UI and shadcn/ui. Compare animations, components, pricing, and use cases. Find which React component library is right for y..."
+      },
+      {
+        "url": "https://ui.aceternity.com/best-marketing-templates",
+        "title": "High-Converting Marketing Templates | Launch Pages | Acet...",
+        "description": "Marketing templates with above-the-fold CTAs, trust signals, and urgency elements. A/B tested layouts that turn traffic into signups."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/3d-globe"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/3d-marquee"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/3d-pin"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/add-utilities"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/animated-modal"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/animated-testimonials"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/animated-tooltip"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/apple-cards-carousel"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/ascii-art"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/background-beams-with-collision"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/background-beams"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/background-gradient"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/background-lines",
+        "title": "Background Lines | Aceternity UI",
+        "description": "A set of svg paths that animate in a wave pattern. Good for hero sections background, as seen on height.app"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/background-ripple-effect"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/bento-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/canvas-reveal-effect"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/canvas-text"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/card-spotlight"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/card-stack"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/carousel"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/cli"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/code-block"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/colourful-text"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/comet-card"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/compare",
+        "title": "Compare - Aceternity UI",
+        "description": "Access an ever-growing collection of premium, meticulously crafted templates and Component Blocks. A product by Aceternity. Building in public at @mannupaaji."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/container-cover"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/container-scroll-animation"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/container-text-flip",
+        "title": "Container Text Flip | Aceternity UI",
+        "description": "A container that flips through words, animating the width."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/direction-aware-hover"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/dither-shader"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/draggable-card"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/encrypted-text"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/evervault-card"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/expandable-card"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/feature-sections-free"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/file-upload"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/flip-words"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/floating-dock"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/floating-navbar"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/focus-cards"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/following-pointer"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/github-globe"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/glare-card",
+        "title": "Glare Card | Aceternity UI",
+        "description": "A glare effect that happens on hover, as seen on Linear's website"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/glowing-effect"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/glowing-stars-effect",
+        "title": "Glowing Background Stars Card | Aceternity UI",
+        "description": "Card background stars that animate on hover and animate anyway"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/gooey-input"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/google-gemini-effect",
+        "title": "Google Gemini Effect | Aceternity UI",
+        "description": "Google Gemini Effect An effect of SVGs as seen on the Google Gemini Website"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/grid-and-dot-backgrounds"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/hero-highlight"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/hero-parallax"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/hero-sections-free"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/hover-border-gradient"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/images-badge"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/images-slider"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/infinite-moving-cards"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/install-nextjs"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/install-tailwindcss"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/keyboard"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/layout-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/layout-text-flip"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/lens"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/loader"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/macbook-scroll"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/magnetic-button"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/meteors"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/multi-step-loader"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/navbar-menu"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/noise-background"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/notch"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/parallax-hero-images"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/parallax-scroll",
+        "title": "Parallax Scroll Component for React & Next.js | Aceternity UI",
+        "description": "A multi-column parallax scrolling image grid for React. Columns move at different speeds as the page scrolls. Built with Tailwind CSS and Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/pixelated-canvas"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/placeholders-and-vanish-input"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/pointer-highlight"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/resizable-navbar"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/scales"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/shooting-stars-and-stars-background"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/sidebar"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/signup-form"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/spotlight-new"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/squiggly-text"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/stateful-button"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/sticky-banner"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/sticky-scroll-reveal"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/svg-mask-effect"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/tabs"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/tailwindcss-buttons"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/terminal",
+        "title": "Terminal | Aceternity UI",
+        "description": "A mac style terminal component with bash syntax highlighting and typewriter effect."
+      },
+      {
+        "url": "https://ui.aceternity.com/components/text-flipping-board"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/text-generate-effect"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/text-hover-effect"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/text-reveal-card"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/timeline"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/tracing-beam"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/typewriter-effect"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/vortex"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/wavy-background"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/webcam-pixel-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/wobble-card"
+      },
+      {
+        "url": "https://ui.aceternity.com/components/world-map",
+        "title": "World Map | Aceternity UI",
+        "description": "A world map with animated lines and dots, programatically generated."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/card"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/background"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/special"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/3d",
+        "title": "Best Free 3d Components - Aceternity UI",
+        "description": "Best Free 3d Components for your Tailwind CSS and React project. Explore the best components and templates for your project to help you stand out from the crowd ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/call-to-action"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/hero-section"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/hero",
+        "title": "Best Free Hero Components - Aceternity UI",
+        "description": "Best Free Hero Components for your Tailwind CSS and React project. Explore the best components and templates for your project to help you stand out from the ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/backgrounds",
+        "title": "Best Free Backgrounds Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/testimonials"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/hover"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories",
+        "title": "Component Categories — Browse by Type | Aceternity UI",
+        "description": "Browse 200+ React and Next.js components by category. Find hero sections, cards, backgrounds, animations, and more built with Tailwind CSS and Framer ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/utilities"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/modal",
+        "title": "Best Free Modal Components - Aceternity UI",
+        "description": "Best Free Modal Components for your Tailwind CSS and React project. Explore the best components and templates for your project to help you stand out from ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/utility",
+        "title": "Best Free Utility Components - Aceternity UI",
+        "description": "Best Free Utility Components for your Tailwind CSS and React project. Explore the best components and templates for your project to help you stand out from the ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/features",
+        "title": "Best Free Features Components - Aceternity UI",
+        "description": "A simple, clean, modern and minimalistic landing page template for startups. Filled with microinteractions to keep your users engaged. Included with all-access."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/carousel"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/image"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/canvas",
+        "title": "Best Free Canvas Components - Aceternity UI",
+        "description": "Animated text component with colorful curved lines rendered on canvas, clipped to the text shape. Component Thumbnail. Canvas Reveal Effect."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/gradient"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/ui"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/effects"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/ripple"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/effect",
+        "title": "Best Free Effect Components - Aceternity UI",
+        "description": "Best Free Effect Components for your Tailwind CSS and React project. Explore the best components and templates for your project to help you stand out from ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/text"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/animation",
+        "title": "Best Free Animation Components - Aceternity UI",
+        "description": "Animated text component with colorful curved lines rendered on canvas, clipped to the text shape. Component Thumbnail. Container Text Flip."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/code"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/tilt"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/highlights",
+        "title": "Best Free Highlights Components - Aceternity UI",
+        "description": "Explore our collection of beautiful Highlights components built with Tailwind CSS and Framer Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/product"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/container"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/draggable"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/tiltable",
+        "title": "Best Free Tiltable Components - Aceternity UI",
+        "description": "Explore our collection of beautiful Tiltable components built with Tailwind CSS and Framer Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/bento-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/form",
+        "title": "Best Free Form Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/cards",
+        "title": "Best Free Cards Components - Aceternity UI",
+        "description": "Explore the best components and templates for your project to help you stand out from the crowd. all components blocks. Component Thumbnail. Focus Cards. Hover ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/feature"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/section",
+        "title": "Best Free Section Components - Aceternity UI",
+        "description": "A new spotlight component with left and right spotlight, configurable and customizable. Component Thumbnail. Spotlight. A spotlight effect with Tailwind CSS, ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/border"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/highlight",
+        "title": "Best Free Highlight Components - Aceternity UI",
+        "description": "Explore the best components and templates for your project to help you stand out from the crowd. all components blocks. Component Thumbnail. Pointer Highlight."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/navigation",
+        "title": "Best Free Navigation Components - Aceternity UI",
+        "description": "Simple and elegant headers for your website. Included with all-access. Coming Soon. We are working hard to bring you more components. Bookmark this page to stay ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/footer"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/parallax",
+        "title": "Best Free Parallax Components - Aceternity UI",
+        "description": "Explore the best components and templates for your project to help you stand out from the crowd. all components blocks. Component Thumbnail. Fey.com Macbook ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/button",
+        "title": "Best Free Button Components - Aceternity UI",
+        "description": "Best Free Button Components for your Tailwind CSS and React project. Explore the best components and templates for your project to help you stand out from the ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/marquee",
+        "title": "Best Free Marquee Components - Aceternity UI",
+        "description": "Explore our collection of beautiful Marquee components built with Tailwind CSS and Framer Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/header"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/content"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/loaders",
+        "title": "Best Free Loaders Components - Aceternity UI",
+        "description": "A set of simple and minimal loaders for your loading screens and components. Coming Soon. We are working hard to bring you more components."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/loader"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/loading",
+        "title": "Best Free Loading Components - Aceternity UI",
+        "description": "A button that shows a loading state when clicked, and a success state when the action is completed. Coming Soon. We are working hard to bring you more ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/interaction"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/testimonial",
+        "title": "Best Free Testimonial Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/floating",
+        "title": "Best Free Floating Components - Aceternity UI",
+        "description": "A floating, configurable notch that pins to the top or bottom of the screen. Pass an array of items with links and it animates the active state as you switch ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/images"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/pointer",
+        "title": "Best Free Pointer Components - Aceternity UI",
+        "description": "Explore the best components and templates for your project to help you stand out from the crowd. all components blocks. Component Thumbnail. Pointer Highlight."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/responsive",
+        "title": "Best Free Responsive Components - Aceternity UI",
+        "description": "Explore our collection of beautiful Responsive components built with Tailwind CSS and Framer Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/layout",
+        "title": "Best Free Layout Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/pattern"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/sidebar"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/dashboard"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/stateful"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/banner",
+        "title": "Best Free Banner Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/sticky",
+        "title": "Best Free Sticky Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/tooltip"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/informative"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/scroll"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/cta"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/map",
+        "title": "Best Free Map Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/chatbot"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/bento",
+        "title": "Best Free Bento Components - Aceternity UI",
+        "description": "Explore our collection of beautiful Bento components built with Tailwind CSS and Framer Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/blog",
+        "title": "Best Free Blog Components - Aceternity UI",
+        "description": "Explore the best components and templates for your project to help you stand out from the crowd. all components blocks. Component Thumbnail. Blog Content ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/sections",
+        "title": "Best Free Sections Components - Aceternity UI",
+        "description": "Best Free Sections Components for your Tailwind CSS and React project. Explore the best components and templates for your project to help you stand out from ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/search",
+        "title": "Best Free Search Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/contact"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/projects"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/empty",
+        "title": "Best Free Empty Components - Aceternity UI",
+        "description": "Explore our collection of beautiful Empty components built with Tailwind CSS and Framer Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/state"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/page"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/faq",
+        "title": "Best Free Faq Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/masonry"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/footers",
+        "title": "Best Free Footers Components - Aceternity UI",
+        "description": "Explore the best components and templates for your project to help you stand out from the crowd. all components blocks. Component Thumbnail. Footers. Clean ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/motion"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/block",
+        "title": "Best Free Block Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/auth"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/registration",
+        "title": "Best Free Registration Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/login"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/logo"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/clouds",
+        "title": "Best Free Clouds Components - Aceternity UI",
+        "description": "Explore the best components and templates for your project to help you stand out from the crowd. all components blocks. Component Thumbnail. Logo Clouds. A ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/shaders"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/microinteractions"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/stats"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/data",
+        "title": "Best Free Data Components - Aceternity UI",
+        "description": "Access an ever-growing collection of premium, meticulously crafted templates and Component Blocks. A product by Aceternity. Building in public at @mannupaaji."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/numbers"
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/team",
+        "title": "Best Free Team Components - Aceternity UI",
+        "description": "Explore our collection of beautiful Team components built with Tailwind CSS and Framer Motion."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/headings",
+        "title": "Best Free Headings Components - Aceternity UI",
+        "description": "We are working hard to bring you more components. Bookmark this page to stay tuned! Build websites faster and 10x better than your competitors with. Aceternity ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/categories/paragraphs",
+        "title": "Best Free Paragraphs Components - Aceternity UI",
+        "description": "Best Free Paragraphs Components for your Tailwind CSS and React project. Explore the best components and templates for your project to help you stand out from ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/blog/how-to-create-a-bento-grid-with-tailwindcss-nextjs-and-framer-motion"
+      },
+      {
+        "url": "https://ui.aceternity.com/blog/how-we-built-the-best-ai-saas-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/blog/motion-vs-gsap-for-react"
+      },
+      {
+        "url": "https://ui.aceternity.com/blog/skeletons-to-uplift-your-feature-sections"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/agenforce-marketing-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/agenlabs-agency-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/ai-saas-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds",
+        "title": "Backgrounds | Aceternity UI Blocks",
+        "description": "We are a team of developers who are passionate about creating web apps that make you feel like you're in the future. Sign up. Register now. Background ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/bento-grids",
+        "title": "Bento Grids | Aceternity UI Blocks",
+        "description": "A set of bento grids for various use cases"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/blog-content-sections"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/blog-sections"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cards",
+        "title": "Cards | Aceternity UI Blocks",
+        "description": "A card that showcases a set of tools that you use to create your product. Expandable Card On Click. Preview Code. Classic look. Classic look. The best in class ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/contact-sections"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/cryptgen-marketing-aceternity"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cta-sections"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/design-development-studio-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/devpro-portfolio-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/empty-states"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/faqs"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/footers",
+        "title": "Footers | Aceternity UI Blocks",
+        "description": "Access an ever-growing collection of premium, meticulously crafted templates and Component Blocks. Built by the founders of Aceternity UI."
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/foxtrot-marketing-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections",
+        "title": "Hero Sections | Aceternity UI Blocks",
+        "description": "A collection of hero sections that are modern and stand out"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/login-and-signup-sections"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/logo-clouds",
+        "title": "Logo Clouds | Aceternity UI Blocks",
+        "description": "A collection of logo clouds with micro interactions and minimal animations"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/minimal-portfolio-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/minimalist-portfolio-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/navbars"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/nodus-agent-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/playful-marketing-aceternity"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/pricing-sections"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/proactiv-marketing-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/productized-agency-template",
+        "title": "Productized Agency Template | Aceternity UI Templates",
+        "description": "Modern template for productized agencies to showcase services, packages, and pricing with a clean design."
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/schedule-marketing-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/shaders",
+        "title": "Shaders | Aceternity UI Blocks",
+        "description": "We are a team of developers who are passionate about creating web apps that make you feel like you're in the future. Get started → G Sign ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/sidebars"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/sidefolio-portfolio-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/simplistic-saas-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/templates/startup-landing-page-template"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/stats-sections"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/team-sections"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/testimonials"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/text-animations"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/animated-beam-path-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds/background-grid-with-dots-and-animations"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds/background-grid-with-dots"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cards/background-overlay-card"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds/background-with-dots-masked-vertical"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds/background-with-dots-masked"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds/background-with-dots"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds/background-with-full-video"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds/background-with-lines"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds/background-with-noise-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds/background-with-shooting-stars"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds/background-with-skewed-lines"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/backgrounds/background-with-skewed-rectangles"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/bento-grids/bento-grid-illustrations"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/bento-grids/bento-grid-with-skeletons"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/bento-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/blog-content-sections/blog-content-centered"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/blog-content-sections/blog-content-with-toc"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/blog-sections/blog-with-categories"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/blog-sections/blog-with-search-magazine"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/blog-sections/blog-with-search"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/box-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/centered-around-testimonials"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/footers/centered-with-logo"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/chat-conversation"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/collaborative-cursors"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/sidebars/collapsible-sidebar"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/contact-sections/contact-form-grid-with-details"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/contact-sections/contact-section-with-shader"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/contact-sections/contact-with-dither-image"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cards/content-card"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cta-sections/cta-centered-masonry-gallery"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cta-sections/cta-with-background-noise"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cta-sections/cta-with-centered-text"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cta-sections/cta-with-dashed-grid-lines"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cta-sections/cta-with-masonry-images"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/dither-features"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/shaders/dot-distortion-shader"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/draggable-cards"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/dynamic-island"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/empty-states/empty-state-vertical-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/empty-states/empty-state-with-cards"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/empty-states/empty-state-with-draggable-cards"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/empty-states/empty-state-with-pictures"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/empty-states/empty-state-with-stacked-cards"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cards/expandable-card-on-click"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/faqs/faqs-with-dashed-lines"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/faqs/faqs-with-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cards/feature-block-animated-card"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/feature-section-bento-skeletons"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/feature-section-with-centered-skeleton"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/feature-section-with-horizontal-skeletons"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/feature-section-with-terminal"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/feature-section-with-vertical-grids"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/feature-with-inline-icons"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/features-grid-with-large-skeletons"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/features-section-with-skeletons"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/features-with-accordion-and-image"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/features-with-hover-and-text-animation"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/features-with-isometric-blocks"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/features-with-square-edges"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/features-with-stacked-isometric-boxes"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/features-with-sticky-scroll"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/flipping-images-with-bar"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/folder-with-files"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/footers/footer-with-big-text"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/faqs/frequently-asked-questions-with-accordion"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/full-background-image-with-text"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/sidebars/grouped-sidebar"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-section-with-beams-and-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-section-with-dither-background"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-section-with-flickering-lights"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-section-with-images-grid-and-navbar"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-section-with-infinite-scroll-cards"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-section-with-mesh-gradient"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-section-with-mousemove"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-section-with-multi-color-background"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-section-with-noise-background"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-section-with-shadow-and-scales"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-section-with-tabs"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-with-background-and-navbar"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-with-centered-image"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-with-chat-input"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-with-dither-shader"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-with-framed-image-and-logos"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/hero-with-image-and-scales"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/footers/huge-footer-with-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/inline-icon-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/ipad-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/iphone-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/isometric-box"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/keyboard-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/shaders/lines-gradient-shader"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/login-and-signup-sections/login-form-with-gradient"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/login-and-signup-sections/login-signup-minimal"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/login-and-signup-sections/login-with-socials-and-email"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/logo-clouds/logo-cloud-marquee"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/logo-clouds/logo-cloud-with-blur-animation"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/logo-clouds/logo-cloud-with-swap-animation"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/logo-clouds/logos-with-blur-flip"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/macbook-illustration-with-icons"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/macbook-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/bento-grids/masonry-bento-grid-with-images"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/meeting-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/minimal-hero-section-with-parallax-images"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/modern-hero-with-gradients"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/multi-illustration-bento"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/multi-level-features-with-illustrations"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/multicolored-features"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/navbars/navbar-classic"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/navbars/navbar-dark-shadow"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/navbars/navbar-mega"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/navbars/navbar-pill"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/navbars/navbar-underline"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/navbars/navbar-with-children"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/playful-hero-section"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/login-and-signup-sections/premium-auth-split"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/pricing-sections/pricing-minimal"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/pricing-sections/pricing-page-with-featured-and-enterprise"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/pricing-sections/pricing-with-header-and-icons"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/pricing-sections/pricing-with-switch-and-add-on"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/pricing-sections/pricing-with-switch"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/login-and-signup-sections/registration-form-with-images"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/rotating-tabs-with-text"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/blog-sections/simple-blog-with-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/contact-sections/simple-centered-contact-form"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/cta-sections/simple-cta-with-images"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/faqs/simple-faqs-with-background"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/footers/simple-footer-with-four-grids"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/login-and-signup-sections/simple-login-with-grid-lines"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/navbars/simple-navbar-with-hover-effects"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/pricing-sections/simple-pricing-with-three-tiers"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/sidebars/simple-sidebar-with-hover"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/simple-with-card-gradient"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/simple-with-hover-effects"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/logo-clouds/single-row-logo-cloud"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/slider-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/logo-clouds/spotlight-logo-cloud"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/shaders/spotlight-shader"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/stats-sections/stats-for-changelog"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/stats-sections/stats-with-gradient"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/stats-sections/stats-with-grid-background"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/stats-sections/stats-with-number-ticker"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/bento-grids/symmetric-bento-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/team-sections/team-section-with-light-background"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/team-sections/team-section-with-scales"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/team-sections/team-section-with-small-avatars"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/team-sections/team-section-with-timeline-cards"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/testimonials/testimonials-background-with-drag"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/testimonials/testimonials-grid-with-centered-carousel"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/testimonials-hover-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/testimonials/testimonials-marquee-grid-boxed"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/testimonials/testimonials-marquee-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/testimonials/testimonials-masonry-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/testimonials/testimonials-with-carousel"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/testimonials/testimonials-with-centered-highlight"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/text-animations/text-animation-blur-fade-in"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/text-animations/text-animation-flipping-words"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/text-animations/text-animation-typewriter-effect"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/text-animations/text-generate-typewriter"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/text-highlight-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/bento-grids/three-column-bento-grid"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/feature-sections/three-column-features-with-image"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/bento-grids/three-column-with-images"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/hero-sections/two-column-with-image"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/uptime-status-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks/illustrations/world-map-illustration"
+      },
+      {
+        "url": "https://ui.aceternity.com/blocks",
+        "title": "UI Blocks for React & Next.js - Aceternity UI",
+        "description": "Access an ever-growing collection of premium, meticulously crafted templates and Component Blocks."
+      },
+      {
+        "url": "https://ui.aceternity.com/labs",
+        "title": "Labs — Interactive Component Playgrounds - Aceternity UI",
+        "description": "Play with interactive React and Tailwind CSS components live in your browser. Edit the code, see it run instantly, and install any block with the CLI."
+      },
+      {
+        "url": "https://ui.aceternity.com/labs/fey-cards"
+      },
+      {
+        "url": "https://ui.aceternity.com/labs/gooey-dropdown"
+      },
+      {
+        "url": "https://ui.aceternity.com/labs/gta-vi-poster"
+      },
+      {
+        "url": "https://ui.aceternity.com/labs/interface-crafts-cards"
+      },
+      {
+        "url": "https://ui.aceternity.com/labs/svg-path-morphing"
+      },
+      {
+        "url": "https://ui.aceternity.com/labs/wispr-flow-text-animation"
+      },
+      {
+        "url": "https://ui.aceternity.com/explore",
+        "title": "Explore Components, Blocks & Templates - Aceternity UI",
+        "description": "Explore the complete collection of React and Next.js components, UI blocks, and templates. Find everything you need in one place."
+      },
+      {
+        "url": "https://ui.aceternity.com/blog",
+        "title": "Blog - Aceternity UI",
+        "description": "Tech tips, best practices and the latest front-end development trends explained by us in detail. Get access to all templates, components and blocks for a one- ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/privacy",
+        "title": "Privacy Policy - Aceternity UI",
+        "description": "Information We Collect. We collect information you provide directly to us, such as when you create an account, make a purchase, or contact us for support."
+      },
+      {
+        "url": "https://ui.aceternity.com/refunds",
+        "title": "Refunds Policy - Aceternity UI",
+        "description": "Our policy regarding refunds for Aceternity UI Pro products."
+      },
+      {
+        "url": "https://ui.aceternity.com/terms",
+        "title": "Terms and Conditions - Aceternity UI",
+        "description": "These terms and conditions outline the rules and regulations for the use of Aceternity Solutions Private Limited's website, located at ui.aceternity.com."
+      },
+      {
+        "url": "https://ui.aceternity.com/affiliate-program"
+      },
+      {
+        "url": "https://ui.aceternity.com/installation",
+        "title": "Installation Guide | Aceternity UI Pro",
+        "description": "Learn how to install and use Aceternity UI Pro components and templates in your projects."
+      },
+      {
+        "url": "https://ui.aceternity.com/showcase",
+        "title": "Showcase - Aceternity UI",
+        "description": "Discover how leading companies leverage Aceternity UI to create stunning landing pages and powerful web applications."
+      },
+      {
+        "url": "https://ui.aceternity.com/tools/box-shadows"
+      },
+      {
+        "url": "https://ui.aceternity.com/sponsor",
+        "title": "Sponsor Aceternity UI",
+        "description": "Sponsor Aceternity UI. Reach thousands of developers building the next generation of web applications. Get your brand in front of our growing community of ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/brand-facts",
+        "title": "About Aceternity UI | Brand Facts & Company Information",
+        "description": "Access an ever-growing collection of premium, meticulously crafted templates and Component Blocks. A product by Aceternity. Building in public at @mannupaaji."
+      },
+      {
+        "url": "https://ui.aceternity.com/guides",
+        "title": "Guides | Best React Components & Templates Comparison",
+        "description": "Best React UI Component Libraries 2026. Compare Aceternity UI, shadcn/ui, Chakra UI, MUI, and Radix. Find the perfect library for your project."
+      },
+      {
+        "url": "https://ui.aceternity.com/guides/best-nextjs-templates-2026"
+      },
+      {
+        "url": "https://ui.aceternity.com/compare/aceternity-vs-chakra-ui"
+      },
+      {
+        "url": "https://ui.aceternity.com/compare/aceternity-vs-material-ui"
+      },
+      {
+        "url": "https://ui.aceternity.com/footer",
+        "title": "React Footer Components | Tailwind CSS - Aceternity UI",
+        "description": "4 responsive footer components for React and Next.js. Centered, four-column, and full-width grid footers with newsletter fields, built with Tailwind CSS."
+      },
+      {
+        "url": "https://ui.aceternity.com/feature-section",
+        "title": "React Feature Section Components | 22 Blocks | Aceternity UI",
+        "description": "22 feature section components for React and Next.js. Bento grids, sticky scroll layouts, animated terminals and skeleton illustrations built with Tailwind ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/pricing-section"
+      },
+      {
+        "url": "https://ui.aceternity.com/faq-section"
+      },
+      {
+        "url": "https://ui.aceternity.com/cta-section",
+        "title": "React CTA Section Components | Tailwind CSS - Aceternity UI",
+        "description": "Every CTA section in the library. Each one is a single section you can paste near the end of a page. Swap the headline, the button label, and the href, ..."
+      },
+      {
+        "url": "https://ui.aceternity.com/card"
+      },
+      {
+        "url": "https://ui.aceternity.com/sidebar",
+        "title": "React Sidebar Components | Collapsible Nav - Aceternity UI",
+        "description": "A sidebar with a toggle button to expand and collapse. Maintains state between interactions and includes a smooth width transition. Included with all-access."
+      },
+      {
+        "url": "https://ui.aceternity.com/contact-section",
+        "title": "Contact Section Components for React & Next.js | Aceternity UI",
+        "description": "React footer componentsFour footers ranging from a centered logo with a single row of links to a full-width grid with four link columns and a newsletter field."
+      },
+      {
+        "url": "https://ui.aceternity.com/blog-section"
+      },
+      {
+        "url": "https://ui.aceternity.com/blog-content-section"
+      },
+      {
+        "url": "https://ui.aceternity.com/logo-cloud"
+      },
+      {
+        "url": "https://ui.aceternity.com/login-signup-section"
+      },
+      {
+        "url": "https://ui.aceternity.com/portfolio-website-templates"
+      },
+      {
+        "url": "https://ui.aceternity.com/marketing-website-templates"
+      },
+      {
+        "url": "https://ui.aceternity.com/best-ai-saas-templates"
+      },
+      {
+        "url": "https://ui.aceternity.com/best-minimal-templates-in-react-and-nextjs"
+      },
+      {
+        "url": "https://ui.aceternity.com/amazing-tailwindcss-and-framer-motion-components"
+      },
+      {
+        "url": "https://ui.aceternity.com/login",
+        "title": "Login - Aceternity UI Pro",
+        "description": "Login to your Aceternity UI Pro account to access 100+ ready made Templates and Component Blocks."
+      },
+      {
+        "url": "https://ui.aceternity.com/docs/cli",
+        "title": "CLI - Aceternity UI",
+        "description": "You will be asked a few questions to configure components.json : Which style would you like to use? › New York Which color would you like to use as base ..."
+      }
+    ]
+  }
+}

@@ -1,0 +1,402 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - link "Home" [ref=e6] [cursor=pointer]:
+          - /url: https://coss.com/
+          - text: coss.com
+        - generic [ref=e7]: ui
+      - generic [ref=e8]:
+        - navigation [ref=e9]:
+          - link "Docs" [ref=e10] [cursor=pointer]:
+            - /url: /ui/docs
+          - link "Particles" [ref=e11] [cursor=pointer]:
+            - /url: /ui/particles
+        - button [ref=e13] [cursor=pointer]:
+          - generic [ref=e14]:
+            - generic: ⌘
+            - generic: K
+        - separator [ref=e15]
+        - link "10.4k" [ref=e16] [cursor=pointer]:
+          - /url: https://github.com/cosscom/coss
+        - button "Toggle theme" [ref=e18] [cursor=pointer]
+  - main [ref=e20]:
+    - generic [ref=e21]:
+      - generic [ref=e24]:
+        - generic [ref=e26]:
+          - generic [ref=e27]: Overview
+          - list [ref=e29]:
+            - listitem [ref=e30]:
+              - link "Introduction" [ref=e31] [cursor=pointer]:
+                - /url: /ui/docs
+            - listitem [ref=e32]:
+              - link "Get Started" [ref=e33] [cursor=pointer]:
+                - /url: /ui/docs/get-started
+            - listitem [ref=e34]:
+              - link "Styling" [ref=e35] [cursor=pointer]:
+                - /url: /ui/docs/styling
+            - listitem [ref=e36]:
+              - link "Migrating from Radix" [ref=e37] [cursor=pointer]:
+                - /url: /ui/docs/radix-migration
+            - listitem [ref=e38]:
+              - link "Skills" [ref=e39] [cursor=pointer]:
+                - /url: /ui/docs/skills
+            - listitem [ref=e40]:
+              - link "Changelog" [ref=e41] [cursor=pointer]:
+                - /url: /ui/docs/changelog
+            - listitem [ref=e42]:
+              - link "Roadmap" [ref=e43] [cursor=pointer]:
+                - /url: /ui/docs/roadmap
+        - generic [ref=e44]:
+          - generic [ref=e45]: Components
+          - list [ref=e47]:
+            - listitem [ref=e48]:
+              - link "Accordion" [ref=e49] [cursor=pointer]:
+                - /url: /ui/docs/components/accordion
+            - listitem [ref=e50]:
+              - link "Alert" [ref=e51] [cursor=pointer]:
+                - /url: /ui/docs/components/alert
+            - listitem [ref=e52]:
+              - link "Alert Dialog" [ref=e53] [cursor=pointer]:
+                - /url: /ui/docs/components/alert-dialog
+            - listitem [ref=e54]:
+              - link "Autocomplete" [ref=e55] [cursor=pointer]:
+                - /url: /ui/docs/components/autocomplete
+            - listitem [ref=e56]:
+              - link "Avatar" [ref=e57] [cursor=pointer]:
+                - /url: /ui/docs/components/avatar
+            - listitem [ref=e58]:
+              - link "Badge" [ref=e59] [cursor=pointer]:
+                - /url: /ui/docs/components/badge
+            - listitem [ref=e60]:
+              - link "Breadcrumb" [ref=e61] [cursor=pointer]:
+                - /url: /ui/docs/components/breadcrumb
+            - listitem [ref=e62]:
+              - link "Button" [ref=e63] [cursor=pointer]:
+                - /url: /ui/docs/components/button
+            - listitem [ref=e64]:
+              - link "Calendar" [ref=e65] [cursor=pointer]:
+                - /url: /ui/docs/components/calendar
+            - listitem [ref=e66]:
+              - link "Card" [ref=e67] [cursor=pointer]:
+                - /url: /ui/docs/components/card
+            - listitem [ref=e68]:
+              - link "Checkbox" [ref=e69] [cursor=pointer]:
+                - /url: /ui/docs/components/checkbox
+            - listitem [ref=e70]:
+              - link "Checkbox Group" [ref=e71] [cursor=pointer]:
+                - /url: /ui/docs/components/checkbox-group
+            - listitem [ref=e72]:
+              - link "Collapsible" [ref=e73] [cursor=pointer]:
+                - /url: /ui/docs/components/collapsible
+            - listitem [ref=e74]:
+              - link "Combobox" [ref=e75] [cursor=pointer]:
+                - /url: /ui/docs/components/combobox
+            - listitem [ref=e76]:
+              - link "Command" [ref=e77] [cursor=pointer]:
+                - /url: /ui/docs/components/command
+            - listitem [ref=e78]:
+              - link "Context Menu" [ref=e79] [cursor=pointer]:
+                - /url: /ui/docs/components/context-menu
+            - listitem [ref=e80]:
+              - link "Date Picker" [ref=e81] [cursor=pointer]:
+                - /url: /ui/docs/components/date-picker
+            - listitem [ref=e82]:
+              - link "Dialog" [ref=e83] [cursor=pointer]:
+                - /url: /ui/docs/components/dialog
+            - listitem [ref=e84]:
+              - link "Drawer" [ref=e85] [cursor=pointer]:
+                - /url: /ui/docs/components/drawer
+            - listitem [ref=e86]:
+              - link "Empty" [ref=e87] [cursor=pointer]:
+                - /url: /ui/docs/components/empty
+            - listitem [ref=e88]:
+              - link "Field" [ref=e89] [cursor=pointer]:
+                - /url: /ui/docs/components/field
+            - listitem [ref=e90]:
+              - link "Fieldset" [ref=e91] [cursor=pointer]:
+                - /url: /ui/docs/components/fieldset
+            - listitem [ref=e92]:
+              - link "Form" [ref=e93] [cursor=pointer]:
+                - /url: /ui/docs/components/form
+            - listitem [ref=e94]:
+              - link "Frame" [ref=e95] [cursor=pointer]:
+                - /url: /ui/docs/components/frame
+            - listitem [ref=e96]:
+              - link "Group" [ref=e97] [cursor=pointer]:
+                - /url: /ui/docs/components/group
+            - listitem [ref=e98]:
+              - link "Input" [ref=e99] [cursor=pointer]:
+                - /url: /ui/docs/components/input
+            - listitem [ref=e100]:
+              - link "Input Group" [ref=e101] [cursor=pointer]:
+                - /url: /ui/docs/components/input-group
+            - listitem [ref=e102]:
+              - link "Kbd" [ref=e103] [cursor=pointer]:
+                - /url: /ui/docs/components/kbd
+            - listitem [ref=e104]:
+              - link "Label" [ref=e105] [cursor=pointer]:
+                - /url: /ui/docs/components/label
+            - listitem [ref=e106]:
+              - link "Menu" [ref=e107] [cursor=pointer]:
+                - /url: /ui/docs/components/menu
+            - listitem [ref=e108]:
+              - link "Meter" [ref=e109] [cursor=pointer]:
+                - /url: /ui/docs/components/meter
+            - listitem [ref=e110]:
+              - link "Number Field" [ref=e111] [cursor=pointer]:
+                - /url: /ui/docs/components/number-field
+            - listitem [ref=e112]:
+              - link "OTP Field" [ref=e113] [cursor=pointer]:
+                - /url: /ui/docs/components/otp-field
+            - listitem [ref=e114]:
+              - link "Pagination" [ref=e115] [cursor=pointer]:
+                - /url: /ui/docs/components/pagination
+            - listitem [ref=e116]:
+              - link "Popover" [ref=e117] [cursor=pointer]:
+                - /url: /ui/docs/components/popover
+            - listitem [ref=e118]:
+              - link "Preview Card" [ref=e119] [cursor=pointer]:
+                - /url: /ui/docs/components/preview-card
+            - listitem [ref=e120]:
+              - link "Progress" [ref=e121] [cursor=pointer]:
+                - /url: /ui/docs/components/progress
+            - listitem [ref=e122]:
+              - link "Radio Group" [ref=e123] [cursor=pointer]:
+                - /url: /ui/docs/components/radio-group
+            - listitem [ref=e124]:
+              - link "Scroll Area" [ref=e125] [cursor=pointer]:
+                - /url: /ui/docs/components/scroll-area
+            - listitem [ref=e126]:
+              - link "Select" [ref=e127] [cursor=pointer]:
+                - /url: /ui/docs/components/select
+            - listitem [ref=e128]:
+              - link "Segmented Control New" [ref=e129] [cursor=pointer]:
+                - /url: /ui/docs/components/segmented-control
+                - text: Segmented Control
+                - generic [ref=e130]: New
+            - listitem [ref=e131]:
+              - link "Separator" [ref=e132] [cursor=pointer]:
+                - /url: /ui/docs/components/separator
+            - listitem [ref=e133]:
+              - link "Sheet" [ref=e134] [cursor=pointer]:
+                - /url: /ui/docs/components/sheet
+            - listitem [ref=e135]:
+              - link "Skeleton" [ref=e136] [cursor=pointer]:
+                - /url: /ui/docs/components/skeleton
+            - listitem [ref=e137]:
+              - link "Slider" [ref=e138] [cursor=pointer]:
+                - /url: /ui/docs/components/slider
+            - listitem [ref=e139]:
+              - link "Spinner" [ref=e140] [cursor=pointer]:
+                - /url: /ui/docs/components/spinner
+            - listitem [ref=e141]:
+              - link "Switch" [ref=e142] [cursor=pointer]:
+                - /url: /ui/docs/components/switch
+            - listitem [ref=e143]:
+              - link "Table" [ref=e144] [cursor=pointer]:
+                - /url: /ui/docs/components/table
+            - listitem [ref=e145]:
+              - link "Tabs" [ref=e146] [cursor=pointer]:
+                - /url: /ui/docs/components/tabs
+            - listitem [ref=e147]:
+              - link "Textarea" [ref=e148] [cursor=pointer]:
+                - /url: /ui/docs/components/textarea
+            - listitem [ref=e149]:
+              - link "Toast" [ref=e150] [cursor=pointer]:
+                - /url: /ui/docs/components/toast
+            - listitem [ref=e151]:
+              - link "Toggle" [ref=e152] [cursor=pointer]:
+                - /url: /ui/docs/components/toggle
+            - listitem [ref=e153]:
+              - link "Toggle Group" [ref=e154] [cursor=pointer]:
+                - /url: /ui/docs/components/toggle-group
+            - listitem [ref=e155]:
+              - link "Toolbar" [ref=e156] [cursor=pointer]:
+                - /url: /ui/docs/components/toolbar
+            - listitem [ref=e157]:
+              - link "Tooltip" [ref=e158] [cursor=pointer]:
+                - /url: /ui/docs/components/tooltip
+        - generic [ref=e159]:
+          - generic [ref=e160]: Hooks
+          - list [ref=e162]:
+            - listitem [ref=e163]:
+              - link "useMediaQuery" [ref=e164] [cursor=pointer]:
+                - /url: /ui/docs/hooks/use-media-query
+            - listitem [ref=e165]:
+              - link "useCopyToClipboard" [ref=e166] [cursor=pointer]:
+                - /url: /ui/docs/hooks/use-copy-to-clipboard
+        - generic [ref=e167]:
+          - generic [ref=e168]: Resources
+          - list [ref=e170]:
+            - listitem [ref=e171]:
+              - link "llms.txt" [ref=e172] [cursor=pointer]:
+                - /url: /ui/llms.txt
+            - listitem [ref=e173]:
+              - link "coss.com origin" [ref=e174] [cursor=pointer]:
+                - /url: https://coss.com/origin
+      - generic [ref=e176]:
+        - generic [ref=e178]:
+          - generic [ref=e182]:
+            - generic [ref=e183]:
+              - generic [ref=e184]:
+                - heading "Date Picker" [level=1] [ref=e185]
+                - paragraph [ref=e186]: A date picker component built with Calendar and Popover.
+              - button "Copy Markdown" [ref=e188] [cursor=pointer]
+            - generic [ref=e189]:
+              - generic [ref=e190]:
+                - tablist [ref=e193]:
+                  - tab "Preview" [selected] [ref=e194] [cursor=pointer]
+                  - tab "Code" [ref=e195] [cursor=pointer]
+                - button "Pick a date" [ref=e200] [cursor=pointer]
+              - heading [level=2] [ref=e201]:
+                - link "About" [ref=e202] [cursor=pointer]:
+                  - /url: "#about"
+              - paragraph [ref=e203]:
+                - text: The Date Picker is built using a composition of the
+                - code [ref=e204]: <Calendar>
+                - text: and
+                - code [ref=e205]: <Popover>
+                - text: components.
+              - heading [level=2] [ref=e206]:
+                - link "Installation" [ref=e207] [cursor=pointer]:
+                  - /url: "#installation"
+              - paragraph [ref=e208]: "The Date Picker is a composition pattern, not a standalone component. Install the required components:"
+              - generic [ref=e209]:
+                - tablist [ref=e210]:
+                  - tab "CLI" [selected] [ref=e211] [cursor=pointer]
+                  - tab "Manual" [ref=e212] [cursor=pointer]
+                - tabpanel [ref=e213]:
+                  - figure [ref=e214]:
+                    - generic [ref=e217]:
+                      - generic [ref=e218]:
+                        - tablist [ref=e223]:
+                          - tab "bun" [ref=e224] [cursor=pointer]
+                          - tab "npm" [ref=e225] [cursor=pointer]
+                          - tab "pnpm" [selected] [ref=e226] [cursor=pointer]
+                          - tab "yarn" [ref=e227] [cursor=pointer]
+                        - tabpanel [ref=e229]:
+                          - code [ref=e231]: pnpm dlx shadcn@latest add @coss/calendar @coss/popover @coss/button
+                      - button "Copy" [ref=e232] [cursor=pointer]
+              - heading [level=2] [ref=e234]:
+                - link "Usage" [ref=e235] [cursor=pointer]:
+                  - /url: "#usage"
+              - figure [ref=e236]:
+                - generic [ref=e238]:
+                  - button "Copy" [ref=e239] [cursor=pointer]
+                  - code [ref=e241]:
+                    - generic [ref=e242]: "import { format } from \"date-fns\""
+                    - generic [ref=e243]: "import { CalendarIcon } from \"lucide-react\""
+                    - generic [ref=e244]: "import { useState } from \"react\""
+                    - generic [ref=e246]: "import { Button } from \"@/components/ui/button\""
+                    - generic [ref=e247]: "import { Calendar } from \"@/components/ui/calendar\""
+                    - generic [ref=e248]: "import {"
+                    - generic [ref=e249]: Popover,
+                    - generic [ref=e250]: PopoverPopup,
+                    - generic [ref=e251]: PopoverTrigger,
+                    - generic [ref=e252]: "} from \"@/components/ui/popover\""
+              - figure [ref=e253]:
+                - generic [ref=e255]:
+                  - button "Copy" [ref=e256] [cursor=pointer]
+                  - code [ref=e258]:
+                    - generic [ref=e259]: const [date, setDate] = useState<Date>()
+                    - generic [ref=e261]: return (
+                    - generic [ref=e262]: <Popover>
+                    - generic [ref=e263]: <PopoverTrigger
+                    - generic [ref=e264]: "render={"
+                    - generic [ref=e265]: <Button
+                    - generic [ref=e266]: className="w-[280px] justify-start text-left font-normal"
+                    - generic [ref=e267]: variant="outline"
+                    - generic [ref=e268]: />
+                    - generic [ref=e269]: "}"
+                    - generic [ref=e270]: ">"
+                    - generic [ref=e271]: <CalendarIcon />
+                    - generic [ref=e272]: "{date ? format(date, \"PPP\") : <span>Pick a date</span>}"
+                    - generic [ref=e273]: </PopoverTrigger>
+                    - generic [ref=e274]: <PopoverPopup align="start" className="w-auto p-0">
+                    - generic [ref=e275]: "<Calendar mode=\"single\" selected={date} onSelect={setDate} />"
+                    - generic [ref=e276]: </PopoverPopup>
+                    - generic [ref=e277]: </Popover>
+                    - generic [ref=e278]: )
+              - heading [level=2] [ref=e279]:
+                - link "Examples" [ref=e280] [cursor=pointer]:
+                  - /url: "#examples"
+              - heading [level=3] [ref=e281]:
+                - link "Date Range Picker" [ref=e282] [cursor=pointer]:
+                  - /url: "#date-range-picker"
+              - generic [ref=e283]:
+                - tablist [ref=e286]:
+                  - tab "Preview" [selected] [ref=e287] [cursor=pointer]
+                  - tab "Code" [ref=e288] [cursor=pointer]
+                - button "Pick a date range" [ref=e293] [cursor=pointer]
+              - heading [level=3] [ref=e295]:
+                - link "With Dropdown Navigation" [ref=e296] [cursor=pointer]:
+                  - /url: "#with-dropdown-navigation"
+              - paragraph [ref=e297]:
+                - text: Use
+                - code [ref=e298]: captionLayout="dropdown"
+                - text: "for date of birth or historical date selection:"
+              - generic [ref=e299]:
+                - tablist [ref=e302]:
+                  - tab "Preview" [selected] [ref=e303] [cursor=pointer]
+                  - tab "Code" [ref=e304] [cursor=pointer]
+                - generic [ref=e309]:
+                  - generic [ref=e310]: Start date
+                  - button "Start date" [ref=e311] [cursor=pointer]: Pick a date
+              - heading [level=3] [ref=e312]:
+                - link "With Presets" [ref=e313] [cursor=pointer]:
+                  - /url: "#with-presets"
+              - generic [ref=e314]:
+                - tablist [ref=e317]:
+                  - tab "Preview" [selected] [ref=e318] [cursor=pointer]
+                  - tab "Code" [ref=e319] [cursor=pointer]
+                - button "August 18th, 2026" [ref=e324] [cursor=pointer]
+              - heading [level=3] [ref=e325]:
+                - link "With Input" [ref=e326] [cursor=pointer]:
+                  - /url: "#with-input"
+              - generic [ref=e327]:
+                - tablist [ref=e330]:
+                  - tab "Preview" [selected] [ref=e331] [cursor=pointer]
+                  - tab "Code" [ref=e332] [cursor=pointer]
+                - group [ref=e337]:
+                  - textbox "Select date" [ref=e339]
+                  - button "Select date" [ref=e341] [cursor=pointer]
+              - heading [level=3] [ref=e342]:
+                - link "Close on Select" [ref=e343] [cursor=pointer]:
+                  - /url: "#close-on-select"
+              - paragraph [ref=e344]: "Control the popover state to close it when a date is selected:"
+              - generic [ref=e345]:
+                - tablist [ref=e348]:
+                  - tab "Preview" [selected] [ref=e349] [cursor=pointer]
+                  - tab "Code" [ref=e350] [cursor=pointer]
+                - button "Pick a date" [ref=e355] [cursor=pointer]
+          - generic [ref=e357]:
+            - paragraph [ref=e358]:
+              - link "coss.com ui" [ref=e359] [cursor=pointer]:
+                - /url: /ui
+            - paragraph [ref=e360]:
+              - text: Built by and for the team of
+              - link "Cal.com" [ref=e361] [cursor=pointer]:
+                - /url: https://cal.com
+              - text: ", Inc. — the leading commercial open source company (“coss”)."
+        - generic [ref=e366]:
+          - paragraph [ref=e367]: On This Page
+          - generic [ref=e368]:
+            - link "About" [ref=e369] [cursor=pointer]:
+              - /url: "#about"
+            - link "Installation" [ref=e370] [cursor=pointer]:
+              - /url: "#installation"
+            - link "Usage" [ref=e371] [cursor=pointer]:
+              - /url: "#usage"
+            - link "Examples" [ref=e372] [cursor=pointer]:
+              - /url: "#examples"
+            - link "Date Range Picker" [ref=e373] [cursor=pointer]:
+              - /url: "#date-range-picker"
+            - link "With Dropdown Navigation" [ref=e374] [cursor=pointer]:
+              - /url: "#with-dropdown-navigation"
+            - link "With Presets" [ref=e375] [cursor=pointer]:
+              - /url: "#with-presets"
+            - link "With Input" [ref=e376] [cursor=pointer]:
+              - /url: "#with-input"
+            - link "Close on Select" [ref=e377] [cursor=pointer]:
+              - /url: "#close-on-select"

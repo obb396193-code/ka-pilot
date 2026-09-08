@@ -1,0 +1,1103 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - link "ReUI home" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - navigation [ref=e18]:
+          - button "Products" [ref=e19]
+          - button "Resources" [ref=e22]
+          - link "Docs" [ref=e25] [cursor=pointer]:
+            - /url: /docs
+          - link "Support" [ref=e26] [cursor=pointer]:
+            - /url: /support
+          - link "Pricing" [ref=e27] [cursor=pointer]:
+            - /url: /pricing
+        - generic [ref=e28]:
+          - generic [ref=e29]:
+            - button "Search" [ref=e30]
+            - button "Toggle light or dark mode" [ref=e31]
+            - link "ReUI roadmap" [ref=e32] [cursor=pointer]:
+              - /url: /roadmap
+              - generic [ref=e33]: Roadmap (has updates coming soon)
+            - link "Open X profile" [ref=e37] [cursor=pointer]:
+              - /url: https://x.com/reui_io
+              - generic [ref=e38]: X
+            - link "Open ReUI on Figma" [ref=e39] [cursor=pointer]:
+              - /url: https://www.figma.com/community/file/1649373313065184861/shadcn-ui-design-system-by-reui
+              - generic [ref=e40]: Figma
+            - link "ReUI on GitHub (opens in new tab)" [ref=e41] [cursor=pointer]:
+              - /url: https://github.com/keenthemes/reui
+              - generic [ref=e42]: 3.3K
+          - generic [ref=e43]:
+            - link "Login" [ref=e44] [cursor=pointer]:
+              - /url: /login?redirect=%2Fcomponents%2Fdata-grid
+            - link "Get All-access" [ref=e46] [cursor=pointer]:
+              - /url: /pricing
+    - main [ref=e48]:
+      - generic [ref=e50]:
+        - complementary [ref=e51]:
+          - generic [ref=e53]:
+            - generic [ref=e55]:
+              - textbox "Filter categories..." [ref=e58]
+              - generic [ref=e59]:
+                - button "Compact view" [ref=e60]
+                - button [ref=e61]
+            - generic [ref=e69]:
+              - link "All Components 1052" [ref=e70] [cursor=pointer]:
+                - /url: /components
+                - generic [ref=e71]: All Components
+                - generic [ref=e72]: "1052"
+              - link "Accordion 11" [ref=e73] [cursor=pointer]:
+                - /url: /components/accordion
+                - generic [ref=e74]: Accordion
+                - generic [ref=e76]: "11"
+              - link "Alert 20" [ref=e77] [cursor=pointer]:
+                - /url: /components/alert
+                - generic [ref=e78]: Alert
+                - generic [ref=e80]: "20"
+              - link "Alert Dialog 14" [ref=e81] [cursor=pointer]:
+                - /url: /components/alert-dialog
+                - generic [ref=e82]: Alert Dialog
+                - generic [ref=e84]: "14"
+              - link "Aspect Ratio 8" [ref=e85] [cursor=pointer]:
+                - /url: /components/aspect-ratio
+                - generic [ref=e86]: Aspect Ratio
+                - generic [ref=e88]: "8"
+              - link "Autocomplete 12" [ref=e89] [cursor=pointer]:
+                - /url: /components/autocomplete
+                - generic [ref=e90]: Autocomplete
+                - generic [ref=e92]: "12"
+              - link "Avatar 35" [ref=e93] [cursor=pointer]:
+                - /url: /components/avatar
+                - generic [ref=e94]: Avatar
+                - generic [ref=e96]: "35"
+              - link "Badge 25" [ref=e97] [cursor=pointer]:
+                - /url: /components/badge
+                - generic [ref=e98]: Badge
+                - generic [ref=e100]: "25"
+              - link "Breadcrumb 15" [ref=e101] [cursor=pointer]:
+                - /url: /components/breadcrumb
+                - generic [ref=e102]: Breadcrumb
+                - generic [ref=e104]: "15"
+              - link "Button 61" [ref=e105] [cursor=pointer]:
+                - /url: /components/button
+                - generic [ref=e106]: Button
+                - generic [ref=e108]: "61"
+              - link "Button Group 57" [ref=e109] [cursor=pointer]:
+                - /url: /components/button-group
+                - generic [ref=e110]: Button Group
+                - generic [ref=e112]: "57"
+              - link "Calendar 30" [ref=e113] [cursor=pointer]:
+                - /url: /components/calendar
+                - generic [ref=e114]: Calendar
+                - generic [ref=e116]: "30"
+              - link "Card 18" [ref=e117] [cursor=pointer]:
+                - /url: /components/card
+                - generic [ref=e118]: Card
+                - generic [ref=e120]: "18"
+              - link "Carousel 11" [ref=e121] [cursor=pointer]:
+                - /url: /components/carousel
+                - generic [ref=e122]: Carousel
+                - generic [ref=e124]: "11"
+              - link "Chart 25" [ref=e125] [cursor=pointer]:
+                - /url: /components/chart
+                - generic [ref=e126]: Chart
+                - generic [ref=e128]: "25"
+              - link "Checkbox 22" [ref=e129] [cursor=pointer]:
+                - /url: /components/checkbox
+                - generic [ref=e130]: Checkbox
+                - generic [ref=e132]: "22"
+              - link "Collapsible 10" [ref=e133] [cursor=pointer]:
+                - /url: /components/collapsible
+                - generic [ref=e134]: Collapsible
+                - generic [ref=e136]: "10"
+              - link "Combobox 28" [ref=e137] [cursor=pointer]:
+                - /url: /components/combobox
+                - generic [ref=e138]: Combobox
+                - generic [ref=e140]: "28"
+              - link "Command 8" [ref=e141] [cursor=pointer]:
+                - /url: /components/command
+                - generic [ref=e142]: Command
+                - generic [ref=e144]: "8"
+              - link "Context Menu 10" [ref=e145] [cursor=pointer]:
+                - /url: /components/context-menu
+                - generic [ref=e146]: Context Menu
+                - generic [ref=e148]: "10"
+              - link "Data Grid All 30 examples rebuilt on TanStack Table v9 30" [ref=e149] [cursor=pointer]:
+                - /url: /components/data-grid
+                - generic [ref=e150]:
+                  - generic [ref=e151]: Data Grid
+                  - generic [ref=e152]: All 30 examples rebuilt on TanStack Table v9
+                - generic [ref=e155]: "30"
+              - link "Date Selector 4" [ref=e156] [cursor=pointer]:
+                - /url: /components/date-selector
+                - generic [ref=e157]: Date Selector
+                - generic [ref=e159]: "4"
+              - link "Dialog 10" [ref=e160] [cursor=pointer]:
+                - /url: /components/dialog
+                - generic [ref=e161]: Dialog
+                - generic [ref=e163]: "10"
+              - link "Drawer 5" [ref=e164] [cursor=pointer]:
+                - /url: /components/drawer
+                - generic [ref=e165]: Drawer
+                - generic [ref=e167]: "5"
+              - link "Dropdown Menu 18" [ref=e168] [cursor=pointer]:
+                - /url: /components/dropdown-menu
+                - generic [ref=e169]: Dropdown Menu
+                - generic [ref=e171]: "18"
+              - link "Empty 20" [ref=e172] [cursor=pointer]:
+                - /url: /components/empty
+                - generic [ref=e173]: Empty
+                - generic [ref=e175]: "20"
+              - link "Event Calendar New component with five example components added 5" [ref=e176] [cursor=pointer]:
+                - /url: /components/event-calendar
+                - generic [ref=e177]:
+                  - generic [ref=e178]: Event Calendar
+                  - generic [ref=e179]: New component with five example components added
+                - generic [ref=e182]: "5"
+              - link "Field 11" [ref=e183] [cursor=pointer]:
+                - /url: /components/field
+                - generic [ref=e184]: Field
+                - generic [ref=e186]: "11"
+              - link "File Upload 10" [ref=e187] [cursor=pointer]:
+                - /url: /components/file-upload
+                - generic [ref=e188]: File Upload
+                - generic [ref=e190]: "10"
+              - link "Filters Sizing and interaction refinements 12" [ref=e191] [cursor=pointer]:
+                - /url: /components/filters
+                - generic [ref=e192]:
+                  - generic [ref=e193]: Filters
+                  - generic [ref=e194]: Sizing and interaction refinements
+                - generic [ref=e197]: "12"
+              - link "Frame 19" [ref=e198] [cursor=pointer]:
+                - /url: /components/frame
+                - generic [ref=e199]: Frame
+                - generic [ref=e201]: "19"
+              - link "Gantt New component with five examples added 5" [ref=e202] [cursor=pointer]:
+                - /url: /components/gantt
+                - generic [ref=e203]:
+                  - generic [ref=e204]: Gantt
+                  - generic [ref=e205]: New component with five examples added
+                - generic [ref=e208]: "5"
+              - link "Hover Card 8" [ref=e209] [cursor=pointer]:
+                - /url: /components/hover-card
+                - generic [ref=e210]: Hover Card
+                - generic [ref=e212]: "8"
+              - link "Icon Stack 6" [ref=e213] [cursor=pointer]:
+                - /url: /components/icon-stack
+                - generic [ref=e214]: Icon Stack
+                - generic [ref=e216]: "6"
+              - link "Icon Tile New component with sixteen examples added 17" [ref=e217] [cursor=pointer]:
+                - /url: /components/icon-tile
+                - generic [ref=e218]:
+                  - generic [ref=e219]: Icon Tile
+                  - generic [ref=e220]: New component with sixteen examples added
+                - generic [ref=e223]: "17"
+              - link "Input 31" [ref=e224] [cursor=pointer]:
+                - /url: /components/input
+                - generic [ref=e225]: Input
+                - generic [ref=e227]: "31"
+              - link "Input Group 40" [ref=e228] [cursor=pointer]:
+                - /url: /components/input-group
+                - generic [ref=e229]: Input Group
+                - generic [ref=e231]: "40"
+              - link "Input Otp 6" [ref=e232] [cursor=pointer]:
+                - /url: /components/input-otp
+                - generic [ref=e233]: Input Otp
+                - generic [ref=e235]: "6"
+              - link "Item 12" [ref=e236] [cursor=pointer]:
+                - /url: /components/item
+                - generic [ref=e237]: Item
+                - generic [ref=e239]: "12"
+              - link "Kanban onValueCommit callback and accessibility improvements 6" [ref=e240] [cursor=pointer]:
+                - /url: /components/kanban
+                - generic [ref=e241]:
+                  - generic [ref=e242]: Kanban
+                  - generic [ref=e243]: onValueCommit callback and accessibility improvements
+                - generic [ref=e246]: "6"
+              - link "Kbd 6" [ref=e247] [cursor=pointer]:
+                - /url: /components/kbd
+                - generic [ref=e248]: Kbd
+                - generic [ref=e250]: "6"
+              - link "Label 13" [ref=e251] [cursor=pointer]:
+                - /url: /components/label
+                - generic [ref=e252]: Label
+                - generic [ref=e254]: "13"
+              - link "Menubar 5" [ref=e255] [cursor=pointer]:
+                - /url: /components/menubar
+                - generic [ref=e256]: Menubar
+                - generic [ref=e258]: "5"
+              - link "Native Select 6" [ref=e259] [cursor=pointer]:
+                - /url: /components/native-select
+                - generic [ref=e260]: Native Select
+                - generic [ref=e262]: "6"
+              - link "Navigation Menu 4" [ref=e263] [cursor=pointer]:
+                - /url: /components/navigation-menu
+                - generic [ref=e264]: Navigation Menu
+                - generic [ref=e266]: "4"
+              - link "Number Field 6" [ref=e267] [cursor=pointer]:
+                - /url: /components/number-field
+                - generic [ref=e268]: Number Field
+                - generic [ref=e270]: "6"
+              - link "Pagination 15" [ref=e271] [cursor=pointer]:
+                - /url: /components/pagination
+                - generic [ref=e272]: Pagination
+                - generic [ref=e274]: "15"
+              - link "Phone Input 8" [ref=e275] [cursor=pointer]:
+                - /url: /components/phone-input
+                - generic [ref=e276]: Phone Input
+                - generic [ref=e278]: "8"
+              - link "Popover 11" [ref=e279] [cursor=pointer]:
+                - /url: /components/popover
+                - generic [ref=e280]: Popover
+                - generic [ref=e282]: "11"
+              - link "Progress 8" [ref=e283] [cursor=pointer]:
+                - /url: /components/progress
+                - generic [ref=e284]: Progress
+                - generic [ref=e286]: "8"
+              - link "Radio Group 17" [ref=e287] [cursor=pointer]:
+                - /url: /components/radio-group
+                - generic [ref=e288]: Radio Group
+                - generic [ref=e290]: "17"
+              - link "Rating 9" [ref=e291] [cursor=pointer]:
+                - /url: /components/rating
+                - generic [ref=e292]: Rating
+                - generic [ref=e294]: "9"
+              - link "Resizable 10" [ref=e295] [cursor=pointer]:
+                - /url: /components/resizable
+                - generic [ref=e296]: Resizable
+                - generic [ref=e298]: "10"
+              - link "Scroll Area 5" [ref=e299] [cursor=pointer]:
+                - /url: /components/scroll-area
+                - generic [ref=e300]: Scroll Area
+                - generic [ref=e302]: "5"
+              - link "Scrollspy 2" [ref=e303] [cursor=pointer]:
+                - /url: /components/scrollspy
+                - generic [ref=e304]: Scrollspy
+                - generic [ref=e306]: "2"
+              - link "Select 33" [ref=e307] [cursor=pointer]:
+                - /url: /components/select
+                - generic [ref=e308]: Select
+                - generic [ref=e310]: "33"
+              - link "Separator 6" [ref=e311] [cursor=pointer]:
+                - /url: /components/separator
+                - generic [ref=e312]: Separator
+                - generic [ref=e314]: "6"
+              - link "Sheet 4" [ref=e315] [cursor=pointer]:
+                - /url: /components/sheet
+                - generic [ref=e316]: Sheet
+                - generic [ref=e318]: "4"
+              - link "Skeleton 10" [ref=e319] [cursor=pointer]:
+                - /url: /components/skeleton
+                - generic [ref=e320]: Skeleton
+                - generic [ref=e322]: "10"
+              - link "Slider 12" [ref=e323] [cursor=pointer]:
+                - /url: /components/slider
+                - generic [ref=e324]: Slider
+                - generic [ref=e326]: "12"
+              - link "Sonner 21" [ref=e327] [cursor=pointer]:
+                - /url: /components/sonner
+                - generic [ref=e328]: Sonner
+                - generic [ref=e330]: "21"
+              - link "Sortable onValueCommit callback and accessibility improvements 8" [ref=e331] [cursor=pointer]:
+                - /url: /components/sortable
+                - generic [ref=e332]:
+                  - generic [ref=e333]: Sortable
+                  - generic [ref=e334]: onValueCommit callback and accessibility improvements
+                - generic [ref=e337]: "8"
+              - link "Spinner 12" [ref=e338] [cursor=pointer]:
+                - /url: /components/spinner
+                - generic [ref=e339]: Spinner
+                - generic [ref=e341]: "12"
+              - link "Stepper Render prop composition and styling refinements 15" [ref=e342] [cursor=pointer]:
+                - /url: /components/stepper
+                - generic [ref=e343]:
+                  - generic [ref=e344]: Stepper
+                  - generic [ref=e345]: Render prop composition and styling refinements
+                - generic [ref=e348]: "15"
+              - link "Switch 14" [ref=e349] [cursor=pointer]:
+                - /url: /components/switch
+                - generic [ref=e350]: Switch
+                - generic [ref=e352]: "14"
+              - link "Table 17" [ref=e353] [cursor=pointer]:
+                - /url: /components/table
+                - generic [ref=e354]: Table
+                - generic [ref=e356]: "17"
+              - link "Tabs 9" [ref=e357] [cursor=pointer]:
+                - /url: /components/tabs
+                - generic [ref=e358]: Tabs
+                - generic [ref=e360]: "9"
+              - link "Textarea 6" [ref=e361] [cursor=pointer]:
+                - /url: /components/textarea
+                - generic [ref=e362]: Textarea
+                - generic [ref=e364]: "6"
+              - link "Timeline 12" [ref=e365] [cursor=pointer]:
+                - /url: /components/timeline
+                - generic [ref=e366]: Timeline
+                - generic [ref=e368]: "12"
+              - link "Toggle 14" [ref=e369] [cursor=pointer]:
+                - /url: /components/toggle
+                - generic [ref=e370]: Toggle
+                - generic [ref=e372]: "14"
+              - link "Toggle Group 16" [ref=e373] [cursor=pointer]:
+                - /url: /components/toggle-group
+                - generic [ref=e374]: Toggle Group
+                - generic [ref=e376]: "16"
+              - link "Tooltip 16" [ref=e377] [cursor=pointer]:
+                - /url: /components/tooltip
+                - generic [ref=e378]: Tooltip
+                - generic [ref=e380]: "16"
+              - link "Tree 7" [ref=e381] [cursor=pointer]:
+                - /url: /components/tree
+                - generic [ref=e382]: Tree
+                - generic [ref=e384]: "7"
+        - main [ref=e385]:
+          - generic [ref=e386]:
+            - textbox "Search components..." [ref=e388]
+            - generic [ref=e389]:
+              - tablist [ref=e391]:
+                - tab "1 column (row mode)" [ref=e392]
+                - tab "2 columns" [selected] [ref=e393]
+              - button "Customize preview" [ref=e394]: Customize
+          - generic [ref=e395]:
+            - generic [ref=e397]:
+              - navigation "breadcrumb" [ref=e398]:
+                - list [ref=e399]:
+                  - listitem [ref=e400]:
+                    - link "Components" [ref=e401] [cursor=pointer]:
+                      - /url: /components
+                  - listitem [ref=e402]
+                  - listitem [ref=e405]:
+                    - link "Data Grid" [disabled] [ref=e406]
+              - generic [ref=e407]:
+                - heading "Shadcn Data Grid" [level=1] [ref=e408]
+                - generic [ref=e409]:
+                  - link "35 Pro blocks" [ref=e410] [cursor=pointer]:
+                    - /url: /blocks/data-grid
+                  - link "View docs" [ref=e411] [cursor=pointer]:
+                    - /url: /docs/components/base/data-grid
+              - paragraph [ref=e412]: "Browse 30 production-ready shadcn data grid components built on TanStack Table v9 and TanStack Virtual. Covers pagination, sorting, column resizing, drag-and-drop rows and columns, row and column pinning, infinite scroll, CRUD, expandable rows, footer aggregates, and virtualized rendering: fully compatible with Shadcn Create style tokens."
+            - generic [ref=e416]:
+              - generic [ref=e417]:
+                - generic "Data grid with pagination preview loading" [ref=e420]:
+                  - status "Loading" [ref=e421]
+                - generic [ref=e423]:
+                  - paragraph [ref=e424]:
+                    - generic "Data grid with pagination" [ref=e425]
+                  - generic [ref=e426]:
+                    - button "Copy registry URL" [ref=e427]
+                    - button "View code" [ref=e429]
+              - generic [ref=e430]:
+                - generic "Data grid with cell border preview loading" [ref=e433]:
+                  - status "Loading" [ref=e434]
+                - generic [ref=e436]:
+                  - paragraph [ref=e437]:
+                    - generic "Data grid with cell border" [ref=e438]
+                  - generic [ref=e439]:
+                    - button "Copy registry URL" [ref=e440]
+                    - button "View code" [ref=e442]
+              - generic [ref=e443]:
+                - generic "Data grid with dense layout preview loading" [ref=e446]:
+                  - status "Loading" [ref=e447]
+                - generic [ref=e449]:
+                  - paragraph [ref=e450]:
+                    - generic "Data grid with dense layout" [ref=e451]
+                  - generic [ref=e452]:
+                    - button "Copy registry URL" [ref=e453]
+                    - button "View code" [ref=e455]
+              - generic [ref=e456]:
+                - generic "Data grid without table borders preview loading" [ref=e459]:
+                  - status "Loading" [ref=e460]
+                - generic [ref=e462]:
+                  - paragraph [ref=e463]:
+                    - generic "Data grid without table borders" [ref=e464]
+                  - generic [ref=e465]:
+                    - button "Copy registry URL" [ref=e466]
+                    - button "View code" [ref=e468]
+              - generic [ref=e469]:
+                - status "Loading" [ref=e472]
+                - generic [ref=e474]:
+                  - paragraph [ref=e475]:
+                    - generic "Data grid with striped rows" [ref=e476]
+                  - generic [ref=e477]:
+                    - button "Copy registry URL" [ref=e478]
+                    - button "View code" [ref=e480]
+              - generic [ref=e481]:
+                - status "Loading" [ref=e484]
+                - generic [ref=e486]:
+                  - paragraph [ref=e487]:
+                    - generic "Data grid with auto width table layout" [ref=e488]
+                  - generic [ref=e489]:
+                    - button "Copy registry URL" [ref=e490]
+                    - button "View code" [ref=e492]
+              - generic [ref=e493]:
+                - status "Loading" [ref=e496]
+                - generic [ref=e498]:
+                  - paragraph [ref=e499]:
+                    - generic "Data grid with row selection" [ref=e500]
+                  - generic [ref=e501]:
+                    - button "Copy registry URL" [ref=e502]
+                    - button "View code" [ref=e504]
+              - generic [ref=e505]:
+                - status "Loading" [ref=e508]
+                - generic [ref=e510]:
+                  - paragraph [ref=e511]:
+                    - generic "Data grid with expandable rows" [ref=e512]
+                  - generic [ref=e513]:
+                    - button "Copy registry URL" [ref=e514]
+                    - button "View code" [ref=e516]
+              - generic [ref=e517]:
+                - status "Loading" [ref=e520]
+                - generic [ref=e522]:
+                  - paragraph [ref=e523]:
+                    - generic "Data grid with sub table" [ref=e524]
+                  - generic [ref=e525]:
+                    - button "Copy registry URL" [ref=e526]
+                    - button "View code" [ref=e528]
+              - generic [ref=e529]:
+                - status "Loading" [ref=e532]
+                - generic [ref=e534]:
+                  - paragraph [ref=e535]:
+                    - generic "Data grid with column icons" [ref=e536]
+                  - generic [ref=e537]:
+                    - button "Copy registry URL" [ref=e538]
+                    - button "View code" [ref=e540]
+              - generic [ref=e541]:
+                - status "Loading" [ref=e544]
+                - generic [ref=e546]:
+                  - paragraph [ref=e547]:
+                    - generic "Data grid with sortable columns" [ref=e548]
+                  - generic [ref=e549]:
+                    - button "Copy registry URL" [ref=e550]
+                    - button "View code" [ref=e552]
+              - generic [ref=e553]:
+                - status "Loading" [ref=e556]
+                - generic [ref=e558]:
+                  - paragraph [ref=e559]:
+                    - generic "Data grid with movable columns" [ref=e560]
+                  - generic [ref=e561]:
+                    - button "Copy registry URL" [ref=e562]
+                    - button "View code" [ref=e564]
+              - generic [ref=e565]:
+                - status "Loading" [ref=e568]
+                - generic [ref=e570]:
+                  - paragraph [ref=e571]:
+                    - generic "Data grid with draggable columns" [ref=e572]
+                  - generic [ref=e573]:
+                    - button "Copy registry URL" [ref=e574]
+                    - button "View code" [ref=e576]
+              - generic [ref=e577]:
+                - status "Loading" [ref=e580]
+                - generic [ref=e582]:
+                  - paragraph [ref=e583]:
+                    - generic "Data grid with draggable rows" [ref=e584]
+                  - generic [ref=e585]:
+                    - button "Copy registry URL" [ref=e586]
+                    - button "View code" [ref=e588]
+              - generic [ref=e589]:
+                - status "Loading" [ref=e592]
+                - generic [ref=e594]:
+                  - paragraph [ref=e595]:
+                    - generic "Data grid with column resizing" [ref=e596]
+                  - generic [ref=e597]:
+                    - button "Copy registry URL" [ref=e598]
+                    - button "View code" [ref=e600]
+              - generic [ref=e601]:
+                - status "Loading" [ref=e604]
+                - generic [ref=e606]:
+                  - paragraph [ref=e607]:
+                    - generic "Data grid with pinnable columns" [ref=e608]
+                  - generic [ref=e609]:
+                    - button "Copy registry URL" [ref=e610]
+                    - button "View code" [ref=e612]
+              - generic [ref=e613]:
+                - status "Loading" [ref=e616]
+                - generic [ref=e618]:
+                  - paragraph [ref=e619]:
+                    - generic "Data grid with sticky header" [ref=e620]
+                  - generic [ref=e621]:
+                    - button "Copy registry URL" [ref=e622]
+                    - button "View code" [ref=e624]
+              - generic [ref=e625]:
+                - status "Loading" [ref=e628]
+                - generic [ref=e630]:
+                  - paragraph [ref=e631]:
+                    - generic "Data grid with column controls" [ref=e632]
+                  - generic [ref=e633]:
+                    - button "Copy registry URL" [ref=e634]
+                    - button "View code" [ref=e636]
+              - generic [ref=e637]:
+                - status "Loading" [ref=e640]
+                - generic [ref=e642]:
+                  - paragraph [ref=e643]:
+                    - generic "Data grid with card container" [ref=e644]
+                  - generic [ref=e645]:
+                    - button "Copy registry URL" [ref=e646]
+                    - button "View code" [ref=e648]
+              - generic [ref=e649]:
+                - status "Loading" [ref=e652]
+                - generic [ref=e654]:
+                  - paragraph [ref=e655]:
+                    - generic "Data grid with column visibility controls" [ref=e656]
+                  - generic [ref=e657]:
+                    - button "Copy registry URL" [ref=e658]
+                    - button "View code" [ref=e660]
+              - generic [ref=e661]:
+                - status "Loading" [ref=e664]
+                - generic [ref=e666]:
+                  - paragraph [ref=e667]:
+                    - generic "Data grid with loading skeleton" [ref=e668]
+                  - generic [ref=e669]:
+                    - button "Copy registry URL" [ref=e670]
+                    - button "View code" [ref=e672]
+              - generic [ref=e673]:
+                - status "Loading" [ref=e676]
+                - generic [ref=e678]:
+                  - paragraph [ref=e679]:
+                    - generic "Data grid with CRUD features" [ref=e680]
+                  - generic [ref=e681]:
+                    - button "Copy registry URL" [ref=e682]
+                    - button "View code" [ref=e684]
+              - generic [ref=e685]:
+                - status "Loading" [ref=e688]
+                - generic [ref=e690]:
+                  - paragraph [ref=e691]:
+                    - generic "Data grid with CRUD in frame container" [ref=e692]
+                  - generic [ref=e693]:
+                    - button "Copy registry URL" [ref=e694]
+                    - button "View code" [ref=e696]
+              - generic [ref=e697]:
+                - status "Loading" [ref=e700]
+                - generic [ref=e702]:
+                  - paragraph [ref=e703]:
+                    - generic "Data grid with column totals footer" [ref=e704]
+                  - generic [ref=e705]:
+                    - button "Copy registry URL" [ref=e706]
+                    - button "View code" [ref=e708]
+              - generic [ref=e709]:
+                - status "Loading" [ref=e712]
+                - generic [ref=e714]:
+                  - paragraph [ref=e715]:
+                    - generic "Data grid with summary stats footer" [ref=e716]
+                  - generic [ref=e717]:
+                    - button "Copy registry URL" [ref=e718]
+                    - button "View code" [ref=e720]
+              - generic [ref=e721]:
+                - status "Loading" [ref=e724]
+                - generic [ref=e726]:
+                  - paragraph [ref=e727]:
+                    - generic "Data grid with per-column aggregate footer" [ref=e728]
+                  - generic [ref=e729]:
+                    - button "Copy registry URL" [ref=e730]
+                    - button "View code" [ref=e732]
+              - generic [ref=e733]:
+                - status "Loading" [ref=e736]
+                - generic [ref=e738]:
+                  - paragraph [ref=e739]:
+                    - generic "Data grid with local infinite scroll" [ref=e740]
+                  - generic [ref=e741]:
+                    - button "Copy registry URL" [ref=e742]
+                    - button "View code" [ref=e744]
+              - generic [ref=e745]:
+                - status "Loading" [ref=e748]
+                - generic [ref=e750]:
+                  - paragraph [ref=e751]:
+                    - generic "Data grid with remote infinite scroll" [ref=e752]
+                  - generic [ref=e753]:
+                    - button "Copy registry URL" [ref=e754]
+                    - button "View code" [ref=e756]
+              - generic [ref=e757]:
+                - status "Loading" [ref=e760]
+                - generic [ref=e762]:
+                  - paragraph [ref=e763]:
+                    - generic "Data grid with row pinning support" [ref=e764]
+                  - generic [ref=e765]:
+                    - button "Copy registry URL" [ref=e766]
+                    - button "View code" [ref=e768]
+              - generic [ref=e769]:
+                - status "Loading" [ref=e772]
+                - generic [ref=e774]:
+                  - paragraph [ref=e775]:
+                    - generic "Data grid with tree rows" [ref=e776]
+                  - generic [ref=e777]:
+                    - button "Copy registry URL" [ref=e778]
+                    - button "View code" [ref=e780]
+            - region [ref=e781]:
+              - generic [ref=e783]:
+                - generic [ref=e784]:
+                  - 'heading "Shadcn Data Grid: TanStack Table, Virtual, and DnD" [level=2] [ref=e785]'
+                  - generic [ref=e786]:
+                    - paragraph [ref=e787]: "ReUI Data Grid is built on TanStack Table v9 and TanStack Virtual: the headless table and virtualization engines trusted by thousands of production React apps. It handles sorting, filtering, pagination, column sizing, pinning, selection, grouping, and virtual row rendering without dictating markup."
+                    - paragraph [ref=e788]: Components cover 29 real layouts including drag-and-drop rows and columns via @dnd-kit, local and remote infinite scroll, CRUD with Sonner feedback, expandable rows, sub-tables, footer aggregates, and dense or borderless visual variants.
+                    - paragraph [ref=e789]: "ReUI shows every data grid component inside realistic dashboards and frame containers so you can evaluate density, sticky headers, and column controls next to real chrome: not an isolated sandbox. The sections below cover architecture, features, and integration guidance."
+                - generic [ref=e790]:
+                  - generic [ref=e791]:
+                    - heading "What is Shadcn Data Grid?" [level=3] [ref=e792]
+                    - paragraph [ref=e793]:
+                      - text: "ReUI Data Grid is a custom shadcn component built on TanStack Table v9 for state management and TanStack Virtual for row and column virtualization. It exposes the full TanStack Table API: columnDef, the"
+                      - generic [ref=e794]: dataGridFeatures
+                      - text: "bundle, createSortedRowModel, createFilteredRowModel, createPaginatedRowModel, and more: while wrapping the markup in Tailwind-styled, accessible table primitives that follow shadcn conventions."
+                    - paragraph [ref=e795]:
+                      - text: Components range from simple paginated lists to full CRUD interfaces with drag-and-drop column reordering via
+                      - generic [ref=e796]: "@dnd-kit/sortable"
+                      - text: ", pinned rows and columns, expandable sub-tables, aggregate footers, loading skeletons, and both local and server-driven infinite scroll. Every layout is shown inside a realistic frame or dashboard container so you judge composition in context."
+                  - generic [ref=e797]:
+                    - heading "Why Use Shadcn Data Grid?" [level=3] [ref=e798]
+                    - paragraph [ref=e799]: "Admin panels, analytics dashboards, CRM tables, audit logs, and billing history all need a table that scales with data. TanStack Table v9 handles thousands of rows without re-rendering the entire DOM: TanStack Virtual extends that to tens of thousands by only mounting visible rows. Together they let you ship a fast, accessible table without building sort state, filter logic, or pagination from scratch."
+                    - paragraph [ref=e800]:
+                      - text: The DnD Kit integration adds drag-and-drop column reordering and row reordering that works with keyboard and pointer devices. Pair with
+                      - link "Shadcn Filters" [ref=e801] [cursor=pointer]:
+                        - /url: /docs/components/base/filters
+                      - text: for faceted search,
+                      - link "Shadcn Pagination" [ref=e802] [cursor=pointer]:
+                        - /url: /components/pagination
+                      - text: for standalone controls, and
+                      - link "Sonner" [ref=e803] [cursor=pointer]:
+                        - /url: /components/toast
+                      - text: for async feedback on CRUD operations.
+                  - generic [ref=e804]:
+                    - heading "Libraries and ReUI Data Grid Primitives" [level=3] [ref=e805]
+                    - paragraph [ref=e806]:
+                      - text: ReUI Data Grid imports
+                      - generic [ref=e807]: "@tanstack/react-table"
+                      - text: for the headless table engine,
+                      - generic [ref=e808]: "@tanstack/react-virtual"
+                      - text: for row virtualization,
+                      - generic [ref=e809]: "@dnd-kit/core"
+                      - text: and
+                      - generic [ref=e810]: "@dnd-kit/sortable"
+                      - text: for drag-and-drop, and Sonner for toast feedback.
+                      - generic [ref=e811]: class-variance-authority
+                      - text: handles variant styling across dense, bordered, striped, and borderless layouts.
+                    - paragraph [ref=e812]: The ScrollArea primitive wraps the table for overflow control. Frame containers group data grid components with toolbars, filter bars, and pagination into shippable dashboard blocks rather than bare table demos.
+                  - generic [ref=e813]:
+                    - heading "Shadcn Data Grid Features" [level=3] [ref=e814]
+                    - list [ref=e815]:
+                      - listitem [ref=e816]:
+                        - text: TanStack Table Core. Powered by TanStack Table v9. Full access to createSortedRowModel, createFilteredRowModel, createPaginatedRowModel, and the rest of the
+                        - generic [ref=e817]: dataGridFeatures
+                        - text: "bundle: headless, typed, and framework-agnostic state."
+                      - listitem [ref=e818]: TanStack Virtual Row Virtualization. TanStack Virtual renders only visible rows in the DOM. Handles tens of thousands of rows without layout shift, supports overscan, and works with both fixed and dynamic row heights.
+                      - listitem [ref=e819]:
+                        - text: Drag and Drop Rows and Columns. Built on
+                        - generic [ref=e820]: "@dnd-kit/core"
+                        - text: and
+                        - generic [ref=e821]: "@dnd-kit/sortable"
+                        - text: . Reorder rows or move columns with pointer and keyboard. Drag overlays prevent layout jump during active drags.
+                      - listitem [ref=e822]: Column Pinning. Pin columns to the left or right so identity columns (name, ID) and action columns (edit, delete) stay visible while users scroll wide datasets horizontally.
+                      - listitem [ref=e823]: Row Pinning. Sticky row support keeps summary rows, totals, or selected records fixed at the top or bottom of the visible viewport across scroll.
+                      - listitem [ref=e824]: Column Resizing. Drag column edges to resize width. Respects min and max constraints and persists across re-renders through TanStack Table column sizing state.
+                      - listitem [ref=e825]: Sortable Columns. Click-to-sort with multi-column sort support, directional indicators, and controlled or uncontrolled sort state. Integrates cleanly with server-side sort APIs via manualSorting.
+                      - listitem [ref=e826]:
+                        - text: Column Visibility Controls. Show or hide columns at runtime via a dropdown panel. State is serializable for URL persistence with
+                        - generic [ref=e827]: nuqs
+                        - text: or localStorage, enabling shareable filtered views.
+                      - listitem [ref=e828]: Pagination and Infinite Scroll. Switch between client-side pagination, local infinite scroll, and remote infinite scroll. The remote component integrates with SWR, React Query, or Next.js Server Actions for cursor-based APIs.
+                      - listitem [ref=e829]: Row Selection and CRUD. Single and multi-row selection with indeterminate checkbox states. Full CRUD components with inline editing, confirm dialogs, row action menus, and Sonner toast feedback for async save and delete.
+                      - listitem [ref=e830]: "Expandable Rows and Sub-Tables. Expand rows to reveal nested detail panels or full sub-tables: useful for order lines, log entries, invoice items, or hierarchical entity relationships."
+                      - listitem [ref=e831]: Footer Aggregates. Column totals, summary stats, and per-column aggregate footers for financial tables, inventory dashboards, and reporting views.
+                      - listitem [ref=e832]: Loading Skeleton. Column-aware skeleton state renders placeholder rows while data loads. Matches real row density to prevent layout shift and signal correct table structure before data arrives.
+                      - listitem [ref=e833]:
+                        - text: Dense, Striped, and Borderless Layouts. Variant system built with
+                        - generic [ref=e834]: class-variance-authority
+                        - text: . Switch between default, dense, borderless, striped, and card-container layouts to match audit logs, dashboards, or data-heavy admin views.
+                      - listitem [ref=e835]: Sticky Header. Header row stays visible as users scroll through long datasets. Works with column pinning and column visibility controls for maximum navigability in wide tables.
+                  - generic [ref=e836]:
+                    - 'heading "ReUI Data Grid: In-House Custom Shadcn Component" [level=3] [ref=e837]'
+                    - paragraph [ref=e838]:
+                      - text: "ReUI Data Grid is an in-house component built and maintained by the ReUI team as part of the ReUI open-source library. It is designed to integrate seamlessly into any shadcn/ui project: following the same copy-and-own installation model. The component source lands directly in your repository; you own it, extend it, and style it with your Tailwind CSS tokens. ReUI Data Grid is a comprehensive custom component not available in base shadcn/ui. It is built on"
+                      - generic [ref=e839]: "@tanstack/react-table"
+                      - text: for headless table state,
+                      - generic [ref=e840]: "@tanstack/react-virtual"
+                      - text: for row virtualization, and
+                      - generic [ref=e841]: "@dnd-kit/core"
+                      - text: with
+                      - generic [ref=e842]: "@dnd-kit/sortable"
+                      - text: "for accessible drag-and-drop. The component ships as 10 composable sub-files covering the table, DnD rows, DnD columns, virtual table, scroll area, column header, column filter, column visibility, and pagination: each independently importable."
+                    - paragraph [ref=e843]:
+                      - text: "The component is available in two API flavors to match your primitive stack: a Radix UI version for teams using Radix-based shadcn primitives, and a Base UI version for teams on"
+                      - generic [ref=e844]: "@base-ui/react"
+                      - text: ". Both versions share identical visual output and Tailwind CSS styling: only the underlying headless primitive differs. ReUI maintains 10+ such in-house components, all available in both Radix and Base UI versions, each with dedicated documentation covering the full component API, usage examples, and prop references."
+                - region [ref=e845]:
+                  - heading "Integrating With Other Components" [level=2] [ref=e846]
+                  - generic [ref=e847]:
+                    - paragraph [ref=e848]:
+                      - text: Pair data grid with
+                      - link "Shadcn Filters" [ref=e849] [cursor=pointer]:
+                        - /url: /docs/components/base/filters
+                      - text: to add a faceted filter panel above the table. Filters integrates with TanStack Table's column filter API and supports URL state via nuqs, so users can share filtered views.
+                    - paragraph [ref=e850]:
+                      - text: Use
+                      - link "Shadcn Pagination" [ref=e851] [cursor=pointer]:
+                        - /url: /components/pagination
+                      - text: as a standalone control below the table when you need custom pagination UI beyond the built-in component, and
+                      - link "Shadcn Select" [ref=e852] [cursor=pointer]:
+                        - /url: /components/select
+                      - text: for page-size pickers.
+                      - link "Shadcn Button" [ref=e853] [cursor=pointer]:
+                        - /url: /components/button
+                      - text: and
+                      - link "Shadcn Dropdown Menu" [ref=e854] [cursor=pointer]:
+                        - /url: /components/dropdown-menu
+                      - text: wire naturally into row action columns.
+                    - paragraph [ref=e855]:
+                      - text: Wrap data grid in a
+                      - link "Shadcn Frame" [ref=e856] [cursor=pointer]:
+                        - /url: /docs/components/base/frame
+                      - text: to get a toolbar, filter bar, and pagination row as a single shippable dashboard block. Use
+                      - link "Shadcn Sonner" [ref=e857] [cursor=pointer]:
+                        - /url: /components/sonner
+                      - text: for CRUD feedback and
+                      - link "Shadcn Skeleton" [ref=e858] [cursor=pointer]:
+                        - /url: /components/skeleton
+                      - text: or the built-in loading skeleton for data fetch states.
+                - region [ref=e859]:
+                  - heading "Data Grid Blocks in ReUI Pro" [level=2] [ref=e860]
+                  - paragraph [ref=e861]: "The free data grid examples above cover focused, single purpose patterns. ReUI Pro extends them with 35 production ready data grid blocks, complete sections that compose the same primitives into full screens. Browse them by category:"
+                  - list [ref=e862]:
+                    - listitem [ref=e863]:
+                      - link "Base" [ref=e864] [cursor=pointer]:
+                        - /url: /blocks/data-grid/base
+                      - text: (7 blocks)
+                      - generic [ref=e865]: Standard data grids with sorting, pagination, and inline row actions.
+                    - listitem [ref=e866]:
+                      - link "Columns" [ref=e867] [cursor=pointer]:
+                        - /url: /blocks/data-grid/columns
+                      - text: (4 blocks)
+                      - generic [ref=e868]: Column visibility, pinning, resizing, density, and settings controls.
+                    - listitem [ref=e869]:
+                      - link "Drag & Drop" [ref=e870] [cursor=pointer]:
+                        - /url: /blocks/data-grid/drag-drop
+                      - text: (4 blocks)
+                      - generic [ref=e871]: Drag-and-drop row and column reordering with sortable handles.
+                    - listitem [ref=e872]:
+                      - link "Editing" [ref=e873] [cursor=pointer]:
+                        - /url: /blocks/data-grid/editing
+                      - text: (4 blocks)
+                      - generic [ref=e874]: Inline create, edit, and delete cells for full CRUD workflows.
+                    - listitem [ref=e875]:
+                      - link "Expansion" [ref=e876] [cursor=pointer]:
+                        - /url: /blocks/data-grid/expansion
+                      - text: (3 blocks)
+                      - generic [ref=e877]: Expandable parent rows with nested sub-rows and master-detail panels.
+                    - listitem [ref=e878]:
+                      - link "Filtering" [ref=e879] [cursor=pointer]:
+                        - /url: /blocks/data-grid/filtering
+                      - text: (4 blocks)
+                      - generic [ref=e880]: Search, faceted filters, filter builders, and status tab toolbars.
+                    - listitem [ref=e881]:
+                      - link "Grouping" [ref=e882] [cursor=pointer]:
+                        - /url: /blocks/data-grid/grouping
+                      - text: (7 blocks)
+                      - generic [ref=e883]: Rows grouped into banded sections with stage and category headers.
+                    - listitem [ref=e884]:
+                      - link "Virtualization" [ref=e885] [cursor=pointer]:
+                        - /url: /blocks/data-grid/virtualization
+                      - text: (2 blocks)
+                      - generic [ref=e886]: Virtualized rendering for large datasets with smooth scrolling.
+                  - paragraph [ref=e887]:
+                    - link "Browse all Data Grid blocks" [ref=e888] [cursor=pointer]:
+                      - /url: /blocks/data-grid
+                - region [ref=e889]:
+                  - heading "Frequently Asked Questions" [level=2] [ref=e890]
+                  - generic [ref=e891]:
+                    - heading [level=3] [ref=e893]:
+                      - button "Does ReUI Data Grid support TanStack Virtual?" [ref=e894]
+                    - heading [level=3] [ref=e896]:
+                      - button "Which table library does ReUI Data Grid use?" [ref=e897]
+                    - heading [level=3] [ref=e899]:
+                      - button "Can I drag and drop columns and rows in the data grid?" [ref=e900]
+                    - heading [level=3] [ref=e902]:
+                      - button "How does infinite scroll work with a remote API?" [ref=e903]
+                    - heading [level=3] [ref=e905]:
+                      - button "Can I pin rows and columns at the same time?" [ref=e906]
+                    - heading [level=3] [ref=e908]:
+                      - button "How do I persist column visibility and sort state in the URL?" [ref=e909]
+                    - heading [level=3] [ref=e911]:
+                      - button "Does data grid work with Next.js App Router and Server Actions?" [ref=e912]
+            - navigation "Adjacent component categories" [ref=e913]:
+              - generic [ref=e914]:
+                - link "Previous 10 Shadcn Context Menu Components" [ref=e916] [cursor=pointer]:
+                  - /url: /components/context-menu
+                  - generic [ref=e919]:
+                    - generic [ref=e920]: Previous
+                    - generic [ref=e921]: 10 Shadcn Context Menu Components
+                - link "Next 4 Shadcn Date Selector Components" [ref=e923] [cursor=pointer]:
+                  - /url: /components/date-selector
+                  - generic [ref=e924]:
+                    - generic [ref=e925]: Next
+                    - generic [ref=e926]: 4 Shadcn Date Selector Components
+    - contentinfo [ref=e929]:
+      - generic [ref=e933]:
+        - generic [ref=e934]:
+          - heading "Application" [level=3] [ref=e935]
+          - list [ref=e936]:
+            - listitem [ref=e937]:
+              - link "App Shell" [ref=e938] [cursor=pointer]:
+                - /url: /blocks/application/app-shell
+            - listitem [ref=e939]:
+              - link "Auth" [ref=e940] [cursor=pointer]:
+                - /url: /blocks/application/auth
+            - listitem [ref=e941]:
+              - link "Card" [ref=e942] [cursor=pointer]:
+                - /url: /blocks/application/card
+            - listitem [ref=e943]:
+              - link "Chart" [ref=e944] [cursor=pointer]:
+                - /url: /blocks/application/chart
+            - listitem [ref=e945]:
+              - link "Dashboard" [ref=e946] [cursor=pointer]:
+                - /url: /blocks/application/dashboard
+            - listitem [ref=e947]:
+              - link "Dialog" [ref=e948] [cursor=pointer]:
+                - /url: /blocks/application/dialog
+            - listitem [ref=e949]:
+              - link "Empty State" [ref=e950] [cursor=pointer]:
+                - /url: /blocks/application/empty-state
+            - listitem [ref=e951]:
+              - link "Event Calendar Three new event calendar blocks added" [ref=e952] [cursor=pointer]:
+                - /url: /blocks/application/event-calendar
+                - text: Event Calendar
+                - generic [ref=e953]: Three new event calendar blocks added
+            - listitem [ref=e956]:
+              - link "Form" [ref=e957] [cursor=pointer]:
+                - /url: /blocks/application/form
+            - listitem [ref=e958]:
+              - link "Gantt New gantt block added" [ref=e959] [cursor=pointer]:
+                - /url: /blocks/application/gantt
+                - text: Gantt
+                - generic [ref=e960]: New gantt block added
+            - listitem [ref=e963]:
+              - link "Kanban Board" [ref=e964] [cursor=pointer]:
+                - /url: /blocks/application/kanban-board
+            - listitem [ref=e965]:
+              - link "List" [ref=e966] [cursor=pointer]:
+                - /url: /blocks/application/list
+            - listitem [ref=e967]:
+              - link "Navbar" [ref=e968] [cursor=pointer]:
+                - /url: /blocks/application/navbar
+            - listitem [ref=e969]:
+              - link "Onboarding" [ref=e970] [cursor=pointer]:
+                - /url: /blocks/application/onboarding
+            - listitem [ref=e971]:
+              - link "Profile" [ref=e972] [cursor=pointer]:
+                - /url: /blocks/application/profile
+            - listitem [ref=e973]:
+              - link "Schedule" [ref=e974] [cursor=pointer]:
+                - /url: /blocks/application/schedule
+            - listitem [ref=e975]:
+              - link "Settings" [ref=e976] [cursor=pointer]:
+                - /url: /blocks/application/settings
+            - listitem [ref=e977]:
+              - link "Sheet" [ref=e978] [cursor=pointer]:
+                - /url: /blocks/application/sheet
+            - listitem [ref=e979]:
+              - link "Stats" [ref=e980] [cursor=pointer]:
+                - /url: /blocks/application/stats
+            - listitem [ref=e981]:
+              - link "Timeline" [ref=e982] [cursor=pointer]:
+                - /url: /blocks/application/timeline
+            - listitem [ref=e983]:
+              - link "Wizard" [ref=e984] [cursor=pointer]:
+                - /url: /blocks/application/wizard
+        - generic [ref=e985]:
+          - generic [ref=e986]:
+            - heading "Solutions" [level=3] [ref=e987]
+            - list [ref=e988]:
+              - listitem [ref=e989]:
+                - link "Agents" [ref=e990] [cursor=pointer]:
+                  - /url: /blocks/solutions/agents
+              - listitem [ref=e991]:
+                - link "AI Ops" [ref=e992] [cursor=pointer]:
+                  - /url: /blocks/solutions/ai-ops
+              - listitem [ref=e993]:
+                - link "Analytics" [ref=e994] [cursor=pointer]:
+                  - /url: /blocks/solutions/analytics
+              - listitem [ref=e995]:
+                - link "Billing" [ref=e996] [cursor=pointer]:
+                  - /url: /blocks/solutions/billing
+              - listitem [ref=e997]:
+                - link "Bookings" [ref=e998] [cursor=pointer]:
+                  - /url: /blocks/solutions/bookings
+              - listitem [ref=e999]:
+                - link "CRM" [ref=e1000] [cursor=pointer]:
+                  - /url: /blocks/solutions/crm
+              - listitem [ref=e1001]:
+                - link "Files" [ref=e1002] [cursor=pointer]:
+                  - /url: /blocks/solutions/files
+              - listitem [ref=e1003]:
+                - link "Inventory" [ref=e1004] [cursor=pointer]:
+                  - /url: /blocks/solutions/inventory
+              - listitem [ref=e1005]:
+                - link "Users" [ref=e1006] [cursor=pointer]:
+                  - /url: /blocks/solutions/users
+          - generic [ref=e1007]:
+            - heading "Templates" [level=3] [ref=e1008]
+            - list [ref=e1009]:
+              - listitem [ref=e1010]:
+                - link "E-commerce" [ref=e1011] [cursor=pointer]:
+                  - /url: /templates/e-commerce
+              - listitem [ref=e1012]:
+                - link "SaaS" [ref=e1013] [cursor=pointer]:
+                  - /url: /templates/saas
+              - listitem [ref=e1014]:
+                - link "Dashboard" [ref=e1015] [cursor=pointer]:
+                  - /url: /templates/dashboard
+              - listitem [ref=e1016]:
+                - link "Landing" [ref=e1017] [cursor=pointer]:
+                  - /url: /templates/landing
+              - listitem [ref=e1018]:
+                - link "All templates" [ref=e1019] [cursor=pointer]:
+                  - /url: /templates
+        - generic [ref=e1020]:
+          - heading "eCommerce" [level=3] [ref=e1021]
+          - list [ref=e1022]:
+            - listitem [ref=e1023]:
+              - link "Category Card" [ref=e1024] [cursor=pointer]:
+                - /url: /blocks/ecommerce/category-card
+            - listitem [ref=e1025]:
+              - link "Checkout" [ref=e1026] [cursor=pointer]:
+                - /url: /blocks/ecommerce/checkout
+            - listitem [ref=e1027]:
+              - link "Comparison" [ref=e1028] [cursor=pointer]:
+                - /url: /blocks/ecommerce/comparison
+            - listitem [ref=e1029]:
+              - link "Coupon" [ref=e1030] [cursor=pointer]:
+                - /url: /blocks/ecommerce/coupon
+            - listitem [ref=e1031]:
+              - link "Filter Sidebar" [ref=e1032] [cursor=pointer]:
+                - /url: /blocks/ecommerce/filter-sidebar
+            - listitem [ref=e1033]:
+              - link "Product Card" [ref=e1034] [cursor=pointer]:
+                - /url: /blocks/ecommerce/product-card
+            - listitem [ref=e1035]:
+              - link "Product Detail" [ref=e1036] [cursor=pointer]:
+                - /url: /blocks/ecommerce/product-detail
+            - listitem [ref=e1037]:
+              - link "Product Grid" [ref=e1038] [cursor=pointer]:
+                - /url: /blocks/ecommerce/product-grid
+            - listitem [ref=e1039]:
+              - link "Receipt" [ref=e1040] [cursor=pointer]:
+                - /url: /blocks/ecommerce/receipt
+            - listitem [ref=e1041]:
+              - link "Review" [ref=e1042] [cursor=pointer]:
+                - /url: /blocks/ecommerce/review
+            - listitem [ref=e1043]:
+              - link "Shopping Cart" [ref=e1044] [cursor=pointer]:
+                - /url: /blocks/ecommerce/shopping-cart
+            - listitem [ref=e1045]:
+              - link "Wishlist" [ref=e1046] [cursor=pointer]:
+                - /url: /blocks/ecommerce/wishlist
+        - generic [ref=e1047]:
+          - generic [ref=e1048]:
+            - heading "Data Grid" [level=3] [ref=e1049]
+            - list [ref=e1050]:
+              - listitem [ref=e1051]:
+                - link "Base" [ref=e1052] [cursor=pointer]:
+                  - /url: /blocks/data-grid/base
+              - listitem [ref=e1053]:
+                - link "Columns" [ref=e1054] [cursor=pointer]:
+                  - /url: /blocks/data-grid/columns
+              - listitem [ref=e1055]:
+                - link "Drag & Drop New drag and drop Data Grid block added" [ref=e1056] [cursor=pointer]:
+                  - /url: /blocks/data-grid/drag-drop
+                  - text: Drag & Drop
+                  - generic [ref=e1057]: New drag and drop Data Grid block added
+              - listitem [ref=e1060]:
+                - link "Editing New editable Data Grid block added" [ref=e1061] [cursor=pointer]:
+                  - /url: /blocks/data-grid/editing
+                  - text: Editing
+                  - generic [ref=e1062]: New editable Data Grid block added
+              - listitem [ref=e1065]:
+                - link "Expansion" [ref=e1066] [cursor=pointer]:
+                  - /url: /blocks/data-grid/expansion
+              - listitem [ref=e1067]:
+                - link "Filtering" [ref=e1068] [cursor=pointer]:
+                  - /url: /blocks/data-grid/filtering
+              - listitem [ref=e1069]:
+                - link "Grouping Four new grouped and tree Data Grid blocks added" [ref=e1070] [cursor=pointer]:
+                  - /url: /blocks/data-grid/grouping
+                  - text: Grouping
+                  - generic [ref=e1071]: Four new grouped and tree Data Grid blocks added
+              - listitem [ref=e1074]:
+                - link "Virtualization" [ref=e1075] [cursor=pointer]:
+                  - /url: /blocks/data-grid/virtualization
+          - generic [ref=e1076]:
+            - heading "Marketing" [level=3] [ref=e1077]
+            - list [ref=e1078]:
+              - listitem [ref=e1079]:
+                - link "Blog" [ref=e1080] [cursor=pointer]:
+                  - /url: /blocks/marketing/blog
+              - listitem [ref=e1081]:
+                - link "Contact" [ref=e1082] [cursor=pointer]:
+                  - /url: /blocks/marketing/contact
+              - listitem [ref=e1083]:
+                - link "CTA" [ref=e1084] [cursor=pointer]:
+                  - /url: /blocks/marketing/cta
+              - listitem [ref=e1085]:
+                - link "FAQ" [ref=e1086] [cursor=pointer]:
+                  - /url: /blocks/marketing/faq
+        - generic [ref=e1087]:
+          - generic [ref=e1088]:
+            - heading "Resources" [level=3] [ref=e1089]
+            - list [ref=e1090]:
+              - listitem [ref=e1091]:
+                - link "Components" [ref=e1092] [cursor=pointer]:
+                  - /url: /components
+              - listitem [ref=e1093]:
+                - link "Blocks" [ref=e1094] [cursor=pointer]:
+                  - /url: /blocks
+              - listitem [ref=e1095]:
+                - link "Icons" [ref=e1096] [cursor=pointer]:
+                  - /url: /icons
+              - listitem [ref=e1097]:
+                - link "MCP for Agents" [ref=e1098] [cursor=pointer]:
+                  - /url: /mcp
+              - listitem [ref=e1099]:
+                - link "Docs" [ref=e1100] [cursor=pointer]:
+                  - /url: /docs
+              - listitem [ref=e1101]:
+                - link "Support" [ref=e1102] [cursor=pointer]:
+                  - /url: /support
+              - listitem [ref=e1103]:
+                - link "Pricing" [ref=e1104] [cursor=pointer]:
+                  - /url: /pricing
+              - listitem [ref=e1105]:
+                - link "Roadmap (has updates coming soon)" [ref=e1106] [cursor=pointer]:
+                  - /url: /roadmap
+                  - text: Roadmap
+                  - generic [ref=e1110]: (has updates coming soon)
+              - listitem [ref=e1111]:
+                - generic [ref=e1112]:
+                  - generic [ref=e1113]: Affiliate
+                  - generic [ref=e1114]: Soon
+          - generic [ref=e1115]:
+            - heading "Legal" [level=3] [ref=e1116]
+            - list [ref=e1117]:
+              - listitem [ref=e1118]:
+                - link "Privacy Policy" [ref=e1119] [cursor=pointer]:
+                  - /url: /legal/privacy-policy
+              - listitem [ref=e1120]:
+                - link "Terms & Conditions" [ref=e1121] [cursor=pointer]:
+                  - /url: /legal/terms-and-conditions
+              - listitem [ref=e1122]:
+                - link "License" [ref=e1123] [cursor=pointer]:
+                  - /url: /legal/license
+              - listitem [ref=e1124]:
+                - link "Refunds" [ref=e1125] [cursor=pointer]:
+                  - /url: /legal/refund-policy
+              - listitem [ref=e1126]:
+                - link "Cookies" [ref=e1127] [cursor=pointer]:
+                  - /url: /legal/cookies
+      - generic [ref=e1131]:
+        - paragraph [ref=e1132]: © 2026 ReUI. All rights reserved.
+        - generic [ref=e1133]:
+          - link "Follow us on X" [ref=e1134] [cursor=pointer]:
+            - /url: https://x.com/reui_io
+          - link "View ReUI on Figma" [ref=e1137] [cursor=pointer]:
+            - /url: https://www.figma.com/community/file/1649373313065184861/shadcn-ui-design-system-by-reui
+          - link "View ReUI on GitHub" [ref=e1144] [cursor=pointer]:
+            - /url: https://github.com/keenthemes
+            - generic [ref=e1147]: 3.3K
+  - region "Notifications alt+T"
+  - alert [ref=e1148]

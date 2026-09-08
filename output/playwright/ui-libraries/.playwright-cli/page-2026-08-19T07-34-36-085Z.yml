@@ -1,0 +1,118 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - link [ref=e6] [cursor=pointer]:
+            - /url: https://coss.com/
+            - text: coss.com
+          - generic [ref=e7]: ui
+        - generic [ref=e8]:
+          - navigation [ref=e9]:
+            - link [ref=e10] [cursor=pointer]:
+              - /url: /ui/docs
+              - text: Docs
+            - link [ref=e11] [cursor=pointer]:
+              - /url: /ui/particles
+              - text: Particles
+          - button [ref=e13] [cursor=pointer]:
+            - generic [ref=e14]:
+              - generic: ⌘
+              - generic: K
+          - separator [ref=e15]
+          - link [ref=e16] [cursor=pointer]:
+            - /url: https://github.com/cosscom/coss
+            - generic [ref=e17]: 10.4k
+          - button [ref=e18] [cursor=pointer]:
+            - generic [ref=e19]: Toggle theme
+    - generic [ref=e20]:
+      - generic [ref=e22]:
+        - heading [level=1] [ref=e23]: Browse Particles
+        - paragraph [ref=e24]: Discover 508 ready-to-use particles, the building blocks of your design system. Filter by category to find the perfect component for your project.
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - button "Dismiss" [ref=e29]
+          - combobox "Search components" [expanded] [active] [ref=e30]
+        - textbox [ref=e31]
+  - alert [ref=e32]
+  - generic:
+    - region "Notifications"
+  - generic:
+    - region "Notifications"
+  - generic [ref=e33]:
+    - generic [ref=e34]:
+      - status
+      - listbox [ref=e36]:
+        - group "Filter particles" [ref=e37]:
+          - option "Accordion" [ref=e39]
+          - option "Alert" [ref=e43]
+          - option "Alert Dialog" [ref=e47]
+          - option "Autocomplete" [ref=e51]
+          - option "Avatar" [ref=e55]
+          - option "Badge" [ref=e59]
+          - option "Breadcrumb" [ref=e63]
+          - option "Button" [ref=e67]
+          - option "Calendar" [ref=e71]
+          - option "Card" [ref=e75]
+          - option "Checkbox" [ref=e79]
+          - option "Checkbox Group" [ref=e83]
+          - option "Collapsible" [ref=e87]
+          - option "Combobox" [ref=e91]
+          - option "Command" [ref=e95]
+          - option "Context Menu" [ref=e99]
+          - option "Date Picker" [ref=e103]
+          - option "Dialog" [ref=e107]
+          - option "Drawer" [ref=e111]
+          - option "Dropdown" [ref=e115]
+          - option "Empty State" [ref=e119]
+          - option "Field" [ref=e123]
+          - option "Fieldset" [ref=e127]
+          - option "Form" [ref=e131]
+          - option "Frame" [ref=e135]
+          - option "Group" [ref=e139]
+          - option "Input" [ref=e143]
+          - option "Input Group" [ref=e147]
+          - option "Kbd" [ref=e151]
+          - option "Label" [ref=e155]
+          - option "Menu" [ref=e159]
+          - option "Meter" [ref=e163]
+          - option "Navigation" [ref=e167]
+          - option "Number Field" [ref=e171]
+          - option "Otp Field" [ref=e175]
+          - option "Pagination" [ref=e179]
+          - option "Popover" [ref=e183]
+          - option "Preview Card" [ref=e187]
+          - option "Progress" [ref=e191]
+          - option "Radio Group" [ref=e195]
+          - option "Scroll Area" [ref=e199]
+          - option "Select" [ref=e203]
+          - option "Segmented Control" [ref=e207]
+          - option "Separator" [ref=e211]
+          - option "Sheet" [ref=e215]
+          - option "Skeleton" [ref=e219]
+          - option "Slider" [ref=e223]
+          - option "Spinner" [ref=e227]
+          - option "Switch" [ref=e231]
+          - option "Table" [ref=e235]
+          - option "Tabs" [ref=e239]
+          - option "Textarea" [ref=e243]
+          - option "Toast" [ref=e247]
+          - option "Toggle" [ref=e251]
+          - option "Toggle Group" [ref=e255]
+          - option "Toolbar" [ref=e259]
+          - option "Tooltip" [ref=e263]
+          - option "Async" [ref=e267]
+          - option "Disabled" [ref=e271]
+          - option "Error" [ref=e275]
+          - option "Filter" [ref=e279]
+          - option "Info" [ref=e283]
+          - option "Loading" [ref=e287]
+          - option "Search" [ref=e291]
+          - option "Success" [ref=e295]
+          - option "Tanstack" [ref=e299]
+          - option "Time" [ref=e303]
+          - option "Timezone" [ref=e307]
+          - option "Validation" [ref=e311]
+          - option "Warning" [ref=e315]
+          - option "Zod" [ref=e319]
+    - button "Dismiss" [ref=e325]

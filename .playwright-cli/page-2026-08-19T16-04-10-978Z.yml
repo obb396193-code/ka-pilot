@@ -1,0 +1,17 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - text: 05 / SMALL MOTION
+      - heading "Motion Primitives" [level=1] [ref=e6]
+    - paragraph [ref=e7]: 实际运行 Animated Number 与 Disclosure，展示极简、细腻、可局部采用的 Motion 风格。
+  - generic [ref=e8]:
+    - article [ref=e9]:
+      - generic [ref=e10]: ANIMATED NUMBER
+      - generic [ref=e11]:
+        - generic [ref=e12]: "74"
+        - generic [ref=e13]: "%"
+      - paragraph [ref=e14]: 预算完成率
+      - button "切换数值" [ref=e15]
+    - article [ref=e16]:
+      - generic [ref=e17]: DISCLOSURE
+      - button "为什么判定异常？" [ref=e19]

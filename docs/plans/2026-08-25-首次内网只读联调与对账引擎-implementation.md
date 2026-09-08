@@ -1,6 +1,6 @@
 # 首次内网只读联调与对账引擎 Implementation Plan
 
-> **状态更新（2026-08-25）：不再作为首次内网前置任务包。** 对账引擎 G2-G4 暂停派发；奇航为默认主通路，KA Data 只作备用/管理员诊断，见 `docs/decisions/2026-08-25-奇航主源与KAData备用路径.md`。内部试用身份和多租户作为独立后端批次推进。
+> **状态更新（2026-08-25）：不再作为首次内网前置任务包。** 对账引擎 G2-G4 暂停派发；启航为默认主通路，KA Data 只作备用/管理员诊断，见 `docs/decisions/2026-08-25-启航主源与KAData备用路径.md`。内部试用身份和多租户作为独立后端批次推进。
 
 > **For Codex:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 

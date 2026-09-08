@@ -49,7 +49,7 @@
 - 已完成：可重放 SQL 迁移与月分区、指标唯一纯函数、双口径字段级合并、Qihang 四资源 client、DB lease consumer、full/incr handler、etl_runs、失败 outbox、canonical 生效版本读取/计算/幂等 upsert。
 - 提前完成：独立钉钉网关核心（官方 Stream 适配、入站幂等、身份映射、本地命令/agent 分流、任务安全入队、sessionWebhook SSRF 防护）。
 - 验证：56 tests 全绿；四包 TypeScript/ESLint 全绿；V8 coverage domain 92.17% / worker 90.82% / db 80.69% / gateway 83.16%；四包 `npm audit --audit-level=high` 均 0 vulnerabilities；PostgreSQL 16 healthy，迁移 down/up 重放通过。
-- P-001~P-003 裁决落实：契约 v1.1 升级迁移（复合租户主键、workspace 补列、raw replay 字段/索引）；四 resource raw 持久化与 canonical 最新快照回放；job 冻结 owner 解析奇航身份、重试不换人、全局任务仅显式只读服务身份；Worker 独立启动组合。
+- P-001~P-003 裁决落实：契约 v1.1 升级迁移（复合租户主键、workspace 补列、raw replay 字段/索引）；四 resource raw 持久化与 canonical 最新快照回放；job 冻结 owner 解析启航身份、重试不换人、全局任务仅显式只读服务身份；Worker 独立启动组合。
 - 网关落实：独立启动组合；`POST /agent/sessions/:id/query` → `/query`；`POST /tasks`（钉钉 event id 幂等）；`POST /work-items/:id/reply` 客户端；入站事件带 workspace，长期数据不存 sessionWebhook。
 - 最终验证：69 tests 全绿；业务源码行覆盖率 domain 93.39% / worker 85.14% / db 81.32% / gateway 86.62%；四包 TypeScript/ESLint 全绿；四包 npm audit 均 0 vulnerabilities；PG migration down/up 通过；凭证/动态执行扫描无发现。
 - 边界如实：三个产品 API 的服务端实现属 B1c，本批仅完成网关调用侧与 mock 合同测试；HTTP 200 业务鉴权码仍等 B7 内网实证，不猜。
@@ -94,7 +94,7 @@ Codex 本批只实现内部状态、严格字符串快照比较、审计和端�
 
 ### P-007 ✅已裁决（2026-09-04 v1.3）｜原B4 任务与报告契约差异｜be（Codex）
 
-1. 奇航 `task_id` 是否为主数据仍未核验；B4 Repository 只接收 taskId，不绑定来源。
+1. 启航 `task_id` 是否为主数据仍未核验；B4 Repository 只接收 taskId，不绑定来源。
 2. `task_accounts UNIQUE(task_id,account_id,valid_from)` 缺 workspace_id，且无租户 FK/区间排斥约束；建议修正复合唯一与 FK，区间重叠由事务检查兜底。
 3. pacing 请冻结：日历天还是业务日、asOf 是否含当日、7 日零量日是否纳入、任务结束后的显示语义。本批明确采用“asOf=完整结算日，剩余不含 asOf，调用方传有效日序列”。
 4. 日报“12 模块”缺字段、顺序、角色裁剪、缺数状态和版本 schema；本批只做稳定事实集。
@@ -213,7 +213,7 @@ main 9335150
 8. 报表生成 job_type、run 状态、失败恢复和 outbound/钉钉交接；本批未注册生产任务。
 9. 权威 `dataCutoffAt` 从 ETL/canonical 哪个 Run 取，不能使用查询完成时间。
 
-**明确未做**：公开 API、Schema/迁移、前端设计器、共享治理、定时调度、PNG/PDF/Excel、钉钉推送、缺失策略维度查询、真实 Provider/奇航/Multica/OS 联调。
+**明确未做**：公开 API、Schema/迁移、前端设计器、共享治理、定时调度、PNG/PDF/Excel、钉钉推送、缺失策略维度查询、真实 Provider/启航/Multica/OS 联调。
 
 ---
 
@@ -343,7 +343,7 @@ main 9335150
 **已完成**：
 
 1. P0 修复 6/14：日常 raw→canonical→quality 派发、Job lease fencing、确认/执行 TTL、Changeset+T1 崩溃恢复、知识明文对象权限、Workflow 嵌入式凭证扫描。
-2. P1 修复 7/17：上海业务日、unknown lifecycle、inactive 奇航身份、Changeset exact-once 结果、规则全失败可见、账户分页 fail-closed、指标分区运行期保活。
+2. P1 修复 7/17：上海业务日、unknown lifecycle、inactive 启航身份、Changeset exact-once 结果、规则全失败可见、账户分页 fail-closed、指标分区运行期保活。
 3. 额外补强：缺数/零置信度/无证据 Agent 诊断不得给调整动作；租约 CHECK 防 SQL NULL 绕过；Agent timeout 不超过 credential envelope TTL。
 4. 验证：422 默认 tests passed；1 个真 Claude Agent SDK→本地网关→fake upstream opt-in smoke 单独 passed；四包 typecheck/lint/audit 全绿；coverage 86.62%-95.43%；PG16 迁移回放和 Job 并发反例通过。
 5. 复杂度复核：full ETL、Job Consumer、Job enqueue 完成等价职责提取；变更生产文件 complexity≤10、单函数≤100 行门禁 0 发现。
@@ -375,7 +375,7 @@ main 9335150
 1. 机械核验 `be/b8a`→`fe/f001` 共同基线与重叠路径；最终复核时 `fe/f001` 已前进到 `1de9256`，仍有 46 个脏路径，禁止在此现场直接 merge。5 个 committed overlap 中，台账、两信箱和 `schema.sql` 有明确文本冲突，`api.md` 仍需契约人工审查；脏路径与后端交集更新为台账和两信箱。
 2. Qihang 增加响应字节、行数、ID 数与编码 URL 四层资源预算；超限稳定为 `RESOURCE_LIMIT`，不进入网络重试。ETL/Backfill payload 同步 fail-closed。
 3. 增加纯合成、无网络/DB benchmark。当前代码基线暴露 Canonical 每轮 `3N+4` 端口调用；5,000 行是 15,004 次，报告没有把本机毫秒数冒充生产 SLA。
-4. 形成奇航、Multica/OS read/preview/execute、Secret、模型网关、钉钉 Stream、PG/FaaS 的 Gate A-E 准入矩阵，所有未知协议保持未证实。
+4. 形成启航、Multica/OS read/preview/execute、Secret、模型网关、钉钉 Stream、PG/FaaS 的 Gate A-E 准入矩阵，所有未知协议保持未证实。
 5. 当前全量门禁：434 默认 tests passed；真 Claude Agent SDK→localhost gateway→fake upstream opt-in smoke 1 passed；四包 typecheck/lint/audit 全绿；coverage 86.62%-95.43%；PG16 迁移回放通过；变更生产代码 complexity≤10、单函数≤100 行；凭证/动态执行扫描无发现。
 
 **请重点复核**：
@@ -385,7 +385,7 @@ main 9335150
 3. 合并时 `schema.sql` 以 Claude 契约裁决为主，后端 migration 真相不得丢；两信箱按条目语义合并，不可整文件覆盖。
 4. 联调清单的 owner、证据、失败级别、写确认和敏感信息禁记是否满足内部安全要求。
 
-**仍然不是完成项**：未合并、未部署、未接真实奇航/Multica/OS/Secret/Provider/钉钉 Stream；fake upstream 只证明 SDK 与本地协议网关链路。P0-02/03/04/05/07/11/12/13 与 9 个 P1 继续保留。
+**仍然不是完成项**：未合并、未部署、未接真实启航/Multica/OS/Secret/Provider/钉钉 Stream；fake upstream 只证明 SDK 与本地协议网关链路。P0-02/03/04/05/07/11/12/13 与 9 个 P1 继续保留。
 
 ---
 
@@ -408,7 +408,7 @@ main 9335150
 **已完成**：
 
 1. CanonicalStore/Repository 改为默认 250 的 settings/history/upsert 批量端口；复合 workspace/account/date 缺失、重复、越界 fail-closed。
-2. 真实 PostgreSQL 纵向链：假奇航→Full ETL→Raw→Job→Canonical→质量→语义查询→规则→工作项→报告事实；同 accountId 跨 workspace 隔离实测。
+2. 真实 PostgreSQL 纵向链：假启航→Full ETL→Raw→Job→Canonical→质量→语义查询→规则→工作项→报告事实；同 accountId 跨 workspace 隔离实测。
 3. Full/Incr `etl_runs.workspace_id` 补齐；规则首次创建/重扫合并，报告 KPI/趋势/任务维度共用语义事实。
 4. 修复 P1-03：按 Canonical `field_sources.cost` 选择 latest offline `cost_api` 或 realtime `account_cost` 对平，消除当天假异常。
 5. 修复 P1-16：5000 行端口调用从 15004 降到 64；真实 PG 三次中位 394.974ms，最终 5000 行，代表性读计划无根级 Seq Scan。
@@ -419,7 +419,7 @@ main 9335150
 1. 批量 SQL 使用 JSON recordset、默认 250/最大 1000、每 chunk 原子但跨 chunk 非单事务的语义是否保留；后续批次失败时已写前缀可留，Job 失败且不派生质量。
 2. Handler 对 batch 返回结果的复合键 completeness/duplicate/out-of-scope 检查是否足够；是否需要 Repository 层额外 workspace 外键/一致性约束。
 3. Raw append-only 重试语义：当前崩溃重试会保留重复抓取，latest-row + Canonical Upsert 防双计。请裁决这是审计历史还是应增加 request/run identity 去重。
-4. 质量 source 选择：`realtime|gap_filled` 取 `account_cost`，其余优先 offline `cost_api` 再 realtime；请与真实奇航字段和数据日口径核对。
+4. 质量 source 选择：`realtime|gap_filled` 取 `account_cost`，其余优先 offline `cost_api` 再 realtime；请与真实启航字段和数据日口径核对。
 5. 集成测试的规则候选只从真实语义结果生成，但仍是 test adapter；不要未经契约冻结直接注册生产 rule/report Job。
 6. PG benchmark 只允许本机测试库且会自动清理；结果是热缓存单 workspace，不得写成生产 SLA。
 
@@ -427,7 +427,7 @@ main 9335150
 
 - production rule/report job payload、触发器、候选 Provider 和输出存储；
 - Raw 大响应分片和 PostgreSQL 参数上限（P1-14 剩余部分）；
-- 真实奇航 1000 IDs 以上分片、限流、字段宽度和失败恢复；
+- 真实启航 1000 IDs 以上分片、限流、字段宽度和失败恢复；
 - 真实 Multica/OS、Secret、Provider、钉钉 Stream、FaaS/共享 PG；
 - Raw 请求幂等、冷缓存/并发/p95/p99 和生产资源预算。
 
@@ -435,15 +435,15 @@ main 9335150
 
 ---
 
-### P-017 ⏳B10 真实奇航只读适配待审计｜be（Codex）
+### P-017 ⏳B10 真实启航只读适配待审计｜be（Codex）
 
 - 分支：`be/b8a`
 - 基线：`f756140`
 - 功能与证据 SHA：`41c6646`
 - 双口径事实纠偏 SHA：`3167e39`（当天 realtime 分钟级；D-2 仅为本次 offline 观测；BI 为备用/增强）
-- 实施计划：`docs/plans/2026-08-20-B10真实奇航只读适配-implementation.md`
+- 实施计划：`docs/plans/2026-08-20-B10真实启航只读适配-implementation.md`
 - 状态：`docs/plans/B10-状态.md`
-- 脱敏证据：`docs/evidence/B10-真实奇航只读适配报告.md`
+- 脱敏证据：`docs/evidence/B10-真实启航只读适配报告.md`
 
 **真实证据边界**：老板转交的 OS Agent 在合法身份下实际执行四类只读 GET；已确认协议、日期、空数组和动态字段；当天 realtime 命中且 `last_sync_time` 为分钟级，离线仅在本次观察到 D-1 空、D-2 命中。D-2 不是实时延迟也不是固定 SLA。原始 userId、账户/广告/任务标识、金额和精确业务规模未写入仓库。请求不是由本项目 Worker/FaaS 发起，因此仍不能标记 Gate B 完成。
 
@@ -458,7 +458,7 @@ main 9335150
 
 1. `packages/contract/metrics.md` 仍写“离线 T+1 权威”且 `account_real_conversion` 只列 realtime，是否按真实证据改为“最新已产出分区”和 offline/realtime 双来源。
    `docs/20-PRD-v1.md` 的“account_offline（昨日结算）→ account_realtime（近 7 日补洞）”也需同步改成“当天 realtime 分钟级 + offline 动态探测最新已产出分区”，并注明历史 realtime `ds` 尚未实测。
-2. 三日回退是当前无分区状态接口下的有界保护；D-1 部分产出无法识别。是否要求奇航提供分区完成标记，或由数据健康层引入跨批稳定性判定。
+2. 三日回退是当前无分区状态接口下的有界保护；D-1 部分产出无法识别。是否要求启航提供分区完成标记，或由数据健康层引入跨批稳定性判定。
 3. 当前业务线离线样本没有 `cash/income/rebate`。现有派生逻辑在 compensation 缺失时按 0 计算现金成本；该业务语义本批未改，请业务/arch 明确“缺失=0”还是“现金指标不可用”。
 4. userId 仍是个人身份，OS 只证明内网可调用，不是部门级服务身份。正式推广前应用身份仍是硬门。
 5. 本轮 realtime 只实测当天；Skill 源码虽会用历史 realtime 补洞，但服务端是否正式支持历史 `ds` 尚待探针，不能由实现反推协议。
@@ -470,7 +470,7 @@ main 9335150
 
 ---
 
-### P-018 ⏳B11 奇航时效完整性与小时监控待审计｜be（Codex）
+### P-018 ⏳B11 启航时效完整性与小时监控待审计｜be（Codex）
 
 - 分支：`be/b11`
 - 基线：`878126f`
@@ -506,8 +506,8 @@ main 9335150
 
 1. offline 无 complete marker 时仅有 `not_observed/observed_unverified` 是否符合数据健康语义；不要把非空或跨批稳定升级成 complete。
 2. 默认每次 Incr 重查 D-1 与 0..3 配置是否需要由调度层固定频率/冷却，避免高频任务重复拉离线。
-3. 默认 5 账户/80 广告 ID、最多 200 批的奇航频控与资源边界是否长期保留；当前没有真实 SLA，故实现选择顺序执行。
-4. 单个账户过滤查询若仍恰好命中 2000，当前缺少权威 adIds 发现来源，只能 fail-closed；请裁决后续由账户基建台账、奇航新接口还是媒体对象清单提供拆分种子。
+3. 默认 5 账户/80 广告 ID、最多 200 批的启航频控与资源边界是否长期保留；当前没有真实 SLA，故实现选择顺序执行。
+4. 单个账户过滤查询若仍恰好命中 2000，当前缺少权威 adIds 发现来源，只能 fail-closed；请裁决后续由账户基建台账、启航新接口还是媒体对象清单提供拆分种子。
 5. 现有小时表没有 `last_sync_time`/issue 状态列；本批只在 ETL observation 留源更新时间和 aggregate issue。请裁决未来公开数据健康 DTO、保留期和页面展示方式。
 6. 当前小时 Repository 一次 JSON batch；上游已按最多 5 账户拆分，但单账户仍可能有大量广告。是否增加 DB 分块上限，等真实响应宽度与 PG 基准后决定。
 
@@ -532,7 +532,7 @@ main 9335150
 **本批实现**：
 
 1. 广告 ID 通用分页枚举，校验 page/pageSize/total、空页、页数和 ID 数；只有 `complete + confirmed_equal + 独立证据指纹` 才输出 `adIds`，运行时再次防结构伪造。
-2. 奇航素材池严格只读客户端，校验 envelope、total 稳定、重复冲突、页/行/字节预算，错误和观测不含业务 ID、完整 URL 或响应正文。
+2. 启航素材池严格只读客户端，校验 envelope、total 稳定、重复冲突、页/行/字节预算，错误和观测不含业务 ID、完整 URL 或响应正文。
 3. 视频来源安全探针默认全拒绝；显式 host allowlist 后逐跳校验重定向，HEAD 不支持才发单字节 Range；直接 IP、非视频、未知/零长度和超限阻断。
 4. 未修改 public contract、migration、DB、前端；未接生产 Runtime、视频下载、拆片或媒体写操作。
 
@@ -790,7 +790,7 @@ main 9335150
 **请重点审查/裁决**：
 
 1. 真实期次模板和 factKey/公式/汇总/容差，以及模板发布/废弃权限。
-2. sourceFactId/rowKey 与奇航 offline/语义层的权威映射、完整分区和勘误重算。
+2. sourceFactId/rowKey 与启航 offline/语义层的权威映射、完整分区和勘误重算。
 3. 人工修正权限/evidenceRef/双人复核、冻结后勘误生成新 run 的状态机。
 4. DB/API DTO 与 workspace/optimizer/period 唯一键、历史模板和值快照留存。
 5. Excel/PDF/PNG 精度/舍入与导出、差异转工作项、钉钉订阅/推送契约。
@@ -1468,7 +1468,7 @@ Git 评估没有复制包内内部 URL、真实 ID 或高风险参数值。一�
 
 - EVO 子资料明确实验设计、流量规划、联调、发布、分析、人工推全/下线和结果报告阶段；
 - 用户增长目录多数是 43 条摘要索引，不是 43 篇完整正文；
-- 当前一期取数主通路是奇航 `get_data`，不是 FBI；
+- 当前一期取数主通路是启航 `get_data`，不是 FBI；
 - Excel 是“人填策略/参数→工具拼指令”的白盒执行样本；当前产品设计仍是可控自治灰盒。
 
 合理推断（待裁决）：
@@ -1522,7 +1522,7 @@ Git 评估没有复制包内内部 URL、真实 ID 或高风险参数值。一�
 5. 是否确认重复 `INDEX.md` 不另分配 document_id？
 6. 哪些子文档优先提升：EVO A/B、FBI 嵌入、SaaS 广告投放摘要、O2 Next.js、AIStudio API？
 7. EVO 是否可进入 Experiment Copilot 下一版候选；固定测量期与实时调控如何裁决？
-8. 是否确认 FBI 只做后续备选，不改变一期奇航主通路？
+8. 是否确认 FBI 只做后续备选，不改变一期启航主通路？
 9. Excel 哪些字段可进入 `create_ad` schema，100 组默认/“其他默认”是否明确驳回？
 10. 是否对高风险参数维持 deny/quarantine，并由 security/compliance 专项裁决？
 11. 是否批准派生“去 ID/去高风险字段的快手基建参数字典”进入下一轮审查？
@@ -1886,7 +1886,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 合理推断（待审查）：
 
 - MAPI 应成为快手 provider 的官方能力上限证据，CLI 是执行壳；优先补 Capability Registry、结构同步和执行回查。
-- 一期不应因此替换奇航 `get_data` 主读取链路；MAPI 报表先作结构/口径校验或缺维度补充。
+- 一期不应因此替换启航 `get_data` 主读取链路；MAPI 报表先作结构/口径校验或缺维度补充。
 - 媒体原生自动基建/调控/智投与我方矩阵基建、自治度、Agent 决策不是同一能力，应单独治理。
 - 当前公开 MAPI 证据不足以支持严格 AI A/B 实验；实验模式默认冻结媒体原生自动化更安全。
 
@@ -1894,7 +1894,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 - 本公司 AppID/账户实际 scope、白名单和接口可用性；
 - 当前 `kuaishou-cli` 对本批接口的封装覆盖、host/版本与运行状态；
-- MAPI 与奇航在字段、时效、结算口径上的一致性；
+- MAPI 与启航在字段、时效、结算口径上的一致性；
 - 冲突页面的生产真实路径、方法和上限；
 - 是否存在非公开/白名单实验分流能力；
 - 媒体自动调控是否跨实验组共享学习或污染对照。
@@ -1918,7 +1918,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 建议驳回：
 
 - 因公开页面存在就宣称公司账户已可用；
-- 用 MAPI 报表直接替换奇航主链路；
+- 用 MAPI 报表直接替换启航主链路；
 - 一次性封装全量 MAPI；
 - 产品服务直存媒体 token/secret；
 - 无确认自动删除、关停、调预算/出价；
@@ -1935,7 +1935,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 1. 是否批准 `ka-src-0007` 为 E1 官方证据，并允许升为 `reviewed`；冲突项是否继续 `unverified`？
 2. 是否认可 `documented/authorized/wrapped/verified` 四态和 `official_conflict`？
-3. 是否同意“先 capability manifest + CLI 覆盖审计 + 只读探针，不替换奇航主链路”？
+3. 是否同意“先 capability manifest + CLI 覆盖审计 + 只读探针，不替换启航主链路”？
 4. 是否要求执行/架构 Agent 单独提交当前 `kuaishou-cli` 与本批接口的覆盖矩阵？
 5. 谁负责裁定路径、计划上限和请求方法三类官方冲突：测试账户探针、媒体接口人还是两者都要？
 6. 是否批准先做 campaign/unit/creative 只读结构同步和媒体态回查？
@@ -2022,7 +2022,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 合理推断（待审查）：
 
-- 奇航继续承担一期既定数据主链路；MAPI 作为快手官方能力上限、执行/结构/素材/回查底座，两者不是替代关系。
+- 启航继续承担一期既定数据主链路；MAPI 作为快手官方能力上限、执行/结构/素材/回查底座，两者不是替代关系。
 - CLI 缺失端点可以按 `constants + client + command` 模式按需补壳；但不应为追求数量一次性封装 327 条。
 - 机器初筛把 381 条分为 59 一期候选、249 后续条件候选、73 参考或排除，能作为业务 owner/架构二次裁剪的起点。
 - 一期最值得补的是 campaign update/status、unit budget、creative update/status/review、四层实时 report；其余按明确产品场景进入后续。
@@ -2031,7 +2031,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 - 本公司 AppID/广告账户实际 scope、白名单和每个 endpoint 的授权状态；矩阵 `required_scope` 暂为 `requires_mapping`。
 - CLI 23 个可达端点在当前沙箱代理与测试账户是否全部运行正常。
-- MAPI 与奇航在字段、时效、结算口径上的一致性；MAPI 报表不能据此替换奇航。
+- MAPI 与启航在字段、时效、结算口径上的一致性；MAPI 报表不能据此替换启航。
 - 327 个未封装 endpoint 的公司账户可用性、当前生产路径和实际业务价值。
 - 官方冲突项的生产真实方法/上限；媒体原生自动化对实验流量和共享学习的影响。
 - 非公开或白名单实验能力是否存在；公开目录仍不足以证明严格 A/B 分流能力。
@@ -2055,7 +2055,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 建议驳回：
 
-- 用 MAPI 替代奇航一期主数据链路；
+- 用 MAPI 替代启航一期主数据链路；
 - 一次性封装全部 327 个缺失 endpoint；
 - 代理商开户/充值/转账/退款、共享钱包资金写进入当前 KA 产品；
 - CRM 外呼、企微成员、第三方支付进入当前产品或 Agent 工具；
@@ -2075,7 +2075,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 1. 是否接受 `P-KB-008` 替代 `P-KB-007` 的范围描述，并认可同一 `ka-src-0007` revision/hash 更新？
 2. 是否批准 672 篇全量快照为 E1 资料、381 条矩阵为未审查分析附件；是否允许升为 `reviewed`？
 3. 是否接受 CLI 静态结论：代码 1.2.1、25 常量、23 reachable、2 declared-only、327 未封装、raw 未注册？
-4. 是否确认“奇航主读取链路不变，MAPI/CLI 按需补执行、结构、素材和回查能力”？
+4. 是否确认“启航主读取链路不变，MAPI/CLI 按需补执行、结构、素材和回查能力”？
 5. 59 条一期候选是否必须由业务 owner 二次裁剪；素材共享、AI 推荐、广告语推荐是否移出一期？
 6. 是否批准优先补 campaign update/status、unit budget、creative update/status/review、四层实时 report 的候选顺序？
 7. 谁负责在授权测试账户上做 `authorized/verified` 探针，以及 scope 映射？
@@ -2307,7 +2307,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - 原文描述了一个 reader 级只读查询门面、三类数据后端、账户/广告组/素材/商品/BI 转化数据字典、现金/考核/扣量公式、对象 ID 和故障排查；其中账户双 namespace 说法已被 R1 纠正。
 - 冻结账户事实：KA 与平台 `account_id` 相同，不建立账户 ID 映射表；R3 已把账户主键与相关外键统一为 `(workspace_id, media, account_id)`。
 - `task/product/material/adgroup` 等其他对象 ID 是否一致仍待核证，不能从账户结论顺推。
-- 当前冻结 Contract 仍以奇航 `get_data` 为一期数据主链路；产品 API 是结构化语义查询，生产存储设计是 PostgreSQL raw/canonical + workspace ACL。
+- 当前冻结 Contract 仍以启航 `get_data` 为一期数据主链路；产品 API 是结构化语义查询，生产存储设计是 PostgreSQL raw/canonical + workspace ACL。
 - 当前仓库没有原文所指服务端实现、产品 adapter、调用日志、reader token 或运行验收；本轮没有调用内部服务。
 
 资料主张但未独立核实：
@@ -2319,7 +2319,7 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 
 合理推断：
 
-- 若探针成立，ka-data 可作为 BI 转化、素材/商品和跨媒体的补充/对平 provider；不必立即替换奇航。
+- 若探针成立，ka-data 可作为 BI 转化、素材/商品和跨媒体的补充/对平 provider；不必立即替换启航。
 - media 条件、其他对象 ID 关联、业务日期门槛和截断规则适合转成数据质量检查；账户 ID 不再列入待映射范围。
 - 原始 SQL 门面只适合受控数据运维/adapter，不适合直接给普通用户或产品 Agent。
 
@@ -2337,9 +2337,9 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 #### 4. 分期建议
 
 - P0：授权 data owner 做只读 health/query 探针、安全复核和少量脱敏样本的同日同户对平；不把 token 交给本项目或写入资料库。
-- P0：确认奇航/ka-data/业务确认表在消耗、转化、赔付、现金、考核上的字段级 SSOT 与差异处理。
+- P0：确认启航/ka-data/业务确认表在消耗、转化、赔付、现金、考核上的字段级 SSOT 与差异处理。
 - P0：账户已采用 `(workspace_id, media, account_id)`；继续分别核证 task/product/material/adgroup 等其他对象 ID 与关联键。
-- P1：探针通过后，把 ka-data 作为 Worker 内受控 adapter/补充源/对平源；只接批准模板或视图，不接 Agent 原始 SQL，先快手且不替换奇航主链路。
+- P1：探针通过后，把 ka-data 作为 Worker 内受控 adapter/补充源/对平源；只接批准模板或视图，不接 Agent 原始 SQL，先快手且不替换启航主链路。
 - P2：素材/商品/内容标签和多渠道，以许可、ACL、字段覆盖和数据质量为前置。
 - 不采用：普通用户/Agent 任意 SQL、共享 token 台账、临时地址写进 Contract、SQLite 作生产主库、硬编码系数、因资料写“全媒体”而扩一期。
 
@@ -2355,11 +2355,11 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 #### 6. 请 arch/security/data owner 回写 ✅/❌
 
 1. 谁是正式 data owner；资料版本、服务环境和 SLA 是什么？
-2. 是否批准把 ka-data 作为一期补充/对平 provider 候选，而非立即替换奇航？
+2. 是否批准把 ka-data 作为一期补充/对平 provider 候选，而非立即替换启航？
 3. 是否批准第一批只读探针；测试身份、样本、指标和验收人由谁提供？
 4. reader token 的数据范围、签发/撤销、审计和 BUC/workspace 映射是否合规？
 5. SQL 护栏是否需要 security 绕过测试、底层只读角色和 allowlisted views？
-6. 奇航、ka-data、MAPI、业务确认表的字段级 SSOT 如何裁决？
+6. 启航、ka-data、MAPI、业务确认表的字段级 SSOT 如何裁决？
 7. 现金公式的固定系数与版本化 `channel_coefficients` 是否同一定义？
 8. `task/product/material/adgroup` 等其他对象 ID 是否一致；若不一致，各对象的关联键与 coverage 如何表达？账户不建立 mapping。
 9. SQLite 快照生成链、data_as_of、revision、保留期和失败补偿是否可提供？
@@ -2435,14 +2435,14 @@ canonical：`/Users/aik/Desktop/投放agent/private/knowledge-sources/ka-src-000
 - 代码终态：`72228b4`
 - 质量与交接：`fa84d22`
 - 质量：`docs/evidence/B23-A-代码质量报告.md`
-- Gap matrix：`docs/evidence/B23-C-奇航只读链Gap矩阵.md`
+- Gap matrix：`docs/evidence/B23-C-启航只读链Gap矩阵.md`
 - 状态：implemented / codex self-checked / root integration pending / Claude review reserved
 
 **本批实现**：
 
 1. 四表 migration 保留 workspace-local users，用复合 FK 绑定 membership→user、grant→账户三字段键。
 2. Worker 明文 session token 只在内存中即时 SHA-256；DB Repository 只接受 hash，不选择或返回
-   provider subject、奇航 userId、Secret ref、token hash。
+   provider subject、启航 userId、Secret ref、token hash。
 3. Domain 对 expired/revoked/inactive/missing/mismatched/duplicate 全部 fail closed；无 grant 是
    approved empty scope，不是 workspace 全权。
 4. 同 identity 双 workspace、跨 workspace/跨 media 同 account ID、跨 workspace user FK、撤销和
@@ -2458,11 +2458,11 @@ identity/workspace/user/grant seed 与审计。
 
 **关键未完成**：B23-A 还不是登录 E2E。此处原记账户主表同步缺口已由后续 B23-C1/P-034 关闭；
 仍缺普通业务调度、`/api/v1/query`、任务/账户/工作项列表 API 和严格 DTO；详见 B23-C。未合并、未部署、
-未使用真实 BUC/session/奇航账户，所有媒体写继续关闭。
+未使用真实 BUC/session/启航账户，所有媒体写继续关闭。
 
 ---
 
-### P-034 ⏳B23-C1 奇航账户主表同步待审计｜be（Codex）
+### P-034 ⏳B23-C1 启航账户主表同步待审计｜be（Codex）
 
 - 分支：`codex/b23-c1-account-sync`
 - 基线：`codex/integration-control@0775a13`
@@ -2472,21 +2472,21 @@ identity/workspace/user/grant seed 与审计。
 - Full/Backfill/Runtime 接线：`0807cd4`
 - 真实 PG 纵切片：`c1e2600`
 - 自审分页修复/代码终态：`ec4934a`
-- 质量：`docs/evidence/B23-C1-奇航账户主表同步质量报告.md`
+- 质量：`docs/evidence/B23-C1-启航账户主表同步质量报告.md`
 - 状态：implemented / local PostgreSQL verified / Codex self-checked / root integration pending / Claude review reserved
 
-**实现边界**：奇航 `resource=account` 只从受信任务取 workspace/media，只接收
+**实现边界**：启航 `resource=account` 只从受信任务取 workspace/media，只接收
 `account_id/account_name/status`；每个非空分页先验 pagination 和整页 tuple，再用短事务 upsert
 `accounts`并写同页 Raw。失败页 0 写入，前页可重放，未完成不派 canonical/fanout。
 
 **质量真相**：DB 112、Worker 467 tests passed，2 项既有 opt-in skipped；两包 typecheck/lint/audit、
-coverage 与真实 PostgreSQL 全绿。纵切片的奇航是 fake port，只证明代码+真 PG，不代表内网真源已联通。
+coverage 与真实 PostgreSQL 全绿。纵切片的启航是 fake port，只证明代码+真 PG，不代表内网真源已联通。
 
 **请重点审计**：上游 metadata 精确字段允许集；每页事务与跨页恢复语义；Raw append-only
 重放对 canonical 取最新行的影响；正式 scheduler 如何从 approvedAuthContext 构造首次/周期 job。
 
 **仍未完成**：普通 ETL scheduler/入队、session HTTP composition、`POST /api/v1/query`、
-`GET /tasks`、`GET /accounts`、`GET /work-items` 列表、真实奇航联调、内网部署。媒体写继续关闭。
+`GET /tasks`、`GET /accounts`、`GET /work-items` 列表、真实启航联调、内网部署。媒体写继续关闭。
 
 ---
 
@@ -2515,7 +2515,7 @@ skipped；三包 typecheck/lint/audit、coverage 与真实 PostgreSQL 全绿。H
 无账户 tuple 工作项默认不计入摘要；coverage 以筛选全集、freshness 以返回页事实表达；
 正式 BFF/session 是否能只从 approvedAuthContext 注入 headers。
 
-**仍未完成**：浏览器 `/api/internal/tasks` 与页面整合、正式 BUC/session E2E、真实奇航任务源
+**仍未完成**：浏览器 `/api/internal/tasks` 与页面整合、正式 BUC/session E2E、真实启航任务源
 网络/身份 trace、内网部署。所有任务创建/编辑/考核价/账户分配及媒体写继续关闭。
 
 
@@ -2529,7 +2529,7 @@ R-008 原文有两处按字面实现会损害可靠性，老板已批准 Codex �
 
 1. **历史回灌不复用现有 `etl_full`**：现有 full 每次会查账户分页、D-1 离线及连续 7 天实时；拆 90 个 full 会造成重复账户发现和约 630 日实时查询。改为 `backfill_historical` 协调器一次发现账户，扇出确定性 `backfill_day` 子 job；每个子 job 只查目标日 `account_offline`。
 2. **优先级修正**：现有 `ORDER BY priority ASC` 表示数字越小越优先。采用 `etl_incr=1`、`rule_scan=3`、`backfill_day=9`，不采用 R-008 原文 `backfill=1/etl_incr=5`，避免 90 天回灌压住实时取数。
-3. **可靠执行补强**：日任务独立重试、失败日不阻塞其他日期；用确定性 job UUID 防 fan-out/阶段衔接重复入队；补 lease heartbeat，避免奇航请求超过 60 秒时被第二 Worker 重复领取；启动时仍回收超 10 分钟陈旧 lease。
+3. **可靠执行补强**：日任务独立重试、失败日不阻塞其他日期；用确定性 job UUID 防 fan-out/阶段衔接重复入队；补 lease heartbeat，避免启航请求超过 60 秒时被第二 Worker 重复领取；启动时仍回收超 10 分钟陈旧 lease。
 4. **阶段链路**：backfill raw → canonical 聚合 → data quality；总量对账基于每账户/日/resource 最新 raw 快照，不能直接累加重试产生的重复 raw 行。
 5. **边界**：不新增未冻结业务表；回灌日状态使用 `jobs.payload(backfillId, ds)` + `backfill_jobs.cursor_date/status`，失败详情由 jobs/etl_runs 留痕。
 
@@ -2546,7 +2546,7 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 - PostgreSQL 真实冒烟（脱敏假数据）：10 账户 × 90 天 = 900 canonical；270/270 质量检查通过；0 failed/blocked job；180 etl_runs done；backfill cursor=`2026-08-18`。
 - 证据：`docs/evidence/B1b-90天回灌日志.txt`、`docs/evidence/B1b-90天回灌.png`、`scripts/b1b-90d-smoke.ts`。
 - 全量门禁：88 tests；行覆盖率 domain 93.39% / db 85.24% / worker 84.75% / gateway 86.62%；四包 typecheck/lint 全绿；四包 npm audit 均 0 vulnerabilities；静态安全审查 0 Critical/High。
-- 审查边界：以 P-005 修正方案为准；本次是本地 PG + 程序生成假数据，不代表真实奇航接口联调完成，真联调仍属 B7。
+- 审查边界：以 P-005 修正方案为准；本次是本地 PG + 程序生成假数据，不代表真实启航接口联调完成，真联调仍属 B7。
 
 **arch 待办**：按 R-008 + P-005 逐项 diff 审计，并将 B1b 最终状态补记到工作台账。
 
@@ -2639,7 +2639,7 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 
 ### 二、数据源绑定空间（老板 2026-09-04；替代 root 的"管理员诊断"方案与前端三态切换器）
 
-- personal 空间 → `platform`（奇航，本人授权户）；team 空间 → `ka_data`（全渠道，团队只读）。**切空间 = 切源**。
+- personal 空间 → `platform`（启航，本人授权户）；team 空间 → `ka_data`（全渠道，团队只读）。**切空间 = 切源**。
 - 普通页面移除 `KA Data 权威版/自建平台版/双源对账` 三 tab 与 `data_view` URL 参数；`reconcile` 只留治理后台、entitlement allowlist。
 - 落 api.md DATA-ROUTE-001 v1.2 修订块。root 对 Task5 提的 P1-2「dataView 由浏览器控制」由此条一并解决。
 
@@ -2675,12 +2675,12 @@ Codex 将在 `be/b1b` 实现并交最终 SHA；如 arch 发现契约冲突，请
 | ka-src-0004 术语/调控工作流 | ✅ reviewed，confidential。高风险回传 deny；**术语卡→approved**；固定阈值只作规则候选不默认 | **术语卡是**；其余否 | 规则候选进 13.2 候补池，Shadow 回放后才升 |
 | ka-src-0005 内部文档包 671 篇 | ✅ reviewed，confidential。整包不进 KB；8 直接候选（用户增长摘要/EVO 实验治理）逐篇后续；FBI 不做一期主链 | 否 | 无一期动作 |
 | ka-src-0006 广告创建 Excel | ✅ reviewed，confidential。真实 ID deny；字段映射→基建 schema（4.6 Prompt Compiler 已按此设计） | 否 | B7 基建节点字段校验按此 |
-| ka-src-0007 快手 MAPI 官方（381 篇+CLI 覆盖） | ✅ reviewed→**approved**（public 官方）。奇航仍是一期主链，MAPI=能力底座；59 条机器初筛**不整体进一期**，先由老板/业务 owner 裁剪；CLI 2 处 HTTP 方法冲突要修 | **是**（开发者+优化师） | Codex R-010：Capability Registry 录入状态 `documented_unverified`；核心断点 campaign update/status、unit budget、creative update/review、四层实时 report 补 CLI 壳 |
+| ka-src-0007 快手 MAPI 官方（381 篇+CLI 覆盖） | ✅ reviewed→**approved**（public 官方）。启航仍是一期主链，MAPI=能力底座；59 条机器初筛**不整体进一期**，先由老板/业务 owner 裁剪；CLI 2 处 HTTP 方法冲突要修 | **是**（开发者+优化师） | Codex R-010：Capability Registry 录入状态 `documented_unverified`；核心断点 campaign update/status、unit budget、creative update/review、四层实时 report 补 CLI 壳 |
 | ka-src-0008 巨量官方 1103 篇 | ✅ reviewed→**approved**（public）。只融合对象模型/权限状态/实验治理概念；**不开发巨量 adapter** | **是**（参考） | 无一期动作 |
 | ka-src-0009 腾讯 Apifox 镜像 | ✅ reviewed，E2。306/307 参数位置错、1 endpoint 错，不可作 Contract | 是但标 **reference_only/未核** | 无一期动作 |
-| ka-src-0010 ka-data 取数指南 | ✅ reviewed，confidential。**老板已裁：团队空间主源=ka_data**（覆盖评估的"先探针后 adapter"）。安全项保留：reader token 只进 Secret、不开任意 SQL、不依赖临时沙箱 URL、SQLite 快照不作主库。**同日同户对平（奇航 vs ka-data）= 内网联调硬门** | 否（内部运维） | R-009 已含 team→ka_data；对平交 OS agent 联调 |
+| ka-src-0010 ka-data 取数指南 | ✅ reviewed，confidential。**老板已裁：团队空间主源=ka_data**（覆盖评估的"先探针后 adapter"）。安全项保留：reader token 只进 Secret、不开任意 SQL、不依赖临时沙箱 URL、SQLite 快照不作主库。**同日同户对平（启航 vs ka-data）= 内网联调硬门** | 否（内部运维） | R-009 已含 team→ka_data；对平交 OS agent 联调 |
 | P-KB-010 发布机制 | ✅ 纳入 B8 知识库批次（权限继承/门禁/approved→published 流程） | — | B8 |
-| P-KB-011 六问 | ①ka-data 服务 owner/ACL/只读性 → OS agent 联调核 ②数据血缘/公式 → 对平后定 ③数据许可 → 老板与运营方确认 ④adapter 分期 → 已由 team 绑定裁掉 ⑤字段级 SSOT：**奇航=personal 权威、ka-data=team 权威、业务确认表=考核价/返点权威、MAPI=结构/执行权威** ⑥其他对象 ID（task/product/material/adgroup）继续 unresolved，逐项核证 | — | — |
+| P-KB-011 六问 | ①ka-data 服务 owner/ACL/只读性 → OS agent 联调核 ②数据血缘/公式 → 对平后定 ③数据许可 → 老板与运营方确认 ④adapter 分期 → 已由 team 绑定裁掉 ⑤字段级 SSOT：**启航=personal 权威、ka-data=team 权威、业务确认表=考核价/返点权威、MAPI=结构/执行权威** ⑥其他对象 ID（task/product/material/adgroup）继续 unresolved，逐项核证 | — | — |
 | P-KB-012 R1 纠错 | ✅ 关闭（账户三键已落 R3） | — | — |
 
 catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publication_status`。
@@ -2720,7 +2720,7 @@ catalog.jsonl 已按上表更新 `review_status/lifecycle_status/product_kb_publ
 
 | # | 裁决 |
 |---|---|
-| 1 task_id 主数据 | 先按奇航 task_id；核验列为 OS agent 联调项（B7） |
+| 1 task_id 主数据 | 先按启航 task_id；核验列为 OS agent 联调项（B7） |
 | 2 task_accounts | ✅ v1.2 已加 workspace_id + 区间排斥 |
 | 3 pacing | **业务日**（上海 03:00 日切）；asOf=最近完整结算日；剩余天数不含 asOf；7 日均速**剔除零量日**（与 metrics.md 均值规则一致）但标注剔除数；任务结束后显示最终达成率不再外推 |
 | 4 日报 12 模块 | 字段/顺序按 `docs/18-KA日报规范借鉴.md`；角色三版 `optimizer|lead|exec` 裁剪；缺数按三态；schema `daily-report/v1`；具体字段表由 R-010 从 18 号规范抄进 api.md 附录 |
@@ -2878,14 +2878,14 @@ be 在裁决前不修改上述 Domain/公开 DTO；先处理 R-009 已明确要�
 ### 本轮新发现（并入 R-009 追加条）
 
 1. ~~Task4 P1-1 登录 oracle 未修~~ **撤回**：复核 `login()` 已统一 401，root 结论成立。
-2. **hh 上限不一致**：`etl/payload.ts` `max(23)` → 改 `max(24)` 与 client 一致（奇航实证 hh=24 有效=全天）。
+2. **hh 上限不一致**：`etl/payload.ts` `max(23)` → 改 `max(24)` 与 client 一致（启航实证 hh=24 有效=全天）。
 3. **迁移编号**：v1.2 用 011、v1.3 用 012（008-010 已占用）——契约与派活已改。
 4. B4 pacing 零量日剔除、B13 下载 allowlist 默认拒绝、B23-C2 首次 full ready 门、B10 离线分区有界回退 —— 4 项"待核"在 R-009 交付审查时定位（另 4 项已当场核实 ✅）。
 
 ### 总判断
 
 - **可保留**：全部。架构决定（SQL-first、agent 不算数、写操作确认门、租户 fail-closed、凭证信封）经代码级核验成立，无一处需要推倒。
-- **不可宣称完成**：8 个 P0 待 R-009、29 个契约问题待 R-010 接 HTTP、真实奇航/IdeaLab/Multica/BUC 零联调。
+- **不可宣称完成**：8 个 P0 待 R-009、29 个契约问题待 R-010 接 HTTP、真实启航/IdeaLab/Multica/BUC 零联调。
 - **HTTP 现状**：worker 只有 `/healthz`、`/api/v1/data/query`、auth×4、tasks/accounts/work-items 三个列表；web BFF 4 条。其余 ~35 个契约端点=内核有、HTTP 无 → R-010。
 
 
@@ -3249,9 +3249,9 @@ root 的 `codex_prechecked` 结论全部降级为**输入**，不作终审依据
 ### P-048 R013 只读账户发现｜Codex 2026-09-06，待审
 
 - 代码 **7c08b97**，Worker三文件；`npm run --silent discover:accounts -- --media KUAISHOU`。复用QihangClient account GET，强制server URL/user identity配置，无DB依赖/写库/job/grant。未知配置或源失败不能返回假空。
-- 50/页、10000总预算、可信total需稳定，页码/行数必须对齐且无重复ID；上游坏字段、错媒体、truncate/limit_clamped拒绝；响应/最终输出严格小于16MB。完整后才输出五字段JSON，未知描述null；no retry/no redirect，错误统一固定文本不带URL/userId/body。总数一致不是对上游权限完整性的独立证明，实际范围仍由奇航服务端控制。
-- 37新反例含真进程CLI缺配置退出；Worker非PG **761+2 opt-in skipped**、typecheck/lint、offline audit0。行覆盖93.61%/分支89.15%；37新增测试并未调用真实奇航。首轮全回归listen EPERM造成100失败，获准本机假服务后同套重跑全绿，记录在`/tmp/ka-discover-worker{,-retry}.log`。
-- 02:37获准TCP probe：55432 ECONNREFUSED（首次沙箱EPERM不算PG拒连证据）；真实PG/真实奇航/首次部署均未验。命令与数据处理写唯一runbook §2.5，bootstrap尚不能执行，P047三项待裁不掩盖。
+- 50/页、10000总预算、可信total需稳定，页码/行数必须对齐且无重复ID；上游坏字段、错媒体、truncate/limit_clamped拒绝；响应/最终输出严格小于16MB。完整后才输出五字段JSON，未知描述null；no retry/no redirect，错误统一固定文本不带URL/userId/body。总数一致不是对上游权限完整性的独立证明，实际范围仍由启航服务端控制。
+- 37新反例含真进程CLI缺配置退出；Worker非PG **761+2 opt-in skipped**、typecheck/lint、offline audit0。行覆盖93.61%/分支89.15%；37新增测试并未调用真实启航。首轮全回归listen EPERM造成100失败，获准本机假服务后同套重跑全绿，记录在`/tmp/ka-discover-worker{,-retry}.log`。
+- 02:37获准TCP probe：55432 ECONNREFUSED（首次沙箱EPERM不算PG拒连证据）；真实PG/真实启航/首次部署均未验。命令与数据处理写唯一runbook §2.5，bootstrap尚不能执行，P047三项待裁不掩盖。
 - 下一项独立coefficients输入/幂等（显式有效日期），继续目标；不push/合流/部署/改视觉。用户验收句：首次部署前能拿到本人账户清单供确认，而不是为了首跑给全空间默认授权。
 
 ### P-049 R013 四渠道系数seed｜Codex 2026-09-06，待审
@@ -4116,7 +4116,7 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 ### P-121｜六ETL入口固化真实attempt快照（be，2026-09-07）
 
 - 独立代码 **9e14169**，main@4222d4e已同步。无Contract/共享runtime/队列/前端/DDL改动，不push、不部署、不调媒体。
-- 六handler startRun原scope增加`execution:{version:'etl-attempt/v1',jobId,workspaceId,jobType,attempt}`，来自claimed JobRecord，payload自报无效；原scope已有业务字段保留，leaseToken/原始payload/奇航身份不进入新增块。旧记录不反填，不用当前jobs.attempts/ROW_NUMBER推测。
+- 六handler startRun原scope增加`execution:{version:'etl-attempt/v1',jobId,workspaceId,jobType,attempt}`，来自claimed JobRecord，payload自报无效；原scope已有业务字段保留，leaseToken/原始payload/启航身份不进入新增块。旧记录不反填，不用当前jobs.attempts/ROW_NUMBER推测。
 - TDD RED→Worker6文件62过（含逐个真实handler入口注入停止点）；核心28行helper四项覆盖100%；Workertype/lint/离线audit0；DB观察更新4过。详见`docs/plans/2026-09-07-R010a1-ETL尝试快照质量报告.md`。PG仍是P120的55432拒连，落盘验证待补；空间5.7GiB未全量。
 - **仍未完成公开etl-runs**。BIGSERIAL→string需要`apps/worker/src/runtime.ts:58`的recordObservation参数同步；共享文件只准你开缝，申请你把该显式number删除改为依赖EtlRunRepository方法签名推导（或明确授权我只改此一类型行），我再做独立全链string修复。旧无execution行的attempt不可伪造，公开呈现请允许unknown/null或明确隔离历史。
 - 本批不是新增安全授权机制，已有lease/fencing不变；我继续未被依赖挡住的部分，不等本回执✅。

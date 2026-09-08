@@ -1,0 +1,1484 @@
+- generic [active] [ref=f178e1]:
+  - link "跳到内容" [ref=f178e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f178e3]:
+    - complementary "展厅导航" [ref=f178e4]:
+      - generic [ref=f178e5]:
+        - generic [ref=f178e6]: UI
+        - generic [ref=f178e7]:
+          - strong [ref=f178e8]: 投放 Agent
+          - text: Asset field guide
+      - navigation [ref=f178e9]:
+        - button "01 总览与风格 17" [ref=f178e10] [cursor=pointer]:
+          - generic [ref=f178e11]: "01"
+          - generic [ref=f178e12]: 总览与风格
+          - generic [ref=f178e13]: "17"
+        - button "02 全量清单 7,056" [ref=f178e14] [cursor=pointer]:
+          - generic [ref=f178e15]: "02"
+          - generic [ref=f178e16]: 全量清单
+          - generic [ref=f178e17]: 7,056
+        - button "03 付费处置 2,153" [ref=f178e18] [cursor=pointer]:
+          - generic [ref=f178e19]: "03"
+          - generic [ref=f178e20]: 付费处置
+          - generic [ref=f178e21]: 2,153
+        - button "04 本地源码 144" [ref=f178e22] [cursor=pointer]:
+          - generic [ref=f178e23]: "04"
+          - generic [ref=f178e24]: 本地源码
+          - generic [ref=f178e25]: "144"
+        - button "05 主题展厅 42" [ref=f178e26] [cursor=pointer]:
+          - generic [ref=f178e27]: "05"
+          - generic [ref=f178e28]: 主题展厅
+          - generic [ref=f178e29]: "42"
+        - button "06 17 库比较 17" [ref=f178e30] [cursor=pointer]:
+          - generic [ref=f178e31]: "06"
+          - generic [ref=f178e32]: 17 库比较
+          - generic [ref=f178e33]: "17"
+      - generic [ref=f178e34]: 离线可用本页内嵌全部目录和替代数据，不依赖网络加载；外部链接仅在你主动打开时访问官网。
+    - main [ref=f178e35]:
+      - generic [ref=f178e36]:
+        - generic [ref=f178e37]: 官方目录快照 · 2026-08-19
+        - generic [ref=f178e39]: 目录 ≠ 运行时安装 · 缓存 ≠ 已接入
+      - text: s c T A V K D A M
+      - generic [ref=f178e41]:
+        - generic [ref=f178e42]:
+          - generic [ref=f178e43]:
+            - generic [ref=f178e44]: 17-library comparison wall
+            - heading "17 家产品线，16 家实时 + 1 家锁定" [level=1] [ref=f178e45]
+          - paragraph [ref=f178e46]: 下面不是截图：16 家运行已缓存的官方公开源码，React Bits Pro 单独显示付费锁定。每家只取 1–2 个最能体现差异的代表能力，离线运行、无 CDN、无 fetch，也没有安装进产品运行时。
+        - generic "比较墙筛选" [ref=f178e47]:
+          - button "全部 17 家" [pressed] [ref=f178e48] [cursor=pointer]
+          - button "基础组件" [ref=f178e49] [cursor=pointer]
+          - button "数据业务" [ref=f178e50] [cursor=pointer]
+          - button "动效视觉" [ref=f178e51] [cursor=pointer]
+          - button "Agent" [ref=f178e52] [cursor=pointer]
+          - button "主题系统" [ref=f178e53] [cursor=pointer]
+          - button "只看付费锁定" [ref=f178e54] [cursor=pointer]
+        - generic [ref=f178e55]:
+          - status [ref=f178e56]:
+            - strong [ref=f178e57]: "17"
+            - text: 个产品线位置
+          - generic [ref=f178e58]: 实时预览按进入视口加载
+        - generic [ref=f178e59]:
+          - article [ref=f178e60]:
+            - generic [ref=f178e61]:
+              - generic [ref=f178e62]:
+                - generic [ref=f178e63]: Compiled official source
+                - heading "shadcn/ui" [level=3] [ref=f178e64]
+                - paragraph [ref=f178e65]: 中性产品底座与可组合基础控件
+              - generic [ref=f178e66]:
+                - generic [ref=f178e67]: 真实交互
+                - generic [ref=f178e68]: 离线
+                - generic [ref=f178e69]: 2 个代表项
+            - iframe [ref=f178e70]:
+              - main [ref=f179e3]:
+                - generic [ref=f179e4]:
+                  - generic [ref=f179e5]:
+                    - text: 01 / PRODUCT FOUNDATION
+                    - heading "shadcn/ui" [level=1] [ref=f179e6]
+                  - paragraph [ref=f179e7]: 官方 Calendar 代表中性、可组合的产品底座；点击日期可直接观察状态与焦点。
+                - generic [ref=f179e8]:
+                  - article [ref=f179e9]:
+                    - generic [ref=f179e10]: CURRENT NEW YORK V4
+                    - generic [ref=f179e13]:
+                      - navigation "Navigation bar" [ref=f179e14]:
+                        - button "Go to the Previous Month" [ref=f179e15]
+                        - button "Go to the Next Month" [ref=f179e16]
+                      - generic [ref=f179e17]:
+                        - generic [ref=f179e19]:
+                          - generic [ref=f179e20]:
+                            - combobox "Choose the Month" [ref=f179e21]:
+                              - option "1月"
+                              - option "2月"
+                              - option "3月"
+                              - option "4月"
+                              - option "5月"
+                              - option "6月"
+                              - option "7月"
+                              - option "8月" [selected]
+                              - option "9月"
+                              - option "10月"
+                              - option "11月"
+                              - option "12月"
+                            - generic [ref=f179e22]: 8月
+                          - generic [ref=f179e25]:
+                            - combobox "Choose the Year" [ref=f179e26]:
+                              - option "1926"
+                              - option "1927"
+                              - option "1928"
+                              - option "1929"
+                              - option "1930"
+                              - option "1931"
+                              - option "1932"
+                              - option "1933"
+                              - option "1934"
+                              - option "1935"
+                              - option "1936"
+                              - option "1937"
+                              - option "1938"
+                              - option "1939"
+                              - option "1940"
+                              - option "1941"
+                              - option "1942"
+                              - option "1943"
+                              - option "1944"
+                              - option "1945"
+                              - option "1946"
+                              - option "1947"
+                              - option "1948"
+                              - option "1949"
+                              - option "1950"
+                              - option "1951"
+                              - option "1952"
+                              - option "1953"
+                              - option "1954"
+                              - option "1955"
+                              - option "1956"
+                              - option "1957"
+                              - option "1958"
+                              - option "1959"
+                              - option "1960"
+                              - option "1961"
+                              - option "1962"
+                              - option "1963"
+                              - option "1964"
+                              - option "1965"
+                              - option "1966"
+                              - option "1967"
+                              - option "1968"
+                              - option "1969"
+                              - option "1970"
+                              - option "1971"
+                              - option "1972"
+                              - option "1973"
+                              - option "1974"
+                              - option "1975"
+                              - option "1976"
+                              - option "1977"
+                              - option "1978"
+                              - option "1979"
+                              - option "1980"
+                              - option "1981"
+                              - option "1982"
+                              - option "1983"
+                              - option "1984"
+                              - option "1985"
+                              - option "1986"
+                              - option "1987"
+                              - option "1988"
+                              - option "1989"
+                              - option "1990"
+                              - option "1991"
+                              - option "1992"
+                              - option "1993"
+                              - option "1994"
+                              - option "1995"
+                              - option "1996"
+                              - option "1997"
+                              - option "1998"
+                              - option "1999"
+                              - option "2000"
+                              - option "2001"
+                              - option "2002"
+                              - option "2003"
+                              - option "2004"
+                              - option "2005"
+                              - option "2006"
+                              - option "2007"
+                              - option "2008"
+                              - option "2009"
+                              - option "2010"
+                              - option "2011"
+                              - option "2012"
+                              - option "2013"
+                              - option "2014"
+                              - option "2015"
+                              - option "2016"
+                              - option "2017"
+                              - option "2018"
+                              - option "2019"
+                              - option "2020"
+                              - option "2021"
+                              - option "2022"
+                              - option "2023"
+                              - option "2024"
+                              - option "2025"
+                              - option "2026" [selected]
+                            - generic [ref=f179e27]: "2026"
+                          - status [ref=f179e30]: August 2026
+                        - grid "August 2026" [ref=f179e31]:
+                          - rowgroup [ref=f179e32]:
+                            - row [ref=f179e33]:
+                              - columnheader [ref=f179e34]: Su
+                              - columnheader [ref=f179e35]: Mo
+                              - columnheader [ref=f179e36]: Tu
+                              - columnheader [ref=f179e37]: We
+                              - columnheader [ref=f179e38]: Th
+                              - columnheader [ref=f179e39]: Fr
+                              - columnheader [ref=f179e40]: Sa
+                          - rowgroup [ref=f179e41]:
+                            - row [ref=f179e42]:
+                              - gridcell [ref=f179e43]:
+                                - button "Sunday, July 26th, 2026" [ref=f179e44]: "26"
+                              - gridcell [ref=f179e45]:
+                                - button "Monday, July 27th, 2026" [ref=f179e46]: "27"
+                              - gridcell [ref=f179e47]:
+                                - button "Tuesday, July 28th, 2026" [ref=f179e48]: "28"
+                              - gridcell [ref=f179e49]:
+                                - button "Wednesday, July 29th, 2026" [ref=f179e50]: "29"
+                              - gridcell [ref=f179e51]:
+                                - button "Thursday, July 30th, 2026" [ref=f179e52]: "30"
+                              - gridcell [ref=f179e53]:
+                                - button "Friday, July 31st, 2026" [ref=f179e54]: "31"
+                              - gridcell [ref=f179e55]:
+                                - button "Saturday, August 1st, 2026" [ref=f179e56]: "1"
+                            - row [ref=f179e57]:
+                              - gridcell [ref=f179e58]:
+                                - button "Sunday, August 2nd, 2026" [ref=f179e59]: "2"
+                              - gridcell [ref=f179e60]:
+                                - button "Monday, August 3rd, 2026" [ref=f179e61]: "3"
+                              - gridcell [ref=f179e62]:
+                                - button "Tuesday, August 4th, 2026" [ref=f179e63]: "4"
+                              - gridcell [ref=f179e64]:
+                                - button "Wednesday, August 5th, 2026" [ref=f179e65]: "5"
+                              - gridcell [ref=f179e66]:
+                                - button "Thursday, August 6th, 2026" [ref=f179e67]: "6"
+                              - gridcell [ref=f179e68]:
+                                - button "Friday, August 7th, 2026" [ref=f179e69]: "7"
+                              - gridcell [ref=f179e70]:
+                                - button "Saturday, August 8th, 2026" [ref=f179e71]: "8"
+                            - row [ref=f179e72]:
+                              - gridcell [ref=f179e73]:
+                                - button "Sunday, August 9th, 2026" [ref=f179e74]: "9"
+                              - gridcell [ref=f179e75]:
+                                - button "Monday, August 10th, 2026" [ref=f179e76]: "10"
+                              - gridcell [ref=f179e77]:
+                                - button "Tuesday, August 11th, 2026" [ref=f179e78]: "11"
+                              - gridcell [ref=f179e79]:
+                                - button "Wednesday, August 12th, 2026" [ref=f179e80]: "12"
+                              - gridcell [ref=f179e81]:
+                                - button "Thursday, August 13th, 2026" [ref=f179e82]: "13"
+                              - gridcell [ref=f179e83]:
+                                - button "Friday, August 14th, 2026" [ref=f179e84]: "14"
+                              - gridcell [ref=f179e85]:
+                                - button "Saturday, August 15th, 2026" [ref=f179e86]: "15"
+                            - row [ref=f179e87]:
+                              - gridcell [ref=f179e88]:
+                                - button "Sunday, August 16th, 2026" [ref=f179e89]: "16"
+                              - gridcell [ref=f179e90]:
+                                - button "Monday, August 17th, 2026" [ref=f179e91]: "17"
+                              - gridcell [ref=f179e92]:
+                                - button "Tuesday, August 18th, 2026" [ref=f179e93]: "18"
+                              - gridcell [ref=f179e94]:
+                                - button "Wednesday, August 19th, 2026" [ref=f179e95]: "19"
+                              - gridcell [selected] [ref=f179e96]:
+                                - button "Today, Thursday, August 20th, 2026, selected" [ref=f179e97]: "20"
+                              - gridcell [ref=f179e98]:
+                                - button "Friday, August 21st, 2026" [ref=f179e99]: "21"
+                              - gridcell [ref=f179e100]:
+                                - button "Saturday, August 22nd, 2026" [ref=f179e101]: "22"
+                            - row [ref=f179e102]:
+                              - gridcell [ref=f179e103]:
+                                - button "Sunday, August 23rd, 2026" [ref=f179e104]: "23"
+                              - gridcell [ref=f179e105]:
+                                - button "Monday, August 24th, 2026" [ref=f179e106]: "24"
+                              - gridcell [ref=f179e107]:
+                                - button "Tuesday, August 25th, 2026" [ref=f179e108]: "25"
+                              - gridcell [ref=f179e109]:
+                                - button "Wednesday, August 26th, 2026" [ref=f179e110]: "26"
+                              - gridcell [ref=f179e111]:
+                                - button "Thursday, August 27th, 2026" [ref=f179e112]: "27"
+                              - gridcell [ref=f179e113]:
+                                - button "Friday, August 28th, 2026" [ref=f179e114]: "28"
+                              - gridcell [ref=f179e115]:
+                                - button "Saturday, August 29th, 2026" [ref=f179e116]: "29"
+                            - row [ref=f179e117]:
+                              - gridcell [ref=f179e118]:
+                                - button "Sunday, August 30th, 2026" [ref=f179e119]: "30"
+                              - gridcell [ref=f179e120]:
+                                - button "Monday, August 31st, 2026" [ref=f179e121]: "31"
+                              - gridcell [ref=f179e122]:
+                                - button "Tuesday, September 1st, 2026" [ref=f179e123]: "1"
+                              - gridcell [ref=f179e124]:
+                                - button "Wednesday, September 2nd, 2026" [ref=f179e125]: "2"
+                              - gridcell [ref=f179e126]:
+                                - button "Thursday, September 3rd, 2026" [ref=f179e127]: "3"
+                              - gridcell [ref=f179e128]:
+                                - button "Friday, September 4th, 2026" [ref=f179e129]: "4"
+                              - gridcell [ref=f179e130]:
+                                - button "Saturday, September 5th, 2026" [ref=f179e131]: "5"
+                  - article [ref=f179e132]:
+                    - generic [ref=f179e133]: WHY IT FITS
+                    - heading "稳定的全站 primitives" [level=2] [ref=f179e134]
+                    - paragraph [ref=f179e135]: 视觉克制，结构和无障碍状态完整，适合做项目统一底座，再通过 tweakcn token 改品牌。
+            - generic [ref=f178e71]:
+              - generic [ref=f178e72]:
+                - generic [ref=f178e73]: 气质
+                - text: 克制、中性、结构稳定，是最适合统一全站语言的基础层。
+              - generic [ref=f178e74]:
+                - generic [ref=f178e75]: 适合
+                - text: 页面壳、基础表单、弹层、筛选器和产品级 primitives
+              - generic [ref=f178e76]:
+                - generic [ref=f178e77]: 重叠与取舍
+                - text: 与 coss 的基础控件重叠；shadcn 更像底座，coss 更强调细节成品。
+              - generic [ref=f178e78]:
+                - generic [ref=f178e79]: 许可证
+                - text: MIT
+            - generic [ref=f178e80]:
+              - text: 代表项：calendar-demo · calendar ｜
+              - link "官方页面 ↗" [ref=f178e81] [cursor=pointer]:
+                - /url: https://ui.shadcn.com/docs/components/calendar
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e82]:
+            - generic [ref=f178e83]:
+              - generic [ref=f178e84]:
+                - generic [ref=f178e85]: Compiled official source
+                - heading "coss/ui" [level=3] [ref=f178e86]
+                - paragraph [ref=f178e87]: 高完成度日期范围与细节控件
+              - generic [ref=f178e88]:
+                - generic [ref=f178e89]: 真实交互
+                - generic [ref=f178e90]: 离线
+                - generic [ref=f178e91]: 1 个代表项
+            - iframe [ref=f178e92]:
+              - main [ref=f180e3]:
+                - generic [ref=f180e4]:
+                  - generic [ref=f180e5]:
+                    - text: 02 / FINE CONTROLS
+                    - heading "coss/ui" [level=1] [ref=f180e6]
+                  - paragraph [ref=f180e7]: 官方日期范围 Particle 展示 Base UI 上更细密的尺寸、层级和弹层完成度。
+                - generic [ref=f180e8]:
+                  - article [ref=f180e9]:
+                    - generic [ref=f180e10]: DATE RANGE PARTICLE
+                    - button "Pick a date range" [ref=f180e11] [cursor=pointer]
+                    - paragraph [ref=f180e13]: 打开日历并选择起止日期；这不是 shadcn 的同名组件副本。
+                  - article [ref=f180e14]:
+                    - generic [ref=f180e15]: CURRENT GENERATION
+                    - heading "更像直接可用的工具细节" [level=2] [ref=f180e16]
+                    - paragraph [ref=f180e17]: 适合日期、Command、Combobox、Field 和 Drawer。与 Radix 组件并存时必须隔离路径。
+            - generic [ref=f178e93]:
+              - generic [ref=f178e94]:
+                - generic [ref=f178e95]: 气质
+                - text: 极简、细密、尺寸与状态处理精确，工具产品感强。
+              - generic [ref=f178e96]:
+                - generic [ref=f178e97]: 适合
+                - text: 日期、Command、Combobox、Field、Drawer 和表格工具栏
+              - generic [ref=f178e98]:
+                - generic [ref=f178e99]: 重叠与取舍
+                - text: 可与 shadcn 共存，但 Base UI 与 Radix 同名组件必须隔离目录。
+              - generic [ref=f178e100]:
+                - generic [ref=f178e101]: 许可证
+                - text: MIT for apps/ui; repository root AGPL-3.0
+            - generic [ref=f178e102]:
+              - text: 代表项：p-date-picker-2 ｜
+              - link "官方页面 ↗" [ref=f178e103] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/date-picker
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e104]:
+            - generic [ref=f178e105]:
+              - generic [ref=f178e106]:
+                - generic [ref=f178e107]: Compiled official source
+                - heading "coss Origin" [level=3] [ref=f178e108]
+                - paragraph [ref=f178e109]: 旧版大颗粒交互档案与 current 缺口参考
+              - generic [ref=f178e110]:
+                - generic [ref=f178e111]: 真实交互
+                - generic [ref=f178e112]: 离线
+                - generic [ref=f178e113]: 2 个代表项
+            - iframe [ref=f178e114]:
+              - main [ref=f181e3]:
+                - generic [ref=f181e4]:
+                  - generic [ref=f181e5]:
+                    - text: 03 / LEGACY ARCHIVE
+                    - heading "coss Origin" [level=1] [ref=f181e6]
+                  - paragraph [ref=f181e7]: 官方 comp-100 是 legacy particle：点击可切换可访问菜单图标，展示旧库的案例式写法。
+                - generic [ref=f181e8]:
+                  - article [ref=f181e9]:
+                    - generic [ref=f181e10]: COMP-100
+                    - button "Open menu" [ref=f181e12]
+                    - paragraph [ref=f181e13]: 只作为 current 缺口与历史参考；新页面不默认选 Origin。
+                  - article [ref=f181e14]:
+                    - generic [ref=f181e15]: GENERATION DIFFERENCE
+                    - heading "更大颗粒、更多案例" [level=2] [ref=f181e16]
+                    - paragraph [ref=f181e17]: 覆盖很广，但维护与体系化不如 current coss；两代必须独立登记。
+            - generic [ref=f178e115]:
+              - generic [ref=f178e116]:
+                - generic [ref=f178e117]: 气质
+                - text: 覆盖广、案例感强，展示 legacy 粒子库的独立交互写法。
+              - generic [ref=f178e118]:
+                - generic [ref=f178e119]: 适合
+                - text: 只补 current coss 没有的旧交互，不作为新代码默认底座
+              - generic [ref=f178e120]:
+                - generic [ref=f178e121]: 重叠与取舍
+                - text: 与 coss current 同品牌不同架构；必须明确 legacy 状态。
+              - generic [ref=f178e122]:
+                - generic [ref=f178e123]: 许可证
+                - text: MIT for apps/origin; repository root AGPL-3.0
+            - generic [ref=f178e124]:
+              - text: 代表项：comp-100 · button ｜
+              - link "官方页面 ↗" [ref=f178e125] [cursor=pointer]:
+                - /url: https://coss.com/origin
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e126]:
+            - generic [ref=f178e127]:
+              - generic [ref=f178e128]:
+                - generic [ref=f178e129]: Compiled official source
+                - heading "ReUI" [level=3] [ref=f178e130]
+                - paragraph [ref=f178e131]: 企业级高密度数据表和复杂操作模式
+              - generic [ref=f178e132]:
+                - generic [ref=f178e133]: 真实交互
+                - generic [ref=f178e134]: 离线
+                - generic [ref=f178e135]: 2 个代表项
+            - iframe [ref=f178e136]:
+              - main [ref=f182e3]:
+                - generic [ref=f182e4]:
+                  - generic [ref=f182e5]:
+                    - text: 04 / ENTERPRISE DATA
+                    - heading "ReUI" [level=1] [ref=f182e6]
+                  - paragraph [ref=f182e7]: 官方虚拟滚动 Data Grid 运行 200 行数据，体现企业后台的列、排序和高密度操作模式。
+                - article [ref=f182e9]:
+                  - generic [ref=f182e10]: VIRTUALIZED DATA GRID
+                  - generic [ref=f182e11]:
+                    - generic [ref=f182e12]:
+                      - generic [ref=f182e13]: Virtualized Directory
+                      - button "Refresh" [ref=f182e15]:
+                        - generic [ref=f182e16]: ↕
+                        - text: Refresh
+                    - table [ref=f182e21]:
+                      - rowgroup [ref=f182e28]:
+                        - row [ref=f182e29]:
+                          - columnheader "#" [ref=f182e30]:
+                            - button "#" [ref=f182e32]
+                          - columnheader "User" [ref=f182e34]:
+                            - button "User" [ref=f182e36]:
+                              - text: User
+                              - generic [ref=f182e37]: ↕
+                          - columnheader "Department" [ref=f182e39]:
+                            - button "Department" [ref=f182e41]:
+                              - text: Department
+                              - generic [ref=f182e42]: ↕
+                          - columnheader "Status" [ref=f182e44]:
+                            - button "Status" [ref=f182e46]:
+                              - text: Status
+                              - generic [ref=f182e47]: ↕
+                          - columnheader [ref=f182e49]:
+                            - button "Balance" [ref=f182e51]:
+                              - text: Balance
+                              - generic [ref=f182e52]: ↕
+                      - rowgroup [ref=f182e54]:
+                        - row [ref=f182e55]:
+                          - cell "1" [ref=f182e56]
+                          - cell "AJ Alex Johnson" [ref=f182e57]:
+                            - generic [ref=f182e58]:
+                              - generic [ref=f182e59]: AJ
+                              - generic [ref=f182e60]: Alex Johnson
+                          - cell "Engineering" [ref=f182e61]
+                          - cell "Active" [ref=f182e62]
+                          - cell "$1,180.32" [ref=f182e64]
+                        - row [ref=f182e66]:
+                          - cell "2" [ref=f182e67]
+                          - cell "SC Sarah Chen" [ref=f182e68]:
+                            - generic [ref=f182e69]:
+                              - generic [ref=f182e70]: SC
+                              - generic [ref=f182e71]: Sarah Chen
+                          - cell "Marketing" [ref=f182e72]
+                          - cell "Inactive" [ref=f182e73]
+                          - cell "$9,507.84" [ref=f182e75]
+                        - row [ref=f182e77]:
+                          - cell "3" [ref=f182e78]
+                          - cell "MR Michael Rodriguez" [ref=f182e79]:
+                            - generic [ref=f182e80]:
+                              - generic [ref=f182e81]: MR
+                              - generic [ref=f182e82]: Michael Rodriguez
+                          - cell "Design" [ref=f182e83]
+                          - cell "Pending" [ref=f182e84]
+                          - cell "$3,535.93" [ref=f182e86]
+                        - row [ref=f182e88]:
+                          - cell "4" [ref=f182e89]
+                          - cell "EW Emma Wilson" [ref=f182e90]:
+                            - generic [ref=f182e91]:
+                              - generic [ref=f182e92]: EW
+                              - generic [ref=f182e93]: Emma Wilson
+                          - cell "Sales" [ref=f182e94]
+                          - cell "Active" [ref=f182e95]
+                          - cell "$7,808.65" [ref=f182e97]
+                        - row [ref=f182e99]:
+                          - cell "5" [ref=f182e100]
+                          - cell "DK David Kim" [ref=f182e101]:
+                            - generic [ref=f182e102]:
+                              - generic [ref=f182e103]: DK
+                              - generic [ref=f182e104]: David Kim
+                          - cell "Finance" [ref=f182e105]
+                          - cell "Inactive" [ref=f182e106]
+                          - cell "$5,633.98" [ref=f182e108]
+                        - row [ref=f182e110]:
+                          - cell "6" [ref=f182e111]
+                          - cell "AT Aron Thompson" [ref=f182e112]:
+                            - generic [ref=f182e113]:
+                              - generic [ref=f182e114]: AT
+                              - generic [ref=f182e115]: Aron Thompson
+                          - cell "Operations" [ref=f182e116]
+                          - cell "Pending" [ref=f182e117]
+                          - cell "$4,201.11" [ref=f182e119]
+                        - row [ref=f182e121]:
+                          - cell "7" [ref=f182e122]
+                          - cell "JB James Brown" [ref=f182e123]:
+                            - generic [ref=f182e124]:
+                              - generic [ref=f182e125]: JB
+                              - generic [ref=f182e126]: James Brown
+                          - cell "Legal" [ref=f182e127]
+                          - cell "Active" [ref=f182e128]
+                          - cell "$8,764.60" [ref=f182e130]
+                        - row [ref=f182e132]:
+                          - cell "8" [ref=f182e133]
+                          - cell "MG Maria Garcia" [ref=f182e134]:
+                            - generic [ref=f182e135]:
+                              - generic [ref=f182e136]: MG
+                              - generic [ref=f182e137]: Maria Garcia
+                          - cell "Support" [ref=f182e138]
+                          - cell "Inactive" [ref=f182e139]
+                          - cell "$4,979.69" [ref=f182e141]
+                        - row [ref=f182e143]:
+                          - cell "9" [ref=f182e144]
+                          - cell "NJ Nick Johnson" [ref=f182e145]:
+                            - generic [ref=f182e146]:
+                              - generic [ref=f182e147]: NJ
+                              - generic [ref=f182e148]: Nick Johnson
+                          - cell "Engineering" [ref=f182e149]
+                          - cell "Pending" [ref=f182e150]
+                          - cell "$9,881.62" [ref=f182e152]
+                        - row [ref=f182e154]:
+                          - cell "10" [ref=f182e155]
+                          - cell "LT Liam Thompson" [ref=f182e156]:
+                            - generic [ref=f182e157]:
+                              - generic [ref=f182e158]: LT
+                              - generic [ref=f182e159]: Liam Thompson
+                          - cell "Marketing" [ref=f182e160]
+                          - cell "Active" [ref=f182e161]
+                          - cell "$7,487.98" [ref=f182e163]
+                        - row [ref=f182e165]:
+                          - cell "11" [ref=f182e166]
+                          - cell "AJ Alex Johnson" [ref=f182e167]:
+                            - generic [ref=f182e168]:
+                              - generic [ref=f182e169]: AJ
+                              - generic [ref=f182e170]: Alex Johnson
+                          - cell "Design" [ref=f182e171]
+                          - cell "Inactive" [ref=f182e172]
+                          - cell "$9,541.40" [ref=f182e174]
+                        - row [ref=f182e176]:
+                          - cell "12" [ref=f182e177]
+                          - cell "SC Sarah Chen" [ref=f182e178]:
+                            - generic [ref=f182e179]:
+                              - generic [ref=f182e180]: SC
+                              - generic [ref=f182e181]: Sarah Chen
+                          - cell "Sales" [ref=f182e182]
+                          - cell "Pending" [ref=f182e183]
+                          - cell "$1,755.13" [ref=f182e185]
+                        - row [ref=f182e187]:
+                          - cell "13" [ref=f182e188]
+                          - cell "MR Michael Rodriguez" [ref=f182e189]:
+                            - generic [ref=f182e190]:
+                              - generic [ref=f182e191]: MR
+                              - generic [ref=f182e192]: Michael Rodriguez
+                          - cell "Finance" [ref=f182e193]
+                          - cell "Active" [ref=f182e194]
+                          - cell "$9,101.79" [ref=f182e196]
+                        - row [ref=f182e198]:
+                          - cell "14" [ref=f182e199]
+                          - cell "EW Emma Wilson" [ref=f182e200]:
+                            - generic [ref=f182e201]:
+                              - generic [ref=f182e202]: EW
+                              - generic [ref=f182e203]: Emma Wilson
+                          - cell "Operations" [ref=f182e204]
+                          - cell "Inactive" [ref=f182e205]
+                          - cell "$7,253.73" [ref=f182e207]
+                        - row [ref=f182e209]:
+                          - cell "15" [ref=f182e210]
+                          - cell "DK David Kim" [ref=f182e211]:
+                            - generic [ref=f182e212]:
+                              - generic [ref=f182e213]: DK
+                              - generic [ref=f182e214]: David Kim
+                          - cell "Legal" [ref=f182e215]
+                          - cell "Pending" [ref=f182e216]
+                          - cell "$2,633.59" [ref=f182e218]
+                        - row [ref=f182e220]:
+                          - cell "16" [ref=f182e221]
+                          - cell "AT Aron Thompson" [ref=f182e222]:
+                            - generic [ref=f182e223]:
+                              - generic [ref=f182e224]: AT
+                              - generic [ref=f182e225]: Aron Thompson
+                          - cell "Support" [ref=f182e226]
+                          - cell "Active" [ref=f182e227]
+                          - cell "$1,135.43" [ref=f182e229]
+                        - row [ref=f182e231]:
+                          - cell "17" [ref=f182e232]
+                          - cell "JB James Brown" [ref=f182e233]:
+                            - generic [ref=f182e234]:
+                              - generic [ref=f182e235]: JB
+                              - generic [ref=f182e236]: James Brown
+                          - cell "Engineering" [ref=f182e237]
+                          - cell "Inactive" [ref=f182e238]
+                          - cell "$1,505.18" [ref=f182e240]
+                        - row [ref=f182e242]:
+                          - cell "18" [ref=f182e243]
+                          - cell "MG Maria Garcia" [ref=f182e244]:
+                            - generic [ref=f182e245]:
+                              - generic [ref=f182e246]: MG
+                              - generic [ref=f182e247]: Maria Garcia
+                          - cell "Marketing" [ref=f182e248]
+                          - cell "Pending" [ref=f182e249]
+                          - cell "$5,843.44" [ref=f182e251]
+                        - row [ref=f182e253]:
+                          - cell "19" [ref=f182e254]
+                          - cell "NJ Nick Johnson" [ref=f182e255]:
+                            - generic [ref=f182e256]:
+                              - generic [ref=f182e257]: NJ
+                              - generic [ref=f182e258]: Nick Johnson
+                          - cell "Design" [ref=f182e259]
+                          - cell "Active" [ref=f182e260]
+                          - cell "$9,731.23" [ref=f182e262]
+                        - row [ref=f182e264]:
+                          - cell "20" [ref=f182e265]
+                          - cell "LT Liam Thompson" [ref=f182e266]:
+                            - generic [ref=f182e267]:
+                              - generic [ref=f182e268]: LT
+                              - generic [ref=f182e269]: Liam Thompson
+                          - cell "Sales" [ref=f182e270]
+                          - cell "Inactive" [ref=f182e271]
+                          - cell "$1,834.52" [ref=f182e273]
+                        - row [ref=f182e275]:
+                          - cell [ref=f182e276]
+            - generic [ref=f178e137]:
+              - generic [ref=f178e138]:
+                - generic [ref=f178e139]: 气质
+                - text: 信息密度高、后台感强，复杂状态、列和批量操作成熟。
+              - generic [ref=f178e140]:
+                - generic [ref=f178e141]: 适合
+                - text: 账户、任务、素材大表，虚拟滚动、筛选与列配置
+              - generic [ref=f178e142]:
+                - generic [ref=f178e143]: 重叠与取舍
+                - text: 与 Dice Data Grid 重叠；ReUI 偏成熟成品，Dice 偏可访问底层能力。
+              - generic [ref=f178e144]:
+                - generic [ref=f178e145]: 许可证
+                - text: MIT for Free registry items
+            - generic [ref=f178e146]:
+              - text: 代表项：c-data-grid-27 · data-grid-table-virtual ｜
+              - link "官方页面 ↗" [ref=f178e147] [cursor=pointer]:
+                - /url: https://reui.io/docs/components/data-grid
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e148]:
+            - generic [ref=f178e149]:
+              - generic [ref=f178e150]:
+                - generic [ref=f178e151]: Compiled official source
+                - heading "Tremor" [level=3] [ref=f178e152]
+                - paragraph [ref=f178e153]: 现代分析产品 KPI 和报告节奏
+              - generic [ref=f178e154]:
+                - generic [ref=f178e155]: 真实交互
+                - generic [ref=f178e156]: 离线
+                - generic [ref=f178e157]: 1 个代表项
+            - iframe [ref=f178e158]:
+              - main [ref=f183e3]:
+                - generic [ref=f183e4]:
+                  - generic [ref=f183e5]:
+                    - text: 05 / ANALYTICS
+                    - heading "Tremor" [level=1] [ref=f183e6]
+                  - paragraph [ref=f183e7]: 官方 KPI block 展示现代分析产品的数字层级、变化状态和报告节奏。
+                - article [ref=f183e9]:
+                  - generic [ref=f183e10]: CURRENT KPI COMPOSITION
+                  - generic [ref=f183e12]:
+                    - generic [ref=f183e13]:
+                      - term [ref=f183e14]: Unique visitors
+                      - definition [ref=f183e15]:
+                        - generic [ref=f183e16]: 10,450
+                        - generic [ref=f183e17]: "-12.5%"
+                    - generic [ref=f183e18]:
+                      - term [ref=f183e19]: Bounce rate
+                      - definition [ref=f183e20]:
+                        - generic [ref=f183e21]: 56.1%
+                        - generic [ref=f183e22]: +1.8%
+                    - generic [ref=f183e23]:
+                      - term [ref=f183e24]: Visit duration
+                      - definition [ref=f183e25]:
+                        - generic [ref=f183e26]: 5.2min
+                        - generic [ref=f183e27]: +19.7%
+            - generic [ref=f178e159]:
+              - generic [ref=f178e160]:
+                - generic [ref=f178e161]: 气质
+                - text: 清晰、专业、数据优先，擅长卡片、筛选栏和报告组合。
+              - generic [ref=f178e162]:
+                - generic [ref=f178e163]: 适合
+                - text: 经营看板、趋势分析、报告页和 KPI 信息层级
+              - generic [ref=f178e164]:
+                - generic [ref=f178e165]: 重叠与取舍
+                - text: 视觉参考优先，正式复杂图表仍接项目 ECharts。
+              - generic [ref=f178e166]:
+                - generic [ref=f178e167]: 许可证
+                - text: Apache-2.0
+            - generic [ref=f178e168]:
+              - text: 代表项：block/kpi-cards/kpi-card-01 ｜
+              - link "官方页面 ↗" [ref=f178e169] [cursor=pointer]:
+                - /url: https://blocks.tremor.so/blocks/kpi-cards
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e170]:
+            - generic [ref=f178e171]:
+              - generic [ref=f178e172]:
+                - generic [ref=f178e173]: Compiled official source
+                - heading "Tremor Legacy" [level=3] [ref=f178e174]
+                - paragraph [ref=f178e175]: 旧 @tremor/react 的 Metric/Card 组件语言
+              - generic [ref=f178e176]:
+                - generic [ref=f178e177]: 真实交互
+                - generic [ref=f178e178]: 离线
+                - generic [ref=f178e179]: 2 个代表项
+            - iframe [ref=f178e180]:
+              - main [ref=f184e3]:
+                - generic [ref=f184e4]:
+                  - generic [ref=f184e5]:
+                    - text: 06 / LEGACY ANALYTICS
+                    - heading "Tremor 3.18" [level=1] [ref=f184e6]
+                  - paragraph [ref=f184e7]: 固定官方 @tremor/react 3.18.7 的 Card 与 Metric，直观看旧版封装和视觉语言。
+                - generic [ref=f184e8]:
+                  - generic [ref=f184e9]:
+                    - paragraph [ref=f184e10]: 广告消耗
+                    - paragraph [ref=f184e11]: ¥ 128,640
+                    - paragraph [ref=f184e12]: 较昨日 +8.2%
+                  - article [ref=f184e13]:
+                    - generic [ref=f184e14]: LEGACY ONLY
+                    - paragraph [ref=f184e15]: 仍可公开下载且为 Apache-2.0，但只作旧版比较，不冒充 Tremor current。
+            - generic [ref=f178e181]:
+              - generic [ref=f178e182]:
+                - generic [ref=f178e183]: 气质
+                - text: 更像早期 SaaS 分析后台，封装度高但维护状态较旧。
+              - generic [ref=f178e184]:
+                - generic [ref=f178e185]: 适合
+                - text: 只用于比较旧版视觉和 API，不作为新页面首选
+              - generic [ref=f178e186]:
+                - generic [ref=f178e187]: 重叠与取舍
+                - text: 与 Tremor current 同品牌不同代，需显式标记 legacy。
+              - generic [ref=f178e188]:
+                - generic [ref=f178e189]: 许可证
+                - text: Apache-2.0
+            - generic [ref=f178e190]:
+              - text: 代表项：ui/card · ui/metric ｜
+              - link "官方页面 ↗" [ref=f178e191] [cursor=pointer]:
+                - /url: https://npm.tremor.so/docs/ui/card
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e192]:
+            - generic [ref=f178e193]:
+              - generic [ref=f178e194]:
+                - generic [ref=f178e195]: Compiled official source
+                - heading "Aceternity UI" [level=3] [ref=f178e196]
+                - paragraph [ref=f178e197]: 具有空间感的品牌化 Bento 能力陈列
+              - generic [ref=f178e198]:
+                - generic [ref=f178e199]: 真实交互
+                - generic [ref=f178e200]: 离线
+                - generic [ref=f178e201]: 1 个代表项
+            - iframe [ref=f178e202]:
+              - main [ref=f185e3]:
+                - generic [ref=f185e4]:
+                  - generic [ref=f185e5]:
+                    - text: 07 / CINEMATIC UI
+                    - heading "Aceternity" [level=1] [ref=f185e6]
+                  - paragraph [ref=f185e7]: 官方 Bento Grid 展示强空间层级和能力陈列；悬停卡片可看到它的内容位移动效。
+                - generic [ref=f185e8]:
+                  - generic [ref=f185e9]: BENTO GRID
+                  - generic [ref=f185e10]:
+                    - generic [ref=f185e13]:
+                      - generic [ref=f185e14]: Agent 决策中心
+                      - generic [ref=f185e15]: 把推理、工具和成果集中成有空间感的能力入口。
+                    - generic [ref=f185e18]:
+                      - generic [ref=f185e19]: 异常洞察
+                      - generic [ref=f185e20]: 适合低频高价值展示，不用于密集表格。
+                    - generic [ref=f185e23]:
+                      - generic [ref=f185e24]: 素材灵感
+                      - generic [ref=f185e25]: 为创意区提供少量品牌感。
+            - generic [ref=f178e203]:
+              - generic [ref=f178e204]:
+                - generic [ref=f178e205]: 气质
+                - text: 强空间层级和内容陈列感，适合少数高价值入口。
+              - generic [ref=f178e206]:
+                - generic [ref=f178e207]: 适合
+                - text: Agent 欢迎区、能力入口和成果展示，不用于密集数据主界面
+              - generic [ref=f178e208]:
+                - generic [ref=f178e209]: 重叠与取舍
+                - text: 与 Magic UI/React Bits 动效重叠，但视觉冲击最强。
+              - generic [ref=f178e210]:
+                - generic [ref=f178e211]: 许可证
+                - text: MIT for Free components
+            - generic [ref=f178e212]:
+              - text: 代表项：bento-grid ｜
+              - link "官方页面 ↗" [ref=f178e213] [cursor=pointer]:
+                - /url: https://ui.aceternity.com/components/bento-grid
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e214]:
+            - generic [ref=f178e215]:
+              - generic [ref=f178e216]:
+                - generic [ref=f178e217]: Compiled official source
+                - heading "Magic UI Free" [level=3] [ref=f178e218]
+                - paragraph [ref=f178e219]: 克制的数字更新与产品微动效
+              - generic [ref=f178e220]:
+                - generic [ref=f178e221]: 真实交互
+                - generic [ref=f178e222]: 离线
+                - generic [ref=f178e223]: 1 个代表项
+            - iframe [ref=f178e224]:
+              - main [ref=f186e3]:
+                - generic [ref=f186e4]:
+                  - generic [ref=f186e5]:
+                    - text: 08 / PRODUCT MOTION
+                    - heading "Magic UI" [level=1] [ref=f186e6]
+                  - paragraph [ref=f186e7]: 官方 Number Ticker 是更克制的 SaaS 微动效，适合 KPI 更新而不是持续抢注意力。
+                - generic [ref=f186e8]:
+                  - article [ref=f186e9]:
+                    - generic [ref=f186e10]: NUMBER TICKER
+                    - generic [ref=f186e11]:
+                      - text: ¥
+                      - generic [ref=f186e12]: "0"
+                    - button "模拟更新" [ref=f186e13]
+                  - article [ref=f186e14]:
+                    - generic [ref=f186e15]: FREE REGISTRY
+                    - paragraph [ref=f186e16]: 适合数字、列表、边框等局部强调；当前展示的是公开 MIT Free 源码。
+            - generic [ref=f178e225]:
+              - generic [ref=f178e226]:
+                - generic [ref=f178e227]: 气质
+                - text: 现代、轻盈、偏 SaaS，效果比 Aceternity 更容易局部使用。
+              - generic [ref=f178e228]:
+                - generic [ref=f178e229]: 适合
+                - text: KPI 数字、轻量强调、空态和少量品牌细节
+              - generic [ref=f178e230]:
+                - generic [ref=f178e231]: 重叠与取舍
+                - text: 数字动效需和 React Bits、Animate、Motion Primitives 并排比较。
+              - generic [ref=f178e232]:
+                - generic [ref=f178e233]: 许可证
+                - text: MIT for public Free registry
+            - generic [ref=f178e234]:
+              - text: 代表项：number-ticker ｜
+              - link "官方页面 ↗" [ref=f178e235] [cursor=pointer]:
+                - /url: https://magicui.design/docs/components/number-ticker
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e236]:
+            - generic [ref=f178e237]:
+              - generic [ref=f178e238]:
+                - generic [ref=f178e239]: Compiled official source
+                - heading "Magic UI Pro / Public Template" [level=3] [ref=f178e240]
+                - paragraph [ref=f178e241]: 公开模板中的品牌化网格背景与整页气质
+              - generic [ref=f178e242]:
+                - generic [ref=f178e243]: 真实交互
+                - generic [ref=f178e244]: 离线
+                - generic [ref=f178e245]: 2 个代表项
+            - iframe [ref=f178e246]:
+              - main [ref=f187e3]:
+                - generic [ref=f187e4]:
+                  - generic [ref=f187e5]:
+                    - text: 09 / PUBLIC TEMPLATE
+                    - heading "Magic UI Pro" [level=1] [ref=f187e6]
+                  - paragraph [ref=f187e7]: 这里只运行官方公开 MIT blog template 的 FlickeringGrid，不代表取得任何私有 Pro block。
+                - generic [ref=f187e8]:
+                  - article [ref=f187e9]:
+                    - generic [ref=f187e11]:
+                      - generic [ref=f187e12]: PUBLIC MIT TEMPLATE
+                      - heading "完整页面的品牌化背景" [level=2] [ref=f187e13]
+                      - paragraph [ref=f187e14]: 用于看公开模板气质，不解锁 101 个付费 blocks。
+                  - article [ref=f187e15]:
+                    - generic [ref=f187e16]: THEME RESPONSE
+                    - button "切换明暗背景" [ref=f187e17]
+                    - paragraph [ref=f187e18]: 源码来自 magicuidesign/blog-template 的公开组件。
+            - generic [ref=f178e247]:
+              - generic [ref=f178e248]:
+                - generic [ref=f178e249]: 气质
+                - text: 比 Free 组件更接近完整成品页面，但只展示官方公开 MIT 模板。
+              - generic [ref=f178e250]:
+                - generic [ref=f178e251]: 适合
+                - text: 看完整页面风格与营销/内容区组合，不代表已取得 Pro 私有 blocks
+              - generic [ref=f178e252]:
+                - generic [ref=f178e253]: 重叠与取舍
+                - text: 公开模板与 101 个付费 Pro blocks 必须分开；本卡不解锁私有源码。
+              - generic [ref=f178e254]:
+                - generic [ref=f178e255]: 许可证
+                - text: MIT for the public official blog-template repository
+            - generic [ref=f178e256]:
+              - text: 代表项：template/blog · components/magicui/flickering-grid.tsx ｜
+              - link "官方页面 ↗" [ref=f178e257] [cursor=pointer]:
+                - /url: https://github.com/magicuidesign/blog-template
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e258]:
+            - generic [ref=f178e259]:
+              - generic [ref=f178e260]:
+                - generic [ref=f178e261]: Compiled official source
+                - heading "React Bits Free" [level=3] [ref=f178e262]
+                - paragraph [ref=f178e263]: 独立、表现力强的 React 动效片段
+              - generic [ref=f178e264]:
+                - generic [ref=f178e265]: 真实交互
+                - generic [ref=f178e266]: 离线
+                - generic [ref=f178e267]: 1 个代表项
+            - iframe [ref=f178e268]:
+              - main [ref=f188e3]:
+                - generic [ref=f188e4]:
+                  - generic [ref=f188e5]:
+                    - text: 10 / EXPRESSIVE MOTION
+                    - heading "React Bits" [level=1] [ref=f188e6]
+                  - paragraph [ref=f188e7]: 官方 Counter 的滚轮数字更有表现力；适合挑单个效果，不适合把整站都做成动效展览。
+                - generic [ref=f188e8]:
+                  - article [ref=f188e9]:
+                    - generic [ref=f188e10]: COUNTER
+                    - generic [ref=f188e12]:
+                      - generic [ref=f188e13]:
+                        - generic [ref=f188e14]: "0"
+                        - generic [ref=f188e15]: "1"
+                        - generic [ref=f188e16]: "2"
+                        - generic [ref=f188e17]: "3"
+                        - generic [ref=f188e18]: "4"
+                        - generic [ref=f188e19]: "5"
+                        - generic [ref=f188e20]: "6"
+                        - generic [ref=f188e21]: "7"
+                        - generic [ref=f188e22]: "8"
+                        - generic [ref=f188e23]: "9"
+                      - generic [ref=f188e24]:
+                        - generic [ref=f188e25]: "0"
+                        - generic [ref=f188e26]: "1"
+                        - generic [ref=f188e27]: "2"
+                        - generic [ref=f188e28]: "3"
+                        - generic [ref=f188e29]: "4"
+                        - generic [ref=f188e30]: "5"
+                        - generic [ref=f188e31]: "6"
+                        - generic [ref=f188e32]: "7"
+                        - generic [ref=f188e33]: "8"
+                        - generic [ref=f188e34]: "9"
+                      - generic [ref=f188e35]:
+                        - generic [ref=f188e36]: "0"
+                        - generic [ref=f188e37]: "1"
+                        - generic [ref=f188e38]: "2"
+                        - generic [ref=f188e39]: "3"
+                        - generic [ref=f188e40]: "4"
+                        - generic [ref=f188e41]: "5"
+                        - generic [ref=f188e42]: "6"
+                        - generic [ref=f188e43]: "7"
+                        - generic [ref=f188e44]: "8"
+                        - generic [ref=f188e45]: "9"
+                      - generic [ref=f188e46]:
+                        - generic [ref=f188e47]: "0"
+                        - generic [ref=f188e48]: "1"
+                        - generic [ref=f188e49]: "2"
+                        - generic [ref=f188e50]: "3"
+                        - generic [ref=f188e51]: "4"
+                        - generic [ref=f188e52]: "5"
+                        - generic [ref=f188e53]: "6"
+                        - generic [ref=f188e54]: "7"
+                        - generic [ref=f188e55]: "8"
+                        - generic [ref=f188e56]: "9"
+                    - button "更新数值" [ref=f188e57]
+                  - article [ref=f188e58]:
+                    - generic [ref=f188e59]: LICENSE EDGE
+                    - paragraph [ref=f188e60]: Free 源码可审阅，但继续标记 Commons Clause；商业再分发边界必须单独核对。
+            - generic [ref=f178e269]:
+              - generic [ref=f178e270]:
+                - generic [ref=f178e271]: 气质
+                - text: 实验感和表现力更强，适合挑单个效果而不是统一全站。
+              - generic [ref=f178e272]:
+                - generic [ref=f178e273]: 适合
+                - text: KPI、欢迎语、少量背景和交互高光
+              - generic [ref=f178e274]:
+                - generic [ref=f178e275]: 重叠与取舍
+                - text: 许可证有 Commons Clause 边界；与 Magic/Animate/Motion 逐项对比。
+              - generic [ref=f178e276]:
+                - generic [ref=f178e277]: 许可证
+                - text: MIT with Commons Clause restrictions
+            - generic [ref=f178e278]:
+              - text: 代表项：Counter ｜
+              - link "官方页面 ↗" [ref=f178e279] [cursor=pointer]:
+                - /url: https://www.reactbits.dev/components/counter
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e280]:
+            - generic [ref=f178e281]:
+              - generic [ref=f178e282]:
+                - generic [ref=f178e283]: Official preview only
+                - heading "React Bits Pro" [level=3] [ref=f178e284]
+                - paragraph [ref=f178e285]: 付费高阶动效与多代码变体
+              - generic [ref=f178e286]:
+                - generic [ref=f178e287]: 付费锁定
+                - generic [ref=f178e288]: 1 个代表项
+            - generic [ref=f178e290]:
+              - strong [ref=f178e291]: 🔒 付费源码锁定
+              - paragraph [ref=f178e292]: 全部 702 项均为 paid-source-after-license；没有可合法缓存的公开源码。
+              - link "查看官方预览 ↗" [ref=f178e294] [cursor=pointer]:
+                - /url: https://reactbits.dev/get-pro
+            - generic [ref=f178e295]:
+              - generic [ref=f178e296]:
+                - generic [ref=f178e297]: 气质
+                - text: 与 Free 同系但能力更多；当前只提供官方预览和免费替代。
+              - generic [ref=f178e298]:
+                - generic [ref=f178e299]: 适合
+                - text: 购买许可后再按具体效果评估
+              - generic [ref=f178e300]:
+                - generic [ref=f178e301]: 重叠与取舍
+                - text: 不得下载、仿写或把 Free 组件冒充 Pro。
+              - generic [ref=f178e302]:
+                - generic [ref=f178e303]: 许可证
+                - text: Commercial license required
+            - generic [ref=f178e304]:
+              - text: 代表项：702 Pro variants ｜
+              - link "官方页面 ↗" [ref=f178e305] [cursor=pointer]:
+                - /url: https://reactbits.dev/get-pro
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e306]:
+            - generic [ref=f178e307]:
+              - generic [ref=f178e308]:
+                - generic [ref=f178e309]: Compiled official source
+                - heading "tweakcn" [level=3] [ref=f178e310]
+                - paragraph [ref=f178e311]: 多主题 token 与同一业务界面的风格切换
+              - generic [ref=f178e312]:
+                - generic [ref=f178e313]: 真实交互
+                - generic [ref=f178e314]: 离线
+                - generic [ref=f178e315]: 2 个代表项
+            - iframe [ref=f178e316]:
+              - main [ref=f189e3]:
+                - generic [ref=f189e4]:
+                  - generic [ref=f189e5]:
+                    - text: 11 / THEME TOKENS
+                    - heading "tweakcn" [level=1] [ref=f189e6]
+                  - paragraph [ref=f189e7]: 同一个 KPI/筛选小界面只替换官方 token，直接比较颜色、圆角、字体与图表色的变化。
+                - generic [ref=f189e8]:
+                  - article [ref=f189e9]:
+                    - generic [ref=f189e10]: OFFICIAL PRESETS
+                    - generic [ref=f189e11]:
+                      - button "Modern Minimal" [ref=f189e12]
+                      - button "Violet Bloom" [ref=f189e13]
+                      - button "Doom 64" [ref=f189e14]
+                    - paragraph [ref=f189e15]: 当前：Modern Minimal
+                  - article [ref=f189e16]:
+                    - generic [ref=f189e17]:
+                      - generic [ref=f189e18]: 投放达标率
+                      - generic [ref=f189e19]: 实时
+                    - strong [ref=f189e20]: 86.4%
+            - generic [ref=f178e317]:
+              - generic [ref=f178e318]:
+                - generic [ref=f178e319]: 气质
+                - text: 不是另一套组件底层，而是让 shadcn 体系快速切换颜色、圆角和字体。
+              - generic [ref=f178e320]:
+                - generic [ref=f178e321]: 适合
+                - text: 项目多风格切换、客户主题和图表 token 桥接
+              - generic [ref=f178e322]:
+                - generic [ref=f178e323]: 重叠与取舍
+                - text: 应改 token，不复制一套新组件。
+              - generic [ref=f178e324]:
+                - generic [ref=f178e325]: 许可证
+                - text: MIT for official preset source
+            - generic [ref=f178e326]:
+              - text: 代表项：modern-minimal · defaultPresets ｜
+              - link "官方页面 ↗" [ref=f178e327] [cursor=pointer]:
+                - /url: https://tweakcn.com/
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e328]:
+            - generic [ref=f178e329]:
+              - generic [ref=f178e330]:
+                - generic [ref=f178e331]: Compiled official source
+                - heading "Vercel AI Elements" [level=3] [ref=f178e332]
+                - paragraph [ref=f178e333]: Agent 对话、来源引用与工具过程
+              - generic [ref=f178e334]:
+                - generic [ref=f178e335]: 真实交互
+                - generic [ref=f178e336]: 离线
+                - generic [ref=f178e337]: 2 个代表项
+            - iframe [ref=f178e338]:
+              - main [ref=f190e3]:
+                - generic [ref=f190e4]:
+                  - generic [ref=f190e5]:
+                    - text: 01 / AGENT UI
+                    - heading "AI Elements" [level=1] [ref=f190e6]
+                  - paragraph [ref=f190e7]: 实际运行 Conversation 与 Sources：消息滚动、追加结果、来源折叠均可交互。
+                - generic [ref=f190e8]:
+                  - article [ref=f190e9]:
+                    - generic [ref=f190e10]: CONVERSATION
+                    - log [ref=f190e11]:
+                      - generic [ref=f190e13]:
+                        - generic [ref=f190e14]: 把今天消耗异常的计划找出来。
+                        - generic [ref=f190e15]: 已定位 3 个计划，先按影响排序，并保留数据来源。
+                    - button "追加工具结果" [ref=f190e16]
+                  - article [ref=f190e17]:
+                    - generic [ref=f190e18]: SOURCES
+                    - generic [ref=f190e19]:
+                      - paragraph [ref=f190e20]: 回答先给结论，证据保持可展开，适合投放数据与规则引用。
+                      - generic [ref=f190e21]:
+                        - button [expanded] [ref=f190e22]:
+                          - paragraph [ref=f190e23]: Used 3 sources
+                        - generic [ref=f190e26]:
+                          - link "账户小时级消耗表" [ref=f190e27] [cursor=pointer]:
+                            - /url: "#"
+                          - link "任务考核价契约" [ref=f190e31] [cursor=pointer]:
+                            - /url: "#"
+                          - link "变更审计记录" [ref=f190e35] [cursor=pointer]:
+                            - /url: "#"
+            - generic [ref=f178e339]:
+              - generic [ref=f178e340]:
+                - generic [ref=f178e341]: 气质
+                - text: 克制、产品化、与 Vercel/shadcn 生态接近，专为 AI 交互设计。
+              - generic [ref=f178e342]:
+                - generic [ref=f178e343]: 适合
+                - text: 内置 Agent 悬浮窗、消息流、推理、工具调用和引用
+              - generic [ref=f178e344]:
+                - generic [ref=f178e345]: 重叠与取舍
+                - text: 这是 Agent 语义组件层，不替代通用 shadcn primitives。
+              - generic [ref=f178e346]:
+                - generic [ref=f178e347]: 许可证
+                - text: Apache-2.0
+            - generic [ref=f178e348]:
+              - text: 代表项：conversation · sources ｜
+              - link "官方页面 ↗" [ref=f178e349] [cursor=pointer]:
+                - /url: https://ai-sdk.dev/elements/components/conversation
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e350]:
+            - generic [ref=f178e351]:
+              - generic [ref=f178e352]:
+                - generic [ref=f178e353]: Compiled official source
+                - heading "Kibo UI" [level=3] [ref=f178e354]
+                - paragraph [ref=f178e355]: 业务级上传、排期、协作和高级控件
+              - generic [ref=f178e356]:
+                - generic [ref=f178e357]: 真实交互
+                - generic [ref=f178e358]: 离线
+                - generic [ref=f178e359]: 2 个代表项
+            - iframe [ref=f178e360]:
+              - main [ref=f191e3]:
+                - generic [ref=f191e4]:
+                  - generic [ref=f191e5]:
+                    - text: 02 / BUSINESS UI
+                    - heading "Kibo UI" [level=1] [ref=f191e6]
+                  - paragraph [ref=f191e7]: 实际运行 Dropzone 与 Color Picker，体现业务级组件的完成度；颜色已接项目语义强调色。
+                - generic [ref=f191e8]:
+                  - article [ref=f191e9]:
+                    - generic [ref=f191e10]: DROPZONE
+                    - button [ref=f191e11]:
+                      - button "file upload"
+                      - generic [ref=f191e12]:
+                        - paragraph [ref=f191e14]: Upload files
+                        - paragraph [ref=f191e15]: Drag and drop or click to upload
+                        - paragraph [ref=f191e16]: Accepts image/* less than 8.00MB.
+                    - paragraph [ref=f191e17]: 点击或拖入图片；选择后由官方组件切换到文件摘要状态。
+                  - article [ref=f191e18]:
+                    - generic [ref=f191e19]: COLOR PICKER
+                    - generic [ref=f191e20]:
+                      - generic [ref=f191e22]:
+                        - generic [ref=f191e23]:
+                          - slider [ref=f191e28]
+                          - slider [ref=f191e34]
+                        - combobox [ref=f191e35]:
+                          - generic: HEX
+                      - generic [ref=f191e36]:
+                        - textbox [ref=f191e37]: "#F45D2C"
+                        - generic [ref=f191e38]:
+                          - textbox [ref=f191e39]: "100"
+                          - generic [ref=f191e40]: "%"
+                    - generic [ref=f191e41]: 用于图表、标注与主题配置，不绑定官网配色。
+            - generic [ref=f178e361]:
+              - generic [ref=f178e362]:
+                - generic [ref=f178e363]: 气质
+                - text: 现代、克制、功能密度高，接近成熟 SaaS 成品。
+              - generic [ref=f178e364]:
+                - generic [ref=f178e365]: 适合
+                - text: Gantt、Kanban、Editor、Dropzone、Color Picker、复杂 Calendar
+              - generic [ref=f178e366]:
+                - generic [ref=f178e367]: 重叠与取舍
+                - text: 与 ReUI/Dice 的复杂组件重叠；按具体业务容器比较。
+              - generic [ref=f178e368]:
+                - generic [ref=f178e369]: 许可证
+                - text: MIT
+            - generic [ref=f178e370]:
+              - text: 代表项：dropzone · color-picker ｜
+              - link "官方页面 ↗" [ref=f178e371] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/components/dropzone
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e372]:
+            - generic [ref=f178e373]:
+              - generic [ref=f178e374]:
+                - generic [ref=f178e375]: Compiled official source
+                - heading "Dice UI" [level=3] [ref=f178e376]
+                - paragraph [ref=f178e377]: 可访问的复杂交互与拖拽业务控件
+              - generic [ref=f178e378]:
+                - generic [ref=f178e379]: 真实交互
+                - generic [ref=f178e380]: 离线
+                - generic [ref=f178e381]: 2 个代表项
+            - iframe [ref=f178e382]:
+              - main [ref=f192e3]:
+                - generic [ref=f192e4]:
+                  - generic [ref=f192e5]:
+                    - text: 03 / ACCESSIBLE INTERACTION
+                    - heading "Dice UI" [level=1] [ref=f192e6]
+                  - paragraph [ref=f192e7]: 实际运行 File Upload 与 Kanban：前者可键盘触发，后者支持鼠标、触摸与键盘拖拽。
+                - generic [ref=f192e8]:
+                  - article [ref=f192e9]:
+                    - generic [ref=f192e10]: FILE UPLOAD
+                    - generic [ref=f192e11]:
+                      - region [ref=f192e12]:
+                        - paragraph [ref=f192e16]: 拖入素材，或用键盘选择文件
+                        - paragraph [ref=f192e17]: PNG / JPG，最多 4 个
+                        - button "选择素材" [ref=f192e18]
+                      - button "File upload" [ref=f192e19]
+                      - generic [ref=f192e20]: File upload
+                    - paragraph [ref=f192e21]: 当前选择：尚未选择
+                  - article [ref=f192e22]:
+                    - generic [ref=f192e23]: KANBAN
+                    - generic [ref=f192e24]:
+                      - generic [ref=f192e25]:
+                        - generic [ref=f192e26]:
+                          - text: 待处理
+                          - button "拖动待处理" [ref=f192e27]
+                        - generic [ref=f192e36]:
+                          - generic [ref=f192e37]:
+                            - paragraph [ref=f192e38]: 素材审核
+                            - paragraph [ref=f192e39]: 3 个创意
+                          - button "拖动素材审核" [ref=f192e40]
+                        - generic [ref=f192e49]:
+                          - generic [ref=f192e50]:
+                            - paragraph [ref=f192e51]: 异常计划复核
+                            - paragraph [ref=f192e52]: CPA +28%
+                          - button "拖动异常计划复核" [ref=f192e53]
+                      - generic [ref=f192e61]:
+                        - generic [ref=f192e62]:
+                          - text: 进行中
+                          - button "拖动进行中" [ref=f192e63]
+                        - generic [ref=f192e72]:
+                          - generic [ref=f192e73]:
+                            - paragraph [ref=f192e74]: 预算调整预览
+                            - paragraph [ref=f192e75]: 等待确认
+                          - button "拖动预算调整预览" [ref=f192e76]
+                    - status [ref=f192e84]
+            - generic [ref=f178e383]:
+              - generic [ref=f178e384]:
+                - generic [ref=f178e385]: 气质
+                - text: 更偏工程化和可访问性，视觉中性但复杂行为扎实。
+              - generic [ref=f178e386]:
+                - generic [ref=f178e387]: 适合
+                - text: Data Grid、文件上传、Kanban 和键盘操作
+              - generic [ref=f178e388]:
+                - generic [ref=f178e389]: 重叠与取舍
+                - text: 和 Kibo/ReUI 同能力时优先比较交互、依赖和可访问性。
+              - generic [ref=f178e390]:
+                - generic [ref=f178e391]: 许可证
+                - text: MIT
+            - generic [ref=f178e392]:
+              - text: 代表项：file-upload · kanban ｜
+              - link "官方页面 ↗" [ref=f178e393] [cursor=pointer]:
+                - /url: https://diceui.com/docs/components/file-upload
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e394]:
+            - generic [ref=f178e395]:
+              - generic [ref=f178e396]:
+                - generic [ref=f178e397]: Compiled official source
+                - heading "Animate UI" [level=3] [ref=f178e398]
+                - paragraph [ref=f178e399]: shadcn 风格的克制状态过渡
+              - generic [ref=f178e400]:
+                - generic [ref=f178e401]: 真实交互
+                - generic [ref=f178e402]: 离线
+                - generic [ref=f178e403]: 2 个代表项
+            - iframe [ref=f178e404]:
+              - main [ref=f193e3]:
+                - generic [ref=f193e4]:
+                  - generic [ref=f193e5]:
+                    - text: 04 / CONTROLLED MOTION
+                    - heading "Animate UI" [level=1] [ref=f193e6]
+                  - paragraph [ref=f193e7]: 实际运行 Ripple Button 与 Counting Number；只保留能解释状态变化的微交互。
+                - generic [ref=f193e8]:
+                  - article [ref=f193e9]:
+                    - generic [ref=f193e10]: RIPPLE BUTTON
+                    - button "更新报表数据" [ref=f193e11]
+                    - paragraph [ref=f193e12]: 点击观察官方 ripple primitive；反馈不阻塞业务动作。
+                  - article [ref=f193e13]:
+                    - generic [ref=f193e14]: COUNTING NUMBER
+                    - generic [ref=f193e15]: ¥1138
+                    - generic [ref=f193e16]:
+                      - generic [ref=f193e17]: +12.4%
+                      - generic [ref=f193e18]: 今日消耗
+            - generic [ref=f178e405]:
+              - generic [ref=f178e406]:
+                - generic [ref=f178e407]: 气质
+                - text: 动效贴近现有组件，最适合按钮、弹层和数字的局部增强。
+              - generic [ref=f178e408]:
+                - generic [ref=f178e409]: 适合
+                - text: 少量状态反馈，不用于持续装饰动画
+              - generic [ref=f178e410]:
+                - generic [ref=f178e411]: 重叠与取舍
+                - text: 与 Magic/React Bits/Motion 重叠，按 reduced-motion 和包体积选。
+              - generic [ref=f178e412]:
+                - generic [ref=f178e413]: 许可证
+                - text: MIT with Commons Clause restrictions
+            - generic [ref=f178e414]:
+              - text: 代表项：components-buttons-ripple · primitives-texts-counting-number ｜
+              - link "官方页面 ↗" [ref=f178e415] [cursor=pointer]:
+                - /url: https://animate-ui.com/docs/components/buttons/ripple
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=f178e416]:
+            - generic [ref=f178e417]:
+              - generic [ref=f178e418]:
+                - generic [ref=f178e419]: Compiled official source
+                - heading "Motion Primitives" [level=3] [ref=f178e420]
+                - paragraph [ref=f178e421]: 小而精的数字、文字和展开微交互
+              - generic [ref=f178e422]:
+                - generic [ref=f178e423]: 真实交互
+                - generic [ref=f178e424]: 离线
+                - generic [ref=f178e425]: 2 个代表项
+            - iframe [ref=f178e426]:
+              - main [ref=f194e3]:
+                - generic [ref=f194e4]:
+                  - generic [ref=f194e5]:
+                    - text: 05 / SMALL MOTION
+                    - heading "Motion Primitives" [level=1] [ref=f194e6]
+                  - paragraph [ref=f194e7]: 实际运行 Animated Number 与 Disclosure，展示极简、细腻、可局部采用的 Motion 风格。
+                - generic [ref=f194e8]:
+                  - article [ref=f194e9]:
+                    - generic [ref=f194e10]: ANIMATED NUMBER
+                    - generic [ref=f194e11]:
+                      - generic [ref=f194e12]: "74"
+                      - generic [ref=f194e13]: "%"
+                    - paragraph [ref=f194e14]: 预算完成率
+                    - button "切换数值" [ref=f194e15]
+                  - article [ref=f194e16]:
+                    - generic [ref=f194e17]: DISCLOSURE
+                    - button "为什么判定异常？" [ref=f194e19]
+            - generic [ref=f178e427]:
+              - generic [ref=f178e428]:
+                - generic [ref=f178e429]: 气质
+                - text: 轻量、精致、单一职责，适合在产品界面少量落点。
+              - generic [ref=f178e430]:
+                - generic [ref=f178e431]: 适合
+                - text: KPI 数字、说明展开和 Agent 状态文字
+              - generic [ref=f178e432]:
+                - generic [ref=f178e433]: 重叠与取舍
+                - text: 比完整动效库更小，适合只拿一个 primitive。
+              - generic [ref=f178e434]:
+                - generic [ref=f178e435]: 许可证
+                - text: MIT
+            - generic [ref=f178e436]:
+              - text: 代表项：animated-number · disclosure ｜
+              - link "官方页面 ↗" [ref=f178e437] [cursor=pointer]:
+                - /url: https://motion-primitives.com/docs/animated-number
+              - text: ｜ 产品运行时尚未安装。
+        - generic [ref=f178e438]:
+          - generic [ref=f178e439]:
+            - generic [ref=f178e440]: Approved intake
+            - heading "五库准入与使用边界" [level=2] [ref=f178e441]
+          - paragraph [ref=f178e442]: 五库完整目录已入库，并选择性缓存 21 个高频根资产；AI Elements、Kibo、Dice 正式进入具体能力选型，Animate UI、Motion Primitives 只做少量微动效对比。
+        - generic [ref=f178e443]:
+          - article [ref=f178e444]:
+            - generic [ref=f178e445]:
+              - generic [ref=f178e446]: 正式准入
+              - generic [ref=f178e447]: Apache-2.0
+              - generic [ref=f178e448]: 已缓存代表源码
+              - generic [ref=f178e449]: 未安装
+            - heading "Vercel AI Elements" [level=3] [ref=f178e450]
+            - paragraph [ref=f178e451]: AI-native conversation and agent interaction components
+            - paragraph [ref=f178e452]: 克制、产品化、接近 Vercel/shadcn 的 AI 工作台风格；重点在对话、消息、推理、工具调用和输入区，而不是炫技动效。
+            - generic [ref=f178e453]:
+              - generic [ref=f178e454]: Agent 对话
+              - generic [ref=f178e455]: 流式消息
+              - generic [ref=f178e456]: 推理折叠
+              - generic [ref=f178e457]: 工具调用
+              - generic [ref=f178e458]: 来源引用
+              - generic [ref=f178e459]: Prompt 输入
+            - generic [ref=f178e460]: 项目用法：Agent 对话、悬浮窗、消息、推理、工具调用和来源引用的首选候选；普通数据页不默认引入。
+            - paragraph [ref=f178e461]: catalogued-136 · starter-roots-cached-6 · not-installed
+            - generic [ref=f178e462]:
+              - link "官网 ↗" [ref=f178e463] [cursor=pointer]:
+                - /url: https://elements.ai-sdk.dev/
+              - link "文档 ↗" [ref=f178e464] [cursor=pointer]:
+                - /url: https://elements.ai-sdk.dev/docs
+              - link "GitHub ↗" [ref=f178e465] [cursor=pointer]:
+                - /url: https://github.com/vercel/ai-elements
+          - article [ref=f178e466]:
+            - generic [ref=f178e467]:
+              - generic [ref=f178e468]: 正式准入
+              - generic [ref=f178e469]: MIT
+              - generic [ref=f178e470]: 已缓存代表源码
+              - generic [ref=f178e471]: 未安装
+            - heading "Kibo UI" [level=3] [ref=f178e472]
+            - paragraph [ref=f178e473]: shadcn 的高阶功能组件补充
+            - paragraph [ref=f178e474]: 现代、克制、功能密度高，视觉接近成熟 SaaS；比单纯 shadcn primitive 更像可直接落业务的复杂控件。
+            - generic [ref=f178e475]:
+              - generic [ref=f178e476]: Gantt
+              - generic [ref=f178e477]: Kanban
+              - generic [ref=f178e478]: Editor
+              - generic [ref=f178e479]: Dropzone
+              - generic [ref=f178e480]: Color Picker
+              - generic [ref=f178e481]: Calendar
+              - generic [ref=f178e482]: 复杂业务组件
+            - generic [ref=f178e483]: 项目用法：Gantt、Kanban、Editor、Dropzone、Color Picker、复杂 Calendar 的首选候选；视觉颜色统一改为项目语义 token，不直接照搬官网配色。
+            - paragraph [ref=f178e484]: catalogued-69 · starter-roots-cached-6 · not-installed
+            - generic [ref=f178e485]:
+              - link "官网 ↗" [ref=f178e486] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/
+              - link "文档 ↗" [ref=f178e487] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/docs
+              - link "GitHub ↗" [ref=f178e488] [cursor=pointer]:
+                - /url: https://github.com/shadcnblocks/kibo
+          - article [ref=f178e489]:
+            - generic [ref=f178e490]:
+              - generic [ref=f178e491]: 正式准入
+              - generic [ref=f178e492]: MIT
+              - generic [ref=f178e493]: 已缓存代表源码
+              - generic [ref=f178e494]: 未安装
+            - heading "Dice UI" [level=3] [ref=f178e495]
+            - paragraph [ref=f178e496]: 可访问性优先的复杂交互组件
+            - paragraph [ref=f178e497]: 中性、细致、偏产品工具；交互状态比装饰更突出，适合高频操作型后台。
+            - generic [ref=f178e498]:
+              - generic [ref=f178e499]: Data Grid
+              - generic [ref=f178e500]: Data Table
+              - generic [ref=f178e501]: File Upload
+              - generic [ref=f178e502]: Kanban
+              - generic [ref=f178e503]: Media Player
+              - generic [ref=f178e504]: Mention
+              - generic [ref=f178e505]: Time Picker
+              - generic [ref=f178e506]: Tour
+            - generic [ref=f178e507]: 项目用法：Data Grid、File Upload、Kanban、Time Picker 等复杂交互的正式候选；首次使用前与 ReUI/coss/TanStack 同业务容器对比。
+            - paragraph [ref=f178e508]: catalogued-242 · starter-roots-cached-3 · not-installed
+            - generic [ref=f178e509]:
+              - link "官网 ↗" [ref=f178e510] [cursor=pointer]:
+                - /url: https://diceui.com/
+              - link "文档 ↗" [ref=f178e511] [cursor=pointer]:
+                - /url: https://diceui.com/docs/introduction
+              - link "GitHub ↗" [ref=f178e512] [cursor=pointer]:
+                - /url: https://github.com/sadmann7/diceui
+          - article [ref=f178e513]:
+            - generic [ref=f178e514]:
+              - generic [ref=f178e515]: 选择性准入
+              - generic [ref=f178e516]: MIT + Commons Clause
+              - generic [ref=f178e517]: 限制组件再分发
+              - generic [ref=f178e518]: 已缓存代表源码
+              - generic [ref=f178e519]: 未安装
+            - heading "Animate UI" [level=3] [ref=f178e520]
+            - paragraph [ref=f178e521]: shadcn 体系内的克制动效与动画 primitives
+            - paragraph [ref=f178e522]: 现代、流畅、比 React Bits 更克制；保留 shadcn 的产品感，同时给 Accordion、Dialog、Tabs、Button、背景和图标补统一 Motion。
+            - generic [ref=f178e523]:
+              - generic [ref=f178e524]: 交互过渡
+              - generic [ref=f178e525]: 动效 primitive
+              - generic [ref=f178e526]: 按钮反馈
+              - generic [ref=f178e527]: 轻背景
+              - generic [ref=f178e528]: 动画图标
+              - generic [ref=f178e529]: 局部高光
+            - generic [ref=f178e530]: 项目用法：只按具体微交互少量选择；每次与 Aceternity、Magic UI、React Bits、Motion Primitives 对比，遵守 Commons Clause，禁止整库默认安装。
+            - paragraph [ref=f178e531]: catalogued-580 · starter-roots-cached-3 · not-installed
+            - generic [ref=f178e532]:
+              - link "官网 ↗" [ref=f178e533] [cursor=pointer]:
+                - /url: https://animate-ui.com/
+              - link "文档 ↗" [ref=f178e534] [cursor=pointer]:
+                - /url: https://animate-ui.com/docs
+              - link "GitHub ↗" [ref=f178e535] [cursor=pointer]:
+                - /url: https://github.com/imskyleen/animate-ui
+          - article [ref=f178e536]:
+            - generic [ref=f178e537]:
+              - generic [ref=f178e538]: 选择性准入
+              - generic [ref=f178e539]: MIT
+              - generic [ref=f178e540]: 已缓存代表源码
+              - generic [ref=f178e541]: 未安装
+            - heading "Motion Primitives" [level=3] [ref=f178e542]
+            - paragraph [ref=f178e543]: 精致微交互和文字/布局过渡
+            - paragraph [ref=f178e544]: 极简、偏设计工具与编辑器气质，动效细腻而不喧闹；适合给成熟页面补微交互。
+            - generic [ref=f178e545]:
+              - generic [ref=f178e546]: 文字过渡
+              - generic [ref=f178e547]: Disclosure
+              - generic [ref=f178e548]: Dock
+              - generic [ref=f178e549]: Tabs
+              - generic [ref=f178e550]: 光标跟随
+              - generic [ref=f178e551]: 数字变化
+              - generic [ref=f178e552]: 局部布局动画
+            - generic [ref=f178e553]: 项目用法：只用于文字、数字、布局和局部交互的克制微动效；每次与现有动效来源对比，禁止成为业务组件底座。
+            - paragraph [ref=f178e554]: catalogued-33 · starter-roots-cached-3 · not-installed
+            - generic [ref=f178e555]:
+              - link "官网 ↗" [ref=f178e556] [cursor=pointer]:
+                - /url: https://motion-primitives.com/
+              - link "文档 ↗" [ref=f178e557] [cursor=pointer]:
+                - /url: https://motion-primitives.com/docs
+              - link "GitHub ↗" [ref=f178e558] [cursor=pointer]:
+                - /url: https://github.com/ibelick/motion-primitives
+        - paragraph [ref=f178e559]: 候选里的第三方 patterns、模板或 Sponsor 内容如果另有商业授权，必须再次拆分；不能因为主仓 MIT/Apache 就把所有外链内容都当免费。

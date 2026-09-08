@@ -1,0 +1,188 @@
+- generic [active] [ref=f11e1]:
+  - generic [ref=f11e2]:
+    - banner [ref=f11e3]:
+      - generic [ref=f11e4]:
+        - link "MP Logo motion-primitives beta" [ref=f11e5] [cursor=pointer]:
+          - /url: /docs
+          - img "MP Logo" [ref=f11e6]
+          - generic [ref=f11e8]: motion-primitives
+          - generic [ref=f11e9]: beta
+        - generic [ref=f11e10]:
+          - navigation [ref=f11e11]:
+            - link "AI" [ref=f11e12] [cursor=pointer]:
+              - /url: https://www.prompt-kit.com/
+            - link "Advanced" [ref=f11e13] [cursor=pointer]:
+              - /url: https://pro.motion-primitives.com
+            - link "Components" [ref=f11e14] [cursor=pointer]:
+              - /url: /docs/text-effect
+          - navigation [ref=f11e16]:
+            - link "X" [ref=f11e17] [cursor=pointer]:
+              - /url: https://twitter.com/Ibelick
+              - img "X" [ref=f11e18]
+            - link "GitHub" [ref=f11e20] [cursor=pointer]:
+              - /url: https://github.com/ibelick/motion-primitives
+              - img "GitHub" [ref=f11e21]
+            - button "Toggle theme" [ref=f11e23]
+    - generic [ref=f11e29]:
+      - complementary [ref=f11e30]:
+        - navigation [ref=f11e34]:
+          - list [ref=f11e35]:
+            - listitem [ref=f11e36]:
+              - generic [ref=f11e37]: Getting Started
+              - list [ref=f11e38]:
+                - listitem [ref=f11e39]:
+                  - link "Introduction" [ref=f11e40] [cursor=pointer]:
+                    - /url: /docs
+                - listitem [ref=f11e43]:
+                  - link "Installation" [ref=f11e44] [cursor=pointer]:
+                    - /url: /docs/installation
+            - listitem [ref=f11e46]:
+              - generic [ref=f11e47]: Core Components
+              - list [ref=f11e48]:
+                - listitem [ref=f11e49]:
+                  - link "Accordion" [ref=f11e50] [cursor=pointer]:
+                    - /url: /docs/accordion
+                - listitem [ref=f11e52]:
+                  - link "Animated Background" [ref=f11e53] [cursor=pointer]:
+                    - /url: /docs/animated-background
+                - listitem [ref=f11e55]:
+                  - link "Animated Group" [ref=f11e56] [cursor=pointer]:
+                    - /url: /docs/animated-group
+                - listitem [ref=f11e58]:
+                  - link "Border Trail" [ref=f11e59] [cursor=pointer]:
+                    - /url: /docs/border-trail
+                - listitem [ref=f11e61]:
+                  - link "Carousel" [ref=f11e62] [cursor=pointer]:
+                    - /url: /docs/carousel
+                - listitem [ref=f11e64]:
+                  - link "Cursor" [ref=f11e65] [cursor=pointer]:
+                    - /url: /docs/cursor
+                - listitem [ref=f11e67]:
+                  - link "Dialog" [ref=f11e68] [cursor=pointer]:
+                    - /url: /docs/dialog
+                - listitem [ref=f11e70]:
+                  - link "Disclosure" [ref=f11e71] [cursor=pointer]:
+                    - /url: /docs/disclosure
+                - listitem [ref=f11e73]:
+                  - link "In View" [ref=f11e74] [cursor=pointer]:
+                    - /url: /docs/in-view
+                - listitem [ref=f11e76]:
+                  - link "Infinite Slider" [ref=f11e77] [cursor=pointer]:
+                    - /url: /docs/infinite-slider
+                - listitem [ref=f11e79]:
+                  - link "Transition Panel" [ref=f11e80] [cursor=pointer]:
+                    - /url: /docs/transition-panel
+            - listitem [ref=f11e82]:
+              - generic [ref=f11e83]: Text Effects
+              - list [ref=f11e84]:
+                - listitem [ref=f11e85]:
+                  - link "Text Effect" [ref=f11e86] [cursor=pointer]:
+                    - /url: /docs/text-effect
+                - listitem [ref=f11e88]:
+                  - link "Text Loop" [ref=f11e89] [cursor=pointer]:
+                    - /url: /docs/text-loop
+                - listitem [ref=f11e91]:
+                  - link "Text Morph" [ref=f11e92] [cursor=pointer]:
+                    - /url: /docs/text-morph
+                - listitem [ref=f11e94]:
+                  - link "Text Roll" [ref=f11e95] [cursor=pointer]:
+                    - /url: /docs/text-roll
+                - listitem [ref=f11e97]:
+                  - link "Text Scramble" [ref=f11e98] [cursor=pointer]:
+                    - /url: /docs/text-scramble
+                - listitem [ref=f11e100]:
+                  - link "Text Shimmer" [ref=f11e101] [cursor=pointer]:
+                    - /url: /docs/text-shimmer
+                - listitem [ref=f11e103]:
+                  - link "Text Shimmer Wave" [ref=f11e104] [cursor=pointer]:
+                    - /url: /docs/text-shimmer-wave
+            - listitem [ref=f11e106]:
+              - generic [ref=f11e107]: Number Effects
+              - list [ref=f11e108]:
+                - listitem [ref=f11e109]:
+                  - link "Animated Number" [ref=f11e110] [cursor=pointer]:
+                    - /url: /docs/animated-number
+                - listitem [ref=f11e112]:
+                  - link "Sliding Number" [ref=f11e113] [cursor=pointer]:
+                    - /url: /docs/sliding-number
+            - listitem [ref=f11e115]:
+              - generic [ref=f11e116]: Interactive Elements
+              - list [ref=f11e117]:
+                - listitem [ref=f11e118]:
+                  - link "Dock" [ref=f11e119] [cursor=pointer]:
+                    - /url: /docs/dock
+                - listitem [ref=f11e121]:
+                  - link "Glow Effect" [ref=f11e122] [cursor=pointer]:
+                    - /url: /docs/glow-effect
+                - listitem [ref=f11e124]:
+                  - link "Image Comparison" [ref=f11e125] [cursor=pointer]:
+                    - /url: /docs/image-comparison
+                - listitem [ref=f11e127]:
+                  - link "Scroll Progress" [ref=f11e128] [cursor=pointer]:
+                    - /url: /docs/scroll-progress
+                - listitem [ref=f11e130]:
+                  - link "Spotlight" [ref=f11e131] [cursor=pointer]:
+                    - /url: /docs/spotlight
+                - listitem [ref=f11e133]:
+                  - link "Spinning Text" [ref=f11e134] [cursor=pointer]:
+                    - /url: /docs/spinning-text
+                - listitem [ref=f11e136]:
+                  - link "Tilt" [ref=f11e137] [cursor=pointer]:
+                    - /url: /docs/tilt
+            - listitem [ref=f11e139]:
+              - generic [ref=f11e140]: Toolbars
+              - list [ref=f11e141]:
+                - listitem [ref=f11e142]:
+                  - link "Toolbar Dynamic" [ref=f11e143] [cursor=pointer]:
+                    - /url: /docs/toolbar-dynamic
+                - listitem [ref=f11e145]:
+                  - link "Toolbar Expandable" [ref=f11e146] [cursor=pointer]:
+                    - /url: /docs/toolbar-expandable
+            - listitem [ref=f11e148]:
+              - generic [ref=f11e149]: Advanced Effects
+              - list [ref=f11e150]:
+                - listitem [ref=f11e151]:
+                  - link "Magnetic" [ref=f11e152] [cursor=pointer]:
+                    - /url: /docs/magnetic
+                - listitem [ref=f11e154]:
+                  - link "Morphing Dialog" [ref=f11e155] [cursor=pointer]:
+                    - /url: /docs/morphing-dialog
+                - listitem [ref=f11e157]:
+                  - link "Morphing Popover" [ref=f11e158] [cursor=pointer]:
+                    - /url: /docs/morphing-popover
+                - listitem [ref=f11e160]:
+                  - link "Progressive Blur" [ref=f11e161] [cursor=pointer]:
+                    - /url: /docs/progressive-blur
+      - main [ref=f11e163]:
+        - heading "Motion-Primitives" [level=1] [ref=f11e164]
+        - paragraph [ref=f11e165]: Make your website look better with beautifully designed motion components. Easy to use. Customizable. Open Source. Built for engineers, designers, and founders.
+        - paragraph [ref=f11e166]: Motion-Primitives offers a collection of reusable animated components built with Motion and Tailwind CSS. Add smooth, engaging animations to your web projects, making them more interactive and enjoyable.
+        - heading "Vision" [level=2] [ref=f11e167]
+        - paragraph [ref=f11e168]: As a developer, I struggled to find practical, high-quality animated components suitable for real-world projects. Motion-Primitives was created to fill this gap, providing ready-to-use, customizable components that improve marketing websites and web applications.
+        - heading "Easy to Use and customize" [level=3] [ref=f11e169]
+        - paragraph [ref=f11e170]: Each component has comprehensive examples and detailed documentation. You can use them directly or easily modify them to align with your custom UI kit, design system, or specific requirements.
+        - heading "Built around Motion" [level=3] [ref=f11e171]
+        - paragraph [ref=f11e172]:
+          - text: All components are built with
+          - link "Motion" [ref=f11e173] [cursor=pointer]:
+            - /url: https://motion.dev/
+          - text: to ensure a solid foundation and showcase the library's capabilities. Future plans include versions using CSS and Tailwind CSS only.
+        - heading "Open source and community-driven" [level=3] [ref=f11e174]
+        - paragraph [ref=f11e175]: Motion-Primitives is open-source. Contributions are welcome to expand and improve the collection.
+      - complementary [ref=f11e176]:
+        - generic [ref=f11e179]:
+          - paragraph [ref=f11e180]: On this page
+          - list [ref=f11e181]:
+            - listitem [ref=f11e182]:
+              - link "Vision" [ref=f11e183] [cursor=pointer]:
+                - /url: "#vision"
+            - listitem [ref=f11e184]:
+              - link "Easy to Use and customize" [ref=f11e185] [cursor=pointer]:
+                - /url: "#easy-to-use-and-customize"
+            - listitem [ref=f11e186]:
+              - link "Built around Motion" [ref=f11e187] [cursor=pointer]:
+                - /url: "#built-around-motion"
+            - listitem [ref=f11e188]:
+              - link "Open source and community-driven" [ref=f11e189] [cursor=pointer]:
+                - /url: "#open-source-and-community-driven"
+  - alert [ref=f11e190]

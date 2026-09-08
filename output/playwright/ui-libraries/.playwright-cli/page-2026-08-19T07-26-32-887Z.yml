@@ -1,0 +1,545 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - region "Notifications (F8)":
+    - list
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "tweakcn" [ref=e6] [cursor=pointer]:
+          - /url: /
+        - navigation [ref=e14]:
+          - link "Features" [ref=e15] [cursor=pointer]:
+            - /url: "#features"
+          - link "AI" [ref=e16] [cursor=pointer]:
+            - /url: /ai
+          - link "Pricing" [ref=e17] [cursor=pointer]:
+            - /url: /pricing
+          - link "Community" [ref=e18] [cursor=pointer]:
+            - /url: /community
+          - link "FAQ" [ref=e19] [cursor=pointer]:
+            - /url: "#faq"
+        - generic [ref=e20] [cursor=pointer]:
+          - link "10.3k" [ref=e22]:
+            - /url: https://github.com/jnsahaj/tweakcn
+          - button [ref=e24]
+          - link [ref=e26]:
+            - /url: /editor/theme
+            - button "Try It Now" [ref=e27]
+    - main [ref=e28]:
+      - generic [ref=e32]:
+        - heading "Design Your Perfect shadcn/ui Theme" [level=1] [ref=e33]:
+          - text: Design Your Perfect
+          - generic [ref=e34]: shadcn/ui
+          - text: Theme
+        - paragraph [ref=e37]: Customize colors, typography, and layouts with a real-time preview. No signup required.
+        - generic [ref=e38]:
+          - link [ref=e39] [cursor=pointer]:
+            - /url: /editor/theme
+            - button "Start Customizing" [ref=e40]
+          - link [ref=e41] [cursor=pointer]:
+            - /url: /community
+            - button "Browse Community" [ref=e42]
+        - generic [ref=e43]:
+          - generic [ref=e44]: Real-time Preview
+          - generic [ref=e49]: Export to Tailwind
+          - generic [ref=e54]: Beautiful Presets
+        - generic [ref=e61]:
+          - generic [ref=e63]:
+            - button "modern minimal" [ref=e65] [cursor=pointer]
+            - button "twitter" [ref=e73] [cursor=pointer]
+            - button "amethyst haze" [ref=e81] [cursor=pointer]
+            - button "catppuccin" [ref=e89] [cursor=pointer]
+            - button "kodama grove" [ref=e97] [cursor=pointer]
+            - button "quantum rose" [ref=e105] [cursor=pointer]
+            - button "elegant luxury" [ref=e113] [cursor=pointer]
+            - button "neo brutalism" [ref=e121] [cursor=pointer]
+            - button "cyberpunk" [ref=e129] [cursor=pointer]
+            - button "caffeine" [ref=e137] [cursor=pointer]
+            - button "midnight bloom" [ref=e145] [cursor=pointer]
+            - button "vintage paper" [ref=e153] [cursor=pointer]
+            - button "claude" [ref=e161] [cursor=pointer]
+            - button "mono" [ref=e169] [cursor=pointer]
+            - button "modern minimal" [ref=e177] [cursor=pointer]
+            - button "twitter" [ref=e185] [cursor=pointer]
+            - button "amethyst haze" [ref=e193] [cursor=pointer]
+            - button "catppuccin" [ref=e201] [cursor=pointer]
+            - button "kodama grove" [ref=e209] [cursor=pointer]
+            - button "quantum rose" [ref=e217] [cursor=pointer]
+            - button "elegant luxury" [ref=e225] [cursor=pointer]
+            - button "neo brutalism" [ref=e233] [cursor=pointer]
+            - button "cyberpunk" [ref=e241] [cursor=pointer]
+            - button "caffeine" [ref=e249] [cursor=pointer]
+            - button "midnight bloom" [ref=e257] [cursor=pointer]
+            - button "vintage paper" [ref=e265] [cursor=pointer]
+            - button "claude" [ref=e273] [cursor=pointer]
+            - button "mono" [ref=e281] [cursor=pointer]
+            - button "modern minimal" [ref=e289] [cursor=pointer]
+            - button "twitter" [ref=e297] [cursor=pointer]
+            - button "amethyst haze" [ref=e305] [cursor=pointer]
+            - button "catppuccin" [ref=e313] [cursor=pointer]
+            - button "kodama grove" [ref=e321] [cursor=pointer]
+            - button "quantum rose" [ref=e329] [cursor=pointer]
+            - button "elegant luxury" [ref=e337] [cursor=pointer]
+            - button "neo brutalism" [ref=e345] [cursor=pointer]
+            - button "cyberpunk" [ref=e353] [cursor=pointer]
+            - button "caffeine" [ref=e361] [cursor=pointer]
+            - button "midnight bloom" [ref=e369] [cursor=pointer]
+            - button "vintage paper" [ref=e377] [cursor=pointer]
+            - button "claude" [ref=e385] [cursor=pointer]
+            - button "mono" [ref=e393] [cursor=pointer]
+            - button "modern minimal" [ref=e401] [cursor=pointer]
+            - button "twitter" [ref=e409] [cursor=pointer]
+            - button "amethyst haze" [ref=e417] [cursor=pointer]
+            - button "catppuccin" [ref=e425] [cursor=pointer]
+            - button "kodama grove" [ref=e433] [cursor=pointer]
+            - button "quantum rose" [ref=e441] [cursor=pointer]
+            - button "elegant luxury" [ref=e449] [cursor=pointer]
+            - button "neo brutalism" [ref=e457] [cursor=pointer]
+            - button "cyberpunk" [ref=e465] [cursor=pointer]
+            - button "caffeine" [ref=e473] [cursor=pointer]
+            - button "midnight bloom" [ref=e481] [cursor=pointer]
+            - button "vintage paper" [ref=e489] [cursor=pointer]
+            - button "claude" [ref=e497] [cursor=pointer]
+            - button "mono" [ref=e505] [cursor=pointer]
+          - generic [ref=e513]:
+            - button "violet bloom" [ref=e515] [cursor=pointer]
+            - button "mocha mousse" [ref=e523] [cursor=pointer]
+            - button "notebook" [ref=e531] [cursor=pointer]
+            - button "graphite" [ref=e539] [cursor=pointer]
+            - button "cosmic night" [ref=e547] [cursor=pointer]
+            - button "nature" [ref=e555] [cursor=pointer]
+            - button "amber minimal" [ref=e563] [cursor=pointer]
+            - button "solar dusk" [ref=e571] [cursor=pointer]
+            - button "pastel dreams" [ref=e579] [cursor=pointer]
+            - button "ocean breeze" [ref=e587] [cursor=pointer]
+            - button "candyland" [ref=e595] [cursor=pointer]
+            - button "sunset horizon" [ref=e603] [cursor=pointer]
+            - button "vercel" [ref=e611] [cursor=pointer]
+            - button "soft pop" [ref=e619] [cursor=pointer]
+            - button "violet bloom" [ref=e627] [cursor=pointer]
+            - button "mocha mousse" [ref=e635] [cursor=pointer]
+            - button "notebook" [ref=e643] [cursor=pointer]
+            - button "graphite" [ref=e651] [cursor=pointer]
+            - button "cosmic night" [ref=e659] [cursor=pointer]
+            - button "nature" [ref=e667] [cursor=pointer]
+            - button "amber minimal" [ref=e675] [cursor=pointer]
+            - button "solar dusk" [ref=e683] [cursor=pointer]
+            - button "pastel dreams" [ref=e691] [cursor=pointer]
+            - button "ocean breeze" [ref=e699] [cursor=pointer]
+            - button "candyland" [ref=e707] [cursor=pointer]
+            - button "sunset horizon" [ref=e715] [cursor=pointer]
+            - button "vercel" [ref=e723] [cursor=pointer]
+            - button "soft pop" [ref=e731] [cursor=pointer]
+            - button "violet bloom" [ref=e739] [cursor=pointer]
+            - button "mocha mousse" [ref=e747] [cursor=pointer]
+            - button "notebook" [ref=e755] [cursor=pointer]
+            - button "graphite" [ref=e763] [cursor=pointer]
+            - button "cosmic night" [ref=e771] [cursor=pointer]
+            - button "nature" [ref=e779] [cursor=pointer]
+            - button "amber minimal" [ref=e787] [cursor=pointer]
+            - button "solar dusk" [ref=e795] [cursor=pointer]
+            - button "pastel dreams" [ref=e803] [cursor=pointer]
+            - button "ocean breeze" [ref=e811] [cursor=pointer]
+            - button "candyland" [ref=e819] [cursor=pointer]
+            - button "sunset horizon" [ref=e827] [cursor=pointer]
+            - button "vercel" [ref=e835] [cursor=pointer]
+            - button "soft pop" [ref=e843] [cursor=pointer]
+            - button "violet bloom" [ref=e851] [cursor=pointer]
+            - button "mocha mousse" [ref=e859] [cursor=pointer]
+            - button "notebook" [ref=e867] [cursor=pointer]
+            - button "graphite" [ref=e875] [cursor=pointer]
+            - button "cosmic night" [ref=e883] [cursor=pointer]
+            - button "nature" [ref=e891] [cursor=pointer]
+            - button "amber minimal" [ref=e899] [cursor=pointer]
+            - button "solar dusk" [ref=e907] [cursor=pointer]
+            - button "pastel dreams" [ref=e915] [cursor=pointer]
+            - button "ocean breeze" [ref=e923] [cursor=pointer]
+            - button "candyland" [ref=e931] [cursor=pointer]
+            - button "sunset horizon" [ref=e939] [cursor=pointer]
+            - button "vercel" [ref=e947] [cursor=pointer]
+            - button "soft pop" [ref=e955] [cursor=pointer]
+          - generic [ref=e963]:
+            - button "t3 chat" [ref=e965] [cursor=pointer]
+            - button "bubblegum" [ref=e973] [cursor=pointer]
+            - button "doom 64" [ref=e981] [cursor=pointer]
+            - button "perpetuity" [ref=e989] [cursor=pointer]
+            - button "tangerine" [ref=e997] [cursor=pointer]
+            - button "bold tech" [ref=e1005] [cursor=pointer]
+            - button "supabase" [ref=e1013] [cursor=pointer]
+            - button "claymorphism" [ref=e1021] [cursor=pointer]
+            - button "clean slate" [ref=e1029] [cursor=pointer]
+            - button "retro arcade" [ref=e1037] [cursor=pointer]
+            - button "northern lights" [ref=e1045] [cursor=pointer]
+            - button "starry night" [ref=e1053] [cursor=pointer]
+            - button "darkmatter" [ref=e1061] [cursor=pointer]
+            - button "sage garden" [ref=e1069] [cursor=pointer]
+            - button "t3 chat" [ref=e1077] [cursor=pointer]
+            - button "bubblegum" [ref=e1085] [cursor=pointer]
+            - button "doom 64" [ref=e1093] [cursor=pointer]
+            - button "perpetuity" [ref=e1101] [cursor=pointer]
+            - button "tangerine" [ref=e1109] [cursor=pointer]
+            - button "bold tech" [ref=e1117] [cursor=pointer]
+            - button "supabase" [ref=e1125] [cursor=pointer]
+            - button "claymorphism" [ref=e1133] [cursor=pointer]
+            - button "clean slate" [ref=e1141] [cursor=pointer]
+            - button "retro arcade" [ref=e1149] [cursor=pointer]
+            - button "northern lights" [ref=e1157] [cursor=pointer]
+            - button "starry night" [ref=e1165] [cursor=pointer]
+            - button "darkmatter" [ref=e1173] [cursor=pointer]
+            - button "sage garden" [ref=e1181] [cursor=pointer]
+            - button "t3 chat" [ref=e1189] [cursor=pointer]
+            - button "bubblegum" [ref=e1197] [cursor=pointer]
+            - button "doom 64" [ref=e1205] [cursor=pointer]
+            - button "perpetuity" [ref=e1213] [cursor=pointer]
+            - button "tangerine" [ref=e1221] [cursor=pointer]
+            - button "bold tech" [ref=e1229] [cursor=pointer]
+            - button "supabase" [ref=e1237] [cursor=pointer]
+            - button "claymorphism" [ref=e1245] [cursor=pointer]
+            - button "clean slate" [ref=e1253] [cursor=pointer]
+            - button "retro arcade" [ref=e1261] [cursor=pointer]
+            - button "northern lights" [ref=e1269] [cursor=pointer]
+            - button "starry night" [ref=e1277] [cursor=pointer]
+            - button "darkmatter" [ref=e1285] [cursor=pointer]
+            - button "sage garden" [ref=e1293] [cursor=pointer]
+            - button "t3 chat" [ref=e1301] [cursor=pointer]
+            - button "bubblegum" [ref=e1309] [cursor=pointer]
+            - button "doom 64" [ref=e1317] [cursor=pointer]
+            - button "perpetuity" [ref=e1325] [cursor=pointer]
+            - button "tangerine" [ref=e1333] [cursor=pointer]
+            - button "bold tech" [ref=e1341] [cursor=pointer]
+            - button "supabase" [ref=e1349] [cursor=pointer]
+            - button "claymorphism" [ref=e1357] [cursor=pointer]
+            - button "clean slate" [ref=e1365] [cursor=pointer]
+            - button "retro arcade" [ref=e1373] [cursor=pointer]
+            - button "northern lights" [ref=e1381] [cursor=pointer]
+            - button "starry night" [ref=e1389] [cursor=pointer]
+            - button "darkmatter" [ref=e1397] [cursor=pointer]
+            - button "sage garden" [ref=e1405] [cursor=pointer]
+      - generic [ref=e1414]:
+        - generic [ref=e1415]:
+          - heading "Loved by developers" [level=2] [ref=e1416]
+          - paragraph [ref=e1417]: Join thousands of developers building beautiful interfaces.
+        - generic [ref=e1418]:
+          - generic [ref=e1420]:
+            - link "Y YiMing @yimingdothan v0 + tweakcn + chatgpt for graphics generated a landing page in about 2~ hours crazy how easy this shit is now" [ref=e1422] [cursor=pointer]:
+              - /url: https://x.com/yimingdothan/status/1923833970799608086
+              - generic [ref=e1423]:
+                - generic [ref=e1424]:
+                  - generic [ref=e1425]: "Y"
+                  - generic [ref=e1427]:
+                    - heading "YiMing" [level=3] [ref=e1428]
+                    - paragraph [ref=e1429]: "@yimingdothan"
+                - paragraph [ref=e1430]: v0 + tweakcn + chatgpt for graphics generated a landing page in about 2~ hours crazy how easy this shit is now
+            - 'link "G Guillermo Rauch @rauchg If you''re looking to learn: ▪️ full stack Next.js ▪️ how to build a focused product people love … look no further than tweakcn[0] by @iamsahaj_xyz. It''s an open-source @shadcn theme builder." [ref=e1432] [cursor=pointer]':
+              - /url: https://x.com/rauchg/status/1938745259204493738
+              - generic [ref=e1433]:
+                - generic [ref=e1434]:
+                  - generic [ref=e1435]: G
+                  - generic [ref=e1437]:
+                    - heading "Guillermo Rauch" [level=3] [ref=e1438]
+                    - paragraph [ref=e1439]: "@rauchg"
+                - paragraph [ref=e1440]: "If you're looking to learn: ▪️ full stack Next.js ▪️ how to build a focused product people love … look no further than tweakcn[0] by @iamsahaj_xyz. It's an open-source @shadcn theme builder."
+            - link "s shadcn @shadcn 4/n - Finally, a custom theme from tweakcn by @iamsahaj_xyz" [ref=e1442] [cursor=pointer]:
+              - /url: https://x.com/shadcn/status/1909619407124676701
+              - generic [ref=e1443]:
+                - generic [ref=e1444]:
+                  - generic [ref=e1445]: s
+                  - generic [ref=e1447]:
+                    - heading "shadcn" [level=3] [ref=e1448]
+                    - paragraph [ref=e1449]: "@shadcn"
+                - paragraph [ref=e1450]: 4/n - Finally, a custom theme from tweakcn by @iamsahaj_xyz
+            - link "K Kevin Kern @kregenrek Tweakcn is really cool. Custom shadcn themes on the fly." [ref=e1452] [cursor=pointer]:
+              - /url: https://x.com/kregenrek/status/1911892242568216618
+              - generic [ref=e1453]:
+                - generic [ref=e1454]:
+                  - generic [ref=e1455]: K
+                  - generic [ref=e1457]:
+                    - heading "Kevin Kern" [level=3] [ref=e1458]
+                    - paragraph [ref=e1459]: "@kregenrek"
+                - paragraph [ref=e1460]: Tweakcn is really cool. Custom shadcn themes on the fly.
+            - link "O OrcDev @theorcdev Transform your Shadcn app with one click! @iamsahaj_xyz created a great concept with Tweakcn ⚔️" [ref=e1462] [cursor=pointer]:
+              - /url: https://x.com/theorcdev/status/1923396394452124081
+              - generic [ref=e1463]:
+                - generic [ref=e1464]:
+                  - generic [ref=e1465]: O
+                  - generic [ref=e1467]:
+                    - heading "OrcDev" [level=3] [ref=e1468]
+                    - paragraph [ref=e1469]: "@theorcdev"
+                - paragraph [ref=e1470]: Transform your Shadcn app with one click! @iamsahaj_xyz created a great concept with Tweakcn ⚔️
+            - link "Y YiMing @yimingdothan v0 + tweakcn + chatgpt for graphics generated a landing page in about 2~ hours crazy how easy this shit is now" [ref=e1472] [cursor=pointer]:
+              - /url: https://x.com/yimingdothan/status/1923833970799608086
+              - generic [ref=e1473]:
+                - generic [ref=e1474]:
+                  - generic [ref=e1475]: "Y"
+                  - generic [ref=e1477]:
+                    - heading "YiMing" [level=3] [ref=e1478]
+                    - paragraph [ref=e1479]: "@yimingdothan"
+                - paragraph [ref=e1480]: v0 + tweakcn + chatgpt for graphics generated a landing page in about 2~ hours crazy how easy this shit is now
+            - 'link "G Guillermo Rauch @rauchg If you''re looking to learn: ▪️ full stack Next.js ▪️ how to build a focused product people love … look no further than tweakcn[0] by @iamsahaj_xyz. It''s an open-source @shadcn theme builder." [ref=e1482] [cursor=pointer]':
+              - /url: https://x.com/rauchg/status/1938745259204493738
+              - generic [ref=e1483]:
+                - generic [ref=e1484]:
+                  - generic [ref=e1485]: G
+                  - generic [ref=e1487]:
+                    - heading "Guillermo Rauch" [level=3] [ref=e1488]
+                    - paragraph [ref=e1489]: "@rauchg"
+                - paragraph [ref=e1490]: "If you're looking to learn: ▪️ full stack Next.js ▪️ how to build a focused product people love … look no further than tweakcn[0] by @iamsahaj_xyz. It's an open-source @shadcn theme builder."
+            - link "s shadcn @shadcn 4/n - Finally, a custom theme from tweakcn by @iamsahaj_xyz" [ref=e1492] [cursor=pointer]:
+              - /url: https://x.com/shadcn/status/1909619407124676701
+              - generic [ref=e1493]:
+                - generic [ref=e1494]:
+                  - generic [ref=e1495]: s
+                  - generic [ref=e1497]:
+                    - heading "shadcn" [level=3] [ref=e1498]
+                    - paragraph [ref=e1499]: "@shadcn"
+                - paragraph [ref=e1500]: 4/n - Finally, a custom theme from tweakcn by @iamsahaj_xyz
+            - link "K Kevin Kern @kregenrek Tweakcn is really cool. Custom shadcn themes on the fly." [ref=e1502] [cursor=pointer]:
+              - /url: https://x.com/kregenrek/status/1911892242568216618
+              - generic [ref=e1503]:
+                - generic [ref=e1504]:
+                  - generic [ref=e1505]: K
+                  - generic [ref=e1507]:
+                    - heading "Kevin Kern" [level=3] [ref=e1508]
+                    - paragraph [ref=e1509]: "@kregenrek"
+                - paragraph [ref=e1510]: Tweakcn is really cool. Custom shadcn themes on the fly.
+            - link "O OrcDev @theorcdev Transform your Shadcn app with one click! @iamsahaj_xyz created a great concept with Tweakcn ⚔️" [ref=e1512] [cursor=pointer]:
+              - /url: https://x.com/theorcdev/status/1923396394452124081
+              - generic [ref=e1513]:
+                - generic [ref=e1514]:
+                  - generic [ref=e1515]: O
+                  - generic [ref=e1517]:
+                    - heading "OrcDev" [level=3] [ref=e1518]
+                    - paragraph [ref=e1519]: "@theorcdev"
+                - paragraph [ref=e1520]: Transform your Shadcn app with one click! @iamsahaj_xyz created a great concept with Tweakcn ⚔️
+          - generic [ref=e1522]:
+            - 'link "C Ciara Wearen @nocheerleader Create a Custom Theme: Your app instantly looks more intentional. Build a color palette, typography and layout preview with tweakcn dot com Grab the CSS → drop into Bolt = cohesive design" [ref=e1524] [cursor=pointer]':
+              - /url: https://x.com/nocheerleader/status/1934648830315684275
+              - generic [ref=e1525]:
+                - generic [ref=e1526]:
+                  - generic [ref=e1527]: C
+                  - generic [ref=e1529]:
+                    - heading "Ciara Wearen" [level=3] [ref=e1530]
+                    - paragraph [ref=e1531]: "@nocheerleader"
+                - paragraph [ref=e1532]: "Create a Custom Theme: Your app instantly looks more intentional. Build a color palette, typography and layout preview with tweakcn dot com Grab the CSS → drop into Bolt = cohesive design"
+            - link "T Tanpreet Jolly 🌂 @JollyTanpreet I just tried tweakcn and seems like you nailed it. This is what I have been looking for, awesome job!" [ref=e1534] [cursor=pointer]:
+              - /url: https://x.com/JollyTanpreet/status/1926923858721808484
+              - generic [ref=e1535]:
+                - generic [ref=e1536]:
+                  - generic [ref=e1537]: T
+                  - generic [ref=e1539]:
+                    - heading "Tanpreet Jolly 🌂" [level=3] [ref=e1540]
+                    - paragraph [ref=e1541]: "@JollyTanpreet"
+                - paragraph [ref=e1542]: I just tried tweakcn and seems like you nailed it. This is what I have been looking for, awesome job!
+            - link "C Code With Antonio @YTCodeAntonio there is an entire chapter dedicated to tweakcn!! such a cool project" [ref=e1544] [cursor=pointer]:
+              - /url: https://x.com/YTCodeAntonio/status/1938314416497549430
+              - generic [ref=e1545]:
+                - generic [ref=e1546]:
+                  - generic [ref=e1547]: C
+                  - generic [ref=e1549]:
+                    - heading "Code With Antonio" [level=3] [ref=e1550]
+                    - paragraph [ref=e1551]: "@YTCodeAntonio"
+                - paragraph [ref=e1552]: there is an entire chapter dedicated to tweakcn!! such a cool project
+            - link "E Emir @emirthedev Started using tweakcn for client projects too. This is a real game changer" [ref=e1554] [cursor=pointer]:
+              - /url: https://x.com/emirthedev/status/1919418644183843211
+              - generic [ref=e1555]:
+                - generic [ref=e1556]:
+                  - generic [ref=e1557]: E
+                  - generic [ref=e1559]:
+                    - heading "Emir" [level=3] [ref=e1560]
+                    - paragraph [ref=e1561]: "@emirthedev"
+                - paragraph [ref=e1562]: Started using tweakcn for client projects too. This is a real game changer
+            - 'link "M Matt Silverlock 🐀 @elithrar used this shadcn theme editor to make it a little less plain: tweakcn.com" [ref=e1564] [cursor=pointer]':
+              - /url: https://x.com/elithrar/status/1905704716589510889
+              - generic [ref=e1565]:
+                - generic [ref=e1566]:
+                  - generic [ref=e1567]: M
+                  - generic [ref=e1569]:
+                    - heading "Matt Silverlock 🐀" [level=3] [ref=e1570]
+                    - paragraph [ref=e1571]: "@elithrar"
+                - paragraph [ref=e1572]: "used this shadcn theme editor to make it a little less plain: tweakcn.com"
+            - 'link "C Ciara Wearen @nocheerleader Create a Custom Theme: Your app instantly looks more intentional. Build a color palette, typography and layout preview with tweakcn dot com Grab the CSS → drop into Bolt = cohesive design" [ref=e1574] [cursor=pointer]':
+              - /url: https://x.com/nocheerleader/status/1934648830315684275
+              - generic [ref=e1575]:
+                - generic [ref=e1576]:
+                  - generic [ref=e1577]: C
+                  - generic [ref=e1579]:
+                    - heading "Ciara Wearen" [level=3] [ref=e1580]
+                    - paragraph [ref=e1581]: "@nocheerleader"
+                - paragraph [ref=e1582]: "Create a Custom Theme: Your app instantly looks more intentional. Build a color palette, typography and layout preview with tweakcn dot com Grab the CSS → drop into Bolt = cohesive design"
+            - link "T Tanpreet Jolly 🌂 @JollyTanpreet I just tried tweakcn and seems like you nailed it. This is what I have been looking for, awesome job!" [ref=e1584] [cursor=pointer]:
+              - /url: https://x.com/JollyTanpreet/status/1926923858721808484
+              - generic [ref=e1585]:
+                - generic [ref=e1586]:
+                  - generic [ref=e1587]: T
+                  - generic [ref=e1589]:
+                    - heading "Tanpreet Jolly 🌂" [level=3] [ref=e1590]
+                    - paragraph [ref=e1591]: "@JollyTanpreet"
+                - paragraph [ref=e1592]: I just tried tweakcn and seems like you nailed it. This is what I have been looking for, awesome job!
+            - link "C Code With Antonio @YTCodeAntonio there is an entire chapter dedicated to tweakcn!! such a cool project" [ref=e1594] [cursor=pointer]:
+              - /url: https://x.com/YTCodeAntonio/status/1938314416497549430
+              - generic [ref=e1595]:
+                - generic [ref=e1596]:
+                  - generic [ref=e1597]: C
+                  - generic [ref=e1599]:
+                    - heading "Code With Antonio" [level=3] [ref=e1600]
+                    - paragraph [ref=e1601]: "@YTCodeAntonio"
+                - paragraph [ref=e1602]: there is an entire chapter dedicated to tweakcn!! such a cool project
+            - link "E Emir @emirthedev Started using tweakcn for client projects too. This is a real game changer" [ref=e1604] [cursor=pointer]:
+              - /url: https://x.com/emirthedev/status/1919418644183843211
+              - generic [ref=e1605]:
+                - generic [ref=e1606]:
+                  - generic [ref=e1607]: E
+                  - generic [ref=e1609]:
+                    - heading "Emir" [level=3] [ref=e1610]
+                    - paragraph [ref=e1611]: "@emirthedev"
+                - paragraph [ref=e1612]: Started using tweakcn for client projects too. This is a real game changer
+            - 'link "M Matt Silverlock 🐀 @elithrar used this shadcn theme editor to make it a little less plain: tweakcn.com" [ref=e1614] [cursor=pointer]':
+              - /url: https://x.com/elithrar/status/1905704716589510889
+              - generic [ref=e1615]:
+                - generic [ref=e1616]:
+                  - generic [ref=e1617]: M
+                  - generic [ref=e1619]:
+                    - heading "Matt Silverlock 🐀" [level=3] [ref=e1620]
+                    - paragraph [ref=e1621]: "@elithrar"
+                - paragraph [ref=e1622]: "used this shadcn theme editor to make it a little less plain: tweakcn.com"
+      - generic [ref=e1626]:
+        - generic [ref=e1627]:
+          - heading "Powerful Tools For Total Control" [level=2] [ref=e1628]
+          - paragraph [ref=e1629]: Everything you need to customize your shadcn/ui components and make them unique.
+        - generic [ref=e1630]:
+          - generic [ref=e1632]:
+            - heading "Color Control" [level=3] [ref=e1638]
+            - paragraph [ref=e1639]: Customize background, text, and border colors with an intuitive color picker interface.
+          - generic [ref=e1641]:
+            - heading "Typography Settings" [level=3] [ref=e1648]
+            - paragraph [ref=e1649]: Fine-tune font size, weight, and text transform to create the perfect look.
+          - generic [ref=e1651]:
+            - heading "Tailwind v4 & v3" [level=3] [ref=e1656]
+            - paragraph [ref=e1657]: Seamlessly switch between Tailwind versions with support for OKLCH & HSL formats.
+          - generic [ref=e1659]:
+            - heading "Detailed Properties" [level=3] [ref=e1665]
+            - paragraph [ref=e1666]: Fine-tune every aspect including radius, spacing, shadows, and other properties.
+          - generic [ref=e1668]:
+            - heading "Contrast Checker" [level=3] [ref=e1673]
+            - paragraph [ref=e1674]: Ensure designs meet accessibility standards with built-in contrast ratio checking.
+          - generic [ref=e1676]:
+            - heading [level=3] [ref=e1690]:
+              - text: AI Theme Generation
+              - generic [ref=e1691]: Pro
+            - paragraph [ref=e1695]: Create stunning, ready-to-use themes in seconds. Just provide an image or prompt.
+      - generic [ref=e1699]:
+        - generic [ref=e1701]:
+          - generic [ref=e1702]:
+            - heading "Generate Themes in Seconds" [level=2] [ref=e1703]
+            - paragraph [ref=e1704]: Just provide an image or text prompt, and our AI will create a stunning, production-ready theme for you.
+          - generic [ref=e1705]:
+            - link [ref=e1706] [cursor=pointer]:
+              - /url: /ai
+              - button "Generate with AI" [ref=e1707]
+            - link [ref=e1708] [cursor=pointer]:
+              - /url: /pricing
+              - button "View Pricing" [ref=e1709]
+          - generic [ref=e1710]:
+            - generic [ref=e1711]: Theme Preview
+            - generic [ref=e1716]: Checkpoint Restoration
+            - generic [ref=e1721]: Image Extraction
+            - generic [ref=e1726]: Text-to-Theme
+        - generic [ref=e1739]:
+          - generic [ref=e1743]:
+            - generic [ref=e1745] [cursor=pointer]
+            - generic [ref=e1752]: Generate a theme from this image.
+          - paragraph [ref=e1765]: I've generated a Midnight Bloom theme based on your image. It features deep purples and blues for a calming, modern look.
+          - generic [ref=e1766]: Can you generate a theme inspired by @Twitter?
+          - paragraph [ref=e1783]: Alright, I've whipped up a Twitter-inspired theme. Expect bright blues and clean contrasts for a social, energetic vibe.
+          - generic [ref=e1784]: How about a @Supabase theme?
+          - paragraph [ref=e1801]: I've generated a Supabase theme for you. It uses fresh greens and dark backgrounds for a modern, developer-friendly feel.
+      - generic [ref=e1804]:
+        - generic [ref=e1806]:
+          - heading "Three Steps to Perfection" [level=2] [ref=e1807]
+          - paragraph [ref=e1808]: We've simplified the theming process so you can focus on building your app.
+        - generic [ref=e1809]:
+          - generic [ref=e1810]:
+            - generic [ref=e1811]: "01"
+            - heading "Select Preset" [level=3] [ref=e1814]
+            - paragraph [ref=e1815]: Start with a pre-made theme from our library.
+          - generic [ref=e1816]:
+            - generic [ref=e1817]: "02"
+            - heading "Customize" [level=3] [ref=e1820]
+            - paragraph [ref=e1821]: Adjust colors, radius, and typography visually.
+          - generic [ref=e1822]:
+            - generic [ref=e1823]: "03"
+            - heading "Export Code" [level=3] [ref=e1826]
+            - paragraph [ref=e1827]: Copy the Tailwind CSS config to your project.
+      - generic [ref=e1830]:
+        - generic [ref=e1831]:
+          - heading "FAQ" [level=2] [ref=e1832]
+          - paragraph [ref=e1833]: Got questions? We've got answers. If you can't find what you're looking for, feel free to reach out.
+          - paragraph [ref=e1835]:
+            - text: Contact us at
+            - link "sahaj@tweakcn.com" [ref=e1836] [cursor=pointer]:
+              - /url: "#"
+        - generic [ref=e1838]:
+          - heading [level=3] [ref=e1841]:
+            - button "What is tweakcn?" [ref=e1842] [cursor=pointer]
+          - heading [level=3] [ref=e1845]:
+            - button "Is it free?" [ref=e1846] [cursor=pointer]
+          - heading [level=3] [ref=e1849]:
+            - button "What's included in Pro?" [ref=e1850] [cursor=pointer]
+          - heading [level=3] [ref=e1853]:
+            - button "Supports Tailwind v4?" [ref=e1854] [cursor=pointer]
+          - heading [level=3] [ref=e1857]:
+            - button "Can I use with existing projects?" [ref=e1858] [cursor=pointer]
+      - generic [ref=e1864]:
+        - heading "Ready to Make Your Components Stand Out?" [level=2] [ref=e1865]
+        - paragraph [ref=e1866]: Start customizing your shadcn/ui components today and create a unique look for your application.
+        - generic [ref=e1867]:
+          - link [ref=e1868] [cursor=pointer]:
+            - /url: /editor/theme
+            - button "Try It Now" [ref=e1869]
+          - link [ref=e1870] [cursor=pointer]:
+            - /url: https://github.com/jnsahaj/tweakcn
+            - button "View on GitHub" [ref=e1871]
+        - paragraph [ref=e1872]: No login required. Free to use. Open source.
+    - contentinfo [ref=e1873]:
+      - generic [ref=e1874]:
+        - generic [ref=e1875]:
+          - generic [ref=e1876]:
+            - link "tweakcn" [ref=e1877] [cursor=pointer]:
+              - /url: /
+            - paragraph [ref=e1884]: A powerful visual theme editor for shadcn/ui components with Tailwind CSS support. Make your components stand out.
+            - generic [ref=e1885]:
+              - link "GitHub" [ref=e1886] [cursor=pointer]:
+                - /url: https://github.com/jnsahaj/tweakcn
+              - link "Discord" [ref=e1890] [cursor=pointer]:
+                - /url: https://discord.gg/Phs4u2NM3n
+              - link "Twitter" [ref=e1894] [cursor=pointer]:
+                - /url: https://x.com/iamsahaj_xyz
+          - generic [ref=e1898]:
+            - heading "Product" [level=4] [ref=e1899]
+            - list [ref=e1900]:
+              - listitem [ref=e1901]:
+                - link "Features" [ref=e1902] [cursor=pointer]:
+                  - /url: /#features
+              - listitem [ref=e1903]:
+                - link "Examples" [ref=e1904] [cursor=pointer]:
+                  - /url: /community
+              - listitem [ref=e1905]:
+                - link "Roadmap" [ref=e1906] [cursor=pointer]:
+                  - /url: /#roadmap
+          - generic [ref=e1907]:
+            - heading "Resources" [level=4] [ref=e1908]
+            - list [ref=e1909]:
+              - listitem [ref=e1910]:
+                - link "GitHub" [ref=e1911] [cursor=pointer]:
+                  - /url: https://github.com/jnsahaj/tweakcn
+              - listitem [ref=e1912]:
+                - link "Discord" [ref=e1913] [cursor=pointer]:
+                  - /url: https://discord.gg/Phs4u2NM3n
+              - listitem [ref=e1914]:
+                - link "Contact" [ref=e1915] [cursor=pointer]:
+                  - /url: https://x.com/messages/compose?recipient_id=1426676644152889345
+        - generic [ref=e1916]:
+          - paragraph [ref=e1917]: © 2026 tweakcn. All rights reserved.
+          - paragraph [ref=e1918]:
+            - link "Privacy Policy" [ref=e1919] [cursor=pointer]:
+              - /url: /privacy-policy

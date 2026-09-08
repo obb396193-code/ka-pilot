@@ -1,8 +1,8 @@
-# B11 奇航时效、完整性与小时监控加固 Implementation Plan
+# B11 启航时效、完整性与小时监控加固 Implementation Plan
 
 > **For Codex:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** 将第二轮 OS 真实只读证据落成可恢复的离线重查、广告查询截断防护、可审计数据观测和确定性小时差分，使奇航主取数链可以安全支撑实时监控与延迟结算。
+**Goal:** 将第二轮 OS 真实只读证据落成可恢复的离线重查、广告查询截断防护、可审计数据观测和确定性小时差分，使启航主取数链可以安全支撑实时监控与延迟结算。
 
 **Architecture:** 保持现有四 resource、Raw append-only、Canonical 和公开 API/Contract 不变。`etl_incr` 复用现有调度承载可配置 D-1 离线重查；Qihang Client 对无过滤广告查询和疑似 2000 行截断 fail-closed；每次查询把不含业务明细的观测元数据写入 `etl_runs.scope.observations`。小时指标由 Domain 对相邻累计快照做 ID 并集差分，再由现有 `ad_metrics_hourly` 表 Upsert；未确认的分区完整性只标 observed/provisional，不虚报 complete。
 

@@ -1,0 +1,2447 @@
+- generic [active] [ref=f7e1]:
+  - region "Notifications alt+T"
+  - generic [ref=f7e2]:
+    - complementary [ref=f7e3]:
+      - generic [ref=f7e4]:
+        - generic [ref=f7e5]:
+          - link "Dice UI" [ref=f7e6] [cursor=pointer]:
+            - /url: /
+          - button "Collapse Sidebar" [ref=f7e10]
+        - button "Search ⌘ K" [ref=f7e13]:
+          - text: Search
+          - generic [ref=f7e17]:
+            - generic [ref=f7e18]: ⌘
+            - generic [ref=f7e19]: K
+      - generic [ref=f7e22]:
+        - link "Introduction" [ref=f7e23] [cursor=pointer]:
+          - /url: /docs/introduction
+        - link "Changelog" [ref=f7e24] [cursor=pointer]:
+          - /url: /docs/changelog
+        - generic [ref=f7e25]:
+          - button "Components" [expanded] [ref=f7e26]
+          - generic [ref=f7e30]:
+            - link "Action Bar" [ref=f7e31] [cursor=pointer]:
+              - /url: /docs/components/radix/action-bar
+            - link "Angle Slider" [ref=f7e32] [cursor=pointer]:
+              - /url: /docs/components/radix/angle-slider
+            - link "Avatar Group" [ref=f7e33] [cursor=pointer]:
+              - /url: /docs/components/radix/avatar-group
+            - link "Badge Overflow" [ref=f7e34] [cursor=pointer]:
+              - /url: /docs/components/radix/badge-overflow
+            - link "Banner Preview" [ref=f7e35] [cursor=pointer]:
+              - /url: /docs/components/radix/banner
+              - text: Banner
+              - generic [ref=f7e36]: Preview
+            - link "Checkbox Group" [ref=f7e37] [cursor=pointer]:
+              - /url: /docs/components/radix/checkbox-group
+            - link "Circular Progress" [ref=f7e38] [cursor=pointer]:
+              - /url: /docs/components/radix/circular-progress
+            - link "Color Picker" [ref=f7e39] [cursor=pointer]:
+              - /url: /docs/components/radix/color-picker
+            - link "Color Swatch" [ref=f7e40] [cursor=pointer]:
+              - /url: /docs/components/radix/color-swatch
+            - link "Combobox" [ref=f7e41] [cursor=pointer]:
+              - /url: /docs/components/radix/combobox
+            - link "Compare Slider" [ref=f7e42] [cursor=pointer]:
+              - /url: /docs/components/radix/compare-slider
+            - link "Cropper" [ref=f7e43] [cursor=pointer]:
+              - /url: /docs/components/radix/cropper
+            - link "Data Grid" [ref=f7e44] [cursor=pointer]:
+              - /url: /docs/components/radix/data-grid
+            - link "Data Table" [ref=f7e45] [cursor=pointer]:
+              - /url: /docs/components/radix/data-table
+            - link "Editable" [ref=f7e46] [cursor=pointer]:
+              - /url: /docs/components/radix/editable
+            - link "File Upload" [ref=f7e47] [cursor=pointer]:
+              - /url: /docs/components/radix/file-upload
+            - link "FPS" [ref=f7e48] [cursor=pointer]:
+              - /url: /docs/components/radix/fps
+            - link "Gauge" [ref=f7e49] [cursor=pointer]:
+              - /url: /docs/components/radix/gauge
+            - link "Kanban" [ref=f7e50] [cursor=pointer]:
+              - /url: /docs/components/radix/kanban
+            - link "Kbd" [ref=f7e51] [cursor=pointer]:
+              - /url: /docs/components/radix/kbd
+            - link "Key Value" [ref=f7e52] [cursor=pointer]:
+              - /url: /docs/components/radix/key-value
+            - link "Listbox" [ref=f7e53] [cursor=pointer]:
+              - /url: /docs/components/radix/listbox
+            - link "Marquee" [ref=f7e54] [cursor=pointer]:
+              - /url: /docs/components/radix/marquee
+            - link "Mask Input" [ref=f7e55] [cursor=pointer]:
+              - /url: /docs/components/radix/mask-input
+            - link "Masonry" [ref=f7e56] [cursor=pointer]:
+              - /url: /docs/components/radix/masonry
+            - link "Media Player" [ref=f7e57] [cursor=pointer]:
+              - /url: /docs/components/radix/media-player
+            - link "Mention" [ref=f7e58] [cursor=pointer]:
+              - /url: /docs/components/radix/mention
+            - link "Phone Input" [ref=f7e59] [cursor=pointer]:
+              - /url: /docs/components/radix/phone-input
+            - link "QR Code" [ref=f7e60] [cursor=pointer]:
+              - /url: /docs/components/radix/qr-code
+            - link "Rating" [ref=f7e61] [cursor=pointer]:
+              - /url: /docs/components/radix/rating
+            - link "Relative Time Card" [ref=f7e62] [cursor=pointer]:
+              - /url: /docs/components/radix/relative-time-card
+            - link "Responsive Dialog" [ref=f7e63] [cursor=pointer]:
+              - /url: /docs/components/radix/responsive-dialog
+            - link "Scroll Spy" [ref=f7e64] [cursor=pointer]:
+              - /url: /docs/components/radix/scroll-spy
+            - link "Scroller" [ref=f7e65] [cursor=pointer]:
+              - /url: /docs/components/radix/scroller
+            - link "Segmented Input" [ref=f7e66] [cursor=pointer]:
+              - /url: /docs/components/radix/segmented-input
+            - link "Selection Toolbar" [ref=f7e67] [cursor=pointer]:
+              - /url: /docs/components/radix/selection-toolbar
+            - link "Sortable" [ref=f7e68] [cursor=pointer]:
+              - /url: /docs/components/radix/sortable
+            - link "Speed Dial" [ref=f7e69] [cursor=pointer]:
+              - /url: /docs/components/radix/speed-dial
+            - link "Stack" [ref=f7e70] [cursor=pointer]:
+              - /url: /docs/components/radix/stack
+            - link "Stat" [ref=f7e71] [cursor=pointer]:
+              - /url: /docs/components/radix/stat
+            - link "Status" [ref=f7e72] [cursor=pointer]:
+              - /url: /docs/components/radix/status
+            - link "Stepper" [ref=f7e73] [cursor=pointer]:
+              - /url: /docs/components/radix/stepper
+            - link "Swap" [ref=f7e74] [cursor=pointer]:
+              - /url: /docs/components/radix/swap
+            - link "Tags Input" [ref=f7e75] [cursor=pointer]:
+              - /url: /docs/components/radix/tags-input
+            - link "Time Picker" [ref=f7e76] [cursor=pointer]:
+              - /url: /docs/components/radix/time-picker
+            - link "Timeline" [ref=f7e77] [cursor=pointer]:
+              - /url: /docs/components/radix/timeline
+            - link "Tour" [ref=f7e78] [cursor=pointer]:
+              - /url: /docs/components/radix/tour
+        - generic [ref=f7e79]:
+          - button "Utilities" [expanded] [ref=f7e80]
+          - generic [ref=f7e84]:
+            - link "Client Only" [ref=f7e85] [cursor=pointer]:
+              - /url: /docs/utilities/radix/client-only
+            - link "Composition" [ref=f7e86] [cursor=pointer]:
+              - /url: /docs/utilities/radix/composition
+            - link "Direction Provider" [ref=f7e87] [cursor=pointer]:
+              - /url: /docs/utilities/radix/direction-provider
+            - link "Hitbox" [ref=f7e88] [cursor=pointer]:
+              - /url: /docs/utilities/radix/hitbox
+            - link "Portal" [ref=f7e89] [cursor=pointer]:
+              - /url: /docs/utilities/radix/portal
+            - link "Pending Preview" [ref=f7e90] [cursor=pointer]:
+              - /url: /docs/utilities/radix/pending
+              - text: Pending
+              - generic [ref=f7e91]: Preview
+            - link "Presence" [ref=f7e92] [cursor=pointer]:
+              - /url: /docs/utilities/radix/presence
+            - link "Visually Hidden" [ref=f7e93] [cursor=pointer]:
+              - /url: /docs/utilities/radix/visually-hidden
+            - link "Visually Hidden Input" [ref=f7e94] [cursor=pointer]:
+              - /url: /docs/utilities/radix/visually-hidden-input
+      - generic [ref=f7e96]:
+        - link [ref=f7e97] [cursor=pointer]:
+          - /url: https://github.com/sadmann7/diceui
+        - button "Toggle Theme" [ref=f7e100]
+    - generic:
+      - button "Collapse Sidebar"
+      - button "Open Search"
+    - article [ref=f7e109]:
+      - generic [ref=f7e110]:
+        - generic [ref=f7e111]:
+          - heading "Data Grid" [level=1] [ref=f7e112]
+          - paragraph [ref=f7e113]: A high-performance editable data grid component with virtualization, keyboard navigation, and comprehensive cell editing capabilities.
+        - generic [ref=f7e114]:
+          - link "Docs" [ref=f7e115] [cursor=pointer]:
+            - /url: https://tanstack.com/table/latest/docs/introduction
+          - link "API" [ref=f7e116] [cursor=pointer]:
+            - /url: /docs/components/radix/data-grid#api-reference
+          - group [ref=f7e117]:
+            - button "Copy Page" [ref=f7e118]
+            - button [ref=f7e119]
+      - generic [ref=f7e120]:
+        - generic [ref=f7e121]:
+          - tablist [ref=f7e123]:
+            - tab "Preview" [selected] [ref=f7e124]
+            - tab "Code" [ref=f7e125]
+          - tabpanel "Preview" [ref=f7e126]:
+            - grid "Data grid" [ref=f7e129]:
+              - rowgroup [ref=f7e130]:
+                - row [ref=f7e131]:
+                  - columnheader [ref=f7e132]:
+                    - button "Trick name" [ref=f7e133]
+                    - separator "Resize Trick name column" [ref=f7e140]
+                  - columnheader [ref=f7e141]:
+                    - button "Skater" [ref=f7e142]
+                    - separator "Resize Skater column" [ref=f7e149]
+                  - columnheader [ref=f7e150]:
+                    - button "Difficulty" [ref=f7e151]
+                    - separator "Resize Difficulty column" [ref=f7e157]
+                  - columnheader [ref=f7e158]:
+                    - button "Category" [ref=f7e159]
+                    - separator "Resize Category column" [ref=f7e165]
+                  - columnheader [ref=f7e166]:
+                    - button "Landed" [ref=f7e167]
+                    - separator "Resize Landed column" [ref=f7e175]
+                  - columnheader [ref=f7e176]:
+                    - button "Attempts" [ref=f7e177]
+                    - separator "Resize Attempts column" [ref=f7e185]
+                  - columnheader [ref=f7e186]:
+                    - button "Score" [ref=f7e187]
+                    - separator "Resize Score column" [ref=f7e195]
+                  - columnheader [ref=f7e196]:
+                    - button "Location" [ref=f7e197]
+                    - separator "Resize Location column" [ref=f7e203]
+                  - columnheader [ref=f7e204]:
+                    - button "Attempted at" [ref=f7e205]
+                    - separator "Resize Attempted at column" [ref=f7e212]
+              - rowgroup [ref=f7e213]
+              - rowgroup [ref=f7e214]:
+                - row [ref=f7e215]:
+                  - gridcell "Add row" [ref=f7e216]
+        - heading [level=2] [ref=f7e220]:
+          - link "Installation" [ref=f7e221] [cursor=pointer]:
+            - /url: "#installation"
+        - generic [ref=f7e225]:
+          - generic [ref=f7e226]:
+            - paragraph [ref=f7e227]: "Install the main component and dependencies:"
+            - generic [ref=f7e228]:
+              - tablist [ref=f7e230]:
+                - tab "npm" [ref=f7e231]
+                - tab "pnpm" [selected] [ref=f7e232]
+                - tab "yarn" [ref=f7e233]
+                - tab "bun" [ref=f7e234]
+              - tabpanel "pnpm" [ref=f7e235]:
+                - figure [ref=f7e236]:
+                  - figure [ref=f7e238]:
+                    - button "Copy Text" [ref=f7e240]
+                    - region [ref=f7e244]:
+                      - code [ref=f7e246]:
+                        - generic [ref=f7e247]: pnpm dlx shadcn@latest add "@diceui/data-grid"
+          - generic [ref=f7e248]:
+            - paragraph [ref=f7e249]: "Install the following optional components:"
+            - paragraph [ref=f7e250]:
+              - link [ref=f7e251] [cursor=pointer]:
+                - /url: "#getdatagridselectcolumn"
+                - code [ref=f7e252]: getDataGridSelectColumn
+              - text: ":"
+            - generic [ref=f7e253]:
+              - tablist [ref=f7e255]:
+                - tab "npm" [ref=f7e256]
+                - tab "pnpm" [selected] [ref=f7e257]
+                - tab "yarn" [ref=f7e258]
+                - tab "bun" [ref=f7e259]
+              - tabpanel "pnpm" [ref=f7e260]:
+                - figure [ref=f7e261]:
+                  - figure [ref=f7e263]:
+                    - button "Copy Text" [ref=f7e265]
+                    - region [ref=f7e269]:
+                      - code [ref=f7e271]:
+                        - generic [ref=f7e272]: pnpm dlx shadcn@latest add "@diceui/data-grid-select-column"
+            - paragraph [ref=f7e273]:
+              - link [ref=f7e274] [cursor=pointer]:
+                - /url: "#datagridsortmenu"
+                - code [ref=f7e275]: DataGridSortMenu
+              - text: ":"
+            - generic [ref=f7e276]:
+              - tablist [ref=f7e278]:
+                - tab "npm" [ref=f7e279]
+                - tab "pnpm" [selected] [ref=f7e280]
+                - tab "yarn" [ref=f7e281]
+                - tab "bun" [ref=f7e282]
+              - tabpanel "pnpm" [ref=f7e283]:
+                - figure [ref=f7e284]:
+                  - figure [ref=f7e286]:
+                    - button "Copy Text" [ref=f7e288]
+                    - region [ref=f7e292]:
+                      - code [ref=f7e294]:
+                        - generic [ref=f7e295]: pnpm dlx shadcn@latest add "@diceui/data-grid-sort-menu"
+            - paragraph [ref=f7e296]:
+              - link [ref=f7e297] [cursor=pointer]:
+                - /url: "#datagridfiltermenu"
+                - code [ref=f7e298]: DataGridFilterMenu
+              - text: ":"
+            - generic [ref=f7e299]:
+              - tablist [ref=f7e301]:
+                - tab "npm" [ref=f7e302]
+                - tab "pnpm" [selected] [ref=f7e303]
+                - tab "yarn" [ref=f7e304]
+                - tab "bun" [ref=f7e305]
+              - tabpanel "pnpm" [ref=f7e306]:
+                - figure [ref=f7e307]:
+                  - figure [ref=f7e309]:
+                    - button "Copy Text" [ref=f7e311]
+                    - region [ref=f7e315]:
+                      - code [ref=f7e317]:
+                        - generic [ref=f7e318]: pnpm dlx shadcn@latest add "@diceui/data-grid-filter-menu"
+            - paragraph [ref=f7e319]:
+              - link [ref=f7e320] [cursor=pointer]:
+                - /url: "#datagridrowheightmenu"
+                - code [ref=f7e321]: DataGridRowHeightMenu
+              - text: ":"
+            - generic [ref=f7e322]:
+              - tablist [ref=f7e324]:
+                - tab "npm" [ref=f7e325]
+                - tab "pnpm" [selected] [ref=f7e326]
+                - tab "yarn" [ref=f7e327]
+                - tab "bun" [ref=f7e328]
+              - tabpanel "pnpm" [ref=f7e329]:
+                - figure [ref=f7e330]:
+                  - figure [ref=f7e332]:
+                    - button "Copy Text" [ref=f7e334]
+                    - region [ref=f7e338]:
+                      - code [ref=f7e340]:
+                        - generic [ref=f7e341]: pnpm dlx shadcn@latest add "@diceui/data-grid-row-height-menu"
+            - paragraph [ref=f7e342]:
+              - link [ref=f7e343] [cursor=pointer]:
+                - /url: "#datagridviewmenu"
+                - code [ref=f7e344]: DataGridViewMenu
+              - text: ":"
+            - generic [ref=f7e345]:
+              - tablist [ref=f7e347]:
+                - tab "npm" [ref=f7e348]
+                - tab "pnpm" [selected] [ref=f7e349]
+                - tab "yarn" [ref=f7e350]
+                - tab "bun" [ref=f7e351]
+              - tabpanel "pnpm" [ref=f7e352]:
+                - figure [ref=f7e353]:
+                  - figure [ref=f7e355]:
+                    - button "Copy Text" [ref=f7e357]
+                    - region [ref=f7e361]:
+                      - code [ref=f7e363]:
+                        - generic [ref=f7e364]: pnpm dlx shadcn@latest add "@diceui/data-grid-view-menu"
+            - paragraph [ref=f7e365]:
+              - link [ref=f7e366] [cursor=pointer]:
+                - /url: "#datagridkeyboardshortcuts"
+                - code [ref=f7e367]: DataGridKeyboardShortcuts
+              - text: ":"
+            - generic [ref=f7e368]:
+              - tablist [ref=f7e370]:
+                - tab "npm" [ref=f7e371]
+                - tab "pnpm" [selected] [ref=f7e372]
+                - tab "yarn" [ref=f7e373]
+                - tab "bun" [ref=f7e374]
+              - tabpanel "pnpm" [ref=f7e375]:
+                - figure [ref=f7e376]:
+                  - figure [ref=f7e378]:
+                    - button "Copy Text" [ref=f7e380]
+                    - region [ref=f7e384]:
+                      - code [ref=f7e386]:
+                        - generic [ref=f7e387]: pnpm dlx shadcn@latest add "@diceui/data-grid-keyboard-shortcuts"
+            - paragraph [ref=f7e388]:
+              - link [ref=f7e389] [cursor=pointer]:
+                - /url: "#datagridskeleton"
+                - code [ref=f7e390]: DataGridSkeleton
+              - text: ":"
+            - generic [ref=f7e391]:
+              - tablist [ref=f7e393]:
+                - tab "npm" [ref=f7e394]
+                - tab "pnpm" [selected] [ref=f7e395]
+                - tab "yarn" [ref=f7e396]
+                - tab "bun" [ref=f7e397]
+              - tabpanel "pnpm" [ref=f7e398]:
+                - figure [ref=f7e399]:
+                  - figure [ref=f7e401]:
+                    - button "Copy Text" [ref=f7e403]
+                    - region [ref=f7e407]:
+                      - code [ref=f7e409]:
+                        - generic [ref=f7e410]: pnpm dlx shadcn@latest add "@diceui/data-grid-skeleton"
+            - paragraph [ref=f7e411]:
+              - link [ref=f7e412] [cursor=pointer]:
+                - /url: "#usedatagridundoredo"
+                - code [ref=f7e413]: useDataGridUndoRedo
+              - text: ":"
+            - generic [ref=f7e414]:
+              - tablist [ref=f7e416]:
+                - tab "npm" [ref=f7e417]
+                - tab "pnpm" [selected] [ref=f7e418]
+                - tab "yarn" [ref=f7e419]
+                - tab "bun" [ref=f7e420]
+              - tabpanel "pnpm" [ref=f7e421]:
+                - figure [ref=f7e422]:
+                  - figure [ref=f7e424]:
+                    - button "Copy Text" [ref=f7e426]
+                    - region [ref=f7e430]:
+                      - code [ref=f7e432]:
+                        - generic [ref=f7e433]: pnpm dlx shadcn@latest add "@diceui/use-data-grid-undo-redo"
+          - generic [ref=f7e434]:
+            - paragraph [ref=f7e435]: "Update import paths for custom components:"
+            - paragraph [ref=f7e436]:
+              - text: The shadcn CLI doesn't handle custom component paths properly (
+              - link "see issue" [ref=f7e437] [cursor=pointer]:
+                - /url: https://github.com/shadcn-ui/ui/issues/8308
+              - text: "). You'll need to update these imports manually:"
+            - paragraph [ref=f7e438]:
+              - strong [ref=f7e439]:
+                - text: In
+                - code [ref=f7e440]: lib/data-grid.ts
+                - text: ":"
+            - figure "lib/data-grid.ts" [ref=f7e441]:
+              - figure [ref=f7e444]:
+                - button "Copy Text" [ref=f7e446]
+                - region [ref=f7e450]:
+                  - code [ref=f7e452]:
+                    - generic [ref=f7e453]: "- import type {"
+                    - generic [ref=f7e454]: "- CellPosition,"
+                    - generic [ref=f7e455]: "- Direction,"
+                    - generic [ref=f7e456]: "- FileCellData,"
+                    - generic [ref=f7e457]: "- RowHeightValue,"
+                    - generic [ref=f7e458]: "- } from \"@/components/data-grid/data-grid\";"
+                    - generic [ref=f7e459]: "+ import type {"
+                    - generic [ref=f7e460]: + CellPosition,
+                    - generic [ref=f7e461]: + Direction,
+                    - generic [ref=f7e462]: + FileCellData,
+                    - generic [ref=f7e463]: + RowHeightValue,
+                    - generic [ref=f7e464]: "+ } from \"@/types/data-grid\";"
+            - paragraph [ref=f7e465]:
+              - strong [ref=f7e466]:
+                - text: In
+                - code [ref=f7e467]: hooks/use-data-grid.ts
+                - text: ":"
+            - figure "hooks/use-data-grid.ts" [ref=f7e468]:
+              - figure [ref=f7e471]:
+                - button "Copy Text" [ref=f7e473]
+                - region [ref=f7e477]:
+                  - code [ref=f7e479]:
+                    - generic [ref=f7e480]: "- import {"
+                    - generic [ref=f7e481]: "- getCellKey,"
+                    - generic [ref=f7e482]: "- getIsFileCellData,"
+                    - generic [ref=f7e483]: "- getIsInPopover,"
+                    - generic [ref=f7e484]: "- getRowHeightValue,"
+                    - generic [ref=f7e485]: "- getScrollDirection,"
+                    - generic [ref=f7e486]: "- matchSelectOption,"
+                    - generic [ref=f7e487]: "- parseCellKey,"
+                    - generic [ref=f7e488]: "- scrollCellIntoView,"
+                    - generic [ref=f7e489]: "- } from \"@/components/data-grid/data-grid\";"
+                    - generic [ref=f7e490]: "- import type {"
+                    - generic [ref=f7e491]: "- CellPosition,"
+                    - generic [ref=f7e492]: "- ContextMenuState,"
+                    - generic [ref=f7e493]: "- Direction,"
+                    - generic [ref=f7e494]: "- FileCellData,"
+                    - generic [ref=f7e495]: "- NavigationDirection,"
+                    - generic [ref=f7e496]: "- PasteDialogState,"
+                    - generic [ref=f7e497]: "- RowHeightValue,"
+                    - generic [ref=f7e498]: "- SearchState,"
+                    - generic [ref=f7e499]: "- SelectionState,"
+                    - generic [ref=f7e500]: "- CellUpdate,"
+                    - generic [ref=f7e501]: "- } from \"@/components/data-grid/data-grid\";"
+                    - generic [ref=f7e502]: "+ import {"
+                    - generic [ref=f7e503]: + getCellKey,
+                    - generic [ref=f7e504]: + getIsFileCellData,
+                    - generic [ref=f7e505]: + getIsInPopover,
+                    - generic [ref=f7e506]: + getRowHeightValue,
+                    - generic [ref=f7e507]: + getScrollDirection,
+                    - generic [ref=f7e508]: + matchSelectOption,
+                    - generic [ref=f7e509]: + parseCellKey,
+                    - generic [ref=f7e510]: + scrollCellIntoView,
+                    - generic [ref=f7e511]: "+ } from \"@/lib/data-grid\";"
+                    - generic [ref=f7e512]: "+ import type {"
+                    - generic [ref=f7e513]: + CellPosition,
+                    - generic [ref=f7e514]: + ContextMenuState,
+                    - generic [ref=f7e515]: + Direction,
+                    - generic [ref=f7e516]: + FileCellData,
+                    - generic [ref=f7e517]: + NavigationDirection,
+                    - generic [ref=f7e518]: + PasteDialogState,
+                    - generic [ref=f7e519]: + RowHeightValue,
+                    - generic [ref=f7e520]: + SearchState,
+                    - generic [ref=f7e521]: + SelectionState,
+                    - generic [ref=f7e522]: + CellUpdate,
+                    - generic [ref=f7e523]: "+ } from \"@/types/data-grid\";"
+            - paragraph [ref=f7e524]:
+              - strong [ref=f7e525]:
+                - text: In all
+                - code [ref=f7e526]: components/data-grid/*.tsx
+                - text: "files:"
+            - paragraph [ref=f7e527]:
+              - text: Update imports to use
+              - code [ref=f7e528]: "@/lib/data-grid"
+              - text: for utility functions and
+              - code [ref=f7e529]: "@/types/data-grid"
+              - text: for types instead of importing from
+              - code [ref=f7e530]: "@/components/data-grid/data-grid"
+              - text: .
+        - heading [level=2] [ref=f7e531]:
+          - link "Usage" [ref=f7e532] [cursor=pointer]:
+            - /url: "#usage"
+        - heading [level=3] [ref=f7e536]:
+          - link "Basic Data Grid" [ref=f7e537] [cursor=pointer]:
+            - /url: "#basic-data-grid"
+        - figure [ref=f7e541]:
+          - figure [ref=f7e543]:
+            - button "Copy Text" [ref=f7e545]
+            - region [ref=f7e549]:
+              - code [ref=f7e551]:
+                - generic [ref=f7e552]: "import { DataGrid } from \"@/components/data-grid/data-grid\";"
+                - generic [ref=f7e553]: "import { DataGridKeyboardShortcuts } from \"@/components/data-grid/data-grid-keyboard-shortcuts\";"
+                - generic [ref=f7e554]: "import { useDataGrid } from \"@/hooks/use-data-grid\";"
+                - generic [ref=f7e556]: "export default function MyDataGrid() {"
+                - generic [ref=f7e557]: const [data, setData] = React.useState(initialData);
+                - generic [ref=f7e559]: const columns = React.useMemo(() => [
+                - generic [ref=f7e560]: "{"
+                - generic [ref=f7e561]: "id: \"name\","
+                - generic [ref=f7e562]: "accessorKey: \"name\","
+                - generic [ref=f7e563]: "header: \"Name\","
+                - generic [ref=f7e564]: "meta: {"
+                - generic [ref=f7e565]: "cell: {"
+                - generic [ref=f7e566]: "variant: \"short-text\","
+                - generic [ref=f7e567]: "},"
+                - generic [ref=f7e568]: "},"
+                - generic [ref=f7e569]: "},"
+                - generic [ref=f7e570]: // ... other columns
+                - generic [ref=f7e571]: "], []);"
+                - generic [ref=f7e573]: "const { table, ...dataGridProps } = useDataGrid({"
+                - generic [ref=f7e574]: data,
+                - generic [ref=f7e575]: columns,
+                - generic [ref=f7e576]: "onDataChange: setData,"
+                - generic [ref=f7e577]: "getRowId: (row) => row.id,"
+                - generic [ref=f7e578]: "});"
+                - generic [ref=f7e580]: return (
+                - generic [ref=f7e581]: <>
+                - generic [ref=f7e582]: <DataGridKeyboardShortcuts />
+                - generic [ref=f7e583]: "<DataGrid table={table} {...dataGridProps} />"
+                - generic [ref=f7e584]: </>
+                - generic [ref=f7e585]: );
+                - generic [ref=f7e586]: "}"
+        - heading [level=3] [ref=f7e587]:
+          - link "With Toolbar Menus" [ref=f7e588] [cursor=pointer]:
+            - /url: "#with-toolbar-menus"
+        - paragraph [ref=f7e592]: "Add sort, filter, row height, and view menus:"
+        - figure [ref=f7e593]:
+          - figure [ref=f7e595]:
+            - button "Copy Text" [ref=f7e597]
+            - region [ref=f7e601]:
+              - code [ref=f7e603]:
+                - generic [ref=f7e604]: "import { DataGrid } from \"@/components/data-grid/data-grid\";"
+                - generic [ref=f7e605]: "import { DataGridFilterMenu } from \"@/components/data-grid/data-grid-filter-menu\";"
+                - generic [ref=f7e606]: "import { DataGridKeyboardShortcuts } from \"@/components/data-grid/data-grid-keyboard-shortcuts\";"
+                - generic [ref=f7e607]: "import { DataGridRowHeightMenu } from \"@/components/data-grid/data-grid-row-height-menu\";"
+                - generic [ref=f7e608]: "import { DataGridSortMenu } from \"@/components/data-grid/data-grid-sort-menu\";"
+                - generic [ref=f7e609]: "import { DataGridViewMenu } from \"@/components/data-grid/data-grid-view-menu\";"
+                - generic [ref=f7e610]: "import { useDataGrid } from \"@/hooks/use-data-grid\";"
+                - generic [ref=f7e612]: "export default function DataGridToolbarDemo() {"
+                - generic [ref=f7e613]: "const { table, ...dataGridProps } = useDataGrid({"
+                - generic [ref=f7e614]: data,
+                - generic [ref=f7e615]: columns,
+                - generic [ref=f7e616]: "onDataChange: setData,"
+                - generic [ref=f7e617]: "});"
+                - generic [ref=f7e619]: return (
+                - generic [ref=f7e620]: <div className="flex flex-col gap-4">
+                - generic [ref=f7e621]: "{/* Toolbar */}"
+                - generic [ref=f7e622]: <div role="toolbar" aria-orientation="horizontal" className="flex items-center gap-2 self-end">
+                - generic [ref=f7e623]: "<DataGridFilterMenu table={table} />"
+                - generic [ref=f7e624]: "<DataGridSortMenu table={table} />"
+                - generic [ref=f7e625]: "<DataGridRowHeightMenu table={table} />"
+                - generic [ref=f7e626]: "<DataGridViewMenu table={table} />"
+                - generic [ref=f7e627]: </div>
+                - generic [ref=f7e629]: "<DataGridKeyboardShortcuts enableSearch={!!dataGridProps.searchState} />"
+                - generic [ref=f7e630]: "<DataGrid table={table} {...dataGridProps} />"
+                - generic [ref=f7e631]: </div>
+                - generic [ref=f7e632]: );
+                - generic [ref=f7e633]: "}"
+        - heading [level=3] [ref=f7e634]:
+          - link "With Row Management" [ref=f7e635] [cursor=pointer]:
+            - /url: "#with-row-management"
+        - paragraph [ref=f7e639]: "Add and delete rows with callbacks:"
+        - figure [ref=f7e640]:
+          - figure [ref=f7e642]:
+            - button "Copy Text" [ref=f7e644]
+            - region [ref=f7e648]:
+              - code [ref=f7e650]:
+                - generic [ref=f7e651]: "const onRowAdd = React.useCallback(() => {"
+                - generic [ref=f7e652]: "setData((prev) => [...prev, { id: generateId() }]);"
+                - generic [ref=f7e654]: "return {"
+                - generic [ref=f7e655]: "rowIndex: data.length,"
+                - generic [ref=f7e656]: "columnId: \"name\", // Focus this column after creating the new row"
+                - generic [ref=f7e657]: "};"
+                - generic [ref=f7e658]: "}, [data.length]);"
+                - generic [ref=f7e660]: "const onRowsDelete = React.useCallback((rows, rowIndices) => {"
+                - generic [ref=f7e661]: "// rows: array of row data objects"
+                - generic [ref=f7e662]: "// rowIndices: array of row indices"
+                - generic [ref=f7e663]: setData((prev) => prev.filter((row) => !rows.includes(row)));
+                - generic [ref=f7e664]: "}, []);"
+                - generic [ref=f7e666]: "const { table, ...dataGridProps } = useDataGrid({"
+                - generic [ref=f7e667]: data,
+                - generic [ref=f7e668]: columns,
+                - generic [ref=f7e669]: "onDataChange: setData,"
+                - generic [ref=f7e670]: onRowAdd,
+                - generic [ref=f7e671]: onRowsDelete,
+                - generic [ref=f7e672]: "getRowId: (row) => row.id,"
+                - generic [ref=f7e673]: "});"
+        - heading [level=3] [ref=f7e674]:
+          - link "With Search" [ref=f7e675] [cursor=pointer]:
+            - /url: "#with-search"
+        - paragraph [ref=f7e679]:
+          - text: Use the
+          - code [ref=f7e680]: enableSearch
+          - text: "prop to enable search functionality:"
+        - figure [ref=f7e681]:
+          - figure [ref=f7e683]:
+            - button "Copy Text" [ref=f7e685]
+            - region [ref=f7e689]:
+              - code [ref=f7e691]:
+                - generic [ref=f7e692]: "const { table, ...dataGridProps } = useDataGrid({"
+                - generic [ref=f7e693]: data,
+                - generic [ref=f7e694]: columns,
+                - generic [ref=f7e695]: "onDataChange: setData,"
+                - generic [ref=f7e696]: "enableSearch: true, // Enable search (Ctrl/Cmd+F)"
+                - generic [ref=f7e697]: "});"
+                - generic [ref=f7e699]: // Pass search state to keyboard shortcuts for proper shortcuts display
+                - generic [ref=f7e700]: "<DataGridKeyboardShortcuts enableSearch={!!dataGridProps.searchState} />"
+        - heading [level=3] [ref=f7e701]:
+          - link "With Paste Support" [ref=f7e702] [cursor=pointer]:
+            - /url: "#with-paste-support"
+        - paragraph [ref=f7e706]:
+          - text: Use the
+          - code [ref=f7e707]: enablePaste
+          - text: "prop to enable pasting from clipboard:"
+        - figure [ref=f7e708]:
+          - figure [ref=f7e710]:
+            - button "Copy Text" [ref=f7e712]
+            - region [ref=f7e716]:
+              - code [ref=f7e718]:
+                - generic [ref=f7e719]: "const { table, ...dataGridProps } = useDataGrid({"
+                - generic [ref=f7e720]: data,
+                - generic [ref=f7e721]: columns,
+                - generic [ref=f7e722]: "onDataChange: setData,"
+                - generic [ref=f7e723]: "enablePaste: true, // Enable paste (Ctrl/Cmd+V)"
+                - generic [ref=f7e724]: "onRowsAdd: async (count) => {"
+                - generic [ref=f7e725]: // Called when paste needs to add new rows
+                - generic [ref=f7e726]: "// This is more performant than adding rows one by one with the `onRowAdd` prop"
+                - generic [ref=f7e727]: "const newRows = Array.from({ length: count }, () => ({ id: generateId() }));"
+                - generic [ref=f7e728]: setData((prev) => [...prev, ...newRows]);
+                - generic [ref=f7e729]: "},"
+                - generic [ref=f7e730]: "});"
+        - heading [level=3] [ref=f7e731]:
+          - link "With Undo/Redo" [ref=f7e732] [cursor=pointer]:
+            - /url: "#with-undoredo"
+        - paragraph [ref=f7e736]:
+          - text: Use the
+          - code [ref=f7e737]: useDataGridUndoRedo
+          - text: "hook to add undo/redo support with keyboard shortcuts (Ctrl/Cmd+Z to undo, Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y to redo):"
+        - figure [ref=f7e738]:
+          - figure [ref=f7e740]:
+            - button "Copy Text" [ref=f7e742]
+            - region [ref=f7e746]:
+              - code [ref=f7e748]:
+                - generic [ref=f7e749]: "import { useDataGrid } from \"@/hooks/use-data-grid\";"
+                - generic [ref=f7e750]: "import {"
+                - generic [ref=f7e751]: useDataGridUndoRedo,
+                - generic [ref=f7e752]: type UndoRedoCellUpdate,
+                - generic [ref=f7e753]: "} from \"@/hooks/use-data-grid-undo-redo\";"
+                - generic [ref=f7e755]: "export default function MyDataGrid() {"
+                - generic [ref=f7e756]: const [data, setData] = React.useState(initialData);
+                - generic [ref=f7e758]: "const { trackCellsUpdate, trackRowsAdd, trackRowsDelete } ="
+                - generic [ref=f7e759]: "useDataGridUndoRedo({"
+                - generic [ref=f7e760]: data,
+                - generic [ref=f7e761]: "onDataChange: setData,"
+                - generic [ref=f7e762]: "getRowId: (row) => row.id,"
+                - generic [ref=f7e763]: "});"
+                - generic [ref=f7e765]: const onDataChange = React.useCallback(
+                - generic [ref=f7e766]: "(newData: Person[]) => {"
+                - generic [ref=f7e767]: // Track cell updates for undo/redo
+                - generic [ref=f7e768]: "const cellUpdates: Array<UndoRedoCellUpdate> = [];"
+                - generic [ref=f7e770]: "for (let rowIndex = 0; rowIndex < data.length; rowIndex++) {"
+                - generic [ref=f7e771]: const oldRow = data[rowIndex];
+                - generic [ref=f7e772]: const newRow = newData[rowIndex];
+                - generic [ref=f7e773]: if (!oldRow || !newRow) continue;
+                - generic [ref=f7e775]: "for (const key of Object.keys(oldRow)) {"
+                - generic [ref=f7e776]: const oldValue = oldRow[key];
+                - generic [ref=f7e777]: const newValue = newRow[key];
+                - generic [ref=f7e778]: "if (!Object.is(oldValue, newValue)) {"
+                - generic [ref=f7e779]: "cellUpdates.push({"
+                - generic [ref=f7e780]: "rowId: oldRow.id,"
+                - generic [ref=f7e781]: "columnId: key,"
+                - generic [ref=f7e782]: "previousValue: oldValue,"
+                - generic [ref=f7e783]: newValue,
+                - generic [ref=f7e784]: "});"
+                - generic [ref=f7e785]: "}"
+                - generic [ref=f7e786]: "}"
+                - generic [ref=f7e787]: "}"
+                - generic [ref=f7e789]: "if (cellUpdates.length > 0) {"
+                - generic [ref=f7e790]: trackCellsUpdate(cellUpdates);
+                - generic [ref=f7e791]: "}"
+                - generic [ref=f7e793]: setData(newData);
+                - generic [ref=f7e794]: "},"
+                - generic [ref=f7e795]: "[data, trackCellsUpdate],"
+                - generic [ref=f7e796]: );
+                - generic [ref=f7e798]: "const onRowAdd = React.useCallback(() => {"
+                - generic [ref=f7e799]: "const newRow = { id: generateId() };"
+                - generic [ref=f7e800]: setData((prev) => [...prev, newRow]);
+                - generic [ref=f7e801]: trackRowsAdd([newRow]);
+                - generic [ref=f7e802]: "return { rowIndex: data.length, columnId: \"name\" };"
+                - generic [ref=f7e803]: "}, [data.length, trackRowsAdd]);"
+                - generic [ref=f7e805]: const onRowsDelete = React.useCallback(
+                - generic [ref=f7e806]: "(rows) => {"
+                - generic [ref=f7e807]: trackRowsDelete(rows);
+                - generic [ref=f7e808]: setData((prev) => prev.filter((row) => !rows.includes(row)));
+                - generic [ref=f7e809]: "},"
+                - generic [ref=f7e810]: "[trackRowsDelete],"
+                - generic [ref=f7e811]: );
+                - generic [ref=f7e813]: "const { table, ...dataGridProps } = useDataGrid({"
+                - generic [ref=f7e814]: data,
+                - generic [ref=f7e815]: columns,
+                - generic [ref=f7e816]: onDataChange,
+                - generic [ref=f7e817]: onRowAdd,
+                - generic [ref=f7e818]: onRowsDelete,
+                - generic [ref=f7e819]: "getRowId: (row) => row.id,"
+                - generic [ref=f7e820]: "});"
+                - generic [ref=f7e822]: return (
+                - generic [ref=f7e823]: <>
+                - generic [ref=f7e824]: <DataGridKeyboardShortcuts enableUndoRedo />
+                - generic [ref=f7e825]: "<DataGrid table={table} {...dataGridProps} />"
+                - generic [ref=f7e826]: </>
+                - generic [ref=f7e827]: );
+                - generic [ref=f7e828]: "}"
+        - heading [level=3] [ref=f7e829]:
+          - link "Read-Only Mode" [ref=f7e830] [cursor=pointer]:
+            - /url: "#read-only-mode"
+        - paragraph [ref=f7e834]:
+          - text: Use the
+          - code [ref=f7e835]: readOnly
+          - text: "prop to make the grid read-only:"
+        - figure [ref=f7e836]:
+          - figure [ref=f7e838]:
+            - button "Copy Text" [ref=f7e840]
+            - region [ref=f7e844]:
+              - code [ref=f7e846]:
+                - generic [ref=f7e847]: "const { table, ...dataGridProps } = useDataGrid({"
+                - generic [ref=f7e848]: data,
+                - generic [ref=f7e849]: columns,
+                - generic [ref=f7e850]: "readOnly: true, // Disable all editing"
+                - generic [ref=f7e851]: "});"
+        - heading [level=3] [ref=f7e852]:
+          - link "RTL Support" [ref=f7e853] [cursor=pointer]:
+            - /url: "#rtl-support"
+        - paragraph [ref=f7e857]:
+          - text: Wrap the grid in a
+          - code [ref=f7e858]: DirectionProvider
+          - text: and the language direction will be automatically detected. The
+          - code [ref=f7e859]: direction
+          - text: component is included when you install the data grid — see the
+          - link "shadcn Direction docs" [ref=f7e860] [cursor=pointer]:
+            - /url: https://ui.shadcn.com/docs/components/radix/direction
+          - text: for the underlying API.
+        - figure [ref=f7e861]:
+          - figure [ref=f7e863]:
+            - button "Copy Text" [ref=f7e865]
+            - region [ref=f7e869]:
+              - code [ref=f7e871]:
+                - generic [ref=f7e872]: "import { DirectionProvider } from \"@/components/ui/direction\";"
+                - generic [ref=f7e874]: return (
+                - generic [ref=f7e875]: <DirectionProvider dir="rtl">
+                - generic [ref=f7e876]: <DataGridImpl />
+                - generic [ref=f7e877]: </DirectionProvider>
+                - generic [ref=f7e878]: )
+                - generic [ref=f7e880]: "function DataGridImpl() {"
+                - generic [ref=f7e881]: "const { table, ...dataGridProps } = useDataGrid({"
+                - generic [ref=f7e882]: data,
+                - generic [ref=f7e883]: columns,
+                - generic [ref=f7e884]: "});"
+                - generic [ref=f7e886]: return (
+                - generic [ref=f7e887]: "<DataGrid table={table} {...dataGridProps} />"
+                - generic [ref=f7e888]: )
+                - generic [ref=f7e889]: "}"
+        - heading [level=3] [ref=f7e890]:
+          - link "Auto Focus" [ref=f7e891] [cursor=pointer]:
+            - /url: "#auto-focus"
+        - paragraph [ref=f7e895]:
+          - text: Use the
+          - code [ref=f7e896]: autoFocus
+          - text: "prop to automatically focus any navigable cell on mount:"
+        - figure [ref=f7e897]:
+          - figure [ref=f7e899]:
+            - button "Copy Text" [ref=f7e901]
+            - region [ref=f7e905]:
+              - code [ref=f7e907]:
+                - generic [ref=f7e908]: "const { table, ...dataGridProps } = useDataGrid({"
+                - generic [ref=f7e909]: data,
+                - generic [ref=f7e910]: columns,
+                - generic [ref=f7e911]: "autoFocus: true, // Focus first navigable cell"
+                - generic [ref=f7e912]: "// Or focus a specific cell:"
+                - generic [ref=f7e913]: "// autoFocus: { rowIndex: 0, columnId: \"name\" },"
+                - generic [ref=f7e914]: "});"
+        - heading [level=3] [ref=f7e915]:
+          - link "Custom Height and Stretch Columns" [ref=f7e916] [cursor=pointer]:
+            - /url: "#custom-height-and-stretch-columns"
+        - paragraph [ref=f7e920]: "Control the grid height and column stretching:"
+        - figure [ref=f7e921]:
+          - figure [ref=f7e923]:
+            - button "Copy Text" [ref=f7e925]
+            - region [ref=f7e929]:
+              - code [ref=f7e931]:
+                - generic [ref=f7e932]: <DataGrid
+                - generic [ref=f7e933]: "table={table}"
+                - generic [ref=f7e934]: "{...dataGridProps}"
+                - generic [ref=f7e935]: "height={800} // Custom height in pixels (default: 600)"
+                - generic [ref=f7e936]: "stretchColumns={true} // Stretch columns to fill available width"
+                - generic [ref=f7e937]: />
+        - heading [level=3] [ref=f7e938]:
+          - link "Loading States" [ref=f7e939] [cursor=pointer]:
+            - /url: "#loading-states"
+        - paragraph [ref=f7e943]:
+          - text: Use the
+          - code [ref=f7e944]: DataGridSkeleton
+          - text: "component for loading states:"
+        - figure [ref=f7e945]:
+          - figure [ref=f7e947]:
+            - button "Copy Text" [ref=f7e949]
+            - region [ref=f7e953]:
+              - code [ref=f7e955]:
+                - generic [ref=f7e956]: "import { Suspense } from \"react\";"
+                - generic [ref=f7e957]: "import {"
+                - generic [ref=f7e958]: DataGridSkeleton,
+                - generic [ref=f7e959]: DataGridSkeletonGrid,
+                - generic [ref=f7e960]: DataGridSkeletonToolbar,
+                - generic [ref=f7e961]: "} from \"@/components/data-grid/data-grid-skeleton\";"
+                - generic [ref=f7e963]: "export default function Page() {"
+                - generic [ref=f7e964]: return (
+                - generic [ref=f7e965]: <Suspense
+                - generic [ref=f7e966]: "fallback={"
+                - generic [ref=f7e967]: <DataGridSkeleton className="container flex flex-col gap-4 py-4">
+                - generic [ref=f7e968]: "<DataGridSkeletonToolbar actionCount={5} />"
+                - generic [ref=f7e969]: <DataGridSkeletonGrid />
+                - generic [ref=f7e970]: </DataGridSkeleton>
+                - generic [ref=f7e971]: "}"
+                - generic [ref=f7e972]: ">"
+                - generic [ref=f7e973]: <DataGridDemo />
+                - generic [ref=f7e974]: </Suspense>
+                - generic [ref=f7e975]: );
+                - generic [ref=f7e976]: "}"
+        - heading [level=2] [ref=f7e977]:
+          - link "Cell Variants" [ref=f7e978] [cursor=pointer]:
+            - /url: "#cell-variants"
+        - paragraph [ref=f7e982]: "The Data Grid supports various cell variants for different data formats:"
+        - heading [level=3] [ref=f7e983]:
+          - link "Short Text Cell" [ref=f7e984] [cursor=pointer]:
+            - /url: "#short-text-cell"
+        - paragraph [ref=f7e988]: "Single-line text input with inline editing:"
+        - figure [ref=f7e989]:
+          - figure [ref=f7e991]:
+            - button "Copy Text" [ref=f7e993]
+            - region [ref=f7e997]:
+              - code [ref=f7e999]:
+                - generic [ref=f7e1000]: "{"
+                - generic [ref=f7e1001]: "id: \"name\","
+                - generic [ref=f7e1002]: "accessorKey: \"name\","
+                - generic [ref=f7e1003]: "header: \"Name\","
+                - generic [ref=f7e1004]: "meta: {"
+                - generic [ref=f7e1005]: "cell: {"
+                - generic [ref=f7e1006]: "variant: \"short-text\","
+                - generic [ref=f7e1007]: "},"
+                - generic [ref=f7e1008]: "},"
+                - generic [ref=f7e1009]: "}"
+        - heading [level=3] [ref=f7e1010]:
+          - link "Long Text Cell" [ref=f7e1011] [cursor=pointer]:
+            - /url: "#long-text-cell"
+        - paragraph [ref=f7e1015]: "Multi-line text displayed in a popover with auto-save:"
+        - figure [ref=f7e1016]:
+          - figure [ref=f7e1018]:
+            - button "Copy Text" [ref=f7e1020]
+            - region [ref=f7e1024]:
+              - code [ref=f7e1026]:
+                - generic [ref=f7e1027]: "{"
+                - generic [ref=f7e1028]: "id: \"notes\","
+                - generic [ref=f7e1029]: "accessorKey: \"notes\","
+                - generic [ref=f7e1030]: "header: \"Notes\","
+                - generic [ref=f7e1031]: "meta: {"
+                - generic [ref=f7e1032]: "cell: {"
+                - generic [ref=f7e1033]: "variant: \"long-text\","
+                - generic [ref=f7e1034]: "},"
+                - generic [ref=f7e1035]: "},"
+                - generic [ref=f7e1036]: "}"
+        - heading [level=3] [ref=f7e1037]:
+          - link "Number Cell" [ref=f7e1038] [cursor=pointer]:
+            - /url: "#number-cell"
+        - paragraph [ref=f7e1042]: "Numeric input with optional constraints:"
+        - figure [ref=f7e1043]:
+          - figure [ref=f7e1045]:
+            - button "Copy Text" [ref=f7e1047]
+            - region [ref=f7e1051]:
+              - code [ref=f7e1053]:
+                - generic [ref=f7e1054]: "{"
+                - generic [ref=f7e1055]: "id: \"price\","
+                - generic [ref=f7e1056]: "accessorKey: \"price\","
+                - generic [ref=f7e1057]: "header: \"Price\","
+                - generic [ref=f7e1058]: "meta: {"
+                - generic [ref=f7e1059]: "cell: {"
+                - generic [ref=f7e1060]: "variant: \"number\","
+                - generic [ref=f7e1061]: "min: 0,"
+                - generic [ref=f7e1062]: "max: 1000,"
+                - generic [ref=f7e1063]: "step: 0.01,"
+                - generic [ref=f7e1064]: "},"
+                - generic [ref=f7e1065]: "},"
+                - generic [ref=f7e1066]: "}"
+        - heading [level=3] [ref=f7e1067]:
+          - link "URL Cell" [ref=f7e1068] [cursor=pointer]:
+            - /url: "#url-cell"
+        - paragraph [ref=f7e1072]: "URL input with validation and clickable links:"
+        - figure [ref=f7e1073]:
+          - figure [ref=f7e1075]:
+            - button "Copy Text" [ref=f7e1077]
+            - region [ref=f7e1081]:
+              - code [ref=f7e1083]:
+                - generic [ref=f7e1084]: "{"
+                - generic [ref=f7e1085]: "id: \"website\","
+                - generic [ref=f7e1086]: "accessorKey: \"website\","
+                - generic [ref=f7e1087]: "header: \"Website\","
+                - generic [ref=f7e1088]: "meta: {"
+                - generic [ref=f7e1089]: "cell: {"
+                - generic [ref=f7e1090]: "variant: \"url\","
+                - generic [ref=f7e1091]: "},"
+                - generic [ref=f7e1092]: "},"
+                - generic [ref=f7e1093]: "}"
+        - heading [level=3] [ref=f7e1094]:
+          - link "Checkbox Cell" [ref=f7e1095] [cursor=pointer]:
+            - /url: "#checkbox-cell"
+        - paragraph [ref=f7e1099]: "Boolean checkbox for true/false values:"
+        - figure [ref=f7e1100]:
+          - figure [ref=f7e1102]:
+            - button "Copy Text" [ref=f7e1104]
+            - region [ref=f7e1108]:
+              - code [ref=f7e1110]:
+                - generic [ref=f7e1111]: "{"
+                - generic [ref=f7e1112]: "id: \"isActive\","
+                - generic [ref=f7e1113]: "accessorKey: \"isActive\","
+                - generic [ref=f7e1114]: "header: \"Active\","
+                - generic [ref=f7e1115]: "meta: {"
+                - generic [ref=f7e1116]: "cell: {"
+                - generic [ref=f7e1117]: "variant: \"checkbox\","
+                - generic [ref=f7e1118]: "},"
+                - generic [ref=f7e1119]: "},"
+                - generic [ref=f7e1120]: "}"
+        - heading [level=3] [ref=f7e1121]:
+          - link "Select Cell" [ref=f7e1122] [cursor=pointer]:
+            - /url: "#select-cell"
+        - paragraph [ref=f7e1126]: "Single-select input with predefined options:"
+        - figure [ref=f7e1127]:
+          - figure [ref=f7e1129]:
+            - button "Copy Text" [ref=f7e1131]
+            - region [ref=f7e1135]:
+              - code [ref=f7e1137]:
+                - generic [ref=f7e1138]: "{"
+                - generic [ref=f7e1139]: "id: \"category\","
+                - generic [ref=f7e1140]: "accessorKey: \"category\","
+                - generic [ref=f7e1141]: "header: \"Category\","
+                - generic [ref=f7e1142]: "meta: {"
+                - generic [ref=f7e1143]: "cell: {"
+                - generic [ref=f7e1144]: "variant: \"select\","
+                - generic [ref=f7e1145]: "options: ["
+                - generic [ref=f7e1146]: "{ label: \"Electronics\", value: \"electronics\" },"
+                - generic [ref=f7e1147]: "{ label: \"Clothing\", value: \"clothing\" },"
+                - generic [ref=f7e1148]: "{ label: \"Books\", value: \"books\" },"
+                - generic [ref=f7e1149]: "],"
+                - generic [ref=f7e1150]: "},"
+                - generic [ref=f7e1151]: "},"
+                - generic [ref=f7e1152]: "}"
+        - heading [level=3] [ref=f7e1153]:
+          - link "Multi-Select Cell" [ref=f7e1154] [cursor=pointer]:
+            - /url: "#multi-select-cell"
+        - paragraph [ref=f7e1158]: "Multi-select input with predefined options and badge display:"
+        - figure [ref=f7e1159]:
+          - figure [ref=f7e1161]:
+            - button "Copy Text" [ref=f7e1163]
+            - region [ref=f7e1167]:
+              - code [ref=f7e1169]:
+                - generic [ref=f7e1170]: "{"
+                - generic [ref=f7e1171]: "id: \"skills\","
+                - generic [ref=f7e1172]: "accessorKey: \"skills\","
+                - generic [ref=f7e1173]: "header: \"Skills\","
+                - generic [ref=f7e1174]: "meta: {"
+                - generic [ref=f7e1175]: "cell: {"
+                - generic [ref=f7e1176]: "variant: \"multi-select\","
+                - generic [ref=f7e1177]: "options: ["
+                - generic [ref=f7e1178]: "{ label: \"JavaScript\", value: \"javascript\" },"
+                - generic [ref=f7e1179]: "{ label: \"TypeScript\", value: \"typescript\" },"
+                - generic [ref=f7e1180]: "{ label: \"React\", value: \"react\" },"
+                - generic [ref=f7e1181]: "],"
+                - generic [ref=f7e1182]: "},"
+                - generic [ref=f7e1183]: "},"
+                - generic [ref=f7e1184]: "}"
+        - heading [level=3] [ref=f7e1185]:
+          - link "Date Cell" [ref=f7e1186] [cursor=pointer]:
+            - /url: "#date-cell"
+        - paragraph [ref=f7e1190]: "Date picker with calendar popover:"
+        - figure [ref=f7e1191]:
+          - figure [ref=f7e1193]:
+            - button "Copy Text" [ref=f7e1195]
+            - region [ref=f7e1199]:
+              - code [ref=f7e1201]:
+                - generic [ref=f7e1202]: "{"
+                - generic [ref=f7e1203]: "id: \"startDate\","
+                - generic [ref=f7e1204]: "accessorKey: \"startDate\","
+                - generic [ref=f7e1205]: "header: \"Start Date\","
+                - generic [ref=f7e1206]: "meta: {"
+                - generic [ref=f7e1207]: "cell: {"
+                - generic [ref=f7e1208]: "variant: \"date\","
+                - generic [ref=f7e1209]: "},"
+                - generic [ref=f7e1210]: "},"
+                - generic [ref=f7e1211]: "}"
+        - heading [level=3] [ref=f7e1212]:
+          - link "File Cell" [ref=f7e1213] [cursor=pointer]:
+            - /url: "#file-cell"
+        - paragraph [ref=f7e1217]: "File upload with support for multiple files and file management:"
+        - figure [ref=f7e1218]:
+          - figure [ref=f7e1220]:
+            - button "Copy Text" [ref=f7e1222]
+            - region [ref=f7e1226]:
+              - code [ref=f7e1228]:
+                - generic [ref=f7e1229]: "{"
+                - generic [ref=f7e1230]: "id: \"attachments\","
+                - generic [ref=f7e1231]: "accessorKey: \"attachments\","
+                - generic [ref=f7e1232]: "header: \"Attachments\","
+                - generic [ref=f7e1233]: "meta: {"
+                - generic [ref=f7e1234]: "cell: {"
+                - generic [ref=f7e1235]: "variant: \"file\","
+                - generic [ref=f7e1236]: "maxFileSize: 10 * 1024 * 1024, // 10MB"
+                - generic [ref=f7e1237]: "maxFiles: 5,"
+                - generic [ref=f7e1238]: "accept: \"image/*,video/*,audio/*,.pdf,.doc,.docx\","
+                - generic [ref=f7e1239]: "multiple: true,"
+                - generic [ref=f7e1240]: "},"
+                - generic [ref=f7e1241]: "},"
+                - generic [ref=f7e1242]: "}"
+        - paragraph [ref=f7e1243]: "To use file cells, provide upload and delete handlers:"
+        - figure [ref=f7e1244]:
+          - figure [ref=f7e1246]:
+            - button "Copy Text" [ref=f7e1248]
+            - region [ref=f7e1252]:
+              - code [ref=f7e1254]:
+                - generic [ref=f7e1255]: "const onFilesUpload = React.useCallback(async ({ files, rowIndex, columnId }) => {"
+                - generic [ref=f7e1256]: // Upload files to your server/storage
+                - generic [ref=f7e1257]: const formData = new FormData();
+                - generic [ref=f7e1258]: files.forEach(file => formData.append('files', file));
+                - generic [ref=f7e1260]: "const response = await fetch('/api/upload', {"
+                - generic [ref=f7e1261]: "method: 'POST',"
+                - generic [ref=f7e1262]: "body: formData"
+                - generic [ref=f7e1263]: "});"
+                - generic [ref=f7e1265]: const data = await response.json();
+                - generic [ref=f7e1267]: // Return array of file metadata
+                - generic [ref=f7e1268]: "return data.files.map(f => ({"
+                - generic [ref=f7e1269]: "id: f.fileId,"
+                - generic [ref=f7e1270]: "name: f.fileName,"
+                - generic [ref=f7e1271]: "size: f.fileSize,"
+                - generic [ref=f7e1272]: "type: f.fileType,"
+                - generic [ref=f7e1273]: "url: f.fileUrl"
+                - generic [ref=f7e1274]: "}));"
+                - generic [ref=f7e1275]: "}, []);"
+                - generic [ref=f7e1277]: "const onFilesDelete = React.useCallback(async ({ fileIds, rowIndex, columnId }) => {"
+                - generic [ref=f7e1278]: // Delete files from your server/storage
+                - generic [ref=f7e1279]: "await fetch('/api/files', {"
+                - generic [ref=f7e1280]: "method: 'DELETE',"
+                - generic [ref=f7e1281]: "body: JSON.stringify({ fileIds })"
+                - generic [ref=f7e1282]: "});"
+                - generic [ref=f7e1283]: "}, []);"
+                - generic [ref=f7e1285]: "const { table, ...dataGridProps } = useDataGrid({"
+                - generic [ref=f7e1286]: data,
+                - generic [ref=f7e1287]: columns,
+                - generic [ref=f7e1288]: onFilesUpload,
+                - generic [ref=f7e1289]: onFilesDelete,
+                - generic [ref=f7e1290]: "});"
+        - heading [level=2] [ref=f7e1291]:
+          - link "Row Selection" [ref=f7e1292] [cursor=pointer]:
+            - /url: "#row-selection"
+        - paragraph [ref=f7e1296]:
+          - text: Add a selection column to enable row selection with shift-click support using the
+          - code [ref=f7e1297]: getDataGridSelectColumn
+          - text: "helper:"
+        - figure [ref=f7e1298]:
+          - figure [ref=f7e1300]:
+            - button "Copy Text" [ref=f7e1302]
+            - region [ref=f7e1306]:
+              - code [ref=f7e1308]:
+                - generic [ref=f7e1309]: "import { getDataGridSelectColumn } from \"@/components/data-grid/data-grid-select-column\";"
+                - generic [ref=f7e1311]: const columns = [
+                - generic [ref=f7e1312]: getDataGridSelectColumn<YourData>(),
+                - generic [ref=f7e1313]: // ... other columns
+                - generic [ref=f7e1314]: "];"
+        - paragraph [ref=f7e1315]: "You can customize the select column by passing options:"
+        - figure [ref=f7e1316]:
+          - figure [ref=f7e1318]:
+            - button "Copy Text" [ref=f7e1320]
+            - region [ref=f7e1324]:
+              - code [ref=f7e1326]:
+                - generic [ref=f7e1327]: "getDataGridSelectColumn<YourData>({"
+                - generic [ref=f7e1328]: "size: 50, // Custom width (default: 40)"
+                - generic [ref=f7e1329]: "enableHiding: true, // Allow hiding via view menu (default: false)"
+                - generic [ref=f7e1330]: "enableResizing: true, // Allow resizing (default: false)"
+                - generic [ref=f7e1331]: "})"
+        - paragraph [ref=f7e1332]:
+          - text: The shift-click functionality is handled automatically by the
+          - code [ref=f7e1333]: useDataGrid
+          - text: hook when you include the select column.
+        - heading [level=2] [ref=f7e1334]:
+          - link "Cell Architecture" [ref=f7e1335] [cursor=pointer]:
+            - /url: "#cell-architecture"
+        - paragraph [ref=f7e1339]: "The Data Grid uses a three-layer cell composition pattern:"
+        - list [ref=f7e1340]:
+          - listitem [ref=f7e1341]:
+            - strong [ref=f7e1342]: DataGridCell
+            - text: ": Routes to the appropriate cell variant based on the column's"
+            - code [ref=f7e1343]: meta.cell.variant
+            - text: property
+          - listitem [ref=f7e1344]:
+            - strong [ref=f7e1345]: Cell Variants
+            - text: ": Implement specific editing UIs for different data variants (text, number, select, etc.)"
+          - listitem [ref=f7e1346]:
+            - strong [ref=f7e1347]: DataGridCellWrapper
+            - text: ": Provides common functionality for all cells (focus, selection, keyboard interactions)"
+        - figure [ref=f7e1348]:
+          - figure [ref=f7e1350]:
+            - button "Copy Text" [ref=f7e1352]
+            - region [ref=f7e1356]:
+              - code [ref=f7e1358]:
+                - generic [ref=f7e1359]: // Cell composition flow
+                - generic [ref=f7e1360]: "<DataGridCell cell={cell} table={table} />"
+                - generic [ref=f7e1361]: ↓
+                - generic [ref=f7e1362]: "<ShortTextCell {...props} /> // Based on variant"
+                - generic [ref=f7e1363]: ↓
+                - generic [ref=f7e1364]: "<DataGridCellWrapper {...props}>"
+                - generic [ref=f7e1365]: "{/* Cell-specific content */}"
+                - generic [ref=f7e1366]: </DataGridCellWrapper>
+        - paragraph [ref=f7e1367]:
+          - text: Each cell variant receives the same props and wraps its content in
+          - code [ref=f7e1368]: DataGridCellWrapper
+          - text: ", which provides:"
+        - list [ref=f7e1369]:
+          - listitem [ref=f7e1370]: Focus management and visual focus ring
+          - listitem [ref=f7e1371]: Selection state and highlighting
+          - listitem [ref=f7e1372]: Search match highlighting
+          - listitem [ref=f7e1373]: Click, double-click, and keyboard event management
+          - listitem [ref=f7e1374]: Edit mode triggering (Enter, F2, Space, or typing)
+        - heading [level=3] [ref=f7e1375]:
+          - link "Creating Custom Cell Variants" [ref=f7e1376] [cursor=pointer]:
+            - /url: "#creating-custom-cell-variants"
+        - paragraph [ref=f7e1380]:
+          - text: You can create custom cell variants by implementing the
+          - code [ref=f7e1381]: DataGridCellProps
+          - text: interface and wrapping your content in
+          - code [ref=f7e1382]: DataGridCellWrapper
+          - text: ":"
+        - figure [ref=f7e1383]:
+          - figure [ref=f7e1385]:
+            - button "Copy Text" [ref=f7e1387]
+            - region [ref=f7e1391]:
+              - code [ref=f7e1393]:
+                - generic [ref=f7e1394]: "import { DataGridCellWrapper } from \"@/components/data-grid/data-grid-cell-wrapper\";"
+                - generic [ref=f7e1395]: "import type { DataGridCellProps } from \"@/types/data-grid\";"
+                - generic [ref=f7e1397]: "export function CustomCell<TData>({"
+                - generic [ref=f7e1398]: cell,
+                - generic [ref=f7e1399]: tableMeta,
+                - generic [ref=f7e1400]: rowIndex,
+                - generic [ref=f7e1401]: columnId,
+                - generic [ref=f7e1402]: isFocused,
+                - generic [ref=f7e1403]: isEditing,
+                - generic [ref=f7e1404]: isSelected,
+                - generic [ref=f7e1405]: isSearchMatch,
+                - generic [ref=f7e1406]: isActiveSearchMatch,
+                - generic [ref=f7e1407]: readOnly,
+                - generic [ref=f7e1408]: "}: DataGridCellProps<TData>) {"
+                - generic [ref=f7e1409]: const value = cell.getValue() as CustomCellValue;
+                - generic [ref=f7e1411]: return (
+                - generic [ref=f7e1412]: <DataGridCellWrapper
+                - generic [ref=f7e1413]: "cell={cell}"
+                - generic [ref=f7e1414]: "tableMeta={tableMeta}"
+                - generic [ref=f7e1415]: "rowIndex={rowIndex}"
+                - generic [ref=f7e1416]: "columnId={columnId}"
+                - generic [ref=f7e1417]: "isEditing={isEditing}"
+                - generic [ref=f7e1418]: "isFocused={isFocused}"
+                - generic [ref=f7e1419]: "isSelected={isSelected}"
+                - generic [ref=f7e1420]: "isSearchMatch={isSearchMatch}"
+                - generic [ref=f7e1421]: "isActiveSearchMatch={isActiveSearchMatch}"
+                - generic [ref=f7e1422]: "readOnly={readOnly}"
+                - generic [ref=f7e1423]: ">"
+                - generic [ref=f7e1424]: "{/* Your custom cell content */}"
+                - generic [ref=f7e1425]: </DataGridCellWrapper>
+                - generic [ref=f7e1426]: );
+                - generic [ref=f7e1427]: "}"
+        - heading [level=2] [ref=f7e1428]:
+          - link "Column Configuration" [ref=f7e1429] [cursor=pointer]:
+            - /url: "#column-configuration"
+        - heading [level=3] [ref=f7e1433]:
+          - link "Enabling Filtering and Sorting" [ref=f7e1434] [cursor=pointer]:
+            - /url: "#enabling-filtering-and-sorting"
+        - paragraph [ref=f7e1438]:
+          - text: To enable filtering and sorting on columns, use the
+          - code [ref=f7e1439]: filterFn
+          - text: "from the data grid library:"
+        - figure [ref=f7e1440]:
+          - figure [ref=f7e1442]:
+            - button "Copy Text" [ref=f7e1444]
+            - region [ref=f7e1448]:
+              - code [ref=f7e1450]:
+                - generic [ref=f7e1451]: "import { getFilterFn } from \"@/lib/data-grid-filters\";"
+                - generic [ref=f7e1453]: "const columns = React.useMemo(() => {"
+                - generic [ref=f7e1454]: const filterFn = getFilterFn<YourData>();
+                - generic [ref=f7e1456]: return [
+                - generic [ref=f7e1457]: "{"
+                - generic [ref=f7e1458]: "id: \"name\","
+                - generic [ref=f7e1459]: "accessorKey: \"name\","
+                - generic [ref=f7e1460]: "header: \"Name\","
+                - generic [ref=f7e1461]: filterFn, // Enable filtering
+                - generic [ref=f7e1462]: // Sorting is enabled by default
+                - generic [ref=f7e1463]: "meta: {"
+                - generic [ref=f7e1464]: "label: \"Name\", // Label shown in filter/sort menus"
+                - generic [ref=f7e1465]: "cell: {"
+                - generic [ref=f7e1466]: "variant: \"short-text\","
+                - generic [ref=f7e1467]: "},"
+                - generic [ref=f7e1468]: "},"
+                - generic [ref=f7e1469]: "},"
+                - generic [ref=f7e1470]: // ... other columns
+                - generic [ref=f7e1471]: "];"
+                - generic [ref=f7e1472]: "}, []);"
+        - heading [level=3] [ref=f7e1473]:
+          - link "Column Pinning" [ref=f7e1474] [cursor=pointer]:
+            - /url: "#column-pinning"
+        - paragraph [ref=f7e1478]: "Pin columns to the left or right:"
+        - figure [ref=f7e1479]:
+          - figure [ref=f7e1481]:
+            - button "Copy Text" [ref=f7e1483]
+            - region [ref=f7e1487]:
+              - code [ref=f7e1489]:
+                - generic [ref=f7e1490]: "const { table, ...dataGridProps } = useDataGrid({"
+                - generic [ref=f7e1491]: data,
+                - generic [ref=f7e1492]: columns,
+                - generic [ref=f7e1493]: "initialState: {"
+                - generic [ref=f7e1494]: "columnPinning: {"
+                - generic [ref=f7e1495]: "left: [\"select\", \"name\"], // Pin to left side"
+                - generic [ref=f7e1496]: "right: [\"actions\"], // Pin to right side"
+                - generic [ref=f7e1497]: "},"
+                - generic [ref=f7e1498]: "},"
+                - generic [ref=f7e1499]: "});"
+        - paragraph [ref=f7e1500]: You can also pin/unpin columns dynamically via the column header dropdown menu.
+        - heading [level=3] [ref=f7e1501]:
+          - link "Column Resizing" [ref=f7e1502] [cursor=pointer]:
+            - /url: "#column-resizing"
+        - paragraph [ref=f7e1506]: "Column resizing is enabled by default. Users can:"
+        - list [ref=f7e1507]:
+          - listitem [ref=f7e1508]: Drag the column resize handle
+          - listitem [ref=f7e1509]: Double-click the resize handle to auto-fit the column width
+        - paragraph [ref=f7e1510]:
+          - text: Set minimum column size using
+          - code [ref=f7e1511]: minSize
+          - text: ":"
+        - figure [ref=f7e1512]:
+          - figure [ref=f7e1514]:
+            - button "Copy Text" [ref=f7e1516]
+            - region [ref=f7e1520]:
+              - code [ref=f7e1522]:
+                - generic [ref=f7e1523]: "{"
+                - generic [ref=f7e1524]: "id: \"name\","
+                - generic [ref=f7e1525]: "accessorKey: \"name\","
+                - generic [ref=f7e1526]: "header: \"Name\","
+                - generic [ref=f7e1527]: "minSize: 180, // Minimum width in pixels"
+                - generic [ref=f7e1528]: "meta: {"
+                - generic [ref=f7e1529]: "cell: {"
+                - generic [ref=f7e1530]: "variant: \"short-text\","
+                - generic [ref=f7e1531]: "},"
+                - generic [ref=f7e1532]: "},"
+                - generic [ref=f7e1533]: "}"
+        - heading [level=2] [ref=f7e1534]:
+          - link "Context Menu Actions" [ref=f7e1535] [cursor=pointer]:
+            - /url: "#context-menu-actions"
+        - paragraph [ref=f7e1539]: "Right-click on cells to access context menu options:"
+        - list [ref=f7e1540]:
+          - listitem [ref=f7e1541]:
+            - strong [ref=f7e1542]: Copy
+            - text: "(Ctrl/Cmd+C): Copy selected cells to clipboard"
+          - listitem [ref=f7e1543]:
+            - strong [ref=f7e1544]: Cut
+            - text: "(Ctrl/Cmd+X): Cut selected cells (shows visual indicator)"
+          - listitem [ref=f7e1545]:
+            - strong [ref=f7e1546]: Clear
+            - text: "(Delete/Backspace): Clear content from selected cells"
+          - listitem [ref=f7e1547]:
+            - strong [ref=f7e1548]: Delete rows
+            - text: "(Ctrl/Cmd+Backspace): Remove selected rows (only available when"
+            - code [ref=f7e1549]: onRowsDelete
+            - text: is provided)
+        - heading [level=2] [ref=f7e1550]:
+          - link "API Reference" [ref=f7e1551] [cursor=pointer]:
+            - /url: "#api-reference"
+        - heading [level=3] [ref=f7e1555]:
+          - link "useDataGrid" [ref=f7e1556] [cursor=pointer]:
+            - /url: "#usedatagrid"
+        - paragraph [ref=f7e1560]: Hook for initializing the data grid with state management and editing capabilities.
+        - generic [ref=f7e1562]:
+          - generic [ref=f7e1563]:
+            - paragraph [ref=f7e1564]: Prop
+            - paragraph [ref=f7e1565]: Type
+          - button [ref=f7e1567]:
+            - code [ref=f7e1568]: onDataChange?
+            - code [ref=f7e1571]: union
+          - button [ref=f7e1575]:
+            - code [ref=f7e1576]: onRowAdd?
+            - code [ref=f7e1579]: union
+          - button [ref=f7e1583]:
+            - code [ref=f7e1584]: onRowsAdd?
+            - code [ref=f7e1587]: union
+          - button [ref=f7e1591]:
+            - code [ref=f7e1592]: onRowsDelete?
+            - code [ref=f7e1595]: union
+          - button [ref=f7e1599]:
+            - code [ref=f7e1600]: onFilesUpload?
+            - code [ref=f7e1603]: union
+          - button [ref=f7e1607]:
+            - code [ref=f7e1608]: onFilesDelete?
+            - code [ref=f7e1611]: union
+          - button [ref=f7e1615]:
+            - code [ref=f7e1616]: dir?
+            - code [ref=f7e1619]: union
+          - button [ref=f7e1623]:
+            - code [ref=f7e1624]: rowHeight?
+            - code [ref=f7e1627]: union
+          - button [ref=f7e1631]:
+            - code [ref=f7e1632]: overscan?
+            - code [ref=f7e1635]: union
+          - button [ref=f7e1639]:
+            - code [ref=f7e1640]: autoFocus?
+            - code [ref=f7e1643]: union
+          - button [ref=f7e1647]:
+            - code [ref=f7e1648]: enableColumnSelection?
+            - code [ref=f7e1651]: union
+          - button [ref=f7e1655]:
+            - code [ref=f7e1656]: enableSearch?
+            - code [ref=f7e1659]: union
+          - button [ref=f7e1663]:
+            - code [ref=f7e1664]: enablePaste?
+            - code [ref=f7e1667]: union
+          - button [ref=f7e1671]:
+            - code [ref=f7e1672]: readOnly?
+            - code [ref=f7e1675]: union
+          - button [ref=f7e1679]:
+            - code [ref=f7e1680]: data
+            - code [ref=f7e1683]: array
+          - button [ref=f7e1687]:
+            - code [ref=f7e1688]: columns
+            - code [ref=f7e1691]: array
+          - button [ref=f7e1695]:
+            - code [ref=f7e1696]: getRowId?
+            - code [ref=f7e1699]: union
+          - button [ref=f7e1703]:
+            - code [ref=f7e1704]: defaultColumn?
+            - code [ref=f7e1707]: union
+          - button [ref=f7e1711]:
+            - code [ref=f7e1712]: initialState?
+            - code [ref=f7e1715]: union
+          - button [ref=f7e1719]:
+            - code [ref=f7e1720]: state?
+            - code [ref=f7e1723]: union
+        - heading [level=3] [ref=f7e1726]:
+          - link "useDataGridUndoRedo" [ref=f7e1727] [cursor=pointer]:
+            - /url: "#usedatagridundoredo"
+        - paragraph [ref=f7e1731]: Hook for adding undo/redo support to the data grid with keyboard shortcuts and history management.
+        - generic [ref=f7e1733]:
+          - generic [ref=f7e1734]:
+            - paragraph [ref=f7e1735]: Prop
+            - paragraph [ref=f7e1736]: Type
+          - button [ref=f7e1738]:
+            - code [ref=f7e1739]: data
+            - code [ref=f7e1742]: array
+          - button [ref=f7e1746]:
+            - code [ref=f7e1747]: onDataChange
+            - code [ref=f7e1750]: function
+          - button [ref=f7e1754]:
+            - code [ref=f7e1755]: getRowId
+            - code [ref=f7e1758]: function
+          - button [ref=f7e1762]:
+            - code [ref=f7e1763]: maxHistory?
+            - code [ref=f7e1766]: union
+          - button [ref=f7e1770]:
+            - code [ref=f7e1771]: enabled?
+            - code [ref=f7e1774]: union
+        - paragraph [ref=f7e1777]: "Returns:"
+        - generic [ref=f7e1779]:
+          - generic [ref=f7e1780]:
+            - paragraph [ref=f7e1781]: Prop
+            - paragraph [ref=f7e1782]: Type
+          - button [ref=f7e1784]:
+            - code [ref=f7e1785]: canUndo
+            - code [ref=f7e1788]: union
+          - button [ref=f7e1792]:
+            - code [ref=f7e1793]: canRedo
+            - code [ref=f7e1796]: union
+          - button [ref=f7e1800]:
+            - code [ref=f7e1801]: onUndo
+            - code [ref=f7e1804]: function
+          - button [ref=f7e1808]:
+            - code [ref=f7e1809]: onRedo
+            - code [ref=f7e1812]: function
+          - button [ref=f7e1816]:
+            - code [ref=f7e1817]: onClear
+            - code [ref=f7e1820]: function
+          - button [ref=f7e1824]:
+            - code [ref=f7e1825]: trackCellsUpdate
+            - code [ref=f7e1828]: function
+          - button [ref=f7e1832]:
+            - code [ref=f7e1833]: trackRowsAdd
+            - code [ref=f7e1836]: function
+          - button [ref=f7e1840]:
+            - code [ref=f7e1841]: trackRowsDelete
+            - code [ref=f7e1844]: function
+        - heading [level=3] [ref=f7e1847]:
+          - link "DataGrid" [ref=f7e1848] [cursor=pointer]:
+            - /url: "#datagrid"
+        - paragraph [ref=f7e1852]: Main data grid component with virtualization and editing capabilities.
+        - generic [ref=f7e1854]:
+          - generic [ref=f7e1855]:
+            - paragraph [ref=f7e1856]: Prop
+            - paragraph [ref=f7e1857]: Type
+          - button [ref=f7e1859]:
+            - code [ref=f7e1860]: table
+            - code [ref=f7e1863]: object
+          - button [ref=f7e1867]:
+            - code [ref=f7e1868]: tableMeta
+            - code [ref=f7e1871]: object
+          - button [ref=f7e1875]:
+            - code [ref=f7e1876]: columns
+            - code [ref=f7e1879]: array
+          - button [ref=f7e1883]:
+            - code [ref=f7e1884]: dataGridRef
+            - code [ref=f7e1887]: object
+          - button [ref=f7e1891]:
+            - code [ref=f7e1892]: headerRef
+            - code [ref=f7e1895]: object
+          - button [ref=f7e1899]:
+            - code [ref=f7e1900]: footerRef
+            - code [ref=f7e1903]: object
+          - button [ref=f7e1907]:
+            - code [ref=f7e1908]: rowMapRef
+            - code [ref=f7e1911]: object
+          - button [ref=f7e1915]:
+            - code [ref=f7e1916]: virtualTotalSize
+            - code [ref=f7e1919]: number
+          - button [ref=f7e1923]:
+            - code [ref=f7e1924]: virtualItems
+            - code [ref=f7e1927]: array
+          - button [ref=f7e1931]:
+            - code [ref=f7e1932]: measureElement
+            - code [ref=f7e1935]: function
+          - button [ref=f7e1939]:
+            - code [ref=f7e1940]: dir?
+            - code [ref=f7e1943]: union
+          - button [ref=f7e1947]:
+            - code [ref=f7e1948]: height?
+            - code [ref=f7e1951]: union
+          - button [ref=f7e1955]:
+            - code [ref=f7e1956]: searchState?
+            - code [ref=f7e1959]: union
+          - button [ref=f7e1963]:
+            - code [ref=f7e1964]: columnSizeVars
+            - code [ref=f7e1967]: object
+          - button [ref=f7e1971]:
+            - code [ref=f7e1972]: cellSelectionMap
+            - code [ref=f7e1975]: object
+          - button [ref=f7e1979]:
+            - code [ref=f7e1980]: searchMatchesByRow
+            - code [ref=f7e1983]: union
+          - button [ref=f7e1987]:
+            - code [ref=f7e1988]: activeSearchMatch
+            - code [ref=f7e1991]: union
+          - button [ref=f7e1995]:
+            - code [ref=f7e1996]: focusedCell
+            - code [ref=f7e1999]: union
+          - button [ref=f7e2003]:
+            - code [ref=f7e2004]: editingCell
+            - code [ref=f7e2007]: union
+          - button [ref=f7e2011]:
+            - code [ref=f7e2012]: rowHeight
+            - code [ref=f7e2015]: RowHeightValue
+          - button [ref=f7e2019]:
+            - code [ref=f7e2020]: contextMenu
+            - code [ref=f7e2023]: object
+          - button [ref=f7e2027]:
+            - code [ref=f7e2028]: pasteDialog
+            - code [ref=f7e2031]: object
+          - button [ref=f7e2035]:
+            - code [ref=f7e2036]: onRowAdd?
+            - code [ref=f7e2039]: union
+          - button [ref=f7e2043]:
+            - code [ref=f7e2044]: stretchColumns?
+            - code [ref=f7e2047]: union
+        - heading [level=3] [ref=f7e2050]:
+          - link "getDataGridSelectColumn" [ref=f7e2051] [cursor=pointer]:
+            - /url: "#getdatagridselectcolumn"
+        - paragraph [ref=f7e2055]: A utility function that returns a reusable select column definition for the data grid with checkbox selection and shift-click support.
+        - generic [ref=f7e2057]:
+          - generic [ref=f7e2058]:
+            - paragraph [ref=f7e2059]: Prop
+            - paragraph [ref=f7e2060]: Type
+          - button [ref=f7e2062]:
+            - code [ref=f7e2063]: getUniqueValues?
+            - code [ref=f7e2066]: union
+          - button [ref=f7e2070]:
+            - code [ref=f7e2071]: footer?
+            - code [ref=f7e2074]: union
+          - button [ref=f7e2078]:
+            - code [ref=f7e2079]: cell?
+            - code [ref=f7e2082]: union
+          - button [ref=f7e2086]:
+            - code [ref=f7e2087]: meta?
+            - code [ref=f7e2090]: union
+          - button [ref=f7e2094]:
+            - code [ref=f7e2095]: enableHiding?
+            - code [ref=f7e2098]: union
+          - button [ref=f7e2102]:
+            - code [ref=f7e2103]: enablePinning?
+            - code [ref=f7e2106]: union
+          - button [ref=f7e2110]:
+            - code [ref=f7e2111]: enableColumnFilter?
+            - code [ref=f7e2114]: union
+          - button [ref=f7e2118]:
+            - code [ref=f7e2119]: filterFn?
+            - code [ref=f7e2122]: union
+          - button [ref=f7e2126]:
+            - code [ref=f7e2127]: enableGlobalFilter?
+            - code [ref=f7e2130]: union
+          - button [ref=f7e2134]:
+            - code [ref=f7e2135]: enableMultiSort?
+            - code [ref=f7e2138]: union
+          - button [ref=f7e2142]:
+            - code [ref=f7e2143]: enableSorting?
+            - code [ref=f7e2146]: union
+          - button [ref=f7e2150]:
+            - code [ref=f7e2151]: invertSorting?
+            - code [ref=f7e2154]: union
+          - button [ref=f7e2158]:
+            - code [ref=f7e2159]: sortDescFirst?
+            - code [ref=f7e2162]: union
+          - button [ref=f7e2166]:
+            - code [ref=f7e2167]: sortingFn?
+            - code [ref=f7e2170]: union
+          - button [ref=f7e2174]:
+            - code [ref=f7e2175]: sortUndefined?
+            - code [ref=f7e2178]: union
+          - button [ref=f7e2182]:
+            - code [ref=f7e2183]: aggregatedCell?
+            - code [ref=f7e2186]: union
+          - button [ref=f7e2190]:
+            - code [ref=f7e2191]: aggregationFn?
+            - code [ref=f7e2194]: union
+          - button [ref=f7e2198]:
+            - code [ref=f7e2199]: enableGrouping?
+            - code [ref=f7e2202]: union
+          - button [ref=f7e2206]:
+            - code [ref=f7e2207]: getGroupingValue?
+            - code [ref=f7e2210]: union
+          - button [ref=f7e2214]:
+            - code [ref=f7e2215]: enableResizing?
+            - code [ref=f7e2218]: union
+          - button [ref=f7e2222]:
+            - code [ref=f7e2223]: maxSize?
+            - code [ref=f7e2226]: union
+          - button [ref=f7e2230]:
+            - code [ref=f7e2231]: minSize?
+            - code [ref=f7e2234]: union
+          - button [ref=f7e2238]:
+            - code [ref=f7e2239]: size?
+            - code [ref=f7e2242]: union
+          - button [ref=f7e2246]:
+            - code [ref=f7e2247]: header?
+            - code [ref=f7e2250]: union
+          - button [ref=f7e2254]:
+            - code [ref=f7e2255]: id?
+            - code [ref=f7e2258]: union
+        - heading [level=3] [ref=f7e2261]:
+          - link "DataGridColumnHeader" [ref=f7e2262] [cursor=pointer]:
+            - /url: "#datagridcolumnheader"
+        - paragraph [ref=f7e2266]: Column header with sorting controls and visual indicators for sort direction.
+        - generic [ref=f7e2268]:
+          - generic [ref=f7e2269]:
+            - paragraph [ref=f7e2270]: Prop
+            - paragraph [ref=f7e2271]: Type
+          - button [ref=f7e2273]:
+            - code [ref=f7e2274]: header
+            - code [ref=f7e2277]: object
+          - button [ref=f7e2281]:
+            - code [ref=f7e2282]: table
+            - code [ref=f7e2285]: object
+        - heading [level=3] [ref=f7e2288]:
+          - link "DataGridCell" [ref=f7e2289] [cursor=pointer]:
+            - /url: "#datagridcell"
+        - paragraph [ref=f7e2293]:
+          - text: Routes to the appropriate cell variant based on the column's
+          - code [ref=f7e2294]: meta.cell.variant
+          - text: property.
+        - generic [ref=f7e2296]:
+          - generic [ref=f7e2297]:
+            - paragraph [ref=f7e2298]: Prop
+            - paragraph [ref=f7e2299]: Type
+          - button [ref=f7e2301]:
+            - code [ref=f7e2302]: cell
+            - code [ref=f7e2305]: object
+          - button [ref=f7e2309]:
+            - code [ref=f7e2310]: table
+            - code [ref=f7e2313]: object
+          - button [ref=f7e2317]:
+            - code [ref=f7e2318]: rowIndex
+            - code [ref=f7e2321]: number
+          - button [ref=f7e2325]:
+            - code [ref=f7e2326]: columnId
+            - code [ref=f7e2329]: string
+          - button [ref=f7e2333]:
+            - code [ref=f7e2334]: isFocused
+            - code [ref=f7e2337]: union
+          - button [ref=f7e2341]:
+            - code [ref=f7e2342]: isEditing
+            - code [ref=f7e2345]: union
+          - button [ref=f7e2349]:
+            - code [ref=f7e2350]: isSelected
+            - code [ref=f7e2353]: union
+          - button [ref=f7e2357]:
+            - code [ref=f7e2358]: isSearchMatch
+            - code [ref=f7e2361]: union
+          - button [ref=f7e2365]:
+            - code [ref=f7e2366]: isActiveSearchMatch
+            - code [ref=f7e2369]: union
+          - button [ref=f7e2373]:
+            - code [ref=f7e2374]: readOnly
+            - code [ref=f7e2377]: union
+        - heading [level=3] [ref=f7e2380]:
+          - link "DataGridCellWrapper" [ref=f7e2381] [cursor=pointer]:
+            - /url: "#datagridcellwrapper"
+        - paragraph [ref=f7e2385]: Base wrapper providing common functionality for all cell variants including focus management, selection state, search highlighting, and keyboard interactions.
+        - generic [ref=f7e2387]:
+          - generic [ref=f7e2388]:
+            - paragraph [ref=f7e2389]: Prop
+            - paragraph [ref=f7e2390]: Type
+          - button [ref=f7e2392]:
+            - code [ref=f7e2393]: cell
+            - code [ref=f7e2396]: object
+          - button [ref=f7e2400]:
+            - code [ref=f7e2401]: table
+            - code [ref=f7e2404]: object
+          - button [ref=f7e2408]:
+            - code [ref=f7e2409]: rowIndex
+            - code [ref=f7e2412]: number
+          - button [ref=f7e2416]:
+            - code [ref=f7e2417]: columnId
+            - code [ref=f7e2420]: string
+          - button [ref=f7e2424]:
+            - code [ref=f7e2425]: isFocused
+            - code [ref=f7e2428]: union
+          - button [ref=f7e2432]:
+            - code [ref=f7e2433]: isEditing
+            - code [ref=f7e2436]: union
+          - button [ref=f7e2440]:
+            - code [ref=f7e2441]: isSelected
+            - code [ref=f7e2444]: union
+          - button [ref=f7e2448]:
+            - code [ref=f7e2449]: isSearchMatch
+            - code [ref=f7e2452]: union
+          - button [ref=f7e2456]:
+            - code [ref=f7e2457]: isActiveSearchMatch
+            - code [ref=f7e2460]: union
+          - button [ref=f7e2464]:
+            - code [ref=f7e2465]: readOnly
+            - code [ref=f7e2468]: union
+        - heading [level=3] [ref=f7e2471]:
+          - link "DataGridCellVariants" [ref=f7e2472] [cursor=pointer]:
+            - /url: "#datagridcellvariants"
+        - paragraph [ref=f7e2476]:
+          - text: Individual cell variants for different data variants. Each variant implements the
+          - code [ref=f7e2477]: DataGridCellProps
+          - text: interface and wraps its content in
+          - code [ref=f7e2478]: DataGridCellWrapper
+          - text: .
+        - generic [ref=f7e2480]:
+          - generic [ref=f7e2481]:
+            - paragraph [ref=f7e2482]: Prop
+            - paragraph [ref=f7e2483]: Type
+          - button [ref=f7e2485]:
+            - code [ref=f7e2486]: cell
+            - code [ref=f7e2489]: object
+          - button [ref=f7e2493]:
+            - code [ref=f7e2494]: table
+            - code [ref=f7e2497]: object
+          - button [ref=f7e2501]:
+            - code [ref=f7e2502]: rowIndex
+            - code [ref=f7e2505]: number
+          - button [ref=f7e2509]:
+            - code [ref=f7e2510]: columnId
+            - code [ref=f7e2513]: string
+          - button [ref=f7e2517]:
+            - code [ref=f7e2518]: isFocused
+            - code [ref=f7e2521]: union
+          - button [ref=f7e2525]:
+            - code [ref=f7e2526]: isEditing
+            - code [ref=f7e2529]: union
+          - button [ref=f7e2533]:
+            - code [ref=f7e2534]: isSelected
+            - code [ref=f7e2537]: union
+          - button [ref=f7e2541]:
+            - code [ref=f7e2542]: isSearchMatch
+            - code [ref=f7e2545]: union
+          - button [ref=f7e2549]:
+            - code [ref=f7e2550]: isActiveSearchMatch
+            - code [ref=f7e2553]: union
+          - button [ref=f7e2557]:
+            - code [ref=f7e2558]: readOnly
+            - code [ref=f7e2561]: union
+        - paragraph [ref=f7e2564]: "Available cell variants:"
+        - list [ref=f7e2565]:
+          - listitem [ref=f7e2566]:
+            - strong [ref=f7e2567]: ShortTextCell
+            - text: ": Single-line text input with inline contentEditable"
+          - listitem [ref=f7e2568]:
+            - strong [ref=f7e2569]: LongTextCell
+            - text: ": Multi-line textarea displayed in a popover dialog with auto-save"
+          - listitem [ref=f7e2570]:
+            - strong [ref=f7e2571]: NumberCell
+            - text: ": Numeric input with optional min, max, and step constraints"
+          - listitem [ref=f7e2572]:
+            - strong [ref=f7e2573]: UrlCell
+            - text: ": URL input with validation and clickable links"
+          - listitem [ref=f7e2574]:
+            - strong [ref=f7e2575]: SelectCell
+            - text: ": Single-select dropdown with predefined options"
+          - listitem [ref=f7e2576]:
+            - strong [ref=f7e2577]: MultiSelectCell
+            - text: ": Multi-select input with badge display and command palette"
+          - listitem [ref=f7e2578]:
+            - strong [ref=f7e2579]: CheckboxCell
+            - text: ": Boolean checkbox for true/false values"
+          - listitem [ref=f7e2580]:
+            - strong [ref=f7e2581]: DateCell
+            - text: ": Date picker with calendar popover"
+          - listitem [ref=f7e2582]:
+            - strong [ref=f7e2583]: FileCell
+            - text: ": File upload with support for multiple files and file management"
+        - heading [level=3] [ref=f7e2584]:
+          - link "DataGridRow" [ref=f7e2585] [cursor=pointer]:
+            - /url: "#datagridrow"
+        - paragraph [ref=f7e2589]: Individual row component with virtualization support for large datasets.
+        - generic [ref=f7e2591]:
+          - generic [ref=f7e2592]:
+            - paragraph [ref=f7e2593]: Prop
+            - paragraph [ref=f7e2594]: Type
+          - button [ref=f7e2596]:
+            - code [ref=f7e2597]: row
+            - code [ref=f7e2600]: object
+          - button [ref=f7e2604]:
+            - code [ref=f7e2605]: tableMeta
+            - code [ref=f7e2608]: object
+          - button [ref=f7e2612]:
+            - code [ref=f7e2613]: virtualItem
+            - code [ref=f7e2616]: object
+          - button [ref=f7e2620]:
+            - code [ref=f7e2621]: measureElement
+            - code [ref=f7e2624]: function
+          - button [ref=f7e2628]:
+            - code [ref=f7e2629]: rowMapRef
+            - code [ref=f7e2632]: object
+          - button [ref=f7e2636]:
+            - code [ref=f7e2637]: rowHeight
+            - code [ref=f7e2640]: RowHeightValue
+          - button [ref=f7e2644]:
+            - code [ref=f7e2645]: columnVisibility
+            - code [ref=f7e2648]: VisibilityState
+          - button [ref=f7e2652]:
+            - code [ref=f7e2653]: columnPinning
+            - code [ref=f7e2656]: object
+          - button [ref=f7e2660]:
+            - code [ref=f7e2661]: focusedCell
+            - code [ref=f7e2664]: union
+          - button [ref=f7e2668]:
+            - code [ref=f7e2669]: editingCell
+            - code [ref=f7e2672]: union
+          - button [ref=f7e2676]:
+            - code [ref=f7e2677]: cellSelectionKeys
+            - code [ref=f7e2680]: object
+          - button [ref=f7e2684]:
+            - code [ref=f7e2685]: searchMatchColumns
+            - code [ref=f7e2688]: union
+          - button [ref=f7e2692]:
+            - code [ref=f7e2693]: activeSearchMatch
+            - code [ref=f7e2696]: union
+          - button [ref=f7e2700]:
+            - code [ref=f7e2701]: dir
+            - code [ref=f7e2704]: Direction
+          - button [ref=f7e2708]:
+            - code [ref=f7e2709]: readOnly
+            - code [ref=f7e2712]: union
+          - button [ref=f7e2716]:
+            - code [ref=f7e2717]: stretchColumns
+            - code [ref=f7e2720]: union
+        - heading [level=3] [ref=f7e2723]:
+          - link "DataGridSearch" [ref=f7e2724] [cursor=pointer]:
+            - /url: "#datagridsearch"
+        - paragraph [ref=f7e2728]: Search menu with keyboard shortcuts for finding and navigating between matching cells in the grid.
+        - generic [ref=f7e2730]:
+          - generic [ref=f7e2731]:
+            - paragraph [ref=f7e2732]: Prop
+            - paragraph [ref=f7e2733]: Type
+          - button [ref=f7e2735]:
+            - code [ref=f7e2736]: searchQuery
+            - code [ref=f7e2739]: string
+          - button [ref=f7e2743]:
+            - code [ref=f7e2744]: onSearchQueryChange
+            - code [ref=f7e2747]: function
+          - button [ref=f7e2751]:
+            - code [ref=f7e2752]: searchMatches
+            - code [ref=f7e2755]: array
+          - button [ref=f7e2759]:
+            - code [ref=f7e2760]: matchIndex
+            - code [ref=f7e2763]: number
+          - button [ref=f7e2767]:
+            - code [ref=f7e2768]: searchOpen
+            - code [ref=f7e2771]: union
+          - button [ref=f7e2775]:
+            - code [ref=f7e2776]: onSearchOpenChange
+            - code [ref=f7e2779]: function
+          - button [ref=f7e2783]:
+            - code [ref=f7e2784]: onNavigateToNextMatch
+            - code [ref=f7e2787]: function
+          - button [ref=f7e2791]:
+            - code [ref=f7e2792]: onNavigateToPrevMatch
+            - code [ref=f7e2795]: function
+          - button [ref=f7e2799]:
+            - code [ref=f7e2800]: onSearch
+            - code [ref=f7e2803]: function
+        - heading [level=3] [ref=f7e2806]:
+          - link "DataGridFilterMenu" [ref=f7e2807] [cursor=pointer]:
+            - /url: "#datagridfiltermenu"
+        - paragraph [ref=f7e2811]: Filter menu with drag-and-drop reordering and advanced filtering operators for text, number, date, select, and boolean fields.
+        - generic [ref=f7e2813]:
+          - generic [ref=f7e2814]:
+            - paragraph [ref=f7e2815]: Prop
+            - paragraph [ref=f7e2816]: Type
+          - button [ref=f7e2818]:
+            - code [ref=f7e2819]: table
+            - code [ref=f7e2822]: object
+          - button [ref=f7e2826]:
+            - code [ref=f7e2827]: disabled?
+            - code [ref=f7e2830]: union
+        - heading [level=3] [ref=f7e2833]:
+          - link "DataGridSortMenu" [ref=f7e2834] [cursor=pointer]:
+            - /url: "#datagridsortmenu"
+        - paragraph [ref=f7e2838]: Sort menu with drag-and-drop reordering for multi-column sorting with ascending/descending controls.
+        - generic [ref=f7e2840]:
+          - generic [ref=f7e2841]:
+            - paragraph [ref=f7e2842]: Prop
+            - paragraph [ref=f7e2843]: Type
+          - button [ref=f7e2845]:
+            - code [ref=f7e2846]: table
+            - code [ref=f7e2849]: object
+          - button [ref=f7e2853]:
+            - code [ref=f7e2854]: disabled?
+            - code [ref=f7e2857]: union
+        - heading [level=3] [ref=f7e2860]:
+          - link "DataGridRowHeightMenu" [ref=f7e2861] [cursor=pointer]:
+            - /url: "#datagridrowheightmenu"
+        - paragraph [ref=f7e2865]: Row height menu for adjusting row sizes between short, medium, tall, and extra-tall options.
+        - generic [ref=f7e2867]:
+          - generic [ref=f7e2868]:
+            - paragraph [ref=f7e2869]: Prop
+            - paragraph [ref=f7e2870]: Type
+          - button [ref=f7e2872]:
+            - code [ref=f7e2873]: table
+            - code [ref=f7e2876]: object
+          - button [ref=f7e2880]:
+            - code [ref=f7e2881]: disabled?
+            - code [ref=f7e2884]: union
+        - heading [level=3] [ref=f7e2887]:
+          - link "DataGridViewMenu" [ref=f7e2888] [cursor=pointer]:
+            - /url: "#datagridviewmenu"
+        - paragraph [ref=f7e2892]: View menu for controlling column visibility with search functionality.
+        - generic [ref=f7e2894]:
+          - generic [ref=f7e2895]:
+            - paragraph [ref=f7e2896]: Prop
+            - paragraph [ref=f7e2897]: Type
+          - button [ref=f7e2899]:
+            - code [ref=f7e2900]: table
+            - code [ref=f7e2903]: object
+          - button [ref=f7e2907]:
+            - code [ref=f7e2908]: disabled?
+            - code [ref=f7e2911]: union
+        - heading [level=3] [ref=f7e2914]:
+          - link "DataGridContextMenu" [ref=f7e2915] [cursor=pointer]:
+            - /url: "#datagridcontextmenu"
+        - paragraph [ref=f7e2919]: Right-click context menu for quick access to common cell and row actions like copy, cut, clear, and delete.
+        - generic [ref=f7e2921]:
+          - generic [ref=f7e2922]:
+            - paragraph [ref=f7e2923]: Prop
+            - paragraph [ref=f7e2924]: Type
+          - button [ref=f7e2926]:
+            - code [ref=f7e2927]: table
+            - code [ref=f7e2930]: object
+        - heading [level=3] [ref=f7e2933]:
+          - link "DataGridPasteDialog" [ref=f7e2934] [cursor=pointer]:
+            - /url: "#datagridpastedialog"
+        - paragraph [ref=f7e2938]: Dialog for handling paste operations that require adding new rows to the grid.
+        - generic [ref=f7e2940]:
+          - generic [ref=f7e2941]:
+            - paragraph [ref=f7e2942]: Prop
+            - paragraph [ref=f7e2943]: Type
+          - button [ref=f7e2945]:
+            - code [ref=f7e2946]: tableMeta
+            - code [ref=f7e2949]: object
+          - button [ref=f7e2953]:
+            - code [ref=f7e2954]: pasteDialog
+            - code [ref=f7e2957]: object
+        - heading [level=3] [ref=f7e2960]:
+          - link "DataGridKeyboardShortcuts" [ref=f7e2961] [cursor=pointer]:
+            - /url: "#datagridkeyboardshortcuts"
+        - paragraph [ref=f7e2965]: Searchable reference dialog for all available keyboard shortcuts for navigating and interacting with the data grid.
+        - generic [ref=f7e2967]:
+          - generic [ref=f7e2968]:
+            - paragraph [ref=f7e2969]: Prop
+            - paragraph [ref=f7e2970]: Type
+          - button [ref=f7e2972]:
+            - code [ref=f7e2973]: enableSearch?
+            - code [ref=f7e2976]: union
+          - button [ref=f7e2980]:
+            - code [ref=f7e2981]: enableUndoRedo?
+            - code [ref=f7e2984]: union
+          - button [ref=f7e2988]:
+            - code [ref=f7e2989]: enablePaste?
+            - code [ref=f7e2992]: union
+          - button [ref=f7e2996]:
+            - code [ref=f7e2997]: enableRowAdd?
+            - code [ref=f7e3000]: union
+          - button [ref=f7e3004]:
+            - code [ref=f7e3005]: enableRowsDelete?
+            - code [ref=f7e3008]: union
+        - heading [level=3] [ref=f7e3011]:
+          - link "DataGridSkeleton" [ref=f7e3012] [cursor=pointer]:
+            - /url: "#datagridskeleton"
+        - paragraph [ref=f7e3016]: A composable skeleton component for the data grid with toolbar and grid parts for loading states.
+        - figure [ref=f7e3017]:
+          - figure [ref=f7e3019]:
+            - button "Copy Text" [ref=f7e3021]
+            - region [ref=f7e3025]:
+              - code [ref=f7e3027]:
+                - generic [ref=f7e3028]: "import {"
+                - generic [ref=f7e3029]: DataGridSkeleton,
+                - generic [ref=f7e3030]: DataGridSkeletonGrid,
+                - generic [ref=f7e3031]: DataGridSkeletonToolbar,
+                - generic [ref=f7e3032]: "} from \"@/components/data-grid/data-grid-skeleton\";"
+                - generic [ref=f7e3034]: return (
+                - generic [ref=f7e3035]: <DataGridSkeleton>
+                - generic [ref=f7e3036]: <DataGridSkeletonToolbar />
+                - generic [ref=f7e3037]: <DataGridSkeletonGrid />
+                - generic [ref=f7e3038]: </DataGridSkeleton>
+                - generic [ref=f7e3039]: );
+        - generic [ref=f7e3042]:
+          - paragraph [ref=f7e3043]: Prop
+          - paragraph [ref=f7e3044]: Type
+        - heading [level=4] [ref=f7e3045]:
+          - link "DataGridSkeletonToolbar" [ref=f7e3046] [cursor=pointer]:
+            - /url: "#datagridskeletontoolbar"
+        - generic [ref=f7e3051]:
+          - generic [ref=f7e3052]:
+            - paragraph [ref=f7e3053]: Prop
+            - paragraph [ref=f7e3054]: Type
+          - button [ref=f7e3056]:
+            - code [ref=f7e3057]: align?
+            - code [ref=f7e3060]: union
+          - button [ref=f7e3064]:
+            - code [ref=f7e3065]: actionCount?
+            - code [ref=f7e3068]: union
+        - heading [level=4] [ref=f7e3071]:
+          - link "DataGridSkeletonGrid" [ref=f7e3072] [cursor=pointer]:
+            - /url: "#datagridskeletongrid"
+        - generic [ref=f7e3078]:
+          - paragraph [ref=f7e3079]: Prop
+          - paragraph [ref=f7e3080]: Type
+        - heading [level=2] [ref=f7e3081]:
+          - link "Accessibility" [ref=f7e3082] [cursor=pointer]:
+            - /url: "#accessibility"
+        - paragraph [ref=f7e3086]: "The Data Grid follows WAI-ARIA guidelines for grid widgets:"
+        - list [ref=f7e3087]:
+          - listitem [ref=f7e3088]: Full keyboard navigation support
+          - listitem [ref=f7e3089]: Proper ARIA labels, roles, and properties
+          - listitem [ref=f7e3090]: Focus management with visible focus indicators
+          - listitem [ref=f7e3091]: Keyboard shortcuts for all actions
+          - listitem [ref=f7e3092]: Screen reader friendly cell updates
+        - heading [level=2] [ref=f7e3093]:
+          - link "Keyboard Interactions" [ref=f7e3094] [cursor=pointer]:
+            - /url: "#keyboard-interactions"
+        - heading [level=3] [ref=f7e3098]:
+          - link "Navigation" [ref=f7e3099] [cursor=pointer]:
+            - /url: "#navigation"
+        - table [ref=f7e3105]:
+          - rowgroup [ref=f7e3106]:
+            - row [ref=f7e3107]:
+              - columnheader "Key" [ref=f7e3108]
+              - columnheader "Description" [ref=f7e3109]
+          - rowgroup [ref=f7e3110]:
+            - row [ref=f7e3111]:
+              - cell "↑ ↓ ← →" [ref=f7e3112]:
+                - generic: ↑
+                - generic: ↓
+                - generic: ←
+                - generic: →
+              - cell "Navigate between cells" [ref=f7e3113]
+            - row [ref=f7e3114]:
+              - cell "Tab" [ref=f7e3115]
+              - cell "Move to next cell" [ref=f7e3116]
+            - row [ref=f7e3117]:
+              - cell "Shift Tab" [ref=f7e3118]:
+                - generic: Shift
+                - generic: Tab
+              - cell "Move to previous cell" [ref=f7e3119]
+            - row [ref=f7e3120]:
+              - cell "Home" [ref=f7e3121]
+              - cell "Move to first column" [ref=f7e3122]
+            - row [ref=f7e3123]:
+              - cell "End" [ref=f7e3124]
+              - cell "Move to last column" [ref=f7e3125]
+            - row [ref=f7e3126]:
+              - cell "Ctrl + ↑ Cmd + ↑" [ref=f7e3127]:
+                - generic: Ctrl + ↑
+                - generic: Cmd + ↑
+              - cell "Move to first row (same column)" [ref=f7e3128]
+            - row [ref=f7e3129]:
+              - cell "Ctrl + ↓ Cmd + ↓" [ref=f7e3130]:
+                - generic: Ctrl + ↓
+                - generic: Cmd + ↓
+              - cell "Move to last row (same column)" [ref=f7e3131]
+            - row [ref=f7e3132]:
+              - cell "Ctrl + ← Cmd + ←" [ref=f7e3133]:
+                - generic: Ctrl + ←
+                - generic: Cmd + ←
+              - cell "Move to first column (same row)" [ref=f7e3134]
+            - row [ref=f7e3135]:
+              - cell "Ctrl + → Cmd + →" [ref=f7e3136]:
+                - generic: Ctrl + →
+                - generic: Cmd + →
+              - cell "Move to last column (same row)" [ref=f7e3137]
+            - row [ref=f7e3138]:
+              - cell "Ctrl + Home Cmd + Home" [ref=f7e3139]:
+                - generic: Ctrl + Home
+                - generic: Cmd + Home
+              - cell "Move to first cell" [ref=f7e3140]
+            - row [ref=f7e3141]:
+              - cell "Ctrl + End Cmd + End" [ref=f7e3142]:
+                - generic: Ctrl + End
+                - generic: Cmd + End
+              - cell "Move to last cell" [ref=f7e3143]
+            - row [ref=f7e3144]:
+              - cell "PgUp" [ref=f7e3145]
+              - cell "Move up one page" [ref=f7e3146]
+            - row [ref=f7e3147]:
+              - cell "PgDn" [ref=f7e3148]
+              - cell "Move down one page" [ref=f7e3149]
+            - row [ref=f7e3150]:
+              - cell "Alt + ↑" [ref=f7e3151]
+              - cell "Scroll up one page" [ref=f7e3152]
+            - row [ref=f7e3153]:
+              - cell "Alt + ↓" [ref=f7e3154]
+              - cell "Scroll down one page" [ref=f7e3155]
+            - row [ref=f7e3156]:
+              - cell "Alt + PgUp" [ref=f7e3157]
+              - cell "Scroll left one page of columns" [ref=f7e3158]
+            - row [ref=f7e3159]:
+              - cell "Alt + PgDn" [ref=f7e3160]
+              - cell "Scroll right one page of columns" [ref=f7e3161]
+        - heading [level=3] [ref=f7e3162]:
+          - link "Selection" [ref=f7e3163] [cursor=pointer]:
+            - /url: "#selection"
+        - table [ref=f7e3169]:
+          - rowgroup [ref=f7e3170]:
+            - row [ref=f7e3171]:
+              - columnheader "Key" [ref=f7e3172]
+              - columnheader "Description" [ref=f7e3173]
+          - rowgroup [ref=f7e3174]:
+            - row [ref=f7e3175]:
+              - cell "Shift + ↑ Shift + ↓ Shift + ← Shift + →" [ref=f7e3176]:
+                - generic: Shift + ↑
+                - generic: Shift + ↓
+                - generic: Shift + ←
+                - generic: Shift + →
+              - cell "Extend selection" [ref=f7e3177]
+            - row [ref=f7e3178]:
+              - cell "Ctrl + Shift + ↑ Cmd + Shift + ↑" [ref=f7e3179]:
+                - generic: Ctrl + Shift + ↑
+                - generic: Cmd + Shift + ↑
+              - cell "Select to top of table" [ref=f7e3180]
+            - row [ref=f7e3181]:
+              - cell "Ctrl + Shift + ↓ Cmd + Shift + ↓" [ref=f7e3182]:
+                - generic: Ctrl + Shift + ↓
+                - generic: Cmd + Shift + ↓
+              - cell "Select to bottom of table" [ref=f7e3183]
+            - row [ref=f7e3184]:
+              - cell "Ctrl + Shift + ← Cmd + Shift + ←" [ref=f7e3185]:
+                - generic: Ctrl + Shift + ←
+                - generic: Cmd + Shift + ←
+              - cell "Select to first column" [ref=f7e3186]
+            - row [ref=f7e3187]:
+              - cell "Ctrl + Shift + → Cmd + Shift + →" [ref=f7e3188]:
+                - generic: Ctrl + Shift + →
+                - generic: Cmd + Shift + →
+              - cell "Select to last column" [ref=f7e3189]
+            - row [ref=f7e3190]:
+              - cell "Ctrl + A Cmd + A" [ref=f7e3191]:
+                - generic: Ctrl + A
+                - generic: Cmd + A
+              - cell "Select all cells" [ref=f7e3192]
+            - row [ref=f7e3193]:
+              - cell "Ctrl + Click Cmd + Click" [ref=f7e3194]:
+                - generic: Ctrl + Click
+                - generic: Cmd + Click
+              - cell "Toggle cell selection" [ref=f7e3195]
+            - row [ref=f7e3196]:
+              - cell "Shift + Click" [ref=f7e3197]
+              - cell "Select range" [ref=f7e3198]
+            - row [ref=f7e3199]:
+              - cell "Escape" [ref=f7e3200]
+              - cell "Clear selection or exit edit mode" [ref=f7e3201]
+        - heading [level=3] [ref=f7e3202]:
+          - link "Editing" [ref=f7e3203] [cursor=pointer]:
+            - /url: "#editing"
+        - table [ref=f7e3209]:
+          - rowgroup [ref=f7e3210]:
+            - row [ref=f7e3211]:
+              - columnheader "Key" [ref=f7e3212]
+              - columnheader "Description" [ref=f7e3213]
+          - rowgroup [ref=f7e3214]:
+            - row [ref=f7e3215]:
+              - cell "Enter" [ref=f7e3216]
+              - cell "Start editing cell" [ref=f7e3217]
+            - row [ref=f7e3218]:
+              - cell "F2" [ref=f7e3219]
+              - cell "Start editing cell" [ref=f7e3220]
+            - row [ref=f7e3221]:
+              - cell "Double Click" [ref=f7e3222]
+              - cell "Start editing cell" [ref=f7e3223]
+            - row [ref=f7e3224]:
+              - cell "Shift + Enter" [ref=f7e3225]
+              - cell "Insert row below" [ref=f7e3226]
+            - row [ref=f7e3227]:
+              - cell "Ctrl + C Cmd + C" [ref=f7e3228]:
+                - generic: Ctrl + C
+                - generic: Cmd + C
+              - cell "Copy selected cells" [ref=f7e3229]
+            - row [ref=f7e3230]:
+              - cell "Ctrl + X Cmd + X" [ref=f7e3231]:
+                - generic: Ctrl + X
+                - generic: Cmd + X
+              - cell "Cut selected cells" [ref=f7e3232]
+            - row [ref=f7e3233]:
+              - cell "Ctrl + V Cmd + V" [ref=f7e3234]:
+                - generic: Ctrl + V
+                - generic: Cmd + V
+              - cell "Paste cells" [ref=f7e3235]
+            - row [ref=f7e3236]:
+              - cell "Delete" [ref=f7e3237]
+              - cell "Clear selected cells" [ref=f7e3238]
+            - row [ref=f7e3239]:
+              - cell "Backspace" [ref=f7e3240]
+              - cell "Clear selected cells" [ref=f7e3241]
+            - row [ref=f7e3242]:
+              - cell "Ctrl + Backspace Cmd + Backspace" [ref=f7e3243]:
+                - generic: Ctrl + Backspace
+                - generic: Cmd + Backspace
+              - cell "Delete selected rows" [ref=f7e3244]
+            - row [ref=f7e3245]:
+              - cell "Ctrl + Delete Cmd + Delete" [ref=f7e3246]:
+                - generic: Ctrl + Delete
+                - generic: Cmd + Delete
+              - cell "Delete selected rows" [ref=f7e3247]
+            - row [ref=f7e3248]:
+              - cell "Ctrl + Z Cmd + Z" [ref=f7e3249]:
+                - generic: Ctrl + Z
+                - generic: Cmd + Z
+              - cell "Undo last action" [ref=f7e3250]
+            - row [ref=f7e3251]:
+              - cell "Ctrl + Shift + Z Cmd + Shift + Z" [ref=f7e3252]:
+                - generic: Ctrl + Shift + Z
+                - generic: Cmd + Shift + Z
+              - cell "Redo last action" [ref=f7e3253]
+            - row [ref=f7e3254]:
+              - cell "Ctrl + Y Cmd + Y" [ref=f7e3255]:
+                - generic: Ctrl + Y
+                - generic: Cmd + Y
+              - cell "Redo last action" [ref=f7e3256]
+        - heading [level=3] [ref=f7e3257]:
+          - link "Search & Shortcuts" [ref=f7e3258] [cursor=pointer]:
+            - /url: "#search--shortcuts"
+        - table [ref=f7e3264]:
+          - rowgroup [ref=f7e3265]:
+            - row [ref=f7e3266]:
+              - columnheader "Key" [ref=f7e3267]
+              - columnheader "Description" [ref=f7e3268]
+          - rowgroup [ref=f7e3269]:
+            - row [ref=f7e3270]:
+              - cell "Ctrl + F Cmd + F" [ref=f7e3271]:
+                - generic: Ctrl + F
+                - generic: Cmd + F
+              - cell "Open search" [ref=f7e3272]
+            - row [ref=f7e3273]:
+              - cell "Enter" [ref=f7e3274]
+              - cell "Next search match (when search is open)" [ref=f7e3275]
+            - row [ref=f7e3276]:
+              - cell "Shift + Enter" [ref=f7e3277]
+              - cell "Previous search match (when search is open)" [ref=f7e3278]
+            - row [ref=f7e3279]:
+              - cell "Escape" [ref=f7e3280]
+              - cell "Close search (when search is open)" [ref=f7e3281]
+            - row [ref=f7e3282]:
+              - cell "Ctrl + Shift + F Cmd + Shift + F" [ref=f7e3283]:
+                - generic: Ctrl + Shift + F
+                - generic: Cmd + Shift + F
+              - cell "Toggle filter menu" [ref=f7e3284]
+            - row [ref=f7e3285]:
+              - cell "Ctrl + Shift + S Cmd + Shift + S" [ref=f7e3286]:
+                - generic: Ctrl + Shift + S
+                - generic: Cmd + Shift + S
+              - cell "Toggle sort menu" [ref=f7e3287]
+            - row [ref=f7e3288]:
+              - cell "Ctrl + / Cmd + /" [ref=f7e3289]:
+                - generic: Ctrl + /
+                - generic: Cmd + /
+              - cell "Show keyboard shortcuts" [ref=f7e3290]
+        - heading [level=2] [ref=f7e3291]:
+          - link "Features" [ref=f7e3292] [cursor=pointer]:
+            - /url: "#features"
+        - paragraph [ref=f7e3296]: "The Data Grid component provides a comprehensive spreadsheet-like experience with:"
+        - heading [level=3] [ref=f7e3297]:
+          - link "Core Features" [ref=f7e3298] [cursor=pointer]:
+            - /url: "#core-features"
+        - list [ref=f7e3302]:
+          - listitem [ref=f7e3303]:
+            - strong [ref=f7e3304]: High Performance
+            - text: ": Virtualized rows and columns for handling large datasets (10,000+ rows)"
+          - listitem [ref=f7e3305]:
+            - strong [ref=f7e3306]: Cell Editing
+            - text: ": In-place editing with 9 different cell variants"
+          - listitem [ref=f7e3307]:
+            - strong [ref=f7e3308]: Cell Selection
+            - text: ": Single and multi-cell selection with keyboard and mouse"
+          - listitem [ref=f7e3309]:
+            - strong [ref=f7e3310]: Keyboard Navigation
+            - text: ": Full keyboard support with Excel-like shortcuts"
+          - listitem [ref=f7e3311]:
+            - strong [ref=f7e3312]: Copy/Cut/Paste
+            - text: ": Full clipboard support including paste from Excel/Google Sheets"
+          - listitem [ref=f7e3313]:
+            - strong [ref=f7e3314]: Undo/Redo
+            - text: ": Full history support for cell updates, row additions, and deletions (Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z)"
+          - listitem [ref=f7e3315]:
+            - strong [ref=f7e3316]: Context Menu
+            - text: ": Right-click actions for cells and rows"
+          - listitem [ref=f7e3317]:
+            - strong [ref=f7e3318]: Search
+            - text: ": Find and navigate to matching cells (Ctrl/Cmd+F)"
+          - listitem [ref=f7e3319]:
+            - strong [ref=f7e3320]: Filtering
+            - text: ": Advanced filtering with multiple operators and drag-and-drop reordering"
+          - listitem [ref=f7e3321]:
+            - strong [ref=f7e3322]: Sorting
+            - text: ": Multi-column sorting with drag-and-drop reordering"
+          - listitem [ref=f7e3323]:
+            - strong [ref=f7e3324]: Row Management
+            - text: ": Add and delete rows with callbacks"
+          - listitem [ref=f7e3325]:
+            - strong [ref=f7e3326]: Column Features
+            - text: ": Resizing, pinning (left/right), hiding, and reordering"
+        - heading [level=3] [ref=f7e3327]:
+          - link "Cell Variants" [ref=f7e3328] [cursor=pointer]:
+            - /url: "#cell-variants-1"
+        - list [ref=f7e3332]:
+          - listitem [ref=f7e3333]:
+            - strong [ref=f7e3334]: Text Cells
+            - text: ": Short-text and long-text with auto-save"
+          - listitem [ref=f7e3335]:
+            - strong [ref=f7e3336]: Number Cells
+            - text: ": With min/max/step constraints"
+          - listitem [ref=f7e3337]:
+            - strong [ref=f7e3338]: URL Cells
+            - text: ": With validation and clickable links"
+          - listitem [ref=f7e3339]:
+            - strong [ref=f7e3340]: Date Cells
+            - text: ": Calendar picker with keyboard navigation"
+          - listitem [ref=f7e3341]:
+            - strong [ref=f7e3342]: Select Cells
+            - text: ": Single and multi-select with search"
+          - listitem [ref=f7e3343]:
+            - strong [ref=f7e3344]: Checkbox Cells
+            - text: ": Boolean values"
+          - listitem [ref=f7e3345]:
+            - strong [ref=f7e3346]: File Cells
+            - text: ": Upload and manage multiple files per cell"
+        - heading [level=3] [ref=f7e3347]:
+          - link "Advanced Features" [ref=f7e3348] [cursor=pointer]:
+            - /url: "#advanced-features"
+        - list [ref=f7e3352]:
+          - listitem [ref=f7e3353]:
+            - strong [ref=f7e3354]: Smart Paste
+            - text: ": Automatically expands grid when pasting more data than fits"
+          - listitem [ref=f7e3355]:
+            - strong [ref=f7e3356]: Auto-Fill
+            - text: ": Type to start editing, like in Excel"
+          - listitem [ref=f7e3357]:
+            - strong [ref=f7e3358]: Row Heights
+            - text: ": Adjustable row heights (short, medium, tall, extra-tall)"
+          - listitem [ref=f7e3359]:
+            - strong [ref=f7e3360]: RTL Support
+            - text: ": Full right-to-left language support"
+          - listitem [ref=f7e3361]:
+            - strong [ref=f7e3362]: Read-Only Mode
+            - text: ": Lock the grid to prevent editing"
+          - listitem [ref=f7e3363]:
+            - strong [ref=f7e3364]: Auto-Focus
+            - text: ": Focus specific cell on mount"
+          - listitem [ref=f7e3365]:
+            - strong [ref=f7e3366]: Accessibility
+            - text: ": Full ARIA support and keyboard navigation"
+        - heading [level=2] [ref=f7e3367]:
+          - link "Credits" [ref=f7e3368] [cursor=pointer]:
+            - /url: "#credits"
+        - list [ref=f7e3372]:
+          - listitem [ref=f7e3373]:
+            - link "TanStack Table" [ref=f7e3374] [cursor=pointer]:
+              - /url: https://tanstack.com/table
+            - text: "- For the table state management."
+          - listitem [ref=f7e3375]:
+            - link "TanStack Virtual" [ref=f7e3376] [cursor=pointer]:
+              - /url: https://tanstack.com/virtual
+            - text: "- For the virtualization."
+          - listitem [ref=f7e3377]:
+            - link "shadcn/ui" [ref=f7e3378] [cursor=pointer]:
+              - /url: https://ui.shadcn.com
+            - text: "- For the UI components."
+          - listitem [ref=f7e3379]:
+            - link "Airtable" [ref=f7e3380] [cursor=pointer]:
+              - /url: https://www.airtable.com
+            - text: and
+            - link "Glide Data Grid" [ref=f7e3381] [cursor=pointer]:
+              - /url: https://grid.glideapps.com/
+            - text: "- For accessibility and best practices."
+      - generic [ref=f7e3382]:
+        - link [ref=f7e3383] [cursor=pointer]:
+          - /url: /docs/components/radix/cropper
+          - paragraph [ref=f7e3387]: Cropper
+          - paragraph [ref=f7e3388]: A powerful image and video cropper with zoom, rotation, and customizable crop areas.
+        - link [ref=f7e3389] [cursor=pointer]:
+          - /url: /docs/components/radix/data-table
+          - paragraph [ref=f7e3393]: Data Table
+          - paragraph [ref=f7e3394]: A powerful and flexible data table component for displaying, filtering, sorting, and paginating tabular data.
+    - generic [ref=f7e3395]:
+      - heading "On this page" [level=3] [ref=f7e3396]
+      - generic [ref=f7e3399]:
+        - link "Installation" [ref=f7e3400] [cursor=pointer]:
+          - /url: "#installation"
+        - link "Usage" [ref=f7e3402] [cursor=pointer]:
+          - /url: "#usage"
+        - link "Basic Data Grid" [ref=f7e3404] [cursor=pointer]:
+          - /url: "#basic-data-grid"
+        - link "With Toolbar Menus" [ref=f7e3408] [cursor=pointer]:
+          - /url: "#with-toolbar-menus"
+        - link "With Row Management" [ref=f7e3410] [cursor=pointer]:
+          - /url: "#with-row-management"
+        - link "With Search" [ref=f7e3412] [cursor=pointer]:
+          - /url: "#with-search"
+        - link "With Paste Support" [ref=f7e3414] [cursor=pointer]:
+          - /url: "#with-paste-support"
+        - link "With Undo/Redo" [ref=f7e3416] [cursor=pointer]:
+          - /url: "#with-undoredo"
+        - link "Read-Only Mode" [ref=f7e3418] [cursor=pointer]:
+          - /url: "#read-only-mode"
+        - link "RTL Support" [ref=f7e3420] [cursor=pointer]:
+          - /url: "#rtl-support"
+        - link "Auto Focus" [ref=f7e3422] [cursor=pointer]:
+          - /url: "#auto-focus"
+        - link "Custom Height and Stretch Columns" [ref=f7e3424] [cursor=pointer]:
+          - /url: "#custom-height-and-stretch-columns"
+        - link "Loading States" [ref=f7e3426] [cursor=pointer]:
+          - /url: "#loading-states"
+        - link "Cell Variants" [ref=f7e3428] [cursor=pointer]:
+          - /url: "#cell-variants"
+        - link "Short Text Cell" [ref=f7e3432] [cursor=pointer]:
+          - /url: "#short-text-cell"
+        - link "Long Text Cell" [ref=f7e3436] [cursor=pointer]:
+          - /url: "#long-text-cell"
+        - link "Number Cell" [ref=f7e3438] [cursor=pointer]:
+          - /url: "#number-cell"
+        - link "URL Cell" [ref=f7e3440] [cursor=pointer]:
+          - /url: "#url-cell"
+        - link "Checkbox Cell" [ref=f7e3442] [cursor=pointer]:
+          - /url: "#checkbox-cell"
+        - link "Select Cell" [ref=f7e3444] [cursor=pointer]:
+          - /url: "#select-cell"
+        - link "Multi-Select Cell" [ref=f7e3446] [cursor=pointer]:
+          - /url: "#multi-select-cell"
+        - link "Date Cell" [ref=f7e3448] [cursor=pointer]:
+          - /url: "#date-cell"
+        - link "File Cell" [ref=f7e3450] [cursor=pointer]:
+          - /url: "#file-cell"
+        - link "Row Selection" [ref=f7e3452] [cursor=pointer]:
+          - /url: "#row-selection"
+        - link "Cell Architecture" [ref=f7e3456] [cursor=pointer]:
+          - /url: "#cell-architecture"
+        - link "Creating Custom Cell Variants" [ref=f7e3458] [cursor=pointer]:
+          - /url: "#creating-custom-cell-variants"
+        - link "Column Configuration" [ref=f7e3462] [cursor=pointer]:
+          - /url: "#column-configuration"
+        - link "Enabling Filtering and Sorting" [ref=f7e3466] [cursor=pointer]:
+          - /url: "#enabling-filtering-and-sorting"
+        - link "Column Pinning" [ref=f7e3470] [cursor=pointer]:
+          - /url: "#column-pinning"
+        - link "Column Resizing" [ref=f7e3472] [cursor=pointer]:
+          - /url: "#column-resizing"
+        - link "Context Menu Actions" [ref=f7e3474] [cursor=pointer]:
+          - /url: "#context-menu-actions"
+        - link "API Reference" [ref=f7e3478] [cursor=pointer]:
+          - /url: "#api-reference"
+        - link "useDataGrid" [ref=f7e3480] [cursor=pointer]:
+          - /url: "#usedatagrid"
+        - link "useDataGridUndoRedo" [ref=f7e3484] [cursor=pointer]:
+          - /url: "#usedatagridundoredo"
+        - link "DataGrid" [ref=f7e3486] [cursor=pointer]:
+          - /url: "#datagrid"
+        - link "getDataGridSelectColumn" [ref=f7e3488] [cursor=pointer]:
+          - /url: "#getdatagridselectcolumn"
+        - link "DataGridColumnHeader" [ref=f7e3490] [cursor=pointer]:
+          - /url: "#datagridcolumnheader"
+        - link "DataGridCell" [ref=f7e3492] [cursor=pointer]:
+          - /url: "#datagridcell"
+        - link "DataGridCellWrapper" [ref=f7e3494] [cursor=pointer]:
+          - /url: "#datagridcellwrapper"
+        - link "DataGridCellVariants" [ref=f7e3496] [cursor=pointer]:
+          - /url: "#datagridcellvariants"
+        - link "DataGridRow" [ref=f7e3498] [cursor=pointer]:
+          - /url: "#datagridrow"
+        - link "DataGridSearch" [ref=f7e3500] [cursor=pointer]:
+          - /url: "#datagridsearch"
+        - link "DataGridFilterMenu" [ref=f7e3502] [cursor=pointer]:
+          - /url: "#datagridfiltermenu"
+        - link "DataGridSortMenu" [ref=f7e3504] [cursor=pointer]:
+          - /url: "#datagridsortmenu"
+        - link "DataGridRowHeightMenu" [ref=f7e3506] [cursor=pointer]:
+          - /url: "#datagridrowheightmenu"
+        - link "DataGridViewMenu" [ref=f7e3508] [cursor=pointer]:
+          - /url: "#datagridviewmenu"
+        - link "DataGridContextMenu" [ref=f7e3510] [cursor=pointer]:
+          - /url: "#datagridcontextmenu"
+        - link "DataGridPasteDialog" [ref=f7e3512] [cursor=pointer]:
+          - /url: "#datagridpastedialog"
+        - link "DataGridKeyboardShortcuts" [ref=f7e3514] [cursor=pointer]:
+          - /url: "#datagridkeyboardshortcuts"
+        - link "DataGridSkeleton" [ref=f7e3516] [cursor=pointer]:
+          - /url: "#datagridskeleton"
+        - link "DataGridSkeletonToolbar" [ref=f7e3518] [cursor=pointer]:
+          - /url: "#datagridskeletontoolbar"
+        - link "DataGridSkeletonGrid" [ref=f7e3522] [cursor=pointer]:
+          - /url: "#datagridskeletongrid"
+        - link "Accessibility" [ref=f7e3524] [cursor=pointer]:
+          - /url: "#accessibility"
+        - link "Keyboard Interactions" [ref=f7e3528] [cursor=pointer]:
+          - /url: "#keyboard-interactions"
+        - link "Navigation" [ref=f7e3530] [cursor=pointer]:
+          - /url: "#navigation"
+        - link "Selection" [ref=f7e3534] [cursor=pointer]:
+          - /url: "#selection"
+        - link "Editing" [ref=f7e3536] [cursor=pointer]:
+          - /url: "#editing"
+        - link "Search & Shortcuts" [ref=f7e3538] [cursor=pointer]:
+          - /url: "#search--shortcuts"
+        - link "Features" [ref=f7e3540] [cursor=pointer]:
+          - /url: "#features"
+        - link "Core Features" [ref=f7e3544] [cursor=pointer]:
+          - /url: "#core-features"
+        - link "Cell Variants" [ref=f7e3548] [cursor=pointer]:
+          - /url: "#cell-variants-1"
+        - link "Advanced Features" [ref=f7e3550] [cursor=pointer]:
+          - /url: "#advanced-features"
+        - link "Credits" [ref=f7e3552] [cursor=pointer]:
+          - /url: "#credits"

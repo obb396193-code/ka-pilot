@@ -1,0 +1,197 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://motion-primitives.com/docs/progressive-blur",
+        "title": "Progressive blur - Motion-Primitives",
+        "description": "A Progressive Blur component creates a layered blur effect using motion and gradient masks. It progressively blurs layers based on direction and intensity, a..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/text-effect",
+        "title": "Text Effect - Motion-Primitives",
+        "description": "Easily animate text content with various effects. You can apply animations per character or per word, and customize the animation effects using custom varian..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/toolbar-dynamic",
+        "title": "Toolbar Dynamic - Motion-Primitives",
+        "description": "Adjusts width dynamically to accommodate varying tool requirements. Starts small and expands to offer more tools as needed. Built for React, Next.js, and Tai..."
+      },
+      {
+        "url": "https://motion-primitives.com",
+        "title": "Motion-Primitives - UI kit to make beautiful, animated in...",
+        "description": "Motion-Primitives is an open-source UI kit to make beautiful, animated interfaces, faster. Built for React, Next.js, and Tailwind CSS."
+      },
+      {
+        "url": "https://motion-primitives.com/docs",
+        "title": "UI kit to make beautiful, animated interfaces, faster.",
+        "description": "Make your website look better with beautifully designed motion components. Easy to use. Customizable. Open Source. Built for engineers, designers, and founders."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/carousel",
+        "title": "Carousel",
+        "description": "A flexible and easy-to-use carousel with customizable navigation and indicators."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/accordion",
+        "title": "Accordion",
+        "description": "Accordion. A vertically stacked set of collapsible containers allowing users to toggle content visibility. Customize the animation effects with variants and ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/dock",
+        "title": "Dock",
+        "description": "A versatile UI element that provides a flexible and customizable way to organize and display menu items within your application. Built for React, Next.js, ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/disclosure",
+        "title": "Disclosure",
+        "description": "The Disclosure component allows users to toggle the visibility of content, either collapsed or expanded."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/dialog",
+        "title": "Dialog",
+        "description": "Dialog. A window overlaid on either the primary window or another dialog window, rendering the content underneath inert. Customize the dialog with variants and ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/cursor",
+        "title": "Cursor",
+        "description": "Cursor. A custom cursor component with optional spring animations. It can be globally applied to the page or attached specifically to a parent element."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/magnetic",
+        "title": "Magnetic",
+        "description": "A magnetic effect for elements that allows them to be attracted to the mouse cursor. Built for React, Next.js, and Tailwind CSS."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/installation",
+        "title": "Installation",
+        "description": "How to install Motion-Primitives in your project."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/spotlight",
+        "title": "Spotlight",
+        "description": "Spotlight. A dynamic spotlight effect component that follows cursor movement. Examples. Spotlight Basic 1. Preview Code. Spotlight Custom Color. You can ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/tilt",
+        "title": "Tilt",
+        "description": "Example of the Spotlight component used with the Tilt component. Preview Code. Ghost in the shell - Kôkaku kidôtai. 2001: A Space Odyssey. Stanley Kubrick ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/animated-background",
+        "title": "Animated background",
+        "description": "Animated Background. Visually highlights selected items by sliding a background into view when hovered over or clicked. This smooth transition helps users ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/infinite-slider",
+        "title": "Infinite Slider",
+        "description": "Infinite Slider. Infinite scrolling slider component that smoothly loops through its children. It supports both horizontal and vertical directions, ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/text-roll",
+        "title": "Text Roll",
+        "description": "Text Roll. A text roll component that rotates each character, fully customizable for nice text animations. Examples. Text Roll basic. Preview Code. mmmooo ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/in-view",
+        "title": "In view",
+        "description": "Craft beautiful animated components with Motion-Primitives. Designed for developers and designers. The library leverages the power of Motion, with intuitive ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/morphing-popover",
+        "title": "Morphing Popover",
+        "description": "A popover that transforms from its trigger into the content using layout animations. It visually morphs instead of appearing as a separate element."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/morphing-dialog",
+        "title": "Morphing Dialog",
+        "description": "A dialog that uses layout animations to transition content into a focused view. It supports click-outside and escape key functionalities for closing."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/sliding-number",
+        "title": "Sliding Number",
+        "description": "A component that slides numbers. Examples. Clock. Preview Code. 0. 0123456789. 0. 01234567 ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/image-comparison",
+        "title": "Image Comparison",
+        "description": "Optional CSS class for styling the component. alt, string, The alt text for the image. src, string, The source URL of the image. position, 'left' ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/spinning-text",
+        "title": "Spinning Text",
+        "description": "Spinning Text. Easily animate text circularly. Customize the animation with variants and transitions. Examples. Basic Usage. Preview Code. pre-order • ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/text-loop",
+        "title": "Text Loop",
+        "description": "The text content to be animated. className, string, Additional CSS classes for styling. interval, number, 2, Time interval between text changes in seconds."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/scroll-progress",
+        "title": "Scroll Progress",
+        "description": "Animated scroll progress for your web pages. Built for React, Next.js, and Tailwind CSS."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/glow-effect",
+        "title": "Glow Effect",
+        "description": "Glow effect button. You can use different modes to animate the glow effect. Preview Code. Explore. Glow effect card mode. Preview Code. Submit. Installation."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/border-trail",
+        "title": "Border Trail",
+        "description": "Prop, Type, Default, Description. className, string, Additional CSS classes for styling the border trail. size, number, 60, Size of the animated border ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/animated-group",
+        "title": "Animated Group",
+        "description": "Preset animations to apply to the group of elements. as, React.ElementType, 'div', The HTML element to render the component as. asChild, React.ElementType ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/text-shimmer",
+        "title": "Text Shimmer",
+        "description": "Prop, Type, Default, Description. children, string, The text content. as, keyof JSX.IntrinsicElements, 'p', The HTML tag to render, defaults to paragraph."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/text-morph",
+        "title": "Text Morph",
+        "description": "Animates text by morphing shared letters between words, creating fluid transitions. Built for React, Next.js, and Tailwind CSS."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/transition-panel",
+        "title": "Transition Panel",
+        "description": "Easy way to switch between different pieces of content with enter and exit animations. It's perfect for enhancing user experience in areas such as onboarding ..."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/text-scramble",
+        "title": "Text Scramble",
+        "description": "Text animation that transforms text by randomly cycling through characters before settling on the final content, creating an engaging cryptographic effect."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/animated-number",
+        "title": "Animated Number",
+        "description": "The HTML tag to render the number in. On this page. Examples; Basic; Basic counter; With useInView; Installation; Component API."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/toolbar-expandable",
+        "title": "Toolbar Expandable",
+        "description": "Please add: useClickOutside · cn."
+      },
+      {
+        "url": "https://motion-primitives.com/docs/text-shimmer-wave",
+        "title": "Text Shimmer Wave",
+        "description": "Shimmer wave effect on text. Easily adjust the wave effect, spread, duration, and more. Examples. Text Shimmer Wave Basic. Preview Code. Gene ..."
+      },
+      {
+        "url": "https://motion-primitives.com/c/registry.json",
+        "title": "motion-primitives.com",
+        "description": "{ \"$schema\": \"https://ui.shadcn.com/schema/registry.json\", \"name\": \"motion-primitives\", \"homepage\": \"https://motion-primitives.com\", \"items\": [ { \"name\": \"accordion ..."
+      },
+      {
+        "url": "https://motion-primitives.com/",
+        "title": "Motion-Primitives - UI kit to make beautiful, animated ...",
+        "description": "Motion-Primitives is an open-source UI kit to make beautiful, animated interfaces, faster. Built for React, Next.js, and Tailwind CSS."
+      }
+    ]
+  }
+}

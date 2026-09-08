@@ -38,7 +38,7 @@ Expected: 只保留历史证据中的被替代说明，不再将旧判断作为�
 
 ```bash
 git add docs/evidence/integration/2026-08-20-qihang-readonly-os-probe-round3.md docs/19-实证结果定案.md docs/10-数据通路真相.md docs/plans/工作台账.md docs/plans/2026-08-20-B11第三轮实证收口-implementation.md
-git commit -m "固化奇航第三轮只读实证"
+git commit -m "固化启航第三轮只读实证"
 ```
 
 ### Task 2: Qihang 原子 Client 自校验 hh 0..24
@@ -71,7 +71,7 @@ Expected: PASS。
 
 ```bash
 git add apps/worker/src/qihang/client.ts apps/worker/test/qihang-client.test.ts
-git commit -m "收紧奇航小时查询边界"
+git commit -m "收紧启航小时查询边界"
 ```
 
 ### Task 3: 广告实时查询按账户和广告 ID 确定性分片

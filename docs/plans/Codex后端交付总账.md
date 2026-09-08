@@ -6,7 +6,7 @@
 >
 > 当前连续交付分支：`be/b1a` → `be/b1b` → `be/b1c` → `be/b2` → `be/b3` → `be/b4` → `be/b5` → `be/b6` → `be/b7a` → `be/b8a` → `be/b11` → `be/b12` → `be/b13` → `be/b14` → `codex/b15-material-teardown-semantics` → `codex/b22-idealab-asr-provider` → `codex/dual-data-backend` → `codex/b23-auth-core` → `codex/b23-c1-account-sync` → `codex/b23-c2-workspace-scheduler`
 >
-> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实奇航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`；B18 素材 Brief 回测就绪代码终态：`54f5223`；B19 月度结算单代码终态：`c2fed1f`；B20 公共资产治理代码终态：`d22a5d8`；B21 未触发诊断代码终态：`f985923`；B22 IdeaLab ASR Provider 代码终态：`b60e09e`；双数据 R3/只读详情代码终态：`391a5a2`；B23-A 授权内核代码终态：`72228b4`；B23-C1 奇航账户主表同步代码终态：`ec4934a`；B23-C2 同步调度代码终态：`d1a184d`
+> 最新知识库功能实现提交：`32a82ba`；B1-B8 自审修复基线：`b1bd873`；B9 代码基线：`83cf855`；B10 真实启航适配终态：`878126f`；B11 第三轮实证适配代码：`1c87e2e`；B15 拆片语义与帧墙代码终态：`020a902`；B16 素材相似与复刻谱系代码终态：`d7a49f8`；B17 商品素材实验矩阵代码终态：`064f1f5`；B18 素材 Brief 回测就绪代码终态：`54f5223`；B19 月度结算单代码终态：`c2fed1f`；B20 公共资产治理代码终态：`d22a5d8`；B21 未触发诊断代码终态：`f985923`；B22 IdeaLab ASR Provider 代码终态：`b60e09e`；双数据 R3/只读详情代码终态：`391a5a2`；B23-A 授权内核代码终态：`72228b4`；B23-C1 启航账户主表同步代码终态：`ec4934a`；B23-C2 同步调度代码终态：`d1a184d`
 >
 > 最新修复质量证据：`docs/evidence/B1-B8自审修复-代码质量报告.md`；审查入口：`docs/relay/inbox-arch.md` P-014
 >
@@ -28,7 +28,7 @@
 
 | 批次 | 最终分支 SHA | 功能审查 SHA | 已完成范围 | 最终记录中的累计测试 | 详细状态/证据 |
 |---|---|---|---|---:|---|
-| B1a 契约与存储 | `f98952f` | `5b4b937` | PostgreSQL 迁移、月分区、指标纯函数、奇航四资源 Client、DB lease Worker、ETL、raw→canonical、钉钉网关基础 | 69 | `B1a-状态.md` |
+| B1a 契约与存储 | `f98952f` | `5b4b937` | PostgreSQL 迁移、月分区、指标纯函数、启航四资源 Client、DB lease Worker、ETL、raw→canonical、钉钉网关基础 | 69 | `B1a-状态.md` |
 | B1b 回灌与对平 | `50e3014` | 同最终 SHA | 90 天回灌、断点续传、优先级与心跳、canonical 聚合、三类数据质量检查、10 户×90 天假数据冒烟 | 88 | `B1b-状态.md`、`docs/evidence/B1b-90天回灌日志.txt` |
 | B1c 语义查询 | `a699279` | `997e4d8` | table/summary/trend/dimension/health 五类查询内核、租户隔离、聚合口径与多任务歧义保护 | 101 | `B1c-状态.md`、`docs/evidence/B1c-代码质量报告.md` |
 | B2 队列闭环 | `46b7eec` | `9563625` | 首发异常规则、逐条件解释、工作项状态机、并发去重/升级、通知分级、扫描 Worker | 144 | `B2-状态.md`、`docs/evidence/B2-代码质量报告.md` |
@@ -40,10 +40,10 @@
 | B8 知识库领域底座 | 见 `be/b8a` HEAD | `32a82ba`；质量 `8c87530` | BlockNote 安全信封、文本投影/指纹、ID 双链、KA 业务引用、资产语义、权限化 Agent citation 边界 | 406 默认 + 1 opt-in | `B8-状态.md`、`docs/evidence/B8-代码质量报告.md`、P-012 |
 | B1-B8 自审修复 | `b1bd873` | 原审查 `1919a8e`；复验 `48c7fd5`/`b1bd873` | 修复日常 ETL 派发、Job fencing、确认 TTL、Changeset+T1、知识正文权限、输出凭证、生命周期、身份、分页、分区、上海业务日等；其余契约项明确保留 | 422 默认 + 1 opt-in | `docs/evidence/B1-B8自审修复-代码质量报告.md`、P-014 |
 | B8a 交接与联调准备 | `9fce24a`（代码） | 待 Claude/arch 审查 P-015 | Qihang 响应/行/ID/URL 资源预算，Qihang→Canonical 纯合成基线，前后端合并清单与真实通路准入矩阵 | 434 默认 + 1 opt-in | `docs/evidence/B8a-数据链性能基线.md`、`docs/evidence/B8a-交接准备代码质量报告.md`、P-015 |
-| B9 纵向闭环与批量性能 | `83cf855`（代码） | 待 Claude/arch 审查 P-016 | Canonical settings/history/upsert 批量化，假奇航→真实 PG→质量/语义/规则/工作项/报告事实闭环，真实 PG 100/1000/5000 基准，realtime/offline source 对平 | 445 默认 + 1 opt-in | `B9-状态.md`、`docs/evidence/B9-数据链真实PG性能基线.md`、`docs/evidence/B9-代码质量报告.md`、P-016 |
-| B10 真实奇航适配 | `878126f` | 待 Claude/arch 审查 P-017 | 日期紧凑格式、离线分区有界回退、历史真实转化来源、双口径事实和 Skill 身份补证 | 变更定向 34；非 PG 回归见状态 | `B10-状态.md`、`docs/evidence/B10-真实奇航只读适配报告.md`、P-017 |
+| B9 纵向闭环与批量性能 | `83cf855`（代码） | 待 Claude/arch 审查 P-016 | Canonical settings/history/upsert 批量化，假启航→真实 PG→质量/语义/规则/工作项/报告事实闭环，真实 PG 100/1000/5000 基准，realtime/offline source 对平 | 445 默认 + 1 opt-in | `B9-状态.md`、`docs/evidence/B9-数据链真实PG性能基线.md`、`docs/evidence/B9-代码质量报告.md`、P-016 |
+| B10 真实启航适配 | `878126f` | 待 Claude/arch 审查 P-017 | 日期紧凑格式、离线分区有界回退、历史真实转化来源、双口径事实和 Skill 身份补证 | 变更定向 34；非 PG 回归见状态 | `B10-状态.md`、`docs/evidence/B10-真实启航只读适配报告.md`、P-017 |
 | B11 时效完整性与小时监控 | `1c87e2e`（第三轮代码） | 待 Claude/arch 审查 P-018 | 历史 realtime 诊断、`hh` 0..24 Client 边界、广告 5/80 分片与 2000 截断 fail-closed、查询观测、D-1 动态重查、累计小时安全差分和幂等落库 | Domain 207 / DB 92 / Worker 200 / Gateway 19 + 1 opt-in | `B11-状态.md`、`docs/evidence/B11-代码质量报告.md`、P-018 |
-| B12 广告 ID 与素材来源桥 | `fb3bf9f`（代码） | 待 Claude/arch 审查 P-019 | 广告对象完整性/映射证据门、奇航素材池严格分页、默认拒绝的视频 URL 来源探针 | 定向 54；非 PG 回归见状态 | `B12-状态.md`、`docs/evidence/B12-代码质量报告.md`、P-019 |
+| B12 广告 ID 与素材来源桥 | `fb3bf9f`（代码） | 待 Claude/arch 审查 P-019 | 广告对象完整性/映射证据门、启航素材池严格分页、默认拒绝的视频 URL 来源探针 | 定向 54；非 PG 回归见状态 | `B12-状态.md`、`docs/evidence/B12-代码质量报告.md`、P-019 |
 | B13 素材拆片后端内核 | `85c5fbf`（代码） | 待 Claude/arch 审查 P-020 | 受控下载、字幕/云 ASR 端口、FFmpeg 抽帧、证据 Schema、版本化 Prompt、Claude Agent SDK 结构化分析、可恢复编排 | Domain 235 / DB 92 / Worker 287 / Gateway 19 + 1 opt-in | `B13-状态.md`、`docs/evidence/B13-代码质量报告.md`、P-020 |
 | B14 单次整段 ASR 与 URL 租约 | `6cea3d8`（代码） | 待 Claude/arch 审查 P-021 | `segment/whole_video` 精度、一次整段云 ASR adapter、稳定 sourceRef 换短期 URL 后即取即下 | Domain 244 / DB 92 / Worker 297 / Gateway 19 + 1 opt-in | `B14-状态.md`、`docs/evidence/B14-代码质量报告.md`、P-021 |
 | B15 拆片语义与逐镜头帧墙 | `020a902`（代码） | 待 Claude/arch 审查 P-022 | 无时间多段语义结构、精确时间证据门、Prompt v3、分页逐镜头帧墙、旧缓存升级和页面承接结果信封 | Domain 245 / DB 92 / Worker 301 / Gateway 19 + 1 opt-in | `B15-状态.md`、`docs/evidence/B15-代码质量报告.md`、P-022 |
@@ -57,8 +57,8 @@
 | 双数据 BE-001 + R1 | `de31f3a`（R1 代码） | 待 Claude/arch 审查 P-030 | 六 Query Registry、KA Data 安全 reader、真实 Platform canonical 适配、独立 HTTP composition、unknown lineage、输出 scope guard、reconcile 明确 pending | Domain 406 / DB 94 / Worker 393 / Gateway 19；2 opt-in skipped | `docs/evidence/BE-001-双数据安全查询质量报告.md`、`docs/evidence/R1-双数据HTTP与平台适配质量报告.md`、P-030 |
 | 双数据 R2 requestId/fixtures | `a81a176` | 待 Claude/arch 审查 P-031 | requestId 贯通、安全重生、四类 canonical response fixtures、BFF server-side scope 合同 | Domain 414 / DB 94 / Worker 404；2 opt-in skipped | `docs/evidence/R2-requestId与契约fixtures质量报告.md`、P-031 |
 | 双数据 R3 + 只读详情 | `391a5a2`（代码终态） | 待 root 集成与 Claude/arch 审查 P-032 | 账户三键/tuple scope、复合 FK、六 Query canonical rows、真实 lineage/coverage、详情 scope migration、两个只读 GET、统一 16MB 响应边界 | Domain 418 / DB 97 / Worker 444；2 opt-in skipped | `docs/evidence/R3-双数据与只读详情质量报告.md`、P-032 |
-| B23-A 多租户授权内核 | `72228b4`（代码终态） | 待 root 集成与 Claude/arch 审查 P-033 | 身份四表、workspace-local actor 绑定、token hash Repository、approvedAuthContext、账户三字段 grant、撤销/过期 fail closed | Domain 433 / DB 107 / Worker 453；2 opt-in skipped | `docs/evidence/B23-A-代码质量报告.md`、`docs/evidence/B23-C-奇航只读链Gap矩阵.md`、P-033 |
-| B23-C1 奇航账户主表同步 | `ec4934a`（代码终态） | 待 root 合流与 Claude/arch 后审 P-034 | 受信范围 metadata Adapter、accounts+Raw 每页短事务、Full/Backfill/Runtime 接线、pagination 提交前 fail-closed、新户纵切片与重放隔离 | DB 112 / Worker 467；2 opt-in skipped | `docs/evidence/B23-C1-奇航账户主表同步质量报告.md`、`docs/evidence/B23-C-奇航只读链Gap矩阵.md`、P-034 |
+| B23-A 多租户授权内核 | `72228b4`（代码终态） | 待 root 集成与 Claude/arch 审查 P-033 | 身份四表、workspace-local actor 绑定、token hash Repository、approvedAuthContext、账户三字段 grant、撤销/过期 fail closed | Domain 433 / DB 107 / Worker 453；2 opt-in skipped | `docs/evidence/B23-A-代码质量报告.md`、`docs/evidence/B23-C-启航只读链Gap矩阵.md`、P-033 |
+| B23-C1 启航账户主表同步 | `ec4934a`（代码终态） | 待 root 合流与 Claude/arch 后审 P-034 | 受信范围 metadata Adapter、accounts+Raw 每页短事务、Full/Backfill/Runtime 接线、pagination 提交前 fail-closed、新户纵切片与重放隔离 | DB 112 / Worker 467；2 opt-in skipped | `docs/evidence/B23-C1-启航账户主表同步质量报告.md`、`docs/evidence/B23-C-启航只读链Gap矩阵.md`、P-034 |
 | B23-C2 Workspace 同步调度 | `d1a184d`（P1 修复后代码终态） | 待 root 合流与 Claude/arch 后审 P-036 | active 身份候选、显式 grant、不可变授权快照、确定性并发幂等、blocked_auth、重试 owner 复核、Full 上游/落库 scope guard、one-shot CLI、首次 full ready 门 | Domain 455 / DB 139 / Worker 510；2 opt-in skipped | `docs/evidence/B23-C2-普通Workspace同步调度内核质量报告.md`、P-036 |
 
 表中的测试数是每批最终全仓累计值，不能相加计算“总测试数”。
@@ -73,7 +73,7 @@
 - 产品内 Agent 只有一套 Claude Agent SDK Runtime；多模型由 localhost 协议网关适配，不建立多套 Agent Runtime。
 - Agent 子进程关闭内建 Bash/文件/Web/Task/Skill，关闭自动记忆，只开放服务端闭包绑定的 MCP allowlist。
 - Provider 凭证使用绑定 workspace/user/run/provider/model 的短时 AES-GCM 信封；真实 AK 不进入提示词、SDK 子进程配置或持久化事件。
-- Fake upstream、mock PostgreSQL 和本地协议烟测只证明代码链路，不代表真实奇航、IdeaLab、Anthropic、Multica/OS 已联通。
+- Fake upstream、mock PostgreSQL 和本地协议烟测只证明代码链路，不代表真实启航、IdeaLab、Anthropic、Multica/OS 已联通。
 - 工作流画布、页面按钮和 Agent tool 共用 Capability Registry；execute 不可直接暴露 Agent，只经 B3 Changeset 预览、hash 确认和幂等执行。
 - 工作流运行以 exact published version + 事件重放为真相；崩溃恢复不重跑成功节点，执行结果含糊时进 UNKNOWN 等待对账。
 - 知识正文以受限 BlockNote blocks 为真相，文本、双链和业务引用都是可重建派生结果；Agent 只接收经 workspace/user 和业务对象双重权限裁剪的 citation。
@@ -124,7 +124,7 @@ be/b7a..be/b8a
 
 - B1a-B8a 尚未由 Claude/arch 逐批审计，也尚未合入 `main`。
 - `apps/web` 正式 API Route 和前后端 E2E 尚未完成。
-- 真实奇航、Multica/OS、Secret 服务、IdeaLab/Anthropic 模型通路尚未联调。
+- 真实启航、Multica/OS、Secret 服务、IdeaLab/Anthropic 模型通路尚未联调。
 - Agent 生产容器/微虚机沙箱、CPU/RAM/磁盘限制和 egress allowlist 尚未完成。
 - Claude Agent SDK 经协议适配驱动非 Anthropic 模型的许可边界，正式使用前仍需内部法务/采购确认。
 - daily 环境部署、真实数据对平和老板业务验收尚未完成。
@@ -171,16 +171,16 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 
 ## 9. B9 纵向闭环与批量性能真相
 
-- 真实 PostgreSQL 纵向测试已连接 Full ETL、Raw、Canonical、质量、语义查询、规则、工作项和报告事实；只有奇航输入、未冻结规则候选和外发告警是测试适配器。
+- 真实 PostgreSQL 纵向测试已连接 Full ETL、Raw、Canonical、质量、语义查询、规则、工作项和报告事实；只有启航输入、未冻结规则候选和外发告警是测试适配器。
 - Canonical 默认 250 行批次，设置/历史/Upsert 以复合键严格映射；第二批失败不派生质量，重试由 Upsert 收敛。
 - Full/Incr ETL Run 已带 workspace；质量对平按 Canonical cost source 选择 offline/realtime latest Raw，不再每天误报 realtime gap。
 - 真实 PG 5000 行三次中位数 394.974ms、64 次端口调用、5000 最终行；仅为本机热缓存单租户证据。
 - Raw 仍是 append-only，重试可能留下物理重复抓取；latest 读取避免进入 Canonical 双计，但是否增加 request/run idempotency 需 arch 裁决。
-- B9 未新增公开 contract/migration/production job type/API/前端，也未接真实奇航/Multica/OS。审查入口 P-016。
+- B9 未新增公开 contract/migration/production job type/API/前端，也未接真实启航/Multica/OS。审查入口 P-016。
 
-## 10. B10 真实奇航只读适配真相
+## 10. B10 真实启航只读适配真相
 
-- OS 在合法身份下真实确认奇航四资源、显式 userId、紧凑日期、结构化返回和空数组语义；当天 realtime 为分钟级，离线仅在本次观察到 D-1 空、D-2 命中，不能把 D-2 写成系统整体延迟或固定 SLA；原始业务规模与数据未进入仓库。
+- OS 在合法身份下真实确认启航四资源、显式 userId、紧凑日期、结构化返回和空数组语义；当天 realtime 为分钟级，离线仅在本次观察到 D-1 空、D-2 命中，不能把 D-2 写成系统整体延迟或固定 SLA；原始业务规模与数据未进入仓库。
 - 代码修复内部 ISO→`YYYYMMDD`、最多三日离线空分区回退、历史离线 `account_real_conversion` 优先级；不改公开契约、Migration、API 或前端。
 - `hh`、跨日离线、部分分区完整性、现金字段缺失语义和服务身份继续未验证。
 - 真实请求仍由 OS 执行，不等于产品 Worker/FaaS 已联通；Gate B 要等本项目 SHA 的 Raw→Canonical→质量同链 trace。
@@ -305,4 +305,4 @@ B6/B7a/B8a 已在上述边界内完成，且均未接入公开 API 或生产 run
 - assessmentPrice 只取业务日已生效最新版本；pacing 唯一复用 `computeTaskPacing`，RatioValue 不重算、不舍入。
 - `dataState` 固定 `partial > stale > empty > ready`，`selectedSource=qihang`，dataAsOf 只来自已授权 Canonical `computed_at`。
 - 代码终态 `891372d`。全量 Domain 451、DB 120、Worker 492 默认 tests 通过，2 个既有 opt-in skipped；三包 type/lint/audit、coverage 与真实 PG 全绿。
-- 未完成：`/api/internal/tasks` 与前端整合、正式 session/BFF 登录链、真实奇航任务源 trace、内网部署；所有任务/媒体写继续关闭。质量报告 `docs/evidence/TASK-LIST-001-后端质量报告.md`，审查入口 P-035。
+- 未完成：`/api/internal/tasks` 与前端整合、正式 session/BFF 登录链、真实启航任务源 trace、内网部署；所有任务/媒体写继续关闭。质量报告 `docs/evidence/TASK-LIST-001-后端质量报告.md`，审查入口 P-035。

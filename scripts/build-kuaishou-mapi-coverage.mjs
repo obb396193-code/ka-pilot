@@ -50,7 +50,7 @@ export function classifyCapability(row) {
     relevance = "direct_candidate";
     phase = "phase1_candidate";
     action = "verify_data_gap_then_wrap";
-    useScope = "保留奇航主链路；只补结构、口径校验和奇航缺失维度";
+    useScope = "保留启航主链路；只补结构、口径校验和启航缺失维度";
     modules = ["数据分析", "效果回收", "策略中心", "报告"];
   } else if (top === "数据报表") {
     useScope = "直播、搜索、商品、人群、代理商和异步报表按产品缺口后续接入";

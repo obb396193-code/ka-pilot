@@ -3,7 +3,7 @@
 > 日期：2026-08-26
 > 分支：`codex/b23-c2-workspace-scheduler`
 > 基线：`codex/integration-control@1950808`
-> 状态：`implemented + local_pg_verified + codex_self_checked`；未部署、未真实奇航联调
+> 状态：`implemented + local_pg_verified + codex_self_checked`；未部署、未真实启航联调
 
 ## 交付范围
 
@@ -41,9 +41,9 @@
 | DB | 25 files / 139 passed（其中 Repository/migration 为真实 PostgreSQL） | 通过 | 通过 | 0 vulnerabilities | 93.58 / 78.65 / 97.11 / 93.58 |
 | Worker | 68 files / 510 passed，2 个既有外部凭证 opt-in skipped | 通过 | 通过 | 0 vulnerabilities | 92.49 / 82.35 / 96.36 / 92.49 |
 
-真实 PG 覆盖：migration up/down/up、inactive workspace/user/identity/membership、无奇航身份、
+真实 PG 覆盖：migration up/down/up、inactive workspace/user/identity/membership、无启航身份、
 跨 workspace、同号跨 media、空 grant、重复与并发 tick、首次 full 前 ready 门、重试 credential
-owner 不漂移。测试使用本机临时数据库；不包含真实奇航网络调用。
+owner 不漂移。测试使用本机临时数据库；不包含真实启航网络调用。
 
 P1 审查修复新增真实 PG 空 grant 反例，并补 Full/Auto/Incr Service 三态、执行前空授权快照、
 上游忽略 `accountIds` 返回越界账户时 0 metadata/Raw 持久化和 0 downstream enqueue。普通
@@ -64,7 +64,7 @@ workspace 的 full/incr 不再存在“发现模式”；legacy 非调度 ETL �
 ## 未完成项
 
 1. 未配置或验证内网 external scheduler，也未完成真实 workspace 首次 full。
-2. 未做真实奇航凭证、网络、数据规模和业务日连续运行联调。
+2. 未做真实启航凭证、网络、数据规模和业务日连续运行联调。
 3. 未接浏览器 BFF、正式登录页面或部署健康监控。
 4. ACCOUNTS-LIST-001 / WORK-ITEM-LIST-001 仍缺 root 冻结严格 DTO；仅完成只读 Gap Matrix。
 5. 所有 Multica/OS/ChangeSet/媒体写执行继续关闭；Claude/arch 后审位保留。

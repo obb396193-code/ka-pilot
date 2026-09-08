@@ -28,7 +28,7 @@
 **一期（第一批）：个人与团队双空间。每人默认进入独立 personal workspace，业务数据初始为空，
 只看到本人接入/获授的媒体账户、任务、工作项与操作记录；同时可切换到本人有 membership 的
 team workspace，只读查看团队账户、任务、指标和账户型异常。团队数据可由 KA Data 或已批准的
-部门奇航通路写入独立 workspace，数据源不等于权限。团队空间不开放媒体写、跨用户派发、个人
+部门启航通路写入独立 workspace，数据源不等于权限。团队空间不开放媒体写、跨用户派发、个人
 行为审计或绩效排名。官方模板、规则和教学内容作为不含用户业务数据的公共只读资产。**
 
 ## 1.3 优化师三问与命根子口径
@@ -255,7 +255,7 @@ ad_metrics_hourly(ad_id, account_id, ds, hh, cost, conversion, real_conversion, 
 account_structure(account_id, campaign_id, unit_id, creative_id, level, name, status, bid, day_budget,
   schedule_time, synced_at)   -- 经 agent 同步
 account_balance(account_id, balance, recharge_balance, contract_rebate, direct_rebate, synced_at)
-tasks(task_id PK[奇航], task_name, biz_name, rta_flag, delivery_mode, placement_pref, conversion_metric,
+tasks(task_id PK[启航], task_name, biz_name, rta_flag, delivery_mode, placement_pref, conversion_metric,
   period_start/end, target_volume, owner_user_id, status)   -- REQ-024 RTA/投放方式/版位/转化口径
 assessment_price_history(task_id, price, effective_date, changed_by, created_at)
 channel_coefficients(media, coefficient, effective_date, changed_by)   -- 返点折算系数
@@ -482,7 +482,7 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 - 主动提审全线同理：永远是用户自愿发起的协作动作，任何功能不得把它变成强制关卡（红线）
 
 **凭证模型（2026-08-18 老板终裁：每用户自己的 token 与 OS 交互）：**
-- **每个用户绑定三样自己的凭证**（设置页引导，secret reference 存储不落明文）：①奇航 userId（拉数）②Multica `mul_` PAT（派活给 agent/读回执——**产品以当前操作用户自己的 PAT 调 Multica**，媒体侧与 OS 侧审计显示真实操作人，不存在"全记在一个人头上"）③IdeaLab AK（LLM 调用）
+- **每个用户绑定三样自己的凭证**（设置页引导，secret reference 存储不落明文）：①启航 userId（拉数）②Multica `mul_` PAT（派活给 agent/读回执——**产品以当前操作用户自己的 PAT 调 Multica**，媒体侧与 OS 侧审计显示真实操作人，不存在"全记在一个人头上"）③IdeaLab AK（LLM 调用）
 - 谁的操作用谁的凭证——与"不借个人 token"红线完全一致：每人授权自己的产品替自己干活
 - 无 PAT 用户降级：只读+建议+深链跳后台（不能派活给 agent）
 - **后台任务凭证归属（闭环规则）**：每个需用户权限的 job 固化 `credential_owner_user_id + initiator_user_id + workspace_id + 授权快照`；**重试永远用原运行绑定的凭证，绝不自动换成他人/老板 PAT**；凭证失效/撤销 → job 进 `blocked_auth` 态并通知本人重新授权，不借他人凭证续跑；定时基建/延迟执行/T+1 回查/结构同步均按发起人凭证运行
@@ -509,7 +509,7 @@ metric_snapshots(work_item_id, metrics JSONB, snapshot_at)   -- 证据快照
 
 ```
 ┌─ 外部依赖 ──────────────────────────────────────────────────────┐
-│  奇航 get_data（qh.alibaba-inc.com）差异 userId 直连 ✅实证        │
+│  启航 get_data（qh.alibaba-inc.com）差异 userId 直连 ✅实证        │
 │  private-dataservice（账户归属）appCode ✅实证                    │
 │  IdeaLab（LLM）✅实证 ｜ 钉钉开放平台 ✅实证                       │
 │  Multica webhook→agent 沙箱→kuaishou-cli（写+结构+余额）✅实证     │
@@ -646,7 +646,7 @@ arch（本会话）：契约包（schema+API 合同+类型+脱敏 mock 数据集
 
 # 第七部分：开放问题（不阻塞开工）
 
-1. B7：奇航 task 数据准不准（老板抽查中）——影响任务主键策略，B4 前需定
+1. B7：启航 task 数据准不准（老板抽查中）——影响任务主键策略，B4 前需定
 2. IdeaLab 200 次/日额度在 agent 多轮调用下的真实消耗——B5 实测，不够则申请正式配额或 Whale
 3. 素材级独立数据源（AIGC 平台接入时确认）
 4. 组织架构接口（上级派发的汇报关系，先手工配置成员表）
@@ -679,7 +679,7 @@ Capability Registry 后增加三类可插拔执行器：
 - “接入管理”按 `用户 × 渠道 × 执行后端` 展示授权，不假设一套凭证全渠道通用。
 - 每项显示：渠道、账户作用域、可读能力、可写能力、执行后端、验证等级、最后验证时间、失效原因和撤销入口。
 - 正式存储只保存 Secret reference 和元数据；凭证失效后关联 Job 进入 `blocked_auth`，重试不得换成老板或其他用户凭证。
-- 现有奇航 userId、Multica PAT、IdeaLab AK 继续保留；Runtime 直接写所需 avatar/user/bucNo 或平台授权包，只在源码和真实 Runtime 验证后进入正式字段。
+- 现有启航 userId、Multica PAT、IdeaLab AK 继续保留；Runtime 直接写所需 avatar/user/bucNo 或平台授权包，只在源码和真实 Runtime 验证后进入正式字段。
 
 ## A.4 跨渠道边界（REQ-129）
 
@@ -714,7 +714,7 @@ Capability Registry 后增加三类可插拔执行器：
 
 ## B.2 自建数据主线（REQ-132）
 
-- 奇航 get_data、我方 ETL、canonical 计算、异常诊断、账户动作和效果回收继续作为产品主线。
+- 启航 get_data、我方 ETL、canonical 计算、异常诊断、账户动作和效果回收继续作为产品主线。
 - KA Data 可用不等于自建主线停止；今日实时巡检、小时 pacing、广告下钻和写操作仍由自建主线负责。
 
 ## B.3 三态数据视图（REQ-133）

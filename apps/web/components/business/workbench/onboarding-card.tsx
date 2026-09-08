@@ -25,7 +25,7 @@ export function OnboardingCard() {
   const watching = isOk(watchlistFixture) ? watchlistFixture.data.items.length > 0 : false
 
   const steps = [
-    { done: boundQihang, title: "绑定奇航凭证", hint: "没绑就没有数据，页面只会显示 −", href: "/settings?tab=credentials", cta: "去绑定" },
+    { done: boundQihang, title: "绑定启航凭证", hint: "没绑就没有数据，页面只会显示 −", href: "/settings?tab=credentials", cta: "去绑定" },
     { done: watching, title: "挑几个账户加盯盘", hint: "盯盘的账户会出现在工作台和通知里", href: "/accounts", cta: "去账户池" },
     { done: false, title: "让 Agent 帮你看一遍昨天", hint: "右下角球，问「昨天哪些户超成本」", href: "/?agent=1", cta: "试一下" },
   ]
