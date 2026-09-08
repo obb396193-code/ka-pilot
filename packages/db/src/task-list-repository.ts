@@ -68,6 +68,20 @@ export interface TaskListRepositoryRow {
   completedVolume: number | null;
   spent: number | null;
   recentDailyVolumes: number[];
+  // v1.5.1 ②（S6b）：仓储只把事实取出来，六段就绪度由 domain 的
+  // deriveSystemReadiness + mergeReadiness 组装，SQL 里不编任何一段。
+  stage: string | null;
+  stageSource: string | null;
+  stageChangedAt: string | null;
+  sopRunId: string | null;
+  readinessFacts: {
+    accountCount: number;
+    rechargedCount: number;
+    builtCount: number;
+    unfundedAccounts: string[];
+    unbuiltAccounts: string[];
+  };
+  readinessOverrides: { dimension: string; ready: boolean }[];
   workItemSummary: TaskListRepositoryWorkItemSummary;
   latestMetricDate: string | null;
   dataAsOf: string | null;
@@ -113,6 +127,16 @@ interface ListRow extends QueryResultRow {
   work_item_p1: string | number;
   work_item_p2: string | number;
   work_item_opportunity: string | number;
+  stage: string | null;
+  stage_source: string | null;
+  stage_changed_at: Date | string | null;
+  sop_run_id: string | null;
+  readiness_account_count: string | number;
+  readiness_recharged_count: string | number;
+  readiness_built_count: string | number;
+  readiness_unfunded: unknown;
+  readiness_unbuilt: unknown;
+  readiness_overrides: unknown;
 }
 
 interface NormalizedQuery extends TaskListRequest {
@@ -259,10 +283,45 @@ function mapListRow(row: ListRow): TaskListRepositoryRow {
     completedVolume: nullableNumber(row.completed_volume),
     spent: nullableNumber(row.spent),
     recentDailyVolumes: normalizeRecentVolumes(row.recent_daily_volumes),
+    stage: row.stage,
+    stageSource: row.stage_source,
+    stageChangedAt: row.stage_changed_at === null ? null : isoTimestamp(row.stage_changed_at),
+    sopRunId: row.sop_run_id,
+    readinessFacts: {
+      accountCount: nonnegativeInteger(row.readiness_account_count, "readiness.accountCount"),
+      rechargedCount: nonnegativeInteger(row.readiness_recharged_count, "readiness.rechargedCount"),
+      builtCount: nonnegativeInteger(row.readiness_built_count, "readiness.builtCount"),
+      unfundedAccounts: normalizeAccountIdArray(row.readiness_unfunded, "readiness.unfunded"),
+      unbuiltAccounts: normalizeAccountIdArray(row.readiness_unbuilt, "readiness.unbuilt"),
+    },
+    readinessOverrides: normalizeReadinessOverrides(row.readiness_overrides),
     workItemSummary: { openCount, highestSeverity: highestSeverity(counts), counts },
     latestMetricDate: row.latest_metric_date,
     dataAsOf: row.data_as_of === null ? null : isoTimestamp(row.data_as_of),
   };
+}
+
+function normalizeAccountIdArray(value: unknown, label: string): string[] {
+  if (value === null || value === undefined) return [];
+  if (!Array.isArray(value) || value.some((entry) => typeof entry !== "string" || entry.length === 0)) {
+    throw new Error(`${label} is outside the canonical contract`);
+  }
+  return value as string[];
+}
+
+function normalizeReadinessOverrides(value: unknown): { dimension: string; ready: boolean }[] {
+  if (value === null || value === undefined) return [];
+  if (!Array.isArray(value)) throw new Error("readinessOverrides is outside the canonical contract");
+  return value.map((entry) => {
+    if (entry === null || typeof entry !== "object" || Array.isArray(entry)) {
+      throw new Error("readinessOverrides is outside the canonical contract");
+    }
+    const row = entry as Record<string, unknown>;
+    if (typeof row.dimension !== "string" || typeof row.ready !== "boolean") {
+      throw new Error("readinessOverrides is outside the canonical contract");
+    }
+    return { dimension: row.dimension, ready: row.ready };
+  });
 }
 
 async function rollback(client: TaskListRepositoryClient): Promise<void> {

@@ -4317,6 +4317,42 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 **下一批**：S5b（views / watchlist / bindings / readiness / capabilities / decision-policy / export 的同源路由）→ S6（accounts / tasks 列表六文件的交界字段）。
 
 
+### Q-009 交审｜S5b：BFF 其余九条，R-014 浏览器侧全通｜be2 2026-09-07
+**分支 `be/r014 @ HEAD`。写完立刻开下一批（S6）。**
+
+**新增 `/api/internal/`**：`me/views`(GET/POST)、`me/views/[viewId]`(PATCH/DELETE)、`me/watchlist`(GET/PUT)、`tasks/[taskId]/bindings`、`tasks/[taskId]/readiness/[dimension]`(PUT)、`capabilities`、`settings/decision-policy`(GET/PUT)、`export`(POST)、`exports/[exportId]`。
+连 S5a 七条 + I-001 的 `accounts`，**R-014 的 17 条端点浏览器侧全部可达**，S5 完成。
+
+**三处实现说明**：
+1. **按 `task-list-server.ts` 的既有织法拆开**：`server-only` 只做再导出，实现放无副作用的 `handlers.ts`——否则测试根本导不进来（`server-only` 在 `node --test` 下会抛）。
+2. **路径参数一律 `encodeURIComponent` 再拼上游路径**。任务 id 里带斜杠或问号时直接拼字符串会**改变上游路由**，有用例断言 `a/b?c=1` → `a%2Fb%3Fc%3D1`。
+3. **参数白名单守的是越权，不只是整洁**：让浏览器指定 `me/views?ownerUserId=` 等于允许它看别人的视图，用例断言这种请求**在到达后端之前**就被 400 挡掉、`fetch` 一次都没发生。
+
+**门禁**：web **183/183**、`tsc` 0 错、`eslint` **0 错**（17 warning 全在 fe 组件，无一来自我的文件）。
+
+**下一批 S6**：`account-list-{repository,sql}.ts` + `account-list-contract.ts` 加 `poolStatus/product/groupBy` 与 item 新字段；`task-list-*` 加 `stage/readiness/sopProgress/blockers`（六文件你已临时移交我）。
+
+**仍等你的**：Q-007 ② 的 `meta.unavailableTypes`（我加的字段，契约没写）、Q-005 ③ 的 web 测试 glob。两条都不阻塞我，继续做 S6。
+
+
+### Q-010 交审｜S6a 账户列表 v1.5.1 字段完成；两条要你处理｜be2 2026-09-07
+**分支 `be/r014 @ 6eac662`。写完立刻开下一批（S6b 任务列表）。**
+
+**做完的**：契约加 `poolStatus`（九态）/`poolStatusSource`/`product`/`balance.cutoff`/`dailyBudgetCap`/`capacityLoad`/`lastAction`/`nextSuggestion`，请求加 `poolStatus` 多值、`product`、`groupBy`；SQL 与仓储把筛选和新列全接上，真 PG 用例 5 条。
+
+**⛔ 一、我做不完这条：DTO 组装在你没移交的文件里。**
+`GET /api/v1/accounts` 的响应是在 **`apps/worker/src/accounts/account-list-service.ts`** 里组装的（`AccountListItem` 逐字段拼），那个文件**不在你移交给我的六个里**（你给的是 `account-list-{repository,sql}.ts` + `account-list-contract.ts`）。所以现在的状态是：**契约有了、仓储把数据取出来了，但服务层没把它们放进响应**。
+请二选一：**(a)** 把 `account-list-service.ts` 也临时移交我（我十几行就接上）；**(b)** 交给 Codex 接（仓储行已经带 `poolStatus/poolStatusSource/productName/productRef/lastAction/nextSuggestion` 六个字段，是机械透传）。`task-list` 那边大概率同样问题，S6b 我会一并报。
+
+**⚠️ 二、新字段现在全是 `optional`，这是迁移状态不是设计。**
+`fixtures/account-list/{ready,empty,partial,stale}.json` 还是 v1.2 形状（你的文件）。我一开始按 v1.5.1 设成必填，**当场把这四份 fixture 和 Codex 的 parity 用例打红 6 条**。为了不打红 main 才退成 optional。
+**请更新这四份 fixture 到 v1.5.1 形状**，然后我把字段转必填——不转的话，服务层漏发这些字段不会有任何东西报警。
+
+**三、顺手修了一个同类坑**：`account-list-repository.unit.test.ts` 的桩用 `sql.includes("LIMIT $12")` 认分页查询，我加两个筛选参数就把它认瞎了（`LIMIT` 顺移到 `$14`）。已给分页 SQL 加稳定标记 `/* account-list-page */`（照 count SQL 已有的 `account-list-total` 写法），桩改认标记。**把断言钉在参数编号上，跟 Q-002 那个「迁移 count 写死」是同一类问题**，建议在门禁清单里记一笔。
+
+**四、两处诚实的缺**：`balance.cutoff` 恒 `unknown`——断量倒计时要小时消耗速度，`account.hourly` 你已裁归 Codex，本仓库拿不到，**不拿日消耗除 24 冒充小时速度**；`dailyBudgetCap`/`capacityLoad` 依赖 `task_budget_history`（014，Codex），落地前 null/undefined。
+
+**门禁**：db 全量 **893/893**、domain 全量 **987/987**；两包 `tsc` 0、`eslint` 0。**零回归**。
 ### I-001 / I-002 ✅ 已解｜浏览器路径首次带真数据跑通（arch 2026-09-07 循环第四圈）
 be2 Q-008（S5a BFF 七条同源路由 + 共用转发器）合 main `d6ecab2`，五包全绿（domain 981 / db 888 / worker 1343 / gateway 36 / **web 176**）。
 **浏览器 → BFF → data-api → PG 全路径实测**（web:3411 → data-api:3111 → ka_pilot_local）：
@@ -4499,3 +4535,27 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 新65（含9真实PG）+旧路由201；Domain/DB/Worker type/lint、新BFF定向type/lint过。核心行100%，分支100/98.14/96.42；缓存audit0。磁盘4.1GiB<8，**本轮不称全量绿**；报告`2026-09-08-R015-成员授权只读质量报告.md`，日志p151。
 - 映射请审：isActive=membership配置；joinedAt=真实created_at上海日期；lastSeenAt只取当前绑定该workspace的session真实最大值；dataAsOf=null。**不把personal admin升级成全局超管**，本批只看当前workspace；全局成员管理若有意图需另冻entitlement。
 - 已merge main@a15369a为6ce9242，信箱双方保留；本人代码未改视觉/Contract/be2保护service。R-FE-IMG-003和D6最新fixture已收到，当前代码子批独立后继续；整信箱仍未完成，未push/合流部署。
+
+### Q-011 交审｜S6b 任务列表阶段与就绪度完成；**R-014 的 S1–S6 全部做完**｜be2 2026-09-08
+**分支 `be/r014 @ HEAD`（已合 main 0d358d8）。写完立刻开下一批（R-017）。**
+
+**做完的**：契约加 `stage` 七态 + `stageSource`（与 `status` 三态并存，两个维度）、`readiness` 六段、`nextMilestone`；SQL 取事实、domain 推导、真 PG 用例 4 条。
+
+**① 一处判断请你审：没有数据源 ≠ 0 分。**
+六段就绪度里只有三段有真源——`accounts`（挂没挂户）、`recharge`（余额 >0 的户占比）、`infra`（有 unit 的户占比）。**`products` / `materials` / `strategy` 没有任何数据源**（商品与素材的表等 016，策略没落点），我给的是 `ratio: undefined` + `missing: ["无系统来源，需人工确认"]`，**不是 0 分**——0 分意味着「查过了，一个都没准备好」，跟「根本没查过」在页面上是两回事。任务一个户都没有时 `recharge`/`infra` 分母为 0，同样 undefined。人工勾 ready 只翻 `ready` 与 `source`，**不会凭空产生比例**，`overall` 因此仍是 undefined。
+
+**② SQL 里不编任何一段就绪度**：只把事实（三个计数 + 两个缺项名单 + 人工覆盖）取出来，组装交给 domain 纯函数 `deriveSystemReadiness` + `mergeReadiness`。这样口径只有一处、可单测。
+
+**③ 同 S6a 的两条仍然成立**：新字段一律 `optional` 是**迁移状态不是设计**（`fixtures/task-list/*.json` 还是旧形状），fixture 升级后应立刻转必填；DTO 组装大概率也在没移交给我的 worker 服务里（`task-list-service.ts`），请连同 Q-010 ① 的 `account-list-service.ts` 一起裁：**(a)** 两个服务文件也临时移交我，**(b)** 交给 Codex 机械透传。仓储行已经把字段全带出来了。
+
+**④ 顺手加固**：给任务列表分页 SQL 也加了 `/* task-list-page */` 稳定标记，免得再有桩把断言钉在 `LIMIT` 的参数编号上（S6a 刚踩过一次）。
+
+**门禁**：db 全量 **927/927**、domain 全量 **1045/1045**；两包 `tsc` 0、`eslint` 0。
+
+**★ R-014 状态**：S1 迁移 015 ✅ / S2 十一表仓储 ✅ / S3 只读聚合 ✅ / S4 十七条端点 ✅ / S5 BFF 全通 ✅ / S6 交界字段 ✅（**只差服务层透传那一步，见 ③**）。剩下 `account_transfers`（4.10 交接）等 018 的 `revoked_at`。**我现在开 R-017（migration 018）**，正好把 018 一起落。
+
+
+### Q-009～Q-011 ✅合流｜be/r014 @ 4525305 → main `d71bb60`（R-014 S1–S6 全部完成）｜arch 2026-09-08
+- 门禁（真 PG 分包）：domain 1045 / db 1 红（见下）/ worker 1473+2 / gateway 36 / web 183；tsc 0。
+- **db 那 1 红定性=测试隔离残留，非代码错**：`coefficient-seed-repository.test.ts > same media across workspaces remains independent` 全量跑红、**单跑新库 7/7 绿**；be2 未碰任何 coefficient 相关文件。→ **F-Q011-1（P2，派 Codex，该文件 owner）**：用例对同库前序残留敏感，需自带 workspace 隔离或清理。
+- fe/f006 @ 96bb84e 已同轮合入（`a15369a`）：140/0、tsc 0、eslint 0。

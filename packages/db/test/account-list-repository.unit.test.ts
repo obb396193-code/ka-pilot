@@ -42,7 +42,7 @@ describe("AccountListRepository unit boundary", () => {
         if (sql.includes("workspace-sync-initial-full-readiness")) {
           return result([{ initial_full_complete: true }] as unknown as Row[]) as QueryResult<Row>;
         }
-        if (sql.includes("LIMIT $12")) {
+        if (sql.includes("account-list-page")) {
           return result([{
             workspace_id: workspaceId,
             media: "KUAISHOU",
@@ -58,6 +58,15 @@ describe("AccountListRepository unit boundary", () => {
               { taskId: "task-z", taskName: "末项" },
               { taskId: "task-a", taskName: null },
             ],
+            pool_status: "in_delivery",
+            pool_status_source: "system",
+            product_name: null,
+            product_ref: null,
+            last_action_at: null,
+            last_action_kind: null,
+            last_action_summary: null,
+            next_suggestion_id: null,
+            next_suggestion_title: null,
             metric_date: "2026-08-25",
             cost: "10.5",
             real_conversion: "2",
@@ -111,7 +120,7 @@ describe("AccountListRepository unit boundary", () => {
         if (sql.includes("workspace-sync-initial-full-readiness")) {
           return result([{ initial_full_complete: true }] as unknown as Row[]) as QueryResult<Row>;
         }
-        if (sql.includes("LIMIT $12")) {
+        if (sql.includes("account-list-page")) {
           return result([{ tags: [], linked_tasks: "not-an-array" }] as unknown as Row[]) as QueryResult<Row>;
         }
         return result([] as Row[]) as QueryResult<Row>;
@@ -146,7 +155,7 @@ describe("AccountListRepository unit boundary", () => {
         if (sql.includes("workspace-sync-initial-full-readiness")) {
           return result([{ initial_full_complete: true }] as unknown as Row[]) as QueryResult<Row>;
         }
-        if (sql.includes("LIMIT $12")) {
+        if (sql.includes("account-list-page")) {
           return result([{
             workspace_id: workspaceId,
             media: "KUAISHOU",

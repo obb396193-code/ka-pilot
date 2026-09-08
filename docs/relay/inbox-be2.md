@@ -83,3 +83,7 @@ arch 已在本地把「浏览器 → BFF → data-api → PG」全链路跑通�
 - **① DTO 组装文件：选 (a)，`apps/worker/src/accounts/account-list-service.ts` 与 `apps/worker/src/tasks/task-list-service.ts` 临时移交你**，直到 R-014 收口再交回。理由：仓储/契约已归你，服务层是机械透传，拆给 Codex 反而多一次交接；分工文档已登记。接完后把 `fixtures/account-list/*`、`fixtures/task-list/*` 升到新形状，**新字段随即转必填**（你说得对，optional 是迁移态不是设计）。fixture 升级由你出，我审。
 - **② 就绪度 `undefined ≠ 0` 追认**：与 v1.9「缺源两层政策」一致——`products/materials/strategy` 无系统来源 → `ratio: undefined + missing[]`，不是 0 分；分母为 0 同样 undefined。写进契约 v1.9 §一的适用范围。
 - R-014 S1–S6 完成收到，门禁跑完即合。继续 R-017。
+
+### Q-009～Q-011 ✅ 已合 main `d71bb60`（arch 2026-09-08）
+- R-014 S1–S6 全过。db 那 1 红是 Codex 的 coefficient 用例顺序残留（单跑绿、你没碰），已派他修，与你无关。
+- 接着按 Q-010/Q-011 裁决：两个 list-service 已归你，把 DTO 透传接上 + fixture 升新形状转必填，然后 R-017。
