@@ -41,6 +41,25 @@ function setup(options: { status?: string; hash?: string | null; evidence?: bool
 
 describe("changeset dry-run hard gate (mock SQL)", () => {
   const result = { workspaceId: ws, changeSetId: id, now, expectedHash: hash, items: [{ itemId: 1, status: "success" as const }] };
+  const observations = { checkedAt: now.toISOString(), dataAsOf: null, items: [{ itemId: "1", targetType: "unit", targetId: item.target_id,
+    field: "bid", fromValue: value, toValue: value, observed: value, verdict: "ok", reason: null }] };
+  it("persists validated observations atomically alongside dry-run status", async () => {
+    const c = setup(); await c.repository.recordDryRun({ ...result, observations });
+    const insert = c.query.mock.calls.find(([sql]) => sql.includes("INSERT INTO execution_runs"))!;
+    expect(JSON.parse(insert[1]![4] as string)).toEqual({ items: result.items, observations });
+    expect(c.query.mock.calls.at(-1)![0]).toBe("COMMIT");
+  });
+  it.each(["target", "from", "to", "verdict", "time", "count"])("rejects contradictory %s observations under draft lock", async kind => {
+    const c = setup(); const evidence = structuredClone(observations);
+    if (kind === "target") evidence.items[0]!.targetId = "foreign";
+    if (kind === "from") evidence.items[0]!.fromValue = { type: "number", value: 2 };
+    if (kind === "to") evidence.items[0]!.toValue = { type: "number", value: 2 };
+    if (kind === "verdict") { evidence.items[0]!.verdict = "changed"; evidence.items[0]!.observed = { type: "number", value: 2 }; Object.assign(evidence.items[0]!, { reason: "changed" }); }
+    if (kind === "time") evidence.checkedAt = new Date(now.getTime() + 1).toISOString();
+    if (kind === "count") evidence.items = [];
+    await expect(c.repository.recordDryRun({ ...result, observations: evidence })).rejects.toThrow();
+    expect(c.query.mock.calls.some(([sql]) => sql.includes("INSERT INTO execution_runs"))).toBe(false);
+  });
   it.each(["media", "accountId", "initiatorUserId", "credentialOwnerUserId"] as const)("checks authorized %s under the same record lock", async key => {
     const c = setup();
     const expectedScope = { media: "KUAISHOU", accountId: "synthetic", initiatorUserId: user, credentialOwnerUserId: user, [key]: "different" };

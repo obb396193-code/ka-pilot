@@ -18,6 +18,12 @@ export const preflightProofSchema = z.object({
   credentialOwnerUserId: z.string().uuid(), draftHash: z.string().regex(/^[a-f0-9]{64}$/),
   items: z.array(preflightItemSchema).min(1).max(10_000),
 }).strict();
+export const preflightObservedProofSchema = preflightProofSchema.extend({
+  dataAsOf: z.string().datetime({ offset: true }).nullable(),
+  items: z.array(z.object({ itemId: z.number().int().positive().safe(), status: z.enum(["success", "failed", "unknown"]),
+    failReason: preflightReasonSchema.nullable(), observed: changeValueSchema.nullable(),
+  }).strict().refine(item => item.status === "success" ? item.failReason === null : item.failReason !== null)).min(1).max(10000),
+});
 export const preflightDraftItemsSchema = z.array(z.object({
   id: z.number().int().positive().safe(), targetType: z.enum(["account", "campaign", "unit", "creative"]),
   targetId: identity, field: identity, fromValue: changeValueSchema, toValue: changeValueSchema,

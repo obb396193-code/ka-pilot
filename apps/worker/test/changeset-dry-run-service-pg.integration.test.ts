@@ -47,6 +47,36 @@ describe("dry-run service to actual PG (synthetic preflight port, no media)", ()
   }
   const runs = async (id: string) => (await pool.query("SELECT attempt,status,dry_run FROM execution_runs WHERE changeset_id=$1 ORDER BY attempt", [id])).rows;
 
+  it("public observations are persisted with the same run; changed and unknown clear proof without jobs", async () => {
+    const draft = await create();
+    let verdict: "ok" | "changed" | "unknown" = "ok";
+    const service = new ChangeSetDryRunService({ store, now: () => now, preflight: { check: async input => ({
+      ...evidence(input), dataAsOf: null, items: input.items.map(item => ({ itemId: item.id,
+        status: verdict === "ok" ? "success" : verdict === "unknown" ? "unknown" : "failed",
+        failReason: verdict === "ok" ? null : verdict === "unknown" ? "UNKNOWN_RESULT" : "FROM_VALUE_CHANGED",
+        observed: verdict === "unknown" ? null : { type: "number", value: verdict === "ok" ? 30 : 35 } })) }) } });
+    for (const next of ["ok", "changed", "unknown"] as const) {
+      verdict = next; const result = await service.preview(draft.id, auth);
+      expect(result.data.items[0]!.verdict).toBe(next); expect(result.data.confirmAllowed).toBe(false); // preview-only grant
+      const row = (await pool.query("SELECT dry_run,result_payload FROM execution_runs WHERE id=$1 AND changeset_id=$2", [result.data.executionRunId, draft.id])).rows[0];
+      expect(row.dry_run).toBe(true); expect(row.result_payload.observations).toEqual({ checkedAt: now.toISOString(), dataAsOf: null, items: result.data.items });
+      const header = (await pool.query("SELECT status,dry_run_hash,confirm_hash FROM changesets WHERE id=$1", [draft.id])).rows[0];
+      expect(header.status).toBe("draft"); expect(header.confirm_hash).toBeNull();
+      expect(header.dry_run_hash).toBe(next === "ok" ? result.data.hash : null);
+    }
+    expect((await pool.query("SELECT count(*)::int AS n FROM jobs WHERE workspace_id=$1", [workspaceId])).rows[0].n).toBe(0);
+  });
+  it("rejects observation injection against a locked draft without a persisted partial run", async () => {
+    const draft = await create(), prepared = await store.prepareDryRun({ workspaceId, changeSetId: draft.id, now });
+    const item = draft.items[0]!;
+    await expect(store.recordDryRun({ workspaceId, changeSetId: draft.id, now, expectedHash: prepared.hash,
+      items: [{ itemId: item.id, status: "success" }], observations: { checkedAt: now.toISOString(), dataAsOf: null,
+        items: [{ itemId: String(item.id), targetType: "unit", targetId: "outside", field: "bid", fromValue: item.fromValue,
+          toValue: item.toValue, observed: item.fromValue, verdict: "ok", reason: null }] } })).rejects.toThrow("Invalid dry-run observations");
+    expect(await runs(draft.id)).toEqual([]);
+    expect((await pool.query("SELECT dry_run_hash FROM changesets WHERE id=$1", [draft.id])).rows[0].dry_run_hash).toBeNull();
+  });
+
   it("source-off actual HTTP to PG checks personal draft but writes no run, proof or job", async () => {
     const draft = await create(), foreignMedia = await create("TENCENT"), foreignWorkspace = await create("KUAISHOU", other);
     const token = "synthetic-d6-pg-internal-token-long-enough";

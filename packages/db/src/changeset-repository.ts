@@ -20,6 +20,7 @@ import { ChangeSetPreconditionError, draftHash, requireSuccessfulDryRun, require
 import { claimReconciliation, finishReconciliationClaim, type ReconciliationClaim } from "./changeset-reconciliation.js";
 import { assertExecutionRunBinding, enqueueConfirmedExecution, findConfirmedExecution, startConfirmedExecution, type ConfirmedExecutionRun } from "./changeset-execution-queue.js";
 import { JobRepository } from "./job-repository.js";
+import { validateDryRunObservations } from "./changeset-observations.js";
 export { ChangeSetPreconditionError } from "./changeset-dry-run.js";
 
 export interface NewChangeSetItem {
@@ -273,6 +274,7 @@ export class ChangeSetRepository {
   /** Only trusted server-side preflight code may call this, never raw HTTP item results. */
   async recordDryRun(input: { workspaceId: string; changeSetId: string; expectedHash: string; now: Date; items: ItemExecutionResult[];
     expectedScope?: { media: string; accountId: string; initiatorUserId: string; credentialOwnerUserId: string };
+    observations?: unknown;
   }): Promise<{ executionRunId: string; hash: string; status: "success" | "partial" | "failed" | "unknown" }> {
     requireValidClock(input.now);
     const expectedHash = input.expectedHash;
@@ -297,10 +299,13 @@ export class ChangeSetRepository {
       const hash = draftHash(header, storedItems);
       if (hash !== expectedHash) throw new ChangeSetPreconditionError("FROM_VALUE_CHANGED");
       assertCompleteItemCoverage(storedItems, items);
+      const observations = validateDryRunObservations(input.observations, storedItems, items, input.now);
       const status = aggregateExecutionResult(items);
+      const resultPayload = JSON.stringify({ items, ...(observations === undefined ? {} : { observations }) });
+      if (Buffer.byteLength(resultPayload) >= 16 * 1024 * 1024) throw new Error("Dry-run result exceeds limit");
       const attempt = await client.query<{ attempt: number }>("SELECT COALESCE(MAX(attempt),0)::int + 1 AS attempt FROM execution_runs WHERE changeset_id=$1 AND dry_run=true", [header.id]);
       const run = await client.query<{ id: string }>(`INSERT INTO execution_runs(changeset_id,attempt,status,dry_run,request_payload,result_payload,started_at,finished_at)
-        VALUES($1,$2,$3,true,$4::jsonb,$5::jsonb,$6,$6) RETURNING id`, [header.id, attempt.rows[0]!.attempt, status, JSON.stringify({ dry_run_hash: hash }), JSON.stringify({ items }), input.now]);
+        VALUES($1,$2,$3,true,$4::jsonb,$5::jsonb,$6,$6) RETURNING id`, [header.id, attempt.rows[0]!.attempt, status, JSON.stringify({ dry_run_hash: hash }), resultPayload, input.now]);
       if (run.rows.length !== 1) throw new Error("Dry-run result was not persisted");
       const updated = await client.query("UPDATE changesets SET dry_run_hash=$3,confirm_hash=NULL WHERE workspace_id=$1 AND id=$2 AND status='draft'", [input.workspaceId, header.id, status === "success" ? hash : null]);
       if (updated.rowCount !== 1) throw new Error("Dry-run draft changed while persisting");

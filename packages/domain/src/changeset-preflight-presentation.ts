@@ -76,3 +76,7 @@ export const preflightPresentationResponseSchema = z.discriminatedUnion("ok", [
 ]);
 export type PreflightPresentationData = z.infer<typeof preflightPresentationDataSchema>;
 export type PreflightPresentationResponse = z.infer<typeof preflightPresentationResponseSchema>;
+
+// Internal persisted evidence, not an alternate HTTP response.
+export const preflightObservationSnapshotSchema = z.object({ checkedAt: timestamp, dataAsOf: timestamp.nullable(),
+  items: z.array(preflightPresentationItemSchema).min(1).max(10000) }).strict();
