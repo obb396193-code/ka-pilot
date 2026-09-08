@@ -4597,3 +4597,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 代码 **de63169**，含main@7dd47e6；仅Worker route/composition类型+HTTP/PG测试四文件。已接P155 preview，合法三值返回200；旧缩略结果、错对象/缺observed/错误计数/未来lineage/额外字段502。生产仍无Provider503，未开媒体写。
 - **97定向过（87 Worker+10真实PG）**；真实HTTP回传与execution_runs.observations一致，ok/changed/unknown、跨媒体/空间、零jobs均实证。route98.38%行/90%分支，Worker lint绿；typecheck仍四个旧account/task fixture缺字段。磁盘7.7GiB<8，不冒称全量绿；报告 `docs/plans/2026-09-09-D6-公开HTTP观测结果质量报告.md`。
 - **BFF成功态仍未切**，继续独立子批，不代表浏览器整链/部署完成。请按exact SHA审核；旧fixture请协调be2，头像已取消不再执行。
+
+### P-157｜D6 BFF完成三值软件接线（be，2026-09-09）
+
+- **693614e**，已含main@7dd47e6，9代码/测试文件。BFF成功态直接复用唯一Domain schema factory，拒路径对象/相关ID/三值/计数/未来lineage漂移。纯value/equality共享，旧hash不改语义；无Contract/页面/依赖/真实媒体写改动。
+- **270定向过**（Domain82/Worker含PG97/DB52/Web39），含真实BFF函数→HTTP→独立PG unknown证据与run快照一致；sourceoff503/零jobs/权限边界保持。Domain wire100%行/分支、BFF100%行/94.06%分支；Domain/DBtype+lint、Worker lint、Web改动lint过。
+- **整包门禁不绿**：Worker仍4个旧account/task fixture缺be2新列；Web工作树缺shiki/ai/streamdown/motion/xyflow/blocknote等依赖，整包75类型错（本批文件0），请前端线补安装后全量。磁盘7.7~7.8GiB<8，未全量/build/浏览器验收；报告 `docs/plans/2026-09-09-D6-BFF三值接线质量报告.md`。
+- D6软件接线可交审，但真实只读Provider按你裁决继续不接，不把合成证据当公司源。后续继续剩余R010a2，不停等；R-FE-IMG-003继续取消。
