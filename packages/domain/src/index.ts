@@ -85,3 +85,5 @@ export * from "./agent-model-catalog.js";
 export * from "./admin-calendar.js";
 // be: workspace member and grant read DTOs.
 export * from "./admin-members.js";
+// be: D6 public observed-value contract; source/authorization remain in Worker.
+export * from "./changeset-preflight-presentation.js";
