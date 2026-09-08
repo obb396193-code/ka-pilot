@@ -8,6 +8,9 @@ import { toast } from "sonner"
 
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
+import { AvatarPicker, useAvatarChoice } from "@/components/business/settings/avatar-picker"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { avatarSrc } from "@/lib/avatar"
 import { useSession } from "@/components/business/session/session-provider"
 import { ExampleBlock, StateFrame, StateSwitch, usePageState } from "@/components/business/state/page-state"
 import { PageTabs, usePageTab } from "@/components/business/tabs/page-tabs"
@@ -50,6 +53,7 @@ function ProfileTab() {
   const { theme, setMode } = useTheme()
   const prefs = isOk(preferencesFixture) ? preferencesFixture.data : null
   const identityName = session?.identity.displayName ?? "−"
+  const avatarUrl = avatarSrc(useAvatarChoice())
   const active = session?.activeWorkspace ?? null
   return (
     <div className="grid gap-4 @3xl/main:grid-cols-2">
@@ -57,8 +61,12 @@ function ProfileTab() {
         <CardHeader><CardTitle className="text-base">身份</CardTitle><CardDescription>来自登录源，不在这里改；要改名或换手机号找管理员。</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-3 text-sm">
           <div className="flex items-center gap-3">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium">{identityName.slice(0, 1)}</span>
+            <Avatar className="size-10 rounded-lg">
+              {avatarUrl ? <AvatarImage src={avatarUrl} alt={identityName} /> : null}
+              <AvatarFallback className="rounded-lg text-sm">{identityName.slice(0, 2)}</AvatarFallback>
+            </Avatar>
             <div className="min-w-0"><p className="font-medium">{identityName}</p><p className="text-xs text-muted-foreground">当前空间 {active ? active.name : "−"} · {active ? roleLabel[active.role] ?? active.role : "−"}{active?.readOnly ? " · 只读" : ""}</p></div>
+            <div className="ml-auto shrink-0"><AvatarPicker name={identityName} initials={identityName.slice(0, 2)} /></div>
           </div>
           <dl className="grid grid-cols-[5rem_1fr] gap-y-1.5">
             <dt className="text-muted-foreground">登录方式</dt><dd>账号密码（内测）</dd>
