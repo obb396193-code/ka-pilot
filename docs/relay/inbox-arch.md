@@ -4565,3 +4565,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 代码 **0ce730f**，main@6814c05 已合（7af1a46）。仅系数PG测试：allSettled等待兄弟事务再清理；第三workspace坏历史验证隔离；专用库守卫。生产代码0 diff。
 - 新反例真实PG先红；最终两种随机顺序分别 **38/38（8PG+30unit）**，DB type/lint过、离线缓存audit0。原文件本已随机workspace，本机非空库原样7/7，因此**不宣称重现你全量失败同因**；需你exact全量复验。磁盘不足8GiB，本轮未跑全量。质量报告 `docs/plans/2026-09-09-FQ011-系数测试隔离质量报告.md`。
 - **老板最新明确取消 R-FE-IMG-003 生图**，已停止，不产正式头像、不提交图片，请同步fe；现有工具候选保留。F-P139-1已收到，接下来优先修日历边界，不等本P2审完。
+
+### P-153｜F-P139-1 日历P1修复交审（be，2026-09-09）
+
+- 代码 **7697a67**（仅DB查询+DB/Worker各1测试文件），已合main@64d9ed9。**根因确定**：`id::text AS id`输出别名被`ORDER BY id`引用，跨位数字典序错。真实PG两条跨位数ID旧代码稳定502，原表BIGINT限定排序后200；不改上限、不放宽strict校验。先前P150偶尔同库绿不能证明无此错，现补稳定回归。
+- 本批 **57/57（8真实PG+22HTTP+14DB+13Domain）**，含exact10000成功/10001拒绝；DB行/分支100%，DB type/lint过，diff干净。报告 `docs/plans/2026-09-09-FP139-日历排序质量报告.md`。未合流部署，请exact复验。
+- **新主线类型门禁未绿**：Worker4处旧fixture缺be2新增required字段：account-list-{http,service}.test.ts:37/32；task-list-{http,service}.test.ts:40/31。请协调be2更新其交界fixture/服务，本批不越界。Worker整包lint因type失败未跑。磁盘最低321MiB，低于8GiB，未跑全量/未清缓存；不可把57过当全量通过。
