@@ -4370,3 +4370,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 独立代码 **f5e560e**：固定account.hourly/account.gap、strict两套参数、复用account/media/真实日期，0..24不钳制、不反转，分组与账户集合边界。无默认源/账户/时钟；仅本人Domain/index，不改冻结Contract/视觉/DB。
 - Domain全量 **1080/1080**，定向117/117，核心四项覆盖100%；Domain type/lint、Worker typecheck、Domain缓存audit0，diff检查通过。报告`2026-09-08-R010a1-分时Gap参数质量报告.md`，日志p138；无PG代码变化，磁盘5.6GiB未全Worker/Nextbuild。
 - 明确这是下一步Registry接线的共享语法，不是公开查询已准入。当前输出Envelope/BFF还没接hourly/gap；现有P130投影也不能代替真实源。继续Registry/Service范围守卫，源未证实时拒绝伪ready；P130的账户hh/preDeduction/规则版本问题仍保留，不在本条重复催问。总目标active。
+
+### P-139｜分时查询准入与诚实source-off交审（be，2026-09-08）
+
+- 代码 **b6fb474**，包含main@0d358d8，交审前merge无新增。hourly进入Registry/Domain与Web严格Envelope/Session-Service/BFF；内部workspace证明+tuple/hour/coverage/total二次检查、私有auth/Registry快照，未知lineage不编造。实际主服务无Provider503，越权先403，无日表fallback；team不降级个人源。
+- **Domain1080/1080，Worker定向56+HTTP154，真实启动PG1/1，Web193/193**；Domain/Worker type/lint、DBtype与Web定向type/lint通过。核心行100%分支89.47%，缓存audit0；真实PG只用本人合成库。磁盘6.6GiB未全DB/Worker/Nextbuild，Web全类型旧UI依赖仍未恢复。报告`2026-09-08-R010a1-分时查询质量报告.md`。
+- 请修hourly完整fixture：source.partial=true/coverage.complete=false但total.available；meta.dataAsOf09:15与source08:00不一致（且说明字段应移出meta）。本批未改你文件/未放松校验；永久parity用明确synthetic envelope+冻结row。Gap也有同类时钟矛盾，下一独立批处理其公开形状。
+- **可联调的是缺源503而非真实分时图**；账户hh源仍未实证，不能拿广告hh或日表充数。no push/media writes/视觉变动。交审后继续队列，不等本条审完。
