@@ -1,60 +1,22 @@
 import { randomUUID } from "node:crypto";
-import { EventEmitter } from "node:events";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { runMigrations } from "@ka/db";
 import { createMeRoutes } from "../../src/r014/me-routes.js";
 import { findR014Route, registerR014Routes } from "../../src/r014/routes.js";
+import { callRoute, type Captured } from "./fake-http.js";
 
 // Synthetic data only. Execute on the explicitly selected isolated test database (ka_be2_r014_test).
 const databaseUrl = process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka_be2_r014_test";
-
-interface Captured { status: number; headers: Record<string, string>; body: unknown }
-
-/** 最小的 req/res 替身：只验路由层自己的行为，不把整个壳层拖进来。 */
-function fakeRequest(method: string, body?: unknown): never {
-  const payload = body === undefined ? [] : [Buffer.from(JSON.stringify(body))];
-  const request = Object.assign(new EventEmitter(), {
-    method,
-    [Symbol.asyncIterator]: async function* (): AsyncGenerator<Buffer> { yield* payload; },
-  });
-  return request as never;
-}
-
-function fakeResponse(): { response: never; captured: () => Captured } {
-  let status = 0;
-  let headers: Record<string, string> = {};
-  let raw = "";
-  const response = {
-    writeHead(code: number, given: Record<string, string> = {}) { status = code; headers = given; return response; },
-    end(chunk?: string) { raw = chunk ?? ""; },
-  };
-  return {
-    response: response as never,
-    captured: () => ({ status, headers, body: raw === "" ? undefined : JSON.parse(raw) as unknown }),
-  };
-}
 
 describe("R-014 me routes (real PostgreSQL)", () => {
   const pool = new Pool({ connectionString: databaseUrl });
   const workspaces: string[] = [];
   let auth: { workspaceId: string; userId: string; role: "optimizer"; workspaceKind: "personal"; scope: { kind: "explicit_accounts"; accounts: never[] } };
 
-  async function call(pathname: string, method: string, body?: unknown, search = ""): Promise<Captured> {
-    const route = findR014Route(pathname);
-    expect(route, `no route matched ${pathname}`).not.toBeNull();
-    const { response, captured } = fakeResponse();
-    await route!.handle({
-      request: fakeRequest(method, body),
-      response,
-      url: new URL(`http://data-api.internal${pathname}${search}`),
-      auth,
-      requestId: "test-request",
-      maxResponseBytes: 1_000_000,
-    });
-    return captured();
-  }
+  const call = (pathname: string, method: string, body?: unknown, search = ""): Promise<Captured> =>
+    callRoute(auth, pathname, method, body, search);
 
   beforeAll(async () => {
     await runMigrations({ databaseUrl });

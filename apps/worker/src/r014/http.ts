@@ -119,3 +119,24 @@ export function requireMethod(request: IncomingMessage, allowed: readonly string
   }
   return method;
 }
+
+/**
+ * 把处理函数包成 R014Route：统一兜住抛出的错误，避免任何一条路由把异常漏给壳层
+ * （壳层会当成未处理异常整体 500，丢掉我们的稳定错误 envelope）。
+ * 放在 http.ts 而不是各路由文件里，是为了所有路由共用同一套失败语义。
+ */
+export function guardedRoute(
+  matches: (pathname: string) => boolean,
+  handle: (context: import("./routes.js").R014RouteContext) => Promise<void>,
+): import("./routes.js").R014Route {
+  return {
+    matches,
+    handle: async (context) => {
+      try {
+        await handle(context);
+      } catch (error) {
+        sendFailure(context.response, error, context.requestId);
+      }
+    },
+  };
+}

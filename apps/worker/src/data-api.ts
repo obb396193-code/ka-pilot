@@ -27,13 +27,21 @@ import { SessionAuthService } from "./auth/session-auth-service.js";
 import { SessionHttpService } from "./auth/session-http.js";
 import { WorkItemListService } from "./work-items/work-item-list-service.js";
 // be2-r014：把 R-014 的路由注册进 arch 开的缝（routes.ts）。壳层只认这个数组，不认识具体路径。
+import { createAccountRoutes } from "./r014/account-routes.js";
 import { createMeRoutes } from "./r014/me-routes.js";
+import { createTaskRoutes } from "./r014/task-routes.js";
+import { createWorkspaceRoutes } from "./r014/workspace-routes.js";
 import { registerR014Routes } from "./r014/routes.js";
 
 async function main(): Promise<void> {
   const config = loadDataApiConfig(process.env);
   const pool = createPool(config.databaseUrl);
-  registerR014Routes([...createMeRoutes(pool)]); // be2-r014
+  registerR014Routes([ // be2-r014
+    ...createMeRoutes(pool),
+    ...createAccountRoutes(pool),
+    ...createTaskRoutes(pool),
+    ...createWorkspaceRoutes(pool),
+  ]);
   const authRepository = new AuthSessionRepository(pool);
   const sessionAuthService = new SessionAuthService(authRepository);
   const service = new DataQueryService({

@@ -8,8 +8,8 @@ import {
 } from "@ka/domain";
 import type { Pool } from "pg";
 
-import { R014HttpError, readJsonBody, requireMethod, sendData, sendEmpty, sendFailure } from "./http.js";
-import type { R014Route, R014RouteContext } from "./routes.js";
+import { R014HttpError, guardedRoute, readJsonBody, requireMethod, sendData, sendEmpty } from "./http.js";
+import type { R014Route } from "./routes.js";
 
 /**
  * `/api/v1/me/*` 一族。
@@ -47,19 +47,7 @@ export function createMeRoutes(pool: Pool): R014Route[] {
   const views = new SavedViewRepository(pool);
   const me = new MeWorkspaceRepository(pool);
 
-  const route = (
-    matches: (pathname: string) => boolean,
-    handle: (context: R014RouteContext) => Promise<void>,
-  ): R014Route => ({
-    matches,
-    handle: async (context) => {
-      try {
-        await handle(context);
-      } catch (error) {
-        sendFailure(context.response, error, context.requestId);
-      }
-    },
-  });
+  const route = guardedRoute;
 
   return [
     route((pathname) => pathname === "/api/v1/me/preferences", async (context) => {
