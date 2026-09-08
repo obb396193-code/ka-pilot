@@ -23,6 +23,8 @@ ACCOUNTS = [
     ("KUAISHOU","account-6","没按规范起的名字_测试户",                                      None,None,None,"unknown",29.0,"green"),
 ]
 print("① 账户与任务")
+sql(f"DELETE FROM changeset_items WHERE workspace_id='{WS_P}'"); sql(f"DELETE FROM changesets WHERE workspace_id='{WS_P}'"); sql(f"DELETE FROM work_items WHERE workspace_id='{WS_P}'")
+sql(f"DELETE FROM account_access_grants WHERE workspace_id='{WS_P}'")   # 授权引用账户，必须先删
 sql(f"DELETE FROM account_metrics_daily WHERE workspace_id='{WS_P}'")
 sql(f"DELETE FROM task_accounts WHERE workspace_id='{WS_P}'")
 sql(f"DELETE FROM assessment_price_history WHERE workspace_id='{WS_P}'")
@@ -81,3 +83,54 @@ for i in range(0,len(vals),60):
         + ",".join(vals[i:i+60]))
 print(f"   灌了 {len(vals)} 行")
 print("\n完成。账户 6（其中 1 个不按命名规范）、任务 3、31 天指标、缺数 3 天、异常 1 天。")
+
+# ---------- ④ 工作项 / 变更集草稿 / 通知（2026-09-08 追加，让工作台·变更集·通知铃有东西）----------
+print("④ 工作项 + 变更集草稿")
+sql(f"DELETE FROM changeset_items WHERE workspace_id='{WS_P}'")
+sql(f"DELETE FROM changesets WHERE workspace_id='{WS_P}'")
+sql(f"DELETE FROM work_items WHERE workspace_id='{WS_P}'")
+W = [
+ # (type, media, account, task, severity, title, status, evidence, diagnosis)
+ ("diagnosis","KUAISHOU","account-2","1803240580","P0","现金 CPA 连续 2 日高于考核价：41.0 vs 38.0","open",
+  {"snapshot_at":"2026-09-06T08:00:00+08:00","cashCpa":41.0,"price":38.0,"days":2,"realConversion":118},
+  {"cause":"bid_too_high","confidence":0.86,"suggestion":"unit 出价下调 5%，先试运行"}),
+ ("diagnosis","KUAISHOU","account-5","1278297263","P1","昨日消耗异常放量 3.4 倍，转化未同步上涨","open",
+  {"snapshot_at":"2026-09-06T08:00:00+08:00","cost":8213.4,"baseline":2416.0,"realConversion":49},
+  {"cause":"budget_spike","confidence":0.74,"suggestion":"核对日预算上限与自动出价"}),
+ ("diagnosis","KUAISHOU","account-4","280707655","P1","达标黄区：现金 CPA 贴近考核价（51.2 / 52.0）","processing",
+  {"snapshot_at":"2026-09-06T08:00:00+08:00","cashCpa":51.2,"price":52.0},
+  {"cause":"margin_thin","confidence":0.66,"suggestion":"观察 1 日，不动"}),
+ ("diagnosis","KUAISHOU","account-2","1803240580","P2","最近 3 日现金缺数，达标未判","open",
+  {"snapshot_at":"2026-09-06T08:00:00+08:00","missingDays":3},
+  {"cause":"data_missing","confidence":None,"suggestion":"等启航离线口径补齐，不补 0"}),
+ ("dispatch",None,None,"1278297263","P1","派发：闲鱼DAU 任务本周复盘，请补交承接页转化数据","open",
+  {"snapshot_at":"2026-09-06T09:00:00+08:00"},{"cause":None,"confidence":None,"suggestion":None}),
+ ("diagnosis","KUAISHOU","account-1","1803240580","opportunity","账户 1 现金 CPA 5.05 远低于考核价 38，有加量空间","open",
+  {"snapshot_at":"2026-09-06T08:00:00+08:00","cashCpa":5.05,"price":38.0,"headroom":32.95},
+  {"cause":"headroom","confidence":0.71,"suggestion":"日预算 +20%，走变更集"}),
+ ("diagnosis","KUAISHOU","account-3","280707655","P2","上周同一规则已处理，本周未再触发","done",
+  {"snapshot_at":"2026-08-30T08:00:00+08:00"},{"cause":"resolved","confidence":0.9,"suggestion":None}),
+]
+ids=[]
+for typ,media,acc,task,sev,title,status,ev,dg in W:
+    m = f"'{media}'" if media else "NULL"; a = f"'{acc}'" if acc else "NULL"
+    resolved = "now()" if status=="done" else "NULL"
+    out = sql(f"""INSERT INTO work_items(workspace_id,type,media,account_id,task_id,severity,title,status,evidence_snapshot,diagnosis,assignee,creator,sla_due,resolved_at,last_triggered_at)
+      VALUES('{WS_P}','{typ}',{m},{a},'{task}','{sev}',$${title}$$,'{status}',$${json.dumps(ev,ensure_ascii=False)}$$::jsonb,$${json.dumps(dg,ensure_ascii=False)}$$::jsonb,'{USER}','{USER}',now()+interval '1 day',{resolved},now()) RETURNING id""")
+    ids.append(out.strip().split("\n")[-1].strip() if out else None)
+print(f"   工作项 {len(W)} 条（P0 1 / P1 3 / P2 2 / 机会 1）")
+# 变更集草稿：挂在 P0 那条上，3 明细与 fixtures/changesets/dry-run-ok.json 同形
+cs = sql(f"""INSERT INTO changesets(workspace_id,work_item_id,media,account_id,title,status,initiator,credential_owner_user_id,ttl_expire_at,reason_code)
+  SELECT '{WS_P}', id, 'KUAISHOU','account-2','出价下调 5%（试运行草稿）','draft','{USER}','{USER}', now()+interval '2 hours','cpa_over_target'
+  FROM work_items WHERE workspace_id='{WS_P}' AND severity='P0' LIMIT 1 RETURNING id""")
+csid = [l for l in cs.strip().split("\n") if "-" in l][-1].strip()
+for tt,tid,field,fv,tv in [("unit","unit-8801","bid","40","38"),("unit","unit-8802","bid","42","39"),("account","account-2","daily_budget","3000","3600")]:
+    sql(f"INSERT INTO changeset_items(changeset_id,workspace_id,media,account_id,target_type,target_id,field,from_value,to_value) VALUES('{csid}','{WS_P}','KUAISHOU','account-2','{tt}','{tid}','{field}','{fv}','{tv}')")
+print("   变更集草稿 1 个（3 明细，挂 P0 工作项）")
+
+# ---------- ⑤ 账户授权（没有这一步接口一律返 0 行：账户级授权是硬门）----------
+IDENTITY="00000000-0000-4000-8000-000000000090"
+sql(f"""INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id,access_level)
+  SELECT workspace_id,'{IDENTITY}',media,account_id,'preview' FROM accounts WHERE workspace_id='{WS_P}' ON CONFLICT DO NOTHING""")
+print("⑤ 授权 6 户（preview）")
+print("\n全部完成：账户 6 / 任务 3 / 指标 186 行 / 工作项 7 / 变更集草稿 1 / 授权 6。")
