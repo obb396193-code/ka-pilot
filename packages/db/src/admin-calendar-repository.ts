@@ -21,7 +21,8 @@ export class AdminCalendarRepository {
             CASE WHEN octet_length(event_type)<=64 THEN event_type END AS event_type,
             CASE WHEN octet_length(label)<=2048 THEN label END AS label, affects_baseline,
             CASE WHEN threshold_profile IS NULL OR octet_length(threshold_profile)<=1024 THEN threshold_profile ELSE '' END AS threshold_profile
-          FROM business_calendar WHERE workspace_id=$1 ORDER BY event_date DESC,id DESC LIMIT 10001`, [auth.data.workspaceId]);
+          FROM business_calendar WHERE workspace_id=$1
+          ORDER BY business_calendar.event_date DESC,business_calendar.id DESC LIMIT 10001`, [auth.data.workspaceId]);
         if (rows.length > 10000) throw new AdminCalendarError("SOURCE_TRUNCATED");
         const items = rows.map(row => {
           if (row.workspace_id !== auth.data.workspaceId || typeof row.id !== "string" || !/^[1-9][0-9]{0,18}$/.test(row.id))

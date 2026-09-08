@@ -22,6 +22,8 @@ describe("admin calendar repository boundary", () => {
     expect(s.query.mock.calls[0]![0]).toContain("REPEATABLE READ READ ONLY");
     const call = s.query.mock.calls.find(c => c[0].includes("admin-calendar"))!;
     expect(call[0]).toContain("WHERE workspace_id=$1"); expect(call[0]).toContain("LIMIT 10001"); expect(call[1]).toEqual([auth.workspaceId]);
+    // id output is text for lossless transport; ordering must use the original BIGINT.
+    expect(call[0]).toContain("ORDER BY business_calendar.event_date DESC,business_calendar.id DESC");
   });
   it.each([{ workspace_id: "foreign" }, { id: "9007199254740993" }, { event_date: "2026-02-31" }, { label: null }, { affects_baseline: null }, { event_type: null }, { threshold_profile: "" }])("rejects invalid row %j", async patch => {
     const s = setup([{ ...row, ...patch }]); await expect(s.repo.list(auth)).rejects.toMatchObject({ code: "UPSTREAM_INVALID_RESPONSE" }); expect(s.query.mock.calls.at(-1)![0]).toBe("ROLLBACK");

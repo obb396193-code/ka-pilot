@@ -77,6 +77,18 @@ describe("calendar actual HTTP + Session + PG (synthetic data)", () => {
       finally { await pool.query(`UPDATE business_calendar SET ${field}=$2 WHERE workspace_id=$1`, [personal, field === "label" ? "synthetic personal" : null]); }
     }
   });
+  it("orders cross-digit BIGINT identifiers numerically rather than by text alias", async () => {
+    const token = await issue();
+    // Safe integer synthetic IDs straddle 10^14; leave the shared sequence untouched.
+    const suffix = Number.parseInt(randomUUID().replaceAll("-", "").slice(0, 8), 16);
+    const low = 100000000000000 - suffix - 1, high = 100000000000000 + suffix + 1;
+    await pool.query("INSERT INTO business_calendar(id,workspace_id,event_date,event_type,label) VALUES($1,$3,'2026-09-09','promo','synthetic cross digit'),($2,$3,'2026-09-09','promo','synthetic cross digit')", [low, high, personal]);
+    try {
+      const result = await call(token);
+      expect(result.status, JSON.stringify(result.body.error)).toBe(200);
+      expect(result.body.data.items.slice(0, 2).map((item: { id: number }) => item.id)).toEqual([high, low]);
+    } finally { await pool.query("DELETE FROM business_calendar WHERE workspace_id=$1 AND id=ANY($2::bigint[])", [personal, [low, high]]); }
+  });
   it("real SQL sentinel permits exact10000 but rejects10001 without a partial calendar", async () => {
     const token = await issue();
     await pool.query("INSERT INTO business_calendar(workspace_id,event_date,event_type,label) SELECT $1,'2026-09-08','promo','synthetic bulk' FROM generate_series(1,9999)", [personal]);
