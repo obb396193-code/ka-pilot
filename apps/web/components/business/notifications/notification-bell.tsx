@@ -115,7 +115,7 @@ export function NotificationBell() {
         </div>
         <Separator />
         <div className="flex items-center justify-between px-3 py-2">
-          <span className="text-[11px] text-muted-foreground">静默时段只压 P1 / P2</span>
+          <span className="text-[11px] text-muted-foreground">免打扰时段只压 P1 / P2</span>
           <Button asChild size="sm" variant="ghost" className="h-7 text-xs"><Link href="/integrations?tab=oncall" onClick={() => setOpen(false)}>值守与推送设置</Link></Button>
         </div>
       </PopoverContent>
