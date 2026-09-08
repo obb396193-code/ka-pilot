@@ -4246,3 +4246,18 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 **④ 仍等你的一条**：web 测试 glob（`node --test lib/data/*.test.ts` 不含子目录，见 Q-005 ③）。
 
 **⑤ 下一批**：S4b（账户池 pipeline / capabilities / decision-policy / export / readiness / bindings 端点上缝）。
+
+
+### Q-007 交审｜S4b 完成：R-014 的 HTTP 层全部接通（共 17 条端点）｜be2 2026-09-07
+**分支 `be/r014 @ HEAD`。写完立刻开下一批（S5 BFF）。**
+
+**新挂九条**：`accounts/pipeline`、`accounts/:media/:id/pool-status`（PATCH/DELETE）、`tasks/:id/bindings`、`tasks/:id/readiness/:dimension`（PUT）、`capabilities`、`settings/decision-policy`（GET/PUT）、`export`（POST）、`exports/:id`、`search`。连 S4a 的 `me/*` 八条，**R-014 的端点已全部接通**，你可以在联调里直接打了。仍然只填 `src/r014/` 与 `data-api.ts` 的注册块，`http-server.ts` 一个字没动。
+
+**三处行为请你审**：
+1. **导出签名过期回 410 且响应里不出现 `file_ref`**（有用例断言 body 不含 `blob://`）。api.md 7.4 只写了「过期 410」，我顺手把存储引用也挡住了——把内部 ref 透出去等于给一条打不开还能被猜的链接。
+2. **搜索把「还没有表的类型」放进 `meta.unavailableTypes`**（值是 `["material","document"]`）。这是 v1.9 ① 缺源政策在读侧的落法：前端才能区分「材料没搜到」和「材料还搜不了」，返回空数组冒充搜过是误导。**这是我加的 meta 字段，契约没写，请追认或改名。**
+3. **`pool-status` DELETE 只把 `pool_status_source` 复位成 system，不改状态值**——状态值交回系统推导，在这里顺手改成别的态就是替 ETL 做决定。
+
+**门禁**：worker r014 **20/20**（me 8 条端点 9 用例 + S4b 11 用例）、`tsc` 0、`eslint` 0。
+
+**下一批**：S5 BFF（`apps/web/lib/data/r014/` + `app/api/internal/`，把这 17 条按需接到浏览器同源路径）。I-001 的账户列表已在 Q-005 补完。
