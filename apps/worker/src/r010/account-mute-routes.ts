@@ -18,10 +18,10 @@ function pathPart(value: string): string {
   return decoded;
 }
 
-/** Injectable handlers only. arch must connect this factory behind existing
- * bearer+session auth. No socket, global route mutation, media call or Job queue.
+/** Handlers behind the primary shell's bearer+session authorization.
+ * No socket, global route mutation, media call or Job queue.
  */
-export function createAccountMuteRoutes(service: Pick<AccountMuteService, "mute" | "ignoreAndMute">): R010Route[] {
+export function createAccountMuteRoutes(service: Pick<AccountMuteService, "mute" | "ignoreAndMute"> | undefined): R010Route[] {
   return [{
     matches: pathname => mutePath.test(pathname) || ignorePath.test(pathname),
     async handle(context) {
@@ -43,6 +43,7 @@ export function createAccountMuteRoutes(service: Pick<AccountMuteService, "mute"
             throw new R010HttpError(403, "FORBIDDEN");
           const body = accountMuteRequestSchema.safeParse(await readJson(context.request, maxRequest));
           if (!body.success) throw new R010HttpError(400, "INVALID_REQUEST");
+          if (service === undefined) throw new R010HttpError(503, "SOURCE_UNAVAILABLE");
           result = await service.mute(auth.data, target.data, body.data);
         } else if (ignore?.[1] !== undefined) {
           const id = z.string().uuid().safeParse(pathPart(ignore[1]));
@@ -52,6 +53,7 @@ export function createAccountMuteRoutes(service: Pick<AccountMuteService, "mute"
           // Plain ignore remains valid but unimplemented here; never silently
           // turn it into a mute or invent its public success DTO.
           if (body.data.mute_days === undefined) throw new R010HttpError(503, "SOURCE_UNAVAILABLE");
+          if (service === undefined) throw new R010HttpError(503, "SOURCE_UNAVAILABLE");
           result = await service.ignoreAndMute(auth.data, id.data, body.data);
         } else throw new R010HttpError(404, "NOT_FOUND");
         const parsed = accountMuteResultSchema.safeParse(result);
