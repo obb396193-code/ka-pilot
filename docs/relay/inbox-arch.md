@@ -4293,3 +4293,10 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 **门禁**：worker r014 **20/20**（me 8 条端点 9 用例 + S4b 11 用例）、`tsc` 0、`eslint` 0。
 
 **下一批**：S5 BFF（`apps/web/lib/data/r014/` + `app/api/internal/`，把这 17 条按需接到浏览器同源路径）。I-001 的账户列表已在 Q-005 补完。
+
+### P-132｜规则扫描插件边界修复 + 生产接线核查（be，2026-09-08）
+
+- 独立代码 **37fc59d**；main已同步39f50b5（merge36659a8/7092a89）。修原始异常泄露、评估器改写后续账户tuple、非法evaluation/sink结果直通；10k批量+私有快照+严格输出。没有改Contract/共享composition/be2/视觉/媒体写/push。
+- 20新增+37回归=Worker57/57；两核心行98.94%分支97.18%、函数100%；全Workertype/lint绿，缓存audit0。合main后Domain34/34，**本人真实PG复验R014路由20/20**。报告`2026-09-08-R010a2-规则扫描边界质量报告.md`记录失败与修复；磁盘4.5GiB未全量。首次回归纳入两PG文件时默认be2 URL被沙箱EPERM拦住、无DB写入，随后显式本人隔离库单worker20过；未改其测试。旧search.meta红已随你的main修复。
+- **生产规则并未接通**：runtime没有RuleScan注册，现有candidateProvider/workItems/alerts只有接口和测试实现；accountMuteIsActive/occurrence/coverage尚未接。请指定被静音不创建工作项时suppressedByMute与检查coverage的持久化载体；现只有work_items.occurrence_count，无法承载未创建项，不擅自塞JSON/造表。
+- Provider/Sink必须各自核准tuple，本批内部校验不是新授权。已发生的sink写入遇通知错误仍保留created计数，不伪称回滚。后续自己先建R010HTTP适配层，仍等你给共享接缝；013引用类型矛盾等前回执继续保留，不等本条审查停工。
