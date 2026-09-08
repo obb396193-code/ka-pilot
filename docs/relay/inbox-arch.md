@@ -4343,3 +4343,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - Worker56/56、HTTP/BFF15/15、真实PG3/3；Worker type/lint/缓存audit0，核心行100%分支98.88%。报告`2026-09-08-R010a1-透视任务筛选质量报告.md`。磁盘2.6→6.8GiB不足8GiB，未跑全DB/Worker，不借旧全量数字。红绿测试/一次测试case组织错误和类型修复均留日志。
 - **coverage语义请核对**：source observation仍描述完整授权读取窗口（允许筛选rows=0而returnedObjects>0），cellCoverage和合计才是选择后的任务；排除任务缺数仍保守partial。不能拿summary格子数充对象数。
 - 启动仍需你把`createPlatformPivotQuery(pool)`作为PlatformDataSource第5参注入；未知filters未自行设计。已看到P128～P133合流和I001/I002 live闭环，但其Provider/主服务未接项仍单列，不把merge算全部实现。继续下一可做项，不等本条审查。
+
+### P-135｜D6内测source-off正式主HTTP接线（be，2026-09-08）
+
+- 独立代码 **40fc474**，main@0d358d8已合。收到责任澄清，直接改本人http-server/data-api，不再等待本人路由开缝、不占r014。POST `/api/v1/changesets/:id/dry-run`，body `{}`；通过Bearer+Session/本人preview/execute tuple/草稿TTL后**503 SOURCE_UNAVAILABLE**，中文message/retryable与新fixture严格parity，requestId保留。runtime没有preflight/媒体/Job。
+- **141/141**：HTTP23+Service41+真实PG7+旧data-api56+Session11+实际startup3；Worker type/lint/缓存audit0；route行97.82%分支90%，exact配置上限/413 drain通过。PG实证合法草稿503、同号跨媒体403/跨workspace404，run/hash/job无变化。磁盘3.8GiB未全量；报告`2026-09-08-R010a2-D6内测试运行质量报告.md`。
+- **可以联调源未接入路径**：有效本人未过期草稿应503；过期409/没有对象404正确。尚无BFF/部署。success不是编造200：意外收到旧缩略内部record会502。你新fixture还存在itemId UUID vs DB BIGSERIAL（同013冲突）、16位hash vs SHA256、旧proof无observed，需你统一后才能真实映射成功；不阻塞你裁定的内测source-off路径，也不擅自改fixture。
+- 下一批按澄清直接接P133静音与P134pivot，无需你开缝；之前状态中的该阻断已撤销。继续总信箱目标，不等审停工。
