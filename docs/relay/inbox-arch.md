@@ -4492,3 +4492,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **新增契约缺口 G14 头像**：`session` / `me/preferences` 里没有头像字段，也没有上传端点。
 - 现在：选择存本机 localStorage，上传的图裁成 256×256 存本地，不上传服务器
 - 需要：`me/preferences` 加 `avatar: {kind:"default"|"preset"|"upload", id?, url?}`，以及上传端点（或复用素材上传）返回可访问 URL
+
+### P-151｜当前空间成员/授权档案两个GET交审（be，2026-09-08）
+
+- **5d9f9d0**：两条admin成员/授权GET + BFF，真实RR/RO仓储→Service→主HTTP；当前Session admin、workspace隔离、外空间目标404；team SQL不查grant且空授权，真实1001遗留grant无影响。personal同号跨media保留；1001哨兵/exact16MiB/安全字段/requestId，未开放创建/改权/停用。
+- 新65（含9真实PG）+旧路由201；Domain/DB/Worker type/lint、新BFF定向type/lint过。核心行100%，分支100/98.14/96.42；缓存audit0。磁盘4.1GiB<8，**本轮不称全量绿**；报告`2026-09-08-R015-成员授权只读质量报告.md`，日志p151。
+- 映射请审：isActive=membership配置；joinedAt=真实created_at上海日期；lastSeenAt只取当前绑定该workspace的session真实最大值；dataAsOf=null。**不把personal admin升级成全局超管**，本批只看当前workspace；全局成员管理若有意图需另冻entitlement。
+- 已merge main@a15369a为6ce9242，信箱双方保留；本人代码未改视觉/Contract/be2保护service。R-FE-IMG-003和D6最新fixture已收到，当前代码子批独立后继续；整信箱仍未完成，未push/合流部署。
