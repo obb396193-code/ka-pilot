@@ -176,6 +176,8 @@ function reconcileRows(state: QueryRequest["mockState"]) {
 }
 
 export function getMockResponse(request: QueryRequest): DataQueryResponse {
+  if (request.queryId === "account.hourly") return { ok: false, error: { code: "SOURCE_UNAVAILABLE",
+    message: "Hourly snapshots are not produced by the daily mock", retryable: false, requestId: "hourly-mock-off" } }
   const errorResponse = mockError(request.mockState)
   if (errorResponse) return errorResponse
   if (request.dataView === "reconcile") {

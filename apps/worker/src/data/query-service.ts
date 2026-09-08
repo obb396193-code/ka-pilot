@@ -27,6 +27,7 @@ import { resolveRequestId } from "./request-id.js";
 import { PlatformDataSourceError } from "./platform-data-source.js";
 import { DataSourceRoutingError, selectDataSourceRoute, type ServerDataSourcePolicy, type SelectedDataSourceRoute } from "./data-source-routing.js";
 import { maskCanonicalQueryRows } from "./canonical-query-rows.js";
+import { HourlySourceError, validateHourlySource, type HourlyQueryPort } from "./hourly-public-source.js";
 
 export const DATA_QUERY_HTTP_PATH = "/api/v1/data/query";
 export const SEMANTIC_QUERY_HTTP_PATH = "/api/v1/query";
@@ -40,6 +41,7 @@ export interface DataSourceQueryPort {
 }
 
 export interface DataQueryServiceDependencies {
+  hourly?: HourlyQueryPort;
   registry: DataQueryRegistry;
   kaData: DataSourceQueryPort;
   platform: DataSourceQueryPort;
@@ -111,6 +113,8 @@ function stableError(
 }
 
 function mapError(error: unknown, requestId: string): StableDataQueryError {
+  if (error instanceof HourlySourceError) return stableError(error.code, error.code === "FORBIDDEN"
+    ? "Hourly source escaped approved scope" : "Invalid or truncated hourly source", false, requestId);
   if (error instanceof DataSourceRoutingError) {
     return stableError(error.code, error.message, error.retryable, requestId);
   }
@@ -425,6 +429,27 @@ export class DataQueryService {
         throw error;
       }
 
+      if (resolved.queryId === "account.hourly") {
+        if (route.selectedSource !== "platform" || auth.workspaceKind !== "personal" || !this.dependencies.hourly)
+          throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Account hourly source is not configured");
+        const allowed = new Set(scope.accounts.map(a => JSON.stringify([a.media, a.accountId])));
+        const filtered: ApprovedWorkspaceAuthContext = { ...auth, scope: { ...auth.scope,
+          accounts: auth.scope.accounts.filter(a => allowed.has(JSON.stringify([a.media, a.accountId]))) } };
+        let proof: unknown;
+        // Object spread preserves the Registry's symbol brand; clone nested data
+        // so a provider cannot broaden the trusted query used below for checking.
+        const providerQuery = { ...resolved, params: structuredClone(resolved.params), supportedViews: [...resolved.supportedViews],
+          authorityPolicy: { ...resolved.authorityPolicy } };
+        try { proof = await this.dependencies.hourly.query(providerQuery, structuredClone(filtered)); }
+        catch { throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Account hourly source is unavailable"); }
+        const source = withFrozenAuthority(validateHourlySource(proof, resolved, filtered), resolved, "platform", requestId, "personal");
+        if (source.status === "unavailable") {
+          if (source.error?.code === "UPSTREAM_INVALID_RESPONSE") throw new OutputContractError();
+          throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Account hourly source is unavailable");
+        }
+        return dataQueryResponseSchema.parse({ ok: true, data: { mode: "platform", source }, meta: { requestId,
+          businessDate: resolved.params.dateFrom, dataAsOf: source.lineage.dataAsOf, workspaceKind: "personal", selectedSource: "platform" } });
+      }
       if (resolved.queryId === "account.pivot2") {
         if (route.selectedSource !== "platform" || auth.workspaceKind !== "personal" || !this.dependencies.platform.pivot) {
           throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Pivot source is not configured");

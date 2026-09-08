@@ -2,6 +2,8 @@ import { z } from "zod";
 import { queryWindowSchema } from "./summary-window.js";
 import { dimensionTypeSchema, dimensionWindowRowsSchema } from "./dimension-window-rows.js";
 import { pivotWindowRowsSchema } from "./pivot-window.js";
+import { accountHourlyRowsSchema } from "./operational-query-rows.js";
+import { calendarDateSchema } from "./data-query-base-rows.js";
 
 import {
   canonicalQueryRowSchemaById,
@@ -12,6 +14,7 @@ export const dataViewModeSchema = z.enum(["ka_data", "platform", "reconcile"]);
 export type DataViewMode = z.infer<typeof dataViewModeSchema>;
 
 export const dataQueryIdSchema = z.enum([
+  "account.hourly",
   "account.pivot2",
   "account.dimension",
   "account.summary",
@@ -233,6 +236,12 @@ export const sourceQueryResultSchema = z
   })
   .strict()
   .superRefine((result, context) => {
+    if (result.queryId === "account.hourly") {
+      if (!accountHourlyRowsSchema.safeParse(result.rows).success || !result.lineage.window ||
+        result.lineage.window.from !== result.lineage.window.to) {
+        context.addIssue({ code: "custom", message: "Hourly rows require a unique account/hour set and one-day lineage window" });
+      }
+    }
     if ((result.queryId === "account.summary" || result.queryId === "account.trend" || result.queryId === "account.dimension" || result.queryId === "account.pivot2") && !result.lineage.window) {
       context.addIssue({ code: "custom", path: ["lineage", "window"], message: "Window queries require their resolved window" });
     }
@@ -400,16 +409,28 @@ export const pivotCellCoverageSchema = z.object({ cells: z.number().int().min(0)
   withData: z.number().int().min(0).max(10000), undeterminable: z.number().int().min(0).max(10000),
 }).strict().refine(value => value.withData <= value.cells && value.undeterminable <= value.cells);
 
+export const hourlyQueryMetaSchema = z.object({ requestId: requestIdSchema,
+  dataAsOf: z.string().datetime({ offset: true }).nullable(), businessDate: calendarDateSchema,
+  workspaceKind: z.literal("personal"), selectedSource: z.literal("platform"),
+}).strict();
+
 export const dataQueryResponseSchema = z.discriminatedUnion("ok", [
   z.object({ ok: z.literal(true), data: dataQuerySuccessDataSchema,
-    meta: z.object({ cellCoverage: pivotCellCoverageSchema }).strict().optional(),
+    meta: z.union([z.object({ cellCoverage: pivotCellCoverageSchema }).strict(), hourlyQueryMetaSchema]).optional(),
   }).strict().superRefine((value, context) => {
+    if (value.data.mode !== "reconcile" && value.data.source.queryId === "account.hourly") {
+      const parsed = hourlyQueryMetaSchema.safeParse(value.meta), source = value.data.source;
+      if (!parsed.success || value.data.mode !== "platform" || source.lineage.workspaceKind !== "personal" ||
+        source.lineage.source === "ka_data" || parsed.data.dataAsOf !== source.lineage.dataAsOf ||
+        parsed.data.businessDate !== source.lineage.window?.from) context.addIssue({ code: "custom", message: "Hourly metadata must match its source" });
+      return;
+    }
     const pivot = value.data.mode !== "reconcile" && value.data.source.queryId === "account.pivot2" ? value.data.source : null;
     if (!pivot) {
       if (value.meta !== undefined) context.addIssue({ code: "custom", message: "Unexpected pivot metadata" });
       return;
     }
-    const coverage = value.meta?.cellCoverage;
+    const coverage = value.meta && "cellCoverage" in value.meta ? value.meta.cellCoverage : undefined;
     if (!coverage || coverage.cells !== pivot.rows.length || coverage.undeterminable !== pivot.rows.filter(row =>
       (row.assessment as { onTarget?: unknown } | undefined)?.onTarget === null).length) {
       context.addIssue({ code: "custom", message: "Pivot metadata must match cells" });

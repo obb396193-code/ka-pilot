@@ -7,6 +7,7 @@ import {
   dataQueryIdSchema,
   dimensionTypeSchema,
   pivotWindowRowsSchema,
+  accountHourlyRowsSchema,
   type DataQueryId,
 } from "./canonical-query-rows.ts"
 import { displayMetricValueSchema, dataViewModeSchema } from "./data-view.ts"
@@ -97,6 +98,8 @@ export const sourceQueryResultSchema = z.object({
   warnings: z.array(z.string()),
   error: stableDataQueryErrorSchema.optional(),
 }).strict().superRefine((source, context) => {
+  if (source.queryId === "account.hourly" && (!accountHourlyRowsSchema.safeParse(source.rows).success || !source.lineage.window ||
+    source.lineage.window.from !== source.lineage.window.to)) context.addIssue({ code: "custom", message: "Invalid hourly rows or window" })
   if (source.queryId === "account.dimension") {
     if (source.dimension === undefined || !source.lineage.window || new Set(source.rows.map((row) => row.key)).size !== source.rows.length) context.addIssue({ code: "custom", message: "Invalid dimension/window/groups" })
     for (const row of source.rows) {
@@ -144,14 +147,27 @@ const reconcileSchema = z.object({
 }).strict()
 
 export const dataQuerySuccessDataSchema = z.discriminatedUnion("mode", [singleSourceSchema, reconcileSchema])
+const hourlyMetaSchema = z.object({ requestId: requestIdSchema, dataAsOf: z.string().datetime({ offset: true }).nullable(),
+  businessDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(value => {
+    const d = new Date(`${value}T00:00:00Z`)
+    return !Number.isNaN(d.valueOf()) && d.toISOString().slice(0, 10) === value
+  }), workspaceKind: z.literal("personal"), selectedSource: z.literal("platform"),
+}).strict()
 export const dataQueryResponseSchema = z.discriminatedUnion("ok", [
   z.object({ ok: z.literal(true), data: dataQuerySuccessDataSchema,
-    meta: z.object({ cellCoverage: z.object({ cells: z.number().int().min(0).max(10000), withData: z.number().int().min(0).max(10000),
-      undeterminable: z.number().int().min(0).max(10000) }).strict().refine(value => value.withData <= value.cells && value.undeterminable <= value.cells) }).strict().optional(),
+    meta: z.union([z.object({ cellCoverage: z.object({ cells: z.number().int().min(0).max(10000), withData: z.number().int().min(0).max(10000),
+      undeterminable: z.number().int().min(0).max(10000) }).strict().refine(value => value.withData <= value.cells && value.undeterminable <= value.cells) }).strict(), hourlyMetaSchema]).optional(),
   }).strict().superRefine((value, context) => {
+    if (value.data.mode !== "reconcile" && value.data.source.queryId === "account.hourly") {
+      const parsed = hourlyMetaSchema.safeParse(value.meta), source = value.data.source
+      if (!parsed.success || value.data.mode !== "platform" || source.lineage.workspaceKind !== "personal" || source.lineage.source === "ka_data" ||
+        parsed.data.dataAsOf !== source.lineage.dataAsOf || parsed.data.businessDate !== source.lineage.window?.from)
+        context.addIssue({ code: "custom", message: "Hourly metadata must match source" })
+      return
+    }
     const source = value.data.mode !== "reconcile" && value.data.source.queryId === "account.pivot2" ? value.data.source : null
     if (!source) { if (value.meta !== undefined) context.addIssue({ code: "custom", message: "Unexpected pivot metadata" }); return }
-    const coverage = value.meta?.cellCoverage
+    const coverage = value.meta && "cellCoverage" in value.meta ? value.meta.cellCoverage : undefined
     if (!coverage || coverage.cells !== source.rows.length || coverage.undeterminable !== source.rows.filter(row =>
       (row.assessment as { onTarget?: unknown } | undefined)?.onTarget === null).length) context.addIssue({ code: "custom", message: "Invalid pivot coverage" })
   }),

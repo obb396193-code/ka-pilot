@@ -32,6 +32,7 @@ for (const name of fixtureNames) {
 
 test("frontend freezes v3 windows and v2 daily rows without dual version compatibility", () => {
   assert.deepEqual(canonicalRowSchemaVersionByQueryId, {
+    "account.hourly": "account.hourly/v1",
     "account.pivot2": "account.pivot2/v1",
     "account.dimension": "account.dimension/v3",
     "account.summary": "account.summary/v3",

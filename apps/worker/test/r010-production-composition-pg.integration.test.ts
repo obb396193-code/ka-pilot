@@ -91,6 +91,11 @@ describe("R010 actual production composition with KA disabled", () => {
   }
   it("queries real scoped pivot, persists mute/ignore, then rejects team and logged-out session", async () => {
     expect((await call("/api/v1/auth/session", {}, "GET")).response.status).toBe(200);
+    const hourly = { queryId: "account.hourly", params: { date: "2026-09-01", media: "KUAISHOU" } };
+    const unavailableHourly = await call("/api/v1/query", hourly);
+    expect(unavailableHourly.response.status).toBe(503);
+    expect(unavailableHourly.body).toMatchObject({ ok: false, error: { code: "SOURCE_UNAVAILABLE" } });
+    expect((await call("/api/v1/query", { ...hourly, params: { ...hourly.params, accountIds: ["not-granted"] } })).response.status).toBe(403);
     const query = { queryId: "account.pivot2", params: { dimA: "biz", dimB: "account", media: "KUAISHOU", window_from: "2026-09-01", window_to: "2026-09-01", taskIds: ["synthetic-task"] } };
     const pivot = await call("/api/v1/query", query);
     expect(pivot.response.status).toBe(200);

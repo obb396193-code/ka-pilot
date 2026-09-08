@@ -6,6 +6,7 @@ import {
   queryWindowSchema,
   comparisonWindow,
   dimensionTypeSchema,
+  accountHourlyParamsSchema,
   type AuthorityUseCase,
   type DataQueryId,
   type DataViewMode,
@@ -31,6 +32,8 @@ export interface QueryAuthorityPolicy {
 }
 
 export interface NormalizedQueryParams {
+  hhFrom?: number;
+  hhTo?: number;
   dimA?: z.infer<typeof dimensionTypeSchema>;
   dimB?: z.infer<typeof dimensionTypeSchema>;
   dimensionType?: z.infer<typeof dimensionTypeSchema>;
@@ -320,6 +323,13 @@ function reconciliationSql(params: NormalizedQueryParams, accounts: SqlAccountSc
 }
 
 const DEFINITION_INPUT: QueryDefinition[] = [
+  {
+    queryId: "account.hourly", supportedViews: ["platform"], maxDateSpanDays: 1, maxRows: 10000,
+    accountScope: "optional_many", outputShape: "account_rows", queryTemplateVersion: "account-hourly-v1",
+    metricVersion: "account-hourly-v1", authorityPolicy: authority("hourly_pacing", "platform"),
+    paramsSchema: accountHourlyParamsSchema.transform(({ date, media, accountIds, hhFrom, hhTo }) => ({ dateFrom: date, dateTo: date, media,
+      ...(accountIds === undefined ? {} : { accountIds }), ...(hhFrom === undefined ? {} : { hhFrom }), ...(hhTo === undefined ? {} : { hhTo }) })),
+  },
   {
     queryId: "account.pivot2", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
     accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-pivot-window-v1",

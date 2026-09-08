@@ -8,6 +8,7 @@ const calendarDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value
 }, "date must be a real calendar date")
 
 export const dataQueryIdSchema = z.enum([
+  "account.hourly",
   "account.pivot2",
   "account.dimension",
   "account.summary",
@@ -47,6 +48,41 @@ export const canonicalMetricValueSchema = z.discriminatedUnion("availability", [
   z.object({ value: z.null(), availability: z.literal("missing") }).strict(),
   z.object({ value: z.null(), availability: z.literal("error") }).strict(),
 ])
+
+const hourlyVolumeSchema = z.object({ cost: canonicalMetricValueSchema, cashCost: canonicalMetricValueSchema,
+  conversion: canonicalMetricValueSchema, realConversion: canonicalMetricValueSchema }).strict()
+const hourlyKeys = ["cost", "cashCost", "conversion", "realConversion"] as const
+export const accountHourlyRowSchema = z.object({
+  media: z.string().regex(/^[A-Z0-9_]{1,32}$/), accountId: z.string().regex(/^[A-Za-z0-9_-]{1,128}$/), hh: z.number().int().min(0).max(24),
+  cumulative: hourlyVolumeSchema, delta: hourlyVolumeSchema,
+  ratios: z.object({ cashCpa: ratioValueSchema, realCpa: ratioValueSchema }).strict(),
+  velocity: z.object({ costPerHour: canonicalMetricValueSchema }).strict(), projectedDayCost: canonicalMetricValueSchema,
+  budgetUsage: ratioValueSchema, lastSyncAt: z.string().datetime({ offset: true }).nullable(),
+}).strict().superRefine((row, context) => {
+  for (const field of hourlyKeys) if (row.cumulative[field].availability !== "available" && row.delta[field].availability === "available")
+    context.addIssue({ code: "custom", message: "A delta requires its current cumulative value" })
+  for (const [ratio, numerator] of [["cashCpa", "cashCost"], ["realCpa", "cost"]] as const) {
+    if ((row.cumulative[numerator].availability !== "available" || row.cumulative.realConversion.availability !== "available") && row.ratios[ratio].state !== "undefined")
+      context.addIssue({ code: "custom", message: "Missing CPA inputs require an undefined ratio" })
+    if (row.cumulative.realConversion.value === 0 && row.ratios[ratio].state === "finite")
+      context.addIssue({ code: "custom", message: "Zero denominator cannot produce a finite CPA" })
+  }
+})
+export const accountHourlyRowsSchema = z.array(accountHourlyRowSchema).max(10000).superRefine((rows, context) => {
+  const key = (row: { media: string; accountId: string; hh: number }, hh = row.hh) => JSON.stringify([row.media, row.accountId, hh])
+  const indexed = new Map<string, z.infer<typeof accountHourlyRowSchema>>()
+  for (const row of rows) {
+    if (indexed.has(key(row))) context.addIssue({ code: "custom", message: "Duplicate media/account/hour" })
+    indexed.set(key(row), row)
+  }
+  for (const row of rows) {
+    if (row.hh === 0 || row.hh === 24) continue
+    const previous = indexed.get(key(row, row.hh - 1))
+    if (!previous) continue
+    for (const field of hourlyKeys) if (previous.cumulative[field].availability !== "available" && row.delta[field].availability === "available")
+      context.addIssue({ code: "custom", message: "A missing predecessor cannot produce an available delta" })
+  }
+})
 
 export const canonicalMetricSetSchema = z.object({
   cost: canonicalMetricValueSchema,
@@ -166,6 +202,7 @@ export const accountAnomalyRowSchema = accountDailyRowSchema.extend({
 }).strict()
 
 export const canonicalQueryRowSchemaById = {
+  "account.hourly": accountHourlyRowSchema,
   "account.pivot2": pivotWindowRowSchema,
   "account.dimension": dimensionWindowRowSchema,
   "account.summary": accountSummaryRowSchema,
@@ -177,6 +214,7 @@ export const canonicalQueryRowSchemaById = {
 } as const
 
 export const canonicalRowSchemaVersionByQueryId = {
+  "account.hourly": "account.hourly/v1",
   "account.pivot2": "account.pivot2/v1",
   "account.dimension": "account.dimension/v3",
   "account.summary": "account.summary/v3",
