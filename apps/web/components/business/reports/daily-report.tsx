@@ -32,7 +32,7 @@ function ModuleBody({ module }: { module: DailyModule }) {
       </div>
     )
   }
-  if (module.unsupported) return <p className="text-sm text-muted-foreground">UNSUPPORTED：该维度映射未就绪（出价工具待 mapping / UBP 永久不支持），日报不出此模块数据。</p>
+  if (module.unsupported) return <p className="text-sm text-muted-foreground">该维度暂不支持：出价工具的映射还没就绪、UBP 永久不支持，日报不出此模块数据。</p>
   if (module.status) return <p className="text-sm text-muted-foreground">{module.status === "p1_pending" ? "健康度模块 P1 待接入" : module.status}</p>
   const rows = module.rows ?? module.trend ?? []
   return rows.length ? <p className="text-sm">{rows.length} 行</p> : <p className="text-sm text-muted-foreground">本模块本日无数据（后端未返回行；不用 0 代）</p>

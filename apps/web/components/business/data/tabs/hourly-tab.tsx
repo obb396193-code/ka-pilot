@@ -61,14 +61,14 @@ export function HourlyTab() {
       </Card>
       <Card className="@4xl/main:col-span-9">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">小时累计 / 差分{current ? <span className="font-mono text-xs font-normal text-muted-foreground">{current.accountId}</span> : null}</CardTitle>
+          <CardTitle className="flex items-center gap-2">小时累计 / 逐时增量{current ? <span className="font-mono text-xs font-normal text-muted-foreground">{current.accountId}</span> : null}</CardTitle>
           <CardDescription>0–23 时 · 累计与逐时增量 · 缺小时显 − 不补 0 · 最近同步 {fmtTime(lastSync)}</CardDescription>
         </CardHeader>
         <CardContent className="overflow-x-auto p-0">
           <Table>
             <TableHeader className="bg-muted">
               <TableRow>
-                <TableHead className="w-14">hh</TableHead>
+                <TableHead className="w-14">小时</TableHead>
                 <TableHead className="text-right">累计消耗</TableHead>
                 <TableHead className="text-right">累计现金</TableHead>
                 <TableHead className="text-right">累计真实转化</TableHead>

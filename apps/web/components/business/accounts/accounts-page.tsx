@@ -42,7 +42,7 @@ function CapacityDistribution({ items }: { items: AccountItem[] }) {
   const unknown = items.length - known.length
   return (
     <div className="flex flex-col gap-2">
-      {buckets.map((bucket) => { const n = known.filter((item) => bucket.test(item.capacityLoad.value as number)).length; return <div key={bucket.label} className="flex items-center gap-2 text-xs"><span className="w-14 text-muted-foreground">{bucket.label}</span><span className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-foreground" style={{ width: `${items.length ? (n / items.length) * 100 : 0}%` }} /></span><span className="w-6 text-right tabular-nums">{n}</span></div> })}
+      {buckets.map((bucket) => { const n = known.filter((item) => bucket.test(item.capacityLoad.value as number)).length; return <div key={bucket.label} className="flex items-center gap-2 text-xs"><span className="w-14 text-muted-foreground">{bucket.label}</span><span className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full" style={{ width: `${items.length ? (n / items.length) * 100 : 0}%`, background: "var(--kp-chart-spend)" }} /></span><span className="w-6 text-right tabular-nums">{n}</span></div> })}
       <div className="flex items-center gap-2 text-xs text-muted-foreground"><span className="w-14">无卡 / 缺</span><span className="flex-1" /><span className="w-6 text-right tabular-nums">{unknown}</span></div>
     </div>
   )
