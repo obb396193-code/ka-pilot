@@ -196,6 +196,9 @@ async function updateActiveAlert(
   }
   const decision = decideDuplicate(existing.severity, input.severity);
   const upgraded = decision === "upgrade";
+  // Increment under the existing row/advisory locks. Reject corrupt/overflow
+  // history rather than invent a count. Observe time after lock acquisition,
+  // not the earlier transaction start of a caller waiting on another signal.
   const updated = await client.query<WorkItemRow>(
     `UPDATE work_items
      SET severity = CASE WHEN $2::boolean THEN $3 ELSE severity END,
@@ -207,8 +210,11 @@ async function updateActiveAlert(
          assignee = COALESCE($8::uuid, assignee),
          acceptance_criteria = COALESCE($9, acceptance_criteria),
          sla_due = COALESCE($10::timestamptz, sla_due),
+         occurrence_count = occurrence_count + 1,
+         last_triggered_at = clock_timestamp(),
          resolved_at = NULL
      WHERE workspace_id = $1 AND id = $11
+       AND occurrence_count BETWEEN 1 AND 2147483646
      RETURNING ${columns}`,
     [
       input.workspaceId,
@@ -238,10 +244,10 @@ async function insertAlert(
     `INSERT INTO work_items (
        workspace_id, type, media, account_id, task_id, rule_id, severity, title,
        evidence_snapshot, diagnosis, status, assignee, creator,
-       acceptance_criteria, sla_due
+       acceptance_criteria, sla_due, occurrence_count, last_triggered_at
      ) VALUES (
        $1, $2, $3, $4, $5, $6::bigint, $7, $8,
-       $9::jsonb, $10::jsonb, 'open', $11::uuid, $12::uuid, $13, $14::timestamptz
+       $9::jsonb, $10::jsonb, 'open', $11::uuid, $12::uuid, $13, $14::timestamptz, 1, now()
      )
      RETURNING ${columns}`,
     [
