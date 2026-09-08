@@ -81,3 +81,5 @@ export * from "./rule-definition.js";
 export * from "./rule-daily-evidence.js";
 // be: public Agent model catalog; no credential or runtime-readiness projection.
 export * from "./agent-model-catalog.js";
+// be: strict admin calendar read DTO.
+export * from "./admin-calendar.js";

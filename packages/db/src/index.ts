@@ -61,3 +61,5 @@ export * from "./rule-definition-repository.js";
 export * from "./rule-evidence-repository.js";
 // be: authenticated read-only global model capability catalog.
 export * from "./agent-model-catalog-repository.js";
+// be: workspace-scoped readonly calendar.
+export * from "./admin-calendar-repository.js";
