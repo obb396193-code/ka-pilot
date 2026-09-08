@@ -1,4 +1,5 @@
 import {
+  ACTIVE_WORK_ITEM_STATUSES,
   assertWorkItemTransition,
   decideDuplicate,
   workItemDedupeKey,
@@ -176,11 +177,11 @@ async function findActiveAlert(
        AND rule_id = $2::bigint
        AND media = $3
        AND account_id = $4
-       AND status IN ('open', 'processing', 'escalated')
+       AND status = ANY($5::text[])
      ORDER BY created_at DESC, id DESC
      LIMIT 1
      FOR UPDATE`,
-    [input.workspaceId, String(input.ruleId), input.media, input.accountId],
+    [input.workspaceId, String(input.ruleId), input.media, input.accountId, [...ACTIVE_WORK_ITEM_STATUSES]],
   );
   return active.rows[0];
 }
