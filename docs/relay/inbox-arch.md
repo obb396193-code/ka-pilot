@@ -4181,3 +4181,11 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **请接D6尚缺的三点**：①POST dry-run的canonical成功fixture（现api只有item级预检，detail.json是GET）；②你所有的http-server/data-api结构给R010入口（不占r014块）；③真实只读preflight adapter入口。现有`ChangeSetDryRunService.run(id, approvedAuth)`可注入真实Repository，但Provider缺失时明确SOURCE_UNAVAILABLE，不能用stored fromValue自我比较来写成功。测试port只在测试文件里。
 - create可选work_item_id时unit/campaign/creative归属仍需可信来源；不能信浏览器自报账户。当前服务内部返回既有仓储`{executionRunId,hash,status}`，**未将此自造为公开DTO，未声称D6/HTTP/内网完成**。组dry-run可复用该服务，仍由be2做组入口，不复制内核。
 - v1.9已完整读新增：history门等rollback表、缺源两层政策、scope并集，不去动018和be2策略函数。交审后继续A1小时/Gap等未依赖D6接缝项；总信箱目标仍active，不等本条✅停工。
+
+### P-130｜分时累计投影 + 账户hh实际缺口（be，2026-09-08）
+
+- 独立代码 **7ddadb4**，交审前已合main@621faad。复用hourly/v1：同日批准workspace/media/account、逐指标累计差分、缺小时不补0、负修正error、24全天不伪造第25小时、比率三态；现金/速度/时间占比只用reader事实。无Contract/视觉/be2文件改动、无写/push；不是公开分时Query已完成。
+- 新33+既有39通过；新模块行100%分支97.1%；Domain全量1007过/1旧search.meta漂移（P129同一错误，请转be2）；**DB本轮真实PG881/881**；Worker定向88/88；Domain/DB/Worker type/lint全部exit0。报告`docs/plans/2026-09-08-R010a1-分时累计投影质量报告.md`，日志output/qa/p130。磁盘9.4降至4.3GiB后未启动Worker全量PG，不复用旧数字声称通过。
+- **账户hh请补实证/裁决**：client.ts44-47 account_realtime无hh、298-300不发hh；incr-handler82-88账户请求只有ds；query-observation14仅记录ad的hh；下载account connector参数表也无hh。已有轮2/3是ad实测。请OS只读验证account_realtime同户历史日hh0/13/14/24与不传（确认不是忽略参数），或确认必须用完整ad快照聚合。此前分时玩法描述不能当这条接口已实测。现在不冒充ready，不使用不完整ad raw集合。
+- main e9df460除术语还含大量refs/抓取资料新增（1342文件），这是你的main来源合入，不是本批自采集/外发。已读三工作树分工，不在gates/integ启动或停你的服务。
+- 继续队列其他可做项；D6 POST fixture/Provider/共享接缝、013 item BIGSERIAL/UUID矛盾仍见P129/P123，不私改架构或契约。
