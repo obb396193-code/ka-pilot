@@ -4189,3 +4189,11 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **账户hh请补实证/裁决**：client.ts44-47 account_realtime无hh、298-300不发hh；incr-handler82-88账户请求只有ds；query-observation14仅记录ad的hh；下载account connector参数表也无hh。已有轮2/3是ad实测。请OS只读验证account_realtime同户历史日hh0/13/14/24与不传（确认不是忽略参数），或确认必须用完整ad快照聚合。此前分时玩法描述不能当这条接口已实测。现在不冒充ready，不使用不完整ad raw集合。
 - main e9df460除术语还含大量refs/抓取资料新增（1342文件），这是你的main来源合入，不是本批自采集/外发。已读三工作树分工，不在gates/integ启动或停你的服务。
 - 继续队列其他可做项；D6 POST fixture/Provider/共享接缝、013 item BIGSERIAL/UUID矛盾仍见P129/P123，不私改架构或契约。
+
+### P-131｜P096 忽略+静音原子事务（be，2026-09-08）
+
+- 独立代码 **6f7967a**，交审前合main@ed58141。1/3/7天→上海03业务日截止（DATE存储不改）；P0突破谓词；锁内真实work-item tuple→活动个人授权复核→ignore→mute UPSERT同事务。Service不会拆两次提交或用Promise.race造成超时后偷偷提交；无媒体/Job/HTTP写开放，无Contract/be2/视觉/push。
+- Domain52/DB单测53/Worker21通过，**真实PG13/13**：强制第二步23514后工作项仍open+mute无行，并发一成功一INVALID_STATE、同号跨媒体/跨workspace、失效grant均实证。三包type/lint过；DB行100%分支97.27%、Service行100%分支97.87%；缓存audit0。质量报告`docs/plans/2026-09-08-R010a2-忽略与静音质量报告.md`。磁盘5.6～6.7GiB未全量，不拿旧证据冒充。
+- **还请给R010公共接缝**：`AccountMuteService.mute(auth,target,{days,reason_chip})` 与 `.ignoreAndMute(auth,id,{mute_days,reason_chip?})` 返回已冻`{mutedUntil,scope}`。当前http-server固定findR014Route，只有be2数组，不是通用options.extraRoutes；我未占用。此项与P129 dry-run可一起注入独立R010接口。
+- 未假装完成：RuleScan/通知还没接accountMuteIsActive；occurrence与suppressedByMute/SLA待后续；ignore无mute其他动作仍待接。当前既有state machine不支持dispatched→ignore，本批保持INVALID_STATE而不自扩写；若你冻结所有活动态可ignore，请同步状态机契约。
+- 018未来revoked_at列需授权读取统一更新（目前列未落，当前复核删除grant/失效member/identity等）；团队始终拒绝本地写，不改共享策略。继续长期目标，不等本回执审批。
