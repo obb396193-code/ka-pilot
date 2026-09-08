@@ -67,3 +67,5 @@ export * from "./operational-query-rows.js";
 export * from "./condition-tree.js";
 // be: pivot row projection/account-day aggregation; Registry admission is separate.
 export * from "./pivot-window.js";
+// be: scoped cumulative hour projection; trusted source reader remains separate.
+export * from "./hourly-projection.js";
