@@ -1,15 +1,16 @@
-import { approvedAccountAccessSchema, approvedWorkspaceAuthContextSchema, type ApprovedWorkspaceAuthContext } from "@ka/domain";
+import { approvedAccountAccessSchema, approvedWorkspaceAuthContextSchema, assertWorkItemTransition, type WorkItemStatus, type ApprovedWorkspaceAuthContext } from "@ka/domain";
 import type { Pool, PoolClient } from "pg";
 
 export interface AccountMuteTarget { media: string; accountId: string }
 export interface SetAccountMuteInput extends AccountMuteTarget { mutedUntil: string; reasonChip: string | null }
+export interface IgnoreAndMuteInput { workItemId: string; mutedUntil: string; reasonChip: string | null }
 export interface AccountMuteRecord extends SetAccountMuteInput {
   workspaceId: string;
   mutedBy: string | null;
   createdAt: Date | null;
 }
 export class AccountMuteRepositoryError extends Error {
-  constructor(readonly code: "FORBIDDEN" | "INVALID_INPUT" | "INVALID_RESULT") {
+  constructor(readonly code: "FORBIDDEN" | "INVALID_INPUT" | "INVALID_RESULT" | "NOT_FOUND" | "INVALID_STATE") {
     super(`Account mute ${code.toLowerCase()}`);
     this.name = "AccountMuteRepositoryError";
   }
@@ -77,17 +78,37 @@ function mapRow(row: Record<string, unknown>, auth: PersonalAuth, target: Accoun
     mutedUntil: row.muted_until, mutedBy: row.muted_by, reasonChip: row.reason_chip, createdAt: row.created_at };
 }
 
+async function writeMute(client: PoolClient, approved: PersonalAuth, fixed: SetAccountMuteInput): Promise<AccountMuteRecord> {
+  const result = await client.query(
+    `INSERT INTO account_mutes (workspace_id,media,account_id,muted_until,muted_by,reason_chip)
+     VALUES ($1,$2,$3,$4::date,$5,$6)
+     ON CONFLICT (workspace_id, media, account_id) DO UPDATE
+       SET muted_until=EXCLUDED.muted_until, muted_by=EXCLUDED.muted_by, reason_chip=EXCLUDED.reason_chip
+     RETURNING ${columns}`,
+    [approved.workspaceId, fixed.media, fixed.accountId, fixed.mutedUntil, approved.userId, fixed.reasonChip],
+  );
+  if (result.rows.length !== 1) throw new AccountMuteRepositoryError("INVALID_RESULT");
+  const row = mapRow(result.rows[0] as Record<string, unknown>, approved, fixed);
+  if (row.mutedUntil !== fixed.mutedUntil || row.mutedBy !== approved.userId || row.reasonChip !== fixed.reasonChip) {
+    throw new AccountMuteRepositoryError("INVALID_RESULT");
+  }
+  return row;
+}
+
 /** Internal storage only. Does not calculate days, evaluate suppression, or expose a public write route. */
 export class AccountMuteRepository {
   constructor(private readonly pool: Pool) {}
 
   private async transaction<T>(auth: PersonalAuth, target: AccountMuteTarget, work: (client: PoolClient) => Promise<T>): Promise<T> {
+    return this.withTransaction(async client => { await lockAuthority(client, auth, target); return work(client); });
+  }
+
+  private async withTransaction<T>(work: (client: PoolClient) => Promise<T>): Promise<T> {
     const client = await this.pool.connect();
     try {
       await client.query("BEGIN");
       await client.query("SET LOCAL lock_timeout = '3s'");
       await client.query("SET LOCAL statement_timeout = '5s'");
-      await lockAuthority(client, auth, target);
       const result = await work(client);
       await client.query("COMMIT");
       return result;
@@ -100,21 +121,45 @@ export class AccountMuteRepository {
   async set(auth: ApprovedWorkspaceAuthContext, input: SetAccountMuteInput): Promise<AccountMuteRecord> {
     const approved = validate(auth, input, true);
     const fixed = { ...input }; // Freeze caller input before the first await.
-    return this.transaction(approved, fixed, async (client) => {
+    return this.transaction(approved, fixed, client => writeMute(client, approved, fixed));
+  }
+
+  /** Internal atomic command. The account is resolved from the locked work item,
+   * not supplied by a browser. No media operation, job, or legacy muted_until write.
+   */
+  async ignoreAndMute(auth: ApprovedWorkspaceAuthContext, input: IgnoreAndMuteInput): Promise<AccountMuteRecord> {
+    const parsed = approvedWorkspaceAuthContextSchema.safeParse(auth);
+    if (!parsed.success || parsed.data.workspaceKind !== "personal" || parsed.data.scope.accounts.length === 0) {
+      throw new AccountMuteRepositoryError("FORBIDDEN");
+    }
+    const keys = ["workItemId", "mutedUntil", "reasonChip"];
+    if (!input || typeof input !== "object" || Array.isArray(input) || Object.keys(input).length !== keys.length ||
+      Object.keys(input).some(key => !keys.includes(key)) || typeof input.workItemId !== "string" || !uuid.test(input.workItemId) ||
+      !validDate(input.mutedUntil) || !validReason(input.reasonChip)) throw new AccountMuteRepositoryError("INVALID_INPUT");
+    const approved = parsed.data, fixed = { ...input };
+    return this.withTransaction(async client => {
       const result = await client.query(
-        `INSERT INTO account_mutes (workspace_id,media,account_id,muted_until,muted_by,reason_chip)
-         VALUES ($1,$2,$3,$4::date,$5,$6)
-         ON CONFLICT (workspace_id, media, account_id) DO UPDATE
-           SET muted_until=EXCLUDED.muted_until, muted_by=EXCLUDED.muted_by, reason_chip=EXCLUDED.reason_chip
-         RETURNING ${columns}`,
-        [approved.workspaceId, fixed.media, fixed.accountId, fixed.mutedUntil, approved.userId, fixed.reasonChip],
-      );
+        `SELECT id, workspace_id, media, account_id, status FROM work_items WHERE workspace_id=$1 AND id=$2 FOR UPDATE`,
+        [approved.workspaceId, fixed.workItemId]);
+      if (result.rows.length === 0) throw new AccountMuteRepositoryError("NOT_FOUND");
       if (result.rows.length !== 1) throw new AccountMuteRepositoryError("INVALID_RESULT");
-      const row = mapRow(result.rows[0] as Record<string, unknown>, approved, fixed);
-      if (row.mutedUntil !== fixed.mutedUntil || row.mutedBy !== approved.userId || row.reasonChip !== fixed.reasonChip) {
-        throw new AccountMuteRepositoryError("INVALID_RESULT");
-      }
-      return row;
+      const current = result.rows[0] as Record<string, unknown>;
+      if (current.id !== fixed.workItemId || current.workspace_id !== approved.workspaceId) throw new AccountMuteRepositoryError("INVALID_RESULT");
+      if (typeof current.media !== "string" || typeof current.account_id !== "string") throw new AccountMuteRepositoryError("FORBIDDEN");
+      const target = { media: current.media, accountId: current.account_id };
+      validate(approved, target, false);
+      await lockAuthority(client, approved, target);
+      try { assertWorkItemTransition(current.status as WorkItemStatus, "ignore"); }
+      catch { throw new AccountMuteRepositoryError("INVALID_STATE"); }
+      const updated = await client.query(
+        `UPDATE work_items SET status='ignored', ignore_reason=$3, resolved_at=now()
+         WHERE workspace_id=$1 AND id=$2 AND status=$4
+         RETURNING id, workspace_id, media, account_id, status`,
+        [approved.workspaceId, fixed.workItemId, fixed.reasonChip, current.status]);
+      const row = updated.rows[0] as Record<string, unknown> | undefined;
+      if (updated.rows.length !== 1 || !row || row.id !== fixed.workItemId || row.workspace_id !== approved.workspaceId ||
+        row.media !== target.media || row.account_id !== target.accountId || row.status !== "ignored") throw new AccountMuteRepositoryError("INVALID_RESULT");
+      return writeMute(client, approved, { ...target, mutedUntil: fixed.mutedUntil, reasonChip: fixed.reasonChip });
     });
   }
 

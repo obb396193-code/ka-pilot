@@ -1,0 +1,9 @@
+{
+  "ok": false,
+  "error": {
+    "code": "SOURCE_UNAVAILABLE",
+    "message": "媒体只读通道未接入，试运行无法读取现值",
+    "retryable": true,
+    "requestId": "fixture-dry-run-src"
+  }
+}

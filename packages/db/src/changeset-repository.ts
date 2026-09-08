@@ -259,8 +259,9 @@ export class ChangeSetRepository {
       const row = await client.query<HeaderRow>(`SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2 FOR UPDATE`, [input.workspaceId, input.changeSetId]);
       const header = requireHeader(row.rows[0], input.changeSetId);
       await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
-      if (header.status !== "draft") throw new ChangeSetPreconditionError("INVALID_STATE");
-      if (header.ttl_expire_at === null) throw new Error("changeset has no TTL");
+      if (header.status !== "draft" || header.ttl_expire_at === null || header.ttl_expire_at <= input.now) {
+        throw new ChangeSetPreconditionError("INVALID_STATE");
+      }
       assertChangeSetConfirmable({ status: header.status, ttlExpireAt: header.ttl_expire_at, now: input.now });
       const changeset = await assemble(client, header);
       const hash = draftHash(header, changeset.items);
@@ -269,8 +270,10 @@ export class ChangeSetRepository {
     } catch (error) { await rollback(client); throw error; } finally { client.release(); }
   }
 
-  /** Only trusted server-side preflight code may call this. No HTTP exposes it. */
-  async recordDryRun(input: { workspaceId: string; changeSetId: string; expectedHash: string; now: Date; items: ItemExecutionResult[] }): Promise<{ executionRunId: string; hash: string; status: "success" | "partial" | "failed" | "unknown" }> {
+  /** Only trusted server-side preflight code may call this, never raw HTTP item results. */
+  async recordDryRun(input: { workspaceId: string; changeSetId: string; expectedHash: string; now: Date; items: ItemExecutionResult[];
+    expectedScope?: { media: string; accountId: string; initiatorUserId: string; credentialOwnerUserId: string };
+  }): Promise<{ executionRunId: string; hash: string; status: "success" | "partial" | "failed" | "unknown" }> {
     requireValidClock(input.now);
     const expectedHash = input.expectedHash;
     if (typeof expectedHash !== "string" || !/^[a-f0-9]{64}$/.test(expectedHash)) throw new Error("Invalid dry-run hash");
@@ -280,9 +283,15 @@ export class ChangeSetRepository {
       await client.query("BEGIN");
       const row = await client.query<HeaderRow>(`SELECT ${headerColumns} FROM changesets WHERE workspace_id=$1 AND id=$2 FOR UPDATE`, [input.workspaceId, input.changeSetId]);
       const header = requireHeader(row.rows[0], input.changeSetId);
+      // Bind the service's authorized snapshot under the same lock as persistence.
+      // The value/TTL hash alone intentionally does not include account or actors.
+      if (input.expectedScope !== undefined && (header.media !== input.expectedScope.media ||
+        header.account_id !== input.expectedScope.accountId || header.initiator !== input.expectedScope.initiatorUserId ||
+        header.credential_owner_user_id !== input.expectedScope.credentialOwnerUserId)) throw new ChangeSetAuthorizationError();
       await assertActiveActors(client, input.workspaceId, header.initiator, header.credential_owner_user_id);
-      if (header.status !== "draft") throw new ChangeSetPreconditionError("INVALID_STATE");
-      if (header.ttl_expire_at === null) throw new Error("changeset has no TTL");
+      if (header.status !== "draft" || header.ttl_expire_at === null || header.ttl_expire_at <= input.now) {
+        throw new ChangeSetPreconditionError("INVALID_STATE");
+      }
       assertChangeSetConfirmable({ status: header.status, ttlExpireAt: header.ttl_expire_at, now: input.now });
       const storedItems = await loadItems(client, header);
       const hash = draftHash(header, storedItems);
