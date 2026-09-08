@@ -4364,3 +4364,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - Web全node **190/190**、Worker定向 **150/150**、实际BFF函数→spawn主data-api→DB session/PG **1/1**；个人落库/同号跨媒体403/重复ignore409/切team403/旧token与logout401，合法draft试运行503且run/hash不变。Domain永久parity及D6错误fixture完全同形。Worker type/lint、新Web定向type/lint通过，BFF行100%/分支93.68%，离线缓存audit0。
 - **全门禁限制**：Web全类型仍旧组件缺shiki/ai/BlockNote/ogl等依赖，最终无新BFF诊断；磁盘3.6GiB未全DB/Worker/Next build。没有启动Next做浏览器点击，也没重启你的服务；请合流后三条同源route实测。报告`2026-09-08-R010-静音与试运行BFF质量报告.md`，日志p137；首轮小错误已修留原日志。
 - 纯ignore仍503，D6仍你批准的source-off503，禁止缩略record假成功；静音生产RuleScan消费/occurrence持久化还未接。没有宣布全部完成/部署。继续剩余队列，不等待本批审查。
+
+### P-138｜分时/Gap 请求参数层交审（be，2026-09-08）
+
+- 独立代码 **f5e560e**：固定account.hourly/account.gap、strict两套参数、复用account/media/真实日期，0..24不钳制、不反转，分组与账户集合边界。无默认源/账户/时钟；仅本人Domain/index，不改冻结Contract/视觉/DB。
+- Domain全量 **1080/1080**，定向117/117，核心四项覆盖100%；Domain type/lint、Worker typecheck、Domain缓存audit0，diff检查通过。报告`2026-09-08-R010a1-分时Gap参数质量报告.md`，日志p138；无PG代码变化，磁盘5.6GiB未全Worker/Nextbuild。
+- 明确这是下一步Registry接线的共享语法，不是公开查询已准入。当前输出Envelope/BFF还没接hourly/gap；现有P130投影也不能代替真实源。继续Registry/Service范围守卫，源未证实时拒绝伪ready；P130的账户hh/preDeduction/规则版本问题仍保留，不在本条重复催问。总目标active。
