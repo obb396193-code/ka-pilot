@@ -188,12 +188,21 @@ export class SessionHttpService {
   }
 }
 
+/**
+ * Secure 属性默认开启（生产唯一正确值）。只有显式设置 AUTH_COOKIE_INSECURE=1 才关闭，
+ * 用于「本地/内测走 http 端口映射」这种没有 TLS 的场景——浏览器会丢弃 http 上的 Secure cookie，
+ * 表现为「登录成功但读取会话失败」。生产部署禁止设置该变量。
+ */
+function cookieSecureAttribute(): string {
+  return process.env.AUTH_COOKIE_INSECURE === "1" ? "" : " Secure;";
+}
+
 export function sessionCookie(token: string, ttlSeconds: number): string {
-  return `${SESSION_COOKIE_NAME}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${ttlSeconds}`;
+  return `${SESSION_COOKIE_NAME}=${token}; Path=/; HttpOnly;${cookieSecureAttribute()} SameSite=Lax; Max-Age=${ttlSeconds}`;
 }
 
 export function clearedSessionCookie(): string {
-  return `${SESSION_COOKIE_NAME}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
+  return `${SESSION_COOKIE_NAME}=; Path=/; HttpOnly;${cookieSecureAttribute()} SameSite=Lax; Max-Age=0`;
 }
 
 export function parseSessionCookie(header: string | null): string | null {
