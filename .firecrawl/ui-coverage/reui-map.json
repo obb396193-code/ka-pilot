@@ -1,0 +1,2534 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://reui.io/blocks/application/sheet/sheet-4",
+        "title": "Shadcn Sheet 4 Block - ReUI",
+        "description": "Floating right-side AI chat panel with a header model-switch Select, user and assistant message bubbles, suggestion chips, and an InputGroup composer toolbar."
+      },
+      {
+        "url": "https://reui.io/blocks/application/sheet/sheet-11",
+        "title": "Shadcn Sheet 11 Block - ReUI",
+        "description": "Right drawer for one KPI: current value with delta badge, target progress bar, definition facts, owner avatars, alert rule, and a recent-changes timeline., F..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/timeline/timeline-8",
+        "title": "Shadcn Timeline 8 Block - ReUI",
+        "description": "Right-side activity feed panel listing team events as timeline entries with avatars, status badges, progress bars, attachments, ratings, and a per-item actio..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/wizard/wizard-6",
+        "title": "Shadcn Wizard 6 Block - ReUI",
+        "description": "Add-product flow across details, image gallery, variant option groups, pricing, and a per-variant SKU matrix table., Free shadcn/ui components and premium bl..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/checkout/checkout-2",
+        "title": "Shadcn Checkout 2 Block - ReUI",
+        "description": "Four-step checkout (contact, delivery, payment, review) with order summary, promo codes, saved addresses, and card, PayPal, or Apple Pay payment., Free shadc..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/review/review-2",
+        "title": "Shadcn Review 2 Block - ReUI",
+        "description": "Product reviews section with topic filter chips showing per-theme confidence percentages and a two-column grid of avatar, star rating, verified badge, and......"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/wishlist/wishlist-4",
+        "title": "Shadcn Wishlist 4 Block - ReUI",
+        "description": "Account wishlist as named boards with 2x2 mosaic cover cards, +N overflow, item count, updated time, Shared badge, hover share/delete., Free shadcn/ui compon..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/coupon/coupon-1",
+        "title": "Shadcn Coupon 1 Block - ReUI",
+        "description": "Two-column sale promo: eyebrow badge, headline, dashed promo-code panel with copy-to-clipboard button, fine-print terms, CTA, and image., Free shadcn/ui comp..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/review/review-1",
+        "title": "Shadcn Review 1 Block - ReUI",
+        "description": "Slides one full testimonial at a time with an attribution bar (reviewer, star rating, variant, verified badge) and avatar thumbnails to jump reviews., Free s..."
+      },
+      {
+        "url": "https://reui.io/components/calendar",
+        "title": "Shadcn Calendar - UI Components - ReUI",
+        "description": "Shadcn Calendar component for date selection using react-day-picker library. 30 components for controlled dates and localization support."
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-9",
+        "title": "Shadcn Settings 9 Block - ReUI",
+        "description": "Workspace settings page grouping preference rows into collapsible General and Display sections, each row mixing select dropdowns and switch toggles with stat..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/drag-drop",
+        "title": "Shadcn Data Grid Drag & Drop Blocks - ReUI",
+        "description": "Drag-and-drop row and column reordering with sortable handles. 4 shadcn blocks for Tailwind CSS., Free shadcn/ui components and premium blocks, icons, and te..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/shopping-cart/shopping-cart-3",
+        "title": "Shadcn Shopping Cart 3 Block - ReUI",
+        "description": "Full-width pre-checkout cart laid out as a data table: column header rail, thumbnail rows with linked title, color swatch and size, ButtonGroup steppers, lin..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/kanban-board/kanban-board-5",
+        "title": "Shadcn Kanban Board 5 Block - ReUI",
+        "description": "Drag-and-drop status workflow kanban: reorder cards and columns, collapse columns to vertical rails, with progress rings, owner avatars, and status badges., ..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/wishlist/wishlist-5",
+        "title": "Shadcn Wishlist 5 Block - ReUI",
+        "description": "Saved-items page grouping products into Must Have, Save For Later, Maybe buckets with per-item stock status, price savings, a total, and lock-on-add cart act..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/review/review-6",
+        "title": "Shadcn Review 6 Block - ReUI",
+        "description": "Looping testimonial slider for product pages and social proof sections: auto-rotating cards pause on hover, each leads with a star Rating, quote, and reviewe..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/shopping-cart/shopping-cart-4",
+        "title": "Shadcn Shopping Cart 4 Block - ReUI",
+        "description": "Cart page where each item toggles delivery or pickup with its own date and fee, plus quantity steppers, promo code, and a hero estimated total., Free shadcn/..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/coupon/coupon-3",
+        "title": "Shadcn Coupon 3 Block - ReUI",
+        "description": "Split-panel promo hero with member badge, headline, copyable code, time limit indicator, fine print, and CTA paired with full-bleed image., Free shadcn/ui co..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/profile/profile-9",
+        "title": "Shadcn Profile 9 Block - ReUI",
+        "description": "Workspace settings page where a collapsible grouped sidebar switches 11 card-based form panels: authentication, profile, billing, API keys, webhooks, audit.,..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/editing",
+        "title": "Shadcn Data Grid Editing Blocks - ReUI",
+        "description": "Inline create, edit, and delete cells for full CRUD workflows. 4 shadcn blocks for Tailwind CSS., Free shadcn/ui components and premium blocks, icons, and te..."
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/billing",
+        "title": "Shadcn Billing Blocks for Subscription Management UI - ReUI",
+        "description": "9 shadcn billing blocks for React: invoice ledgers, dunning queues, proration previews, metered usage, and subscription management UI built with Tailwind., F..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/receipt/receipt-2",
+        "title": "Shadcn Receipt 2 Block - ReUI",
+        "description": "Order receipt pairing a vertical fulfillment Timeline (placed to delivered, with Track CTA) and a details pane: items, totals, Ship To, Bill To, Payment., Fr..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/review/review-5",
+        "title": "Shadcn Review 5 Block - ReUI",
+        "description": "Customer reviews section: looping autoplay carousel of quote cards with star Rating, avatar attribution, and active dot pagination., Free shadcn/ui component..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/coupon/coupon-5",
+        "title": "Shadcn Coupon 5 Block - ReUI",
+        "description": "Dismissible top banner announcing an offer with a dashed promo code chip, copy-to-clipboard button with copied feedback, and a restore action.Uses shadcn But..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/editing/data-grid-editing-2",
+        "title": "Shadcn Data Grid Editing 2 Block - ReUI",
+        "description": "Edit inventory rows in place with text, number, and select cell editors, live validation, and a dirty-tracking Save / Discard bar., Free shadcn/ui components..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/event-calendar/event-calendar-4",
+        "title": "Shadcn Event Calendar 4 Block - ReUI",
+        "description": "Workforce shift scheduling board for HR and operations teams: a day, week, and month event calendar of staffing shifts grouped into color-coded departments, ..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/checkout/checkout-3",
+        "title": "Shadcn Checkout 3 Block - ReUI",
+        "description": "Three-step wizard to buy prepaid AI token credits: pick a provider, choose a bundle with auto top-up and usage alerts, then pay., Free shadcn/ui components a..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/checkout/checkout-5",
+        "title": "Shadcn Checkout 5 Block - ReUI",
+        "description": "Four-step ecommerce checkout (contact, delivery, payment, review) with animated stepper, saved addresses, delivery and payment options, and promo codes., Fre..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/timeline/timeline-7",
+        "title": "Shadcn Timeline 7 Block - ReUI",
+        "description": "Dropdown holding a scrollable vertical timeline of rollout steps, each with date, owner, status badge, dot-meta badge, attachment and star rating., Free shad..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-12",
+        "title": "Shadcn Dialog 12 Block - ReUI",
+        "description": "Quick-create record dialog with five entry-type tabs, each a title and notes field plus shared Status, Assignee, Due date, Priority and Labels comboboxes., F..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/receipt/receipt-3",
+        "title": "Shadcn Receipt 3 Block - ReUI",
+        "description": "Printable order receipt styled as a narrow monospaced paper slip: order meta, text-only item lines, totals with discount and a double-line TOTAL row, payment..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/review/review-3",
+        "title": "Shadcn Review 3 Block - ReUI",
+        "description": "Product reviews layout: summary card with aggregate rating, star-distribution bars and top-mention tags beside a sortable review list with verified badges an..."
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/agents",
+        "title": "Shadcn AI Agent Dashboard and Ops Console Blocks - ReUI",
+        "description": "10 shadcn agents blocks: run queues, risk-tiered approval inboxes, step-trace run detail, tool access matrices, eval reports, and an agent memory manager., F..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/wishlist/wishlist-1",
+        "title": "Shadcn Wishlist 1 Block - ReUI",
+        "description": "Saved-items wishlist as selectable rows with thumbnail, brand, variant, stock dot, and price., Free shadcn/ui components and premium blocks, icons, and templ..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/wishlist",
+        "title": "Shadcn eCommerce Wishlist Blocks - ReUI",
+        "description": "Wishlist and favorites list interfaces with product cards and save-for-later actions. 6 shadcn blocks for Tailwind CSS., Free shadcn/ui components and premiu..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/receipt/receipt-5",
+        "title": "Shadcn Receipt 5 Block - ReUI",
+        "description": "Statement-layout receipt: left sidebar with brand mark, Paid badge, large Total Paid amount and order/payment/address blocks; right pane lists items and tota..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/editing/data-grid-editing-1",
+        "title": "Shadcn Data Grid Editing 1 Block - ReUI",
+        "description": "Manage project labels in a DataGrid: inline add and edit form with hex color picker Popover, drag-to-reorder rows, and delete confirmation., Free shadcn/ui c..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/checkout/checkout-6",
+        "title": "Shadcn Checkout 6 Block - ReUI",
+        "description": "Ecommerce checkout with order summary and payment form.Product list with totals, shipping details, card input with Apple Pay button and card logos., Free sha..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/base",
+        "title": "Shadcn Data Table Blocks Built on the ReUI Data Grid - ReUI",
+        "description": "7 production shadcn data table blocks built on the ReUI DataGrid: sorting, pagination, faceted filters, pinned rows, bulk actions, and row action menus., Fre..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/virtualization",
+        "title": "Shadcn Data Grid Virtualization Blocks - ReUI",
+        "description": "Virtualized rendering for large datasets with smooth scrolling. 2 shadcn blocks for Tailwind CSS., Free shadcn/ui components and premium blocks, icons, and t..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/checkout",
+        "title": "Shadcn Checkout Blocks with Multi-Step Stepper Flows - ReUI",
+        "description": "Browse 7 shadcn checkout blocks: multi-step flows for contact, delivery, payment, and review, plus express checkout with promo codes and order summaries., Fr..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/grouping",
+        "title": "Shadcn Data Grid Grouping Blocks - ReUI",
+        "description": "Rows grouped into banded sections with stage and category headers. 7 shadcn blocks for Tailwind CSS., Free shadcn/ui components and premium blocks, icons, an..."
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/ai-ops",
+        "title": "Shadcn Solutions AI Ops Blocks - ReUI",
+        "description": "AI startup control plane pages for model providers, prompts, token cost, routing, and quotas. 9 shadcn blocks for Tailwind CSS., Free shadcn/ui components an..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/receipt",
+        "title": "Shadcn eCommerce Receipt Blocks - ReUI",
+        "description": "Digital receipt and invoice blocks with itemized lists, taxes, and payment details. 6 shadcn blocks for Tailwind CSS., Free shadcn/ui components and premium ..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-4",
+        "title": "Shadcn App Shell 4 Block - ReUI",
+        "description": "Mail and inbox shell: folder icon rail plus a wide 440px message list with live search, filter tabs, rich preview rows, and a selected-message action header...."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/columns/data-grid-columns-2",
+        "title": "Shadcn Data Grid Columns 2 Block - ReUI",
+        "description": "Course catalog table with thumbnail rows, category Badge, star Rating, assignee AvatarGroup, and completion rings., Free shadcn/ui components and premium blo..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/review",
+        "title": "Shadcn eCommerce Review Blocks - ReUI",
+        "description": "Customer review and rating components with star ratings, comments, and review forms. 6 shadcn blocks for Tailwind CSS., Free shadcn/ui components and premium..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/coupon",
+        "title": "Shadcn eCommerce Coupon Blocks - ReUI",
+        "description": "Coupon code input fields, discount badges, and promotional offer display blocks. 6 shadcn blocks for Tailwind CSS., Free shadcn/ui components and premium blo..."
+      },
+      {
+        "url": "https://reui.io/templates",
+        "title": "Shadcn UI Templates for Next.js, Laravel, Vite and Astro ...",
+        "description": "Full-page shadcn/ui templates for Next.js, Vite, TanStack Start, Astro, and Laravel with Inertia. Multi-page apps built from shadcn components and blocks."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/columns/data-grid-columns-1",
+        "title": "Shadcn Data Grid Columns 1 Block - ReUI",
+        "description": "Access review matrix whose columns swap per General, Tags, and Permissions tab, each scope a Switch toggle cell with row pinning, sorting, role filter, and s..."
+      },
+      {
+        "url": "https://reui.io/legal/license",
+        "title": "License - ReUI",
+        "description": "What your ReUI license grants and the restrictions that apply to the files you receive after purchase."
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-2",
+        "title": "Shadcn App Shell 2 Block - ReUI",
+        "description": "App shell with a floating collapsible-to-icon Sidebar, command-K search Dialog, nested Platform nav with a live status pulse, workspace switcher Dropdown, an..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-3",
+        "title": "Shadcn App Shell 3 Block - ReUI",
+        "description": "Inset collapsible sidebar dashboard shell with workspace switcher, command search, project donut progress rings, usage limit meter, and notifications popover..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/checkout/checkout-1",
+        "title": "Shadcn Checkout 1 Block - ReUI",
+        "description": "Four-step purchase flow for contact, address, delivery speed, and card/PayPal/Apple Pay payment, with promo code, validation, and a sticky order summary., Fr..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/columns/data-grid-columns-3",
+        "title": "Shadcn Data Grid Columns 3 Block - ReUI",
+        "description": "Work queue task tracker with tabs, table/card view switch, and a Display popover for density, sticky header, resizable and movable columns, and toggled prope..."
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/crm",
+        "title": "Shadcn CRM Blocks for a Complete Sales Pipeline UI - ReUI",
+        "description": "6 shadcn CRM blocks covering the full pipeline: dashboard, deal kanban, contacts grid, deal detail sheet, activity timeline, and a CSV import wizard., Free s..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/checkout/checkout-7",
+        "title": "Shadcn Checkout 7 Block - ReUI",
+        "description": "Stepper-driven checkout for contact, shipping, delivery method, and payment, plus promo code discount, tax, and a live order summary., Free shadcn/ui compone..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/wishlist/wishlist-3",
+        "title": "Shadcn Wishlist 3 Block - ReUI",
+        "description": "Saved-items wishlist grid where each card shows a stock or price signal badge, Move To Cart or Notify When Restocked, and hover remove., Free shadcn/ui compo..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/checkout/checkout-4",
+        "title": "Shadcn Checkout 4 Block - ReUI",
+        "description": "Express checkout with saved contact, address, and card review rows, a CVV security field, and a collapsible new-card form beside a live order summary., Free ..."
+      },
+      {
+        "url": "https://reui.io/components/item",
+        "title": "Shadcn Item - UI Components - ReUI",
+        "description": "Free shadcn item components for list items and interactive elements. Static and interactive list items with keyboard navigation, React item components."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/coupon/coupon-2",
+        "title": "Shadcn Coupon 2 Block - ReUI",
+        "description": "Filterable promotions grid of discount cards showing min spend, expiry, status badge, and a copy-code button with copied feedback.ReUI Frame, Badge; shadcn B..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-1",
+        "title": "Shadcn App Shell 1 Block - ReUI",
+        "description": "Dashboard app shell with an icon-collapsible sidebar: workspace switcher, nested platform nav with count badges, pinned resources with row action menus, them..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/filtering",
+        "title": "Shadcn Data Grid Filtering Blocks - ReUI",
+        "description": "Search, faceted filters, filter builders, and status tab toolbars. 4 shadcn blocks for Tailwind CSS., Free shadcn/ui components and premium blocks, icons, an..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/timeline/timeline-9",
+        "title": "Shadcn Timeline 9 Block - ReUI",
+        "description": "Floating right sheet with a scrollable activity feed of payouts, risk reviews, and ledger entries with avatar indicators, status badges, attachment downloads..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/timeline/timeline-6",
+        "title": "Shadcn Timeline 6 Block - ReUI",
+        "description": "Horizontal scrollable timeline tracking approval steps, each with a phase status badge, attachment download, star rating, action button, and owner avatar., F..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/event-calendar/event-calendar-5",
+        "title": "Shadcn Event Calendar 5 Block - ReUI",
+        "description": "Clinic day board on the event calendar resource view: one column per practitioner with avatar headers and live patient counts, status-tinted appointment chip..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/editing/data-grid-editing-3",
+        "title": "Shadcn Data Grid Editing 3 Block - ReUI",
+        "description": "Editable request intake table with click-to-edit text, number, and select cells, validation, search, status and priority filters, approval Switch, and..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/review/review-4",
+        "title": "Shadcn Review 4 Block - ReUI",
+        "description": "Product review highlights section: six verified-buyer pull-quote tiles in a responsive grid, each with quote glyph, star Rating, score, avatar and posted dat..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/expansion",
+        "title": "Shadcn Data Grid Expansion Blocks - ReUI",
+        "description": "Expandable parent rows with nested sub-rows and master-detail panels. 3 shadcn blocks for Tailwind CSS., Free shadcn/ui components and premium blocks, icons,..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/wishlist/wishlist-6",
+        "title": "Shadcn Wishlist 6 Block - ReUI",
+        "description": "Saved products in selectable collections: a left rail of cover-stacked tiles with count and total, plus a product pane with brand, price, savings, and bulk....."
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-11",
+        "title": "Shadcn Settings 11 Block - ReUI",
+        "description": "Notification settings grouping events under Projects, Messages, Reports, and System tabs, each a table with per-row Email/Slack/In-app checkboxes., Free shad..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/wishlist/wishlist-2",
+        "title": "Shadcn Wishlist 2 Block - ReUI",
+        "description": "Ecommerce wishlist that flags saved products with price-drop, restock, almost-gone, or unavailable badges, filters by status tabs, and bulk-adds in-stock ite..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/coupon/coupon-6",
+        "title": "Shadcn Coupon 6 Block - ReUI",
+        "description": "Dark full-width announcement strip with offer headline, dashed promo code chip, copy-to-clipboard button with copied feedback, and dismiss control., Free sha..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/receipt/receipt-4",
+        "title": "Shadcn Receipt 4 Block - ReUI",
+        "description": "Post-purchase order receipt with a Delivered hero, totals, and item rows whose action flips between Write Review and Buy Again plus a per-item menu (Return I..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/coupon/coupon-4",
+        "title": "Shadcn Coupon 4 Block - ReUI",
+        "description": "Promotional offer card with one-click copyable promo code, discount headline, eyebrow badge, expiry and minimum-spend meta, fine-print checklist, and CTA., F..."
+      },
+      {
+        "url": "https://reui.io/components/accordion",
+        "title": "Shadcn Accordion - UI Components - ReUI",
+        "description": "Shadcn Accordion components for collapsible FAQs, settings, and onboarding flows. 11 free Tailwind CSS layouts for React and Next.js, compatible with shadcn/ui."
+      },
+      {
+        "url": "https://reui.io",
+        "title": "Free Shadcn UI Components, Blocks, Icons, Templates & MCP...",
+        "description": "Free Shadcn UI components and pro blocks for React and Tailwind CSS. Hand-crafted icons, templates, and a hosted MCP server so coding agents build with the s..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/sheet/sheet-7",
+        "title": "Shadcn Sheet 7 Block - ReUI",
+        "description": "Floating right-anchored notification panel for in-app activity., Free shadcn/ui components and premium blocks, icons, and templates, plus a hosted MCP server..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/columns/data-grid-columns-4",
+        "title": "Shadcn Data Grid Columns 4 Block - ReUI",
+        "description": "Member directory table for admin and people pages.A settings popover toggles display columns, sets ordering, and hides paused members., Free shadcn/ui compon..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/receipt/receipt-6",
+        "title": "Shadcn Receipt 6 Block - ReUI",
+        "description": "Post-purchase receipt with a status-badged order summary, line items with thumbnails, totals breakdown, a shipping/payment/tracking grid, and a 4-tile..., Fr..."
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/columns",
+        "title": "Shadcn Data Grid Columns Blocks - ReUI",
+        "description": "Column visibility, pinning, resizing, density, and settings controls. 4 shadcn blocks for Tailwind CSS., Free shadcn/ui components and premium blocks, icons,..."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/receipt/receipt-1",
+        "title": "Shadcn Receipt 1 Block - ReUI",
+        "description": "Post-checkout receipt for a completed purchase: Paid badge, Ship/Bill/Payment grid, line items with thumbnails, subtotal-discount-tax-total summary..., Free ..."
+      },
+      {
+        "url": "https://reui.io/docs"
+      },
+      {
+        "url": "https://reui.io/components",
+        "title": "Free Shadcn UI Components",
+        "description": "Browse 1052+ free open-source shadcn/ui components for React and Tailwind CSS. ReUI helps you move from primitives to polished product UI with real examples ..."
+      },
+      {
+        "url": "https://reui.io/blocks",
+        "title": "Shadcn Pro Blocks for React and Tailwind CSS",
+        "description": "Browse 502+ production-ready shadcn blocks for SaaS, marketing, AI products, eCommerce, fintech, dashboards, and developer tools. Pick a product surface,"
+      },
+      {
+        "url": "https://reui.io/icons"
+      },
+      {
+        "url": "https://reui.io/mcp",
+        "title": "ReUI for Agents - MCP + Agent Skills",
+        "description": "A free MCP server and Agent Skills, so your agent builds with real ReUI - no guesswork, no slop."
+      },
+      {
+        "url": "https://reui.io/pricing"
+      },
+      {
+        "url": "https://reui.io/support"
+      },
+      {
+        "url": "https://reui.io/roadmap"
+      },
+      {
+        "url": "https://reui.io/legal/privacy-policy",
+        "title": "Privacy Policy",
+        "description": "How we collect, use, and protect your personal information when you use ReUI products and services."
+      },
+      {
+        "url": "https://reui.io/legal/terms-and-conditions"
+      },
+      {
+        "url": "https://reui.io/legal/refund-policy"
+      },
+      {
+        "url": "https://reui.io/legal/cookies",
+        "title": "Cookie Policy",
+        "description": "ReUI is a product of KeenThemes Inc. This Cookie Policy explains how KeenThemes Inc uses cookies and similar technologies on the ReUI website."
+      },
+      {
+        "url": "https://reui.io/docs/antigravity"
+      },
+      {
+        "url": "https://reui.io/docs/bolt"
+      },
+      {
+        "url": "https://reui.io/docs/claude",
+        "title": "Claude",
+        "description": "Set ReUI up in Claude once, then build UI from the entire ReUI registry just by chatting. Pick your Claude below - the two setups differ only in how you add ..."
+      },
+      {
+        "url": "https://reui.io/docs/codex",
+        "title": "Codex",
+        "description": "Requests hang or the session drops mid-build - long sessions can lose the connection. To fix it, run codex mcp login reui and retry your last prompt."
+      },
+      {
+        "url": "https://reui.io/docs/conductor"
+      },
+      {
+        "url": "https://reui.io/docs/cursor"
+      },
+      {
+        "url": "https://reui.io/docs/github-copilot"
+      },
+      {
+        "url": "https://reui.io/docs/grok"
+      },
+      {
+        "url": "https://reui.io/docs/kilo-code"
+      },
+      {
+        "url": "https://reui.io/docs/lovable"
+      },
+      {
+        "url": "https://reui.io/docs/opencode"
+      },
+      {
+        "url": "https://reui.io/docs/replit"
+      },
+      {
+        "url": "https://reui.io/docs/v0"
+      },
+      {
+        "url": "https://reui.io/docs/vscode"
+      },
+      {
+        "url": "https://reui.io/docs/zed"
+      },
+      {
+        "url": "https://reui.io/docs/agent-skills"
+      },
+      {
+        "url": "https://reui.io/docs/changelog"
+      },
+      {
+        "url": "https://reui.io/docs/get-started",
+        "title": "Get Started",
+        "description": "A quick guide to adding ReUI components to your application."
+      },
+      {
+        "url": "https://reui.io/docs/license-setup",
+        "title": "License Setup",
+        "description": "Configure your ReUI license key for premium registry installs."
+      },
+      {
+        "url": "https://reui.io/docs/mcp"
+      },
+      {
+        "url": "https://reui.io/docs/registry"
+      },
+      {
+        "url": "https://reui.io/docs/rtl"
+      },
+      {
+        "url": "https://reui.io/docs/styling"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/alert"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/autocomplete"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/badge",
+        "title": "Shadcn Badge (Base UI) - ReUI",
+        "description": "Shadcn Badge for React and Tailwind CSS. Open-source component documentation with copy-ready examples and installation guidance. Shadcn Badge components including dot indicators and size variants for React apps. 25 free Tailwind CSS layouts for React and Next.js components."
+      },
+      {
+        "url": "https://reui.io/docs/components/base/data-grid"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/date-selector"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/event-calendar"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/file-upload",
+        "title": "Shadcn File Upload (Base UI) - ReUI",
+        "description": "Shadcn File Upload Free Components Browse 10 production-ready Shadcn File Upload components for dashboards, forms, and product UI. These examples use Base UI primitives from @base-ui/react and stay fully compatible with Shadcn Create so radius, color, and typography match your configured theme."
+      },
+      {
+        "url": "https://reui.io/docs/components/base/filters"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/frame"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/gantt"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/icon-stack"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/icon-tile"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/kanban"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/number-field"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/phone-input"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/rating"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/scrollspy"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/sortable"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/stepper"
+      },
+      {
+        "url": "https://reui.io/docs/components/base/timeline",
+        "title": "Shadcn Timeline (Base UI) - ReUI",
+        "description": "Shadcn Timeline for React and Tailwind CSS. Open-source component documentation with copy-ready examples and installation guidance. 12 free shadcn timeline components for deployment logs, activity feeds, git history, milestones, roadmaps, and pipeline steps. Copy-ready for React and Next.js. Visualize React event sequences with Tailwind CSS-styled timeline components."
+      },
+      {
+        "url": "https://reui.io/docs/components/base/tree",
+        "title": "Shadcn Tree (Base UI) - ReUI",
+        "description": "Shadcn Tree for React and Tailwind CSS. Open-source component documentation with copy-ready examples and installation guidance. 7 free shadcn tree components built on Headless Tree. File explorer, org chart, permissions tree, indented lines, and keyboard navigation. Copy-ready for React and Next.js. Navigate React hierarchical data with Tailwind CSS-styled collapsible tree views."
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/alert"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/autocomplete"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/badge"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/data-grid"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/date-selector"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/event-calendar"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/file-upload"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/filters",
+        "title": "Shadcn Filters (Radix UI) - ReUI",
+        "description": "Shadcn Filters for React and Tailwind CSS. Radix UI documentation with accessible primitives from the Radix stack. Free shadcn filters components for data filtering with URL persistence. Custom React component for client and server-side filtering with date ranges."
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/frame"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/gantt"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/icon-stack"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/icon-tile"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/kanban"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/number-field"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/phone-input"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/rating"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/scrollspy"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/sortable"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/stepper"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/timeline"
+      },
+      {
+        "url": "https://reui.io/docs/components/radix/tree"
+      },
+      {
+        "url": "https://reui.io/components/alert"
+      },
+      {
+        "url": "https://reui.io/components/alert-dialog"
+      },
+      {
+        "url": "https://reui.io/components/aspect-ratio"
+      },
+      {
+        "url": "https://reui.io/components/autocomplete",
+        "title": "Shadcn Autocomplete - UI Components",
+        "description": "Browse 12 production-ready shadcn autocomplete components using @base-ui/react Autocomplete. Covers basic typeahead, auto-highlight, grouped options, ..."
+      },
+      {
+        "url": "https://reui.io/components/avatar",
+        "title": "Shadcn Avatar - UI Components",
+        "description": "What is Shadcn Avatar? An avatar component displays a user's photo or initials in a fixed-size circle or square. Shadcn Avatar follows Radix UI composition with ..."
+      },
+      {
+        "url": "https://reui.io/components/badge",
+        "title": "Shadcn Badge - UI Components",
+        "description": "Shadcn Badge components including dot indicators and size variants for React apps. 25 free Tailwind CSS layouts for React and Next.js components."
+      },
+      {
+        "url": "https://reui.io/components/breadcrumb"
+      },
+      {
+        "url": "https://reui.io/components/button"
+      },
+      {
+        "url": "https://reui.io/components/button-group",
+        "title": "Shadcn Button Group - UI Components",
+        "description": "Shadcn Button Group components for toggle buttons and multi-select groups. 57 free Tailwind CSS layouts with accessible keyboard navigation."
+      },
+      {
+        "url": "https://reui.io/components/card"
+      },
+      {
+        "url": "https://reui.io/components/carousel"
+      },
+      {
+        "url": "https://reui.io/components/chart",
+        "title": "Shadcn Chart - UI Components",
+        "description": "Browse 25 production-ready shadcn chart components built on Recharts and Motion. Covers bar, vertical bar, area, step area, stacked area, line, forecast, ..."
+      },
+      {
+        "url": "https://reui.io/components/checkbox"
+      },
+      {
+        "url": "https://reui.io/components/collapsible"
+      },
+      {
+        "url": "https://reui.io/components/combobox",
+        "title": "Shadcn Combobox - UI Components",
+        "description": "Why Use Shadcn Combobox? Multi-select is one of the most requested form controls in SaaS products: skill tags, team member assignment, category classification, ..."
+      },
+      {
+        "url": "https://reui.io/components/command"
+      },
+      {
+        "url": "https://reui.io/components/context-menu",
+        "title": "Shadcn Context Menu - UI Components",
+        "description": "In UI terms, a context menu is a popup menu displayed near the cursor on right-click, showing actions specific to the clicked element. Shadcn Context Menu ..."
+      },
+      {
+        "url": "https://reui.io/components/data-grid"
+      },
+      {
+        "url": "https://reui.io/components/date-selector"
+      },
+      {
+        "url": "https://reui.io/components/dialog",
+        "title": "Shadcn Dialog - UI Components - ReUI",
+        "description": "Shadcn Dialog components for modal windows. Focus trapping, async forms, stacked dialogs, and scroll containment. Production-ready components."
+      },
+      {
+        "url": "https://reui.io/components/drawer",
+        "title": "Shadcn Drawer - UI Components",
+        "description": "In UI terms, a drawer is a slide-out panel that opens from the edge of the screen, usually the left or bottom. Shadcn Drawer follows the same accessibility ..."
+      },
+      {
+        "url": "https://reui.io/components/dropdown-menu"
+      },
+      {
+        "url": "https://reui.io/components/empty",
+        "title": "Shadcn Empty - UI Components",
+        "description": "Why Use Shadcn Empty? Empty states are one of the highest-leverage UX touchpoints in a product. A blank table with no message signals a bug; a well-designed ..."
+      },
+      {
+        "url": "https://reui.io/components/event-calendar"
+      },
+      {
+        "url": "https://reui.io/components/field"
+      },
+      {
+        "url": "https://reui.io/components/file-upload"
+      },
+      {
+        "url": "https://reui.io/components/filters"
+      },
+      {
+        "url": "https://reui.io/components/frame"
+      },
+      {
+        "url": "https://reui.io/components/gantt",
+        "title": "Shadcn Gantt - UI Components",
+        "description": "Browse 5 production-ready shadcn gantt components built on a headless-first ReUI primitive. Covers a resizable task tree, day through year scales, zoom, ..."
+      },
+      {
+        "url": "https://reui.io/components/hover-card"
+      },
+      {
+        "url": "https://reui.io/components/icon-stack",
+        "title": "Shadcn Icon Stack - UI Components",
+        "description": "What is Shadcn Icon Stack? Shadcn Icon Stack is a layered icon illustration primitive. Instead of drawing a single flat glyph, it renders a stack of offset ..."
+      },
+      {
+        "url": "https://reui.io/components/icon-tile"
+      },
+      {
+        "url": "https://reui.io/components/input"
+      },
+      {
+        "url": "https://reui.io/components/input-group"
+      },
+      {
+        "url": "https://reui.io/components/input-otp"
+      },
+      {
+        "url": "https://reui.io/components/kanban"
+      },
+      {
+        "url": "https://reui.io/components/kbd"
+      },
+      {
+        "url": "https://reui.io/components/label",
+        "title": "Shadcn Label - UI Components",
+        "description": "13 free shadcn label components for form field labels and accessible associations. Connect React form inputs to labels with Tailwind CSS styling."
+      },
+      {
+        "url": "https://reui.io/components/menubar"
+      },
+      {
+        "url": "https://reui.io/components/native-select"
+      },
+      {
+        "url": "https://reui.io/components/navigation-menu",
+        "title": "Shadcn Navigation Menu - UI Components - ReUI",
+        "description": "4 free shadcn navigation menu components for primary site navigation and rich mega menus. Build React site navigation with Tailwind CSS styling."
+      },
+      {
+        "url": "https://reui.io/components/number-field",
+        "title": "Shadcn Number Field - UI Components",
+        "description": "Shadcn Number Field is a numeric input component with increment/decrement buttons (spinners) and keyboard step support. It maintains semantic HTML and ..."
+      },
+      {
+        "url": "https://reui.io/components/pagination",
+        "title": "Shadcn Pagination - UI Components",
+        "description": "Pagination improves performance and UX by breaking large datasets into manageable chunks. Users see only what fits on one page, pages load faster, and users ..."
+      },
+      {
+        "url": "https://reui.io/components/phone-input"
+      },
+      {
+        "url": "https://reui.io/components/popover",
+        "title": "Shadcn Popover - UI Components",
+        "description": "Why Use Shadcn Popover? Teams use popovers when they need to show interactive content without opening a full dialog or page. Quick edits to a table row, filter ..."
+      },
+      {
+        "url": "https://reui.io/components/progress",
+        "title": "Shadcn Progress - UI Components",
+        "description": "Why Use Shadcn Progress? Progress bars reduce anxiety during long operations by showing users that something is happening. File uploads, API calls, and batch ..."
+      },
+      {
+        "url": "https://reui.io/components/radio-group"
+      },
+      {
+        "url": "https://reui.io/components/rating"
+      },
+      {
+        "url": "https://reui.io/components/resizable"
+      },
+      {
+        "url": "https://reui.io/components/scroll-area",
+        "title": "Shadcn Scroll Area - UI Components",
+        "description": "What is Shadcn Scroll Area? A scroll area is a container that overflows and requires scrolling, but displays a custom scrollbar instead of the browser default."
+      },
+      {
+        "url": "https://reui.io/components/scrollspy"
+      },
+      {
+        "url": "https://reui.io/components/select",
+        "title": "Shadcn Select - UI Components - ReUI",
+        "description": "33 select components with async options, virtualization, and multi-select support. Accessible dropdowns built on Radix UI with form validation."
+      },
+      {
+        "url": "https://reui.io/components/separator"
+      },
+      {
+        "url": "https://reui.io/components/sheet",
+        "title": "Shadcn Sheet - UI Components",
+        "description": "What is Shadcn Sheet? A sheet is a modal overlay that extends from the page edge, similar to a drawer. Shadcn Sheet extends Radix UI Dialog to provide ..."
+      },
+      {
+        "url": "https://reui.io/components/skeleton"
+      },
+      {
+        "url": "https://reui.io/components/slider"
+      },
+      {
+        "url": "https://reui.io/components/sonner"
+      },
+      {
+        "url": "https://reui.io/components/sortable"
+      },
+      {
+        "url": "https://reui.io/components/spinner",
+        "title": "Shadcn Spinner - UI Components",
+        "description": "What is Shadcn Spinner? A spinner is a rotating or animated icon that conveys an in-progress operation. Shadcn Spinner uses a Lucide icon (default: LoaderIcon) ..."
+      },
+      {
+        "url": "https://reui.io/components/stepper"
+      },
+      {
+        "url": "https://reui.io/components/switch",
+        "title": "Shadcn Switch - UI Components",
+        "description": "Shadcn Switch is a boolean control that toggles between checked and unchecked states. Built on Radix UI primitives, it follows WAI-ARIA switch semantics and ..."
+      },
+      {
+        "url": "https://reui.io/components/table",
+        "title": "Shadcn Table - UI Components",
+        "description": "What is Shadcn Table? A table is a structured layout for displaying rows and columns of data. Shadcn Table uses semantic HTML <table>, <thead>, <tbody>, and <tr> ..."
+      },
+      {
+        "url": "https://reui.io/components/tabs",
+        "title": "Shadcn Tabs - UI Components - ReUI",
+        "description": "9 free shadcn tabs components for navigation, content switching. Switch React content views with Tailwind CSS-styled accessible tab navigation."
+      },
+      {
+        "url": "https://reui.io/components/textarea"
+      },
+      {
+        "url": "https://reui.io/components/timeline"
+      },
+      {
+        "url": "https://reui.io/components/toggle",
+        "title": "Shadcn Toggle - UI Components",
+        "description": "Why Use Shadcn Toggle? Teams use toggles for view options (show/hide, list/grid), text formatting (bold, italic, underline), and feature toggles in dense ..."
+      },
+      {
+        "url": "https://reui.io/components/toggle-group",
+        "title": "Shadcn Toggle Group - UI Components",
+        "description": "Shadcn Toggle Group is a wrapper for multiple Shadcn Toggle buttons that enforces exclusivity (radio-like) or allows multiple selections. Built on Radix UI ..."
+      },
+      {
+        "url": "https://reui.io/components/tooltip"
+      },
+      {
+        "url": "https://reui.io/components/tree",
+        "title": "Shadcn Tree - UI Components",
+        "description": "Why Use Shadcn Tree? Hierarchical data appears in file systems, folder browsers, org charts, permission editors, navigation menus, category taxonomies, and code ..."
+      },
+      {
+        "url": "https://reui.io/icons/abstract"
+      },
+      {
+        "url": "https://reui.io/icons/archive"
+      },
+      {
+        "url": "https://reui.io/icons/arrow"
+      },
+      {
+        "url": "https://reui.io/icons/burger-menu"
+      },
+      {
+        "url": "https://reui.io/icons/business"
+      },
+      {
+        "url": "https://reui.io/icons/communication"
+      },
+      {
+        "url": "https://reui.io/icons/delivery-logistics"
+      },
+      {
+        "url": "https://reui.io/icons/design"
+      },
+      {
+        "url": "https://reui.io/icons/devices"
+      },
+      {
+        "url": "https://reui.io/icons/ecommerce"
+      },
+      {
+        "url": "https://reui.io/icons/education"
+      },
+      {
+        "url": "https://reui.io/icons/emoji"
+      },
+      {
+        "url": "https://reui.io/icons/files-folders"
+      },
+      {
+        "url": "https://reui.io/icons/finance"
+      },
+      {
+        "url": "https://reui.io/icons/general",
+        "title": "General Shadcn Icons",
+        "description": "ReUI includes 66 general shadcn icons for teams building product UI, dashboards, docs, settings panels, and Tailwind-powered React applications."
+      },
+      {
+        "url": "https://reui.io/icons/grid",
+        "title": "Grid Shadcn Icons",
+        "description": "ReUI includes 27 grid shadcn icons for teams building product UI, dashboards, docs, settings panels, and Tailwind-powered React applications."
+      },
+      {
+        "url": "https://reui.io/icons/it-network"
+      },
+      {
+        "url": "https://reui.io/icons/location"
+      },
+      {
+        "url": "https://reui.io/icons/medicine"
+      },
+      {
+        "url": "https://reui.io/icons/notifications"
+      },
+      {
+        "url": "https://reui.io/icons/security"
+      },
+      {
+        "url": "https://reui.io/icons/settings"
+      },
+      {
+        "url": "https://reui.io/icons/social-media"
+      },
+      {
+        "url": "https://reui.io/icons/software"
+      },
+      {
+        "url": "https://reui.io/icons/support",
+        "title": "Support Shadcn Icons - ReUI",
+        "description": "Browse 18 support shadcn icons for React, Next.js, and Tailwind CSS in outline, solid, duotone, and filled styles."
+      },
+      {
+        "url": "https://reui.io/icons/technologies"
+      },
+      {
+        "url": "https://reui.io/icons/time"
+      },
+      {
+        "url": "https://reui.io/icons/typography"
+      },
+      {
+        "url": "https://reui.io/icons/users"
+      },
+      {
+        "url": "https://reui.io/icons/weather"
+      },
+      {
+        "url": "https://reui.io/blocks/application"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-11"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-12"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-13"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-14"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-15"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-16"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-17"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-18"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-19"
+      },
+      {
+        "url": "https://reui.io/blocks/application/app-shell/app-shell-20"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-13"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-14"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-11"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-16"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-12"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-19"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-15"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-17"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-18"
+      },
+      {
+        "url": "https://reui.io/blocks/application/auth/auth-20"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card",
+        "title": "Shadcn Card Blocks for KPI Grids, Logos, and Profiles",
+        "description": "Grid of dark metric cards on colored panels, each with a big value, an up-trend Badge with percent, an icon tile, and a footer report link."
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-11"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-12"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-13"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-14"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-15"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-16"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-17"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-18"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-19"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-20"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-21"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-22"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-23"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-24"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-25"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-26"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-27"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-28"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-29"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-30"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-31"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-32"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-33"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-34"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-35"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-36"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-37"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-38"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-39"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-40"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-41"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-42"
+      },
+      {
+        "url": "https://reui.io/blocks/application/card/card-43"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart",
+        "title": "Shadcn Chart Blocks and Analytics Cards",
+        "description": "Multi-line chart comparing Facebook, Instagram and LinkedIn activity over a selectable time range, with custom tooltip and dot legend. ReUI Frame and Select, ..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-11"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-12"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-13"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-14"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-15"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-16"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-17"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-18"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-19"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-20"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-21"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-22"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-23"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-24"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-25"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-26"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-27"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-28"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-29"
+      },
+      {
+        "url": "https://reui.io/blocks/application/chart/chart-30"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dashboard"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dashboard/dashboard-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dashboard/dashboard-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dashboard/dashboard-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dashboard/dashboard-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dashboard/dashboard-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dashboard/dashboard-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dashboard/dashboard-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dashboard/dashboard-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog",
+        "title": "Shadcn Application Dialog Blocks",
+        "description": "Dialog components for modal windows, alerts, confirmations, and content overlays. 14 shadcn blocks for Tailwind CSS."
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-11"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-13"
+      },
+      {
+        "url": "https://reui.io/blocks/application/dialog/dialog-14"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-11"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-12"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-13"
+      },
+      {
+        "url": "https://reui.io/blocks/application/empty-state/empty-state-14"
+      },
+      {
+        "url": "https://reui.io/blocks/application/event-calendar"
+      },
+      {
+        "url": "https://reui.io/blocks/application/event-calendar/event-calendar-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/event-calendar/event-calendar-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/event-calendar/event-calendar-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/event-calendar/event-calendar-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-11"
+      },
+      {
+        "url": "https://reui.io/blocks/application/form/form-12"
+      },
+      {
+        "url": "https://reui.io/blocks/application/gantt"
+      },
+      {
+        "url": "https://reui.io/blocks/application/gantt/gantt-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/gantt/gantt-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/gantt/gantt-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/gantt/gantt-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/kanban-board"
+      },
+      {
+        "url": "https://reui.io/blocks/application/kanban-board/kanban-board-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/kanban-board/kanban-board-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/kanban-board/kanban-board-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/kanban-board/kanban-board-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/kanban-board/kanban-board-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/kanban-board/kanban-board-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/kanban-board/kanban-board-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/kanban-board/kanban-board-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/kanban-board/kanban-board-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list/list-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list/list-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list/list-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list/list-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list/list-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list/list-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list/list-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list/list-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list/list-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list/list-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/list/list-11"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar",
+        "title": "Shadcn Navbar Blocks for App Headers and Toolbars",
+        "description": "Shadcn Navbar Blocks for App Headers and Toolbars. Worth knowing before you scroll: this is app chrome, not landing page chrome."
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-11"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-12"
+      },
+      {
+        "url": "https://reui.io/blocks/application/navbar/navbar-13"
+      },
+      {
+        "url": "https://reui.io/blocks/application/onboarding"
+      },
+      {
+        "url": "https://reui.io/blocks/application/onboarding/onboarding-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/onboarding/onboarding-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/onboarding/onboarding-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/onboarding/onboarding-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/onboarding/onboarding-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/onboarding/onboarding-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/onboarding/onboarding-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/onboarding/onboarding-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/onboarding/onboarding-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/profile"
+      },
+      {
+        "url": "https://reui.io/blocks/application/profile/profile-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/profile/profile-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/profile/profile-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/profile/profile-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/profile/profile-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/profile/profile-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/profile/profile-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/profile/profile-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/schedule"
+      },
+      {
+        "url": "https://reui.io/blocks/application/schedule/schedule-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/schedule/schedule-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/schedule/schedule-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/schedule/schedule-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/schedule/schedule-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/schedule/schedule-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/schedule/schedule-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/schedule/schedule-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/schedule/schedule-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/schedule/schedule-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings",
+        "title": "Shadcn Settings Page Blocks for Security and Roles",
+        "description": "The general settings block puts a different control on every row: a plain Input, a prefixed URL InputGroup, a Select, a ToggleGroup, color swatches, and a list ..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-12"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-13"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-14"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-15"
+      },
+      {
+        "url": "https://reui.io/blocks/application/settings/settings-16"
+      },
+      {
+        "url": "https://reui.io/blocks/application/sheet",
+        "title": "Shadcn Application Sheet Blocks",
+        "description": "Sheet panels for record details, editing forms, notifications, and side drawers that keep users in context. 11 shadcn blocks for Tailwind CSS."
+      },
+      {
+        "url": "https://reui.io/blocks/application/sheet/sheet-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/sheet/sheet-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/sheet/sheet-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/sheet/sheet-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/sheet/sheet-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/sheet/sheet-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/sheet/sheet-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/sheet/sheet-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats",
+        "title": "Shadcn Stats and KPI Card Blocks with Trend Deltas",
+        "description": "Shadcn Stats and KPI Card Blocks with Trend Deltas. Stats blocks explain a single number: KPI cards with an up or down delta, segmented gauges, ..."
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-6"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-7"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-8"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-9"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-10"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-11"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-12"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-13"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-14"
+      },
+      {
+        "url": "https://reui.io/blocks/application/stats/stats-15"
+      },
+      {
+        "url": "https://reui.io/blocks/application/timeline"
+      },
+      {
+        "url": "https://reui.io/blocks/application/timeline/timeline-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/timeline/timeline-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/timeline/timeline-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/timeline/timeline-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/timeline/timeline-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/wizard"
+      },
+      {
+        "url": "https://reui.io/blocks/application/wizard/wizard-1"
+      },
+      {
+        "url": "https://reui.io/blocks/application/wizard/wizard-2"
+      },
+      {
+        "url": "https://reui.io/blocks/application/wizard/wizard-3"
+      },
+      {
+        "url": "https://reui.io/blocks/application/wizard/wizard-4"
+      },
+      {
+        "url": "https://reui.io/blocks/application/wizard/wizard-5"
+      },
+      {
+        "url": "https://reui.io/blocks/application/wizard/wizard-7"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/base/data-grid-base-1"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/base/data-grid-base-2"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/base/data-grid-base-3"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/base/data-grid-base-4"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/base/data-grid-base-5"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/base/data-grid-base-6"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/base/data-grid-base-7"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/drag-drop/data-grid-drag-drop-1"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/drag-drop/data-grid-drag-drop-2"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/drag-drop/data-grid-drag-drop-3"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/drag-drop/data-grid-drag-drop-4"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/editing/data-grid-editing-4"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/expansion/data-grid-expansion-1"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/expansion/data-grid-expansion-2"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/expansion/data-grid-expansion-3"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/filtering/data-grid-filtering-1"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/filtering/data-grid-filtering-2"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/filtering/data-grid-filtering-3"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/filtering/data-grid-filtering-4"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/grouping/data-grid-grouping-1"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/grouping/data-grid-grouping-2"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/grouping/data-grid-grouping-3"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/grouping/data-grid-grouping-4"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/grouping/data-grid-grouping-5"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/grouping/data-grid-grouping-6"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/grouping/data-grid-grouping-7"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/virtualization/data-grid-virtualization-1"
+      },
+      {
+        "url": "https://reui.io/blocks/data-grid/virtualization/data-grid-virtualization-2"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/agents/solution-agents-1"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/agents/solution-agents-2"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/agents/solution-agents-3"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/agents/solution-agents-4"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/agents/solution-agents-5"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/agents/solution-agents-6"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/agents/solution-agents-7"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/agents/solution-agents-8"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/agents/solution-agents-9"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/agents/solution-agents-10"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/ai-ops/solution-ai-ops-1"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/ai-ops/solution-ai-ops-2"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/ai-ops/solution-ai-ops-3"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/ai-ops/solution-ai-ops-4"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/ai-ops/solution-ai-ops-5"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/ai-ops/solution-ai-ops-6"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/ai-ops/solution-ai-ops-7"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/ai-ops/solution-ai-ops-8"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/ai-ops/solution-ai-ops-9"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/analytics"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/analytics/solution-analytics-1"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/analytics/solution-analytics-2"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/analytics/solution-analytics-3"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/analytics/solution-analytics-4"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/analytics/solution-analytics-5"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/analytics/solution-analytics-6"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/analytics/solution-analytics-7"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/analytics/solution-analytics-8"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/analytics/solution-analytics-9"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/billing/solution-billing-1"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/billing/solution-billing-2"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/billing/solution-billing-3"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/billing/solution-billing-4"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/billing/solution-billing-5"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/billing/solution-billing-6"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/billing/solution-billing-7"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/billing/solution-billing-8"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/billing/solution-billing-9"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/bookings"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/bookings/solution-bookings-1"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/bookings/solution-bookings-2"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/bookings/solution-bookings-3"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/crm/solution-crm-1"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/crm/solution-crm-2"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/crm/solution-crm-3"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/crm/solution-crm-4"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/crm/solution-crm-5"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/crm/solution-crm-6"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/files"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/files/solution-files-1"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory/solution-inventory-1"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory/solution-inventory-2"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory/solution-inventory-3"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory/solution-inventory-4"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory/solution-inventory-5"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory/solution-inventory-6"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory/solution-inventory-7"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory/solution-inventory-8"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory/solution-inventory-9"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory/solution-inventory-10"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/inventory/solution-inventory-11"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/users"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/users/solution-users-1"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/users/solution-users-2"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/users/solution-users-3"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/users/solution-users-4"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/users/solution-users-5"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/users/solution-users-6"
+      },
+      {
+        "url": "https://reui.io/blocks/solutions/users/solution-users-7"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce",
+        "title": "Shadcn eCommerce Blocks for Storefronts and Checkout",
+        "description": "Browse 87 Shadcn eCommerce blocks: product grids and cards, product detail, filter sidebars, reviews, wishlists, coupons, shopping cart, and checkout flows."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/category-card"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/category-card/category-card-1"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/category-card/category-card-2"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/category-card/category-card-3"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/category-card/category-card-4"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/category-card/category-card-5"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/category-card/category-card-6"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/comparison"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/comparison/comparison-1"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/comparison/comparison-2"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/comparison/comparison-3"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/comparison/comparison-4"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/comparison/comparison-5"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/comparison/comparison-6"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/filter-sidebar"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/filter-sidebar/filter-sidebar-1"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/filter-sidebar/filter-sidebar-2"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/filter-sidebar/filter-sidebar-3"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/filter-sidebar/filter-sidebar-4"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/filter-sidebar/filter-sidebar-5"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/filter-sidebar/filter-sidebar-6"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/filter-sidebar/filter-sidebar-7"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-card"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-card/product-card-1"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-card/product-card-2"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-card/product-card-3"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-card/product-card-4"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-card/product-card-5"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-card/product-card-6"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-card/product-card-7"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-card/product-card-8"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-card/product-card-9"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-card/product-card-10"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-detail"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-detail/product-detail-1"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-detail/product-detail-2"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-detail/product-detail-3"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-detail/product-detail-4"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-detail/product-detail-5"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-detail/product-detail-6"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-grid"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-grid/product-grid-1"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-grid/product-grid-2"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-grid/product-grid-3"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-grid/product-grid-4"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-grid/product-grid-5"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/product-grid/product-grid-6"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/shopping-cart",
+        "title": "Shadcn Shopping Cart Blocks: Page, Dropdown, Sheet - ReUI",
+        "description": "Browse 7 shadcn shopping cart blocks at three scales: full cart pages, a header mini-cart dropdown, and a slide-out sheet, with quantity steppers and totals."
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/shopping-cart/shopping-cart-1"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/shopping-cart/shopping-cart-2"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/shopping-cart/shopping-cart-5"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/shopping-cart/shopping-cart-6"
+      },
+      {
+        "url": "https://reui.io/blocks/ecommerce/shopping-cart/shopping-cart-7"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing",
+        "title": "Shadcn Marketing Blocks: Blog, FAQ, CTA, and Contact",
+        "description": "Browse 24 Shadcn marketing blocks: blog indexes and post pages, FAQ accordions, call to action banners, and contact sections for React and Tailwind CSS."
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/blog"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/blog/blog-1"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/blog/blog-2"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/blog/blog-3"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/blog/blog-4"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/blog/blog-5"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/blog/blog-6"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/contact"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/contact/contact-1"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/contact/contact-2"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/contact/contact-3"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/contact/contact-4"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/contact/contact-5"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/contact/contact-6"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/cta"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/cta/cta-1"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/cta/cta-2"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/cta/cta-3"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/cta/cta-4"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/cta/cta-5"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/cta/cta-6"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/faq"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/faq/faq-1"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/faq/faq-2"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/faq/faq-3"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/faq/faq-4"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/faq/faq-5"
+      },
+      {
+        "url": "https://reui.io/blocks/marketing/faq/faq-6"
+      },
+      {
+        "url": "https://reui.io/templates/e-commerce"
+      },
+      {
+        "url": "https://reui.io/templates/saas",
+        "title": "SaaS Shadcn UI Templates",
+        "description": "A React people operations console: a directory nested by reporting line, time off, timesheets, a hiring board and approvals, on a typed seed with no backend."
+      },
+      {
+        "url": "https://reui.io/templates/dashboard"
+      },
+      {
+        "url": "https://reui.io/templates/landing"
+      },
+      {
+        "url": "https://reui.io/template/verve-crm",
+        "title": "Verve - Next.js CRM Template with Deal Board and Quotes",
+        "description": "A Next.js sales CRM: deal board, forecast, quotes and approvals, contacts and companies, with reports and a full settings area."
+      },
+      {
+        "url": "https://reui.io/template/overture-waitlist"
+      },
+      {
+        "url": "https://reui.io/template/manifest-commerce"
+      },
+      {
+        "url": "https://reui.io/template/surge-commerce",
+        "title": "Surge - TanStack Start Commerce Admin Template",
+        "description": "A commerce admin on TanStack Start: orders, catalog, inventory with purchase orders, customers, promotions, reviews and analytics."
+      },
+      {
+        "url": "https://reui.io/template/atlas-admin"
+      },
+      {
+        "url": "https://reui.io/template/cohort-hr"
+      },
+      {
+        "url": "https://reui.io/template/flux-agentops"
+      },
+      {
+        "url": "https://reui.io/template/tempo-tasks"
+      },
+      {
+        "url": "https://reui.io/template/roster-hr"
+      },
+      {
+        "url": "https://reui.io/template/lucent-devops"
+      }
+    ]
+  }
+}

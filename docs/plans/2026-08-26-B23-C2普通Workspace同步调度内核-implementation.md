@@ -3,20 +3,20 @@
 > 日期：2026-08-26
 > 基线：`codex/integration-control@1950808`
 > 分支：`codex/b23-c2-workspace-scheduler`
-> 状态：代码完成并通过本地真实 PostgreSQL 自审；不代表已部署或真实奇航联调
+> 状态：代码完成并通过本地真实 PostgreSQL 自审；不代表已部署或真实启航联调
 
 ## 目标
 
 在不增加浏览器或公开写 API 的前提下，为指定 active workspace 提供一次性、可测试的
 内部 tick（调度触发）入口：首次同步选择 `etl_full`，首次 full 成功后允许按部署配置选择
 `etl_full` 或 `etl_incr`。每个 Job 固化 workspace、业务用户、凭证 owner、上海 03:00
-业务日和账户授权快照；缺少合法身份、奇航取数身份或账户授权时 fail closed。
+业务日和账户授权快照；缺少合法身份、启航取数身份或账户授权时 fail closed。
 
 ## 已确认复用点
 
 - `jobs` 表、`JobRepository` 与 `JobConsumer` 已提供确定性 UUID、`FOR UPDATE SKIP LOCKED`、
   lease token fencing、heartbeat、有限重试和 `blocked_auth`。
-- `etl_full`、`etl_incr`、Canonical fan-out 与奇航身份注入已经接入真实 Worker runtime。
+- `etl_full`、`etl_incr`、Canonical fan-out 与启航身份注入已经接入真实 Worker runtime。
 - B23-A 已有 identity / membership / workspace-local user / account grant 四段身份链；C1 已保证
   full 账户页先安全 upsert `accounts` 再落 Raw。
 - `shanghaiTaskBusinessDate()` 已冻结上海 03:00 日切，可直接复用，不再造第二套算法。
@@ -30,7 +30,7 @@
 - `qihang_user_id` 只在 Worker 执行前由 DB 解析并注入内存，不写 Job payload、不输出 CLI、
   不写日志。重试继续使用原 Job 的 credential owner 和授权快照。
 - 普通 workspace 的 full/incr 都必须使用冻结的显式 `(media, account_id)` grant；无 grant
-  固定进入 `blocked_auth/ACCOUNT_SCOPE_MISSING`，不得借奇航个人权限做全量发现。
+  固定进入 `blocked_auth/ACCOUNT_SCOPE_MISSING`，不得借启航个人权限做全量发现。
 - 同 `(workspace,user,media,businessDate,jobType)` 生成确定性 Job ID；并发 tick 只保留一条。
 - cadence（频率）由外部 scheduler/config 决定；CLI 每次只执行一个确定性 tick 后退出。
 - 真实媒体写、Multica/OS/ChangeSet 执行仍关闭；不修改 `apps/web`、`apps/ui-layout-demo`。
@@ -73,7 +73,7 @@
 ## 完成判定
 
 - `implemented + local_pg_verified + codex_self_checked` 才可描述为本批完成。
-- 未部署、未真实奇航调用、未接外部 scheduler 时必须继续明确标注；Claude/arch 后审位保留。
+- 未部署、未真实启航调用、未接外部 scheduler 时必须继续明确标注；Claude/arch 后审位保留。
 
 ## 实施结果
 

@@ -1,0 +1,1867 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - link "Vercel" [ref=e6] [cursor=pointer]:
+          - /url: https://vercel.com/
+          - img "Vercel" [ref=e7]
+        - link [ref=e11] [cursor=pointer]:
+          - /url: /en
+          - paragraph [ref=e13]: AI Elements
+      - navigation "Main" [ref=e14]:
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - link "Docs" [ref=e18] [cursor=pointer]:
+              - /url: /en/docs
+          - listitem [ref=e19]:
+            - link "Components" [ref=e20] [cursor=pointer]:
+              - /url: /en/components
+          - listitem [ref=e21]:
+            - link "Examples" [ref=e22] [cursor=pointer]:
+              - /url: /en/examples
+      - generic [ref=e23]:
+        - button "Search... ⌘K" [ref=e24] [cursor=pointer]:
+          - generic [ref=e25]: Search...
+          - generic: ⌘K
+        - button "Ask AI" [ref=e26] [cursor=pointer]
+  - generic [ref=e30]:
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - heading "AI Elements" [level=1] [ref=e33]
+        - paragraph [ref=e34]: A component library and custom registry built on top of shadcn/ui to help you build AI-native applications faster.
+      - generic [ref=e35]:
+        - link "Explore Components" [ref=e36] [cursor=pointer]:
+          - /url: /en/components
+        - group [ref=e37]:
+          - group [ref=e38]:
+            - generic [ref=e39]: $
+          - textbox [ref=e40]: npx ai-elements
+          - group [ref=e41]:
+            - button "Copy" [ref=e42] [cursor=pointer]
+    - generic [ref=e43]:
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - heading "Fully Composable" [level=3] [ref=e46]
+          - paragraph [ref=e47]: Every component is a building block. Combine small, focused pieces to create exactly the UI you need.
+        - generic [ref=e48]:
+          - heading "AI SDK Integration" [level=3] [ref=e49]
+          - paragraph [ref=e50]: Deep integration with the AI SDK. Streaming, status states and type safety built-in.
+        - generic [ref=e51]:
+          - heading "shadcn/ui Foundation" [level=3] [ref=e52]
+          - paragraph [ref=e53]: Built on shadcn/ui conventions. Your existing theme and setup apply automatically.
+      - generic [ref=e54]:
+        - generic [ref=e55]:
+          - heading "Components to build anything" [level=2] [ref=e56]
+          - paragraph [ref=e57]: Mix and match components to build chat experiences, workflows, IDEs, voice agents and more.
+        - generic [ref=e59]:
+          - generic [ref=e60]:
+            - generic [ref=e62]:
+              - generic [ref=e63]:
+                - button "7 Queued" [expanded] [ref=e64] [cursor=pointer]
+                - list [ref=e74]:
+                  - listitem [ref=e75]:
+                    - generic [ref=e76]:
+                      - generic [ref=e78]: How do I set up the project?
+                      - generic [ref=e79]:
+                        - button "Remove from queue" [ref=e80] [cursor=pointer]
+                        - button "Send now" [ref=e81] [cursor=pointer]
+                  - listitem [ref=e82]:
+                    - generic [ref=e83]:
+                      - generic [ref=e85]: What is the roadmap for Q4?
+                      - generic [ref=e86]:
+                        - button "Remove from queue" [ref=e87] [cursor=pointer]
+                        - button "Send now" [ref=e88] [cursor=pointer]
+                  - listitem [ref=e89]:
+                    - generic [ref=e90]:
+                      - generic [ref=e92]: Update the default logo to this png.
+                      - generic [ref=e93]:
+                        - button "Remove from queue" [ref=e94] [cursor=pointer]
+                        - button "Send now" [ref=e95] [cursor=pointer]
+                    - img "setup-guide.png" [ref=e97]
+                  - listitem [ref=e98]:
+                    - generic [ref=e99]:
+                      - generic [ref=e101]: Please generate a changelog.
+                      - generic [ref=e102]:
+                        - button "Remove from queue" [ref=e103] [cursor=pointer]
+                        - button "Send now" [ref=e104] [cursor=pointer]
+                  - listitem [ref=e105]:
+                    - generic [ref=e106]:
+                      - generic [ref=e108]: Add dark mode support.
+                      - generic [ref=e109]:
+                        - button "Remove from queue" [ref=e110] [cursor=pointer]
+                        - button "Send now" [ref=e111] [cursor=pointer]
+                  - listitem [ref=e112]:
+                    - generic [ref=e113]:
+                      - generic [ref=e115]: Optimize database queries.
+                      - generic [ref=e116]:
+                        - button "Remove from queue" [ref=e117] [cursor=pointer]
+                        - button "Send now" [ref=e118] [cursor=pointer]
+                  - listitem [ref=e119]:
+                    - generic [ref=e120]:
+                      - generic [ref=e122]: Set up CI/CD pipeline.
+                      - generic [ref=e123]:
+                        - button "Remove from queue" [ref=e124] [cursor=pointer]
+                        - button "Send now" [ref=e125] [cursor=pointer]
+              - generic [ref=e126]:
+                - button "5 Todo" [expanded] [ref=e127] [cursor=pointer]
+                - list [ref=e137]:
+                  - listitem [ref=e138]:
+                    - generic [ref=e139]:
+                      - generic [ref=e141]: Write project documentation
+                      - button "Remove todo" [ref=e143] [cursor=pointer]
+                    - generic [ref=e144]: Complete the README and API docs
+                  - listitem [ref=e145]:
+                    - generic [ref=e146]:
+                      - generic [ref=e148]: Implement authentication
+                      - button "Remove todo" [ref=e150] [cursor=pointer]
+                  - listitem [ref=e151]:
+                    - generic [ref=e152]:
+                      - generic [ref=e154]: "Fix bug #42"
+                      - button "Remove todo" [ref=e156] [cursor=pointer]
+                    - generic [ref=e157]: Resolve crash on settings page
+                  - listitem [ref=e158]:
+                    - generic [ref=e159]:
+                      - generic [ref=e161]: Refactor queue logic
+                      - button "Remove todo" [ref=e163] [cursor=pointer]
+                    - generic [ref=e164]: Unify queue and todo state management
+                  - listitem [ref=e165]:
+                    - generic [ref=e166]:
+                      - generic [ref=e168]: Add unit tests
+                      - button "Remove todo" [ref=e170] [cursor=pointer]
+                    - generic [ref=e171]: Increase test coverage for hooks
+            - group [ref=e175]:
+              - group [ref=e176]:
+                - button [ref=e178] [cursor=pointer]
+                - button "1" [ref=e180] [cursor=pointer]
+                - button "1 Tab" [ref=e183] [cursor=pointer]
+              - textbox "Plan, search, build anything" [ref=e186]
+              - group [ref=e187]:
+                - button "openai logo GPT-4o" [ref=e189] [cursor=pointer]:
+                  - img "openai logo" [ref=e190]
+                  - generic [ref=e191]: GPT-4o
+                - generic [ref=e192]:
+                  - button [ref=e193] [cursor=pointer]
+                  - button "Submit" [ref=e194] [cursor=pointer]
+            - group [ref=e198]:
+              - button [ref=e199] [cursor=pointer]
+              - button [ref=e200] [cursor=pointer]
+              - button [ref=e201] [cursor=pointer]
+              - button [ref=e202] [cursor=pointer]
+              - button [ref=e203] [cursor=pointer]
+            - generic [ref=e205]:
+              - generic [ref=e206]:
+                - generic [ref=e207]:
+                  - generic [ref=e208]: Rewrite AI Elements to SolidJS
+                  - generic [ref=e216]: Rewrite the AI Elements component library from React to SolidJS while maintaining compatibility with existing React-based shadcn/ui components using solid-js/compat, updating all 29 components and their test suite.
+                - button "Toggle plan" [ref=e217] [cursor=pointer]
+              - button "Build ⌘↩" [ref=e221] [cursor=pointer]:
+                - text: Build
+                - generic [ref=e222]: ⌘↩
+          - generic [ref=e223]:
+            - generic [ref=e225]:
+              - generic [ref=e227]:
+                - generic [ref=e235]: Research Assistant
+                - generic [ref=e236]: openai/gpt-5.2-pro
+              - generic [ref=e237]:
+                - generic [ref=e238]:
+                  - text: Instructions
+                  - paragraph [ref=e240]: You are a helpful research assistant. Your job is to search the web for information and summarize findings for the user. Always cite your sources and provide accurate, up-to-date information.
+                - generic [ref=e241]:
+                  - text: Tools
+                  - generic [ref=e242]:
+                    - heading [level=3] [ref=e244]:
+                      - button "Search the web for information" [ref=e245] [cursor=pointer]
+                    - heading [level=3] [ref=e247]:
+                      - button "Read and parse a URL" [ref=e248] [cursor=pointer]
+                    - heading [level=3] [ref=e250]:
+                      - button "Summarize text into key points" [ref=e251] [cursor=pointer]
+                - generic [ref=e252]:
+                  - text: Output Schema
+                  - code [ref=e257]:
+                    - generic [ref=e258]: "z.object({"
+                    - generic [ref=e259]: "sentiment: z.enum(['positive', 'negative', 'neutral']),"
+                    - generic [ref=e260]: "score: z.number(),"
+                    - generic [ref=e261]: "summary: z.string(),"
+                    - generic [ref=e262]: "})"
+            - generic [ref=e264]:
+              - button "Chain of Thought" [expanded] [ref=e266] [cursor=pointer]
+              - generic [ref=e280]:
+                - generic [ref=e287]:
+                  - generic [ref=e288]: Searching for profiles for Hayden Bleasel
+                  - generic [ref=e289]:
+                    - generic [ref=e290]: www.x.com
+                    - generic [ref=e291]: www.instagram.com
+                    - generic [ref=e292]: www.github.com
+                - generic [ref=e300]:
+                  - generic [ref=e301]: Found the profile photo for Hayden Bleasel
+                  - generic [ref=e302]:
+                    - img "Example generated image" [ref=e304]
+                    - paragraph [ref=e305]: Hayden Bleasel's profile photo from x.com, showing a Ghibli-style man.
+                - generic [ref=e306]: Hayden Bleasel is an Australian product designer, software engineer, and founder. He is currently based in the United States working for Vercel, an American cloud application company.
+                - generic [ref=e319]:
+                  - generic [ref=e320]: Searching for recent work...
+                  - generic [ref=e321]:
+                    - generic [ref=e322]: www.github.com
+                    - generic [ref=e323]: www.dribbble.com
+          - generic [ref=e324]:
+            - generic [ref=e327]:
+              - paragraph [ref=e332] [cursor=pointer]: Found project files
+              - generic [ref=e336]:
+                - generic [ref=e337]: Searching "app/page.tsx, components structure"
+                - generic [ref=e339]:
+                  - text: Read
+                  - generic [ref=e340]:
+                    - img "React" [ref=e341]
+                    - generic [ref=e343]: page.tsx
+                - generic [ref=e344]: Scanning 52 files
+                - generic [ref=e345]: Scanning 2 files
+                - generic [ref=e347]:
+                  - text: Reading files
+                  - generic [ref=e348]:
+                    - img "React" [ref=e349]
+                    - generic [ref=e351]: layout.tsx
+            - generic [ref=e353]:
+              - generic [ref=e354]:
+                - button "database_query Pending" [expanded] [ref=e355] [cursor=pointer]:
+                  - generic [ref=e356]:
+                    - generic [ref=e359]: database_query
+                    - generic [ref=e360]: Pending
+                - generic [ref=e364]:
+                  - heading "Parameters" [level=4] [ref=e365]
+                  - code [ref=e370]:
+                    - generic [ref=e371]: "{}"
+              - button "database_query Awaiting Approval" [ref=e373] [cursor=pointer]:
+                - generic [ref=e374]:
+                  - generic [ref=e377]: database_query
+                  - generic [ref=e378]: Awaiting Approval
+              - button "database_query Responded" [ref=e382] [cursor=pointer]:
+                - generic [ref=e383]:
+                  - generic [ref=e386]: database_query
+                  - generic [ref=e387]: Responded
+              - button "database_query Running" [ref=e391] [cursor=pointer]:
+                - generic [ref=e392]:
+                  - generic [ref=e395]: database_query
+                  - generic [ref=e396]: Running
+              - button "database_query Completed" [ref=e400] [cursor=pointer]:
+                - generic [ref=e401]:
+                  - generic [ref=e404]: database_query
+                  - generic [ref=e405]: Completed
+              - button "database_query Error" [ref=e409] [cursor=pointer]:
+                - generic [ref=e410]:
+                  - generic [ref=e413]: database_query
+                  - generic [ref=e414]: Error
+              - button "database_query Denied" [ref=e418] [cursor=pointer]:
+                - generic [ref=e419]:
+                  - generic [ref=e422]: database_query
+                  - generic [ref=e423]: Denied
+            - generic [ref=e427]:
+              - generic [ref=e428]:
+                - generic [ref=e429]: greet.ts
+                - generic [ref=e434]:
+                  - combobox [ref=e435] [cursor=pointer]
+                  - combobox [ref=e436]
+                  - button [ref=e437] [cursor=pointer]
+              - code [ref=e440]:
+                - generic [ref=e441]: "function greet(name: string): string {"
+                - generic [ref=e442]: "return `Hello, ${name}!`;"
+                - generic [ref=e443]: "}"
+                - generic [ref=e445]: console.log(greet("World"));
+            - generic [ref=e447]:
+              - generic [ref=e448]:
+                - heading "Environment Variables" [level=3] [ref=e449]
+                - generic [ref=e450]:
+                  - switch "Toggle value visibility" [ref=e457] [cursor=pointer]
+                  - checkbox
+              - generic [ref=e458]:
+                - generic [ref=e459]:
+                  - generic [ref=e460]:
+                    - generic [ref=e461]: DATABASE_URL
+                    - generic [ref=e462]: Required
+                  - generic [ref=e463]:
+                    - generic [ref=e464]: ••••••••••••••••••••
+                    - button [ref=e465] [cursor=pointer]
+                - generic [ref=e466]:
+                  - generic [ref=e467]:
+                    - generic [ref=e468]: API_KEY
+                    - generic [ref=e469]: Required
+                  - generic [ref=e470]:
+                    - generic [ref=e471]: •••••••••••••••••••
+                    - button [ref=e472] [cursor=pointer]
+                - generic [ref=e473]:
+                  - generic [ref=e474]: NODE_ENV
+                  - generic [ref=e476]:
+                    - generic [ref=e477]: ••••••••••
+                    - button [ref=e478] [cursor=pointer]
+                - generic [ref=e479]:
+                  - generic [ref=e480]: PORT
+                  - generic [ref=e482]:
+                    - generic [ref=e483]: ••••
+                    - button [ref=e484] [cursor=pointer]
+      - generic [ref=e485]:
+        - generic [ref=e486]:
+          - heading "Fast, Flexible Installation" [level=2] [ref=e487]
+          - paragraph [ref=e488]: Install only what you need. The CLI adds components directly to your codebase with full source code access. No hidden dependencies, tree-shaking friendly.
+        - generic [ref=e490]:
+          - text: $npx ai-elements@latest add conversation
+          - generic [ref=e491]:
+            - paragraph [ref=e492]: ✔ Checking registry.
+            - paragraph [ref=e493]: ✔ Installing dependencies.
+            - paragraph [ref=e494]: "✔ Created 1 file:"
+            - paragraph [ref=e495]: "- components/ai-elements/conversation.tsx"
+            - paragraph [ref=e496]: "ℹ Skipped 1 files: (files might be identical, use --overwrite to overwrite)"
+            - paragraph [ref=e497]: "- components/ui/button.tsx"
+      - generic [ref=e498]:
+        - generic [ref=e499]:
+          - heading "Get started quickly" [level=2] [ref=e500]
+          - paragraph [ref=e501]: See AI Elements in action with one of our examples.
+        - generic [ref=e502]:
+          - link [ref=e503] [cursor=pointer]:
+            - /url: /examples/chatbot
+            - heading "Chatbot" [level=3] [ref=e504]
+            - paragraph [ref=e505]: A full-featured chat interface with streaming, markdown and file attachments.
+            - code [ref=e510]:
+              - generic [ref=e511]: "\"use client\";"
+              - generic [ref=e513]: "import {"
+              - generic [ref=e514]: Conversation,
+              - generic [ref=e515]: ConversationContent,
+              - generic [ref=e516]: ConversationScrollButton,
+              - generic [ref=e517]: "} from \"@repo/elements/conversation\";"
+              - generic [ref=e518]: "import {"
+              - generic [ref=e519]: Message,
+              - generic [ref=e520]: MessageBranch,
+              - generic [ref=e521]: MessageBranchContent,
+              - generic [ref=e522]: MessageBranchNext,
+              - generic [ref=e523]: MessageBranchPage,
+              - generic [ref=e524]: MessageBranchPrevious,
+              - generic [ref=e525]: MessageBranchSelector,
+              - generic [ref=e526]: MessageContent,
+              - generic [ref=e527]: MessageResponse,
+              - generic [ref=e528]: "} from \"@repo/elements/message\";"
+              - generic [ref=e529]: "import type { PromptInputMessage } from \"@repo/elements/prompt-input\";"
+              - generic [ref=e530]: "import {"
+              - generic [ref=e531]: PromptInput,
+              - generic [ref=e532]: PromptInputButton,
+              - generic [ref=e533]: PromptInputFooter,
+              - generic [ref=e534]: PromptInputTextarea,
+              - generic [ref=e535]: PromptInputTools,
+              - generic [ref=e536]: "} from \"@repo/elements/prompt-input\";"
+              - generic [ref=e537]: "import {"
+              - generic [ref=e538]: Reasoning,
+              - generic [ref=e539]: ReasoningContent,
+              - generic [ref=e540]: ReasoningTrigger,
+              - generic [ref=e541]: "} from \"@repo/elements/reasoning\";"
+              - generic [ref=e542]: "import {"
+              - generic [ref=e543]: Source,
+              - generic [ref=e544]: Sources,
+              - generic [ref=e545]: SourcesContent,
+              - generic [ref=e546]: SourcesTrigger,
+              - generic [ref=e547]: "} from \"@repo/elements/sources\";"
+              - generic [ref=e548]: "import { Suggestion, Suggestions } from \"@repo/elements/suggestion\";"
+              - generic [ref=e549]: "import {"
+              - generic [ref=e550]: DropdownMenu,
+              - generic [ref=e551]: DropdownMenuContent,
+              - generic [ref=e552]: DropdownMenuItem,
+              - generic [ref=e553]: DropdownMenuTrigger,
+              - generic [ref=e554]: "} from \"@repo/shadcn-ui/components/ui/dropdown-menu\";"
+              - generic [ref=e555]: "import { cn } from \"@repo/shadcn-ui/lib/utils\";"
+              - generic [ref=e556]: "import type { ToolUIPart } from \"ai\";"
+              - generic [ref=e557]: "import {"
+              - generic [ref=e558]: AudioWaveformIcon,
+              - generic [ref=e559]: BarChartIcon,
+              - generic [ref=e560]: BoxIcon,
+              - generic [ref=e561]: CameraIcon,
+              - generic [ref=e562]: CodeSquareIcon,
+              - generic [ref=e563]: FileIcon,
+              - generic [ref=e564]: GlobeIcon,
+              - generic [ref=e565]: GraduationCapIcon,
+              - generic [ref=e566]: ImageIcon,
+              - generic [ref=e567]: NotepadTextIcon,
+              - generic [ref=e568]: PaperclipIcon,
+              - generic [ref=e569]: ScreenShareIcon,
+              - generic [ref=e570]: "} from \"lucide-react\";"
+              - generic [ref=e571]: "import { nanoid } from \"nanoid\";"
+              - generic [ref=e572]: "import { memo, useCallback, useEffect, useState } from \"react\";"
+              - generic [ref=e573]: "import { toast } from \"sonner\";"
+              - generic [ref=e575]: "interface MessageType {"
+              - generic [ref=e576]: "key: string;"
+              - generic [ref=e577]: "from: \"user\" | \"assistant\";"
+              - generic [ref=e578]: "sources?: { href: string; title: string }[];"
+              - generic [ref=e579]: "versions: {"
+              - generic [ref=e580]: "id: string;"
+              - generic [ref=e581]: "content: string;"
+              - generic [ref=e582]: "}[];"
+              - generic [ref=e583]: "reasoning?: {"
+              - generic [ref=e584]: "content: string;"
+              - generic [ref=e585]: "duration: number;"
+              - generic [ref=e586]: "};"
+              - generic [ref=e587]: "tools?: {"
+              - generic [ref=e588]: "name: string;"
+              - generic [ref=e589]: "description: string;"
+              - generic [ref=e590]: "status: ToolUIPart[\"state\"];"
+              - generic [ref=e591]: "parameters: Record<string, unknown>;"
+              - generic [ref=e592]: "result: string | undefined;"
+              - generic [ref=e593]: "error: string | undefined;"
+              - generic [ref=e594]: "}[];"
+              - generic [ref=e595]: "isReasoningComplete?: boolean;"
+              - generic [ref=e596]: "isContentComplete?: boolean;"
+              - generic [ref=e597]: "isReasoningStreaming?: boolean;"
+              - generic [ref=e598]: "}"
+              - generic [ref=e600]: "const mockMessages: MessageType[] = ["
+              - generic [ref=e601]: "{"
+              - generic [ref=e602]: "from: \"user\","
+              - generic [ref=e603]: "key: nanoid(),"
+              - generic [ref=e604]: "versions: ["
+              - generic [ref=e605]: "{"
+              - generic [ref=e606]: "content: \"Can you explain how to use React hooks effectively?\","
+              - generic [ref=e607]: "id: nanoid(),"
+              - generic [ref=e608]: "},"
+              - generic [ref=e609]: "],"
+              - generic [ref=e610]: "},"
+              - generic [ref=e611]: "{"
+              - generic [ref=e612]: "from: \"assistant\","
+              - generic [ref=e613]: "key: nanoid(),"
+              - generic [ref=e614]: "sources: ["
+              - generic [ref=e615]: "{"
+              - generic [ref=e616]: "href: \"https://react.dev/reference/react\","
+              - generic [ref=e617]: "title: \"React Documentation\","
+              - generic [ref=e618]: "},"
+              - generic [ref=e619]: "{"
+              - generic [ref=e620]: "href: \"https://react.dev/reference/react-dom\","
+              - generic [ref=e621]: "title: \"React DOM Documentation\","
+              - generic [ref=e622]: "},"
+              - generic [ref=e623]: "],"
+              - generic [ref=e624]: "tools: ["
+              - generic [ref=e625]: "{"
+              - generic [ref=e626]: "description: \"Searching React documentation\","
+              - generic [ref=e627]: "error: undefined,"
+              - generic [ref=e628]: "name: \"mcp\","
+              - generic [ref=e629]: "parameters: {"
+              - generic [ref=e630]: "query: \"React hooks best practices\","
+              - generic [ref=e631]: "source: \"react.dev\","
+              - generic [ref=e632]: "},"
+              - generic [ref=e633]: "result: `{"
+              - generic [ref=e634]: "\"query\": \"React hooks best practices\","
+              - generic [ref=e635]: "\"results\": ["
+              - generic [ref=e636]: "{"
+              - generic [ref=e637]: "\"title\": \"Rules of Hooks\","
+              - generic [ref=e638]: "\"url\": \"https://react.dev/warnings/invalid-hook-call-warning\","
+              - generic [ref=e639]: "\"snippet\": \"Hooks must be called at the top level of your React function components or custom hooks. Don't call hooks inside loops, conditions, or nested functions.\""
+              - generic [ref=e640]: "},"
+              - generic [ref=e641]: "{"
+              - generic [ref=e642]: "\"title\": \"useState Hook\","
+              - generic [ref=e643]: "\"url\": \"https://react.dev/reference/react/useState\","
+              - generic [ref=e644]: "\"snippet\": \"useState is a React Hook that lets you add state to your function components. It returns an array with two values: the current state and a function to update it.\""
+              - generic [ref=e645]: "},"
+              - generic [ref=e646]: "{"
+              - generic [ref=e647]: "\"title\": \"useEffect Hook\","
+              - generic [ref=e648]: "\"url\": \"https://react.dev/reference/react/useEffect\","
+              - generic [ref=e649]: "\"snippet\": \"useEffect lets you synchronize a component with external systems. It runs after render and can be used to perform side effects like data fetching.\""
+              - generic [ref=e650]: "}"
+              - generic [ref=e651]: "]"
+              - generic [ref=e652]: "}`,"
+              - generic [ref=e653]: "status: \"input-available\","
+              - generic [ref=e654]: "},"
+              - generic [ref=e655]: "],"
+              - generic [ref=e656]: "versions: ["
+              - generic [ref=e657]: "{"
+              - generic [ref=e658]: "content: `# React Hooks Best Practices"
+              - generic [ref=e660]: "React hooks are a powerful feature that let you use state and other React features without writing classes. Here are some tips for using them effectively:"
+              - generic [ref=e662]: "## Rules of Hooks"
+              - generic [ref=e664]: 1. **Only call hooks at the top level** of your component or custom hooks
+              - generic [ref=e665]: 2. **Don't call hooks inside loops, conditions, or nested functions**
+              - generic [ref=e667]: "## Common Hooks"
+              - generic [ref=e669]: "- **useState**: For local component state"
+              - generic [ref=e670]: "- **useEffect**: For side effects like data fetching"
+              - generic [ref=e671]: "- **useContext**: For consuming context"
+              - generic [ref=e672]: "- **useReducer**: For complex state logic"
+              - generic [ref=e673]: "- **useCallback**: For memoizing functions"
+              - generic [ref=e674]: "- **useMemo**: For memoizing values"
+              - generic [ref=e676]: "## Example of useState and useEffect"
+              - generic [ref=e678]: "\\`\\`\\`jsx"
+              - generic [ref=e679]: "function ProfilePage({ userId }) {"
+              - generic [ref=e680]: const [user, setUser] = useState(null);
+              - generic [ref=e682]: "useEffect(() => {"
+              - generic [ref=e683]: // This runs after render and when userId changes
+              - generic [ref=e684]: "fetchUser(userId).then(userData => {"
+              - generic [ref=e685]: setUser(userData);
+              - generic [ref=e686]: "});"
+              - generic [ref=e687]: "}, [userId]);"
+              - generic [ref=e689]: "return user ? <Profile user={user} /> : <Loading />;"
+              - generic [ref=e690]: "}"
+              - generic [ref=e691]: "\\`\\`\\`"
+              - generic [ref=e693]: "Would you like me to explain any specific hook in more detail?`,"
+              - generic [ref=e694]: "id: nanoid(),"
+              - generic [ref=e695]: "},"
+              - generic [ref=e696]: "],"
+              - generic [ref=e697]: "},"
+              - generic [ref=e698]: "{"
+              - generic [ref=e699]: "from: \"user\","
+              - generic [ref=e700]: "key: nanoid(),"
+              - generic [ref=e701]: "versions: ["
+              - generic [ref=e702]: "{"
+              - generic [ref=e703]: "content:"
+              - generic [ref=e704]: "\"Yes, could you explain useCallback and useMemo in more detail? When should I use one over the other?\","
+              - generic [ref=e705]: "id: nanoid(),"
+              - generic [ref=e706]: "},"
+              - generic [ref=e707]: "{"
+              - generic [ref=e708]: "content:"
+              - generic [ref=e709]: "\"I'm particularly interested in understanding the performance implications of useCallback and useMemo. Could you break down when each is most appropriate?\","
+              - generic [ref=e710]: "id: nanoid(),"
+              - generic [ref=e711]: "},"
+              - generic [ref=e712]: "{"
+              - generic [ref=e713]: "content:"
+              - generic [ref=e714]: "\"Thanks for the overview! Could you dive deeper into the specific use cases where useCallback and useMemo make the biggest difference in React applications?\","
+              - generic [ref=e715]: "id: nanoid(),"
+              - generic [ref=e716]: "},"
+              - generic [ref=e717]: "],"
+              - generic [ref=e718]: "},"
+              - generic [ref=e719]: "{"
+              - generic [ref=e720]: "from: \"assistant\","
+              - generic [ref=e721]: "key: nanoid(),"
+              - generic [ref=e722]: "reasoning: {"
+              - generic [ref=e723]: "content: `The user is asking for a detailed explanation of useCallback and useMemo. I should provide a clear and concise explanation of each hook's purpose and how they differ."
+              - generic [ref=e725]: The useCallback hook is used to memoize functions to prevent unnecessary re-renders of child components that receive functions as props.
+              - generic [ref=e727]: The useMemo hook is used to memoize values to avoid expensive recalculations on every render.
+              - generic [ref=e729]: "Both hooks help with performance optimization, but they serve different purposes.`,"
+              - generic [ref=e730]: "duration: 10,"
+              - generic [ref=e731]: "},"
+              - generic [ref=e732]: "versions: ["
+              - generic [ref=e733]: "{"
+              - generic [ref=e734]: "content: `## useCallback vs useMemo"
+              - generic [ref=e736]: "Both hooks help with *performance optimization*, but they serve different purposes:"
+              - generic [ref=e738]: "### useCallback"
+              - generic [ref=e740]: "\\`useCallback\\` memoizes **functions** to prevent unnecessary re-renders of child components that receive functions as props."
+              - generic [ref=e742]: "\\`\\`\\`jsx"
+              - generic [ref=e743]: // Without useCallback - a new function is created on every render
+              - generic [ref=e744]: "const handleClick = () => {"
+              - generic [ref=e745]: console.log(count);
+              - generic [ref=e746]: "};"
+              - generic [ref=e748]: // With useCallback - the function is only recreated when dependencies change
+              - generic [ref=e749]: "const handleClick = useCallback(() => {"
+              - generic [ref=e750]: console.log(count);
+              - generic [ref=e751]: "}, [count]);"
+              - generic [ref=e752]: "\\`\\`\\`"
+              - generic [ref=e754]: "### useMemo"
+              - generic [ref=e756]: "\\`useMemo\\` memoizes **values** to avoid expensive recalculations on every render."
+              - generic [ref=e758]: "\\`\\`\\`jsx"
+              - generic [ref=e759]: // Without useMemo - expensive calculation runs on every render
+              - generic [ref=e760]: const sortedList = expensiveSort(items);
+              - generic [ref=e762]: // With useMemo - calculation only runs when items change
+              - generic [ref=e763]: const sortedList = useMemo(() => expensiveSort(items), [items]);
+              - generic [ref=e764]: "\\`\\`\\`"
+              - generic [ref=e766]: "### When to use which?"
+              - generic [ref=e768]: "- Use **useCallback** when:"
+              - generic [ref=e769]: "- Passing callbacks to optimized child components that rely on reference equality"
+              - generic [ref=e770]: "- Working with event handlers that you pass to child components"
+              - generic [ref=e772]: "- Use **useMemo** when:"
+              - generic [ref=e773]: "- You have computationally expensive calculations"
+              - generic [ref=e774]: "- You want to avoid recreating objects that are used as dependencies for other hooks"
+              - generic [ref=e776]: "### Performance Note"
+              - generic [ref=e778]: Don't overuse these hooks! They come with their own overhead. Only use them when you have identified a genuine performance issue.
+              - generic [ref=e780]: "### ~~Deprecated Methods~~"
+              - generic [ref=e782]: "Note that ~~class-based lifecycle methods~~ like \\`componentDidMount\\` are now replaced by the \\`useEffect\\` hook in modern React development.`,"
+              - generic [ref=e783]: "id: nanoid(),"
+              - generic [ref=e784]: "},"
+              - generic [ref=e785]: "],"
+              - generic [ref=e786]: "},"
+              - generic [ref=e787]: "];"
+              - generic [ref=e789]: const suggestions = [
+              - generic [ref=e790]: "{ color: \"#76d0eb\", icon: BarChartIcon, text: \"Analyze data\" },"
+              - generic [ref=e791]: "{ color: \"#76d0eb\", icon: BoxIcon, text: \"Surprise me\" },"
+              - generic [ref=e792]: "{ color: \"#ea8444\", icon: NotepadTextIcon, text: \"Summarize text\" },"
+              - generic [ref=e793]: "{ color: \"#6c71ff\", icon: CodeSquareIcon, text: \"Code\" },"
+              - generic [ref=e794]: "{ color: \"#76d0eb\", icon: GraduationCapIcon, text: \"Get advice\" },"
+              - generic [ref=e795]: "{ text: \"More\" },"
+              - generic [ref=e796]: "];"
+              - generic [ref=e798]: const mockMessageResponses = [
+              - generic [ref=e799]: "\"That's a great question! Let me help you understand this concept better. The key thing to remember is that proper implementation requires careful consideration of the underlying principles and best practices in the field.\","
+              - generic [ref=e800]: "\"I'd be happy to explain this topic in detail. From my understanding, there are several important factors to consider when approaching this problem. Let me break it down step by step for you.\","
+              - generic [ref=e801]: "\"This is an interesting topic that comes up frequently. The solution typically involves understanding the core concepts and applying them in the right context. Here's what I recommend...\","
+              - generic [ref=e802]: "\"Great choice of topic! This is something that many developers encounter. The approach I'd suggest is to start with the fundamentals and then build up to more complex scenarios.\","
+              - generic [ref=e803]: "\"That's definitely worth exploring. From what I can see, the best way to handle this is to consider both the theoretical aspects and practical implementation details.\","
+              - generic [ref=e804]: "];"
+              - generic [ref=e806]: "interface SuggestionItemProps {"
+              - generic [ref=e807]: "icon?: React.ComponentType<{ size: number; style?: React.CSSProperties }>;"
+              - generic [ref=e808]: "text: string;"
+              - generic [ref=e809]: "color?: string;"
+              - generic [ref=e810]: "onSuggestionClick: (text: string) => void;"
+              - generic [ref=e811]: "}"
+              - generic [ref=e813]: const SuggestionItem = memo(
+              - generic [ref=e814]: "({ icon: Icon, text, color, onSuggestionClick }: SuggestionItemProps) => {"
+              - generic [ref=e815]: const handleClick = useCallback(
+              - generic [ref=e816]: () => onSuggestionClick(text),
+              - generic [ref=e817]: "[onSuggestionClick, text]"
+              - generic [ref=e818]: );
+              - generic [ref=e820]: return (
+              - generic [ref=e821]: <Suggestion
+              - generic [ref=e822]: className="font-normal text-foreground"
+              - generic [ref=e823]: "onClick={handleClick}"
+              - generic [ref=e824]: "suggestion={text}"
+              - generic [ref=e825]: ">"
+              - generic [ref=e826]: "{Icon && <Icon size={16} style={{ color }} />}"
+              - generic [ref=e827]: "{text}"
+              - generic [ref=e828]: </Suggestion>
+              - generic [ref=e829]: );
+              - generic [ref=e830]: "}"
+              - generic [ref=e831]: );
+              - generic [ref=e833]: SuggestionItem.displayName = "SuggestionItem";
+              - generic [ref=e835]: "const Example = () => {"
+              - generic [ref=e836]: const [text, setText] = useState<string>("");
+              - generic [ref=e837]: const [_useWebSearch, setUseWebSearch] = useState<boolean>(false);
+              - generic [ref=e838]: const [_useMicrophone, setUseMicrophone] = useState<boolean>(false);
+              - generic [ref=e839]: const [_status, setStatus] = useState<
+              - generic [ref=e840]: "\"submitted\" | \"streaming\" | \"ready\" | \"error\""
+              - generic [ref=e841]: ">(\"ready\");"
+              - generic [ref=e842]: const [messages, setMessages] = useState<MessageType[]>([]);
+              - generic [ref=e843]: const [_streamingMessageId, setStreamingMessageId] = useState<string | null>(
+              - generic [ref=e844]: "null"
+              - generic [ref=e845]: );
+              - generic [ref=e847]: const streamReasoning = async (
+              - generic [ref=e848]: "messageKey: string,"
+              - generic [ref=e849]: "_versionId: string,"
+              - generic [ref=e850]: "reasoningContent: string"
+              - generic [ref=e851]: ") => {"
+              - generic [ref=e852]: const words = reasoningContent.split(" ");
+              - generic [ref=e853]: let currentContent = "";
+              - generic [ref=e855]: "for (let i = 0; i < words.length; i += 1) {"
+              - generic [ref=e856]: "currentContent += (i > 0 ? \" \" : \"\") + words[i];"
+              - generic [ref=e858]: // Intentionally capture currentContent at each iteration for streaming effect
+              - generic [ref=e859]: // oxlint-disable-next-line eslint(no-loop-func)
+              - generic [ref=e860]: setMessages((prev) =>
+              - generic [ref=e861]: "prev.map((msg) => {"
+              - generic [ref=e862]: "if (msg.key === messageKey) {"
+              - generic [ref=e863]: "return {"
+              - generic [ref=e864]: ...msg,
+              - generic [ref=e865]: "reasoning: msg.reasoning"
+              - generic [ref=e866]: "? { ...msg.reasoning, content: currentContent }"
+              - generic [ref=e867]: ": undefined,"
+              - generic [ref=e868]: "};"
+              - generic [ref=e869]: "}"
+              - generic [ref=e870]: return msg;
+              - generic [ref=e871]: "})"
+              - generic [ref=e872]: );
+              - generic [ref=e874]: // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
+              - generic [ref=e875]: "await new Promise((resolve) => {"
+              - generic [ref=e876]: setTimeout(resolve, Math.random() * 30 + 20);
+              - generic [ref=e877]: "});"
+              - generic [ref=e878]: "}"
+              - generic [ref=e880]: // Mark reasoning as complete
+              - generic [ref=e881]: setMessages((prev) =>
+              - generic [ref=e882]: "prev.map((msg) => {"
+              - generic [ref=e883]: "if (msg.key === messageKey) {"
+              - generic [ref=e884]: "return {"
+              - generic [ref=e885]: ...msg,
+              - generic [ref=e886]: "isReasoningComplete: true,"
+              - generic [ref=e887]: "isReasoningStreaming: false,"
+              - generic [ref=e888]: "};"
+              - generic [ref=e889]: "}"
+              - generic [ref=e890]: return msg;
+              - generic [ref=e891]: "})"
+              - generic [ref=e892]: );
+              - generic [ref=e893]: "};"
+              - generic [ref=e895]: const streamContent = async (
+              - generic [ref=e896]: "messageKey: string,"
+              - generic [ref=e897]: "versionId: string,"
+              - generic [ref=e898]: "content: string"
+              - generic [ref=e899]: ") => {"
+              - generic [ref=e900]: const words = content.split(" ");
+              - generic [ref=e901]: let currentContent = "";
+              - generic [ref=e903]: "for (let i = 0; i < words.length; i += 1) {"
+              - generic [ref=e904]: "currentContent += (i > 0 ? \" \" : \"\") + words[i];"
+              - generic [ref=e906]: // Intentionally capture currentContent at each iteration for streaming effect
+              - generic [ref=e907]: // oxlint-disable-next-line eslint(no-loop-func)
+              - generic [ref=e908]: setMessages((prev) =>
+              - generic [ref=e909]: "prev.map((msg) => {"
+              - generic [ref=e910]: "if (msg.key === messageKey) {"
+              - generic [ref=e911]: "return {"
+              - generic [ref=e912]: ...msg,
+              - generic [ref=e913]: "versions: msg.versions.map((v) =>"
+              - generic [ref=e914]: "v.id === versionId ? { ...v, content: currentContent } : v"
+              - generic [ref=e915]: ),
+              - generic [ref=e916]: "};"
+              - generic [ref=e917]: "}"
+              - generic [ref=e918]: return msg;
+              - generic [ref=e919]: "})"
+              - generic [ref=e920]: );
+              - generic [ref=e922]: // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
+              - generic [ref=e923]: "await new Promise((resolve) => {"
+              - generic [ref=e924]: setTimeout(resolve, Math.random() * 50 + 25);
+              - generic [ref=e925]: "});"
+              - generic [ref=e926]: "}"
+              - generic [ref=e928]: // Mark content as complete
+              - generic [ref=e929]: setMessages((prev) =>
+              - generic [ref=e930]: "prev.map((msg) => {"
+              - generic [ref=e931]: "if (msg.key === messageKey) {"
+              - generic [ref=e932]: "return { ...msg, isContentComplete: true };"
+              - generic [ref=e933]: "}"
+              - generic [ref=e934]: return msg;
+              - generic [ref=e935]: "})"
+              - generic [ref=e936]: );
+              - generic [ref=e937]: "};"
+              - generic [ref=e939]: "// biome-ignore lint/correctness/useExhaustiveDependencies: streamContent and streamReasoning only use stable setMessages"
+              - generic [ref=e940]: const streamMessageResponse = useCallback(
+              - generic [ref=e941]: async (
+              - generic [ref=e942]: "messageKey: string,"
+              - generic [ref=e943]: "versionId: string,"
+              - generic [ref=e944]: "content: string,"
+              - generic [ref=e945]: "reasoning?: { content: string; duration: number }"
+              - generic [ref=e946]: ") => {"
+              - generic [ref=e947]: setStatus("streaming");
+              - generic [ref=e948]: setStreamingMessageId(versionId);
+              - generic [ref=e950]: // First stream the reasoning if it exists
+              - generic [ref=e951]: "if (reasoning) {"
+              - generic [ref=e952]: await streamReasoning(messageKey, versionId, reasoning.content);
+              - generic [ref=e953]: // Pause between reasoning and content
+              - generic [ref=e954]: // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
+              - generic [ref=e955]: "await new Promise((resolve) => {"
+              - generic [ref=e956]: setTimeout(resolve, 500);
+              - generic [ref=e957]: "});"
+              - generic [ref=e958]: "}"
+              - generic [ref=e960]: // Then stream the content
+              - generic [ref=e961]: await streamContent(messageKey, versionId, content);
+              - generic [ref=e963]: setStatus("ready");
+              - generic [ref=e964]: setStreamingMessageId(null);
+              - generic [ref=e965]: "},"
+              - generic [ref=e966]: "[]"
+              - generic [ref=e967]: );
+              - generic [ref=e969]: const streamMessage = useCallback(
+              - generic [ref=e970]: "async (message: MessageType) => {"
+              - generic [ref=e971]: "if (message.from === \"user\") {"
+              - generic [ref=e972]: setMessages((prev) => [...prev, message]);
+              - generic [ref=e973]: return;
+              - generic [ref=e974]: "}"
+              - generic [ref=e976]: // Add empty assistant message with reasoning structure
+              - generic [ref=e977]: "const newMessage = {"
+              - generic [ref=e978]: ...message,
+              - generic [ref=e979]: "isContentComplete: false,"
+              - generic [ref=e980]: "isReasoningComplete: false,"
+              - generic [ref=e981]: "isReasoningStreaming: !!message.reasoning,"
+              - generic [ref=e982]: "reasoning: message.reasoning"
+              - generic [ref=e983]: "? { ...message.reasoning, content: \"\" }"
+              - generic [ref=e984]: ": undefined,"
+              - generic [ref=e985]: "versions: message.versions.map((v) => ({ ...v, content: \"\" })),"
+              - generic [ref=e986]: "};"
+              - generic [ref=e988]: setMessages((prev) => [...prev, newMessage]);
+              - generic [ref=e990]: // Get the first version for streaming
+              - generic [ref=e991]: const [firstVersion] = message.versions;
+              - generic [ref=e992]: "if (!firstVersion) {"
+              - generic [ref=e993]: return;
+              - generic [ref=e994]: "}"
+              - generic [ref=e996]: // Stream the response
+              - generic [ref=e997]: await streamMessageResponse(
+              - generic [ref=e998]: newMessage.key,
+              - generic [ref=e999]: firstVersion.id,
+              - generic [ref=e1000]: firstVersion.content,
+              - generic [ref=e1001]: message.reasoning
+              - generic [ref=e1002]: );
+              - generic [ref=e1003]: "},"
+              - generic [ref=e1004]: "[streamMessageResponse]"
+              - generic [ref=e1005]: );
+              - generic [ref=e1007]: const addUserMessage = useCallback(
+              - generic [ref=e1008]: "(content: string) => {"
+              - generic [ref=e1009]: "const userMessage: MessageType = {"
+              - generic [ref=e1010]: "from: \"user\","
+              - generic [ref=e1011]: "key: `user-${Date.now()}`,"
+              - generic [ref=e1012]: "versions: ["
+              - generic [ref=e1013]: "{"
+              - generic [ref=e1014]: content,
+              - generic [ref=e1015]: "id: `user-${Date.now()}`,"
+              - generic [ref=e1016]: "},"
+              - generic [ref=e1017]: "],"
+              - generic [ref=e1018]: "};"
+              - generic [ref=e1020]: setMessages((prev) => [...prev, userMessage]);
+              - generic [ref=e1022]: "setTimeout(() => {"
+              - generic [ref=e1023]: "const assistantMessageKey = `assistant-${Date.now()}`;"
+              - generic [ref=e1024]: "const assistantMessageId = `version-${Date.now()}`;"
+              - generic [ref=e1025]: const randomMessageResponse =
+              - generic [ref=e1026]: mockMessageResponses[
+              - generic [ref=e1027]: Math.floor(Math.random() * mockMessageResponses.length)
+              - generic [ref=e1028]: "];"
+              - generic [ref=e1030]: // Create reasoning for some responses
+              - generic [ref=e1031]: const shouldHaveReasoning = Math.random() > 0.5;
+              - generic [ref=e1032]: const reasoning = shouldHaveReasoning
+              - generic [ref=e1033]: "? {"
+              - generic [ref=e1034]: "content:"
+              - generic [ref=e1035]: "\"Let me think about this question carefully. I need to provide a comprehensive and helpful response that addresses the user's needs while being clear and concise.\","
+              - generic [ref=e1036]: "duration: 3,"
+              - generic [ref=e1037]: "}"
+              - generic [ref=e1038]: ": undefined;"
+              - generic [ref=e1040]: "const assistantMessage: MessageType = {"
+              - generic [ref=e1041]: "from: \"assistant\","
+              - generic [ref=e1042]: "isContentComplete: false,"
+              - generic [ref=e1043]: "isReasoningComplete: false,"
+              - generic [ref=e1044]: "isReasoningStreaming: !!reasoning,"
+              - generic [ref=e1045]: "key: assistantMessageKey,"
+              - generic [ref=e1046]: "reasoning: reasoning ? { ...reasoning, content: \"\" } : undefined,"
+              - generic [ref=e1047]: "versions: ["
+              - generic [ref=e1048]: "{"
+              - generic [ref=e1049]: "content: \"\","
+              - generic [ref=e1050]: "id: assistantMessageId,"
+              - generic [ref=e1051]: "},"
+              - generic [ref=e1052]: "],"
+              - generic [ref=e1053]: "};"
+              - generic [ref=e1055]: setMessages((prev) => [...prev, assistantMessage]);
+              - generic [ref=e1056]: streamMessageResponse(
+              - generic [ref=e1057]: assistantMessageKey,
+              - generic [ref=e1058]: assistantMessageId,
+              - generic [ref=e1059]: randomMessageResponse,
+              - generic [ref=e1060]: reasoning
+              - generic [ref=e1061]: );
+              - generic [ref=e1062]: "}, 500);"
+              - generic [ref=e1063]: "},"
+              - generic [ref=e1064]: "[streamMessageResponse]"
+              - generic [ref=e1065]: );
+              - generic [ref=e1067]: "useEffect(() => {"
+              - generic [ref=e1068]: // Reset state on mount to ensure fresh component
+              - generic [ref=e1069]: setMessages([]);
+              - generic [ref=e1071]: "const processMessages = async () => {"
+              - generic [ref=e1072]: "for (let i = 0; i < mockMessages.length; i += 1) {"
+              - generic [ref=e1073]: await streamMessage(mockMessages[i]);
+              - generic [ref=e1075]: "if (i < mockMessages.length - 1) {"
+              - generic [ref=e1076]: // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
+              - generic [ref=e1077]: "await new Promise((resolve) => {"
+              - generic [ref=e1078]: setTimeout(resolve, 1000);
+              - generic [ref=e1079]: "});"
+              - generic [ref=e1080]: "}"
+              - generic [ref=e1081]: "}"
+              - generic [ref=e1082]: "};"
+              - generic [ref=e1084]: // Small delay to ensure state is reset before starting
+              - generic [ref=e1085]: "const timer = setTimeout(() => {"
+              - generic [ref=e1086]: processMessages();
+              - generic [ref=e1087]: "}, 100);"
+              - generic [ref=e1089]: // Cleanup function to cancel any ongoing operations
+              - generic [ref=e1090]: "return () => {"
+              - generic [ref=e1091]: clearTimeout(timer);
+              - generic [ref=e1092]: setMessages([]);
+              - generic [ref=e1093]: "};"
+              - generic [ref=e1094]: "}, [streamMessage]);"
+              - generic [ref=e1096]: const handleSubmit = useCallback(
+              - generic [ref=e1097]: "(message: PromptInputMessage) => {"
+              - generic [ref=e1098]: const hasText = Boolean(message.text);
+              - generic [ref=e1099]: const hasAttachments = Boolean(message.files?.length);
+              - generic [ref=e1101]: "if (!(hasText || hasAttachments)) {"
+              - generic [ref=e1102]: return;
+              - generic [ref=e1103]: "}"
+              - generic [ref=e1105]: setStatus("submitted");
+              - generic [ref=e1106]: addUserMessage(message.text || "Sent with attachments");
+              - generic [ref=e1107]: setText("");
+              - generic [ref=e1108]: "},"
+              - generic [ref=e1109]: "[addUserMessage]"
+              - generic [ref=e1110]: );
+              - generic [ref=e1112]: const handleTextChange = useCallback(
+              - generic [ref=e1113]: "(event: React.ChangeEvent<HTMLTextAreaElement>) =>"
+              - generic [ref=e1114]: setText(event.target.value),
+              - generic [ref=e1115]: "[]"
+              - generic [ref=e1116]: );
+              - generic [ref=e1118]: "const handleFileAction = (action: string) => {"
+              - generic [ref=e1119]: "toast.success(\"File action\", {"
+              - generic [ref=e1120]: "description: action,"
+              - generic [ref=e1121]: "});"
+              - generic [ref=e1122]: "};"
+              - generic [ref=e1124]: const handleUploadFile = useCallback(
+              - generic [ref=e1125]: () => handleFileAction("upload-file"),
+              - generic [ref=e1126]: "[]"
+              - generic [ref=e1127]: );
+              - generic [ref=e1128]: const handleUploadPhoto = useCallback(
+              - generic [ref=e1129]: () => handleFileAction("upload-photo"),
+              - generic [ref=e1130]: "[]"
+              - generic [ref=e1131]: );
+              - generic [ref=e1132]: const handleTakeScreenshot = useCallback(
+              - generic [ref=e1133]: () => handleFileAction("take-screenshot"),
+              - generic [ref=e1134]: "[]"
+              - generic [ref=e1135]: );
+              - generic [ref=e1136]: const handleTakePhoto = useCallback(() => handleFileAction("take-photo"), []);
+              - generic [ref=e1137]: const handleToggleWebSearch = useCallback(
+              - generic [ref=e1138]: () => setUseWebSearch((prev) => !prev),
+              - generic [ref=e1139]: "[]"
+              - generic [ref=e1140]: );
+              - generic [ref=e1141]: const handleToggleMicrophone = useCallback(
+              - generic [ref=e1142]: () => setUseMicrophone((prev) => !prev),
+              - generic [ref=e1143]: "[]"
+              - generic [ref=e1144]: );
+              - generic [ref=e1146]: const handleSuggestionClick = useCallback(
+              - generic [ref=e1147]: "(suggestion: string) => {"
+              - generic [ref=e1148]: setStatus("submitted");
+              - generic [ref=e1149]: addUserMessage(suggestion);
+              - generic [ref=e1150]: "},"
+              - generic [ref=e1151]: "[addUserMessage]"
+              - generic [ref=e1152]: );
+              - generic [ref=e1154]: return (
+              - generic [ref=e1155]: <div className="relative flex size-full flex-col divide-y overflow-hidden">
+              - generic [ref=e1156]: <Conversation>
+              - generic [ref=e1157]: <ConversationContent>
+              - generic [ref=e1158]: "{messages.map(({ versions, ...message }) => ("
+              - generic [ref=e1159]: "<MessageBranch defaultBranch={0} key={message.key}>"
+              - generic [ref=e1160]: <MessageBranchContent>
+              - generic [ref=e1161]: "{versions.map((version) => ("
+              - generic [ref=e1162]: <Message
+              - generic [ref=e1163]: "from={message.from}"
+              - generic [ref=e1164]: "key={`${message.key}-${version.id}`}"
+              - generic [ref=e1165]: ">"
+              - generic [ref=e1166]: <div>
+              - generic [ref=e1167]: "{message.sources?.length && ("
+              - generic [ref=e1168]: <Sources>
+              - generic [ref=e1169]: "<SourcesTrigger count={message.sources.length} />"
+              - generic [ref=e1170]: <SourcesContent>
+              - generic [ref=e1171]: "{message.sources.map((source) => ("
+              - generic [ref=e1172]: <Source
+              - generic [ref=e1173]: "href={source.href}"
+              - generic [ref=e1174]: "key={source.href}"
+              - generic [ref=e1175]: "title={source.title}"
+              - generic [ref=e1176]: />
+              - generic [ref=e1177]: "))}"
+              - generic [ref=e1178]: </SourcesContent>
+              - generic [ref=e1179]: </Sources>
+              - generic [ref=e1180]: ")}"
+              - generic [ref=e1181]: "{message.reasoning && ("
+              - generic [ref=e1182]: <Reasoning
+              - generic [ref=e1183]: "duration={message.reasoning.duration}"
+              - generic [ref=e1184]: "isStreaming={message.isReasoningStreaming}"
+              - generic [ref=e1185]: ">"
+              - generic [ref=e1186]: <ReasoningTrigger />
+              - generic [ref=e1187]: <ReasoningContent>
+              - generic [ref=e1188]: "{message.reasoning.content}"
+              - generic [ref=e1189]: </ReasoningContent>
+              - generic [ref=e1190]: </Reasoning>
+              - generic [ref=e1191]: ")}"
+              - generic [ref=e1192]: "{(message.from === \"user\" ||"
+              - generic [ref=e1193]: message.isReasoningComplete ||
+              - generic [ref=e1194]: "!message.reasoning) && ("
+              - generic [ref=e1195]: <MessageContent
+              - generic [ref=e1196]: "className={cn("
+              - generic [ref=e1197]: "\"group-[.is-user]:rounded-[24px] group-[.is-user]:bg-secondary group-[.is-user]:text-foreground\","
+              - generic [ref=e1198]: "\"group-[.is-assistant]:bg-transparent group-[.is-assistant]:p-0 group-[.is-assistant]:text-foreground\""
+              - generic [ref=e1199]: ")}"
+              - generic [ref=e1200]: ">"
+              - generic [ref=e1201]: "<MessageResponse>{version.content}</MessageResponse>"
+              - generic [ref=e1202]: </MessageContent>
+              - generic [ref=e1203]: ")}"
+              - generic [ref=e1204]: </div>
+              - generic [ref=e1205]: </Message>
+              - generic [ref=e1206]: "))}"
+              - generic [ref=e1207]: </MessageBranchContent>
+              - generic [ref=e1208]: "{versions.length > 1 && ("
+              - generic [ref=e1209]: <MessageBranchSelector className="px-0">
+              - generic [ref=e1210]: <MessageBranchPrevious />
+              - generic [ref=e1211]: <MessageBranchPage />
+              - generic [ref=e1212]: <MessageBranchNext />
+              - generic [ref=e1213]: </MessageBranchSelector>
+              - generic [ref=e1214]: ")}"
+              - generic [ref=e1215]: </MessageBranch>
+              - generic [ref=e1216]: "))}"
+              - generic [ref=e1217]: </ConversationContent>
+              - generic [ref=e1218]: <ConversationScrollButton />
+              - generic [ref=e1219]: </Conversation>
+              - generic [ref=e1220]: <div className="grid shrink-0 gap-4 p-4">
+              - generic [ref=e1221]: <PromptInput
+              - generic [ref=e1222]: className="divide-y-0 rounded-[28px]"
+              - generic [ref=e1223]: "onSubmit={handleSubmit}"
+              - generic [ref=e1224]: ">"
+              - generic [ref=e1225]: <PromptInputTextarea
+              - generic [ref=e1226]: className="px-5 md:text-base"
+              - generic [ref=e1227]: "onChange={handleTextChange}"
+              - generic [ref=e1228]: placeholder="Ask anything"
+              - generic [ref=e1229]: "value={text}"
+              - generic [ref=e1230]: />
+              - generic [ref=e1231]: <PromptInputFooter className="p-2.5">
+              - generic [ref=e1232]: <PromptInputTools>
+              - generic [ref=e1233]: <DropdownMenu>
+              - generic [ref=e1234]: <DropdownMenuTrigger asChild>
+              - generic [ref=e1235]: <PromptInputButton
+              - generic [ref=e1236]: className="!rounded-full border font-medium"
+              - generic [ref=e1237]: variant="outline"
+              - generic [ref=e1238]: ">"
+              - generic [ref=e1239]: "<PaperclipIcon size={16} />"
+              - generic [ref=e1240]: <span>Attach</span>
+              - generic [ref=e1241]: </PromptInputButton>
+              - generic [ref=e1242]: </DropdownMenuTrigger>
+              - generic [ref=e1243]: <DropdownMenuContent align="start">
+              - generic [ref=e1244]: "<DropdownMenuItem onClick={handleUploadFile}>"
+              - generic [ref=e1245]: "<FileIcon className=\"mr-2\" size={16} />"
+              - generic [ref=e1246]: Upload file
+              - generic [ref=e1247]: </DropdownMenuItem>
+              - generic [ref=e1248]: "<DropdownMenuItem onClick={handleUploadPhoto}>"
+              - generic [ref=e1249]: "<ImageIcon className=\"mr-2\" size={16} />"
+              - generic [ref=e1250]: Upload photo
+              - generic [ref=e1251]: </DropdownMenuItem>
+              - generic [ref=e1252]: "<DropdownMenuItem onClick={handleTakeScreenshot}>"
+              - generic [ref=e1253]: "<ScreenShareIcon className=\"mr-2\" size={16} />"
+              - generic [ref=e1254]: Take screenshot
+              - generic [ref=e1255]: </DropdownMenuItem>
+              - generic [ref=e1256]: "<DropdownMenuItem onClick={handleTakePhoto}>"
+              - generic [ref=e1257]: "<CameraIcon className=\"mr-2\" size={16} />"
+              - generic [ref=e1258]: Take photo
+              - generic [ref=e1259]: </DropdownMenuItem>
+              - generic [ref=e1260]: </DropdownMenuContent>
+              - generic [ref=e1261]: </DropdownMenu>
+              - generic [ref=e1262]: <PromptInputButton
+              - generic [ref=e1263]: className="rounded-full border font-medium"
+              - generic [ref=e1264]: "onClick={handleToggleWebSearch}"
+              - generic [ref=e1265]: variant="outline"
+              - generic [ref=e1266]: ">"
+              - generic [ref=e1267]: "<GlobeIcon size={16} />"
+              - generic [ref=e1268]: <span>Search</span>
+              - generic [ref=e1269]: </PromptInputButton>
+              - generic [ref=e1270]: </PromptInputTools>
+              - generic [ref=e1271]: <PromptInputButton
+              - generic [ref=e1272]: className="rounded-full font-medium text-foreground"
+              - generic [ref=e1273]: "onClick={handleToggleMicrophone}"
+              - generic [ref=e1274]: variant="secondary"
+              - generic [ref=e1275]: ">"
+              - generic [ref=e1276]: "<AudioWaveformIcon size={16} />"
+              - generic [ref=e1277]: <span>Voice</span>
+              - generic [ref=e1278]: </PromptInputButton>
+              - generic [ref=e1279]: </PromptInputFooter>
+              - generic [ref=e1280]: </PromptInput>
+              - generic [ref=e1281]: <Suggestions className="px-4">
+              - generic [ref=e1282]: "{suggestions.map(({ icon, text: label, color }) => ("
+              - generic [ref=e1283]: <SuggestionItem
+              - generic [ref=e1284]: "color={color}"
+              - generic [ref=e1285]: "icon={icon}"
+              - generic [ref=e1286]: "key={label}"
+              - generic [ref=e1287]: "onSuggestionClick={handleSuggestionClick}"
+              - generic [ref=e1288]: "text={label}"
+              - generic [ref=e1289]: />
+              - generic [ref=e1290]: "))}"
+              - generic [ref=e1291]: </Suggestions>
+              - generic [ref=e1292]: </div>
+              - generic [ref=e1293]: </div>
+              - generic [ref=e1294]: );
+              - generic [ref=e1295]: "};"
+              - generic [ref=e1297]: export default Example;
+          - link [ref=e1299] [cursor=pointer]:
+            - /url: /examples/ide
+            - heading "IDE" [level=3] [ref=e1300]
+            - paragraph [ref=e1301]: IDE-style interface with syntax highlighting, terminal output and file trees.
+            - code [ref=e1306]:
+              - generic [ref=e1307]: "\"use client\";"
+              - generic [ref=e1309]: "import {"
+              - generic [ref=e1310]: Checkpoint,
+              - generic [ref=e1311]: CheckpointIcon,
+              - generic [ref=e1312]: CheckpointTrigger,
+              - generic [ref=e1313]: "} from \"@repo/elements/checkpoint\";"
+              - generic [ref=e1314]: "import { CodeBlock } from \"@repo/elements/code-block\";"
+              - generic [ref=e1315]: "import { Conversation, ConversationContent } from \"@repo/elements/conversation\";"
+              - generic [ref=e1316]: "import {"
+              - generic [ref=e1317]: FileTree,
+              - generic [ref=e1318]: FileTreeFile,
+              - generic [ref=e1319]: FileTreeFolder,
+              - generic [ref=e1320]: "} from \"@repo/elements/file-tree\";"
+              - generic [ref=e1321]: "import {"
+              - generic [ref=e1322]: Message,
+              - generic [ref=e1323]: MessageContent,
+              - generic [ref=e1324]: MessageResponse,
+              - generic [ref=e1325]: "} from \"@repo/elements/message\";"
+              - generic [ref=e1326]: "import {"
+              - generic [ref=e1327]: Plan,
+              - generic [ref=e1328]: PlanAction,
+              - generic [ref=e1329]: PlanContent,
+              - generic [ref=e1330]: PlanDescription,
+              - generic [ref=e1331]: PlanHeader,
+              - generic [ref=e1332]: PlanTitle,
+              - generic [ref=e1333]: PlanTrigger,
+              - generic [ref=e1334]: "} from \"@repo/elements/plan\";"
+              - generic [ref=e1335]: "import type { PromptInputMessage } from \"@repo/elements/prompt-input\";"
+              - generic [ref=e1336]: "import {"
+              - generic [ref=e1337]: PromptInput,
+              - generic [ref=e1338]: PromptInputFooter,
+              - generic [ref=e1339]: PromptInputSubmit,
+              - generic [ref=e1340]: PromptInputTextarea,
+              - generic [ref=e1341]: "} from \"@repo/elements/prompt-input\";"
+              - generic [ref=e1342]: "import {"
+              - generic [ref=e1343]: Queue,
+              - generic [ref=e1344]: QueueItem,
+              - generic [ref=e1345]: QueueItemContent,
+              - generic [ref=e1346]: QueueItemIndicator,
+              - generic [ref=e1347]: QueueList,
+              - generic [ref=e1348]: QueueSection,
+              - generic [ref=e1349]: QueueSectionContent,
+              - generic [ref=e1350]: QueueSectionLabel,
+              - generic [ref=e1351]: QueueSectionTrigger,
+              - generic [ref=e1352]: "} from \"@repo/elements/queue\";"
+              - generic [ref=e1353]: "import {"
+              - generic [ref=e1354]: Task,
+              - generic [ref=e1355]: TaskContent,
+              - generic [ref=e1356]: TaskItemFile,
+              - generic [ref=e1357]: TaskTrigger,
+              - generic [ref=e1358]: "} from \"@repo/elements/task\";"
+              - generic [ref=e1359]: "import { Terminal, TerminalContent } from \"@repo/elements/terminal\";"
+              - generic [ref=e1360]: "import { cn } from \"@repo/shadcn-ui/lib/utils\";"
+              - generic [ref=e1361]: "import { CheckCircle2Icon, ListTodoIcon } from \"lucide-react\";"
+              - generic [ref=e1362]: "import { nanoid } from \"nanoid\";"
+              - generic [ref=e1363]: "import { useCallback, useEffect, useState } from \"react\";"
+              - generic [ref=e1364]: "import type { BundledLanguage } from \"shiki\";"
+              - generic [ref=e1366]: // Types
+              - generic [ref=e1367]: "interface MockFile {"
+              - generic [ref=e1368]: "path: string;"
+              - generic [ref=e1369]: "name: string;"
+              - generic [ref=e1370]: "language: BundledLanguage;"
+              - generic [ref=e1371]: "content: string;"
+              - generic [ref=e1372]: "}"
+              - generic [ref=e1374]: "interface MessageType {"
+              - generic [ref=e1375]: "key: string;"
+              - generic [ref=e1376]: "from: \"user\" | \"assistant\";"
+              - generic [ref=e1377]: "content: string;"
+              - generic [ref=e1378]: "}"
+              - generic [ref=e1380]: "interface TaskItem {"
+              - generic [ref=e1381]: "id: string;"
+              - generic [ref=e1382]: "title: string;"
+              - generic [ref=e1383]: "status: \"pending\" | \"in_progress\" | \"completed\";"
+              - generic [ref=e1384]: "}"
+              - generic [ref=e1386]: // Mock file contents
+              - generic [ref=e1387]: "const mockFiles: MockFile[] = ["
+              - generic [ref=e1388]: "{"
+              - generic [ref=e1389]: "content: `import { useState } from \"react\";"
+              - generic [ref=e1390]: "import { Button } from \"./components/button\";"
+              - generic [ref=e1391]: "import { Input } from \"./components/input\";"
+              - generic [ref=e1392]: "import { validateForm } from \"./utils/helpers\";"
+              - generic [ref=e1394]: "export function App() {"
+              - generic [ref=e1395]: const [name, setName] = useState("");
+              - generic [ref=e1396]: const [email, setEmail] = useState("");
+              - generic [ref=e1397]: const [errors, setErrors] = useState<string[]>([]);
+              - generic [ref=e1399]: "const handleSubmit = () => {"
+              - generic [ref=e1400]: "const validation = validateForm({ name, email });"
+              - generic [ref=e1401]: "if (!validation.isValid) {"
+              - generic [ref=e1402]: setErrors(validation.errors);
+              - generic [ref=e1403]: return;
+              - generic [ref=e1404]: "}"
+              - generic [ref=e1405]: "console.log(\"Form submitted:\", { name, email });"
+              - generic [ref=e1406]: "};"
+              - generic [ref=e1408]: return (
+              - generic [ref=e1409]: <div className="container mx-auto p-4">
+              - generic [ref=e1410]: <h1 className="text-2xl font-bold mb-4">Contact Form</h1>
+              - generic [ref=e1411]: <Input
+              - generic [ref=e1412]: placeholder="Name"
+              - generic [ref=e1413]: "value={name}"
+              - generic [ref=e1414]: "onChange={(e) => setName(e.target.value)}"
+              - generic [ref=e1415]: />
+              - generic [ref=e1416]: <Input
+              - generic [ref=e1417]: placeholder="Email"
+              - generic [ref=e1418]: "value={email}"
+              - generic [ref=e1419]: "onChange={(e) => setEmail(e.target.value)}"
+              - generic [ref=e1420]: />
+              - generic [ref=e1421]: "{errors.map((error) => ("
+              - generic [ref=e1422]: "<p key={error} className=\"text-red-500\">{error}</p>"
+              - generic [ref=e1423]: "))}"
+              - generic [ref=e1424]: "<Button onClick={handleSubmit}>Submit</Button>"
+              - generic [ref=e1425]: </div>
+              - generic [ref=e1426]: );
+              - generic [ref=e1427]: "}`,"
+              - generic [ref=e1428]: "language: \"tsx\","
+              - generic [ref=e1429]: "name: \"app.tsx\","
+              - generic [ref=e1430]: "path: \"src/app.tsx\","
+              - generic [ref=e1431]: "},"
+              - generic [ref=e1432]: "{"
+              - generic [ref=e1433]: "content: `import { forwardRef, type ButtonHTMLAttributes } from \"react\";"
+              - generic [ref=e1434]: "import { cn } from \"../utils/helpers\";"
+              - generic [ref=e1436]: "interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {"
+              - generic [ref=e1437]: "variant?: \"primary\" | \"secondary\" | \"ghost\";"
+              - generic [ref=e1438]: "size?: \"sm\" | \"md\" | \"lg\";"
+              - generic [ref=e1439]: "}"
+              - generic [ref=e1441]: export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+              - generic [ref=e1442]: "({ className, variant = \"primary\", size = \"md\", ...props }, ref) => {"
+              - generic [ref=e1443]: return (
+              - generic [ref=e1444]: <button
+              - generic [ref=e1445]: "ref={ref}"
+              - generic [ref=e1446]: "className={cn("
+              - generic [ref=e1447]: "\"inline-flex items-center justify-center rounded-md font-medium\","
+              - generic [ref=e1448]: "\"transition-colors focus-visible:outline-none focus-visible:ring-2\","
+              - generic [ref=e1449]: variant === "primary" && "bg-blue-500 text-white hover:bg-blue-600",
+              - generic [ref=e1450]: variant === "secondary" && "bg-gray-200 text-gray-900 hover:bg-gray-300",
+              - generic [ref=e1451]: variant === "ghost" && "hover:bg-gray-100",
+              - generic [ref=e1452]: size === "sm" && "h-8 px-3 text-sm",
+              - generic [ref=e1453]: size === "md" && "h-10 px-4",
+              - generic [ref=e1454]: size === "lg" && "h-12 px-6 text-lg",
+              - generic [ref=e1455]: className
+              - generic [ref=e1456]: ")}"
+              - generic [ref=e1457]: "{...props}"
+              - generic [ref=e1458]: />
+              - generic [ref=e1459]: );
+              - generic [ref=e1460]: "}"
+              - generic [ref=e1461]: );
+              - generic [ref=e1463]: "Button.displayName = \"Button\";`,"
+              - generic [ref=e1464]: "language: \"tsx\","
+              - generic [ref=e1465]: "name: \"button.tsx\","
+              - generic [ref=e1466]: "path: \"src/components/button.tsx\","
+              - generic [ref=e1467]: "},"
+              - generic [ref=e1468]: "{"
+              - generic [ref=e1469]: "content: `import { forwardRef, type InputHTMLAttributes } from \"react\";"
+              - generic [ref=e1470]: "import { cn } from \"../utils/helpers\";"
+              - generic [ref=e1472]: "interface InputProps extends InputHTMLAttributes<HTMLInputElement> {"
+              - generic [ref=e1473]: "error?: boolean;"
+              - generic [ref=e1474]: "}"
+              - generic [ref=e1476]: export const Input = forwardRef<HTMLInputElement, InputProps>(
+              - generic [ref=e1477]: "({ className, error, ...props }, ref) => {"
+              - generic [ref=e1478]: return (
+              - generic [ref=e1479]: <input
+              - generic [ref=e1480]: "ref={ref}"
+              - generic [ref=e1481]: "className={cn("
+              - generic [ref=e1482]: "\"flex h-10 w-full rounded-md border px-3 py-2 text-sm\","
+              - generic [ref=e1483]: "\"focus-visible:outline-none focus-visible:ring-2\","
+              - generic [ref=e1484]: "error ? \"border-red-500\" : \"border-gray-300\","
+              - generic [ref=e1485]: className
+              - generic [ref=e1486]: ")}"
+              - generic [ref=e1487]: "{...props}"
+              - generic [ref=e1488]: />
+              - generic [ref=e1489]: );
+              - generic [ref=e1490]: "}"
+              - generic [ref=e1491]: );
+              - generic [ref=e1493]: "Input.displayName = \"Input\";`,"
+              - generic [ref=e1494]: "language: \"tsx\","
+              - generic [ref=e1495]: "name: \"input.tsx\","
+              - generic [ref=e1496]: "path: \"src/components/input.tsx\","
+              - generic [ref=e1497]: "},"
+              - generic [ref=e1498]: "{"
+              - generic [ref=e1499]: "content: `export function cn(...classes: (string | boolean | undefined)[]) {"
+              - generic [ref=e1500]: return classes.filter(Boolean).join(" ");
+              - generic [ref=e1501]: "}"
+              - generic [ref=e1503]: "interface FormData {"
+              - generic [ref=e1504]: "name: string;"
+              - generic [ref=e1505]: "email: string;"
+              - generic [ref=e1506]: "}"
+              - generic [ref=e1508]: "interface ValidationResult {"
+              - generic [ref=e1509]: "isValid: boolean;"
+              - generic [ref=e1510]: "errors: string[];"
+              - generic [ref=e1511]: "}"
+              - generic [ref=e1513]: "export function validateForm(data: FormData): ValidationResult {"
+              - generic [ref=e1514]: "const errors: string[] = [];"
+              - generic [ref=e1516]: "if (!data.name.trim()) {"
+              - generic [ref=e1517]: errors.push("Name is required");
+              - generic [ref=e1518]: "}"
+              - generic [ref=e1520]: "if (!data.email.trim()) {"
+              - generic [ref=e1521]: errors.push("Email is required");
+              - generic [ref=e1522]: "} else if (!isValidEmail(data.email)) {"
+              - generic [ref=e1523]: errors.push("Invalid email format");
+              - generic [ref=e1524]: "}"
+              - generic [ref=e1526]: "return {"
+              - generic [ref=e1527]: "isValid: errors.length === 0,"
+              - generic [ref=e1528]: errors,
+              - generic [ref=e1529]: "};"
+              - generic [ref=e1530]: "}"
+              - generic [ref=e1532]: "function isValidEmail(email: string): boolean {"
+              - generic [ref=e1533]: return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email);
+              - generic [ref=e1534]: "}`,"
+              - generic [ref=e1535]: "language: \"typescript\","
+              - generic [ref=e1536]: "name: \"helpers.ts\","
+              - generic [ref=e1537]: "path: \"src/utils/helpers.ts\","
+              - generic [ref=e1538]: "},"
+              - generic [ref=e1539]: "{"
+              - generic [ref=e1540]: "content: `{"
+              - generic [ref=e1541]: "\"name\": \"my-app\","
+              - generic [ref=e1542]: "\"version\": \"1.0.0\","
+              - generic [ref=e1543]: "\"private\": true,"
+              - generic [ref=e1544]: "\"scripts\": {"
+              - generic [ref=e1545]: "\"dev\": \"vite\","
+              - generic [ref=e1546]: "\"build\": \"tsc && vite build\","
+              - generic [ref=e1547]: "\"test\": \"vitest\","
+              - generic [ref=e1548]: "\"lint\": \"eslint src\""
+              - generic [ref=e1549]: "},"
+              - generic [ref=e1550]: "\"dependencies\": {"
+              - generic [ref=e1551]: "\"react\": \"^18.2.0\","
+              - generic [ref=e1552]: "\"react-dom\": \"^18.2.0\""
+              - generic [ref=e1553]: "},"
+              - generic [ref=e1554]: "\"devDependencies\": {"
+              - generic [ref=e1555]: "\"@types/react\": \"^18.2.0\","
+              - generic [ref=e1556]: "\"typescript\": \"^5.0.0\","
+              - generic [ref=e1557]: "\"vite\": \"^5.0.0\","
+              - generic [ref=e1558]: "\"vitest\": \"^1.0.0\""
+              - generic [ref=e1559]: "}"
+              - generic [ref=e1560]: "}`,"
+              - generic [ref=e1561]: "language: \"json\","
+              - generic [ref=e1562]: "name: \"package.json\","
+              - generic [ref=e1563]: "path: \"package.json\","
+              - generic [ref=e1564]: "},"
+              - generic [ref=e1565]: "{"
+              - generic [ref=e1566]: "content: `# My App"
+              - generic [ref=e1568]: A simple React application with form validation.
+              - generic [ref=e1570]: "## Getting Started"
+              - generic [ref=e1572]: "\\`\\`\\`bash"
+              - generic [ref=e1573]: npm install
+              - generic [ref=e1574]: npm run dev
+              - generic [ref=e1575]: "\\`\\`\\`"
+              - generic [ref=e1577]: "## Features"
+              - generic [ref=e1579]: "- Contact form with validation"
+              - generic [ref=e1580]: "- Reusable Button and Input components"
+              - generic [ref=e1581]: "- TypeScript support"
+              - generic [ref=e1582]: "`,"
+              - generic [ref=e1583]: "language: \"markdown\","
+              - generic [ref=e1584]: "name: \"README.md\","
+              - generic [ref=e1585]: "path: \"README.md\","
+              - generic [ref=e1586]: "},"
+              - generic [ref=e1587]: "];"
+              - generic [ref=e1589]: // Mock tasks
+              - generic [ref=e1590]: "const initialTasks: TaskItem[] = ["
+              - generic [ref=e1591]: "{ id: \"1\", status: \"completed\", title: \"Refactor Button component\" },"
+              - generic [ref=e1592]: "{ id: \"2\", status: \"in_progress\", title: \"Add form validation\" },"
+              - generic [ref=e1593]: "{ id: \"3\", status: \"pending\", title: \"Write unit tests\" },"
+              - generic [ref=e1594]: "];"
+              - generic [ref=e1596]: // Mock chat messages
+              - generic [ref=e1597]: "const mockMessages: MessageType[] = ["
+              - generic [ref=e1598]: "{"
+              - generic [ref=e1599]: "content: \"Can you help me add email validation to the form?\","
+              - generic [ref=e1600]: "from: \"user\","
+              - generic [ref=e1601]: "key: nanoid(),"
+              - generic [ref=e1602]: "},"
+              - generic [ref=e1603]: "{"
+              - generic [ref=e1604]: "content: `I can help you add email validation. Looking at your code in \\`src/utils/helpers.ts\\`, I see you already have a \\`validateForm\\` function."
+              - generic [ref=e1606]: "Here's what I'll do:"
+              - generic [ref=e1608]: "1. Add an \\`isValidEmail\\` helper function"
+              - generic [ref=e1609]: "2. Update \\`validateForm\\` to check email format"
+              - generic [ref=e1610]: 3. Show validation errors in the UI
+              - generic [ref=e1612]: "The email validation uses a regex pattern to check for valid email format. The form will now show \"Invalid email format\" if the user enters an incorrectly formatted email address.`,"
+              - generic [ref=e1613]: "from: \"assistant\","
+              - generic [ref=e1614]: "key: nanoid(),"
+              - generic [ref=e1615]: "},"
+              - generic [ref=e1616]: "];"
+              - generic [ref=e1618]: // Mock terminal output
+              - generic [ref=e1619]: const mockTerminalLines = [
+              - generic [ref=e1620]: "\"\\u001B[32m✓\\u001B[0m Building application...\","
+              - generic [ref=e1621]: "\"\\u001B[36m src/app.tsx\\u001B[0m → \\u001B[33mdist/app.js\\u001B[0m\","
+              - generic [ref=e1622]: "\"\\u001B[36m src/components/button.tsx\\u001B[0m → \\u001B[33mdist/button.js\\u001B[0m\","
+              - generic [ref=e1623]: "\"\\u001B[36m src/components/input.tsx\\u001B[0m → \\u001B[33mdist/input.js\\u001B[0m\","
+              - generic [ref=e1624]: "\"\\u001B[36m src/utils/helpers.ts\\u001B[0m → \\u001B[33mdist/helpers.js\\u001B[0m\","
+              - generic [ref=e1625]: "\"\","
+              - generic [ref=e1626]: "\"\\u001B[32m✓\\u001B[0m Build completed in \\u001B[33m1.2s\\u001B[0m\","
+              - generic [ref=e1627]: "\"\","
+              - generic [ref=e1628]: "\"\\u001B[34mRunning tests...\\u001B[0m\","
+              - generic [ref=e1629]: "\"\","
+              - generic [ref=e1630]: "\" \\u001B[32m✓\\u001B[0m validateForm › returns errors for empty fields\","
+              - generic [ref=e1631]: "\" \\u001B[32m✓\\u001B[0m validateForm › returns error for invalid email\","
+              - generic [ref=e1632]: "\" \\u001B[32m✓\\u001B[0m validateForm › passes for valid input\","
+              - generic [ref=e1633]: "\" \\u001B[32m✓\\u001B[0m Button › renders with correct variant\","
+              - generic [ref=e1634]: "\" \\u001B[32m✓\\u001B[0m Input › shows error state\","
+              - generic [ref=e1635]: "\"\","
+              - generic [ref=e1636]: "\"\\u001B[32mAll tests passed!\\u001B[0m (5/5)\","
+              - generic [ref=e1637]: "];"
+              - generic [ref=e1639]: "const Example = () => {"
+              - generic [ref=e1640]: // File tree state
+              - generic [ref=e1641]: const [selectedPath, setSelectedPath] = useState<string>("src/app.tsx");
+              - generic [ref=e1642]: const [expandedPaths, setExpandedPaths] = useState<Set<string>>(
+              - generic [ref=e1643]: new Set(["src", "src/components", "src/utils"])
+              - generic [ref=e1644]: );
+              - generic [ref=e1646]: // Code editor state
+              - generic [ref=e1647]: const [currentFile, setCurrentFile] = useState<MockFile>(mockFiles[0]);
+              - generic [ref=e1649]: // Terminal state
+              - generic [ref=e1650]: const [terminalOutput, setTerminalOutput] = useState<string>("");
+              - generic [ref=e1651]: const [isTerminalStreaming, setIsTerminalStreaming] =
+              - generic [ref=e1652]: useState<boolean>(false);
+              - generic [ref=e1654]: // Chat state
+              - generic [ref=e1655]: const [messages, setMessages] = useState<MessageType[]>([]);
+              - generic [ref=e1656]: const [chatText, setChatText] = useState<string>("");
+              - generic [ref=e1657]: const [status, setStatus] = useState<"ready" | "streaming" | "submitted">(
+              - generic [ref=e1658]: "\"ready\""
+              - generic [ref=e1659]: );
+              - generic [ref=e1661]: // Tasks state
+              - generic [ref=e1662]: const [tasks, setTasks] = useState<TaskItem[]>(initialTasks);
+              - generic [ref=e1664]: // Checkpoint state
+              - generic [ref=e1665]: const [showCheckpoint, setShowCheckpoint] = useState<boolean>(false);
+              - generic [ref=e1667]: // Find file by path
+              - generic [ref=e1668]: "const findFileByPath = (path: string): MockFile | undefined =>"
+              - generic [ref=e1669]: mockFiles.find((f) => f.path === path);
+              - generic [ref=e1671]: // Handle file selection
+              - generic [ref=e1672]: "const handleFileSelect = useCallback((path: string) => {"
+              - generic [ref=e1673]: setSelectedPath(path);
+              - generic [ref=e1674]: const file = findFileByPath(path);
+              - generic [ref=e1675]: "if (file) {"
+              - generic [ref=e1676]: setCurrentFile(file);
+              - generic [ref=e1677]: "}"
+              - generic [ref=e1678]: "}, []);"
+              - generic [ref=e1680]: // Stream message content word by word
+              - generic [ref=e1681]: const streamContent = useCallback(
+              - generic [ref=e1682]: "async (messageKey: string, content: string) => {"
+              - generic [ref=e1683]: const words = content.split(" ");
+              - generic [ref=e1684]: let currentContent = "";
+              - generic [ref=e1686]: "for (let i = 0; i < words.length; i += 1) {"
+              - generic [ref=e1687]: "currentContent += (i > 0 ? \" \" : \"\") + words[i];"
+              - generic [ref=e1688]: const finalContent = currentContent;
+              - generic [ref=e1690]: setMessages((prev) =>
+              - generic [ref=e1691]: prev.map((msg) =>
+              - generic [ref=e1692]: "msg.key === messageKey ? { ...msg, content: finalContent } : msg"
+              - generic [ref=e1693]: )
+              - generic [ref=e1694]: );
+              - generic [ref=e1696]: // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
+              - generic [ref=e1697]: "await new Promise((resolve) => {"
+              - generic [ref=e1698]: setTimeout(resolve, Math.random() * 40 + 20);
+              - generic [ref=e1699]: "});"
+              - generic [ref=e1700]: "}"
+              - generic [ref=e1701]: "},"
+              - generic [ref=e1702]: "[]"
+              - generic [ref=e1703]: );
+              - generic [ref=e1705]: // Stream message
+              - generic [ref=e1706]: const streamMessage = useCallback(
+              - generic [ref=e1707]: "async (message: MessageType) => {"
+              - generic [ref=e1708]: // Generate fresh key to avoid duplicates
+              - generic [ref=e1709]: const newKey = nanoid();
+              - generic [ref=e1710]: "if (message.from === \"user\") {"
+              - generic [ref=e1711]: "setMessages((prev) => [...prev, { ...message, key: newKey }]);"
+              - generic [ref=e1712]: return;
+              - generic [ref=e1713]: "}"
+              - generic [ref=e1715]: // Add empty assistant message
+              - generic [ref=e1716]: "const newMessage = { ...message, content: \"\", key: newKey };"
+              - generic [ref=e1717]: setMessages((prev) => [...prev, newMessage]);
+              - generic [ref=e1719]: setStatus("streaming");
+              - generic [ref=e1720]: await streamContent(message.key, message.content);
+              - generic [ref=e1721]: setStatus("ready");
+              - generic [ref=e1722]: "},"
+              - generic [ref=e1723]: "[streamContent]"
+              - generic [ref=e1724]: );
+              - generic [ref=e1726]: // Stream terminal output line by line
+              - generic [ref=e1727]: "const streamTerminal = useCallback(async () => {"
+              - generic [ref=e1728]: setIsTerminalStreaming(true);
+              - generic [ref=e1729]: let output = "";
+              - generic [ref=e1731]: "for (const line of mockTerminalLines) {"
+              - generic [ref=e1732]: "output += `${line}\\n`;"
+              - generic [ref=e1733]: setTerminalOutput(output);
+              - generic [ref=e1734]: // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
+              - generic [ref=e1735]: "await new Promise((resolve) => {"
+              - generic [ref=e1736]: setTimeout(resolve, 100);
+              - generic [ref=e1737]: "});"
+              - generic [ref=e1738]: "}"
+              - generic [ref=e1740]: setIsTerminalStreaming(false);
+              - generic [ref=e1741]: "}, []);"
+              - generic [ref=e1743]: // Animation sequence on mount
+              - generic [ref=e1744]: "useEffect(() => {"
+              - generic [ref=e1745]: "const runAnimation = async () => {"
+              - generic [ref=e1746]: // Wait a bit before starting
+              - generic [ref=e1747]: // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
+              - generic [ref=e1748]: "await new Promise((resolve) => {"
+              - generic [ref=e1749]: setTimeout(resolve, 500);
+              - generic [ref=e1750]: "});"
+              - generic [ref=e1752]: // Stream first message (user)
+              - generic [ref=e1753]: await streamMessage(mockMessages[0]);
+              - generic [ref=e1754]: // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
+              - generic [ref=e1755]: "await new Promise((resolve) => {"
+              - generic [ref=e1756]: setTimeout(resolve, 800);
+              - generic [ref=e1757]: "});"
+              - generic [ref=e1759]: // Stream second message (assistant)
+              - generic [ref=e1760]: await streamMessage(mockMessages[1]);
+              - generic [ref=e1761]: // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
+              - generic [ref=e1762]: "await new Promise((resolve) => {"
+              - generic [ref=e1763]: setTimeout(resolve, 500);
+              - generic [ref=e1764]: "});"
+              - generic [ref=e1766]: // Update task status
+              - generic [ref=e1767]: setTasks((prev) =>
+              - generic [ref=e1768]: prev.map((task) =>
+              - generic [ref=e1769]: "task.id === \"2\" ? { ...task, status: \"completed\" as const } : task"
+              - generic [ref=e1770]: )
+              - generic [ref=e1771]: );
+              - generic [ref=e1773]: // Stream terminal output
+              - generic [ref=e1774]: await streamTerminal();
+              - generic [ref=e1776]: // Show checkpoint
+              - generic [ref=e1777]: // oxlint-disable-next-line eslint-plugin-promise(avoid-new)
+              - generic [ref=e1778]: "await new Promise((resolve) => {"
+              - generic [ref=e1779]: setTimeout(resolve, 300);
+              - generic [ref=e1780]: "});"
+              - generic [ref=e1781]: setShowCheckpoint(true);
+              - generic [ref=e1782]: "};"
+              - generic [ref=e1784]: runAnimation();
+              - generic [ref=e1785]: "}, [streamMessage, streamTerminal]);"
+              - generic [ref=e1787]: const handleChatTextChange = useCallback(
+              - generic [ref=e1788]: "(e: React.ChangeEvent<HTMLTextAreaElement>) => setChatText(e.target.value),"
+              - generic [ref=e1789]: "[]"
+              - generic [ref=e1790]: );
+              - generic [ref=e1792]: // Handle chat submit
+              - generic [ref=e1793]: const handleSubmit = useCallback(
+              - generic [ref=e1794]: "(message: PromptInputMessage) => {"
+              - generic [ref=e1795]: "if (!message.text.trim()) {"
+              - generic [ref=e1796]: return;
+              - generic [ref=e1797]: "}"
+              - generic [ref=e1799]: "const userMessage: MessageType = {"
+              - generic [ref=e1800]: "content: message.text,"
+              - generic [ref=e1801]: "from: \"user\","
+              - generic [ref=e1802]: "key: nanoid(),"
+              - generic [ref=e1803]: "};"
+              - generic [ref=e1805]: setMessages((prev) => [...prev, userMessage]);
+              - generic [ref=e1806]: setChatText("");
+              - generic [ref=e1807]: setStatus("submitted");
+              - generic [ref=e1809]: // Simulate AI response
+              - generic [ref=e1810]: "setTimeout(() => {"
+              - generic [ref=e1811]: "const assistantMessage: MessageType = {"
+              - generic [ref=e1812]: "content:"
+              - generic [ref=e1813]: "\"I'll look into that for you. Let me analyze the codebase and suggest some improvements.\","
+              - generic [ref=e1814]: "from: \"assistant\","
+              - generic [ref=e1815]: "key: nanoid(),"
+              - generic [ref=e1816]: "};"
+              - generic [ref=e1817]: streamMessage(assistantMessage);
+              - generic [ref=e1818]: "}, 500);"
+              - generic [ref=e1819]: "},"
+              - generic [ref=e1820]: "[streamMessage]"
+              - generic [ref=e1821]: );
+              - generic [ref=e1823]: const completedTasks = tasks.filter((t) => t.status === "completed");
+              - generic [ref=e1824]: const pendingTasks = tasks.filter((t) => t.status !== "completed");
+              - generic [ref=e1826]: return (
+              - generic [ref=e1827]: <div className="flex h-full w-full bg-background">
+              - generic [ref=e1828]: "{/* Left Sidebar - File Tree */}"
+              - generic [ref=e1829]: <div className="flex w-64 flex-col border-r">
+              - generic [ref=e1830]: <div className="flex-1 overflow-auto p-1">
+              - generic [ref=e1831]: <FileTree
+              - generic [ref=e1832]: className="border-none"
+              - generic [ref=e1833]: "expanded={expandedPaths}"
+              - generic [ref=e1834]: "onExpandedChange={setExpandedPaths}"
+              - generic [ref=e1835]: "onSelect={handleFileSelect}"
+              - generic [ref=e1836]: "selectedPath={selectedPath}"
+              - generic [ref=e1837]: ">"
+              - generic [ref=e1838]: <FileTreeFolder name="src" path="src">
+              - generic [ref=e1839]: <FileTreeFolder name="components" path="src/components">
+              - generic [ref=e1840]: <FileTreeFile
+              - generic [ref=e1841]: name="button.tsx"
+              - generic [ref=e1842]: path="src/components/button.tsx"
+              - generic [ref=e1843]: />
+              - generic [ref=e1844]: <FileTreeFile
+              - generic [ref=e1845]: name="input.tsx"
+              - generic [ref=e1846]: path="src/components/input.tsx"
+              - generic [ref=e1847]: />
+              - generic [ref=e1848]: </FileTreeFolder>
+              - generic [ref=e1849]: <FileTreeFolder name="utils" path="src/utils">
+              - generic [ref=e1850]: <FileTreeFile name="helpers.ts" path="src/utils/helpers.ts" />
+              - generic [ref=e1851]: </FileTreeFolder>
+              - generic [ref=e1852]: <FileTreeFile name="app.tsx" path="src/app.tsx" />
+              - generic [ref=e1853]: </FileTreeFolder>
+              - generic [ref=e1854]: <FileTreeFile name="package.json" path="package.json" />
+              - generic [ref=e1855]: <FileTreeFile name="README.md" path="README.md" />
+              - generic [ref=e1856]: </FileTree>
+              - generic [ref=e1857]: </div>
+              - generic [ref=e1858]: </div>
+              - generic [ref=e1860]: "{/* Center Panel - Code + Terminal */}"
+              - generic [ref=e1861]: <div className="flex flex-1 flex-col overflow-hidden">
+              - generic [ref=e1862]: "{/* Code Block */}"
+              - generic [ref=e1863]: <CodeBlock
+              - generic [ref=e1864]: className="rounded-none border-0"
+              - generic [ref=e1865]: "code={currentFile.content}"
+              - generic [ref=e1866]: "language={currentFile.language}"
+              - generic [ref=e1867]: showLineNumbers
+              - generic [ref=e1868]: />
+              - generic [ref=e1870]: <Terminal
+              - generic [ref=e1871]: className="h-64 rounded-none border-0"
+              - generic [ref=e1872]: "isStreaming={isTerminalStreaming}"
+              - generic [ref=e1873]: "output={terminalOutput}"
+              - generic [ref=e1874]: ">"
+              - generic [ref=e1875]: <TerminalContent className="max-h-full" />
+              - generic [ref=e1876]: </Terminal>
+              - generic [ref=e1877]: </div>
+              - generic [ref=e1879]: "{/* Right Sidebar - AI Chat */}"
+              - generic [ref=e1880]: <div className="flex w-80 flex-col border-l">
+              - generic [ref=e1881]: "{/* Plan Section */}"
+              - generic [ref=e1882]: <div className="border-b p-3">
+              - generic [ref=e1883]: <Plan defaultOpen>
+              - generic [ref=e1884]: <PlanHeader>
+              - generic [ref=e1885]: <div>
+              - generic [ref=e1886]: <PlanTitle>Implementation Plan</PlanTitle>
+              - generic [ref=e1887]: <PlanDescription>Adding form validation</PlanDescription>
+              - generic [ref=e1888]: </div>
+              - generic [ref=e1889]: <PlanAction>
+              - generic [ref=e1890]: <PlanTrigger />
+              - generic [ref=e1891]: </PlanAction>
+              - generic [ref=e1892]: </PlanHeader>
+              - generic [ref=e1893]: <PlanContent className="pt-0">
+              - generic [ref=e1894]: <Task defaultOpen>
+              - generic [ref=e1895]: <TaskTrigger title="Search for validation patterns" />
+              - generic [ref=e1896]: <TaskContent>
+              - generic [ref=e1897]: <TaskItemFile>src/utils/helpers.ts</TaskItemFile>
+              - generic [ref=e1898]: <TaskItemFile>src/app.tsx</TaskItemFile>
+              - generic [ref=e1899]: </TaskContent>
+              - generic [ref=e1900]: </Task>
+              - generic [ref=e1901]: </PlanContent>
+              - generic [ref=e1902]: </Plan>
+              - generic [ref=e1903]: </div>
+              - generic [ref=e1905]: "{/* Task Queue */}"
+              - generic [ref=e1906]: <div className="border-b p-3">
+              - generic [ref=e1907]: <Queue>
+              - generic [ref=e1908]: <QueueSection defaultOpen>
+              - generic [ref=e1909]: <QueueSectionTrigger>
+              - generic [ref=e1910]: <QueueSectionLabel
+              - generic [ref=e1911]: "count={pendingTasks.length}"
+              - generic [ref=e1912]: "icon={<ListTodoIcon className=\"size-4\" />}"
+              - generic [ref=e1913]: label="Pending"
+              - generic [ref=e1914]: />
+              - generic [ref=e1915]: </QueueSectionTrigger>
+              - generic [ref=e1916]: <QueueSectionContent>
+              - generic [ref=e1917]: <QueueList>
+              - generic [ref=e1918]: "{pendingTasks.map((task) => ("
+              - generic [ref=e1919]: "<QueueItem key={task.id}>"
+              - generic [ref=e1920]: <div className="flex items-center gap-2">
+              - generic [ref=e1921]: <QueueItemIndicator />
+              - generic [ref=e1922]: "<QueueItemContent>{task.title}</QueueItemContent>"
+              - generic [ref=e1923]: </div>
+              - generic [ref=e1924]: </QueueItem>
+              - generic [ref=e1925]: "))}"
+              - generic [ref=e1926]: </QueueList>
+              - generic [ref=e1927]: </QueueSectionContent>
+              - generic [ref=e1928]: </QueueSection>
+              - generic [ref=e1929]: "<QueueSection defaultOpen={false}>"
+              - generic [ref=e1930]: <QueueSectionTrigger>
+              - generic [ref=e1931]: <QueueSectionLabel
+              - generic [ref=e1932]: "count={completedTasks.length}"
+              - generic [ref=e1933]: "icon={<CheckCircle2Icon className=\"size-4\" />}"
+              - generic [ref=e1934]: label="Completed"
+              - generic [ref=e1935]: />
+              - generic [ref=e1936]: </QueueSectionTrigger>
+              - generic [ref=e1937]: <QueueSectionContent>
+              - generic [ref=e1938]: <QueueList>
+              - generic [ref=e1939]: "{completedTasks.map((task) => ("
+              - generic [ref=e1940]: "<QueueItem key={task.id}>"
+              - generic [ref=e1941]: <div className="flex items-center gap-2">
+              - generic [ref=e1942]: <QueueItemIndicator completed />
+              - generic [ref=e1943]: <QueueItemContent completed>
+              - generic [ref=e1944]: "{task.title}"
+              - generic [ref=e1945]: </QueueItemContent>
+              - generic [ref=e1946]: </div>
+              - generic [ref=e1947]: </QueueItem>
+              - generic [ref=e1948]: "))}"
+              - generic [ref=e1949]: </QueueList>
+              - generic [ref=e1950]: </QueueSectionContent>
+              - generic [ref=e1951]: </QueueSection>
+              - generic [ref=e1952]: </Queue>
+              - generic [ref=e1953]: </div>
+              - generic [ref=e1955]: "{/* Chat Messages */}"
+              - generic [ref=e1956]: <div className="flex flex-1 flex-col overflow-hidden">
+              - generic [ref=e1957]: <Conversation className="flex-1">
+              - generic [ref=e1958]: <ConversationContent className="gap-4 p-3">
+              - generic [ref=e1959]: "{messages.map((message) => ("
+              - generic [ref=e1960]: "<Message from={message.from} key={message.key}>"
+              - generic [ref=e1961]: <MessageContent
+              - generic [ref=e1962]: "className={cn("
+              - generic [ref=e1963]: message.from === "user"
+              - generic [ref=e1964]: "? \"rounded-lg bg-secondary px-3 py-2\""
+              - generic [ref=e1965]: ": \"\""
+              - generic [ref=e1966]: ")}"
+              - generic [ref=e1967]: ">"
+              - generic [ref=e1968]: "{message.from === \"assistant\" ? ("
+              - generic [ref=e1969]: "<MessageResponse>{message.content}</MessageResponse>"
+              - generic [ref=e1970]: ") : ("
+              - generic [ref=e1971]: message.content
+              - generic [ref=e1972]: ")}"
+              - generic [ref=e1973]: </MessageContent>
+              - generic [ref=e1974]: </Message>
+              - generic [ref=e1975]: "))}"
+              - generic [ref=e1976]: "{showCheckpoint && ("
+              - generic [ref=e1977]: <Checkpoint>
+              - generic [ref=e1978]: <CheckpointIcon />
+              - generic [ref=e1979]: <CheckpointTrigger tooltip="Restore to this checkpoint">
+              - generic [ref=e1980]: Checkpoint saved
+              - generic [ref=e1981]: </CheckpointTrigger>
+              - generic [ref=e1982]: </Checkpoint>
+              - generic [ref=e1983]: ")}"
+              - generic [ref=e1984]: </ConversationContent>
+              - generic [ref=e1985]: </Conversation>
+              - generic [ref=e1987]: "{/* Chat Input */}"
+              - generic [ref=e1988]: <div className="border-t p-3">
+              - generic [ref=e1989]: "<PromptInput className=\"rounded-lg border\" onSubmit={handleSubmit}>"
+              - generic [ref=e1990]: <PromptInputTextarea
+              - generic [ref=e1991]: className="min-h-10"
+              - generic [ref=e1992]: "onChange={handleChatTextChange}"
+              - generic [ref=e1993]: placeholder="Ask about the code..."
+              - generic [ref=e1994]: "value={chatText}"
+              - generic [ref=e1995]: />
+              - generic [ref=e1996]: <PromptInputFooter className="justify-end p-2">
+              - generic [ref=e1997]: <PromptInputSubmit
+              - generic [ref=e1998]: "disabled={status !== \"ready\" || !chatText.trim()}"
+              - generic [ref=e1999]: "status={status === \"streaming\" ? \"streaming\" : undefined}"
+              - generic [ref=e2000]: />
+              - generic [ref=e2001]: </PromptInputFooter>
+              - generic [ref=e2002]: </PromptInput>
+              - generic [ref=e2003]: </div>
+              - generic [ref=e2004]: </div>
+              - generic [ref=e2005]: </div>
+              - generic [ref=e2006]: </div>
+              - generic [ref=e2007]: );
+              - generic [ref=e2008]: "};"
+              - generic [ref=e2010]: export default Example;
+          - link [ref=e2012] [cursor=pointer]:
+            - /url: /examples/workflow
+            - heading "Workflow" [level=3] [ref=e2013]
+            - paragraph [ref=e2014]: Visualize and interact with your AI workflows.
+            - code [ref=e2019]:
+              - generic [ref=e2020]: "\"use client\";"
+              - generic [ref=e2022]: "import { Canvas } from \"@repo/elements/canvas\";"
+              - generic [ref=e2023]: "import { Connection } from \"@repo/elements/connection\";"
+              - generic [ref=e2024]: "import { Edge } from \"@repo/elements/edge\";"
+              - generic [ref=e2025]: "import {"
+              - generic [ref=e2026]: Node,
+              - generic [ref=e2027]: NodeContent,
+              - generic [ref=e2028]: NodeDescription,
+              - generic [ref=e2029]: NodeFooter,
+              - generic [ref=e2030]: NodeHeader,
+              - generic [ref=e2031]: NodeTitle,
+              - generic [ref=e2032]: "} from \"@repo/elements/node\";"
+              - generic [ref=e2034]: "const nodeIds = {"
+              - generic [ref=e2035]: "decision: \"decision\","
+              - generic [ref=e2036]: "output1: \"output1\","
+              - generic [ref=e2037]: "output2: \"output2\","
+              - generic [ref=e2038]: "process1: \"process1\","
+              - generic [ref=e2039]: "process2: \"process2\","
+              - generic [ref=e2040]: "start: \"start\","
+              - generic [ref=e2041]: "};"
+              - generic [ref=e2043]: const nodes = [
+              - generic [ref=e2044]: "{"
+              - generic [ref=e2045]: "data: {"
+              - generic [ref=e2046]: "content: \"Triggered by user action at 09:30 AM\","
+              - generic [ref=e2047]: "description: \"Initialize workflow\","
+              - generic [ref=e2048]: "footer: \"Status: Ready\","
+              - generic [ref=e2049]: "handles: { source: true, target: false },"
+              - generic [ref=e2050]: "label: \"Start\","
+              - generic [ref=e2051]: "},"
+              - generic [ref=e2052]: "id: nodeIds.start,"
+              - generic [ref=e2053]: "position: { x: 0, y: 0 },"
+              - generic [ref=e2054]: "type: \"workflow\","
+              - generic [ref=e2055]: "},"
+              - generic [ref=e2056]: "{"
+              - generic [ref=e2057]: "data: {"
+              - generic [ref=e2058]: "content: \"Validating 1,234 records and applying business rules\","
+              - generic [ref=e2059]: "description: \"Transform input\","
+              - generic [ref=e2060]: "footer: \"Duration: ~2.5s\","
+              - generic [ref=e2061]: "handles: { source: true, target: true },"
+              - generic [ref=e2062]: "label: \"Process Data\","
+              - generic [ref=e2063]: "},"
+              - generic [ref=e2064]: "id: nodeIds.process1,"
+              - generic [ref=e2065]: "position: { x: 500, y: 0 },"
+              - generic [ref=e2066]: "type: \"workflow\","
+              - generic [ref=e2067]: "},"
+              - generic [ref=e2068]: "{"
+              - generic [ref=e2069]: "data: {"
+              - generic [ref=e2070]: "content: \"Evaluating: data.status === 'valid' && data.score > 0.8\","
+              - generic [ref=e2071]: "description: \"Route based on conditions\","
+              - generic [ref=e2072]: "footer: \"Confidence: 94%\","
+              - generic [ref=e2073]: "handles: { source: true, target: true },"
+              - generic [ref=e2074]: "label: \"Decision Point\","
+              - generic [ref=e2075]: "},"
+              - generic [ref=e2076]: "id: nodeIds.decision,"
+              - generic [ref=e2077]: "position: { x: 1000, y: 0 },"
+              - generic [ref=e2078]: "type: \"workflow\","
+              - generic [ref=e2079]: "},"
+              - generic [ref=e2080]: "{"
+              - generic [ref=e2081]: "data: {"
+              - generic [ref=e2082]: "content: \"1,156 records passed validation (93.7%)\","
+              - generic [ref=e2083]: "description: \"Handle success case\","
+              - generic [ref=e2084]: "footer: \"Next: Send to production\","
+              - generic [ref=e2085]: "handles: { source: true, target: true },"
+              - generic [ref=e2086]: "label: \"Success Path\","
+              - generic [ref=e2087]: "},"
+              - generic [ref=e2088]: "id: nodeIds.output1,"
+              - generic [ref=e2089]: "position: { x: 1500, y: -300 },"
+              - generic [ref=e2090]: "type: \"workflow\","
+              - generic [ref=e2091]: "},"
+              - generic [ref=e2092]: "{"
+              - generic [ref=e2093]: "data: {"
+              - generic [ref=e2094]: "content: \"78 records failed validation (6.3%)\","
+              - generic [ref=e2095]: "description: \"Handle error case\","
+              - generic [ref=e2096]: "footer: \"Next: Queue for review\","
+              - generic [ref=e2097]: "handles: { source: true, target: true },"
+              - generic [ref=e2098]: "label: \"Error Path\","
+              - generic [ref=e2099]: "},"
+              - generic [ref=e2100]: "id: nodeIds.output2,"
+              - generic [ref=e2101]: "position: { x: 1500, y: 300 },"
+              - generic [ref=e2102]: "type: \"workflow\","
+              - generic [ref=e2103]: "},"
+              - generic [ref=e2104]: "{"
+              - generic [ref=e2105]: "data: {"
+              - generic [ref=e2106]: "content: \"All records processed and routed successfully\","
+              - generic [ref=e2107]: "description: \"Finalize workflow\","
+              - generic [ref=e2108]: "footer: \"Total time: 4.2s\","
+              - generic [ref=e2109]: "handles: { source: false, target: true },"
+              - generic [ref=e2110]: "label: \"Complete\","
+              - generic [ref=e2111]: "},"
+              - generic [ref=e2112]: "id: nodeIds.process2,"
+              - generic [ref=e2113]: "position: { x: 2000, y: 0 },"
+              - generic [ref=e2114]: "type: \"workflow\","
+              - generic [ref=e2115]: "},"
+              - generic [ref=e2116]: "];"
+              - generic [ref=e2118]: const edges = [
+              - generic [ref=e2119]: "{"
+              - generic [ref=e2120]: "id: \"edge1\","
+              - generic [ref=e2121]: "source: nodeIds.start,"
+              - generic [ref=e2122]: "target: nodeIds.process1,"
+              - generic [ref=e2123]: "type: \"animated\","
+              - generic [ref=e2124]: "},"
+              - generic [ref=e2125]: "{"
+              - generic [ref=e2126]: "id: \"edge2\","
+              - generic [ref=e2127]: "source: nodeIds.process1,"
+              - generic [ref=e2128]: "target: nodeIds.decision,"
+              - generic [ref=e2129]: "type: \"animated\","
+              - generic [ref=e2130]: "},"
+              - generic [ref=e2131]: "{"
+              - generic [ref=e2132]: "id: \"edge3\","
+              - generic [ref=e2133]: "source: nodeIds.decision,"
+              - generic [ref=e2134]: "target: nodeIds.output1,"
+              - generic [ref=e2135]: "type: \"animated\","
+              - generic [ref=e2136]: "},"
+              - generic [ref=e2137]: "{"
+              - generic [ref=e2138]: "id: \"edge4\","
+              - generic [ref=e2139]: "source: nodeIds.decision,"
+              - generic [ref=e2140]: "target: nodeIds.output2,"
+              - generic [ref=e2141]: "type: \"temporary\","
+              - generic [ref=e2142]: "},"
+              - generic [ref=e2143]: "{"
+              - generic [ref=e2144]: "id: \"edge5\","
+              - generic [ref=e2145]: "source: nodeIds.output1,"
+              - generic [ref=e2146]: "target: nodeIds.process2,"
+              - generic [ref=e2147]: "type: \"animated\","
+              - generic [ref=e2148]: "},"
+              - generic [ref=e2149]: "{"
+              - generic [ref=e2150]: "id: \"edge6\","
+              - generic [ref=e2151]: "source: nodeIds.output2,"
+              - generic [ref=e2152]: "target: nodeIds.process2,"
+              - generic [ref=e2153]: "type: \"temporary\","
+              - generic [ref=e2154]: "},"
+              - generic [ref=e2155]: "];"
+              - generic [ref=e2157]: "const nodeTypes = {"
+              - generic [ref=e2158]: "workflow: ({"
+              - generic [ref=e2159]: data,
+              - generic [ref=e2160]: "}: {"
+              - generic [ref=e2161]: "data: {"
+              - generic [ref=e2162]: "label: string;"
+              - generic [ref=e2163]: "description: string;"
+              - generic [ref=e2164]: "handles: { target: boolean; source: boolean };"
+              - generic [ref=e2165]: "content: string;"
+              - generic [ref=e2166]: "footer: string;"
+              - generic [ref=e2167]: "};"
+              - generic [ref=e2168]: "}) => ("
+              - generic [ref=e2169]: "<Node handles={data.handles}>"
+              - generic [ref=e2170]: <NodeHeader>
+              - generic [ref=e2171]: "<NodeTitle>{data.label}</NodeTitle>"
+              - generic [ref=e2172]: "<NodeDescription>{data.description}</NodeDescription>"
+              - generic [ref=e2173]: </NodeHeader>
+              - generic [ref=e2174]: <NodeContent>
+              - generic [ref=e2175]: "<p className=\"text-sm\">{data.content}</p>"
+              - generic [ref=e2176]: </NodeContent>
+              - generic [ref=e2177]: <NodeFooter>
+              - generic [ref=e2178]: "<p className=\"text-muted-foreground text-xs\">{data.footer}</p>"
+              - generic [ref=e2179]: </NodeFooter>
+              - generic [ref=e2180]: </Node>
+              - generic [ref=e2181]: ),
+              - generic [ref=e2182]: "};"
+              - generic [ref=e2184]: "const edgeTypes = {"
+              - generic [ref=e2185]: "animated: Edge.Animated,"
+              - generic [ref=e2186]: "temporary: Edge.Temporary,"
+              - generic [ref=e2187]: "};"
+              - generic [ref=e2189]: const Example = () => (
+              - generic [ref=e2190]: "<div style={{ height: \"100%\", width: \"100%\" }}>"
+              - generic [ref=e2191]: <Canvas
+              - generic [ref=e2192]: "connectionLineComponent={Connection}"
+              - generic [ref=e2193]: "edges={edges}"
+              - generic [ref=e2194]: "edgeTypes={edgeTypes}"
+              - generic [ref=e2195]: fitView
+              - generic [ref=e2196]: "nodes={nodes}"
+              - generic [ref=e2197]: "nodeTypes={nodeTypes}"
+              - generic [ref=e2198]: />
+              - generic [ref=e2199]: </div>
+              - generic [ref=e2200]: );
+              - generic [ref=e2202]: export default Example;
+      - generic [ref=e2204]:
+        - heading "Start building AI interfaces today" [level=2] [ref=e2205]
+        - link "Get started" [ref=e2206] [cursor=pointer]:
+          - /url: /en/docs
+  - contentinfo [ref=e2207]:
+    - generic [ref=e2208]:
+      - generic [ref=e2209]:
+        - img "Vercel" [ref=e2210]
+        - paragraph [ref=e2212]: Copyright Vercel 2026. All rights reserved.
+      - generic [ref=e2213]:
+        - button "Select language" [ref=e2214] [cursor=pointer]
+        - link [ref=e2220] [cursor=pointer]:
+          - /url: /rss.xml
+        - link "GitHub" [ref=e2221] [cursor=pointer]:
+          - /url: https://github.com/vercel/ai-elements
+          - img "GitHub"
+        - button [ref=e2222] [cursor=pointer]
+  - region "Notifications alt+T"

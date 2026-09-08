@@ -1,0 +1,1158 @@
+- generic [ref=f2e1]:
+  - link "跳到内容" [ref=f2e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f2e3]:
+    - complementary "展厅导航" [ref=f2e4]:
+      - generic [ref=f2e5]:
+        - generic [ref=f2e6]: UI
+        - generic [ref=f2e7]:
+          - strong [ref=f2e8]: 投放 Agent
+          - text: Asset field guide
+      - navigation [ref=f2e9]:
+        - button "01 总览与风格 12" [ref=f2e2431] [cursor=pointer]:
+          - generic [ref=f2e11]: "01"
+          - generic [ref=f2e12]: 总览与风格
+          - generic [ref=f2e13]: "12"
+        - button "02 全量清单 5,936" [ref=f2e2432] [cursor=pointer]:
+          - generic [ref=f2e15]: "02"
+          - generic [ref=f2e16]: 全量清单
+          - generic [ref=f2e17]: 5,936
+        - button "03 付费替代 2,160" [ref=f2e2433] [cursor=pointer]:
+          - generic [ref=f2e19]: "03"
+          - generic [ref=f2e20]: 付费替代
+          - generic [ref=f2e21]: 2,160
+        - button "04 本地源码 93" [active] [ref=f2e2434] [cursor=pointer]:
+          - generic [ref=f2e23]: "04"
+          - generic [ref=f2e24]: 本地源码
+          - generic [ref=f2e25]: "93"
+        - button "05 主题展厅 42" [ref=f2e2435] [cursor=pointer]:
+          - generic [ref=f2e27]: "05"
+          - generic [ref=f2e28]: 主题展厅
+          - generic [ref=f2e29]: "42"
+        - button "06 新库候选 5" [ref=f2e2436] [cursor=pointer]:
+          - generic [ref=f2e31]: "06"
+          - generic [ref=f2e32]: 新库候选
+          - generic [ref=f2e33]: "5"
+      - generic [ref=f2e34]: 离线可用本页内嵌全部目录和替代数据，不依赖网络加载；外部链接仅在你主动打开时访问官网。
+    - main [ref=f2e35]:
+      - generic [ref=f2e36]:
+        - generic [ref=f2e37]: 官方目录快照 · 2026-08-19
+        - generic [ref=f2e39]: 目录 ≠ 运行时安装 · 缓存 ≠ 已接入
+      - text: s c T A
+      - generic [ref=f2e2556]:
+        - generic [ref=f2e2557]:
+          - generic [ref=f2e2558]:
+            - generic [ref=f2e2559]: Source provenance
+            - heading "真正下载到本地的源码" [level=2] [ref=f2e2560]
+          - paragraph [ref=f2e2561]: 当前是隔离缓存，不是运行时安装：48 个高频根资产带出 41 个同源依赖，共 89 个缓存条目、93 份源码文件。
+        - generic [ref=f2e2562]:
+          - generic [ref=f2e2563]:
+            - generic [ref=f2e2564]: "48"
+            - text: 根资产
+          - generic [ref=f2e2565]:
+            - generic [ref=f2e2566]: "41"
+            - text: 依赖
+          - generic [ref=f2e2567]:
+            - generic [ref=f2e2568]: "89"
+            - text: 缓存条目
+          - generic [ref=f2e2569]:
+            - generic [ref=f2e2570]: "93"
+            - text: 源码文件
+        - generic [ref=f2e2571]:
+          - generic [ref=f2e2572]:
+            - generic [ref=f2e2573]: 搜索缓存
+            - searchbox "搜索缓存" [ref=f2e2574]
+          - generic [ref=f2e2575]:
+            - generic [ref=f2e2576]: 来源
+            - combobox "来源" [ref=f2e2577]:
+              - option "全部缓存来源" [selected]
+              - option "aceternity"
+              - option "coss"
+              - option "magic-ui"
+              - option "react-bits"
+              - option "reui"
+              - option "tremor"
+              - option "tweakcn"
+        - generic [ref=f2e2578]:
+          - generic [ref=f2e2579]:
+            - strong [ref=f2e2580]: "89"
+            - text: 个缓存条目
+          - generic [ref=f2e2581]: 打开本地源码不会访问网络
+        - table [ref=f2e2583]:
+          - rowgroup [ref=f2e2584]:
+            - row [ref=f2e2585]:
+              - columnheader "来源 / 资产" [ref=f2e2586]
+              - columnheader "角色" [ref=f2e2587]
+              - columnheader "文件数" [ref=f2e2588]
+              - columnheader "本地路径" [ref=f2e2589]
+              - columnheader "SHA-256" [ref=f2e2590]
+          - rowgroup [ref=f2e2591]:
+            - row [ref=f2e2592]:
+              - cell [ref=f2e2593]:
+                - text: aceternity
+                - code [ref=f2e2594]: aceternity:background-beams-with-collision
+              - cell "root" [ref=f2e2595]
+              - cell "1" [ref=f2e2597]
+              - cell [ref=f2e2598]:
+                - link [ref=f2e2599] [cursor=pointer]:
+                  - /url: source-cache/aceternity/background-beams-with-collision.json
+                  - code [ref=f2e2600]: source-cache/aceternity/background-beams-with-collision.json
+              - cell [ref=f2e2601]:
+                - code [ref=f2e2602]: 9337d964f6d597c3…
+            - row [ref=f2e2603]:
+              - cell [ref=f2e2604]:
+                - text: aceternity
+                - code [ref=f2e2605]: aceternity:bento-grid
+              - cell "root" [ref=f2e2606]
+              - cell "1" [ref=f2e2608]
+              - cell [ref=f2e2609]:
+                - link [ref=f2e2610] [cursor=pointer]:
+                  - /url: source-cache/aceternity/bento-grid.json
+                  - code [ref=f2e2611]: source-cache/aceternity/bento-grid.json
+              - cell [ref=f2e2612]:
+                - code [ref=f2e2613]: 9d988ea63b4209b6…
+            - row [ref=f2e2614]:
+              - cell [ref=f2e2615]:
+                - text: aceternity
+                - code [ref=f2e2616]: aceternity:canvas-reveal-effect
+              - cell "dependency" [ref=f2e2617]
+              - cell "1" [ref=f2e2619]
+              - cell [ref=f2e2620]:
+                - link [ref=f2e2621] [cursor=pointer]:
+                  - /url: source-cache/aceternity/canvas-reveal-effect.json
+                  - code [ref=f2e2622]: source-cache/aceternity/canvas-reveal-effect.json
+              - cell [ref=f2e2623]:
+                - code [ref=f2e2624]: 68ce92e879c57827…
+            - row [ref=f2e2625]:
+              - cell [ref=f2e2626]:
+                - text: aceternity
+                - code [ref=f2e2627]: aceternity:card-spotlight
+              - cell "root" [ref=f2e2628]
+              - cell "2" [ref=f2e2630]
+              - cell [ref=f2e2631]:
+                - link [ref=f2e2632] [cursor=pointer]:
+                  - /url: source-cache/aceternity/card-spotlight.json
+                  - code [ref=f2e2633]: source-cache/aceternity/card-spotlight.json
+              - cell [ref=f2e2634]:
+                - code [ref=f2e2635]: a46aab4f9f62bce0…
+            - row [ref=f2e2636]:
+              - cell [ref=f2e2637]:
+                - text: aceternity
+                - code [ref=f2e2638]: aceternity:spotlight-new
+              - cell "root" [ref=f2e2639]
+              - cell "1" [ref=f2e2641]
+              - cell [ref=f2e2642]:
+                - link [ref=f2e2643] [cursor=pointer]:
+                  - /url: source-cache/aceternity/spotlight-new.json
+                  - code [ref=f2e2644]: source-cache/aceternity/spotlight-new.json
+              - cell [ref=f2e2645]:
+                - code [ref=f2e2646]: df03e25ac5d80801…
+            - row [ref=f2e2647]:
+              - cell [ref=f2e2648]:
+                - text: aceternity
+                - code [ref=f2e2649]: aceternity:text-generate-effect
+              - cell "root" [ref=f2e2650]
+              - cell "1" [ref=f2e2652]
+              - cell [ref=f2e2653]:
+                - link [ref=f2e2654] [cursor=pointer]:
+                  - /url: source-cache/aceternity/text-generate-effect.json
+                  - code [ref=f2e2655]: source-cache/aceternity/text-generate-effect.json
+              - cell [ref=f2e2656]:
+                - code [ref=f2e2657]: 31f3b8c41b215c8e…
+            - row [ref=f2e2658]:
+              - cell [ref=f2e2659]:
+                - text: aceternity
+                - code [ref=f2e2660]: aceternity:timeline
+              - cell "root" [ref=f2e2661]
+              - cell "1" [ref=f2e2663]
+              - cell [ref=f2e2664]:
+                - link [ref=f2e2665] [cursor=pointer]:
+                  - /url: source-cache/aceternity/timeline.json
+                  - code [ref=f2e2666]: source-cache/aceternity/timeline.json
+              - cell [ref=f2e2667]:
+                - code [ref=f2e2668]: 32ec3327b9057d7f…
+            - row [ref=f2e2669]:
+              - cell [ref=f2e2670]:
+                - text: coss
+                - code [ref=f2e2671]: coss:autocomplete
+              - cell "dependency" [ref=f2e2672]
+              - cell "1" [ref=f2e2674]
+              - cell [ref=f2e2675]:
+                - link [ref=f2e2676] [cursor=pointer]:
+                  - /url: source-cache/coss/autocomplete.json
+                  - code [ref=f2e2677]: source-cache/coss/autocomplete.json
+              - cell [ref=f2e2678]:
+                - code [ref=f2e2679]: cb12993e367e4895…
+            - row [ref=f2e2680]:
+              - cell [ref=f2e2681]:
+                - text: coss
+                - code [ref=f2e2682]: coss:avatar
+              - cell "dependency" [ref=f2e2683]
+              - cell "1" [ref=f2e2685]
+              - cell [ref=f2e2686]:
+                - link [ref=f2e2687] [cursor=pointer]:
+                  - /url: source-cache/coss/avatar.json
+                  - code [ref=f2e2688]: source-cache/coss/avatar.json
+              - cell [ref=f2e2689]:
+                - code [ref=f2e2690]: cbdb88971a62b21f…
+            - row [ref=f2e2691]:
+              - cell [ref=f2e2692]:
+                - text: coss
+                - code [ref=f2e2693]: coss:badge
+              - cell "dependency" [ref=f2e2694]
+              - cell "1" [ref=f2e2696]
+              - cell [ref=f2e2697]:
+                - link [ref=f2e2698] [cursor=pointer]:
+                  - /url: source-cache/coss/badge.json
+                  - code [ref=f2e2699]: source-cache/coss/badge.json
+              - cell [ref=f2e2700]:
+                - code [ref=f2e2701]: 6447fc6679885712…
+            - row [ref=f2e2702]:
+              - cell [ref=f2e2703]:
+                - text: coss
+                - code [ref=f2e2704]: coss:button
+              - cell "dependency" [ref=f2e2705]
+              - cell "1" [ref=f2e2707]
+              - cell [ref=f2e2708]:
+                - link [ref=f2e2709] [cursor=pointer]:
+                  - /url: source-cache/coss/button.json
+                  - code [ref=f2e2710]: source-cache/coss/button.json
+              - cell [ref=f2e2711]:
+                - code [ref=f2e2712]: ec0425ff3e8a3d1b…
+            - row [ref=f2e2713]:
+              - cell [ref=f2e2714]:
+                - text: coss
+                - code [ref=f2e2715]: coss:calendar
+              - cell "dependency" [ref=f2e2716]
+              - cell "1" [ref=f2e2718]
+              - cell [ref=f2e2719]:
+                - link [ref=f2e2720] [cursor=pointer]:
+                  - /url: source-cache/coss/calendar.json
+                  - code [ref=f2e2721]: source-cache/coss/calendar.json
+              - cell [ref=f2e2722]:
+                - code [ref=f2e2723]: 89bf3cf8aa970fb0…
+            - row [ref=f2e2724]:
+              - cell [ref=f2e2725]:
+                - text: coss
+                - code [ref=f2e2726]: coss:card
+              - cell "dependency" [ref=f2e2727]
+              - cell "1" [ref=f2e2729]
+              - cell [ref=f2e2730]:
+                - link [ref=f2e2731] [cursor=pointer]:
+                  - /url: source-cache/coss/card.json
+                  - code [ref=f2e2732]: source-cache/coss/card.json
+              - cell [ref=f2e2733]:
+                - code [ref=f2e2734]: 79fac2382b2163be…
+            - row [ref=f2e2735]:
+              - cell [ref=f2e2736]:
+                - text: coss
+                - code [ref=f2e2737]: coss:checkbox
+              - cell "dependency" [ref=f2e2738]
+              - cell "1" [ref=f2e2740]
+              - cell [ref=f2e2741]:
+                - link [ref=f2e2742] [cursor=pointer]:
+                  - /url: source-cache/coss/checkbox.json
+                  - code [ref=f2e2743]: source-cache/coss/checkbox.json
+              - cell [ref=f2e2744]:
+                - code [ref=f2e2745]: 1fe5b0cb7f79ef20…
+            - row [ref=f2e2746]:
+              - cell [ref=f2e2747]:
+                - text: coss
+                - code [ref=f2e2748]: coss:checkbox-group
+              - cell "dependency" [ref=f2e2749]
+              - cell "1" [ref=f2e2751]
+              - cell [ref=f2e2752]:
+                - link [ref=f2e2753] [cursor=pointer]:
+                  - /url: source-cache/coss/checkbox-group.json
+                  - code [ref=f2e2754]: source-cache/coss/checkbox-group.json
+              - cell [ref=f2e2755]:
+                - code [ref=f2e2756]: 3052be19ec09c345…
+            - row [ref=f2e2757]:
+              - cell [ref=f2e2758]:
+                - text: coss
+                - code [ref=f2e2759]: coss:combobox
+              - cell "dependency" [ref=f2e2760]
+              - cell "1" [ref=f2e2762]
+              - cell [ref=f2e2763]:
+                - link [ref=f2e2764] [cursor=pointer]:
+                  - /url: source-cache/coss/combobox.json
+                  - code [ref=f2e2765]: source-cache/coss/combobox.json
+              - cell [ref=f2e2766]:
+                - code [ref=f2e2767]: 6450394eecabdb89…
+            - row [ref=f2e2768]:
+              - cell [ref=f2e2769]:
+                - text: coss
+                - code [ref=f2e2770]: coss:command
+              - cell "dependency" [ref=f2e2771]
+              - cell "1" [ref=f2e2773]
+              - cell [ref=f2e2774]:
+                - link [ref=f2e2775] [cursor=pointer]:
+                  - /url: source-cache/coss/command.json
+                  - code [ref=f2e2776]: source-cache/coss/command.json
+              - cell [ref=f2e2777]:
+                - code [ref=f2e2778]: a613b0e2cbc96385…
+            - row [ref=f2e2779]:
+              - cell [ref=f2e2780]:
+                - text: coss
+                - code [ref=f2e2781]: coss:dialog
+              - cell "dependency" [ref=f2e2782]
+              - cell "1" [ref=f2e2784]
+              - cell [ref=f2e2785]:
+                - link [ref=f2e2786] [cursor=pointer]:
+                  - /url: source-cache/coss/dialog.json
+                  - code [ref=f2e2787]: source-cache/coss/dialog.json
+              - cell [ref=f2e2788]:
+                - code [ref=f2e2789]: c234338b47dea397…
+            - row [ref=f2e2790]:
+              - cell [ref=f2e2791]:
+                - text: coss
+                - code [ref=f2e2792]: coss:drawer
+              - cell "dependency" [ref=f2e2793]
+              - cell "1" [ref=f2e2795]
+              - cell [ref=f2e2796]:
+                - link [ref=f2e2797] [cursor=pointer]:
+                  - /url: source-cache/coss/drawer.json
+                  - code [ref=f2e2798]: source-cache/coss/drawer.json
+              - cell [ref=f2e2799]:
+                - code [ref=f2e2800]: 672bb0eca94da40c…
+            - row [ref=f2e2801]:
+              - cell [ref=f2e2802]:
+                - text: coss
+                - code [ref=f2e2803]: coss:empty
+              - cell "dependency" [ref=f2e2804]
+              - cell "1" [ref=f2e2806]
+              - cell [ref=f2e2807]:
+                - link [ref=f2e2808] [cursor=pointer]:
+                  - /url: source-cache/coss/empty.json
+                  - code [ref=f2e2809]: source-cache/coss/empty.json
+              - cell [ref=f2e2810]:
+                - code [ref=f2e2811]: 3f72196b7f77ace3…
+            - row [ref=f2e2812]:
+              - cell [ref=f2e2813]:
+                - text: coss
+                - code [ref=f2e2814]: coss:field
+              - cell "dependency" [ref=f2e2815]
+              - cell "1" [ref=f2e2817]
+              - cell [ref=f2e2818]:
+                - link [ref=f2e2819] [cursor=pointer]:
+                  - /url: source-cache/coss/field.json
+                  - code [ref=f2e2820]: source-cache/coss/field.json
+              - cell [ref=f2e2821]:
+                - code [ref=f2e2822]: b0efc6f3d69fc935…
+            - row [ref=f2e2823]:
+              - cell [ref=f2e2824]:
+                - text: coss
+                - code [ref=f2e2825]: coss:form
+              - cell "dependency" [ref=f2e2826]
+              - cell "1" [ref=f2e2828]
+              - cell [ref=f2e2829]:
+                - link [ref=f2e2830] [cursor=pointer]:
+                  - /url: source-cache/coss/form.json
+                  - code [ref=f2e2831]: source-cache/coss/form.json
+              - cell [ref=f2e2832]:
+                - code [ref=f2e2833]: 88cd07481e6f1682…
+            - row [ref=f2e2834]:
+              - cell [ref=f2e2835]:
+                - text: coss
+                - code [ref=f2e2836]: coss:input
+              - cell "dependency" [ref=f2e2837]
+              - cell "1" [ref=f2e2839]
+              - cell [ref=f2e2840]:
+                - link [ref=f2e2841] [cursor=pointer]:
+                  - /url: source-cache/coss/input.json
+                  - code [ref=f2e2842]: source-cache/coss/input.json
+              - cell [ref=f2e2843]:
+                - code [ref=f2e2844]: dd80584491e555f2…
+            - row [ref=f2e2845]:
+              - cell [ref=f2e2846]:
+                - text: coss
+                - code [ref=f2e2847]: coss:input-group
+              - cell "dependency" [ref=f2e2848]
+              - cell "1" [ref=f2e2850]
+              - cell [ref=f2e2851]:
+                - link [ref=f2e2852] [cursor=pointer]:
+                  - /url: source-cache/coss/input-group.json
+                  - code [ref=f2e2853]: source-cache/coss/input-group.json
+              - cell [ref=f2e2854]:
+                - code [ref=f2e2855]: 40971ef8038ef032…
+            - row [ref=f2e2856]:
+              - cell [ref=f2e2857]:
+                - text: coss
+                - code [ref=f2e2858]: coss:kbd
+              - cell "dependency" [ref=f2e2859]
+              - cell "1" [ref=f2e2861]
+              - cell [ref=f2e2862]:
+                - link [ref=f2e2863] [cursor=pointer]:
+                  - /url: source-cache/coss/kbd.json
+                  - code [ref=f2e2864]: source-cache/coss/kbd.json
+              - cell [ref=f2e2865]:
+                - code [ref=f2e2866]: c8bac185ada71239…
+            - row [ref=f2e2867]:
+              - cell [ref=f2e2868]:
+                - text: coss
+                - code [ref=f2e2869]: coss:label
+              - cell "dependency" [ref=f2e2870]
+              - cell "1" [ref=f2e2872]
+              - cell [ref=f2e2873]:
+                - link [ref=f2e2874] [cursor=pointer]:
+                  - /url: source-cache/coss/label.json
+                  - code [ref=f2e2875]: source-cache/coss/label.json
+              - cell [ref=f2e2876]:
+                - code [ref=f2e2877]: 88fb40fa51b80e29…
+            - row [ref=f2e2878]:
+              - cell [ref=f2e2879]:
+                - text: coss
+                - code [ref=f2e2880]: coss:number-field
+              - cell "dependency" [ref=f2e2881]
+              - cell "1" [ref=f2e2883]
+              - cell [ref=f2e2884]:
+                - link [ref=f2e2885] [cursor=pointer]:
+                  - /url: source-cache/coss/number-field.json
+                  - code [ref=f2e2886]: source-cache/coss/number-field.json
+              - cell [ref=f2e2887]:
+                - code [ref=f2e2888]: 2de96e15c631e700…
+            - row [ref=f2e2889]:
+              - cell [ref=f2e2890]:
+                - text: coss
+                - code [ref=f2e2891]: coss:p-calendar-13
+              - cell "root" [ref=f2e2892]
+              - cell "1" [ref=f2e2894]
+              - cell [ref=f2e2895]:
+                - link [ref=f2e2896] [cursor=pointer]:
+                  - /url: source-cache/coss/p-calendar-13.json
+                  - code [ref=f2e2897]: source-cache/coss/p-calendar-13.json
+              - cell [ref=f2e2898]:
+                - code [ref=f2e2899]: 790d6a65af5dc891…
+            - row [ref=f2e2900]:
+              - cell [ref=f2e2901]:
+                - text: coss
+                - code [ref=f2e2902]: coss:p-combobox-19
+              - cell "root" [ref=f2e2903]
+              - cell "1" [ref=f2e2905]
+              - cell [ref=f2e2906]:
+                - link [ref=f2e2907] [cursor=pointer]:
+                  - /url: source-cache/coss/p-combobox-19.json
+                  - code [ref=f2e2908]: source-cache/coss/p-combobox-19.json
+              - cell [ref=f2e2909]:
+                - code [ref=f2e2910]: dab2bc984d3282eb…
+            - row [ref=f2e2911]:
+              - cell [ref=f2e2912]:
+                - text: coss
+                - code [ref=f2e2913]: coss:p-command-2
+              - cell "root" [ref=f2e2914]
+              - cell "1" [ref=f2e2916]
+              - cell [ref=f2e2917]:
+                - link [ref=f2e2918] [cursor=pointer]:
+                  - /url: source-cache/coss/p-command-2.json
+                  - code [ref=f2e2919]: source-cache/coss/p-command-2.json
+              - cell [ref=f2e2920]:
+                - code [ref=f2e2921]: c57aa8fb32836953…
+            - row [ref=f2e2922]:
+              - cell [ref=f2e2923]:
+                - text: coss
+                - code [ref=f2e2924]: coss:p-date-picker-2
+              - cell "root" [ref=f2e2925]
+              - cell "1" [ref=f2e2927]
+              - cell [ref=f2e2928]:
+                - link [ref=f2e2929] [cursor=pointer]:
+                  - /url: source-cache/coss/p-date-picker-2.json
+                  - code [ref=f2e2930]: source-cache/coss/p-date-picker-2.json
+              - cell [ref=f2e2931]:
+                - code [ref=f2e2932]: f5c045026424ac74…
+            - row [ref=f2e2933]:
+              - cell [ref=f2e2934]:
+                - text: coss
+                - code [ref=f2e2935]: coss:p-date-picker-9
+              - cell "root" [ref=f2e2936]
+              - cell "1" [ref=f2e2938]
+              - cell [ref=f2e2939]:
+                - link [ref=f2e2940] [cursor=pointer]:
+                  - /url: source-cache/coss/p-date-picker-9.json
+                  - code [ref=f2e2941]: source-cache/coss/p-date-picker-9.json
+              - cell [ref=f2e2942]:
+                - code [ref=f2e2943]: b3a0458eeca487e2…
+            - row [ref=f2e2944]:
+              - cell [ref=f2e2945]:
+                - text: coss
+                - code [ref=f2e2946]: coss:p-drawer-12
+              - cell "root" [ref=f2e2947]
+              - cell "1" [ref=f2e2949]
+              - cell [ref=f2e2950]:
+                - link [ref=f2e2951] [cursor=pointer]:
+                  - /url: source-cache/coss/p-drawer-12.json
+                  - code [ref=f2e2952]: source-cache/coss/p-drawer-12.json
+              - cell [ref=f2e2953]:
+                - code [ref=f2e2954]: 2e0bc1f863cab763…
+            - row [ref=f2e2955]:
+              - cell [ref=f2e2956]:
+                - text: coss
+                - code [ref=f2e2957]: coss:p-empty-1
+              - cell "root" [ref=f2e2958]
+              - cell "1" [ref=f2e2960]
+              - cell [ref=f2e2961]:
+                - link [ref=f2e2962] [cursor=pointer]:
+                  - /url: source-cache/coss/p-empty-1.json
+                  - code [ref=f2e2963]: source-cache/coss/p-empty-1.json
+              - cell [ref=f2e2964]:
+                - code [ref=f2e2965]: 08695e65ec6da8b6…
+            - row [ref=f2e2966]:
+              - cell [ref=f2e2967]:
+                - text: coss
+                - code [ref=f2e2968]: coss:p-field-9
+              - cell "root" [ref=f2e2969]
+              - cell "1" [ref=f2e2971]
+              - cell [ref=f2e2972]:
+                - link [ref=f2e2973] [cursor=pointer]:
+                  - /url: source-cache/coss/p-field-9.json
+                  - code [ref=f2e2974]: source-cache/coss/p-field-9.json
+              - cell [ref=f2e2975]:
+                - code [ref=f2e2976]: 885cdb6273f861da…
+            - row [ref=f2e2977]:
+              - cell [ref=f2e2978]:
+                - text: coss
+                - code [ref=f2e2979]: coss:p-input-group-23
+              - cell "root" [ref=f2e2980]
+              - cell "1" [ref=f2e2982]
+              - cell [ref=f2e2983]:
+                - link [ref=f2e2984] [cursor=pointer]:
+                  - /url: source-cache/coss/p-input-group-23.json
+                  - code [ref=f2e2985]: source-cache/coss/p-input-group-23.json
+              - cell [ref=f2e2986]:
+                - code [ref=f2e2987]: d74540b1b13bb8d3…
+            - row [ref=f2e2988]:
+              - cell [ref=f2e2989]:
+                - text: coss
+                - code [ref=f2e2990]: coss:p-slider-22
+              - cell "root" [ref=f2e2991]
+              - cell "1" [ref=f2e2993]
+              - cell [ref=f2e2994]:
+                - link [ref=f2e2995] [cursor=pointer]:
+                  - /url: source-cache/coss/p-slider-22.json
+                  - code [ref=f2e2996]: source-cache/coss/p-slider-22.json
+              - cell [ref=f2e2997]:
+                - code [ref=f2e2998]: c3ebb2cfc9b35989…
+            - row [ref=f2e2999]:
+              - cell [ref=f2e3000]:
+                - text: coss
+                - code [ref=f2e3001]: coss:p-switch-7
+              - cell "root" [ref=f2e3002]
+              - cell "1" [ref=f2e3004]
+              - cell [ref=f2e3005]:
+                - link [ref=f2e3006] [cursor=pointer]:
+                  - /url: source-cache/coss/p-switch-7.json
+                  - code [ref=f2e3007]: source-cache/coss/p-switch-7.json
+              - cell [ref=f2e3008]:
+                - code [ref=f2e3009]: eca077bce2706a32…
+            - row [ref=f2e3010]:
+              - cell [ref=f2e3011]:
+                - text: coss
+                - code [ref=f2e3012]: coss:p-table-8
+              - cell "root" [ref=f2e3013]
+              - cell "1" [ref=f2e3015]
+              - cell [ref=f2e3016]:
+                - link [ref=f2e3017] [cursor=pointer]:
+                  - /url: source-cache/coss/p-table-8.json
+                  - code [ref=f2e3018]: source-cache/coss/p-table-8.json
+              - cell [ref=f2e3019]:
+                - code [ref=f2e3020]: faf1430bcd93d2b2…
+            - row [ref=f2e3021]:
+              - cell [ref=f2e3022]:
+                - text: coss
+                - code [ref=f2e3023]: coss:pagination
+              - cell "dependency" [ref=f2e3024]
+              - cell "1" [ref=f2e3026]
+              - cell [ref=f2e3027]:
+                - link [ref=f2e3028] [cursor=pointer]:
+                  - /url: source-cache/coss/pagination.json
+                  - code [ref=f2e3029]: source-cache/coss/pagination.json
+              - cell [ref=f2e3030]:
+                - code [ref=f2e3031]: e0eb63bd9aa52b04…
+            - row [ref=f2e3032]:
+              - cell [ref=f2e3033]:
+                - text: coss
+                - code [ref=f2e3034]: coss:popover
+              - cell "dependency" [ref=f2e3035]
+              - cell "1" [ref=f2e3037]
+              - cell [ref=f2e3038]:
+                - link [ref=f2e3039] [cursor=pointer]:
+                  - /url: source-cache/coss/popover.json
+                  - code [ref=f2e3040]: source-cache/coss/popover.json
+              - cell [ref=f2e3041]:
+                - code [ref=f2e3042]: 8a71de3696b38f0d…
+            - row [ref=f2e3043]:
+              - cell [ref=f2e3044]:
+                - text: coss
+                - code [ref=f2e3045]: coss:scroll-area
+              - cell "dependency" [ref=f2e3046]
+              - cell "1" [ref=f2e3048]
+              - cell [ref=f2e3049]:
+                - link [ref=f2e3050] [cursor=pointer]:
+                  - /url: source-cache/coss/scroll-area.json
+                  - code [ref=f2e3051]: source-cache/coss/scroll-area.json
+              - cell [ref=f2e3052]:
+                - code [ref=f2e3053]: 7dec1f81d43ad3d4…
+            - row [ref=f2e3054]:
+              - cell [ref=f2e3055]:
+                - text: coss
+                - code [ref=f2e3056]: coss:select
+              - cell "dependency" [ref=f2e3057]
+              - cell "1" [ref=f2e3059]
+              - cell [ref=f2e3060]:
+                - link [ref=f2e3061] [cursor=pointer]:
+                  - /url: source-cache/coss/select.json
+                  - code [ref=f2e3062]: source-cache/coss/select.json
+              - cell [ref=f2e3063]:
+                - code [ref=f2e3064]: 96c0f2af83901ba8…
+            - row [ref=f2e3065]:
+              - cell [ref=f2e3066]:
+                - text: coss
+                - code [ref=f2e3067]: coss:skeleton
+              - cell "dependency" [ref=f2e3068]
+              - cell "1" [ref=f2e3070]
+              - cell [ref=f2e3071]:
+                - link [ref=f2e3072] [cursor=pointer]:
+                  - /url: source-cache/coss/skeleton.json
+                  - code [ref=f2e3073]: source-cache/coss/skeleton.json
+              - cell [ref=f2e3074]:
+                - code [ref=f2e3075]: a44259c84ccddfea…
+            - row [ref=f2e3076]:
+              - cell [ref=f2e3077]:
+                - text: coss
+                - code [ref=f2e3078]: coss:slider
+              - cell "dependency" [ref=f2e3079]
+              - cell "1" [ref=f2e3081]
+              - cell [ref=f2e3082]:
+                - link [ref=f2e3083] [cursor=pointer]:
+                  - /url: source-cache/coss/slider.json
+                  - code [ref=f2e3084]: source-cache/coss/slider.json
+              - cell [ref=f2e3085]:
+                - code [ref=f2e3086]: 6362f5bfb69bcb80…
+            - row [ref=f2e3087]:
+              - cell [ref=f2e3088]:
+                - text: coss
+                - code [ref=f2e3089]: coss:spinner
+              - cell "dependency" [ref=f2e3090]
+              - cell "1" [ref=f2e3092]
+              - cell [ref=f2e3093]:
+                - link [ref=f2e3094] [cursor=pointer]:
+                  - /url: source-cache/coss/spinner.json
+                  - code [ref=f2e3095]: source-cache/coss/spinner.json
+              - cell [ref=f2e3096]:
+                - code [ref=f2e3097]: 5ad5667bc3e317a9…
+            - row [ref=f2e3098]:
+              - cell [ref=f2e3099]:
+                - text: coss
+                - code [ref=f2e3100]: coss:switch
+              - cell "dependency" [ref=f2e3101]
+              - cell "1" [ref=f2e3103]
+              - cell [ref=f2e3104]:
+                - link [ref=f2e3105] [cursor=pointer]:
+                  - /url: source-cache/coss/switch.json
+                  - code [ref=f2e3106]: source-cache/coss/switch.json
+              - cell [ref=f2e3107]:
+                - code [ref=f2e3108]: 4b803868161ff34d…
+            - row [ref=f2e3109]:
+              - cell [ref=f2e3110]:
+                - text: coss
+                - code [ref=f2e3111]: coss:table
+              - cell "dependency" [ref=f2e3112]
+              - cell "1" [ref=f2e3114]
+              - cell [ref=f2e3115]:
+                - link [ref=f2e3116] [cursor=pointer]:
+                  - /url: source-cache/coss/table.json
+                  - code [ref=f2e3117]: source-cache/coss/table.json
+              - cell [ref=f2e3118]:
+                - code [ref=f2e3119]: 5597158df48fdab3…
+            - row [ref=f2e3120]:
+              - cell [ref=f2e3121]:
+                - text: coss
+                - code [ref=f2e3122]: coss:textarea
+              - cell "dependency" [ref=f2e3123]
+              - cell "1" [ref=f2e3125]
+              - cell [ref=f2e3126]:
+                - link [ref=f2e3127] [cursor=pointer]:
+                  - /url: source-cache/coss/textarea.json
+                  - code [ref=f2e3128]: source-cache/coss/textarea.json
+              - cell [ref=f2e3129]:
+                - code [ref=f2e3130]: d19bba7b7d40252b…
+            - row [ref=f2e3131]:
+              - cell [ref=f2e3132]:
+                - text: coss
+                - code [ref=f2e3133]: coss:tooltip
+              - cell "dependency" [ref=f2e3134]
+              - cell "1" [ref=f2e3136]
+              - cell [ref=f2e3137]:
+                - link [ref=f2e3138] [cursor=pointer]:
+                  - /url: source-cache/coss/tooltip.json
+                  - code [ref=f2e3139]: source-cache/coss/tooltip.json
+              - cell [ref=f2e3140]:
+                - code [ref=f2e3141]: e462c49b1b68fe0d…
+            - row [ref=f2e3142]:
+              - cell [ref=f2e3143]:
+                - text: coss
+                - code [ref=f2e3144]: coss:use-media-query
+              - cell "dependency" [ref=f2e3145]
+              - cell "1" [ref=f2e3147]
+              - cell [ref=f2e3148]:
+                - link [ref=f2e3149] [cursor=pointer]:
+                  - /url: source-cache/coss/use-media-query.json
+                  - code [ref=f2e3150]: source-cache/coss/use-media-query.json
+              - cell [ref=f2e3151]:
+                - code [ref=f2e3152]: c4c16f3bc82635a4…
+            - row [ref=f2e3153]:
+              - cell [ref=f2e3154]:
+                - text: magic-ui
+                - code [ref=f2e3155]: magic-ui:animated-list
+              - cell "root" [ref=f2e3156]
+              - cell "1" [ref=f2e3158]
+              - cell [ref=f2e3159]:
+                - link [ref=f2e3160] [cursor=pointer]:
+                  - /url: source-cache/magic-ui/animated-list.json
+                  - code [ref=f2e3161]: source-cache/magic-ui/animated-list.json
+              - cell [ref=f2e3162]:
+                - code [ref=f2e3163]: a95ae266e0eda12b…
+            - row [ref=f2e3164]:
+              - cell [ref=f2e3165]:
+                - text: magic-ui
+                - code [ref=f2e3166]: magic-ui:bento-grid
+              - cell "root" [ref=f2e3167]
+              - cell "1" [ref=f2e3169]
+              - cell [ref=f2e3170]:
+                - link [ref=f2e3171] [cursor=pointer]:
+                  - /url: source-cache/magic-ui/bento-grid.json
+                  - code [ref=f2e3172]: source-cache/magic-ui/bento-grid.json
+              - cell [ref=f2e3173]:
+                - code [ref=f2e3174]: f43018c50fbc37f0…
+            - row [ref=f2e3175]:
+              - cell [ref=f2e3176]:
+                - text: magic-ui
+                - code [ref=f2e3177]: magic-ui:blur-fade
+              - cell "root" [ref=f2e3178]
+              - cell "1" [ref=f2e3180]
+              - cell [ref=f2e3181]:
+                - link [ref=f2e3182] [cursor=pointer]:
+                  - /url: source-cache/magic-ui/blur-fade.json
+                  - code [ref=f2e3183]: source-cache/magic-ui/blur-fade.json
+              - cell [ref=f2e3184]:
+                - code [ref=f2e3185]: 5161e38f05b5898e…
+            - row [ref=f2e3186]:
+              - cell [ref=f2e3187]:
+                - text: magic-ui
+                - code [ref=f2e3188]: magic-ui:border-beam
+              - cell "root" [ref=f2e3189]
+              - cell "1" [ref=f2e3191]
+              - cell [ref=f2e3192]:
+                - link [ref=f2e3193] [cursor=pointer]:
+                  - /url: source-cache/magic-ui/border-beam.json
+                  - code [ref=f2e3194]: source-cache/magic-ui/border-beam.json
+              - cell [ref=f2e3195]:
+                - code [ref=f2e3196]: 5ed4f31cf1aa2cf4…
+            - row [ref=f2e3197]:
+              - cell [ref=f2e3198]:
+                - text: magic-ui
+                - code [ref=f2e3199]: magic-ui:magic-card
+              - cell "root" [ref=f2e3200]
+              - cell "1" [ref=f2e3202]
+              - cell [ref=f2e3203]:
+                - link [ref=f2e3204] [cursor=pointer]:
+                  - /url: source-cache/magic-ui/magic-card.json
+                  - code [ref=f2e3205]: source-cache/magic-ui/magic-card.json
+              - cell [ref=f2e3206]:
+                - code [ref=f2e3207]: d487ae39795640bd…
+            - row [ref=f2e3208]:
+              - cell [ref=f2e3209]:
+                - text: magic-ui
+                - code [ref=f2e3210]: magic-ui:marquee
+              - cell "root" [ref=f2e3211]
+              - cell "1" [ref=f2e3213]
+              - cell [ref=f2e3214]:
+                - link [ref=f2e3215] [cursor=pointer]:
+                  - /url: source-cache/magic-ui/marquee.json
+                  - code [ref=f2e3216]: source-cache/magic-ui/marquee.json
+              - cell [ref=f2e3217]:
+                - code [ref=f2e3218]: 6378d12f6ac7b383…
+            - row [ref=f2e3219]:
+              - cell [ref=f2e3220]:
+                - text: magic-ui
+                - code [ref=f2e3221]: magic-ui:number-ticker
+              - cell "root" [ref=f2e3222]
+              - cell "1" [ref=f2e3224]
+              - cell [ref=f2e3225]:
+                - link [ref=f2e3226] [cursor=pointer]:
+                  - /url: source-cache/magic-ui/number-ticker.json
+                  - code [ref=f2e3227]: source-cache/magic-ui/number-ticker.json
+              - cell [ref=f2e3228]:
+                - code [ref=f2e3229]: c4808c7218100b21…
+            - row [ref=f2e3230]:
+              - cell [ref=f2e3231]:
+                - text: react-bits
+                - code [ref=f2e3232]: react-bits:AnimatedContent
+              - cell "root" [ref=f2e3233]
+              - cell "1" [ref=f2e3235]
+              - cell [ref=f2e3236]:
+                - link [ref=f2e3237] [cursor=pointer]:
+                  - /url: source-cache/react-bits/AnimatedContent/
+                  - code [ref=f2e3238]: source-cache/react-bits/AnimatedContent/
+              - cell [ref=f2e3239]:
+                - code [ref=f2e3240]: b5b031519bb0b79c…
+            - row [ref=f2e3241]:
+              - cell [ref=f2e3242]:
+                - text: react-bits
+                - code [ref=f2e3243]: react-bits:BlurText
+              - cell "root" [ref=f2e3244]
+              - cell "1" [ref=f2e3246]
+              - cell [ref=f2e3247]:
+                - link [ref=f2e3248] [cursor=pointer]:
+                  - /url: source-cache/react-bits/BlurText/
+                  - code [ref=f2e3249]: source-cache/react-bits/BlurText/
+              - cell [ref=f2e3250]:
+                - code [ref=f2e3251]: 7a5da0961a81deac…
+            - row [ref=f2e3252]:
+              - cell [ref=f2e3253]:
+                - text: react-bits
+                - code [ref=f2e3254]: react-bits:Counter
+              - cell "root" [ref=f2e3255]
+              - cell "2" [ref=f2e3257]
+              - cell [ref=f2e3258]:
+                - link [ref=f2e3259] [cursor=pointer]:
+                  - /url: source-cache/react-bits/Counter/
+                  - code [ref=f2e3260]: source-cache/react-bits/Counter/
+              - cell [ref=f2e3261]:
+                - code [ref=f2e3262]: da9bb42d46d9a159…
+            - row [ref=f2e3263]:
+              - cell [ref=f2e3264]:
+                - text: react-bits
+                - code [ref=f2e3265]: react-bits:FadeContent
+              - cell "root" [ref=f2e3266]
+              - cell "1" [ref=f2e3268]
+              - cell [ref=f2e3269]:
+                - link [ref=f2e3270] [cursor=pointer]:
+                  - /url: source-cache/react-bits/FadeContent/
+                  - code [ref=f2e3271]: source-cache/react-bits/FadeContent/
+              - cell [ref=f2e3272]:
+                - code [ref=f2e3273]: c262d380ff208145…
+            - row [ref=f2e3274]:
+              - cell [ref=f2e3275]:
+                - text: react-bits
+                - code [ref=f2e3276]: react-bits:ShinyText
+              - cell "root" [ref=f2e3277]
+              - cell "2" [ref=f2e3279]
+              - cell [ref=f2e3280]:
+                - link [ref=f2e3281] [cursor=pointer]:
+                  - /url: source-cache/react-bits/ShinyText/
+                  - code [ref=f2e3282]: source-cache/react-bits/ShinyText/
+              - cell [ref=f2e3283]:
+                - code [ref=f2e3284]: 85f9b64dd4f1e317…
+            - row [ref=f2e3285]:
+              - cell [ref=f2e3286]:
+                - text: react-bits
+                - code [ref=f2e3287]: react-bits:SoftAurora
+              - cell "root" [ref=f2e3288]
+              - cell "2" [ref=f2e3290]
+              - cell [ref=f2e3291]:
+                - link [ref=f2e3292] [cursor=pointer]:
+                  - /url: source-cache/react-bits/SoftAurora/
+                  - code [ref=f2e3293]: source-cache/react-bits/SoftAurora/
+              - cell [ref=f2e3294]:
+                - code [ref=f2e3295]: ae2c8bb76dede12a…
+            - row [ref=f2e3296]:
+              - cell [ref=f2e3297]:
+                - text: react-bits
+                - code [ref=f2e3298]: react-bits:SpotlightCard
+              - cell "root" [ref=f2e3299]
+              - cell "2" [ref=f2e3301]
+              - cell [ref=f2e3302]:
+                - link [ref=f2e3303] [cursor=pointer]:
+                  - /url: source-cache/react-bits/SpotlightCard/
+                  - code [ref=f2e3304]: source-cache/react-bits/SpotlightCard/
+              - cell [ref=f2e3305]:
+                - code [ref=f2e3306]: 355c1c629d4876c3…
+            - row [ref=f2e3307]:
+              - cell [ref=f2e3308]:
+                - text: reui
+                - code [ref=f2e3309]: reui:badge
+              - cell "dependency" [ref=f2e3310]
+              - cell "1" [ref=f2e3312]
+              - cell [ref=f2e3313]:
+                - link [ref=f2e3314] [cursor=pointer]:
+                  - /url: source-cache/reui/badge.json
+                  - code [ref=f2e3315]: source-cache/reui/badge.json
+              - cell [ref=f2e3316]:
+                - code [ref=f2e3317]: 43a95d2c2953c96b…
+            - row [ref=f2e3318]:
+              - cell [ref=f2e3319]:
+                - text: reui
+                - code [ref=f2e3320]: reui:c-calendar-29
+              - cell "root" [ref=f2e3321]
+              - cell "1" [ref=f2e3323]
+              - cell [ref=f2e3324]:
+                - link [ref=f2e3325] [cursor=pointer]:
+                  - /url: source-cache/reui/c-calendar-29.json
+                  - code [ref=f2e3326]: source-cache/reui/c-calendar-29.json
+              - cell [ref=f2e3327]:
+                - code [ref=f2e3328]: 5d373adea696b757…
+            - row [ref=f2e3329]:
+              - cell [ref=f2e3330]:
+                - text: reui
+                - code [ref=f2e3331]: reui:c-combobox-25
+              - cell "root" [ref=f2e3332]
+              - cell "1" [ref=f2e3334]
+              - cell [ref=f2e3335]:
+                - link [ref=f2e3336] [cursor=pointer]:
+                  - /url: source-cache/reui/c-combobox-25.json
+                  - code [ref=f2e3337]: source-cache/reui/c-combobox-25.json
+              - cell [ref=f2e3338]:
+                - code [ref=f2e3339]: 75b9848c9e943e9a…
+            - row [ref=f2e3340]:
+              - cell [ref=f2e3341]:
+                - text: reui
+                - code [ref=f2e3342]: reui:c-command-5
+              - cell "root" [ref=f2e3343]
+              - cell "1" [ref=f2e3345]
+              - cell [ref=f2e3346]:
+                - link [ref=f2e3347] [cursor=pointer]:
+                  - /url: source-cache/reui/c-command-5.json
+                  - code [ref=f2e3348]: source-cache/reui/c-command-5.json
+              - cell [ref=f2e3349]:
+                - code [ref=f2e3350]: 5a7205137aec6ca0…
+            - row [ref=f2e3351]:
+              - cell [ref=f2e3352]:
+                - text: reui
+                - code [ref=f2e3353]: reui:c-data-grid-20
+              - cell "root" [ref=f2e3354]
+              - cell "1" [ref=f2e3356]
+              - cell [ref=f2e3357]:
+                - link [ref=f2e3358] [cursor=pointer]:
+                  - /url: source-cache/reui/c-data-grid-20.json
+                  - code [ref=f2e3359]: source-cache/reui/c-data-grid-20.json
+              - cell [ref=f2e3360]:
+                - code [ref=f2e3361]: 054c18dce3760e8c…
+            - row [ref=f2e3362]:
+              - cell [ref=f2e3363]:
+                - text: reui
+                - code [ref=f2e3364]: reui:c-data-grid-22
+              - cell "root" [ref=f2e3365]
+              - cell "1" [ref=f2e3367]
+              - cell [ref=f2e3368]:
+                - link [ref=f2e3369] [cursor=pointer]:
+                  - /url: source-cache/reui/c-data-grid-22.json
+                  - code [ref=f2e3370]: source-cache/reui/c-data-grid-22.json
+              - cell [ref=f2e3371]:
+                - code [ref=f2e3372]: f73c47fb78d09f19…
+            - row [ref=f2e3373]:
+              - cell [ref=f2e3374]:
+                - text: reui
+                - code [ref=f2e3375]: reui:c-data-grid-27
+              - cell "root" [ref=f2e3376]
+              - cell "1" [ref=f2e3378]
+              - cell [ref=f2e3379]:
+                - link [ref=f2e3380] [cursor=pointer]:
+                  - /url: source-cache/reui/c-data-grid-27.json
+                  - code [ref=f2e3381]: source-cache/reui/c-data-grid-27.json
+              - cell [ref=f2e3382]:
+                - code [ref=f2e3383]: 25f49e8bf72d7d0c…
+            - row [ref=f2e3384]:
+              - cell [ref=f2e3385]:
+                - text: reui
+                - code [ref=f2e3386]: reui:c-empty-12
+              - cell "root" [ref=f2e3387]
+              - cell "1" [ref=f2e3389]
+              - cell [ref=f2e3390]:
+                - link [ref=f2e3391] [cursor=pointer]:
+                  - /url: source-cache/reui/c-empty-12.json
+                  - code [ref=f2e3392]: source-cache/reui/c-empty-12.json
+              - cell [ref=f2e3393]:
+                - code [ref=f2e3394]: 807aa48a2a09ef38…
+            - row [ref=f2e3395]:
+              - cell [ref=f2e3396]:
+                - text: reui
+                - code [ref=f2e3397]: reui:data-grid
+              - cell "root" [ref=f2e3398]
+              - cell "10" [ref=f2e3400]
+              - cell [ref=f2e3401]:
+                - link [ref=f2e3402] [cursor=pointer]:
+                  - /url: source-cache/reui/data-grid.json
+                  - code [ref=f2e3403]: source-cache/reui/data-grid.json
+              - cell [ref=f2e3404]:
+                - code [ref=f2e3405]: bb8817f0dcebe894…
+            - row [ref=f2e3406]:
+              - cell [ref=f2e3407]:
+                - text: reui
+                - code [ref=f2e3408]: reui:data-grid-column-header
+              - cell "dependency" [ref=f2e3409]
+              - cell "1" [ref=f2e3411]
+              - cell [ref=f2e3412]:
+                - link [ref=f2e3413] [cursor=pointer]:
+                  - /url: source-cache/reui/data-grid-column-header.json
+                  - code [ref=f2e3414]: source-cache/reui/data-grid-column-header.json
+              - cell [ref=f2e3415]:
+                - code [ref=f2e3416]: 33f922465f345e76…
+            - row [ref=f2e3417]:
+              - cell [ref=f2e3418]:
+                - text: reui
+                - code [ref=f2e3419]: reui:data-grid-column-visibility
+              - cell "dependency" [ref=f2e3420]
+              - cell "1" [ref=f2e3422]
+              - cell [ref=f2e3423]:
+                - link [ref=f2e3424] [cursor=pointer]:
+                  - /url: source-cache/reui/data-grid-column-visibility.json
+                  - code [ref=f2e3425]: source-cache/reui/data-grid-column-visibility.json
+              - cell [ref=f2e3426]:
+                - code [ref=f2e3427]: febd00a17989f0a7…
+            - row [ref=f2e3428]:
+              - cell [ref=f2e3429]:
+                - text: reui
+                - code [ref=f2e3430]: reui:data-grid-pagination
+              - cell "dependency" [ref=f2e3431]
+              - cell "1" [ref=f2e3433]
+              - cell [ref=f2e3434]:
+                - link [ref=f2e3435] [cursor=pointer]:
+                  - /url: source-cache/reui/data-grid-pagination.json
+                  - code [ref=f2e3436]: source-cache/reui/data-grid-pagination.json
+              - cell [ref=f2e3437]:
+                - code [ref=f2e3438]: 7f49fdbd8309e67f…
+            - row [ref=f2e3439]:
+              - cell [ref=f2e3440]:
+                - text: reui
+                - code [ref=f2e3441]: reui:data-grid-scroll-area
+              - cell "dependency" [ref=f2e3442]
+              - cell "1" [ref=f2e3444]
+              - cell [ref=f2e3445]:
+                - link [ref=f2e3446] [cursor=pointer]:
+                  - /url: source-cache/reui/data-grid-scroll-area.json
+                  - code [ref=f2e3447]: source-cache/reui/data-grid-scroll-area.json
+              - cell [ref=f2e3448]:
+                - code [ref=f2e3449]: 6121df7e01e7d490…
+            - row [ref=f2e3450]:
+              - cell [ref=f2e3451]:
+                - text: reui
+                - code [ref=f2e3452]: reui:data-grid-table
+              - cell "dependency" [ref=f2e3453]
+              - cell "1" [ref=f2e3455]
+              - cell [ref=f2e3456]:
+                - link [ref=f2e3457] [cursor=pointer]:
+                  - /url: source-cache/reui/data-grid-table.json
+                  - code [ref=f2e3458]: source-cache/reui/data-grid-table.json
+              - cell [ref=f2e3459]:
+                - code [ref=f2e3460]: 8e083cfafbe73405…
+            - row [ref=f2e3461]:
+              - cell [ref=f2e3462]:
+                - text: reui
+                - code [ref=f2e3463]: reui:data-grid-table-virtual
+              - cell "dependency" [ref=f2e3464]
+              - cell "1" [ref=f2e3466]
+              - cell [ref=f2e3467]:
+                - link [ref=f2e3468] [cursor=pointer]:
+                  - /url: source-cache/reui/data-grid-table-virtual.json
+                  - code [ref=f2e3469]: source-cache/reui/data-grid-table-virtual.json
+              - cell [ref=f2e3470]:
+                - code [ref=f2e3471]: 5a2c48d539641a47…
+            - row [ref=f2e3472]:
+              - cell [ref=f2e3473]:
+                - text: reui
+                - code [ref=f2e3474]: reui:use-copy-to-clipboard
+              - cell "dependency" [ref=f2e3475]
+              - cell "1" [ref=f2e3477]
+              - cell [ref=f2e3478]:
+                - link [ref=f2e3479] [cursor=pointer]:
+                  - /url: source-cache/reui/use-copy-to-clipboard.json
+                  - code [ref=f2e3480]: source-cache/reui/use-copy-to-clipboard.json
+              - cell [ref=f2e3481]:
+                - code [ref=f2e3482]: fd2a396af79c828b…
+            - row [ref=f2e3483]:
+              - cell [ref=f2e3484]:
+                - text: tremor
+                - code [ref=f2e3485]: tremor:block/chart-compositions/chart-composition-01
+              - cell "root" [ref=f2e3486]
+              - cell "1" [ref=f2e3488]
+              - cell [ref=f2e3489]:
+                - link [ref=f2e3490] [cursor=pointer]:
+                  - /url: source-cache/tremor/block-chart-compositions-chart-composition-01/chart-composition-01.tsx
+                  - code [ref=f2e3491]: source-cache/tremor/block-chart-compositions-chart-composition-01/chart-composition-01.tsx
+              - cell [ref=f2e3492]:
+                - code [ref=f2e3493]: 507e9a80c6933018…
+            - row [ref=f2e3494]:
+              - cell [ref=f2e3495]:
+                - text: tremor
+                - code [ref=f2e3496]: tremor:block/empty-states/empty-state-01
+              - cell "root" [ref=f2e3497]
+              - cell "1" [ref=f2e3499]
+              - cell [ref=f2e3500]:
+                - link [ref=f2e3501] [cursor=pointer]:
+                  - /url: source-cache/tremor/block-empty-states-empty-state-01/empty-state-01.tsx
+                  - code [ref=f2e3502]: source-cache/tremor/block-empty-states-empty-state-01/empty-state-01.tsx
+              - cell [ref=f2e3503]:
+                - code [ref=f2e3504]: 70b695bf936f89b8…
+            - row [ref=f2e3505]:
+              - cell [ref=f2e3506]:
+                - text: tremor
+                - code [ref=f2e3507]: tremor:block/filterbar/filterbar-01
+              - cell "root" [ref=f2e3508]
+              - cell "1" [ref=f2e3510]
+              - cell [ref=f2e3511]:
+                - link [ref=f2e3512] [cursor=pointer]:
+                  - /url: source-cache/tremor/block-filterbar-filterbar-01/filterbar-01.tsx
+                  - code [ref=f2e3513]: source-cache/tremor/block-filterbar-filterbar-01/filterbar-01.tsx
+              - cell [ref=f2e3514]:
+                - code [ref=f2e3515]: 139a442a351d38b8…
+            - row [ref=f2e3516]:
+              - cell [ref=f2e3517]:
+                - text: tremor
+                - code [ref=f2e3518]: tremor:block/kpi-cards/kpi-card-01
+              - cell "root" [ref=f2e3519]
+              - cell "1" [ref=f2e3521]
+              - cell [ref=f2e3522]:
+                - link [ref=f2e3523] [cursor=pointer]:
+                  - /url: source-cache/tremor/block-kpi-cards-kpi-card-01/kpi-card-01.tsx
+                  - code [ref=f2e3524]: source-cache/tremor/block-kpi-cards-kpi-card-01/kpi-card-01.tsx
+              - cell [ref=f2e3525]:
+                - code [ref=f2e3526]: 4023f20de8030f36…
+            - row [ref=f2e3527]:
+              - cell [ref=f2e3528]:
+                - text: tremor
+                - code [ref=f2e3529]: tremor:block/page-shells/page-shell-01
+              - cell "root" [ref=f2e3530]
+              - cell "1" [ref=f2e3532]
+              - cell [ref=f2e3533]:
+                - link [ref=f2e3534] [cursor=pointer]:
+                  - /url: source-cache/tremor/block-page-shells-page-shell-01/page-shell-01.tsx
+                  - code [ref=f2e3535]: source-cache/tremor/block-page-shells-page-shell-01/page-shell-01.tsx
+              - cell [ref=f2e3536]:
+                - code [ref=f2e3537]: 4555810c27829941…
+            - row [ref=f2e3538]:
+              - cell [ref=f2e3539]:
+                - text: tremor
+                - code [ref=f2e3540]: tremor:block/table-actions/table-action-01
+              - cell "root" [ref=f2e3541]
+              - cell "1" [ref=f2e3543]
+              - cell [ref=f2e3544]:
+                - link [ref=f2e3545] [cursor=pointer]:
+                  - /url: source-cache/tremor/block-table-actions-table-action-01/table-action-01.tsx
+                  - code [ref=f2e3546]: source-cache/tremor/block-table-actions-table-action-01/table-action-01.tsx
+              - cell [ref=f2e3547]:
+                - code [ref=f2e3548]: b1324b92a7264e3e…
+            - row [ref=f2e3549]:
+              - cell [ref=f2e3550]:
+                - text: tremor
+                - code [ref=f2e3551]: tremor:block/tables/table-01
+              - cell "root" [ref=f2e3552]
+              - cell "1" [ref=f2e3554]
+              - cell [ref=f2e3555]:
+                - link [ref=f2e3556] [cursor=pointer]:
+                  - /url: source-cache/tremor/block-tables-table-01/table-01.tsx
+                  - code [ref=f2e3557]: source-cache/tremor/block-tables-table-01/table-01.tsx
+              - cell [ref=f2e3558]:
+                - code [ref=f2e3559]: bb97fc6a2af65017…
+            - row [ref=f2e3560]:
+              - cell [ref=f2e3561]:
+                - text: tweakcn
+                - code [ref=f2e3562]: tweakcn:modern-minimal
+              - cell "root" [ref=f2e3563]
+              - cell "1" [ref=f2e3565]
+              - cell [ref=f2e3566]:
+                - link [ref=f2e3567] [cursor=pointer]:
+                  - /url: source-cache/tweakcn/modern-minimal/theme-presets.ts
+                  - code [ref=f2e3568]: source-cache/tweakcn/modern-minimal/theme-presets.ts
+              - cell [ref=f2e3569]:
+                - code [ref=f2e3570]: d333858a5a4f1e2f…
+        - paragraph [ref=f2e3571]: "注意：运行仓 `apps/web` 里仍没有把这些第三方缓存批量接入。前端真正使用某项时，再从这里复制到来源隔离目录并做业务适配与门禁。"

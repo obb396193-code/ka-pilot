@@ -1,0 +1,44 @@
+- main [ref=f1e3]:
+  - generic [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - text: 03 / ACCESSIBLE INTERACTION
+      - heading "Dice UI" [level=1] [ref=f1e6]
+    - paragraph [ref=f1e7]: 实际运行 File Upload 与 Kanban：前者可键盘触发，后者支持鼠标、触摸与键盘拖拽。
+  - generic [ref=f1e8]:
+    - article [ref=f1e9]:
+      - generic [ref=f1e10]: FILE UPLOAD
+      - generic [ref=f1e11]:
+        - region [ref=f1e12]:
+          - paragraph [ref=f1e16]: 拖入素材，或用键盘选择文件
+          - paragraph [ref=f1e17]: PNG / JPG，最多 4 个
+          - button "选择素材" [ref=f1e18]
+        - button "File upload" [ref=f1e19]
+        - generic [ref=f1e20]: File upload
+      - paragraph [ref=f1e21]: 当前选择：尚未选择
+    - article [ref=f1e22]:
+      - generic [ref=f1e23]: KANBAN
+      - generic [ref=f1e24]:
+        - generic [ref=f1e25]:
+          - generic [ref=f1e26]:
+            - text: 待处理
+            - button "拖动待处理" [ref=f1e27]
+          - generic [ref=f1e36]:
+            - generic [ref=f1e37]:
+              - paragraph [ref=f1e38]: 素材审核
+              - paragraph [ref=f1e39]: 3 个创意
+            - button "拖动素材审核" [ref=f1e40]
+          - generic [ref=f1e49]:
+            - generic [ref=f1e50]:
+              - paragraph [ref=f1e51]: 异常计划复核
+              - paragraph [ref=f1e52]: CPA +28%
+            - button "拖动异常计划复核" [ref=f1e53]
+        - generic [ref=f1e61]:
+          - generic [ref=f1e62]:
+            - text: 进行中
+            - button "拖动进行中" [ref=f1e63]
+          - generic [ref=f1e72]:
+            - generic [ref=f1e73]:
+              - paragraph [ref=f1e74]: 预算调整预览
+              - paragraph [ref=f1e75]: 等待确认
+            - button "拖动预算调整预览" [ref=f1e76]
+      - status [ref=f1e84]

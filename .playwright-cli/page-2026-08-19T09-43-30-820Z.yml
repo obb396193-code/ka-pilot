@@ -1,0 +1,853 @@
+- generic:
+  - alert
+  - generic:
+    - link:
+      - /url: "#main-content"
+      - text: Skip to content
+    - generic:
+      - banner:
+        - generic:
+          - generic:
+            - generic:
+              - link:
+                - /url: /
+            - navigation:
+              - button: Products
+              - button: Resources
+              - link:
+                - /url: /docs
+                - text: Docs
+              - link:
+                - /url: /support
+                - text: Support
+              - link:
+                - /url: /pricing
+                - text: Pricing
+            - generic:
+              - generic:
+                - button
+                - button
+                - link:
+                  - /url: /roadmap
+                  - generic: Roadmap (has updates coming soon)
+                - link:
+                  - /url: https://x.com/reui_io
+                  - generic: X
+                - link:
+                  - /url: https://www.figma.com/community/file/1649373313065184861/shadcn-ui-design-system-by-reui
+                  - generic: Figma
+                - link:
+                  - /url: https://github.com/keenthemes/reui
+                  - generic: 3.3K
+              - generic:
+                - link:
+                  - /url: /login?redirect=%2Ficons
+                  - text: Login
+                - generic:
+                  - link:
+                    - /url: /pricing
+                    - text: Get All-access
+    - main:
+      - region:
+        - generic:
+          - paragraph: Icons
+          - generic:
+            - heading [level=1]: Shadcn UI Icons
+            - generic: "638"
+          - generic: Explore 638 handcrafted Shadcn UI icons built for React, shadcn projects, CLI registry installs, and Tailwind-powered interfaces.
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - complementary:
+                - generic:
+                  - generic: All Icons
+                  - generic: "638"
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - link:
+                          - /url: /icons/abstract
+                          - generic: Abstract
+                          - generic: "50"
+                        - link:
+                          - /url: /icons/archive
+                          - generic: Archive
+                          - generic: "4"
+                        - link:
+                          - /url: /icons/arrow
+                          - generic:
+                            - generic: Arrow
+                            - generic: Twenty-seven new arrow, chevron and sort icons added
+                          - generic: "97"
+                        - link:
+                          - /url: /icons/burger-menu
+                          - generic: Burger Menu
+                          - generic: "7"
+                        - link:
+                          - /url: /icons/business
+                          - generic: Business
+                          - generic: "20"
+                        - link:
+                          - /url: /icons/communication
+                          - generic: Communication
+                          - generic: "10"
+                        - link:
+                          - /url: /icons/delivery-logistics
+                          - generic:
+                            - generic: Delivery Logistics
+                            - generic: Seven new parcel and shipping icons added
+                          - generic: "25"
+                        - link:
+                          - /url: /icons/design
+                          - generic: Design
+                          - generic: "19"
+                        - link:
+                          - /url: /icons/devices
+                          - generic:
+                            - generic: Devices
+                            - generic: New phone call icon added
+                          - generic: "21"
+                        - link:
+                          - /url: /icons/ecommerce
+                          - generic: Ecommerce
+                          - generic: "12"
+                        - link:
+                          - /url: /icons/education
+                          - generic: Education
+                          - generic: "13"
+                        - link:
+                          - /url: /icons/emoji
+                          - generic:
+                            - generic: Emoji
+                            - generic: New category with five face icons
+                          - generic: "5"
+                        - link:
+                          - /url: /icons/files-folders
+                          - generic:
+                            - generic: Files Folders
+                            - generic: Three new folder and account icons added
+                          - generic: "40"
+                        - link:
+                          - /url: /icons/finance
+                          - generic:
+                            - generic: Finance
+                            - generic: Four new money and investment icons added
+                          - generic: "33"
+                        - link:
+                          - /url: /icons/general
+                          - generic:
+                            - generic: General
+                            - generic: Seven new media, cloud and layout icons added
+                          - generic: "66"
+                        - link:
+                          - /url: /icons/grid
+                          - generic:
+                            - generic: Grid
+                            - generic: New vertical slider icon added
+                          - generic: "27"
+                        - link:
+                          - /url: /icons/it-network
+                          - generic: It Network
+                          - generic: "12"
+                        - link:
+                          - /url: /icons/location
+                          - generic:
+                            - generic: Location
+                            - generic: Two new target icons added
+                          - generic: "12"
+                        - link:
+                          - /url: /icons/medicine
+                          - generic:
+                            - generic: Medicine
+                            - generic: New first aid kit icon added
+                          - generic: "11"
+                        - link:
+                          - /url: /icons/notifications
+                          - generic:
+                            - generic: Notifications
+                            - generic: New megaphone icon added
+                          - generic: "8"
+                        - link:
+                          - /url: /icons/security
+                          - generic: Security
+                          - generic: "16"
+                        - link:
+                          - /url: /icons/settings
+                          - generic: Settings
+                          - generic: "10"
+                        - link:
+                          - /url: /icons/social-media
+                          - generic: Social Media
+                          - generic: "11"
+                        - link:
+                          - /url: /icons/software
+                          - generic: Software
+                          - generic: "34"
+                        - link:
+                          - /url: /icons/support
+                          - generic:
+                            - generic: Support
+                            - generic: Two new support and messaging icons added
+                          - generic: "18"
+                        - link:
+                          - /url: /icons/technologies
+                          - generic: Technologies
+                          - generic: "10"
+                        - link:
+                          - /url: /icons/time
+                          - generic:
+                            - generic: Time
+                            - generic: Four new clock and scheduling icons added
+                          - generic: "15"
+                        - link:
+                          - /url: /icons/typography
+                          - generic:
+                            - generic: Typography
+                            - generic: Six new list and text editing icons added
+                          - generic: "16"
+                        - link:
+                          - /url: /icons/users
+                          - generic:
+                            - generic: Users
+                            - generic: New add user icon added
+                          - generic: "8"
+                        - link:
+                          - /url: /icons/weather
+                          - generic:
+                            - generic: Weather
+                            - generic: Four new sun, cloud and droplet icons added
+                          - generic: "8"
+              - main:
+                - generic:
+                  - generic:
+                    - textbox:
+                      - /placeholder: Search icons...
+                  - generic:
+                    - tablist:
+                      - tab [selected]: Default
+                      - tab: Animated
+                  - generic:
+                    - tablist:
+                      - tab: All
+                      - tab [selected]: Filled
+                      - tab: Duotone
+                      - tab: Outline
+                      - tab: Solid
+                  - generic:
+                    - button
+                - generic:
+                  - generic:
+                    - generic:
+                      - button:
+                        - generic: abstract
+                    - generic:
+                      - button:
+                        - generic: abstract-1
+                    - generic:
+                      - button:
+                        - generic: abstract-10
+                    - generic:
+                      - button:
+                        - generic: abstract-11
+                    - generic:
+                      - button:
+                        - generic: abstract-12
+                    - generic:
+                      - button:
+                        - generic: abstract-13
+                    - generic:
+                      - button:
+                        - generic: abstract-14
+                    - generic:
+                      - button:
+                        - generic: abstract-15
+                    - generic:
+                      - button:
+                        - generic: abstract-16
+                    - generic:
+                      - button:
+                        - generic: abstract-17
+                    - generic:
+                      - button:
+                        - generic: abstract-18
+                    - generic:
+                      - button:
+                        - generic: abstract-19
+                    - generic:
+                      - button:
+                        - generic: abstract-2
+                    - generic:
+                      - button:
+                        - generic: abstract-20
+                    - generic:
+                      - button:
+                        - generic: abstract-21
+                    - generic:
+                      - button:
+                        - generic: abstract-22
+                    - generic:
+                      - button:
+                        - generic: abstract-23
+                    - generic:
+                      - button:
+                        - generic: abstract-24
+                    - generic:
+                      - button:
+                        - generic: abstract-25
+                    - generic:
+                      - button:
+                        - generic: abstract-26
+                    - generic:
+                      - button:
+                        - generic: abstract-27
+                    - generic:
+                      - button:
+                        - generic: abstract-28
+                    - generic:
+                      - button:
+                        - generic: abstract-29
+                    - generic:
+                      - button:
+                        - generic: abstract-3
+                    - generic:
+                      - button:
+                        - generic: abstract-30
+                    - generic:
+                      - button:
+                        - generic: abstract-31
+                    - generic:
+                      - button:
+                        - generic: abstract-32
+                    - generic:
+                      - button:
+                        - generic: abstract-33
+                    - generic:
+                      - button:
+                        - generic: abstract-34
+                    - generic:
+                      - button:
+                        - generic: abstract-35
+                    - generic:
+                      - button:
+                        - generic: abstract-36
+                    - generic:
+                      - button:
+                        - generic: abstract-37
+                    - generic:
+                      - button:
+                        - generic: abstract-38
+                    - generic:
+                      - button:
+                        - generic: abstract-39
+                    - generic:
+                      - button:
+                        - generic: abstract-4
+                    - generic:
+                      - button:
+                        - generic: abstract-40
+                    - generic:
+                      - button:
+                        - generic: abstract-41
+                    - generic:
+                      - button:
+                        - generic: abstract-42
+                    - generic:
+                      - button:
+                        - generic: abstract-43
+                    - generic:
+                      - button:
+                        - generic: abstract-44
+                    - generic:
+                      - button:
+                        - generic: abstract-45
+                    - generic:
+                      - button:
+                        - generic: abstract-46
+                    - generic:
+                      - button:
+                        - generic: abstract-47
+                    - generic:
+                      - button:
+                        - generic: abstract-48
+                    - generic:
+                      - button:
+                        - generic: abstract-49
+                    - generic:
+                      - button:
+                        - generic: abstract-5
+                    - generic:
+                      - button:
+                        - generic: abstract-6
+                    - generic:
+                      - button:
+                        - generic: abstract-7
+                    - generic:
+                      - button:
+                        - generic: abstract-8
+                    - generic:
+                      - button:
+                        - generic: abstract-9
+      - generic:
+        - region:
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=2]: Icon Library for React Projects
+                - generic:
+                  - paragraph: ReUI icons are designed for teams that want a cleaner icon workflow across product UI, docs, onboarding, dashboards, settings, and marketing surfaces.
+                  - paragraph: The library keeps browsing simple while giving you multiple styles and installation paths that fit shadcn-based workflows.
+              - generic:
+                - generic:
+                  - heading [level=3]: Icon Library Features
+                  - list:
+                    - listitem: Handcrafted set designed for production UI instead of generic placeholder symbol packs.
+                    - listitem: Four visual styles including outline, solid, duotone, and filled so the same concept can match different interface densities.
+                    - listitem: Consistent grid and stroke drawn on a shared grid so icons stay crisp and align cleanly next to text at any size.
+                    - listitem: Fully customizable preview with controllable color, size, style, and variant settings.
+                    - listitem: Shadcn registry compatible with CLI-friendly installation aliases for teams that want copyable delivery.
+                    - listitem: Category-based browsing to help you find icons by product intent instead of scanning one giant undifferentiated list.
+                - generic:
+                  - heading [level=3]: How Teams Use the Icon Library
+                  - list:
+                    - listitem: Pick a category first when you know the product area, such as finance, notifications, settings, security, or communication.
+                    - listitem: Switch styles to test whether the same icon works better as outline, solid, duotone, or filled within your existing UI.
+                    - listitem: Mix styles by role within a screen, such as outline for secondary actions and filled for primary ones, to guide attention.
+              - region:
+                - heading [level=2]: Frequently Asked Questions
+                - generic:
+                  - generic:
+                    - heading [level=3]:
+                      - button: Can I use these icons in React and shadcn projects?
+                  - generic:
+                    - heading [level=3]:
+                      - button: How should I choose between the four icon styles?
+      - generic:
+        - generic:
+          - heading [level=2]: Start building with ReUI Pro today.
+          - paragraph: Get instant access to every block, every update, and every new addition with a single license.
+          - generic:
+            - link:
+              - /url: /pricing
+              - text: Get All-Access
+    - contentinfo:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - heading [level=3]: Application
+              - list:
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/app-shell
+                    - text: App Shell
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/auth
+                    - text: Auth
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/card
+                    - text: Card
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/chart
+                    - text: Chart
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/dashboard
+                    - text: Dashboard
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/dialog
+                    - text: Dialog
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/empty-state
+                    - text: Empty State
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/event-calendar
+                    - text: Event Calendar
+                    - generic: Three new event calendar blocks added
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/form
+                    - text: Form
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/gantt
+                    - text: Gantt
+                    - generic: New gantt block added
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/kanban-board
+                    - text: Kanban Board
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/list
+                    - text: List
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/navbar
+                    - text: Navbar
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/onboarding
+                    - text: Onboarding
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/profile
+                    - text: Profile
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/schedule
+                    - text: Schedule
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/settings
+                    - text: Settings
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/sheet
+                    - text: Sheet
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/stats
+                    - text: Stats
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/timeline
+                    - text: Timeline
+                - listitem:
+                  - link:
+                    - /url: /blocks/application/wizard
+                    - text: Wizard
+            - generic:
+              - generic:
+                - heading [level=3]: Solutions
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /blocks/solutions/agents
+                      - text: Agents
+                  - listitem:
+                    - link:
+                      - /url: /blocks/solutions/ai-ops
+                      - text: AI Ops
+                  - listitem:
+                    - link:
+                      - /url: /blocks/solutions/analytics
+                      - text: Analytics
+                  - listitem:
+                    - link:
+                      - /url: /blocks/solutions/billing
+                      - text: Billing
+                  - listitem:
+                    - link:
+                      - /url: /blocks/solutions/bookings
+                      - text: Bookings
+                  - listitem:
+                    - link:
+                      - /url: /blocks/solutions/crm
+                      - text: CRM
+                  - listitem:
+                    - link:
+                      - /url: /blocks/solutions/files
+                      - text: Files
+                  - listitem:
+                    - link:
+                      - /url: /blocks/solutions/inventory
+                      - text: Inventory
+                  - listitem:
+                    - link:
+                      - /url: /blocks/solutions/users
+                      - text: Users
+              - generic:
+                - heading [level=3]: Templates
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /templates/e-commerce
+                      - text: E-commerce
+                  - listitem:
+                    - link:
+                      - /url: /templates/saas
+                      - text: SaaS
+                  - listitem:
+                    - link:
+                      - /url: /templates/dashboard
+                      - text: Dashboard
+                  - listitem:
+                    - link:
+                      - /url: /templates/landing
+                      - text: Landing
+                  - listitem:
+                    - link:
+                      - /url: /templates
+                      - text: All templates
+            - generic:
+              - heading [level=3]: eCommerce
+              - list:
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/category-card
+                    - text: Category Card
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/checkout
+                    - text: Checkout
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/comparison
+                    - text: Comparison
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/coupon
+                    - text: Coupon
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/filter-sidebar
+                    - text: Filter Sidebar
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/product-card
+                    - text: Product Card
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/product-detail
+                    - text: Product Detail
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/product-grid
+                    - text: Product Grid
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/receipt
+                    - text: Receipt
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/review
+                    - text: Review
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/shopping-cart
+                    - text: Shopping Cart
+                - listitem:
+                  - link:
+                    - /url: /blocks/ecommerce/wishlist
+                    - text: Wishlist
+            - generic:
+              - generic:
+                - heading [level=3]: Data Grid
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /blocks/data-grid/base
+                      - text: Base
+                  - listitem:
+                    - link:
+                      - /url: /blocks/data-grid/columns
+                      - text: Columns
+                  - listitem:
+                    - link:
+                      - /url: /blocks/data-grid/drag-drop
+                      - text: Drag & Drop
+                      - generic: New drag and drop Data Grid block added
+                  - listitem:
+                    - link:
+                      - /url: /blocks/data-grid/editing
+                      - text: Editing
+                      - generic: New editable Data Grid block added
+                  - listitem:
+                    - link:
+                      - /url: /blocks/data-grid/expansion
+                      - text: Expansion
+                  - listitem:
+                    - link:
+                      - /url: /blocks/data-grid/filtering
+                      - text: Filtering
+                  - listitem:
+                    - link:
+                      - /url: /blocks/data-grid/grouping
+                      - text: Grouping
+                      - generic: Four new grouped and tree Data Grid blocks added
+                  - listitem:
+                    - link:
+                      - /url: /blocks/data-grid/virtualization
+                      - text: Virtualization
+              - generic:
+                - heading [level=3]: Marketing
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /blocks/marketing/blog
+                      - text: Blog
+                  - listitem:
+                    - link:
+                      - /url: /blocks/marketing/contact
+                      - text: Contact
+                  - listitem:
+                    - link:
+                      - /url: /blocks/marketing/cta
+                      - text: CTA
+                  - listitem:
+                    - link:
+                      - /url: /blocks/marketing/faq
+                      - text: FAQ
+            - generic:
+              - generic:
+                - heading [level=3]: Resources
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /components
+                      - text: Components
+                  - listitem:
+                    - link:
+                      - /url: /blocks
+                      - text: Blocks
+                  - listitem:
+                    - link:
+                      - /url: /icons
+                      - text: Icons
+                  - listitem:
+                    - link:
+                      - /url: /mcp
+                      - text: MCP for Agents
+                  - listitem:
+                    - link:
+                      - /url: /docs
+                      - text: Docs
+                  - listitem:
+                    - link:
+                      - /url: /support
+                      - text: Support
+                  - listitem:
+                    - link:
+                      - /url: /pricing
+                      - text: Pricing
+                  - listitem:
+                    - link:
+                      - /url: /roadmap
+                      - text: Roadmap
+                      - generic: (has updates coming soon)
+                  - listitem:
+                    - generic:
+                      - generic: Affiliate
+                      - generic: Soon
+              - generic:
+                - heading [level=3]: Legal
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /legal/privacy-policy
+                      - text: Privacy Policy
+                  - listitem:
+                    - link:
+                      - /url: /legal/terms-and-conditions
+                      - text: Terms & Conditions
+                  - listitem:
+                    - link:
+                      - /url: /legal/license
+                      - text: License
+                  - listitem:
+                    - link:
+                      - /url: /legal/refund-policy
+                      - text: Refunds
+                  - listitem:
+                    - link:
+                      - /url: /legal/cookies
+                      - text: Cookies
+      - generic:
+        - generic:
+          - generic:
+            - paragraph: © 2026 ReUI. All rights reserved.
+            - generic:
+              - link:
+                - /url: https://x.com/reui_io
+              - link:
+                - /url: https://www.figma.com/community/file/1649373313065184861/shadcn-ui-design-system-by-reui
+              - link:
+                - /url: https://github.com/keenthemes
+                - generic: 3.3K
+  - region "Notifications alt+T"
+  - dialog [ref=e1076]:
+    - generic [ref=e1077]:
+      - heading "Abstract icon" [level=2] [ref=e1078]
+      - navigation "breadcrumb" [ref=e1079]:
+        - list [ref=e1080]:
+          - listitem [ref=e1081]:
+            - generic [ref=e1082]: Icons
+          - listitem [ref=e1083]
+          - listitem [ref=e1086]: Default
+          - listitem [ref=e1087]
+          - listitem [ref=e1090]: Filled
+          - listitem [ref=e1091]
+          - listitem [ref=e1094]: Abstract
+          - listitem [ref=e1095]
+          - listitem [ref=e1098]:
+            - link "Abstract" [disabled] [ref=e1099]
+    - generic [ref=e1100]:
+      - generic [ref=e1101]:
+        - heading "Preview" [level=3] [ref=e1102]
+        - generic [ref=e1104]:
+          - complementary [ref=e1105]
+          - generic [ref=e1110]:
+            - generic [ref=e1111]:
+              - generic [ref=e1112]: AbstractIcon
+              - button "Copy import code" [active] [ref=e1113]
+            - generic [ref=e1114]:
+              - generic "Icon type" [ref=e1115]:
+                - tablist [ref=e1116]:
+                  - tab "Default" [selected] [ref=e1117]
+                  - tab "Animated" [ref=e1118]
+              - generic "Icon style" [ref=e1119]:
+                - tablist [ref=e1120]:
+                  - tab "Filled" [selected] [ref=e1121]
+                  - tab "Duotone" [ref=e1122]
+                  - tab "Outline" [ref=e1123]
+                  - tab "Solid" [ref=e1124]
+            - generic [ref=e1125]:
+              - button "Color picker" [ref=e1127]
+              - combobox "Icon size" [ref=e1135]:
+                - generic: 48px
+      - generic [ref=e1136]:
+        - heading "Install Set" [level=3] [ref=e1137]
+        - generic [ref=e1139]:
+          - generic [ref=e1140]:
+            - tablist [ref=e1146]:
+              - tab "pnpm" [selected] [ref=e1147]
+              - tab "npm" [ref=e1148]
+              - tab "yarn" [ref=e1149]
+              - tab "bun" [ref=e1150]
+            - tabpanel "pnpm" [ref=e1152]:
+              - code [ref=e1154]: pnpm dlx shadcn@latest add @reui/icons/default/filled/all
+          - button "Copy" [ref=e1155]
+      - generic [ref=e1157]:
+        - heading "Install Icon" [level=3] [ref=e1158]
+        - generic [ref=e1160]:
+          - generic [ref=e1161]:
+            - tablist [ref=e1167]:
+              - tab "pnpm" [selected] [ref=e1168]
+              - tab "npm" [ref=e1169]
+              - tab "yarn" [ref=e1170]
+              - tab "bun" [ref=e1171]
+            - tabpanel "pnpm" [ref=e1173]:
+              - code [ref=e1175]: pnpm dlx shadcn@latest add @reui/icons/default/filled/abstract
+          - button "Copy" [ref=e1176]
+      - generic [ref=e1178]:
+        - heading "Code" [level=3] [ref=e1179]
+        - generic [ref=e1180]:
+          - paragraph [ref=e1184]: Unlock icon access
+          - paragraph [ref=e1185]:
+            - text: Icon source code and CLI installation require the
+            - strong [ref=e1186]: Ultimate
+            - text: plan.
+          - generic [ref=e1187]:
+            - link "Get a plan" [ref=e1188] [cursor=pointer]:
+              - /url: /pricing
+            - link "Login" [ref=e1189] [cursor=pointer]:
+              - /url: /login?redirect=%2Ficons
+    - button "Close" [ref=e1190]

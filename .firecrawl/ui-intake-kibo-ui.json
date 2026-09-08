@@ -1,0 +1,352 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://www.kibo-ui.com/docs",
+        "title": "Introduction",
+        "description": "What is Kibo UI and why you should use it."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/avatar-stack",
+        "title": "Avatar Stack",
+        "description": "Avatar Stack is a component that allows you to stack and overlap avatars."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/choicebox",
+        "title": "Choicebox",
+        "description": "Choiceboxes are a great way to show radio or checkbox options with a card style."
+      },
+      {
+        "url": "https://www.kibo-ui.com",
+        "title": "Kibo UI",
+        "description": "Kibo UI is a custom registry of composable, accessible and extensible components designed for use with shadcn/ui. Free and open source, forever."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/ticker",
+        "title": "Ticker",
+        "description": "A composable finance ticker for displaying symbols, prices and changes. Flexible composition with optional icon, symbol, price, and change components"
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/tags",
+        "title": "Tags",
+        "description": "Tags are a way to apply multiple labels to an item. Supports both controlled and uncontrolled usage Fully customizable through className props"
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/rating",
+        "title": "Rating",
+        "description": "A star rating component with keyboard navigation and hover effects. Customizable number of stars and size Support for keyboard navigation"
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/combobox",
+        "title": "Combobox",
+        "description": "Choiceboxes are a great way to show radio or checkbox options with a card style. Dropzone Allows users to drag-and-drop files into a container to upload or ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/marquee",
+        "title": "Marquee",
+        "description": "Marquees are a great way to show a list of items in a horizontal scrolling motion. Drag and drop items between groups Customize the item contents"
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/announcement",
+        "title": "Announcement",
+        "description": "Compound component with Badge-based styling and rounded full appearance Customizable themed mode for different visual styles Built-in tag and title components"
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/tree",
+        "title": "Tree",
+        "description": "Features · Animated expand/collapse with configurable animations · Customizable node icons and labels · Single and multi-selection support · Optional tree lines ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/spinner",
+        "title": "Spinner",
+        "description": "A component that displays time in various timezones. Status. Status components are used to display the uptime of a service. On this page. Installation. Features."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/blogpost",
+        "title": "Blog Post",
+        "description": "A full blog post layout with hero image, author avatar, publication date, and prose content with alerts, tables, and blockquotes."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/calendar",
+        "title": "Calendar",
+        "description": "The Gantt chart is a powerful tool for visualizing project schedules and tracking the progress of tasks. It provides a clear, hierarchical view of tasks, ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/glimpse",
+        "title": "Glimpse",
+        "description": "The Editor component is a powerful and flexible text editor that allows you to create and edit rich text content. Marquee. Marquees are a great way to show a ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/snippet",
+        "title": "Snippet",
+        "description": "Snippet is a component that allows you to display and copy code in a tabbed interface."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/editor",
+        "title": "Editor",
+        "description": "The Editor component is a powerful and flexible text editor that allows you to create and edit rich text content."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/pill",
+        "title": "Pill",
+        "description": "A flexible badge component designed for a variety of use cases."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/deck",
+        "title": "Deck",
+        "description": "A slider-based component for comparing two items in an overlay. Dialog Stack. Composable stacked dialogs, useful for creating a wizard, nested form or multi- ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/changelog",
+        "title": "Changelog",
+        "description": "Enhanced Analytics Dashboard. We've completely redesigned our analytics dashboard to provide deeper insights and improved visualizations of your data."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/typography",
+        "title": "Typography",
+        "description": "A component for applying consistent typography styles across your application."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/relative-time",
+        "title": "Relative Time - kibo-ui.com",
+        "description": "A component that displays time in various timezones."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/gantt",
+        "title": "Gantt - kibo-ui.com",
+        "description": "The Gantt chart is a powerful tool for visualizing project schedules and tracking the progress of tasks. It provides a clear, hierarchical view of tasks, allowing you to easily identify manage project timelines."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/pricing",
+        "title": "Pricing - kibo-ui.com",
+        "description": "A pricing page with a list of plans and features."
+      },
+      {
+        "url": "https://www.kibo-ui.com/docs/benefits",
+        "title": "Benefits - kibo-ui.com",
+        "description": "Whether you’re prototyping an MVP for a new idea or maintaining a large enterprise application, Kibo UI can adapt to your workflow. Smaller projects benefit from the speed of ha"
+      },
+      {
+        "url": "https://www.kibo-ui.com/patterns",
+        "title": "Accordion / Form / Accordion Form 1 | Kibo UI",
+        "description": "A pattern from Kibo UI"
+      },
+      {
+        "url": "https://www.kibo-ui.com/patterns/accordion/form/accordion-form-1",
+        "title": "Accordion / Form / Accordion Form 1 - Kibo UI",
+        "description": "A pattern from Kibo UI"
+      },
+      {
+        "url": "https://www.kibo-ui.com/",
+        "title": "Kibo UI",
+        "description": "Kibo UI is a custom registry of composable, accessible and open source components designed for use with shadcn/ui."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/contact",
+        "title": "Contact - kibo-ui.com",
+        "description": "A contact block with title, description, and a grid of contact options including email, address, phone, and live chat."
+      },
+      {
+        "url": "https://www.kibo-ui.com/docs/usage",
+        "title": "Usage - kibo-ui.com",
+        "description": "Learn how to use Kibo UI components in your application."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/compare",
+        "title": "Compare - kibo-ui.com",
+        "description": "A comparison table component with 3 columns highlighting features of two frameworks with tooltips for additional info."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/table",
+        "title": "Table",
+        "description": "Table views are used to display data in a tabular format. They are useful for displaying large amounts of data in a structured way."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/awards",
+        "title": "Awards",
+        "description": "Award, Description, Year. CSS Design Awards Winner, Recognized for excellence in web design and functionality. 2024. Awwwards Site of the Day, Featured for ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/kanban",
+        "title": "Kanban",
+        "description": "A kanban board is a visual tool that helps you manage and visualize your work. It is a board with columns, and each column represents a status, ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/community",
+        "title": "Community",
+        "description": "A component showcasing 4 social platform links in a 1-2-4 column layout, encouraging community engagement through actions like follow, connect, contribute, ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/stats",
+        "title": "Stats",
+        "description": "A statistics display block with a heading, description, link, and a responsive 4-column grid for key metrics."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/form",
+        "title": "Form",
+        "description": "A footer component with a logo and tagline, 1-4 columns of menu items, and a bottom row for copyright and policy links. Hero. A hero ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/footer",
+        "title": "Footer",
+        "description": "A footer component with a logo and tagline, 1-4 columns of menu items, and a bottom row for copyright and policy links."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/careers",
+        "title": "Careers",
+        "description": "A component displaying job openings with categories, titles, and locations, styled with a central heading and grid layout for job listings."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/experience",
+        "title": "Experience",
+        "description": "A component listing experiences with download CV button, 3-column layout for period, title/description, and company."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/faq",
+        "title": "FAQ",
+        "description": "FAQ. An accordion-style FAQ block with a customizable heading and list of questions and answers. Code Preview. Frequently asked questions. What is a FAQ?"
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/feature",
+        "title": "Feature",
+        "description": "A feature block showcasing product features with a 2-column layout featuring a title, description, buttons, and an image."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/blog",
+        "title": "Blog",
+        "description": "Discover the latest trends, tips, and best practices in modern web development. From UI components to design systems, stay updated with our ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/testimonial",
+        "title": "Testimonial",
+        "description": "A testimonial block with a central quote, author's name, role, and avatar in a clean vertical layout."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/compliance",
+        "title": "Compliance",
+        "description": "A two-column component featuring compliance and security features, highlighted with badges, images, and outlined sections for automated audit trails, ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/team",
+        "title": "Team",
+        "description": "A team showcase block with a title, description, and a responsive grid of team member avatars, names, and roles."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/cta",
+        "title": "CTA",
+        "description": "A call-to-action block with a heading, description, and action buttons to drive user engagement."
+      },
+      {
+        "url": "https://www.kibo-ui.com/docs/community",
+        "title": "Community",
+        "description": "Please note we have a Code of Conduct – we expect everyone to be respectful and constructive in all project discussions. If you're contributing, ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/contribution-graph",
+        "title": "Contribution Graph",
+        "description": "Usage Tips ... Provides syntax highlighting, line numbers, and copy to clipboard functionality for code blocks. Sandbox. The sandbox component allows you to ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/image-crop",
+        "title": "Image Crop",
+        "description": "Image zoom is a component that allows you to zoom in on an image. On this page. Installation. Features. Examples. Custom buttons. Circular crop. Powered by."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/code-block",
+        "title": "Code Block",
+        "description": "Table views are used to display data in a tabular format. They are useful for displaying large amounts of data in a structured way. Contribution Graph. A GitHub ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/dialog-stack",
+        "title": "Dialog Stack",
+        "description": "The Editor component is a powerful and flexible text editor that allows you to create and edit rich text content. On this page. Installation. Features. Examples."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/color-picker",
+        "title": "Color Picker",
+        "description": "A slider-based component for comparing two items in an overlay. On this page. Installation. Features. Powered by. lucide.dev · github.com."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/mini-calendar",
+        "title": "Mini Calendar",
+        "description": "A composable mini calendar component for picking dates close to today."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/theme-switcher",
+        "title": "Theme Switcher",
+        "description": "A component to switch between light, dark and system theme."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/code-example",
+        "title": "Code Example",
+        "description": "A code example section with multi-language tabs, syntax highlighting, and copy functionality alongside marketing content."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/qr-code",
+        "title": "QR Code",
+        "description": "QR Code is a component that generates a QR code from a string."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/case-study",
+        "title": "Case Study",
+        "description": "A detailed case study page with prose content and a company info sidebar featuring logo, industry, location, and website details."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/image-zoom",
+        "title": "Image Zoom",
+        "description": "Image zoom is a component that allows you to zoom in on an image."
+      },
+      {
+        "url": "https://www.kibo-ui.com/components/credit-card",
+        "title": "Credit Card",
+        "description": "A composable finance ticker for displaying symbols, prices and changes. On this page. Installation. Features. Examples. Apple card. Back only. Amex card."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/case-studies",
+        "title": "Case Studies",
+        "description": "A case studies section with testimonial quotes, customer stats, and ROI metrics in a two-column layout."
+      },
+      {
+        "url": "https://www.kibo-ui.com/docs/new-components",
+        "title": "New Components",
+        "description": "Learn about adding new components to Kibo UI."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/collaborative-canvas",
+        "title": "Collaborative Canvas",
+        "description": "Create an online, realtime collaborative canvas with Kibo UI components."
+      },
+      {
+        "url": "https://www.kibo-ui.com/r/announcement.json",
+        "title": "www.kibo-ui.com",
+        "description": "{\"$schema\":\"https://ui.shadcn.com/schema/registry-item.json\",\"name\":\"announcement\",\"type\":\"registry:ui\",\"title\":\"announcement\",\"description\":\"A compound badge ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/r/tags.json",
+        "title": "www.kibo-ui.com",
+        "description": "\\n \\n \\n);\\n\\nexport type TagsValueProps = ComponentProps;\\n\\nexport const TagsValue = ({\\n className,\\n children,\\n onRemove,\\n ...props\\n}: TagsValueProps ..."
+      },
+      {
+        "url": "https://www.kibo-ui.com/blocks/hero",
+        "title": "Hero - kibo-ui.com",
+        "description": "A hero block is a large, full-width block that is used to introduce a new product or service."
+      },
+      {
+        "url": "https://www.kibo-ui.com/patterns/accordion/form/accordion-form-2",
+        "title": "Accordion / Form / Accordion Form 2 - Kibo UI",
+        "description": "A pattern from Kibo UI"
+      },
+      {
+        "url": "https://www.kibo-ui.com/docs/mcp",
+        "title": "MCP Server - kibo-ui.com",
+        "description": "Kibo UI supports the Model Context Protocol (MCP) for model-driven development."
+      },
+      {
+        "url": "https://www.kibo-ui.com/patterns/skeleton/table/skeleton-table-5",
+        "title": "Skeleton / Table / Skeleton Table 5 - Kibo UI",
+        "description": "A pattern from Kibo UI"
+      }
+    ]
+  }
+}

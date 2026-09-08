@@ -1,0 +1,793 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - link "✨ Introducing Magic UI Pro - 50+ blocks and templates to build beautiful landing pages in minutes" [ref=e4] [cursor=pointer]:
+      - /url: https://pro.magicui.design
+      - text: ✨
+      - generic [ref=e5]: Introducing Magic UI Pro - 50+ blocks and templates to build beautiful landing pages in minutes
+    - separator [ref=e8]
+  - banner [ref=e9]:
+    - generic [ref=e11]:
+      - link "Home" [ref=e12] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e17]: Magic UI
+      - navigation [ref=e18]:
+        - link "Components" [ref=e19] [cursor=pointer]:
+          - /url: /components
+        - link "Templates" [ref=e20] [cursor=pointer]:
+          - /url: https://pro.magicui.design
+        - link "Showcase" [ref=e21] [cursor=pointer]:
+          - /url: /showcase
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - button "Search documentation... ⌘ K" [ref=e25]:
+            - generic [ref=e26]: Search documentation...
+            - generic:
+              - generic: ⌘
+              - text: K
+          - generic [ref=e27]:
+            - heading "Command Palette" [level=2] [ref=e28]
+            - paragraph [ref=e29]: Search for a command to run...
+        - link "22,001" [ref=e30] [cursor=pointer]:
+          - /url: https://github.com/magicuidesign/magicui
+        - link "168" [ref=e32] [cursor=pointer]:
+          - /url: https://discord.gg/87p2vpsat5
+        - button "Toggle theme" [ref=e38]
+  - main [ref=e40]:
+    - generic [ref=e42]:
+      - generic [ref=e44]:
+        - generic [ref=e46]:
+          - generic [ref=e47]: Getting Started
+          - list [ref=e49]:
+            - listitem [ref=e51]:
+              - link "Introduction" [ref=e52] [cursor=pointer]:
+                - /url: /docs
+            - listitem [ref=e56]:
+              - link "Installation" [ref=e57] [cursor=pointer]:
+                - /url: /docs/installation
+            - listitem [ref=e61]:
+              - link "MCP" [ref=e62] [cursor=pointer]:
+                - /url: /docs/mcp
+            - listitem [ref=e66]:
+              - link "Story New" [ref=e67] [cursor=pointer]:
+                - /url: /docs/story
+                - generic [ref=e69]:
+                  - text: Story
+                  - generic [ref=e70]: New
+            - listitem [ref=e72]:
+              - link "Legacy" [ref=e73] [cursor=pointer]:
+                - /url: /docs/legacy
+        - generic [ref=e76]:
+          - generic [ref=e77]: Templates
+          - list [ref=e79]:
+            - listitem [ref=e81]:
+              - link "CodeForge New Pro" [ref=e82] [cursor=pointer]:
+                - /url: /docs/templates/codeforge
+                - generic [ref=e84]:
+                  - text: CodeForge
+                  - generic [ref=e85]: New
+                  - generic [ref=e86]: Pro
+            - listitem [ref=e88]:
+              - link "AI Agent Pro" [ref=e89] [cursor=pointer]:
+                - /url: /docs/templates/agent
+                - generic [ref=e91]:
+                  - text: AI Agent
+                  - generic [ref=e92]: Pro
+            - listitem [ref=e94]:
+              - link "Dev Tool Pro" [ref=e95] [cursor=pointer]:
+                - /url: /docs/templates/devtool
+                - generic [ref=e97]:
+                  - text: Dev Tool
+                  - generic [ref=e98]: Pro
+            - listitem [ref=e100]:
+              - link "Mobile Pro" [ref=e101] [cursor=pointer]:
+                - /url: /docs/templates/mobile
+                - generic [ref=e103]:
+                  - text: Mobile
+                  - generic [ref=e104]: Pro
+            - listitem [ref=e106]:
+              - link "SaaS Pro" [ref=e107] [cursor=pointer]:
+                - /url: /docs/templates/saas
+                - generic [ref=e109]:
+                  - text: SaaS
+                  - generic [ref=e110]: Pro
+            - listitem [ref=e112]:
+              - link "Startup Pro" [ref=e113] [cursor=pointer]:
+                - /url: /docs/templates/startup
+                - generic [ref=e115]:
+                  - text: Startup
+                  - generic [ref=e116]: Pro
+            - listitem [ref=e118]:
+              - link "Portfolio" [ref=e119] [cursor=pointer]:
+                - /url: /docs/templates/portfolio
+            - listitem [ref=e123]:
+              - link "Changelog New" [ref=e124] [cursor=pointer]:
+                - /url: /docs/templates/changelog
+                - generic [ref=e126]:
+                  - text: Changelog
+                  - generic [ref=e127]: New
+            - listitem [ref=e129]:
+              - link "Blog New" [ref=e130] [cursor=pointer]:
+                - /url: /docs/templates/blog
+                - generic [ref=e132]:
+                  - text: Blog
+                  - generic [ref=e133]: New
+        - generic [ref=e134]:
+          - generic [ref=e135]: Components
+          - list [ref=e137]:
+            - listitem [ref=e139]:
+              - link "Marquee" [ref=e140] [cursor=pointer]:
+                - /url: /docs/components/marquee
+            - listitem [ref=e144]:
+              - link "Terminal" [ref=e145] [cursor=pointer]:
+                - /url: /docs/components/terminal
+            - listitem [ref=e149]:
+              - link "Hero Video Dialog" [ref=e150] [cursor=pointer]:
+                - /url: /docs/components/hero-video-dialog
+            - listitem [ref=e154]:
+              - link "Bento Grid" [ref=e155] [cursor=pointer]:
+                - /url: /docs/components/bento-grid
+            - listitem [ref=e159]:
+              - link "Animated List" [ref=e160] [cursor=pointer]:
+                - /url: /docs/components/animated-list
+            - listitem [ref=e164]:
+              - link "Dock" [ref=e165] [cursor=pointer]:
+                - /url: /docs/components/dock
+            - listitem [ref=e169]:
+              - link "Globe" [ref=e170] [cursor=pointer]:
+                - /url: /docs/components/globe
+            - listitem [ref=e174]:
+              - link "Tweet Card" [ref=e175] [cursor=pointer]:
+                - /url: /docs/components/tweet-card
+            - listitem [ref=e179]:
+              - link "Orbiting Circles" [ref=e180] [cursor=pointer]:
+                - /url: /docs/components/orbiting-circles
+            - listitem [ref=e184]:
+              - link "Avatar Circles" [ref=e185] [cursor=pointer]:
+                - /url: /docs/components/avatar-circles
+            - listitem [ref=e189]:
+              - link "Icon Cloud" [ref=e190] [cursor=pointer]:
+                - /url: /docs/components/icon-cloud
+            - listitem [ref=e194]:
+              - link "Lens" [ref=e195] [cursor=pointer]:
+                - /url: /docs/components/lens
+            - listitem [ref=e199]:
+              - link "Pointer" [ref=e200] [cursor=pointer]:
+                - /url: /docs/components/pointer
+            - listitem [ref=e204]:
+              - link "Smooth Cursor" [ref=e205] [cursor=pointer]:
+                - /url: /docs/components/smooth-cursor
+            - listitem [ref=e209]:
+              - link "Progressive Blur" [ref=e210] [cursor=pointer]:
+                - /url: /docs/components/progressive-blur
+            - listitem [ref=e214]:
+              - link "Dotted Map New" [ref=e215] [cursor=pointer]:
+                - /url: /docs/components/dotted-map
+                - generic [ref=e217]:
+                  - text: Dotted Map
+                  - generic [ref=e218]: New
+        - generic [ref=e219]:
+          - generic [ref=e220]: Special Effects
+          - list [ref=e222]:
+            - listitem [ref=e224]:
+              - link "Animated Beam" [ref=e225] [cursor=pointer]:
+                - /url: /docs/components/animated-beam
+            - listitem [ref=e229]:
+              - link "Border Beam" [ref=e230] [cursor=pointer]:
+                - /url: /docs/components/border-beam
+            - listitem [ref=e234]:
+              - link "Shine Border" [ref=e235] [cursor=pointer]:
+                - /url: /docs/components/shine-border
+            - listitem [ref=e239]:
+              - link "Magic Card" [ref=e240] [cursor=pointer]:
+                - /url: /docs/components/magic-card
+            - listitem [ref=e244]:
+              - link "Glare Hover New" [ref=e245] [cursor=pointer]:
+                - /url: /docs/components/glare-hover
+                - generic [ref=e247]:
+                  - text: Glare Hover
+                  - generic [ref=e248]: New
+            - listitem [ref=e250]:
+              - link "Meteors" [ref=e251] [cursor=pointer]:
+                - /url: /docs/components/meteors
+            - listitem [ref=e255]:
+              - link "Confetti" [ref=e256] [cursor=pointer]:
+                - /url: /docs/components/confetti
+            - listitem [ref=e260]:
+              - link "Particles" [ref=e261] [cursor=pointer]:
+                - /url: /docs/components/particles
+            - listitem [ref=e265]:
+              - link "Animated Theme Toggler New" [ref=e266] [cursor=pointer]:
+                - /url: /docs/components/animated-theme-toggler
+                - generic [ref=e268]:
+                  - text: Animated Theme Toggler
+                  - generic [ref=e269]: New
+        - generic [ref=e270]:
+          - generic [ref=e271]: Animations
+          - list [ref=e273]:
+            - listitem [ref=e275]:
+              - link "Blur Fade" [ref=e276] [cursor=pointer]:
+                - /url: /docs/components/blur-fade
+        - generic [ref=e279]:
+          - generic [ref=e280]: Text Animations
+          - list [ref=e282]:
+            - listitem [ref=e284]:
+              - link "Text Animate" [ref=e285] [cursor=pointer]:
+                - /url: /docs/components/text-animate
+            - listitem [ref=e289]:
+              - link "Typing Animation New" [ref=e290] [cursor=pointer]:
+                - /url: /docs/components/typing-animation
+                - generic [ref=e292]:
+                  - text: Typing Animation
+                  - generic [ref=e293]: New
+            - listitem [ref=e295]:
+              - link "Line Shadow Text" [ref=e296] [cursor=pointer]:
+                - /url: /docs/components/line-shadow-text
+            - listitem [ref=e300]:
+              - link "Aurora Text" [ref=e301] [cursor=pointer]:
+                - /url: /docs/components/aurora-text
+            - listitem [ref=e305]:
+              - link "Video Text" [ref=e306] [cursor=pointer]:
+                - /url: /docs/components/video-text
+            - listitem [ref=e310]:
+              - link "Number Ticker" [ref=e311] [cursor=pointer]:
+                - /url: /docs/components/number-ticker
+            - listitem [ref=e315]:
+              - link "Animated Shiny Text" [ref=e316] [cursor=pointer]:
+                - /url: /docs/components/animated-shiny-text
+            - listitem [ref=e320]:
+              - link "Animated Gradient Text" [ref=e321] [cursor=pointer]:
+                - /url: /docs/components/animated-gradient-text
+            - listitem [ref=e325]:
+              - link "Text Reveal" [ref=e326] [cursor=pointer]:
+                - /url: /docs/components/text-reveal
+            - listitem [ref=e330]:
+              - link "Dia Text Reveal New" [ref=e331] [cursor=pointer]:
+                - /url: /docs/components/dia-text-reveal
+                - generic [ref=e333]:
+                  - text: Dia Text Reveal
+                  - generic [ref=e334]: New
+            - listitem [ref=e336]:
+              - link "Hyper Text" [ref=e337] [cursor=pointer]:
+                - /url: /docs/components/hyper-text
+            - listitem [ref=e341]:
+              - link "Word Rotate" [ref=e342] [cursor=pointer]:
+                - /url: /docs/components/word-rotate
+            - listitem [ref=e346]:
+              - link "Scroll Based Velocity" [ref=e347] [cursor=pointer]:
+                - /url: /docs/components/scroll-based-velocity
+            - listitem [ref=e351]:
+              - link "Sparkles Text" [ref=e352] [cursor=pointer]:
+                - /url: /docs/components/sparkles-text
+            - listitem [ref=e356]:
+              - link "Morphing Text" [ref=e357] [cursor=pointer]:
+                - /url: /docs/components/morphing-text
+            - listitem [ref=e361]:
+              - link "Spinning Text" [ref=e362] [cursor=pointer]:
+                - /url: /docs/components/spinning-text
+            - listitem [ref=e366]:
+              - link "Text Highlighter New" [ref=e367] [cursor=pointer]:
+                - /url: /docs/components/highlighter
+                - generic [ref=e369]:
+                  - text: Text Highlighter
+                  - generic [ref=e370]: New
+            - listitem [ref=e372]:
+              - link "Text 3D Flip New" [ref=e373] [cursor=pointer]:
+                - /url: /docs/components/text-3d-flip
+                - generic [ref=e375]:
+                  - text: Text 3D Flip
+                  - generic [ref=e376]: New
+        - generic [ref=e377]:
+          - generic [ref=e378]: Device Mocks
+          - list [ref=e380]:
+            - listitem [ref=e382]:
+              - link "Safari" [ref=e383] [cursor=pointer]:
+                - /url: /docs/components/safari
+            - listitem [ref=e387]:
+              - link "iPhone" [ref=e388] [cursor=pointer]:
+                - /url: /docs/components/iphone
+            - listitem [ref=e392]:
+              - link "Android" [ref=e393] [cursor=pointer]:
+                - /url: /docs/components/android
+        - generic [ref=e396]:
+          - generic [ref=e397]: Buttons
+          - list [ref=e399]:
+            - listitem [ref=e401]:
+              - link "Rainbow Button" [ref=e402] [cursor=pointer]:
+                - /url: /docs/components/rainbow-button
+            - listitem [ref=e406]:
+              - link "Shimmer Button" [ref=e407] [cursor=pointer]:
+                - /url: /docs/components/shimmer-button
+            - listitem [ref=e411]:
+              - link "Ripple Button" [ref=e412] [cursor=pointer]:
+                - /url: /docs/components/ripple-button
+        - generic [ref=e415]:
+          - generic [ref=e416]: Backgrounds
+          - list [ref=e418]:
+            - listitem [ref=e420]:
+              - link "Flickering Grid" [ref=e421] [cursor=pointer]:
+                - /url: /docs/components/flickering-grid
+            - listitem [ref=e425]:
+              - link "Animated Grid Pattern" [ref=e426] [cursor=pointer]:
+                - /url: /docs/components/animated-grid-pattern
+            - listitem [ref=e430]:
+              - link "Retro Grid" [ref=e431] [cursor=pointer]:
+                - /url: /docs/components/retro-grid
+            - listitem [ref=e435]:
+              - link "Ripple" [ref=e436] [cursor=pointer]:
+                - /url: /docs/components/ripple
+            - listitem [ref=e440]:
+              - link "Dot Pattern" [ref=e441] [cursor=pointer]:
+                - /url: /docs/components/dot-pattern
+            - listitem [ref=e445]:
+              - link "Grid Pattern" [ref=e446] [cursor=pointer]:
+                - /url: /docs/components/grid-pattern
+            - listitem [ref=e450]:
+              - link "Hexagon Pattern New" [ref=e451] [cursor=pointer]:
+                - /url: /docs/components/hexagon-pattern
+                - generic [ref=e453]:
+                  - text: Hexagon Pattern
+                  - generic [ref=e454]: New
+            - listitem [ref=e456]:
+              - link "Striped Pattern New" [ref=e457] [cursor=pointer]:
+                - /url: /docs/components/striped-pattern
+                - generic [ref=e459]:
+                  - text: Striped Pattern
+                  - generic [ref=e460]: New
+            - listitem [ref=e462]:
+              - link "Interactive Grid Pattern" [ref=e463] [cursor=pointer]:
+                - /url: /docs/components/interactive-grid-pattern
+            - listitem [ref=e467]:
+              - link "Light Rays New" [ref=e468] [cursor=pointer]:
+                - /url: /docs/components/light-rays
+                - generic [ref=e470]:
+                  - text: Light Rays
+                  - generic [ref=e471]: New
+            - listitem [ref=e473]:
+              - link "Noise Texture New" [ref=e474] [cursor=pointer]:
+                - /url: /docs/components/noise-texture
+                - generic [ref=e476]:
+                  - text: Noise Texture
+                  - generic [ref=e477]: New
+        - generic [ref=e478]:
+          - generic [ref=e479]: Community
+          - list [ref=e481]:
+            - listitem [ref=e483]:
+              - link "Shiny Button" [ref=e484] [cursor=pointer]:
+                - /url: /docs/components/shiny-button
+            - listitem [ref=e488]:
+              - link "File Tree" [ref=e489] [cursor=pointer]:
+                - /url: /docs/components/file-tree
+            - listitem [ref=e493]:
+              - link "Code Comparison" [ref=e494] [cursor=pointer]:
+                - /url: /docs/components/code-comparison
+            - listitem [ref=e498]:
+              - link "Scroll Progress" [ref=e499] [cursor=pointer]:
+                - /url: /docs/components/scroll-progress
+            - listitem [ref=e503]:
+              - link "Neon Gradient Card" [ref=e504] [cursor=pointer]:
+                - /url: /docs/components/neon-gradient-card
+            - listitem [ref=e508]:
+              - link "Comic Text" [ref=e509] [cursor=pointer]:
+                - /url: /docs/components/comic-text
+            - listitem [ref=e513]:
+              - link "Kinetic Text New" [ref=e514] [cursor=pointer]:
+                - /url: /docs/components/kinetic-text
+                - generic [ref=e516]:
+                  - text: Kinetic Text
+                  - generic [ref=e517]: New
+            - listitem [ref=e519]:
+              - link "Cool Mode" [ref=e520] [cursor=pointer]:
+                - /url: /docs/components/cool-mode
+            - listitem [ref=e524]:
+              - link "Pixel Image" [ref=e525] [cursor=pointer]:
+                - /url: /docs/components/pixel-image
+            - listitem [ref=e529]:
+              - link "Pulsating Button" [ref=e530] [cursor=pointer]:
+                - /url: /docs/components/pulsating-button
+            - listitem [ref=e534]:
+              - link "Warp Background" [ref=e535] [cursor=pointer]:
+                - /url: /docs/components/warp-background
+            - listitem [ref=e539]:
+              - link "Interactive Hover Button" [ref=e540] [cursor=pointer]:
+                - /url: /docs/components/interactive-hover-button
+            - listitem [ref=e544]:
+              - link "Animated Circular Progress Bar" [ref=e545] [cursor=pointer]:
+                - /url: /docs/components/animated-circular-progress-bar
+            - listitem [ref=e549]:
+              - link "Backlight New" [ref=e550] [cursor=pointer]:
+                - /url: /docs/components/backlight
+                - generic [ref=e552]:
+                  - text: Backlight
+                  - generic [ref=e553]: New
+            - listitem [ref=e555]:
+              - link "Glyph Matrix New" [ref=e556] [cursor=pointer]:
+                - /url: /docs/components/glyph-matrix
+                - generic [ref=e558]:
+                  - text: Glyph Matrix
+                  - generic [ref=e559]: New
+      - generic [ref=e561]:
+        - generic [ref=e562]:
+          - generic [ref=e563]:
+            - generic [ref=e565]:
+              - navigation "Breadcrumb" [ref=e566]:
+                - list [ref=e567]:
+                  - listitem [ref=e568]:
+                    - link "Docs" [ref=e569] [cursor=pointer]:
+                      - /url: /docs
+                    - generic [ref=e570]: /
+                  - listitem [ref=e571]:
+                    - link "Components" [ref=e572] [cursor=pointer]:
+                      - /url: /docs/components
+                    - generic [ref=e573]: /
+                  - listitem [ref=e574]:
+                    - generic [ref=e575]: Bento Grid
+              - generic [ref=e576]:
+                - heading "Bento Grid" [level=1] [ref=e577]
+                - generic [ref=e578]:
+                  - generic [ref=e579]:
+                    - button "Copy Page" [ref=e580]
+                    - button [ref=e581]
+                  - link "Previous" [ref=e582] [cursor=pointer]:
+                    - /url: /docs/components/hero-video-dialog
+                  - link "Next" [ref=e584] [cursor=pointer]:
+                    - /url: /docs/components/animated-list
+              - paragraph [ref=e586]: Bento grid is a layout used to showcase the features of a product in a simple and elegant way.
+            - generic [ref=e587]:
+              - generic [ref=e588]:
+                - tablist [ref=e591]:
+                  - tab "Preview" [selected] [ref=e592]
+                  - tab "Code" [ref=e593]
+                - generic [ref=e595]:
+                  - generic [ref=e596]:
+                    - link "Open in v0" [ref=e597] [cursor=pointer]:
+                      - /url: https://v0.dev/chat/api/open?url=https://magicui.design/r/bento-demo.json
+                      - text: Open in
+                    - button "restart-btn" [ref=e598]:
+                      - img "restart-btn"
+                  - generic [ref=e600]:
+                    - generic [ref=e601]:
+                      - generic [ref=e602]:
+                        - generic [ref=e603]:
+                          - figure [ref=e604] [cursor=pointer]:
+                            - generic [ref=e605]: bitcoin.pdf
+                            - blockquote [ref=e608]: Bitcoin is a cryptocurrency invented in 2008 by an unknown person or group of people using the name Satoshi Nakamoto.
+                          - figure [ref=e609] [cursor=pointer]:
+                            - generic [ref=e610]: finances.xlsx
+                            - blockquote [ref=e613]: A spreadsheet or worksheet is a file made of rows and columns that help sort data, arrange data easily, and calculate numerical data.
+                          - figure [ref=e614] [cursor=pointer]:
+                            - generic [ref=e615]: logo.svg
+                            - blockquote [ref=e618]: Scalable Vector Graphics is an Extensible Markup Language-based vector image format for two-dimensional graphics with support for interactivity and animation.
+                          - figure [ref=e619] [cursor=pointer]:
+                            - generic [ref=e620]: keys.gpg
+                            - blockquote [ref=e623]: GPG keys are used to encrypt and decrypt email, files, directories, and whole disk partitions and to authenticate messages.
+                          - figure [ref=e624] [cursor=pointer]:
+                            - generic [ref=e625]: seed.txt
+                            - blockquote [ref=e628]: A seed phrase, seed recovery phrase or backup seed phrase is a list of words which store all the information needed to recover Bitcoin funds on-chain.
+                        - generic [ref=e629]:
+                          - figure [ref=e630] [cursor=pointer]:
+                            - generic [ref=e631]: bitcoin.pdf
+                            - blockquote [ref=e634]: Bitcoin is a cryptocurrency invented in 2008 by an unknown person or group of people using the name Satoshi Nakamoto.
+                          - figure [ref=e635] [cursor=pointer]:
+                            - generic [ref=e636]: finances.xlsx
+                            - blockquote [ref=e639]: A spreadsheet or worksheet is a file made of rows and columns that help sort data, arrange data easily, and calculate numerical data.
+                          - figure [ref=e640] [cursor=pointer]:
+                            - generic [ref=e641]: logo.svg
+                            - blockquote [ref=e644]: Scalable Vector Graphics is an Extensible Markup Language-based vector image format for two-dimensional graphics with support for interactivity and animation.
+                          - figure [ref=e645] [cursor=pointer]:
+                            - generic [ref=e646]: keys.gpg
+                            - blockquote [ref=e649]: GPG keys are used to encrypt and decrypt email, files, directories, and whole disk partitions and to authenticate messages.
+                          - figure [ref=e650] [cursor=pointer]:
+                            - generic [ref=e651]: seed.txt
+                            - blockquote [ref=e654]: A seed phrase, seed recovery phrase or backup seed phrase is a list of words which store all the information needed to recover Bitcoin funds on-chain.
+                        - generic [ref=e655]:
+                          - figure [ref=e656] [cursor=pointer]:
+                            - generic [ref=e657]: bitcoin.pdf
+                            - blockquote [ref=e660]: Bitcoin is a cryptocurrency invented in 2008 by an unknown person or group of people using the name Satoshi Nakamoto.
+                          - figure [ref=e661] [cursor=pointer]:
+                            - generic [ref=e662]: finances.xlsx
+                            - blockquote [ref=e665]: A spreadsheet or worksheet is a file made of rows and columns that help sort data, arrange data easily, and calculate numerical data.
+                          - figure [ref=e666] [cursor=pointer]:
+                            - generic [ref=e667]: logo.svg
+                            - blockquote [ref=e670]: Scalable Vector Graphics is an Extensible Markup Language-based vector image format for two-dimensional graphics with support for interactivity and animation.
+                          - figure [ref=e671] [cursor=pointer]:
+                            - generic [ref=e672]: keys.gpg
+                            - blockquote [ref=e675]: GPG keys are used to encrypt and decrypt email, files, directories, and whole disk partitions and to authenticate messages.
+                          - figure [ref=e676] [cursor=pointer]:
+                            - generic [ref=e677]: seed.txt
+                            - blockquote [ref=e680]: A seed phrase, seed recovery phrase or backup seed phrase is a list of words which store all the information needed to recover Bitcoin funds on-chain.
+                        - generic [ref=e681]:
+                          - figure [ref=e682] [cursor=pointer]:
+                            - generic [ref=e683]: bitcoin.pdf
+                            - blockquote [ref=e686]: Bitcoin is a cryptocurrency invented in 2008 by an unknown person or group of people using the name Satoshi Nakamoto.
+                          - figure [ref=e687] [cursor=pointer]:
+                            - generic [ref=e688]: finances.xlsx
+                            - blockquote [ref=e691]: A spreadsheet or worksheet is a file made of rows and columns that help sort data, arrange data easily, and calculate numerical data.
+                          - figure [ref=e692] [cursor=pointer]:
+                            - generic [ref=e693]: logo.svg
+                            - blockquote [ref=e696]: Scalable Vector Graphics is an Extensible Markup Language-based vector image format for two-dimensional graphics with support for interactivity and animation.
+                          - figure [ref=e697] [cursor=pointer]:
+                            - generic [ref=e698]: keys.gpg
+                            - blockquote [ref=e701]: GPG keys are used to encrypt and decrypt email, files, directories, and whole disk partitions and to authenticate messages.
+                          - figure [ref=e702] [cursor=pointer]:
+                            - generic [ref=e703]: seed.txt
+                            - blockquote [ref=e706]: A seed phrase, seed recovery phrase or backup seed phrase is a list of words which store all the information needed to recover Bitcoin funds on-chain.
+                      - generic [ref=e707]:
+                        - generic:
+                          - heading "Save your files" [level=3]
+                          - paragraph: We automatically save your files as you type.
+                      - link "Learn more" [ref=e708] [cursor=pointer]:
+                        - /url: "#"
+                    - generic [ref=e709]:
+                      - figure [ref=e713] [cursor=pointer]:
+                        - generic [ref=e714]:
+                          - generic [ref=e715]: 💸
+                          - generic [ref=e717]:
+                            - generic [ref=e718]:
+                              - generic [ref=e719]: Payment received
+                              - generic [ref=e720]: ·
+                              - generic [ref=e721]: 15m ago
+                            - paragraph [ref=e722]: Magic UI
+                      - generic [ref=e723]:
+                        - generic:
+                          - heading "Notifications" [level=3]
+                          - paragraph: Get notified when something happens.
+                      - link "Learn more" [ref=e724] [cursor=pointer]:
+                        - /url: "#"
+                    - generic [ref=e725]:
+                      - generic [ref=e788]:
+                        - generic:
+                          - heading "Integrations" [level=3]
+                          - paragraph: Supports 100+ integrations and counting.
+                      - link "Learn more" [ref=e789] [cursor=pointer]:
+                        - /url: "#"
+                    - generic [ref=e790]:
+                      - generic [ref=e792]:
+                        - navigation "Navigation bar" [ref=e793]:
+                          - button "Go to the Previous Month" [ref=e794]
+                          - button "Go to the Next Month" [ref=e795]
+                        - generic [ref=e796]:
+                          - status [ref=e798]: August 2026
+                          - grid "August 2026" [ref=e799]:
+                            - rowgroup [ref=e800]:
+                              - row [ref=e801]:
+                                - columnheader [ref=e802]: Su
+                                - columnheader [ref=e803]: Mo
+                                - columnheader [ref=e804]: Tu
+                                - columnheader [ref=e805]: We
+                                - columnheader [ref=e806]: Th
+                                - columnheader [ref=e807]: Fr
+                                - columnheader [ref=e808]: Sa
+                            - rowgroup [ref=e809]:
+                              - row [ref=e810]:
+                                - gridcell [ref=e811]:
+                                  - button "Sunday, July 26th, 2026" [ref=e812]: "26"
+                                - gridcell [ref=e813]:
+                                  - button "Monday, July 27th, 2026" [ref=e814]: "27"
+                                - gridcell [ref=e815]:
+                                  - button "Tuesday, July 28th, 2026" [ref=e816]: "28"
+                                - gridcell [ref=e817]:
+                                  - button "Wednesday, July 29th, 2026" [ref=e818]: "29"
+                                - gridcell [ref=e819]:
+                                  - button "Thursday, July 30th, 2026" [ref=e820]: "30"
+                                - gridcell [ref=e821]:
+                                  - button "Friday, July 31st, 2026" [ref=e822]: "31"
+                                - gridcell [ref=e823]:
+                                  - button "Saturday, August 1st, 2026" [ref=e824]: "1"
+                              - row [ref=e825]:
+                                - gridcell [ref=e826]:
+                                  - button "Sunday, August 2nd, 2026" [ref=e827]: "2"
+                                - gridcell [ref=e828]:
+                                  - button "Monday, August 3rd, 2026" [ref=e829]: "3"
+                                - gridcell [ref=e830]:
+                                  - button "Tuesday, August 4th, 2026" [ref=e831]: "4"
+                                - gridcell [ref=e832]:
+                                  - button "Wednesday, August 5th, 2026" [ref=e833]: "5"
+                                - gridcell [ref=e834]:
+                                  - button "Thursday, August 6th, 2026" [ref=e835]: "6"
+                                - gridcell [ref=e836]:
+                                  - button "Friday, August 7th, 2026" [ref=e837]: "7"
+                                - gridcell [ref=e838]:
+                                  - button "Saturday, August 8th, 2026" [ref=e839]: "8"
+                              - row [ref=e840]:
+                                - gridcell [ref=e841]:
+                                  - button "Sunday, August 9th, 2026" [ref=e842]: "9"
+                                - gridcell [ref=e843]:
+                                  - button "Monday, August 10th, 2026" [ref=e844]: "10"
+                                - gridcell [ref=e845]:
+                                  - button "Tuesday, August 11th, 2026" [ref=e846]: "11"
+                                - gridcell [ref=e847]:
+                                  - button "Wednesday, August 12th, 2026" [ref=e848]: "12"
+                                - gridcell [ref=e849]:
+                                  - button "Thursday, August 13th, 2026" [ref=e850]: "13"
+                                - gridcell [ref=e851]:
+                                  - button "Friday, August 14th, 2026" [ref=e852]: "14"
+                                - gridcell [ref=e853]:
+                                  - button "Saturday, August 15th, 2026" [ref=e854]: "15"
+                              - row [ref=e855]:
+                                - gridcell [ref=e856]:
+                                  - button "Sunday, August 16th, 2026" [ref=e857]: "16"
+                                - gridcell [ref=e858]:
+                                  - button "Monday, August 17th, 2026" [ref=e859]: "17"
+                                - gridcell [ref=e860]:
+                                  - button "Tuesday, August 18th, 2026" [ref=e861]: "18"
+                                - gridcell [ref=e862]:
+                                  - button "Today, Wednesday, August 19th, 2026" [ref=e863]: "19"
+                                - gridcell [ref=e864]:
+                                  - button "Thursday, August 20th, 2026" [ref=e865]: "20"
+                                - gridcell [ref=e866]:
+                                  - button "Friday, August 21st, 2026" [ref=e867]: "21"
+                                - gridcell [ref=e868]:
+                                  - button "Saturday, August 22nd, 2026" [ref=e869]: "22"
+                              - row [ref=e870]:
+                                - gridcell [ref=e871]:
+                                  - button "Sunday, August 23rd, 2026" [ref=e872]: "23"
+                                - gridcell [ref=e873]:
+                                  - button "Monday, August 24th, 2026" [ref=e874]: "24"
+                                - gridcell [ref=e875]:
+                                  - button "Tuesday, August 25th, 2026" [ref=e876]: "25"
+                                - gridcell [ref=e877]:
+                                  - button "Wednesday, August 26th, 2026" [ref=e878]: "26"
+                                - gridcell [ref=e879]:
+                                  - button "Thursday, August 27th, 2026" [ref=e880]: "27"
+                                - gridcell [ref=e881]:
+                                  - button "Friday, August 28th, 2026" [ref=e882]: "28"
+                                - gridcell [ref=e883]:
+                                  - button "Saturday, August 29th, 2026" [ref=e884]: "29"
+                              - row [ref=e885]:
+                                - gridcell [ref=e886]:
+                                  - button "Sunday, August 30th, 2026" [ref=e887]: "30"
+                                - gridcell [ref=e888]:
+                                  - button "Monday, August 31st, 2026" [ref=e889]: "31"
+                                - gridcell [ref=e890]:
+                                  - button "Tuesday, September 1st, 2026" [ref=e891]: "1"
+                                - gridcell [ref=e892]:
+                                  - button "Wednesday, September 2nd, 2026" [ref=e893]: "2"
+                                - gridcell [ref=e894]:
+                                  - button "Thursday, September 3rd, 2026" [ref=e895]: "3"
+                                - gridcell [ref=e896]:
+                                  - button "Friday, September 4th, 2026" [ref=e897]: "4"
+                                - gridcell [ref=e898]:
+                                  - button "Saturday, September 5th, 2026" [ref=e899]: "5"
+                      - generic [ref=e900]:
+                        - generic:
+                          - heading "Calendar" [level=3]
+                          - paragraph: Use the calendar to filter your files by date.
+                      - link "Learn more" [ref=e901] [cursor=pointer]:
+                        - /url: "#"
+              - heading "Installation" [level=2] [ref=e902]
+              - generic [ref=e903]:
+                - tablist [ref=e904]:
+                  - tab "CLI" [selected] [ref=e905]
+                  - tab "Manual" [ref=e906]
+                - tabpanel "CLI" [ref=e907]:
+                  - figure [ref=e908]:
+                    - generic [ref=e910]:
+                      - generic [ref=e911]:
+                        - tablist [ref=e916]:
+                          - tab "pnpm" [selected] [ref=e917]
+                          - tab "npm" [ref=e918]
+                          - tab "yarn" [ref=e919]
+                          - tab "bun" [ref=e920]
+                        - tabpanel "pnpm" [ref=e922]:
+                          - code [ref=e924]: pnpm dlx shadcn@latest add @magicui/bento-grid
+                      - button "Copy" [ref=e925]
+              - heading "Examples" [level=2] [ref=e927]
+              - generic [ref=e928]:
+                - tablist [ref=e931]:
+                  - tab "Preview" [selected] [ref=e932]
+                  - tab "Code" [ref=e933]
+                - generic [ref=e935]:
+                  - generic [ref=e936]:
+                    - link "Open in v0" [ref=e937] [cursor=pointer]:
+                      - /url: https://v0.dev/chat/api/open?url=https://magicui.design/r/bento-demo-vertical.json
+                      - text: Open in
+                    - button "restart-btn" [ref=e938]:
+                      - img "restart-btn"
+                  - generic [ref=e940]:
+                    - generic [ref=e941]:
+                      - generic [ref=e942]:
+                        - generic:
+                          - heading "Save your files" [level=3]
+                          - paragraph: We automatically save your files as you type.
+                      - link "Learn more" [ref=e943] [cursor=pointer]:
+                        - /url: /
+                    - generic [ref=e944]:
+                      - generic [ref=e945]:
+                        - generic:
+                          - heading "Full text search" [level=3]
+                          - paragraph: Search through all your files in one place.
+                      - link "Learn more" [ref=e946] [cursor=pointer]:
+                        - /url: /
+                    - generic [ref=e947]:
+                      - generic [ref=e948]:
+                        - generic:
+                          - heading "Multilingual" [level=3]
+                          - paragraph: Supports 100+ languages and counting.
+                      - link "Learn more" [ref=e949] [cursor=pointer]:
+                        - /url: /
+                    - generic [ref=e950]:
+                      - generic [ref=e951]:
+                        - generic:
+                          - heading "Calendar" [level=3]
+                          - paragraph: Use the calendar to filter your files by date.
+                      - link "Learn more" [ref=e952] [cursor=pointer]:
+                        - /url: /
+                    - generic [ref=e953]:
+                      - generic [ref=e954]:
+                        - generic:
+                          - heading "Notifications" [level=3]
+                          - paragraph: Get notified when someone shares a file or mentions you in a comment.
+                      - link "Learn more" [ref=e955] [cursor=pointer]:
+                        - /url: /
+              - heading "Usage" [level=2] [ref=e956]
+              - figure [ref=e957]:
+                - generic [ref=e958]:
+                  - button "Copy" [ref=e959]
+                  - code [ref=e961]:
+                    - generic [ref=e962]: "import { BentoCard, BentoGrid } from \"@/components/ui/bento-grid\""
+              - figure [ref=e963]:
+                - generic [ref=e964]:
+                  - button "Copy" [ref=e965]
+                  - code [ref=e967]:
+                    - generic [ref=e968]: <BentoGrid>
+                    - generic [ref=e969]: <BentoCard />
+                    - generic [ref=e970]: </BentoGrid>
+          - generic [ref=e971]:
+            - link "Hero Video Dialog" [ref=e972] [cursor=pointer]:
+              - /url: /docs/components/hero-video-dialog
+            - link "Animated List" [ref=e973] [cursor=pointer]:
+              - /url: /docs/components/animated-list
+        - generic [ref=e976]:
+          - generic [ref=e977]:
+            - paragraph [ref=e978]: On This Page
+            - link "Installation" [ref=e979] [cursor=pointer]:
+              - /url: "#installation"
+            - link "Examples" [ref=e980] [cursor=pointer]:
+              - /url: "#examples"
+            - link "Usage" [ref=e981] [cursor=pointer]:
+              - /url: "#usage"
+          - generic [ref=e982]:
+            - paragraph [ref=e983]: Contribute
+            - list [ref=e984]:
+              - listitem [ref=e985]:
+                - link "Report an issue" [ref=e986] [cursor=pointer]:
+                  - /url: https://github.com/magicuidesign/magicui/issues/new?title=%5Bbug%5D%3A+%2Fdocs%2Fcomponents%2Fbento-grid&labels=bug&labels=documentation&template=bug_report.yml
+              - listitem [ref=e996]:
+                - link "Request a feature" [ref=e997] [cursor=pointer]:
+                  - /url: https://github.com/magicuidesign/magicui/issues/new?title=%5Bfeat%5D%3A+%2Fdocs%2Fcomponents%2Fbento-grid&labels=enhancement&template=feature_request.yml
+              - listitem [ref=e1000]:
+                - link "Edit this page" [ref=e1001] [cursor=pointer]:
+                  - /url: https://github.com/magicuidesign/magicui/edit/main/apps/www/content/docs/components/bento-grid.mdx
+          - generic [ref=e1006]:
+            - generic [ref=e1007]: Limited Time Offer
+            - generic [ref=e1012]:
+              - paragraph [ref=e1013]:
+                - text: Ship
+                - generic [ref=e1014]: Faster Faster
+                - text: with
+                - generic [ref=e1015]:
+                  - generic [ref=e1016]: Magic UI Pro
+                  - text: Magic UI Pro
+              - paragraph [ref=e1017]: Stop building from scratch. Get 8 production-ready templates and 50+ premium components that your users will love.
+            - generic [ref=e1018]:
+              - generic [ref=e1019]: Next.js 15 + TypeScript ready
+              - generic [ref=e1024]: Copy, paste, customize in minutes
+              - generic [ref=e1029]: Save 100+ hours of development
+            - generic [ref=e1034]:
+              - generic [ref=e1035]:
+                - generic [ref=e1036]: $199
+                - generic [ref=e1037]: once
+              - link "Get Lifetime Access" [ref=e1038] [cursor=pointer]:
+                - /url: https://pro.magicui.design
+              - paragraph [ref=e1040]: Trusted by 5,000+ developers
+  - contentinfo [ref=e1041]:
+    - generic [ref=e1044]:
+      - text: Built by
+      - link "dillion" [ref=e1045] [cursor=pointer]:
+        - /url: https://twitter.com/dillionverma
+      - text: . The source code is available on
+      - link "GitHub" [ref=e1046] [cursor=pointer]:
+        - /url: https://github.com/magicuidesign/magicui
+      - text: .
+  - region "Notifications alt+T"
+  - alert [ref=e1047]

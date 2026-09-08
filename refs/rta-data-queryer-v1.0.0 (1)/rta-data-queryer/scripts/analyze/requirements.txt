@@ -1,0 +1,4 @@
+# 分析流水线（聚合、对比、环比同比、过滤排序等）依赖
+# 安装：pip install -r requirements.txt
+pandas>=2.0,<3
+duckdb>=1.0,<2

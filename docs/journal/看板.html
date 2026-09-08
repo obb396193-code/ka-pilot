@@ -189,7 +189,7 @@
     <div class="lane">
       <div class="lane-head"><h2>内网 <small>OS agent</small></h2><span class="chip c-boss">等 OS 回八条</span></div>
       <div class="rows">
-        <div class="row"><span class="chip c-done">已实证</span><div class="t">奇航五轮 · 写链路 · LLM · ASR · 钉钉出网 · 素材 CDN · ka-data 对平 &lt;0.1%<small>总账 docs/19</small></div></div>
+        <div class="row"><span class="chip c-done">已实证</span><div class="t">启航五轮 · 写链路 · LLM · ASR · 钉钉出网 · 素材 CDN · ka-data 对平 &lt;0.1%<small>总账 docs/19</small></div></div>
         <div class="row"><span class="chip c-done">已回收</span><div class="t">9-5 部署准备 + 四项核证全部回收<small>拓扑方案 B · 不选 ADB-PG · token 经外网作废</small></div></div>
         <div class="row"><span class="chip c-run">等回</span><div class="t">9-6 八条：token 重生成 · 方案 B · 沙箱 PG/出网 5432 · f.yml · userId · Excel 作废 · ka-data 源版本证明 · bid_tool 六探针<small>老板已发</small></div></div>
         <div class="row"><span class="chip c-wait">部署</span><div class="t">初始化七步已备好（migrate → bootstrap → discover → grants → coefficients → sync → data-api）<small>runbook §2.5–2.6 · fixtures/ops/bootstrap-seed.json</small></div></div>
@@ -224,7 +224,7 @@
     <div class="sec-head"><h2>开发日志</h2><span class="cap">事实源 docs/journal/开发日志.md + 工作台账 · 蓝=方法 · 橙=坑</span></div>
     <div class="journal">
       <div class="ph"><div class="when"><b>08-13</b>立项与可行性</div><div><div class="what">靠内网 OS agent 三轮问答把"能不能做"问清：token 不借、a1 faas 是主路径、异步 ETL 落自有库。</div><div class="tags"><span class="tag way">先问硬边界再设计</span><span class="tag way">冲突登记不猜</span><span class="tag way">找内部先例</span><span class="tag pit">文档架构 ≠ 实测架构</span></div></div></div>
-      <div class="ph"><div class="when"><b>08-14</b>数据通路真相</div><div><div class="what">实读 5 份 CLI 源码：奇航 get_data 是裸 userId、无 token 无签名；FaaS 出网两个域名都通。定型"外网设计、内网部署、老板中转"。</div><div class="tags"><span class="tag way">读代码不读说明</span><span class="tag way">OS 贴原始输出、凭证打码</span></div></div></div>
+      <div class="ph"><div class="when"><b>08-14</b>数据通路真相</div><div><div class="what">实读 5 份 CLI 源码：启航 get_data 是裸 userId、无 token 无签名；FaaS 出网两个域名都通。定型"外网设计、内网部署、老板中转"。</div><div class="tags"><span class="tag way">读代码不读说明</span><span class="tag way">OS 贴原始输出、凭证打码</span></div></div></div>
       <div class="ph"><div class="when"><b>08-17～18</b>PRD v1.6 冻结</div><div><div class="what">八路 sub agent 并行审查 → 老板分批处置 → Codex 交叉复核 grep 清零 → 105 条验收基线。/1.09 是返点系数不是税。</div><div class="tags"><span class="tag way">多视角审、人来处置</span><span class="tag way">另一家模型复核</span><span class="tag way">grep 清零</span><span class="tag pit">术语反复互相打架</span></div></div></div>
       <div class="ph"><div class="when"><b>08-18～19</b>开工三件套</div><div><div class="what">协作规范（信箱/台账/SHA 审计/路径限定 commit/不 push）+ 契约包唯一出口 + 契约 v1.1 九条裁决。</div><div class="tags"><span class="tag way">契约先行</span><span class="tag way">agent 不算数</span><span class="tag way">派活写进对方 inbox</span></div></div></div>
       <div class="ph"><div class="when"><b>08-19～21</b>后端 B1–B22</div><div><div class="what">Codex 三天 22 批、台账单日 82 条。OS 五轮只读探针改掉五条"文档说的"：YYYYMMDD、D-2 分区、hh 0..24、2000 行截断、CDN octet-stream、ASR 要 WAV。</div><div class="tags"><span class="tag way">设计→TDD 计划→Task→门禁→交审</span><span class="tag way">实测驱动修 bug</span><span class="tag way">自审 + 架构裁决分层</span><span class="tag pit">Docker 磁盘 99% 停 PG 门禁</span><span class="tag pit">31 条交付无人独立审</span></div></div></div>

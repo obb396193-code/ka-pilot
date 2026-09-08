@@ -1,0 +1,173 @@
+- generic [ref=f2e1]:
+  - link "跳到内容" [ref=f2e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f2e3]:
+    - complementary "展厅导航" [ref=f2e4]:
+      - generic [ref=f2e5]:
+        - generic [ref=f2e6]: UI
+        - generic [ref=f2e7]:
+          - strong [ref=f2e8]: 投放 Agent
+          - text: Asset field guide
+      - navigation [ref=f2e9]:
+        - button "01 总览与风格 12" [ref=f2e2431] [cursor=pointer]:
+          - generic [ref=f2e11]: "01"
+          - generic [ref=f2e12]: 总览与风格
+          - generic [ref=f2e13]: "12"
+        - button "02 全量清单 5,936" [ref=f2e2432] [cursor=pointer]:
+          - generic [ref=f2e15]: "02"
+          - generic [ref=f2e16]: 全量清单
+          - generic [ref=f2e17]: 5,936
+        - button "03 付费替代 2,160" [ref=f2e2433] [cursor=pointer]:
+          - generic [ref=f2e19]: "03"
+          - generic [ref=f2e20]: 付费替代
+          - generic [ref=f2e21]: 2,160
+        - button "04 本地源码 93" [ref=f2e2434] [cursor=pointer]:
+          - generic [ref=f2e23]: "04"
+          - generic [ref=f2e24]: 本地源码
+          - generic [ref=f2e25]: "93"
+        - button "05 主题展厅 42" [ref=f2e2435] [cursor=pointer]:
+          - generic [ref=f2e27]: "05"
+          - generic [ref=f2e28]: 主题展厅
+          - generic [ref=f2e29]: "42"
+        - button "06 新库候选 5" [active] [ref=f2e2436] [cursor=pointer]:
+          - generic [ref=f2e31]: "06"
+          - generic [ref=f2e32]: 新库候选
+          - generic [ref=f2e33]: "5"
+      - generic [ref=f2e34]: 离线可用本页内嵌全部目录和替代数据，不依赖网络加载；外部链接仅在你主动打开时访问官网。
+    - main [ref=f2e35]:
+      - generic [ref=f2e36]:
+        - generic [ref=f2e37]: 官方目录快照 · 2026-08-19
+        - generic [ref=f2e39]: 目录 ≠ 运行时安装 · 缓存 ≠ 已接入
+      - text: s c T A
+      - generic [ref=f2e2438]:
+        - generic [ref=f2e2439]:
+          - generic [ref=f2e2440]:
+            - generic [ref=f2e2441]: Next intake
+            - heading "又找到 5 个值得收的免费库" [level=2] [ref=f2e2442]
+          - paragraph [ref=f2e2443]: 全部已核官方许可证和定位，但仍是 discovery-only、源码未缓存。AI Elements 和 Kibo UI 最值得优先进入下一批全量审计。
+        - generic [ref=f2e2444]:
+          - article [ref=f2e2445]:
+            - generic [ref=f2e2446]:
+              - generic [ref=f2e2447]: high priority
+              - generic [ref=f2e2448]: Apache-2.0
+              - generic [ref=f2e2449]: 源码未缓存
+            - heading "Vercel AI Elements" [level=3] [ref=f2e2450]
+            - paragraph [ref=f2e2451]: AI-native conversation and agent interaction components
+            - paragraph [ref=f2e2452]: 克制、产品化、接近 Vercel/shadcn 的 AI 工作台风格；重点在对话、消息、推理、工具调用和输入区，而不是炫技动效。
+            - generic [ref=f2e2453]:
+              - generic [ref=f2e2454]: Agent 对话
+              - generic [ref=f2e2455]: 流式消息
+              - generic [ref=f2e2456]: 推理折叠
+              - generic [ref=f2e2457]: 工具调用
+              - generic [ref=f2e2458]: 来源引用
+              - generic [ref=f2e2459]: Prompt 输入
+            - generic [ref=f2e2460]: 接入边界：shadcn Registry；目标为 React 19、Next.js 14+、Tailwind CSS 4，接入前核对本仓版本。
+            - paragraph [ref=f2e2461]: 优先全量审计官方 Registry；为产品 Agent 抽屉挑 conversation、message、prompt-input、reasoning、tool、sources。
+            - generic [ref=f2e2462]:
+              - link "官网 ↗" [ref=f2e2463] [cursor=pointer]:
+                - /url: https://elements.ai-sdk.dev/
+              - link "文档 ↗" [ref=f2e2464] [cursor=pointer]:
+                - /url: https://elements.ai-sdk.dev/docs
+              - link "GitHub ↗" [ref=f2e2465] [cursor=pointer]:
+                - /url: https://github.com/vercel/ai-elements
+          - article [ref=f2e2466]:
+            - generic [ref=f2e2467]:
+              - generic [ref=f2e2468]: high priority
+              - generic [ref=f2e2469]: MIT
+              - generic [ref=f2e2470]: 源码未缓存
+            - heading "Kibo UI" [level=3] [ref=f2e2471]
+            - paragraph [ref=f2e2472]: shadcn 的高阶功能组件补充
+            - paragraph [ref=f2e2473]: 现代、克制、功能密度高，视觉接近成熟 SaaS；比单纯 shadcn primitive 更像可直接落业务的复杂控件。
+            - generic [ref=f2e2474]:
+              - generic [ref=f2e2475]: Gantt
+              - generic [ref=f2e2476]: Kanban
+              - generic [ref=f2e2477]: Editor
+              - generic [ref=f2e2478]: Dropzone
+              - generic [ref=f2e2479]: Color Picker
+              - generic [ref=f2e2480]: Calendar
+              - generic [ref=f2e2481]: 复杂业务组件
+            - generic [ref=f2e2482]: 接入边界：原生沿用 shadcn CSS variables，并支持 Kibo CLI 或 shadcn CLI。
+            - paragraph [ref=f2e2483]: 下一批抓取 Registry 全量清单；优先比较 ReUI Pro 的 Gantt/Kanban/Editor 能力。
+            - generic [ref=f2e2484]:
+              - link "官网 ↗" [ref=f2e2485] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/
+              - link "文档 ↗" [ref=f2e2486] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/docs
+              - link "GitHub ↗" [ref=f2e2487] [cursor=pointer]:
+                - /url: https://github.com/shadcnblocks/kibo
+          - article [ref=f2e2488]:
+            - generic [ref=f2e2489]:
+              - generic [ref=f2e2490]: high priority
+              - generic [ref=f2e2491]: MIT
+              - generic [ref=f2e2492]: 源码未缓存
+            - heading "Dice UI" [level=3] [ref=f2e2493]
+            - paragraph [ref=f2e2494]: 可访问性优先的复杂交互组件
+            - paragraph [ref=f2e2495]: 中性、细致、偏产品工具；交互状态比装饰更突出，适合高频操作型后台。
+            - generic [ref=f2e2496]:
+              - generic [ref=f2e2497]: Data Grid
+              - generic [ref=f2e2498]: Data Table
+              - generic [ref=f2e2499]: File Upload
+              - generic [ref=f2e2500]: Kanban
+              - generic [ref=f2e2501]: Media Player
+              - generic [ref=f2e2502]: Mention
+              - generic [ref=f2e2503]: Time Picker
+              - generic [ref=f2e2504]: Tour
+            - generic [ref=f2e2505]: 接入边界：React + TypeScript + Tailwind，遵循 shadcn copy-paste 模式；逐项核对 Radix/Base 依赖。
+            - paragraph [ref=f2e2506]: 全量抓取组件目录，重点与 coss/ReUI 比较 Data Grid、File Upload、Kanban 和筛选细节。
+            - generic [ref=f2e2507]:
+              - link "官网 ↗" [ref=f2e2508] [cursor=pointer]:
+                - /url: https://diceui.com/
+              - link "文档 ↗" [ref=f2e2509] [cursor=pointer]:
+                - /url: https://diceui.com/docs/introduction
+              - link "GitHub ↗" [ref=f2e2510] [cursor=pointer]:
+                - /url: https://github.com/sadmann7/diceui
+          - article [ref=f2e2511]:
+            - generic [ref=f2e2512]:
+              - generic [ref=f2e2513]: medium-high priority
+              - generic [ref=f2e2514]: MIT
+              - generic [ref=f2e2515]: 源码未缓存
+            - heading "Animate UI" [level=3] [ref=f2e2516]
+            - paragraph [ref=f2e2517]: shadcn 体系内的克制动效与动画 primitives
+            - paragraph [ref=f2e2518]: 现代、流畅、比 React Bits 更克制；保留 shadcn 的产品感，同时给 Accordion、Dialog、Tabs、Button、背景和图标补统一 Motion。
+            - generic [ref=f2e2519]:
+              - generic [ref=f2e2520]: 交互过渡
+              - generic [ref=f2e2521]: 动效 primitive
+              - generic [ref=f2e2522]: 按钮反馈
+              - generic [ref=f2e2523]: 轻背景
+              - generic [ref=f2e2524]: 动画图标
+              - generic [ref=f2e2525]: 局部高光
+            - generic [ref=f2e2526]: 接入边界：shadcn Registry + Tailwind CSS + Motion；同时覆盖 Radix UI、Base UI、Headless UI 变体。
+            - paragraph [ref=f2e2527]: 抓取 components/primitives/icons 三类完整索引，作为 Aceternity/React Bits Pro 动效的免费替代池。
+            - generic [ref=f2e2528]:
+              - link "官网 ↗" [ref=f2e2529] [cursor=pointer]:
+                - /url: https://animate-ui.com/
+              - link "文档 ↗" [ref=f2e2530] [cursor=pointer]:
+                - /url: https://animate-ui.com/docs
+              - link "GitHub ↗" [ref=f2e2531] [cursor=pointer]:
+                - /url: https://github.com/imskyleen/animate-ui
+          - article [ref=f2e2532]:
+            - generic [ref=f2e2533]:
+              - generic [ref=f2e2534]: medium priority
+              - generic [ref=f2e2535]: MIT
+              - generic [ref=f2e2536]: 源码未缓存
+            - heading "Motion Primitives" [level=3] [ref=f2e2537]
+            - paragraph [ref=f2e2538]: 精致微交互和文字/布局过渡
+            - paragraph [ref=f2e2539]: 极简、偏设计工具与编辑器气质，动效细腻而不喧闹；适合给成熟页面补微交互。
+            - generic [ref=f2e2540]:
+              - generic [ref=f2e2541]: 文字过渡
+              - generic [ref=f2e2542]: Disclosure
+              - generic [ref=f2e2543]: Dock
+              - generic [ref=f2e2544]: Tabs
+              - generic [ref=f2e2545]: 光标跟随
+              - generic [ref=f2e2546]: 数字变化
+              - generic [ref=f2e2547]: 局部布局动画
+            - generic [ref=f2e2548]: 接入边界：React + Tailwind CSS + Motion；不是本项目 primitive 底座，按需复制并接 token。
+            - paragraph [ref=f2e2549]: 从官方仓库建立目录与维护状态，不把 README 的展示数量推断成全量。
+            - generic [ref=f2e2550]:
+              - link "官网 ↗" [ref=f2e2551] [cursor=pointer]:
+                - /url: https://motion-primitives.com/
+              - link "文档 ↗" [ref=f2e2552] [cursor=pointer]:
+                - /url: https://motion-primitives.com/docs
+              - link "GitHub ↗" [ref=f2e2553] [cursor=pointer]:
+                - /url: https://github.com/ibelick/motion-primitives
+        - paragraph [ref=f2e2554]: 候选里的第三方 patterns、模板或 Sponsor 内容如果另有商业授权，必须再次拆分；不能因为主仓 MIT/Apache 就把所有外链内容都当免费。

@@ -140,7 +140,7 @@ documented → authorized → white-listed(if required) → wrapped → method/c
 
 ```bash
 jq -c 'select(.document_id == "ka-src-0010")' docs/knowledge/catalog.jsonl
-rg -n '奇航|SQL|SQLite|BI转化|现金口径|account_id|素材|商品' \
+rg -n '启航|SQL|SQLite|BI转化|现金口径|account_id|素材|商品' \
   docs/knowledge/assessments/ka-src-0010.md
 ```
 

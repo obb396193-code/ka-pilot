@@ -1,0 +1,363 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://coss.com/ui/docs/styling",
+        "title": "Styling - coss ui",
+        "description": "A guide to styling components with our color system."
+      },
+      {
+        "url": "https://coss.com/ui/docs",
+        "title": "Introduction - coss ui",
+        "description": "A new, modern UI component library built on top of Base UI. Built for developers and AI."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/checkbox.md"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/dialog",
+        "title": "Dialog - coss ui",
+        "description": "A popup that opens on top of the entire page."
+      },
+      {
+        "url": "https://coss.com/ui/llms.txt"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/button",
+        "title": "Button - coss ui",
+        "description": "A button or a component that looks like a button."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/calendar",
+        "title": "Calendar - coss ui",
+        "description": "A date picker component with range and multi-select support."
+      },
+      {
+        "url": "https://coss.com/ui/docs/get-started",
+        "title": "Get Started - coss ui",
+        "description": "A quick guide to adding your first component."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/badge",
+        "title": "Badge - coss ui",
+        "description": "A badge or a component that looks like a badge."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/checkbox-group.md"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/card",
+        "title": "Card - coss ui",
+        "description": "A content container for grouping related information."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/select",
+        "title": "Select - coss ui",
+        "description": "A common form component for choosing a predefined value in a dropdown menu."
+      },
+      {
+        "url": "https://coss.com/ui/particles",
+        "title": "Browse Particles - coss ui",
+        "description": "Discover 500 ready-to-use particles, the building blocks of your design system. Filter by category to find the perfect component for your project."
+      },
+      {
+        "url": "https://coss.com/ui"
+      },
+      {
+        "url": "https://coss.com/ui/docs/changelog",
+        "title": "Changelog",
+        "description": "Breaking changes, migration guides, and notable updates."
+      },
+      {
+        "url": "https://coss.com/ui/docs/radix-migration",
+        "title": "Migrating from Radix - coss ui",
+        "description": "This guide is for developers who already have applications built on Radix-based libraries — frameworks that wrap Radix primitives — and want to adopt coss ui. coss ui is built on top of Base UI, using a custom abstraction that stays intentionally close to its mental model. The component API exposed by coss ui is intentionally similar to shadcn/ui, which is why this guide also highlights ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/roadmap",
+        "title": "Roadmap",
+        "description": "coss ui is the evolution of Origin UI, an open-source collection of React and Tailwind components created by Pasquale Vitiello and Davide Pacilio."
+      },
+      {
+        "url": "https://coss.com/ui/docs/skills",
+        "title": "Skills",
+        "description": "Skills provide AI coding assistants with structured knowledge about coss ui — component APIs, composition patterns, styling conventions, migration rules, and ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/accordion",
+        "title": "Accordion",
+        "description": "A set of collapsible panels with headings and content."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/alert-dialog",
+        "title": "Alert Dialog",
+        "description": "A dialog that requires user response to proceed."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/alert",
+        "title": "Alert",
+        "description": "A callout for displaying important information."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/autocomplete",
+        "title": "Autocomplete",
+        "description": "An input that suggests options as you type."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/avatar",
+        "title": "Avatar",
+        "description": "Group Avatars ... Built by and for the team of Cal.com, Inc. — the leading commercial open source company (“coss”). On This ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/breadcrumb",
+        "title": "Breadcrumb",
+        "description": "With custom separator ... Built by and for the team of Cal.com, Inc. — the leading commercial open source company (“coss”). On ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/checkbox-group"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/checkbox",
+        "title": "Checkbox",
+        "description": "A control allowing the user to toggle between checked and not checked. Includes a built-in indicator with checkmark and indeterminate icons. leading commercial ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/collapsible",
+        "title": "Collapsible - coss ui",
+        "description": "A collapsible panel controlled by a button trigger."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/combobox",
+        "title": "Combobox",
+        "description": "The input field component for use inside ComboboxChips in multiple selection mode. This is a minimal input without the wrapper, trigger, or clear button. Prop ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/command",
+        "title": "Command",
+        "description": "The root component that wraps the autocomplete functionality. It's an alias for Autocomplete.Root with sensible defaults for command palette behavior: ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/context-menu"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/date-picker",
+        "title": "Date Picker",
+        "description": "A date picker component built with Calendar and Popover. Copy Markdown. Preview Code. Pick a date. Copy. \"use client\"; import { format } from \"date ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/drawer",
+        "title": "Drawer",
+        "description": "DrawerMenu. Container for drawer menu items. Use with DrawerMenuItem , DrawerMenuSeparator , DrawerMenuGroup , DrawerMenuGroupLabel , DrawerMenuCheckboxItem , ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/empty",
+        "title": "Empty",
+        "description": "The main component of the empty state. Wraps the EmptyHeader and EmptyContent components. Prop, Type, Default. className, string. Copy <Empty> <EmptyHeader /> < ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/field",
+        "title": "Field",
+        "description": "API Reference. Field. Root component. Styled wrapper for Field.Root from Base UI with flex column layout. FieldLabel. Label for the field."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/fieldset"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/form",
+        "title": "Form",
+        "description": "Built by and for the team of Cal.com, Inc. — the leading commercial open source company (“coss”). On This Page. Installation ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/frame",
+        "title": "Frame",
+        "description": "Built by and for the team of Cal.com, Inc. — the leading commercial open source company (“coss”). On This Page. Installation ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/group"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/input-group"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/input",
+        "title": "Input - coss ui",
+        "description": "A native input element. API Reference Input Styled wrapper for Input from Base UI with custom size options."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/kbd"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/label"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/menu",
+        "title": "Menu",
+        "description": "Copy <Menu> <MenuTrigger>Open</MenuTrigger> <MenuPopup align=\"start\" sideOffset={4}> <MenuItem>Profile</MenuItem> <MenuSeparator /> <MenuGroup> ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/meter",
+        "title": "Meter",
+        "description": "A graphical display of a numeric value within a range."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/number-field",
+        "title": "Number Field",
+        "description": "NumberFieldGroup. Container for the input and buttons. Styled wrapper for NumberField.Group from Base UI. NumberFieldInput. Input element for the number ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/otp-field"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/pagination",
+        "title": "Pagination",
+        "description": "Built by and for the team of Cal.com, Inc. — the leading commercial open source company (“coss”). On This Page. Installation ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/popover",
+        "title": "Popover",
+        "description": "An accessible popup anchored to a button."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/preview-card",
+        "title": "Preview Card",
+        "description": "PreviewCardPopup. Popup container that displays the preview content. Also exported as HoverCardContent . ... Built by and for the team of Cal.com, Inc. — the ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/progress"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/radio-group",
+        "title": "Radio Group",
+        "description": "Built by and for the team of Cal.com, Inc. — the leading commercial open source company (“coss”). On This Page. Installation ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/scroll-area",
+        "title": "Scroll Area - coss ui",
+        "description": "A native scroll container with custom scrollbars."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/separator",
+        "title": "Separator",
+        "description": "Built by and for the team of Cal.com, Inc. — the leading commercial open source company (“coss”). On This Page. Installation ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/sheet",
+        "title": "Sheet",
+        "description": "A flyout that opens from the side of the screen, based on the dialog component."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/skeleton",
+        "title": "Skeleton",
+        "description": "Built by and for the team of Cal.com, Inc. — the leading commercial open source company (“coss”). On This Page. Installation ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/slider",
+        "title": "Slider",
+        "description": "An input where the user selects a value from within a given range."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/spinner",
+        "title": "Spinner",
+        "description": "Spinner. An indicator that can be used to show a loading state. Copy Markdown. Preview Code. Copy. import { Spinner } from \"@/components/ui/ ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/switch",
+        "title": "Switch",
+        "description": "Form Integration ... Built by and for the team of Cal.com, Inc. — the leading commercial open source company (“coss”). On This ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/table"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/tabs",
+        "title": "Tabs",
+        "description": "Underline with Vertical Orientation ... Built by and for the team of Cal.com, Inc. — the leading commercial open source company (“coss”)."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/textarea"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/toast",
+        "title": "Toast",
+        "description": "A temporary notification that appears on screen to inform users. By default, toasts appear in the bottom-right corner."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/toggle-group",
+        "title": "Toggle Group - coss ui",
+        "description": "ToggleGroupItem Individual toggle button within the group. Styled wrapper for Toggle from Base UI. Inherits variant and size from parent ToggleGroup context. ToggleGroupSeparator Visual separator between toggle buttons. Examples Small Toggles"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/toggle",
+        "title": "Toggle",
+        "description": "Built by and for the team of Cal.com, Inc. — the leading commercial open source company (“coss”). On This Page. Installation ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/toolbar",
+        "title": "Toolbar",
+        "description": "A container for grouping a set of buttons and controls."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/tooltip",
+        "title": "Tooltip",
+        "description": "A popup that appears when an element is hovered or focused, showing a hint for sighted users."
+      },
+      {
+        "url": "https://coss.com/ui/docs/hooks/use-copy-to-clipboard"
+      },
+      {
+        "url": "https://coss.com/ui/docs/hooks/use-media-query"
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/toggle.md",
+        "title": "coss.com",
+        "description": "--- title: Toggle description: A two-state button that can be toggled on or off. links: doc: https://base-ui.com/react/components/toggle#api-reference ..."
+      },
+      {
+        "url": "https://coss.com/ui/r/p-otp-field-1.json",
+        "title": "coss.com",
+        "description": "{ \"$schema\": \"https://ui.shadcn.com/schema/registry-item.json\", \"name\": \"p-otp-field-1\", \"description\": \"Basic OTP field\", \"registryDependencies\": [ \"@coss/otp-field ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/roadmap.md",
+        "title": "coss.com",
+        "description": "--- title: Roadmap description: Current state of coss ui and where we’re headed next. --- **coss ui** is the evolution of **Origin UI**, an open-source collection of React and Tailwind components created by Pasquale Vitiello and Davide Pacilio. It was recently **acquired by Cal.com** and grown into a broader, more ambitious ecosystem, with Pasquale contributing directly to the development of ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/input.md",
+        "title": "coss.com",
+        "description": "--- title: Input description: A native input element. links: doc: https://base-ui.com/react/components/input#api-reference --- <ComponentPreview name=\"p-input-1 ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/collapsible.md",
+        "title": "coss.com",
+        "description": "--- title: Collapsible description: A collapsible panel controlled by a button trigger. links: doc: https://base-ui.com/react/components/collapsible#api-reference ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/combobox.md",
+        "title": "coss.com",
+        "description": "--- title: Combobox description: An input combined with a list of predefined items to select. links: doc: https://base-ui.com/react/components/combobox#api-reference ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/tabs.md",
+        "title": "coss.com",
+        "description": "--- title: Tabs description: A component for toggling between related panels on the same page. links: doc: https://base-ui.com/react/components/tabs#api-reference ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/sheet.md",
+        "title": "coss.com",
+        "description": "--- title: Sheet description: A flyout that opens from the side of the screen, based on the dialog component. links: doc: https://base-ui.com/react/components/dialog# ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/components/table.md",
+        "title": "coss.com",
+        "description": "--- title: Table description: A simple table component for displaying tabular data. --- <ComponentPreview name=\"p-table-1\" /> ## Installation <CodeTabs> <TabsList ..."
+      },
+      {
+        "url": "https://coss.com/ui/docs/index.md",
+        "title": "coss.com",
+        "description": "--- title: Introduction description: A new, modern UI component library built on top of Base UI. Built for developers and AI. --- **coss ui** is a collection of ..."
+      }
+    ]
+  }
+}

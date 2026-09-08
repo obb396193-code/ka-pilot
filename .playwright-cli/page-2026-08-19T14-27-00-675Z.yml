@@ -1,0 +1,272 @@
+- generic [active] [ref=f9e1]:
+  - banner [ref=f9e2]:
+    - link [ref=f9e3] [cursor=pointer]:
+      - /url: /
+    - generic [ref=f9e6]:
+      - generic [ref=f9e7]:
+        - link "Docs" [ref=f9e8] [cursor=pointer]:
+          - /url: /docs
+        - link "Components" [ref=f9e9] [cursor=pointer]:
+          - /url: /docs/components
+        - link "Primitives" [ref=f9e10] [cursor=pointer]:
+          - /url: /docs/primitives
+        - link "Icons" [ref=f9e11] [cursor=pointer]:
+          - /url: /docs/icons
+      - generic [ref=f9e12]:
+        - button "Search... K" [ref=f9e13]:
+          - generic [ref=f9e14]: Search...
+          - generic [ref=f9e15]: K
+        - generic [ref=f9e21]:
+          - link [ref=f9e22] [cursor=pointer]:
+            - /url: https://github.com/imskyleen/animate-ui
+            - img "GitHub" [ref=f9e23]
+          - link [ref=f9e25] [cursor=pointer]:
+            - /url: https://x.com/animate_ui
+            - img "X" [ref=f9e26]
+        - switch [ref=f9e28] [cursor=pointer]
+  - main [ref=f9e40]:
+    - complementary [ref=f9e41]:
+      - generic [ref=f9e44]:
+        - paragraph [ref=f9e45]:
+          - generic [ref=f9e46]: Guide
+        - link "Introduction" [ref=f9e52] [cursor=pointer]:
+          - /url: /docs
+        - link "Installation" [ref=f9e55] [cursor=pointer]:
+          - /url: /docs/installation
+        - link "Accessibility" [ref=f9e58] [cursor=pointer]:
+          - /url: /docs/accessibility
+        - link "MCP" [ref=f9e61] [cursor=pointer]:
+          - /url: /docs/mcp
+        - link "Troubleshooting" [ref=f9e64] [cursor=pointer]:
+          - /url: /docs/troubleshooting
+        - link "Changelog" [ref=f9e67] [cursor=pointer]:
+          - /url: /docs/changelog
+        - link "Roadmap" [ref=f9e70] [cursor=pointer]:
+          - /url: /docs/roadmap
+        - link "Other animated distributions" [ref=f9e73] [cursor=pointer]:
+          - /url: /docs/other-animated-distributions
+        - paragraph [ref=f9e76]:
+          - generic [ref=f9e77]:
+            - img "Animate UI" [ref=f9e79]
+            - generic [ref=f9e82]: Animate UI
+        - link "Avatar Group" [ref=f9e83] [cursor=pointer]:
+          - /url: /docs/components/animate/avatar-group
+        - link "Code" [ref=f9e86] [cursor=pointer]:
+          - /url: /docs/components/animate/code
+        - link "Code Tabs" [ref=f9e89] [cursor=pointer]:
+          - /url: /docs/components/animate/code-tabs
+        - link "Cursor" [ref=f9e92] [cursor=pointer]:
+          - /url: /docs/components/animate/cursor
+        - link "GitHub Stars Wheel" [ref=f9e95] [cursor=pointer]:
+          - /url: /docs/components/animate/github-stars-wheel
+        - link "Tabs" [ref=f9e98] [cursor=pointer]:
+          - /url: /docs/components/animate/tabs
+        - link "Tooltip" [ref=f9e101] [cursor=pointer]:
+          - /url: /docs/components/animate/tooltip
+        - paragraph [ref=f9e104]:
+          - generic [ref=f9e105]:
+            - img "Radix UI" [ref=f9e107]
+            - generic [ref=f9e110]: Radix UI
+        - link "Accordion" [ref=f9e111] [cursor=pointer]:
+          - /url: /docs/components/radix/accordion
+        - link "Alert Dialog" [ref=f9e114] [cursor=pointer]:
+          - /url: /docs/components/radix/alert-dialog
+        - link "Checkbox" [ref=f9e117] [cursor=pointer]:
+          - /url: /docs/components/radix/checkbox
+        - link "Dialog" [ref=f9e120] [cursor=pointer]:
+          - /url: /docs/components/radix/dialog
+        - link "Dropdown Menu" [ref=f9e123] [cursor=pointer]:
+          - /url: /docs/components/radix/dropdown-menu
+        - link "Files" [ref=f9e126] [cursor=pointer]:
+          - /url: /docs/components/radix/files
+        - link "Hover Card" [ref=f9e129] [cursor=pointer]:
+          - /url: /docs/components/radix/hover-card
+        - link "Popover" [ref=f9e132] [cursor=pointer]:
+          - /url: /docs/components/radix/popover
+        - link "Preview Link Card" [ref=f9e135] [cursor=pointer]:
+          - /url: /docs/components/radix/preview-link-card
+        - link "Progress" [ref=f9e138] [cursor=pointer]:
+          - /url: /docs/components/radix/progress
+        - link "Radio Group" [ref=f9e141] [cursor=pointer]:
+          - /url: /docs/components/radix/radio-group
+        - link "Sheet" [ref=f9e144] [cursor=pointer]:
+          - /url: /docs/components/radix/sheet
+        - link "Sidebar" [ref=f9e147] [cursor=pointer]:
+          - /url: /docs/components/radix/sidebar
+        - link "Switch" [ref=f9e150] [cursor=pointer]:
+          - /url: /docs/components/radix/switch
+        - link "Tabs" [ref=f9e153] [cursor=pointer]:
+          - /url: /docs/components/radix/tabs
+        - link "Toggle" [ref=f9e156] [cursor=pointer]:
+          - /url: /docs/components/radix/toggle
+        - link "Toggle Group" [ref=f9e159] [cursor=pointer]:
+          - /url: /docs/components/radix/toggle-group
+        - link "Tooltip" [ref=f9e162] [cursor=pointer]:
+          - /url: /docs/components/radix/tooltip
+        - paragraph [ref=f9e165]:
+          - generic [ref=f9e166]:
+            - img "Base UI" [ref=f9e168]
+            - generic [ref=f9e171]: Base UI
+        - link "Accordion" [ref=f9e172] [cursor=pointer]:
+          - /url: /docs/components/base/accordion
+        - link "Alert Dialog" [ref=f9e175] [cursor=pointer]:
+          - /url: /docs/components/base/alert-dialog
+        - link "Checkbox" [ref=f9e178] [cursor=pointer]:
+          - /url: /docs/components/base/checkbox
+        - link "Dialog" [ref=f9e181] [cursor=pointer]:
+          - /url: /docs/components/base/dialog
+        - link "Files" [ref=f9e184] [cursor=pointer]:
+          - /url: /docs/components/base/files
+        - link "Menu" [ref=f9e187] [cursor=pointer]:
+          - /url: /docs/components/base/menu
+        - link "Popover" [ref=f9e190] [cursor=pointer]:
+          - /url: /docs/components/base/popover
+        - link "Preview Card" [ref=f9e193] [cursor=pointer]:
+          - /url: /docs/components/base/preview-card
+        - link "Preview Link Card" [ref=f9e196] [cursor=pointer]:
+          - /url: /docs/components/base/preview-link-card
+        - link "Progress" [ref=f9e199] [cursor=pointer]:
+          - /url: /docs/components/base/progress
+        - link "Radio" [ref=f9e202] [cursor=pointer]:
+          - /url: /docs/components/base/radio
+        - link "Switch" [ref=f9e205] [cursor=pointer]:
+          - /url: /docs/components/base/switch
+        - link "Tabs" [ref=f9e208] [cursor=pointer]:
+          - /url: /docs/components/base/tabs
+        - link "Toggle" [ref=f9e211] [cursor=pointer]:
+          - /url: /docs/components/base/toggle
+        - link "Toggle Group" [ref=f9e214] [cursor=pointer]:
+          - /url: /docs/components/base/toggle-group
+        - link "Tooltip" [ref=f9e217] [cursor=pointer]:
+          - /url: /docs/components/base/tooltip
+        - paragraph [ref=f9e220]:
+          - generic [ref=f9e221]:
+            - img "Headless UI" [ref=f9e223]
+            - generic [ref=f9e226]: Headless UI
+        - link "Accordion" [ref=f9e227] [cursor=pointer]:
+          - /url: /docs/components/headless/accordion
+        - link "Checkbox" [ref=f9e230] [cursor=pointer]:
+          - /url: /docs/components/headless/checkbox
+        - link "Dialog" [ref=f9e233] [cursor=pointer]:
+          - /url: /docs/components/headless/dialog
+        - link "Popover" [ref=f9e236] [cursor=pointer]:
+          - /url: /docs/components/headless/popover
+        - link "Switch" [ref=f9e239] [cursor=pointer]:
+          - /url: /docs/components/headless/switch
+        - link "Tabs" [ref=f9e242] [cursor=pointer]:
+          - /url: /docs/components/headless/tabs
+        - paragraph [ref=f9e245]:
+          - generic [ref=f9e246]: Buttons
+        - link "Button" [ref=f9e252] [cursor=pointer]:
+          - /url: /docs/components/buttons/button
+        - link "Copy Button" [ref=f9e255] [cursor=pointer]:
+          - /url: /docs/components/buttons/copy
+        - link "Flip Button" [ref=f9e258] [cursor=pointer]:
+          - /url: /docs/components/buttons/flip
+        - link "GitHub Stars Button" [ref=f9e261] [cursor=pointer]:
+          - /url: /docs/components/buttons/github-stars
+        - link "Icon Button" [ref=f9e264] [cursor=pointer]:
+          - /url: /docs/components/buttons/icon
+        - link "Liquid Button" [ref=f9e267] [cursor=pointer]:
+          - /url: /docs/components/buttons/liquid
+        - link "Ripple Button" [ref=f9e270] [cursor=pointer]:
+          - /url: /docs/components/buttons/ripple
+        - link "Theme Toggler Button" [ref=f9e273] [cursor=pointer]:
+          - /url: /docs/components/buttons/theme-toggler
+        - paragraph [ref=f9e276]:
+          - generic [ref=f9e277]: Backgrounds
+        - link "Bubble Background" [ref=f9e285] [cursor=pointer]:
+          - /url: /docs/components/backgrounds/bubble
+        - link "Fireworks Background" [ref=f9e288] [cursor=pointer]:
+          - /url: /docs/components/backgrounds/fireworks
+        - link "Gradient Background" [ref=f9e291] [cursor=pointer]:
+          - /url: /docs/components/backgrounds/gradient
+        - link "Gravity Stars Background" [ref=f9e294] [cursor=pointer]:
+          - /url: /docs/components/backgrounds/gravity-stars
+        - link "Hexagon Background" [ref=f9e297] [cursor=pointer]:
+          - /url: /docs/components/backgrounds/hexagon
+        - link "Hole Background" [ref=f9e300] [cursor=pointer]:
+          - /url: /docs/components/backgrounds/hole
+        - link "Stars Background" [ref=f9e303] [cursor=pointer]:
+          - /url: /docs/components/backgrounds/stars
+        - paragraph [ref=f9e306]:
+          - generic [ref=f9e307]: Community
+        - link "Introduction" [ref=f9e315] [cursor=pointer]:
+          - /url: /docs/components/community
+        - link "Flip Card" [ref=f9e318] [cursor=pointer]:
+          - /url: /docs/components/community/flip-card
+        - link "Management Bar" [ref=f9e321] [cursor=pointer]:
+          - /url: /docs/components/community/management-bar
+        - link "Motion Carousel" [ref=f9e324] [cursor=pointer]:
+          - /url: /docs/components/community/motion-carousel
+        - link "Notification List" [ref=f9e327] [cursor=pointer]:
+          - /url: /docs/components/community/notification-list
+        - link "Pin List" [ref=f9e330] [cursor=pointer]:
+          - /url: /docs/components/community/pin-list
+        - link "Playful Todolist" [ref=f9e333] [cursor=pointer]:
+          - /url: /docs/components/community/playful-todolist
+        - link "Radial Intro" [ref=f9e336] [cursor=pointer]:
+          - /url: /docs/components/community/radial-intro
+        - link "Radial Menu" [ref=f9e339] [cursor=pointer]:
+          - /url: /docs/components/community/radial-menu
+        - link "Radial Nav" [ref=f9e342] [cursor=pointer]:
+          - /url: /docs/components/community/radial-nav
+        - link "Share Button" [ref=f9e345] [cursor=pointer]:
+          - /url: /docs/components/community/share-button
+        - link "User Presence Avatar" [ref=f9e348] [cursor=pointer]:
+          - /url: /docs/components/community/user-presence-avatar
+    - article [ref=f9e352]:
+      - generic [ref=f9e353]:
+        - heading "Components" [level=1] [ref=f9e354]
+        - generic [ref=f9e355]:
+          - link "Aller à Other animated distributions" [ref=f9e356] [cursor=pointer]:
+            - /url: /docs/other-animated-distributions
+            - button [ref=f9e357]
+          - link "Aller à Avatar Group" [ref=f9e358] [cursor=pointer]:
+            - /url: /docs/components/animate/avatar-group
+            - button [ref=f9e359]
+      - paragraph [ref=f9e360]: Animated components styled with Tailwind CSS.
+      - generic [ref=f9e361]:
+        - link "Edit on GitHub" [ref=f9e362] [cursor=pointer]:
+          - /url: https://github.com/imskyleen/animate-ui/blob/main/apps/www/content/docs/components.mdx
+        - button "Copy Markdown" [ref=f9e366]
+        - button "Open" [ref=f9e370]
+      - generic [ref=f9e374]:
+        - link [ref=f9e375] [cursor=pointer]:
+          - /url: /docs/components/animate/avatar-group
+          - img "Animate UI" [ref=f9e377]
+          - heading "Animate UI" [level=3] [ref=f9e379]
+        - link [ref=f9e380] [cursor=pointer]:
+          - /url: /docs/components/radix/accordion
+          - img "Radix UI" [ref=f9e382]
+          - heading "Radix UI" [level=3] [ref=f9e384]
+        - link [ref=f9e385] [cursor=pointer]:
+          - /url: /docs/components/base/accordion
+          - img "Base UI" [ref=f9e387]
+          - heading "Base UI" [level=3] [ref=f9e389]
+        - link [ref=f9e390] [cursor=pointer]:
+          - /url: /docs/components/headless/accordion
+          - img "Headless UI" [ref=f9e392]
+          - heading "Headless UI" [level=3] [ref=f9e394]
+        - link [ref=f9e395] [cursor=pointer]:
+          - /url: /docs/components/buttons/button
+          - heading "Buttons" [level=3] [ref=f9e399]
+        - link [ref=f9e400] [cursor=pointer]:
+          - /url: /docs/components/backgrounds/bubble
+          - heading "Backgrounds" [level=3] [ref=f9e406]
+        - link [ref=f9e407] [cursor=pointer]:
+          - /url: /docs/components/community/management-bar
+          - heading "Community" [level=3] [ref=f9e413]
+      - generic [ref=f9e414]:
+        - paragraph [ref=f9e417]:
+          - text: Built by
+          - link "Skyleen" [ref=f9e418] [cursor=pointer]:
+            - /url: https://x.com/imskyleen
+          - text: . The source code is available on
+          - link "GitHub" [ref=f9e419] [cursor=pointer]:
+            - /url: https://github.com/imskyleen/animate-ui
+          - text: .
+        - paragraph [ref=f9e420]:
+          - text: "Last updated:"
+          - generic [ref=f9e421]: 12/6/2025
+  - alert [ref=f9e422]

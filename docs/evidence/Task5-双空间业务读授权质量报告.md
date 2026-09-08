@@ -62,7 +62,7 @@
 
 1. 前端 BFF 尚未改为转发 Session cookie；在前端纵切片完成前，浏览器真实 E2E 尚不可用。
 2. Task6 team ingestion 未实施，team readiness 继续保守，不把未同步冒充 ready。
-3. 未做真实奇航/KA Data 联调、内网部署或生产验证。
+3. 未做真实启航/KA Data 联调、内网部署或生产验证。
 4. Task4 非阻断 P2：`createSessionForIdentity()` 的 active personal membership 查询仍全量
    materialize 后判断唯一性；后续独立硬化为稳定 `LIMIT 2`（第 2 行作为 ambiguous sentinel）并补真实 PG 反例。
 5. Claude/审查 Agent 保留后审席位；本报告不等于 root 合流或 Claude 已批准。

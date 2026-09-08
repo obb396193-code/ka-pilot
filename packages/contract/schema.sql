@@ -66,7 +66,7 @@ CREATE TABLE auth_sessions (
 -- P-001#3 裁决（全表通用）：外部 ID（task_id/account_id/entity_id/ad_id）在租户间不保证唯一，
 -- 凡以外部 ID 为主键的表，主键一律为 (workspace_id, 外部ID...)；FK 一律带 workspace_id 同行引用。
 CREATE TABLE tasks (
-  task_id TEXT NOT NULL,               -- 奇航 task_id（B7 核验后若不准改自维护主键，字段结构不变）
+  task_id TEXT NOT NULL,               -- 启航 task_id（B7 核验后若不准改自维护主键，字段结构不变）
   workspace_id UUID NOT NULL,
   PRIMARY KEY (workspace_id, task_id),
   task_name TEXT, biz_name TEXT,
@@ -1127,6 +1127,18 @@ CREATE TABLE account_name_parses (     -- 每个账户昵称的解析结果与�
   override JSONB,                      -- 人工改过的段；永远优先，重解析不覆盖
   parsed_at TIMESTAMPTZ DEFAULT now(), confirmed_by UUID, confirmed_at TIMESTAMPTZ,
   PRIMARY KEY (workspace_id, media, account_id),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE CASCADE
+);
+
+-- ===== v1.9（2026-09-07 arch；be2 九条缺口裁决；并入 migration 018 = R-017） =====
+ALTER TABLE account_access_grants ADD COLUMN revoked_at TIMESTAMPTZ;   -- A7 交接：置位保留审计，不删行
+ALTER TABLE account_access_grants ADD COLUMN revoked_by UUID;
+ALTER TABLE alert_rules ADD COLUMN bound_at TIMESTAMPTZ;               -- 规则绑定时间；列落地前 DTO 允许 null
+CREATE TABLE pool_status_daily_snapshot (  -- 账户池九态每日快照，供 deltaVsYesterday
+  workspace_id UUID NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,
+  ds DATE NOT NULL, pool_status TEXT NOT NULL,
+  PRIMARY KEY (workspace_id, media, account_id, ds),
   FOREIGN KEY (workspace_id, media, account_id)
     REFERENCES accounts(workspace_id, media, account_id) ON DELETE CASCADE
 );

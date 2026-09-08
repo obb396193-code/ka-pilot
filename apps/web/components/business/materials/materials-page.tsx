@@ -237,7 +237,7 @@ export function MaterialsPage() {
       {cards.length ? <ExampleBlock unlock={UNLOCK} inline><KpiCards metrics={cards} /></ExampleBlock> : null}
       <PageTabs tabs={tabs} value={tab} onChange={setTab} />
       <div className="px-4 lg:px-6">
-        <StateFrame state={state} unlock={UNLOCK} empty={{ title: "没有商品或素材", description: "先在商品池录入商品，再上传或从奇航素材池同步素材。" }}>
+        <StateFrame state={state} unlock={UNLOCK} empty={{ title: "没有商品或素材", description: "先在商品池录入商品，再上传或从启航素材池同步素材。" }}>
           <ExampleBlock unlock={UNLOCK}>
             {tab === "products" ? <ProductsTab /> : null}
             {tab === "materials" ? <MaterialsTab onOpen={setOpen} /> : null}

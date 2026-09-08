@@ -1,0 +1,31 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - text: 02 / BUSINESS UI
+      - heading "Kibo UI" [level=1] [ref=e6]
+    - paragraph [ref=e7]: 实际运行 Dropzone 与 Color Picker，体现业务级组件的完成度；颜色已接项目语义强调色。
+  - generic [ref=e8]:
+    - article [ref=e9]:
+      - generic [ref=e10]: DROPZONE
+      - button [ref=e11]:
+        - button "file upload"
+        - generic [ref=e12]:
+          - paragraph [ref=e14]: Upload files
+          - paragraph [ref=e15]: Drag and drop or click to upload
+          - paragraph [ref=e16]: Accepts image/* less than 8.00MB.
+      - paragraph [ref=e17]: 点击或拖入图片；选择后由官方组件切换到文件摘要状态。
+    - article [ref=e18]:
+      - generic [ref=e19]: COLOR PICKER
+      - generic [ref=e20]:
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - slider [ref=e28]
+            - slider [ref=e34]
+          - combobox [ref=e35]:
+            - generic: HEX
+        - generic [ref=e36]:
+          - textbox [ref=e37]: "#F45D2C"
+          - generic [ref=e38]:
+            - textbox [ref=e39]: "100"
+            - generic [ref=e40]: "%"
+      - generic [ref=e41]: 用于图表、标注与主题配置，不绑定官网配色。

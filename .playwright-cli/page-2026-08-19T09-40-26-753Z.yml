@@ -1,0 +1,676 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - banner [ref=e6]:
+      - generic [ref=e8]:
+        - link "ReUI home" [ref=e10] [cursor=pointer]:
+          - /url: /
+        - navigation [ref=e20]:
+          - button "Products" [ref=e21]
+          - button "Resources" [ref=e24]
+          - link "Docs" [ref=e27] [cursor=pointer]:
+            - /url: /docs
+          - link "Support" [ref=e28] [cursor=pointer]:
+            - /url: /support
+          - link "Pricing" [ref=e29] [cursor=pointer]:
+            - /url: /pricing
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - button "Search" [ref=e32]
+            - button "Toggle light or dark mode" [ref=e33]
+            - link "ReUI roadmap" [ref=e34] [cursor=pointer]:
+              - /url: /roadmap
+              - generic [ref=e35]: Roadmap (has updates coming soon)
+            - link "Open X profile" [ref=e39] [cursor=pointer]:
+              - /url: https://x.com/reui_io
+              - generic [ref=e40]: X
+            - link "Open ReUI on Figma" [ref=e41] [cursor=pointer]:
+              - /url: https://www.figma.com/community/file/1649373313065184861/shadcn-ui-design-system-by-reui
+              - generic [ref=e42]: Figma
+            - link "ReUI on GitHub (opens in new tab)" [ref=e43] [cursor=pointer]:
+              - /url: https://github.com/keenthemes/reui
+              - generic [ref=e44]: 3.3K
+          - generic [ref=e45]:
+            - link "Login" [ref=e46] [cursor=pointer]:
+              - /url: /login?redirect=%2Ficons
+            - link "Get All-access" [ref=e48] [cursor=pointer]:
+              - /url: /pricing
+    - main [ref=e50]:
+      - region "Shadcn UI Icons" [ref=e51]:
+        - generic [ref=e52]:
+          - paragraph [ref=e53]: Icons
+          - generic [ref=e54]:
+            - heading "Shadcn UI Icons" [level=1] [ref=e55]
+            - generic [ref=e56]: "638"
+          - generic [ref=e57]: Explore 638 handcrafted Shadcn UI icons built for React, shadcn projects, CLI registry installs, and Tailwind-powered interfaces.
+      - generic [ref=e61]:
+        - complementary [ref=e62]:
+          - generic [ref=e63]:
+            - generic [ref=e64]: All Icons
+            - generic [ref=e65]: "638"
+          - generic [ref=e69]:
+            - link "Abstract 50" [ref=e70] [cursor=pointer]:
+              - /url: /icons/abstract
+              - generic [ref=e71]: Abstract
+              - generic [ref=e73]: "50"
+            - link "Archive 4" [ref=e74] [cursor=pointer]:
+              - /url: /icons/archive
+              - generic [ref=e75]: Archive
+              - generic [ref=e77]: "4"
+            - link "Arrow Twenty-seven new arrow, chevron and sort icons added 97" [ref=e78] [cursor=pointer]:
+              - /url: /icons/arrow
+              - generic [ref=e79]:
+                - generic [ref=e80]: Arrow
+                - generic [ref=e81]: Twenty-seven new arrow, chevron and sort icons added
+              - generic [ref=e84]: "97"
+            - link "Burger Menu 7" [ref=e85] [cursor=pointer]:
+              - /url: /icons/burger-menu
+              - generic [ref=e86]: Burger Menu
+              - generic [ref=e88]: "7"
+            - link "Business 20" [ref=e89] [cursor=pointer]:
+              - /url: /icons/business
+              - generic [ref=e90]: Business
+              - generic [ref=e92]: "20"
+            - link "Communication 10" [ref=e93] [cursor=pointer]:
+              - /url: /icons/communication
+              - generic [ref=e94]: Communication
+              - generic [ref=e96]: "10"
+            - link "Delivery Logistics Seven new parcel and shipping icons added 25" [ref=e97] [cursor=pointer]:
+              - /url: /icons/delivery-logistics
+              - generic [ref=e98]:
+                - generic [ref=e99]: Delivery Logistics
+                - generic [ref=e100]: Seven new parcel and shipping icons added
+              - generic [ref=e103]: "25"
+            - link "Design 19" [ref=e104] [cursor=pointer]:
+              - /url: /icons/design
+              - generic [ref=e105]: Design
+              - generic [ref=e107]: "19"
+            - link "Devices New phone call icon added 21" [ref=e108] [cursor=pointer]:
+              - /url: /icons/devices
+              - generic [ref=e109]:
+                - generic [ref=e110]: Devices
+                - generic [ref=e111]: New phone call icon added
+              - generic [ref=e114]: "21"
+            - link "Ecommerce 12" [ref=e115] [cursor=pointer]:
+              - /url: /icons/ecommerce
+              - generic [ref=e116]: Ecommerce
+              - generic [ref=e118]: "12"
+            - link "Education 13" [ref=e119] [cursor=pointer]:
+              - /url: /icons/education
+              - generic [ref=e120]: Education
+              - generic [ref=e122]: "13"
+            - link "Emoji New category with five face icons 5" [ref=e123] [cursor=pointer]:
+              - /url: /icons/emoji
+              - generic [ref=e124]:
+                - generic [ref=e125]: Emoji
+                - generic [ref=e126]: New category with five face icons
+              - generic [ref=e129]: "5"
+            - link "Files Folders Three new folder and account icons added 40" [ref=e130] [cursor=pointer]:
+              - /url: /icons/files-folders
+              - generic [ref=e131]:
+                - generic [ref=e132]: Files Folders
+                - generic [ref=e133]: Three new folder and account icons added
+              - generic [ref=e136]: "40"
+            - link "Finance Four new money and investment icons added 33" [ref=e137] [cursor=pointer]:
+              - /url: /icons/finance
+              - generic [ref=e138]:
+                - generic [ref=e139]: Finance
+                - generic [ref=e140]: Four new money and investment icons added
+              - generic [ref=e143]: "33"
+            - link "General Seven new media, cloud and layout icons added 66" [ref=e144] [cursor=pointer]:
+              - /url: /icons/general
+              - generic [ref=e145]:
+                - generic [ref=e146]: General
+                - generic [ref=e147]: Seven new media, cloud and layout icons added
+              - generic [ref=e150]: "66"
+            - link "Grid New vertical slider icon added 27" [ref=e151] [cursor=pointer]:
+              - /url: /icons/grid
+              - generic [ref=e152]:
+                - generic [ref=e153]: Grid
+                - generic [ref=e154]: New vertical slider icon added
+              - generic [ref=e157]: "27"
+            - link "It Network 12" [ref=e158] [cursor=pointer]:
+              - /url: /icons/it-network
+              - generic [ref=e159]: It Network
+              - generic [ref=e161]: "12"
+            - link "Location Two new target icons added 12" [ref=e162] [cursor=pointer]:
+              - /url: /icons/location
+              - generic [ref=e163]:
+                - generic [ref=e164]: Location
+                - generic [ref=e165]: Two new target icons added
+              - generic [ref=e168]: "12"
+            - link "Medicine New first aid kit icon added 11" [ref=e169] [cursor=pointer]:
+              - /url: /icons/medicine
+              - generic [ref=e170]:
+                - generic [ref=e171]: Medicine
+                - generic [ref=e172]: New first aid kit icon added
+              - generic [ref=e175]: "11"
+            - link "Notifications New megaphone icon added 8" [ref=e176] [cursor=pointer]:
+              - /url: /icons/notifications
+              - generic [ref=e177]:
+                - generic [ref=e178]: Notifications
+                - generic [ref=e179]: New megaphone icon added
+              - generic [ref=e182]: "8"
+            - link "Security 16" [ref=e183] [cursor=pointer]:
+              - /url: /icons/security
+              - generic [ref=e184]: Security
+              - generic [ref=e186]: "16"
+            - link "Settings 10" [ref=e187] [cursor=pointer]:
+              - /url: /icons/settings
+              - generic [ref=e188]: Settings
+              - generic [ref=e190]: "10"
+            - link "Social Media 11" [ref=e191] [cursor=pointer]:
+              - /url: /icons/social-media
+              - generic [ref=e192]: Social Media
+              - generic [ref=e194]: "11"
+            - link "Software 34" [ref=e195] [cursor=pointer]:
+              - /url: /icons/software
+              - generic [ref=e196]: Software
+              - generic [ref=e198]: "34"
+            - link "Support Two new support and messaging icons added 18" [ref=e199] [cursor=pointer]:
+              - /url: /icons/support
+              - generic [ref=e200]:
+                - generic [ref=e201]: Support
+                - generic [ref=e202]: Two new support and messaging icons added
+              - generic [ref=e205]: "18"
+            - link "Technologies 10" [ref=e206] [cursor=pointer]:
+              - /url: /icons/technologies
+              - generic [ref=e207]: Technologies
+              - generic [ref=e209]: "10"
+            - link "Time Four new clock and scheduling icons added 15" [ref=e210] [cursor=pointer]:
+              - /url: /icons/time
+              - generic [ref=e211]:
+                - generic [ref=e212]: Time
+                - generic [ref=e213]: Four new clock and scheduling icons added
+              - generic [ref=e216]: "15"
+            - link "Typography Six new list and text editing icons added 16" [ref=e217] [cursor=pointer]:
+              - /url: /icons/typography
+              - generic [ref=e218]:
+                - generic [ref=e219]: Typography
+                - generic [ref=e220]: Six new list and text editing icons added
+              - generic [ref=e223]: "16"
+            - link "Users New add user icon added 8" [ref=e224] [cursor=pointer]:
+              - /url: /icons/users
+              - generic [ref=e225]:
+                - generic [ref=e226]: Users
+                - generic [ref=e227]: New add user icon added
+              - generic [ref=e230]: "8"
+            - link "Weather Four new sun, cloud and droplet icons added 8" [ref=e231] [cursor=pointer]:
+              - /url: /icons/weather
+              - generic [ref=e232]:
+                - generic [ref=e233]: Weather
+                - generic [ref=e234]: Four new sun, cloud and droplet icons added
+              - generic [ref=e237]: "8"
+        - main [ref=e238]:
+          - generic [ref=e239]:
+            - textbox "Search icons..." [ref=e244]
+            - tablist [ref=e246]:
+              - tab "Default" [selected] [ref=e247]
+              - tab "Animated" [ref=e248]
+            - tablist [ref=e250]:
+              - tab "All" [ref=e251]
+              - tab "Filled" [selected] [ref=e252]
+              - tab "Duotone" [ref=e253]
+              - tab "Outline" [ref=e254]
+              - tab "Solid" [ref=e255]
+            - button "Color picker" [ref=e257]
+          - generic [ref=e266]:
+            - button "abstract Copy registry command" [ref=e268] [cursor=pointer]:
+              - generic [ref=e273]: abstract
+              - img "Copy registry command" [ref=e275]
+            - button "abstract-1 Copy registry command" [ref=e279] [cursor=pointer]:
+              - generic [ref=e284]: abstract-1
+              - img "Copy registry command" [ref=e286]
+            - button "abstract-10 Copy registry command" [ref=e290] [cursor=pointer]:
+              - generic [ref=e295]: abstract-10
+              - img "Copy registry command" [ref=e297]
+            - button "abstract-11 Copy registry command" [ref=e301] [cursor=pointer]:
+              - generic [ref=e306]: abstract-11
+              - img "Copy registry command" [ref=e308]
+            - button "abstract-12 Copy registry command" [ref=e312] [cursor=pointer]:
+              - generic [ref=e317]: abstract-12
+              - img "Copy registry command" [ref=e319]
+            - button "abstract-13 Copy registry command" [ref=e323] [cursor=pointer]:
+              - generic [ref=e328]: abstract-13
+              - img "Copy registry command" [ref=e330]
+            - button "abstract-14 Copy registry command" [ref=e334] [cursor=pointer]:
+              - generic [ref=e339]: abstract-14
+              - img "Copy registry command" [ref=e341]
+            - button "abstract-15 Copy registry command" [ref=e345] [cursor=pointer]:
+              - generic [ref=e350]: abstract-15
+              - img "Copy registry command" [ref=e352]
+            - button "abstract-16 Copy registry command" [ref=e356] [cursor=pointer]:
+              - generic [ref=e361]: abstract-16
+              - img "Copy registry command" [ref=e363]
+            - button "abstract-17 Copy registry command" [ref=e367] [cursor=pointer]:
+              - generic [ref=e372]: abstract-17
+              - img "Copy registry command" [ref=e374]
+            - button "abstract-18 Copy registry command" [ref=e378] [cursor=pointer]:
+              - generic [ref=e383]: abstract-18
+              - img "Copy registry command" [ref=e385]
+            - button "abstract-19 Copy registry command" [ref=e389] [cursor=pointer]:
+              - generic [ref=e394]: abstract-19
+              - img "Copy registry command" [ref=e396]
+            - button "abstract-2 Copy registry command" [ref=e400] [cursor=pointer]:
+              - generic [ref=e405]: abstract-2
+              - img "Copy registry command" [ref=e407]
+            - button "abstract-20 Copy registry command" [ref=e411] [cursor=pointer]:
+              - generic [ref=e416]: abstract-20
+              - img "Copy registry command" [ref=e418]
+            - button "abstract-21 Copy registry command" [ref=e422] [cursor=pointer]:
+              - generic [ref=e427]: abstract-21
+              - img "Copy registry command" [ref=e429]
+            - button "abstract-22 Copy registry command" [ref=e433] [cursor=pointer]:
+              - generic [ref=e438]: abstract-22
+              - img "Copy registry command" [ref=e440]
+            - button "abstract-23 Copy registry command" [ref=e444] [cursor=pointer]:
+              - generic [ref=e449]: abstract-23
+              - img "Copy registry command" [ref=e451]
+            - button "abstract-24 Copy registry command" [ref=e455] [cursor=pointer]:
+              - generic [ref=e460]: abstract-24
+              - img "Copy registry command" [ref=e462]
+            - button "abstract-25 Copy registry command" [ref=e466] [cursor=pointer]:
+              - generic [ref=e471]: abstract-25
+              - img "Copy registry command" [ref=e473]
+            - button "abstract-26 Copy registry command" [ref=e477] [cursor=pointer]:
+              - generic [ref=e482]: abstract-26
+              - img "Copy registry command" [ref=e484]
+            - button "abstract-27 Copy registry command" [ref=e488] [cursor=pointer]:
+              - generic [ref=e493]: abstract-27
+              - img "Copy registry command" [ref=e495]
+            - button "abstract-28 Copy registry command" [ref=e499] [cursor=pointer]:
+              - generic [ref=e504]: abstract-28
+              - img "Copy registry command" [ref=e506]
+            - button "abstract-29 Copy registry command" [ref=e510] [cursor=pointer]:
+              - generic [ref=e515]: abstract-29
+              - img "Copy registry command" [ref=e517]
+            - button "abstract-3 Copy registry command" [ref=e521] [cursor=pointer]:
+              - generic [ref=e526]: abstract-3
+              - img "Copy registry command" [ref=e528]
+            - button "abstract-30 Copy registry command" [ref=e532] [cursor=pointer]:
+              - generic [ref=e537]: abstract-30
+              - img "Copy registry command" [ref=e539]
+            - button "abstract-31 Copy registry command" [ref=e543] [cursor=pointer]:
+              - generic [ref=e548]: abstract-31
+              - img "Copy registry command" [ref=e550]
+            - button "abstract-32 Copy registry command" [ref=e554] [cursor=pointer]:
+              - generic [ref=e559]: abstract-32
+              - img "Copy registry command" [ref=e561]
+            - button "abstract-33 Copy registry command" [ref=e565] [cursor=pointer]:
+              - generic [ref=e570]: abstract-33
+              - img "Copy registry command" [ref=e572]
+            - button "abstract-34 Copy registry command" [ref=e576] [cursor=pointer]:
+              - generic [ref=e581]: abstract-34
+              - img "Copy registry command" [ref=e583]
+            - button "abstract-35 Copy registry command" [ref=e587] [cursor=pointer]:
+              - generic [ref=e592]: abstract-35
+              - img "Copy registry command" [ref=e594]
+            - button "abstract-36 Copy registry command" [ref=e598] [cursor=pointer]:
+              - generic [ref=e603]: abstract-36
+              - img "Copy registry command" [ref=e605]
+            - button "abstract-37 Copy registry command" [ref=e609] [cursor=pointer]:
+              - generic [ref=e614]: abstract-37
+              - img "Copy registry command" [ref=e616]
+            - button "abstract-38 Copy registry command" [ref=e620] [cursor=pointer]:
+              - generic [ref=e625]: abstract-38
+              - img "Copy registry command" [ref=e627]
+            - button "abstract-39 Copy registry command" [ref=e631] [cursor=pointer]:
+              - generic [ref=e636]: abstract-39
+              - img "Copy registry command" [ref=e638]
+            - button "abstract-4 Copy registry command" [ref=e642] [cursor=pointer]:
+              - generic [ref=e647]: abstract-4
+              - img "Copy registry command" [ref=e649]
+            - button "abstract-40 Copy registry command" [ref=e653] [cursor=pointer]:
+              - generic [ref=e658]: abstract-40
+              - img "Copy registry command" [ref=e660]
+            - button "abstract-41 Copy registry command" [ref=e664] [cursor=pointer]:
+              - generic [ref=e669]: abstract-41
+              - img "Copy registry command" [ref=e671]
+            - button "abstract-42 Copy registry command" [ref=e675] [cursor=pointer]:
+              - generic [ref=e680]: abstract-42
+              - img "Copy registry command" [ref=e682]
+            - button "abstract-43 Copy registry command" [ref=e686] [cursor=pointer]:
+              - generic [ref=e691]: abstract-43
+              - img "Copy registry command" [ref=e693]
+            - button "abstract-44 Copy registry command" [ref=e697] [cursor=pointer]:
+              - generic [ref=e702]: abstract-44
+              - img "Copy registry command" [ref=e704]
+            - button "abstract-45 Copy registry command" [ref=e708] [cursor=pointer]:
+              - generic [ref=e712]: abstract-45
+              - img "Copy registry command" [ref=e714]
+            - button "abstract-46 Copy registry command" [ref=e718] [cursor=pointer]:
+              - generic [ref=e723]: abstract-46
+              - img "Copy registry command" [ref=e725]
+            - button "abstract-47 Copy registry command" [ref=e729] [cursor=pointer]:
+              - generic [ref=e734]: abstract-47
+              - img "Copy registry command" [ref=e736]
+            - button "abstract-48 Copy registry command" [ref=e740] [cursor=pointer]:
+              - generic [ref=e745]: abstract-48
+              - img "Copy registry command" [ref=e747]
+            - button "abstract-49 Copy registry command" [ref=e751] [cursor=pointer]:
+              - generic [ref=e756]: abstract-49
+              - img "Copy registry command" [ref=e758]
+            - button "abstract-5 Copy registry command" [ref=e762] [cursor=pointer]:
+              - generic [ref=e767]: abstract-5
+              - img "Copy registry command" [ref=e769]
+            - button "abstract-6 Copy registry command" [ref=e773] [cursor=pointer]:
+              - generic [ref=e778]: abstract-6
+              - img "Copy registry command" [ref=e780]
+            - button "abstract-7 Copy registry command" [ref=e784] [cursor=pointer]:
+              - generic [ref=e789]: abstract-7
+              - img "Copy registry command" [ref=e791]
+            - button "abstract-8 Copy registry command" [ref=e795] [cursor=pointer]:
+              - generic [ref=e800]: abstract-8
+              - img "Copy registry command" [ref=e802]
+            - button "abstract-9 Copy registry command" [ref=e806] [cursor=pointer]:
+              - generic [ref=e811]: abstract-9
+              - img "Copy registry command" [ref=e813]
+      - region "Icon Library for React Projects" [ref=e817]:
+        - generic [ref=e819]:
+          - generic [ref=e820]:
+            - heading "Icon Library for React Projects" [level=2] [ref=e821]
+            - generic [ref=e822]:
+              - paragraph [ref=e823]: ReUI icons are designed for teams that want a cleaner icon workflow across product UI, docs, onboarding, dashboards, settings, and marketing surfaces.
+              - paragraph [ref=e824]: The library keeps browsing simple while giving you multiple styles and installation paths that fit shadcn-based workflows.
+          - generic [ref=e825]:
+            - generic [ref=e826]:
+              - heading "Icon Library Features" [level=3] [ref=e827]
+              - list [ref=e828]:
+                - listitem [ref=e829]: Handcrafted set designed for production UI instead of generic placeholder symbol packs.
+                - listitem [ref=e830]: Four visual styles including outline, solid, duotone, and filled so the same concept can match different interface densities.
+                - listitem [ref=e831]: Consistent grid and stroke drawn on a shared grid so icons stay crisp and align cleanly next to text at any size.
+                - listitem [ref=e832]: Fully customizable preview with controllable color, size, style, and variant settings.
+                - listitem [ref=e833]: Shadcn registry compatible with CLI-friendly installation aliases for teams that want copyable delivery.
+                - listitem [ref=e834]: Category-based browsing to help you find icons by product intent instead of scanning one giant undifferentiated list.
+            - generic [ref=e835]:
+              - heading "How Teams Use the Icon Library" [level=3] [ref=e836]
+              - list [ref=e837]:
+                - listitem [ref=e838]: Pick a category first when you know the product area, such as finance, notifications, settings, security, or communication.
+                - listitem [ref=e839]: Switch styles to test whether the same icon works better as outline, solid, duotone, or filled within your existing UI.
+                - listitem [ref=e840]: Mix styles by role within a screen, such as outline for secondary actions and filled for primary ones, to guide attention.
+          - region "Frequently Asked Questions" [ref=e841]:
+            - heading "Frequently Asked Questions" [level=2] [ref=e842]
+            - generic [ref=e843]:
+              - heading [level=3] [ref=e845]:
+                - button "Can I use these icons in React and shadcn projects?" [ref=e846]
+              - heading [level=3] [ref=e848]:
+                - button "How should I choose between the four icon styles?" [ref=e849]
+      - generic [ref=e851]:
+        - heading "Start building with ReUI Pro today." [level=2] [ref=e852]
+        - paragraph [ref=e853]: Get instant access to every block, every update, and every new addition with a single license.
+        - link "Get All-Access" [ref=e855] [cursor=pointer]:
+          - /url: /pricing
+    - contentinfo [ref=e856]:
+      - generic [ref=e860]:
+        - generic [ref=e861]:
+          - heading "Application" [level=3] [ref=e862]
+          - list [ref=e863]:
+            - listitem [ref=e864]:
+              - link "App Shell" [ref=e865] [cursor=pointer]:
+                - /url: /blocks/application/app-shell
+            - listitem [ref=e866]:
+              - link "Auth" [ref=e867] [cursor=pointer]:
+                - /url: /blocks/application/auth
+            - listitem [ref=e868]:
+              - link "Card" [ref=e869] [cursor=pointer]:
+                - /url: /blocks/application/card
+            - listitem [ref=e870]:
+              - link "Chart" [ref=e871] [cursor=pointer]:
+                - /url: /blocks/application/chart
+            - listitem [ref=e872]:
+              - link "Dashboard" [ref=e873] [cursor=pointer]:
+                - /url: /blocks/application/dashboard
+            - listitem [ref=e874]:
+              - link "Dialog" [ref=e875] [cursor=pointer]:
+                - /url: /blocks/application/dialog
+            - listitem [ref=e876]:
+              - link "Empty State" [ref=e877] [cursor=pointer]:
+                - /url: /blocks/application/empty-state
+            - listitem [ref=e878]:
+              - link "Event Calendar Three new event calendar blocks added" [ref=e879] [cursor=pointer]:
+                - /url: /blocks/application/event-calendar
+                - text: Event Calendar
+                - generic [ref=e880]: Three new event calendar blocks added
+            - listitem [ref=e883]:
+              - link "Form" [ref=e884] [cursor=pointer]:
+                - /url: /blocks/application/form
+            - listitem [ref=e885]:
+              - link "Gantt New gantt block added" [ref=e886] [cursor=pointer]:
+                - /url: /blocks/application/gantt
+                - text: Gantt
+                - generic [ref=e887]: New gantt block added
+            - listitem [ref=e890]:
+              - link "Kanban Board" [ref=e891] [cursor=pointer]:
+                - /url: /blocks/application/kanban-board
+            - listitem [ref=e892]:
+              - link "List" [ref=e893] [cursor=pointer]:
+                - /url: /blocks/application/list
+            - listitem [ref=e894]:
+              - link "Navbar" [ref=e895] [cursor=pointer]:
+                - /url: /blocks/application/navbar
+            - listitem [ref=e896]:
+              - link "Onboarding" [ref=e897] [cursor=pointer]:
+                - /url: /blocks/application/onboarding
+            - listitem [ref=e898]:
+              - link "Profile" [ref=e899] [cursor=pointer]:
+                - /url: /blocks/application/profile
+            - listitem [ref=e900]:
+              - link "Schedule" [ref=e901] [cursor=pointer]:
+                - /url: /blocks/application/schedule
+            - listitem [ref=e902]:
+              - link "Settings" [ref=e903] [cursor=pointer]:
+                - /url: /blocks/application/settings
+            - listitem [ref=e904]:
+              - link "Sheet" [ref=e905] [cursor=pointer]:
+                - /url: /blocks/application/sheet
+            - listitem [ref=e906]:
+              - link "Stats" [ref=e907] [cursor=pointer]:
+                - /url: /blocks/application/stats
+            - listitem [ref=e908]:
+              - link "Timeline" [ref=e909] [cursor=pointer]:
+                - /url: /blocks/application/timeline
+            - listitem [ref=e910]:
+              - link "Wizard" [ref=e911] [cursor=pointer]:
+                - /url: /blocks/application/wizard
+        - generic [ref=e912]:
+          - generic [ref=e913]:
+            - heading "Solutions" [level=3] [ref=e914]
+            - list [ref=e915]:
+              - listitem [ref=e916]:
+                - link "Agents" [ref=e917] [cursor=pointer]:
+                  - /url: /blocks/solutions/agents
+              - listitem [ref=e918]:
+                - link "AI Ops" [ref=e919] [cursor=pointer]:
+                  - /url: /blocks/solutions/ai-ops
+              - listitem [ref=e920]:
+                - link "Analytics" [ref=e921] [cursor=pointer]:
+                  - /url: /blocks/solutions/analytics
+              - listitem [ref=e922]:
+                - link "Billing" [ref=e923] [cursor=pointer]:
+                  - /url: /blocks/solutions/billing
+              - listitem [ref=e924]:
+                - link "Bookings" [ref=e925] [cursor=pointer]:
+                  - /url: /blocks/solutions/bookings
+              - listitem [ref=e926]:
+                - link "CRM" [ref=e927] [cursor=pointer]:
+                  - /url: /blocks/solutions/crm
+              - listitem [ref=e928]:
+                - link "Files" [ref=e929] [cursor=pointer]:
+                  - /url: /blocks/solutions/files
+              - listitem [ref=e930]:
+                - link "Inventory" [ref=e931] [cursor=pointer]:
+                  - /url: /blocks/solutions/inventory
+              - listitem [ref=e932]:
+                - link "Users" [ref=e933] [cursor=pointer]:
+                  - /url: /blocks/solutions/users
+          - generic [ref=e934]:
+            - heading "Templates" [level=3] [ref=e935]
+            - list [ref=e936]:
+              - listitem [ref=e937]:
+                - link "E-commerce" [ref=e938] [cursor=pointer]:
+                  - /url: /templates/e-commerce
+              - listitem [ref=e939]:
+                - link "SaaS" [ref=e940] [cursor=pointer]:
+                  - /url: /templates/saas
+              - listitem [ref=e941]:
+                - link "Dashboard" [ref=e942] [cursor=pointer]:
+                  - /url: /templates/dashboard
+              - listitem [ref=e943]:
+                - link "Landing" [ref=e944] [cursor=pointer]:
+                  - /url: /templates/landing
+              - listitem [ref=e945]:
+                - link "All templates" [ref=e946] [cursor=pointer]:
+                  - /url: /templates
+        - generic [ref=e947]:
+          - heading "eCommerce" [level=3] [ref=e948]
+          - list [ref=e949]:
+            - listitem [ref=e950]:
+              - link "Category Card" [ref=e951] [cursor=pointer]:
+                - /url: /blocks/ecommerce/category-card
+            - listitem [ref=e952]:
+              - link "Checkout" [ref=e953] [cursor=pointer]:
+                - /url: /blocks/ecommerce/checkout
+            - listitem [ref=e954]:
+              - link "Comparison" [ref=e955] [cursor=pointer]:
+                - /url: /blocks/ecommerce/comparison
+            - listitem [ref=e956]:
+              - link "Coupon" [ref=e957] [cursor=pointer]:
+                - /url: /blocks/ecommerce/coupon
+            - listitem [ref=e958]:
+              - link "Filter Sidebar" [ref=e959] [cursor=pointer]:
+                - /url: /blocks/ecommerce/filter-sidebar
+            - listitem [ref=e960]:
+              - link "Product Card" [ref=e961] [cursor=pointer]:
+                - /url: /blocks/ecommerce/product-card
+            - listitem [ref=e962]:
+              - link "Product Detail" [ref=e963] [cursor=pointer]:
+                - /url: /blocks/ecommerce/product-detail
+            - listitem [ref=e964]:
+              - link "Product Grid" [ref=e965] [cursor=pointer]:
+                - /url: /blocks/ecommerce/product-grid
+            - listitem [ref=e966]:
+              - link "Receipt" [ref=e967] [cursor=pointer]:
+                - /url: /blocks/ecommerce/receipt
+            - listitem [ref=e968]:
+              - link "Review" [ref=e969] [cursor=pointer]:
+                - /url: /blocks/ecommerce/review
+            - listitem [ref=e970]:
+              - link "Shopping Cart" [ref=e971] [cursor=pointer]:
+                - /url: /blocks/ecommerce/shopping-cart
+            - listitem [ref=e972]:
+              - link "Wishlist" [ref=e973] [cursor=pointer]:
+                - /url: /blocks/ecommerce/wishlist
+        - generic [ref=e974]:
+          - generic [ref=e975]:
+            - heading "Data Grid" [level=3] [ref=e976]
+            - list [ref=e977]:
+              - listitem [ref=e978]:
+                - link "Base" [ref=e979] [cursor=pointer]:
+                  - /url: /blocks/data-grid/base
+              - listitem [ref=e980]:
+                - link "Columns" [ref=e981] [cursor=pointer]:
+                  - /url: /blocks/data-grid/columns
+              - listitem [ref=e982]:
+                - link "Drag & Drop New drag and drop Data Grid block added" [ref=e983] [cursor=pointer]:
+                  - /url: /blocks/data-grid/drag-drop
+                  - text: Drag & Drop
+                  - generic [ref=e984]: New drag and drop Data Grid block added
+              - listitem [ref=e987]:
+                - link "Editing New editable Data Grid block added" [ref=e988] [cursor=pointer]:
+                  - /url: /blocks/data-grid/editing
+                  - text: Editing
+                  - generic [ref=e989]: New editable Data Grid block added
+              - listitem [ref=e992]:
+                - link "Expansion" [ref=e993] [cursor=pointer]:
+                  - /url: /blocks/data-grid/expansion
+              - listitem [ref=e994]:
+                - link "Filtering" [ref=e995] [cursor=pointer]:
+                  - /url: /blocks/data-grid/filtering
+              - listitem [ref=e996]:
+                - link "Grouping Four new grouped and tree Data Grid blocks added" [ref=e997] [cursor=pointer]:
+                  - /url: /blocks/data-grid/grouping
+                  - text: Grouping
+                  - generic [ref=e998]: Four new grouped and tree Data Grid blocks added
+              - listitem [ref=e1001]:
+                - link "Virtualization" [ref=e1002] [cursor=pointer]:
+                  - /url: /blocks/data-grid/virtualization
+          - generic [ref=e1003]:
+            - heading "Marketing" [level=3] [ref=e1004]
+            - list [ref=e1005]:
+              - listitem [ref=e1006]:
+                - link "Blog" [ref=e1007] [cursor=pointer]:
+                  - /url: /blocks/marketing/blog
+              - listitem [ref=e1008]:
+                - link "Contact" [ref=e1009] [cursor=pointer]:
+                  - /url: /blocks/marketing/contact
+              - listitem [ref=e1010]:
+                - link "CTA" [ref=e1011] [cursor=pointer]:
+                  - /url: /blocks/marketing/cta
+              - listitem [ref=e1012]:
+                - link "FAQ" [ref=e1013] [cursor=pointer]:
+                  - /url: /blocks/marketing/faq
+        - generic [ref=e1014]:
+          - generic [ref=e1015]:
+            - heading "Resources" [level=3] [ref=e1016]
+            - list [ref=e1017]:
+              - listitem [ref=e1018]:
+                - link "Components" [ref=e1019] [cursor=pointer]:
+                  - /url: /components
+              - listitem [ref=e1020]:
+                - link "Blocks" [ref=e1021] [cursor=pointer]:
+                  - /url: /blocks
+              - listitem [ref=e1022]:
+                - link "Icons" [ref=e1023] [cursor=pointer]:
+                  - /url: /icons
+              - listitem [ref=e1024]:
+                - link "MCP for Agents" [ref=e1025] [cursor=pointer]:
+                  - /url: /mcp
+              - listitem [ref=e1026]:
+                - link "Docs" [ref=e1027] [cursor=pointer]:
+                  - /url: /docs
+              - listitem [ref=e1028]:
+                - link "Support" [ref=e1029] [cursor=pointer]:
+                  - /url: /support
+              - listitem [ref=e1030]:
+                - link "Pricing" [ref=e1031] [cursor=pointer]:
+                  - /url: /pricing
+              - listitem [ref=e1032]:
+                - link "Roadmap (has updates coming soon)" [ref=e1033] [cursor=pointer]:
+                  - /url: /roadmap
+                  - text: Roadmap
+                  - generic [ref=e1037]: (has updates coming soon)
+              - listitem [ref=e1038]:
+                - generic [ref=e1039]:
+                  - generic [ref=e1040]: Affiliate
+                  - generic [ref=e1041]: Soon
+          - generic [ref=e1042]:
+            - heading "Legal" [level=3] [ref=e1043]
+            - list [ref=e1044]:
+              - listitem [ref=e1045]:
+                - link "Privacy Policy" [ref=e1046] [cursor=pointer]:
+                  - /url: /legal/privacy-policy
+              - listitem [ref=e1047]:
+                - link "Terms & Conditions" [ref=e1048] [cursor=pointer]:
+                  - /url: /legal/terms-and-conditions
+              - listitem [ref=e1049]:
+                - link "License" [ref=e1050] [cursor=pointer]:
+                  - /url: /legal/license
+              - listitem [ref=e1051]:
+                - link "Refunds" [ref=e1052] [cursor=pointer]:
+                  - /url: /legal/refund-policy
+              - listitem [ref=e1053]:
+                - link "Cookies" [ref=e1054] [cursor=pointer]:
+                  - /url: /legal/cookies
+      - generic [ref=e1058]:
+        - paragraph [ref=e1059]: © 2026 ReUI. All rights reserved.
+        - generic [ref=e1060]:
+          - link "Follow us on X" [ref=e1061] [cursor=pointer]:
+            - /url: https://x.com/reui_io
+          - link "View ReUI on Figma" [ref=e1064] [cursor=pointer]:
+            - /url: https://www.figma.com/community/file/1649373313065184861/shadcn-ui-design-system-by-reui
+          - link "View ReUI on GitHub" [ref=e1071] [cursor=pointer]:
+            - /url: https://github.com/keenthemes
+            - generic [ref=e1074]: 3.3K
+  - region "Notifications alt+T"

@@ -1,4 +1,4 @@
-# 多租户身份与奇航主链实施计划（2026-08-25）
+# 多租户身份与启航主链实施计划（2026-08-25）
 
 > 状态：Contract 已冻结，等待后端按批实现。前端唯一实现线为「梳理前端组件与页面库」；
 > 本计划不规定视觉，只规定页面可消费的接口、状态、权限与验收。
@@ -6,7 +6,7 @@
 ## 目标
 
 首次内网联调先打通一条真实主链：内部试用身份登录 → 选择 workspace → 服务端解析
-账户授权 → 奇航主数据进入既有 Canonical/Semantic Query → 前端可调用。KA Data 仅作备用和
+账户授权 → 启航主数据进入既有 Canonical/Semantic Query → 前端可调用。KA Data 仅作备用和
 管理员诊断，不再阻断业务功能。
 
 ## 冻结边界
@@ -17,7 +17,7 @@
 3. 每次请求从 session、membership、grant 解析 `approvedAuthContext`；三键授权固定为
    `(workspace_id, media, account_id)`。
 4. 内测 provider 与 BUC provider 共享同一个 session 输出和授权内核；BUC 只替换登录入口。
-5. 普通业务主源固定奇航；KA Data/reconcile 默认隐藏、关闭或仅管理员可诊断。
+5. 普通业务主源固定启航；KA Data/reconcile 默认隐藏、关闭或仅管理员可诊断。
 6. 本批不开放任何媒体写操作；后续所有写能力仍必须 preview → confirm → execute。
 
 ## 交付批次与文件边界
@@ -40,7 +40,7 @@
 - 这一批属于前端仓库的服务端 BFF，不由后端任务修改；root 只验 Contract、scope 和错误态，
   视觉与登录页继续由老板在「梳理前端组件与页面库」任务中决定。
 
-### B23-C：奇航主源业务读链
+### B23-C：启航主源业务读链
 
 - 普通工作台/账户/任务读接口默认调用现有 Qihang→Canonical→Semantic Query 能力。
 - KA Data 只保留管理员诊断 flag；普通请求不能自选 data source。
@@ -60,5 +60,5 @@
 - 不带 approved server session 的 production 请求必为 401/403。
 - 两个脱敏 workspace 的真实 PG 隔离反例通过。
 - 浏览器无法伪造 workspace、role、account scope 或选择共享数据源。
-- Git/响应/日志无密码、cookie/token、BUC subject、奇航 userId、PAT/AK、真实账户标识。
+- Git/响应/日志无密码、cookie/token、BUC subject、启航 userId、PAT/AK、真实账户标识。
 - 所有媒体写 HTTP 路由继续为 0；KA Data 故障不影响普通业务主链。

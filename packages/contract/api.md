@@ -19,7 +19,7 @@ session、membership 与账户授权响应保持不变。一期产品策略为**
   无默认账号、无 Git 明文、无 production fallback。成功后只设置高熵 `HttpOnly + Secure +
   SameSite=Lax` session cookie，不把 session token 返回 JSON。
 - `GET /api/internal/auth/session`：返回当前身份、可进入 workspace 列表、active workspace
-  与角色；不返回 credential reference、奇航 userId、BUC subject 或账户 scope 明细。
+  与角色；不返回 credential reference、启航 userId、BUC subject 或账户 scope 明细。
 - `POST /api/internal/auth/workspace`：`{workspaceId}`；只允许切换到当前 identity 自己的 active
   personal workspace 或具有 active membership 的 team workspace。服务端重新解析 workspace kind
   与 scope，清除前一空间缓存；不存在或无权统一返回 403，不泄露 workspace 是否存在。
@@ -49,7 +49,7 @@ personal workspace 固定为 `explicit_accounts`。scope mode 只能由服务端
   membership 与该 workspace 已持久化数据，不把团队全账户列表放进浏览器/header，也绝不跨到
   personal workspace。
 - `auth_sessions` 只保存 token hash；日志、Trace、错误和响应均不得出现 cookie/token、登录
-  密码、BUC subject、奇航 userId 或 Secret reference。
+  密码、BUC subject、启航 userId 或 Secret reference。
 - 内测试点至少预置两个不同 identity 的独立脱敏 personal workspace 和一个共同 team workspace，
   覆盖同 account_id 跨 workspace、同 account_id 跨 media、未加入团队、撤销 membership/session、
   team scope 写请求五类反例。
@@ -77,7 +77,7 @@ personal workspace 固定为 `explicit_accounts`。scope mode 只能由服务端
 
 规则只有这一套（取代 root 2026-08-25「KA Data 备用/诊断、普通 Session 一律 platform」旧文；老板 9-4「数据源绑空间」裁决覆盖 8-25 裁决，历史见台账 #320/#139）：
 
-- **源由服务端按 `workspaceKind` 固定**：`personal` → `platform`（奇航，本人授权账户）；`team` → `ka_data`（全渠道，只读）。切空间即切源。
+- **源由服务端按 `workspaceKind` 固定**：`personal` → `platform`（启航，本人授权账户）；`team` → `ka_data`（全渠道，只读）。切空间即切源。
 - **浏览器不能选源**：普通请求只接受 `{queryId, params}`；出现 `dataView`/`data_view` → `400 INVALID_REQUEST`；导航与响应不暴露 `ka_data/platform/reconcile` 选择器。
 - **每个数据响应必带来源标识**（BE-001 lineage 已有 `source/metricVersion/dataAsOf/timezone/dayCut`；R-010a 补齐 `workspaceKind`）；前端页头**常显**「空间 · 来源 · 数据日期 · 更新时间 · 口径 ⓘ」，不只在首次说明——切空间后金额不同是换源不是算错，要让用户一眼看出。
 - **team 空间只读**：变更集/任务编辑/授权变更在 Repository 前拒绝 → `403 FORBIDDEN`（已由 Task5 实现）；团队数据只用于观察，**不驱动个人账户写操作**。
@@ -333,7 +333,7 @@ Canonical camelCase。缺必填字段、夹带 source-specific 字段或版本�
 - 列表不返回完整 `evidenceSnapshot/diagnosis/t1Result`，点击后走已冻结详情接口。
 - **覆盖三态（2026-09-05 冻结，取代"其余 N 户在阈值内"）**：响应 `meta.coverage = {accountsInScope, checked, pending, undeterminable, ruleSetVersion, window:{from,to}, checkedAt}`，全部由服务端算：`accountsInScope`=本空间本媒体授权账户数；`checked`=规则已在本窗口跑完且数据完整的账户；`pending`=规则未跑/取数未完成；`undeterminable`=缺数三态非 available 的账户。**前端只有在 `pending=0 && undeterminable=0` 时才允许显示"其余 N 户在阈值内"**（N=checked−有工作项的账户数）；否则显示「已检查 checked · 待检查 pending · 缺数无法判断 undeterminable」。前端不得自行算。
 - `dataState` 只描述工作项持久化查询本身：事务快照完整且筛选后 total=0 为 empty；分页或
-  来源覆盖不完整为 partial；依赖奇航事实生成的账户型工作项在首次 full 未完成时为 stale，
+  来源覆盖不完整为 partial；依赖启航事实生成的账户型工作项在首次 full 未完成时为 stale，
   但已持久化的本人非账户型工作项仍可返回。count/page/readiness 同一 RR/RO 快照。
 - 401/403/400/502/503/504/500 使用稳定 error envelope；所有成功/错误响应的
   `x-request-id` 必须与正文 `meta.requestId`/`error.requestId` 完全一致。响应正文大于或恰好
@@ -1078,7 +1078,7 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ## v1.8 追加（2026-09-07 arch；老板拍板：账户昵称解析为主源，归属一律可人工改；R-017 实现，migration 018）
 
 ### 为什么改主源
-平台的 `resource_position` 是**广告组级的平台版位**，而业务口径的「优选」是把两三个平台版位合成一个，两者对不上；规范里还明确「主站内选择多个版位则填主站」——**业务版位只有账户昵称里有**。同理出价模式/设备/出价目标/运营方/优化师/专项/承接/增量扣量都只在昵称里。所以：**这些维度主源改昵称解析，平台字段降为对照**；**任务 ID 仍以奇航为主**（它有历史有效期），昵称括号里的任务 ID 作校验。
+平台的 `resource_position` 是**广告组级的平台版位**，而业务口径的「优选」是把两三个平台版位合成一个，两者对不上；规范里还明确「主站内选择多个版位则填主站」——**业务版位只有账户昵称里有**。同理出价模式/设备/出价目标/运营方/优化师/专项/承接/增量扣量都只在昵称里。所以：**这些维度主源改昵称解析，平台字段降为对照**；**任务 ID 仍以启航为主**（它有历史有效期），昵称括号里的任务 ID 作校验。
 
 ### 命名规范（可配置，按渠道分）
 快手现行 12 段：`渠道-业务-运营方-优化师/代理商-出价模式-设备-流量版位-出价目标-RTA-专项-承接-自定义`（原文 `private/knowledge-sources/ka-src-0003/source.txt` §4.3；业务段枚举**自带任务 ID**，如「CVR有端(1803240580)」）。
@@ -1091,13 +1091,13 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ### 解析算法（两端锚定，解规范自身的歧义）
 规范有两处天然歧义，硬解必炸，冻结如下：
 1. **专项段允许用 `-` 分隔多值，和字段分隔符同字符** → 解析器**不按分隔符切段**，而是**两端锚定**：前 9 段按位置 + 枚举匹配（渠道…RTA），末尾按正则识别（承接=纯数字串、客单价=`0/10|10/30|30/50|50\+`、增量扣量=`^(ZZ|KK)\d+$`），**中间剩下的整体归专项**（可含 `-`）。
-2. **括号有半角 `()` 也有全角 `（）`**，业务段一个值可对多个任务 ID（如促活 UV 四个）→ 括号两种都认，多 ID 存数组，任务归属仍以奇航为准，不一致进冲突。
+2. **括号有半角 `()` 也有全角 `（）`**，业务段一个值可对多个任务 ID（如促活 UV 四个）→ 括号两种都认，多 ID 存数组，任务归属仍以启航为准，不一致进冲突。
 
 ### 表与状态
 `account_name_parses`：`workspace_id, media, account_id, account_name, rule_version, status, segments JSONB, task_ids TEXT[], conflicts JSONB, parsed_at, confirmed_by, confirmed_at, override JSONB`
 `status ∈ parsed | partial | failed | conflict | confirmed | overridden`
 - `partial` = 部分段解析成功（例如专项没匹配上），成功的段照用，失败的段显 −，**不整条丢弃**。
-- `conflict` = 昵称与平台字段/奇航不一致（例：昵称说自投、标签说代投；昵称任务 ID 与奇航 task_id 不同）→ **必须人工看，绝不静默选一边**。
+- `conflict` = 昵称与平台字段/启航不一致（例：昵称说自投、标签说代投；昵称任务 ID 与启航 task_id 不同）→ **必须人工看，绝不静默选一边**。
 - `override` = 人工改过的段，**永远优先于解析结果**，重解析不覆盖。
 
 ### 端点
@@ -1111,3 +1111,24 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ### 维度来源与「归属都能手动改」
 `account.dimension/v3` 与账户列表的这些维度改读解析结果：`placement(流量版位) / bid_mode / device / goal / rta / agent_type(运营方) / optimizer / special / landing / rebate`；每个维度值带 `source:"nickname"|"platform"|"manual"|"qihang"`，前端可显来源角标。
 **老板铁律（v1.8 起全局）：凡是「归属」性质的字段，都必须有人工改的入口且改后不被自动流程覆盖。** 已覆盖：任务归属（`POST /tasks/:id/accounts` + `task_accounts` 有效期）、账户 owner（账户池指派）、昵称解析各段（本节 `override`）、账户状态 `pool_status`（v1.5.1 manual 覆盖留痕）。新增归属类字段一律照此办理。
+
+## v1.9 追加（2026-09-07 arch；be2 Q-003/Q-004 九条缺口一次裁完；migration 018 = R-017）
+
+### 一、缺源政策（追认 be2 的两层做法，立为全局规矩）
+**仓储层只报事实，HTTP 层落政策。**
+- 表/列不存在 → 仓储返 `null`（有用例守着不许变 0）；HTTP 层按语义决定：**「这类对象在系统里根本不存在」判 0**（如 014 未落地时 `approvals`/`dispatches` 计数），**「源存在但算不出来」回 `503 SOURCE_UNAVAILABLE`**，两者都不编数字。
+- 这条适用于所有计数类字段，不只 `me/counts`。
+
+### 二、九条缺口裁决
+
+| # | 缺口 | 裁决 |
+|---|---|---|
+| 1 | `account_access_grants` 缺 `revoked_at`（A7 交接写不出来） | **018 补列** `revoked_at TIMESTAMPTZ` + `revoked_by UUID`（015 已合 main，不回改已落迁移）。交接语义不变：原 grant 置 `revoked_at` 保留审计行，不删行。`account_transfers` 端点排 018 之后 |
+| 2 | `recentManualOps` 只有窗口没有门限 | **采纳 be2 的 `>0 即不过`**：窗口内有任何人工操作就不自动执行（系统不抢方向盘）。写死 threshold=0，不做可配置 |
+| 3 | `overriddenBy:"history"` 触发条件未定义 | 定义为：**同一对象在过去 30 天内有过「系统执行后被人工回退」的记录**。依赖 R-010a2 的 rollback 三表；**三表落地前恒返回 `null`**（不是猜） |
+| 4 | `GET/PUT /settings/decision-policy` 写权限 | **采纳 `lead\|admin`**。理由 be2 说得对：放开给 optimizer 等于让人自己抬高自己的自动执行额度上限 |
+| 5 | `/me/views` 的 `is_shared` 无读路径 | **采纳**：`/me/views` 只返回本人视图；共享视图走公共资产（v1.5.1 ⑤ `/assets`），不在 me 域自造归属 |
+| 6 | `accounts/pipeline` 的 `deltaVsYesterday` 无源 | **短期回 `missing`**（MetricValue 三态可表达，补 0 等于编「昨天到今天没变」）。**018 加 `pool_status_daily_snapshot(workspace_id, media, account_id, ds, pool_status)`**，每日 ETL 末尾写一行；有快照后才出真值 |
+| 7 | 搜索 `subtitle` 谁出中文 | **后端不出 `subtitle`**。改出结构化机器字段：`meta:{status?, stage?, taskName?, severity?, kind?, durationMs?}`，**中文由 fe 组装**（与 fe 刚做完的「去黑话」一致：后端出机器值、前端管文案）。fixture 统一改 |
+| 8 | 搜索 fixture 的 work_item href 过期 | **arch 改 fixture**：`/?tab=today&item=<id>` → `/work-items/<id>`（v1.7.6 已正名）。be2 按 v1.7.6 出是对的 |
+| 9 | `alert_rules.scope` 结构未定义 + `boundAt` 无源 | **`scope` 结构冻结**：`{"taskIds": string[], "accountScopes": [{"media","accountId"}], "bizNames": string[]}`，三者取并集，空数组=不限。**`boundAt` 018 加列** `alert_rules.bound_at TIMESTAMPTZ`；列落地前 DTO 允许 `null`（`GET /tasks/:id/bindings` 的 `rules[].boundAt` 可空） |

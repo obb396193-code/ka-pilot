@@ -62,7 +62,7 @@
 
 ## 6. 尚未验证
 
-- 真实奇航字段、限流、最大 URL/响应和应用身份；
+- 真实启航字段、限流、最大 URL/响应和应用身份；
 - Multica/OS 正式 read/preview/execute 请求、回执和原始 run 引用；
 - Secret 服务的 SDK、TTL、revoke 和审计；
 - 真实 IdeaLab/Anthropic/其他 Provider 能力与许可；

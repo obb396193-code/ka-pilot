@@ -1,0 +1,555 @@
+- generic [ref=e1]:
+  - link "跳到内容" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e3]:
+    - complementary "展厅导航" [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]: UI
+        - generic [ref=e7]:
+          - strong [ref=e8]: 投放 Agent
+          - text: Asset field guide
+      - navigation [ref=e9]:
+        - button "01 总览与风格 17" [ref=e10] [cursor=pointer]:
+          - generic [ref=e11]: "01"
+          - generic [ref=e12]: 总览与风格
+          - generic [ref=e13]: "17"
+        - button "02 全量清单 7,056" [ref=e14] [cursor=pointer]:
+          - generic [ref=e15]: "02"
+          - generic [ref=e16]: 全量清单
+          - generic [ref=e17]: 7,056
+        - button "03 付费处置 2,153" [ref=e18] [cursor=pointer]:
+          - generic [ref=e19]: "03"
+          - generic [ref=e20]: 付费处置
+          - generic [ref=e21]: 2,153
+        - button "04 本地源码 144" [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]: "04"
+          - generic [ref=e24]: 本地源码
+          - generic [ref=e25]: "144"
+        - button "05 主题展厅 42" [ref=e26] [cursor=pointer]:
+          - generic [ref=e27]: "05"
+          - generic [ref=e28]: 主题展厅
+          - generic [ref=e29]: "42"
+        - button "06 17 库比较 17" [active] [ref=e30] [cursor=pointer]:
+          - generic [ref=e31]: "06"
+          - generic [ref=e32]: 17 库比较
+          - generic [ref=e33]: "17"
+      - generic [ref=e34]: 离线可用本页内嵌全部目录和替代数据，不依赖网络加载；外部链接仅在你主动打开时访问官网。
+    - main [ref=e35]:
+      - generic [ref=e36]:
+        - generic [ref=e37]: 官方目录快照 · 2026-08-19
+        - generic [ref=e39]: 目录 ≠ 运行时安装 · 缓存 ≠ 已接入
+      - text: s c T A V K D A M
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - generic [ref=e44]: 17-library comparison wall
+            - heading "17 家产品线，16 家实时 + 1 家锁定" [level=1] [ref=e45]
+          - paragraph [ref=e46]: 下面不是截图：16 家运行已缓存的官方公开源码，React Bits Pro 单独显示付费锁定。每家只取 1–2 个最能体现差异的代表能力，离线运行、无 CDN、无 fetch，也没有安装进产品运行时。
+        - generic "比较墙筛选" [ref=e47]:
+          - button "全部 17 家" [ref=e48] [cursor=pointer]
+          - button "基础组件" [pressed] [ref=e49] [cursor=pointer]
+          - button "数据业务" [ref=e50] [cursor=pointer]
+          - button "动效视觉" [ref=e51] [cursor=pointer]
+          - button "Agent" [ref=e52] [cursor=pointer]
+          - button "主题系统" [ref=e53] [cursor=pointer]
+          - button "只看付费锁定" [ref=e54] [cursor=pointer]
+        - generic [ref=e55]:
+          - status [ref=e56]:
+            - strong [ref=e560]: "3"
+            - text: 个产品线位置
+          - generic [ref=e58]: 实时预览按进入视口加载
+        - generic [ref=e59]:
+          - article [ref=e561]:
+            - generic [ref=e562]:
+              - generic [ref=e563]:
+                - generic [ref=e564]: Compiled official source
+                - heading "shadcn/ui" [level=3] [ref=e565]
+                - paragraph [ref=e566]: 中性产品底座与可组合基础控件
+              - generic [ref=e567]:
+                - generic [ref=e568]: 真实交互
+                - generic [ref=e569]: 离线
+                - generic [ref=e570]: 2 个代表项
+            - iframe [ref=e571]:
+              - main [ref=f17e3]:
+                - generic [ref=f17e4]:
+                  - generic [ref=f17e5]:
+                    - text: 01 / PRODUCT FOUNDATION
+                    - heading "shadcn/ui" [level=1] [ref=f17e6]
+                  - paragraph [ref=f17e7]: 官方 Calendar 代表中性、可组合的产品底座；点击日期可直接观察状态与焦点。
+                - generic [ref=f17e8]:
+                  - article [ref=f17e9]:
+                    - generic [ref=f17e10]: CURRENT NEW YORK V4
+                    - generic [ref=f17e13]:
+                      - navigation "Navigation bar" [ref=f17e14]:
+                        - button "Go to the Previous Month" [ref=f17e15]
+                        - button "Go to the Next Month" [ref=f17e16]
+                      - generic [ref=f17e17]:
+                        - generic [ref=f17e19]:
+                          - generic [ref=f17e20]:
+                            - combobox "Choose the Month" [ref=f17e21]:
+                              - option "1月"
+                              - option "2月"
+                              - option "3月"
+                              - option "4月"
+                              - option "5月"
+                              - option "6月"
+                              - option "7月"
+                              - option "8月" [selected]
+                              - option "9月"
+                              - option "10月"
+                              - option "11月"
+                              - option "12月"
+                            - generic [ref=f17e22]: 8月
+                          - generic [ref=f17e25]:
+                            - combobox "Choose the Year" [ref=f17e26]:
+                              - option "1926"
+                              - option "1927"
+                              - option "1928"
+                              - option "1929"
+                              - option "1930"
+                              - option "1931"
+                              - option "1932"
+                              - option "1933"
+                              - option "1934"
+                              - option "1935"
+                              - option "1936"
+                              - option "1937"
+                              - option "1938"
+                              - option "1939"
+                              - option "1940"
+                              - option "1941"
+                              - option "1942"
+                              - option "1943"
+                              - option "1944"
+                              - option "1945"
+                              - option "1946"
+                              - option "1947"
+                              - option "1948"
+                              - option "1949"
+                              - option "1950"
+                              - option "1951"
+                              - option "1952"
+                              - option "1953"
+                              - option "1954"
+                              - option "1955"
+                              - option "1956"
+                              - option "1957"
+                              - option "1958"
+                              - option "1959"
+                              - option "1960"
+                              - option "1961"
+                              - option "1962"
+                              - option "1963"
+                              - option "1964"
+                              - option "1965"
+                              - option "1966"
+                              - option "1967"
+                              - option "1968"
+                              - option "1969"
+                              - option "1970"
+                              - option "1971"
+                              - option "1972"
+                              - option "1973"
+                              - option "1974"
+                              - option "1975"
+                              - option "1976"
+                              - option "1977"
+                              - option "1978"
+                              - option "1979"
+                              - option "1980"
+                              - option "1981"
+                              - option "1982"
+                              - option "1983"
+                              - option "1984"
+                              - option "1985"
+                              - option "1986"
+                              - option "1987"
+                              - option "1988"
+                              - option "1989"
+                              - option "1990"
+                              - option "1991"
+                              - option "1992"
+                              - option "1993"
+                              - option "1994"
+                              - option "1995"
+                              - option "1996"
+                              - option "1997"
+                              - option "1998"
+                              - option "1999"
+                              - option "2000"
+                              - option "2001"
+                              - option "2002"
+                              - option "2003"
+                              - option "2004"
+                              - option "2005"
+                              - option "2006"
+                              - option "2007"
+                              - option "2008"
+                              - option "2009"
+                              - option "2010"
+                              - option "2011"
+                              - option "2012"
+                              - option "2013"
+                              - option "2014"
+                              - option "2015"
+                              - option "2016"
+                              - option "2017"
+                              - option "2018"
+                              - option "2019"
+                              - option "2020"
+                              - option "2021"
+                              - option "2022"
+                              - option "2023"
+                              - option "2024"
+                              - option "2025"
+                              - option "2026" [selected]
+                            - generic [ref=f17e27]: "2026"
+                          - status [ref=f17e30]: August 2026
+                        - grid "August 2026" [ref=f17e31]:
+                          - rowgroup [ref=f17e32]:
+                            - row [ref=f17e33]:
+                              - columnheader [ref=f17e34]: Su
+                              - columnheader [ref=f17e35]: Mo
+                              - columnheader [ref=f17e36]: Tu
+                              - columnheader [ref=f17e37]: We
+                              - columnheader [ref=f17e38]: Th
+                              - columnheader [ref=f17e39]: Fr
+                              - columnheader [ref=f17e40]: Sa
+                          - rowgroup [ref=f17e41]:
+                            - row [ref=f17e42]:
+                              - gridcell [ref=f17e43]:
+                                - button "Sunday, July 26th, 2026" [ref=f17e44]: "26"
+                              - gridcell [ref=f17e45]:
+                                - button "Monday, July 27th, 2026" [ref=f17e46]: "27"
+                              - gridcell [ref=f17e47]:
+                                - button "Tuesday, July 28th, 2026" [ref=f17e48]: "28"
+                              - gridcell [ref=f17e49]:
+                                - button "Wednesday, July 29th, 2026" [ref=f17e50]: "29"
+                              - gridcell [ref=f17e51]:
+                                - button "Thursday, July 30th, 2026" [ref=f17e52]: "30"
+                              - gridcell [ref=f17e53]:
+                                - button "Friday, July 31st, 2026" [ref=f17e54]: "31"
+                              - gridcell [ref=f17e55]:
+                                - button "Saturday, August 1st, 2026" [ref=f17e56]: "1"
+                            - row [ref=f17e57]:
+                              - gridcell [ref=f17e58]:
+                                - button "Sunday, August 2nd, 2026" [ref=f17e59]: "2"
+                              - gridcell [ref=f17e60]:
+                                - button "Monday, August 3rd, 2026" [ref=f17e61]: "3"
+                              - gridcell [ref=f17e62]:
+                                - button "Tuesday, August 4th, 2026" [ref=f17e63]: "4"
+                              - gridcell [ref=f17e64]:
+                                - button "Wednesday, August 5th, 2026" [ref=f17e65]: "5"
+                              - gridcell [ref=f17e66]:
+                                - button "Thursday, August 6th, 2026" [ref=f17e67]: "6"
+                              - gridcell [ref=f17e68]:
+                                - button "Friday, August 7th, 2026" [ref=f17e69]: "7"
+                              - gridcell [ref=f17e70]:
+                                - button "Saturday, August 8th, 2026" [ref=f17e71]: "8"
+                            - row [ref=f17e72]:
+                              - gridcell [ref=f17e73]:
+                                - button "Sunday, August 9th, 2026" [ref=f17e74]: "9"
+                              - gridcell [ref=f17e75]:
+                                - button "Monday, August 10th, 2026" [ref=f17e76]: "10"
+                              - gridcell [ref=f17e77]:
+                                - button "Tuesday, August 11th, 2026" [ref=f17e78]: "11"
+                              - gridcell [ref=f17e79]:
+                                - button "Wednesday, August 12th, 2026" [ref=f17e80]: "12"
+                              - gridcell [ref=f17e81]:
+                                - button "Thursday, August 13th, 2026" [ref=f17e82]: "13"
+                              - gridcell [ref=f17e83]:
+                                - button "Friday, August 14th, 2026" [ref=f17e84]: "14"
+                              - gridcell [ref=f17e85]:
+                                - button "Saturday, August 15th, 2026" [ref=f17e86]: "15"
+                            - row [ref=f17e87]:
+                              - gridcell [ref=f17e88]:
+                                - button "Sunday, August 16th, 2026" [ref=f17e89]: "16"
+                              - gridcell [ref=f17e90]:
+                                - button "Monday, August 17th, 2026" [ref=f17e91]: "17"
+                              - gridcell [ref=f17e92]:
+                                - button "Tuesday, August 18th, 2026" [ref=f17e93]: "18"
+                              - gridcell [ref=f17e94]:
+                                - button "Wednesday, August 19th, 2026" [ref=f17e95]: "19"
+                              - gridcell [selected] [ref=f17e96]:
+                                - button "Today, Thursday, August 20th, 2026, selected" [ref=f17e97]: "20"
+                              - gridcell [ref=f17e98]:
+                                - button "Friday, August 21st, 2026" [ref=f17e99]: "21"
+                              - gridcell [ref=f17e100]:
+                                - button "Saturday, August 22nd, 2026" [ref=f17e101]: "22"
+                            - row [ref=f17e102]:
+                              - gridcell [ref=f17e103]:
+                                - button "Sunday, August 23rd, 2026" [ref=f17e104]: "23"
+                              - gridcell [ref=f17e105]:
+                                - button "Monday, August 24th, 2026" [ref=f17e106]: "24"
+                              - gridcell [ref=f17e107]:
+                                - button "Tuesday, August 25th, 2026" [ref=f17e108]: "25"
+                              - gridcell [ref=f17e109]:
+                                - button "Wednesday, August 26th, 2026" [ref=f17e110]: "26"
+                              - gridcell [ref=f17e111]:
+                                - button "Thursday, August 27th, 2026" [ref=f17e112]: "27"
+                              - gridcell [ref=f17e113]:
+                                - button "Friday, August 28th, 2026" [ref=f17e114]: "28"
+                              - gridcell [ref=f17e115]:
+                                - button "Saturday, August 29th, 2026" [ref=f17e116]: "29"
+                            - row [ref=f17e117]:
+                              - gridcell [ref=f17e118]:
+                                - button "Sunday, August 30th, 2026" [ref=f17e119]: "30"
+                              - gridcell [ref=f17e120]:
+                                - button "Monday, August 31st, 2026" [ref=f17e121]: "31"
+                              - gridcell [ref=f17e122]:
+                                - button "Tuesday, September 1st, 2026" [ref=f17e123]: "1"
+                              - gridcell [ref=f17e124]:
+                                - button "Wednesday, September 2nd, 2026" [ref=f17e125]: "2"
+                              - gridcell [ref=f17e126]:
+                                - button "Thursday, September 3rd, 2026" [ref=f17e127]: "3"
+                              - gridcell [ref=f17e128]:
+                                - button "Friday, September 4th, 2026" [ref=f17e129]: "4"
+                              - gridcell [ref=f17e130]:
+                                - button "Saturday, September 5th, 2026" [ref=f17e131]: "5"
+                  - article [ref=f17e132]:
+                    - generic [ref=f17e133]: WHY IT FITS
+                    - heading "稳定的全站 primitives" [level=2] [ref=f17e134]
+                    - paragraph [ref=f17e135]: 视觉克制，结构和无障碍状态完整，适合做项目统一底座，再通过 tweakcn token 改品牌。
+            - generic [ref=e572]:
+              - generic [ref=e573]:
+                - generic [ref=e574]: 气质
+                - text: 克制、中性、结构稳定，是最适合统一全站语言的基础层。
+              - generic [ref=e575]:
+                - generic [ref=e576]: 适合
+                - text: 页面壳、基础表单、弹层、筛选器和产品级 primitives
+              - generic [ref=e577]:
+                - generic [ref=e578]: 重叠与取舍
+                - text: 与 coss 的基础控件重叠；shadcn 更像底座，coss 更强调细节成品。
+              - generic [ref=e579]:
+                - generic [ref=e580]: 许可证
+                - text: MIT
+            - generic [ref=e581]:
+              - text: 代表项：calendar-demo · calendar ｜
+              - link "官方页面 ↗" [ref=e582] [cursor=pointer]:
+                - /url: https://ui.shadcn.com/docs/components/calendar
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=e583]:
+            - generic [ref=e584]:
+              - generic [ref=e585]:
+                - generic [ref=e586]: Compiled official source
+                - heading "coss/ui" [level=3] [ref=e587]
+                - paragraph [ref=e588]: 高完成度日期范围与细节控件
+              - generic [ref=e589]:
+                - generic [ref=e590]: 真实交互
+                - generic [ref=e591]: 离线
+                - generic [ref=e592]: 1 个代表项
+            - iframe [ref=e593]:
+              - main [ref=f18e3]:
+                - generic [ref=f18e4]:
+                  - generic [ref=f18e5]:
+                    - text: 02 / FINE CONTROLS
+                    - heading "coss/ui" [level=1] [ref=f18e6]
+                  - paragraph [ref=f18e7]: 官方日期范围 Particle 展示 Base UI 上更细密的尺寸、层级和弹层完成度。
+                - generic [ref=f18e8]:
+                  - article [ref=f18e9]:
+                    - generic [ref=f18e10]: DATE RANGE PARTICLE
+                    - button "Pick a date range" [ref=f18e11] [cursor=pointer]
+                    - paragraph [ref=f18e13]: 打开日历并选择起止日期；这不是 shadcn 的同名组件副本。
+                  - article [ref=f18e14]:
+                    - generic [ref=f18e15]: CURRENT GENERATION
+                    - heading "更像直接可用的工具细节" [level=2] [ref=f18e16]
+                    - paragraph [ref=f18e17]: 适合日期、Command、Combobox、Field 和 Drawer。与 Radix 组件并存时必须隔离路径。
+            - generic [ref=e594]:
+              - generic [ref=e595]:
+                - generic [ref=e596]: 气质
+                - text: 极简、细密、尺寸与状态处理精确，工具产品感强。
+              - generic [ref=e597]:
+                - generic [ref=e598]: 适合
+                - text: 日期、Command、Combobox、Field、Drawer 和表格工具栏
+              - generic [ref=e599]:
+                - generic [ref=e600]: 重叠与取舍
+                - text: 可与 shadcn 共存，但 Base UI 与 Radix 同名组件必须隔离目录。
+              - generic [ref=e601]:
+                - generic [ref=e602]: 许可证
+                - text: MIT for apps/ui; repository root AGPL-3.0
+            - generic [ref=e603]:
+              - text: 代表项：p-date-picker-2 ｜
+              - link "官方页面 ↗" [ref=e604] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/date-picker
+              - text: ｜ 产品运行时尚未安装。
+          - article [ref=e605]:
+            - generic [ref=e606]:
+              - generic [ref=e607]:
+                - generic [ref=e608]: Compiled official source
+                - heading "coss Origin" [level=3] [ref=e609]
+                - paragraph [ref=e610]: 旧版大颗粒交互档案与 current 缺口参考
+              - generic [ref=e611]:
+                - generic [ref=e612]: 真实交互
+                - generic [ref=e613]: 离线
+                - generic [ref=e614]: 2 个代表项
+            - iframe [ref=e615]:
+              - main [ref=f19e3]:
+                - generic [ref=f19e4]:
+                  - generic [ref=f19e5]:
+                    - text: 03 / LEGACY ARCHIVE
+                    - heading "coss Origin" [level=1] [ref=f19e6]
+                  - paragraph [ref=f19e7]: 官方 comp-100 是 legacy particle：点击可切换可访问菜单图标，展示旧库的案例式写法。
+                - generic [ref=f19e8]:
+                  - article [ref=f19e9]:
+                    - generic [ref=f19e10]: COMP-100
+                    - button "Open menu" [ref=f19e12]
+                    - paragraph [ref=f19e13]: 只作为 current 缺口与历史参考；新页面不默认选 Origin。
+                  - article [ref=f19e14]:
+                    - generic [ref=f19e15]: GENERATION DIFFERENCE
+                    - heading "更大颗粒、更多案例" [level=2] [ref=f19e16]
+                    - paragraph [ref=f19e17]: 覆盖很广，但维护与体系化不如 current coss；两代必须独立登记。
+            - generic [ref=e616]:
+              - generic [ref=e617]:
+                - generic [ref=e618]: 气质
+                - text: 覆盖广、案例感强，展示 legacy 粒子库的独立交互写法。
+              - generic [ref=e619]:
+                - generic [ref=e620]: 适合
+                - text: 只补 current coss 没有的旧交互，不作为新代码默认底座
+              - generic [ref=e621]:
+                - generic [ref=e622]: 重叠与取舍
+                - text: 与 coss current 同品牌不同架构；必须明确 legacy 状态。
+              - generic [ref=e623]:
+                - generic [ref=e624]: 许可证
+                - text: MIT for apps/origin; repository root AGPL-3.0
+            - generic [ref=e625]:
+              - text: 代表项：comp-100 · button ｜
+              - link "官方页面 ↗" [ref=e626] [cursor=pointer]:
+                - /url: https://coss.com/origin
+              - text: ｜ 产品运行时尚未安装。
+        - generic [ref=e438]:
+          - generic [ref=e439]:
+            - generic [ref=e440]: Approved intake
+            - heading "五库准入与使用边界" [level=2] [ref=e441]
+          - paragraph [ref=e442]: 五库完整目录已入库，并选择性缓存 21 个高频根资产；AI Elements、Kibo、Dice 正式进入具体能力选型，Animate UI、Motion Primitives 只做少量微动效对比。
+        - generic [ref=e443]:
+          - article [ref=e627]:
+            - generic [ref=e628]:
+              - generic [ref=e629]: 正式准入
+              - generic [ref=e630]: Apache-2.0
+              - generic [ref=e631]: 已缓存代表源码
+              - generic [ref=e632]: 未安装
+            - heading "Vercel AI Elements" [level=3] [ref=e633]
+            - paragraph [ref=e634]: AI-native conversation and agent interaction components
+            - paragraph [ref=e635]: 克制、产品化、接近 Vercel/shadcn 的 AI 工作台风格；重点在对话、消息、推理、工具调用和输入区，而不是炫技动效。
+            - generic [ref=e636]:
+              - generic [ref=e637]: Agent 对话
+              - generic [ref=e638]: 流式消息
+              - generic [ref=e639]: 推理折叠
+              - generic [ref=e640]: 工具调用
+              - generic [ref=e641]: 来源引用
+              - generic [ref=e642]: Prompt 输入
+            - generic [ref=e643]: 项目用法：Agent 对话、悬浮窗、消息、推理、工具调用和来源引用的首选候选；普通数据页不默认引入。
+            - paragraph [ref=e644]: catalogued-136 · starter-roots-cached-6 · not-installed
+            - generic [ref=e645]:
+              - link "官网 ↗" [ref=e646] [cursor=pointer]:
+                - /url: https://elements.ai-sdk.dev/
+              - link "文档 ↗" [ref=e647] [cursor=pointer]:
+                - /url: https://elements.ai-sdk.dev/docs
+              - link "GitHub ↗" [ref=e648] [cursor=pointer]:
+                - /url: https://github.com/vercel/ai-elements
+          - article [ref=e649]:
+            - generic [ref=e650]:
+              - generic [ref=e651]: 正式准入
+              - generic [ref=e652]: MIT
+              - generic [ref=e653]: 已缓存代表源码
+              - generic [ref=e654]: 未安装
+            - heading "Kibo UI" [level=3] [ref=e655]
+            - paragraph [ref=e656]: shadcn 的高阶功能组件补充
+            - paragraph [ref=e657]: 现代、克制、功能密度高，视觉接近成熟 SaaS；比单纯 shadcn primitive 更像可直接落业务的复杂控件。
+            - generic [ref=e658]:
+              - generic [ref=e659]: Gantt
+              - generic [ref=e660]: Kanban
+              - generic [ref=e661]: Editor
+              - generic [ref=e662]: Dropzone
+              - generic [ref=e663]: Color Picker
+              - generic [ref=e664]: Calendar
+              - generic [ref=e665]: 复杂业务组件
+            - generic [ref=e666]: 项目用法：Gantt、Kanban、Editor、Dropzone、Color Picker、复杂 Calendar 的首选候选；视觉颜色统一改为项目语义 token，不直接照搬官网配色。
+            - paragraph [ref=e667]: catalogued-69 · starter-roots-cached-6 · not-installed
+            - generic [ref=e668]:
+              - link "官网 ↗" [ref=e669] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/
+              - link "文档 ↗" [ref=e670] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/docs
+              - link "GitHub ↗" [ref=e671] [cursor=pointer]:
+                - /url: https://github.com/shadcnblocks/kibo
+          - article [ref=e672]:
+            - generic [ref=e673]:
+              - generic [ref=e674]: 正式准入
+              - generic [ref=e675]: MIT
+              - generic [ref=e676]: 已缓存代表源码
+              - generic [ref=e677]: 未安装
+            - heading "Dice UI" [level=3] [ref=e678]
+            - paragraph [ref=e679]: 可访问性优先的复杂交互组件
+            - paragraph [ref=e680]: 中性、细致、偏产品工具；交互状态比装饰更突出，适合高频操作型后台。
+            - generic [ref=e681]:
+              - generic [ref=e682]: Data Grid
+              - generic [ref=e683]: Data Table
+              - generic [ref=e684]: File Upload
+              - generic [ref=e685]: Kanban
+              - generic [ref=e686]: Media Player
+              - generic [ref=e687]: Mention
+              - generic [ref=e688]: Time Picker
+              - generic [ref=e689]: Tour
+            - generic [ref=e690]: 项目用法：Data Grid、File Upload、Kanban、Time Picker 等复杂交互的正式候选；首次使用前与 ReUI/coss/TanStack 同业务容器对比。
+            - paragraph [ref=e691]: catalogued-242 · starter-roots-cached-3 · not-installed
+            - generic [ref=e692]:
+              - link "官网 ↗" [ref=e693] [cursor=pointer]:
+                - /url: https://diceui.com/
+              - link "文档 ↗" [ref=e694] [cursor=pointer]:
+                - /url: https://diceui.com/docs/introduction
+              - link "GitHub ↗" [ref=e695] [cursor=pointer]:
+                - /url: https://github.com/sadmann7/diceui
+          - article [ref=e696]:
+            - generic [ref=e697]:
+              - generic [ref=e698]: 选择性准入
+              - generic [ref=e699]: MIT + Commons Clause
+              - generic [ref=e700]: 限制组件再分发
+              - generic [ref=e701]: 已缓存代表源码
+              - generic [ref=e702]: 未安装
+            - heading "Animate UI" [level=3] [ref=e703]
+            - paragraph [ref=e704]: shadcn 体系内的克制动效与动画 primitives
+            - paragraph [ref=e705]: 现代、流畅、比 React Bits 更克制；保留 shadcn 的产品感，同时给 Accordion、Dialog、Tabs、Button、背景和图标补统一 Motion。
+            - generic [ref=e706]:
+              - generic [ref=e707]: 交互过渡
+              - generic [ref=e708]: 动效 primitive
+              - generic [ref=e709]: 按钮反馈
+              - generic [ref=e710]: 轻背景
+              - generic [ref=e711]: 动画图标
+              - generic [ref=e712]: 局部高光
+            - generic [ref=e713]: 项目用法：只按具体微交互少量选择；每次与 Aceternity、Magic UI、React Bits、Motion Primitives 对比，遵守 Commons Clause，禁止整库默认安装。
+            - paragraph [ref=e714]: catalogued-580 · starter-roots-cached-3 · not-installed
+            - generic [ref=e715]:
+              - link "官网 ↗" [ref=e716] [cursor=pointer]:
+                - /url: https://animate-ui.com/
+              - link "文档 ↗" [ref=e717] [cursor=pointer]:
+                - /url: https://animate-ui.com/docs
+              - link "GitHub ↗" [ref=e718] [cursor=pointer]:
+                - /url: https://github.com/imskyleen/animate-ui
+          - article [ref=e719]:
+            - generic [ref=e720]:
+              - generic [ref=e721]: 选择性准入
+              - generic [ref=e722]: MIT
+              - generic [ref=e723]: 已缓存代表源码
+              - generic [ref=e724]: 未安装
+            - heading "Motion Primitives" [level=3] [ref=e725]
+            - paragraph [ref=e726]: 精致微交互和文字/布局过渡
+            - paragraph [ref=e727]: 极简、偏设计工具与编辑器气质，动效细腻而不喧闹；适合给成熟页面补微交互。
+            - generic [ref=e728]:
+              - generic [ref=e729]: 文字过渡
+              - generic [ref=e730]: Disclosure
+              - generic [ref=e731]: Dock
+              - generic [ref=e732]: Tabs
+              - generic [ref=e733]: 光标跟随
+              - generic [ref=e734]: 数字变化
+              - generic [ref=e735]: 局部布局动画
+            - generic [ref=e736]: 项目用法：只用于文字、数字、布局和局部交互的克制微动效；每次与现有动效来源对比，禁止成为业务组件底座。
+            - paragraph [ref=e737]: catalogued-33 · starter-roots-cached-3 · not-installed
+            - generic [ref=e738]:
+              - link "官网 ↗" [ref=e739] [cursor=pointer]:
+                - /url: https://motion-primitives.com/
+              - link "文档 ↗" [ref=e740] [cursor=pointer]:
+                - /url: https://motion-primitives.com/docs
+              - link "GitHub ↗" [ref=e741] [cursor=pointer]:
+                - /url: https://github.com/ibelick/motion-primitives
+        - paragraph [ref=e559]: 候选里的第三方 patterns、模板或 Sponsor 内容如果另有商业授权，必须再次拆分；不能因为主仓 MIT/Apache 就把所有外链内容都当免费。

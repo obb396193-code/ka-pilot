@@ -51,7 +51,7 @@
 - 代码终态：`72228b4`
 - 质量与交接：`fa84d22`
 - 质量：`docs/evidence/B23-A-代码质量报告.md`
-- Gap matrix：`docs/evidence/B23-C-奇航只读链Gap矩阵.md`
+- Gap matrix：`docs/evidence/B23-C-启航只读链Gap矩阵.md`
 - 状态：已实现并完成 Codex 自审；未合并/部署，等待 root 验收。
 
 #### B23-A 回执
@@ -61,23 +61,23 @@
 - Domain 433、DB 107、Worker 453 passed；三包 typecheck/lint/audit、coverage 与真实 PG
   up/down/up 通过，0 vulnerabilities。
 - 未改 `apps/web`、`apps/ui-layout-demo` 或视觉文件；未 push；媒体写继续关闭。
-- 正式 session/BFF 接线、普通业务 API 和奇航账户主表同步未完成，详见 B23-C，不得把内核完成
+- 正式 session/BFF 接线、普通业务 API 和启航账户主表同步未完成，详见 B23-C，不得把内核完成
   表述成登录、页面、内网部署或业务 E2E 完成。
 
-### B23-C1 奇航 account metadata → accounts 主表同步
+### B23-C1 启航 account metadata → accounts 主表同步
 
 - 派活方：root Codex（Contract/验收/整合）
 - 日期：2026-08-25
 - 分支：`codex/b23-c1-account-sync`，基线 `codex/integration-control@0775a13`
-- 实施计划：`docs/plans/2026-08-25-B23-C1奇航账户主表同步-implementation.md`
+- 实施计划：`docs/plans/2026-08-25-B23-C1启航账户主表同步-implementation.md`
 - 边界：只解决 Qihang account metadata→accounts→同页 Raw 的 P0；不改普通 API DTO、前端，
   不 push，不开放媒体写。
 - 冻结事务：网络请求完成后按 account 分页开短事务，整页校验→upsert accounts→append Raw→
   commit；该页失败 0 写入，前页可信提交可在 Job 重试时幂等重放，未全部完成不派 canonical/fanout。
 - 代码提交：`bdc37cc`、`20636af`、`0807cd4`、`c1e2600`、`ec4934a`。
 - 质量：DB 112、Worker 467 tests passed，2 opt-in skipped；两包 typecheck/lint/audit、coverage 与真实 PG 全绿。
-- 证据：`docs/evidence/B23-C1-奇航账户主表同步质量报告.md`、已更新 B23-C Gap Matrix。
-- 未完成：普通 ETL scheduler/入队、session HTTP composition、四个普通只读 API、真实奇航联调与内网部署。
+- 证据：`docs/evidence/B23-C1-启航账户主表同步质量报告.md`、已更新 B23-C Gap Matrix。
+- 未完成：普通 ETL scheduler/入队、session HTTP composition、四个普通只读 API、真实启航联调与内网部署。
 - 状态：已实现并完成 Codex 自审；待 root 合流，Claude/arch 后审位保留。
 
 ### TASK-LIST-001 任务列表只读纵切片
@@ -92,7 +92,7 @@
 - 代码提交：`01080a0`、`796183e`、`204b4c1`、`d38f9ec`、`891372d`。
 - 质量：Domain 451、DB 120、Worker 492 默认 tests passed，2 个既有 opt-in skipped；三包 typecheck/lint/audit、coverage 与真实 PG 全绿。
 - 证据：`docs/evidence/TASK-LIST-001-后端质量报告.md`。
-- 未完成：BFF/前端整合、正式 session 登录链、真实奇航任务源 trace、内网部署；任务/媒体写继续关闭。
+- 未完成：BFF/前端整合、正式 session 登录链、真实启航任务源 trace、内网部署；任务/媒体写继续关闭。
 - 状态：已实现并完成 Codex 自审；待 root 合流，Claude/arch 后审位保留。
 
 ### B23-C2 普通 Workspace 首次同步与周期调度内核
@@ -110,14 +110,14 @@
   `docs/evidence/B23-C2-账户与工作项列表Gap矩阵.md`。
 - 已实现：active 身份候选快照、确定性并发幂等、blocked_auth、不可变授权/credential owner、
   执行前复核、上海 03:00 业务日、one-shot CLI、首次 full ready 门及共享 readiness 查询。
-- 未完成：外部 scheduler 配置、真实 workspace/奇航首次 full、内网部署、BFF；两个后续列表仍待
+- 未完成：外部 scheduler 配置、真实 workspace/启航首次 full、内网部署、BFF；两个后续列表仍待
   root 冻结严格 DTO。所有媒体写继续关闭。
 - 状态：`implemented + local_pg_verified + codex_self_checked`；待 root 独立验收合流，
   Claude/arch 后审位保留。
 
 #### C2 P1 授权退回修复回执
 
-- root 发现：首次 Full 在空 grant 时仍会无过滤枚举并落库奇航账户，违反 AUTH-001 空 grant=空范围。
+- root 发现：首次 Full 在空 grant 时仍会无过滤枚举并落库启航账户，违反 AUTH-001 空 grant=空范围。
 - 修复 SHA：`d1a184d`。
 - 三道门：调度 Full/Incr 空 scope 均 `blocked_auth/ACCOUNT_SCOPE_MISSING`；执行前空授权快照
   `BlockedAuthError`；Full 请求携带批准 `accountIds`，上游越界行在 metadata/Raw 持久化前拒绝。

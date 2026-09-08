@@ -1,0 +1,119 @@
+- generic [active] [ref=f10e1]:
+  - generic [ref=f10e2]:
+    - banner [ref=f10e3]:
+      - generic [ref=f10e4]:
+        - link "MP Logo motion-primitives beta" [ref=f10e5] [cursor=pointer]:
+          - /url: /
+          - img "MP Logo" [ref=f10e6]
+          - generic [ref=f10e8]: motion-primitives
+          - generic [ref=f10e9]: beta
+        - generic [ref=f10e10]:
+          - navigation [ref=f10e11]:
+            - link "AI" [ref=f10e12] [cursor=pointer]:
+              - /url: https://www.prompt-kit.com/
+            - link "Advanced" [ref=f10e13] [cursor=pointer]:
+              - /url: https://pro.motion-primitives.com/
+            - link "Components" [ref=f10e14] [cursor=pointer]:
+              - /url: /docs/text-effect
+          - navigation [ref=f10e16]:
+            - link "X" [ref=f10e17] [cursor=pointer]:
+              - /url: https://twitter.com/Ibelick
+              - img "X" [ref=f10e18]
+            - link "GitHub" [ref=f10e20] [cursor=pointer]:
+              - /url: https://github.com/ibelick/motion-primitives
+              - img "GitHub" [ref=f10e21]
+            - button "Toggle theme" [ref=f10e23]
+    - generic [ref=f10e27]:
+      - generic [ref=f10e28]:
+        - generic [ref=f10e29]:
+          - heading "UI kit to make beautiful, animated interfaces, faster." [level=1] [ref=f10e30]
+          - paragraph [ref=f10e31]: Beautifully designed motions components. Easy copy-paste. Customizable. Open Source. Built for engineers and designers.
+        - generic [ref=f10e32]:
+          - link [ref=f10e33] [cursor=pointer]:
+            - /url: /docs
+            - button "Explore Docs" [ref=f10e34]
+          - link [ref=f10e37] [cursor=pointer]:
+            - /url: https://github.com/ibelick/motion-primitives
+            - button "GitHub Star on GitHub" [ref=f10e38]:
+              - img "GitHub" [ref=f10e39]
+              - text: Star on GitHub
+        - generic [ref=f10e41]: Free updates and new components released regularly.
+      - button "Open dialog :r2:" [ref=f10e46] [cursor=pointer]:
+        - img "A desk lamp designed by Edouard Wilfrid Buquet in 1925. It features a double-arm design and is made from nickel-plated brass, aluminium and varnished wood." [ref=f10e47]
+        - generic [ref=f10e48]:
+          - generic [ref=f10e49]:
+            - generic [ref=f10e50]: EB27
+            - generic [ref=f10e51]: Edouard Wilfrid Buquet
+          - button "Open dialog" [ref=f10e52]
+      - generic [ref=f10e56]:
+        - generic [ref=f10e57] [cursor=pointer]
+        - generic [ref=f10e62]:
+          - img "impressionist painting, uploaded to Cosmos" [ref=f10e64]
+          - img "impressionist painting, uploaded to Cosmos" [ref=f10e66]
+          - img "impressionist painting, uploaded to Cosmos" [ref=f10e68]
+          - img "impressionist painting, uploaded to Cosmos" [ref=f10e70]
+      - generic [ref=f10e73]:
+        - generic [ref=f10e74] [cursor=pointer]
+        - paragraph [ref=f10e79]:
+          - generic [ref=f10e80]: Animate your ideas with motion-primitives.
+          - generic [ref=f10e81]: Animate
+          - generic [ref=f10e83]: your
+          - generic [ref=f10e85]: ideas
+          - generic [ref=f10e87]: with
+          - generic [ref=f10e89]: motion-primitives.
+      - generic [ref=f10e92]:
+        - generic [ref=f10e93] [cursor=pointer]
+        - generic [ref=f10e98]:
+          - generic [ref=f10e99]: Scroll down
+          - generic [ref=f10e102]:
+            - img "Image placeholder from cosmos.so, index:0" [ref=f10e104]
+            - img "Image placeholder from cosmos.so, index:1" [ref=f10e106]
+            - generic:
+              - img "Image placeholder from cosmos.so, index:2"
+            - generic:
+              - img "Image placeholder from cosmos.so, index:3"
+            - generic:
+              - img "Image placeholder from cosmos.so, index:4"
+            - generic:
+              - img "Image placeholder from cosmos.so, index:5"
+            - generic:
+              - img "Image placeholder from cosmos.so, index:6"
+            - generic:
+              - img "Image placeholder from cosmos.so, index:7"
+            - generic:
+              - img "Image placeholder from cosmos.so, index:8"
+            - generic:
+              - img "Image placeholder from cosmos.so, index:9"
+      - generic [ref=f10e112]:
+        - img "Dean blunt - Black Metal 2" [ref=f10e113]
+        - img "Jungle Jack - JUNGLE DES ILLUSIONS VOL 2" [ref=f10e114]
+        - img "Yung Lean - Stardust" [ref=f10e115]
+        - img "Lana Del Rey - Ultraviolence" [ref=f10e116]
+        - img "A$AP Rocky - Tailor Swif" [ref=f10e117]
+        - img "Midnight Miami (feat Konvy) - Nino Paid, Konvy" [ref=f10e118]
+        - img "Dean blunt - Black Metal 2" [ref=f10e119]
+        - img "Jungle Jack - JUNGLE DES ILLUSIONS VOL 2" [ref=f10e120]
+        - img "Yung Lean - Stardust" [ref=f10e121]
+        - img "Lana Del Rey - Ultraviolence" [ref=f10e122]
+        - img "A$AP Rocky - Tailor Swif" [ref=f10e123]
+        - img "Midnight Miami (feat Konvy) - Nino Paid, Konvy" [ref=f10e124]
+      - img "Olympic logo Paris 2024" [ref=f10e131]
+      - generic [ref=f10e132]: How can I assist you today?
+      - paragraph [ref=f10e142]: Generating code...
+      - generic [ref=f10e145]:
+        - generic [ref=f10e146] [cursor=pointer]
+        - paragraph [ref=f10e151]: Text ScrmRXfF
+      - button "Add Note" [ref=f10e158]
+      - status "Loading..." [ref=f10e165]
+      - generic [ref=f10e175]:
+        - button "Day view" [ref=f10e176]:
+          - generic [ref=f10e178]: Day
+        - button "Week view" [ref=f10e179]:
+          - generic [ref=f10e180]: Week
+        - button "Month view" [ref=f10e181]:
+          - generic [ref=f10e182]: Month
+        - button "Year view" [ref=f10e183]:
+          - generic [ref=f10e184]: Year
+      - link "and more..." [ref=f10e186] [cursor=pointer]:
+        - /url: /docs
+  - alert [ref=f10e187]

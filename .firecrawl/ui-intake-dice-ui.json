@@ -1,0 +1,455 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://diceui.com",
+        "title": "Dice UI",
+        "description": "Accessible shadcn/ui components built with React, TypeScript, and Tailwind CSS. Copy-paste ready, and customizable. View ComponentsGitHub. Built by sadman."
+      },
+      {
+        "url": "https://diceui.com/docs/components"
+      },
+      {
+        "url": "https://diceui.com/docs/introduction",
+        "title": "Introduction",
+        "description": "Dice UI is a collection of fully composable components that extend shadcn/ui. These components are accessible and customizable to fit your needs."
+      },
+      {
+        "url": "https://diceui.com/docs/changelog/2026-02-unified-radix-multi-base",
+        "title": "February 2026 - Unified Radix UI and Multi-Base Architecture",
+        "description": "Migrated to the unified radix-ui package, introduced multi-base component architecture, and optimized utility components."
+      },
+      {
+        "url": "https://diceui.com/docs/changelog/2026-06-banner-positioning-strategy"
+      },
+      {
+        "url": "https://diceui.com/docs/changelog"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/action-bar"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/angle-slider",
+        "title": "Angle Slider",
+        "description": "A component that arranges avatars with overlapping visual effects for displaying multiple users or items. On this page. Installation. Layout. Examples."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/avatar-group"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/badge-overflow",
+        "title": "Badge Overflow",
+        "description": "The component automatically extracts container padding, gap, badge height, and overflow badge width from computed styles. This means it adapts seamlessly to ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/banner"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/circular-progress",
+        "title": "Circular Progress",
+        "description": "A color picker component that allows users to select colors using various input methods. On this page. Installation. Layout. Examples. Interactive Demo. Colors."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/color-picker"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/color-swatch",
+        "title": "Color Swatch",
+        "description": "The color swatch automatically detects transparent colors and displays them with a checkerboard background pattern. Preview Code. Alpha Transparency."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/compare-slider"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/cropper"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/editable",
+        "title": "Editable",
+        "description": "An accessible inline editable component for editing text content in place. EditableTrigger, EditableToolbar, Input that automatically resizes based on content. ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/file-upload",
+        "title": "File Upload",
+        "description": "A file upload component with drag and drop, previewing, and progress tracking."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/fps"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/gauge"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/key-value",
+        "title": "Key Value",
+        "description": "A customizable gauge component that displays values on circular or partial arcs, perfect for dashboards, metrics, and KPIs. Marquee. An animated scrolling ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/marquee",
+        "title": "Marquee",
+        "description": "An animated scrolling component that continuously moves content horizontally or vertically."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/mask-input",
+        "title": "Mask Input",
+        "description": "An input component that formats user input with predefined patterns like phone numbers, dates, and credit cards."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/masonry",
+        "title": "Masonry",
+        "description": "A responsive masonry layout component for displaying items in a grid."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/media-player",
+        "title": "Media Player",
+        "description": "function DropdownMenuContent({ align = \"start\", alignOffset = 0, side = \"bottom\", sideOffset = 4, className, + container, ...props }: MenuPrimitive.Popup."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/phone-input",
+        "title": "Phone Input",
+        "description": "PhoneInput. The root container component that acts as both the wrapper and input group. Handles layout, borders, and focus states. Prop. Type. id? union."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/qr-code",
+        "title": "QR Code",
+        "description": "A flexible QR code component for generating and displaying QR codes with customization options."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/rating"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/relative-time-card"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/responsive-dialog",
+        "title": "Responsive Dialog",
+        "description": "A dialog component that automatically switches between a centered dialog on desktop and a bottom drawer on mobile."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/scroll-spy",
+        "title": "Scroll Spy",
+        "description": "Automatically updates navigation links based on scroll position with support for nested sections and customizable behavior."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/scroller"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/segmented-input"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/selection-toolbar"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/speed-dial",
+        "title": "Speed Dial",
+        "description": "The button that toggles the speed dial open/closed state. Prop. Type. onClick? union. onMouseEnter? union. onMouseLeave? union. variant? union. size? union."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/stack"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/stat",
+        "title": "Stat",
+        "description": "A flexible component for displaying key metrics and statistics with support for trends, indicators, and descriptions."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/status",
+        "title": "Status",
+        "description": "A flexible status indicator component with animated ping effect and color variants for displaying system states, user presence, and service health. API. Copy ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/stepper"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/swap"
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/time-picker",
+        "title": "Time Picker",
+        "description": "Behavior · Native HTML time input behavior: Replicates the exact behavior of <input type=\"time\"> for maximum familiarity · Inline editing: All time segments are ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/timeline",
+        "title": "Timeline",
+        "description": "import { Timeline, TimelineItem, TimelineDot, TimelineConnector, TimelineContent, TimelineHeader, TimelineTitle, TimelineTime, TimelineDescription, } ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/base/tour"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/action-bar",
+        "title": "Action Bar",
+        "description": "A container for action items that implements roving focus management. Items within a group can be navigated using arrow keys, forming a single tab stop. See ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/angle-slider",
+        "title": "Angle Slider",
+        "description": "A component that arranges avatars with overlapping visual effects for displaying multiple users or items. On this page. Installation. Layout. Examples."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/avatar-group"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/badge-overflow",
+        "title": "Badge Overflow",
+        "description": "BadgeOverflow. The component that measures available space and displays badges with overflow indicators. Prop. Type. items array. getBadgeLabel? union."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/banner"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/checkbox-group"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/circular-progress",
+        "title": "Circular Progress",
+        "description": "A circular progress with interactive controls and simulated upload progress. Preview Code. Colors. Different color themes using Tailwind CSS stroke and text ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/color-picker",
+        "title": "Color Picker",
+        "description": "An input field that displays and allows editing of the color value in the selected format. Prop. Type. withoutAlpha? union. asChild? union. Accessibility."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/color-swatch",
+        "title": "Color Swatch",
+        "description": "A color picker component that allows users to select colors using various input methods. Combobox. An input with a popover that helps users filter through a ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/combobox"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/compare-slider",
+        "title": "Compare Slider",
+        "description": "A powerful image and video cropper with zoom, rotation, and customizable crop areas. On this page. Installation. Layout. Examples. Controlled State. Vertical ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/cropper"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/data-grid",
+        "title": "Data Grid",
+        "description": "A powerful and flexible data table component for displaying, filtering, sorting, and paginating tabular data. On this page. Installation. Usage. Basic Data Grid."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/data-table"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/editable"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/file-upload",
+        "title": "File Upload",
+        "description": "A file upload component with drag and drop, previewing, and progress tracking."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/fps"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/gauge"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/kanban",
+        "title": "Kanban",
+        "description": "A drag and drop kanban board component for organizing items into columns."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/kbd"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/key-value"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/listbox"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/marquee",
+        "title": "Marquee",
+        "description": "An animated scrolling component that continuously moves content horizontally or vertically. automatically adapts to Code"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/mask-input",
+        "title": "Mask Input",
+        "description": "An input component that formats user input with predefined patterns like phone numbers, dates, and credit cards."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/masonry",
+        "title": "Masonry",
+        "description": "An input component that formats user input with predefined patterns like phone numbers, dates, and credit cards. Media Player. A fully featured media player ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/media-player"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/mention"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/phone-input",
+        "title": "Phone Input",
+        "description": "An accessible phone input component with automatic country detection and international phone number formatting."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/qr-code",
+        "title": "QR Code",
+        "description": "Displays a loading placeholder while the QR code is being generated. Automatically hides once the QR code is ready. Prop. Type. asChild? union. Download. A ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/rating",
+        "title": "Rating",
+        "description": "An accessible rating component that allows users to provide star ratings with support for half values, keyboard navigation, and form integration."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/relative-time-card",
+        "title": "Relative Time Card",
+        "description": "A dialog component that automatically switches between a centered dialog on desktop and a bottom drawer on mobile. On this page. Installation. Examples. With ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/responsive-dialog"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/scroll-spy",
+        "title": "Scroll Spy",
+        "description": "A dialog component that automatically switches between a centered dialog on desktop and a bottom drawer on mobile. Scroller. A scrollable container with ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/scroller",
+        "title": "Scroller",
+        "description": "A scrollable container with customizable scroll shadows and navigation buttons."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/segmented-input",
+        "title": "Segmented Input",
+        "description": "Segmented Input. A group of connected input fields that appear as a single segmented visual unit. API. Copy Page. Radix UIBase UI. Preview"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/selection-toolbar"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/sortable",
+        "title": "Sortable",
+        "description": "A drag and drop sortable component for reordering items. Multiple SortableContent components can be used within a Sortable component."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/speed-dial",
+        "title": "Speed Dial",
+        "description": "A floating action button that reveals a set of actions when triggered."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/stack"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/stat",
+        "title": "Stat",
+        "description": "A flexible status indicator component with animated ping effect and color variants for displaying system states, user presence, and service health. On this page."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/status",
+        "title": "Status",
+        "description": "A flexible status indicator component with animated ping effect and color variants for displaying system states, user presence, and service health."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/stepper",
+        "title": "Stepper",
+        "description": "Stepper A component that guides users through a multi-step process with clear visual progress indicators."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/swap",
+        "title": "Swap",
+        "description": "A component that swaps between two states with click or hover activation modes."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/tags-input",
+        "title": "Tags Input",
+        "description": "When input has text, adds a new tag. When a tag is highlighted and editable is enabled, enters edit mode. Escape, Clears tag highlight and edit ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/time-picker",
+        "title": "Time Picker",
+        "description": "TimePickerInput. Inline editable input field for time segments (hour, minute, second, period). Prop. Type. segment union. asChild? union. CSS Variable ..."
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/timeline"
+      },
+      {
+        "url": "https://diceui.com/docs/components/radix/tour"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/base/client-only",
+        "title": "Client Only",
+        "description": "Renders client-only components with hydration and fallback support."
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/base/composition"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/base/direction-provider",
+        "title": "Direction Provider",
+        "description": "Provides bidirectional text support (RTL/LTR) across your application."
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/base/hitbox"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/base/pending"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/base/portal"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/base/presence"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/base/visually-hidden-input"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/base/visually-hidden"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/radix/client-only"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/radix/composition"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/radix/direction-provider",
+        "title": "Direction Provider",
+        "description": "Usage. For data grid and other tablecn components, use the shadcn-style direction component at @/components/ui/direction instead — it ships automatically ..."
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/radix/hitbox"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/radix/pending",
+        "title": "Pending",
+        "description": "A utility component that disables interactions, maintains keyboard focus, and ensures proper accessibility for buttons, forms, links, switches, ..."
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/radix/portal"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/radix/presence"
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/radix/visually-hidden-input",
+        "title": "Visually Hidden Input",
+        "description": "import { VisuallyHiddenInput } from \"@diceui/visually-hidden-input\" export function CustomForm() { const [checked, setChecked] = React."
+      },
+      {
+        "url": "https://diceui.com/docs/utilities/radix/visually-hidden",
+        "title": "Visually Hidden",
+        "description": "Visually Hidden. Hides content visually while keeping it accessible to screen readers. API. Copy Page. Installation. Command Manual. npm pnpm yarn"
+      },
+      {
+        "url": "https://diceui.com/docs/components/data-table",
+        "title": "Data Table",
+        "description": "A powerful and flexible data table component for displaying, filtering, sorting, and paginating tabular data."
+      },
+      {
+        "url": "https://www.diceui.com/docs/utilities/base/pending",
+        "title": "Pending",
+        "description": "A utility component that disables interactions, maintains keyboard focus, and ensures proper accessibility for buttons, forms, links, switches, ..."
+      }
+    ]
+  }
+}

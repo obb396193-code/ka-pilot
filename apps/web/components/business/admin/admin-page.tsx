@@ -111,10 +111,10 @@ function EtlTab() {
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 @3xl/main:grid-cols-3">
         {connections.map((item) => <Card key={item.id}><CardHeader><CardTitle className="flex items-center justify-between text-base">{providerLabel[item.provider]}<StatusChip tone={item.health === "ok" ? "success" : "critical"}>{item.health === "ok" ? "健康" : "异常"}</StatusChip></CardTitle><CardDescription>探活 {fmtTime(item.lastCheckedAt)}</CardDescription></CardHeader></Card>)}
-        <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">奇航（platform）<StatusChip tone="warning">补拉中</StatusChip></CardTitle><CardDescription>2 户补拉中</CardDescription></CardHeader></Card>
+        <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">启航（platform）<StatusChip tone="warning">补拉中</StatusChip></CardTitle><CardDescription>2 户补拉中</CardDescription></CardHeader></Card>
         <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">ka-data（团队源）<StatusChip tone="success">D-1</StatusChip></CardTitle><CardDescription>数据日 2026-09-04</CardDescription></CardHeader></Card>
       </div>
-      <DataGrid table={table} empty="没有拉数记录" toolbar={<p className="text-xs text-muted-foreground">每天从奇航 / KA Data 拉数的记录；显示「凭证失效」= 奇航凭证过期，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
+      <DataGrid table={table} empty="没有拉数记录" toolbar={<p className="text-xs text-muted-foreground">每天从启航 / KA Data 拉数的记录；显示「凭证失效」= 启航凭证过期，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
     </div>
   )
 }
@@ -206,7 +206,7 @@ function AssetsTab() {
 function DiagnosticsTab() {
   const data = isOk(reconcileFixture) ? reconcileFixture.data : null
   if (!data) return null
-  const sides = [{ key: "kaData", label: "KA Data（权威源）", side: data.kaData }, { key: "platform", label: "奇航（对照源）", side: data.platform }]
+  const sides = [{ key: "kaData", label: "KA Data（权威源）", side: data.kaData }, { key: "platform", label: "启航（对照源）", side: data.platform }]
   return (
     <div className="flex flex-col gap-4">
       <Card>

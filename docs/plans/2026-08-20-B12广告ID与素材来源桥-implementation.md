@@ -1,6 +1,6 @@
 # B12 广告 ID 与素材来源桥实施计划
 
-**Goal:** 在 `be/b11` 干净终态上实现合同中立的广告 ID 证据门、奇航素材池分页客户端和视频来源安全探针。
+**Goal:** 在 `be/b11` 干净终态上实现合同中立的广告 ID 证据门、启航素材池分页客户端和视频来源安全探针。
 
 **Architecture:** Worker 内部采用 ports + strict adapters。广告对象候选必须通过显式证据门后才能成为 `adIds`；素材池使用独立只读 HTTP client，分页完整性和资源预算 fail-closed；视频 URL 使用部署级 host allowlist 和手动跳转探针，不下载正文。
 

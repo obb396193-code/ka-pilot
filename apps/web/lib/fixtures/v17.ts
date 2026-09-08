@@ -36,7 +36,7 @@ export type GapNode = { key: string; label: string; gap: MetricValue; share?: Ra
 export type AttributionTree = { mode: "volume" | "cost"; root: GapNode; children: GapNode[]; byTask?: { taskId: string; taskName: string; gap: MetricValue }[]; lineage: { window: { from: string; to: string; preset?: string }; adLevelSource: string } }
 export const attributionFixtures: Record<string, Fixture<AttributionTree>> = { "fixture-task-ready": attribution as unknown as Fixture<AttributionTree> }
 export const leadGapTreeFixture = leadGapTree as unknown as Fixture<AttributionTree>
-export const adLevelSourceLabel: Record<string, string> = { "platform.ad_realtime": "奇航广告实时", "ka_data.dwd_adgroup_daily": "ka_data 广告组日表", none: "无广告级数据" }
+export const adLevelSourceLabel: Record<string, string> = { "platform.ad_realtime": "启航广告实时", "ka_data.dwd_adgroup_daily": "ka_data 广告组日表", none: "无广告级数据" }
 
 // ---- 7.6 知悉流 ----
 export type FyiItem = { at: string; kind: "approval_decided" | "escalation_closed" | "major_change" | "milestone" | "member_change"; summary: string; ref: { type: string; id: string } | null }

@@ -1,0 +1,1922 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="paper" data-density="default" data-motion="full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>前端规范实验室 · 临时 Demo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --font-scale: 1;
+      --space-unit: 1;
+      --page-pad: calc(28px * var(--space-unit));
+      --card-pad: calc(20px * var(--space-unit));
+      --gap: calc(16px * var(--space-unit));
+      --control-h: calc(38px * var(--space-unit));
+      --radius: 16px;
+      --radius-sm: 9px;
+      --bg: #f2efe6;
+      --surface: #fbfaf5;
+      --surface-2: #e9e5d9;
+      --ink: #15191f;
+      --muted: #62666b;
+      --line: #c9c4b7;
+      --accent: #1757ff;
+      --accent-ink: #ffffff;
+      --signal: #e64d2e;
+      --good: #087a55;
+      --warn: #b46300;
+      --bad: #c72c41;
+      --chart-1: #1757ff;
+      --chart-2: #e64d2e;
+      --chart-3: #008b75;
+      --shadow: 0 18px 60px rgba(28, 31, 36, .08);
+      --display: "Iowan Old Style", "Songti SC", "Noto Serif CJK SC", serif;
+      --body: "Avenir Next", "PingFang SC", "Microsoft YaHei", sans-serif;
+      --mono: "SFMono-Regular", "Roboto Mono", "Menlo", monospace;
+    }
+
+    html[data-theme="midnight"] {
+      color-scheme: dark;
+      --bg: #090d14;
+      --surface: #101722;
+      --surface-2: #192231;
+      --ink: #edf2f7;
+      --muted: #98a5b5;
+      --line: #2d3949;
+      --accent: #79a7ff;
+      --accent-ink: #07101f;
+      --signal: #ff785a;
+      --good: #56d6a1;
+      --warn: #ffbd66;
+      --bad: #ff7186;
+      --chart-1: #79a7ff;
+      --chart-2: #ff785a;
+      --chart-3: #55d7c2;
+      --shadow: 0 22px 70px rgba(0, 0, 0, .32);
+    }
+
+    html[data-theme="signal"] {
+      color-scheme: light;
+      --bg: #e7eadf;
+      --surface: #f7f9ef;
+      --surface-2: #d7dccd;
+      --ink: #172018;
+      --muted: #566057;
+      --line: #aeb7aa;
+      --accent: #006b4f;
+      --accent-ink: #ffffff;
+      --signal: #ff4f1f;
+      --good: #006b4f;
+      --warn: #9a5800;
+      --bad: #c3243c;
+      --chart-1: #006b4f;
+      --chart-2: #ff4f1f;
+      --chart-3: #6c49c8;
+      --radius: 4px;
+      --radius-sm: 2px;
+      --shadow: 8px 8px 0 rgba(23, 32, 24, .13);
+    }
+
+    html[data-density="compact"] {
+      --space-unit: .78;
+    }
+
+    html[data-density="comfortable"] {
+      --space-unit: 1.22;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: calc(16px * var(--font-scale));
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        linear-gradient(color-mix(in srgb, var(--line) 28%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--line) 28%, transparent) 1px, transparent 1px),
+        var(--bg);
+      background-size: 24px 24px;
+      color: var(--ink);
+      font-family: var(--body);
+      line-height: 1.55;
+      transition: background-color 220ms ease, color 220ms ease;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button,
+    a,
+    input,
+    select,
+    iframe {
+      border-radius: var(--radius-sm);
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 10px;
+      left: 10px;
+      translate: 0 -160%;
+      padding: 10px 14px;
+      background: var(--ink);
+      color: var(--surface);
+    }
+
+    .skip-link:focus {
+      translate: 0;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 268px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .rail {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      height: 100vh;
+      overflow: auto;
+      border-right: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      backdrop-filter: blur(18px);
+      padding: 22px;
+    }
+
+    .brand {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 12px;
+      align-items: center;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--ink);
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--surface);
+      font: italic 700 25px/1 var(--display);
+    }
+
+    .brand strong {
+      display: block;
+      font-size: .95rem;
+    }
+
+    .brand small,
+    .rail-note,
+    .eyebrow,
+    .spec-id {
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 650;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .rail nav {
+      display: grid;
+      gap: 4px;
+      margin: 22px 0;
+    }
+
+    .rail nav a {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 12px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: background-color 150ms ease, color 150ms ease, translate 150ms ease;
+    }
+
+    .rail nav a:hover {
+      translate: 3px 0;
+      background: var(--surface-2);
+      color: var(--ink);
+    }
+
+    .rail nav span {
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rail-note {
+      margin-top: 28px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      line-height: 1.6;
+      letter-spacing: .04em;
+      text-transform: none;
+    }
+
+    main {
+      min-width: 0;
+      padding: var(--page-pad);
+    }
+
+    .hero {
+      position: relative;
+      min-height: min(76vh, 760px);
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr);
+      gap: clamp(28px, 6vw, 90px);
+      align-items: end;
+      padding: clamp(24px, 6vw, 84px) 0 42px;
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .hero h1 {
+      max-width: 1050px;
+      margin: 12px 0 22px;
+      font: 500 clamp(3.5rem, 8vw, 9rem)/.84 var(--display);
+      letter-spacing: -.055em;
+      text-wrap: balance;
+    }
+
+    .hero h1 em {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .hero-copy {
+      max-width: 660px;
+      font-size: clamp(1rem, 1.3vw, 1.22rem);
+      text-wrap: pretty;
+    }
+
+    .hero-aside {
+      align-self: center;
+      padding: 20px;
+      border-left: 4px solid var(--signal);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-aside strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    .control-dock {
+      position: sticky;
+      top: 12px;
+      z-index: 8;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr .9fr 1fr auto;
+      gap: 10px;
+      margin: 18px 0 38px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .control-group {
+      min-width: 0;
+    }
+
+    .control-group > span,
+    .control-group > label {
+      display: block;
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .segmented {
+      display: flex;
+      gap: 3px;
+      min-width: 0;
+      padding: 3px;
+      background: var(--surface-2);
+      border-radius: var(--radius-sm);
+    }
+
+    .segmented button,
+    .replay-button,
+    .soft-button,
+    .primary-button,
+    .chip-button {
+      min-height: var(--control-h);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms ease;
+    }
+
+    .segmented button {
+      flex: 1;
+      min-width: 0;
+      padding: 7px 8px;
+      background: transparent;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .segmented button[aria-pressed="true"] {
+      background: var(--ink);
+      color: var(--surface);
+    }
+
+    .replay-button,
+    .primary-button {
+      align-self: end;
+      padding: 8px 16px;
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-weight: 700;
+    }
+
+    .replay-button:hover,
+    .primary-button:hover {
+      transform: translateY(-2px);
+    }
+
+    .range-wrap {
+      display: flex;
+      align-items: center;
+      height: var(--control-h);
+      gap: 8px;
+      padding: 0 9px;
+      background: var(--surface-2);
+    }
+
+    .range-wrap input {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .range-wrap output {
+      min-width: 38px;
+      font: 650 .75rem/1 var(--mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .section {
+      scroll-margin-top: 120px;
+      padding: clamp(44px, 7vw, 96px) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-heading {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr) minmax(260px, .46fr);
+      gap: 20px;
+      align-items: start;
+      margin-bottom: 30px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font: 500 clamp(2.2rem, 4.6vw, 5rem)/.95 var(--display);
+      letter-spacing: -.035em;
+      text-wrap: balance;
+    }
+
+    .section-heading p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      text-wrap: pretty;
+    }
+
+    .spec-grid,
+    .metric-grid,
+    .motion-grid,
+    .tool-grid,
+    .format-grid,
+    .official-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: var(--gap);
+    }
+
+    .card {
+      min-width: 0;
+      padding: var(--card-pad);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      transition: background-color 220ms ease, border-color 220ms ease, transform 180ms ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    .card > :first-child {
+      margin-top: 0;
+    }
+
+    .card > :last-child {
+      margin-bottom: 0;
+    }
+
+    .col-12 { grid-column: span 12; }
+    .col-8 { grid-column: span 8; }
+    .col-7 { grid-column: span 7; }
+    .col-6 { grid-column: span 6; }
+    .col-5 { grid-column: span 5; }
+    .col-4 { grid-column: span 4; }
+    .col-3 { grid-column: span 3; }
+
+    .type-sheet {
+      padding: clamp(24px, 4vw, 52px);
+    }
+
+    .type-row {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr) 90px;
+      gap: 20px;
+      align-items: baseline;
+      padding: calc(18px * var(--space-unit)) 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .type-row:last-child {
+      border: 0;
+    }
+
+    .type-role,
+    .type-token {
+      color: var(--muted);
+      font: 600 .72rem/1.2 var(--mono);
+    }
+
+    .type-token {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .page-title-sample {
+      font: 600 clamp(2rem, 4vw, 3.4rem)/1.02 var(--display);
+      letter-spacing: -.03em;
+    }
+
+    .section-title-sample {
+      font: 650 1.45rem/1.25 var(--body);
+    }
+
+    .body-sample {
+      max-width: 66ch;
+      line-height: 1.7;
+      text-wrap: pretty;
+    }
+
+    .label-sample {
+      font-size: .82rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+
+    .helper-sample {
+      color: var(--muted);
+      font-size: .76rem;
+    }
+
+    .stress-test {
+      overflow-wrap: anywhere;
+      font-family: var(--mono);
+      font-size: .78rem;
+    }
+
+    .format-card {
+      grid-column: span 3;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .format-card::before {
+      content: attr(data-index);
+      position: absolute;
+      right: 12px;
+      top: 10px;
+      color: color-mix(in srgb, var(--line) 70%, transparent);
+      font: 500 2.4rem/1 var(--display);
+    }
+
+    .format-card h3 {
+      margin: 0 0 18px;
+      font-size: .82rem;
+    }
+
+    .format-value,
+    .kpi-value,
+    td.is-number,
+    .number-demo {
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+
+    .format-value {
+      display: block;
+      overflow: hidden;
+      margin-bottom: 7px;
+      font: 650 clamp(1.4rem, 2.4vw, 2.1rem)/1.05 var(--mono);
+      letter-spacing: -.06em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .format-exact,
+    .microcopy {
+      color: var(--muted);
+      font-size: .75rem;
+    }
+
+    .alignment-demo {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px 18px;
+      align-items: baseline;
+      font-family: var(--mono);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .alignment-demo span:nth-child(3n + 2) {
+      min-width: 9ch;
+      text-align: right;
+    }
+
+    .alignment-demo span:nth-child(3n) {
+      min-width: 46px;
+      color: var(--muted);
+    }
+
+    .wrong-alignment {
+      font-family: var(--body);
+      font-variant-numeric: proportional-nums;
+    }
+
+    .status-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .status-line:last-child {
+      border: 0;
+    }
+
+    .status-pill {
+      padding: 4px 9px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+
+    .is-good { color: var(--good); }
+    .is-warn { color: var(--warn); }
+    .is-bad { color: var(--bad); }
+    .is-muted { color: var(--muted); }
+
+    .dashboard {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .dashboard-topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      padding: var(--card-pad);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .dashboard-topbar h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .dashboard-body {
+      padding: var(--card-pad);
+    }
+
+    .health-banner {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: var(--gap);
+      padding: 12px 14px;
+      border-left: 4px solid var(--good);
+      background: color-mix(in srgb, var(--good) 9%, var(--surface));
+    }
+
+    .health-banner strong {
+      display: block;
+    }
+
+    .health-banner span {
+      color: var(--muted);
+      font-size: .78rem;
+    }
+
+    .metric-grid {
+      margin-bottom: var(--gap);
+    }
+
+    .kpi {
+      grid-column: span 3;
+      padding: var(--card-pad);
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      font-size: .76rem;
+      font-weight: 650;
+    }
+
+    .kpi-value {
+      display: block;
+      margin: 8px 0;
+      font: 650 clamp(1.65rem, 3vw, 2.55rem)/1 var(--mono);
+      letter-spacing: -.065em;
+    }
+
+    .kpi-change {
+      font-size: .76rem;
+      font-weight: 700;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: var(--gap);
+    }
+
+    .chip-button,
+    .soft-button {
+      padding: 7px 12px;
+      border-color: var(--line);
+      background: var(--surface);
+      color: var(--ink);
+    }
+
+    .chip-button[aria-pressed="true"] {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+      color: var(--accent);
+    }
+
+    .chart-table-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(360px, .8fr);
+      gap: var(--gap);
+    }
+
+    .chart-card,
+    .table-card {
+      min-width: 0;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head h4 {
+      margin: 0;
+      font-size: .9rem;
+    }
+
+    .panel-head p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-size: .72rem;
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      color: var(--muted);
+      font-size: .7rem;
+      white-space: nowrap;
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 4px;
+      border-radius: 50%;
+      background: var(--chart-1);
+    }
+
+    .legend span:last-child i {
+      background: var(--chart-2);
+    }
+
+    .chart-wrap {
+      padding: 10px 12px 2px;
+    }
+
+    .chart-wrap svg {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .grid-line {
+      stroke: var(--line);
+      stroke-width: 1;
+      stroke-dasharray: 4 5;
+    }
+
+    .axis-label {
+      fill: var(--muted);
+      font: 10px var(--mono);
+    }
+
+    .trend-line {
+      fill: none;
+      stroke: var(--chart-1);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .target-line {
+      fill: none;
+      stroke: var(--chart-2);
+      stroke-width: 2;
+      stroke-dasharray: 6 5;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .area-fill {
+      fill: color-mix(in srgb, var(--chart-1) 13%, transparent);
+    }
+
+    .table-scroll {
+      overflow: auto;
+      max-width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .78rem;
+    }
+
+    th,
+    td {
+      padding: calc(11px * var(--space-unit)) 13px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: .68rem;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    td.is-number,
+    th.is-number {
+      text-align: right;
+      font-family: var(--mono);
+    }
+
+    tbody tr:hover {
+      background: var(--surface-2);
+    }
+
+    .density-compare {
+      display: grid;
+      gap: 10px;
+    }
+
+    .density-row {
+      display: grid;
+      grid-template-columns: 92px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .density-row.compact { padding: 7px 10px; }
+    .density-row.default { padding: 12px 14px; }
+    .density-row.comfortable { padding: 18px; }
+
+    .mini-layout {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+      min-height: 155px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(color-mix(in srgb, var(--line) 30%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--line) 30%, transparent) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+
+    .mini-layout > div {
+      border: 1px solid var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+    }
+
+    .mini-layout > div:first-child { grid-column: span 4; }
+    .mini-layout > div:last-child { grid-column: span 3; }
+
+    .mobile-frame {
+      width: min(100%, 310px);
+      margin: auto;
+      padding: 10px;
+      border: 2px solid var(--ink);
+      border-radius: 28px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .mobile-screen {
+      display: grid;
+      gap: 8px;
+      min-height: 360px;
+      padding: 18px 12px;
+      border-radius: 20px;
+      background: var(--bg);
+    }
+
+    .mobile-kpi {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .mobile-kpi div,
+    .mobile-list div {
+      min-height: 58px;
+      padding: 9px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .motion-card {
+      grid-column: span 3;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+
+    .motion-stage {
+      display: grid;
+      place-items: center;
+      min-height: 92px;
+      margin: 14px 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      text-align: center;
+    }
+
+    .motion-word {
+      display: inline-block;
+      max-width: 100%;
+      font: 650 clamp(1.35rem, 2.5vw, 2rem)/1.1 var(--display);
+      overflow-wrap: anywhere;
+    }
+
+    .effect-shimmer {
+      color: transparent;
+      background: linear-gradient(100deg, var(--muted) 25%, var(--ink) 48%, var(--muted) 72%);
+      background-size: 240% 100%;
+      background-clip: text;
+      animation: shimmer 1.7s linear infinite;
+    }
+
+    .effect-roll {
+      animation: roll-in 650ms cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .effect-loop {
+      animation: loop-rise 2.2s cubic-bezier(.2, .8, .2, 1) infinite;
+    }
+
+    .number-demo {
+      display: inline-grid;
+      place-items: center;
+      width: 100%;
+      min-width: 0;
+      font: 650 clamp(1.35rem, 1.9vw, 1.8rem)/1 var(--mono);
+      letter-spacing: -.06em;
+      white-space: nowrap;
+    }
+
+    .slide-number {
+      animation: number-slide 520ms cubic-bezier(.22, .85, .25, 1) both;
+    }
+
+    @keyframes shimmer {
+      to { background-position: -240% 0; }
+    }
+
+    @keyframes roll-in {
+      from { opacity: 0; transform: rotateX(-75deg) translateY(16px); }
+      to { opacity: 1; transform: rotateX(0) translateY(0); }
+    }
+
+    @keyframes loop-rise {
+      0%, 18% { opacity: 0; transform: translateY(18px); }
+      28%, 72% { opacity: 1; transform: translateY(0); }
+      82%, 100% { opacity: 0; transform: translateY(-18px); }
+    }
+
+    @keyframes number-slide {
+      from { opacity: 0; transform: translateY(28%); filter: blur(5px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+
+    .usage-note {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 8px;
+      align-items: start;
+      color: var(--muted);
+      font-size: .72rem;
+    }
+
+    .usage-note b {
+      color: var(--good);
+    }
+
+    .usage-note.is-no b {
+      color: var(--bad);
+    }
+
+    .bad-stage {
+      animation: bad-pulse 650ms ease-in-out infinite alternate;
+    }
+
+    @keyframes bad-pulse {
+      to { transform: scale(1.04); color: var(--bad); }
+    }
+
+    .official-card {
+      grid-column: span 6;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .official-card header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .official-card h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .official-card p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: .75rem;
+    }
+
+    .official-card iframe {
+      display: block;
+      width: 100%;
+      height: 430px;
+      border: 0;
+      background: #fff;
+    }
+
+    .tool-card {
+      grid-column: span 4;
+      min-height: 390px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tool-number {
+      color: var(--accent);
+      font: 600 3.4rem/1 var(--display);
+    }
+
+    .tool-card h3 {
+      margin: 8px 0;
+      font: 600 1.55rem/1.1 var(--display);
+    }
+
+    .tool-demo {
+      flex: 1;
+      margin: 18px 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+    }
+
+    .storybook-tabs {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+
+    .storybook-tabs button {
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .storybook-tabs button[aria-pressed="true"] {
+      background: var(--ink);
+      color: var(--surface);
+    }
+
+    .story-component {
+      display: grid;
+      place-items: center;
+      min-height: 155px;
+      border: 1px dashed var(--line);
+    }
+
+    .empty-illustration {
+      width: 66px;
+      height: 46px;
+      border: 2px solid var(--muted);
+      border-radius: 50% 50% 45% 45%;
+      opacity: .55;
+    }
+
+    .audit-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, .42fr);
+      gap: var(--gap);
+    }
+
+    .audit-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .audit-item {
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      gap: 10px;
+      align-items: start;
+      padding: 11px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .audit-check {
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--good) 15%, var(--surface));
+      color: var(--good);
+      font-weight: 800;
+    }
+
+    .audit-item strong {
+      display: block;
+      font-size: .82rem;
+    }
+
+    .audit-item small {
+      color: var(--muted);
+    }
+
+    .audit-item code {
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: .72rem;
+    }
+
+    .current-state {
+      position: sticky;
+      top: 116px;
+      align-self: start;
+    }
+
+    .current-state dl {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .current-state dt {
+      color: var(--muted);
+    }
+
+    .current-state dd {
+      margin: 0;
+      font-family: var(--mono);
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 32px 0 12px;
+      color: var(--muted);
+      font-size: .75rem;
+    }
+
+    html[data-motion="reduced"] *,
+    html[data-motion="reduced"] *::before,
+    html[data-motion="reduced"] *::after {
+      animation-duration: 1ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 80ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    html[data-motion="off"] *,
+    html[data-motion="off"] *::before,
+    html[data-motion="off"] *::after {
+      animation: none !important;
+      transition-duration: 0ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 1ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 1180px) {
+      .control-dock {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .replay-button {
+        grid-column: span 2;
+      }
+
+      .chart-table-grid,
+      .audit-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .current-state {
+        position: static;
+      }
+
+      .format-card,
+      .motion-card {
+        grid-column: span 6;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .app-shell {
+        display: block;
+      }
+
+      .rail {
+        position: relative;
+        width: auto;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .rail nav {
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .rail nav a {
+        flex: 0 0 auto;
+        gap: 12px;
+      }
+
+      .rail-note {
+        display: none;
+      }
+
+      .hero {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        padding-top: 50px;
+      }
+
+      .section-heading {
+        grid-template-columns: 70px minmax(0, 1fr);
+      }
+
+      .section-heading p {
+        grid-column: 2;
+      }
+
+      .official-card,
+      .tool-card {
+        grid-column: span 12;
+      }
+    }
+
+    @media (max-width: 650px) {
+      main {
+        padding: 16px;
+      }
+
+      .brand {
+        grid-template-columns: 42px 1fr;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+      }
+
+      .hero h1 {
+        font-size: clamp(3.2rem, 18vw, 5.2rem);
+      }
+
+      .control-dock {
+        position: relative;
+        top: auto;
+        grid-template-columns: 1fr;
+      }
+
+      .replay-button {
+        grid-column: auto;
+      }
+
+      .section-heading {
+        grid-template-columns: 1fr;
+      }
+
+      .section-heading p {
+        grid-column: auto;
+      }
+
+      .type-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .type-token {
+        text-align: left;
+      }
+
+      .format-card,
+      .motion-card,
+      .col-8,
+      .col-7,
+      .col-6,
+      .col-5,
+      .col-4,
+      .col-3 {
+        grid-column: span 12;
+      }
+
+      .kpi {
+        grid-column: span 6;
+      }
+
+      .dashboard-topbar,
+      .health-banner,
+      footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .chart-table-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .official-card iframe {
+        height: 520px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <div class="app-shell">
+    <aside class="rail" aria-label="实验室导航">
+      <div class="brand">
+        <div class="brand-mark">Aa</div>
+        <div><strong>前端规范实验室</strong><small>UI SYSTEM PROOF</small></div>
+      </div>
+      <nav>
+        <a href="#type"><span>01</span>文字层级</a>
+        <a href="#numbers"><span>02</span>数字格式</a>
+        <a href="#workspace"><span>03</span>数据工作台</a>
+        <a href="#layout"><span>04</span>布局密度</a>
+        <a href="#motion"><span>05</span>Motion Lab</a>
+        <a href="#official"><span>06</span>官方动效</a>
+        <a href="#tools"><span>07</span>工具职责</a>
+        <a href="#audit"><span>08</span>即时审核</a>
+      </nav>
+      <div class="rail-note">临时规范实验，不是最终产品皮肤。所有数据均为脱敏假数据，所有参数都可以继续调整。</div>
+    </aside>
+
+    <main id="main-content">
+      <section class="hero" aria-labelledby="hero-title">
+        <div>
+          <p class="eyebrow">TEMPORARY SPECIMEN · 2026</p>
+          <h1 id="hero-title">把规范变成<br><em>看得见的判断</em></h1>
+          <p class="hero-copy">不是告诉前端“永远必须这样”，而是把字体、数字、留白、密度和动画放进真实数据场景里。你可以现场切换，再判断哪个组合更清晰、更好看。</p>
+        </div>
+        <aside class="hero-aside">
+          <strong>这里验证什么？</strong>
+          <p>扫一眼能否找到结论；金额和 CPA 是否对齐；移动端是否仍有层级；动画是否帮助理解，而不是抢走注意力。</p>
+        </aside>
+      </section>
+
+      <section class="control-dock" aria-label="全局规范控制台">
+        <div class="control-group" data-theme-control>
+          <span>主题 Theme</span>
+          <div class="segmented">
+            <button type="button" data-set-theme="paper" aria-pressed="true">纸面</button>
+            <button type="button" data-set-theme="midnight" aria-pressed="false">夜间</button>
+            <button type="button" data-set-theme="signal" aria-pressed="false">信号</button>
+          </div>
+        </div>
+        <div class="control-group" data-density-control>
+          <span>密度 Density</span>
+          <div class="segmented">
+            <button type="button" data-set-density="compact" aria-pressed="false">紧凑</button>
+            <button type="button" data-set-density="default" aria-pressed="true">默认</button>
+            <button type="button" data-set-density="comfortable" aria-pressed="false">舒展</button>
+          </div>
+        </div>
+        <div class="control-group" data-font-control>
+          <label for="font-scale">字号 Font scale</label>
+          <div class="range-wrap"><input id="font-scale" type="range" min="90" max="112" value="100" step="1"><output for="font-scale">100%</output></div>
+        </div>
+        <div class="control-group" data-motion-control>
+          <span>动画 Motion</span>
+          <div class="segmented">
+            <button type="button" data-set-motion="full" aria-pressed="true">正常</button>
+            <button type="button" data-set-motion="reduced" aria-pressed="false">减弱</button>
+            <button type="button" data-set-motion="off" aria-pressed="false">关闭</button>
+          </div>
+        </div>
+        <button class="replay-button" type="button" data-replay-motion>↻ 重播动画</button>
+      </section>
+
+      <section class="section" id="type">
+        <header class="section-heading">
+          <span class="spec-id">01 / TYPE</span>
+          <h2>字体不是一个字号，<br>而是一套阅读顺序</h2>
+          <p>推荐范围只提供起点。真正要看的是：用户能否先找到页面结论，再读指标、证据和限制。</p>
+        </header>
+        <div class="spec-grid">
+          <article class="card col-8 type-sheet">
+            <div class="type-row">
+              <span class="type-role">PAGE TITLE</span>
+              <span class="page-title-sample">账户经营总览</span>
+              <span class="type-token">24–32 / 600</span>
+            </div>
+            <div class="type-row">
+              <span class="type-role">SECTION</span>
+              <span class="section-title-sample">今天最需要处理的 3 个异常</span>
+              <span class="type-token">18–24 / 600</span>
+            </div>
+            <div class="type-row">
+              <span class="type-role">BODY</span>
+              <span class="body-sample">近 24 小时整体消耗稳定，但高消耗账户中有 2 个 CPA 高于考核价。建议先查看数据完整性，再决定是否调整预算。</span>
+              <span class="type-token">14–16 / 1.5</span>
+            </div>
+            <div class="type-row">
+              <span class="type-role">LABEL</span>
+              <span class="label-sample">目标 CPA · 数据更新时间 · 当前筛选</span>
+              <span class="type-token">12–14 / 600</span>
+            </div>
+            <div class="type-row">
+              <span class="type-role">HELPER</span>
+              <span class="helper-sample">口径：按业务日统计；数据可能存在约 8 分钟延迟。</span>
+              <span class="type-token">12–13 / muted</span>
+            </div>
+          </article>
+          <aside class="card col-4">
+            <p class="eyebrow">STRESS TEST</p>
+            <h3>超长内容不能把布局顶坏</h3>
+            <p>华东食品饮料事业群—夏季新品联合推广超长账户名称测试</p>
+            <p class="stress-test">campaign_summer_launch_2026_extremely_long_identifier_without_spaces_004291</p>
+            <div class="usage-note"><b>✓</b><span>标题自然换行，辅助标识允许断行或截断，并能查看完整值。</span></div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="numbers">
+        <header class="section-heading">
+          <span class="spec-id">02 / NUMBER</span>
+          <h2>数字不仅要正确，<br>还要能快速比较</h2>
+          <p>总览可以缩写，表格保留精确值；金额、比例、CPA、日期和无值状态必须有统一语义。</p>
+        </header>
+        <div class="format-grid">
+          <article class="card format-card" data-index="01">
+            <h3>今日消耗 · 金额</h3>
+            <output class="format-value" data-format="currency-short">—</output>
+            <span class="format-exact" data-format="currency-exact">—</span>
+          </article>
+          <article class="card format-card" data-index="02">
+            <h3>点击率 · 百分比</h3>
+            <output class="format-value" data-format="percent">—</output>
+            <span class="format-exact">API 原值 0.03784</span>
+          </article>
+          <article class="card format-card" data-index="03">
+            <h3>转化成本 · CPA</h3>
+            <output class="format-value" data-format="cpa">—</output>
+            <span class="format-exact">考核价 ¥58.00 · 高 6.6%</span>
+          </article>
+          <article class="card format-card" data-index="04">
+            <h3>更新时间 · 业务日</h3>
+            <output class="format-value" data-format="date">—</output>
+            <span class="format-exact">Asia/Shanghai · 约 8 分钟延迟</span>
+          </article>
+
+          <article class="card col-6">
+            <p class="eyebrow">TABULAR + DECIMAL ALIGN</p>
+            <h3>正确：等宽数字、右对齐、单位稳定</h3>
+            <div class="alignment-demo" aria-label="正确数字对齐示例">
+              <span>品牌旗舰店</span><span>123,456.70</span><span>元</span>
+              <span>新品测试组</span><span>9,842.15</span><span>元</span>
+              <span>低量观察组</span><span>87.00</span><span>元</span>
+              <span>无有效值</span><span>—</span><span>元</span>
+            </div>
+          </article>
+          <article class="card col-6">
+            <p class="eyebrow">PROPORTIONAL + MIXED UNIT</p>
+            <h3>错误：比例数字、单位混乱、未知写成 0</h3>
+            <div class="alignment-demo wrong-alignment" aria-label="错误数字对齐示例">
+              <span>品牌旗舰店</span><span>¥123456.7</span><span></span>
+              <span>新品测试组</span><span>0.984万</span><span></span>
+              <span>低量观察组</span><span>87元</span><span></span>
+              <span>无有效值</span><span>0</span><span>元</span>
+            </div>
+          </article>
+
+          <article class="card col-12">
+            <p class="eyebrow">ZERO ≠ NULL ≠ STALE ≠ NO PERMISSION</p>
+            <div class="status-line"><span><strong>0</strong> · 已确认有数据，结果为零</span><span class="status-pill is-good">有效零值</span></div>
+            <div class="status-line"><span><strong>—</strong> · 当前口径不适用或没有有效值</span><span class="status-pill is-muted">无有效值</span></div>
+            <div class="status-line"><span><strong>¥61.84</strong> · 最近成功值，但数据已过期</span><span class="status-pill is-warn">18 分钟未更新</span></div>
+            <div class="status-line"><span><strong>隐藏</strong> · 当前角色没有查看权限</span><span class="status-pill is-bad">无权限</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="workspace">
+        <header class="section-heading">
+          <span class="spec-id">03 / WORK</span>
+          <h2>把规范放进一个<br>真实数据工作台</h2>
+          <p>先数据健康与结论，再 KPI、筛选、趋势证据、明细和动作。下面不是产品定稿，而是层级样张。</p>
+        </header>
+        <article class="card dashboard">
+          <header class="dashboard-topbar">
+            <div><p class="eyebrow">ACCOUNT HEALTH · DEMO</p><h3>经营驾驶舱</h3></div>
+            <button class="primary-button" type="button">打开 Agent 诊断</button>
+          </header>
+          <div class="dashboard-body">
+            <div class="health-banner">
+              <div><strong>数据完整，2 个账户需要关注</strong><span>最近更新：<span data-format="time">—</span> · Asia/Shanghai · 当前可执行只读诊断</span></div>
+              <span class="status-pill is-good">健康度 96%</span>
+            </div>
+
+            <div class="metric-grid">
+              <article class="kpi"><span class="kpi-label">今日消耗</span><output class="kpi-value" data-animate-value="128640.72" data-kind="currency">¥0</output><span class="kpi-change is-good">↑ 8.4% 较昨日</span></article>
+              <article class="kpi"><span class="kpi-label">转化成本 CPA</span><output class="kpi-value" data-animate-value="61.84" data-kind="cpa">¥0</output><span class="kpi-change is-bad">高于考核价 6.6%</span></article>
+              <article class="kpi"><span class="kpi-label">支付转化数</span><output class="kpi-value" data-animate-value="2080" data-kind="count">0</output><span class="kpi-change is-good">↑ 14.2% 较昨日</span></article>
+              <article class="kpi"><span class="kpi-label">目标达成率</span><output class="kpi-value" data-animate-value="92.6" data-kind="percent">0%</output><span class="kpi-change is-warn">距目标还差 7.4%</span></article>
+            </div>
+
+            <div class="filter-row" aria-label="演示筛选器">
+              <button class="chip-button" type="button" aria-pressed="true">今天</button>
+              <button class="chip-button" type="button" aria-pressed="false">全部账户</button>
+              <button class="chip-button" type="button" aria-pressed="false">高消耗</button>
+              <button class="chip-button" type="button" aria-pressed="false">CPA 超标</button>
+              <button class="soft-button" type="button">更多筛选 2</button>
+            </div>
+
+            <div class="chart-table-grid">
+              <section class="chart-card" aria-labelledby="trend-title">
+                <header class="panel-head">
+                  <div><h4 id="trend-title">消耗平稳上升，CPA 在 14:00 后回落</h4><p>左轴：消耗（元） · 右轴：CPA（元） · 每小时</p></div>
+                  <div class="legend"><span><i></i>消耗</span><span><i></i>目标 CPA</span></div>
+                </header>
+                <div class="chart-wrap">
+                  <svg viewBox="0 0 720 300" role="img" aria-labelledby="trend-title trend-desc">
+                    <desc id="trend-desc">脱敏假数据趋势图。消耗随时间上升，目标 CPA 为 58 元。</desc>
+                    <line class="grid-line" x1="54" y1="40" x2="690" y2="40"></line>
+                    <line class="grid-line" x1="54" y1="100" x2="690" y2="100"></line>
+                    <line class="grid-line" x1="54" y1="160" x2="690" y2="160"></line>
+                    <line class="grid-line" x1="54" y1="220" x2="690" y2="220"></line>
+                    <text class="axis-label" x="8" y="44">16万</text><text class="axis-label" x="8" y="104">12万</text><text class="axis-label" x="8" y="164">8万</text><text class="axis-label" x="8" y="224">4万</text>
+                    <path class="area-fill" d="M54 238 C120 225 150 205 206 199 S300 175 360 164 S455 143 515 120 S610 88 690 62 L690 250 L54 250 Z"></path>
+                    <path class="trend-line" d="M54 238 C120 225 150 205 206 199 S300 175 360 164 S455 143 515 120 S610 88 690 62"></path>
+                    <path class="target-line" d="M54 134 L690 134"></path>
+                    <circle cx="515" cy="120" r="6" fill="var(--chart-1)" stroke="var(--surface)" stroke-width="3"></circle>
+                    <text class="axis-label" x="54" y="275">00:00</text><text class="axis-label" x="210" y="275">06:00</text><text class="axis-label" x="365" y="275">12:00</text><text class="axis-label" x="520" y="275">18:00</text><text class="axis-label" x="660" y="275">24:00</text>
+                  </svg>
+                </div>
+              </section>
+
+              <section class="table-card" aria-labelledby="account-table-title">
+                <header class="panel-head"><div><h4 id="account-table-title">需要关注的账户</h4><p>按消耗降序 · 3 条脱敏假数据</p></div><button class="soft-button" type="button">查看全部</button></header>
+                <div class="table-scroll">
+                  <table>
+                    <thead><tr><th>账户</th><th class="is-number">消耗</th><th class="is-number">CPA</th><th>状态</th></tr></thead>
+                    <tbody>
+                      <tr><td>旗舰店 A</td><td class="is-number">¥48,260.70</td><td class="is-number">¥64.20</td><td><span class="is-bad">高于目标</span></td></tr>
+                      <tr><td>新品组 B</td><td class="is-number">¥31,842.15</td><td class="is-number">¥57.10</td><td><span class="is-good">正常</span></td></tr>
+                      <tr><td>探索组 C</td><td class="is-number">¥9,842.00</td><td class="is-number">—</td><td><span class="is-warn">数据不足</span></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="section" id="layout">
+        <header class="section-heading">
+          <span class="spec-id">04 / SPACE</span>
+          <h2>密度不是越松越高级，<br>也不是越挤越专业</h2>
+          <p>紧凑适合大表批量扫读，舒展适合决策摘要。用顶部控制器切换，观察整个页面的节奏变化。</p>
+        </header>
+        <div class="spec-grid">
+          <article class="card col-5">
+            <p class="eyebrow">DENSITY VARIANTS</p>
+            <div class="density-compare">
+              <div class="density-row compact"><span>紧凑</span><span>适合高密度表格</span><strong>32px</strong></div>
+              <div class="density-row default"><span>默认</span><span>大部分工作台</span><strong>40px</strong></div>
+              <div class="density-row comfortable"><span>舒展</span><span>摘要与详情</span><strong>48px</strong></div>
+            </div>
+          </article>
+          <article class="card col-4">
+            <p class="eyebrow">GRID RHYTHM</p>
+            <h3>同层靠近，跨层拉开</h3>
+            <div class="mini-layout" aria-label="四列布局节奏示意"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          </article>
+          <article class="card col-3">
+            <p class="eyebrow">MOBILE PRIORITY</p>
+            <div class="mobile-frame">
+              <div class="mobile-screen">
+                <strong>经营驾驶舱</strong>
+                <div class="mobile-kpi"><div>消耗<br><b>12.8万</b></div><div>CPA<br><b>¥61.84</b></div></div>
+                <div class="mobile-list"><div>2 个账户需要关注</div><div>趋势证据折叠显示</div><div>主动作保留</div></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="motion">
+        <header class="section-heading">
+          <span class="spec-id">05 / MOTION</span>
+          <h2>文字可以动，<br>但不能妨碍读</h2>
+          <p>下面是规范效果样张，不冒充第三方官方源码。顶部可切正常、减弱、关闭并重播。</p>
+        </header>
+        <div class="motion-grid">
+          <article class="card motion-card"><div><p class="eyebrow">Typing</p><div class="motion-stage"><span class="motion-word" data-effect="typing" aria-live="polite">正在分析异常账户…</span></div></div><div class="usage-note"><b>✓</b><span>Agent 流式状态、短句。不要用于长文。</span></div></article>
+          <article class="card motion-card"><div><p class="eyebrow">Morph</p><div class="motion-stage"><span class="motion-word" data-effect="morph">发现问题</span></div></div><div class="usage-note"><b>✓</b><span>同一位置的短状态切换，必须保留稳定语义。</span></div></article>
+          <article class="card motion-card"><div><p class="eyebrow">Roll</p><div class="motion-stage"><span class="motion-word effect-roll" data-effect="roll">诊断已完成</span></div></div><div class="usage-note"><b>✓</b><span>低频完成反馈，不用于每次轮询。</span></div></article>
+          <article class="card motion-card"><div><p class="eyebrow">Scramble</p><div class="motion-stage"><span class="motion-word" data-effect="scramble">生成策略摘要</span></div></div><div class="usage-note"><b>✓</b><span>极少量品牌/生成提示；最终文字必须立即可读。</span></div></article>
+          <article class="card motion-card"><div><p class="eyebrow">Shimmer</p><div class="motion-stage"><span class="motion-word effect-shimmer" data-effect="shimmer">模型正在推理</span></div></div><div class="usage-note"><b>✓</b><span>短暂等待提示；结束后停止，不永久闪烁。</span></div></article>
+          <article class="card motion-card"><div><p class="eyebrow">Text Loop</p><div class="motion-stage"><span class="motion-word effect-loop" data-effect="loop">检查数据完整性</span></div></div><div class="usage-note"><b>✓</b><span>有限步骤轮播；提供当前状态而非纯装饰。</span></div></article>
+          <article class="card motion-card"><div><p class="eyebrow">Animated Number</p><div class="motion-stage"><output class="number-demo" data-number-effect="animated">¥0</output></div></div><div class="usage-note"><b>✓</b><span>低频 KPI 确认性更新，最终值保持可访问。</span></div></article>
+          <article class="card motion-card"><div><p class="eyebrow">Sliding Number</p><div class="motion-stage"><output class="number-demo slide-number" data-number-effect="sliding">0.00%</output></div></div><div class="usage-note"><b>✓</b><span>短数字状态变化；不能每秒滚动。</span></div></article>
+          <article class="card motion-card"><div><p class="eyebrow">Counting Number</p><div class="motion-stage"><output class="number-demo" data-number-effect="counting">0</output></div></div><div class="usage-note"><b>✓</b><span>任务完成计数或一次性摘要，不替代精确表格。</span></div></article>
+          <article class="card motion-card"><div><p class="eyebrow">禁用场景 / ERROR</p><div class="motion-stage"><span class="motion-word bad-stage">支付失败！立即处理！</span></div></div><div class="usage-note is-no"><b>✕</b><span>错误、权限、关键按钮和表格正文不做炫技动画。</span></div></article>
+          <article class="card motion-card"><div><p class="eyebrow">禁用场景 / TABLE</p><div class="motion-stage"><span class="number-demo bad-stage">¥61.84</span></div></div><div class="usage-note is-no"><b>✕</b><span>表格轮询数字不停滚动会妨碍比较与复制。</span></div></article>
+          <article class="card motion-card"><div><p class="eyebrow">Reduced Motion</p><div class="motion-stage"><span class="motion-word">信息保留，位移关闭</span></div></div><div class="usage-note"><b>✓</b><span>减弱/关闭动画后，状态、焦点和操作都不能丢。</span></div></article>
+        </div>
+      </section>
+
+      <section class="section" id="official">
+        <header class="section-heading">
+          <span class="spec-id">06 / SOURCE</span>
+          <h2>规范样张之外，<br>再看官方真实源码</h2>
+          <p>下面两个窗口读取现有离线 sandbox frame：Motion Primitives 与 Animate UI。它们是来源候选，不等于最终全站都要使用。</p>
+        </header>
+        <div class="official-grid">
+          <article class="card official-card">
+            <header><h3>Motion Primitives · 官方缓存代表</h3><p>Animated Number / Disclosure · 选择性准入</p></header>
+            <iframe title="Motion Primitives 离线官方预览" src="../live-previews/frames/motion-primitives.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          </article>
+          <article class="card official-card">
+            <header><h3>Animate UI · 官方缓存代表</h3><p>Counting Number / Ripple · Commons Clause，应用内按需使用</p></header>
+            <iframe title="Animate UI 离线官方预览" src="../live-previews/frames/animate-ui.html" sandbox="allow-scripts" loading="lazy"></iframe>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="tools">
+        <header class="section-heading">
+          <span class="spec-id">07 / TOOL</span>
+          <h2>三个工具，<br>解决三个不同问题</h2>
+          <p>这里做成可视化工作台，避免把 Storybook、ECharts 和 UI 资产展厅混为一件事。</p>
+        </header>
+        <div class="tool-grid">
+          <article class="card tool-card">
+            <span class="tool-number">01</span><h3>Storybook</h3><p>项目自己的组件样板间：同一个组件切换正常、加载、空、错等状态。</p>
+            <div class="tool-demo">
+              <div class="storybook-tabs" aria-label="Storybook 状态演示">
+                <button type="button" data-story="normal" aria-pressed="true">Normal</button>
+                <button type="button" data-story="loading" aria-pressed="false">Loading</button>
+                <button type="button" data-story="empty" aria-pressed="false">Empty</button>
+              </div>
+              <div class="story-component" data-story-output><strong>KPI 卡 · ¥61.84</strong></div>
+            </div>
+            <span class="microcopy">开发环境使用；stories 不进入生产 bundle。</span>
+          </article>
+          <article class="card tool-card">
+            <span class="tool-number">02</span><h3>ECharts</h3><p>产品运行时的图表引擎：负责折线、柱状、散点、漏斗、热力图和交互。</p>
+            <div class="tool-demo">
+              <svg viewBox="0 0 280 160" role="img" aria-label="ECharts 视觉规范 SVG 样张">
+                <line class="grid-line" x1="20" y1="35" x2="260" y2="35"></line><line class="grid-line" x1="20" y1="80" x2="260" y2="80"></line><line class="grid-line" x1="20" y1="125" x2="260" y2="125"></line>
+                <path class="area-fill" d="M20 124 C55 112 70 120 100 91 S150 86 180 62 S225 59 260 32 L260 135 L20 135 Z"></path>
+                <path class="trend-line" d="M20 124 C55 112 70 120 100 91 S150 86 180 62 S225 59 260 32"></path>
+              </svg>
+            </div>
+            <span class="microcopy">这里是无依赖视觉规范样张；正式产品图表仍由 ECharts 实现。</span>
+          </article>
+          <article class="card tool-card">
+            <span class="tool-number">03</span><h3>UI 资产展厅</h3><p>第三方选型商场：比较 17 家官方来源的风格、能力、许可证和源码状态。</p>
+            <div class="tool-demo">
+              <div class="status-line"><span>shadcn/ui</span><span class="status-pill is-good">底座</span></div>
+              <div class="status-line"><span>coss/ui</span><span class="status-pill is-good">细节</span></div>
+              <div class="status-line"><span>ReUI / Dice</span><span class="status-pill is-good">数据</span></div>
+              <div class="status-line"><span>Motion / Animate</span><span class="status-pill is-warn">按需</span></div>
+            </div>
+            <span class="microcopy">展厅不进入产品；选中的合法源码才按页面复制。</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="audit">
+        <header class="section-heading">
+          <span class="spec-id">08 / AUDIT</span>
+          <h2>自动检查只能提示，<br>最终还要看真实页面</h2>
+          <p>这些项目显示当前 Demo 遵守了什么。美观不能完全自动判定，规范不好看时应调整 token，而不是机械服从。</p>
+        </header>
+        <div class="audit-panel">
+          <div class="audit-list">
+            <div class="audit-item"><span class="audit-check">✓</span><div><strong>数字格式与对齐</strong><small>Intl formatter、tabular nums、单位和 null/stale 分开。</small></div><code>PASS</code></div>
+            <div class="audit-item"><span class="audit-check">✓</span><div><strong>响应式与长内容</strong><small>桌面、移动、超长中文和无空格标识都可测试。</small></div><code>PASS</code></div>
+            <div class="audit-item"><span class="audit-check">✓</span><div><strong>动画克制</strong><small>提供正常、减弱、关闭；错误与表格列为禁用示例。</small></div><code>PASS</code></div>
+            <div class="audit-item"><span class="audit-check">✓</span><div><strong>键盘与焦点</strong><small>语义按钮、可见 focus-visible、跳过导航入口。</small></div><code>PASS</code></div>
+            <div class="audit-item"><span class="audit-check">✓</span><div><strong>数据边界</strong><small>明确全部为脱敏假数据，前端只展示格式，不发明业务口径。</small></div><code>PASS</code></div>
+            <div class="audit-item"><span class="audit-check">?</span><div><strong>审美是否合适</strong><small>请实际切换主题、密度和字号后判断；这一项不能由脚本替你拍板。</small></div><code>REVIEW</code></div>
+          </div>
+          <aside class="card current-state">
+            <p class="eyebrow">CURRENT TOKEN STATE</p>
+            <h3>当前实验组合</h3>
+            <dl>
+              <dt>主题</dt><dd data-current-theme>paper</dd>
+              <dt>密度</dt><dd data-current-density>default</dd>
+              <dt>字号</dt><dd data-current-font>100%</dd>
+              <dt>动画</dt><dd data-current-motion>full</dd>
+            </dl>
+            <p class="microcopy">觉得不好看时，先说清是层级、密度、对比、扫读还是气质问题，再调整全局 token 并跨页面验证。</p>
+          </aside>
+        </div>
+      </section>
+
+      <footer><span>前端规范实验室 · 临时 Demo · 脱敏假数据</span><span>无 CDN · 无 fetch · 可直接 file:// 打开</span></footer>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const reduceQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const currencyExact = new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', minimumFractionDigits: 2 });
+      const compactNumber = new Intl.NumberFormat('zh-CN', { notation: 'compact', maximumFractionDigits: 1 });
+      const percent = new Intl.NumberFormat('zh-CN', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const date = new Intl.DateTimeFormat('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Shanghai' });
+      const integer = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 0 });
+      const demoTime = new Date('2026-08-20T10:42:00+08:00');
+      let runId = 0;
+      let timers = [];
+
+      const clearTimers = () => {
+        timers.forEach((timer) => window.clearTimeout(timer));
+        timers = [];
+        runId += 1;
+      };
+
+      const later = (fn, delay) => {
+        const timer = window.setTimeout(fn, delay);
+        timers.push(timer);
+        return timer;
+      };
+
+      const effectiveMotion = () => {
+        if (root.dataset.motion === 'off') return 'off';
+        if (root.dataset.motion === 'reduced' || reduceQuery.matches) return 'reduced';
+        return 'full';
+      };
+
+      const updateFormats = () => {
+        document.querySelector('[data-format="currency-short"]').textContent = `¥${compactNumber.format(128640.72)}`;
+        document.querySelector('[data-format="currency-exact"]').textContent = `精确值 ${currencyExact.format(128640.72)}`;
+        document.querySelector('[data-format="percent"]').textContent = percent.format(0.03784);
+        document.querySelector('[data-format="cpa"]').textContent = currencyExact.format(61.84);
+        document.querySelector('[data-format="date"]').textContent = date.format(demoTime);
+        document.querySelector('[data-format="time"]').textContent = date.format(demoTime);
+      };
+
+      const formatAnimatedValue = (value, kind) => {
+        if (kind === 'currency' || kind === 'cpa') return currencyExact.format(value);
+        if (kind === 'percent') return `${value.toFixed(1)}%`;
+        return integer.format(value);
+      };
+
+      const animateCounter = (element, target, kind, duration = 700) => {
+        const mode = effectiveMotion();
+        if (mode !== 'full') {
+          element.textContent = formatAnimatedValue(target, kind);
+          return;
+        }
+        const start = performance.now();
+        const id = runId;
+        const frame = (now) => {
+          if (id !== runId) return;
+          const progress = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          element.textContent = formatAnimatedValue(target * eased, kind);
+          if (progress < 1) requestAnimationFrame(frame);
+        };
+        requestAnimationFrame(frame);
+      };
+
+      const animateTyping = (element, text) => {
+        const mode = effectiveMotion();
+        element.textContent = mode === 'full' ? '' : text;
+        if (mode !== 'full') return;
+        [...text].forEach((character, index) => later(() => { element.textContent += character; }, 42 * index));
+      };
+
+      const animateScramble = (element, text) => {
+        const mode = effectiveMotion();
+        if (mode !== 'full') { element.textContent = text; return; }
+        const glyphs = '分析诊断策略数据0123456789';
+        let step = 0;
+        const tick = () => {
+          element.textContent = [...text].map((char, index) => index < step ? char : glyphs[Math.floor(Math.random() * glyphs.length)]).join('');
+          step += 1;
+          if (step <= text.length) later(tick, 58);
+          else element.textContent = text;
+        };
+        tick();
+      };
+
+      const replayMotion = () => {
+        clearTimers();
+        const typing = document.querySelector('[data-effect="typing"]');
+        const morph = document.querySelector('[data-effect="morph"]');
+        const scramble = document.querySelector('[data-effect="scramble"]');
+        const roll = document.querySelector('[data-effect="roll"]');
+        const loop = document.querySelector('[data-effect="loop"]');
+        animateTyping(typing, '正在分析异常账户…');
+        animateScramble(scramble, '生成策略摘要');
+        const morphWords = ['发现问题', '定位原因', '生成建议'];
+        const loopWords = ['检查数据完整性', '核对指标口径', '生成诊断摘要'];
+        const mode = effectiveMotion();
+        morph.textContent = morphWords[0];
+        loop.textContent = loopWords[0];
+        if (mode === 'full') {
+          morphWords.slice(1).forEach((word, index) => later(() => {
+            morph.style.opacity = '0';
+            morph.style.transform = 'translateY(8px)';
+            later(() => { morph.textContent = word; morph.style.opacity = '1'; morph.style.transform = 'translateY(0)'; }, 150);
+          }, 850 * (index + 1)));
+          loopWords.slice(1).forEach((word, index) => later(() => { loop.textContent = word; }, 760 * (index + 1)));
+        }
+        roll.classList.remove('effect-roll');
+        void roll.offsetWidth;
+        roll.classList.add('effect-roll');
+        document.querySelectorAll('[data-number-effect]').forEach((element) => {
+          const type = element.dataset.numberEffect;
+          if (type === 'animated') animateCounter(element, 128640.72, 'currency', 900);
+          if (type === 'sliding') {
+            element.classList.remove('slide-number');
+            void element.offsetWidth;
+            element.classList.add('slide-number');
+            animateCounter(element, 92.6, 'percent', 650);
+          }
+          if (type === 'counting') animateCounter(element, 2080, 'count', 800);
+        });
+        document.querySelectorAll('[data-animate-value]').forEach((element) => {
+          animateCounter(element, Number(element.dataset.animateValue), element.dataset.kind, 850);
+        });
+      };
+
+      const setPressed = (selector, activeAttribute, value) => {
+        document.querySelectorAll(selector).forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.getAttribute(activeAttribute) === value));
+        });
+      };
+
+      document.querySelectorAll('[data-set-theme]').forEach((button) => button.addEventListener('click', () => {
+        root.dataset.theme = button.dataset.setTheme;
+        setPressed('[data-set-theme]', 'data-set-theme', root.dataset.theme);
+        document.querySelector('[data-current-theme]').textContent = root.dataset.theme;
+      }));
+
+      document.querySelectorAll('[data-set-density]').forEach((button) => button.addEventListener('click', () => {
+        root.dataset.density = button.dataset.setDensity;
+        setPressed('[data-set-density]', 'data-set-density', root.dataset.density);
+        document.querySelector('[data-current-density]').textContent = root.dataset.density;
+      }));
+
+      document.querySelectorAll('[data-set-motion]').forEach((button) => button.addEventListener('click', () => {
+        root.dataset.motion = button.dataset.setMotion;
+        setPressed('[data-set-motion]', 'data-set-motion', root.dataset.motion);
+        document.querySelector('[data-current-motion]').textContent = root.dataset.motion;
+        replayMotion();
+      }));
+
+      const fontScale = document.querySelector('#font-scale');
+      fontScale.addEventListener('input', () => {
+        const value = Number(fontScale.value);
+        root.style.setProperty('--font-scale', String(value / 100));
+        document.querySelector('output[for="font-scale"]').textContent = `${value}%`;
+        document.querySelector('[data-current-font]').textContent = `${value}%`;
+      });
+
+      document.querySelector('[data-replay-motion]').addEventListener('click', replayMotion);
+
+      document.querySelectorAll('.chip-button').forEach((button) => button.addEventListener('click', () => {
+        button.setAttribute('aria-pressed', String(button.getAttribute('aria-pressed') !== 'true'));
+      }));
+
+      const storyOutput = document.querySelector('[data-story-output]');
+      const storyStates = {
+        normal: '<strong>KPI 卡 · ¥61.84</strong>',
+        loading: '<span aria-live="polite">正在加载…</span>',
+        empty: '<div><div class="empty-illustration" aria-hidden="true"></div><p>当前筛选没有数据</p></div>',
+      };
+      document.querySelectorAll('[data-story]').forEach((button) => button.addEventListener('click', () => {
+        document.querySelectorAll('[data-story]').forEach((item) => item.setAttribute('aria-pressed', 'false'));
+        button.setAttribute('aria-pressed', 'true');
+        storyOutput.innerHTML = storyStates[button.dataset.story];
+      }));
+
+      reduceQuery.addEventListener?.('change', replayMotion);
+      updateFormats();
+      replayMotion();
+    })();
+  </script>
+</body>
+</html>

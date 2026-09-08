@@ -1,12 +1,12 @@
-# B23-C1 奇航账户主表同步 Implementation Plan
+# B23-C1 启航账户主表同步 Implementation Plan
 
 > **For Codex:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** 让奇航 `resource=account` 的可信任务范围安全、幂等地创建/更新 `accounts`，并在同一短事务中先建户再落同页 Raw，使未预置新账户可进入既有 Canonical 主链。
+**Goal:** 让启航 `resource=account` 的可信任务范围安全、幂等地创建/更新 `accounts`，并在同一短事务中先建户再落同页 Raw，使未预置新账户可进入既有 Canonical 主链。
 
-**Status:** 已实现并完成 Codex 自审；代码终态 `ec4934a`，质量与交接见 `docs/evidence/B23-C1-奇航账户主表同步质量报告.md`。未合入 root、未部署、未联调真实奇航。
+**Status:** 已实现并完成 Codex 自审；代码终态 `ec4934a`，质量与交接见 `docs/evidence/B23-C1-启航账户主表同步质量报告.md`。未合入 root、未部署、未联调真实启航。
 
-**Architecture:** Full ETL 与 Backfill Coordinator 仍负责真实奇航 account 分页。Worker 只从任务范围注入 `workspaceId/media`，从上游精确读取 `account_id` 及允许的可选 `account_name/status`；DB Repository 对每个已取回分页执行短事务：校验整页、upsert accounts、append metrics_raw、commit。网络请求不进入 DB 事务；已提交分页可幂等重放，任一页失败时该页 0 写入且不派 canonical/fanout，前页可信结果保留供 Job 重试恢复。
+**Architecture:** Full ETL 与 Backfill Coordinator 仍负责真实启航 account 分页。Worker 只从任务范围注入 `workspaceId/media`，从上游精确读取 `account_id` 及允许的可选 `account_name/status`；DB Repository 对每个已取回分页执行短事务：校验整页、upsert accounts、append metrics_raw、commit。网络请求不进入 DB 事务；已提交分页可幂等重放，任一页失败时该页 0 写入且不派 canonical/fanout，前页可信结果保留供 Job 重试恢复。
 
 **Tech Stack:** TypeScript、Zod、PostgreSQL 16、node-postgres、Vitest、现有 Qihang Client/ETL Runtime。
 
@@ -58,7 +58,7 @@
 **Files:**
 - Modify: `apps/worker/test/data-pipeline-pg.integration.test.ts`
 
-1. 删除目标 workspace 的预置 account fixture；奇航 account row 提供精确可选 metadata。
+1. 删除目标 workspace 的预置 account fixture；启航 account row 提供精确可选 metadata。
 2. Full ETL 后断言 accounts 先存在、Raw 已落库、另 workspace 同号未污染。
 3. Full 成功后再建立 task_accounts 关系，继续执行 Canonical→Quality→Semantic→Rule→WorkItem 既有纵切片。
 4. 重放 Full，断言账户不重复、经营字段不被覆盖。
@@ -67,8 +67,8 @@
 ### Task 5: 全量质量与交接
 
 **Files:**
-- Create: `docs/evidence/B23-C1-奇航账户主表同步质量报告.md`
-- Modify: `docs/evidence/B23-C-奇航只读链Gap矩阵.md`
+- Create: `docs/evidence/B23-C1-启航账户主表同步质量报告.md`
+- Modify: `docs/evidence/B23-C-启航只读链Gap矩阵.md`
 - Modify: `docs/plans/工作台账.md`
 - Modify: `docs/plans/Codex后端交付总账.md`
 - Modify: `docs/relay/inbox-be-codex.md`

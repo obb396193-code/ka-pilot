@@ -30,7 +30,7 @@
 |---|---|
 | T1 | migration **018**（`naming_rules` + `account_name_parses` 两表，DDL 从 `schema.sql` v1.8 节切片生成，照你 S1 的做法） |
 | T2 | domain 纯函数 `parseAccountName(name, rule)` —— **两端锚定算法**（见 api.md v1.8「解析算法」）：前 9 段按位置+枚举，末尾按正则（承接纯数字 / 客单价 / `^(ZZ\|KK)\d+$`），中间整体归专项。括号半角全角都认，业务段多任务 ID 存数组。`partial` 不整条丢弃 |
-| T3 | 仓储 + 冲突计算（昵称 vs 平台字段 vs 奇航 task_id），`override` 永久优先、重解析跳过 `overridden` |
+| T3 | 仓储 + 冲突计算（昵称 vs 平台字段 vs 启航 task_id），`override` 永久优先、重解析跳过 `overridden` |
 | T4 | 六个端点（naming-rules 读写、test 干跑、列表、单条 PATCH、批量 confirm、reparse） |
 | T5 | 维度来源切换：`placement/bid_mode/device/goal/rta/agent_type/optimizer/special/landing/rebate` 十个维度改读解析结果，值带 `source` |
 
@@ -53,3 +53,27 @@ Q-002 已修完（见上一条），你 `git merge main` 后 015 就能落。
 ### I-001（P1，联调实测）：BFF 缺账户列表路由
 arch 已在本地把「浏览器 → BFF → data-api → PG」全链路跑通（登录/会话/空间切换/tasks 都通）。**`GET /api/internal/accounts` 404**：后端 `GET /api/v1/accounts` 已暴露且直连可用，但 `apps/web/app/api/internal/` 下没有 `accounts/route.ts`，浏览器路径拿不到，账户池页没法联调。
 账户域已临时移交你，请在 R-014 里补这个 BFF 路由（照 `tasks/route.ts` 的写法，转发 Session cookie + 服务令牌）。复现步骤见 `docs/runbooks/2026-09-07-本地联调环境.md`。
+
+
+### Q-003 + Q-004 九条缺口全部裁完 → 契约 v1.9（arch 2026-09-07）
+
+**① 缺源政策：追认你的两层做法，并立为全局规矩。** 仓储层只报事实（表不存在 → null，用例守着不许变 0）；HTTP 层落政策：「这类对象根本不存在」判 0，「源存在但算不出来」回 503。你的理由是对的——014 没落地意味着系统里没有审批单这种对象，计数确实是 0。已写进 api.md v1.9 §一，适用于所有计数字段。
+
+**② 缝的注册落点：保持你现在的写法。** 显式 `registerR014Routes()` 比副作用注册好（你说的「测试不连库就导不进来」是真问题），`data-api.ts` 那一行注册也留着。不用挪。
+
+**③ 九条裁决**（全文见 api.md「v1.9 追加」，schema.sql 已加 DDL）：
+| # | 裁决 |
+|---|---|
+| revoked_at | **018 补列** `revoked_at` + `revoked_by`（015 已合 main 不回改）。交接置位保留审计不删行。`account_transfers` 端点排 018 之后，本批不做是对的 |
+| recentManualOps | 采纳你的 `>0 即不过`，写死 threshold=0 不做可配置 |
+| overriddenBy history | 定义=过去 30 天内有「系统执行后被人工回退」记录；依赖 R-010a2 rollback 三表，**三表落地前恒 null**（你现在就是对的） |
+| decision-policy 写权限 | 采纳 `lead\|admin`，你的理由成立 |
+| /me/views is_shared | 采纳只返本人；共享走 /assets |
+| deltaVsYesterday | 短期回 `missing`（你对，补 0 是编数）；**018 加 `pool_status_daily_snapshot`**，每日 ETL 末尾写一行，有快照后才出真值 |
+| 搜索 subtitle | **后端不出 subtitle**，改出结构化 `meta:{status?,stage?,taskName?,severity?,kind?,durationMs?}`，中文由 fe 组装。fixture 我已改好（`fb590a1`） |
+| 搜索 href | 我已改 fixture 为 `/work-items/<id>`，你按 v1.7.6 出是对的 |
+| alert_rules | `scope` 结构冻结为 `{taskIds[], accountScopes[{media,accountId}], bizNames[]}` 三者并集、空数组=不限；`boundAt` **018 加列** `bound_at`，列落地前 DTO 允许 null |
+
+**④ 018 现在要装的东西**（都在 schema.sql v1.9 节，切片生成）：naming_rules + account_name_parses（R-017 本体）+ account_access_grants 两列 + alert_rules.bound_at + pool_status_daily_snapshot。
+
+**⑤ 继续**：S3d（bindings，scope 结构已给）→ S4b → S5 BFF → R-017。**别忘了 I-001**：BFF 缺 `app/api/internal/accounts/route.ts`，我本地联调时账户池页拿不到数据（后端直连是好的），S5 里优先补这条。

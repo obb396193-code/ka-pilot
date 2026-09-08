@@ -1,0 +1,854 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://reactbits.dev/animations/magnet",
+        "title": "React Bits - Magnet",
+        "description": "Elements magnetically ease toward the cursor then settle back with spring physics."
+      },
+      {
+        "url": "https://reactbits.dev/r/dither.json",
+        "title": "React Bits - Dither.json",
+        "description": "High quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/galaxy",
+        "title": "React Bits - Galaxy",
+        "description": "Parallax realistic starfield with pointer interactions."
+      },
+      {
+        "url": "https://reactbits.dev/components/parallax-carousel",
+        "title": "React Bits - Parallax Carousel",
+        "description": "High quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://reactbits.dev/components",
+        "title": "React Bits - Animated UI Components For React",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://reactbits.dev/pro/components",
+        "title": "React Bits Pro - Animated React Components",
+        "description": "Browse every animated React component in React Bits Pro. Shader effects, custom cursors, galleries, 3D text and more, with Tailwind and CSS variants."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/floating-lines",
+        "title": "React Bits - Floating Lines",
+        "description": "3D floating lines that react to cursor movement."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/prism",
+        "title": "React Bits - Prism",
+        "description": "Rotating prism with configurable intensity, size, and colors."
+      },
+      {
+        "url": "https://reactbits.dev/components/scroll-stack",
+        "title": "React Bits - Scroll Stack",
+        "description": "Overlapping card stack reveals on scroll with depth layering."
+      },
+      {
+        "url": "https://reactbits.dev/r/GooeyNav-JS-CSS.json"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/pixel-blast",
+        "title": "React Bits - Pixel Blast",
+        "description": "Exploding pixel particle bursts with optional liquid postprocessing."
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/count-up",
+        "title": "React Bits - Count Up",
+        "description": "Animated number counter supporting formatting and decimals."
+      },
+      {
+        "url": "https://reactbits.dev/get-started/index",
+        "title": "React Bits - Index",
+        "description": "High quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/curved-loop",
+        "title": "React Bits - Curved Loop",
+        "description": "Flowing looping text path along a customizable curve with drag interaction."
+      },
+      {
+        "url": "https://reactbits.dev/components/card-nav",
+        "title": "React Bits - Card Nav",
+        "description": "Expandable navigation bar with card panels revealing nested links."
+      },
+      {
+        "url": "https://reactbits.dev/animations/magic-rings",
+        "title": "React Bits - Magic Rings",
+        "description": "Interactive magic rings effect with customizable parameters."
+      },
+      {
+        "url": "https://reactbits.dev/get-started/introduction",
+        "title": "React Bits - Introduction",
+        "description": "High quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/silk",
+        "title": "React Bits - Silk",
+        "description": "Smooth waves background with soft lighting."
+      },
+      {
+        "url": "https://reactbits.dev/components/flowing-menu",
+        "title": "React Bits - Flowing Menu",
+        "description": "Liquid flowing active indicator glides between menu items."
+      },
+      {
+        "url": "https://reactbits.dev/get-started/installation",
+        "title": "React Bits - Installation",
+        "description": "High quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://reactbits.dev/animations/metallic-paint",
+        "title": "React Bits - Metallic Paint",
+        "description": "Liquid metallic paint shader which can be applied to SVG elements."
+      },
+      {
+        "url": "https://reactbits.dev/components/circular-gallery",
+        "title": "React Bits - Circular Gallery",
+        "description": "Circular orbit gallery rotating images."
+      },
+      {
+        "url": "https://reactbits.dev/animations/electric-border",
+        "title": "React Bits - Electric Border",
+        "description": "Jittery electric energy border with animated arcs, glow and adjustable intensity."
+      },
+      {
+        "url": "https://reactbits.dev/animations/pixel-transition",
+        "title": "React Bits - Pixel Transition",
+        "description": "Pixel dissolve transition for content reveal on hover."
+      },
+      {
+        "url": "https://reactbits.dev",
+        "title": "React Bits - Animated UI Components For React",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/particles",
+        "title": "React Bits - Particles",
+        "description": "Configurable particle system."
+      },
+      {
+        "url": "https://reactbits.dev/components/specular-button",
+        "title": "React Bits - Specular Button",
+        "description": "Glass button with a shader-driven specular rim light that sweeps around the edge and follows the cursor."
+      },
+      {
+        "url": "https://reactbits.dev/animations/pixel-swap",
+        "title": "React Bits - Pixel Swap",
+        "description": "Pixel fragments assemble into a full cover, swap arbitrary content, then dissolve away with reversible colors and triggers."
+      },
+      {
+        "url": "https://reactbits.dev/animations/star-border",
+        "title": "React Bits - Star Border",
+        "description": "Animated star / sparkle border orbiting content with twinkle pulses."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/lightfall",
+        "title": "React Bits - Lightfall",
+        "description": "Colorful light streaks raining down a glowing tunnel with a cursor light."
+      },
+      {
+        "url": "https://reactbits.dev/animations/laser-flow",
+        "title": "React Bits - Laser Flow",
+        "description": "Dynamic laser light that flows onto a surface, customizable effect."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/color-bends",
+        "title": "React Bits - Color Bends",
+        "description": "Vibrant color bends with smooth flowing animation."
+      },
+      {
+        "url": "https://reactbits.dev/animations/animated-content",
+        "title": "React Bits - Animated Content",
+        "description": "Wrapper that animates any children on scroll or mount with configurable direction, distance, duration, easing and disappear options."
+      },
+      {
+        "url": "https://reactbits.dev/components/masonry",
+        "title": "React Bits - Masonry",
+        "description": "Responsive masonry layout with animated reflow + gaps optimization."
+      },
+      {
+        "url": "https://reactbits.dev/r/MagicRings-JS-CSS.json"
+      },
+      {
+        "url": "https://reactbits.dev/components/magic-bento",
+        "title": "React Bits - Magic Bento",
+        "description": "Interactive bento grid tiles expand + animate with various options."
+      },
+      {
+        "url": "https://reactbits.dev/components/spotlight-card",
+        "title": "React Bits - Spotlight Card",
+        "description": "Dynamic spotlight follows cursor casting gradient illumination."
+      },
+      {
+        "url": "https://reactbits.dev/r/fade-content.json",
+        "title": "React Bits - Fade Content.json",
+        "description": "High quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://reactbits.dev/components/morph-slider",
+        "title": "React Bits - Morph Slider",
+        "description": "WebGL slider that melts between images with a displacement transition."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/liquid-ether",
+        "title": "React Bits - Liquid Ether",
+        "description": "Interactive liquid shader with flowing distortion and customizable colors."
+      },
+      {
+        "url": "https://reactbits.dev/components/glass-surface",
+        "title": "React Bits - Glass Surface",
+        "description": "Advanced Apple-style glass surface with real-time distortion + lighting."
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/blur-text",
+        "title": "React Bits - Blur Text",
+        "description": "Text starts blurred then crisply resolves for a soft-focus reveal effect."
+      },
+      {
+        "url": "https://reactbits.dev/animations/fade-content",
+        "title": "React Bits - Fade Content",
+        "description": "Simple directional fade / slide entrance / exit wrapper with threshold-based activation."
+      },
+      {
+        "url": "https://reactbits.dev/r/animated-list.json",
+        "title": "React Bits - Animated List.json",
+        "description": "High quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://reactbits.dev/components/reflective-card",
+        "title": "React Bits - Reflective Card",
+        "description": "Card with dynamic webcam reflection and glare effects that respond to cursor movement."
+      },
+      {
+        "url": "https://reactbits.dev/animations/glare-hover",
+        "title": "React Bits - Glare Hover",
+        "description": "Adds a realistic moving glare highlight on hover over any element."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/grainient",
+        "title": "React Bits - Grainient",
+        "description": "Grainy gradient swirls with soft wave distortion."
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/scroll-reveal",
+        "title": "React Bits - Scroll Reveal",
+        "description": "Text gently unblurs and reveals on scroll."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/ferrofluid",
+        "title": "React Bits - Ferrofluid",
+        "description": "A churning magnetic fluid traced by glowing contour lines, with a cursor magnet."
+      },
+      {
+        "url": "https://reactbits.dev/get-started/mcp",
+        "title": "React Bits - Mcp",
+        "description": "High quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/components/split-text",
+        "title": "React Bits - Split Text",
+        "description": "High quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev",
+        "title": "React Bits - Animated UI Components For React",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://reactbits.dev/animations/click-spark",
+        "title": "React Bits - Click Spark",
+        "description": "Creates particle spark bursts at click position."
+      },
+      {
+        "url": "https://reactbits.dev/showcase",
+        "title": "Showcase",
+        "description": "Everything humans and agents need to ship creative products. Explore React Bits Pro."
+      },
+      {
+        "url": "https://reactbits.dev/sponsors",
+        "title": "Sponsors",
+        "description": "React Bits free and open-source for developers everywhere. Power the fastest growing open-source creative UI library, cancel anytime. Everything humans and ..."
+      },
+      {
+        "url": "https://reactbits.dev/favorites",
+        "title": "Favorites",
+        "description": "React Bits Pro August Update. 34 new components, 300 app UI blocks and an agent kit just landed. Now 134 components, 238 blocks, 300 app UI blocks, 11 templates ..."
+      },
+      {
+        "url": "https://reactbits.dev/pro",
+        "title": "React Bits Pro - Components, Blocks, App UI & Templates",
+        "description": "The complete React toolkit for crafting memorable UI React Bits stays free forever. Pro adds 134 more components, app UI blocks, templates and an agent kit."
+      },
+      {
+        "url": "https://reactbits.dev/pro/blocks",
+        "title": "React Bits Pro - React UI Blocks & Page Sections",
+        "description": "Animated Blocks. Heroes, pricing, FAQs, footers and every other section a landing page needs, each a single editable file. A full page is a few minutes of ..."
+      },
+      {
+        "url": "https://reactbits.dev/pro/app-ui"
+      },
+      {
+        "url": "https://reactbits.dev/pro/templates",
+        "title": "React Bits Pro - React & Next.js Website Templates",
+        "description": "Complete React and Next.js templates from React Bits Pro: SaaS, agency, portfolio, finance, AI and security sites, with live previews. One template is free."
+      },
+      {
+        "url": "https://reactbits.dev/pro/agent-kit"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/masked-heading"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/particle-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/split-flap-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/warp-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/stroke-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/depth-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/fold-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/echo-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/text-loop"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/split-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/circular-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/text-type"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/shuffle"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/shiny-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/text-pressure"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/fuzzy-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/gradient-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/falling-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/text-cursor"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/decrypted-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/true-focus"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/scroll-float"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/ascii-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/scrambled-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/rotating-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/glitch-text"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/scroll-velocity"
+      },
+      {
+        "url": "https://reactbits.dev/text-animations/variable-proximity"
+      },
+      {
+        "url": "https://reactbits.dev/animations/scroll-expand",
+        "title": "Scroll Expand",
+        "description": "Now 134 components, 238 blocks, 300 app UI blocks, 11 templates and 19 agent skills. Everything humans and agents need to ship creative products. Explore React ..."
+      },
+      {
+        "url": "https://reactbits.dev/animations/elastic-mesh"
+      },
+      {
+        "url": "https://reactbits.dev/animations/ripple-distortion",
+        "title": "Ripple Distortion",
+        "description": "Now 134 components, 238 blocks, 300 app UI blocks, 11 templates and 19 agent skills. Everything humans and agents need to ship creative products. Explore React ..."
+      },
+      {
+        "url": "https://reactbits.dev/animations/swarm-cursor"
+      },
+      {
+        "url": "https://reactbits.dev/animations/halftone-reveal"
+      },
+      {
+        "url": "https://reactbits.dev/animations/cursor-grid"
+      },
+      {
+        "url": "https://reactbits.dev/animations/orbit-images",
+        "title": "Orbit Images",
+        "description": "SVG Path customizable orbiting images effect."
+      },
+      {
+        "url": "https://reactbits.dev/animations/antigravity",
+        "title": "Antigravity",
+        "description": "Everything humans and agents need to ship creative products. Explore React Bits Pro."
+      },
+      {
+        "url": "https://reactbits.dev/animations/logo-loop"
+      },
+      {
+        "url": "https://reactbits.dev/animations/target-cursor",
+        "title": "Target Cursor",
+        "description": "Everything humans and agents need to ship creative products. Explore React Bits Pro."
+      },
+      {
+        "url": "https://reactbits.dev/animations/magnet-lines",
+        "title": "Magnet Lines",
+        "description": "Animated field lines bend toward the cursor."
+      },
+      {
+        "url": "https://reactbits.dev/animations/ghost-cursor",
+        "title": "Ghost Cursor",
+        "description": "Semi-transparent ghost cursor that smoothly follows the real cursor with a trailing effect."
+      },
+      {
+        "url": "https://reactbits.dev/animations/gradual-blur"
+      },
+      {
+        "url": "https://reactbits.dev/animations/strands"
+      },
+      {
+        "url": "https://reactbits.dev/animations/sticker-peel",
+        "title": "Sticker Peel",
+        "description": "Everything humans and agents need to ship creative products. Explore React Bits Pro."
+      },
+      {
+        "url": "https://reactbits.dev/animations/pixel-trail"
+      },
+      {
+        "url": "https://reactbits.dev/animations/cubes"
+      },
+      {
+        "url": "https://reactbits.dev/animations/noise"
+      },
+      {
+        "url": "https://reactbits.dev/animations/shape-blur",
+        "title": "Shape Blur",
+        "description": "Controls the size of the shape. ... Determines the roundness of the shape's corners. ... Sets the thickness of the border. ... Determines the size of the hover circle ..."
+      },
+      {
+        "url": "https://reactbits.dev/animations/crosshair",
+        "title": "Crosshair",
+        "description": "Everything humans and agents need to ship creative products. Explore React Bits Pro."
+      },
+      {
+        "url": "https://reactbits.dev/animations/image-trail",
+        "title": "Image Trail",
+        "description": "Everything humans and agents need to ship creative products. Explore React Bits Pro."
+      },
+      {
+        "url": "https://reactbits.dev/animations/ribbons"
+      },
+      {
+        "url": "https://reactbits.dev/animations/splash-cursor"
+      },
+      {
+        "url": "https://reactbits.dev/animations/meta-balls"
+      },
+      {
+        "url": "https://reactbits.dev/animations/blob-cursor"
+      },
+      {
+        "url": "https://reactbits.dev/components/depth-carousel",
+        "title": "Depth Carousel",
+        "description": "Cards recede into depth on a 3D rail, with drag, keyboard and auto-advance."
+      },
+      {
+        "url": "https://reactbits.dev/components/accordion-gallery"
+      },
+      {
+        "url": "https://reactbits.dev/components/drift-wall"
+      },
+      {
+        "url": "https://reactbits.dev/components/option-wheel"
+      },
+      {
+        "url": "https://reactbits.dev/components/curved-input"
+      },
+      {
+        "url": "https://reactbits.dev/components/line-sidebar"
+      },
+      {
+        "url": "https://reactbits.dev/components/animated-list"
+      },
+      {
+        "url": "https://reactbits.dev/components/bubble-menu"
+      },
+      {
+        "url": "https://reactbits.dev/components/stack"
+      },
+      {
+        "url": "https://reactbits.dev/components/fluid-glass"
+      },
+      {
+        "url": "https://reactbits.dev/components/pill-nav"
+      },
+      {
+        "url": "https://reactbits.dev/components/tilted-card"
+      },
+      {
+        "url": "https://reactbits.dev/components/dome-gallery"
+      },
+      {
+        "url": "https://reactbits.dev/components/chroma-grid"
+      },
+      {
+        "url": "https://reactbits.dev/components/folder"
+      },
+      {
+        "url": "https://reactbits.dev/components/staggered-menu",
+        "title": "Staggered Menu",
+        "description": "Menu with staggered item animations and smooth transitions on open/close."
+      },
+      {
+        "url": "https://reactbits.dev/components/model-viewer"
+      },
+      {
+        "url": "https://reactbits.dev/components/lanyard",
+        "title": "Lanyard",
+        "description": "Swinging 3D lanyard / badge card with realistic inertial motion."
+      },
+      {
+        "url": "https://reactbits.dev/components/profile-card"
+      },
+      {
+        "url": "https://reactbits.dev/components/dock"
+      },
+      {
+        "url": "https://reactbits.dev/components/gooey-nav"
+      },
+      {
+        "url": "https://reactbits.dev/components/pixel-card",
+        "title": "Pixel Card",
+        "description": "Card content revealed through pixel expansion transition."
+      },
+      {
+        "url": "https://reactbits.dev/components/carousel"
+      },
+      {
+        "url": "https://reactbits.dev/components/border-glow",
+        "title": "Border Glow",
+        "description": "Glowing mesh-gradient border that follows cursor direction and intensifies near edges."
+      },
+      {
+        "url": "https://reactbits.dev/components/flying-posters",
+        "title": "Flying Posters",
+        "description": "Property, Type, Default, Description. items, string[], [], An array of image URLs to be displayed as flying posters. planeWidth, number, 320, The width of ..."
+      },
+      {
+        "url": "https://reactbits.dev/components/card-swap"
+      },
+      {
+        "url": "https://reactbits.dev/components/glass-icons"
+      },
+      {
+        "url": "https://reactbits.dev/components/decay-card",
+        "title": "Decay Card",
+        "description": "Property, Type, Default, Description. children, ReactNode, —, The content (JSX) to be rendered inside the card. width, number, 300, The width of the card in ..."
+      },
+      {
+        "url": "https://reactbits.dev/components/elastic-slider",
+        "title": "Elastic Slider",
+        "description": "Slider handle stretches elastically then snaps with spring physics."
+      },
+      {
+        "url": "https://reactbits.dev/components/counter"
+      },
+      {
+        "url": "https://reactbits.dev/components/infinite-menu"
+      },
+      {
+        "url": "https://reactbits.dev/components/stepper"
+      },
+      {
+        "url": "https://reactbits.dev/components/bounce-cards"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/molten-metal"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/gradient-waves"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/web-threads"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/topography",
+        "title": "Topography",
+        "description": "A living contour map with glowing, elevation-tinted lines."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/light-tunnel"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/sliced-waves"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/acid-squares"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/scanner"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/dark-veil",
+        "title": "Dark Veil",
+        "description": "Subtle dark background with a smooth animation and postprocessing."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/light-pillar"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/side-rays",
+        "title": "Side Rays",
+        "description": "Everything humans and agents need to ship creative products. Explore React Bits Pro."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/light-rays",
+        "title": "Light Rays",
+        "description": "Everything humans and agents need to ship creative products. Explore React Bits Pro."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/evil-eye"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/line-waves"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/radar"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/soft-aurora"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/aurora"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/plasma"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/plasma-wave"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/gradient-blinds"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/grid-scan",
+        "title": "Grid Scan",
+        "description": "Animated grid room 3D scan effect and cool interactions."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/beams"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/pixel-snow",
+        "title": "Pixel Snow",
+        "description": "Everything humans and agents need to ship creative products. Explore React Bits Pro."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/lightning"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/prismatic-burst",
+        "title": "Prismatic Burst",
+        "description": "Everything humans and agents need to ship creative products. Explore React Bits Pro."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/dither"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/faulty-terminal"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/ripple-grid",
+        "title": "Ripple Grid",
+        "description": "A grid that continuously animates with a ripple effect."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/dot-field"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/dot-grid"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/threads",
+        "title": "Threads",
+        "description": "34 new components, 300 app UI blocks and an agent kit just landed. Now 134 components, 238 blocks, 300 app UI blocks, 11 templates and 19 agent skills."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/hyperspeed",
+        "title": "Hyperspeed",
+        "description": "34 new components, 300 app UI blocks and an agent kit just landed. Now 134 components, 238 blocks, 300 app UI blocks, 11 templates and 19 agent skills."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/iridescence"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/waves",
+        "title": "Waves",
+        "description": "Layered lines that form smooth wave patterns with animation."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/grid-distortion"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/ballpit"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/orb"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/letter-glitch"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/grid-motion"
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/shape-grid",
+        "title": "Shape Grid",
+        "description": "Property, Type, Default, Description. direction, string, 'right', Direction of square animation. Options: 'diagonal', 'up', 'right', 'down', 'left'."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/liquid-chrome",
+        "title": "Liquid Chrome",
+        "description": "Liquid metallic chrome shader with flowing reflective surface."
+      },
+      {
+        "url": "https://reactbits.dev/backgrounds/balatro",
+        "title": "Balatro",
+        "description": "The balatro shader, fully customizalbe and interactive."
+      },
+      {
+        "url": "https://reactbits.dev/tools",
+        "title": "React Bits - Tools",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/backgrounds/ballpit",
+        "title": "React Bits - Ballpit",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/animations/meta-balls",
+        "title": "React Bits - Animated UI Components For React",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/showcase",
+        "title": "React Bits - Showcase",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/text-animations/fuzzy-text",
+        "title": "React Bits - Animated UI Components For React",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/text-animations/split-text",
+        "title": "React Bits - Split Text",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/animations/orbit-images",
+        "title": "React Bits - Animated UI Components For React",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/components/stack",
+        "title": "React Bits - Stack",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/text-animations/falling-text",
+        "title": "React Bits - Falling Text",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/backgrounds/orb",
+        "title": "React Bits - Orb",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/backgrounds/lightning",
+        "title": "React Bits - Lightning",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/animations/gradual-blur",
+        "title": "React Bits - Gradual Blur",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/animations/laser-flow",
+        "title": "React Bits - Laser Flow",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/text-animations/shiny-text",
+        "title": "React Bits - Shiny Text",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://reactbits.dev/tools/texture-lab",
+        "title": "React Bits - Texture Lab",
+        "description": "Background Studio · Shape Magic · Texture Lab. Media Source. Upload. Sample. Presets. Effects (0). Add Effect. No effects added. Click “Add Effect” to get ..."
+      },
+      {
+        "url": "https://reactbits.dev/tools/background-studio",
+        "title": "React Bits - Background Studio",
+        "description": "Everything humans and agents need to ship creative products. Explore React Bits Pro."
+      },
+      {
+        "url": "https://www.reactbits.dev/components/glass-surface",
+        "title": "React Bits - Glass Surface",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/get-started/installation",
+        "title": "React Bits - Installation",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/backgrounds/liquid-ether",
+        "title": "React Bits - Liquid Ether",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      },
+      {
+        "url": "https://www.reactbits.dev/backgrounds/aurora",
+        "title": "React Bits - Aurora",
+        "description": "An open source collection of high quality, animated, interactive & fully customizable React components for building stunning, memorable user interfaces."
+      }
+    ]
+  }
+}
