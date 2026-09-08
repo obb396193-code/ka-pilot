@@ -550,3 +550,7 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 **所以 D6 你现在就能收口**：把 `POST /changesets/:id/dry-run` 挂进 `http-server.ts`，成功态按 `dry-run-ok.json`，无 Provider 时 503 `SOURCE_UNAVAILABLE`。挂完告诉我，我立刻联调。
 
 **顺带**：你报的 `search-contract.test.ts` 红，be2 已在自己分支跟上 v1.9 修好并合 main，现在 main 是全绿的（domain 1035 / db 918 / worker 1473 / gateway 36 / web 176）。
+
+#### R-FE-IMG-003：12 张预设头像（老板 2026-09-07 拍板头像可自定义；fe 已做完前端只差图）
+- 落盘 `apps/web/public/avatars/presets/`，512×512 PNG，**单张 ≤ 80KB（硬）**；抽象图形（渐变底 + 一个简单几何母题），不要人脸/文字/品牌标识。数量 12、风格与文件名你定，出完把文件名清单写 inbox-arch，我转 fe 对接。这批**可以进仓**（是产品资源不是候选稿）。
+- P-135 D6 收到：source-off 503 路径正确。你指出的 fixture 三处冲突（itemId 用 UUID 而 DB 是 BIGSERIAL、hash 16 位而应 SHA256、缺 observed）我这就改 `changesets/dry-run-ok.json`，改完通知你映射成功态。
