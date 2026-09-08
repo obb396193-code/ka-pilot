@@ -25,6 +25,7 @@ import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
 import { fmtTime, isOk } from "@/lib/fixtures/contract"
+import { accountsFixture } from "@/lib/fixtures/accounts"
 import { preferencesFixture } from "@/lib/fixtures/me"
 import { themeModes } from "@/lib/theme/theme"
 import { useTheme } from "@/components/business/theme/theme-provider"
@@ -246,11 +247,14 @@ function ViewsTab() {
       <DataGrid table={table} empty="还没保存视图；在数据分析总表里「另存为视图」" toolbar={<p className="text-xs text-muted-foreground">保存的视图 · Agent 的修改建议可全部或局部接受</p>} showPagination={false} />
       <Card>
         <CardHeader><CardTitle>关注账户</CardTitle><CardDescription>工作台「我关注的」用这份名单 · 更新 {watchlist ? fmtTime(watchlist.updatedAt) : "−"}</CardDescription></CardHeader>
-        <CardContent className="flex flex-wrap gap-2">{watchlist?.items.map((item) => <Link key={`${item.media}-${item.accountId}`} href={`/accounts/${encodeURIComponent(item.media)}/${encodeURIComponent(item.accountId)}`}><Badge variant="outline" className="gap-1">{mediaLabel(item.media)} · {item.accountId}</Badge></Link>)}</CardContent>
+        <CardContent className="flex flex-wrap gap-2">{watchlist?.items.map((item) => <Link key={`${item.media}-${item.accountId}`} href={`/accounts/${encodeURIComponent(item.media)}/${encodeURIComponent(item.accountId)}`}><Badge variant="outline" className="gap-1">{mediaLabel(item.media)} · {accountName(item.accountId)}</Badge></Link>)}</CardContent>
       </Card>
     </div>
   )
 }
+
+// 盯盘名单显账户名，不显 ID；样例里查不到就退回 ID，不编名字
+const accountName = (id: string) => (isOk(accountsFixture) ? accountsFixture.data.items.find((item) => item.accountId === id)?.accountName ?? id : id)
 
 export function SettingsPage() {
   const { isMock } = useSession()
