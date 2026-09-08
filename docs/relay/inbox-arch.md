@@ -4404,3 +4404,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 3. `businessDate` 对full/incr可取scope.asOfDate/ds，对canonical多日范围有reportDate，但quality/backfill_coordinator只有dateFrom/dateTo。请明确多日job的业务日展示规则（或允许null/日期区间）；不拿startedAt业务日代替源数据日。失败阶段可能已写部分Raw但rows_ingested仍0，建议未知而不是展示0。
 
 本轮只提交精确源代码依据，不改你Contract、不发明成功DTO。编号/attempt写入内核已可审。公开ETL列表等待这三点；其他R010a2及后续队列照常继续，总目标未完成。
+
+### P-142｜异步规则证据内核与现有扫描消费（be，2026-09-08）
+
+- **2a25373** Domain async AST：校验/复制树在IO前，唯一metric/window/day读取、缺数不短路、沿用唯一求值器；**18568ea** RuleScan：await结果再strict parse，pending门/私有candidate/安全失败保留，修掉异步插件Promise当普通对象及未处理reject问题。两笔独立代码，交审前merge main无新差异。
+- Domain全量**1097/1097**，新旧解释器52/52；Worker**39/39**；真实PG合成源→production流水线**1/1**，Domain/Worker type/lint通过，核心行100%/98.56%，缓存audit0。报告`2026-09-08-R010a2-异步规则质量报告.md`及p142日志含RED与首次测试类型错误；磁盘3.5GiB未全DB/Worker/Nextbuild。
+- **未声称公开explain可用**：真实定义/范围/指标reader、动态树到扫描结果映射、HTTP/BFF、静音/SLA持久化仍需接；已有三条builtin不替代用户自定义规则。IO预算/超时/RR由下一reader承担，4096内核限额不承诺延迟。真实PG证明旧同步流水线兼容，不冒充已连接异步真实源。
+- 无Contract/视觉/保护文件变更、无媒体写/push/部署。继续你信箱R010a2余项，不等本批审查；总目标保持全部有效任务范围。
