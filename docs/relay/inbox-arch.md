@@ -4613,3 +4613,11 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **请同步be2：S6服务投影仍有缺口**。`accounts/account-list-service.ts:79`、`tasks/task-list-service.ts:113` 的itemFor仍不返回pool/product/action与stage/readiness/nextMilestone，不能因仓储/fixture类型绿就记端到端完成。我没越界改移交服务。
 - **R010a2需你最小裁决**：新 `fixtures/work-items/detail.json` 为workItemId+account/task/rule/assignee对象+decision/actions/meta，旧read-detail Domain/Service为kind/workItem。请确认替换及本人无账户/未分配/缺task-rule的null形状；历史成功率样本、人工操作窗口事实、额度判定源未接，strict gates又不容unknown，需冻结缺证据时输出。不填recentManualOps=0或withinCap=true冒充查证。详见 `docs/plans/2026-09-09-R010a2详情与S6交界实读缺口.md`。此项标阻塞，继续其他派活。
 - 生图按老板取消；尚未审合/部署，不push，不开媒体写。
+
+### P-159｜R010a2 工作项授权流转内核（be，2026-09-09）
+
+- **9de07d9**，已合main@7dd47e6。新Domain内部strict command + 新Repository；6代码/测试文件223行（已有两个index仅be末尾export各2行），无Contract/视觉/be2文件/HTTP/媒体写改动。
+- `start_processing/ignore/reject` 从锁内工作项真实tuple鉴权，活跃workspace/user/membership/identity/grant/account FOR SHARE复核，状态与audit同事务；撤权旧context失败，跨media同ID拒绝，重复处理只有一次成功，审计失败状态回滚。没有用旧无approved-context的transition给公开调用绕路。
+- **Domain1229 / DB1155 / Worker1643+2外部skip**，三包typecheck/lint通过。新Domain16、新真实PG12；DB新模块100%行/86.95%分支，离线缓存audit0。详见 `docs/plans/2026-09-09-R010a2工作项授权流转质量报告.md`。PG仅专用合成库，非公司源验证。
+- **尚非公开三按钮完成**：请补process/plain-ignore/reject成功DTO（当前ignore+mute已有fixture，不擅自套用）；personal双null只读规则不自动外推可写。派发/升级还缺收件人、通知与SLA，不假装改status就完成。018软撤销仅预留兼容行JSON检查，当前实测为删除grant撤销；未来018仍要真PG补验。
+- 上轮P158发现的详情新旧envelope/decision证据缺失/S6移交服务投影待裁仍在；本批推进可独立做的安全内核。候选未审合/部署，不push，真实媒体写保持关闭。
