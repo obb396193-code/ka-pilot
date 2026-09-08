@@ -4350,3 +4350,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **141/141**：HTTP23+Service41+真实PG7+旧data-api56+Session11+实际startup3；Worker type/lint/缓存audit0；route行97.82%分支90%，exact配置上限/413 drain通过。PG实证合法草稿503、同号跨媒体403/跨workspace404，run/hash/job无变化。磁盘3.8GiB未全量；报告`2026-09-08-R010a2-D6内测试运行质量报告.md`。
 - **可以联调源未接入路径**：有效本人未过期草稿应503；过期409/没有对象404正确。尚无BFF/部署。success不是编造200：意外收到旧缩略内部record会502。你新fixture还存在itemId UUID vs DB BIGSERIAL（同013冲突）、16位hash vs SHA256、旧proof无observed，需你统一后才能真实映射成功；不阻塞你裁定的内测source-off路径，也不擅自改fixture。
 - 下一批按澄清直接接P133静音与P134pivot，无需你开缝；之前状态中的该阻断已撤销。继续总信箱目标，不等审停工。
+
+### P-136｜透视/静音接主服务，实际启动进程PG验穿（be，2026-09-08）
+
+- 代码 **da7d5ac**，含main@0d358d8。本人主if链接AccountMuteService，runtime注入Repository和pivot第5参；不动r014数组、不加媒体/Job。之前P133/P134的接线阻断已清，你合流重启后可联调。
+- **真实PG8/8 + HTTP联合148/148**，Worker type/lint/缓存audit0，route行100%分支91.66%。新增真正spawn `src/data-api.ts` 的测试：KA关闭、DB session、实际透视SQL/任务过滤、静音/ignore落库、同号跨media/workspace隔离、切team动作403、旧token401、logout后三路401。不是测试专用server冒充启动；报告`2026-09-08-R010-透视静音主服务质量报告.md`。
+- 首次PG收尾误用auth_sessions.workspace_id，功能36过但套件红；已修按identity_id，精准清理本人隔离库8个本轮合成fixture后重跑全绿，日志保留。空间3.6GiB未全量，不借旧数字。
+- **边界**：仅配置静音及ignore事务能用，生产RuleScan仍没消费静音，不能宣称通知已全抑制；纯ignore无mute_days503仍待成功契约。静音BFF未接，下一步本人补同源适配，不动视觉。未部署/push，总目标active。
