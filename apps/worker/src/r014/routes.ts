@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 
 import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
+import type { Pool } from "pg";
 
 /** R-014 追加路由的执行上下文：服务令牌 + 会话鉴权都已由壳层做完，这里只拿结果。 */
 export interface R014RouteContext {
@@ -29,3 +30,15 @@ export const r014Routes: R014Route[] = [];
 export function findR014Route(pathname: string): R014Route | null {
   return r014Routes.find((route) => route.matches(pathname)) ?? null;
 }
+
+/**
+ * be2 在进程装配时（data-api.ts）调一次，把 R-014 的路由注册进上面的数组。
+ * 路由需要 Pool，而缝是在模块顶层求值的，所以注册必须显式调用而不是模块副作用——
+ * 副作用式注册会让测试无法在不连库的情况下导入这个模块。
+ */
+export function registerR014Routes(routes: readonly R014Route[]): void {
+  r014Routes.length = 0;
+  r014Routes.push(...routes);
+}
+
+export type R014RouteFactory = (pool: Pool) => R014Route[];

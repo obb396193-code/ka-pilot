@@ -1,3 +1,9 @@
+import { ACTIVE_WORK_ITEM_STATUSES } from "@ka/domain";
+
+// P-123 转 be2：活动态集合以 domain 的冻结常量为准（v1.7.5 P-083 把 dispatched 并入活动态）。
+// Only frozen code constants become SQL literals; all request values remain parameters.
+const activeStates = ACTIVE_WORK_ITEM_STATUSES.map((status) => `'${status}'`).join(", ");
+
 const FILTERED_TASKS_CTE = `
   allowed_scope AS (
     SELECT allowed.media, allowed.account_id
@@ -36,7 +42,7 @@ const FILTERED_TASKS_CTE = `
           FROM work_items AS filtered_item
           WHERE filtered_item.workspace_id = task.workspace_id
             AND filtered_item.task_id = task.task_id
-            AND filtered_item.status IN ('open', 'processing', 'escalated')
+            AND filtered_item.status IN (${activeStates})
             AND filtered_item.media IS NOT NULL
             AND filtered_item.account_id IS NOT NULL
             AND (
@@ -187,7 +193,7 @@ export const TASK_LIST_PAGE_SQL = `
     FROM work_items AS item
     WHERE item.workspace_id = task.workspace_id
       AND item.task_id = task.task_id
-      AND item.status IN ('open', 'processing', 'escalated')
+      AND item.status IN (${activeStates})
       AND item.media IS NOT NULL
       AND item.account_id IS NOT NULL
       AND (

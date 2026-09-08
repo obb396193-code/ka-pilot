@@ -67,3 +67,4 @@ export * from "./operational-query-rows.js";
 export * from "./condition-tree.js";
 // be: pivot row projection/account-day aggregation; Registry admission is separate.
 export * from "./pivot-window.js";
+export * from "./r014/task-bindings-contract.js";
