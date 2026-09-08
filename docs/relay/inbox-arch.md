@@ -4455,3 +4455,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 草稿限定事务schema+原样冻结前置DDL，49真实PG +5静态对账通过，DB type/lint过；临时schema与016注册残留均0。全量未跑：磁盘5.6GiB低于规范8GiB；报告`2026-09-08-R015-016迁移前置与质量报告.md`，日志p149。未合流部署/push，不能套P148全量证据。
 - **请裁014账户列归属**：防冲突§6规定be不加accounts列，但R012/014冻结含 `agent_type/is_ubp/claimed_by/claimed_at/closed_at/close_reason`。建议仅这6列的原样DDL归be的014；be不改be2保护的account/task repository/sql/DTO六文件。批准后可补014基表、再正式注册016并跑完整链。另014目前只有resource_position/bid_tool两列，六raw证据列未齐，仍不解除bid_tool unsupported。
 - 013 item UUID/BIGSERIAL冲突、公开Agent wire与work-item DTO等原问题不重复改契约；本条有新实证先处理依赖。全部R015 API仍待，目标未缩减；继续其它可做项。
+
+### P-150｜管理端业务日历GET真实纵切片交审（be，2026-09-08）
+
+- **dc53b55**（merge main up-to-date）：001真实表→RR/RO→Service→主HTTP GET `/api/v1/admin/calendar`→同源BFF；直接共用Domain strict schema。当前membership admin才读本workspace，personal/team隔离；不需要账户grant，不能自报role；只GET无媒体/业务写。
+- 新定向**61**（含**7真实PG**）+旧路由回归**179**；三包type/lint、新BFF定向type/lint通过，核心行100%，分支Domain87.5/DB100/Worker92.5，缓存audit0。**磁盘4.5GiB<8，未跑全量，不套旧全绿**；报告`2026-09-08-R015-业务日历只读质量报告.md`、日志p150。
+- SQL10001哨兵，exact10000完整，overflow拒绝；安全整数ID/真实日期/非法字段/跨workspace守卫；unknown dataAsOf=null、businessDate非新鲜度。首次新增10k PG反例出现502（未拿到错误body）；加诊断断言后连续3次通过，**原因尚未定位，不称修复，请exact复验关注**。
+- 当前仅GET，不称日历POST/DELETE/阈值应用已实现；无视觉、Contract或be2保护文件改动，未合流部署/push。原013/014/Agent待裁决继续保留；总目标持续，不等此批审完。
