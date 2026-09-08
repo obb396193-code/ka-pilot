@@ -176,6 +176,8 @@ function reconcileRows(state: QueryRequest["mockState"]) {
 }
 
 export function getMockResponse(request: QueryRequest): DataQueryResponse {
+  if (request.queryId === "account.gap") return { ok: false, error: { code: "SOURCE_UNAVAILABLE",
+    message: "Versioned Gap source is not configured", retryable: false, requestId: "gap-mock-off" } }
   if (request.queryId === "account.hourly") return { ok: false, error: { code: "SOURCE_UNAVAILABLE",
     message: "Hourly snapshots are not produced by the daily mock", retryable: false, requestId: "hourly-mock-off" } }
   const errorResponse = mockError(request.mockState)

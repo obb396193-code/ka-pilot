@@ -429,6 +429,12 @@ export class DataQueryService {
         throw error;
       }
 
+      if (resolved.queryId === "account.gap") {
+        // Frozen gapStatus requires a real versioned rule plus scoped source
+        // contributions. Neither an old daily aggregate nor a constant threshold
+        // is a substitute. This runs AFTER request and approved tuple validation.
+        throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Versioned Gap source is not configured");
+      }
       if (resolved.queryId === "account.hourly") {
         if (route.selectedSource !== "platform" || auth.workspaceKind !== "personal" || !this.dependencies.hourly)
           throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Account hourly source is not configured");

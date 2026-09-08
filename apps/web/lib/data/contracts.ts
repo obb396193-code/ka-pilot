@@ -8,6 +8,7 @@ import {
   dimensionTypeSchema,
   pivotWindowRowsSchema,
   accountHourlyRowsSchema,
+  accountGapRowsSchema,
   type DataQueryId,
 } from "./canonical-query-rows.ts"
 import { displayMetricValueSchema, dataViewModeSchema } from "./data-view.ts"
@@ -87,6 +88,7 @@ export type CanonicalDataQueryRequest = z.infer<typeof dataQueryRequestSchema>
 
 export const sourceQueryResultSchema = z.object({
   queryId: dataQueryIdSchema,
+  groupBy: z.enum(["account", "task", "biz"]).optional(),
   dimension: dimensionTypeSchema.optional(),
   dimA: dimensionTypeSchema.optional(), dimB: dimensionTypeSchema.optional(),
   rowSchemaVersion: z.string().min(1),
@@ -98,6 +100,10 @@ export const sourceQueryResultSchema = z.object({
   warnings: z.array(z.string()),
   error: stableDataQueryErrorSchema.optional(),
 }).strict().superRefine((source, context) => {
+  if (source.queryId === "account.gap") {
+    if (source.groupBy === undefined || !source.lineage.window || !accountGapRowsSchema.safeParse(source.rows).success)
+      context.addIssue({ code: "custom", message: "Gap requires grouping/window/unique valid rows" })
+  } else if (source.groupBy !== undefined) context.addIssue({ code: "custom", message: "Unexpected Gap grouping" })
   if (source.queryId === "account.hourly" && (!accountHourlyRowsSchema.safeParse(source.rows).success || !source.lineage.window ||
     source.lineage.window.from !== source.lineage.window.to)) context.addIssue({ code: "custom", message: "Invalid hourly rows or window" })
   if (source.queryId === "account.dimension") {
@@ -153,11 +159,20 @@ const hourlyMetaSchema = z.object({ requestId: requestIdSchema, dataAsOf: z.stri
     return !Number.isNaN(d.valueOf()) && d.toISOString().slice(0, 10) === value
   }), workspaceKind: z.literal("personal"), selectedSource: z.literal("platform"),
 }).strict()
+const gapMetaSchema = hourlyMetaSchema.extend({ ruleSetVersion: z.string().min(1).max(256)
+  .refine(value => value.trim() === value && [...value].every(c => c.charCodeAt(0) >= 32 && c.charCodeAt(0) !== 127), "Invalid rule version") }).strict()
 export const dataQueryResponseSchema = z.discriminatedUnion("ok", [
   z.object({ ok: z.literal(true), data: dataQuerySuccessDataSchema,
     meta: z.union([z.object({ cellCoverage: z.object({ cells: z.number().int().min(0).max(10000), withData: z.number().int().min(0).max(10000),
-      undeterminable: z.number().int().min(0).max(10000) }).strict().refine(value => value.withData <= value.cells && value.undeterminable <= value.cells) }).strict(), hourlyMetaSchema]).optional(),
+      undeterminable: z.number().int().min(0).max(10000) }).strict().refine(value => value.withData <= value.cells && value.undeterminable <= value.cells) }).strict(), hourlyMetaSchema, gapMetaSchema]).optional(),
   }).strict().superRefine((value, context) => {
+    if (value.data.mode !== "reconcile" && value.data.source.queryId === "account.gap") {
+      const parsed = gapMetaSchema.safeParse(value.meta), source = value.data.source
+      if (!parsed.success || value.data.mode !== "platform" || source.lineage.workspaceKind !== "personal" || source.lineage.source === "ka_data" ||
+        parsed.data.dataAsOf !== source.lineage.dataAsOf || parsed.data.businessDate !== source.lineage.window?.to)
+        context.addIssue({ code: "custom", message: "Gap metadata must match source and carry a rule version" })
+      return
+    }
     if (value.data.mode !== "reconcile" && value.data.source.queryId === "account.hourly") {
       const parsed = hourlyMetaSchema.safeParse(value.meta), source = value.data.source
       if (!parsed.success || value.data.mode !== "platform" || source.lineage.workspaceKind !== "personal" || source.lineage.source === "ka_data" ||

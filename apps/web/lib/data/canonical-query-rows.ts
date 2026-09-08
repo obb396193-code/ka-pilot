@@ -8,6 +8,7 @@ const calendarDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value
 }, "date must be a real calendar date")
 
 export const dataQueryIdSchema = z.enum([
+  "account.gap",
   "account.hourly",
   "account.pivot2",
   "account.dimension",
@@ -201,7 +202,22 @@ export const accountAnomalyRowSchema = accountDailyRowSchema.extend({
   dataAnomaly: z.literal(true),
 }).strict()
 
+export const accountGapRowSchema = z.object({
+  group: z.object({ key: z.string().min(1).nullable(), label: z.string().nullable() }).strict(),
+  conversion: canonicalMetricValueSchema, realConversion: canonicalMetricValueSchema,
+  gap: ratioValueSchema, preDeductionGap: ratioValueSchema, deductionRate: ratioValueSchema,
+  gapStatus: z.enum(["normal", "high", "missing"]),
+}).strict().superRefine((row, ctx) => {
+  if ((row.conversion.availability !== "available" || row.realConversion.availability !== "available") &&
+    (row.gap.state !== "undefined" || row.gapStatus !== "missing")) ctx.addIssue({ code: "custom", message: "Missing Gap inputs" })
+  if (row.gap.state === "undefined" && row.gapStatus !== "missing") ctx.addIssue({ code: "custom", message: "Undefined Gap cannot be classified" })
+  if (row.realConversion.value === 0 && row.gap.state === "finite") ctx.addIssue({ code: "custom", message: "Zero denominator" })
+})
+export const accountGapRowsSchema = z.array(accountGapRowSchema).max(10000).refine(rows =>
+  new Set(rows.map(row => row.group.key)).size === rows.length, "Duplicate Gap groups")
+
 export const canonicalQueryRowSchemaById = {
+  "account.gap": accountGapRowSchema,
   "account.hourly": accountHourlyRowSchema,
   "account.pivot2": pivotWindowRowSchema,
   "account.dimension": dimensionWindowRowSchema,
@@ -214,6 +230,7 @@ export const canonicalQueryRowSchemaById = {
 } as const
 
 export const canonicalRowSchemaVersionByQueryId = {
+  "account.gap": "account.gap/v1",
   "account.hourly": "account.hourly/v1",
   "account.pivot2": "account.pivot2/v1",
   "account.dimension": "account.dimension/v3",

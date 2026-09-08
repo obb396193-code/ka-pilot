@@ -2,7 +2,7 @@ import { z } from "zod";
 import { queryWindowSchema } from "./summary-window.js";
 import { dimensionTypeSchema, dimensionWindowRowsSchema } from "./dimension-window-rows.js";
 import { pivotWindowRowsSchema } from "./pivot-window.js";
-import { accountHourlyRowsSchema } from "./operational-query-rows.js";
+import { accountHourlyRowsSchema, accountGapRowsSchema } from "./operational-query-rows.js";
 import { calendarDateSchema } from "./data-query-base-rows.js";
 
 import {
@@ -14,6 +14,7 @@ export const dataViewModeSchema = z.enum(["ka_data", "platform", "reconcile"]);
 export type DataViewMode = z.infer<typeof dataViewModeSchema>;
 
 export const dataQueryIdSchema = z.enum([
+  "account.gap",
   "account.hourly",
   "account.pivot2",
   "account.dimension",
@@ -222,6 +223,7 @@ export type DataQueryRequest = z.infer<typeof dataQueryRequestSchema>;
 export const sourceQueryResultSchema = z
   .object({
     queryId: dataQueryIdSchema,
+    groupBy: z.enum(["account", "task", "biz"]).optional(),
     dimension: dimensionTypeSchema.optional(),
     dimA: dimensionTypeSchema.optional(),
     dimB: dimensionTypeSchema.optional(),
@@ -236,6 +238,10 @@ export const sourceQueryResultSchema = z
   })
   .strict()
   .superRefine((result, context) => {
+    if (result.queryId === "account.gap") {
+      if (result.groupBy === undefined || !result.lineage.window || !accountGapRowsSchema.safeParse(result.rows).success)
+        context.addIssue({ code: "custom", message: "Gap requires its grouping, window and unique valid rows" });
+    } else if (result.groupBy !== undefined) context.addIssue({ code: "custom", message: "Unexpected Gap grouping" });
     if (result.queryId === "account.hourly") {
       if (!accountHourlyRowsSchema.safeParse(result.rows).success || !result.lineage.window ||
         result.lineage.window.from !== result.lineage.window.to) {
@@ -413,11 +419,20 @@ export const hourlyQueryMetaSchema = z.object({ requestId: requestIdSchema,
   dataAsOf: z.string().datetime({ offset: true }).nullable(), businessDate: calendarDateSchema,
   workspaceKind: z.literal("personal"), selectedSource: z.literal("platform"),
 }).strict();
+export const gapQueryMetaSchema = hourlyQueryMetaSchema.extend({ ruleSetVersion: z.string().min(1).max(256)
+  .refine(value => value.trim() === value && [...value].every(c => c.charCodeAt(0) >= 32 && c.charCodeAt(0) !== 127), "Invalid rule version") }).strict();
 
 export const dataQueryResponseSchema = z.discriminatedUnion("ok", [
   z.object({ ok: z.literal(true), data: dataQuerySuccessDataSchema,
-    meta: z.union([z.object({ cellCoverage: pivotCellCoverageSchema }).strict(), hourlyQueryMetaSchema]).optional(),
+    meta: z.union([z.object({ cellCoverage: pivotCellCoverageSchema }).strict(), hourlyQueryMetaSchema, gapQueryMetaSchema]).optional(),
   }).strict().superRefine((value, context) => {
+    if (value.data.mode !== "reconcile" && value.data.source.queryId === "account.gap") {
+      const parsed = gapQueryMetaSchema.safeParse(value.meta), source = value.data.source;
+      if (!parsed.success || value.data.mode !== "platform" || source.lineage.workspaceKind !== "personal" ||
+        source.lineage.source === "ka_data" || parsed.data.dataAsOf !== source.lineage.dataAsOf ||
+        parsed.data.businessDate !== source.lineage.window?.to) context.addIssue({ code: "custom", message: "Gap metadata must match source and carry a rule version" });
+      return;
+    }
     if (value.data.mode !== "reconcile" && value.data.source.queryId === "account.hourly") {
       const parsed = hourlyQueryMetaSchema.safeParse(value.meta), source = value.data.source;
       if (!parsed.success || value.data.mode !== "platform" || source.lineage.workspaceKind !== "personal" ||

@@ -96,6 +96,11 @@ describe("R010 actual production composition with KA disabled", () => {
     expect(unavailableHourly.response.status).toBe(503);
     expect(unavailableHourly.body).toMatchObject({ ok: false, error: { code: "SOURCE_UNAVAILABLE" } });
     expect((await call("/api/v1/query", { ...hourly, params: { ...hourly.params, accountIds: ["not-granted"] } })).response.status).toBe(403);
+    const gap = { queryId: "account.gap", params: { date_from: "2026-09-01", date_to: "2026-09-01", media: "KUAISHOU", groupBy: "account" } };
+    const gapOff = await call("/api/v1/query", gap);
+    expect(gapOff.response.status).toBe(503);
+    expect(gapOff.body).toMatchObject({ ok: false, error: { code: "SOURCE_UNAVAILABLE" } });
+    expect((await call("/api/v1/query", { ...gap, params: { ...gap.params, accountIds: ["not-granted"] } })).response.status).toBe(403);
     const query = { queryId: "account.pivot2", params: { dimA: "biz", dimB: "account", media: "KUAISHOU", window_from: "2026-09-01", window_to: "2026-09-01", taskIds: ["synthetic-task"] } };
     const pivot = await call("/api/v1/query", query);
     expect(pivot.response.status).toBe(200);

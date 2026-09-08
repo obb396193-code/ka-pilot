@@ -121,7 +121,7 @@ async function handleQueryRequest(request: Request, dependencies: Dependencies, 
         return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query source identity did not match the current Session", false, requestId), requestId }
       }
       if (source.queryId !== upstreamRequest.queryId) return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Data query response queryId did not match the request", false, requestId), requestId }
-      if (source.queryId === "account.hourly" && bodyRequestId(envelope.data) !== requestId)
+      if ((source.queryId === "account.hourly" || source.queryId === "account.gap") && bodyRequestId(envelope.data) !== requestId)
         return { status: 502, body: error("UPSTREAM_INVALID_RESPONSE", "Hourly response requestId did not match the request", false, requestId), requestId }
     }
     return { status: upstream.status, body: envelope.data, requestId }

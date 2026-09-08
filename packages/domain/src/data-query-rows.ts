@@ -4,11 +4,12 @@ import { accountDailyRowSchema, accountAnomalyRowSchema } from "./data-query-bas
 import { summaryWindowRowSchema, trendWindowRowSchema } from "./summary-window.js";
 import { dimensionWindowRowSchema } from "./dimension-window-rows.js";
 import { pivotWindowRowSchema } from "./pivot-window.js";
-import { accountHourlyRowSchema } from "./operational-query-rows.js";
+import { accountHourlyRowSchema, accountGapRowSchema } from "./operational-query-rows.js";
 export { trendWindowRowSchema as accountTrendRowSchema } from "./summary-window.js";
 export type AccountTrendRow = z.infer<typeof trendWindowRowSchema>;
 
 export const canonicalQueryRowSchemaById = {
+  "account.gap": accountGapRowSchema,
   "account.hourly": accountHourlyRowSchema,
   "account.pivot2": pivotWindowRowSchema,
   "account.dimension": dimensionWindowRowSchema,
@@ -20,6 +21,7 @@ export const canonicalQueryRowSchemaById = {
   "reconcile.account_daily": accountDailyRowSchema,
 } as const;
 export const canonicalRowSchemaVersionByQueryId = {
+  "account.gap": "account.gap/v1",
   "account.hourly": "account.hourly/v1",
   "account.pivot2": "account.pivot2/v1",
   "account.dimension": "account.dimension/v3",

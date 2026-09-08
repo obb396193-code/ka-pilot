@@ -7,6 +7,7 @@ import {
   comparisonWindow,
   dimensionTypeSchema,
   accountHourlyParamsSchema,
+  accountGapParamsSchema,
   type AuthorityUseCase,
   type DataQueryId,
   type DataViewMode,
@@ -32,6 +33,7 @@ export interface QueryAuthorityPolicy {
 }
 
 export interface NormalizedQueryParams {
+  groupBy?: "account" | "task" | "biz";
   hhFrom?: number;
   hhTo?: number;
   dimA?: z.infer<typeof dimensionTypeSchema>;
@@ -323,6 +325,14 @@ function reconciliationSql(params: NormalizedQueryParams, accounts: SqlAccountSc
 }
 
 const DEFINITION_INPUT: QueryDefinition[] = [
+  {
+    queryId: "account.gap", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
+    accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-gap-v1",
+    metricVersion: "account-gap-v1", authorityPolicy: authority("cross_media_operations", "platform"),
+    paramsSchema: accountGapParamsSchema.transform(({ date_from, date_to, media, accountIds, groupBy }) => ({
+      dateFrom: date_from, dateTo: date_to, media, groupBy, ...(accountIds === undefined ? {} : { accountIds }),
+    })),
+  },
   {
     queryId: "account.hourly", supportedViews: ["platform"], maxDateSpanDays: 1, maxRows: 10000,
     accountScope: "optional_many", outputShape: "account_rows", queryTemplateVersion: "account-hourly-v1",

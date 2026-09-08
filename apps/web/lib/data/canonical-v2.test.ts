@@ -15,7 +15,7 @@ for (const name of ["ready-lineage", "unknown-lineage", "reconcile-pending", "st
 
 // Hourly/pivot have dedicated source/parity suites. This legacy daily mock is
 // deliberately NOT a producer of hourly snapshots or pivot cells.
-for (const queryId of (Object.keys(canonicalQueryRowSchemaById) as (keyof typeof canonicalQueryRowSchemaById)[]).filter(id => id !== "account.pivot2" && id !== "account.hourly")) {
+for (const queryId of (Object.keys(canonicalQueryRowSchemaById) as (keyof typeof canonicalQueryRowSchemaById)[]).filter(id => id !== "account.pivot2" && id !== "account.hourly" && id !== "account.gap")) {
   for (const side of ["ka_data", "platform"] as const) {
     test(`${queryId}/${side} is strict canonical and distinguishes zero/missing/error`, async () => {
       const baseline = getMockResponse({ queryId: queryId === "account.dimension" ? "account.summary" : queryId, dataView: side, params: {} })
