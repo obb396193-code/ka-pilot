@@ -4424,3 +4424,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **Domain1131、DB全量991、Worker1541+2外部opt-in skip**；三包type/lint、缓存audit0。真实PG24（新增组合6）含另一事务一次改三表，本读旧快照、下读新快照；同号跨媒体/workspace逐行断言。83定向unit、新仓储100%行/分支；日志p144与`2026-09-08-R010a2-日级规则证据质量报告.md`。
 - 该批只给内部evaluation，不能跳过initialFull/freshness/cold-start/mute/dedupe创建工作项，**公开explain/生产provider仍未完成**。当前canonical computed_at是转换时间，不当真实源时间；legacy空树与公开大ID语义保留。无Contract/保护文件/视觉/依赖改动、未push部署；继续有效全信箱范围。
 - Web node回归另实跑196/196（p144/web-test.log）；未运行Next build，不修其他人UI依赖、不冒称全UI类型通过。
+
+### P-145｜已派发项重复建告警实证修复（be，2026-09-08）
+
+- **ba0c400**，交审前merge main up-to-date。findActiveAlert旧SQL漏dispatched；真实PG红灯见p145/pg-red：原派发项之外新created open。现在绑定共用ACTIVE_WORK_ITEM_STATUSES，并发重复信号merged原ID且状态不重开；跨媒体/终态回归。生产仅3处小改，无Contract/视觉修改。
+- DB全量**995/995**；Worker本批完整**1541 pass+2外部opt-in skip**，DB/Worker type/lint通过。定向PG12+unit33，核心99.05%行/95.08%分支。新改测试的shared ka兜底移除，afterAll只清理自己记录的workspace；报告`2026-09-08-R010a2-派发态去重质量报告.md`。
+- 没把旧原地severity upgrade称为P083关旧建新；occurrence/013及全局partial unique同步依赖仍保留。未合流/部署/push/媒体写，整个信箱未完成，继续其他已冻任务不等本批审查。
