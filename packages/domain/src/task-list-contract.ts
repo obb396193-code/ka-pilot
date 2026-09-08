@@ -17,6 +17,37 @@ export const taskListCalendarDateSchema = z
   }, "date must be a real calendar date");
 
 export const taskListStatusSchema = z.enum(["preparing", "active", "ended"]);
+
+/** v1.5.1 ② 投放阶段七态；与 status 三态并存，不是同一维度（status 是任务生命周期）。 */
+export const taskStageSchema = z.enum([
+  "preparing", "opening", "recharging", "building", "cold_start", "delivering", "ended",
+]);
+export const taskStageSourceSchema = z.enum(["system", "manual", "workflow"]);
+
+const readinessRatioSchema = z
+  .object({ value: z.number().finite().nullable(), state: z.enum(["finite", "infinite", "undefined"]) })
+  .strict();
+
+const readinessEntrySchema = z
+  .object({
+    ratio: readinessRatioSchema,
+    ready: z.boolean(),
+    source: z.enum(["system", "manual"]),
+    missing: z.array(z.string()),
+  })
+  .strict();
+
+/** 六段固定，缺一不可——少一段等于前端不知道那一段是「没查」还是「没准备」。 */
+export const taskListReadinessSchema = z
+  .object({
+    accounts: readinessEntrySchema,
+    recharge: readinessEntrySchema,
+    products: readinessEntrySchema,
+    materials: readinessEntrySchema,
+    strategy: readinessEntrySchema,
+    infra: readinessEntrySchema,
+  })
+  .strict();
 export type TaskListStatus = z.infer<typeof taskListStatusSchema>;
 
 export const taskListRequestSchema = z
@@ -149,6 +180,17 @@ export const taskListItemSchema = z
     pacing: taskListPacingSchema.nullable(),
     linkedAccountCount: z.number().int().nonnegative(),
     workItemSummary: taskWorkItemSummarySchema,
+    // v1.5.1 ② 新增。**optional 是迁移状态不是设计**：fixtures/task-list/*.json
+    // 还是旧形状（arch 的文件），设成必填会当场打红既有 parity 用例。
+    // fixture 升级后应立刻转必填，否则服务层漏发不会有任何东西报警。已回抛 arch。
+    stage: taskStageSchema.optional(),
+    stageSource: taskStageSourceSchema.optional(),
+    readiness: taskListReadinessSchema.optional(),
+    nextMilestone: z
+      .object({ at: taskListCalendarDateSchema, label: z.string().min(1) })
+      .strict()
+      .nullable()
+      .optional(),
   })
   .strict();
 export type TaskListItem = z.infer<typeof taskListItemSchema>;

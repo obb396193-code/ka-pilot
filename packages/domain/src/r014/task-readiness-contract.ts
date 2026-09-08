@@ -74,3 +74,63 @@ export function overallReadiness(readiness: TaskReadiness): RatioValue {
   const total = ratios.reduce((sum, ratio) => sum + (ratio.value as number), 0);
   return { value: total / ratios.length, state: "finite" };
 }
+
+/* ── S6b：系统可推导的就绪度 ───────────────────────────────────────── */
+
+export interface TaskReadinessFacts {
+  /** 任务下挂的账户数（task_accounts 去重三键）。 */
+  accountCount: number;
+  /** 余额 > 0 的账户数。 */
+  rechargedCount: number;
+  /** 至少有一个 unit 的账户数。 */
+  builtCount: number;
+  /** 余额不足的账户，用于 missing 明细。 */
+  unfundedAccounts: readonly string[];
+  /** 还没有 unit 的账户，用于 missing 明细。 */
+  unbuiltAccounts: readonly string[];
+}
+
+/** 系统推不出来的三段：products / materials / strategy 目前没有任何数据源。 */
+const WITHOUT_SYSTEM_SOURCE: readonly ReadinessDimension[] = ["products", "materials", "strategy"];
+
+/**
+ * 从库里真有的事实推六段就绪度。
+ *
+ * - `accounts` / `recharge` / `infra` 有源：分别看挂没挂户、有没有余额、有没有 unit；
+ * - `products` / `materials` / `strategy` **没有任何系统来源**（商品与素材的表要等 016，
+ *   策略没有落点）→ ratio `undefined`、ready `false`、missing 写明「需人工确认」。
+ *   **不把「没有数据源」算成 0 分**——0 分意味着「查过了，一个都没准备好」，那是两回事。
+ * - 任务下一个户都没有时，recharge / infra 的分母是 0 → 同样 `undefined` 而不是 0。
+ */
+export function deriveSystemReadiness(
+  facts: TaskReadinessFacts,
+): Record<ReadinessDimension, SystemReadinessEntry> {
+  const ratio = (numerator: number, denominator: number): RatioValue =>
+    denominator <= 0 ? { value: null, state: "undefined" } : { value: numerator / denominator, state: "finite" };
+
+  const accounts: SystemReadinessEntry = {
+    ratio: facts.accountCount > 0 ? { value: 1, state: "finite" } : { value: 0, state: "finite" },
+    ready: facts.accountCount > 0,
+    missing: facts.accountCount > 0 ? [] : ["任务下还没有账户"],
+  };
+  const recharge: SystemReadinessEntry = {
+    ratio: ratio(facts.rechargedCount, facts.accountCount),
+    ready: facts.accountCount > 0 && facts.rechargedCount === facts.accountCount,
+    missing: facts.unfundedAccounts.map((accountId) => `${accountId} 余额不足`),
+  };
+  const infra: SystemReadinessEntry = {
+    ratio: ratio(facts.builtCount, facts.accountCount),
+    ready: facts.accountCount > 0 && facts.builtCount === facts.accountCount,
+    missing: facts.unbuiltAccounts.map((accountId) => `${accountId} 无 unit`),
+  };
+
+  const result = { accounts, recharge, infra } as Record<ReadinessDimension, SystemReadinessEntry>;
+  for (const dimension of WITHOUT_SYSTEM_SOURCE) {
+    result[dimension] = {
+      ratio: { value: null, state: "undefined" },
+      ready: false,
+      missing: ["无系统来源，需人工确认"],
+    };
+  }
+  return result;
+}
