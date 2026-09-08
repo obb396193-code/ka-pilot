@@ -155,11 +155,11 @@ function NotificationsTab() {
   return (
     <div className="flex flex-col gap-4">
       <Card>
-        <CardHeader><CardTitle>免打扰</CardTitle><CardDescription>免打扰 · 只压 P1 / P2，P0 破静默直达</CardDescription></CardHeader>
+        <CardHeader><CardTitle>免打扰</CardTitle><CardDescription>免打扰 · 只压 P1 / P2，P0 直达不受免打扰限制</CardDescription></CardHeader>
         <CardContent className="flex flex-wrap items-end gap-3">
           <div className="grid gap-1.5"><Label>从</Label><Input type="time" value={quiet.from} onChange={(event) => setQuiet((prev) => ({ ...prev, from: event.target.value }))} className="w-32" /></div>
           <div className="grid gap-1.5"><Label>到</Label><Input type="time" value={quiet.to} onChange={(event) => setQuiet((prev) => ({ ...prev, to: event.target.value }))} className="w-32" /></div>
-          <Button size="sm" onClick={() => toast.success("免打扰已保存", { description: `静默 ${quiet.from}–${quiet.to}；P0 仍会破静默` })}>保存</Button>
+          <Button size="sm" onClick={() => toast.success("免打扰已保存", { description: `免打扰 ${quiet.from}–${quiet.to}；P0 仍会破静默` })}>保存</Button>
         </CardContent>
       </Card>
       <DataGrid table={table} empty="没有订阅" toolbar={<p className="text-xs text-muted-foreground">我收什么、送到哪</p>} actions={<Button size="sm" variant="outline" asChild><Link href="/integrations?tab=subscriptions"><IconPlus />去集成页新建</Link></Button>} showPagination={false} showColumnPicker={false} />
