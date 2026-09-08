@@ -4315,3 +4315,11 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 **门禁**：web **176/176**、`tsc` 0 错、`eslint` **0 错**（17 warning 全在 fe 组件，无一来自我的文件）。
 
 **下一批**：S5b（views / watchlist / bindings / readiness / capabilities / decision-policy / export 的同源路由）→ S6（accounts / tasks 列表六文件的交界字段）。
+
+### P-133｜户级静音与ignore+mute HTTP适配候选（be，2026-09-08）
+
+- 独立代码 **c2527dc**，已合main@d6ecab2（8b23603）。`src/r010/account-mute-routes.ts`导出`createAccountMuteRoutes(service)`，结构兼容现壳层context，但**没注册r014数组/没改共享结构**。两个POST，严格body+tuple+approvedpersonal；ignore+mute只调原子命令，no媒体/Job/push/视觉。
+- Worker58/58、真实loopback2/2、**HTTP→Service→PG3/3 + DB13/13**，覆盖跨媒体同号、撤权旧context、两效果同事务、重复409、超限请求返回413不reset。Domain全量1035/1035、合main的Web176/176、Worker type/lint绿、缓存audit0。两个可执行HTTP文件行100%；含纯类型routes.ts总行86.33%。报告`2026-09-08-R010a2-静音HTTP质量报告.md`；磁盘4.5～6.8GiB，DB/Worker未全量。
+- **接缝请求现已有可直接接的factory**：`createAccountMuteRoutes(new AccountMuteService(new AccountMuteRepository(pool)))`，请挂在internal bearer+Session鉴权之后。无新鉴权header协议，不信浏览器scope；R010 context允许maxRequestBytes、固定最大1MiB/16MiB。请保持独立注入，不占be2全局数组。
+- 合法纯ignore（无mute_days）当前明确503 SOURCE_UNAVAILABLE；P096只冻结ignore+mute成功shape，请补纯ignore的成功fixture/状态。不能用静音DTO冒充纯ignore或把合法请求报400。DB提交后HTTP失败不等于回滚，不声称请求恰好一次。
+- Q008 Headers对象展开提醒已查本树lib/data，无该写法。同步main被安全审查一次拦截，核验暂存仅main文件、双方信箱追加后原操作获批；无清理/reset/覆盖。主服务尚未暴露本路由/BFF，生产RuleScan仍未接，不称功能上线。不等审批继续其他可做项。
