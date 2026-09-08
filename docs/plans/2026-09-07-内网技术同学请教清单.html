@@ -127,35 +127,21 @@
 
 <div class="wrap">
   <header class="top">
-    <span class="eyebrow">KA Pilot · 会前准备 · 2026-09-07</span>
+    <span class="eyebrow">KA Pilot · 技术请教 · 2026-09-07</span>
     <h1>内网平台请教清单</h1>
-    <p class="lede">用对方的既有答案，换掉我们的试错。一个卡点问对了，能省一到三周。</p>
+    <p class="lede">我们在做一个投放经营助手，数据链路和建议链路已经跑通，卡在部署与身份权限。下面是想请教的问题，按卡点轻重排。</p>
     <dl class="facts">
-      <div class="fact"><dt>对方</dt><dd>做过 Scale OS / OS agent，懂工作流编排、内网数据权限与 BUC</dd></div>
-      <div class="fact"><dt>建议时长</dt><dd>45 分钟：3 分钟背景 + 35 分钟提问 + 5 分钟盲点</dd></div>
+      <div class="fact"><dt>产品</dt><dd>把内网数据拉进自有库，算达标与差距，给建议和一键操作，人确认后才写回媒体</dd></div>
+      <div class="fact"><dt>现状</dt><dd>全站页面已铺完、后端接口在接；写回媒体那一段全程关闭</dd></div>
       <div class="fact"><dt>共</dt><dd>7 组 34 问，A 组第一题最重要</dd></div>
-      <div class="fact"><dt>最卡的一组</dt><dd>A 组部署与数据库，问不完不要往下走</dd></div>
+      <div class="fact"><dt>最卡的</dt><dd>A 组：FaaS 出网只开 443，连不上任何 5432 的数据库</dd></div>
     </dl>
   </header>
 
-  <section class="block">
-    <div class="head"><h2>怎么开这个会</h2></div>
-    <p class="sub">顺序是有意的：先让对方进入语境，再问，最后留时间捡盲点。</p>
-    <ol class="method">
-      <li><div><b>先给 3 分钟背景，别让对方猜。</b>一句话定位 + 一条主流程 + 一张页面截图。
-        <p class="say">「给投放优化师做的经营助手——把启航和 BI 的数据拉进自有库，算成本达标和差距，给出建议和一键操作，人确认后再写回媒体。全站页面已铺完、后端在接接口，现在卡在部署和身份权限。」</p></div></li>
-      <li><div><b>带着「我们已经实测过什么」去。</b>对方不用从零解释，省一半时间。清单在本页最后。</div></li>
-      <li><div><b>问「你们怎么做的」，不是「能不能帮我们做」。</b>前者拿到方案，后者拿到「排期再说」。</div></li>
-      <li><div><b>每个问题都要落到三样之一：</b>文档链接、具体人名、一句可执行的结论。当场记在下面的框里。</div></li>
-      <li><div><b>按 A → F 顺序走。</b>A 组是命门，问不完不要往下。</div></li>
-      <li><div><b>最后 5 分钟问盲点：</b>我们哪里做错了、有没有别的团队在做同样的事。</div></li>
-      <li><div><b>A1 是全场最重要的一个问题。</b>他答不了就追问「该问谁」，拿到人名也算成功。</div></li>
-    </ol>
-  </section>
 
   <section class="block">
     <div class="head"><span class="tag crit">A 组 · 命门</span><h2>部署与数据库</h2></div>
-    <p class="sub">实测：FaaS 出网只开 443，5432 和 3306 全被过滤，连不上沙箱里的 PostgreSQL，也连不上公网 RDS。已查证：RDS 申请入口是 CloudCenter 不是 Normandy，必须归属一个 AONE 应用加云账号；走 aone-platform 建应用能一步拿到 AONE 应用和带产品名的域名，建应用与发 daily 无外部审批。所以下面只问还没答案的。</p>
+    <p class="sub">实测：FaaS 出网只开 443，5432 和 3306 全被过滤，连不上沙箱里的 PostgreSQL，也连不上公网 RDS。已查证：RDS 申请入口是 CloudCenter 不是 Normandy，必须归属一个 AONE 应用加云账号；走 aone-platform 建应用能一步拿到 AONE 应用和带产品名的域名，建应用与发 daily 无外部审批。下面只列还没有答案的。</p>
     <div class="qs" id="A"></div>
   </section>
 
@@ -173,7 +159,7 @@
 
   <section class="block">
     <div class="head"><span class="tag">D 组</span><h2>工作流与 Agent</h2></div>
-    <p class="sub">对方的强项，这组是取经。我们自己做了：可视化画布 + 十类节点 + 版本发布 + 运行实例 + 人工确认门 + 失败重试 + 未知结果人工核查。</p>
+    <p class="sub">我们自己做了这些，想对一下你们的做法：可视化画布 + 十类节点 + 版本发布 + 运行实例 + 人工确认门 + 失败重试 + 未知结果人工核查。</p>
     <div class="qs" id="D"></div>
   </section>
 
@@ -185,41 +171,38 @@
 
   <section class="block">
     <div class="head"><span class="tag">G 组</span><h2>发布与上线流程</h2></div>
-    <p class="sub">已知：建应用和发 daily 无外部审批；发预发要变更单加流水线；发正式门禁最严，可能人工审批加发布窗口。这组问细节，部署时要用。</p>
+    <p class="sub">已知：建应用和发 daily 无外部审批；发预发要变更单加流水线；发正式门禁最严，可能人工审批加发布窗口。这组是部署时要用的细节。</p>
     <div class="qs" id="G"></div>
   </section>
 
   <section class="block">
     <div class="head"><span class="tag">F 组</span><h2>组织与先例</h2></div>
-    <p class="sub">性价比最高的一组，留在最后 5 分钟问。</p>
+    <p class="sub">最后几个开放问题。</p>
     <div class="qs" id="F"></div>
   </section>
 
   <section class="block">
-    <div class="head"><h2>我们能给对方什么</h2></div>
-    <p class="sub">别只索取，这几样他们未必系统测过。</p>
+    <div class="head"><h2>我们能提供的</h2></div>
+    <p class="sub">这几样我们系统测过，可以直接给。</p>
     <ul class="plain">
       <li>一份内网能力实测清单：启航双口径、写链路 14 项、FaaS 出网端口、素材 CDN、语音识别格式要求。</li>
       <li>快手投放接口出价字段的实测枚举——三个字段不是同一个分类轴，官方文档没说清。</li>
-      <li>一个「契约驱动 + 多 Agent 并行开发」的实践样本，如果他们对 AI 协作开发感兴趣。</li>
+      <li>一个「契约驱动 + 多 Agent 并行开发」的实践样本，如果对 AI 协作开发感兴趣。</li>
     </ul>
   </section>
 
   <section class="block">
-    <div class="head"><h2>别问的</h2></div>
+    <div class="head"><h2>我们已经实测过的</h2></div>
     <div class="quiet">
-      <p><b>这些已经实测过，问了浪费时间：</b>启航取数双口径与字段、写链路全链路可行、IdeaLab 与 Whale 的大模型通路、语音识别要 WAV、快手命令行工具四层结构与余额、钉钉出网、素材 CDN 可下载、FaaS 能跑服务端渲染与流式、多路由网关、三环境内网域名、ka-data 与启航同日同户对平差异小于千分之一。</p>
-      <p>证据都在 <b>docs/19-实证结果定案.md</b>，按真实执行、源码实读、平台文档、合理推断、未证实五级标注。</p>
+      <p><b>这些我们已经跑通或验过，不用再花时间讲：</b>启航取数双口径与字段、写链路全链路可行、IdeaLab 与 Whale 的大模型通路、语音识别要 WAV、快手命令行工具四层结构与余额、钉钉出网、素材 CDN 可下载、FaaS 能跑服务端渲染与流式、多路由网关、三环境内网域名、ka-data 与启航同日同户对平差异小于千分之一。</p>
+      <p>证据我们按「真实执行 / 源码实读 / 平台文档 / 合理推断 / 未证实」五级标注，需要哪条可以随时给。</p>
     </div>
   </section>
 
   <section class="block">
-    <div class="head"><h2>会后 24 小时内</h2></div>
+    <div class="head"><h2>记录</h2></div>
     <ul class="plain">
-      <li>每个拿到答案的问题写进实证定案文档，标证据等级；或更新上线前门禁清单对应的门。</li>
-      <li>A 组结论直接决定内测方案的寿命和正式化路线，同步更新部署手册。</li>
-      <li>B 组结论决定 BUC 接入排期，可能要新增一个后端批次。</li>
-      <li>拿到的文档链接存进知识库，注明来源和日期。</li>
+      <li>下面每题都能勾选和记录答案，只存在本机浏览器里。</li>
     </ul>
     <div class="exp">
       <button class="btn" id="mk" type="button">汇总我的记录</button>
