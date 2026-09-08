@@ -56,7 +56,7 @@ export function createWorkerConsumer(options: WorkerRuntimeOptions): JobConsumer
     startRun: etlRuns.startRun.bind(etlRuns),
     appendRaw: rawMetrics.appendRaw.bind(rawMetrics),
     syncAccountMetadataAndRaw: rawMetrics.syncAccountMetadataAndRaw.bind(rawMetrics),
-    recordObservation: (runId: number, observation: object) =>
+    recordObservation: (runId: string, observation: object) =>
       etlRuns.recordObservation(runId, { ...observation }),
     finishRun: etlRuns.finishRun.bind(etlRuns),
     failRun: etlRuns.failRun.bind(etlRuns),

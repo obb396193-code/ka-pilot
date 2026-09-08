@@ -40,7 +40,7 @@ function dependencies() {
       }),
     },
     store: {
-      startRun: vi.fn().mockResolvedValue(41),
+      startRun: vi.fn().mockResolvedValue("41"),
       appendRaw: vi.fn().mockResolvedValue(undefined),
       recordObservation: vi.fn().mockResolvedValue(undefined),
       finishRun: vi.fn().mockResolvedValue(undefined),
@@ -106,7 +106,7 @@ describe("backfill day", () => {
       credentialOwnerUserId: ownerId,
       maxAttempts: 3,
     });
-    expect(deps.store.finishRun).toHaveBeenCalledWith(41, 1);
+    expect(deps.store.finishRun).toHaveBeenCalledWith("41", 1);
   });
 
   it("records the fetch stage before allowing the day job to retry", async () => {
@@ -117,7 +117,7 @@ describe("backfill day", () => {
       "offline failed",
     );
     expect(deps.store.failRun).toHaveBeenCalledWith(
-      41,
+      "41",
       "fetch:account_offline",
       "offline failed",
     );

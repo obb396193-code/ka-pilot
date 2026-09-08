@@ -1,5 +1,18 @@
 import type { Pool } from "pg";
 
+/** PG BIGSERIAL is signed int64. Keep canonical decimal text end-to-end:
+ * Number() rounds adjacent IDs above 2^53 and can update the wrong attempt. */
+function runIdentifier(value: unknown): string {
+  if (
+    typeof value !== "string" ||
+    !/^[1-9][0-9]{0,18}$/.test(value) ||
+    (value.length === 19 && value > "9223372036854775807")
+  ) {
+    throw new Error("Invalid ETL run identifier");
+  }
+  return value;
+}
+
 export class EtlRunRepository {
   constructor(private readonly pool: Pool) {}
 
@@ -7,7 +20,7 @@ export class EtlRunRepository {
     jobId: string,
     runKind: "full" | "incr" | "backfill_coordinator" | "backfill_day" | "canonical" | "quality",
     scope: Record<string, unknown>,
-  ): Promise<number> {
+  ): Promise<string> {
     const workspaceId =
       typeof scope.workspaceId === "string" ? scope.workspaceId : null;
     const result = await this.pool.query<{ id: string }>(
@@ -21,10 +34,11 @@ export class EtlRunRepository {
     if (id === undefined) {
       throw new Error("Failed to create ETL run");
     }
-    return Number(id);
+    return runIdentifier(id);
   }
 
-  async finishRun(runId: number, rowsIngested: number): Promise<void> {
+  async finishRun(runId: string, rowsIngested: number): Promise<void> {
+    runIdentifier(runId);
     const result = await this.pool.query(
       `UPDATE etl_runs
        SET status = 'done', rows_ingested = $2, finished_at = now(),
@@ -38,9 +52,10 @@ export class EtlRunRepository {
   }
 
   async recordObservation(
-    runId: number,
+    runId: string,
     observation: Readonly<Record<string, unknown>>,
   ): Promise<void> {
+    runIdentifier(runId);
     const safeObservation = pickSafeObservation(observation);
     const result = await this.pool.query(
       `UPDATE etl_runs
@@ -58,7 +73,8 @@ export class EtlRunRepository {
     }
   }
 
-  async failRun(runId: number, stepFailed: string, errorSummary: string): Promise<void> {
+  async failRun(runId: string, stepFailed: string, errorSummary: string): Promise<void> {
+    runIdentifier(runId);
     const result = await this.pool.query(
       `UPDATE etl_runs
        SET status = 'failed', step_failed = $2, error_summary = $3, finished_at = now()

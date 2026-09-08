@@ -221,7 +221,7 @@ function createSyntheticCanonicalHandler(
     runs: {
       startRun: async () => {
         counters.startRun += 1;
-        return 1;
+        return "1";
       },
       finishRun: async () => {
         counters.finishRun += 1;

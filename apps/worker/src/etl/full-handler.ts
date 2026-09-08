@@ -68,7 +68,7 @@ async function discoverAccountIds(
   dependencies: FullEtlDependencies,
   payload: FullEtlPayload,
   progress: FullEtlProgress,
-  runId: number,
+  runId: string,
 ): Promise<string[]> {
   const discovered = new Set(payload.accountIds);
   let pageNum = 1;
@@ -137,7 +137,7 @@ async function ingestAccountMetrics(
   payload: FullEtlPayload,
   accountIds: string[],
   progress: FullEtlProgress,
-  runId: number,
+  runId: string,
 ): Promise<string | null> {
   const offlineDate = await ingestLatestAvailableOffline(
     dependencies,
@@ -164,7 +164,7 @@ async function ingestLatestAvailableOffline(
   payload: FullEtlPayload,
   accountIds: string[],
   progress: FullEtlProgress,
-  runId: number,
+  runId: string,
 ): Promise<string | null> {
   for (let offset = 1; offset <= OFFLINE_PARTITION_LOOKBACK_DAYS; offset += 1) {
     const ds = shiftIsoDate(payload.asOfDate, -offset);
@@ -186,7 +186,7 @@ async function ingestLatestAvailableOffline(
 async function ingestQuery(
   dependencies: FullEtlDependencies,
   payload: FullEtlPayload,
-  runId: number,
+  runId: string,
   query: QihangQuery,
   fallbackDs: string,
 ): Promise<number> {
@@ -197,7 +197,7 @@ async function ingestQuery(
 
 async function recordObservation(
   store: EtlRunStore,
-  runId: number,
+  runId: string,
   query: QihangQuery,
   observation: Awaited<ReturnType<QihangQueryPort["query"]>>["observation"],
 ): Promise<void> {
