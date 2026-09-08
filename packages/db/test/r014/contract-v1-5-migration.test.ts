@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { runMigrations } from "../../src/migrate.js";
+import { windowSize } from "../migration-window.js";
 
 // Synthetic data only. Execute on the explicitly selected isolated test database (ka_be2_r014_test).
 const databaseUrl = process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka_be2_r014_test";
@@ -177,7 +178,7 @@ describe("contract v1.5 / v1.5.1 / v1.7.1 migration 015 (real PostgreSQL)", () =
   ])("refuses to downgrade when %s, leaving the schema untouched", async (_label, message, arrange) => {
     const cleanup = await arrange();
     try {
-      await expect(runMigrations({ databaseUrl, direction: "down", count: 1 })).rejects.toThrow(message);
+      await expect(runMigrations({ databaseUrl, direction: "down", count: windowSize("015") })).rejects.toThrow(message);
       for (const table of NEW_TABLES) expect(await tableExists(table)).toBe(true);
       expect(await columnDefault("accounts", "pool_status")).toBe("'available'::text");
     } finally {
@@ -189,14 +190,14 @@ describe("contract v1.5 / v1.5.1 / v1.7.1 migration 015 (real PostgreSQL)", () =
     for (const table of NEW_TABLES) {
       expect((await pool.query(`SELECT count(*)::int AS n FROM ${table}`)).rows[0].n).toBe(0);
     }
-    expect(await runMigrations({ databaseUrl, direction: "down", count: 1 })).toHaveLength(1);
+    expect(await runMigrations({ databaseUrl, direction: "down", count: windowSize("015") })).toHaveLength(windowSize("015"));
     for (const table of NEW_TABLES) expect(await tableExists(table)).toBe(false);
     expect((await pool.query(
       `SELECT count(*)::int AS n FROM information_schema.columns
        WHERE table_schema='public' AND table_name='accounts' AND column_name LIKE 'pool_status%'`,
     )).rows[0].n).toBe(0);
     expect((await pool.query("SELECT count(*)::int AS n FROM accounts WHERE workspace_id=$1", [workspace])).rows[0].n).toBe(1);
-    expect(await runMigrations({ databaseUrl, count: 1 })).toHaveLength(1);
+    expect(await runMigrations({ databaseUrl, count: windowSize("015") })).toHaveLength(windowSize("015"));
     for (const table of NEW_TABLES) expect(await tableExists(table)).toBe(true);
     expect((await pool.query(
       "SELECT pool_status, pool_status_source FROM accounts WHERE workspace_id=$1 AND account_id='r014-a1'", [workspace],
