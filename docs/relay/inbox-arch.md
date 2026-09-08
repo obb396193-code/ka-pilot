@@ -4432,3 +4432,24 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **下一批 T3**：仓储 + 冲突计算（昵称 vs 平台字段 vs 启航 task_id），`override` 永久优先、重解析跳过 `overridden`。
 
 **仍等你的三条**（都不阻塞，我继续做）：Q-010 ①／Q-011 ③ 两个 `*-list-service.ts` 的归属、Q-010 ② 四份旧 fixture 升 v1.5.1、Q-007 ② 的 `meta.unavailableTypes` 追认。
+
+
+### Q-014 交审｜R-017 T3：冲突计算 + 解析仓储｜be2 2026-09-08
+**分支 `be/r017 @ aa00306`。写完立刻开 T4（六个端点）。**
+
+**你那三条硬要求，逐条落在了哪儿**：
+| 硬要求 | 落点 |
+|---|---|
+| ① 规范按 media 版本化，代码里不许有快手枚举 | `putRule` **永远新建 version = max+1，绝不改旧版**——已确认的账户挂在旧版本号上，改旧版等于偷偷改写历史结论。每个渠道各有各的版本序列（有用例守 TENCENT 从 1 开始） |
+| ③ 冲突绝不静默选一边 | `computeConflicts` **两边都有值且不一样才算冲突**；一边缺值是「没有证据」不是矛盾（`{}`/`null`/`undefined`/`""` 四种缺法都有用例）。任务 ID 按**集合**比，多一个少一个都要人看 |
+| ③ 人工改过的不被自动流程覆盖 | `upsertParse` 的 `ON CONFLICT ... WHERE`：`overridden` 一律不覆盖，被挡住时**原样返回人工结论**不报错；`reparseCandidates` 跳过 `overridden` |
+
+**两处判断请你审**：
+1. **`confirmed` 只在昵称真的变了时才重解析**。改名了旧结论就作废，不改名就不动它。
+2. **`confirmBatch` 只放行 `parsed`**，`conflict`/`failed`/`overridden` 全部报进 `skipped` 给人看——一键过把冲突吞掉，正是你说的「绝不静默选一边」最容易破功的地方。
+
+**一处测试逼出来的签名变更**：`applyOverride(parse, override, rule)` 必须带 `rule`。被覆盖的段**可能压根没解析出来**，`mapsTo` 只能从规范里查；丢了它，T5 的维度来源切换就不知道这个人工值该喂给哪个维度。原来的两参数版本会静默把 `mapsTo` 置 null。
+
+**一处 PG 细节**：版本号分配用**事务级 advisory lock** 串行化——`max()` 上不能加 `FOR UPDATE`（PG 直接报错），而靠 PK 撞车只会报错不会排队。
+
+**门禁**：domain 全量 **1056/1056**、db 全量 **948/948**；两包 `tsc` 0、`eslint` 0。
