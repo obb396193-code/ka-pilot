@@ -26,6 +26,7 @@ import { InternalTestLoginProvider } from "./auth/internal-test-login-provider.j
 import { SessionAuthService } from "./auth/session-auth-service.js";
 import { SessionHttpService } from "./auth/session-http.js";
 import { WorkItemListService } from "./work-items/work-item-list-service.js";
+import { ChangeSetDryRunService } from "./changesets/dry-run-service.js";
 // be2-r014：把 R-014 的路由注册进 arch 开的缝（routes.ts）。壳层只认这个数组，不认识具体路径。
 import { createAccountRoutes } from "./r014/account-routes.js";
 import { createMeRoutes } from "./r014/me-routes.js";
@@ -60,6 +61,8 @@ async function main(): Promise<void> {
   });
   const server = createDataApiServer({
     service,
+    // be: pilot source-off preflight. Never inject a mock/stored-value provider.
+    dryRunService: new ChangeSetDryRunService({ store: new ChangeSetRepository(pool) }),
     detailService: new ReadDetailService({
       workItems: new WorkItemRepository(pool),
       changeSets: new ChangeSetRepository(pool),

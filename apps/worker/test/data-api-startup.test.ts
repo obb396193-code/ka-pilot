@@ -114,6 +114,11 @@ describe("Data API production composition", () => {
       ok: false,
       error: { code: "UNAUTHORIZED", message: "Authentication is required" },
     });
+    const dryRun = await fetch(`http://127.0.0.1:${port}/api/v1/changesets/00000000-0000-4000-8000-000000000301/dry-run`, {
+      method: "POST", headers: { authorization: `Bearer ${internalToken}`, "x-request-id": "startup-d6" }, body: "{}",
+    });
+    expect(dryRun.status).toBe(401); // Registered, but no session: never old 404 or preflight access.
+    await expect(dryRun.json()).resolves.toMatchObject({ ok: false, error: { code: "UNAUTHORIZED", requestId: "startup-d6" } });
   }, 20_000);
 
   it("fails startup when KA Data is explicitly enabled without its credentials", async () => {

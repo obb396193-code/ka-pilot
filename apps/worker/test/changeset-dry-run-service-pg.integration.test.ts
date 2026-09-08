@@ -4,6 +4,8 @@ import { ChangeSetRepository, runMigrations } from "@ka/db";
 import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { ChangeSetDryRunService, type ChangeSetPreflightInput } from "../src/changesets/dry-run-service.js";
+import { createDataApiServer, type DataApiServerOptions } from "../src/data/http-server.js";
+import { approvedSessionAuth, businessHeaders } from "./business-auth-fixtures.js";
 
 // Explicit local, synthetic-only DB. Never fall back to shared /ka or live source.
 const databaseUrl = process.env.TEST_DATABASE_URL;
@@ -44,6 +46,28 @@ describe("dry-run service to actual PG (synthetic preflight port, no media)", ()
       items: input.items.map(item => ({ itemId: item.id, status, failReason: status === "success" ? null : "SOURCE_UNAVAILABLE" })) };
   }
   const runs = async (id: string) => (await pool.query("SELECT attempt,status,dry_run FROM execution_runs WHERE changeset_id=$1 ORDER BY attempt", [id])).rows;
+
+  it("source-off actual HTTP to PG checks personal draft but writes no run, proof or job", async () => {
+    const draft = await create(), foreignMedia = await create("TENCENT"), foreignWorkspace = await create("KUAISHOU", other);
+    const token = "synthetic-d6-pg-internal-token-long-enough";
+    const absent = new Proxy({}, { get() { throw new Error("Unexpected unrelated service"); } });
+    const server = createDataApiServer({ service: absent, detailService: absent, taskListService: absent,
+      accountListService: absent, workItemListService: absent, internalToken: token, sessionAuthService: approvedSessionAuth(auth),
+      dryRunService: new ChangeSetDryRunService({ store, now: () => now }) } as unknown as DataApiServerOptions);
+    await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
+    try {
+      const address = server.address(); if (!address || typeof address === "string") throw new Error("Missing listener");
+      for (const [target, expected] of [[draft.id, 503], [foreignMedia.id, 403], [foreignWorkspace.id, 404]] as const) {
+        const response = await fetch(`http://127.0.0.1:${address.port}/api/v1/changesets/${target}/dry-run`, { method: "POST",
+          headers: { ...businessHeaders(token), "x-request-id": "d6-pg", "x-ka-account-scope": "*" }, body: "{}" });
+        expect(response.status).toBe(expected); expect((await response.json()).error.requestId).toBe("d6-pg");
+        expect(await runs(target)).toEqual([]);
+      }
+      expect((await pool.query("SELECT status,dry_run_hash,confirm_hash FROM changesets WHERE id=$1", [draft.id])).rows[0])
+        .toEqual({ status: "draft", dry_run_hash: null, confirm_hash: null });
+      expect((await pool.query("SELECT COUNT(*)::int AS n FROM jobs WHERE workspace_id=$1", [workspaceId])).rows[0].n).toBe(0);
+    } finally { server.closeAllConnections(); await new Promise<void>((resolve, reject) => server.close(e => e ? reject(e) : resolve())); }
+  });
 
   it("success is still draft; repeat has ordered dry attempts; unknown invalidates old proof; no jobs", async () => {
     const draft = await create(); let status: "success" | "unknown" = "success";
