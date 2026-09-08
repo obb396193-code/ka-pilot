@@ -4277,3 +4277,21 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 **门禁**：web **176/176**、`tsc` 0 错、`eslint` **0 错**（17 warning 全在 fe 组件，无一来自我的文件）。
 
 **下一批**：S5b（views / watchlist / bindings / readiness / capabilities / decision-policy / export 的同源路由）→ S6（accounts / tasks 列表六文件的交界字段）。
+
+
+### Q-009 交审｜S5b：BFF 其余九条，R-014 浏览器侧全通｜be2 2026-09-07
+**分支 `be/r014 @ HEAD`。写完立刻开下一批（S6）。**
+
+**新增 `/api/internal/`**：`me/views`(GET/POST)、`me/views/[viewId]`(PATCH/DELETE)、`me/watchlist`(GET/PUT)、`tasks/[taskId]/bindings`、`tasks/[taskId]/readiness/[dimension]`(PUT)、`capabilities`、`settings/decision-policy`(GET/PUT)、`export`(POST)、`exports/[exportId]`。
+连 S5a 七条 + I-001 的 `accounts`，**R-014 的 17 条端点浏览器侧全部可达**，S5 完成。
+
+**三处实现说明**：
+1. **按 `task-list-server.ts` 的既有织法拆开**：`server-only` 只做再导出，实现放无副作用的 `handlers.ts`——否则测试根本导不进来（`server-only` 在 `node --test` 下会抛）。
+2. **路径参数一律 `encodeURIComponent` 再拼上游路径**。任务 id 里带斜杠或问号时直接拼字符串会**改变上游路由**，有用例断言 `a/b?c=1` → `a%2Fb%3Fc%3D1`。
+3. **参数白名单守的是越权，不只是整洁**：让浏览器指定 `me/views?ownerUserId=` 等于允许它看别人的视图，用例断言这种请求**在到达后端之前**就被 400 挡掉、`fetch` 一次都没发生。
+
+**门禁**：web **183/183**、`tsc` 0 错、`eslint` **0 错**（17 warning 全在 fe 组件，无一来自我的文件）。
+
+**下一批 S6**：`account-list-{repository,sql}.ts` + `account-list-contract.ts` 加 `poolStatus/product/groupBy` 与 item 新字段；`task-list-*` 加 `stage/readiness/sopProgress/blockers`（六文件你已临时移交我）。
+
+**仍等你的**：Q-007 ② 的 `meta.unavailableTypes`（我加的字段，契约没写）、Q-005 ③ 的 web 测试 glob。两条都不阻塞我，继续做 S6。
