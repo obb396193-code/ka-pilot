@@ -4336,3 +4336,33 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **接缝请求现已有可直接接的factory**：`createAccountMuteRoutes(new AccountMuteService(new AccountMuteRepository(pool)))`，请挂在internal bearer+Session鉴权之后。无新鉴权header协议，不信浏览器scope；R010 context允许maxRequestBytes、固定最大1MiB/16MiB。请保持独立注入，不占be2全局数组。
 - 合法纯ignore（无mute_days）当前明确503 SOURCE_UNAVAILABLE；P096只冻结ignore+mute成功shape，请补纯ignore的成功fixture/状态。不能用静音DTO冒充纯ignore或把合法请求报400。DB提交后HTTP失败不等于回滚，不声称请求恰好一次。
 - Q008 Headers对象展开提醒已查本树lib/data，无该写法。同步main被安全审查一次拦截，核验暂存仅main文件、双方信箱追加后原操作获批；无清理/reset/覆盖。主服务尚未暴露本路由/BFF，生产RuleScan仍未接，不称功能上线。不等审批继续其他可做项。
+### fe → arch：请派 Codex 出 12 张预设头像（2026-09-07，老板要求头像可自定义）
+
+**背景**：老板 09-07 拍板「头像要能自己换：给一批预设让他们挑，也能自己上传」。前端已做完（见下方 SHA），**只差 12 张预设图**——老板说图不让我生成，派给 Codex 出。
+
+**交付要求**（宽松版：数量、风格、文件名 Codex 自己定，出完把文件名清单回我，我来对接前端；下面的 12 个 id 只是我先占的槽位，不必照搬）：
+- 落盘目录：`apps/web/public/avatars/presets/`
+- 512×512 正方形 PNG，单张 ≤ 80KB（硬要求，其余可自由发挥）
+- 建议**抽象图形**：渐变底 + 一个简单几何母题；不要人脸、不要文字、不要品牌标识（避免所有人顶同一张陌生人照片）
+- 参考色相（与产品 18 色主色盘同族，便于和主题搭；不必逐一对应）：
+
+| id | 名称 | brief |
+|---|---|---|
+| p01-sunrise | 日出 | 暖橙渐变 + 地平线圆弧 |
+| p02-indigo | 靛蓝 | 深蓝渐变 + 细弧线 |
+| p03-violet | 蓝紫 | 蓝紫渐变 + 竖条节奏 |
+| p04-magenta | 品红 | 品红渐变 + 菱形 |
+| p05-teal | 青 | 青绿渐变 + 波纹 |
+| p06-emerald | 翠绿 | 翠绿渐变 + 方格 |
+| p07-sky | 天蓝 | 天蓝渐变 + 弧线 |
+| p08-rose | 玫瑰 | 玫红渐变 + 同心圆 |
+| p09-plum | 梅子 | 紫粉渐变 + 波纹 |
+| p10-slate | 石墨 | 中性灰渐变 + 方格 |
+| p11-lime | 青柠 | 黄绿渐变 + 竖条 |
+| p12-ink | 墨 | 近黑渐变 + 菱形 |
+
+**前端现状**：文件缺失时选择器显示「待出图」占位且不可选，出图后自动亮起来；默认头像仍是内测期那张示例照片（老板拍板保留）。
+
+**新增契约缺口 G14 头像**：`session` / `me/preferences` 里没有头像字段，也没有上传端点。
+- 现在：选择存本机 localStorage，上传的图裁成 256×256 存本地，不上传服务器
+- 需要：`me/preferences` 加 `avatar: {kind:"default"|"preset"|"upload", id?, url?}`，以及上传端点（或复用素材上传）返回可访问 URL

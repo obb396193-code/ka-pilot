@@ -107,7 +107,7 @@ function SubscriptionsTab() {
   const items = useMemo(() => (isOk(subscriptionsFixture) ? subscriptionsFixture.data.items : []).map((item) => ({ ...item, enabled: enabled[item.id] ?? item.enabled })), [enabled])
   const columns = useMemo(() => makeSubColumns((sub, next) => { setEnabled((prev) => ({ ...prev, [sub.id]: next })); toast(`${subscriptionKindLabel[sub.kind]}已${next ? "启用" : "停用"}`) }), [])
   const table = useGridTable({ data: items, columns, pageSize: 20, getRowId: (item) => String(item.id) })
-  return <DataGrid table={table} empty="没有订阅" toolbar={<p className="text-xs text-muted-foreground">免打扰只压 P1/P2，P0 破静默直达</p>} actions={<Button size="sm" onClick={() => toast("新建订阅", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新建订阅</Button>} showPagination={false} />
+  return <DataGrid table={table} empty="没有订阅" toolbar={<p className="text-xs text-muted-foreground">免打扰只压 P1/P2，P0 直达不受免打扰限制</p>} actions={<Button size="sm" onClick={() => toast("新建订阅", { description: "接口接入后生效（当前为示例）" })}><IconPlus />新建订阅</Button>} showPagination={false} />
 }
 
 const instHelper = createColumnHelper<GridFeatures, CardInstance>()
@@ -172,7 +172,7 @@ function OncallTab() {
         <CardHeader><CardTitle>分级策略</CardTitle><CardDescription>默认：P0 满 30 分钟没人确认，先升给备班，再升给负责人</CardDescription></CardHeader>
         <CardContent className="p-0">
           <Table>
-            <TableHeader className="bg-muted"><TableRow><TableHead>级别</TableHead><TableHead>破静默</TableHead><TableHead>确认时限</TableHead><TableHead>升级</TableHead></TableRow></TableHeader>
+            <TableHeader className="bg-muted"><TableRow><TableHead>级别</TableHead><TableHead>破免打扰</TableHead><TableHead>确认时限</TableHead><TableHead>升级</TableHead></TableRow></TableHeader>
             <TableBody>{policies?.items.map((policy) => <TableRow key={policy.severity}><TableCell><StatusChip tone={policy.severity === "P0" ? "critical" : policy.severity === "P1" ? "warning" : "muted"}>{policy.severity}</StatusChip></TableCell><TableCell>{policy.breakMute ? "是" : "否"}</TableCell><TableCell className="tabular-nums">{policy.ackWithinMin ? (policy.ackWithinMin >= 60 ? `${policy.ackWithinMin / 60} 小时` : `${policy.ackWithinMin} 分钟`) : policy.batchDigest ? "合并摘要" : "−"}</TableCell><TableCell className="text-xs">{policy.escalateTo ? `${escalateLabel[policy.escalateTo] ?? policy.escalateTo}${policy.then ? ` → ${escalateLabel[policy.then] ?? policy.then}` : ""}${policy.thenAfterMin ? `（${policy.thenAfterMin / 60} 小时后）` : ""}` : "−"}</TableCell></TableRow>)}</TableBody>
           </Table>
           {policies ? <p className="border-t px-4 py-2 text-xs text-muted-foreground">免打扰 {policies.quietHours.from} – {policies.quietHours.to}，只压 {policies.quietHours.suppress.join(" / ")}</p> : null}
@@ -190,7 +190,7 @@ function OncallTab() {
       <Card className="@5xl/main:col-span-2">
         <CardHeader><CardTitle>升级链</CardTitle><CardDescription>未确认按策略逐级升级；可暂停</CardDescription></CardHeader>
         <CardContent className="flex flex-col gap-2">
-          {escalations.length ? escalations.map((item) => { const isPaused = paused[item.escalationId] ?? item.paused; return <div key={item.escalationId} className="flex flex-wrap items-center gap-3 rounded-lg border px-3 py-2 text-sm"><span className="font-mono text-xs text-muted-foreground">…{item.escalationId.slice(-4)}</span><ol className="flex flex-wrap items-center gap-2">{item.chain.map((step) => <li key={step.level} className="flex items-center gap-1.5"><StatusChip tone={step.status === "acked" ? "success" : step.status === "unacked" ? "critical" : "pending"}>L{step.level} {step.status === "acked" ? "已确认" : step.status === "unacked" ? "未确认" : "待触发"}</StatusChip><span>{step.to.name}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(step.at)}</span></li>)}</ol><span className="ml-auto flex items-center gap-2 text-xs"><span className="text-muted-foreground">{isPaused ? "已暂停" : "运行中"}</span><Switch checked={!isPaused} onCheckedChange={(checked) => { setPaused((prev) => ({ ...prev, [item.escalationId]: !checked })); toast(checked ? "升级链已恢复" : "升级链已暂停", { description: `${checked ? "恢复后按规则继续升级" : "暂停期间不再向上升级"}` }) }} aria-label="升级链开关" /></span></div> }) : <p className="text-sm text-muted-foreground">没有进行中的升级</p>}
+          {escalations.length ? escalations.map((item) => { const isPaused = paused[item.escalationId] ?? item.paused; return <div key={item.escalationId} className="flex flex-wrap items-center gap-3 rounded-lg border px-3 py-2 text-sm"><span className="font-mono text-xs text-muted-foreground">…{item.escalationId.slice(-4)}</span><ol className="flex flex-wrap items-center gap-2">{item.chain.map((step) => <li key={step.level} className="flex items-center gap-1.5"><StatusChip tone={step.status === "acked" ? "success" : step.status === "unacked" ? "critical" : "pending"}>第 {step.level} 级 {step.status === "acked" ? "已确认" : step.status === "unacked" ? "未确认" : "待触发"}</StatusChip><span>{step.to.name}</span><span className="text-xs text-muted-foreground tabular-nums">{fmtTime(step.at)}</span></li>)}</ol><span className="ml-auto flex items-center gap-2 text-xs"><span className="text-muted-foreground">{isPaused ? "已暂停" : "运行中"}</span><Switch checked={!isPaused} onCheckedChange={(checked) => { setPaused((prev) => ({ ...prev, [item.escalationId]: !checked })); toast(checked ? "升级链已恢复" : "升级链已暂停", { description: `${checked ? "恢复后按规则继续升级" : "暂停期间不再向上升级"}` }) }} aria-label="升级链开关" /></span></div> }) : <p className="text-sm text-muted-foreground">没有进行中的升级</p>}
         </CardContent>
       </Card>
     </div>
@@ -241,7 +241,7 @@ export function IntegrationsPage() {
               <Card>
                 <CardHeader><CardTitle>群助手</CardTitle><CardDescription>在钉钉群 @KA Pilot 经营助手，用自然语言查数、建任务、调工作流；写操作一律出变更集卡片确认</CardDescription></CardHeader>
                 <CardContent className="grid gap-3 @3xl/main:grid-cols-3 text-sm">
-                  {[["查数", "「AAC 拉新 昨天 现金 CPA」→ 回只读卡：账面 / 现金并排，缺数显 −"], ["建任务", "「新建任务 闲鱼潜客 9 月 目标 5 万」→ 回确认卡，确认后创建（未映射身份不执行）"], ["调工作流", "「跑一遍 新任务开户到基建」→ 起 run，到人工确认节点发 L2 卡"]].map(([title, body]) => <div key={title} className="rounded-lg border p-3"><p className="font-medium">{title}</p><p className="mt-1 text-xs text-muted-foreground">{body}</p></div>)}
+                  {[["查数", "「AAC 拉新 昨天 现金 CPA」→ 回只读卡：账面 / 现金并排，缺数显 −"], ["建任务", "「新建任务 闲鱼潜客 9 月 目标 5 万」→ 回确认卡，确认后创建（未映射身份不执行）"], ["调工作流", "「跑一遍 新任务开户到基建」→ 起 run，到人工确认节点发一张需确认的卡"]].map(([title, body]) => <div key={title} className="rounded-lg border p-3"><p className="font-medium">{title}</p><p className="mt-1 text-xs text-muted-foreground">{body}</p></div>)}
                 </CardContent>
               </Card>
             </ExampleBlock>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState, useRef } from "react"
 import Link from "next/link"
 import { IconAlertTriangle, IconArrowLeft, IconBell, IconBolt, IconCircleCheck, IconClockPause, IconDatabaseSearch, IconFileDiff, IconGitBranch, IconMathFunction, IconPlayerPlay, IconSparkles, IconTrash, IconUserCheck } from "@tabler/icons-react"
 import { addEdge, Background, BackgroundVariant, Controls, Handle, MarkerType, MiniMap, Position, ReactFlow, ReactFlowProvider, useEdgesState, useNodesState, useReactFlow, type Connection, type Edge, type Node, type NodeProps } from "@xyflow/react"
@@ -84,6 +84,9 @@ function KpNodeView({ data, selected }: NodeProps<KpNode>) {
     </div>
   )
 }
+// 十节点直线流程整屏铺开会缩到看不清字，缩放下限设 0.55，触底就从流程头部开始看
+const MIN_FIT_ZOOM = 0.55
+
 const nodeTypes = { kp: KpNodeView }
 
 function toFlow(graph: WorkflowGraph, missingByNode: Record<string, string[]>): { nodes: KpNode[]; edges: Edge[] } {
@@ -108,8 +111,40 @@ function Canvas({ definitionId }: { definitionId: string }) {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [editing, setEditing] = useState(isNew || version?.status !== "published")
   const [dialog, setDialog] = useState<"validate" | "simulate" | null>(null)
-  const { screenToFlowPosition, fitView } = useReactFlow()
-  useEffect(() => { const timer = setTimeout(() => fitView({ padding: 0.2 }), 50); return () => clearTimeout(timer) }, [fitView])
+  const { screenToFlowPosition, fitView, getViewport, setViewport, getNodes } = useReactFlow()
+  // 打开画布常看不到全图：容器还没量到最终宽度时 fitView 就跑了，节点被裁在左边。
+  // 改成容器尺寸变化时重新 fit（首帧 + 侧栏收合 + 窗口缩放都覆盖），并给一点最小缩放兜底。
+  const flowRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = flowRef.current
+    if (!el) return
+    let raf = 0
+    // 打开画布常「看不到图」：容器还没量到宽度 fitView 就跑了，节点被裁在左边。
+    // 现在容器尺寸一变就重 fit；十节点的直线流程整屏铺开会缩到看不清字，所以缩放不低于 0.55，
+    // 触到下限时把视口挪到最左，从流程头部开始看，右侧靠拖动。
+    let timer = 0
+    const refit = () => {
+      cancelAnimationFrame(raf)
+      window.clearTimeout(timer)
+      raf = requestAnimationFrame(() => {
+        fitView({ padding: 0.12, minZoom: MIN_FIT_ZOOM, maxZoom: 1.1, duration: 0 })
+        // fitView 的视口不是同步生效，等它落定再判断是否触到缩放下限
+        timer = window.setTimeout(() => {
+          const viewport = getViewport()
+          if (viewport.zoom > MIN_FIT_ZOOM + 0.01) return
+          const nodes = getNodes()
+          if (!nodes.length) return
+          const left = Math.min(...nodes.map((node) => node.position.x))
+          const wanted = -left * viewport.zoom + 32
+          if (Math.abs(viewport.x - wanted) > 1) setViewport({ ...viewport, x: wanted }, { duration: 0 })
+        }, 80)
+      })
+    }
+    refit()
+    const observer = new ResizeObserver(refit)
+    observer.observe(el)
+    return () => { cancelAnimationFrame(raf); window.clearTimeout(timer); observer.disconnect() }
+  }, [fitView, getViewport, setViewport, getNodes])
 
   const graph = useMemo<WorkflowGraph>(() => ({ version: "workflow-graph/v1", nodes: nodes.map((node) => node.data.node), edges: edges.map((edge) => ({ from: edge.source, to: edge.target, condition: typeof edge.label === "string" && edge.label ? { expr: edge.label } : null })) }), [nodes, edges])
   useEffect(() => {
@@ -143,7 +178,7 @@ function Canvas({ definitionId }: { definitionId: string }) {
         <p className="mt-2 text-[11px] text-muted-foreground">红点 = 写媒体，须 变更集 → 人工确认 → 执行；黄点 = 外部调用</p>
       </aside>
       <div className="relative min-h-[520px] overflow-hidden rounded-xl border bg-card" onDrop={onDrop} onDragOver={(event) => { event.preventDefault(); event.dataTransfer.dropEffect = "move" }}>
-        <ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} onNodeClick={(_, node) => setSelectedId(node.id)} onPaneClick={() => setSelectedId(null)} nodesDraggable={editing} nodesConnectable={editing} elementsSelectable fitView proOptions={{ hideAttribution: true }} deleteKeyCode={editing ? ["Backspace", "Delete"] : null} className="[&_.react-flow__edge-path]:stroke-foreground/50 [&_.react-flow__edge-textbg]:fill-card [&_.react-flow__edge-text]:fill-muted-foreground">
+        <ReactFlow ref={flowRef} nodes={nodes} edges={edges} nodeTypes={nodeTypes} onNodesChange={onNodesChange} onEdgesChange={onEdgesChange} onConnect={onConnect} onNodeClick={(_, node) => setSelectedId(node.id)} onPaneClick={() => setSelectedId(null)} nodesDraggable={editing} nodesConnectable={editing} elementsSelectable minZoom={0.2} proOptions={{ hideAttribution: true }} deleteKeyCode={editing ? ["Backspace", "Delete"] : null} className="[&_.react-flow__edge-path]:stroke-foreground/50 [&_.react-flow__edge-textbg]:fill-card [&_.react-flow__edge-text]:fill-muted-foreground">
           <Background variant={BackgroundVariant.Dots} gap={20} size={1} className="!bg-card" />
           <Controls showInteractive={false} className="!rounded-lg !border !bg-card !shadow-sm [&>button]:!border-b [&>button]:!bg-card [&>button]:!fill-foreground" />
           <MiniMap pannable zoomable className="!rounded-lg !border !bg-card" maskColor="color-mix(in oklch, var(--muted) 70%, transparent)" nodeColor={(node) => ((node as KpNode).data?.node?.side_effect === "write" ? "var(--kp-status-critical)" : "var(--muted-foreground)")} />
