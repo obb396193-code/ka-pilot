@@ -65,3 +65,5 @@ export * from "./agent-model-catalog-repository.js";
 export * from "./admin-calendar-repository.js";
 // be: server-approved workspace member/grant reads.
 export * from "./admin-members-repository.js";
+// be: authorized local work-item commands, no public/media write routes.
+export * from "./work-item-command-repository.js";
