@@ -4,6 +4,8 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
+// 真 PG 迁移回放：耗时随迁移数线性增长，5s 默认线注定被推过（已撞 4 次），这一类统一 30s。
+const MIGRATION_REPLAY_TIMEOUT_MS = 30_000;
 import { windowSize } from "./migration-window.js";
 
 const databaseUrl =
@@ -182,5 +184,5 @@ describe("contract v1.2 P0 migration", () => {
     await pool.query("DELETE FROM users WHERE workspace_id IN ($1, $2)", [workspaceA, workspaceB]);
     await pool.query("DELETE FROM accounts WHERE workspace_id IN ($1, $2)", [workspaceA, workspaceB]);
     await pool.query("DELETE FROM workspaces WHERE id IN ($1, $2)", [workspaceA, workspaceB]);
-  });
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 });

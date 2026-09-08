@@ -2,6 +2,8 @@ import { randomUUID } from "node:crypto";
 import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { runMigrations } from "../src/migrate.js";
+// 真 PG 迁移回放：耗时随迁移数线性增长，5s 默认线注定被推过（已撞 4 次），这一类统一 30s。
+const MIGRATION_REPLAY_TIMEOUT_MS = 30_000;
 import { windowSize } from "./migration-window.js";
 
 // Synthetic data only. Execute on the explicitly selected isolated test database.
@@ -47,7 +49,7 @@ describe("contract v1.3 migration (real PostgreSQL)", () => {
     await pool.query("DELETE FROM accounts WHERE workspace_id=$1", [ws]);
     await pool.query("DELETE FROM users WHERE workspace_id=$1", [ws]);
     await pool.query("DELETE FROM workspaces WHERE id=$1", [ws]);
-  });
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 
   it.each(["agent_messages", "agent_context_items"])("rejects legacy orphan %s without partial DDL", async (table) => {
     await runMigrations({ databaseUrl, direction: "down", count: windowSize("012") });
@@ -61,7 +63,7 @@ describe("contract v1.3 migration (real PostgreSQL)", () => {
       await pool.query(`DELETE FROM ${table} WHERE id=$1`, [id]);
       expect(await runMigrations({ databaseUrl, count: windowSize("012") })).toHaveLength(windowSize("012"));
     }
-  });
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 
   it("enforces tenant/media mute keys, active dedupe, session idempotency, event and credential FKs", async () => {
     const wsA = (await pool.query("INSERT INTO workspaces(name) VALUES($1) RETURNING id", [randomUUID()])).rows[0].id;
@@ -108,5 +110,5 @@ describe("contract v1.3 migration (real PostgreSQL)", () => {
       await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [[wsA, wsB]]);
     }
     await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [[wsA, wsB]]);
-  });
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 });
