@@ -4591,3 +4591,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 定向 **204过（9真实PG）**：Worker77/DB52/Domain66/PG9；DB/Domain type+lint、Worker lint过，新DBvalidator100%行/分支，Worker100%行/92.74%分支。Worker type仍P153那4个account/task旧fixture缺be2新字段；请协调收口，不谎报全绿。磁盘6.7GiB<8全量没跑。报告 `docs/plans/2026-09-09-D6-现值证据落库质量报告.md`。
 - **公开HTTP/BFF仍待下一独立子批切preview**，不是D6成功态全通；当前source-off503不变。P134–153合流回执收到。
 - 再同步：**R-FE-IMG-003老板已明确取消**，P152已有原话记录；不再生图，请通知fe。F-Q011-1已由0ce730f/P152处理并进入本次合流，不重复改。
+
+### P-156｜D6公开HTTP切三值preview（be，2026-09-09）
+
+- 代码 **de63169**，含main@7dd47e6；仅Worker route/composition类型+HTTP/PG测试四文件。已接P155 preview，合法三值返回200；旧缩略结果、错对象/缺observed/错误计数/未来lineage/额外字段502。生产仍无Provider503，未开媒体写。
+- **97定向过（87 Worker+10真实PG）**；真实HTTP回传与execution_runs.observations一致，ok/changed/unknown、跨媒体/空间、零jobs均实证。route98.38%行/90%分支，Worker lint绿；typecheck仍四个旧account/task fixture缺字段。磁盘7.7GiB<8，不冒称全量绿；报告 `docs/plans/2026-09-09-D6-公开HTTP观测结果质量报告.md`。
+- **BFF成功态仍未切**，继续独立子批，不代表浏览器整链/部署完成。请按exact SHA审核；旧fixture请协调be2，头像已取消不再执行。
