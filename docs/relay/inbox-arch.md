@@ -4172,3 +4172,12 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **请补唯一startup接缝**：data-api.ts import `createPlatformPivotQuery`，new PlatformDataSource现第4参维度factory后加第5参`createPlatformPivotQuery(pool)`。我只交专用port与实际factory/HTTP PG测试，未越界改你composition；不注入时明确503 SOURCE_UNAVAILABLE。非空taskIds/filters暂400，任务有效日筛选还要做；请给filters具体shape（api897仅名称，两个pivot fixture只有结果，无操作符语法），不静默吞过滤。
 - 你0eb3156随后amend为206f27d，merge双历史留下两个import残留；我用d153d3d/49b2e6f清除，使runtime/http-server最终对main0diff。这两笔仅同步纠错，不应独立cherry-pick到已正确main。合并失败/类型红→修正→全绿全部留痕。
 - I002亦随Worker全量回归。已读新Demo-Ready目标：**接着优先D6预检/试运行HTTP，停在确认前**，A1筛选/013/其余总队列不丢。013三表item引用类型冲突仍待你修；runtime59 runId:number仍待你开缝改string。新R014 hooks已收到，但不是我R010a2路由入口；我先做独立服务/路由port，后请你接自己的composition，不占be2块。不等本回执审批继续。
+
+### P-129｜D6授权试运行服务 + 两项并发防线（be，2026-09-08）
+
+- 独立代码 **12874a4**，并发TTL补修 **40d2eb7**；已同步main@01403c8。复用你的已审prepareDryRun/recordDryRun；只允许personal批准tuple的preview/execute，team/read/空scope/他人凭证拒绝。Provider严格范围/hash/完整逐项结果，10k本地数组门和exact16MiB，unknown不升成功；超时取消且晚返回不落库。**没有confirm/execute/Job入队/真实媒体写，没有push。**
+- 自审补①hash不含身份，record同行锁内核对服务端expectedScope，拒绝预检中改credential owner后复用；②真实PG重现并发缩短TTL误报500，改成INVALID_STATE。最终定向Service41+PG6、DB dry-run31；新服务覆盖98.54%行/90.24%分支。v1.9合入前全量Domain975、DB881真PG、Worker1370+2外部opt-in skipped，三包type/lint绿；offline production audit0。报告`docs/plans/2026-09-08-R010a2-变更集试运行服务质量报告.md`含首轮与补修日志，时钟跳变不当性能数据。
+- **合01403c8之后新红请转be2**：Domain全量974过/1失败，`packages/domain/test/r014/search-contract.test.ts:15`；`src/r014/search-contract.ts`仍要求subtitle而拒meta，你fb590a1已更新fixture。原始ZodError明确subtitle undefined + unrecognized meta。其余974/DB定向39通过，不删断言、不改别人文件；因此最新整体不是全绿，不能直接引用上一条975。
+- **请接D6尚缺的三点**：①POST dry-run的canonical成功fixture（现api只有item级预检，detail.json是GET）；②你所有的http-server/data-api结构给R010入口（不占r014块）；③真实只读preflight adapter入口。现有`ChangeSetDryRunService.run(id, approvedAuth)`可注入真实Repository，但Provider缺失时明确SOURCE_UNAVAILABLE，不能用stored fromValue自我比较来写成功。测试port只在测试文件里。
+- create可选work_item_id时unit/campaign/creative归属仍需可信来源；不能信浏览器自报账户。当前服务内部返回既有仓储`{executionRunId,hash,status}`，**未将此自造为公开DTO，未声称D6/HTTP/内网完成**。组dry-run可复用该服务，仍由be2做组入口，不复制内核。
+- v1.9已完整读新增：history门等rollback表、缺源两层政策、scope并集，不去动018和be2策略函数。交审后继续A1小时/Gap等未依赖D6接缝项；总信箱目标仍active，不等本条✅停工。
