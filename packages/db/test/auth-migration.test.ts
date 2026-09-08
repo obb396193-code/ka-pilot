@@ -4,6 +4,8 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { Client } from "pg";
 
 import { runMigrations } from "../src/migrate.js";
+// 真 PG 迁移回放：耗时随迁移数线性增长，5s 默认线注定被推过（已撞 4 次），这一类统一 30s。
+const MIGRATION_REPLAY_TIMEOUT_MS = 30_000;
 import { windowSize } from "./migration-window.js";
 
 const databaseUrl =
@@ -108,5 +110,5 @@ describe("multi-tenant auth migration", () => {
     expect(dropped.rows[0]?.table_name).toBeNull();
     await downClient.end();
     expect(await runMigrations({ databaseUrl, count: windowSize("008") })).toHaveLength(windowSize("008"));
-  });
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 });

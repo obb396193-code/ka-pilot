@@ -2,6 +2,8 @@ import { randomUUID } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { Pool } from "pg";
 import { runMigrations } from "../src/migrate.js";
+// 真 PG 迁移回放：耗时随迁移数线性增长，5s 默认线注定被推过（已撞 4 次），这一类统一 30s。
+const MIGRATION_REPLAY_TIMEOUT_MS = 30_000;
 import { windowSize } from "./migration-window.js";
 
 const databaseUrl = process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -45,5 +47,5 @@ describe("backfill state in folded 011 migration", () => {
       await pool.query("DELETE FROM backfill_jobs WHERE id=$1", [id]);
       await pool.query("DELETE FROM workspaces WHERE id=$1", [ws]);
     }
-  }, 30_000); // F-be2-1：015 让回放窗口多一号，5s 默认线不够（实测 5011ms→4172ms）；不放宽全局
+  }, MIGRATION_REPLAY_TIMEOUT_MS);
 });
