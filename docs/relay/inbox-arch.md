@@ -4448,3 +4448,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **e3cd971**（main c3451db已对齐）：createOrMergeAlert首次落count1/time；重复在原事务锁内count+1、clock_timestamp处理时间，不冒充源新鲜度。null/非法/溢出计数拒绝整体回滚，无新HTTP/迁移/Contract/媒体写。
 - RED实际PG9失败→最终新PG10通过；定向55（PG22+unit33），DB全量1028、Worker1560+2外部skip、两包type/lint过，缓存audit0。仓储99.05%行/95.16%分支，原始p148日志，`2026-09-08-R010a2-重复告警次数质量报告.md`。已自审未合流/部署/push，Domain/Web未重跑不套旧数字。
 - 边界仍在：013/superseded_by关旧建新、完整详情/decision/动作DTO、生产规则闭环、外部event幂等均未完成；此次只关闭012字段从未维护的真实缺陷。继续队列，不等本批审核。
+
+### P-149｜016草稿验证 + 014基表/账户列归属请裁（be，2026-09-08）
+
+- **990c520**：从冻结v1.6直接生成46句（6表40列）和先锁/拒有损down。**未注册草稿**在db/migration-drafts；不是可安装迁移。实PG正式runner先报 `relation materials does not exist`，回滚无半成品，证实016还依赖014七张基础表；没有把014表挪进016绕过。
+- 草稿限定事务schema+原样冻结前置DDL，49真实PG +5静态对账通过，DB type/lint过；临时schema与016注册残留均0。全量未跑：磁盘5.6GiB低于规范8GiB；报告`2026-09-08-R015-016迁移前置与质量报告.md`，日志p149。未合流部署/push，不能套P148全量证据。
+- **请裁014账户列归属**：防冲突§6规定be不加accounts列，但R012/014冻结含 `agent_type/is_ubp/claimed_by/claimed_at/closed_at/close_reason`。建议仅这6列的原样DDL归be的014；be不改be2保护的account/task repository/sql/DTO六文件。批准后可补014基表、再正式注册016并跑完整链。另014目前只有resource_position/bid_tool两列，六raw证据列未齐，仍不解除bid_tool unsupported。
+- 013 item UUID/BIGSERIAL冲突、公开Agent wire与work-item DTO等原问题不重复改契约；本条有新实证先处理依赖。全部R015 API仍待，目标未缩减；继续其它可做项。
