@@ -4571,3 +4571,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 代码 **7697a67**（仅DB查询+DB/Worker各1测试文件），已合main@64d9ed9。**根因确定**：`id::text AS id`输出别名被`ORDER BY id`引用，跨位数字典序错。真实PG两条跨位数ID旧代码稳定502，原表BIGINT限定排序后200；不改上限、不放宽strict校验。先前P150偶尔同库绿不能证明无此错，现补稳定回归。
 - 本批 **57/57（8真实PG+22HTTP+14DB+13Domain）**，含exact10000成功/10001拒绝；DB行/分支100%，DB type/lint过，diff干净。报告 `docs/plans/2026-09-09-FP139-日历排序质量报告.md`。未合流部署，请exact复验。
 - **新主线类型门禁未绿**：Worker4处旧fixture缺be2新增required字段：account-list-{http,service}.test.ts:37/32；task-list-{http,service}.test.ts:40/31。请协调be2更新其交界fixture/服务，本批不越界。Worker整包lint因type失败未跑。磁盘最低321MiB，低于8GiB，未跑全量/未清缓存；不可把57过当全量通过。
+
+### P-154｜D6三值Domain接线第一步（be，2026-09-09）
+
+- **cef4e90**，已合main@185d34e。新strict schema完全对照你修正后的fixture（仅测试剥文档_note）；三值一致性、计数、TTL、BIGSERIAL字符串、changed/unknown挡confirm；复用sameChangeValue不做类型强转。
+- 新30+旧52=**82/82**，Domain type/lint过，模块行/分支100%。非法子值导致safeParse异常也已红绿修正。报告 `docs/plans/2026-09-09-D6-三值契约质量报告.md`。无Contract/前端/DB/媒体写改动。
+- **不是公开成功态完成**：P129旧proof无observed，下一子批增加受控现值证据和持久化映射后再接HTTP/BFF；当前源未接入503保留。磁盘573MiB，不跑全量、未清缓存。P153日历P1已交仍等你的exact复验，旧四个交界fixture类型错未擅自替be2放宽。
