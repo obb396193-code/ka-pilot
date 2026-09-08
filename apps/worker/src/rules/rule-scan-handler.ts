@@ -16,6 +16,10 @@ import type {
   RuleScanSummary,
   WorkItemSink,
 } from "./types.js";
+import {
+  alertSinkResultSchema, CandidateWorkspaceMismatch, failureCandidateId, parseCandidate,
+  parseEvaluation, safeCandidateFailure, snapshotCandidateBatch, workItemSinkResultSchema,
+} from "./scan-boundary.js";
 
 export const builtInRuleEvaluator: RuleEvaluator = {
   evaluate(candidate) {
@@ -53,10 +57,6 @@ function emptySummary(): RuleScanSummary {
   };
 }
 
-function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
-
 function deliveryKey(workItemId: string, severity: string): string {
   return JSON.stringify(["work_item_alert", workItemId, severity]);
 }
@@ -74,17 +74,20 @@ export class RuleScanHandler {
   async run(input: RuleScanInput): Promise<RuleScanSummary> {
     if (typeof input.workspaceId !== "string" || !input.workspaceId.trim() || !(input.now instanceof Date) || !Number.isFinite(input.now.getTime())) throw new Error("Invalid rule scan scope or clock");
     const scope = { workspaceId: input.workspaceId, now: new Date(input.now) };
-    const candidates = await this.dependencies.candidateProvider.listCandidates({ ...scope, now: new Date(scope.now) });
+    let rawCandidates: unknown;
+    try { rawCandidates = await this.dependencies.candidateProvider.listCandidates({ ...scope, now: new Date(scope.now) }); }
+    catch { throw new Error("Rule candidate source unavailable"); }
+    const candidates = snapshotCandidateBatch(rawCandidates);
     const summary = emptySummary();
     const coverage = new Map<string, RuleCoverageState>();
     for (const candidate of candidates) {
       summary.evaluated += 1;
       try {
-        await this.processCandidate(scope, candidate, summary, coverage);
+        await this.processCandidate(scope, parseCandidate(candidate), summary, coverage);
       } catch (error) {
         summary.failures.push({
-          candidateId: candidate.candidateId,
-          message: errorMessage(error),
+          candidateId: failureCandidateId(candidate),
+          message: safeCandidateFailure(error),
         });
       }
     }
@@ -104,9 +107,7 @@ export class RuleScanHandler {
     coverage: Map<string, RuleCoverageState>,
   ): Promise<void> {
     if (candidate.workspaceId !== input.workspaceId) {
-      throw new Error(
-        `Rule candidate workspace mismatch: expected ${input.workspaceId}, received ${candidate.workspaceId}`,
-      );
+      throw new CandidateWorkspaceMismatch();
     }
     let gate;
     try { gate = assessRuleReadiness(candidate.readiness, input.now); }
@@ -118,7 +119,7 @@ export class RuleScanHandler {
       return;
     }
     let evaluation;
-    try { evaluation = this.dependencies.evaluator.evaluate(candidate); }
+    try { evaluation = parseEvaluation(this.dependencies.evaluator.evaluate(structuredClone(candidate)), candidate.ruleCode); }
     catch (error) { recordCoverage(coverage, candidate, "undeterminable"); throw error; }
     recordCoverage(coverage, candidate, "checked");
     if (evaluation.outcome === "not_matched") {
@@ -132,7 +133,7 @@ export class RuleScanHandler {
     }
 
     summary.matched += 1;
-    const workItem = await this.dependencies.workItems.createOrMerge({
+    const workItem = workItemSinkResultSchema.parse(await this.dependencies.workItems.createOrMerge({
       workspaceId: candidate.workspaceId,
       type: "diagnosis",
       media: candidate.media,
@@ -146,7 +147,7 @@ export class RuleScanHandler {
         rule_code: evaluation.ruleCode,
         rule_trace: evaluation.trace,
       },
-    });
+    }));
     summary[workItem.disposition] += 1;
 
     const decision = decideAlertDelivery({
@@ -159,7 +160,7 @@ export class RuleScanHandler {
       return;
     }
 
-    const enqueueResult = await this.dependencies.alerts.enqueue({
+    const enqueueResult = alertSinkResultSchema.parse(await this.dependencies.alerts.enqueue({
       deliveryKey: deliveryKey(workItem.workItemId, evaluation.severity),
       workspaceId: candidate.workspaceId,
       workItemId: workItem.workItemId,
@@ -167,7 +168,7 @@ export class RuleScanHandler {
       severity: evaluation.severity,
       title: candidate.title,
       decision,
-    });
+    }));
     if (enqueueResult === "enqueued") {
       summary.notificationsEnqueued += 1;
     }

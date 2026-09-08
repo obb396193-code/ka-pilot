@@ -67,4 +67,9 @@ export * from "./operational-query-rows.js";
 export * from "./condition-tree.js";
 // be: pivot row projection/account-day aggregation; Registry admission is separate.
 export * from "./pivot-window.js";
+// be: scoped cumulative hour projection; trusted source reader remains separate.
+export * from "./hourly-projection.js";
+// be: P096 business-day account mute policy; HTTP and rule scan are separate.
+export * from "./account-mute-policy.js";
+// be2-r014
 export * from "./r014/task-bindings-contract.js";

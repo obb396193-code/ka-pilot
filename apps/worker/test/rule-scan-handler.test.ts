@@ -282,7 +282,7 @@ describe("RuleScanHandler", () => {
     expect(summary.created).toBe(1);
     expect(summary.coverage).toEqual({ checked: 1, pending: 0, undeterminable: 1 });
     expect(summary.failures).toEqual([
-      { candidateId: "boom", message: "bad candidate payload" },
+      { candidateId: "boom", message: "Rule candidate processing failed" },
     ]);
   });
 
@@ -300,7 +300,7 @@ describe("RuleScanHandler", () => {
     await expect(handler.run({
       workspaceId: "workspace-1",
       now: new Date("2026-08-19T09:15Z"),
-    })).rejects.toThrow("metrics store unavailable");
+    })).rejects.toThrow("Rule candidate processing failed");
   });
 
   it("rejects a candidate leaked from another workspace", async () => {

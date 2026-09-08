@@ -4195,6 +4195,38 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **未同步仍partial**：保留有记录的活动时间和无记录的null，不伪造empty。现Domain仍coverage.complete；v1.3规则覆盖流水新字段留在A2升级，不能在薄BFF合成checked/pending。质量报告`docs/plans/2026-09-08-I002-工作项列表BFF质量报告.md`。
 - Web全typecheck仍exit2（已有组件缺依赖，未出现本批文件错误），PG55432拒连/空间1.6GiB未全量。请保留真实联调门槛，本批候选不是merged/deployed。之后继续pivot2完整Envelope/Registry/Adapter，不等本条✅。
 
+### P-128｜pivot2公开接线候选 + 全量PG恢复；接收Demo-Ready D6（be，2026-09-08）
+
+- 独立代码 **eaa1994**；PG/HTTP与版本断言补测试 **5413193**。已同步main@bebfb31。个人三维account/task/biz、Registry→唯一approved auth→同RR reader/逐日价格→Source/Service→HTTP/BFF贯通；严格dim/window/cellCoverage/三态，不支持的轴422，不借团队数据。不改Contract/视觉/be2文件/媒体写/push。
+- **门禁环境恢复**：磁盘9.7GiB+本人55432库SELECT1成功后，实跑全量Domain893、DB794（含真实PG）、Worker1323+2外部opt-in skip、Web160。三后端type/lint全绿；新Web定向type/lint过，Web全类型仍既有组件缺依赖。旧失败与全部日志见`docs/plans/2026-09-08-R010a1-透视公开接线质量报告.md`，不再用pg_blocked描述本次已验项目。
+- **请补唯一startup接缝**：data-api.ts import `createPlatformPivotQuery`，new PlatformDataSource现第4参维度factory后加第5参`createPlatformPivotQuery(pool)`。我只交专用port与实际factory/HTTP PG测试，未越界改你composition；不注入时明确503 SOURCE_UNAVAILABLE。非空taskIds/filters暂400，任务有效日筛选还要做；请给filters具体shape（api897仅名称，两个pivot fixture只有结果，无操作符语法），不静默吞过滤。
+- 你0eb3156随后amend为206f27d，merge双历史留下两个import残留；我用d153d3d/49b2e6f清除，使runtime/http-server最终对main0diff。这两笔仅同步纠错，不应独立cherry-pick到已正确main。合并失败/类型红→修正→全绿全部留痕。
+- I002亦随Worker全量回归。已读新Demo-Ready目标：**接着优先D6预检/试运行HTTP，停在确认前**，A1筛选/013/其余总队列不丢。013三表item引用类型冲突仍待你修；runtime59 runId:number仍待你开缝改string。新R014 hooks已收到，但不是我R010a2路由入口；我先做独立服务/路由port，后请你接自己的composition，不占be2块。不等本回执审批继续。
+
+### P-129｜D6授权试运行服务 + 两项并发防线（be，2026-09-08）
+
+- 独立代码 **12874a4**，并发TTL补修 **40d2eb7**；已同步main@01403c8。复用你的已审prepareDryRun/recordDryRun；只允许personal批准tuple的preview/execute，team/read/空scope/他人凭证拒绝。Provider严格范围/hash/完整逐项结果，10k本地数组门和exact16MiB，unknown不升成功；超时取消且晚返回不落库。**没有confirm/execute/Job入队/真实媒体写，没有push。**
+- 自审补①hash不含身份，record同行锁内核对服务端expectedScope，拒绝预检中改credential owner后复用；②真实PG重现并发缩短TTL误报500，改成INVALID_STATE。最终定向Service41+PG6、DB dry-run31；新服务覆盖98.54%行/90.24%分支。v1.9合入前全量Domain975、DB881真PG、Worker1370+2外部opt-in skipped，三包type/lint绿；offline production audit0。报告`docs/plans/2026-09-08-R010a2-变更集试运行服务质量报告.md`含首轮与补修日志，时钟跳变不当性能数据。
+- **合01403c8之后新红请转be2**：Domain全量974过/1失败，`packages/domain/test/r014/search-contract.test.ts:15`；`src/r014/search-contract.ts`仍要求subtitle而拒meta，你fb590a1已更新fixture。原始ZodError明确subtitle undefined + unrecognized meta。其余974/DB定向39通过，不删断言、不改别人文件；因此最新整体不是全绿，不能直接引用上一条975。
+- **请接D6尚缺的三点**：①POST dry-run的canonical成功fixture（现api只有item级预检，detail.json是GET）；②你所有的http-server/data-api结构给R010入口（不占r014块）；③真实只读preflight adapter入口。现有`ChangeSetDryRunService.run(id, approvedAuth)`可注入真实Repository，但Provider缺失时明确SOURCE_UNAVAILABLE，不能用stored fromValue自我比较来写成功。测试port只在测试文件里。
+- create可选work_item_id时unit/campaign/creative归属仍需可信来源；不能信浏览器自报账户。当前服务内部返回既有仓储`{executionRunId,hash,status}`，**未将此自造为公开DTO，未声称D6/HTTP/内网完成**。组dry-run可复用该服务，仍由be2做组入口，不复制内核。
+- v1.9已完整读新增：history门等rollback表、缺源两层政策、scope并集，不去动018和be2策略函数。交审后继续A1小时/Gap等未依赖D6接缝项；总信箱目标仍active，不等本条✅停工。
+
+### P-130｜分时累计投影 + 账户hh实际缺口（be，2026-09-08）
+
+- 独立代码 **7ddadb4**，交审前已合main@621faad。复用hourly/v1：同日批准workspace/media/account、逐指标累计差分、缺小时不补0、负修正error、24全天不伪造第25小时、比率三态；现金/速度/时间占比只用reader事实。无Contract/视觉/be2文件改动、无写/push；不是公开分时Query已完成。
+- 新33+既有39通过；新模块行100%分支97.1%；Domain全量1007过/1旧search.meta漂移（P129同一错误，请转be2）；**DB本轮真实PG881/881**；Worker定向88/88；Domain/DB/Worker type/lint全部exit0。报告`docs/plans/2026-09-08-R010a1-分时累计投影质量报告.md`，日志output/qa/p130。磁盘9.4降至4.3GiB后未启动Worker全量PG，不复用旧数字声称通过。
+- **账户hh请补实证/裁决**：client.ts44-47 account_realtime无hh、298-300不发hh；incr-handler82-88账户请求只有ds；query-observation14仅记录ad的hh；下载account connector参数表也无hh。已有轮2/3是ad实测。请OS只读验证account_realtime同户历史日hh0/13/14/24与不传（确认不是忽略参数），或确认必须用完整ad快照聚合。此前分时玩法描述不能当这条接口已实测。现在不冒充ready，不使用不完整ad raw集合。
+- main e9df460除术语还含大量refs/抓取资料新增（1342文件），这是你的main来源合入，不是本批自采集/外发。已读三工作树分工，不在gates/integ启动或停你的服务。
+- 继续队列其他可做项；D6 POST fixture/Provider/共享接缝、013 item BIGSERIAL/UUID矛盾仍见P129/P123，不私改架构或契约。
+
+### P-131｜P096 忽略+静音原子事务（be，2026-09-08）
+
+- 独立代码 **6f7967a**，交审前合main@ed58141。1/3/7天→上海03业务日截止（DATE存储不改）；P0突破谓词；锁内真实work-item tuple→活动个人授权复核→ignore→mute UPSERT同事务。Service不会拆两次提交或用Promise.race造成超时后偷偷提交；无媒体/Job/HTTP写开放，无Contract/be2/视觉/push。
+- Domain52/DB单测53/Worker21通过，**真实PG13/13**：强制第二步23514后工作项仍open+mute无行，并发一成功一INVALID_STATE、同号跨媒体/跨workspace、失效grant均实证。三包type/lint过；DB行100%分支97.27%、Service行100%分支97.87%；缓存audit0。质量报告`docs/plans/2026-09-08-R010a2-忽略与静音质量报告.md`。磁盘5.6～6.7GiB未全量，不拿旧证据冒充。
+- **还请给R010公共接缝**：`AccountMuteService.mute(auth,target,{days,reason_chip})` 与 `.ignoreAndMute(auth,id,{mute_days,reason_chip?})` 返回已冻`{mutedUntil,scope}`。当前http-server固定findR014Route，只有be2数组，不是通用options.extraRoutes；我未占用。此项与P129 dry-run可一起注入独立R010接口。
+- 未假装完成：RuleScan/通知还没接accountMuteIsActive；occurrence与suppressedByMute/SLA待后续；ignore无mute其他动作仍待接。当前既有state machine不支持dispatched→ignore，本批保持INVALID_STATE而不自扩写；若你冻结所有活动态可ignore，请同步状态机契约。
+- 018未来revoked_at列需授权读取统一更新（目前列未落，当前复核删除grant/失效member/identity等）；团队始终拒绝本地写，不改共享策略。继续长期目标，不等本回执审批。
 
 ### Q-005 交审｜收两条转来的活：P-123（任务列表补 dispatched）+ I-001（BFF 账户列表路由）｜be2 2026-09-07
 **分支 `be/r014 @ HEAD`（已合 main 01b4fbd）。写完立刻开下一批。**
@@ -4262,6 +4294,12 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 
 **下一批**：S5 BFF（`apps/web/lib/data/r014/` + `app/api/internal/`，把这 17 条按需接到浏览器同源路径）。I-001 的账户列表已在 Q-005 补完。
 
+### P-132｜规则扫描插件边界修复 + 生产接线核查（be，2026-09-08）
+
+- 独立代码 **37fc59d**；main已同步39f50b5（merge36659a8/7092a89）。修原始异常泄露、评估器改写后续账户tuple、非法evaluation/sink结果直通；10k批量+私有快照+严格输出。没有改Contract/共享composition/be2/视觉/媒体写/push。
+- 20新增+37回归=Worker57/57；两核心行98.94%分支97.18%、函数100%；全Workertype/lint绿，缓存audit0。合main后Domain34/34，**本人真实PG复验R014路由20/20**。报告`2026-09-08-R010a2-规则扫描边界质量报告.md`记录失败与修复；磁盘4.5GiB未全量。首次回归纳入两PG文件时默认be2 URL被沙箱EPERM拦住、无DB写入，随后显式本人隔离库单worker20过；未改其测试。旧search.meta红已随你的main修复。
+- **生产规则并未接通**：runtime没有RuleScan注册，现有candidateProvider/workItems/alerts只有接口和测试实现；accountMuteIsActive/occurrence/coverage尚未接。请指定被静音不创建工作项时suppressedByMute与检查coverage的持久化载体；现只有work_items.occurrence_count，无法承载未创建项，不擅自塞JSON/造表。
+- Provider/Sink必须各自核准tuple，本批内部校验不是新授权。已发生的sink写入遇通知错误仍保留created计数，不伪称回滚。后续自己先建R010HTTP适配层，仍等你给共享接缝；013引用类型矛盾等前回执继续保留，不等本条审查停工。
 
 ### Q-008 交审｜S5a：BFF 七条同源路由 + 共用转发器｜be2 2026-09-07
 **分支 `be/r014 @ 7086435`（已合 main ed58141）。写完立刻开下一批。**
@@ -4291,3 +4329,10 @@ be2 Q-008（S5a BFF 七条同源路由 + 共用转发器）合 main `d6ecab2`，
 | `/api/internal/me/counts`、`me/workload` | ✅ 200，负载读出「参与 3 任务 / 拥有 6 账户」 |
 | `/api/internal/search?q=闲鱼` | ✅ 200，搜出对应账户（无参数 400 是对的） |
 BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2（账户池）D3（工作台队列）的数据链路已通。**
+### P-133｜户级静音与ignore+mute HTTP适配候选（be，2026-09-08）
+
+- 独立代码 **c2527dc**，已合main@d6ecab2（8b23603）。`src/r010/account-mute-routes.ts`导出`createAccountMuteRoutes(service)`，结构兼容现壳层context，但**没注册r014数组/没改共享结构**。两个POST，严格body+tuple+approvedpersonal；ignore+mute只调原子命令，no媒体/Job/push/视觉。
+- Worker58/58、真实loopback2/2、**HTTP→Service→PG3/3 + DB13/13**，覆盖跨媒体同号、撤权旧context、两效果同事务、重复409、超限请求返回413不reset。Domain全量1035/1035、合main的Web176/176、Worker type/lint绿、缓存audit0。两个可执行HTTP文件行100%；含纯类型routes.ts总行86.33%。报告`2026-09-08-R010a2-静音HTTP质量报告.md`；磁盘4.5～6.8GiB，DB/Worker未全量。
+- **接缝请求现已有可直接接的factory**：`createAccountMuteRoutes(new AccountMuteService(new AccountMuteRepository(pool)))`，请挂在internal bearer+Session鉴权之后。无新鉴权header协议，不信浏览器scope；R010 context允许maxRequestBytes、固定最大1MiB/16MiB。请保持独立注入，不占be2全局数组。
+- 合法纯ignore（无mute_days）当前明确503 SOURCE_UNAVAILABLE；P096只冻结ignore+mute成功shape，请补纯ignore的成功fixture/状态。不能用静音DTO冒充纯ignore或把合法请求报400。DB提交后HTTP失败不等于回滚，不声称请求恰好一次。
+- Q008 Headers对象展开提醒已查本树lib/data，无该写法。同步main被安全审查一次拦截，核验暂存仅main文件、双方信箱追加后原操作获批；无清理/reset/覆盖。主服务尚未暴露本路由/BFF，生产RuleScan仍未接，不称功能上线。不等审批继续其他可做项。
