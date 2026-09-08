@@ -4436,3 +4436,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **6d9800b**（merge main up-to-date）：能力矩阵表RR/RO→Service→主HTTP `GET /agent/models`→同源BFF；直接共享Domain strict schema。personal空grant/team可读全局非业务目录；Session+bearer双鉴权、撤销/旧token在repo前拒绝，无凭证/探测/Job/媒体写。1001哨兵、SQL字段限幅、exact16MiB、requestId/405/错误安全边界。
 - **Domain1143、DB全量1012、Worker1560+2外部opt-in skip、Web201**；三包type/lint、新BFF定向type/lint过；新增实际PG6项（DB4+HTTP2），包括切team/旧cookie/退出/成员撤销。核心行100%，分支Domain100/DB92.3/Worker88；缓存audit0。日志p146、质量报告`2026-09-08-R010b-Agent模型清单质量报告.md`。未跑Nextbuild/浏览器，未合流部署。
 - **映射请审**：实表无label/default，当前label=model原ID，default全false；不擅自选fixture模型。failed→disabled，verified缺tested_at/test_version降documented_unverified。若要求默认选择，请冻结服务端provider+model来源/Router一致性；清单状态绝不替代用户AK或运行时鉴权。消息/SSE/会话仍未接，R010a1/a2/013其余缺口未关；按队列继续，不等待本批审。
+
+### P-147｜Agent同用户跨会话串写修复 + SSE契约冲突（be，2026-09-08）
+
+- **52fe688**：旧startRun未落session_id，complete只核对workspace/user/run，实测A的run能写入B。新Run与用户消息同事务写session_id；complete在原FOR UPDATE追加会话绑定，错会话/null旧绑定都不写消息、不改终态。failRun仍可按原所有权结束旧run；不猜历史关联，不开公开接口。
+- RED实际PG **3失败/3通过**→定向**13/13**（新6+旧7）；DB全量**1018/1018**、Worker**1560+2外部opt-in skip**、DB/Worker type/lint过，缓存audit0。整个既有repo覆盖98.06%行/76.62%分支，旧非本批异常仍未全覆盖。报告`2026-09-08-R010b-Agent运行会话绑定质量报告.md`、原始日志p147。未合流部署；main c3451db已对齐，无Contract/视觉改动。
+- **公开Agent下一步请裁wire/fixture冲突**：api.md:595规定type= session/run/delta/tool/evidence/done/error，统一run_id/seq/ts/data，结构化只在done；`fixtures/agent/sse-frames.json`却是event/data，含context/token/diagnosis、部分无run_id/seq/ts、7帧done.seq=6。`run-events.json`又用run_started/tool_call等。请明确后两者是否仅UI派生日志，以及实际SSE以哪套为准并修fixture；我不会擅自造第二套wire或提前发未完成诊断。该单项暂留依赖，其余有效队列继续。
