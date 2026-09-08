@@ -93,7 +93,10 @@ describe("R-014 search repository (real PostgreSQL)", () => {
       title: "阿尔法拉新_快手_01",
       href: "/accounts/KUAISHOU/alfa-acc-1",
       workspaceKind: "personal",
+      // v1.9 ⑦：后端只出机器字段，不出拼好的中文 subtitle。
+      meta: { status: "stable", taskName: "AAC 拉新包" },
     });
+    expect(outcome.items[0]).not.toHaveProperty("subtitle");
     expect(outcome.items[2]!.href).toBe(`/work-items/${outcome.items[2]!.id}`);
   });
 
@@ -118,7 +121,7 @@ describe("R-014 search repository (real PostgreSQL)", () => {
   it("filters to a single type when asked and rejects an unknown one", async () => {
     const tasks = await search.search(actor, "阿尔法", "task");
     expect(tasks.items.map((item) => item.type)).toEqual(["task"]);
-    expect(tasks.items[0]!.subtitle).toBe("preparing · 0 户");
+    expect(tasks.items[0]!.meta).toEqual({ stage: "preparing", accountCount: 0 });
     await expect(search.search(actor, "阿尔法", "campaign")).rejects.toThrow(/invalid_input/);
   });
 

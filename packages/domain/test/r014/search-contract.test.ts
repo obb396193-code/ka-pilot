@@ -11,16 +11,20 @@ const fixture = JSON.parse(
 ) as { data: { items: SearchItem[] } };
 
 describe("v1.7.4 G6 global search", () => {
-  it("parses the frozen fixture, including the recent block it carries beyond the G6 text", () => {
+  it("parses the frozen fixture (v1.9 ⑦: structured meta, no backend-composed subtitle)", () => {
     const parsed = searchResultSchema.parse(fixture.data);
     expect(parsed.recent).toEqual([{ type: "task", id: "fixture-task-ready", title: "AAC 拉新", href: "/tasks/fixture-task-ready" }]);
     expect(new Set(fixture.data.items.map((item) => item.type)).size).toBeGreaterThan(1);
     for (const item of fixture.data.items) expect(SEARCH_TYPES).toContain(item.type);
+    // v1.9 ⑦：后端不再出 subtitle，中文由 fe 从 meta 组装。
+    for (const item of fixture.data.items) expect(item).not.toHaveProperty("subtitle");
+    expect(fixture.data.items.find((item) => item.type === "task")!.meta)
+      .toEqual({ stage: "active", accountCount: 3 });
   });
 
   it("caps each type at five results", () => {
     const many = Array.from({ length: SEARCH_LIMIT_PER_TYPE + 1 }, (_, index) => ({
-      type: "account" as const, id: `a${index}`, title: "t", subtitle: "", href: "/a", workspaceKind: "personal" as const,
+      type: "account" as const, id: `a${index}`, title: "t", meta: {}, href: "/a", workspaceKind: "personal" as const,
     }));
     expect(() => searchResultSchema.parse({ items: many })).toThrow(/at most 5 account items/);
     expect(() => searchResultSchema.parse({ items: many.slice(1) })).not.toThrow();
@@ -28,9 +32,9 @@ describe("v1.7.4 G6 global search", () => {
 
   it("groups by the fixed type order while keeping relevance order inside a group", () => {
     const items: SearchItem[] = [
-      { type: "task", id: "t1", title: "t1", subtitle: "", href: "/t1", workspaceKind: "personal" },
-      { type: "account", id: "a1", title: "a1", subtitle: "", href: "/a1", workspaceKind: "personal" },
-      { type: "task", id: "t2", title: "t2", subtitle: "", href: "/t2", workspaceKind: "personal" },
+      { type: "task", id: "t1", title: "t1", meta: {}, href: "/t1", workspaceKind: "personal" },
+      { type: "account", id: "a1", title: "a1", meta: {}, href: "/a1", workspaceKind: "personal" },
+      { type: "task", id: "t2", title: "t2", meta: {}, href: "/t2", workspaceKind: "personal" },
     ];
     expect(orderSearchItems(items).map((item) => item.id)).toEqual(["a1", "t1", "t2"]);
   });

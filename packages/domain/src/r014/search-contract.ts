@@ -8,11 +8,28 @@ export const SEARCH_TYPES: readonly SearchType[] = searchTypeSchema.options;
 /** 每类最多 5 条（G6 冻结）。 */
 export const SEARCH_LIMIT_PER_TYPE = 5;
 
+/**
+ * v1.9 ⑦：**后端不出 subtitle**，只出结构化机器字段；中文由 fe 组装
+ * （与 fe 的「去黑话」一致：后端出机器值、前端管文案）。
+ * 键按 fixture system/search.json 逐条对齐，全部可选——不同类型带不同的几个。
+ */
+export const searchItemMetaSchema = z.object({
+  status: z.string().min(1).optional(),
+  stage: z.string().min(1).optional(),
+  taskName: z.string().min(1).optional(),
+  accountCount: z.number().int().nonnegative().optional(),
+  severity: z.string().min(1).optional(),
+  kind: z.string().min(1).optional(),
+  durationMs: z.number().int().nonnegative().optional(),
+  analysisVersion: z.number().int().nonnegative().optional(),
+}).strict();
+export type SearchItemMeta = z.infer<typeof searchItemMetaSchema>;
+
 export const searchItemSchema = z.object({
   type: searchTypeSchema,
   id: z.string().min(1),
   title: z.string().min(1),
-  subtitle: z.string(),
+  meta: searchItemMetaSchema,
   href: z.string().min(1),
   workspaceKind: z.enum(["personal", "team"]),
 }).strict();

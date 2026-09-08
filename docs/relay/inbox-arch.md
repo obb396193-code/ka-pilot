@@ -4095,6 +4095,36 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 **④ 本批的实现取向（供你审时对照）**：`evaluateDecisionTier` 没有 execute 分支，写类能力永远只到变更集草稿；置信度/成功率缺数一律当「不过」不按 0 代入；`report_runs` 用表上的 UNIQUE 做幂等且已终态拒绝改写；`dailyBriefSchema` 把「不生成假早报」变成 schema 硬约束（pending 的早报不许带 generatedAt/queueSummary/sections）；导出仓储**不编签名 URL**，过期回 `fileExpired` 让服务层 410；`external_changes` 观测不到旧值就说「被改动」不编数字。
 
 **⑤ 下一步**：`apps/worker/src/r014/routes.ts`、`handlers.ts` 两个空文件**还没在 main 上**（我刚 merge 完确认过），S4/S5 仍卡。按你 R-017 派活里「S4/S5 卡住可以先插这批」，我**另开 `be/r017` 分支开始 R-017 T1（migration 018，DDL 照 S1 的切片法从 v1.8 节生成）**，be/r014 就地冻结等你 ✅/❌。
+
+
+### Q-004 交审｜R-014 S3a–S3c + S4a（只读聚合三批 + HTTP 层开工八条）｜be2 2026-09-07
+**分支 `be/r014 @ 4dda65a`（已合 main 206f27d）。写完立刻开下一批，不等 ✅。**
+
+| 子批 | SHA | 内容 |
+|---|---|---|
+| S3a | `6f7585e` | 账户池九态管道 + 人工置态（v1.5.1 ①） |
+| S3b | `8bfd16a` | 通知流投影 + me/counts + me/workload（v1.7.8 G10 / v1.7.1 / v1.7.4 G9） |
+| S3c | `381e875` | 全局搜索（v1.7.4 G6） |
+| S4a | `4dda65a` | me/* 八条端点挂上你开的缝 |
+
+**门禁**：worker r014 9/9、db r014 82/82、domain r014 82/82；三包 `tsc` 0、`eslint` 0。
+
+**① 你的缝很好用，一次接通**。只填了 `src/r014/{http,me-routes}.ts`（新文件）+ 在 `routes.ts` 加了 `registerR014Routes()`（缝是模块顶层求值、路由要 Pool，所以注册必须显式调用；副作用式注册会让测试不连库都导不进来）+ `data-api.ts` 加一行注册和 import。**`http-server.ts` 一个字没动。** 如果你希望注册行换个落点，说一声我挪。
+
+**② 一条需要你追认的政策：「表不存在」判成 0 还是「未知」？**
+`approvals` / `dispatches`（migration 014，Codex）现在没有表。我的处理是**分两层**：
+- **仓储层只报事实**：表不存在 → `null`，有用例守着它不许变 0；
+- **HTTP 层落政策**：把「表不存在」判成 **0**。理由：表不存在意味着系统里**根本没有审批单/派发单这种对象**，计数确实是 0，不是「我们不知道」。真算不出来（源存在但查询失败）仍回 `503 SOURCE_UNAVAILABLE`，不编数字。
+这样你现在本地联调时侧栏 badge 能正常出数，014 落地后仓储自然返回真实计数，HTTP 层不用改。**请追认或改判。**
+
+**③ 本批新发现的契约缺口（都按保守实现并在代码注释标了出处）**
+1. **`accounts/pipeline` 的 `deltaVsYesterday` 没有数据源**：库里没有 pool_status 历史快照，`pool_status_changed_at` 只记最后一次变更，反推不出昨天的分布。我一律回 `missing`（它是 MetricValue，三态可表达）。补 0 会显示成「昨天到今天没变」——那是编的。要真做，得有个每日 pool_status 快照，请裁。
+2. **搜索 subtitle 谁出中文标签**：fixture 里 account 是「投放中 · AAC 拉新包」（中文标签）、work_item 是「P1 · open」（原始枚举），两种风格。后端没有标签表（fe 刚做完去黑话、标签在他们那边），我按 **后端只出机器值、fe 负责翻译** 实现。请定一边。
+3. **搜索 fixture 的 work_item href 是改名前的** `/?tab=today&item=<id>`；v1.7.6 已把工作项详情正名为 `/work-items/[id]`。我按 v1.7.6 出 `/work-items/<id>`，**fixture 需要更新**。
+4. **`GET /tasks/:id/bindings` 有两处推不出来**（S3d 还没做，先问）：`alert_rules` **没有任何时间列**，`rules[].boundAt` 无源；`alert_rules.scope` 是 JSONB 但契约没定义它的结构，「这条规则绑在哪个任务上」无法可靠判断。请给 `scope` 的结构（我猜是 `{"task_id":"..."}`）与 `boundAt` 的落点（加列？还是 DTO 允许 null？）。
+5. **Q-003 的 `account_access_grants` 缺 `revoked_at` 仍未裁**，`account_transfers`（4.10 交接）继续挂着，是 R-014 唯一因契约写不出来而没做的端点。
+
+**④ 下一批**：S3d（bindings，等 ④ 的答复前先做能做的部分）→ S4b（账户池/能力/决策策略/导出/就绪度端点）→ S5 BFF。R-017 排在 R-014 之后。
 ### P-119｜unknown parity + 分时/Gap Domain数据边界；继续队列不等审（be，2026-09-07）
 
 - 收P117✅及1c622d0新铁律，已合main至`3d4df55`。独立代码 **4041f26**（unknown+计划）、**ad19c08**（strict版本化rows）。自身diff仅Domain与本人文档；Contract/视觉/DB/依赖0改动。没有push/部署/真实媒体写。
@@ -4197,3 +4227,69 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - **还请给R010公共接缝**：`AccountMuteService.mute(auth,target,{days,reason_chip})` 与 `.ignoreAndMute(auth,id,{mute_days,reason_chip?})` 返回已冻`{mutedUntil,scope}`。当前http-server固定findR014Route，只有be2数组，不是通用options.extraRoutes；我未占用。此项与P129 dry-run可一起注入独立R010接口。
 - 未假装完成：RuleScan/通知还没接accountMuteIsActive；occurrence与suppressedByMute/SLA待后续；ignore无mute其他动作仍待接。当前既有state machine不支持dispatched→ignore，本批保持INVALID_STATE而不自扩写；若你冻结所有活动态可ignore，请同步状态机契约。
 - 018未来revoked_at列需授权读取统一更新（目前列未落，当前复核删除grant/失效member/identity等）；团队始终拒绝本地写，不改共享策略。继续长期目标，不等本回执审批。
+
+### Q-005 交审｜收两条转来的活：P-123（任务列表补 dispatched）+ I-001（BFF 账户列表路由）｜be2 2026-09-07
+**分支 `be/r014 @ HEAD`（已合 main 01b4fbd）。写完立刻开下一批。**
+
+**① P-123 转 be2 —— 已修**。`packages/db/src/task-list-sql.ts` 两处活动态写死 `open/processing/escalated`，漏了 v1.7.5 P-083 并入的 `dispatched`。改成引用 Codex 已导出的 `ACTIVE_WORK_ITEM_STATUSES`（domain），**顺带把我自己在 `me-workspace-repository.ts` 里的同名重复定义也换成同一个常量**——两处各写一份迟早分叉。新增守卫用例：两段 SQL 必须含全部活动态、且不许再出现写死的三态字面量，下次再加态不会又漏一处。
+
+**② I-001 —— 已补，你可以重跑账户池页联调**。`GET /api/internal/accounts` 现在有了：
+- `apps/web/lib/data/r014/{account-list-contracts,account-list-bff,account-list-server}.ts` + `app/api/internal/accounts/route.ts`，全是新文件；
+- 织法逐条照 `task-list-bff.ts`：白名单参数、Session cookie + 服务令牌、requestId 双向对齐、16MB 边界、上游响应必须过契约校验**且状态码与 body 自洽**，任一不符一律 502 且不透传上游原文；
+- **浏览器不能自带 `workspaceId`**（范围由 Session 决定），有专门用例守着它不被转发上去；
+- `tags` 用逗号分隔的单参数（重复参数会有歧义），空段判非法而不是悄悄丢掉。
+
+**③ 一个需要你定的小事：web 的测试 glob**。`apps/web/package.json` 的 `test` 是 `node --test lib/data/*.test.ts`，**不含子目录**。所以我的 BFF 测试没敢放 `lib/data/r014/`（放进去等于永远不被跑），而是放成 `lib/data/r014-account-list-bff.test.ts`。要么保持这个命名约定，要么你把 glob 放宽成 `lib/data/**/*.test.ts`——`package.json` 是共享文件，我没动。请裁。
+
+**门禁**：web **167/167**、web `tsc` 0 错、`eslint` **0 错**（17 warning 全在 fe 的组件里，无一来自我的文件）；db r014 + task-list **98/98**、worker r014 **9/9**；db/worker `tsc` 0、`eslint` 0。
+
+**④ Q-003 / Q-004 里仍未裁的**：`account_access_grants` 缺 `revoked_at`（卡住 4.10 交接）、`me/counts` 的「表不存在=0」政策请追认、`bindings` 的 `boundAt` 无列与 `alert_rules.scope` 结构未定义、搜索 subtitle 的中文标签归属、搜索 fixture 的 work_item href 需按 v1.7.6 更新。
+
+**⑤ 下一批**：S4b（账户池 pipeline / capabilities / decision-policy / export / readiness 端点上缝）。
+
+
+### Q-006 交审｜v1.9 裁决全部落地 + S3d 任务绑定完成｜be2 2026-09-07
+**分支 `be/r014 @ bd7f4a9`（已合 main e9df460）。写完立刻开下一批。**
+
+**① 你 v1.9 的九条我全接了**，逐条对照：
+| 裁决 | 我的落地 |
+|---|---|
+| 缺源政策两层（追认） | 已是现状，未改；`me/counts`、`me/workload` 都按此走 |
+| 缝的注册落点保持 | 未改 |
+| revoked_at 排 018 | `account_transfers` 继续不做，等 018 |
+| recentManualOps `>0 即不过` | 已是现状 |
+| overriddenBy 三表前恒 null | 已是现状 |
+| decision-policy 限 lead\|admin | 已是现状 |
+| /me/views 只返本人 | 已是现状 |
+| deltaVsYesterday 短期 missing | 已是现状；018 的 `pool_status_daily_snapshot` 落地后我再接真值 |
+| **搜索改结构化 meta** | **已改**：domain schema + 仓储 + 两处测试同步，用例断言响应里不再有 `subtitle` 键 |
+| 搜索 href | 你改的 fixture 与我的实现一致，无需再动 |
+| **alert_rules.scope 结构 + boundAt 可空** | **已按此实现 S3d** |
+
+**② S3d `GET /tasks/:id/bindings` 完成**，三处判断请你审：
+1. **全局规则不算绑定**：`scope` 三个数组全空 = 全局，对每个任务都成立；列进「本任务的绑定」就是 v1.7.3 明令禁止的「用全局规则冒充」。有专门用例守着它不出现。
+2. **工作流绑定是推导不是发明**：库里没有「定义↔任务」绑定表，唯一可靠的联系是 `workflow_runs.task_id`（我的 015 列），所以「绑在本任务上的工作流」= **为本任务跑过 run 的那些定义**，取每个定义最近一次 run 作 `lastRun`。如果你要的是别的语义（比如显式绑定表），说一声我改。
+3. **SOP 进度** = `node_succeeded` 的去重节点数 / 版本图上的节点数。图上没节点 → `undefined` 不是 0；事件多于节点（重跑）封顶 1。`scope` 结构解析不了的规则一律当没绑——猜错会让规则凭空出现在某个任务上。
+
+**门禁**：db r014 **94/94**、domain r014 **88/88**；两包 `tsc` 0、`eslint` 0。
+
+**③ 提醒**：I-001 我上一批（`cbad7fa`，回执 Q-005）已经补好了 —— `app/api/internal/accounts/route.ts` + `lib/data/r014/account-list-{contracts,bff,server}.ts`，web 167/167 全绿。你 v1.9 那条「S5 里优先补」写的时候应该还没看到。可以直接重跑账户池页联调。
+
+**④ 仍等你的一条**：web 测试 glob（`node --test lib/data/*.test.ts` 不含子目录，见 Q-005 ③）。
+
+**⑤ 下一批**：S4b（账户池 pipeline / capabilities / decision-policy / export / readiness / bindings 端点上缝）。
+
+
+### Q-007 交审｜S4b 完成：R-014 的 HTTP 层全部接通（共 17 条端点）｜be2 2026-09-07
+**分支 `be/r014 @ HEAD`。写完立刻开下一批（S5 BFF）。**
+
+**新挂九条**：`accounts/pipeline`、`accounts/:media/:id/pool-status`（PATCH/DELETE）、`tasks/:id/bindings`、`tasks/:id/readiness/:dimension`（PUT）、`capabilities`、`settings/decision-policy`（GET/PUT）、`export`（POST）、`exports/:id`、`search`。连 S4a 的 `me/*` 八条，**R-014 的端点已全部接通**，你可以在联调里直接打了。仍然只填 `src/r014/` 与 `data-api.ts` 的注册块，`http-server.ts` 一个字没动。
+
+**三处行为请你审**：
+1. **导出签名过期回 410 且响应里不出现 `file_ref`**（有用例断言 body 不含 `blob://`）。api.md 7.4 只写了「过期 410」，我顺手把存储引用也挡住了——把内部 ref 透出去等于给一条打不开还能被猜的链接。
+2. **搜索把「还没有表的类型」放进 `meta.unavailableTypes`**（值是 `["material","document"]`）。这是 v1.9 ① 缺源政策在读侧的落法：前端才能区分「材料没搜到」和「材料还搜不了」，返回空数组冒充搜过是误导。**这是我加的 meta 字段，契约没写，请追认或改名。**
+3. **`pool-status` DELETE 只把 `pool_status_source` 复位成 system，不改状态值**——状态值交回系统推导，在这里顺手改成别的态就是替 ETL 做决定。
+
+**门禁**：worker r014 **20/20**（me 8 条端点 9 用例 + S4b 11 用例）、`tsc` 0、`eslint` 0。
+
+**下一批**：S5 BFF（`apps/web/lib/data/r014/` + `app/api/internal/`，把这 17 条按需接到浏览器同源路径）。I-001 的账户列表已在 Q-005 补完。

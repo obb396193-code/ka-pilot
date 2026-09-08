@@ -12,16 +12,22 @@ import { R014RepositoryError, approveAuth } from "./workspace-authority.js";
  * `material` / `document` 的表分别在 migration 016（R-015）与知识库批次，现在还没有；
  * 缺哪类就在 `unavailable` 里如实报出来，不返回空数组冒充「搜过了没有」。
  *
- * subtitle 只放**机器值**（如 `P1 · open`，与 fixture 的 work_item 行一致），
- * 中文标签归前端——后端没有标签表，编一套会和 fe 已经统一过的措辞打架。已回抛 arch。
+ * v1.9 ⑦ 已裁：**后端不出 subtitle**，只出结构化 `meta` 机器字段，中文由 fe 组装。
  */
 export interface SearchOutcome {
   items: SearchItem[];
   unavailable: SearchType[];
 }
 
-const joinSubtitle = (...parts: (string | null | undefined)[]): string =>
-  parts.filter((part): part is string => typeof part === "string" && part.length > 0).join(" · ");
+/** 只把真有值的键放进 meta：缺的键就不出现，不用空串占位。 */
+function meta(entries: Record<string, string | number | null | undefined>): Record<string, string | number> {
+  const result: Record<string, string | number> = {};
+  for (const [key, value] of Object.entries(entries)) {
+    if (value === null || value === undefined || value === "") continue;
+    result[key] = value;
+  }
+  return result;
+}
 
 export class SearchRepository {
   constructor(private readonly pool: Pool) {}
@@ -73,7 +79,7 @@ export class SearchRepository {
       type: "account" as const,
       id: `${String(row.media)}:${String(row.account_id)}`,
       title: (row.account_name as string | null) ?? String(row.account_id),
-      subtitle: joinSubtitle(row.lifecycle_stage as string | null, row.product_name as string | null),
+      meta: meta({ status: row.lifecycle_stage as string | null, taskName: row.product_name as string | null }),
       href: `/accounts/${String(row.media)}/${String(row.account_id)}`,
       workspaceKind: auth.workspaceKind,
     }));
@@ -95,7 +101,7 @@ export class SearchRepository {
       type: "task" as const,
       id: String(row.task_id),
       title: (row.task_name as string | null) ?? String(row.task_id),
-      subtitle: joinSubtitle(row.stage as string | null, `${Number(row.account_count)} 户`),
+      meta: meta({ stage: row.stage as string | null, accountCount: Number(row.account_count) }),
       href: `/tasks/${String(row.task_id)}`,
       workspaceKind: auth.workspaceKind,
     }));
@@ -113,7 +119,7 @@ export class SearchRepository {
       type: "work_item" as const,
       id: String(row.id),
       title: (row.title as string | null) ?? "工作项",
-      subtitle: joinSubtitle(row.severity as string | null, row.status as string | null),
+      meta: meta({ severity: row.severity as string | null, status: row.status as string | null }),
       href: `/work-items/${String(row.id)}`,
       workspaceKind: auth.workspaceKind,
     }));
