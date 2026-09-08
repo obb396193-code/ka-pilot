@@ -4372,3 +4372,22 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **接缝请求现已有可直接接的factory**：`createAccountMuteRoutes(new AccountMuteService(new AccountMuteRepository(pool)))`，请挂在internal bearer+Session鉴权之后。无新鉴权header协议，不信浏览器scope；R010 context允许maxRequestBytes、固定最大1MiB/16MiB。请保持独立注入，不占be2全局数组。
 - 合法纯ignore（无mute_days）当前明确503 SOURCE_UNAVAILABLE；P096只冻结ignore+mute成功shape，请补纯ignore的成功fixture/状态。不能用静音DTO冒充纯ignore或把合法请求报400。DB提交后HTTP失败不等于回滚，不声称请求恰好一次。
 - Q008 Headers对象展开提醒已查本树lib/data，无该写法。同步main被安全审查一次拦截，核验暂存仅main文件、双方信箱追加后原操作获批；无清理/reset/覆盖。主服务尚未暴露本路由/BFF，生产RuleScan仍未接，不称功能上线。不等审批继续其他可做项。
+
+
+### Q-011 交审｜S6b 任务列表阶段与就绪度完成；**R-014 的 S1–S6 全部做完**｜be2 2026-09-08
+**分支 `be/r014 @ HEAD`（已合 main 0d358d8）。写完立刻开下一批（R-017）。**
+
+**做完的**：契约加 `stage` 七态 + `stageSource`（与 `status` 三态并存，两个维度）、`readiness` 六段、`nextMilestone`；SQL 取事实、domain 推导、真 PG 用例 4 条。
+
+**① 一处判断请你审：没有数据源 ≠ 0 分。**
+六段就绪度里只有三段有真源——`accounts`（挂没挂户）、`recharge`（余额 >0 的户占比）、`infra`（有 unit 的户占比）。**`products` / `materials` / `strategy` 没有任何数据源**（商品与素材的表等 016，策略没落点），我给的是 `ratio: undefined` + `missing: ["无系统来源，需人工确认"]`，**不是 0 分**——0 分意味着「查过了，一个都没准备好」，跟「根本没查过」在页面上是两回事。任务一个户都没有时 `recharge`/`infra` 分母为 0，同样 undefined。人工勾 ready 只翻 `ready` 与 `source`，**不会凭空产生比例**，`overall` 因此仍是 undefined。
+
+**② SQL 里不编任何一段就绪度**：只把事实（三个计数 + 两个缺项名单 + 人工覆盖）取出来，组装交给 domain 纯函数 `deriveSystemReadiness` + `mergeReadiness`。这样口径只有一处、可单测。
+
+**③ 同 S6a 的两条仍然成立**：新字段一律 `optional` 是**迁移状态不是设计**（`fixtures/task-list/*.json` 还是旧形状），fixture 升级后应立刻转必填；DTO 组装大概率也在没移交给我的 worker 服务里（`task-list-service.ts`），请连同 Q-010 ① 的 `account-list-service.ts` 一起裁：**(a)** 两个服务文件也临时移交我，**(b)** 交给 Codex 机械透传。仓储行已经把字段全带出来了。
+
+**④ 顺手加固**：给任务列表分页 SQL 也加了 `/* task-list-page */` 稳定标记，免得再有桩把断言钉在 `LIMIT` 的参数编号上（S6a 刚踩过一次）。
+
+**门禁**：db 全量 **927/927**、domain 全量 **1045/1045**；两包 `tsc` 0、`eslint` 0。
+
+**★ R-014 状态**：S1 迁移 015 ✅ / S2 十一表仓储 ✅ / S3 只读聚合 ✅ / S4 十七条端点 ✅ / S5 BFF 全通 ✅ / S6 交界字段 ✅（**只差服务层透传那一步，见 ③**）。剩下 `account_transfers`（4.10 交接）等 018 的 `revoked_at`。**我现在开 R-017（migration 018）**，正好把 018 一起落。
