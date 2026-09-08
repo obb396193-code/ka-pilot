@@ -1,5 +1,5 @@
 import {
-  countUnread, notificationReadStateSchema,
+  ACTIVE_WORK_ITEM_STATUSES, countUnread, notificationReadStateSchema,
   type ApprovedWorkspaceAuthContext, type MeCountsParts, type NotificationCandidate, type NotificationReadState,
 } from "@ka/domain";
 import type { Pool, PoolClient } from "pg";
@@ -30,9 +30,6 @@ export interface NotificationSources {
   /** 还拿不到的投影源；调用方据此判断 unread 是否可信。 */
   unavailable: string[];
 }
-
-/** work_items 的活动态集合（v1.7.5 P-083 冻结）。 */
-const ACTIVE_WORK_ITEM_STATUSES = ["open", "processing", "dispatched", "escalated"];
 
 async function tableExists(client: Pool | PoolClient, name: string): Promise<boolean> {
   const result = await client.query("SELECT to_regclass($1) AS name", [`public.${name}`]);
@@ -152,7 +149,7 @@ export class MeWorkspaceRepository {
       `SELECT id, severity, title, coalesce(last_triggered_at, created_at) AS at
        FROM work_items WHERE workspace_id=$1 AND status = ANY($2::text[])
        ORDER BY coalesce(last_triggered_at, created_at) DESC LIMIT 200`,
-      [approved.workspaceId, ACTIVE_WORK_ITEM_STATUSES],
+      [approved.workspaceId, [...ACTIVE_WORK_ITEM_STATUSES]],
     );
     for (const row of workItems.rows as Record<string, unknown>[]) {
       candidates.push({
@@ -226,7 +223,7 @@ export class MeWorkspaceRepository {
               count(*) FILTER (WHERE severity='P1')::int AS p1,
               count(*) FILTER (WHERE severity='opportunity')::int AS opportunity
        FROM work_items WHERE workspace_id=$1 AND status = ANY($2::text[])`,
-      [auth.workspaceId, ACTIVE_WORK_ITEM_STATUSES],
+      [auth.workspaceId, [...ACTIVE_WORK_ITEM_STATUSES]],
     );
     const row = result.rows[0] as Record<string, unknown> | undefined;
     if (row === undefined) throw new R014RepositoryError("INVALID_RESULT");
