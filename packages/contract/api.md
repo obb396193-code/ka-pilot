@@ -1111,3 +1111,24 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ### 维度来源与「归属都能手动改」
 `account.dimension/v3` 与账户列表的这些维度改读解析结果：`placement(流量版位) / bid_mode / device / goal / rta / agent_type(运营方) / optimizer / special / landing / rebate`；每个维度值带 `source:"nickname"|"platform"|"manual"|"qihang"`，前端可显来源角标。
 **老板铁律（v1.8 起全局）：凡是「归属」性质的字段，都必须有人工改的入口且改后不被自动流程覆盖。** 已覆盖：任务归属（`POST /tasks/:id/accounts` + `task_accounts` 有效期）、账户 owner（账户池指派）、昵称解析各段（本节 `override`）、账户状态 `pool_status`（v1.5.1 manual 覆盖留痕）。新增归属类字段一律照此办理。
+
+## v1.9 追加（2026-09-07 arch；be2 Q-003/Q-004 九条缺口一次裁完；migration 018 = R-017）
+
+### 一、缺源政策（追认 be2 的两层做法，立为全局规矩）
+**仓储层只报事实，HTTP 层落政策。**
+- 表/列不存在 → 仓储返 `null`（有用例守着不许变 0）；HTTP 层按语义决定：**「这类对象在系统里根本不存在」判 0**（如 014 未落地时 `approvals`/`dispatches` 计数），**「源存在但算不出来」回 `503 SOURCE_UNAVAILABLE`**，两者都不编数字。
+- 这条适用于所有计数类字段，不只 `me/counts`。
+
+### 二、九条缺口裁决
+
+| # | 缺口 | 裁决 |
+|---|---|---|
+| 1 | `account_access_grants` 缺 `revoked_at`（A7 交接写不出来） | **018 补列** `revoked_at TIMESTAMPTZ` + `revoked_by UUID`（015 已合 main，不回改已落迁移）。交接语义不变：原 grant 置 `revoked_at` 保留审计行，不删行。`account_transfers` 端点排 018 之后 |
+| 2 | `recentManualOps` 只有窗口没有门限 | **采纳 be2 的 `>0 即不过`**：窗口内有任何人工操作就不自动执行（系统不抢方向盘）。写死 threshold=0，不做可配置 |
+| 3 | `overriddenBy:"history"` 触发条件未定义 | 定义为：**同一对象在过去 30 天内有过「系统执行后被人工回退」的记录**。依赖 R-010a2 的 rollback 三表；**三表落地前恒返回 `null`**（不是猜） |
+| 4 | `GET/PUT /settings/decision-policy` 写权限 | **采纳 `lead\|admin`**。理由 be2 说得对：放开给 optimizer 等于让人自己抬高自己的自动执行额度上限 |
+| 5 | `/me/views` 的 `is_shared` 无读路径 | **采纳**：`/me/views` 只返回本人视图；共享视图走公共资产（v1.5.1 ⑤ `/assets`），不在 me 域自造归属 |
+| 6 | `accounts/pipeline` 的 `deltaVsYesterday` 无源 | **短期回 `missing`**（MetricValue 三态可表达，补 0 等于编「昨天到今天没变」）。**018 加 `pool_status_daily_snapshot(workspace_id, media, account_id, ds, pool_status)`**，每日 ETL 末尾写一行；有快照后才出真值 |
+| 7 | 搜索 `subtitle` 谁出中文 | **后端不出 `subtitle`**。改出结构化机器字段：`meta:{status?, stage?, taskName?, severity?, kind?, durationMs?}`，**中文由 fe 组装**（与 fe 刚做完的「去黑话」一致：后端出机器值、前端管文案）。fixture 统一改 |
+| 8 | 搜索 fixture 的 work_item href 过期 | **arch 改 fixture**：`/?tab=today&item=<id>` → `/work-items/<id>`（v1.7.6 已正名）。be2 按 v1.7.6 出是对的 |
+| 9 | `alert_rules.scope` 结构未定义 + `boundAt` 无源 | **`scope` 结构冻结**：`{"taskIds": string[], "accountScopes": [{"media","accountId"}], "bizNames": string[]}`，三者取并集，空数组=不限。**`boundAt` 018 加列** `alert_rules.bound_at TIMESTAMPTZ`；列落地前 DTO 允许 `null`（`GET /tasks/:id/bindings` 的 `rules[].boundAt` 可空） |
