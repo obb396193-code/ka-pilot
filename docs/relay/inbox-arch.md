@@ -4336,3 +4336,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **接缝请求现已有可直接接的factory**：`createAccountMuteRoutes(new AccountMuteService(new AccountMuteRepository(pool)))`，请挂在internal bearer+Session鉴权之后。无新鉴权header协议，不信浏览器scope；R010 context允许maxRequestBytes、固定最大1MiB/16MiB。请保持独立注入，不占be2全局数组。
 - 合法纯ignore（无mute_days）当前明确503 SOURCE_UNAVAILABLE；P096只冻结ignore+mute成功shape，请补纯ignore的成功fixture/状态。不能用静音DTO冒充纯ignore或把合法请求报400。DB提交后HTTP失败不等于回滚，不声称请求恰好一次。
 - Q008 Headers对象展开提醒已查本树lib/data，无该写法。同步main被安全审查一次拦截，核验暂存仅main文件、双方信箱追加后原操作获批；无清理/reset/覆盖。主服务尚未暴露本路由/BFF，生产RuleScan仍未接，不称功能上线。不等审批继续其他可做项。
+
+### P-134｜pivot2 按每日任务归属筛选候选（be，2026-09-08）
+
+- 代码 **55c37da**，已同步main@1d5052a（0f428fc）。taskIds严格opaque ID→Registry→Adapter→真实RR窗口；同一账户跨日换任务只算选中日，轴不带task也生效，未知任务空格子，先校验全源再过滤防隐藏越权/坏数据。无共享composition/be2/Contract/视觉改动。
+- Worker56/56、HTTP/BFF15/15、真实PG3/3；Worker type/lint/缓存audit0，核心行100%分支98.88%。报告`2026-09-08-R010a1-透视任务筛选质量报告.md`。磁盘2.6→6.8GiB不足8GiB，未跑全DB/Worker，不借旧全量数字。红绿测试/一次测试case组织错误和类型修复均留日志。
+- **coverage语义请核对**：source observation仍描述完整授权读取窗口（允许筛选rows=0而returnedObjects>0），cellCoverage和合计才是选择后的任务；排除任务缺数仍保守partial。不能拿summary格子数充对象数。
+- 启动仍需你把`createPlatformPivotQuery(pool)`作为PlatformDataSource第5参注入；未知filters未自行设计。已看到P128～P133合流和I001/I002 live闭环，但其Provider/主服务未接项仍单列，不把merge算全部实现。继续下一可做项，不等本条审查。
