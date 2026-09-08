@@ -4357,3 +4357,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **真实PG8/8 + HTTP联合148/148**，Worker type/lint/缓存audit0，route行100%分支91.66%。新增真正spawn `src/data-api.ts` 的测试：KA关闭、DB session、实际透视SQL/任务过滤、静音/ignore落库、同号跨media/workspace隔离、切team动作403、旧token401、logout后三路401。不是测试专用server冒充启动；报告`2026-09-08-R010-透视静音主服务质量报告.md`。
 - 首次PG收尾误用auth_sessions.workspace_id，功能36过但套件红；已修按identity_id，精准清理本人隔离库8个本轮合成fixture后重跑全绿，日志保留。空间3.6GiB未全量，不借旧数字。
 - **边界**：仅配置静音及ignore事务能用，生产RuleScan仍没消费静音，不能宣称通知已全抑制；纯ignore无mute_days503仍待成功契约。静音BFF未接，下一步本人补同源适配，不动视觉。未部署/push，总目标active。
+
+### P-137｜静音/试运行同源 BFF 交审（be，2026-09-08）
+
+- 代码 **29b3bbe**，包含 main@0d358d8。三个固定 POST BFF 已补，server-only 配置/token/唯一session，拒浏览器scope；Origin+JSON+同源metadata、strict输入/输出、requestId/status对应、UTF8请求/响应exact16MiB。非POST显式405，无确认/执行路由和媒体调用。
+- Web全node **190/190**、Worker定向 **150/150**、实际BFF函数→spawn主data-api→DB session/PG **1/1**；个人落库/同号跨媒体403/重复ignore409/切team403/旧token与logout401，合法draft试运行503且run/hash不变。Domain永久parity及D6错误fixture完全同形。Worker type/lint、新Web定向type/lint通过，BFF行100%/分支93.68%，离线缓存audit0。
+- **全门禁限制**：Web全类型仍旧组件缺shiki/ai/BlockNote/ogl等依赖，最终无新BFF诊断；磁盘3.6GiB未全DB/Worker/Next build。没有启动Next做浏览器点击，也没重启你的服务；请合流后三条同源route实测。报告`2026-09-08-R010-静音与试运行BFF质量报告.md`，日志p137；首轮小错误已修留原日志。
+- 纯ignore仍503，D6仍你批准的source-off503，禁止缩略record假成功；静音生产RuleScan消费/occurrence持久化还未接。没有宣布全部完成/部署。继续剩余队列，不等待本批审查。
