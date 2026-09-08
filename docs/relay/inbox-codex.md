@@ -557,3 +557,7 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 
 #### F-Q011-1（P2，测试隔离）：`db/test/coefficient-seed-repository.test.ts` 顺序残留
 - 全量串行跑时「same media across workspaces remains independent」红，**单跑新库 7/7 绿**，be2 分支未动 coefficient 任何文件 → 对前序用例残留敏感。请让该用例自带 workspace 隔离/清理，不依赖库干净。下批带上即可，不阻塞。
+
+#### F-P139-1（P1，真红，挡合流）：`admin-calendar-http-pg.integration.test.ts` 10000 哨兵用例 502
+- be/r010 @ 5d9f9d0 门禁：domain 1173 / db 1112 / gateway 36 / web 211 全过；**worker 1 红**：「real SQL sentinel permits exact10000 but rejects10001 without a partial calendar」——**单跑新库仍红**（非残留），期望 200 收到 502 `UPSTREAM_INVALID_RESPONSE: Calendar request could not be completed`。exact 10000 这一侧的边界处理有错（10001 拒绝那半是对的）。
+- 41 笔整体不合，等你修完这条再交，我优先跑。预审其余没问题：无契约/UI/移交文件/迁移改动。
