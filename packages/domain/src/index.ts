@@ -69,3 +69,5 @@ export * from "./condition-tree.js";
 export * from "./pivot-window.js";
 // be: scoped cumulative hour projection; trusted source reader remains separate.
 export * from "./hourly-projection.js";
+// be: P096 business-day account mute policy; HTTP and rule scan are separate.
+export * from "./account-mute-policy.js";
