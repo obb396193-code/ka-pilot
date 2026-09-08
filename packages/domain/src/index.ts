@@ -77,3 +77,5 @@ export * from "./operational-query-request.js";
 export * from "./r014/task-bindings-contract.js";
 // be: internal rule definition read boundary, not a public DTO.
 export * from "./rule-definition.js";
+// be: explicit daily windows and actual canonical evidence interpretation.
+export * from "./rule-daily-evidence.js";
