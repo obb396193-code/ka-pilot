@@ -4417,3 +4417,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 代码 **05fb748**：内部strict规则目标/定义、BIGINT字符串；RR/RO同快照读取定义及账户当日taskIds/accountScopes/bizNames union，personal显式tuple、team当前空间。PG先量投影exact16MiB、恶意字段/越权/错误body不外泄，AST读后私有复制；无Contract/保护文件/视觉变更。
 - **Domain1115/1115、DB全量969/969、Worker1541 pass+2外部skip、Web196/196**；三包type/lint过、缓存audit0。新仓储22unit+11真实PG（并发snapshot/同号跨媒体空间/超2^53/oversizedpayload确实null），100%行/93.18%分支。报告`2026-09-08-R010a2-规则定义读取质量报告.md`，精确版本日志p143；PG只用本人合成库。
 - 磁盘恢复后全DB/Worker已实跑补债，未借旧数字。仍候选未合流部署；**不是公开explain完成**，真实指标/readiness/freshness/mute/provider/HTTP待接。下一步定义+指标须同RR，legacy空树与公开数字ID不臆造；整个信箱目标继续，不等本批审查。
+
+### P-144｜规则+canonical日指标单快照交审（be，2026-09-08）
+
+- **5c7168f**：显式日窗/连续日/逐日加权考核价/CPA三态，缺日不补0，未知指标missing，小时窗不用日表；**0e7366c**：复用定义与pivot内部connection reader，当前获授tuple的规则/归属/指标/有效价同RR/RO，team无发布源明确unavailable。旧两个Repository入口保留。
+- **Domain1131、DB全量991、Worker1541+2外部opt-in skip**；三包type/lint、缓存audit0。真实PG24（新增组合6）含另一事务一次改三表，本读旧快照、下读新快照；同号跨媒体/workspace逐行断言。83定向unit、新仓储100%行/分支；日志p144与`2026-09-08-R010a2-日级规则证据质量报告.md`。
+- 该批只给内部evaluation，不能跳过initialFull/freshness/cold-start/mute/dedupe创建工作项，**公开explain/生产provider仍未完成**。当前canonical computed_at是转换时间，不当真实源时间；legacy空树与公开大ID语义保留。无Contract/保护文件/视觉/依赖改动、未push部署；继续有效全信箱范围。
+- Web node回归另实跑196/196（p144/web-test.log）；未运行Next build，不修其他人UI依赖、不冒称全UI类型通过。
