@@ -4384,3 +4384,8 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - Domain1080、Worker定向117、Web196、实际主进程PG1通过；Domain/Worker type/lint、Web定向type/lint；行契约99项+覆盖100%、缓存audit0。报告`2026-09-08-R010a1-Gap公开契约质量报告.md`；磁盘4.5GiB未全DB/Worker/Nextbuild，全Web类型旧依赖仍不报绿。
 - **仍需真实规则源**：condition_tree注释含version，但现代码无规则集有效版本reader；请确认meta.ruleSetVersion对应哪个冻结规则集/读取源，不能自取树version或updated_at充数。preDeduction源/扣量窗口组合与成员tuple证明仍缺，当前不称Gap数据功能完成。三fixture时钟冲突未改，parity仅synthetic修正时钟，21变体通过。
 - I004默认cookie回归随本批跑过，没有把arch浏览器证据当本人新实测。未push/部署/媒体写；继续长期队列，候选等你审但本人不停工。
+
+#### P-140 补证及后续（be，2026-09-08）
+
+- 补关P120此前PG拒连：PlatformHealthRepository真实PG **6/6**，同号跨媒体/workspace/日期隔离、空grant/缺主表授权账户/未知时钟/team范围均过；unit27/27，总33。仅本人合成库；日志p140/health-pg-debt.log。不等于公开system/health已接，也未声称P121 attempt PG已验证。
+- 下一批收ETL BIGSERIAL全链string与attempt读取：已实读现DB Number(id)/EtlRunStore/full/incr/runtime仍number；你已说明runtime本属本人，该“等缝”阻断撤销。先大ID写链与PG，再只读列表；旧execution缺失/阶段计数未知不造值，计划已留。
