@@ -154,6 +154,11 @@ function collectRequests(root: Node): ConditionReadRequest[] {
   return [...requests.values()];
 }
 
+/** Internal bounded read plan, useful for batch prefetch in one RR snapshot. */
+export function conditionReadRequests(input: unknown): ConditionReadRequest[] {
+  return collectRequests(parseTree(input));
+}
+
 /** The same interpreter with bounded asynchronous evidence reads. Parsing and
  * copying precede IO; no dummy evaluation is used to discover requirements.
  * The caller still owns authorization, freshness, RR snapshot and IO deadlines.

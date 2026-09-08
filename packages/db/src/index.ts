@@ -55,3 +55,5 @@ export * from "./platform-health-repository.js";
 // be: bounded canonical account-day facts for the pivot window reader.
 export * from "./platform-pivot-repository.js";
 export * from "./r014/task-bindings-repository.js";
+// be: internal rule definition and effective target-scope observation.
+export * from "./rule-definition-repository.js";

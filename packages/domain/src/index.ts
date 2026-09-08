@@ -75,3 +75,5 @@ export * from "./account-mute-policy.js";
 export * from "./operational-query-request.js";
 // be2-r014
 export * from "./r014/task-bindings-contract.js";
+// be: internal rule definition read boundary, not a public DTO.
+export * from "./rule-definition.js";
