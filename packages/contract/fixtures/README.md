@@ -240,3 +240,9 @@
 
 - `me/notifications.json` / `me/notifications-empty.json` — v1.7.8 G10 统一通知流（五 kind + 未读数 + cursor）
 - `auth/password-changed.json` / `auth/password-error.json` — v1.7.6 改密码成功/失败
+
+## D6 变更集试运行（2026-09-07）
+
+- `changesets/dry-run-ok.json` — 逐项 from/to/observed 三值 + ok/changed/unknown 判定；changed 与 unknown 挡 confirm 不挡 dry-run
+- `changesets/dry-run-source-unavailable.json` — 媒体只读通道未接入（本地与内测期的真实形态）
+

@@ -535,3 +535,18 @@
 #### I-002（P1，联调实测）：BFF 缺工作项列表路由
 arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会话/空间切换/tasks 全通）。**`GET /api/internal/work-items` 404**：后端 `GET /api/v1/work-items` 已暴露且直连可用，但 BFF 只有 `work-items/[id]/route.ts`，没有列表路由 → 工作台今日队列联调不了。请在 R-010a2 里补，照 `tasks/route.ts` 写法。
 顺带确认两条你实现对了：① 业务列表接口必须同时有服务令牌 + 会话 cookie，只带令牌 401 ✅；② 未同步过的数据返回 `partial` + `coverage.complete:false` + `dataAsOf:null`，不是假 `empty` ✅。
+
+#### D6 三点全部答复 + 一处你想岔了（arch 2026-09-07；P-128～P-133 已全部合 main `8b47a62`）
+
+**② 你不需要我给缝——`http-server.ts` 和 `data-api.ts` 本来就是你的文件。** 分工文档里「共享文件由 arch 开缝」那条是为 **be2** 定的（它不许改你的文件）。你是这两个文件的 owner，**直接往 if 链里加你的路由即可**，跟你已经做的 accounts/tasks/work-items 一样。`r014` 那个缝只服务 be2，你不要用、也不用绕开它——两边天然不撞。这条我补进分工文档，免得再误会。
+
+**① POST dry-run 的成功态 fixture 已给**（`afb3c0c`）：
+- `changesets/dry-run-ok.json`：逐项三值 `fromValue / toValue / observed` + 判定 `ok | changed | unknown`，外加 `summary` 与 `confirmAllowed/confirmBlockedReason`。
+- **语义冻结**：`changed`（媒体现值与起草时不同）和 `unknown`（读不回来）**都不阻断 dry-run 本身，但都挡住 confirm**；`unknown` 绝不当 `ok`——这正是你拒绝「用 stored fromValue 自我比较写成功」的那条原则，我把它写进 fixture 注释了。
+- `changesets/dry-run-source-unavailable.json`：媒体只读通道未接入时的形态。
+
+**③ 真实只读 preflight adapter：内测期不接，你按 SOURCE_UNAVAILABLE 返回是对的。** 理由：媒体只读通道要走 OS 的 kuaishou-cli，本地和内测都没有；**演示时我们就说「写回媒体那一段全关着」**，试运行走到读媒体这一步诚实报「源未接入」，比编一个成功更有说服力。等 OS 把只读 preflight 通道给出来再接。**别为演示造假成功。**
+
+**所以 D6 你现在就能收口**：把 `POST /changesets/:id/dry-run` 挂进 `http-server.ts`，成功态按 `dry-run-ok.json`，无 Provider 时 503 `SOURCE_UNAVAILABLE`。挂完告诉我，我立刻联调。
+
+**顺带**：你报的 `search-contract.test.ts` 红，be2 已在自己分支跟上 v1.9 修好并合 main，现在 main 是全绿的（domain 1035 / db 918 / worker 1473 / gateway 36 / web 176）。
