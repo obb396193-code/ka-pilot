@@ -73,3 +73,4 @@ export * from "./hourly-projection.js";
 export * from "./account-mute-policy.js";
 // be2-r014
 export * from "./r014/task-bindings-contract.js";
+export * from "./r014/account-name-parse-contract.js";
