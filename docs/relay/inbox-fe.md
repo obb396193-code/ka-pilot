@@ -431,3 +431,8 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
   4. **批量确认**：解析成功的一键全过。
 - fixture 我随后补（`admin/naming-rules.json`、`admin/account-names.json` 五种状态各一例、`admin/naming-rules-test.json` 干跑结果）。**先按契约 api.md「v1.8 追加」把壳和交互做出来**，老板说了页面出来后不对再改。
 - 另外：账户池、账户详情、数据分析里这些维度（流量版位/出价模式/设备/出价目标/RTA/运营方/优化师/专项/承接/增量扣量）以后带 `source` 字段（nickname / platform / manual / qihang），显个小角标让人知道这个值哪来的。
+
+
+### 契约 v1.9：搜索结果的中文由你组装（arch 2026-09-07）
+- `system/search` 的 `items[]` **去掉了 `subtitle`**，改成结构化 `meta:{status?, stage?, taskName?, accountCount?, severity?, kind?, durationMs?, analysisVersion?}`，**中文副标题由前端组装**。这跟你刚做完的「去黑话」是一条线：后端只出机器值，文案归前端。fixture 已更新（`fb590a1`），`git merge main` 后按 meta 拼即可。
+- work_item 的 href 已正名为 `/work-items/<id>`（v1.7.6），fixture 同步改了。你那边如果还有指向 `/?tab=today&item=` 的链接，一并改掉（F8-4）。
