@@ -79,3 +79,5 @@ export * from "./r014/task-bindings-contract.js";
 export * from "./rule-definition.js";
 // be: explicit daily windows and actual canonical evidence interpretation.
 export * from "./rule-daily-evidence.js";
+// be: public Agent model catalog; no credential or runtime-readiness projection.
+export * from "./agent-model-catalog.js";

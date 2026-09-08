@@ -17,17 +17,17 @@ export function byteLimit(value: number | undefined, maximum: number): number {
   if (!Number.isSafeInteger(value) || value <= 0) throw new R010HttpError(500, "INTERNAL_ERROR");
   return Math.min(value, maximum);
 }
-function sendJson(response: ServerResponse, status: number, value: unknown, requestId: string): void {
+function sendJson(response: ServerResponse, status: number, value: unknown, requestId: string, allow = "POST"): void {
   const body = JSON.stringify(value);
   response.writeHead(status, {
     "content-type": "application/json; charset=utf-8", "content-length": Buffer.byteLength(body),
     "cache-control": "no-store", "x-content-type-options": "nosniff", "x-request-id": requestId,
-    ...(status === 405 ? { allow: "POST" } : {}), ...(status === 413 ? { connection: "close" } : {}),
+    ...(status === 405 ? { allow } : {}), ...(status === 413 ? { connection: "close" } : {}),
   });
   response.end(body);
 }
-export function sendFailure(response: ServerResponse, status: number, code: R010ErrorCode, requestId: string): void {
-  sendJson(response, status, { ok: false, error: { code, message: messages[code], retryable: false, requestId } }, requestId);
+export function sendFailure(response: ServerResponse, status: number, code: R010ErrorCode, requestId: string, allow = "POST"): void {
+  sendJson(response, status, { ok: false, error: { code, message: messages[code], retryable: false, requestId } }, requestId, allow);
 }
 export function sendData(response: ServerResponse, data: unknown, requestId: string, maxBytes: number): void {
   const body = { ok: true, data, meta: { requestId } };

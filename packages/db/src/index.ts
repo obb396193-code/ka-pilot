@@ -59,3 +59,5 @@ export * from "./r014/task-bindings-repository.js";
 export * from "./rule-definition-repository.js";
 // be: same-snapshot rule/metric observation, not a public trigger decision.
 export * from "./rule-evidence-repository.js";
+// be: authenticated read-only global model capability catalog.
+export * from "./agent-model-catalog-repository.js";

@@ -65,6 +65,8 @@ import type { ChangeSetDryRunService } from "../changesets/dry-run-service.js";
 import { createChangeSetDryRunRoute } from "../r010/changeset-dry-run-route.js";
 import { createAccountMuteRoutes } from "../r010/account-mute-routes.js";
 import type { AccountMuteService } from "../work-items/account-mute-service.js";
+import type { AgentModelCatalogService } from "../agent/model-catalog-service.js";
+import { createAgentModelRoute } from "../r010/agent-model-routes.js";
 
 
 // arch 开的缝：R-014 路由由 be2 在 src/r014/routes.ts 注册
@@ -85,6 +87,7 @@ export interface DataApiServerOptions {
   sessionAuthService?: SessionAuthService;
   dryRunService?: Pick<ChangeSetDryRunService, "run">;
   accountMuteService?: Pick<AccountMuteService, "mute" | "ignoreAndMute">;
+  agentModelCatalogService?: Pick<AgentModelCatalogService, "list">;
 }
 
 export type { ServerDataSourcePolicy as DataQueryAccessPolicy } from "./data-source-routing.js";
@@ -293,6 +296,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
   const reconcileHandler = createDataQueryHttpHandler(options.service, "admin_reconcile");
   const dryRunRoute = createChangeSetDryRunRoute(options.dryRunService);
   const accountMuteRoutes = createAccountMuteRoutes(options.accountMuteService);
+  const agentModelRoute = createAgentModelRoute(options.agentModelCatalogService);
 
   return createServer(async (request, response) => {
     const requestId = resolveRequestId(header(request, REQUEST_ID_HEADER));
@@ -384,6 +388,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       const isWorkItemListRoute = url.pathname === WORK_ITEM_LIST_HTTP_PATH;
       const isDryRunRoute = dryRunRoute.matches(url.pathname);
       const accountMuteRoute = accountMuteRoutes.find(route => route.matches(url.pathname));
+      const isAgentModelRoute = agentModelRoute.matches(url.pathname);
       // arch 开的缝：R-014 由 be2 在 src/r014/routes.ts 注册，壳层不认识具体路径，只问一句归不归它。
       const r014Route = findR014Route(url.pathname);
       if (
@@ -396,6 +401,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         !isWorkItemListRoute &&
         !isDryRunRoute &&
         accountMuteRoute === undefined &&
+        !isAgentModelRoute &&
         r014Route === null
       ) {
         sendJson(
@@ -436,7 +442,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           sendJson(response, taskListHttpStatus(result), result, requestId);
           return;
         }
-        if (resolvedDetailRoute !== null || r014Route !== null || isDryRunRoute || accountMuteRoute !== undefined) {
+        if (resolvedDetailRoute !== null || r014Route !== null || isDryRunRoute || accountMuteRoute !== undefined || isAgentModelRoute) {
           sendJson(
             response,
             401,
@@ -452,6 +458,10 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           requestId,
         });
         sendJson(response, result.status, result.body, requestId);
+        return;
+      }
+      if (isAgentModelRoute) {
+        await agentModelRoute.handle({ request, response, url, auth: authentication.auth, requestId, maxResponseBytes });
         return;
       }
       if (accountMuteRoute !== undefined) {
