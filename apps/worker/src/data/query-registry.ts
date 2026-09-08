@@ -40,6 +40,7 @@ export interface NormalizedQueryParams {
   accountIds?: string[];
   accountId?: string;
   taskId?: string;
+  taskIds?: string[];
   page?: number;
   pageSize?: number;
   preset?: z.infer<typeof queryWindowSchema>["preset"];
@@ -193,7 +194,9 @@ function normalizedSchema<Shape extends z.ZodRawShape>(shape: Shape): z.ZodType<
 
 const pivotSchema = z.object({ dimA: dimensionTypeSchema, dimB: dimensionTypeSchema,
   window_from: dateInputSchema, window_to: dateInputSchema, media: mediaSchema,
-}).strict().transform(({ window_from, window_to, ...input }) => ({ ...input, dateFrom: window_from, dateTo: window_to }));
+  taskIds: z.array(taskQueryIdSchema).max(1000).refine(ids => new Set(ids).size === ids.length, "Duplicate task IDs").optional(),
+}).strict().transform(({ window_from, window_to, taskIds, ...input }) => ({ ...input, dateFrom: window_from, dateTo: window_to,
+  ...(taskIds === undefined ? {} : { taskIds }) }));
 const intervalSchema = normalizedSchema(commonDateFields);
 const windowFields = { ...commonDateFields, taskId: taskQueryIdSchema.optional(), preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
 const summarySchema = normalizedSchema({ ...windowFields, compare: z.enum(["dod", "wow"]).optional() });
