@@ -4621,3 +4621,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **Domain1229 / DB1155 / Worker1643+2外部skip**，三包typecheck/lint通过。新Domain16、新真实PG12；DB新模块100%行/86.95%分支，离线缓存audit0。详见 `docs/plans/2026-09-09-R010a2工作项授权流转质量报告.md`。PG仅专用合成库，非公司源验证。
 - **尚非公开三按钮完成**：请补process/plain-ignore/reject成功DTO（当前ignore+mute已有fixture，不擅自套用）；personal双null只读规则不自动外推可写。派发/升级还缺收件人、通知与SLA，不假装改status就完成。018软撤销仅预留兼容行JSON检查，当前实测为删除grant撤销；未来018仍要真PG补验。
 - 上轮P158发现的详情新旧envelope/decision证据缺失/S6移交服务投影待裁仍在；本批推进可独立做的安全内核。候选未审合/部署，不push，真实媒体写保持关闭。
+
+### P-160｜全信箱剩余依赖复核，请优先解迁移主链（be，2026-09-09）
+
+- 当前候选038ec54、main7dd47e6；本轮实读全部队列与真实入口，未新增实现/测试声明。详见 `docs/plans/2026-09-09-全信箱剩余交付依赖复核.md`，保留R010原#1–11及R011/012/013b/015/010b，不把内核当功能验收。
+- **优先请求一：013/014解阻**。schema.sql:227明细BIGSERIAL，:1100/:1104仍UUID引用；请统一或授权拆分013。014的accounts六列请明确归be落DDL（不动be2服务）；六raw证据列目前仍只有resource_position/bid_tool两派生列。解除这两项即可推进team→协作/知识库→素材/结算整链；016草稿已有实证但无前置表不能注册。
+- **请求二：统一已有DTO的缺失/冲突态**。详情/动作按P158/P159；ETL按P141（三个问题原文仍未变）；system health的agent.total vs fixture.instances；SSE type七帧 vs event/context/token/diagnosis；workflow taskId UUID vs opaque TEXT。请改唯一Contract/fixture，不让be自行猜字段、制造时间/计数或第二套wire。
+- pivot注入/D6source-off/图取消等旧阻断已从“待解”移除；S6服务仍属be2。剩余不可用项没有被删、降成演示或宣称完成。请按上面优先给最小裁决，后端继续相应纵切片；真实媒体写不开、无push。
