@@ -18,6 +18,49 @@ function setup(evaluator: RuleEvaluator = builtInRuleEvaluator) {
   return { source, provider, workItems, alerts, handler: new RuleScanHandler({ candidateProvider: provider, evaluator, workItems, alerts }) };
 }
 describe("rule scan plugin boundaries", () => {
+  it("awaits an async evaluator before persistence and protects its private scope", async () => {
+    let release!: () => void;
+    let signalStarted!: () => void;
+    const gate = new Promise<void>(resolve => { release = resolve; });
+    const started = new Promise<void>(resolve => { signalStarted = resolve; });
+    const s = setup({ async evaluate(value) {
+      const result = builtInRuleEvaluator.evaluate(value);
+      value.workspaceId = "foreign"; value.media = "TENCENT"; value.accountId = "other";
+      signalStarted(); await gate; return result;
+    } });
+    // Attach both outcomes immediately so the pre-fix rejection is not unhandled.
+    const running = s.handler.run(input).then(value => ({ value }), error => ({ error }));
+    await started;
+    expect(s.workItems.createOrMerge).not.toHaveBeenCalled(); expect(s.alerts.enqueue).not.toHaveBeenCalled();
+    release(); const output = await running;
+    expect(output).toHaveProperty("value.created", 1);
+    expect(s.workItems.createOrMerge).toHaveBeenCalledWith(expect.objectContaining({ workspaceId: input.workspaceId, media: "KUAISHOU", accountId: "account-1" }));
+  });
+  it("async insufficient evidence does not create or clear work items", async () => {
+    const s = setup({ async evaluate(value) { return { ...builtInRuleEvaluator.evaluate(value), outcome: "insufficient_data" }; } });
+    expect(await s.handler.run(input)).toMatchObject({ insufficient: 1, created: 0, coverage: { checked: 0, pending: 0, undeterminable: 1 } });
+    expect(s.workItems.createOrMerge).not.toHaveBeenCalled(); expect(s.alerts.enqueue).not.toHaveBeenCalled();
+  });
+  it("async invalid output is validated before sinks", async () => {
+    const s = setup({ async evaluate(value) { return { ...builtInRuleEvaluator.evaluate(value), severity: "P9" } as unknown as RuleEvaluation; } });
+    await expect(s.handler.run(input)).rejects.toThrow(/Rule candidate processing failed/);
+    expect(s.workItems.createOrMerge).not.toHaveBeenCalled(); expect(s.alerts.enqueue).not.toHaveBeenCalled();
+  });
+  it("async rejection is sanitized while healthy candidates can still proceed", async () => {
+    const s = setup({ async evaluate(value) {
+      await Promise.resolve();
+      if (value.candidateId === "synthetic") throw new Error("synthetic token and SQL body");
+      return builtInRuleEvaluator.evaluate(value);
+    } });
+    s.source.push({ ...candidate(), candidateId: "healthy", accountId: "account-2" });
+    expect(await s.handler.run(input)).toMatchObject({ created: 1, failures: [{ candidateId: "synthetic", message: "Rule candidate processing failed" }] });
+  });
+  it("pending readiness does not invoke an async evaluator", async () => {
+    const evaluate = vi.fn(async (value: RuleCandidate) => builtInRuleEvaluator.evaluate(value));
+    const s = setup({ evaluate }); s.source[0]!.readiness.initialFullDone = false;
+    expect(await s.handler.run(input)).toMatchObject({ created: 0, coverage: { checked: 0, pending: 1, undeterminable: 0 } });
+    expect(evaluate).not.toHaveBeenCalled();
+  });
   it("sanitizes source error before it can become a job error", async () => {
     const s = setup(); s.provider.listCandidates.mockRejectedValueOnce(new Error("SELECT secret FROM synthetic upstream body"));
     await expect(s.handler.run(input)).rejects.toThrow(/^Rule candidate source unavailable$/);

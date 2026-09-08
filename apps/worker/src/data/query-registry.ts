@@ -6,6 +6,8 @@ import {
   queryWindowSchema,
   comparisonWindow,
   dimensionTypeSchema,
+  accountHourlyParamsSchema,
+  accountGapParamsSchema,
   type AuthorityUseCase,
   type DataQueryId,
   type DataViewMode,
@@ -31,6 +33,9 @@ export interface QueryAuthorityPolicy {
 }
 
 export interface NormalizedQueryParams {
+  groupBy?: "account" | "task" | "biz";
+  hhFrom?: number;
+  hhTo?: number;
   dimA?: z.infer<typeof dimensionTypeSchema>;
   dimB?: z.infer<typeof dimensionTypeSchema>;
   dimensionType?: z.infer<typeof dimensionTypeSchema>;
@@ -40,6 +45,7 @@ export interface NormalizedQueryParams {
   accountIds?: string[];
   accountId?: string;
   taskId?: string;
+  taskIds?: string[];
   page?: number;
   pageSize?: number;
   preset?: z.infer<typeof queryWindowSchema>["preset"];
@@ -193,7 +199,9 @@ function normalizedSchema<Shape extends z.ZodRawShape>(shape: Shape): z.ZodType<
 
 const pivotSchema = z.object({ dimA: dimensionTypeSchema, dimB: dimensionTypeSchema,
   window_from: dateInputSchema, window_to: dateInputSchema, media: mediaSchema,
-}).strict().transform(({ window_from, window_to, ...input }) => ({ ...input, dateFrom: window_from, dateTo: window_to }));
+  taskIds: z.array(taskQueryIdSchema).max(1000).refine(ids => new Set(ids).size === ids.length, "Duplicate task IDs").optional(),
+}).strict().transform(({ window_from, window_to, taskIds, ...input }) => ({ ...input, dateFrom: window_from, dateTo: window_to,
+  ...(taskIds === undefined ? {} : { taskIds }) }));
 const intervalSchema = normalizedSchema(commonDateFields);
 const windowFields = { ...commonDateFields, taskId: taskQueryIdSchema.optional(), preset: z.enum(["today", "yesterday", "last_7d", "month_to_date", "last_month", "task_period", "custom"]).optional() };
 const summarySchema = normalizedSchema({ ...windowFields, compare: z.enum(["dod", "wow"]).optional() });
@@ -317,6 +325,21 @@ function reconciliationSql(params: NormalizedQueryParams, accounts: SqlAccountSc
 }
 
 const DEFINITION_INPUT: QueryDefinition[] = [
+  {
+    queryId: "account.gap", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
+    accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-gap-v1",
+    metricVersion: "account-gap-v1", authorityPolicy: authority("cross_media_operations", "platform"),
+    paramsSchema: accountGapParamsSchema.transform(({ date_from, date_to, media, accountIds, groupBy }) => ({
+      dateFrom: date_from, dateTo: date_to, media, groupBy, ...(accountIds === undefined ? {} : { accountIds }),
+    })),
+  },
+  {
+    queryId: "account.hourly", supportedViews: ["platform"], maxDateSpanDays: 1, maxRows: 10000,
+    accountScope: "optional_many", outputShape: "account_rows", queryTemplateVersion: "account-hourly-v1",
+    metricVersion: "account-hourly-v1", authorityPolicy: authority("hourly_pacing", "platform"),
+    paramsSchema: accountHourlyParamsSchema.transform(({ date, media, accountIds, hhFrom, hhTo }) => ({ dateFrom: date, dateTo: date, media,
+      ...(accountIds === undefined ? {} : { accountIds }), ...(hhFrom === undefined ? {} : { hhFrom }), ...(hhTo === undefined ? {} : { hhTo }) })),
+  },
   {
     queryId: "account.pivot2", supportedViews: ["platform"], maxDateSpanDays: 31, maxRows: 10000,
     accountScope: "optional_many", outputShape: "aggregate", queryTemplateVersion: "account-pivot-window-v1",

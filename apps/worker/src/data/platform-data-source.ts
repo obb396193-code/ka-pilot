@@ -214,6 +214,7 @@ export class PlatformDataSource {
     if (!this.pivotQuery) throw new DataSourceRoutingError("SOURCE_UNAVAILABLE", "Pivot reader is not configured");
     try {
       const result = await this.pivotQuery.query({ auth, dimA: resolved.params.dimA, dimB: resolved.params.dimB,
+        ...(resolved.params.taskIds === undefined ? {} : { taskIds: resolved.params.taskIds }),
         window: { from: resolved.params.dateFrom, to: resolved.params.dateTo, preset: resolved.params.preset ?? "custom" } });
       const observation = result.observation;
       const complete = observation.expectedAccountDays === observation.observedAccountDays && observation.missingComputedAt === 0;

@@ -4,10 +4,14 @@ import { PlatformPivotRepository, PlatformPivotContractError } from "@ka/db";
 import {
   aggregatePivotWindow, approvedWorkspaceAuthContextSchema, queryWindowSchema, dimensionTypeSchema,
   canonicalMetricSetSchema, dailyAssessmentInputSchema, calendarDateSchema,
+  aggregateWindowMetrics, computeWindowAssessment, pivotWindowRowsSchema,
 } from "@ka/domain";
+import { taskQueryIdSchema } from "./query-registry.js";
 
 const inputSchema = z.object({ auth: approvedWorkspaceAuthContextSchema, window: queryWindowSchema,
-  dimA: dimensionTypeSchema, dimB: dimensionTypeSchema }).strict();
+  dimA: dimensionTypeSchema, dimB: dimensionTypeSchema,
+  taskIds: z.array(taskQueryIdSchema).max(1000).refine(ids => new Set(ids).size === ids.length, "Duplicate task IDs").optional(),
+}).strict();
 const dateTime = z.string().datetime({ offset: true }).refine(value => calendarDateSchema.safeParse(value.slice(0, 10)).success);
 const memberSchema = z.object({ workspaceId: z.string().uuid(), media: z.string().regex(/^[A-Z0-9_]{1,32}$/),
   accountId: z.string().regex(/^[A-Za-z0-9_-]{1,128}$/), observed: z.boolean(),
@@ -93,9 +97,25 @@ export class PlatformPivotQuery {
         })) })),
       });
     } catch { return invalid(); }
-    return { ...aggregated, window: input.window, observation,
-      cellCoverage: { cells: cells.size, withData: [...cells.values()].filter(cell => cell.members.some(member => member.observed)).length,
-        undeterminable: aggregated.rows.filter(row => row.assessment.onTarget === null).length } };
+    // Validate the entire source partition above BEFORE filtering. Otherwise a
+    // filter could conceal corrupt/unauthorized rows. Keep observation as source
+    // coverage; cellCoverage and totals below describe the selected account-days.
+    const selectedTasks = new Set(input.taskIds ?? []);
+    const selectedCells = [...cells.values()].map(cell => ({ ...cell,
+      members: selectedTasks.size === 0 ? cell.members : cell.members.filter(member => member.taskId !== null && selectedTasks.has(member.taskId)),
+    })).filter(cell => cell.members.length > 0);
+    let projection: ReturnType<typeof pivotWindowRowsSchema.parse>;
+    try { projection = selectedTasks.size === 0 ? aggregated : pivotWindowRowsSchema.parse({
+      queryId: aggregated.queryId, rowSchemaVersion: aggregated.rowSchemaVersion, dimA: aggregated.dimA, dimB: aggregated.dimB,
+      rows: selectedCells.map(cell => {
+        const assessment = computeWindowAssessment(cell.members.map(member => member.assessment));
+        return { a: cell.a, b: cell.b, metrics: { ...aggregateWindowMetrics(cell.members.map(member => member.metrics)), costSpace: assessment.costSpace },
+          assessment: assessment.assessment };
+      }),
+    }); } catch { return invalid(); }
+    return { ...projection, warnings: aggregated.warnings, window: input.window, observation,
+      cellCoverage: { cells: selectedCells.length, withData: selectedCells.filter(cell => cell.members.some(member => member.observed)).length,
+        undeterminable: projection.rows.filter(row => row.assessment.onTarget === null).length } };
   }
 }
 export function createPlatformPivotQuery(pool: Pick<Pool, "connect">): PlatformPivotQuery {

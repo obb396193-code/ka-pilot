@@ -38,7 +38,7 @@ export interface RuleCandidateProvider {
 }
 
 export interface RuleEvaluator {
-  evaluate(candidate: RuleCandidate): RuleEvaluation;
+  evaluate(candidate: RuleCandidate): RuleEvaluation | Promise<RuleEvaluation>;
 }
 
 export interface WorkItemAlertInput {

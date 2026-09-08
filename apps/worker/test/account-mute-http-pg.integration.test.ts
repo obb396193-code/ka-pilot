@@ -1,12 +1,13 @@
-// Synthetic local DB/HTTP adapter integration. Not production Session composition.
+// Actual HTTP shell and DB session/repository, synthetic local data, no media.
 import { randomUUID } from "node:crypto";
-import { createServer, type Server } from "node:http";
+import type { Server } from "node:http";
 import { Pool } from "pg";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { AccountMuteRepository, runMigrations } from "@ka/db";
+import { AccountMuteRepository, AuthSessionRepository, runMigrations } from "@ka/db";
 import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 import { AccountMuteService } from "../src/work-items/account-mute-service.js";
-import { createAccountMuteRoutes } from "../src/r010/account-mute-routes.js";
+import { createDataApiServer, type DataApiServerOptions } from "../src/data/http-server.js";
+import { SessionAuthService } from "../src/auth/session-auth-service.js";
 
 const databaseUrl = process.env.TEST_DATABASE_URL;
 if (databaseUrl === undefined) throw new Error("Explicit synthetic TEST_DATABASE_URL required");
@@ -18,15 +19,16 @@ describe("R010 mute HTTP with real repository/transaction", () => {
   const pool = new Pool({ connectionString: databaseUrl, max: 3, connectionTimeoutMillis: 3000 });
   const workspaces: string[] = [], identities: string[] = [];
   const repo = new AccountMuteRepository(pool);
-  const routes = createAccountMuteRoutes(new AccountMuteService(repo, () => new Date("2026-09-08T03:00:00+08:00")));
+  const sessionAuth = new SessionAuthService(new AuthSessionRepository(pool));
+  const internalToken = "synthetic-internal-mute-pg-token-long-enough";
+  let sessionToken: string;
   let auth: ApprovedWorkspaceAuthContext, server: Server, origin: string, workItemId: string;
   beforeAll(async () => {
     await runMigrations({ databaseUrl });
-    server = createServer((request, response) => {
-      const url = new URL(request.url ?? "/", "http://synthetic.invalid"), route = routes.find(r => r.matches(url.pathname));
-      if (!route) { response.writeHead(404); response.end(); return; }
-      void route.handle({ request, response, url, auth: structuredClone(auth), requestId: "pg-http-request", maxResponseBytes: 16 * 1024 * 1024 });
-    });
+    const unrelated = new Proxy({}, { get() { throw new Error("Unexpected unrelated service"); } });
+    server = createDataApiServer({ service: unrelated, detailService: unrelated, accountListService: unrelated,
+      taskListService: unrelated, workItemListService: unrelated, internalToken, sessionAuthService: sessionAuth,
+      accountMuteService: new AccountMuteService(repo, () => new Date("2026-09-08T03:00:00+08:00")) } as unknown as DataApiServerOptions);
     await new Promise<void>((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
     const address = server.address(); if (address === null || typeof address === "string") throw new Error("Missing synthetic listener");
     origin = `http://127.0.0.1:${address.port}`;
@@ -40,20 +42,23 @@ describe("R010 mute HTTP with real repository/transaction", () => {
     await pool.query("INSERT INTO accounts(workspace_id,media,account_id) VALUES($1,'KUAISHOU','synthetic-account'),($1,'TENCENT','synthetic-account')", [workspaceId]);
     await pool.query("INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id) VALUES($1,$2,'KUAISHOU','synthetic-account')", [workspaceId, identityId]);
     auth = { workspaceId, userId, workspaceKind: "personal", role: "optimizer", scope: { kind: "explicit_accounts", accounts: [{ media: "KUAISHOU", accountId: "synthetic-account", accessLevel: "read" }] } };
+    sessionToken = randomUUID() + randomUUID();
+    expect((await sessionAuth.issueForIdentity({ identityId, token: sessionToken, expiresAt: new Date(Date.now() + 60_000) })).status).toBe("approved");
     workItemId = randomUUID();
     await pool.query("INSERT INTO work_items(id,workspace_id,media,account_id,type,title,status) VALUES($1,$2,'KUAISHOU','synthetic-account','diagnosis','synthetic','open')", [workItemId, workspaceId]);
   });
   afterAll(async () => {
     if (server?.listening) { server.closeAllConnections(); await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())); }
     try {
+      await pool.query("DELETE FROM auth_sessions WHERE identity_id=ANY($1::uuid[])", [identities]);
       for (const table of ["account_mutes", "work_items", "account_access_grants", "workspace_memberships", "accounts", "users"] as const)
         await pool.query(`DELETE FROM ${table} WHERE workspace_id=ANY($1::uuid[])`, [workspaces]);
       await pool.query("DELETE FROM workspaces WHERE id=ANY($1::uuid[])", [workspaces]);
       await pool.query("DELETE FROM auth_identities WHERE id=ANY($1::uuid[])", [identities]);
     } finally { await pool.end(); }
   });
-  async function post(path: string, body: unknown) {
-    const response = await fetch(`${origin}/api/v1${path}`, { method: "POST", headers: { "content-type": "application/json", "x-ka-account-scope": "*", "x-ka-user-id": "foreign" }, body: JSON.stringify(body) });
+  async function post(path: string, body: unknown, headers: Record<string, string> = { authorization: `Bearer ${internalToken}`, cookie: `ka_session=${sessionToken}` }) {
+    const response = await fetch(`${origin}/api/v1${path}`, { method: "POST", headers: { ...headers, "x-request-id": "pg-http-request", "content-type": "application/json", "x-ka-account-scope": "*", "x-ka-user-id": "foreign" }, body: JSON.stringify(body) });
     return { status: response.status, body: await response.json() };
   }
   it("writes only approved media tuple and returns the server day-cut deadline", async () => {
@@ -71,11 +76,18 @@ describe("R010 mute HTTP with real repository/transaction", () => {
     const replay = await post(`/work-items/${workItemId}/ignore`, { mute_days: 3 });
     expect(replay.status).toBe(409); expect(replay.body).toMatchObject({ error: { code: "INVALID_STATE", requestId: "pg-http-request" } });
   });
-  it("stale approved context after grant revocation cannot mutate through HTTP", async () => {
+  it("grant revocation cannot mutate through fresh session resolution", async () => {
     await pool.query("DELETE FROM account_access_grants WHERE workspace_id=$1", [auth.workspaceId]);
     expect((await post(`/work-items/${workItemId}/ignore`, { mute_days: 1 })).status).toBe(403);
     expect((await post("/accounts/KUAISHOU/synthetic-account/mute", { days: 1, reason_chip: "synthetic" })).status).toBe(403);
     expect((await pool.query("SELECT status FROM work_items WHERE id=$1", [workItemId])).rows).toEqual([{ status: "open" }]);
+    expect((await pool.query("SELECT media FROM account_mutes WHERE workspace_id=$1", [auth.workspaceId])).rows).toEqual([]);
+  });
+  it("both bearer and active session are required, including after logout", async () => {
+    for (const headers of [{}, { authorization: `Bearer ${internalToken}` }, { cookie: `ka_session=${sessionToken}` }])
+      expect((await post("/accounts/KUAISHOU/synthetic-account/mute", { days: 1, reason_chip: "synthetic" }, headers)).status).toBe(401);
+    await sessionAuth.logout(sessionToken);
+    expect((await post(`/work-items/${workItemId}/ignore`, { mute_days: 1 })).status).toBe(401);
     expect((await pool.query("SELECT media FROM account_mutes WHERE workspace_id=$1", [auth.workspaceId])).rows).toEqual([]);
   });
 });

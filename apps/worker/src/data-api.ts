@@ -1,5 +1,9 @@
 import {
   AccountListRepository,
+  AccountMuteRepository,
+  AgentModelCatalogRepository,
+  AdminCalendarRepository,
+  AdminMembersRepository,
   ChangeSetRepository,
   AuthSessionRepository,
   createPool,
@@ -18,6 +22,7 @@ import { DisabledKaDataSource } from "./data/disabled-ka-data-source.js";
 import { PlatformDataSource } from "./data/platform-data-source.js";
 import { createPlatformWindowQuery } from "./data/platform-window-query.js";
 import { createPlatformDimensionQuery } from "./data/platform-dimension-query.js";
+import { createPlatformPivotQuery } from "./data/platform-pivot-query.js";
 import { createDataQueryRegistry } from "./data/query-registry.js";
 import { DataQueryService } from "./data/query-service.js";
 import { ReadDetailService } from "./data/read-detail-service.js";
@@ -26,6 +31,11 @@ import { InternalTestLoginProvider } from "./auth/internal-test-login-provider.j
 import { SessionAuthService } from "./auth/session-auth-service.js";
 import { SessionHttpService } from "./auth/session-http.js";
 import { WorkItemListService } from "./work-items/work-item-list-service.js";
+import { ChangeSetDryRunService } from "./changesets/dry-run-service.js";
+import { AccountMuteService } from "./work-items/account-mute-service.js";
+import { AgentModelCatalogService } from "./agent/model-catalog-service.js";
+import { AdminCalendarService } from "./admin/calendar-service.js";
+import { AdminMembersService } from "./admin/members-service.js";
 // be2-r014：把 R-014 的路由注册进 arch 开的缝（routes.ts）。壳层只认这个数组，不认识具体路径。
 import { createAccountRoutes } from "./r014/account-routes.js";
 import { createMeRoutes } from "./r014/me-routes.js";
@@ -50,7 +60,7 @@ async function main(): Promise<void> {
       ? createKaDataClientFromEnv(process.env)
       : new DisabledKaDataSource(),
     platform: new PlatformDataSource(new SemanticQueryRepository(pool), (read) =>
-      withSemanticReadSnapshot(pool, (connection) => read(new SemanticQueryRepository(connection))), createPlatformWindowQuery(pool), createPlatformDimensionQuery(pool)),
+      withSemanticReadSnapshot(pool, (connection) => read(new SemanticQueryRepository(connection))), createPlatformWindowQuery(pool), createPlatformDimensionQuery(pool), createPlatformPivotQuery(pool)),
     sourcePolicy: {
       diagnosticEnabled: config.dataDiagnosticEnabled,
       kaDataEnabled: config.kaDataEnabled,
@@ -60,6 +70,12 @@ async function main(): Promise<void> {
   });
   const server = createDataApiServer({
     service,
+    // be: pilot source-off preflight. Never inject a mock/stored-value provider.
+    dryRunService: new ChangeSetDryRunService({ store: new ChangeSetRepository(pool) }),
+    accountMuteService: new AccountMuteService(new AccountMuteRepository(pool)),
+    agentModelCatalogService: new AgentModelCatalogService(new AgentModelCatalogRepository(pool)),
+    adminCalendarService: new AdminCalendarService(new AdminCalendarRepository(pool)),
+    adminMembersService: new AdminMembersService(new AdminMembersRepository(pool)),
     detailService: new ReadDetailService({
       workItems: new WorkItemRepository(pool),
       changeSets: new ChangeSetRepository(pool),

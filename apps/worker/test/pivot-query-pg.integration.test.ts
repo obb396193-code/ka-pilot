@@ -53,9 +53,9 @@ describe("pivot HTTP factory to real PG / synthetic data only", () => {
       }
     } finally { await pool.end(); }
   });
-  async function query(day = "2026-09-01", headers: Record<string, string> = businessHeaders(token)) {
+  async function query(day = "2026-09-01", headers: Record<string, string> = businessHeaders(token), extra: Record<string, unknown> = {}) {
     const response = await fetch(`${base}/api/v1/query`, { method: "POST", headers: { ...headers, "x-request-id": "pivot-pg", "content-type": "application/json" },
-      body: JSON.stringify({ queryId: "account.pivot2", params: { dimA: "task", dimB: "account", window_from: day, window_to: day, media: "KUAISHOU" } }) });
+      body: JSON.stringify({ queryId: "account.pivot2", params: { dimA: "task", dimB: "account", window_from: day, window_to: day, media: "KUAISHOU", ...extra } }) });
     return { status: response.status, id: response.headers.get("x-request-id"), body: await response.json() };
   }
   it("scope keeps same-ID media/workspaces separate through actual factory, SQL and HTTP", async () => {
@@ -70,5 +70,19 @@ describe("pivot HTTP factory to real PG / synthetic data only", () => {
       lineage: { coverage: { complete: false, returnedObjects: 0 }, dataAsOf: null, partial: true, truncated: false },
       rows: [{ metrics: { cashCost: { value: null, availability: "missing" } } }], wholeResultTotal: { value: null, availability: "partial" } } },
       meta: { cellCoverage: { cells: 1, withData: 0, undeterminable: 1 } } } });
+  });
+  it("task filter applies to each actual business day before aggregating a cross-day account", async () => {
+    await pool.query("INSERT INTO tasks(workspace_id,task_id,task_name,biz_name) VALUES($1,'second','synthetic second','b')", [workspaceId]);
+    await pool.query("INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_date) VALUES($1,'second',30,'2026-09-02')", [workspaceId]);
+    await pool.query("UPDATE task_accounts SET valid_to='2026-09-01' WHERE workspace_id=$1 AND media='KUAISHOU'", [workspaceId]);
+    await pool.query("INSERT INTO task_accounts(workspace_id,media,account_id,task_id,valid_from) VALUES($1,'KUAISHOU','same','second','2026-09-02')", [workspaceId]);
+    await pool.query("INSERT INTO account_metrics_daily(workspace_id,media,account_id,ds,cash_cost,real_conversion,computed_at) VALUES($1,'KUAISHOU','same','2026-09-02',90,3,'2026-09-02T01:00:00Z')", [workspaceId]);
+    const extra = { window_to: "2026-09-02", dimA: "biz", dimB: "account" };
+    const first = await query("2026-09-01", businessHeaders(token), { ...extra, taskIds: ["t"] });
+    expect(first).toMatchObject({ status: 200, body: { ok: true, data: { source: { rows: [{ metrics: { cashCost: { value: 10 }, realConversion: { value: 1 }, ratios: { cashCpa: { value: 10 } }, costSpace: { value: 10 } } }] } } } });
+    const second = await query("2026-09-01", businessHeaders(token), { ...extra, taskIds: ["second"] });
+    expect(second).toMatchObject({ status: 200, body: { data: { source: { rows: [{ metrics: { cashCost: { value: 90 }, realConversion: { value: 3 }, costSpace: { value: 0 } } }] } } } });
+    const empty = await query("2026-09-01", businessHeaders(token), { ...extra, taskIds: ["foreign"] });
+    expect(empty).toMatchObject({ status: 200, body: { data: { source: { rows: [] } }, meta: { cellCoverage: { cells: 0 } } } });
   });
 });

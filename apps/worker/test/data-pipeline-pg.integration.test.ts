@@ -29,8 +29,16 @@ import type {
   WorkItemSink,
 } from "../src/rules/types.js";
 
-const databaseUrl =
-  process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
+const databaseUrl = process.env.TEST_DATABASE_URL;
+if (!databaseUrl) throw new Error("Explicit TEST_DATABASE_URL is required");
+const testDatabase = new URL(databaseUrl);
+if (
+  !["localhost", "127.0.0.1"].includes(testDatabase.hostname) ||
+  testDatabase.port !== "55432" ||
+  !/^\/ka_[a-z0-9_]*_test$/.test(testDatabase.pathname)
+) {
+  throw new Error("A dedicated local ka_*_test database on port 55432 is required");
+}
 
 function job(input: {
   id: string;
@@ -232,7 +240,7 @@ describe("real PostgreSQL data pipeline", () => {
       startRun: runs.startRun.bind(runs),
       appendRaw: raw.appendRaw.bind(raw),
       syncAccountMetadataAndRaw: raw.syncAccountMetadataAndRaw.bind(raw),
-      recordObservation: (runId: number, observation: object) =>
+      recordObservation: (runId: string, observation: object) =>
         runs.recordObservation(runId, { ...observation }),
       finishRun: runs.finishRun.bind(runs),
       failRun: runs.failRun.bind(runs),

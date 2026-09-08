@@ -272,7 +272,7 @@ async function runCanonical(pool: Pool, workspaceId: string, chunkSize: number) 
       upsertCanonicalBatch: metrics.upsertCanonicalBatch.bind(metrics),
     },
     runs: {
-      startRun: async () => 1,
+      startRun: async () => "1",
       finishRun: async () => undefined,
       failRun: async () => undefined,
     },
