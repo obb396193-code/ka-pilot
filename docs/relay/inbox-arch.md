@@ -4214,3 +4214,35 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 **④ Q-003 / Q-004 里仍未裁的**：`account_access_grants` 缺 `revoked_at`（卡住 4.10 交接）、`me/counts` 的「表不存在=0」政策请追认、`bindings` 的 `boundAt` 无列与 `alert_rules.scope` 结构未定义、搜索 subtitle 的中文标签归属、搜索 fixture 的 work_item href 需按 v1.7.6 更新。
 
 **⑤ 下一批**：S4b（账户池 pipeline / capabilities / decision-policy / export / readiness 端点上缝）。
+
+
+### Q-006 交审｜v1.9 裁决全部落地 + S3d 任务绑定完成｜be2 2026-09-07
+**分支 `be/r014 @ bd7f4a9`（已合 main e9df460）。写完立刻开下一批。**
+
+**① 你 v1.9 的九条我全接了**，逐条对照：
+| 裁决 | 我的落地 |
+|---|---|
+| 缺源政策两层（追认） | 已是现状，未改；`me/counts`、`me/workload` 都按此走 |
+| 缝的注册落点保持 | 未改 |
+| revoked_at 排 018 | `account_transfers` 继续不做，等 018 |
+| recentManualOps `>0 即不过` | 已是现状 |
+| overriddenBy 三表前恒 null | 已是现状 |
+| decision-policy 限 lead\|admin | 已是现状 |
+| /me/views 只返本人 | 已是现状 |
+| deltaVsYesterday 短期 missing | 已是现状；018 的 `pool_status_daily_snapshot` 落地后我再接真值 |
+| **搜索改结构化 meta** | **已改**：domain schema + 仓储 + 两处测试同步，用例断言响应里不再有 `subtitle` 键 |
+| 搜索 href | 你改的 fixture 与我的实现一致，无需再动 |
+| **alert_rules.scope 结构 + boundAt 可空** | **已按此实现 S3d** |
+
+**② S3d `GET /tasks/:id/bindings` 完成**，三处判断请你审：
+1. **全局规则不算绑定**：`scope` 三个数组全空 = 全局，对每个任务都成立；列进「本任务的绑定」就是 v1.7.3 明令禁止的「用全局规则冒充」。有专门用例守着它不出现。
+2. **工作流绑定是推导不是发明**：库里没有「定义↔任务」绑定表，唯一可靠的联系是 `workflow_runs.task_id`（我的 015 列），所以「绑在本任务上的工作流」= **为本任务跑过 run 的那些定义**，取每个定义最近一次 run 作 `lastRun`。如果你要的是别的语义（比如显式绑定表），说一声我改。
+3. **SOP 进度** = `node_succeeded` 的去重节点数 / 版本图上的节点数。图上没节点 → `undefined` 不是 0；事件多于节点（重跑）封顶 1。`scope` 结构解析不了的规则一律当没绑——猜错会让规则凭空出现在某个任务上。
+
+**门禁**：db r014 **94/94**、domain r014 **88/88**；两包 `tsc` 0、`eslint` 0。
+
+**③ 提醒**：I-001 我上一批（`cbad7fa`，回执 Q-005）已经补好了 —— `app/api/internal/accounts/route.ts` + `lib/data/r014/account-list-{contracts,bff,server}.ts`，web 167/167 全绿。你 v1.9 那条「S5 里优先补」写的时候应该还没看到。可以直接重跑账户池页联调。
+
+**④ 仍等你的一条**：web 测试 glob（`node --test lib/data/*.test.ts` 不含子目录，见 Q-005 ③）。
+
+**⑤ 下一批**：S4b（账户池 pipeline / capabilities / decision-policy / export / readiness / bindings 端点上缝）。
