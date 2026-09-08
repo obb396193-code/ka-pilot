@@ -15,7 +15,7 @@ import { LoadingBlock, StateFrame, StateSwitch, usePageState } from "@/component
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { fmtTime, isOk } from "@/lib/fixtures/contract"
-import { businessRefHref, businessRefLabel, flattenTree, kbKindLabel, kbSearchFixture } from "@/lib/fixtures/knowledge"
+import { businessRefHref, businessRefLabel, flattenTree, kbKindLabel, kbSearchFixture, businessRefName } from "@/lib/fixtures/knowledge"
 import { cn } from "@/lib/utils"
 import { kbActions, useKnowledgeStore } from "./knowledge-store"
 
@@ -65,14 +65,14 @@ export function KnowledgePage({ initialId = null }: { initialId?: string | null 
             </div>
             <div className={cn("overflow-auto px-4 py-4 @3xl/main:px-10", doc ? "" : "hidden @3xl/main:block")}>
               {!doc ? (
-                <div className="grid h-full place-items-center text-center text-sm text-muted-foreground"><div><p className="mb-1 font-medium text-foreground">选一篇文档</p><p>左侧树里点文档看正文；拖拽移动、右键新建。<br /><span className="text-xs">富文本编辑，输入 <code className="rounded bg-muted px-1">@</code> 插入双链。</span></p></div></div>
+                <div className="grid h-full place-items-center text-center text-sm text-muted-foreground"><div><p className="mb-1 font-medium text-foreground">{selId ? "没有这篇文档" : "选一篇文档"}</p><p>{selId ? "链接可能失效，或这篇不在你的授权范围内；左侧树里挑一篇。" : <>左侧树里点文档看正文；拖拽移动、右键新建。<br /><span className="text-xs">富文本编辑，输入 <code className="rounded bg-muted px-1">@</code> 插入双链。</span></>}</p></div></div>
               ) : (
                 <div className="mx-auto max-w-[760px] pb-16">
                   <Button variant="ghost" size="sm" className="-ml-2 mb-2 @3xl/main:hidden" onClick={() => setSelId(null)}><IconArrowLeft />文档树</Button>
                   <div className="mb-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground"><TypeChip>{kbKindLabel[doc.kind]}</TypeChip><span>修订 v{doc.revision}</span><span>·</span><span>{doc.updatedBy.name} {fmtTime(doc.updatedAt)}</span>{doc.readOnly || readOnly ? <StatusChip tone="muted">只读</StatusChip> : null}</div>
                   <h2 className="mb-3 text-[21px] font-bold tracking-tight">{doc.title}</h2>
                   <KnowledgeEditor key={doc.id} doc={doc} readOnly={readOnly || doc.readOnly} />
-                  {doc.businessRefs.length ? <div className="mt-7 border-t pt-4"><p className="mb-2 text-xs font-semibold">关联业务对象 <span className="font-normal text-muted-foreground tabular-nums">{doc.businessRefs.length}</span></p><div className="flex flex-wrap gap-2">{doc.businessRefs.map((ref) => <Link key={`${ref.type}-${ref.id}`} href={businessRefHref(ref)} className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs hover:bg-muted"><span className="text-muted-foreground">{businessRefLabel[ref.type] ?? ref.type}</span>{ref.id}</Link>)}</div><p className="mt-1 text-[11px] text-muted-foreground">关联的任务 / 账户详情里可反查到本文</p></div> : null}
+                  {doc.businessRefs.length ? <div className="mt-7 border-t pt-4"><p className="mb-2 text-xs font-semibold">关联业务对象 <span className="font-normal text-muted-foreground tabular-nums">{doc.businessRefs.length}</span></p><div className="flex flex-wrap gap-2">{doc.businessRefs.map((ref) => <Link key={`${ref.type}-${ref.id}`} href={businessRefHref(ref)} className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs hover:bg-muted"><span className="text-muted-foreground">{businessRefLabel[ref.type] ?? ref.type}</span>{businessRefName(ref)}</Link>)}</div><p className="mt-1 text-[11px] text-muted-foreground">关联的任务 / 账户详情里可反查到本文</p></div> : null}
                   {doc.documentLinks.length ? <div className="mt-7 border-t pt-4"><p className="mb-2 text-xs font-semibold">出链 <span className="font-normal text-muted-foreground tabular-nums">{doc.documentLinks.length}</span></p><div className="flex flex-col gap-0.5">{doc.documentLinks.map((link) => <button key={link.toId} type="button" onClick={() => setSelId(link.toId)} className="rounded-md px-2 py-1.5 text-left text-sm hover:bg-muted">→ {link.label}</button>)}</div></div> : null}
                   {backlinks.length ? <div className="mt-7 border-t pt-4"><p className="mb-2 text-xs font-semibold">反链 · 引用本文的文档 <span className="font-normal text-muted-foreground tabular-nums">{backlinks.length}</span></p><div className="flex flex-col gap-0.5">{backlinks.map((item) => <button key={item.id} type="button" onClick={() => setSelId(item.id)} className="rounded-md px-2 py-1.5 text-left text-sm hover:bg-muted">⇠ {item.title}</button>)}</div></div> : null}
                   {!doc.contentJson && !store.blocks[doc.id] ? <p className="mt-6 text-xs text-muted-foreground">该文档只有目录节点、没有正文（kb/document.json 只给了「新任务开户到基建 SOP」）；可直接编辑，保存落本地。</p> : null}
