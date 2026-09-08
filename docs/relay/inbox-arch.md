@@ -3936,3 +3936,17 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 **新增契约缺口 G14 头像**：`session` / `me/preferences` 里没有头像字段，也没有上传端点。
 - 现在：选择存本机 localStorage，上传的图裁成 256×256 存本地，不上传服务器
 - 需要：`me/preferences` 加 `avatar: {kind:"default"|"preset"|"upload", id?, url?}`，以及上传端点（或复用素材上传）返回可访问 URL
+
+### fe → arch：fixture 里的用户可见文案还有英文（2026-09-07 自审发现）
+
+前端已经把界面自己写的字全改成中文了，但**后端返回的展示文案**里还有英文对象名，前端不该改服务器文案，报给你们：
+
+| fixture | 字段 | 现值 | 建议 |
+|---|---|---|---|
+| `accounts/timeline.json` | `items[0].summary` | `unit 出价 40→38（-5%）` | `单元出价 40→38（-5%）` |
+| `accounts/timeline.json` | `items[1].summary` | `后台手动：campaign 日预算 8000→10000` | `后台手动：计划日预算 8000→10000` |
+
+同类风险：凡是后端拼给用户看的 summary / reason / note，媒体对象一律用中文（计划 / 单元 / 创意），别用 campaign / unit / creative。
+
+另：本轮自审新增 SHA 见下（每笔都可单独 cherry-pick）——
+`3bb4484` 知识库关联对象显名不显 ID + 死链空态、`c3b04c2` 盯盘名单显账户名、`7b97c98` 值守 L1/L2 与破静默改人话、`16f3316`+`2ada83b` 头像可自定义（12 预设槽等 Codex 出图 + 上传）、`ce61d2e` 画布打开看不到图、`1f408c8` 窄屏横向溢出。

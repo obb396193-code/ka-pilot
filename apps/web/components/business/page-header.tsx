@@ -19,5 +19,6 @@ export function PageHeader({ title, description, actions, isMock }: { title: Rea
 }
 
 export function PageBody({ children }: { children: ReactNode }) {
-  return <div className="flex flex-col gap-4 py-4 md:gap-5 md:py-5 [&_[data-slot=card]]:gap-4 [&_[data-slot=card]]:py-4 [&_[data-slot=card-content]]:px-4 [&_[data-slot=card-footer]]:px-4 [&_[data-slot=card-header]]:px-4 @3xl/main:[&_[data-slot=card]]:py-5 @3xl/main:[&_[data-slot=card-content]]:px-5 @3xl/main:[&_[data-slot=card-footer]]:px-5 @3xl/main:[&_[data-slot=card-header]]:px-5">{children}</div>
+  // 底部多留一段：右下角常驻 AI 悬浮球（48px + 24px 边距），不留白会盖住最后一张卡的数值
+  return <div className="flex flex-col gap-4 py-4 pb-24 md:gap-5 md:py-5 md:pb-24 [&_[data-slot=card]]:gap-4 [&_[data-slot=card]]:py-4 [&_[data-slot=card-content]]:px-4 [&_[data-slot=card-footer]]:px-4 [&_[data-slot=card-header]]:px-4 @3xl/main:[&_[data-slot=card]]:py-5 @3xl/main:[&_[data-slot=card-content]]:px-5 @3xl/main:[&_[data-slot=card-footer]]:px-5 @3xl/main:[&_[data-slot=card-header]]:px-5">{children}</div>
 }
