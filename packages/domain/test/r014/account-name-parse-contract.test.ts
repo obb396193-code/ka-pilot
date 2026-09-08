@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  extractTaskIds, namingRuleSchema, parseAccountName, type NamingRule,
+  applyOverride, computeConflicts, extractTaskIds, namingRuleSchema, parseAccountName,
+  statusWithConflicts, type NamingRule,
 } from "../../src/r014/account-name-parse-contract.js";
 
 /**
@@ -126,5 +127,63 @@ describe("v1.8 account nickname parsing (two-end anchored)", () => {
     expect(() => namingRuleSchema.parse({
       ...KUAISHOU, segments: [{ key: "k", label: "l", order: 0, source: "regex" }],
     })).toThrow(/must carry its pattern/);
+  });
+});
+
+describe("v1.8 conflicts and manual override", () => {
+  const parsed = parseAccountName(
+    "DAU-CVR有端(1803240580)-自投-张三-单出价-安卓-优选-订单-有R-常规-KK70-13177", KUAISHOU,
+  );
+
+  it("records a conflict only when both sides have a value and they disagree", () => {
+    const conflicts = computeConflicts(parsed, {
+      platform: { agent_type: "代投", placement: "优选" },
+      qihangTaskIds: ["1803240580"],
+    });
+    expect(conflicts).toEqual([
+      { field: "agent_type", fromNickname: "自投", fromPlatform: "代投", source: "platform" },
+    ]);
+    expect(statusWithConflicts(parsed, conflicts)).toBe("conflict");
+  });
+
+  it("treats a missing platform value as no evidence, not as a conflict", () => {
+    for (const platform of [{}, { agent_type: null }, { agent_type: undefined }, { agent_type: "" }]) {
+      expect(computeConflicts(parsed, { platform, qihangTaskIds: [] })).toEqual([]);
+    }
+    expect(statusWithConflicts(parsed, [])).toBe("parsed");
+  });
+
+  it("compares task ids as a set, so one extra or one missing both count", () => {
+    const extra = computeConflicts(parsed, { platform: {}, qihangTaskIds: ["1803240580", "999"] });
+    expect(extra).toEqual([
+      { field: "task_ids", fromNickname: "1803240580", fromPlatform: "1803240580,999", source: "qihang" },
+    ]);
+    const different = computeConflicts(parsed, { platform: {}, qihangTaskIds: ["999"] });
+    expect(different[0]!.source).toBe("qihang");
+    // 启航没有归属 = 没有证据，不算冲突。
+    expect(computeConflicts(parsed, { platform: {}, qihangTaskIds: [] })).toEqual([]);
+  });
+
+  it("never escalates a failed parse into a conflict", () => {
+    const failed = parseAccountName("随便起的名字", KUAISHOU);
+    expect(statusWithConflicts(failed, [
+      { field: "agent_type", fromNickname: "x", fromPlatform: "y", source: "platform" },
+    ])).toBe("failed");
+  });
+
+  it("lets a manual override win and clears that segment from unmatched", () => {
+    const partial = parseAccountName("DAU-通投-自投-张三-单出价-安卓-未知版位-订单-非R-常规-ZZ50-2086", KUAISHOU);
+    expect(partial.unmatched).toEqual(["placement"]);
+    const overridden = applyOverride(partial, { placement: "主站" }, KUAISHOU);
+    // 被覆盖的段原本没解析出来，mapsTo 只能从规范里查——丢了它 T5 就不知道喂给哪个维度。
+    expect(overridden.segments.placement).toMatchObject({ value: "主站", mapsTo: "placement" });
+    expect(overridden.unmatched).toEqual([]);
+    // 人工只改这一段的值，不动它带的任务 ID——那是从括号里读出来的事实。
+    const keepTaskIds = applyOverride(parsed, { biz: "改过的业务" }, KUAISHOU);
+    expect(keepTaskIds.segments.biz).toMatchObject({ value: "改过的业务", taskIds: ["1803240580"] });
+  });
+
+  it("leaves the parse untouched when the override is empty", () => {
+    expect(applyOverride(parsed, {}, KUAISHOU)).toEqual(parsed);
   });
 });

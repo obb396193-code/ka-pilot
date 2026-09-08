@@ -187,3 +187,99 @@ export function parseAccountName(rawName: string, rawRule: NamingRule): AccountN
     leftover,
   };
 }
+
+/* ── T3：冲突计算与人工覆盖 ────────────────────────────────────────── */
+
+export const parseConflictSchema = z.object({
+  field: z.string().min(1),
+  fromNickname: z.string().min(1),
+  fromPlatform: z.string().min(1),
+  source: z.enum(["platform", "qihang"]),
+}).strict();
+export type ParseConflict = z.infer<typeof parseConflictSchema>;
+
+export interface ExternalFacts {
+  /** 平台侧同维度的现值（键是 mapsTo）。**取不到就别放进来**——缺证据不是冲突。 */
+  platform: Readonly<Record<string, string | null | undefined>>;
+  /** 启航侧该账户当前的有效任务 ID。空数组 = 启航没有归属，不构成冲突。 */
+  qihangTaskIds: readonly string[];
+}
+
+/**
+ * 昵称 vs 平台字段 vs 启航任务 ID 的冲突。
+ *
+ * **绝不静默选一边**（arch 硬要求 ③）：两边都有值且不一样才记冲突，
+ * 由人工在清洗页看；**一边缺值不算冲突**——那是没有证据，不是矛盾。
+ */
+export function computeConflicts(parse: AccountNameParse, facts: ExternalFacts): ParseConflict[] {
+  const conflicts: ParseConflict[] = [];
+  for (const segment of Object.values(parse.segments)) {
+    if (segment.mapsTo === null) continue;
+    const platform = facts.platform[segment.mapsTo];
+    if (platform === null || platform === undefined || platform === "") continue;
+    if (platform === segment.value) continue;
+    conflicts.push(parseConflictSchema.parse({
+      field: segment.mapsTo,
+      fromNickname: segment.value,
+      fromPlatform: platform,
+      source: "platform",
+    }));
+  }
+  // 任务 ID 比的是集合：昵称里多写一个、少写一个都算不一致，要人看。
+  if (parse.taskIds.length > 0 && facts.qihangTaskIds.length > 0) {
+    const nickname = [...parse.taskIds].sort();
+    const qihang = [...facts.qihangTaskIds].sort();
+    if (nickname.join(",") !== qihang.join(",")) {
+      conflicts.push(parseConflictSchema.parse({
+        field: "task_ids",
+        fromNickname: nickname.join(","),
+        fromPlatform: qihang.join(","),
+        source: "qihang",
+      }));
+    }
+  }
+  return conflicts;
+}
+
+/** 有冲突就升级成 conflict；`failed` 不升级（都没解析出来，谈不上跟谁矛盾）。 */
+export function statusWithConflicts(parse: AccountNameParse, conflicts: readonly ParseConflict[]): ParseStatus {
+  if (parse.status === "failed") return "failed";
+  return conflicts.length > 0 ? "conflict" : parse.status;
+}
+
+export const parseOverrideSchema = z.record(z.string().min(1), z.string().min(1));
+export type ParseOverride = z.infer<typeof parseOverrideSchema>;
+
+/**
+ * 人工改过的段**永远优先**，重解析不覆盖（arch 硬要求 ③）。
+ * 覆盖一个原本没解析出来的段时，它同时从 unmatched 里移除——人已经给了答案。
+ *
+ * 必须传 `rule`：被覆盖的段可能压根没解析出来，`mapsTo` 只能从规范里查。
+ * 丢了 `mapsTo`，T5 的维度来源切换就不知道这个人工值该喂给哪个维度。
+ */
+export function applyOverride(
+  parse: AccountNameParse,
+  rawOverride: ParseOverride,
+  rule: NamingRule,
+): AccountNameParse {
+  const override = parseOverrideSchema.parse(rawOverride);
+  const keys = Object.keys(override);
+  if (keys.length === 0) return parse;
+  const mapsToByKey = new Map(rule.segments.map((segment) => [segment.key, segment.mapsTo]));
+  const segments = { ...parse.segments };
+  for (const [key, value] of Object.entries(override)) {
+    const existing = segments[key];
+    segments[key] = {
+      key,
+      value,
+      mapsTo: existing?.mapsTo ?? mapsToByKey.get(key) ?? null,
+      // 人工只改这一段的值，不改它带的任务 ID——那是从昵称括号里读出来的事实。
+      taskIds: existing?.taskIds ?? [],
+    };
+  }
+  return {
+    ...parse,
+    segments,
+    unmatched: parse.unmatched.filter((key) => !keys.includes(key)),
+  };
+}
