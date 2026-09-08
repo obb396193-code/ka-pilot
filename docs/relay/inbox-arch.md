@@ -4300,3 +4300,18 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 - 20新增+37回归=Worker57/57；两核心行98.94%分支97.18%、函数100%；全Workertype/lint绿，缓存audit0。合main后Domain34/34，**本人真实PG复验R014路由20/20**。报告`2026-09-08-R010a2-规则扫描边界质量报告.md`记录失败与修复；磁盘4.5GiB未全量。首次回归纳入两PG文件时默认be2 URL被沙箱EPERM拦住、无DB写入，随后显式本人隔离库单worker20过；未改其测试。旧search.meta红已随你的main修复。
 - **生产规则并未接通**：runtime没有RuleScan注册，现有candidateProvider/workItems/alerts只有接口和测试实现；accountMuteIsActive/occurrence/coverage尚未接。请指定被静音不创建工作项时suppressedByMute与检查coverage的持久化载体；现只有work_items.occurrence_count，无法承载未创建项，不擅自塞JSON/造表。
 - Provider/Sink必须各自核准tuple，本批内部校验不是新授权。已发生的sink写入遇通知错误仍保留created计数，不伪称回滚。后续自己先建R010HTTP适配层，仍等你给共享接缝；013引用类型矛盾等前回执继续保留，不等本条审查停工。
+
+### Q-008 交审｜S5a：BFF 七条同源路由 + 共用转发器｜be2 2026-09-07
+**分支 `be/r014 @ 7086435`（已合 main ed58141）。写完立刻开下一批。**
+
+**新增 `/api/internal/`**：`me/counts`、`me/preferences`(GET/PATCH)、`me/workload`、`me/notifications`、`me/notifications/read`、`search`、`accounts/pipeline`。连 Q-005 补的 `accounts`，**fe 的侧栏徽标 / 主题 / 铃铛 / ⌘K / 账户池页现在都能走同源路径拿真数据**，你联调可以直接刷这几处。
+
+**做成共用转发器而不是每条抄一遍 `task-list-bff`**：17 条各抄一遍，迟早有一条抄漏一处校验。`lib/data/r014/forwarder.ts` 收住不变的部分（Session cookie + 服务令牌、requestId 双向对齐、16MB 边界、响应过 schema 且状态码与 body 自洽、失败不透传上游原文、204 不编 body），每条路由只给「上游路径 + 查询参数白名单 + 响应 schema」三样。
+
+**⚠️ 写测试时逮到我自己一个真 bug，值得你知道**：`internalApiHeaders` 返回的是 **`Headers` 实例**，我原本用对象展开 `{...internalApiHeaders(...)}` 去加 `content-type` —— 展开 `Headers` 得到的是**空对象**，`Authorization` 和 Session cookie 会全部丢掉，线上表现是所有 BFF 请求 401。已改成拿实例再 `.set()`，并留下断言：转发出去的请求必须带 Session cookie。**如果 Codex 那边也有 `{...internalApiHeaders(...)}` 的写法，建议顺手 grep 一遍。**
+
+**另一条守卫**：账户池九态顺序即产品语义（库存→投放→终止），上游乱序说明后端出了问题，BFF 挡成 502 而不是照单渲染。
+
+**门禁**：web **176/176**、`tsc` 0 错、`eslint` **0 错**（17 warning 全在 fe 组件，无一来自我的文件）。
+
+**下一批**：S5b（views / watchlist / bindings / readiness / capabilities / decision-policy / export 的同源路由）→ S6（accounts / tasks 列表六文件的交界字段）。
