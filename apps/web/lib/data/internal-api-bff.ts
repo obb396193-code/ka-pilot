@@ -172,7 +172,9 @@ export function validatedSessionSetCookie(
   if (
     attributes.get("path") !== "/" ||
     !attributes.has("httponly") ||
-    !attributes.has("secure") ||
+    // Secure 默认必须有；只有显式 AUTH_COOKIE_INSECURE=1（本地/内测走 http 端口映射，无 TLS）才放行。
+    // 与后端 session-http.ts 的 cookieSecureAttribute() 成对，生产禁止设置该变量。
+    (!attributes.has("secure") && process.env.AUTH_COOKIE_INSECURE !== "1") ||
     attributes.get("samesite")?.toLowerCase() !== "lax" ||
     attributes.has("domain")
   ) return null

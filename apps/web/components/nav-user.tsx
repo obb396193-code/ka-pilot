@@ -12,6 +12,8 @@ import {
 } from "@tabler/icons-react"
 
 import { useSession } from "@/components/business/session/session-provider"
+import { useAvatarChoice } from "@/components/business/settings/avatar-picker"
+import { avatarSrc } from "@/lib/avatar"
 import {
   Avatar,
   AvatarFallback,
@@ -36,7 +38,6 @@ import {
 const roleLabel = { optimizer: "优化师", operator: "运营", lead: "负责人", admin: "管理员" } as const
 
 // 头像沿用母版 shadcn 官方示例图；身份来自服务端 session，不在浏览器自报。
-const avatar = "/avatars/shadcn-morty-official.jpg"
 
 export function NavUser() {
   const { isMobile } = useSidebar()
@@ -44,6 +45,8 @@ export function NavUser() {
   const name = session?.identity.displayName ?? (status === "loading" ? "正在读取…" : "未登录")
   const subtitle = session ? `${session.activeWorkspace.name} · ${roleLabel[session.activeWorkspace.role]}` : status === "error" ? "会话服务未就绪" : "请先登录"
   const initials = name.slice(0, 2)
+  // 用户在「设置 · 个人资料」里选的头像；没选过就用内测期的示例照片
+  const avatar = avatarSrc(useAvatarChoice())
   const isAdmin = session?.activeWorkspace.role === "admin"
 
   return (

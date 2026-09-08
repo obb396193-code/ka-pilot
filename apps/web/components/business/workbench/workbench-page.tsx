@@ -120,13 +120,13 @@ export function WorkbenchPage() {
                   <Card>
                     <CardHeader>
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div><CardTitle>今日待处理队列</CardTitle><CardDescription>四件套：户 / 为什么 / 建议 / 动作</CardDescription></div>
-                        <div className="flex items-center gap-2">
+                        <div className="min-w-0"><CardTitle>今日待处理队列</CardTitle><CardDescription>四件套：户 / 为什么 / 建议 / 动作</CardDescription></div>
+                        <div className="flex flex-wrap items-center gap-2">
                           <Tabs value={queueFilter} onValueChange={(value) => setQueueFilter(value as QueueFilter)}>
                             <TabsList>{(["all", "P0", "P1", "opportunity"] as QueueFilter[]).map((key) => <TabsTrigger key={key} value={key}>{key === "all" ? "全部" : severityMeta[key as Severity].label}<Badge variant="secondary" className="ml-1">{counts[key]}</Badge></TabsTrigger>)}</TabsList>
                           </Tabs>
                           <Select value={queueVariant} onValueChange={(value) => setQueueVariant(value as WorkItemListVariant)}>
-                            <SelectTrigger size="sm" className="w-44" aria-label="样例"><span className="text-muted-foreground">样例</span><SelectValue /></SelectTrigger>
+                            <SelectTrigger size="sm" className="w-44 max-w-full" aria-label="样例"><span className="text-muted-foreground">样例</span><SelectValue /></SelectTrigger>
                             <SelectContent align="end">{workItemListVariants.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectContent>
                           </Select>
                         </div>

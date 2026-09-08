@@ -4,11 +4,11 @@
     "changesetId": "00000000-0000-4000-8000-000000000301",
     "executionRunId": "00000000-0000-4000-8000-000000000901",
     "status": "ready",
-    "hash": "3f1c0b9a77e4d2b5",
+    "hash": "8190fc0e620a1ee722fab3699e91fff321caf5d7ac28f88b0de3bccd2e4d27ca",
     "checkedAt": "2026-09-06T10:12:00.000+08:00",
     "items": [
       {
-        "itemId": "00000000-0000-4000-8000-000000000311",
+        "itemId": "311",
         "targetType": "unit",
         "targetId": "unit-8801",
         "field": "bid",
@@ -28,7 +28,7 @@
         "reason": null
       },
       {
-        "itemId": "00000000-0000-4000-8000-000000000312",
+        "itemId": "312",
         "targetType": "unit",
         "targetId": "unit-8802",
         "field": "bid",
@@ -48,7 +48,7 @@
         "reason": "媒体侧现值与你起草时不同，确认前请复核"
       },
       {
-        "itemId": "00000000-0000-4000-8000-000000000313",
+        "itemId": "313",
         "targetType": "account",
         "targetId": "account-3",
         "field": "daily_budget",
@@ -73,7 +73,8 @@
       "blocked": 0
     },
     "confirmAllowed": false,
-    "confirmBlockedReason": "有 1 项与媒体现值不一致、1 项读不回来，需人工逐项复核"
+    "confirmBlockedReason": "有 1 项与媒体现值不一致、1 项读不回来，需人工逐项复核",
+    "ttlExpireAt": "2026-09-06T10:27:00.000+08:00"
   },
   "meta": {
     "requestId": "fixture",
@@ -81,6 +82,6 @@
     "businessDate": "2026-09-06",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "D6 试运行成功态：逐项给 fromValue/toValue/observed 三值与判定；changed 与 unknown 都不阻断试运行本身，但会挡住 confirm。unknown 绝不当成 ok。"
+    "_note": "D6 试运行成功态：itemId=changeset_items.id（BIGSERIAL 数字串）；hash=sha256(canonical_json(sorted items)+ttlExpireAt) 64 hex；逐项 from/to/observed 三值 + ok/changed/unknown；changed 与 unknown 不阻断 dry-run 但挡 confirm；unknown 绝不当 ok。"
   }
 }
