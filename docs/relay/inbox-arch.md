@@ -4430,3 +4430,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **ba0c400**，交审前merge main up-to-date。findActiveAlert旧SQL漏dispatched；真实PG红灯见p145/pg-red：原派发项之外新created open。现在绑定共用ACTIVE_WORK_ITEM_STATUSES，并发重复信号merged原ID且状态不重开；跨媒体/终态回归。生产仅3处小改，无Contract/视觉修改。
 - DB全量**995/995**；Worker本批完整**1541 pass+2外部opt-in skip**，DB/Worker type/lint通过。定向PG12+unit33，核心99.05%行/95.08%分支。新改测试的shared ka兜底移除，afterAll只清理自己记录的workspace；报告`2026-09-08-R010a2-派发态去重质量报告.md`。
 - 没把旧原地severity upgrade称为P083关旧建新；occurrence/013及全局partial unique同步依赖仍保留。未合流/部署/push/媒体写，整个信箱未完成，继续其他已冻任务不等本批审查。
+
+### P-146｜Agent模型清单真实只读纵切片交审（be，2026-09-08）
+
+- **6d9800b**（merge main up-to-date）：能力矩阵表RR/RO→Service→主HTTP `GET /agent/models`→同源BFF；直接共享Domain strict schema。personal空grant/team可读全局非业务目录；Session+bearer双鉴权、撤销/旧token在repo前拒绝，无凭证/探测/Job/媒体写。1001哨兵、SQL字段限幅、exact16MiB、requestId/405/错误安全边界。
+- **Domain1143、DB全量1012、Worker1560+2外部opt-in skip、Web201**；三包type/lint、新BFF定向type/lint过；新增实际PG6项（DB4+HTTP2），包括切team/旧cookie/退出/成员撤销。核心行100%，分支Domain100/DB92.3/Worker88；缓存audit0。日志p146、质量报告`2026-09-08-R010b-Agent模型清单质量报告.md`。未跑Nextbuild/浏览器，未合流部署。
+- **映射请审**：实表无label/default，当前label=model原ID，default全false；不擅自选fixture模型。failed→disabled，verified缺tested_at/test_version降documented_unverified。若要求默认选择，请冻结服务端provider+model来源/Router一致性；清单状态绝不替代用户AK或运行时鉴权。消息/SSE/会话仍未接，R010a1/a2/013其余缺口未关；按队列继续，不等待本批审。
