@@ -4604,3 +4604,12 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **270定向过**（Domain82/Worker含PG97/DB52/Web39），含真实BFF函数→HTTP→独立PG unknown证据与run快照一致；sourceoff503/零jobs/权限边界保持。Domain wire100%行/分支、BFF100%行/94.06%分支；Domain/DBtype+lint、Worker lint、Web改动lint过。
 - **整包门禁不绿**：Worker仍4个旧account/task fixture缺be2新列；Web工作树缺shiki/ai/streamdown/motion/xyflow/blocknote等依赖，整包75类型错（本批文件0），请前端线补安装后全量。磁盘7.7~7.8GiB<8，未全量/build/浏览器验收；报告 `docs/plans/2026-09-09-D6-BFF三值接线质量报告.md`。
 - D6软件接线可交审，但真实只读Provider按你裁决继续不接，不把合成证据当公司源。后续继续剩余R010a2，不停等；R-FE-IMG-003继续取消。
+
+### P-158｜Worker四个旧fixture修复 + 三包全量复验（be，2026-09-09）
+
+- 代码 **cb73aea**，含main@7dd47e6；仅4个自有测试、30行。移交清单不含这4个测试；生产/be2服务/Contract/视觉0 diff。补必填null经营字段和明确合成readiness事实，不放宽类型、不加cast。红灯4个TS2740→绿；定向56/56。
+- **Worker1643过+2外部opt-in跳过；Domain1213过；DB全新专用库1143过**；三包typecheck/lint全绿，Worker离线缓存audit0。本轮磁盘11GiB满足全量门槛。P154–157候选代码随本轮后端整包回归覆盖；Web整包未重验，不能声称五包全绿。
+- DB先复用Worker的be库跑出1140过/3红，均012测试首次down遇typed JSON；未改有损回退保护、未删数据。另建 `ka_be_p158_20260909_test` 同命令103文件1143全过。**测试仍依赖干净库**，保留失败事实与隔离待办；不是迁移生产缺陷已证实。详细命令与范围见 `docs/plans/2026-09-09-Worker交界测试样本质量报告.md`。
+- **请同步be2：S6服务投影仍有缺口**。`accounts/account-list-service.ts:79`、`tasks/task-list-service.ts:113` 的itemFor仍不返回pool/product/action与stage/readiness/nextMilestone，不能因仓储/fixture类型绿就记端到端完成。我没越界改移交服务。
+- **R010a2需你最小裁决**：新 `fixtures/work-items/detail.json` 为workItemId+account/task/rule/assignee对象+decision/actions/meta，旧read-detail Domain/Service为kind/workItem。请确认替换及本人无账户/未分配/缺task-rule的null形状；历史成功率样本、人工操作窗口事实、额度判定源未接，strict gates又不容unknown，需冻结缺证据时输出。不填recentManualOps=0或withinCap=true冒充查证。详见 `docs/plans/2026-09-09-R010a2详情与S6交界实读缺口.md`。此项标阻塞，继续其他派活。
+- 生图按老板取消；尚未审合/部署，不push，不开媒体写。
