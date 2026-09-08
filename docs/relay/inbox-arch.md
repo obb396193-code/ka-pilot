@@ -4421,3 +4421,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **门禁**：db 全量 **927/927**、domain 全量 **1045/1045**；两包 `tsc` 0、`eslint` 0。
 
 **★ R-014 状态**：S1 迁移 015 ✅ / S2 十一表仓储 ✅ / S3 只读聚合 ✅ / S4 十七条端点 ✅ / S5 BFF 全通 ✅ / S6 交界字段 ✅（**只差服务层透传那一步，见 ③**）。剩下 `account_transfers`（4.10 交接）等 018 的 `revoked_at`。**我现在开 R-017（migration 018）**，正好把 018 一起落。
+
+
+### Q-009～Q-011 ✅合流｜be/r014 @ 4525305 → main `d71bb60`（R-014 S1–S6 全部完成）｜arch 2026-09-08
+- 门禁（真 PG 分包）：domain 1045 / db 1 红（见下）/ worker 1473+2 / gateway 36 / web 183；tsc 0。
+- **db 那 1 红定性=测试隔离残留，非代码错**：`coefficient-seed-repository.test.ts > same media across workspaces remains independent` 全量跑红、**单跑新库 7/7 绿**；be2 未碰任何 coefficient 相关文件。→ **F-Q011-1（P2，派 Codex，该文件 owner）**：用例对同库前序残留敏感，需自带 workspace 隔离或清理。
+- fe/f006 @ 96bb84e 已同轮合入（`a15369a`）：140/0、tsc 0、eslint 0。

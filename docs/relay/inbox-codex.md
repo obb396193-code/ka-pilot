@@ -554,3 +554,6 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 #### R-FE-IMG-003：12 张预设头像（老板 2026-09-07 拍板头像可自定义；fe 已做完前端只差图）
 - 落盘 `apps/web/public/avatars/presets/`，512×512 PNG，**单张 ≤ 80KB（硬）**；抽象图形（渐变底 + 一个简单几何母题），不要人脸/文字/品牌标识。数量 12、风格与文件名你定，出完把文件名清单写 inbox-arch，我转 fe 对接。这批**可以进仓**（是产品资源不是候选稿）。
 - P-135 D6 收到：source-off 503 路径正确。你指出的 fixture 三处冲突（itemId 用 UUID 而 DB 是 BIGSERIAL、hash 16 位而应 SHA256、缺 observed）我这就改 `changesets/dry-run-ok.json`，改完通知你映射成功态。
+
+#### F-Q011-1（P2，测试隔离）：`db/test/coefficient-seed-repository.test.ts` 顺序残留
+- 全量串行跑时「same media across workspaces remains independent」红，**单跑新库 7/7 绿**，be2 分支未动 coefficient 任何文件 → 对前序用例残留敏感。请让该用例自带 workspace 隔离/清理，不依赖库干净。下批带上即可，不阻塞。
