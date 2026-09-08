@@ -1,20 +1,7 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
-import { changeValueSchema, transportSchema } from "./change-value-schema.js";
-export { changeValueSchema, type ChangeValue } from "./change-value-schema.js";
-
-// Private: callers have already validated the whole transport tree. Keeping the
-// input unknown accommodates optional Zod properties without weakening validation.
-function canonicalJson(value: unknown): string {
-  if (value === null || typeof value !== "object") return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
-  const object = value as Record<string, unknown>;
-  return `{${Object.keys(object).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`).join(",")}}`;
-}
-
-export function sameChangeValue(left: unknown, right: unknown): boolean {
-  return canonicalJson(changeValueSchema.parse(left)) === canonicalJson(changeValueSchema.parse(right));
-}
+import { changeValueSchema, transportSchema, canonicalChangeJson as canonicalJson } from "./change-value-schema.js";
+export { changeValueSchema, sameChangeValue, type ChangeValue } from "./change-value-schema.js";
 
 const identity = z.string().min(1).max(256);
 const itemSchema = z.object({

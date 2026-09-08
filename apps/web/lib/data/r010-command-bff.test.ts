@@ -1,5 +1,6 @@
 import assert from "node:assert/strict"
 import test from "node:test"
+import { readFileSync } from "node:fs"
 import { handleR010CommandRequest } from "./r010-command-bff.ts"
 
 const origin = "https://web.example", cookie = "ka_session=synthetic-session-longer-than-thirty-two", id = "r010-bff-test"
@@ -138,5 +139,58 @@ test("timeout/network errors are stable and never retried", async () => {
   for (const cause of [new DOMException("private", "TimeoutError"), new Error("private")]) {
     let calls = 0; const result = await handleR010CommandRequest(request(), { ...deps, fetchImpl: async () => { calls++; throw cause } })
     assert.equal(result.status, cause instanceof DOMException ? 504 : 503); assert.equal(calls, 1); assert.equal(JSON.stringify(result).includes("private"), false)
+  }
+})
+
+function observedFixture() {
+  const fixture = JSON.parse(readFileSync(new URL("../../../../packages/contract/fixtures/changesets/dry-run-ok.json", import.meta.url), "utf8"))
+  delete fixture.meta._note // Documentation only; actual upstream _note is rejected below.
+  fixture.meta.requestId = id; fixture.data.changesetId = uuid
+  return fixture
+}
+test("dry-run preserves the canonical three-value response and only forwards approved credentials", async () => {
+  const fixture = observedFixture()
+  const result = await handleR010CommandRequest(request({ path: dryRun, raw: "{}", headers: {
+    "x-ka-account-scope": "*", authorization: "Bearer forged" } }), { ...deps, fetchImpl: async (url, init) => {
+    assert.equal(url, environment.KA_DATA_BACKEND_ORIGIN + dryRun.replace("/api/internal/", "/api/v1/"))
+    const headers = new Headers(init?.headers)
+    assert.equal(headers.get("authorization"), "Bearer " + environment.KA_DATA_SERVICE_TOKEN)
+    assert.equal(headers.get("cookie"), cookie); assert.equal(headers.get("x-ka-account-scope"), null)
+    assert.equal(init?.body, "{}"); assert.equal(init?.redirect, "error")
+    return json(fixture)
+  } })
+  assert.equal(result.status, 200); assert.deepEqual(result.body, fixture)
+})
+test("dry-run preserves unknown dataAsOf rather than substituting the current clock", async () => {
+  const fixture = observedFixture(); fixture.meta.dataAsOf = null
+  const result = await handleR010CommandRequest(request({ path: dryRun, raw: "{}" }), { ...deps, fetchImpl: async () => json(fixture) })
+  assert.equal(result.status, 200); assert.deepEqual(result.body, fixture)
+})
+test("dry-run rejects wrong object, malformed evidence, extras, lineage and correlation without changing values", async () => {
+  for (const mutate of [
+    (f: ReturnType<typeof observedFixture>) => { f.data.changesetId = "00000000-0000-4000-8000-000000000099" },
+    (f: ReturnType<typeof observedFixture>) => { delete f.data.items[0].observed },
+    (f: ReturnType<typeof observedFixture>) => { f.data.items[0].observed.value = "40" },
+    (f: ReturnType<typeof observedFixture>) => { f.data.items[1].verdict = "ok"; f.data.items[1].reason = null },
+    (f: ReturnType<typeof observedFixture>) => { f.data.summary.total = 1 },
+    (f: ReturnType<typeof observedFixture>) => { f.data.confirmAllowed = true; f.data.confirmBlockedReason = null },
+    (f: ReturnType<typeof observedFixture>) => { f.meta.requestId = "another-request" },
+    (f: ReturnType<typeof observedFixture>) => { f.meta.dataAsOf = "2027-01-01T00:00:00Z" },
+    (f: ReturnType<typeof observedFixture>) => { f.meta.businessDate = "2026-02-31" },
+    (f: ReturnType<typeof observedFixture>) => { f.meta._note = "unexpected-secret" },
+    (f: ReturnType<typeof observedFixture>) => { f.data.items[0].token = "unexpected-secret" },
+  ]) {
+    const fixture = observedFixture(); mutate(fixture)
+    const result = await handleR010CommandRequest(request({ path: dryRun, raw: "{}" }), { ...deps, fetchImpl: async () => json(fixture) })
+    assert.equal(result.status, 502); assert.equal(result.body.error?.code, "UPSTREAM_INVALID_RESPONSE")
+    assert.equal(JSON.stringify(result).includes("unexpected-secret"), false)
+  }
+})
+test("dry-run exact16MiB is fail-closed even when padded JSON would otherwise be valid", async () => {
+  const fixture = JSON.stringify(observedFixture()), padding = " ".repeat(16 * 1024 * 1024 - Buffer.byteLength(fixture))
+  for (const response of [new Response(fixture + padding, { headers: { "x-request-id": id } }),
+    new Response(fixture, { headers: { "x-request-id": id, "content-length": String(16 * 1024 * 1024) } })]) {
+    const result = await handleR010CommandRequest(request({ path: dryRun, raw: "{}" }), { ...deps, fetchImpl: async () => response })
+    assert.equal(result.status, 502); assert.equal(result.body.error?.code, "SOURCE_TRUNCATED")
   }
 })

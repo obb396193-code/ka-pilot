@@ -72,7 +72,8 @@ describe("D6 preflight three-value public contract", () => {
     expect(() => classifyPreflightObservation({ type: "number", value: "40" }, null)).toThrow();
   });
   it("rejects unapproved envelope fields and malformed request/date metadata", () => {
-    for (const patch of [{ businessDate: "2026-02-31" }, { workspaceKind: "team" }, { requestId: "bad\nlog" }, { selectedSource: "ka_data" }, { _note: "doc only" }]) {
+    for (const patch of [{ businessDate: "2026-02-31" }, { workspaceKind: "team" }, { requestId: "bad\nlog" }, { selectedSource: "ka_data" }, { _note: "doc only" },
+      { dataAsOf: "2027-01-01T00:00:00Z" }]) {
       const value = fixture(); value.meta = { ...value.meta, ...patch };
       expect(preflightPresentationResponseSchema.safeParse(value).success).toBe(false);
     }

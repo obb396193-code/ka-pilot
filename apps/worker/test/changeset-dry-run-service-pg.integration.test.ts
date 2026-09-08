@@ -128,6 +128,20 @@ describe("dry-run service to actual PG (synthetic preflight port, no media)", ()
         expect(row.dry_run).toBe(true); expect(row.result_payload.observations.items).toEqual(body.data.items);
         expect(row.result_payload.observations.checkedAt).toBe(body.data.checkedAt);
       }
+      // Real BFF implementation -> real localhost HTTP -> real PG; only the
+      // approved session and media read evidence are synthetic in this harness.
+      const { handleR010CommandRequest } = await import(new URL("../../web/lib/data/r010-command-bff.ts", import.meta.url).href);
+      const bff = await handleR010CommandRequest(new Request(`https://web.example/api/internal/changesets/${draft.id}/dry-run`, {
+        method: "POST", headers: { origin: "https://web.example", "content-type": "application/json",
+          cookie: businessHeaders(token).cookie!, "x-ka-account-scope": "*", "x-ka-workspace-id": other }, body: "{}",
+      }), { environment: { KA_DATA_BACKEND_ORIGIN: `http://127.0.0.1:${address.port}`, KA_DATA_SERVICE_TOKEN: token },
+        requestId: () => "bff-observed-pg" });
+      expect(bff.status).toBe(200); expect(bff.body.meta.requestId).toBe("bff-observed-pg");
+      expect(bff.body.data.items[0].verdict).toBe("unknown"); expect(bff.body.meta.dataAsOf).toBeNull();
+      expect(bff.body.data.confirmAllowed).toBe(false);
+      const snapshot = (await pool.query("SELECT result_payload FROM execution_runs WHERE id=$1 AND changeset_id=$2",
+        [bff.body.data.executionRunId, draft.id])).rows[0].result_payload.observations;
+      expect(snapshot.items).toEqual(bff.body.data.items);
       check.mockClear();
       for (const [id, expected] of [[foreignMedia.id, 403], [foreignWorkspace.id, 404]] as const) {
         expect((await call(id)).status).toBe(expected); expect(await runs(id)).toEqual([]);
