@@ -99,6 +99,46 @@ describe("dry-run service to actual PG (synthetic preflight port, no media)", ()
     } finally { server.closeAllConnections(); await new Promise<void>((resolve, reject) => server.close(e => e ? reject(e) : resolve())); }
   });
 
+  it("observed HTTP results match real PG snapshots and never enqueue media execution", async () => {
+    const draft = await create(), foreignMedia = await create("TENCENT"), foreignWorkspace = await create("KUAISHOU", other);
+    let state: "ok" | "changed" | "unknown" = "ok";
+    const check = vi.fn(async (input: ChangeSetPreflightInput) => ({ ...evidence(input), dataAsOf: null,
+      items: input.items.map(item => ({ itemId: item.id,
+        status: state === "ok" ? "success" : state === "changed" ? "failed" : "unknown",
+        failReason: state === "ok" ? null : state === "changed" ? "FROM_VALUE_CHANGED" : "UNKNOWN_RESULT",
+        observed: state === "unknown" ? null : { type: "number", value: state === "ok" ? 30 : 35 },
+      })) })); // Synthetic evidence only; no media transport is injected.
+    const token = "synthetic-observed-pg-internal-token-long-enough";
+    const absent = new Proxy({}, { get() { throw new Error("Unexpected unrelated service"); } });
+    const server = createDataApiServer({ service: absent, detailService: absent, taskListService: absent,
+      accountListService: absent, workItemListService: absent, internalToken: token, sessionAuthService: approvedSessionAuth(auth),
+      dryRunService: new ChangeSetDryRunService({ store, now: () => now, preflight: { check } }) } as unknown as DataApiServerOptions);
+    await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
+    try {
+      const address = server.address(); if (!address || typeof address === "string") throw new Error("Missing listener");
+      const call = (id: string) => fetch(`http://127.0.0.1:${address.port}/api/v1/changesets/${id}/dry-run`, { method: "POST",
+        headers: { ...businessHeaders(token), "x-request-id": "observed-pg", "x-ka-account-scope": "*" }, body: "{}" });
+      for (const verdict of ["ok", "changed", "unknown"] as const) {
+        state = verdict; const response = await call(draft.id), body = await response.json();
+        expect(response.status).toBe(200); expect(body.meta).toEqual({ requestId: "observed-pg", dataAsOf: null,
+          businessDate: "2026-09-08", workspaceKind: "personal", selectedSource: "platform" });
+        expect(body.data.items[0].verdict).toBe(verdict); expect(body.data.confirmAllowed).toBe(false);
+        const row = (await pool.query("SELECT dry_run,result_payload FROM execution_runs WHERE id=$1 AND changeset_id=$2",
+          [body.data.executionRunId, draft.id])).rows[0];
+        expect(row.dry_run).toBe(true); expect(row.result_payload.observations.items).toEqual(body.data.items);
+        expect(row.result_payload.observations.checkedAt).toBe(body.data.checkedAt);
+      }
+      check.mockClear();
+      for (const [id, expected] of [[foreignMedia.id, 403], [foreignWorkspace.id, 404]] as const) {
+        expect((await call(id)).status).toBe(expected); expect(await runs(id)).toEqual([]);
+      }
+      expect(check).not.toHaveBeenCalled();
+      expect((await pool.query("SELECT status,dry_run_hash,confirm_hash FROM changesets WHERE id=$1", [draft.id])).rows[0])
+        .toEqual({ status: "draft", dry_run_hash: null, confirm_hash: null });
+      expect((await pool.query("SELECT count(*)::int AS n FROM jobs WHERE workspace_id=$1", [workspaceId])).rows[0].n).toBe(0);
+    } finally { server.closeAllConnections(); await new Promise<void>((resolve, reject) => server.close(e => e ? reject(e) : resolve())); }
+  });
+
   it("success is still draft; repeat has ordered dry attempts; unknown invalidates old proof; no jobs", async () => {
     const draft = await create(); let status: "success" | "unknown" = "success";
     const service = new ChangeSetDryRunService({ store, now: () => now, preflight: { check: async input => evidence(input, status) } });
