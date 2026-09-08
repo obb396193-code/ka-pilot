@@ -118,3 +118,119 @@ export const accountPipelineSchema = z.object({
     context.addIssue({ code: "custom", message: "pipeline stages must keep the frozen nine-state order", path: ["stages"] })
   }
 })
+
+/* me/views（v1.5 3.10） */
+const savedViewConfigSchema = z.object({
+  version: z.literal("view/v1"),
+  filters: z.record(z.string(), z.unknown()).optional(),
+  columns: z.array(z.string().min(1)).max(200).optional(),
+  sort: z.array(z.object({ by: z.string().min(1), dir: z.enum(["asc", "desc"]) }).strict()).max(20).optional(),
+  window: z.record(z.string(), z.unknown()).optional(),
+}).strict()
+
+export const savedViewSchema = z.object({
+  id: z.string().uuid(),
+  page: z.enum(["data.table", "data.pivot", "accounts", "tasks", "work_items", "data.live"]),
+  name: z.string().min(1).max(120),
+  config: savedViewConfigSchema,
+  isShared: z.boolean(),
+  updatedAt: z.string().datetime({ offset: true }),
+}).strict()
+
+export const savedViewListSchema = z.object({ items: z.array(savedViewSchema) }).strict()
+
+/* me/watchlist（v1.5 3.5 + v1.7.4 G2） */
+export const watchlistSchema = z.object({
+  items: z.array(z.union([
+    z.object({ type: z.literal("account"), media: z.string().min(1), accountId: z.string().min(1) }).strict(),
+    z.object({ type: z.literal("task"), taskId: z.string().min(1) }).strict(),
+  ])),
+  updatedAt: z.string().datetime({ offset: true }).nullable(),
+}).strict()
+
+/* tasks/:id/bindings（v1.7.3 + v1.9 ⑨） */
+export const taskBindingsSchema = z.object({
+  taskId: z.string().min(1),
+  rules: z.array(z.object({
+    ruleId: z.number().int().positive(),
+    name: z.string().min(1),
+    type: z.string().min(1).nullable(),
+    enabled: z.boolean(),
+    autonomyLevel: z.number().int().min(1).max(3),
+    scope: z.enum(["task", "account"]),
+    boundAt: z.string().datetime({ offset: true }).nullable(),
+  }).strict()),
+  workflows: z.array(z.object({
+    workflowId: z.string().uuid(),
+    name: z.string().min(1),
+    version: z.number().int().positive(),
+    status: z.string().min(1),
+    scope: z.literal("task"),
+    lastRun: z.object({
+      runId: z.string().uuid(),
+      status: z.string().min(1).nullable(),
+      at: z.string().datetime({ offset: true }),
+    }).strict().nullable(),
+  }).strict()),
+  sop: z.object({
+    sopRunId: z.string().uuid(),
+    template: z.string().min(1),
+    progress: ratioValueSchema,
+  }).strict().nullable(),
+}).strict()
+
+/* tasks/:id/readiness/:dimension（v1.5.1 ②） */
+export const readinessOverrideSchema = z.object({
+  dimension: z.enum(["accounts", "recharge", "products", "materials", "strategy", "infra"]),
+  ready: z.boolean(),
+  note: z.string().nullable(),
+  markedBy: z.string().uuid().nullable(),
+  markedAt: z.string().datetime({ offset: true }).nullable(),
+}).strict()
+
+/* capabilities（v1.5 5.7） */
+export const capabilityListSchema = z.object({
+  items: z.array(z.object({
+    key: z.string().min(1),
+    name: z.string().min(1),
+    category: z.enum(["query", "write", "infra", "account", "material"]),
+    form_schema: z.record(z.string(), z.unknown()),
+    permission: z.string().min(1),
+    version: z.string().min(1),
+    status: z.enum(["documented_unverified", "verified", "disabled"]),
+    executor: z.enum(["product_direct", "runtime", "multica_run"]),
+    media: z.array(z.string().min(1)),
+  }).strict()),
+}).strict()
+
+/* settings/decision-policy（v1.5 10.11） */
+export const decisionPolicySchema = z.object({
+  policy: z.object({
+    confidenceMin: z.number().min(0).max(1),
+    historicalSuccessRateMin: z.number().min(0).max(1),
+    recentManualOpsWindowHours: z.number().int().positive().max(720),
+    dailyCapCny: z.number().nonnegative(),
+  }).strict(),
+  updatedBy: z.object({ userId: z.string().uuid(), name: z.string() }).strict().nullable(),
+  updatedAt: z.string().datetime({ offset: true }).nullable(),
+}).strict()
+
+/* export / exports/:id（v1.5 7.4） */
+export const exportQueuedSchema = z.object({
+  exportId: z.string().uuid(),
+  status: z.literal("queued"),
+  kind: z.enum(["query", "view", "report"]),
+  format: z.enum(["xlsx", "png", "pdf"]),
+}).strict()
+
+export const exportRecordSchema = z.object({
+  exportId: z.string().uuid(),
+  status: z.enum(["queued", "running", "done", "failed"]),
+  kind: z.enum(["query", "view", "report"]),
+  format: z.enum(["xlsx", "png", "pdf"]),
+  fileRef: z.string().min(1).nullable(),
+  bytes: z.number().int().nonnegative().nullable(),
+  expiresAt: z.string().datetime({ offset: true }).nullable(),
+  error: z.string().min(1).nullable(),
+  fileExpired: z.boolean(),
+}).strict()

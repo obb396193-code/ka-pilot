@@ -80,6 +80,7 @@ export const TASK_LIST_COUNT_SQL = `
 
 export const TASK_LIST_PAGE_SQL = `
   WITH ${FILTERED_TASKS_CTE}
+  /* task-list-page */
   SELECT
     task.workspace_id,
     task.task_id,
@@ -105,11 +106,61 @@ export const TASK_LIST_PAGE_SQL = `
     COALESCE(items.p0, 0) AS work_item_p0,
     COALESCE(items.p1, 0) AS work_item_p1,
     COALESCE(items.p2, 0) AS work_item_p2,
-    COALESCE(items.opportunity, 0) AS work_item_opportunity
+    COALESCE(items.opportunity, 0) AS work_item_opportunity,
+    task.stage,
+    task.stage_source,
+    task.stage_changed_at,
+    task.sop_run_id,
+    COALESCE(readiness.account_count, 0) AS readiness_account_count,
+    COALESCE(readiness.recharged_count, 0) AS readiness_recharged_count,
+    COALESCE(readiness.built_count, 0) AS readiness_built_count,
+    COALESCE(readiness.unfunded, ARRAY[]::text[]) AS readiness_unfunded,
+    COALESCE(readiness.unbuilt, ARRAY[]::text[]) AS readiness_unbuilt,
+    COALESCE(overrides.entries, '[]'::jsonb) AS readiness_overrides
   FROM filtered_tasks AS task
   LEFT JOIN users AS owner
     ON owner.workspace_id = task.workspace_id
    AND owner.id = task.owner_user_id
+  LEFT JOIN LATERAL (
+    -- 就绪度里系统能推的三段（accounts / recharge / infra）的原始事实。
+    -- 商品 / 素材 / 策略没有任何数据源，一律不在这里编，交给 domain 报 undefined。
+    SELECT
+      count(*)::int AS account_count,
+      count(*) FILTER (WHERE COALESCE(balance.balance, 0) > 0)::int AS recharged_count,
+      count(*) FILTER (WHERE unit.account_id IS NOT NULL)::int AS built_count,
+      array_remove(array_agg(link.account_id ORDER BY link.account_id)
+        FILTER (WHERE COALESCE(balance.balance, 0) <= 0), NULL) AS unfunded,
+      array_remove(array_agg(link.account_id ORDER BY link.account_id)
+        FILTER (WHERE unit.account_id IS NULL), NULL) AS unbuilt
+    FROM (
+      SELECT DISTINCT account_task.media, account_task.account_id
+      FROM task_accounts AS account_task
+      WHERE account_task.workspace_id = task.workspace_id
+        AND account_task.task_id = task.task_id
+        AND account_task.valid_from <= $2::date
+        AND (account_task.valid_to IS NULL OR account_task.valid_to >= $2::date)
+    ) AS link
+    LEFT JOIN account_balance AS balance
+      ON balance.workspace_id = task.workspace_id
+     AND balance.media = link.media
+     AND balance.account_id = link.account_id
+    LEFT JOIN LATERAL (
+      SELECT entity.account_id
+      FROM ad_entities AS entity
+      WHERE entity.workspace_id = task.workspace_id
+        AND entity.media = link.media
+        AND entity.account_id = link.account_id
+        AND entity.entity_type = 'unit'
+      LIMIT 1
+    ) AS unit ON true
+  ) AS readiness ON true
+  LEFT JOIN LATERAL (
+    SELECT jsonb_agg(jsonb_build_object('dimension', override.dimension, 'ready', override.ready)
+      ORDER BY override.dimension) AS entries
+    FROM task_readiness_overrides AS override
+    WHERE override.workspace_id = task.workspace_id
+      AND override.task_id = task.task_id
+  ) AS overrides ON true
   LEFT JOIN LATERAL (
     SELECT history.price,
            to_char(history.effective_date, 'YYYY-MM-DD') AS effective_date
