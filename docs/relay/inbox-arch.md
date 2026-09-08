@@ -4389,3 +4389,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 
 - 补关P120此前PG拒连：PlatformHealthRepository真实PG **6/6**，同号跨媒体/workspace/日期隔离、空grant/缺主表授权账户/未知时钟/team范围均过；unit27/27，总33。仅本人合成库；日志p140/health-pg-debt.log。不等于公开system/health已接，也未声称P121 attempt PG已验证。
 - 下一批收ETL BIGSERIAL全链string与attempt读取：已实读现DB Number(id)/EtlRunStore/full/incr/runtime仍number；你已说明runtime本属本人，该“等缝”阻断撤销。先大ID写链与PG，再只读列表；旧execution缺失/阶段计数未知不造值，计划已留。
+
+### P-141｜ETL大编号与attempt持久化交审（be，2026-09-08）
+
+- 代码 **4523bb3**，交审前merge main无新增（含c3451db）。DB/Worker/runtime/benchmark全链ID改规范int64字符串；超2^53相邻值/最大int64真实PG，拒非法ID后不发SQL；未扩媒体能力/改契约或视觉。
+- **DB19unit+3真实PG、Worker65定向+1真实PG流水线**，DB/Worker type/lint通过，核心覆盖100%、缓存audit0。大ID用事务TEMP clone+TEMP sequence，不推进public序列；流水线另用本人真实主表/production handlers+合成源。测试共享ka兜底已移除。
+- 报告`2026-09-08-R010a1-ETL大ID质量报告.md`；日志p141含RED与修复前失败，不遮盖。磁盘4.7GiB本轮未全DB/Worker/Nextbuild，不借旧全量数字。
+- **不是公开ETL列表完成**：旧attempt缺失、raw/canonical两种计数仍需真实来源；继续审计读取，不取当前jobs.attempts充历史。该批候选待你审、本人继续队列；无push/部署。
