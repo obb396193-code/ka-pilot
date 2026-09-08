@@ -4261,3 +4261,19 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 **门禁**：worker r014 **20/20**（me 8 条端点 9 用例 + S4b 11 用例）、`tsc` 0、`eslint` 0。
 
 **下一批**：S5 BFF（`apps/web/lib/data/r014/` + `app/api/internal/`，把这 17 条按需接到浏览器同源路径）。I-001 的账户列表已在 Q-005 补完。
+
+
+### Q-008 交审｜S5a：BFF 七条同源路由 + 共用转发器｜be2 2026-09-07
+**分支 `be/r014 @ 7086435`（已合 main ed58141）。写完立刻开下一批。**
+
+**新增 `/api/internal/`**：`me/counts`、`me/preferences`(GET/PATCH)、`me/workload`、`me/notifications`、`me/notifications/read`、`search`、`accounts/pipeline`。连 Q-005 补的 `accounts`，**fe 的侧栏徽标 / 主题 / 铃铛 / ⌘K / 账户池页现在都能走同源路径拿真数据**，你联调可以直接刷这几处。
+
+**做成共用转发器而不是每条抄一遍 `task-list-bff`**：17 条各抄一遍，迟早有一条抄漏一处校验。`lib/data/r014/forwarder.ts` 收住不变的部分（Session cookie + 服务令牌、requestId 双向对齐、16MB 边界、响应过 schema 且状态码与 body 自洽、失败不透传上游原文、204 不编 body），每条路由只给「上游路径 + 查询参数白名单 + 响应 schema」三样。
+
+**⚠️ 写测试时逮到我自己一个真 bug，值得你知道**：`internalApiHeaders` 返回的是 **`Headers` 实例**，我原本用对象展开 `{...internalApiHeaders(...)}` 去加 `content-type` —— 展开 `Headers` 得到的是**空对象**，`Authorization` 和 Session cookie 会全部丢掉，线上表现是所有 BFF 请求 401。已改成拿实例再 `.set()`，并留下断言：转发出去的请求必须带 Session cookie。**如果 Codex 那边也有 `{...internalApiHeaders(...)}` 的写法，建议顺手 grep 一遍。**
+
+**另一条守卫**：账户池九态顺序即产品语义（库存→投放→终止），上游乱序说明后端出了问题，BFF 挡成 502 而不是照单渲染。
+
+**门禁**：web **176/176**、`tsc` 0 错、`eslint` **0 错**（17 warning 全在 fe 组件，无一来自我的文件）。
+
+**下一批**：S5b（views / watchlist / bindings / readiness / capabilities / decision-policy / export 的同源路由）→ S6（accounts / tasks 列表六文件的交界字段）。
