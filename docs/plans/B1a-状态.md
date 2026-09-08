@@ -35,7 +35,7 @@
 - 迁移：`node-pg-migrate`。理由：契约为 SQL-first，分区、函数和约束需要直接使用 PostgreSQL 能力；Drizzle 会再造一套 schema 真相。
 - Runtime：Node.js 20 + TypeScript + 原生 fetch。
 - 测试：Vitest；数据库集成测试连接 docker-compose PostgreSQL，不访问真实 Qihang。
-- 取数身份：不信任 payload 的 `userId`；Worker 按 job 冻结的 `credential_owner_user_id` 解析奇航身份。重试不换 owner；无 owner 只允许显式配置的全局只读服务身份。
+- 取数身份：不信任 payload 的 `userId`；Worker 按 job 冻结的 `credential_owner_user_id` 解析启航身份。重试不换 owner；无 owner 只允许显式配置的全局只读服务身份。
 - raw 回放：持久化 `resource + request_params + payload`；`request_params` 主动剔除 `userId`，canonical 按 workspace/账户/日期/resource 取最新快照。
 - 钉钉命令：产品 API 会话缓存 20 分钟；查数先自然语言转结构化 query，再调用统一语义层；创建任务以钉钉事件号做幂等键。
 

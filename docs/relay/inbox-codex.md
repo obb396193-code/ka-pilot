@@ -37,7 +37,7 @@
 - v1.2 相对你上次复核的变化（重点核对这些）：
   1. 老板六终裁：工作流画布做（模板+自由编排）／钉钉群查数做／网关独立部署／公共资产五段全套（表全字段 UI 两态起步）／素材拆片做（复用 CR）／卡片 L0-L3 四档全做
   2. 你的六项修正全部采纳：部署拆三单元（Web-API/Worker-Scheduler/DingTalk-Gateway + job/outbox 表 + DB lease）／B1 拆 B1a/b/c／Schema 契约硬要求（含你列的 30+ 缺失表）／LLM Provider 抽象+现状如实／充值提审改"自愿快捷方式非门槛"／补 6 缺失件（加关账户/选品/相似查找/群建工作项/运行监控页/能力目录）
-  3. 老板新终裁：**每用户三凭证自持**（奇航 userId+Multica mul_ PAT+IdeaLab AK，secret ref；谁操作用谁的凭证；无 PAT 降级只读+深链；服务级后台任务 demo 用老板 PAT→正式化 mcn_）
+  3. 老板新终裁：**每用户三凭证自持**（启航 userId+Multica mul_ PAT+IdeaLab AK，secret ref；谁操作用谁的凭证；无 PAT 降级只读+深链；服务级后台任务 demo 用老板 PAT→正式化 mcn_）
   4. **一级导航老板定稿 9 项**：工作台/投放任务/数据分析/账户资源/自动化/商品素材/报告/知识库/钉钉中心 + 头像菜单(设置+治理后台)；工作台加警报监控区；数据分析加完整数据总表；值守与警报配置放钉钉中心；协作=工作台 tab
   5. 商品素材域改"数据可得性优先"（能拿到数据做深，拿不到保持占位）
 - 要求：
@@ -92,11 +92,11 @@
 - 交付物（目录边界：apps/worker、apps/web/app/api、packages/db、packages/domain）：
   1. `packages/db`：按 schema.sql 出迁移（node-pg-migrate 或 drizzle，你选并在状态文件记录理由）；迁移可重放；分区表按月建
   2. `packages/domain`：metrics.md 全部派生指标纯函数实现 + 单测（含环比 NEW/null 边界、双口径合并、零耗日剔除）——**这是"agent 不算数"的唯一计算实现**
-  3. `apps/worker` 骨架：jobs 表轮询消费器（DB lease，SELECT FOR UPDATE SKIP LOCKED）+ etl_full/etl_incr 两个 job handler（调奇航 get_data，userId 从 payload 取）+ etl_runs 留痕 + 失败重试进 outbound 告警
+  3. `apps/worker` 骨架：jobs 表轮询消费器（DB lease，SELECT FOR UPDATE SKIP LOCKED）+ etl_full/etl_incr 两个 job handler（调启航 get_data，userId 从 payload 取）+ etl_runs 留痕 + 失败重试进 outbound 告警
   4. qihang client：GET get_data 封装（account/account_offline/account_realtime/ad_realtime 四 resource；502/503/504 重试 3 次指数退避；鉴权失败不重试直接 blocked_auth）
   5. metrics_raw 落库 → canonical 合并 job（字段级合并规则见 metrics.md）
 - 工程纪律：`[be]` 前缀路径限定 commit；在自己分支 `be/b1a`；建 `docs/plans/B1a-状态.md`（从 CR 状态文件模板样式）逐条更新；完成给 SHA 等 arch 验收
-- 本地环境：PG 用 docker 本地起；**不碰 SQLite**；奇航接口本地不通就写 client 单测（mock HTTP 层），真实连通在内网联调
+- 本地环境：PG 用 docker 本地起；**不碰 SQLite**；启航接口本地不通就写 client 单测（mock HTTP 层），真实连通在内网联调
 - 契约缺口：写 inbox-arch.md 提议，不自己发明字段
 - **✅ P-001~P-003 已裁决**（2026-08-19）：契约 v1.1 已冻结（SHA 4696fdf），9 条问题全部已落契约本体；inbox-arch.md 已更新逐条回复。**继续 B1a**：按契约 v1.1 补 migration 主键变更（复合主键含 workspace_id）、`metrics_raw.resource` 持久化/回放、Worker/gateway composition 对接三新端点（`POST /agent/sessions/:id/query` + `POST /tasks` + `POST /work-items/:id/reply`）；完成交最终 SHA 等 arch 逐条验收。
 - 状态：已完成（最终 SHA `f98952f8cf1daae126e22c431052d688644237c9`；回执见 `inbox-arch.md` P-004）
@@ -163,7 +163,7 @@
   10. **Next BFF**：以上全部对应 `/api/internal/*` 路由，转发 Session cookie + requestId，不接受 `dataView`。
   11. **Capability Registry**：把 ka-src-0007 评估列出的快手 MAPI 核心能力（campaign update/status、unit budget、creative update/status/review、四层实时 report）录入 `provider_model_capabilities` 同构的 capability 表（B7 Registry），状态 `documented_unverified`；修 kuaishou-cli 2 处 HTTP 方法冲突。
 - 拆批（**2026-09-05 修订**，按"用户闭环"切，不按模块切）：
-  - **R-010a1「每天能看」**：#6 语义查询（summary/trend/table/dimension/health，`meta` 补 `workspaceKind`）+ #9 `GET /system/health`/`etl-runs` + #5 `GET /accounts/:id` 小传/余额 + BFF。**验收句**：合入后老板能在数据总表/大盘/账户池用真实奇航数据看全字段、下钻账户、导出 Excel。
+  - **R-010a1「每天能看」**：#6 语义查询（summary/trend/table/dimension/health，`meta` 补 `workspaceKind`）+ #9 `GET /system/health`/`etl-runs` + #5 `GET /accounts/:id` 小传/余额 + BFF。**验收句**：合入后老板能在数据总表/大盘/账户池用真实启航数据看全字段、下钻账户、导出 Excel。
   - **R-010a2「每天能处理」**：#2 工作项动作 + `meta.coverage` 三态（api.md 9-5 冻结）+ #3 变更集全流程 + #4 任务详情/写 + #5 其余。**验收句**：老板能在工作台看到有证据的队列、处理或跳后台、T+1 看到回收。
   - **R-010b**：#7 日报、#8 Agent SSE、#9 rerun/search、#11 Registry。
   - 每批 SHA + 四包测试数 + 真实 PG 证据 + HTTP 负向用例（401/403/409/410）。**不能写出验收句的项标"基础建设"，不计入可用功能。**
@@ -173,7 +173,7 @@
 #### R-009 追加（2026-09-04 arch 六簇审计新发现）
 
 11. ~~Task4 P1-1 登录 credential oracle~~ **撤回**（arch 2026-09-04 复核：`session-http.ts` `login()` 两条失败路径均走 `loginFailure()` 统一 401，测试 `session-http-service.test.ts:140-170` 已断言一致；我 grep 到的 401/403 分叉是已登录后的 `view()`，属正确行为。root Task4 复验结论成立）。
-12. **hh 上限不一致**：`apps/worker/src/etl/payload.ts:37` `max(23)` → `max(24)`（奇航实证 hh=24 有效=全天，与 `qihang/client.ts:156` 一致）。
+12. **hh 上限不一致**：`apps/worker/src/etl/payload.ts:37` `max(23)` → `max(24)`（启航实证 hh=24 有效=全天，与 `qihang/client.ts:156` 一致）。
 13. 交付时在状态文件逐条定位以下 4 项代码行给 arch 复核：B4 pacing 零量日剔除、B13 下载 allowlist 默认拒绝、B23-C2 首次 full ready 门、B10 离线分区有界回退。
 
 
@@ -182,7 +182,7 @@
 ### R-011 后端：Task6 团队数据接入（按 v1.2「team→ka_data」重做；2026-09-04）
 
 - 派活方：arch　日期：2026-09-04　顺序：R-009 → R-010a → **R-011** → R-010b
-- **现场**：`/private/tmp/ka-personal-team-task6-20260904`（`codex/personal-team-task6-ingestion@4e67315`）。其中 `f009e19`（个人 Session 候选查询 `LIMIT 2` 稳定排序）可独立审后合入；`feec2ec/6d02cfe/4e67315`（source-neutral 团队接入计划/Domain contract/staging 设计）与未提交的 `011_team_data_sync.cjs` 草稿**按旧"奇航主源、KA Data 备用"设计写的，与 v1.2 冲突，作废重做**——但 root 停工前补的六条设计要求**全部保留**：
+- **现场**：`/private/tmp/ka-personal-team-task6-20260904`（`codex/personal-team-task6-ingestion@4e67315`）。其中 `f009e19`（个人 Session 候选查询 `LIMIT 2` 稳定排序）可独立审后合入；`feec2ec/6d02cfe/4e67315`（source-neutral 团队接入计划/Domain contract/staging 设计）与未提交的 `011_team_data_sync.cjs` 草稿**按旧"启航主源、KA Data 备用"设计写的，与 v1.2 冲突，作废重做**——但 root 停工前补的六条设计要求**全部保留**：
   1. 团队同步不逐页直接覆盖当前 canonical；
   2. run-scoped staging / versioned rows；
   3. 全部页 + coverage + lineage 验证通过后才原子 publish；
@@ -195,7 +195,7 @@
   3. `ka_data` → staging → 校验 → publish 的 Worker job 链（`team_sync_run`/`team_sync_page`/`team_sync_publish`），确定性 job id，失败保留上一 snapshot。
   4. 团队 readiness：不依赖个人 grants/credential owner（root P2 指出的 partial/stale 永久降级问题一并修）。
   5. 真实 PG 反例：中途失败保 snapshot、并发两 run 只发布一个、团队失败不动个人行、unknown lineage 不 ready。
-- 联调硬门（不在本批）：ka-data 服务 owner/ACL/只读性核实、**同日同户对平（奇航 vs ka-data）**交 OS agent。
+- 联调硬门（不在本批）：ka-data 服务 owner/ACL/只读性核实、**同日同户对平（启航 vs ka-data）**交 OS agent。
 - 状态：#1 提案已交 P082（2026-09-06），`docs/plans/2026-09-06-R011团队KA快照接入-契约提案.md`，proposal_pending_arch；#2–5 未实施，等 arch 冻结后再动013/代码，不复活旧Task6。
 
 
@@ -240,7 +240,7 @@
 
 **R-013 修订（2026-09-05，Codex 审查会话指出的死循环，arch 核实属实）**：`workspace-sync-service.ts` `planJob` 在授权账户为空时返回 `ACCOUNT_SCOPE_MISSING` 不发首次全量——所以"ETL 首跑后再补授权"走不通。改为：
 - **删除** `grants: "all_accounts_in_workspace"` 快捷值；grants 必须显式列账户。
-- 新增 **只读发现命令** `npm run discover:accounts -- --media KUAISHOU`（apps/worker）：用 `WORKER_SERVICE_QIHANG_USER_ID` 调奇航 `resource=account`（这本来就是授权的来源，不需要 grants），把 `{media, account_id, account_name, task_id, biz_name}` 列表打到 stdout（JSON），**不写库、不发任何 job**。老板看过清单 → 填进 seed JSON 的 grants → 跑 seed → 正常 tick 触发 etl_full。
+- 新增 **只读发现命令** `npm run discover:accounts -- --media KUAISHOU`（apps/worker）：用 `WORKER_SERVICE_QIHANG_USER_ID` 调启航 `resource=account`（这本来就是授权的来源，不需要 grants），把 `{media, account_id, account_name, task_id, biz_name}` 列表打到 stdout（JSON），**不写库、不发任何 job**。老板看过清单 → 填进 seed JSON 的 grants → 跑 seed → 正常 tick 触发 etl_full。
 - 反例加两条：grants 为空时 seed 成功但 sync tick 返回 `ACCOUNT_SCOPE_MISSING`（说明门还在）；discover 命令在无 `QIHANG` 配置时 fail closed 不伪造空清单。
 - 这不是放宽安全边界，是把"首次账户发现→人确认→显式授权→同步"这条真实首次路径补齐；以后 4.5「加/关账户闭环」复用 discover。
 

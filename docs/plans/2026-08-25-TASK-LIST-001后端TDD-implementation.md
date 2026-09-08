@@ -4,7 +4,7 @@
 
 **Goal:** 实现只读 `GET /api/v1/tasks`，在 AUTH-001 批准的 workspace/account tuple 内返回稳定分页的任务、权限化账户/工作项摘要和由 `computeTaskPacing` 生成的 pacing。
 
-**Architecture:** Domain 冻结 strict request/response/error schema 和上海 03:00 业务日；DB 在单个 `REPEATABLE READ READ ONLY` 事务中查 total、稳定分页与本页聚合事实，所有账户派生数据通过 `(media,account_id)` JSON tuple scope 过滤。Worker Service 只组合批准身份、业务日、契约状态与奇航主源审计；HTTP 复用已有 internal Bearer + server-side scope + requestId 边界，不增加任何写路由。
+**Architecture:** Domain 冻结 strict request/response/error schema 和上海 03:00 业务日；DB 在单个 `REPEATABLE READ READ ONLY` 事务中查 total、稳定分页与本页聚合事实，所有账户派生数据通过 `(media,account_id)` JSON tuple scope 过滤。Worker Service 只组合批准身份、业务日、契约状态与启航主源审计；HTTP 复用已有 internal Bearer + server-side scope + requestId 边界，不增加任何写路由。
 
 **Tech Stack:** TypeScript、Zod、PostgreSQL 16、node-postgres、Vitest、现有 `@ka/domain` / `@ka/db` / Worker data-api。
 

@@ -1,0 +1,362 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://animate-ui.com/docs/primitives/radix/collapsible",
+        "title": "Collapsible - Animate UI",
+        "description": "An interactive component which expands/collapses a panel."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/animate/avatar-group",
+        "title": "Avatar Group - Animate UI",
+        "description": "An animated avatar group that displays overlapping user images and smoothly shifts each avatar forward on hover to highlight it."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/backgrounds/gradient",
+        "title": "Gradient Background - Animate UI",
+        "description": "A background component featuring a subtle yet engaging animated gradient effect, smoothly transitioning colors to enhance visual depth."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/base/radio",
+        "title": "Radio - Animate UI",
+        "description": "An easily stylable radio button component."
+      },
+      {
+        "url": "https://animate-ui.com/docs/icons",
+        "title": "Icons - Animate UI",
+        "description": "Lucide Icons animated with Motion."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/animate/code-tabs",
+        "title": "Code Tabs - Animate UI",
+        "description": "A tabs component that displays code for different languages."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/base/accordion",
+        "title": "Accordion - Animate UI",
+        "description": "A set of collapsible panels with headings."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/community/radial-menu",
+        "title": "Radial Menu - Animate UI",
+        "description": "A circular context menu built with Base UI, displaying actions in a clean radial layout with full keyboard support and smooth interaction."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/base/tabs",
+        "title": "Tabs - Animate UI",
+        "description": "A set of layered sections of content—known as tab panels—that are displayed one at a time."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/radix/tabs",
+        "title": "Tabs - Animate UI",
+        "description": "A set of layered sections of content—known as tab panels—that are displayed one at a time."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/radix/radio-group",
+        "title": "Radio Group - Animate UI",
+        "description": "A set of checkable buttons—known as radio buttons—where no more than one of the buttons can be checked at a time."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/headless/tabs",
+        "title": "Tabs - Animate UI",
+        "description": "Easily create accessible, fully customizable tab interfaces, with robust focus management and keyboard navigation support."
+      },
+      {
+        "url": "https://animate-ui.com/docs",
+        "title": "Introduction - Animate UI",
+        "description": "Use Animate UI components to animate your pages."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/animate/avatar-group",
+        "title": "Avatar Group - Animate UI",
+        "description": "An animated avatar group that displays overlapping user images and smoothly shifts each avatar forward on hover to highlight it."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/radix/preview-link-card",
+        "title": "Preview Link Card - Animate UI",
+        "description": "Displays a preview image of a link when hovered."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/headless/dialog",
+        "title": "Dialog - Animate UI",
+        "description": "A fully-managed, renderless dialog component jam-packed with accessibility and keyboard features, perfect for building completely custom dialogs and alerts."
+      },
+      {
+        "url": "https://animate-ui.com",
+        "title": "Animate UI - Animated React Components",
+        "description": "Fully animated, open-source component distribution built with React, TypeScript, Tailwind CSS, Motion and Shadcn CLI. Browse a list of components you can ins..."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/base/collapsible",
+        "title": "Collapsible - Animate UI",
+        "description": "A collapsible panel controlled by a button."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/animate/tabs",
+        "title": "Tabs - Animate UI",
+        "description": "A set of layered sections with the same height of content—known as tab panels—that are displayed one at a time."
+      },
+      {
+        "url": "https://animate-ui.com/docs/mcp",
+        "title": "MCP",
+        "description": "How to use the Registry MCP with Animate UI. Select your MCP client and follow the instructions to configure the shadcn MCP server."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives",
+        "title": "Primitives",
+        "description": "Primitives Animated, unstyled components to let you express your creativity. UI Effects Buttons. The source code is available on GitHub."
+      },
+      {
+        "url": "https://animate-ui.com/docs/accessibility",
+        "title": "Accessibility",
+        "description": "Animate UI is built on top of Motion. This means all Animate UI components can leverage Motion's accessibility features. Accessible animations help ensure your ..."
+      },
+      {
+        "url": "https://animate-ui.com/docs/installation",
+        "title": "Installation",
+        "description": "How to install dependencies and structure your app. create a new project with shadcn/ui or setup an existing one. add a component to your project."
+      },
+      {
+        "url": "https://animate-ui.com/docs/troubleshooting",
+        "title": "Troubleshooting",
+        "description": "How to troubleshoot common issues with Animate UI. Common culprits include: Screen Shader | Smart Screen Tinting"
+      },
+      {
+        "url": "https://animate-ui.com/docs/components",
+        "title": "Components",
+        "description": "Animated components styled with Tailwind CSS."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/community",
+        "title": "Introduction",
+        "description": "The goal is to make it easy for anyone to publish and share animated components with the community. How to add a community component? Perform a PR by ..."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/backgrounds/stars",
+        "title": "Stars Background",
+        "description": "Built by Skyleen. The source code is available on GitHub. Last updated: 12/6/2025. On this page. InstallationUsageAPI ReferenceStarsBackgroundCredits."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/buttons/flip",
+        "title": "Flip Button",
+        "description": "An animated flip button component with a variety of styles. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/headless/popover",
+        "title": "Popover",
+        "description": "Popovers are perfect for floating panels with arbitrary content like navigation menus, mobile menus and flyout menus."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/buttons/liquid",
+        "title": "Liquid Button",
+        "description": "A button that fills on hover. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code. Open in. Hover me. LiquidButton. variant. default. size."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/effects/blur",
+        "title": "Blur",
+        "description": "An effect that allows you to animate elements with a blur effect on first view or load."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/radix/switch",
+        "title": "Switch",
+        "description": "Switch. A control that allows the user to toggle between checked and not checked. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code. Open in."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/radix/toggle",
+        "title": "Toggle",
+        "description": "Toggle. A two-state button that can be either on or off. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code. Open in. Installation. CLI."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/base/menu",
+        "title": "Menu",
+        "description": "Built by Skyleen. The source code is available on GitHub. Last updated: 12/6/2025. On this page. InstallationUsageExamplesMenu CheckboxMenu Radio ..."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/headless/dialog",
+        "title": "Dialog",
+        "description": "A fully-managed, renderless dialog component jam-packed with accessibility and keyboard features, perfect for building completely custom dialogs and alerts."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/radix/toggle",
+        "title": "Toggle",
+        "description": "A two-state button that can be either on or off. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code. Open in. Toggle. variant. default. size."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/backgrounds/hole",
+        "title": "Hole Background",
+        "description": "strokeColor? string. #737373. numberOfLines? number. 50. numberOfDiscs? number. 50. particleRGBColor? [number, number, number]. [255, 255, 255] ."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/base/progress",
+        "title": "Progress",
+        "description": "Displays the status of a task that takes a long time."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/buttons/copy",
+        "title": "Copy Button",
+        "description": "A copy button component with a variety of styles and animations. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/headless/popover",
+        "title": "Popover",
+        "description": "Popovers are perfect for floating panels with arbitrary content like navigation menus, mobile menus and flyout menus."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/radix/checkbox",
+        "title": "Checkbox",
+        "description": "A control that allows the user to toggle between checked and not checked."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/effects/effect",
+        "title": "Effect",
+        "description": "An effect that allows you to animate elements on first view or load."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/radix/tooltip",
+        "title": "Tooltip",
+        "description": "Tooltip. A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it. Made by imskyleen · Edit ..."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/radix/progress",
+        "title": "Progress",
+        "description": "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/radix/accordion",
+        "title": "Accordion",
+        "description": "Accordion. A vertically stacked set of interactive headings that each reveal an associated section of content. Made by imskyleen · Edit on GitHub. Copy Markdown"
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/backgrounds/bubble",
+        "title": "Bubble Background",
+        "description": "Built by Skyleen. The source code is available on GitHub. Last updated: 12/6/2025. On this page. InstallationUsageAPI ReferenceBubbleBackgroundCredits."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/radix/popover",
+        "title": "Popover",
+        "description": "Displays rich content in a portal, triggered by a button."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/radix/dialog",
+        "title": "Dialog",
+        "description": "A window overlaid on either the primary window or another dialog window, rendering the content underneath inert."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/base/checkbox",
+        "title": "Checkbox",
+        "description": "An easily stylable checkbox component. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code. Open in. Accept terms and conditions. Checkbox."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/animate/tabs",
+        "title": "Tabs",
+        "description": "A set of layered sections of content—known as tab panels—that are displayed one at a time."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/backgrounds/fireworks",
+        "title": "Fireworks Background",
+        "description": "A background component that displays a fireworks animation. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/buttons/button",
+        "title": "Button",
+        "description": "An animated button component with a variety of styles. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code. Open in. Click me. Button."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/base/dialog",
+        "title": "Dialog",
+        "description": "Dialog. A popup that opens on top of the entire page. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code. Open in. Open Dialog. DialogPopup."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/buttons/button",
+        "title": "Button",
+        "description": "A simple button that animates on hover and tap."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/base/tooltip",
+        "title": "Tooltip",
+        "description": "A popup that appears when an element is hovered or focused, showing a hint for sighted users."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/base/toggle",
+        "title": "Toggle",
+        "description": "Toggle. A two-state button that can be on or off. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code. Open in. Toggle. variant. default. size."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/radix/popover",
+        "title": "Popover",
+        "description": "Popover. Displays rich content in a portal, triggered by a button. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code. Open in. Open popover."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/base/popover",
+        "title": "Popover",
+        "description": "An accessible popup anchored to a button."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/base/tooltip",
+        "title": "Tooltip",
+        "description": "A popup that appears when an element is hovered or focused, showing a hint for sighted users."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/headless/switch",
+        "title": "Switch",
+        "description": "Switches are a pleasant interface for toggling a value between two states, and offer the same semantics and keyboard navigation as native checkbox elements."
+      },
+      {
+        "url": "https://animate-ui.com/docs/icons/usage/persistence",
+        "title": "Persistence",
+        "description": "Define whether the icon resets to its initial state or keeps the animation."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/animate/tooltip",
+        "title": "Tooltip",
+        "description": "A tooltip is a small box that appears when hovering over an element."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/buttons/theme-toggler",
+        "title": "Theme Toggler Button",
+        "description": "A button that toggles the theme gradually."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/buttons/github-stars",
+        "title": "GitHub Stars Button",
+        "description": "Credit to shadcn/ui for style inspiration. Built by Skyleen. The source code is available on GitHub. Last updated: 12/6/2025. On ..."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/animate/pinned-list",
+        "title": "Pinned List",
+        "description": "Based on @arhamkhnz's Pin List component. Built by Skyleen. The source code is available on GitHub. Last updated: 12/6/2025 ..."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/radix/alert-dialog",
+        "title": "Alert Dialog",
+        "description": "A modal dialog that interrupts the user with important content and expects a response. Made by imskyleen · Edit on GitHub. Copy Markdown Open. Preview. Code."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/radix/hover-card",
+        "title": "Hover Card",
+        "description": "For sighted users to preview content available behind a link."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/community/radial-nav",
+        "title": "Radial Nav",
+        "description": "A circular navigation menu with animated pointer and expanding buttons for smooth interactive transitions."
+      },
+      {
+        "url": "https://animate-ui.com/docs/primitives/radix/dropdown-menu",
+        "title": "Dropdown Menu",
+        "description": "Displays a menu to the user — such as a set of actions or functions — triggered by a button."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/community/motion-carousel",
+        "title": "Motion Carousel",
+        "description": "A carousel built on top of Embla Carousel with smooth Motion-powered animations. Each slide scales dynamically based on its active state, ..."
+      },
+      {
+        "url": "https://animate-ui.com/docs/components/radix/hover-card",
+        "title": "Hover Card",
+        "description": "For sighted users to preview content available behind a link."
+      }
+    ]
+  }
+}

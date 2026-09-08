@@ -1,0 +1,237 @@
+- generic [active] [ref=e1]:
+  - link "跳到主要内容" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e4]:
+    - link "跳到主要内容" [ref=e5] [cursor=pointer]:
+      - /url: "#main-content"
+    - banner [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - strong [ref=e13]: 投放 Agent
+          - text: 经营控制台
+        - navigation "产品主导航" [ref=e14]:
+          - list [ref=e16]:
+            - listitem [ref=e17]:
+              - link "经营总览" [ref=e18] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e19]:
+              - button "投放经营" [ref=e20]
+            - listitem [ref=e23]:
+              - link "自动化" [ref=e24] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e25]:
+              - button "内容资产" [ref=e26]
+        - generic [ref=e29]:
+          - button "全局搜索⌘ K" [ref=e30]
+          - button "切换深色主题" [ref=e34]
+          - button "通知" [ref=e35]
+          - button "个人中心" [ref=e36]
+          - button "打开导航" [ref=e37]
+      - generic [ref=e38]:
+        - navigation "当前页面视图" [ref=e39]:
+          - link "我的工作" [ref=e40] [cursor=pointer]:
+            - /url: "#"
+          - link "协作事项 4" [ref=e41] [cursor=pointer]:
+            - /url: "#"
+          - link "管理视图" [ref=e42] [cursor=pointer]:
+            - /url: "#"
+        - generic [ref=e43]:
+          - text: 数据同步正常 媒体 10:42 · 后端约延迟 8 分钟
+          - button "Agent 在线" [ref=e44]
+    - main [ref=e45]:
+      - generic [ref=e46]:
+        - generic [ref=e47]:
+          - paragraph [ref=e48]: MY OPERATIONS · 08/20
+          - heading "先处理 3 个异常账户" [level=1] [ref=e49]
+          - paragraph [ref=e50]: 把影响跑量和成本的事情排在最前面，确认后再执行。
+        - generic [ref=e51]:
+          - generic "首页角色模式" [ref=e52]:
+            - button "优化师" [pressed] [ref=e53]
+            - button "KA 负责人" [ref=e54]
+            - button "综合首页" [ref=e55]
+          - generic "工作台筛选" [ref=e56]:
+            - generic [ref=e57]:
+              - generic [ref=e58]: 日期范围
+              - combobox "日期范围" [ref=e61]:
+                - option "今天 · 08/20" [selected]
+                - option "昨天 · 08/19"
+                - option "近 7 天"
+            - generic [ref=e62]:
+              - generic [ref=e63]: 投放任务
+              - combobox "投放任务" [ref=e66]:
+                - option "全部任务" [selected]
+                - option "新客增长计划"
+                - option "重点单品放量"
+                - option "老客召回测试"
+            - button "刷新" [ref=e67]
+          - generic [ref=e68]: 全部任务 · 数据更新于 10:42
+      - generic [ref=e72]:
+        - generic [ref=e73]:
+          - generic [ref=e75]:
+            - paragraph [ref=e76]: 今日消耗
+            - generic [ref=e77]: ¥12.9万
+          - generic [ref=e82]:
+            - generic [ref=e83]:
+              - text: 精确值 ¥128,640.72
+              - generic [ref=e84]: +8.6%
+            - generic [ref=e85]: "01"
+        - generic [ref=e86]:
+          - generic [ref=e88]:
+            - paragraph [ref=e89]: 后端真实转化
+            - generic [ref=e90]: 2,080
+          - generic [ref=e97]:
+            - generic [ref=e98]:
+              - text: 媒体回传 2,232 · Gap 6.8%
+              - generic [ref=e99]: +12.4%
+            - generic [ref=e100]: "02"
+        - generic [ref=e101]:
+          - generic [ref=e103]:
+            - paragraph [ref=e104]: 真实 CPA
+            - generic [ref=e105]: ¥61.85
+          - generic [ref=e109]:
+            - generic [ref=e110]:
+              - text: 考核价 ¥58.00 · 高 6.6%
+              - generic [ref=e111]: +3.8%
+            - generic [ref=e112]: "03"
+        - generic [ref=e113]:
+          - generic [ref=e115]:
+            - paragraph [ref=e116]: 风险账户
+            - generic [ref=e117]: 3 / 46
+          - generic [ref=e121]:
+            - generic [ref=e122]:
+              - text: 1 个严重 · 2 个关注
+              - generic [ref=e123]: 待处理
+            - generic [ref=e124]: "04"
+      - generic [ref=e125]:
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - generic [ref=e128]:
+              - heading "经营趋势" [level=3] [ref=e129]
+              - paragraph [ref=e130]: 截至 10:42 · 后端真实转化约延迟 8 分钟
+            - generic "趋势指标" [ref=e131]:
+              - button "消耗" [pressed] [ref=e132]
+              - button "真实 CPA" [ref=e133]
+          - generic [ref=e134]:
+            - img "投放经营趋势图"
+        - generic [ref=e135]:
+          - generic [ref=e136]:
+            - generic [ref=e137]:
+              - heading "今日需要处理" [level=3] [ref=e138]
+              - paragraph [ref=e139]: 按成本与跑量影响排序
+            - generic [ref=e140]: 3 项
+          - generic [ref=e141]:
+            - article [ref=e142]:
+              - generic [ref=e143]:
+                - strong [ref=e144]: 演示账户-A01 连续 90 分钟超成本
+                - text: 真实 CPA ¥71.24，高于考核价 22.8%4 分钟前
+              - button "查看诊断" [ref=e145]
+            - article [ref=e146]:
+              - generic [ref=e147]:
+                - strong [ref=e148]: 老客召回测试消耗增速异常
+                - text: 近 30 分钟消耗 +38%，转化未同步增长12 分钟前
+              - button "核对时段" [ref=e149]
+            - article [ref=e150]:
+              - generic [ref=e151]:
+                - strong [ref=e152]: 区域增量探索数据延迟
+                - text: 媒体数据已更新，后端真实转化延迟 18 分钟18 分钟前
+              - button "检查数据" [ref=e153]
+            - button "查看完整行动队列" [ref=e154]
+      - generic [ref=e155]:
+        - generic [ref=e156]:
+          - generic [ref=e157]:
+            - heading "账户经营明细" [level=3] [ref=e158]
+            - paragraph [ref=e159]: 6 条脱敏演示记录 · 金额按精确值显示
+          - generic [ref=e160]:
+            - button "按CPA排序" [ref=e161]
+            - button "更多表格操作" [ref=e162]
+        - table [ref=e164]:
+          - rowgroup [ref=e165]:
+            - row [ref=e166]:
+              - columnheader "账户 / 任务" [ref=e167]
+              - columnheader "负责人" [ref=e168]
+              - columnheader "今日消耗" [ref=e169]
+              - columnheader "真实转化" [ref=e170]
+              - columnheader "真实 CPA" [ref=e171]
+              - columnheader "状态" [ref=e172]
+              - columnheader "操作" [ref=e173]
+          - rowgroup [ref=e175]:
+            - row [ref=e176]:
+              - cell [ref=e177]:
+                - strong [ref=e178]: 演示账户-A01
+                - text: 新客增长计划
+              - cell "演示成员-甲" [ref=e179]
+              - cell "¥28,640.18" [ref=e180]
+              - cell "402" [ref=e181]
+              - cell [ref=e182]:
+                - strong [ref=e183]: ¥71.24
+                - generic [ref=e184]: 12.4%
+              - cell "严重" [ref=e188]
+              - cell [ref=e190]:
+                - button "查看演示账户-A01" [ref=e191]
+            - row [ref=e192]:
+              - cell [ref=e193]:
+                - strong [ref=e194]: 演示账户-A02
+                - text: 重点单品放量
+              - cell "演示成员-乙" [ref=e195]
+              - cell "¥24,680.32" [ref=e196]
+              - cell "448" [ref=e197]
+              - cell [ref=e198]:
+                - strong [ref=e199]: ¥55.09
+                - generic [ref=e200]: 4.1%
+              - cell "正常" [ref=e204]
+              - cell [ref=e206]:
+                - button "查看演示账户-A02" [ref=e207]
+            - row [ref=e208]:
+              - cell [ref=e209]:
+                - strong [ref=e210]: 演示账户-A03
+                - text: 老客召回测试
+              - cell "演示成员-甲" [ref=e211]
+              - cell "¥19,472.80" [ref=e212]
+              - cell "280" [ref=e213]
+              - cell [ref=e214]:
+                - strong [ref=e215]: ¥69.55
+                - generic [ref=e216]: 8.7%
+              - cell "关注" [ref=e220]
+              - cell [ref=e222]:
+                - button "查看演示账户-A03" [ref=e223]
+            - row [ref=e224]:
+              - cell [ref=e225]:
+                - strong [ref=e226]: 演示账户-A04
+                - text: 素材方向验证
+              - cell "演示成员-丙" [ref=e227]
+              - cell "¥17,620.42" [ref=e228]
+              - cell "321" [ref=e229]
+              - cell [ref=e230]:
+                - strong [ref=e231]: ¥54.89
+                - generic [ref=e232]: 2.2%
+              - cell "正常" [ref=e236]
+              - cell [ref=e238]:
+                - button "查看演示账户-A04" [ref=e239]
+            - row [ref=e240]:
+              - cell [ref=e241]:
+                - strong [ref=e242]: 演示账户-A05
+                - text: 区域增量探索
+              - cell "演示成员-乙" [ref=e243]
+              - cell "¥14,350.00" [ref=e244]
+              - cell "202" [ref=e245]
+              - cell [ref=e246]:
+                - strong [ref=e247]: ¥71.04
+                - generic [ref=e248]: 6.4%
+              - cell "关注" [ref=e252]
+              - cell [ref=e254]:
+                - button "查看演示账户-A05" [ref=e255]
+            - row [ref=e256]:
+              - cell [ref=e257]:
+                - strong [ref=e258]: 演示账户-A06
+                - text: 稳定跑量维护
+              - cell "演示成员-丙" [ref=e259]
+              - cell "¥13,420.00" [ref=e260]
+              - cell "247" [ref=e261]
+              - cell [ref=e262]:
+                - strong [ref=e263]: ¥54.33
+                - generic [ref=e264]: 1.8%
+              - cell "正常" [ref=e268]
+              - cell [ref=e270]:
+                - button "查看演示账户-A06" [ref=e271]
+      - generic [ref=e272]: 所有账户、金额与人员均为脱敏演示数据数据状态：媒体已更新 · 后端延迟约 8 分钟
+      - button "打开投放 Agent" [ref=e273]: 问 Agent

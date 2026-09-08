@@ -6,7 +6,7 @@
 
 ## 1. 背景与证据边界
 
-老板提供了一套已有人使用的钉钉机器人 SOP。其描述的运行方式是：在能访问外网与阿里内网的沙箱中初始化巨浪/Multica Runtime，启动 `multica daemon`，运行常驻 Claude Agent，通过本机 MITM、CA 和个人身份字段调用奇航与媒体接口。
+老板提供了一套已有人使用的钉钉机器人 SOP。其描述的运行方式是：在能访问外网与阿里内网的沙箱中初始化巨浪/Multica Runtime，启动 `multica daemon`，运行常驻 Claude Agent，通过本机 MITM、CA 和个人身份字段调用启航与媒体接口。
 
 当前只拿到 SOP 文本和 OS 对其机制的解释，**尚未取得或实读附件源码包**。因此本设计只把以下内容视为材料所声称的能力，不把它们冒充为本项目已验证事实：
 
@@ -62,7 +62,7 @@ Capability Registry
 
 | 类别 | 可能字段 | 用途 | 当前证据 |
 |---|---|---|---|
-| 奇航数据身份 | qihang/mozi userId | 查数和账户范围 | 已有项目实证，但各媒体资源仍逐项验收 |
+| 启航数据身份 | qihang/mozi userId | 查数和账户范围 | 已有项目实证，但各媒体资源仍逐项验收 |
 | Multica 身份 | `mul_` PAT reference | 派发 Run、读取回执、Runtime 登录 | 已有项目实证 |
 | 内部模型 | IdeaLab AK reference | 产品内 Agent/ASR | 已有项目实证 |
 | Runtime 写身份 | avatar/user/bucNo 或平台后续提供的授权包 | MITM 代理注入媒体写权限 | 仅 SOP/OS 材料，待源码和真实 Runtime 核验 |

@@ -33,6 +33,6 @@
   2. 双数据诊断改为服务端 flag + 精确 entitlement，普通 Session 固定 platform；
   3. 联合真 PG+HTTP 补齐 team Changeset Repository 前 403、logout 后五路 401，
      以及同号账户跨 workspace/media 不串数。
-- 已知未完成：前端 BFF Session 转发、Task6 team ingestion、真实奇航/KA Data、内网部署。
+- 已知未完成：前端 BFF Session 转发、Task6 team ingestion、真实启航/KA Data、内网部署。
 - 非阻断 P2：`createSessionForIdentity()` active personal membership 查询后续改稳定 `LIMIT 2`。
 - 状态：`r1_resubmitted`；不得据此宣称已合流、已部署或 Claude 已批准。

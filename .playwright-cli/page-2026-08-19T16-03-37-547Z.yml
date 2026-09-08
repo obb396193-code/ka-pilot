@@ -1,0 +1,17 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - text: 04 / CONTROLLED MOTION
+      - heading "Animate UI" [level=1] [ref=e6]
+    - paragraph [ref=e7]: 实际运行 Ripple Button 与 Counting Number；只保留能解释状态变化的微交互。
+  - generic [ref=e8]:
+    - article [ref=e9]:
+      - generic [ref=e10]: RIPPLE BUTTON
+      - button "更新报表数据" [active] [ref=e11]
+      - paragraph [ref=e12]: 点击观察官方 ripple primitive；反馈不阻塞业务动作。
+    - article [ref=e13]:
+      - generic [ref=e14]: COUNTING NUMBER
+      - generic [ref=e15]: ¥7563
+      - generic [ref=e16]:
+        - generic [ref=e17]: +12.4%
+        - generic [ref=e18]: 今日消耗

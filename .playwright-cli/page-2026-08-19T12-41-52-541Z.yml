@@ -1,0 +1,378 @@
+- generic [ref=f1e1]:
+  - link "跳到内容" [ref=f1e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f1e3]:
+    - complementary "展厅导航" [ref=f1e4]:
+      - navigation [ref=f1e9]:
+        - button "总览与风格 12" [ref=f1e1541] [cursor=pointer]:
+          - generic [ref=f1e12]: 总览与风格
+          - generic [ref=f1e13]: "12"
+        - button "全量清单 5,936" [ref=f1e1542] [cursor=pointer]:
+          - generic [ref=f1e16]: 全量清单
+          - generic [ref=f1e17]: 5,936
+        - button "付费替代 2,137" [ref=f1e1543] [cursor=pointer]:
+          - generic [ref=f1e20]: 付费替代
+          - generic [ref=f1e21]: 2,137
+        - button "本地源码 93" [ref=f1e1544] [cursor=pointer]:
+          - generic [ref=f1e24]: 本地源码
+          - generic [ref=f1e25]: "93"
+        - button "主题展厅 42" [active] [ref=f1e1545] [cursor=pointer]:
+          - generic [ref=f1e28]: 主题展厅
+          - generic [ref=f1e29]: "42"
+        - button "新库候选 5" [ref=f1e1546] [cursor=pointer]:
+          - generic [ref=f1e32]: 新库候选
+          - generic [ref=f1e33]: "5"
+    - main [ref=f1e35]:
+      - generic [ref=f1e36]: 官方目录快照 ·
+      - text: s c T A
+      - generic [ref=f1e1548]:
+        - generic [ref=f1e1549]:
+          - generic [ref=f1e1550]:
+            - generic [ref=f1e1551]: tweakcn core
+            - heading "42 个官方主题种子" [level=1] [ref=f1e1552]
+          - paragraph [ref=f1e1553]: 这些卡片直接读取官方 preset 的 light tokens，目的是先看气质差异。最终运行时切换要落到项目自己的语义 token 和版本契约。
+        - generic [ref=f1e1555]:
+          - generic [ref=f1e1556]: 搜索主题
+          - searchbox "搜索主题" [ref=f1e1557]
+        - generic [ref=f1e1558]:
+          - status [ref=f1e1559]:
+            - strong [ref=f1e1560]: "42"
+            - text: 个主题
+          - generic [ref=f1e1561]: 颜色为官方 light token 快照
+        - generic [ref=f1e1562]:
+          - article [ref=f1e1563]:
+            - generic [ref=f1e1569]:
+              - generic [ref=f1e1570]: Campaign pulse
+              - paragraph [ref=f1e1571]
+              - generic [ref=f1e1572]: 查看诊断
+            - generic [ref=f1e1579]:
+              - heading "Amber Minimal" [level=3] [ref=f1e1580]
+              - paragraph [ref=f1e1581]: "amber-minimal · radius 0.375remprimary #f59e0b · background #ffffff"
+          - article [ref=f1e1582]:
+            - generic [ref=f1e1588]:
+              - generic [ref=f1e1589]: Campaign pulse
+              - paragraph [ref=f1e1590]
+              - generic [ref=f1e1591]: 查看诊断
+            - generic [ref=f1e1598]:
+              - heading "Amethyst Haze" [level=3] [ref=f1e1599]
+              - paragraph [ref=f1e1600]: "amethyst-haze · radius 0.5remprimary #8a79ab · background #f8f7fa"
+          - article [ref=f1e1601]:
+            - generic [ref=f1e1607]:
+              - generic [ref=f1e1608]: Campaign pulse
+              - paragraph [ref=f1e1609]
+              - generic [ref=f1e1610]: 查看诊断
+            - generic [ref=f1e1617]:
+              - heading "Bold Tech" [level=3] [ref=f1e1618]
+              - paragraph [ref=f1e1619]: "bold-tech · radius 0.625remprimary #8b5cf6 · background #ffffff"
+          - article [ref=f1e1620]:
+            - generic [ref=f1e1626]:
+              - generic [ref=f1e1627]: Campaign pulse
+              - paragraph [ref=f1e1628]
+              - generic [ref=f1e1629]: 查看诊断
+            - generic [ref=f1e1636]:
+              - heading "Bubblegum" [level=3] [ref=f1e1637]
+              - paragraph [ref=f1e1638]: "bubblegum · radius 0.4remprimary #d04f99 · background #f6e6ee"
+          - article [ref=f1e1639]:
+            - generic [ref=f1e1645]:
+              - generic [ref=f1e1646]: Campaign pulse
+              - paragraph [ref=f1e1647]
+              - generic [ref=f1e1648]: 查看诊断
+            - generic [ref=f1e1655]:
+              - heading "Caffeine" [level=3] [ref=f1e1656]
+              - paragraph [ref=f1e1657]: "caffeine · radius 0.5remprimary #644a40 · background #f9f9f9"
+          - article [ref=f1e1658]:
+            - generic [ref=f1e1664]:
+              - generic [ref=f1e1665]: Campaign pulse
+              - paragraph [ref=f1e1666]
+              - generic [ref=f1e1667]: 查看诊断
+            - generic [ref=f1e1674]:
+              - heading "Candyland" [level=3] [ref=f1e1675]
+              - paragraph [ref=f1e1676]: "candyland · radius 0.5remprimary #ffc0cb · background #f7f9fa"
+          - article [ref=f1e1677]:
+            - generic [ref=f1e1683]:
+              - generic [ref=f1e1684]: Campaign pulse
+              - paragraph [ref=f1e1685]
+              - generic [ref=f1e1686]: 查看诊断
+            - generic [ref=f1e1693]:
+              - heading "Catppuccin" [level=3] [ref=f1e1694]
+              - paragraph [ref=f1e1695]: "catppuccin · radius 0.35remprimary #8839ef · background #eff1f5"
+          - article [ref=f1e1696]:
+            - generic [ref=f1e1702]:
+              - generic [ref=f1e1703]: Campaign pulse
+              - paragraph [ref=f1e1704]
+              - generic [ref=f1e1705]: 查看诊断
+            - generic [ref=f1e1712]:
+              - heading "Claude" [level=3] [ref=f1e1713]
+              - paragraph [ref=f1e1714]: "claude · radius 0.5remprimary #c96442 · background #faf9f5"
+          - article [ref=f1e1715]:
+            - generic [ref=f1e1721]:
+              - generic [ref=f1e1722]: Campaign pulse
+              - paragraph [ref=f1e1723]
+              - generic [ref=f1e1724]: 查看诊断
+            - generic [ref=f1e1731]:
+              - heading "Claymorphism" [level=3] [ref=f1e1732]
+              - paragraph [ref=f1e1733]: "claymorphism · radius 1.25remprimary #6366f1 · background #e7e5e4"
+          - article [ref=f1e1734]:
+            - generic [ref=f1e1740]:
+              - generic [ref=f1e1741]: Campaign pulse
+              - paragraph [ref=f1e1742]
+              - generic [ref=f1e1743]: 查看诊断
+            - generic [ref=f1e1750]:
+              - heading "Clean Slate" [level=3] [ref=f1e1751]
+              - paragraph [ref=f1e1752]: "clean-slate · radius 0.5remprimary #6366f1 · background #f8fafc"
+          - article [ref=f1e1753]:
+            - generic [ref=f1e1759]:
+              - generic [ref=f1e1760]: Campaign pulse
+              - paragraph [ref=f1e1761]
+              - generic [ref=f1e1762]: 查看诊断
+            - generic [ref=f1e1769]:
+              - heading "Cosmic Night" [level=3] [ref=f1e1770]
+              - paragraph [ref=f1e1771]: "cosmic-night · radius 0.5remprimary #6e56cf · background #f5f5ff"
+          - article [ref=f1e1772]:
+            - generic [ref=f1e1778]:
+              - generic [ref=f1e1779]: Campaign pulse
+              - paragraph [ref=f1e1780]
+              - generic [ref=f1e1781]: 查看诊断
+            - generic [ref=f1e1788]:
+              - heading "Cyberpunk" [level=3] [ref=f1e1789]
+              - paragraph [ref=f1e1790]: "cyberpunk · radius 0.5remprimary #ff00c8 · background #f8f9fa"
+          - article [ref=f1e1791]:
+            - generic [ref=f1e1797]:
+              - generic [ref=f1e1798]: Campaign pulse
+              - paragraph [ref=f1e1799]
+              - generic [ref=f1e1800]: 查看诊断
+            - generic [ref=f1e1807]:
+              - heading "Darkmatter" [level=3] [ref=f1e1808]
+              - paragraph [ref=f1e1809]: "darkmatter · radius 0.75remprimary #d87943 · background #ffffff"
+          - article [ref=f1e1810]:
+            - generic [ref=f1e1816]:
+              - generic [ref=f1e1817]: Campaign pulse
+              - paragraph [ref=f1e1818]
+              - generic [ref=f1e1819]: 查看诊断
+            - generic [ref=f1e1826]:
+              - heading "Doom 64" [level=3] [ref=f1e1827]
+              - paragraph [ref=f1e1828]: "doom-64 · radius 0pxprimary #b71c1c · background #cccccc"
+          - article [ref=f1e1829]:
+            - generic [ref=f1e1835]:
+              - generic [ref=f1e1836]: Campaign pulse
+              - paragraph [ref=f1e1837]
+              - generic [ref=f1e1838]: 查看诊断
+            - generic [ref=f1e1845]:
+              - heading "Elegant Luxury" [level=3] [ref=f1e1846]
+              - paragraph [ref=f1e1847]: "elegant-luxury · radius 0.375remprimary #9b2c2c · background #faf7f5"
+          - article [ref=f1e1848]:
+            - generic [ref=f1e1854]:
+              - generic [ref=f1e1855]: Campaign pulse
+              - paragraph [ref=f1e1856]
+              - generic [ref=f1e1857]: 查看诊断
+            - generic [ref=f1e1864]:
+              - heading "Graphite" [level=3] [ref=f1e1865]
+              - paragraph [ref=f1e1866]: "graphite · radius 0.35remprimary #606060 · background #f0f0f0"
+          - article [ref=f1e1867]:
+            - generic [ref=f1e1873]:
+              - generic [ref=f1e1874]: Campaign pulse
+              - paragraph [ref=f1e1875]
+              - generic [ref=f1e1876]: 查看诊断
+            - generic [ref=f1e1883]:
+              - heading "Kodama Grove" [level=3] [ref=f1e1884]
+              - paragraph [ref=f1e1885]: "kodama-grove · radius 0.425remprimary #8d9d4f · background #e4d7b0"
+          - article [ref=f1e1886]:
+            - generic [ref=f1e1892]:
+              - generic [ref=f1e1893]: Campaign pulse
+              - paragraph [ref=f1e1894]
+              - generic [ref=f1e1895]: 查看诊断
+            - generic [ref=f1e1902]:
+              - heading "Midnight Bloom" [level=3] [ref=f1e1903]
+              - paragraph [ref=f1e1904]: "midnight-bloom · radius 0.5remprimary #6c5ce7 · background #f9f9f9"
+          - article [ref=f1e1905]:
+            - generic [ref=f1e1911]:
+              - generic [ref=f1e1912]: Campaign pulse
+              - paragraph [ref=f1e1913]
+              - generic [ref=f1e1914]: 查看诊断
+            - generic [ref=f1e1921]:
+              - heading "Mocha Mousse" [level=3] [ref=f1e1922]
+              - paragraph [ref=f1e1923]: "mocha-mousse · radius 0.5remprimary #A37764 · background #F1F0E5"
+          - article [ref=f1e1924]:
+            - generic [ref=f1e1930]:
+              - generic [ref=f1e1931]: Campaign pulse
+              - paragraph [ref=f1e1932]
+              - generic [ref=f1e1933]: 查看诊断
+            - generic [ref=f1e1940]:
+              - heading "Modern Minimal" [level=3] [ref=f1e1941]
+              - paragraph [ref=f1e1942]: "modern-minimal · radius 0.375remprimary #3b82f6 · background #ffffff"
+          - article [ref=f1e1943]:
+            - generic [ref=f1e1949]:
+              - generic [ref=f1e1950]: Campaign pulse
+              - paragraph [ref=f1e1951]
+              - generic [ref=f1e1952]: 查看诊断
+            - generic [ref=f1e1959]:
+              - heading "Mono" [level=3] [ref=f1e1960]
+              - paragraph [ref=f1e1961]: "mono · radius 0remprimary #737373 · background #ffffff"
+          - article [ref=f1e1962]:
+            - generic [ref=f1e1968]:
+              - generic [ref=f1e1969]: Campaign pulse
+              - paragraph [ref=f1e1970]
+              - generic [ref=f1e1971]: 查看诊断
+            - generic [ref=f1e1978]:
+              - heading "Nature" [level=3] [ref=f1e1979]
+              - paragraph [ref=f1e1980]: "nature · radius 0.5remprimary #2e7d32 · background #f8f5f0"
+          - article [ref=f1e1981]:
+            - generic [ref=f1e1987]:
+              - generic [ref=f1e1988]: Campaign pulse
+              - paragraph [ref=f1e1989]
+              - generic [ref=f1e1990]: 查看诊断
+            - generic [ref=f1e1997]:
+              - heading "Neo Brutalism" [level=3] [ref=f1e1998]
+              - paragraph [ref=f1e1999]: "neo-brutalism · radius 0pxprimary #ff3333 · background #ffffff"
+          - article [ref=f1e2000]:
+            - generic [ref=f1e2006]:
+              - generic [ref=f1e2007]: Campaign pulse
+              - paragraph [ref=f1e2008]
+              - generic [ref=f1e2009]: 查看诊断
+            - generic [ref=f1e2016]:
+              - heading "Northern Lights" [level=3] [ref=f1e2017]
+              - paragraph [ref=f1e2018]: "northern-lights · radius 0.5remprimary #34a85a · background #f9f9fa"
+          - article [ref=f1e2019]:
+            - generic [ref=f1e2025]:
+              - generic [ref=f1e2026]: Campaign pulse
+              - paragraph [ref=f1e2027]
+              - generic [ref=f1e2028]: 查看诊断
+            - generic [ref=f1e2035]:
+              - heading "Notebook" [level=3] [ref=f1e2036]
+              - paragraph [ref=f1e2037]: "notebook · radius 0.625remprimary #606060 · background #f9f9f9"
+          - article [ref=f1e2038]:
+            - generic [ref=f1e2044]:
+              - generic [ref=f1e2045]: Campaign pulse
+              - paragraph [ref=f1e2046]
+              - generic [ref=f1e2047]: 查看诊断
+            - generic [ref=f1e2054]:
+              - heading "Ocean Breeze" [level=3] [ref=f1e2055]
+              - paragraph [ref=f1e2056]: "ocean-breeze · radius 0.5remprimary #22c55e · background #f0f8ff"
+          - article [ref=f1e2057]:
+            - generic [ref=f1e2063]:
+              - generic [ref=f1e2064]: Campaign pulse
+              - paragraph [ref=f1e2065]
+              - generic [ref=f1e2066]: 查看诊断
+            - generic [ref=f1e2073]:
+              - heading "Pastel Dreams" [level=3] [ref=f1e2074]
+              - paragraph [ref=f1e2075]: "pastel-dreams · radius 1.5remprimary #a78bfa · background #f7f3f9"
+          - article [ref=f1e2076]:
+            - generic [ref=f1e2082]:
+              - generic [ref=f1e2083]: Campaign pulse
+              - paragraph [ref=f1e2084]
+              - generic [ref=f1e2085]: 查看诊断
+            - generic [ref=f1e2092]:
+              - heading "Perpetuity" [level=3] [ref=f1e2093]
+              - paragraph [ref=f1e2094]: "perpetuity · radius 0.125remprimary #06858e · background #e8f0f0"
+          - article [ref=f1e2095]:
+            - generic [ref=f1e2101]:
+              - generic [ref=f1e2102]: Campaign pulse
+              - paragraph [ref=f1e2103]
+              - generic [ref=f1e2104]: 查看诊断
+            - generic [ref=f1e2111]:
+              - heading "Quantum Rose" [level=3] [ref=f1e2112]
+              - paragraph [ref=f1e2113]: "quantum-rose · radius 0.5remprimary #e6067a · background #fff0f8"
+          - article [ref=f1e2114]:
+            - generic [ref=f1e2120]:
+              - generic [ref=f1e2121]: Campaign pulse
+              - paragraph [ref=f1e2122]
+              - generic [ref=f1e2123]: 查看诊断
+            - generic [ref=f1e2130]:
+              - heading "Retro Arcade" [level=3] [ref=f1e2131]
+              - paragraph [ref=f1e2132]: "retro-arcade · radius 0.25remprimary #d33682 · background #fdf6e3"
+          - article [ref=f1e2133]:
+            - generic [ref=f1e2139]:
+              - generic [ref=f1e2140]: Campaign pulse
+              - paragraph [ref=f1e2141]
+              - generic [ref=f1e2142]: 查看诊断
+            - generic [ref=f1e2149]:
+              - heading "Sage Garden" [level=3] [ref=f1e2150]
+              - paragraph [ref=f1e2151]: "sage-garden · radius 0.35remprimary #7c9082 · background #f8f7f4"
+          - article [ref=f1e2152]:
+            - generic [ref=f1e2158]:
+              - generic [ref=f1e2159]: Campaign pulse
+              - paragraph [ref=f1e2160]
+              - generic [ref=f1e2161]: 查看诊断
+            - generic [ref=f1e2168]:
+              - heading "Soft Pop" [level=3] [ref=f1e2169]
+              - paragraph [ref=f1e2170]: "soft-pop · radius 1remprimary #4f46e5 · background #f7f9f3"
+          - article [ref=f1e2171]:
+            - generic [ref=f1e2177]:
+              - generic [ref=f1e2178]: Campaign pulse
+              - paragraph [ref=f1e2179]
+              - generic [ref=f1e2180]: 查看诊断
+            - generic [ref=f1e2187]:
+              - heading "Solar Dusk" [level=3] [ref=f1e2188]
+              - paragraph [ref=f1e2189]: "solar-dusk · radius 0.3remprimary #B45309 · background #FDFBF7"
+          - article [ref=f1e2190]:
+            - generic [ref=f1e2196]:
+              - generic [ref=f1e2197]: Campaign pulse
+              - paragraph [ref=f1e2198]
+              - generic [ref=f1e2199]: 查看诊断
+            - generic [ref=f1e2206]:
+              - heading "Starry Night" [level=3] [ref=f1e2207]
+              - paragraph [ref=f1e2208]: "starry-night · radius 0.5remprimary #3a5ba0 · background #f5f7fa"
+          - article [ref=f1e2209]:
+            - generic [ref=f1e2215]:
+              - generic [ref=f1e2216]: Campaign pulse
+              - paragraph [ref=f1e2217]
+              - generic [ref=f1e2218]: 查看诊断
+            - generic [ref=f1e2225]:
+              - heading "Sunset Horizon" [level=3] [ref=f1e2226]
+              - paragraph [ref=f1e2227]: "sunset-horizon · radius 0.625remprimary #ff7e5f · background #fff9f5"
+          - article [ref=f1e2228]:
+            - generic [ref=f1e2234]:
+              - generic [ref=f1e2235]: Campaign pulse
+              - paragraph [ref=f1e2236]
+              - generic [ref=f1e2237]: 查看诊断
+            - generic [ref=f1e2244]:
+              - heading "Supabase" [level=3] [ref=f1e2245]
+              - paragraph [ref=f1e2246]: "supabase · radius 0.5remprimary #72e3ad · background #fcfcfc"
+          - article [ref=f1e2247]:
+            - generic [ref=f1e2253]:
+              - generic [ref=f1e2254]: Campaign pulse
+              - paragraph [ref=f1e2255]
+              - generic [ref=f1e2256]: 查看诊断
+            - generic [ref=f1e2263]:
+              - heading "T3 Chat" [level=3] [ref=f1e2264]
+              - paragraph [ref=f1e2265]: "t3-chat · radius 0.5remprimary #a84370 · background #faf5fa"
+          - article [ref=f1e2266]:
+            - generic [ref=f1e2272]:
+              - generic [ref=f1e2273]: Campaign pulse
+              - paragraph [ref=f1e2274]
+              - generic [ref=f1e2275]: 查看诊断
+            - generic [ref=f1e2282]:
+              - heading "Tangerine" [level=3] [ref=f1e2283]
+              - paragraph [ref=f1e2284]: "tangerine · radius 0.75remprimary #e05d38 · background #e8ebed"
+          - article [ref=f1e2285]:
+            - generic [ref=f1e2291]:
+              - generic [ref=f1e2292]: Campaign pulse
+              - paragraph [ref=f1e2293]
+              - generic [ref=f1e2294]: 查看诊断
+            - generic [ref=f1e2301]:
+              - heading "Twitter" [level=3] [ref=f1e2302]
+              - paragraph [ref=f1e2303]: "twitter · radius 1.3remprimary #1e9df1 · background #ffffff"
+          - article [ref=f1e2304]:
+            - generic [ref=f1e2310]:
+              - generic [ref=f1e2311]: Campaign pulse
+              - paragraph [ref=f1e2312]
+              - generic [ref=f1e2313]: 查看诊断
+            - generic [ref=f1e2320]:
+              - heading "Vercel" [level=3] [ref=f1e2321]
+              - paragraph [ref=f1e2322]: vercel · radius 0.5remprimary oklch(0 0 0) · background oklch(0.99 0 0)
+          - article [ref=f1e2323]:
+            - generic [ref=f1e2329]:
+              - generic [ref=f1e2330]: Campaign pulse
+              - paragraph [ref=f1e2331]
+              - generic [ref=f1e2332]: 查看诊断
+            - generic [ref=f1e2339]:
+              - heading "Vintage Paper" [level=3] [ref=f1e2340]
+              - paragraph [ref=f1e2341]: "vintage-paper · radius 0.25remprimary #a67c52 · background #f5f1e6"
+          - article [ref=f1e2342]:
+            - generic [ref=f1e2348]:
+              - generic [ref=f1e2349]: Campaign pulse
+              - paragraph [ref=f1e2350]
+              - generic [ref=f1e2351]: 查看诊断
+            - generic [ref=f1e2358]:
+              - heading "Violet Bloom" [level=3] [ref=f1e2359]
+              - paragraph [ref=f1e2360]: "violet-bloom · radius 1.4remprimary #7033ff · background #fdfdfd"

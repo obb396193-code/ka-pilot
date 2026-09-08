@@ -1,0 +1,11 @@
+[    1007ms] Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at rK (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:45827)
+    at rX (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:46860)
+    at https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:140579
+    at sp (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:145740)
+    at sc (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:137080)
+    at https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:131909
+    at u9 (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:132010)
+    at sV (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:158392)
+    at MessagePort.O (https://www.kibo-ui.com/_next/static/chunks/664a0904103cf871.js?dpl=dpl_5buSAUN9A23bTZgxANLXKFKCB9qo:1:7353)
+[   13132ms] [WARNING] The resource https://deifkwefumgah.cloudfront.net/shadcnblocks/screenshots/group/collaborative-canvas.webp was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ https://www.kibo-ui.com/components/gantt:0

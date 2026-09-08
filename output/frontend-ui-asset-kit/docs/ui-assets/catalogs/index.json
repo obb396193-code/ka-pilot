@@ -1,0 +1,298 @@
+{
+  "schema_version": 2,
+  "fetched_at": "2026-08-19T15:38:06.845Z",
+  "total_items": 7056,
+  "counts": {
+    "by_access_status": {
+      "paid-source-after-license": 2176,
+      "public-metadata-only": 97,
+      "public-source": 4783
+    },
+    "by_source_cache_status": {
+      "not-cached": 7056
+    }
+  },
+  "sources": [
+    {
+      "id": "shadcn",
+      "count": 473,
+      "coverage": "complete-new-york-v4-plus-logical-index",
+      "coverage_note": "471-entry New York v4 Registry plus two current base-specific UI items from r/index.json; 24 preset variants are recorded as a matrix, not miscounted as unique components.",
+      "upstream_ref": "sha256:8abcb34837fc377b9c541b01c7090059b08fe5b1bc0b2e44902a4511f1514cf9",
+      "counts": {
+        "by_access_status": {
+          "public-metadata-only": 59,
+          "public-source": 414
+        },
+        "by_source_cache_status": {
+          "not-cached": 473
+        }
+      },
+      "file": "shadcn.json"
+    },
+    {
+      "id": "coss",
+      "count": 577,
+      "coverage": "complete-current-registry",
+      "coverage_note": "Current coss Registry is complete; legacy Origin is kept as a separate catalog.",
+      "upstream_ref": "sha256:bb3281de9b3ff55c73d95287a33eb16a7a533edeccd7fa93e290130b905c5dc8",
+      "counts": {
+        "by_access_status": {
+          "public-metadata-only": 7,
+          "public-source": 570
+        },
+        "by_source_cache_status": {
+          "not-cached": 577
+        }
+      },
+      "file": "coss.json"
+    },
+    {
+      "id": "coss-origin",
+      "count": 646,
+      "coverage": "complete-legacy-registry",
+      "coverage_note": "646 public Origin Registry JSON items: 599 components plus 47 support assets; legacy/limited-support, not paid.",
+      "upstream_ref": "sha256:0173534cffa93f014825ad1ec187547c83d699a40a5f23894887f842bcb72f6c",
+      "counts": {
+        "by_access_status": {
+          "public-source": 646
+        },
+        "by_source_cache_status": {
+          "not-cached": 646
+        }
+      },
+      "file": "coss-origin.json"
+    },
+    {
+      "id": "reui",
+      "count": 2315,
+      "coverage": "complete-official-llms-index",
+      "coverage_note": "Registry plus official llms.txt covers free examples/modules/hooks, 518 Pro blocks, 638 icon concepts and 10 Ultimate templates; 16 concrete Base/Radix style variants are a separate matrix.",
+      "upstream_ref": "sha256:337faaf2c0dc7e75604ebcbc33c0d3737610dba9433fa76196a2e2bb3458b711",
+      "counts": {
+        "by_access_status": {
+          "paid-source-after-license": 1166,
+          "public-source": 1149
+        },
+        "by_source_cache_status": {
+          "not-cached": 2315
+        }
+      },
+      "file": "reui.json"
+    },
+    {
+      "id": "tremor",
+      "count": 375,
+      "coverage": "complete-current-public-surfaces",
+      "coverage_note": "40 Raw capabilities/39 source dirs, five utilities, 323 Blocks, six official templates and one related dashboard OSS variant.",
+      "upstream_ref": "sha256:5f0251602d9aa23f4cfd0f6f39596ea45cedc5f608233cd89217d8ca6fbf7e03",
+      "counts": {
+        "by_access_status": {
+          "public-source": 375
+        },
+        "by_source_cache_status": {
+          "not-cached": 375
+        }
+      },
+      "file": "tremor.json"
+    },
+    {
+      "id": "tremor-legacy",
+      "count": 30,
+      "coverage": "complete-live-legacy-docs",
+      "coverage_note": "30 still-live @tremor/react documentation capabilities; maintenance-stale, not officially deprecated.",
+      "upstream_ref": "sha256:79546296637db394bd107094f2d0a3b0fb08d0917f403ebd153e2c8138bb81b5",
+      "counts": {
+        "by_access_status": {
+          "public-source": 30
+        },
+        "by_source_cache_status": {
+          "not-cached": 30
+        }
+      },
+      "file": "tremor-legacy.json"
+    },
+    {
+      "id": "aceternity",
+      "count": 319,
+      "coverage": "complete-to-ai-index",
+      "coverage_note": "Official AI index has 111 free components, one free hook and 207 Pro metadata entries; pricing copy says 200+ blocks and remains an unresolved upstream count conflict.",
+      "upstream_ref": "sha256:f3255af3dd992c98afa70b7b9bf7d05e0effd4ca343a48819e4da931805cad58",
+      "counts": {
+        "by_access_status": {
+          "paid-source-after-license": 207,
+          "public-source": 112
+        },
+        "by_source_cache_status": {
+          "not-cached": 319
+        }
+      },
+      "file": "aceternity.json"
+    },
+    {
+      "id": "magic-ui",
+      "count": 247,
+      "coverage": "complete-free-registry",
+      "coverage_note": "247-item free Registry; Magic UI Pro has no public total manifest and is a separate lower-bound catalog.",
+      "upstream_ref": "sha256:3791dcc1b24c392b9e906473357338a9ed154300334bae998c0ed7dd46b0ba45",
+      "counts": {
+        "by_access_status": {
+          "public-metadata-only": 1,
+          "public-source": 246
+        },
+        "by_source_cache_status": {
+          "not-cached": 247
+        }
+      },
+      "file": "magic-ui.json"
+    },
+    {
+      "id": "magic-ui-pro",
+      "count": 104,
+      "coverage": "partial-public-docs-lower-bound",
+      "coverage_note": "95 exact public block slugs plus nine observed template names; official claims 50+ sections and 9+ templates without a public total Registry.",
+      "upstream_ref": "sha256:d25c5262c1ad489c562243f1ab022f6d02cea14237bef3fb1f1114c940b12d0a",
+      "counts": {
+        "by_access_status": {
+          "paid-source-after-license": 101,
+          "public-source": 3
+        },
+        "by_source_cache_status": {
+          "not-cached": 104
+        }
+      },
+      "file": "magic-ui-pro.json"
+    },
+    {
+      "id": "react-bits",
+      "count": 166,
+      "coverage": "complete-free-repository",
+      "coverage_note": "166 free logical components, with four code variants deduplicated; Pro is a separate catalog.",
+      "upstream_ref": "sha256:de938b4d78403f7017bd1e236c1f60198cd54ea3fc33795e18d6a600f3eeca62",
+      "counts": {
+        "by_access_status": {
+          "public-source": 166
+        },
+        "by_source_cache_status": {
+          "not-cached": 166
+        }
+      },
+      "file": "react-bits.json"
+    },
+    {
+      "id": "react-bits-pro",
+      "count": 702,
+      "coverage": "complete-public-pro-index",
+      "coverage_note": "702 paid assets: 134 components, 238 page blocks, 300 app UI blocks, 11 templates and 19 Agent Kit assets.",
+      "upstream_ref": "sha256:34240be1fa348285f054de285d38abc446b7759175a5eb346e8a6127e7e952f8",
+      "counts": {
+        "by_access_status": {
+          "paid-source-after-license": 702
+        },
+        "by_source_cache_status": {
+          "not-cached": 702
+        }
+      },
+      "file": "react-bits-pro.json"
+    },
+    {
+      "id": "tweakcn",
+      "count": 42,
+      "coverage": "complete-default-presets-partial-dynamic-community",
+      "coverage_note": "All 42 defaultPresets are stored with their token source; anonymous community themes are dynamic and have no stable finite total.",
+      "upstream_ref": "sha256:d333858a5a4f1e2fd615f1b73709f552e5a84c12882196456dfc48e1f09376a8",
+      "counts": {
+        "by_access_status": {
+          "public-source": 42
+        },
+        "by_source_cache_status": {
+          "not-cached": 42
+        }
+      },
+      "file": "tweakcn.json"
+    },
+    {
+      "id": "ai-elements",
+      "count": 136,
+      "coverage": "complete-official-runtime-registry",
+      "coverage_note": "Official /api/registry/registry.json lists every current component and example emitted by the deployed Registry route; docs-only headings are not counted as assets.",
+      "upstream_ref": "sha256:4813ba20ae1ea4e4e5de8e84f17bf0203983785e0aaacb213b38a66a91313144",
+      "counts": {
+        "by_access_status": {
+          "public-source": 136
+        },
+        "by_source_cache_status": {
+          "not-cached": 136
+        }
+      },
+      "file": "ai-elements.json"
+    },
+    {
+      "id": "kibo-ui",
+      "count": 69,
+      "coverage": "complete-current-registry-plus-public-block-docs",
+      "coverage_note": "The current Registry provides 40 components plus one style item. Official /blocks/ links rendered on the homepage are recorded as public metadata because their /r endpoints currently return 500 and are not source payloads. Shadcnblocks patterns are a separate product and are not counted as Kibo assets.",
+      "upstream_ref": "sha256:06d493a953a3d084eadd56d14d8bcc43eaa51c3ef1cf8b5a4a4edefc8935c3d3",
+      "counts": {
+        "by_access_status": {
+          "public-metadata-only": 29,
+          "public-source": 40
+        },
+        "by_source_cache_status": {
+          "not-cached": 69
+        }
+      },
+      "file": "kibo-ui.json"
+    },
+    {
+      "id": "dice-ui",
+      "count": 242,
+      "coverage": "complete-current-radix-registry",
+      "coverage_note": "The public r/registry.json is the current Radix Registry and contains UI modules, examples, hooks, utilities and internal component assets. Base/Radix Nova/Vega distributions remain a variant matrix rather than duplicated logical products.",
+      "upstream_ref": "sha256:783b7e8a1d0db30e4004e4f3a54d61c50387c1bd89c1ec522181feb8ee74e511",
+      "counts": {
+        "by_access_status": {
+          "public-source": 242
+        },
+        "by_source_cache_status": {
+          "not-cached": 242
+        }
+      },
+      "file": "dice-ui.json"
+    },
+    {
+      "id": "animate-ui",
+      "count": 580,
+      "coverage": "complete-current-registry",
+      "coverage_note": "The official Registry includes components, primitives, demos, hooks, utilities, styles and icon payloads. Logical/demo entries remain separate because they are separately installable Registry items.",
+      "upstream_ref": "sha256:7e2295daf3d30af25f0904e5ec9865a33ec858e60d3f3a30b23960b8638b5ac2",
+      "counts": {
+        "by_access_status": {
+          "public-metadata-only": 1,
+          "public-source": 579
+        },
+        "by_source_cache_status": {
+          "not-cached": 580
+        }
+      },
+      "file": "animate-ui.json"
+    },
+    {
+      "id": "motion-primitives",
+      "count": 33,
+      "coverage": "complete-official-repository-registry",
+      "coverage_note": "The deployed /c/registry.json may rate-limit automated clients; the identical public/c/registry.json in the official repository is the stable complete Registry source.",
+      "upstream_ref": "sha256:8c49ab463c44f4bc54e634d41ecc73808f3dff5e88433a24db98b13294c84735",
+      "counts": {
+        "by_access_status": {
+          "public-source": 33
+        },
+        "by_source_cache_status": {
+          "not-cached": 33
+        }
+      },
+      "file": "motion-primitives.json"
+    }
+  ],
+  "failures": []
+}

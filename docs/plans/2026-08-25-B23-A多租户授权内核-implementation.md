@@ -52,7 +52,7 @@
 
 **Files:**
 - Create: `docs/evidence/B23-A-代码质量报告.md`
-- Create: `docs/evidence/B23-C-奇航只读链Gap矩阵.md`
+- Create: `docs/evidence/B23-C-启航只读链Gap矩阵.md`
 - Modify: `docs/plans/工作台账.md`
 - Modify: `docs/plans/Codex后端交付总账.md`
 - Modify: `docs/relay/inbox-arch.md`

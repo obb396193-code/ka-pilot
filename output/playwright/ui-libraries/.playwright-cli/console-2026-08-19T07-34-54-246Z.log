@@ -1,0 +1,9 @@
+[    7381ms] Error: Minified React error #418; visit https://react.dev/errors/418?args[]=text&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+    at rX (https://coss.com/ui/_next/static/chunks/0k.cfi5zhlw5u.js?dpl=dpl_7C1R35MFAXpoNeVAZWs9U7CfhL78:1:47243)
+    at https://coss.com/ui/_next/static/chunks/0k.cfi5zhlw5u.js?dpl=dpl_7C1R35MFAXpoNeVAZWs9U7CfhL78:1:144220
+    at sh (https://coss.com/ui/_next/static/chunks/0k.cfi5zhlw5u.js?dpl=dpl_7C1R35MFAXpoNeVAZWs9U7CfhL78:1:147785)
+    at sd (https://coss.com/ui/_next/static/chunks/0k.cfi5zhlw5u.js?dpl=dpl_7C1R35MFAXpoNeVAZWs9U7CfhL78:1:139035)
+    at https://coss.com/ui/_next/static/chunks/0k.cfi5zhlw5u.js?dpl=dpl_7C1R35MFAXpoNeVAZWs9U7CfhL78:1:133860
+    at se (https://coss.com/ui/_next/static/chunks/0k.cfi5zhlw5u.js?dpl=dpl_7C1R35MFAXpoNeVAZWs9U7CfhL78:1:133961)
+    at s$ (https://coss.com/ui/_next/static/chunks/0k.cfi5zhlw5u.js?dpl=dpl_7C1R35MFAXpoNeVAZWs9U7CfhL78:1:160525)
+    at MessagePort.O (https://coss.com/ui/_next/static/chunks/0k.cfi5zhlw5u.js?dpl=dpl_7C1R35MFAXpoNeVAZWs9U7CfhL78:1:8683)

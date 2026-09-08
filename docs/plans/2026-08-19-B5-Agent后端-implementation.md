@@ -208,7 +208,7 @@ Commit: `[be] 实现多模型能力路由与降级`
 
 - options 必须是 `tools:[]`、精确 MCP allowlist、`dontAsk`、`settingSources:[]`、`skills:[]`、`strictMcpConfig:true`、`persistSession:false`。
 - PreToolUse 对非 allowlist 工具 deny；任何人改坏安全选项，runtime 启动前自审失败。
-- env 只保留最小 PATH/临时 HOME/网关变量，不继承数据库、Multica、奇航和宿主 key。
+- env 只保留最小 PATH/临时 HOME/网关变量，不继承数据库、Multica、启航和宿主 key。
 - partial `text_delta` → `delta`；tool start/stop → safe `tool`；result → `done/error`；未知 SDK message 忽略并计数。
 - AbortController、总 timeout、maxTurns、maxBudget、stderr 脱敏生效。
 - structured output 只从 final result 读取。

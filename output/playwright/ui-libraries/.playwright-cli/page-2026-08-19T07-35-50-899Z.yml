@@ -1,0 +1,908 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - link "Home" [ref=e6] [cursor=pointer]:
+          - /url: https://coss.com/
+          - text: coss.com
+        - generic [ref=e7]: ui
+      - generic [ref=e8]:
+        - navigation [ref=e9]:
+          - link "Docs" [ref=e10] [cursor=pointer]:
+            - /url: /ui/docs
+          - link "Particles" [ref=e11] [cursor=pointer]:
+            - /url: /ui/particles
+        - button [ref=e13] [cursor=pointer]:
+          - generic [ref=e14]:
+            - generic: ⌘
+            - generic: K
+        - separator [ref=e15]
+        - link "10.4k" [ref=e16] [cursor=pointer]:
+          - /url: https://github.com/cosscom/coss
+        - button "Toggle theme" [ref=e18] [cursor=pointer]
+  - main [ref=e20]:
+    - generic [ref=e21]:
+      - generic [ref=e24]:
+        - generic [ref=e26]:
+          - generic [ref=e27]: Overview
+          - list [ref=e29]:
+            - listitem [ref=e30]:
+              - link "Introduction" [ref=e31] [cursor=pointer]:
+                - /url: /ui/docs
+            - listitem [ref=e32]:
+              - link "Get Started" [ref=e33] [cursor=pointer]:
+                - /url: /ui/docs/get-started
+            - listitem [ref=e34]:
+              - link "Styling" [ref=e35] [cursor=pointer]:
+                - /url: /ui/docs/styling
+            - listitem [ref=e36]:
+              - link "Migrating from Radix" [ref=e37] [cursor=pointer]:
+                - /url: /ui/docs/radix-migration
+            - listitem [ref=e38]:
+              - link "Skills" [ref=e39] [cursor=pointer]:
+                - /url: /ui/docs/skills
+            - listitem [ref=e40]:
+              - link "Changelog" [ref=e41] [cursor=pointer]:
+                - /url: /ui/docs/changelog
+            - listitem [ref=e42]:
+              - link "Roadmap" [ref=e43] [cursor=pointer]:
+                - /url: /ui/docs/roadmap
+        - generic [ref=e44]:
+          - generic [ref=e45]: Components
+          - list [ref=e47]:
+            - listitem [ref=e48]:
+              - link "Accordion" [ref=e49] [cursor=pointer]:
+                - /url: /ui/docs/components/accordion
+            - listitem [ref=e50]:
+              - link "Alert" [ref=e51] [cursor=pointer]:
+                - /url: /ui/docs/components/alert
+            - listitem [ref=e52]:
+              - link "Alert Dialog" [ref=e53] [cursor=pointer]:
+                - /url: /ui/docs/components/alert-dialog
+            - listitem [ref=e54]:
+              - link "Autocomplete" [ref=e55] [cursor=pointer]:
+                - /url: /ui/docs/components/autocomplete
+            - listitem [ref=e56]:
+              - link "Avatar" [ref=e57] [cursor=pointer]:
+                - /url: /ui/docs/components/avatar
+            - listitem [ref=e58]:
+              - link "Badge" [ref=e59] [cursor=pointer]:
+                - /url: /ui/docs/components/badge
+            - listitem [ref=e60]:
+              - link "Breadcrumb" [ref=e61] [cursor=pointer]:
+                - /url: /ui/docs/components/breadcrumb
+            - listitem [ref=e62]:
+              - link "Button" [ref=e63] [cursor=pointer]:
+                - /url: /ui/docs/components/button
+            - listitem [ref=e64]:
+              - link "Calendar" [ref=e65] [cursor=pointer]:
+                - /url: /ui/docs/components/calendar
+            - listitem [ref=e66]:
+              - link "Card" [ref=e67] [cursor=pointer]:
+                - /url: /ui/docs/components/card
+            - listitem [ref=e68]:
+              - link "Checkbox" [ref=e69] [cursor=pointer]:
+                - /url: /ui/docs/components/checkbox
+            - listitem [ref=e70]:
+              - link "Checkbox Group" [ref=e71] [cursor=pointer]:
+                - /url: /ui/docs/components/checkbox-group
+            - listitem [ref=e72]:
+              - link "Collapsible" [ref=e73] [cursor=pointer]:
+                - /url: /ui/docs/components/collapsible
+            - listitem [ref=e74]:
+              - link "Combobox" [ref=e75] [cursor=pointer]:
+                - /url: /ui/docs/components/combobox
+            - listitem [ref=e76]:
+              - link "Command" [ref=e77] [cursor=pointer]:
+                - /url: /ui/docs/components/command
+            - listitem [ref=e78]:
+              - link "Context Menu" [ref=e79] [cursor=pointer]:
+                - /url: /ui/docs/components/context-menu
+            - listitem [ref=e80]:
+              - link "Date Picker" [ref=e81] [cursor=pointer]:
+                - /url: /ui/docs/components/date-picker
+            - listitem [ref=e82]:
+              - link "Dialog" [ref=e83] [cursor=pointer]:
+                - /url: /ui/docs/components/dialog
+            - listitem [ref=e84]:
+              - link "Drawer" [ref=e85] [cursor=pointer]:
+                - /url: /ui/docs/components/drawer
+            - listitem [ref=e86]:
+              - link "Empty" [ref=e87] [cursor=pointer]:
+                - /url: /ui/docs/components/empty
+            - listitem [ref=e88]:
+              - link "Field" [ref=e89] [cursor=pointer]:
+                - /url: /ui/docs/components/field
+            - listitem [ref=e90]:
+              - link "Fieldset" [ref=e91] [cursor=pointer]:
+                - /url: /ui/docs/components/fieldset
+            - listitem [ref=e92]:
+              - link "Form" [ref=e93] [cursor=pointer]:
+                - /url: /ui/docs/components/form
+            - listitem [ref=e94]:
+              - link "Frame" [ref=e95] [cursor=pointer]:
+                - /url: /ui/docs/components/frame
+            - listitem [ref=e96]:
+              - link "Group" [ref=e97] [cursor=pointer]:
+                - /url: /ui/docs/components/group
+            - listitem [ref=e98]:
+              - link "Input" [ref=e99] [cursor=pointer]:
+                - /url: /ui/docs/components/input
+            - listitem [ref=e100]:
+              - link "Input Group" [ref=e101] [cursor=pointer]:
+                - /url: /ui/docs/components/input-group
+            - listitem [ref=e102]:
+              - link "Kbd" [ref=e103] [cursor=pointer]:
+                - /url: /ui/docs/components/kbd
+            - listitem [ref=e104]:
+              - link "Label" [ref=e105] [cursor=pointer]:
+                - /url: /ui/docs/components/label
+            - listitem [ref=e106]:
+              - link "Menu" [ref=e107] [cursor=pointer]:
+                - /url: /ui/docs/components/menu
+            - listitem [ref=e108]:
+              - link "Meter" [ref=e109] [cursor=pointer]:
+                - /url: /ui/docs/components/meter
+            - listitem [ref=e110]:
+              - link "Number Field" [ref=e111] [cursor=pointer]:
+                - /url: /ui/docs/components/number-field
+            - listitem [ref=e112]:
+              - link "OTP Field" [ref=e113] [cursor=pointer]:
+                - /url: /ui/docs/components/otp-field
+            - listitem [ref=e114]:
+              - link "Pagination" [ref=e115] [cursor=pointer]:
+                - /url: /ui/docs/components/pagination
+            - listitem [ref=e116]:
+              - link "Popover" [ref=e117] [cursor=pointer]:
+                - /url: /ui/docs/components/popover
+            - listitem [ref=e118]:
+              - link "Preview Card" [ref=e119] [cursor=pointer]:
+                - /url: /ui/docs/components/preview-card
+            - listitem [ref=e120]:
+              - link "Progress" [ref=e121] [cursor=pointer]:
+                - /url: /ui/docs/components/progress
+            - listitem [ref=e122]:
+              - link "Radio Group" [ref=e123] [cursor=pointer]:
+                - /url: /ui/docs/components/radio-group
+            - listitem [ref=e124]:
+              - link "Scroll Area" [ref=e125] [cursor=pointer]:
+                - /url: /ui/docs/components/scroll-area
+            - listitem [ref=e126]:
+              - link "Select" [ref=e127] [cursor=pointer]:
+                - /url: /ui/docs/components/select
+            - listitem [ref=e128]:
+              - link "Segmented Control New" [ref=e129] [cursor=pointer]:
+                - /url: /ui/docs/components/segmented-control
+                - text: Segmented Control
+                - generic [ref=e130]: New
+            - listitem [ref=e131]:
+              - link "Separator" [ref=e132] [cursor=pointer]:
+                - /url: /ui/docs/components/separator
+            - listitem [ref=e133]:
+              - link "Sheet" [ref=e134] [cursor=pointer]:
+                - /url: /ui/docs/components/sheet
+            - listitem [ref=e135]:
+              - link "Skeleton" [ref=e136] [cursor=pointer]:
+                - /url: /ui/docs/components/skeleton
+            - listitem [ref=e137]:
+              - link "Slider" [ref=e138] [cursor=pointer]:
+                - /url: /ui/docs/components/slider
+            - listitem [ref=e139]:
+              - link "Spinner" [ref=e140] [cursor=pointer]:
+                - /url: /ui/docs/components/spinner
+            - listitem [ref=e141]:
+              - link "Switch" [ref=e142] [cursor=pointer]:
+                - /url: /ui/docs/components/switch
+            - listitem [ref=e143]:
+              - link "Table" [ref=e144] [cursor=pointer]:
+                - /url: /ui/docs/components/table
+            - listitem [ref=e145]:
+              - link "Tabs" [ref=e146] [cursor=pointer]:
+                - /url: /ui/docs/components/tabs
+            - listitem [ref=e147]:
+              - link "Textarea" [ref=e148] [cursor=pointer]:
+                - /url: /ui/docs/components/textarea
+            - listitem [ref=e149]:
+              - link "Toast" [ref=e150] [cursor=pointer]:
+                - /url: /ui/docs/components/toast
+            - listitem [ref=e151]:
+              - link "Toggle" [ref=e152] [cursor=pointer]:
+                - /url: /ui/docs/components/toggle
+            - listitem [ref=e153]:
+              - link "Toggle Group" [ref=e154] [cursor=pointer]:
+                - /url: /ui/docs/components/toggle-group
+            - listitem [ref=e155]:
+              - link "Toolbar" [ref=e156] [cursor=pointer]:
+                - /url: /ui/docs/components/toolbar
+            - listitem [ref=e157]:
+              - link "Tooltip" [ref=e158] [cursor=pointer]:
+                - /url: /ui/docs/components/tooltip
+        - generic [ref=e159]:
+          - generic [ref=e160]: Hooks
+          - list [ref=e162]:
+            - listitem [ref=e163]:
+              - link "useMediaQuery" [ref=e164] [cursor=pointer]:
+                - /url: /ui/docs/hooks/use-media-query
+            - listitem [ref=e165]:
+              - link "useCopyToClipboard" [ref=e166] [cursor=pointer]:
+                - /url: /ui/docs/hooks/use-copy-to-clipboard
+        - generic [ref=e167]:
+          - generic [ref=e168]: Resources
+          - list [ref=e170]:
+            - listitem [ref=e171]:
+              - link "llms.txt" [ref=e172] [cursor=pointer]:
+                - /url: /ui/llms.txt
+            - listitem [ref=e173]:
+              - link "coss.com origin" [ref=e174] [cursor=pointer]:
+                - /url: https://coss.com/origin
+      - generic [ref=e176]:
+        - generic [ref=e178]:
+          - generic [ref=e182]:
+            - generic [ref=e183]:
+              - generic [ref=e184]:
+                - heading "Command" [level=1] [ref=e185]
+                - paragraph [ref=e186]: A command palette component built with Dialog and Autocomplete for searching and executing commands.
+              - generic [ref=e187]:
+                - link "API Reference" [ref=e188] [cursor=pointer]:
+                  - /url: https://base-ui.com/react/components/autocomplete#api-reference
+                - button "Copy Markdown" [ref=e189] [cursor=pointer]
+            - generic [ref=e190]:
+              - generic [ref=e191]:
+                - tablist [ref=e194]:
+                  - tab "Preview" [selected] [ref=e195] [cursor=pointer]
+                  - tab "Code" [ref=e196] [cursor=pointer]
+                - button [ref=e201] [cursor=pointer]:
+                  - text: Open Command Palette
+                  - generic [ref=e202]:
+                    - generic: ⌘
+                    - generic: J
+              - heading [level=2] [ref=e203]:
+                - link "Installation" [ref=e204] [cursor=pointer]:
+                  - /url: "#installation"
+              - generic [ref=e205]:
+                - tablist [ref=e206]:
+                  - tab "CLI" [selected] [ref=e207] [cursor=pointer]
+                  - tab "Manual" [ref=e208] [cursor=pointer]
+                - tabpanel [ref=e209]:
+                  - figure [ref=e210]:
+                    - generic [ref=e213]:
+                      - generic [ref=e214]:
+                        - tablist [ref=e219]:
+                          - tab "bun" [ref=e220] [cursor=pointer]
+                          - tab "npm" [ref=e221] [cursor=pointer]
+                          - tab "pnpm" [selected] [ref=e222] [cursor=pointer]
+                          - tab "yarn" [ref=e223] [cursor=pointer]
+                        - tabpanel [ref=e225]:
+                          - code [ref=e227]: pnpm dlx shadcn@latest add @coss/command
+                      - button "Copy" [ref=e228] [cursor=pointer]
+              - heading [level=2] [ref=e230]:
+                - link "Usage" [ref=e231] [cursor=pointer]:
+                  - /url: "#usage"
+              - figure [ref=e232]:
+                - generic [ref=e234]:
+                  - button "Copy" [ref=e235] [cursor=pointer]
+                  - code [ref=e237]:
+                    - generic [ref=e238]: "import {"
+                    - generic [ref=e239]: Command,
+                    - generic [ref=e240]: CommandCollection,
+                    - generic [ref=e241]: CommandDialog,
+                    - generic [ref=e242]: CommandDialogPopup,
+                    - generic [ref=e243]: CommandDialogTrigger,
+                    - generic [ref=e244]: CommandEmpty,
+                    - generic [ref=e245]: CommandFooter,
+                    - generic [ref=e246]: CommandGroup,
+                    - generic [ref=e247]: CommandGroupLabel,
+                    - generic [ref=e248]: CommandInput,
+                    - generic [ref=e249]: CommandItem,
+                    - generic [ref=e250]: CommandList,
+                    - generic [ref=e251]: CommandPanel,
+                    - generic [ref=e252]: CommandSeparator,
+                    - generic [ref=e253]: CommandShortcut,
+                    - generic [ref=e254]: "} from \"@/components/ui/command\""
+                    - generic [ref=e255]: "import { Button } from \"@/components/ui/button\""
+              - figure [ref=e256]:
+                - generic [ref=e258]:
+                  - button "Copy" [ref=e259] [cursor=pointer]
+                  - code [ref=e261]:
+                    - generic [ref=e262]: const items = [
+                    - generic [ref=e263]: "{ value: \"linear\", label: \"Linear\" },"
+                    - generic [ref=e264]: "{ value: \"figma\", label: \"Figma\" },"
+                    - generic [ref=e265]: "{ value: \"slack\", label: \"Slack\" },"
+                    - generic [ref=e266]: "]"
+                    - generic [ref=e268]: <CommandDialog>
+                    - generic [ref=e269]: "<CommandDialogTrigger render={<Button variant=\"outline\" />}>"
+                    - generic [ref=e270]: Open Command Palette
+                    - generic [ref=e271]: </CommandDialogTrigger>
+                    - generic [ref=e273]: <CommandDialogPopup>
+                    - generic [ref=e274]: "<Command items={items}>"
+                    - generic [ref=e275]: <CommandInput placeholder="Search..." />
+                    - generic [ref=e276]: <CommandEmpty>No results found.</CommandEmpty>
+                    - generic [ref=e277]: <CommandList>
+                    - generic [ref=e278]: "{(item) => ("
+                    - generic [ref=e279]: "<CommandItem key={item.value} value={item.value}>"
+                    - generic [ref=e280]: "{item.label}"
+                    - generic [ref=e281]: </CommandItem>
+                    - generic [ref=e282]: ")}"
+                    - generic [ref=e283]: </CommandList>
+                    - generic [ref=e284]: </Command>
+                    - generic [ref=e285]: </CommandDialogPopup>
+                    - generic [ref=e286]: </CommandDialog>
+              - heading [level=2] [ref=e287]:
+                - link "API Reference" [ref=e288] [cursor=pointer]:
+                  - /url: "#api-reference"
+              - heading [level=3] [ref=e289]:
+                - link "Command" [ref=e290] [cursor=pointer]:
+                  - /url: "#command"
+              - paragraph [ref=e291]:
+                - text: The root component that wraps the autocomplete functionality. It's an alias for
+                - code [ref=e292]: Autocomplete.Root
+                - text: "with sensible defaults for command palette behavior:"
+                - code [ref=e293]: autoHighlight="always"
+                - text: ","
+                - code [ref=e294]: "keepHighlight={true}"
+                - text: ", and"
+                - code [ref=e295]: "open={true}"
+                - text: .
+              - table [ref=e297]:
+                - rowgroup [ref=e298]:
+                  - row [ref=e299]:
+                    - columnheader "Prop" [ref=e300]
+                    - columnheader "Type" [ref=e301]
+                    - columnheader "Default" [ref=e302]
+                    - columnheader "Description" [ref=e303]
+                - rowgroup [ref=e304]:
+                  - row [ref=e305]:
+                    - cell [ref=e306]:
+                      - code [ref=e307]: items
+                    - cell [ref=e308]:
+                      - code [ref=e309]: readonly unknown[]
+                    - cell "-" [ref=e310]
+                    - cell "The array of items to display in the command" [ref=e311]
+                  - row [ref=e312]:
+                    - cell [ref=e313]:
+                      - code [ref=e314]: open
+                    - cell [ref=e315]:
+                      - code [ref=e316]: boolean
+                    - cell [ref=e317]:
+                      - code [ref=e318]: "true"
+                    - cell "Controls whether the command is open" [ref=e319]
+                  - row [ref=e320]:
+                    - cell [ref=e321]:
+                      - code [ref=e322]: autoHighlight
+                    - cell [ref=e323]:
+                      - code [ref=e324]: boolean | "always"
+                    - cell [ref=e325]:
+                      - code [ref=e326]: "\"always\""
+                    - cell "Controls automatic highlighting of items" [ref=e327]
+                  - row [ref=e328]:
+                    - cell [ref=e329]:
+                      - code [ref=e330]: keepHighlight
+                    - cell [ref=e331]:
+                      - code [ref=e332]: boolean
+                    - cell [ref=e333]:
+                      - code [ref=e334]: "true"
+                    - cell "Whether to maintain highlight state" [ref=e335]
+                  - row [ref=e336]:
+                    - cell [ref=e337]:
+                      - code [ref=e338]: ...props
+                    - cell [ref=e339]:
+                      - code [ref=e340]: React.ComponentProps<typeof Command>
+                    - cell "-" [ref=e341]
+                    - cell "All Base UI Autocomplete props are supported" [ref=e342]
+              - heading [level=3] [ref=e343]:
+                - link "CommandDialog" [ref=e344] [cursor=pointer]:
+                  - /url: "#commanddialog"
+              - paragraph [ref=e345]:
+                - text: A wrapper component that provides the dialog root functionality. It's an alias for
+                - code [ref=e346]: Dialog.Root
+                - text: from Base UI.
+              - table [ref=e348]:
+                - rowgroup [ref=e349]:
+                  - row [ref=e350]:
+                    - columnheader "Prop" [ref=e351]
+                    - columnheader "Type" [ref=e352]
+                    - columnheader "Description" [ref=e353]
+                - rowgroup [ref=e354]:
+                  - row [ref=e355]:
+                    - cell [ref=e356]:
+                      - code [ref=e357]: open
+                    - cell [ref=e358]:
+                      - code [ref=e359]: boolean
+                    - cell "Controls whether the dialog is open" [ref=e360]
+                  - row [ref=e361]:
+                    - cell [ref=e362]:
+                      - code [ref=e363]: onOpenChange
+                    - cell [ref=e364]:
+                      - code [ref=e365]: function
+                    - cell "Callback fired when the open state changes" [ref=e366]
+                  - row [ref=e367]:
+                    - cell [ref=e368]:
+                      - code [ref=e369]: ...props
+                    - cell "Base UI Dialog props" [ref=e370]
+                    - cell "All standard dialog attributes are supported" [ref=e371]
+              - heading [level=3] [ref=e372]:
+                - link "CommandDialogTrigger" [ref=e373] [cursor=pointer]:
+                  - /url: "#commanddialogtrigger"
+              - paragraph [ref=e374]: The trigger button that opens the command dialog. Renders as a button by default.
+              - table [ref=e376]:
+                - rowgroup [ref=e377]:
+                  - row [ref=e378]:
+                    - columnheader "Prop" [ref=e379]
+                    - columnheader "Type" [ref=e380]
+                    - columnheader "Description" [ref=e381]
+                - rowgroup [ref=e382]:
+                  - row [ref=e383]:
+                    - cell [ref=e384]:
+                      - code [ref=e385]: render
+                    - cell [ref=e386]:
+                      - code [ref=e387]: React.ReactElement
+                    - cell "Element to render as the trigger" [ref=e388]
+                  - row [ref=e389]:
+                    - cell [ref=e390]:
+                      - code [ref=e391]: className
+                    - cell [ref=e392]:
+                      - code [ref=e393]: string
+                    - cell "Additional CSS classes to apply to the component" [ref=e394]
+                  - row [ref=e395]:
+                    - cell [ref=e396]:
+                      - code [ref=e397]: ...props
+                    - cell "Base UI Dialog Trigger props" [ref=e398]
+                    - cell "All standard dialog trigger attributes are supported" [ref=e399]
+              - heading [level=3] [ref=e400]:
+                - link "CommandDialogPopup" [ref=e401] [cursor=pointer]:
+                  - /url: "#commanddialogpopup"
+              - paragraph [ref=e402]: The popup content container that displays the command palette inside a dialog.
+              - table [ref=e404]:
+                - rowgroup [ref=e405]:
+                  - row [ref=e406]:
+                    - columnheader "Prop" [ref=e407]
+                    - columnheader "Type" [ref=e408]
+                    - columnheader "Description" [ref=e409]
+                - rowgroup [ref=e410]:
+                  - row [ref=e411]:
+                    - cell [ref=e412]:
+                      - code [ref=e413]: className
+                    - cell [ref=e414]:
+                      - code [ref=e415]: string
+                    - cell "Additional CSS classes to apply to the component" [ref=e416]
+                  - row [ref=e417]:
+                    - cell [ref=e418]:
+                      - code [ref=e419]: portalProps
+                    - cell [ref=e420]:
+                      - code [ref=e421]: Dialog.Portal.Props
+                    - cell [ref=e422]:
+                      - text: Props forwarded to the internal portal (
+                      - code [ref=e423]: keepMounted
+                      - text: ","
+                      - code [ref=e424]: container
+                      - text: ", etc.); see Base UI Dialog portal API"
+                  - row [ref=e425]:
+                    - cell [ref=e426]:
+                      - code [ref=e427]: ...props
+                    - cell "Base UI Dialog Popup props" [ref=e428]
+                    - cell "All standard dialog popup attributes are supported" [ref=e429]
+              - heading [level=3] [ref=e430]:
+                - link "CommandInput" [ref=e431] [cursor=pointer]:
+                  - /url: "#commandinput"
+              - paragraph [ref=e432]:
+                - text: The search input field with an integrated search icon. Automatically includes a search icon via
+                - code [ref=e433]: startAddon
+                - text: and is sized to
+                - code [ref=e434]: lg
+                - text: by default.
+              - table [ref=e436]:
+                - rowgroup [ref=e437]:
+                  - row [ref=e438]:
+                    - columnheader "Prop" [ref=e439]
+                    - columnheader "Type" [ref=e440]
+                    - columnheader "Description" [ref=e441]
+                - rowgroup [ref=e442]:
+                  - row [ref=e443]:
+                    - cell [ref=e444]:
+                      - code [ref=e445]: placeholder
+                    - cell [ref=e446]:
+                      - code [ref=e447]: string
+                    - cell "The placeholder text for the input" [ref=e448]
+                  - row [ref=e449]:
+                    - cell [ref=e450]:
+                      - code [ref=e451]: className
+                    - cell [ref=e452]:
+                      - code [ref=e453]: string
+                    - cell "Additional CSS classes to apply to the component" [ref=e454]
+                  - row [ref=e455]:
+                    - cell [ref=e456]:
+                      - code [ref=e457]: ...props
+                    - cell "Base UI Autocomplete Input props" [ref=e458]
+                    - cell "All standard autocomplete input attributes are supported" [ref=e459]
+              - heading [level=3] [ref=e460]:
+                - link "CommandList" [ref=e461] [cursor=pointer]:
+                  - /url: "#commandlist"
+              - paragraph [ref=e462]:
+                - text: A scrollable container for command items. It wraps
+                - code [ref=e463]: AutocompleteList
+                - text: with scroll functionality.
+              - table [ref=e465]:
+                - rowgroup [ref=e466]:
+                  - row [ref=e467]:
+                    - columnheader "Prop" [ref=e468]
+                    - columnheader "Type" [ref=e469]
+                    - columnheader "Description" [ref=e470]
+                - rowgroup [ref=e471]:
+                  - row [ref=e472]:
+                    - cell [ref=e473]:
+                      - code [ref=e474]: className
+                    - cell [ref=e475]:
+                      - code [ref=e476]: string
+                    - cell "Additional CSS classes to apply to the component" [ref=e477]
+                  - row [ref=e478]:
+                    - cell [ref=e479]:
+                      - code [ref=e480]: ...props
+                    - cell "Base UI Autocomplete List props" [ref=e481]
+                    - cell "All standard autocomplete list attributes are supported" [ref=e482]
+              - heading [level=3] [ref=e483]:
+                - link "CommandPanel" [ref=e484] [cursor=pointer]:
+                  - /url: "#commandpanel"
+              - paragraph [ref=e485]: A container component that provides styling for command content outside of dialogs. Useful when building standalone command interfaces with a bordered, elevated appearance.
+              - table [ref=e487]:
+                - rowgroup [ref=e488]:
+                  - row [ref=e489]:
+                    - columnheader "Prop" [ref=e490]
+                    - columnheader "Type" [ref=e491]
+                    - columnheader "Description" [ref=e492]
+                - rowgroup [ref=e493]:
+                  - row [ref=e494]:
+                    - cell [ref=e495]:
+                      - code [ref=e496]: className
+                    - cell [ref=e497]:
+                      - code [ref=e498]: string
+                    - cell "Additional CSS classes to apply to the component" [ref=e499]
+                  - row [ref=e500]:
+                    - cell [ref=e501]:
+                      - code [ref=e502]: ...props
+                    - cell [ref=e503]:
+                      - code [ref=e504]: React.ComponentProps<'div'>
+                    - cell "All standard div attributes are supported" [ref=e505]
+              - heading [level=3] [ref=e506]:
+                - link "CommandEmpty" [ref=e507] [cursor=pointer]:
+                  - /url: "#commandempty"
+              - paragraph [ref=e508]: Displays a message when no results are found.
+              - table [ref=e510]:
+                - rowgroup [ref=e511]:
+                  - row [ref=e512]:
+                    - columnheader "Prop" [ref=e513]
+                    - columnheader "Type" [ref=e514]
+                    - columnheader "Description" [ref=e515]
+                - rowgroup [ref=e516]:
+                  - row [ref=e517]:
+                    - cell [ref=e518]:
+                      - code [ref=e519]: className
+                    - cell [ref=e520]:
+                      - code [ref=e521]: string
+                    - cell "Additional CSS classes to apply to the component" [ref=e522]
+                  - row [ref=e523]:
+                    - cell [ref=e524]:
+                      - code [ref=e525]: ...props
+                    - cell "Base UI Autocomplete Empty props" [ref=e526]
+                    - cell "All standard autocomplete empty attributes are supported" [ref=e527]
+              - heading [level=3] [ref=e528]:
+                - link "CommandGroup" [ref=e529] [cursor=pointer]:
+                  - /url: "#commandgroup"
+              - paragraph [ref=e530]:
+                - text: Groups related command items together. Wraps
+                - code [ref=e531]: AutocompleteGroup
+                - text: .
+              - table [ref=e533]:
+                - rowgroup [ref=e534]:
+                  - row [ref=e535]:
+                    - columnheader "Prop" [ref=e536]
+                    - columnheader "Type" [ref=e537]
+                    - columnheader "Description" [ref=e538]
+                - rowgroup [ref=e539]:
+                  - row [ref=e540]:
+                    - cell [ref=e541]:
+                      - code [ref=e542]: items
+                    - cell [ref=e543]:
+                      - code [ref=e544]: readonly unknown[]
+                    - cell "The array of items in this group" [ref=e545]
+                  - row [ref=e546]:
+                    - cell [ref=e547]:
+                      - code [ref=e548]: className
+                    - cell [ref=e549]:
+                      - code [ref=e550]: string
+                    - cell "Additional CSS classes to apply to the component" [ref=e551]
+                  - row [ref=e552]:
+                    - cell [ref=e553]:
+                      - code [ref=e554]: ...props
+                    - cell "Base UI Autocomplete Group props" [ref=e555]
+                    - cell "All standard autocomplete group attributes are supported" [ref=e556]
+              - heading [level=3] [ref=e557]:
+                - link "CommandGroupLabel" [ref=e558] [cursor=pointer]:
+                  - /url: "#commandgrouplabel"
+              - paragraph [ref=e559]: Displays a label for a command group.
+              - table [ref=e561]:
+                - rowgroup [ref=e562]:
+                  - row [ref=e563]:
+                    - columnheader "Prop" [ref=e564]
+                    - columnheader "Type" [ref=e565]
+                    - columnheader "Description" [ref=e566]
+                - rowgroup [ref=e567]:
+                  - row [ref=e568]:
+                    - cell [ref=e569]:
+                      - code [ref=e570]: className
+                    - cell [ref=e571]:
+                      - code [ref=e572]: string
+                    - cell "Additional CSS classes to apply to the component" [ref=e573]
+                  - row [ref=e574]:
+                    - cell [ref=e575]:
+                      - code [ref=e576]: ...props
+                    - cell "Base UI Autocomplete Group Label props" [ref=e577]
+                    - cell "All standard autocomplete group label attributes are supported" [ref=e578]
+              - heading [level=3] [ref=e579]:
+                - link "CommandItem" [ref=e580] [cursor=pointer]:
+                  - /url: "#commanditem"
+              - paragraph [ref=e581]:
+                - text: An individual selectable command item. Extends
+                - code [ref=e582]: AutocompleteItem
+                - text: .
+              - table [ref=e584]:
+                - rowgroup [ref=e585]:
+                  - row [ref=e586]:
+                    - columnheader "Prop" [ref=e587]
+                    - columnheader "Type" [ref=e588]
+                    - columnheader "Description" [ref=e589]
+                - rowgroup [ref=e590]:
+                  - row [ref=e591]:
+                    - cell [ref=e592]:
+                      - code [ref=e593]: value
+                    - cell [ref=e594]:
+                      - code [ref=e595]: unknown
+                    - cell "The value of the item" [ref=e596]
+                  - row [ref=e597]:
+                    - cell [ref=e598]:
+                      - code [ref=e599]: className
+                    - cell [ref=e600]:
+                      - code [ref=e601]: string
+                    - cell "Additional CSS classes to apply to the component" [ref=e602]
+                  - row [ref=e603]:
+                    - cell [ref=e604]:
+                      - code [ref=e605]: ...props
+                    - cell "Base UI Autocomplete Item props" [ref=e606]
+                    - cell "All standard autocomplete item attributes are supported" [ref=e607]
+              - heading [level=3] [ref=e608]:
+                - link "CommandSeparator" [ref=e609] [cursor=pointer]:
+                  - /url: "#commandseparator"
+              - paragraph [ref=e610]:
+                - text: A visual separator between command groups or items. Includes default vertical spacing with
+                - code [ref=e611]: my-2
+                - text: className.
+              - table [ref=e613]:
+                - rowgroup [ref=e614]:
+                  - row [ref=e615]:
+                    - columnheader "Prop" [ref=e616]
+                    - columnheader "Type" [ref=e617]
+                    - columnheader "Description" [ref=e618]
+                - rowgroup [ref=e619]:
+                  - row [ref=e620]:
+                    - cell [ref=e621]:
+                      - code [ref=e622]: className
+                    - cell [ref=e623]:
+                      - code [ref=e624]: string
+                    - cell [ref=e625]:
+                      - text: Additional CSS classes to apply to the component (default includes
+                      - code [ref=e626]: my-2
+                      - text: )
+                  - row [ref=e627]:
+                    - cell [ref=e628]:
+                      - code [ref=e629]: ...props
+                    - cell "Base UI Autocomplete Separator props" [ref=e630]
+                    - cell "All standard autocomplete separator attributes are supported" [ref=e631]
+              - heading [level=3] [ref=e632]:
+                - link "CommandShortcut" [ref=e633] [cursor=pointer]:
+                  - /url: "#commandshortcut"
+              - paragraph [ref=e634]: Displays keyboard shortcuts in a styled span element.
+              - table [ref=e636]:
+                - rowgroup [ref=e637]:
+                  - row [ref=e638]:
+                    - columnheader "Prop" [ref=e639]
+                    - columnheader "Type" [ref=e640]
+                    - columnheader "Description" [ref=e641]
+                - rowgroup [ref=e642]:
+                  - row [ref=e643]:
+                    - cell [ref=e644]:
+                      - code [ref=e645]: className
+                    - cell [ref=e646]:
+                      - code [ref=e647]: string
+                    - cell "Additional CSS classes to apply to the component" [ref=e648]
+                  - row [ref=e649]:
+                    - cell [ref=e650]:
+                      - code [ref=e651]: ...props
+                    - cell [ref=e652]:
+                      - code [ref=e653]: React.ComponentProps<'span'>
+                    - cell "All standard span attributes are supported" [ref=e654]
+              - heading [level=3] [ref=e655]:
+                - link "CommandFooter" [ref=e656] [cursor=pointer]:
+                  - /url: "#commandfooter"
+              - paragraph [ref=e657]:
+                - text: A footer section for displaying hints or additional keyboard shortcuts. Renders as a styled
+                - code [ref=e658]: div
+                - text: with padding and border.
+              - table [ref=e660]:
+                - rowgroup [ref=e661]:
+                  - row [ref=e662]:
+                    - columnheader "Prop" [ref=e663]
+                    - columnheader "Type" [ref=e664]
+                    - columnheader "Description" [ref=e665]
+                - rowgroup [ref=e666]:
+                  - row [ref=e667]:
+                    - cell [ref=e668]:
+                      - code [ref=e669]: className
+                    - cell [ref=e670]:
+                      - code [ref=e671]: string
+                    - cell "Additional CSS classes to apply to the component" [ref=e672]
+                  - row [ref=e673]:
+                    - cell [ref=e674]:
+                      - code [ref=e675]: ...props
+                    - cell [ref=e676]:
+                      - code [ref=e677]: React.ComponentProps<'div'>
+                    - cell "All standard div attributes are supported" [ref=e678]
+              - heading [level=3] [ref=e679]:
+                - link "CommandCollection" [ref=e680] [cursor=pointer]:
+                  - /url: "#commandcollection"
+              - paragraph [ref=e681]:
+                - text: Used within
+                - code [ref=e682]: CommandGroup
+                - text: to wrap items when using grouped data. It's an alias for
+                - code [ref=e683]: AutocompleteCollection
+                - text: from the Autocomplete component.
+              - table [ref=e685]:
+                - rowgroup [ref=e686]:
+                  - row [ref=e687]:
+                    - columnheader "Prop" [ref=e688]
+                    - columnheader "Type" [ref=e689]
+                    - columnheader "Description" [ref=e690]
+                - rowgroup [ref=e691]:
+                  - row [ref=e692]:
+                    - cell [ref=e693]:
+                      - code [ref=e694]: ...props
+                    - cell "Base UI Autocomplete Collection props" [ref=e695]
+                    - cell "All standard autocomplete collection attributes are supported" [ref=e696]
+              - heading [level=2] [ref=e697]:
+                - link "Examples" [ref=e698] [cursor=pointer]:
+                  - /url: "#examples"
+              - heading [level=3] [ref=e699]:
+                - link "With Keyboard Shortcut" [ref=e700] [cursor=pointer]:
+                  - /url: "#with-keyboard-shortcut"
+              - paragraph [ref=e701]: "You can add a keyboard shortcut to open the command palette:"
+              - figure [ref=e702]:
+                - generic [ref=e704]:
+                  - button "Copy" [ref=e705] [cursor=pointer]
+                  - code [ref=e707]:
+                    - generic [ref=e708]: "React.useEffect(() => {"
+                    - generic [ref=e709]: "const down = (e: KeyboardEvent) => {"
+                    - generic [ref=e710]: "if (e.key === \"k\" && (e.metaKey || e.ctrlKey)) {"
+                    - generic [ref=e711]: e.preventDefault()
+                    - generic [ref=e712]: setOpen((open) => !open)
+                    - generic [ref=e713]: "}"
+                    - generic [ref=e714]: "}"
+                    - generic [ref=e716]: document.addEventListener("keydown", down)
+                    - generic [ref=e717]: return () => document.removeEventListener("keydown", down)
+                    - generic [ref=e718]: "}, [])"
+              - heading [level=3] [ref=e719]:
+                - link "With Grouped Items" [ref=e720] [cursor=pointer]:
+                  - /url: "#with-grouped-items"
+              - figure [ref=e721]:
+                - generic [ref=e723]:
+                  - button "Copy" [ref=e724] [cursor=pointer]
+                  - code [ref=e726]:
+                    - generic [ref=e727]: const groupedItems = [
+                    - generic [ref=e728]: "{"
+                    - generic [ref=e729]: "value: \"Suggestions\","
+                    - generic [ref=e730]: "items: ["
+                    - generic [ref=e731]: "{ value: \"linear\", label: \"Linear\" },"
+                    - generic [ref=e732]: "{ value: \"figma\", label: \"Figma\" },"
+                    - generic [ref=e733]: "]"
+                    - generic [ref=e734]: "},"
+                    - generic [ref=e735]: "{"
+                    - generic [ref=e736]: "value: \"Commands\","
+                    - generic [ref=e737]: "items: ["
+                    - generic [ref=e738]: "{ value: \"clipboard\", label: \"Clipboard History\" },"
+                    - generic [ref=e739]: "{ value: \"settings\", label: \"System Preferences\" },"
+                    - generic [ref=e740]: "]"
+                    - generic [ref=e741]: "},"
+                    - generic [ref=e742]: "]"
+                    - generic [ref=e744]: "<Command items={groupedItems}>"
+                    - generic [ref=e745]: <CommandInput placeholder="Search..." />
+                    - generic [ref=e746]: <CommandEmpty>No results found.</CommandEmpty>
+                    - generic [ref=e747]: <CommandList>
+                    - generic [ref=e748]: "{(group, index) => ("
+                    - generic [ref=e749]: "<React.Fragment key={group.value}>"
+                    - generic [ref=e750]: "<CommandGroup items={group.items}>"
+                    - generic [ref=e751]: "<CommandGroupLabel>{group.value}</CommandGroupLabel>"
+                    - generic [ref=e752]: <CommandCollection>
+                    - generic [ref=e753]: "{(item) => ("
+                    - generic [ref=e754]: "<CommandItem key={item.value} value={item.value}>"
+                    - generic [ref=e755]: "{item.label}"
+                    - generic [ref=e756]: </CommandItem>
+                    - generic [ref=e757]: ")}"
+                    - generic [ref=e758]: </CommandCollection>
+                    - generic [ref=e759]: </CommandGroup>
+                    - generic [ref=e760]: "{index < groupedItems.length - 1 && <CommandSeparator />}"
+                    - generic [ref=e761]: </React.Fragment>
+                    - generic [ref=e762]: ")}"
+                    - generic [ref=e763]: </CommandList>
+                    - generic [ref=e764]: </Command>
+              - heading [level=3] [ref=e765]:
+                - link "Standalone Command (Without Dialog)" [ref=e766] [cursor=pointer]:
+                  - /url: "#standalone-command-without-dialog"
+              - paragraph [ref=e767]: "You can use the Command component without a dialog wrapper:"
+              - figure [ref=e768]:
+                - generic [ref=e770]:
+                  - button "Copy" [ref=e771] [cursor=pointer]
+                  - code [ref=e773]:
+                    - generic [ref=e774]: "<Command open items={items}>"
+                    - generic [ref=e775]: <CommandInput placeholder="Type a command..." />
+                    - generic [ref=e776]: <CommandEmpty>No results found.</CommandEmpty>
+                    - generic [ref=e777]: <CommandList>
+                    - generic [ref=e778]: "{(item) => ("
+                    - generic [ref=e779]: "<CommandItem key={item.value} value={item.value}>"
+                    - generic [ref=e780]: "{item.label}"
+                    - generic [ref=e781]: </CommandItem>
+                    - generic [ref=e782]: ")}"
+                    - generic [ref=e783]: </CommandList>
+                    - generic [ref=e784]: </Command>
+          - generic [ref=e786]:
+            - paragraph [ref=e787]:
+              - link "coss.com ui" [ref=e788] [cursor=pointer]:
+                - /url: /ui
+            - paragraph [ref=e789]:
+              - text: Built by and for the team of
+              - link "Cal.com" [ref=e790] [cursor=pointer]:
+                - /url: https://cal.com
+              - text: ", Inc. — the leading commercial open source company (“coss”)."
+        - generic [ref=e795]:
+          - paragraph [ref=e796]: On This Page
+          - generic [ref=e797]:
+            - link "Installation" [ref=e798] [cursor=pointer]:
+              - /url: "#installation"
+            - link "Usage" [ref=e799] [cursor=pointer]:
+              - /url: "#usage"
+            - link "API Reference" [ref=e800] [cursor=pointer]:
+              - /url: "#api-reference"
+            - link "Command" [ref=e801] [cursor=pointer]:
+              - /url: "#command"
+            - link "CommandDialog" [ref=e802] [cursor=pointer]:
+              - /url: "#commanddialog"
+            - link "CommandDialogTrigger" [ref=e803] [cursor=pointer]:
+              - /url: "#commanddialogtrigger"
+            - link "CommandDialogPopup" [ref=e804] [cursor=pointer]:
+              - /url: "#commanddialogpopup"
+            - link "CommandInput" [ref=e805] [cursor=pointer]:
+              - /url: "#commandinput"
+            - link "CommandList" [ref=e806] [cursor=pointer]:
+              - /url: "#commandlist"
+            - link "CommandPanel" [ref=e807] [cursor=pointer]:
+              - /url: "#commandpanel"
+            - link "CommandEmpty" [ref=e808] [cursor=pointer]:
+              - /url: "#commandempty"
+            - link "CommandGroup" [ref=e809] [cursor=pointer]:
+              - /url: "#commandgroup"
+            - link "CommandGroupLabel" [ref=e810] [cursor=pointer]:
+              - /url: "#commandgrouplabel"
+            - link "CommandItem" [ref=e811] [cursor=pointer]:
+              - /url: "#commanditem"
+            - link "CommandSeparator" [ref=e812] [cursor=pointer]:
+              - /url: "#commandseparator"
+            - link "CommandShortcut" [ref=e813] [cursor=pointer]:
+              - /url: "#commandshortcut"
+            - link "CommandFooter" [ref=e814] [cursor=pointer]:
+              - /url: "#commandfooter"
+            - link "CommandCollection" [ref=e815] [cursor=pointer]:
+              - /url: "#commandcollection"
+            - link "Examples" [ref=e816] [cursor=pointer]:
+              - /url: "#examples"
+            - link "With Keyboard Shortcut" [ref=e817] [cursor=pointer]:
+              - /url: "#with-keyboard-shortcut"
+            - link "With Grouped Items" [ref=e818] [cursor=pointer]:
+              - /url: "#with-grouped-items"
+            - link "Standalone Command (Without Dialog)" [ref=e819] [cursor=pointer]:
+              - /url: "#standalone-command-without-dialog"

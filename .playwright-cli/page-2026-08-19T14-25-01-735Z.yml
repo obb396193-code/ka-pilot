@@ -1,0 +1,2167 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e3]:
+    - generic [ref=f2e4]:
+      - generic [ref=f2e5]:
+        - link "Kibo UI Kibo UI" [ref=f2e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f2e7]:
+            - img "Kibo UI" [ref=f2e8]
+            - generic [ref=f2e11]: Kibo UI
+        - generic [ref=f2e12]:
+          - link "Docs" [ref=f2e13] [cursor=pointer]:
+            - /url: /docs
+          - link "Components 41" [ref=f2e14] [cursor=pointer]:
+            - /url: /components
+            - text: Components
+            - generic [ref=f2e15]: "41"
+          - link "Blocks 28" [ref=f2e16] [cursor=pointer]:
+            - /url: /blocks
+            - text: Blocks
+            - generic [ref=f2e17]: "28"
+          - link "Patterns 1101" [ref=f2e18] [cursor=pointer]:
+            - /url: /patterns
+            - text: Patterns
+            - generic [ref=f2e19]: "1101"
+      - generic [ref=f2e20]:
+        - button [ref=f2e21]:
+          - paragraph [ref=f2e22]: Search...
+          - generic [ref=f2e23]:
+            - generic: ⌘
+            - generic: K
+        - link [ref=f2e24] [cursor=pointer]:
+          - /url: https://www.shadcnblocks.com
+          - img "shadcnblocks" [ref=f2e25]
+          - text: Shadcn UI Blocks
+        - link "GitHub 3.8K" [ref=f2e26] [cursor=pointer]:
+          - /url: https://github.com/shadcnblocks/kibo
+          - img "GitHub"
+          - generic [ref=f2e27]: 3.8K
+    - generic:
+      - button "Collapse Sidebar"
+      - button "Open Search"
+    - generic [ref=f2e28]:
+      - generic [ref=f2e31]:
+        - heading "High quality shadcn/ui shadcn/ui components built with React TypeScript Tailwind CSS Lucide Radix UI" [level=1] [ref=f2e32]:
+          - text: High quality
+          - generic [ref=f2e33]:
+            - img "shadcn/ui" [ref=f2e34]
+            - generic [ref=f2e35]: shadcn/ui
+          - text: components built with
+          - generic [ref=f2e36]:
+            - img "React" [ref=f2e38]
+            - img "TypeScript" [ref=f2e41]
+            - img "Tailwind CSS" [ref=f2e44]
+            - img "Lucide" [ref=f2e47]
+            - img "Radix UI" [ref=f2e50]
+        - paragraph [ref=f2e53]: Kibo UI is a custom registry of composable, accessible and extensible components designed for use with shadcn/ui. Free and open source, forever.
+        - generic [ref=f2e54]:
+          - link "Browse components" [ref=f2e55] [cursor=pointer]:
+            - /url: /components
+          - link "GitHub GitHub 3758" [ref=f2e56] [cursor=pointer]:
+            - /url: https://github.com/shadcnblocks/kibo
+            - generic [ref=f2e57]:
+              - generic [ref=f2e58]:
+                - img "GitHub"
+                - generic [ref=f2e59]: GitHub
+              - generic [ref=f2e61]: "3758"
+      - generic [ref=f2e64]:
+        - generic [ref=f2e65]:
+          - generic [ref=f2e66]:
+            - heading "Functional and fully composable" [level=2] [ref=f2e67]
+            - paragraph [ref=f2e68]: Kibo UI components are designed to be fully composable so you can build, customize and extend them to your own needs.
+          - link "Explore components" [ref=f2e69] [cursor=pointer]:
+            - /url: /components
+        - generic [ref=f2e71]:
+          - generic [ref=f2e72]:
+            - generic [ref=f2e73]:
+              - paragraph [ref=f2e81]: Color Picker
+              - paragraph [ref=f2e82]: Allows users to select a color. Modeled after the color picker in Figma.
+            - generic [ref=f2e84]:
+              - generic [ref=f2e86]:
+                - button [ref=f2e87]
+                - generic [ref=f2e88]:
+                  - slider [ref=f2e92]
+                  - slider [ref=f2e98]
+              - generic [ref=f2e99]:
+                - combobox [ref=f2e100]:
+                  - generic: HEX
+                - generic [ref=f2e101]:
+                  - textbox [ref=f2e102]: "#FF0000"
+                  - generic [ref=f2e103]:
+                    - textbox [ref=f2e104]: "100"
+                    - generic [ref=f2e105]: "%"
+          - generic [ref=f2e106]:
+            - generic [ref=f2e107]:
+              - paragraph [ref=f2e116]: Image Zoom
+              - paragraph [ref=f2e117]: Image zoom is a component that allows you to zoom in on an image.
+            - img "Placeholder image" [ref=f2e122]
+          - generic [ref=f2e124]:
+            - paragraph [ref=f2e132]: QR Code
+            - paragraph [ref=f2e133]: QR Code is a component that generates a QR code from a string.
+          - generic [ref=f2e140]:
+            - generic [ref=f2e141]:
+              - paragraph [ref=f2e146]: Code Block
+              - paragraph [ref=f2e147]: Provides syntax highlighting, line numbers, and copy to clipboard functionality for code blocks.
+            - generic [ref=f2e149]:
+              - generic [ref=f2e150]:
+                - generic [ref=f2e151]: MyComponent.jsx
+                - combobox [ref=f2e156]:
+                  - generic: jsx
+                - button [ref=f2e157]
+              - code [ref=f2e162]:
+                - generic [ref=f2e163]: "function MyComponent(props) {"
+                - generic [ref=f2e164]: return (
+                - generic [ref=f2e165]: <div>
+                - generic [ref=f2e166]: "<h1>Hello, {props.name}!</h1>"
+                - generic [ref=f2e167]: <p>This is an example React component.</p>
+                - generic [ref=f2e168]: </div>
+                - generic [ref=f2e169]: );
+                - generic [ref=f2e170]: "}"
+          - generic [ref=f2e171]:
+            - generic [ref=f2e172]:
+              - paragraph [ref=f2e178]: Dropzone
+              - paragraph [ref=f2e179]: Allows users to drag-and-drop files into a container to upload or process them.
+            - button [ref=f2e181]:
+              - button "Choose File" [ref=f2e182]
+              - generic [ref=f2e183]:
+                - paragraph [ref=f2e185]: Upload files
+                - paragraph [ref=f2e186]: Drag and drop or click to upload
+                - paragraph [ref=f2e187]: Accepts image/* between 1.00KB and 10.00MB.
+          - generic [ref=f2e188]:
+            - generic [ref=f2e189]:
+              - paragraph [ref=f2e193]: Marquee
+              - paragraph [ref=f2e194]: Marquees are a great way to show a list of items in a horizontal scrolling motion.
+            - generic [ref=f2e200]:
+              - generic [ref=f2e202]:
+                - img "Placeholder 0" [ref=f2e205]
+                - img "Placeholder 1" [ref=f2e208]
+                - img "Placeholder 2" [ref=f2e211]
+                - img "Placeholder 3" [ref=f2e214]
+                - img "Placeholder 4" [ref=f2e217]
+                - img "Placeholder 5" [ref=f2e220]
+                - img "Placeholder 6" [ref=f2e223]
+                - img "Placeholder 7" [ref=f2e226]
+                - img "Placeholder 8" [ref=f2e229]
+                - img "Placeholder 9" [ref=f2e232]
+              - generic [ref=f2e233]:
+                - img "Placeholder 0" [ref=f2e236]
+                - img "Placeholder 1" [ref=f2e239]
+                - img "Placeholder 2" [ref=f2e242]
+                - img "Placeholder 3" [ref=f2e245]
+                - img "Placeholder 4" [ref=f2e248]
+                - img "Placeholder 5" [ref=f2e251]
+                - img "Placeholder 6" [ref=f2e254]
+                - img "Placeholder 7" [ref=f2e257]
+                - img "Placeholder 8" [ref=f2e260]
+                - img "Placeholder 9" [ref=f2e263]
+      - generic [ref=f2e264]:
+        - generic [ref=f2e265]:
+          - generic [ref=f2e266]:
+            - heading "Building blocks for interfaces" [level=2] [ref=f2e267]
+            - paragraph [ref=f2e268]: Get your apps and websites up and running quickly with precomposed and animated blocks.
+          - link "Explore blocks" [ref=f2e269] [cursor=pointer]:
+            - /url: /blocks
+        - generic [ref=f2e271]:
+          - generic [ref=f2e272]:
+            - generic [ref=f2e273]:
+              - paragraph [ref=f2e278]: Collaborative Canvas
+              - paragraph [ref=f2e279]: Create an online, realtime collaborative canvas with Kibo UI components.
+            - generic [ref=f2e282]:
+              - generic [ref=f2e284]:
+                - generic [ref=f2e285]: Ha
+                - generic [ref=f2e288]: sh
+                - generic [ref=f2e291]: Le
+              - generic:
+                - generic:
+                  - generic:
+                    - img "Hayden Bleasel"
+                    - generic: Hayden Bleasel
+              - generic:
+                - generic:
+                  - generic:
+                    - img "shadcn"
+                    - generic: shadcn
+                  - generic: Can we adjust the color?
+              - generic:
+                - generic:
+                  - generic:
+                    - img "Lee Robinson"
+                    - generic: Lee Robinson
+          - generic [ref=f2e294]:
+            - generic [ref=f2e295]:
+              - paragraph [ref=f2e302]: Form
+              - paragraph [ref=f2e303]: A form block allows users to submit data to a website or application.
+            - generic [ref=f2e306]:
+              - generic [ref=f2e307]:
+                - heading "Create Your Event" [level=1] [ref=f2e308]
+                - paragraph [ref=f2e309]: Fill out the form below to create and customize your upcoming event
+              - generic [ref=f2e310]:
+                - generic [ref=f2e311]:
+                  - heading "Basic Information" [level=2] [ref=f2e312]
+                  - generic [ref=f2e315]:
+                    - generic [ref=f2e316]:
+                      - generic [ref=f2e317]: Event Name
+                      - textbox "Event Name" [ref=f2e318]:
+                        - /placeholder: Enter your event name
+                    - generic [ref=f2e319]:
+                      - generic [ref=f2e320]: Organizer
+                      - textbox "Organizer" [ref=f2e321]:
+                        - /placeholder: Your name or organization
+                  - generic [ref=f2e322]:
+                    - generic [ref=f2e323]: Description
+                    - textbox "Description" [ref=f2e324]:
+                      - /placeholder: Describe your event in detail...
+                - generic [ref=f2e325]:
+                  - heading "Event Type" [level=2] [ref=f2e326]
+                  - radiogroup [ref=f2e332]:
+                    - group [ref=f2e334]:
+                      - generic [ref=f2e335]:
+                        - generic [ref=f2e336]: Conference
+                        - paragraph [ref=f2e337]: Professional gathering with speakers and networking
+                      - radio "Conference Professional gathering with speakers and networking" [ref=f2e338]
+                      - radio
+                    - group [ref=f2e340]:
+                      - generic [ref=f2e341]:
+                        - generic [ref=f2e342]: Workshop
+                        - paragraph [ref=f2e343]: Hands-on learning experience with practical activities
+                      - radio "Workshop Hands-on learning experience with practical activities" [ref=f2e344]
+                      - radio
+                    - group [ref=f2e346]:
+                      - generic [ref=f2e347]:
+                        - generic [ref=f2e348]: Meetup
+                        - paragraph [ref=f2e349]: Casual gathering for like-minded individuals
+                      - radio "Meetup Casual gathering for like-minded individuals" [ref=f2e350]
+                      - radio
+                    - group [ref=f2e352]:
+                      - generic [ref=f2e353]:
+                        - generic [ref=f2e354]: Webinar
+                        - paragraph [ref=f2e355]: Online presentation or seminar via video conference
+                      - radio "Webinar Online presentation or seminar via video conference" [ref=f2e356]
+                      - radio
+                - generic [ref=f2e357]:
+                  - heading "Venue" [level=2] [ref=f2e358]
+                  - button "Select venue..." [ref=f2e362]
+                - generic [ref=f2e364]:
+                  - heading "Select Date" [level=2] [ref=f2e365]
+                  - generic [ref=f2e368]:
+                    - button [ref=f2e369]
+                    - generic [ref=f2e370]:
+                      - button "Aug 19" [ref=f2e371]:
+                        - generic [ref=f2e372]: Aug
+                        - generic [ref=f2e373]: "19"
+                      - button "Aug 20" [ref=f2e374]:
+                        - generic [ref=f2e375]: Aug
+                        - generic [ref=f2e376]: "20"
+                      - button "Aug 21" [ref=f2e377]:
+                        - generic [ref=f2e378]: Aug
+                        - generic [ref=f2e379]: "21"
+                      - button "Aug 22" [ref=f2e380]:
+                        - generic [ref=f2e381]: Aug
+                        - generic [ref=f2e382]: "22"
+                      - button "Aug 23" [ref=f2e383]:
+                        - generic [ref=f2e384]: Aug
+                        - generic [ref=f2e385]: "23"
+                      - button "Aug 24" [ref=f2e386]:
+                        - generic [ref=f2e387]: Aug
+                        - generic [ref=f2e388]: "24"
+                      - button "Aug 25" [ref=f2e389]:
+                        - generic [ref=f2e390]: Aug
+                        - generic [ref=f2e391]: "25"
+                    - button [ref=f2e392]
+                - generic [ref=f2e393]:
+                  - heading "Event Tags" [level=2] [ref=f2e394]
+                  - combobox [ref=f2e399]:
+                    - generic [ref=f2e400]: Select a tag...
+                - generic [ref=f2e402]:
+                  - heading "Event Images" [level=2] [ref=f2e403]
+                  - button [ref=f2e408]:
+                    - button "Choose File" [ref=f2e409]
+                    - generic [ref=f2e410]:
+                      - paragraph [ref=f2e412]: Upload files
+                      - paragraph [ref=f2e413]: Drag and drop or click to upload
+                      - paragraph [ref=f2e414]: Accepts image/* less than 5.00MB.
+                - generic [ref=f2e415]:
+                  - button "Save as Draft" [ref=f2e416]
+                  - button "Create Event" [ref=f2e417]
+          - generic [ref=f2e418]:
+            - generic [ref=f2e419]:
+              - paragraph [ref=f2e422]: Roadmap
+              - paragraph [ref=f2e423]: A roadmap block is a large, full-width block that is used to introduce a new product or service.
+            - generic [ref=f2e426]:
+              - generic [ref=f2e427]:
+                - paragraph [ref=f2e428]: Roadmap
+                - tablist [ref=f2e429]:
+                  - tab "Gantt" [selected] [ref=f2e430]
+                  - tab "Calendar" [ref=f2e432]
+                  - tab "List" [ref=f2e434]
+                  - tab "Kanban" [ref=f2e436]
+                  - tab "Table" [ref=f2e438]
+              - tabpanel "Gantt" [ref=f2e440]:
+                - generic [ref=f2e441]:
+                  - generic [ref=f2e442]:
+                    - generic [ref=f2e443]:
+                      - paragraph [ref=f2e444]: Issues
+                      - paragraph [ref=f2e445]: Duration
+                    - generic [ref=f2e446]:
+                      - generic [ref=f2e447]:
+                        - paragraph [ref=f2e448]: Collaborate magnetic supply-chains
+                        - button "Harness best-of-breed large language models 6 months" [ref=f2e450]:
+                          - paragraph: Harness best-of-breed large language models
+                          - paragraph: 6 months
+                      - generic [ref=f2e451]:
+                        - paragraph [ref=f2e452]: Deliver enterprise partnerships
+                        - generic [ref=f2e453]:
+                          - button "Optimize ubiquitous infrastructures about 2 months" [ref=f2e454]:
+                            - paragraph: Optimize ubiquitous infrastructures
+                            - paragraph: about 2 months
+                          - button "Incentivize customized metrics 5 months" [ref=f2e455]:
+                            - paragraph: Incentivize customized metrics
+                            - paragraph: 5 months
+                          - button "Harness turn-key architectures 8 months" [ref=f2e456]:
+                            - paragraph: Harness turn-key architectures
+                            - paragraph: 8 months
+                      - generic [ref=f2e457]:
+                        - paragraph [ref=f2e458]: Drive generative convergence
+                        - generic [ref=f2e459]:
+                          - button "Leverage B2B niches 7 months" [ref=f2e460]:
+                            - paragraph: Leverage B2B niches
+                            - paragraph: 7 months
+                          - button "Generate rich applications 21 days" [ref=f2e461]:
+                            - paragraph: Generate rich applications
+                            - paragraph: 21 days
+                      - generic [ref=f2e462]:
+                        - paragraph [ref=f2e463]: Enable quantum methodologies
+                        - generic [ref=f2e464]:
+                          - button "Architect decentralized partnerships 5 months" [ref=f2e465]:
+                            - paragraph: Architect decentralized partnerships
+                            - paragraph: 5 months
+                          - button "Repurpose viral mindshare 7 months" [ref=f2e466]:
+                            - paragraph: Repurpose viral mindshare
+                            - paragraph: 7 months
+                          - button "Engineer global infrastructures 2 months" [ref=f2e467]:
+                            - paragraph: Engineer global infrastructures
+                            - paragraph: 2 months
+                          - button "Drive rich lifetime value 5 months" [ref=f2e468]:
+                            - paragraph: Drive rich lifetime value
+                            - paragraph: 5 months
+                          - button "Engage rich niches 7 months" [ref=f2e469]:
+                            - paragraph: Engage rich niches
+                            - paragraph: 7 months
+                          - button "Empower B2C initiatives 10 months" [ref=f2e470]:
+                            - paragraph: Empower B2C initiatives
+                            - paragraph: 10 months
+                      - generic [ref=f2e471]:
+                        - paragraph [ref=f2e472]: Incubate scalable communities
+                        - generic [ref=f2e473]:
+                          - button "Facilitate extensible schemas 8 months" [ref=f2e474]:
+                            - paragraph: Facilitate extensible schemas
+                            - paragraph: 8 months
+                          - button "Reinvent strategic architectures 7 months" [ref=f2e475]:
+                            - paragraph: Reinvent strategic architectures
+                            - paragraph: 7 months
+                          - button "Reinvent value-added functionalities 5 months" [ref=f2e476]:
+                            - paragraph: Reinvent value-added functionalities
+                            - paragraph: 5 months
+                      - generic [ref=f2e477]:
+                        - paragraph [ref=f2e478]: Transition quantum experiences
+                        - generic [ref=f2e479]:
+                          - button "Scale vertical lifetime value 9 months" [ref=f2e480]:
+                            - paragraph: Scale vertical lifetime value
+                            - paragraph: 9 months
+                          - button "Syndicate viral applications 7 months" [ref=f2e481]:
+                            - paragraph: Syndicate viral applications
+                            - paragraph: 7 months
+                          - button "Target AI-driven blockchains 7 months" [ref=f2e482]:
+                            - paragraph: Target AI-driven blockchains
+                            - paragraph: 7 months
+                          - button "Aggregate virtual platforms 10 months" [ref=f2e483]:
+                            - paragraph: Aggregate virtual platforms
+                            - paragraph: 10 months
+                          - button "Maximize immersive methodologies 6 months" [ref=f2e484]:
+                            - paragraph: Maximize immersive methodologies
+                            - paragraph: 6 months
+                  - generic [ref=f2e485]:
+                    - generic [ref=f2e486]:
+                      - generic [ref=f2e488]:
+                        - paragraph [ref=f2e491]: "2025"
+                        - generic [ref=f2e492]:
+                          - paragraph [ref=f2e494]: Jan
+                          - paragraph [ref=f2e496]: Feb
+                          - paragraph [ref=f2e498]: Mar
+                          - paragraph [ref=f2e500]: Apr
+                          - paragraph [ref=f2e502]: May
+                          - paragraph [ref=f2e504]: Jun
+                          - paragraph [ref=f2e506]: Jul
+                          - paragraph [ref=f2e508]: Aug
+                          - paragraph [ref=f2e510]: Sep
+                          - paragraph [ref=f2e512]: Oct
+                          - paragraph [ref=f2e514]: Nov
+                          - paragraph [ref=f2e516]: Dec
+                      - generic [ref=f2e531]:
+                        - paragraph [ref=f2e534]: "2026"
+                        - generic [ref=f2e535]:
+                          - paragraph [ref=f2e537]: Jan
+                          - paragraph [ref=f2e539]: Feb
+                          - paragraph [ref=f2e541]: Mar
+                          - paragraph [ref=f2e543]: Apr
+                          - paragraph [ref=f2e545]: May
+                          - paragraph [ref=f2e547]: Jun
+                          - paragraph [ref=f2e549]: Jul
+                          - paragraph [ref=f2e551]: Aug
+                          - paragraph [ref=f2e553]: Sep
+                          - paragraph [ref=f2e555]: Oct
+                          - paragraph [ref=f2e557]: Nov
+                          - paragraph [ref=f2e559]: Dec
+                      - generic [ref=f2e574]:
+                        - paragraph [ref=f2e577]: "2027"
+                        - generic [ref=f2e578]:
+                          - paragraph [ref=f2e580]: Jan
+                          - paragraph [ref=f2e582]: Feb
+                          - paragraph [ref=f2e584]: Mar
+                          - paragraph [ref=f2e586]: Apr
+                          - paragraph [ref=f2e588]: May
+                          - paragraph [ref=f2e590]: Jun
+                          - paragraph [ref=f2e592]: Jul
+                          - paragraph [ref=f2e594]: Aug
+                          - paragraph [ref=f2e596]: Sep
+                          - paragraph [ref=f2e598]: Oct
+                          - paragraph [ref=f2e600]: Nov
+                          - paragraph [ref=f2e602]: Dec
+                    - generic:
+                      - generic:
+                        - generic:
+                          - button "Harness best-of-breed large language models El":
+                            - generic [ref=f2e616]:
+                              - button [ref=f2e617]
+                              - status [ref=f2e619]
+                              - button "Harness best-of-breed large language models El" [ref=f2e621]:
+                                - paragraph [ref=f2e622]: Harness best-of-breed large language models
+                                - generic [ref=f2e623]: El
+                              - status [ref=f2e625]
+                              - button [ref=f2e626]
+                              - status [ref=f2e628]
+                      - generic:
+                        - generic:
+                          - button "Optimize ubiquitous infrastructures Jo":
+                            - generic [ref=f2e629]:
+                              - button [ref=f2e630]
+                              - status [ref=f2e632]
+                              - button "Optimize ubiquitous infrastructures Jo" [ref=f2e634]:
+                                - paragraph [ref=f2e635]: Optimize ubiquitous infrastructures
+                                - generic [ref=f2e636]: Jo
+                              - status [ref=f2e638]
+                              - button [ref=f2e639]
+                              - status [ref=f2e641]
+                        - generic:
+                          - button "Incentivize customized metrics El":
+                            - generic [ref=f2e642]:
+                              - button [ref=f2e643]
+                              - status [ref=f2e645]
+                              - button "Incentivize customized metrics El" [ref=f2e647]:
+                                - paragraph [ref=f2e648]: Incentivize customized metrics
+                                - generic [ref=f2e649]: El
+                              - status [ref=f2e651]
+                              - button [ref=f2e652]
+                              - status [ref=f2e654]
+                        - generic:
+                          - button "Harness turn-key architectures Fa":
+                            - generic [ref=f2e655]:
+                              - button [ref=f2e656]
+                              - status [ref=f2e658]
+                              - button "Harness turn-key architectures Fa" [ref=f2e660]:
+                                - paragraph [ref=f2e661]: Harness turn-key architectures
+                                - generic [ref=f2e662]: Fa
+                              - status [ref=f2e664]
+                              - button [ref=f2e665]
+                              - status [ref=f2e667]
+                      - generic:
+                        - generic:
+                          - button "Leverage B2B niches El":
+                            - generic [ref=f2e668]:
+                              - button [ref=f2e669]
+                              - status [ref=f2e671]
+                              - button "Leverage B2B niches El" [ref=f2e673]:
+                                - paragraph [ref=f2e674]: Leverage B2B niches
+                                - generic [ref=f2e675]: El
+                              - status [ref=f2e677]
+                              - button [ref=f2e678]
+                              - status [ref=f2e680]
+                        - generic:
+                          - button "Generate rich applications Fa":
+                            - generic [ref=f2e681]:
+                              - button [ref=f2e682]
+                              - status [ref=f2e684]
+                              - button "Generate rich applications Fa" [ref=f2e686]:
+                                - paragraph [ref=f2e687]: Generate rich applications
+                                - generic [ref=f2e688]: Fa
+                              - status [ref=f2e690]
+                              - button [ref=f2e691]
+                              - status [ref=f2e693]
+                      - generic:
+                        - generic:
+                          - button "Architect decentralized partnerships Fa":
+                            - generic [ref=f2e694]:
+                              - button [ref=f2e695]
+                              - status [ref=f2e697]
+                              - button "Architect decentralized partnerships Fa" [ref=f2e699]:
+                                - paragraph [ref=f2e700]: Architect decentralized partnerships
+                                - generic [ref=f2e701]: Fa
+                              - status [ref=f2e703]
+                              - button [ref=f2e704]
+                              - status [ref=f2e706]
+                        - generic:
+                          - button "Repurpose viral mindshare Fa":
+                            - generic [ref=f2e707]:
+                              - button [ref=f2e708]
+                              - status [ref=f2e710]
+                              - button "Repurpose viral mindshare Fa" [ref=f2e712]:
+                                - paragraph [ref=f2e713]: Repurpose viral mindshare
+                                - generic [ref=f2e714]: Fa
+                              - status [ref=f2e716]
+                              - button [ref=f2e717]
+                              - status [ref=f2e719]
+                        - generic:
+                          - button "Engineer global infrastructures Fa":
+                            - generic [ref=f2e720]:
+                              - button [ref=f2e721]
+                              - status [ref=f2e723]
+                              - button "Engineer global infrastructures Fa" [ref=f2e725]:
+                                - paragraph [ref=f2e726]: Engineer global infrastructures
+                                - generic [ref=f2e727]: Fa
+                              - status [ref=f2e729]
+                              - button [ref=f2e730]
+                              - status [ref=f2e732]
+                        - generic:
+                          - button "Drive rich lifetime value Fa":
+                            - generic [ref=f2e733]:
+                              - button [ref=f2e734]
+                              - status [ref=f2e736]
+                              - button "Drive rich lifetime value Fa" [ref=f2e738]:
+                                - paragraph [ref=f2e739]: Drive rich lifetime value
+                                - generic [ref=f2e740]: Fa
+                              - status [ref=f2e742]
+                              - button [ref=f2e743]
+                              - status [ref=f2e745]
+                        - generic:
+                          - button "Engage rich niches Mr":
+                            - generic [ref=f2e746]:
+                              - button [ref=f2e747]
+                              - status [ref=f2e749]
+                              - button "Engage rich niches Mr" [ref=f2e751]:
+                                - paragraph [ref=f2e752]: Engage rich niches
+                                - generic [ref=f2e753]: Mr
+                              - status [ref=f2e755]
+                              - button [ref=f2e756]
+                              - status [ref=f2e758]
+                        - generic:
+                          - button "Empower B2C initiatives Mr":
+                            - generic [ref=f2e759]:
+                              - button [ref=f2e760]
+                              - status [ref=f2e762]
+                              - button "Empower B2C initiatives Mr" [ref=f2e764]:
+                                - paragraph [ref=f2e765]: Empower B2C initiatives
+                                - generic [ref=f2e766]: Mr
+                              - status [ref=f2e768]
+                              - button [ref=f2e769]
+                              - status [ref=f2e771]
+                      - generic:
+                        - generic:
+                          - button "Facilitate extensible schemas El":
+                            - generic [ref=f2e772]:
+                              - button [ref=f2e773]
+                              - status [ref=f2e775]
+                              - button "Facilitate extensible schemas El" [ref=f2e777]:
+                                - paragraph [ref=f2e778]: Facilitate extensible schemas
+                                - generic [ref=f2e779]: El
+                              - status [ref=f2e781]
+                              - button [ref=f2e782]
+                              - status [ref=f2e784]
+                        - generic:
+                          - button "Reinvent strategic architectures Jo":
+                            - generic [ref=f2e785]:
+                              - button [ref=f2e786]
+                              - status [ref=f2e788]
+                              - button "Reinvent strategic architectures Jo" [ref=f2e790]:
+                                - paragraph [ref=f2e791]: Reinvent strategic architectures
+                                - generic [ref=f2e792]: Jo
+                              - status [ref=f2e794]
+                              - button [ref=f2e795]
+                              - status [ref=f2e797]
+                        - generic:
+                          - button "Reinvent value-added functionalities Fa":
+                            - generic [ref=f2e798]:
+                              - button [ref=f2e799]
+                              - status [ref=f2e801]
+                              - button "Reinvent value-added functionalities Fa" [ref=f2e803]:
+                                - paragraph [ref=f2e804]: Reinvent value-added functionalities
+                                - generic [ref=f2e805]: Fa
+                              - status [ref=f2e807]
+                              - button [ref=f2e808]
+                              - status [ref=f2e810]
+                      - generic:
+                        - generic:
+                          - button "Scale vertical lifetime value Fa":
+                            - generic [ref=f2e811]:
+                              - button [ref=f2e812]
+                              - status [ref=f2e814]
+                              - button "Scale vertical lifetime value Fa" [ref=f2e816]:
+                                - paragraph [ref=f2e817]: Scale vertical lifetime value
+                                - generic [ref=f2e818]: Fa
+                              - status [ref=f2e820]
+                              - button [ref=f2e821]
+                              - status [ref=f2e823]
+                        - generic:
+                          - button "Syndicate viral applications Fa":
+                            - generic [ref=f2e824]:
+                              - button [ref=f2e825]
+                              - status [ref=f2e827]
+                              - button "Syndicate viral applications Fa" [ref=f2e829]:
+                                - paragraph [ref=f2e830]: Syndicate viral applications
+                                - generic [ref=f2e831]: Fa
+                              - status [ref=f2e833]
+                              - button [ref=f2e834]
+                              - status [ref=f2e836]
+                        - generic:
+                          - button "Target AI-driven blockchains Jo":
+                            - generic [ref=f2e837]:
+                              - button [ref=f2e838]
+                              - status [ref=f2e840]
+                              - button "Target AI-driven blockchains Jo" [ref=f2e842]:
+                                - paragraph [ref=f2e843]: Target AI-driven blockchains
+                                - generic [ref=f2e844]: Jo
+                              - status [ref=f2e846]
+                              - button [ref=f2e847]
+                              - status [ref=f2e849]
+                        - generic:
+                          - button "Aggregate virtual platforms Fa":
+                            - generic [ref=f2e850]:
+                              - button [ref=f2e851]
+                              - status [ref=f2e853]
+                              - button "Aggregate virtual platforms Fa" [ref=f2e855]:
+                                - paragraph [ref=f2e856]: Aggregate virtual platforms
+                                - generic [ref=f2e857]: Fa
+                              - status [ref=f2e859]
+                              - button [ref=f2e860]
+                              - status [ref=f2e862]
+                        - generic:
+                          - button "Maximize immersive methodologies Fa":
+                            - generic [ref=f2e863]:
+                              - button [ref=f2e864]
+                              - status [ref=f2e866]
+                              - button "Maximize immersive methodologies Fa" [ref=f2e868]:
+                                - paragraph [ref=f2e869]: Maximize immersive methodologies
+                                - generic [ref=f2e870]: Fa
+                              - status [ref=f2e872]
+                              - button [ref=f2e873]
+                              - status [ref=f2e875]
+                    - generic [ref=f2e876]:
+                      - text: Deploy enterprise blockchains
+                      - generic: Mar 24, 2026
+                    - generic [ref=f2e877]:
+                      - text: Brand proactive architectures
+                      - generic: Apr 11, 2026
+                    - generic [ref=f2e878]:
+                      - text: Synthesize mission-critical networks
+                      - generic: Jun 19, 2026
+                    - generic [ref=f2e879]:
+                      - text: Whiteboard cross-platform methodologies
+                      - generic: Jul 13, 2026
+                    - generic [ref=f2e880]:
+                      - text: Mesh granular initiatives
+                      - generic: May 23, 2026
+                    - generic [ref=f2e881]:
+                      - text: Enable end-to-end users
+                      - generic: Jul 31, 2026
+                    - generic [ref=f2e882]:
+                      - text: Today
+                      - generic: Aug 19, 2026
+                    - generic [ref=f2e883]:
+                      - button [ref=f2e884]
+                      - generic [ref=f2e886]: Dec 23, 2025
+      - generic [ref=f2e887]:
+        - generic [ref=f2e888]:
+          - generic [ref=f2e889]:
+            - heading "Thousands of ready-to-use patterns" [level=2] [ref=f2e890]
+            - paragraph [ref=f2e891]: Browse through 1000+ production-ready patterns built with shadcn/ui. Copy, customize, and ship faster than ever.
+          - link "Explore patterns" [ref=f2e892] [cursor=pointer]:
+            - /url: /patterns
+        - generic [ref=f2e894]:
+          - generic [ref=f2e898]:
+            - generic [ref=f2e900]:
+              - generic [ref=f2e907]:
+                - heading "Accordion" [level=3] [ref=f2e908]
+                - paragraph [ref=f2e909]: Vertically stacked sections that expand and collapse to reveal content
+              - generic [ref=f2e917]:
+                - heading "Alert" [level=3] [ref=f2e918]
+                - paragraph [ref=f2e919]: Prominent messages to capture user attention for important information
+              - generic [ref=f2e926]:
+                - heading "Alert Dialog" [level=3] [ref=f2e927]
+                - paragraph [ref=f2e928]: Modal dialogs that interrupt users with important decisions or information
+              - generic [ref=f2e942]:
+                - heading "Aspect Ratio" [level=3] [ref=f2e943]
+                - paragraph [ref=f2e944]: Container that maintains a consistent width-to-height ratio
+              - generic [ref=f2e952]:
+                - heading "Avatar" [level=3] [ref=f2e953]
+                - paragraph [ref=f2e954]: Visual representation of a user or entity with image and fallback
+              - generic [ref=f2e962]:
+                - heading "Badge" [level=3] [ref=f2e963]
+                - paragraph [ref=f2e964]: Small status indicators or labels for highlighting information
+              - generic [ref=f2e972]:
+                - heading "Breadcrumb" [level=3] [ref=f2e973]
+                - paragraph [ref=f2e974]: Navigation aid showing the current page's location in hierarchy
+              - generic [ref=f2e985]:
+                - heading "Button" [level=3] [ref=f2e986]
+                - paragraph [ref=f2e987]: Clickable elements that trigger actions or navigation
+              - generic [ref=f2e999]:
+                - heading "Button Group" [level=3] [ref=f2e1000]
+                - paragraph [ref=f2e1001]: Collection of related buttons grouped together as a single unit
+              - generic [ref=f2e1008]:
+                - heading "Calendar" [level=3] [ref=f2e1009]
+                - paragraph [ref=f2e1010]: Date selector with month and year navigation for picking dates
+              - generic [ref=f2e1017]:
+                - heading "Card" [level=3] [ref=f2e1018]
+                - paragraph [ref=f2e1019]: Container for grouping related content with optional header and footer
+              - generic [ref=f2e1026]:
+                - heading "Carousel" [level=3] [ref=f2e1027]
+                - paragraph [ref=f2e1028]: Slideshow component for cycling through content or images
+              - generic [ref=f2e1034]:
+                - heading "Chart" [level=3] [ref=f2e1035]
+                - paragraph [ref=f2e1036]: Data visualization components for displaying graphs and charts
+              - generic [ref=f2e1044]:
+                - heading "Checkbox" [level=3] [ref=f2e1045]
+                - paragraph [ref=f2e1046]: Input allowing users to select one or multiple options from a list
+              - generic [ref=f2e1053]:
+                - heading "Collapsible" [level=3] [ref=f2e1054]
+                - paragraph [ref=f2e1055]: Content section that can be expanded or collapsed by the user
+              - generic [ref=f2e1063]:
+                - heading "Combobox" [level=3] [ref=f2e1064]
+                - paragraph [ref=f2e1065]: Searchable select input combining dropdown with text filtering
+              - generic [ref=f2e1072]:
+                - heading "Command" [level=3] [ref=f2e1073]
+                - paragraph [ref=f2e1074]: Fast, composable command menu for keyboard-driven navigation
+              - generic [ref=f2e1083]:
+                - heading "Context Menu" [level=3] [ref=f2e1084]
+                - paragraph [ref=f2e1085]: Menu that appears on right-click with contextual actions
+              - generic [ref=f2e1092]:
+                - heading "Data Table" [level=3] [ref=f2e1093]
+                - paragraph [ref=f2e1094]: Feature-rich table with sorting, filtering, and pagination
+            - generic [ref=f2e1095]:
+              - generic [ref=f2e1102]:
+                - heading "Accordion" [level=3] [ref=f2e1103]
+                - paragraph [ref=f2e1104]: Vertically stacked sections that expand and collapse to reveal content
+              - generic [ref=f2e1112]:
+                - heading "Alert" [level=3] [ref=f2e1113]
+                - paragraph [ref=f2e1114]: Prominent messages to capture user attention for important information
+              - generic [ref=f2e1121]:
+                - heading "Alert Dialog" [level=3] [ref=f2e1122]
+                - paragraph [ref=f2e1123]: Modal dialogs that interrupt users with important decisions or information
+              - generic [ref=f2e1137]:
+                - heading "Aspect Ratio" [level=3] [ref=f2e1138]
+                - paragraph [ref=f2e1139]: Container that maintains a consistent width-to-height ratio
+              - generic [ref=f2e1147]:
+                - heading "Avatar" [level=3] [ref=f2e1148]
+                - paragraph [ref=f2e1149]: Visual representation of a user or entity with image and fallback
+              - generic [ref=f2e1157]:
+                - heading "Badge" [level=3] [ref=f2e1158]
+                - paragraph [ref=f2e1159]: Small status indicators or labels for highlighting information
+              - generic [ref=f2e1167]:
+                - heading "Breadcrumb" [level=3] [ref=f2e1168]
+                - paragraph [ref=f2e1169]: Navigation aid showing the current page's location in hierarchy
+              - generic [ref=f2e1180]:
+                - heading "Button" [level=3] [ref=f2e1181]
+                - paragraph [ref=f2e1182]: Clickable elements that trigger actions or navigation
+              - generic [ref=f2e1194]:
+                - heading "Button Group" [level=3] [ref=f2e1195]
+                - paragraph [ref=f2e1196]: Collection of related buttons grouped together as a single unit
+              - generic [ref=f2e1203]:
+                - heading "Calendar" [level=3] [ref=f2e1204]
+                - paragraph [ref=f2e1205]: Date selector with month and year navigation for picking dates
+              - generic [ref=f2e1212]:
+                - heading "Card" [level=3] [ref=f2e1213]
+                - paragraph [ref=f2e1214]: Container for grouping related content with optional header and footer
+              - generic [ref=f2e1221]:
+                - heading "Carousel" [level=3] [ref=f2e1222]
+                - paragraph [ref=f2e1223]: Slideshow component for cycling through content or images
+              - generic [ref=f2e1229]:
+                - heading "Chart" [level=3] [ref=f2e1230]
+                - paragraph [ref=f2e1231]: Data visualization components for displaying graphs and charts
+              - generic [ref=f2e1239]:
+                - heading "Checkbox" [level=3] [ref=f2e1240]
+                - paragraph [ref=f2e1241]: Input allowing users to select one or multiple options from a list
+              - generic [ref=f2e1248]:
+                - heading "Collapsible" [level=3] [ref=f2e1249]
+                - paragraph [ref=f2e1250]: Content section that can be expanded or collapsed by the user
+              - generic [ref=f2e1258]:
+                - heading "Combobox" [level=3] [ref=f2e1259]
+                - paragraph [ref=f2e1260]: Searchable select input combining dropdown with text filtering
+              - generic [ref=f2e1267]:
+                - heading "Command" [level=3] [ref=f2e1268]
+                - paragraph [ref=f2e1269]: Fast, composable command menu for keyboard-driven navigation
+              - generic [ref=f2e1278]:
+                - heading "Context Menu" [level=3] [ref=f2e1279]
+                - paragraph [ref=f2e1280]: Menu that appears on right-click with contextual actions
+              - generic [ref=f2e1287]:
+                - heading "Data Table" [level=3] [ref=f2e1288]
+                - paragraph [ref=f2e1289]: Feature-rich table with sorting, filtering, and pagination
+          - generic [ref=f2e1293]:
+            - generic [ref=f2e1295]:
+              - generic [ref=f2e1303]:
+                - heading "Date Picker" [level=3] [ref=f2e1304]
+                - paragraph [ref=f2e1305]: Calendar-based input for selecting dates or date ranges
+              - generic [ref=f2e1312]:
+                - heading "Dialog" [level=3] [ref=f2e1313]
+                - paragraph [ref=f2e1314]: Modal window that requires user interaction before continuing
+              - generic [ref=f2e1321]:
+                - heading "Drawer" [level=3] [ref=f2e1322]
+                - paragraph [ref=f2e1323]: Sliding panel that overlays content from the edge of the screen
+              - generic [ref=f2e1329]:
+                - heading "Dropdown Menu" [level=3] [ref=f2e1330]
+                - paragraph [ref=f2e1331]: Menu with a list of actions or links triggered by a button
+              - generic [ref=f2e1341]:
+                - heading "Empty" [level=3] [ref=f2e1342]
+                - paragraph [ref=f2e1343]: Placeholder state when no content or data is available
+              - generic [ref=f2e1351]:
+                - heading "Field" [level=3] [ref=f2e1352]
+                - paragraph [ref=f2e1353]: Form field wrapper with label, input, and error message
+              - generic [ref=f2e1361]:
+                - heading "Form" [level=3] [ref=f2e1362]
+                - paragraph [ref=f2e1363]: Complete form system with validation and error handling
+              - generic [ref=f2e1372]:
+                - heading "Hover Card" [level=3] [ref=f2e1373]
+                - paragraph [ref=f2e1374]: Card that appears when hovering over a trigger element
+              - generic [ref=f2e1381]:
+                - heading "Input" [level=3] [ref=f2e1382]
+                - paragraph [ref=f2e1383]: Text input field for collecting user information
+              - generic [ref=f2e1391]:
+                - heading "Input Group" [level=3] [ref=f2e1392]
+                - paragraph [ref=f2e1393]: Input with attached addons, icons, or buttons
+              - generic [ref=f2e1400]:
+                - heading "Input OTP" [level=3] [ref=f2e1401]
+                - paragraph [ref=f2e1402]: Specialized input for one-time password or verification codes
+              - generic [ref=f2e1410]:
+                - heading "Item" [level=3] [ref=f2e1411]
+                - paragraph [ref=f2e1412]: Reusable list item component with consistent styling
+              - generic [ref=f2e1419]:
+                - heading "Kbd" [level=3] [ref=f2e1420]
+                - paragraph [ref=f2e1421]: Keyboard key representation for displaying shortcuts
+              - generic [ref=f2e1427]:
+                - heading "Label" [level=3] [ref=f2e1428]
+                - paragraph [ref=f2e1429]: Text label for form inputs and interactive elements
+              - generic [ref=f2e1436]:
+                - heading "Menubar" [level=3] [ref=f2e1437]
+                - paragraph [ref=f2e1438]: Horizontal menu bar with dropdown submenus
+              - generic [ref=f2e1445]:
+                - heading "Navigation Menu" [level=3] [ref=f2e1446]
+                - paragraph [ref=f2e1447]: Accessible navigation menu with nested dropdown support
+              - generic [ref=f2e1455]:
+                - heading "Pagination" [level=3] [ref=f2e1456]
+                - paragraph [ref=f2e1457]: Navigation controls for moving between pages of content
+              - generic [ref=f2e1465]:
+                - heading "Popover" [level=3] [ref=f2e1466]
+                - paragraph [ref=f2e1467]: Floating content panel triggered by user interaction
+              - generic [ref=f2e1474]:
+                - heading "Progress" [level=3] [ref=f2e1475]
+                - paragraph [ref=f2e1476]: Visual indicator showing completion status of a task
+            - generic [ref=f2e1477]:
+              - generic [ref=f2e1485]:
+                - heading "Date Picker" [level=3] [ref=f2e1486]
+                - paragraph [ref=f2e1487]: Calendar-based input for selecting dates or date ranges
+              - generic [ref=f2e1494]:
+                - heading "Dialog" [level=3] [ref=f2e1495]
+                - paragraph [ref=f2e1496]: Modal window that requires user interaction before continuing
+              - generic [ref=f2e1503]:
+                - heading "Drawer" [level=3] [ref=f2e1504]
+                - paragraph [ref=f2e1505]: Sliding panel that overlays content from the edge of the screen
+              - generic [ref=f2e1511]:
+                - heading "Dropdown Menu" [level=3] [ref=f2e1512]
+                - paragraph [ref=f2e1513]: Menu with a list of actions or links triggered by a button
+              - generic [ref=f2e1523]:
+                - heading "Empty" [level=3] [ref=f2e1524]
+                - paragraph [ref=f2e1525]: Placeholder state when no content or data is available
+              - generic [ref=f2e1533]:
+                - heading "Field" [level=3] [ref=f2e1534]
+                - paragraph [ref=f2e1535]: Form field wrapper with label, input, and error message
+              - generic [ref=f2e1543]:
+                - heading "Form" [level=3] [ref=f2e1544]
+                - paragraph [ref=f2e1545]: Complete form system with validation and error handling
+              - generic [ref=f2e1554]:
+                - heading "Hover Card" [level=3] [ref=f2e1555]
+                - paragraph [ref=f2e1556]: Card that appears when hovering over a trigger element
+              - generic [ref=f2e1563]:
+                - heading "Input" [level=3] [ref=f2e1564]
+                - paragraph [ref=f2e1565]: Text input field for collecting user information
+              - generic [ref=f2e1573]:
+                - heading "Input Group" [level=3] [ref=f2e1574]
+                - paragraph [ref=f2e1575]: Input with attached addons, icons, or buttons
+              - generic [ref=f2e1582]:
+                - heading "Input OTP" [level=3] [ref=f2e1583]
+                - paragraph [ref=f2e1584]: Specialized input for one-time password or verification codes
+              - generic [ref=f2e1592]:
+                - heading "Item" [level=3] [ref=f2e1593]
+                - paragraph [ref=f2e1594]: Reusable list item component with consistent styling
+              - generic [ref=f2e1601]:
+                - heading "Kbd" [level=3] [ref=f2e1602]
+                - paragraph [ref=f2e1603]: Keyboard key representation for displaying shortcuts
+              - generic [ref=f2e1609]:
+                - heading "Label" [level=3] [ref=f2e1610]
+                - paragraph [ref=f2e1611]: Text label for form inputs and interactive elements
+              - generic [ref=f2e1618]:
+                - heading "Menubar" [level=3] [ref=f2e1619]
+                - paragraph [ref=f2e1620]: Horizontal menu bar with dropdown submenus
+              - generic [ref=f2e1627]:
+                - heading "Navigation Menu" [level=3] [ref=f2e1628]
+                - paragraph [ref=f2e1629]: Accessible navigation menu with nested dropdown support
+              - generic [ref=f2e1637]:
+                - heading "Pagination" [level=3] [ref=f2e1638]
+                - paragraph [ref=f2e1639]: Navigation controls for moving between pages of content
+              - generic [ref=f2e1647]:
+                - heading "Popover" [level=3] [ref=f2e1648]
+                - paragraph [ref=f2e1649]: Floating content panel triggered by user interaction
+              - generic [ref=f2e1656]:
+                - heading "Progress" [level=3] [ref=f2e1657]
+                - paragraph [ref=f2e1658]: Visual indicator showing completion status of a task
+          - generic [ref=f2e1662]:
+            - generic [ref=f2e1664]:
+              - generic [ref=f2e1674]:
+                - heading "Radio Group" [level=3] [ref=f2e1675]
+                - paragraph [ref=f2e1676]: Group of radio buttons allowing single selection from options
+              - generic [ref=f2e1686]:
+                - heading "Resizable" [level=3] [ref=f2e1687]
+                - paragraph [ref=f2e1688]: Panels with draggable handles for adjusting size
+              - generic [ref=f2e1696]:
+                - heading "Scroll Area" [level=3] [ref=f2e1697]
+                - paragraph [ref=f2e1698]: Customizable scrollable container with styled scrollbars
+              - generic [ref=f2e1708]:
+                - heading "Select" [level=3] [ref=f2e1709]
+                - paragraph [ref=f2e1710]: Dropdown menu for selecting a value from a list of options
+              - generic [ref=f2e1716]:
+                - heading "Separator" [level=3] [ref=f2e1717]
+                - paragraph [ref=f2e1718]: Visual divider for separating content or interface sections
+              - generic [ref=f2e1726]:
+                - heading "Sheet" [level=3] [ref=f2e1727]
+                - paragraph [ref=f2e1728]: Sliding panel overlay for displaying supplementary content
+              - generic [ref=f2e1735]:
+                - heading "Skeleton" [level=3] [ref=f2e1736]
+                - paragraph [ref=f2e1737]: Loading placeholder showing the shape of upcoming content
+              - generic [ref=f2e1743]:
+                - heading "Slider" [level=3] [ref=f2e1744]
+                - paragraph [ref=f2e1745]: Input for selecting a value from a range using a draggable handle
+              - generic [ref=f2e1753]:
+                - heading "Sonner" [level=3] [ref=f2e1754]
+                - paragraph [ref=f2e1755]: Toast notification system for displaying temporary messages
+              - generic [ref=f2e1765]:
+                - heading "Spinner" [level=3] [ref=f2e1766]
+                - paragraph [ref=f2e1767]: Loading indicator showing an ongoing process or action
+              - generic [ref=f2e1775]:
+                - heading "Switch" [level=3] [ref=f2e1776]
+                - paragraph [ref=f2e1777]: Toggle control for binary on/off states
+              - generic [ref=f2e1784]:
+                - heading "Table" [level=3] [ref=f2e1785]
+                - paragraph [ref=f2e1786]: Organized data display in rows and columns
+              - generic [ref=f2e1795]:
+                - heading "Tabs" [level=3] [ref=f2e1796]
+                - paragraph [ref=f2e1797]: Layered content sections accessible via tab navigation
+              - generic [ref=f2e1806]:
+                - heading "Textarea" [level=3] [ref=f2e1807]
+                - paragraph [ref=f2e1808]: Multi-line text input for longer form content
+              - generic [ref=f2e1816]:
+                - heading "Toggle" [level=3] [ref=f2e1817]
+                - paragraph [ref=f2e1818]: Two-state button for enabling or disabling options
+              - generic [ref=f2e1826]:
+                - heading "Toggle Group" [level=3] [ref=f2e1827]
+                - paragraph [ref=f2e1828]: Group of toggle buttons with single or multiple selection
+              - generic [ref=f2e1836]:
+                - heading "Tooltip" [level=3] [ref=f2e1837]
+                - paragraph [ref=f2e1838]: Small popup displaying helpful information on hover
+            - generic [ref=f2e1839]:
+              - generic [ref=f2e1849]:
+                - heading "Radio Group" [level=3] [ref=f2e1850]
+                - paragraph [ref=f2e1851]: Group of radio buttons allowing single selection from options
+              - generic [ref=f2e1861]:
+                - heading "Resizable" [level=3] [ref=f2e1862]
+                - paragraph [ref=f2e1863]: Panels with draggable handles for adjusting size
+              - generic [ref=f2e1871]:
+                - heading "Scroll Area" [level=3] [ref=f2e1872]
+                - paragraph [ref=f2e1873]: Customizable scrollable container with styled scrollbars
+              - generic [ref=f2e1883]:
+                - heading "Select" [level=3] [ref=f2e1884]
+                - paragraph [ref=f2e1885]: Dropdown menu for selecting a value from a list of options
+              - generic [ref=f2e1891]:
+                - heading "Separator" [level=3] [ref=f2e1892]
+                - paragraph [ref=f2e1893]: Visual divider for separating content or interface sections
+              - generic [ref=f2e1901]:
+                - heading "Sheet" [level=3] [ref=f2e1902]
+                - paragraph [ref=f2e1903]: Sliding panel overlay for displaying supplementary content
+              - generic [ref=f2e1910]:
+                - heading "Skeleton" [level=3] [ref=f2e1911]
+                - paragraph [ref=f2e1912]: Loading placeholder showing the shape of upcoming content
+              - generic [ref=f2e1918]:
+                - heading "Slider" [level=3] [ref=f2e1919]
+                - paragraph [ref=f2e1920]: Input for selecting a value from a range using a draggable handle
+              - generic [ref=f2e1928]:
+                - heading "Sonner" [level=3] [ref=f2e1929]
+                - paragraph [ref=f2e1930]: Toast notification system for displaying temporary messages
+              - generic [ref=f2e1940]:
+                - heading "Spinner" [level=3] [ref=f2e1941]
+                - paragraph [ref=f2e1942]: Loading indicator showing an ongoing process or action
+              - generic [ref=f2e1950]:
+                - heading "Switch" [level=3] [ref=f2e1951]
+                - paragraph [ref=f2e1952]: Toggle control for binary on/off states
+              - generic [ref=f2e1959]:
+                - heading "Table" [level=3] [ref=f2e1960]
+                - paragraph [ref=f2e1961]: Organized data display in rows and columns
+              - generic [ref=f2e1970]:
+                - heading "Tabs" [level=3] [ref=f2e1971]
+                - paragraph [ref=f2e1972]: Layered content sections accessible via tab navigation
+              - generic [ref=f2e1981]:
+                - heading "Textarea" [level=3] [ref=f2e1982]
+                - paragraph [ref=f2e1983]: Multi-line text input for longer form content
+              - generic [ref=f2e1991]:
+                - heading "Toggle" [level=3] [ref=f2e1992]
+                - paragraph [ref=f2e1993]: Two-state button for enabling or disabling options
+              - generic [ref=f2e2001]:
+                - heading "Toggle Group" [level=3] [ref=f2e2002]
+                - paragraph [ref=f2e2003]: Group of toggle buttons with single or multiple selection
+              - generic [ref=f2e2011]:
+                - heading "Tooltip" [level=3] [ref=f2e2012]
+                - paragraph [ref=f2e2013]: Small popup displaying helpful information on hover
+      - generic [ref=f2e2015]:
+        - generic [ref=f2e2017]:
+          - heading "What people are saying" [level=2] [ref=f2e2018]
+          - paragraph [ref=f2e2019]: We're proud to have a community of users who love using Kibo UI.
+        - generic [ref=f2e2020]:
+          - article [ref=f2e2022]:
+            - generic [ref=f2e2023]:
+              - link [ref=f2e2024] [cursor=pointer]:
+                - /url: https://x.com/arthurbritom/status/1922622720887448039
+                - img "Arthur Brito" [ref=f2e2026]
+              - generic [ref=f2e2029]:
+                - link "Arthur Brito Verified account" [ref=f2e2030] [cursor=pointer]:
+                  - /url: https://x.com/arthurbritom/status/1922622720887448039
+                  - generic [ref=f2e2031]: Arthur Brito
+                  - img "Verified account" [ref=f2e2033]
+                - generic [ref=f2e2036]:
+                  - link "@arthurbritom" [ref=f2e2037] [cursor=pointer]:
+                    - /url: https://x.com/arthurbritom/status/1922622720887448039
+                  - generic [ref=f2e2039]:
+                    - generic [ref=f2e2040]: ·
+                    - link "Follow" [ref=f2e2041] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=arthurbritom
+              - link "View on Twitter" [ref=f2e2042] [cursor=pointer]:
+                - /url: https://x.com/arthurbritom/status/1922622720887448039
+            - paragraph [ref=f2e2046]:
+              - text: "I'm in love with Kibo UI. Feels like the missing parts of shadcn/ui. And that's the whole point of the lib. As the docs say: \"While shadcn/ui focuses on wrapping primitives from Radix UI, Kibo UI is designed to be a more comprehensive library of components that can be used to"
+              - link "Show more" [ref=f2e2047] [cursor=pointer]:
+                - /url: https://x.com/arthurbritom/status/1922622720887448039
+            - generic [ref=f2e2049]:
+              - link [ref=f2e2050] [cursor=pointer]:
+                - /url: https://x.com/arthurbritom/status/1922622720887448039
+                - img "screenshot of dropzone component of Kibo UI" [ref=f2e2052]
+              - link [ref=f2e2053] [cursor=pointer]:
+                - /url: https://x.com/arthurbritom/status/1922622720887448039
+                - img "screenshot of QR Code component of Kibo UI" [ref=f2e2055]
+              - generic [ref=f2e2056]:
+                - button "View video on X" [ref=f2e2058] [cursor=pointer]
+                - link "Watch on X" [ref=f2e2063] [cursor=pointer]:
+                  - /url: https://x.com/arthurbritom/status/1922622720887448039
+              - generic [ref=f2e2064]:
+                - button "View video on X" [ref=f2e2066] [cursor=pointer]
+                - link "Watch on X" [ref=f2e2071] [cursor=pointer]:
+                  - /url: https://x.com/arthurbritom/status/1922622720887448039
+            - generic [ref=f2e2072]:
+              - link "11:59 AM · May 14, 2025" [ref=f2e2073] [cursor=pointer]:
+                - /url: https://x.com/arthurbritom/status/1922622720887448039
+                - time [ref=f2e2074]: 11:59 AM · May 14, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2075] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2079]:
+              - link "Like. This Tweet has 9 likes" [ref=f2e2080] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1922622720887448039
+                - generic [ref=f2e2085]: "9"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2086] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1922622720887448039
+                - generic [ref=f2e2091]: Reply
+              - button "Copy link" [ref=f2e2092] [cursor=pointer]
+            - link "Read 2 replies" [ref=f2e2099] [cursor=pointer]:
+              - /url: https://x.com/arthurbritom/status/1922622720887448039
+          - article [ref=f2e2102]:
+            - generic [ref=f2e2103]:
+              - link [ref=f2e2104] [cursor=pointer]:
+                - /url: https://x.com/webpnkdotdev/status/1915794244347875396
+                - img "Dmytro" [ref=f2e2106]
+              - generic [ref=f2e2109]:
+                - link "Dmytro Verified account" [ref=f2e2110] [cursor=pointer]:
+                  - /url: https://x.com/webpnkdotdev/status/1915794244347875396
+                  - generic [ref=f2e2111]: Dmytro
+                  - img "Verified account" [ref=f2e2113]
+                - generic [ref=f2e2116]:
+                  - link "@webpnkdotdev" [ref=f2e2117] [cursor=pointer]:
+                    - /url: https://x.com/webpnkdotdev/status/1915794244347875396
+                  - generic [ref=f2e2119]:
+                    - generic [ref=f2e2120]: ·
+                    - link "Follow" [ref=f2e2121] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=webpnkdotdev
+              - link "View on Twitter" [ref=f2e2122] [cursor=pointer]:
+                - /url: https://x.com/webpnkdotdev/status/1915794244347875396
+            - paragraph [ref=f2e2126]:
+              - text: Was looking for a stack dialog component for shadcn - came across amazing Kibo UI components by
+              - link "@haydenbleasel" [ref=f2e2127] [cursor=pointer]:
+                - /url: https://x.com/haydenbleasel
+              - text: It's really NUTS 🔥
+              - link "kibo-ui.com/components" [ref=f2e2128] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/components
+            - generic [ref=f2e2129]:
+              - link "3:45 PM · Apr 25, 2025" [ref=f2e2130] [cursor=pointer]:
+                - /url: https://x.com/webpnkdotdev/status/1915794244347875396
+                - time [ref=f2e2131]: 3:45 PM · Apr 25, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2132] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2136]:
+              - link "Like. This Tweet has 2 likes" [ref=f2e2137] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1915794244347875396
+                - generic [ref=f2e2142]: "2"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2143] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1915794244347875396
+                - generic [ref=f2e2148]: Reply
+              - button "Copy link" [ref=f2e2149] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2156] [cursor=pointer]:
+              - /url: https://x.com/webpnkdotdev/status/1915794244347875396
+          - article [ref=f2e2159]:
+            - generic [ref=f2e2160]:
+              - link [ref=f2e2161] [cursor=pointer]:
+                - /url: https://x.com/jqueryscript/status/1906910093247205414
+                - img "jQueryScript" [ref=f2e2163]
+              - generic [ref=f2e2166]:
+                - link "jQueryScript Verified account" [ref=f2e2167] [cursor=pointer]:
+                  - /url: https://x.com/jqueryscript/status/1906910093247205414
+                  - generic [ref=f2e2168]: jQueryScript
+                  - img "Verified account" [ref=f2e2170]
+                - generic [ref=f2e2173]:
+                  - link "@jqueryscript" [ref=f2e2174] [cursor=pointer]:
+                    - /url: https://x.com/jqueryscript/status/1906910093247205414
+                  - generic [ref=f2e2176]:
+                    - generic [ref=f2e2177]: ·
+                    - link "Follow" [ref=f2e2178] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=jqueryscript
+              - link "View on Twitter" [ref=f2e2179] [cursor=pointer]:
+                - /url: https://x.com/jqueryscript/status/1906910093247205414
+            - paragraph [ref=f2e2183]:
+              - text: Extend your
+              - link "#shadcnui" [ref=f2e2184] [cursor=pointer]:
+                - /url: https://x.com/hashtag/shadcnui
+              - text: toolkit with Kibo UI! Adds complex, open-source components like Gantt, Kanban, Editor, Color Picker, Dropzone & more directly into your
+              - link "#React" [ref=f2e2185] [cursor=pointer]:
+                - /url: https://x.com/hashtag/React
+              - text: project 👉
+              - link "next.jqueryscript.net/shadcn-ui/comp…" [ref=f2e2186] [cursor=pointer]:
+                - /url: https://next.jqueryscript.net/shadcn-ui/component-library-kibo-ui/
+              - link "#WebDev" [ref=f2e2187] [cursor=pointer]:
+                - /url: https://x.com/hashtag/WebDev
+              - link "#UI" [ref=f2e2188] [cursor=pointer]:
+                - /url: https://x.com/hashtag/UI
+            - link [ref=f2e2191] [cursor=pointer]:
+              - /url: https://x.com/jqueryscript/status/1906910093247205414
+              - img "Image" [ref=f2e2193]
+            - generic [ref=f2e2194]:
+              - link "3:22 AM · Apr 1, 2025" [ref=f2e2195] [cursor=pointer]:
+                - /url: https://x.com/jqueryscript/status/1906910093247205414
+                - time [ref=f2e2196]: 3:22 AM · Apr 1, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2197] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2201]:
+              - link "Like. This Tweet has 1 likes" [ref=f2e2202] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1906910093247205414
+                - generic [ref=f2e2207]: "1"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2208] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1906910093247205414
+                - generic [ref=f2e2213]: Reply
+              - button "Copy link" [ref=f2e2214] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2221] [cursor=pointer]:
+              - /url: https://x.com/jqueryscript/status/1906910093247205414
+          - article [ref=f2e2224]:
+            - generic [ref=f2e2225]:
+              - link [ref=f2e2226] [cursor=pointer]:
+                - /url: https://x.com/rjv_im/status/1905513006861287768
+                - img "Rajiv S" [ref=f2e2228]
+              - generic [ref=f2e2231]:
+                - link "Rajiv S Verified account" [ref=f2e2232] [cursor=pointer]:
+                  - /url: https://x.com/rjv_im/status/1905513006861287768
+                  - generic [ref=f2e2233]: Rajiv S
+                  - img "Verified account" [ref=f2e2235]
+                - generic [ref=f2e2238]:
+                  - link "@rjv_im" [ref=f2e2239] [cursor=pointer]:
+                    - /url: https://x.com/rjv_im/status/1905513006861287768
+                  - generic [ref=f2e2241]:
+                    - generic [ref=f2e2242]: ·
+                    - link "Follow" [ref=f2e2243] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=rjv_im
+              - link "View on Twitter" [ref=f2e2244] [cursor=pointer]:
+                - /url: https://x.com/rjv_im/status/1905513006861287768
+            - paragraph [ref=f2e2248]:
+              - text: I was exploring
+              - link "kibo-ui.com/overview" [ref=f2e2249] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/overview
+              - text: by
+              - link "@haydenbleasel" [ref=f2e2250] [cursor=pointer]:
+                - /url: https://x.com/haydenbleasel
+              - text: "- amazing work. Cherry on the top: Cool codebase:"
+              - link "github.com/haydenbleasel/…" [ref=f2e2251] [cursor=pointer]:
+                - /url: https://github.com/haydenbleasel/kibo
+              - text: "Just one question: Is it possible to add dependencies to gantt chart - what would be the starting point for accomplishing this?"
+            - generic [ref=f2e2252]:
+              - link "6:51 AM · Mar 28, 2025" [ref=f2e2253] [cursor=pointer]:
+                - /url: https://x.com/rjv_im/status/1905513006861287768
+                - time [ref=f2e2254]: 6:51 AM · Mar 28, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2255] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2259]:
+              - link "Like. This Tweet has 6 likes" [ref=f2e2260] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1905513006861287768
+                - generic [ref=f2e2265]: "6"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2266] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1905513006861287768
+                - generic [ref=f2e2271]: Reply
+              - button "Copy link" [ref=f2e2272] [cursor=pointer]
+            - link "Read 1 reply" [ref=f2e2279] [cursor=pointer]:
+              - /url: https://x.com/rjv_im/status/1905513006861287768
+          - article [ref=f2e2282]:
+            - generic [ref=f2e2283]:
+              - link [ref=f2e2284] [cursor=pointer]:
+                - /url: https://x.com/AnirudhWith/status/1908028809804169709
+                - img "anirudh" [ref=f2e2286]
+              - generic [ref=f2e2289]:
+                - link "anirudh" [ref=f2e2290] [cursor=pointer]:
+                  - /url: https://x.com/AnirudhWith/status/1908028809804169709
+                - generic [ref=f2e2292]:
+                  - link "@AnirudhWith" [ref=f2e2293] [cursor=pointer]:
+                    - /url: https://x.com/AnirudhWith/status/1908028809804169709
+                  - generic [ref=f2e2295]:
+                    - generic [ref=f2e2296]: ·
+                    - link "Follow" [ref=f2e2297] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=AnirudhWith
+              - link "View on Twitter" [ref=f2e2298] [cursor=pointer]:
+                - /url: https://x.com/AnirudhWith/status/1908028809804169709
+            - link "Replying to @piros_dev" [ref=f2e2302] [cursor=pointer]:
+              - /url: https://x.com/piros_dev/status/1907893259029959154
+            - paragraph [ref=f2e2303]:
+              - text: Kibo-UI has a pretty good sandbox component for fumadocs.
+              - link "kibo-ui.com/components/san…" [ref=f2e2304] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/components/sandbox
+            - generic [ref=f2e2305]:
+              - link "5:28 AM · Apr 4, 2025" [ref=f2e2306] [cursor=pointer]:
+                - /url: https://x.com/AnirudhWith/status/1908028809804169709
+                - time [ref=f2e2307]: 5:28 AM · Apr 4, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2308] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2312]:
+              - link "Like. This Tweet has 0 likes" [ref=f2e2313] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1908028809804169709
+                - generic [ref=f2e2318]: "0"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2319] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1908028809804169709
+                - generic [ref=f2e2324]: Reply
+              - button "Copy link" [ref=f2e2325] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2332] [cursor=pointer]:
+              - /url: https://x.com/AnirudhWith/status/1908028809804169709
+          - article [ref=f2e2335]:
+            - generic [ref=f2e2336]:
+              - link [ref=f2e2337] [cursor=pointer]:
+                - /url: https://x.com/DragorWW/status/1889957205216207304
+                - img "Sergey Andreev" [ref=f2e2339]
+              - generic [ref=f2e2342]:
+                - link "Sergey Andreev Verified account" [ref=f2e2343] [cursor=pointer]:
+                  - /url: https://x.com/DragorWW/status/1889957205216207304
+                  - generic [ref=f2e2344]: Sergey Andreev
+                  - img "Verified account" [ref=f2e2346]
+                - generic [ref=f2e2349]:
+                  - link "@DragorWW" [ref=f2e2350] [cursor=pointer]:
+                    - /url: https://x.com/DragorWW/status/1889957205216207304
+                  - generic [ref=f2e2352]:
+                    - generic [ref=f2e2353]: ·
+                    - link "Follow" [ref=f2e2354] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=DragorWW
+              - link "View on Twitter" [ref=f2e2355] [cursor=pointer]:
+                - /url: https://x.com/DragorWW/status/1889957205216207304
+            - paragraph [ref=f2e2359]: Обратил свое внимание на Kibo UI это база более сложных компонентов, которая расширяет идеи shadcn/ui Всякие kanban, gant, редактор и прочее Выглядит интересно, но на первый взгляд сыровато
+            - link [ref=f2e2362] [cursor=pointer]:
+              - /url: https://x.com/DragorWW/status/1889957205216207304
+              - img "Image" [ref=f2e2364]
+            - generic [ref=f2e2365]:
+              - link "8:38 AM · Feb 13, 2025" [ref=f2e2366] [cursor=pointer]:
+                - /url: https://x.com/DragorWW/status/1889957205216207304
+                - time [ref=f2e2367]: 8:38 AM · Feb 13, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2368] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2372]:
+              - link "Like. This Tweet has 10 likes" [ref=f2e2373] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1889957205216207304
+                - generic [ref=f2e2378]: "10"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2379] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1889957205216207304
+                - generic [ref=f2e2384]: Reply
+              - button "Copy link" [ref=f2e2385] [cursor=pointer]
+            - link "Read 2 replies" [ref=f2e2392] [cursor=pointer]:
+              - /url: https://x.com/DragorWW/status/1889957205216207304
+          - article [ref=f2e2395]:
+            - generic [ref=f2e2396]:
+              - link [ref=f2e2397] [cursor=pointer]:
+                - /url: https://x.com/strad3r/status/1896601074360058146
+                - img "harman" [ref=f2e2399]
+              - generic [ref=f2e2402]:
+                - link "harman Verified account" [ref=f2e2403] [cursor=pointer]:
+                  - /url: https://x.com/strad3r/status/1896601074360058146
+                  - generic [ref=f2e2404]: harman
+                  - img "Verified account" [ref=f2e2406]
+                - generic [ref=f2e2409]:
+                  - link "@strad3r" [ref=f2e2410] [cursor=pointer]:
+                    - /url: https://x.com/strad3r/status/1896601074360058146
+                  - generic [ref=f2e2412]:
+                    - generic [ref=f2e2413]: ·
+                    - link "Follow" [ref=f2e2414] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=strad3r
+              - link "View on Twitter" [ref=f2e2415] [cursor=pointer]:
+                - /url: https://x.com/strad3r/status/1896601074360058146
+            - link "Replying to @pavelsvitek_" [ref=f2e2419] [cursor=pointer]:
+              - /url: https://x.com/pavelsvitek_/status/1896595724449820932
+            - paragraph [ref=f2e2420]:
+              - text: Definitely, components that contain time jobs are maybe the hardest things. I can also recommend this
+              - link "kibo-ui.com/components/gan…" [ref=f2e2421] [cursor=pointer]:
+                - /url: https://www.kibo-ui.com/components/gantt
+              - text: from
+              - link "@haydenbleasel" [ref=f2e2422] [cursor=pointer]:
+                - /url: https://x.com/haydenbleasel
+            - generic [ref=f2e2423]:
+              - link "4:38 PM · Mar 3, 2025" [ref=f2e2424] [cursor=pointer]:
+                - /url: https://x.com/strad3r/status/1896601074360058146
+                - time [ref=f2e2425]: 4:38 PM · Mar 3, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2426] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2430]:
+              - link "Like. This Tweet has 2 likes" [ref=f2e2431] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1896601074360058146
+                - generic [ref=f2e2436]: "2"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2437] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1896601074360058146
+                - generic [ref=f2e2442]: Reply
+              - button "Copy link" [ref=f2e2443] [cursor=pointer]
+            - link "Read 2 replies" [ref=f2e2450] [cursor=pointer]:
+              - /url: https://x.com/strad3r/status/1896601074360058146
+          - article [ref=f2e2453]:
+            - generic [ref=f2e2454]:
+              - link [ref=f2e2455] [cursor=pointer]:
+                - /url: https://x.com/bridgertower/status/1922336175953531326
+                - img "Bridger Tower" [ref=f2e2457]
+              - generic [ref=f2e2460]:
+                - link "Bridger Tower Verified account" [ref=f2e2461] [cursor=pointer]:
+                  - /url: https://x.com/bridgertower/status/1922336175953531326
+                  - generic [ref=f2e2462]: Bridger Tower
+                  - img "Verified account" [ref=f2e2464]
+                - generic [ref=f2e2467]:
+                  - link "@bridgertower" [ref=f2e2468] [cursor=pointer]:
+                    - /url: https://x.com/bridgertower/status/1922336175953531326
+                  - generic [ref=f2e2470]:
+                    - generic [ref=f2e2471]: ·
+                    - link "Follow" [ref=f2e2472] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=bridgertower
+              - link "View on Twitter" [ref=f2e2473] [cursor=pointer]:
+                - /url: https://x.com/bridgertower/status/1922336175953531326
+            - link "Replying to @haydenbleasel" [ref=f2e2477] [cursor=pointer]:
+              - /url: https://x.com/haydenbleasel/status/1922335836533883018
+            - paragraph [ref=f2e2478]: So clean
+            - generic [ref=f2e2479]:
+              - link "5:00 PM · May 13, 2025" [ref=f2e2480] [cursor=pointer]:
+                - /url: https://x.com/bridgertower/status/1922336175953531326
+                - time [ref=f2e2481]: 5:00 PM · May 13, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2482] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2486]:
+              - link "Like. This Tweet has 1 likes" [ref=f2e2487] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1922336175953531326
+                - generic [ref=f2e2492]: "1"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2493] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1922336175953531326
+                - generic [ref=f2e2498]: Reply
+              - button "Copy link" [ref=f2e2499] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2506] [cursor=pointer]:
+              - /url: https://x.com/bridgertower/status/1922336175953531326
+          - article [ref=f2e2509]:
+            - generic [ref=f2e2510]:
+              - link [ref=f2e2511] [cursor=pointer]:
+                - /url: https://x.com/Pablo_Seibans/status/1922321546275680635
+                - img "Pablo" [ref=f2e2513]
+              - generic [ref=f2e2516]:
+                - link "Pablo" [ref=f2e2517] [cursor=pointer]:
+                  - /url: https://x.com/Pablo_Seibans/status/1922321546275680635
+                - generic [ref=f2e2519]:
+                  - link "@Pablo_Seibans" [ref=f2e2520] [cursor=pointer]:
+                    - /url: https://x.com/Pablo_Seibans/status/1922321546275680635
+                  - generic [ref=f2e2522]:
+                    - generic [ref=f2e2523]: ·
+                    - link "Follow" [ref=f2e2524] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=Pablo_Seibans
+              - link "View on Twitter" [ref=f2e2525] [cursor=pointer]:
+                - /url: https://x.com/Pablo_Seibans/status/1922321546275680635
+            - link "Replying to @haydenbleasel" [ref=f2e2529] [cursor=pointer]:
+              - /url: https://x.com/haydenbleasel/status/1922079412096528578
+            - paragraph [ref=f2e2530]: Its Amazing Thanks
+            - generic [ref=f2e2531]:
+              - link "4:02 PM · May 13, 2025" [ref=f2e2532] [cursor=pointer]:
+                - /url: https://x.com/Pablo_Seibans/status/1922321546275680635
+                - time [ref=f2e2533]: 4:02 PM · May 13, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2534] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2538]:
+              - link "Like. This Tweet has 1 likes" [ref=f2e2539] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1922321546275680635
+                - generic [ref=f2e2544]: "1"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2545] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1922321546275680635
+                - generic [ref=f2e2550]: Reply
+              - button "Copy link" [ref=f2e2551] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2558] [cursor=pointer]:
+              - /url: https://x.com/Pablo_Seibans/status/1922321546275680635
+          - article [ref=f2e2561]:
+            - generic [ref=f2e2562]:
+              - link [ref=f2e2563] [cursor=pointer]:
+                - /url: https://x.com/elie2222/status/1919571095608275107
+                - img "Elie Steinbock — oss/acc" [ref=f2e2565]
+              - generic [ref=f2e2568]:
+                - link "Elie Steinbock — oss/acc Verified account" [ref=f2e2569] [cursor=pointer]:
+                  - /url: https://x.com/elie2222/status/1919571095608275107
+                  - generic [ref=f2e2570]: Elie Steinbock — oss/acc
+                  - img "Verified account" [ref=f2e2572]
+                - generic [ref=f2e2575]:
+                  - link "@elie2222" [ref=f2e2576] [cursor=pointer]:
+                    - /url: https://x.com/elie2222/status/1919571095608275107
+                  - generic [ref=f2e2578]:
+                    - generic [ref=f2e2579]: ·
+                    - link "Follow" [ref=f2e2580] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=elie2222
+              - link "View on Twitter" [ref=f2e2581] [cursor=pointer]:
+                - /url: https://x.com/elie2222/status/1919571095608275107
+            - link "Replying to @haydenbleasel" [ref=f2e2585] [cursor=pointer]:
+              - /url: https://x.com/haydenbleasel/status/1919422230641176904
+            - paragraph [ref=f2e2586]: this is an awesome set! love how many advanced components exist in kibo
+            - generic [ref=f2e2587]:
+              - link "1:53 AM · May 6, 2025" [ref=f2e2588] [cursor=pointer]:
+                - /url: https://x.com/elie2222/status/1919571095608275107
+                - time [ref=f2e2589]: 1:53 AM · May 6, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2590] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2594]:
+              - link "Like. This Tweet has 1 likes" [ref=f2e2595] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1919571095608275107
+                - generic [ref=f2e2600]: "1"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2601] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1919571095608275107
+                - generic [ref=f2e2606]: Reply
+              - button "Copy link" [ref=f2e2607] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2614] [cursor=pointer]:
+              - /url: https://x.com/elie2222/status/1919571095608275107
+          - article [ref=f2e2617]:
+            - generic [ref=f2e2618]:
+              - link [ref=f2e2619] [cursor=pointer]:
+                - /url: https://x.com/paulclindo/status/1919462310327755047
+                - img "Paul Ccari" [ref=f2e2621]
+              - generic [ref=f2e2624]:
+                - link "Paul Ccari" [ref=f2e2625] [cursor=pointer]:
+                  - /url: https://x.com/paulclindo/status/1919462310327755047
+                - generic [ref=f2e2627]:
+                  - link "@paulclindo" [ref=f2e2628] [cursor=pointer]:
+                    - /url: https://x.com/paulclindo/status/1919462310327755047
+                  - generic [ref=f2e2630]:
+                    - generic [ref=f2e2631]: ·
+                    - link "Follow" [ref=f2e2632] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=paulclindo
+              - link "View on Twitter" [ref=f2e2633] [cursor=pointer]:
+                - /url: https://x.com/paulclindo/status/1919462310327755047
+            - link "Replying to @haydenbleasel" [ref=f2e2637] [cursor=pointer]:
+              - /url: https://x.com/haydenbleasel/status/1919422230641176904
+            - paragraph [ref=f2e2638]: Awesome work!
+            - generic [ref=f2e2639]:
+              - link "6:40 PM · May 5, 2025" [ref=f2e2640] [cursor=pointer]:
+                - /url: https://x.com/paulclindo/status/1919462310327755047
+                - time [ref=f2e2641]: 6:40 PM · May 5, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2642] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2646]:
+              - link "Like. This Tweet has 1 likes" [ref=f2e2647] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1919462310327755047
+                - generic [ref=f2e2652]: "1"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2653] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1919462310327755047
+                - generic [ref=f2e2658]: Reply
+              - button "Copy link" [ref=f2e2659] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2666] [cursor=pointer]:
+              - /url: https://x.com/paulclindo/status/1919462310327755047
+          - article [ref=f2e2669]:
+            - generic [ref=f2e2670]:
+              - link [ref=f2e2671] [cursor=pointer]:
+                - /url: https://x.com/BDoma/status/1919442400910405743
+                - img "COURT" [ref=f2e2673]
+              - generic [ref=f2e2676]:
+                - link "COURT Verified account" [ref=f2e2677] [cursor=pointer]:
+                  - /url: https://x.com/BDoma/status/1919442400910405743
+                  - generic [ref=f2e2678]: COURT
+                  - img "Verified account" [ref=f2e2680]
+                - generic [ref=f2e2683]:
+                  - link "@BDoma" [ref=f2e2684] [cursor=pointer]:
+                    - /url: https://x.com/BDoma/status/1919442400910405743
+                  - generic [ref=f2e2686]:
+                    - generic [ref=f2e2687]: ·
+                    - link "Follow" [ref=f2e2688] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=BDoma
+              - link "View on Twitter" [ref=f2e2689] [cursor=pointer]:
+                - /url: https://x.com/BDoma/status/1919442400910405743
+            - link "Replying to @haydenbleasel" [ref=f2e2693] [cursor=pointer]:
+              - /url: https://x.com/haydenbleasel/status/1919422230641176904
+            - paragraph [ref=f2e2694]:
+              - text: Thank you. Blocks are really nice. I've been hoping for ShadCN to add an AI input block for a while, and it's great to see the one you created!
+              - link "Show more" [ref=f2e2695] [cursor=pointer]:
+                - /url: https://x.com/BDoma/status/1919442400910405743
+            - generic [ref=f2e2696]:
+              - link "5:21 PM · May 5, 2025" [ref=f2e2697] [cursor=pointer]:
+                - /url: https://x.com/BDoma/status/1919442400910405743
+                - time [ref=f2e2698]: 5:21 PM · May 5, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2699] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2703]:
+              - link "Like. This Tweet has 1 likes" [ref=f2e2704] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1919442400910405743
+                - generic [ref=f2e2709]: "1"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2710] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1919442400910405743
+                - generic [ref=f2e2715]: Reply
+              - button "Copy link" [ref=f2e2716] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2723] [cursor=pointer]:
+              - /url: https://x.com/BDoma/status/1919442400910405743
+          - article [ref=f2e2726]:
+            - generic [ref=f2e2727]:
+              - link [ref=f2e2728] [cursor=pointer]:
+                - /url: https://x.com/jacob_abiola/status/1919437300011876565
+                - img "Abiola Jacob" [ref=f2e2730]
+              - generic [ref=f2e2733]:
+                - link "Abiola Jacob Verified account" [ref=f2e2734] [cursor=pointer]:
+                  - /url: https://x.com/jacob_abiola/status/1919437300011876565
+                  - generic [ref=f2e2735]: Abiola Jacob
+                  - img "Verified account" [ref=f2e2737]
+                - generic [ref=f2e2740]:
+                  - link "@jacob_abiola" [ref=f2e2741] [cursor=pointer]:
+                    - /url: https://x.com/jacob_abiola/status/1919437300011876565
+                  - generic [ref=f2e2743]:
+                    - generic [ref=f2e2744]: ·
+                    - link "Follow" [ref=f2e2745] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=jacob_abiola
+              - link "View on Twitter" [ref=f2e2746] [cursor=pointer]:
+                - /url: https://x.com/jacob_abiola/status/1919437300011876565
+            - link "Replying to @haydenbleasel" [ref=f2e2750] [cursor=pointer]:
+              - /url: https://x.com/haydenbleasel/status/1919422230641176904
+            - paragraph [ref=f2e2751]: This looks great 👍, thank you for sharing this gem 💎
+            - generic [ref=f2e2752]:
+              - link "5:01 PM · May 5, 2025" [ref=f2e2753] [cursor=pointer]:
+                - /url: https://x.com/jacob_abiola/status/1919437300011876565
+                - time [ref=f2e2754]: 5:01 PM · May 5, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2755] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2759]:
+              - link "Like. This Tweet has 1 likes" [ref=f2e2760] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1919437300011876565
+                - generic [ref=f2e2765]: "1"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2766] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1919437300011876565
+                - generic [ref=f2e2771]: Reply
+              - button "Copy link" [ref=f2e2772] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2779] [cursor=pointer]:
+              - /url: https://x.com/jacob_abiola/status/1919437300011876565
+          - article [ref=f2e2782]:
+            - generic [ref=f2e2783]:
+              - link [ref=f2e2784] [cursor=pointer]:
+                - /url: https://x.com/f1yingbanana/status/1919435318144512384
+                - img "J 🎹" [ref=f2e2786]
+              - generic [ref=f2e2789]:
+                - link "J 🎹 Verified account" [ref=f2e2790] [cursor=pointer]:
+                  - /url: https://x.com/f1yingbanana/status/1919435318144512384
+                  - generic [ref=f2e2791]: J 🎹
+                  - img "Verified account" [ref=f2e2793]
+                - generic [ref=f2e2796]:
+                  - link "@f1yingbanana" [ref=f2e2797] [cursor=pointer]:
+                    - /url: https://x.com/f1yingbanana/status/1919435318144512384
+                  - generic [ref=f2e2799]:
+                    - generic [ref=f2e2800]: ·
+                    - link "Follow" [ref=f2e2801] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=f1yingbanana
+              - link "View on Twitter" [ref=f2e2802] [cursor=pointer]:
+                - /url: https://x.com/f1yingbanana/status/1919435318144512384
+            - link "Replying to @shadcn" [ref=f2e2806] [cursor=pointer]:
+              - /url: https://x.com/shadcn/status/1919423020944294084
+            - paragraph [ref=f2e2807]: We need moar components! Moarrrr 🥲🥲🥲
+            - generic [ref=f2e2808]:
+              - link "4:53 PM · May 5, 2025" [ref=f2e2809] [cursor=pointer]:
+                - /url: https://x.com/f1yingbanana/status/1919435318144512384
+                - time [ref=f2e2810]: 4:53 PM · May 5, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2811] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2815]:
+              - link "Like. This Tweet has 3 likes" [ref=f2e2816] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1919435318144512384
+                - generic [ref=f2e2821]: "3"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2822] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1919435318144512384
+                - generic [ref=f2e2827]: Reply
+              - button "Copy link" [ref=f2e2828] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2835] [cursor=pointer]:
+              - /url: https://x.com/f1yingbanana/status/1919435318144512384
+          - article [ref=f2e2838]:
+            - generic [ref=f2e2839]:
+              - link [ref=f2e2840] [cursor=pointer]:
+                - /url: https://x.com/yamzeight/status/1918384155374833747
+                - img "yamz8" [ref=f2e2842]
+              - generic [ref=f2e2845]:
+                - link "yamz8 Verified account" [ref=f2e2846] [cursor=pointer]:
+                  - /url: https://x.com/yamzeight/status/1918384155374833747
+                  - generic [ref=f2e2847]: yamz8
+                  - img "Verified account" [ref=f2e2849]
+                - generic [ref=f2e2852]:
+                  - link "@yamzeight" [ref=f2e2853] [cursor=pointer]:
+                    - /url: https://x.com/yamzeight/status/1918384155374833747
+                  - generic [ref=f2e2855]:
+                    - generic [ref=f2e2856]: ·
+                    - link "Follow" [ref=f2e2857] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=yamzeight
+              - link "View on Twitter" [ref=f2e2858] [cursor=pointer]:
+                - /url: https://x.com/yamzeight/status/1918384155374833747
+            - link "Replying to @haydenbleasel" [ref=f2e2862] [cursor=pointer]:
+              - /url: https://x.com/haydenbleasel/status/1917999819928510675
+            - paragraph [ref=f2e2863]: Very nice
+            - generic [ref=f2e2864]:
+              - link "7:16 PM · May 2, 2025" [ref=f2e2865] [cursor=pointer]:
+                - /url: https://x.com/yamzeight/status/1918384155374833747
+                - time [ref=f2e2866]: 7:16 PM · May 2, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2867] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2871]:
+              - link "Like. This Tweet has 1 likes" [ref=f2e2872] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1918384155374833747
+                - generic [ref=f2e2877]: "1"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2878] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1918384155374833747
+                - generic [ref=f2e2883]: Reply
+              - button "Copy link" [ref=f2e2884] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2891] [cursor=pointer]:
+              - /url: https://x.com/yamzeight/status/1918384155374833747
+          - article [ref=f2e2894]:
+            - generic [ref=f2e2895]:
+              - link [ref=f2e2896] [cursor=pointer]:
+                - /url: https://x.com/joelhooks/status/1918023620703732018
+                - img "joel ⛈️" [ref=f2e2898]
+              - generic [ref=f2e2901]:
+                - link "joel ⛈️ Verified account" [ref=f2e2902] [cursor=pointer]:
+                  - /url: https://x.com/joelhooks/status/1918023620703732018
+                  - generic [ref=f2e2903]: joel ⛈️
+                  - img "Verified account" [ref=f2e2905]
+                - generic [ref=f2e2908]:
+                  - link "@joelhooks" [ref=f2e2909] [cursor=pointer]:
+                    - /url: https://x.com/joelhooks/status/1918023620703732018
+                  - generic [ref=f2e2911]:
+                    - generic [ref=f2e2912]: ·
+                    - link "Follow" [ref=f2e2913] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=joelhooks
+              - link "View on Twitter" [ref=f2e2914] [cursor=pointer]:
+                - /url: https://x.com/joelhooks/status/1918023620703732018
+            - link "Replying to @haydenbleasel" [ref=f2e2918] [cursor=pointer]:
+              - /url: https://x.com/haydenbleasel/status/1917999819928510675
+            - paragraph
+            - generic [ref=f2e2921]:
+              - button "View video on X" [ref=f2e2923] [cursor=pointer]
+              - link "Watch on X" [ref=f2e2928] [cursor=pointer]:
+                - /url: https://x.com/joelhooks/status/1918023620703732018
+            - generic [ref=f2e2929]:
+              - link "7:24 PM · May 1, 2025" [ref=f2e2930] [cursor=pointer]:
+                - /url: https://x.com/joelhooks/status/1918023620703732018
+                - time [ref=f2e2931]: 7:24 PM · May 1, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2932] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2936]:
+              - link "Like. This Tweet has 1 likes" [ref=f2e2937] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1918023620703732018
+                - generic [ref=f2e2942]: "1"
+              - link "Reply to this Tweet on Twitter" [ref=f2e2943] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1918023620703732018
+                - generic [ref=f2e2948]: Reply
+              - button "Copy link" [ref=f2e2949] [cursor=pointer]
+            - link "Read more on X" [ref=f2e2956] [cursor=pointer]:
+              - /url: https://x.com/joelhooks/status/1918023620703732018
+          - article [ref=f2e2959]:
+            - generic [ref=f2e2960]:
+              - link [ref=f2e2961] [cursor=pointer]:
+                - /url: https://x.com/MuxHQ/status/1918003297639911563
+                - img "Mux" [ref=f2e2963]
+              - generic [ref=f2e2966]:
+                - link "Mux Verified account" [ref=f2e2967] [cursor=pointer]:
+                  - /url: https://x.com/MuxHQ/status/1918003297639911563
+                  - generic [ref=f2e2968]: Mux
+                  - img "Verified account" [ref=f2e2970]
+                - generic [ref=f2e2976]:
+                  - link "@MuxHQ" [ref=f2e2977] [cursor=pointer]:
+                    - /url: https://x.com/MuxHQ/status/1918003297639911563
+                  - generic [ref=f2e2979]:
+                    - generic [ref=f2e2980]: ·
+                    - link "Follow" [ref=f2e2981] [cursor=pointer]:
+                      - /url: https://x.com/intent/follow?screen_name=MuxHQ
+              - link "View on Twitter" [ref=f2e2982] [cursor=pointer]:
+                - /url: https://x.com/MuxHQ/status/1918003297639911563
+            - link "Replying to @haydenbleasel" [ref=f2e2986] [cursor=pointer]:
+              - /url: https://x.com/haydenbleasel/status/1917999819928510675
+            - paragraph [ref=f2e2987]: looks great, Hayden!
+            - generic [ref=f2e2988]:
+              - link "6:03 PM · May 1, 2025" [ref=f2e2989] [cursor=pointer]:
+                - /url: https://x.com/MuxHQ/status/1918003297639911563
+                - time [ref=f2e2990]: 6:03 PM · May 1, 2025
+              - link "Twitter for Websites, Ads Information and Privacy" [ref=f2e2991] [cursor=pointer]:
+                - /url: https://help.x.com/en/x-for-websites-ads-info-and-privacy
+            - generic [ref=f2e2995]:
+              - link "Like. This Tweet has 1 likes" [ref=f2e2996] [cursor=pointer]:
+                - /url: https://x.com/intent/like?tweet_id=1918003297639911563
+                - generic [ref=f2e3001]: "1"
+              - link "Reply to this Tweet on Twitter" [ref=f2e3002] [cursor=pointer]:
+                - /url: https://x.com/intent/tweet?in_reply_to=1918003297639911563
+                - generic [ref=f2e3007]: Reply
+              - button "Copy link" [ref=f2e3008] [cursor=pointer]
+            - link "Read more on X" [ref=f2e3015] [cursor=pointer]:
+              - /url: https://x.com/MuxHQ/status/1918003297639911563
+      - generic [ref=f2e3017]:
+        - generic [ref=f2e3018]:
+          - heading "Get started with Kibo UI" [level=2] [ref=f2e3019]
+          - paragraph [ref=f2e3020]: Install your first component in seconds with the Kibo UI or shadcn CLI.
+        - generic [ref=f2e3022]:
+          - generic [ref=f2e3023]: Terminal
+          - generic [ref=f2e3030]:
+            - code [ref=f2e3031]: $
+            - code [ref=f2e3032]: npx kibo-ui add
+            - generic [ref=f2e3033]: announcement
+      - contentinfo [ref=f2e3036]:
+        - generic [ref=f2e3037]:
+          - link "Kibo UI Kibo UI" [ref=f2e3039] [cursor=pointer]:
+            - /url: /
+            - generic [ref=f2e3040]:
+              - img "Kibo UI" [ref=f2e3041]
+              - generic [ref=f2e3044]: Kibo UI
+          - generic [ref=f2e3045]:
+            - button "System theme" [ref=f2e3046]
+            - button "Light theme" [ref=f2e3050]
+            - button "Dark theme" [ref=f2e3057]
+        - generic [ref=f2e3060]:
+          - generic [ref=f2e3061]:
+            - heading "Docs" [level=3] [ref=f2e3062]
+            - list [ref=f2e3063]:
+              - listitem [ref=f2e3064]:
+                - link "Benefits" [ref=f2e3065] [cursor=pointer]:
+                  - /url: /docs/benefits
+              - listitem [ref=f2e3066]:
+                - link "Community" [ref=f2e3067] [cursor=pointer]:
+                  - /url: /docs/community
+              - listitem [ref=f2e3068]:
+                - link "How to Contribute" [ref=f2e3069] [cursor=pointer]:
+                  - /url: /docs/how-to-contribute
+              - listitem [ref=f2e3070]:
+                - link "Introduction" [ref=f2e3071] [cursor=pointer]:
+                  - /url: /docs
+              - listitem [ref=f2e3072]:
+                - link "MCP Server" [ref=f2e3073] [cursor=pointer]:
+                  - /url: /docs/mcp
+              - listitem [ref=f2e3074]:
+                - link "New Components" [ref=f2e3075] [cursor=pointer]:
+                  - /url: /docs/new-components
+              - listitem [ref=f2e3076]:
+                - link "Philosophy" [ref=f2e3077] [cursor=pointer]:
+                  - /url: /docs/philosophy
+              - listitem [ref=f2e3078]:
+                - link "Setup" [ref=f2e3079] [cursor=pointer]:
+                  - /url: /docs/setup
+              - listitem [ref=f2e3080]:
+                - link "Troubleshooting" [ref=f2e3081] [cursor=pointer]:
+                  - /url: /docs/troubleshooting
+              - listitem [ref=f2e3082]:
+                - link "Usage" [ref=f2e3083] [cursor=pointer]:
+                  - /url: /docs/usage
+          - generic [ref=f2e3084]:
+            - heading "Components" [level=3] [ref=f2e3085]
+            - generic [ref=f2e3086]:
+              - list [ref=f2e3087]:
+                - listitem [ref=f2e3088]:
+                  - link "Announcement" [ref=f2e3089] [cursor=pointer]:
+                    - /url: /components/announcement
+                - listitem [ref=f2e3090]:
+                  - link "Avatar Stack" [ref=f2e3091] [cursor=pointer]:
+                    - /url: /components/avatar-stack
+                - listitem [ref=f2e3092]:
+                  - link "Banner" [ref=f2e3093] [cursor=pointer]:
+                    - /url: /components/banner
+                - listitem [ref=f2e3094]:
+                  - link "Calendar" [ref=f2e3095] [cursor=pointer]:
+                    - /url: /components/calendar
+                - listitem [ref=f2e3096]:
+                  - link "Choicebox" [ref=f2e3097] [cursor=pointer]:
+                    - /url: /components/choicebox
+                - listitem [ref=f2e3098]:
+                  - link "Code Block" [ref=f2e3099] [cursor=pointer]:
+                    - /url: /components/code-block
+                - listitem [ref=f2e3100]:
+                  - link "Color Picker" [ref=f2e3101] [cursor=pointer]:
+                    - /url: /components/color-picker
+                - listitem [ref=f2e3102]:
+                  - link "Combobox" [ref=f2e3103] [cursor=pointer]:
+                    - /url: /components/combobox
+                - listitem [ref=f2e3104]:
+                  - link "Comparison" [ref=f2e3105] [cursor=pointer]:
+                    - /url: /components/comparison
+                - listitem [ref=f2e3106]:
+                  - link "Contribution Graph" [ref=f2e3107] [cursor=pointer]:
+                    - /url: /components/contribution-graph
+                - listitem [ref=f2e3108]:
+                  - link "Credit Card" [ref=f2e3109] [cursor=pointer]:
+                    - /url: /components/credit-card
+                - listitem [ref=f2e3110]:
+                  - link "Cursor" [ref=f2e3111] [cursor=pointer]:
+                    - /url: /components/cursor
+                - listitem [ref=f2e3112]:
+                  - link "Deck" [ref=f2e3113] [cursor=pointer]:
+                    - /url: /components/deck
+                - listitem [ref=f2e3114]:
+                  - link "Dialog Stack" [ref=f2e3115] [cursor=pointer]:
+                    - /url: /components/dialog-stack
+                - listitem [ref=f2e3116]:
+                  - link "Dropzone" [ref=f2e3117] [cursor=pointer]:
+                    - /url: /components/dropzone
+                - listitem [ref=f2e3118]:
+                  - link "Editor" [ref=f2e3119] [cursor=pointer]:
+                    - /url: /components/editor
+                - listitem [ref=f2e3120]:
+                  - link "Gantt" [ref=f2e3121] [cursor=pointer]:
+                    - /url: /components/gantt
+                - listitem [ref=f2e3122]:
+                  - link "Glimpse" [ref=f2e3123] [cursor=pointer]:
+                    - /url: /components/glimpse
+                - listitem [ref=f2e3124]:
+                  - link "Image Crop" [ref=f2e3125] [cursor=pointer]:
+                    - /url: /components/image-crop
+                - listitem [ref=f2e3126]:
+                  - link "Image Zoom" [ref=f2e3127] [cursor=pointer]:
+                    - /url: /components/image-zoom
+                - listitem [ref=f2e3128]:
+                  - link "Kanban" [ref=f2e3129] [cursor=pointer]:
+                    - /url: /components/kanban
+              - list [ref=f2e3130]:
+                - listitem [ref=f2e3131]:
+                  - link "List" [ref=f2e3132] [cursor=pointer]:
+                    - /url: /components/list
+                - listitem [ref=f2e3133]:
+                  - link "Marquee" [ref=f2e3134] [cursor=pointer]:
+                    - /url: /components/marquee
+                - listitem [ref=f2e3135]:
+                  - link "Mini Calendar" [ref=f2e3136] [cursor=pointer]:
+                    - /url: /components/mini-calendar
+                - listitem [ref=f2e3137]:
+                  - link "Pill" [ref=f2e3138] [cursor=pointer]:
+                    - /url: /components/pill
+                - listitem [ref=f2e3139]:
+                  - link "QR Code" [ref=f2e3140] [cursor=pointer]:
+                    - /url: /components/qr-code
+                - listitem [ref=f2e3141]:
+                  - link "Rating" [ref=f2e3142] [cursor=pointer]:
+                    - /url: /components/rating
+                - listitem [ref=f2e3143]:
+                  - link "Reel" [ref=f2e3144] [cursor=pointer]:
+                    - /url: /components/reel
+                - listitem [ref=f2e3145]:
+                  - link "Relative Time" [ref=f2e3146] [cursor=pointer]:
+                    - /url: /components/relative-time
+                - listitem [ref=f2e3147]:
+                  - link "Sandbox" [ref=f2e3148] [cursor=pointer]:
+                    - /url: /components/sandbox
+                - listitem [ref=f2e3149]:
+                  - link "Snippet" [ref=f2e3150] [cursor=pointer]:
+                    - /url: /components/snippet
+                - listitem [ref=f2e3151]:
+                  - link "Spinner" [ref=f2e3152] [cursor=pointer]:
+                    - /url: /components/spinner
+                - listitem [ref=f2e3153]:
+                  - link "Status" [ref=f2e3154] [cursor=pointer]:
+                    - /url: /components/status
+                - listitem [ref=f2e3155]:
+                  - link "Stories" [ref=f2e3156] [cursor=pointer]:
+                    - /url: /components/stories
+                - listitem [ref=f2e3157]:
+                  - link "Table" [ref=f2e3158] [cursor=pointer]:
+                    - /url: /components/table
+                - listitem [ref=f2e3159]:
+                  - link "Tags" [ref=f2e3160] [cursor=pointer]:
+                    - /url: /components/tags
+                - listitem [ref=f2e3161]:
+                  - link "Theme Switcher" [ref=f2e3162] [cursor=pointer]:
+                    - /url: /components/theme-switcher
+                - listitem [ref=f2e3163]:
+                  - link "Ticker" [ref=f2e3164] [cursor=pointer]:
+                    - /url: /components/ticker
+                - listitem [ref=f2e3165]:
+                  - link "Tree" [ref=f2e3166] [cursor=pointer]:
+                    - /url: /components/tree
+                - listitem [ref=f2e3167]:
+                  - link "Typography" [ref=f2e3168] [cursor=pointer]:
+                    - /url: /components/typography
+                - listitem [ref=f2e3169]:
+                  - link "Video Player" [ref=f2e3170] [cursor=pointer]:
+                    - /url: /components/video-player
+          - generic [ref=f2e3171]:
+            - heading "Blocks" [level=3] [ref=f2e3172]
+            - list [ref=f2e3173]:
+              - listitem [ref=f2e3174]:
+                - link "About" [ref=f2e3175] [cursor=pointer]:
+                  - /url: /blocks/about
+              - listitem [ref=f2e3176]:
+                - link "Awards" [ref=f2e3177] [cursor=pointer]:
+                  - /url: /blocks/awards
+              - listitem [ref=f2e3178]:
+                - link "Blog" [ref=f2e3179] [cursor=pointer]:
+                  - /url: /blocks/blog
+              - listitem [ref=f2e3180]:
+                - link "Blog Post" [ref=f2e3181] [cursor=pointer]:
+                  - /url: /blocks/blogpost
+              - listitem [ref=f2e3182]:
+                - link "Careers" [ref=f2e3183] [cursor=pointer]:
+                  - /url: /blocks/careers
+              - listitem [ref=f2e3184]:
+                - link "Case Studies" [ref=f2e3185] [cursor=pointer]:
+                  - /url: /blocks/case-studies
+              - listitem [ref=f2e3186]:
+                - link "Case Study" [ref=f2e3187] [cursor=pointer]:
+                  - /url: /blocks/case-study
+              - listitem [ref=f2e3188]:
+                - link "Changelog" [ref=f2e3189] [cursor=pointer]:
+                  - /url: /blocks/changelog
+              - listitem [ref=f2e3190]:
+                - link "Code Example" [ref=f2e3191] [cursor=pointer]:
+                  - /url: /blocks/code-example
+              - listitem [ref=f2e3192]:
+                - link "Codebase" [ref=f2e3193] [cursor=pointer]:
+                  - /url: /blocks/codebase
+              - listitem [ref=f2e3194]:
+                - link "Collaborative Canvas" [ref=f2e3195] [cursor=pointer]:
+                  - /url: /blocks/collaborative-canvas
+              - listitem [ref=f2e3196]:
+                - link "Community" [ref=f2e3197] [cursor=pointer]:
+                  - /url: /blocks/community
+              - listitem [ref=f2e3198]:
+                - link "Compare" [ref=f2e3199] [cursor=pointer]:
+                  - /url: /blocks/compare
+              - listitem [ref=f2e3200]:
+                - link "Compliance" [ref=f2e3201] [cursor=pointer]:
+                  - /url: /blocks/compliance
+              - listitem [ref=f2e3202]:
+                - link "Contact" [ref=f2e3203] [cursor=pointer]:
+                  - /url: /blocks/contact
+              - listitem [ref=f2e3204]:
+                - link "CTA" [ref=f2e3205] [cursor=pointer]:
+                  - /url: /blocks/cta
+              - listitem [ref=f2e3206]:
+                - link "Download" [ref=f2e3207] [cursor=pointer]:
+                  - /url: /blocks/download
+              - listitem [ref=f2e3208]:
+                - link "Experience" [ref=f2e3209] [cursor=pointer]:
+                  - /url: /blocks/experience
+              - listitem [ref=f2e3210]:
+                - link "FAQ" [ref=f2e3211] [cursor=pointer]:
+                  - /url: /blocks/faq
+              - listitem [ref=f2e3212]:
+                - link "Feature" [ref=f2e3213] [cursor=pointer]:
+                  - /url: /blocks/feature
+              - listitem [ref=f2e3214]:
+                - link "Footer" [ref=f2e3215] [cursor=pointer]:
+                  - /url: /blocks/footer
+              - listitem [ref=f2e3216]:
+                - link "Form" [ref=f2e3217] [cursor=pointer]:
+                  - /url: /blocks/form
+              - listitem [ref=f2e3218]:
+                - link "Hero" [ref=f2e3219] [cursor=pointer]:
+                  - /url: /blocks/hero
+              - listitem [ref=f2e3220]:
+                - link "Pricing" [ref=f2e3221] [cursor=pointer]:
+                  - /url: /blocks/pricing
+              - listitem [ref=f2e3222]:
+                - link "Roadmap" [ref=f2e3223] [cursor=pointer]:
+                  - /url: /blocks/roadmap
+              - listitem [ref=f2e3224]:
+                - link "Stats" [ref=f2e3225] [cursor=pointer]:
+                  - /url: /blocks/stats
+              - listitem [ref=f2e3226]:
+                - link "Team" [ref=f2e3227] [cursor=pointer]:
+                  - /url: /blocks/team
+              - listitem [ref=f2e3228]:
+                - link "Testimonial" [ref=f2e3229] [cursor=pointer]:
+                  - /url: /blocks/testimonial
+          - generic [ref=f2e3230]:
+            - heading "Patterns" [level=3] [ref=f2e3231]
+            - generic [ref=f2e3232]:
+              - list [ref=f2e3233]:
+                - listitem [ref=f2e3234]:
+                  - link "Accordion" [ref=f2e3235] [cursor=pointer]:
+                    - /url: accordion
+                - listitem [ref=f2e3236]:
+                  - link "Alert" [ref=f2e3237] [cursor=pointer]:
+                    - /url: alert
+                - listitem [ref=f2e3238]:
+                  - link "Alert Dialog" [ref=f2e3239] [cursor=pointer]:
+                    - /url: alert-dialog
+                - listitem [ref=f2e3240]:
+                  - link "Aspect Ratio" [ref=f2e3241] [cursor=pointer]:
+                    - /url: aspect-ratio
+                - listitem [ref=f2e3242]:
+                  - link "Avatar" [ref=f2e3243] [cursor=pointer]:
+                    - /url: avatar
+                - listitem [ref=f2e3244]:
+                  - link "Badge" [ref=f2e3245] [cursor=pointer]:
+                    - /url: badge
+                - listitem [ref=f2e3246]:
+                  - link "Breadcrumb" [ref=f2e3247] [cursor=pointer]:
+                    - /url: breadcrumb
+                - listitem [ref=f2e3248]:
+                  - link "Button" [ref=f2e3249] [cursor=pointer]:
+                    - /url: button
+                - listitem [ref=f2e3250]:
+                  - link "Button Group" [ref=f2e3251] [cursor=pointer]:
+                    - /url: button-group
+                - listitem [ref=f2e3252]:
+                  - link "Calendar" [ref=f2e3253] [cursor=pointer]:
+                    - /url: calendar
+                - listitem [ref=f2e3254]:
+                  - link "Card" [ref=f2e3255] [cursor=pointer]:
+                    - /url: card
+                - listitem [ref=f2e3256]:
+                  - link "Carousel" [ref=f2e3257] [cursor=pointer]:
+                    - /url: carousel
+                - listitem [ref=f2e3258]:
+                  - link "Chart" [ref=f2e3259] [cursor=pointer]:
+                    - /url: chart
+                - listitem [ref=f2e3260]:
+                  - link "Checkbox" [ref=f2e3261] [cursor=pointer]:
+                    - /url: checkbox
+                - listitem [ref=f2e3262]:
+                  - link "Collapsible" [ref=f2e3263] [cursor=pointer]:
+                    - /url: collapsible
+                - listitem [ref=f2e3264]:
+                  - link "Combobox" [ref=f2e3265] [cursor=pointer]:
+                    - /url: combobox
+                - listitem [ref=f2e3266]:
+                  - link "Command" [ref=f2e3267] [cursor=pointer]:
+                    - /url: command
+                - listitem [ref=f2e3268]:
+                  - link "Context Menu" [ref=f2e3269] [cursor=pointer]:
+                    - /url: context-menu
+                - listitem [ref=f2e3270]:
+                  - link "Data Table" [ref=f2e3271] [cursor=pointer]:
+                    - /url: data-table
+                - listitem [ref=f2e3272]:
+                  - link "Date Picker" [ref=f2e3273] [cursor=pointer]:
+                    - /url: date-picker
+                - listitem [ref=f2e3274]:
+                  - link "Dialog" [ref=f2e3275] [cursor=pointer]:
+                    - /url: dialog
+                - listitem [ref=f2e3276]:
+                  - link "Drawer" [ref=f2e3277] [cursor=pointer]:
+                    - /url: drawer
+                - listitem [ref=f2e3278]:
+                  - link "Dropdown Menu" [ref=f2e3279] [cursor=pointer]:
+                    - /url: dropdown-menu
+                - listitem [ref=f2e3280]:
+                  - link "Empty" [ref=f2e3281] [cursor=pointer]:
+                    - /url: empty
+                - listitem [ref=f2e3282]:
+                  - link "Field" [ref=f2e3283] [cursor=pointer]:
+                    - /url: field
+                - listitem [ref=f2e3284]:
+                  - link "Form" [ref=f2e3285] [cursor=pointer]:
+                    - /url: form
+                - listitem [ref=f2e3286]:
+                  - link "Hover Card" [ref=f2e3287] [cursor=pointer]:
+                    - /url: hover-card
+              - list [ref=f2e3288]:
+                - listitem [ref=f2e3289]:
+                  - link "Input" [ref=f2e3290] [cursor=pointer]:
+                    - /url: /patterns/input
+                - listitem [ref=f2e3291]:
+                  - link "Input Group" [ref=f2e3292] [cursor=pointer]:
+                    - /url: /patterns/input-group
+                - listitem [ref=f2e3293]:
+                  - link "Input OTP" [ref=f2e3294] [cursor=pointer]:
+                    - /url: /patterns/input-otp
+                - listitem [ref=f2e3295]:
+                  - link "Item" [ref=f2e3296] [cursor=pointer]:
+                    - /url: /patterns/item
+                - listitem [ref=f2e3297]:
+                  - link "Kbd" [ref=f2e3298] [cursor=pointer]:
+                    - /url: /patterns/kbd
+                - listitem [ref=f2e3299]:
+                  - link "Label" [ref=f2e3300] [cursor=pointer]:
+                    - /url: /patterns/label
+                - listitem [ref=f2e3301]:
+                  - link "Menubar" [ref=f2e3302] [cursor=pointer]:
+                    - /url: /patterns/menubar
+                - listitem [ref=f2e3303]:
+                  - link "Navigation Menu" [ref=f2e3304] [cursor=pointer]:
+                    - /url: /patterns/navigation-menu
+                - listitem [ref=f2e3305]:
+                  - link "Pagination" [ref=f2e3306] [cursor=pointer]:
+                    - /url: /patterns/pagination
+                - listitem [ref=f2e3307]:
+                  - link "Popover" [ref=f2e3308] [cursor=pointer]:
+                    - /url: /patterns/popover
+                - listitem [ref=f2e3309]:
+                  - link "Progress" [ref=f2e3310] [cursor=pointer]:
+                    - /url: /patterns/progress
+                - listitem [ref=f2e3311]:
+                  - link "Radio Group" [ref=f2e3312] [cursor=pointer]:
+                    - /url: /patterns/radio-group
+                - listitem [ref=f2e3313]:
+                  - link "Scroll Area" [ref=f2e3314] [cursor=pointer]:
+                    - /url: /patterns/scroll-area
+                - listitem [ref=f2e3315]:
+                  - link "Separator" [ref=f2e3316] [cursor=pointer]:
+                    - /url: /patterns/separator
+                - listitem [ref=f2e3317]:
+                  - link "Sheet" [ref=f2e3318] [cursor=pointer]:
+                    - /url: /patterns/sheet
+                - listitem [ref=f2e3319]:
+                  - link "Skeleton" [ref=f2e3320] [cursor=pointer]:
+                    - /url: /patterns/skeleton
+                - listitem [ref=f2e3321]:
+                  - link "Slider" [ref=f2e3322] [cursor=pointer]:
+                    - /url: /patterns/slider
+                - listitem [ref=f2e3323]:
+                  - link "Sonner" [ref=f2e3324] [cursor=pointer]:
+                    - /url: /patterns/sonner
+                - listitem [ref=f2e3325]:
+                  - link "Spinner" [ref=f2e3326] [cursor=pointer]:
+                    - /url: /patterns/spinner
+                - listitem [ref=f2e3327]:
+                  - link "Switch" [ref=f2e3328] [cursor=pointer]:
+                    - /url: /patterns/switch
+                - listitem [ref=f2e3329]:
+                  - link "Table" [ref=f2e3330] [cursor=pointer]:
+                    - /url: /patterns/table
+                - listitem [ref=f2e3331]:
+                  - link "Tabs" [ref=f2e3332] [cursor=pointer]:
+                    - /url: /patterns/tabs
+                - listitem [ref=f2e3333]:
+                  - link "Textarea" [ref=f2e3334] [cursor=pointer]:
+                    - /url: /patterns/textarea
+                - listitem [ref=f2e3335]:
+                  - link "Toggle" [ref=f2e3336] [cursor=pointer]:
+                    - /url: /patterns/toggle
+                - listitem [ref=f2e3337]:
+                  - link "Toggle Group" [ref=f2e3338] [cursor=pointer]:
+                    - /url: /patterns/toggle-group
+                - listitem [ref=f2e3339]:
+                  - link "Tooltip" [ref=f2e3340] [cursor=pointer]:
+                    - /url: /patterns/tooltip
+  - region "Notifications alt+T"
+  - alert [ref=f2e3341]

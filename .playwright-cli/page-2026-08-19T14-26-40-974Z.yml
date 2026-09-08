@@ -1,0 +1,10 @@
+- generic [active] [ref=f8e1]:
+  - main [ref=f8e2]:
+    - generic [ref=f8e4]:
+      - generic [ref=f8e5]: Animate UI
+      - generic [ref=f8e10]:
+        - link [ref=f8e12] [cursor=pointer]:
+          - /url: https://x.com/animate_ui
+          - img "X" [ref=f8e13]
+        - switch [ref=f8e15] [cursor=pointer]
+  - alert [ref=f8e28]

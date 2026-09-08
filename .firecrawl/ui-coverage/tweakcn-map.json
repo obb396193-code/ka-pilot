@@ -1,0 +1,69 @@
+{
+  "success": true,
+  "data": {
+    "links": [
+      {
+        "url": "https://tweakcn.com/r/themes/amethyst-haze"
+      },
+      {
+        "url": "https://tweakcn.com/community",
+        "title": "Community Themes - tweakcn",
+        "description": "Discover and explore beautiful shadcn/ui themes created by the community."
+      },
+      {
+        "url": "https://tweakcn.com/r/themes/amber-minimal"
+      },
+      {
+        "url": "https://tweakcn.com/r/themes/elegant-luxury"
+      },
+      {
+        "url": "https://tweakcn.com/editor/theme",
+        "title": "tweakcn — Theme Generator for shadcn/ui",
+        "description": "Easily customize and preview your shadcn/ui theme with tweakcn. Modify colors, fonts, and styles in real-time."
+      },
+      {
+        "url": "https://tweakcn.com/r/themes/cmmbmmxsb000104l5fqg5b4x3"
+      },
+      {
+        "url": "https://tweakcn.com",
+        "title": "Beautiful themes for shadcn/ui — tweakcn | Theme Editor &...",
+        "description": "Customize theme for shadcn/ui with tweakcn's interactive editor. Supports Tailwind CSS v4, Shadcn UI, and custom styles. Modify properties, preview changes, ..."
+      },
+      {
+        "url": "https://tweakcn.com/themes/cmcup07dt000104l4hj4eferh",
+        "title": "designbyte - tweakcn",
+        "description": "A elegant, professional shadcn/ui theme by Gaurav Kumar"
+      },
+      {
+        "url": "https://tweakcn.com/ai",
+        "title": "Image to shadcn/ui theme. Generate with AI",
+        "description": "Transform images into stunning shadcn/ui themes instantly with tweakcn's AI theme generator. Upload any image or describe your vision—our AI creates custom ..."
+      },
+      {
+        "url": "https://tweakcn.com/pricing",
+        "title": "Pricing",
+        "description": "Customize theme for shadcn/ui with tweakcn's interactive editor. Supports Tailwind CSS v4, Shadcn UI, and custom styles. Modify properties, preview changes, ..."
+      },
+      {
+        "url": "https://tweakcn.com/figma",
+        "title": "Apply your theme to the ultimate Figma UI kit",
+        "description": "Apply your theme to the ultimate Figma UI kit. Step 1 Download the kit. Transform components with your custom theme"
+      },
+      {
+        "url": "https://tweakcn.com/themes/cmm3ngaig000004jl71bt739e",
+        "title": "Catppuccin Mocha",
+        "description": "A visual editor for shadcn/ui components with beautiful themes. A powerful visual theme editor for shadcn/ui components with Tailwind CSS ..."
+      },
+      {
+        "url": "https://tweakcn.com/themes/cmie97f2b000704l27r9g1p11",
+        "title": "Tiesen",
+        "description": "A visual editor for shadcn/ui components with beautiful themes. A powerful visual theme editor for shadcn/ui components with Tailwind CSS ..."
+      },
+      {
+        "url": "https://tweakcn.com/themes/cmmab9sq4000004l58w1r3vak",
+        "title": "Shopify Red",
+        "description": "A powerful visual theme editor for shadcn/ui components with Tailwind CSS support. Make your components stand out. GitHub Discord ..."
+      }
+    ]
+  }
+}

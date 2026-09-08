@@ -1,0 +1,455 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-19T15:38:06.845Z",
+  "runtime_root": "apps/web",
+  "catalog_snapshot": {
+    "item_count": 7056,
+    "source_cached_item_count": 0,
+    "not_cached_item_count": 7056,
+    "note": "Catalog JSON stores discovery metadata; it is not a source mirror."
+  },
+  "summary": {
+    "runtime_local_ui_source_files": 22,
+    "runtime_imported_local_ui_files": 20,
+    "provenance_verified_files": 0,
+    "provenance_inferred_files": 22,
+    "selected_third_party_source_files": 0,
+    "fully_cached_catalog_items": 0,
+    "starter_cached_entries": 131,
+    "starter_cached_roots": 73,
+    "starter_cached_dependencies": 58,
+    "starter_cached_files": 144,
+    "starter_cache_failures": 0
+  },
+  "components_config": {
+    "style": "new-york-v4",
+    "configured_registries": []
+  },
+  "relevant_runtime_packages": {
+    "shadcn": "^4.18.0",
+    "radix-ui": "^1.6.7",
+    "@base-ui-components/react": null,
+    "@base-ui/react": null,
+    "@tremor/react": null,
+    "recharts": "^3.8.0",
+    "echarts": null,
+    "ai": null,
+    "motion": null
+  },
+  "local_ui_components": [
+    {
+      "name": "avatar",
+      "path": "components/ui/avatar.tsx",
+      "sha256": "sha256:58a846bf1617b94b9681921db9b8461d0145f311424663d11678a06b6153cb34",
+      "runtime_import_count": 1,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:avatar",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "badge",
+      "path": "components/ui/badge.tsx",
+      "sha256": "sha256:46a0de5224f6a5d5d63d45246534288518dce888f031064bff925bbc7fe6ad97",
+      "runtime_import_count": 5,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:badge",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "breadcrumb",
+      "path": "components/ui/breadcrumb.tsx",
+      "sha256": "sha256:d4c0831bba2212e778248f54a6ace6ef378df8bba4616d1abf27787a31eabae5",
+      "runtime_import_count": 0,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:breadcrumb",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "button",
+      "path": "components/ui/button.tsx",
+      "sha256": "sha256:cc36af0f8b5019c33cc039fbf03bb952a513072b15b55b53c592b78af3e5f4c4",
+      "runtime_import_count": 5,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:button",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "card",
+      "path": "components/ui/card.tsx",
+      "sha256": "sha256:c48dd3b96be90a7066f1aebf294f0af9d00ebcdc367d5d4aca55429ade570c1c",
+      "runtime_import_count": 5,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:card",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "chart",
+      "path": "components/ui/chart.tsx",
+      "sha256": "sha256:84b423d5fd7e645c3c259d8cde84765dcc4e185450dcb3494a39a20f935bf5c7",
+      "runtime_import_count": 2,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:chart",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "checkbox",
+      "path": "components/ui/checkbox.tsx",
+      "sha256": "sha256:b23ab9d4deeedf2ac8f512c368361ede681aa383437ef48563a6f9b7dbe95f27",
+      "runtime_import_count": 1,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:checkbox",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "drawer",
+      "path": "components/ui/drawer.tsx",
+      "sha256": "sha256:cb6eaf58eb0757ca91af284e5d925b89a42ad7eb19cb3f44c575a3487aa9350f",
+      "runtime_import_count": 1,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:drawer",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "dropdown-menu",
+      "path": "components/ui/dropdown-menu.tsx",
+      "sha256": "sha256:98f0dcdae38225b73734aceeb9213dd751fea2c72ea520df31003cd133deac8a",
+      "runtime_import_count": 3,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:dropdown-menu",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "input",
+      "path": "components/ui/input.tsx",
+      "sha256": "sha256:8c4612a7c41319ac5049daa3b34b080f9784b6245c17780eb87c127e58e473db",
+      "runtime_import_count": 2,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:input",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "label",
+      "path": "components/ui/label.tsx",
+      "sha256": "sha256:a476e41f08b9de5bd447de66a33d8bc2ad18f2fa6b96c064778bab4b6f439f4c",
+      "runtime_import_count": 1,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:label",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "select",
+      "path": "components/ui/select.tsx",
+      "sha256": "sha256:0b796a108a4eb5ba52d9ad938b7aea36dc56ae66c703a6d0a23dbc24f96daff3",
+      "runtime_import_count": 2,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:select",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "separator",
+      "path": "components/ui/separator.tsx",
+      "sha256": "sha256:6da346505c8629a4668420d2a5ca48891383bbe0b0ceb14163537c671879427e",
+      "runtime_import_count": 3,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:separator",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "sheet",
+      "path": "components/ui/sheet.tsx",
+      "sha256": "sha256:63863cf2df8f8973e52b3459ac9bdbf81be1262dbc70eb53d5271ffb03488e16",
+      "runtime_import_count": 1,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:sheet",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "sidebar",
+      "path": "components/ui/sidebar.tsx",
+      "sha256": "sha256:2e9a91271c8c2593177e96f3e8f51c49273b4ca2ae4421c8ea11317b0e7625f5",
+      "runtime_import_count": 7,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:sidebar",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "skeleton",
+      "path": "components/ui/skeleton.tsx",
+      "sha256": "sha256:ba48dd5be5a6a1378bd4e011028654b5bf419f1e7d20ee4b9f8330c1264e7239",
+      "runtime_import_count": 1,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:skeleton",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "sonner",
+      "path": "components/ui/sonner.tsx",
+      "sha256": "sha256:13ccc9b0fe4248e622f83a1d3b2f0566b72b5e04162d7d0c8db8945ecc71b55f",
+      "runtime_import_count": 0,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:sonner",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "table",
+      "path": "components/ui/table.tsx",
+      "sha256": "sha256:20e5a7f224959c6b75802995706a97e9da171f693d4b6b1b436388fcd9df96f3",
+      "runtime_import_count": 2,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:table",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "tabs",
+      "path": "components/ui/tabs.tsx",
+      "sha256": "sha256:865d0194331b9b2be36723fa79d3575dc83078b4cb941cafee87cb72fc2cff46",
+      "runtime_import_count": 2,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:tabs",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "toggle-group",
+      "path": "components/ui/toggle-group.tsx",
+      "sha256": "sha256:69f643e889e933f05c1439084480d8646f66a161c7d1cf0730ee926382ade35e",
+      "runtime_import_count": 1,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:toggle-group",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "toggle",
+      "path": "components/ui/toggle.tsx",
+      "sha256": "sha256:ba4d0b0a2b2fee75dc36dfc19e32082e721024b919050c97fd5dc70faa924e16",
+      "runtime_import_count": 1,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:toggle",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    },
+    {
+      "name": "tooltip",
+      "path": "components/ui/tooltip.tsx",
+      "sha256": "sha256:a0784eb77831a799fad7991df4f1b666f876201565a80175e1aa68733574a2e4",
+      "runtime_import_count": 1,
+      "runtime_status": "present-local-copy",
+      "inferred_source": "shadcn/ui",
+      "catalog_identity": "shadcn:tooltip",
+      "provenance_status": "inferred-from-components.json-and-path",
+      "exact_upstream_ref": "",
+      "exact_upstream_source_hash": "",
+      "note": "Local copy-owned source exists, but no install manifest proves which exact upstream payload/ref produced it."
+    }
+  ],
+  "selected_third_party_directories": {
+    "coss": [],
+    "reui": [],
+    "tremor": [],
+    "aceternity": [],
+    "magic-ui": [],
+    "react-bits": [],
+    "ai-elements": [],
+    "kibo-ui": [],
+    "dice-ui": [],
+    "animate-ui": [],
+    "motion-primitives": []
+  },
+  "isolated_starter_cache": {
+    "runtime_imported": false,
+    "entries": 131,
+    "roots": 73,
+    "dependencies": 58,
+    "source_files": 144,
+    "failures": [],
+    "by_source": {
+      "aceternity": {
+        "entries": 7,
+        "files": 7,
+        "roots": 6,
+        "dependencies": 1
+      },
+      "ai-elements": {
+        "entries": 8,
+        "files": 8,
+        "roots": 6,
+        "dependencies": 2
+      },
+      "animate-ui": {
+        "entries": 11,
+        "files": 11,
+        "roots": 3,
+        "dependencies": 8
+      },
+      "coss-origin": {
+        "entries": 2,
+        "files": 2,
+        "roots": 1,
+        "dependencies": 1
+      },
+      "coss": {
+        "entries": 44,
+        "files": 44,
+        "roots": 12,
+        "dependencies": 32
+      },
+      "dice-ui": {
+        "entries": 7,
+        "files": 16,
+        "roots": 3,
+        "dependencies": 4
+      },
+      "kibo-ui": {
+        "entries": 6,
+        "files": 6,
+        "roots": 6,
+        "dependencies": 0
+      },
+      "magic-ui-pro": {
+        "entries": 1,
+        "files": 1,
+        "roots": 1,
+        "dependencies": 0
+      },
+      "magic-ui": {
+        "entries": 7,
+        "files": 7,
+        "roots": 7,
+        "dependencies": 0
+      },
+      "motion-primitives": {
+        "entries": 3,
+        "files": 3,
+        "roots": 3,
+        "dependencies": 0
+      },
+      "react-bits": {
+        "entries": 7,
+        "files": 11,
+        "roots": 7,
+        "dependencies": 0
+      },
+      "reui": {
+        "entries": 16,
+        "files": 16,
+        "roots": 8,
+        "dependencies": 8
+      },
+      "shadcn": {
+        "entries": 3,
+        "files": 3,
+        "roots": 1,
+        "dependencies": 2
+      },
+      "tremor-legacy": {
+        "entries": 1,
+        "files": 1,
+        "roots": 1,
+        "dependencies": 0
+      },
+      "tremor": {
+        "entries": 7,
+        "files": 7,
+        "roots": 7,
+        "dependencies": 0
+      },
+      "tweakcn": {
+        "entries": 1,
+        "files": 1,
+        "roots": 1,
+        "dependencies": 0
+      }
+    },
+    "manifest_path": "docs/frontend/ui-assets/source-cache/manifest.json",
+    "note": "Official public source is cached with hashes for later selection; nothing in this cache is installed into apps/web."
+  },
+  "conclusion": {
+    "catalog_source_downloaded": false,
+    "shadcn_style_local_source_present": true,
+    "third_party_selected_source_present": false,
+    "starter_source_cache_present": true,
+    "next_rule": "When an asset is approved, inspect/download its exact official item payload, store the upstream URL/ref/hash/local path, then mark it vendored or adapted."
+  }
+}

@@ -1,0 +1,729 @@
+- generic [ref=f2e1]:
+  - link "跳到内容" [ref=f2e2] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=f2e3]:
+    - complementary "展厅导航" [ref=f2e4]:
+      - navigation [ref=f2e9]:
+        - button "总览与风格 12" [ref=f2e854] [cursor=pointer]:
+          - generic [ref=f2e12]: 总览与风格
+          - generic [ref=f2e13]: "12"
+        - button "全量清单 5,936" [active] [ref=f2e855] [cursor=pointer]:
+          - generic [ref=f2e16]: 全量清单
+          - generic [ref=f2e17]: 5,936
+        - button "付费替代 2,160" [ref=f2e856] [cursor=pointer]:
+          - generic [ref=f2e20]: 付费替代
+          - generic [ref=f2e21]: 2,160
+        - button "本地源码 93" [ref=f2e857] [cursor=pointer]:
+          - generic [ref=f2e24]: 本地源码
+          - generic [ref=f2e25]: "93"
+        - button "主题展厅 42" [ref=f2e858] [cursor=pointer]:
+          - generic [ref=f2e28]: 主题展厅
+          - generic [ref=f2e29]: "42"
+        - button "新库候选 5" [ref=f2e859] [cursor=pointer]:
+          - generic [ref=f2e32]: 新库候选
+          - generic [ref=f2e33]: "5"
+    - main [ref=f2e35]:
+      - generic [ref=f2e36]: 官方目录快照 · 2026-08-19
+      - text: s c T A
+      - generic [ref=f2e1205]:
+        - generic [ref=f2e1206]:
+          - generic [ref=f2e1207]:
+            - generic [ref=f2e1208]: Complete inventory
+            - heading "全量能力清单" [level=2] [ref=f2e1209]
+          - paragraph [ref=f2e1210]: 搜索名称、分类或能力；按来源、访问状态和类型过滤。每页只渲染 24 项，完整 5,936 项都在本页数据里。
+        - generic [ref=f2e1211]:
+          - generic [ref=f2e1212]:
+            - generic [ref=f2e1213]: 搜索
+            - searchbox "搜索" [ref=f2e1214]
+          - generic [ref=f2e1215]:
+            - generic [ref=f2e1216]: 来源
+            - combobox "来源" [ref=f2e1217]:
+              - option "全部来源"
+              - option "shadcn"
+              - option "coss" [selected]
+              - option "coss-origin"
+              - option "reui"
+              - option "tremor"
+              - option "tremor-legacy"
+              - option "aceternity"
+              - option "magic-ui"
+              - option "magic-ui-pro"
+              - option "react-bits"
+              - option "react-bits-pro"
+              - option "tweakcn"
+          - generic [ref=f2e1218]:
+            - generic [ref=f2e1219]: 访问
+            - combobox "访问" [ref=f2e1220]:
+              - option "全部访问状态" [selected]
+              - option "付费源码"
+              - option "公开元数据"
+              - option "公开源码"
+          - generic [ref=f2e1221]:
+            - generic [ref=f2e1222]: 类型
+            - combobox "类型" [ref=f2e1223]:
+              - option "全部类型" [selected]
+              - option "block"
+              - option "component"
+              - option "font"
+              - option "hook"
+              - option "icon"
+              - option "internal"
+              - option "motion"
+              - option "particle"
+              - option "primitive"
+              - option "style"
+              - option "template"
+              - option "theme"
+              - option "utility"
+        - generic [ref=f2e1224]:
+          - generic [ref=f2e1225]:
+            - strong [ref=f2e1833]: "577"
+            - text: 个匹配
+          - generic [ref=f2e1227]: 点击“免费替代”可展开对比
+        - generic [ref=f2e1228]:
+          - article [ref=f2e1834]:
+            - generic [ref=f2e1835]:
+              - generic [ref=f2e1836]:
+                - generic [ref=f2e1837]: coss / primitive
+                - heading "accordion" [level=3] [ref=f2e1838]
+              - generic [ref=f2e1839]: 公开源码
+            - paragraph [ref=f2e1840]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e1841]:
+              - generic [ref=f2e1842]:
+                - generic [ref=f2e1843]: 分类
+                - generic "primitive" [ref=f2e1844]
+              - generic [ref=f2e1845]:
+                - generic [ref=f2e1846]: 适配
+                - generic [ref=f2e1847]: medium
+              - generic [ref=f2e1848]:
+                - generic [ref=f2e1849]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e1850]
+              - generic [ref=f2e1851]:
+                - generic [ref=f2e1852]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e1853]
+            - generic [ref=f2e1854]:
+              - link "预览 ↗" [ref=f2e1855] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/accordion
+              - link "官方源码 ↗" [ref=f2e1856] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/accordion.json
+          - article [ref=f2e1857]:
+            - generic [ref=f2e1858]:
+              - generic [ref=f2e1859]:
+                - generic [ref=f2e1860]: coss / primitive
+                - heading "alert" [level=3] [ref=f2e1861]
+              - generic [ref=f2e1862]: 公开源码
+            - paragraph [ref=f2e1863]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e1864]:
+              - generic [ref=f2e1865]:
+                - generic [ref=f2e1866]: 分类
+                - generic "primitive" [ref=f2e1867]
+              - generic [ref=f2e1868]:
+                - generic [ref=f2e1869]: 适配
+                - generic [ref=f2e1870]: medium
+              - generic [ref=f2e1871]:
+                - generic [ref=f2e1872]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e1873]
+              - generic [ref=f2e1874]:
+                - generic [ref=f2e1875]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e1876]
+            - generic [ref=f2e1877]:
+              - link "预览 ↗" [ref=f2e1878] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/alert
+              - link "官方源码 ↗" [ref=f2e1879] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/alert.json
+          - article [ref=f2e1880]:
+            - generic [ref=f2e1881]:
+              - generic [ref=f2e1882]:
+                - generic [ref=f2e1883]: coss / primitive
+                - heading "alert-dialog" [level=3] [ref=f2e1884]
+              - generic [ref=f2e1885]: 公开源码
+            - paragraph [ref=f2e1886]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e1887]:
+              - generic [ref=f2e1888]:
+                - generic [ref=f2e1889]: 分类
+                - generic "primitive" [ref=f2e1890]
+              - generic [ref=f2e1891]:
+                - generic [ref=f2e1892]: 适配
+                - generic [ref=f2e1893]: medium
+              - generic [ref=f2e1894]:
+                - generic [ref=f2e1895]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e1896]
+              - generic [ref=f2e1897]:
+                - generic [ref=f2e1898]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e1899]
+            - generic [ref=f2e1900]:
+              - link "预览 ↗" [ref=f2e1901] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/alert-dialog
+              - link "官方源码 ↗" [ref=f2e1902] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/alert-dialog.json
+          - article [ref=f2e1903]:
+            - generic [ref=f2e1904]:
+              - generic [ref=f2e1905]:
+                - generic [ref=f2e1906]: coss / primitive
+                - heading "autocomplete" [level=3] [ref=f2e1907]
+              - generic [ref=f2e1908]: 公开源码
+            - paragraph [ref=f2e1909]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e1910]: 源码已缓存
+            - generic [ref=f2e1912]:
+              - generic [ref=f2e1913]:
+                - generic [ref=f2e1914]: 分类
+                - generic "primitive" [ref=f2e1915]
+              - generic [ref=f2e1916]:
+                - generic [ref=f2e1917]: 适配
+                - generic [ref=f2e1918]: medium
+              - generic [ref=f2e1919]:
+                - generic [ref=f2e1920]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e1921]
+              - generic [ref=f2e1922]:
+                - generic [ref=f2e1923]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e1924]
+            - generic [ref=f2e1925]:
+              - link "预览 ↗" [ref=f2e1926] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/autocomplete
+              - link "官方源码 ↗" [ref=f2e1927] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/autocomplete.json
+              - link "本地源码 ↗" [ref=f2e1928] [cursor=pointer]:
+                - /url: source-cache/coss/autocomplete.json
+          - article [ref=f2e1929]:
+            - generic [ref=f2e1930]:
+              - generic [ref=f2e1931]:
+                - generic [ref=f2e1932]: coss / primitive
+                - heading "avatar" [level=3] [ref=f2e1933]
+              - generic [ref=f2e1934]: 公开源码
+            - paragraph [ref=f2e1935]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e1936]: 源码已缓存
+            - generic [ref=f2e1938]:
+              - generic [ref=f2e1939]:
+                - generic [ref=f2e1940]: 分类
+                - generic "primitive" [ref=f2e1941]
+              - generic [ref=f2e1942]:
+                - generic [ref=f2e1943]: 适配
+                - generic [ref=f2e1944]: medium
+              - generic [ref=f2e1945]:
+                - generic [ref=f2e1946]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e1947]
+              - generic [ref=f2e1948]:
+                - generic [ref=f2e1949]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e1950]
+            - generic [ref=f2e1951]:
+              - link "预览 ↗" [ref=f2e1952] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/avatar
+              - link "官方源码 ↗" [ref=f2e1953] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/avatar.json
+              - link "本地源码 ↗" [ref=f2e1954] [cursor=pointer]:
+                - /url: source-cache/coss/avatar.json
+          - article [ref=f2e1955]:
+            - generic [ref=f2e1956]:
+              - generic [ref=f2e1957]:
+                - generic [ref=f2e1958]: coss / primitive
+                - heading "badge" [level=3] [ref=f2e1959]
+              - generic [ref=f2e1960]: 公开源码
+            - paragraph [ref=f2e1961]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e1962]: 源码已缓存
+            - generic [ref=f2e1964]:
+              - generic [ref=f2e1965]:
+                - generic [ref=f2e1966]: 分类
+                - generic "primitive" [ref=f2e1967]
+              - generic [ref=f2e1968]:
+                - generic [ref=f2e1969]: 适配
+                - generic [ref=f2e1970]: medium
+              - generic [ref=f2e1971]:
+                - generic [ref=f2e1972]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e1973]
+              - generic [ref=f2e1974]:
+                - generic [ref=f2e1975]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e1976]
+            - generic [ref=f2e1977]:
+              - link "预览 ↗" [ref=f2e1978] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/badge
+              - link "官方源码 ↗" [ref=f2e1979] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/badge.json
+              - link "本地源码 ↗" [ref=f2e1980] [cursor=pointer]:
+                - /url: source-cache/coss/badge.json
+          - article [ref=f2e1981]:
+            - generic [ref=f2e1982]:
+              - generic [ref=f2e1983]:
+                - generic [ref=f2e1984]: coss / primitive
+                - heading "breadcrumb" [level=3] [ref=f2e1985]
+              - generic [ref=f2e1986]: 公开源码
+            - paragraph [ref=f2e1987]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e1988]:
+              - generic [ref=f2e1989]:
+                - generic [ref=f2e1990]: 分类
+                - generic "primitive" [ref=f2e1991]
+              - generic [ref=f2e1992]:
+                - generic [ref=f2e1993]: 适配
+                - generic [ref=f2e1994]: medium
+              - generic [ref=f2e1995]:
+                - generic [ref=f2e1996]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e1997]
+              - generic [ref=f2e1998]:
+                - generic [ref=f2e1999]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2000]
+            - generic [ref=f2e2001]:
+              - link "预览 ↗" [ref=f2e2002] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/breadcrumb
+              - link "官方源码 ↗" [ref=f2e2003] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/breadcrumb.json
+          - article [ref=f2e2004]:
+            - generic [ref=f2e2005]:
+              - generic [ref=f2e2006]:
+                - generic [ref=f2e2007]: coss / primitive
+                - heading "button" [level=3] [ref=f2e2008]
+              - generic [ref=f2e2009]: 公开源码
+            - paragraph [ref=f2e2010]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2011]: 源码已缓存
+            - generic [ref=f2e2013]:
+              - generic [ref=f2e2014]:
+                - generic [ref=f2e2015]: 分类
+                - generic "primitive" [ref=f2e2016]
+              - generic [ref=f2e2017]:
+                - generic [ref=f2e2018]: 适配
+                - generic [ref=f2e2019]: medium
+              - generic [ref=f2e2020]:
+                - generic [ref=f2e2021]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2022]
+              - generic [ref=f2e2023]:
+                - generic [ref=f2e2024]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2025]
+            - generic [ref=f2e2026]:
+              - link "预览 ↗" [ref=f2e2027] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/button
+              - link "官方源码 ↗" [ref=f2e2028] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/button.json
+              - link "本地源码 ↗" [ref=f2e2029] [cursor=pointer]:
+                - /url: source-cache/coss/button.json
+          - article [ref=f2e2030]:
+            - generic [ref=f2e2031]:
+              - generic [ref=f2e2032]:
+                - generic [ref=f2e2033]: coss / primitive
+                - heading "calendar" [level=3] [ref=f2e2034]
+              - generic [ref=f2e2035]: 公开源码
+            - paragraph [ref=f2e2036]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2037]: 源码已缓存
+            - generic [ref=f2e2039]:
+              - generic [ref=f2e2040]:
+                - generic [ref=f2e2041]: 分类
+                - generic "primitive" [ref=f2e2042]
+              - generic [ref=f2e2043]:
+                - generic [ref=f2e2044]: 适配
+                - generic [ref=f2e2045]: medium
+              - generic [ref=f2e2046]:
+                - generic [ref=f2e2047]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2048]
+              - generic [ref=f2e2049]:
+                - generic [ref=f2e2050]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2051]
+            - generic [ref=f2e2052]:
+              - link "预览 ↗" [ref=f2e2053] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/calendar
+              - link "官方源码 ↗" [ref=f2e2054] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/calendar.json
+              - link "本地源码 ↗" [ref=f2e2055] [cursor=pointer]:
+                - /url: source-cache/coss/calendar.json
+          - article [ref=f2e2056]:
+            - generic [ref=f2e2057]:
+              - generic [ref=f2e2058]:
+                - generic [ref=f2e2059]: coss / primitive
+                - heading "card" [level=3] [ref=f2e2060]
+              - generic [ref=f2e2061]: 公开源码
+            - paragraph [ref=f2e2062]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2063]: 源码已缓存
+            - generic [ref=f2e2065]:
+              - generic [ref=f2e2066]:
+                - generic [ref=f2e2067]: 分类
+                - generic "primitive" [ref=f2e2068]
+              - generic [ref=f2e2069]:
+                - generic [ref=f2e2070]: 适配
+                - generic [ref=f2e2071]: medium
+              - generic [ref=f2e2072]:
+                - generic [ref=f2e2073]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2074]
+              - generic [ref=f2e2075]:
+                - generic [ref=f2e2076]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2077]
+            - generic [ref=f2e2078]:
+              - link "预览 ↗" [ref=f2e2079] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/card
+              - link "官方源码 ↗" [ref=f2e2080] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/card.json
+              - link "本地源码 ↗" [ref=f2e2081] [cursor=pointer]:
+                - /url: source-cache/coss/card.json
+          - article [ref=f2e2082]:
+            - generic [ref=f2e2083]:
+              - generic [ref=f2e2084]:
+                - generic [ref=f2e2085]: coss / primitive
+                - heading "checkbox" [level=3] [ref=f2e2086]
+              - generic [ref=f2e2087]: 公开源码
+            - paragraph [ref=f2e2088]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2089]: 源码已缓存
+            - generic [ref=f2e2091]:
+              - generic [ref=f2e2092]:
+                - generic [ref=f2e2093]: 分类
+                - generic "primitive" [ref=f2e2094]
+              - generic [ref=f2e2095]:
+                - generic [ref=f2e2096]: 适配
+                - generic [ref=f2e2097]: medium
+              - generic [ref=f2e2098]:
+                - generic [ref=f2e2099]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2100]
+              - generic [ref=f2e2101]:
+                - generic [ref=f2e2102]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2103]
+            - generic [ref=f2e2104]:
+              - link "预览 ↗" [ref=f2e2105] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/checkbox
+              - link "官方源码 ↗" [ref=f2e2106] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/checkbox.json
+              - link "本地源码 ↗" [ref=f2e2107] [cursor=pointer]:
+                - /url: source-cache/coss/checkbox.json
+          - article [ref=f2e2108]:
+            - generic [ref=f2e2109]:
+              - generic [ref=f2e2110]:
+                - generic [ref=f2e2111]: coss / primitive
+                - heading "checkbox-group" [level=3] [ref=f2e2112]
+              - generic [ref=f2e2113]: 公开源码
+            - paragraph [ref=f2e2114]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2115]: 源码已缓存
+            - generic [ref=f2e2117]:
+              - generic [ref=f2e2118]:
+                - generic [ref=f2e2119]: 分类
+                - generic "primitive" [ref=f2e2120]
+              - generic [ref=f2e2121]:
+                - generic [ref=f2e2122]: 适配
+                - generic [ref=f2e2123]: medium
+              - generic [ref=f2e2124]:
+                - generic [ref=f2e2125]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2126]
+              - generic [ref=f2e2127]:
+                - generic [ref=f2e2128]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2129]
+            - generic [ref=f2e2130]:
+              - link "预览 ↗" [ref=f2e2131] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/checkbox-group
+              - link "官方源码 ↗" [ref=f2e2132] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/checkbox-group.json
+              - link "本地源码 ↗" [ref=f2e2133] [cursor=pointer]:
+                - /url: source-cache/coss/checkbox-group.json
+          - article [ref=f2e2134]:
+            - generic [ref=f2e2135]:
+              - generic [ref=f2e2136]:
+                - generic [ref=f2e2137]: coss / primitive
+                - heading "collapsible" [level=3] [ref=f2e2138]
+              - generic [ref=f2e2139]: 公开源码
+            - paragraph [ref=f2e2140]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2141]:
+              - generic [ref=f2e2142]:
+                - generic [ref=f2e2143]: 分类
+                - generic "primitive" [ref=f2e2144]
+              - generic [ref=f2e2145]:
+                - generic [ref=f2e2146]: 适配
+                - generic [ref=f2e2147]: medium
+              - generic [ref=f2e2148]:
+                - generic [ref=f2e2149]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2150]
+              - generic [ref=f2e2151]:
+                - generic [ref=f2e2152]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2153]
+            - generic [ref=f2e2154]:
+              - link "预览 ↗" [ref=f2e2155] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/collapsible
+              - link "官方源码 ↗" [ref=f2e2156] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/collapsible.json
+          - article [ref=f2e2157]:
+            - generic [ref=f2e2158]:
+              - generic [ref=f2e2159]:
+                - generic [ref=f2e2160]: coss / theme
+                - heading "colors-neutral" [level=3] [ref=f2e2161]
+              - generic [ref=f2e2162]: 公开元数据
+            - paragraph [ref=f2e2163]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2164]:
+              - generic [ref=f2e2165]:
+                - generic [ref=f2e2166]: 分类
+                - generic "theme" [ref=f2e2167]
+              - generic [ref=f2e2168]:
+                - generic [ref=f2e2169]: 适配
+                - generic [ref=f2e2170]: medium
+              - generic [ref=f2e2171]:
+                - generic [ref=f2e2172]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2173]
+              - generic [ref=f2e2174]:
+                - generic [ref=f2e2175]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2176]
+            - generic [ref=f2e2177]:
+              - link "预览 ↗" [ref=f2e2178] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs
+              - link "官方入口 ↗" [ref=f2e2179] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/colors-neutral.json
+          - article [ref=f2e2180]:
+            - generic [ref=f2e2181]:
+              - generic [ref=f2e2182]:
+                - generic [ref=f2e2183]: coss / primitive
+                - heading "combobox" [level=3] [ref=f2e2184]
+              - generic [ref=f2e2185]: 公开源码
+            - paragraph [ref=f2e2186]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2187]: 源码已缓存
+            - generic [ref=f2e2189]:
+              - generic [ref=f2e2190]:
+                - generic [ref=f2e2191]: 分类
+                - generic "primitive" [ref=f2e2192]
+              - generic [ref=f2e2193]:
+                - generic [ref=f2e2194]: 适配
+                - generic [ref=f2e2195]: medium
+              - generic [ref=f2e2196]:
+                - generic [ref=f2e2197]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2198]
+              - generic [ref=f2e2199]:
+                - generic [ref=f2e2200]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2201]
+            - generic [ref=f2e2202]:
+              - link "预览 ↗" [ref=f2e2203] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/combobox
+              - link "官方源码 ↗" [ref=f2e2204] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/combobox.json
+              - link "本地源码 ↗" [ref=f2e2205] [cursor=pointer]:
+                - /url: source-cache/coss/combobox.json
+          - article [ref=f2e2206]:
+            - generic [ref=f2e2207]:
+              - generic [ref=f2e2208]:
+                - generic [ref=f2e2209]: coss / primitive
+                - heading "command" [level=3] [ref=f2e2210]
+              - generic [ref=f2e2211]: 公开源码
+            - paragraph [ref=f2e2212]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2213]: 源码已缓存
+            - generic [ref=f2e2215]:
+              - generic [ref=f2e2216]:
+                - generic [ref=f2e2217]: 分类
+                - generic "primitive" [ref=f2e2218]
+              - generic [ref=f2e2219]:
+                - generic [ref=f2e2220]: 适配
+                - generic [ref=f2e2221]: medium
+              - generic [ref=f2e2222]:
+                - generic [ref=f2e2223]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2224]
+              - generic [ref=f2e2225]:
+                - generic [ref=f2e2226]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2227]
+            - generic [ref=f2e2228]:
+              - link "预览 ↗" [ref=f2e2229] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/command
+              - link "官方源码 ↗" [ref=f2e2230] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/command.json
+              - link "本地源码 ↗" [ref=f2e2231] [cursor=pointer]:
+                - /url: source-cache/coss/command.json
+          - article [ref=f2e2232]:
+            - generic [ref=f2e2233]:
+              - generic [ref=f2e2234]:
+                - generic [ref=f2e2235]: coss / primitive
+                - heading "context-menu" [level=3] [ref=f2e2236]
+              - generic [ref=f2e2237]: 公开源码
+            - paragraph [ref=f2e2238]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2239]:
+              - generic [ref=f2e2240]:
+                - generic [ref=f2e2241]: 分类
+                - generic "primitive" [ref=f2e2242]
+              - generic [ref=f2e2243]:
+                - generic [ref=f2e2244]: 适配
+                - generic [ref=f2e2245]: medium
+              - generic [ref=f2e2246]:
+                - generic [ref=f2e2247]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2248]
+              - generic [ref=f2e2249]:
+                - generic [ref=f2e2250]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2251]
+            - generic [ref=f2e2252]:
+              - link "预览 ↗" [ref=f2e2253] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/context-menu
+              - link "官方源码 ↗" [ref=f2e2254] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/context-menu.json
+          - article [ref=f2e2255]:
+            - generic [ref=f2e2256]:
+              - generic [ref=f2e2257]:
+                - generic [ref=f2e2258]: coss / utility
+                - heading "csp-provider" [level=3] [ref=f2e2259]
+              - generic [ref=f2e2260]: 公开源码
+            - paragraph [ref=f2e2261]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2262]:
+              - generic [ref=f2e2263]:
+                - generic [ref=f2e2264]: 分类
+                - generic "utility" [ref=f2e2265]
+              - generic [ref=f2e2266]:
+                - generic [ref=f2e2267]: 适配
+                - generic [ref=f2e2268]: medium
+              - generic [ref=f2e2269]:
+                - generic [ref=f2e2270]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2271]
+              - generic [ref=f2e2272]:
+                - generic [ref=f2e2273]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2274]
+            - generic [ref=f2e2275]:
+              - link "预览 ↗" [ref=f2e2276] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs
+              - link "官方源码 ↗" [ref=f2e2277] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/csp-provider.json
+          - article [ref=f2e2278]:
+            - generic [ref=f2e2279]:
+              - generic [ref=f2e2280]:
+                - generic [ref=f2e2281]: coss / primitive
+                - heading "dialog" [level=3] [ref=f2e2282]
+              - generic [ref=f2e2283]: 公开源码
+            - paragraph [ref=f2e2284]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2285]: 源码已缓存
+            - generic [ref=f2e2287]:
+              - generic [ref=f2e2288]:
+                - generic [ref=f2e2289]: 分类
+                - generic "primitive" [ref=f2e2290]
+              - generic [ref=f2e2291]:
+                - generic [ref=f2e2292]: 适配
+                - generic [ref=f2e2293]: medium
+              - generic [ref=f2e2294]:
+                - generic [ref=f2e2295]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2296]
+              - generic [ref=f2e2297]:
+                - generic [ref=f2e2298]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2299]
+            - generic [ref=f2e2300]:
+              - link "预览 ↗" [ref=f2e2301] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/dialog
+              - link "官方源码 ↗" [ref=f2e2302] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/dialog.json
+              - link "本地源码 ↗" [ref=f2e2303] [cursor=pointer]:
+                - /url: source-cache/coss/dialog.json
+          - article [ref=f2e2304]:
+            - generic [ref=f2e2305]:
+              - generic [ref=f2e2306]:
+                - generic [ref=f2e2307]: coss / utility
+                - heading "direction-provider" [level=3] [ref=f2e2308]
+              - generic [ref=f2e2309]: 公开源码
+            - paragraph [ref=f2e2310]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2311]:
+              - generic [ref=f2e2312]:
+                - generic [ref=f2e2313]: 分类
+                - generic "utility" [ref=f2e2314]
+              - generic [ref=f2e2315]:
+                - generic [ref=f2e2316]: 适配
+                - generic [ref=f2e2317]: medium
+              - generic [ref=f2e2318]:
+                - generic [ref=f2e2319]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2320]
+              - generic [ref=f2e2321]:
+                - generic [ref=f2e2322]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2323]
+            - generic [ref=f2e2324]:
+              - link "预览 ↗" [ref=f2e2325] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs
+              - link "官方源码 ↗" [ref=f2e2326] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/direction-provider.json
+          - article [ref=f2e2327]:
+            - generic [ref=f2e2328]:
+              - generic [ref=f2e2329]:
+                - generic [ref=f2e2330]: coss / primitive
+                - heading "drawer" [level=3] [ref=f2e2331]
+              - generic [ref=f2e2332]: 公开源码
+            - paragraph [ref=f2e2333]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2334]: 源码已缓存
+            - generic [ref=f2e2336]:
+              - generic [ref=f2e2337]:
+                - generic [ref=f2e2338]: 分类
+                - generic "primitive" [ref=f2e2339]
+              - generic [ref=f2e2340]:
+                - generic [ref=f2e2341]: 适配
+                - generic [ref=f2e2342]: medium
+              - generic [ref=f2e2343]:
+                - generic [ref=f2e2344]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2345]
+              - generic [ref=f2e2346]:
+                - generic [ref=f2e2347]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2348]
+            - generic [ref=f2e2349]:
+              - link "预览 ↗" [ref=f2e2350] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/drawer
+              - link "官方源码 ↗" [ref=f2e2351] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/drawer.json
+              - link "本地源码 ↗" [ref=f2e2352] [cursor=pointer]:
+                - /url: source-cache/coss/drawer.json
+          - article [ref=f2e2353]:
+            - generic [ref=f2e2354]:
+              - generic [ref=f2e2355]:
+                - generic [ref=f2e2356]: coss / primitive
+                - heading "empty" [level=3] [ref=f2e2357]
+              - generic [ref=f2e2358]: 公开源码
+            - paragraph [ref=f2e2359]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2360]: 源码已缓存
+            - generic [ref=f2e2362]:
+              - generic [ref=f2e2363]:
+                - generic [ref=f2e2364]: 分类
+                - generic "primitive" [ref=f2e2365]
+              - generic [ref=f2e2366]:
+                - generic [ref=f2e2367]: 适配
+                - generic [ref=f2e2368]: medium
+              - generic [ref=f2e2369]:
+                - generic [ref=f2e2370]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2371]
+              - generic [ref=f2e2372]:
+                - generic [ref=f2e2373]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2374]
+            - generic [ref=f2e2375]:
+              - link "预览 ↗" [ref=f2e2376] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/empty
+              - link "官方源码 ↗" [ref=f2e2377] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/empty.json
+              - link "本地源码 ↗" [ref=f2e2378] [cursor=pointer]:
+                - /url: source-cache/coss/empty.json
+          - article [ref=f2e2379]:
+            - generic [ref=f2e2380]:
+              - generic [ref=f2e2381]:
+                - generic [ref=f2e2382]: coss / primitive
+                - heading "field" [level=3] [ref=f2e2383]
+              - generic [ref=f2e2384]: 公开源码
+            - paragraph [ref=f2e2385]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2386]: 源码已缓存
+            - generic [ref=f2e2388]:
+              - generic [ref=f2e2389]:
+                - generic [ref=f2e2390]: 分类
+                - generic "primitive" [ref=f2e2391]
+              - generic [ref=f2e2392]:
+                - generic [ref=f2e2393]: 适配
+                - generic [ref=f2e2394]: medium
+              - generic [ref=f2e2395]:
+                - generic [ref=f2e2396]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2397]
+              - generic [ref=f2e2398]:
+                - generic [ref=f2e2399]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2400]
+            - generic [ref=f2e2401]:
+              - link "预览 ↗" [ref=f2e2402] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/field
+              - link "官方源码 ↗" [ref=f2e2403] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/field.json
+              - link "本地源码 ↗" [ref=f2e2404] [cursor=pointer]:
+                - /url: source-cache/coss/field.json
+          - article [ref=f2e2405]:
+            - generic [ref=f2e2406]:
+              - generic [ref=f2e2407]:
+                - generic [ref=f2e2408]: coss / primitive
+                - heading "fieldset" [level=3] [ref=f2e2409]
+              - generic [ref=f2e2410]: 公开源码
+            - paragraph [ref=f2e2411]: 官方目录未提供说明；请打开真实预览判断。
+            - generic [ref=f2e2412]:
+              - generic [ref=f2e2413]:
+                - generic [ref=f2e2414]: 分类
+                - generic "primitive" [ref=f2e2415]
+              - generic [ref=f2e2416]:
+                - generic [ref=f2e2417]: 适配
+                - generic [ref=f2e2418]: medium
+              - generic [ref=f2e2419]:
+                - generic [ref=f2e2420]: 底层
+                - generic "Base UI + Tailwind CSS v4" [ref=f2e2421]
+              - generic [ref=f2e2422]:
+                - generic [ref=f2e2423]: 许可证
+                - generic "MIT when sourced from coss apps/ui; verify file path" [ref=f2e2424]
+            - generic [ref=f2e2425]:
+              - link "预览 ↗" [ref=f2e2426] [cursor=pointer]:
+                - /url: https://coss.com/ui/docs/components/fieldset
+              - link "官方源码 ↗" [ref=f2e2427] [cursor=pointer]:
+                - /url: https://coss.com/ui/r/fieldset.json
+        - generic [ref=f2e1829]:
+          - button "上一页" [disabled] [ref=f2e2428]: ←
+          - generic [ref=f2e2429]: 1 / 25
+          - button "下一页" [ref=f2e2430] [cursor=pointer]: →

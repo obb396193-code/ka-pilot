@@ -10,7 +10,7 @@
 
 帮我在 FaaS 环境里测两个接口的网络连通性——就是测从 a1 faas 部署的服务能不能访问这两个内网域名。请在 FaaS 的 daily 环境里实际发 HTTP 请求，把请求和响应（状态码+前200字符body）都贴出来：
 
-测试 1：奇航 get_data（快手账户消耗/转化数据）
+测试 1：启航 get_data（快手账户消耗/转化数据）
 
 curl -s -o /dev/null -w "HTTP %{http_code}\n" \
   "https://qh.alibaba-inc.com/qihang/api/rta_auto/tmp/get_data?resource=account&userId=JULANG_OS_USER_IDENTITY&returnTotalNum=true&pageNum=1&pageSize=1&media=KUAISHOU"

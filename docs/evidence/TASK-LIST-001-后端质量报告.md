@@ -4,7 +4,7 @@
 > 分支：`codex/task-list-001-backend`  
 > 基线：`codex/integration-control@f2adad3`  
 > 代码终态：`891372d`  
-> 状态：implemented + local PostgreSQL verified + Codex self-checked；未合入 root、未部署、未联调真实奇航。
+> 状态：implemented + local PostgreSQL verified + Codex self-checked；未合入 root、未部署、未联调真实启航。
 
 ## 1. 本批实现
 
@@ -63,7 +63,7 @@
 ## 6. 仍未完成与 root 审查重点
 
 1. 本批实现的是后端 `GET /api/v1/tasks`；浏览器 BFF `GET /api/internal/tasks` 与前端页面由唯一前端线/root 整合，本分支没有修改或验证。
-2. 当前读取的是已同步到 PostgreSQL 的任务/账户/Canonical 数据；没有完成真实奇航任务 metadata 的内网网络/身份 trace，不能表述为真实奇航 E2E。
+2. 当前读取的是已同步到 PostgreSQL 的任务/账户/Canonical 数据；没有完成真实启航任务 metadata 的内网网络/身份 trace，不能表述为真实启航 E2E。
 3. 尚未部署内网，也没有用正式 BUC session → BFF → internal headers 跑真实登录链；本地 HTTP 用受控 internal auth fixture 验证。
 4. 请 root/Claude 复核“workspace 内任务 metadata 可见、账户派生事实按 grant 隐藏”的一期权限语义，以及无账户 tuple 工作项默认排除是否符合管理角色预期。
 5. 任务创建、编辑、考核价写入、账户分配、改价和所有媒体执行继续关闭；没有 Runtime/Multica/ChangeSet 写路由。
