@@ -78,3 +78,6 @@ export const targetTypeLabel: Record<string, string> = { unit: "单元", campaig
 // 报告 / 诊断的模板版本标识在界面显中文
 export const schemaLabel: Record<string, string> = { "daily-report/v1": "日报模板 v1", "weekly-report/v1": "周报模板 v1", "task-review/v1": "任务复盘模板 v1", "diagnosis/v1": "诊断模板 v1", "monthly-exec/v1": "月度经营模板 v1" }
 export const schemaText = (key: string) => schemaLabel[key] ?? key
+
+export const exportStatusLabel: Record<string, string> = { queued: "排队中", running: "生成中", done: "已完成", failed: "失败", expired: "已过期" }
+export const exportStatusText = (status: string | null | undefined) => (status ? exportStatusLabel[status] ?? status : "−")

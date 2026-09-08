@@ -26,3 +26,7 @@ export const toolLabel: Record<string, string> = { "query.account_summary": "查
 export type SearchItem = { type: "account" | "task" | "work_item" | "material" | "document"; id: string; label: string; href: string }
 export const searchFixture = search as unknown as Fixture<{ items: SearchItem[]; recent: SearchItem[] }>
 export const searchTypeLabel: Record<SearchItem["type"], string> = { account: "账户", task: "任务", work_item: "工作项", material: "素材", document: "文档" }
+
+// Agent 运行事件 / 建议动作 / 参数类型在界面显中文
+export const runEventKindLabel: Record<string, string> = { run_started: "开始运行", run_finished: "运行结束", diagnosis: "诊断", tool_call: "调用工具", tool_result: "工具返回", error: "出错" }
+export const paramTypeLabel: Record<string, string> = { string: "文本", number: "数字", integer: "整数", boolean: "是否", array: "列表", object: "对象" }
