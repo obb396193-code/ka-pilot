@@ -57,3 +57,5 @@ export * from "./platform-pivot-repository.js";
 export * from "./r014/task-bindings-repository.js";
 // be: internal rule definition and effective target-scope observation.
 export * from "./rule-definition-repository.js";
+// be: same-snapshot rule/metric observation, not a public trigger decision.
+export * from "./rule-evidence-repository.js";
