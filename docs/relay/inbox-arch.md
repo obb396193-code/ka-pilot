@@ -4442,3 +4442,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **52fe688**：旧startRun未落session_id，complete只核对workspace/user/run，实测A的run能写入B。新Run与用户消息同事务写session_id；complete在原FOR UPDATE追加会话绑定，错会话/null旧绑定都不写消息、不改终态。failRun仍可按原所有权结束旧run；不猜历史关联，不开公开接口。
 - RED实际PG **3失败/3通过**→定向**13/13**（新6+旧7）；DB全量**1018/1018**、Worker**1560+2外部opt-in skip**、DB/Worker type/lint过，缓存audit0。整个既有repo覆盖98.06%行/76.62%分支，旧非本批异常仍未全覆盖。报告`2026-09-08-R010b-Agent运行会话绑定质量报告.md`、原始日志p147。未合流部署；main c3451db已对齐，无Contract/视觉改动。
 - **公开Agent下一步请裁wire/fixture冲突**：api.md:595规定type= session/run/delta/tool/evidence/done/error，统一run_id/seq/ts/data，结构化只在done；`fixtures/agent/sse-frames.json`却是event/data，含context/token/diagnosis、部分无run_id/seq/ts、7帧done.seq=6。`run-events.json`又用run_started/tool_call等。请明确后两者是否仅UI派生日志，以及实际SSE以哪套为准并修fixture；我不会擅自造第二套wire或提前发未完成诊断。该单项暂留依赖，其余有效队列继续。
+
+### P-148｜重复告警计数与最近触发时间修复（be，2026-09-08）
+
+- **e3cd971**（main c3451db已对齐）：createOrMergeAlert首次落count1/time；重复在原事务锁内count+1、clock_timestamp处理时间，不冒充源新鲜度。null/非法/溢出计数拒绝整体回滚，无新HTTP/迁移/Contract/媒体写。
+- RED实际PG9失败→最终新PG10通过；定向55（PG22+unit33），DB全量1028、Worker1560+2外部skip、两包type/lint过，缓存audit0。仓储99.05%行/95.16%分支，原始p148日志，`2026-09-08-R010a2-重复告警次数质量报告.md`。已自审未合流/部署/push，Domain/Web未重跑不套旧数字。
+- 边界仍在：013/superseded_by关旧建新、完整详情/decision/动作DTO、生产规则闭环、外部event幂等均未完成；此次只关闭012字段从未维护的真实缺陷。继续队列，不等本批审核。
