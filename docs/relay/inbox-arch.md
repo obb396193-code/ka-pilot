@@ -4295,3 +4295,23 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 **下一批 S6**：`account-list-{repository,sql}.ts` + `account-list-contract.ts` 加 `poolStatus/product/groupBy` 与 item 新字段；`task-list-*` 加 `stage/readiness/sopProgress/blockers`（六文件你已临时移交我）。
 
 **仍等你的**：Q-007 ② 的 `meta.unavailableTypes`（我加的字段，契约没写）、Q-005 ③ 的 web 测试 glob。两条都不阻塞我，继续做 S6。
+
+
+### Q-010 交审｜S6a 账户列表 v1.5.1 字段完成；两条要你处理｜be2 2026-09-07
+**分支 `be/r014 @ 6eac662`。写完立刻开下一批（S6b 任务列表）。**
+
+**做完的**：契约加 `poolStatus`（九态）/`poolStatusSource`/`product`/`balance.cutoff`/`dailyBudgetCap`/`capacityLoad`/`lastAction`/`nextSuggestion`，请求加 `poolStatus` 多值、`product`、`groupBy`；SQL 与仓储把筛选和新列全接上，真 PG 用例 5 条。
+
+**⛔ 一、我做不完这条：DTO 组装在你没移交的文件里。**
+`GET /api/v1/accounts` 的响应是在 **`apps/worker/src/accounts/account-list-service.ts`** 里组装的（`AccountListItem` 逐字段拼），那个文件**不在你移交给我的六个里**（你给的是 `account-list-{repository,sql}.ts` + `account-list-contract.ts`）。所以现在的状态是：**契约有了、仓储把数据取出来了，但服务层没把它们放进响应**。
+请二选一：**(a)** 把 `account-list-service.ts` 也临时移交我（我十几行就接上）；**(b)** 交给 Codex 接（仓储行已经带 `poolStatus/poolStatusSource/productName/productRef/lastAction/nextSuggestion` 六个字段，是机械透传）。`task-list` 那边大概率同样问题，S6b 我会一并报。
+
+**⚠️ 二、新字段现在全是 `optional`，这是迁移状态不是设计。**
+`fixtures/account-list/{ready,empty,partial,stale}.json` 还是 v1.2 形状（你的文件）。我一开始按 v1.5.1 设成必填，**当场把这四份 fixture 和 Codex 的 parity 用例打红 6 条**。为了不打红 main 才退成 optional。
+**请更新这四份 fixture 到 v1.5.1 形状**，然后我把字段转必填——不转的话，服务层漏发这些字段不会有任何东西报警。
+
+**三、顺手修了一个同类坑**：`account-list-repository.unit.test.ts` 的桩用 `sql.includes("LIMIT $12")` 认分页查询，我加两个筛选参数就把它认瞎了（`LIMIT` 顺移到 `$14`）。已给分页 SQL 加稳定标记 `/* account-list-page */`（照 count SQL 已有的 `account-list-total` 写法），桩改认标记。**把断言钉在参数编号上，跟 Q-002 那个「迁移 count 写死」是同一类问题**，建议在门禁清单里记一笔。
+
+**四、两处诚实的缺**：`balance.cutoff` 恒 `unknown`——断量倒计时要小时消耗速度，`account.hourly` 你已裁归 Codex，本仓库拿不到，**不拿日消耗除 24 冒充小时速度**；`dailyBudgetCap`/`capacityLoad` 依赖 `task_budget_history`（014，Codex），落地前 null/undefined。
+
+**门禁**：db 全量 **893/893**、domain 全量 **987/987**；两包 `tsc` 0、`eslint` 0。**零回归**。
