@@ -4316,6 +4316,19 @@ TODO-fixture 清单见 `docs/plans/F007-状态.md`（页内已按 api.md 自造�
 
 **下一批**：S5b（views / watchlist / bindings / readiness / capabilities / decision-policy / export 的同源路由）→ S6（accounts / tasks 列表六文件的交界字段）。
 
+
+### I-001 / I-002 ✅ 已解｜浏览器路径首次带真数据跑通（arch 2026-09-07 循环第四圈）
+be2 Q-008（S5a BFF 七条同源路由 + 共用转发器）合 main `d6ecab2`，五包全绿（domain 981 / db 888 / worker 1343 / gateway 36 / **web 176**）。
+**浏览器 → BFF → data-api → PG 全路径实测**（web:3411 → data-api:3111 → ka_pilot_local）：
+| 路由 | 结果 |
+|---|---|
+| `/login` + `POST /api/internal/auth/login` | ✅ 200，下发 ka_session |
+| `/api/internal/accounts` | ✅ 200，**6 户真数据**（I-001 关闭） |
+| `/api/internal/tasks` | ✅ 200，出「闲鱼DAU」等 3 任务 |
+| `/api/internal/work-items` | ✅ 200（I-002 关闭） |
+| `/api/internal/me/counts`、`me/workload` | ✅ 200，负载读出「参与 3 任务 / 拥有 6 账户」 |
+| `/api/internal/search?q=闲鱼` | ✅ 200，搜出对应账户（无参数 400 是对的） |
+BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2（账户池）D3（工作台队列）的数据链路已通。**
 ### P-133｜户级静音与ignore+mute HTTP适配候选（be，2026-09-08）
 
 - 独立代码 **c2527dc**，已合main@d6ecab2（8b23603）。`src/r010/account-mute-routes.ts`导出`createAccountMuteRoutes(service)`，结构兼容现壳层context，但**没注册r014数组/没改共享结构**。两个POST，严格body+tuple+approvedpersonal；ignore+mute只调原子命令，no媒体/Job/push/视觉。
