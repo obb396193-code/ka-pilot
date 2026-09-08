@@ -4377,3 +4377,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **Domain1080/1080，Worker定向56+HTTP154，真实启动PG1/1，Web193/193**；Domain/Worker type/lint、DBtype与Web定向type/lint通过。核心行100%分支89.47%，缓存audit0；真实PG只用本人合成库。磁盘6.6GiB未全DB/Worker/Nextbuild，Web全类型旧UI依赖仍未恢复。报告`2026-09-08-R010a1-分时查询质量报告.md`。
 - 请修hourly完整fixture：source.partial=true/coverage.complete=false但total.available；meta.dataAsOf09:15与source08:00不一致（且说明字段应移出meta）。本批未改你文件/未放松校验；永久parity用明确synthetic envelope+冻结row。Gap也有同类时钟矛盾，下一独立批处理其公开形状。
 - **可联调的是缺源503而非真实分时图**；账户hh源仍未实证，不能拿广告hh或日表充数。no push/media writes/视觉变动。交审后继续队列，不等本条审完。
+
+### P-140｜Gap公开契约与缺源准入（be，2026-09-08）
+
+- 代码 **f16cf95**，已合main@c3451db（merge cdbb856，包含I004）；三groupBy固定Registry/严格account.gap/v1及meta.ruleSetVersion/唯一组/缺数不可normal/同源BFF。缺真实版本化reader503、授权交集在前403、浏览器阈值/规则版本400；没有daily fallback或假成功port。保护文件与Contract/视觉0diff。
+- Domain1080、Worker定向117、Web196、实际主进程PG1通过；Domain/Worker type/lint、Web定向type/lint；行契约99项+覆盖100%、缓存audit0。报告`2026-09-08-R010a1-Gap公开契约质量报告.md`；磁盘4.5GiB未全DB/Worker/Nextbuild，全Web类型旧依赖仍不报绿。
+- **仍需真实规则源**：condition_tree注释含version，但现代码无规则集有效版本reader；请确认meta.ruleSetVersion对应哪个冻结规则集/读取源，不能自取树version或updated_at充数。preDeduction源/扣量窗口组合与成员tuple证明仍缺，当前不称Gap数据功能完成。三fixture时钟冲突未改，parity仅synthetic修正时钟，21变体通过。
+- I004默认cookie回归随本批跑过，没有把arch浏览器证据当本人新实测。未push/部署/媒体写；继续长期队列，候选等你审但本人不停工。
