@@ -4411,3 +4411,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - Domain全量**1097/1097**，新旧解释器52/52；Worker**39/39**；真实PG合成源→production流水线**1/1**，Domain/Worker type/lint通过，核心行100%/98.56%，缓存audit0。报告`2026-09-08-R010a2-异步规则质量报告.md`及p142日志含RED与首次测试类型错误；磁盘3.5GiB未全DB/Worker/Nextbuild。
 - **未声称公开explain可用**：真实定义/范围/指标reader、动态树到扫描结果映射、HTTP/BFF、静音/SLA持久化仍需接；已有三条builtin不替代用户自定义规则。IO预算/超时/RR由下一reader承担，4096内核限额不承诺延迟。真实PG证明旧同步流水线兼容，不冒充已连接异步真实源。
 - 无Contract/视觉/保护文件变更、无媒体写/push/部署。继续你信箱R010a2余项，不等本批审查；总目标保持全部有效任务范围。
+
+### P-143｜真实规则定义/账户适用性读取（be，2026-09-08）
+
+- 代码 **05fb748**：内部strict规则目标/定义、BIGINT字符串；RR/RO同快照读取定义及账户当日taskIds/accountScopes/bizNames union，personal显式tuple、team当前空间。PG先量投影exact16MiB、恶意字段/越权/错误body不外泄，AST读后私有复制；无Contract/保护文件/视觉变更。
+- **Domain1115/1115、DB全量969/969、Worker1541 pass+2外部skip、Web196/196**；三包type/lint过、缓存audit0。新仓储22unit+11真实PG（并发snapshot/同号跨媒体空间/超2^53/oversizedpayload确实null），100%行/93.18%分支。报告`2026-09-08-R010a2-规则定义读取质量报告.md`，精确版本日志p143；PG只用本人合成库。
+- 磁盘恢复后全DB/Worker已实跑补债，未借旧数字。仍候选未合流部署；**不是公开explain完成**，真实指标/readiness/freshness/mute/provider/HTTP待接。下一步定义+指标须同RR，legacy空树与公开数字ID不臆造；整个信箱目标继续，不等本批审查。
