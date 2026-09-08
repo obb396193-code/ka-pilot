@@ -83,3 +83,5 @@ export * from "./rule-daily-evidence.js";
 export * from "./agent-model-catalog.js";
 // be: strict admin calendar read DTO.
 export * from "./admin-calendar.js";
+// be: workspace member and grant read DTOs.
+export * from "./admin-members.js";

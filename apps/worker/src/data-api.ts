@@ -3,6 +3,7 @@ import {
   AccountMuteRepository,
   AgentModelCatalogRepository,
   AdminCalendarRepository,
+  AdminMembersRepository,
   ChangeSetRepository,
   AuthSessionRepository,
   createPool,
@@ -34,6 +35,7 @@ import { ChangeSetDryRunService } from "./changesets/dry-run-service.js";
 import { AccountMuteService } from "./work-items/account-mute-service.js";
 import { AgentModelCatalogService } from "./agent/model-catalog-service.js";
 import { AdminCalendarService } from "./admin/calendar-service.js";
+import { AdminMembersService } from "./admin/members-service.js";
 // be2-r014：把 R-014 的路由注册进 arch 开的缝（routes.ts）。壳层只认这个数组，不认识具体路径。
 import { createAccountRoutes } from "./r014/account-routes.js";
 import { createMeRoutes } from "./r014/me-routes.js";
@@ -73,6 +75,7 @@ async function main(): Promise<void> {
     accountMuteService: new AccountMuteService(new AccountMuteRepository(pool)),
     agentModelCatalogService: new AgentModelCatalogService(new AgentModelCatalogRepository(pool)),
     adminCalendarService: new AdminCalendarService(new AdminCalendarRepository(pool)),
+    adminMembersService: new AdminMembersService(new AdminMembersRepository(pool)),
     detailService: new ReadDetailService({
       workItems: new WorkItemRepository(pool),
       changeSets: new ChangeSetRepository(pool),

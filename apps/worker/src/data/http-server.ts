@@ -69,6 +69,8 @@ import type { AgentModelCatalogService } from "../agent/model-catalog-service.js
 import { createAgentModelRoute } from "../r010/agent-model-routes.js";
 import type { AdminCalendarService } from "../admin/calendar-service.js";
 import { createAdminCalendarRoute } from "../r010/admin-calendar-route.js";
+import type { AdminMembersService } from "../admin/members-service.js";
+import { createAdminMembersRoutes } from "../r010/admin-members-routes.js";
 
 
 // arch 开的缝：R-014 路由由 be2 在 src/r014/routes.ts 注册
@@ -91,6 +93,7 @@ export interface DataApiServerOptions {
   accountMuteService?: Pick<AccountMuteService, "mute" | "ignoreAndMute">;
   agentModelCatalogService?: Pick<AgentModelCatalogService, "list">;
   adminCalendarService?: Pick<AdminCalendarService, "list">;
+  adminMembersService?: Pick<AdminMembersService, "read">;
 }
 
 export type { ServerDataSourcePolicy as DataQueryAccessPolicy } from "./data-source-routing.js";
@@ -301,6 +304,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
   const accountMuteRoutes = createAccountMuteRoutes(options.accountMuteService);
   const agentModelRoute = createAgentModelRoute(options.agentModelCatalogService);
   const adminCalendarRoute = createAdminCalendarRoute(options.adminCalendarService);
+  const adminMembersRoute = createAdminMembersRoutes(options.adminMembersService);
 
   return createServer(async (request, response) => {
     const requestId = resolveRequestId(header(request, REQUEST_ID_HEADER));
@@ -394,6 +398,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       const accountMuteRoute = accountMuteRoutes.find(route => route.matches(url.pathname));
       const isAgentModelRoute = agentModelRoute.matches(url.pathname);
       const isAdminCalendarRoute = adminCalendarRoute.matches(url.pathname);
+      const isAdminMembersRoute = adminMembersRoute.matches(url.pathname);
       // arch 开的缝：R-014 由 be2 在 src/r014/routes.ts 注册，壳层不认识具体路径，只问一句归不归它。
       const r014Route = findR014Route(url.pathname);
       if (
@@ -408,6 +413,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
         accountMuteRoute === undefined &&
         !isAgentModelRoute &&
         !isAdminCalendarRoute &&
+        !isAdminMembersRoute &&
         r014Route === null
       ) {
         sendJson(
@@ -448,7 +454,7 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
           sendJson(response, taskListHttpStatus(result), result, requestId);
           return;
         }
-        if (resolvedDetailRoute !== null || r014Route !== null || isDryRunRoute || accountMuteRoute !== undefined || isAgentModelRoute || isAdminCalendarRoute) {
+        if (resolvedDetailRoute !== null || r014Route !== null || isDryRunRoute || accountMuteRoute !== undefined || isAgentModelRoute || isAdminCalendarRoute || isAdminMembersRoute) {
           sendJson(
             response,
             401,
@@ -472,6 +478,10 @@ export function createDataApiServer(options: DataApiServerOptions): Server {
       }
       if (isAdminCalendarRoute) {
         await adminCalendarRoute.handle({ request, response, url, auth: authentication.auth, requestId, maxResponseBytes });
+        return;
+      }
+      if (isAdminMembersRoute) {
+        await adminMembersRoute.handle({ request, response, url, auth: authentication.auth, requestId, maxResponseBytes });
         return;
       }
       if (accountMuteRoute !== undefined) {

@@ -63,3 +63,5 @@ export * from "./rule-evidence-repository.js";
 export * from "./agent-model-catalog-repository.js";
 // be: workspace-scoped readonly calendar.
 export * from "./admin-calendar-repository.js";
+// be: server-approved workspace member/grant reads.
+export * from "./admin-members-repository.js";
