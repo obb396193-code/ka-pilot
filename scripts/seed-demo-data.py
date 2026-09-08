@@ -124,8 +124,10 @@ cs = sql(f"""INSERT INTO changesets(workspace_id,work_item_id,media,account_id,t
   SELECT '{WS_P}', id, 'KUAISHOU','account-2','出价下调 5%（试运行草稿）','draft','{USER}','{USER}', now()+interval '2 hours','cpa_over_target'
   FROM work_items WHERE workspace_id='{WS_P}' AND severity='P0' LIMIT 1 RETURNING id""")
 csid = [l for l in cs.strip().split("\n") if "-" in l][-1].strip()
-for tt,tid,field,fv,tv in [("unit","unit-8801","bid","40","38"),("unit","unit-8802","bid","42","39"),("account","account-2","daily_budget","3000","3600")]:
-    sql(f"INSERT INTO changeset_items(changeset_id,workspace_id,media,account_id,target_type,target_id,field,from_value,to_value) VALUES('{csid}','{WS_P}','KUAISHOU','account-2','{tt}','{tid}','{field}','{fv}','{tv}')")
+# v1.3 起 from/to 是带类型 JSON（{type,value}），裸数字过不了 preflightDraftItemsSchema（联调实测 500）
+for tt,tid,field,fv,tv in [("unit","unit-8801","bid",40,38),("unit","unit-8802","bid",42,39),("account","account-2","daily_budget",3000,3600)]:
+    fj=json.dumps({"type":"number","value":fv}); tj=json.dumps({"type":"number","value":tv})
+    sql(f"INSERT INTO changeset_items(changeset_id,workspace_id,media,account_id,target_type,target_id,field,from_value,to_value) VALUES('{csid}','{WS_P}','KUAISHOU','account-2','{tt}','{tid}','{field}','{fj}'::jsonb,'{tj}'::jsonb)")
 print("   变更集草稿 1 个（3 明细，挂 P0 工作项）")
 
 # ---------- ⑤ 账户授权（没有这一步接口一律返 0 行：账户级授权是硬门）----------

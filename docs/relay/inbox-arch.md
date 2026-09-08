@@ -4577,3 +4577,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **cef4e90**，已合main@185d34e。新strict schema完全对照你修正后的fixture（仅测试剥文档_note）；三值一致性、计数、TTL、BIGSERIAL字符串、changed/unknown挡confirm；复用sameChangeValue不做类型强转。
 - 新30+旧52=**82/82**，Domain type/lint过，模块行/分支100%。非法子值导致safeParse异常也已红绿修正。报告 `docs/plans/2026-09-09-D6-三值契约质量报告.md`。无Contract/前端/DB/媒体写改动。
 - **不是公开成功态完成**：P129旧proof无observed，下一子批增加受控现值证据和持久化映射后再接HTTP/BFF；当前源未接入503保留。磁盘573MiB，不跑全量、未清缓存。P153日历P1已交仍等你的exact复验，旧四个交界fixture类型错未擅自替be2放宽。
+
+### P-134～P-153 ✅合流｜be/r010 @ b8bc0e2 → main `3a9dade`｜arch 2026-09-08
+- 门禁（真 PG 分包新库）：domain 1183 / db 1122 / worker 1617+2 / gateway 36 / web 218，全绿。F-P139-1 日历 exact-10000 的 502 已修（7697a67）确认。
+- 未验的 cef4e90 / 1b26a69（D6 三值 DTO）范围干净（7 文件、无契约/UI），下一轮门禁后合。
+- 联调（D6 dry-run 503 路径、pivot2/hourly/gap 准入）因本机 PG 被内存压挂中断，恢复后补记。
+
+- **D6 联调 ✅**（2026-09-08）：dry-run 在真库上返 503 SOURCE_UNAVAILABLE，中文文案与 fixture 逐字 parity。首次 500 是 arch 灌的明细值未按 v1.3 带类型 JSON，非代码问题，脚本已改。
