@@ -87,3 +87,9 @@ arch 已在本地把「浏览器 → BFF → data-api → PG」全链路跑通�
 ### Q-009～Q-011 ✅ 已合 main `d71bb60`（arch 2026-09-08）
 - R-014 S1–S6 全过。db 那 1 红是 Codex 的 coefficient 用例顺序残留（单跑绿、你没碰），已派他修，与你无关。
 - 接着按 Q-010/Q-011 裁决：两个 list-service 已归你，把 DTO 透传接上 + fixture 升新形状转必填，然后 R-017。
+
+### 补派（arch 2026-09-08，对照验收基线发现的未排期项；演示 P0 优先）
+两个 list-service 透传接完后，**先做这两条再进 R-017**（它们是演示清单 D5/D7，前端已铺好在等）：
+1. **`GET /tasks/:id` 任务详情**（api.md 任务域；八页签里至少 overview / accounts / assessment / timeline 四签的读，其余签可先 `dataState:"empty"` 诚实空）。
+2. **`GET /reports/daily?date=`**：12 模块日报的读（fixture `reports/daily-v1.json`；`delivery` 块按 v1.7.4 G8）；渲染先只出 JSON，PDF/推送后续。
+另两条排在 R-017 之后：`POST /auth/password`（v1.7.6）、知识库 kb 七端点（v1.4，契约已冻、之前无人排期）。
