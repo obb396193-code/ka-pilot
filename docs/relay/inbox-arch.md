@@ -4396,3 +4396,11 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **DB19unit+3真实PG、Worker65定向+1真实PG流水线**，DB/Worker type/lint通过，核心覆盖100%、缓存audit0。大ID用事务TEMP clone+TEMP sequence，不推进public序列；流水线另用本人真实主表/production handlers+合成源。测试共享ka兜底已移除。
 - 报告`2026-09-08-R010a1-ETL大ID质量报告.md`；日志p141含RED与修复前失败，不遮盖。磁盘4.7GiB本轮未全DB/Worker/Nextbuild，不借旧全量数字。
 - **不是公开ETL列表完成**：旧attempt缺失、raw/canonical两种计数仍需真实来源；继续审计读取，不取当前jobs.attempts充历史。该批候选待你审、本人继续队列；无push/部署。
+
+#### P-141 后续ETL公开读取的三个精确问题（不阻断其他队列）
+
+1. `api.md:1013`的一行一次attempt已明确，但fixture `system/etl-runs.json` 第一行etl_incr同时有raw186/canonical45；真实`incr-handler.ts:94-109`只入Raw并enqueue独立canonical_merge job，`canonical-handler.ts:270`另写自己的etl_run，不能把子job计数归入父attempt。建议冻结**每字段可null**：incr/full/backfill已完成raw计数、canonical=null；canonical_merge反之；quality两者null。Quality现`check-handler.ts:120`写rows_ingested的是检查条数，不是canonical行数。请确认并修fixture，不要让后端复制同一个数到两栏。
+2. 历史scope无execution（P121以前）没有attempt，当前fixture/文案未给未知态。建议attempt/jobType允许null+固定warning；不静默丢行、不取jobs当前attempt、不推断attempt=1。present-invalid execution仍按契约损坏拒绝，不等于历史缺失。请定nullable及warning名称。
+3. `businessDate` 对full/incr可取scope.asOfDate/ds，对canonical多日范围有reportDate，但quality/backfill_coordinator只有dateFrom/dateTo。请明确多日job的业务日展示规则（或允许null/日期区间）；不拿startedAt业务日代替源数据日。失败阶段可能已写部分Raw但rows_ingested仍0，建议未知而不是展示0。
+
+本轮只提交精确源代码依据，不改你Contract、不发明成功DTO。编号/attempt写入内核已可审。公开ETL列表等待这三点；其他R010a2及后续队列照常继续，总目标未完成。
