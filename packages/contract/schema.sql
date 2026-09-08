@@ -1130,3 +1130,15 @@ CREATE TABLE account_name_parses (     -- 每个账户昵称的解析结果与�
   FOREIGN KEY (workspace_id, media, account_id)
     REFERENCES accounts(workspace_id, media, account_id) ON DELETE CASCADE
 );
+
+-- ===== v1.9（2026-09-07 arch；be2 九条缺口裁决；并入 migration 018 = R-017） =====
+ALTER TABLE account_access_grants ADD COLUMN revoked_at TIMESTAMPTZ;   -- A7 交接：置位保留审计，不删行
+ALTER TABLE account_access_grants ADD COLUMN revoked_by UUID;
+ALTER TABLE alert_rules ADD COLUMN bound_at TIMESTAMPTZ;               -- 规则绑定时间；列落地前 DTO 允许 null
+CREATE TABLE pool_status_daily_snapshot (  -- 账户池九态每日快照，供 deltaVsYesterday
+  workspace_id UUID NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,
+  ds DATE NOT NULL, pool_status TEXT NOT NULL,
+  PRIMARY KEY (workspace_id, media, account_id, ds),
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE CASCADE
+);
