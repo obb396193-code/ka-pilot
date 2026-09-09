@@ -96,3 +96,6 @@ export * from "./r014/account-transfer-contract.js";
 export * from "./r014/kb-contract.js";
 // be: private operator Qihang identity binding, never an HTTP auth context.
 export * from "./qihang-identity-seed.js";
+export * from "./etl-batch-failure.js";
+// be: F-P179 frozen attempt-list response; runtime/API wiring remains separate.
+export * from "./etl-run-list.js";

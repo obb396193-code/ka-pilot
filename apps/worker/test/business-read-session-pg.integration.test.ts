@@ -237,9 +237,9 @@ describe.each([false, true])("Session-backed business reads with PostgreSQL (KA 
           },
         },
         changeSets: {
-          find: async (workspaceId, changeSetId) => {
+          find: async (workspaceId, changeSetId, auth) => {
             sourceCalls.changeSetDetail += 1;
-            return changeSetRepository.find(workspaceId, changeSetId);
+            return changeSetRepository.find(workspaceId, changeSetId, auth);
           },
         },
       }),

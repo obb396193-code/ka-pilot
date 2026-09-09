@@ -4,7 +4,9 @@ import {
 } from "@ka/domain";
 import type { Pool } from "pg";
 
-import { R014RepositoryError, approveAuth } from "./workspace-authority.js";
+import {
+  R014RepositoryError, accountScopeParams, approveAuth, workItemScopeClause,
+} from "./workspace-authority.js";
 
 /**
  * v1.7.4 G6 全局搜索：五类、每类 ≤5、**无 LLM**（纯 ILIKE 包含匹配）。
@@ -110,11 +112,14 @@ export class SearchRepository {
 
   /** 路由用 v1.7.6 正名后的 `/work-items/[id]`；fixture 里的 `/?tab=today&item=` 是改名前的写法。 */
   private async workItems(auth: ApprovedWorkspaceAuthContext, pattern: string): Promise<SearchItem[]> {
+    const scope = accountScopeParams(auth);
     const result = await this.pool.query(
       `SELECT id, title, severity, status FROM work_items
        WHERE workspace_id=$1 AND coalesce(title,'') ILIKE $2 ESCAPE '\\'
+         -- 工作项标题里常带账户名与成本；不收口等于把别人的经营数据做成可搜索索引。
+         AND ${workItemScopeClause("$3", "$4", "work_items")}
        ORDER BY created_at DESC LIMIT ${SEARCH_LIMIT_PER_TYPE}`,
-      [auth.workspaceId, pattern],
+      [auth.workspaceId, pattern, scope.kind, scope.allowed],
     );
     return (result.rows as Record<string, unknown>[]).map((row) => ({
       type: "work_item" as const,

@@ -13,7 +13,7 @@ describe("protocol retry diagnostics through real full handler / PG jobs", () =>
     const databaseUrl = process.env.TEST_DATABASE_URL;
     if (!databaseUrl) throw new Error("Explicit isolated TEST_DATABASE_URL required");
     const url = new URL(databaseUrl);
-    if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_be_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated local be test DB required");
+    if (!["localhost", "127.0.0.1"].includes(url.hostname) || url.port !== "55432" || !/^\/ka_[a-z0-9_]+_test$/.test(url.pathname)) throw new Error("Dedicated local test DB required");
     await runMigrations({ databaseUrl }); pool = new Pool({ connectionString: databaseUrl });
     await pool.query("INSERT INTO workspaces(id,name) VALUES($1,'synthetic protocol retry')", [workspaceId]);
   });
@@ -24,7 +24,7 @@ describe("protocol retry diagnostics through real full handler / PG jobs", () =>
     }
     await pool.end();
   });
-  it("persists safe exhausted request detail, retains the job for retry, then leases the same job successfully", async () => {
+  it.each([0, 60_000])("persists safe exhausted request detail and retries the same job (host clock lead %sms)", async hostClockLeadMs => {
     const jobs = new JobRepository(pool, { workspaceId, jobTypes: ["etl_full"] });
     const runs = new EtlRunRepository(pool), raw = new RawMetricsRepository(pool);
     const fetchFn = vi.fn(async (input: string | URL | Request) => {
@@ -39,7 +39,8 @@ describe("protocol retry diagnostics through real full handler / PG jobs", () =>
       syncAccountMetadataAndRaw: raw.syncAccountMetadataAndRaw.bind(raw),
     } });
     // Tests the real handler/queue error channel, not credential resolution (synthetic runtime-only identity).
-    const consumer = new JobConsumer(jobs, { etl_full: job => full({ ...job, payload: { ...job.payload, userId: "synthetic-private-user" } }) }, { retryBaseMs: 0 });
+    const consumer = new JobConsumer(jobs, { etl_full: job => full({ ...job, payload: { ...job.payload, userId: "synthetic-private-user" } }) },
+      { retryBaseMs: 0, now: () => new Date(Date.now() + hostClockLeadMs) });
     const id = await jobs.enqueue({ workspaceId, jobType: "etl_full", credentialOwnerUserId: null, maxAttempts: 3,
       payload: { workspaceId, accountIds: ["synthetic-account"], media: "KUAISHOU", asOfDate: "2026-09-09", realtimeDays: 1 } });
     expect(await consumer.processOnce()).toBe(true);
@@ -50,6 +51,18 @@ describe("protocol retry diagnostics through real full handler / PG jobs", () =>
     expect(failure.last_error).not.toMatch(/synthetic-private-user|synthetic-credential|<html>/);
     const attempt = (await pool.query("SELECT status,step_failed,error_summary FROM etl_runs WHERE job_id=$1", [id])).rows[0];
     expect(attempt).toMatchObject({ status: "failed", step_failed: "fetch:account_page_1", error_summary: failure.last_error });
+    if (hostClockLeadMs > 0) {
+      // retryAt uses the injected process clock, while lease eligibility uses PG.
+      // A future retry must remain queued, not be forcibly executed early.
+      expect(await consumer.processOnce()).toBe(false);
+      expect(fetchFn).toHaveBeenCalledTimes(4);
+      expect((await pool.query("SELECT status,attempts,run_after>clock_timestamp() AS future FROM jobs WHERE id=$1", [id])).rows[0])
+        .toEqual({ status: "queued", attempts: 1, future: true });
+    }
+    // Simulate elapsed retry delay on the SAME clock as the real SQL lease,
+    // rather than assuming Docker PG and the Node host have identical clocks.
+    expect((await pool.query(`UPDATE jobs SET run_after=clock_timestamp()-interval '1 second'
+      WHERE id=$1 AND workspace_id=$2 AND status='queued' AND attempts=1`, [id, workspaceId])).rowCount).toBe(1);
     expect(await consumer.processOnce()).toBe(true);
     expect((await pool.query("SELECT status,attempts,last_error FROM jobs WHERE id=$1", [id])).rows[0])
       .toEqual({ status: "done", attempts: 2, last_error: null });

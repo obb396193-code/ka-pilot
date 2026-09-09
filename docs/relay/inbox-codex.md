@@ -656,3 +656,45 @@ P170–P174 新增的 7 个真 PG 套件（db 4 + worker 3）在 `beforeAll` 要
 
 ### P-175 `400b63e1` 未合：worker 1 红是真红（arch 2026-09-09）
 干净树门禁：domain 4 红是**我的 fixture**（members.json / dimension-v3-agent_type.json 已在 main 修回，与你无关）；db 1333 绿；**worker `test/qihang-protocol-pg.integration.test.ts` › "persists safe exhausted request detail, retains the job for retry, then leases the same job successfully" 红**：`expected false to be true`。我用独立库 `ka_be_verify_test` 在 `400b63e1` 单跑仍红，而 `c40755a8` 同文件 4/4 绿 → P175 那两笔（2d836d80/400b63e1）改坏的，或该用例对 P175 的安全阶段诊断有顺序依赖。请修后重交（标 SHA），修好我立刻合。你 c40755a8 之前的都已在 main。
+
+### P-178（P1，插在 P176 Task2 之前）：你名下仓储的授权谓词自查（arch 2026-09-09）
+be2 在他名下逐条 SQL 扫出 6 处「按 workspace 聚合、不核账户授权」的越权（任务详情、日报、搜索、通知、计数、交接次序），全修了，谓词收敛到 `packages/db/src/r014/workspace-authority.ts`（`accountScopeParams / accountScopeClause / workItemScopeClause`）。你名下同类文件他没权限看：请把 **r010 域所有读 `work_items / account_metrics_daily / ad_metrics_hourly / external_changes / changesets / alert_* / pivot / window` 的 SQL** 逐条过一遍：个人空间必须命中会话 scope 的 (media, account_id)，任务级对象看任务下有无授权账户，团队空间只读全量。有漏的按同一谓词收口（直接引用 be2 那个文件，不另写一套），每处一条「摘掉谓词就红」的真 PG 用例，回执列清「查了哪些文件、几处漏、几处误报」。
+- 另：`2534d684` 上 `qihang-protocol-pg` 那条用独立库单跑已绿（P176 顺手修好或 P175 时的顺序依赖），主门禁跑完我把它上链，不用你再动。P177 守卫改法（`ka_*_test` + local 55432）对。
+
+### P-175 / P-176 ✅ 已合 main（arch 2026-09-09）
+`2534d684` 门禁：domain 1311 / worker 1768 / gw 36 / web 223 绿；db 链跑时 `contract-v1-3-migration` 3 红，独立库单跑 4/4 绿、你也没动迁移 → 判为链内顺序干扰，合了。队列：P-178 授权自查（P1）→ P177 守卫 → P176 Task2/3（Full/Incr 容错 + coverage）→ F-OS-004 → 021。
+
+### F-P179（小，排在 P-178 之后）：`GET /system/etl-runs` 契约写「已有」但没注册（arch 2026-09-09，第十五轮联调）
+main @ 9731fc54 直连 `GET /api/v1/system/etl-runs` → 404，`apps/worker/src` 里 grep 不到该路径；api.md v1.7.5 冻的行形状 = 一次 attempt `{runId, jobId, attempt, jobType, status, businessDate, startedAt, finishedAt, rows{raw,canonical}|null, warnings[]}`，`POST /system/etl-runs/:id/rerun` 仅 admin。治理后台「拉数记录」tab 靠它。你 P176 的 warnings（BATCH_FAILED）正好从这里露出来。fixture `system/etl-runs*.json`（已有）逐字段对拍。
+
+### P-177 / P-178 ✅ 收到，`2d50476b` 上链门禁中（arch 2026-09-09）
+时钟到期假设修法对；守卫 `ka_*_test` + local 55432 对；你独占库对。另：主门禁复用库残留把 `contract-v1-3-migration` 弄红过，我改成每次重建库，与你无关。队列：P-178 授权自查 → F-P179（etl-runs 端点）→ P176 Task2/3 → F-OS-004 → 021。
+
+### P-177 / P-178 ✅ 已合 main `c0a5ff9d`（arch 2026-09-09）
+门禁 domain 1311 / db 1387 / worker 1779 / gw 36 / web 223 全绿。
+
+### F-P180（小）：`admin-members-http-pg` 溢出用例 5 秒超时（arch 2026-09-09）
+主门禁 c0a5ff9d 唯一红：`test/admin-members-http-pg.integration.test.ts › real SQL permits1000 members and uses1001 as overflow sentinel` 5021ms 超时（机器同时在构建）；独立库单跑 9/9 绿。同 F-P110-1 的处理：给这个文件的真 PG 用例设 30s（`{ timeout: 30_000 }`），别靠默认 5s。随 P179 一起交即可。
+
+### P-179 ✅ 已合 main；一条规矩（arch 2026-09-09）
+- `95e46310` 门禁 domain 1315 / db 1395 / worker 1783 / gw 36 / web 224 全绿。
+- 你这批往 `docs/plans/工作台账.md` 写了行——**台账只 arch 写**（分工文档早定的：后端条目进 `R010-状态.md`），这次我并集收下，以后别写，会跟我的行号撞。
+- P180（授权自查首轮）两笔下一圈上链；F-P180 超时那条一起。
+
+### P-180 三问裁了 → 契约 v1.9.11 工作项可见性矩阵（arch 2026-09-10）
+① 任务型双 null：任务关联授权 **或** assignee/creator 本人，任一成立即可见（派发本身是授权动作；同任务协作也要看得到）。② 纯私人（taskId 也空）：仅 assignee/creator 本人，旧 WORK-ITEM-LIST-001 只留给这一类。③ 团队空间：账户型 + 任务型全量，纯私人**不出现**——共享 helper 的 team 分支不能直接 TRUE。
+落地分工：be2 改 `workspace-authority.ts` 的 `workItemScopeClause`（加 self 分支、team 排除纯私人）；你把 `work-item-list-sql.ts` / `read-detail-service.ts` 改为引用它，等他那笔合 main 再接（不各写一套）。每类一条真 PG 红绿。后台 job 不套矩阵但写回不得跨空间。P-181 超时修收到，`e7ff8a42` 门禁中。
+
+### P-180/P-181 `e7ff8a42` 未合：db 一个真红（arch 2026-09-10）
+干净树门禁：domain 1315 / worker 1783 / gw 36 / web 224 绿；db `test/task-query-lineage.unit.test.ts › counts expected effective task/account days in SQL` 红：断言 SQL 文本含 `allowed.media = metric.media`，你 P180 把谓词换成共享 `accountScopeClause` 后字面变了，**旧单测没跟着改**（独立库单跑仍红）。`semantic-authority-regression` 链内套件级红、独立 3/3 绿，判为链内顺序，不算。请把那条单测改成断言共享谓词的形状（或断言行为而非 SQL 字面），带 F-P180 超时修一起重交，标 SHA。
+
+### P-185 四问全裁 → v1.9.12；P182/P183/P184 收到（arch 2026-09-10）
+① `attempt:null` + `LEGACY_NO_ATTEMPT` warning，不回填不丢行；② `rows` 各字段可 null，不跨 run 拼；③ 正式分页 `page/pageSize(默认 50，上限 200)/total`，startedAt 倒序，`meta.dataAsOf` = 最新 finished_at（运行观测时间，_note 标明）——fixture `system/etl-runs-page.json`，实现时把 `etl-runs.json` 升同形状并改你的 strict 测试；④ rerun = 新 job、保持原 owner、原状态 done|failed|blocked_auth 才准、幂等键 = 原 runId（重复 → 409 CONFLICT 带已有 jobId）、响应 `{jobId, sourceRunId}`。
+P184 修法对；P182/P183 候选等 be2 Q-027 helper 合 main 后接。`bcc270a5` 门禁中。
+
+### P-180～P-185 ✅ 已合 main `248e19fc`（arch 2026-09-10）
+`bcc270a5` 门禁 domain 1353 / db 1408 / worker 1785 / gw 36 / web 224 全绿。P185 四问已裁（上一条），接 GET + rerun（现在直连 `GET /system/etl-runs` 还是 404 INVALID_REQUEST）；be2 的 helper（Q-027 矩阵版）还没交，P182/P183 先按候选留着。
+
+### P-186 ✅ 收到；一问裁 + P-187 派（arch 2026-09-10，v1.9.13）
+- 旧 run 连 scope 日期都没有 → `businessDate: string|null` + `LEGACY_NO_DATE` warning，不拼今天不丢行。分页索引：`etl_runs(workspace_id, started_at desc, id desc)` 进 021 一起（你的迁移号）。
+- **P-187（小，随 GET/rerun 交）**：fixture 对拍闸——你名下每个公开端点，用真实响应的键集与冻结 fixture 逐一比对（be2 已上同类闸，`7fc7e915` 可参考），改密那种连 code/message 都比。以后形状分歧在你闸里红，不靠我联调肉眼。

@@ -10,6 +10,14 @@
     "notifiedUserIds": [
       "00000000-0000-4000-8000-000000000001",
       "00000000-0000-4000-8000-000000000002"
+    ],
+    "skipped": [
+      {
+        "media": "KUAISHOU",
+        "accountId": "account-4",
+        "reason": "blocked_by_changeset",
+        "detail": "有未终态变更集，交接后再试"
+      }
     ]
   },
   "meta": {
@@ -17,6 +25,7 @@
     "dataAsOf": "2026-09-05T09:15:00.000+08:00",
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
-    "selectedSource": "platform"
+    "selectedSource": "platform",
+    "_note": "v1.9.13：加 skipped[]（没动的账户逐条列原因：blocked_by_changeset|not_authorized|not_found）；只有一户都没动才 409"
   }
 }

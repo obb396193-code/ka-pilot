@@ -5,7 +5,7 @@ import type { Pool, PoolClient } from "pg";
 
 import {
   R014RepositoryError, approveAuth, inTransaction, lockWorkspaceMembership, requireTimestamp,
-} from "./workspace-authority.js";
+} from "./r014/workspace-authority.js";
 
 /**
  * v1.7.6 + v1.7.8 G11 自助改密（migration 020）。
@@ -87,9 +87,10 @@ export class IdentityPasswordRepository {
         ? envFallback
         : { passwordSalt: String(stored.password_salt), passwordScrypt: String(stored.password_scrypt), algo: "scrypt" };
       // 表里没有、ENV 里也没有 → 没有可比对的当前密码，一律按「当前密码不正确」回，
-      // **不透露这个身份有没有设过密码**。
+      // **不透露这个身份有没有设过密码**。v1.9.9 F-Q024-1：这一种要和 FORBIDDEN 分开，
+      // 前端表单认它走「密码错」分支，返 403 会走成未知错误。
       if (expected === null || !await verifyPassword(currentPassword, expected)) {
-        throw new R014RepositoryError("FORBIDDEN");
+        throw new R014RepositoryError("INVALID_CREDENTIALS");
       }
 
       const salt = randomBytes(16);
@@ -117,6 +118,58 @@ export class IdentityPasswordRepository {
         otherSessionsRevoked: revoked.rows.length,
       };
     });
+  }
+
+  /**
+   * v1.9.5：治理后台新增成员时直接写初始密码。Codex 的 members 端点复用这里，
+   * **两边不各写一套 scrypt**——KDF 参数分头写死必然对不上，改密那次已经踩过。
+   */
+  async setPassword(identityId: string, plain: string, updatedBy: string | null): Promise<{ updatedAt: string }> {
+    if (typeof identityId !== "string" || identityId.length === 0) throw new R014RepositoryError("INVALID_INPUT");
+    if (typeof plain !== "string" || plain.length < MIN_PASSWORD_LENGTH || plain.length > 1024) {
+      throw new R014RepositoryError("INVALID_INPUT");
+    }
+    const salt = randomBytes(16);
+    const derived = await deriveScrypt(plain, salt);
+    const row = (await this.pool.query(
+      `INSERT INTO identity_passwords(identity_id, password_salt, password_scrypt, algo, updated_by)
+       VALUES($1,$2,$3,'scrypt',$4)
+       ON CONFLICT (identity_id) DO UPDATE
+         SET password_salt=EXCLUDED.password_salt, password_scrypt=EXCLUDED.password_scrypt,
+             algo='scrypt', updated_at=now(), updated_by=EXCLUDED.updated_by
+       RETURNING updated_at`,
+      [identityId, salt.toString("base64url"), derived.toString("hex"), updatedBy],
+    )).rows[0] as Record<string, unknown>;
+    return { updatedAt: requireTimestamp(row.updated_at).toISOString() };
+  }
+
+  /** 校验明文密码。表里没有行 → false（调用方自己决定要不要回落 ENV）。 */
+  async verify(identityId: string, plain: string): Promise<boolean> {
+    const stored = await this.find(identityId);
+    if (stored === null) return false;
+    return verifyPassword(plain, stored);
+  }
+
+  /**
+   * 这个身份是不是还在用**别人给的初始密码**。
+   *
+   * 判据：有密码行、且 `updated_by` 不是这个身份自己的 user —— 管理员开户时写的是
+   * 管理员的 user id，本人自助改密写的是自己的。**没有加 must_change 列**：
+   * 这个事实已经能从 updated_by 推出来，多一列就多一处要维护的真相。
+   */
+  async mustChangePassword(identityId: string): Promise<boolean> {
+    const row = (await this.pool.query(
+      `SELECT password.updated_by, member.user_id
+       FROM identity_passwords AS password
+       LEFT JOIN workspace_memberships AS member
+         ON member.identity_id=password.identity_id AND member.is_active=true
+       WHERE password.identity_id=$1
+       LIMIT 1`,
+      [identityId],
+    )).rows[0] as Record<string, unknown> | undefined;
+    if (row === undefined) return false;
+    if (row.updated_by === null) return true;
+    return String(row.updated_by) !== String(row.user_id ?? "");
   }
 
   /** 只对 `provider=internal_test` 开放；BUC 身份的密码不在我们手里。 */

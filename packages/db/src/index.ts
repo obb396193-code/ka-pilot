@@ -78,4 +78,6 @@ export * from "./r014/kb-repository.js";
 export * from "./account-dimension-evidence-repository.js";
 // be: operator-only explicit identity binding; no role/session/grant mutation.
 export * from "./qihang-identity-seed-repository.js";
-export * from "./r014/identity-password-repository.js";
+export * from "./worker-once-diagnostics-repository.js";
+export * from "./etl-batch-failure-repository.js";
+export * from "./identity-password-repository.js";

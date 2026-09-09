@@ -19,6 +19,6 @@ describe("worker once real CLI configuration boundary", () => {
     [{ NODE_ENV: "production", KA_DATA_DEV_SAMPLE: "synthetic-secret" }, []],
     [{ DATABASE_URL: "postgres://synthetic:synthetic@127.0.0.1:1/not_used" }, ["--workspace-id", "synthetic-private-id"]],
   ])("rejects incomplete/production-dev/browser-like input before DB with fixed output", async (env, args) => {
-    expect(await run(env, args)).toEqual({ code: 1, output: "Worker once failed\n" });
+    expect(await run(env, args)).toEqual({ code: 1, output: "Worker once failed [INVALID_CONFIG]\n" });
   });
 });

@@ -1,4 +1,5 @@
 import type { Pool, PoolClient } from "pg";
+import { etlBatchReadableSql } from "./etl-batch-readability.js";
 
 export type RawMetricResource =
   | "account"
@@ -205,10 +206,11 @@ export class RawMetricsRepository {
     const result = await this.pool.query<ReplayRow>(
       `SELECT DISTINCT ON (workspace_id, media, account_id, ds, resource)
          workspace_id, media, account_id, to_char(ds, 'YYYY-MM-DD') AS ds, resource, payload
-       FROM metrics_raw
+       FROM metrics_raw AS raw
        WHERE workspace_id = $1
          AND ds BETWEEN $2::date AND $3::date
          AND resource IN ('account_offline', 'account_realtime')
+         AND ${etlBatchReadableSql("raw", "raw")}
        ORDER BY workspace_id, media, account_id, ds, resource, fetched_at DESC, id DESC`,
       [scope.workspaceId, scope.dateFrom, scope.dateTo],
     );

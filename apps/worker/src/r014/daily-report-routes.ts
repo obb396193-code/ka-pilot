@@ -1,7 +1,8 @@
-import { DailyReportRepository } from "@ka/db";
+import { AccountNameParseRepository, DailyReportRepository } from "@ka/db";
 import {
-  DAILY_REPORT_MODULES, dailyReportSchema, divideMetricValues, metricValue, shanghaiTaskBusinessDate,
-  unsupportedModule, type DailyReportModule,
+  DAILY_REPORT_MODULES, UNLABELLED_DIMENSION, dailyReportSchema, divideMetricValues,
+  groupRowsByDimension, metricValue, shanghaiTaskBusinessDate, unsupportedModule,
+  type DailyReportModule,
 } from "@ka/domain";
 import type { Pool } from "pg";
 
@@ -16,9 +17,22 @@ import type { R014Route } from "./routes.js";
  * 不是「查过了没有数据」，两者在页面上必须分得开。
  */
 const SOURCED_DIMENSIONS = ["dim_task", "dim_biz", "dim_account"] as const;
+
+/**
+ * v1.9.2：这三个模块读 `account_name_parses`，按账户的解析维度归并账户行
+ * （**不重算指标**，所以与六卡、dim_account 天然同源）。
+ *
+ * `dim_ubp` **不在此列**：它的标题就是「UBP」，而 v1.8 命名规范的十个维度里
+ * 没有叫 UBP 的段。猜一个映射上去就是给日报贴错标签，已回抛 arch。
+ */
+const PARSED_DIMENSION_MODULES = {
+  dim_agent: "agentType",
+  dim_resource_position: "placement",
+  dim_bid_tool: "bidMode",
+} as const;
+
 const UNSUPPORTED_DIMENSIONS = [
-  "dim_agent", "dim_resource_position", "dim_bid_tool", "dim_ubp",
-  "dim_deduction", "deduction_analysis", "cost_tiers",
+  "dim_ubp", "dim_deduction", "deduction_analysis", "cost_tiers",
 ] as const;
 
 /** F-Q019-1：回显**请求的** role，不是身份角色。缺省 optimizer。 */
@@ -33,6 +47,7 @@ function requestedRole(raw: string | null): (typeof REPORT_ROLES)[number] {
 
 export function createDailyReportRoutes(pool: Pool): R014Route[] {
   const repository = new DailyReportRepository(pool);
+  const parses = new AccountNameParseRepository(pool);
 
   return [
     guardedRoute((pathname) => pathname === "/api/v1/reports/daily", async (context) => {
@@ -44,6 +59,28 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
       }
       const role = requestedRole(context.url.searchParams.get("role"));
       const facts = await repository.facts(context.auth, date);
+
+      // 维度值取自解析表；解析读失败不该让整张日报 500，拿不到就全部归「未标注」。
+      let dimensionOf = new Map<string, Record<string, { value: string | null }>>();
+      try {
+        dimensionOf = await parses.dimensionsFor(
+          context.auth,
+          facts.dimensions.account.map((row) => ({ media: row.media!, accountId: row.accountId! })),
+        ) as never;
+      } catch {
+        dimensionOf = new Map();
+      }
+
+      // F-Q023-1 归属链：绑定任务的 biz_name → 账户昵称解析出的业务段 → 未标注业务。
+      let parsedBiz = new Map<string, string>();
+      try {
+        parsedBiz = await parses.bizFor(
+          context.auth,
+          facts.dimensions.account.map((row) => ({ media: row.media!, accountId: row.accountId! })),
+        );
+      } catch {
+        parsedBiz = new Map();
+      }
 
       const cashCost = metricValue(facts.cards.cashCost);
       const realConversion = metricValue(facts.cards.realConversion);
@@ -85,10 +122,24 @@ export function createDailyReportRoutes(pool: Pool): R014Route[] {
           return { key: definition.key, title: definition.title, rows: facts.dimensions.task, unsupported: false };
         }
         if (definition.key === "dim_biz") {
-          return { key: definition.key, title: definition.title, rows: facts.dimensions.biz, unsupported: false };
+          // 走归并而不是直接用 SQL 那份：这样任务没填 biz_name 时能回落到昵称解析的业务段，
+          // 且与 dim_account、六卡同源（同一批账户行合并出来的）。
+          const rows = groupRowsByDimension(facts.dimensions.account, (row) =>
+            facts.bizByAccount[row.key] ?? parsedBiz.get(row.key) ?? null);
+          return {
+            key: definition.key, title: definition.title, unsupported: false,
+            rows: rows.map((row) => (row.key === UNLABELLED_DIMENSION
+              ? { ...row, key: "未标注业务", label: "未标注业务" } : row)),
+          };
         }
         if (definition.key === "dim_account") {
           return { key: definition.key, title: definition.title, rows: facts.dimensions.account, unsupported: false };
+        }
+        const parsedKey = PARSED_DIMENSION_MODULES[definition.key as keyof typeof PARSED_DIMENSION_MODULES];
+        if (parsedKey !== undefined) {
+          const rows = groupRowsByDimension(facts.dimensions.account, (row) =>
+            dimensionOf.get(row.key)?.[parsedKey]?.value ?? null);
+          return { key: definition.key, title: definition.title, rows, unsupported: false };
         }
         return unsupportedModule(definition.key);
       });

@@ -1,4 +1,6 @@
 import type { Pool } from "pg";
+import { etlBatchReadableSql } from "./etl-batch-readability.js";
+import { accountScopeClause } from "./r014/workspace-authority.js";
 
 import {
   buildMetricFilter,
@@ -83,13 +85,7 @@ function buildAccountScopeFilter(scope: SemanticQueryScope): {
       conditions.push("false");
     } else {
       add(
-        (placeholder) => `EXISTS (
-          SELECT 1
-          FROM jsonb_to_recordset(${placeholder}::jsonb)
-            AS allowed(media text, account_id text)
-          WHERE allowed.media = account.media
-            AND allowed.account_id = account.account_id
-        )`,
+        (placeholder) => accountScopeClause("'explicit_accounts'", placeholder, "account.media", "account.account_id"),
         JSON.stringify(scope.filters.accountScopes.map((account) => ({
           media: account.media,
           account_id: account.accountId,
@@ -130,7 +126,7 @@ async function queryCoverage(pool: Pick<Pool, "query">, scope: SemanticQueryScop
        ON account.workspace_id = metric.workspace_id
       AND account.media = metric.media
       AND account.account_id = metric.account_id
-     WHERE ${metricFilter.whereSql}`,
+     WHERE ${metricFilter.whereSql} AND ${etlBatchReadableSql("metric")}`,
     metricFilter.values,
   );
   const accountFilter = buildAccountScopeFilter(scope);

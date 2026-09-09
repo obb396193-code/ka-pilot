@@ -1,5 +1,6 @@
 import { safeDivide } from "@ka/domain";
 import type { Pool } from "pg";
+import { etlBatchReadableSql } from "./etl-batch-readability.js";
 
 import { buildMetricFilter, nullableNumber } from "./semantic-query-support.js";
 import type {
@@ -53,6 +54,7 @@ export const EXPECTED_METRIC_CTE = `WITH expected_metric AS (
   LEFT JOIN account_metrics_daily AS stored
     ON stored.workspace_id=account.workspace_id AND stored.media=account.media
     AND stored.account_id=account.account_id AND stored.ds=$2::date+day.day_index
+    AND ${etlBatchReadableSql("stored")}
   WHERE account.workspace_id=$1
 )`;
 

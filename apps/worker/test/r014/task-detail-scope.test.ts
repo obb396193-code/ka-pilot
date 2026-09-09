@@ -3,6 +3,7 @@ import { Pool } from "pg";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { runMigrations } from "@ka/db";
+import { shanghaiTaskBusinessDate } from "@ka/domain";
 import { registerR014Routes } from "../../src/r014/routes.js";
 import { createTaskDetailRoutes } from "../../src/r014/task-detail-routes.js";
 import { callRoute, type Captured } from "./fake-http.js";
@@ -103,6 +104,20 @@ describe("Q-020 task detail honours the personal account scope (real PostgreSQL)
     await pool.query(
       "INSERT INTO account_access_grants(workspace_id,identity_id,media,account_id,access_level) VALUES($1,$2,'KUAISHOU','q020-ks','read')",
       [workspaceId, identityId]);
+
+    // 窗口源是「应观测 vs 实观测」口径：窗口里缺一天，整段就算 missing（不做部分求和）。
+    // 所以把本月到业务日的每一天都补上零行，只留 09-03 那条真数据。
+    const businessDate = shanghaiTaskBusinessDate(new Date());
+    const monthStart = `${businessDate.slice(0, 7)}-01`;
+    for (const [media, accountId] of [["KUAISHOU", "q020-ks"], ["TENCENT", "q020-tx"]] as const) {
+      await pool.query(
+        `INSERT INTO account_metrics_daily(workspace_id,media,account_id,ds,cost,cash_cost,real_conversion,
+           cost_space,assessment_price_snapshot,computed_at)
+         SELECT $1,$2,$3,day.ds,0,0,0,0,38,now()
+         FROM generate_series($4::date, $5::date, INTERVAL '1 day') AS day(ds)
+         ON CONFLICT DO NOTHING`,
+        [workspaceId, media, accountId, monthStart, businessDate]);
+    }
   });
 
   afterAll(async () => {
@@ -154,5 +169,28 @@ describe("Q-020 task detail honours the personal account scope (real PostgreSQL)
       "UPDATE account_access_grants SET revoked_at=NULL WHERE workspace_id=$1 AND account_id='q020-ks'",
       [workspaceId]);
     expect((await get(mixedTask)).status).toBe(200);
+  });
+
+  it("fills the window cost block from the real window source, inventing no projections", async () => {
+    const overview = dataOf(await get(mixedTask)).overview as Record<string, unknown>;
+    const cost = overview.cost as Record<string, unknown> | null;
+    expect(cost, "D5b-2：窗口口径块该有值了，不再恒 null").not.toBeNull();
+
+    // 窗口是本月至业务日（fixture overview-v151 就是 month_to_date）。
+    expect((cost!.window as { preset: string }).preset).toBe("month_to_date");
+    // 只算授权那一半：两个户各 100 元，只授权快手那个。
+    expect((cost!.cost as { value: number }).value).toBe(100);
+
+    // 预估两项窗口源不提供，照 undefined 出——不自己算一个像模像样的数。
+    expect(cost!.projectedWindowCashCpa).toEqual({ value: null, state: "undefined" });
+    expect(cost!.affordableDailyCashCpa).toEqual({ value: null, state: "undefined" });
+
+    // 达标判定来自源的 assessment，不是本地重算。
+    expect(["green", "yellow", "red", null]).toContain(overview.costStatus);
+    expect(typeof overview.costStatusReason).toBe("string");
+
+    // 预算三项仍等 014，保持 null，不拿任务级 budget 凑。
+    expect(overview.budgetUsageRate).toBeNull();
+    expect(overview.dailyBudgetCap).toBeNull();
   });
 });

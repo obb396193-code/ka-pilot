@@ -12,7 +12,8 @@ const databaseUrl = process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1
 
 interface AuthContext {
   workspaceId: string; userId: string; role: "lead" | "optimizer"; workspaceKind: "personal";
-  scope: { kind: "explicit_accounts"; accounts: never[] };
+  // scope 里要放真 tuple：v1.9.9 之后成员级归属操作按它收口。
+  scope: { kind: "explicit_accounts"; accounts: { media: string; accountId: string; accessLevel: "execute" }[] };
 }
 
 /** 只取够用的枚举——解析器本身不认识任何渠道，规范全从请求/库里来。 */
@@ -58,7 +59,16 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
         [workspaceId, accountId, name],
       );
     }
-    auth = { workspaceId, userId, role: "lead", workspaceKind: "personal", scope: { kind: "explicit_accounts", accounts: [] } };
+    // v1.9.9：归属清洗的成员级操作只作用于会话 scope 内的账户，所以会话要带上这三个户。
+    auth = {
+      workspaceId, userId, role: "lead", workspaceKind: "personal",
+      scope: {
+        kind: "explicit_accounts",
+        accounts: ["r017h-a1", "r017h-a2", "r017h-a3"].map((accountId) => ({
+          media: "KUAISHOU", accountId, accessLevel: "execute" as const,
+        })),
+      },
+    };
   });
 
   afterAll(async () => {
@@ -174,20 +184,32 @@ describe("R-017 naming admin routes (real PostgreSQL)", () => {
     }
   });
 
-  it("keeps an optimizer out of the whole governance backend, not just the rule writer", async () => {
-    const optimizer = { ...auth, role: "optimizer" as const };
-    // 六个端点都在 /api/v1/admin/ 下；原来只有 PUT naming-rules 挡了角色，
-    // 列表/改单条/确认/重解析四个是敞开的——任何优化师都能读改**全空间**账户昵称，
-    // 而账户列表本身是按授权收口的。和 Q-020 同一类：一个入口收口了，旁边的没收。
+  it("splits the governance backend 按 v1.9.9: two are lead-only, four are member-but-scoped", async () => {
+    // 这个优化师**没有任何账户授权**——正好用来验「成员可用但按 scope 收口」。
+    const optimizer = {
+      ...auth, role: "optimizer" as const,
+      scope: { kind: "explicit_accounts" as const, accounts: [] },
+    };
+
+    // 改规范、批量重解析是全空间动作 → lead|admin。
     for (const [path, method, body] of [
-      ["/api/v1/admin/account-names", "GET", undefined],
-      ["/api/v1/admin/account-names/confirm", "POST", { items: [{ media: "KUAISHOU", accountId: "n1" }] }],
+      ["/api/v1/admin/naming-rules", "PUT", { segments: [], separators: ["-"], effective_from: "2026-09-01" }],
       ["/api/v1/admin/account-names/reparse", "POST", {}],
-      [`/api/v1/admin/account-names/KUAISHOU/n1`, "PATCH", { segments: { biz: "改一下" } }],
     ] as const) {
-      const result = await callRoute(optimizer, path, method, body, path.includes("?") ? "" : "?media=KUAISHOU");
-      expect(result.status, `${method} ${path}`).toBe(403);
+      expect((await callRoute(optimizer, path, method, body, "?media=KUAISHOU")).status,
+        `${method} ${path}`).toBe(403);
     }
+
+    // 列表/改单条/确认对成员开放，但**只作用于会话 scope 内的账户**（v1.8「归属可人工改」）。
+    const listed = await callRoute(optimizer, "/api/v1/admin/account-names", "GET", undefined, "?media=KUAISHOU");
+    expect(listed.status).toBe(200);
+    // scope 为空 → 一条都看不到，而不是看到全空间。
+    expect(((listed.body as { data: { items: unknown[] } }).data.items)).toEqual([]);
+
+    // 不在授权内的账户改不动，且回 404 不是 403——403 等于确认这个账户存在。
+    expect((await callRoute(optimizer, "/api/v1/admin/account-names/KUAISHOU/n1", "PATCH",
+      { segments: { biz: "改一下" } })).status).toBe(404);
+
     // 规范本身仍读得到：账户列表取维度要用它（dimensionsFor），那是普通读路径。
     expect((await callRoute(optimizer, "/api/v1/admin/naming-rules", "GET", undefined, "?media=KUAISHOU")).status)
       .toBe(200);

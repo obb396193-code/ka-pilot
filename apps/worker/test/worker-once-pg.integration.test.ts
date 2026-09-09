@@ -39,7 +39,7 @@ describe("single-shot real PG/runtime/CLI integration (synthetic only)", () => {
       child.stdout.on("data", (value: Buffer) => { stdout += value; }); child.stderr.on("data", (value: Buffer) => { stderr += value; });
       child.once("error", reject); child.once("close", (code) => resolve({ code, stdout, stderr }));
     });
-    expect(result.code).toBe(1); expect(result.stderr).toBe("Worker once failed\n");
+    expect(result.code).toBe(1); expect(result.stderr).toBe("Worker once failed [BLOCKED_AUTH]\n");
     expect(JSON.parse(result.stdout)).toEqual({ jobId: expect.any(String), jobType: "etl_full", status: "blocked_auth" });
     expect(result.stdout).not.toContain("synthetic-once-private");
     expect((await pool.query("SELECT status,attempts FROM jobs WHERE id=$1", [foreignId])).rows[0]).toEqual({ status: "queued", attempts: 0 });

@@ -2,6 +2,44 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-185 F-P179运行记录：先做严格响应，历史证据/重跑请裁｜be（Codex，2026-09-10）
+
+- 响应基础代码 **70187851**已交：38个运行记录测试+19批次warning测试，共57过；新模块覆盖100%，Domain/DB/Worker typecheck/lint过。既有fixture未改，真实barrel导出已测。报告`docs/plans/2026-09-10-P185运行记录响应质量回执.md`。**未接GET、未开rerun**，下面四问仍须裁；不以schema绿代替Runtime完成。
+
+- 已读v1.7.5+v1.9.8和system/etl-runs.json，开始Domain严格响应，不改你fixture。
+- ① 旧etl_runs.scope无execution时没有可信attempt；withEtlAttempt只保证新run快照。不能拿当前jobs.attempts回填历史。是否允许`attempt:null + warning`？若保持正整数，我只能显式拒绝不可验证记录，不能悄悄丢行。
+- ② `rows_ingested`是单run自身阶段计数，full/incr与canonical_merge分别独立job/attempt；不能拼不同run进同一行。目前fixture为`rows:{raw:number,canonical:number}|null`。建议允许**各字段null**：raw任务只知raw，canonical任务只知canonical；没到/未知不填0。若要父链聚合需要另定义关联，不偷推。
+- ③ GET排序/分页未冻结（fixture无page/total），请明确是否先“最近1000次，命中上限拒截断”或正式分页；响应source时间用真实run finished/started，但它是运行观测时间不是canonical数据新鲜度。
+- ④ rerun admin已定，但请定：原job重试还是新job、可重跑状态、credential owner（重试保持原owner）与幂等键。现有通用enqueue不能自动代表已批准的重跑语义，先不开放POST。
+- 可继续做严格Domain和fixture测试；这四项不凭空猜。工作项helper仍待Q-027合main，不复制旧版本。
+
+### P-184 退修已关：旧lineage字面断言｜be（Codex，2026-09-10）
+
+- **3a05c7ce**独立测试修复，先复现1红17绿，再改为从绑定参数定位tuple、断言共享accountScopeClause在预期/实际两侧各一次。
+- 18unit+3独占PG=21通过，DB typecheck/lint过；未改生产。F-P180超时修仍**a0e4c01b**，请连同P180首轮重新验收。
+- 承认前批定向回归漏同步此旧断言。报告`docs/plans/2026-09-10-P184任务lineage退修回执.md`，未push/未部署、未冒报全包。
+
+### P-183 变更集详情共享授权前置候选｜be（Codex，2026-09-10）
+
+- **8db53852**：Service端口第三参必填approved auth，三参find进入RR/RO授权读取；先只读id/workspace/allowed，再共享谓词读取正文/items。跨workspace404、同workspace越权403、team进仓储前拒绝；原Service后置guard保留。
+- 旧后台两参find未伪装成会话授权；显式第三参undefined拒绝，HTTP实际composition始终传入auth，PG包装已透传。未开放媒体写或team变更集。
+- DB63（新PG9、旧PG41、unit13），Worker HTTP57/Service14/Session PG4/bootstrap PG2过；DB/Worker type/lint/cache audit通过；仓储行97.34/分支81.25。初次HTTP EPERM按权限重跑通过。
+- 报告`docs/plans/2026-09-10-P183变更集详情授权质量回执.md`。当前仍candidate、全域P-178未完、未push/部署；等待Q-027合main后接工作项，不复制旧helper。
+
+### P-182 健康读取共享授权候选；已收到v1.9.11｜be（Codex，2026-09-10）
+
+- **58db9dce**：PlatformHealthRepository接accountScopeParams/accountScopeClause，保留获授但主表未到的缺数分母。无公开Contract变化；当前无Worker/public caller，因此不冒称修了线上健康页。
+- DB30（PG7+unit23）红绿过；摘谓词真PG观测由1户变3户、dataAsOf越到未授权媒体，输出guard仍拒绝。原代码是重复实现而非已证数据泄漏；P-178全域尚未完成。
+- DB/Worker typecheck/lint/cache audit0；模块行100/分支97.91%。2000候选EXPLAIN3.925ms但会扫描当前workspace候选，报告披露规模风险，不冒称生产性能或全包门禁。
+- 详见`docs/plans/2026-09-10-P182健康读取授权质量回执.md`。收到main54613184/v1.9.11矩阵与后台job例外，撤销待裁状态；按分工等be2 Q-027 helper合main后再接本人work-item列表/详情，不另写一套。未push、未部署、无真实媒体写。
+
+### P-181 F-P180成员PG超时已修｜be（Codex，2026-09-10）
+
+- 代码 **a0e4c01b**，单文件`apps/worker/test/admin-members-http-pg.integration.test.ts`：suite `{ timeout: 30_000 }`，所有九例继承；未改生产期限/数据上限/截断或任何业务授权。
+- 独占本机合成库`ka_ci_be_r010_p178_test`：真实PG9/9（3.05s），Worker typecheck/lint过，offline production audit0；diff check过。低于8GiB全包磁盘门槛，未冒报全包。
+- 质量回执`docs/plans/2026-09-10-P181成员PG超时质量回执.md`。请求exact SHA审查；未push/部署。收到P179已合及“台账仅arch写”纠偏，后续只写R010状态/信箱。
+- P180两笔`d124cfce/e209e321`首轮授权审计仍不代表全域完成；原已提的task级/纯私人双null及后台job授权边界问题保持待裁。不提前开放team私人项，不因本小修复跳过P-178。
+
 ### P-001 ✅已裁决（B1a 契约缺口 6 条）｜be（Codex）
 
 **裁决已落契约本体** `packages/contract/{schema.sql, api.md}` v1.1，逐条回复：
@@ -5136,6 +5174,49 @@ domain 1276 / db 1242 / worker 1704（+2 skipped）/ web 223 全绿，四包 `ts
 - 真once：昨日blocked→正式绑定→今日once旧job done；同日执行期blocked后新增grant仍仅执行原账户。撤权/换identity/跨空间媒体/耗尽/其他blocked原因不放行，audit失败真实回滚。runbook§OS-1已把“删job”改为合版本后补身份/授权直接重触发，明确OS尚待复测。
 - 报告 `2026-09-09-P174身份缺失任务恢复质量回执.md`；F-OS-003安全阶段诊断继续，001③missing仍待完整闭环。新BI002、v1.9.6/7知会已收，不等这些去扩大权限或动be2登录文件。
 
+### P-175 F-OS-003安全阶段码与只读自查交审（be/r010，2026-09-09）
+
+- 代码 **2d836d80**，同步main e46783a0后HEAD **c5d22aec**；18文件，非视觉/契约/真实媒体写。CLI和HTTP内部stderr白名单阶段码，公开HTTP错误不变；新增 `npm run --silent worker:diagnose` 只读命令，DB/空间/身份缺项/ETL队列计数，不消费/复排jobs，不显示qid/DSN/原error。
+- 最终Worker13文件82过（含真实CLI/HTTP/PG/恢复/锁），DB2文件10过（3PG/7unit）；两包type/lint、缓存production audit0；Worker三模块96.92%行/90.69%分支，DB诊断100%行/97.91%分支。磁盘不足8GiB未全包，请独立验收，不冒称已部署。
+- 顺带实测发现HTTP child曾丢NODE_EXTRA_CA_CERTS，已加白名单及先红后绿测试；没有传TLS禁用开关/trigger token，真实OS TLS仍待复测。自查明确network/data not_checked、missing workspace不假ready；runbook2.6.1已补。
+- 报告 `2026-09-09-P175Worker安全诊断质量回执.md`；v1.9.8裁决已读并合本人分支，下一项单批失败missing。生图取消持续；全信箱目标不缩成这一项。
+
+### P-176 Task1批次失败内核候选（be/r010，2026-09-09）
+
+- **42e98717**（9文件），140定向全过：Domain18、DB54含23PG、Worker68；三包type/lint/offline audit0；新模块行100%、DB分支96.96%、其他100%。磁盘7.7GiB未全量。
+- warning固定v1.9.8形状，私有ledger run/job/attempt/current lease/同媒体账户与日期范围限定，10000/16MiB、并发幂等、真实回滚、写前lease时钟反例均过。只有记录内核，**没把Full/Incr容错打开**，还须旧Raw/Canonical missing屏蔽+公开coverage，避免旧数据假ready；不把F-OS-001③勾完。
+- 报告`2026-09-09-P176批次失败内核质量回执.md`，Task2/3计划同前缀。您新P-175库名守卫收到：会单独用本人P177编号修，ka_*_test且local55432，绝不借您的门禁库跑。密码仓储待main后接；BUC/Pod仍条件待办。
+
+### P-177/P-178 两条P175退修回执（be/r010，2026-09-09）
+
+- **495ea1c9**：原协议PG用例本机1/1过；对您对比的400b63e1/c40755a8查consumer/job-repository/full/client/该测试零diff，未进入supervisor。注入Node时钟领先60s，原第二次processOnce断言稳定同错`false→true`；改为先验证未到期不领取，再用PG clock在本例tuple/job条件内模拟到期，原job重试成功。相关6文件32过。**不能断言您当时一定是时钟原因**，请exact复验；若仍红请给断言行与合成job run_after/DB now快照。
+- **16679e7a**：9套件10guard都改为您要求的ka_*_test且local55432（原7套件+P175诊断2套件），静态先9红→10过。新建本人独占`ka_ci_be_r010_p178_test`，DB48、Worker7真实PG/CLI全部过，两包type/lint/cache audit0。不共用您的门禁库。
+- P177/P178均仅测试改动，报告`2026-09-09-P177-P178审查退修质量回执.md`；磁盘5.7GiB仍未全包，P175请重新验收，不冒报已部署。
+- main69b1582已合本人分支2534d684；已收到020密码仓储交回，后续接F-OS-004。P176只完成内核，继续旧canonical屏蔽和批次容错；完整信箱目标仍active，生图停止。
+
+### P-179 失败批次读取屏蔽已交，容错开关仍关闭（be/r010，2026-09-09）
+
+- **c11dde2d**，10文件：失败ledger屏蔽Raw/Semantic旧值，LEFT JOIN保留expected missing；同资源真实补采后仍须重算才恢复旧Canonical。私有ad filters不改变v1.9.8公开warning。4条先红→7条PG通过，跨空间/媒体/日期/资源/小时/子集反例齐。
+- Domain19、DB70（58PG）、Worker69（11PG）通过，三包type/lint/cache audit0；新谓词覆盖100%。磁盘7.7GiB未全包。报告`docs/plans/2026-09-09-P179失败批次读取屏蔽质量回执.md`，不称已合流/部署。
+- **请协调be2派生读取接线**：`etlBatchReadableSql(alias)` 位于`packages/db/src/etl-batch-readability.ts`，仅代码alias；物理Canonical WHERE可接，但expected集合必须在LEFT JOIN ON接，不能滤掉缺失分母。账户/任务列表及其详情/日报直接SQL我未越权修改。
+- **暂不能开启单批半成功**：下一批还需canonical写入race guard、readiness/public warning、Full/Incr逐批接线和all-failed处理。历史failure相关扫描性能、Raw保留期与恢复证据协调须明确；本批无大规模基准，不承诺常数时间。
+- 持续按信箱推进，生图已取消，020依赖已解不再空等；P175退修495ea1c9/16679e7a仍请exact复验。
+
+### P-180 授权自查进行中：请裁任务级与私人无账户工作项交叉口径（2026-09-09）
+
+- 已同步您main b0351577→本人95e46310，已知P175–178合流，不再等旧复审。优先遵循您新P-178授权自查→F-P179端点→P176余项的顺序。
+- 找到一处**契约语义冲突，未擅改**：api.md §WORK-ITEM-LIST-001/详情仍写双null只凭assignee/creator；新的§3.3/v1.9.10与workItemScopeClause却按task关联授权，且共享helper的team分支直接TRUE（会包含task也null的私人项），没有旧“team不得看双null私人项”的保护。
+- 当前`work-item-list-sql.ts:24-26`、`read-detail-service.ts:49-56`把所有双null都归personal，不区分taskId。因此本人assignee + 未获授任务也能过旧分支；已获授任务但非本人assignee反而被拒。共享helper若直接替换，又会漏掉纯私人self并向team放开它们。
+- 请明确矩阵：①taskId非null的双null项是否必须任务关联授权、即使assignee是本人也不绕过；②taskId为null纯私人项是否继续仅personal本人；③team是否只允许账户型+任务型，不允许纯私人。建议这三条，但不代裁。收到前保留更早已冻结私人与team边界，不盲目复制helper。
+- 其他Semantic/Window/health正在实跑统一accountScopeClause回归；这条疑问不阻塞其余SQL自查及endpoint准备。没有认定所有workspace查询都是越权；逐个追到Service/runtime入口。
+
+### P-180 首轮代码及逐查询矩阵回执（非全域完结）
+
+- **d124cfce**：Semantic/health两个独立tuple谓词引用您统一accountScopeClause。新PG3项含负对照：摘掉SQL后summary/trend/window混入同号TENCENT，account维度输出guard仍拒绝；不是空库“过测”。原实现有独立谓词保护，**不虚称修了两个实证越权**。
+- DB35+Worker83（含Session→各业务读真实PG）、三包type/lint/offline audit0；行94.27/分支88.11。报告`docs/plans/2026-09-09-P180授权自查首轮质量回执.md`逐文件标已核/剩余统一化/内部维护/冲突，授权自查整体未完成。
+- 另请明确§3.3在**无Session的后台Canonical/quality/执行结果回收维护查询**的适用方式：这些API当前只有workspace/目标tuple/持久化job owner，不能拿管理员或虚构session来套accountScopeParams。本人按真实caller继续核，绝不为满足grep导入伪scope；建议冻结为持久化授权快照+live credential-owner重核或明确维护例外，未代选。
+- 7.6GiB未全包；main同步SHA95e46310；本批不push不改FE，生图保持取消。接着做其余可核项，不因疑问空等。
+
 ### Q-024 回执：v1.9.3 派的活全部做完（be2，合流源 = `be/r017 @ acc80c83`）
 你 v1.9.3 那条列的顺序 —— Q-020 → T5 → 日报三维度 + F-Q019-1～3 → 改密 020 → kb 软删/反查 —— **五档全清**。Q-020/T5/kb 在 Q-023 回执里，这条补后两档。
 
@@ -5193,3 +5274,112 @@ domain 1276 / db 1247 / worker 1719（+2 skipped）/ web 223 全绿，四包 `ts
 **你让我自查的 404**：`/api/internal/tasks/:id/readiness` **本来就没有这一层路由**。文件在 `readiness/[dimension]/route.ts`，且只导出 **PUT**（人工置某一段就绪度的写接口）。读就绪度在任务详情响应的 `overview.readiness` 里，不需要单独打。要是希望有个只读的 `GET .../readiness`，说一声我加。
 
 **顺带报一个我自查发现的坑**（不用你做，记一笔）：合 main 之后我发现你第三批 fixture 早就进来了，但页面还按「只有一份样例」写着，等于新数据白给——已在 `162aeca` 一次接完七处（我的负载 / 归因树成本模式 / 规则 7·9 判定 / 失败 run 事件 / 策略库第二方案 / 第二位成员授权 / 日报投递状态）。**门禁全绿并不能发现这类哑功能**，以后每次合完 main 我会主动扫一遍新增 fixture 有没有页面接上。
+
+### Q-025：自查扫描又揪出四处同类越权（be2，分支 `be/r017 @ afeafc75`）
+Q-020 和日报那两次是同一类，所以我把名下仓储**逐条 SQL** 扫了一遍（查带账户维度的业务表、但该条 SQL 没有任何授权过滤的）。不是等你派，是这类东西不会只有两处。
+
+| # | 位置 | 后果 |
+|---|---|---|
+| 1 | `search-repository` 搜工作项 | 全局搜索只按 workspace_id 过滤。**工作项标题里常带账户名与成本**（日报那次实测到「别人的账户的异常」），等于把别人的经营数据做成可搜索索引 |
+| 2 | `me-workspace` `notificationSources` | 通知投影取全空间活动工作项——别人账户上的告警推给他 |
+| 3 | `me-workspace` `workItemCounts` | `/me/counts` 把全空间工作项数成「我的」 |
+| 4 | `account-transfer` 循环次序 | 先查变更集再查授权，于是对交出方**根本没授权**的账户，`blocked_by_changeset` 这个 reason 泄露了「那个户正在跑变更集」。已改成先授权后变更集 |
+
+红是摘掉谓词跑出来的：搜索搜得到「别人户的成本异常」、计数把全空间两条算成他的。
+
+**★顺手做了一件该早做的事**：这段「这个账户是不是他的」判断，此前在任务列表、任务详情、日报各写了一份。**安全谓词散着写，改一处漏三处**——Q-020 和日报那两次漏检就是这么来的。现在收敛到 `workspace-authority.ts` 一处（`accountScopeParams` / `accountScopeClause` / `workItemScopeClause`），新增三处全引用它。
+工作项口径：账户级按 tuple 收口；**任务级（account 为空）看任务下有没有他授权的账户**（与任务列表同口径）；两者都不沾的不返回——无法归属给任何人的工作项不该出现在个人视图里。这条口径请你确认，我按最保守的取了。
+
+**误报两条已核实排除**：`external_changes` 上一行就有 `assertAccountVisible`；归属清洗后台是 admin 域（角色闸在 `0dcc4e4a`）。
+
+**建议你把这条立成验收项**：新加任何读 `work_items` / `account_metrics_daily` / `external_changes` / `changesets` 的 SQL，必须带 `workspace-authority` 里那三个谓词之一，或在同一函数里先 `assertAccountVisible`。Codex 那边同类文件我没权限扫，**建议派他自查一遍**——这类漏检两边都可能有。
+
+闸：db 1248 / worker 1719（+2 skipped）全绿，四包 tsc 清。
+
+### Q-026 结账：补做两条漏项 + 修一个已交付端点的真 bug + 待办按边界分类（be2 `be/r017 @ d19c6b80`）
+上一轮我说「手上没有待办」，**说早了**——重新逐条比对你的派活，发现漏了两条，都已补完。另外自查时揪出一个影响**已交付端点**的 BFF bug。
+
+#### ① 漏项一：D5b-2 cost 四项（你说「Q-020 修完顺手做、同一批」）
+`cost / costStatus / costStatusReason / onTarget` 已接 `PlatformWindowQuery`。窗口 = 本月至业务日；传的是会话 scope 的 tuple、内部按 taskId 收敛（用例实测：两户各 100 元只授权一个 → 出 100 不是 200）。
+`projectedWindowCashCpa` / `affordableDailyCashCpa` **窗口源不提供**（预估不是观测），照 undefined 出。源在但算不出 → 503 SOURCE_UNAVAILABLE（v1.9 §一）。`budget*` 三项仍等 014。
+顺带记一条口径：窗口源是「应观测 vs 实观测」，**窗口里缺一天整段就 missing**，不做部分求和。
+
+#### ② 漏项二：日报三个解析维度模块（v1.9.2「T5 接线时一并填」）
+`dim_agent / dim_resource_position / dim_bid_tool` 已填行：把按账户聚好的行**按解析维度归并**，不重查不重算，所以与六卡同源（用例断言归并加总 == 大盘卡）。解析不出的归「未标注」（v1.7.9 对 agent_type 的原口径）。
+
+**`dim_ubp` 仍 unsupported，需要你一句话**：它的标题就是「UBP」，而 v1.8 命名规范的十个维度里没有叫 UBP 的段（placement/bidMode/device/goal/rta/agentType/optimizer/special/landing/rebate）。**UBP 对应哪一段？** 猜一个映射上去就是给日报贴错标签。
+
+#### ③ ★修一个影响已交付端点的真 bug：后端 404/409/429 被 BFF 翻成 502
+`apps/web/lib/data/r014/forwarder.ts`（我的镜像）只认共享的 11 个稳定码，而我后端一直在返 `NOT_FOUND`/`CONFLICT`/`RATE_LIMITED`（kb 单读不存在的文档、账户交接撞未终态变更集、任务详情越权 404、改密限速）。解析不过 → 全部变成 **502 UPSTREAM_INVALID_RESPONSE**。
+用户看到「上游坏了」而不是「这篇文档不存在」，而且 502 会把人引去查后端故障——后端行为其实完全正确。forwarder 里那句「后端错误码复用 INVALID_REQUEST 一类」是我当初的错误假设。
+已在 r014 forwarder 就地扩三个码 + 状态映射，**不动共享枚举**。红绿都跑了（修前三个码全 502）。
+
+#### ④ pg_trgm：我**实测后建议不装**，这条不用你拍板了
+```
+similarity('新任务开户到基建SOP', '开户')      = 0
+similarity('新任务开户到基建SOP', '新任务开户') = 0.385   （默认阈值 0.3）
+```
+**短中文词的 trigram 相似度是 0**——`similarity()` 救不了「搜开户」，我现在的子串路反而更对。pg_trgm 唯一的价值是给 ILIKE 建 GIN 索引（性能），而我们当前数据量下这个收益没法证明。所以：**不建议装，代码不动**。等 kb 文档量真上来了再谈索引。
+
+#### ⑤ 待办按边界分类 —— 剩下的**没有一条是我能自己推进的**
+| 项 | 归属 | 卡在哪 | 我这边状态 |
+|---|---|---|---|
+| `dim_ubp` 映射 | **等你一句话** | 十个维度里没有 UBP，猜就是贴错标签 | 代码位置留好了，你说哪段我当天填 |
+| 归属清洗权限形态 | **等你裁** | admin-only vs「成员限已授权账户」是契约语义 | **已按更严的 lead\|admin 落地**，安全侧无敞口；你要放宽我改 |
+| 工作项任务级可见口径 | **等你确认** | 我取了最保守解（任务下有授权账户才可见） | 已落地并有用例，你不改就是它 |
+| `RATE_LIMITED` 进共享枚举 | **fe/arch 的活** | 共享 `contracts.ts` 不是我的文件 | 我这侧已闭环（③），fe 若要统一枚举再动 |
+| `source:"platform"` 维度 | **无源** | `accounts` 表没有平台侧维度列 | 有列我就接 |
+| `budget*` 三项 | **Codex 014** | `task_budget_history` 未落地 | 保持 null 不凑 |
+| 限速换共享计数器 | **正式化前的部署项** | 内测按你说的进程内够用 | 注释写明，不装作强限速 |
+
+#### ⑥ 合流与部署（不冒充完成）
+17 笔全在 `be/r017`，**未 push**（按规矩等你 cherry-pick），**线上未部署**——staradar/内网环境都还没有这些改动。这一批里有四处越权修复（Q-020、日报、搜索/通知/计数、归属清洗闸），**在合流部署前线上仍是有敞口的**，建议优先合。
+
+闸：domain 1279 / db 1248 / worker 1722（+2 skipped）/ web 224 全绿，四包 `tsc --noEmit` 清。
+
+### Q-027 回执：v1.9.5/1.9.8/1.9.9 派的全做完 + Q-022 卡在一处接缝（be2 `be/r017 @ c385be8a`）
+
+| 派活 | 状态 |
+|---|---|
+| F-Q024-1 改密错误码 | ✅ 401 `INVALID_CREDENTIALS`「当前密码不正确」，BFF 镜像同步 |
+| 归属清洗权限形态（v1.9.9） | ✅ 按裁决放宽：putRule/reparseCandidates = lead\|admin；list/patch/upsertParse/confirmBatch = 成员但按 scope 收口 |
+| F-Q023-1 dim_biz | ✅ 归属链补第二跳 |
+| F-Q023-2 四个解析维度 | ✅ 三个填行；`dim_ubp` 见下 |
+| pg_trgm（v1.9.8） | ✅ 但**改在 022 不是 019**，见下 |
+| v1.9.5 密码仓储给 Codex 复用 | ✅ 移到 `packages/db/src/identity-password-repository.ts`，补 setPassword/verify/mustChangePassword |
+| RATE_LIMITED | ✅ 你准了，已按 v1.9.9 落 |
+| Q-022 访客登录 | **半边** ——viewer + 写类拦截已做；guest 登录卡接缝 |
+
+#### ① pg_trgm 我没加进 019，加在了 **022**
+你原话是「019 加扩展 + 索引」，但 **019 已经合进 main 并在你联调库应用过**——回头改一个已应用的迁移，在任何库上都不会重跑，等于没做。021 是 Codex 的 `account_metrics_hourly`，所以我取 022。
+扩展装不上时**不让整批迁移失败**（装扩展要权限，卡住整个部署不值当），索引跳过、搜索侧降级并标 `TRGM_MISSING`。
+
+★**一条实测，可能要改你的 v1.9.8 措辞**：
+```
+similarity('新任务开户到基建SOP','开户')      = 0
+similarity('新任务开户到基建SOP','新任务开户') = 0.385
+```
+**短中文词的 trigram 相似度是 0**。所以「score 换 similarity」如果字面执行，搜「开户」这类两字词会得到一屏 0 分，排序等于没有；`%` 算子同样命不中，匹配只能靠 ILIKE。
+我的落法：**匹配一律 ILIKE（trgm 索引负责加速），score 用 similarity，为 0 时回落启发式**。两条路径都有真库用例。你若要严格按字面来（0 分照出），说一声我改回。
+
+#### ② `dim_ubp` 的疑问你已经答了，但结论是「还不能做」
+v1.9.6 写明 UBP 的源是 `ads_rta_media_daily_report_base_adgroup.is_ubp`，**要等 ka-data 暴露该列**——它不是命名规范里的段，所以从 `account_name_parses` 取不到。保持 `unsupported:true`，等列到位我接。
+
+#### ③ Q-022 只做了前半，**后半要你开一处接缝**
+✅ 已做：`viewer` 角色（实测零类型涟漪）、写类**路由层统一拦截**（viewer 非 GET → 403 READ_ONLY_ROLE，挡在处理器之前，不是跑完再拒）、`migration 023` 放宽 `workspaces_kind_ck` 到 personal\|team\|demo（**否则演示空间根本建不出来**，灌数脚本会被约束挡回去）。
+
+❌ guest 登录没做，卡在：`workspaceKindSchema` 加 `demo` 会让 **`packages/db/src/bootstrap-seed-repository.ts:106`** 类型不过（Codex 的文件，那里有自己一份 personal|team 的窄类型）。按你立的接缝规矩，共享文件的结构性改造归你，所以我把 `demo` 撤回只留 viewer。要开的口子就三处：
+1. 那一行类型放宽（Codex 一行改完即可）；
+2. `schema.sql` 的 `workspaces_kind_ck` 同步加 demo（我 023 已实现，权威文件还没改）；
+3. `approvedWorkspaceAuthContextSchema` 加 demo 分支——**我的建议是加，scope 复用 `team_workspace_readonly`**（演示空间就是只读全量，不另造一种）。
+
+★**开口子前请先想这条**：`demo` 进枚举后，全仓 **49 处 `workspaceKind === "team"` 判断都要过一遍**，漏掉就是让访客走进个人空间口径。方向是 fail-closed（访客没有授权 tuple，按个人口径反而什么都看不到），所以不会多给权限，但会「该看见的看不见」。这 49 处大半不在我名下，建议你统一派。
+
+#### ④ 另外三条要你知道的
+- **schema.sql 还缺两处**：`pg_trgm` 扩展+索引（022 实现）、`workspaces_kind_ck` 加 demo（023 实现）。我按 api.md 的裁决先落地了，权威文件请你同步，否则下次谁按 schema.sql 切片会切不到。
+- **db 测试必须串行跑**（`--no-file-parallelism`）：迁移回放用例共用同一套 schema，并发会互相踩出假红（012 那三条），单跑与串行都绿。
+- **Codex 的库名守卫**：`ka_be_[a-z0-9_]+_test` 写死，我原来的 `ka_be2_r014_test` 会让他 4 个套件报「Dedicated local be test DB required」。我换到合规库名后 45/45 全过——不是回归，你派的 P-175 放宽后就好。
+
+#### ⑤ 闸与合流
+domain 1296 / db 1352 / worker 1740（+2 skipped）/ web 224 全绿，四包 tsc 清。
+`be/r017` 领先 main 若干笔，**未 push**、**未部署**。

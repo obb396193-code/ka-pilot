@@ -45,6 +45,8 @@ export interface DailyReportFacts {
   trend: DailyTrendPoint[];
   /** 三个有源的维度模块的行；其余维度另有源或未接。 */
   dimensions: { task: DailyDimensionRow[]; biz: DailyDimensionRow[]; account: DailyDimensionRow[] };
+  /** 每个账户当日绑定任务的业务名（F-Q023-1 归属链的第一跳）；任务没填就没有这一项。 */
+  bizByAccount: Record<string, string>;
   /** 未处理工作项的最高等级，用来给健康度定档；没有未处理项就是 ok。 */
   highestOpenSeverity: "P0" | "P1" | "P2" | null;
   dataAsOf: string | null;
@@ -88,6 +90,28 @@ export class DailyReportRepository {
         realConversion: row.real_conversion === null ? null : Number(row.real_conversion),
       },
     }));
+  }
+
+  /**
+   * F-Q023-1：账户 → 绑定任务 → `tasks.biz_name`。这是 v1.4 的归属链第一跳；
+   * 任务没填 biz_name 时由调用方回落到昵称解析的业务段，都没有才「未标注业务」。
+   */
+  private async bizByAccount(
+    workspaceId: string, date: string, scope: DailyScope,
+  ): Promise<Record<string, string>> {
+    const rows = (await this.pool.query(
+      `SELECT DISTINCT metric.media, metric.account_id, task.biz_name
+       FROM account_metrics_daily AS metric
+       JOIN task_accounts AS link ON link.workspace_id=metric.workspace_id
+         AND link.media=metric.media AND link.account_id=metric.account_id
+         AND link.valid_from <= metric.ds AND (link.valid_to IS NULL OR link.valid_to >= metric.ds)
+       JOIN tasks AS task ON task.workspace_id=link.workspace_id AND task.task_id=link.task_id
+       WHERE metric.workspace_id=$1 AND metric.ds=$2::date AND ${SCOPED_METRIC}
+         AND task.biz_name IS NOT NULL`,
+      [workspaceId, date, scope.kind, scope.allowed],
+    )).rows as Record<string, unknown>[];
+    return Object.fromEntries(rows.map((row) =>
+      [`${String(row.media)}:${String(row.account_id)}`, String(row.biz_name)]));
   }
 
   /**
@@ -225,6 +249,7 @@ export class DailyReportRepository {
         DailyReportFacts["highestOpenSeverity"],
       trend: await this.trend(approved.workspaceId, date, scope),
       dimensions: await this.dimensionRows(approved.workspaceId, date, scope),
+      bizByAccount: await this.bizByAccount(approved.workspaceId, date, scope),
       dataAsOf: cards.data_as_of === null ? null : requireTimestamp(cards.data_as_of).toISOString(),
       delivery: await this.delivery(approved, date),
     };
