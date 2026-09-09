@@ -4885,3 +4885,27 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **门禁**：db 全量 **1212/1212**；`tsc` 0、`eslint` 0。
 
 **下一批**：R-017 T5 接线（十个维度改读解析结果）→ `account_transfers`（4.10 交接，018 的 `revoked_at` 已落，正好用得上软撤权语义）。
+
+### Q-020 回执：A7 账户交接接通（be2，合流源 = `be/r017 @ 0bd6ee9`）
+**分支**：`be/r017`（origin/main @ 0811de6 已全含，无待合上游）
+
+**① A7 做完了**（Q-003 起卡 `revoked_at`，018 落地后解锁）：`POST /api/v1/accounts/transfer`、`POST /api/v1/users/:id/transfer-all`。
+| 点 | 实现 |
+|---|---|
+| 软撤权 | 原 grant 置 `revoked_at`/`revoked_by` 保留审计行，新 grant 另起一行；目标已有被撤行走 `ON CONFLICT DO UPDATE` 复活。**全程不删行** |
+| 变更集闸 | 账户有 `confirmed`/`executing` 变更集 → 拒绝并进 `skipped.reason=blocked_by_changeset` |
+| 409 边界 | **只有一户都没动成才 409**；部分成功仍 200，没动的逐条列在 `skipped` 里。部分成功当失败会让调用方重试已成功的那批 |
+| 离职交接 | `transferAll` 仅 admin；交出方用**显式参数 `fromUserId`**，不伪造 auth 上下文冒充离职者 |
+| `dispatches` | 表（你派 Codex 的 014）不在 → 恒 0。这是「系统里没有派发单这种对象」，按 v1.9 §一属 0 不属 `missing` |
+
+**为什么不伪装身份**（值得记一笔）：我第一版是 `this.transfer({...approved, userId: fromUserId}, ...)`，测试直接 403 ——`lockWorkspaceMembership` 会拿 `auth.role` 去核实时成员行，管理员的 role 跟离职者对不上，当场露馅。这个红是对的：**伪装上下文顺带绕掉了一次真实权限校验**，就算校验放过也是隐患。改成 admin 以自己身份执行 + 交出方显式传入，`account_transfers` 里 `from_user_id`=交出方、`initiated_by`=实际操作人，审计能分清「谁被交接」和「谁操作的」。
+
+**② 顺带修一处合流撞车**：你 `5dce113`（v1.9.1 文案改中文对象名）改了 `task-readiness-contract.ts` 的「无 unit」→「无单元」并同步了 5 处期望，但我的 D5 测试（`9e132f8`）写在旧文案上、时间上晚于你的修，合并后期望值成了孤儿 —— 全量跑才露出来（单跑 A7 是绿的）。已把测试改到「无单元」跟上契约。**教训**：你改我文件后我 merge，不能只看 tsc，得跑一遍全量对拍。
+
+**③ 闸**：domain 1263 / db 1212 / worker 1684（+2 skipped）全绿，三包 `tsc --noEmit` 清；串行跑的，无并发假红。路径限定提交 `0bd6ee9`，未 push。
+
+**④ 请裁一条（R-017 T5 卡这里）**：`resolveAccountDimensions`（人工 > 昵称解析 > 平台，都没有则 `{value:null,source:null}`）领域层已就绪并有用例，但**没有 fixture 定义 `dimensions` 挂在账户列表行的哪个位置**（是 `item.dimensions` 还是并进现有 `item.meta`？字段名用 `value/source` 还是展开成 `bizName/bizNameSource`？）。我不猜结构 —— 猜错就是给 fe 一个要返工的形状。给个 fixture 或直接指定形状，我当天接。
+
+**⑤ 待你裁的旧账**（未收到回复，不阻塞我，但会影响交付形状）：Q-019 ③ 日报维度模块行结构未冻（我现在出 `unsupported:true`）、Q-015 web 镜像文件越界、Q-007 ② `meta.unavailableTypes`。
+
+**⑥ 我接着做**：T5 等你裁的期间转 `POST /auth/password`（v1.7.6 + v1.7.8 G11 响应加 `{changedAt, otherSessionsRevoked}`），再往下是 kb 七端点。
