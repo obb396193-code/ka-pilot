@@ -49,7 +49,7 @@ function BatchPreview({ items, op, onClose }: { items: AccountItem[]; op: string
         <DialogDescription>对 {items.length} 户生成变更集组；试运行通过才能确认，执行逐账户，三键不变（当前为示例数据）。</DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-4 text-sm">
-        <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{preview.status}</Badge><span className="text-muted-foreground">原因码 {reasonCodeLabel[preview.reasonCode] ?? preview.reasonCode} · 过期 {fmtTime(preview.expiresAt)}</span></div>
+        <div className="flex flex-wrap items-center gap-2"><Badge variant="outline">{changesetStatusText(preview.status)}</Badge><span className="text-muted-foreground">原因码 {reasonCodeLabel[preview.reasonCode] ?? preview.reasonCode} · 过期 {fmtTime(preview.expiresAt)}</span></div>
         <div className="overflow-hidden rounded-lg border">
           <Table>
             <TableHeader className="bg-muted"><TableRow><TableHead>账户</TableHead><TableHead>变更项</TableHead><TableHead>风险</TableHead><TableHead>状态</TableHead><TableHead>数据截至</TableHead></TableRow></TableHeader>

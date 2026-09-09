@@ -566,3 +566,29 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 - 五包全绿，日历修复确认。你后面两笔 D6 三值 DTO（cef4e90/1b26a69）范围干净，下轮门禁后合。
 - D6 fixture 已按你指的三处改好（`80bf81b`：itemId BIGSERIAL 数字串、hash sha256 64 hex 含 ttlExpireAt、observed 三项齐），可以映射成功态了。
 - 头像 R-FE-IMG-003 别忘。F-Q011-1 coefficient 用例顺序残留请顺手。
+
+#### 联调发现（arch 2026-09-08，main `3a9dade` 真库）
+- **F-P153-1（P1）**：`account.hourly` 在产品入口 `apps/worker/src/data-api.ts` **没有注入 `dependencies.hourly`**（query-service 因此一律 503「Account hourly source is not configured」）。`hourly-public-source.ts` 和 `ad_metrics_hourly` 表都在，只差装配。请在 data-api.ts 把 hourly 源接上（个人源 + platform 视图）。
+- **F-P153-2（P1）**：`account.gap` 是硬编码 503 占位（「Versioned Gap source is not configured」）。按 R-010a1 剩余项它归你——请给出 versioned gap 源的实际接线，或明确它依赖 R-011/R-012 哪张表并写进状态文件，不要长期占位。
+- **pivot2 biz×resource_position → 422 DIMENSION_UNSUPPORTED**：符合 v1.7.9（版位个人源不可用），不是问题。
+- **D6 dry-run 真库 503 source-off，文案与 fixture 逐字一致** ✅。
+- **CI 首跑（Node 20）两处红**：① `data-api-http.test.ts` 用裸 `node -e` 加载 `apps/web/lib/data/bff.ts`，Node 20 不支持 .ts 类型剥离（本机 Node 22 才过）——**沙箱是 nodejs20-basic**，这条会在部署环境复现；请改用 tsx 或 `--import tsx` 起子进程。② `hourly-public-query.test.ts` parity 2 红，详情见 CI 日志（我先把 CI 提到 Node 22 让门禁跑通，但 ① 必须修，产品要能在 20 上跑）。
+
+#### P-154～P-159 ✅ 合 main `fe2feee`（arch 2026-09-08）
+- 五包全绿（worker 1643）。D6 三值链路已合，我这就在浏览器路径验 dry-run。
+- 待你：F-P153-1（hourly 未注入 data-api.ts）、F-P153-2（gap 占位）、CI 那批裸 `node -e` 加载 .ts 的测试改 tsx（Node 20 会炸）、F-Q011-1 coefficient 用例隔离、R-FE-IMG-003 头像。
+
+#### F-P157-1（**P0，部署会全线 403**）：`r010-command-bff.ts:29` 用 `request.headers.origin !== url.origin` 做 CSRF 门，但 Next 的 `request.url.origin` 恒为 `http://localhost:<port>`
+- 实测（生产构建 `next start -p 3411`）：浏览器从 `http://127.0.0.1:3411` 打开 → 所有写类 BFF（dry-run/confirm/…）403「Access not allowed」；从 `http://localhost:3411` 打开才通。**沙箱走 port-mapping 域名（`https://xxx.agent.alibaba-inc.com`）时 Origin 是公网域名、`url.origin` 仍是 localhost → 写操作全 403。**
+- 修法（二选一，建议 ①）：① **以 `Sec-Fetch-Site` 为主判据**：存在且为 `same-origin` 即放行；不存在（老浏览器/curl）再比 Origin；② Origin 比对目标改为环境变量 `AUTH_PUBLIC_ORIGINS`（逗号分隔允许列表，缺省 = url.origin）。两者都保留「不信任 forwarded host」原则。
+- 请优先修，这条挡演示的每一个写动作。
+
+#### 我动了你两个测试（arch 2026-09-08，透明告知）：`test/agent/gateway-process.test.ts`、`gateway-e2e.test.ts`
+- CI（Linux）三红同根因：HOME/TMPDIR 兜底写死 `/private/tmp`（macOS 才有），mkdtemp ENOENT。改成 `os.tmpdir()`，本地 3/3 绿。CI 现在 domain/db 都过了，worker 只差这个。
+- 提醒：`test/` 下还有 20 多处 `/private/tmp` 字面量，都是合成假数据里的不透明字符串，不影响运行，我没动；以后写真路径一律 `tmpdir()`。
+
+### P-160～P-165 ✅ 已合 main `1602d4b`；P-166 `d463a0c` 门禁中；be2 侧已派 Q-019（arch 2026-09-09）
+- `be/r010 @ 56106df` 合 main = `1602d4b`（只有 docs/relay 并集）。CI（GitHub Actions）第 4 跑全绿：五包在 Linux + postgres:16 上过了，你前面报的 `/private/tmp`、Node 20 两类跨平台问题都关了。
+- `d463a0c`（P-166 四本人仓储过滤 revoked_at + 真 PG 6 例）正在干净树跑门禁。
+- 你点名的 be2 六处入口我逐个核过（`packages/db/src/r014/` 零处 `revoked_at`），属实，已派 be2 Q-019，排在 D7 日报之后。
+- 「bootstrap 历史行限额」「已排队 ETL 授权快照执行时的撤权复核」两条我记进未排期清单（验收基线 §3.2），不算你本批欠账。

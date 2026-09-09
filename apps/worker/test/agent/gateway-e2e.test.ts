@@ -1,3 +1,4 @@
+import { tmpdir } from "node:os";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import type { AddressInfo } from "node:net";
 import { fileURLToPath } from "node:url";
@@ -52,8 +53,8 @@ describe("real protocol gateway with fake upstreams", () => {
       startupTimeoutMs: 8_000,
       baseEnv: {
         PATH: process.env.PATH ?? "/usr/bin:/bin",
-        HOME: process.env.HOME ?? "/private/tmp",
-        TMPDIR: process.env.TMPDIR ?? "/private/tmp",
+        HOME: process.env.HOME ?? tmpdir(),
+        TMPDIR: process.env.TMPDIR ?? tmpdir(), // 跨平台：Linux CI 无 /private/tmp
       },
     });
     const baseUrl = `http://127.0.0.1:${gatewayPort}`;

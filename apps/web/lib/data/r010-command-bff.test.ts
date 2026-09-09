@@ -1,5 +1,6 @@
 import assert from "node:assert/strict"
 import test from "node:test"
+import { readFileSync } from "node:fs"
 import { handleR010CommandRequest } from "./r010-command-bff.ts"
 
 const origin = "https://web.example", cookie = "ka_session=synthetic-session-longer-than-thirty-two", id = "r010-bff-test"
@@ -42,9 +43,10 @@ test("dry-run and plain ignore preserve honest 503, never reflect raw upstream m
     assert.equal(JSON.stringify(result).includes("upstream-secret"), false)
   }
 })
-test("rejects cross-site, missing/null/non-origin Origin and non-json before fetch", async () => {
-  for (const headers of [{ origin: "https://attacker.example" }, { origin: "null" }, { origin: "" }, { origin: origin + "/path" },
-    { "sec-fetch-site": "same-site" }, { "sec-fetch-site": "cross-site" }, { "content-type": "text/plain" }] as Record<string, string>[]) {
+test("rejects non-same-origin fetch metadata even with matching Origin, and rejects non-json", async () => {
+  for (const headers of [{ "sec-fetch-site": "same-site" }, { "sec-fetch-site": "cross-site" },
+    { "sec-fetch-site": "none" }, { "sec-fetch-site": "same-origin, cross-site" }, { "sec-fetch-site": "" },
+    { "content-type": "text/plain" }] as Record<string, string>[]) {
     let calls = 0
     const result = await handleR010CommandRequest(request({ headers }), { ...deps, fetchImpl: async () => { calls++; return json(success) } })
     assert.equal(result.status, headers["content-type"] ? 400 : 403); assert.equal(calls, 0)
@@ -62,15 +64,41 @@ test("JSON null upstream is invalid response, not truncated; stable known errors
   const mismatch = await handleR010CommandRequest(request(), { ...deps, fetchImpl: async () => json(error("FORBIDDEN"), 404) })
   assert.equal(mismatch.body.error?.code, "UPSTREAM_INVALID_RESPONSE")
 })
-test("missing Origin is rejected; no fetch metadata is allowed only with explicit same Origin", async () => {
-  const missing = request(); missing.headers.delete("origin")
+test("absent fetch metadata requires explicit matching Origin, ignoring forwarded host", async () => {
   let calls = 0
   const fetchImpl = async () => { calls++; return json(success) }
-  assert.equal((await handleR010CommandRequest(missing, { ...deps, fetchImpl })).status, 403)
+  for (const value of [null, "", "null", origin + "/path", "https://attacker.example"]) {
+    const denied = request(); denied.headers.delete("sec-fetch-site")
+    if (value === null) denied.headers.delete("origin"); else denied.headers.set("origin", value)
+    denied.headers.set("x-forwarded-host", "attacker.example")
+    denied.headers.set("forwarded", "host=attacker.example;proto=https")
+    assert.equal((await handleR010CommandRequest(denied, { ...deps, fetchImpl })).status, 403)
+  }
   assert.equal(calls, 0)
   const approved = request(); approved.headers.delete("sec-fetch-site")
   assert.equal((await handleR010CommandRequest(approved, { ...deps, fetchImpl })).status, 200)
   assert.equal(calls, 1)
+})
+test("browser same-origin metadata works through internal localhost for all three command paths", async () => {
+  for (const publicOrigin of ["http://127.0.0.1:3411", "https://synthetic.agent.example", null]) {
+    for (const path of [mute, ignore, dryRun]) {
+      const headers = new Headers({ cookie, "content-type": "application/json", "sec-fetch-site": "same-origin",
+        "x-forwarded-host": "attacker.example", forwarded: "host=attacker.example;proto=https" })
+      if (publicOrigin !== null) headers.set("origin", publicOrigin)
+      const input = new Request("http://localhost:3411" + path, { method: "POST", headers,
+        body: path === mute ? '{"days":1,"reason_chip":"synthetic"}' : path === ignore ? '{"mute_days":3}' : "{}" })
+      let calls = 0
+      const result = await handleR010CommandRequest(input, { ...deps, fetchImpl: async (url, init) => {
+        calls++
+        assert.equal(url, environment.KA_DATA_BACKEND_ORIGIN + path.replace("/api/internal/", "/api/v1/"))
+        assert.equal(new Headers(init?.headers).get("forwarded"), null)
+        assert.equal(new Headers(init?.headers).get("x-forwarded-host"), null)
+        return path === dryRun ? json(error("SOURCE_UNAVAILABLE"), 503) : json(success)
+      } })
+      assert.equal(calls, 1); assert.equal(result.status, path === dryRun ? 503 : 200)
+      assert.equal(result.requestId, id)
+    }
+  }
 })
 test("invalid server config cannot use browser credentials or origin as fallback", async () => {
   for (const environment of [{}, { ...deps.environment, KA_DATA_BACKEND_ORIGIN: "https://backend.example/path" },
@@ -138,5 +166,58 @@ test("timeout/network errors are stable and never retried", async () => {
   for (const cause of [new DOMException("private", "TimeoutError"), new Error("private")]) {
     let calls = 0; const result = await handleR010CommandRequest(request(), { ...deps, fetchImpl: async () => { calls++; throw cause } })
     assert.equal(result.status, cause instanceof DOMException ? 504 : 503); assert.equal(calls, 1); assert.equal(JSON.stringify(result).includes("private"), false)
+  }
+})
+
+function observedFixture() {
+  const fixture = JSON.parse(readFileSync(new URL("../../../../packages/contract/fixtures/changesets/dry-run-ok.json", import.meta.url), "utf8"))
+  delete fixture.meta._note // Documentation only; actual upstream _note is rejected below.
+  fixture.meta.requestId = id; fixture.data.changesetId = uuid
+  return fixture
+}
+test("dry-run preserves the canonical three-value response and only forwards approved credentials", async () => {
+  const fixture = observedFixture()
+  const result = await handleR010CommandRequest(request({ path: dryRun, raw: "{}", headers: {
+    "x-ka-account-scope": "*", authorization: "Bearer forged" } }), { ...deps, fetchImpl: async (url, init) => {
+    assert.equal(url, environment.KA_DATA_BACKEND_ORIGIN + dryRun.replace("/api/internal/", "/api/v1/"))
+    const headers = new Headers(init?.headers)
+    assert.equal(headers.get("authorization"), "Bearer " + environment.KA_DATA_SERVICE_TOKEN)
+    assert.equal(headers.get("cookie"), cookie); assert.equal(headers.get("x-ka-account-scope"), null)
+    assert.equal(init?.body, "{}"); assert.equal(init?.redirect, "error")
+    return json(fixture)
+  } })
+  assert.equal(result.status, 200); assert.deepEqual(result.body, fixture)
+})
+test("dry-run preserves unknown dataAsOf rather than substituting the current clock", async () => {
+  const fixture = observedFixture(); fixture.meta.dataAsOf = null
+  const result = await handleR010CommandRequest(request({ path: dryRun, raw: "{}" }), { ...deps, fetchImpl: async () => json(fixture) })
+  assert.equal(result.status, 200); assert.deepEqual(result.body, fixture)
+})
+test("dry-run rejects wrong object, malformed evidence, extras, lineage and correlation without changing values", async () => {
+  for (const mutate of [
+    (f: ReturnType<typeof observedFixture>) => { f.data.changesetId = "00000000-0000-4000-8000-000000000099" },
+    (f: ReturnType<typeof observedFixture>) => { delete f.data.items[0].observed },
+    (f: ReturnType<typeof observedFixture>) => { f.data.items[0].observed.value = "40" },
+    (f: ReturnType<typeof observedFixture>) => { f.data.items[1].verdict = "ok"; f.data.items[1].reason = null },
+    (f: ReturnType<typeof observedFixture>) => { f.data.summary.total = 1 },
+    (f: ReturnType<typeof observedFixture>) => { f.data.confirmAllowed = true; f.data.confirmBlockedReason = null },
+    (f: ReturnType<typeof observedFixture>) => { f.meta.requestId = "another-request" },
+    (f: ReturnType<typeof observedFixture>) => { f.meta.dataAsOf = "2027-01-01T00:00:00Z" },
+    (f: ReturnType<typeof observedFixture>) => { f.meta.businessDate = "2026-02-31" },
+    (f: ReturnType<typeof observedFixture>) => { f.meta._note = "unexpected-secret" },
+    (f: ReturnType<typeof observedFixture>) => { f.data.items[0].token = "unexpected-secret" },
+  ]) {
+    const fixture = observedFixture(); mutate(fixture)
+    const result = await handleR010CommandRequest(request({ path: dryRun, raw: "{}" }), { ...deps, fetchImpl: async () => json(fixture) })
+    assert.equal(result.status, 502); assert.equal(result.body.error?.code, "UPSTREAM_INVALID_RESPONSE")
+    assert.equal(JSON.stringify(result).includes("unexpected-secret"), false)
+  }
+})
+test("dry-run exact16MiB is fail-closed even when padded JSON would otherwise be valid", async () => {
+  const fixture = JSON.stringify(observedFixture()), padding = " ".repeat(16 * 1024 * 1024 - Buffer.byteLength(fixture))
+  for (const response of [new Response(fixture + padding, { headers: { "x-request-id": id } }),
+    new Response(fixture, { headers: { "x-request-id": id, "content-length": String(16 * 1024 * 1024) } })]) {
+    const result = await handleR010CommandRequest(request({ path: dryRun, raw: "{}" }), { ...deps, fetchImpl: async () => response })
+    assert.equal(result.status, 502); assert.equal(result.body.error?.code, "SOURCE_TRUNCATED")
   }
 })

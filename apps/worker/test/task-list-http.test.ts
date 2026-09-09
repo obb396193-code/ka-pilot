@@ -67,8 +67,8 @@ function taskResult(status = "active"): TaskListRepositoryResult {
       stageChangedAt: null,
       sopRunId: null,
       readinessFacts: {
-        accountCount: 0, rechargedCount: 0, builtCount: 0,
-        unfundedAccounts: [], unbuiltAccounts: [],
+        accountCount: 1, rechargedCount: 0, builtCount: 0,
+        unfundedAccounts: ["account-1"], unbuiltAccounts: ["account-1"],
       },
       readinessOverrides: [],
     }],

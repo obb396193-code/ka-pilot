@@ -53,8 +53,8 @@ describe("Gap fixed Registry and rule-source-off contract", () => {
       }
     }
     expect(variants.map(v => dataQueryResponseSchema.safeParse(v).success)).toEqual(expected);
-    const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e",
-      "const m=await import(process.argv[1]);process.stdout.write(JSON.stringify(JSON.parse(process.argv[2]).map(v=>m.dataQueryResponseSchema.safeParse(v).success)))",
+    const { stdout } = await promisify(execFile)(process.execPath, ["--import", "tsx", "--input-type=module", "-e",
+      "const m=await import(process.argv[1]).then(m => m.default ?? m);process.stdout.write(JSON.stringify(JSON.parse(process.argv[2]).map(v=>m.dataQueryResponseSchema.safeParse(v).success)))",
       new URL("../../web/lib/data/contracts.ts", import.meta.url).href, JSON.stringify(variants)], { timeout: 10000 });
     expect(JSON.parse(stdout)).toEqual(expected);
   });

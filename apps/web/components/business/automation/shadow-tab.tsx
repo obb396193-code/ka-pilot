@@ -29,7 +29,7 @@ const columns = helper.columns([
   helper.accessor((row) => row.t1Result?.cashCpaDelta.value ?? null, { id: "t1", header: "T+1 观察", meta: { label: "T+1 观察", align: "right" }, cell: ({ row }) => row.original.t1Result ? <span className={cn("text-xs tabular-nums", (row.original.t1Result.cashCpaDelta.value ?? 0) < 0 ? "text-status-success" : "text-status-warning")}>CPA {rv(row.original.t1Result.cashCpaDelta, "money")} · 消耗 {mv(row.original.t1Result.costDelta, "money0")} · 转化 {mv(row.original.t1Result.realConversionDelta)}</span> : <MissingValue title="未成熟" /> }),
   helper.accessor((row) => row.t7Result?.cashCpaDelta.value ?? null, { id: "t7", header: "T+7 观察", meta: { label: "T+7 观察", align: "right" }, cell: ({ row }) => row.original.t7Result ? <span className="text-xs tabular-nums">CPA {rv(row.original.t7Result.cashCpaDelta, "money")}</span> : <MissingValue title="未成熟" /> }),
   helper.accessor("status", { header: "状态", meta: { label: "状态" }, cell: ({ getValue }) => <TypeChip>{getValue()}</TypeChip> }),
-  actionsColumn<ShadowDecision>((row) => <DropdownMenuItem asChild><Link href={`/diagnostics/${row.workItemId}`}>看工作项</Link></DropdownMenuItem>),
+  actionsColumn<ShadowDecision>((row) => <DropdownMenuItem asChild><Link href={`/work-items/${row.workItemId}`}>看工作项</Link></DropdownMenuItem>),
 ])
 
 export function ShadowTab() {
@@ -57,7 +57,7 @@ export function ShadowTab() {
             <div className="grid gap-2 @3xl/main:grid-cols-4">
               {[
                 { label: "观察改善率", pass: exam.gates.observation.pass, text: `${rv(exam.gates.observation.value)} · 门槛 ${(exam.gates.observation.threshold * 100).toFixed(0)}% · 最少 ${exam.gates.observation.minSample} 样本` },
-                { label: "执行可靠性", pass: exam.gates.executionReliability.pass, text: `成功 ${rv(exam.gates.executionReliability.successRate)} · UNKNOWN ${rv(exam.gates.executionReliability.unknownRate)}` },
+                { label: "执行可靠性", pass: exam.gates.executionReliability.pass, text: `成功 ${rv(exam.gates.executionReliability.successRate)} · 结果未知 ${rv(exam.gates.executionReliability.unknownRate)}` },
                 { label: "范围", pass: exam.gates.scope.pass, text: exam.gates.scope.note },
                 { label: "损失上限", pass: exam.gates.lossBound.pass, text: `30 日净损 ${mv(exam.gates.lossBound.netLoss30d, "money0")} · 上限 ¥${exam.gates.lossBound.threshold}` },
               ].map((gate) => <div key={gate.label} className="rounded-lg border px-3 py-2 text-sm"><div className="flex items-center justify-between"><span className="font-medium">{gate.label}</span>{gate.pass ? <StatusChip tone="success">过</StatusChip> : <StatusChip tone="critical">未过</StatusChip>}</div><p className="mt-1 text-xs text-muted-foreground">{gate.text}</p></div>)}

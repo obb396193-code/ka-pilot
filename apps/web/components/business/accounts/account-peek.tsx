@@ -52,7 +52,7 @@ export function AccountInlinePeek({ item }: { item: AccountItem }) {
         <div className="rounded-xl border bg-card p-4 @5xl/main:col-span-5">
           <div className="text-sm font-medium">建议下一步</div>
           {item.nextSuggestion ? (
-            <Button asChild variant="outline" size="sm" className="mt-2"><Link href={`/diagnostics/${item.nextSuggestion.workItemId}`}>{item.nextSuggestion.title}</Link></Button>
+            <Button asChild variant="outline" size="sm" className="mt-2"><Link href={`/work-items/${item.nextSuggestion.workItemId}`}>{item.nextSuggestion.title}</Link></Button>
           ) : <p className="mt-2 text-xs text-muted-foreground">没有待处理的工作项；系统不生成假建议。</p>}
           <div className="mt-3 flex flex-wrap gap-1.5">{item.tags.map((tag) => <TypeChip key={tag}>{tag}</TypeChip>)}{item.starred ? <TypeChip>★ 星标</TypeChip> : null}</div>
         </div>
