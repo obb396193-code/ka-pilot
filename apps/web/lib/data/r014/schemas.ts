@@ -389,3 +389,101 @@ export const namingRulesTestSchema = z.object({
   hitRate: z.number().min(0).max(1),
   counts: z.record(z.string(), z.number().int().nonnegative()),
 }).strict()
+
+// ── Q-030：kb 七条 / 账户交接 / 自助改密 / 日报 的前端侧镜像 ─────────────────
+// 逐条对应 packages/domain/src/r014/{kb,account-transfer,daily-report}-contract.ts。
+// 形状以 packages/contract/fixtures 为准；后端改了这里不改，BFF 会以
+// UPSTREAM_INVALID_RESPONSE 挡住——那正是这层校验存在的意义。
+
+const kbKindSchema = z.enum(["manual", "ai_report", "case", "sop"])
+const kbObjectTypeSchema = z.enum(["account", "task", "changeset", "work_item", "material"])
+
+export const kbDocumentSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  kind: kbKindSchema,
+  parentId: z.string().uuid().nullable(),
+  contentJson: z.unknown().nullable(),
+  contentText: z.string(),
+  documentLinks: z.array(z.object({ toId: z.string().uuid(), label: z.string() }).strict()),
+  businessRefs: z.array(z.object({ type: kbObjectTypeSchema, id: z.string() }).strict()),
+  revision: z.number().int().nonnegative(),
+  updatedBy: z.object({ userId: z.string().uuid(), name: z.string() }).strict().nullable(),
+  updatedAt: z.string(),
+  readOnly: z.boolean(),
+}).strict()
+
+type KbTreeNode = {
+  id: string; title: string; kind: z.infer<typeof kbKindSchema>
+  parentId: string | null; position: string | null; children: KbTreeNode[]
+}
+const kbTreeNodeSchema: z.ZodType<KbTreeNode> = z.lazy(() => z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  kind: kbKindSchema,
+  parentId: z.string().uuid().nullable(),
+  position: z.string().nullable(),
+  children: z.array(kbTreeNodeSchema),
+}).strict())
+
+export const kbTreeSchema = z.object({ items: z.array(kbTreeNodeSchema) }).strict()
+
+export const kbSearchSchema = z.object({
+  items: z.array(z.object({
+    id: z.string().uuid(), title: z.string(), kind: kbKindSchema,
+    snippet: z.string(), score: z.number(),
+  }).strict()),
+}).strict()
+
+const kbRefItemSchema = z.object({
+  id: z.string().uuid(), title: z.string(), kind: kbKindSchema,
+}).strict()
+
+export const kbBacklinksSchema = z.object({ items: z.array(kbRefItemSchema) }).strict()
+
+export const kbByObjectSchema = z.object({
+  objectType: kbObjectTypeSchema,
+  objectId: z.string(),
+  items: z.array(kbRefItemSchema),
+}).strict()
+
+/** 软删只回置位时间——行还在，前端据此显示「已删除于…」而不是让文档凭空消失。 */
+export const kbDeletedSchema = z.object({ deletedAt: z.string() }).strict()
+
+export const accountTransferSchema = z.object({
+  transferId: z.string().uuid(),
+  moved: z.object({
+    accounts: z.number().int().nonnegative(),
+    workItems: z.number().int().nonnegative(),
+    dispatches: z.number().int().nonnegative(),
+  }).strict(),
+  notifiedUserIds: z.array(z.string().uuid()),
+  /** 没交接成的逐条列出，前端要显示哪几户没动、为什么——不静默吞掉。 */
+  skipped: z.array(z.object({
+    media: z.string(),
+    accountId: z.string(),
+    reason: z.enum(["blocked_by_changeset", "not_authorized", "not_found"]),
+    detail: z.string().min(1),
+  }).strict()),
+}).strict()
+
+export const passwordChangedSchema = z.object({
+  changedAt: z.string(),
+  /** 改密后被下线的其他设备数；当前这台保留。 */
+  otherSessionsRevoked: z.number().int().nonnegative(),
+}).strict()
+
+/** 日报模块形状各异（六卡 / 趋势 / 健康度 / 维度行），这里只锁到「有 key 和 title」。 */
+export const dailyReportSchema = z.object({
+  schema: z.literal("daily-report/v1"),
+  date: z.string(),
+  role: z.enum(["optimizer", "lead", "exec"]),
+  dataAsOf: z.string().nullable(),
+  modules: z.array(z.object({ key: z.string().min(1), title: z.string().min(1) }).passthrough()),
+  actions: z.object({ pushDingtalk: z.boolean(), exportPdf: z.boolean() }).strict(),
+  delivery: z.object({
+    status: z.enum(["not_sent", "queued", "sent", "failed"]),
+    at: z.string().nullable(),
+    target: z.string().nullable(),
+  }).strict(),
+}).strict()

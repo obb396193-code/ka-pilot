@@ -1,7 +1,9 @@
 import type { ApprovedWorkspaceAuthContext } from "@ka/domain";
 import type { Pool } from "pg";
 
-import { R014RepositoryError, approveAuth, requireTimestamp } from "./workspace-authority.js";
+import {
+  R014RepositoryError, approveAuth, requireTimestamp, workItemScopeClause,
+} from "./workspace-authority.js";
 
 /**
  * v1.5 1.8 日报（D7）的读侧。
@@ -23,6 +25,9 @@ export interface DailyDimensionRow {
     cost: number | null; cashCost: number | null; exposure: number | null; click: number | null;
     conversion: number | null; realConversion: number | null; costSpace: number | null;
   };
+  /** 该行当日的考核价（取组内最新一版）；没有就是 null，达标与否随之「不知道」。 */
+  price: number | null;
+  priceEffectiveDate: string | null;
 }
 
 export interface DailyTrendPoint {
@@ -57,10 +62,6 @@ export interface DailyReportFacts {
 const SCOPED_METRIC = `($3::text = 'team_workspace_readonly' OR EXISTS (
   SELECT 1 FROM jsonb_to_recordset($4::jsonb) AS allowed(media text, account_id text)
   WHERE allowed.media=metric.media AND allowed.account_id=metric.account_id))`;
-
-const SCOPED_WORK_ITEM = `($2::text = 'team_workspace_readonly' OR account_id IS NULL OR EXISTS (
-  SELECT 1 FROM jsonb_to_recordset($3::jsonb) AS allowed(media text, account_id text)
-  WHERE allowed.media=work_items.media AND allowed.account_id=work_items.account_id))`;
 
 interface DailyScope { kind: string; allowed: string }
 
@@ -124,7 +125,8 @@ export class DailyReportRepository {
     const metricColumns = `sum(metric.cost) AS cost, sum(metric.cash_cost) AS cash_cost,
       sum(metric.exposure) AS exposure, sum(metric.click) AS click,
       sum(metric.conversion) AS conversion, sum(metric.real_conversion) AS real_conversion,
-      sum(metric.cost_space) AS cost_space`;
+      sum(metric.cost_space) AS cost_space,
+      max(metric.assessment_price_snapshot) AS price`;
     const params = [workspaceId, date, scope.kind, scope.allowed];
 
     const account = (await this.pool.query(
@@ -175,6 +177,11 @@ export class DailyReportRepository {
       realConversion: row.real_conversion === null ? null : Number(row.real_conversion),
       costSpace: row.cost_space === null ? null : Number(row.cost_space),
     });
+    const priceOf = (row: Record<string, unknown>): { price: number | null; priceEffectiveDate: string | null } => ({
+      price: row.price === null || row.price === undefined ? null : Number(row.price),
+      // 快照价没有独立生效日；日报口径就是「当日那一版」，用业务日本身，不编一个更早的日期。
+      priceEffectiveDate: row.price === null || row.price === undefined ? null : date,
+    });
 
     return {
       account: account.map((row) => ({
@@ -182,13 +189,13 @@ export class DailyReportRepository {
         label: String(row.label),
         media: String(row.media),
         accountId: String(row.account_id),
-        metrics: metricsOf(row),
+        metrics: metricsOf(row), ...priceOf(row),
       })),
       task: byTask.map((row) => ({
-        key: String(row.task_id), label: String(row.label), metrics: metricsOf(row),
+        key: String(row.task_id), label: String(row.label), metrics: metricsOf(row), ...priceOf(row),
       })),
       biz: byBiz.map((row) => ({
-        key: String(row.biz), label: String(row.biz), metrics: metricsOf(row),
+        key: String(row.biz), label: String(row.biz), metrics: metricsOf(row), ...priceOf(row),
       })),
     };
   }
@@ -225,10 +232,11 @@ export class DailyReportRepository {
 
     const anomalies = await this.pool.query(
       `SELECT COALESCE(title, '工作项') AS title, severity FROM work_items
-       WHERE workspace_id=$1 AND status='open' AND ${SCOPED_WORK_ITEM}
+       WHERE workspace_id=$1 AND status='open'
+         AND ${workItemScopeClause("$2", "$3", "work_items", "$4")}
        ORDER BY CASE severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1 WHEN 'P2' THEN 2 ELSE 3 END, created_at DESC
        LIMIT 10`,
-      [approved.workspaceId, scope.kind, scope.allowed],
+      [approved.workspaceId, scope.kind, scope.allowed, approved.userId],
     );
 
     const determinable = Number(cards.determinable);

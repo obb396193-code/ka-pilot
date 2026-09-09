@@ -4,6 +4,15 @@ import "server-only"
 // 实现放在无副作用的 handlers.ts，测试才导得进来。
 export {
   handleAccountPipeline,
+  handleAccountTransfer,
+  handleAuthPassword,
+  handleDailyReport,
+  handleKbBacklinks,
+  handleKbByObject,
+  handleKbDocument,
+  handleKbDocuments,
+  handleKbSearch,
+  handleTransferAll,
   handleAdminAccountNamePatch,
   handleAdminAccountNames,
   handleAdminNamingRules,

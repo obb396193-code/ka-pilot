@@ -30,11 +30,17 @@ export const accountTransferResultSchema = z.object({
     dispatches: z.number().int().nonnegative(),
   }).strict(),
   notifiedUserIds: z.array(z.string().uuid()),
-  /** 没能交接的账户与原因；**不静默跳过**，调用方要能看到哪几户没动。 */
+  /**
+   * 没能交接的账户与原因；**不静默跳过**，调用方要能看到哪几户没动、为什么。
+   * 枚举与 `detail` 按 v1.9.13 的 fixture（我原来那版是 not_granted/already_owned，
+   * arch 冻的是 not_authorized/not_found，以 fixture 为准）。
+   */
   skipped: z.array(z.object({
     media: mediaSchema,
     accountId: accountIdSchema,
-    reason: z.enum(["not_granted", "blocked_by_changeset", "already_owned"]),
+    reason: z.enum(["blocked_by_changeset", "not_authorized", "not_found"]),
+    /** 给人看的一句话，前端直接显示，不用自己拼措辞。 */
+    detail: z.string().min(1),
   }).strict()),
 }).strict();
 export type AccountTransferResult = z.infer<typeof accountTransferResultSchema>;

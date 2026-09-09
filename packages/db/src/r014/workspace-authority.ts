@@ -139,17 +139,41 @@ export function accountScopeClause(
 }
 
 /**
- * 工作项：账户级的按 (media, account_id) 收口；**任务级的（account 为空）看任务**——
- * 该任务下只要有一个他授权的账户就算他能看见，与任务列表同口径。
- * 两者都不沾的（账户任务都为空）不返回：无法归属给任何人的工作项，不该出现在个人视图里。
+ * 工作项可见性（契约 v1.9.11 三类矩阵）。参数：`$kindParam` = scope 种类，
+ * `$listParam` = 授权 tuple 数组，`$userParam` = 当前 user id。
+ *
+ * | 类 | 个人空间 | 团队空间 |
+ * |---|---|---|
+ * | 账户型（media+account 非空） | scope 命中该 tuple | 全量 |
+ * | 任务型（账户空、task 非空） | 任务下有授权账户 **或** assignee/creator 是本人 | 全量 |
+ * | 纯私人（两者皆空） | 仅 assignee/creator 本人 | **不出现** |
+ *
+ * 两处容易写错、都写进断言了：
+ * - 任务型「派给我」必须可见——派发本身就是授权动作，派给谁谁就得看得到；
+ * - 团队分支**不能直接 TRUE**，纯私人项不是团队对象，团队空间里不该出现别人的备忘。
  */
-export function workItemScopeClause(kindParam: string, listParam: string, alias: string): string {
-  return `(${kindParam}::text = 'team_workspace_readonly' OR EXISTS (
+export function workItemScopeClause(
+  kindParam: string, listParam: string, alias: string, userParam: string,
+): string {
+  const accountRow = `${alias}.account_id IS NOT NULL`;
+  const taskRow = `${alias}.account_id IS NULL AND ${alias}.task_id IS NOT NULL`;
+  const privateRow = `${alias}.account_id IS NULL AND ${alias}.task_id IS NULL`;
+  const mine = `(${alias}.assignee = ${userParam}::uuid OR ${alias}.creator = ${userParam}::uuid)`;
+  const tupleHit = `EXISTS (
     SELECT 1 FROM jsonb_to_recordset(${listParam}::jsonb) AS scoped(media text, account_id text)
-    WHERE scoped.media = ${alias}.media AND scoped.account_id = ${alias}.account_id)
-    OR (${alias}.account_id IS NULL AND ${alias}.task_id IS NOT NULL AND EXISTS (
-      SELECT 1 FROM task_accounts AS scoped_link
-      JOIN jsonb_to_recordset(${listParam}::jsonb) AS scoped_tuple(media text, account_id text)
-        ON scoped_tuple.media = scoped_link.media AND scoped_tuple.account_id = scoped_link.account_id
-      WHERE scoped_link.workspace_id = ${alias}.workspace_id AND scoped_link.task_id = ${alias}.task_id)))`;
+    WHERE scoped.media = ${alias}.media AND scoped.account_id = ${alias}.account_id)`;
+  const taskHasGrant = `EXISTS (
+    SELECT 1 FROM task_accounts AS scoped_link
+    JOIN jsonb_to_recordset(${listParam}::jsonb) AS scoped_tuple(media text, account_id text)
+      ON scoped_tuple.media = scoped_link.media AND scoped_tuple.account_id = scoped_link.account_id
+    WHERE scoped_link.workspace_id = ${alias}.workspace_id AND scoped_link.task_id = ${alias}.task_id)`;
+
+  return `(CASE
+    WHEN ${kindParam}::text = 'team_workspace_readonly'
+      THEN NOT (${privateRow})
+    WHEN ${accountRow} THEN ${tupleHit}
+    WHEN ${taskRow} THEN (${taskHasGrant} OR ${mine})
+    ELSE ${mine}
+  END)`;
 }
+
