@@ -267,16 +267,40 @@ export class KbRepository {
     });
   }
 
-  /** FTS 搜索（非 LLM）。中文靠子串，见 `relevanceScore` 注释里的实测。 */
+  /** 装了 pg_trgm 就用它算相关度；没装则降级到子串 + 启发式分数（v1.9.8）。 */
+  private trgm: boolean | null = null;
+
+  private async hasTrigram(): Promise<boolean> {
+    // 每进程问一次就够：扩展不会在运行期装上或卸掉。
+    if (this.trgm === null) {
+      this.trgm = (await this.pool.query(
+        "SELECT 1 FROM pg_extension WHERE extname='pg_trgm'",
+      )).rows.length === 1;
+    }
+    return this.trgm;
+  }
+
+  /**
+   * 搜索（非 LLM）。**匹配一律靠子串**——实测 `simple` 分词把连续中文串当一个词、
+   * 而 trigram 的 `similarity('新任务开户到基建SOP','开户')` 也是 **0**（短中文词的
+   * trigram 集合几乎不重叠）。所以 `%` 算子和 FTS 都不能当匹配条件，只有 ILIKE 能。
+   *
+   * 装了 pg_trgm 的价值有两条：GIN 索引能加速这个 ILIKE；`similarity()` 给长查询
+   * 一个真实相关度。所以 v1.9.8 说的「score 换 similarity」我这样落：
+   * **similarity 有值就用它，为 0（短中文词）时回落到可解释的启发式**，
+   * 否则整页搜索结果分数全 0，排序等于没有。
+   */
   async search(
     auth: ApprovedWorkspaceAuthContext,
     query: string,
     kind?: string,
     limit = 20,
-  ): Promise<{ items: KbSearchItem[] }> {
+  ): Promise<{ items: KbSearchItem[]; warnings: string[] }> {
     const approved = approveAuth(auth);
     const needle = query.trim();
-    if (needle === "") return { items: [] };
+    const trigram = await this.hasTrigram();
+    const warnings = trigram ? [] : ["TRGM_MISSING"];
+    if (needle === "") return { items: [], warnings };
     const params: unknown[] = [approved.workspaceId, approved.userId, `%${needle}%`, needle];
     let kindClause = "";
     if (kind !== undefined) {
@@ -285,8 +309,11 @@ export class KbRepository {
     }
     params.push(Math.min(Math.max(limit, 1), 100));
 
+    const scoreColumn = trigram
+      ? `GREATEST(similarity(document.title, $4), similarity(coalesce(document.content_text,''), $4)) AS trgm_score`
+      : "NULL::float8 AS trgm_score";
     const rows = (await this.pool.query(
-      `SELECT ${SELECT_COLUMNS} FROM kb_documents AS document
+      `SELECT ${SELECT_COLUMNS}, ${scoreColumn} FROM kb_documents AS document
        WHERE ${VISIBLE}${kindClause}
          AND (document.title ILIKE $3 OR document.content_text ILIKE $3
               OR to_tsvector('simple', coalesce(document.title,'') || ' ' || coalesce(document.content_text,''))
@@ -299,14 +326,17 @@ export class KbRepository {
       requireOwnWorkspace(row, approved.workspaceId);
       const title = String(row.title);
       const contentText = row.content_text === null ? "" : String(row.content_text);
+      const trgmScore = row.trgm_score === null ? 0 : Number(row.trgm_score);
       return {
         id: String(row.id), title, kind: mapKind(row.kind),
         snippet: buildSnippet(needle, contentText),
-        score: relevanceScore(needle, title, contentText),
+        // similarity 为 0 的多半是短中文词（实测「开户」对整串标题就是 0）；
+        // 那种情况下用启发式排序，总好过一屏 0 分。
+        score: trgmScore > 0 ? Number(trgmScore.toFixed(4)) : relevanceScore(needle, title, contentText),
       };
     });
     items.sort((left, right) => right.score - left.score || left.title.localeCompare(right.title));
-    return { items };
+    return { items, warnings };
   }
 
   /**

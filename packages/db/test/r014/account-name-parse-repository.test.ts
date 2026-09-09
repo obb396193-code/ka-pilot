@@ -10,7 +10,8 @@ const databaseUrl = process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1
 
 interface AuthContext {
   workspaceId: string; userId: string; role: "lead" | "optimizer"; workspaceKind: "personal";
-  scope: { kind: "explicit_accounts"; accounts: never[] };
+  // v1.9.9：成员级归属操作按会话 scope 收口，所以 scope 里要放真 tuple。
+  scope: { kind: "explicit_accounts"; accounts: { media: string; accountId: string; accessLevel: "execute" }[] };
 }
 
 const SEGMENTS = [
@@ -47,7 +48,15 @@ describe("R-017 account name parse repository (real PostgreSQL)", () => {
         "INSERT INTO workspace_memberships(workspace_id,identity_id,user_id,role,is_active) VALUES($1,$2,$3,$4,true)",
         [workspaceId, identityId, userId, role],
       );
-      contexts.push({ workspaceId, userId, role, workspaceKind: "personal", scope: { kind: "explicit_accounts", accounts: [] } });
+      contexts.push({
+        workspaceId, userId, role, workspaceKind: "personal",
+        scope: {
+          kind: "explicit_accounts",
+          accounts: ["r017-a1", "r017-a2", "r017-a3"].map((accountId) => ({
+            media: "KUAISHOU", accountId, accessLevel: "execute" as const,
+          })),
+        },
+      });
     }
     [lead, optimizer] = contexts as [AuthContext, AuthContext];
     for (const [accountId, name] of [["r017-a1", "DAU-常规"], ["r017-a2", "DAU-年轻人"], ["r017-a3", "乱起的"]] as const) {

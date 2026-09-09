@@ -229,4 +229,37 @@ describe("D7 daily report route (real PostgreSQL)", () => {
     expect(ubp.unsupported).toBe(true);
     expect(ubp.rows).toEqual([]);
   });
+
+  it("attributes business by the bound task, then the nickname, then 未标注业务", async () => {
+    // 这个套件原来没建任务绑定，所以先补一条：账户 → 任务 → 业务 是 v1.4 的归属链。
+    const taskId = `d7-biz-${randomUUID()}`;
+    await pool.query(
+      "INSERT INTO tasks(workspace_id,task_id,task_name,status) VALUES($1,$2,'带业务的任务','active')",
+      [workspaceId, taskId]);
+    await pool.query(
+      `INSERT INTO task_accounts(workspace_id,task_id,media,account_id,valid_from)
+       VALUES($1,$2,'KUAISHOU','d7-a1',$3::date)`,
+      [workspaceId, taskId, DATE]);
+
+    const before = (dataOf(await call()).modules as Record<string, unknown>[])
+      .find((module) => module.key === "dim_biz")!;
+    // 灌数任务没填 biz_name、账户也没有解析行 → 全部「未标注业务」，但不丢行。
+    expect((before.rows as { key: string }[]).map((row) => row.key)).toEqual(["未标注业务"]);
+
+    // 给绑定任务填上业务名 → 归属链第一跳就该接管。
+    await pool.query("UPDATE tasks SET biz_name='CVR有端' WHERE workspace_id=$1 AND task_id=$2", [workspaceId, taskId]);
+    const after = (dataOf(await call()).modules as Record<string, unknown>[])
+      .find((module) => module.key === "dim_biz")!;
+    const rows = after.rows as { key: string; metrics: Record<string, number | null> }[];
+    expect(rows.map((row) => row.key)).toContain("CVR有端");
+
+    // 归并加总仍等于大盘卡：归属换了口径，钱不能变多也不能变少。
+    const summary = (dataOf(await call()).modules as Record<string, unknown>[])
+      .find((module) => module.key === "executive_summary")!;
+    const cardCost = (summary.cards as { cost: { value: number | null } }).cost.value;
+    expect(rows.reduce((total, row) => total + (row.metrics.cost ?? 0), 0)).toBeCloseTo(cardCost ?? 0, 6);
+
+    await pool.query("DELETE FROM task_accounts WHERE workspace_id=$1 AND task_id=$2", [workspaceId, taskId]);
+    await pool.query("DELETE FROM tasks WHERE workspace_id=$1 AND task_id=$2", [workspaceId, taskId]);
+  });
 });
