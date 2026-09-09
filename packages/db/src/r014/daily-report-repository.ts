@@ -25,6 +25,9 @@ export interface DailyDimensionRow {
     cost: number | null; cashCost: number | null; exposure: number | null; click: number | null;
     conversion: number | null; realConversion: number | null; costSpace: number | null;
   };
+  /** 该行当日的考核价（取组内最新一版）；没有就是 null，达标与否随之「不知道」。 */
+  price: number | null;
+  priceEffectiveDate: string | null;
 }
 
 export interface DailyTrendPoint {
@@ -122,7 +125,8 @@ export class DailyReportRepository {
     const metricColumns = `sum(metric.cost) AS cost, sum(metric.cash_cost) AS cash_cost,
       sum(metric.exposure) AS exposure, sum(metric.click) AS click,
       sum(metric.conversion) AS conversion, sum(metric.real_conversion) AS real_conversion,
-      sum(metric.cost_space) AS cost_space`;
+      sum(metric.cost_space) AS cost_space,
+      max(metric.assessment_price_snapshot) AS price`;
     const params = [workspaceId, date, scope.kind, scope.allowed];
 
     const account = (await this.pool.query(
@@ -173,6 +177,11 @@ export class DailyReportRepository {
       realConversion: row.real_conversion === null ? null : Number(row.real_conversion),
       costSpace: row.cost_space === null ? null : Number(row.cost_space),
     });
+    const priceOf = (row: Record<string, unknown>): { price: number | null; priceEffectiveDate: string | null } => ({
+      price: row.price === null || row.price === undefined ? null : Number(row.price),
+      // 快照价没有独立生效日；日报口径就是「当日那一版」，用业务日本身，不编一个更早的日期。
+      priceEffectiveDate: row.price === null || row.price === undefined ? null : date,
+    });
 
     return {
       account: account.map((row) => ({
@@ -180,13 +189,13 @@ export class DailyReportRepository {
         label: String(row.label),
         media: String(row.media),
         accountId: String(row.account_id),
-        metrics: metricsOf(row),
+        metrics: metricsOf(row), ...priceOf(row),
       })),
       task: byTask.map((row) => ({
-        key: String(row.task_id), label: String(row.label), metrics: metricsOf(row),
+        key: String(row.task_id), label: String(row.label), metrics: metricsOf(row), ...priceOf(row),
       })),
       biz: byBiz.map((row) => ({
-        key: String(row.biz), label: String(row.biz), metrics: metricsOf(row),
+        key: String(row.biz), label: String(row.biz), metrics: metricsOf(row), ...priceOf(row),
       })),
     };
   }
