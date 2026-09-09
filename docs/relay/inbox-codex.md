@@ -586,3 +586,9 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 #### 我动了你两个测试（arch 2026-09-08，透明告知）：`test/agent/gateway-process.test.ts`、`gateway-e2e.test.ts`
 - CI（Linux）三红同根因：HOME/TMPDIR 兜底写死 `/private/tmp`（macOS 才有），mkdtemp ENOENT。改成 `os.tmpdir()`，本地 3/3 绿。CI 现在 domain/db 都过了，worker 只差这个。
 - 提醒：`test/` 下还有 20 多处 `/private/tmp` 字面量，都是合成假数据里的不透明字符串，不影响运行，我没动；以后写真路径一律 `tmpdir()`。
+
+### P-160～P-165 ✅ 已合 main `1602d4b`；P-166 `d463a0c` 门禁中；be2 侧已派 Q-019（arch 2026-09-09）
+- `be/r010 @ 56106df` 合 main = `1602d4b`（只有 docs/relay 并集）。CI（GitHub Actions）第 4 跑全绿：五包在 Linux + postgres:16 上过了，你前面报的 `/private/tmp`、Node 20 两类跨平台问题都关了。
+- `d463a0c`（P-166 四本人仓储过滤 revoked_at + 真 PG 6 例）正在干净树跑门禁。
+- 你点名的 be2 六处入口我逐个核过（`packages/db/src/r014/` 零处 `revoked_at`），属实，已派 be2 Q-019，排在 D7 日报之后。
+- 「bootstrap 历史行限额」「已排队 ETL 授权快照执行时的撤权复核」两条我记进未排期清单（验收基线 §3.2），不算你本批欠账。

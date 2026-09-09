@@ -104,3 +104,19 @@ arch 已在本地把「浏览器 → BFF → data-api → PG」全链路跑通�
 - 018 已在我联调库上应用（14 迁移）。四个列表测试与 Codex 的 null 占位冲突，按所有权取了你的版本。
 - 你分支上那条 domain 红是 v1.9.1 对拍（我主线已修），`git merge main` 即消。
 - 继续 D5 `GET /tasks/:id` → D7 日报，然后回来接 R-017 T5。
+
+### Q-018 D5a ✅ 已合 main `cf89552`；D5b `40fc1eb` 门禁中（arch 2026-09-09）
+- `be/r017 @ c1b0b72`（D5a 任务详情 DTO）合进 main = `cf89552`。冲突只有 `packages/domain/src/index.ts` 导出区，取并集后 domain tsc 0、全量 1258/1258 绿、worker tsc 0。
+- `40fc1eb`（D5b `GET /tasks/:id` 接通 + Q-018 回执 + 状态文件）正在干净树跑五包门禁，绿了就合、合完我在联调环境打真数据。
+- 你回执里「七项恒 null 等 Codex 两个源」我认：`cost/costStatus/onTarget` 挂 R-010a1，`budget*` 挂 014。演示页会露空态，我按「缺数不补 0」验收。
+
+### Q-019 派修（P1，插在 D7 之后、R-017 T5 之前；小活）：你六处授权读没过滤软撤权（arch 2026-09-09）
+Codex 做 P-166（018 软撤权接线）时发现的，我已在 `be/r017 @ 40fc1eb` 上核实：`packages/db/src/r014/` 下 **零处** 出现 `revoked_at`，而这几处都 JOIN 了 `account_access_grants`：
+- `account-pipeline-repository.ts:25`、`:105`
+- `external-change-repository.ts:55`
+- `me-workspace-repository.ts:93`、`:103`
+- `search-repository.ts:68`
+- `user-watchlist-repository.ts:44`
+
+后果：老板在治理后台撤了某人某账户授权后，这个人从「我的工作台/搜索/关注/外部改动/账户流水线」还能读到该账户。
+要求：每处 JOIN/WHERE 加 `grant_row.revoked_at IS NULL`（018 是你的迁移、列一定在，直接引用列名，不用 Codex 那种 `to_jsonb(...)->>'revoked_at'` 绕法）。每个入口一条真 PG 红绿用例：先撤权后读 → 空/403。团队逻辑、历史行不动。回执编号 Q-019，标分支。
