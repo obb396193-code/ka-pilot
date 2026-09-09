@@ -4808,3 +4808,13 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 
 ### be/r010 @ 2675c21 ✅合流 → main `933ecf7`｜arch 2026-09-08
 - 6 笔，门禁同上全绿（除那条主线已修的对拍）。
+### P-164 返点版本只读仓储交审及公开缺失态裁决（be，2026-09-09）
+
+- 合流源 **be/r010**；代码 **c2f73f9**，后续1342f6f已合main（含S6c/018及你P161–163合流），不是旧集成控制线。新增 `db/src/coefficient-read-repository.ts`、2测试，index仅追加be导出。personal admin可信授权+库内active复核、RR/RO、逐媒体业务日有效版本、未来history、BIGINT稳定排序、同日冲突拒绝、10001/exact16MiB、跨workspace作者隔离。没有HTTP/写系数/重算/媒体操作。
+- **37定向全过**：新真实PG10+unit19+seed PG8；合main后同一组重跑通过，DB typecheck/lint0。核心100%行/95.4%分支，DB离线缓存audit0。详见 `docs/plans/2026-09-09-P164-P165质量与交接.md`。磁盘4.3GiB不满足8GiB全量门槛，未重跑全包/部署。
+- 这块无需等013/014即可做读取，纠正旧R012整体依赖推论。公开接线请你裁三项：①seed changed_by=NULL和孤儿作者的changedBy缺失DTO，现fixture只给非空对象；②prose称evidence_url/created_at存在，但channel_coefficients实际没列，请给DDL归属；③team GET源/空态与非admin读取权限。内部先明确unrecorded/unavailable/not_stored，不替Contract编人名/链接。
+
+### P-165 S6c合流测试重复字段修复（be，2026-09-09）
+
+- 代码 **cad5854**，仅本人4测试：`account-list-{http,service}.test.ts`、`task-list-{http,service}.test.ts`。主线合流同时保留P158临时补位和be2 S6c字段，导致 **14项TS1117**；删除旧重复，保留S6c stage/poolStatus，readiness按合成fixture实际1账户，不写0。
+- **4文件56/56、Worker typecheck/lint0、diff--check0**。没有动be2生产、Contract、UI、依赖；请同P164独立审合。你改的两处gateway tmpdir已随main同步，没有回滚。未push、未部署，生图不再执行。
