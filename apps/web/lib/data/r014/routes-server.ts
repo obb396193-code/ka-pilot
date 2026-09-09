@@ -6,6 +6,8 @@ export {
   handleAccountPipeline,
   handleAdminAccountNamePatch,
   handleAdminAccountNames,
+  handleAdminMemberCreate,
+  handleAdminMemberResetPassword,
   handleAdminNamingRules,
   handleAdminNamingRulesTest,
   handleCapabilities,

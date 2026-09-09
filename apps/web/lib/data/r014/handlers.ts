@@ -16,6 +16,8 @@ import {
   searchResultSchema,
   accountNamePatchSchema,
   accountNamesSchema,
+  memberCreatedSchema,
+  memberPasswordResetSchema,
   namingRuleSchema,
   namingRulesTestSchema,
   taskBindingsSchema,
@@ -198,5 +200,23 @@ export const handleAdminAccountNamePatch = (request: Request, media: string, acc
     path: `/api/v1/admin/account-names/${encodeURIComponent(media)}/${encodeURIComponent(accountId)}`,
     method: "PATCH",
     dataSchema: accountNamePatchSchema,
+    ...withDeps(deps),
+  })
+
+/* 新增成员 / 重置密码（契约 v1.9.5）——F8-11 */
+export const handleAdminMemberCreate = (request: Request, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: "/api/v1/admin/members",
+    method: "POST",
+    dataSchema: memberCreatedSchema,
+    ...withDeps(deps),
+  })
+
+// 密码类端点一律不开查询参数白名单：连 ?debug= 这种都不许透过去
+export const handleAdminMemberResetPassword = (request: Request, identityId: string, deps: Deps): Promise<R014BffResult> =>
+  forwardToBackend(request, {
+    path: `/api/v1/admin/members/${encodeURIComponent(identityId)}/reset-password`,
+    method: "POST",
+    dataSchema: memberPasswordResetSchema,
     ...withDeps(deps),
   })

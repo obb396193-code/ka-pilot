@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import test from "node:test"
 
 import {
+  handleAdminMemberCreate, handleAdminMemberResetPassword,
   handleDecisionPolicy, handleExportDetail, handleMeView, handleMeViews, handleMeWatchlist,
   handleTaskBindings, handleTaskReadiness,
 } from "./r014/handlers.ts"
@@ -131,4 +132,41 @@ test("an expired export link is relayed with the backend's own 410, not softened
   })
   assert.equal(result.status, 410)
   assert.equal((result.body as { ok: boolean }).ok, false)
+})
+
+/* F8-11 新增成员 / 重置密码（契约 v1.9.5） */
+const MEMBER = {
+  identityId: "00000000-0000-4000-8000-000000000201", displayName: "王五", provider: "internal_test",
+  userId: "wangwu", role: "operator", isActive: true, joinedAt: "2026-09-05T09:15:00.000+08:00",
+  grantsCount: 0, lastSeenAt: null, mustChangePassword: true, initialPassword: "Kp7v-Qm2x-Ln9s-Ab3d",
+}
+
+test("creating a member posts to /admin/members and carries the one-time initial password back", async () => {
+  const { seen, fetchImpl } = spy("req-m1", MEMBER)
+  const result = await handleAdminMemberCreate(
+    req("http://localhost/api/internal/admin/members", "POST", { display_name: "王五", provider: "internal_test", provider_subject: "wangwu", role: "operator" }),
+    { environment, fetchImpl, requestId: () => "req-m1" },
+  )
+  assert.equal(result.status, 200)
+  assert.equal(new URL(seen[0]!.url).pathname, "/api/v1/admin/members")
+  assert.equal(seen[0]!.method, "POST")
+  assert.equal((result.body as { data: { initialPassword: string } }).data.initialPassword, "Kp7v-Qm2x-Ln9s-Ab3d")
+})
+
+test("reset-password encodes the identity id and opens no query whitelist", async () => {
+  const { seen, fetchImpl } = spy("req-m2", { identityId: "00000000-0000-4000-8000-000000000201", initialPassword: "Rt4h-Wn8k-Zc2p-Ye6m", sessionsRevoked: 2 })
+  const result = await handleAdminMemberResetPassword(
+    req("http://localhost/api/internal/admin/members/x/reset-password?debug=1", "POST", {}),
+    "a/b", { environment, fetchImpl, requestId: () => "req-m2" },
+  )
+  // 密码类端点不开任何查询参数白名单：?debug=1 这种一律拒，不静默丢弃
+  assert.equal(result.status, 400)
+  assert.equal(seen.length, 0)
+
+  const clean = spy("req-m3", { identityId: "00000000-0000-4000-8000-000000000201", initialPassword: "Rt4h-Wn8k-Zc2p-Ye6m", sessionsRevoked: 2 })
+  await handleAdminMemberResetPassword(
+    req("http://localhost/api/internal/admin/members/x/reset-password", "POST", {}),
+    "a/b", { environment, fetchImpl: clean.fetchImpl, requestId: () => "req-m3" },
+  )
+  assert.equal(new URL(clean.seen[0]!.url).pathname, "/api/v1/admin/members/a%2Fb/reset-password")
 })

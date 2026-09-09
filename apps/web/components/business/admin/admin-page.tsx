@@ -24,7 +24,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { fmtTime, isOk, rv } from "@/lib/fixtures/contract"
-import { assetKindLabel, assetsFixture, assetStatusMeta, calendarFixture, etlJobLabel, etlRunsFixture, eventTypeLabel, flagMeta, flagsFixture, grantsFixtures, membersFixture, reconcileFixture, roleLabel, type AssetItem, type CalendarEvent, type EtlRun, type FlagKey, type Member } from "@/lib/fixtures/admin"
+import { AddMemberDialog, ResetPasswordDialog } from "@/components/business/admin/member-dialogs"
+import { assetKindLabel, assetsFixture, assetStatusMeta, calendarFixture, etlJobLabel, etlRunsFixture, normalizeEtlRun, eventTypeLabel, flagMeta, flagsFixture, grantsFixtures, membersFixture, reconcileFixture, roleLabel, type AssetItem, type CalendarEvent, type EtlRun, type FlagKey, type Member } from "@/lib/fixtures/admin"
 import { connectionsFixture, providerLabel } from "@/lib/fixtures/integrations"
 import { coefficientText, coefficientsFixture, decisionPolicyFixture } from "@/lib/fixtures/settings"
 import { cn } from "@/lib/utils"
@@ -43,21 +44,29 @@ type Tab = (typeof tabs)[number]["value"]
 
 const identitySourceLabel: Record<string, string> = { internal_test: "内测账号", buc: "公司统一登录", sso: "统一身份" }
 const memberHelper = createColumnHelper<GridFeatures, Member>()
-function makeMemberColumns(onGrants: (member: Member) => void, onToggle: (member: Member) => void) {
+function makeMemberColumns(onGrants: (member: Member) => void, onToggle: (member: Member) => void, onResetPassword: (member: Member) => void) {
   return memberHelper.columns([
     dragColumn<Member>(),
     selectionColumn<Member>(),
-    memberHelper.accessor("displayName", { header: "成员", enableHiding: false, meta: { label: "成员" }, cell: ({ row }) => <span className={cn("font-medium", !row.original.isActive && "text-muted-foreground line-through")}>{row.original.displayName}</span> }),
+    memberHelper.accessor("displayName", { header: "成员", enableHiding: false, meta: { label: "成员" }, cell: ({ row }) => (
+      <span className="flex items-center gap-1.5">
+        <span className={cn("font-medium", !row.original.isActive && "text-muted-foreground line-through")}>{row.original.displayName}</span>
+        {/* 初始密码还没改过：这号还在用管理员发的那串密码（契约 v1.9.5 mustChangePassword） */}
+        {row.original.mustChangePassword ? <Badge variant="outline" className="text-[10px] text-status-warning">未改初始密码</Badge> : null}
+      </span>
+    ) }),
     memberHelper.accessor("role", { header: "角色", meta: { label: "角色" }, cell: ({ getValue }) => <TypeChip>{roleLabel[getValue()]}</TypeChip> }),
     memberHelper.accessor("isActive", { header: "状态", meta: { label: "状态" }, cell: ({ getValue }) => getValue() ? <StatusChip tone="success">在职</StatusChip> : <StatusChip tone="muted">已停用</StatusChip> }),
     memberHelper.accessor("provider", { header: "身份源", meta: { label: "身份源" }, cell: ({ getValue }) => <span className="text-xs">{identitySourceLabel[getValue()] ?? getValue()}</span> }),
     memberHelper.accessor("grantsCount", { header: "授权账户", meta: { label: "授权账户", align: "right" }, cell: ({ row }) => <Button variant="link" className="h-auto px-0 tabular-nums" onClick={() => onGrants(row.original)}>{row.original.grantsCount}</Button> }),
-    memberHelper.accessor("joinedAt", { header: "加入", meta: { label: "加入" }, cell: ({ getValue }) => <span className="tabular-nums">{getValue()}</span> }),
+    // 列表行的 joinedAt 是 "2026-09-05"，但新建响应回的是完整时间戳；这列只显日期，别把 ISO 原文甩出来
+    memberHelper.accessor("joinedAt", { header: "加入", meta: { label: "加入" }, cell: ({ getValue }) => <span className="tabular-nums">{getValue().slice(0, 10)}</span> }),
     memberHelper.accessor((row) => row.lastSeenAt ?? "", { id: "seen", header: "最近活跃", meta: { label: "最近活跃" }, cell: ({ row }) => row.original.lastSeenAt ? <span className="tabular-nums">{fmtTime(row.original.lastSeenAt)}</span> : <MissingValue title="从未登录" /> }),
     actionsColumn<Member>((member) => (
       <>
         <DropdownMenuItem onSelect={() => onGrants(member)}>账户授权</DropdownMenuItem>
         <DropdownMenuItem onSelect={() => toast("改角色", { description: `接口接入后生效（当前为示例）` })}>改角色</DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => onResetPassword(member)}>重置密码</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant={member.isActive ? "destructive" : "default"} onSelect={() => onToggle(member)}>{member.isActive ? "停用（立刻踢下线，记录保留）" : "恢复"}</DropdownMenuItem>
       </>
@@ -68,14 +77,22 @@ function makeMemberColumns(onGrants: (member: Member) => void, onToggle: (member
 function MembersTab() {
   const [active, setActive] = useState<Record<string, boolean>>({})
   const [grantsFor, setGrantsFor] = useState<Member | null>(null)
-  const items = useMemo(() => (isOk(membersFixture) ? membersFixture.data.items : []).map((item) => ({ ...item, isActive: active[item.identityId] ?? item.isActive })), [active])
-  const columns = useMemo(() => makeMemberColumns(setGrantsFor, (member) => { setActive((prev) => ({ ...prev, [member.identityId]: !member.isActive })); toast(member.isActive ? "已已停用：成员失效并踢下线" : "已恢复", { description: `接口接入后生效（当前为示例）` }) }), [])
+  const [adding, setAdding] = useState(false)
+  const [resetFor, setResetFor] = useState<Member | null>(null)
+  // 新建出来的成员先落在本地：真实模式下列表要等下次拉取才有，别让人以为没建上
+  const [addedMembers, setAddedMembers] = useState<Member[]>([])
+  const [mustChange, setMustChange] = useState<Record<string, boolean>>({})
+  const items = useMemo(() => [...(isOk(membersFixture) ? membersFixture.data.items : []), ...addedMembers]
+    .map((item) => ({ ...item, isActive: active[item.identityId] ?? item.isActive, mustChangePassword: mustChange[item.identityId] ?? item.mustChangePassword })), [active, addedMembers, mustChange])
+  const columns = useMemo(() => makeMemberColumns(setGrantsFor, (member) => { setActive((prev) => ({ ...prev, [member.identityId]: !member.isActive })); toast(member.isActive ? "已已停用：成员失效并踢下线" : "已恢复", { description: `接口接入后生效（当前为示例）` }) }, setResetFor), [])
   const table = useGridTable({ data: items, columns, pageSize: 20, getRowId: (item) => item.identityId })
   const grantsFixture = grantsFor ? grantsFixtures[grantsFor.identityId] : undefined
   const grants = grantsFixture && isOk(grantsFixture) ? grantsFixture.data.items : null
   return (
     <>
-      <DataGrid table={table} empty="没有成员" toolbar={<p className="text-xs text-muted-foreground">停用 = 成员失效并立刻踢下线，记录不删；该成员的长期令牌一并吊销</p>} actions={<Button size="sm" onClick={() => toast("邀请成员", { description: "接口接入后生效（当前为示例）" })}><IconPlus />邀请</Button>} showPagination={false} />
+      <DataGrid table={table} empty="没有成员" toolbar={<p className="text-xs text-muted-foreground">停用 = 成员失效并立刻踢下线，记录不删；该成员的长期令牌一并吊销</p>} actions={<Button size="sm" onClick={() => setAdding(true)}><IconPlus />新增成员</Button>} showPagination={false} />
+      <AddMemberDialog open={adding} onOpenChange={setAdding} onCreated={(member) => setAddedMembers((prev) => [...prev, member])} />
+      <ResetPasswordDialog member={resetFor} onOpenChange={(open) => { if (!open) setResetFor(null) }} onReset={(identityId) => setMustChange((prev) => ({ ...prev, [identityId]: true }))} />
       <Dialog open={grantsFor !== null} onOpenChange={(open) => { if (!open) setGrantsFor(null) }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader><DialogTitle>账户授权 · {grantsFor?.displayName}</DialogTitle><DialogDescription>admin/grants · read 只看，execute 可执行写操作（仍走变更集确认）</DialogDescription></DialogHeader>
@@ -96,20 +113,33 @@ const etlHelper = createColumnHelper<GridFeatures, EtlRun>()
 const etlColumns = etlHelper.columns([
   dragColumn<EtlRun>(),
   selectionColumn<EtlRun>(),
-  etlHelper.accessor("jobType", { header: "任务", enableHiding: false, meta: { label: "任务" }, cell: ({ getValue }) => <TypeChip>{etlJobLabel[getValue()] ?? getValue()}</TypeChip> }),
+  etlHelper.accessor("jobType", { header: "任务", enableHiding: false, meta: { label: "任务" }, cell: ({ row }) => (
+    <span className="flex items-center gap-1.5">
+      <TypeChip>{etlJobLabel[row.original.jobType] ?? row.original.jobType}</TypeChip>
+      {/* 同一个 job 失败重跑会有多次 attempt；旧 run 没这条记录，显「次数未记录」而不是编个 1 */}
+      {row.original.attempt === null ? <span className="text-xs text-muted-foreground">次数未记录</span>
+        : row.original.attempt > 1 ? <span className="text-xs tabular-nums text-status-warning">第 {row.original.attempt} 次</span> : null}
+    </span>
+  ) }),
   etlHelper.accessor("businessDate", { header: "业务日", meta: { label: "业务日" }, cell: ({ getValue }) => <span className="tabular-nums">{getValue()}</span> }),
   etlHelper.accessor("status", { header: "状态", meta: { label: "状态" }, cell: ({ row }) => <StatusChip tone={row.original.status === "done" ? "success" : row.original.status === "failed" ? "critical" : "progress"}>{row.original.status === "done" ? "完成" : row.original.status === "failed" ? `失败${row.original.failedStage ? ` · ${row.original.failedStage}` : ""}` : row.original.status === "running" ? "运行中" : "排队"}</StatusChip> }),
   etlHelper.accessor("startedAt", { header: "开始", meta: { label: "开始" }, cell: ({ getValue }) => <span className="tabular-nums">{fmtTime(getValue())}</span> }),
   etlHelper.accessor((row) => row.finishedAt ?? "", { id: "finished", header: "结束", meta: { label: "结束" }, cell: ({ row }) => row.original.finishedAt ? <span className="tabular-nums">{fmtTime(row.original.finishedAt)}</span> : <MissingValue /> }),
-  etlHelper.accessor((row) => row.rows?.raw ?? null, { id: "rows", header: "行数 原始 / 清洗后", meta: { label: "行数", align: "right" }, cell: ({ row }) => row.original.rows ? <span className="tabular-nums">{row.original.rows.raw} / {row.original.rows.canonical}</span> : <MissingValue /> }),
-  etlHelper.accessor((row) => row.warnings.join(","), { id: "warnings", header: "警告", meta: { label: "警告" }, cell: ({ row }) => row.original.warnings.length ? <span className="flex flex-wrap gap-1">{row.original.warnings.map((warning) => <Badge key={warning} variant="outline" className="text-[10px] text-status-warning">{warning}</Badge>)}</span> : <span className="text-xs text-muted-foreground">−</span> }),
+  // raw / canonical 各自可 null（只跑到 raw 阶段就不知道清洗后行数），缺哪个显哪个的缺值，不补 0
+  etlHelper.accessor((row) => row.rows?.raw ?? null, { id: "rows", header: "行数 原始 / 清洗后", meta: { label: "行数", align: "right" }, cell: ({ row }) => row.original.rows === null ? <MissingValue /> : (
+    <span className="tabular-nums">{row.original.rows.raw ?? <MissingValue />} / {row.original.rows.canonical ?? <MissingValue />}</span>
+  ) }),
+  etlHelper.accessor((row) => row.warnings.map((warning) => warning.code).join(","), { id: "warnings", header: "警告", meta: { label: "警告" }, cell: ({ row }) => row.original.warnings.length ? <span className="flex flex-wrap gap-1">{row.original.warnings.map((warning) => <Badge key={warning.code} variant="outline" title={warning.message ?? undefined} className="text-[10px] text-status-warning">{warning.code}</Badge>)}</span> : <span className="text-xs text-muted-foreground">−</span> }),
   actionsColumn<EtlRun>((run) => <DropdownMenuItem onSelect={() => toast("已重跑", { description: `接口接入后生效（当前为示例）` })}><IconRefresh />重跑</DropdownMenuItem>),
 ])
 
 function EtlTab() {
-  const runs = isOk(etlRunsFixture) ? etlRunsFixture.data.items : []
+  // getRowId 原来取 item.id —— 契约里这张表的主键叫 runId，取到的是 undefined，
+  // 于是所有行共用同一个 id，勾选一行等于勾选全部。
+  const runs = isOk(etlRunsFixture) ? etlRunsFixture.data.items.map(normalizeEtlRun) : []
+  const total = isOk(etlRunsFixture) ? etlRunsFixture.data.total : runs.length
   const connections = isOk(connectionsFixture) ? connectionsFixture.data.items : []
-  const table = useGridTable({ data: runs, columns: etlColumns, pageSize: 20, getRowId: (item) => item.id })
+  const table = useGridTable({ data: runs, columns: etlColumns, pageSize: 20, getRowId: (item) => item.runId })
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 @3xl/main:grid-cols-3">
@@ -117,7 +147,7 @@ function EtlTab() {
         <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">启航（platform）<StatusChip tone="warning">补拉中</StatusChip></CardTitle><CardDescription>2 户补拉中</CardDescription></CardHeader></Card>
         <Card><CardHeader><CardTitle className="flex items-center justify-between text-base">ka-data（团队源）<StatusChip tone="success">D-1</StatusChip></CardTitle><CardDescription>数据日 2026-09-04</CardDescription></CardHeader></Card>
       </div>
-      <DataGrid table={table} empty="没有拉数记录" toolbar={<p className="text-xs text-muted-foreground">每天从启航 / KA Data 拉数的记录；显示「凭证失效」= 启航凭证过期，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
+      <DataGrid table={table} empty="没有拉数记录" toolbar={<p className="text-xs text-muted-foreground">每天从启航 / KA Data 拉数的记录（按开始时间倒序，共 {total} 次）；显示「凭证失效」= 启航凭证过期，去「设置 · 三凭证」重绑</p>} actions={<Button size="sm" variant="outline" onClick={() => toast("已触发按日补拉", { description: "接口接入后生效（当前为示例）" })}><IconRefresh />按日补拉</Button>} showPagination={false} />
     </div>
   )
 }

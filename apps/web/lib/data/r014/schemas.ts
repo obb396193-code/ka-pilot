@@ -389,3 +389,30 @@ export const namingRulesTestSchema = z.object({
   hitRate: z.number().min(0).max(1),
   counts: z.record(z.string(), z.number().int().nonnegative()),
 }).strict()
+
+/* 新增成员 / 重置密码（契约 v1.9.5）——F8-11 BFF 透传 */
+const memberRowSchema = z.object({
+  identityId: z.string().uuid(),
+  displayName: z.string().min(1),
+  provider: z.enum(["internal_test", "buc", "sso"]),
+  userId: z.string().min(1),
+  role: z.enum(["admin", "lead", "operator", "viewer", "optimizer"]),
+  isActive: z.boolean(),
+  joinedAt: z.string().min(1),
+  grantsCount: z.number().int().nonnegative(),
+  lastSeenAt: z.string().nullable(),
+  mustChangePassword: z.boolean(),
+})
+
+/**
+ * `POST /admin/members` 的响应比列表行多一个 `initialPassword`——**只在这一次回**。
+ * 不 strict：后端以后往行里加字段（v1.9.5 的 mustChangePassword 就是这么来的）不该让整条透传变 502。
+ */
+export const memberCreatedSchema = memberRowSchema.extend({ initialPassword: z.string().min(1) })
+
+/** `POST /admin/members/:identityId/reset-password` → 新初始密码只回一次 + 该身份全部 session 吊销 */
+export const memberPasswordResetSchema = z.object({
+  identityId: z.string().uuid(),
+  initialPassword: z.string().min(1),
+  sessionsRevoked: z.number().int().nonnegative(),
+})
