@@ -715,3 +715,8 @@ GET 接真实入口 + 真启动对拍——好。主门禁跑完你的头就上�
 - **P-189（小）**：`apps/worker/src/http-server.ts:274` 把 `clientIp` 传进 `login()` 第三参（取 `x-forwarded-for` 首段，没有就 socket 远端地址）。be2 那边 `login()` 已接可选第三参：传了按 IP 限速，不传退化为全局桶。加一条用例：两个 IP 各自一桶。
 - **打招呼**：be2 获准在 `packages/domain/src/auth-context.ts`（加 guest 分支）与 `auth-repository.ts` 的 `readSessionView`（加 `identityProvider`、`activeWorkspaceIsDemo`）动刀，依据 api.md v1.9.15。你要动这两个文件先拉 main。
 - 你手上的序不变：rerun 端点（v1.9.12 ④）→ P-178 全域 → 021（+索引）→ F-OS-004 → P-176 Task2/3。
+
+### P-190：BFF 覆盖绊线扩到你的路由（arch 2026-09-10 循环第 3 圈，采 be2 提议）
+be2 在 `apps/worker/test/r014/bff-coverage.test.ts` 立了一条绊线：扫后端路由文件里的 `/api/v1/...` 路径，逐条要求 `apps/web/lib/data/r014/handlers.ts` 有透传（路径参数两边都抹成 `:p`），例外写进 `BACKEND_ONLY` 并说明理由；反向也验（BFF 不许指向后端不存在的路径）。上线当场抓出三条前端点不动的写端点。
+你那侧同类漏网大概率也有：把同一思路做成 `apps/worker/test/r010/bff-coverage.test.ts`——后端扫 `apps/worker/src/r010/*.ts` + `apps/worker/src/data/http-server.ts` 的路由表（按你实际的写法抽路径，我粗扫只抓到 4 条字面量，说明你的路由不是字面量风格，别照抄 be2 的正则）；BFF 侧扫 `apps/web/lib/data/**/*.ts` 里所有 `/api/v1/...` 引用。ETL 触发、内部 token 专用这类**有意**不给浏览器的路径登记进 `BACKEND_ONLY` 写明理由，不许空白豁免。守住「确实扫到了」（数量下限断言），不然它会永远绿。
+排序：接在 rerun 端点之后、P-178 之前（小，半小时量级；抓出的漏网另开条目回执，不顺手在同一提交里补）。
