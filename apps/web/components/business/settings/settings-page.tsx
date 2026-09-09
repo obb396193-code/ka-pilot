@@ -9,6 +9,7 @@ import { toast } from "sonner"
 import { actionsColumn, DataGrid, dragColumn, MissingValue, selectionColumn, StatusChip, TypeChip, useGridTable, type GridFeatures } from "@/components/business/data-grid/data-grid"
 import { PageBody, PageHeader } from "@/components/business/page-header"
 import { AvatarPicker, useAvatarChoice } from "@/components/business/settings/avatar-picker"
+import { PasswordForm } from "@/components/business/settings/password-form"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { avatarSrc } from "@/lib/avatar"
 import { useSession } from "@/components/business/session/session-provider"
@@ -71,7 +72,7 @@ function ProfileTab() {
           </div>
           <dl className="grid grid-cols-[5rem_1fr] gap-y-1.5">
             <dt className="text-muted-foreground">登录方式</dt><dd>账号密码（内测）</dd>
-            <dt className="text-muted-foreground">改密码</dt><dd className="text-muted-foreground">改密接口未开放，先找管理员重置</dd>
+            <dt className="text-muted-foreground">改密码</dt><dd>在「三凭证」页签的「账号安全」里改</dd>
           </dl>
         </CardContent>
       </Card>
@@ -267,7 +268,7 @@ export function SettingsPage() {
       <div className="px-4 lg:px-6">
         <StateFrame state={state} unlock="凭证 / 订阅 / 返点系数 / 个人视图接口接入后切换为真数据" empty={{ title: "没有设置项", description: "先绑定凭证。" }}>
           {tab === "profile" ? <ProfileTab /> : null}
-          {tab === "credentials" ? <CredentialsTab /> : null}
+          {tab === "credentials" ? <div className="flex flex-col gap-4"><CredentialsTab /><PasswordForm /></div> : null}
           {tab === "notifications" ? <NotificationsTab /> : null}
           {tab === "workload" ? (
             <ExampleBlock unlock="我的负载：按负责任务数 / 账户数 / 待处理工作项算负载分，接口接入后显示">
