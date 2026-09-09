@@ -83,29 +83,27 @@ export const accountListItemSchema = z.object({
     cutoff: z.object({
       hours: canonicalMetricValueSchema,
       state: z.enum(["ok", "warning", "critical", "unknown"]),
-    }).strict().optional(),
+    }).strict(),
   }).strict().nullable(),
-  // v1.5.1 ① 新增字段。**现在一律 optional 是迁移状态，不是设计**：
-  // `fixtures/account-list/{ready,empty,partial,stale}.json` 还是 v1.2 形状（arch 的文件），
-  // 设成必填会把它们和 Codex 的 parity 用例一起打红。四份 fixture 更新后应立刻转必填——
-  // 否则服务层漏发这些字段不会有任何东西报警。已回抛 arch（Q-010）。
-  poolStatus: accountPoolStatusSchema.optional(),
-  poolStatusSource: accountPoolStatusSourceSchema.optional(),
-  product: z.object({ name: z.string().min(1), ref: z.string().min(1).nullable() }).strict().nullable().optional(),
+  // v1.5.1 ① 新增字段。四份 fixture 已升到新形状（arch Q-010 ① 批准），**这些字段现在必填**——
+  // 留成 optional 的话，服务层漏发它们不会有任何东西报警。
+  poolStatus: accountPoolStatusSchema,
+  poolStatusSource: accountPoolStatusSourceSchema,
+  product: z.object({ name: z.string().min(1), ref: z.string().min(1).nullable() }).strict().nullable(),
   /** 当前任务的日预算卡；源是 `task_budget_history`（migration 014，Codex）→ 落地前恒 null。 */
-  dailyBudgetCap: z.number().finite().nullable().optional(),
+  dailyBudgetCap: z.number().finite().nullable(),
   /** = 当日消耗 / 日预算卡；上面那项没有源时它也算不出来 → undefined，不按 0 代入。 */
-  capacityLoad: ratioValueSchema.optional(),
+  capacityLoad: ratioValueSchema,
   lastAction: z.object({
     at: z.string().datetime({ offset: true }),
     kind: z.enum(["changeset", "external_change", "pool_status"]),
     summary: z.string().min(1),
-  }).strict().nullable().optional(),
+  }).strict().nullable(),
   /** 只来自真实的 open 工作项；没有就是 null，**不生成假建议**（v1.5.1 ① 明写）。 */
   nextSuggestion: z.object({
     workItemId: z.string().uuid(),
     title: z.string().min(1),
-  }).strict().nullable().optional(),
+  }).strict().nullable(),
 }).strict().superRefine((item, context) => {
   if (new Set(item.tags).size !== item.tags.length) {
     context.addIssue({ code: "custom", path: ["tags"], message: "tags must be unique" });

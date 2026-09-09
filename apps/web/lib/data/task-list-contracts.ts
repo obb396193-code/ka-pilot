@@ -79,6 +79,18 @@ const taskListPacingSchema = z.object({
   budgetProgress: ratioValueSchema,
 }).strict()
 
+
+// v1.5.1 ②：六段就绪度；没有系统来源的段 ratio 是 undefined 而不是 0。
+const taskReadinessEntrySchema = z.object({
+  ratio: z.object({
+    value: z.number().finite().nullable(),
+    state: z.enum(["finite", "infinite", "undefined"]),
+  }).strict(),
+  ready: z.boolean(),
+  source: z.enum(["system", "manual"]),
+  missing: z.array(z.string()),
+}).strict()
+
 const taskListItemSchema = z.object({
   taskId: z.string().min(1).max(128),
   taskName: z.string().nullable(),
@@ -94,6 +106,21 @@ const taskListItemSchema = z.object({
   pacing: taskListPacingSchema.nullable(),
   linkedAccountCount: z.number().int().nonnegative(),
   workItemSummary: taskWorkItemSummarySchema,
+  // v1.5.1 ②（S6）与 domain 侧同步转必填。
+  stage: z.enum(["preparing", "opening", "recharging", "building", "cold_start", "delivering", "ended"]),
+  stageSource: z.enum(["system", "manual", "workflow"]),
+  readiness: z.object({
+    accounts: taskReadinessEntrySchema,
+    recharge: taskReadinessEntrySchema,
+    products: taskReadinessEntrySchema,
+    materials: taskReadinessEntrySchema,
+    strategy: taskReadinessEntrySchema,
+    infra: taskReadinessEntrySchema,
+  }).strict(),
+  nextMilestone: z.object({
+    at: taskListCalendarDateSchema,
+    label: z.string().min(1),
+  }).strict().nullable(),
 }).strict()
 
 const taskListSuccessSchema = z.object({

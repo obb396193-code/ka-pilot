@@ -187,7 +187,7 @@ describe("data API HTTP composition", () => {
     const baseUrl = await start({ platform, sessionHttpService });
     const moduleUrl = new URL("../../web/lib/data/bff.ts", import.meta.url).href;
     const script = `
-      const {handleSemanticQueryRequest} = await import(process.argv[1]);
+      const {handleSemanticQueryRequest} = await import(process.argv[1]).then(m => m.default ?? m);
       const results=[];
       for (const [query_type, dimension_type] of [['summary'],['trend'],['table'],['dimension','account'],['dimension','task'],['dimension','biz']]) {
         const request=new Request('http://localhost/api/internal/query', {method:'POST',headers:{cookie:'ka_session=synthetic-session-token-at-least-32-characters'},
@@ -196,7 +196,7 @@ describe("data API HTTP composition", () => {
       }
       process.stdout.write(JSON.stringify(results));
     `;
-    const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e", script, moduleUrl, baseUrl, internalToken],
+    const { stdout } = await promisify(execFile)(process.execPath, ["--import", "tsx", "--input-type=module", "-e", script, moduleUrl, baseUrl, internalToken],
       { timeout: 15000, maxBuffer: 1024 * 1024 });
     const results = JSON.parse(stdout) as { status: number; requestId: string; body: { ok: boolean; data?: { source: { queryId: string } } } }[];
     expect(results.map((item) => item.status)).toEqual([200, 200, 200, 200, 200, 200]);

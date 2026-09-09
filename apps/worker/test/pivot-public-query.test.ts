@@ -119,13 +119,13 @@ describe("pivot public query and approved source chain", () => {
     server.listen(0, "127.0.0.1"); await once(server, "listening");
     try {
       const url = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
-      const script = `const {handleSemanticQueryRequest}=await import(process.argv[1]);
+      const script = `const {handleSemanticQueryRequest}=await import(process.argv[1]).then(m => m.default ?? m);
         const headers=JSON.parse(process.argv[4]); const body=JSON.parse(process.argv[5]); const result=[];
         for(const extra of [{},{params:{...body.params,dimA:'ubp'}},{dataView:'ka_data'},{params:{...body.params,taskIds:['absent']}}]) {
           const req=new Request('http://localhost/api/internal/query',{method:'POST',headers:{...headers,'x-ka-workspace-id':'forged'},body:JSON.stringify({...body,...extra})});
           result.push(await handleSemanticQueryRequest(req,{environment:{KA_DATA_BACKEND_ORIGIN:process.argv[2],KA_DATA_SERVICE_TOKEN:process.argv[3]},requestId:()=> 'pivot-http'}));
         } process.stdout.write(JSON.stringify(result));`;
-      const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e", script,
+      const { stdout } = await promisify(execFile)(process.execPath, ["--import", "tsx", "--input-type=module", "-e", script,
         new URL("../../web/lib/data/bff.ts", import.meta.url).href, url, token, JSON.stringify(businessHeaders(token)), JSON.stringify(request)],
       { timeout: 15000, maxBuffer: 1024 * 1024 });
       const results = JSON.parse(stdout);
@@ -149,8 +149,8 @@ describe("pivot public query and approved source chain", () => {
       (changed.data.source.rows[0]!.a as { key: string }).key = key; variants.push(changed);
     }
     const expected = variants.map(value => dataQueryResponseSchema.safeParse(value).success);
-    const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e",
-      "const m=await import(process.argv[1]);process.stdout.write(JSON.stringify(JSON.parse(process.argv[2]).map(v=>m.dataQueryResponseSchema.safeParse(v).success)))",
+    const { stdout } = await promisify(execFile)(process.execPath, ["--import", "tsx", "--input-type=module", "-e",
+      "const m=await import(process.argv[1]).then(m => m.default ?? m);process.stdout.write(JSON.stringify(JSON.parse(process.argv[2]).map(v=>m.dataQueryResponseSchema.safeParse(v).success)))",
       new URL("../../web/lib/data/contracts.ts", import.meta.url).href, JSON.stringify(variants)], { timeout: 10000 });
     expect(JSON.parse(stdout)).toEqual(expected);
   });

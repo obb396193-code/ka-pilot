@@ -1,0 +1,114 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "workspaceId": "00000000-0000-4000-8000-000000000024",
+        "media": "KUAISHOU",
+        "accountId": "account-1",
+        "accountName": "账户一",
+        "status": "active",
+        "lifecycleStage": "stable",
+        "starred": true,
+        "tags": [
+          "重点"
+        ],
+        "owner": null,
+        "linkedTasks": [
+          {
+            "taskId": "task-1",
+            "taskName": "任务一"
+          }
+        ],
+        "metrics": {
+          "businessDate": "2026-08-25",
+          "cost": 120.5,
+          "realConversion": 8,
+          "realCpa": {
+            "value": 15.0625,
+            "state": "finite"
+          },
+          "assessmentPrice": 38
+        },
+        "balance": {
+          "value": 1000,
+          "syncedAt": "2026-08-25T12:00:00.000Z",
+          "cutoff": {
+            "hours": {
+              "value": null,
+              "availability": "missing"
+            },
+            "state": "unknown"
+          }
+        },
+        "poolStatus": "in_delivery",
+        "poolStatusSource": "system",
+        "product": null,
+        "dailyBudgetCap": null,
+        "capacityLoad": {
+          "value": null,
+          "state": "undefined"
+        },
+        "lastAction": null,
+        "nextSuggestion": null,
+        "dimensions": {
+          "placement": {
+            "value": "优选",
+            "source": "nickname"
+          },
+          "bidMode": {
+            "value": "单出价",
+            "source": "nickname"
+          },
+          "device": {
+            "value": "安卓",
+            "source": "nickname"
+          },
+          "goal": {
+            "value": "激活",
+            "source": "nickname"
+          },
+          "rta": {
+            "value": "有R",
+            "source": "nickname"
+          },
+          "agentType": {
+            "value": "自投",
+            "source": "nickname"
+          },
+          "optimizer": {
+            "value": "张三",
+            "source": "manual"
+          },
+          "special": {
+            "value": null,
+            "source": null
+          },
+          "landing": {
+            "value": "13177",
+            "source": "nickname"
+          },
+          "rebate": {
+            "value": "常规",
+            "source": "platform"
+          }
+        }
+      }
+    ],
+    "page": 1,
+    "pageSize": 20,
+    "total": 1,
+    "groupBy": "none"
+  },
+  "meta": {
+    "dataState": "ready",
+    "businessDate": "2026-08-25",
+    "dataAsOf": "2026-08-25T12:00:00.000Z",
+    "coverage": {
+      "complete": true
+    },
+    "selectedSource": "qihang",
+    "requestId": "fixture-account-ready",
+    "_note": "v1.9.3：行加 dimensions{十维}，每维 {value:string|null, source:\"manual\"|\"nickname\"|\"platform\"|\"qihang\"|null}；优先级 manual>nickname>platform(>qihang 仅 agent_type/optimizer)；都没有 → {null,null}。T5 落地时四份现有 account-list fixture 一并加此字段"
+  }
+}

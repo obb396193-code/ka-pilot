@@ -1,9 +1,12 @@
 import type { Pool } from "pg";
+import { approvedAccountAccessSchema } from "@ka/domain";
 
 export interface AccountCredentialScope {
   media: string;
   accountId: string;
 }
+
+const scheduledAccountsSchema = approvedAccountAccessSchema.pick({ media: true, accountId: true }).array().min(1).max(1000);
 
 export class CredentialRepository {
   constructor(private readonly pool: Pool) {}
@@ -22,10 +25,18 @@ export class CredentialRepository {
     workspaceId: string,
     userId: string,
     identityId: string,
+    accounts: readonly AccountCredentialScope[],
   ): Promise<string | null> {
+    const parsed = scheduledAccountsSchema.safeParse(accounts);
+    if (!parsed.success || new Set(parsed.data.map(a => JSON.stringify([a.media, a.accountId]))).size !== parsed.data.length) return null;
     const result = await this.pool.query<{ qihang_user_id: string }>(
-      `SELECT actor.qihang_user_id
+      `WITH requested AS (
+         SELECT media, account_id FROM jsonb_to_recordset($4::jsonb) AS value(media text, account_id text)
+       )
+       SELECT actor.qihang_user_id
        FROM users AS actor
+       JOIN workspaces AS workspace
+         ON workspace.id = actor.workspace_id AND workspace.is_active = true AND workspace.kind = 'personal'
        JOIN workspace_memberships AS membership
          ON membership.workspace_id = actor.workspace_id
         AND membership.user_id = actor.id
@@ -38,10 +49,25 @@ export class CredentialRepository {
          AND actor.id = $2
          AND actor.is_active = true
          AND actor.qihang_user_id IS NOT NULL
-         AND btrim(actor.qihang_user_id) <> ''`,
-      [workspaceId, userId, identityId],
+         AND btrim(actor.qihang_user_id) <> ''
+         AND NOT EXISTS (
+           SELECT 1 FROM requested WHERE NOT EXISTS (
+             SELECT 1 FROM account_access_grants AS grant_row
+             JOIN accounts AS account ON account.workspace_id=grant_row.workspace_id
+               AND account.media=grant_row.media AND account.account_id=grant_row.account_id
+             WHERE grant_row.workspace_id=actor.workspace_id
+               AND grant_row.identity_id=membership.identity_id
+               AND grant_row.media=requested.media AND grant_row.account_id=requested.account_id
+               AND grant_row.access_level IN ('read','preview','execute')
+               AND (to_jsonb(grant_row)->>'revoked_at') IS NULL
+           )
+         ) LIMIT 2`,
+      [workspaceId, userId, identityId, JSON.stringify(parsed.data.map(a => ({ media: a.media, account_id: a.accountId })))],
     );
-    return result.rows[0]?.qihang_user_id ?? null;
+    // One query validates the complete frozen range and returns only its original
+    // owner's credential. Never reduce a job scope or substitute another owner.
+    const value = result.rows[0]?.qihang_user_id;
+    return result.rows.length === 1 && typeof value === "string" && value.trim() !== "" ? value : null;
   }
 
   async resolveIdeaLabSecretRef(workspaceId: string, userId: string): Promise<string | null> {

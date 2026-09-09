@@ -91,17 +91,17 @@ describe("v1.5 4.3 / 11.7 external changes", () => {
   });
 
   it("never invents the old value when the sync could not observe it", () => {
-    expect(describeExternalChange({ ...CHANGE, fromValue: null })).toBe("后台手动：campaign 日预算 改为 10000");
-    expect(describeExternalChange({ ...CHANGE, fromValue: null, toValue: null })).toBe("后台手动：campaign 日预算 被改动");
+    expect(describeExternalChange({ ...CHANGE, fromValue: null })).toBe("后台手动：计划日预算 改为 10000");
+    expect(describeExternalChange({ ...CHANGE, fromValue: null, toValue: null })).toBe("后台手动：计划日预算 被改动");
     expect(describeExternalChange({ ...CHANGE, fromValue: { value: 8000 }, toValue: { value: 10000 } }))
-      .toBe("后台手动：campaign 日预算 8000→10000");
+      .toBe("后台手动：计划日预算 8000→10000");
   });
 
   it("only recognises the four contract fields and three target types", () => {
     expect(() => externalChangeSchema.parse({ ...CHANGE, field: "targeting" })).toThrow();
     expect(() => externalChangeSchema.parse({ ...CHANGE, targetType: "account" })).toThrow();
     for (const field of ["bid", "budget", "status", "schedule"] as const) {
-      expect(describeExternalChange({ ...CHANGE, field })).toMatch(/^后台手动：campaign /);
+      expect(describeExternalChange({ ...CHANGE, field })).toMatch(/^后台手动：计划/);
     }
   });
 });

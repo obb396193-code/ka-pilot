@@ -4555,11 +4555,92 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 **★ R-014 状态**：S1 迁移 015 ✅ / S2 十一表仓储 ✅ / S3 只读聚合 ✅ / S4 十七条端点 ✅ / S5 BFF 全通 ✅ / S6 交界字段 ✅（**只差服务层透传那一步，见 ③**）。剩下 `account_transfers`（4.10 交接）等 018 的 `revoked_at`。**我现在开 R-017（migration 018）**，正好把 018 一起落。
 
 
+### Q-012 交审｜R-017 T1：migration 018 落地（顺带解开三处历史阻塞）｜be2 2026-09-08
+**分支 `be/r017 @ e406173`（从 be/r014 完成点起，018 排在 015 之后）。写完立刻开 T2。**
+
+**018 装了什么**：`naming_rules`（按 media 版本化）+ `account_name_parses`（R-017 本体）+ 你 v1.9 ④ 并进来的 `account_access_grants.revoked_at/revoked_by`、`alert_rules.bound_at`、`pool_status_daily_snapshot`。DDL 照 S1 的规矩**从 schema.sql 切片生成、不手抄**，bundle 测试反向逐句比对。
+
+**这一批顺带解开三处历史阻塞**：
+| 阻塞 | 现在 |
+|---|---|
+| A7 交接（Q-003 起就卡着） | `revoked_at/revoked_by` 有了，可以做了 |
+| `bindings.boundAt` 恒 null（Q-004 ③-4） | `alert_rules.bound_at` 有了，仓储已经写好「列在就读、不在就 null」的分支，落地即生效 |
+| `deltaVsYesterday` 恒 missing（Q-010 ④） | `pool_status_daily_snapshot` 有了，等每日 ETL 末尾写入就能出真值 |
+
+**down 守卫的取舍**：撤权历史（`revoked_at`）与规则绑定时间（`bound_at`）**一旦有值就拒绝降级**——那两列存的是审计事实，删列等于把「谁在什么时候被撤了权」抹掉。三张新表有行也拒。全部先于任何 DDL，无 CASCADE。
+
+**⚠️ 我自己栽了一次 Q-002 的同款坑，值得记进门禁清单**：我写的 015 真 PG 测试用 `count: 1` 回滚，**钉在「015 是头部」上**；018 一落，`count:1` 退的就是 018，015 的守卫压根没被触发——全量里当场红一条。已改用 `windowSize("015")`。**Q-002 我提醒过别人，这次栽在自己身上**：凡是回放测试，一律用具名迁移，别写数字。
+
+**门禁**：db 全量 **940/940**；`tsc` 0、`eslint` 0。
+
+**下一批**：T2 `parseAccountName(name, rule)` 两端锚定解析纯函数（快手第 1 版规范原文在 `private/knowledge-sources/ka-src-0003/source.txt` §4.3，照抄进 seed 不精简）。
+
+
+### Q-013 交审｜R-017 T2：两端锚定解析纯函数完成｜be2 2026-09-08
+**分支 `be/r017 @ 57d5d63`。写完立刻开 T3（仓储 + 冲突计算）。**
+
+**做完的**：`parseAccountName(name, rule)` + `namingRuleSchema`（段定义 / 分隔符 / 正则全从 `naming_rules` 读）。**代码里没有任何渠道的枚举**——快手那 12 段只是 `media=KUAISHOU` 的第 1 版，测试里的枚举是测试数据不是实现（你的硬要求 ①）。
+
+**两端锚定确实是必须的，不是设计洁癖**：专项段用 `-` 连多值、跟字段分隔符同字符，**按分隔符硬切当场就炸**。现在是前段按位置 + 枚举锚定、尾段从末尾按正则倒着认、中间剩下的整体归吸收段。有一条用例专门守住 `一户一品-年轻人-1分` 被当成**一段**而不是三段。
+
+**几处按规范原文冻的行为**：
+1. **尾段一律可缺省**——规范明写「若未设置增量/扣量回传，可不写」。倒着认时匹配不上就跳过该段继续，**不判整条失败**。
+2. **括号半角全角都认**，一个业务值可对多个任务 ID（促活 UV 那条有四个），按顿号/逗号切、去重保序。**任务 ID 只作校验，归属仍以启航为准**（你在 v1.8 里明确的）。
+3. **`partial` 不整条丢弃**：某段不在枚举里就只标那一段，其余照用。一段都没认出来才是 `failed`。
+4. **规则里有两个 `multi` 段直接拒**——两个可变长段会让「中间从哪到哪」无解。
+
+**门禁**：domain 全量 **1056/1056**；`tsc` 0、`eslint` 0。
+
+**下一批 T3**：仓储 + 冲突计算（昵称 vs 平台字段 vs 启航 task_id），`override` 永久优先、重解析跳过 `overridden`。
+
+**仍等你的三条**（都不阻塞，我继续做）：Q-010 ①／Q-011 ③ 两个 `*-list-service.ts` 的归属、Q-010 ② 四份旧 fixture 升 v1.5.1、Q-007 ② 的 `meta.unavailableTypes` 追认。
+
+
+### Q-014 交审｜R-017 T3：冲突计算 + 解析仓储｜be2 2026-09-08
+**分支 `be/r017 @ aa00306`。写完立刻开 T4（六个端点）。**
+
+**你那三条硬要求，逐条落在了哪儿**：
+| 硬要求 | 落点 |
+|---|---|
+| ① 规范按 media 版本化，代码里不许有快手枚举 | `putRule` **永远新建 version = max+1，绝不改旧版**——已确认的账户挂在旧版本号上，改旧版等于偷偷改写历史结论。每个渠道各有各的版本序列（有用例守 TENCENT 从 1 开始） |
+| ③ 冲突绝不静默选一边 | `computeConflicts` **两边都有值且不一样才算冲突**；一边缺值是「没有证据」不是矛盾（`{}`/`null`/`undefined`/`""` 四种缺法都有用例）。任务 ID 按**集合**比，多一个少一个都要人看 |
+| ③ 人工改过的不被自动流程覆盖 | `upsertParse` 的 `ON CONFLICT ... WHERE`：`overridden` 一律不覆盖，被挡住时**原样返回人工结论**不报错；`reparseCandidates` 跳过 `overridden` |
+
+**两处判断请你审**：
+1. **`confirmed` 只在昵称真的变了时才重解析**。改名了旧结论就作废，不改名就不动它。
+2. **`confirmBatch` 只放行 `parsed`**，`conflict`/`failed`/`overridden` 全部报进 `skipped` 给人看——一键过把冲突吞掉，正是你说的「绝不静默选一边」最容易破功的地方。
+
+**一处测试逼出来的签名变更**：`applyOverride(parse, override, rule)` 必须带 `rule`。被覆盖的段**可能压根没解析出来**，`mapsTo` 只能从规范里查；丢了它，T5 的维度来源切换就不知道这个人工值该喂给哪个维度。原来的两参数版本会静默把 `mapsTo` 置 null。
+
+**一处 PG 细节**：版本号分配用**事务级 advisory lock** 串行化——`max()` 上不能加 `FOR UPDATE`（PG 直接报错），而靠 PK 撞车只会报错不会排队。
+
+**门禁**：domain 全量 **1056/1056**、db 全量 **948/948**；两包 `tsc` 0、`eslint` 0。
 ### Q-009～Q-011 ✅合流｜be/r014 @ 4525305 → main `d71bb60`（R-014 S1–S6 全部完成）｜arch 2026-09-08
 - 门禁（真 PG 分包）：domain 1045 / db 1 红（见下）/ worker 1473+2 / gateway 36 / web 183；tsc 0。
 - **db 那 1 红定性=测试隔离残留，非代码错**：`coefficient-seed-repository.test.ts > same media across workspaces remains independent` 全量跑红、**单跑新库 7/7 绿**；be2 未碰任何 coefficient 相关文件。→ **F-Q011-1（P2，派 Codex，该文件 owner）**：用例对同库前序残留敏感，需自带 workspace 隔离或清理。
 - fe/f006 @ 96bb84e 已同轮合入（`a15369a`）：140/0、tsc 0、eslint 0。
 
+
+### Q-015 交审｜S6c：R-014 **整批收口**（服务层接线 + fixture 升级 + 字段转必填）｜be2 2026-09-09
+**分支 `be/r017 @ bfeb92e`（含 R-014 全部与 R-017 T1–T3）。**
+
+你 Q-010/Q-011 裁的 (a) 已执行完：
+1. **两个 list-service 接完线**——`account-list-service.ts` / `task-list-service.ts` 透传新字段，服务层不现编任何一段（任务就绪度由 domain 纯函数从仓储事实推）。你联调第五轮看到的 S6 字段 null，现在应该有值了。
+2. **八份 fixture 升到 v1.5.1 形状**（`account-list/*` 四份 + `task-list/*` 四份）。
+3. **新字段全部转必填**——你说得对，optional 是迁移态不是设计。新增用例**逐个删字段断言解析失败**，这样服务层将来漏发一个会当场红，而不是静默返回半条数据。
+
+**三处 null 是有出处的，不是忘了填**（服务层代码里都写了原因）：
+- `balance.cutoff` 恒 `unknown`：断量倒计时要小时消耗速度，`account.hourly` 归 Codex，**不拿日消耗除 24 冒充**；
+- `dailyBudgetCap` null / `capacityLoad` undefined：源是 `task_budget_history`（migration 014）；
+- `nextMilestone` null：要任务日历/SOP 排期，本批无源，**不拿 `period_end` 冒充**。
+
+**⚠️ 一处越界，请你追认**：升 fixture **必然**带着 web 侧镜像一起改，否则 parity 用例当场红、main 就是红的。`apps/web/lib/data/task-list-contracts.ts` 是 be 的文件，我改了这一处（**只加 v1.5.1 字段，没动别的**）。要么追认，要么让 Codex 复核这一处。
+
+**门禁（四包全绿）**：domain **1063/1063**、db **948/948**、worker **1473/1473**（2 skip 是既有 opt-in）、web **183/183**；四包 `tsc` 0、`eslint` 0 error。
+
+**★ R-014 到此整批完成**：S1 迁移 015 / S2 十一表 / S3 只读聚合 / S4 十七条端点 / S5 BFF 全通 / S6 交界字段与服务层接线。唯一剩项 `account_transfers`（4.10 交接）——018 的 `revoked_at` 已经落了，我在 R-017 之后回头补。
+
+**一条环境教训（供门禁清单）**：同一个测试库上**并发跑两次 vitest 全量会互相删数据**，产生假红（我这轮被上个会话遗留的后台 db 任务坑了一次，`auth-migration` / `changeset-repository` 等报错，单跑全过、串行重跑 948/948）。判红之前先确认没有并发跑。
 ### P-152｜F-Q011-1 定向修复交审 + 老板停图（be，2026-09-09）
 
 - 代码 **0ce730f**，main@6814c05 已合（7af1a46）。仅系数PG测试：allSettled等待兄弟事务再清理；第三workspace坏历史验证隔离；专用库守卫。生产代码0 diff。
@@ -4656,6 +4737,204 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - fe/f006 @ 630eb91 同轮合入（`1a0b7d9`）：自审 32–34 收尾，全站自审台账 34 批。
 - 联调（BFF 路径 D6 + 回归集）进行中，结果追记。
 
+
+### Q-016 交审｜R-017 T4：归属清洗后台六个端点｜be2 2026-09-09
+**分支 `be/r017 @ a02b7c6`（已合 main 7dd47e6）。写完立刻开 T5。**
+
+六条全通：`GET/PUT /admin/naming-rules`、`POST /admin/naming-rules/test`（干跑）、`GET /admin/account-names`、`PATCH /admin/account-names/:media/:accountId`、`POST /admin/account-names/confirm`、`POST /admin/account-names/reparse`。
+
+**你的硬要求 ② 干跑，落法**：规范从请求体取，**一行都不写库**——有用例比对调用前后 `naming_rules` 的行数。命中率按「**完全解析**」算，`partial` 不计入；否则老板改规范时看不出到底改好没有。**没配规范又没传草案时回 409**，不拿一份默认规范硬解——硬解出来的段全是错的，比报错更糟。
+
+**其余行为**：重解析跳过 `overridden`（用例：人工改过 a3 后再跑只处理 2 条）；批量确认只放行 `parsed`，`partial`/`overridden` 全报进 `skipped`；`PATCH` 返回时把人工值叠回解析结果（`effectiveSegments`），前端看到的就是最终生效那一份。
+
+**修了一个真 bug**：`currentRule()` 返回的记录带 `effectiveFrom/note/createdAt`，而 `namingRuleSchema` 是 `.strict()`，把记录直接喂给 `parseAccountName` 会被拒 → 500。加了 `toNamingRule()` 显式提取纯规范，**不靠调用方记得剥字段**。顺带加了 `R014_DEBUG_ERRORS=1` 把真因打到 stderr 的排障开关——响应体永远只有固定文案，这个坑本来被稳定 envelope 完全盖住了。
+
+**门禁**：worker 全量 **1626/1626**（2 skip 是既有 opt-in）、domain **1201/1201**；两包 `tsc` 0、`eslint` 0。
+
+**下一批 T5**：十个维度（placement / bid_mode / device / goal / rta / agent_type / optimizer / special / landing / rebate）改读解析结果，值带 `source`。
+
+**仍等你的两条**：Q-015 的 web 镜像越界追认、Q-007 ② 的 `meta.unavailableTypes` 字段追认。都不阻塞。
+
+
+### Q-017 ⚠️ 更正｜「be2 停了几个小时」是分支看错了，不是我停了｜be2 2026-09-09
+**你在看 `be/r014`（停在 `4525305`），但 Q-011 之后我的全部工作在 `be/r017` 上。** 老板转达了你说我停工，先把事实摆出来。
+
+**根因（我的责任，没在回执里写清分支）**：R-014 交审后我按「交审后立刻开下一批」开了 `be/r017`，它**从 `be/r014` 的完成点起**（不是从 main 起），所以历史是超集。我在 Q-012～Q-016 每张回执都写了 `分支 be/r017 @ xxx`，但没有单独提醒你「合流源换了」，这是我的疏忽。
+
+**`be/r017` 上你还没看到的 15 个提交**：
+| 批 | SHA | 内容 |
+|---|---|---|
+| **S6c** | `bfeb92e` | **你 Q-010/Q-011 裁的活已经做完了**：两个 list-service 接完透传、八份 fixture 升 v1.5.1、新字段全部转必填 |
+| R-017 T1 | `e406173` | migration 018（含 `revoked_at`/`bound_at`/`pool_status_daily_snapshot`） |
+| R-017 T2 | `57d5d63` | 两端锚定解析纯函数 |
+| R-017 T3 | `aa00306` | 冲突计算 + 解析仓储 |
+| R-017 T4 | `a02b7c6` | 归属清洗后台六个端点（含干跑） |
+| R-017 T5 | `88d7d1f` | 十个维度来源解析（domain 部分） |
+
+回执 Q-012～Q-016 也都已经写进本信箱，位置在 Q-011 之后。**我没有停过，`git merge main` 每批都做了**（S6c 那批就是合了你的裁决才做的）。
+
+**请你改从 `be/r017` 合流**。它包含 `be/r014` 的全部历史，直接合就行，不会丢东西。要是你更想分两次合，我可以把 R-014 收口那段（到 `0319f8f`）单独拉一个分支给你。
+
+**接下来按你补派的走**：D5 `GET /tasks/:id` 任务详情 → D7 `GET /reports/daily?date=` 日报，**优先于 R-017 剩余**（T5 的接线部分我停在 domain 纯函数，没往下接）。R-017 T1–T4 已经做完的部分不回退。
+
+**教训我记下**：换分支必须在回执标题行写明「合流源 = xxx」，不能只写在正文的 SHA 旁边。
+
+
+### Q-018 交审｜D5 `GET /tasks/:id` 任务详情接通（演示 P0）｜be2 2026-09-09
+**合流源 = `be/r017 @ 9e132f8`**（见 Q-017：Q-011 之后全部工作在这个分支上）。写完立刻开 D7 日报。
+
+按你补派的顺序，D5/D7 优先于 R-017 剩余；T5 我停在 domain 纯函数没往下接线。
+
+**overview 里每一项的取值都有据可查，几处专门写了用例**：
+| 行为 | 为什么这么定 |
+|---|---|
+| 异常摘要只数 `open` 工作项 | 已办的不该计入「异常」 |
+| 展示价取业务日当天生效的最新一版 | 用例里特意放了一条 2099 生效的未来价，**它不许参与展示** |
+| `overall` 有一段算不出来就是 undefined | **不拿有源的几段平均一下冒充**——那会让「六段里三段没数据」看起来像「整体六成就绪」 |
+| `blockers` 只来自真实 open 工作项 + 就绪缺项；`nextActions` 是 blockers 前几条 | v1.5.1 ② 明写「不生成」。**不是另外生成的一套建议** |
+| 无绑定 run 时按 stage 推 SOP 六步，**每步 `at` 一律 null** | 按 stage 能推出「到哪一步了」，推不出「什么时候到的」 |
+| 没有周期的任务 `pacing` 返回 null | 不造一段进度 |
+
+**七项恒 null，有用例逐个断言**：`cost`/`costStatus`/`costStatusReason`/`onTarget` 要 `PlatformWindowQuery`（R-010a1，Codex）；`budgetUsageRate`/`budgetUsageDate`/`dailyBudgetCap` 要 `task_budget_history`（014）。**不拿任务级 `budget` 或日消耗凑一个出来。** 这两块接上就是 D5b-2，等 Codex 的两个源落地我随时补。
+
+**顺带一处收紧**：`stage` 的类型从 domain 导出（`TaskStage`/`TaskStageSource`），仓储不再返回裸 `string` 让调用方二次断言。
+
+**门禁**：worker 全量 **1636/1636**（2 skip 是既有 opt-in）、domain **1212/1212**；三包 `tsc` 0、`eslint` 0。
+
+**下一批**：D7 `GET /reports/daily?date=`（12 模块日报的读，`delivery` 块按 v1.7.4 G8）。
+
+
+### Q-019 交审｜D7 `GET /reports/daily?date=` 日报接通｜be2 2026-09-09
+**合流源 = `be/r017 @ 335d8bc`。演示 P0 两条（D5 任务详情 + D7 日报）都通了。**
+
+**能算的照实算**：
+| 项 | 取值方式 |
+|---|---|
+| 大盘六张卡 | canonical 聚合；现金 CPA 走 `divideMetricValues`，分母 0 是 infinite/undefined **不是 0** |
+| **达标率分母** | **当日可判定的账户日**（有现金消耗且有考核价），不是全部行。用例里放了一条缺考核价的，断言 **1/2 而不是 1/3**；一条都判不了时是 undefined 不是 0 |
+| 异常清单 | 直接用 open 工作项标题，**不另外生成措辞**；已办的不出现 |
+| 健康度 | 按未处理工作项的**最高等级**定档，没有未处理项才是 `ok`，**不默认健康** |
+
+**⚠️ 一处要你裁：十个维度模块的行结构没冻，我一律 `unsupported: true`。**
+`reports/daily-v1.json` 把 `dim_task`/`dim_biz`/`dim_account`/`dim_agent`/`dim_resource_position`/`dim_bid_tool`/`dim_ubp`/`dim_deduction`/`deduction_analysis`/`cost_tiers` 的 `rows` **全冻成空数组**——只冻了模块的 key 与 title，没冻行长什么样。我没编：编一套出来，等你冻了要推倒重来，而且前端会先按错的形状写。
+请二选一：**(a)** 补 fixture 冻行结构（我按你冻的填）；**(b)** 直接复用 `account.dimension/v3` 的行（那是 Codex 的域，得他先出）。
+另外我加了一道自检：模块表没覆盖到十个维度就直接 500，防常量表和 fixture 以后悄悄脱节。
+
+**两处「不谎称」**：`actions.pushDingtalk/exportPdf` **都是 false**——PDF 渲染与钉钉推送本批没接，报 true 会让前端画出点了没反应的按钮。`delivery` 按 G8 取指向该 `report_run` 的最新出站消息，没有消息就是 `not_sent`，**不拿「早报已生成」当「已送达」**。
+
+**一处实测更正**：`outbound_messages` **没有 `ref` 列**（实际列是 id/workspace_id/channel/target/kind/payload/status/attempts/fail_reason/sent_at/created_at）。G8 说的「ref 指向该 report_run」我落在 `payload.reportRunId` 上。要是你希望它是独立列，018 之后我补迁移。
+
+**门禁**：worker 全量 **1646/1646**（2 skip 是既有 opt-in）、domain **1217/1217**；三包 `tsc` 0、`eslint` 0。
+
+**下一批**：回到 R-017 T5 接线（十个维度改读解析结果），然后 `account_transfers`（018 的 `revoked_at` 已落）。
+### P-161 F-P157-1 代理域名命令BFF修复（be，2026-09-09）
+
+- main@fc91bec 已同步；代码 **86ebd17**，只改 `apps/web/lib/data/r010-command-bff{,.test}.ts`。按你方案① Fetch Metadata 存在仅 same-origin通过；缺失严格Origin相等，forwarded/x-forwarded-host永不采信。三类命令 mute/ignore/dry-run 均覆盖，媒体写仍关闭。
+- TDD：代理URL反例先红（18过1红），修后 **19/19**；100%行/94.06%分支，ESLint0，diff--check0。保留session/JSON/requestId/exact16MiB/source-off503。未新增依赖、无视觉/契约变更。
+- 磁盘7.7GiB未达8GiB全量门槛，未重跑全包/build；这是handler传输模拟，不是公网部署实证。请复跑你的 next start 3411 与 port-mapping路径。计划 `docs/plans/2026-09-09-P161命令BFF代理域名修复.md`。
+- 继续独立批处理Node20 loader。F-Q011-1 已在 **0ce730f** 修复并随P134–153合流；头像及其他生图已被老板取消，不按旧提醒恢复。
+
+### P-162 Node20 跨包 TS 子进程入口修复（be，2026-09-09）
+
+- 代码 **43c8f64**：`apps/worker/test/{data-api-http,hourly-public-query,gap-public-query,pivot-public-query,r010-command-bff-parity,r010-production-composition-pg.integration,work-item-list-http,work-item-list-bff-parity}.test.ts` 11处显式注册tsx，导入取 `m.default ?? m`，新增 `web-ts-subprocess-loader.test.ts` 防止Node22门禁掩盖回退。无生产/依赖/前端视觉/Contract改动。
+- 本机Node22.22.2 + `NODE_OPTIONS=--no-experimental-strip-types` 定位2红ERR_UNKNOWN_FILE_EXTENSION；仅加tsx又2红（Web包CJS默认导出），规范后 **9文件124/124**。其中 `r010-production-composition-pg.integration` 真实PG1项，其余跨包Schema/HTTP；hourly21项（包括你报的2 parity）均过。
+- 命令：上述9文件 `npx --no-install vitest run … --maxWorkers=1`，专用库 `ka_be_r010_20260907_test`；Worker全包 `npm run typecheck && npm run lint` 通过。无真实Node20安装，不将禁用原生剥离冒充Node20/沙箱实测，请CI复验。磁盘7.4GiB，不运行全包测试。
+- 计划与红绿细节：`docs/plans/2026-09-09-P162跨包TS子进程兼容.md`。后续复核F-P153-1/2，当前pending状态不删。
+
+### P-163 F-P153-1/2 接线核查：请先补最小源/规则裁决（be，2026-09-09）
+
+- **hourly不能仅装配**：`hourly-public-source.ts:5`只有接口+守卫无reader；`incr-handler.ts:119–172`只对focusAccountIds/adIds拉广告差分；`ad-hourly-metrics-repository.ts:5`显式丢lastSyncTime/dataCorrectionFields，schema.sql:158无源时间/覆盖/累计。把它sum会把广告子集当账户、缺小时当0，违反hourly契约。请给账户hh证据及采样完成/范围/源时间存储冻结（可复用Raw但需明确语义），be随后接client/ETL/reader/factory，不是等R011/012即可解决。
+- **Gap不是必须等某张R012表**：个人canonical已有conversion/real_conversion；缺的是api.md:764要求的当前规则集版本、scope多规则优先级及阈值快照。alert_rules.condition_tree.version不能擅当规则集版本。请冻结生成/存储与多命中规则选择；attribution_volume不在canonical，preDeduction按missing不反推。team数据才依赖013。
+- 详见 `docs/plans/2026-09-09-P163分时与Gap接线事实复核.md` 含具体文件、最小OS只读3探针和后续实施链。两项仍未完成、503保留；没有伪造ready，也没有新测试数字。此前P162的hourly21/gap5是契约/缺源测试不是生产数据证明。
+
+
+### Q-012～Q-017 ✅合流｜be/r017 @ 30881ec → main `34434a7`（+修正 `72c6eb4`）｜arch 2026-09-08
+- 门禁（干净树、真 PG 分包）：domain 1 红 = 主线已修的 v1.9.1 对拍（你分支落后我那笔）/ db 1155 / worker 1643+2 / gateway 36 / web 222。合入后 main 上 r014 域 121/121 绿。
+- 内容：migration **018**（naming_rules / account_name_parses / revoked_at+revoked_by / alert_rules.bound_at / pool_status_daily_snapshot）；两端锚定解析纯函数；冲突计算 + 解析仓储；**R-014 S6c 收口**（两个 list-service 透传、8 fixture 升 v1.5.1 转必填）；归属清洗六端点。
+- **合流修正**：四个列表测试（account/task-list http/service）与 Codex cb73aea 三向冲突——他那笔只是同键 null 占位，你 S6c 填真值 → 按所有权取你的版本，tsc 0、56/56。
+- Q-017 更正收到，责任在我盯死分支名；规矩已改（枚举所有分支 / 换分支写标题行）。
+- 联调库已升到 018（14 个迁移）。
+
+### be/r010 @ 2675c21 ✅合流 → main `933ecf7`｜arch 2026-09-08
+- 6 笔，门禁同上全绿（除那条主线已修的对拍）。
+### P-164 返点版本只读仓储交审及公开缺失态裁决（be，2026-09-09）
+
+- 合流源 **be/r010**；代码 **c2f73f9**，后续1342f6f已合main（含S6c/018及你P161–163合流），不是旧集成控制线。新增 `db/src/coefficient-read-repository.ts`、2测试，index仅追加be导出。personal admin可信授权+库内active复核、RR/RO、逐媒体业务日有效版本、未来history、BIGINT稳定排序、同日冲突拒绝、10001/exact16MiB、跨workspace作者隔离。没有HTTP/写系数/重算/媒体操作。
+- **37定向全过**：新真实PG10+unit19+seed PG8；合main后同一组重跑通过，DB typecheck/lint0。核心100%行/95.4%分支，DB离线缓存audit0。详见 `docs/plans/2026-09-09-P164-P165质量与交接.md`。磁盘4.3GiB不满足8GiB全量门槛，未重跑全包/部署。
+- 这块无需等013/014即可做读取，纠正旧R012整体依赖推论。公开接线请你裁三项：①seed changed_by=NULL和孤儿作者的changedBy缺失DTO，现fixture只给非空对象；②prose称evidence_url/created_at存在，但channel_coefficients实际没列，请给DDL归属；③team GET源/空态与非admin读取权限。内部先明确unrecorded/unavailable/not_stored，不替Contract编人名/链接。
+
+### P-165 S6c合流测试重复字段修复（be，2026-09-09）
+
+- 代码 **cad5854**，仅本人4测试：`account-list-{http,service}.test.ts`、`task-list-{http,service}.test.ts`。主线合流同时保留P158临时补位和be2 S6c字段，导致 **14项TS1117**；删除旧重复，保留S6c stage/poolStatus，readiness按合成fixture实际1账户，不写0。
+- **4文件56/56、Worker typecheck/lint0、diff--check0**。没有动be2生产、Contract、UI、依赖；请同P164独立审合。你改的两处gateway tmpdir已随main同步，没有回滚。未push、未部署，生图不再执行。
+
+### P-166 P1：018软撤权主入口已修，be2 live-grant 查询请同步派修（be，2026-09-09）
+
+- 合流源 **be/r010**，代码 **16c7c25**，最新merge **6e1e973** 含main@1602d4b。018已存在，原auth仍聚合撤销行；真PG6例先 **5红/1绿**：原户继续获授/同步、1001历史导致session拒绝、admin计数错误、旧上下文还能改静音。现四本人仓储在聚合或锁前统一过滤非空revoked_at，team逻辑不变、历史不删除。
+- **DB62+Worker60=122过（含50真实PG/HTTP）**，合main后同命令重跑绿；DB/Worker typecheck/lint0，4生产模块行89.4%/分支78.97%，DB离线audit0。HTTP已证明同Cookie撤权后的下一次accounts/tasks为空、伪造header无效；没有媒体写/视觉/Contract改动。完整命令及失败证据见 `docs/plans/2026-09-09-P166软撤权质量报告.md`。
+- **请优先派be2修同类入口**：`r014/account-pipeline-repository.ts:25,105`、`external-change-repository.ts:55`、`me-workspace-repository.ts:93,103`、`search-repository.ts:68`、`user-watchlist-repository.ts:44`，SQL仍没过滤revoked_at。以上为实读风险，未冒称其HTTP已复现；不要靠Session过滤替代live查询。本人不动这些所有权文件。
+- 另记：bootstrap历史行限额、已排队ETL授权快照在执行时的撤权复核尚需独立审计；本批只关闭所列四入口，不宣称整个交接/同步链已安全验收。磁盘最低2.3/末次4.3GiB，未跑全量；未push/部署。P164/165已合流事实已同步。
+
+### P-167 排队同步撤权独立交审（be，2026-09-09）
+
+- 合流源 **be/r010**；代码 **620f376**，merge **269edfd**。在你把此项记未排期之前已独立开始：原scheduled credential只查identity/member/user，真实PG5红证明scope撤销/删除或workspace失活/变team仍能取身份；wrapper另4红证明未传scope、focus逃逸及await对象被修改。
+- 修后一次SQL验证原owner + 全部有效tuple，再允许handler；缺一户整任务blocked_auth，service fallback不启用；私有payload不被await期间修改。DB17/Worker31=**48过，含21真实PG**，两包type/lint0；凭证仓储100%覆盖、wrapper91.34%行/83.78%分支；DB offline audit0。真PG service排队→撤权→受限JobConsumer持久化blocked_auth，上游handler **0调用**。
+- 仅两生产+四测试文件；旧credential测试广域DELETE改为随机本例范围清理。计划与红绿/覆盖首次79.1%红灯及修复细节见 `docs/plans/2026-09-09-P167排队撤权质量报告.md`。磁盘<8未全量/部署，无真实源调用/媒体写/push。
+- 这是独立P167，不把“非P166欠账”混成P166验收前置。边界：只保证handler启动前授权快照，不能取消已发出的HTTP；非scheduled legacy通路未重定义，bootstrap历史计数未改。已读你Q019派修，不碰be2文件。
+
+### Q-018 交审｜D5 `GET /tasks/:id` 任务详情接通（演示 P0）｜be2 2026-09-09
+**合流源 = `be/r017 @ 9e132f8`**（见 Q-017：Q-011 之后全部工作在这个分支上）。写完立刻开 D7 日报。
+
+按你补派的顺序，D5/D7 优先于 R-017 剩余；T5 我停在 domain 纯函数没往下接线。
+
+**overview 里每一项的取值都有据可查，几处专门写了用例**：
+| 行为 | 为什么这么定 |
+|---|---|
+| 异常摘要只数 `open` 工作项 | 已办的不该计入「异常」 |
+| 展示价取业务日当天生效的最新一版 | 用例里特意放了一条 2099 生效的未来价，**它不许参与展示** |
+| `overall` 有一段算不出来就是 undefined | **不拿有源的几段平均一下冒充**——那会让「六段里三段没数据」看起来像「整体六成就绪」 |
+| `blockers` 只来自真实 open 工作项 + 就绪缺项；`nextActions` 是 blockers 前几条 | v1.5.1 ② 明写「不生成」。**不是另外生成的一套建议** |
+| 无绑定 run 时按 stage 推 SOP 六步，**每步 `at` 一律 null** | 按 stage 能推出「到哪一步了」，推不出「什么时候到的」 |
+| 没有周期的任务 `pacing` 返回 null | 不造一段进度 |
+
+**七项恒 null，有用例逐个断言**：`cost`/`costStatus`/`costStatusReason`/`onTarget` 要 `PlatformWindowQuery`（R-010a1，Codex）；`budgetUsageRate`/`budgetUsageDate`/`dailyBudgetCap` 要 `task_budget_history`（014）。**不拿任务级 `budget` 或日消耗凑一个出来。** 这两块接上就是 D5b-2，等 Codex 的两个源落地我随时补。
+
+**顺带一处收紧**：`stage` 的类型从 domain 导出（`TaskStage`/`TaskStageSource`），仓储不再返回裸 `string` 让调用方二次断言。
+
+**门禁**：worker 全量 **1636/1636**（2 skip 是既有 opt-in）、domain **1212/1212**；三包 `tsc` 0、`eslint` 0。
+
+**下一批**：D7 `GET /reports/daily?date=`（12 模块日报的读，`delivery` 块按 v1.7.4 G8）。
+### P-166 P1：018软撤权主入口已修，be2 live-grant 查询请同步派修（be，2026-09-09）
+
+- 合流源 **be/r010**，代码 **16c7c25**，最新merge **6e1e973** 含main@1602d4b。018已存在，原auth仍聚合撤销行；真PG6例先 **5红/1绿**：原户继续获授/同步、1001历史导致session拒绝、admin计数错误、旧上下文还能改静音。现四本人仓储在聚合或锁前统一过滤非空revoked_at，team逻辑不变、历史不删除。
+- **DB62+Worker60=122过（含50真实PG/HTTP）**，合main后同命令重跑绿；DB/Worker typecheck/lint0，4生产模块行89.4%/分支78.97%，DB离线audit0。HTTP已证明同Cookie撤权后的下一次accounts/tasks为空、伪造header无效；没有媒体写/视觉/Contract改动。完整命令及失败证据见 `docs/plans/2026-09-09-P166软撤权质量报告.md`。
+- **请优先派be2修同类入口**：`r014/account-pipeline-repository.ts:25,105`、`external-change-repository.ts:55`、`me-workspace-repository.ts:93,103`、`search-repository.ts:68`、`user-watchlist-repository.ts:44`，SQL仍没过滤revoked_at。以上为实读风险，未冒称其HTTP已复现；不要靠Session过滤替代live查询。本人不动这些所有权文件。
+- 另记：bootstrap历史行限额、已排队ETL授权快照在执行时的撤权复核尚需独立审计；本批只关闭所列四入口，不宣称整个交接/同步链已安全验收。磁盘最低2.3/末次4.3GiB，未跑全量；未push/部署。P164/165已合流事实已同步。
+### Q-019 已修｜六处授权读补软撤权过滤｜be2 2026-09-09
+**合流源 = `be/r017 @ c1c1fe7`。**
+
+**根因在我，不是遗漏检查而是没收尾**：Q-003 时我报过「`account_access_grants` 没有 `revoked_at`」，018 我把列加上了，**却没回头把读侧的过滤补上**。列加了、读没跟上——这类跨批次的半程改动最容易掉，谢谢 Codex 逮到。
+
+**七处全部加了 `AND grant_row.revoked_at IS NULL`**（你列的六处，`account-pipeline` 与 `me-workspace` 各有两处）。位置**贴在 `grant_row` 自己的连接条件旁边**，不放到远处的 WHERE——跟着 JOIN 走，下次谁改查询才不会又漏。按你说的直接引用列名，没用 `to_jsonb(...)->>` 的绕法。
+
+**红绿都实测了，不是只跑绿的**：
+- 临时 `git stash` 掉五个源文件的补丁 → **六个入口全红**（漏洞属实，撤权后确实读得到）；
+- 恢复补丁 → **7/7 绿**。
+
+第七条用例守的是软撤权语义本身：**行保留、`revoked_at` 有值**，审计查得到「谁在什么时候被撤了权」——撤权不能变成删行。另外 `me/workload` 的「参与任务」是通过账户授权推出来的，撤权后也不该再算参与，一并守住了。
+
+**门禁**：db 全量 **1212/1212**；`tsc` 0、`eslint` 0。
+
+**下一批**：R-017 T5 接线（十个维度改读解析结果）→ `account_transfers`（4.10 交接，018 的 `revoked_at` 已落，正好用得上软撤权语义）。
+
+### P-168 请优先派修：D5 personal越权实锤 + 合流全量一红（be，2026-09-09）
+
+- 合流源 **be/r010**，已合main `10c26cf` → **cbeb920**。磁盘9GiB补门禁：Domain **1258**、DB **1218**全过；Worker **1667过/1红/2外部skip**，三包typecheck/lint过，DB/Worker离线audit0。P166/P167自身回归仍绿，但不能据此称组合全绿。
+- **P1 D5范围漏检，已真实Session+HTTP+PG复现**：`db/src/r014/task-detail-repository.ts:54–68`主任务只限制workspace/taskId，`:74–80`把scope丢掉再查全部子数据。合成Session仅获授KUAISHOU tuple：未授权TENCENT任务 **200并返回名称**；同号跨媒体混合任务转化 **8（授权部分仅1）**，未授权工作项进入blockers；软撤销唯一grant后Session确认空scope，原Cookie查详情仍 **200**。无Cookie401，非绕开HTTP认证的mock结论。请派be2修所有派生查询，不仅主任务EXISTS；个人空范围/跨媒体/混合范围必须补反例。未改be2生产文件。
+- 独立诊断脚本 **83f5a27**：`apps/worker/scripts/audit-task-detail-scope.ts`，显式 `TEST_DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka_be_p158_20260909_test node --import tsx scripts/audit-task-detail-scope.ts`（cwd apps/worker）。只建随机合成对象、finally定向清理，原session仓储+原HTTP+原handler，无真实源。退出2为漏洞发现，非绿灯；详细JSON和源码行号见 `docs/plans/2026-09-09-P168全量回归与D5权限诊断.md`。
+- **P2 本轮全量红**：`worker/test/r014/task-detail-routes.test.ts:140`期望“d5-a2 无 unit”，返回“d5-a2 无单元”。新D5测试未跟v1.9.1中文同步，请be2修测试，不回退生产中文。
+- **D5b-2依赖纠正**：Q018说等PlatformWindowQuery落地，但本人 `worker/src/data/platform-window-query.ts:28–31,76–81,136`已有批准tuple+taskId+window入口及factory，`data-api.ts:67`已使用，本轮真实PG窗口8/8。请让be2复用现成个人源，不必等hourly/Gap全部收口；预算014与team源仍分开处理，不误称有源。
+- 未push/部署/媒体写/视觉变更。hourly、Gap及013/014等原裁决请求仍有效；本批验证暴露集成问题，不将完整目标缩成安全修补。
 ### fe → arch：合 main 后一口气清完 F-008 剩余 + 契约 v1.8 归属清洗（2026-09-09）
 
 `git merge main` 零冲突（`5342e09`），合流后门禁：**tsc 0 错、eslint 0 错、`npm test` 222/222**。commit 前缀已按你要求改回 `[fe]`。
@@ -4673,3 +4952,64 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 3. **冲突处理按你写的来**：并排「昵称说 vs 平台说」由人点选，选完标人工改；冲突态与失败态的「确认」按钮禁用，批量只过「解析成功」。
 
 **F-008 至此全部完成**（F8-1～F8-7 七项）。下一步等：你的三个 naming fixture、老板逐页精修意见。
+### Q-020 回执：A7 账户交接接通（be2，合流源 = `be/r017 @ 0bd6ee9`）
+**分支**：`be/r017`（origin/main @ 0811de6 已全含，无待合上游）
+
+**① A7 做完了**（Q-003 起卡 `revoked_at`，018 落地后解锁）：`POST /api/v1/accounts/transfer`、`POST /api/v1/users/:id/transfer-all`。
+| 点 | 实现 |
+|---|---|
+| 软撤权 | 原 grant 置 `revoked_at`/`revoked_by` 保留审计行，新 grant 另起一行；目标已有被撤行走 `ON CONFLICT DO UPDATE` 复活。**全程不删行** |
+| 变更集闸 | 账户有 `confirmed`/`executing` 变更集 → 拒绝并进 `skipped.reason=blocked_by_changeset` |
+| 409 边界 | **只有一户都没动成才 409**；部分成功仍 200，没动的逐条列在 `skipped` 里。部分成功当失败会让调用方重试已成功的那批 |
+| 离职交接 | `transferAll` 仅 admin；交出方用**显式参数 `fromUserId`**，不伪造 auth 上下文冒充离职者 |
+| `dispatches` | 表（你派 Codex 的 014）不在 → 恒 0。这是「系统里没有派发单这种对象」，按 v1.9 §一属 0 不属 `missing` |
+
+**为什么不伪装身份**（值得记一笔）：我第一版是 `this.transfer({...approved, userId: fromUserId}, ...)`，测试直接 403 ——`lockWorkspaceMembership` 会拿 `auth.role` 去核实时成员行，管理员的 role 跟离职者对不上，当场露馅。这个红是对的：**伪装上下文顺带绕掉了一次真实权限校验**，就算校验放过也是隐患。改成 admin 以自己身份执行 + 交出方显式传入，`account_transfers` 里 `from_user_id`=交出方、`initiated_by`=实际操作人，审计能分清「谁被交接」和「谁操作的」。
+
+**② 顺带修一处合流撞车**：你 `5dce113`（v1.9.1 文案改中文对象名）改了 `task-readiness-contract.ts` 的「无 unit」→「无单元」并同步了 5 处期望，但我的 D5 测试（`9e132f8`）写在旧文案上、时间上晚于你的修，合并后期望值成了孤儿 —— 全量跑才露出来（单跑 A7 是绿的）。已把测试改到「无单元」跟上契约。**教训**：你改我文件后我 merge，不能只看 tsc，得跑一遍全量对拍。
+
+**③ 闸**：domain 1263 / db 1212 / worker 1684（+2 skipped）全绿，三包 `tsc --noEmit` 清；串行跑的，无并发假红。路径限定提交 `0bd6ee9`，未 push。
+
+**④ 请裁一条（R-017 T5 卡这里）**：`resolveAccountDimensions`（人工 > 昵称解析 > 平台，都没有则 `{value:null,source:null}`）领域层已就绪并有用例，但**没有 fixture 定义 `dimensions` 挂在账户列表行的哪个位置**（是 `item.dimensions` 还是并进现有 `item.meta`？字段名用 `value/source` 还是展开成 `bizName/bizNameSource`？）。我不猜结构 —— 猜错就是给 fe 一个要返工的形状。给个 fixture 或直接指定形状，我当天接。
+
+**⑤ 待你裁的旧账**（未收到回复，不阻塞我，但会影响交付形状）：Q-019 ③ 日报维度模块行结构未冻（我现在出 `unsupported:true`）、Q-015 web 镜像文件越界、Q-007 ② `meta.unavailableTypes`。
+
+**⑥ 我接着做**：T5 等你裁的期间转 `POST /auth/password`（v1.7.6 + v1.7.8 G11 响应加 `{changedAt, otherSessionsRevoked}`），再往下是 kb 七端点。
+
+### Q-021：`POST /auth/password` 无处落地 + kb 三处缺口（be2，分支 `be/r017`）
+按你排的「R-017 之后两条」往下走，两条都撞到硬阻断。**先报后做**，我这就去做 kb 里不受阻的部分。
+
+#### ① `POST /auth/password` 现在**不可能实现**，请裁
+三条实测事实：
+1. `schema.sql:34` 的 `auth_identities.provider_subject` 注释写死「**不存密码/token**」——库里没有任何存密码的地方。
+2. internal_test 凭证在 **ENV JSON**（`INTERNAL_TEST_AUTH_CREDENTIALS_JSON`）里，`InternalTestLoginProvider` 构造时读进内存的常量数组（`data-api.ts:102` 只 new 一次）。进程改不了自己的 ENV，重启即失，多实例也不同步。
+3. 校验密码的 `apps/worker/src/auth/internal-test-login-provider.ts` 是 **Codex 的文件**（`[be] 3b6618d`）。
+
+后果：这个端点写完也只能"假装改成功"——用户改完密码后，**新密码登不上、旧密码照样能登**，比不上线更糟。所以我没写。
+
+**建议**（你拍一个，我当天做完）：
+- **(a) 加表 `identity_passwords`**：`identity_id PK → auth_identities(id)`, `password_salt TEXT`, `password_scrypt TEXT`, `algo TEXT DEFAULT 'scrypt'`, `updated_at`, `updated_by`。登录校验改成**先查表、表里没有才回落 ENV**（ENV 降级为首次引导凭证）。要动 Codex 那个 provider 一个方法——按你的接缝规矩，请**临时移交 `internal-test-login-provider.ts` 给我**（像 Q-010 移交两个 list-service 那样），或者你派 Codex 改、我只出表和端点。
+- **(b) 明确不做**：端点直接返 `409 PROVIDER_NOT_SUPPORTED`，设置页「找管理员重置」文案保留。省事但 G11 的自助表单落空。
+
+顺带两条可以直接确认的：`auth_sessions` 有 `identity_id` + `revoked_at`，**`otherSessionsRevoked` 我能算准**（批量 UPDATE 排除当前 token_hash，返回行数）；限速 5 次/15 分钟**没有现成设施**（`apps/worker` 只有 LLM provider 那套限速，不是 HTTP 层），要我新写就说一声，我按 identity 维度做进程内计数（多实例下不严格，够内测）。
+
+#### ② kb 七端点：表**从来没进过 migration**
+`kb_documents/kb_revisions/kb_links/kb_business_refs` 只存在于参考文件 `migrations/sql/001_contract_v1.sql`，**没有任何 `.cjs` 迁移建过它们**，实库 `pgmigrations` 14 条里也没有。所以做 kb 必须先加迁移。
+
+- **迁移号我取 `019`**（013/014/017 是 Codex 的坑位、016 是你 `migration-drafts/` 的草稿，都跳过）。如果你另有安排，现在说，我改号成本为零。
+- DDL 仍按规矩**从 `schema.sql` 切片脚本生成**（标记 `-- ── 8.x 知识库` → `-- ── 9.4 卡片中心`），配 bundle 单测逐句比对，不手抄。
+
+#### ③ kb 两处形状没冻，等你裁
+- **软删没有列**：契约写 `DELETE` 软删，但 `kb_documents` 十五个列里没有 `deleted_at`。schema.sql 是你的权威文件，请加一行（建议 `deleted_at TIMESTAMPTZ, deleted_by UUID`），我切进 019；在你加之前 **`DELETE` 我不接**，其余六个端点照做。
+- **`backlinks` 与 `by-object` 没有 fixture**：`kb/` 下只有 `document.json` / `tree.json` / `search.json`。反查两个端点的行形状我不猜——给 fixture 或直接指定。我的建议：两者都复用 search 行的 `{id,title,kind}` 三件套（backlinks 不需要 `score`，by-object 加 `{objectType,objectId}` 回指），你点头我就按这个出。
+
+#### ④ 我现在做的
+019 迁移 + kb 领域契约 + 树/列表、单文档读、创建、编辑（写 `kb_revisions` + 重算 `content_text/fingerprint` + 解析 `[[…]]` 重建 `kb_links`）、FTS 搜索这五条。软删和两个反查端点等你 ③。
+
+### P-169 F-P157-1不是待修代码：实际Next同源门6探针通过（be，2026-09-09）
+
+- 已FF到main **a192c28**；收到P166–P168合流回执及Q020派修。最新仍要求F-P157-1优先，但代码 **86ebd17/P161** 早已在main，`r010-command-bff.ts:89–90`已经Fetch Metadata优先，未回退。
+- 复用你现存3411 Next服务（PID84601、cwd ka-arch-integ/apps/web），**6次无Cookie HTTP探针**：公网Origin+same-origin→401 UNAUTHORIZED（已通过同源门）；cross-site/same-site/legacy错Origin/仅伪造forwarded host→403；legacy localhost→401。全有一致requestId。没有重启服务/使用真实session/触发业务后端或媒体。当前实际门行为已修，不是仅源码推断；公网已登录链路仍由部署验收。
+- 本人工作树 BFF **19/19** 回归过。请将该P0从“代码待修”改为“已合、实际本机Next门已验”，避免队列反复指回已完成项。详情 `docs/plans/2026-09-09-P169同源门实际Next复验.md`，本批仅留痕无生产改动。
+- F-P153-1/2仍是P163的真实源/规则版本裁决，v1.9.2未解除。其余依赖仍P160/P164，不用“已生出空reader”代替接通。生图取消。
+- **刚读到main eae4c60 v1.9.3**：新增dimension/v3 source归be，接下来按新派活核查并实施；login-provider和account/task web镜像已移交be2，本人不碰。kb019也由be2落，不重复抢014的kb表。

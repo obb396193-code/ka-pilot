@@ -1,0 +1,189 @@
+{
+  "ok": true,
+  "data": {
+    "ruleVersion": 1,
+    "results": [
+      {
+        "accountName": "DAU-CVR有端-自投-张三-单出价-安卓-优选-激活-有R-常规-13177-A",
+        "status": "partial",
+        "segments": {
+          "channel": {
+            "key": "channel",
+            "value": "DAU",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "biz": {
+            "key": "biz",
+            "value": "CVR有端",
+            "mapsTo": "biz",
+            "taskIds": []
+          },
+          "operator": {
+            "key": "operator",
+            "value": "自投",
+            "mapsTo": "agent_type",
+            "taskIds": []
+          },
+          "optimizer": {
+            "key": "optimizer",
+            "value": "张三",
+            "mapsTo": "optimizer",
+            "taskIds": []
+          },
+          "bid_mode": {
+            "key": "bid_mode",
+            "value": "单出价",
+            "mapsTo": "bid_mode",
+            "taskIds": []
+          },
+          "device": {
+            "key": "device",
+            "value": "安卓",
+            "mapsTo": "device",
+            "taskIds": []
+          },
+          "placement": {
+            "key": "placement",
+            "value": "优选",
+            "mapsTo": "placement",
+            "taskIds": []
+          },
+          "goal": {
+            "key": "goal",
+            "value": "激活",
+            "mapsTo": "goal",
+            "taskIds": []
+          },
+          "rta": {
+            "key": "rta",
+            "value": "有R",
+            "mapsTo": "rta",
+            "taskIds": []
+          },
+          "custom": {
+            "key": "custom",
+            "value": "A",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "landing": {
+            "key": "landing",
+            "value": "13177",
+            "mapsTo": "landing",
+            "taskIds": []
+          }
+        },
+        "taskIds": [],
+        "unmatched": [
+          "rebate",
+          "special"
+        ]
+      },
+      {
+        "accountName": "达人-M运动(280707655)-代投-李四-双出价-iOS-信息流-付费-无R-返点-20031-B",
+        "status": "partial",
+        "segments": {
+          "channel": {
+            "key": "channel",
+            "value": "达人",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "biz": {
+            "key": "biz",
+            "value": "M运动",
+            "mapsTo": "biz",
+            "taskIds": [
+              "280707655"
+            ]
+          },
+          "operator": {
+            "key": "operator",
+            "value": "代投",
+            "mapsTo": "agent_type",
+            "taskIds": []
+          },
+          "optimizer": {
+            "key": "optimizer",
+            "value": "李四",
+            "mapsTo": "optimizer",
+            "taskIds": []
+          },
+          "bid_mode": {
+            "key": "bid_mode",
+            "value": "双出价",
+            "mapsTo": "bid_mode",
+            "taskIds": []
+          },
+          "goal": {
+            "key": "goal",
+            "value": "付费",
+            "mapsTo": "goal",
+            "taskIds": []
+          },
+          "custom": {
+            "key": "custom",
+            "value": "B",
+            "mapsTo": null,
+            "taskIds": []
+          },
+          "landing": {
+            "key": "landing",
+            "value": "20031",
+            "mapsTo": "landing",
+            "taskIds": []
+          }
+        },
+        "taskIds": [
+          "280707655"
+        ],
+        "unmatched": [
+          "device",
+          "placement",
+          "rta",
+          "rebate",
+          "special"
+        ]
+      },
+      {
+        "accountName": "随便起的名字",
+        "status": "failed",
+        "segments": {},
+        "taskIds": [],
+        "unmatched": [
+          "channel",
+          "biz",
+          "operator",
+          "optimizer",
+          "bid_mode",
+          "device",
+          "placement",
+          "goal",
+          "rta",
+          "rebate",
+          "custom",
+          "landing",
+          "special"
+        ]
+      }
+    ],
+    "hitRate": {
+      "value": 0,
+      "state": "finite"
+    },
+    "counts": {
+      "parsed": 0,
+      "partial": 2,
+      "failed": 1
+    }
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "POST /admin/naming-rules/test?media=KUAISHOU {media, sample_names[3]}：实测响应；hitRate 是三态数（parsed 占比，这里 0/3 因样本都缺括号任务 ID）；results[] 每条 status/segments/unmatched/taskIds；不写库"
+  }
+}

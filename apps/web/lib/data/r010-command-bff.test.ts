@@ -43,9 +43,10 @@ test("dry-run and plain ignore preserve honest 503, never reflect raw upstream m
     assert.equal(JSON.stringify(result).includes("upstream-secret"), false)
   }
 })
-test("rejects cross-site, missing/null/non-origin Origin and non-json before fetch", async () => {
-  for (const headers of [{ origin: "https://attacker.example" }, { origin: "null" }, { origin: "" }, { origin: origin + "/path" },
-    { "sec-fetch-site": "same-site" }, { "sec-fetch-site": "cross-site" }, { "content-type": "text/plain" }] as Record<string, string>[]) {
+test("rejects non-same-origin fetch metadata even with matching Origin, and rejects non-json", async () => {
+  for (const headers of [{ "sec-fetch-site": "same-site" }, { "sec-fetch-site": "cross-site" },
+    { "sec-fetch-site": "none" }, { "sec-fetch-site": "same-origin, cross-site" }, { "sec-fetch-site": "" },
+    { "content-type": "text/plain" }] as Record<string, string>[]) {
     let calls = 0
     const result = await handleR010CommandRequest(request({ headers }), { ...deps, fetchImpl: async () => { calls++; return json(success) } })
     assert.equal(result.status, headers["content-type"] ? 400 : 403); assert.equal(calls, 0)
@@ -63,15 +64,41 @@ test("JSON null upstream is invalid response, not truncated; stable known errors
   const mismatch = await handleR010CommandRequest(request(), { ...deps, fetchImpl: async () => json(error("FORBIDDEN"), 404) })
   assert.equal(mismatch.body.error?.code, "UPSTREAM_INVALID_RESPONSE")
 })
-test("missing Origin is rejected; no fetch metadata is allowed only with explicit same Origin", async () => {
-  const missing = request(); missing.headers.delete("origin")
+test("absent fetch metadata requires explicit matching Origin, ignoring forwarded host", async () => {
   let calls = 0
   const fetchImpl = async () => { calls++; return json(success) }
-  assert.equal((await handleR010CommandRequest(missing, { ...deps, fetchImpl })).status, 403)
+  for (const value of [null, "", "null", origin + "/path", "https://attacker.example"]) {
+    const denied = request(); denied.headers.delete("sec-fetch-site")
+    if (value === null) denied.headers.delete("origin"); else denied.headers.set("origin", value)
+    denied.headers.set("x-forwarded-host", "attacker.example")
+    denied.headers.set("forwarded", "host=attacker.example;proto=https")
+    assert.equal((await handleR010CommandRequest(denied, { ...deps, fetchImpl })).status, 403)
+  }
   assert.equal(calls, 0)
   const approved = request(); approved.headers.delete("sec-fetch-site")
   assert.equal((await handleR010CommandRequest(approved, { ...deps, fetchImpl })).status, 200)
   assert.equal(calls, 1)
+})
+test("browser same-origin metadata works through internal localhost for all three command paths", async () => {
+  for (const publicOrigin of ["http://127.0.0.1:3411", "https://synthetic.agent.example", null]) {
+    for (const path of [mute, ignore, dryRun]) {
+      const headers = new Headers({ cookie, "content-type": "application/json", "sec-fetch-site": "same-origin",
+        "x-forwarded-host": "attacker.example", forwarded: "host=attacker.example;proto=https" })
+      if (publicOrigin !== null) headers.set("origin", publicOrigin)
+      const input = new Request("http://localhost:3411" + path, { method: "POST", headers,
+        body: path === mute ? '{"days":1,"reason_chip":"synthetic"}' : path === ignore ? '{"mute_days":3}' : "{}" })
+      let calls = 0
+      const result = await handleR010CommandRequest(input, { ...deps, fetchImpl: async (url, init) => {
+        calls++
+        assert.equal(url, environment.KA_DATA_BACKEND_ORIGIN + path.replace("/api/internal/", "/api/v1/"))
+        assert.equal(new Headers(init?.headers).get("forwarded"), null)
+        assert.equal(new Headers(init?.headers).get("x-forwarded-host"), null)
+        return path === dryRun ? json(error("SOURCE_UNAVAILABLE"), 503) : json(success)
+      } })
+      assert.equal(calls, 1); assert.equal(result.status, path === dryRun ? 503 : 200)
+      assert.equal(result.requestId, id)
+    }
+  }
 })
 test("invalid server config cannot use browser credentials or origin as fallback", async () => {
   for (const environment of [{}, { ...deps.environment, KA_DATA_BACKEND_ORIGIN: "https://backend.example/path" },

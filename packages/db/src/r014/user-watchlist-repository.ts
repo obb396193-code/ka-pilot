@@ -46,7 +46,7 @@ async function assertItemsVisible(
              AND member.identity_id=grant_row.identity_id AND member.is_active=true AND member.user_id=$2
            JOIN accounts AS account ON account.workspace_id=grant_row.workspace_id
              AND account.media=grant_row.media AND account.account_id=grant_row.account_id
-           WHERE grant_row.workspace_id=$1
+           WHERE grant_row.workspace_id=$1 AND grant_row.revoked_at IS NULL
              AND (grant_row.media, grant_row.account_id) IN (
                SELECT * FROM unnest($3::text[], $4::text[]))
          ) AS granted`,

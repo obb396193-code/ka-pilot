@@ -109,6 +109,7 @@ describe("withQihangIdentity", () => {
       workspaceId,
       ownerUserId,
       "55555555-5555-4555-8555-555555555555",
+      [{ media: "KUAISHOU", accountId: "account-1" }],
     );
     expect(credentials.resolveQihangUserId).not.toHaveBeenCalled();
     expect(handler.mock.calls[0]?.[0].payload.userId).toBe("qihang-owner");
@@ -126,6 +127,7 @@ describe("withQihangIdentity", () => {
       workspaceId,
       ownerUserId,
       "55555555-5555-4555-8555-555555555555",
+      [{ media: "KUAISHOU", accountId: "account-1" }],
     );
   });
 
@@ -147,5 +149,25 @@ describe("withQihangIdentity", () => {
     await expect(wrapped(changedScope)).rejects.toBeInstanceOf(BlockedAuthError);
     await expect(wrapped(emptyScope)).rejects.toBeInstanceOf(BlockedAuthError);
     expect(credentials.resolveScheduledQihangUserId).not.toHaveBeenCalled();
+  });
+
+  it("rejects incremental focus outside the frozen account range before fetching credentials", async () => {
+    const handler = vi.fn(), credentials = { resolveQihangUserId: vi.fn(), resolveScheduledQihangUserId: vi.fn().mockResolvedValue("owner") };
+    const value = scheduledJob();
+    await expect(withQihangIdentity(handler, credentials, "fallback")({ ...value,
+      payload: { ...value.payload, focusAccountIds: ["outside"] } })).rejects.toBeInstanceOf(BlockedAuthError);
+    expect(credentials.resolveScheduledQihangUserId).not.toHaveBeenCalled(); expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("keeps the verified job private while waiting for live credential approval", async () => {
+    let release!: (value: string) => void;
+    const handler = vi.fn(), credentials = { resolveQihangUserId: vi.fn(),
+      resolveScheduledQihangUserId: vi.fn(() => new Promise<string>(resolve => { release = resolve; })) };
+    const value = scheduledJob(); const running = withQihangIdentity(handler, credentials, null)(value);
+    value.payload.accountIds[0] = "outside";
+    value.payload.authorizationSnapshot.allowedAccounts[0]!.accountId = "outside";
+    release("owner"); await running;
+    expect(handler.mock.calls[0]![0].payload.accountIds).toEqual(["account-1"]);
+    expect(handler.mock.calls[0]![0].payload.authorizationSnapshot.allowedAccounts[0].accountId).toBe("account-1");
   });
 });

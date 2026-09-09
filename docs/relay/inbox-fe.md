@@ -447,3 +447,34 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 ### fixture 英文文案 ✅ 已改（arch 2026-09-08）
 你报的两处 + 全量扫描另外四处（timeline-account-2、me/notifications 审批标题、tasks/timeline、workflows/definitions 描述）都改成「计划/单元/创意」了，并冻成契约 v1.9.1：后端拼给人看的文案一律中文，机器枚举不受限。`git merge main` 即得。
 自审 34 批完成回执收到，门禁跑完合。头像 12 张已派 Codex（R-FE-IMG-003）。
+
+### F8-3 ✅ 已合 main `d41b1e5`；F8-1 `c03887b` 门禁中（arch 2026-09-09）
+- `fe/f006 @ a1d602a`（改密码表单）合 main = `d41b1e5`，web 222/0。后端 `POST /auth/password` 还没做（be2 排在 R-017 之后），你这页接真后端前会 404，空态/错误态先按契约 v1.7.6 fixture 走。
+- `c03887b`（F8-1 移动端值班最小路径）跑 web 门禁中，绿了就合。
+
+### F8-1 ✅ 已合 main `10c26cf`（arch 2026-09-09）
+web 222/0。
+
+### F8-8 派活（演示 P0，插队做）：任务详情 overview 接真后端 `GET /tasks/:id`（arch 2026-09-09）
+后端已落 main 并在联调环境实测通（be2 D5b，`24ede2d`）。你这边缺两样：
+1. **BFF 透传**：`apps/web/app/api/internal/tasks/[taskId]/route.ts` 现在没有（只有 `bindings/`、`readiness/`），浏览器打 `/api/internal/tasks/1803240580` 是 404。加一个 GET 透传到 data-api `GET /api/v1/tasks/:id`，照你其它透传的写法（带 session cookie，不带服务令牌到浏览器）。
+2. **页面接线**：`app/(main)/tasks/[taskId]/page.tsx` 的 overview 页签从 `lib/fixtures/tasks.ts` 切到真数据；其余七个页签暂时保持 fixture，`tabs` 数组以响应为准。
+
+契约 = v1.5.1 ②，fixture `packages/contract/fixtures/task-detail/overview-v151.json`。**实测响应与 fixture 顶层/overview 键逐一相同**（缺 0 多 0），真数据长这样：
+- `stage {value:"preparing", source:"system", changedAt:null}`；`readiness` 六段各带 `ratio{value,state}` + `ready` + `source`；`blockers[]` 混 `work_item`（带 severity P0/P2/opportunity）与 `readiness`（severity null）两种 kind；`sopProgress.steps[]` 六步、`at` 全 null；`tabs` 八个键。
+- **恒 null 的七项**（`cost/costStatus/costStatusReason/onTarget/budgetUsageRate/budgetUsageDate/dailyBudgetCap`）等 Codex 两个源，前端显「待接源」空态，**不许显 0 或 —**；`achievementRate/timeProgress` 是 `{value:null,state:"undefined"}` 时同样空态；`targetVolume.availability:"missing"` 显缺数。
+- `pacing` 为 null = 该任务没周期，不画进度条。
+- 不存在的 id 返 404 `NOT_FOUND`，页面走你现有的 404 态。
+
+顺带一条请你自查：`/api/internal/tasks/1803240580/readiness` 我用登录 cookie 打是 404（route 文件在），看是路径段还是必填参数的问题，回执里说一句。
+
+### 归属清洗三份 fixture 已补 + F8-9 派活：BFF 补 admin 归属清洗透传（arch 2026-09-09）
+- `packages/contract/fixtures/admin/naming-rules.json`、`account-names.json`、`naming-rules-test.json` 已进 main，全部取自真后端响应（快手 v1 规范 13 段、6 户 5 partial/1 failed、干跑 3 条 hitRate 0）。请把 `lib/fixtures/naming.ts` 的示例换成 import 这三份，「示例」角标去掉。
+- 你三点确认：1 干跑本地预览 → 后端 `POST /admin/naming-rules/test` **已经活了**，切成调接口；2 fixture 已补；3 冲突处理按你写的，冻结。
+- **F8-9**：`apps/web/app/api/internal/admin/` 现在只有 `calendar/ members/`，缺归属清洗四条透传：`GET/PUT admin/naming-rules?media=`、`POST admin/naming-rules/test?media=`、`GET admin/account-names?media=&status=&q=&page=`、`PATCH admin/account-names/[media]/[accountId]`、`POST admin/account-names/confirm`、`POST admin/account-names/reparse`。都要 admin 角色（后端返 403 时页面显「需要管理员」，不要吞成空态）。做完连同 F8-8 一起交。
+
+### 45fc9b80 ✅ 已合 main `3dfd867`（arch 2026-09-09）
+web 222/0。联调环境已切到这版（build `JlrQ6iY8OrR6VUte7_Tw7`），`/admin?tab=naming` 200。接下来按上面 F8-8、F8-9 做，三份 naming fixture 已在 main。
+
+### 8af3c77 ✅ 已合 main（集成页崩溃修，web 222/0）（arch 2026-09-09）
+联调环境重建到这版；老板报的集成页 `config.robots` 崩溃在 `/integrations` 复验。

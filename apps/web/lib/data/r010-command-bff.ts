@@ -83,9 +83,11 @@ export async function handleR010CommandRequest(request: Request, deps: {
   if (command === "invalid") return fail("INVALID_REQUEST")
   if (request.method !== "POST") return fail("INVALID_REQUEST", 405)
   if (url.search !== "") return fail("INVALID_REQUEST")
-  // Do not trust forwarded host headers. Same-site is not same-origin.
+  // Browser-controlled Fetch Metadata survives reverse proxies where request.url
+  // contains localhost, not the public origin. Same-site is not same-origin.
+  // Legacy clients must supply an exact Origin; never trust forwarded host.
   const fetchSite = request.headers.get("sec-fetch-site")
-  if (request.headers.get("origin") !== url.origin || (fetchSite !== null && fetchSite !== "same-origin")) return fail("FORBIDDEN")
+  if (fetchSite !== null ? fetchSite !== "same-origin" : request.headers.get("origin") !== url.origin) return fail("FORBIDDEN")
   if (request.headers.get("content-type")?.split(";")[0]?.trim().toLowerCase() !== "application/json") return fail("INVALID_REQUEST")
   const session = resolveSessionCookie(request)
   if (session.status !== "valid") return fail("UNAUTHORIZED")

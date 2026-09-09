@@ -76,8 +76,8 @@ describe("R010 actual production composition with KA disabled", () => {
     return { response, body: await response.json() };
   }
   async function bff(path: string, body: unknown, session = cookie) {
-    const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e",
-      `const {handleR010CommandRequest}=await import(process.argv[1]); const p=JSON.parse(process.argv[2]);
+    const { stdout } = await promisify(execFile)(process.execPath, ["--import", "tsx", "--input-type=module", "-e",
+      `const {handleR010CommandRequest}=await import(process.argv[1]).then(m => m.default ?? m); const p=JSON.parse(process.argv[2]);
        const result=await handleR010CommandRequest(new Request('https://web.example'+p.path,{method:'POST',
          headers:{origin:'https://web.example','content-type':'application/json',cookie:p.cookie,'x-ka-workspace-id':p.team,'x-ka-account-scope':'*'},body:JSON.stringify(p.body)}),
          {environment:{KA_DATA_BACKEND_ORIGIN:p.base,KA_DATA_SERVICE_TOKEN:p.token},requestId:()=> 'r010-bff-pg'});

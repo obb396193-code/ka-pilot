@@ -8,7 +8,7 @@
     "modules": [
       {
         "key": "executive_summary",
-        "title": "Executive Summary",
+        "title": "管理摘要",
         "cards": {
           "cost": {
             "value": 14200.0,

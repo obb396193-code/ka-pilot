@@ -73,6 +73,10 @@
     "businessDate": "2026-09-05",
     "workspaceKind": "personal",
     "selectedSource": "platform",
-    "_note": "v1.9：后端不出 subtitle，只出结构化 meta 机器值，中文由 fe 组装；work_item href 按 v1.7.6 正名为 /work-items/<id>"
+    "_note": "v1.9：后端不出 subtitle，只出结构化 meta 机器值，中文由 fe 组装；work_item href 按 v1.7.6 正名为 /work-items/<id> | v1.9.3：unavailableTypes = 表还不存在、本次没搜的类型（缺源政策读侧），kb 019 落地后 document 移出",
+    "unavailableTypes": [
+      "material",
+      "document"
+    ]
   }
 }

@@ -1,11 +1,18 @@
 {
   "ok": true,
-  "data": {"items": [], "page": 1, "pageSize": 20, "total": 0},
+  "data": {
+    "items": [],
+    "page": 1,
+    "pageSize": 20,
+    "total": 0
+  },
   "meta": {
     "dataState": "empty",
     "businessDate": "2026-08-25",
     "dataAsOf": null,
-    "coverage": {"complete": true},
+    "coverage": {
+      "complete": true
+    },
     "selectedSource": "qihang",
     "requestId": "fixture-task-empty-001"
   }

@@ -87,6 +87,10 @@ function itemFor(row: AccountListRepositoryRow): AccountListItem {
   const balance = row.balance === null ? null : {
     value: row.balance,
     syncedAt: row.balanceSyncedAt as string,
+    // v1.5.1 ① 断量倒计时 = balance / velocity。velocity 来自小时消耗（account.hourly，
+    // 已裁归 Codex），本服务拿不到 → hours missing、state unknown。
+    // **不拿日消耗除 24 冒充小时速度。**
+    cutoff: { hours: { value: null, availability: "missing" as const }, state: "unknown" as const },
   };
   return {
     workspaceId: row.workspaceId,
@@ -101,6 +105,20 @@ function itemFor(row: AccountListRepositoryRow): AccountListItem {
     linkedTasks: row.linkedTasks,
     metrics,
     balance,
+    // v1.5.1 ①（S6）：仓储已经把事实取出来，这里只做透传，不在服务层现编。
+    poolStatus: (row.poolStatus ?? "available") as AccountListItem["poolStatus"],
+    poolStatusSource: (row.poolStatusSource ?? "system") as AccountListItem["poolStatusSource"],
+    product: row.productName === null ? null : { name: row.productName, ref: row.productRef },
+    // 日预算卡的源是 task_budget_history（migration 014，Codex）→ 落地前 null；
+    // capacityLoad = 当日消耗 / 日预算卡，上面那项没有源时它也算不出来 → undefined，不按 0 代入。
+    dailyBudgetCap: null,
+    capacityLoad: { value: null, state: "undefined" as const },
+    lastAction: row.lastAction === null ? null : {
+      at: row.lastAction.at,
+      kind: row.lastAction.kind as NonNullable<AccountListItem["lastAction"]>["kind"],
+      summary: row.lastAction.summary,
+    },
+    nextSuggestion: row.nextSuggestion,
   };
 }
 

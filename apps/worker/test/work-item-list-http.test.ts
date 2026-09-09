@@ -159,7 +159,7 @@ describe("WORK-ITEM-LIST-001 HTTP composition", () => {
     const emptyOrigin = await start({ ...result, rows: [], total: 0, accountItemCount: 0, dataAsOf: null });
     const moduleUrl = new URL("../../web/lib/data/work-item-list-bff.ts", import.meta.url).href;
     const script = `
-      const {handleWorkItemListRequest}=await import(process.argv[1]);
+      const {handleWorkItemListRequest}=await import(process.argv[1]).then(m => m.default ?? m);
       const deps={environment:{KA_DATA_BACKEND_ORIGIN:process.argv[2],KA_DATA_SERVICE_TOKEN:process.argv[3]},requestId:()=>"work-bff-loopback"};
       const results=[];
       for(const headers of [{cookie:"ka_session=synthetic-session-token-at-least-32-characters","x-ka-workspace-id":"forged"},{}]){
@@ -169,7 +169,7 @@ describe("WORK-ITEM-LIST-001 HTTP composition", () => {
         {...deps,environment:{...deps.environment,KA_DATA_BACKEND_ORIGIN:process.argv[4]}}));
       process.stdout.write(JSON.stringify(results));
     `;
-    const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e", script, moduleUrl, origin, internalToken, emptyOrigin],
+    const { stdout } = await promisify(execFile)(process.execPath, ["--import", "tsx", "--input-type=module", "-e", script, moduleUrl, origin, internalToken, emptyOrigin],
       { timeout: 15000, maxBuffer: 1024 * 1024 });
     const results = JSON.parse(stdout);
     expect(results[0], stdout).toMatchObject({ status: 200, body: { ok: true, data: { total: 1, items: [{ title: "HTTP 成本异常" }] },

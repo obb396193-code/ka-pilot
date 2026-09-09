@@ -55,6 +55,7 @@ export * from "./platform-health-repository.js";
 // be: bounded canonical account-day facts for the pivot window reader.
 export * from "./platform-pivot-repository.js";
 export * from "./r014/task-bindings-repository.js";
+export * from "./r014/account-name-parse-repository.js";
 // be: internal rule definition and effective target-scope observation.
 export * from "./rule-definition-repository.js";
 // be: same-snapshot rule/metric observation, not a public trigger decision.
@@ -65,5 +66,10 @@ export * from "./agent-model-catalog-repository.js";
 export * from "./admin-calendar-repository.js";
 // be: server-approved workspace member/grant reads.
 export * from "./admin-members-repository.js";
+export * from "./r014/task-detail-repository.js";
+export * from "./r014/daily-report-repository.js";
 // be: authorized local work-item commands, no public/media write routes.
 export * from "./work-item-command-repository.js";
+// be: internal readonly effective coefficient history; no public/writing route.
+export * from "./coefficient-read-repository.js";
+export * from "./r014/account-transfer-repository.js";

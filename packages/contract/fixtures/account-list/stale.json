@@ -1,1 +1,45 @@
-{"ok":true,"data":{"items":[{"workspaceId":"00000000-0000-4000-8000-000000000024","media":"KUAISHOU","accountId":"account-1","accountName":null,"status":null,"lifecycleStage":"unknown","starred":false,"tags":[],"owner":null,"linkedTasks":[],"metrics":null,"balance":null}],"page":1,"pageSize":20,"total":1},"meta":{"dataState":"stale","businessDate":"2026-08-25","dataAsOf":null,"coverage":{"complete":true},"selectedSource":"qihang","requestId":"fixture-account-stale"}}
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "workspaceId": "00000000-0000-4000-8000-000000000024",
+        "media": "KUAISHOU",
+        "accountId": "account-1",
+        "accountName": null,
+        "status": null,
+        "lifecycleStage": "unknown",
+        "starred": false,
+        "tags": [],
+        "owner": null,
+        "linkedTasks": [],
+        "metrics": null,
+        "balance": null,
+        "poolStatus": "in_delivery",
+        "poolStatusSource": "system",
+        "product": null,
+        "dailyBudgetCap": null,
+        "capacityLoad": {
+          "value": null,
+          "state": "undefined"
+        },
+        "lastAction": null,
+        "nextSuggestion": null
+      }
+    ],
+    "page": 1,
+    "pageSize": 20,
+    "total": 1,
+    "groupBy": "none"
+  },
+  "meta": {
+    "dataState": "stale",
+    "businessDate": "2026-08-25",
+    "dataAsOf": null,
+    "coverage": {
+      "complete": true
+    },
+    "selectedSource": "qihang",
+    "requestId": "fixture-account-stale"
+  }
+}
