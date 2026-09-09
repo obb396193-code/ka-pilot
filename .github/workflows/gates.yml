@@ -55,6 +55,11 @@ jobs:
         run: |
           psql -h 127.0.0.1 -p 55432 -U ka -d postgres -c "DROP DATABASE IF EXISTS ka_be_ci_gw_test" -c "CREATE DATABASE ka_be_ci_gw_test"
           cd apps/dingtalk-gateway && TEST_DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka_be_ci_gw_test npx vitest run --maxWorkers=1 && npx tsc --noEmit && npx eslint .
+      - name: Route slug guard (sibling dynamic segments must share a name)
+        working-directory: apps/web
+        run: |
+          bad=$(find app -type d -name '\[*\]' | sed -E 's|/\[[^]]+\]$||' | sort | uniq -d | while read d; do n=$(ls -d "$d"/\[*\] | xargs -n1 basename | sort -u | wc -l | tr -d ' '); [ "$n" -gt 1 ] && echo "SLUG-CONFLICT $d: $(ls -d "$d"/\[*\] | xargs -n1 basename | tr '\n' ' ')"; done)
+          if [ -n "$bad" ]; then echo "$bad"; exit 1; fi
       - name: apps/web
         run: cd apps/web && npm test && npx tsc --noEmit && npx eslint .
       - name: 迁移计数自检（部署前同样要做）
