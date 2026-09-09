@@ -5490,3 +5490,46 @@ F-Q023-2 是你让我把这三个一起填的，但 fixture 只改了 `dim_agent
 #### ⑤ 闸
 domain 1359 / db 1424 / worker 1805（+2 skipped）/ web 224 全绿，四包 tsc 清，db+worker eslint 清。
 **db 要从包内跑**（`cd packages/db && npx vitest`）：Codex 新的 seed CLI 用例会 `node --import tsx`，从仓库根跑时 node 在根目录找 tsx 找不到——我这个工作树根没装。串行 `--no-file-parallelism` 那条老规矩不变。
+
+---
+
+## fe → arch：F8-10 收尾 + F8-14 + F8-11 三批交付（2026-09-09）
+
+三笔都在 `fe/f006`，未 push。
+
+| SHA | 内容 | 门禁 |
+|---|---|---|
+| `6bba84b0` | F8-10 收尾三项：去外链图 / 外链守卫测试 / MiSans 首屏预载 | tsc 0、eslint 0、test 224、构建过 |
+| `e9b45fbb` | F8-14 五个稳定码进共享枚举 + retryable 按码判 + 中文文案 | tsc 0、eslint 0、test 230、构建过 |
+| `61d88779` | F8-11 新增成员 / 重置密码对话框 + 顺手修拉数记录页两处 | tsc 0、eslint 0、test 232、构建过 |
+
+### F8-10 收尾（`6bba84b0`）
+- 登录页两张 Unsplash 外链图 → **纯 CSS 渐变**（你允许的「或直接用纯 CSS 背景不带图」）。没塞本地 webp，是因为这两处在 bleed 变体和 split 的 image 面板里，只当底纹，塞两张 ≤300KB 图不划算；线上登录页走 split+iridescence，视觉无变化。
+- 守卫测试 `lib/data/no-runtime-external-links.test.ts`：扫 `app/ components/ lib/` 的 ts|tsx|css，运行时 http(s) 外链即失败。**注释里的来源链接不算**（先剥注释再扫，你点的 diceui / registry.ai-sdk 那几条确认都是注释）；白名单只有 `hwmov.a.kwimgs.com`、`tx2.a.yximgs.com`。已进 `npm test`。
+- MiSans 预载：不拍脑袋选片——用界面里实际出现的 **917 个汉字**反查落在哪些切片，**Regular 115–119 五片覆盖 88% 的字、合计 105KB**。Next 给 `app/` 下字体加内容哈希、preload 的 href 拿不到，所以这五片由 `prepare-misans.mjs` 另拷一份到 `public/fonts/misans/`（稳定路径）并生成 `preload.css`，layout 里 5 条 `<link rel=preload>`。实测 `.118.woff2` 200 / 19956 字节，HTML 里五条都在。
+- **`font-display: optional` 我没做**，请你裁：正文改 optional 后慢网会「永远不换成 MiSans」，比跳一次更难解释。建议等这版预载上内网 Win 实机复验，还跳再上 optional。
+
+### F8-14（`e9b45fbb`，你说优先做）
+- 五个码并进 `lib/data/contracts.ts` 的共享枚举；新增 `stableErrorStatus`（404/409/429/401/403，`null` = 状态由后端定，行为与原来逐个 if 完全一致）、`isRetryableErrorCode`、`stableErrorCopy` / `resolveErrorMessage`。
+- forwarder 去掉本地扩的 `r014ErrorSchema`，改用共享枚举 + 查表。
+- **`retryable` 不再恒 false**：admin-members / admin-calendar / agent-models / work-item-list 四个 handler 的 `fail()` 原来写死 false，超时和数据源不可用也让人干等。
+- `adaptWorkItemDetail` 不再把 NOT_FOUND 洗成 SOURCE_UNAVAILABLE（原来只为过枚举），`errorState` 把 NOT_FOUND 落到**空态**、INVALID_CREDENTIALS→未登录、READ_ONLY_ROLE→无权限。
+- 文案分两类：**RATE_LIMITED、READ_ONLY_ROLE 以我们的文案为准**（后端那句说不清「等多久」「找谁开」），其余以上游 message 为准——同是 INVALID_CREDENTIALS，登录页要「用户名或密码错误」、改密页要「当前密码不正确」。**这个取舍要不要改成全部以我们为准，你定。**
+- 新增 `lib/data/stable-error-codes.test.ts`：枚举/状态表全覆盖、retryable 名单、两个强制文案码、forwarder 对 404/409/429 透传不再变 502、码与状态自相矛盾时仍拦（NOT_FOUND 配 409 → 502）。
+
+### F8-11（`61d88779`）
+按你派的三件都做了（对话框 / 重置密码 / 角标），BFF 两条 POST 透传，密码类端点不开任何查询参数白名单。浏览器实测走通两条流程，截图 `docs/evidence/ui/2026-09-09-F8-11-初始密码面板.png`。
+
+**➊ 要你拍板：③ 的后半做不了。**「该用户自己进设置页顶部提示『请修改初始密码』」——`GET /auth/session` 的 `sessionViewSchema` 是 strict 且 identity 只有 `displayName`，普通用户拿不到自己的 `mustChangePassword`（成员列表只有 admin 能读）。**建议在 session 的 identity 上加 `mustChangePassword: boolean`**（登录后一次就有，不用额外请求）。你点头我就加 schema + 设置页顶条；在那之前这条我先空着，没做假数据。
+
+### 顺手修的两个哑功能（合完 main 扫新 fixture 时发现，已在 `61d88779` 里）
+- **「连接与拉数」表 `getRowId` 取 `item.id`，契约里主键叫 `runId`** → 取到 undefined，所有行共用一个 id，**勾一行等于勾全部**。这条是既有 bug，不是新 fixture 引起的。
+- `system/etl-runs-page.json`（v1.9.12 分页形）合进 main 后没有页面接。已接：warnings 现在**字符串码和 `{code,message}` 两种形状并存**，直接 render 对象 React 会整页崩，归一后再显；attempt 可 null 显「次数未记录」不编 1；rows.raw/canonical 各自可 null，缺哪个显哪个缺值不补 0。
+
+**➋ 提醒**：`admin/members-v195.json` 我现在直接读了（要 `mustChangePassword`）。Codex F-OS-004 落地、你把字段并回 `members.json` 时说一声，我改一行 import 即可。
+
+### 下一步
+按你的序继续 F8-12（访客浏览 + viewer 只读态，已按 v1.9.12 改口理解为 `kind:"team"` + `isDemo:true`）→ F8-13 日报页（只做页，等 be2 Q-030 的 BFF 透传）。
+**➌ F8-12 里的一处**：你说「写入口按 `role === "viewer"` 隐藏」，但 `sessionWorkspaceSchema` 的 role 枚举是 `optimizer|operator|lead|admin`，**没有 viewer**（be2 在后端加的）。我需要你确认这个枚举也扩 viewer，否则真实模式下 session 解析直接失败。
+
+服务：本地生产构建跑在 3401（非 mock），mock 版临时起在 3402 做浏览器实测，用完关。

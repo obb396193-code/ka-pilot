@@ -15,6 +15,8 @@ export {
   handleTransferAll,
   handleAdminAccountNamePatch,
   handleAdminAccountNames,
+  handleAdminMemberCreate,
+  handleAdminMemberResetPassword,
   handleAdminNamingRules,
   handleAdminNamingRulesTest,
   handleCapabilities,
