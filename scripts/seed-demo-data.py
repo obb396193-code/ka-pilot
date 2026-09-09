@@ -51,7 +51,8 @@ sql(f"INSERT INTO assessment_price_history(workspace_id,task_id,price,effective_
     f"VALUES('{WS_P}','1803240580',36.0,'2026-09-03') ON CONFLICT DO NOTHING")
 
 print("③ 31 天指标（含缺数日、异常日）")
-today = dt.date(2026,9,6); COEF = 0.7812
+# 业务日 = 上海时间 03:00 日切（与 domain shanghaiTaskBusinessDate 同口径）；灌到业务日当天，窗口才完整（v4，2026-09-09）
+today = (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=8-3)).date(); COEF = 0.7812
 rows=[]
 for media,aid,_n,tid,_tn,_p,_g,price,_c in ACCOUNTS:
     base = random.uniform(1800,4200)
