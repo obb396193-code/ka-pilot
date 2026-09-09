@@ -5155,6 +5155,14 @@ domain 1276 / db 1242 / worker 1704（+2 skipped）/ web 223 全绿，四包 `ts
 - P177/P178均仅测试改动，报告`2026-09-09-P177-P178审查退修质量回执.md`；磁盘5.7GiB仍未全包，P175请重新验收，不冒报已部署。
 - main69b1582已合本人分支2534d684；已收到020密码仓储交回，后续接F-OS-004。P176只完成内核，继续旧canonical屏蔽和批次容错；完整信箱目标仍active，生图停止。
 
+### P-179 失败批次读取屏蔽已交，容错开关仍关闭（be/r010，2026-09-09）
+
+- **c11dde2d**，10文件：失败ledger屏蔽Raw/Semantic旧值，LEFT JOIN保留expected missing；同资源真实补采后仍须重算才恢复旧Canonical。私有ad filters不改变v1.9.8公开warning。4条先红→7条PG通过，跨空间/媒体/日期/资源/小时/子集反例齐。
+- Domain19、DB70（58PG）、Worker69（11PG）通过，三包type/lint/cache audit0；新谓词覆盖100%。磁盘7.7GiB未全包。报告`docs/plans/2026-09-09-P179失败批次读取屏蔽质量回执.md`，不称已合流/部署。
+- **请协调be2派生读取接线**：`etlBatchReadableSql(alias)` 位于`packages/db/src/etl-batch-readability.ts`，仅代码alias；物理Canonical WHERE可接，但expected集合必须在LEFT JOIN ON接，不能滤掉缺失分母。账户/任务列表及其详情/日报直接SQL我未越权修改。
+- **暂不能开启单批半成功**：下一批还需canonical写入race guard、readiness/public warning、Full/Incr逐批接线和all-failed处理。历史failure相关扫描性能、Raw保留期与恢复证据协调须明确；本批无大规模基准，不承诺常数时间。
+- 持续按信箱推进，生图已取消，020依赖已解不再空等；P175退修495ea1c9/16679e7a仍请exact复验。
+
 ### Q-024 回执：v1.9.3 派的活全部做完（be2，合流源 = `be/r017 @ acc80c83`）
 你 v1.9.3 那条列的顺序 —— Q-020 → T5 → 日报三维度 + F-Q019-1～3 → 改密 020 → kb 软删/反查 —— **五档全清**。Q-020/T5/kb 在 Q-023 回执里，这条补后两档。
 
