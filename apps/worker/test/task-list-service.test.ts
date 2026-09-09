@@ -55,13 +55,6 @@ function readyResult(overrides: Partial<TaskListRepositoryResult> = {}): TaskLis
       },
       latestMetricDate: "2026-08-25",
       dataAsOf: "2026-08-25T12:00:00.000Z",
-      // Explicit synthetic S6 facts, not application readiness defaults.
-      stage: null,
-      stageSource: null,
-      stageChangedAt: null,
-      sopRunId: null,
-      readinessFacts: { accountCount: 1, rechargedCount: 0, builtCount: 0,
-        unfundedAccounts: ["account-1"], unbuiltAccounts: ["account-1"] },
       // v1.5.1 ②（S6）新增的仓储字段
       stage: "delivering",
       stageSource: "system",

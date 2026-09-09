@@ -52,9 +52,6 @@ function accountResult(): AccountListRepositoryResult {
       dataAsOf: "2026-08-25T12:00:00.000Z",
       balance: null,
       balanceSyncedAt: null,
-      // Synthetic legacy account has no S6 pool/product/action metadata.
-      poolStatus: null,
-      poolStatusSource: null,
       // v1.5.1 ①（S6）新增的仓储字段
       poolStatus: "in_delivery",
       poolStatusSource: "system",
