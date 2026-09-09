@@ -137,8 +137,8 @@ describe("hourly query Registry, scope and source boundary", () => {
     const duplicate = structuredClone(baseline); duplicate.data.source.rows.push(duplicate.data.source.rows[0]!); duplicate.data.source.returnedRowCount = 2; variants.push(duplicate);
     const expected = variants.map(v => dataQueryResponseSchema.safeParse(v).success);
     expect(expected).toEqual([true, ...Array(variants.length - 1).fill(false)]);
-    const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e",
-      "const m=await import(process.argv[1]);process.stdout.write(JSON.stringify(JSON.parse(process.argv[2]).map(v=>m.dataQueryResponseSchema.safeParse(v).success)))",
+    const { stdout } = await promisify(execFile)(process.execPath, ["--import", "tsx", "--input-type=module", "-e",
+      "const m=await import(process.argv[1]).then(m => m.default ?? m);process.stdout.write(JSON.stringify(JSON.parse(process.argv[2]).map(v=>m.dataQueryResponseSchema.safeParse(v).success)))",
       new URL("../../web/lib/data/contracts.ts", import.meta.url).href, JSON.stringify(variants)], { timeout: 10000 });
     expect(JSON.parse(stdout)).toEqual(expected);
   });
@@ -151,12 +151,12 @@ describe("hourly query Registry, scope and source boundary", () => {
       sessionAuthService: approvedSessionAuth(auth), detailService: absent, taskListService: absent, accountListService: absent, workItemListService: absent } as unknown as DataApiServerOptions);
     server.listen(0, "127.0.0.1"); await once(server, "listening");
     try {
-      const script = `const {handleSemanticQueryRequest}=await import(process.argv[1]);const p=JSON.parse(process.argv[2]);const results=[];
+      const script = `const {handleSemanticQueryRequest}=await import(process.argv[1]).then(m => m.default ?? m);const p=JSON.parse(process.argv[2]);const results=[];
         for(const extra of [{},{params:{...p.body.params,hhTo:25}},{params:{...p.body.params,accountIds:['unapproved']}},{dataView:'ka_data'}]){
           results.push(await handleSemanticQueryRequest(new Request('http://localhost/api/internal/query',{method:'POST',headers:{...p.headers,'x-ka-account-scope':'*'},body:JSON.stringify({...p.body,...extra})}),
           {environment:{KA_DATA_BACKEND_ORIGIN:p.base,KA_DATA_SERVICE_TOKEN:p.token},requestId:()=> 'hourly-bff'}));}
         process.stdout.write(JSON.stringify(results));`;
-      const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e", script,
+      const { stdout } = await promisify(execFile)(process.execPath, ["--import", "tsx", "--input-type=module", "-e", script,
         new URL("../../web/lib/data/bff.ts", import.meta.url).href, JSON.stringify({ body: request, headers: businessHeaders(token), token,
           base: `http://127.0.0.1:${(server.address() as AddressInfo).port}` })], { timeout: 15000 });
       const results = JSON.parse(stdout); expect(results.map((r: { status: number }) => r.status)).toEqual([200, 400, 403, 400]);

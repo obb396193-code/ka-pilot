@@ -29,10 +29,10 @@ describe("I002 frontend/backend live contract parity", () => {
     const expected = { requests: requests.map(value => workItemListRequestSchema.safeParse(value).success),
       responses: responses.map(value => workItemListResponseSchema.safeParse(value).success) };
     const moduleUrl = new URL("../../web/lib/data/work-item-list-contracts.ts", import.meta.url).href;
-    const script = `const m=await import(process.argv[1]); const data=JSON.parse(process.argv[2]);
+    const script = `const m=await import(process.argv[1]).then(m => m.default ?? m); const data=JSON.parse(process.argv[2]);
       process.stdout.write(JSON.stringify({requests:data.requests.map(v=>m.workItemListRequestSchema.safeParse(v).success),
         responses:data.responses.map(v=>m.workItemListResponseSchema.safeParse(v).success)}));`;
-    const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e", script, moduleUrl, JSON.stringify({ requests, responses })],
+    const { stdout } = await promisify(execFile)(process.execPath, ["--import", "tsx", "--input-type=module", "-e", script, moduleUrl, JSON.stringify({ requests, responses })],
       { timeout: 10000, maxBuffer: 1024 * 1024 });
     expect(JSON.parse(stdout)).toEqual(expected);
   });
