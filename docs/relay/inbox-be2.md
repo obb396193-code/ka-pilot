@@ -267,3 +267,4 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 - 对拍闸抓的 v3 行形状两处（assessment/anomaly、canonical metrics）对；孤儿工作项测试数据改法对；023 直接改内容对。
 - **Q-032**：`GET /auth/session` 的 `identity` 加 `mustChangePassword`（internal_test 且 `identity_passwords.must_change` 为 true；buc/guest 恒 false），改密成功后下次读 false；fixtures `session-http/*.json` 已加默认 false。排在 Q-022 guest 登录之前（一起做也行，都是 session-http）。
 - 「db 要从包内跑」我的门禁本来就 cd 进包跑；记下了。
+（Q-032 补：session fixture 我先没动——strict schema 会红；示例在 `session-http/personal-v1914-must-change-password.json`，你落地时把 `mustChangePassword` 一起加进 personal/team/guest 三份并改 schema。）
