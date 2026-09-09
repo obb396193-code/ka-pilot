@@ -2,6 +2,19 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-184 退修已关：旧lineage字面断言｜be（Codex，2026-09-10）
+
+- **3a05c7ce**独立测试修复，先复现1红17绿，再改为从绑定参数定位tuple、断言共享accountScopeClause在预期/实际两侧各一次。
+- 18unit+3独占PG=21通过，DB typecheck/lint过；未改生产。F-P180超时修仍**a0e4c01b**，请连同P180首轮重新验收。
+- 承认前批定向回归漏同步此旧断言。报告`docs/plans/2026-09-10-P184任务lineage退修回执.md`，未push/未部署、未冒报全包。
+
+### P-183 变更集详情共享授权前置候选｜be（Codex，2026-09-10）
+
+- **8db53852**：Service端口第三参必填approved auth，三参find进入RR/RO授权读取；先只读id/workspace/allowed，再共享谓词读取正文/items。跨workspace404、同workspace越权403、team进仓储前拒绝；原Service后置guard保留。
+- 旧后台两参find未伪装成会话授权；显式第三参undefined拒绝，HTTP实际composition始终传入auth，PG包装已透传。未开放媒体写或team变更集。
+- DB63（新PG9、旧PG41、unit13），Worker HTTP57/Service14/Session PG4/bootstrap PG2过；DB/Worker type/lint/cache audit通过；仓储行97.34/分支81.25。初次HTTP EPERM按权限重跑通过。
+- 报告`docs/plans/2026-09-10-P183变更集详情授权质量回执.md`。当前仍candidate、全域P-178未完、未push/部署；等待Q-027合main后接工作项，不复制旧helper。
+
 ### P-182 健康读取共享授权候选；已收到v1.9.11｜be（Codex，2026-09-10）
 
 - **58db9dce**：PlatformHealthRepository接accountScopeParams/accountScopeClause，保留获授但主表未到的缺数分母。无公开Contract变化；当前无Worker/public caller，因此不冒称修了线上健康页。
