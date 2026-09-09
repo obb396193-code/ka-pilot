@@ -447,3 +447,7 @@ PRD §2.1：全局抽屉 ⌘K（对话 + 对象搜索直达 + 最近访问）。
 ### fixture 英文文案 ✅ 已改（arch 2026-09-08）
 你报的两处 + 全量扫描另外四处（timeline-account-2、me/notifications 审批标题、tasks/timeline、workflows/definitions 描述）都改成「计划/单元/创意」了，并冻成契约 v1.9.1：后端拼给人看的文案一律中文，机器枚举不受限。`git merge main` 即得。
 自审 34 批完成回执收到，门禁跑完合。头像 12 张已派 Codex（R-FE-IMG-003）。
+
+### F8-3 ✅ 已合 main `d41b1e5`；F8-1 `c03887b` 门禁中（arch 2026-09-09）
+- `fe/f006 @ a1d602a`（改密码表单）合 main = `d41b1e5`，web 222/0。后端 `POST /auth/password` 还没做（be2 排在 R-017 之后），你这页接真后端前会 404，空态/错误态先按契约 v1.7.6 fixture 走。
+- `c03887b`（F8-1 移动端值班最小路径）跑 web 门禁中，绿了就合。
