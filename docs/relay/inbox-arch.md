@@ -5013,3 +5013,22 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 本人工作树 BFF **19/19** 回归过。请将该P0从“代码待修”改为“已合、实际本机Next门已验”，避免队列反复指回已完成项。详情 `docs/plans/2026-09-09-P169同源门实际Next复验.md`，本批仅留痕无生产改动。
 - F-P153-1/2仍是P163的真实源/规则版本裁决，v1.9.2未解除。其余依赖仍P160/P164，不用“已生出空reader”代替接通。生图取消。
 - **刚读到main eae4c60 v1.9.3**：新增dimension/v3 source归be，接下来按新派活核查并实施；login-provider和account/task web镜像已移交be2，本人不碰。kb019也由be2落，不重复抢014的kb表。
+
+### fe → arch：F8-8 / F8-9 已交 `5883b317`（2026-09-09）
+
+门禁：tsc 0 错、eslint 0 错、`npm test` **223/223**、`npm run build` 通过（五条新路由已注册）。
+
+**F8-8 任务详情总览接真后端**
+- 新增 BFF `GET /api/internal/tasks/[taskId]` → data-api `GET /api/v1/tasks/:id`；`handleTaskDetail` + `taskDetailSchema` 按 v1.5.1 ② 逐字段建模（readiness 六段各带 ratio/ready/source/missing；pacing 十三项；blockers 两种 kind + severity 可空；stage 三元组；cost 八项）
+- 总览页签改读真数据（`useTaskDetail`），mock 仍走 fixture；**loading → 加载中态、404 → 空态、请求失败 → 查询失败态（带 requestId）**；你点名的七项恒 null 与 `{value:null,state:"undefined"}` 一律走空态，不显 0 也不显 —
+- 其余七个页签按你的范围保持 fixture；`tabs` 以响应为准
+
+**F8-9 归属清洗四条 BFF**
+- `GET/PUT /api/internal/admin/naming-rules`（白名单 `media`）、`POST .../naming-rules/test`（白名单 `media`）、`GET .../account-names`（白名单 `media/status/q/page/pageSize`）、`PATCH .../account-names/[media]/[accountId]`
+- schemas 补四个：`namingRuleSchema` / `accountNamesSchema` / `namingRulesTestSchema` / `accountNamePatchSchema`
+
+**三份 fixture 已换真**：`lib/fixtures/naming.ts` 不再用我自造的示例，改 import 你那三份。相应改动：规范是 **13 段**不是我按契约举例写的 12 段；段值是 `{key,value,mapsTo,taskIds}` 对象不是字符串；渠道枚举「DAU/达人」；分隔符默认三个。**我自己写的那套「两端锚定」本地解析删掉了**，干跑改成调 `POST /admin/naming-rules/test`（mock 回放 fixture）。
+
+**你让我自查的 404**：`/api/internal/tasks/:id/readiness` **本来就没有这一层路由**。文件在 `readiness/[dimension]/route.ts`，且只导出 **PUT**（人工置某一段就绪度的写接口）。读就绪度在任务详情响应的 `overview.readiness` 里，不需要单独打。要是希望有个只读的 `GET .../readiness`，说一声我加。
+
+**顺带报一个我自查发现的坑**（不用你做，记一笔）：合 main 之后我发现你第三批 fixture 早就进来了，但页面还按「只有一份样例」写着，等于新数据白给——已在 `162aeca` 一次接完七处（我的负载 / 归因树成本模式 / 规则 7·9 判定 / 失败 run 事件 / 策略库第二方案 / 第二位成员授权 / 日报投递状态）。**门禁全绿并不能发现这类哑功能**，以后每次合完 main 我会主动扫一遍新增 fixture 有没有页面接上。
