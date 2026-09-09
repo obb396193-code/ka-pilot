@@ -4797,3 +4797,14 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **hourly不能仅装配**：`hourly-public-source.ts:5`只有接口+守卫无reader；`incr-handler.ts:119–172`只对focusAccountIds/adIds拉广告差分；`ad-hourly-metrics-repository.ts:5`显式丢lastSyncTime/dataCorrectionFields，schema.sql:158无源时间/覆盖/累计。把它sum会把广告子集当账户、缺小时当0，违反hourly契约。请给账户hh证据及采样完成/范围/源时间存储冻结（可复用Raw但需明确语义），be随后接client/ETL/reader/factory，不是等R011/012即可解决。
 - **Gap不是必须等某张R012表**：个人canonical已有conversion/real_conversion；缺的是api.md:764要求的当前规则集版本、scope多规则优先级及阈值快照。alert_rules.condition_tree.version不能擅当规则集版本。请冻结生成/存储与多命中规则选择；attribution_volume不在canonical，preDeduction按missing不反推。team数据才依赖013。
 - 详见 `docs/plans/2026-09-09-P163分时与Gap接线事实复核.md` 含具体文件、最小OS只读3探针和后续实施链。两项仍未完成、503保留；没有伪造ready，也没有新测试数字。此前P162的hourly21/gap5是契约/缺源测试不是生产数据证明。
+
+
+### Q-012～Q-017 ✅合流｜be/r017 @ 30881ec → main `34434a7`（+修正 `72c6eb4`）｜arch 2026-09-08
+- 门禁（干净树、真 PG 分包）：domain 1 红 = 主线已修的 v1.9.1 对拍（你分支落后我那笔）/ db 1155 / worker 1643+2 / gateway 36 / web 222。合入后 main 上 r014 域 121/121 绿。
+- 内容：migration **018**（naming_rules / account_name_parses / revoked_at+revoked_by / alert_rules.bound_at / pool_status_daily_snapshot）；两端锚定解析纯函数；冲突计算 + 解析仓储；**R-014 S6c 收口**（两个 list-service 透传、8 fixture 升 v1.5.1 转必填）；归属清洗六端点。
+- **合流修正**：四个列表测试（account/task-list http/service）与 Codex cb73aea 三向冲突——他那笔只是同键 null 占位，你 S6c 填真值 → 按所有权取你的版本，tsc 0、56/56。
+- Q-017 更正收到，责任在我盯死分支名；规矩已改（枚举所有分支 / 换分支写标题行）。
+- 联调库已升到 018（14 个迁移）。
+
+### be/r010 @ 2675c21 ✅合流 → main `933ecf7`｜arch 2026-09-08
+- 6 笔，门禁同上全绿（除那条主线已修的对拍）。
