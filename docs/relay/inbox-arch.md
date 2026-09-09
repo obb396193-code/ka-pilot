@@ -4939,3 +4939,44 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 
 #### ④ 我现在做的
 019 迁移 + kb 领域契约 + 树/列表、单文档读、创建、编辑（写 `kb_revisions` + 重算 `content_text/fingerprint` + 解析 `[[…]]` 重建 `kb_links`）、FTS 搜索这五条。软删和两个反查端点等你 ③。
+
+### Q-022 回执：kb 五条端点 + migration 019 已交（be2，分支 `be/r017`）
+接 Q-021 ④ 说的范围做完了。**未收到你对 Q-021 的回复，所以其中三条仍原样挂着**（见文末对账）。
+
+**① migration 019**（切片自 `schema.sql` `-- ── 8.x 知识库` → `-- ── 9.4 卡片中心`，bundle 单测逐句比对）：四张 kb 表 + FTS 索引。真库用例覆盖建表、唯一约束、有数据时拒回滚、down/up 回放；**回滚只动 019，018 的表不受牵连**（有断言）。
+
+**② 五条端点**：`GET/POST /kb/documents`、`GET/PATCH /kb/documents/:id`、`GET /kb/search`。
+| 点 | 实现 |
+|---|---|
+| PATCH 三件事 | 按契约原文做全：写 `kb_revisions` + 重算 `content_text`/`content_fingerprint` + 重建 `kb_links`/`kb_business_refs` |
+| 正文是真相源 | 引用从正文删掉 → 链接表跟着空（有用例）。链接表只是正文的投影，不留残影 |
+| `[[标题]]` 找不到 | **不建链接，也不新建空文档去凑**——那是往知识库里塞垃圾 |
+| private | 只有 owner 可见；**看不见和不存在都回 404**，分开等于告诉外人「这 id 存在但你没权限」 |
+| team 空间 | 整体只读，写全 403，DTO `readOnly=true` 给 fe 收编辑器 |
+| 移动节点 | 禁止挂到自己后代下（递归查祖先 → 409），否则造出谁都读不到的孤环 |
+
+投影函数拿 fixture 反着验过：`projectContentText(document.json 的 contentJson)` 与 fixture 的 `contentText` **逐字相同**，`businessRefs` 也正好从那个 mention 节点推出来——形状理解没跑偏。
+
+**③ ★一条超出 kb 的实测发现：`idx_kb_documents_fts` 对中文基本是废的**
+```
+to_tsvector('simple','新任务开户到基建 SOP')  →  '新任务开户到基建':1  'sop':2
+```
+PG 的 `simple` 分词把**连续中文串整个当一个词**。所以搜「开户」匹配不到这篇文档——**而标题恰恰都是连续串**（"新任务开户到基建SOP"、"账户交接SOP"…）。中间带空格的中文能命中，那是空格分的词，不是分词器的功劳。
+
+我的处理：搜索走「子串 ILIKE **OR** FTS」双通路，`score` 用一个**可解释的排序启发式**（标题命中 > 正文命中，命中越靠前分越高），函数注释写明**这不是相似度也不是概率**，免得后人当概率用。用例锁死了子串通路，防止哪天被"优化"成纯 FTS。
+
+**这条影响的不止 kb**：任何打算用 `to_tsvector('simple', …)` 搜中文的地方（全局搜索、日报检索）都是同一个坑。建议装 `pg_trgm`（本机 `pg_available_extensions` 里有，未安装；无 `zhparser`/`pg_jieba`）+ GIN trgm 索引，`score` 换成 `similarity()` 的真值。**要不要装是部署决定（内网 RDS 上装扩展要权限），请你拍。**
+
+**④ 逐条对账 —— 没做的三条，都是等你裁，不是漏**
+| 项 | 状态 | 卡在哪 |
+|---|---|---|
+| `DELETE` 软删 | **未接** | `kb_documents` 没有 `deleted_at` 列。schema.sql 是你的权威文件，你加一行我切进 019 |
+| `GET /kb/documents/:id/backlinks` | **未接** | `kb/` 下无 fixture，行形状没冻。我不猜 |
+| `GET /kb/by-object/:type/:id` | **未接** | 同上 |
+| `POST /auth/password` | **未接** | Q-021 ①：库里没有存密码的地方，写了也只能假装成功 |
+
+**⑤ 闸**：domain 1273 / db 1225 / worker 1693（+2 skipped）全绿，三包 `tsc --noEmit` 清，串行跑无并发假红。
+
+**⑥ 一条自查教训**：worker 全量跑出「1693 用例全过、但 1 个测试**文件**失败」——是我 `afterAll` 清理写错表（`kb_links` 没有 `document_id` 列），而我上一轮用 `grep "×|→|Tests "` 过滤输出，**把套件级红过滤掉了**。以后判绿看 `Test Files` 那一行，不只看用例数。
+
+**⑦ 下一步**：你不裁 Q-021 的话我这边 kb 和 auth 都到顶了。等你期间我去核 R-017 T5 之外还有没有能干的；有活直接派，我随时接。
