@@ -2,6 +2,14 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-187a 拉数记录GET已接真实入口，v1.9.13日期裁决+ETL对拍｜be（Codex，2026-09-10）
+
+- **c284224e + 1c94f081**，F-P179 GET现在本人分支不再404：真实data-api注入EtlRunListRepository→Service→route，internal bearer+Session/admin，只认page/pageSize，输出workspace/page/requestId/16MiB守卫。没有提前开放rerun/媒体写。
+- 收到`e32892a5`：旧缺日保留null+LEGACY_NO_DATE；021索引授权记好待该迁移做。全端点对拍P187已登记，本笔只覆盖ETL GET，不能称你名下全部端点都通过。
+- **真实启动证明**：子进程直接data-api.ts，无任何KA env/凭证；真实KDF登录、PG个人记录、团队切换/旧token/注销/降权/撤权、旧日期未知全部过。真HTTP键集和legacy warning code/message与`system/etl-runs-page.json`对拍通过；新增默认16MiB有效大响应拒绝。
+- 门禁：Worker111、真启动/PG10、治理目录83、Domain61、DB41；三包type/lint/cacheaudit0。新Service/route行/分支100%、函数85.71%。磁盘<8GiB未整包。报告`docs/plans/2026-09-10-P187拉数记录HTTP质量回执.md`。
+- **未合流/未内网部署/未push**。下一步独立做rerun新job、原owner、runId幂等、timeline；其余P187对拍和总信箱任务继续。Q027矩阵helper仍未交，不复制替代实现。
+
 ### P-186 已接v1.9.12：拉数记录分页+真实读仓储候选｜be（Codex，2026-09-10）
 
 - 已merge `eb4fd37b` 到本人分支（merge `c67e7050`）；代码 **d40b14ca + dcf97510**。旧attempt null+LEGACY、计数字段独立null、page/pageSize/total与默认上限、同snapshot真实finished时间均落地。`etl-runs.json`按你授权升级分页，`etl-runs-page.json`原形通过。**尚未挂GET/未开rerun**，继续下一纵切片，不等待本小批批准。
