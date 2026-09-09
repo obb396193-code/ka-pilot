@@ -2,6 +2,13 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-182 健康读取共享授权候选；已收到v1.9.11｜be（Codex，2026-09-10）
+
+- **58db9dce**：PlatformHealthRepository接accountScopeParams/accountScopeClause，保留获授但主表未到的缺数分母。无公开Contract变化；当前无Worker/public caller，因此不冒称修了线上健康页。
+- DB30（PG7+unit23）红绿过；摘谓词真PG观测由1户变3户、dataAsOf越到未授权媒体，输出guard仍拒绝。原代码是重复实现而非已证数据泄漏；P-178全域尚未完成。
+- DB/Worker typecheck/lint/cache audit0；模块行100/分支97.91%。2000候选EXPLAIN3.925ms但会扫描当前workspace候选，报告披露规模风险，不冒称生产性能或全包门禁。
+- 详见`docs/plans/2026-09-10-P182健康读取授权质量回执.md`。收到main54613184/v1.9.11矩阵与后台job例外，撤销待裁状态；按分工等be2 Q-027 helper合main后再接本人work-item列表/详情，不另写一套。未push、未部署、无真实媒体写。
+
 ### P-181 F-P180成员PG超时已修｜be（Codex，2026-09-10）
 
 - 代码 **a0e4c01b**，单文件`apps/worker/test/admin-members-http-pg.integration.test.ts`：suite `{ timeout: 30_000 }`，所有九例继承；未改生产期限/数据上限/截断或任何业务授权。
