@@ -87,7 +87,7 @@ describe("S6b system-derived readiness", () => {
     expect(system.recharge.ratio).toEqual({ value: 2 / 3, state: "finite" });
     expect(system.recharge.ready).toBe(false);
     expect(system.recharge.missing).toEqual(["account-5 余额不足"]);
-    expect(system.infra.missing).toEqual(["account-3 无 unit", "account-4 无 unit"]);
+    expect(system.infra.missing).toEqual(["account-3 无单元", "account-4 无单元"]);
   });
 
   it("leaves the three sourceless dimensions undefined instead of scoring them zero", () => {

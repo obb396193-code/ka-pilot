@@ -106,7 +106,7 @@ describe("v1.5.1 ② task list stage and readiness (real PostgreSQL)", () => {
     );
     expect(readiness.accounts).toMatchObject({ ready: true, source: "system" });
     expect(readiness.recharge.ratio).toEqual({ value: 2 / 3, state: "finite" });
-    expect(readiness.infra.missing).toEqual(["s6b-a2 无 unit", "s6b-a3 无 unit"]);
+    expect(readiness.infra.missing).toEqual(["s6b-a2 无单元", "s6b-a3 无单元"]);
     // 人工勾过的那段变 manual，但没有源的比例仍是 undefined，不会凭空出现数字。
     expect(readiness.strategy).toMatchObject({ ready: true, source: "manual" });
     expect(readiness.strategy.ratio).toEqual({ value: null, state: "undefined" });

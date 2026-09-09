@@ -30,9 +30,9 @@ const FIELD_LABELS: Record<ExternalChangeField, string> = {
   schedule: "投放时段",
 };
 const TARGET_LABELS: Record<z.infer<typeof externalChangeTargetTypeSchema>, string> = {
-  campaign: "campaign",
-  unit: "unit",
-  creative: "creative",
+  campaign: "计划",
+  unit: "单元",
+  creative: "创意",
 };
 
 function renderValue(value: unknown): string | null {
@@ -46,12 +46,12 @@ function renderValue(value: unknown): string | null {
 }
 
 /**
- * 时间线摘要（fixture 形如「后台手动：campaign 日预算 8000→10000」）。
+ * 时间线摘要（fixture 形如「后台手动：计划日预算 8000→10000」）。
  * 取不到前后值时只说改了什么，**不编数字**——带外变更的旧值经常观测不到。
  */
 export function describeExternalChange(change: ExternalChange): string {
   const parsed = externalChangeSchema.parse(change);
-  const what = `${TARGET_LABELS[parsed.targetType]} ${FIELD_LABELS[parsed.field]}`;
+  const what = `${TARGET_LABELS[parsed.targetType]}${FIELD_LABELS[parsed.field]}`; // v1.9.1：给人看的文案用中文对象名，且不留英文式空格
   const from = renderValue(parsed.fromValue);
   const to = renderValue(parsed.toValue);
   if (from !== null && to !== null) return `后台手动：${what} ${from}→${to}`;

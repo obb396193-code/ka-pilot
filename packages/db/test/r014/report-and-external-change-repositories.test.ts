@@ -122,7 +122,7 @@ describe("R-014 report run and external change repositories (real PostgreSQL)", 
       expect(timeline.items).toHaveLength(1);
       expect(timeline.items[0]).toMatchObject({
         kind: "external_change", actor: "external",
-        summary: "后台手动：campaign 日预算 8000→10000",
+        summary: "后台手动：计划日预算 8000→10000",
         detail: { target_type: "campaign", target_id: "c-1", field: "budget" },
       });
       expect(timeline.nextCursor).toBeNull();
@@ -135,7 +135,7 @@ describe("R-014 report run and external change repositories (real PostgreSQL)", 
         fromValue: null, toValue: "paused", syncRunId: null,
       });
       const timeline = await changes.listForTimeline(actor, "KUAISHOU", "r014-a1");
-      expect(timeline.items[0]!.summary).toBe("后台手动：unit 状态 改为 paused");
+      expect(timeline.items[0]!.summary).toBe("后台手动：单元状态 改为 paused");
     });
 
     it("pages newest first with a monotonic cursor", async () => {

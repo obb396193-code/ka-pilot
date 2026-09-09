@@ -96,7 +96,7 @@ const WITHOUT_SYSTEM_SOURCE: readonly ReadinessDimension[] = ["products", "mater
 /**
  * 从库里真有的事实推六段就绪度。
  *
- * - `accounts` / `recharge` / `infra` 有源：分别看挂没挂户、有没有余额、有没有 unit；
+ * - `accounts` / `recharge` / `infra` 有源：分别看挂没挂户、有没有余额、有没有单元；
  * - `products` / `materials` / `strategy` **没有任何系统来源**（商品与素材的表要等 016，
  *   策略没有落点）→ ratio `undefined`、ready `false`、missing 写明「需人工确认」。
  *   **不把「没有数据源」算成 0 分**——0 分意味着「查过了，一个都没准备好」，那是两回事。
@@ -121,7 +121,7 @@ export function deriveSystemReadiness(
   const infra: SystemReadinessEntry = {
     ratio: ratio(facts.builtCount, facts.accountCount),
     ready: facts.accountCount > 0 && facts.builtCount === facts.accountCount,
-    missing: facts.unbuiltAccounts.map((accountId) => `${accountId} 无 unit`),
+    missing: facts.unbuiltAccounts.map((accountId) => `${accountId} 无单元`),
   };
 
   const result = { accounts, recharge, infra } as Record<ReadinessDimension, SystemReadinessEntry>;
