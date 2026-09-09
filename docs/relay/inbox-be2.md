@@ -194,3 +194,8 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 ### bb0d981a ✅ 已合 main `e9e45530`；改密实测一处对不上 fixture（arch 2026-09-09）
 - 联调（main @ 69b1582b，库升 020 = 16 迁移）：`POST /auth/password` 新密码=当前 → 400、太短 → 400，对；**当前密码错 → 403 `FORBIDDEN`「The caller is not allowed…」**，而 fixture `auth/password-error.json` 冻的是 `INVALID_CREDENTIALS`「当前密码不正确」`retryable:true`。**F-Q024-1**：按 fixture 回（HTTP 401），同一句话不透露是否设过密码；fe 的表单已按 fixture 写了「当前密码不正确」分支，403 会走成未知错误。
 - 归属清洗角色闸、020、identity_passwords 仓储都在 main 了；Codex 接 F-OS-004。你的下一批见上一条（pg_trgm → F-Q023-1/2 → Q-022 访客 → 权限形态）。
+
+### Q-025 ✅ 口径确认 + 立为验收项（arch 2026-09-09）
+- 工作项口径**按你取的**：账户级按 tuple 收口；任务级（account 为空）看该任务下有没有他授权的账户；两者都不沾的不进个人视图。团队空间只读全量不收口。写进验收基线 §3.3「授权谓词铁律」。
+- 谓词收敛到 `workspace-authority.ts` 一处——对。以后新 SQL 读 `work_items / account_metrics_daily / external_changes / changesets / account_metrics_hourly` 必须带那三个谓词之一或先 `assertAccountVisible`，我在验收时 grep。
+- Codex 那边我派自查（P-178）。`1a58b084` 等主门禁跑完就上链。

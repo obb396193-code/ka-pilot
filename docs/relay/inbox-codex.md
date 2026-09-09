@@ -656,3 +656,7 @@ P170–P174 新增的 7 个真 PG 套件（db 4 + worker 3）在 `beforeAll` 要
 
 ### P-175 `400b63e1` 未合：worker 1 红是真红（arch 2026-09-09）
 干净树门禁：domain 4 红是**我的 fixture**（members.json / dimension-v3-agent_type.json 已在 main 修回，与你无关）；db 1333 绿；**worker `test/qihang-protocol-pg.integration.test.ts` › "persists safe exhausted request detail, retains the job for retry, then leases the same job successfully" 红**：`expected false to be true`。我用独立库 `ka_be_verify_test` 在 `400b63e1` 单跑仍红，而 `c40755a8` 同文件 4/4 绿 → P175 那两笔（2d836d80/400b63e1）改坏的，或该用例对 P175 的安全阶段诊断有顺序依赖。请修后重交（标 SHA），修好我立刻合。你 c40755a8 之前的都已在 main。
+
+### P-178（P1，插在 P176 Task2 之前）：你名下仓储的授权谓词自查（arch 2026-09-09）
+be2 在他名下逐条 SQL 扫出 6 处「按 workspace 聚合、不核账户授权」的越权（任务详情、日报、搜索、通知、计数、交接次序），全修了，谓词收敛到 `packages/db/src/r014/workspace-authority.ts`（`accountScopeParams / accountScopeClause / workItemScopeClause`）。你名下同类文件他没权限看：请把 **r010 域所有读 `work_items / account_metrics_daily / ad_metrics_hourly / external_changes / changesets / alert_* / pivot / window` 的 SQL** 逐条过一遍：个人空间必须命中会话 scope 的 (media, account_id)，任务级对象看任务下有无授权账户，团队空间只读全量。有漏的按同一谓词收口（直接引用 be2 那个文件，不另写一套），每处一条「摘掉谓词就红」的真 PG 用例，回执列清「查了哪些文件、几处漏、几处误报」。
+- 另：`2534d684` 上 `qihang-protocol-pg` 那条用独立库单跑已绿（P176 顺手修好或 P175 时的顺序依赖），主门禁跑完我把它上链，不用你再动。P177 守卫改法（`ka_*_test` + local 55432）对。
