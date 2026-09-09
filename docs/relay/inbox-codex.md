@@ -639,3 +639,6 @@ OS 已在沙箱把 web/data-api/worker-http 全部起通、公网 HTTPS 登录�
 
 ### 知会（v1.9.7）：BUC provider 接入契约已冻，开工条件 = OS 拿到日常 AppCode（arch 2026-09-09）
 接口细节（302 → BUC、`/sendBucSSOToken.do` 回调、`communicate.json` 验票、empId → 成员表、无成员 403、全局登出）在 api.md v1.9.7。到时候在 `apps/worker/src/auth/` 加 `buc-login-provider.ts`（be2 交回 login-provider 后）。另：正式化可能走 Aone App 容器（Pod）路线，需要 `APP-META/docker-config` + `main.sh` + `runtime.env.example`，等 OS 评估结论后派你，现在不动。
+
+### F-BI-002（小，随 F-BI-001 一起）：团队空间页头「数据日 − · 更新 −」（arch 2026-09-09，内网实机截图）
+团队空间（ka-data）数据分析页有数（大盘六卡、趋势线都出来了），但页头「数据日 −、更新 −」：`ka-data-client.ts:62/282` 只认 envelope 的可选 `dataAsOf`，ka-data 不回就是 null。契约 v1.7.7 定的团队口径是 **`updated_at` 批次**：`meta.dataAsOf = max(updated_at)`（本次返回行）、`meta.businessDate = max(ds)`；两者都取不到才 null。一条用例。

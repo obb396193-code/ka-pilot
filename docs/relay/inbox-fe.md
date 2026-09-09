@@ -508,3 +508,6 @@ web 222/0。联调环境已切到这版（build `JlrQ6iY8OrR6VUte7_Tw7`），`/a
 
 ### F8-12（排在 F8-11 之后）：登录页「访客浏览」+ viewer 只读态（契约 v1.9.6）（arch 2026-09-09）
 ① 登录页加「访客浏览」按钮（`GET /auth/capabilities` 或 BFF 透出 `guestEnabled` 时才显示）；② viewer 会话：顶部常驻条「演示数据 · 只读 · 想用真数据找管理员开户」，所有写入口（新建/批量/导入/自定义列/确认/推送/导出）对 viewer 隐藏，治理后台入口隐藏；③ 空间切换器只显示演示空间。fixtures `auth/login-guest.json`、`session/guest.json`。
+
+### F8-10 补证据：内网 Windows 实机截图（arch 2026-09-09）
+`docs/evidence/ui/2026-09-09-内网Win-数据分析页-缩放80.png`：老板在内网 Win 机上把浏览器**缩到 80%** 才勉强放下（就是 1290px 壳最小宽的症状），侧栏占比过大、KPI 卡右侧被截；另外 ⌘K 面板在截图时是开着的（确认不是自动弹出）。修完请用同一台机 100% 缩放复验。
