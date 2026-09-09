@@ -1,5 +1,6 @@
 import type { Pool } from "pg";
 import { calendarDateSchema } from "@ka/domain";
+import { etlBatchReadableSql } from "./etl-batch-readability.js";
 
 import { queryMetricDimension } from "./semantic-query-dimension.js";
 import { querySemanticHealth } from "./semantic-query-health.js";
@@ -99,7 +100,7 @@ export class SemanticQueryRepository {
          ON account.workspace_id = metric.workspace_id
         AND account.media = metric.media
         AND account.account_id = metric.account_id
-       WHERE ${filter.whereSql}`,
+       WHERE ${filter.whereSql} AND ${etlBatchReadableSql("metric")}`,
       filter.values,
     );
     const offset = (query.page - 1) * query.pageSize;
@@ -140,7 +141,7 @@ export class SemanticQueryRepository {
            AND relation.valid_from <= metric.ds
            AND (relation.valid_to IS NULL OR relation.valid_to >= metric.ds)
        ) AS related ON true
-       WHERE ${filter.whereSql}
+       WHERE ${filter.whereSql} AND ${etlBatchReadableSql("metric")}
        ORDER BY ${tableOrderBy(query.sortBy, query.sortDirection)}
        LIMIT $${filter.values.length + 1} OFFSET $${filter.values.length + 2}`,
       values,
@@ -195,7 +196,7 @@ export class SemanticQueryRepository {
          ON account.workspace_id = metric.workspace_id
         AND account.media = metric.media
         AND account.account_id = metric.account_id
-       WHERE ${filter.whereSql}`,
+       WHERE ${filter.whereSql} AND ${etlBatchReadableSql("metric")}`,
       filter.values,
     );
     const row = result.rows[0];

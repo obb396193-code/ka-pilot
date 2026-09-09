@@ -1,4 +1,5 @@
 import type { Pool } from "pg";
+import { etlBatchReadableSql } from "./etl-batch-readability.js";
 
 import {
   buildMetricFilter,
@@ -130,7 +131,7 @@ async function queryCoverage(pool: Pick<Pool, "query">, scope: SemanticQueryScop
        ON account.workspace_id = metric.workspace_id
       AND account.media = metric.media
       AND account.account_id = metric.account_id
-     WHERE ${metricFilter.whereSql}`,
+     WHERE ${metricFilter.whereSql} AND ${etlBatchReadableSql("metric")}`,
     metricFilter.values,
   );
   const accountFilter = buildAccountScopeFilter(scope);

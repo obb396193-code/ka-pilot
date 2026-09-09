@@ -140,4 +140,30 @@ describe("personal summary window composition / synthetic real PG", () => {
     expect(result.warnings).toContain("BUDGET_SOURCE_NOT_READY");
     expect(result.row.assessment.budgetUsageRate).toEqual({ value: null, state: "undefined" });
   });
+  it("failed batch masks old canonical at public summary/table boundaries with partial, not truncated, coverage", async () => {
+    // Synthetic persisted failure evidence; actual writer/fencing is exercised by DB suite.
+    const inserted = await pool.query(`INSERT INTO etl_runs(workspace_id,run_kind,status,scope)
+      VALUES($1,'full','done',$2) RETURNING id::text`, [workspaceId, { batchFailures: [{
+        code: "BATCH_FAILED", resource: "account_realtime", ds: "2026-09-02", media: "KUAISHOU",
+        accountIds: ["synthetic-window"], fingerprint: "f".repeat(64), failedAt: "2026-09-03T00:00:00Z",
+      }] }]);
+    try {
+      expect((await createPlatformWindowQuery(pool).summary(input)).lineage).toMatchObject({ requestedAccountDays: 2, returnedAccountDays: 1 });
+      const platform = new PlatformDataSource(new SemanticQueryRepository(pool), read => withSemanticReadSnapshot(pool,
+        connection => read(new SemanticQueryRepository(connection))), createPlatformWindowQuery(pool));
+      const execution = { workspaceId, userId: randomUUID(), scopeKind: "explicit_accounts" as const, accounts: input.accounts };
+      for (const queryId of ["account.summary", "account.table"] as const) {
+        const query = createDataQueryRegistry().resolve(queryId, { dateFrom: "2026-09-01", dateTo: "2026-09-02" }, "platform");
+        const result = await platform.query(query, execution);
+        expect(result).toMatchObject({ status: "ready", lineage: { partial: true, truncated: false,
+          coverage: { complete: false, requestedObjects: 1, returnedObjects: 1 } },
+          wholeResultTotal: { value: null, availability: "partial" } });
+        if (queryId === "account.summary") {
+          expect(result.rows[0]).toMatchObject({ metrics: { cashCost: { value: null, availability: "missing" } }, assessment: { onTarget: null } });
+        } else {
+          expect(result.rows).toHaveLength(1); expect(result.rows[0]).toMatchObject({ ds: "2026-09-01" });
+        }
+      }
+    } finally { await pool.query("DELETE FROM etl_runs WHERE id=$1 AND workspace_id=$2", [inserted.rows[0].id, workspaceId]); }
+  });
 });
