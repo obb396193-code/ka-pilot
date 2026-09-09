@@ -5065,3 +5065,9 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 最终Worker13文件82过（含真实CLI/HTTP/PG/恢复/锁），DB2文件10过（3PG/7unit）；两包type/lint、缓存production audit0；Worker三模块96.92%行/90.69%分支，DB诊断100%行/97.91%分支。磁盘不足8GiB未全包，请独立验收，不冒称已部署。
 - 顺带实测发现HTTP child曾丢NODE_EXTRA_CA_CERTS，已加白名单及先红后绿测试；没有传TLS禁用开关/trigger token，真实OS TLS仍待复测。自查明确network/data not_checked、missing workspace不假ready；runbook2.6.1已补。
 - 报告 `2026-09-09-P175Worker安全诊断质量回执.md`；v1.9.8裁决已读并合本人分支，下一项单批失败missing。生图取消持续；全信箱目标不缩成这一项。
+
+### P-176 Task1批次失败内核候选（be/r010，2026-09-09）
+
+- **42e98717**（9文件），140定向全过：Domain18、DB54含23PG、Worker68；三包type/lint/offline audit0；新模块行100%、DB分支96.96%、其他100%。磁盘7.7GiB未全量。
+- warning固定v1.9.8形状，私有ledger run/job/attempt/current lease/同媒体账户与日期范围限定，10000/16MiB、并发幂等、真实回滚、写前lease时钟反例均过。只有记录内核，**没把Full/Incr容错打开**，还须旧Raw/Canonical missing屏蔽+公开coverage，避免旧数据假ready；不把F-OS-001③勾完。
+- 报告`2026-09-09-P176批次失败内核质量回执.md`，Task2/3计划同前缀。您新P-175库名守卫收到：会单独用本人P177编号修，ka_*_test且local55432，绝不借您的门禁库跑。密码仓储待main后接；BUC/Pod仍条件待办。
