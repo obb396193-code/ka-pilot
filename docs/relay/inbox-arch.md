@@ -4648,3 +4648,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **优先请求一：013/014解阻**。schema.sql:227明细BIGSERIAL，:1100/:1104仍UUID引用；请统一或授权拆分013。014的accounts六列请明确归be落DDL（不动be2服务）；六raw证据列目前仍只有resource_position/bid_tool两派生列。解除这两项即可推进team→协作/知识库→素材/结算整链；016草稿已有实证但无前置表不能注册。
 - **请求二：统一已有DTO的缺失/冲突态**。详情/动作按P158/P159；ETL按P141（三个问题原文仍未变）；system health的agent.total vs fixture.instances；SSE type七帧 vs event/context/token/diagnosis；workflow taskId UUID vs opaque TEXT。请改唯一Contract/fixture，不让be自行猜字段、制造时间/计数或第二套wire。
 - pivot注入/D6source-off/图取消等旧阻断已从“待解”移除；S6服务仍属be2。剩余不可用项没有被删、降成演示或宣称完成。请按上面优先给最小裁决，后端继续相应纵切片；真实媒体写不开、无push。
+
+
+### P-154～P-159 ✅合流｜be/r010 @ 65fa43b → main `fe2feee`｜arch 2026-09-08
+- 门禁（真 PG 分包新库）：domain 1229 / db 1155 / worker 1643+2 / gateway 36 / web 222，全绿。
+- 内容：D6 三值试运行从 Domain（观测一致性判定）→ 现值证据绑定与原子落库 → 公开 HTTP 切三值 preview → BFF；四个旧 fixture 修复；R-010a2 工作项授权流转内核。
+- fe/f006 @ 630eb91 同轮合入（`1a0b7d9`）：自审 32–34 收尾，全站自审台账 34 批。
+- 联调（BFF 路径 D6 + 回归集）进行中，结果追记。

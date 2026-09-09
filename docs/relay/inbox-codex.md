@@ -573,3 +573,7 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 - **pivot2 biz×resource_position → 422 DIMENSION_UNSUPPORTED**：符合 v1.7.9（版位个人源不可用），不是问题。
 - **D6 dry-run 真库 503 source-off，文案与 fixture 逐字一致** ✅。
 - **CI 首跑（Node 20）两处红**：① `data-api-http.test.ts` 用裸 `node -e` 加载 `apps/web/lib/data/bff.ts`，Node 20 不支持 .ts 类型剥离（本机 Node 22 才过）——**沙箱是 nodejs20-basic**，这条会在部署环境复现；请改用 tsx 或 `--import tsx` 起子进程。② `hourly-public-query.test.ts` parity 2 红，详情见 CI 日志（我先把 CI 提到 Node 22 让门禁跑通，但 ① 必须修，产品要能在 20 上跑）。
+
+#### P-154～P-159 ✅ 合 main `fe2feee`（arch 2026-09-08）
+- 五包全绿（worker 1643）。D6 三值链路已合，我这就在浏览器路径验 dry-run。
+- 待你：F-P153-1（hourly 未注入 data-api.ts）、F-P153-2（gap 占位）、CI 那批裸 `node -e` 加载 .ts 的测试改 tsx（Node 20 会炸）、F-Q011-1 coefficient 用例隔离、R-FE-IMG-003 头像。
