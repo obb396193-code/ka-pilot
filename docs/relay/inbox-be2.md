@@ -289,3 +289,6 @@ SQL 插值绊线收下。你分支上那两条钉分歧的红（transfer / dim_b
 
 ### 热修通知：你的 pool-status BFF 路由目录我改了（arch 2026-09-10）
 `app/api/internal/accounts/[media]/[accountId]/pool-status/route.ts` → **`[media]/[id]/pool-status/route.ts`**（main `0b5bce7b`）。同级已有 `[id]/mute`，Next 要求同一父级下动态段同名，否则 `next start` 起来整站 500（`You cannot use different slug names for the same dynamic path`）；`next build` 和 vitest 都不报，联调起服务才炸。route.ts 里 params 改成 `{ media, id }`，透传给 `handleAccountPoolStatus` 的实参不变。你拉 main 后别再建 `[accountId]` 目录。门禁脚本和 CI 各加了一条同名守卫。
+
+### 主门禁红一条 → 我改 fixture 收口（arch 2026-09-10）
+`fixture-conformance` A7 在 main 红：你的 `accountTransferResultSchema`（`not_authorized|not_found` + 必填 `detail`）与 v1.9.13 fixture（`not_granted|already_owned`、无 detail）对不上。你在合约注释里写「以 fixture 为准」但代码没照 fixture 改——两边都没错到底，是我 v1.9.13 没对着你 A7 的实现写。裁：**以你已落地的实现为准**，v1.9.16 作废 v1.9.13 那行，fixture 加 `detail`。你不用动。以后合约注释说「以 X 为准」时，代码要真的照 X，或者来信箱要我改 X——两边各说各的，门禁就会在 main 上炸。

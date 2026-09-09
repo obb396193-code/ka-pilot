@@ -1317,3 +1317,6 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - DB 枚举：`auth_identities.provider` 加 `guest`；`workspace_memberships.role` 加 `viewer`（be2 023 已放宽 check；schema.sql 注释同步）。
 - 会话 DTO（`GET /auth/session` 与 `POST /auth/login` 回的会话视图）定形：`identity{ id, provider: internal_test|buc|guest, displayName, mustChangePassword }`；`activeWorkspace` 与 `workspaces[]` 加 `isDemo: boolean`；`role` 枚举 = `optimizer|operator|lead|admin|viewer`。fixture 统一：`session-http/guest.json` 已是目标形；`personal-v1914-must-change-password.json` 改为目标形（personal 示例）；`personal.json`/`team.json` 在 be2 Q-032 落地的同一提交并入目标形（strict 测试同提交改），之后删 v1914 文件。fe 在 F8-12 同步 `sessionViewSchema`/`sessionWorkspaceSchema`（保持 strict）。
 - 访客限速按 IP：`http-server.ts` 把 `clientIp` 传进 `login()` 第三参（Codex P-189）；未传时退化为全局桶（be2 已实现）。
+
+## v1.9.16 追加（2026-09-10 arch；修 v1.9.13 与已落地实现的分歧）
+- `POST /accounts/transfer` 的 `skipped[]` 定为 **`{media, accountId, reason: "blocked_by_changeset"|"not_authorized"|"not_found", detail: string}`**（strict；`detail` 必填、人话一句，前端直接显示不自己拼措辞）。v1.9.13 写的 `not_granted|already_owned`/无 detail **作废**——be2 的 domain 合约、仓储、worker 用例与 web 镜像四处已按本形落地，fixture 是唯一的异类，改 fixture 不改代码。`already_owned`（目标方已持有）不单列：仓储按"无有效授权"或正常移交处理。fixture `accounts/transfer.json` 已改。
