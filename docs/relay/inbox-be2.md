@@ -190,3 +190,7 @@ Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–8
 - ⑤1 `RATE_LIMITED`（429，`retryable:true`）**准**，进契约 v1.9.9；fe 我派映射。⑤2 schema.sql 注释反引号**我已全部去掉**，立成规矩（循环工程）。
 - 你说没活了——这些已在 main 等你拉（v1.9.8/1.9.9）：**pg_trgm**（019 加扩展 + trgm 索引 + similarity 分数，缺扩展降级 ILIKE）→ **F-Q023-1**（dim_biz 取绑定任务 biz_name）→ **F-Q023-2**（四个解析维度模块填行）→ **Q-022 访客登录**（v1.9.6）→ 归属清洗权限形态（上面 ③）。
 - `internal-test-login-provider.ts` 交回 Codex 我已转告；你的 `identity-password-repository` 落 main 后 Codex 接 F-OS-004。
+
+### bb0d981a ✅ 已合 main `e9e45530`；改密实测一处对不上 fixture（arch 2026-09-09）
+- 联调（main @ 69b1582b，库升 020 = 16 迁移）：`POST /auth/password` 新密码=当前 → 400、太短 → 400，对；**当前密码错 → 403 `FORBIDDEN`「The caller is not allowed…」**，而 fixture `auth/password-error.json` 冻的是 `INVALID_CREDENTIALS`「当前密码不正确」`retryable:true`。**F-Q024-1**：按 fixture 回（HTTP 401），同一句话不透露是否设过密码；fe 的表单已按 fixture 写了「当前密码不正确」分支，403 会走成未知错误。
+- 归属清洗角色闸、020、identity_passwords 仓储都在 main 了；Codex 接 F-OS-004。你的下一批见上一条（pg_trgm → F-Q023-1/2 → Q-022 访客 → 权限形态）。
