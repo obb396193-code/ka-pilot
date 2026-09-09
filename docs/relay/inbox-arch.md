@@ -5336,3 +5336,50 @@ similarity('新任务开户到基建SOP', '新任务开户') = 0.385   （默认
 17 笔全在 `be/r017`，**未 push**（按规矩等你 cherry-pick），**线上未部署**——staradar/内网环境都还没有这些改动。这一批里有四处越权修复（Q-020、日报、搜索/通知/计数、归属清洗闸），**在合流部署前线上仍是有敞口的**，建议优先合。
 
 闸：domain 1279 / db 1248 / worker 1722（+2 skipped）/ web 224 全绿，四包 `tsc --noEmit` 清。
+
+### Q-027 回执：v1.9.5/1.9.8/1.9.9 派的全做完 + Q-022 卡在一处接缝（be2 `be/r017 @ c385be8a`）
+
+| 派活 | 状态 |
+|---|---|
+| F-Q024-1 改密错误码 | ✅ 401 `INVALID_CREDENTIALS`「当前密码不正确」，BFF 镜像同步 |
+| 归属清洗权限形态（v1.9.9） | ✅ 按裁决放宽：putRule/reparseCandidates = lead\|admin；list/patch/upsertParse/confirmBatch = 成员但按 scope 收口 |
+| F-Q023-1 dim_biz | ✅ 归属链补第二跳 |
+| F-Q023-2 四个解析维度 | ✅ 三个填行；`dim_ubp` 见下 |
+| pg_trgm（v1.9.8） | ✅ 但**改在 022 不是 019**，见下 |
+| v1.9.5 密码仓储给 Codex 复用 | ✅ 移到 `packages/db/src/identity-password-repository.ts`，补 setPassword/verify/mustChangePassword |
+| RATE_LIMITED | ✅ 你准了，已按 v1.9.9 落 |
+| Q-022 访客登录 | **半边** ——viewer + 写类拦截已做；guest 登录卡接缝 |
+
+#### ① pg_trgm 我没加进 019，加在了 **022**
+你原话是「019 加扩展 + 索引」，但 **019 已经合进 main 并在你联调库应用过**——回头改一个已应用的迁移，在任何库上都不会重跑，等于没做。021 是 Codex 的 `account_metrics_hourly`，所以我取 022。
+扩展装不上时**不让整批迁移失败**（装扩展要权限，卡住整个部署不值当），索引跳过、搜索侧降级并标 `TRGM_MISSING`。
+
+★**一条实测，可能要改你的 v1.9.8 措辞**：
+```
+similarity('新任务开户到基建SOP','开户')      = 0
+similarity('新任务开户到基建SOP','新任务开户') = 0.385
+```
+**短中文词的 trigram 相似度是 0**。所以「score 换 similarity」如果字面执行，搜「开户」这类两字词会得到一屏 0 分，排序等于没有；`%` 算子同样命不中，匹配只能靠 ILIKE。
+我的落法：**匹配一律 ILIKE（trgm 索引负责加速），score 用 similarity，为 0 时回落启发式**。两条路径都有真库用例。你若要严格按字面来（0 分照出），说一声我改回。
+
+#### ② `dim_ubp` 的疑问你已经答了，但结论是「还不能做」
+v1.9.6 写明 UBP 的源是 `ads_rta_media_daily_report_base_adgroup.is_ubp`，**要等 ka-data 暴露该列**——它不是命名规范里的段，所以从 `account_name_parses` 取不到。保持 `unsupported:true`，等列到位我接。
+
+#### ③ Q-022 只做了前半，**后半要你开一处接缝**
+✅ 已做：`viewer` 角色（实测零类型涟漪）、写类**路由层统一拦截**（viewer 非 GET → 403 READ_ONLY_ROLE，挡在处理器之前，不是跑完再拒）、`migration 023` 放宽 `workspaces_kind_ck` 到 personal\|team\|demo（**否则演示空间根本建不出来**，灌数脚本会被约束挡回去）。
+
+❌ guest 登录没做，卡在：`workspaceKindSchema` 加 `demo` 会让 **`packages/db/src/bootstrap-seed-repository.ts:106`** 类型不过（Codex 的文件，那里有自己一份 personal|team 的窄类型）。按你立的接缝规矩，共享文件的结构性改造归你，所以我把 `demo` 撤回只留 viewer。要开的口子就三处：
+1. 那一行类型放宽（Codex 一行改完即可）；
+2. `schema.sql` 的 `workspaces_kind_ck` 同步加 demo（我 023 已实现，权威文件还没改）；
+3. `approvedWorkspaceAuthContextSchema` 加 demo 分支——**我的建议是加，scope 复用 `team_workspace_readonly`**（演示空间就是只读全量，不另造一种）。
+
+★**开口子前请先想这条**：`demo` 进枚举后，全仓 **49 处 `workspaceKind === "team"` 判断都要过一遍**，漏掉就是让访客走进个人空间口径。方向是 fail-closed（访客没有授权 tuple，按个人口径反而什么都看不到），所以不会多给权限，但会「该看见的看不见」。这 49 处大半不在我名下，建议你统一派。
+
+#### ④ 另外三条要你知道的
+- **schema.sql 还缺两处**：`pg_trgm` 扩展+索引（022 实现）、`workspaces_kind_ck` 加 demo（023 实现）。我按 api.md 的裁决先落地了，权威文件请你同步，否则下次谁按 schema.sql 切片会切不到。
+- **db 测试必须串行跑**（`--no-file-parallelism`）：迁移回放用例共用同一套 schema，并发会互相踩出假红（012 那三条），单跑与串行都绿。
+- **Codex 的库名守卫**：`ka_be_[a-z0-9_]+_test` 写死，我原来的 `ka_be2_r014_test` 会让他 4 个套件报「Dedicated local be test DB required」。我换到合规库名后 45/45 全过——不是回归，你派的 P-175 放宽后就好。
+
+#### ⑤ 闸与合流
+domain 1296 / db 1352 / worker 1740（+2 skipped）/ web 224 全绿，四包 tsc 清。
+`be/r017` 领先 main 若干笔，**未 push**、**未部署**。
