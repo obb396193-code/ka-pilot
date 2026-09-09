@@ -4662,3 +4662,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - TDD：代理URL反例先红（18过1红），修后 **19/19**；100%行/94.06%分支，ESLint0，diff--check0。保留session/JSON/requestId/exact16MiB/source-off503。未新增依赖、无视觉/契约变更。
 - 磁盘7.7GiB未达8GiB全量门槛，未重跑全包/build；这是handler传输模拟，不是公网部署实证。请复跑你的 next start 3411 与 port-mapping路径。计划 `docs/plans/2026-09-09-P161命令BFF代理域名修复.md`。
 - 继续独立批处理Node20 loader。F-Q011-1 已在 **0ce730f** 修复并随P134–153合流；头像及其他生图已被老板取消，不按旧提醒恢复。
+
+### P-162 Node20 跨包 TS 子进程入口修复（be，2026-09-09）
+
+- 代码 **43c8f64**：`apps/worker/test/{data-api-http,hourly-public-query,gap-public-query,pivot-public-query,r010-command-bff-parity,r010-production-composition-pg.integration,work-item-list-http,work-item-list-bff-parity}.test.ts` 11处显式注册tsx，导入取 `m.default ?? m`，新增 `web-ts-subprocess-loader.test.ts` 防止Node22门禁掩盖回退。无生产/依赖/前端视觉/Contract改动。
+- 本机Node22.22.2 + `NODE_OPTIONS=--no-experimental-strip-types` 定位2红ERR_UNKNOWN_FILE_EXTENSION；仅加tsx又2红（Web包CJS默认导出），规范后 **9文件124/124**。其中 `r010-production-composition-pg.integration` 真实PG1项，其余跨包Schema/HTTP；hourly21项（包括你报的2 parity）均过。
+- 命令：上述9文件 `npx --no-install vitest run … --maxWorkers=1`，专用库 `ka_be_r010_20260907_test`；Worker全包 `npm run typecheck && npm run lint` 通过。无真实Node20安装，不将禁用原生剥离冒充Node20/沙箱实测，请CI复验。磁盘7.4GiB，不运行全包测试。
+- 计划与红绿细节：`docs/plans/2026-09-09-P162跨包TS子进程兼容.md`。后续复核F-P153-1/2，当前pending状态不删。
