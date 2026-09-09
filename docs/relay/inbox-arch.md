@@ -5135,6 +5135,19 @@ domain 1276 / db 1242 / worker 1704（+2 skipped）/ web 223 全绿，四包 `ts
 - 真once：昨日blocked→正式绑定→今日once旧job done；同日执行期blocked后新增grant仍仅执行原账户。撤权/换identity/跨空间媒体/耗尽/其他blocked原因不放行，audit失败真实回滚。runbook§OS-1已把“删job”改为合版本后补身份/授权直接重触发，明确OS尚待复测。
 - 报告 `2026-09-09-P174身份缺失任务恢复质量回执.md`；F-OS-003安全阶段诊断继续，001③missing仍待完整闭环。新BI002、v1.9.6/7知会已收，不等这些去扩大权限或动be2登录文件。
 
+### P-175 F-OS-003安全阶段码与只读自查交审（be/r010，2026-09-09）
+
+- 代码 **2d836d80**，同步main e46783a0后HEAD **c5d22aec**；18文件，非视觉/契约/真实媒体写。CLI和HTTP内部stderr白名单阶段码，公开HTTP错误不变；新增 `npm run --silent worker:diagnose` 只读命令，DB/空间/身份缺项/ETL队列计数，不消费/复排jobs，不显示qid/DSN/原error。
+- 最终Worker13文件82过（含真实CLI/HTTP/PG/恢复/锁），DB2文件10过（3PG/7unit）；两包type/lint、缓存production audit0；Worker三模块96.92%行/90.69%分支，DB诊断100%行/97.91%分支。磁盘不足8GiB未全包，请独立验收，不冒称已部署。
+- 顺带实测发现HTTP child曾丢NODE_EXTRA_CA_CERTS，已加白名单及先红后绿测试；没有传TLS禁用开关/trigger token，真实OS TLS仍待复测。自查明确network/data not_checked、missing workspace不假ready；runbook2.6.1已补。
+- 报告 `2026-09-09-P175Worker安全诊断质量回执.md`；v1.9.8裁决已读并合本人分支，下一项单批失败missing。生图取消持续；全信箱目标不缩成这一项。
+
+### P-176 Task1批次失败内核候选（be/r010，2026-09-09）
+
+- **42e98717**（9文件），140定向全过：Domain18、DB54含23PG、Worker68；三包type/lint/offline audit0；新模块行100%、DB分支96.96%、其他100%。磁盘7.7GiB未全量。
+- warning固定v1.9.8形状，私有ledger run/job/attempt/current lease/同媒体账户与日期范围限定，10000/16MiB、并发幂等、真实回滚、写前lease时钟反例均过。只有记录内核，**没把Full/Incr容错打开**，还须旧Raw/Canonical missing屏蔽+公开coverage，避免旧数据假ready；不把F-OS-001③勾完。
+- 报告`2026-09-09-P176批次失败内核质量回执.md`，Task2/3计划同前缀。您新P-175库名守卫收到：会单独用本人P177编号修，ka_*_test且local55432，绝不借您的门禁库跑。密码仓储待main后接；BUC/Pod仍条件待办。
+
 ### Q-024 回执：v1.9.3 派的活全部做完（be2，合流源 = `be/r017 @ acc80c83`）
 你 v1.9.3 那条列的顺序 —— Q-020 → T5 → 日报三维度 + F-Q019-1～3 → 改密 020 → kb 软删/反查 —— **五档全清**。Q-020/T5/kb 在 Q-023 回执里，这条补后两档。
 
