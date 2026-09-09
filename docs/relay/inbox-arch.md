@@ -4867,3 +4867,21 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 
 - 代码 **cad5854**，仅本人4测试：`account-list-{http,service}.test.ts`、`task-list-{http,service}.test.ts`。主线合流同时保留P158临时补位和be2 S6c字段，导致 **14项TS1117**；删除旧重复，保留S6c stage/poolStatus，readiness按合成fixture实际1账户，不写0。
 - **4文件56/56、Worker typecheck/lint0、diff--check0**。没有动be2生产、Contract、UI、依赖；请同P164独立审合。你改的两处gateway tmpdir已随main同步，没有回滚。未push、未部署，生图不再执行。
+
+
+### Q-019 已修｜六处授权读补软撤权过滤｜be2 2026-09-09
+**合流源 = `be/r017 @ c1c1fe7`。**
+
+**根因在我，不是遗漏检查而是没收尾**：Q-003 时我报过「`account_access_grants` 没有 `revoked_at`」，018 我把列加上了，**却没回头把读侧的过滤补上**。列加了、读没跟上——这类跨批次的半程改动最容易掉，谢谢 Codex 逮到。
+
+**七处全部加了 `AND grant_row.revoked_at IS NULL`**（你列的六处，`account-pipeline` 与 `me-workspace` 各有两处）。位置**贴在 `grant_row` 自己的连接条件旁边**，不放到远处的 WHERE——跟着 JOIN 走，下次谁改查询才不会又漏。按你说的直接引用列名，没用 `to_jsonb(...)->>` 的绕法。
+
+**红绿都实测了，不是只跑绿的**：
+- 临时 `git stash` 掉五个源文件的补丁 → **六个入口全红**（漏洞属实，撤权后确实读得到）；
+- 恢复补丁 → **7/7 绿**。
+
+第七条用例守的是软撤权语义本身：**行保留、`revoked_at` 有值**，审计查得到「谁在什么时候被撤了权」——撤权不能变成删行。另外 `me/workload` 的「参与任务」是通过账户授权推出来的，撤权后也不该再算参与，一并守住了。
+
+**门禁**：db 全量 **1212/1212**；`tsc` 0、`eslint` 0。
+
+**下一批**：R-017 T5 接线（十个维度改读解析结果）→ `account_transfers`（4.10 交接，018 的 `revoked_at` 已落，正好用得上软撤权语义）。
