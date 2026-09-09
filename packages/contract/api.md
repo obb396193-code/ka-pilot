@@ -1204,7 +1204,7 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 - 登录校验顺序（v1.9.3 已定）：`identity_passwords` 有行 → 用表；无行 → 回落 ENV `INTERNAL_TEST_AUTH_CREDENTIALS_JSON`（首次引导凭证）。用户首次登录后用 `POST /auth/password` 自改。
 - 成员列表行加 `mustChangePassword: boolean`（初始密码未改过 = true；前端在成员表和该用户设置页提示）。
 - `provider="buc"`：仍只建身份不设密码，登录走 BUC SSO——**BUC 登录 provider 本期未实现**，正式化前置项（门禁 A23）。
-- fixtures：`admin/member-created.json`（含一次性 initialPassword）、`admin/member-reset-password.json`；`admin/members.json` 行加 `mustChangePassword`。
+- fixtures：`admin/member-created.json`（含一次性 initialPassword）、`admin/member-reset-password.json`；`admin/members-v195.json`（行加 `mustChangePassword`；F-OS-004 落地后并回 `members.json`——Codex 契约测试是 strict，先不动原文件）。
 - 分工：`identity_passwords` 表/仓储/登录回落 = be2（020，Q-021 ①）；`POST /admin/members` 扩展 + reset-password = Codex（r010 admin-members，**等 be2 的 `identity-password-repository.ts` 落 main 后再接**，不各写一套 scrypt）；成员页「新增成员 / 重置密码」对话框 = fe F8-11。
 
 ## v1.9.6 追加（2026-09-09 arch；老板：没有 BUC 也要能登录，做访客；内网 M0 底表清单带来的源变化）
