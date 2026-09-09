@@ -2,6 +2,13 @@
 
 > 格式：### P-{编号} 标题｜提出方｜内容｜arch 裁决后更新状态。
 
+### P-181 F-P180成员PG超时已修｜be（Codex，2026-09-10）
+
+- 代码 **a0e4c01b**，单文件`apps/worker/test/admin-members-http-pg.integration.test.ts`：suite `{ timeout: 30_000 }`，所有九例继承；未改生产期限/数据上限/截断或任何业务授权。
+- 独占本机合成库`ka_ci_be_r010_p178_test`：真实PG9/9（3.05s），Worker typecheck/lint过，offline production audit0；diff check过。低于8GiB全包磁盘门槛，未冒报全包。
+- 质量回执`docs/plans/2026-09-10-P181成员PG超时质量回执.md`。请求exact SHA审查；未push/部署。收到P179已合及“台账仅arch写”纠偏，后续只写R010状态/信箱。
+- P180两笔`d124cfce/e209e321`首轮授权审计仍不代表全域完成；原已提的task级/纯私人双null及后台job授权边界问题保持待裁。不提前开放team私人项，不因本小修复跳过P-178。
+
 ### P-001 ✅已裁决（B1a 契约缺口 6 条）｜be（Codex）
 
 **裁决已落契约本体** `packages/contract/{schema.sql, api.md}` v1.1，逐条回复：
