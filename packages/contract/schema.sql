@@ -61,6 +61,16 @@ CREATE TABLE auth_sessions (
   FOREIGN KEY (active_workspace_id, identity_id)
     REFERENCES workspace_memberships(workspace_id, identity_id) ON DELETE RESTRICT
 );
+-- v1.9.3（2026-09-09 arch 裁 be2 Q-021 ①，migration 020 = be2）：内测账密期自助改密的落点。
+-- 登录校验先查本表，无行回落 ENV `INTERNAL_TEST_AUTH_CREDENTIALS_JSON`（ENV 降级为首次引导凭证）；只对 provider=internal_test。
+CREATE TABLE identity_passwords (
+  identity_id UUID PRIMARY KEY REFERENCES auth_identities(id) ON DELETE CASCADE,
+  password_salt TEXT NOT NULL,
+  password_scrypt TEXT NOT NULL,
+  algo TEXT NOT NULL DEFAULT 'scrypt',
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_by UUID
+);
 
 -- ═══ 业务对象 ═══
 -- P-001#3 裁决（全表通用）：外部 ID（task_id/account_id/entity_id/ad_id）在租户间不保证唯一，
@@ -163,6 +173,21 @@ CREATE TABLE ad_metrics_hourly (       -- 小时级（保留 90 天→日级 rol
   FOREIGN KEY (workspace_id, media, account_id)
     REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
   PRIMARY KEY (workspace_id, ad_id, ds, hh)    -- P-001#3 裁决：同上
+) PARTITION BY RANGE (ds);
+-- v1.9.4（2026-09-09 arch 裁 Codex P-163；migration 021 = Codex，不依赖 013/014）：账户级小时快照，F-P153-1 的唯一真源。
+-- 源 = 启航 account_realtime(ds, hh)：docs/19 已实证 hh 为「截至该小时（0..hh 含）累计」、单调非降、hh=24 等于全天、历史 ds 可查、行带 last_sync_time。
+-- 只存 hh 0..23 的累计值；小时增量 = cum(hh) − cum(hh−1) 在读侧算；缺行 = missing，永不补 0。cash 口径在读侧按 ds 生效的 channel_coefficients 折算。
+CREATE TABLE account_metrics_hourly (
+  workspace_id UUID NOT NULL, media TEXT NOT NULL, account_id TEXT NOT NULL,
+  ds DATE NOT NULL, hh SMALLINT NOT NULL CHECK (hh BETWEEN 0 AND 23),
+  cost NUMERIC, exposure BIGINT, click BIGINT, conversion BIGINT, real_conversion BIGINT, budget NUMERIC,  -- 均为截至 hh 的累计
+  last_sync_time TIMESTAMPTZ NOT NULL,   -- 源行的同步时间（原样）
+  sampled_at TIMESTAMPTZ NOT NULL,       -- 我方抓取时间
+  complete BOOLEAN NOT NULL,             -- sampled_at ≥ 该小时结束 +5min → 该小时已完整；false 的行每次采样覆盖
+  source_run_id BIGINT,                  -- etl attempt（system/etl-runs 的 runId）
+  FOREIGN KEY (workspace_id, media, account_id)
+    REFERENCES accounts(workspace_id, media, account_id) ON DELETE RESTRICT,
+  PRIMARY KEY (workspace_id, media, account_id, ds, hh)
 ) PARTITION BY RANGE (ds);
 CREATE TABLE ad_entities (             -- 账户结构（经 agent 同步，强类型层级）
   entity_id TEXT NOT NULL, workspace_id UUID NOT NULL,
@@ -676,6 +701,7 @@ CREATE TABLE kb_documents (
   tags TEXT[], owner UUID,
   visibility TEXT DEFAULT 'private',      -- private|team|workspace；错题本默认 private
   source_ref JSONB,                       -- ai_report/case 来源 {type,id}
+  deleted_at TIMESTAMPTZ, deleted_by UUID, -- v1.9.3 软删（DELETE 只置位；列表/搜索/反查默认过滤）
   created_at TIMESTAMPTZ DEFAULT now(), updated_at TIMESTAMPTZ DEFAULT now()
 );
 CREATE TABLE kb_revisions (

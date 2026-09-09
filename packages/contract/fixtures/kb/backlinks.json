@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "data": {
+    "items": [
+      {
+        "id": "00000000-0000-4000-8000-000000002702",
+        "title": "新任务开户到基建 SOP",
+        "kind": "sop"
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000002711",
+        "title": "CVR有端 8 月复盘",
+        "kind": "ai_report"
+      }
+    ]
+  },
+  "meta": {
+    "requestId": "fixture",
+    "dataAsOf": "2026-09-05T09:15:00.000+08:00",
+    "businessDate": "2026-09-05",
+    "workspaceKind": "personal",
+    "selectedSource": "platform",
+    "_note": "GET /kb/documents/:id/backlinks：行 = search 行去 snippet/score 的三件套 {id,title,kind}；已软删的不出现"
+  }
+}

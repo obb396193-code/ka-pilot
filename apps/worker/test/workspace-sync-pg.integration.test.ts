@@ -1,15 +1,18 @@
 import { randomUUID } from "node:crypto";
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { Pool } from "pg";
 
 import {
   JobRepository,
+  CredentialRepository,
   WorkspaceSyncRepository,
   runMigrations,
 } from "@ka/db";
 
 import { WorkspaceSyncTickService } from "../src/scheduling/workspace-sync-service.js";
+import { JobConsumer } from "../src/jobs/consumer.js";
+import { withQihangIdentity } from "../src/jobs/identity.js";
 
 const databaseUrl =
   process.env.TEST_DATABASE_URL ?? "postgres://ka:ka@127.0.0.1:55432/ka";
@@ -178,5 +181,23 @@ describe("workspace sync scheduler with PostgreSQL", () => {
         allowedAccounts: [{ media: "KUAISHOU", accountId: "account-1" }],
       },
     });
+  });
+
+  it("blocks a queued full job after revocation, before any upstream handler", async () => {
+    const result = await service.execute({ workspaceId, media: "KUAISHOU", mode: "full", triggeredAt: "2026-08-27T20:00:00Z" });
+    const jobId = result.jobs[0]!.jobId;
+    expect(result.jobs[0]?.status).toBe("queued");
+    await pool.query("UPDATE account_access_grants SET revoked_at=now() WHERE workspace_id=$1", [workspaceId]);
+    const upstream = vi.fn().mockResolvedValue(undefined);
+    // Lease only this synthetic workspace/type; never consume another suite's jobs.
+    const consumer = new JobConsumer(new JobRepository(pool, { workspaceId, jobTypes: ["etl_full"] }), {
+      etl_full: withQihangIdentity(upstream, new CredentialRepository(pool), "must-not-fallback"),
+    });
+    expect(await consumer.processOnce()).toBe(true);
+    expect(upstream).not.toHaveBeenCalled();
+    expect((await pool.query("SELECT status,credential_owner_user_id,payload FROM jobs WHERE id=$1", [jobId])).rows).toMatchObject([{
+      status: "blocked_auth", credential_owner_user_id: userId,
+      payload: { accountIds: ["account-1"], authorizationSnapshot: { identityId, userId } },
+    }]);
   });
 });

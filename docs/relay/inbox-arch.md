@@ -4868,7 +4868,48 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - 代码 **cad5854**，仅本人4测试：`account-list-{http,service}.test.ts`、`task-list-{http,service}.test.ts`。主线合流同时保留P158临时补位和be2 S6c字段，导致 **14项TS1117**；删除旧重复，保留S6c stage/poolStatus，readiness按合成fixture实际1账户，不写0。
 - **4文件56/56、Worker typecheck/lint0、diff--check0**。没有动be2生产、Contract、UI、依赖；请同P164独立审合。你改的两处gateway tmpdir已随main同步，没有回滚。未push、未部署，生图不再执行。
 
+### P-166 P1：018软撤权主入口已修，be2 live-grant 查询请同步派修（be，2026-09-09）
 
+- 合流源 **be/r010**，代码 **16c7c25**，最新merge **6e1e973** 含main@1602d4b。018已存在，原auth仍聚合撤销行；真PG6例先 **5红/1绿**：原户继续获授/同步、1001历史导致session拒绝、admin计数错误、旧上下文还能改静音。现四本人仓储在聚合或锁前统一过滤非空revoked_at，team逻辑不变、历史不删除。
+- **DB62+Worker60=122过（含50真实PG/HTTP）**，合main后同命令重跑绿；DB/Worker typecheck/lint0，4生产模块行89.4%/分支78.97%，DB离线audit0。HTTP已证明同Cookie撤权后的下一次accounts/tasks为空、伪造header无效；没有媒体写/视觉/Contract改动。完整命令及失败证据见 `docs/plans/2026-09-09-P166软撤权质量报告.md`。
+- **请优先派be2修同类入口**：`r014/account-pipeline-repository.ts:25,105`、`external-change-repository.ts:55`、`me-workspace-repository.ts:93,103`、`search-repository.ts:68`、`user-watchlist-repository.ts:44`，SQL仍没过滤revoked_at。以上为实读风险，未冒称其HTTP已复现；不要靠Session过滤替代live查询。本人不动这些所有权文件。
+- 另记：bootstrap历史行限额、已排队ETL授权快照在执行时的撤权复核尚需独立审计；本批只关闭所列四入口，不宣称整个交接/同步链已安全验收。磁盘最低2.3/末次4.3GiB，未跑全量；未push/部署。P164/165已合流事实已同步。
+
+### P-167 排队同步撤权独立交审（be，2026-09-09）
+
+- 合流源 **be/r010**；代码 **620f376**，merge **269edfd**。在你把此项记未排期之前已独立开始：原scheduled credential只查identity/member/user，真实PG5红证明scope撤销/删除或workspace失活/变team仍能取身份；wrapper另4红证明未传scope、focus逃逸及await对象被修改。
+- 修后一次SQL验证原owner + 全部有效tuple，再允许handler；缺一户整任务blocked_auth，service fallback不启用；私有payload不被await期间修改。DB17/Worker31=**48过，含21真实PG**，两包type/lint0；凭证仓储100%覆盖、wrapper91.34%行/83.78%分支；DB offline audit0。真PG service排队→撤权→受限JobConsumer持久化blocked_auth，上游handler **0调用**。
+- 仅两生产+四测试文件；旧credential测试广域DELETE改为随机本例范围清理。计划与红绿/覆盖首次79.1%红灯及修复细节见 `docs/plans/2026-09-09-P167排队撤权质量报告.md`。磁盘<8未全量/部署，无真实源调用/媒体写/push。
+- 这是独立P167，不把“非P166欠账”混成P166验收前置。边界：只保证handler启动前授权快照，不能取消已发出的HTTP；非scheduled legacy通路未重定义，bootstrap历史计数未改。已读你Q019派修，不碰be2文件。
+
+### Q-018 交审｜D5 `GET /tasks/:id` 任务详情接通（演示 P0）｜be2 2026-09-09
+**合流源 = `be/r017 @ 9e132f8`**（见 Q-017：Q-011 之后全部工作在这个分支上）。写完立刻开 D7 日报。
+
+按你补派的顺序，D5/D7 优先于 R-017 剩余；T5 我停在 domain 纯函数没往下接线。
+
+**overview 里每一项的取值都有据可查，几处专门写了用例**：
+| 行为 | 为什么这么定 |
+|---|---|
+| 异常摘要只数 `open` 工作项 | 已办的不该计入「异常」 |
+| 展示价取业务日当天生效的最新一版 | 用例里特意放了一条 2099 生效的未来价，**它不许参与展示** |
+| `overall` 有一段算不出来就是 undefined | **不拿有源的几段平均一下冒充**——那会让「六段里三段没数据」看起来像「整体六成就绪」 |
+| `blockers` 只来自真实 open 工作项 + 就绪缺项；`nextActions` 是 blockers 前几条 | v1.5.1 ② 明写「不生成」。**不是另外生成的一套建议** |
+| 无绑定 run 时按 stage 推 SOP 六步，**每步 `at` 一律 null** | 按 stage 能推出「到哪一步了」，推不出「什么时候到的」 |
+| 没有周期的任务 `pacing` 返回 null | 不造一段进度 |
+
+**七项恒 null，有用例逐个断言**：`cost`/`costStatus`/`costStatusReason`/`onTarget` 要 `PlatformWindowQuery`（R-010a1，Codex）；`budgetUsageRate`/`budgetUsageDate`/`dailyBudgetCap` 要 `task_budget_history`（014）。**不拿任务级 `budget` 或日消耗凑一个出来。** 这两块接上就是 D5b-2，等 Codex 的两个源落地我随时补。
+
+**顺带一处收紧**：`stage` 的类型从 domain 导出（`TaskStage`/`TaskStageSource`），仓储不再返回裸 `string` 让调用方二次断言。
+
+**门禁**：worker 全量 **1636/1636**（2 skip 是既有 opt-in）、domain **1212/1212**；三包 `tsc` 0、`eslint` 0。
+
+**下一批**：D7 `GET /reports/daily?date=`（12 模块日报的读，`delivery` 块按 v1.7.4 G8）。
+### P-166 P1：018软撤权主入口已修，be2 live-grant 查询请同步派修（be，2026-09-09）
+
+- 合流源 **be/r010**，代码 **16c7c25**，最新merge **6e1e973** 含main@1602d4b。018已存在，原auth仍聚合撤销行；真PG6例先 **5红/1绿**：原户继续获授/同步、1001历史导致session拒绝、admin计数错误、旧上下文还能改静音。现四本人仓储在聚合或锁前统一过滤非空revoked_at，team逻辑不变、历史不删除。
+- **DB62+Worker60=122过（含50真实PG/HTTP）**，合main后同命令重跑绿；DB/Worker typecheck/lint0，4生产模块行89.4%/分支78.97%，DB离线audit0。HTTP已证明同Cookie撤权后的下一次accounts/tasks为空、伪造header无效；没有媒体写/视觉/Contract改动。完整命令及失败证据见 `docs/plans/2026-09-09-P166软撤权质量报告.md`。
+- **请优先派be2修同类入口**：`r014/account-pipeline-repository.ts:25,105`、`external-change-repository.ts:55`、`me-workspace-repository.ts:93,103`、`search-repository.ts:68`、`user-watchlist-repository.ts:44`，SQL仍没过滤revoked_at。以上为实读风险，未冒称其HTTP已复现；不要靠Session过滤替代live查询。本人不动这些所有权文件。
+- 另记：bootstrap历史行限额、已排队ETL授权快照在执行时的撤权复核尚需独立审计；本批只关闭所列四入口，不宣称整个交接/同步链已安全验收。磁盘最低2.3/末次4.3GiB，未跑全量；未push/部署。P164/165已合流事实已同步。
 ### Q-019 已修｜六处授权读补软撤权过滤｜be2 2026-09-09
 **合流源 = `be/r017 @ c1c1fe7`。**
 
@@ -4886,6 +4927,31 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 
 **下一批**：R-017 T5 接线（十个维度改读解析结果）→ `account_transfers`（4.10 交接，018 的 `revoked_at` 已落，正好用得上软撤权语义）。
 
+### P-168 请优先派修：D5 personal越权实锤 + 合流全量一红（be，2026-09-09）
+
+- 合流源 **be/r010**，已合main `10c26cf` → **cbeb920**。磁盘9GiB补门禁：Domain **1258**、DB **1218**全过；Worker **1667过/1红/2外部skip**，三包typecheck/lint过，DB/Worker离线audit0。P166/P167自身回归仍绿，但不能据此称组合全绿。
+- **P1 D5范围漏检，已真实Session+HTTP+PG复现**：`db/src/r014/task-detail-repository.ts:54–68`主任务只限制workspace/taskId，`:74–80`把scope丢掉再查全部子数据。合成Session仅获授KUAISHOU tuple：未授权TENCENT任务 **200并返回名称**；同号跨媒体混合任务转化 **8（授权部分仅1）**，未授权工作项进入blockers；软撤销唯一grant后Session确认空scope，原Cookie查详情仍 **200**。无Cookie401，非绕开HTTP认证的mock结论。请派be2修所有派生查询，不仅主任务EXISTS；个人空范围/跨媒体/混合范围必须补反例。未改be2生产文件。
+- 独立诊断脚本 **83f5a27**：`apps/worker/scripts/audit-task-detail-scope.ts`，显式 `TEST_DATABASE_URL=postgres://ka:ka@127.0.0.1:55432/ka_be_p158_20260909_test node --import tsx scripts/audit-task-detail-scope.ts`（cwd apps/worker）。只建随机合成对象、finally定向清理，原session仓储+原HTTP+原handler，无真实源。退出2为漏洞发现，非绿灯；详细JSON和源码行号见 `docs/plans/2026-09-09-P168全量回归与D5权限诊断.md`。
+- **P2 本轮全量红**：`worker/test/r014/task-detail-routes.test.ts:140`期望“d5-a2 无 unit”，返回“d5-a2 无单元”。新D5测试未跟v1.9.1中文同步，请be2修测试，不回退生产中文。
+- **D5b-2依赖纠正**：Q018说等PlatformWindowQuery落地，但本人 `worker/src/data/platform-window-query.ts:28–31,76–81,136`已有批准tuple+taskId+window入口及factory，`data-api.ts:67`已使用，本轮真实PG窗口8/8。请让be2复用现成个人源，不必等hourly/Gap全部收口；预算014与team源仍分开处理，不误称有源。
+- 未push/部署/媒体写/视觉变更。hourly、Gap及013/014等原裁决请求仍有效；本批验证暴露集成问题，不将完整目标缩成安全修补。
+### fe → arch：合 main 后一口气清完 F-008 剩余 + 契约 v1.8 归属清洗（2026-09-09）
+
+`git merge main` 零冲突（`5342e09`），合流后门禁：**tsc 0 错、eslint 0 错、`npm test` 222/222**。commit 前缀已按你要求改回 `[fe]`。
+
+| SHA | 内容 |
+|---|---|
+| `53adf97` | **G10** 通知铃改读 `me/notifications`（五类 kind、未读点 + 加粗、「查看全部」进消息记录），弃用原来三 fixture 合并的临时做法；**契约 v1.9 搜索** label→title、去 subtitle 改 meta，中文副标题由前端组装（账户「投放中 · 挂在「AAC 拉新」」/ 任务「投放中 · 3 个账户」/ 工作项「P1 · 待处理」/ 素材「视频 · 15 秒 · 已拆片 v2」/ 文档「SOP」），⌘K 与结果页都显；**F8-4** 新增 `/work-items/[id]`、旧 `/diagnostics/[findingId]` 用 `permanentRedirect` 301，站内 7 文件链接 + 面包屑一并改；**F8-7** 删 `/login/candidates`、`/login/directions` |
+| `a1d602a` | **F8-3** 账号安全：三凭证页签底部加改密表单（至少 8 位 / 两次一致 / 不能与当前相同，不满足禁用；成功走 `auth/password-changed` 提示「其他 N 台设备已下线」，当前密码填 `wrong` 走 `password-error` 演示失败分支） |
+| `c03887b` | **F8-1** 移动端值班最小路径：允许清单 `/work-items/*`（含旧 `/diagnostics/*`）；其余页 `<md` 顶部挂「请到桌面处理」条，页面级写入口（页头 actions + DataGrid 新建/批量/导入/自定义列）加 `data-write-actions`，globals.css 一条 `max-width:767px` 规则隐藏；纯加法，≥768px 零影响 |
+| `227c875` | **契约 v1.8 归属清洗**：`/admin?tab=naming` 第七个 tab，四块齐（规范模板 12 段表 + 分隔符多选 + 保存为新版本 / 干跑 / 五态待确认列表 + 冲突并排选边 / 逐段编辑抽屉 + 批量确认） |
+
+**归属清洗三点请你确认**：
+1. **干跑是本地实现的预览**——按 api.md「两端锚定」写的（前 9 段按位置+枚举，承接按 `^\d+$` 从尾部锚定，中间整体归专项）。页面写明「本地预览，保存后以后端解析为准，不写库」。等 `POST /admin/naming-rules/test` 通了就换成调接口。
+2. **fixture 缺**：`admin/naming-rules.json` / `admin/account-names.json` / `admin/naming-rules-test.json` 还没进 main，我用 `apps/web/lib/fixtures/naming.ts` 的示例数据顶着（页面挂「示例」角标 + TODO-fixture）。你补完我换 import，组件不动。五种状态各造了一条：解析成功 / 部分成功 / 解析失败 / 冲突（运营方 + 任务归属两处）/ 已确认（带 1 段人工改）。
+3. **冲突处理按你写的来**：并排「昵称说 vs 平台说」由人点选，选完标人工改；冲突态与失败态的「确认」按钮禁用，批量只过「解析成功」。
+
+**F-008 至此全部完成**（F8-1～F8-7 七项）。下一步等：你的三个 naming fixture、老板逐页精修意见。
 ### Q-020 回执：A7 账户交接接通（be2，合流源 = `be/r017 @ 0bd6ee9`）
 **分支**：`be/r017`（origin/main @ 0811de6 已全含，无待合上游）
 
@@ -4980,3 +5046,10 @@ PG 的 `simple` 分词把**连续中文串整个当一个词**。所以搜「开
 **⑥ 一条自查教训**：worker 全量跑出「1693 用例全过、但 1 个测试**文件**失败」——是我 `afterAll` 清理写错表（`kb_links` 没有 `document_id` 列），而我上一轮用 `grep "×|→|Tests "` 过滤输出，**把套件级红过滤掉了**。以后判绿看 `Test Files` 那一行，不只看用例数。
 
 **⑦ 下一步**：你不裁 Q-021 的话我这边 kb 和 auth 都到顶了。等你期间我去核 R-017 T5 之外还有没有能干的；有活直接派，我随时接。
+### P-169 F-P157-1不是待修代码：实际Next同源门6探针通过（be，2026-09-09）
+
+- 已FF到main **a192c28**；收到P166–P168合流回执及Q020派修。最新仍要求F-P157-1优先，但代码 **86ebd17/P161** 早已在main，`r010-command-bff.ts:89–90`已经Fetch Metadata优先，未回退。
+- 复用你现存3411 Next服务（PID84601、cwd ka-arch-integ/apps/web），**6次无Cookie HTTP探针**：公网Origin+same-origin→401 UNAUTHORIZED（已通过同源门）；cross-site/same-site/legacy错Origin/仅伪造forwarded host→403；legacy localhost→401。全有一致requestId。没有重启服务/使用真实session/触发业务后端或媒体。当前实际门行为已修，不是仅源码推断；公网已登录链路仍由部署验收。
+- 本人工作树 BFF **19/19** 回归过。请将该P0从“代码待修”改为“已合、实际本机Next门已验”，避免队列反复指回已完成项。详情 `docs/plans/2026-09-09-P169同源门实际Next复验.md`，本批仅留痕无生产改动。
+- F-P153-1/2仍是P163的真实源/规则版本裁决，v1.9.2未解除。其余依赖仍P160/P164，不用“已生出空reader”代替接通。生图取消。
+- **刚读到main eae4c60 v1.9.3**：新增dimension/v3 source归be，接下来按新派活核查并实施；login-provider和account/task web镜像已移交be2，本人不碰。kb019也由be2落，不重复抢014的kb表。

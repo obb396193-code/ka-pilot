@@ -1136,3 +1136,63 @@ from/to/status/failReason、`simulation` 风险与 dry-run 快照、TTL、原因
 ## v1.9.1 追加（2026-09-08 arch；fe 自审报出）
 
 - **后端拼给人看的文案（`summary / reason / note / title / body / message / hint / fallbackCopy / confirmBlockedReason`）一律中文，媒体对象用「计划 / 单元 / 创意」，不出现 `campaign / unit / creative`**；机器字段（`targetType` 等枚举）不受此限。fixture 已全量扫过改齐（5 文件 6 处）。前端不改服务器文案，发现英文报 arch。
+
+## v1.9.2 追加（2026-09-09 arch；裁 be2 Q-019 两问 + 采 Codex P-168 一条）
+
+**日报十个维度模块的行结构（冻）**
+- `dim_task / dim_biz / dim_account / dim_agent / dim_resource_position / dim_bid_tool / dim_ubp / dim_deduction / deduction_analysis / cost_tiers` 的 `rows[]` **一律复用 `account.dimension/v3` 的行**：`{key, label, metrics{cost,cashCost,exposure,click,conversion,realConversion,costSpace,wakeUv,potentialUv,ratios{ctr,cvr,realCpa,cashCpa,gap,potentialRate,biConversionRate}}, assessment{price,priceSource,onTarget,costStatus,costStatusReason,budgetUsageRate}, anomaly}`；`dim_account` 用三键形（加 `media, accountId`，`key="<media>:<accountId>"`）。三态/比率/assessment 语义与 v1.7.5 同，不另造。
+- `key/label`：`dim_task` = taskId / 任务名；`dim_biz` = 业务名；`dim_agent / dim_resource_position / dim_bid_tool / dim_ubp` = 解析段值（agent_type / placement / bid_mode / ubp），**读 `account_name_parses`（v1.9 T5）**，T5 接线前 `unsupported:true`。
+- `dim_deduction / deduction_analysis / cost_tiers`：扣量源与分层阈值未裁，**保持 `unsupported:true`**，进未排期清单；不许用别的数凑。
+- 数据源：日报的行由 canonical 日表按维度聚合（与 overview 六卡同源），**不调 `account.dimension` 查询接口**（那是交互查询，日报是快照）；fixture `reports/daily-v1.json` 的 `dim_biz`/`dim_account` 各放一行示例。
+- 模块表覆盖自检（be2 加的「不足十个维度直接 500」）保留。
+
+**G8 `delivery` 的源**
+- `outbound_messages` **无 `ref` 列**（实际列 id/workspace_id/channel/target/kind/payload/status/attempts/fail_reason/sent_at/created_at）。G8「ref 指向该 report_run」改为 **`payload.reportRunId`**（JSONB），取最新一条；不加列、不加迁移。量大再议表达式索引。
+- `actions.pushDingtalk / exportPdf` 在推送与 PDF 未接前 **保持 false**（be2 做法正确，冻结）。
+
+**D5b-2（采 Codex P-168）**
+- `cost / costStatus / costStatusReason / onTarget` 的个人源 = `apps/worker/src/data/platform-window-query.ts`（批准 tuple + taskId + window 入口已在，`data-api.ts` 已用），**不等 hourly/Gap**；`budgetUsageRate / budgetUsageDate / dailyBudgetCap` 仍等 014 `task_budget_history`。
+- 任务详情**个人范围**：主任务须 EXISTS 有效授权 tuple 绑定账户（否则 404），六个派生查询全按 tuple 过滤（Q-020）。
+
+**归属清洗 fixture（补 fe 缺的三份）**：`admin/naming-rules.json`、`admin/account-names.json`、`admin/naming-rules-test.json`，均取自联调第十/十一轮真响应（时间戳固定）。
+
+**v1.9.2 补（联调第十二轮实测 D7 后追加，2026-09-09）**
+- `GET /reports/daily` 的 `role` **回显请求参数**（`optimizer|lead|exec`，缺省 `optimizer`），不是当前身份的角色；后续按 role 裁模块（exec 只出 executive_summary/overview/health）——本批先回显，裁模块另裁。
+- `executive_summary.title` = **管理摘要**（v1.9.1 中文对象名规则；fixture 已改）。
+- `overview.trend` = **截至 `date` 的 7 个点**，点 = `account.trend` 的点（`{ds, metrics}`，metrics 与 summary 同构、三态）；缺数日照缺（三态 missing），不补 0、不跳日。fixture 放一点示例。
+
+## v1.9.3 追加（2026-09-09 arch；裁 be2 Q-020 ④⑤ + Q-021 ①②③；migration 019 = kb、020 = identity_passwords，均 be2）
+
+**T5 账户维度的形状（Q-020 ④）**
+- 账户列表行加 **`dimensions`** 对象（不并进 meta、不展开成 `bizNameSource` 之类）：`{placement, bidMode, device, goal, rta, agentType, optimizer, special, landing, rebate}`，每维 `{value:string|null, source:"manual"|"nickname"|"platform"|"qihang"|null}`；优先级 **manual > nickname > platform**（`qihang` 只出现在 agent_type/optimizer 的启航侧来源），都没有 → `{value:null, source:null}`。键名 camelCase 跟行走；解析段 key（`bid_mode/agent_type`）到行字段的映射在服务层做。fixture `account-list/ready-v193-dimensions.json`；T5 落地时四份现有 account-list fixture 一并加字段（同 S6c 做法，含 web 镜像）。
+- `account.dimension/v3` 行加 `source` 同枚举 → Codex 域，另派（不阻塞 T5）。
+
+**追认两条旧账**
+- Q-015：be2 为 R-014 S6c 改 `apps/web/lib/data/task-list-contracts.ts` **追认**；规则补一句：**§2.0 临时移交的服务，其 web 侧镜像契约文件随之移交**（`task-list-contracts.ts`、`account-list-contracts.ts`），直到交回。
+- Q-007 ②：搜索 `meta.unavailableTypes: string[]` **追认**（缺源政策读侧：表还不存在、本次没搜的类型，前端显「还搜不了」而不是「没搜到」）；fixture 已加。kb 019 落地后 `document` 移出。
+
+**改密码（Q-021 ①）：选 (a)，做真的**
+- 新表 `identity_passwords`（schema.sql v1.9.3；**migration 020 = be2**）。登录校验：**先查表，无行回落 ENV**（ENV 降级为首次引导凭证；多实例一致）。改密写表 + 吊销该身份其他 session（`otherSessionsRevoked` = 排除当前 token_hash 的 UPDATE 行数）。
+- `apps/worker/src/auth/internal-test-login-provider.ts` **临时移交 be2**（只改「表优先、ENV 回落」那一处，接口不变），做完交回 Codex；分工文档 §2.0 已记。
+- 限速 5 次/15 分钟：内测期**按 identity 的进程内计数**即可，多实例不严格可接受；HTTP 层通用限速另立项。
+- fixture 不变（`auth/password-changed.json` / `password-error.json`）。
+
+**知识库（Q-021 ②③）**
+- **migration 019 = kb 四表**（`kb_documents/kb_revisions/kb_links/kb_business_refs`），DDL 仍从 schema.sql 切片生成；`kb_documents` 加 `deleted_at TIMESTAMPTZ, deleted_by UUID`（schema.sql 已加）。`DELETE /kb/documents/:id` = 置位；列表/树/搜索/反查/backlinks 默认过滤已删；已删文档 `GET` → 404。
+- `GET /kb/documents/:id/backlinks` → `{items:[{id,title,kind}]}`；`GET /kb/by-object/:type/:id` → `{objectType, objectId, items:[{id,title,kind}]}`，`type ∈ task|account|material|work_item`，无关联 → `items:[]` 不 404。fixture `kb/backlinks.json`、`kb/by-object.json`。
+
+## v1.9.4 追加（2026-09-09 arch；裁 Codex P-163 = F-P153-1/2 的最小源与规则语义；migration 021 = Codex）
+
+**F-P153-1 小时盯盘的源与存储（冻）**
+- 源 = 启航 `account_realtime`（账户级，**不是 ad 加总**），`hh` 语义按 docs/19 已实证：截至该小时（0..hh 含）累计、单调非降、`hh=24` = 全天、历史 `ds` 可查、行带 `last_sync_time`。不需要再向 OS 探针。
+- 表 `account_metrics_hourly`（schema.sql v1.9.4）：PK `(workspace_id, media, account_id, ds, hh)`，只存 `hh 0..23` 的累计；`last_sync_time`（源）+ `sampled_at`（我方）+ `complete`（该小时是否已完整：`sampled_at ≥ 小时末 + 5min`）+ `source_run_id`。**缺行 = missing，永不补 0**；`complete=false` 的行每次采样覆盖。
+- 采样：worker 每小时 HH:05 抓 `hh=HH−1`（complete=true）与 `hh=HH`（当前小时，complete=false）；补抓给定 ds 的 hh 列表按需触发（限速沿用 ETL）。`metrics_raw.request_params` 继续原样留 hh 与 payload 作审计，不作真源。
+- 读 `account.hourly`：只读此表、只取批准 tuple；`cumulative` 直出、`delta = cum(hh) − cum(hh−1)`（hh−1 缺行 → delta missing）；`cashCost` 按 ds 生效的 `channel_coefficients` op 折算；`velocity / projectedDayCost / budgetUsage` 走现有 `hourly-projection.ts`（`completeHour` = `complete`，`elapsedDayFraction` 按 `sampled_at`）；`lastSyncAt = last_sync_time`。行不足以投影的项 → missing/undefined。
+- 实施链（Codex）：021 迁移 → client（`account_realtime` 带 hh）→ ETL 小时 job → 批准 tuple reader → factory 注入 `data-api.ts` → 现有 hourly 契约/缺源用例改为真源用例。`ad_metrics_hourly` 保留给广告级差分，不动。
+
+**F-P153-2 Gap 的规则集版本与多命中（冻）**
+- `meta.ruleSetVersion` = **读时派生**：取 workspace 内 `alert_rules` 里 `enabled=true AND metric='gap'` 的规则，按 `id` 排序做规范化 JSON（`id, scope, operator, threshold, severity, condition_tree.version`），`sha256` 前 12 位。**不加表、不加列**；`meta.ruleSet` 同时回放该快照 `[{ruleId, scope, operator, threshold, severity}]`，前端可显「按哪版规则判的」。
+- 多命中：适用 = enabled + metric=gap + `scope` 命中该行（`{}` 全空间 / `{media}` / `{taskIds}` / `{accountIds}`）；**最具体的 scope 赢**（account > task > biz > media > 全空间），同级多条取**最严**（按 operator 方向最容易命中 high 的阈值）。
+- 无适用规则或阈值为 null → `gapStatus:"missing"`、`meta.ruleSetVersion:null`（**不是 normal**）。
+- 口径：`gap = Σconversion / Σreal_conversion − 1`（先聚合再相除，窗口内按批准 tuple）；分母 0 → 三态 infinite/undefined。`preDeductionGap / deductionRate` 需 `attribution_volume`（不在 canonical）→ **missing，不反推**，等 R-012 落表再接。团队路径的版本化快照仍走 013，不变。
+

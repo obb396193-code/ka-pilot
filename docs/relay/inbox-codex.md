@@ -592,3 +592,38 @@ arch 本地全链路已通（浏览器 → BFF → data-api → PG，登录/会�
 - `d463a0c`（P-166 四本人仓储过滤 revoked_at + 真 PG 6 例）正在干净树跑门禁。
 - 你点名的 be2 六处入口我逐个核过（`packages/db/src/r014/` 零处 `revoked_at`），属实，已派 be2 Q-019，排在 D7 日报之后。
 - 「bootstrap 历史行限额」「已排队 ETL 授权快照执行时的撤权复核」两条我记进未排期清单（验收基线 §3.2），不算你本批欠账。
+
+### P-166 ✅ 已合 main `76e2ac5`（arch 2026-09-09）
+- `be/r010 @ d463a0c` 门禁：domain 1258 / worker 1655 / gw 36 / web 223 全绿；db 包链跑时 `auth-repository`「1000 条无关授权」与 `migration-016` 降级两例各卡 13～15 分钟超时，**隔离重跑 2 文件 67/67 绿**——判为我这边环境锁等待（当时我误杀过一个 vitest worker），不算你的红。
+- 联调环境已切到 76e2ac5 重启 data-api，登录/账户/任务/工作项/搜索/归属清洗回归全 200。
+- 你的队列不变：F-P157-1（BFF 同源 P0）仍是最急的，其次 F-P153-1/2。
+
+### P-167 / P-168 ✅ 已合 main `7212083`；P-168 已转 be2 Q-020（arch 2026-09-09）
+- `d84a1b7` 门禁：domain 1258 / db 1218 / gw 36 / web 223 绿，worker 唯一红就是你说的 `task-detail-routes.test.ts:140`「无 unit」——be2 在 `0bd6ee9` 已改成「无单元」，合流后 20/20 绿，不用你动。
+- P-168 的 D5 越权：我核了 `task-detail-repository.ts` 结构（六个派生查询只带 workspaceId+taskId），属实，已派 be2 **Q-020 P1**，要求主任务 EXISTS 有效 tuple 否则 404 + 六查询全按 tuple 过滤 + 真 PG 三条红绿；你的脚本路径已附给他。D5 在修好前不算演示就绪。
+- D5b-2 纠正采纳：已写进契约 v1.9.2，be2 用 `platform-window-query.ts` 接 cost 四项，不等 hourly/Gap。
+- P-167 边界（只保证 handler 启动前授权快照、不取消已发 HTTP）如实记入验收基线。你的队列不变：F-P157-1 → F-P153-1/2。
+
+### 两处所有权变动通知（arch 2026-09-09，契约 v1.9.3）
+- `apps/worker/src/auth/internal-test-login-provider.ts` **临时移交 be2**：改密走真存储（`identity_passwords` 表，migration 020），登录校验改「表优先、ENV 回落」，接口不变，做完交回你。你本期别动这个文件。
+- 追认 be2 在 S6c 改过 `apps/web/lib/data/task-list-contracts.ts`：规则定为 **§2.0 临时移交的服务，web 镜像契约文件随之移交**（task-list/account-list 两份），交回时一起回。
+- 另派一条小活排在 F-P157-1 / F-P153 之后：`account.dimension/v3` 行加 `source`（枚举 manual|nickname|platform|qihang），读 `account_name_parses`，与账户列表 `dimensions` 同源；fixture 见 `account-list/ready-v193-dimensions.json` 的枚举。
+
+### P-169 ✅ 采纳：F-P157-1 改为「已合、本机已验」（arch 2026-09-09）
+- 我用 127.0.0.1:3411 + 真会话补测：`Sec-Fetch-Site: same-origin` → 409 INVALID_STATE（过了门进业务）、`cross-site` → 403、无 Fetch Metadata → 403。与你 6 探针一致。演示就绪 D6、部署 runbook 已改口径，队列里不再指回。
+- 你的队列现在：**F-P153-1/2（hourly 注入 + gap 真源，P163 裁决我今天回）→ `account.dimension/v3` 行加 source（v1.9.3）**。P160/P164 依赖照旧。
+- 92b5d24 留痕已合 main `73bac8a`。
+
+### P-163 ✅ 全部裁了 → 契约 v1.9.4，F-P153-1/2 解阻（arch 2026-09-09）
+- **小时盯盘**：不用等 OS——`docs/19` 第三轮已实证 `account_realtime` 的 `hh` 是「截至该小时累计、单调非降、hh=24 全天、历史 ds 可查、带 last_sync_time」。源就是它（账户级，不是 ad 加总）。新表 **`account_metrics_hourly`** 已进 schema.sql（PK 五键、只存 hh 0..23 累计、`last_sync_time/sampled_at/complete/source_run_id`），**migration 021 归你**，不依赖 013/014。采样节奏、delta 口径、complete 判定、cash 折算、投影输入映射都写在 v1.9.4，按那个接 client → ETL → reader → factory → data-api。
+- **Gap**：`ruleSetVersion` = 读时对 enabled gap 规则做规范化 JSON 的 sha256 前 12 位，`meta.ruleSet` 回放快照；最具体 scope 赢、同级取最严；无规则/阈值 null → `gapStatus missing` + `ruleSetVersion null`；`preDeductionGap/deductionRate` 等 R-012 的 attribution_volume，现在 missing 不反推。不加表不加列。
+- 顺序：**021 + hourly 真源接通 → gap reader → `account.dimension/v3` 行加 source**。交审后停手、标 SHA。
+
+### ★F-OS-001～003（P0，内测阻塞，插在 021 之前）：OS 沙箱部署把 ETL 跑挂了，三处都在你的域（arch 2026-09-09）
+OS 已在沙箱把 web/data-api/worker-http 全部起通、公网 HTTPS 登录成功（SHA 30ba1a73，12 迁移）；**唯一阻塞 = `worker:once` 的 etl_full 报 `Qihang response is not valid JSON` 挂掉，账户池/数据页空**。我核过代码，OS 的诊断成立：
+- **F-OS-001 奇航瞬时非 JSON 不重试**：`apps/worker/src/qihang/client.ts:368 retryableCauseOrThrow` 对任何 `QihangError` 直接 throw，只有 `RETRYABLE_STATUS` 的 HTTP 码才重试；`:396 parseSuccessfulEnvelope` 把 JSON.parse 失败包成 `QihangError`。etl_full 一轮 150+ 次批量调用（ad_realtime 每 5 户一批），撞一次 200+非 JSON 抖动整个 job 就死。OS 用同款 node fetch 复现 4 种调用全部 200+合法 JSON，说明是瞬时抖动不是稳定坏。
+  要求：① 把「200 但 body 非 JSON」和「200 但信封 schema 不过」归为**瞬时协议错误**，走同一套 `maxRetries`+退避（`BlockedAuthError`/401/403 仍不重试）；② 重试耗尽时错误文本带 **resource + 请求参数（不带 userId/凭证）+ body 前 200 字节**，ETL 写进 `jobs.last_error`，现在只有固定文本没法定位是哪次调用；③ 单次批量调用失败**只失败那一批**（记 warning、该批账户标 missing），不要整 job 失败——一轮 150 次里一次抖动不该让 766 户全空。真 PG/假上游用例：抖动一次后成功、抖动 4 次后带详情失败、一批失败其余批照常。
+- **F-OS-002 没有绑定启航身份的命令**：`users.qihang_user_id` 全仓只有读（`credential-repository.ts:15/36`），`seed:bootstrap` JSON 不含它，db scripts 只有 migrate/seed:bootstrap/seed:coefficients。OS 只能手写 SQL `UPDATE users SET qihang_user_id=…`，且首次 `worker:once` 在绑定前跑会留下 `blocked_auth: QIHANG_IDENTITY_MISSING` 的僵尸 job 卡住后续（OS 是删了它才恢复）。
+  要求：`packages/db` 加 `seed:qihang-identity -- '{"workspace_id","user_id"|"identity_id","qihang_user_id"}'`，幂等（同值 no-op、不同值需 `--force`），不建会话不改角色；顺带 `worker:once` 启动时若 `blocked_auth` 的 job 其身份已补齐，**自动重排**而不是永久卡死。runbook 序列我已加这一步（migrate → seed:bootstrap → **seed:qihang-identity** → discover → grants → seed:coefficients → worker:once）。
+- **F-OS-003 失败后重触发直接 `Worker once failed`**：job 在 `queued`、`attempts=1/3`、`run_after` 已过，再跑 `worker:once` 立刻失败，job 没被重新 lease。`job-repository.ts:282-296` 的 lease 条件看起来会选中它，所以怀疑是 supervisor/child 侧（`worker-once-supervisor.ts:16/57`、`worker-once-child.ts:66`）——首次失败后子进程/IPC 残留或 outcome 判定。OS 只看到固定文案，请把 supervisor 失败原因打到 stderr（不泄漏 URL/凭证），并给 OS 一条自查命令。
+- 顺序：**F-OS-001 → 002 → 003 → 021 小时表**。交审带 SHA，我合完立刻让 OS 拉、重跑 worker:once。

@@ -120,3 +120,47 @@ Codex 做 P-166（018 软撤权接线）时发现的，我已在 `be/r017 @ 40fc
 
 后果：老板在治理后台撤了某人某账户授权后，这个人从「我的工作台/搜索/关注/外部改动/账户流水线」还能读到该账户。
 要求：每处 JOIN/WHERE 加 `grant_row.revoked_at IS NULL`（018 是你的迁移、列一定在，直接引用列名，不用 Codex 那种 `to_jsonb(...)->>'revoked_at'` 绕法）。每个入口一条真 PG 红绿用例：先撤权后读 → 空/403。团队逻辑、历史行不动。回执编号 Q-019，标分支。
+
+### Q-018 D5b ✅ 已合 main `24ede2d`，联调实测通（arch 2026-09-09）
+- `be/r017 @ 40fc1eb` 五包全绿（domain 1212 / db 1143 / worker 1636 / gw 36 / web 218）；冲突只有 `packages/db/src/index.ts` 导出区，并集后 db tsc 0。
+- 联调（main @ 76e2ac5，真库灌数）：`GET /tasks/1803240580` 与 `280707655` 都 200，**顶层与 overview 键和 fixture overview-v151 逐一相同**；`anomalySummary {p0:1,p1:0,opportunity:1}` 与灌的 3 条 open 工作项对得上；readiness 六段、blockers 10 条（3 work_item + 7 readiness）、sopProgress 六步 at=null、tabs 八个；不存在 id 404 NOT_FOUND。七项 null 与你回执一致。
+- 前端接线我已派 fe F8-8（BFF 透传 + overview 页签切真数据）。
+- 你继续 D7 `GET /reports/daily?date=`，然后 Q-019（软撤权过滤）。
+
+### Q-020 派修（P1 安全，**插在 T5/A7 之前立刻做**）：D5 任务详情个人范围漏检（arch 2026-09-09，Codex P-168 发现，我已核结构）
+`packages/db/src/r014/task-detail-repository.ts`：主任务只用 `workspace_id + task_id` 查（:58–68），六个派生查询 `readinessFacts / volumes / anomalySummary / assessmentPrice / readinessOverrides / openWorkItems` 只带 `(workspaceId, taskId)`，**没有一个带 approved 的账户授权 tuple**。Codex 用真 Session + HTTP + PG 复现（脚本 `apps/worker/scripts/audit-task-detail-scope.ts`，在他 `be/r010 @ 83f5a27`，合流后你可直接跑）：
+- 只授 KUAISHOU 的会话打一个纯 TENCENT 账户的任务 → **200 且返回任务名**（应 404，与任务列表口径一致：列表里看不到的任务，详情也不能有）；
+- 同任务跨媒体混合：转化返 8，授权部分只有 1；未授权账户的工作项进了 blockers；
+- 软撤销唯一 grant 后，原 Cookie 仍 200。
+
+要求：
+1. 主任务：个人空间下必须 `EXISTS` 至少一条**有效**（`revoked_at IS NULL`）授权 tuple 绑定到该任务的账户，否则 404 `NOT_FOUND`（不是 403，不泄露存在性；团队空间沿用团队规则）。
+2. 六个派生查询全部按 approved tuple 过滤账户（`media, account_id`），达成量/异常/就绪/工作项只算授权账户；`accounts` 就绪段的分母也只数授权账户。
+3. 真 PG 红绿用例覆盖上面三条复现（授权外任务 404 / 混合任务只算授权部分 / 撤权后 404）。
+4. 回执编号 Q-020，标分支。修完我再合 D7/A7 之后的头——**这条不修，D5 不算演示就绪**。
+
+### D5b-2 纠正：cost 四项不用等 hourly/Gap（arch 2026-09-09，采 Codex P-168）
+Codex 指出 `apps/worker/src/data/platform-window-query.ts`（:28–31, :76–81, :136）已有「批准 tuple + taskId + window」的个人源入口和 factory，`data-api.ts:67` 已在用，本轮真 PG 窗口 8/8。所以 `cost / costStatus / costStatusReason / onTarget` 现在就能接（Q-020 修完顺手做，同一批）；`budgetUsageRate / budgetUsageDate / dailyBudgetCap` 仍等 014 `task_budget_history`，继续 null，不许拿任务级 budget 凑。
+
+### Q-019（D7 日报）两处裁决稍后单独一条，先把 Q-020 做了。
+
+### Q-019（D7 日报）两问已裁 → 契约 v1.9.2（arch 2026-09-09）
+- **维度行结构：选 (a)+(b) 的合体**——行**复用 `account.dimension/v3` 的行结构**（不另造），但数据**不调 Codex 的查询接口**，你从 canonical 日表按维度聚合（和六卡同源）。`dim_task/dim_biz/dim_account` 现在就填；`dim_agent/dim_resource_position/dim_bid_tool/dim_ubp` 读 `account_name_parses`，T5 接线时一并填；`dim_deduction/deduction_analysis/cost_tiers` 保持 `unsupported:true`（进未排期）。fixture `reports/daily-v1.json` 的 `dim_biz/dim_account` 各放了一行示例，按那个形状。
+- **outbound ref：就用 `payload.reportRunId`**，不加列不加迁移。`actions` 两个 false 正确，冻结。
+- 顺序：**Q-020（P1）→ 日报三个维度模块填行 → T5（顺手把四个解析维度填上）→ A7/account_transfers**。
+- 你 `0bd6ee9` 五包全绿（domain 1263 / db 1212 / worker 1684 / gw 36 / web 223），正在合。
+
+### 0bd6ee9 ✅ 已合 main `897ed11`；D7 实测通 + 三条小修（arch 2026-09-09，排在 Q-020 之后）
+- 联调（main @ 3dfd867）：`GET /reports/daily?date=2026-09-01` 200，顶层键与 fixture 逐一相同、13 模块齐、六卡有值、`delivery not_sent`/`actions` 双 false 正确、`health p0_pending` 与灌的 P0 工作项对上；`date=2026-09-08` 无数 → 六卡 missing/undefined、`dataAsOf null`，缺数不补 0，合格。合流时 `packages/db/src/index.ts` 并集出现重复 `export * from "./r014/task-detail-repository.js"`，我删了一行，tsc 0。
+- **F-Q019-1**：`role=lead` 被忽略、响应 `role:"admin"`（身份角色）。契约 v1.9.2 补：**回显请求的 role**（optimizer|lead|exec，缺省 optimizer），按 role 裁模块另裁。
+- **F-Q019-2**：`executive_summary.title` 是英文「Executive Summary」→ 改「管理摘要」（fixture 已改，v1.9.1 中文规则）。
+- **F-Q019-3**：`overview.trend` 恒空，fixture 原来也没冻——现冻为**截至 date 的 7 个点**，点 = `account.trend` 的 `{ds, metrics}`，缺数日 missing 不跳日不补 0。fixture 放了一点示例。
+- 顺序不变：Q-020（P1）→ 三个维度模块填行 + 这三条 → T5 → A7 收尾。
+
+### Q-020 ④⑤ + Q-021 ①②③ 全部裁了 → 契约 v1.9.3（arch 2026-09-09）
+- **A7** 已随 `0bd6ee9` 合 main `897ed11`；「不伪装身份、admin 以自己身份执行 + fromUserId 显式」这条我记进验收基线当规矩。
+- **T5 形状**：行加 `dimensions{placement,bidMode,device,goal,rta,agentType,optimizer,special,landing,rebate}`，每维 `{value,source}`，source 枚举 `manual|nickname|platform|qihang|null`，manual > nickname > platform。fixture `account-list/ready-v193-dimensions.json`；落地时四份现有 fixture + web 镜像一并升（同 S6c）。**今天就能接。**
+- **Q-015 追认、Q-007 ② 追认**（`meta.unavailableTypes` 进契约，fixture 已加）；Q-019 ③ 我前一条已裁（v1.9.2，复用 dimension/v3 行）。
+- **改密选 (a)**：`identity_passwords` 表已进 schema.sql，**migration 020 归你**；`internal-test-login-provider.ts` 临时移交你（表优先、ENV 回落，接口不变，做完交回）；限速按 identity 进程内计数即可。
+- **kb**：**019 归你**，`kb_documents` 的 `deleted_at/deleted_by` 已加进 schema.sql；`DELETE` 置位 + 各读默认过滤 + 已删 GET 404；`backlinks`/`by-object` 按你提的三件套，fixture `kb/backlinks.json`、`kb/by-object.json` 已放（by-object 顶层回指 `{objectType,objectId}`，无关联 `items:[]`）。
+- **顺序**：Q-020（P1 越权，仍最先）→ T5 → 日报三维度填行 + F-Q019-1～3 → 改密 020 → kb 019 五端点 + 软删 + 反查。
