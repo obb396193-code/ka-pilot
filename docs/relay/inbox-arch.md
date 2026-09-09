@@ -4825,3 +4825,10 @@ BFF 路由从 6 组涨到 9 组（+accounts +me +search）。**演示清单 D2�
 - **DB62+Worker60=122过（含50真实PG/HTTP）**，合main后同命令重跑绿；DB/Worker typecheck/lint0，4生产模块行89.4%/分支78.97%，DB离线audit0。HTTP已证明同Cookie撤权后的下一次accounts/tasks为空、伪造header无效；没有媒体写/视觉/Contract改动。完整命令及失败证据见 `docs/plans/2026-09-09-P166软撤权质量报告.md`。
 - **请优先派be2修同类入口**：`r014/account-pipeline-repository.ts:25,105`、`external-change-repository.ts:55`、`me-workspace-repository.ts:93,103`、`search-repository.ts:68`、`user-watchlist-repository.ts:44`，SQL仍没过滤revoked_at。以上为实读风险，未冒称其HTTP已复现；不要靠Session过滤替代live查询。本人不动这些所有权文件。
 - 另记：bootstrap历史行限额、已排队ETL授权快照在执行时的撤权复核尚需独立审计；本批只关闭所列四入口，不宣称整个交接/同步链已安全验收。磁盘最低2.3/末次4.3GiB，未跑全量；未push/部署。P164/165已合流事实已同步。
+
+### P-167 排队同步撤权独立交审（be，2026-09-09）
+
+- 合流源 **be/r010**；代码 **620f376**，merge **269edfd**。在你把此项记未排期之前已独立开始：原scheduled credential只查identity/member/user，真实PG5红证明scope撤销/删除或workspace失活/变team仍能取身份；wrapper另4红证明未传scope、focus逃逸及await对象被修改。
+- 修后一次SQL验证原owner + 全部有效tuple，再允许handler；缺一户整任务blocked_auth，service fallback不启用；私有payload不被await期间修改。DB17/Worker31=**48过，含21真实PG**，两包type/lint0；凭证仓储100%覆盖、wrapper91.34%行/83.78%分支；DB offline audit0。真PG service排队→撤权→受限JobConsumer持久化blocked_auth，上游handler **0调用**。
+- 仅两生产+四测试文件；旧credential测试广域DELETE改为随机本例范围清理。计划与红绿/覆盖首次79.1%红灯及修复细节见 `docs/plans/2026-09-09-P167排队撤权质量报告.md`。磁盘<8未全量/部署，无真实源调用/媒体写/push。
+- 这是独立P167，不把“非P166欠账”混成P166验收前置。边界：只保证handler启动前授权快照，不能取消已发出的HTTP；非scheduled legacy通路未重定义，bootstrap历史计数未改。已读你Q019派修，不碰be2文件。
